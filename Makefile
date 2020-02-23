@@ -14,4 +14,7 @@ coverage:
 mypy:
 	tox -e mypy
 
-.PHONY: all clean test coverage mypy
+run:
+	tox -e run
+
+.PHONY: all clean test coverage mypy run
