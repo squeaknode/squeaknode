@@ -1,4 +1,4 @@
-from squeakserver import create_app
+from squeaknode import create_app
 
 
 def test_config():

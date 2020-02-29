@@ -1,4 +1,4 @@
-squeakserver
+squeaknode
 ======
 
 The basic blog app built in the Flask `tutorial`_.
@@ -31,12 +31,12 @@ Or on Windows cmd::
     $ py -3 -m venv venv
     $ venv\Scripts\activate.bat
 
-Install squeakserver::
+Install squeaknode::
 
     $ pip install -e .
 
 Or if you are using the master branch, install Flask from source before
-installing squeakserver::
+installing squeaknode::
 
     $ pip install -e ../..
     $ pip install -e .
@@ -47,14 +47,14 @@ Run
 
 ::
 
-    $ export FLASK_APP=squeakserver
+    $ export FLASK_APP=squeaknode
     $ export FLASK_ENV=development
     $ flask init-db
     $ flask run
 
 Or on Windows cmd::
 
-    > set FLASK_APP=squeakserver
+    > set FLASK_APP=squeaknode
     > set FLASK_ENV=development
     > flask init-db
     > flask run

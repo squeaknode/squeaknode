@@ -7,8 +7,8 @@ from flask import request
 from flask import url_for
 from werkzeug.exceptions import abort
 
-from squeakserver.auth import login_required
-from squeakserver.db import get_db
+from squeaknode.auth import login_required
+from squeaknode.db import get_db
 
 bp = Blueprint("blog", __name__)
 

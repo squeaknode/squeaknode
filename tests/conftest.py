@@ -3,9 +3,9 @@ import tempfile
 
 import pytest
 
-from squeakserver import create_app
-from squeakserver.db import get_db
-from squeakserver.db import init_db
+from squeaknode import create_app
+from squeaknode.db import get_db
+from squeaknode.db import init_db
 
 # read in SQL for populating test data
 with open(os.path.join(os.path.dirname(__file__), "data.sql"), "rb") as f:

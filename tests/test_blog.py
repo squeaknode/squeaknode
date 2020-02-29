@@ -1,6 +1,6 @@
 import pytest
 
-from squeakserver.db import get_db
+from squeaknode.db import get_db
 
 
 def test_index(client, auth):
