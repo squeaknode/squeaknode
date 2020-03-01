@@ -10,6 +10,8 @@ from werkzeug.exceptions import abort
 from squeaknode.server.auth import login_required
 from squeaknode.server.db import get_db
 
+from squeaknode.common.greeting import greet
+
 bp = Blueprint("blog", __name__)
 
 
@@ -123,3 +125,8 @@ def delete(id):
     db.execute("DELETE FROM post WHERE id = ?", (id,))
     db.commit()
     return redirect(url_for("blog.index"))
+
+
+def hi():
+    """Return a greeting."""
+    return greet()
