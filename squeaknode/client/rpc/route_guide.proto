@@ -1,0 +1,253 @@
+// Copyright 2015 gRPC authors.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "io.grpc.examples.routeguide";
+option java_outer_classname = "RouteGuideProto";
+option objc_class_prefix = "RTG";
+
+package routeguide;
+
+// Interface exported by the server.
+service RouteGuide {
+  // A simple RPC.
+  //
+  // Obtains the feature at a given position.
+  //
+  // A feature with an empty name is returned if there's no feature at the given
+  // position.
+  rpc GetFeature(Point) returns (Feature) {}
+
+  // A server-to-client streaming RPC.
+  //
+  // Obtains the Features available within the given Rectangle.  Results are
+  // streamed rather than returned at once (e.g. in a response message with a
+  // repeated field), as the rectangle may cover a large area and contain a
+  // huge number of features.
+  rpc ListFeatures(Rectangle) returns (stream Feature) {}
+
+  // A client-to-server streaming RPC.
+  //
+  // Accepts a stream of Points on a route being traversed, returning a
+  // RouteSummary when traversal is completed.
+  rpc RecordRoute(stream Point) returns (RouteSummary) {}
+
+  // A Bidirectional streaming RPC.
+  //
+  // Accepts a stream of RouteNotes sent while a route is being traversed,
+  // while receiving other RouteNotes (e.g. from other users).
+  rpc RouteChat(stream RouteNote) returns (stream RouteNote) {}
+
+  /** sqk: `walletbalance`
+  WalletBalance returns total unspent outputs(confirmed and unconfirmed), all
+  confirmed unspent outputs and all unconfirmed unspent outputs under control
+  of the wallet.
+  */
+  rpc WalletBalance (WalletBalanceRequest) returns (WalletBalanceResponse) {}
+
+  /** sqk: `addpeer`
+  */
+  rpc ConnectHost (ConnectHostRequest) returns (ConnectHostResponse) {}
+
+  /** sqk: `disconnectpeer`
+  */
+  rpc DisconnectPeer (DisconnectPeerRequest) returns (DisconnectPeerResponse) {}
+
+  /** sqk: `listpeers`
+  ListPeers returns a verbose listing of all currently active peers.
+  */
+  rpc ListPeers (ListPeersRequest) returns (ListPeersResponse) {}
+
+  /** sqk: `makesqueak`
+  */
+  rpc MakeSqueak (MakeSqueakRequest) returns (MakeSqueakResponse) {}
+
+  /** sqk: `generatesigningKey`
+  */
+  rpc GenerateSigningKey (GenerateSigningKeyRequest) returns (GenerateSigningKeyResponse) {}
+}
+
+// Points are represented as latitude-longitude pairs in the E7 representation
+// (degrees multiplied by 10**7 and rounded to the nearest integer).
+// Latitudes should be in the range +/- 90 degrees and longitude should be in
+// the range +/- 180 degrees (inclusive).
+message Point {
+  int32 latitude = 1;
+  int32 longitude = 2;
+}
+
+// A latitude-longitude rectangle, represented as two diagonally opposite
+// points "lo" and "hi".
+message Rectangle {
+  // One corner of the rectangle.
+  Point lo = 1;
+
+  // The other corner of the rectangle.
+  Point hi = 2;
+}
+
+// A feature names something at a given point.
+//
+// If a feature could not be named, the name is empty.
+message Feature {
+  // The name of the feature.
+  string name = 1;
+
+  // The point where the feature is detected.
+  Point location = 2;
+}
+
+// A RouteNote is a message sent while at a given point.
+message RouteNote {
+  // The location from which the message is sent.
+  Point location = 1;
+
+  // The message to be sent.
+  string message = 2;
+}
+
+// A RouteSummary is received in response to a RecordRoute rpc.
+//
+// It contains the number of individual points received, the number of
+// detected features, and the total distance covered as the cumulative sum of
+// the distance between each point.
+message RouteSummary {
+  // The number of points received.
+  int32 point_count = 1;
+
+  // The number of known features passed while traversing the route.
+  int32 feature_count = 2;
+
+  // The distance covered in metres.
+  int32 distance = 3;
+
+  // The duration of the traversal in seconds.
+  int32 elapsed_time = 4;
+}
+
+message WalletBalanceRequest {
+}
+
+message WalletBalanceResponse {
+    /// The balance of the wallet
+    int64 total_balance = 1;
+
+    /// The confirmed balance of a wallet(with >= 1 confirmations)
+    int64 confirmed_balance = 2;
+
+    /// The unconfirmed balance of a wallet(with 0 confirmations)
+    int64 unconfirmed_balance = 3;
+}
+
+// message GetPeersRequest {
+// }
+
+// message GetPeersResponse {
+//     /// The balance of the wallet
+//     int64 total_balance = 1 [json_name = "total_balance"];
+
+//     /// The confirmed balance of a wallet(with >= 1 confirmations)
+//     int64 confirmed_balance = 2 [json_name = "confirmed_balance"];
+
+//     /// The unconfirmed balance of a wallet(with 0 confirmations)
+//     int64 unconfirmed_balance = 3 [json_name = "unconfirmed_balance"];
+// }
+
+message ConnectHostRequest {
+    // The address of the peer to add.
+    string host = 1;
+}
+
+message ConnectHostResponse {
+}
+
+message DisconnectPeerRequest {
+    Addr addr = 1;
+}
+
+message DisconnectPeerResponse {
+}
+
+message ListPeersRequest {
+}
+
+message ListPeersResponse {
+    /// The list of currently connected peers
+    repeated Peer peers = 1;
+}
+
+message MakeSqueakRequest {
+    /// Content of the squeak to be made.
+    string content = 1;
+}
+
+message MakeSqueakResponse {
+    /// The squeak.
+    Squeak squeak = 1;
+}
+
+message GenerateSigningKeyRequest {}
+
+message GenerateSigningKeyResponse {
+    /// Address of the signing key.
+    string address = 1;
+}
+
+message Addr {
+  string host = 1;
+
+  uint64 port = 2;
+}
+
+message Peer {
+    /// Address
+    Addr addr = 1;
+
+    /// Bytes of data transmitted to this peer
+    uint64 bytes_sent = 2;
+
+    /// Bytes of data transmitted from this peer
+    uint64 bytes_recv = 3;
+
+    /// Satoshis sent to this peer
+    int64 sat_sent = 4;
+
+    /// Satoshis received from this peer
+    int64 sat_recv = 5;
+
+    /// A channel is inbound if the counterparty initiated the connection
+    bool inbound = 6;
+
+    /// Ping time to this peer
+    int64 ping_time = 7;
+}
+
+message Squeak {
+    /// Hash of the squeak.
+    bytes hash = 1;
+
+    /// Address of the creator.
+    string address = 2;
+
+    /// Content of the squeak.
+    string content = 3;
+
+    /// Block height of the squeak.
+    uint64 block_height = 4;
+
+    /// Timestamp of the squeak.
+    uint64 timestamp = 5;
+}

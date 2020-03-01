@@ -1,2 +1,7 @@
 flask==1.1.1
 squeaklib
+argparse
+googleapis-common-protos
+grpcio
+grpcio-tools
+requests

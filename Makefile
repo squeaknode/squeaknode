@@ -9,6 +9,9 @@ clean:
 test:
 	tox
 
+itest:
+	./itests/run_itest.sh
+
 coverage:
 	tox -e coverage
 
@@ -18,4 +21,4 @@ mypy:
 run:
 	tox -e run
 
-.PHONY: all clean test coverage mypy run
+.PHONY: all clean test itest coverage mypy run
