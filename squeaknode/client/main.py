@@ -10,6 +10,7 @@ from squeaknode.common.lightning_client import LightningClient
 from squeaknode.common.btcd_blockchain_client import BTCDBlockchainClient
 from squeaknode.common.lnd_lightning_client import LNDLightningClient
 from squeaknode.client.rpc.route_guide_server import RouteGuideServicer
+from squeaknode.client.clientsqueaknode import ClientSqueakNode
 
 
 
@@ -30,16 +31,9 @@ def load_lightning_client(rpc_host, rpc_port, network) -> LightningClient:
     )
 
 
-# def _start_node(blockchain, lightning_client):
-#     node = ClientSqueakNode(blockchain, lightning_client)
-#     peer_handler = PeerHandler(node)
-#     thread = threading.Thread(
-#         target=node.start,
-#         args=(peer_handler,),
-#     )
-#     thread.daemon = True
-#     thread.start()
-#     return node, thread
+def _start_node(blockchain_client, lightning_client):
+    node = ClientSqueakNode(blockchain_client, lightning_client)
+    return node
 
 
 def _start_route_guide_rpc_server(node):
@@ -160,7 +154,7 @@ def main():
         args.network,
     )
 
-    # node, thread = _start_node(blockchain, lightning_client)
+    node = _start_node(blockchain_client, lightning_client)
 
     # start rpc server
     route_guide_server, route_guide_server_thread = _start_route_guide_rpc_server(node)

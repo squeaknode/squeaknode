@@ -101,9 +101,9 @@ def run():
     # NOTE(gRPC Python Team): .close() is possible on a channel and should be
     # used in circumstances in which the with statement does not fit the needs
     # of the code.
-    with grpc.insecure_channel('sqk_alice:50051') as alice_channel, \
-         grpc.insecure_channel('sqk_bob:50051') as bob_channel, \
-         grpc.insecure_channel('sqk_carol:50051') as carol_channel:
+    with grpc.insecure_channel('sqkclient_alice:50051') as alice_channel, \
+         grpc.insecure_channel('sqkclient_bob:50051') as bob_channel, \
+         grpc.insecure_channel('sqkclient_carol:50051') as carol_channel:
 
         # Make the stubs
         alice_stub = route_guide_pb2_grpc.RouteGuideStub(alice_channel)
@@ -122,72 +122,6 @@ def run():
         print("Balance: %s" % balance)
         print("Balance confirmed %s %s" % (balance.total_balance, balance.total_balance))
         assert balance.total_balance == 1505000000000
-
-        print("-------------- ConnectHost --------------")
-        # Connect alice to bob
-        request = route_guide_pb2.ConnectHostRequest(
-            host='sqk_bob',
-        )
-        alice_stub.ConnectHost(request)
-        time.sleep(1)
-
-        # Connect bob to carol
-        request = route_guide_pb2.ConnectHostRequest(
-            host='sqk_carol',
-        )
-        bob_stub.ConnectHost(request)
-        time.sleep(1)
-
-        # Check how many peers alice has.
-        time.sleep(5)
-        request = route_guide_pb2.ListPeersRequest()
-        alice_peers = alice_stub.ListPeers(request).peers
-        bob_peers = bob_stub.ListPeers(request).peers
-        carol_peers = carol_stub.ListPeers(request).peers
-        print("Alice peers: %s" % alice_peers)
-        assert len(alice_peers) >= 1
-        print("Bob peers: %s" % bob_peers)
-        assert len(bob_peers) >= 1
-        print("Carol peers: %s" % carol_peers)
-        assert len(carol_peers) >= 1
-
-        print("-------------- GenerateSigningKey --------------")
-        request = route_guide_pb2.GenerateSigningKeyRequest()
-        resp = alice_stub.GenerateSigningKey(request)
-        alice_address = resp.address
-        bob_address = bob_stub.GenerateSigningKey(request).address
-        carol_address = carol_stub.GenerateSigningKey(request).address
-        print("Generated signing key for Alice with address: %s" % alice_address)
-        print("Generated signing key for Bob with address: %s" % bob_address)
-        print("Generated signing key for Carol with address: %s" % carol_address)
-
-        print("-------------- MakeSqueak --------------")
-        content = 'hello world!'
-        request = route_guide_pb2.MakeSqueakRequest(
-            content=content,
-        )
-        response = alice_stub.MakeSqueak(request)
-        squeak = response.squeak
-        print("Made squeak: %s" % squeak)
-        assert 'hello world!' == squeak.content
-        assert 400 == squeak.block_height
-
-        print("-------------- DisconnectPeer --------------")
-        # Disconnect all peers from alice
-        print("Alice peers: %s" % alice_peers)
-        for peer in alice_peers:
-            address = peer.addr
-            request = route_guide_pb2.DisconnectPeerRequest(
-                addr=address,
-            )
-            alice_stub.DisconnectPeer(request)
-        time.sleep(1)
-
-        # Alice peers response should be empty
-        request = route_guide_pb2.ListPeersRequest()
-        alice_peers = alice_stub.ListPeers(request).peers
-        print("Alice peers: %s" % alice_peers)
-        assert len(alice_peers) == 0
 
 
 if __name__ == '__main__':
