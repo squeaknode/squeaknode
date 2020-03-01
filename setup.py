@@ -18,4 +18,9 @@ setup(
     zip_safe=False,
     install_requires=["flask"],
     extras_require={"test": ["pytest", "coverage"]},
+    entry_points={
+        'console_scripts': [
+            'runsqueaknodeclient = squeaknode.client.main:main',
+        ],
+    },
 )

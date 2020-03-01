@@ -1,0 +1,200 @@
+version: '3'
+services:
+
+  btcd:
+    image: btcd
+    container_name: btcd
+    build:
+      context: ../
+      dockerfile: docker/btcd/Dockerfile
+    volumes:
+      - shared_test:/rpc
+      - bitcoin_test:/data
+    environment:
+      - RPCUSER
+      - RPCPASS
+      - NETWORK
+      - DEBUG
+      - MINING_ADDRESS
+    ports:
+      - 8334:8334
+      - 18334:18334
+      - 18556:18556
+      - 28902:28902
+    entrypoint: ["./start-btcd.sh"]
+
+  btcctl:
+    image: btcd
+    container_name: btcctl
+    build:
+      context: ../
+      dockerfile: docker/btcd/Dockerfile
+    volumes:
+      - shared_test:/rpc
+      - bitcoin_test:/data
+    environment:
+      - RPCUSER
+      - RPCPASS
+      - NETWORK
+      - DEBUG
+      - MINING_ADDRESS
+    links:
+      - "btcd:rpcserver"
+    entrypoint: ["./start-btcctl.sh"]
+
+  lnd_alice:
+    image: lnd
+    container_name: lnd_alice
+    build:
+      context: ../
+      dockerfile: docker/lnd/Dockerfile
+    environment:
+      - RPCUSER
+      - RPCPASS
+      - NETWORK
+      - CHAIN
+      - DEBUG
+    volumes:
+      - shared_test:/rpc
+      - lnd_dir_alice:/root/.lnd
+    links:
+      - "btcd:blockchain"
+    entrypoint: ["./start-lnd.sh"]
+
+  lnd_bob:
+    image: lnd
+    container_name: lnd_bob
+    build:
+      context: ../
+      dockerfile: docker/lnd/Dockerfile
+    environment:
+      - RPCUSER
+      - RPCPASS
+      - NETWORK
+      - CHAIN
+      - DEBUG
+    volumes:
+      - shared_test:/rpc
+      - lnd_dir_bob:/root/.lnd
+    links:
+      - "btcd:blockchain"
+    entrypoint: ["./start-lnd.sh"]
+
+  lnd_carol:
+    image: lnd
+    container_name: lnd_carol
+    build:
+      context: ../
+      dockerfile: docker/lnd/Dockerfile
+    environment:
+      - RPCUSER
+      - RPCPASS
+      - NETWORK
+      - CHAIN
+      - DEBUG
+    volumes:
+      - shared_test:/rpc
+      - lnd_dir_carol:/root/.lnd
+    links:
+      - "btcd:blockchain"
+    entrypoint: ["./start-lnd.sh"]
+
+  sqkclient_alice:
+    image: sqkclient
+    container_name: sqkclient_alice
+    build:
+      context: ../
+      dockerfile: docker/sqkclient/Dockerfile
+    environment:
+      - RPCUSER
+      - RPCPASS
+      - NETWORK
+      - CHAIN
+      - DEBUG
+      - HEADLESS
+    volumes:
+      - shared_test:/rpc
+      - lnd_dir_alice:/root/.lnd
+    links:
+      - "btcd:blockchain"
+      - "lnd_alice:lnd"
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=0
+    entrypoint: ["./start-sqkclient.sh"]
+
+  sqkclient_bob:
+    image: sqkclient
+    container_name: sqkclient_bob
+    build:
+      context: ../
+      dockerfile: docker/sqkclient/Dockerfile
+    environment:
+      - RPCUSER
+      - RPCPASS
+      - NETWORK
+      - CHAIN
+      - DEBUG
+      - HEADLESS
+    volumes:
+      - shared_test:/rpc
+      - lnd_dir_bob:/root/.lnd
+    links:
+      - "btcd:blockchain"
+      - "lnd_bob:lnd"
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=0
+    entrypoint: ["./start-sqkclient.sh"]
+
+  sqkclient_carol:
+    image: sqkclient
+    container_name: sqkclient_carol
+    build:
+      context: ../
+      dockerfile: docker/sqkclient/Dockerfile
+    environment:
+      - RPCUSER
+      - RPCPASS
+      - NETWORK
+      - CHAIN
+      - DEBUG
+      - HEADLESS
+    volumes:
+      - shared_test:/rpc
+      - lnd_dir_carol:/root/.lnd
+    links:
+      - "btcd:blockchain"
+      - "lnd_carol:lnd"
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=0
+    entrypoint: ["./start-sqkclient.sh"]
+
+  test:
+    image: test
+    container_name: test
+    build:
+      context: ../
+      dockerfile: docker/test/Dockerfile
+    links:
+      - "btcd:blockchain"
+      - "sqkclient_alice:sqkclient_alice"
+      - "sqkclient_bob:sqkclient_bob"
+      - "sqkclient_carol:sqkclient_carol"
+    command: tail -f /dev/null
+
+volumes:
+  # btcctl and lnd containers.
+  shared_test:
+    driver: local
+
+  # bitcoin_test volume is needed for maintaining blockchain persistence
+  # during btcd container recreation.
+  bitcoin_test:
+    driver: local
+
+  # lnd_dir volume is needed for sharing tht tls certificate
+  lnd_dir_alice:
+    driver: local
+  lnd_dir_bob:
+    driver: local
+  lnd_dir_carol:
+    driver: local

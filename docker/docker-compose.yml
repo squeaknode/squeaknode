@@ -1,0 +1,108 @@
+version: '3'
+services:
+
+  btcd:
+    image: btcd
+    container_name: btcd
+    build:
+      context: ../
+      dockerfile: docker/btcd/Dockerfile
+    volumes:
+      - shared:/rpc
+      - bitcoin:/data
+    environment:
+      - RPCUSER
+      - RPCPASS
+      - NETWORK
+      - DEBUG
+      - MINING_ADDRESS
+    ports:
+      - 8334:8334
+      - 18334:18334
+      - 18556:18556
+      - 28902:28902
+    entrypoint: ["./start-btcd.sh"]
+
+  btcctl:
+    image: btcd
+    container_name: btcctl
+    build:
+      context: ../
+      dockerfile: docker/btcd/Dockerfile
+    volumes:
+      - shared:/rpc
+      - bitcoin:/data
+    environment:
+      - RPCUSER
+      - RPCPASS
+      - NETWORK
+      - DEBUG
+      - MINING_ADDRESS
+    links:
+      - "btcd:rpcserver"
+    entrypoint: ["./start-btcctl.sh"]
+
+  lnd:
+    image: lnd
+    container_name: lnd
+    build:
+      context: ../
+      dockerfile: docker/lnd/Dockerfile
+    environment:
+      - RPCUSER
+      - RPCPASS
+      - NETWORK
+      - CHAIN
+      - DEBUG
+      - RPC_LISTEN="0.0.0.0:10009"
+    volumes:
+      - shared:/rpc
+      - lnd_dir:/root/.lnd
+    links:
+      - "btcd:blockchain"
+    entrypoint: ["./start-lnd.sh"]
+
+  sqk:
+    image: sqk
+    container_name: sqk
+    build:
+      context: ../
+      dockerfile: docker/sqk/Dockerfile
+    environment:
+      - RPCUSER
+      - RPCPASS
+      - NETWORK
+      - CHAIN
+      - DEBUG
+      - HEADLESS
+    volumes:
+      - shared:/rpc
+      - lnd_dir:/root/.lnd
+    links:
+      - "btcd:blockchain"
+      - "lnd:lnd"
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=0
+    entrypoint: ["./start-sqk.sh"]
+
+  frontend:
+    container_name: frontend
+    build:
+      context: ../
+      dockerfile: docker/frontend/Dockerfile
+    ports:
+      - 8080:80
+
+volumes:
+  # btcctl and lnd containers.
+  shared:
+    driver: local
+
+  # bitcoin volume is needed for maintaining blockchain persistence
+  # during btcd container recreation.
+  bitcoin:
+    driver: local
+
+  # lnd_dir volume is needed for sharing tht tls certificate
+  lnd_dir:
+    driver: local
