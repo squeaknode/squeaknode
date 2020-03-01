@@ -6,7 +6,7 @@ import grpc
 
 import squeakclient.rpc_pb2 as ln
 import squeakclient.rpc_pb2_grpc as lnrpc
-from squeakclient.squeaknode.core.lightning_client import LightningClient
+from squeaknode.common.lightning_client import LightningClient
 
 
 logger = logging.getLogger(__name__)
