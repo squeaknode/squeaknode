@@ -1,6 +1,6 @@
 include LICENSE
-include squeaknode/schema.sql
-graft squeaknode/static
-graft squeaknode/templates
+include squeaknode/server/schema.sql
+graft squeaknode/server/static
+graft squeaknode/server/templates
 graft tests
 global-exclude *.pyc

@@ -11,7 +11,7 @@ from flask import url_for
 from werkzeug.security import check_password_hash
 from werkzeug.security import generate_password_hash
 
-from squeaknode.db import get_db
+from squeaknode.server.db import get_db
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
 
