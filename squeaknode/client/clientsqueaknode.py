@@ -8,7 +8,7 @@ from squeaknode.common.squeak_maker import SqueakMaker
 logger = logging.getLogger(__name__)
 
 
-class ClientSqueakNode(object):
+class SqueakNodeClient(object):
     """Network node that handles client commands.
     """
 
