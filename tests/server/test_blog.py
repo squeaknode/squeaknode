@@ -1,6 +1,7 @@
 import pytest
 
-from squeaknode.db import get_db
+from squeaknode.server.db import get_db
+from squeaknode.server.blog import hi
 
 
 def test_index(client, auth):
@@ -81,3 +82,7 @@ def test_delete(client, auth, app):
         db = get_db()
         post = db.execute("SELECT * FROM post WHERE id = 1").fetchone()
         assert post is None
+
+def test_hi():
+    response = hi()
+    assert 'hello' == response
