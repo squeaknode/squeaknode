@@ -54,7 +54,7 @@ Run
 
 Or on Windows cmd::
 
-    > set FLASK_APP=squeaknode
+    > set FLASK_APP=squeaknode.server
     > set FLASK_ENV=development
     > flask init-db
     > flask run
