@@ -36,7 +36,6 @@ def get_post(id, check_author=True):
     :param check_author: require the current user to be the author
     :return: the post with author information
     :raise 404: if a post with the given id doesn't exist
-    :raise 403: if the current user isn't the author
     """
     post = (
         get_db()
@@ -79,6 +78,12 @@ def create():
 
     return render_template("blog/create.html")
 
+
+@bp.route("/post/<int:id>", methods=("GET", "POST"))
+def update(id):
+    """Read a post."""
+    post = get_post(id)
+    return render_template("blog/show.html", post=post)
 
 
 def hi():
