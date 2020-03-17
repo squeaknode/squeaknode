@@ -80,7 +80,7 @@ def create():
 
 
 @bp.route("/post/<int:id>", methods=("GET", "POST"))
-def update(id):
+def show(id):
     """Read a post."""
     post = get_post(id)
     return render_template("blog/show.html", post=post)
