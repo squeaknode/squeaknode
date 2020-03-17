@@ -26,14 +26,12 @@ def index():
     return render_template("blog/index.html", posts=posts)
 
 
-def get_post(id, check_author=True):
+def get_post(id):
     """Get a post and its author by id.
 
-    Checks that the id exists and optionally that the current user is
-    the author.
+    Checks that the id exists.
 
     :param id: id of post to get
-    :param check_author: require the current user to be the author
     :return: the post with author information
     :raise 404: if a post with the given id doesn't exist
     """
