@@ -1,16 +1,23 @@
 import os
 
+from configparser import ConfigParser
+
 from flask import Flask
 
 
 def create_app(test_config=None):
     """Create and configure an instance of the Flask application."""
     app = Flask(__name__, instance_relative_config=True)
+
+    config = ConfigParser()
+    config.read(os.environ.get('MY_APP_CONFIG_FILE'))
+
+    print(dict(config['flask']))
+
+    flask_config = {k.upper():v for k,v in dict(config['flask']).items()}
+    print(flask_config)
     app.config.from_mapping(
-        # a default secret that should be overridden by instance config
-        SECRET_KEY="dev",
-        # store the database in the instance folder
-        DATABASE=os.path.join(app.instance_path, "squeaknode.sqlite"),
+        **flask_config,
     )
 
     if test_config is None:
