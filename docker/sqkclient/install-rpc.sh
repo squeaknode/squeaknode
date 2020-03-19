@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-# Install the gRPC files for lnd.
 git clone https://github.com/googleapis/googleapis.git
 curl -o rpc.proto -s https://raw.githubusercontent.com/lightningnetwork/lnd/master/lnrpc/rpc.proto
 
