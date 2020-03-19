@@ -3,6 +3,8 @@ import logging
 import threading
 import time
 
+from configparser import ConfigParser
+
 from squeak.params import SelectParams
 
 from squeaknode.common.blockchain_client import BlockchainClient
@@ -63,75 +65,10 @@ def parse_args():
     # create the parser for the "run-client" command
     parser_run_client = subparsers.add_parser('run-client', help='run-client help')
     parser_run_client.add_argument(
-        '--network',
-        dest='network',
+        '--config',
+        dest='config',
         type=str,
-        default='mainnet',
-        choices=['mainnet', 'testnet', 'regtest', 'simnet'],
-        help='The bitcoin network to use',
-    )
-    parser_run_client.add_argument(
-        '--rpcport',
-        dest='rpcport',
-        type=int,
-        default=None,
-        help='RPC server port number',
-    )
-    parser_run_client.add_argument(
-        '--rpcuser',
-        dest='rpcuser',
-        type=str,
-        default='',
-        help='RPC username',
-    )
-    parser_run_client.add_argument(
-        '--rpcpass',
-        dest='rpcpass',
-        type=str,
-        default='',
-        help='RPC password',
-    )
-    parser_run_client.add_argument(
-        '--btcd.rpchost',
-        dest='btcd_rpchost',
-        type=str,
-        default='localhost',
-        help='Blockchain (bitcoin) backend hostname',
-    )
-    parser_run_client.add_argument(
-        '--btcd.rpcport',
-        dest='btcd_rpcport',
-        type=int,
-        default=18332,
-        help='Blockchain (bitcoin) backend port',
-    )
-    parser_run_client.add_argument(
-        '--btcd.rpcuser',
-        dest='btcd_rpcuser',
-        type=str,
-        default='',
-        help='Blockchain (bitcoin) backend username',
-    )
-    parser_run_client.add_argument(
-        '--btcd.rpcpass',
-        dest='btcd_rpcpass',
-        type=str,
-        default='',
-        help='Blockchain (bitcoin) backend password',
-    )
-    parser_run_client.add_argument(
-        '--lnd.rpchost',
-        dest='lnd_rpchost',
-        type=str,
-        default='localhost',
-        help='Lightning network backend hostname',
-    )
-    parser_run_client.add_argument(
-        '--lnd.rpcport',
-        dest='lnd_rpcport',
-        type=int,
-        default=10009,
-        help='Lightning network backend port',
+        help='Path to the config file.',
     )
     parser_run_client.add_argument(
         '--log-level',
@@ -159,22 +96,25 @@ def init_db(args):
 
 def run_client(args):
     level = args.log_level.upper()
-    print("level: " + level, flush=True)
+    print("level: " + level)
     logging.getLogger().setLevel(level)
 
-    print('network:', args.network, flush=True)
-    SelectParams(args.network)
+    config = ConfigParser()
+    config.read(args.config)
+
+    print('network:', config['DEFAULT']['network'])
+    SelectParams(config['DEFAULT']['network'])
 
     blockchain_client = load_blockchain_client(
-        args.btcd_rpchost,
-        args.btcd_rpcport,
-        args.btcd_rpcuser,
-        args.btcd_rpcpass,
+        config['btcd']['rpc_host'],
+        config['btcd']['rpc_port'],
+        config['btcd']['rpc_user'],
+        config['btcd']['rpc_pass'],
     )
     lightning_client = load_lightning_client(
-        args.lnd_rpchost,
-        args.lnd_rpcport,
-        args.network,
+        config['lnd']['rpc_host'],
+        config['lnd']['rpc_port'],
+        config['lnd']['network'],
     )
 
     db = get_db()

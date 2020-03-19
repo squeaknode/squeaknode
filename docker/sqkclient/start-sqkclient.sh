@@ -39,12 +39,18 @@ set_default() {
 }
 
 # Set default variables if needed.
+LND_HOST="lnd"
+LND_PORT=10009
+BTCD_HOST="btcd"
 RPCUSER=$(set_default "$RPCUSER" "devuser")
 RPCPASS=$(set_default "$RPCPASS" "devpass")
 DEBUG=$(set_default "$DEBUG" "debug")
 NETWORK=$(set_default "$NETWORK" "simnet")
 CHAIN=$(set_default "$CHAIN" "bitcoin")
 BACKEND="btcd"
+SQK_HOST=""
+SQK_PORT=""
+PRIVATE_KEY=$(set_default "$PRIVATE_KEY" "myprivatekey")
 
 # This is a hack that is needed because python-bitcoinlib does not
 # currently support simnet network.
@@ -69,16 +75,15 @@ update-ca-certificates
 # needs to be told to use it over its own embedded bundle
 export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
 
+
+# Generate the config file.
+chmod +x config.ini.sh
+./config.ini.sh $NETWORK $LND_HOST $LND_PORT $BTCD_HOST $BTCD_RPC_PORT $RPCUSER $RPCPASS $SQK_HOST $SQK_PORT $PRIVATE_KEY > config.ini
+cat config.ini
+
 # Initialize the client database.
 runsqueaknodeclient init-db
 
 exec runsqueaknodeclient run-client \
-     "--network"="$NETWORK" \
-     "--rpcuser"="$RPCUSER" \
-     "--rpcpass"="$RPCPASS" \
-     "--$BACKEND.rpchost"="blockchain" \
-     "--$BACKEND.rpcport"="$BTCD_RPC_PORT" \
-     "--$BACKEND.rpcuser"="$RPCUSER" \
-     "--$BACKEND.rpcpass"="$RPCPASS" \
-     "--lnd.rpchost"="lnd" \
-     --log-level="$DEBUG" \
+     "--config"="config.ini" \
+     "--log-level"="$DEBUG"
