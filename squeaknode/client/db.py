@@ -22,7 +22,6 @@ def close_db(db):
 
 def initialize_db(db):
     """Clear existing data and create new tables."""
-    # TODO: uncomment
     schema = files('squeaknode.client').joinpath('schema.sql').read_text()
     print('schema:')
     print(schema)
