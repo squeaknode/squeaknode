@@ -16,7 +16,7 @@ COPY . /app
 WORKDIR /app
 
 # Install the gRPC files.
-COPY "docker/sqkclient/install-rpc.sh" .
+COPY "install-rpc.sh" .
 RUN chmod +x install-rpc.sh
 
 RUN python3 setup.py install
