@@ -1,4 +1,5 @@
 flask==1.1.1
+importlib_resources==1.4.0
 squeaklib
 argparse
 googleapis-common-protos
