@@ -69,7 +69,11 @@ update-ca-certificates
 # needs to be told to use it over its own embedded bundle
 export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
 
+# Initialize the client database.
+runsqueaknodeclient init-db
+
 exec runsqueaknodeclient \
+     run-client \
      "--network"="$NETWORK" \
      "--rpcuser"="$RPCUSER" \
      "--rpcpass"="$RPCPASS" \
