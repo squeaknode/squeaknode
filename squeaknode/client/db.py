@@ -10,7 +10,6 @@ def get_db():
         detect_types=sqlite3.PARSE_DECLTYPES,
     )
     db.row_factory = sqlite3.Row
-
     return db
 
 
@@ -21,8 +20,10 @@ def close_db(db):
         db.close()
 
 
-def init_db(db):
+def initialize_db(db):
     """Clear existing data and create new tables."""
-    schema_file_path = files('squeaknode.client').joinpath('schema.sql')
-    with as_file(schema_file_path) as schema:
-        db.executescript(schema)
+    # TODO: uncomment
+    # schema = files('squeaknode.client').joinpath('schema.sql').read_text()
+    # print('schema:')
+    # print(schema)
+    # db.executescript(schema)
