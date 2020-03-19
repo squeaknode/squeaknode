@@ -13,6 +13,7 @@ from squeaknode.client.rpc.route_guide_server import RouteGuideServicer
 from squeaknode.client.clientsqueaknode import SqueakNodeClient
 from squeaknode.client.db import get_db
 from squeaknode.client.db import close_db
+from squeaknode.client.db import initialize_db
 
 
 def load_blockchain_client(rpc_host, rpc_port, rpc_user, rpc_pass) -> BlockchainClient:
@@ -61,7 +62,6 @@ def parse_args():
 
     # create the parser for the "run-client" command
     parser_run_client = subparsers.add_parser('run-client', help='run-client help')
-
     parser_run_client.add_argument(
         '--network',
         dest='network',
@@ -152,8 +152,9 @@ def main():
 
 
 def init_db(args):
-    # TODO: Initialize the db.
-    print("Initialize the db here.")
+    db = get_db()
+    initialize_db(db)
+    print("Initialized the database.")
 
 
 def run_client(args):
