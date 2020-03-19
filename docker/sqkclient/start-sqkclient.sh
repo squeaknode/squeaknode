@@ -72,8 +72,7 @@ export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
 # Initialize the client database.
 runsqueaknodeclient init-db
 
-exec runsqueaknodeclient \
-     run-client \
+exec runsqueaknodeclient run-client \
      "--network"="$NETWORK" \
      "--rpcuser"="$RPCUSER" \
      "--rpcpass"="$RPCPASS" \
