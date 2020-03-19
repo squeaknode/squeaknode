@@ -1,36 +1,28 @@
 import sqlite3
 
-from flask import current_app
-from flask import g
-
+from importlib_resources import files, as_file
 
 def get_db():
-    """Connect to the application's configured database. The connection
-    is unique for each request and will be reused if this is called
-    again.
+    """Connect to the application's configured database.
     """
-    if "db" not in g:
-        g.db = sqlite3.connect(
-            current_app.config["DATABASE"], detect_types=sqlite3.PARSE_DECLTYPES
-        )
-        g.db.row_factory = sqlite3.Row
+    db = sqlite3.connect(
+        ":memory:",
+        detect_types=sqlite3.PARSE_DECLTYPES,
+    )
+    db.row_factory = sqlite3.Row
 
-    return g.db
+    return db
 
 
-def close_db(e=None):
-    """If this request connected to the database, close the
-    connection.
+def close_db(db):
+    """Close the connection.
     """
-    db = g.pop("db", None)
-
     if db is not None:
         db.close()
 
 
-def init_db():
+def init_db(db):
     """Clear existing data and create new tables."""
-    db = get_db()
-
-    with current_app.open_resource("schema.sql") as f:
-        db.executescript(f.read().decode("utf8"))
+    schema_file_path = files('squeaknode.client').joinpath('schema.sql')
+    with as_file(schema_file_path) as schema:
+        db.executescript(schema)
