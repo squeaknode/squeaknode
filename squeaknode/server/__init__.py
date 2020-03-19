@@ -12,8 +12,6 @@ def create_app(test_config=None):
     config = ConfigParser()
     config.read(os.environ.get('MY_APP_CONFIG_FILE'))
 
-    print(dict(config['flask']))
-
     flask_config = {k.upper():v for k,v in dict(config['flask']).items()}
     print(flask_config)
     app.config.from_mapping(
