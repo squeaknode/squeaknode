@@ -1,5 +1,7 @@
 import argparse
 import logging
+import signal
+import sys
 import threading
 import time
 
@@ -51,6 +53,11 @@ def start_rpc_server(node):
     thread.daemon = True
     thread.start()
     return server, thread
+
+
+def sigterm_handler(_signo, _stack_frame):
+    # Raises SystemExit(0):
+    sys.exit(0)
 
 
 def parse_args():
@@ -117,10 +124,15 @@ def run_client(config):
     # start rpc server
     rpc_server, rpc_server_thread = start_rpc_server(node)
 
-    while True:
-        time.sleep(10)
+    signal.signal(signal.SIGTERM, sigterm_handler)
 
-    close_db(db)
+    print("Starting client...")
+    try:
+        while True:
+            time.sleep(1)
+    finally:
+        print("Shutting down...")
+        close_db(db)
 
 
 if __name__ == '__main__':
