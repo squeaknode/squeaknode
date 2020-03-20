@@ -48,8 +48,6 @@ def load_client(blockchain_client, lightning_client, signing_key):
 
 def load_signing_key(config):
     signing_key_str = config['client']['private_key']
-    print("signing_key_str:")
-    print(signing_key_str)
     if signing_key_str:
         return CSigningKey(signing_key_str)
 
