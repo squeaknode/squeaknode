@@ -35,7 +35,7 @@ def load_lightning_client(rpc_host, rpc_port, network) -> LightningClient:
     )
 
 
-def _start_node(blockchain_client, lightning_client):
+def _load_client(blockchain_client, lightning_client):
     node = SqueakNodeClient(blockchain_client, lightning_client)
     return node
 
@@ -121,7 +121,7 @@ def run_client(config):
 
     db = get_db()
 
-    node = _start_node(blockchain_client, lightning_client)
+    node = _load_client(blockchain_client, lightning_client)
 
     # start rpc server
     route_guide_server, route_guide_server_thread = _start_route_guide_rpc_server(node)
