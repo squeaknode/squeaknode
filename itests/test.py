@@ -123,6 +123,20 @@ def run():
         print("Balance confirmed %s %s" % (balance.total_balance, balance.total_balance))
         assert balance.total_balance == 1505000000000
 
+        print("-------------- MakeSqueak --------------")
+        squeak_resp = alice_stub.MakeSqueak(route_guide_pb2.MakeSqueakRequest(
+            content='hello squeak.',
+        ))
+        print("squeak: %s" % squeak_resp.squeak)
+        assert squeak_resp.squeak.content == 'hello squeak.'
+
+        print("-------------- GetSqueak --------------")
+        get_squeak_resp = alice_stub.GetSqueak(route_guide_pb2.GetSqueakRequest(
+            hash=squeak_resp.squeak.hash,
+        ))
+        print("squeak: %s" % get_squeak_resp)
+        assert get_squeak_resp.content == 'hello squeak.'
+
 
 if __name__ == '__main__':
     logging.basicConfig()

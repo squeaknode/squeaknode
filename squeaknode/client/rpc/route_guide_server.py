@@ -159,6 +159,23 @@ class RouteGuideServicer(route_guide_pb2_grpc.RouteGuideServicer):
             squeak=squeak_msg,
         )
 
+    def GetSqueak(self, request, context):
+        print("Getting squeak....")
+        squeak_hash = request.hash
+        squeak_hash = 1
+        post = self.node.get_squeak(squeak_hash)
+        # squeak_msg = route_guide_pb2.Squeak(
+        #     hash=squeak.GetHash(),
+        #     address=str(squeak.GetAddress()),
+        #     content=squeak.GetDecryptedContentStr(),
+        #     block_height=squeak.nBlockHeight,
+        #     timestamp=squeak.nTime,
+        # )
+        content = post['body']
+        return route_guide_pb2.GetSqueakResponse(
+            content=content,
+        )
+
     def GenerateSigningKey(self, request, context):
         address = self.node.generate_signing_key()
         return route_guide_pb2.GenerateSigningKeyResponse(
