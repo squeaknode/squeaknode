@@ -82,8 +82,12 @@ chmod +x config.ini.sh
 cat config.ini
 
 # Initialize the client database.
-runsqueaknodeclient init-db
+runsqueaknodeclient \
+    "--config"="config.ini" \
+    "--log-level"="$DEBUG" \
+    init-db
 
-exec runsqueaknodeclient run-client \
+exec runsqueaknodeclient \
      "--config"="config.ini" \
-     "--log-level"="$DEBUG"
+     "--log-level"="$DEBUG" \
+     run-client

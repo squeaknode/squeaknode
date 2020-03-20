@@ -55,7 +55,19 @@ def parse_args():
     parser = argparse.ArgumentParser(
         description="squeaknode runs a node using squeak protocol. ",
     )
-
+    parser.add_argument(
+        '--config',
+        dest='config',
+        type=str,
+        help='Path to the config file.',
+    )
+    parser.add_argument(
+        '--log-level',
+        dest='log_level',
+        type=str,
+        default='info',
+        help='Logging level',
+    )
     subparsers = parser.add_subparsers(help='sub-command help')
 
     # create the parser for the "init-db" command
@@ -64,19 +76,6 @@ def parse_args():
 
     # create the parser for the "run-client" command
     parser_run_client = subparsers.add_parser('run-client', help='run-client help')
-    parser_run_client.add_argument(
-        '--config',
-        dest='config',
-        type=str,
-        help='Path to the config file.',
-    )
-    parser_run_client.add_argument(
-        '--log-level',
-        dest='log_level',
-        type=str,
-        default='info',
-        help='Logging level',
-    )
     parser_run_client.set_defaults(func=run_client)
 
     return parser.parse_args()
@@ -85,23 +84,26 @@ def parse_args():
 def main():
     logging.basicConfig(level=logging.ERROR)
     args = parse_args()
-    args.func(args)
+
+    # Set the log level
+    level = args.log_level.upper()
+    print("level: " + level)
+    logging.getLogger().setLevel(level)
+
+    # Get the config object
+    config = ConfigParser()
+    config.read(args.config)
+
+    args.func(config)
 
 
-def init_db(args):
+def init_db(config):
     db = get_db()
     initialize_db(db)
     print("Initialized the database.")
 
 
-def run_client(args):
-    level = args.log_level.upper()
-    print("level: " + level)
-    logging.getLogger().setLevel(level)
-
-    config = ConfigParser()
-    config.read(args.config)
-
+def run_client(config):
     print('network:', config['DEFAULT']['network'])
     SelectParams(config['DEFAULT']['network'])
 
