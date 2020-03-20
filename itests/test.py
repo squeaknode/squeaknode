@@ -131,11 +131,11 @@ def run():
         assert squeak_resp.squeak.content == 'hello squeak.'
 
         print("-------------- GetSqueak --------------")
-        # get_squeak_resp = alice_stub.GetSqueak(route_guide_pb2.GetSqueakRequest(
-        #     hash=squeak_resp.squeak.hash,
-        # ))
-        # print("squeak: %s" % get_squeak_resp)
-        # assert get_squeak_resp.content == 'hello squeak.'
+        get_squeak_resp = alice_stub.GetSqueak(route_guide_pb2.GetSqueakRequest(
+            hash=squeak_resp.squeak.hash,
+        ))
+        print("squeak: %s" % get_squeak_resp)
+        assert get_squeak_resp.content == 'hello squeak.'
 
 
 if __name__ == '__main__':

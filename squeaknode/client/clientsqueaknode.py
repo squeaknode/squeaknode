@@ -45,7 +45,7 @@ class SqueakNodeClient(object):
         self.squeak_store.save_squeak(squeak)
 
     def get_squeak(self, squeak_hash):
-        self.squeak_store.get_squeak(squeak_hash)
+        return self.squeak_store.get_squeak(squeak_hash)
 
     def listen_squeaks_changed(self, callback):
         self.squeaks_access.listen_squeaks_changed(callback)

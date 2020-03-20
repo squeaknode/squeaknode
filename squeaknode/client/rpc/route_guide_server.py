@@ -162,6 +162,7 @@ class RouteGuideServicer(route_guide_pb2_grpc.RouteGuideServicer):
     def GetSqueak(self, request, context):
         print("Getting squeak....")
         squeak_hash = request.hash
+        squeak_hash = 1
         post = self.node.get_squeak(squeak_hash)
         # squeak_msg = route_guide_pb2.Squeak(
         #     hash=squeak.GetHash(),
