@@ -16,8 +16,7 @@ from squeaknode.common.btcd_blockchain_client import BTCDBlockchainClient
 from squeaknode.common.lnd_lightning_client import LNDLightningClient
 from squeaknode.client.rpc.route_guide_server import RouteGuideServicer
 from squeaknode.client.clientsqueaknode import SqueakNodeClient
-from squeaknode.client.db import get_db
-from squeaknode.client.db import close_db
+from squeaknode.client.db import SQLiteDBFactory
 from squeaknode.client.db import initialize_db
 
 
@@ -38,11 +37,12 @@ def load_lightning_client(config) -> LightningClient:
     )
 
 
-def load_client(blockchain_client, lightning_client, signing_key):
+def load_client(blockchain_client, lightning_client, signing_key, db):
     return SqueakNodeClient(
         blockchain_client,
         lightning_client,
         signing_key,
+        db,
     )
 
 
@@ -50,6 +50,10 @@ def load_signing_key(config):
     signing_key_str = config['client']['private_key']
     if signing_key_str:
         return CSigningKey(signing_key_str)
+
+
+def load_db_factory(config):
+    return SQLiteDBFactory('db_file_path')
 
 
 def start_rpc_server(node):
@@ -115,8 +119,9 @@ def main():
 
 
 def init_db(config):
-    db = get_db()
-    initialize_db(db)
+    db_factory = load_db_factory(config)
+    with db_factory.make_conn() as conn:
+        initialize_db(conn)
     print("Initialized the database.")
 
 
@@ -126,9 +131,9 @@ def run_client(config):
 
     blockchain_client = load_blockchain_client(config)
     lightning_client = load_lightning_client(config)
-    db = get_db()
+    db_factory = load_db_factory(config)
     signing_key = load_signing_key(config)
-    node = load_client(blockchain_client, lightning_client, signing_key)
+    node = load_client(blockchain_client, lightning_client, signing_key, db_factory)
 
     # start rpc server
     rpc_server, rpc_server_thread = start_rpc_server(node)

@@ -75,6 +75,10 @@ service RouteGuide {
   */
   rpc MakeSqueak (MakeSqueakRequest) returns (MakeSqueakResponse) {}
 
+  /** sqk: `getsqueak`
+  */
+  rpc GetSqueak (GetSqueakRequest) returns (GetSqueakResponse) {}
+
   /** sqk: `generatesigningKey`
   */
   rpc GenerateSigningKey (GenerateSigningKeyRequest) returns (GenerateSigningKeyResponse) {}
@@ -194,9 +198,19 @@ message MakeSqueakRequest {
     string content = 1;
 }
 
+message GetSqueakRequest {
+    /// Hash of the squeak to get.
+    bytes hash = 1;
+}
+
 message MakeSqueakResponse {
     /// The squeak.
     Squeak squeak = 1;
+}
+
+message GetSqueakResponse {
+    /// The squeak.
+    string content = 1;
 }
 
 message GenerateSigningKeyRequest {}

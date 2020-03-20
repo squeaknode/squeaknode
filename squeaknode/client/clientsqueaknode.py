@@ -2,9 +2,11 @@ import logging
 
 from squeak.core.signing import CSigningKey
 
+from squeaknode.client.squeak_store import SqueakStore
 from squeaknode.common.blockchain_client import BlockchainClient
 from squeaknode.common.lightning_client import LightningClient
 from squeaknode.common.squeak_maker import SqueakMaker
+from squeaknode.client.db import SQLiteDBFactory
 
 
 logger = logging.getLogger(__name__)
@@ -19,10 +21,12 @@ class SqueakNodeClient(object):
             blockchain_client: BlockchainClient,
             lightning_client: LightningClient,
             signing_key: CSigningKey,
+            db_factory: SQLiteDBFactory,
     ) -> None:
         self.blockchain_client = blockchain_client
         self.lightning_client = lightning_client
         self.signing_key = signing_key
+        self.squeak_store = SqueakStore(db_factory)
 
     def get_address(self):
         pass
@@ -38,9 +42,10 @@ class SqueakNodeClient(object):
         return squeak
 
     def add_squeak(self, squeak):
-        # TODO: Add squeak to local db.
-        # self.squeaks_access.add_squeak(squeak)
-        pass
+        self.squeak_store.save_squeak(squeak)
+
+    def get_squeak(self, squeak_hash):
+        self.squeak_store.get_squeak(squeak_hash)
 
     def listen_squeaks_changed(self, callback):
         self.squeaks_access.listen_squeaks_changed(callback)
