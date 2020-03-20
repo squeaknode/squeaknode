@@ -21,6 +21,9 @@ RUN chmod +x install-rpc.sh
 
 RUN python3 setup.py install
 
+# Copy the config file template.
+COPY "docker/sqkclient/config.ini.sh" .
+
 # Copy the entrypoint script.
 COPY "docker/sqkclient/start-sqkclient.sh" .
 RUN chmod +x start-sqkclient.sh
