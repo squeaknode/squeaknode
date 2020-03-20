@@ -42,7 +42,7 @@ def load_client(blockchain_client, lightning_client):
     )
 
 
-def _start_route_guide_rpc_server(node):
+def start_rpc_server(node):
     server = RouteGuideServicer(node)
     thread = threading.Thread(
         target=server.serve,
@@ -115,7 +115,7 @@ def run_client(config):
     node = load_client(blockchain_client, lightning_client)
 
     # start rpc server
-    route_guide_server, route_guide_server_thread = _start_route_guide_rpc_server(node)
+    rpc_server, rpc_server_thread = start_rpc_server(node)
 
     while True:
         time.sleep(10)
