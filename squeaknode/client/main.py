@@ -18,26 +18,28 @@ from squeaknode.client.db import close_db
 from squeaknode.client.db import initialize_db
 
 
-def load_blockchain_client(rpc_host, rpc_port, rpc_user, rpc_pass) -> BlockchainClient:
+def load_blockchain_client(config) -> BlockchainClient:
     return BTCDBlockchainClient(
-        host=rpc_host,
-        port=rpc_port,
-        rpc_user=rpc_user,
-        rpc_password=rpc_pass,
+        config['btcd']['rpc_host'],
+        config['btcd']['rpc_port'],
+        config['btcd']['rpc_user'],
+        config['btcd']['rpc_pass'],
     )
 
 
-def load_lightning_client(rpc_host, rpc_port, network) -> LightningClient:
+def load_lightning_client(config) -> LightningClient:
     return LNDLightningClient(
-        host=rpc_host,
-        port=rpc_port,
-        network=network,
+        config['lnd']['rpc_host'],
+        config['lnd']['rpc_port'],
+        config['lnd']['network'],
     )
 
 
 def load_client(blockchain_client, lightning_client):
-    node = SqueakNodeClient(blockchain_client, lightning_client)
-    return node
+    return SqueakNodeClient(
+        blockchain_client,
+        lightning_client,
+    )
 
 
 def _start_route_guide_rpc_server(node):
@@ -107,20 +109,9 @@ def run_client(config):
     print('network:', config['DEFAULT']['network'])
     SelectParams(config['DEFAULT']['network'])
 
-    blockchain_client = load_blockchain_client(
-        config['btcd']['rpc_host'],
-        config['btcd']['rpc_port'],
-        config['btcd']['rpc_user'],
-        config['btcd']['rpc_pass'],
-    )
-    lightning_client = load_lightning_client(
-        config['lnd']['rpc_host'],
-        config['lnd']['rpc_port'],
-        config['lnd']['network'],
-    )
-
+    blockchain_client = load_blockchain_client(config)
+    lightning_client = load_lightning_client(config)
     db = get_db()
-
     node = load_client(blockchain_client, lightning_client)
 
     # start rpc server
