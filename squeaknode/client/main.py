@@ -8,6 +8,7 @@ import time
 from configparser import ConfigParser
 
 from squeak.params import SelectParams
+from squeak.core.signing import CSigningKey
 
 from squeaknode.common.blockchain_client import BlockchainClient
 from squeaknode.common.lightning_client import LightningClient
@@ -37,11 +38,20 @@ def load_lightning_client(config) -> LightningClient:
     )
 
 
-def load_client(blockchain_client, lightning_client):
+def load_client(blockchain_client, lightning_client, signing_key):
     return SqueakNodeClient(
         blockchain_client,
         lightning_client,
+        signing_key,
     )
+
+
+def load_signing_key(config):
+    signing_key_str = config['client']['private_key']
+    print("signing_key_str:")
+    print(signing_key_str)
+    if signing_key_str:
+        return CSigningKey(signing_key_str)
 
 
 def start_rpc_server(node):
@@ -119,7 +129,8 @@ def run_client(config):
     blockchain_client = load_blockchain_client(config)
     lightning_client = load_lightning_client(config)
     db = get_db()
-    node = load_client(blockchain_client, lightning_client)
+    signing_key = load_signing_key(config)
+    node = load_client(blockchain_client, lightning_client, signing_key)
 
     # start rpc server
     rpc_server, rpc_server_thread = start_rpc_server(node)
