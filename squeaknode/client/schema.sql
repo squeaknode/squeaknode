@@ -18,6 +18,6 @@ CREATE TABLE squeak (
   nNonce INTEGER NOT NULL,
   encContent BLOB NOT NULL,
   scriptSig BLOB NOT NULL,
-  vchDataKey TEXT NOT NULL,
-  content BLOB NOT NULL
+  vchDataKey TEXT,
+  content BLOB
 );
