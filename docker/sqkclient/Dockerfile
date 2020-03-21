@@ -18,6 +18,7 @@ WORKDIR /app
 # Install the gRPC files.
 COPY "install-rpc.sh" .
 RUN chmod +x install-rpc.sh
+RUN ./install-rpc.sh
 
 RUN python3 setup.py install
 
