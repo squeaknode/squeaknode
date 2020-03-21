@@ -29,7 +29,7 @@ class SqueakStore(object):
         self.db_factory = db_factory
 
     def save_squeak(self, squeak):
-        print('Saving squeak with hash: ' + str(squeak.GetHash()))
+        CheckSqueak(squeak)
         with self.db_factory.make_conn() as conn:
             conn.execute(
                 "INSERT INTO squeak (hash, nVersion, hashEncContent, hashReplySqk, hashBlock, nBlockHeight, scriptPubKey, hashDataKey, vchIv, nTime, nNonce, encContent, scriptSig, vchDataKey, content) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
@@ -64,10 +64,6 @@ class SqueakStore(object):
                 )
                 .fetchone()
             )
-
-            print('squeak_row:')
-            print(squeak_row)
-
             if squeak_row is None:
                 return None
             squeak = CSqueak(
@@ -85,9 +81,7 @@ class SqueakStore(object):
                 scriptSig=CScript(squeak_row['scriptSig']),
                 vchDataKey=squeak_row['vchDataKey'],
             )
-
             CheckSqueak(squeak)
-
             return squeak
 
     def delete_squeak(self):
