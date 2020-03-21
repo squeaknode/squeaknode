@@ -135,7 +135,7 @@ def run():
             hash=squeak_resp.squeak.hash,
         ))
         print("squeak: %s" % get_squeak_resp)
-        assert get_squeak_resp.content == 'hello squeak.'
+        assert get_squeak_resp.squeak.content == 'hello squeak.'
 
 
 if __name__ == '__main__':

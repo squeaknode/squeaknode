@@ -210,7 +210,7 @@ message MakeSqueakResponse {
 
 message GetSqueakResponse {
     /// The squeak.
-    string content = 1;
+    Squeak squeak = 1;
 }
 
 message GenerateSigningKeyRequest {}
@@ -253,15 +253,45 @@ message Squeak {
     /// Hash of the squeak.
     bytes hash = 1;
 
-    /// Address of the creator.
-    string address = 2;
+    /// Protocol version
+    uint64 n_version = 2;
 
-    /// Content of the squeak.
-    string content = 3;
+    /// Hash of the squeak to which it replies.
+    bytes hash_reply_squeak = 3;
+
+    /// Hash of the bitcoin block.
+    bytes hash_block = 4;
 
     /// Block height of the squeak.
-    uint64 block_height = 4;
+    uint64 block_height = 5;
+
+    /// Public key script
+    bytes script_pub_key = 6;
+
+    /// Hash of the data key
+    bytes hash_data_key = 7;
+
+    /// Initialization vector
+    bytes iv = 8;
 
     /// Timestamp of the squeak.
-    uint64 timestamp = 5;
+    uint64 n_time = 9;
+
+    /// Nonce
+    uint64 nonce = 10;
+
+    /// Encrypted content
+    bytes enc_content = 11;
+
+    /// Signatute script
+    bytes script_sig = 12;
+
+    /// Data key
+    bytes data_key = 13;
+
+    /// Address of the creator.
+    string address = 14;
+
+    /// Decrypted content of the squeak.
+    string content = 15;
 }

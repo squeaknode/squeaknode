@@ -148,32 +148,17 @@ class RouteGuideServicer(route_guide_pb2_grpc.RouteGuideServicer):
     def MakeSqueak(self, request, context):
         content = request.content
         squeak = self.node.make_squeak(content)
-        squeak_msg = route_guide_pb2.Squeak(
-            hash=squeak.GetHash(),
-            address=str(squeak.GetAddress()),
-            content=squeak.GetDecryptedContentStr(),
-            block_height=squeak.nBlockHeight,
-            timestamp=squeak.nTime,
-        )
+        squeak_msg = self.build_squeak_msg(squeak)
         return route_guide_pb2.MakeSqueakResponse(
             squeak=squeak_msg,
         )
 
     def GetSqueak(self, request, context):
-        print("Getting squeak....")
         squeak_hash = request.hash
-        squeak_hash = 1
-        post = self.node.get_squeak(squeak_hash)
-        # squeak_msg = route_guide_pb2.Squeak(
-        #     hash=squeak.GetHash(),
-        #     address=str(squeak.GetAddress()),
-        #     content=squeak.GetDecryptedContentStr(),
-        #     block_height=squeak.nBlockHeight,
-        #     timestamp=squeak.nTime,
-        # )
-        content = post['body']
+        squeak = self.node.get_squeak(squeak_hash)
+        squeak_msg = self.build_squeak_msg(squeak)
         return route_guide_pb2.GetSqueakResponse(
-            content=content,
+            squeak=squeak_msg,
         )
 
     def GenerateSigningKey(self, request, context):
@@ -181,6 +166,26 @@ class RouteGuideServicer(route_guide_pb2_grpc.RouteGuideServicer):
         return route_guide_pb2.GenerateSigningKeyResponse(
             address=str(address),
         )
+
+    def build_squeak_msg(self, squeak):
+        return route_guide_pb2.Squeak(
+            hash=squeak.GetHash(),
+            n_version=squeak.nVersion,
+            hash_reply_squeak=squeak.hashReplySqk,
+            hash_block=squeak.hashBlock,
+            block_height=squeak.nBlockHeight,
+            script_pub_key=bytes(squeak.scriptPubKey),
+            hash_data_key=squeak.hashDataKey,
+            iv=squeak.vchIv,
+            n_time=squeak.nTime,
+            nonce=squeak.nNonce,
+            enc_content=bytes(squeak.encContent.vchEncContent),
+            script_sig=bytes(squeak.scriptSig),
+            data_key=squeak.vchDataKey,
+            address=str(squeak.GetAddress()),
+            content=squeak.GetDecryptedContentStr(),
+        )
+
 
     def serve(self):
         server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
