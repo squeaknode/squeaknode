@@ -1,6 +1,13 @@
 import logging
 
+from squeak.core import CSqueak
+from squeak.core import CheckSqueak
+from squeak.core import HASH_LENGTH
+from squeak.core import MakeSqueakFromStr
+from squeak.core import CSqueakEncContent
 from squeak.core.signing import CSigningKey
+from squeak.core.signing import CSigningKey
+from squeak.core.script import CScript
 
 from squeaknode.client.db import get_db
 from squeaknode.client.db import close_db
@@ -22,27 +29,66 @@ class SqueakStore(object):
         self.db_factory = db_factory
 
     def save_squeak(self, squeak):
-        title = squeak.GetHash()
-        body = squeak.GetDecryptedContentStr()
+        print('Saving squeak with hash: ' + str(squeak.GetHash()))
         with self.db_factory.make_conn() as conn:
             conn.execute(
-                "INSERT INTO post (title, body) VALUES (?, ?)",
-                (title, body),
+                "INSERT INTO squeak (hash, nVersion, hashEncContent, hashReplySqk, hashBlock, nBlockHeight, scriptPubKey, hashDataKey, vchIv, nTime, nNonce, encContent, scriptSig, vchDataKey, content) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                (
+                    squeak.GetHash(),
+                    squeak.nVersion,
+                    squeak.hashEncContent,
+                    squeak.hashReplySqk,
+                    squeak.hashBlock,
+                    squeak.nBlockHeight,
+                    bytes(squeak.scriptPubKey),
+                    squeak.hashDataKey,
+                    squeak.vchIv,
+                    squeak.nTime,
+                    squeak.nNonce,
+                    bytes(squeak.encContent.vchEncContent),
+                    bytes(squeak.scriptSig),
+                    squeak.vchDataKey,
+                    "",
+                ),
             )
 
     def get_squeak(self, squeak_hash):
         with self.db_factory.make_conn() as conn:
-            post = (
+            squeak_row = (
                 conn
                 .execute(
-                    "SELECT p.id, title, body, created"
-                    " FROM post p"
-                    " WHERE p.id = ?",
+                    "SELECT s.hash, nVersion, hashEncContent, hashReplySqk, hashBlock, nBlockHeight, scriptPubKey, hashDataKey, vchIv, nTime, nNonce, encContent, scriptSig, vchDataKey"
+                    " FROM squeak s"
+                    " WHERE s.hash = ?",
                     (squeak_hash,),
                 )
                 .fetchone()
             )
-            return post
+
+            print('squeak_row:')
+            print(squeak_row)
+
+            if squeak_row is None:
+                return None
+            squeak = CSqueak(
+                nVersion=squeak_row['nVersion'],
+                hashEncContent=squeak_row['hashEncContent'],
+                hashReplySqk=squeak_row['hashReplySqk'],
+                hashBlock=squeak_row['hashBlock'],
+                nBlockHeight=squeak_row['nBlockHeight'],
+                scriptPubKey=CScript(squeak_row['scriptPubKey']),
+                hashDataKey=squeak_row['hashDataKey'],
+                vchIv=squeak_row['vchIv'],
+                nTime=squeak_row['nTime'],
+                nNonce=squeak_row['nNonce'],
+                encContent=CSqueakEncContent(squeak_row['encContent']),
+                scriptSig=CScript(squeak_row['scriptSig']),
+                vchDataKey=squeak_row['vchDataKey'],
+            )
+
+            CheckSqueak(squeak)
+
+            return squeak
 
     def delete_squeak(self):
         pass
