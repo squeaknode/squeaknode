@@ -90,3 +90,39 @@ class SqueakStore(object):
 
     def unlock_squeak(self):
         pass
+
+    def get_squeaks_to_upload(self):
+        """Get the hashes of all squeaks that need to be uploaded.
+        """
+        with self.db_factory.make_conn() as conn:
+            upload_rows = (
+                conn
+                .execute(
+                    "SELECT u.squeakHash"
+                    " FROM upload u"
+                    " WHERE u.complete = 0",
+                )
+                .fetchall()
+            )
+            squeaks_to_upload = []
+            for upload_row in upload_rows:
+                squeaks_to_upload.append(upload_row['squeakHash'])
+            return squeaks
+
+    def mark_squeak_to_upload(self, squeak_hash):
+        """Mark the given squeak as one that needs to be uploaded.
+        """
+        with self.db_factory.make_conn() as conn:
+            conn.execute(
+                "INSERT INTO upload (squeakHash, complete) VALUES (?, ?)",
+                (squeak_hash, 0),
+            )
+
+    def mark_squeak_uploaded(self, squeak_hash):
+        """Mark the given squeak as one that needs to be uploaded.
+        """
+        with self.db_factory.make_conn() as conn:
+            conn.execute(
+                "INSERT INTO upload (squeakHash, complete) VALUES (?, ?)",
+                (squeak_hash, 1),
+            )

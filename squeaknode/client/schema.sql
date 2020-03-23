@@ -36,9 +36,6 @@ CREATE TABLE upload (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   squeakHash TEXT NOT NULL,
-  host TEXT NOT NULL,
-  port TEXT NOT NULL,
-  --  FOREIGN KEY(host, port) REFERENCES [hub] (host, port),
-  --  FOREIGN KEY ( squeakHash ) REFERENCES [squeak] ( hash ) ON UPDATE  NO ACTION  ON DELETE  CASCADE,
+  -- FOREIGN KEY ( squeakHash ) REFERENCES [squeak] ( hash ) ON UPDATE  NO ACTION  ON DELETE  CASCADE,
   complete INTEGER NOT NULL
 );

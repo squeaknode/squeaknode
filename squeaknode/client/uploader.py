@@ -20,42 +20,17 @@ class Uploader(object):
     def __init__(
             self,
             hub_store: HubStore,
-            address: CSqueakAddress,
+            squeak_store: SqueakStore,
     ) -> None:
         self.hub_store = hub_store
-        self.signing_key = signing_key
+        self.squeak_store = squeak_store
 
-    def get_squeaks_to_upload(self):
-        if self.address is None:
-            return None
+    def upload_squeak(self, squeak_hash):
+        squeak = self.squeak_store.get_squeak(squeak_hash)
+        # TODO: Upload squeak here.
+        ##
+        self.squeak_store.mark_squeak_uploaded(squeak_hash)
 
-        with self.db_factory.make_conn() as conn:
-            squeak_rows = (
-                conn
-                .execute(
-                    "SELECT s.hash, nVersion, hashEncContent, hashReplySqk, hashBlock, nBlockHeight, scriptPubKey, hashDataKey, vchIv, nTime, nNonce, encContent, scriptSig, vchDataKey"
-                    " FROM squeak s"
-                    " WHERE s. = ?",
-                    (squeak_hash,),
-                )
-                .fetchall()
-            )
-            squeaks = []
-            for squeak_row in squeak_rows:
-                squeak = CSqueak(
-                    nVersion=squeak_row['nVersion'],
-                    hashEncContent=squeak_row['hashEncContent'],
-                    hashReplySqk=squeak_row['hashReplySqk'],
-                    hashBlock=squeak_row['hashBlock'],
-                    nBlockHeight=squeak_row['nBlockHeight'],
-                    scriptPubKey=CScript(squeak_row['scriptPubKey']),
-                    hashDataKey=squeak_row['hashDataKey'],
-                    vchIv=squeak_row['vchIv'],
-                    nTime=squeak_row['nTime'],
-                    nNonce=squeak_row['nNonce'],
-                    encContent=CSqueakEncContent(squeak_row['encContent']),
-                    scriptSig=CScript(squeak_row['scriptSig']),
-                    vchDataKey=squeak_row['vchDataKey'],
-                )
-                CheckSqueak(squeak)
-            return squeaks
+    def upload_squeaks(self):
+        for squeak_hash in self.squeak_store.get_squeaks_to_upload():
+            self.upload_squeak(squeak_hash)
