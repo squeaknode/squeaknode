@@ -42,7 +42,6 @@ class SqueakNodeClient(object):
         squeak = squeak_maker.make_squeak(content)
         logger.info('Made squeak: {}'.format(squeak))
         self.squeak_store.save_squeak(squeak)
-        self.squeak_store.mark_squeak_to_upload(squeak.GetHash())
         return squeak
 
     def get_squeak(self, squeak_hash):
