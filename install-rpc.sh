@@ -1,7 +1,12 @@
 #!/usr/bin/env bash
 
-git clone https://github.com/googleapis/googleapis.git
-curl -o rpc.proto -s https://raw.githubusercontent.com/lightningnetwork/lnd/master/lnrpc/rpc.proto
+if [ ! -d "googleapis" ]; then
+    git clone https://github.com/googleapis/googleapis.git
+fi
+
+if [ ! -f "rpc.proto" ]; then
+    curl -o rpc.proto -s https://raw.githubusercontent.com/lightningnetwork/lnd/master/lnrpc/rpc.proto
+fi
 
 cp rpc.proto squeaknode/common
 
