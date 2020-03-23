@@ -18,6 +18,25 @@ CREATE TABLE squeak (
   nNonce INTEGER NOT NULL,
   encContent BLOB NOT NULL,
   scriptSig BLOB NOT NULL,
+  address TEXT NOT NULL,
   vchDataKey TEXT,
   content BLOB
 );
+
+
+-- CREATE TABLE hub (
+--   host TEXT NOT NULL,
+--   port TEXT NOT NULL,
+--   created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+--   PRIMARY KEY(host, port)
+-- );
+
+
+-- CREATE TABLE upload (
+--   id INTEGER PRIMARY KEY AUTOINCREMENT,
+--   host TEXT NOT NULL,
+--   port TEXT NOT NULL,
+--   created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+--   FOREIGN KEY(host, port) REFERENCES [hub] (host, port)
+--   complete INTEGER NOT NULL,
+-- );

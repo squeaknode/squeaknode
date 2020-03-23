@@ -32,7 +32,7 @@ class SqueakStore(object):
         CheckSqueak(squeak)
         with self.db_factory.make_conn() as conn:
             conn.execute(
-                "INSERT INTO squeak (hash, nVersion, hashEncContent, hashReplySqk, hashBlock, nBlockHeight, scriptPubKey, hashDataKey, vchIv, nTime, nNonce, encContent, scriptSig, vchDataKey, content) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                "INSERT INTO squeak (hash, nVersion, hashEncContent, hashReplySqk, hashBlock, nBlockHeight, scriptPubKey, hashDataKey, vchIv, nTime, nNonce, encContent, scriptSig, address, vchDataKey, content) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 (
                     squeak.GetHash(),
                     squeak.nVersion,
@@ -47,6 +47,7 @@ class SqueakStore(object):
                     squeak.nNonce,
                     bytes(squeak.encContent.vchEncContent),
                     bytes(squeak.scriptSig),
+                    str(squeak.GetAddress()),
                     squeak.vchDataKey,
                     "",
                 ),
