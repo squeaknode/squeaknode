@@ -141,12 +141,13 @@ def run_client(config):
     signal.signal(signal.SIGTERM, sigterm_handler)
 
     print("Starting client...")
+    node.start()
     try:
         while True:
             time.sleep(1)
     finally:
         print("Shutting down...")
-        close_db(db)
+        node.stop()
 
 
 if __name__ == '__main__':
