@@ -1,12 +1,15 @@
 import logging
+import threading
 
 from squeak.core.signing import CSigningKey
+from squeak.core.signing import CSqueakAddress
 
 from squeaknode.client.squeak_store import SqueakStore
 from squeaknode.common.blockchain_client import BlockchainClient
 from squeaknode.common.lightning_client import LightningClient
 from squeaknode.common.squeak_maker import SqueakMaker
 from squeaknode.client.db import SQLiteDBFactory
+from squeaknode.client.uploader import Uploader
 
 
 logger = logging.getLogger(__name__)
@@ -26,10 +29,22 @@ class SqueakNodeClient(object):
         self.blockchain_client = blockchain_client
         self.lightning_client = lightning_client
         self.signing_key = signing_key
+        self.address = CSqueakAddress.from_verifying_key(signing_key.get_verifying_key())
         self.squeak_store = SqueakStore(db_factory)
+        self.hub_store = None
+
+        # Event is set when the client stops
+        self.stopped = threading.Event()
+        self.uploader = Uploader(self.hub_store, self.squeak_store, self.address, self.stopped)
+
+    def start(self):
+        self.uploader.start()
+
+    def stop(self):
+        self.stopped.set()
 
     def get_address(self):
-        pass
+        return self.address
 
     def make_squeak(self, content):
         if self.signing_key is None:
@@ -38,11 +53,8 @@ class SqueakNodeClient(object):
         squeak_maker = SqueakMaker(self.signing_key, self.blockchain_client)
         squeak = squeak_maker.make_squeak(content)
         logger.info('Made squeak: {}'.format(squeak))
-        self.add_squeak(squeak)
-        return squeak
-
-    def add_squeak(self, squeak):
         self.squeak_store.save_squeak(squeak)
+        return squeak
 
     def get_squeak(self, squeak_hash):
         return self.squeak_store.get_squeak(squeak_hash)
