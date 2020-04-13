@@ -35,10 +35,11 @@ class SqueakNodeClient(object):
 
         # Event is set when the client stops
         self.stopped = threading.Event()
-        self.uploader = Uploader(self.hub_store, self.squeak_store, self.address, self.stopped)
+        self.uploader = Uploader(self.hub_store, self.squeak_store, self.address)
 
     def start(self):
-        self.uploader.start()
+        # TODO: start the uploader and the downloader.
+        pass
 
     def stop(self):
         self.stopped.set()

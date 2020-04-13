@@ -1,5 +1,4 @@
 import logging
-import threading
 
 from squeak.core.signing import CSigningKey
 from squeak.core.signing import CSqueakAddress
@@ -24,12 +23,15 @@ class Uploader(object):
             hub_store: HubStore,
             squeak_store: SqueakStore,
             address: CSqueakAddress,
-            stopped: threading.Event,
     ) -> None:
         self.hub_store = hub_store
         self.squeak_store = squeak_store
         self.address = address
-        self.stopped = stopped
+
+    def upload(self):
+        '''Uploads all of the squeaks that need to be uploaded.'''
+        for squeak in self.squeak_store.get_squeaks_to_upload(self.address):
+            self.upload_squeak(squeak)
 
     def upload_squeak(self, squeak):
         squeak_hash = squeak.GetHash()
@@ -38,19 +40,3 @@ class Uploader(object):
             ##
             logger.info("Upload the squeak here.")
             self.squeak_store.mark_squeak_uploaded(squeak_hash)
-
-    def upload_squeaks(self):
-        for squeak in self.squeak_store.get_squeaks_to_upload(self.address):
-            self.upload_squeak(squeak)
-
-    def start(self):
-        while True:
-            try:
-                self.upload_squeaks()
-            except:
-                self.stopped.set()
-
-            # Check if client is stopped.
-            is_stopped = self.stopped.wait(10)
-            if is_stopped:
-                break
