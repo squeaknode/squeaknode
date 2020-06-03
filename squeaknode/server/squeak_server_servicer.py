@@ -25,7 +25,9 @@ from squeaknode.common.rpc import squeak_server_pb2_grpc
 class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
     """Provides methods that implement functionality of squeak server."""
 
-    def __init__(self, handler):
+    def __init__(self, host, port, handler):
+        self.host = host
+        self.port = port
         self.handler = handler
 
     def SayHello(self, request, context):
@@ -44,8 +46,8 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
         server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
         squeak_server_pb2_grpc.add_SqueakServerServicer_to_server(
             self, server)
-        print("server.add_insecure_port...", flush=True)
-        server.add_insecure_port('0.0.0.0:50052')
+        # server.add_insecure_port('0.0.0.0:50052')
+        server.add_insecure_port('{}:{}'.format(self.host, self.port))
         print("Starting SqueakServerServicer rpc server...", flush=True)
         server.start()
         print("Started SqueakServerServicer rpc server...", flush=True)

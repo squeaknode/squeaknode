@@ -48,8 +48,8 @@ DEBUG=$(set_default "$DEBUG" "debug")
 NETWORK=$(set_default "$NETWORK" "simnet")
 CHAIN=$(set_default "$CHAIN" "bitcoin")
 BACKEND="btcd"
-SQK_HOST="localhost"
-SQK_PORT="56789"
+SQK_HOST="0.0.0.0"
+SQK_PORT=50052
 
 # This is a hack that is needed because python-bitcoinlib does not
 # currently support simnet network.

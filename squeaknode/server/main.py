@@ -15,7 +15,7 @@ from squeaknode.common.lightning_client import LightningClient
 from squeaknode.common.btcd_blockchain_client import BTCDBlockchainClient
 from squeaknode.common.lnd_lightning_client import LNDLightningClient
 from squeaknode.client.rpc.route_guide_server import RouteGuideServicer
-from squeaknode.common.rpc.squeak_server_servicer import SqueakServerServicer
+from squeaknode.server.squeak_server_servicer import SqueakServerServicer
 from squeaknode.client.clientsqueaknode import SqueakNodeClient
 from squeaknode.client.db import SQLiteDBFactory
 from squeaknode.client.db import initialize_db
@@ -27,6 +27,14 @@ def load_lightning_client(config) -> LightningClient:
         config['lnd']['rpc_host'],
         config['lnd']['rpc_port'],
         config['lnd']['network'],
+    )
+
+
+def load_rpc_server(config, handler) -> SqueakServerServicer:
+    return SqueakServerServicer(
+        config['server']['rpc_host'],
+        config['server']['rpc_port'],
+        handler,
     )
 
 
@@ -119,7 +127,11 @@ def run_server(config):
     handler = load_handler(lightning_client)
 
     # start rpc server
-    start_rpc_server(handler)
+    # start_rpc_server(handler)
+
+    server = load_rpc_server(config, handler)
+    server.serve()
+
     # rpc_server, rpc_server_thread = start_rpc_server(handler)
     # print("rpc server started...", flush=True)
 
