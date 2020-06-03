@@ -78,6 +78,7 @@ export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
 # Generate the config file.
 chmod +x config.ini.sh
 ./config.ini.sh $NETWORK $LND_HOST $LND_PORT $BTCD_HOST $BTCD_RPC_PORT $RPCUSER $RPCPASS $SQK_HOST $SQK_PORT > config.ini
+echo "config.ini:"
 cat config.ini
 
 # # Initialize the client database.
@@ -86,7 +87,14 @@ cat config.ini
 #     "--log-level"="$DEBUG" \
 #     init-db
 
+echo "$DEBUG:"
+echo $DEBUG
+
+echo "Starting to run the python server here...."
+
 exec runsqueaknodeserver \
      "--config"="config.ini" \
      "--log-level"="$DEBUG" \
      run-server
+
+# exec ls

@@ -31,14 +31,16 @@ def load_lightning_client(config) -> LightningClient:
 
 
 def start_rpc_server(handler):
+    print('Calling start_rpc_server...', flush=True)
     server = SqueakServerServicer(handler)
-    thread = threading.Thread(
-        target=server.serve,
-        args=(),
-    )
-    thread.daemon = True
-    thread.start()
-    return server, thread
+    # thread = threading.Thread(
+    #     target=server.serve,
+    #     args=(),
+    # )
+    # thread.daemon = True
+    # thread.start()
+    # return server, thread
+    server.serve()
 
 
 def load_handler(lightning_client):
@@ -83,6 +85,7 @@ def parse_args():
 
 
 def main():
+    print("Running main() in server...", flush=True)
     logging.basicConfig(level=logging.ERROR)
     args = parse_args()
 
@@ -106,25 +109,28 @@ def main():
 
 
 def run_server(config):
-    print('network:', config['DEFAULT']['network'])
+    print('network:', config['DEFAULT']['network'], flush=True)
     SelectParams(config['DEFAULT']['network'])
 
-    lightning_client = load_lightning_client(config)
+    print('starting lightning client here...', flush=True)
+    # lightning_client = load_lightning_client(config)
     # db_factory = load_db_factory(config)
     # node = load_client(blockchain_client, lightning_client, signing_key, db_factory)
-    handler = load_handler(lightning_client)
+    handler = load_handler(None)
 
     # start rpc server
-    rpc_server, rpc_server_thread = start_rpc_server(handler)
+    start_rpc_server(handler)
+    # rpc_server, rpc_server_thread = start_rpc_server(handler)
+    # print("rpc server started...", flush=True)
 
-    signal.signal(signal.SIGTERM, sigterm_handler)
+    # signal.signal(signal.SIGTERM, sigterm_handler)
 
-    print("Starting server...")
-    try:
-        while True:
-            time.sleep(1)
-    finally:
-        print("Shutting down...")
+    # print("sleeping....", flush=True)
+    # try:
+    #     while True:
+    #         time.sleep(1)
+    # finally:
+    #     print("Shutting down...", flush=True)
 
 
 if __name__ == '__main__':

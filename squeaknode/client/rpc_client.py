@@ -1,5 +1,10 @@
 import logging
 
+import grpc
+
+from squeaknode.common.rpc import squeak_server_pb2
+from squeaknode.common.rpc import squeak_server_pb2_grpc
+
 from squeak.core.signing import CSigningKey
 from squeak.core.signing import CSqueakAddress
 
@@ -30,3 +35,12 @@ class RPCClient(object):
     def upload_squeak(self, squeak):
         squeak_hash = squeak.GetHash()
         logger.info("Upload the squeak here.")
+
+        # Make the rpc request to the server.
+        #channel = grpc.insecure_channel('localhost:50051')
+        # channel = grpc.insecure_channel('{}:{}'.format(self.host, self.port))
+        channel = grpc.insecure_channel('sqkserver:50052')
+        stub = squeak_server_pb2_grpc.SqueakServerStub(channel)
+        response = stub.SayHello(squeak_server_pb2.HelloRequest(name='rpc_client'))
+        print("Greeter client received: " + response.message)
+        logger.info("Greeter client received: " + response.message)

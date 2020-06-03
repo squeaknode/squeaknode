@@ -99,9 +99,9 @@ services:
       - "btcd:blockchain"
     entrypoint: ["./start-lnd.sh"]
 
-  lnd_server:
+  lnd_sqkserver:
     image: lnd
-    container_name: lnd_server
+    container_name: lnd_sqkserver
     build:
       context: ../
       dockerfile: docker/lnd/Dockerfile
@@ -113,10 +113,33 @@ services:
       - DEBUG
     volumes:
       - shared_test:/rpc
-      - lnd_dir_server:/root/.lnd
+      - lnd_dir_sqkserver:/root/.lnd
     links:
       - "btcd:blockchain"
     entrypoint: ["./start-lnd.sh"]
+
+  sqkserver:
+    image: sqkserver
+    container_name: sqkserver
+    build:
+      context: ../
+      dockerfile: docker/sqkserver/Dockerfile
+    environment:
+      - RPCUSER
+      - RPCPASS
+      - NETWORK
+      - CHAIN
+      - DEBUG
+      - HEADLESS
+    volumes:
+      - shared_test:/rpc
+      - lnd_dir_sqkserver:/root/.lnd
+    links:
+      - "btcd:blockchain"
+      - "lnd_sqkserver:lnd"
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=0
+    entrypoint: ["./start-sqkserver.sh"]
 
   sqkclient_alice:
     image: sqkclient
@@ -137,6 +160,7 @@ services:
     links:
       - "btcd:blockchain"
       - "lnd_alice:lnd"
+      - "sqkserver:sqkserver"
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=0
     entrypoint: ["./start-sqkclient.sh"]
@@ -160,6 +184,7 @@ services:
     links:
       - "btcd:blockchain"
       - "lnd_bob:lnd"
+      - "sqkserver:sqkserver"
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=0
     entrypoint: ["./start-sqkclient.sh"]
@@ -183,32 +208,10 @@ services:
     links:
       - "btcd:blockchain"
       - "lnd_carol:lnd"
+      - "sqkserver:sqkserver"
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=0
     entrypoint: ["./start-sqkclient.sh"]
-
-  sqkserver:
-    image: sqkserver
-    container_name: sqkserver
-    build:
-      context: ../
-      dockerfile: docker/sqkserver/Dockerfile
-    environment:
-      - RPCUSER
-      - RPCPASS
-      - NETWORK
-      - CHAIN
-      - DEBUG
-      - HEADLESS
-    volumes:
-      - shared_test:/rpc
-      - lnd_dir_server:/root/.lnd
-    links:
-      - "btcd:blockchain"
-      - "lnd_alice:lnd"
-    sysctls:
-      - net.ipv6.conf.all.disable_ipv6=0
-    entrypoint: ["./start-sqkserver.sh"]
 
   test:
     image: test
@@ -240,5 +243,5 @@ volumes:
     driver: local
   lnd_dir_carol:
     driver: local
-  lnd_dir_server:
+  lnd_dir_sqkserver:
     driver: local

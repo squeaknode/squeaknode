@@ -40,9 +40,13 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
     #     )
 
     def serve(self):
+        print('Calling serve...', flush=True)
         server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-        squeak_server_pb2_grpc.add_SqueakServicer_to_server(
+        squeak_server_pb2_grpc.add_SqueakServerServicer_to_server(
             self, server)
-        server.add_insecure_port('0.0.0.0:50051')
+        print("server.add_insecure_port...", flush=True)
+        server.add_insecure_port('0.0.0.0:50052')
+        print("Starting SqueakServerServicer rpc server...", flush=True)
         server.start()
+        print("Started SqueakServerServicer rpc server...", flush=True)
         server.wait_for_termination()
