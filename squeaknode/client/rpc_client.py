@@ -39,7 +39,7 @@ class RPCClient(object):
         # Make the rpc request to the server.
         #channel = grpc.insecure_channel('localhost:50051')
         # channel = grpc.insecure_channel('{}:{}'.format(self.host, self.port))
-        channel = grpc.insecure_channel('sqkserver:50051')
+        channel = grpc.insecure_channel('sqkserver:50052')
         stub = squeak_server_pb2_grpc.SqueakServerStub(channel)
         response = stub.SayHello(squeak_server_pb2.HelloRequest(name='rpc_client'))
         print("Greeter client received: " + response.message)

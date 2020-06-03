@@ -87,9 +87,9 @@ runsqueaknodeclient \
     "--log-level"="$DEBUG" \
     init-db
 
-
 echo "Checking if the server port is open"
-nc -zvw3 sqkserver 50051
+nc -zvw3 blockchain 18556
+nc -zvw3 sqkserver 50052
 echo "Done checking remote port"
 
 exec runsqueaknodeclient \

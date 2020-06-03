@@ -6,6 +6,9 @@ RUN apt-get update && apt-get install -y \
 	curl \
 	git
 
+# install nc
+RUN apt-get update && apt-get install -y netcat
+
 COPY requirements.txt /
 
 RUN pip3 install --upgrade pip

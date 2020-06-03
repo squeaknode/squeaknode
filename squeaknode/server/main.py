@@ -31,14 +31,16 @@ def load_lightning_client(config) -> LightningClient:
 
 
 def start_rpc_server(handler):
+    print('Calling start_rpc_server...', flush=True)
     server = SqueakServerServicer(handler)
-    thread = threading.Thread(
-        target=server.serve,
-        args=(),
-    )
-    thread.daemon = True
-    thread.start()
-    return server, thread
+    # thread = threading.Thread(
+    #     target=server.serve,
+    #     args=(),
+    # )
+    # thread.daemon = True
+    # thread.start()
+    # return server, thread
+    server.serve()
 
 
 def load_handler(lightning_client):
@@ -117,17 +119,18 @@ def run_server(config):
     handler = load_handler(None)
 
     # start rpc server
-    rpc_server, rpc_server_thread = start_rpc_server(handler)
-    print("rpc server started...", flush=True)
+    start_rpc_server(handler)
+    # rpc_server, rpc_server_thread = start_rpc_server(handler)
+    # print("rpc server started...", flush=True)
 
-    signal.signal(signal.SIGTERM, sigterm_handler)
+    # signal.signal(signal.SIGTERM, sigterm_handler)
 
-    print("sleeping....", flush=True)
-    try:
-        while True:
-            time.sleep(1)
-    finally:
-        print("Shutting down...", flush=True)
+    # print("sleeping....", flush=True)
+    # try:
+    #     while True:
+    #         time.sleep(1)
+    # finally:
+    #     print("Shutting down...", flush=True)
 
 
 if __name__ == '__main__':
