@@ -18,18 +18,18 @@ from concurrent import futures
 
 import grpc
 
-from squeaknode.common.rpc import squeak_pb2
-from squeaknode.common.rpc import squeak_pb2_grpc
+from squeaknode.common.rpc import squeak_server_pb2
+from squeaknode.common.rpc import squeak_server_pb2_grpc
 
 
-class SqueakServicer(squeak_pb2_grpc.SqueakServicer):
+class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
     """Provides methods that implement functionality of squeak server."""
 
     def __init__(self, handler):
         self.handler = handler
 
     def SayHello(self, request, context):
-        return helloworld_pb2.HelloReply(message='Hello, %s!' % request.name)
+        return squeak_server_pb2.HelloReply(message='Hello, %s!' % request.name)
 
     # def WalletBalance(self, request, context):
     #     response = self.node.get_wallet_balance()
@@ -41,7 +41,7 @@ class SqueakServicer(squeak_pb2_grpc.SqueakServicer):
 
     def serve(self):
         server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-        route_guide_pb2_grpc.add_SqueakServicer_to_server(
+        squeak_server_pb2_grpc.add_SqueakServicer_to_server(
             self, server)
         server.add_insecure_port('0.0.0.0:50051')
         server.start()

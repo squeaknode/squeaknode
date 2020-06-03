@@ -15,7 +15,7 @@ from squeaknode.common.lightning_client import LightningClient
 from squeaknode.common.btcd_blockchain_client import BTCDBlockchainClient
 from squeaknode.common.lnd_lightning_client import LNDLightningClient
 from squeaknode.client.rpc.route_guide_server import RouteGuideServicer
-from squeaknode.server.squeak_server import SqueakServicer
+from squeaknode.common.rpc.squeak_server_servicer import SqueakServerServicer
 from squeaknode.client.clientsqueaknode import SqueakNodeClient
 from squeaknode.client.db import SQLiteDBFactory
 from squeaknode.client.db import initialize_db

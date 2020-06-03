@@ -19,7 +19,7 @@ option java_package = "io.github.yzernik.squeakserver";
 option java_outer_classname = "SqueakProto";
 option objc_class_prefix = "SQK";
 
-package squeak;
+package squeakserver;
 
 // Interface exported by the server.
 service SqueakServer {
