@@ -113,10 +113,10 @@ def run_server(config):
     SelectParams(config['DEFAULT']['network'])
 
     print('starting lightning client here...', flush=True)
-    # lightning_client = load_lightning_client(config)
+    lightning_client = load_lightning_client(config)
     # db_factory = load_db_factory(config)
     # node = load_client(blockchain_client, lightning_client, signing_key, db_factory)
-    handler = load_handler(None)
+    handler = load_handler(lightning_client)
 
     # start rpc server
     start_rpc_server(handler)
