@@ -99,6 +99,25 @@ services:
       - "btcd:blockchain"
     entrypoint: ["./start-lnd.sh"]
 
+  lnd_server:
+    image: lnd
+    container_name: lnd_server
+    build:
+      context: ../
+      dockerfile: docker/lnd/Dockerfile
+    environment:
+      - RPCUSER
+      - RPCPASS
+      - NETWORK
+      - CHAIN
+      - DEBUG
+    volumes:
+      - shared_test:/rpc
+      - lnd_dir_server:/root/.lnd
+    links:
+      - "btcd:blockchain"
+    entrypoint: ["./start-lnd.sh"]
+
   sqkclient_alice:
     image: sqkclient
     container_name: sqkclient_alice
@@ -168,6 +187,29 @@ services:
       - net.ipv6.conf.all.disable_ipv6=0
     entrypoint: ["./start-sqkclient.sh"]
 
+  sqkserver:
+    image: sqkserver
+    container_name: sqkserver
+    build:
+      context: ../
+      dockerfile: docker/sqkserver/Dockerfile
+    environment:
+      - RPCUSER
+      - RPCPASS
+      - NETWORK
+      - CHAIN
+      - DEBUG
+      - HEADLESS
+    volumes:
+      - shared_test:/rpc
+      - lnd_dir_server:/root/.lnd
+    links:
+      - "btcd:blockchain"
+      - "lnd_alice:lnd"
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=0
+    entrypoint: ["./start-sqkserver.sh"]
+
   test:
     image: test
     container_name: test
@@ -197,4 +239,6 @@ volumes:
   lnd_dir_bob:
     driver: local
   lnd_dir_carol:
+    driver: local
+  lnd_dir_server:
     driver: local
