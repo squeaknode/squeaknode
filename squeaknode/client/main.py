@@ -18,6 +18,7 @@ from squeaknode.client.rpc.route_guide_server import RouteGuideServicer
 from squeaknode.client.clientsqueaknode import SqueakNodeClient
 from squeaknode.client.db import SQLiteDBFactory
 from squeaknode.client.db import initialize_db
+from squeaknode.client.rpc_client import RPCClient
 
 
 def load_blockchain_client(config) -> BlockchainClient:
@@ -37,12 +38,20 @@ def load_lightning_client(config) -> LightningClient:
     )
 
 
-def load_client(blockchain_client, lightning_client, signing_key, db):
+def load_rpc_client(config) -> RPCClient:
+    return RPCClient(
+        config['server']['rpc_host'],
+        config['server']['rpc_port'],
+    )
+
+
+def load_client(blockchain_client, lightning_client, signing_key, db, rpc_client):
     return SqueakNodeClient(
         blockchain_client,
         lightning_client,
         signing_key,
         db,
+        rpc_client,
     )
 
 
@@ -133,7 +142,8 @@ def run_client(config):
     lightning_client = load_lightning_client(config)
     db_factory = load_db_factory(config)
     signing_key = load_signing_key(config)
-    node = load_client(blockchain_client, lightning_client, signing_key, db_factory)
+    rpc_client = load_rpc_client(config)
+    node = load_client(blockchain_client, lightning_client, signing_key, db_factory, rpc_client)
 
     # start rpc server
     rpc_server, rpc_server_thread = start_rpc_server(node)
