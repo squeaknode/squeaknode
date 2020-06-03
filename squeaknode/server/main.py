@@ -15,13 +15,23 @@ from squeaknode.common.lightning_client import LightningClient
 from squeaknode.common.btcd_blockchain_client import BTCDBlockchainClient
 from squeaknode.common.lnd_lightning_client import LNDLightningClient
 from squeaknode.client.rpc.route_guide_server import RouteGuideServicer
+from squeaknode.server.squeak_server import SqueakServicer
 from squeaknode.client.clientsqueaknode import SqueakNodeClient
 from squeaknode.client.db import SQLiteDBFactory
 from squeaknode.client.db import initialize_db
+from squeaknode.server.squeak_server_handler import SqueakServerHandler
+
+
+def load_lightning_client(config) -> LightningClient:
+    return LNDLightningClient(
+        config['lnd']['rpc_host'],
+        config['lnd']['rpc_port'],
+        config['lnd']['network'],
+    )
 
 
 def start_rpc_server(node):
-    server = RouteGuideServicer(node)
+    server = SqueakServicer(node)
     thread = threading.Thread(
         target=server.serve,
         args=(),
@@ -29,6 +39,12 @@ def start_rpc_server(node):
     thread.daemon = True
     thread.start()
     return server, thread
+
+
+def load_handler(lightning_client):
+    return SqueakServerHandler(
+        lightning_client,
+    )
 
 
 def sigterm_handler(_signo, _stack_frame):
@@ -96,9 +112,10 @@ def run_server(config):
     lightning_client = load_lightning_client(config)
     # db_factory = load_db_factory(config)
     # node = load_client(blockchain_client, lightning_client, signing_key, db_factory)
+    handler = load_handler(lightning_client)
 
     # start rpc server
-    rpc_server, rpc_server_thread = start_rpc_server(node)
+    rpc_server, rpc_server_thread = start_rpc_server(handler)
 
     signal.signal(signal.SIGTERM, sigterm_handler)
 

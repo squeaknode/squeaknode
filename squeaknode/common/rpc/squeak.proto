@@ -27,13 +27,13 @@ service SqueakServer {
   // Sends a greeting
   rpc SayHello (HelloRequest) returns (HelloReply) {}
 
-  /** sqk: `postsqueak`
-  */
-  rpc Postsqueak (PostsqueakRequest) returns (PostsqueakResponse) {}
+  // /** sqk: `postsqueak`
+  // */
+  // rpc Postsqueak (PostsqueakRequest) returns (PostsqueakResponse) {}
 
-  /** sqk: `getsqueak`
-  */
-  rpc GetSqueak (GetSqueakRequest) returns (GetSqueakResponse) {}
+  // /** sqk: `getsqueak`
+  // */
+  // rpc GetSqueak (GetSqueakRequest) returns (GetSqueakResponse) {}
 
 }
 
