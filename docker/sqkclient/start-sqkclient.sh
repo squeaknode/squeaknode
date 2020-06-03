@@ -51,6 +51,8 @@ BACKEND="btcd"
 SQK_HOST="localhost"
 SQK_PORT="56789"
 PRIVATE_KEY=$(set_default "$PRIVATE_KEY" "cS59SQeg1khCuVHJfXRmGeYxgZqr6Cu5Bgu8o9Z5ABioSD5Fm7dy")
+SQK_SERVER_HOST="sqkserver"
+SQK_SERVER_PORT=50052
 
 # This is a hack that is needed because python-bitcoinlib does not
 # currently support simnet network.
@@ -78,7 +80,7 @@ export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
 
 # Generate the config file.
 chmod +x config.ini.sh
-./config.ini.sh $NETWORK $LND_HOST $LND_PORT $BTCD_HOST $BTCD_RPC_PORT $RPCUSER $RPCPASS $SQK_HOST $SQK_PORT $PRIVATE_KEY > config.ini
+./config.ini.sh $NETWORK $LND_HOST $LND_PORT $BTCD_HOST $BTCD_RPC_PORT $RPCUSER $RPCPASS $SQK_HOST $SQK_PORT $PRIVATE_KEY $SQK_SERVER_HOST $SQK_SERVER_PORT > config.ini
 cat config.ini
 
 # Initialize the client database.

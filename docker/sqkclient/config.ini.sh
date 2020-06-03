@@ -9,6 +9,8 @@ BTCD_RPC_PASS=$7
 SQK_RPC_HOST=$8
 SQK_RPC_PORT=$9
 PRIVATE_KEY=${10}
+SQK_SERVER_RPC_HOST=${11}
+SQK_SERVER_RPC_PORT=${12}
 
 #define the template.
 cat  << EOF
@@ -30,5 +32,9 @@ rpc_pass=$BTCD_RPC_PASS
 rpc_host=$SQK_RPC_HOST
 rpc_port=$SQK_RPC_PORT
 private_key=$PRIVATE_KEY
+
+[server]
+rpc_host=$SQK_SERVER_RPC_HOST
+rpc_port=$SQK_SERVER_RPC_PORT
 
 EOF

@@ -26,6 +26,7 @@ class SqueakNodeClient(object):
             lightning_client: LightningClient,
             signing_key: CSigningKey,
             db_factory: SQLiteDBFactory,
+            rpc_client: RPCClient,
     ) -> None:
         self.blockchain_client = blockchain_client
         self.lightning_client = lightning_client
@@ -33,11 +34,12 @@ class SqueakNodeClient(object):
         self.address = CSqueakAddress.from_verifying_key(signing_key.get_verifying_key())
         self.squeak_store = SqueakStore(db_factory)
         self.hub_store = None
+        self.rpc_client = rpc_client
 
         # Event is set when the client stops
         self.stopped = threading.Event()
         self.uploader = Uploader(self.hub_store, self.squeak_store, self.address)
-        self.rpc_client = RPCClient('sqkserver', 50052)
+        # self.rpc_client = RPCClient('sqkserver', 50052)
 
     def start(self):
         # TODO: start the uploader and the downloader.
