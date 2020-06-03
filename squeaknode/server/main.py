@@ -30,8 +30,8 @@ def load_lightning_client(config) -> LightningClient:
     )
 
 
-def start_rpc_server(node):
-    server = SqueakServicer(node)
+def start_rpc_server(handler):
+    server = SqueakServerServicer(handler)
     thread = threading.Thread(
         target=server.serve,
         args=(),
