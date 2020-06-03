@@ -37,7 +37,7 @@ class SqueakNodeClient(object):
         # Event is set when the client stops
         self.stopped = threading.Event()
         self.uploader = Uploader(self.hub_store, self.squeak_store, self.address)
-        self.rpc_client = RPCClient('sqkserver', 50051)
+        self.rpc_client = RPCClient('sqkserver', 50052)
 
     def start(self):
         # TODO: start the uploader and the downloader.
