@@ -1,0 +1,121 @@
+// Copyright 2015 gRPC authors.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "io.github.yzernik.squeakserver";
+option java_outer_classname = "SqueakProto";
+option objc_class_prefix = "SQK";
+
+package squeakserver;
+
+// Interface exported by the server.
+service SqueakServer {
+
+  // Sends a greeting
+  rpc SayHello (HelloRequest) returns (HelloReply) {}
+
+  // /** sqk: `postsqueak`
+  // */
+  // rpc Postsqueak (PostsqueakRequest) returns (PostsqueakResponse) {}
+
+  // /** sqk: `getsqueak`
+  // */
+  // rpc GetSqueak (GetSqueakRequest) returns (GetSqueakResponse) {}
+
+}
+
+// The request message containing the user's name.
+message HelloRequest {
+  string name = 1;
+}
+
+// The response message containing the greetings
+message HelloReply {
+  string message = 1;
+}
+
+message PostsqueakRequest {
+    /// Content of the squeak to be made.
+    string content = 1;
+}
+
+message GetSqueakRequest {
+    /// Hash of the squeak to get.
+    bytes hash = 1;
+}
+
+message PostsqueakResponse {
+    /// The squeak.
+    Squeak squeak = 1;
+}
+
+message GetSqueakResponse {
+    /// The squeak.
+    Squeak squeak = 1;
+}
+
+message Addr {
+  string host = 1;
+
+  uint64 port = 2;
+}
+
+message Squeak {
+    /// Hash of the squeak.
+    bytes hash = 1;
+
+    /// Protocol version
+    uint64 n_version = 2;
+
+    /// Hash of the squeak to which it replies.
+    bytes hash_reply_squeak = 3;
+
+    /// Hash of the bitcoin block.
+    bytes hash_block = 4;
+
+    /// Block height of the squeak.
+    uint64 block_height = 5;
+
+    /// Public key script
+    bytes script_pub_key = 6;
+
+    /// Hash of the data key
+    bytes hash_data_key = 7;
+
+    /// Initialization vector
+    bytes iv = 8;
+
+    /// Timestamp of the squeak.
+    uint64 n_time = 9;
+
+    /// Nonce
+    uint64 nonce = 10;
+
+    /// Encrypted content
+    bytes enc_content = 11;
+
+    /// Signatute script
+    bytes script_sig = 12;
+
+    /// Data key
+    bytes data_key = 13;
+
+    /// Address of the creator.
+    string address = 14;
+
+    /// Decrypted content of the squeak.
+    string content = 15;
+}

@@ -10,6 +10,7 @@ from squeaknode.common.lightning_client import LightningClient
 from squeaknode.common.squeak_maker import SqueakMaker
 from squeaknode.client.db import SQLiteDBFactory
 from squeaknode.client.uploader import Uploader
+from squeaknode.client.rpc_client import RPCClient
 
 
 logger = logging.getLogger(__name__)
@@ -35,10 +36,12 @@ class SqueakNodeClient(object):
 
         # Event is set when the client stops
         self.stopped = threading.Event()
-        self.uploader = Uploader(self.hub_store, self.squeak_store, self.address, self.stopped)
+        self.uploader = Uploader(self.hub_store, self.squeak_store, self.address)
+        self.rpc_client = RPCClient('fake_host', 1234)
 
     def start(self):
-        self.uploader.start()
+        # TODO: start the uploader and the downloader.
+        pass
 
     def stop(self):
         self.stopped.set()
@@ -54,6 +57,7 @@ class SqueakNodeClient(object):
         squeak = squeak_maker.make_squeak(content)
         logger.info('Made squeak: {}'.format(squeak))
         self.squeak_store.save_squeak(squeak)
+        self.rpc_client.upload_squeak(squeak)
         return squeak
 
     def get_squeak(self, squeak_hash):

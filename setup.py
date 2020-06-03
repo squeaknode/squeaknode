@@ -21,6 +21,7 @@ setup(
     entry_points={
         'console_scripts': [
             'runsqueaknodeclient = squeaknode.client.main:main',
+            'runsqueaknodeserver = squeaknode.server.main:main',
         ],
     },
 )
