@@ -20,7 +20,6 @@ import grpc
 
 from squeaknode.client.rpc import route_guide_pb2
 from squeaknode.client.rpc import route_guide_pb2_grpc
-from squeaknode.client.rpc import route_guide_resources
 from squeaknode.client.rpc.util import build_squeak_msg
 
 
