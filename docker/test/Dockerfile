@@ -1,16 +1,15 @@
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y \
 	python3-pip \
-	python3-psycopg2 \
 	curl \
 	git
 
-COPY requirements.txt /
+COPY requirements-itest.txt /
 
 RUN pip3 install --upgrade pip
-RUN pip3 install -r requirements.txt
+RUN pip3 install -r requirements-itest.txt
 
 RUN git clone https://github.com/googleapis/googleapis.git
 
