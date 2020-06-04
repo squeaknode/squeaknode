@@ -18,6 +18,8 @@ import logging
 import random
 import time
 
+from squeak.core import CSqueak
+
 import grpc
 import route_guide_pb2
 import route_guide_pb2_grpc
@@ -96,6 +98,16 @@ def guide_route_chat(stub):
         print("Received message %s at %s" % (response.message,
                                              response.location))
 
+def build_squeak_msg(squeak):
+    return route_guide_pb2.Squeak(
+        hash=squeak.GetHash(),
+        serialized_squeak=squeak.serialize(),
+    )
+
+
+def squeak_from_msg(squeak_msg):
+    return CSqueak.deserialize(squeak_msg.serialized_squeak)
+
 
 def run():
     # NOTE(gRPC Python Team): .close() is possible on a channel and should be
@@ -124,25 +136,28 @@ def run():
         assert balance.total_balance == 1505000000000
 
         print("-------------- MakeSqueak --------------")
-        squeak_resp = alice_stub.MakeSqueak(route_guide_pb2.MakeSqueakRequest(
+        squeak_resp_msg = alice_stub.MakeSqueak(route_guide_pb2.MakeSqueakRequest(
             content='hello squeak.',
         ))
-        print("squeak: %s" % squeak_resp.squeak)
-        assert squeak_resp.squeak.content == 'hello squeak.'
+        print("squeak_resp_msg: %s" % squeak_resp_msg.squeak)
+        squeak_resp = squeak_from_msg(squeak_resp_msg.squeak)
+        print("squeak: %s" % squeak_resp)
+        assert squeak_resp.GetDecryptedContentStr() == 'hello squeak.'
 
         print("-------------- GetSqueak --------------")
-        get_squeak_resp = alice_stub.GetSqueak(route_guide_pb2.GetSqueakRequest(
-            hash=squeak_resp.squeak.hash,
+        get_squeak_resp_msg = alice_stub.GetSqueak(route_guide_pb2.GetSqueakRequest(
+            hash=squeak_resp.GetHash(),
         ))
-        print("squeak: %s" % get_squeak_resp)
-        assert get_squeak_resp.squeak.content == 'hello squeak.'
+        get_squeak_resp = squeak_from_msg(get_squeak_resp_msg.squeak)
+        print("get_squeak_resp: %s" % get_squeak_resp)
+        assert get_squeak_resp.GetDecryptedContentStr() == 'hello squeak.'
 
-        print("-------------- GetSqueak from other client --------------")
-        get_squeak_resp = bob_stub.GetSqueak(route_guide_pb2.GetSqueakRequest(
-            hash=squeak_resp.squeak.hash,
-        ))
-        print("squeak: %s" % get_squeak_resp)
-        assert get_squeak_resp.squeak.content == 'hello squeak.'
+        # print("-------------- GetSqueak from other client --------------")
+        # get_squeak_resp = bob_stub.GetSqueak(route_guide_pb2.GetSqueakRequest(
+        #     hash=squeak_resp.squeak.hash,
+        # ))
+        # print("squeak: %s" % get_squeak_resp)
+        # assert get_squeak_resp.squeak.content == 'hello squeak.'
 
 
 if __name__ == '__main__':
