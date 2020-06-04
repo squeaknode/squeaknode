@@ -11,6 +11,7 @@ from squeaknode.common.squeak_maker import SqueakMaker
 from squeaknode.client.db import SQLiteDBFactory
 from squeaknode.client.uploader import Uploader
 from squeaknode.client.rpc_client import RPCClient
+from squeaknode.server.postgres_db import PostgresDb
 
 
 logger = logging.getLogger(__name__)
@@ -23,14 +24,20 @@ class SqueakServerHandler(object):
     def __init__(
             self,
             lightning_client: LightningClient,
+            postgres_db: PostgresDb,
     ) -> None:
         self.lightning_client = lightning_client
+        self.postgres_db = postgres_db
 
     def say_hello(self):
         return 'hello from the handler'
 
     def handle_posted_squeak(self, squeak):
         logger.info("Handler got posted squeak: " + str(squeak))
+
+        # Insert the squeak in the database
+        # self.postgres_db.add_squeak
+
         return squeak.GetHash()
 
 

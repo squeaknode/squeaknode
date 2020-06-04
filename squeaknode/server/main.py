@@ -53,9 +53,10 @@ def start_rpc_server(handler):
     server.serve()
 
 
-def load_handler(lightning_client):
+def load_handler(lightning_client, postgres_db):
     return SqueakServerHandler(
         lightning_client,
+        postgres_db
     )
 
 
@@ -144,7 +145,7 @@ def run_server(config):
     lightning_client = load_lightning_client(config)
     # db_factory = load_db_factory(config)
     # node = load_client(blockchain_client, lightning_client, signing_key, db_factory)
-    handler = load_handler(lightning_client)
+    handler = load_handler(lightning_client, postgres_db)
 
     # start rpc server
     # start_rpc_server(handler)
