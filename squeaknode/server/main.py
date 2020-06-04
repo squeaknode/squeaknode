@@ -21,6 +21,8 @@ from squeaknode.client.db import SQLiteDBFactory
 from squeaknode.client.db import initialize_db
 from squeaknode.server.squeak_server_handler import SqueakServerHandler
 from squeaknode.server.db_params import parse_db_params
+from squeaknode.server.postgres_db import PostgresDb
+
 
 def load_lightning_client(config) -> LightningClient:
     return LNDLightningClient(
@@ -56,8 +58,14 @@ def load_handler(lightning_client):
         lightning_client,
     )
 
+
 def load_db_params(config):
     return parse_db_params(config)
+
+
+def load_postgres_db(config):
+    db_params = parse_db_params(config)
+    return PostgresDb(db_params)
 
 
 def sigterm_handler(_signo, _stack_frame):
@@ -126,6 +134,11 @@ def run_server(config):
     # load the db params
     db_params = load_db_params(config)
     print('db params: ' + str(db_params), flush=True)
+
+    # load postgres db
+    postgres_db = load_postgres_db(config)
+    print('postgres_db: ' + str(postgres_db), flush=True)
+    postgres_db.get_connection()
 
     print('starting lightning client here...', flush=True)
     lightning_client = load_lightning_client(config)
