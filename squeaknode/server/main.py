@@ -13,14 +13,8 @@ from squeak.core.signing import CSigningKey
 import squeaknode.common.lnd_pb2 as ln
 import squeaknode.common.lnd_pb2_grpc as lnrpc
 
-from squeaknode.common.blockchain_client import BlockchainClient
-from squeaknode.common.btcd_blockchain_client import BTCDBlockchainClient
 from squeaknode.common.lnd_lightning_client import LNDLightningClient
-from squeaknode.client.rpc.route_guide_server import RouteGuideServicer
 from squeaknode.server.squeak_server_servicer import SqueakServerServicer
-from squeaknode.client.clientsqueaknode import SqueakNodeClient
-from squeaknode.client.db import SQLiteDBFactory
-from squeaknode.client.db import initialize_db
 from squeaknode.server.squeak_server_handler import SqueakServerHandler
 from squeaknode.server.db_params import parse_db_params
 from squeaknode.server.postgres_db import PostgresDb
@@ -148,7 +142,6 @@ def run_server(config):
     print('starting lightning client here...', flush=True)
     lightning_client = load_lightning_client(config)
     # db_factory = load_db_factory(config)
-    # node = load_client(blockchain_client, lightning_client, signing_key, db_factory)
     handler = load_handler(lightning_client, postgres_db)
 
     # start rpc server

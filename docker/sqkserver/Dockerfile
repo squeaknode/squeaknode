@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y \
@@ -31,7 +31,7 @@ RUN chmod +x install-rpc.sh
 RUN ./install-rpc.sh
 RUN ls -l squeaknode/common/
 RUN ls -l squeaknode/common/rpc/
-RUN ls -l squeaknode/client/rpc/
+# RUN ls -l squeaknode/client/rpc/
 
 RUN python3 setup.py install
 
