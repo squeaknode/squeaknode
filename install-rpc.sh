@@ -9,11 +9,14 @@ if [ ! -f "rpc.proto" ]; then
 fi
 
 # Move this to squeaknode/common/lnd/rpc.proto instead.
-cp rpc.proto squeaknode/common
+cp rpc.proto squeaknode/common/lnd.proto
+# cp rpc.proto lnd.proto
 
 echo "Installing RPC protocol files"
 # install lnd protocol
-python3 -m grpc_tools.protoc --proto_path=googleapis:. --python_out=. --grpc_python_out=. squeaknode/common/rpc.proto
+python3 -m grpc_tools.protoc --proto_path=googleapis:. --python_out=. --grpc_python_out=. squeaknode/common/lnd.proto
+# install lnd protocol at the top level
+# python3 -m grpc_tools.protoc --proto_path=googleapis:. --python_out=. --grpc_python_out=. lnd.proto
 
 # install squeak server protocol
 python3 -m grpc_tools.protoc --proto_path=googleapis:. --python_out=. --grpc_python_out=. squeaknode/common/rpc/squeak_server.proto

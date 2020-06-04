@@ -4,8 +4,8 @@ import os
 
 import grpc
 
-import squeaknode.common.rpc_pb2 as ln
-import squeaknode.common.rpc_pb2_grpc as lnrpc
+import squeaknode.common.lnd_pb2 as ln
+import squeaknode.common.lnd_pb2_grpc as lnrpc
 from squeaknode.common.lightning_client import LightningClient
 
 
