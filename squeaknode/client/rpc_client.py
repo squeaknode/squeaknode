@@ -4,6 +4,7 @@ import grpc
 
 from squeaknode.common.rpc import squeak_server_pb2
 from squeaknode.common.rpc import squeak_server_pb2_grpc
+from squeaknode.common.rpc.util import build_squeak_msg
 
 from squeak.core.signing import CSigningKey
 from squeak.core.signing import CSqueakAddress
@@ -43,5 +44,10 @@ class RPCClient(object):
         # channel = grpc.insecure_channel('sqkserver:50052')
         stub = squeak_server_pb2_grpc.SqueakServerStub(channel)
         response = stub.SayHello(squeak_server_pb2.HelloRequest(name='rpc_client'))
-        print("Greeter client received: " + response.message)
         logger.info("Greeter client received: " + response.message)
+
+        logger.info("Building squeak msg with squeak: " + str(squeak))
+        squeak_msg = build_squeak_msg(squeak)
+        logger.info("Building squeak msg with squeak_msg: " + str(squeak_msg))
+        response2 = stub.PostSqueak(squeak_server_pb2.PostSqueakRequest(squeak=squeak_msg))
+        logger.info("Post squeak client received: " + str(response2.hash))

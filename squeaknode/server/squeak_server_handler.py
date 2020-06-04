@@ -29,6 +29,10 @@ class SqueakServerHandler(object):
     def say_hello(self):
         return 'hello from the handler'
 
+    def handle_posted_squeak(self, squeak):
+        logger.info("Handler got posted squeak: " + str(squeak))
+        return squeak.GetHash()
+
 
 # class ClientNodeError(Exception):
 #     pass

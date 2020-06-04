@@ -27,9 +27,9 @@ service SqueakServer {
   // Sends a greeting
   rpc SayHello (HelloRequest) returns (HelloReply) {}
 
-  // /** sqk: `postsqueak`
-  // */
-  // rpc Postsqueak (PostsqueakRequest) returns (PostsqueakResponse) {}
+  /** sqk: `postsqueak`
+  */
+  rpc PostSqueak (PostSqueakRequest) returns (PostSqueakReply) {}
 
   // /** sqk: `getsqueak`
   // */
@@ -47,9 +47,9 @@ message HelloReply {
   string message = 1;
 }
 
-message PostsqueakRequest {
+message PostSqueakRequest {
     /// Content of the squeak to be made.
-    string content = 1;
+    Squeak squeak = 1;
 }
 
 message GetSqueakRequest {
@@ -57,9 +57,9 @@ message GetSqueakRequest {
     bytes hash = 1;
 }
 
-message PostsqueakResponse {
+message PostSqueakReply {
     /// The squeak.
-    Squeak squeak = 1;
+    bytes hash = 1;
 }
 
 message GetSqueakResponse {
@@ -67,55 +67,10 @@ message GetSqueakResponse {
     Squeak squeak = 1;
 }
 
-message Addr {
-  string host = 1;
-
-  uint64 port = 2;
-}
-
 message Squeak {
     /// Hash of the squeak.
     bytes hash = 1;
 
-    /// Protocol version
-    uint64 n_version = 2;
-
-    /// Hash of the squeak to which it replies.
-    bytes hash_reply_squeak = 3;
-
-    /// Hash of the bitcoin block.
-    bytes hash_block = 4;
-
-    /// Block height of the squeak.
-    uint64 block_height = 5;
-
-    /// Public key script
-    bytes script_pub_key = 6;
-
-    /// Hash of the data key
-    bytes hash_data_key = 7;
-
-    /// Initialization vector
-    bytes iv = 8;
-
-    /// Timestamp of the squeak.
-    uint64 n_time = 9;
-
-    /// Nonce
-    uint64 nonce = 10;
-
-    /// Encrypted content
-    bytes enc_content = 11;
-
-    /// Signatute script
-    bytes script_sig = 12;
-
-    /// Data key
-    bytes data_key = 13;
-
-    /// Address of the creator.
-    string address = 14;
-
-    /// Decrypted content of the squeak.
-    string content = 15;
+    /// Serialized squeak.
+    bytes serialized_squeak = 2;
 }

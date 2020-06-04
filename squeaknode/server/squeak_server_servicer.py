@@ -20,6 +20,7 @@ import grpc
 
 from squeaknode.common.rpc import squeak_server_pb2
 from squeaknode.common.rpc import squeak_server_pb2_grpc
+from squeaknode.common.rpc.util import squeak_from_msg
 
 
 class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
@@ -40,6 +41,14 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
     #         confirmed_balance=response.confirmed_balance,
     #         unconfirmed_balance=response.unconfirmed_balance,
     #     )
+
+    def PostSqueak(self, request, context):
+        squeak_msg = request.squeak
+        squeak = squeak_from_msg(squeak_msg)
+        squeak_hash = self.handler.handle_posted_squeak(squeak)
+        return squeak_server_pb2.PostSqueakReply(
+            hash=squeak_hash,
+        )
 
     def serve(self):
         print('Calling serve...', flush=True)
