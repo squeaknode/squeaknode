@@ -18,7 +18,12 @@ import logging
 import random
 import time
 
+
+from bitcoin.core import lx, x
 from squeak.core import CSqueak
+from squeak.core import HASH_LENGTH
+from squeak.core import MakeSqueakFromStr
+from squeak.core.signing import CSigningKey
 
 import grpc
 import route_guide_pb2
@@ -33,6 +38,12 @@ def build_squeak_msg(squeak):
         serialized_squeak=squeak.serialize(),
     )
 
+def build_squeak_msg_2(squeak):
+    return squeak_server_pb2.Squeak(
+        hash=squeak.GetHash(),
+        serialized_squeak=squeak.serialize(),
+    )
+
 
 def squeak_from_msg(squeak_msg):
     if not squeak_msg:
@@ -40,6 +51,23 @@ def squeak_from_msg(squeak_msg):
     if not squeak_msg.serialized_squeak:
         return None
     return CSqueak.deserialize(squeak_msg.serialized_squeak)
+
+
+def generate_signing_key():
+    return CSigningKey.generate()
+
+
+def make_squeak(signing_key: CSigningKey, content: str, reply_to: bytes = b'\x00'*HASH_LENGTH):
+    block_height = 0
+    block_hash = lx('4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b')
+    timestamp = int(time.time())
+    return MakeSqueakFromStr(
+        signing_key,
+        content,
+        block_height,
+        block_hash,
+        timestamp,
+    )
 
 
 def run():
@@ -95,6 +123,15 @@ def run():
         print("Direct server response: " + str(server_response.squeak))
         server_response_squeak = squeak_from_msg(server_response.squeak)
         assert server_response_squeak.GetDecryptedContentStr()  == 'hello squeak.'
+
+        # Post a squeak with a direct request to the server
+        signing_key = generate_signing_key()
+        direct_squeak = make_squeak(signing_key, 'hello from itest!')
+
+        direct_squeak_msg = build_squeak_msg_2(direct_squeak)
+        server_post_response = server_stub.PostSqueak(squeak_server_pb2.PostSqueakRequest(squeak=direct_squeak_msg))
+        print("Direct server post response: " + str(server_post_response))
+        assert server_post_response.hash == direct_squeak.GetHash()
 
 
 if __name__ == '__main__':
