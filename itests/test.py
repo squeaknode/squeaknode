@@ -76,14 +76,11 @@ def make_squeak(signing_key: CSigningKey, content: str, reply_to: bytes = b'\x00
     )
 
 
-def load_lightning_client(config) -> LNDLightningClient:
+def load_lightning_client() -> LNDLightningClient:
     return LNDLightningClient(
-        # config['lnd']['rpc_host'],
-        # config['lnd']['rpc_port'],
-        # config['lnd']['network'],
-        'foooo',
-        123,
-        'barrr',
+        'lnd',
+        10009,
+        'simnet',
         ln,
         lnrpc,
     )
@@ -97,6 +94,12 @@ def run():
          grpc.insecure_channel('sqkclient_alice:50051') as alice_channel, \
          grpc.insecure_channel('sqkclient_bob:50051') as bob_channel, \
          grpc.insecure_channel('sqkclient_carol:50051') as carol_channel:
+
+        # load lnd client
+        lnd_lightning_client = load_lightning_client()
+        balance_from_client = lnd_lightning_client.get_wallet_balance()
+        print("Balance from direct client: %s" % balance_from_client)
+        assert balance_from_client.total_balance == 1505000000000
 
         # Make the stubs
         server_stub = squeak_server_pb2_grpc.SqueakServerStub(server_channel)

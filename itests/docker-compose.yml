@@ -230,8 +230,12 @@ services:
     build:
       context: ../
       dockerfile: docker/test/Dockerfile
+    volumes:
+      - shared_test:/rpc
+      - lnd_dir_alice:/root/.lnd
     links:
       - "btcd:blockchain"
+      - "lnd_alice:lnd"
       - "sqkclient_alice:sqkclient_alice"
       - "sqkclient_bob:sqkclient_bob"
       - "sqkclient_carol:sqkclient_carol"
