@@ -12,7 +12,6 @@ from squeak.core.signing import CSqueakAddress
 
 from squeaknode.client.squeak_store import SqueakStore
 from squeaknode.common.blockchain_client import BlockchainClient
-from squeaknode.common.lightning_client import LightningClient
 from squeaknode.common.squeak_maker import SqueakMaker
 from squeaknode.client.db import SQLiteDBFactory
 from squeaknode.client.hub_store import HubStore

@@ -19,7 +19,7 @@ class BTCDBlockchainClient(BlockchainClient):
         self.url = f'https://{rpc_user}:{rpc_password}@{host}:{port}'
         self.headers = {'content-type': 'application/json'}
 
-    def get_block_count(self) -> int:
+    def get_latest_block_height(self) -> int:
         payload = {
             "method": "getblockcount",
             "params": [],

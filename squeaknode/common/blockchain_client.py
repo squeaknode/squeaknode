@@ -7,7 +7,7 @@ class BlockchainClient(ABC):
     """Used to get info from the blockchain."""
 
     @abstractmethod
-    def get_block_count(self) -> int:
+    def get_latest_block_height(self) -> int:
         pass
 
     @abstractmethod

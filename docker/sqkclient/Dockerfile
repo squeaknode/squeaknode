@@ -32,6 +32,7 @@ WORKDIR /app
 COPY "install-rpc.sh" .
 RUN chmod +x install-rpc.sh
 RUN ./install-rpc.sh
+RUN ls -l .
 
 RUN python3 setup.py install
 
