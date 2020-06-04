@@ -21,6 +21,7 @@ import grpc
 from squeaknode.common.rpc import squeak_server_pb2
 from squeaknode.common.rpc import squeak_server_pb2_grpc
 from squeaknode.common.rpc.util import squeak_from_msg
+from squeaknode.common.rpc.util import build_squeak_msg
 
 
 class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
@@ -48,6 +49,17 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
         squeak_hash = self.handler.handle_posted_squeak(squeak)
         return squeak_server_pb2.PostSqueakReply(
             hash=squeak_hash,
+        )
+
+    def GetSqueak(self, request, context):
+        squeak_hash = request.hash
+        squeak = self.handler.handle_get_squeak(squeak_hash)
+        if squeak == None:
+            squeak_msg = None
+        else:
+            squeak_msg = build_squeak_msg(squeak)
+        return squeak_server_pb2.GetSqueakReply(
+            squeak=squeak_msg,
         )
 
     def serve(self):
