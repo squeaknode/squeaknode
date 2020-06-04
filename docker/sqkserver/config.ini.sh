@@ -29,4 +29,10 @@ rpc_pass=$BTCD_RPC_PASS
 rpc_host=$SQK_RPC_HOST
 rpc_port=$SQK_RPC_PORT
 
+[postgresql]
+host=db
+database=squeakserver
+user=postgres
+password=postgres
+
 EOF

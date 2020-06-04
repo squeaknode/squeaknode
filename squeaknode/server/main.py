@@ -20,7 +20,7 @@ from squeaknode.client.clientsqueaknode import SqueakNodeClient
 from squeaknode.client.db import SQLiteDBFactory
 from squeaknode.client.db import initialize_db
 from squeaknode.server.squeak_server_handler import SqueakServerHandler
-
+from squeaknode.server.db_params import parse_db_params
 
 def load_lightning_client(config) -> LightningClient:
     return LNDLightningClient(
@@ -55,6 +55,9 @@ def load_handler(lightning_client):
     return SqueakServerHandler(
         lightning_client,
     )
+
+def load_db_params(config):
+    return parse_db_params(config)
 
 
 def sigterm_handler(_signo, _stack_frame):
@@ -119,6 +122,10 @@ def main():
 def run_server(config):
     print('network:', config['DEFAULT']['network'], flush=True)
     SelectParams(config['DEFAULT']['network'])
+
+    # load the db params
+    db_params = load_db_params(config)
+    print('db params: ' + str(db_params), flush=True)
 
     print('starting lightning client here...', flush=True)
     lightning_client = load_lightning_client(config)
