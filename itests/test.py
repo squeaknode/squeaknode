@@ -106,6 +106,10 @@ def build_squeak_msg(squeak):
 
 
 def squeak_from_msg(squeak_msg):
+    if not squeak_msg:
+        return None
+    if not squeak_msg.serialized_squeak:
+        return None
     return CSqueak.deserialize(squeak_msg.serialized_squeak)
 
 
@@ -152,12 +156,14 @@ def run():
         print("get_squeak_resp: %s" % get_squeak_resp)
         assert get_squeak_resp.GetDecryptedContentStr() == 'hello squeak.'
 
-        # print("-------------- GetSqueak from other client --------------")
-        # get_squeak_resp = bob_stub.GetSqueak(route_guide_pb2.GetSqueakRequest(
-        #     hash=squeak_resp.squeak.hash,
-        # ))
-        # print("squeak: %s" % get_squeak_resp)
-        # assert get_squeak_resp.squeak.content == 'hello squeak.'
+        print("-------------- GetSqueak from other client --------------")
+        bob_get_squeak_resp_msg = bob_stub.GetSqueak(route_guide_pb2.GetSqueakRequest(
+            hash=squeak_resp.GetHash(),
+        ))
+        print("bob_get_squeak_resp_msg: %s" % bob_get_squeak_resp_msg.squeak)
+        bob_get_squeak_resp = squeak_from_msg(bob_get_squeak_resp_msg.squeak)
+        print("bob_get_squeak_resp: %s" % bob_get_squeak_resp)
+        assert bob_get_squeak_resp.GetDecryptedContentStr()  == 'hello squeak.'
 
 
 if __name__ == '__main__':

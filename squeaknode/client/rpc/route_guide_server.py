@@ -169,23 +169,8 @@ class RouteGuideServicer(route_guide_pb2_grpc.RouteGuideServicer):
         )
 
     def build_squeak_msg(self, squeak):
-        # return route_guide_pb2.Squeak(
-        #     hash=squeak.GetHash(),
-        #     n_version=squeak.nVersion,
-        #     hash_reply_squeak=squeak.hashReplySqk,
-        #     hash_block=squeak.hashBlock,
-        #     block_height=squeak.nBlockHeight,
-        #     script_pub_key=bytes(squeak.scriptPubKey),
-        #     hash_data_key=squeak.hashDataKey,
-        #     iv=squeak.vchIv,
-        #     n_time=squeak.nTime,
-        #     nonce=squeak.nNonce,
-        #     enc_content=bytes(squeak.encContent.vchEncContent),
-        #     script_sig=bytes(squeak.scriptSig),
-        #     data_key=squeak.vchDataKey,
-        #     address=str(squeak.GetAddress()),
-        #     content=squeak.GetDecryptedContentStr(),
-        # )
+        if squeak == None:
+            return None
         return build_squeak_msg(squeak)
 
 
