@@ -23,6 +23,8 @@ from squeak.core import CSqueak
 import grpc
 import route_guide_pb2
 import route_guide_pb2_grpc
+import squeak_server_pb2
+import squeak_server_pb2_grpc
 
 
 def build_squeak_msg(squeak):
@@ -44,11 +46,13 @@ def run():
     # NOTE(gRPC Python Team): .close() is possible on a channel and should be
     # used in circumstances in which the with statement does not fit the needs
     # of the code.
-    with grpc.insecure_channel('sqkclient_alice:50051') as alice_channel, \
+    with grpc.insecure_channel('sqkserver:50052') as server_channel, \
+         grpc.insecure_channel('sqkclient_alice:50051') as alice_channel, \
          grpc.insecure_channel('sqkclient_bob:50051') as bob_channel, \
          grpc.insecure_channel('sqkclient_carol:50051') as carol_channel:
 
         # Make the stubs
+        server_stub = squeak_server_pb2_grpc.SqueakServerStub(server_channel)
         alice_stub = route_guide_pb2_grpc.RouteGuideStub(alice_channel)
         bob_stub = route_guide_pb2_grpc.RouteGuideStub(bob_channel)
         carol_stub = route_guide_pb2_grpc.RouteGuideStub(carol_channel)
@@ -84,6 +88,13 @@ def run():
         bob_get_squeak_resp = squeak_from_msg(bob_get_squeak_resp_msg.squeak)
         print("bob_get_squeak_resp: %s" % bob_get_squeak_resp)
         assert bob_get_squeak_resp.GetDecryptedContentStr()  == 'hello squeak.'
+
+
+        # Make a direct request to the server
+        server_response = server_stub.GetSqueak(squeak_server_pb2.GetSqueakRequest(hash=squeak_resp.GetHash()))
+        print("Direct server response: " + str(server_response.squeak))
+        server_response_squeak = squeak_from_msg(server_response.squeak)
+        assert server_response_squeak.GetDecryptedContentStr()  == 'hello squeak.'
 
 
 if __name__ == '__main__':
