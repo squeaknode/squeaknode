@@ -5,6 +5,7 @@ import grpc
 from squeaknode.common.rpc import squeak_server_pb2
 from squeaknode.common.rpc import squeak_server_pb2_grpc
 from squeaknode.common.rpc.util import build_squeak_msg
+from squeaknode.common.rpc.util import squeak_from_msg
 
 from squeak.core.signing import CSigningKey
 from squeak.core.signing import CSqueakAddress
@@ -51,3 +52,14 @@ class RPCClient(object):
         logger.info("Building squeak msg with squeak_msg: " + str(squeak_msg))
         response2 = stub.PostSqueak(squeak_server_pb2.PostSqueakRequest(squeak=squeak_msg))
         logger.info("Post squeak client received: " + str(response2.hash))
+
+    def download_squeak(self, squeak_hash):
+        logger.info("Download the squeak here.")
+
+        # Make the rpc request to the server.
+        channel = grpc.insecure_channel('{}:{}'.format(self.host, self.port))
+        # channel = grpc.insecure_channel('sqkserver:50052')
+        stub = squeak_server_pb2_grpc.SqueakServerStub(channel)
+        response = stub.GetSqueak(squeak_server_pb2.GetSqueakRequest(hash=squeak_hash))
+        logger.info("Get squeak client received: " + str(response.squeak))
+        return squeak_from_msg(response.squeak)

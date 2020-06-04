@@ -14,7 +14,7 @@ CREATE TABLE squeak (
   hashDataKey CHAR(64) NOT NULL,
   vchIv CHAR(32) NOT NULL,
   nTime INTEGER NOT NULL,
-  nNonce INTEGER NOT NULL,
+  nNonce BIGINT NOT NULL,
   encContent CHAR(2272) NOT NULL,
   scriptSig VARCHAR(400) NOT NULL,
   address VARCHAR(50) NOT NULL,

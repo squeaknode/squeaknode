@@ -1,5 +1,9 @@
 import psycopg2
 
+from squeak.core import CSqueak
+from squeak.core import CSqueakEncContent
+from squeak.core.script import CScript
+
 
 class PostgresDb():
 
@@ -49,3 +53,32 @@ class PostgresDb():
                 # get the generated hash back
                 squeak_hash = curs.fetchone()[0]
                 return squeak_hash
+
+    def get_squeak(self, squeak_hash):
+        """ Get a squeak. """
+        sql = """
+        SELECT * FROM squeak WHERE hash=%s"""
+
+        squeak_hash_str = squeak_hash.hex()
+
+        with psycopg2.connect(**self.params) as conn:
+            with conn.cursor() as curs:
+                curs.execute(sql, (squeak_hash_str,))
+                row = curs.fetchone()
+
+                squeak = CSqueak(
+                    nVersion=row[2],
+                    hashEncContent=bytes.fromhex(row[3]),
+                    hashReplySqk=bytes.fromhex(row[4]),
+                    hashBlock=bytes.fromhex(row[5]),
+                    nBlockHeight=row[6],
+                    scriptPubKey=CScript(bytes.fromhex(row[7])),
+                    hashDataKey=bytes.fromhex(row[8]),
+                    vchIv=bytes.fromhex((row[9])),
+                    nTime=row[10],
+                    nNonce=row[11],
+                    encContent=CSqueakEncContent(bytes.fromhex((row[12]))),
+                    scriptSig=CScript(bytes.fromhex((row[13]))),
+                    vchDataKey=bytes.fromhex((row[15])),
+                )
+                return squeak

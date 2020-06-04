@@ -38,8 +38,15 @@ class SqueakServerHandler(object):
         # Insert the squeak in the database
         inserted_squeak_hash = self.postgres_db.insert_squeak(squeak)
         logger.info("Inserted squeak and got back hash: " + str(inserted_squeak_hash))
-
+        ## Todo: return the squeak from the db.
         return squeak.GetHash()
+
+    def handle_get_squeak(self, squeak_hash):
+        logger.info("Handler get squeak by hash: " + str(squeak_hash))
+
+        squeak = self.postgres_db.get_squeak(squeak_hash)
+        logger.info("Got squeak from db: " + str(squeak))
+        return squeak
 
 
 # class ClientNodeError(Exception):
