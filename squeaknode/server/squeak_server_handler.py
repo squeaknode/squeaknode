@@ -36,7 +36,8 @@ class SqueakServerHandler(object):
         logger.info("Handler got posted squeak: " + str(squeak))
 
         # Insert the squeak in the database
-        # self.postgres_db.add_squeak
+        inserted_squeak_hash = self.postgres_db.insert_squeak(squeak)
+        logger.info("Inserted squeak and got back hash: " + str(inserted_squeak_hash))
 
         return squeak.GetHash()
 

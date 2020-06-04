@@ -17,3 +17,35 @@ class PostgresDb():
                 # display the PostgreSQL database server version
                 db_version = curs.fetchone()
                 print(db_version)
+
+    def insert_squeak(self, squeak):
+        """ Insert a new squeak. """
+        sql = """
+        INSERT INTO squeak(hash, nVersion, hashEncContent, hashReplySqk, hashBlock, nBlockHeight, scriptPubKey, hashDataKey, vchIv, nTime, nNonce, encContent, scriptSig, address, vchDataKey, content)
+        VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        RETURNING hash;"""
+
+        with psycopg2.connect(**self.params) as conn:
+            with conn.cursor() as curs:
+                # execute the INSERT statement
+                curs.execute(sql, (
+                    squeak.GetHash(),
+                    squeak.nVersion,
+                    squeak.hashEncContent,
+                    squeak.hashReplySqk,
+                    squeak.hashBlock,
+                    squeak.nBlockHeight,
+                    bytes(squeak.scriptPubKey),
+                    squeak.hashDataKey,
+                    squeak.vchIv,
+                    squeak.nTime,
+                    squeak.nNonce,
+                    bytes(squeak.encContent.vchEncContent),
+                    bytes(squeak.scriptSig),
+                    str(squeak.GetAddress()),
+                    squeak.vchDataKey,
+                    squeak.GetDecryptedContentStr(),
+                ))
+                # get the generated hash back
+                squeak_hash = curs.fetchone()[0]
+                return squeak_hash
