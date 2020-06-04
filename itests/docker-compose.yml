@@ -118,6 +118,15 @@ services:
       - "btcd:blockchain"
     entrypoint: ["./start-lnd.sh"]
 
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - ../squeaknode/server/init.sql:/docker-entrypoint-initdb.d/init.sql
+
   sqkserver:
     image: sqkserver
     container_name: sqkserver
@@ -137,6 +146,8 @@ services:
     links:
       - "btcd:blockchain"
       - "lnd_sqkserver:lnd"
+    depends_on:
+      - db
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=0
     entrypoint: ["./start-sqkserver.sh"]

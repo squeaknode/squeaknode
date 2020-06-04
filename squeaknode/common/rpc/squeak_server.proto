@@ -31,9 +31,9 @@ service SqueakServer {
   */
   rpc PostSqueak (PostSqueakRequest) returns (PostSqueakReply) {}
 
-  // /** sqk: `getsqueak`
-  // */
-  // rpc GetSqueak (GetSqueakRequest) returns (GetSqueakResponse) {}
+  /** sqk: `getsqueak`
+  */
+  rpc GetSqueak (GetSqueakRequest) returns (GetSqueakReply) {}
 
 }
 
@@ -62,7 +62,7 @@ message PostSqueakReply {
     bytes hash = 1;
 }
 
-message GetSqueakResponse {
+message GetSqueakReply {
     /// The squeak.
     Squeak squeak = 1;
 }
