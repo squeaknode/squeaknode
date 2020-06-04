@@ -21,3 +21,6 @@ CREATE TABLE squeak (
   vchDataKey CHAR(64),
   content CHAR(1120)
 );
+
+CREATE INDEX idx_squeak_address
+  ON squeak(address);
