@@ -16,11 +16,7 @@ import squeaknode.common.lnd_pb2_grpc as lnrpc
 from squeaknode.common.blockchain_client import BlockchainClient
 from squeaknode.common.btcd_blockchain_client import BTCDBlockchainClient
 from squeaknode.common.lnd_lightning_client import LNDLightningClient
-from squeaknode.client.rpc.route_guide_server import RouteGuideServicer
 from squeaknode.server.squeak_server_servicer import SqueakServerServicer
-from squeaknode.client.clientsqueaknode import SqueakNodeClient
-from squeaknode.client.db import SQLiteDBFactory
-from squeaknode.client.db import initialize_db
 from squeaknode.server.squeak_server_handler import SqueakServerHandler
 from squeaknode.server.db_params import parse_db_params
 from squeaknode.server.postgres_db import PostgresDb

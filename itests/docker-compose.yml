@@ -152,78 +152,6 @@ services:
       - net.ipv6.conf.all.disable_ipv6=0
     entrypoint: ["./start-sqkserver.sh"]
 
-  sqkclient_alice:
-    image: sqkclient
-    container_name: sqkclient_alice
-    build:
-      context: ../
-      dockerfile: docker/sqkclient/Dockerfile
-    environment:
-      - RPCUSER
-      - RPCPASS
-      - NETWORK
-      - CHAIN
-      - DEBUG
-      - HEADLESS
-    volumes:
-      - shared_test:/rpc
-      - lnd_dir_alice:/root/.lnd
-    links:
-      - "btcd:blockchain"
-      - "lnd_alice:lnd"
-      - "sqkserver:sqkserver"
-    sysctls:
-      - net.ipv6.conf.all.disable_ipv6=0
-    entrypoint: ["./start-sqkclient.sh"]
-
-  sqkclient_bob:
-    image: sqkclient
-    container_name: sqkclient_bob
-    build:
-      context: ../
-      dockerfile: docker/sqkclient/Dockerfile
-    environment:
-      - RPCUSER
-      - RPCPASS
-      - NETWORK
-      - CHAIN
-      - DEBUG
-      - HEADLESS
-    volumes:
-      - shared_test:/rpc
-      - lnd_dir_bob:/root/.lnd
-    links:
-      - "btcd:blockchain"
-      - "lnd_bob:lnd"
-      - "sqkserver:sqkserver"
-    sysctls:
-      - net.ipv6.conf.all.disable_ipv6=0
-    entrypoint: ["./start-sqkclient.sh"]
-
-  sqkclient_carol:
-    image: sqkclient
-    container_name: sqkclient_carol
-    build:
-      context: ../
-      dockerfile: docker/sqkclient/Dockerfile
-    environment:
-      - RPCUSER
-      - RPCPASS
-      - NETWORK
-      - CHAIN
-      - DEBUG
-      - HEADLESS
-    volumes:
-      - shared_test:/rpc
-      - lnd_dir_carol:/root/.lnd
-    links:
-      - "btcd:blockchain"
-      - "lnd_carol:lnd"
-      - "sqkserver:sqkserver"
-    sysctls:
-      - net.ipv6.conf.all.disable_ipv6=0
-    entrypoint: ["./start-sqkclient.sh"]
-
   test:
     image: test
     container_name: test
@@ -236,9 +164,6 @@ services:
     links:
       - "btcd:blockchain"
       - "lnd_alice:lnd"
-      - "sqkclient_alice:sqkclient_alice"
-      - "sqkclient_bob:sqkclient_bob"
-      - "sqkclient_carol:sqkclient_carol"
     command: tail -f /dev/null
 
 volumes:
