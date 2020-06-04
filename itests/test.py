@@ -137,6 +137,13 @@ def run():
         print("squeak: %s" % get_squeak_resp)
         assert get_squeak_resp.squeak.content == 'hello squeak.'
 
+        print("-------------- GetSqueak from other client --------------")
+        get_squeak_resp = bob_stub.GetSqueak(route_guide_pb2.GetSqueakRequest(
+            hash=squeak_resp.squeak.hash,
+        ))
+        print("squeak: %s" % get_squeak_resp)
+        assert get_squeak_resp.squeak.content == 'hello squeak.'
+
 
 if __name__ == '__main__':
     logging.basicConfig()
