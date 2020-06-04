@@ -25,11 +25,17 @@ from squeak.core import HASH_LENGTH
 from squeak.core import MakeSqueakFromStr
 from squeak.core.signing import CSigningKey
 
+
+import lnd_pb2 as ln
+import lnd_pb2_grpc as lnrpc
+
 import grpc
 import route_guide_pb2
 import route_guide_pb2_grpc
 import squeak_server_pb2
 import squeak_server_pb2_grpc
+
+from lnd_lightning_client import LNDLightningClient
 
 
 def build_squeak_msg(squeak):
@@ -67,6 +73,19 @@ def make_squeak(signing_key: CSigningKey, content: str, reply_to: bytes = b'\x00
         block_height,
         block_hash,
         timestamp,
+    )
+
+
+def load_lightning_client(config) -> LNDLightningClient:
+    return LNDLightningClient(
+        # config['lnd']['rpc_host'],
+        # config['lnd']['rpc_port'],
+        # config['lnd']['network'],
+        'foooo',
+        123,
+        'barrr',
+        ln,
+        lnrpc,
     )
 
 
