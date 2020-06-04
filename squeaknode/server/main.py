@@ -10,8 +10,8 @@ from configparser import ConfigParser
 from squeak.params import SelectParams
 from squeak.core.signing import CSigningKey
 
-import squeaknode.common.lnd_pb2 as ln
-import squeaknode.common.lnd_pb2_grpc as lnrpc
+import squeaknode.common.rpc.lnd_pb2 as ln
+import squeaknode.common.rpc.lnd_pb2_grpc as lnrpc
 
 from squeaknode.common.lnd_lightning_client import LNDLightningClient
 from squeaknode.server.squeak_server_servicer import SqueakServerServicer
