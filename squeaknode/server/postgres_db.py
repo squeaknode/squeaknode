@@ -29,21 +29,21 @@ class PostgresDb():
             with conn.cursor() as curs:
                 # execute the INSERT statement
                 curs.execute(sql, (
-                    squeak.GetHash(),
+                    squeak.GetHash().hex(),
                     squeak.nVersion,
-                    squeak.hashEncContent,
-                    squeak.hashReplySqk,
-                    squeak.hashBlock,
+                    squeak.hashEncContent.hex(),
+                    squeak.hashReplySqk.hex(),
+                    squeak.hashBlock.hex(),
                     squeak.nBlockHeight,
-                    bytes(squeak.scriptPubKey),
-                    squeak.hashDataKey,
-                    squeak.vchIv,
+                    bytes(squeak.scriptPubKey).hex(),
+                    squeak.hashDataKey.hex(),
+                    squeak.vchIv.hex(),
                     squeak.nTime,
                     squeak.nNonce,
-                    bytes(squeak.encContent.vchEncContent),
-                    bytes(squeak.scriptSig),
+                    bytes(squeak.encContent.vchEncContent).hex(),
+                    bytes(squeak.scriptSig).hex(),
                     str(squeak.GetAddress()),
-                    squeak.vchDataKey,
+                    squeak.vchDataKey.hex(),
                     squeak.GetDecryptedContentStr(),
                 ))
                 # get the generated hash back
