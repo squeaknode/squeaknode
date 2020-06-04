@@ -1,6 +1,8 @@
 
 
-valid_params = {'host', 'database', 'user', 'password'}
+# valid_params = {'host', 'database', 'user', 'password'}
+
+valid_params = {'host', 'user', 'password'}
 
 
 def parse_db_params(config, section='postgresql'):
