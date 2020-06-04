@@ -6,7 +6,7 @@ from squeak.core.signing import CSqueakAddress
 
 from squeaknode.client.squeak_store import SqueakStore
 from squeaknode.common.blockchain_client import BlockchainClient
-from squeaknode.common.lightning_client import LightningClient
+from squeaknode.common.lnd_lightning_client import LNDLightningClient
 from squeaknode.common.squeak_maker import SqueakMaker
 from squeaknode.client.db import SQLiteDBFactory
 from squeaknode.client.uploader import Uploader
@@ -23,7 +23,7 @@ class SqueakNodeClient(object):
     def __init__(
             self,
             blockchain_client: BlockchainClient,
-            lightning_client: LightningClient,
+            lightning_client: LNDLightningClient,
             signing_key: CSigningKey,
             db_factory: SQLiteDBFactory,
             rpc_client: RPCClient,

@@ -11,7 +11,7 @@ from squeak.params import SelectParams
 from squeak.core.signing import CSigningKey
 
 from squeaknode.common.blockchain_client import BlockchainClient
-from squeaknode.common.lightning_client import LightningClient
+from squeaknode.common.lnd_lightning_client import LNDLightningClient
 from squeaknode.common.btcd_blockchain_client import BTCDBlockchainClient
 from squeaknode.common.lnd_lightning_client import LNDLightningClient
 from squeaknode.client.rpc.route_guide_server import RouteGuideServicer
@@ -30,7 +30,7 @@ def load_blockchain_client(config) -> BlockchainClient:
     )
 
 
-def load_lightning_client(config) -> LightningClient:
+def load_lightning_client(config) -> LNDLightningClient:
     return LNDLightningClient(
         config['lnd']['rpc_host'],
         config['lnd']['rpc_port'],
