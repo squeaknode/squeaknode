@@ -21,7 +21,7 @@ class SqueakMaker(object):
         content: content of the squeak
         reply_to: hash of the reply_to squeak
         """
-        block_height = self.blockchain_client.get_block_count()
+        block_height = self.blockchain_client.get_latest_block_height()
         block_hash = self.blockchain_client.get_block_hash(block_height)
         timestamp = int(time.time())
 
