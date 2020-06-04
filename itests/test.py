@@ -36,13 +36,7 @@ import squeak_server_pb2_grpc
 from lnd_lightning_client import LNDLightningClient
 
 
-# def build_squeak_msg(squeak):
-#     return route_guide_pb2.Squeak(
-#         hash=squeak.GetHash(),
-#         serialized_squeak=squeak.serialize(),
-#     )
-
-def build_squeak_msg_2(squeak):
+def build_squeak_msg(squeak):
     return squeak_server_pb2.Squeak(
         hash=squeak.GetHash(),
         serialized_squeak=squeak.serialize(),
@@ -88,10 +82,7 @@ def run():
     # NOTE(gRPC Python Team): .close() is possible on a channel and should be
     # used in circumstances in which the with statement does not fit the needs
     # of the code.
-    with grpc.insecure_channel('sqkserver:50052') as server_channel, \
-         grpc.insecure_channel('sqkclient_alice:50051') as alice_channel, \
-         grpc.insecure_channel('sqkclient_bob:50051') as bob_channel, \
-         grpc.insecure_channel('sqkclient_carol:50051') as carol_channel:
+    with grpc.insecure_channel('sqkserver:50052') as server_channel:
 
         # load lnd client
         lnd_lightning_client = load_lightning_client()
@@ -101,42 +92,6 @@ def run():
 
         # Make the stubs
         server_stub = squeak_server_pb2_grpc.SqueakServerStub(server_channel)
-        # alice_stub = route_guide_pb2_grpc.RouteGuideStub(alice_channel)
-        # bob_stub = route_guide_pb2_grpc.RouteGuideStub(bob_channel)
-        # carol_stub = route_guide_pb2_grpc.RouteGuideStub(carol_channel)
-
-        # print("-------------- WalletBalance --------------")
-        # balance = alice_stub.WalletBalance(route_guide_pb2.WalletBalanceRequest())
-        # print("Balance: %s" % balance)
-        # print("Balance confirmed %s %s" % (balance.total_balance, balance.total_balance))
-        # assert balance.total_balance == 1505000000000
-
-        # print("-------------- MakeSqueak --------------")
-        # squeak_resp_msg = alice_stub.MakeSqueak(route_guide_pb2.MakeSqueakRequest(
-        #     content='hello squeak.',
-        # ))
-        # print("squeak_resp_msg: %s" % squeak_resp_msg.squeak)
-        # squeak_resp = squeak_from_msg(squeak_resp_msg.squeak)
-        # print("squeak: %s" % squeak_resp)
-        # assert squeak_resp.GetDecryptedContentStr() == 'hello squeak.'
-
-        # print("-------------- GetSqueak --------------")
-        # get_squeak_resp_msg = alice_stub.GetSqueak(route_guide_pb2.GetSqueakRequest(
-        #     hash=squeak_resp.GetHash(),
-        # ))
-        # get_squeak_resp = squeak_from_msg(get_squeak_resp_msg.squeak)
-        # print("get_squeak_resp: %s" % get_squeak_resp)
-        # assert get_squeak_resp.GetDecryptedContentStr() == 'hello squeak.'
-
-        # print("-------------- GetSqueak from other client --------------")
-        # bob_get_squeak_resp_msg = bob_stub.GetSqueak(route_guide_pb2.GetSqueakRequest(
-        #     hash=squeak_resp.GetHash(),
-        # ))
-        # print("bob_get_squeak_resp_msg: %s" % bob_get_squeak_resp_msg.squeak)
-        # bob_get_squeak_resp = squeak_from_msg(bob_get_squeak_resp_msg.squeak)
-        # print("bob_get_squeak_resp: %s" % bob_get_squeak_resp)
-        # assert bob_get_squeak_resp.GetDecryptedContentStr()  == 'hello squeak.'
-
 
         # # Make a direct request to the server
         # server_response = server_stub.GetSqueak(squeak_server_pb2.GetSqueakRequest(hash=squeak_resp.GetHash()))
@@ -148,7 +103,7 @@ def run():
         signing_key = generate_signing_key()
         direct_squeak = make_squeak(signing_key, 'hello from itest!')
 
-        direct_squeak_msg = build_squeak_msg_2(direct_squeak)
+        direct_squeak_msg = build_squeak_msg(direct_squeak)
         server_post_response = server_stub.PostSqueak(squeak_server_pb2.PostSqueakRequest(squeak=direct_squeak_msg))
         print("Direct server post response: " + str(server_post_response))
         assert server_post_response.hash == direct_squeak.GetHash()
