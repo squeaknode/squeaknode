@@ -4,9 +4,8 @@ import os
 
 import grpc
 
-import squeaknode.common.lnd_pb2 as ln
-import squeaknode.common.lnd_pb2_grpc as lnrpc
-from squeaknode.common.lightning_client import LightningClient
+# import squeaknode.common.lnd_pb2 as ln
+# import squeaknode.common.lnd_pb2_grpc as lnrpc
 
 
 logger = logging.getLogger(__name__)
@@ -19,7 +18,7 @@ os.environ["GRPC_SSL_CIPHER_SUITES"] = 'HIGH+ECDSA'
 os.environ["GRPC_VERBOSITY"] = 'DEBUG'
 
 
-class LNDLightningClient(LightningClient):
+class LNDLightningClient():
     """Access a lightning deamon using RPC."""
 
     def __init__(
@@ -27,7 +26,11 @@ class LNDLightningClient(LightningClient):
             host: str,
             port: int,
             network: str,
+            ln_module,
+            lnrpc_module,
     ) -> None:
+        self.ln_module = ln_module
+        self.lnrpc_module = lnrpc_module
         url = '{}:{}'.format(host, port)
         tls_cert_path = '~/.lnd/tls.cert'
         macaroon_path = '~/.lnd/data/chain/bitcoin/{}/admin.macaroon'.format(network)
@@ -37,7 +40,7 @@ class LNDLightningClient(LightningClient):
         cert = open(os.path.expanduser(tls_cert_path), 'rb').read()
         creds = grpc.ssl_channel_credentials(cert)
         channel = grpc.secure_channel(url, creds)
-        self.stub = lnrpc.LightningStub(channel)
+        self.stub = self.lnrpc_module.LightningStub(channel)
 
         # Lnd admin macaroon is at ~/.lnd/data/chain/bitcoin/simnet/admin.macaroon on Linux and
         # ~/Library/Application Support/Lnd/data/chain/bitcoin/simnet/admin.macaroon on Mac
@@ -48,4 +51,4 @@ class LNDLightningClient(LightningClient):
 
     def get_wallet_balance(self):
         # Retrieve and display the wallet balance
-        return self.stub.WalletBalance(ln.WalletBalanceRequest(), metadata=[('macaroon', self.macaroon)])
+        return self.stub.WalletBalance(self.ln_module.WalletBalanceRequest(), metadata=[('macaroon', self.macaroon)])

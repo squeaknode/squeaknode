@@ -10,6 +10,9 @@ from configparser import ConfigParser
 from squeak.params import SelectParams
 from squeak.core.signing import CSigningKey
 
+import squeaknode.common.lnd_pb2 as ln
+import squeaknode.common.lnd_pb2_grpc as lnrpc
+
 from squeaknode.common.blockchain_client import BlockchainClient
 from squeaknode.common.btcd_blockchain_client import BTCDBlockchainClient
 from squeaknode.common.lnd_lightning_client import LNDLightningClient
@@ -28,6 +31,8 @@ def load_lightning_client(config) -> LNDLightningClient:
         config['lnd']['rpc_host'],
         config['lnd']['rpc_port'],
         config['lnd']['network'],
+        ln,
+        lnrpc,
     )
 
 
