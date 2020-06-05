@@ -81,18 +81,12 @@ chmod +x config.ini.sh
 echo "config.ini:"
 cat config.ini
 
-# # Initialize the client database.
-# runsqueaknodeclient \
-#     "--config"="config.ini" \
-#     "--log-level"="$DEBUG" \
-#     init-db
-
 echo "$DEBUG:"
 echo $DEBUG
 
 echo "Starting to run the python server here...."
 
-exec runsqueaknodeserver \
+exec runsqueakserver \
      "--config"="config.ini" \
      "--log-level"="$DEBUG" \
      run-server

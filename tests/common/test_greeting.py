@@ -1,6 +1,6 @@
 import pytest
 
-from squeaknode.common.greeting import greet
+from squeakserver.common.greeting import greet
 
 
 def test_greet():

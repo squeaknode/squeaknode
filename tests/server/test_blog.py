@@ -1,7 +1,7 @@
 import pytest
 
-from squeaknode.server.db import get_db
-from squeaknode.server.blog import hi
+from squeakserver.server.db import get_db
+from squeakserver.server.blog import hi
 
 
 def test_index(client):

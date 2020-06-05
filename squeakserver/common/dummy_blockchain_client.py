@@ -3,7 +3,7 @@ from typing import Optional
 
 import requests
 
-from squeaknode.common.blockchain_client import BlockchainClient
+from squeakserver.common.blockchain_client import BlockchainClient
 
 
 class DummyBlockchainClient(BlockchainClient):
