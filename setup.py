@@ -18,7 +18,7 @@ setup(
     extras_require={"test": ["pytest", "coverage"]},
     entry_points={
         'console_scripts': [
-            'runsqueaknodeserver = squeaknode.server.main:main',
+            'runsqueakserver = squeaknode.server.main:main',
         ],
     },
 )
