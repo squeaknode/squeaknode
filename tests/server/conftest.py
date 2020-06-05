@@ -1,44 +1,50 @@
-import os
-import tempfile
+import time
 
 import pytest
 
-from squeakserver.server import create_app
-from squeakserver.server.db import get_db
-from squeakserver.server.db import init_db
+from bitcoin.core import lx, x
+from squeak.core import CSqueak
+from squeak.core import HASH_LENGTH
+from squeak.core import MakeSqueakFromStr
+from squeak.core.signing import CSigningKey
 
-# read in SQL for populating test data
-with open(os.path.join(os.path.dirname(__file__), "data.sql"), "rb") as f:
-    _data_sql = f.read().decode("utf8")
+from squeakserver.server.squeak_validator import SqueakValidator
+
+# # read in SQL for populating test data
+# with open(os.path.join(os.path.dirname(__file__), "data.sql"), "rb") as f:
+#     _data_sql = f.read().decode("utf8")
 
 
-@pytest.fixture
-def app():
-    """Create and configure a new app instance for each test."""
-    # create a temporary file to isolate the database for each test
-    db_fd, db_path = tempfile.mkstemp()
-    # create the app with common test config
-    app = create_app({"TESTING": True, "DATABASE": db_path})
-
-    # create the database and load test data
-    with app.app_context():
-        init_db()
-        get_db().executescript(_data_sql)
-
-    yield app
-
-    # close and remove the temporary database
-    os.close(db_fd)
-    os.unlink(db_path)
+def make_squeak(signing_key: CSigningKey, content: str, reply_to: bytes = b'\x00'*HASH_LENGTH):
+    block_height = 0
+    block_hash = lx('4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b')
+    timestamp = int(time.time())
+    return MakeSqueakFromStr(
+        signing_key,
+        content,
+        block_height,
+        block_hash,
+        timestamp,
+    )
 
 
 @pytest.fixture
-def client(app):
-    """A test client for the app."""
-    return app.test_client()
+def signing_key():
+    return CSigningKey.generate()
 
 
 @pytest.fixture
-def runner(app):
-    """A test runner for the app's Click commands."""
-    return app.test_cli_runner()
+def validator():
+    return SqueakValidator()
+
+
+@pytest.fixture
+def example_squeak(signing_key):
+    return make_squeak(signing_key, 'hello!', )
+
+
+@pytest.fixture
+def bad_squeak(signing_key):
+    squeak = make_squeak(signing_key, 'hello!', )
+    squeak.SetDataKey(b'deadbeef')
+    return squeak
