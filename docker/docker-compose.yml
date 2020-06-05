@@ -87,6 +87,9 @@ services:
     volumes:
       - shared:/rpc
       - lnd_dir:/root/.lnd
+    ports:
+      - 8554:8554
+      - 18554:18554
     links:
       - "lnd:lnd"
     depends_on:
