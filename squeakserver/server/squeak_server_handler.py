@@ -28,7 +28,6 @@ class SqueakServerHandler(object):
 
     def handle_posted_squeak(self, squeak):
         logger.info("Handler got posted squeak: " + str(squeak))
-
         # Insert the squeak in the database
         inserted_squeak_hash = self.postgres_db.insert_squeak(squeak)
         logger.info("Inserted squeak and got back hash: " + str(inserted_squeak_hash))
@@ -37,10 +36,15 @@ class SqueakServerHandler(object):
 
     def handle_get_squeak(self, squeak_hash):
         logger.info("Handler get squeak by hash: " + str(squeak_hash))
-
         squeak = self.postgres_db.get_squeak(squeak_hash)
         logger.info("Got squeak from db: " + str(squeak))
         return squeak
+
+    def handle_lookup_squeaks(self, addresses, min_block, max_block):
+        logger.info("Handler lookup squeaks with addresses: " + str(addresses))
+        hashes = self.postgres_db.lookup_squeaks(addresses, min_block, max_block)
+        logger.info("Got hashes from db: " + str(hashes))
+        return hashes
 
 
 # class ClientNodeError(Exception):

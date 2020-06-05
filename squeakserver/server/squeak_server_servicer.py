@@ -35,14 +35,6 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
     def SayHello(self, request, context):
         return squeak_server_pb2.HelloReply(message='Hello, %s!' % request.name)
 
-    # def WalletBalance(self, request, context):
-    #     response = self.node.get_wallet_balance()
-    #     return route_guide_pb2.WalletBalanceResponse(
-    #         total_balance=response.total_balance,
-    #         confirmed_balance=response.confirmed_balance,
-    #         unconfirmed_balance=response.unconfirmed_balance,
-    #     )
-
     def PostSqueak(self, request, context):
         squeak_msg = request.squeak
         squeak = squeak_from_msg(squeak_msg)
@@ -60,6 +52,15 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
             squeak_msg = build_squeak_msg(squeak)
         return squeak_server_pb2.GetSqueakReply(
             squeak=squeak_msg,
+        )
+
+    def LookupSqueaks(self, request, context):
+        addresses = request.addresses
+        min_block = request.min_block
+        max_block = request.max_block
+        hashes = self.handler.handle_lookup_squeaks(addresses, min_block, max_block)
+        return squeak_server_pb2.LookupSqueaksReply(
+            hashes=hashes,
         )
 
     def serve(self):

@@ -20,11 +20,12 @@ import time
 
 
 from bitcoin.core import lx, x
+from squeak.params import SelectParams
 from squeak.core import CSqueak
 from squeak.core import HASH_LENGTH
 from squeak.core import MakeSqueakFromStr
 from squeak.core.signing import CSigningKey
-
+from squeak.core.signing import CSqueakAddress
 
 import lnd_pb2 as ln
 import lnd_pb2_grpc as lnrpc
@@ -55,6 +56,11 @@ def generate_signing_key():
     return CSigningKey.generate()
 
 
+def get_address(signing_key):
+    verifying_key = signing_key.get_verifying_key()
+    return CSqueakAddress.from_verifying_key(verifying_key)
+
+
 def make_squeak(signing_key: CSigningKey, content: str, reply_to: bytes = b'\x00'*HASH_LENGTH):
     block_height = 0
     block_hash = lx('4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b')
@@ -79,6 +85,9 @@ def load_lightning_client() -> LNDLightningClient:
 
 
 def run():
+    # Set the network to simnet for itest.
+    SelectParams("simnet")
+
     # NOTE(gRPC Python Team): .close() is possible on a channel and should be
     # used in circumstances in which the with statement does not fit the needs
     # of the code.
@@ -101,12 +110,61 @@ def run():
 
         # Post a squeak with a direct request to the server
         signing_key = generate_signing_key()
-        direct_squeak = make_squeak(signing_key, 'hello from itest!')
+        squeak = make_squeak(signing_key, 'hello from itest!')
 
-        direct_squeak_msg = build_squeak_msg(direct_squeak)
-        server_post_response = server_stub.PostSqueak(squeak_server_pb2.PostSqueakRequest(squeak=direct_squeak_msg))
-        print("Direct server post response: " + str(server_post_response))
-        assert server_post_response.hash == direct_squeak.GetHash()
+        squeak_msg = build_squeak_msg(squeak)
+        post_response = server_stub.PostSqueak(squeak_server_pb2.PostSqueakRequest(squeak=squeak_msg))
+        print("Direct server post response: " + str(post_response))
+        assert post_response.hash == squeak.GetHash()
+
+        # Get the same squeak from the server
+        get_response = server_stub.GetSqueak(squeak_server_pb2.GetSqueakRequest(hash=post_response.hash))
+        print("Direct server get response: " + str(get_response))
+        get_response_squeak = squeak_from_msg(get_response.squeak)
+        assert get_response_squeak.GetDecryptedContentStr()  == 'hello from itest!'
+
+        # Lookup squeaks based on address
+        other_signing_key = generate_signing_key()
+        signing_keys = [signing_key, other_signing_key]
+        address_strs = [
+            str(get_address(key))
+            for key in signing_keys
+        ]
+        lookup_response = server_stub.LookupSqueaks(squeak_server_pb2.LookupSqueaksRequest(
+            addresses=address_strs,
+            min_block=0,
+            max_block=99999999,
+        ))
+        print("Lookup response: " + str(lookup_response))
+        assert squeak.GetHash() in set(lookup_response.hashes)
+
+        # Lookup again without the relevant address
+        another_signing_key = generate_signing_key()
+        signing_keys = [other_signing_key, another_signing_key]
+        address_strs = [
+            str(get_address(key))
+            for key in signing_keys
+        ]
+        lookup_response = server_stub.LookupSqueaks(squeak_server_pb2.LookupSqueaksRequest(
+            addresses=address_strs,
+            min_block=0,
+            max_block=99999999,
+        ))
+        assert squeak.GetHash() not in set(lookup_response.hashes)
+
+        # Lookup again with a different block range
+        signing_keys = [signing_key, other_signing_key]
+        address_strs = [
+            str(get_address(key))
+            for key in signing_keys
+        ]
+        lookup_response = server_stub.LookupSqueaks(squeak_server_pb2.LookupSqueaksRequest(
+            addresses=address_strs,
+            min_block=600,
+            max_block=99999999,
+        ))
+        assert squeak.GetHash() not in set(lookup_response.hashes)
+
 
 
 if __name__ == '__main__':
