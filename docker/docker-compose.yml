@@ -62,12 +62,21 @@ services:
       - "btcd:blockchain"
     entrypoint: ["./start-lnd.sh"]
 
-  sqk:
-    image: sqk
-    container_name: sqk
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - ../init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  sqkserver:
+    image: sqkserver
+    container_name: sqkserver
     build:
       context: ../
-      dockerfile: docker/sqk/Dockerfile
+      dockerfile: docker/sqkserver/Dockerfile
     environment:
       - RPCUSER
       - RPCPASS
@@ -79,11 +88,12 @@ services:
       - shared:/rpc
       - lnd_dir:/root/.lnd
     links:
-      - "btcd:blockchain"
       - "lnd:lnd"
+    depends_on:
+      - db
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=0
-    entrypoint: ["./start-sqk.sh"]
+    entrypoint: ["./start-sqkserver.sh"]
 
 volumes:
   # btcctl and lnd containers.

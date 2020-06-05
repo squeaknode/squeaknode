@@ -47,7 +47,7 @@ DEBUG=$(set_default "$DEBUG" "debug")
 NETWORK=$(set_default "$NETWORK" "simnet")
 CHAIN=$(set_default "$CHAIN" "bitcoin")
 SQK_HOST="0.0.0.0"
-SQK_PORT=50052
+SQK_PORT=8554
 
 
 # Generate the config file.

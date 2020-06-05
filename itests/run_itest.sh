@@ -16,3 +16,7 @@ sleep 10
 
 echo "Running test.sh...."
 docker-compose run test ./test.sh
+
+echo "Shutting down itest..."
+# docker-compose down --rmi all --volumes
+docker-compose down
