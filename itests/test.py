@@ -101,12 +101,18 @@ def run():
 
         # Post a squeak with a direct request to the server
         signing_key = generate_signing_key()
-        direct_squeak = make_squeak(signing_key, 'hello from itest!')
+        squeak = make_squeak(signing_key, 'hello from itest!')
 
-        direct_squeak_msg = build_squeak_msg(direct_squeak)
-        server_post_response = server_stub.PostSqueak(squeak_server_pb2.PostSqueakRequest(squeak=direct_squeak_msg))
-        print("Direct server post response: " + str(server_post_response))
-        assert server_post_response.hash == direct_squeak.GetHash()
+        squeak_msg = build_squeak_msg(squeak)
+        post_response = server_stub.PostSqueak(squeak_server_pb2.PostSqueakRequest(squeak=squeak_msg))
+        print("Direct server post response: " + str(post_response))
+        assert post_response.hash == squeak.GetHash()
+
+        # Get the same squeak from the server
+        get_response = server_stub.GetSqueak(squeak_server_pb2.GetSqueakRequest(hash=post_response.hash))
+        print("Direct server get response: " + str(get_response))
+        get_response_squeak = squeak_from_msg(get_response.squeak)
+        assert get_response_squeak.GetDecryptedContentStr()  == 'hello from itest!'
 
 
 if __name__ == '__main__':
