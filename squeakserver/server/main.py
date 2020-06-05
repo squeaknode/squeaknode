@@ -10,14 +10,14 @@ from configparser import ConfigParser
 from squeak.params import SelectParams
 from squeak.core.signing import CSigningKey
 
-import squeaknode.common.rpc.lnd_pb2 as ln
-import squeaknode.common.rpc.lnd_pb2_grpc as lnrpc
+import squeakserver.common.rpc.lnd_pb2 as ln
+import squeakserver.common.rpc.lnd_pb2_grpc as lnrpc
 
-from squeaknode.common.lnd_lightning_client import LNDLightningClient
-from squeaknode.server.squeak_server_servicer import SqueakServerServicer
-from squeaknode.server.squeak_server_handler import SqueakServerHandler
-from squeaknode.server.db_params import parse_db_params
-from squeaknode.server.postgres_db import PostgresDb
+from squeakserver.common.lnd_lightning_client import LNDLightningClient
+from squeakserver.server.squeak_server_servicer import SqueakServerServicer
+from squeakserver.server.squeak_server_handler import SqueakServerHandler
+from squeakserver.server.db_params import parse_db_params
+from squeakserver.server.postgres_db import PostgresDb
 
 
 def load_lightning_client(config) -> LNDLightningClient:
@@ -74,7 +74,7 @@ def sigterm_handler(_signo, _stack_frame):
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description="squeaknode runs a node using squeak protocol. ",
+        description="squeakserver runs a node using squeak protocol. ",
     )
     parser.add_argument(
         '--config',

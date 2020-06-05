@@ -1,8 +1,8 @@
 
 from squeak.core import CSqueak
 
-from squeaknode.common.rpc import squeak_server_pb2
-from squeaknode.common.rpc import squeak_server_pb2_grpc
+from squeakserver.common.rpc import squeak_server_pb2
+from squeakserver.common.rpc import squeak_server_pb2_grpc
 
 
 def build_squeak_msg(squeak):

@@ -18,10 +18,10 @@ from concurrent import futures
 
 import grpc
 
-from squeaknode.common.rpc import squeak_server_pb2
-from squeaknode.common.rpc import squeak_server_pb2_grpc
-from squeaknode.common.rpc.util import squeak_from_msg
-from squeaknode.common.rpc.util import build_squeak_msg
+from squeakserver.common.rpc import squeak_server_pb2
+from squeakserver.common.rpc import squeak_server_pb2_grpc
+from squeakserver.common.rpc.util import squeak_from_msg
+from squeakserver.common.rpc.util import build_squeak_msg
 
 
 class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):

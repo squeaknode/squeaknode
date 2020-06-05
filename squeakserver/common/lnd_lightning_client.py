@@ -4,8 +4,8 @@ import os
 
 import grpc
 
-# import squeaknode.common.lnd_pb2 as ln
-# import squeaknode.common.lnd_pb2_grpc as lnrpc
+# import squeakserver.common.lnd_pb2 as ln
+# import squeakserver.common.lnd_pb2_grpc as lnrpc
 
 
 logger = logging.getLogger(__name__)

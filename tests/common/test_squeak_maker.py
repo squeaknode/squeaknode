@@ -5,8 +5,8 @@ from squeak.core import CheckSqueak
 from squeak.core import HASH_LENGTH
 from squeak.core.signing import CSigningKey
 
-from squeaknode.common.blockchain_client import BlockchainClient
-from squeaknode.common.squeak_maker import SqueakMaker
+from squeakserver.common.blockchain_client import BlockchainClient
+from squeakserver.common.squeak_maker import SqueakMaker
 
 
 @pytest.fixture

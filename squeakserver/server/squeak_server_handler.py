@@ -4,8 +4,8 @@ import threading
 from squeak.core.signing import CSigningKey
 from squeak.core.signing import CSqueakAddress
 
-from squeaknode.common.lnd_lightning_client import LNDLightningClient
-from squeaknode.server.postgres_db import PostgresDb
+from squeakserver.common.lnd_lightning_client import LNDLightningClient
+from squeakserver.server.postgres_db import PostgresDb
 
 
 logger = logging.getLogger(__name__)
