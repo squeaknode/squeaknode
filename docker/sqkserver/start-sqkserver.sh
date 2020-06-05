@@ -41,48 +41,20 @@ set_default() {
 # Set default variables if needed.
 LND_HOST="lnd"
 LND_PORT=10009
-BTCD_HOST="btcd"
 RPCUSER=$(set_default "$RPCUSER" "devuser")
 RPCPASS=$(set_default "$RPCPASS" "devpass")
 DEBUG=$(set_default "$DEBUG" "debug")
 NETWORK=$(set_default "$NETWORK" "simnet")
 CHAIN=$(set_default "$CHAIN" "bitcoin")
-BACKEND="btcd"
 SQK_HOST="0.0.0.0"
 SQK_PORT=50052
-
-# This is a hack that is needed because python-bitcoinlib does not
-# currently support simnet network.
-BTCD_RPC_PORT="18332"
-if [[ "$NETWORK" == "mainnet" ]]; then
-    BTCD_RPC_PORT="8334"
-elif [[ "$NETWORK" == "testnet" ]]; then
-    BTCD_RPC_PORT="18334"
-elif [[ "$NETWORK" == "regtest" ]]; then
-    BTCD_RPC_PORT="18445"
-elif [[ "$NETWORK" == "simnet" ]]; then
-    BTCD_RPC_PORT="18556"
-fi
-
-
-# Add btcd's RPC TLS certificate to system Certificate Authority list.	exec runsqueak \
-cp /rpc/rpc.cert /usr/share/ca-certificates/btcd.crt
-echo btcd.crt >> /etc/ca-certificates.conf
-update-ca-certificates
-
-# To make python requests use the system ca-certificates bundle, it
-# needs to be told to use it over its own embedded bundle
-export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
 
 
 # Generate the config file.
 chmod +x config.ini.sh
-./config.ini.sh $NETWORK $LND_HOST $LND_PORT $BTCD_HOST $BTCD_RPC_PORT $RPCUSER $RPCPASS $SQK_HOST $SQK_PORT > config.ini
+./config.ini.sh $NETWORK $LND_HOST $LND_PORT $SQK_HOST $SQK_PORT > config.ini
 echo "config.ini:"
 cat config.ini
-
-echo "$DEBUG:"
-echo $DEBUG
 
 echo "Starting to run the python server here...."
 

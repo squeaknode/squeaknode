@@ -144,7 +144,6 @@ services:
       - shared_test:/rpc
       - lnd_dir_sqkserver:/root/.lnd
     links:
-      - "btcd:blockchain"
       - "lnd_sqkserver:lnd"
     depends_on:
       - db
@@ -162,7 +161,6 @@ services:
       - shared_test:/rpc
       - lnd_dir_alice:/root/.lnd
     links:
-      - "btcd:blockchain"
       - "lnd_alice:lnd"
     command: tail -f /dev/null
 
