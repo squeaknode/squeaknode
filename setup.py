@@ -9,18 +9,15 @@ with io.open("README.rst", "rt", encoding="utf8") as f:
 setup(
     name="squeaknode",
     version="1.0.0",
-    url="https://flask.palletsprojects.com/tutorial/",
-    license="BSD",
-    description="The basic blog app built in the Flask tutorial.",
+    url="https://github.com/yzernik/squeakserver",
+    description="Server for squeak protocol.",
     long_description=readme,
     packages=find_packages(),
     include_package_data=True,
     zip_safe=False,
-    install_requires=["flask"],
     extras_require={"test": ["pytest", "coverage"]},
     entry_points={
         'console_scripts': [
-            'runsqueaknodeclient = squeaknode.client.main:main',
             'runsqueaknodeserver = squeaknode.server.main:main',
         ],
     },
