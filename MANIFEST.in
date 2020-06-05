@@ -1,4 +1,4 @@
 include LICENSE
-include squeaknode/server/init.sql
+include init.sql
 graft tests
 global-exclude *.pyc
