@@ -7,7 +7,7 @@ with io.open("README.rst", "rt", encoding="utf8") as f:
     readme = f.read()
 
 setup(
-    name="squeaknode",
+    name="squeakserver",
     version="1.0.0",
     url="https://github.com/yzernik/squeakserver",
     description="Server for squeak protocol.",
