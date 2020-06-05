@@ -42,6 +42,13 @@ class SqueakServerHandler(object):
         logger.info("Got squeak from db: " + str(squeak))
         return squeak
 
+    def handle_lookup_squeaks(self, addresses, min_block, max_block):
+        logger.info("Handler lookup squeaks with addresses: " + str(addresses))
+
+        hashes = self.postgres_db.lookup_squeaks(addresses, min_block, max_block)
+        logger.info("Got hashes from db: " + str(hashes))
+        return hashes
+
 
 # class ClientNodeError(Exception):
 #     pass

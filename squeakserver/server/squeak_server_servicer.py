@@ -62,6 +62,15 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
             squeak=squeak_msg,
         )
 
+    def LookupSqueaks(self, request, context):
+        addresses = request.addresses
+        min_block = request.min_block
+        max_block = request.max_block
+        hashes = self.handler.handle_lookup_squeaks(squeak_hash, min_block, max_block)
+        return squeak_server_pb2.LookupSqueaksReply(
+            hashes=hashes,
+        )
+
     def serve(self):
         print('Calling serve...', flush=True)
         server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))

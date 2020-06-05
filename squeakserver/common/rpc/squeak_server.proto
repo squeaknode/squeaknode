@@ -35,6 +35,10 @@ service SqueakServer {
   */
   rpc GetSqueak (GetSqueakRequest) returns (GetSqueakReply) {}
 
+  /** sqk: `lookupsqueaks`
+  */
+  rpc LookupSqueaks (LookupSqueaksRequest) returns (LookupSqueaksReply) {}
+
 }
 
 // The request message containing the user's name.
@@ -57,6 +61,15 @@ message GetSqueakRequest {
     bytes hash = 1;
 }
 
+message LookupSqueaksRequest {
+    /// List of the author addresses
+    repeated string addresses = 1;
+    /// Minimum block to look for
+    int32 min_block = 2;
+    /// Maximum block to look for
+    int32 max_block = 3;
+}
+
 message PostSqueakReply {
     /// The squeak.
     bytes hash = 1;
@@ -65,6 +78,11 @@ message PostSqueakReply {
 message GetSqueakReply {
     /// The squeak.
     Squeak squeak = 1;
+}
+
+message LookupSqueaksReply {
+    /// Hash of the squeak to get.
+    repeated bytes hashes = 1;
 }
 
 message Squeak {

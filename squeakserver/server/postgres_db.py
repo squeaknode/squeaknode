@@ -1,3 +1,5 @@
+import sys
+
 import psycopg2
 
 from squeak.core import CSqueak
@@ -82,3 +84,25 @@ class PostgresDb():
                     vchDataKey=bytes.fromhex((row[15])),
                 )
                 return squeak
+
+    def lookup_squeaks(self, addresses, min_block=sys.maxsize, max_block=0):
+        """ Lookup squeaks. """
+        sql = """
+        SELECT hash FROM squeak
+        WHERE address IN %s
+        AND nBlockHeight >= %s
+        AND nBlockHeight >= %s"""
+        addresses_tuple = tuple(addresses)
+
+        with psycopg2.connect(**self.params) as conn:
+            with conn.cursor() as curs:
+                # mogrify to debug.
+                # curs.mogrify(sql, (addresses_tuple,))
+                curs.execute(sql, (addresses_tuple, min_block, max_block))
+                rows = curs.fetchall()
+
+                hashes = [
+                    row[0]
+                    for row in rows
+                ]
+                return hashes
