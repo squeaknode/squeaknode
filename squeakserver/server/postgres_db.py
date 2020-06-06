@@ -99,6 +99,9 @@ class PostgresDb():
         addresses_tuple = tuple(addresses)
         logger.info("Lookup query with addresses tuple: " + str(addresses_tuple))
 
+        if not addresses:
+            return []
+
         with psycopg2.connect(**self.params) as conn:
             with conn.cursor() as curs:
                 # mogrify to debug.
