@@ -88,8 +88,8 @@ services:
       - shared:/rpc
       - lnd_dir:/root/.lnd
     ports:
-      - 8554:8554
-      - 18554:18554
+      - 8774:8774
+      - 18774:18774
     links:
       - "lnd:lnd"
     depends_on:

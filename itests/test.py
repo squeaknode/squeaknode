@@ -91,7 +91,7 @@ def run():
     # NOTE(gRPC Python Team): .close() is possible on a channel and should be
     # used in circumstances in which the with statement does not fit the needs
     # of the code.
-    with grpc.insecure_channel('sqkserver:8554') as server_channel:
+    with grpc.insecure_channel('sqkserver:8774') as server_channel:
 
         # load lnd client
         lnd_lightning_client = load_lightning_client()
