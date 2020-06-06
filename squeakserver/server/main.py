@@ -128,7 +128,8 @@ def main():
 
 def run_server(config):
     print('network:', config['DEFAULT']['network'], flush=True)
-    SelectParams(config['DEFAULT']['network'])
+    # SelectParams(config['DEFAULT']['network'])
+    SelectParams("mainnet")
 
     # load the db params
     db_params = load_db_params(config)

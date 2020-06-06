@@ -86,7 +86,7 @@ def load_lightning_client() -> LNDLightningClient:
 
 def run():
     # Set the network to simnet for itest.
-    SelectParams("simnet")
+    SelectParams("mainnet")
 
     # NOTE(gRPC Python Team): .close() is possible on a channel and should be
     # used in circumstances in which the with statement does not fit the needs
