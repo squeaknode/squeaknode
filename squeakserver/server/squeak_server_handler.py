@@ -23,9 +23,6 @@ class SqueakServerHandler(object):
         self.lightning_client = lightning_client
         self.postgres_db = postgres_db
 
-    def say_hello(self):
-        return 'hello from the handler'
-
     def handle_posted_squeak(self, squeak):
         logger.info("Handler got posted squeak: " + str(squeak))
         # Insert the squeak in the database
@@ -45,16 +42,3 @@ class SqueakServerHandler(object):
         hashes = self.postgres_db.lookup_squeaks(addresses, min_block, max_block)
         logger.info("Got hashes from db: " + str(hashes))
         return hashes
-
-
-# class ClientNodeError(Exception):
-#     pass
-
-
-# class MissingSigningKeyError(ClientNodeError):
-#     def __str__(self):
-#         return 'Missing signing key.'
-
-
-def get_hash(squeak):
-    return squeak.GetHash()[::-1]

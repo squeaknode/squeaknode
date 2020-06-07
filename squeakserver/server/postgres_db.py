@@ -7,6 +7,8 @@ from squeak.core import CSqueak
 from squeak.core import CSqueakEncContent
 from squeak.core.script import CScript
 
+from squeakserver.server.util import get_hash
+
 
 logger = logging.getLogger(__name__)
 
@@ -113,7 +115,3 @@ class PostgresDb():
                     for row in rows
                 ]
                 return hashes
-
-
-def get_hash(squeak):
-    return squeak.GetHash()[::-1]
