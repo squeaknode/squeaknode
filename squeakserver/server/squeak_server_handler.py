@@ -23,9 +23,6 @@ class SqueakServerHandler(object):
         self.lightning_client = lightning_client
         self.postgres_db = postgres_db
 
-    def say_hello(self):
-        return 'hello from the handler'
-
     def handle_posted_squeak(self, squeak):
         logger.info("Handler got posted squeak: " + str(squeak))
         # Insert the squeak in the database

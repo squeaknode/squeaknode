@@ -33,9 +33,6 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
         self.port = port
         self.handler = handler
 
-    def SayHello(self, request, context):
-        return squeak_server_pb2.HelloReply(message='Hello, %s!' % request.name)
-
     def PostSqueak(self, request, context):
         squeak_msg = request.squeak
 
