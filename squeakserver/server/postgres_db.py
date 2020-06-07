@@ -39,7 +39,7 @@ class PostgresDb():
             with conn.cursor() as curs:
                 # execute the INSERT statement
                 curs.execute(sql, (
-                    squeak.GetHash().hex(),
+                    get_hash(squeak).hex(),
                     squeak.nVersion,
                     squeak.hashEncContent.hex(),
                     squeak.hashReplySqk.hex(),
@@ -57,8 +57,8 @@ class PostgresDb():
                     squeak.GetDecryptedContentStr(),
                 ))
                 # get the generated hash back
-                squeak_hash = curs.fetchone()[0]
-                return squeak_hash
+                row = curs.fetchone()
+                return bytes.fromhex(row[0])
 
     def get_squeak(self, squeak_hash):
         """ Get a squeak. """
@@ -113,3 +113,7 @@ class PostgresDb():
                     for row in rows
                 ]
                 return hashes
+
+
+def get_hash(squeak):
+    return squeak.GetHash()[::-1]

@@ -18,10 +18,10 @@ from concurrent import futures
 
 import grpc
 
+from squeak.core import CSqueak
+
 from squeakserver.common.rpc import squeak_server_pb2
 from squeakserver.common.rpc import squeak_server_pb2_grpc
-from squeakserver.common.rpc.util import squeak_from_msg
-from squeakserver.common.rpc.util import build_squeak_msg
 
 
 class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
@@ -74,3 +74,22 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
         server.start()
         print("Started SqueakServerServicer rpc server...", flush=True)
         server.wait_for_termination()
+
+
+def build_squeak_msg(squeak):
+    return squeak_server_pb2.Squeak(
+        hash=get_hash(squeak),
+        serialized_squeak=squeak.serialize(),
+    )
+
+
+def squeak_from_msg(squeak_msg):
+    squeak_hash = squeak_msg.hash
+    squeak = CSqueak.deserialize(squeak_msg.serialized_squeak)
+    if get_hash(squeak) != squeak_hash:
+        return None
+    return squeak
+
+
+def get_hash(squeak):
+    return squeak.GetHash()[::-1]

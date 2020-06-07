@@ -32,7 +32,7 @@ class SqueakServerHandler(object):
         inserted_squeak_hash = self.postgres_db.insert_squeak(squeak)
         logger.info("Inserted squeak and got back hash: " + str(inserted_squeak_hash))
         ## Todo: return the squeak from the db.
-        return squeak.GetHash()
+        return inserted_squeak_hash
 
     def handle_get_squeak(self, squeak_hash):
         logger.info("Handler get squeak by hash: " + str(squeak_hash))
@@ -54,3 +54,7 @@ class SqueakServerHandler(object):
 # class MissingSigningKeyError(ClientNodeError):
 #     def __str__(self):
 #         return 'Missing signing key.'
+
+
+def get_hash(squeak):
+    return squeak.GetHash()[::-1]

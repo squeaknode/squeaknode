@@ -39,7 +39,7 @@ from lnd_lightning_client import LNDLightningClient
 
 def build_squeak_msg(squeak):
     return squeak_server_pb2.Squeak(
-        hash=squeak.GetHash(),
+        hash=get_hash(squeak),
         serialized_squeak=squeak.serialize(),
     )
 
@@ -74,6 +74,11 @@ def make_squeak(signing_key: CSigningKey, content: str, reply_to: bytes = b'\x00
     )
 
 
+def get_hash(squeak):
+    """ Needs to be reversed because hash is stored as little-endian """
+    return squeak.GetHash()[::-1]
+
+
 def load_lightning_client() -> LNDLightningClient:
     return LNDLightningClient(
         'lnd',
@@ -102,12 +107,6 @@ def run():
         # Make the stubs
         server_stub = squeak_server_pb2_grpc.SqueakServerStub(server_channel)
 
-        # # Make a direct request to the server
-        # server_response = server_stub.GetSqueak(squeak_server_pb2.GetSqueakRequest(hash=squeak_resp.GetHash()))
-        # print("Direct server response: " + str(server_response.squeak))
-        # server_response_squeak = squeak_from_msg(server_response.squeak)
-        # assert server_response_squeak.GetDecryptedContentStr()  == 'hello squeak.'
-
         # Post a squeak with a direct request to the server
         signing_key = generate_signing_key()
         squeak = make_squeak(signing_key, 'hello from itest!')
@@ -115,7 +114,7 @@ def run():
         squeak_msg = build_squeak_msg(squeak)
         post_response = server_stub.PostSqueak(squeak_server_pb2.PostSqueakRequest(squeak=squeak_msg))
         print("Direct server post response: " + str(post_response))
-        assert post_response.hash == squeak.GetHash()
+        assert post_response.hash == get_hash(squeak)
 
         # Get the same squeak from the server
         get_response = server_stub.GetSqueak(squeak_server_pb2.GetSqueakRequest(hash=post_response.hash))
@@ -136,7 +135,7 @@ def run():
             max_block=99999999,
         ))
         print("Lookup response: " + str(lookup_response))
-        assert squeak.GetHash() in set(lookup_response.hashes)
+        assert get_hash(squeak) in set(lookup_response.hashes)
 
         # Lookup again without the relevant address
         another_signing_key = generate_signing_key()
@@ -150,7 +149,7 @@ def run():
             min_block=0,
             max_block=99999999,
         ))
-        assert squeak.GetHash() not in set(lookup_response.hashes)
+        assert get_hash(squeak) not in set(lookup_response.hashes)
 
         # Lookup again with a different block range
         signing_keys = [signing_key, other_signing_key]
@@ -163,7 +162,7 @@ def run():
             min_block=600,
             max_block=99999999,
         ))
-        assert squeak.GetHash() not in set(lookup_response.hashes)
+        assert get_hash(squeak) not in set(lookup_response.hashes)
 
 
 
