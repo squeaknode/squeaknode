@@ -32,4 +32,6 @@ RUN ./install-rpc.sh
 
 RUN python3 setup.py install
 
+EXPOSE 8774
+
 CMD ["runsqueakserver", "--config", "config.ini", "--log-level", "DEBUG", "run-server"]
