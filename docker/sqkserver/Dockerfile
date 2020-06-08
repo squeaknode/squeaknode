@@ -32,9 +32,4 @@ RUN ./install-rpc.sh
 
 RUN python3 setup.py install
 
-# Copy the config file template.
-COPY "docker/sqkserver/config.ini.sh" .
-
-# Copy the entrypoint script.
-COPY "docker/sqkserver/start-sqkserver.sh" .
-RUN chmod +x start-sqkserver.sh
+CMD ["runsqueakserver", "--config", "config.ini", "--log-level", "DEBUG", "run-server"]
