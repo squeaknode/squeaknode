@@ -143,13 +143,13 @@ services:
     volumes:
       - shared_test:/rpc
       - lnd_dir_sqkserver:/root/.lnd
+      - ./config.ini:/app/config.ini
     links:
       - "lnd_sqkserver:lnd"
     depends_on:
       - db
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=0
-    entrypoint: ["./start-sqkserver.sh"]
 
   test:
     image: test
