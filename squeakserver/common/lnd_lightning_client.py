@@ -65,3 +65,14 @@ class LNDLightningClient():
             value=amount,
         )
         return self.stub.AddInvoice(invoice, metadata=[('macaroon', self.macaroon)])
+
+    def pay_invoice_sync(self, payment_request):
+        """ Pay an invoice with a given payment_request
+
+        args:
+        payment_request -- the payment_request as a string
+        """
+        send_payment_request = self.ln_module.SendRequest(
+            payment_request=payment_request,
+        )
+        return self.stub.SendPaymentSync(send_payment_request, metadata=[('macaroon', self.macaroon)])

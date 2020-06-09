@@ -169,6 +169,13 @@ def run():
         print("Server buy response: " + str(buy_response))
         assert buy_response.offer.payment_request.startswith('ln')
 
+        # Pay the invoice
+        preimage = None
+        payment = lnd_lightning_client.pay_invoice_sync(buy_response.offer.payment_request)
+        print(payment)
+        preimage = payment.payment_preimage
+        print("preimage: " + str(preimage))
+
 
 if __name__ == '__main__':
     logging.basicConfig()
