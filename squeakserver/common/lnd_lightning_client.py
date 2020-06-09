@@ -52,3 +52,16 @@ class LNDLightningClient():
     def get_wallet_balance(self):
         # Retrieve and display the wallet balance
         return self.stub.WalletBalance(self.ln_module.WalletBalanceRequest(), metadata=[('macaroon', self.macaroon)])
+
+    def add_invoice(self, preimage, amount):
+        """ Create a new invoice with the given hash pre-image.
+
+        args:
+        preimage -- the preimage bytes used to create the invoice
+        amount -- the value of the invoice
+        """
+        invoice = self.ln_module.Invoice(
+            r_preimage = preimage,
+            value=amount,
+        )
+        return self.stub.AddInvoice(invoice, metadata=[('macaroon', self.macaroon)])

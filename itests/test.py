@@ -164,6 +164,10 @@ def run():
         ))
         assert get_hash(squeak) not in set(lookup_response.hashes)
 
+        # Buy the squeak data key
+        buy_response = server_stub.BuySqueak(squeak_server_pb2.BuySqueakRequest(hash=post_response.hash))
+        print("Server buy response: " + str(buy_response))
+        assert buy_response.offer.payment_request.startswith('ln')
 
 
 if __name__ == '__main__':

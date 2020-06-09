@@ -36,6 +36,10 @@ service SqueakServer {
   */
   rpc LookupSqueaks (LookupSqueaksRequest) returns (LookupSqueaksReply) {}
 
+  /** sqk: `buysqueak`
+  */
+  rpc BuySqueak (BuySqueakRequest) returns (BuySqueakReply) {}
+
 }
 
 message PostSqueakRequest {
@@ -57,6 +61,11 @@ message LookupSqueaksRequest {
     int32 max_block = 3;
 }
 
+message BuySqueakRequest {
+    /// Hash of the squeak to buy.
+    bytes hash = 1;
+}
+
 message PostSqueakReply {
     /// The squeak.
     bytes hash = 1;
@@ -72,10 +81,32 @@ message LookupSqueaksReply {
     repeated bytes hashes = 1;
 }
 
+message BuySqueakReply {
+    /// The buy offer
+    SqueakBuyOffer offer = 1;
+}
+
 message Squeak {
     /// Hash of the squeak.
     bytes hash = 1;
 
     /// Serialized squeak.
     bytes serialized_squeak = 2;
+}
+
+message SqueakBuyOffer {
+    /// The squeak hash.
+    bytes squeak_hash = 1;
+
+    /// The decryption nonce
+    bytes nonce = 2;
+
+    /// The amount
+    int64 amount = 3;
+
+    /// The invoice preimage hash.
+    bytes preimage_hash = 4;
+
+    /// The invoice
+    string payment_request = 5;
 }
