@@ -169,10 +169,17 @@ def run():
         print("Server buy response: " + str(buy_response))
         assert buy_response.offer.payment_request.startswith('ln')
 
+        # Connect to the server lightning node
+        # lightning_host_port = buy_response.offer.host + ':' + buy_response.offer.port
+        lightning_host_port = buy_response.offer.host
+        # connect_peer_response = lnd_lightning_client.connect_peer(buy_response.offer.pubkey, 'lnd_sqkserver')
+        connect_peer_response = lnd_lightning_client.connect_peer(buy_response.offer.pubkey, lightning_host_port)
+        print("Server connect peer response: " + str(connect_peer_response))
+
         # Pay the invoice
         preimage = None
         payment = lnd_lightning_client.pay_invoice_sync(buy_response.offer.payment_request)
-        print(payment)
+        print("Server pay invoice response: " + str(payment))
         preimage = payment.payment_preimage
         print("preimage: " + str(preimage))
 

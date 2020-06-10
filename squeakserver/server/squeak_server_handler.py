@@ -9,6 +9,7 @@ from squeakserver.server.buy_offer import BuyOffer
 from squeakserver.server.postgres_db import PostgresDb
 from squeakserver.server.util import generate_offer_nonce
 from squeakserver.server.util import bxor
+from squeakserver.server.lightning_address import LightningAddressHostPort
 
 
 logger = logging.getLogger(__name__)
@@ -20,9 +21,11 @@ class SqueakServerHandler(object):
 
     def __init__(
             self,
+            lightning_host_port: LightningAddressHostPort,
             lightning_client: LNDLightningClient,
             postgres_db: PostgresDb,
     ) -> None:
+        self.lightning_host_port = lightning_host_port
         self.lightning_client = lightning_client
         self.postgres_db = postgres_db
 
@@ -68,6 +71,10 @@ class SqueakServerHandler(object):
         preimage_hash = add_invoice_response.r_hash
         invoice_payment_request = add_invoice_response.payment_request
 
+        # Get the lightning network node pubkey
+        get_info_response = self.lightning_client.get_info()
+        pubkey = get_info_response.identity_pubkey
+
         # Return the buy offer
         return BuyOffer(
             squeak_hash,
@@ -75,4 +82,7 @@ class SqueakServerHandler(object):
             amount,
             preimage_hash,
             invoice_payment_request,
+            pubkey,
+            self.lightning_host_port.host,
+            self.lightning_host_port.port,
         )

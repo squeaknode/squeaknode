@@ -114,6 +114,9 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
                 amount=amount,
                 preimage_hash=buy_response.preimage_hash,
                 payment_request=buy_response.payment_request,
+                pubkey=buy_response.pubkey,
+                host=buy_response.host,
+                port=buy_response.port,
             )
         )
 

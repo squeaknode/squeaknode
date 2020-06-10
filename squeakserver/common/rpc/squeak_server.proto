@@ -109,4 +109,13 @@ message SqueakBuyOffer {
 
     /// The invoice
     string payment_request = 5;
+
+    /// The seller node pubkey
+    string pubkey = 6;
+
+    /// The host of the seller lightning node
+    string host = 7;
+
+    /// The port of the seller lightning node
+    string port = 8;
 }

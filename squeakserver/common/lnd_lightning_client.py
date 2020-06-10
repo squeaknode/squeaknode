@@ -76,3 +76,25 @@ class LNDLightningClient():
             payment_request=payment_request,
         )
         return self.stub.SendPaymentSync(send_payment_request, metadata=[('macaroon', self.macaroon)])
+
+    def connect_peer(self, pubkey, host):
+        """ Connect to a lightning node peer.
+
+        args:
+        pubkey -- The identity pubkey of the Lightning node
+        host -- The network location of the lightning node
+        """
+        lightning_address = self.ln_module.LightningAddress(
+            pubkey=pubkey,
+            host=host,
+        )
+        connect_peer_request = self.ln_module.ConnectPeerRequest(
+            addr=lightning_address,
+        )
+        return self.stub.ConnectPeer(connect_peer_request, metadata=[('macaroon', self.macaroon)])
+
+    def get_info(self):
+        """ Get info about the lightning network node.
+        """
+        get_info_request = self.ln_module.GetInfoRequest()
+        return self.stub.GetInfo(get_info_request, metadata=[('macaroon', self.macaroon)])
