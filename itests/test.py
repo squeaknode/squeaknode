@@ -176,6 +176,11 @@ def run():
         connect_peer_response = lnd_lightning_client.connect_peer(buy_response.offer.pubkey, lightning_host_port)
         print("Server connect peer response: " + str(connect_peer_response))
 
+        # Open channel to the server lightning node
+        pubkey_bytes = bytes.fromhex(buy_response.offer.pubkey)
+        open_channel_response = lnd_lightning_client.open_channel_sync(pubkey_bytes, 1000000)
+        print("Server open channel response: " + str(open_channel_response))
+
         # Pay the invoice
         preimage = None
         payment = lnd_lightning_client.pay_invoice_sync(buy_response.offer.payment_request)
