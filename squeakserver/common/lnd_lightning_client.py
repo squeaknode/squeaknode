@@ -33,8 +33,6 @@ class LNDLightningClient():
         self.ln_module = ln_module
         self.lnrpc_module = lnrpc_module
         url = '{}:{}'.format(host, port)
-        # tls_cert_path = tls_cert_path,
-        # macaroon_path = '~/.lnd/data/chain/bitcoin/{}/admin.macaroon'.format(network)
 
         # Lnd cert is at ~/.lnd/tls.cert on Linux and
         # ~/Library/Application Support/Lnd/tls.cert on Mac
