@@ -26,7 +26,8 @@ def load_lightning_client(config) -> LNDLightningClient:
     return LNDLightningClient(
         config['lnd']['rpc_host'],
         config['lnd']['rpc_port'],
-        config['lnd']['network'],
+        config['lnd']['tls_cert_path'],
+        config['lnd']['macaroon_path'],
         ln,
         lnrpc,
     )
