@@ -18,7 +18,6 @@ import logging
 import random
 import time
 
-
 from bitcoin.core import lx, x
 from squeak.params import SelectParams
 from squeak.core import CSqueak
@@ -102,7 +101,7 @@ def run():
         lnd_lightning_client = load_lightning_client()
         balance_from_client = lnd_lightning_client.get_wallet_balance()
         print("Balance from direct client: %s" % balance_from_client)
-        assert balance_from_client.total_balance == 1505000000000
+        assert balance_from_client.total_balance >= 1505000000000
 
         # Make the stubs
         server_stub = squeak_server_pb2_grpc.SqueakServerStub(server_channel)
@@ -176,14 +175,21 @@ def run():
         connect_peer_response = lnd_lightning_client.connect_peer(buy_response.offer.pubkey, lightning_host_port)
         print("Server connect peer response: " + str(connect_peer_response))
 
-        # Open channel to the server lightning node
-        pubkey_bytes = bytes.fromhex(buy_response.offer.pubkey)
-        open_channel_response = lnd_lightning_client.open_channel_sync(pubkey_bytes, 1000000)
-        print("Server open channel response: " + str(open_channel_response))
-
         # List peers
         list_peers_response = lnd_lightning_client.list_peers()
         print("Server list peers response: " + str(list_peers_response))
+
+        # Open channel to the server lightning node
+        # pubkey_bytes = bytes.fromhex(buy_response.offer.pubkey)
+        open_channel_response = lnd_lightning_client.open_channel_sync(buy_response.offer.pubkey, 1000000)
+        print("Server open channel response: " + str(open_channel_response))
+
+        # List channels
+        list_channels_response = lnd_lightning_client.list_channels()
+        print("Server list channels response: " + str(list_channels_response))
+
+        # Sleep for 30 seconds to confirm the channel open transaction
+        time.sleep(30)
 
         # List channels
         list_channels_response = lnd_lightning_client.list_channels()

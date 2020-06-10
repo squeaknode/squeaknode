@@ -99,15 +99,15 @@ class LNDLightningClient():
         get_info_request = self.ln_module.GetInfoRequest()
         return self.stub.GetInfo(get_info_request, metadata=[('macaroon', self.macaroon)])
 
-    def open_channel_sync(self, pubkey, local_amount):
+    def open_channel_sync(self, pubkey_str, local_amount):
         """ Open a channel with a remote lightning node.
 
         args:
-        pubkey (bytes) -- The identity pubkey of the Lightning node
+        pubkey (str) -- The identity pubkey of the Lightning node
         local_amount -- The number of satoshis the wallet should commit to the channel
         """
         open_channel_request = self.ln_module.OpenChannelRequest(
-            node_pubkey=pubkey,
+            node_pubkey_string=pubkey_str,
             local_funding_amount=local_amount,
         )
         return self.stub.OpenChannelSync(open_channel_request, metadata=[('macaroon', self.macaroon)])
