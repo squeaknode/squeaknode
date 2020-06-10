@@ -21,6 +21,7 @@ import time
 from bitcoin.core import lx, x
 from squeak.params import SelectParams
 from squeak.core import CSqueak
+from squeak.core import CheckSqueak
 from squeak.core import HASH_LENGTH
 from squeak.core import MakeSqueakFromStr
 from squeak.core.signing import CSigningKey
@@ -86,6 +87,14 @@ def load_lightning_client() -> LNDLightningClient:
         ln,
         lnrpc,
     )
+
+
+
+def bxor(b1, b2): # use xor for bytes
+    result = bytearray()
+    for b1, b2 in zip(b1, b2):
+        result.append(b1 ^ b2)
+    return bytes(result)
 
 
 def run():
@@ -189,7 +198,7 @@ def run():
         print("Server list channels response: " + str(list_channels_response))
 
         # Sleep for 30 seconds to confirm the channel open transaction
-        time.sleep(30)
+        time.sleep(60)
 
         # List channels
         list_channels_response = lnd_lightning_client.list_channels()
@@ -201,6 +210,15 @@ def run():
         print("Server pay invoice response: " + str(payment))
         preimage = payment.payment_preimage
         print("preimage: " + str(preimage))
+
+        # Clear the data key from the squeak and verify with the payment preimage
+        new_data_key = bxor(buy_response.offer.nonce, preimage)
+        print("new data key: " + str(new_data_key))
+        squeak.ClearDataKey()
+        squeak.SetDataKey(new_data_key)
+        CheckSqueak(squeak)
+        print("Finished checking squeak.")
+
 
 
 if __name__ == '__main__':
