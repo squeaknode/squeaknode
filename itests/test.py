@@ -181,6 +181,14 @@ def run():
         open_channel_response = lnd_lightning_client.open_channel_sync(pubkey_bytes, 1000000)
         print("Server open channel response: " + str(open_channel_response))
 
+        # List peers
+        list_peers_response = lnd_lightning_client.list_peers()
+        print("Server list peers response: " + str(list_peers_response))
+
+        # List channels
+        list_channels_response = lnd_lightning_client.list_channels()
+        print("Server list channels response: " + str(list_channels_response))
+
         # Pay the invoice
         preimage = None
         payment = lnd_lightning_client.pay_invoice_sync(buy_response.offer.payment_request)

@@ -111,3 +111,15 @@ class LNDLightningClient():
             local_funding_amount=local_amount,
         )
         return self.stub.OpenChannelSync(open_channel_request, metadata=[('macaroon', self.macaroon)])
+
+    def list_channels(self):
+        """ List the channels
+        """
+        list_channels_request = self.ln_module.ListChannelsRequest()
+        return self.stub.ListChannels(list_channels_request, metadata=[('macaroon', self.macaroon)])
+
+    def list_peers(self):
+        """ List the peers
+        """
+        list_peers_request = self.ln_module.ListPeersRequest()
+        return self.stub.ListPeers(list_peers_request, metadata=[('macaroon', self.macaroon)])
