@@ -85,6 +85,41 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
             hashes=hashes,
         )
 
+    def BuySqueak(self, request, context):
+        squeak_hash = request.hash
+        # TODO: check if hash is valid
+
+        buy_response = self.handler.handle_buy_squeak(squeak_hash)
+
+        if buy_response == None:
+            context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
+            return squeak_server_pb2.BuySqueakReply(
+                offer=None,
+            )
+
+        offer_squeak_hash = buy_response.squeak_hash
+        amount = buy_response.amount
+        nonce = buy_response.nonce
+
+        if offer_squeak_hash != squeak_hash:
+            context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
+            return squeak_server_pb2.BuySqueakReply(
+                offer=None,
+            )
+
+        return squeak_server_pb2.BuySqueakReply(
+            offer=squeak_server_pb2.SqueakBuyOffer(
+                squeak_hash=offer_squeak_hash,
+                nonce=nonce,
+                amount=amount,
+                preimage_hash=buy_response.preimage_hash,
+                payment_request=buy_response.payment_request,
+                pubkey=buy_response.pubkey,
+                host=buy_response.host,
+                port=buy_response.port,
+            )
+        )
+
     def serve(self):
         print('Calling serve...', flush=True)
         server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))

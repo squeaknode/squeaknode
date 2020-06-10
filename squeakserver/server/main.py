@@ -1,3 +1,4 @@
+import socket
 import argparse
 import logging
 import signal
@@ -14,6 +15,7 @@ import squeakserver.common.rpc.lnd_pb2 as ln
 import squeakserver.common.rpc.lnd_pb2_grpc as lnrpc
 
 from squeakserver.common.lnd_lightning_client import LNDLightningClient
+from squeakserver.server.lightning_address import LightningAddressHostPort
 from squeakserver.server.squeak_server_servicer import SqueakServerServicer
 from squeakserver.server.squeak_server_handler import SqueakServerHandler
 from squeakserver.server.db_params import parse_db_params
@@ -27,6 +29,17 @@ def load_lightning_client(config) -> LNDLightningClient:
         config['lnd']['network'],
         ln,
         lnrpc,
+    )
+
+
+def load_lightning_host_port(config) -> LNDLightningClient:
+    lnd_ip_address = socket.gethostbyname(
+        config['lnd']['rpc_host'],
+    )
+    lnd_port = config['lnd']['port']
+    return LightningAddressHostPort(
+        lnd_ip_address,
+        lnd_port,
     )
 
 
@@ -51,8 +64,9 @@ def start_rpc_server(handler):
     server.serve()
 
 
-def load_handler(lightning_client, postgres_db):
+def load_handler(lightning_host_port, lightning_client, postgres_db):
     return SqueakServerHandler(
+        lightning_host_port,
         lightning_client,
         postgres_db
     )
@@ -142,8 +156,9 @@ def run_server(config):
 
     print('starting lightning client here...', flush=True)
     lightning_client = load_lightning_client(config)
+    lightning_host_port = load_lightning_host_port(config)
     # db_factory = load_db_factory(config)
-    handler = load_handler(lightning_client, postgres_db)
+    handler = load_handler(lightning_host_port, lightning_client, postgres_db)
 
     # start rpc server
     # start_rpc_server(handler)

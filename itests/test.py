@@ -18,10 +18,10 @@ import logging
 import random
 import time
 
-
 from bitcoin.core import lx, x
 from squeak.params import SelectParams
 from squeak.core import CSqueak
+from squeak.core import CheckSqueak
 from squeak.core import HASH_LENGTH
 from squeak.core import MakeSqueakFromStr
 from squeak.core.signing import CSigningKey
@@ -89,6 +89,14 @@ def load_lightning_client() -> LNDLightningClient:
     )
 
 
+
+def bxor(b1, b2): # use xor for bytes
+    result = bytearray()
+    for b1, b2 in zip(b1, b2):
+        result.append(b1 ^ b2)
+    return bytes(result)
+
+
 def run():
     # Set the network to simnet for itest.
     SelectParams("mainnet")
@@ -102,7 +110,7 @@ def run():
         lnd_lightning_client = load_lightning_client()
         balance_from_client = lnd_lightning_client.get_wallet_balance()
         print("Balance from direct client: %s" % balance_from_client)
-        assert balance_from_client.total_balance == 1505000000000
+        assert balance_from_client.total_balance >= 1505000000000
 
         # Make the stubs
         server_stub = squeak_server_pb2_grpc.SqueakServerStub(server_channel)
@@ -163,6 +171,53 @@ def run():
             max_block=99999999,
         ))
         assert get_hash(squeak) not in set(lookup_response.hashes)
+
+        # Buy the squeak data key
+        buy_response = server_stub.BuySqueak(squeak_server_pb2.BuySqueakRequest(hash=post_response.hash))
+        print("Server buy response: " + str(buy_response))
+        assert buy_response.offer.payment_request.startswith('ln')
+
+        # Connect to the server lightning node
+        # lightning_host_port = buy_response.offer.host + ':' + buy_response.offer.port
+        lightning_host_port = buy_response.offer.host
+        # connect_peer_response = lnd_lightning_client.connect_peer(buy_response.offer.pubkey, 'lnd_sqkserver')
+        connect_peer_response = lnd_lightning_client.connect_peer(buy_response.offer.pubkey, lightning_host_port)
+        print("Server connect peer response: " + str(connect_peer_response))
+
+        # List peers
+        list_peers_response = lnd_lightning_client.list_peers()
+        print("Server list peers response: " + str(list_peers_response))
+
+        # Open channel to the server lightning node
+        # pubkey_bytes = bytes.fromhex(buy_response.offer.pubkey)
+        open_channel_response = lnd_lightning_client.open_channel_sync(buy_response.offer.pubkey, 1000000)
+        print("Server open channel response: " + str(open_channel_response))
+
+        # List channels
+        list_channels_response = lnd_lightning_client.list_channels()
+        print("Server list channels response: " + str(list_channels_response))
+
+        # Sleep for 30 seconds to confirm the channel open transaction
+        time.sleep(60)
+
+        # List channels
+        list_channels_response = lnd_lightning_client.list_channels()
+        print("Server list channels response: " + str(list_channels_response))
+
+        # Pay the invoice
+        preimage = None
+        payment = lnd_lightning_client.pay_invoice_sync(buy_response.offer.payment_request)
+        print("Server pay invoice response: " + str(payment))
+        preimage = payment.payment_preimage
+        print("preimage: " + str(preimage))
+
+        # Clear the data key from the squeak and verify with the payment preimage
+        new_data_key = bxor(buy_response.offer.nonce, preimage)
+        print("new data key: " + str(new_data_key))
+        squeak.ClearDataKey()
+        squeak.SetDataKey(new_data_key)
+        CheckSqueak(squeak)
+        print("Finished checking squeak.")
 
 
 

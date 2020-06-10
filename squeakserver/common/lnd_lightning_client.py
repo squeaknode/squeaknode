@@ -52,3 +52,74 @@ class LNDLightningClient():
     def get_wallet_balance(self):
         # Retrieve and display the wallet balance
         return self.stub.WalletBalance(self.ln_module.WalletBalanceRequest(), metadata=[('macaroon', self.macaroon)])
+
+    def add_invoice(self, preimage, amount):
+        """ Create a new invoice with the given hash pre-image.
+
+        args:
+        preimage -- the preimage bytes used to create the invoice
+        amount -- the value of the invoice
+        """
+        invoice = self.ln_module.Invoice(
+            r_preimage = preimage,
+            value=amount,
+        )
+        return self.stub.AddInvoice(invoice, metadata=[('macaroon', self.macaroon)])
+
+    def pay_invoice_sync(self, payment_request):
+        """ Pay an invoice with a given payment_request
+
+        args:
+        payment_request -- the payment_request as a string
+        """
+        send_payment_request = self.ln_module.SendRequest(
+            payment_request=payment_request,
+        )
+        return self.stub.SendPaymentSync(send_payment_request, metadata=[('macaroon', self.macaroon)])
+
+    def connect_peer(self, pubkey, host):
+        """ Connect to a lightning node peer.
+
+        args:
+        pubkey -- The identity pubkey of the Lightning node
+        host -- The network location of the lightning node
+        """
+        lightning_address = self.ln_module.LightningAddress(
+            pubkey=pubkey,
+            host=host,
+        )
+        connect_peer_request = self.ln_module.ConnectPeerRequest(
+            addr=lightning_address,
+        )
+        return self.stub.ConnectPeer(connect_peer_request, metadata=[('macaroon', self.macaroon)])
+
+    def get_info(self):
+        """ Get info about the lightning network node.
+        """
+        get_info_request = self.ln_module.GetInfoRequest()
+        return self.stub.GetInfo(get_info_request, metadata=[('macaroon', self.macaroon)])
+
+    def open_channel_sync(self, pubkey_str, local_amount):
+        """ Open a channel with a remote lightning node.
+
+        args:
+        pubkey (str) -- The identity pubkey of the Lightning node
+        local_amount -- The number of satoshis the wallet should commit to the channel
+        """
+        open_channel_request = self.ln_module.OpenChannelRequest(
+            node_pubkey_string=pubkey_str,
+            local_funding_amount=local_amount,
+        )
+        return self.stub.OpenChannelSync(open_channel_request, metadata=[('macaroon', self.macaroon)])
+
+    def list_channels(self):
+        """ List the channels
+        """
+        list_channels_request = self.ln_module.ListChannelsRequest()
+        return self.stub.ListChannels(list_channels_request, metadata=[('macaroon', self.macaroon)])
+
+    def list_peers(self):
+        """ List the peers
+        """
+        list_peers_request = self.ln_module.ListPeersRequest()
+        return self.stub.ListPeers(list_peers_request, metadata=[('macaroon', self.macaroon)])
