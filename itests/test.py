@@ -80,10 +80,13 @@ def get_hash(squeak):
 
 
 def load_lightning_client() -> LNDLightningClient:
+    tls_cert_path = '~/.lnd/tls.cert'
+    macaroon_path = '~/.lnd/data/chain/bitcoin/simnet/admin.macaroon'
     return LNDLightningClient(
         'lnd',
         10009,
-        'simnet',
+        tls_cert_path,
+        macaroon_path,
         ln,
         lnrpc,
     )
