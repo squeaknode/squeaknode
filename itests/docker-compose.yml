@@ -61,44 +61,6 @@ services:
       - "btcd:blockchain"
     entrypoint: ["./start-lnd.sh"]
 
-  lnd_bob:
-    image: lnd
-    container_name: lnd_bob
-    build:
-      context: ../
-      dockerfile: docker/lnd/Dockerfile
-    environment:
-      - RPCUSER
-      - RPCPASS
-      - NETWORK
-      - CHAIN
-      - DEBUG
-    volumes:
-      - shared_test:/rpc
-      - lnd_dir_bob:/root/.lnd
-    links:
-      - "btcd:blockchain"
-    entrypoint: ["./start-lnd.sh"]
-
-  lnd_carol:
-    image: lnd
-    container_name: lnd_carol
-    build:
-      context: ../
-      dockerfile: docker/lnd/Dockerfile
-    environment:
-      - RPCUSER
-      - RPCPASS
-      - NETWORK
-      - CHAIN
-      - DEBUG
-    volumes:
-      - shared_test:/rpc
-      - lnd_dir_carol:/root/.lnd
-    links:
-      - "btcd:blockchain"
-    entrypoint: ["./start-lnd.sh"]
-
   lnd_sqkserver:
     image: lnd
     container_name: lnd_sqkserver
@@ -133,13 +95,6 @@ services:
     build:
       context: ../
       dockerfile: docker/sqkserver/Dockerfile
-    environment:
-      - RPCUSER
-      - RPCPASS
-      - NETWORK
-      - CHAIN
-      - DEBUG
-      - HEADLESS
     volumes:
       - shared_test:/rpc
       - lnd_dir_sqkserver:/root/.lnd
@@ -176,10 +131,6 @@ volumes:
 
   # lnd_dir volume is needed for sharing tht tls certificate
   lnd_dir_alice:
-    driver: local
-  lnd_dir_bob:
-    driver: local
-  lnd_dir_carol:
     driver: local
   lnd_dir_sqkserver:
     driver: local
