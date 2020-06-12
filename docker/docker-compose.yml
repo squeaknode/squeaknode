@@ -1,67 +1,6 @@
 version: '3'
 services:
 
-  btcd:
-    image: btcd
-    container_name: btcd
-    build:
-      context: ../
-      dockerfile: docker/btcd/Dockerfile
-    volumes:
-      - shared:/rpc
-      - bitcoin:/data
-    environment:
-      - RPCUSER
-      - RPCPASS
-      - NETWORK
-      - DEBUG
-      - MINING_ADDRESS
-    ports:
-      - 8334:8334
-      - 18334:18334
-      - 18556:18556
-      - 28902:28902
-    entrypoint: ["./start-btcd.sh"]
-
-  btcctl:
-    image: btcd
-    container_name: btcctl
-    build:
-      context: ../
-      dockerfile: docker/btcd/Dockerfile
-    volumes:
-      - shared:/rpc
-      - bitcoin:/data
-    environment:
-      - RPCUSER
-      - RPCPASS
-      - NETWORK
-      - DEBUG
-      - MINING_ADDRESS
-    links:
-      - "btcd:rpcserver"
-    entrypoint: ["./start-btcctl.sh"]
-
-  lnd:
-    image: lnd
-    container_name: lnd
-    build:
-      context: ../
-      dockerfile: docker/lnd/Dockerfile
-    environment:
-      - RPCUSER
-      - RPCPASS
-      - NETWORK
-      - CHAIN
-      - DEBUG
-      - RPC_LISTEN="0.0.0.0:10009"
-    volumes:
-      - shared:/rpc
-      - lnd_dir:/root/.lnd
-    links:
-      - "btcd:blockchain"
-    entrypoint: ["./start-lnd.sh"]
-
   db:
     image: postgres
     environment:
@@ -69,7 +8,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     volumes:
-      - ../init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./createdb.sql:/docker-entrypoint-initdb.d/init.sql
 
   sqkserver:
     image: sqkserver
@@ -77,37 +16,13 @@ services:
     build:
       context: ../
       dockerfile: docker/sqkserver/Dockerfile
-    environment:
-      - RPCUSER
-      - RPCPASS
-      - NETWORK
-      - CHAIN
-      - DEBUG
-      - HEADLESS
     volumes:
-      - shared:/rpc
-      - lnd_dir:/root/.lnd
       - ./config.ini:/app/config.ini
     ports:
       - 8774:8774
       - 18774:18774
-    links:
-      - "lnd:lnd"
     depends_on:
       - db
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=0
-
-volumes:
-  # btcctl and lnd containers.
-  shared:
-    driver: local
-
-  # bitcoin volume is needed for maintaining blockchain persistence
-  # during btcd container recreation.
-  bitcoin:
-    driver: local
-
-  # lnd_dir volume is needed for sharing tht tls certificate
-  lnd_dir:
-    driver: local
+    command: ["./wait-for-it.sh", "db:5432", "--", "runsqueakserver", "--config", "config.ini", "--log-level", "DEBUG", "run-server"]
