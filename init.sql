@@ -1,8 +1,4 @@
-CREATE DATABASE squeakserver;
-
-\connect squeakserver;
-
-CREATE TABLE squeak (
+CREATE TABLE IF NOT EXISTS squeak (
   hash CHAR(64) PRIMARY KEY,
   created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   nVersion INTEGER NOT NULL,
@@ -22,5 +18,5 @@ CREATE TABLE squeak (
   content CHAR(1120)
 );
 
-CREATE INDEX idx_squeak_address
+CREATE INDEX IF NOT EXISTS idx_squeak_address
   ON squeak(address);
