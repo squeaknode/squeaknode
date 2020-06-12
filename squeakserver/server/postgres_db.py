@@ -30,6 +30,14 @@ class PostgresDb():
                 db_version = curs.fetchone()
                 print(db_version)
 
+    def init(self):
+        """ Create the tables and indices in the database. """
+        with psycopg2.connect(**self.params) as conn:
+            with conn.cursor() as curs:
+	        # execute a statement
+                print('Setting up database tables...')
+                curs.execute(open("init.sql", "r").read())
+
     def insert_squeak(self, squeak):
         """ Insert a new squeak. """
         sql = """
