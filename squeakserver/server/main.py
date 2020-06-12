@@ -153,7 +153,7 @@ def run_server(config):
     # load postgres db
     postgres_db = load_postgres_db(config)
     print('postgres_db: ' + str(postgres_db), flush=True)
-    postgres_db.get_connection()
+    postgres_db.get_version()
     postgres_db.init()
 
     print('starting lightning client here...', flush=True)

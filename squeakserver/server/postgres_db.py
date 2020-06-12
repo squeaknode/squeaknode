@@ -2,6 +2,7 @@ import logging
 import sys
 
 import psycopg2
+from psycopg2 import pool
 
 from squeak.core import CSqueak
 from squeak.core import CSqueakEncContent
@@ -16,11 +17,11 @@ logger = logging.getLogger(__name__)
 class PostgresDb():
 
     def __init__(self, params):
-        self.params = params
+        self.connection_pool = psycopg2.pool.ThreadedConnectionPool(5, 20, **params)
 
-    def get_connection(self):
+    def get_version(self):
         """ Connect to the PostgreSQL database server """
-        with psycopg2.connect(**self.params) as conn:
+        with self.connection_pool.getconn() as conn:
             with conn.cursor() as curs:
 	        # execute a statement
                 print('PostgreSQL database version:')
@@ -32,7 +33,7 @@ class PostgresDb():
 
     def init(self):
         """ Create the tables and indices in the database. """
-        with psycopg2.connect(**self.params) as conn:
+        with self.connection_pool.getconn() as conn:
             with conn.cursor() as curs:
 	        # execute a statement
                 print('Setting up database tables...')
@@ -45,7 +46,7 @@ class PostgresDb():
         VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         RETURNING hash;"""
 
-        with psycopg2.connect(**self.params) as conn:
+        with self.connection_pool.getconn() as conn:
             with conn.cursor() as curs:
                 # execute the INSERT statement
                 curs.execute(sql, (
@@ -77,7 +78,7 @@ class PostgresDb():
 
         squeak_hash_str = squeak_hash.hex()
 
-        with psycopg2.connect(**self.params) as conn:
+        with self.connection_pool.getconn() as conn:
             with conn.cursor() as curs:
                 curs.execute(sql, (squeak_hash_str,))
                 row = curs.fetchone()
@@ -112,7 +113,7 @@ class PostgresDb():
         if not addresses:
             return []
 
-        with psycopg2.connect(**self.params) as conn:
+        with self.connection_pool.getconn() as conn:
             with conn.cursor() as curs:
                 # mogrify to debug.
                 # logger.info(curs.mogrify(sql, (addresses_tuple, min_block, max_block)))
