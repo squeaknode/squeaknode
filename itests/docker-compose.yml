@@ -96,7 +96,6 @@ services:
       context: ../
       dockerfile: docker/sqkserver/Dockerfile
     volumes:
-      - shared_test:/rpc
       - lnd_dir_sqkserver:/root/.lnd
       - ./config.ini:/app/config.ini
     links:
