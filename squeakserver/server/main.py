@@ -23,6 +23,8 @@ from squeakserver.server.postgres_db import PostgresDb
 
 
 def load_lightning_client(config) -> LNDLightningClient:
+    if int(config['server']['price']) == 0:
+        return None
     return LNDLightningClient(
         config['lnd']['host'],
         config['lnd']['rpc_port'],
@@ -34,6 +36,8 @@ def load_lightning_client(config) -> LNDLightningClient:
 
 
 def load_lightning_host_port(config) -> LNDLightningClient:
+    if int(config['server']['price']) == 0:
+        return None
     lnd_ip_address = socket.gethostbyname(
         config['lnd']['host'],
     )
