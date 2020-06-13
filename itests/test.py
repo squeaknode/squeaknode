@@ -58,7 +58,8 @@ def generate_signing_key():
 
 def get_address(signing_key):
     verifying_key = signing_key.get_verifying_key()
-    return CSqueakAddress.from_verifying_key(verifying_key)
+    address = CSqueakAddress.from_verifying_key(verifying_key)
+    return str(address)
 
 
 def make_squeak(signing_key: CSigningKey, content: str, reply_to: bytes = b'\x00'*HASH_LENGTH):
@@ -134,14 +135,14 @@ def run():
         assert get_response_squeak.GetDecryptedContentStr()  == 'hello from itest!'
 
         # Lookup squeaks based on address
-        other_signing_key = generate_signing_key()
-        signing_keys = [signing_key, other_signing_key]
-        address_strs = [
-            str(get_address(key))
-            for key in signing_keys
+        signing_address = get_address(signing_key)
+        addresses = [
+            signing_address,
+            get_address(generate_signing_key()),
+            get_address(generate_signing_key()),
         ]
         lookup_response = server_stub.LookupSqueaks(squeak_server_pb2.LookupSqueaksRequest(
-            addresses=address_strs,
+            addresses=addresses,
             min_block=0,
             max_block=99999999,
         ))
@@ -149,27 +150,26 @@ def run():
         assert get_hash(squeak) in set(lookup_response.hashes)
 
         # Lookup again without the relevant address
-        another_signing_key = generate_signing_key()
-        signing_keys = [other_signing_key, another_signing_key]
-        address_strs = [
-            str(get_address(key))
-            for key in signing_keys
+        addresses = [
+            get_address(generate_signing_key()),
+            get_address(generate_signing_key()),
+            get_address(generate_signing_key()),
         ]
         lookup_response = server_stub.LookupSqueaks(squeak_server_pb2.LookupSqueaksRequest(
-            addresses=address_strs,
+            addresses=addresses,
             min_block=0,
             max_block=99999999,
         ))
         assert get_hash(squeak) not in set(lookup_response.hashes)
 
         # Lookup again with a different block range
-        signing_keys = [signing_key, other_signing_key]
-        address_strs = [
-            str(get_address(key))
-            for key in signing_keys
+        addresses = [
+            signing_address,
+            get_address(generate_signing_key()),
+            get_address(generate_signing_key()),
         ]
         lookup_response = server_stub.LookupSqueaks(squeak_server_pb2.LookupSqueaksRequest(
-            addresses=address_strs,
+            addresses=addresses,
             min_block=600,
             max_block=99999999,
         ))
@@ -196,7 +196,7 @@ def run():
         list_channels_response = lnd_lightning_client.list_channels()
         print("Server list channels response: " + str(list_channels_response))
 
-        # Sleep for 30 seconds to confirm the channel open transaction
+        # Sleep for 60 seconds to confirm the channel open transaction
         time.sleep(60)
 
         # List channels
