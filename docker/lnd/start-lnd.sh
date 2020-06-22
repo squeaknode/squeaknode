@@ -51,7 +51,7 @@ exec lnd \
     --logdir="/data" \
     "--$CHAIN.active" \
     "--$CHAIN.$NETWORK" \
-    "--$CHAIN.node"="btcd" \
+    "--$CHAIN.node"="$BACKEND" \
     "--$BACKEND.rpccert"="/rpc/rpc.cert" \
     "--$BACKEND.rpchost"="blockchain" \
     "--$BACKEND.rpcuser"="$RPCUSER" \
