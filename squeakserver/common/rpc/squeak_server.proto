@@ -117,5 +117,5 @@ message SqueakBuyOffer {
     string host = 7;
 
     /// The port of the seller lightning node
-    string port = 8;
+    int32 port = 8;
 }
