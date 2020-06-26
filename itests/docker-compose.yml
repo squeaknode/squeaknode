@@ -61,9 +61,9 @@ services:
       - "btcd:blockchain"
     entrypoint: ["./start-lnd.sh"]
 
-  lnd_sqkserver:
+  lnd:
     image: lnd
-    container_name: lnd_sqkserver
+    container_name: lnd
     build:
       context: ../
       dockerfile: docker/lnd/Dockerfile
@@ -99,7 +99,7 @@ services:
       - lnd_dir_sqkserver:/root/.lnd
       - ./config.ini:/app/config.ini
     links:
-      - "lnd_sqkserver:lnd"
+      - "lnd:lnd"
     depends_on:
       - db
     sysctls:
