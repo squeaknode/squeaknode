@@ -38,12 +38,10 @@ def load_lightning_client(config) -> LNDLightningClient:
 def load_lightning_host_port(config) -> LNDLightningClient:
     if int(config['server']['price']) == 0:
         return None
-    lnd_ip_address = socket.gethostbyname(
-        config['lnd']['host'],
-    )
+    lnd_host = config['lnd']['external_host'] or config['lnd']['host']
     lnd_port = int(config['lnd']['port'])
     return LightningAddressHostPort(
-        lnd_ip_address,
+        lnd_host,
         lnd_port,
     )
 
