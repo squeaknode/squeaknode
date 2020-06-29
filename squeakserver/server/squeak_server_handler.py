@@ -41,6 +41,8 @@ class SqueakServerHandler(object):
         logger.info("Handler get squeak by hash: " + str(squeak_hash))
         squeak = self.postgres_db.get_squeak(squeak_hash)
         logger.info("Got squeak from db: " + str(squeak))
+        # Remove the data key before sending squeak.
+        squeak.ClearDataKey()
         return squeak
 
     def handle_lookup_squeaks(self, addresses, min_block, max_block):
