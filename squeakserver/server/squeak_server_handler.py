@@ -33,13 +33,13 @@ class SqueakServerHandler(object):
         self.price = price
 
     def handle_posted_squeak(self, squeak):
-        logger.info("Handle posted squeak with hash: {}".format(str(get_hash(squeak))))
+        logger.info("Handle posted squeak with hash: {}".format(get_hash(squeak).hex()))
         # Insert the squeak in the database
         inserted_squeak_hash = self.postgres_db.insert_squeak(squeak)
         return
 
     def handle_get_squeak(self, squeak_hash):
-        logger.info("Handle get squeak by hash: {}".format(str(squeak_hash)))
+        logger.info("Handle get squeak by hash: {}".format(squeak_hash.hex()))
         squeak = self.postgres_db.get_squeak(squeak_hash)
         # Remove the data key before sending response.
         squeak.ClearDataKey()
@@ -52,7 +52,7 @@ class SqueakServerHandler(object):
         return hashes
 
     def handle_buy_squeak(self, squeak_hash):
-        logger.info("Handle buy squeak by hash: {}".format(str(squeak_hash)))
+        logger.info("Handle buy squeak by hash: {}".format(squeak_hash.hex()))
         # Get the squeak from the database
         squeak = self.postgres_db.get_squeak(squeak_hash)
         # Get the datakey from the squeak
