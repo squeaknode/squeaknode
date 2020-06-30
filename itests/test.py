@@ -1,17 +1,3 @@
-# Copyright 2015 gRPC authors.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-"""The Python implementation of the gRPC route guide client."""
 from __future__ import print_function
 
 import logging
@@ -122,14 +108,14 @@ def run():
         # Post a squeak with a direct request to the server
         signing_key = generate_signing_key()
         squeak = make_squeak(signing_key, 'hello from itest!')
+        squeak_hash = get_hash(squeak)
 
         squeak_msg = build_squeak_msg(squeak)
         post_response = server_stub.PostSqueak(squeak_server_pb2.PostSqueakRequest(squeak=squeak_msg))
         print("Direct server post response: " + str(post_response))
-        assert post_response.hash == get_hash(squeak)
 
         # Get the same squeak from the server
-        get_response = server_stub.GetSqueak(squeak_server_pb2.GetSqueakRequest(hash=post_response.hash))
+        get_response = server_stub.GetSqueak(squeak_server_pb2.GetSqueakRequest(hash=squeak_hash))
         print("Direct server get response: " + str(get_response))
         get_response_squeak = squeak_from_msg(get_response.squeak)
         CheckSqueak(get_response_squeak, skipDecryptionCheck=True)
@@ -177,7 +163,7 @@ def run():
         assert get_hash(squeak) not in set(lookup_response.hashes)
 
         # Buy the squeak data key
-        buy_response = server_stub.BuySqueak(squeak_server_pb2.BuySqueakRequest(hash=post_response.hash))
+        buy_response = server_stub.BuySqueak(squeak_server_pb2.BuySqueakRequest(hash=squeak_hash))
         print("Server buy response: " + str(buy_response))
         assert buy_response.offer.payment_request.startswith('ln')
 

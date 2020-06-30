@@ -67,8 +67,6 @@ message BuySqueakRequest {
 }
 
 message PostSqueakReply {
-    /// The squeak.
-    bytes hash = 1;
 }
 
 message GetSqueakReply {

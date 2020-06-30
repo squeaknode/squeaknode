@@ -1,17 +1,4 @@
-# Copyright 2015 gRPC authors.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-"""The Python implementation of the gRPC route guide server."""
+import logging
 import math
 import time
 from concurrent import futures
@@ -23,6 +10,9 @@ from squeak.core import CSqueak
 from squeakserver.common.rpc import squeak_server_pb2
 from squeakserver.common.rpc import squeak_server_pb2_grpc
 from squeakserver.server.util import get_hash
+
+
+logger = logging.getLogger(__name__)
 
 
 class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
@@ -53,10 +43,8 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
             )
 
         # Insert the squeak in database.
-        squeak_hash = self.handler.handle_posted_squeak(squeak)
-        return squeak_server_pb2.PostSqueakReply(
-            hash=squeak_hash,
-        )
+        self.handler.handle_posted_squeak(squeak)
+        return squeak_server_pb2.PostSqueakReply()
 
     def GetSqueak(self, request, context):
         squeak_hash = request.hash
@@ -121,13 +109,10 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
         )
 
     def serve(self):
-        print('Calling serve...', flush=True)
         server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
         squeak_server_pb2_grpc.add_SqueakServerServicer_to_server(
             self, server)
         # server.add_insecure_port('0.0.0.0:50052')
         server.add_insecure_port('{}:{}'.format(self.host, self.port))
-        print("Starting SqueakServerServicer rpc server...", flush=True)
         server.start()
-        print("Started SqueakServerServicer rpc server...", flush=True)
         server.wait_for_termination()
