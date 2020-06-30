@@ -132,7 +132,8 @@ def run():
         get_response = server_stub.GetSqueak(squeak_server_pb2.GetSqueakRequest(hash=post_response.hash))
         print("Direct server get response: " + str(get_response))
         get_response_squeak = squeak_from_msg(get_response.squeak)
-        assert get_response_squeak.GetDecryptedContentStr()  == 'hello from itest!'
+        CheckSqueak(get_response_squeak, skipDecryptionCheck=True)
+        assert get_hash(get_response_squeak) == get_hash(squeak)
 
         # Lookup squeaks based on address
         signing_address = get_address(signing_key)
@@ -212,9 +213,9 @@ def run():
         # Clear the data key from the squeak and verify with the payment preimage
         new_data_key = bxor(buy_response.offer.nonce, preimage)
         print("new data key: " + str(new_data_key))
-        squeak.ClearDataKey()
-        squeak.SetDataKey(new_data_key)
-        CheckSqueak(squeak)
+        get_response_squeak.SetDataKey(new_data_key)
+        CheckSqueak(get_response_squeak)
+        assert get_response_squeak.GetDecryptedContentStr() == 'hello from itest!'
         print("Finished checking squeak.")
 
 

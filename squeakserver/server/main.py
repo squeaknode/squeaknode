@@ -56,6 +56,10 @@ def load_rpc_server(config, handler) -> SqueakServerServicer:
     )
 
 
+def load_price(config):
+    return int(config['server']['price'])
+
+
 def start_rpc_server(handler):
     print('Calling start_rpc_server...', flush=True)
     server = SqueakServerServicer(handler)
@@ -69,11 +73,12 @@ def start_rpc_server(handler):
     server.serve()
 
 
-def load_handler(lightning_host_port, lightning_client, postgres_db):
+def load_handler(lightning_host_port, lightning_client, postgres_db, price):
     return SqueakServerHandler(
         lightning_host_port,
         lightning_client,
-        postgres_db
+        postgres_db,
+        price,
     )
 
 
@@ -161,10 +166,11 @@ def run_server(config):
     postgres_db.init()
 
     print('starting lightning client here...', flush=True)
+    price = load_price(config)
     lightning_client = load_lightning_client(config)
     lightning_host_port = load_lightning_host_port(config)
     # db_factory = load_db_factory(config)
-    handler = load_handler(lightning_host_port, lightning_client, postgres_db)
+    handler = load_handler(lightning_host_port, lightning_client, postgres_db, price)
 
     # start rpc server
     # start_rpc_server(handler)
