@@ -24,10 +24,12 @@ class SqueakServerHandler(object):
             lightning_host_port: LightningAddressHostPort,
             lightning_client: LNDLightningClient,
             postgres_db: PostgresDb,
+            price: int,
     ) -> None:
         self.lightning_host_port = lightning_host_port
         self.lightning_client = lightning_client
         self.postgres_db = postgres_db
+        self.price = price
 
     def handle_posted_squeak(self, squeak):
         logger.info("Handler got posted squeak: " + str(squeak))
@@ -64,8 +66,8 @@ class SqueakServerHandler(object):
         logger.info("Handling buy with nonce: " + str(nonce))
         logger.info("Handling buy with data_key: " + str(data_key))
         preimage = bxor(nonce, data_key)
-        # TODO: Get the offer price
-        amount = 100
+        # Get the offer price
+        amount = self.price
 
         logger.info("Handling buy with preimage: " + str(preimage))
         # Create the lightning invoice
