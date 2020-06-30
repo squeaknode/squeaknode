@@ -35,18 +35,18 @@ class PostgresDb():
         """ Connect to the PostgreSQL database server """
         with self.get_cursor() as curs:
 	    # execute a statement
-            print('PostgreSQL database version:')
+            logger.info('PostgreSQL database version:')
             curs.execute('SELECT version()')
 
             # display the PostgreSQL database server version
             db_version = curs.fetchone()
-            print(db_version)
+            logger.info(db_version)
 
     def init(self):
         """ Create the tables and indices in the database. """
         with self.get_cursor() as curs:
 	    # execute a statement
-            print('Setting up database tables...')
+            logger.info('Setting up database tables...')
             curs.execute(open("init.sql", "r").read())
 
     def insert_squeak(self, squeak):
@@ -116,7 +116,6 @@ class PostgresDb():
         AND nBlockHeight >= %s
         AND nBlockHeight <= %s"""
         addresses_tuple = tuple(addresses)
-        logger.info("Lookup query with addresses tuple: " + str(addresses_tuple))
 
         if not addresses:
             return []
