@@ -1,5 +1,4 @@
 import logging
-import sys
 
 from contextlib import contextmanager
 
@@ -108,7 +107,7 @@ class PostgresDb():
             )
             return squeak
 
-    def lookup_squeaks(self, addresses, min_block=sys.maxsize, max_block=0):
+    def lookup_squeaks(self, addresses, min_block, max_block):
         """ Lookup squeaks. """
         sql = """
         SELECT hash FROM squeak

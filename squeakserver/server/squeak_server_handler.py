@@ -4,12 +4,13 @@ import threading
 from squeak.core.signing import CSigningKey
 from squeak.core.signing import CSqueakAddress
 
-from squeakserver.common.lnd_lightning_client import LNDLightningClient
 from squeakserver.server.buy_offer import BuyOffer
+from squeakserver.common.lnd_lightning_client import LNDLightningClient
+from squeakserver.server.lightning_address import LightningAddressHostPort
 from squeakserver.server.postgres_db import PostgresDb
 from squeakserver.server.util import generate_offer_nonce
 from squeakserver.server.util import bxor
-from squeakserver.server.lightning_address import LightningAddressHostPort
+from squeakserver.server.util import get_hash
 
 
 logger = logging.getLogger(__name__)
@@ -32,28 +33,26 @@ class SqueakServerHandler(object):
         self.price = price
 
     def handle_posted_squeak(self, squeak):
-        logger.info("Handle posted squeak: " + str(squeak))
+        logger.info("Handle posted squeak with hash: {}".format(str(get_hash(squeak))))
         # Insert the squeak in the database
         inserted_squeak_hash = self.postgres_db.insert_squeak(squeak)
-        logger.info("Inserted squeak with hash: " + str(inserted_squeak_hash))
         return
 
     def handle_get_squeak(self, squeak_hash):
-        logger.info("Handle get squeak by hash: " + str(squeak_hash))
+        logger.info("Handle get squeak by hash: {}".format(str(squeak_hash)))
         squeak = self.postgres_db.get_squeak(squeak_hash)
-        logger.info("Got squeak from db: " + str(squeak))
-        # Remove the data key before sending squeak.
+        # Remove the data key before sending response.
         squeak.ClearDataKey()
         return squeak
 
     def handle_lookup_squeaks(self, addresses, min_block, max_block):
-        logger.info("Handle lookup squeaks with addresses: " + str(addresses))
+        logger.info("Handle lookup squeaks with addresses: {}, min_block: {}, max_block: {}".format(str(addresses), min_block, max_block))
         hashes = self.postgres_db.lookup_squeaks(addresses, min_block, max_block)
-        logger.info("Got hashes from db: " + str(hashes))
+        logger.info("Got number of hashes from db: {}".format(len(hashes)))
         return hashes
 
     def handle_buy_squeak(self, squeak_hash):
-        logger.info("Handle buy squeak by hash: " + str(squeak_hash))
+        logger.info("Handle buy squeak by hash: {}".format(str(squeak_hash)))
         # Get the squeak from the database
         squeak = self.postgres_db.get_squeak(squeak_hash)
         # Get the datakey from the squeak
