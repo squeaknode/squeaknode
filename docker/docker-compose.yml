@@ -8,6 +8,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     volumes:
+      - postgres_dir:/var/lib/postgresql/data
       - ./createdb.sql:/docker-entrypoint-initdb.d/init.sql
 
   lnd_sqkserver:
@@ -52,4 +53,7 @@ services:
 volumes:
   # lnd_dir volume is needed for sharing tht tls certificate
   lnd_dir:
+    driver: local
+
+  postgres_dir:
     driver: local
