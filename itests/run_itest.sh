@@ -17,11 +17,11 @@ docker-compose down --volumes
 docker-compose build
 docker-compose up -d
 
-# Initialize the blockchain with miner rewards going to alice.
+# Initialize the blockchain with miner rewards going to the test client.
 sleep 10
-alice_address=$(docker exec -it lnd_alice lncli --network=simnet newaddress np2wkh | jq .address -r)
-MINING_ADDRESS=$alice_address docker-compose up -d btcd
-echo "Mining 400 blocks to address: $alice_address ..."
+client_address=$(docker exec -it test_lnd_client lncli --network=simnet newaddress np2wkh | jq .address -r)
+MINING_ADDRESS=$client_address docker-compose up -d btcd
+echo "Mining 400 blocks to address: $client_address ..."
 docker-compose run btcctl generate 400
 echo "Finished mining blocks."
 sleep 10
