@@ -9,7 +9,7 @@ services:
       - POSTGRES_PASSWORD=postgres
     volumes:
       - postgres_dir:/var/lib/postgresql/data
-      - ./createdb.sql:/docker-entrypoint-initdb.d/init.sql
+      - ../createdb.sql:/docker-entrypoint-initdb.d/init.sql
 
   lnd:
     image: lnd

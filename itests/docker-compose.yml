@@ -3,7 +3,7 @@ services:
 
   btcd:
     image: btcd
-    container_name: btcd
+    container_name: test_btcd
     build:
       context: ../
       dockerfile: docker/btcd/Dockerfile
@@ -25,7 +25,7 @@ services:
 
   btcctl:
     image: btcd
-    container_name: btcctl
+    container_name: test_btcctl
     build:
       context: ../
       dockerfile: docker/btcd/Dockerfile
@@ -88,7 +88,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     volumes:
-      - ./createdb.sql:/docker-entrypoint-initdb.d/init.sql
+      - ../createdb.sql:/docker-entrypoint-initdb.d/init.sql
 
   sqkserver:
     image: sqkserver
