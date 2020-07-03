@@ -8,8 +8,8 @@ services:
       context: ../
       dockerfile: docker/btcd/Dockerfile
     volumes:
-      - shared_test:/rpc
-      - bitcoin_test:/data
+      - test_shared:/rpc
+      - test_bitcoin:/data
     environment:
       - RPCUSER
       - RPCPASS
@@ -30,8 +30,8 @@ services:
       context: ../
       dockerfile: docker/btcd/Dockerfile
     volumes:
-      - shared_test:/rpc
-      - bitcoin_test:/data
+      - test_shared:/rpc
+      - test_bitcoin:/data
     environment:
       - RPCUSER
       - RPCPASS
@@ -42,9 +42,9 @@ services:
       - "btcd:rpcserver"
     entrypoint: ["./start-btcctl.sh"]
 
-  lnd_alice:
+  lnd_client:
     image: lnd
-    container_name: lnd_alice
+    container_name: test_lnd_client
     build:
       context: ../
       dockerfile: docker/lnd/Dockerfile
@@ -55,15 +55,15 @@ services:
       - CHAIN
       - DEBUG
     volumes:
-      - shared_test:/rpc
-      - lnd_dir_alice:/root/.lnd
+      - test_shared:/rpc
+      - test_lnd_client_dir:/root/.lnd
     links:
       - "btcd:blockchain"
     entrypoint: ["./start-lnd.sh"]
 
-  lnd:
+  lnd_server:
     image: lnd
-    container_name: lnd
+    container_name: test_lnd_server
     build:
       context: ../
       dockerfile: docker/lnd/Dockerfile
@@ -74,14 +74,15 @@ services:
       - CHAIN
       - DEBUG
     volumes:
-      - shared_test:/rpc
-      - lnd_dir_sqkserver:/root/.lnd
+      - test_shared:/rpc
+      - test_lnd_server_dir:/root/.lnd
     links:
       - "btcd:blockchain"
     entrypoint: ["./start-lnd.sh"]
 
   db:
     image: postgres
+    container_name: test_db
     environment:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
@@ -91,15 +92,15 @@ services:
 
   sqkserver:
     image: sqkserver
-    container_name: sqkserver
+    container_name: test_sqkserver
     build:
       context: ../
       dockerfile: docker/sqkserver/Dockerfile
     volumes:
-      - lnd_dir_sqkserver:/root/.lnd
+      - test_lnd_server_dir:/root/.lnd
       - ./config.ini:/app/config.ini
     links:
-      - "lnd:lnd"
+      - "lnd_server:lnd"
     depends_on:
       - db
     sysctls:
@@ -112,24 +113,24 @@ services:
       context: ../
       dockerfile: docker/test/Dockerfile
     volumes:
-      - shared_test:/rpc
-      - lnd_dir_alice:/root/.lnd
+      - test_shared:/rpc
+      - test_lnd_client_dir:/root/.lnd
     links:
-      - "lnd_alice:lnd"
+      - "lnd_client:lnd"
     command: tail -f /dev/null
 
 volumes:
   # btcctl and lnd containers.
-  shared_test:
+  test_shared:
     driver: local
 
-  # bitcoin_test volume is needed for maintaining blockchain persistence
+  # test_bitcoin volume is needed for maintaining blockchain persistence
   # during btcd container recreation.
-  bitcoin_test:
+  test_bitcoin:
     driver: local
 
   # lnd_dir volume is needed for sharing tht tls certificate
-  lnd_dir_alice:
+  test_lnd_client_dir:
     driver: local
-  lnd_dir_sqkserver:
+  test_lnd_server_dir:
     driver: local
