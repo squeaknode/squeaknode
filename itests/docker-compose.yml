@@ -88,7 +88,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     volumes:
-      - ./createdb.sql:/docker-entrypoint-initdb.d/init.sql
+      - ../createdb.sql:/docker-entrypoint-initdb.d/init.sql
 
   sqkserver:
     image: sqkserver
