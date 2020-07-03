@@ -3,7 +3,7 @@ services:
 
   btcd:
     image: btcd
-    container_name: btcd
+    container_name: test_btcd
     build:
       context: ../
       dockerfile: docker/btcd/Dockerfile
@@ -25,7 +25,7 @@ services:
 
   btcctl:
     image: btcd
-    container_name: btcctl
+    container_name: test_btcctl
     build:
       context: ../
       dockerfile: docker/btcd/Dockerfile
