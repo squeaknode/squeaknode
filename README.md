@@ -1,24 +1,24 @@
-# # squeakserver
+# squeakserver
 
 Server for Squeak protocol
 
-# Test
+## Test
 
-## Run unit tests:
+### Run unit tests:
 
 ```
 $ make test
 ```
 
-## Run integration tests:
+### Run integration tests:
 
 ```
 $ make itest
 ```
 
-# Run
+## Run
 
-## Run with docker:
+### Run with docker:
 
 - Edit **docker/config.ini** to use your external IP address for `external_host`
 - Start the squeak server:
@@ -27,7 +27,7 @@ $ make itest
 	$ docker-compose up
 	```
 
-## Run without docker:
+### Run without docker:
 
 - Create a **config.ini** file and fill in the relevant values:
 	```
