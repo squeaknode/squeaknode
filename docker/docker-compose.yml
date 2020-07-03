@@ -11,9 +11,9 @@ services:
       - postgres_dir:/var/lib/postgresql/data
       - ./createdb.sql:/docker-entrypoint-initdb.d/init.sql
 
-  lnd_sqkserver:
+  lnd:
     image: lnd
-    container_name: lnd_sqkserver
+    container_name: lnd
     build:
       context: ../
       dockerfile: docker/lnd/Dockerfile
@@ -43,7 +43,7 @@ services:
       - 8774:8774
       - 18774:18774
     links:
-      - "lnd_sqkserver:lnd"
+      - "lnd:lnd"
     depends_on:
       - db
     sysctls:
