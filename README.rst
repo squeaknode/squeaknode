@@ -18,7 +18,7 @@ Run integration tests::
 
 
 Run with docker
----
+---------------
 
 Edit [docker/config.ini](docker/config.ini) to use your external IP address for `external_host`
 
@@ -29,7 +29,7 @@ Start the squeak server::
 
 
 Run without docker
----
+------------------
 
 Create a `config.ini` file and fill in the relevant values::
 
