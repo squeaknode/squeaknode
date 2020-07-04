@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS squeak (
   hashBlock CHAR(64) NOT NULL,
   nBlockHeight INTEGER NOT NULL,
   scriptPubKey VARCHAR(100) NOT NULL,
-  encryptionKey CHAR(324) NOT NULL,
+  encryptionKey bytea NOT NULL,
   encDatakey CHAR(256) NOT NULL,
   vchIv CHAR(32) NOT NULL,
   nTime INTEGER NOT NULL,
