@@ -200,8 +200,7 @@ def run():
         # Verify with the payment preimage and decryption key ciphertext
         decryption_key_cipher_bytes = buy_response.offer.key_cipher
         iv = buy_response.offer.iv
-        # TODO: add from_bytes method to CEncryptedDecryptionKey.
-        encrypted_decryption_key = CEncryptedDecryptionKey(decryption_key_cipher_bytes)
+        encrypted_decryption_key = CEncryptedDecryptionKey.from_bytes(decryption_key_cipher_bytes)
 
         # Decrypt the decryption key
         decryption_key = encrypted_decryption_key.get_decryption_key(preimage, iv)
