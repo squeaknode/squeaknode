@@ -12,11 +12,10 @@ CREATE TABLE IF NOT EXISTS squeak (
   vchIv CHAR(32) NOT NULL,
   nTime INTEGER NOT NULL,
   nNonce BIGINT NOT NULL,
-  encContent CHAR(2272) NOT NULL,
+  encContent CHAR(2272) NOT NULL, -- Encrypted content length is always 1136 bytes (2272 hex characters).
   scriptSig bytea NOT NULL,
-  address VARCHAR(50) NOT NULL,
-  vchDecryptionKey bytea,
-  content CHAR(1120)
+  address VARCHAR(35) NOT NULL, -- Maximum length of a bitcoin address is 35.
+  vchDecryptionKey bytea
 );
 
 CREATE INDEX IF NOT EXISTS idx_squeak_address

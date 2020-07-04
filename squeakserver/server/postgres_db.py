@@ -51,8 +51,8 @@ class PostgresDb():
     def insert_squeak(self, squeak):
         """ Insert a new squeak. """
         sql = """
-        INSERT INTO squeak(hash, nVersion, hashEncContent, hashReplySqk, hashBlock, nBlockHeight, scriptPubKey, encryptionKey, encDatakey, vchIv, nTime, nNonce, encContent, scriptSig, address, vchDecryptionKey, content)
-        VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        INSERT INTO squeak(hash, nVersion, hashEncContent, hashReplySqk, hashBlock, nBlockHeight, scriptPubKey, encryptionKey, encDatakey, vchIv, nTime, nNonce, encContent, scriptSig, address, vchDecryptionKey)
+        VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         RETURNING hash;"""
 
         with self.get_cursor() as curs:
@@ -74,7 +74,6 @@ class PostgresDb():
                 bytes(squeak.scriptSig),
                 str(squeak.GetAddress()),
                 squeak.vchDecryptionKey,
-                squeak.GetDecryptedContentStr(),
             ))
             # get the generated hash back
             row = curs.fetchone()
