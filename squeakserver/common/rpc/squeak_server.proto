@@ -82,24 +82,27 @@ message SqueakBuyOffer {
     /// The squeak hash.
     bytes squeak_hash = 1;
 
-    /// The decryption nonce
-    bytes nonce = 2;
+    /// The decrypted decryption key
+    bytes key_cipher = 3;
+
+    /// The decryption iv
+    bytes iv = 4;
 
     /// The amount
-    int64 amount = 3;
+    int64 amount = 5;
 
     /// The invoice preimage hash.
-    bytes preimage_hash = 4;
+    bytes preimage_hash = 6;
 
     /// The invoice
-    string payment_request = 5;
+    string payment_request = 7;
 
     /// The seller node pubkey
-    string pubkey = 6;
+    string pubkey = 8;
 
     /// The host of the seller lightning node
-    string host = 7;
+    string host = 9;
 
     /// The port of the seller lightning node
-    int32 port = 8;
+    int32 port = 10;
 }

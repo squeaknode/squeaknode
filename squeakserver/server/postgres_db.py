@@ -51,8 +51,8 @@ class PostgresDb():
     def insert_squeak(self, squeak):
         """ Insert a new squeak. """
         sql = """
-        INSERT INTO squeak(hash, nVersion, hashEncContent, hashReplySqk, hashBlock, nBlockHeight, scriptPubKey, hashDataKey, vchIv, nTime, nNonce, encContent, scriptSig, address, vchDataKey, content)
-        VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        INSERT INTO squeak(hash, nVersion, hashEncContent, hashReplySqk, hashBlock, nBlockHeight, scriptPubKey, encryptionKey, encDatakey, vchIv, nTime, nNonce, encContent, scriptSig, address, vchDecryptionKey, content)
+        VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         RETURNING hash;"""
 
         with self.get_cursor() as curs:
@@ -65,14 +65,15 @@ class PostgresDb():
                 squeak.hashBlock.hex(),
                 squeak.nBlockHeight,
                 bytes(squeak.scriptPubKey).hex(),
-                squeak.hashDataKey.hex(),
+                squeak.vchEncryptionKey.hex(),
+                squeak.vchEncDatakey.hex(),
                 squeak.vchIv.hex(),
                 squeak.nTime,
                 squeak.nNonce,
                 bytes(squeak.encContent.vchEncContent).hex(),
                 bytes(squeak.scriptSig).hex(),
                 str(squeak.GetAddress()),
-                squeak.vchDataKey.hex(),
+                squeak.vchDecryptionKey.hex(),
                 squeak.GetDecryptedContentStr(),
             ))
             # get the generated hash back
@@ -97,13 +98,14 @@ class PostgresDb():
                 hashBlock=bytes.fromhex(row[5]),
                 nBlockHeight=row[6],
                 scriptPubKey=CScript(bytes.fromhex(row[7])),
-                hashDataKey=bytes.fromhex(row[8]),
-                vchIv=bytes.fromhex((row[9])),
-                nTime=row[10],
-                nNonce=row[11],
-                encContent=CSqueakEncContent(bytes.fromhex((row[12]))),
-                scriptSig=CScript(bytes.fromhex((row[13]))),
-                vchDataKey=bytes.fromhex((row[15])),
+                vchEncryptionKey=bytes.fromhex(row[8]),
+                vchEncDatakey=bytes.fromhex(row[9]),
+                vchIv=bytes.fromhex((row[10])),
+                nTime=row[11],
+                nNonce=row[12],
+                encContent=CSqueakEncContent(bytes.fromhex((row[13]))),
+                scriptSig=CScript(bytes.fromhex((row[14]))),
+                vchDecryptionKey=bytes.fromhex((row[16])),
             )
             return squeak
 

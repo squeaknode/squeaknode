@@ -7,14 +7,18 @@ RUN apt-get update && apt-get install -y \
 	curl \
 	git
 
+# Download the rpc files.
+RUN git clone https://github.com/googleapis/googleapis.git
+RUN curl -o rpc.proto -s https://raw.githubusercontent.com/lightningnetwork/lnd/master/lnrpc/rpc.proto
+
 COPY requirements.txt /
 
 RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
 
-# Download the rpc files.
-RUN git clone https://github.com/googleapis/googleapis.git
-RUN curl -o rpc.proto -s https://raw.githubusercontent.com/lightningnetwork/lnd/master/lnrpc/rpc.proto
+# Install the local squeaklib
+COPY squeak /squeak
+RUN pip3 install -e /squeak
 
 # Copy the source code.
 COPY . /app

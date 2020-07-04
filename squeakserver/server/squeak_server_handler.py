@@ -1,6 +1,8 @@
 import logging
 import threading
 
+from squeak.core.encryption import generate_initialization_vector
+from squeak.core.encryption import CEncryptedDecryptionKey
 from squeak.core.signing import CSigningKey
 from squeak.core.signing import CSqueakAddress
 
@@ -8,7 +10,7 @@ from squeakserver.server.buy_offer import BuyOffer
 from squeakserver.common.lnd_lightning_client import LNDLightningClient
 from squeakserver.server.lightning_address import LightningAddressHostPort
 from squeakserver.server.postgres_db import PostgresDb
-from squeakserver.server.util import generate_offer_nonce
+from squeakserver.server.util import generate_offer_preimage
 from squeakserver.server.util import bxor
 from squeakserver.server.util import get_hash
 
@@ -41,8 +43,8 @@ class SqueakServerHandler(object):
     def handle_get_squeak(self, squeak_hash):
         logger.info("Handle get squeak by hash: {}".format(squeak_hash.hex()))
         squeak = self.postgres_db.get_squeak(squeak_hash)
-        # Remove the data key before sending response.
-        squeak.ClearDataKey()
+        # Remove the decryption key before sending response.
+        squeak.ClearDecryptionKey()
         return squeak
 
     def handle_lookup_squeaks(self, addresses, min_block, max_block):
@@ -55,12 +57,17 @@ class SqueakServerHandler(object):
         logger.info("Handle buy squeak by hash: {}".format(squeak_hash.hex()))
         # Get the squeak from the database
         squeak = self.postgres_db.get_squeak(squeak_hash)
-        # Get the datakey from the squeak
-        data_key = squeak.GetDataKey()
-        # Generate a new random offer nonce
-        nonce = generate_offer_nonce()
-        # Get the invoice preimage from the nonce and the squeak data key
-        preimage = bxor(nonce, data_key)
+
+        # Get the decryption key from the squeak
+        decryption_key = squeak.GetDecryptionKey()
+
+        # Generate a new random preimage
+        preimage = generate_offer_preimage()
+
+        # Encrypt the decryption key
+        iv = generate_initialization_vector()
+        encrypted_decryption_key = CEncryptedDecryptionKey.from_decryption_key(decryption_key, preimage, iv)
+
         # Get the offer price
         amount = self.price
         # Create the lightning invoice
@@ -73,7 +80,8 @@ class SqueakServerHandler(object):
         # Return the buy offer
         return BuyOffer(
             squeak_hash,
-            nonce,
+            encrypted_decryption_key,
+            iv,
             amount,
             preimage_hash,
             invoice_payment_request,

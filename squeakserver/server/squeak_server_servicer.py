@@ -87,7 +87,6 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
 
         offer_squeak_hash = buy_response.squeak_hash
         amount = buy_response.amount
-        nonce = buy_response.nonce
 
         if offer_squeak_hash != squeak_hash:
             context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
@@ -98,7 +97,8 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
         return squeak_server_pb2.BuySqueakReply(
             offer=squeak_server_pb2.SqueakBuyOffer(
                 squeak_hash=offer_squeak_hash,
-                nonce=nonce,
+                key_cipher=buy_response.key_cipher.cipher_bytes,
+                iv=buy_response.iv,
                 amount=amount,
                 preimage_hash=buy_response.preimage_hash,
                 payment_request=buy_response.payment_request,

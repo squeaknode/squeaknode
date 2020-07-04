@@ -10,6 +10,7 @@ from squeak.core import CSqueak
 from squeak.core import CheckSqueak
 from squeak.core import HASH_LENGTH
 from squeak.core import MakeSqueakFromStr
+from squeak.core.encryption import CEncryptedDecryptionKey
 from squeak.core.signing import CSigningKey
 from squeak.core.signing import CSqueakAddress
 
@@ -196,10 +197,19 @@ def run():
         preimage = payment.payment_preimage
         print("preimage: " + str(preimage))
 
-        # Clear the data key from the squeak and verify with the payment preimage
-        new_data_key = bxor(buy_response.offer.nonce, preimage)
-        print("new data key: " + str(new_data_key))
-        get_response_squeak.SetDataKey(new_data_key)
+        # Verify with the payment preimage and decryption key ciphertext
+        decryption_key_cipher_bytes = buy_response.offer.key_cipher
+        iv = buy_response.offer.iv
+        # TODO: add from_bytes method to CEncryptedDecryptionKey.
+        encrypted_decryption_key = CEncryptedDecryptionKey(decryption_key_cipher_bytes)
+
+        # Decrypt the decryption key
+        decryption_key = encrypted_decryption_key.get_decryption_key(preimage, iv)
+        serialized_decryption_key = decryption_key.serialize()
+
+        print("new decryption key: " + str(decryption_key))
+        print("new decryption key: " + str(serialized_decryption_key))
+        get_response_squeak.SetDecryptionKey(serialized_decryption_key)
         CheckSqueak(get_response_squeak)
         assert get_response_squeak.GetDecryptedContentStr() == 'hello from itest!'
         print("Finished checking squeak.")
