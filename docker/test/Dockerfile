@@ -15,10 +15,6 @@ COPY requirements-itest.txt /
 RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements-itest.txt
 
-# Install the local squeaklib
-COPY squeak /squeak
-RUN pip3 install -e /squeak
-
 Run mkdir /app
 COPY ./squeakserver/common/rpc/squeak_server.proto /app
 RUN cp -r googleapis /app

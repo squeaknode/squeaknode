@@ -16,10 +16,6 @@ COPY requirements.txt /
 RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
 
-# Install the local squeaklib
-COPY squeak /squeak
-RUN pip3 install -e /squeak
-
 # Copy the source code.
 COPY . /app
 
