@@ -73,7 +73,7 @@ class PostgresDb():
                 bytes(squeak.encContent.vchEncContent).hex(),
                 bytes(squeak.scriptSig).hex(),
                 str(squeak.GetAddress()),
-                squeak.vchDecryptionKey.hex(),
+                squeak.vchDecryptionKey,
                 squeak.GetDecryptedContentStr(),
             ))
             # get the generated hash back
@@ -105,7 +105,7 @@ class PostgresDb():
                 nNonce=row[12],
                 encContent=CSqueakEncContent(bytes.fromhex((row[13]))),
                 scriptSig=CScript(bytes.fromhex((row[14]))),
-                vchDecryptionKey=bytes.fromhex((row[16])),
+                vchDecryptionKey=(row[16]),
             )
             return squeak
 

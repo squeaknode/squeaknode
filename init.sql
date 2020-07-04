@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS squeak (
   encContent CHAR(2272) NOT NULL,
   scriptSig VARCHAR(400) NOT NULL,
   address VARCHAR(50) NOT NULL,
-  vchDecryptionKey VARCHAR(8000),
+  vchDecryptionKey bytea,
   content CHAR(1120)
 );
 
