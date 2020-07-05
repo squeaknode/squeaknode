@@ -204,7 +204,7 @@ def run():
 
         # Decrypt the decryption key
         decryption_key = encrypted_decryption_key.get_decryption_key(preimage, iv)
-        serialized_decryption_key = decryption_key.serialize()
+        serialized_decryption_key = decryption_key.get_bytes()
 
         print("new decryption key: " + str(decryption_key))
         print("new decryption key: " + str(serialized_decryption_key))
