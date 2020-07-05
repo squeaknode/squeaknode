@@ -46,5 +46,5 @@ def example_squeak(signing_key):
 @pytest.fixture
 def bad_squeak(signing_key):
     squeak = make_squeak(signing_key, 'hello!', )
-    squeak.SetDataKey(b'deadbeef')
+    squeak.ClearDecryptionKey()
     return squeak
