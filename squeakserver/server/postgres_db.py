@@ -51,7 +51,7 @@ class PostgresDb():
     def insert_squeak(self, squeak):
         """ Insert a new squeak. """
         sql = """
-        INSERT INTO squeak(hash, nVersion, hashEncContent, hashReplySqk, hashBlock, nBlockHeight, scriptPubKey, encryptionKey, encDatakey, vchIv, nTime, nNonce, encContent, scriptSig, address, vchDecryptionKey)
+        INSERT INTO squeak(hash, nVersion, hashEncContent, hashReplySqk, hashBlock, nBlockHeight, vchScriptPubKey, vchEncryptionKey, encDatakey, iv, nTime, nNonce, encContent, vchScriptSig, address, vchDecryptionKey)
         VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         RETURNING hash;"""
 
