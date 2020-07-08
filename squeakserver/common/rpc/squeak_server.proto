@@ -50,6 +50,9 @@ message LookupSqueaksRequest {
 message BuySqueakRequest {
     /// Hash of the squeak to buy.
     bytes hash = 1;
+
+    /// Challenge bytes
+    bytes challenge = 2;
 }
 
 message PostSqueakReply {
@@ -83,26 +86,29 @@ message SqueakBuyOffer {
     bytes squeak_hash = 1;
 
     /// The decrypted decryption key
-    bytes key_cipher = 3;
+    bytes key_cipher = 2;
 
     /// The decryption iv
-    bytes iv = 4;
+    bytes iv = 3;
 
     /// The amount
-    int64 amount = 5;
+    int64 amount = 4;
 
     /// The invoice preimage hash.
-    bytes preimage_hash = 6;
+    bytes preimage_hash = 5;
 
     /// The invoice
-    string payment_request = 7;
+    string payment_request = 6;
 
     /// The seller node pubkey
-    string pubkey = 8;
+    string pubkey = 7;
 
     /// The host of the seller lightning node
-    string host = 9;
+    string host = 8;
 
     /// The port of the seller lightning node
-    int32 port = 10;
+    int32 port = 9;
+
+    /// The challenge proof
+    bytes proof = 10;
 }

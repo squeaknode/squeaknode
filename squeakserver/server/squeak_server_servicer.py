@@ -76,8 +76,9 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
     def BuySqueak(self, request, context):
         squeak_hash = request.hash
         # TODO: check if hash is valid
+        challenge = request.challenge
 
-        buy_response = self.handler.handle_buy_squeak(squeak_hash)
+        buy_response = self.handler.handle_buy_squeak(squeak_hash, challenge)
 
         if buy_response == None:
             context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
@@ -105,7 +106,8 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
                 pubkey=buy_response.pubkey,
                 host=buy_response.host,
                 port=buy_response.port,
-            )
+                proof=buy_response.proof,
+            ),
         )
 
     def serve(self):

@@ -11,6 +11,7 @@ from squeak.core import CheckSqueak
 from squeak.core import HASH_LENGTH
 from squeak.core import MakeSqueakFromStr
 from squeak.core.encryption import CEncryptedDecryptionKey
+from squeak.core.encryption import generate_data_key
 from squeak.core.signing import CSigningKey
 from squeak.core.signing import CSqueakAddress
 
@@ -41,6 +42,14 @@ def squeak_from_msg(squeak_msg):
 
 def generate_signing_key():
     return CSigningKey.generate()
+
+
+def generate_challenge_proof():
+    return generate_data_key()
+
+
+def get_challenge(encryption_key, challenge_proof):
+    return encryption_key.encrypt(challenge_proof)
 
 
 def get_address(signing_key):
@@ -163,10 +172,22 @@ def run():
         ))
         assert get_hash(squeak) not in set(lookup_response.hashes)
 
+        # Generate a challenge to verify the offer
+        expected_proof = generate_challenge_proof()
+        encryption_key = squeak.GetEncryptionKey()
+        challenge = get_challenge(encryption_key, expected_proof)
+
         # Buy the squeak data key
-        buy_response = server_stub.BuySqueak(squeak_server_pb2.BuySqueakRequest(hash=squeak_hash))
+        buy_response = server_stub.BuySqueak(squeak_server_pb2.BuySqueakRequest(
+            hash=squeak_hash,
+            challenge=challenge,
+        ))
         print("Server buy response: " + str(buy_response))
         assert buy_response.offer.payment_request.startswith('ln')
+
+        # Check the offer challenge proof
+        print("Server offer proof: " + str(buy_response.offer.proof))
+        assert buy_response.offer.proof == expected_proof
 
         # Connect to the server lightning node
         connect_peer_response = lnd_lightning_client.connect_peer(buy_response.offer.pubkey, buy_response.offer.host)

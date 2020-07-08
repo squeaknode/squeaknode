@@ -53,13 +53,16 @@ class SqueakServerHandler(object):
         logger.info("Got number of hashes from db: {}".format(len(hashes)))
         return hashes
 
-    def handle_buy_squeak(self, squeak_hash):
+    def handle_buy_squeak(self, squeak_hash, challenge):
         logger.info("Handle buy squeak by hash: {}".format(squeak_hash.hex()))
         # Get the squeak from the database
         squeak = self.postgres_db.get_squeak(squeak_hash)
 
         # Get the decryption key from the squeak
         decryption_key = squeak.GetDecryptionKey()
+
+        # Solve the proof
+        proof = decryption_key.decrypt(challenge)
 
         # Generate a new random preimage
         preimage = generate_offer_preimage()
@@ -88,4 +91,5 @@ class SqueakServerHandler(object):
             pubkey,
             self.lightning_host_port.host,
             self.lightning_host_port.port,
+            proof,
         )
