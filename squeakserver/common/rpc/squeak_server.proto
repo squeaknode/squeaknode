@@ -50,6 +50,9 @@ message LookupSqueaksRequest {
 message BuySqueakRequest {
     /// Hash of the squeak to buy.
     bytes hash = 1;
+
+    /// Challenge bytes
+    bytes challenge = 2;
 }
 
 message PostSqueakReply {
@@ -68,6 +71,9 @@ message LookupSqueaksReply {
 message BuySqueakReply {
     /// The buy offer
     SqueakBuyOffer offer = 1;
+
+    /// The challenge proof
+    bytes proof = 2;
 }
 
 message Squeak {
