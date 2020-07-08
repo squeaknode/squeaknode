@@ -81,7 +81,7 @@ class SqueakServerHandler(object):
         get_info_response = self.lightning_client.get_info()
         pubkey = get_info_response.identity_pubkey
         # Return the buy offer
-        buy_offer = BuyOffer(
+        return BuyOffer(
             squeak_hash,
             encrypted_decryption_key,
             iv,
@@ -91,6 +91,5 @@ class SqueakServerHandler(object):
             pubkey,
             self.lightning_host_port.host,
             self.lightning_host_port.port,
+            proof,
         )
-
-        return buy_offer, proof

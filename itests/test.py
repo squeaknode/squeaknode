@@ -186,8 +186,8 @@ def run():
         assert buy_response.offer.payment_request.startswith('ln')
 
         # Check the offer challenge proof
-        print("Server offer proof: " + str(buy_response.proof))
-        assert buy_response.proof == expected_proof
+        print("Server offer proof: " + str(buy_response.offer.proof))
+        assert buy_response.offer.proof == expected_proof
 
         # Connect to the server lightning node
         connect_peer_response = lnd_lightning_client.connect_peer(buy_response.offer.pubkey, buy_response.offer.host)
