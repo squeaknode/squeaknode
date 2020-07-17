@@ -219,13 +219,6 @@ def run():
         list_channels_response = lnd_lightning_client.list_channels()
         print("Server list channels response: " + str(list_channels_response))
 
-        # # Sleep for 60 seconds to confirm the channel open transaction
-        # time.sleep(60)
-
-        # # List channels
-        # list_channels_response = lnd_lightning_client.list_channels()
-        # print("Server list channels response: " + str(list_channels_response))
-
         # Pay the invoice
         payment = lnd_lightning_client.pay_invoice_sync(buy_response.offer.payment_request)
         print("Server pay invoice response: " + str(payment))
