@@ -34,4 +34,4 @@ echo "Running test.sh...."
 docker-compose run test ./test.sh
 
 echo "Shutting down itest..."
-docker-compose down
+# docker-compose down

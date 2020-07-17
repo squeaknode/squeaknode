@@ -17,3 +17,6 @@ python3 -m grpc_tools.protoc --proto_path=googleapis:. --python_out=. --grpc_pyt
 
 # install squeak server protocol
 python3 -m grpc_tools.protoc --proto_path=googleapis:. --python_out=. --grpc_python_out=. squeakserver/common/rpc/squeak_server.proto
+
+# install squeak admin server protocol
+python3 -m grpc_tools.protoc --proto_path=googleapis:. --python_out=. --grpc_python_out=. squeakserver/admin/rpc/squeak_admin.proto
