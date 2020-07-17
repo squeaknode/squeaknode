@@ -31,6 +31,7 @@ class SqueakAdminServerHandler(object):
         self.postgres_db = postgres_db
 
     def handle_get_balance(self):
-        logger.info("Handle get balance: {}")
+        logger.info("Handle get balance")
         wallet_balance = self.lightning_client.get_wallet_balance()
-        return wallet_balance
+        logger.info("Wallet balance: {}".format(wallet_balance))
+        return wallet_balance.total_balance

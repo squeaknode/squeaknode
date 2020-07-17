@@ -17,6 +17,7 @@ RUN pip3 install -r requirements-itest.txt
 
 Run mkdir /app
 COPY ./squeakserver/common/rpc/squeak_server.proto /app
+COPY ./squeakserver/admin/rpc/squeak_admin.proto /app
 RUN cp -r googleapis /app
 RUN cp rpc.proto /app/lnd.proto
 
@@ -24,6 +25,7 @@ WORKDIR /app
 
 RUN python3 -m grpc_tools.protoc --proto_path=googleapis:. --python_out=. --grpc_python_out=. lnd.proto
 RUN python3 -m grpc_tools.protoc --proto_path=googleapis:. --python_out=. --grpc_python_out=. squeak_server.proto
+RUN python3 -m grpc_tools.protoc --proto_path=googleapis:. --python_out=. --grpc_python_out=. squeak_admin.proto
 
 # Copy the lighting client
 COPY "squeakserver/common/lnd_lightning_client.py" .

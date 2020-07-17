@@ -7,9 +7,6 @@ option objc_class_prefix = "SQK";
 
 package squeakserver;
 
-// Import the lnd proto.
-import "squeakserver/common/rpc/lnd.proto";
-
 // Interface exported by the server.
 service SqueakAdmin {
 
@@ -24,5 +21,5 @@ message GetBalanceRequest {
 
 message GetBalanceReply {
     /// The wallet balance
-    lnrpc.WalletBalanceResponse walletBalanceResponse = 1;
+    int64 balance = 1;
 }

@@ -122,3 +122,27 @@ class LNDLightningClient():
         """
         list_peers_request = self.ln_module.ListPeersRequest()
         return self.stub.ListPeers(list_peers_request, metadata=[('macaroon', self.macaroon)])
+
+    def open_channel(self, pubkey, local_amount):
+        """ Open a channel
+
+        args:
+        pubkey (bytes) -- The identity pubkey of the Lightning node
+        local_amount -- The number of satoshis the wallet should commit to the channel
+        """
+        open_channel_request = self.ln_module.OpenChannelRequest(
+            node_pubkey=pubkey,
+            local_funding_amount=local_amount,
+        )
+        return self.stub.OpenChannel(open_channel_request, metadata=[('macaroon', self.macaroon)])
+
+    def close_channel(self, channel_point):
+        """ Close a channel
+
+        args:
+        channel_point (str) -- The outpoint (txid:index) of the funding transaction.
+        """
+        close_channel_request = self.ln_module.CloseChannelRequest(
+            channel_point=channel_point,
+        )
+        return self.stub.CloseChannel(close_channel_request, metadata=[('macaroon', self.macaroon)])

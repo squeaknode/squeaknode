@@ -22,9 +22,9 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         self.handler = handler
 
     def GetBalance(self, request, context):
-        wallet_balance_response = self.handler.handle_get_balance()
-        return squeak_admin_server_pb2.GetBalanceReply(
-            walletBalanceResponse=wallet_balance_response,
+        total_balance = self.handler.handle_get_balance()
+        return squeak_admin_pb2.GetBalanceReply(
+            balance=total_balance,
         )
 
     def serve(self):
