@@ -14,6 +14,14 @@ service SqueakAdmin {
   */
   rpc GetBalance (GetBalanceRequest) returns (GetBalanceReply) {}
 
+  /** sqkadmin: `createsigningprofile`
+  */
+  rpc CreateSigningProfile (CreateSigningProfileRequest) returns (CreateSigningProfileReply) {}
+
+  /** sqkadmin: `getsqueakprofile`
+  */
+  rpc GetSqueakProfile (GetSqueakProfileRequest) returns (GetSqueakProfileReply) {}
+
 }
 
 message GetBalanceRequest {
@@ -22,4 +30,44 @@ message GetBalanceRequest {
 message GetBalanceReply {
     /// The wallet balance
     int64 balance = 1;
+}
+
+message CreateSigningProfileRequest {
+    /// The name of the new signing profile
+    string profile_name = 1;
+}
+
+message CreateSigningProfileReply {
+    /// The profile id
+    int32 profile_id = 1;
+}
+
+message GetSqueakProfileRequest {
+    /// The profile id
+    int32 profile_id = 1;
+}
+
+message GetSqueakProfileReply {
+    /// The squeak profile
+    SqueakProfile squeak_profile = 1;
+}
+
+message SqueakProfile {
+    /// The profile id
+    int32 profile_id = 1;
+
+    /// The profile name
+    string profile_name = 2;
+
+    /// The private key
+    bytes private_key = 3;
+
+    /// The address
+    string address = 4;
+
+    /// Sharing
+    bool sharing = 5;
+
+    /// Following
+    bool following = 6;
 }

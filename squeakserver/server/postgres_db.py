@@ -11,6 +11,8 @@ from squeak.core.script import CScript
 
 from squeakserver.server.util import get_hash
 
+from squeakserver.server.squeak_profile import SqueakProfile
+
 
 logger = logging.getLogger(__name__)
 
@@ -130,3 +132,44 @@ class PostgresDb():
                 for row in rows
             ]
             return hashes
+
+    def insert_profile(self, squeak_profile):
+        """ Insert a new squeak profile. """
+        sql = """
+        INSERT INTO profile(profile_name, private_key, address, sharing, following)
+        VALUES(%s, %s, %s, %s, %s)
+        RETURNING profile_id;
+        """
+        with self.get_cursor() as curs:
+            # execute the INSERT statement
+            curs.execute(sql, (
+                squeak_profile.profile_name,
+                squeak_profile.private_key,
+                squeak_profile.address,
+                squeak_profile.sharing,
+                squeak_profile.following,
+            ))
+            logger.info('Inserted new profile')
+            # get the new profile id back
+            row = curs.fetchone()
+            logger.info('New profile id: {}'.format(row[0]))
+            return row[0]
+
+    def get_profile(self, profile_id):
+        """ Get a profile. """
+        sql = """
+        SELECT * FROM profile WHERE profile_id=%s"""
+
+        with self.get_cursor() as curs:
+            curs.execute(sql, (profile_id,))
+            row = curs.fetchone()
+
+            squeak_profile = SqueakProfile(
+                profile_id=row[0],
+                profile_name=row[2],
+                private_key=bytes(row[3]),
+                address=row[4],
+                sharing=row[5],
+                following=row[6],
+            )
+            return squeak_profile
