@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "io.github.yzernik.squeakserver";
+option java_outer_classname = "SqueakAdminProto";
+option objc_class_prefix = "SQK";
+
+package squeakserver;
+
+// Interface exported by the server.
+service SqueakAdmin {
+
+  /** sqkadmin: `getsqueak`
+  */
+  rpc GetBalance (GetBalanceRequest) returns (GetBalanceReply) {}
+
+}
+
+message GetBalanceRequest {
+}
+
+message GetBalanceReply {
+    /// The wallet balance
+    int64 balance = 1;
+}

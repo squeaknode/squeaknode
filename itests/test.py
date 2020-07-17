@@ -21,6 +21,8 @@ import lnd_pb2_grpc as lnrpc
 import grpc
 import squeak_server_pb2
 import squeak_server_pb2_grpc
+import squeak_admin_pb2
+import squeak_admin_pb2_grpc
 
 from lnd_lightning_client import LNDLightningClient
 
@@ -97,6 +99,10 @@ def bxor(b1, b2): # use xor for bytes
     return bytes(result)
 
 
+def string_to_hex(s):
+    return bytes.fromhex(s)
+
+
 def run():
     # Set the network to simnet for itest.
     SelectParams("mainnet")
@@ -104,7 +110,8 @@ def run():
     # NOTE(gRPC Python Team): .close() is possible on a channel and should be
     # used in circumstances in which the with statement does not fit the needs
     # of the code.
-    with grpc.insecure_channel('sqkserver:8774') as server_channel:
+    with grpc.insecure_channel('sqkserver:8774') as server_channel,\
+         grpc.insecure_channel('sqkserver:8994') as admin_channel:
 
         # load lnd client
         lnd_lightning_client = load_lightning_client()
@@ -114,6 +121,7 @@ def run():
 
         # Make the stubs
         server_stub = squeak_server_pb2_grpc.SqueakServerStub(server_channel)
+        admin_stub = squeak_admin_pb2_grpc.SqueakAdminStub(admin_channel)
 
         # Post a squeak with a direct request to the server
         signing_key = generate_signing_key()
@@ -198,19 +206,25 @@ def run():
         print("Server list peers response: " + str(list_peers_response))
 
         # Open channel to the server lightning node
-        open_channel_response = lnd_lightning_client.open_channel_sync(buy_response.offer.pubkey, 1000000)
+        pubkey_bytes = string_to_hex(buy_response.offer.pubkey)
+        open_channel_response = lnd_lightning_client.open_channel(pubkey_bytes, 1000000)
         print("Server open channel response: " + str(open_channel_response))
+        for update in open_channel_response:
+            if update.HasField('chan_open'):
+                channel_point = update.chan_open.channel_point
+                print("Channel now open: " + str(channel_point))
+                break
 
         # List channels
         list_channels_response = lnd_lightning_client.list_channels()
         print("Server list channels response: " + str(list_channels_response))
 
-        # Sleep for 60 seconds to confirm the channel open transaction
-        time.sleep(60)
+        # # Sleep for 60 seconds to confirm the channel open transaction
+        # time.sleep(60)
 
-        # List channels
-        list_channels_response = lnd_lightning_client.list_channels()
-        print("Server list channels response: " + str(list_channels_response))
+        # # List channels
+        # list_channels_response = lnd_lightning_client.list_channels()
+        # print("Server list channels response: " + str(list_channels_response))
 
         # Pay the invoice
         payment = lnd_lightning_client.pay_invoice_sync(buy_response.offer.payment_request)
@@ -234,6 +248,22 @@ def run():
         assert get_response_squeak.GetDecryptedContentStr() == 'hello from itest!'
         print("Finished checking squeak.")
 
+        # Check the server balance
+        get_balance_response = admin_stub.GetBalance(squeak_admin_pb2.GetBalanceRequest())
+        print("Get balance response balance: " + str(get_balance_response.balance))
+        assert get_balance_response.balance == 0
+
+        # Close the channel
+        time.sleep(10)
+        for update in lnd_lightning_client.close_channel(channel_point):
+            if update.HasField('chan_close'):
+                print("Channel closed.")
+                break
+
+        # Check the server balance
+        get_balance_response = admin_stub.GetBalance(squeak_admin_pb2.GetBalanceRequest())
+        print("Get balance response balance: " + str(get_balance_response.balance))
+        # assert get_balance_response.balance > 0
 
 
 if __name__ == '__main__':
