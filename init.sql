@@ -20,3 +20,13 @@ CREATE TABLE IF NOT EXISTS squeak (
 
 CREATE INDEX IF NOT EXISTS idx_squeak_address
   ON squeak(address);
+
+CREATE TABLE IF NOT EXISTS profile (
+  profile_id SERIAL PRIMARY KEY,
+  created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  profile_name VARCHAR(64) NOT NULL,
+  private_key bytea,
+  address VARCHAR(35) UNIQUE NOT NULL, -- Maximum length of a bitcoin address is 35.
+  sharing BOOLEAN NOT NULL,
+  following BOOLEAN NOT NULL
+);

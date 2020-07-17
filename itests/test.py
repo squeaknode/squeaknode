@@ -258,6 +258,22 @@ def run():
         print("Get balance response balance: " + str(get_balance_response.balance))
         # assert get_balance_response.balance > 0
 
+        # Create a new signing profile
+        profile_name = 'bob'
+        create_signing_profile_response = admin_stub.CreateSigningProfile(squeak_admin_pb2.CreateSigningProfileRequest(
+            profile_name=profile_name,
+        ))
+        print("Get create signing profile response: " + str(create_signing_profile_response))
+        profile_id = create_signing_profile_response.profile_id
+        # assert profile_id >= 0
+
+        # Get the new squeak profile
+        get_squeak_profile_response = admin_stub.GetSqueakProfile(squeak_admin_pb2.GetSqueakProfileRequest(
+            profile_id=profile_id,
+        ))
+        print("Get squeak profile response: " + str(get_squeak_profile_response))
+        assert get_squeak_profile_response.squeak_profile.profile_name == profile_name
+
 
 if __name__ == '__main__':
     logging.basicConfig()

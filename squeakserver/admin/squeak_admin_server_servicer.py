@@ -27,6 +27,27 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
             balance=total_balance,
         )
 
+    def CreateSigningProfile(self, request, context):
+        profile_name = request.profile_name
+        profile_id = self.handler.handle_create_signing_profile(profile_name)
+        return squeak_admin_pb2.CreateSigningProfileReply(
+            profile_id=profile_id,
+        )
+
+    def GetSqueakProfile(self, request, context):
+        profile_id = request.profile_id
+        squeak_profile = self.handler.handle_get_squeak_profile(profile_id)
+        return squeak_admin_pb2.GetSqueakProfileReply(
+            squeak_profile=squeak_admin_pb2.SqueakProfile(
+                profile_id=squeak_profile.profile_id,
+                profile_name=squeak_profile.profile_name,
+                private_key=squeak_profile.private_key,
+                address=squeak_profile.address,
+                sharing=squeak_profile.sharing,
+                following=squeak_profile.following,
+            )
+        )
+
     def serve(self):
         server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
         squeak_admin_pb2_grpc.add_SqueakAdminServicer_to_server(
