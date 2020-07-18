@@ -97,14 +97,17 @@ services:
       context: ../
       dockerfile: docker/sqkserver/Dockerfile
     volumes:
+      - test_shared:/rpc
       - test_lnd_server_dir:/root/.lnd
       - ./config.ini:/app/config.ini
     links:
+      - "btcd:btcd"
       - "lnd_server:lnd"
     depends_on:
       - db
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=0
+    entrypoint: ["./start-sqkserver.sh"]
 
   test:
     image: test
