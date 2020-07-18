@@ -234,7 +234,6 @@ def run():
         decryption_key = encrypted_decryption_key.get_decryption_key(preimage, iv)
         serialized_decryption_key = decryption_key.get_bytes()
 
-        print("new decryption key: " + str(decryption_key))
         print("new decryption key: " + str(serialized_decryption_key))
         get_response_squeak.SetDecryptionKey(serialized_decryption_key)
         CheckSqueak(get_response_squeak)
@@ -278,7 +277,6 @@ def run():
         CheckSqueak(get_response_squeak, skipDecryptionCheck=True)
         assert get_hash(get_squeak_response_squeak) == make_squeak_hash
         print("Squeak from make squeak request: " + str(get_squeak_response_squeak))
-        assert get_squeak_response_squeak.GetDecryptedContentStr() == 'Hello from the profile on the server!'
 
         # Close the channel
         time.sleep(10)
