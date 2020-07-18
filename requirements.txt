@@ -5,3 +5,4 @@ googleapis-common-protos
 grpcio
 grpcio-tools
 psycopg2
+requests

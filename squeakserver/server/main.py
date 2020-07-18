@@ -18,6 +18,9 @@ from squeakserver.server.squeak_server_servicer import SqueakServerServicer
 from squeakserver.server.squeak_server_handler import SqueakServerHandler
 from squeakserver.server.db_params import parse_db_params
 from squeakserver.server.postgres_db import PostgresDb
+from squeakserver.node.squeak_block_verifier import SqueakBlockVerifier
+from squeakserver.node.squeak_block_periodic_worker import SqueakBlockPeriodicWorker
+from squeakserver.blockchain.bitcoin_blockchain_client import BitcoinBlockchainClient
 
 
 logger = logging.getLogger(__name__)
@@ -92,6 +95,23 @@ def load_db_params(config):
 def load_postgres_db(config):
     db_params = parse_db_params(config)
     return PostgresDb(db_params)
+
+
+def load_blockchain_client(config):
+    return BitcoinBlockchainClient(
+        config['bitcoin']['rpc_host'],
+        config['bitcoin']['rpc_host'],
+        config['bitcoin']['rpc_user'],
+        config['bitcoin']['rpc_pass'],
+    )
+
+
+def load_squeak_block_verifier(postgres_db, blockchain_client):
+    return SqueakBlockVerifier(postgres_db, blockchain_client)
+
+
+def load_squeak_block_periodic_worker(squeak_block_verifier, postgres_db):
+    return SqueakBlockPeriodicWorker(squeak_block_verifier, postgres_db)
 
 
 def sigterm_handler(_signo, _stack_frame):
@@ -182,6 +202,12 @@ def run_server(config):
     price = load_price(config)
     lightning_client = load_lightning_client(config)
     lightning_host_port = load_lightning_host_port(config)
+
+    # Start the squeak block verifier
+    bitcoin_blockchain_client = load_blockchain_client(config)
+    squeak_block_verifier = load_squeak_block_verifier(postgres_db, bitcoin_blockchain_client)
+    squeak_block_periodic_worker = load_squeak_block_periodic_worker(squeak_block_verifier, postgres_db)
+    squeak_block_periodic_worker.start_running()
 
     # start admin rpc server
     admin_handler = load_admin_handler(lightning_client, postgres_db)
