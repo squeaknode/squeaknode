@@ -242,8 +242,8 @@ def run():
 
         # Check the server balance
         get_balance_response = admin_stub.GetBalance(squeak_admin_pb2.GetBalanceRequest())
-        print("Get balance response balance: " + str(get_balance_response.balance))
-        assert get_balance_response.balance == 0
+        print("Get balance response: " + str(get_balance_response))
+        assert get_balance_response.wallet_balance_response.total_balance == 0
 
         # Create a new signing profile
         profile_name = 'bob'
@@ -287,8 +287,8 @@ def run():
 
         # Check the server balance
         get_balance_response = admin_stub.GetBalance(squeak_admin_pb2.GetBalanceRequest())
-        print("Get balance response balance: " + str(get_balance_response.balance))
-        assert get_balance_response.balance == 1000
+        print("Get balance response: " + str(get_balance_response))
+        assert get_balance_response.wallet_balance_response.total_balance == 1000
 
 
 if __name__ == '__main__':

@@ -7,7 +7,7 @@ option objc_class_prefix = "SQK";
 
 package squeakserver;
 
-// import "lnd.proto";
+import "proto/lnd.proto";
 
 // Interface exported by the server.
 service SqueakAdmin {
@@ -34,8 +34,8 @@ message GetBalanceRequest {
 }
 
 message GetBalanceReply {
-    /// The wallet balance
-    int64 balance = 1;
+    /// The wallet balance response
+    lnrpc.WalletBalanceResponse wallet_balance_response = 1;
 }
 
 message CreateSigningProfileRequest {
