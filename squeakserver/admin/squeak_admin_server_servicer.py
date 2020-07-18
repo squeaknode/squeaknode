@@ -5,8 +5,9 @@ import grpc
 
 from squeak.core import CSqueak
 
-from squeakserver.admin.rpc import squeak_admin_pb2
-from squeakserver.admin.rpc import squeak_admin_pb2_grpc
+from proto import squeak_admin_pb2
+from proto import squeak_admin_pb2_grpc
+
 from squeakserver.server.util import get_hash
 
 

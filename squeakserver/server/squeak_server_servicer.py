@@ -7,8 +7,9 @@ import grpc
 
 from squeak.core import CSqueak
 
-from squeakserver.common.rpc import squeak_server_pb2
-from squeakserver.common.rpc import squeak_server_pb2_grpc
+from proto import squeak_server_pb2
+from proto import squeak_server_pb2_grpc
+
 from squeakserver.server.util import get_hash
 
 

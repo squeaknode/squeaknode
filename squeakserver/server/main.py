@@ -11,8 +11,8 @@ from configparser import ConfigParser
 from squeak.params import SelectParams
 from squeak.core.signing import CSigningKey
 
-import squeakserver.common.rpc.lnd_pb2 as ln
-import squeakserver.common.rpc.lnd_pb2_grpc as lnrpc
+import proto.lnd_pb2 as ln
+import proto.lnd_pb2_grpc as lnrpc
 
 from squeakserver.admin.squeak_admin_server_servicer import SqueakAdminServerServicer
 from squeakserver.admin.squeak_admin_server_handler import SqueakAdminServerHandler
