@@ -100,7 +100,7 @@ def load_postgres_db(config):
 def load_blockchain_client(config):
     return BitcoinBlockchainClient(
         config['bitcoin']['rpc_host'],
-        config['bitcoin']['rpc_host'],
+        config['bitcoin']['rpc_port'],
         config['bitcoin']['rpc_user'],
         config['bitcoin']['rpc_pass'],
     )
