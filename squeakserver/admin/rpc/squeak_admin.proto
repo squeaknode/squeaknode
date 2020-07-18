@@ -22,6 +22,10 @@ service SqueakAdmin {
   */
   rpc GetSqueakProfile (GetSqueakProfileRequest) returns (GetSqueakProfileReply) {}
 
+  /** sqkadmin: `makesqueak`
+  */
+  rpc MakeSqueak (MakeSqueakRequest) returns (MakeSqueakReply) {}
+
 }
 
 message GetBalanceRequest {
@@ -70,4 +74,20 @@ message SqueakProfile {
 
     /// Following
     bool following = 6;
+}
+
+message MakeSqueakRequest {
+    /// The profile id
+    int32 profile_id = 1;
+
+    /// The content
+    string content = 2;
+
+    /// The replyto hash
+    bytes replyto = 3;
+}
+
+message MakeSqueakReply {
+    /// Hash of the created squeak.
+    bytes hash = 1;
 }

@@ -274,6 +274,16 @@ def run():
         print("Get squeak profile response: " + str(get_squeak_profile_response))
         assert get_squeak_profile_response.squeak_profile.profile_name == profile_name
 
+        # Create a new squeak using the new profile
+        make_squeak_content = 'Hello from the profile on the server!'
+        make_squeak_response = admin_stub.MakeSqueak(squeak_admin_pb2.MakeSqueakRequest(
+            profile_id=profile_id,
+            content=make_squeak_content,
+        ))
+        print("Get make squeak response: " + str(make_squeak_response))
+        make_squeak_hash = make_squeak_response.hash
+        assert len(make_squeak_hash) == 32
+
 
 if __name__ == '__main__':
     logging.basicConfig()
