@@ -48,6 +48,15 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
             )
         )
 
+    def MakeSqueak(self, request, context):
+        profile_id = request.profile_id
+        content_str = request.content
+        replyto_hash = request.replyto
+        squeak_hash = self.handler.handle_make_squeak(profile_id, content_str, replyto_hash)
+        return squeak_admin_pb2.MakeSqueakReply(
+            hash=squeak_hash,
+        )
+
     def serve(self):
         server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
         squeak_admin_pb2_grpc.add_SqueakAdminServicer_to_server(

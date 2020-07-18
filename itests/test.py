@@ -246,6 +246,40 @@ def run():
         print("Get balance response balance: " + str(get_balance_response.balance))
         assert get_balance_response.balance == 0
 
+        # Create a new signing profile
+        profile_name = 'bob'
+        create_signing_profile_response = admin_stub.CreateSigningProfile(squeak_admin_pb2.CreateSigningProfileRequest(
+            profile_name=profile_name,
+        ))
+        print("Get create signing profile response: " + str(create_signing_profile_response))
+        profile_id = create_signing_profile_response.profile_id
+
+        # Get the new squeak profile
+        get_squeak_profile_response = admin_stub.GetSqueakProfile(squeak_admin_pb2.GetSqueakProfileRequest(
+            profile_id=profile_id,
+        ))
+        print("Get squeak profile response: " + str(get_squeak_profile_response))
+        assert get_squeak_profile_response.squeak_profile.profile_name == profile_name
+
+        # Create a new squeak using the new profile
+        make_squeak_content = 'Hello from the profile on the server!'
+        make_squeak_response = admin_stub.MakeSqueak(squeak_admin_pb2.MakeSqueakRequest(
+            profile_id=profile_id,
+            content=make_squeak_content,
+        ))
+        print("Get make squeak response: " + str(make_squeak_response))
+        make_squeak_hash = make_squeak_response.hash
+        assert len(make_squeak_hash) == 32
+
+        # Get the new squeak from the server
+        get_squeak_response = server_stub.GetSqueak(squeak_server_pb2.GetSqueakRequest(hash=make_squeak_hash))
+        print("Get squeak response: " + str(get_squeak_response))
+        get_squeak_response_squeak = squeak_from_msg(get_squeak_response.squeak)
+        CheckSqueak(get_response_squeak, skipDecryptionCheck=True)
+        assert get_hash(get_squeak_response_squeak) == make_squeak_hash
+        print("Squeak from make squeak request: " + str(get_squeak_response_squeak))
+        assert get_squeak_response_squeak.GetDecryptedContentStr() == 'Hello from the profile on the server!'
+
         # Close the channel
         time.sleep(10)
         for update in lnd_lightning_client.close_channel(channel_point):
@@ -256,23 +290,7 @@ def run():
         # Check the server balance
         get_balance_response = admin_stub.GetBalance(squeak_admin_pb2.GetBalanceRequest())
         print("Get balance response balance: " + str(get_balance_response.balance))
-        # assert get_balance_response.balance > 0
-
-        # Create a new signing profile
-        profile_name = 'bob'
-        create_signing_profile_response = admin_stub.CreateSigningProfile(squeak_admin_pb2.CreateSigningProfileRequest(
-            profile_name=profile_name,
-        ))
-        print("Get create signing profile response: " + str(create_signing_profile_response))
-        profile_id = create_signing_profile_response.profile_id
-        # assert profile_id >= 0
-
-        # Get the new squeak profile
-        get_squeak_profile_response = admin_stub.GetSqueakProfile(squeak_admin_pb2.GetSqueakProfileRequest(
-            profile_id=profile_id,
-        ))
-        print("Get squeak profile response: " + str(get_squeak_profile_response))
-        assert get_squeak_profile_response.squeak_profile.profile_name == profile_name
+        assert get_balance_response.balance == 1000
 
 
 if __name__ == '__main__':
