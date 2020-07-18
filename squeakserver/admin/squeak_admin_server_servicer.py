@@ -3,12 +3,9 @@ from concurrent import futures
 
 import grpc
 
-from squeak.core import CSqueak
 
 from proto import squeak_admin_pb2
 from proto import squeak_admin_pb2_grpc
-
-from squeakserver.server.util import get_hash
 
 
 logger = logging.getLogger(__name__)

@@ -1,17 +1,13 @@
 import logging
-import threading
 
 from squeak.core.encryption import generate_initialization_vector
 from squeak.core.encryption import CEncryptedDecryptionKey
-from squeak.core.signing import CSigningKey
-from squeak.core.signing import CSqueakAddress
 
 from squeakserver.server.buy_offer import BuyOffer
 from squeakserver.common.lnd_lightning_client import LNDLightningClient
 from squeakserver.server.lightning_address import LightningAddressHostPort
 from squeakserver.server.postgres_db import PostgresDb
 from squeakserver.server.util import generate_offer_preimage
-from squeakserver.server.util import bxor
 from squeakserver.server.util import get_hash
 
 
@@ -48,7 +44,8 @@ class SqueakServerHandler(object):
         return squeak
 
     def handle_lookup_squeaks(self, addresses, min_block, max_block):
-        logger.info("Handle lookup squeaks with addresses: {}, min_block: {}, max_block: {}".format(str(addresses), min_block, max_block))
+        logger.info("Handle lookup squeaks with addresses: {}, min_block: {}, max_block: {}".format(
+            str(addresses), min_block, max_block))
         hashes = self.postgres_db.lookup_squeaks(addresses, min_block, max_block)
         logger.info("Got number of hashes from db: {}".format(len(hashes)))
         return hashes
@@ -69,7 +66,8 @@ class SqueakServerHandler(object):
 
         # Encrypt the decryption key
         iv = generate_initialization_vector()
-        encrypted_decryption_key = CEncryptedDecryptionKey.from_decryption_key(decryption_key, preimage, iv)
+        encrypted_decryption_key = CEncryptedDecryptionKey.from_decryption_key(
+            decryption_key, preimage, iv)
 
         # Get the offer price
         amount = self.price

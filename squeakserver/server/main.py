@@ -1,15 +1,11 @@
-import socket
 import argparse
 import logging
-import signal
 import sys
 import threading
-import time
 
 from configparser import ConfigParser
 
 from squeak.params import SelectParams
-from squeak.core.signing import CSigningKey
 
 import proto.lnd_pb2 as ln
 import proto.lnd_pb2_grpc as lnrpc
@@ -52,12 +48,14 @@ def load_lightning_host_port(config) -> LNDLightningClient:
         lnd_port,
     )
 
+
 def load_rpc_server(config, handler) -> SqueakServerServicer:
     return SqueakServerServicer(
         config['server']['rpc_host'],
         config['server']['rpc_port'],
         handler,
     )
+
 
 def load_admin_rpc_server(config, handler) -> SqueakAdminServerServicer:
     return SqueakAdminServerServicer(
@@ -66,8 +64,10 @@ def load_admin_rpc_server(config, handler) -> SqueakAdminServerServicer:
         handler,
     )
 
+
 def load_price(config):
     return int(config['server']['price'])
+
 
 def load_handler(lightning_host_port, lightning_client, postgres_db, price):
     return SqueakServerHandler(
@@ -77,11 +77,13 @@ def load_handler(lightning_host_port, lightning_client, postgres_db, price):
         price,
     )
 
+
 def load_admin_handler(lightning_client, postgres_db):
     return SqueakAdminServerHandler(
         lightning_client,
         postgres_db,
     )
+
 
 def load_db_params(config):
     return parse_db_params(config)
@@ -96,6 +98,7 @@ def sigterm_handler(_signo, _stack_frame):
     # Raises SystemExit(0):
     sys.exit(0)
 
+
 def start_admin_rpc_server(rpc_server):
     logger.info('Calling start_admin_rpc_server...')
     thread = threading.Thread(
@@ -104,6 +107,7 @@ def start_admin_rpc_server(rpc_server):
     )
     thread.daemon = True
     thread.start()
+
 
 def parse_args():
     parser = argparse.ArgumentParser(

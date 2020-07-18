@@ -1,7 +1,6 @@
-import json
 from typing import Optional
 
-from bitcoin.core import lx, x
+from bitcoin.core import lx
 
 from squeakserver.common.blockchain_client import BlockchainClient
 

@@ -1,7 +1,3 @@
-import pytest
-
-from squeakserver.server.squeak_validator import SqueakValidator
-
 
 
 def test_validate(validator, example_squeak):

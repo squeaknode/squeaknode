@@ -1,12 +1,11 @@
 from __future__ import print_function
 
 import logging
-import random
 import time
 
 import grpc
 
-from bitcoin.core import lx, x
+from bitcoin.core import lx
 from squeak.params import SelectParams
 from squeak.core import CSqueak
 from squeak.core import CheckSqueak
@@ -91,8 +90,7 @@ def load_lightning_client() -> LNDLightningClient:
     )
 
 
-
-def bxor(b1, b2): # use xor for bytes
+def bxor(b1, b2):  # use xor for bytes
     result = bytearray()
     for b1, b2 in zip(b1, b2):
         result.append(b1 ^ b2)
@@ -111,7 +109,7 @@ def run():
     # used in circumstances in which the with statement does not fit the needs
     # of the code.
     with grpc.insecure_channel('sqkserver:8774') as server_channel,\
-         grpc.insecure_channel('sqkserver:8994') as admin_channel:
+            grpc.insecure_channel('sqkserver:8994') as admin_channel:
 
         # load lnd client
         lnd_lightning_client = load_lightning_client()
@@ -129,7 +127,8 @@ def run():
         squeak_hash = get_hash(squeak)
 
         squeak_msg = build_squeak_msg(squeak)
-        post_response = server_stub.PostSqueak(squeak_server_pb2.PostSqueakRequest(squeak=squeak_msg))
+        post_response = server_stub.PostSqueak(
+            squeak_server_pb2.PostSqueakRequest(squeak=squeak_msg))
         print("Direct server post response: " + str(post_response))
 
         # Get the same squeak from the server
@@ -198,7 +197,8 @@ def run():
         assert buy_response.offer.proof == expected_proof
 
         # Connect to the server lightning node
-        connect_peer_response = lnd_lightning_client.connect_peer(buy_response.offer.pubkey, buy_response.offer.host)
+        connect_peer_response = lnd_lightning_client.connect_peer(
+            buy_response.offer.pubkey, buy_response.offer.host)
         print("Server connect peer response: " + str(connect_peer_response))
 
         # List peers
@@ -271,7 +271,8 @@ def run():
         assert len(make_squeak_hash) == 32
 
         # Get the new squeak from the server
-        get_squeak_response = server_stub.GetSqueak(squeak_server_pb2.GetSqueakRequest(hash=make_squeak_hash))
+        get_squeak_response = server_stub.GetSqueak(
+            squeak_server_pb2.GetSqueakRequest(hash=make_squeak_hash))
         print("Get squeak response: " + str(get_squeak_response))
         get_squeak_response_squeak = squeak_from_msg(get_squeak_response.squeak)
         CheckSqueak(get_response_squeak, skipDecryptionCheck=True)
