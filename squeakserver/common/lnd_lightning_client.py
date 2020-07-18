@@ -60,7 +60,7 @@ class LNDLightningClient():
         amount -- the value of the invoice
         """
         invoice = self.ln_module.Invoice(
-            r_preimage = preimage,
+            r_preimage=preimage,
             value=amount,
         )
         return self.stub.AddInvoice(invoice, metadata=[('macaroon', self.macaroon)])

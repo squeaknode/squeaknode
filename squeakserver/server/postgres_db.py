@@ -2,12 +2,9 @@ import logging
 
 from contextlib import contextmanager
 
-import psycopg2
 from psycopg2 import pool
 
 from squeak.core import CSqueak
-from squeak.core import CSqueakEncContent
-from squeak.core.script import CScript
 
 from squeakserver.server.util import get_hash
 
@@ -20,7 +17,7 @@ logger = logging.getLogger(__name__)
 class PostgresDb():
 
     def __init__(self, params):
-        self.connection_pool = psycopg2.pool.ThreadedConnectionPool(5, 20, **params)
+        self.connection_pool = pool.ThreadedConnectionPool(5, 20, **params)
 
     # Get Cursor
     @contextmanager
@@ -35,7 +32,7 @@ class PostgresDb():
     def get_version(self):
         """ Connect to the PostgreSQL database server """
         with self.get_cursor() as curs:
-	    # execute a statement
+            # execute a statement
             logger.info('PostgreSQL database version:')
             curs.execute('SELECT version()')
 
@@ -46,7 +43,7 @@ class PostgresDb():
     def init(self):
         """ Create the tables and indices in the database. """
         with self.get_cursor() as curs:
-	    # execute a statement
+            # execute a statement
             logger.info('Setting up database tables...')
             curs.execute(open("init.sql", "r").read())
 

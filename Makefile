@@ -10,6 +10,11 @@ test:
 	tox
 	tox -e codechecks
 
+codeformat:
+#	tox -e black
+	tox -e autoflake
+	tox -e autopep8
+
 itest:
 	./itests/run_itest.sh
 

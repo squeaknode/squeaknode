@@ -1,18 +1,10 @@
 import logging
-import threading
 
-from squeak.core.encryption import generate_initialization_vector
-from squeak.core.encryption import CEncryptedDecryptionKey
 from squeak.core.signing import CSigningKey
 from squeak.core.signing import CSqueakAddress
 
-from squeakserver.server.buy_offer import BuyOffer
 from squeakserver.common.lnd_lightning_client import LNDLightningClient
-from squeakserver.server.lightning_address import LightningAddressHostPort
 from squeakserver.server.postgres_db import PostgresDb
-from squeakserver.server.util import generate_offer_preimage
-from squeakserver.server.util import bxor
-from squeakserver.server.util import get_hash
 
 from squeakserver.server.squeak_profile import SqueakProfile
 

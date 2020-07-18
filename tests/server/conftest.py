@@ -2,8 +2,7 @@ import time
 
 import pytest
 
-from bitcoin.core import lx, x
-from squeak.core import CSqueak
+from bitcoin.core import lx
 from squeak.core import HASH_LENGTH
 from squeak.core import MakeSqueakFromStr
 from squeak.core.signing import CSigningKey
