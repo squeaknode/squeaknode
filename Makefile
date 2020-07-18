@@ -8,6 +8,7 @@ clean:
 
 test:
 	tox
+	tox -e codechecks
 
 itest:
 	./itests/run_itest.sh
