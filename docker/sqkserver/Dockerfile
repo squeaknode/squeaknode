@@ -19,7 +19,7 @@ RUN pip3 install -r requirements.txt
 # Copy the source code.
 COPY . /app
 
-# Copy the source code.
+# Copy the downloaded rpc files.
 RUN cp -r googleapis /app
 RUN cp rpc.proto /app
 

@@ -12,7 +12,6 @@ fi
 cp rpc.proto proto/lnd.proto
 
 echo "Installing RPC protocol files"
-# install lnd protocol
 python3 -m grpc_tools.protoc --proto_path=googleapis:. --python_out=. --grpc_python_out=. \
 	proto/lnd.proto \
 	proto/squeak_server.proto \

@@ -4,6 +4,8 @@ import logging
 import random
 import time
 
+import grpc
+
 from bitcoin.core import lx, x
 from squeak.params import SelectParams
 from squeak.core import CSqueak
@@ -15,14 +17,12 @@ from squeak.core.encryption import generate_data_key
 from squeak.core.signing import CSigningKey
 from squeak.core.signing import CSqueakAddress
 
-import lnd_pb2 as ln
-import lnd_pb2_grpc as lnrpc
-
-import grpc
-import squeak_server_pb2
-import squeak_server_pb2_grpc
-import squeak_admin_pb2
-import squeak_admin_pb2_grpc
+from proto import lnd_pb2 as ln
+from proto import lnd_pb2_grpc as lnrpc
+from proto import squeak_server_pb2
+from proto import squeak_server_pb2_grpc
+from proto import squeak_admin_pb2
+from proto import squeak_admin_pb2_grpc
 
 from lnd_lightning_client import LNDLightningClient
 
