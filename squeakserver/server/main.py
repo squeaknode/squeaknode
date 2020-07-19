@@ -20,6 +20,7 @@ from squeakserver.server.db_params import parse_db_params
 from squeakserver.server.postgres_db import PostgresDb
 from squeakserver.node.squeak_block_verifier import SqueakBlockVerifier
 from squeakserver.node.squeak_block_periodic_worker import SqueakBlockPeriodicWorker
+from squeakserver.node.squeak_block_queue_worker import SqueakBlockQueueWorker
 from squeakserver.blockchain.bitcoin_blockchain_client import BitcoinBlockchainClient
 
 
@@ -72,12 +73,13 @@ def load_price(config):
     return int(config['server']['price'])
 
 
-def load_handler(lightning_host_port, lightning_client, postgres_db, price):
+def load_handler(lightning_host_port, lightning_client, postgres_db, price, squeak_block_verifier):
     return SqueakServerHandler(
         lightning_host_port,
         lightning_client,
         postgres_db,
         price,
+        squeak_block_verifier,
     )
 
 
@@ -110,8 +112,12 @@ def load_squeak_block_verifier(postgres_db, blockchain_client):
     return SqueakBlockVerifier(postgres_db, blockchain_client)
 
 
-def load_squeak_block_periodic_worker(squeak_block_verifier, postgres_db):
-    return SqueakBlockPeriodicWorker(squeak_block_verifier, postgres_db)
+def load_squeak_block_periodic_worker(squeak_block_verifier):
+    return SqueakBlockPeriodicWorker(squeak_block_verifier)
+
+
+def load_squeak_block_queue_worker(squeak_block_verifier):
+    return SqueakBlockQueueWorker(squeak_block_verifier)
 
 
 def sigterm_handler(_signo, _stack_frame):
@@ -206,8 +212,10 @@ def run_server(config):
     # Start the squeak block verifier
     bitcoin_blockchain_client = load_blockchain_client(config)
     squeak_block_verifier = load_squeak_block_verifier(postgres_db, bitcoin_blockchain_client)
-    squeak_block_periodic_worker = load_squeak_block_periodic_worker(squeak_block_verifier, postgres_db)
-    squeak_block_periodic_worker.start_running()
+    squeak_block_periodic_worker = load_squeak_block_periodic_worker(squeak_block_verifier)
+    squeak_block_queue_worker = load_squeak_block_queue_worker(squeak_block_verifier)
+    # squeak_block_periodic_worker.start_running()
+    squeak_block_queue_worker.start_running()
 
     # start admin rpc server
     admin_handler = load_admin_handler(lightning_client, postgres_db)
@@ -215,7 +223,7 @@ def run_server(config):
     start_admin_rpc_server(admin_rpc_server)
 
     # start rpc server
-    handler = load_handler(lightning_host_port, lightning_client, postgres_db, price)
+    handler = load_handler(lightning_host_port, lightning_client, postgres_db, price, squeak_block_verifier)
     server = load_rpc_server(config, handler)
     server.serve()
 

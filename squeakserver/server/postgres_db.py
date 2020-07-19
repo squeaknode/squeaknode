@@ -172,7 +172,7 @@ class PostgresDb():
             return squeak_profile
 
     def get_unverified_block_squeaks(self):
-        """ Lookup squeaks. """
+        """ Get all squeaks without block header. """
         sql = """
         SELECT hash FROM squeak
         WHERE block_header IS NULL;
@@ -185,3 +185,28 @@ class PostgresDb():
                 for row in rows
             ]
             return hashes
+
+    def delete_squeak(self, squeak_hash):
+        """ Delete a squeak. """
+        sql = """
+        DELETE FROM squeak WHERE hash=%s;
+        """
+        squeak_hash_str = squeak_hash.hex()
+        with self.get_cursor() as curs:
+            curs.execute(sql, (squeak_hash_str,))
+
+    def mark_squeak_block_valid(self, squeak_hash, block_header):
+        """ Add the block header to a squeak. """
+        sql = """
+        UPDATE squeak
+        SET block_header=%s
+        WHERE hash=%s;
+        """
+        squeak_hash_str = squeak_hash.hex()
+        with self.get_cursor() as curs:
+            # execute the UPDATE statement
+            curs.execute(sql, (
+                block_header,
+                squeak_hash,
+            ))
+            logger.info('Updated squeak with block header')
