@@ -54,7 +54,7 @@ class SqueakBlockVerifier:
         block_hash_str = squeak.hashBlock.hex()
         block_header = self.blockchain_client.get_block_header(block_hash_str, False)
         logger.info("Got block header from blockchain: {}".format(block_header))
-        return block_header
+        return bytes.fromhex(block_header)
 
     def _get_block_hash(self, block_height):
         block_hash = self.blockchain_client.get_block_hash(block_height)

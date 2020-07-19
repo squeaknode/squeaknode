@@ -32,6 +32,10 @@ service SqueakAdmin {
   */
   rpc GetSqueakDisplay (GetSqueakDisplayRequest) returns (GetSqueakDisplayReply) {}
 
+  /** sqkadmin: `getfollowedsqueakdisplays`
+  */
+  rpc GetFollowedSqueakDisplays (GetFollowedSqueakDisplaysRequest) returns (GetFollowedSqueakDisplaysReply) {}
+
 }
 
 message GetBalanceRequest {
@@ -135,4 +139,12 @@ message SqueakDisplayEntry {
 
     /// The author name
     string author_name = 9;
+}
+
+message GetFollowedSqueakDisplaysRequest {
+}
+
+message GetFollowedSqueakDisplaysReply {
+    /// Multiple squeak display entries
+    repeated SqueakDisplayEntry squeak_display_entries = 1;
 }

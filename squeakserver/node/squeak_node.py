@@ -122,3 +122,6 @@ class SqueakNode:
 
     def get_squeak_entry_with_profile(self, squeak_hash):
         return self.postgres_db.get_squeak_entry_with_profile(squeak_hash)
+
+    def get_followed_squeak_entries_with_profile(self):
+        return self.postgres_db.get_followed_squeak_entries_with_profile()

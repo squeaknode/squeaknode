@@ -313,6 +313,25 @@ def run():
             == "Hello from the profile on the server!"
         )
 
+        # Make another squeak
+        admin_stub.MakeSqueak(
+            squeak_admin_pb2.MakeSqueakRequest(
+                profile_id=profile_id, content="Hello again!",
+            )
+        )
+
+        # Wait a few seconds for the squeak to be verified on the server.
+        time.sleep(5)
+
+        # Get all followed squeak display items
+        get_followed_squeak_display_response = admin_stub.GetFollowedSqueakDisplays(
+            squeak_admin_pb2.GetFollowedSqueakDisplaysRequest()
+        )
+        print("Get followed squeak displays response: " + str(get_followed_squeak_display_response))
+        assert (
+            len(get_followed_squeak_display_response.squeak_display_entries) == 2
+        )
+
 
 if __name__ == "__main__":
     logging.basicConfig()
