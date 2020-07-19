@@ -1,21 +1,21 @@
 CREATE TABLE IF NOT EXISTS squeak (
   hash CHAR(64) PRIMARY KEY,
   created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  nVersion INTEGER NOT NULL,
-  hashEncContent CHAR(64) NOT NULL,
-  hashReplySqk CHAR(64) NOT NULL,
-  hashBlock CHAR(64) NOT NULL,
-  nBlockHeight INTEGER NOT NULL,
-  vchScriptPubKey bytea NOT NULL,
-  vchEncryptionKey bytea NOT NULL,
-  encDatakey CHAR(256) NOT NULL,
+  n_version INTEGER NOT NULL,
+  hash_enc_content CHAR(64) NOT NULL,
+  hash_reply_sqk CHAR(64) NOT NULL,
+  hash_block CHAR(64) NOT NULL,
+  n_block_height INTEGER NOT NULL,
+  vch_script_pub_key bytea NOT NULL,
+  vch_encryption_key bytea NOT NULL,
+  enc_data_key CHAR(256) NOT NULL,
   iv CHAR(32) NOT NULL,
-  nTime INTEGER NOT NULL,
-  nNonce BIGINT NOT NULL,
-  encContent CHAR(2272) NOT NULL, -- Encrypted content length is always 1136 bytes (2272 hex characters).
-  vchScriptSig bytea NOT NULL,
+  n_time INTEGER NOT NULL,
+  n_nonce BIGINT NOT NULL,
+  enc_content CHAR(2272) NOT NULL, -- Encrypted content length is always 1136 bytes (2272 hex characters).
+  vch_script_sig bytea NOT NULL,
   address VARCHAR(35) NOT NULL, -- Maximum length of a bitcoin address is 35.
-  vchDecryptionKey bytea NOT NULL,
+  vch_decryption_key bytea NOT NULL,
   block_header bytea
 );
 
