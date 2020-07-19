@@ -57,37 +57,34 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         squeak_entry_with_profile = self.handler.handle_get_squeak_display_entry(
             squeak_hash
         )
-        squeak_entry = squeak_entry_with_profile.squeak_entry
-        squeak = squeak_entry.squeak
-        block_header = squeak_entry.block_header
-        logger.info("Got block_header: {}".format(block_header))
+        display_message = self._squeak_entry_to_message(squeak_entry_with_profile)
         return squeak_admin_pb2.GetSqueakDisplayReply(
-            squeak_display_entry=squeak_admin_pb2.SqueakDisplayEntry(
-                squeak_hash=get_hash(squeak).hex(),
-                is_unlocked=True,
-                content_str=squeak.GetDecryptedContentStr(),
-                block_height=squeak.nBlockHeight,
-                block_time=block_header.nTime,
-            )
+            squeak_display_entry=display_message
         )
 
     def GetFollowedSqueakDisplays(self, request, context):
         squeak_entries_with_profile = self.handler.handle_get_followed_squeak_display_entries()
         ret = []
         for entry in squeak_entries_with_profile:
-            squeak_entry = entry.squeak_entry
-            squeak = squeak_entry.squeak
-            block_header = squeak_entry.block_header
-            squeak_display_entry=squeak_admin_pb2.SqueakDisplayEntry(
-                squeak_hash=get_hash(squeak).hex(),
-                is_unlocked=True,
-                content_str=squeak.GetDecryptedContentStr(),
-                block_height=squeak.nBlockHeight,
-                block_time=block_header.nTime,
-            )
-            ret.append(squeak_display_entry)
+            display_message = self._squeak_entry_to_message(entry)
+            ret.append(display_message)
         return squeak_admin_pb2.GetFollowedSqueakDisplaysReply(
             squeak_display_entries=ret
+        )
+
+    def _squeak_entry_to_message(self, squeak_entry_with_profile):
+        squeak_entry = squeak_entry_with_profile.squeak_entry
+        squeak = squeak_entry.squeak
+        block_header = squeak_entry.block_header
+        is_unlocked = squeak.HasDecryptionKey()
+        content_str = squeak.GetDecryptedContentStr() if is_unlocked else None
+        logger.info("Got block_header: {}".format(block_header))
+        return squeak_admin_pb2.SqueakDisplayEntry(
+            squeak_hash=get_hash(squeak).hex(),
+            is_unlocked=squeak.HasDecryptionKey(),
+            content_str=content_str,
+            block_height=squeak.nBlockHeight,
+            block_time=block_header.nTime,
         )
 
     def serve(self):
