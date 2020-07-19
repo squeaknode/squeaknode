@@ -1,15 +1,15 @@
-from squeak.core.signing import CSigningKey
-from squeak.core.signing import CSqueakAddress
-from squeak.core.encryption import generate_initialization_vector
-from squeak.core.encryption import CEncryptedDecryptionKey
+from squeak.core.encryption import (CEncryptedDecryptionKey,
+                                    generate_initialization_vector)
+from squeak.core.signing import CSigningKey, CSqueakAddress
 
-from squeakserver.node.squeak_block_verifier import SqueakBlockVerifier
-from squeakserver.node.squeak_block_periodic_worker import SqueakBlockPeriodicWorker
+from squeakserver.node.squeak_block_periodic_worker import \
+    SqueakBlockPeriodicWorker
 from squeakserver.node.squeak_block_queue_worker import SqueakBlockQueueWorker
+from squeakserver.node.squeak_block_verifier import SqueakBlockVerifier
 from squeakserver.node.squeak_maker import SqueakMaker
 from squeakserver.server.buy_offer import BuyOffer
-from squeakserver.server.util import generate_offer_preimage
 from squeakserver.server.squeak_profile import SqueakProfile
+from squeakserver.server.util import generate_offer_preimage
 
 
 class SqueakNode:

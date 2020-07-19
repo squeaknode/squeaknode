@@ -1,9 +1,7 @@
 import logging
 
-
 from squeakserver.common.lnd_lightning_client import LNDLightningClient
 from squeakserver.node.squeak_node import SqueakNode
-
 
 logger = logging.getLogger(__name__)
 

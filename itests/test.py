@@ -4,25 +4,16 @@ import logging
 import time
 
 import grpc
-
+from lnd_lightning_client import LNDLightningClient
+from squeak.core import HASH_LENGTH, CheckSqueak, CSqueak, MakeSqueakFromStr
+from squeak.core.encryption import CEncryptedDecryptionKey, generate_data_key
+from squeak.core.signing import CSigningKey, CSqueakAddress
 from squeak.params import SelectParams
-from squeak.core import CSqueak
-from squeak.core import CheckSqueak
-from squeak.core import HASH_LENGTH
-from squeak.core import MakeSqueakFromStr
-from squeak.core.encryption import CEncryptedDecryptionKey
-from squeak.core.encryption import generate_data_key
-from squeak.core.signing import CSigningKey
-from squeak.core.signing import CSqueakAddress
 
 from proto import lnd_pb2 as ln
 from proto import lnd_pb2_grpc as lnrpc
-from proto import squeak_server_pb2
-from proto import squeak_server_pb2_grpc
-from proto import squeak_admin_pb2
-from proto import squeak_admin_pb2_grpc
-
-from lnd_lightning_client import LNDLightningClient
+from proto import (squeak_admin_pb2, squeak_admin_pb2_grpc, squeak_server_pb2,
+                   squeak_server_pb2_grpc)
 
 
 def build_squeak_msg(squeak):

@@ -1,11 +1,10 @@
 import logging
 import time
 
-from squeak.core.signing import CSigningKey
 from squeak.core import MakeSqueakFromStr
+from squeak.core.signing import CSigningKey
 
 from squeakserver.node.block_info import BlockInfo
-
 
 logger = logging.getLogger(__name__)
 

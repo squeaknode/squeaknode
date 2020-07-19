@@ -1,15 +1,11 @@
 import logging
-
 from contextlib import contextmanager
 
 from psycopg2 import pool
-
 from squeak.core import CSqueak
 
-from squeakserver.server.util import get_hash
-
 from squeakserver.server.squeak_profile import SqueakProfile
-
+from squeakserver.server.util import get_hash
 
 logger = logging.getLogger(__name__)
 

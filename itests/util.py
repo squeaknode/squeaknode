@@ -1,9 +1,7 @@
 import time
 
-
 from bitcoin.core import lx
-from squeak.core import HASH_LENGTH
-from squeak.core import MakeSqueakFromStr
+from squeak.core import HASH_LENGTH, MakeSqueakFromStr
 from squeak.core.signing import CSigningKey
 
 
