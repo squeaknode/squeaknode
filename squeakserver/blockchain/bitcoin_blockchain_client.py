@@ -1,9 +1,8 @@
-import logging
 import json
+import logging
 from typing import Optional
 
 import requests
-
 
 logger = logging.getLogger(__name__)
 
@@ -39,9 +38,7 @@ class BitcoinBlockchainClient:
             "id": 0,
         }
         response = requests.post(
-            self.url,
-            data=json.dumps(payload),
-            headers=self.headers,
+            self.url, data=json.dumps(payload), headers=self.headers,
         ).json()
 
         logger.info("Got header request result: {}".format(response))

@@ -305,12 +305,13 @@ def run():
 
         # Get a squeak display item
         get_squeak_display_response = admin_stub.GetSqueakDisplay(
-            squeak_admin_pb2.GetSqueakDisplayRequest(
-                hash=make_squeak_hash,
-            )
+            squeak_admin_pb2.GetSqueakDisplayRequest(hash=make_squeak_hash,)
         )
         print("Get squeak display response: " + str(get_squeak_display_response))
-        assert get_squeak_display_response.squeak_display_entry.content_str == "Hello from the profile on the server!"
+        assert (
+            get_squeak_display_response.squeak_display_entry.content_str
+            == "Hello from the profile on the server!"
+        )
 
 
 if __name__ == "__main__":

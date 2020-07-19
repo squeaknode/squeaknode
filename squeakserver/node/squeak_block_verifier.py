@@ -1,8 +1,6 @@
 import logging
 import queue
 
-from squeakserver.blockchain.util import parse_block_header
-
 logger = logging.getLogger(__name__)
 
 

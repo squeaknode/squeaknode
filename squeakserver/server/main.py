@@ -34,7 +34,7 @@ def load_lightning_client(config) -> LNDLightningClient:
 
 
 def load_lightning_host_port(config) -> LNDLightningClient:
-    lnd_host = config.get("lnd","external_host", fallback=None)
+    lnd_host = config.get("lnd", "external_host", fallback=None)
     lnd_port = int(config["lnd"]["port"])
     return LightningAddressHostPort(lnd_host, lnd_port,)
 
