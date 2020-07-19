@@ -111,7 +111,10 @@ class PostgresDb:
         SELECT hash FROM squeak
         WHERE address IN %s
         AND nBlockHeight >= %s
-        AND nBlockHeight <= %s"""
+        AND nBlockHeight <= %s
+        AND vchDecryptionKey IS NOT NULL
+        AND block_header IS NOT NULL;
+        """
         addresses_tuple = tuple(addresses)
 
         if not addresses:
@@ -200,5 +203,4 @@ class PostgresDb:
         squeak_hash_str = squeak_hash.hex()
         with self.get_cursor() as curs:
             # execute the UPDATE statement
-            curs.execute(sql, (block_header, squeak_hash,))
-            logger.info("Updated squeak with block header")
+            curs.execute(sql, (block_header, squeak_hash_str,))
