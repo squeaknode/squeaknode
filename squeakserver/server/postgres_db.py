@@ -2,6 +2,8 @@ import logging
 from contextlib import contextmanager
 
 from psycopg2 import pool
+from psycopg2.extras import DictCursor
+
 from squeak.core import CSqueak
 
 from squeakserver.server.squeak_profile import SqueakProfile
@@ -22,7 +24,7 @@ class PostgresDb:
     def get_cursor(self):
         con = self.connection_pool.getconn()
         try:
-            yield con.cursor()
+            yield con.cursor(cursor_factory=DictCursor)
             con.commit()
         finally:
             self.connection_pool.putconn(con)
@@ -48,7 +50,7 @@ class PostgresDb:
     def insert_squeak(self, squeak):
         """ Insert a new squeak. """
         sql = """
-        INSERT INTO squeak(hash, nVersion, hashEncContent, hashReplySqk, hashBlock, nBlockHeight, vchScriptPubKey, vchEncryptionKey, encDatakey, iv, nTime, nNonce, encContent, vchScriptSig, address, vchDecryptionKey)
+        INSERT INTO squeak(hash, n_version, hash_enc_content, hash_reply_sqk, hash_block, n_block_height, vch_script_pub_key, vch_encryption_key, enc_data_key, iv, n_time, n_nonce, enc_content, vch_script_sig, address, vch_decryption_key)
         VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         RETURNING hash;"""
 
@@ -91,20 +93,20 @@ class PostgresDb:
             row = curs.fetchone()
 
             squeak = CSqueak(
-                nVersion=row[2],
-                hashEncContent=bytes.fromhex(row[3]),
-                hashReplySqk=bytes.fromhex(row[4]),
-                hashBlock=bytes.fromhex(row[5]),
-                nBlockHeight=row[6],
-                vchScriptPubKey=row[7],
-                vchEncryptionKey=row[8],
-                encDatakey=bytes.fromhex(row[9]),
-                iv=bytes.fromhex((row[10])),
-                nTime=row[11],
-                nNonce=row[12],
-                encContent=bytes.fromhex((row[13])),
-                vchScriptSig=row[14],
-                vchDecryptionKey=row[16],
+                nVersion=row['n_version'],
+                hashEncContent=bytes.fromhex(row['hash_enc_content']),
+                hashReplySqk=bytes.fromhex(row['hash_reply_sqk']),
+                hashBlock=bytes.fromhex(row['hash_block']),
+                nBlockHeight=row['n_block_height'],
+                vchScriptPubKey=row['vch_script_pub_key'],
+                vchEncryptionKey=row['vch_encryption_key'],
+                encDatakey=bytes.fromhex(row['enc_data_key']),
+                iv=bytes.fromhex((row['iv'])),
+                nTime=row['n_time'],
+                nNonce=row['n_nonce'],
+                encContent=bytes.fromhex((row['enc_content'])),
+                vchScriptSig=row['vch_script_sig'],
+                vchDecryptionKey=row['vch_decryption_key'],
             )
             block_header = row[17]
             return SqueakEntry(squeak=squeak, block_header=block_header)
@@ -160,9 +162,9 @@ class PostgresDb:
         sql = """
         SELECT hash FROM squeak
         WHERE address IN %s
-        AND nBlockHeight >= %s
-        AND nBlockHeight <= %s
-        AND vchDecryptionKey IS NOT NULL
+        AND n_block_height >= %s
+        AND n_block_height <= %s
+        AND vch_decryption_key IS NOT NULL
         AND block_header IS NOT NULL;
         """
         addresses_tuple = tuple(addresses)
