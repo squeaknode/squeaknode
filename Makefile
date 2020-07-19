@@ -11,10 +11,10 @@ test:
 	tox -e codechecks
 
 codeformat:
-#	tox -e black
 	tox -e autoflake
 	tox -e autopep8
 	tox -e isort
+	tox -e black
 
 itest:
 	./itests/run_itest.sh

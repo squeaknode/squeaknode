@@ -25,9 +25,7 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
     def CreateSigningProfile(self, request, context):
         profile_name = request.profile_name
         profile_id = self.handler.handle_create_signing_profile(profile_name)
-        return squeak_admin_pb2.CreateSigningProfileReply(
-            profile_id=profile_id,
-        )
+        return squeak_admin_pb2.CreateSigningProfileReply(profile_id=profile_id,)
 
     def GetSqueakProfile(self, request, context):
         profile_id = request.profile_id
@@ -47,15 +45,14 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         profile_id = request.profile_id
         content_str = request.content
         replyto_hash = request.replyto
-        squeak_hash = self.handler.handle_make_squeak(profile_id, content_str, replyto_hash)
-        return squeak_admin_pb2.MakeSqueakReply(
-            hash=squeak_hash,
+        squeak_hash = self.handler.handle_make_squeak(
+            profile_id, content_str, replyto_hash
         )
+        return squeak_admin_pb2.MakeSqueakReply(hash=squeak_hash,)
 
     def serve(self):
         server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-        squeak_admin_pb2_grpc.add_SqueakAdminServicer_to_server(
-            self, server)
-        server.add_insecure_port('{}:{}'.format(self.host, self.port))
+        squeak_admin_pb2_grpc.add_SqueakAdminServicer_to_server(self, server)
+        server.add_insecure_port("{}:{}".format(self.host, self.port))
         server.start()
         server.wait_for_termination()

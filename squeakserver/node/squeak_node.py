@@ -1,9 +1,10 @@
-from squeak.core.encryption import (CEncryptedDecryptionKey,
-                                    generate_initialization_vector)
+from squeak.core.encryption import (
+    CEncryptedDecryptionKey,
+    generate_initialization_vector,
+)
 from squeak.core.signing import CSigningKey, CSqueakAddress
 
-from squeakserver.node.squeak_block_periodic_worker import \
-    SqueakBlockPeriodicWorker
+from squeakserver.node.squeak_block_periodic_worker import SqueakBlockPeriodicWorker
 from squeakserver.node.squeak_block_queue_worker import SqueakBlockQueueWorker
 from squeakserver.node.squeak_block_verifier import SqueakBlockVerifier
 from squeakserver.node.squeak_maker import SqueakMaker
@@ -13,16 +14,26 @@ from squeakserver.server.util import generate_offer_preimage
 
 
 class SqueakNode:
-
-    def __init__(self, postgres_db, blockchain_client, lightning_client, lightning_host_port, price):
+    def __init__(
+        self,
+        postgres_db,
+        blockchain_client,
+        lightning_client,
+        lightning_host_port,
+        price,
+    ):
         self.postgres_db = postgres_db
         self.blockchain_client = blockchain_client
         self.lightning_client = lightning_client
         self.lightning_host_port = lightning_host_port
         self.price = price
         self.squeak_block_verifier = SqueakBlockVerifier(postgres_db, blockchain_client)
-        self.squeak_block_periodic_worker = SqueakBlockPeriodicWorker(self.squeak_block_verifier)
-        self.squeak_block_queue_worker = SqueakBlockQueueWorker(self.squeak_block_verifier)
+        self.squeak_block_periodic_worker = SqueakBlockPeriodicWorker(
+            self.squeak_block_verifier
+        )
+        self.squeak_block_queue_worker = SqueakBlockQueueWorker(
+            self.squeak_block_verifier
+        )
 
     def start_running(self):
         # self.squeak_block_periodic_worker.start_running()
@@ -57,7 +68,8 @@ class SqueakNode:
         # Encrypt the decryption key
         iv = generate_initialization_vector()
         encrypted_decryption_key = CEncryptedDecryptionKey.from_decryption_key(
-            decryption_key, preimage, iv)
+            decryption_key, preimage, iv
+        )
         # Get the offer price
         amount = self.price
         # Create the lightning invoice

@@ -5,7 +5,6 @@ logger = logging.getLogger(__name__)
 
 
 class SqueakBlockQueueWorker:
-
     def __init__(self, squeak_block_verifier):
         self.squeak_block_verifier = squeak_block_verifier
 

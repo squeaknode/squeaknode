@@ -8,7 +8,6 @@ VERIFY_UPDATE_INTERVAL_S = 10.0
 
 
 class SqueakBlockPeriodicWorker:
-
     def __init__(self, squeak_block_verifier):
         self.squeak_block_verifier = squeak_block_verifier
 

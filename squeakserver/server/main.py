@@ -8,12 +8,9 @@ from squeak.params import SelectParams
 
 import proto.lnd_pb2 as ln
 import proto.lnd_pb2_grpc as lnrpc
-from squeakserver.admin.squeak_admin_server_handler import \
-    SqueakAdminServerHandler
-from squeakserver.admin.squeak_admin_server_servicer import \
-    SqueakAdminServerServicer
-from squeakserver.blockchain.bitcoin_blockchain_client import \
-    BitcoinBlockchainClient
+from squeakserver.admin.squeak_admin_server_handler import SqueakAdminServerHandler
+from squeakserver.admin.squeak_admin_server_servicer import SqueakAdminServerServicer
+from squeakserver.blockchain.bitcoin_blockchain_client import BitcoinBlockchainClient
 from squeakserver.common.lnd_lightning_client import LNDLightningClient
 from squeakserver.node.squeak_node import SqueakNode
 from squeakserver.server.db_params import parse_db_params
@@ -26,49 +23,42 @@ logger = logging.getLogger(__name__)
 
 
 def load_lightning_client(config) -> LNDLightningClient:
-    if int(config['server']['price']) == 0:
+    if int(config["server"]["price"]) == 0:
         return None
     return LNDLightningClient(
-        config['lnd']['host'],
-        config['lnd']['rpc_port'],
-        config['lnd']['tls_cert_path'],
-        config['lnd']['macaroon_path'],
+        config["lnd"]["host"],
+        config["lnd"]["rpc_port"],
+        config["lnd"]["tls_cert_path"],
+        config["lnd"]["macaroon_path"],
         ln,
         lnrpc,
     )
 
 
 def load_lightning_host_port(config) -> LNDLightningClient:
-    if int(config['server']['price']) == 0:
+    if int(config["server"]["price"]) == 0:
         return None
-    lnd_host = config['lnd']['host']
-    if 'external_host' in config['lnd']:
-        lnd_host = config['lnd']['external_host']
-    lnd_port = int(config['lnd']['port'])
-    return LightningAddressHostPort(
-        lnd_host,
-        lnd_port,
-    )
+    lnd_host = config["lnd"]["host"]
+    if "external_host" in config["lnd"]:
+        lnd_host = config["lnd"]["external_host"]
+    lnd_port = int(config["lnd"]["port"])
+    return LightningAddressHostPort(lnd_host, lnd_port,)
 
 
 def load_rpc_server(config, handler) -> SqueakServerServicer:
     return SqueakServerServicer(
-        config['server']['rpc_host'],
-        config['server']['rpc_port'],
-        handler,
+        config["server"]["rpc_host"], config["server"]["rpc_port"], handler,
     )
 
 
 def load_admin_rpc_server(config, handler) -> SqueakAdminServerServicer:
     return SqueakAdminServerServicer(
-        config['admin']['rpc_host'],
-        config['admin']['rpc_port'],
-        handler,
+        config["admin"]["rpc_host"], config["admin"]["rpc_port"], handler,
     )
 
 
 def load_price(config):
-    return int(config['server']['price'])
+    return int(config["server"]["price"])
 
 
 def load_handler(squeak_node):
@@ -76,10 +66,7 @@ def load_handler(squeak_node):
 
 
 def load_admin_handler(lightning_client, squeak_node):
-    return SqueakAdminServerHandler(
-        lightning_client,
-        squeak_node,
-    )
+    return SqueakAdminServerHandler(lightning_client, squeak_node,)
 
 
 def load_db_params(config):
@@ -93,10 +80,10 @@ def load_postgres_db(config):
 
 def load_blockchain_client(config):
     return BitcoinBlockchainClient(
-        config['bitcoin']['rpc_host'],
-        config['bitcoin']['rpc_port'],
-        config['bitcoin']['rpc_user'],
-        config['bitcoin']['rpc_pass'],
+        config["bitcoin"]["rpc_host"],
+        config["bitcoin"]["rpc_port"],
+        config["bitcoin"]["rpc_user"],
+        config["bitcoin"]["rpc_pass"],
     )
 
 
@@ -106,11 +93,8 @@ def sigterm_handler(_signo, _stack_frame):
 
 
 def start_admin_rpc_server(rpc_server):
-    logger.info('Calling start_admin_rpc_server...')
-    thread = threading.Thread(
-        target=rpc_server.serve,
-        args=(),
-    )
+    logger.info("Calling start_admin_rpc_server...")
+    thread = threading.Thread(target=rpc_server.serve, args=(),)
     thread.daemon = True
     thread.start()
 
@@ -120,22 +104,15 @@ def parse_args():
         description="squeakserver runs a node using squeak protocol. ",
     )
     parser.add_argument(
-        '--config',
-        dest='config',
-        type=str,
-        help='Path to the config file.',
+        "--config", dest="config", type=str, help="Path to the config file.",
     )
     parser.add_argument(
-        '--log-level',
-        dest='log_level',
-        type=str,
-        default='info',
-        help='Logging level',
+        "--log-level", dest="log_level", type=str, default="info", help="Logging level",
     )
-    subparsers = parser.add_subparsers(help='sub-command help')
+    subparsers = parser.add_subparsers(help="sub-command help")
 
     # create the parser for the "run-server" command
-    parser_run_server = subparsers.add_parser('run-server', help='run-server help')
+    parser_run_server = subparsers.add_parser("run-server", help="run-server help")
     parser_run_server.set_defaults(func=run_server)
 
     return parser.parse_args()
@@ -159,17 +136,17 @@ def main():
 
 
 def run_server(config):
-    logger.info('network: ' + config['DEFAULT']['network'])
+    logger.info("network: " + config["DEFAULT"]["network"])
     # SelectParams(config['DEFAULT']['network'])
     SelectParams("mainnet")
 
     # load the db params
     db_params = load_db_params(config)
-    logger.info('db params: ' + str(db_params))
+    logger.info("db params: " + str(db_params))
 
     # load postgres db
     postgres_db = load_postgres_db(config)
-    logger.info('postgres_db: ' + str(postgres_db))
+    logger.info("postgres_db: " + str(postgres_db))
     postgres_db.get_version()
     postgres_db.init()
 
@@ -184,8 +161,9 @@ def run_server(config):
     blockchain_client = load_blockchain_client(config)
 
     # Create and start the squeak node
-    squeak_node = SqueakNode(postgres_db, blockchain_client,
-                             lightning_client, lightning_host_port, price)
+    squeak_node = SqueakNode(
+        postgres_db, blockchain_client, lightning_client, lightning_host_port, price
+    )
     squeak_node.start_running()
 
     # start admin rpc server
@@ -199,5 +177,5 @@ def run_server(config):
     server.serve()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

@@ -26,16 +26,12 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
         # Check is squeak deserialized correctly
         if squeak == None:
             context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
-            return squeak_server_pb2.PostSqueakReply(
-                hash=None,
-            )
+            return squeak_server_pb2.PostSqueakReply(hash=None,)
 
         # Check is squeak hash is correct
         if get_hash(squeak) != squeak_hash:
             context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
-            return squeak_server_pb2.PostSqueakReply(
-                hash=None,
-            )
+            return squeak_server_pb2.PostSqueakReply(hash=None,)
 
         # Insert the squeak in database.
         self.handler.handle_posted_squeak(squeak)
@@ -48,14 +44,11 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
         squeak = self.handler.handle_get_squeak(squeak_hash)
         if squeak == None:
             context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
-            return squeak_server_pb2.GetSqueakReply(
-                squeak=None,
-            )
+            return squeak_server_pb2.GetSqueakReply(squeak=None,)
 
         return squeak_server_pb2.GetSqueakReply(
             squeak=squeak_server_pb2.Squeak(
-                hash=get_hash(squeak),
-                serialized_squeak=squeak.serialize(),
+                hash=get_hash(squeak), serialized_squeak=squeak.serialize(),
             )
         )
 
@@ -64,9 +57,7 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
         min_block = request.min_block
         max_block = request.max_block
         hashes = self.handler.handle_lookup_squeaks(addresses, min_block, max_block)
-        return squeak_server_pb2.LookupSqueaksReply(
-            hashes=hashes,
-        )
+        return squeak_server_pb2.LookupSqueaksReply(hashes=hashes,)
 
     def BuySqueak(self, request, context):
         squeak_hash = request.hash
@@ -77,18 +68,14 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
 
         if buy_response == None:
             context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
-            return squeak_server_pb2.BuySqueakReply(
-                offer=None,
-            )
+            return squeak_server_pb2.BuySqueakReply(offer=None,)
 
         offer_squeak_hash = buy_response.squeak_hash
         amount = buy_response.amount
 
         if offer_squeak_hash != squeak_hash:
             context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
-            return squeak_server_pb2.BuySqueakReply(
-                offer=None,
-            )
+            return squeak_server_pb2.BuySqueakReply(offer=None,)
 
         return squeak_server_pb2.BuySqueakReply(
             offer=squeak_server_pb2.SqueakBuyOffer(
@@ -107,9 +94,8 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
 
     def serve(self):
         server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-        squeak_server_pb2_grpc.add_SqueakServerServicer_to_server(
-            self, server)
+        squeak_server_pb2_grpc.add_SqueakServerServicer_to_server(self, server)
         # server.add_insecure_port('0.0.0.0:50052')
-        server.add_insecure_port('{}:{}'.format(self.host, self.port))
+        server.add_insecure_port("{}:{}".format(self.host, self.port))
         server.start()
         server.wait_for_termination()

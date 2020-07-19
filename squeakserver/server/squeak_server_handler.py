@@ -23,8 +23,11 @@ class SqueakServerHandler(object):
         return self.squeak_node.get_locked_squeak(squeak_hash)
 
     def handle_lookup_squeaks(self, addresses, min_block, max_block):
-        logger.info("Handle lookup squeaks with addresses: {}, min_block: {}, max_block: {}".format(
-            str(addresses), min_block, max_block))
+        logger.info(
+            "Handle lookup squeaks with addresses: {}, min_block: {}, max_block: {}".format(
+                str(addresses), min_block, max_block
+            )
+        )
         hashes = self.squeak_node.lookup_squeaks(addresses, min_block, max_block)
         logger.info("Got number of hashes from db: {}".format(len(hashes)))
         return hashes
