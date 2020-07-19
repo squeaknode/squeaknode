@@ -9,7 +9,7 @@ from squeakserver.server.lightning_address import LightningAddressHostPort
 from squeakserver.server.postgres_db import PostgresDb
 from squeakserver.server.util import generate_offer_preimage
 from squeakserver.server.util import get_hash
-from squeakserver.node.squeak_block_verifier import SqueakBlockVerifier
+from squeakserver.node.squeak_node import SqueakNode
 
 
 logger = logging.getLogger(__name__)
@@ -25,19 +25,20 @@ class SqueakServerHandler(object):
             lightning_client: LNDLightningClient,
             postgres_db: PostgresDb,
             price: int,
-            squeak_block_verifier: SqueakBlockVerifier,
+            squeak_node: SqueakNode,
     ) -> None:
         self.lightning_host_port = lightning_host_port
         self.lightning_client = lightning_client
         self.postgres_db = postgres_db
         self.price = price
-        self.squeak_block_verifier = squeak_block_verifier
+        self.squeak_node = squeak_node
 
     def handle_posted_squeak(self, squeak):
         logger.info("Handle posted squeak with hash: {}".format(get_hash(squeak).hex()))
         # Insert the squeak in the database
-        inserted_squeak_hash = self.postgres_db.insert_squeak(squeak)
-        self.squeak_block_verifier.add_squeak_to_queue(inserted_squeak_hash)
+        # inserted_squeak_hash = self.postgres_db.insert_squeak(squeak)
+        # self.squeak_block_verifier.add_squeak_to_queue(inserted_squeak_hash)
+        self.squeak_node.save_squeak(squeak)
         return
 
     def handle_get_squeak(self, squeak_hash):
