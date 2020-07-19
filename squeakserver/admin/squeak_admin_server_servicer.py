@@ -50,6 +50,19 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         )
         return squeak_admin_pb2.MakeSqueakReply(hash=squeak_hash,)
 
+    def GetSqueakDisplay(self, request, context):
+        squeak_hash = request.hash
+        squeak_entry_with_profile = self.handler.handle_get_squeak_display_entry(squeak_hash)
+        squeak_entry = squeak_entry_with_profile.squeak_entry
+        squeak = squeak_entry.squeak
+        return squeak_admin_pb2.GetSqueakDisplayReply(
+            squeak_display_entry=squeak_admin_pb2.SqueakDisplayEntry(
+                squeak_hash=squeak_hash.hex(),
+                is_unlocked=True,
+                content_str=squeak.GetDecryptedContentStr(),
+            )
+        )
+
     def serve(self):
         server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
         squeak_admin_pb2_grpc.add_SqueakAdminServicer_to_server(self, server)

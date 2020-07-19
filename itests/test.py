@@ -303,6 +303,15 @@ def run():
         print("Get balance response: " + str(get_balance_response))
         assert get_balance_response.wallet_balance_response.total_balance == 1000
 
+        # Get a squeak display item
+        get_squeak_display_response = admin_stub.GetSqueakDisplay(
+            squeak_admin_pb2.GetSqueakDisplayRequest(
+                hash=make_squeak_hash,
+            )
+        )
+        print("Get squeak display response: " + str(get_squeak_display_response))
+        assert get_squeak_display_response.squeak_display_entry.content_str == "Hello from the profile on the server!"
+
 
 if __name__ == "__main__":
     logging.basicConfig()
