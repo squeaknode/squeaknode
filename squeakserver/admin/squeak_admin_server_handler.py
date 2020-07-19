@@ -44,5 +44,9 @@ class SqueakAdminServerHandler(object):
         squeak_entry_with_profile = self.squeak_node.get_squeak_entry_with_profile(
             squeak_hash
         )
-        logger.info("Got squeak entry with profile for hash: {}".format(squeak_entry_with_profile))
+        logger.info(
+            "Got squeak entry with profile for hash: {}".format(
+                squeak_entry_with_profile
+            )
+        )
         return squeak_entry_with_profile

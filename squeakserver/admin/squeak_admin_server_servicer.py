@@ -52,7 +52,9 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
 
     def GetSqueakDisplay(self, request, context):
         squeak_hash = request.hash
-        squeak_entry_with_profile = self.handler.handle_get_squeak_display_entry(squeak_hash)
+        squeak_entry_with_profile = self.handler.handle_get_squeak_display_entry(
+            squeak_hash
+        )
         squeak_entry = squeak_entry_with_profile.squeak_entry
         squeak = squeak_entry.squeak
         return squeak_admin_pb2.GetSqueakDisplayReply(
