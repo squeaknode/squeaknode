@@ -1,6 +1,5 @@
 import logging
 import threading
-import time
 
 
 logger = logging.getLogger(__name__)
@@ -17,4 +16,3 @@ class SqueakBlockPeriodicWorker:
     def start_running(self):
         threading.Timer(VERIFY_UPDATE_INTERVAL_S, self.start_running).start()
         self.squeak_block_verifier.verify_all_unverified_squeaks()
-
