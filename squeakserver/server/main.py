@@ -110,8 +110,8 @@ def load_squeak_block_verifier(postgres_db, blockchain_client):
     return SqueakBlockVerifier(postgres_db, blockchain_client)
 
 
-def load_squeak_block_periodic_worker(squeak_block_verifier, postgres_db):
-    return SqueakBlockPeriodicWorker(squeak_block_verifier, postgres_db)
+def load_squeak_block_periodic_worker(squeak_block_verifier):
+    return SqueakBlockPeriodicWorker(squeak_block_verifier)
 
 
 def sigterm_handler(_signo, _stack_frame):
@@ -206,7 +206,7 @@ def run_server(config):
     # Start the squeak block verifier
     bitcoin_blockchain_client = load_blockchain_client(config)
     squeak_block_verifier = load_squeak_block_verifier(postgres_db, bitcoin_blockchain_client)
-    squeak_block_periodic_worker = load_squeak_block_periodic_worker(squeak_block_verifier, postgres_db)
+    squeak_block_periodic_worker = load_squeak_block_periodic_worker(squeak_block_verifier)
     squeak_block_periodic_worker.start_running()
 
     # start admin rpc server

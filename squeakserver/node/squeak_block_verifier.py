@@ -15,6 +15,12 @@ class SqueakBlockVerifier:
         squeak = self._get_squeak(squeak_hash)
         block_info = self._get_block_info(squeak)
 
+    def verify_all_unverified_squeaks(self):
+        logger.info('Calling verify_squeaks.')
+        squeaks_to_verify = self.postgres_db.get_unverified_block_squeaks()
+        for squeak_hash in squeaks_to_verify:
+            self.verify_squeak_block(squeak_hash)
+
     def _get_squeak(self, squeak_hash):
         return self.postgres_db.get_squeak(squeak_hash)
 
