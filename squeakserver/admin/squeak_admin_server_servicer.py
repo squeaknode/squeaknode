@@ -5,6 +5,8 @@ import grpc
 
 from proto import squeak_admin_pb2, squeak_admin_pb2_grpc
 
+from squeakserver.server.util import get_hash
+
 logger = logging.getLogger(__name__)
 
 
@@ -57,12 +59,35 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         )
         squeak_entry = squeak_entry_with_profile.squeak_entry
         squeak = squeak_entry.squeak
+        block_header = squeak_entry.block_header
+        logger.info("Got block_header: {}".format(block_header))
         return squeak_admin_pb2.GetSqueakDisplayReply(
             squeak_display_entry=squeak_admin_pb2.SqueakDisplayEntry(
-                squeak_hash=squeak_hash.hex(),
+                squeak_hash=get_hash(squeak).hex(),
                 is_unlocked=True,
                 content_str=squeak.GetDecryptedContentStr(),
+                block_height=squeak.nBlockHeight,
+                block_time=block_header.nTime,
             )
+        )
+
+    def GetFollowedSqueakDisplays(self, request, context):
+        squeak_entries_with_profile = self.handler.handle_get_followed_squeak_display_entries()
+        ret = []
+        for entry in squeak_entries_with_profile:
+            squeak_entry = entry.squeak_entry
+            squeak = squeak_entry.squeak
+            block_header = squeak_entry.block_header
+            squeak_display_entry=squeak_admin_pb2.SqueakDisplayEntry(
+                squeak_hash=get_hash(squeak).hex(),
+                is_unlocked=True,
+                content_str=squeak.GetDecryptedContentStr(),
+                block_height=squeak.nBlockHeight,
+                block_time=block_header.nTime,
+            )
+            ret.append(squeak_display_entry)
+        return squeak_admin_pb2.GetFollowedSqueakDisplaysReply(
+            squeak_display_entries=ret
         )
 
     def serve(self):

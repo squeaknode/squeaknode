@@ -9,6 +9,8 @@ from squeakserver.core.squeak_entry import SqueakEntry
 from squeakserver.core.squeak_entry_with_profile import SqueakEntryWithProfile
 from squeakserver.server.squeak_profile import SqueakProfile
 from squeakserver.server.util import get_hash
+from squeakserver.blockchain.util import parse_block_header
+
 
 logger = logging.getLogger(__name__)
 
@@ -105,11 +107,22 @@ class PostgresDb:
         with self.get_cursor() as curs:
             curs.execute(sql, (squeak_hash_str,))
             row = curs.fetchone()
-            squeak_entry = self._parse_squeak_entry(row)
-            squeak_profile = self._parse_squeak_profile(row)
-            return SqueakEntryWithProfile(
-                squeak_entry=squeak_entry, squeak_profile=squeak_profile,
-            )
+            return self._parse_squeak_entry_with_profile(row)
+
+    def get_followed_squeak_entries_with_profile(self):
+        """ Get a squeak. """
+        sql = """
+        SELECT * FROM squeak
+        JOIN profile
+        ON squeak.address=profile.address
+        WHERE squeak.block_header IS NOT NULL
+        AND profile.following=False
+        ORDER BY n_block_height DESC, n_time DESC;
+        """
+        with self.get_cursor() as curs:
+            curs.execute(sql)
+            rows = curs.fetchall()
+            return [self._parse_squeak_entry_with_profile(row) for row in rows]
 
     def lookup_squeaks(self, addresses, min_block, max_block):
         """ Lookup squeaks. """
@@ -153,10 +166,8 @@ class PostgresDb:
                     squeak_profile.following,
                 ),
             )
-            logger.info("Inserted new profile")
             # get the new profile id back
             row = curs.fetchone()
-            logger.info("New profile id: {}".format(row["profile_id"]))
             return row["profile_id"]
 
     def get_profile(self, profile_id):
@@ -224,7 +235,8 @@ class PostgresDb:
             vchDecryptionKey=vch_decryption_key,
         )
         block_header_column = row["block_header"]
-        block_header = bytes(block_header_column) if block_header_column else None
+        block_header_bytes = bytes(block_header_column) if block_header_column else None
+        block_header = parse_block_header(block_header_bytes) if block_header_bytes else None
         return SqueakEntry(squeak=squeak, block_header=block_header)
 
     def _parse_squeak_profile(self, row):
@@ -237,4 +249,11 @@ class PostgresDb:
             address=row["address"],
             sharing=row["sharing"],
             following=row["following"],
+        )
+
+    def _parse_squeak_entry_with_profile(self, row):
+        squeak_entry = self._parse_squeak_entry(row)
+        squeak_profile = self._parse_squeak_profile(row)
+        return SqueakEntryWithProfile(
+            squeak_entry=squeak_entry, squeak_profile=squeak_profile,
         )

@@ -50,3 +50,13 @@ class SqueakAdminServerHandler(object):
             )
         )
         return squeak_entry_with_profile
+
+    def handle_get_followed_squeak_display_entries(self):
+        logger.info("Handle get followed squeak display entries.")
+        squeak_entries_with_profile = self.squeak_node.get_followed_squeak_entries_with_profile()
+        logger.info(
+            "Got squeak entries with profile: {}".format(
+                squeak_entries_with_profile
+            )
+        )
+        return squeak_entries_with_profile
