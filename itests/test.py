@@ -5,7 +5,6 @@ import time
 
 import grpc
 
-from bitcoin.core import lx
 from squeak.params import SelectParams
 from squeak.core import CSqueak
 from squeak.core import CheckSqueak
