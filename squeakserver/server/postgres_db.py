@@ -170,3 +170,18 @@ class PostgresDb():
                 following=row[6],
             )
             return squeak_profile
+
+    def get_unverified_block_squeaks(self):
+        """ Lookup squeaks. """
+        sql = """
+        SELECT hash FROM squeak
+        WHERE block_header IS NULL;
+        """
+        with self.get_cursor() as curs:
+            curs.execute(sql)
+            rows = curs.fetchall()
+            hashes = [
+                bytes.fromhex(row[0])
+                for row in rows
+            ]
+            return hashes

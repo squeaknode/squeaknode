@@ -34,4 +34,6 @@ RUN python3 setup.py install
 
 EXPOSE 8774
 
-CMD ["runsqueakserver", "--config", "config.ini", "--log-level", "DEBUG", "run-server"]
+# Copy the entrypoint script.
+COPY "docker/sqkserver/start-sqkserver.sh" .
+RUN chmod +x start-sqkserver.sh

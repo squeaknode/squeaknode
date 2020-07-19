@@ -59,9 +59,14 @@ def get_address(signing_key):
     return str(address)
 
 
-def make_squeak(signing_key: CSigningKey, content: str, reply_to: bytes = b'\x00'*HASH_LENGTH):
-    block_height = 0
-    block_hash = lx('4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b')
+def get_latest_block_info(lightning_client):
+    get_info_response = lightning_client.get_info()
+    block_hash = bytes.fromhex(get_info_response.block_hash)
+    block_height = get_info_response.block_height
+    return block_hash, block_height
+
+
+def make_squeak(signing_key: CSigningKey, content: str, block_height, block_hash, reply_to: bytes = b'\x00'*HASH_LENGTH):
     timestamp = int(time.time())
     return MakeSqueakFromStr(
         signing_key,
@@ -123,7 +128,8 @@ def run():
 
         # Post a squeak with a direct request to the server
         signing_key = generate_signing_key()
-        squeak = make_squeak(signing_key, 'hello from itest!')
+        block_height, block_hash = get_latest_block_info(lnd_lightning_client)
+        squeak = make_squeak(signing_key, 'hello from itest!', block_hash, block_height)
         squeak_hash = get_hash(squeak)
 
         squeak_msg = build_squeak_msg(squeak)
@@ -208,7 +214,7 @@ def run():
         # Open channel to the server lightning node
         pubkey_bytes = string_to_hex(buy_response.offer.pubkey)
         open_channel_response = lnd_lightning_client.open_channel(pubkey_bytes, 1000000)
-        print("Server open channel response: " + str(open_channel_response))
+        print("Opening channel...")
         for update in open_channel_response:
             if update.HasField('chan_open'):
                 channel_point = update.chan_open.channel_point
