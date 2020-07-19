@@ -1,7 +1,6 @@
 import io
 
-from setuptools import find_packages
-from setuptools import setup
+from setuptools import find_packages, setup
 
 with io.open("README.md", "rt", encoding="utf8") as f:
     readme = f.read()

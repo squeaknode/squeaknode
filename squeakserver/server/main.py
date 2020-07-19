@@ -2,25 +2,25 @@ import argparse
 import logging
 import sys
 import threading
-
 from configparser import ConfigParser
 
 from squeak.params import SelectParams
 
 import proto.lnd_pb2 as ln
 import proto.lnd_pb2_grpc as lnrpc
-
-from squeakserver.admin.squeak_admin_server_servicer import SqueakAdminServerServicer
-from squeakserver.admin.squeak_admin_server_handler import SqueakAdminServerHandler
+from squeakserver.admin.squeak_admin_server_handler import \
+    SqueakAdminServerHandler
+from squeakserver.admin.squeak_admin_server_servicer import \
+    SqueakAdminServerServicer
+from squeakserver.blockchain.bitcoin_blockchain_client import \
+    BitcoinBlockchainClient
 from squeakserver.common.lnd_lightning_client import LNDLightningClient
-from squeakserver.server.lightning_address import LightningAddressHostPort
-from squeakserver.server.squeak_server_servicer import SqueakServerServicer
-from squeakserver.server.squeak_server_handler import SqueakServerHandler
-from squeakserver.server.db_params import parse_db_params
-from squeakserver.server.postgres_db import PostgresDb
-from squeakserver.blockchain.bitcoin_blockchain_client import BitcoinBlockchainClient
 from squeakserver.node.squeak_node import SqueakNode
-
+from squeakserver.server.db_params import parse_db_params
+from squeakserver.server.lightning_address import LightningAddressHostPort
+from squeakserver.server.postgres_db import PostgresDb
+from squeakserver.server.squeak_server_handler import SqueakServerHandler
+from squeakserver.server.squeak_server_servicer import SqueakServerServicer
 
 logger = logging.getLogger(__name__)
 

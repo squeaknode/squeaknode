@@ -1,9 +1,6 @@
 import logging
 
-from squeak.core import CheckSqueak
-from squeak.core import CheckSqueakError
-from squeak.core import CSqueak
-
+from squeak.core import CheckSqueak, CheckSqueakError, CSqueak
 
 logger = logging.getLogger(__name__)
 

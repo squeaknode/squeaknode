@@ -14,6 +14,7 @@ codeformat:
 #	tox -e black
 	tox -e autoflake
 	tox -e autopep8
+	tox -e isort
 
 itest:
 	./itests/run_itest.sh

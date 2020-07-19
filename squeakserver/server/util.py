@@ -1,6 +1,5 @@
 import os
 
-
 DATA_KEY_LENGTH = 32
 
 
