@@ -38,7 +38,8 @@ class SqueakBlockVerifier:
             self.verify_squeak_block(squeak_hash)
 
     def _get_squeak(self, squeak_hash):
-        return self.postgres_db.get_squeak(squeak_hash)
+        squeak_entry = self.postgres_db.get_squeak_entry(squeak_hash)
+        return squeak_entry.squeak
 
     def _mark_squeak_verified(self, squeak_hash, block_header):
         self.postgres_db.mark_squeak_block_valid(squeak_hash, block_header)
