@@ -1,14 +1,15 @@
-
+from squeak.core.signing import CSigningKey
+from squeak.core.signing import CSqueakAddress
 from squeak.core.encryption import generate_initialization_vector
 from squeak.core.encryption import CEncryptedDecryptionKey
 
-from squeakserver.server.buy_offer import BuyOffer
-from squeakserver.server.util import generate_offer_preimage
-
-from squeakserver.server.util import generate_offer_preimage
 from squeakserver.node.squeak_block_verifier import SqueakBlockVerifier
 from squeakserver.node.squeak_block_periodic_worker import SqueakBlockPeriodicWorker
 from squeakserver.node.squeak_block_queue_worker import SqueakBlockQueueWorker
+from squeakserver.node.squeak_maker import SqueakMaker
+from squeakserver.server.buy_offer import BuyOffer
+from squeakserver.server.util import generate_offer_preimage
+from squeakserver.server.squeak_profile import SqueakProfile
 
 
 class SqueakNode:
@@ -30,6 +31,7 @@ class SqueakNode:
     def save_squeak(self, squeak):
         inserted_squeak_hash = self.postgres_db.insert_squeak(squeak)
         self.squeak_block_verifier.add_squeak_to_queue(inserted_squeak_hash)
+        return inserted_squeak_hash
 
     def get_locked_squeak(self, squeak_hash):
         squeak = self.postgres_db.get_squeak(squeak_hash)
@@ -78,3 +80,28 @@ class SqueakNode:
             self.lightning_host_port.port,
             proof,
         )
+
+    def create_signing_profile(self, profile_name):
+        signing_key = CSigningKey.generate()
+        verifying_key = signing_key.get_verifying_key()
+        address = CSqueakAddress.from_verifying_key(verifying_key)
+        signing_key_str = str(signing_key)
+        signing_key_bytes = signing_key_str.encode()
+        squeak_profile = SqueakProfile(
+            profile_id=None,
+            profile_name=profile_name,
+            private_key=signing_key_bytes,
+            address=str(address),
+            sharing=False,
+            following=False,
+        )
+        return self.postgres_db.insert_profile(squeak_profile)
+
+    def get_squeak_profile(self, profile_id):
+        return self.postgres_db.get_profile(profile_id)
+
+    def make_squeak(self, profile_id, content_str, replyto_hash):
+        squeak_profile = self.postgres_db.get_profile(profile_id)
+        squeak_maker = SqueakMaker(self.lightning_client)
+        squeak = squeak_maker.make_squeak(squeak_profile, content_str, replyto_hash)
+        return self.save_squeak(squeak)

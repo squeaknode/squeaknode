@@ -75,10 +75,10 @@ def load_handler(squeak_node):
     return SqueakServerHandler(squeak_node)
 
 
-def load_admin_handler(lightning_client, postgres_db):
+def load_admin_handler(lightning_client, squeak_node):
     return SqueakAdminServerHandler(
         lightning_client,
-        postgres_db,
+        squeak_node,
     )
 
 
@@ -189,7 +189,7 @@ def run_server(config):
     squeak_node.start_running()
 
     # start admin rpc server
-    admin_handler = load_admin_handler(lightning_client, postgres_db)
+    admin_handler = load_admin_handler(lightning_client, squeak_node)
     admin_rpc_server = load_admin_rpc_server(config, admin_handler)
     start_admin_rpc_server(admin_rpc_server)
 

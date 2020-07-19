@@ -1,14 +1,8 @@
 import logging
 
-from squeak.core.signing import CSigningKey
-from squeak.core.signing import CSqueakAddress
 
 from squeakserver.common.lnd_lightning_client import LNDLightningClient
-from squeakserver.server.postgres_db import PostgresDb
-
-from squeakserver.server.squeak_profile import SqueakProfile
-
-from squeakserver.node.squeak_maker import SqueakMaker
+from squeakserver.node.squeak_node import SqueakNode
 
 
 logger = logging.getLogger(__name__)
@@ -21,10 +15,10 @@ class SqueakAdminServerHandler(object):
     def __init__(
             self,
             lightning_client: LNDLightningClient,
-            postgres_db: PostgresDb,
-    ) -> None:
+            squeak_node: SqueakNode,
+    ):
         self.lightning_client = lightning_client
-        self.postgres_db = postgres_db
+        self.squeak_node = squeak_node
 
     def handle_get_balance(self):
         logger.info("Handle get balance")
@@ -33,33 +27,16 @@ class SqueakAdminServerHandler(object):
 
     def handle_create_signing_profile(self, profile_name):
         logger.info("Handle create signing profile with name: {}".format(profile_name))
-        signing_key = CSigningKey.generate()
-        logger.info("Created new signing key: {}".format(signing_key))
-        verifying_key = signing_key.get_verifying_key()
-        address = CSqueakAddress.from_verifying_key(verifying_key)
-        signing_key_str = str(signing_key)
-        signing_key_bytes = signing_key_str.encode()
-        squeak_profile = SqueakProfile(
-            profile_id=None,
-            profile_name=profile_name,
-            private_key=signing_key_bytes,
-            address=str(address),
-            sharing=False,
-            following=False,
-        )
-        profile_id = self.postgres_db.insert_profile(squeak_profile)
+        profile_id = self.squeak_node.create_signing_profile(profile_name)
         logger.info("New profile_id: {}".format(profile_id))
         return profile_id
 
     def handle_get_squeak_profile(self, profile_id):
         logger.info("Handle get squeak profile with id: {}".format(profile_id))
-        squeak_profile = self.postgres_db.get_profile(profile_id)
+        squeak_profile = self.squeak_node.get_squeak_profile(profile_id)
         return squeak_profile
 
     def handle_make_squeak(self, profile_id, content_str, replyto_hash):
         logger.info("Handle make squeak profile with id: {}".format(profile_id))
-        squeak_profile = self.postgres_db.get_profile(profile_id)
-        squeak_maker = SqueakMaker(self.lightning_client)
-        squeak = squeak_maker.make_squeak(squeak_profile, content_str, replyto_hash)
-        inserted_squeak_hash = self.postgres_db.insert_squeak(squeak)
+        inserted_squeak_hash = self.squeak_node.make_squeak(profile_id, content_str, replyto_hash)
         return inserted_squeak_hash
