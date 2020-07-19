@@ -1,4 +1,4 @@
 from collections import namedtuple
 
 
-SqueakEntryWithProfile = namedtuple("LightningAddress", ["squeak_entry", "squeak_profile"])
+SqueakEntryWithProfile = namedtuple("SqueakEntryWithProfile", ["squeak_entry", "squeak_profile"])

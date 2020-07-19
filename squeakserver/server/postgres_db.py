@@ -130,15 +130,15 @@ class PostgresDb:
                 hashReplySqk=bytes.fromhex(row[4]),
                 hashBlock=bytes.fromhex(row[5]),
                 nBlockHeight=row[6],
-                vchScriptPubKey=row[7],
-                vchEncryptionKey=row[8],
+                vchScriptPubKey=bytes(row[7]),
+                vchEncryptionKey=bytes(row[8]),
                 encDatakey=bytes.fromhex(row[9]),
                 iv=bytes.fromhex((row[10])),
                 nTime=row[11],
                 nNonce=row[12],
                 encContent=bytes.fromhex((row[13])),
-                vchScriptSig=row[14],
-                vchDecryptionKey=row[16],
+                vchScriptSig=bytes(row[14]),
+                vchDecryptionKey=bytes(row[16]),
             )
             block_header = row[17]
             squeak_entry = SqueakEntry(squeak=squeak, block_header=block_header)

@@ -38,3 +38,11 @@ class SqueakAdminServerHandler(object):
             profile_id, content_str, replyto_hash
         )
         return inserted_squeak_hash
+
+    def handle_get_squeak_display_entry(self, squeak_hash):
+        logger.info("Handle get squeak display entry for hash: {}".format(squeak_hash))
+        squeak_entry_with_profile = self.squeak_node.get_squeak_entry_with_profile(
+            squeak_hash
+        )
+        logger.info("Got squeak entry with profile for hash: {}".format(squeak_entry_with_profile))
+        return squeak_entry_with_profile

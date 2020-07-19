@@ -28,6 +28,10 @@ service SqueakAdmin {
   */
   rpc MakeSqueak (MakeSqueakRequest) returns (MakeSqueakReply) {}
 
+  /** sqkadmin: `getsqueakdisplay`
+  */
+  rpc GetSqueakDisplay (GetSqueakDisplayRequest) returns (GetSqueakDisplayReply) {}
+
 }
 
 message GetBalanceRequest {
@@ -92,4 +96,43 @@ message MakeSqueakRequest {
 message MakeSqueakReply {
     /// Hash of the created squeak.
     bytes hash = 1;
+}
+
+message GetSqueakDisplayRequest {
+    /// Hash of the squeak.
+    bytes hash = 1;
+}
+
+message GetSqueakDisplayReply {
+    /// The squeak display entry
+    SqueakDisplayEntry squeak_display_entry = 1;
+}
+
+message SqueakDisplayEntry {
+    /// The squeak hash.
+    string squeak_hash = 1;
+
+    /// Is unlocked
+    bool is_unlocked = 2;
+
+    /// The decrypted content
+    string content_str = 3;
+
+    /// Is reply
+    bool is_reply = 4;
+
+    /// Reply to hash
+    string reply_to = 5;
+
+    /// Block height
+    int32 block_height = 6;
+
+    /// Block time
+    int64 block_time = 7;
+
+    /// Is author address known
+    bool is_author_known = 8;
+
+    /// The author name
+    string author_name = 9;
 }
