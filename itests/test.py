@@ -125,6 +125,9 @@ def run():
         )
         print("Direct server post response: " + str(post_response))
 
+        # Wait a few seconds for the squeak to be verified on the server.
+        time.sleep(5)
+
         # Get the same squeak from the server
         get_response = server_stub.GetSqueak(
             squeak_server_pb2.GetSqueakRequest(hash=squeak_hash)
