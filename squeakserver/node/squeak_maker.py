@@ -10,7 +10,6 @@ logger = logging.getLogger(__name__)
 
 
 class SqueakMaker:
-
     def __init__(self, lightning_client):
         self.lightning_client = lightning_client
 
@@ -27,11 +26,7 @@ class SqueakMaker:
         logger.info("Creating squeak with block hash: {}".format(block_hash))
         if replyto_hash is None or len(replyto_hash) == 0:
             return MakeSqueakFromStr(
-                signing_key,
-                content_str,
-                block_height,
-                block_hash,
-                timestamp,
+                signing_key, content_str, block_height, block_hash, timestamp,
             )
         else:
             return MakeSqueakFromStr(

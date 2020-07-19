@@ -1,5 +1,3 @@
-
-
 def test_validate(validator, example_squeak):
     assert validator.validate(example_squeak)
 

@@ -10,8 +10,7 @@ from squeakserver.server.util import get_hash
 logger = logging.getLogger(__name__)
 
 
-class PostgresDb():
-
+class PostgresDb:
     def __init__(self, params):
         self.connection_pool = pool.ThreadedConnectionPool(5, 20, **params)
 
@@ -29,8 +28,8 @@ class PostgresDb():
         """ Connect to the PostgreSQL database server """
         with self.get_cursor() as curs:
             # execute a statement
-            logger.info('PostgreSQL database version:')
-            curs.execute('SELECT version()')
+            logger.info("PostgreSQL database version:")
+            curs.execute("SELECT version()")
 
             # display the PostgreSQL database server version
             db_version = curs.fetchone()
@@ -40,7 +39,7 @@ class PostgresDb():
         """ Create the tables and indices in the database. """
         with self.get_cursor() as curs:
             # execute a statement
-            logger.info('Setting up database tables...')
+            logger.info("Setting up database tables...")
             curs.execute(open("init.sql", "r").read())
 
     def insert_squeak(self, squeak):
@@ -52,24 +51,27 @@ class PostgresDb():
 
         with self.get_cursor() as curs:
             # execute the INSERT statement
-            curs.execute(sql, (
-                get_hash(squeak).hex(),
-                squeak.nVersion,
-                squeak.hashEncContent.hex(),
-                squeak.hashReplySqk.hex(),
-                squeak.hashBlock.hex(),
-                squeak.nBlockHeight,
-                squeak.vchScriptPubKey,
-                squeak.vchEncryptionKey,
-                squeak.encDatakey.hex(),
-                squeak.iv.hex(),
-                squeak.nTime,
-                squeak.nNonce,
-                squeak.encContent.hex(),
-                squeak.vchScriptSig,
-                str(squeak.GetAddress()),
-                squeak.vchDecryptionKey,
-            ))
+            curs.execute(
+                sql,
+                (
+                    get_hash(squeak).hex(),
+                    squeak.nVersion,
+                    squeak.hashEncContent.hex(),
+                    squeak.hashReplySqk.hex(),
+                    squeak.hashBlock.hex(),
+                    squeak.nBlockHeight,
+                    squeak.vchScriptPubKey,
+                    squeak.vchEncryptionKey,
+                    squeak.encDatakey.hex(),
+                    squeak.iv.hex(),
+                    squeak.nTime,
+                    squeak.nNonce,
+                    squeak.encContent.hex(),
+                    squeak.vchScriptSig,
+                    str(squeak.GetAddress()),
+                    squeak.vchDecryptionKey,
+                ),
+            )
             # get the generated hash back
             row = curs.fetchone()
             return bytes.fromhex(row[0])
@@ -120,10 +122,7 @@ class PostgresDb():
             # logger.info(curs.mogrify(sql, (addresses_tuple, min_block, max_block)))
             curs.execute(sql, (addresses_tuple, min_block, max_block))
             rows = curs.fetchall()
-            hashes = [
-                bytes.fromhex(row[0])
-                for row in rows
-            ]
+            hashes = [bytes.fromhex(row[0]) for row in rows]
             return hashes
 
     def insert_profile(self, squeak_profile):
@@ -135,17 +134,20 @@ class PostgresDb():
         """
         with self.get_cursor() as curs:
             # execute the INSERT statement
-            curs.execute(sql, (
-                squeak_profile.profile_name,
-                squeak_profile.private_key,
-                squeak_profile.address,
-                squeak_profile.sharing,
-                squeak_profile.following,
-            ))
-            logger.info('Inserted new profile')
+            curs.execute(
+                sql,
+                (
+                    squeak_profile.profile_name,
+                    squeak_profile.private_key,
+                    squeak_profile.address,
+                    squeak_profile.sharing,
+                    squeak_profile.following,
+                ),
+            )
+            logger.info("Inserted new profile")
             # get the new profile id back
             row = curs.fetchone()
-            logger.info('New profile id: {}'.format(row[0]))
+            logger.info("New profile id: {}".format(row[0]))
             return row[0]
 
     def get_profile(self, profile_id):
@@ -176,10 +178,7 @@ class PostgresDb():
         with self.get_cursor() as curs:
             curs.execute(sql)
             rows = curs.fetchall()
-            hashes = [
-                bytes.fromhex(row[0])
-                for row in rows
-            ]
+            hashes = [bytes.fromhex(row[0]) for row in rows]
             return hashes
 
     def delete_squeak(self, squeak_hash):
@@ -201,8 +200,5 @@ class PostgresDb():
         squeak_hash_str = squeak_hash.hex()
         with self.get_cursor() as curs:
             # execute the UPDATE statement
-            curs.execute(sql, (
-                block_header,
-                squeak_hash,
-            ))
-            logger.info('Updated squeak with block header')
+            curs.execute(sql, (block_header, squeak_hash,))
+            logger.info("Updated squeak with block header")

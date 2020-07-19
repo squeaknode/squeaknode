@@ -11,9 +11,7 @@ class SqueakAdminServerHandler(object):
     """
 
     def __init__(
-            self,
-            lightning_client: LNDLightningClient,
-            squeak_node: SqueakNode,
+        self, lightning_client: LNDLightningClient, squeak_node: SqueakNode,
     ):
         self.lightning_client = lightning_client
         self.squeak_node = squeak_node
@@ -36,5 +34,7 @@ class SqueakAdminServerHandler(object):
 
     def handle_make_squeak(self, profile_id, content_str, replyto_hash):
         logger.info("Handle make squeak profile with id: {}".format(profile_id))
-        inserted_squeak_hash = self.squeak_node.make_squeak(profile_id, content_str, replyto_hash)
+        inserted_squeak_hash = self.squeak_node.make_squeak(
+            profile_id, content_str, replyto_hash
+        )
         return inserted_squeak_hash

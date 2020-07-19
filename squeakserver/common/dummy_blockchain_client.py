@@ -17,5 +17,7 @@ class DummyBlockchainClient(BlockchainClient):
     def get_block_hash(self, block_height: int) -> Optional[bytes]:
         # return the genesis block hash
         if block_height == 0:
-            return lx('4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b')
+            return lx(
+                "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b"
+            )
         return None
