@@ -91,25 +91,7 @@ class PostgresDb:
         with self.get_cursor() as curs:
             curs.execute(sql, (squeak_hash_str,))
             row = curs.fetchone()
-
-            squeak = CSqueak(
-                nVersion=row['n_version'],
-                hashEncContent=bytes.fromhex(row['hash_enc_content']),
-                hashReplySqk=bytes.fromhex(row['hash_reply_sqk']),
-                hashBlock=bytes.fromhex(row['hash_block']),
-                nBlockHeight=row['n_block_height'],
-                vchScriptPubKey=row['vch_script_pub_key'],
-                vchEncryptionKey=row['vch_encryption_key'],
-                encDatakey=bytes.fromhex(row['enc_data_key']),
-                iv=bytes.fromhex((row['iv'])),
-                nTime=row['n_time'],
-                nNonce=row['n_nonce'],
-                encContent=bytes.fromhex((row['enc_content'])),
-                vchScriptSig=row['vch_script_sig'],
-                vchDecryptionKey=row['vch_decryption_key'],
-            )
-            block_header = row[17]
-            return SqueakEntry(squeak=squeak, block_header=block_header)
+            return self._parse_squeak_entry(row)
 
     def get_squeak_entry_with_profile(self, squeak_hash):
         """ Get a squeak. """
@@ -125,25 +107,7 @@ class PostgresDb:
         with self.get_cursor() as curs:
             curs.execute(sql, (squeak_hash_str,))
             row = curs.fetchone()
-
-            squeak = CSqueak(
-                nVersion=row[2],
-                hashEncContent=bytes.fromhex(row[3]),
-                hashReplySqk=bytes.fromhex(row[4]),
-                hashBlock=bytes.fromhex(row[5]),
-                nBlockHeight=row[6],
-                vchScriptPubKey=bytes(row[7]),
-                vchEncryptionKey=bytes(row[8]),
-                encDatakey=bytes.fromhex(row[9]),
-                iv=bytes.fromhex((row[10])),
-                nTime=row[11],
-                nNonce=row[12],
-                encContent=bytes.fromhex((row[13])),
-                vchScriptSig=bytes(row[14]),
-                vchDecryptionKey=bytes(row[16]),
-            )
-            block_header = row[17]
-            squeak_entry = SqueakEntry(squeak=squeak, block_header=block_header)
+            squeak_entry = self._parse_squeak_entry(row)
             squeak_profile = SqueakProfile(
                 profile_id=row[18],
                 profile_name=row[20],
@@ -256,3 +220,24 @@ class PostgresDb:
         with self.get_cursor() as curs:
             # execute the UPDATE statement
             curs.execute(sql, (block_header, squeak_hash_str,))
+
+    def _parse_squeak_entry(self, row):
+        squeak = CSqueak(
+            nVersion=row['n_version'],
+            hashEncContent=bytes.fromhex(row['hash_enc_content']),
+            hashReplySqk=bytes.fromhex(row['hash_reply_sqk']),
+            hashBlock=bytes.fromhex(row['hash_block']),
+            nBlockHeight=row['n_block_height'],
+            vchScriptPubKey=bytes(row['vch_script_pub_key']),
+            vchEncryptionKey=bytes(row['vch_encryption_key']),
+            encDatakey=bytes.fromhex(row['enc_data_key']),
+            iv=bytes.fromhex((row['iv'])),
+            nTime=row['n_time'],
+            nNonce=row['n_nonce'],
+            encContent=bytes.fromhex((row['enc_content'])),
+            vchScriptSig=bytes(row['vch_script_sig']),
+            vchDecryptionKey=bytes(row['vch_decryption_key']),
+        )
+        block_header_column = row['block_header']
+        block_header = bytes(block_header_column) if block_header_column else None
+        return SqueakEntry(squeak=squeak, block_header=block_header)
