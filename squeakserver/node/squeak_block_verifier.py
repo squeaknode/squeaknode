@@ -26,3 +26,5 @@ class SqueakBlockVerifier:
         block_height = squeak.nBlockHeight
         block_hash = self.blockchain_client.get_block_hash(block_height)
         logger.info('Got block hash from blockchain: {}'.format(block_hash))
+        logger.info('Got block hash from squeak: {}'.format(squeak.hashBlock))
+        logger.info('Is block hash correct: {}'.format(squeak.hashBlock == block_hash))
