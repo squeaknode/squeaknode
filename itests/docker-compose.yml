@@ -122,6 +122,17 @@ services:
       - "lnd_client:lnd"
     command: tail -f /dev/null
 
+  envoy:
+    image: envoy
+    container_name: test_envoy
+    build:
+      context: ../
+      dockerfile: docker/envoy/Dockerfile
+    ports:
+      - 8080:8080
+    links:
+      - "sqkserver:sqkserver"
+
 volumes:
   # btcctl and lnd containers.
   test_shared:
