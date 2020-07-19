@@ -7,6 +7,7 @@ from squeak.core import CSqueak
 from squeakserver.server.squeak_profile import SqueakProfile
 from squeakserver.server.util import get_hash
 from squeakserver.core.squeak_entry import SqueakEntry
+from squeakserver.core.squeak_entry_with_profile import SqueakEntryWithProfile
 
 
 logger = logging.getLogger(__name__)
@@ -107,6 +108,52 @@ class PostgresDb:
             )
             block_header = row[17]
             return SqueakEntry(squeak=squeak, block_header=block_header)
+
+    def get_squeak_entry_with_profile(self, squeak_hash):
+        """ Get a squeak. """
+        sql = """
+        SELECT * FROM squeak
+        LEFT JOIN profile
+        ON squeak.address=profile.address
+        WHERE squeak.hash=%s
+        """
+
+        squeak_hash_str = squeak_hash.hex()
+
+        with self.get_cursor() as curs:
+            curs.execute(sql, (squeak_hash_str,))
+            row = curs.fetchone()
+
+            squeak = CSqueak(
+                nVersion=row[2],
+                hashEncContent=bytes.fromhex(row[3]),
+                hashReplySqk=bytes.fromhex(row[4]),
+                hashBlock=bytes.fromhex(row[5]),
+                nBlockHeight=row[6],
+                vchScriptPubKey=row[7],
+                vchEncryptionKey=row[8],
+                encDatakey=bytes.fromhex(row[9]),
+                iv=bytes.fromhex((row[10])),
+                nTime=row[11],
+                nNonce=row[12],
+                encContent=bytes.fromhex((row[13])),
+                vchScriptSig=row[14],
+                vchDecryptionKey=row[16],
+            )
+            block_header = row[17]
+            squeak_entry = SqueakEntry(squeak=squeak, block_header=block_header)
+            squeak_profile = SqueakProfile(
+                profile_id=row[18],
+                profile_name=row[20],
+                private_key=bytes(row[21]),
+                address=row[22],
+                sharing=row[23],
+                following=row[24],
+            )
+            return SqueakEntryWithProfile(
+                squeak_entry=squeak_entry,
+                squeak_profile=squeak_profile,
+            )
 
     def lookup_squeaks(self, addresses, min_block, max_block):
         """ Lookup squeaks. """
