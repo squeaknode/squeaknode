@@ -6,6 +6,8 @@ from squeak.core import CSqueak
 
 from squeakserver.server.squeak_profile import SqueakProfile
 from squeakserver.server.util import get_hash
+from squeakserver.core.squeak_entry import SqueakEntry
+
 
 logger = logging.getLogger(__name__)
 
@@ -76,7 +78,7 @@ class PostgresDb:
             row = curs.fetchone()
             return bytes.fromhex(row[0])
 
-    def get_squeak(self, squeak_hash):
+    def get_squeak_entry(self, squeak_hash):
         """ Get a squeak. """
         sql = """
         SELECT * FROM squeak WHERE hash=%s"""
@@ -103,7 +105,8 @@ class PostgresDb:
                 vchScriptSig=row[14],
                 vchDecryptionKey=row[16],
             )
-            return squeak
+            block_header = row[17]
+            return SqueakEntry(squeak=squeak, block_header=block_header)
 
     def lookup_squeaks(self, addresses, min_block, max_block):
         """ Lookup squeaks. """

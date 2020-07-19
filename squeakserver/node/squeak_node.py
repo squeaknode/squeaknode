@@ -45,20 +45,22 @@ class SqueakNode:
         return inserted_squeak_hash
 
     def get_locked_squeak(self, squeak_hash):
-        squeak = self.postgres_db.get_squeak(squeak_hash)
+        squeak_entry = self.postgres_db.get_squeak_entry(squeak_hash)
+        squeak = squeak_entry.squeak
         # Remove the decryption key before returning.
         squeak.ClearDecryptionKey()
         return squeak
 
-    def get_squeak(self, squeak_hash):
-        return self.postgres_db.get_squeak(squeak_hash)
+    def get_squeak_entry(self, squeak_hash):
+        return self.postgres_db.get_squeak_entry(squeak_hash)
 
     def lookup_squeaks(self, addresses, min_block, max_block):
         return self.postgres_db.lookup_squeaks(addresses, min_block, max_block)
 
     def get_buy_offer(self, squeak_hash, challenge):
         # Get the squeak from the database
-        squeak = self.postgres_db.get_squeak(squeak_hash)
+        squeak_entry = self.postgres_db.get_squeak_entry(squeak_hash)
+        squeak = squeak_entry.squeak
         # Get the decryption key from the squeak
         decryption_key = squeak.GetDecryptionKey()
         # Solve the proof
