@@ -37,10 +37,12 @@ RUN ./pb_disable-eslint.sh src/proto/
 # 	npm link grpc-web && \
 # 	npx webpack client.js
 
-# RUN npm link grpc-web
-RUN npm install async --save
-RUN npm install grpc-web --save
-RUN npm install google-protobuf --save
+RUN npm install
+
+#RUN npm install async --save
+#RUN npm install grpc-web --save
+#RUN npm install google-protobuf --save
+RUN npm install @material-ui/core
 
 RUN npm run build
 RUN npm install -g serve
