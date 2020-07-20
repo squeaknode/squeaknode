@@ -1,0 +1,51 @@
+{
+  "name": "react-material-admin",
+  "version": "1.1.0",
+  "private": true,
+  "resolutions": {
+    "websocket-extensions": "^0.1.4"
+  },
+  "dependencies": {
+    "@material-ui/core": "^4.3.0",
+    "@material-ui/icons": "^4.2.1",
+    "@material-ui/styles": "^4.3.0",
+    "apexcharts": "^3.8.3",
+    "classnames": "^2.2.6",
+    "font-awesome": "^4.7.0",
+    "mui-datatables": "^2.6.4",
+    "react": "^16.8.6",
+    "react-apexcharts": "^1.3.3",
+    "react-dom": "^16.8.6",
+    "react-google-maps": "^9.4.5",
+    "react-router-dom": "^5.0.1",
+    "react-scripts": "3.0.1",
+    "react-syntax-highlighter": "^11.0.2",
+    "react-toastify": "^5.3.2",
+    "recharts": "^1.6.2",
+    "tinycolor2": "^1.4.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "prettier": "^1.19.1"
+  }
+}
