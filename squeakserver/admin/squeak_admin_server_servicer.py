@@ -18,6 +18,9 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         self.port = port
         self.handler = handler
 
+    def SayHello(self, request, context):
+        return squeak_admin_pb2.HelloReply(message='Hello, %s!' % request.name)
+
     def GetBalance(self, request, context):
         wallet_balance_response = self.handler.handle_get_balance()
         return squeak_admin_pb2.GetBalanceReply(

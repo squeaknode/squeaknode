@@ -41,7 +41,9 @@ services:
       - ./config.ini:/app/config.ini
     ports:
       - 8774:8774
+      - 8994:8994
       - 18774:18774
+      - 18994:18994
     links:
       - "lnd:lnd"
     depends_on:

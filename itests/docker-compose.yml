@@ -100,6 +100,11 @@ services:
       - test_shared:/rpc
       - test_lnd_server_dir:/root/.lnd
       - ./config.ini:/app/config.ini
+    ports:
+      - 8774:8774
+      - 8994:8994
+      - 18774:18774
+      - 18994:18994
     links:
       - "btcd:btcd"
       - "lnd_server:lnd"
@@ -121,6 +126,26 @@ services:
     links:
       - "lnd_client:lnd"
     command: tail -f /dev/null
+
+  envoy:
+    image: envoy
+    container_name: test_envoy
+    build:
+      context: ../
+      dockerfile: docker/envoy/Dockerfile
+    ports:
+      - 8080:8080
+    links:
+      - "sqkserver:sqkserver"
+
+  frontend:
+    image: frontend
+    container_name: test_frontend
+    build:
+      context: ../
+      dockerfile: docker/frontend/Dockerfile
+    ports:
+      - 8081:8081
 
 volumes:
   # btcctl and lnd containers.
