@@ -8,9 +8,9 @@ import { SqueakAdminClient } from "./proto/squeak_admin_grpc_web_pb"
 var client = new SqueakAdminClient('http://' + window.location.hostname + ':8080')
 function App() {
     console.log('starting App....');
-  const [temp, setTemp] = useState(-9999);
+  const [msg, setMsg] = useState("waiting for message...");
 
-  const getTemp = () => {
+  const getMsg = () => {
       console.log("called");
 
       var helloRequest = new HelloRequest()
@@ -18,23 +18,17 @@ function App() {
 
       client.sayHello(helloRequest, {}, (err, response) => {
 	  console.log(response.getMessage());
+	  setMsg(response.getMessage())
       });
-
-      // var stream = client.sayHello(helloRequest,{})
-
-      // stream.on('data', function(response){
-      // 	  console.log('got response: ' + response);
-      //     setTemp(response.getValue())
-      // });
   };
 
   useEffect(()=>{
-    getTemp()
+    getMsg()
   },[]);
 
   return (
     <div>
-      Temperature : {temp} F
+      Message : {msg}
     </div>
   );
 }
