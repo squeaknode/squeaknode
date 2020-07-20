@@ -28,8 +28,6 @@ RUN curl -sSL https://github.com/grpc/grpc-web/releases/download/1.2.0/\
 protoc-gen-grpc-web-1.2.0-linux-x86_64 -o /usr/local/bin/protoc-gen-grpc-web && \
   chmod +x /usr/local/bin/protoc-gen-grpc-web
 
-WORKDIR /var/www/html/dist
-
 COPY frontend .
 
 RUN mkdir proto
@@ -42,10 +40,8 @@ RUN protoc -I=. proto/squeak_admin.proto proto/lnd.proto \
 	--grpc-web_out=import_style=commonjs,mode=grpcwebtext:.
 
 RUN npm install && \
-  npm link grpc-web && \
-  npx webpack client.js
-
-WORKDIR /var/www/html
+	npm link grpc-web && \
+	npx webpack client.js
 
 EXPOSE 8081
 CMD ["python", "-m", "SimpleHTTPServer", "8081"]

@@ -25,6 +25,8 @@ var client = new SqueakAdminClient('http://localhost:8080');
 var request = new HelloRequest();
 request.setName('World');
 
+console.log('Testing...');
+
 client.sayHello(request, {}, (err, response) => {
   console.log(response.getMessage());
 });
