@@ -18,19 +18,30 @@ COPY frontend/squeak-frontend .
 
 # Copy the proto files
 RUN mkdir proto
-COPY proto/squeak_admin.proto proto/
+COPY proto/squeak_admin.proto src/proto/
 RUN curl -o rpc.proto -s https://raw.githubusercontent.com/lightningnetwork/lnd/master/lnrpc/rpc.proto
-RUN cp rpc.proto proto/lnd.proto
+RUN cp rpc.proto src/proto/lnd.proto
 
-RUN protoc -I=. proto/squeak_admin.proto proto/lnd.proto \
+RUN cd src && \
+	protoc -I=. proto/squeak_admin.proto proto/lnd.proto \
 	--js_out=import_style=commonjs:. \
 	--grpc-web_out=import_style=commonjs,mode=grpcwebtext:.
+
+
+# Copy the eslint prepend script.
+COPY "docker/frontend/pb_disable-eslint.sh" .
+RUN chmod +x pb_disable-eslint.sh
+RUN ./pb_disable-eslint.sh src/proto/
 
 # RUN npm install && \
 # 	npm link grpc-web && \
 # 	npx webpack client.js
 
-RUN npm link grpc-web
+# RUN npm link grpc-web
+RUN npm install async --save
+RUN npm install grpc-web --save
+RUN npm install google-protobuf --save
+
 RUN npm run build
 RUN npm install -g serve
 
