@@ -139,6 +139,8 @@ services:
     build:
       context: ../
       dockerfile: docker/frontend/Dockerfile
+    ports:
+      - 8081:8081
     links:
       - "envoy:envoy"
 
