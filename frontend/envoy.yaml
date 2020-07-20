@@ -23,7 +23,7 @@ static_resources:
               routes:
               - match: { prefix: "/" }
                 route:
-                  cluster: greeter_service
+                  cluster: squeak_admin_service
                   max_grpc_timeout: 0s
               cors:
                 allow_origin_string_match:
@@ -37,7 +37,7 @@ static_resources:
           - name: envoy.filters.http.cors
           - name: envoy.filters.http.router
   clusters:
-  - name: greeter_service
+  - name: squeak_admin_service
     connect_timeout: 0.25s
     type: logical_dns
     http2_protocol_options: {}
