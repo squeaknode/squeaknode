@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Button from '@material-ui/core/Button';
 import './App.css';
 
 import { HelloRequest,
@@ -26,11 +27,14 @@ function App() {
     getMsg()
   },[]);
 
-  return (
-    <div>
-      Message : {msg}
-    </div>
-  );
+    return (
+	    <div>
+	    Message : {msg}
+            <Button variant="contained" color="primary">
+	    Reload message
+	</Button>
+	    </div>
+    );
 }
 
 export default App;
