@@ -33,6 +33,9 @@ RUN ./install-rpc.sh
 RUN python3 setup.py install
 
 EXPOSE 8774
+EXPOSE 8994
+EXPOSE 18774
+EXPOSE 18994
 
 # Copy the entrypoint script.
 COPY "docker/sqkserver/start-sqkserver.sh" .
