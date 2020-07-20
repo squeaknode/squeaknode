@@ -133,6 +133,15 @@ services:
     links:
       - "sqkserver:sqkserver"
 
+  frontend:
+    image: frontend
+    container_name: test_frontend
+    build:
+      context: ../
+      dockerfile: docker/frontend/Dockerfile
+    links:
+      - "envoy:envoy"
+
 volumes:
   # btcctl and lnd containers.
   test_shared:

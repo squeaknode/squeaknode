@@ -14,6 +14,7 @@
 
 FROM envoyproxy/envoy:v1.15.0
 
-COPY "docker/envoy/envoy.yaml" /etc/envoy/envoy.yaml
+# COPY "docker/envoy/envoy.yaml" /etc/envoy/envoy.yaml
+COPY "frontend/envoy.yaml" /etc/envoy/envoy.yaml
 
 CMD /usr/local/bin/envoy -c /etc/envoy/envoy.yaml -l trace --log-path /tmp/envoy_info.log
