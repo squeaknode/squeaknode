@@ -20,7 +20,7 @@ const {HelloRequest,
        HelloReply} = require('./proto/squeak_admin_pb.js');
 const {SqueakAdminClient} = require('./proto/squeak_admin_grpc_web_pb.js');
 
-var client = new SqueakAdminClient('http://localhost:8080');
+var client = new SqueakAdminClient('envoy:8080');
 
 var request = new HelloRequest();
 request.setName('World');
