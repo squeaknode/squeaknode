@@ -4,12 +4,10 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y \
 	python3-pip \
 	python3-psycopg2 \
-	curl \
 	git
 
 # Download the rpc files.
 RUN git clone https://github.com/googleapis/googleapis.git
-RUN curl -o rpc.proto -s https://raw.githubusercontent.com/lightningnetwork/lnd/master/lnrpc/rpc.proto
 
 COPY requirements.txt /
 
@@ -21,7 +19,6 @@ COPY . /app
 
 # Copy the downloaded rpc files.
 RUN cp -r googleapis /app
-RUN cp rpc.proto /app
 
 WORKDIR /app
 
