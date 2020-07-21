@@ -20,10 +20,9 @@ class SqueakAdminServerHandler(object):
         logger.info("Handle lnd get info")
         return self.lightning_client.get_info()
 
-    def handle_get_balance(self):
-        logger.info("Handle get balance")
-        wallet_balance = self.lightning_client.get_wallet_balance()
-        return wallet_balance
+    def handle_lnd_wallet_balance(self):
+        logger.info("Handle lnd wallet balance")
+        return self.lightning_client.get_wallet_balance()
 
     def handle_create_signing_profile(self, profile_name):
         logger.info("Handle create signing profile with name: {}".format(profile_name))

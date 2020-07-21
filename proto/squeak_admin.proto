@@ -18,9 +18,9 @@ service SqueakAdmin {
   */
   rpc LndGetInfo (lnrpc.GetInfoRequest) returns (lnrpc.GetInfoResponse) {}
 
-  /** sqkadmin: `getsqueak`
+  /** sqkadmin: `lndwalletbalance`
   */
-  rpc GetBalance (GetBalanceRequest) returns (GetBalanceReply) {}
+  rpc LndWalletBalance (lnrpc.WalletBalanceRequest) returns (lnrpc.WalletBalanceResponse) {}
 
   /** sqkadmin: `createsigningprofile`
   */
@@ -50,14 +50,6 @@ message HelloRequest {
 
 message HelloReply {
   string message = 1;
-}
-
-message GetBalanceRequest {
-}
-
-message GetBalanceReply {
-    /// The wallet balance response
-    lnrpc.WalletBalanceResponse wallet_balance_response = 1;
 }
 
 message CreateSigningProfileRequest {

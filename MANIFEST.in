@@ -1,5 +1,2 @@
-include LICENSE
-include createdb.sql
 include init.sql
-graft tests
 global-exclude *.pyc

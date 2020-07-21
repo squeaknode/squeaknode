@@ -24,11 +24,8 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
     def LndGetInfo(self, request, context):
         return self.handler.handle_lnd_get_info()
 
-    def GetBalance(self, request, context):
-        wallet_balance_response = self.handler.handle_get_balance()
-        return squeak_admin_pb2.GetBalanceReply(
-            wallet_balance_response=wallet_balance_response,
-        )
+    def LndWalletBalance(self, request, context):
+        return self.handler.handle_lnd_wallet_balance()
 
     def CreateSigningProfile(self, request, context):
         profile_name = request.profile_name
