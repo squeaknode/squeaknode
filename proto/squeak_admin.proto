@@ -14,6 +14,10 @@ service SqueakAdmin {
 
   rpc SayHello (HelloRequest) returns (HelloReply);
 
+  /** sqkadmin: `lndgetinfo`
+  */
+  rpc LndGetInfo (lnrpc.GetInfoRequest) returns (lnrpc.GetInfoResponse) {}
+
   /** sqkadmin: `getsqueak`
   */
   rpc GetBalance (GetBalanceRequest) returns (GetBalanceReply) {}
@@ -47,6 +51,7 @@ message HelloRequest {
 message HelloReply {
   string message = 1;
 }
+
 message GetBalanceRequest {
 }
 

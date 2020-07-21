@@ -16,6 +16,10 @@ class SqueakAdminServerHandler(object):
         self.lightning_client = lightning_client
         self.squeak_node = squeak_node
 
+    def handle_lnd_get_info(self):
+        logger.info("Handle lnd get info")
+        return self.lightning_client.get_info()
+
     def handle_get_balance(self):
         logger.info("Handle get balance")
         wallet_balance = self.lightning_client.get_wallet_balance()

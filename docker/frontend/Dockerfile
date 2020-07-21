@@ -19,9 +19,7 @@ COPY frontend/react-material-admin .
 
 # Copy the proto files
 RUN mkdir proto
-COPY proto/squeak_admin.proto src/proto/
-RUN curl -o rpc.proto -s https://raw.githubusercontent.com/lightningnetwork/lnd/master/lnrpc/rpc.proto
-RUN cp rpc.proto src/proto/lnd.proto
+COPY proto/* src/proto/
 
 RUN cd src && \
 	protoc -I=. proto/squeak_admin.proto proto/lnd.proto \

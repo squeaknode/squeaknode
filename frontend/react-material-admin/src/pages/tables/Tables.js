@@ -10,6 +10,8 @@ import Table from "../dashboard/components/Table/Table";
 // data
 import mock from "../dashboard/mock";
 
+import { GetInfoRequest,
+       GetInfoResponse } from "../../proto/lnd_pb"
 import { HelloRequest,
        HelloReply,
        GetFollowedSqueakDisplaysRequest,
@@ -64,11 +66,24 @@ export default function Tables() {
           setSqueaks(response.getSqueakDisplayEntriesList())
         });
   };
+  const getLndInfo = () => {
+        console.log("called getLndInfo");
+        console.log(client);
+
+        var getInfoRequest = new GetInfoRequest()
+
+        client.lndGetInfo(getInfoRequest, {}, (err, response) => {
+          console.log(response);
+        });
+  };
   useEffect(()=>{
     getMsg()
   },[]);
   useEffect(()=>{
     getSqueaks()
+  },[]);
+  useEffect(()=>{
+    getLndInfo()
   },[]);
 
   return (
