@@ -244,11 +244,11 @@ def run():
         print("Finished checking squeak.")
 
         # Check the server balance
-        get_balance_response = admin_stub.GetBalance(
-            squeak_admin_pb2.GetBalanceRequest()
+        get_balance_response = admin_stub.LndWalletBalance(
+            ln.WalletBalanceRequest()
         )
         print("Get balance response: " + str(get_balance_response))
-        assert get_balance_response.wallet_balance_response.total_balance == 0
+        assert get_balance_response.total_balance == 0
 
         # Create a new signing profile
         profile_name = "bob"
@@ -297,11 +297,11 @@ def run():
                 break
 
         # Check the server balance
-        get_balance_response = admin_stub.GetBalance(
-            squeak_admin_pb2.GetBalanceRequest()
+        get_balance_response = admin_stub.LndWalletBalance(
+            ln.WalletBalanceRequest()
         )
         print("Get balance response: " + str(get_balance_response))
-        assert get_balance_response.wallet_balance_response.total_balance == 1000
+        assert get_balance_response.total_balance == 1000
 
         # Get a squeak display item
         get_squeak_display_response = admin_stub.GetSqueakDisplay(

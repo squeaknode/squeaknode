@@ -6,26 +6,24 @@ RUN apt-get update && apt-get install -y \
 	python3-psycopg2 \
 	git
 
-# Download the rpc files.
-RUN git clone https://github.com/googleapis/googleapis.git
-
 COPY requirements.txt /
 
-RUN pip3 install --upgrade pip
-RUN pip3 install -r requirements.txt
-
-# Copy the source code.
-COPY . /app
-
-# Copy the downloaded rpc files.
-RUN cp -r googleapis /app
+RUN pip3 install --upgrade pip && \
+	pip3 install -r requirements.txt
 
 WORKDIR /app
 
+# Download the rpc files.
+RUN git clone https://github.com/googleapis/googleapis.git
+
+# Copy the source code.
+COPY squeakserver ./squeakserver
+COPY proto ./proto
+COPY setup.py setup.cfg MANIFEST.in README.md init.sql install-rpc.sh ./
+
 # Install the gRPC files.
-COPY "install-rpc.sh" .
-RUN chmod +x install-rpc.sh
-RUN ./install-rpc.sh
+RUN chmod +x install-rpc.sh && \
+	./install-rpc.sh
 
 RUN python3 setup.py install
 
