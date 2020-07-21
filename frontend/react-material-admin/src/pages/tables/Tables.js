@@ -82,7 +82,12 @@ export default function Tables() {
         client.getSigningProfiles(getSigningProfilesRequest, {}, (err, response) => {
           console.log(response);
           var signingProfileRows = response.getSqueakProfilesList().map(p =>
-             [p.getProfileName(), p.getAddress(), p.getFollowing(), p.getSharing()]
+             [
+               p.getProfileName(),
+               p.getAddress(),
+               p.getFollowing().toString(),
+               p.getSharing().toString(),
+             ]
            );
           setSigningProfiles(signingProfileRows);
         });
