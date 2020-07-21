@@ -10,12 +10,10 @@ import Table from "../dashboard/components/Table/Table";
 // data
 import mock from "../dashboard/mock";
 
-import { GetInfoRequest,
-       GetInfoResponse } from "../../proto/lnd_pb"
+import { GetInfoRequest } from "../../proto/lnd_pb"
 import { HelloRequest,
-       HelloReply,
        GetFollowedSqueakDisplaysRequest,
-       GetFollowedSqueakDisplaysReply } from "../../proto/squeak_admin_pb"
+       GetSigningProfilesRequest } from "../../proto/squeak_admin_pb"
 import { SqueakAdminClient } from "../../proto/squeak_admin_grpc_web_pb"
 
 var client = new SqueakAdminClient('http://' + window.location.hostname + ':8080')
@@ -43,6 +41,7 @@ const datatableData = [
 export default function Tables() {
   const [msg, setMsg] = useState("waiting for message...");
   const [squeaks, setSqueaks] = useState([]);
+  const [signingProfiles, setSigningProfiles] = useState([]);
   const getMsg = () => {
       console.log("called getMsg");
 
@@ -68,12 +67,24 @@ export default function Tables() {
   };
   const getLndInfo = () => {
         console.log("called getLndInfo");
-        console.log(client);
 
         var getInfoRequest = new GetInfoRequest()
 
         client.lndGetInfo(getInfoRequest, {}, (err, response) => {
           console.log(response);
+        });
+  };
+  const getSigningProfiles = () => {
+        console.log("called getSigningProfiles");
+
+        var getSigningProfilesRequest = new GetSigningProfilesRequest()
+
+        client.getSigningProfiles(getSigningProfilesRequest, {}, (err, response) => {
+          console.log(response);
+          var signingProfileRows = response.getSqueakProfilesList().map(p =>
+             [p.getProfileName(), p.getAddress(), p.getFollowing(), p.getSharing()]
+           );
+          setSigningProfiles(signingProfileRows);
         });
   };
   useEffect(()=>{
@@ -85,6 +96,9 @@ export default function Tables() {
   useEffect(()=>{
     getLndInfo()
   },[]);
+  useEffect(()=>{
+    getSigningProfiles()
+  },[]);
 
   return (
     <>
@@ -93,8 +107,8 @@ export default function Tables() {
         <Grid item xs={12}>
           <MUIDataTable
             title="Employee List"
-            data={datatableData}
-            columns={["Name", "Company", "City", "State"]}
+            data={signingProfiles}
+            columns={["Name", "Address", "Following", "Sharing"]}
             options={{
               filterType: "checkbox",
             }}
