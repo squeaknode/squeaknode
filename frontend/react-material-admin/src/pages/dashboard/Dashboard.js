@@ -57,7 +57,7 @@ export default function Dashboard(props) {
   const [msg, setMsg] = useState("waiting for message...");
 
   const getMsg = () => {
-      console.log("called");
+      console.log("called getMsg");
 
       var helloRequest = new HelloRequest()
       helloRequest.setName('World');

@@ -11,7 +11,9 @@ import Table from "../dashboard/components/Table/Table";
 import mock from "../dashboard/mock";
 
 import { HelloRequest,
-       HelloReply } from "../../proto/squeak_admin_pb"
+       HelloReply,
+       GetFollowedSqueakDisplaysRequest,
+       GetFollowedSqueakDisplaysReply } from "../../proto/squeak_admin_pb"
 import { SqueakAdminClient } from "../../proto/squeak_admin_grpc_web_pb"
 
 var client = new SqueakAdminClient('http://' + window.location.hostname + ':8080')
@@ -38,8 +40,9 @@ const datatableData = [
 
 export default function Tables() {
   const [msg, setMsg] = useState("waiting for message...");
+  const [squeaks, setSqueaks] = useState([]);
   const getMsg = () => {
-      console.log("called");
+      console.log("called getMsg");
 
       var helloRequest = new HelloRequest()
       helloRequest.setName('World');
@@ -49,8 +52,23 @@ export default function Tables() {
 	  setMsg(response.getMessage())
       });
   };
+  const getSqueaks = () => {
+        console.log("called getSqueaks");
+
+        var getSqueaksRequest = new GetFollowedSqueakDisplaysRequest()
+
+        client.getFollowedSqueakDisplays(getSqueaksRequest, {}, (err, response) => {
+          console.log(response);
+          console.log(response.getSqueakDisplayEntriesList());
+          // console.log(response.getSqueakDisplayEntriesList(),length);
+          setSqueaks(response.getSqueakDisplayEntriesList())
+        });
+  };
   useEffect(()=>{
     getMsg()
+  },[]);
+  useEffect(()=>{
+    getSqueaks()
   },[]);
 
   return (
