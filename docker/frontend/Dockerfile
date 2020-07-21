@@ -34,8 +34,10 @@ RUN chmod +x pb_disable-eslint.sh
 RUN ./pb_disable-eslint.sh src/proto/
 
 RUN npm install
-RUN npm run build
-RUN npm install -g serve
+#RUN npm run build
+#RUN npm install -g serve
 
+EXPOSE 3000
 EXPOSE 8081
-CMD ["serve", "-s", "build", "-l", "8081"]
+# CMD ["serve", "-s", "build", "-l", "8081"]
+CMD ["npm", "start"]
