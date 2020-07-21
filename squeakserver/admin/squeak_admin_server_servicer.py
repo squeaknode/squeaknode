@@ -32,18 +32,23 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         profile_id = self.handler.handle_create_signing_profile(profile_name)
         return squeak_admin_pb2.CreateSigningProfileReply(profile_id=profile_id,)
 
+    def GetSigningProfiles(self, request, context):
+        profiles = self.handler.handle_get_signing_profiles()
+        profile_msgs = [
+            self._squeak_profile_to_message(profile)
+            for profile in
+            profiles
+        ]
+        return squeak_admin_pb2.GetSigningProfilesReply(
+            squeak_profiles=profile_msgs
+        )
+
     def GetSqueakProfile(self, request, context):
         profile_id = request.profile_id
         squeak_profile = self.handler.handle_get_squeak_profile(profile_id)
+        squeak_profile_msg = self._squeak_profile_to_message(squeak_profile)
         return squeak_admin_pb2.GetSqueakProfileReply(
-            squeak_profile=squeak_admin_pb2.SqueakProfile(
-                profile_id=squeak_profile.profile_id,
-                profile_name=squeak_profile.profile_name,
-                private_key=squeak_profile.private_key,
-                address=squeak_profile.address,
-                sharing=squeak_profile.sharing,
-                following=squeak_profile.following,
-            )
+            squeak_profile=squeak_profile_msg
         )
 
     def MakeSqueak(self, request, context):
@@ -67,6 +72,7 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
 
     def GetFollowedSqueakDisplays(self, request, context):
         squeak_entries_with_profile = self.handler.handle_get_followed_squeak_display_entries()
+        # TODO: use list comprehension
         ret = []
         for entry in squeak_entries_with_profile:
             display_message = self._squeak_entry_to_message(entry)
@@ -88,6 +94,16 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
             content_str=content_str,
             block_height=squeak.nBlockHeight,
             block_time=block_header.nTime,
+        )
+
+    def _squeak_profile_to_message(self, squeak_profile):
+        return squeak_admin_pb2.SqueakProfile(
+            profile_id=squeak_profile.profile_id,
+            profile_name=squeak_profile.profile_name,
+            private_key=squeak_profile.private_key,
+            address=squeak_profile.address,
+            sharing=squeak_profile.sharing,
+            following=squeak_profile.following,
         )
 
     def serve(self):
