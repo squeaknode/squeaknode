@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useHistory } from "react-router-dom";
 import { Grid } from "@material-ui/core";
 import MUIDataTable from "mui-datatables";
 
@@ -42,6 +43,8 @@ export default function Tables() {
   const [msg, setMsg] = useState("waiting for message...");
   const [squeaks, setSqueaks] = useState([]);
   const [signingProfiles, setSigningProfiles] = useState([]);
+  const history = useHistory();
+
   const getMsg = () => {
       console.log("called getMsg");
 
@@ -119,6 +122,12 @@ export default function Tables() {
               print: false,
               viewColumns: false,
               selectableRows: "none",
+              onRowClick: rowData => {
+                console.log(rowData);
+                var address = rowData[1];
+                console.log(address);
+                history.push("/app/squeakaddress/" + address);
+              },
             }}
           />
         </Grid>
