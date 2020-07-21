@@ -69,3 +69,12 @@ class SqueakAdminServerHandler(object):
             )
         )
         return squeak_entries_with_profile
+
+    def handle_get_squeak_display_entries_for_address(self, address, min_block, max_block):
+        logger.info("Handle get squeak display entries for address: {}".format(address))
+        squeak_entries_with_profile = self.squeak_node.get_squeak_entries_with_profile_for_address(
+            address,
+            min_block,
+            max_block,
+        )
+        return squeak_entries_with_profile

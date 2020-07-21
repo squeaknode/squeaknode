@@ -46,6 +46,10 @@ service SqueakAdmin {
   */
   rpc GetFollowedSqueakDisplays (GetFollowedSqueakDisplaysRequest) returns (GetFollowedSqueakDisplaysReply) {}
 
+  /** sqkadmin: `getaddresssqueakdisplays`
+  */
+  rpc GetAddressSqueakDisplays (GetAddressSqueakDisplaysRequest) returns (GetAddressSqueakDisplaysReply) {}
+
 }
 
 message HelloRequest {
@@ -163,6 +167,16 @@ message GetFollowedSqueakDisplaysRequest {
 }
 
 message GetFollowedSqueakDisplaysReply {
+    /// Multiple squeak display entries
+    repeated SqueakDisplayEntry squeak_display_entries = 1;
+}
+
+message GetAddressSqueakDisplaysRequest {
+    /// The address
+    string address = 1;
+}
+
+message GetAddressSqueakDisplaysReply {
     /// Multiple squeak display entries
     repeated SqueakDisplayEntry squeak_display_entries = 1;
 }

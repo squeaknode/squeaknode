@@ -124,6 +124,23 @@ class PostgresDb:
             rows = curs.fetchall()
             return [self._parse_squeak_entry_with_profile(row) for row in rows]
 
+    def get_squeak_entries_with_profile_for_address(self, address, min_block, max_block):
+        """ Get a squeak. """
+        sql = """
+        SELECT * FROM squeak
+        JOIN profile
+        ON squeak.address=profile.address
+        WHERE squeak.block_header IS NOT NULL
+        AND squeak.address=%s
+        AND n_block_height >= %s
+        AND n_block_height <= %s
+        ORDER BY n_block_height DESC, n_time DESC;
+        """
+        with self.get_cursor() as curs:
+            curs.execute(sql, (address, min_block, max_block))
+            rows = curs.fetchall()
+            return [self._parse_squeak_entry_with_profile(row) for row in rows]
+
     def lookup_squeaks(self, addresses, min_block, max_block):
         """ Lookup squeaks. """
         sql = """
