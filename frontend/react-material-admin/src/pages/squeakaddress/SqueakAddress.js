@@ -8,7 +8,7 @@ import useStyles from "./styles";
 // components
 import PageTitle from "../../components/PageTitle";
 import Widget from "../../components/Widget";
-import { Typography } from "../../components/Wrappers";
+// import { Typography } from "../../components/Wrappers";
 
 import { GetAddressSqueakDisplaysRequest } from "../../proto/squeak_admin_pb"
 import { SqueakAdminClient } from "../../proto/squeak_admin_grpc_web_pb"
