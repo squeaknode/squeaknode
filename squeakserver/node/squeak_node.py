@@ -111,6 +111,9 @@ class SqueakNode:
         )
         return self.postgres_db.insert_profile(squeak_profile)
 
+    def get_signing_profiles(self):
+        return self.postgres_db.get_signing_profiles()
+
     def get_squeak_profile(self, profile_id):
         return self.postgres_db.get_profile(profile_id)
 

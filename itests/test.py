@@ -332,6 +332,15 @@ def run():
             len(get_followed_squeak_display_response.squeak_display_entries) == 2
         )
 
+        # Get all signing profiles
+        get_signing_profiles_response = admin_stub.GetSigningProfiles(
+            squeak_admin_pb2.GetSigningProfilesRequest()
+        )
+        print("Get signing profiles response: " + str(get_signing_profiles_response))
+        assert (
+            len(get_signing_profiles_response.squeak_profiles) == 1
+        )
+
 
 if __name__ == "__main__":
     logging.basicConfig()

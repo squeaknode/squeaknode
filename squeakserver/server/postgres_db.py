@@ -170,6 +170,18 @@ class PostgresDb:
             row = curs.fetchone()
             return row["profile_id"]
 
+    def get_signing_profiles(self):
+        """ Get a profile. """
+        sql = """
+        SELECT * FROM profile
+        WHERE private_key IS NOT NULL;
+        """
+        with self.get_cursor() as curs:
+            curs.execute(sql)
+            rows = curs.fetchall()
+            profiles = [self._parse_squeak_profile(row) for row in rows]
+            return profiles
+
     def get_profile(self, profile_id):
         """ Get a profile. """
         sql = """
