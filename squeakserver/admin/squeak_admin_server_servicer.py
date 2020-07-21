@@ -97,10 +97,11 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         )
 
     def _squeak_profile_to_message(self, squeak_profile):
+        has_private_key = squeak_profile.private_key is not None
         return squeak_admin_pb2.SqueakProfile(
             profile_id=squeak_profile.profile_id,
             profile_name=squeak_profile.profile_name,
-            private_key=squeak_profile.private_key,
+            has_private_key=has_private_key,
             address=squeak_profile.address,
             sharing=squeak_profile.sharing,
             following=squeak_profile.following,
