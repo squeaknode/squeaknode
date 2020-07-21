@@ -107,7 +107,6 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         block_header = squeak_entry.block_header
         is_unlocked = squeak.HasDecryptionKey()
         content_str = squeak.GetDecryptedContentStr() if is_unlocked else None
-        logger.info("Got block_header: {}".format(block_header))
         return squeak_admin_pb2.SqueakDisplayEntry(
             squeak_hash=get_hash(squeak).hex(),
             is_unlocked=squeak.HasDecryptionKey(),
