@@ -146,7 +146,6 @@ services:
       dockerfile: docker/frontend/Dockerfile
     ports:
       - 8081:8081
-      - 3000:3000
 
 volumes:
   # btcctl and lnd containers.
