@@ -106,25 +106,18 @@ export default function Tables() {
       <Grid container spacing={4}>
         <Grid item xs={12}>
           <MUIDataTable
-            title="Employee List"
+            title="Profile List"
             data={signingProfiles}
             columns={["Name", "Address", "Following", "Sharing"]}
             options={{
-              filterType: "checkbox",
+              filter: false,
+              print: false,
+              viewColumns: false,
+              selectableRows: "none",
             }}
           />
         </Grid>
-        <Grid item xs={12}>
-          <Widget title="Material-UI Table" upperTitle noBodyPadding>
-            <Table data={mock.table} />
-          </Widget>
-        </Grid>
       </Grid>
-
-      <div>
-        Message : {msg}
-      </div>
-
     </>
   );
 }
