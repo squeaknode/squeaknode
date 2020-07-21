@@ -18,7 +18,6 @@ protoc-gen-grpc-web-1.2.0-linux-x86_64 -o /usr/local/bin/protoc-gen-grpc-web && 
 COPY frontend/react-material-admin .
 
 # Copy the proto files
-RUN mkdir proto
 COPY proto/* src/proto/
 
 RUN cd src && \
@@ -28,12 +27,12 @@ RUN cd src && \
 
 # Copy the eslint prepend script.
 COPY "docker/frontend/pb_disable-eslint.sh" .
-RUN chmod +x pb_disable-eslint.sh
-RUN ./pb_disable-eslint.sh src/proto/
+RUN chmod +x pb_disable-eslint.sh && \
+	./pb_disable-eslint.sh src/proto/
 
-RUN npm install
-RUN npm run build
-RUN npm install -g serve
+RUN npm install && \
+	npm run build && \
+	npm install -g serve
 
 EXPOSE 8081
 CMD ["serve", "-s", "build", "-l", "8081"]
