@@ -267,6 +267,7 @@ def run():
         )
         print("Get squeak profile response: " + str(get_squeak_profile_response))
         assert get_squeak_profile_response.squeak_profile.profile_name == profile_name
+        squeak_profile_address = get_squeak_profile_response.squeak_profile.address
 
         # Create a new squeak using the new profile
         make_squeak_content = "Hello from the profile on the server!"
@@ -339,6 +340,17 @@ def run():
         print("Get signing profiles response: " + str(get_signing_profiles_response))
         assert (
             len(get_signing_profiles_response.squeak_profiles) == 1
+        )
+
+        # Get all squeak displays for the known address
+        get_address_squeak_display_response = admin_stub.GetAddressSqueakDisplays(
+            squeak_admin_pb2.GetAddressSqueakDisplaysRequest(
+                address=squeak_profile_address
+            )
+        )
+        print("Get address squeak displays response: " + str(get_address_squeak_display_response))
+        assert (
+            len(get_address_squeak_display_response.squeak_display_entries) == 2
         )
 
 
