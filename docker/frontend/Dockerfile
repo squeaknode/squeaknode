@@ -3,6 +3,8 @@ FROM node:10-stretch
 RUN apt-get -qq update && apt-get -qq install -y \
   unzip
 
+RUN npm install -g serve
+
 WORKDIR /tmp
 
 RUN curl -sSL https://github.com/protocolbuffers/protobuf/releases/download/v3.12.2/\
@@ -31,8 +33,7 @@ RUN chmod +x pb_disable-eslint.sh && \
 	./pb_disable-eslint.sh src/proto/
 
 RUN npm install && \
-	npm run build && \
-	npm install -g serve
+	npm run build
 
 EXPOSE 8081
 CMD ["serve", "-s", "build", "-l", "8081"]
