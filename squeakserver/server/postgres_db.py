@@ -209,6 +209,17 @@ class PostgresDb:
             row = curs.fetchone()
             return self._parse_squeak_profile(row)
 
+    def get_profile_by_address(self, address):
+        """ Get a profile by address. """
+        sql = """
+        SELECT * FROM profile
+        WHERE address=%s;
+        """
+        with self.get_cursor() as curs:
+            curs.execute(sql, (address,))
+            row = curs.fetchone()
+            return self._parse_squeak_profile(row)
+
     def get_unverified_block_squeaks(self):
         """ Get all squeaks without block header. """
         sql = """
