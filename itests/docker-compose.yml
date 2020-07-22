@@ -50,6 +50,7 @@ services:
       context: ../
       dockerfile: docker/lnd/Dockerfile
     environment:
+      - RPCHOST=btcd
       - RPCUSER
       - RPCPASS
       - NETWORK
@@ -59,7 +60,7 @@ services:
       - test_shared:/rpc
       - test_lnd_client_dir:/root/.lnd
     links:
-      - "btcd:blockchain"
+      - "btcd:btcd"
     entrypoint: ["./start-lnd.sh"]
 
   lnd_server:
@@ -69,6 +70,7 @@ services:
       context: ../
       dockerfile: docker/lnd/Dockerfile
     environment:
+      - RPCHOST=btcd
       - RPCUSER
       - RPCPASS
       - NETWORK
