@@ -108,25 +108,25 @@ services:
       - "lnd_client:lnd"
     command: tail -f /dev/null
 
-  envoy:
-    image: envoy
-    container_name: test_envoy
-    build:
-      context: ../
-      dockerfile: docker/envoy/Dockerfile
-    ports:
-      - 8080:8080
-    links:
-      - "sqkserver:sqkserver"
+  # envoy:
+  #   image: envoy
+  #   container_name: test_envoy
+  #   build:
+  #     context: ../
+  #     dockerfile: docker/envoy/Dockerfile
+  #   ports:
+  #     - 8080:8080
+  #   links:
+  #     - "sqkserver:sqkserver"
 
-  frontend:
-    image: frontend
-    container_name: test_frontend
-    build:
-      context: ../
-      dockerfile: docker/frontend/Dockerfile
-    ports:
-      - 8081:8081
+  # frontend:
+  #   image: frontend
+  #   container_name: test_frontend
+  #   build:
+  #     context: ../
+  #     dockerfile: docker/frontend/Dockerfile
+  #   ports:
+  #     - 8081:8081
 
 volumes:
   # btcctl and lnd containers.

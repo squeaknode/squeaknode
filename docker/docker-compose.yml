@@ -21,15 +21,9 @@ services:
       - shared:/rpc
       - bitcoin:/data
     environment:
-      - RPCUSER
-      - RPCPASS
       - NETWORK=testnet
-      - DEBUG
     ports:
-      - 8334:8334
       - 18334:18334
-      - 18556:18556
-      - 28902:28902
     entrypoint: ["./start-btcd.sh"]
 
   lnd:
@@ -40,11 +34,7 @@ services:
       dockerfile: docker/lnd/Dockerfile
     environment:
       - RPCHOST=btcd
-      - RPCUSER
-      - RPCPASS
       - NETWORK=testnet
-      - CHAIN
-      - DEBUG
     volumes:
       - shared:/rpc
       - lnd_dir:/root/.lnd
@@ -63,11 +53,6 @@ services:
     volumes:
       - lnd_dir:/root/.lnd
       - ./config.ini:/app/config.ini
-    ports:
-      - 8774:8774
-      - 8994:8994
-      - 18774:18774
-      - 18994:18994
     links:
       - "lnd:lnd"
     depends_on:
