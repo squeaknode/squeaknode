@@ -17,6 +17,8 @@ import Sidebar from "../Sidebar";
 // pages
 import Dashboard from "../../pages/dashboard";
 import SqueakAddress from "../../pages/squeakaddress";
+import Profile from "../../pages/profile";
+import CreateSigningProfile from "../../pages/createsigningprofile";
 import Notifications from "../../pages/notifications";
 import Maps from "../../pages/maps";
 import Profiles from "../../pages/profiles";
@@ -46,6 +48,8 @@ function Layout(props) {
             <Switch>
               <Route path="/app/dashboard" component={Dashboard} />
               <Route path="/app/squeakaddress/:id" component={SqueakAddress} />
+              <Route path="/app/profile/:id" component={Profile} />
+              <Route path="/app/createsigningprofile" component={CreateSigningProfile} />
               <Route path="/app/profiles" component={Profiles} />
               <Route path="/app/notifications" component={Notifications} />
               <Route

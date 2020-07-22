@@ -41,12 +41,10 @@ export default function SqueakAddressPage() {
   return (
     <>
       <PageTitle title={'Squeak Address: ' + id} />
-      <Grid container spacing={4}>
       <div>
       Hello!
       Number of squeaks for address: {squeaks.length}
       </div>
-      </Grid>
     </>
   );
 }
