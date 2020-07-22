@@ -39,7 +39,7 @@ set_default() {
 }
 
 # Set default variables if needed.
-RPCHOST=$(set_default "$RPCHOST" "localhost")
+RPCHOST=$(set_default "$RPCHOST" "blockchain")
 RPCPORT=$(set_default "$RPCPORT" "18334")
 RPCUSER=$(set_default "$RPCUSER" "devuser")
 RPCPASS=$(set_default "$RPCPASS" "devpass")
