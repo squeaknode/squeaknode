@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Grid } from "@material-ui/core";
+import {useHistory} from "react-router-dom";
+import { Grid, Button } from "@material-ui/core";
 
 // styles
 import useStyles from "./styles";
@@ -22,6 +23,7 @@ export default function SqueakAddressPage() {
   const { id } = useParams();
   const [squeaks, setSqueaks] = useState([]);
   const [squeakProfile, setSqueakProfile] = useState(null);
+  const history = useHistory();
 
   const getSqueaks = () => {
         console.log("called getSqueaks");
@@ -49,6 +51,11 @@ export default function SqueakAddressPage() {
           setSqueakProfile(response.getSqueakProfile());
         });
   };
+
+  const goToCreateProfilePage = (profileId) => {
+    history.push("/app/profile/" + profileId);
+  };
+
   useEffect(()=>{
     getSqueaks()
   },[]);
@@ -66,8 +73,11 @@ export default function SqueakAddressPage() {
 
   function ProfileContent() {
     return (
-      <div>
-        Go to profile: {squeakProfile.getProfileId()}
+      <div className={classes.root}>
+        Profile:
+        <Button variant="contained" onClick={() => {
+            goToCreateProfilePage(squeakProfile.getProfileId());
+          }}>{squeakProfile.getProfileName()}</Button>
       </div>
     )
   }
