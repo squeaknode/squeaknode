@@ -16,30 +16,31 @@ import {SqueakAdminClient} from "../../proto/squeak_admin_grpc_web_pb"
 var client = new SqueakAdminClient('http://' + window.location.hostname + ':8080')
 
 export default function CreateSigningProfilePage() {
-  const [email, setEmail] = useState('');
+  const [profileName, setProfileName] = useState('');
 
   var classes = useStyles();
   const history = useHistory();
 
   const goToProfilePage = (profileId) => {
-    history.push("/app/squeakaddress/" + profileId);
+    history.push("/app/profile/" + profileId);
   };
 
   function handleSubmit(event) {
       event.preventDefault();
-      console.log( 'Email:', email);
+      console.log( 'profileName:', profileName);
      // You should see email and password in console.
      // ..code to submit form to backend here...
+     createSigningProfile(profileName)
   }
 
-  const createSigningProfile = () => {
+  const createSigningProfile = (profileName) => {
     console.log("called createSigningProfile");
 
     var createSigningProfileRequest = new CreateSigningProfileRequest()
-    createSigningProfileRequest.setProfileName("foooo");
+    createSigningProfileRequest.setProfileName(profileName);
     console.log(createSigningProfileRequest);
 
-    client.getAddressSqueakDisplays(createSigningProfileRequest, {}, (err, response) => {
+    client.createSigningProfile(createSigningProfileRequest, {}, (err, response) => {
       console.log(response);
       console.log(response.getProfileId());
       goToProfilePage(response.getProfileId());
@@ -52,9 +53,9 @@ export default function CreateSigningProfilePage() {
      <Paper>
          <form className={classes.root} onSubmit={handleSubmit} >
              <TextField required
-                 value={email}
+                 value={profileName}
                  label="Profile name"
-                 onInput={ e=>setEmail(e.target.value)}
+                 onInput={ e=>setProfileName(e.target.value)}
              />
              <Typography className={classes.divider} />
              <Button

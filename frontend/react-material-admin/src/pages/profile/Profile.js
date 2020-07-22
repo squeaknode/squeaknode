@@ -22,11 +22,9 @@ export default function ProfilePage() {
   return (
     <>
       <PageTitle title={'Squeak Profile: ' + id} />
-      <Grid container spacing={4}>
       <div>
       Hello!
       </div>
-      </Grid>
     </>
   );
 }
