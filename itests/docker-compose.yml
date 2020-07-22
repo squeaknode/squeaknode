@@ -11,10 +11,7 @@ services:
       - test_shared:/rpc
       - test_bitcoin:/data
     environment:
-      - RPCUSER
-      - RPCPASS
-      - NETWORK
-      - DEBUG
+      - NETWORK=simnet
       - MINING_ADDRESS
     ports:
       - 18556:18556
@@ -30,11 +27,8 @@ services:
       - test_shared:/rpc
       - test_bitcoin:/data
     environment:
+      - NETWORK=simnet
       - RPCHOST=btcd
-      - RPCUSER
-      - RPCPASS
-      - NETWORK
-      - DEBUG
       - MINING_ADDRESS
     links:
       - "btcd:btcd"
@@ -47,12 +41,8 @@ services:
       context: ../
       dockerfile: docker/lnd/Dockerfile
     environment:
+      - NETWORK=simnet
       - RPCHOST=btcd
-      - RPCUSER
-      - RPCPASS
-      - NETWORK
-      - CHAIN
-      - DEBUG
     volumes:
       - test_shared:/rpc
       - test_lnd_client_dir:/root/.lnd
@@ -67,12 +57,8 @@ services:
       context: ../
       dockerfile: docker/lnd/Dockerfile
     environment:
+      - NETWORK=simnet
       - RPCHOST=btcd
-      - RPCUSER
-      - RPCPASS
-      - NETWORK
-      - CHAIN
-      - DEBUG
     volumes:
       - test_shared:/rpc
       - test_lnd_server_dir:/root/.lnd
