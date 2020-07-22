@@ -53,6 +53,14 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
             squeak_profile=squeak_profile_msg
         )
 
+    def GetSqueakProfileByAddress(self, request, context):
+        address = request.address
+        squeak_profile = self.handler.handle_get_squeak_profile_by_address(address)
+        squeak_profile_msg = self._squeak_profile_to_message(squeak_profile)
+        return squeak_admin_pb2.GetSqueakProfileReply(
+            squeak_profile=squeak_profile_msg
+        )
+
     def MakeSqueak(self, request, context):
         profile_id = request.profile_id
         content_str = request.content

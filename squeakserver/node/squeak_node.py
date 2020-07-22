@@ -117,6 +117,9 @@ class SqueakNode:
     def get_squeak_profile(self, profile_id):
         return self.postgres_db.get_profile(profile_id)
 
+    def get_squeak_profile_by_address(self, address):
+        return self.postgres_db.get_profile_by_address(address)
+
     def make_squeak(self, profile_id, content_str, replyto_hash):
         squeak_profile = self.postgres_db.get_profile(profile_id)
         squeak_maker = SqueakMaker(self.lightning_client)

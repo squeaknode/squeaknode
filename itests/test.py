@@ -353,6 +353,17 @@ def run():
             len(get_address_squeak_display_response.squeak_display_entries) == 2
         )
 
+        # Get squeak profile by address
+        get_profile_by_address_response = admin_stub.GetSqueakProfileByAddress(
+            squeak_admin_pb2.GetSqueakProfileByAddressRequest(
+                address=squeak_profile_address
+            )
+        )
+        print("Get profile by address response: " + str(get_profile_by_address_response))
+        assert (
+            get_profile_by_address_response.squeak_profile.profile_name == "bob"
+        )
+
 
 if __name__ == "__main__":
     logging.basicConfig()
