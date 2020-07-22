@@ -39,7 +39,7 @@ const datatableData = [
   ["Gaston Festus", "Example Inc.", "Tampa", "FL"],
 ];
 
-export default function Tables() {
+export default function Profiles() {
   const [msg, setMsg] = useState("waiting for message...");
   const [squeaks, setSqueaks] = useState([]);
   const [signingProfiles, setSigningProfiles] = useState([]);
@@ -110,7 +110,7 @@ export default function Tables() {
 
   return (
     <>
-      <PageTitle title="Tables" />
+      <PageTitle title="Profiles" />
       <Grid container spacing={4}>
         <Grid item xs={12}>
           <MUIDataTable

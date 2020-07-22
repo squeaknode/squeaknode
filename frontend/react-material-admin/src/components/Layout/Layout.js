@@ -19,7 +19,7 @@ import Dashboard from "../../pages/dashboard";
 import SqueakAddress from "../../pages/squeakaddress";
 import Notifications from "../../pages/notifications";
 import Maps from "../../pages/maps";
-import Tables from "../../pages/tables";
+import Profiles from "../../pages/profiles";
 import Icons from "../../pages/icons";
 import Charts from "../../pages/charts";
 
@@ -46,7 +46,7 @@ function Layout(props) {
             <Switch>
               <Route path="/app/dashboard" component={Dashboard} />
               <Route path="/app/squeakaddress/:id" component={SqueakAddress} />
-              <Route path="/app/tables" component={Tables} />
+              <Route path="/app/profiles" component={Profiles} />
               <Route path="/app/notifications" component={Notifications} />
               <Route
                 exact
