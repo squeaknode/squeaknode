@@ -39,6 +39,8 @@ set_default() {
 }
 
 # Set default variables if needed.
+RPCHOST=$(set_default "$RPCHOST" "localhost")
+RPCPORT=$(set_default "$RPCPORT" "18334")
 RPCUSER=$(set_default "$RPCUSER" "devuser")
 RPCPASS=$(set_default "$RPCPASS" "devpass")
 DEBUG=$(set_default "$DEBUG" "info")
@@ -65,7 +67,7 @@ else
 	 "--$CHAIN.$NETWORK" \
 	 "--$CHAIN.node"="$BACKEND" \
 	 "--$BACKEND.rpccert"="/rpc/rpc.cert" \
-	 "--$BACKEND.rpchost"="blockchain" \
+	 "--$BACKEND.rpchost"="$RPCHOST" \
 	 "--$BACKEND.rpcuser"="$RPCUSER" \
 	 "--$BACKEND.rpcpass"="$RPCPASS" \
 	 --rpclisten=0.0.0.0:10009 \

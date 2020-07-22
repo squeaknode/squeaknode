@@ -11,6 +11,27 @@ services:
       - postgres_dir:/var/lib/postgresql/data
       - ../createdb.sql:/docker-entrypoint-initdb.d/init.sql
 
+  btcd:
+    image: btcd
+    container_name: btcd
+    build:
+      context: ../
+      dockerfile: docker/btcd/Dockerfile
+    volumes:
+      - shared:/rpc
+      - bitcoin:/data
+    environment:
+      - RPCUSER
+      - RPCPASS
+      - NETWORK=testnet
+      - DEBUG
+    ports:
+      - 8334:8334
+      - 18334:18334
+      - 18556:18556
+      - 28902:28902
+    entrypoint: ["./start-btcd.sh"]
+
   lnd:
     image: lnd
     container_name: lnd
@@ -23,9 +44,11 @@ services:
       - NETWORK=testnet
       - CHAIN
       - DEBUG
-      - BACKEND=neutrino
     volumes:
+      - shared:/rpc
       - lnd_dir:/root/.lnd
+    links:
+      - "btcd:blockchain"
     ports:
       - 9735:9735
     entrypoint: ["./start-lnd.sh"]
@@ -52,8 +75,35 @@ services:
       - net.ipv6.conf.all.disable_ipv6=0
     command: ["./wait-for-it.sh", "db:5432", "--", "runsqueakserver", "--config", "config.ini", "--log-level", "DEBUG", "run-server"]
 
+  envoy:
+    image: envoy
+    container_name: envoy
+    build:
+      context: ../
+      dockerfile: docker/envoy/Dockerfile
+    ports:
+      - 8080:8080
+    links:
+      - "sqkserver:sqkserver"
+
+  frontend:
+    image: frontend
+    container_name: frontend
+    build:
+      context: ../
+      dockerfile: docker/frontend/Dockerfile
+    ports:
+      - 8081:8081
+
 volumes:
-  # lnd_dir volume is needed for sharing tht tls certificate
+  bitcoin:
+    driver: local
+
+  # shared volume is needed for sharing the btcd certificate
+  shared:
+    driver: local
+
+  # lnd_dir volume is needed for sharing the lnd tls certificate
   lnd_dir:
     driver: local
 
