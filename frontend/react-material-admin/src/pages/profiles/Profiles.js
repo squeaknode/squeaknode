@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from "react-router-dom";
-import { Grid } from "@material-ui/core";
+import {
+   Grid,
+   Button } from "@material-ui/core";
 import MUIDataTable from "mui-datatables";
+
+// styles
+import { makeStyles } from '@material-ui/core/styles';
 
 // components
 import PageTitle from "../../components/PageTitle";
@@ -39,7 +44,17 @@ const datatableData = [
   ["Gaston Festus", "Example Inc.", "Tampa", "FL"],
 ];
 
+const useStyles = makeStyles((theme) => ({
+  root: {
+    '& > *': {
+      margin: theme.spacing(1),
+    },
+  },
+}));
+
 export default function Profiles() {
+  const classes = useStyles();
+
   const [msg, setMsg] = useState("waiting for message...");
   const [squeaks, setSqueaks] = useState([]);
   const [signingProfiles, setSigningProfiles] = useState([]);
@@ -111,7 +126,22 @@ export default function Profiles() {
   return (
     <>
       <PageTitle title="Profiles" />
+
       <Grid container spacing={4}>
+
+        <Grid item xs={12}>
+        <div className={classes.root}>
+          <Button
+            variant="contained"
+            onClick={() => { alert('clicked') }}
+            >Create Signing Profile</Button>
+          <Button
+            variant="contained"
+            onClick={() => { alert('clicked') }}
+            >Add contact</Button>
+        </div>
+        </Grid>
+
         <Grid item xs={12}>
           <MUIDataTable
             title="Profile List"
@@ -123,12 +153,12 @@ export default function Profiles() {
               viewColumns: false,
               selectableRows: "none",
               onRowClick: rowData => {
-                console.log(rowData);
-                var address = rowData[1];
-                console.log(address);
-                history.push("/app/squeakaddress/" + address);
-              },
-            }}
+              console.log(rowData);
+              var address = rowData[1];
+              console.log(address);
+              history.push("/app/squeakaddress/" + address);
+            },
+          }}
           />
         </Grid>
       </Grid>
