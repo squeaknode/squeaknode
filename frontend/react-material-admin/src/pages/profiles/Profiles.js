@@ -133,6 +133,15 @@ export default function Profiles() {
       setSigningProfiles(signingProfileRows);
     });
   };
+
+  const goToCreateSigningProfilePage = () => {
+    history.push("/app/createsigningprofile");
+  };
+
+  const goToSqueakAddressPage = (squeakAddress) => {
+    history.push("/app/squeakaddress/" + squeakAddress);
+  };
+
   useEffect(() => {
     getMsg()
   }, []);
@@ -150,10 +159,10 @@ export default function Profiles() {
     <Grid item="item" xs={12}>
       <div className={classes.root}>
         <Button variant="contained" onClick={() => {
-            alert('clicked')
+            goToCreateSigningProfilePage();
           }}>Create Signing Profile</Button>
         <Button variant="contained" onClick={() => {
-            alert('clicked')
+            alert('Add contact button clicked')
           }}>Add contact</Button>
       </div>
     </Grid>
@@ -164,10 +173,8 @@ export default function Profiles() {
           viewColumns: false,
           selectableRows: "none",
           onRowClick: rowData => {
-            console.log(rowData);
             var address = rowData[1];
-            console.log(address);
-            history.push("/app/squeakaddress/" + address);
+            goToSqueakAddressPage(address);
           }
         }}/>
     </Grid>
