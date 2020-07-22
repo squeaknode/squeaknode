@@ -1,0 +1,6 @@
+{
+  "name": "CreateSigningProfile",
+  "version": "0.0.0",
+  "main": "CreateSigningProfile.js",
+  "private": true
+}
