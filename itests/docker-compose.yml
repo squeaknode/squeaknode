@@ -11,16 +11,10 @@ services:
       - test_shared:/rpc
       - test_bitcoin:/data
     environment:
-      - RPCUSER
-      - RPCPASS
-      - NETWORK
-      - DEBUG
+      - NETWORK=simnet
       - MINING_ADDRESS
     ports:
-      - 8334:8334
-      - 18334:18334
       - 18556:18556
-      - 28902:28902
     entrypoint: ["./start-btcd.sh"]
 
   btcctl:
@@ -33,13 +27,11 @@ services:
       - test_shared:/rpc
       - test_bitcoin:/data
     environment:
-      - RPCUSER
-      - RPCPASS
-      - NETWORK
-      - DEBUG
+      - NETWORK=simnet
+      - RPCHOST=btcd
       - MINING_ADDRESS
     links:
-      - "btcd:rpcserver"
+      - "btcd:btcd"
     entrypoint: ["./start-btcctl.sh"]
 
   lnd_client:
@@ -49,16 +41,13 @@ services:
       context: ../
       dockerfile: docker/lnd/Dockerfile
     environment:
-      - RPCUSER
-      - RPCPASS
-      - NETWORK
-      - CHAIN
-      - DEBUG
+      - NETWORK=simnet
+      - RPCHOST=btcd
     volumes:
       - test_shared:/rpc
       - test_lnd_client_dir:/root/.lnd
     links:
-      - "btcd:blockchain"
+      - "btcd:btcd"
     entrypoint: ["./start-lnd.sh"]
 
   lnd_server:
@@ -68,11 +57,8 @@ services:
       context: ../
       dockerfile: docker/lnd/Dockerfile
     environment:
-      - RPCUSER
-      - RPCPASS
-      - NETWORK
-      - CHAIN
-      - DEBUG
+      - NETWORK=simnet
+      - RPCHOST=btcd
     volumes:
       - test_shared:/rpc
       - test_lnd_server_dir:/root/.lnd
@@ -100,11 +86,6 @@ services:
       - test_shared:/rpc
       - test_lnd_server_dir:/root/.lnd
       - ./config.ini:/app/config.ini
-    ports:
-      - 8774:8774
-      - 8994:8994
-      - 18774:18774
-      - 18994:18994
     links:
       - "btcd:btcd"
       - "lnd_server:lnd"
@@ -127,25 +108,25 @@ services:
       - "lnd_client:lnd"
     command: tail -f /dev/null
 
-  envoy:
-    image: envoy
-    container_name: test_envoy
-    build:
-      context: ../
-      dockerfile: docker/envoy/Dockerfile
-    ports:
-      - 8080:8080
-    links:
-      - "sqkserver:sqkserver"
+  # envoy:
+  #   image: envoy
+  #   container_name: test_envoy
+  #   build:
+  #     context: ../
+  #     dockerfile: docker/envoy/Dockerfile
+  #   ports:
+  #     - 8080:8080
+  #   links:
+  #     - "sqkserver:sqkserver"
 
-  frontend:
-    image: frontend
-    container_name: test_frontend
-    build:
-      context: ../
-      dockerfile: docker/frontend/Dockerfile
-    ports:
-      - 8081:8081
+  # frontend:
+  #   image: frontend
+  #   container_name: test_frontend
+  #   build:
+  #     context: ../
+  #     dockerfile: docker/frontend/Dockerfile
+  #   ports:
+  #     - 8081:8081
 
 volumes:
   # btcctl and lnd containers.

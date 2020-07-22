@@ -11,6 +11,21 @@ services:
       - postgres_dir:/var/lib/postgresql/data
       - ../createdb.sql:/docker-entrypoint-initdb.d/init.sql
 
+  btcd:
+    image: btcd
+    container_name: btcd
+    build:
+      context: ../
+      dockerfile: docker/btcd/Dockerfile
+    volumes:
+      - shared:/rpc
+      - bitcoin:/data
+    environment:
+      - NETWORK=testnet
+    ports:
+      - 18334:18334
+    entrypoint: ["./start-btcd.sh"]
+
   lnd:
     image: lnd
     container_name: lnd
@@ -18,14 +33,13 @@ services:
       context: ../
       dockerfile: docker/lnd/Dockerfile
     environment:
-      - RPCUSER
-      - RPCPASS
+      - RPCHOST=btcd
       - NETWORK=testnet
-      - CHAIN
-      - DEBUG
-      - BACKEND=neutrino
     volumes:
+      - shared:/rpc
       - lnd_dir:/root/.lnd
+    links:
+      - "btcd:btcd"
     ports:
       - 9735:9735
     entrypoint: ["./start-lnd.sh"]
@@ -39,11 +53,6 @@ services:
     volumes:
       - lnd_dir:/root/.lnd
       - ./config.ini:/app/config.ini
-    ports:
-      - 8774:8774
-      - 8994:8994
-      - 18774:18774
-      - 18994:18994
     links:
       - "lnd:lnd"
     depends_on:
@@ -52,8 +61,35 @@ services:
       - net.ipv6.conf.all.disable_ipv6=0
     command: ["./wait-for-it.sh", "db:5432", "--", "runsqueakserver", "--config", "config.ini", "--log-level", "DEBUG", "run-server"]
 
+  envoy:
+    image: envoy
+    container_name: envoy
+    build:
+      context: ../
+      dockerfile: docker/envoy/Dockerfile
+    ports:
+      - 8080:8080
+    links:
+      - "sqkserver:sqkserver"
+
+  frontend:
+    image: frontend
+    container_name: frontend
+    build:
+      context: ../
+      dockerfile: docker/frontend/Dockerfile
+    ports:
+      - 8081:8081
+
 volumes:
-  # lnd_dir volume is needed for sharing tht tls certificate
+  bitcoin:
+    driver: local
+
+  # shared volume is needed for sharing the btcd certificate
+  shared:
+    driver: local
+
+  # lnd_dir volume is needed for sharing the lnd tls certificate
   lnd_dir:
     driver: local
 
