@@ -294,6 +294,8 @@ class PostgresDb:
         )
 
     def _parse_squeak_entry_with_profile(self, row):
+        if row is None:
+            return None
         squeak_entry = self._parse_squeak_entry(row)
         squeak_profile = self._parse_squeak_profile(row)
         return SqueakEntryWithProfile(
