@@ -280,6 +280,8 @@ class PostgresDb:
         return SqueakEntry(squeak=squeak, block_header=block_header)
 
     def _parse_squeak_profile(self, row):
+        if row is None:
+            return None
         private_key_column = row["private_key"]
         private_key = bytes(private_key_column) if private_key_column else None
         return SqueakProfile(
@@ -292,6 +294,8 @@ class PostgresDb:
         )
 
     def _parse_squeak_entry_with_profile(self, row):
+        if row is None:
+            return None
         squeak_entry = self._parse_squeak_entry(row)
         squeak_profile = self._parse_squeak_profile(row)
         return SqueakEntryWithProfile(
