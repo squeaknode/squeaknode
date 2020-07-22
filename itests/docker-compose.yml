@@ -33,13 +33,14 @@ services:
       - test_shared:/rpc
       - test_bitcoin:/data
     environment:
+      - RPCHOST=btcd
       - RPCUSER
       - RPCPASS
       - NETWORK
       - DEBUG
       - MINING_ADDRESS
     links:
-      - "btcd:rpcserver"
+      - "btcd:btcd"
     entrypoint: ["./start-btcctl.sh"]
 
   lnd_client:

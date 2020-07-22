@@ -39,6 +39,7 @@ set_default() {
 }
 
 # Set default variables if needed.
+RPCHOST=$(set_default "$RPCHOST" "localhost")
 RPCUSER=$(set_default "$RPCUSER" "devuser")
 RPCPASS=$(set_default "$RPCPASS" "devpass")
 NETWORK=$(set_default "$NETWORK" "simnet")
@@ -50,9 +51,9 @@ fi
 
 PARAMS=$(echo $PARAMS \
     "--rpccert=/rpc/rpc.cert" \
+    "--rpcserver=$RPCHOST" \
     "--rpcuser=$RPCUSER" \
-    "--rpcpass=$RPCPASS" \
-    "--rpcserver=rpcserver" \
+    "--rpcpass=$RPCPASS"
 )
 
 PARAMS="$PARAMS $@"
