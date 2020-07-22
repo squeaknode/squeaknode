@@ -49,10 +49,11 @@ export default function CreateSigningProfilePage() {
   return (
     <>
      < PageTitle title = "Create Signing Profile" />
-     <Paper className={classes.root}>
-         <form className={classes.container} onSubmit={handleSubmit} >
-             <TextField
+     <Paper>
+         <form className={classes.root} onSubmit={handleSubmit} >
+             <TextField required
                  value={email}
+                 label="Profile name"
                  onInput={ e=>setEmail(e.target.value)}
              />
              <Typography className={classes.divider} />
@@ -60,7 +61,7 @@ export default function CreateSigningProfilePage() {
                  type="submit"
                  className={classes.button}
              >
-                 Login
+                 Create
              </Button>
          </form>
      </Paper>
