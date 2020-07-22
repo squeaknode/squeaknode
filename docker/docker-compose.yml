@@ -39,6 +39,7 @@ services:
       context: ../
       dockerfile: docker/lnd/Dockerfile
     environment:
+      - RPCHOST=btcd
       - RPCUSER
       - RPCPASS
       - NETWORK=testnet
@@ -48,7 +49,7 @@ services:
       - shared:/rpc
       - lnd_dir:/root/.lnd
     links:
-      - "btcd:blockchain"
+      - "btcd:btcd"
     ports:
       - 9735:9735
     entrypoint: ["./start-lnd.sh"]
