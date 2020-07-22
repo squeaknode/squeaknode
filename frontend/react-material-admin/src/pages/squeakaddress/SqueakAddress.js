@@ -45,7 +45,7 @@ export default function SqueakAddressPage() {
 
         client.getSqueakProfileByAddress(getSqueakProfileByAddressRequest, {}, (err, response) => {
           console.log(response);
-          console.log(response.getSqueakProfile());
+          console.log("Got squeak profile: " + response.getSqueakProfile());
           setSqueakProfile(response.getSqueakProfile());
         });
   };
@@ -56,12 +56,31 @@ export default function SqueakAddressPage() {
     getSqueakProfile()
   },[]);
 
+  function NoProfileContent() {
+    return (
+      <div>
+        No profile loaded
+      </div>
+    )
+  }
+
+  function ProfileContent() {
+    return (
+      <div>
+        Go to profile: {squeakProfile.getProfileId()}
+      </div>
+    )
+  }
+
   return (
     <>
       <PageTitle title={'Squeak Address: ' + id} />
+      {squeakProfile
+        ? ProfileContent()
+        : NoProfileContent()
+      }
       <div>
-      Hello!
-      Number of squeaks for address: {squeaks.length}
+        Number of squeaks for address: {squeaks.length}
       </div>
     </>
   );
