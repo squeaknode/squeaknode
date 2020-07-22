@@ -40,18 +40,25 @@ export default function ProfilePage() {
   },[]);
 
   function NoProfileContent() {
-    return <p>No profile loaded...</p>;
+    return (
+      <p>
+        No profile loaded
+      </p>
+    )
   }
 
   function ProfileContent() {
-    return <p>{squeakProfile.getProfileName()}</p>;
+    return (
+      <p>
+        Profile name: {squeakProfile.getProfileName()}
+      </p>
+    )
   }
 
   return (
     <>
       <PageTitle title={'Squeak Profile: ' + (squeakProfile ? squeakProfile.getProfileName() : null)} />
       <div>
-      Hello!
       {squeakProfile
         ? ProfileContent()
         : NoProfileContent()

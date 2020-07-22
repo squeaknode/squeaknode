@@ -1,6 +1,6 @@
 {
-  "short_name": "React Material Admin",
-  "name": "React Material Admin is a React Template built with Material-UI",
+  "short_name": "Squeak Node",
+  "name": "Squeak Node is a frontend for accessing a squeak node",
   "icons": [
     {
       "src": "favicon.ico",

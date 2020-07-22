@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Grid } from "@material-ui/core";
+import {useHistory} from "react-router-dom";
+import { Grid, Button } from "@material-ui/core";
 
 // styles
 import useStyles from "./styles";
@@ -22,6 +23,7 @@ export default function SqueakAddressPage() {
   const { id } = useParams();
   const [squeaks, setSqueaks] = useState([]);
   const [squeakProfile, setSqueakProfile] = useState(null);
+  const history = useHistory();
 
   const getSqueaks = () => {
         console.log("called getSqueaks");
@@ -45,10 +47,15 @@ export default function SqueakAddressPage() {
 
         client.getSqueakProfileByAddress(getSqueakProfileByAddressRequest, {}, (err, response) => {
           console.log(response);
-          console.log(response.getSqueakProfile());
+          console.log("Got squeak profile: " + response.getSqueakProfile());
           setSqueakProfile(response.getSqueakProfile());
         });
   };
+
+  const goToCreateProfilePage = (profileId) => {
+    history.push("/app/profile/" + profileId);
+  };
+
   useEffect(()=>{
     getSqueaks()
   },[]);
@@ -56,12 +63,34 @@ export default function SqueakAddressPage() {
     getSqueakProfile()
   },[]);
 
+  function NoProfileContent() {
+    return (
+      <div>
+        No profile loaded
+      </div>
+    )
+  }
+
+  function ProfileContent() {
+    return (
+      <div className={classes.root}>
+        Profile:
+        <Button variant="contained" onClick={() => {
+            goToCreateProfilePage(squeakProfile.getProfileId());
+          }}>{squeakProfile.getProfileName()}</Button>
+      </div>
+    )
+  }
+
   return (
     <>
       <PageTitle title={'Squeak Address: ' + id} />
+      {squeakProfile
+        ? ProfileContent()
+        : NoProfileContent()
+      }
       <div>
-      Hello!
-      Number of squeaks for address: {squeaks.length}
+        Number of squeaks for address: {squeaks.length}
       </div>
     </>
   );
