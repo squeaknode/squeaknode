@@ -94,7 +94,7 @@ message GetSqueakProfileReply {
 
 message GetSqueakProfileByAddressRequest {
     /// The address
-    string address = 4;
+    string address = 1;
 }
 
 message GetSqueakProfileByAddressReply {
