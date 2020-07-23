@@ -25,7 +25,7 @@ import PageTitle from "../../components/PageTitle";
 import Widget from "../../components/Widget";
 import { Typography } from "../../components/Wrappers";
 
-import { GetInfoRequest } from "../../proto/lnd_pb"
+import { GetInfoRequest, WalletBalanceRequest } from "../../proto/lnd_pb"
 import { SqueakAdminClient } from "../../proto/squeak_admin_grpc_web_pb"
 
 var client = new SqueakAdminClient('http://' + window.location.hostname + ':8080')
@@ -35,6 +35,7 @@ export default function LightningPage() {
   var theme = useTheme();
 
   const [lndInfo, setLndInfo] = useState(null);
+  const [walletBalance, setWalletBalance] = useState(null);
 
   const getLndInfo = () => {
         console.log("called getLndInfo");
@@ -48,9 +49,23 @@ export default function LightningPage() {
           setLndInfo(response);
         });
   };
+  const getWalletBalance = () => {
+        console.log("called getWalletBalance");
+
+        var walletBalanceRequest = new WalletBalanceRequest()
+        console.log(walletBalanceRequest);
+
+        client.lndWalletBalance(walletBalanceRequest, {}, (err, response) => {
+          console.log(response);
+          setWalletBalance(response);
+        });
+  };
 
   useEffect(()=>{
     getLndInfo()
+  },[]);
+  useEffect(()=>{
+    getWalletBalance()
   },[]);
 
   function NoInfoContent() {
@@ -81,38 +96,43 @@ export default function LightningPage() {
   function InfoContent() {
     return (
       <>
-         {PubkeyGridItem()}
-         {StatusGridItem()}
+        <Grid container spacing={4}>
+          {PubkeyGridItem()}
+        </Grid>
+        <Grid container spacing={4}>
+          {StatusGridItem()}
+          {ChannelsGridItem()}
+          {BalanceGridItem()}
+        </Grid>
       </>
     )
   }
 
   function PubkeyGridItem() {
     return (
-      <Grid container spacing={4}>
-        <Grid item xs={12}>
-          <Widget
-            title="Node pubkey"
-            disableWidgetMenu
-            upperTitle
-            bodyClass={classes.fullHeightBody}
-            className={classes.card}
-          >
-            <div className={classes.visitsNumberContainer}>
-              <Typography size="xl" weight="medium">
-                {lndInfo.getIdentityPubkey()}
-              </Typography>
-
-            </div>
-          </Widget>
-        </Grid>
+      <Grid item xs={12}>
+        <Widget
+          title="Node info"
+          disableWidgetMenu
+          upperTitle
+          bodyClass={classes.fullHeightBody}
+          className={classes.card}
+        >
+          <div className={classes.visitsNumberContainer}>
+          <Typography color="text" colorBrightness="secondary">
+            pubkey
+          </Typography>
+            <Typography size="md" weight="medium">
+              {lndInfo.getIdentityPubkey()}
+            </Typography>
+          </div>
+        </Widget>
       </Grid>
     )
   }
 
   function StatusGridItem() {
     return (
-      <Grid container spacing={4}>
         <Grid item lg={3} md={4} sm={6} xs={12}>
           <Widget
             title="Node status"
@@ -148,14 +168,93 @@ export default function LightningPage() {
             </Grid>
           </Widget>
         </Grid>
-      </Grid>
+    )
+  }
+
+  function ChannelsGridItem() {
+    return (
+        <Grid item lg={3} md={4} sm={6} xs={12}>
+          <Widget
+            title="Channels"
+            disableWidgetMenu
+            upperTitle
+            bodyClass={classes.fullHeightBody}
+            className={classes.card}
+          >
+            <Grid
+              container
+              direction="row"
+              justify="space-between"
+              alignItems="center"
+            >
+              <Grid item>
+                <Typography color="text" colorBrightness="secondary">
+                  num_pending_channels
+                </Typography>
+                <Typography size="md">{lndInfo.getNumPendingChannels()}</Typography>
+              </Grid>
+              <Grid item>
+                <Typography color="text" colorBrightness="secondary">
+                  num_active_channels
+                </Typography>
+                <Typography size="md">{lndInfo.getNumActiveChannels()}</Typography>
+              </Grid>
+              <Grid item>
+                <Typography color="text" colorBrightness="secondary">
+                  num_inactive_channels
+                </Typography>
+                <Typography size="md">{lndInfo.getNumInactiveChannels()}</Typography>
+              </Grid>
+            </Grid>
+          </Widget>
+        </Grid>
+    )
+  }
+
+  function BalanceGridItem() {
+    return (
+        <Grid item lg={3} md={4} sm={6} xs={12}>
+          <Widget
+            title="Balance"
+            disableWidgetMenu
+            upperTitle
+            bodyClass={classes.fullHeightBody}
+            className={classes.card}
+          >
+            <Grid
+              container
+              direction="row"
+              justify="space-between"
+              alignItems="center"
+            >
+              <Grid item>
+                <Typography color="text" colorBrightness="secondary">
+                  total balance
+                </Typography>
+                <Typography size="md">{walletBalance.getTotalBalance()}</Typography>
+              </Grid>
+              <Grid item>
+                <Typography color="text" colorBrightness="secondary">
+                  confirmed balance
+                </Typography>
+                <Typography size="md">{walletBalance.getConfirmedBalance()}</Typography>
+              </Grid>
+              <Grid item>
+                <Typography color="text" colorBrightness="secondary">
+                  unconfirmed balance
+                </Typography>
+                <Typography size="md">{walletBalance.getUnconfirmedBalance()}</Typography>
+              </Grid>
+            </Grid>
+          </Widget>
+        </Grid>
     )
   }
 
   return (
     <>
       <PageTitle title="Lightning" />
-      {lndInfo
+      {(lndInfo && walletBalance)
         ? InfoContent()
         : NoInfoContent()
       }
