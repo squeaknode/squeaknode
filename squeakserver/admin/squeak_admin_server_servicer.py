@@ -84,13 +84,13 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
 
     def GetFollowedSqueakDisplays(self, request, context):
         squeak_entries_with_profile = self.handler.handle_get_followed_squeak_display_entries()
-        # TODO: use list comprehension
-        ret = []
-        for entry in squeak_entries_with_profile:
-            display_message = self._squeak_entry_to_message(entry)
-            ret.append(display_message)
+        squeak_display_msgs = [
+            self._squeak_entry_to_message(entry)
+            for entry in
+            squeak_entries_with_profile
+        ]
         return squeak_admin_pb2.GetFollowedSqueakDisplaysReply(
-            squeak_display_entries=ret
+            squeak_display_entries=squeak_display_msgs
         )
 
     def GetAddressSqueakDisplays(self, request, context):
@@ -102,13 +102,13 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
             min_block,
             max_block,
         )
-        # TODO: use list comprehension
-        ret = []
-        for entry in squeak_entries_with_profile:
-            display_message = self._squeak_entry_to_message(entry)
-            ret.append(display_message)
+        squeak_display_msgs = [
+            self._squeak_entry_to_message(entry)
+            for entry in
+            squeak_entries_with_profile
+        ]
         return squeak_admin_pb2.GetFollowedSqueakDisplaysReply(
-            squeak_display_entries=ret
+            squeak_display_entries=squeak_display_msgs
         )
 
     def _squeak_entry_to_message(self, squeak_entry_with_profile):
