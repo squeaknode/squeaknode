@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from "react";
 import {
   Grid,
   LinearProgress,
@@ -33,12 +33,6 @@ import Dot from "../../components/Sidebar/components/Dot";
 import Table from "./components/Table/Table";
 import BigStat from "./components/BigStat/BigStat";
 
-import { HelloRequest,
-       HelloReply } from "../../proto/squeak_admin_pb"
-import { SqueakAdminClient } from "../../proto/squeak_admin_grpc_web_pb"
-
-var client = new SqueakAdminClient('http://' + window.location.hostname + ':8080')
-
 const mainChartData = getMainChartData();
 const PieChartData = [
   { name: "Group A", value: 400, color: "primary" },
@@ -48,38 +42,15 @@ const PieChartData = [
 ];
 
 export default function Dashboard(props) {
-  console.log('starting Dashboard....');
   var classes = useStyles();
   var theme = useTheme();
 
   // local
   var [mainChartState, setMainChartState] = useState("monthly");
-  const [msg, setMsg] = useState("waiting for message...");
-
-  const getMsg = () => {
-      console.log("called getMsg");
-
-      var helloRequest = new HelloRequest()
-      helloRequest.setName('World');
-
-      client.sayHello(helloRequest, {}, (err, response) => {
-	  console.log(response.getMessage());
-	  setMsg(response.getMessage())
-      });
-  };
-
-  useEffect(()=>{
-    getMsg()
-  },[]);
 
   return (
     <>
       <PageTitle title="Dashboard" button="Latest Reports" />
-
-      	  <div>
-	  Message : {msg}
-	  </div>
-
       <Grid container spacing={4}>
         <Grid item lg={3} md={4} sm={6} xs={12}>
           <Widget
