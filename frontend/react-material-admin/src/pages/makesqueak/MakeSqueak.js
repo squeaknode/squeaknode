@@ -21,7 +21,7 @@ export default function MakeSqueakPage() {
   const [profileId, setProfileId] = useState(-1);
   const [content, setContent] = useState('');
   const [signingProfiles, setSigningProfiles] = useState([]);
-  const [age, setAge] = useState('');
+  // const [age, setAge] = useState('');
   const { replyto } = useParams();
 
   var classes = useStyles();
@@ -40,7 +40,7 @@ export default function MakeSqueakPage() {
   }
 
   const handleChange = (event) => {
-    setAge(event.target.value);
+    setProfileId(event.target.value);
   };
 
   const makeSqueak = (profileId, content, replyto) => {
@@ -85,16 +85,16 @@ export default function MakeSqueakPage() {
 
          <div>
          <FormControl className={classes.formControl}>
-           <InputLabel id="demo-simple-select-label">Age</InputLabel>
+           <InputLabel id="demo-simple-select-label">Signing Profile</InputLabel>
            <Select
              labelId="demo-simple-select-label"
              id="demo-simple-select"
-             value={age}
+             value={profileId}
              onChange={handleChange}
            >
-             <MenuItem value={10}>Ten</MenuItem>
-             <MenuItem value={20}>Twenty</MenuItem>
-             <MenuItem value={30}>Thirty</MenuItem>
+            {signingProfiles.map(p =>
+              <MenuItem value={p.getProfileId()}>{p.getProfileName()}</MenuItem>
+            )}
            </Select>
          </FormControl>
          </div>
