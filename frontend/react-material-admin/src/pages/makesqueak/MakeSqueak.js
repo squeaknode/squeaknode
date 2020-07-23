@@ -93,7 +93,7 @@ export default function MakeSqueakPage() {
              onChange={handleChange}
            >
             {signingProfiles.map(p =>
-              <MenuItem value={p.getProfileId()}>{p.getProfileName()}</MenuItem>
+              <MenuItem key={p.getProfileId()} value={p.getProfileId()}>{p.getProfileName()}</MenuItem>
             )}
            </Select>
          </FormControl>
@@ -104,7 +104,6 @@ export default function MakeSqueakPage() {
                  value={content}
                  label="Content"
                  inputProps={{
-                   multiline: true,
                    maxLength: 280,
                  }}
                  onInput={ e=>setContent(e.target.value)}

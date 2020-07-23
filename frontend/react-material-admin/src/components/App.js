@@ -33,27 +33,27 @@ export default function App() {
 
   // #######################################################################
 
-  function PrivateRoute({ component, ...rest }) {
-    return (
-      <Route
-        {...rest}
-        render={props =>
-          isAuthenticated ? (
-            React.createElement(component, props)
-          ) : (
-            <Redirect
-              to={{
-                pathname: "/login",
-                state: {
-                  from: props.location,
-                },
-              }}
-            />
-          )
-        }
-      />
-    );
-  }
+  // function PrivateRoute({ component, ...rest }) {
+  //   return (
+  //     <Route
+  //       {...rest}
+  //       render={props =>
+  //         isAuthenticated ? (
+  //           React.createElement(component, props)
+  //         ) : (
+  //           <Redirect
+  //             to={{
+  //               pathname: "/login",
+  //               state: {
+  //                 from: props.location,
+  //               },
+  //             }}
+  //           />
+  //         )
+  //       }
+  //     />
+  //   );
+  // }
 
   function PublicRoute({ component, ...rest }) {
     return (

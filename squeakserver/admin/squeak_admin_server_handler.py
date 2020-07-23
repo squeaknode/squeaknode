@@ -44,6 +44,7 @@ class SqueakAdminServerHandler(object):
     def handle_get_squeak_profile_by_address(self, address):
         logger.info("Handle get squeak profile with address: {}".format(address))
         squeak_profile = self.squeak_node.get_squeak_profile_by_address(address)
+        logger.info("Got squeak profile by address: {}".format(squeak_profile))
         return squeak_profile
 
     def handle_make_squeak(self, profile_id, content_str, replyto_hash):

@@ -54,7 +54,9 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         )
 
     def GetSqueakProfileByAddress(self, request, context):
+        logger.info("Got GetSqueakProfileByAddress request: {}".format(request))
         address = request.address
+        logger.info("Got GetSqueakProfileByAddress request with address: {}".format(address))
         squeak_profile = self.handler.handle_get_squeak_profile_by_address(address)
         squeak_profile_msg = self._squeak_profile_to_message(squeak_profile)
         return squeak_admin_pb2.GetSqueakProfileReply(
@@ -110,6 +112,8 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         )
 
     def _squeak_entry_to_message(self, squeak_entry_with_profile):
+        if squeak_entry_with_profile is None:
+            return None
         squeak_entry = squeak_entry_with_profile.squeak_entry
         squeak = squeak_entry.squeak
         block_header = squeak_entry.block_header
@@ -124,6 +128,8 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         )
 
     def _squeak_profile_to_message(self, squeak_profile):
+        if squeak_profile is None:
+            return None
         has_private_key = squeak_profile.private_key is not None
         return squeak_admin_pb2.SqueakProfile(
             profile_id=squeak_profile.profile_id,
