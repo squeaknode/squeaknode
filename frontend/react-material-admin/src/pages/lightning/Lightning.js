@@ -81,38 +81,42 @@ export default function LightningPage() {
   function InfoContent() {
     return (
       <>
-         {PubkeyGridItem()}
-         {StatusGridItem()}
+        <Grid container spacing={4}>
+          {PubkeyGridItem()}
+        </Grid>
+        <Grid container spacing={4}>
+          {StatusGridItem()}
+          {ChannelsGridItem()}
+        </Grid>
       </>
     )
   }
 
   function PubkeyGridItem() {
     return (
-      <Grid container spacing={4}>
-        <Grid item xs={12}>
-          <Widget
-            title="Node pubkey"
-            disableWidgetMenu
-            upperTitle
-            bodyClass={classes.fullHeightBody}
-            className={classes.card}
-          >
-            <div className={classes.visitsNumberContainer}>
-              <Typography size="xl" weight="medium">
-                {lndInfo.getIdentityPubkey()}
-              </Typography>
-
-            </div>
-          </Widget>
-        </Grid>
+      <Grid item xs={12}>
+        <Widget
+          title="Node info"
+          disableWidgetMenu
+          upperTitle
+          bodyClass={classes.fullHeightBody}
+          className={classes.card}
+        >
+          <div className={classes.visitsNumberContainer}>
+          <Typography color="text" colorBrightness="secondary">
+            pubkey
+          </Typography>
+            <Typography size="md" weight="medium">
+              {lndInfo.getIdentityPubkey()}
+            </Typography>
+          </div>
+        </Widget>
       </Grid>
     )
   }
 
   function StatusGridItem() {
     return (
-      <Grid container spacing={4}>
         <Grid item lg={3} md={4} sm={6} xs={12}>
           <Widget
             title="Node status"
@@ -148,7 +152,46 @@ export default function LightningPage() {
             </Grid>
           </Widget>
         </Grid>
-      </Grid>
+    )
+  }
+
+  function ChannelsGridItem() {
+    return (
+        <Grid item lg={3} md={4} sm={6} xs={12}>
+          <Widget
+            title="Channels"
+            disableWidgetMenu
+            upperTitle
+            bodyClass={classes.fullHeightBody}
+            className={classes.card}
+          >
+            <Grid
+              container
+              direction="row"
+              justify="space-between"
+              alignItems="center"
+            >
+              <Grid item>
+                <Typography color="text" colorBrightness="secondary">
+                  num_pending_channels
+                </Typography>
+                <Typography size="md">{lndInfo.getNumPendingChannels()}</Typography>
+              </Grid>
+              <Grid item>
+                <Typography color="text" colorBrightness="secondary">
+                  num_active_channels
+                </Typography>
+                <Typography size="md">{lndInfo.getNumActiveChannels()}</Typography>
+              </Grid>
+              <Grid item>
+                <Typography color="text" colorBrightness="secondary">
+                  num_inactive_channels
+                </Typography>
+                <Typography size="md">{lndInfo.getNumInactiveChannels()}</Typography>
+              </Grid>
+            </Grid>
+          </Widget>
+        </Grid>
     )
   }
 
