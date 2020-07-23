@@ -2,6 +2,20 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import {useHistory} from "react-router-dom";
 import { Grid, Button } from "@material-ui/core";
+import { useTheme } from "@material-ui/styles";
+import {
+  ResponsiveContainer,
+  ComposedChart,
+  AreaChart,
+  LineChart,
+  Line,
+  Area,
+  PieChart,
+  Pie,
+  Cell,
+  YAxis,
+  XAxis,
+} from "recharts";
 
 // styles
 import useStyles from "./styles";
@@ -9,7 +23,7 @@ import useStyles from "./styles";
 // components
 import PageTitle from "../../components/PageTitle";
 import Widget from "../../components/Widget";
-// import { Typography } from "../../components/Wrappers";
+import { Typography } from "../../components/Wrappers";
 
 import { GetInfoRequest } from "../../proto/lnd_pb"
 import { SqueakAdminClient } from "../../proto/squeak_admin_grpc_web_pb"
@@ -18,6 +32,8 @@ var client = new SqueakAdminClient('http://' + window.location.hostname + ':8080
 
 export default function LightningPage() {
   var classes = useStyles();
+  var theme = useTheme();
+
   const [lndInfo, setLndInfo] = useState(null);
 
   const getLndInfo = () => {
@@ -45,7 +61,7 @@ export default function LightningPage() {
     )
   }
 
-  function InfoContent() {
+  function InfoContentOld() {
     return (
       <div>
         <p>identity_pubkey: {lndInfo.getIdentityPubkey()}</p>
@@ -59,6 +75,53 @@ export default function LightningPage() {
         <p>synced_to_chain: {lndInfo.getSyncedToChain().toString()}</p>
         <p>synced_to_graph: {lndInfo.getSyncedToGraph().toString()}</p>
       </div>
+    )
+  }
+
+  function InfoContent() {
+    return (
+      <Grid container spacing={4}>
+        <Grid item lg={3} md={4} sm={6} xs={12}>
+          <Widget
+            title="Node status"
+            upperTitle
+            bodyClass={classes.fullHeightBody}
+            className={classes.card}
+          >
+            <div className={classes.visitsNumberContainer}>
+              <Typography size="xl" weight="medium">
+                {lndInfo.getIdentityPubkey()}
+              </Typography>
+
+            </div>
+            <Grid
+              container
+              direction="row"
+              justify="space-between"
+              alignItems="center"
+            >
+              <Grid item>
+                <Typography color="text" colorBrightness="secondary">
+                  synced to chain
+                </Typography>
+                <Typography size="md">{lndInfo.getSyncedToChain().toString()}</Typography>
+              </Grid>
+              <Grid item>
+                <Typography color="text" colorBrightness="secondary">
+                  synced to graph
+                </Typography>
+                <Typography size="md">{lndInfo.getSyncedToGraph().toString()}</Typography>
+              </Grid>
+              <Grid item>
+                <Typography color="text" colorBrightness="secondary">
+                  block height
+                </Typography>
+                <Typography size="md">{lndInfo.getBlockHeight()}</Typography>
+              </Grid>
+            </Grid>
+          </Widget>
+        </Grid>
+      </Grid>
     )
   }
 
