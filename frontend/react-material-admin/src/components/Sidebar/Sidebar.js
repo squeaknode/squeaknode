@@ -32,18 +32,11 @@ import {
 
 const structure = [
   { id: 0, label: "Timeline", link: "/app/timeline", icon: <HomeIcon /> },
-  { id: 1, label: "Dashboard", link: "/app/dashboard", icon: <HomeIcon /> },
-  { id: 2, label: "Profiles", link: "/app/profiles", icon: <ProfilesIcon /> },
-  { id: 3, label: "Lightning", link: "/app/lightning", icon: <LightningIcon /> },
+  { id: 1, label: "Profiles", link: "/app/profiles", icon: <ProfilesIcon /> },
+  { id: 2, label: "Lightning", link: "/app/lightning", icon: <LightningIcon /> },
+  { id: 3, label: "Make Squeak", link: "/app/makesqueak", icon: <MakeSqueakIcon /> },
   {
     id: 4,
-    label: "Notifications",
-    link: "/app/notifications",
-    icon: <NotificationsIcon />,
-  },
-  { id: 5, label: "Make Squeak", link: "/app/makesqueak", icon: <MakeSqueakIcon /> },
-  {
-    id: 6,
     label: "UI Elements",
     link: "/app/ui",
     icon: <UIElementsIcon />,
