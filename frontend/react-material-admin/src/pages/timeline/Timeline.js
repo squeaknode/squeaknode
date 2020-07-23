@@ -55,7 +55,7 @@ export default function TimelinePage() {
   function NoInfoContent() {
     return (
       <div>
-        Unable to squeaks.
+        Unable to load squeaks.
       </div>
     )
   }
