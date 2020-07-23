@@ -71,7 +71,7 @@ export default function LightningPage() {
   function NoInfoContent() {
     return (
       <div>
-        No info
+        Unable to fetch lightning info.
       </div>
     )
   }
