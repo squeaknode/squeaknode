@@ -84,23 +84,9 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Profiles() {
   const classes = useStyles();
-
-  const [squeaks, setSqueaks] = useState([]);
   const [signingProfiles, setSigningProfiles] = useState([]);
   const history = useHistory();
 
-  const getSqueaks = () => {
-    console.log("called getSqueaks");
-
-    var getSqueaksRequest = new GetFollowedSqueakDisplaysRequest()
-
-    client.getFollowedSqueakDisplays(getSqueaksRequest, {}, (err, response) => {
-      console.log(response);
-      // console.log(response.getSqueakDisplayEntriesList());
-      // console.log(response.getSqueakDisplayEntriesList(),length);
-      setSqueaks(response.getSqueakDisplayEntriesList())
-    });
-  };
   const getLndInfo = () => {
     console.log("called getLndInfo");
 
@@ -137,9 +123,6 @@ export default function Profiles() {
     history.push("/app/squeakaddress/" + squeakAddress);
   };
 
-  useEffect(() => {
-    getSqueaks()
-  }, []);
   useEffect(() => {
     getLndInfo()
   }, []);
