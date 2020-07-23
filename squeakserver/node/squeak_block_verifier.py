@@ -32,8 +32,11 @@ class SqueakBlockVerifier:
 
     def verify_from_queue(self):
         while True:
-            squeak_hash = self.unverified_queue.get()
-            self.verify_squeak_block(squeak_hash)
+            try:
+                squeak_hash = self.unverified_queue.get()
+                self.verify_squeak_block(squeak_hash)
+            except:
+                logger.error("something bad happened", exc_info=True)
 
     def _get_squeak(self, squeak_hash):
         squeak_entry = self.postgres_db.get_squeak_entry(squeak_hash)
