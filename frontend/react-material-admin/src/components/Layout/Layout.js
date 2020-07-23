@@ -48,7 +48,7 @@ function Layout(props) {
             <div className={classes.fakeToolbar} />
             <Switch>
               <Route path="/app/dashboard" component={Dashboard} />
-              <Route path="/app/squeakaddress/:id" component={SqueakAddress} />
+              <Route path="/app/squeakaddress/:address" component={SqueakAddress} />
               <Route path="/app/profile/:id" component={Profile} />
               <Route path="/app/createsigningprofile" component={CreateSigningProfile} />
               <Route path="/app/profiles" component={Profiles} />

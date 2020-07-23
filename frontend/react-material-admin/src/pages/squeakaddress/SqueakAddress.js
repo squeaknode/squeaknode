@@ -20,7 +20,7 @@ var client = new SqueakAdminClient('http://' + window.location.hostname + ':8080
 
 export default function SqueakAddressPage() {
   var classes = useStyles();
-  const { id } = useParams();
+  const { address } = useParams();
   const [squeaks, setSqueaks] = useState([]);
   const [squeakProfile, setSqueakProfile] = useState(null);
   const history = useHistory();
@@ -29,7 +29,7 @@ export default function SqueakAddressPage() {
         console.log("called getSqueaks");
 
         var getSqueaksRequest = new GetAddressSqueakDisplaysRequest()
-        getSqueaksRequest.setAddress(id);
+        getSqueaksRequest.setAddress(address);
         console.log(getSqueaksRequest);
 
         client.getAddressSqueakDisplays(getSqueaksRequest, {}, (err, response) => {
@@ -42,8 +42,8 @@ export default function SqueakAddressPage() {
         console.log("called getSqueakProfile");
 
         var getSqueakProfileByAddressRequest = new GetSqueakProfileByAddressRequest();
-        getSqueakProfileByAddressRequest.setAddress(id);
-        console.log("setAddress: " + id);
+        getSqueakProfileByAddressRequest.setAddress(address);
+        console.log("setAddress: " + address);
         console.log("getSqueakProfileByAddressRequest: " + getSqueakProfileByAddressRequest);
         console.log(getSqueakProfileByAddressRequest);
 
@@ -86,7 +86,7 @@ export default function SqueakAddressPage() {
 
   return (
     <>
-      <PageTitle title={'Squeak Address: ' + id} />
+      <PageTitle title={'Squeak Address: ' + address} />
       {squeakProfile
         ? ProfileContent()
         : NoProfileContent()
