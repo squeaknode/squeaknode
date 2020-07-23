@@ -87,12 +87,36 @@ export default function LightningPage() {
     )
   }
 
+  function PubkeyGridItem() {
+    return (
+      <Grid container spacing={4}>
+        <Grid item xs={12}>
+          <Widget
+            title="Node pubkey"
+            disableWidgetMenu
+            upperTitle
+            bodyClass={classes.fullHeightBody}
+            className={classes.card}
+          >
+            <div className={classes.visitsNumberContainer}>
+              <Typography size="xl" weight="medium">
+                {lndInfo.getIdentityPubkey()}
+              </Typography>
+
+            </div>
+          </Widget>
+        </Grid>
+      </Grid>
+    )
+  }
+
   function StatusGridItem() {
     return (
       <Grid container spacing={4}>
         <Grid item lg={3} md={4} sm={6} xs={12}>
           <Widget
             title="Node status"
+            disableWidgetMenu
             upperTitle
             bodyClass={classes.fullHeightBody}
             className={classes.card}
@@ -122,28 +146,6 @@ export default function LightningPage() {
                 <Typography size="md">{lndInfo.getBlockHeight()}</Typography>
               </Grid>
             </Grid>
-          </Widget>
-        </Grid>
-      </Grid>
-    )
-  }
-
-  function PubkeyGridItem() {
-    return (
-      <Grid container spacing={4}>
-        <Grid item xs={12}>
-          <Widget
-            title="Node pubkey"
-            upperTitle
-            bodyClass={classes.fullHeightBody}
-            className={classes.card}
-          >
-            <div className={classes.visitsNumberContainer}>
-              <Typography size="xl" weight="medium">
-                {lndInfo.getIdentityPubkey()}
-              </Typography>
-
-            </div>
           </Widget>
         </Grid>
       </Grid>
