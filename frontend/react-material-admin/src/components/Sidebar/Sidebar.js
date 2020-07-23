@@ -5,6 +5,7 @@ import {
   NotificationsNone as NotificationsIcon,
   FilterNone as UIElementsIcon,
   People as ProfilesIcon,
+  AttachMoney as LightningIcon,
   Create as MakeSqueakIcon,
   QuestionAnswer as SupportIcon,
   LibraryBooks as LibraryIcon,
@@ -32,14 +33,16 @@ import {
 const structure = [
   { id: 0, label: "Dashboard", link: "/app/dashboard", icon: <HomeIcon /> },
   { id: 1, label: "Profiles", link: "/app/profiles", icon: <ProfilesIcon /> },
+  { id: 2, label: "Lightning", link: "/app/lightning", icon: <LightningIcon /> },
   {
-    id: 2,
+    id: 3,
     label: "Notifications",
     link: "/app/notifications",
     icon: <NotificationsIcon />,
   },
+  { id: 4, label: "Make Squeak", link: "/app/makesqueak", icon: <MakeSqueakIcon /> },
   {
-    id: 3,
+    id: 5,
     label: "UI Elements",
     link: "/app/ui",
     icon: <UIElementsIcon />,
@@ -49,7 +52,6 @@ const structure = [
       { label: "Maps", link: "/app/ui/maps" },
     ],
   },
-  { id: 4, label: "Make Squeak", link: "/app/makesqueak", icon: <MakeSqueakIcon /> },
 ];
 
 function Sidebar({ location }) {
