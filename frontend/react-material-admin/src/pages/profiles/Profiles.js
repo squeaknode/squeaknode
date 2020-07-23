@@ -155,19 +155,28 @@ export default function Profiles() {
     getSigningProfiles()
   }, []);
 
-  return (<> < PageTitle title = "Profiles" /> <Grid container="container" spacing={4}>
-    <Grid item="item" xs={12}>
-      <div className={classes.root}>
-        <Button variant="contained" onClick={() => {
-            goToCreateSigningProfilePage();
-          }}>Create Signing Profile</Button>
-        <Button variant="contained" onClick={() => {
-            alert('Add contact button clicked')
-          }}>Add contact</Button>
-      </div>
-    </Grid>
-    <Grid item="item" xs={12}>
-      <MUIDataTable title="Profile List" data={signingProfiles} columns={["Name", "Address", "Following", "Sharing"]} options={{
+  return (
+    <>
+     < PageTitle title = "Profiles" />
+     <Grid container spacing={4}>
+      <Grid item xs={12}>
+        <div className={classes.root}>
+          <Button
+            variant="contained"
+            onClick={() => {
+              goToCreateSigningProfilePage();
+            }}>Create Signing Profile
+          </Button>
+          <Button
+            variant="contained"
+            onClick={() => {
+              alert('Add contact button clicked')
+            }}>Add contact
+          </Button>
+        </div>
+      </Grid>
+      <Grid item xs={12}>
+        <MUIDataTable title="Profile List" data={signingProfiles} columns={["Name", "Address", "Following", "Sharing"]} options={{
           filter: false,
           print: false,
           viewColumns: false,
@@ -177,6 +186,7 @@ export default function Profiles() {
             goToSqueakAddressPage(address);
           }
         }}/>
+      </Grid>
     </Grid>
-  </Grid> < />);
+   < />);
 }
