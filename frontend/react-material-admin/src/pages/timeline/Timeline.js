@@ -23,6 +23,7 @@ import useStyles from "./styles";
 // components
 import PageTitle from "../../components/PageTitle";
 import Widget from "../../components/Widget";
+import Squeak from "../../components/Squeak";
 import { Typography } from "../../components/Wrappers";
 
 import { GetInfoRequest, WalletBalanceRequest } from "../../proto/lnd_pb"
@@ -55,16 +56,39 @@ export default function TimelinePage() {
   function NoInfoContent() {
     return (
       <div>
-        Unable to squeaks.
+        Unable to load squeaks.
       </div>
     )
   }
 
   function InfoContent() {
     return (
-      <div>
-        Number of squeaks: {squeaks.length}
-      </div>
+      <>
+        <Grid container spacing={4} >
+        {squeaks.map(i =>
+          <Squeak
+            hash={i.getSqueakHash()}
+            contentStr={i.getContentStr()}
+            authorName={i.getAuthorName()}
+            blockHeight={i.getBlockHeight()}
+            blockTime={i.getBlockTime()}
+            disableWidgetMenu
+            upperTitle
+            bodyClass={classes.fullHeightBody}
+            className={classes.card}
+          >
+            <div className={classes.visitsNumberContainer}>
+            <Typography color="text" colorBrightness="secondary">
+              {i.getSqueakHash()}
+            </Typography>
+              <Typography size="md" weight="medium">
+                {i.getContentStr()}
+              </Typography>
+            </div>
+          </Squeak>
+        )}
+        </Grid>
+      </>
     )
   }
 
