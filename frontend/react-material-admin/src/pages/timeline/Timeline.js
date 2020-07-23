@@ -30,7 +30,7 @@ import { SqueakAdminClient } from "../../proto/squeak_admin_grpc_web_pb"
 
 var client = new SqueakAdminClient('http://' + window.location.hostname + ':8080')
 
-export default function LightningPage() {
+export default function TimelinePage() {
   var classes = useStyles();
   var theme = useTheme();
 
@@ -252,7 +252,7 @@ export default function LightningPage() {
 
   return (
     <>
-      <PageTitle title="Lightning" />
+      <PageTitle title="Timeline" />
       {(lndInfo && walletBalance)
         ? InfoContent()
         : NoInfoContent()

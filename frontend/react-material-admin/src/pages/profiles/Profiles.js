@@ -85,22 +85,10 @@ const useStyles = makeStyles((theme) => ({
 export default function Profiles() {
   const classes = useStyles();
 
-  const [msg, setMsg] = useState("waiting for message...");
   const [squeaks, setSqueaks] = useState([]);
   const [signingProfiles, setSigningProfiles] = useState([]);
   const history = useHistory();
 
-  const getMsg = () => {
-    console.log("called getMsg");
-
-    var helloRequest = new HelloRequest()
-    helloRequest.setName('World');
-
-    client.sayHello(helloRequest, {}, (err, response) => {
-      console.log(response.getMessage());
-      setMsg(response.getMessage())
-    });
-  };
   const getSqueaks = () => {
     console.log("called getSqueaks");
 
@@ -108,7 +96,7 @@ export default function Profiles() {
 
     client.getFollowedSqueakDisplays(getSqueaksRequest, {}, (err, response) => {
       console.log(response);
-      console.log(response.getSqueakDisplayEntriesList());
+      // console.log(response.getSqueakDisplayEntriesList());
       // console.log(response.getSqueakDisplayEntriesList(),length);
       setSqueaks(response.getSqueakDisplayEntriesList())
     });
@@ -119,6 +107,10 @@ export default function Profiles() {
     var getInfoRequest = new GetInfoRequest()
 
     client.lndGetInfo(getInfoRequest, {}, (err, response) => {
+      if (err) {
+        console.log(err.message);
+        return;
+      }
       console.log(response);
     });
   };
@@ -128,9 +120,12 @@ export default function Profiles() {
     var getSigningProfilesRequest = new GetSigningProfilesRequest()
 
     client.getSigningProfiles(getSigningProfilesRequest, {}, (err, response) => {
+      if (err) {
+        console.log(err.message);
+        return;
+      }
       console.log(response);
-      var signingProfileRows = response.getSqueakProfilesList().map(p => [p.getProfileName(), p.getAddress(), p.getFollowing().toString(), p.getSharing().toString()]);
-      setSigningProfiles(signingProfileRows);
+      setSigningProfiles(response.getSqueakProfilesList());
     });
   };
 
@@ -142,9 +137,6 @@ export default function Profiles() {
     history.push("/app/squeakaddress/" + squeakAddress);
   };
 
-  useEffect(() => {
-    getMsg()
-  }, []);
   useEffect(() => {
     getSqueaks()
   }, []);
@@ -176,16 +168,27 @@ export default function Profiles() {
         </div>
       </Grid>
       <Grid item xs={12}>
-        <MUIDataTable title="Profile List" data={signingProfiles} columns={["Name", "Address", "Following", "Sharing"]} options={{
-          filter: false,
-          print: false,
-          viewColumns: false,
-          selectableRows: "none",
-          onRowClick: rowData => {
-            var address = rowData[1];
-            goToSqueakAddressPage(address);
-          }
-        }}/>
+        <MUIDataTable
+          title="Profile List"
+          data={signingProfiles.map(p =>
+             [
+               p.getProfileName(),
+               p.getAddress(),
+               p.getFollowing().toString(),
+               p.getSharing().toString(),
+             ]
+           )}
+          columns={["Name", "Address", "Following", "Sharing"]}
+          options={{
+            filter: false,
+            print: false,
+            viewColumns: false,
+            selectableRows: "none",
+            onRowClick: rowData => {
+              var address = rowData[1];
+              goToSqueakAddressPage(address);
+            }
+          }}/>
       </Grid>
     </Grid>
    < />);
