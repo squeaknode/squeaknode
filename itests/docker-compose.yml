@@ -1,6 +1,16 @@
 version: '3'
 services:
 
+  db:
+    image: postgres
+    container_name: test_db
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - ../createdb.sql:/docker-entrypoint-initdb.d/init.sql
+
   btcd:
     image: btcd
     container_name: test_btcd
@@ -65,16 +75,6 @@ services:
     links:
       - "btcd:blockchain"
     entrypoint: ["./start-lnd.sh"]
-
-  db:
-    image: postgres
-    container_name: test_db
-    environment:
-      - POSTGRES_DB=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-    volumes:
-      - ../createdb.sql:/docker-entrypoint-initdb.d/init.sql
 
   sqkserver:
     image: sqkserver

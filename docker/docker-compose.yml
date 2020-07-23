@@ -51,9 +51,11 @@ services:
       context: ../
       dockerfile: docker/sqkserver/Dockerfile
     volumes:
+      - shared:/rpc
       - lnd_dir:/root/.lnd
       - ./config.ini:/app/config.ini
     links:
+      - "btcd:btcd"
       - "lnd:lnd"
     depends_on:
       - db
