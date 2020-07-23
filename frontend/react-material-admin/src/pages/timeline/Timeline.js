@@ -62,9 +62,17 @@ export default function TimelinePage() {
 
   function InfoContent() {
     return (
+      <>
       <div>
         Number of squeaks: {squeaks.length}
       </div>
+
+      <ul>
+        {squeaks.map(i =>
+          <li key={i.getSqueakHash()}>{i.getSqueakHash()}</li>
+        )}
+      </ul>
+      </>
     )
   }
 
