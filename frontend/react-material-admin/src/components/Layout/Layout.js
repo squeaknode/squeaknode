@@ -15,6 +15,7 @@ import Header from "../Header";
 import Sidebar from "../Sidebar";
 
 // pages
+import Timeline from "../../pages/timeline";
 import Dashboard from "../../pages/dashboard";
 import SqueakAddress from "../../pages/squeakaddress";
 import Profile from "../../pages/profile";
@@ -48,6 +49,7 @@ function Layout(props) {
           >
             <div className={classes.fakeToolbar} />
             <Switch>
+              <Route path="/app/timeline" component={Timeline} />
               <Route path="/app/dashboard" component={Dashboard} />
               <Route path="/app/squeakaddress/:address" component={SqueakAddress} />
               <Route path="/app/profile/:id" component={Profile} />

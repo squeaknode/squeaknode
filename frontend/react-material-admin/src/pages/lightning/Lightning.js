@@ -45,7 +45,6 @@ export default function LightningPage() {
 
         client.lndGetInfo(getInfoRequest, {}, (err, response) => {
           console.log(response);
-          console.log(response.getColor());
           setLndInfo(response);
         });
   };

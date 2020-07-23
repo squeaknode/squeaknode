@@ -23,15 +23,12 @@ export default function ProfilePage() {
   const getSqueakProfile = () => {
         console.log("called getSqueakProfile with profileId: " + id);
 
-        var getSqueaksRequest = new GetSqueakProfileRequest()
-        getSqueaksRequest.setProfileId(id);
-        console.log(getSqueaksRequest);
+        var getSqueakProfileRequest = new GetSqueakProfileRequest()
+        getSqueakProfileRequest.setProfileId(id);
+        console.log(getSqueakProfileRequest);
 
-        client.getSqueakProfile(getSqueaksRequest, {}, (err, response) => {
-          console.log(err);
+        client.getSqueakProfile(getSqueakProfileRequest, {}, (err, response) => {
           console.log(response);
-          console.log(response.getSqueakProfile());
-          // console.log(response.getSqueakDisplayEntriesList(),length);
           setSqueakProfile(response.getSqueakProfile())
         });
   };
