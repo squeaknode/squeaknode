@@ -5,6 +5,7 @@ import {
   NotificationsNone as NotificationsIcon,
   FilterNone as UIElementsIcon,
   People as ProfilesIcon,
+  Create as MakeSqueakIcon,
   QuestionAnswer as SupportIcon,
   LibraryBooks as LibraryIcon,
   HelpOutline as FAQIcon,
@@ -48,6 +49,7 @@ const structure = [
       { label: "Maps", link: "/app/ui/maps" },
     ],
   },
+  { id: 4, label: "Make Squeak", link: "/app/makesqueak", icon: <MakeSqueakIcon /> },
 ];
 
 function Sidebar({ location }) {
