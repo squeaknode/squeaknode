@@ -9,6 +9,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     volumes:
+      - postgres_dir:/var/lib/postgresql/data
       - ../createdb.sql:/docker-entrypoint-initdb.d/init.sql
 
   btcd:
@@ -22,7 +23,6 @@ services:
       - bitcoin:/data
     environment:
       - NETWORK=testnet
-      - MINING_ADDRESS
     entrypoint: ["./start-btcd.sh"]
 
   lnd:
