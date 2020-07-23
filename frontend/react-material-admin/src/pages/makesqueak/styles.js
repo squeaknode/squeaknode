@@ -12,6 +12,13 @@ export default makeStyles(theme => ({
   text: {
     marginBottom: theme.spacing(2),
   },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+  },
+    selectEmpty: {
+    marginTop: theme.spacing(2),
+  },
   root: {
   '& .MuiTextField-root': {
     margin: theme.spacing(1),

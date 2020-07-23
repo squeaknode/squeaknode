@@ -43,6 +43,8 @@ export default function SqueakAddressPage() {
 
         var getSqueakProfileByAddressRequest = new GetSqueakProfileByAddressRequest();
         getSqueakProfileByAddressRequest.setAddress(id);
+        console.log("setAddress: " + id);
+        console.log("getSqueakProfileByAddressRequest: " + getSqueakProfileByAddressRequest);
         console.log(getSqueakProfileByAddressRequest);
 
         client.getSqueakProfileByAddress(getSqueakProfileByAddressRequest, {}, (err, response) => {
