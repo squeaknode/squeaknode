@@ -53,6 +53,12 @@ export default function MakeSqueakPage() {
     console.log(makeSqueakRequest);
 
     client.makeSqueak(makeSqueakRequest, {}, (err, response) => {
+      if (err) {
+        console.log(err.message);
+        alert('Error making squeak: ' + err.message);
+        return;
+      }
+
       console.log(response);
       console.log(response.getHash());
       goToSqueakPage(response.getHash());
