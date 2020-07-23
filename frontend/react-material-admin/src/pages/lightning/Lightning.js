@@ -189,19 +189,19 @@ export default function LightningPage() {
             >
               <Grid item>
                 <Typography color="text" colorBrightness="secondary">
-                  num_pending_channels
+                  num pending channels
                 </Typography>
                 <Typography size="md">{lndInfo.getNumPendingChannels()}</Typography>
               </Grid>
               <Grid item>
                 <Typography color="text" colorBrightness="secondary">
-                  num_active_channels
+                  num active channels
                 </Typography>
                 <Typography size="md">{lndInfo.getNumActiveChannels()}</Typography>
               </Grid>
               <Grid item>
                 <Typography color="text" colorBrightness="secondary">
-                  num_inactive_channels
+                  num inactive channels
                 </Typography>
                 <Typography size="md">{lndInfo.getNumInactiveChannels()}</Typography>
               </Grid>
