@@ -3,12 +3,12 @@ services:
 
   db:
     image: postgres
+    container_name: db
     environment:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     volumes:
-      - postgres_dir:/var/lib/postgresql/data
       - ../createdb.sql:/docker-entrypoint-initdb.d/init.sql
 
   btcd:
@@ -22,8 +22,7 @@ services:
       - bitcoin:/data
     environment:
       - NETWORK=testnet
-    ports:
-      - 18334:18334
+      - MINING_ADDRESS
     entrypoint: ["./start-btcd.sh"]
 
   lnd:
@@ -33,15 +32,13 @@ services:
       context: ../
       dockerfile: docker/lnd/Dockerfile
     environment:
-      - RPCHOST=btcd
       - NETWORK=testnet
+      - RPCHOST=btcd
     volumes:
       - shared:/rpc
       - lnd_dir:/root/.lnd
     links:
       - "btcd:btcd"
-    ports:
-      - 9735:9735
     entrypoint: ["./start-lnd.sh"]
 
   sqkserver:
@@ -61,7 +58,7 @@ services:
       - db
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=0
-    command: ["./wait-for-it.sh", "db:5432", "--", "runsqueakserver", "--config", "config.ini", "--log-level", "DEBUG", "run-server"]
+    entrypoint: ["./start-sqkserver.sh"]
 
   envoy:
     image: envoy
