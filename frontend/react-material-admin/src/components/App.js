@@ -18,11 +18,11 @@ export default function App() {
   return (
     <HashRouter>
       <Switch>
-        <Route exact path="/" render={() => <Redirect to="/app/dashboard" />} />
+        <Route exact path="/" render={() => <Redirect to="/app/timeline" />} />
         <Route
           exact
           path="/app"
-          render={() => <Redirect to="/app/dashboard" />}
+          render={() => <Redirect to="/app/timeline" />}
         />
         <PublicRoute path="/app" component={Layout} />
         // <PublicRoute path="/login" component={Login} />

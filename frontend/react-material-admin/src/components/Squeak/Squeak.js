@@ -6,8 +6,11 @@ import {
   MenuItem,
   Typography,
   Grid,
+  Box,
+  Link,
 } from "@material-ui/core";
 import { MoreVert as MoreIcon } from "@material-ui/icons";
+import {useHistory} from "react-router-dom";
 import classnames from "classnames";
 
 // styles
@@ -16,15 +19,7 @@ import useStyles from "./styles";
 import Widget from "../../components/Widget";
 
 export default function Squeak({
-  hash,
-  isUnlocked,
-  contentStr,
-  isReply,
-  replyTo,
-  isAuthorKnown,
-  authorName,
-  blockHeight,
-  blockTime,
+  squeak,
   ...props
 }) {
   var classes = useStyles();
@@ -32,6 +27,8 @@ export default function Squeak({
   // local
   // var [moreButtonRef, setMoreButtonRef] = useState(null);
   // var [isMoreMenuOpen, setMoreMenuOpen] = useState(false);
+
+  const history = useHistory();
 
   return (
     <Grid item xs={12}>
@@ -44,21 +41,42 @@ export default function Squeak({
           <Grid
             container
             direction="row"
-            justify="space-between"
-            alignItems="center"
+            justify="flex-start"
+            alignItems="flex-start"
           >
             <Grid item>
-              <Typography size="md">{contentStr}</Typography>
+                <Box fontWeight="fontWeightBold">
+                  <Link href="#"
+                    onClick={() => {
+                      console.info("I'm a button: " + squeak.getAuthorAddress());
+                      history.push("/app/squeakaddress/" + squeak.getAuthorAddress());
+                    }}
+                    >
+                    {squeak.getAuthorName()}
+                  </Link>
+                </Box>
             </Grid>
+          </Grid>
+          <Grid
+            container
+            direction="row"
+            justify="flex-start"
+            alignItems="flex-start"
+          >
+          <Grid item>
+            <Typography size="md">{squeak.getContentStr()}</Typography>
+          </Grid>
+          </Grid>
+          <Grid
+            container
+            direction="row"
+            justify="flex-start"
+            alignItems="flex-start"
+          >
             <Grid item>
-              <Typography color="text" colorBrightness="secondary">
-                {authorName}
-              </Typography>
-            </Grid>
-            <Grid item>
-              <Typography color="text" colorBrightness="secondary">
-                {new Date(blockTime*1000).toString()} (Block # {blockHeight})
-              </Typography>
+                <Box color="secondary.main">
+                  {new Date(squeak.getBlockTime()*1000).toString()} (Block # {squeak.getBlockHeight()}
+                </Box>
             </Grid>
           </Grid>
         </Widget>
