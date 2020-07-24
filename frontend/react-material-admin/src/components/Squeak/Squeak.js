@@ -71,7 +71,7 @@ export default function Squeak({
           >
             <Grid item>
                 <Box color="secondary.main">
-                  {new Date(squeak.getBlockTime()*1000).toString()} (Block # {squeak.getBlockHeight()}
+                  {new Date(squeak.getBlockTime()*1000).toString()} (Block # {squeak.getBlockHeight()})
                 </Box>
             </Grid>
           </Grid>

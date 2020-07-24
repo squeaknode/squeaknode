@@ -24,10 +24,9 @@ export default function SqueakAddressPage() {
   const history = useHistory();
   const { address } = useParams();
   const [squeakProfile, setSqueakProfile] = useState(null);
+  const [squeaks, setSqueaks] = useState([]);
 
   const getSqueakProfile = () => {
-        console.log("called getSqueakProfile with profileId: " + address);
-
         var getSqueakProfileByAddressRequest = new GetSqueakProfileByAddressRequest()
         getSqueakProfileByAddressRequest.setAddress(address);
         console.log(getSqueakProfileByAddressRequest);
@@ -37,6 +36,17 @@ export default function SqueakAddressPage() {
           setSqueakProfile(response.getSqueakProfile())
         });
   };
+  const getSqueaks = () => {
+      var getAddressSqueakDisplaysRequest = new GetAddressSqueakDisplaysRequest()
+      getAddressSqueakDisplaysRequest.setAddress(address);
+      console.log(getAddressSqueakDisplaysRequest);
+
+      client.getAddressSqueakDisplays(getAddressSqueakDisplaysRequest, {}, (err, response) => {
+        console.log(response);
+        console.log(response.getSqueakDisplayEntriesList());
+        setSqueaks(response.getSqueakDisplayEntriesList())
+      });
+};
 
   const goToCreateProfilePage = (profileId) => {
     history.push("/app/profile/" + profileId);
@@ -44,6 +54,9 @@ export default function SqueakAddressPage() {
 
   useEffect(()=>{
     getSqueakProfile()
+  },[]);
+  useEffect(()=>{
+    getSqueaks()
   },[]);
 
   function NoProfileContent() {
@@ -65,12 +78,36 @@ export default function SqueakAddressPage() {
     )
   }
 
+  function NoSqueaksContent() {
+    return (
+      <div>
+        Unable to load squeaks.
+      </div>
+    )
+  }
+
+  function SqueaksContent() {
+    return (
+      <>
+        <Grid container spacing={4} >
+          {squeaks.map(squeak =>
+            <Squeak key={squeak.getSqueakHash()} squeak={squeak}></Squeak>
+          )}
+          </Grid>
+      </>
+    )
+  }
+
   return (
     <>
       <PageTitle title={'Squeak Address: ' + address} />
       {squeakProfile
         ? ProfileContent()
         : NoProfileContent()
+      }
+      {(squeaks)
+        ? SqueaksContent()
+        : NoSqueaksContent()
       }
     </>
   );
