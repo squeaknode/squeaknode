@@ -46,11 +46,7 @@ export default function Squeak({
           >
             <Grid item>
                 <Box fontWeight="fontWeightBold">
-                  <Link href="#"
-                    onClick={() => {
-                      console.info("I'm a button: " + squeak.getAuthorAddress());
-                      history.push("/app/squeakaddress/" + squeak.getAuthorAddress());
-                    }}
+                  <Link href={"#/app/squeakaddress/" + squeak.getAuthorAddress()}
                     >
                     {squeak.getAuthorName()}
                   </Link>
