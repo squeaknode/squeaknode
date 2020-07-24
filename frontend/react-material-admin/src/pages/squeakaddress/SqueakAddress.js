@@ -13,44 +13,28 @@ import Squeak from "../../components/Squeak";
 
 import {
    GetAddressSqueakDisplaysRequest,
-   GetSqueakProfileByAddressRequest } from "../../proto/squeak_admin_pb"
+   GetSqueakProfileByAddressRequest,
+   GetSqueakProfileRequest } from "../../proto/squeak_admin_pb"
 import { SqueakAdminClient } from "../../proto/squeak_admin_grpc_web_pb"
 
 var client = new SqueakAdminClient('http://' + window.location.hostname + ':8080')
 
 export default function SqueakAddressPage() {
   var classes = useStyles();
-  const { address } = useParams();
-  const [squeaks, setSqueaks] = useState([]);
-  const [squeakProfile, setSqueakProfile] = useState(null);
   const history = useHistory();
+  const { address } = useParams();
+  const [squeakProfile, setSqueakProfile] = useState(null);
 
-  const getSqueaks = () => {
-        console.log("called getSqueaks");
-
-        var getSqueaksRequest = new GetAddressSqueakDisplaysRequest()
-        getSqueaksRequest.setAddress(address);
-        console.log(getSqueaksRequest);
-
-        client.getAddressSqueakDisplays(getSqueaksRequest, {}, (err, response) => {
-          console.log(response);
-          console.log(response.getSqueakDisplayEntriesList());
-          setSqueaks(response.getSqueakDisplayEntriesList())
-        });
-  };
   const getSqueakProfile = () => {
-        console.log("called getSqueakProfile");
+        console.log("called getSqueakProfile with profileId: " + address);
 
-        var getSqueakProfileByAddressRequest = new GetSqueakProfileByAddressRequest();
+        var getSqueakProfileByAddressRequest = new GetSqueakProfileByAddressRequest()
         getSqueakProfileByAddressRequest.setAddress(address);
-        console.log("setAddress: " + address);
-        console.log("getSqueakProfileByAddressRequest: " + getSqueakProfileByAddressRequest);
         console.log(getSqueakProfileByAddressRequest);
 
         client.getSqueakProfileByAddress(getSqueakProfileByAddressRequest, {}, (err, response) => {
           console.log(response);
-          console.log("Got squeak profile: " + response.getSqueakProfile());
-          setSqueakProfile(response.getSqueakProfile());
+          setSqueakProfile(response.getSqueakProfile())
         });
   };
 
@@ -58,9 +42,6 @@ export default function SqueakAddressPage() {
     history.push("/app/profile/" + profileId);
   };
 
-  useEffect(()=>{
-    getSqueaks()
-  },[]);
   useEffect(()=>{
     getSqueakProfile()
   },[]);
@@ -84,36 +65,12 @@ export default function SqueakAddressPage() {
     )
   }
 
-  function NoSqueaksContent() {
-    return (
-      <div>
-        Unable to load squeaks.
-      </div>
-    )
-  }
-
-  function SqueaksContent() {
-    return (
-      <>
-        <Grid container spacing={4} >
-        {squeaks.map(squeak =>
-          <Squeak key={squeak.getSqueakHash()} squeak={squeak}></Squeak>
-        )}
-        </Grid>
-      </>
-    )
-  }
-
   return (
     <>
       <PageTitle title={'Squeak Address: ' + address} />
       {squeakProfile
         ? ProfileContent()
         : NoProfileContent()
-      }
-      {(squeaks)
-        ? SqueaksContent()
-        : NoSqueaksContent()
       }
     </>
   );
