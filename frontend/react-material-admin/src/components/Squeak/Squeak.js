@@ -17,15 +17,7 @@ import useStyles from "./styles";
 import Widget from "../../components/Widget";
 
 export default function Squeak({
-  hash,
-  isUnlocked,
-  contentStr,
-  isReply,
-  replyTo,
-  isAuthorKnown,
-  authorName,
-  blockHeight,
-  blockTime,
+  squeak,
   ...props
 }) {
   var classes = useStyles();
@@ -51,7 +43,7 @@ export default function Squeak({
             <Grid item>
               <Typography color="text" colorBrightness="secondary">
                 <Box fontWeight="fontWeightBold">
-                  {authorName}
+                  {squeak.getAuthorName()}
                 </Box>
               </Typography>
             </Grid>
@@ -63,7 +55,7 @@ export default function Squeak({
             alignItems="flex-start"
           >
           <Grid item>
-            <Typography size="md">{contentStr}</Typography>
+            <Typography size="md">{squeak.getContentStr()}</Typography>
           </Grid>
           </Grid>
           <Grid
@@ -75,7 +67,7 @@ export default function Squeak({
             <Grid item>
               <Typography color="text" colorBrightness="secondary">
                 <Box color="secondary.main">
-                  {new Date(blockTime*1000).toString()} (Block # {blockHeight})
+                  {new Date(squeak.getBlockTime()*1000).toString()} (Block # {squeak.getBlockHeight()}
                 </Box>
               </Typography>
             </Grid>

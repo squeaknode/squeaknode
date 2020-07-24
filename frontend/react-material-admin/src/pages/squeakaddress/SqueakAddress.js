@@ -9,7 +9,7 @@ import useStyles from "./styles";
 // components
 import PageTitle from "../../components/PageTitle";
 import Widget from "../../components/Widget";
-// import { Typography } from "../../components/Wrappers";
+import Squeak from "../../components/Squeak";
 
 import {
    GetAddressSqueakDisplaysRequest,
@@ -84,6 +84,26 @@ export default function SqueakAddressPage() {
     )
   }
 
+  function NoSqueaksContent() {
+    return (
+      <div>
+        Unable to load squeaks.
+      </div>
+    )
+  }
+
+  function SqueaksContent() {
+    return (
+      <>
+        <Grid container spacing={4} >
+        {squeaks.map(squeak =>
+          <Squeak squeak={squeak}></Squeak>
+        )}
+        </Grid>
+      </>
+    )
+  }
+
   return (
     <>
       <PageTitle title={'Squeak Address: ' + address} />
@@ -91,9 +111,10 @@ export default function SqueakAddressPage() {
         ? ProfileContent()
         : NoProfileContent()
       }
-      <div>
-        Number of squeaks for address: {squeaks.length}
-      </div>
+      {(squeaks)
+        ? SqueaksContent()
+        : NoSqueaksContent()
+      }
     </>
   );
 }
