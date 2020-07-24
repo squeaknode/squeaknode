@@ -7,8 +7,10 @@ import {
   Typography,
   Grid,
   Box,
+  Link,
 } from "@material-ui/core";
 import { MoreVert as MoreIcon } from "@material-ui/icons";
+import {useHistory} from "react-router-dom";
 import classnames from "classnames";
 
 // styles
@@ -26,6 +28,8 @@ export default function Squeak({
   // var [moreButtonRef, setMoreButtonRef] = useState(null);
   // var [isMoreMenuOpen, setMoreMenuOpen] = useState(false);
 
+  const history = useHistory();
+
   return (
     <Grid item xs={12}>
         <Widget
@@ -41,11 +45,16 @@ export default function Squeak({
             alignItems="flex-start"
           >
             <Grid item>
-              <Typography color="text" colorBrightness="secondary">
                 <Box fontWeight="fontWeightBold">
-                  {squeak.getAuthorName()}
+                  <Link href="#"
+                    onClick={() => {
+                      console.info("I'm a button: " + squeak.getAuthorAddress());
+                      history.push("/app/squeakaddress/" + squeak.getAuthorAddress());
+                    }}
+                    >
+                    {squeak.getAuthorName()}
+                  </Link>
                 </Box>
-              </Typography>
             </Grid>
           </Grid>
           <Grid
@@ -65,11 +74,9 @@ export default function Squeak({
             alignItems="flex-start"
           >
             <Grid item>
-              <Typography color="text" colorBrightness="secondary">
                 <Box color="secondary.main">
                   {new Date(squeak.getBlockTime()*1000).toString()} (Block # {squeak.getBlockHeight()}
                 </Box>
-              </Typography>
             </Grid>
           </Grid>
         </Widget>

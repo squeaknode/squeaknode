@@ -66,7 +66,7 @@ export default function TimelinePage() {
       <>
         <Grid container spacing={4} >
         {squeaks.map(squeak =>
-          <Squeak squeak={squeak}></Squeak>
+          <Squeak key={squeak.getSqueakHash()} squeak={squeak}></Squeak>
         )}
         </Grid>
       </>
