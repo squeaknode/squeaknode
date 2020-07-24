@@ -352,6 +352,9 @@ def run():
         assert (
             len(get_address_squeak_display_response.squeak_display_entries) == 2
         )
+        for squeak_display_entry in get_address_squeak_display_response.squeak_display_entries:
+            assert squeak_display_entry.author_name == "bob"
+            assert squeak_display_entry.author_address == squeak_profile_address
 
         # Get squeak profile by address
         get_profile_by_address_response = admin_stub.GetSqueakProfileByAddress(
