@@ -6,6 +6,7 @@ import {
   MenuItem,
   Typography,
   Grid,
+  Box,
 } from "@material-ui/core";
 import { MoreVert as MoreIcon } from "@material-ui/icons";
 import classnames from "classnames";
@@ -44,20 +45,38 @@ export default function Squeak({
           <Grid
             container
             direction="row"
-            justify="space-between"
-            alignItems="center"
+            justify="flex-start"
+            alignItems="flex-start"
           >
             <Grid item>
-              <Typography size="md">{contentStr}</Typography>
-            </Grid>
-            <Grid item>
               <Typography color="text" colorBrightness="secondary">
-                {authorName}
+                <Box fontWeight="fontWeightBold">
+                  {authorName}
+                </Box>
               </Typography>
             </Grid>
+          </Grid>
+          <Grid
+            container
+            direction="row"
+            justify="flex-start"
+            alignItems="flex-start"
+          >
+          <Grid item>
+            <Typography size="md">{contentStr}</Typography>
+          </Grid>
+          </Grid>
+          <Grid
+            container
+            direction="row"
+            justify="flex-start"
+            alignItems="flex-start"
+          >
             <Grid item>
               <Typography color="text" colorBrightness="secondary">
-                {new Date(blockTime*1000).toString()} (Block # {blockHeight})
+                <Box color="secondary.main">
+                  {new Date(blockTime*1000).toString()} (Block # {blockHeight})
+                </Box>
               </Typography>
             </Grid>
           </Grid>
