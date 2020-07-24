@@ -174,7 +174,10 @@ message SqueakDisplayEntry {
     bool is_author_known = 8;
 
     /// The author name
-    string author_name = 9;
+    string author_address = 9;
+
+    /// The author name
+    string author_name = 10;
 }
 
 message GetFollowedSqueakDisplaysRequest {
