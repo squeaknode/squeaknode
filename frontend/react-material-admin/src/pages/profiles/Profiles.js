@@ -174,7 +174,7 @@ export default function Profiles() {
   function ProfilesTabs() {
     return (
       <>
-      <AppBar position="static">
+      <AppBar position="static" color="default">
         <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
           <Tab label="Signing Profiles" {...a11yProps(0)} />
           <Tab label="Item Two" {...a11yProps(1)} />

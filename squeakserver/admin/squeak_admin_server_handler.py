@@ -30,9 +30,21 @@ class SqueakAdminServerHandler(object):
         logger.info("New profile_id: {}".format(profile_id))
         return profile_id
 
+    def handle_create_contact_profile(self, profile_name, squeak_address):
+        logger.info("Handle create contact profile with name: {}, address: {}".format(profile_name, squeak_address))
+        profile_id = self.squeak_node.create_contact_profile(profile_name, squeak_address)
+        logger.info("New profile_id: {}".format(profile_id))
+        return profile_id
+
     def handle_get_signing_profiles(self):
         logger.info("Handle get signing profiles.")
         profiles = self.squeak_node.get_signing_profiles()
+        logger.info("Got number of profiles: {}".format(len(profiles)))
+        return profiles
+
+    def handle_get_contact_profiles(self):
+        logger.info("Handle get contact profiles.")
+        profiles = self.squeak_node.get_contact_profiles()
         logger.info("Got number of profiles: {}".format(len(profiles)))
         return profiles
 
