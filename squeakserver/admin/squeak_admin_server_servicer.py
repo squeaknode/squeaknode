@@ -144,7 +144,7 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         author_name = squeak_profile.profile_name if squeak_profile else None
         author_address = str(squeak.GetAddress())
         return squeak_admin_pb2.SqueakDisplayEntry(
-            squeak_hash=get_hash(squeak).hex(),
+            squeak_hash=get_hash(squeak),
             is_unlocked=squeak.HasDecryptionKey(),
             content_str=content_str,
             block_height=squeak.nBlockHeight,

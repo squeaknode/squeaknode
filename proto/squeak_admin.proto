@@ -179,7 +179,7 @@ message GetSqueakDisplayReply {
 
 message SqueakDisplayEntry {
     /// The squeak hash.
-    string squeak_hash = 1;
+    bytes squeak_hash = 1;
 
     /// Is unlocked
     bool is_unlocked = 2;
@@ -191,7 +191,7 @@ message SqueakDisplayEntry {
     bool is_reply = 4;
 
     /// Reply to hash
-    string reply_to = 5;
+    bytes reply_to = 5;
 
     /// Block height
     int32 block_height = 6;

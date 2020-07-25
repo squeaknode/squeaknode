@@ -348,6 +348,18 @@ def run():
             len(get_followed_squeak_display_response.squeak_display_entries) == 2
         )
 
+        # Get each individual squeak from the list of followed squeak display items
+        for entry in get_followed_squeak_display_response.squeak_display_entries:
+            get_squeak_display_response = admin_stub.GetSqueakDisplay(
+                squeak_admin_pb2.GetSqueakDisplayRequest(
+                    hash=entry.squeak_hash
+                )
+            )
+            print("Get squeak display entry response: " + str(get_squeak_display_response))
+            assert (
+                get_squeak_display_response.squeak_display_entry.squeak_hash == entry.squeak_hash
+            )
+
         # Get all signing profiles
         get_signing_profiles_response = admin_stub.GetSigningProfiles(
             squeak_admin_pb2.GetSigningProfilesRequest()
