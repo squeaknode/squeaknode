@@ -86,14 +86,17 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
     def MakeSqueak(self, request, context):
         profile_id = request.profile_id
         content_str = request.content
-        replyto_hash = request.replyto
+        replyto_hash_str = request.replyto
+        replyto_hash = bytes.fromhex(replyto_hash) if replyto_hash_str else None
         squeak_hash = self.handler.handle_make_squeak(
             profile_id, content_str, replyto_hash
         )
-        return squeak_admin_pb2.MakeSqueakReply(hash=squeak_hash,)
+        squeak_hash_str = squeak_hash.hex()
+        return squeak_admin_pb2.MakeSqueakReply(squeak_hash=squeak_hash_str,)
 
     def GetSqueakDisplay(self, request, context):
-        squeak_hash = request.hash
+        squeak_hash_str = request.squeak_hash
+        squeak_hash = bytes.fromhex(squeak_hash_str)
         squeak_entry_with_profile = self.handler.handle_get_squeak_display_entry(
             squeak_hash
         )
@@ -144,7 +147,7 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         author_name = squeak_profile.profile_name if squeak_profile else None
         author_address = str(squeak.GetAddress())
         return squeak_admin_pb2.SqueakDisplayEntry(
-            squeak_hash=get_hash(squeak),
+            squeak_hash=get_hash(squeak).hex(),
             is_unlocked=squeak.HasDecryptionKey(),
             content_str=content_str,
             block_height=squeak.nBlockHeight,

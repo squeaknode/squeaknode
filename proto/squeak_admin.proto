@@ -159,17 +159,17 @@ message MakeSqueakRequest {
     string content = 2;
 
     /// The replyto hash
-    bytes replyto = 3;
+    string replyto = 3;
 }
 
 message MakeSqueakReply {
     /// Hash of the created squeak.
-    bytes hash = 1;
+    string squeak_hash = 1;
 }
 
 message GetSqueakDisplayRequest {
     /// Hash of the squeak.
-    bytes hash = 1;
+    string squeak_hash = 1;
 }
 
 message GetSqueakDisplayReply {
@@ -179,7 +179,7 @@ message GetSqueakDisplayReply {
 
 message SqueakDisplayEntry {
     /// The squeak hash.
-    bytes squeak_hash = 1;
+    string squeak_hash = 1;
 
     /// Is unlocked
     bool is_unlocked = 2;
@@ -191,7 +191,7 @@ message SqueakDisplayEntry {
     bool is_reply = 4;
 
     /// Reply to hash
-    bytes reply_to = 5;
+    string reply_to = 5;
 
     /// Block height
     int32 block_height = 6;

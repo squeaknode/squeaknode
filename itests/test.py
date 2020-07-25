@@ -292,17 +292,17 @@ def run():
             )
         )
         print("Get make squeak response: " + str(make_squeak_response))
-        make_squeak_hash = make_squeak_response.hash
-        assert len(make_squeak_hash) == 32
+        make_squeak_hash = make_squeak_response.squeak_hash
+        assert len(make_squeak_hash) == 32*2
 
         # Get the new squeak from the server
         get_squeak_response = server_stub.GetSqueak(
-            squeak_server_pb2.GetSqueakRequest(hash=make_squeak_hash)
+            squeak_server_pb2.GetSqueakRequest(hash=bytes.fromhex(make_squeak_hash))
         )
         print("Get squeak response: " + str(get_squeak_response))
         get_squeak_response_squeak = squeak_from_msg(get_squeak_response.squeak)
         CheckSqueak(get_response_squeak, skipDecryptionCheck=True)
-        assert get_hash(get_squeak_response_squeak) == make_squeak_hash
+        assert get_hash(get_squeak_response_squeak) == bytes.fromhex(make_squeak_hash)
         print("Squeak from make squeak request: " + str(get_squeak_response_squeak))
 
         # Close the channel
@@ -321,7 +321,7 @@ def run():
 
         # Get a squeak display item
         get_squeak_display_response = admin_stub.GetSqueakDisplay(
-            squeak_admin_pb2.GetSqueakDisplayRequest(hash=make_squeak_hash,)
+            squeak_admin_pb2.GetSqueakDisplayRequest(squeak_hash=make_squeak_hash,)
         )
         print("Get squeak display response: " + str(get_squeak_display_response))
         assert (
@@ -352,7 +352,7 @@ def run():
         for entry in get_followed_squeak_display_response.squeak_display_entries:
             get_squeak_display_response = admin_stub.GetSqueakDisplay(
                 squeak_admin_pb2.GetSqueakDisplayRequest(
-                    hash=entry.squeak_hash
+                    squeak_hash=entry.squeak_hash
                 )
             )
             print("Get squeak display entry response: " + str(get_squeak_display_response))
