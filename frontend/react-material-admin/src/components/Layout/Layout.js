@@ -18,6 +18,7 @@ import Sidebar from "../Sidebar";
 import Timeline from "../../pages/timeline";
 import Dashboard from "../../pages/dashboard";
 import SqueakAddress from "../../pages/squeakaddress";
+import Squeak from "../../pages/squeak";
 import Profile from "../../pages/profile";
 import CreateSigningProfile from "../../pages/createsigningprofile";
 import CreateContactProfile from "../../pages/createcontactprofile";
@@ -53,6 +54,7 @@ function Layout(props) {
               <Route path="/app/timeline" component={Timeline} />
               <Route path="/app/dashboard" component={Dashboard} />
               <Route path="/app/squeakaddress/:address" component={SqueakAddress} />
+              <Route path="/app/squeak/:hash" component={Squeak} />
               <Route path="/app/profile/:id" component={Profile} />
               <Route path="/app/createsigningprofile" component={CreateSigningProfile} />
               <Route path="/app/createcontactprofile" component={CreateContactProfile} />
