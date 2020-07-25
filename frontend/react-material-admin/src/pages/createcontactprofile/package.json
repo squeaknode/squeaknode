@@ -1,0 +1,6 @@
+{
+  "name": "CreateContactProfile",
+  "version": "0.0.0",
+  "main": "CreateContactProfile.js",
+  "private": true
+}

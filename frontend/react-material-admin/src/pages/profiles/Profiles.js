@@ -160,6 +160,10 @@ export default function Profiles() {
     history.push("/app/createsigningprofile");
   };
 
+  const goToCreateContactProfilePage = () => {
+    history.push("/app/createcontactprofile");
+  };
+
   const goToSqueakAddressPage = (squeakAddress) => {
     history.push("/app/squeakaddress/" + squeakAddress);
   };
@@ -172,24 +176,24 @@ export default function Profiles() {
   }, []);
 
   function TabPanel(props) {
-  const { children, value, index, ...other } = props;
+    const { children, value, index, ...other } = props;
 
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box p={3}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
-    </div>
-  );
-}
+    return (
+      <div
+        role="tabpanel"
+        hidden={value !== index}
+        id={`simple-tabpanel-${index}`}
+        aria-labelledby={`simple-tab-${index}`}
+        {...other}
+      >
+        {value === index && (
+          <Box p={3}>
+            <Typography>{children}</Typography>
+          </Box>
+        )}
+      </div>
+    );
+  }
 
   function ProfilesTabs() {
     return (
@@ -210,26 +214,45 @@ export default function Profiles() {
     )
   }
 
+  function CreateSigningProfileButton() {
+    return (
+      <>
+      <Grid item xs={12}>
+        <div className={classes.root}>
+          <Button
+            variant="contained"
+            onClick={() => {
+              goToCreateSigningProfilePage();
+            }}>Create Signing Profile
+          </Button>
+        </div>
+      </Grid>
+      </>
+    )
+  }
+
+  function CreateContactProfileButton() {
+    return (
+      <>
+      <Grid item xs={12}>
+        <div className={classes.root}>
+          <Button
+            variant="contained"
+            onClick={() => {
+              goToCreateContactProfilePage();
+            }}>Add contact
+          </Button>
+        </div>
+      </Grid>
+      </>
+    )
+  }
+
   function SigningProfiles() {
     return (
       <>
       <Grid container spacing={4}>
-       <Grid item xs={12}>
-         <div className={classes.root}>
-           <Button
-             variant="contained"
-             onClick={() => {
-               goToCreateSigningProfilePage();
-             }}>Create Signing Profile
-           </Button>
-           <Button
-             variant="contained"
-             onClick={() => {
-               alert('Add contact button clicked')
-             }}>Add contact
-           </Button>
-         </div>
-       </Grid>
+        {CreateSigningProfileButton()}
        <Grid item xs={12}>
          <MUIDataTable
            title="Signing Profiles"
@@ -262,22 +285,7 @@ export default function Profiles() {
     return (
       <>
       <Grid container spacing={4}>
-       <Grid item xs={12}>
-         <div className={classes.root}>
-           <Button
-             variant="contained"
-             onClick={() => {
-               goToCreateSigningProfilePage();
-             }}>Create Signing Profile
-           </Button>
-           <Button
-             variant="contained"
-             onClick={() => {
-               alert('Add contact button clicked')
-             }}>Add contact
-           </Button>
-         </div>
-       </Grid>
+      {CreateContactProfileButton()}
        <Grid item xs={12}>
          <MUIDataTable
            title="Contact Profiles"
