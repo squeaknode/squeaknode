@@ -51,6 +51,10 @@ export default function TimelinePage() {
     history.push("/app/squeakaddress/" + squeakAddress);
   };
 
+  const goToSqueakPage = (hash) => {
+    history.push("/app/squeak/" + hash);
+  };
+
   useEffect(()=>{
     getSqueaks()
   },[]);
@@ -71,7 +75,8 @@ export default function TimelinePage() {
           <Squeak
             key={squeak.getSqueakHash()}
             squeak={squeak}
-            handleAddressClick={() => goToSqueakAddressPage(squeak.getAuthorAddress())}>
+            handleAddressClick={() => goToSqueakAddressPage(squeak.getAuthorAddress())}
+            handleSqueakClick={() => goToSqueakPage(squeak.getSqueakHash())}>
           </Squeak>
         )}
         </Grid>
