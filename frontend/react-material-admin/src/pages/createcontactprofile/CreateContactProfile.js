@@ -44,6 +44,11 @@ export default function CreateContactProfilePage() {
     console.log(createContactProfileRequest);
 
     client.createContactProfile(createContactProfileRequest, {}, (err, response) => {
+      if (err) {
+        console.log(err.message);
+        alert('Error creating contact profile: ' + err.message);
+        return;
+      }
       console.log(response);
       console.log(response.getProfileId());
       goToProfilePage(response.getProfileId());

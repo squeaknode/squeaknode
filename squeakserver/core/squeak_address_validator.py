@@ -1,5 +1,6 @@
 import logging
 
+from bitcoin.base58 import Base58ChecksumError
 from bitcoin.wallet import CBitcoinAddressError
 from squeak.core import CheckSqueak, CheckSqueakError, CSqueak
 from squeak.core.signing import CSqueakAddress
@@ -20,6 +21,6 @@ class SqueakAddressValidator(object):
         try:
             CSqueakAddress(squeak_address_str)
             return True
-        except CBitcoinAddressError as e:
+        except (Base58ChecksumError, CBitcoinAddressError) as e:
             logger.info("Got invalid address with error: {}".format(e))
             return False

@@ -41,6 +41,11 @@ export default function CreateSigningProfilePage() {
     console.log(createSigningProfileRequest);
 
     client.createSigningProfile(createSigningProfileRequest, {}, (err, response) => {
+      if (err) {
+        console.log(err.message);
+        alert('Error creating signing profile: ' + err.message);
+        return;
+      }
       console.log(response);
       console.log(response.getProfileId());
       goToProfilePage(response.getProfileId());
