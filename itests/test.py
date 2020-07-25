@@ -263,8 +263,12 @@ def run():
 
         # Create a new contact profile
         contact_name = "carol"
+        contact_address = "1GbFEcAaAzi2fGRaTsgDMm4N8cue5P26mc"
         create_contact_profile_response = admin_stub.CreateContactProfile(
-            squeak_admin_pb2.CreateContactProfileRequest(profile_name=contact_name,)
+            squeak_admin_pb2.CreateContactProfileRequest(
+                profile_name=contact_name,
+                address=contact_address,
+            )
         )
         print(
             "Get create contact profile response: "

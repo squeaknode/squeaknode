@@ -4,6 +4,7 @@ from squeak.core.encryption import (
 )
 from squeak.core.signing import CSigningKey, CSqueakAddress
 
+from squeakserver.core.squeak_address_validator import SqueakAddressValidator
 from squeakserver.node.squeak_block_periodic_worker import SqueakBlockPeriodicWorker
 from squeakserver.node.squeak_block_queue_worker import SqueakBlockQueueWorker
 from squeakserver.node.squeak_block_verifier import SqueakBlockVerifier
@@ -112,6 +113,9 @@ class SqueakNode:
         return self.postgres_db.insert_profile(squeak_profile)
 
     def create_contact_profile(self, profile_name, squeak_address):
+        address_validator = SqueakAddressValidator()
+        if not address_validator.validate(squeak_address):
+            raise Exception('Invalid squeak address: {}'.format(squeak_address))
         squeak_profile = SqueakProfile(
             profile_id=None,
             profile_name=profile_name,
