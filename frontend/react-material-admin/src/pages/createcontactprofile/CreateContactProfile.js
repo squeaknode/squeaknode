@@ -29,9 +29,10 @@ export default function CreateContactProfilePage() {
   function handleSubmit(event) {
       event.preventDefault();
       console.log( 'profileName:', profileName);
+      console.log( 'address:', address);
      // You should see email and password in console.
      // ..code to submit form to backend here...
-     createContactProfile(profileName)
+     createContactProfile(profileName, address);
   }
 
   const createContactProfile = (profileName, squeakAddress) => {
@@ -62,7 +63,7 @@ export default function CreateContactProfilePage() {
              <TextField required
                  value={address}
                  label="Address"
-                 onInput={ e=>setProfileName(e.target.value)}
+                 onInput={ e=>setAddress(e.target.value)}
              />
              <Typography className={classes.divider} />
              <Button
