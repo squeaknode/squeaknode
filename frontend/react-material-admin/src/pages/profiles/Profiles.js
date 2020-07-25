@@ -146,7 +146,7 @@ export default function Profiles() {
 
     var getContactProfilesRequest = new GetContactProfilesRequest()
 
-    client.getSigningProfiles(getContactProfilesRequest, {}, (err, response) => {
+    client.getContactProfiles(getContactProfilesRequest, {}, (err, response) => {
       if (err) {
         console.log(err.message);
         return;
@@ -173,6 +173,9 @@ export default function Profiles() {
   }, []);
   useEffect(() => {
     getSigningProfiles()
+  }, []);
+  useEffect(() => {
+    getContactProfiles()
   }, []);
 
   function TabPanel(props) {
