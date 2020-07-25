@@ -20,6 +20,7 @@ import Widget from "../../components/Widget";
 
 export default function Squeak({
   squeak,
+  handleAddressClick,
   ...props
 }) {
   var classes = useStyles();
@@ -29,6 +30,13 @@ export default function Squeak({
   // var [isMoreMenuOpen, setMoreMenuOpen] = useState(false);
 
   const history = useHistory();
+
+  const onAddressClick = (event) => {
+    event.preventDefault();
+    if (handleAddressClick) {
+      handleAddressClick();
+    }
+  }
 
   return (
     <Grid item xs={12}>
@@ -46,8 +54,8 @@ export default function Squeak({
           >
             <Grid item>
                 <Box fontWeight="fontWeightBold">
-                  <Link href={"#/app/squeakaddress/" + squeak.getAuthorAddress()}
-                    >
+                  <Link href="#"
+                    onClick={onAddressClick}>
                     {squeak.getAuthorName()}
                   </Link>
                 </Box>
