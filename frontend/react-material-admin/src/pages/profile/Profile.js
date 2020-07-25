@@ -20,21 +20,19 @@ export default function ProfilePage() {
   const { id } = useParams();
   const [squeakProfile, setSqueakProfile] = useState(null);
 
-  const getSqueakProfile = () => {
+  const getSqueakProfile = (id) => {
         console.log("called getSqueakProfile with profileId: " + id);
-
         var getSqueakProfileRequest = new GetSqueakProfileRequest()
         getSqueakProfileRequest.setProfileId(id);
         console.log(getSqueakProfileRequest);
-
         client.getSqueakProfile(getSqueakProfileRequest, {}, (err, response) => {
           console.log(response);
           setSqueakProfile(response.getSqueakProfile())
         });
   };
   useEffect(()=>{
-    getSqueakProfile()
-  },[]);
+    getSqueakProfile(id)
+  },[id]);
 
   function NoProfileContent() {
     return (
