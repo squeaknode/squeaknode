@@ -26,7 +26,7 @@ export default function SqueakAddressPage() {
   const [squeakProfile, setSqueakProfile] = useState(null);
   const [squeaks, setSqueaks] = useState([]);
 
-  const getSqueakProfile = () => {
+  const getSqueakProfile = (address) => {
         var getSqueakProfileByAddressRequest = new GetSqueakProfileByAddressRequest()
         getSqueakProfileByAddressRequest.setAddress(address);
         console.log(getSqueakProfileByAddressRequest);
@@ -36,7 +36,7 @@ export default function SqueakAddressPage() {
           setSqueakProfile(response.getSqueakProfile())
         });
   };
-  const getSqueaks = () => {
+  const getSqueaks = (address) => {
       var getAddressSqueakDisplaysRequest = new GetAddressSqueakDisplaysRequest()
       getAddressSqueakDisplaysRequest.setAddress(address);
       console.log(getAddressSqueakDisplaysRequest);
@@ -53,11 +53,11 @@ export default function SqueakAddressPage() {
   };
 
   useEffect(()=>{
-    getSqueakProfile()
-  },[]);
+    getSqueakProfile(address)
+  },[address]);
   useEffect(()=>{
-    getSqueaks()
-  },[]);
+    getSqueaks(address)
+  },[address]);
 
   function NoProfileContent() {
     return (
