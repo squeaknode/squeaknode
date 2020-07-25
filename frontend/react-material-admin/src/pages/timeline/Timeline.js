@@ -35,18 +35,24 @@ var client = new SqueakAdminClient('http://' + window.location.hostname + ':8080
 export default function TimelinePage() {
   var classes = useStyles();
   var theme = useTheme();
-
   const [squeaks, setSqueaks] = useState([]);
+  const history = useHistory();
 
   const getSqueaks = () => {
     console.log("called getSqueaks");
-
     var getSqueaksRequest = new GetFollowedSqueakDisplaysRequest()
-
     client.getFollowedSqueakDisplays(getSqueaksRequest, {}, (err, response) => {
       console.log(response);
       setSqueaks(response.getSqueakDisplayEntriesList())
     });
+  };
+
+  const goToSqueakAddressPage = (squeakAddress) => {
+    history.push("/app/squeakaddress/" + squeakAddress);
+  };
+
+  const goToSqueakPage = (hash) => {
+    history.push("/app/squeak/" + hash);
   };
 
   useEffect(()=>{
@@ -66,7 +72,12 @@ export default function TimelinePage() {
       <>
         <Grid container spacing={4} >
         {squeaks.map(squeak =>
-          <Squeak key={squeak.getSqueakHash()} squeak={squeak}></Squeak>
+          <Squeak
+            key={squeak.getSqueakHash()}
+            squeak={squeak}
+            handleAddressClick={() => goToSqueakAddressPage(squeak.getAuthorAddress())}
+            handleSqueakClick={() => goToSqueakPage(squeak.getSqueakHash())}>
+          </Squeak>
         )}
         </Grid>
       </>
