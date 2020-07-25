@@ -21,6 +21,7 @@ import Widget from "../../components/Widget";
 export default function Squeak({
   squeak,
   handleAddressClick,
+  handleSqueakClick,
   ...props
 }) {
   var classes = useStyles();
@@ -33,13 +34,25 @@ export default function Squeak({
 
   const onAddressClick = (event) => {
     event.preventDefault();
+    event.stopPropagation();
+    console.log("Handling address click...");
     if (handleAddressClick) {
       handleAddressClick();
     }
   }
 
+  const onSqueakClick = (event) => {
+    event.preventDefault();
+    console.log("Handling squeak click...");
+    if (handleSqueakClick) {
+      handleSqueakClick();
+    }
+  }
+
   return (
-    <Grid item xs={12}>
+    <Grid item xs={12}
+      onClick={onSqueakClick}
+    >
         <Widget
           disableWidgetMenu
           upperTitle
