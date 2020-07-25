@@ -1,6 +1,15 @@
 import React, {useState, useEffect} from 'react';
 import {useHistory} from "react-router-dom";
-import {Grid, Button} from "@material-ui/core";
+import {
+    Grid,
+    Button,
+    Paper,
+    Tabs,
+    Tab,
+    AppBar,
+    Box,
+    Typography,
+  } from "@material-ui/core";
 import MUIDataTable from "mui-datatables";
 
 // styles
@@ -15,7 +24,12 @@ import Table from "../dashboard/components/Table/Table";
 import mock from "../dashboard/mock";
 
 import {GetInfoRequest} from "../../proto/lnd_pb"
-import {HelloRequest, GetFollowedSqueakDisplaysRequest, GetSigningProfilesRequest} from "../../proto/squeak_admin_pb"
+import {
+  HelloRequest,
+  GetFollowedSqueakDisplaysRequest,
+  GetSigningProfilesRequest,
+  GetContactProfilesRequest,
+} from "../../proto/squeak_admin_pb"
 import {SqueakAdminClient} from "../../proto/squeak_admin_grpc_web_pb"
 
 var client = new SqueakAdminClient('http://' + window.location.hostname + ':8080')
@@ -85,7 +99,20 @@ const useStyles = makeStyles((theme) => ({
 export default function Profiles() {
   const classes = useStyles();
   const [signingProfiles, setSigningProfiles] = useState([]);
+  const [contactProfiles, setContactProfiles] = useState([]);
+  const [value, setValue] = useState(0);
   const history = useHistory();
+
+  function a11yProps(index) {
+    return {
+      id: `simple-tab-${index}`,
+      'aria-controls': `simple-tabpanel-${index}`,
+    };
+  }
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
 
   const getLndInfo = () => {
     console.log("called getLndInfo");
@@ -114,9 +141,27 @@ export default function Profiles() {
       setSigningProfiles(response.getSqueakProfilesList());
     });
   };
+  const getContactProfiles = () => {
+    console.log("called getContactProfiles");
+
+    var getContactProfilesRequest = new GetContactProfilesRequest()
+
+    client.getContactProfiles(getContactProfilesRequest, {}, (err, response) => {
+      if (err) {
+        console.log(err.message);
+        return;
+      }
+      console.log(response);
+      setContactProfiles(response.getSqueakProfilesList());
+    });
+  };
 
   const goToCreateSigningProfilePage = () => {
     history.push("/app/createsigningprofile");
+  };
+
+  const goToCreateContactProfilePage = () => {
+    history.push("/app/createcontactprofile");
   };
 
   const goToSqueakAddressPage = (squeakAddress) => {
@@ -129,11 +174,52 @@ export default function Profiles() {
   useEffect(() => {
     getSigningProfiles()
   }, []);
+  useEffect(() => {
+    getContactProfiles()
+  }, []);
 
-  return (
-    <>
-     < PageTitle title = "Profiles" />
-     <Grid container spacing={4}>
+  function TabPanel(props) {
+    const { children, value, index, ...other } = props;
+
+    return (
+      <div
+        role="tabpanel"
+        hidden={value !== index}
+        id={`simple-tabpanel-${index}`}
+        aria-labelledby={`simple-tab-${index}`}
+        {...other}
+      >
+        {value === index && (
+          <Box p={3}>
+            <Typography>{children}</Typography>
+          </Box>
+        )}
+      </div>
+    );
+  }
+
+  function ProfilesTabs() {
+    return (
+      <>
+      <AppBar position="static" color="default">
+        <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
+          <Tab label="Signing Profiles" {...a11yProps(0)} />
+          <Tab label="Contact Profiles" {...a11yProps(1)} />
+        </Tabs>
+      </AppBar>
+      <TabPanel value={value} index={0}>
+        {SigningProfiles()}
+      </TabPanel>
+      <TabPanel value={value} index={1}>
+        {ContactProfiles()}
+      </TabPanel>
+      </>
+    )
+  }
+
+  function CreateSigningProfileButton() {
+    return (
+      <>
       <Grid item xs={12}>
         <div className={classes.root}>
           <Button
@@ -142,37 +228,98 @@ export default function Profiles() {
               goToCreateSigningProfilePage();
             }}>Create Signing Profile
           </Button>
+        </div>
+      </Grid>
+      </>
+    )
+  }
+
+  function CreateContactProfileButton() {
+    return (
+      <>
+      <Grid item xs={12}>
+        <div className={classes.root}>
           <Button
             variant="contained"
             onClick={() => {
-              alert('Add contact button clicked')
+              goToCreateContactProfilePage();
             }}>Add contact
           </Button>
         </div>
       </Grid>
-      <Grid item xs={12}>
-        <MUIDataTable
-          title="Profile List"
-          data={signingProfiles.map(p =>
-             [
-               p.getProfileName(),
-               p.getAddress(),
-               p.getFollowing().toString(),
-               p.getSharing().toString(),
-             ]
-           )}
-          columns={["Name", "Address", "Following", "Sharing"]}
-          options={{
-            filter: false,
-            print: false,
-            viewColumns: false,
-            selectableRows: "none",
-            onRowClick: rowData => {
-              var address = rowData[1];
-              goToSqueakAddressPage(address);
-            }
-          }}/>
-      </Grid>
-    </Grid>
+      </>
+    )
+  }
+
+  function SigningProfiles() {
+    return (
+      <>
+      <Grid container spacing={4}>
+        {CreateSigningProfileButton()}
+       <Grid item xs={12}>
+         <MUIDataTable
+           title="Signing Profiles"
+           data={signingProfiles.map(p =>
+              [
+                p.getProfileName(),
+                p.getAddress(),
+                p.getFollowing().toString(),
+                p.getSharing().toString(),
+              ]
+            )}
+           columns={["Name", "Address", "Following", "Sharing"]}
+           options={{
+             filter: false,
+             print: false,
+             viewColumns: false,
+             selectableRows: "none",
+             onRowClick: rowData => {
+               var address = rowData[1];
+               goToSqueakAddressPage(address);
+             }
+           }}/>
+       </Grid>
+     </Grid>
+      </>
+    )
+  }
+
+  function ContactProfiles() {
+    return (
+      <>
+      <Grid container spacing={4}>
+      {CreateContactProfileButton()}
+       <Grid item xs={12}>
+         <MUIDataTable
+           title="Contact Profiles"
+           data={contactProfiles.map(p =>
+              [
+                p.getProfileName(),
+                p.getAddress(),
+                p.getFollowing().toString(),
+                p.getSharing().toString(),
+              ]
+            )}
+           columns={["Name", "Address", "Following", "Sharing"]}
+           options={{
+             filter: false,
+             print: false,
+             viewColumns: false,
+             selectableRows: "none",
+             onRowClick: rowData => {
+               var address = rowData[1];
+               goToSqueakAddressPage(address);
+             }
+           }}/>
+       </Grid>
+     </Grid>
+      </>
+    )
+  }
+
+  return (
+    <>
+     < PageTitle title = "Profiles" />
+    {ProfilesTabs()}
    < />);
 }

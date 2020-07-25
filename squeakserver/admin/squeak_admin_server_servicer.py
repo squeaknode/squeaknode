@@ -34,6 +34,15 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         profile_id = self.handler.handle_create_signing_profile(profile_name)
         return squeak_admin_pb2.CreateSigningProfileReply(profile_id=profile_id,)
 
+    def CreateContactProfile(self, request, context):
+        profile_name = request.profile_name
+        squeak_address = request.address
+        profile_id = self.handler.handle_create_contact_profile(
+            profile_name,
+            squeak_address,
+        )
+        return squeak_admin_pb2.CreateContactProfileReply(profile_id=profile_id,)
+
     def GetSigningProfiles(self, request, context):
         profiles = self.handler.handle_get_signing_profiles()
         profile_msgs = [
@@ -42,6 +51,17 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
             profiles
         ]
         return squeak_admin_pb2.GetSigningProfilesReply(
+            squeak_profiles=profile_msgs
+        )
+
+    def GetContactProfiles(self, request, context):
+        profiles = self.handler.handle_get_contact_profiles()
+        profile_msgs = [
+            self._squeak_profile_to_message(profile)
+            for profile in
+            profiles
+        ]
+        return squeak_admin_pb2.GetContactProfilesReply(
             squeak_profiles=profile_msgs
         )
 

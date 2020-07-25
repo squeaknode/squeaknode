@@ -261,6 +261,21 @@ def run():
         )
         profile_id = create_signing_profile_response.profile_id
 
+        # Create a new contact profile
+        contact_name = "carol"
+        contact_address = "1GbFEcAaAzi2fGRaTsgDMm4N8cue5P26mc"
+        create_contact_profile_response = admin_stub.CreateContactProfile(
+            squeak_admin_pb2.CreateContactProfileRequest(
+                profile_name=contact_name,
+                address=contact_address,
+            )
+        )
+        print(
+            "Get create contact profile response: "
+            + str(create_contact_profile_response)
+        )
+        contact_profile_id = create_contact_profile_response.profile_id
+
         # Get the new squeak profile
         get_squeak_profile_response = admin_stub.GetSqueakProfile(
             squeak_admin_pb2.GetSqueakProfileRequest(profile_id=profile_id,)
@@ -340,6 +355,15 @@ def run():
         print("Get signing profiles response: " + str(get_signing_profiles_response))
         assert (
             len(get_signing_profiles_response.squeak_profiles) == 1
+        )
+
+        # Get all contact profiles
+        get_contact_profiles_response = admin_stub.GetContactProfiles(
+            squeak_admin_pb2.GetContactProfilesRequest()
+        )
+        print("Get contact profiles response: " + str(get_contact_profiles_response))
+        assert (
+            len(get_contact_profiles_response.squeak_profiles) == 1
         )
 
         # Get all squeak displays for the known address

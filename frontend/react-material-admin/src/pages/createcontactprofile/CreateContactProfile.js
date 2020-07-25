@@ -10,13 +10,14 @@ import PageTitle from "../../components/PageTitle";
 import Widget from "../../components/Widget";
 // import { Typography } from "../../components/Wrappers";
 
-import {CreateSigningProfileRequest} from "../../proto/squeak_admin_pb"
+import {CreateContactProfileRequest} from "../../proto/squeak_admin_pb"
 import {SqueakAdminClient} from "../../proto/squeak_admin_grpc_web_pb"
 
 var client = new SqueakAdminClient('http://' + window.location.hostname + ':8080')
 
-export default function CreateSigningProfilePage() {
+export default function CreateContactProfilePage() {
   const [profileName, setProfileName] = useState('');
+  const [address, setAddress] = useState('');
 
   var classes = useStyles();
   const history = useHistory();
@@ -28,22 +29,24 @@ export default function CreateSigningProfilePage() {
   function handleSubmit(event) {
       event.preventDefault();
       console.log( 'profileName:', profileName);
+      console.log( 'address:', address);
      // You should see email and password in console.
      // ..code to submit form to backend here...
-     createSigningProfile(profileName)
+     createContactProfile(profileName, address);
   }
 
-  const createSigningProfile = (profileName) => {
-    console.log("called createSigningProfile");
+  const createContactProfile = (profileName, squeakAddress) => {
+    console.log("called createContactProfile");
 
-    var createSigningProfileRequest = new CreateSigningProfileRequest()
-    createSigningProfileRequest.setProfileName(profileName);
-    console.log(createSigningProfileRequest);
+    var createContactProfileRequest = new CreateContactProfileRequest()
+    createContactProfileRequest.setProfileName(profileName);
+    createContactProfileRequest.setAddress(squeakAddress);
+    console.log(createContactProfileRequest);
 
-    client.createSigningProfile(createSigningProfileRequest, {}, (err, response) => {
+    client.createContactProfile(createContactProfileRequest, {}, (err, response) => {
       if (err) {
         console.log(err.message);
-        alert('Error creating signing profile: ' + err.message);
+        alert('Error creating contact profile: ' + err.message);
         return;
       }
       console.log(response);
@@ -54,13 +57,18 @@ export default function CreateSigningProfilePage() {
 
   return (
     <>
-     < PageTitle title = "Create Signing Profile" />
+     < PageTitle title = "Create Contact Profile" />
      <Paper>
          <form className={classes.root} onSubmit={handleSubmit} >
              <TextField required
                  value={profileName}
                  label="Profile name"
                  onInput={ e=>setProfileName(e.target.value)}
+             />
+             <TextField required
+                 value={address}
+                 label="Address"
+                 onInput={ e=>setAddress(e.target.value)}
              />
              <Typography className={classes.divider} />
              <Button

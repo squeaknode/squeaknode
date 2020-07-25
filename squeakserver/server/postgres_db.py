@@ -188,10 +188,22 @@ class PostgresDb:
             return row["profile_id"]
 
     def get_signing_profiles(self):
-        """ Get a profile. """
+        """ Get all signing profiles. """
         sql = """
         SELECT * FROM profile
         WHERE private_key IS NOT NULL;
+        """
+        with self.get_cursor() as curs:
+            curs.execute(sql)
+            rows = curs.fetchall()
+            profiles = [self._parse_squeak_profile(row) for row in rows]
+            return profiles
+
+    def get_contact_profiles(self):
+        """ Get all contact profiles. """
+        sql = """
+        SELECT * FROM profile
+        WHERE private_key IS NULL;
         """
         with self.get_cursor() as curs:
             curs.execute(sql)
