@@ -1,6 +1,15 @@
 import React, {useState, useEffect} from 'react';
 import {useHistory} from "react-router-dom";
-import {Grid, Button} from "@material-ui/core";
+import {
+    Grid,
+    Button,
+    Paper,
+    Tabs,
+    Tab,
+    AppBar,
+    Box,
+    Typography,
+  } from "@material-ui/core";
 import MUIDataTable from "mui-datatables";
 
 // styles
@@ -85,7 +94,19 @@ const useStyles = makeStyles((theme) => ({
 export default function Profiles() {
   const classes = useStyles();
   const [signingProfiles, setSigningProfiles] = useState([]);
+  const [value, setValue] = useState(0);
   const history = useHistory();
+
+  function a11yProps(index) {
+    return {
+      id: `simple-tab-${index}`,
+      'aria-controls': `simple-tabpanel-${index}`,
+    };
+  }
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
 
   const getLndInfo = () => {
     console.log("called getLndInfo");
@@ -130,49 +151,100 @@ export default function Profiles() {
     getSigningProfiles()
   }, []);
 
+  function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box p={3}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+  function ProfilesTabs() {
+    return (
+      <>
+      <AppBar position="static">
+        <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
+          <Tab label="Signing Profiles" {...a11yProps(0)} />
+          <Tab label="Item Two" {...a11yProps(1)} />
+          <Tab label="Item Three" {...a11yProps(2)} />
+        </Tabs>
+      </AppBar>
+      <TabPanel value={value} index={0}>
+        {SigningProfiles()}
+      </TabPanel>
+      <TabPanel value={value} index={1}>
+        Item Two
+      </TabPanel>
+      <TabPanel value={value} index={2}>
+        Item Three
+      </TabPanel>
+      </>
+    )
+  }
+
+  function SigningProfiles() {
+    return (
+      <>
+      <Grid container spacing={4}>
+       <Grid item xs={12}>
+         <div className={classes.root}>
+           <Button
+             variant="contained"
+             onClick={() => {
+               goToCreateSigningProfilePage();
+             }}>Create Signing Profile
+           </Button>
+           <Button
+             variant="contained"
+             onClick={() => {
+               alert('Add contact button clicked')
+             }}>Add contact
+           </Button>
+         </div>
+       </Grid>
+       <Grid item xs={12}>
+         <MUIDataTable
+           title="Profile List"
+           data={signingProfiles.map(p =>
+              [
+                p.getProfileName(),
+                p.getAddress(),
+                p.getFollowing().toString(),
+                p.getSharing().toString(),
+              ]
+            )}
+           columns={["Name", "Address", "Following", "Sharing"]}
+           options={{
+             filter: false,
+             print: false,
+             viewColumns: false,
+             selectableRows: "none",
+             onRowClick: rowData => {
+               var address = rowData[1];
+               goToSqueakAddressPage(address);
+             }
+           }}/>
+       </Grid>
+     </Grid>
+      </>
+    )
+  }
+
   return (
     <>
      < PageTitle title = "Profiles" />
-     <Grid container spacing={4}>
-      <Grid item xs={12}>
-        <div className={classes.root}>
-          <Button
-            variant="contained"
-            onClick={() => {
-              goToCreateSigningProfilePage();
-            }}>Create Signing Profile
-          </Button>
-          <Button
-            variant="contained"
-            onClick={() => {
-              alert('Add contact button clicked')
-            }}>Add contact
-          </Button>
-        </div>
-      </Grid>
-      <Grid item xs={12}>
-        <MUIDataTable
-          title="Profile List"
-          data={signingProfiles.map(p =>
-             [
-               p.getProfileName(),
-               p.getAddress(),
-               p.getFollowing().toString(),
-               p.getSharing().toString(),
-             ]
-           )}
-          columns={["Name", "Address", "Following", "Sharing"]}
-          options={{
-            filter: false,
-            print: false,
-            viewColumns: false,
-            selectableRows: "none",
-            onRowClick: rowData => {
-              var address = rowData[1];
-              goToSqueakAddressPage(address);
-            }
-          }}/>
-      </Grid>
-    </Grid>
+    {ProfilesTabs()}
    < />);
 }
