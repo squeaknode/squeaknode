@@ -190,9 +190,7 @@ export default function Profiles() {
         {...other}
       >
         {value === index && (
-          <Box p={3}>
-            <Typography>{children}</Typography>
-          </Box>
+          <div>{children}</div>
         )}
       </div>
     );
