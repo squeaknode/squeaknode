@@ -170,21 +170,13 @@ export default function MakeSqueakDialog({
     )
   }
 
-  function MakeSqueakForm() {
-    return (
-      <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
-        {MakeSelectSigningProfile()}
-        {MakeSqueakContentInput()}
-      </form>
-    )
-  }
-
   return (
     <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
   <DialogTitle id="form-dialog-title">Make Squeak</DialogTitle>
   <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
   <DialogContent>
-    {MakeSqueakForm()}
+    {MakeSelectSigningProfile()}
+    {MakeSqueakContentInput()}
   </DialogContent>
   <DialogActions>
     {MakeCancelButton()}
