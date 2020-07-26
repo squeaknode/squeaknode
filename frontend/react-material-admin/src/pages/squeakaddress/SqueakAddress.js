@@ -9,7 +9,7 @@ import useStyles from "./styles";
 // components
 import PageTitle from "../../components/PageTitle";
 import Widget from "../../components/Widget";
-import Squeak from "../../components/Squeak";
+import SqueakThreadItem from "../../components/SqueakThreadItem";
 
 import {
    GetAddressSqueakDisplaysRequest,
@@ -91,7 +91,10 @@ export default function SqueakAddressPage() {
       <>
         <Grid container spacing={4} >
           {squeaks.map(squeak =>
-            <Squeak key={squeak.getSqueakHash()} squeak={squeak}></Squeak>
+            <SqueakThreadItem
+              key={squeak.getSqueakHash()}
+              squeak={squeak}>
+            </SqueakThreadItem>
           )}
           </Grid>
       </>

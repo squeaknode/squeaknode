@@ -23,7 +23,7 @@ import useStyles from "./styles";
 // components
 import PageTitle from "../../components/PageTitle";
 import Widget from "../../components/Widget";
-import Squeak from "../../components/Squeak";
+import SqueakThreadItem from "../../components/SqueakThreadItem";
 import { Typography } from "../../components/Wrappers";
 
 import { GetInfoRequest, WalletBalanceRequest } from "../../proto/lnd_pb"
@@ -72,12 +72,12 @@ export default function TimelinePage() {
       <>
         <Grid container spacing={4} >
         {squeaks.map(squeak =>
-          <Squeak
+          <SqueakThreadItem
             key={squeak.getSqueakHash()}
             squeak={squeak}
             handleAddressClick={() => goToSqueakAddressPage(squeak.getAuthorAddress())}
             handleSqueakClick={() => goToSqueakPage(squeak.getSqueakHash())}>
-          </Squeak>
+          </SqueakThreadItem>
         )}
         </Grid>
       </>
