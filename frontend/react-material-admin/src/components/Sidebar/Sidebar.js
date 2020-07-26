@@ -6,7 +6,6 @@ import {
   FilterNone as UIElementsIcon,
   People as ProfilesIcon,
   AttachMoney as LightningIcon,
-  Create as MakeSqueakIcon,
   QuestionAnswer as SupportIcon,
   LibraryBooks as LibraryIcon,
   HelpOutline as FAQIcon,
@@ -34,7 +33,6 @@ const structure = [
   { id: 0, label: "Timeline", link: "/app/timeline", icon: <HomeIcon /> },
   { id: 1, label: "Profiles", link: "/app/profiles", icon: <ProfilesIcon /> },
   { id: 2, label: "Lightning", link: "/app/lightning", icon: <LightningIcon /> },
-  { id: 3, label: "Make Squeak", link: "/app/makesqueak", icon: <MakeSqueakIcon /> },
   {
     id: 4,
     label: "UI Elements",

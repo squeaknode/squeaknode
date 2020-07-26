@@ -151,7 +151,11 @@ export default function MakeSqueakDialog({
 
   function MakeCancelButton() {
     return (
-      <Button onClick={handleClose} color="primary">
+      <Button
+        onClick={handleClose}
+        variant="contained"
+        color="secondary"
+      >
         Cancel
       </Button>
     )
@@ -162,7 +166,7 @@ export default function MakeSqueakDialog({
       <Button
        type="submit"
        variant="contained"
-       color="secondary"
+       color="primary"
        className={classes.button}
        >
        Make Squeak
