@@ -8,10 +8,13 @@ import {
   Grid,
   Box,
   Link,
+  Divider,
 } from "@material-ui/core";
 import { MoreVert as MoreIcon } from "@material-ui/icons";
 import {useHistory} from "react-router-dom";
 import classnames from "classnames";
+
+import ReplyIcon from '@material-ui/icons/Reply';
 
 // styles
 import useStyles from "./styles";
@@ -97,6 +100,29 @@ export default function SqueakDetailItem({
             <Grid item>
                 <Box color="secondary.main">
                   {new Date(squeak.getBlockTime()*1000).toString()} (Block # {squeak.getBlockHeight()})
+                </Box>
+            </Grid>
+          </Grid>
+          <Divider />
+          <Grid
+            container
+            direction="row"
+            justify="flex-start"
+            alignItems="flex-start"
+          >
+            <Grid item xs={3} sm={1}>
+                <Box>
+                  <ReplyIcon />
+                </Box>
+            </Grid>
+            <Grid item xs={3} sm={1}>
+                <Box>
+                  <ReplyIcon />
+                </Box>
+            </Grid>
+            <Grid item xs={3} sm={1}>
+                <Box>
+                  <ReplyIcon />
                 </Box>
             </Grid>
           </Grid>
