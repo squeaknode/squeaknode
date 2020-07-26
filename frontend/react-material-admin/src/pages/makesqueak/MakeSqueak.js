@@ -103,21 +103,27 @@ export default function MakeSqueakPage() {
 
   function MakeSqueakForm() {
     return (
-      <form className={classes.root} noValidate autoComplete="off">
-        <div>
-          <TextField
-            id="standard-textarea"
-            label="Squeak content"
-            placeholder="Enter squeak content here..."
-            value={content}
-            onChange={handleChangeContent}
-            multiline
-            rows={8}
-            fullWidth
-            inputProps={{ maxLength: 280 }}
-          />
-        </div>
+      <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
+        {MakeSelectSigningProfile()}
+        {MakeSqueakContentInput()}
+        {MakeSqueakButton()}
       </form>
+    )
+  }
+
+  function MakeSqueakContentInput() {
+    return (
+      <TextField
+        id="standard-textarea"
+        label="Squeak content"
+        placeholder="Enter squeak content here..."
+        value={content}
+        onChange={handleChangeContent}
+        multiline
+        rows={8}
+        fullWidth
+        inputProps={{ maxLength: 280 }}
+      />
     )
   }
 
@@ -140,9 +146,7 @@ export default function MakeSqueakPage() {
 
      <div className={classes.root}>
 
-     {MakeSelectSigningProfile()}
      {MakeSqueakForm()}
-     {MakeSqueakButton()}
 
      </div>
 </>);
