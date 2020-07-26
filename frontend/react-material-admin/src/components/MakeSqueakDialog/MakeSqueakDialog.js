@@ -36,7 +36,7 @@ var client = new SqueakAdminClient('http://' + window.location.hostname + ':8080
 export default function MakeSqueakDialog({
   open,
   handleClose,
-  replyto,
+  replytoSqueak,
   ...props
 }) {
   var classes = useStyles();
@@ -101,6 +101,7 @@ export default function MakeSqueakDialog({
     event.preventDefault();
     console.log( 'profileId:', profileId);
     console.log( 'content:', content);
+    var replyto = replyto.getSqueakHash();
     console.log( 'replyto:', replyto);
     if (profileId == -1) {
       alert('Signing profile must be selected.');
@@ -179,6 +180,8 @@ export default function MakeSqueakDialog({
   <DialogTitle id="form-dialog-title">Make Squeak</DialogTitle>
   <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
   <DialogContent>
+    {replytoSqueak.getSqueakHash()}
+    Fooooo
     {MakeSelectSigningProfile()}
     {MakeSqueakContentInput()}
   </DialogContent>

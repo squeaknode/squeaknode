@@ -76,6 +76,7 @@ export default function SqueakPage() {
             squeak={squeak}>
           </SqueakDetailItem>
         </Grid>
+        {MakeSqueakDialogContent()}
       </>
     )
   }
@@ -86,6 +87,7 @@ export default function SqueakPage() {
         <MakeSqueakDialog
           open={open}
           handleClose={handleClose}
+          replytoSqueak={squeak}
           ></MakeSqueakDialog>
       </>
     )
@@ -98,8 +100,6 @@ export default function SqueakPage() {
         ? SqueakContent()
         : NoSqueakContent()
       }
-
-      {MakeSqueakDialogContent()}
     </>
   );
 }
