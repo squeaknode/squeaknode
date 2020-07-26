@@ -102,7 +102,7 @@ export default function MakeSqueakDialog({
     event.preventDefault();
     console.log( 'profileId:', profileId);
     console.log( 'content:', content);
-    var replyto = replyto.getSqueakHash();
+    var replyto = replytoSqueak.getSqueakHash();
     console.log( 'replyto:', replyto);
     if (profileId == -1) {
       alert('Signing profile must be selected.');

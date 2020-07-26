@@ -85,7 +85,7 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         profile_id = request.profile_id
         content_str = request.content
         replyto_hash_str = request.replyto
-        replyto_hash = bytes.fromhex(replyto_hash) if replyto_hash_str else None
+        replyto_hash = bytes.fromhex(replyto_hash_str) if replyto_hash_str else None
         squeak_hash = self.handler.handle_make_squeak(
             profile_id, content_str, replyto_hash
         )
