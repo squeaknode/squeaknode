@@ -52,6 +52,10 @@ export default function SqueakAddressPage() {
     history.push("/app/profile/" + profileId);
   };
 
+  const goToSqueakPage = (hash) => {
+    history.push("/app/squeak/" + hash);
+  };
+
   useEffect(()=>{
     getSqueakProfile(address)
   },[address]);
@@ -93,6 +97,7 @@ export default function SqueakAddressPage() {
           {squeaks.map(squeak =>
             <SqueakThreadItem
               key={squeak.getSqueakHash()}
+              handleSqueakClick={() => goToSqueakPage(squeak.getSqueakHash())}
               squeak={squeak}>
             </SqueakThreadItem>
           )}
