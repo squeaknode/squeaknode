@@ -89,12 +89,13 @@ export default function MakeSqueakPage() {
         <div>
           <TextField
             id="standard-textarea"
-            label="Multiline Placeholder"
-            placeholder="Placeholder"
+            label="Squeak content"
+            placeholder="Enter squeak content here..."
             value={content}
             onChange={handleChangeContent}
             multiline
             rows={8}
+            inputProps={{ maxLength: 280 }}
           />
         </div>
       </form>
