@@ -22,6 +22,7 @@ export default function MakeSqueakPage() {
   const [content, setContent] = useState('');
   const [signingProfiles, setSigningProfiles] = useState([]);
   // const [age, setAge] = useState('');
+  const [value, setValue] = useState('Controlled');
   const { replyto } = useParams();
 
   var classes = useStyles();
@@ -41,6 +42,10 @@ export default function MakeSqueakPage() {
 
   const handleChange = (event) => {
     setProfileId(event.target.value);
+  };
+
+  const handleChangeContent = (event) => {
+    setContent(event.target.value);
   };
 
   const makeSqueak = (profileId, content, replyto) => {
@@ -78,56 +83,29 @@ export default function MakeSqueakPage() {
     getSigningProfiles()
   }, []);
 
+  function MakeSqueakForm() {
+    return (
+      <form className={classes.root} noValidate autoComplete="off">
+        <div>
+          <TextField
+            id="standard-textarea"
+            label="Multiline Placeholder"
+            placeholder="Placeholder"
+            value={content}
+            onChange={handleChangeContent}
+            multiline
+            rows={8}
+          />
+        </div>
+      </form>
+    )
+  }
+
   return (
     <>
      < PageTitle title = "Make Squeak" />
 
-     <div>
-      Number of signing profiles: {signingProfiles.length}
-     </div>
+     {MakeSqueakForm()}
 
-     <Paper>
-         <form className={classes.root} onSubmit={handleSubmit} >
-
-         <div>
-         <FormControl className={classes.formControl}>
-           <InputLabel id="demo-simple-select-label">Signing Profile</InputLabel>
-           <Select
-             labelId="demo-simple-select-label"
-             id="demo-simple-select"
-             value={profileId}
-             onChange={handleChange}
-           >
-            {signingProfiles.map(p =>
-              <MenuItem key={p.getProfileId()} value={p.getProfileId()}>{p.getProfileName()}</MenuItem>
-            )}
-           </Select>
-         </FormControl>
-         </div>
-
-        <div>
-             <TextField required
-                 value={content}
-                 label="Content"
-                 inputProps={{
-                   maxLength: 280,
-                 }}
-                 onInput={ e=>setContent(e.target.value)}
-             />
-        </div>
-
-             <Typography className={classes.divider} />
-
-        <div>
-             <Button
-                 type="submit"
-                 className={classes.button}
-             >
-                 Make Squeak
-             </Button>
-        </div>
-
-         </form>
-     </Paper>
 </>);
 }
