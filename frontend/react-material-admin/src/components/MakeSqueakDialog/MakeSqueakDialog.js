@@ -8,6 +8,13 @@ import {
   Grid,
   Box,
   Link,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  TextField,
+  DialogActions,
+  Button,
 } from "@material-ui/core";
 import { MoreVert as MoreIcon } from "@material-ui/icons";
 import {useHistory} from "react-router-dom";

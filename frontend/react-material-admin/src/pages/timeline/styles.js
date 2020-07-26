@@ -12,4 +12,9 @@ export default makeStyles(theme => ({
   text: {
     marginBottom: theme.spacing(2),
   },
+  fab: {
+    position: 'fixed',
+    bottom: theme.spacing(4),
+    right: theme.spacing(4),
+  },
 }));
