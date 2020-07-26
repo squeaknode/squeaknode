@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useState, useEffect} from 'react';
 import {
   Paper,
   IconButton,
@@ -79,6 +79,19 @@ export default function MakeSqueakDialog({
       goToSqueakPage(response.getSqueakHash());
     });
   };
+  const getSigningProfiles = () => {
+    console.log("called getSigningProfiles");
+    var getSigningProfilesRequest = new GetSigningProfilesRequest()
+    client.getSigningProfiles(getSigningProfilesRequest, {}, (err, response) => {
+      console.log(response);
+      console.log(response.getSqueakProfilesList());
+      setSigningProfiles(response.getSqueakProfilesList());
+    });
+  };
+
+  useEffect(() => {
+    getSigningProfiles()
+  }, []);
 
   const goToSqueakPage = (squeakHash) => {
     history.push("/app/squeak/" + squeakHash);
