@@ -73,6 +73,7 @@ export default function CreateContactProfilePage() {
              <Typography className={classes.divider} />
              <Button
                  type="submit"
+                 variant="contained"
                  className={classes.button}
              >
                  Create
