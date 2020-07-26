@@ -81,7 +81,11 @@ export default function SqueakThreadItem({
             alignItems="flex-start"
           >
           <Grid item>
-            <Typography size="md">{squeak.getContentStr()}</Typography>
+            <Typography
+              size="md"
+              style={{whiteSpace: 'pre-line', overflow: "hidden", textOverflow: "ellipsis", height: '6rem'}}
+              >{squeak.getContentStr()}
+            </Typography>
           </Grid>
           </Grid>
           <Grid
