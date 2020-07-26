@@ -113,6 +113,7 @@ export default function MakeSqueakDialog({
       return;
     }
     makeSqueak(profileId, content, replyto);
+    handleClose();
   }
 
   function ReplySqueakContent() {
