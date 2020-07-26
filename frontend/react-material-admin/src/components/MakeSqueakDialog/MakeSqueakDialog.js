@@ -115,7 +115,7 @@ export default function MakeSqueakDialog({
 
   function MakeSelectSigningProfile() {
     return (
-      <FormControl className={classes.formControl} required>
+      <FormControl className={classes.formControl} required style={{minWidth: 120}}>
         <InputLabel id="demo-simple-select-label">Signing Profile</InputLabel>
         <Select
           labelId="demo-simple-select-label"
