@@ -45,6 +45,11 @@ class SqueakNode:
         self.squeak_block_verifier.add_squeak_to_queue(inserted_squeak_hash)
         return inserted_squeak_hash
 
+    def save_squeak_and_verify(self, squeak):
+        inserted_squeak_hash = self.postgres_db.insert_squeak(squeak)
+        self.squeak_block_verifier.verify_squeak_block(inserted_squeak_hash)
+        return inserted_squeak_hash
+
     def get_locked_squeak(self, squeak_hash):
         squeak_entry = self.postgres_db.get_squeak_entry(squeak_hash)
         squeak = squeak_entry.squeak
@@ -142,7 +147,7 @@ class SqueakNode:
         squeak_profile = self.postgres_db.get_profile(profile_id)
         squeak_maker = SqueakMaker(self.lightning_client)
         squeak = squeak_maker.make_squeak(squeak_profile, content_str, replyto_hash)
-        return self.save_squeak(squeak)
+        return self.save_squeak_and_verify(squeak)
 
     def get_squeak_entry_with_profile(self, squeak_hash):
         return self.postgres_db.get_squeak_entry_with_profile(squeak_hash)
