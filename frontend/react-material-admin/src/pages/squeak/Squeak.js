@@ -24,7 +24,7 @@ export default function SqueakPage() {
 
   const getSqueak = (hash) => {
       var getSqueakDisplayRequest = new GetSqueakDisplayRequest()
-      getSqueakDisplayRequest.setHash(hash);
+      getSqueakDisplayRequest.setSqueakHash(hash);
       console.log(getSqueakDisplayRequest);
 
       client.getSqueakDisplay(getSqueakDisplayRequest, {}, (err, response) => {

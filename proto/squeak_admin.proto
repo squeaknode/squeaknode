@@ -159,17 +159,17 @@ message MakeSqueakRequest {
     string content = 2;
 
     /// The replyto hash
-    bytes replyto = 3;
+    string replyto = 3;
 }
 
 message MakeSqueakReply {
     /// Hash of the created squeak.
-    bytes hash = 1;
+    string squeak_hash = 1;
 }
 
 message GetSqueakDisplayRequest {
     /// Hash of the squeak.
-    bytes hash = 1;
+    string squeak_hash = 1;
 }
 
 message GetSqueakDisplayReply {

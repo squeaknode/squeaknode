@@ -60,8 +60,8 @@ export default function MakeSqueakPage() {
       }
 
       console.log(response);
-      console.log(response.getHash());
-      goToSqueakPage(response.getHash());
+      console.log(response.getSqueakHash());
+      goToSqueakPage(response.getSqueakHash());
     });
   };
   const getSigningProfiles = () => {
