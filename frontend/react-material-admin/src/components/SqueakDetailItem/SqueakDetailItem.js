@@ -18,7 +18,7 @@ import useStyles from "./styles";
 
 import Widget from "../../components/Widget";
 
-export default function Squeak({
+export default function SqueakDetailItem({
   squeak,
   handleAddressClick,
   handleSqueakClick,
@@ -81,7 +81,11 @@ export default function Squeak({
             alignItems="flex-start"
           >
           <Grid item>
-            <Typography size="md">{squeak.getContentStr()}</Typography>
+            <Typography
+              size="md"
+              style={{whiteSpace: 'pre-line'}}
+              >{squeak.getContentStr()}
+            </Typography>
           </Grid>
           </Grid>
           <Grid
