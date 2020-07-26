@@ -74,9 +74,9 @@ export default function TimelinePage() {
         {squeaks.map(squeak =>
           <SqueakThreadItem
             key={squeak.getSqueakHash()}
-            squeak={squeak}
             handleAddressClick={() => goToSqueakAddressPage(squeak.getAuthorAddress())}
-            handleSqueakClick={() => goToSqueakPage(squeak.getSqueakHash())}>
+            handleSqueakClick={() => goToSqueakPage(squeak.getSqueakHash())}
+            squeak={squeak}>
           </SqueakThreadItem>
         )}
         </Grid>

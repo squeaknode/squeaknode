@@ -39,8 +39,8 @@ export default function SqueakPage() {
       });
 };
 
-  const goToCreateProfilePage = (profileId) => {
-    history.push("/app/profile/" + profileId);
+  const goToSqueakAddressPage = (squeakAddress) => {
+    history.push("/app/squeakaddress/" + squeakAddress);
   };
 
   useEffect(()=>{
@@ -61,6 +61,7 @@ export default function SqueakPage() {
         <Grid container spacing={4} >
           <Squeak
             key={squeak.getSqueakHash()}
+            handleAddressClick={() => goToSqueakAddressPage(squeak.getAuthorAddress())}
             squeak={squeak}>
           </Squeak>
         </Grid>
