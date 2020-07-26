@@ -18,7 +18,7 @@ import useStyles from "./styles";
 
 import Widget from "../../components/Widget";
 
-export default function Squeak({
+export default function SqueakDetailItem({
   squeak,
   handleAddressClick,
   handleSqueakClick,
