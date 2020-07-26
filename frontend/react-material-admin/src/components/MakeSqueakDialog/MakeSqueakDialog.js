@@ -27,6 +27,7 @@ import classnames from "classnames";
 import useStyles from "./styles";
 
 import Widget from "../../components/Widget";
+import SqueakThreadItem from "../../components/SqueakThreadItem";
 
 import {MakeSqueakRequest, GetSigningProfilesRequest} from "../../proto/squeak_admin_pb"
 import {SqueakAdminClient} from "../../proto/squeak_admin_grpc_web_pb"
@@ -114,6 +115,16 @@ export default function MakeSqueakDialog({
     makeSqueak(profileId, content, replyto);
   }
 
+  function ReplySqueakContent() {
+    return (
+      <>
+        <SqueakThreadItem
+          squeak={replytoSqueak}>
+        </SqueakThreadItem>
+      </>
+    )
+  }
+
   function MakeSelectSigningProfile() {
     return (
       <FormControl className={classes.formControl} required style={{minWidth: 120}}>
@@ -180,8 +191,7 @@ export default function MakeSqueakDialog({
   <DialogTitle id="form-dialog-title">Make Squeak</DialogTitle>
   <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
   <DialogContent>
-    {replytoSqueak.getSqueakHash()}
-    Fooooo
+    {ReplySqueakContent()}
     {MakeSelectSigningProfile()}
     {MakeSqueakContentInput()}
   </DialogContent>
