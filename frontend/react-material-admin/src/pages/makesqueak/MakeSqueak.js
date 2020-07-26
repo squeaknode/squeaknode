@@ -83,6 +83,24 @@ export default function MakeSqueakPage() {
     getSigningProfiles()
   }, []);
 
+  function MakeSelectSigningProfile() {
+    return (
+      <FormControl className={classes.formControl}>
+        <InputLabel id="demo-simple-select-label">Signing Profile</InputLabel>
+        <Select
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
+          value={profileId}
+          onChange={handleChange}
+        >
+          {signingProfiles.map(p =>
+            <MenuItem key={p.getProfileId()} value={p.getProfileId()}>{p.getProfileName()}</MenuItem>
+          )}
+        </Select>
+      </FormControl>
+    )
+  }
+
   function MakeSqueakForm() {
     return (
       <form className={classes.root} noValidate autoComplete="off">
@@ -122,6 +140,7 @@ export default function MakeSqueakPage() {
 
      <div className={classes.root}>
 
+     {MakeSelectSigningProfile()}
      {MakeSqueakForm()}
      {MakeSqueakButton()}
 
