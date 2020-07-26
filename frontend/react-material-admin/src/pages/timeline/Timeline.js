@@ -63,8 +63,11 @@ export default function TimelinePage() {
   };
 
   const handleClickOpen = () => {
-    alert("setting dialog to open...");
     setOpen(true);
+  };
+
+  const handleClose = () => {
+     setOpen(false);
   };
 
   useEffect(()=>{
@@ -82,7 +85,10 @@ export default function TimelinePage() {
   function MakeSqueakDialogContent() {
     return (
       <>
-        <MakeSqueakDialog open={open}></MakeSqueakDialog>
+        <MakeSqueakDialog
+          open={open}
+          handleClose={handleClose}
+          ></MakeSqueakDialog>
       </>
     )
   }
