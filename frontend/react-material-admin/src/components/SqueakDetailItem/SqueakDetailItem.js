@@ -15,6 +15,8 @@ import {useHistory} from "react-router-dom";
 import classnames from "classnames";
 
 import ReplyIcon from '@material-ui/icons/Reply';
+import RepeatIcon from '@material-ui/icons/Repeat';
+import FavoriteIcon from '@material-ui/icons/Favorite';
 
 // styles
 import useStyles from "./styles";
@@ -118,12 +120,12 @@ export default function SqueakDetailItem({
             </Grid>
             <Grid item xs={3} sm={1}>
                 <Box>
-                  <ReplyIcon />
+                  <RepeatIcon />
                 </Box>
             </Grid>
             <Grid item xs={3} sm={1}>
                 <Box>
-                  <ReplyIcon />
+                  <FavoriteIcon />
                 </Box>
             </Grid>
           </Grid>
