@@ -102,7 +102,11 @@ export default function MakeSqueakDialog({
     event.preventDefault();
     console.log( 'profileId:', profileId);
     console.log( 'content:', content);
-    var replyto = replytoSqueak.getSqueakHash();
+    if (replytoSqueak) {
+      var replyto = replytoSqueak.getSqueakHash();
+    } else {
+      var replyto = null;
+    }
     console.log( 'replyto:', replyto);
     if (profileId == -1) {
       alert('Signing profile must be selected.');
@@ -192,7 +196,8 @@ export default function MakeSqueakDialog({
   <DialogTitle id="form-dialog-title">Make Squeak</DialogTitle>
   <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
   <DialogContent>
-    {ReplySqueakContent()}
+    {replytoSqueak ?
+      ReplySqueakContent() : <></>}
     {MakeSelectSigningProfile()}
     {MakeSqueakContentInput()}
   </DialogContent>
