@@ -95,6 +95,7 @@ export default function MakeSqueakPage() {
             onChange={handleChangeContent}
             multiline
             rows={8}
+            fullWidth
             inputProps={{ maxLength: 280 }}
           />
         </div>
@@ -104,20 +105,14 @@ export default function MakeSqueakPage() {
 
   function MakeSqueakButton() {
     return (
-      <form className={classes.root} noValidate autoComplete="off">
-        <div>
-          <TextField
-            id="standard-textarea"
-            label="Squeak content"
-            placeholder="Enter squeak content here..."
-            value={content}
-            onChange={handleChangeContent}
-            multiline
-            rows={8}
-            inputProps={{ maxLength: 280 }}
-          />
-        </div>
-      </form>
+      <Button
+       type="submit"
+       variant="contained"
+       color="secondary"
+       className={classes.button}
+       >
+       Make Squeak
+       </Button>
     )
   }
 
@@ -125,19 +120,11 @@ export default function MakeSqueakPage() {
     <>
      < PageTitle title = "Make Squeak" />
 
-        <div className={classes.root}>
+     <div className={classes.root}>
 
      {MakeSqueakForm()}
+     {MakeSqueakButton()}
 
-     <Button
-      type="submit"
-      variant="contained"
-      color="secondary"
-      className={classes.button}
-      >
-      Make Squeak
-      </Button>
-
-    </div>
+     </div>
 </>);
 }
