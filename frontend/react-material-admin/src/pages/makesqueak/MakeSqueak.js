@@ -37,7 +37,15 @@ export default function MakeSqueakPage() {
     console.log( 'profileId:', profileId);
     console.log( 'content:', content);
     console.log( 'replyto:', replyto);
-   makeSqueak(profileId, content, replyto);
+    if (profileId == -1) {
+      alert('Signing profile must be selected.');
+      return;
+    }
+    if (!content) {
+      alert('Content cannot be empty.');
+      return;
+    }
+    makeSqueak(profileId, content, replyto);
   }
 
   const handleChange = (event) => {
@@ -83,9 +91,19 @@ export default function MakeSqueakPage() {
     getSigningProfiles()
   }, []);
 
+  function MakeSqueakForm() {
+    return (
+      <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
+        {MakeSelectSigningProfile()}
+        {MakeSqueakContentInput()}
+        {MakeSqueakButton()}
+      </form>
+    )
+  }
+
   function MakeSelectSigningProfile() {
     return (
-      <FormControl className={classes.formControl}>
+      <FormControl className={classes.formControl} required>
         <InputLabel id="demo-simple-select-label">Signing Profile</InputLabel>
         <Select
           labelId="demo-simple-select-label"
@@ -101,22 +119,13 @@ export default function MakeSqueakPage() {
     )
   }
 
-  function MakeSqueakForm() {
-    return (
-      <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
-        {MakeSelectSigningProfile()}
-        {MakeSqueakContentInput()}
-        {MakeSqueakButton()}
-      </form>
-    )
-  }
-
   function MakeSqueakContentInput() {
     return (
       <TextField
         id="standard-textarea"
         label="Squeak content"
         placeholder="Enter squeak content here..."
+        required
         value={content}
         onChange={handleChangeContent}
         multiline
