@@ -15,6 +15,8 @@ import {useHistory} from "react-router-dom";
 import classnames from "classnames";
 
 import ReplyIcon from '@material-ui/icons/Reply';
+import RepeatIcon from '@material-ui/icons/Repeat';
+import FavoriteIcon from '@material-ui/icons/Favorite';
 
 // styles
 import useStyles from "./styles";
@@ -25,6 +27,7 @@ export default function SqueakDetailItem({
   squeak,
   handleAddressClick,
   handleSqueakClick,
+  handleReplyClick,
   ...props
 }) {
   var classes = useStyles();
@@ -44,18 +47,16 @@ export default function SqueakDetailItem({
     }
   }
 
-  const onSqueakClick = (event) => {
+  const onReplyClick = (event) => {
     event.preventDefault();
-    console.log("Handling squeak click...");
-    if (handleSqueakClick) {
-      handleSqueakClick();
+    console.log("Handling reply click...");
+    if (handleReplyClick) {
+      handleReplyClick();
     }
   }
 
   return (
-    <Grid item xs={12}
-      onClick={onSqueakClick}
-    >
+    <Grid item xs={12}>
         <Widget
           disableWidgetMenu
           upperTitle
@@ -111,18 +112,20 @@ export default function SqueakDetailItem({
             alignItems="flex-start"
           >
             <Grid item xs={3} sm={1}>
+              <Box
+                onClick={onReplyClick}
+                >
+              <ReplyIcon />
+            </Box>
+            </Grid>
+            <Grid item xs={3} sm={1}>
                 <Box>
-                  <ReplyIcon />
+                  <RepeatIcon />
                 </Box>
             </Grid>
             <Grid item xs={3} sm={1}>
                 <Box>
-                  <ReplyIcon />
-                </Box>
-            </Grid>
-            <Grid item xs={3} sm={1}>
-                <Box>
-                  <ReplyIcon />
+                  <FavoriteIcon />
                 </Box>
             </Grid>
           </Grid>

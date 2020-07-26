@@ -27,6 +27,7 @@ import classnames from "classnames";
 import useStyles from "./styles";
 
 import Widget from "../../components/Widget";
+import SqueakThreadItem from "../../components/SqueakThreadItem";
 
 import {MakeSqueakRequest, GetSigningProfilesRequest} from "../../proto/squeak_admin_pb"
 import {SqueakAdminClient} from "../../proto/squeak_admin_grpc_web_pb"
@@ -36,7 +37,7 @@ var client = new SqueakAdminClient('http://' + window.location.hostname + ':8080
 export default function MakeSqueakDialog({
   open,
   handleClose,
-  replyto,
+  replytoSqueak,
   ...props
 }) {
   var classes = useStyles();
@@ -101,6 +102,11 @@ export default function MakeSqueakDialog({
     event.preventDefault();
     console.log( 'profileId:', profileId);
     console.log( 'content:', content);
+    if (replytoSqueak) {
+      var replyto = replytoSqueak.getSqueakHash();
+    } else {
+      var replyto = null;
+    }
     console.log( 'replyto:', replyto);
     if (profileId == -1) {
       alert('Signing profile must be selected.');
@@ -111,6 +117,17 @@ export default function MakeSqueakDialog({
       return;
     }
     makeSqueak(profileId, content, replyto);
+    handleClose();
+  }
+
+  function ReplySqueakContent() {
+    return (
+      <>
+        <SqueakThreadItem
+          squeak={replytoSqueak}>
+        </SqueakThreadItem>
+      </>
+    )
   }
 
   function MakeSelectSigningProfile() {
@@ -179,6 +196,8 @@ export default function MakeSqueakDialog({
   <DialogTitle id="form-dialog-title">Make Squeak</DialogTitle>
   <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
   <DialogContent>
+    {replytoSqueak ?
+      ReplySqueakContent() : <></>}
     {MakeSelectSigningProfile()}
     {MakeSqueakContentInput()}
   </DialogContent>
