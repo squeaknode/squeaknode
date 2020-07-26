@@ -3,7 +3,6 @@ import { Drawer, IconButton, List } from "@material-ui/core";
 import {
   Home as HomeIcon,
   NotificationsNone as NotificationsIcon,
-  FilterNone as UIElementsIcon,
   People as ProfilesIcon,
   AttachMoney as LightningIcon,
   QuestionAnswer as SupportIcon,
@@ -33,17 +32,6 @@ const structure = [
   { id: 0, label: "Timeline", link: "/app/timeline", icon: <HomeIcon /> },
   { id: 1, label: "Profiles", link: "/app/profiles", icon: <ProfilesIcon /> },
   { id: 2, label: "Lightning", link: "/app/lightning", icon: <LightningIcon /> },
-  {
-    id: 4,
-    label: "UI Elements",
-    link: "/app/ui",
-    icon: <UIElementsIcon />,
-    children: [
-      { label: "Icons", link: "/app/ui/icons" },
-      { label: "Charts", link: "/app/ui/charts" },
-      { label: "Maps", link: "/app/ui/maps" },
-    ],
-  },
 ];
 
 function Sidebar({ location }) {
