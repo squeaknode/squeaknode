@@ -1,52 +1,54 @@
 import React, {useState, useEffect} from 'react';
-import {useHistory, useParams } from 'react-router-dom';
-import {Grid, TextField, Button, Typography, Paper, Select, InputLabel, MenuItem} from "@material-ui/core";
-
-import FormControl from '@material-ui/core/FormControl';
+import {
+  Paper,
+  IconButton,
+  Menu,
+  MenuItem,
+  Typography,
+  Grid,
+  Box,
+  Link,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  TextField,
+  DialogActions,
+  Button,
+  FormControl,
+  InputLabel,
+  Select,
+} from "@material-ui/core";
+import { MoreVert as MoreIcon } from "@material-ui/icons";
+import {useHistory} from "react-router-dom";
+import classnames from "classnames";
 
 // styles
 import useStyles from "./styles";
 
-// components
-import PageTitle from "../../components/PageTitle";
 import Widget from "../../components/Widget";
-// import { Typography } from "../../components/Wrappers";
 
 import {MakeSqueakRequest, GetSigningProfilesRequest} from "../../proto/squeak_admin_pb"
 import {SqueakAdminClient} from "../../proto/squeak_admin_grpc_web_pb"
 
 var client = new SqueakAdminClient('http://' + window.location.hostname + ':8080')
 
-export default function MakeSqueakPage() {
-  const [profileId, setProfileId] = useState(-1);
-  const [content, setContent] = useState('');
-  const [signingProfiles, setSigningProfiles] = useState([]);
-  // const [age, setAge] = useState('');
-  const [value, setValue] = useState('Controlled');
-  const { replyto } = useParams();
-
+export default function MakeSqueakDialog({
+  open,
+  handleClose,
+  replyto,
+  ...props
+}) {
   var classes = useStyles();
   const history = useHistory();
 
-  const goToSqueakPage = (squeakHash) => {
-    history.push("/app/squeak/" + squeakHash);
-  };
+  var [profileId, setProfileId] = useState(-1);
+  var [content, setContent] = useState('');
+  var [signingProfiles, setSigningProfiles] = useState([]);
 
-  function handleSubmit(event) {
-    event.preventDefault();
-    console.log( 'profileId:', profileId);
-    console.log( 'content:', content);
-    console.log( 'replyto:', replyto);
-    if (profileId == -1) {
-      alert('Signing profile must be selected.');
-      return;
-    }
-    if (!content) {
-      alert('Content cannot be empty.');
-      return;
-    }
-    makeSqueak(profileId, content, replyto);
-  }
+  // local
+  // var [moreButtonRef, setMoreButtonRef] = useState(null);
+  // var [isMoreMenuOpen, setMoreMenuOpen] = useState(false);
 
   const handleChange = (event) => {
     setProfileId(event.target.value);
@@ -91,19 +93,29 @@ export default function MakeSqueakPage() {
     getSigningProfiles()
   }, []);
 
-  function MakeSqueakForm() {
-    return (
-      <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
-        {MakeSelectSigningProfile()}
-        {MakeSqueakContentInput()}
-        {MakeSqueakButton()}
-      </form>
-    )
+  const goToSqueakPage = (squeakHash) => {
+    history.push("/app/squeak/" + squeakHash);
+  };
+
+  function handleSubmit(event) {
+    event.preventDefault();
+    console.log( 'profileId:', profileId);
+    console.log( 'content:', content);
+    console.log( 'replyto:', replyto);
+    if (profileId == -1) {
+      alert('Signing profile must be selected.');
+      return;
+    }
+    if (!content) {
+      alert('Content cannot be empty.');
+      return;
+    }
+    makeSqueak(profileId, content, replyto);
   }
 
   function MakeSelectSigningProfile() {
     return (
-      <FormControl className={classes.formControl} required>
+      <FormControl className={classes.formControl} required style={{minWidth: 120}}>
         <InputLabel id="demo-simple-select-label">Signing Profile</InputLabel>
         <Select
           labelId="demo-simple-select-label"
@@ -126,6 +138,7 @@ export default function MakeSqueakPage() {
         label="Squeak content"
         placeholder="Enter squeak content here..."
         required
+        autoFocus
         value={content}
         onChange={handleChangeContent}
         multiline
@@ -136,12 +149,24 @@ export default function MakeSqueakPage() {
     )
   }
 
+  function MakeCancelButton() {
+    return (
+      <Button
+        onClick={handleClose}
+        variant="contained"
+        color="secondary"
+      >
+        Cancel
+      </Button>
+    )
+  }
+
   function MakeSqueakButton() {
     return (
       <Button
        type="submit"
        variant="contained"
-       color="secondary"
+       color="primary"
        className={classes.button}
        >
        Make Squeak
@@ -150,13 +175,18 @@ export default function MakeSqueakPage() {
   }
 
   return (
-    <>
-     < PageTitle title = "Make Squeak" />
-
-     <div className={classes.root}>
-
-     {MakeSqueakForm()}
-
-     </div>
-</>);
+    <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+  <DialogTitle id="form-dialog-title">Make Squeak</DialogTitle>
+  <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
+  <DialogContent>
+    {MakeSelectSigningProfile()}
+    {MakeSqueakContentInput()}
+  </DialogContent>
+  <DialogActions>
+    {MakeCancelButton()}
+    {MakeSqueakButton()}
+  </DialogActions>
+  </form>
+    </Dialog>
+  )
 }
