@@ -16,8 +16,7 @@ RUN curl -sSL https://github.com/grpc/grpc-web/releases/download/1.2.0/\
 protoc-gen-grpc-web-1.2.0-linux-x86_64 -o /usr/local/bin/protoc-gen-grpc-web && \
   chmod +x /usr/local/bin/protoc-gen-grpc-web
 
-#COPY frontend/squeak-frontend .
-COPY frontend/react-material-admin .
+COPY frontend/squeak-node-frontend .
 
 # Copy the proto files
 COPY proto/* src/proto/
