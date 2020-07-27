@@ -132,6 +132,20 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
             squeak_display_entries=squeak_display_msgs
         )
 
+    def GetAncestorSqueakDisplays(self, request, context):
+        squeak_hash_str = request.squeak_hash
+        squeak_entries_with_profile = self.handler.handle_get_ancestor_squeak_display_entries(
+            squeak_hash_str,
+        )
+        squeak_display_msgs = [
+            self._squeak_entry_to_message(entry)
+            for entry in
+            squeak_entries_with_profile
+        ]
+        return squeak_admin_pb2.GetFollowedSqueakDisplaysReply(
+            squeak_display_entries=squeak_display_msgs
+        )
+
     def _squeak_entry_to_message(self, squeak_entry_with_profile):
         if squeak_entry_with_profile is None:
             return None

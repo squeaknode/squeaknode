@@ -425,6 +425,7 @@ def run():
         reply_2_squeak_hash = reply_2_squeak_response.squeak_hash
         print("Get make reply squeak response: " + str(reply_2_squeak_response))
 
+        # Get the squeak and check that the reply field is correct
         get_reply_squeak_display_response = admin_stub.GetSqueakDisplay(
             squeak_admin_pb2.GetSqueakDisplayRequest(
                 squeak_hash=reply_2_squeak_hash,
@@ -437,6 +438,14 @@ def run():
         assert (
             get_reply_squeak_display_response.squeak_display_entry.reply_to == reply_1_squeak_hash
         )
+
+        # Get the ancestors of the latest reply squeak
+        get_ancestors_response = admin_stub.GetAncestorSqueakDisplays(
+            squeak_admin_pb2.GetAncestorSqueakDisplaysRequest(
+                squeak_hash=reply_2_squeak_hash,
+            )
+        )
+        print("Get ancestor squeak display entries response: " + str(get_ancestors_response))
 
 
 if __name__ == "__main__":

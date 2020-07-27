@@ -96,3 +96,14 @@ class SqueakAdminServerHandler(object):
             max_block,
         )
         return squeak_entries_with_profile
+
+    def handle_get_ancestor_squeak_display_entries(self, squeak_hash_str):
+        logger.info("Handle get ancestor squeak display entries for squeak hash: {}".format(squeak_hash_str))
+        squeak_entries_with_profile = self.squeak_node.get_ancestor_squeak_entries_with_profile(
+            squeak_hash_str,
+        )
+        logger.info("Got number of ancestor squeak entries: {}".format(len(squeak_entries_with_profile)))
+        logger.info("Got ancestor squeak display entries:")
+        for entry in squeak_entries_with_profile:
+            logger.info("Entry: {}".format(entry))
+        return squeak_entries_with_profile

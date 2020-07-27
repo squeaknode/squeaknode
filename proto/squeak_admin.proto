@@ -62,6 +62,10 @@ service SqueakAdmin {
   */
   rpc GetAddressSqueakDisplays (GetAddressSqueakDisplaysRequest) returns (GetAddressSqueakDisplaysReply) {}
 
+  /** sqkadmin: `getaddresssqueakdisplays`
+  */
+  rpc GetAncestorSqueakDisplays (GetAncestorSqueakDisplaysRequest) returns (GetAncestorSqueakDisplaysReply) {}
+
 }
 
 message HelloRequest {
@@ -223,6 +227,16 @@ message GetAddressSqueakDisplaysRequest {
 }
 
 message GetAddressSqueakDisplaysReply {
+    /// Multiple squeak display entries
+    repeated SqueakDisplayEntry squeak_display_entries = 1;
+}
+
+message GetAncestorSqueakDisplaysRequest {
+    /// Hash of the squeak.
+    string squeak_hash = 1;
+}
+
+message GetAncestorSqueakDisplaysReply {
     /// Multiple squeak display entries
     repeated SqueakDisplayEntry squeak_display_entries = 1;
 }

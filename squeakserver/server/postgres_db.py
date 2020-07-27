@@ -50,7 +50,7 @@ class PostgresDb:
     def insert_squeak(self, squeak):
         """ Insert a new squeak. """
         sql = """
-        INSERT INTO squeak(hash, n_version, hash_enc_content, hash_reply_sqk, hash_block, n_block_height, vch_script_pub_key, vch_encryption_key, enc_data_key, iv, n_time, n_nonce, enc_content, vch_script_sig, address, vch_decryption_key)
+        INSERT INTO squeak(hash, n_version, hash_enc_content, hash_reply_sqk, hash_block, n_block_height, vch_script_pub_key, vch_encryption_key, enc_data_key, iv, n_time, n_nonce, enc_content, vch_script_sig, author_address, vch_decryption_key)
         VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         RETURNING hash;"""
 
@@ -98,7 +98,7 @@ class PostgresDb:
         sql = """
         SELECT * FROM squeak
         LEFT JOIN profile
-        ON squeak.address=profile.address
+        ON squeak.author_address=profile.address
         WHERE squeak.hash=%s
         """
 
@@ -114,7 +114,7 @@ class PostgresDb:
         sql = """
         SELECT * FROM squeak
         JOIN profile
-        ON squeak.address=profile.address
+        ON squeak.author_address=profile.address
         WHERE squeak.block_header IS NOT NULL
         AND profile.following=False
         ORDER BY n_block_height DESC, n_time DESC;
@@ -129,9 +129,9 @@ class PostgresDb:
         sql = """
         SELECT * FROM squeak
         JOIN profile
-        ON squeak.address=profile.address
+        ON squeak.author_address=profile.address
         WHERE squeak.block_header IS NOT NULL
-        AND squeak.address=%s
+        AND squeak.author_address=%s
         AND n_block_height >= %s
         AND n_block_height <= %s
         ORDER BY n_block_height DESC, n_time DESC;
@@ -141,7 +141,7 @@ class PostgresDb:
             rows = curs.fetchall()
             return [self._parse_squeak_entry_with_profile(row) for row in rows]
 
-    def get_thread_ancestor_squeak_entries_with_profile(self, squeak_hash):
+    def get_thread_ancestor_squeak_entries_with_profile(self, squeak_hash_str):
         """ Get a squeak. """
         sql = """
         WITH RECURSIVE is_thread_ancestor(n) AS (
@@ -151,21 +151,19 @@ class PostgresDb:
             WHERE squeak.hash=is_thread_ancestor.n
           )
           SELECT * FROM squeak, is_thread_ancestor
-          LEFT JOIN profile ON squeak.address=profile.address
-            WHERE squeak.block_header IS NOT NULL AND
-            squeak.hash=is_thread_ancestor.n
+          WHERE squeak.block_header IS NOT NULL
+          AND squeak.hash=is_thread_ancestor.n;
         """
-        squeak_hash_str = squeak_hash.hex()
         with self.get_cursor() as curs:
             curs.execute(sql, (squeak_hash_str,))
             rows = curs.fetchall()
-            return [self._parse_squeak_entry_with_profile(row) for row in rows]
+            return [self._parse_squeak_entry(row) for row in rows]
 
     def lookup_squeaks(self, addresses, min_block, max_block):
         """ Lookup squeaks. """
         sql = """
         SELECT hash FROM squeak
-        WHERE address IN %s
+        WHERE author_address IN %s
         AND n_block_height >= %s
         AND n_block_height <= %s
         AND vch_decryption_key IS NOT NULL
