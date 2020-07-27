@@ -84,7 +84,7 @@ export default function SqueakDetailItem({
           >
           <Grid item>
             <Typography
-              size="md"
+              variant="h4"
               style={{whiteSpace: 'pre-line'}}
               >{squeak.getContentStr()}
             </Typography>
