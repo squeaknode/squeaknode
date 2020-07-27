@@ -5,6 +5,7 @@ import {
   Grid,
   Button,
   Fab,
+  Box,
 } from "@material-ui/core";
 import { useTheme } from "@material-ui/styles";
 import {
@@ -98,12 +99,16 @@ export default function TimelinePage() {
       <>
         <div>
         {squeaks.map(squeak =>
+          <Box
+            p={1}
+            >
           <SqueakThreadItem
             key={squeak.getSqueakHash()}
             handleAddressClick={() => goToSqueakAddressPage(squeak.getAuthorAddress())}
             handleSqueakClick={() => goToSqueakPage(squeak.getSqueakHash())}
             squeak={squeak}>
           </SqueakThreadItem>
+          </Box>
         )}
         </div>
       </>
