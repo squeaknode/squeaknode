@@ -142,7 +142,7 @@ class PostgresDb:
             return [self._parse_squeak_entry_with_profile(row) for row in rows]
 
     def get_thread_ancestor_squeak_entries_with_profile(self, squeak_hash_str):
-        """ Get a squeak. """
+        """ Get all reply ancestors of squeak hash. """
         sql = """
         WITH RECURSIVE is_thread_ancestor(n) AS (
             VALUES(%s)
