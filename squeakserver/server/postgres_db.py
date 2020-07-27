@@ -144,18 +144,19 @@ class PostgresDb:
     def get_thread_ancestor_squeak_entries_with_profile(self, squeak_hash_str):
         """ Get all reply ancestors of squeak hash. """
         sql = """
-        WITH RECURSIVE is_thread_ancestor(n) AS (
-            VALUES(%s)
+        WITH RECURSIVE is_thread_ancestor(hash, depth) AS (
+            VALUES(%s, 1)
           UNION\n
-            SELECT hash_reply_sqk FROM squeak, is_thread_ancestor
-            WHERE squeak.hash=is_thread_ancestor.n
+            SELECT squeak.hash_reply_sqk AS hash, is_thread_ancestor.depth + 1 AS depth FROM squeak, is_thread_ancestor
+            WHERE squeak.hash=is_thread_ancestor.hash
           )
           SELECT * FROM squeak
           JOIN is_thread_ancestor
-            ON squeak.hash=is_thread_ancestor.n
+            ON squeak.hash=is_thread_ancestor.hash
           LEFT JOIN profile
             ON squeak.author_address=profile.address
-          WHERE squeak.block_header IS NOT NULL;
+          WHERE squeak.block_header IS NOT NULL
+          ORDER BY is_thread_ancestor.depth DESC;
         """
         with self.get_cursor() as curs:
             curs.execute(sql, (squeak_hash_str,))
