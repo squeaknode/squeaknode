@@ -7,6 +7,10 @@ def get_hash(squeak):
     return squeak.GetHash()[::-1]
 
 
+def get_replyto(squeak):
+    return squeak.hashReplySqk
+
+
 def generate_offer_nonce():
     return os.urandom(DATA_KEY_LENGTH)
 

@@ -141,6 +141,26 @@ class PostgresDb:
             rows = curs.fetchall()
             return [self._parse_squeak_entry_with_profile(row) for row in rows]
 
+    def get_thread_ancestor_squeak_entries_with_profile(self, squeak_hash):
+        """ Get a squeak. """
+        sql = """
+        WITH RECURSIVE is_thread_ancestor(n) AS (
+            VALUES(%s)
+          UNION\n
+            SELECT hash_reply_sqk FROM squeak, is_thread_ancestor
+            WHERE squeak.hash=is_thread_ancestor.n
+          )
+          SELECT * FROM squeak, is_thread_ancestor
+          LEFT JOIN profile ON squeak.address=profile.address
+            WHERE squeak.block_header IS NOT NULL AND
+            squeak.hash=is_thread_ancestor.n
+        """
+        squeak_hash_str = squeak_hash.hex()
+        with self.get_cursor() as curs:
+            curs.execute(sql, (squeak_hash_str,))
+            rows = curs.fetchall()
+            return [self._parse_squeak_entry_with_profile(row) for row in rows]
+
     def lookup_squeaks(self, addresses, min_block, max_block):
         """ Lookup squeaks. """
         sql = """

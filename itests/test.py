@@ -403,6 +403,41 @@ def run():
             get_profile_by_address_response.squeak_profile.profile_name == "bob"
         )
 
+        # Make another squeak as a reply
+        reply_1_squeak_response = admin_stub.MakeSqueak(
+            squeak_admin_pb2.MakeSqueakRequest(
+                profile_id=profile_id,
+                content="Reply #1",
+                replyto=make_squeak_hash,
+            )
+        )
+        reply_1_squeak_hash = reply_1_squeak_response.squeak_hash
+        print("Get reply #1 squeak hash: " + str(reply_1_squeak_hash))
+
+        # Make a second squeak as a reply
+        reply_2_squeak_response = admin_stub.MakeSqueak(
+            squeak_admin_pb2.MakeSqueakRequest(
+                profile_id=profile_id,
+                content="Reply #2",
+                replyto=reply_1_squeak_hash,
+            )
+        )
+        reply_2_squeak_hash = reply_2_squeak_response.squeak_hash
+        print("Get make reply squeak response: " + str(reply_2_squeak_response))
+
+        get_reply_squeak_display_response = admin_stub.GetSqueakDisplay(
+            squeak_admin_pb2.GetSqueakDisplayRequest(
+                squeak_hash=reply_2_squeak_hash,
+            )
+        )
+        print("Get reply squeak display entry response: " + str(get_reply_squeak_display_response))
+        assert (
+            get_reply_squeak_display_response.squeak_display_entry.squeak_hash == reply_2_squeak_hash
+        )
+        assert (
+            get_reply_squeak_display_response.squeak_display_entry.reply_to == reply_1_squeak_hash
+        )
+
 
 if __name__ == "__main__":
     logging.basicConfig()
