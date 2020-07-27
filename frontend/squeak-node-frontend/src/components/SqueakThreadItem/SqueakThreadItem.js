@@ -52,7 +52,7 @@ export default function SqueakThreadItem({
   return (
     <Box
       p={1}
-      m={1}
+      m={0}
       bgcolor="background.paper"
       onClick={onSqueakClick}
       >

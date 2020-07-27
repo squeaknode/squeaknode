@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import {useHistory} from "react-router-dom";
-import { Grid, Button } from "@material-ui/core";
+import {
+   Grid,
+   Button,
+   Box,
+} from "@material-ui/core";
 
 // styles
 import useStyles from "./styles";
@@ -95,11 +99,15 @@ export default function SqueakAddressPage() {
       <>
         <div>
           {squeaks.map(squeak =>
+            <Box
+              p={1}
+              >
             <SqueakThreadItem
               key={squeak.getSqueakHash()}
               handleSqueakClick={() => goToSqueakPage(squeak.getSqueakHash())}
               squeak={squeak}>
             </SqueakThreadItem>
+            </Box>
           )}
         </div>
       </>
