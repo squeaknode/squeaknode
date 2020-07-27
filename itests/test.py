@@ -446,6 +446,9 @@ def run():
             )
         )
         print("Get ancestor squeak display entries response: " + str(get_ancestors_response))
+        assert (
+            len(get_ancestors_response.squeak_display_entries) == 3
+        )
 
 
 if __name__ == "__main__":

@@ -151,8 +151,10 @@ class PostgresDb:
             WHERE squeak.hash=is_thread_ancestor.n
           )
           SELECT * FROM squeak
-          JOIN is_thread_ancestor ON squeak.hash=is_thread_ancestor.n
-          LEFT JOIN profile ON squeak.author_address=profile.address
+          JOIN is_thread_ancestor
+            ON squeak.hash=is_thread_ancestor.n
+          LEFT JOIN profile
+            ON squeak.author_address=profile.address
           WHERE squeak.block_header IS NOT NULL;
         """
         with self.get_cursor() as curs:
