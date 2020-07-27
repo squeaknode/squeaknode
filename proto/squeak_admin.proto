@@ -62,7 +62,7 @@ service SqueakAdmin {
   */
   rpc GetAddressSqueakDisplays (GetAddressSqueakDisplaysRequest) returns (GetAddressSqueakDisplaysReply) {}
 
-  /** sqkadmin: `getaddresssqueakdisplays`
+  /** sqkadmin: `getancestorsqueakdisplays`
   */
   rpc GetAncestorSqueakDisplays (GetAncestorSqueakDisplaysRequest) returns (GetAncestorSqueakDisplaysReply) {}
 
