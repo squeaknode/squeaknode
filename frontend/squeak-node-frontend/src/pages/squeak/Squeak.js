@@ -97,7 +97,7 @@ export default function SqueakPage() {
     return (
       <>
         <div>
-          {ancestorSqueaks.slice()
+          {ancestorSqueaks.slice(0, -1)
             //.reverse()
             .map(ancestorSqueak =>
             <SqueakThreadItem
