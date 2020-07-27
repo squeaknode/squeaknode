@@ -7,7 +7,7 @@ import grpc
 
 from proto import squeak_admin_pb2, squeak_admin_pb2_grpc
 
-from squeakserver.server.util import get_hash
+from squeakserver.server.util import get_hash, get_replyto
 
 logger = logging.getLogger(__name__)
 
@@ -132,6 +132,20 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
             squeak_display_entries=squeak_display_msgs
         )
 
+    def GetAncestorSqueakDisplays(self, request, context):
+        squeak_hash_str = request.squeak_hash
+        squeak_entries_with_profile = self.handler.handle_get_ancestor_squeak_display_entries(
+            squeak_hash_str,
+        )
+        squeak_display_msgs = [
+            self._squeak_entry_to_message(entry)
+            for entry in
+            squeak_entries_with_profile
+        ]
+        return squeak_admin_pb2.GetFollowedSqueakDisplaysReply(
+            squeak_display_entries=squeak_display_msgs
+        )
+
     def _squeak_entry_to_message(self, squeak_entry_with_profile):
         if squeak_entry_with_profile is None:
             return None
@@ -144,6 +158,8 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         is_author_known = squeak_profile is not None
         author_name = squeak_profile.profile_name if squeak_profile else None
         author_address = str(squeak.GetAddress())
+        is_reply = squeak.is_reply
+        reply_to = get_replyto(squeak).hex() if is_reply else None
         return squeak_admin_pb2.SqueakDisplayEntry(
             squeak_hash=get_hash(squeak).hex(),
             is_unlocked=squeak.HasDecryptionKey(),
@@ -153,6 +169,8 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
             is_author_known=is_author_known,
             author_name=author_name,
             author_address=author_address,
+            is_reply=is_reply,
+            reply_to=reply_to,
         )
 
     def _squeak_profile_to_message(self, squeak_profile):

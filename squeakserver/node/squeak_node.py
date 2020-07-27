@@ -161,3 +161,8 @@ class SqueakNode:
             min_block,
             max_block,
         )
+
+    def get_ancestor_squeak_entries_with_profile(self, squeak_hash_str):
+        return self.postgres_db.get_thread_ancestor_squeak_entries_with_profile(
+            squeak_hash_str,
+        )

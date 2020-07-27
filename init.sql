@@ -14,13 +14,13 @@ CREATE TABLE IF NOT EXISTS squeak (
   n_nonce BIGINT NOT NULL,
   enc_content CHAR(2272) NOT NULL, -- Encrypted content length is always 1136 bytes (2272 hex characters).
   vch_script_sig bytea NOT NULL,
-  address VARCHAR(35) NOT NULL, -- Maximum length of a bitcoin address is 35.
+  author_address VARCHAR(35) NOT NULL, -- Maximum length of a bitcoin address is 35.
   vch_decryption_key bytea NOT NULL,
   block_header bytea
 );
 
 CREATE INDEX IF NOT EXISTS idx_squeak_address
-  ON squeak(address);
+  ON squeak(author_address);
 
 CREATE TABLE IF NOT EXISTS profile (
   profile_id SERIAL PRIMARY KEY,
