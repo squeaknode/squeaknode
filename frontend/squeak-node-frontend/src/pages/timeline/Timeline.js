@@ -96,7 +96,7 @@ export default function TimelinePage() {
   function SqueaksContent() {
     return (
       <>
-        <Grid container spacing={4} >
+        <div>
         {squeaks.map(squeak =>
           <SqueakThreadItem
             key={squeak.getSqueakHash()}
@@ -105,7 +105,7 @@ export default function TimelinePage() {
             squeak={squeak}>
           </SqueakThreadItem>
         )}
-        </Grid>
+        </div>
       </>
     )
   }
