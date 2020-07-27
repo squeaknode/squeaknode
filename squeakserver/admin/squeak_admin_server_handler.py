@@ -82,8 +82,8 @@ class SqueakAdminServerHandler(object):
         logger.info("Handle get followed squeak display entries.")
         squeak_entries_with_profile = self.squeak_node.get_followed_squeak_entries_with_profile()
         logger.info(
-            "Got squeak entries with profile: {}".format(
-                squeak_entries_with_profile
+            "Got number of squeak entries: {}".format(
+                len(squeak_entries_with_profile)
             )
         )
         return squeak_entries_with_profile
@@ -95,6 +95,11 @@ class SqueakAdminServerHandler(object):
             min_block,
             max_block,
         )
+        logger.info(
+            "Got number of squeak entries: {}".format(
+                len(squeak_entries_with_profile)
+            )
+        )
         return squeak_entries_with_profile
 
     def handle_get_ancestor_squeak_display_entries(self, squeak_hash_str):
@@ -103,7 +108,4 @@ class SqueakAdminServerHandler(object):
             squeak_hash_str,
         )
         logger.info("Got number of ancestor squeak entries: {}".format(len(squeak_entries_with_profile)))
-        logger.info("Got ancestor squeak display entries:")
-        for entry in squeak_entries_with_profile:
-            logger.info("Entry: {}".format(entry))
         return squeak_entries_with_profile
