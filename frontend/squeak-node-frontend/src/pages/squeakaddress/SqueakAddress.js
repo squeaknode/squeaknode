@@ -93,7 +93,7 @@ export default function SqueakAddressPage() {
   function SqueaksContent() {
     return (
       <>
-        <Grid container spacing={4} >
+        <div>
           {squeaks.map(squeak =>
             <SqueakThreadItem
               key={squeak.getSqueakHash()}
@@ -101,7 +101,7 @@ export default function SqueakAddressPage() {
               squeak={squeak}>
             </SqueakThreadItem>
           )}
-          </Grid>
+        </div>
       </>
     )
   }

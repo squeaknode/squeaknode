@@ -50,15 +50,12 @@ export default function SqueakThreadItem({
   }
 
   return (
-    <Grid item xs={12}
+    <Box
+      p={1}
+      m={1}
+      bgcolor="background.paper"
       onClick={onSqueakClick}
-    >
-        <Widget
-          disableWidgetMenu
-          upperTitle
-          bodyClass={classes.fullHeightBody}
-          className={classes.card}
-        >
+      >
           <Grid
             container
             direction="row"
@@ -100,7 +97,6 @@ export default function SqueakThreadItem({
                 </Box>
             </Grid>
           </Grid>
-        </Widget>
-    </Grid>
+    </Box>
   )
 }
