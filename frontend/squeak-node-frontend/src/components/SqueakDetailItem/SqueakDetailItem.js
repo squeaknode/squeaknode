@@ -111,18 +111,23 @@ export default function SqueakDetailItem({
           >
             <Grid item xs={3} sm={1}>
               <Box
+                p={1}
                 onClick={onReplyClick}
                 >
               <ReplyIcon />
             </Box>
             </Grid>
             <Grid item xs={3} sm={1}>
-                <Box>
+                <Box
+                  p={1}
+                  >
                   <RepeatIcon />
                 </Box>
             </Grid>
             <Grid item xs={3} sm={1}>
-                <Box>
+                <Box
+                  p={1}
+                  >
                   <FavoriteIcon />
                 </Box>
             </Grid>
