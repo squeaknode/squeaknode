@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import {useHistory} from "react-router-dom";
-import { Grid, Button } from "@material-ui/core";
+import {
+  Grid,
+  Button,
+  Divider,
+  Box,
+} from "@material-ui/core";
 
 // styles
 import useStyles from "./styles";
@@ -100,12 +105,16 @@ export default function SqueakPage() {
           {ancestorSqueaks.slice(0, -1)
             //.reverse()
             .map(ancestorSqueak =>
+            <Box
+              >
             <SqueakThreadItem
               key={ancestorSqueak.getSqueakHash()}
               handleAddressClick={() => goToSqueakAddressPage(ancestorSqueak.getAuthorAddress())}
               handleSqueakClick={() => goToSqueakPage(ancestorSqueak.getSqueakHash())}
               squeak={ancestorSqueak}>
             </SqueakThreadItem>
+            <Divider />
+            </Box>
           )}
         </div>
         <div>

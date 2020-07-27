@@ -58,7 +58,7 @@ export default function SqueakDetailItem({
   return (
     <Box
       p={1}
-      m={1}
+      m={0}
       bgcolor="background.paper"
       >
           <Grid
