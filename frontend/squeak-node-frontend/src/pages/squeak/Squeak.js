@@ -10,9 +10,13 @@ import useStyles from "./styles";
 import PageTitle from "../../components/PageTitle";
 import Widget from "../../components/Widget";
 import SqueakDetailItem from "../../components/SqueakDetailItem";
+import SqueakThreadItem from "../../components/SqueakThreadItem";
 import MakeSqueakDialog from "../../components/MakeSqueakDialog";
 
-import { GetSqueakDisplayRequest } from "../../proto/squeak_admin_pb"
+import {
+  GetSqueakDisplayRequest,
+  GetAncestorSqueakDisplaysRequest,
+} from "../../proto/squeak_admin_pb"
 import { SqueakAdminClient } from "../../proto/squeak_admin_grpc_web_pb"
 
 var client = new SqueakAdminClient('http://' + window.location.hostname + ':8080')
@@ -22,6 +26,7 @@ export default function SqueakPage() {
   const history = useHistory();
   const { hash } = useParams();
   const [squeak, setSqueak] = useState(null);
+  const [ancestorSqueaks, setAncestorSqueaks] = useState(null);
   const [open, setOpen] = React.useState(false);
 
   const getSqueak = (hash) => {
@@ -39,7 +44,23 @@ export default function SqueakPage() {
         console.log(response.getSqueakDisplayEntry());
         setSqueak(response.getSqueakDisplayEntry())
       });
-};
+  };
+  const getAncestorSqueaks = (hash) => {
+      var getAncestorSqueakDisplaysRequest = new GetAncestorSqueakDisplaysRequest()
+      getAncestorSqueakDisplaysRequest.setSqueakHash(hash);
+      console.log(getAncestorSqueakDisplaysRequest);
+
+      client.getAncestorSqueakDisplays(getAncestorSqueakDisplaysRequest, {}, (err, response) => {
+        if (err) {
+          console.log(err.message);
+          alert('Error getting ancestor squeaks for hash: ' + err.message);
+          return;
+        }
+        console.log(response);
+        console.log(response.getSqueakDisplayEntriesList());
+        setAncestorSqueaks(response.getSqueakDisplayEntriesList())
+      });
+  };
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -53,8 +74,15 @@ export default function SqueakPage() {
     history.push("/app/squeakaddress/" + squeakAddress);
   };
 
+  const goToSqueakPage = (hash) => {
+    history.push("/app/squeak/" + hash);
+  };
+
   useEffect(()=>{
     getSqueak(hash)
+  },[hash]);
+  useEffect(()=>{
+    getAncestorSqueaks(hash)
   },[hash]);
 
   function NoSqueakContent() {
@@ -68,6 +96,18 @@ export default function SqueakPage() {
   function SqueakContent() {
     return (
       <>
+        <div>
+          {ancestorSqueaks.slice()
+            //.reverse()
+            .map(ancestorSqueak =>
+            <SqueakThreadItem
+              key={ancestorSqueak.getSqueakHash()}
+              handleAddressClick={() => goToSqueakAddressPage(ancestorSqueak.getAuthorAddress())}
+              handleSqueakClick={() => goToSqueakPage(ancestorSqueak.getSqueakHash())}
+              squeak={ancestorSqueak}>
+            </SqueakThreadItem>
+          )}
+        </div>
         <div>
           <SqueakDetailItem
             key={squeak.getSqueakHash()}
@@ -96,7 +136,7 @@ export default function SqueakPage() {
   return (
     <>
       <PageTitle title="Squeak" />
-      {squeak
+      {(squeak && ancestorSqueaks)
         ? SqueakContent()
         : NoSqueakContent()
       }
