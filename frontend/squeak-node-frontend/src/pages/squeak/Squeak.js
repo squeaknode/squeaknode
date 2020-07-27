@@ -68,14 +68,14 @@ export default function SqueakPage() {
   function SqueakContent() {
     return (
       <>
-        <Grid container spacing={4} >
+        <div>
           <SqueakDetailItem
             key={squeak.getSqueakHash()}
             handleAddressClick={() => goToSqueakAddressPage(squeak.getAuthorAddress())}
             handleReplyClick={handleClickOpen}
             squeak={squeak}>
           </SqueakDetailItem>
-        </Grid>
+        </div>
         {MakeSqueakDialogContent()}
       </>
     )

@@ -56,13 +56,11 @@ export default function SqueakDetailItem({
   }
 
   return (
-    <Grid item xs={12}>
-        <Widget
-          disableWidgetMenu
-          upperTitle
-          bodyClass={classes.fullHeightBody}
-          className={classes.card}
-        >
+    <Box
+      p={1}
+      m={1}
+      bgcolor="background.paper"
+      >
           <Grid
             container
             direction="row"
@@ -129,7 +127,6 @@ export default function SqueakDetailItem({
                 </Box>
             </Grid>
           </Grid>
-        </Widget>
-    </Grid>
+    </Box>
   )
 }
