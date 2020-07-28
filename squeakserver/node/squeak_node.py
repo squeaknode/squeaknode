@@ -49,11 +49,17 @@ class SqueakNode:
         self.squeak_block_queue_worker.start_running()
 
     def save_squeak(self, squeak):
+        if not self.squeak_rate_limiter.should_rate_limit_allow(squeak):
+            raise Exception("Excedeed allowed number of squeaks per block.")
+
         inserted_squeak_hash = self.postgres_db.insert_squeak(squeak)
         self.squeak_block_verifier.add_squeak_to_queue(inserted_squeak_hash)
         return inserted_squeak_hash
 
     def save_squeak_and_verify(self, squeak):
+        if not self.squeak_rate_limiter.should_rate_limit_allow(squeak):
+            raise Exception("Excedeed allowed number of squeaks per block.")
+
         inserted_squeak_hash = self.postgres_db.insert_squeak(squeak)
         self.squeak_block_verifier.verify_squeak_block(inserted_squeak_hash)
         return inserted_squeak_hash
