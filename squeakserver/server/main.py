@@ -52,7 +52,11 @@ def load_admin_rpc_server(config, handler) -> SqueakAdminServerServicer:
 
 
 def load_price(config):
-    return int(config["server"]["price"])
+    return int(config["squeaknode"]["price"])
+
+
+def max_squeaks_per_block_per_address(config):
+    return int(config["squeaknode"]["max_squeaks_per_block_per_address"])
 
 
 def load_handler(squeak_node):
