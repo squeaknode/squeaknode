@@ -184,6 +184,7 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
             address=squeak_profile.address,
             sharing=squeak_profile.sharing,
             following=squeak_profile.following,
+            whitelisted=squeak_profile.whitelisted,
         )
 
     def serve(self):

@@ -325,6 +325,7 @@ class PostgresDb:
             address=row["address"],
             sharing=row["sharing"],
             following=row["following"],
+            whitelisted=row["whitelisted"],
         )
 
     def _parse_squeak_entry_with_profile(self, row):

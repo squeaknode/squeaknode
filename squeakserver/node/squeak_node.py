@@ -128,6 +128,7 @@ class SqueakNode:
             address=str(address),
             sharing=False,
             following=False,
+            whitelisted=False,
         )
         return self.postgres_db.insert_profile(squeak_profile)
 
@@ -142,6 +143,7 @@ class SqueakNode:
             address=squeak_address,
             sharing=False,
             following=False,
+            whitelisted=False,
         )
         return self.postgres_db.insert_profile(squeak_profile)
 

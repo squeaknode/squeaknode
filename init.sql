@@ -29,5 +29,6 @@ CREATE TABLE IF NOT EXISTS profile (
   private_key bytea,
   address VARCHAR(35) UNIQUE NOT NULL, -- Maximum length of a bitcoin address is 35.
   sharing BOOLEAN NOT NULL,
-  following BOOLEAN NOT NULL
+  following BOOLEAN NOT NULL,
+  whitelisted BOOLEAN NOT NULL
 );
