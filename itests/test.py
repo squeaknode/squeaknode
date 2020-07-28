@@ -348,6 +348,33 @@ def run():
             len(get_followed_squeak_display_response.squeak_display_entries) == 2
         )
 
+        # Get all squeak displays for the known address
+        get_address_squeak_display_response = admin_stub.GetAddressSqueakDisplays(
+            squeak_admin_pb2.GetAddressSqueakDisplaysRequest(
+                address=squeak_profile_address
+            )
+        )
+        print("Get address squeak displays response: " + str(get_address_squeak_display_response))
+        assert (
+            len(get_address_squeak_display_response.squeak_display_entries) == 2
+        )
+        for squeak_display_entry in get_address_squeak_display_response.squeak_display_entries:
+            assert squeak_display_entry.author_name == "bob"
+            assert squeak_display_entry.author_address == squeak_profile_address
+
+        # Make another 10 squeak
+        for i in range(10):
+            try:
+                make_extra_squeak_response = admin_stub.MakeSqueak(
+                    squeak_admin_pb2.MakeSqueakRequest(
+                        profile_id=profile_id, content="Hello number: {}".format(i),
+                    )
+                )
+                print(make_extra_squeak_response)
+            except Exception as e:
+                make_extra_squeak_exception = e
+        assert make_extra_squeak_exception is not None
+
         # Get each individual squeak from the list of followed squeak display items
         for entry in get_followed_squeak_display_response.squeak_display_entries:
             get_squeak_display_response = admin_stub.GetSqueakDisplay(
@@ -378,20 +405,6 @@ def run():
             len(get_contact_profiles_response.squeak_profiles) == 1
         )
 
-        # Get all squeak displays for the known address
-        get_address_squeak_display_response = admin_stub.GetAddressSqueakDisplays(
-            squeak_admin_pb2.GetAddressSqueakDisplaysRequest(
-                address=squeak_profile_address
-            )
-        )
-        print("Get address squeak displays response: " + str(get_address_squeak_display_response))
-        assert (
-            len(get_address_squeak_display_response.squeak_display_entries) == 2
-        )
-        for squeak_display_entry in get_address_squeak_display_response.squeak_display_entries:
-            assert squeak_display_entry.author_name == "bob"
-            assert squeak_display_entry.author_address == squeak_profile_address
-
         # Get squeak profile by address
         get_profile_by_address_response = admin_stub.GetSqueakProfileByAddress(
             squeak_admin_pb2.GetSqueakProfileByAddressRequest(
@@ -403,10 +416,17 @@ def run():
             get_profile_by_address_response.squeak_profile.profile_name == "bob"
         )
 
+        # Create another signing profile
+        other_profile_name = "carol"
+        create_other_signing_profile_response = admin_stub.CreateSigningProfile(
+            squeak_admin_pb2.CreateSigningProfileRequest(profile_name=profile_name,)
+        )
+        other_profile_id = create_other_signing_profile_response.profile_id
+
         # Make another squeak as a reply
         reply_1_squeak_response = admin_stub.MakeSqueak(
             squeak_admin_pb2.MakeSqueakRequest(
-                profile_id=profile_id,
+                profile_id=other_profile_id,
                 content="Reply #1",
                 replyto=make_squeak_hash,
             )
@@ -417,7 +437,7 @@ def run():
         # Make a second squeak as a reply
         reply_2_squeak_response = admin_stub.MakeSqueak(
             squeak_admin_pb2.MakeSqueakRequest(
-                profile_id=profile_id,
+                profile_id=other_profile_id,
                 content="Reply #2",
                 replyto=reply_1_squeak_hash,
             )

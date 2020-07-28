@@ -163,7 +163,7 @@ class PostgresDb:
             rows = curs.fetchall()
             return [self._parse_squeak_entry_with_profile(row) for row in rows]
 
-    def lookup_squeaks(self, addresses, min_block, max_block):
+    def lookup_squeaks(self, addresses, min_block, max_block, include_unverified=False):
         """ Lookup squeaks. """
         sql = """
         SELECT hash FROM squeak
@@ -171,7 +171,7 @@ class PostgresDb:
         AND n_block_height >= %s
         AND n_block_height <= %s
         AND vch_decryption_key IS NOT NULL
-        AND block_header IS NOT NULL;
+        AND ((block_header IS NOT NULL) OR %s);
         """
         addresses_tuple = tuple(addresses)
 
@@ -181,7 +181,7 @@ class PostgresDb:
         with self.get_cursor() as curs:
             # mogrify to debug.
             # logger.info(curs.mogrify(sql, (addresses_tuple, min_block, max_block)))
-            curs.execute(sql, (addresses_tuple, min_block, max_block))
+            curs.execute(sql, (addresses_tuple, min_block, max_block, include_unverified))
             rows = curs.fetchall()
             hashes = [bytes.fromhex(row["hash"]) for row in rows]
             return hashes

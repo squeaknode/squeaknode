@@ -18,6 +18,7 @@ class SqueakRateLimiter:
         squeak_hash = get_hash(squeak)
         logger.info("Checking rate limit for squeak: {}".format(squeak_hash))
         current_squeak_count = self._get_current_squeak_count(squeak)
+        logger.info("Current squeak count: {}, limit: {}".format(current_squeak_count, self.max_squeaks_per_block_per_address))
         return current_squeak_count < self.max_squeaks_per_block_per_address
 
     def _get_current_squeak_count(self, squeak):
@@ -33,7 +34,8 @@ class SqueakRateLimiter:
         return BlockInfo(block_hash, block_height)
 
     def _get_num_squeaks_in_block(self, block_height, squeak_address):
-        hashes = self.postgres_db.lookup_squeaks(squeak_address, block_height, block_height)
+        logger.info("Getting squeak count for block height: {}, squeak address: {}".format(block_height, squeak_address))
+        hashes = self.postgres_db.lookup_squeaks([squeak_address], block_height, block_height, include_unverified=True)
         return len(hashes)
 
     def _get_squeak_address(self, squeak):
