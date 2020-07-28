@@ -9,6 +9,7 @@ from squeakserver.node.squeak_block_periodic_worker import SqueakBlockPeriodicWo
 from squeakserver.node.squeak_block_queue_worker import SqueakBlockQueueWorker
 from squeakserver.node.squeak_block_verifier import SqueakBlockVerifier
 from squeakserver.node.squeak_maker import SqueakMaker
+from squeakserver.node.squeak_rate_limiter import SqueakRateLimiter
 from squeakserver.server.buy_offer import BuyOffer
 from squeakserver.server.squeak_profile import SqueakProfile
 from squeakserver.server.util import generate_offer_preimage
@@ -22,6 +23,7 @@ class SqueakNode:
         lightning_client,
         lightning_host_port,
         price,
+        max_squeaks_per_block_per_address,
     ):
         self.postgres_db = postgres_db
         self.blockchain_client = blockchain_client
@@ -35,17 +37,29 @@ class SqueakNode:
         self.squeak_block_queue_worker = SqueakBlockQueueWorker(
             self.squeak_block_verifier
         )
+        self.squeak_rate_limiter = SqueakRateLimiter(
+            postgres_db,
+            blockchain_client,
+            lightning_client,
+            max_squeaks_per_block_per_address,
+        )
 
     def start_running(self):
         # self.squeak_block_periodic_worker.start_running()
         self.squeak_block_queue_worker.start_running()
 
     def save_squeak(self, squeak):
+        if not self.squeak_rate_limiter.should_rate_limit_allow(squeak):
+            raise Exception("Excedeed allowed number of squeaks per block.")
+
         inserted_squeak_hash = self.postgres_db.insert_squeak(squeak)
         self.squeak_block_verifier.add_squeak_to_queue(inserted_squeak_hash)
         return inserted_squeak_hash
 
     def save_squeak_and_verify(self, squeak):
+        if not self.squeak_rate_limiter.should_rate_limit_allow(squeak):
+            raise Exception("Excedeed allowed number of squeaks per block.")
+
         inserted_squeak_hash = self.postgres_db.insert_squeak(squeak)
         self.squeak_block_verifier.verify_squeak_block(inserted_squeak_hash)
         return inserted_squeak_hash
