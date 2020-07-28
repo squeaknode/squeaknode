@@ -111,6 +111,7 @@ class PostgresDb:
 
     def get_followed_squeak_entries_with_profile(self):
         """ Get a squeak. """
+        # TODO: use profile.following=True
         sql = """
         SELECT * FROM squeak
         JOIN profile
