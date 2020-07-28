@@ -4,3 +4,4 @@ argparse
 googleapis-common-protos
 grpcio
 grpcio-tools
+pytest
