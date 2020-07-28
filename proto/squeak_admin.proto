@@ -153,6 +153,9 @@ message SqueakProfile {
 
     /// Following
     bool following = 6;
+
+    /// Whitelisted
+    bool whitelisted = 7;
 }
 
 message MakeSqueakRequest {
