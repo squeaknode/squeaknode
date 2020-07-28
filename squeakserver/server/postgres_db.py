@@ -189,8 +189,8 @@ class PostgresDb:
     def insert_profile(self, squeak_profile):
         """ Insert a new squeak profile. """
         sql = """
-        INSERT INTO profile(profile_name, private_key, address, sharing, following)
-        VALUES(%s, %s, %s, %s, %s)
+        INSERT INTO profile(profile_name, private_key, address, sharing, following, whitelisted)
+        VALUES(%s, %s, %s, %s, %s, %s)
         RETURNING profile_id;
         """
         with self.get_cursor() as curs:
@@ -203,6 +203,7 @@ class PostgresDb:
                     squeak_profile.address,
                     squeak_profile.sharing,
                     squeak_profile.following,
+                    squeak_profile.whitelisted,
                 ),
             )
             # get the new profile id back
