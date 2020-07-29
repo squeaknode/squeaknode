@@ -53,6 +53,9 @@ class SqueakNode:
         self.squeak_block_queue_worker.start_running()
 
     def save_squeak(self, squeak):
+        if not self.squeak_whitelist.should_allow_squeak(squeak):
+            raise Exception("Squeak upload not allowed by whitelist.")
+
         if not self.squeak_rate_limiter.should_rate_limit_allow(squeak):
             raise Exception("Excedeed allowed number of squeaks per block.")
 
@@ -165,6 +168,7 @@ class SqueakNode:
 
     def set_squeak_profile_whitelisted(self, profile_id, whitelisted):
         self.postgres_db.set_profile_whitelisted(profile_id, whitelisted)
+        self.squeak_whitelist.refresh()
 
     def make_squeak(self, profile_id, content_str, replyto_hash):
         squeak_profile = self.postgres_db.get_profile(profile_id)

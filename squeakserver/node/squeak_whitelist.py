@@ -1,6 +1,8 @@
 import logging
 import queue
 
+from squeak.core.signing import CSqueakAddress
+
 from squeakserver.server.util import get_hash
 from squeakserver.node.block_info import BlockInfo
 
@@ -14,10 +16,11 @@ class SqueakWhitelist:
         self.refresh()
 
     def should_allow_squeak(self, squeak):
-        squeak_hash = get_hash(squeak)
-        squeak_address = CSqueakAddress.from_verifying_key(verifying_key)
-        squeak_address_str = str(squeak_address_str)
-        logger.info("Checking whitelist for squeak hash: {}, squeak address".format(squeak_hash, squeak_address_str))
+        squeak_hash = get_hash(squeak).hex()
+        squeak_address = squeak.GetAddress()
+        squeak_address_str = str(squeak_address)
+        logger.info("Checking whitelist for squeak hash: {}, squeak address: {}".format(squeak_hash, squeak_address_str))
+        logger.info("Allowed addresses: {}".format(self.allowed_addresses))
         is_allowed = squeak_address_str in self.allowed_addresses
         logger.info("Is squeak in whitelist: {}".format(is_allowed))
         return is_allowed
