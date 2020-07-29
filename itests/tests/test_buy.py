@@ -28,24 +28,21 @@ from tests.util import get_address
 from tests.util import get_latest_block_info
 from tests.util import make_squeak
 from tests.util import get_hash
-from tests.util import load_lightning_client
 from tests.util import bxor
 from tests.util import string_to_hex
 
 
-def test_buy_squeak(server_stub, admin_stub):
+def test_buy_squeak(server_stub, admin_stub, lightning_client):
     # Set the network to simnet for itest.
     SelectParams("mainnet")
 
-    # load lnd client
-    lnd_lightning_client = load_lightning_client()
-    balance_from_client = lnd_lightning_client.get_wallet_balance()
+    balance_from_client = lightning_client.get_wallet_balance()
     print("Balance from direct client: %s" % balance_from_client)
     assert balance_from_client.total_balance >= 1505000000000
 
     # Post a squeak with a direct request to the server
     signing_key = generate_signing_key()
-    block_height, block_hash = get_latest_block_info(lnd_lightning_client)
+    block_height, block_hash = get_latest_block_info(lightning_client)
     squeak = make_squeak(signing_key, "hello from itest!", block_hash, block_height)
     squeak_hash = get_hash(squeak)
 
@@ -125,18 +122,18 @@ def test_buy_squeak(server_stub, admin_stub):
     assert buy_response.offer.proof == expected_proof
 
     # Connect to the server lightning node
-    connect_peer_response = lnd_lightning_client.connect_peer(
+    connect_peer_response = lightning_client.connect_peer(
         buy_response.offer.pubkey, buy_response.offer.host
     )
     print("Server connect peer response: " + str(connect_peer_response))
 
     # List peers
-    list_peers_response = lnd_lightning_client.list_peers()
+    list_peers_response = lightning_client.list_peers()
     print("Server list peers response: " + str(list_peers_response))
 
     # Open channel to the server lightning node
     pubkey_bytes = string_to_hex(buy_response.offer.pubkey)
-    open_channel_response = lnd_lightning_client.open_channel(pubkey_bytes, 1000000)
+    open_channel_response = lightning_client.open_channel(pubkey_bytes, 1000000)
     print("Opening channel...")
     for update in open_channel_response:
         if update.HasField("chan_open"):
@@ -145,11 +142,11 @@ def test_buy_squeak(server_stub, admin_stub):
             break
 
     # List channels
-    list_channels_response = lnd_lightning_client.list_channels()
+    list_channels_response = lightning_client.list_channels()
     print("Server list channels response: " + str(list_channels_response))
 
     # Pay the invoice
-    payment = lnd_lightning_client.pay_invoice_sync(
+    payment = lightning_client.pay_invoice_sync(
         buy_response.offer.payment_request
     )
     print("Server pay invoice response: " + str(payment))
@@ -182,7 +179,7 @@ def test_buy_squeak(server_stub, admin_stub):
 
     # Close the channel
     time.sleep(10)
-    for update in lnd_lightning_client.close_channel(channel_point):
+    for update in lightning_client.close_channel(channel_point):
         if update.HasField("chan_close"):
             print("Channel closed.")
             break
