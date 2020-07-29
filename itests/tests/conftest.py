@@ -17,7 +17,7 @@ from tests.util import load_lightning_client
 
 
 @pytest.fixture(autouse=True)
-def run_around_tests():
+def select_mainnet_params():
     # Set the network to mainnet.
     SelectParams("mainnet")
 
