@@ -260,9 +260,6 @@ def test_make_squeak(server_stub, admin_stub):
         )
     )
 
-    # Wait a few seconds for the squeak to be verified on the server.
-    time.sleep(5)
-
     # Get all followed squeak display items
     get_followed_squeak_display_response = admin_stub.GetFollowedSqueakDisplays(
         squeak_admin_pb2.GetFollowedSqueakDisplaysRequest()

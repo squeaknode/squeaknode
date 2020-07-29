@@ -10,6 +10,7 @@ from squeakserver.node.squeak_block_queue_worker import SqueakBlockQueueWorker
 from squeakserver.node.squeak_block_verifier import SqueakBlockVerifier
 from squeakserver.node.squeak_maker import SqueakMaker
 from squeakserver.node.squeak_rate_limiter import SqueakRateLimiter
+from squeakserver.node.squeak_whitelist import SqueakWhitelist
 from squeakserver.server.buy_offer import BuyOffer
 from squeakserver.server.squeak_profile import SqueakProfile
 from squeakserver.server.util import generate_offer_preimage
@@ -42,6 +43,9 @@ class SqueakNode:
             blockchain_client,
             lightning_client,
             max_squeaks_per_block_per_address,
+        )
+        self.squeak_whitelist = SqueakWhitelist(
+            postgres_db,
         )
 
     def start_running(self):

@@ -235,6 +235,18 @@ class PostgresDb:
             profiles = [self._parse_squeak_profile(row) for row in rows]
             return profiles
 
+    def get_whitelisted_profiles(self):
+        """ Get all whitelisted profiles. """
+        sql = """
+        SELECT * FROM profile
+        WHERE whitelisted;
+        """
+        with self.get_cursor() as curs:
+            curs.execute(sql)
+            rows = curs.fetchall()
+            profiles = [self._parse_squeak_profile(row) for row in rows]
+            return profiles
+
     def get_profile(self, profile_id):
         """ Get a profile. """
         sql = """
