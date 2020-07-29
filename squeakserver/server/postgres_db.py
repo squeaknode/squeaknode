@@ -111,13 +111,12 @@ class PostgresDb:
 
     def get_followed_squeak_entries_with_profile(self):
         """ Get a squeak. """
-        # TODO: use profile.followed=True
         sql = """
         SELECT * FROM squeak
         JOIN profile
         ON squeak.author_address=profile.address
         WHERE squeak.block_header IS NOT NULL
-        AND profile.followed=False
+        AND profile.followed
         ORDER BY n_block_height DESC, n_time DESC;
         """
         with self.get_cursor() as curs:
