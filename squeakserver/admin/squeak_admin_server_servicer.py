@@ -81,6 +81,12 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
             squeak_profile=squeak_profile_msg
         )
 
+    def SetSqueakProfileWhitelisted(self, request, context):
+        profile_id = request.profile_id
+        whitelisted = request.whitelisted
+        self.handler.handle_set_squeak_profile_whitelisted(profile_id, whitelisted)
+        return squeak_admin_pb2.SetSqueakProfileWhitelistedReply()
+
     def MakeSqueak(self, request, context):
         profile_id = request.profile_id
         content_str = request.content

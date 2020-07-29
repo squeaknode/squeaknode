@@ -59,6 +59,13 @@ class SqueakAdminServerHandler(object):
         logger.info("Got squeak profile by address: {}".format(squeak_profile))
         return squeak_profile
 
+    def handle_set_squeak_profile_whitelisted(self, profile_id, whitelisted):
+        logger.info("Handle set squeak profile whitelisted with profile id: {}, whitelisted: {}".format(
+            profile_id,
+            whitelisted,
+        ))
+        self.squeak_node.set_squeak_profile_whitelisted(profile_id, whitelisted)
+
     def handle_make_squeak(self, profile_id, content_str, replyto_hash):
         logger.info("Handle make squeak profile with id: {}".format(profile_id))
         inserted_squeak_hash = self.squeak_node.make_squeak(

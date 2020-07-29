@@ -46,6 +46,10 @@ service SqueakAdmin {
   */
   rpc GetSqueakProfileByAddress (GetSqueakProfileByAddressRequest) returns (GetSqueakProfileByAddressReply) {}
 
+  /** sqkadmin: `getsqueakprofilebyaddress`
+  */
+  rpc SetSqueakProfileWhitelisted (SetSqueakProfileWhitelistedRequest) returns (SetSqueakProfileWhitelistedReply) {}
+
   /** sqkadmin: `makesqueak`
   */
   rpc MakeSqueak (MakeSqueakRequest) returns (MakeSqueakReply) {}
@@ -133,6 +137,17 @@ message GetSqueakProfileByAddressRequest {
 message GetSqueakProfileByAddressReply {
     /// The squeak profile
     SqueakProfile squeak_profile = 1;
+}
+
+message SetSqueakProfileWhitelistedRequest {
+    /// The profile id
+    int32 profile_id = 1;
+
+    /// Whitelisted
+    bool whitelisted = 2;
+}
+
+message SetSqueakProfileWhitelistedReply {
 }
 
 message SqueakProfile {
