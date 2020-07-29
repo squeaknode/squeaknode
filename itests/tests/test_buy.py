@@ -205,7 +205,7 @@ def test_buy_squeak():
         print("Get balance response: " + str(get_balance_response))
         assert get_balance_response.total_balance == 1000
 
-def test_rate_limit():
+def test_make_squeak():
     # Set the network to simnet for itest.
     SelectParams("mainnet")
 
@@ -318,19 +318,6 @@ def test_rate_limit():
             assert squeak_display_entry.author_name == "bob"
             assert squeak_display_entry.author_address == squeak_profile_address
 
-        # Make another 10 squeak
-        for i in range(10):
-            try:
-                make_extra_squeak_response = admin_stub.MakeSqueak(
-                    squeak_admin_pb2.MakeSqueakRequest(
-                        profile_id=profile_id, content="Hello number: {}".format(i),
-                    )
-                )
-                print(make_extra_squeak_response)
-            except Exception as e:
-                make_extra_squeak_exception = e
-        assert make_extra_squeak_exception is not None
-
         # Get each individual squeak from the list of followed squeak display items
         for entry in get_followed_squeak_display_response.squeak_display_entries:
             get_squeak_display_response = admin_stub.GetSqueakDisplay(
@@ -425,3 +412,42 @@ def test_rate_limit():
         assert (
             len(get_ancestors_response.squeak_display_entries) == 3
         )
+
+def test_rate_limit():
+    # Set the network to simnet for itest.
+    SelectParams("mainnet")
+
+    # NOTE(gRPC Python Team): .close() is possible on a channel and should be
+    # used in circumstances in which the with statement does not fit the needs
+    # of the code.
+    with grpc.insecure_channel(
+        "sqkserver:8774"
+    ) as server_channel, grpc.insecure_channel("sqkserver:8994") as admin_channel:
+
+        # Make the stubs
+        server_stub = squeak_server_pb2_grpc.SqueakServerStub(server_channel)
+        admin_stub = squeak_admin_pb2_grpc.SqueakAdminStub(admin_channel)
+
+        # Create a new signing profile
+        profile_name = "zach"
+        create_signing_profile_response = admin_stub.CreateSigningProfile(
+            squeak_admin_pb2.CreateSigningProfileRequest(profile_name=profile_name,)
+        )
+        print(
+            "Get create signing profile response: "
+            + str(create_signing_profile_response)
+        )
+        profile_id = create_signing_profile_response.profile_id
+
+        # Make another 10 squeak
+        for i in range(10):
+            try:
+                make_extra_squeak_response = admin_stub.MakeSqueak(
+                    squeak_admin_pb2.MakeSqueakRequest(
+                        profile_id=profile_id, content="Hello number: {}".format(i),
+                    )
+                )
+                print(make_extra_squeak_response)
+            except Exception as e:
+                make_extra_squeak_exception = e
+        assert make_extra_squeak_exception is not None
