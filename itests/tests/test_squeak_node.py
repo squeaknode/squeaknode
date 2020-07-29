@@ -268,7 +268,6 @@ def test_make_reply_squeak(server_stub, admin_stub, saved_squeak_hash, signing_p
         )
     )
     reply_1_squeak_hash = reply_1_squeak_response.squeak_hash
-    print("Get reply #1 squeak hash: " + str(reply_1_squeak_hash))
 
     # Make a second squeak as a reply
     reply_2_squeak_response = admin_stub.MakeSqueak(
@@ -279,7 +278,6 @@ def test_make_reply_squeak(server_stub, admin_stub, saved_squeak_hash, signing_p
         )
     )
     reply_2_squeak_hash = reply_2_squeak_response.squeak_hash
-    print("Get make reply squeak response: " + str(reply_2_squeak_response))
 
     # Get the squeak and check that the reply field is correct
     get_reply_squeak_display_response = admin_stub.GetSqueakDisplay(
@@ -287,7 +285,6 @@ def test_make_reply_squeak(server_stub, admin_stub, saved_squeak_hash, signing_p
             squeak_hash=reply_2_squeak_hash,
         )
     )
-    print("Get reply squeak display entry response: " + str(get_reply_squeak_display_response))
     assert (
         get_reply_squeak_display_response.squeak_display_entry.squeak_hash == reply_2_squeak_hash
     )
@@ -301,7 +298,6 @@ def test_make_reply_squeak(server_stub, admin_stub, saved_squeak_hash, signing_p
             squeak_hash=reply_2_squeak_hash,
         )
     )
-    print("Get ancestor squeak display entries response: " + str(get_ancestors_response))
     assert (
         len(get_ancestors_response.squeak_display_entries) == 3
     )
@@ -326,17 +322,12 @@ def test_make_signing_profile(server_stub, admin_stub):
     create_signing_profile_response = admin_stub.CreateSigningProfile(
         squeak_admin_pb2.CreateSigningProfileRequest(profile_name=profile_name,)
     )
-    print(
-        "Get create signing profile response: "
-        + str(create_signing_profile_response)
-    )
     profile_id = create_signing_profile_response.profile_id
 
     # Get the new squeak profile
     get_squeak_profile_response = admin_stub.GetSqueakProfile(
         squeak_admin_pb2.GetSqueakProfileRequest(profile_id=profile_id,)
     )
-    print("Get squeak profile response: " + str(get_squeak_profile_response))
     assert get_squeak_profile_response.squeak_profile.profile_name == profile_name
     squeak_profile_address = get_squeak_profile_response.squeak_profile.address
 
@@ -344,7 +335,6 @@ def test_make_signing_profile(server_stub, admin_stub):
     get_signing_profiles_response = admin_stub.GetSigningProfiles(
         squeak_admin_pb2.GetSigningProfilesRequest()
     )
-    print("Get signing profiles response: " + str(get_signing_profiles_response))
     signing_profile_names = [
         profile.profile_name
         for profile in get_signing_profiles_response.squeak_profiles
@@ -357,7 +347,6 @@ def test_make_signing_profile(server_stub, admin_stub):
             address=squeak_profile_address
         )
     )
-    print("Get profile by address response: " + str(get_profile_by_address_response))
     assert (
         get_profile_by_address_response.squeak_profile.profile_name == profile_name
     )
@@ -373,17 +362,12 @@ def test_make_contact_profile(server_stub, admin_stub):
             address=contact_address,
         )
     )
-    print(
-        "Get create contact profile response: "
-        + str(create_contact_profile_response)
-    )
     contact_profile_id = create_contact_profile_response.profile_id
 
     # Get all contact profiles
     get_contact_profiles_response = admin_stub.GetContactProfiles(
         squeak_admin_pb2.GetContactProfilesRequest()
     )
-    print("Get contact profiles response: " + str(get_contact_profiles_response))
     contact_profile_names = [
         profile.profile_name
         for profile in get_contact_profiles_response.squeak_profiles
