@@ -68,15 +68,16 @@ def test_post_squeak_not_whitelisted(server_stub, admin_stub, lightning_client, 
         )
 
 def test_buy_squeak(server_stub, admin_stub, lightning_client, saved_squeak_hash):
-    balance_from_client = lightning_client.get_wallet_balance()
-    print("Balance from direct client: %s" % balance_from_client)
-    assert balance_from_client.total_balance >= 1505000000000
+    # Check the server balance
+    get_balance_response = admin_stub.LndWalletBalance(
+        ln.WalletBalanceRequest()
+    )
+    initial_server_balance = get_balance_response.total_balance
 
     # Get the squeak from the server
     get_response = server_stub.GetSqueak(
         squeak_server_pb2.GetSqueakRequest(hash=saved_squeak_hash)
     )
-    print("Direct server get response: " + str(get_response))
     get_response_squeak = squeak_from_msg(get_response.squeak)
     CheckSqueak(get_response_squeak, skipDecryptionCheck=True)
 
@@ -89,22 +90,18 @@ def test_buy_squeak(server_stub, admin_stub, lightning_client, saved_squeak_hash
     buy_response = server_stub.BuySqueak(
         squeak_server_pb2.BuySqueakRequest(hash=saved_squeak_hash, challenge=challenge,)
     )
-    print("Server buy response: " + str(buy_response))
     assert buy_response.offer.payment_request.startswith("ln")
 
     # Check the offer challenge proof
-    print("Server offer proof: " + str(buy_response.offer.proof))
     assert buy_response.offer.proof == expected_proof
 
     # Connect to the server lightning node
     connect_peer_response = lightning_client.connect_peer(
         buy_response.offer.pubkey, buy_response.offer.host
     )
-    print("Server connect peer response: " + str(connect_peer_response))
 
     # List peers
     list_peers_response = lightning_client.list_peers()
-    print("Server list peers response: " + str(list_peers_response))
 
     # Open channel to the server lightning node
     pubkey_bytes = string_to_hex(buy_response.offer.pubkey)
@@ -118,15 +115,12 @@ def test_buy_squeak(server_stub, admin_stub, lightning_client, saved_squeak_hash
 
     # List channels
     list_channels_response = lightning_client.list_channels()
-    print("Server list channels response: " + str(list_channels_response))
 
     # Pay the invoice
     payment = lightning_client.pay_invoice_sync(
         buy_response.offer.payment_request
     )
-    print("Server pay invoice response: " + str(payment))
     preimage = payment.payment_preimage
-    print("preimage: " + str(preimage))
 
     # Verify with the payment preimage and decryption key ciphertext
     decryption_key_cipher_bytes = buy_response.offer.key_cipher
@@ -139,17 +133,8 @@ def test_buy_squeak(server_stub, admin_stub, lightning_client, saved_squeak_hash
     decryption_key = encrypted_decryption_key.get_decryption_key(preimage, iv)
     serialized_decryption_key = decryption_key.get_bytes()
 
-    print("new decryption key: " + str(serialized_decryption_key))
     get_response_squeak.SetDecryptionKey(serialized_decryption_key)
     CheckSqueak(get_response_squeak)
-    print("Finished checking squeak.")
-
-    # Check the server balance
-    get_balance_response = admin_stub.LndWalletBalance(
-        ln.WalletBalanceRequest()
-    )
-    print("Get balance response: " + str(get_balance_response))
-    assert get_balance_response.total_balance == 0
 
     # Close the channel
     time.sleep(10)
@@ -162,8 +147,8 @@ def test_buy_squeak(server_stub, admin_stub, lightning_client, saved_squeak_hash
     get_balance_response = admin_stub.LndWalletBalance(
         ln.WalletBalanceRequest()
     )
-    print("Get balance response: " + str(get_balance_response))
-    assert get_balance_response.total_balance == 1000
+    final_server_balance = get_balance_response.total_balance
+    assert final_server_balance - initial_server_balance == 1000
 
 def test_make_squeak(server_stub, admin_stub):
     # Create a new signing profile
