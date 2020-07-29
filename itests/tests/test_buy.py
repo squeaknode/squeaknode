@@ -486,22 +486,6 @@ def test_make_signing_profile():
         )
         profile_id = create_signing_profile_response.profile_id
 
-        # Create a new contact profile
-        contact_name = "carol"
-        contact_signing_key = generate_signing_key()
-        contact_address = get_address(contact_signing_key)
-        create_contact_profile_response = admin_stub.CreateContactProfile(
-            squeak_admin_pb2.CreateContactProfileRequest(
-                profile_name=contact_name,
-                address=contact_address,
-            )
-        )
-        print(
-            "Get create contact profile response: "
-            + str(create_contact_profile_response)
-        )
-        contact_profile_id = create_contact_profile_response.profile_id
-
         # Get the new squeak profile
         get_squeak_profile_response = admin_stub.GetSqueakProfile(
             squeak_admin_pb2.GetSqueakProfileRequest(profile_id=profile_id,)
@@ -521,17 +505,6 @@ def test_make_signing_profile():
         ]
         assert profile_name in signing_profile_names
 
-        # Get all contact profiles
-        get_contact_profiles_response = admin_stub.GetContactProfiles(
-            squeak_admin_pb2.GetContactProfilesRequest()
-        )
-        print("Get contact profiles response: " + str(get_contact_profiles_response))
-        contact_profile_names = [
-            profile.profile_name
-            for profile in get_contact_profiles_response.squeak_profiles
-        ]
-        assert contact_name in contact_profile_names
-
         # Get squeak profile by address
         get_profile_by_address_response = admin_stub.GetSqueakProfileByAddress(
             squeak_admin_pb2.GetSqueakProfileByAddressRequest(
@@ -542,3 +515,45 @@ def test_make_signing_profile():
         assert (
             get_profile_by_address_response.squeak_profile.profile_name == profile_name
         )
+
+def test_make_contact_profile():
+    # Set the network to simnet for itest.
+    SelectParams("mainnet")
+
+    # NOTE(gRPC Python Team): .close() is possible on a channel and should be
+    # used in circumstances in which the with statement does not fit the needs
+    # of the code.
+    with grpc.insecure_channel(
+        "sqkserver:8774"
+    ) as server_channel, grpc.insecure_channel("sqkserver:8994") as admin_channel:
+
+        # Make the stubs
+        server_stub = squeak_server_pb2_grpc.SqueakServerStub(server_channel)
+        admin_stub = squeak_admin_pb2_grpc.SqueakAdminStub(admin_channel)
+
+        # Create a new contact profile
+        contact_name = "test_contact_profile_name"
+        contact_signing_key = generate_signing_key()
+        contact_address = get_address(contact_signing_key)
+        create_contact_profile_response = admin_stub.CreateContactProfile(
+            squeak_admin_pb2.CreateContactProfileRequest(
+                profile_name=contact_name,
+                address=contact_address,
+            )
+        )
+        print(
+            "Get create contact profile response: "
+            + str(create_contact_profile_response)
+        )
+        contact_profile_id = create_contact_profile_response.profile_id
+
+        # Get all contact profiles
+        get_contact_profiles_response = admin_stub.GetContactProfiles(
+            squeak_admin_pb2.GetContactProfilesRequest()
+        )
+        print("Get contact profiles response: " + str(get_contact_profiles_response))
+        contact_profile_names = [
+            profile.profile_name
+            for profile in get_contact_profiles_response.squeak_profiles
+        ]
+        assert contact_name in contact_profile_names
