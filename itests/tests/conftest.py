@@ -2,6 +2,8 @@ import pytest
 
 import grpc
 
+from squeak.params import SelectParams
+
 from proto import lnd_pb2 as ln
 from proto import lnd_pb2_grpc as lnrpc
 from proto import (
@@ -13,6 +15,11 @@ from proto import (
 
 from tests.util import load_lightning_client
 
+
+@pytest.fixture(autouse=True)
+def run_around_tests():
+    # Set the network to mainnet.
+    SelectParams("mainnet")
 
 @pytest.fixture
 def server_stub():

@@ -8,7 +8,6 @@ from lnd_lightning_client import LNDLightningClient
 from squeak.core import HASH_LENGTH, CheckSqueak, CSqueak, MakeSqueakFromStr
 from squeak.core.encryption import CEncryptedDecryptionKey, generate_data_key
 from squeak.core.signing import CSigningKey, CSqueakAddress
-from squeak.params import SelectParams
 
 from proto import lnd_pb2 as ln
 from proto import lnd_pb2_grpc as lnrpc
@@ -33,9 +32,6 @@ from tests.util import string_to_hex
 
 
 def test_buy_squeak(server_stub, admin_stub, lightning_client):
-    # Set the network to simnet for itest.
-    SelectParams("mainnet")
-
     balance_from_client = lightning_client.get_wallet_balance()
     print("Balance from direct client: %s" % balance_from_client)
     assert balance_from_client.total_balance >= 1505000000000
@@ -192,9 +188,6 @@ def test_buy_squeak(server_stub, admin_stub, lightning_client):
     assert get_balance_response.total_balance == 1000
 
 def test_make_squeak(server_stub, admin_stub):
-    # Set the network to simnet for itest.
-    SelectParams("mainnet")
-
     # Create a new signing profile
     profile_name = "bob"
     create_signing_profile_response = admin_stub.CreateSigningProfile(
@@ -306,9 +299,6 @@ def test_make_squeak(server_stub, admin_stub):
         )
 
 def test_make_reply_squeak(server_stub, admin_stub):
-    # Set the network to simnet for itest.
-    SelectParams("mainnet")
-
     # Create a new signing profile
     profile_name = "bob"
     create_signing_profile_response = admin_stub.CreateSigningProfile(
@@ -386,9 +376,6 @@ def test_make_reply_squeak(server_stub, admin_stub):
     )
 
 def test_rate_limit(server_stub, admin_stub):
-    # Set the network to simnet for itest.
-    SelectParams("mainnet")
-
     # Create a new signing profile
     profile_name = "zach"
     create_signing_profile_response = admin_stub.CreateSigningProfile(
@@ -414,9 +401,6 @@ def test_rate_limit(server_stub, admin_stub):
     assert make_extra_squeak_exception is not None
 
 def test_make_signing_profile(server_stub, admin_stub):
-    # Set the network to simnet for itest.
-    SelectParams("mainnet")
-
     # Create a new signing profile
     profile_name = "test_signing_profile_name"
     create_signing_profile_response = admin_stub.CreateSigningProfile(
@@ -459,9 +443,6 @@ def test_make_signing_profile(server_stub, admin_stub):
     )
 
 def test_make_contact_profile(server_stub, admin_stub):
-    # Set the network to simnet for itest.
-    SelectParams("mainnet")
-
     # Create a new contact profile
     contact_name = "test_contact_profile_name"
     contact_signing_key = generate_signing_key()
