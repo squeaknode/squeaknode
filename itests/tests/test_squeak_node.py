@@ -1,5 +1,6 @@
 from __future__ import print_function
 
+import pytest
 import logging
 import time
 
@@ -30,6 +31,41 @@ from tests.util import get_hash
 from tests.util import bxor
 from tests.util import string_to_hex
 
+
+def test_post_squeak(server_stub, admin_stub, lightning_client, whitelisted_signing_key):
+    # Post a squeak with a direct request to the server
+    block_height, block_hash = get_latest_block_info(lightning_client)
+    squeak = make_squeak(whitelisted_signing_key, "hello from itest!", block_hash, block_height)
+    squeak_hash = get_hash(squeak)
+
+    squeak_msg = build_squeak_msg(squeak)
+    post_response = server_stub.PostSqueak(
+        squeak_server_pb2.PostSqueakRequest(squeak=squeak_msg)
+    )
+
+    # Wait a few seconds for the squeak to be verified on the server.
+    time.sleep(5)
+
+    # Get the same squeak from the server
+    get_response = server_stub.GetSqueak(
+        squeak_server_pb2.GetSqueakRequest(hash=squeak_hash)
+    )
+    get_response_squeak = squeak_from_msg(get_response.squeak)
+    CheckSqueak(get_response_squeak, skipDecryptionCheck=True)
+
+    assert get_hash(get_response_squeak) == get_hash(squeak)
+
+def test_post_squeak_not_whitelisted(server_stub, admin_stub, lightning_client, nonwhitelisted_signing_key):
+    # Post a squeak with a direct request to the server
+    block_height, block_hash = get_latest_block_info(lightning_client)
+    squeak = make_squeak(nonwhitelisted_signing_key, "hello from itest!", block_hash, block_height)
+    squeak_hash = get_hash(squeak)
+
+    squeak_msg = build_squeak_msg(squeak)
+    with pytest.raises(Exception):
+        server_stub.PostSqueak(
+            squeak_server_pb2.PostSqueakRequest(squeak=squeak_msg)
+        )
 
 def test_buy_squeak(server_stub, admin_stub, lightning_client, whitelisted_signing_key):
     balance_from_client = lightning_client.get_wallet_balance()
