@@ -36,8 +36,29 @@ def test_buy_squeak(server_stub, admin_stub, lightning_client):
     print("Balance from direct client: %s" % balance_from_client)
     assert balance_from_client.total_balance >= 1505000000000
 
-    # Post a squeak with a direct request to the server
+    # Create a signing key
     signing_key = generate_signing_key()
+
+    # Create a new contact profile
+    profile_name = "whitelisted_contact"
+    profile_address = get_address(signing_key)
+    create_contact_profile_response = admin_stub.CreateContactProfile(
+        squeak_admin_pb2.CreateContactProfileRequest(
+            profile_name=profile_name,
+            address=profile_address,
+        )
+    )
+    contact_profile_id = create_contact_profile_response.profile_id
+
+    # Set the profile to be whitelisted
+    admin_stub.SetSqueakProfileWhitelisted(
+        squeak_admin_pb2.SetSqueakProfileWhitelistedRequest(
+            profile_id=contact_profile_id,
+            whitelisted=True,
+        )
+    )
+
+    # Post a squeak with a direct request to the server
     block_height, block_hash = get_latest_block_info(lightning_client)
     squeak = make_squeak(signing_key, "hello from itest!", block_hash, block_height)
     squeak_hash = get_hash(squeak)
@@ -266,7 +287,7 @@ def test_make_squeak(server_stub, admin_stub):
     )
     print("Get followed squeak displays response: " + str(get_followed_squeak_display_response))
     assert (
-        len(get_followed_squeak_display_response.squeak_display_entries) == 2
+        len(get_followed_squeak_display_response.squeak_display_entries) >= 2
     )
 
     # Get all squeak displays for the known address
