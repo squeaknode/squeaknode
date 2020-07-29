@@ -194,355 +194,300 @@ def test_buy_squeak(server_stub, admin_stub):
     print("Get balance response: " + str(get_balance_response))
     assert get_balance_response.total_balance == 1000
 
-def test_make_squeak():
+def test_make_squeak(server_stub, admin_stub):
     # Set the network to simnet for itest.
     SelectParams("mainnet")
 
-    # NOTE(gRPC Python Team): .close() is possible on a channel and should be
-    # used in circumstances in which the with statement does not fit the needs
-    # of the code.
-    with grpc.insecure_channel(
-        "sqkserver:8774"
-    ) as server_channel, grpc.insecure_channel("sqkserver:8994") as admin_channel:
+    # Create a new signing profile
+    profile_name = "bob"
+    create_signing_profile_response = admin_stub.CreateSigningProfile(
+        squeak_admin_pb2.CreateSigningProfileRequest(profile_name=profile_name,)
+    )
+    print(
+        "Get create signing profile response: "
+        + str(create_signing_profile_response)
+    )
+    profile_id = create_signing_profile_response.profile_id
 
-        # Make the stubs
-        server_stub = squeak_server_pb2_grpc.SqueakServerStub(server_channel)
-        admin_stub = squeak_admin_pb2_grpc.SqueakAdminStub(admin_channel)
+    # Create a new contact profile
+    contact_name = "carol"
+    contact_address = "1GbFEcAaAzi2fGRaTsgDMm4N8cue5P26mc"
+    create_contact_profile_response = admin_stub.CreateContactProfile(
+        squeak_admin_pb2.CreateContactProfileRequest(
+            profile_name=contact_name,
+            address=contact_address,
+        )
+    )
+    print(
+        "Get create contact profile response: "
+        + str(create_contact_profile_response)
+    )
+    contact_profile_id = create_contact_profile_response.profile_id
 
-        # Create a new signing profile
-        profile_name = "bob"
-        create_signing_profile_response = admin_stub.CreateSigningProfile(
-            squeak_admin_pb2.CreateSigningProfileRequest(profile_name=profile_name,)
-        )
-        print(
-            "Get create signing profile response: "
-            + str(create_signing_profile_response)
-        )
-        profile_id = create_signing_profile_response.profile_id
+    # Get the new squeak profile
+    get_squeak_profile_response = admin_stub.GetSqueakProfile(
+        squeak_admin_pb2.GetSqueakProfileRequest(profile_id=profile_id,)
+    )
+    print("Get squeak profile response: " + str(get_squeak_profile_response))
+    assert get_squeak_profile_response.squeak_profile.profile_name == profile_name
+    squeak_profile_address = get_squeak_profile_response.squeak_profile.address
 
-        # Create a new contact profile
-        contact_name = "carol"
-        contact_address = "1GbFEcAaAzi2fGRaTsgDMm4N8cue5P26mc"
-        create_contact_profile_response = admin_stub.CreateContactProfile(
-            squeak_admin_pb2.CreateContactProfileRequest(
-                profile_name=contact_name,
-                address=contact_address,
-            )
+    # Create a new squeak using the new profile
+    make_squeak_content = "Hello from the profile on the server!"
+    make_squeak_response = admin_stub.MakeSqueak(
+        squeak_admin_pb2.MakeSqueakRequest(
+            profile_id=profile_id, content=make_squeak_content,
         )
-        print(
-            "Get create contact profile response: "
-            + str(create_contact_profile_response)
-        )
-        contact_profile_id = create_contact_profile_response.profile_id
+    )
+    print("Get make squeak response: " + str(make_squeak_response))
+    make_squeak_hash = make_squeak_response.squeak_hash
+    assert len(make_squeak_hash) == 32*2
 
-        # Get the new squeak profile
-        get_squeak_profile_response = admin_stub.GetSqueakProfile(
-            squeak_admin_pb2.GetSqueakProfileRequest(profile_id=profile_id,)
-        )
-        print("Get squeak profile response: " + str(get_squeak_profile_response))
-        assert get_squeak_profile_response.squeak_profile.profile_name == profile_name
-        squeak_profile_address = get_squeak_profile_response.squeak_profile.address
+    # Get the new squeak from the server
+    get_squeak_response = server_stub.GetSqueak(
+        squeak_server_pb2.GetSqueakRequest(hash=bytes.fromhex(make_squeak_hash))
+    )
+    print("Get squeak response: " + str(get_squeak_response))
+    get_squeak_response_squeak = squeak_from_msg(get_squeak_response.squeak)
+    CheckSqueak(get_squeak_response_squeak, skipDecryptionCheck=True)
+    assert get_hash(get_squeak_response_squeak) == bytes.fromhex(make_squeak_hash)
+    print("Squeak from make squeak request: " + str(get_squeak_response_squeak))
 
-        # Create a new squeak using the new profile
-        make_squeak_content = "Hello from the profile on the server!"
-        make_squeak_response = admin_stub.MakeSqueak(
-            squeak_admin_pb2.MakeSqueakRequest(
-                profile_id=profile_id, content=make_squeak_content,
-            )
-        )
-        print("Get make squeak response: " + str(make_squeak_response))
-        make_squeak_hash = make_squeak_response.squeak_hash
-        assert len(make_squeak_hash) == 32*2
+    # Get a squeak display item
+    get_squeak_display_response = admin_stub.GetSqueakDisplay(
+        squeak_admin_pb2.GetSqueakDisplayRequest(squeak_hash=make_squeak_hash,)
+    )
+    print("Get squeak display response: " + str(get_squeak_display_response))
+    assert (
+        get_squeak_display_response.squeak_display_entry.content_str
+        == "Hello from the profile on the server!"
+    )
 
-        # Get the new squeak from the server
-        get_squeak_response = server_stub.GetSqueak(
-            squeak_server_pb2.GetSqueakRequest(hash=bytes.fromhex(make_squeak_hash))
+    # Make another squeak
+    admin_stub.MakeSqueak(
+        squeak_admin_pb2.MakeSqueakRequest(
+            profile_id=profile_id, content="Hello again!",
         )
-        print("Get squeak response: " + str(get_squeak_response))
-        get_squeak_response_squeak = squeak_from_msg(get_squeak_response.squeak)
-        CheckSqueak(get_squeak_response_squeak, skipDecryptionCheck=True)
-        assert get_hash(get_squeak_response_squeak) == bytes.fromhex(make_squeak_hash)
-        print("Squeak from make squeak request: " + str(get_squeak_response_squeak))
+    )
 
-        # Get a squeak display item
+    # Wait a few seconds for the squeak to be verified on the server.
+    time.sleep(5)
+
+    # Get all followed squeak display items
+    get_followed_squeak_display_response = admin_stub.GetFollowedSqueakDisplays(
+        squeak_admin_pb2.GetFollowedSqueakDisplaysRequest()
+    )
+    print("Get followed squeak displays response: " + str(get_followed_squeak_display_response))
+    assert (
+        len(get_followed_squeak_display_response.squeak_display_entries) == 2
+    )
+
+    # Get all squeak displays for the known address
+    get_address_squeak_display_response = admin_stub.GetAddressSqueakDisplays(
+        squeak_admin_pb2.GetAddressSqueakDisplaysRequest(
+            address=squeak_profile_address
+        )
+    )
+    print("Get address squeak displays response: " + str(get_address_squeak_display_response))
+    assert (
+        len(get_address_squeak_display_response.squeak_display_entries) == 2
+    )
+    for squeak_display_entry in get_address_squeak_display_response.squeak_display_entries:
+        assert squeak_display_entry.author_name == "bob"
+        assert squeak_display_entry.author_address == squeak_profile_address
+
+    # Get each individual squeak from the list of followed squeak display items
+    for entry in get_followed_squeak_display_response.squeak_display_entries:
         get_squeak_display_response = admin_stub.GetSqueakDisplay(
-            squeak_admin_pb2.GetSqueakDisplayRequest(squeak_hash=make_squeak_hash,)
-        )
-        print("Get squeak display response: " + str(get_squeak_display_response))
-        assert (
-            get_squeak_display_response.squeak_display_entry.content_str
-            == "Hello from the profile on the server!"
-        )
-
-        # Make another squeak
-        admin_stub.MakeSqueak(
-            squeak_admin_pb2.MakeSqueakRequest(
-                profile_id=profile_id, content="Hello again!",
-            )
-        )
-
-        # Wait a few seconds for the squeak to be verified on the server.
-        time.sleep(5)
-
-        # Get all followed squeak display items
-        get_followed_squeak_display_response = admin_stub.GetFollowedSqueakDisplays(
-            squeak_admin_pb2.GetFollowedSqueakDisplaysRequest()
-        )
-        print("Get followed squeak displays response: " + str(get_followed_squeak_display_response))
-        assert (
-            len(get_followed_squeak_display_response.squeak_display_entries) == 2
-        )
-
-        # Get all squeak displays for the known address
-        get_address_squeak_display_response = admin_stub.GetAddressSqueakDisplays(
-            squeak_admin_pb2.GetAddressSqueakDisplaysRequest(
-                address=squeak_profile_address
-            )
-        )
-        print("Get address squeak displays response: " + str(get_address_squeak_display_response))
-        assert (
-            len(get_address_squeak_display_response.squeak_display_entries) == 2
-        )
-        for squeak_display_entry in get_address_squeak_display_response.squeak_display_entries:
-            assert squeak_display_entry.author_name == "bob"
-            assert squeak_display_entry.author_address == squeak_profile_address
-
-        # Get each individual squeak from the list of followed squeak display items
-        for entry in get_followed_squeak_display_response.squeak_display_entries:
-            get_squeak_display_response = admin_stub.GetSqueakDisplay(
-                squeak_admin_pb2.GetSqueakDisplayRequest(
-                    squeak_hash=entry.squeak_hash
-                )
-            )
-            print("Get squeak display entry response: " + str(get_squeak_display_response))
-            assert (
-                get_squeak_display_response.squeak_display_entry.squeak_hash == entry.squeak_hash
-            )
-
-def test_make_reply_squeak():
-    # Set the network to simnet for itest.
-    SelectParams("mainnet")
-
-    # NOTE(gRPC Python Team): .close() is possible on a channel and should be
-    # used in circumstances in which the with statement does not fit the needs
-    # of the code.
-    with grpc.insecure_channel(
-        "sqkserver:8774"
-    ) as server_channel, grpc.insecure_channel("sqkserver:8994") as admin_channel:
-
-        # Make the stubs
-        server_stub = squeak_server_pb2_grpc.SqueakServerStub(server_channel)
-        admin_stub = squeak_admin_pb2_grpc.SqueakAdminStub(admin_channel)
-
-        # Create a new signing profile
-        profile_name = "bob"
-        create_signing_profile_response = admin_stub.CreateSigningProfile(
-            squeak_admin_pb2.CreateSigningProfileRequest(profile_name=profile_name,)
-        )
-        print(
-            "Get create signing profile response: "
-            + str(create_signing_profile_response)
-        )
-        profile_id = create_signing_profile_response.profile_id
-
-        # Create a new squeak using the new profile
-        make_squeak_content = "Hello from the profile on the server!"
-        make_squeak_response = admin_stub.MakeSqueak(
-            squeak_admin_pb2.MakeSqueakRequest(
-                profile_id=profile_id, content=make_squeak_content,
-            )
-        )
-        print("Get make squeak response: " + str(make_squeak_response))
-        make_squeak_hash = make_squeak_response.squeak_hash
-        assert len(make_squeak_hash) == 32*2
-
-        # Create another signing profile
-        other_profile_name = "carol"
-        create_other_signing_profile_response = admin_stub.CreateSigningProfile(
-            squeak_admin_pb2.CreateSigningProfileRequest(profile_name=profile_name,)
-        )
-        other_profile_id = create_other_signing_profile_response.profile_id
-
-        # Make another squeak as a reply
-        reply_1_squeak_response = admin_stub.MakeSqueak(
-            squeak_admin_pb2.MakeSqueakRequest(
-                profile_id=other_profile_id,
-                content="Reply #1",
-                replyto=make_squeak_hash,
-            )
-        )
-        reply_1_squeak_hash = reply_1_squeak_response.squeak_hash
-        print("Get reply #1 squeak hash: " + str(reply_1_squeak_hash))
-
-        # Make a second squeak as a reply
-        reply_2_squeak_response = admin_stub.MakeSqueak(
-            squeak_admin_pb2.MakeSqueakRequest(
-                profile_id=other_profile_id,
-                content="Reply #2",
-                replyto=reply_1_squeak_hash,
-            )
-        )
-        reply_2_squeak_hash = reply_2_squeak_response.squeak_hash
-        print("Get make reply squeak response: " + str(reply_2_squeak_response))
-
-        # Get the squeak and check that the reply field is correct
-        get_reply_squeak_display_response = admin_stub.GetSqueakDisplay(
             squeak_admin_pb2.GetSqueakDisplayRequest(
-                squeak_hash=reply_2_squeak_hash,
+                squeak_hash=entry.squeak_hash
             )
         )
-        print("Get reply squeak display entry response: " + str(get_reply_squeak_display_response))
+        print("Get squeak display entry response: " + str(get_squeak_display_response))
         assert (
-            get_reply_squeak_display_response.squeak_display_entry.squeak_hash == reply_2_squeak_hash
-        )
-        assert (
-            get_reply_squeak_display_response.squeak_display_entry.reply_to == reply_1_squeak_hash
+            get_squeak_display_response.squeak_display_entry.squeak_hash == entry.squeak_hash
         )
 
-        # Get the ancestors of the latest reply squeak
-        get_ancestors_response = admin_stub.GetAncestorSqueakDisplays(
-            squeak_admin_pb2.GetAncestorSqueakDisplaysRequest(
-                squeak_hash=reply_2_squeak_hash,
-            )
-        )
-        print("Get ancestor squeak display entries response: " + str(get_ancestors_response))
-        assert (
-            len(get_ancestors_response.squeak_display_entries) == 3
-        )
-
-def test_rate_limit():
+def test_make_reply_squeak(server_stub, admin_stub):
     # Set the network to simnet for itest.
     SelectParams("mainnet")
 
-    # NOTE(gRPC Python Team): .close() is possible on a channel and should be
-    # used in circumstances in which the with statement does not fit the needs
-    # of the code.
-    with grpc.insecure_channel(
-        "sqkserver:8774"
-    ) as server_channel, grpc.insecure_channel("sqkserver:8994") as admin_channel:
+    # Create a new signing profile
+    profile_name = "bob"
+    create_signing_profile_response = admin_stub.CreateSigningProfile(
+        squeak_admin_pb2.CreateSigningProfileRequest(profile_name=profile_name,)
+    )
+    print(
+        "Get create signing profile response: "
+        + str(create_signing_profile_response)
+    )
+    profile_id = create_signing_profile_response.profile_id
 
-        # Make the stubs
-        server_stub = squeak_server_pb2_grpc.SqueakServerStub(server_channel)
-        admin_stub = squeak_admin_pb2_grpc.SqueakAdminStub(admin_channel)
-
-        # Create a new signing profile
-        profile_name = "zach"
-        create_signing_profile_response = admin_stub.CreateSigningProfile(
-            squeak_admin_pb2.CreateSigningProfileRequest(profile_name=profile_name,)
+    # Create a new squeak using the new profile
+    make_squeak_content = "Hello from the profile on the server!"
+    make_squeak_response = admin_stub.MakeSqueak(
+        squeak_admin_pb2.MakeSqueakRequest(
+            profile_id=profile_id, content=make_squeak_content,
         )
-        print(
-            "Get create signing profile response: "
-            + str(create_signing_profile_response)
-        )
-        profile_id = create_signing_profile_response.profile_id
+    )
+    print("Get make squeak response: " + str(make_squeak_response))
+    make_squeak_hash = make_squeak_response.squeak_hash
+    assert len(make_squeak_hash) == 32*2
 
-        # Make another 10 squeak
-        for i in range(10):
-            try:
-                make_extra_squeak_response = admin_stub.MakeSqueak(
-                    squeak_admin_pb2.MakeSqueakRequest(
-                        profile_id=profile_id, content="Hello number: {}".format(i),
-                    )
+    # Create another signing profile
+    other_profile_name = "carol"
+    create_other_signing_profile_response = admin_stub.CreateSigningProfile(
+        squeak_admin_pb2.CreateSigningProfileRequest(profile_name=profile_name,)
+    )
+    other_profile_id = create_other_signing_profile_response.profile_id
+
+    # Make another squeak as a reply
+    reply_1_squeak_response = admin_stub.MakeSqueak(
+        squeak_admin_pb2.MakeSqueakRequest(
+            profile_id=other_profile_id,
+            content="Reply #1",
+            replyto=make_squeak_hash,
+        )
+    )
+    reply_1_squeak_hash = reply_1_squeak_response.squeak_hash
+    print("Get reply #1 squeak hash: " + str(reply_1_squeak_hash))
+
+    # Make a second squeak as a reply
+    reply_2_squeak_response = admin_stub.MakeSqueak(
+        squeak_admin_pb2.MakeSqueakRequest(
+            profile_id=other_profile_id,
+            content="Reply #2",
+            replyto=reply_1_squeak_hash,
+        )
+    )
+    reply_2_squeak_hash = reply_2_squeak_response.squeak_hash
+    print("Get make reply squeak response: " + str(reply_2_squeak_response))
+
+    # Get the squeak and check that the reply field is correct
+    get_reply_squeak_display_response = admin_stub.GetSqueakDisplay(
+        squeak_admin_pb2.GetSqueakDisplayRequest(
+            squeak_hash=reply_2_squeak_hash,
+        )
+    )
+    print("Get reply squeak display entry response: " + str(get_reply_squeak_display_response))
+    assert (
+        get_reply_squeak_display_response.squeak_display_entry.squeak_hash == reply_2_squeak_hash
+    )
+    assert (
+        get_reply_squeak_display_response.squeak_display_entry.reply_to == reply_1_squeak_hash
+    )
+
+    # Get the ancestors of the latest reply squeak
+    get_ancestors_response = admin_stub.GetAncestorSqueakDisplays(
+        squeak_admin_pb2.GetAncestorSqueakDisplaysRequest(
+            squeak_hash=reply_2_squeak_hash,
+        )
+    )
+    print("Get ancestor squeak display entries response: " + str(get_ancestors_response))
+    assert (
+        len(get_ancestors_response.squeak_display_entries) == 3
+    )
+
+def test_rate_limit(server_stub, admin_stub):
+    # Set the network to simnet for itest.
+    SelectParams("mainnet")
+
+    # Create a new signing profile
+    profile_name = "zach"
+    create_signing_profile_response = admin_stub.CreateSigningProfile(
+        squeak_admin_pb2.CreateSigningProfileRequest(profile_name=profile_name,)
+    )
+    print(
+        "Get create signing profile response: "
+        + str(create_signing_profile_response)
+    )
+    profile_id = create_signing_profile_response.profile_id
+
+    # Make another 10 squeak
+    for i in range(10):
+        try:
+            make_extra_squeak_response = admin_stub.MakeSqueak(
+                squeak_admin_pb2.MakeSqueakRequest(
+                    profile_id=profile_id, content="Hello number: {}".format(i),
                 )
-                print(make_extra_squeak_response)
-            except Exception as e:
-                make_extra_squeak_exception = e
-        assert make_extra_squeak_exception is not None
+            )
+            print(make_extra_squeak_response)
+        except Exception as e:
+            make_extra_squeak_exception = e
+    assert make_extra_squeak_exception is not None
 
-def test_make_signing_profile():
+def test_make_signing_profile(server_stub, admin_stub):
     # Set the network to simnet for itest.
     SelectParams("mainnet")
 
-    # NOTE(gRPC Python Team): .close() is possible on a channel and should be
-    # used in circumstances in which the with statement does not fit the needs
-    # of the code.
-    with grpc.insecure_channel(
-        "sqkserver:8774"
-    ) as server_channel, grpc.insecure_channel("sqkserver:8994") as admin_channel:
+    # Create a new signing profile
+    profile_name = "test_signing_profile_name"
+    create_signing_profile_response = admin_stub.CreateSigningProfile(
+        squeak_admin_pb2.CreateSigningProfileRequest(profile_name=profile_name,)
+    )
+    print(
+        "Get create signing profile response: "
+        + str(create_signing_profile_response)
+    )
+    profile_id = create_signing_profile_response.profile_id
 
-        # Make the stubs
-        server_stub = squeak_server_pb2_grpc.SqueakServerStub(server_channel)
-        admin_stub = squeak_admin_pb2_grpc.SqueakAdminStub(admin_channel)
+    # Get the new squeak profile
+    get_squeak_profile_response = admin_stub.GetSqueakProfile(
+        squeak_admin_pb2.GetSqueakProfileRequest(profile_id=profile_id,)
+    )
+    print("Get squeak profile response: " + str(get_squeak_profile_response))
+    assert get_squeak_profile_response.squeak_profile.profile_name == profile_name
+    squeak_profile_address = get_squeak_profile_response.squeak_profile.address
 
-        # Create a new signing profile
-        profile_name = "test_signing_profile_name"
-        create_signing_profile_response = admin_stub.CreateSigningProfile(
-            squeak_admin_pb2.CreateSigningProfileRequest(profile_name=profile_name,)
-        )
-        print(
-            "Get create signing profile response: "
-            + str(create_signing_profile_response)
-        )
-        profile_id = create_signing_profile_response.profile_id
+    # Get all signing profiles
+    get_signing_profiles_response = admin_stub.GetSigningProfiles(
+        squeak_admin_pb2.GetSigningProfilesRequest()
+    )
+    print("Get signing profiles response: " + str(get_signing_profiles_response))
+    signing_profile_names = [
+        profile.profile_name
+        for profile in get_signing_profiles_response.squeak_profiles
+    ]
+    assert profile_name in signing_profile_names
 
-        # Get the new squeak profile
-        get_squeak_profile_response = admin_stub.GetSqueakProfile(
-            squeak_admin_pb2.GetSqueakProfileRequest(profile_id=profile_id,)
+    # Get squeak profile by address
+    get_profile_by_address_response = admin_stub.GetSqueakProfileByAddress(
+        squeak_admin_pb2.GetSqueakProfileByAddressRequest(
+            address=squeak_profile_address
         )
-        print("Get squeak profile response: " + str(get_squeak_profile_response))
-        assert get_squeak_profile_response.squeak_profile.profile_name == profile_name
-        squeak_profile_address = get_squeak_profile_response.squeak_profile.address
+    )
+    print("Get profile by address response: " + str(get_profile_by_address_response))
+    assert (
+        get_profile_by_address_response.squeak_profile.profile_name == profile_name
+    )
 
-        # Get all signing profiles
-        get_signing_profiles_response = admin_stub.GetSigningProfiles(
-            squeak_admin_pb2.GetSigningProfilesRequest()
-        )
-        print("Get signing profiles response: " + str(get_signing_profiles_response))
-        signing_profile_names = [
-            profile.profile_name
-            for profile in get_signing_profiles_response.squeak_profiles
-        ]
-        assert profile_name in signing_profile_names
-
-        # Get squeak profile by address
-        get_profile_by_address_response = admin_stub.GetSqueakProfileByAddress(
-            squeak_admin_pb2.GetSqueakProfileByAddressRequest(
-                address=squeak_profile_address
-            )
-        )
-        print("Get profile by address response: " + str(get_profile_by_address_response))
-        assert (
-            get_profile_by_address_response.squeak_profile.profile_name == profile_name
-        )
-
-def test_make_contact_profile():
+def test_make_contact_profile(server_stub, admin_stub):
     # Set the network to simnet for itest.
     SelectParams("mainnet")
 
-    # NOTE(gRPC Python Team): .close() is possible on a channel and should be
-    # used in circumstances in which the with statement does not fit the needs
-    # of the code.
-    with grpc.insecure_channel(
-        "sqkserver:8774"
-    ) as server_channel, grpc.insecure_channel("sqkserver:8994") as admin_channel:
-
-        # Make the stubs
-        server_stub = squeak_server_pb2_grpc.SqueakServerStub(server_channel)
-        admin_stub = squeak_admin_pb2_grpc.SqueakAdminStub(admin_channel)
-
-        # Create a new contact profile
-        contact_name = "test_contact_profile_name"
-        contact_signing_key = generate_signing_key()
-        contact_address = get_address(contact_signing_key)
-        create_contact_profile_response = admin_stub.CreateContactProfile(
-            squeak_admin_pb2.CreateContactProfileRequest(
-                profile_name=contact_name,
-                address=contact_address,
-            )
+    # Create a new contact profile
+    contact_name = "test_contact_profile_name"
+    contact_signing_key = generate_signing_key()
+    contact_address = get_address(contact_signing_key)
+    create_contact_profile_response = admin_stub.CreateContactProfile(
+        squeak_admin_pb2.CreateContactProfileRequest(
+            profile_name=contact_name,
+            address=contact_address,
         )
-        print(
-            "Get create contact profile response: "
-            + str(create_contact_profile_response)
-        )
-        contact_profile_id = create_contact_profile_response.profile_id
+    )
+    print(
+        "Get create contact profile response: "
+        + str(create_contact_profile_response)
+    )
+    contact_profile_id = create_contact_profile_response.profile_id
 
-        # Get all contact profiles
-        get_contact_profiles_response = admin_stub.GetContactProfiles(
-            squeak_admin_pb2.GetContactProfilesRequest()
-        )
-        print("Get contact profiles response: " + str(get_contact_profiles_response))
-        contact_profile_names = [
-            profile.profile_name
-            for profile in get_contact_profiles_response.squeak_profiles
-        ]
-        assert contact_name in contact_profile_names
+    # Get all contact profiles
+    get_contact_profiles_response = admin_stub.GetContactProfiles(
+        squeak_admin_pb2.GetContactProfilesRequest()
+    )
+    print("Get contact profiles response: " + str(get_contact_profiles_response))
+    contact_profile_names = [
+        profile.profile_name
+        for profile in get_contact_profiles_response.squeak_profiles
+    ]
+    assert contact_name in contact_profile_names
