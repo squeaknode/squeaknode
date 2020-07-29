@@ -33,177 +33,166 @@ from tests.util import bxor
 from tests.util import string_to_hex
 
 
-def test_buy_squeak():
+def test_buy_squeak(server_stub, admin_stub):
     # Set the network to simnet for itest.
     SelectParams("mainnet")
 
-    # NOTE(gRPC Python Team): .close() is possible on a channel and should be
-    # used in circumstances in which the with statement does not fit the needs
-    # of the code.
-    with grpc.insecure_channel(
-        "sqkserver:8774"
-    ) as server_channel, grpc.insecure_channel("sqkserver:8994") as admin_channel:
+    # load lnd client
+    lnd_lightning_client = load_lightning_client()
+    balance_from_client = lnd_lightning_client.get_wallet_balance()
+    print("Balance from direct client: %s" % balance_from_client)
+    assert balance_from_client.total_balance >= 1505000000000
 
-        # load lnd client
-        lnd_lightning_client = load_lightning_client()
-        balance_from_client = lnd_lightning_client.get_wallet_balance()
-        print("Balance from direct client: %s" % balance_from_client)
-        assert balance_from_client.total_balance >= 1505000000000
+    # Post a squeak with a direct request to the server
+    signing_key = generate_signing_key()
+    block_height, block_hash = get_latest_block_info(lnd_lightning_client)
+    squeak = make_squeak(signing_key, "hello from itest!", block_hash, block_height)
+    squeak_hash = get_hash(squeak)
 
-        # Make the stubs
-        server_stub = squeak_server_pb2_grpc.SqueakServerStub(server_channel)
-        admin_stub = squeak_admin_pb2_grpc.SqueakAdminStub(admin_channel)
+    squeak_msg = build_squeak_msg(squeak)
+    post_response = server_stub.PostSqueak(
+        squeak_server_pb2.PostSqueakRequest(squeak=squeak_msg)
+    )
+    print("Direct server post response: " + str(post_response))
 
-        # Post a squeak with a direct request to the server
-        signing_key = generate_signing_key()
-        block_height, block_hash = get_latest_block_info(lnd_lightning_client)
-        squeak = make_squeak(signing_key, "hello from itest!", block_hash, block_height)
-        squeak_hash = get_hash(squeak)
+    # Wait a few seconds for the squeak to be verified on the server.
+    time.sleep(5)
 
-        squeak_msg = build_squeak_msg(squeak)
-        post_response = server_stub.PostSqueak(
-            squeak_server_pb2.PostSqueakRequest(squeak=squeak_msg)
+    # Get the same squeak from the server
+    get_response = server_stub.GetSqueak(
+        squeak_server_pb2.GetSqueakRequest(hash=squeak_hash)
+    )
+    print("Direct server get response: " + str(get_response))
+    get_response_squeak = squeak_from_msg(get_response.squeak)
+    CheckSqueak(get_response_squeak, skipDecryptionCheck=True)
+    assert get_hash(get_response_squeak) == get_hash(squeak)
+
+    # Lookup squeaks based on address
+    signing_address = get_address(signing_key)
+    addresses = [
+        signing_address,
+        get_address(generate_signing_key()),
+        get_address(generate_signing_key()),
+    ]
+    lookup_response = server_stub.LookupSqueaks(
+        squeak_server_pb2.LookupSqueaksRequest(
+            addresses=addresses, min_block=0, max_block=99999999,
         )
-        print("Direct server post response: " + str(post_response))
+    )
+    print("Lookup response: " + str(lookup_response))
+    assert get_hash(squeak) in set(lookup_response.hashes)
 
-        # Wait a few seconds for the squeak to be verified on the server.
-        time.sleep(5)
-
-        # Get the same squeak from the server
-        get_response = server_stub.GetSqueak(
-            squeak_server_pb2.GetSqueakRequest(hash=squeak_hash)
+    # Lookup again without the relevant address
+    addresses = [
+        get_address(generate_signing_key()),
+        get_address(generate_signing_key()),
+        get_address(generate_signing_key()),
+    ]
+    lookup_response = server_stub.LookupSqueaks(
+        squeak_server_pb2.LookupSqueaksRequest(
+            addresses=addresses, min_block=0, max_block=99999999,
         )
-        print("Direct server get response: " + str(get_response))
-        get_response_squeak = squeak_from_msg(get_response.squeak)
-        CheckSqueak(get_response_squeak, skipDecryptionCheck=True)
-        assert get_hash(get_response_squeak) == get_hash(squeak)
+    )
+    assert get_hash(squeak) not in set(lookup_response.hashes)
 
-        # Lookup squeaks based on address
-        signing_address = get_address(signing_key)
-        addresses = [
-            signing_address,
-            get_address(generate_signing_key()),
-            get_address(generate_signing_key()),
-        ]
-        lookup_response = server_stub.LookupSqueaks(
-            squeak_server_pb2.LookupSqueaksRequest(
-                addresses=addresses, min_block=0, max_block=99999999,
-            )
+    # Lookup again with a different block range
+    addresses = [
+        signing_address,
+        get_address(generate_signing_key()),
+        get_address(generate_signing_key()),
+    ]
+    lookup_response = server_stub.LookupSqueaks(
+        squeak_server_pb2.LookupSqueaksRequest(
+            addresses=addresses, min_block=600, max_block=99999999,
         )
-        print("Lookup response: " + str(lookup_response))
-        assert get_hash(squeak) in set(lookup_response.hashes)
+    )
+    assert get_hash(squeak) not in set(lookup_response.hashes)
 
-        # Lookup again without the relevant address
-        addresses = [
-            get_address(generate_signing_key()),
-            get_address(generate_signing_key()),
-            get_address(generate_signing_key()),
-        ]
-        lookup_response = server_stub.LookupSqueaks(
-            squeak_server_pb2.LookupSqueaksRequest(
-                addresses=addresses, min_block=0, max_block=99999999,
-            )
-        )
-        assert get_hash(squeak) not in set(lookup_response.hashes)
+    # Generate a challenge to verify the offer
+    expected_proof = generate_challenge_proof()
+    encryption_key = squeak.GetEncryptionKey()
+    challenge = get_challenge(encryption_key, expected_proof)
 
-        # Lookup again with a different block range
-        addresses = [
-            signing_address,
-            get_address(generate_signing_key()),
-            get_address(generate_signing_key()),
-        ]
-        lookup_response = server_stub.LookupSqueaks(
-            squeak_server_pb2.LookupSqueaksRequest(
-                addresses=addresses, min_block=600, max_block=99999999,
-            )
-        )
-        assert get_hash(squeak) not in set(lookup_response.hashes)
+    # Buy the squeak data key
+    buy_response = server_stub.BuySqueak(
+        squeak_server_pb2.BuySqueakRequest(hash=squeak_hash, challenge=challenge,)
+    )
+    print("Server buy response: " + str(buy_response))
+    assert buy_response.offer.payment_request.startswith("ln")
 
-        # Generate a challenge to verify the offer
-        expected_proof = generate_challenge_proof()
-        encryption_key = squeak.GetEncryptionKey()
-        challenge = get_challenge(encryption_key, expected_proof)
+    # Check the offer challenge proof
+    print("Server offer proof: " + str(buy_response.offer.proof))
+    assert buy_response.offer.proof == expected_proof
 
-        # Buy the squeak data key
-        buy_response = server_stub.BuySqueak(
-            squeak_server_pb2.BuySqueakRequest(hash=squeak_hash, challenge=challenge,)
-        )
-        print("Server buy response: " + str(buy_response))
-        assert buy_response.offer.payment_request.startswith("ln")
+    # Connect to the server lightning node
+    connect_peer_response = lnd_lightning_client.connect_peer(
+        buy_response.offer.pubkey, buy_response.offer.host
+    )
+    print("Server connect peer response: " + str(connect_peer_response))
 
-        # Check the offer challenge proof
-        print("Server offer proof: " + str(buy_response.offer.proof))
-        assert buy_response.offer.proof == expected_proof
+    # List peers
+    list_peers_response = lnd_lightning_client.list_peers()
+    print("Server list peers response: " + str(list_peers_response))
 
-        # Connect to the server lightning node
-        connect_peer_response = lnd_lightning_client.connect_peer(
-            buy_response.offer.pubkey, buy_response.offer.host
-        )
-        print("Server connect peer response: " + str(connect_peer_response))
+    # Open channel to the server lightning node
+    pubkey_bytes = string_to_hex(buy_response.offer.pubkey)
+    open_channel_response = lnd_lightning_client.open_channel(pubkey_bytes, 1000000)
+    print("Opening channel...")
+    for update in open_channel_response:
+        if update.HasField("chan_open"):
+            channel_point = update.chan_open.channel_point
+            print("Channel now open: " + str(channel_point))
+            break
 
-        # List peers
-        list_peers_response = lnd_lightning_client.list_peers()
-        print("Server list peers response: " + str(list_peers_response))
+    # List channels
+    list_channels_response = lnd_lightning_client.list_channels()
+    print("Server list channels response: " + str(list_channels_response))
 
-        # Open channel to the server lightning node
-        pubkey_bytes = string_to_hex(buy_response.offer.pubkey)
-        open_channel_response = lnd_lightning_client.open_channel(pubkey_bytes, 1000000)
-        print("Opening channel...")
-        for update in open_channel_response:
-            if update.HasField("chan_open"):
-                channel_point = update.chan_open.channel_point
-                print("Channel now open: " + str(channel_point))
-                break
+    # Pay the invoice
+    payment = lnd_lightning_client.pay_invoice_sync(
+        buy_response.offer.payment_request
+    )
+    print("Server pay invoice response: " + str(payment))
+    preimage = payment.payment_preimage
+    print("preimage: " + str(preimage))
 
-        # List channels
-        list_channels_response = lnd_lightning_client.list_channels()
-        print("Server list channels response: " + str(list_channels_response))
+    # Verify with the payment preimage and decryption key ciphertext
+    decryption_key_cipher_bytes = buy_response.offer.key_cipher
+    iv = buy_response.offer.iv
+    encrypted_decryption_key = CEncryptedDecryptionKey.from_bytes(
+        decryption_key_cipher_bytes
+    )
 
-        # Pay the invoice
-        payment = lnd_lightning_client.pay_invoice_sync(
-            buy_response.offer.payment_request
-        )
-        print("Server pay invoice response: " + str(payment))
-        preimage = payment.payment_preimage
-        print("preimage: " + str(preimage))
+    # Decrypt the decryption key
+    decryption_key = encrypted_decryption_key.get_decryption_key(preimage, iv)
+    serialized_decryption_key = decryption_key.get_bytes()
 
-        # Verify with the payment preimage and decryption key ciphertext
-        decryption_key_cipher_bytes = buy_response.offer.key_cipher
-        iv = buy_response.offer.iv
-        encrypted_decryption_key = CEncryptedDecryptionKey.from_bytes(
-            decryption_key_cipher_bytes
-        )
+    print("new decryption key: " + str(serialized_decryption_key))
+    get_response_squeak.SetDecryptionKey(serialized_decryption_key)
+    CheckSqueak(get_response_squeak)
+    assert get_response_squeak.GetDecryptedContentStr() == "hello from itest!"
+    print("Finished checking squeak.")
 
-        # Decrypt the decryption key
-        decryption_key = encrypted_decryption_key.get_decryption_key(preimage, iv)
-        serialized_decryption_key = decryption_key.get_bytes()
+    # Check the server balance
+    get_balance_response = admin_stub.LndWalletBalance(
+        ln.WalletBalanceRequest()
+    )
+    print("Get balance response: " + str(get_balance_response))
+    assert get_balance_response.total_balance == 0
 
-        print("new decryption key: " + str(serialized_decryption_key))
-        get_response_squeak.SetDecryptionKey(serialized_decryption_key)
-        CheckSqueak(get_response_squeak)
-        assert get_response_squeak.GetDecryptedContentStr() == "hello from itest!"
-        print("Finished checking squeak.")
+    # Close the channel
+    time.sleep(10)
+    for update in lnd_lightning_client.close_channel(channel_point):
+        if update.HasField("chan_close"):
+            print("Channel closed.")
+            break
 
-        # Check the server balance
-        get_balance_response = admin_stub.LndWalletBalance(
-            ln.WalletBalanceRequest()
-        )
-        print("Get balance response: " + str(get_balance_response))
-        assert get_balance_response.total_balance == 0
-
-        # Close the channel
-        time.sleep(10)
-        for update in lnd_lightning_client.close_channel(channel_point):
-            if update.HasField("chan_close"):
-                print("Channel closed.")
-                break
-
-        # Check the server balance
-        get_balance_response = admin_stub.LndWalletBalance(
-            ln.WalletBalanceRequest()
-        )
-        print("Get balance response: " + str(get_balance_response))
-        assert get_balance_response.total_balance == 1000
+    # Check the server balance
+    get_balance_response = admin_stub.LndWalletBalance(
+        ln.WalletBalanceRequest()
+    )
+    print("Get balance response: " + str(get_balance_response))
+    assert get_balance_response.total_balance == 1000
 
 def test_make_squeak():
     # Set the network to simnet for itest.
