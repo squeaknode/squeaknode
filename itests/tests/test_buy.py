@@ -92,7 +92,7 @@ def string_to_hex(s):
     return bytes.fromhex(s)
 
 
-def run():
+def test_buy_squeak():
     # Set the network to simnet for itest.
     SelectParams("mainnet")
 
@@ -471,6 +471,6 @@ def run():
         )
 
 
-if __name__ == "__main__":
-    logging.basicConfig()
-    run()
+# if __name__ == "__main__":
+#     logging.basicConfig()
+#     run()
