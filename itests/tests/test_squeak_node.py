@@ -150,49 +150,14 @@ def test_buy_squeak(server_stub, admin_stub, lightning_client, saved_squeak_hash
     final_server_balance = get_balance_response.total_balance
     assert final_server_balance - initial_server_balance == 1000
 
-def test_make_squeak(server_stub, admin_stub):
-    # Create a new signing profile
-    profile_name = "bob"
-    create_signing_profile_response = admin_stub.CreateSigningProfile(
-        squeak_admin_pb2.CreateSigningProfileRequest(profile_name=profile_name,)
-    )
-    print(
-        "Get create signing profile response: "
-        + str(create_signing_profile_response)
-    )
-    profile_id = create_signing_profile_response.profile_id
-
-    # Create a new contact profile
-    contact_name = "carol"
-    contact_address = "1GbFEcAaAzi2fGRaTsgDMm4N8cue5P26mc"
-    create_contact_profile_response = admin_stub.CreateContactProfile(
-        squeak_admin_pb2.CreateContactProfileRequest(
-            profile_name=contact_name,
-            address=contact_address,
-        )
-    )
-    print(
-        "Get create contact profile response: "
-        + str(create_contact_profile_response)
-    )
-    contact_profile_id = create_contact_profile_response.profile_id
-
-    # Get the new squeak profile
-    get_squeak_profile_response = admin_stub.GetSqueakProfile(
-        squeak_admin_pb2.GetSqueakProfileRequest(profile_id=profile_id,)
-    )
-    print("Get squeak profile response: " + str(get_squeak_profile_response))
-    assert get_squeak_profile_response.squeak_profile.profile_name == profile_name
-    squeak_profile_address = get_squeak_profile_response.squeak_profile.address
-
+def test_make_squeak(server_stub, admin_stub, signing_profile_id):
     # Create a new squeak using the new profile
     make_squeak_content = "Hello from the profile on the server!"
     make_squeak_response = admin_stub.MakeSqueak(
         squeak_admin_pb2.MakeSqueakRequest(
-            profile_id=profile_id, content=make_squeak_content,
+            profile_id=signing_profile_id, content=make_squeak_content,
         )
     )
-    print("Get make squeak response: " + str(make_squeak_response))
     make_squeak_hash = make_squeak_response.squeak_hash
     assert len(make_squeak_hash) == 32*2
 
@@ -200,37 +165,34 @@ def test_make_squeak(server_stub, admin_stub):
     get_squeak_response = server_stub.GetSqueak(
         squeak_server_pb2.GetSqueakRequest(hash=bytes.fromhex(make_squeak_hash))
     )
-    print("Get squeak response: " + str(get_squeak_response))
     get_squeak_response_squeak = squeak_from_msg(get_squeak_response.squeak)
     CheckSqueak(get_squeak_response_squeak, skipDecryptionCheck=True)
     assert get_hash(get_squeak_response_squeak) == bytes.fromhex(make_squeak_hash)
-    print("Squeak from make squeak request: " + str(get_squeak_response_squeak))
 
-    # Get a squeak display item
+    # Get the squeak display item
     get_squeak_display_response = admin_stub.GetSqueakDisplay(
         squeak_admin_pb2.GetSqueakDisplayRequest(squeak_hash=make_squeak_hash,)
     )
-    print("Get squeak display response: " + str(get_squeak_display_response))
     assert (
         get_squeak_display_response.squeak_display_entry.content_str
         == "Hello from the profile on the server!"
     )
 
-    # Make another squeak
-    admin_stub.MakeSqueak(
-        squeak_admin_pb2.MakeSqueakRequest(
-            profile_id=profile_id, content="Hello again!",
-        )
-    )
+    # # Get all followed squeak display items
+    # get_followed_squeak_display_response = admin_stub.GetFollowedSqueakDisplays(
+    #     squeak_admin_pb2.GetFollowedSqueakDisplaysRequest()
+    # )
+    # print("Get followed squeak displays response: " + str(get_followed_squeak_display_response))
+    # assert (
+    #     len(get_followed_squeak_display_response.squeak_display_entries) >= 1
+    # )
 
-    # Get all followed squeak display items
-    get_followed_squeak_display_response = admin_stub.GetFollowedSqueakDisplays(
-        squeak_admin_pb2.GetFollowedSqueakDisplaysRequest()
+    # Get the squeak profile
+    get_squeak_profile_response = admin_stub.GetSqueakProfile(
+        squeak_admin_pb2.GetSqueakProfileRequest(profile_id=signing_profile_id,)
     )
-    print("Get followed squeak displays response: " + str(get_followed_squeak_display_response))
-    assert (
-        len(get_followed_squeak_display_response.squeak_display_entries) >= 2
-    )
+    squeak_profile_address = get_squeak_profile_response.squeak_profile.address
+    squeak_profile_name = get_squeak_profile_response.squeak_profile.profile_name
 
     # Get all squeak displays for the known address
     get_address_squeak_display_response = admin_stub.GetAddressSqueakDisplays(
@@ -238,25 +200,12 @@ def test_make_squeak(server_stub, admin_stub):
             address=squeak_profile_address
         )
     )
-    print("Get address squeak displays response: " + str(get_address_squeak_display_response))
     assert (
-        len(get_address_squeak_display_response.squeak_display_entries) == 2
+        len(get_address_squeak_display_response.squeak_display_entries) == 1
     )
     for squeak_display_entry in get_address_squeak_display_response.squeak_display_entries:
-        assert squeak_display_entry.author_name == "bob"
+        assert squeak_display_entry.author_name == squeak_profile_name
         assert squeak_display_entry.author_address == squeak_profile_address
-
-    # Get each individual squeak from the list of followed squeak display items
-    for entry in get_followed_squeak_display_response.squeak_display_entries:
-        get_squeak_display_response = admin_stub.GetSqueakDisplay(
-            squeak_admin_pb2.GetSqueakDisplayRequest(
-                squeak_hash=entry.squeak_hash
-            )
-        )
-        print("Get squeak display entry response: " + str(get_squeak_display_response))
-        assert (
-            get_squeak_display_response.squeak_display_entry.squeak_hash == entry.squeak_hash
-        )
 
 def test_make_reply_squeak(server_stub, admin_stub, saved_squeak_hash, signing_profile_id):
     # Make another squeak as a reply
