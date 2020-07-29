@@ -258,42 +258,13 @@ def test_make_squeak(server_stub, admin_stub):
             get_squeak_display_response.squeak_display_entry.squeak_hash == entry.squeak_hash
         )
 
-def test_make_reply_squeak(server_stub, admin_stub):
-    # Create a new signing profile
-    profile_name = "bob"
-    create_signing_profile_response = admin_stub.CreateSigningProfile(
-        squeak_admin_pb2.CreateSigningProfileRequest(profile_name=profile_name,)
-    )
-    print(
-        "Get create signing profile response: "
-        + str(create_signing_profile_response)
-    )
-    profile_id = create_signing_profile_response.profile_id
-
-    # Create a new squeak using the new profile
-    make_squeak_content = "Hello from the profile on the server!"
-    make_squeak_response = admin_stub.MakeSqueak(
-        squeak_admin_pb2.MakeSqueakRequest(
-            profile_id=profile_id, content=make_squeak_content,
-        )
-    )
-    print("Get make squeak response: " + str(make_squeak_response))
-    make_squeak_hash = make_squeak_response.squeak_hash
-    assert len(make_squeak_hash) == 32*2
-
-    # Create another signing profile
-    other_profile_name = "carol"
-    create_other_signing_profile_response = admin_stub.CreateSigningProfile(
-        squeak_admin_pb2.CreateSigningProfileRequest(profile_name=profile_name,)
-    )
-    other_profile_id = create_other_signing_profile_response.profile_id
-
+def test_make_reply_squeak(server_stub, admin_stub, saved_squeak_hash, signing_profile_id):
     # Make another squeak as a reply
     reply_1_squeak_response = admin_stub.MakeSqueak(
         squeak_admin_pb2.MakeSqueakRequest(
-            profile_id=other_profile_id,
+            profile_id=signing_profile_id,
             content="Reply #1",
-            replyto=make_squeak_hash,
+            replyto=saved_squeak_hash.hex(),
         )
     )
     reply_1_squeak_hash = reply_1_squeak_response.squeak_hash
@@ -302,7 +273,7 @@ def test_make_reply_squeak(server_stub, admin_stub):
     # Make a second squeak as a reply
     reply_2_squeak_response = admin_stub.MakeSqueak(
         squeak_admin_pb2.MakeSqueakRequest(
-            profile_id=other_profile_id,
+            profile_id=signing_profile_id,
             content="Reply #2",
             replyto=reply_1_squeak_hash,
         )
@@ -335,24 +306,13 @@ def test_make_reply_squeak(server_stub, admin_stub):
         len(get_ancestors_response.squeak_display_entries) == 3
     )
 
-def test_rate_limit(server_stub, admin_stub):
-    # Create a new signing profile
-    profile_name = "zach"
-    create_signing_profile_response = admin_stub.CreateSigningProfile(
-        squeak_admin_pb2.CreateSigningProfileRequest(profile_name=profile_name,)
-    )
-    print(
-        "Get create signing profile response: "
-        + str(create_signing_profile_response)
-    )
-    profile_id = create_signing_profile_response.profile_id
-
-    # Make another 10 squeak
+def test_rate_limit(server_stub, admin_stub, signing_profile_id):
+    # Make 10 squeak
     for i in range(10):
         try:
             make_extra_squeak_response = admin_stub.MakeSqueak(
                 squeak_admin_pb2.MakeSqueakRequest(
-                    profile_id=profile_id, content="Hello number: {}".format(i),
+                    profile_id=signing_profile_id, content="Hello number: {}".format(i),
                 )
             )
             print(make_extra_squeak_response)
