@@ -1,5 +1,6 @@
 from __future__ import print_function
 
+import pytest
 import logging
 import time
 
@@ -31,33 +32,7 @@ from tests.util import bxor
 from tests.util import string_to_hex
 
 
-def test_buy_squeak(server_stub, admin_stub, lightning_client, whitelisted_signing_key):
-    balance_from_client = lightning_client.get_wallet_balance()
-    print("Balance from direct client: %s" % balance_from_client)
-    assert balance_from_client.total_balance >= 1505000000000
-
-    # # Create a signing key
-    # signing_key = generate_signing_key()
-
-    # # Create a new contact profile
-    # profile_name = "whitelisted_contact"
-    # profile_address = get_address(signing_key)
-    # create_contact_profile_response = admin_stub.CreateContactProfile(
-    #     squeak_admin_pb2.CreateContactProfileRequest(
-    #         profile_name=profile_name,
-    #         address=profile_address,
-    #     )
-    # )
-    # contact_profile_id = create_contact_profile_response.profile_id
-
-    # # Set the profile to be whitelisted
-    # admin_stub.SetSqueakProfileWhitelisted(
-    #     squeak_admin_pb2.SetSqueakProfileWhitelistedRequest(
-    #         profile_id=contact_profile_id,
-    #         whitelisted=True,
-    #     )
-    # )
-
+def test_post_squeak(server_stub, admin_stub, lightning_client, whitelisted_signing_key):
     # Post a squeak with a direct request to the server
     block_height, block_hash = get_latest_block_info(lightning_client)
     squeak = make_squeak(whitelisted_signing_key, "hello from itest!", block_hash, block_height)
@@ -67,7 +42,6 @@ def test_buy_squeak(server_stub, admin_stub, lightning_client, whitelisted_signi
     post_response = server_stub.PostSqueak(
         squeak_server_pb2.PostSqueakRequest(squeak=squeak_msg)
     )
-    print("Direct server post response: " + str(post_response))
 
     # Wait a few seconds for the squeak to be verified on the server.
     time.sleep(5)
@@ -76,77 +50,58 @@ def test_buy_squeak(server_stub, admin_stub, lightning_client, whitelisted_signi
     get_response = server_stub.GetSqueak(
         squeak_server_pb2.GetSqueakRequest(hash=squeak_hash)
     )
-    print("Direct server get response: " + str(get_response))
     get_response_squeak = squeak_from_msg(get_response.squeak)
     CheckSqueak(get_response_squeak, skipDecryptionCheck=True)
+
     assert get_hash(get_response_squeak) == get_hash(squeak)
 
-    # Lookup squeaks based on address
-    signing_address = get_address(whitelisted_signing_key)
-    addresses = [
-        signing_address,
-        get_address(generate_signing_key()),
-        get_address(generate_signing_key()),
-    ]
-    lookup_response = server_stub.LookupSqueaks(
-        squeak_server_pb2.LookupSqueaksRequest(
-            addresses=addresses, min_block=0, max_block=99999999,
-        )
-    )
-    print("Lookup response: " + str(lookup_response))
-    assert get_hash(squeak) in set(lookup_response.hashes)
+def test_post_squeak_not_whitelisted(server_stub, admin_stub, lightning_client, nonwhitelisted_signing_key):
+    # Post a squeak with a direct request to the server
+    block_height, block_hash = get_latest_block_info(lightning_client)
+    squeak = make_squeak(nonwhitelisted_signing_key, "hello from itest!", block_hash, block_height)
+    squeak_hash = get_hash(squeak)
 
-    # Lookup again without the relevant address
-    addresses = [
-        get_address(generate_signing_key()),
-        get_address(generate_signing_key()),
-        get_address(generate_signing_key()),
-    ]
-    lookup_response = server_stub.LookupSqueaks(
-        squeak_server_pb2.LookupSqueaksRequest(
-            addresses=addresses, min_block=0, max_block=99999999,
+    squeak_msg = build_squeak_msg(squeak)
+    with pytest.raises(Exception):
+        server_stub.PostSqueak(
+            squeak_server_pb2.PostSqueakRequest(squeak=squeak_msg)
         )
-    )
-    assert get_hash(squeak) not in set(lookup_response.hashes)
 
-    # Lookup again with a different block range
-    addresses = [
-        signing_address,
-        get_address(generate_signing_key()),
-        get_address(generate_signing_key()),
-    ]
-    lookup_response = server_stub.LookupSqueaks(
-        squeak_server_pb2.LookupSqueaksRequest(
-            addresses=addresses, min_block=600, max_block=99999999,
-        )
+def test_buy_squeak(server_stub, admin_stub, lightning_client, saved_squeak_hash):
+    # Check the server balance
+    get_balance_response = admin_stub.LndWalletBalance(
+        ln.WalletBalanceRequest()
     )
-    assert get_hash(squeak) not in set(lookup_response.hashes)
+    initial_server_balance = get_balance_response.total_balance
+
+    # Get the squeak from the server
+    get_response = server_stub.GetSqueak(
+        squeak_server_pb2.GetSqueakRequest(hash=saved_squeak_hash)
+    )
+    get_response_squeak = squeak_from_msg(get_response.squeak)
+    CheckSqueak(get_response_squeak, skipDecryptionCheck=True)
 
     # Generate a challenge to verify the offer
     expected_proof = generate_challenge_proof()
-    encryption_key = squeak.GetEncryptionKey()
+    encryption_key = get_response_squeak.GetEncryptionKey()
     challenge = get_challenge(encryption_key, expected_proof)
 
     # Buy the squeak data key
     buy_response = server_stub.BuySqueak(
-        squeak_server_pb2.BuySqueakRequest(hash=squeak_hash, challenge=challenge,)
+        squeak_server_pb2.BuySqueakRequest(hash=saved_squeak_hash, challenge=challenge,)
     )
-    print("Server buy response: " + str(buy_response))
     assert buy_response.offer.payment_request.startswith("ln")
 
     # Check the offer challenge proof
-    print("Server offer proof: " + str(buy_response.offer.proof))
     assert buy_response.offer.proof == expected_proof
 
     # Connect to the server lightning node
     connect_peer_response = lightning_client.connect_peer(
         buy_response.offer.pubkey, buy_response.offer.host
     )
-    print("Server connect peer response: " + str(connect_peer_response))
 
     # List peers
     list_peers_response = lightning_client.list_peers()
-    print("Server list peers response: " + str(list_peers_response))
 
     # Open channel to the server lightning node
     pubkey_bytes = string_to_hex(buy_response.offer.pubkey)
@@ -160,15 +115,12 @@ def test_buy_squeak(server_stub, admin_stub, lightning_client, whitelisted_signi
 
     # List channels
     list_channels_response = lightning_client.list_channels()
-    print("Server list channels response: " + str(list_channels_response))
 
     # Pay the invoice
     payment = lightning_client.pay_invoice_sync(
         buy_response.offer.payment_request
     )
-    print("Server pay invoice response: " + str(payment))
     preimage = payment.payment_preimage
-    print("preimage: " + str(preimage))
 
     # Verify with the payment preimage and decryption key ciphertext
     decryption_key_cipher_bytes = buy_response.offer.key_cipher
@@ -181,18 +133,8 @@ def test_buy_squeak(server_stub, admin_stub, lightning_client, whitelisted_signi
     decryption_key = encrypted_decryption_key.get_decryption_key(preimage, iv)
     serialized_decryption_key = decryption_key.get_bytes()
 
-    print("new decryption key: " + str(serialized_decryption_key))
     get_response_squeak.SetDecryptionKey(serialized_decryption_key)
     CheckSqueak(get_response_squeak)
-    assert get_response_squeak.GetDecryptedContentStr() == "hello from itest!"
-    print("Finished checking squeak.")
-
-    # Check the server balance
-    get_balance_response = admin_stub.LndWalletBalance(
-        ln.WalletBalanceRequest()
-    )
-    print("Get balance response: " + str(get_balance_response))
-    assert get_balance_response.total_balance == 0
 
     # Close the channel
     time.sleep(10)
@@ -205,8 +147,8 @@ def test_buy_squeak(server_stub, admin_stub, lightning_client, whitelisted_signi
     get_balance_response = admin_stub.LndWalletBalance(
         ln.WalletBalanceRequest()
     )
-    print("Get balance response: " + str(get_balance_response))
-    assert get_balance_response.total_balance == 1000
+    final_server_balance = get_balance_response.total_balance
+    assert final_server_balance - initial_server_balance == 1000
 
 def test_make_squeak(server_stub, admin_stub):
     # Create a new signing profile
