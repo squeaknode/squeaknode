@@ -430,24 +430,11 @@ def test_make_contact_profile(server_stub, admin_stub):
     ]
     assert contact_name in contact_profile_names
 
-def test_set_profile_whitelisted(server_stub, admin_stub):
-    # Create a new contact profile
-    contact_name = "whitelisted_contact"
-    contact_signing_key = generate_signing_key()
-    contact_address = get_address(contact_signing_key)
-    create_contact_profile_response = admin_stub.CreateContactProfile(
-        squeak_admin_pb2.CreateContactProfileRequest(
-            profile_name=contact_name,
-            address=contact_address,
-        )
-    )
-    contact_profile_id = create_contact_profile_response.profile_id
-
-    # Get the new squeak profile
+def test_set_profile_whitelisted(server_stub, admin_stub, contact_profile_id):
+    # Get the existing profile
     get_squeak_profile_response = admin_stub.GetSqueakProfile(
         squeak_admin_pb2.GetSqueakProfileRequest(profile_id=contact_profile_id,)
     )
-    assert get_squeak_profile_response.squeak_profile.profile_name == contact_name
     assert get_squeak_profile_response.squeak_profile.whitelisted == False
 
     # Set the profile to be whitelisted
@@ -462,5 +449,4 @@ def test_set_profile_whitelisted(server_stub, admin_stub):
     get_squeak_profile_response = admin_stub.GetSqueakProfile(
         squeak_admin_pb2.GetSqueakProfileRequest(profile_id=contact_profile_id,)
     )
-    assert get_squeak_profile_response.squeak_profile.profile_name == contact_name
     assert get_squeak_profile_response.squeak_profile.whitelisted == True

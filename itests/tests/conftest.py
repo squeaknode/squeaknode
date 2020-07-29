@@ -77,19 +77,37 @@ def nonwhitelisted_signing_key(server_stub, admin_stub):
     yield signing_key
 
 @pytest.fixture
-def saved_squeak_hash(server_stub, admin_stub):
+def signing_profile_id(server_stub, admin_stub):
     # Create a new signing profile
-    profile_name = "alice"
+    profile_name = "fake_signing_profile"
     create_signing_profile_response = admin_stub.CreateSigningProfile(
         squeak_admin_pb2.CreateSigningProfileRequest(profile_name=profile_name,)
     )
     profile_id = create_signing_profile_response.profile_id
+    yield profile_id
 
+@pytest.fixture
+def contact_profile_id(server_stub, admin_stub):
+    # Create a new contact profile
+    contact_name = "fake_contact_profile"
+    contact_signing_key = generate_signing_key()
+    contact_address = get_address(contact_signing_key)
+    create_contact_profile_response = admin_stub.CreateContactProfile(
+        squeak_admin_pb2.CreateContactProfileRequest(
+            profile_name=contact_name,
+            address=contact_address,
+        )
+    )
+    contact_profile_id = create_contact_profile_response.profile_id
+    yield contact_profile_id
+
+@pytest.fixture
+def saved_squeak_hash(server_stub, admin_stub, signing_profile_id):
     # Create a new squeak using the new profile
     make_squeak_content = "Hello from the profile on the server!"
     make_squeak_response = admin_stub.MakeSqueak(
         squeak_admin_pb2.MakeSqueakRequest(
-            profile_id=profile_id, content=make_squeak_content,
+            profile_id=signing_profile_id, content=make_squeak_content,
         )
     )
     squeak_hash_str = make_squeak_response.squeak_hash
