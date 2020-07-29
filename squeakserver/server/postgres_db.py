@@ -111,13 +111,13 @@ class PostgresDb:
 
     def get_followed_squeak_entries_with_profile(self):
         """ Get a squeak. """
-        # TODO: use profile.following=True
+        # TODO: use profile.followed=True
         sql = """
         SELECT * FROM squeak
         JOIN profile
         ON squeak.author_address=profile.address
         WHERE squeak.block_header IS NOT NULL
-        AND profile.following=False
+        AND profile.followed=False
         ORDER BY n_block_height DESC, n_time DESC;
         """
         with self.get_cursor() as curs:
@@ -190,7 +190,7 @@ class PostgresDb:
     def insert_profile(self, squeak_profile):
         """ Insert a new squeak profile. """
         sql = """
-        INSERT INTO profile(profile_name, private_key, address, sharing, following, whitelisted)
+        INSERT INTO profile(profile_name, private_key, address, shared, followed, whitelisted)
         VALUES(%s, %s, %s, %s, %s, %s)
         RETURNING profile_id;
         """
@@ -202,8 +202,8 @@ class PostgresDb:
                     squeak_profile.profile_name,
                     squeak_profile.private_key,
                     squeak_profile.address,
-                    squeak_profile.sharing,
-                    squeak_profile.following,
+                    squeak_profile.shared,
+                    squeak_profile.followed,
                     squeak_profile.whitelisted,
                 ),
             )
@@ -278,6 +278,16 @@ class PostgresDb:
         with self.get_cursor() as curs:
             curs.execute(sql, (whitelisted, profile_id,))
 
+    def set_profile_followed(self, profile_id, followed):
+        """ Set a profile is followed. """
+        sql = """
+        UPDATE profile
+        SET followed=%s
+        WHERE profile_id=%s;
+        """
+        with self.get_cursor() as curs:
+            curs.execute(sql, (followed, profile_id,))
+
     def get_unverified_block_squeaks(self):
         """ Get all squeaks without block header. """
         sql = """
@@ -347,8 +357,8 @@ class PostgresDb:
             profile_name=row["profile_name"],
             private_key=private_key,
             address=row["address"],
-            sharing=row["sharing"],
-            following=row["following"],
+            shared=row["shared"],
+            followed=row["followed"],
             whitelisted=row["whitelisted"],
         )
 

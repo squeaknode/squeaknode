@@ -133,8 +133,8 @@ class SqueakNode:
             profile_name=profile_name,
             private_key=signing_key_bytes,
             address=str(address),
-            sharing=False,
-            following=False,
+            shared=False,
+            followed=False,
             whitelisted=False,
         )
         return self.postgres_db.insert_profile(squeak_profile)
@@ -148,8 +148,8 @@ class SqueakNode:
             profile_name=profile_name,
             private_key=None,
             address=squeak_address,
-            sharing=False,
-            following=False,
+            shared=False,
+            followed=False,
             whitelisted=False,
         )
         return self.postgres_db.insert_profile(squeak_profile)
@@ -169,6 +169,9 @@ class SqueakNode:
     def set_squeak_profile_whitelisted(self, profile_id, whitelisted):
         self.postgres_db.set_profile_whitelisted(profile_id, whitelisted)
         self.squeak_whitelist.refresh()
+
+    def set_squeak_profile_followed(self, profile_id, followed):
+        self.postgres_db.set_profile_followed(profile_id, followed)
 
     def make_squeak(self, profile_id, content_str, replyto_hash):
         squeak_profile = self.postgres_db.get_profile(profile_id)

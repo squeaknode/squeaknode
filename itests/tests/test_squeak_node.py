@@ -343,3 +343,24 @@ def test_set_profile_whitelisted(server_stub, admin_stub, contact_profile_id):
         squeak_admin_pb2.GetSqueakProfileRequest(profile_id=contact_profile_id,)
     )
     assert get_squeak_profile_response.squeak_profile.whitelisted == True
+
+def test_set_profile_followed(server_stub, admin_stub, contact_profile_id):
+    # Get the existing profile
+    get_squeak_profile_response = admin_stub.GetSqueakProfile(
+        squeak_admin_pb2.GetSqueakProfileRequest(profile_id=contact_profile_id,)
+    )
+    assert get_squeak_profile_response.squeak_profile.followed == False
+
+    # Set the profile to be whitelisted
+    admin_stub.SetSqueakProfileFollowed(
+        squeak_admin_pb2.SetSqueakProfileFollowedRequest(
+            profile_id=contact_profile_id,
+            followed=True,
+        )
+    )
+
+    # Get the squeak profile again
+    get_squeak_profile_response = admin_stub.GetSqueakProfile(
+        squeak_admin_pb2.GetSqueakProfileRequest(profile_id=contact_profile_id,)
+    )
+    assert get_squeak_profile_response.squeak_profile.followed == True
