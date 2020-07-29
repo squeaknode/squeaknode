@@ -235,6 +235,18 @@ class PostgresDb:
             profiles = [self._parse_squeak_profile(row) for row in rows]
             return profiles
 
+    def get_whitelisted_profiles(self):
+        """ Get all whitelisted profiles. """
+        sql = """
+        SELECT * FROM profile
+        WHERE whitelisted;
+        """
+        with self.get_cursor() as curs:
+            curs.execute(sql)
+            rows = curs.fetchall()
+            profiles = [self._parse_squeak_profile(row) for row in rows]
+            return profiles
+
     def get_profile(self, profile_id):
         """ Get a profile. """
         sql = """
@@ -255,6 +267,16 @@ class PostgresDb:
             curs.execute(sql, (address,))
             row = curs.fetchone()
             return self._parse_squeak_profile(row)
+
+    def set_profile_whitelisted(self, profile_id, whitelisted):
+        """ Set a profile is whitelisted. """
+        sql = """
+        UPDATE profile
+        SET whitelisted=%s
+        WHERE profile_id=%s;
+        """
+        with self.get_cursor() as curs:
+            curs.execute(sql, (whitelisted, profile_id,))
 
     def get_unverified_block_squeaks(self):
         """ Get all squeaks without block header. """
