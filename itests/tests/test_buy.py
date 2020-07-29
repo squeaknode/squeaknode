@@ -191,6 +191,35 @@ def test_buy_squeak():
         print("Get balance response: " + str(get_balance_response))
         assert get_balance_response.total_balance == 0
 
+        # Close the channel
+        time.sleep(10)
+        for update in lnd_lightning_client.close_channel(channel_point):
+            if update.HasField("chan_close"):
+                print("Channel closed.")
+                break
+
+        # Check the server balance
+        get_balance_response = admin_stub.LndWalletBalance(
+            ln.WalletBalanceRequest()
+        )
+        print("Get balance response: " + str(get_balance_response))
+        assert get_balance_response.total_balance == 1000
+
+def test_rate_limit():
+    # Set the network to simnet for itest.
+    SelectParams("mainnet")
+
+    # NOTE(gRPC Python Team): .close() is possible on a channel and should be
+    # used in circumstances in which the with statement does not fit the needs
+    # of the code.
+    with grpc.insecure_channel(
+        "sqkserver:8774"
+    ) as server_channel, grpc.insecure_channel("sqkserver:8994") as admin_channel:
+
+        # Make the stubs
+        server_stub = squeak_server_pb2_grpc.SqueakServerStub(server_channel)
+        admin_stub = squeak_admin_pb2_grpc.SqueakAdminStub(admin_channel)
+
         # Create a new signing profile
         profile_name = "bob"
         create_signing_profile_response = admin_stub.CreateSigningProfile(
@@ -242,23 +271,9 @@ def test_buy_squeak():
         )
         print("Get squeak response: " + str(get_squeak_response))
         get_squeak_response_squeak = squeak_from_msg(get_squeak_response.squeak)
-        CheckSqueak(get_response_squeak, skipDecryptionCheck=True)
+        CheckSqueak(get_squeak_response_squeak, skipDecryptionCheck=True)
         assert get_hash(get_squeak_response_squeak) == bytes.fromhex(make_squeak_hash)
         print("Squeak from make squeak request: " + str(get_squeak_response_squeak))
-
-        # Close the channel
-        time.sleep(10)
-        for update in lnd_lightning_client.close_channel(channel_point):
-            if update.HasField("chan_close"):
-                print("Channel closed.")
-                break
-
-        # Check the server balance
-        get_balance_response = admin_stub.LndWalletBalance(
-            ln.WalletBalanceRequest()
-        )
-        print("Get balance response: " + str(get_balance_response))
-        assert get_balance_response.total_balance == 1000
 
         # Get a squeak display item
         get_squeak_display_response = admin_stub.GetSqueakDisplay(
