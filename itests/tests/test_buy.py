@@ -359,6 +359,43 @@ def test_make_squeak():
             get_profile_by_address_response.squeak_profile.profile_name == "bob"
         )
 
+def test_make_reply_squeak():
+    # Set the network to simnet for itest.
+    SelectParams("mainnet")
+
+    # NOTE(gRPC Python Team): .close() is possible on a channel and should be
+    # used in circumstances in which the with statement does not fit the needs
+    # of the code.
+    with grpc.insecure_channel(
+        "sqkserver:8774"
+    ) as server_channel, grpc.insecure_channel("sqkserver:8994") as admin_channel:
+
+        # Make the stubs
+        server_stub = squeak_server_pb2_grpc.SqueakServerStub(server_channel)
+        admin_stub = squeak_admin_pb2_grpc.SqueakAdminStub(admin_channel)
+
+        # Create a new signing profile
+        profile_name = "bob"
+        create_signing_profile_response = admin_stub.CreateSigningProfile(
+            squeak_admin_pb2.CreateSigningProfileRequest(profile_name=profile_name,)
+        )
+        print(
+            "Get create signing profile response: "
+            + str(create_signing_profile_response)
+        )
+        profile_id = create_signing_profile_response.profile_id
+
+        # Create a new squeak using the new profile
+        make_squeak_content = "Hello from the profile on the server!"
+        make_squeak_response = admin_stub.MakeSqueak(
+            squeak_admin_pb2.MakeSqueakRequest(
+                profile_id=profile_id, content=make_squeak_content,
+            )
+        )
+        print("Get make squeak response: " + str(make_squeak_response))
+        make_squeak_hash = make_squeak_response.squeak_hash
+        assert len(make_squeak_hash) == 32*2
+
         # Create another signing profile
         other_profile_name = "carol"
         create_other_signing_profile_response = admin_stub.CreateSigningProfile(
