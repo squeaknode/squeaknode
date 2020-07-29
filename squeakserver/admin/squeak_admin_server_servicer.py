@@ -87,6 +87,12 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         self.handler.handle_set_squeak_profile_whitelisted(profile_id, whitelisted)
         return squeak_admin_pb2.SetSqueakProfileWhitelistedReply()
 
+    def SetSqueakProfileFollowed(self, request, context):
+        profile_id = request.profile_id
+        followed = request.followed
+        self.handler.handle_set_squeak_profile_followed(profile_id, followed)
+        return squeak_admin_pb2.SetSqueakProfileFollowedReply()
+
     def MakeSqueak(self, request, context):
         profile_id = request.profile_id
         content_str = request.content
@@ -188,8 +194,8 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
             profile_name=squeak_profile.profile_name,
             has_private_key=has_private_key,
             address=squeak_profile.address,
-            sharing=squeak_profile.sharing,
-            following=squeak_profile.following,
+            shared=squeak_profile.shared,
+            followed=squeak_profile.followed,
             whitelisted=squeak_profile.whitelisted,
         )
 
