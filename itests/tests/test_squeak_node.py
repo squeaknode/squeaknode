@@ -251,7 +251,6 @@ def test_rate_limit(server_stub, admin_stub, signing_profile_id):
                     profile_id=signing_profile_id, content="Hello number: {}".format(i),
                 )
             )
-            print(make_extra_squeak_response)
         except Exception as e:
             make_extra_squeak_exception = e
     assert make_extra_squeak_exception is not None
