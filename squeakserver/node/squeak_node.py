@@ -24,7 +24,7 @@ class SqueakNode:
         lightning_client,
         lightning_host_port,
         price,
-        max_squeaks_per_block_per_address,
+        max_squeaks_per_address_per_hour,
     ):
         self.postgres_db = postgres_db
         self.blockchain_client = blockchain_client
@@ -42,7 +42,7 @@ class SqueakNode:
             postgres_db,
             blockchain_client,
             lightning_client,
-            max_squeaks_per_block_per_address,
+            max_squeaks_per_address_per_hour,
         )
         self.squeak_whitelist = SqueakWhitelist(
             postgres_db,

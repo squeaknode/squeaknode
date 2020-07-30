@@ -186,6 +186,28 @@ class PostgresDb:
             hashes = [bytes.fromhex(row["hash"]) for row in rows]
             return hashes
 
+    def lookup_squeaks_by_time(self, addresses, interval_seconds, include_unverified=False):
+        """ Lookup squeaks. """
+        sql = """
+        SELECT hash FROM squeak
+        WHERE author_address IN %s
+        AND created > now() - interval '%s seconds'
+        AND vch_decryption_key IS NOT NULL
+        AND ((block_header IS NOT NULL) OR %s);
+        """
+        addresses_tuple = tuple(addresses)
+
+        if not addresses:
+            return []
+
+        with self.get_cursor() as curs:
+            # mogrify to debug.
+            # logger.info(curs.mogrify(sql, (addresses_tuple, min_block, max_block)))
+            curs.execute(sql, (addresses_tuple, interval_seconds, include_unverified))
+            rows = curs.fetchall()
+            hashes = [bytes.fromhex(row["hash"]) for row in rows]
+            return hashes
+
     def insert_profile(self, squeak_profile):
         """ Insert a new squeak profile. """
         sql = """
