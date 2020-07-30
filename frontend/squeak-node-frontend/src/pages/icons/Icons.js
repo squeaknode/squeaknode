@@ -4548,9 +4548,9 @@ export default function IconsPage () {
               sm={4}
               xs={12}
             >
-              <Icons.FolderSharing />
+              <Icons.FolderShared />
               <Typography className={classes.materialIconText}>
-                FolderSharing
+                FolderShared
               </Typography>
             </Grid>
             <Grid
