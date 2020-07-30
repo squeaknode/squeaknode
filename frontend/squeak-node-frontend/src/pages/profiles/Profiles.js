@@ -261,11 +261,11 @@ export default function Profiles() {
               [
                 p.getProfileName(),
                 p.getAddress(),
-                p.getFollowing().toString(),
-                p.getSharing().toString(),
+                p.getFollowed().toString(),
+                p.getShared().toString(),
               ]
             )}
-           columns={["Name", "Address", "Following", "Sharing"]}
+           columns={["Name", "Address", "Followed", "Shared"]}
            options={{
              filter: false,
              print: false,
@@ -294,11 +294,11 @@ export default function Profiles() {
               [
                 p.getProfileName(),
                 p.getAddress(),
-                p.getFollowing().toString(),
-                p.getSharing().toString(),
+                p.getFollowed().toString(),
+                p.getShared().toString(),
               ]
             )}
-           columns={["Name", "Address", "Following", "Sharing"]}
+           columns={["Name", "Address", "Followed", "Shared"]}
            options={{
              filter: false,
              print: false,
