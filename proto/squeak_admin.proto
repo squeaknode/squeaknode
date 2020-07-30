@@ -82,6 +82,14 @@ service SqueakAdmin {
   */
   rpc DeleteSqueak (DeleteSqueakRequest) returns (DeleteSqueakReply) {}
 
+  /** sqkadmin: `addserver`
+  */
+  rpc AddServer (AddServerRequest) returns (AddServerReply) {}
+
+  /** sqkadmin: `getserver`
+  */
+  rpc GetServer (GetServerRequest) returns (GetServerReply) {}
+
 }
 
 message HelloRequest {
@@ -299,4 +307,50 @@ message DeleteSqueakRequest {
 }
 
 message DeleteSqueakReply {
+}
+
+message AddServerRequest {
+    /// Name of the server
+    string server_name = 1;
+
+    /// Host
+    string host = 2;
+
+    /// Port
+    int32 port = 3;
+}
+
+message AddServerReply {
+    /// The server id
+    int32 server_id = 1;
+}
+
+message GetServerRequest {
+    /// The server id
+    int32 server_id = 1;
+}
+
+message GetServerReply {
+    /// The server
+    SqueakServer squeak_server = 1;
+}
+
+message SqueakServer {
+    /// The server id
+    int32 server_id = 1;
+
+    /// The server name
+    string server_name = 2;
+
+    /// Host
+    string host = 3;
+
+    /// Port
+    int32 port = 4;
+
+    /// Sharing
+    bool sharing = 5;
+
+    /// Following
+    bool following = 6;
 }

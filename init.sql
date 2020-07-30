@@ -32,3 +32,13 @@ CREATE TABLE IF NOT EXISTS profile (
   following BOOLEAN NOT NULL,
   whitelisted BOOLEAN NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS server (
+  server_id SERIAL PRIMARY KEY,
+  created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  server_name VARCHAR(64),
+  server_host VARCHAR(256) NOT NULL,
+  server_port INTEGER NOT NULL,
+  sharing BOOLEAN NOT NULL,
+  following BOOLEAN NOT NULL
+);

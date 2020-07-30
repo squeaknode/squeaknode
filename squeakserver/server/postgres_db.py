@@ -362,6 +362,39 @@ class PostgresDb:
         with self.get_cursor() as curs:
             curs.execute(sql, (squeak_hash_str,))
 
+    def insert_server(self, squeak_server):
+        """ Insert a new squeak server. """
+        sql = """
+        INSERT INTO server(server_name, server_host, server_port, sharing, following)
+        VALUES(%s, %s, %s, %s, %s)
+        RETURNING server_id;
+        """
+        with self.get_cursor() as curs:
+            # execute the INSERT statement
+            curs.execute(
+                sql,
+                (
+                    squeak_server.server_name,
+                    squeak_server.host,
+                    squeak_server.port,
+                    squeak_server.sharing,
+                    squeak_server.following,
+                ),
+            )
+            # get the new server id back
+            row = curs.fetchone()
+            return row["server_id"]
+
+    def get_server(self, server_id):
+        """ Get a server. """
+        sql = """
+        SELECT * FROM server WHERE server_id=%s"""
+
+        with self.get_cursor() as curs:
+            curs.execute(sql, (server_id,))
+            row = curs.fetchone()
+            return self._parse_squeak_server(row)
+
     def _parse_squeak_entry(self, row):
         vch_decryption_key_column = row["vch_decryption_key"]
         vch_decryption_key = (
@@ -410,4 +443,16 @@ class PostgresDb:
         squeak_profile = self._parse_squeak_profile(row)
         return SqueakEntryWithProfile(
             squeak_entry=squeak_entry, squeak_profile=squeak_profile,
+        )
+
+    def _parse_squeak_server(self, row):
+        if row is None:
+            return None
+        return SqueakProfile(
+            server_id=row["server_id"],
+            server_name=row["server_name"],
+            host=row["server_host"],
+            port=row["server_port"],
+            sharing=row["sharing"],
+            following=row["following"],
         )
