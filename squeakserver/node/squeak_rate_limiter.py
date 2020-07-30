@@ -25,22 +25,8 @@ class SqueakRateLimiter:
         return current_squeak_count < self.max_squeaks_per_address_per_hour
 
     def _get_current_squeak_count(self, squeak):
-        # current_block_info = self._get_latest_block()
-        # current_block_height = current_block_info.block_height
         squeak_address = self._get_squeak_address(squeak)
-        # return self._get_num_squeaks_in_block(current_block_height, squeak_address)
         return self._get_num_squeaks_in_last_hour(squeak_address)
-
-    # def _get_latest_block(self):
-    #     get_info_response = self.lightning_client.get_info()
-    #     block_hash = bytes.fromhex(get_info_response.block_hash)
-    #     block_height = get_info_response.block_height
-    #     return BlockInfo(block_hash, block_height)
-
-    # def _get_num_squeaks_in_block(self, block_height, squeak_address):
-    #     logger.info("Getting squeak count for block height: {}, squeak address: {}".format(block_height, squeak_address))
-    #     hashes = self.postgres_db.lookup_squeaks([squeak_address], block_height, block_height, include_unverified=True)
-    #     return len(hashes)
 
     def _get_num_squeaks_in_last_hour(self, squeak_address):
         logger.info("Getting squeak count for last hour for squeak address: {}".format(squeak_address))
