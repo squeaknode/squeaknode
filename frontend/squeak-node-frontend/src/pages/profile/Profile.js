@@ -20,6 +20,7 @@ import Widget from "../../components/Widget";
 import {
   GetSqueakProfileRequest,
   SetSqueakProfileFollowingRequest,
+  SetSqueakProfileSharingRequest,
 } from "../../proto/squeak_admin_pb"
 import { SqueakAdminClient } from "../../proto/squeak_admin_grpc_web_pb"
 
@@ -56,6 +57,17 @@ export default function ProfilePage() {
           getSqueakProfile(id);
         });
   };
+  const setSharing = (id, sharing) => {
+        console.log("called setSharing with profileId: " + id + ", sharing: " + sharing);
+        var setSqueakProfileSharingRequest = new SetSqueakProfileSharingRequest()
+        setSqueakProfileSharingRequest.setProfileId(id);
+        setSqueakProfileSharingRequest.setSharing(sharing);
+        console.log(setSqueakProfileSharingRequest);
+        client.setSqueakProfileSharing(setSqueakProfileSharingRequest, {}, (err, response) => {
+          console.log(response);
+          getSqueakProfile(id);
+        });
+  };
 
 
   useEffect(()=>{
@@ -63,9 +75,15 @@ export default function ProfilePage() {
   },[id]);
 
   const handleSettingsFollowingChange = (event) => {
-    console.log("Settings changed for profile id: " + id);
+    console.log("Following changed for profile id: " + id);
     console.log("Following changed to: " + event.target.checked);
     setFollowing(id, event.target.checked);
+  };
+
+  const handleSettingsSharingChange = (event) => {
+    console.log("Sharing changed for profile id: " + id);
+    console.log("Sharing changed to: " + event.target.checked);
+    setSharing(id, event.target.checked);
   };
 
   const handleSettingsChange = (event) => {
@@ -102,7 +120,7 @@ export default function ProfilePage() {
             label="Following"
           />
           <FormControlLabel
-            control={<Switch checked={squeakProfile.getSharing()} onChange={handleSettingsChange} />}
+            control={<Switch checked={squeakProfile.getSharing()} onChange={handleSettingsSharingChange} />}
             label="Sharing"
           />
           <FormControlLabel

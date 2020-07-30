@@ -54,6 +54,10 @@ service SqueakAdmin {
   */
   rpc SetSqueakProfileFollowing (SetSqueakProfileFollowingRequest) returns (SetSqueakProfileFollowingReply) {}
 
+  /** sqkadmin: `setsqueakprofilesharing`
+  */
+  rpc SetSqueakProfileSharing (SetSqueakProfileSharingRequest) returns (SetSqueakProfileSharingReply) {}
+
   /** sqkadmin: `makesqueak`
   */
   rpc MakeSqueak (MakeSqueakRequest) returns (MakeSqueakReply) {}
@@ -163,6 +167,17 @@ message SetSqueakProfileFollowingRequest {
 }
 
 message SetSqueakProfileFollowingReply {
+}
+
+message SetSqueakProfileSharingRequest {
+    /// The profile id
+    int32 profile_id = 1;
+
+    /// Sharing
+    bool sharing = 2;
+}
+
+message SetSqueakProfileSharingReply {
 }
 
 message SqueakProfile {

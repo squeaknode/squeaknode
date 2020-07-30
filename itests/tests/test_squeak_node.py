@@ -356,6 +356,27 @@ def test_set_profile_following(server_stub, admin_stub, contact_profile_id):
     )
     assert get_squeak_profile_response.squeak_profile.following == True
 
+def test_set_profile_sharing(server_stub, admin_stub, contact_profile_id):
+    # Get the existing profile
+    get_squeak_profile_response = admin_stub.GetSqueakProfile(
+        squeak_admin_pb2.GetSqueakProfileRequest(profile_id=contact_profile_id,)
+    )
+    assert get_squeak_profile_response.squeak_profile.sharing == False
+
+    # Set the profile to be sharing
+    admin_stub.SetSqueakProfileSharing(
+        squeak_admin_pb2.SetSqueakProfileSharingRequest(
+            profile_id=contact_profile_id,
+            sharing=True,
+        )
+    )
+
+    # Get the squeak profile again
+    get_squeak_profile_response = admin_stub.GetSqueakProfile(
+        squeak_admin_pb2.GetSqueakProfileRequest(profile_id=contact_profile_id,)
+    )
+    assert get_squeak_profile_response.squeak_profile.sharing == True
+
 def test_get_following_squeaks(server_stub, admin_stub, saved_squeak_hash, signing_profile_id):
     # Set the profile to be following
     admin_stub.SetSqueakProfileFollowing(

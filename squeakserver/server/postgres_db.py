@@ -287,6 +287,16 @@ class PostgresDb:
         with self.get_cursor() as curs:
             curs.execute(sql, (following, profile_id,))
 
+    def set_profile_sharing(self, profile_id, sharing):
+        """ Set a profile is sharing. """
+        sql = """
+        UPDATE profile
+        SET sharing=%s
+        WHERE profile_id=%s;
+        """
+        with self.get_cursor() as curs:
+            curs.execute(sql, (sharing, profile_id,))
+
     def get_unverified_block_squeaks(self):
         """ Get all squeaks without block header. """
         sql = """
