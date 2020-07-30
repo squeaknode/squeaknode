@@ -385,6 +385,16 @@ class PostgresDb:
             row = curs.fetchone()
             return row["server_id"]
 
+    def get_server(self, server_id):
+        """ Get a server. """
+        sql = """
+        SELECT * FROM server WHERE server_id=%s"""
+
+        with self.get_cursor() as curs:
+            curs.execute(sql, (server_id,))
+            row = curs.fetchone()
+            return self._parse_squeak_server(row)
+
     def _parse_squeak_entry(self, row):
         vch_decryption_key_column = row["vch_decryption_key"]
         vch_decryption_key = (
@@ -433,4 +443,16 @@ class PostgresDb:
         squeak_profile = self._parse_squeak_profile(row)
         return SqueakEntryWithProfile(
             squeak_entry=squeak_entry, squeak_profile=squeak_profile,
+        )
+
+    def _parse_squeak_server(self, row):
+        if row is None:
+            return None
+        return SqueakProfile(
+            server_id=row["server_id"],
+            server_name=row["server_name"],
+            host=row["server_host"],
+            port=row["server_port"],
+            sharing=row["sharing"],
+            following=row["following"],
         )

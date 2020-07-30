@@ -421,7 +421,13 @@ def test_add_server(server_stub, admin_stub):
             port=1234,
         )
     )
-    profile_id = add_server_response.server_id
+    server_id = add_server_response.server_id
 
     # Get the new server
-    # TODO
+    get_squeak_server_response = admin_stub.GetSqueakServer(
+        squeak_admin_pb2.GetSqueakServerRequest(
+            server_id=server_id
+        )
+    )
+    assert get_squeak_server_response.squeak_server.host == "fake_host"
+    assert get_squeak_server_response.squeak_server.port == 1234

@@ -185,6 +185,14 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
             server_id=server_id
         )
 
+    def GetServer(self, request, context):
+        server_id = request.server_id
+        squeak_server = self.handler.handle_get_squeak_server(server_id)
+        squeak_server_msg = self._squeak_server_to_message(squeak_server)
+        return squeak_admin_pb2.GetSqueakServerReply(
+            squeak_server=squeak_server_msg
+        )
+
     def _squeak_entry_to_message(self, squeak_entry_with_profile):
         if squeak_entry_with_profile is None:
             return None
@@ -224,6 +232,18 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
             sharing=squeak_profile.sharing,
             following=squeak_profile.following,
             whitelisted=squeak_profile.whitelisted,
+        )
+
+    def _squeak_server_to_message(self, squeak_server):
+        if squeak_server is None:
+            return None
+        return squeak_admin_pb2.SqueakServer(
+            server_id=squeak_server.server_id,
+            server_name=squeak_server.server_name,
+            host=squeak_server.host,
+            port=squeak_server.port,
+            sharing=squeak_server.sharing,
+            following=squeak_server.following,
         )
 
     def serve(self):
