@@ -17,6 +17,7 @@ import classnames from "classnames";
 import ReplyIcon from '@material-ui/icons/Reply';
 import RepeatIcon from '@material-ui/icons/Repeat';
 import FavoriteIcon from '@material-ui/icons/Favorite';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 // styles
 import useStyles from "./styles";
@@ -28,6 +29,7 @@ export default function SqueakDetailItem({
   handleAddressClick,
   handleSqueakClick,
   handleReplyClick,
+  handleDeleteClick,
   ...props
 }) {
   var classes = useStyles();
@@ -52,6 +54,14 @@ export default function SqueakDetailItem({
     console.log("Handling reply click...");
     if (handleReplyClick) {
       handleReplyClick();
+    }
+  }
+
+  const onDeleteClick = (event) => {
+    event.preventDefault();
+    console.log("Handling delete click...");
+    if (handleDeleteClick) {
+      handleDeleteClick();
     }
   }
 
@@ -129,6 +139,14 @@ export default function SqueakDetailItem({
                   p={1}
                   >
                   <FavoriteIcon />
+                </Box>
+            </Grid>
+            <Grid item xs={3} sm={1}>
+                <Box
+                  p={1}
+                  onClick={onDeleteClick}
+                  >
+                  <DeleteIcon />
                 </Box>
             </Grid>
           </Grid>
