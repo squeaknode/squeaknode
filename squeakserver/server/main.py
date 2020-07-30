@@ -55,8 +55,8 @@ def load_price(config):
     return int(config["squeaknode"]["price"])
 
 
-def load_max_squeaks_per_block_per_address(config):
-    return int(config["squeaknode"]["max_squeaks_per_block_per_address"])
+def load_max_squeaks_per_address_per_hour(config):
+    return int(config["squeaknode"]["max_squeaks_per_address_per_hour"])
 
 
 def load_handler(squeak_node):
@@ -152,7 +152,7 @@ def run_server(config):
     price = load_price(config)
 
     # load the max squeaks per block per address
-    max_squeaks_per_block_per_address = load_max_squeaks_per_block_per_address(config)
+    max_squeaks_per_address_per_hour = load_max_squeaks_per_address_per_hour(config)
 
     # load the lightning client
     lightning_client = load_lightning_client(config)
@@ -163,7 +163,7 @@ def run_server(config):
 
     # Create and start the squeak node
     squeak_node = SqueakNode(
-        postgres_db, blockchain_client, lightning_client, lightning_host_port, price, max_squeaks_per_block_per_address
+        postgres_db, blockchain_client, lightning_client, lightning_host_port, price, max_squeaks_per_address_per_hour
     )
     squeak_node.start_running()
 
