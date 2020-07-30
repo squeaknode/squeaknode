@@ -133,7 +133,7 @@ class SqueakNode:
             profile_name=profile_name,
             private_key=signing_key_bytes,
             address=str(address),
-            shared=False,
+            sharing=False,
             following=False,
             whitelisted=False,
         )
@@ -148,7 +148,7 @@ class SqueakNode:
             profile_name=profile_name,
             private_key=None,
             address=squeak_address,
-            shared=False,
+            sharing=False,
             following=False,
             whitelisted=False,
         )

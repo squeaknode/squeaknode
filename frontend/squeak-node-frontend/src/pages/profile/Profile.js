@@ -102,8 +102,8 @@ export default function ProfilePage() {
             label="Following"
           />
           <FormControlLabel
-            control={<Switch checked={squeakProfile.getShared()} onChange={handleSettingsChange} />}
-            label="Shared"
+            control={<Switch checked={squeakProfile.getSharing()} onChange={handleSettingsChange} />}
+            label="Sharing"
           />
           <FormControlLabel
             control={<Switch checked={squeakProfile.getWhitelisted()} onChange={handleSettingsChange} />}

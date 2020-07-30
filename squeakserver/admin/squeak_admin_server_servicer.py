@@ -194,7 +194,7 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
             profile_name=squeak_profile.profile_name,
             has_private_key=has_private_key,
             address=squeak_profile.address,
-            shared=squeak_profile.shared,
+            sharing=squeak_profile.sharing,
             following=squeak_profile.following,
             whitelisted=squeak_profile.whitelisted,
         )

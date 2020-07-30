@@ -178,8 +178,8 @@ message SqueakProfile {
     /// The address
     string address = 4;
 
-    /// Shared
-    bool shared = 5;
+    /// Sharing
+    bool sharing = 5;
 
     /// Following
     bool following = 6;
