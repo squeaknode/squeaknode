@@ -87,11 +87,11 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         self.handler.handle_set_squeak_profile_whitelisted(profile_id, whitelisted)
         return squeak_admin_pb2.SetSqueakProfileWhitelistedReply()
 
-    def SetSqueakProfileFollowed(self, request, context):
+    def SetSqueakProfileFollowing(self, request, context):
         profile_id = request.profile_id
-        followed = request.followed
-        self.handler.handle_set_squeak_profile_followed(profile_id, followed)
-        return squeak_admin_pb2.SetSqueakProfileFollowedReply()
+        following = request.following
+        self.handler.handle_set_squeak_profile_following(profile_id, following)
+        return squeak_admin_pb2.SetSqueakProfileFollowingReply()
 
     def MakeSqueak(self, request, context):
         profile_id = request.profile_id
@@ -140,7 +140,7 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
             for entry in
             squeak_entries_with_profile
         ]
-        return squeak_admin_pb2.GetFollowedSqueakDisplaysReply(
+        return squeak_admin_pb2.GetAddressSqueakDisplaysReply(
             squeak_display_entries=squeak_display_msgs
         )
 
@@ -154,7 +154,7 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
             for entry in
             squeak_entries_with_profile
         ]
-        return squeak_admin_pb2.GetFollowedSqueakDisplaysReply(
+        return squeak_admin_pb2.GetAncestorSqueakDisplaysReply(
             squeak_display_entries=squeak_display_msgs
         )
 
@@ -194,8 +194,8 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
             profile_name=squeak_profile.profile_name,
             has_private_key=has_private_key,
             address=squeak_profile.address,
-            shared=squeak_profile.shared,
-            followed=squeak_profile.followed,
+            sharing=squeak_profile.sharing,
+            following=squeak_profile.following,
             whitelisted=squeak_profile.whitelisted,
         )
 

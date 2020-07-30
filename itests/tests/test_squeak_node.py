@@ -335,18 +335,18 @@ def test_set_profile_whitelisted(server_stub, admin_stub, contact_profile_id):
     )
     assert get_squeak_profile_response.squeak_profile.whitelisted == True
 
-def test_set_profile_followed(server_stub, admin_stub, contact_profile_id):
+def test_set_profile_following(server_stub, admin_stub, contact_profile_id):
     # Get the existing profile
     get_squeak_profile_response = admin_stub.GetSqueakProfile(
         squeak_admin_pb2.GetSqueakProfileRequest(profile_id=contact_profile_id,)
     )
-    assert get_squeak_profile_response.squeak_profile.followed == False
+    assert get_squeak_profile_response.squeak_profile.following == False
 
-    # Set the profile to be followed
-    admin_stub.SetSqueakProfileFollowed(
-        squeak_admin_pb2.SetSqueakProfileFollowedRequest(
+    # Set the profile to be following
+    admin_stub.SetSqueakProfileFollowing(
+        squeak_admin_pb2.SetSqueakProfileFollowingRequest(
             profile_id=contact_profile_id,
-            followed=True,
+            following=True,
         )
     )
 
@@ -354,14 +354,14 @@ def test_set_profile_followed(server_stub, admin_stub, contact_profile_id):
     get_squeak_profile_response = admin_stub.GetSqueakProfile(
         squeak_admin_pb2.GetSqueakProfileRequest(profile_id=contact_profile_id,)
     )
-    assert get_squeak_profile_response.squeak_profile.followed == True
+    assert get_squeak_profile_response.squeak_profile.following == True
 
-def test_get_followed_squeaks(server_stub, admin_stub, saved_squeak_hash, signing_profile_id):
-    # Set the profile to be followed
-    admin_stub.SetSqueakProfileFollowed(
-        squeak_admin_pb2.SetSqueakProfileFollowedRequest(
+def test_get_following_squeaks(server_stub, admin_stub, saved_squeak_hash, signing_profile_id):
+    # Set the profile to be following
+    admin_stub.SetSqueakProfileFollowing(
+        squeak_admin_pb2.SetSqueakProfileFollowingRequest(
             profile_id=signing_profile_id,
-            followed=True,
+            following=True,
         )
     )
 

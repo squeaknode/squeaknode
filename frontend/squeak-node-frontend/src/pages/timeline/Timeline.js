@@ -48,8 +48,8 @@ export default function TimelinePage() {
 
   const getSqueaks = () => {
     console.log("called getSqueaks");
-    var getSqueaksRequest = new GetFollowedSqueakDisplaysRequest()
-    client.getFollowedSqueakDisplays(getSqueaksRequest, {}, (err, response) => {
+    var getFollowedSqueakDisplaysRequest = new GetFollowedSqueakDisplaysRequest()
+    client.getFollowedSqueakDisplays(getFollowedSqueakDisplaysRequest, {}, (err, response) => {
       console.log(response);
       setSqueaks(response.getSqueakDisplayEntriesList())
     });

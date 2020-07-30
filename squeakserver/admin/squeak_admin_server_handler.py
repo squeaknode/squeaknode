@@ -66,12 +66,12 @@ class SqueakAdminServerHandler(object):
         ))
         self.squeak_node.set_squeak_profile_whitelisted(profile_id, whitelisted)
 
-    def handle_set_squeak_profile_followed(self, profile_id, followed):
-        logger.info("Handle set squeak profile followed with profile id: {}, followed: {}".format(
+    def handle_set_squeak_profile_following(self, profile_id, following):
+        logger.info("Handle set squeak profile following with profile id: {}, following: {}".format(
             profile_id,
-            followed,
+            following,
         ))
-        self.squeak_node.set_squeak_profile_followed(profile_id, followed)
+        self.squeak_node.set_squeak_profile_following(profile_id, following)
 
     def handle_make_squeak(self, profile_id, content_str, replyto_hash):
         logger.info("Handle make squeak profile with id: {}".format(profile_id))
@@ -96,7 +96,7 @@ class SqueakAdminServerHandler(object):
         logger.info("Handle get followed squeak display entries.")
         squeak_entries_with_profile = self.squeak_node.get_followed_squeak_entries_with_profile()
         logger.info(
-            "Got number of squeak entries: {}".format(
+            "Got number of followed squeak entries: {}".format(
                 len(squeak_entries_with_profile)
             )
         )

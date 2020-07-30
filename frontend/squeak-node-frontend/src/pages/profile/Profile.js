@@ -19,7 +19,7 @@ import Widget from "../../components/Widget";
 
 import {
   GetSqueakProfileRequest,
-  SetSqueakProfileFollowedRequest,
+  SetSqueakProfileFollowingRequest,
 } from "../../proto/squeak_admin_pb"
 import { SqueakAdminClient } from "../../proto/squeak_admin_grpc_web_pb"
 
@@ -45,13 +45,13 @@ export default function ProfilePage() {
           setSqueakProfile(response.getSqueakProfile())
         });
   };
-  const setFollowed = (id, followed) => {
-        console.log("called setFollowed with profileId: " + id + ", followed: " + followed);
-        var setSqueakProfileFollowedRequest = new SetSqueakProfileFollowedRequest()
-        setSqueakProfileFollowedRequest.setProfileId(id);
-        setSqueakProfileFollowedRequest.setFollowed(followed);
-        console.log(setSqueakProfileFollowedRequest);
-        client.setSqueakProfileFollowed(setSqueakProfileFollowedRequest, {}, (err, response) => {
+  const setFollowing = (id, following) => {
+        console.log("called setFollowing with profileId: " + id + ", following: " + following);
+        var setSqueakProfileFollowingRequest = new SetSqueakProfileFollowingRequest()
+        setSqueakProfileFollowingRequest.setProfileId(id);
+        setSqueakProfileFollowingRequest.setFollowing(following);
+        console.log(setSqueakProfileFollowingRequest);
+        client.setSqueakProfileFollowing(setSqueakProfileFollowingRequest, {}, (err, response) => {
           console.log(response);
           getSqueakProfile(id);
         });
@@ -62,10 +62,10 @@ export default function ProfilePage() {
     getSqueakProfile(id)
   },[id]);
 
-  const handleSettingsFollowedChange = (event) => {
+  const handleSettingsFollowingChange = (event) => {
     console.log("Settings changed for profile id: " + id);
-    console.log("Followed changed to: " + event.target.checked);
-    setFollowed(id, event.target.checked);
+    console.log("Following changed to: " + event.target.checked);
+    setFollowing(id, event.target.checked);
   };
 
   const handleSettingsChange = (event) => {
@@ -98,12 +98,12 @@ export default function ProfilePage() {
         <FormLabel component="legend">Profile settings</FormLabel>
         <FormGroup>
           <FormControlLabel
-            control={<Switch checked={squeakProfile.getFollowed()} onChange={handleSettingsFollowedChange} />}
-            label="Followed"
+            control={<Switch checked={squeakProfile.getFollowing()} onChange={handleSettingsFollowingChange} />}
+            label="Following"
           />
           <FormControlLabel
-            control={<Switch checked={squeakProfile.getShared()} onChange={handleSettingsChange} />}
-            label="Shared"
+            control={<Switch checked={squeakProfile.getSharing()} onChange={handleSettingsChange} />}
+            label="Sharing"
           />
           <FormControlLabel
             control={<Switch checked={squeakProfile.getWhitelisted()} onChange={handleSettingsChange} />}

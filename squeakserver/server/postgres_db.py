@@ -110,13 +110,13 @@ class PostgresDb:
             return self._parse_squeak_entry_with_profile(row)
 
     def get_followed_squeak_entries_with_profile(self):
-        """ Get a squeak. """
+        """ Get all followed squeaks. """
         sql = """
         SELECT * FROM squeak
         JOIN profile
         ON squeak.author_address=profile.address
         WHERE squeak.block_header IS NOT NULL
-        AND profile.followed
+        AND profile.following
         ORDER BY n_block_height DESC, n_time DESC;
         """
         with self.get_cursor() as curs:
@@ -189,7 +189,7 @@ class PostgresDb:
     def insert_profile(self, squeak_profile):
         """ Insert a new squeak profile. """
         sql = """
-        INSERT INTO profile(profile_name, private_key, address, shared, followed, whitelisted)
+        INSERT INTO profile(profile_name, private_key, address, sharing, following, whitelisted)
         VALUES(%s, %s, %s, %s, %s, %s)
         RETURNING profile_id;
         """
@@ -201,8 +201,8 @@ class PostgresDb:
                     squeak_profile.profile_name,
                     squeak_profile.private_key,
                     squeak_profile.address,
-                    squeak_profile.shared,
-                    squeak_profile.followed,
+                    squeak_profile.sharing,
+                    squeak_profile.following,
                     squeak_profile.whitelisted,
                 ),
             )
@@ -277,15 +277,15 @@ class PostgresDb:
         with self.get_cursor() as curs:
             curs.execute(sql, (whitelisted, profile_id,))
 
-    def set_profile_followed(self, profile_id, followed):
-        """ Set a profile is followed. """
+    def set_profile_following(self, profile_id, following):
+        """ Set a profile is following. """
         sql = """
         UPDATE profile
-        SET followed=%s
+        SET following=%s
         WHERE profile_id=%s;
         """
         with self.get_cursor() as curs:
-            curs.execute(sql, (followed, profile_id,))
+            curs.execute(sql, (following, profile_id,))
 
     def get_unverified_block_squeaks(self):
         """ Get all squeaks without block header. """
@@ -356,8 +356,8 @@ class PostgresDb:
             profile_name=row["profile_name"],
             private_key=private_key,
             address=row["address"],
-            shared=row["shared"],
-            followed=row["followed"],
+            sharing=row["sharing"],
+            following=row["following"],
             whitelisted=row["whitelisted"],
         )
 

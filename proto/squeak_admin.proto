@@ -50,9 +50,9 @@ service SqueakAdmin {
   */
   rpc SetSqueakProfileWhitelisted (SetSqueakProfileWhitelistedRequest) returns (SetSqueakProfileWhitelistedReply) {}
 
-  /** sqkadmin: `setsqueakprofilefollowed`
+  /** sqkadmin: `setsqueakprofilefollowing`
   */
-  rpc SetSqueakProfileFollowed (SetSqueakProfileFollowedRequest) returns (SetSqueakProfileFollowedReply) {}
+  rpc SetSqueakProfileFollowing (SetSqueakProfileFollowingRequest) returns (SetSqueakProfileFollowingReply) {}
 
   /** sqkadmin: `makesqueak`
   */
@@ -154,15 +154,15 @@ message SetSqueakProfileWhitelistedRequest {
 message SetSqueakProfileWhitelistedReply {
 }
 
-message SetSqueakProfileFollowedRequest {
+message SetSqueakProfileFollowingRequest {
     /// The profile id
     int32 profile_id = 1;
 
-    /// Followed
-    bool followed = 2;
+    /// Following
+    bool following = 2;
 }
 
-message SetSqueakProfileFollowedReply {
+message SetSqueakProfileFollowingReply {
 }
 
 message SqueakProfile {
@@ -178,11 +178,11 @@ message SqueakProfile {
     /// The address
     string address = 4;
 
-    /// Shared
-    bool shared = 5;
+    /// Sharing
+    bool sharing = 5;
 
-    /// Followed
-    bool followed = 6;
+    /// Following
+    bool following = 6;
 
     /// Whitelisted
     bool whitelisted = 7;
