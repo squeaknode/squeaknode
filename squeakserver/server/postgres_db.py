@@ -109,8 +109,8 @@ class PostgresDb:
             row = curs.fetchone()
             return self._parse_squeak_entry_with_profile(row)
 
-    def get_following_squeak_entries_with_profile(self):
-        """ Get a squeak. """
+    def get_followed_squeak_entries_with_profile(self):
+        """ Get all followed squeaks. """
         sql = """
         SELECT * FROM squeak
         JOIN profile

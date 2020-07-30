@@ -366,13 +366,13 @@ def test_get_following_squeaks(server_stub, admin_stub, saved_squeak_hash, signi
     )
 
     # Get all squeak displays for the known address
-    get_following_squeak_display_response = admin_stub.GetFollowingSqueakDisplays(
-        squeak_admin_pb2.GetFollowingSqueakDisplaysRequest()
+    get_followed_squeak_display_response = admin_stub.GetFollowedSqueakDisplays(
+        squeak_admin_pb2.GetFollowedSqueakDisplaysRequest()
     )
     assert (
-        len(get_following_squeak_display_response.squeak_display_entries) == 1
+        len(get_followed_squeak_display_response.squeak_display_entries) == 1
     )
-    for squeak_display_entry in get_following_squeak_display_response.squeak_display_entries:
+    for squeak_display_entry in get_followed_squeak_display_response.squeak_display_entries:
         # TODO: check the profile id of the squeak display entry
         # assert squeak_display_entry.profile_id == signing_profile_id
         pass

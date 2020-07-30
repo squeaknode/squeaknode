@@ -182,8 +182,8 @@ class SqueakNode:
     def get_squeak_entry_with_profile(self, squeak_hash):
         return self.postgres_db.get_squeak_entry_with_profile(squeak_hash)
 
-    def get_following_squeak_entries_with_profile(self):
-        return self.postgres_db.get_following_squeak_entries_with_profile()
+    def get_followed_squeak_entries_with_profile(self):
+        return self.postgres_db.get_followed_squeak_entries_with_profile()
 
     def get_squeak_entries_with_profile_for_address(self, address, min_block, max_block):
         return self.postgres_db.get_squeak_entries_with_profile_for_address(

@@ -115,14 +115,14 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
             squeak_display_entry=display_message
         )
 
-    def GetFollowingSqueakDisplays(self, request, context):
-        squeak_entries_with_profile = self.handler.handle_get_following_squeak_display_entries()
+    def GetFollowedSqueakDisplays(self, request, context):
+        squeak_entries_with_profile = self.handler.handle_get_followed_squeak_display_entries()
         squeak_display_msgs = [
             self._squeak_entry_to_message(entry)
             for entry in
             squeak_entries_with_profile
         ]
-        return squeak_admin_pb2.GetFollowingSqueakDisplaysReply(
+        return squeak_admin_pb2.GetFollowedSqueakDisplaysReply(
             squeak_display_entries=squeak_display_msgs
         )
 
@@ -140,7 +140,7 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
             for entry in
             squeak_entries_with_profile
         ]
-        return squeak_admin_pb2.GetFollowingSqueakDisplaysReply(
+        return squeak_admin_pb2.GetAddressSqueakDisplaysReply(
             squeak_display_entries=squeak_display_msgs
         )
 
@@ -154,7 +154,7 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
             for entry in
             squeak_entries_with_profile
         ]
-        return squeak_admin_pb2.GetFollowingSqueakDisplaysReply(
+        return squeak_admin_pb2.GetAncestorSqueakDisplaysReply(
             squeak_display_entries=squeak_display_msgs
         )
 

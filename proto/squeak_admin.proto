@@ -62,9 +62,9 @@ service SqueakAdmin {
   */
   rpc GetSqueakDisplay (GetSqueakDisplayRequest) returns (GetSqueakDisplayReply) {}
 
-  /** sqkadmin: `getfollowingsqueakdisplays`
+  /** sqkadmin: `getfollowedsqueakdisplays`
   */
-  rpc GetFollowingSqueakDisplays (GetFollowingSqueakDisplaysRequest) returns (GetFollowingSqueakDisplaysReply) {}
+  rpc GetFollowedSqueakDisplays (GetFollowedSqueakDisplaysRequest) returns (GetFollowedSqueakDisplaysReply) {}
 
   /** sqkadmin: `getaddresssqueakdisplays`
   */
@@ -246,10 +246,10 @@ message SqueakDisplayEntry {
     string author_name = 10;
 }
 
-message GetFollowingSqueakDisplaysRequest {
+message GetFollowedSqueakDisplaysRequest {
 }
 
-message GetFollowingSqueakDisplaysReply {
+message GetFollowedSqueakDisplaysReply {
     /// Multiple squeak display entries
     repeated SqueakDisplayEntry squeak_display_entries = 1;
 }
