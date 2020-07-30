@@ -67,7 +67,7 @@ def test_post_squeak_not_whitelisted(server_stub, admin_stub, lightning_client, 
             squeak_server_pb2.PostSqueakRequest(squeak=squeak_msg)
         )
 
-def test_buy_squeak(server_stub, admin_stub, lightning_client, saved_squeak_hash):
+def test_sell_squeak(server_stub, admin_stub, lightning_client, saved_squeak_hash):
     # Check the server balance
     get_balance_response = admin_stub.LndWalletBalance(
         ln.WalletBalanceRequest()
