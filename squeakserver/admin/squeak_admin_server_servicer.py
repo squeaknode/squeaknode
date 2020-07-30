@@ -172,6 +172,19 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         )
         return squeak_admin_pb2.DeleteSqueakReply()
 
+    def AddServer(self, request, context):
+        server_name = request.server_name if request.server_name else None
+        server_host = request.host
+        server_port = request.port
+        server_id = self.handler.handle_add_server(
+            server_name,
+            server_host,
+            server_port,
+        )
+        return squeak_admin_pb2.AddServerReply(
+            server_id=server_id
+        )
+
     def _squeak_entry_to_message(self, squeak_entry_with_profile):
         if squeak_entry_with_profile is None:
             return None

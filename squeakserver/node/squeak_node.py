@@ -13,6 +13,7 @@ from squeakserver.node.squeak_rate_limiter import SqueakRateLimiter
 from squeakserver.node.squeak_whitelist import SqueakWhitelist
 from squeakserver.server.buy_offer import BuyOffer
 from squeakserver.server.squeak_profile import SqueakProfile
+from squeakserver.server.squeak_server import SqueakServer
 from squeakserver.server.util import generate_offer_preimage
 
 
@@ -202,3 +203,14 @@ class SqueakNode:
 
     def delete_squeak(self, squeak_hash):
         return self.postgres_db.delete_squeak(squeak_hash)
+
+    def add_server(self, server_name, server_host, server_port):
+        squeak_server = SqueakServer(
+            server_id=None,
+            server_name=server_name,
+            host=server_host,
+            port=server_port,
+            sharing=False,
+            following=False,
+        )
+        return self.postgres_db.insert_server(squeak_server)

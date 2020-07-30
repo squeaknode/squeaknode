@@ -362,6 +362,29 @@ class PostgresDb:
         with self.get_cursor() as curs:
             curs.execute(sql, (squeak_hash_str,))
 
+    def insert_server(self, squeak_server):
+        """ Insert a new squeak server. """
+        sql = """
+        INSERT INTO server(server_name, server_host, server_port, sharing, following)
+        VALUES(%s, %s, %s, %s, %s)
+        RETURNING server_id;
+        """
+        with self.get_cursor() as curs:
+            # execute the INSERT statement
+            curs.execute(
+                sql,
+                (
+                    squeak_server.server_name,
+                    squeak_server.host,
+                    squeak_server.port,
+                    squeak_server.sharing,
+                    squeak_server.following,
+                ),
+            )
+            # get the new server id back
+            row = curs.fetchone()
+            return row["server_id"]
+
     def _parse_squeak_entry(self, row):
         vch_decryption_key_column = row["vch_decryption_key"]
         vch_decryption_key = (

@@ -141,3 +141,16 @@ class SqueakAdminServerHandler(object):
                 squeak_hash
             )
         )
+
+    def handle_add_server(self, server_name, server_host, server_port):
+        logger.info("Handle add server with name: {}, host: {}, port: {}".format(
+            server_name,
+            server_host,
+            server_port,
+        ))
+        server_id = self.squeak_node.add_server(
+            server_name,
+            server_host,
+            server_port,
+        )
+        return server_id
