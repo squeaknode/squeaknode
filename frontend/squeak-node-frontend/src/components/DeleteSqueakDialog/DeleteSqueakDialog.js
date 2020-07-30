@@ -108,7 +108,7 @@ export default function DeleteSqueakDialog({
 
   return (
     <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-  <DialogTitle id="form-dialog-title">Make Squeak</DialogTitle>
+  <DialogTitle id="form-dialog-title">Delete Squeak</DialogTitle>
   <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
   <DialogContent>
     Are you sure you want to delete this squeak?
