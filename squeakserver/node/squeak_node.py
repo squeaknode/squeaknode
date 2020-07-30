@@ -173,6 +173,9 @@ class SqueakNode:
     def set_squeak_profile_following(self, profile_id, following):
         self.postgres_db.set_profile_following(profile_id, following)
 
+    def set_squeak_profile_sharing(self, profile_id, sharing):
+        self.postgres_db.set_profile_sharing(profile_id, sharing)
+
     def make_squeak(self, profile_id, content_str, replyto_hash):
         squeak_profile = self.postgres_db.get_profile(profile_id)
         squeak_maker = SqueakMaker(self.lightning_client)

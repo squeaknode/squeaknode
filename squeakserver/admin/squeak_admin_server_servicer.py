@@ -93,6 +93,12 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         self.handler.handle_set_squeak_profile_following(profile_id, following)
         return squeak_admin_pb2.SetSqueakProfileFollowingReply()
 
+    def SetSqueakProfileSharing(self, request, context):
+        profile_id = request.profile_id
+        sharing = request.sharing
+        self.handler.handle_set_squeak_profile_sharing(profile_id, sharing)
+        return squeak_admin_pb2.SetSqueakProfileSharingReply()
+
     def MakeSqueak(self, request, context):
         profile_id = request.profile_id
         content_str = request.content
