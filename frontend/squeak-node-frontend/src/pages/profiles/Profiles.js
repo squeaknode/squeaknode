@@ -26,7 +26,6 @@ import mock from "../dashboard/mock";
 import {GetInfoRequest} from "../../proto/lnd_pb"
 import {
   HelloRequest,
-  GetFollowingSqueakDisplaysRequest,
   GetSigningProfilesRequest,
   GetContactProfilesRequest,
 } from "../../proto/squeak_admin_pb"
