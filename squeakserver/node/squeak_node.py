@@ -134,7 +134,7 @@ class SqueakNode:
             private_key=signing_key_bytes,
             address=str(address),
             shared=False,
-            followed=False,
+            following=False,
             whitelisted=False,
         )
         return self.postgres_db.insert_profile(squeak_profile)
@@ -149,7 +149,7 @@ class SqueakNode:
             private_key=None,
             address=squeak_address,
             shared=False,
-            followed=False,
+            following=False,
             whitelisted=False,
         )
         return self.postgres_db.insert_profile(squeak_profile)
@@ -170,8 +170,8 @@ class SqueakNode:
         self.postgres_db.set_profile_whitelisted(profile_id, whitelisted)
         self.squeak_whitelist.refresh()
 
-    def set_squeak_profile_followed(self, profile_id, followed):
-        self.postgres_db.set_profile_followed(profile_id, followed)
+    def set_squeak_profile_following(self, profile_id, following):
+        self.postgres_db.set_profile_following(profile_id, following)
 
     def make_squeak(self, profile_id, content_str, replyto_hash):
         squeak_profile = self.postgres_db.get_profile(profile_id)
@@ -182,8 +182,8 @@ class SqueakNode:
     def get_squeak_entry_with_profile(self, squeak_hash):
         return self.postgres_db.get_squeak_entry_with_profile(squeak_hash)
 
-    def get_followed_squeak_entries_with_profile(self):
-        return self.postgres_db.get_followed_squeak_entries_with_profile()
+    def get_following_squeak_entries_with_profile(self):
+        return self.postgres_db.get_following_squeak_entries_with_profile()
 
     def get_squeak_entries_with_profile_for_address(self, address, min_block, max_block):
         return self.postgres_db.get_squeak_entries_with_profile_for_address(

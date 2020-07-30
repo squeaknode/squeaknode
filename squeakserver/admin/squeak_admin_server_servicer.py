@@ -87,11 +87,11 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         self.handler.handle_set_squeak_profile_whitelisted(profile_id, whitelisted)
         return squeak_admin_pb2.SetSqueakProfileWhitelistedReply()
 
-    def SetSqueakProfileFollowed(self, request, context):
+    def SetSqueakProfileFollowing(self, request, context):
         profile_id = request.profile_id
-        followed = request.followed
-        self.handler.handle_set_squeak_profile_followed(profile_id, followed)
-        return squeak_admin_pb2.SetSqueakProfileFollowedReply()
+        following = request.following
+        self.handler.handle_set_squeak_profile_following(profile_id, following)
+        return squeak_admin_pb2.SetSqueakProfileFollowingReply()
 
     def MakeSqueak(self, request, context):
         profile_id = request.profile_id
@@ -115,14 +115,14 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
             squeak_display_entry=display_message
         )
 
-    def GetFollowedSqueakDisplays(self, request, context):
-        squeak_entries_with_profile = self.handler.handle_get_followed_squeak_display_entries()
+    def GetFollowingSqueakDisplays(self, request, context):
+        squeak_entries_with_profile = self.handler.handle_get_following_squeak_display_entries()
         squeak_display_msgs = [
             self._squeak_entry_to_message(entry)
             for entry in
             squeak_entries_with_profile
         ]
-        return squeak_admin_pb2.GetFollowedSqueakDisplaysReply(
+        return squeak_admin_pb2.GetFollowingSqueakDisplaysReply(
             squeak_display_entries=squeak_display_msgs
         )
 
@@ -140,7 +140,7 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
             for entry in
             squeak_entries_with_profile
         ]
-        return squeak_admin_pb2.GetFollowedSqueakDisplaysReply(
+        return squeak_admin_pb2.GetFollowingSqueakDisplaysReply(
             squeak_display_entries=squeak_display_msgs
         )
 
@@ -154,7 +154,7 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
             for entry in
             squeak_entries_with_profile
         ]
-        return squeak_admin_pb2.GetFollowedSqueakDisplaysReply(
+        return squeak_admin_pb2.GetFollowingSqueakDisplaysReply(
             squeak_display_entries=squeak_display_msgs
         )
 
@@ -195,7 +195,7 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
             has_private_key=has_private_key,
             address=squeak_profile.address,
             shared=squeak_profile.shared,
-            followed=squeak_profile.followed,
+            following=squeak_profile.following,
             whitelisted=squeak_profile.whitelisted,
         )
 

@@ -26,7 +26,7 @@ import mock from "../dashboard/mock";
 import {GetInfoRequest} from "../../proto/lnd_pb"
 import {
   HelloRequest,
-  GetFollowedSqueakDisplaysRequest,
+  GetFollowingSqueakDisplaysRequest,
   GetSigningProfilesRequest,
   GetContactProfilesRequest,
 } from "../../proto/squeak_admin_pb"
@@ -261,11 +261,11 @@ export default function Profiles() {
               [
                 p.getProfileName(),
                 p.getAddress(),
-                p.getFollowed().toString(),
+                p.getFollowing().toString(),
                 p.getShared().toString(),
               ]
             )}
-           columns={["Name", "Address", "Followed", "Shared"]}
+           columns={["Name", "Address", "Following", "Shared"]}
            options={{
              filter: false,
              print: false,
@@ -294,11 +294,11 @@ export default function Profiles() {
               [
                 p.getProfileName(),
                 p.getAddress(),
-                p.getFollowed().toString(),
+                p.getFollowing().toString(),
                 p.getShared().toString(),
               ]
             )}
-           columns={["Name", "Address", "Followed", "Shared"]}
+           columns={["Name", "Address", "Following", "Shared"]}
            options={{
              filter: false,
              print: false,
