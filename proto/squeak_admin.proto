@@ -169,7 +169,7 @@ message SetSqueakProfileFollowingRequest {
 message SetSqueakProfileFollowingReply {
 }
 
-message SetSqueakProfileSharedRequest {
+message SetSqueakProfileSharingRequest {
     /// The profile id
     int32 profile_id = 1;
 
