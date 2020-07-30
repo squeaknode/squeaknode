@@ -199,3 +199,6 @@ class SqueakNode:
         return self.postgres_db.get_thread_ancestor_squeak_entries_with_profile(
             squeak_hash_str,
         )
+
+    def delete_squeak(self, squeak_hash):
+        return self.postgres_db.delete_squeak(squeak_hash)

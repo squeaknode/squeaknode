@@ -130,3 +130,14 @@ class SqueakAdminServerHandler(object):
         )
         logger.info("Got number of ancestor squeak entries: {}".format(len(squeak_entries_with_profile)))
         return squeak_entries_with_profile
+
+    def handle_delete_squeak(self, squeak_hash):
+        logger.info("Handle delete squeak with hash: {}".format(squeak_hash))
+        self.squeak_node.delete_squeak(
+            squeak_hash
+        )
+        logger.info(
+            "Deleted squeak entry with hash: {}".format(
+                squeak_hash
+            )
+        )

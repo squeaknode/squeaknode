@@ -330,6 +330,16 @@ class PostgresDb:
             # execute the UPDATE statement
             curs.execute(sql, (block_header, squeak_hash_str,))
 
+    def delete_squeak(self, squeak_hash):
+        """ Delete a squeak. """
+        sql = """
+        DELETE FROM squeak
+        WHERE squeak.hash=%s
+        """
+        squeak_hash_str = squeak_hash.hex()
+        with self.get_cursor() as curs:
+            curs.execute(sql, (squeak_hash_str,))
+
     def _parse_squeak_entry(self, row):
         vch_decryption_key_column = row["vch_decryption_key"]
         vch_decryption_key = (
