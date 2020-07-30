@@ -78,6 +78,10 @@ service SqueakAdmin {
   */
   rpc GetAncestorSqueakDisplays (GetAncestorSqueakDisplaysRequest) returns (GetAncestorSqueakDisplaysReply) {}
 
+  /** sqkadmin: `deletesqueak`
+  */
+  rpc DeleteSqueak (DeleteSqueakRequest) returns (DeleteSqueakReply) {}
+
 }
 
 message HelloRequest {
@@ -287,4 +291,12 @@ message GetAncestorSqueakDisplaysRequest {
 message GetAncestorSqueakDisplaysReply {
     /// Multiple squeak display entries
     repeated SqueakDisplayEntry squeak_display_entries = 1;
+}
+
+message DeleteSqueakRequest {
+    /// Hash of the created squeak.
+    string squeak_hash = 1;
+}
+
+message DeleteSqueakReply {
 }

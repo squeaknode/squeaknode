@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS squeak (
   enc_content CHAR(2272) NOT NULL, -- Encrypted content length is always 1136 bytes (2272 hex characters).
   vch_script_sig bytea NOT NULL,
   author_address VARCHAR(35) NOT NULL, -- Maximum length of a bitcoin address is 35.
-  vch_decryption_key bytea NOT NULL,
+  vch_decryption_key bytea,
   block_header bytea
 );
 

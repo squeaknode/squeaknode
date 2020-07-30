@@ -397,3 +397,19 @@ def test_get_following_squeaks(server_stub, admin_stub, saved_squeak_hash, signi
         # TODO: check the profile id of the squeak display entry
         # assert squeak_display_entry.profile_id == signing_profile_id
         pass
+
+def test_delete_squeak(server_stub, admin_stub, saved_squeak_hash):
+    # Delete the squeak
+    admin_stub.DeleteSqueak(
+        squeak_admin_pb2.DeleteSqueakRequest(
+            squeak_hash=saved_squeak_hash.hex()
+        )
+    )
+
+    # Try to get the squeak and fail
+    with pytest.raises(Exception):
+        get_response = server_stub.GetSqueak(
+            squeak_server_pb2.GetSqueakRequest(
+                hash=saved_squeak_hash
+            )
+        )

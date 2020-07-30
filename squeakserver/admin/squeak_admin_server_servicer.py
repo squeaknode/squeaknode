@@ -164,6 +164,14 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
             squeak_display_entries=squeak_display_msgs
         )
 
+    def DeleteSqueak(self, request, context):
+        squeak_hash_str = request.squeak_hash
+        squeak_hash = bytes.fromhex(squeak_hash_str)
+        self.handler.handle_delete_squeak(
+            squeak_hash
+        )
+        return squeak_admin_pb2.DeleteSqueakReply()
+
     def _squeak_entry_to_message(self, squeak_entry_with_profile):
         if squeak_entry_with_profile is None:
             return None
