@@ -86,9 +86,9 @@ service SqueakAdmin {
   */
   rpc AddServer (AddServerRequest) returns (AddServerReply) {}
 
-  /** sqkadmin: `getserver`
+  /** sqkadmin: `getsqueakserver`
   */
-  rpc GetServer (GetServerRequest) returns (GetServerReply) {}
+  rpc GetSqueakServer (GetSqueakServerRequest) returns (GetSqueakServerReply) {}
 
 }
 
@@ -325,17 +325,17 @@ message AddServerReply {
     int32 server_id = 1;
 }
 
-message GetServerRequest {
+message GetSqueakServerRequest {
     /// The server id
     int32 server_id = 1;
 }
 
-message GetServerReply {
+message GetSqueakServerReply {
     /// The server
-    SqueakServer squeak_server = 1;
+    SqueakServerSubscription squeak_server = 1;
 }
 
-message SqueakServer {
+message SqueakServerSubscription {
     /// The server id
     int32 server_id = 1;
 
