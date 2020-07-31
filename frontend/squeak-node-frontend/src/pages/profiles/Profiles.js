@@ -20,6 +20,7 @@ import PageTitle from "../../components/PageTitle";
 import Widget from "../../components/Widget";
 import Table from "../dashboard/components/Table/Table";
 import CreateSigningProfileDialog from "../../components/CreateSigningProfileDialog";
+import CreateContactProfileDialog from "../../components/CreateContactProfileDialog";
 
 // data
 import mock from "../dashboard/mock";
@@ -101,6 +102,7 @@ export default function Profiles() {
   const [signingProfiles, setSigningProfiles] = useState([]);
   const [contactProfiles, setContactProfiles] = useState([]);
   const [createSigningProfileDialogOpen, setCreateSigningProfileDialogOpen] = useState(false);
+  const [createContactProfileDialogOpen, setCreateContactProfileDialogOpen] = useState(false);
   const [value, setValue] = useState(0);
   const history = useHistory();
 
@@ -177,6 +179,14 @@ export default function Profiles() {
      setCreateSigningProfileDialogOpen(false);
   };
 
+  const handleClickOpenCreateContactProfileDialog = () => {
+    setCreateContactProfileDialogOpen(true);
+  };
+
+  const handleCloseCreateContactProfileDialog = () => {
+     setCreateContactProfileDialogOpen(false);
+  };
+
   useEffect(() => {
     getLndInfo()
   }, []);
@@ -249,7 +259,7 @@ export default function Profiles() {
           <Button
             variant="contained"
             onClick={() => {
-              goToCreateContactProfilePage();
+              handleClickOpenCreateContactProfileDialog();
             }}>Add contact
           </Button>
         </div>
@@ -335,10 +345,22 @@ export default function Profiles() {
     )
   }
 
+  function CreateContactProfileDialogContent() {
+    return (
+      <>
+        <CreateContactProfileDialog
+          open={createContactProfileDialogOpen}
+          handleClose={handleCloseCreateContactProfileDialog}
+          ></CreateContactProfileDialog>
+      </>
+    )
+  }
+
   return (
     <>
      < PageTitle title = "Profiles" />
     {ProfilesTabs()}
     {CreateSigningProfileDialogContent()}
+    {CreateContactProfileDialogContent()}
    < />);
 }
