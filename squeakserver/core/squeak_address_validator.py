@@ -2,7 +2,6 @@ import logging
 
 from bitcoin.base58 import Base58ChecksumError
 from bitcoin.wallet import CBitcoinAddressError
-from squeak.core import CheckSqueak, CheckSqueakError, CSqueak
 from squeak.core.signing import CSqueakAddress
 
 logger = logging.getLogger(__name__)

@@ -168,7 +168,12 @@ def run_server(config):
 
     # Create and start the squeak node
     squeak_node = SqueakNode(
-        postgres_db, blockchain_client, lightning_client, lightning_host_port, price, max_squeaks_per_address_per_hour
+        postgres_db,
+        blockchain_client,
+        lightning_client,
+        lightning_host_port,
+        price,
+        max_squeaks_per_address_per_hour,
     )
     squeak_node.start_running()
 

@@ -45,9 +45,7 @@ class SqueakNode:
             lightning_client,
             max_squeaks_per_address_per_hour,
         )
-        self.squeak_whitelist = SqueakWhitelist(
-            postgres_db,
-        )
+        self.squeak_whitelist = SqueakWhitelist(postgres_db,)
 
     def start_running(self):
         # self.squeak_block_periodic_worker.start_running()
@@ -143,7 +141,7 @@ class SqueakNode:
     def create_contact_profile(self, profile_name, squeak_address):
         address_validator = SqueakAddressValidator()
         if not address_validator.validate(squeak_address):
-            raise Exception('Invalid squeak address: {}'.format(squeak_address))
+            raise Exception("Invalid squeak address: {}".format(squeak_address))
         squeak_profile = SqueakProfile(
             profile_id=None,
             profile_name=profile_name,
@@ -189,11 +187,11 @@ class SqueakNode:
     def get_followed_squeak_entries_with_profile(self):
         return self.postgres_db.get_followed_squeak_entries_with_profile()
 
-    def get_squeak_entries_with_profile_for_address(self, address, min_block, max_block):
+    def get_squeak_entries_with_profile_for_address(
+        self, address, min_block, max_block
+    ):
         return self.postgres_db.get_squeak_entries_with_profile_for_address(
-            address,
-            min_block,
-            max_block,
+            address, min_block, max_block,
         )
 
     def get_ancestor_squeak_entries_with_profile(self, squeak_hash_str):

@@ -5,13 +5,12 @@ from psycopg2 import pool
 from psycopg2.extras import DictCursor
 from squeak.core import CSqueak
 
+from squeakserver.blockchain.util import parse_block_header
 from squeakserver.core.squeak_entry import SqueakEntry
 from squeakserver.core.squeak_entry_with_profile import SqueakEntryWithProfile
 from squeakserver.server.squeak_profile import SqueakProfile
 from squeakserver.server.squeak_server import SqueakServer
 from squeakserver.server.util import get_hash
-from squeakserver.blockchain.util import parse_block_header
-
 
 logger = logging.getLogger(__name__)
 
@@ -125,7 +124,9 @@ class PostgresDb:
             rows = curs.fetchall()
             return [self._parse_squeak_entry_with_profile(row) for row in rows]
 
-    def get_squeak_entries_with_profile_for_address(self, address, min_block, max_block):
+    def get_squeak_entries_with_profile_for_address(
+        self, address, min_block, max_block
+    ):
         """ Get a squeak. """
         sql = """
         SELECT * FROM squeak
@@ -182,12 +183,16 @@ class PostgresDb:
         with self.get_cursor() as curs:
             # mogrify to debug.
             # logger.info(curs.mogrify(sql, (addresses_tuple, min_block, max_block)))
-            curs.execute(sql, (addresses_tuple, min_block, max_block, include_unverified))
+            curs.execute(
+                sql, (addresses_tuple, min_block, max_block, include_unverified)
+            )
             rows = curs.fetchall()
             hashes = [bytes.fromhex(row["hash"]) for row in rows]
             return hashes
 
-    def lookup_squeaks_by_time(self, addresses, interval_seconds, include_unverified=False):
+    def lookup_squeaks_by_time(
+        self, addresses, interval_seconds, include_unverified=False
+    ):
         """ Lookup squeaks. """
         sql = """
         SELECT hash FROM squeak
@@ -419,7 +424,9 @@ class PostgresDb:
         )
         block_header_column = row["block_header"]
         block_header_bytes = bytes(block_header_column) if block_header_column else None
-        block_header = parse_block_header(block_header_bytes) if block_header_bytes else None
+        block_header = (
+            parse_block_header(block_header_bytes) if block_header_bytes else None
+        )
         return SqueakEntry(squeak=squeak, block_header=block_header)
 
     def _parse_squeak_profile(self, row):
