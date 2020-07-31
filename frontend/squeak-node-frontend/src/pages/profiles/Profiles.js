@@ -159,14 +159,6 @@ export default function Profiles() {
     });
   };
 
-  const goToCreateSigningProfilePage = () => {
-    history.push("/app/createsigningprofile");
-  };
-
-  const goToCreateContactProfilePage = () => {
-    history.push("/app/createcontactprofile");
-  };
-
   const goToSqueakAddressPage = (squeakAddress) => {
     history.push("/app/squeakaddress/" + squeakAddress);
   };
