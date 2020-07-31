@@ -119,7 +119,7 @@ export default function CreateSigningProfileDialog({
        color="primary"
        className={classes.button}
        >
-       Make Squeak
+       Create Signing Profile
        </Button>
     )
   }

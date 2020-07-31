@@ -19,6 +19,7 @@ import {makeStyles} from '@material-ui/core/styles';
 import PageTitle from "../../components/PageTitle";
 import Widget from "../../components/Widget";
 import Table from "../dashboard/components/Table/Table";
+import CreateSigningProfileDialog from "../../components/CreateSigningProfileDialog";
 
 // data
 import mock from "../dashboard/mock";
@@ -99,6 +100,7 @@ export default function Profiles() {
   const classes = useStyles();
   const [signingProfiles, setSigningProfiles] = useState([]);
   const [contactProfiles, setContactProfiles] = useState([]);
+  const [createSigningProfileDialogOpen, setCreateSigningProfileDialogOpen] = useState(false);
   const [value, setValue] = useState(0);
   const history = useHistory();
 
@@ -167,6 +169,14 @@ export default function Profiles() {
     history.push("/app/squeakaddress/" + squeakAddress);
   };
 
+  const handleClickOpenCreateSigningProfileDialog = () => {
+    setCreateSigningProfileDialogOpen(true);
+  };
+
+  const handleCloseCreateSigningProfileDialog = () => {
+     setCreateSigningProfileDialogOpen(false);
+  };
+
   useEffect(() => {
     getLndInfo()
   }, []);
@@ -222,7 +232,7 @@ export default function Profiles() {
           <Button
             variant="contained"
             onClick={() => {
-              goToCreateSigningProfilePage();
+              handleClickOpenCreateSigningProfileDialog();
             }}>Create Signing Profile
           </Button>
         </div>
@@ -314,9 +324,21 @@ export default function Profiles() {
     )
   }
 
+  function CreateSigningProfileDialogContent() {
+    return (
+      <>
+        <CreateSigningProfileDialog
+          open={createSigningProfileDialogOpen}
+          handleClose={handleCloseCreateSigningProfileDialog}
+          ></CreateSigningProfileDialog>
+      </>
+    )
+  }
+
   return (
     <>
      < PageTitle title = "Profiles" />
     {ProfilesTabs()}
+    {CreateSigningProfileDialogContent()}
    < />);
 }
