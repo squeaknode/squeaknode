@@ -185,7 +185,7 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
             server_id=server_id
         )
 
-    def GetServer(self, request, context):
+    def GetSqueakServer(self, request, context):
         server_id = request.server_id
         squeak_server = self.handler.handle_get_squeak_server(server_id)
         squeak_server_msg = self._squeak_server_to_message(squeak_server)
@@ -237,7 +237,7 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
     def _squeak_server_to_message(self, squeak_server):
         if squeak_server is None:
             return None
-        return squeak_admin_pb2.SqueakServer(
+        return squeak_admin_pb2.SqueakServerSubscription(
             server_id=squeak_server.server_id,
             server_name=squeak_server.server_name,
             host=squeak_server.host,

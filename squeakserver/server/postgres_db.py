@@ -8,6 +8,7 @@ from squeak.core import CSqueak
 from squeakserver.core.squeak_entry import SqueakEntry
 from squeakserver.core.squeak_entry_with_profile import SqueakEntryWithProfile
 from squeakserver.server.squeak_profile import SqueakProfile
+from squeakserver.server.squeak_server import SqueakServer
 from squeakserver.server.util import get_hash
 from squeakserver.blockchain.util import parse_block_header
 
@@ -448,7 +449,7 @@ class PostgresDb:
     def _parse_squeak_server(self, row):
         if row is None:
             return None
-        return SqueakProfile(
+        return SqueakServer(
             server_id=row["server_id"],
             server_name=row["server_name"],
             host=row["server_host"],
