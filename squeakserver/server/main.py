@@ -51,6 +51,10 @@ def load_admin_rpc_server(config, handler) -> SqueakAdminServerServicer:
     )
 
 
+def load_network(config):
+    return config["squeaknode"]["network"]
+
+
 def load_price(config):
     return int(config["squeaknode"]["price"])
 
@@ -134,10 +138,6 @@ def main():
 
 
 def run_server(config):
-    logger.info("network: " + config["DEFAULT"]["network"])
-    # SelectParams(config['DEFAULT']['network'])
-    SelectParams("mainnet")
-
     # load the db params
     db_params = load_db_params(config)
     logger.info("db params: " + str(db_params))
@@ -147,6 +147,11 @@ def run_server(config):
     logger.info("postgres_db: " + str(postgres_db))
     postgres_db.get_version()
     postgres_db.init()
+
+    # load the price
+    network = load_network(config)
+    logger.info("network: " + network)
+    SelectParams(network)
 
     # load the price
     price = load_price(config)

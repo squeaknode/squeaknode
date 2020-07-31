@@ -20,8 +20,8 @@ from tests.util import load_lightning_client
 
 @pytest.fixture(autouse=True)
 def select_mainnet_params():
-    # Set the network to mainnet.
-    SelectParams("mainnet")
+    # Set the network to simnet
+    SelectParams("simnet")
 
 @pytest.fixture
 def server_stub():
