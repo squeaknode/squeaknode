@@ -1,12 +1,10 @@
-import sys
-
 import logging
+import sys
 from concurrent import futures
 
 import grpc
 
 from proto import squeak_admin_pb2, squeak_admin_pb2_grpc
-
 from squeakserver.server.util import get_hash, get_replyto
 
 logger = logging.getLogger(__name__)
@@ -21,7 +19,7 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         self.handler = handler
 
     def SayHello(self, request, context):
-        return squeak_admin_pb2.HelloReply(message='Hello, %s!' % request.name)
+        return squeak_admin_pb2.HelloReply(message="Hello, %s!" % request.name)
 
     def LndGetInfo(self, request, context):
         return self.handler.handle_lnd_get_info()
@@ -38,48 +36,35 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         profile_name = request.profile_name
         squeak_address = request.address
         profile_id = self.handler.handle_create_contact_profile(
-            profile_name,
-            squeak_address,
+            profile_name, squeak_address,
         )
         return squeak_admin_pb2.CreateContactProfileReply(profile_id=profile_id,)
 
     def GetSigningProfiles(self, request, context):
         profiles = self.handler.handle_get_signing_profiles()
         profile_msgs = [
-            self._squeak_profile_to_message(profile)
-            for profile in
-            profiles
+            self._squeak_profile_to_message(profile) for profile in profiles
         ]
-        return squeak_admin_pb2.GetSigningProfilesReply(
-            squeak_profiles=profile_msgs
-        )
+        return squeak_admin_pb2.GetSigningProfilesReply(squeak_profiles=profile_msgs)
 
     def GetContactProfiles(self, request, context):
         profiles = self.handler.handle_get_contact_profiles()
         profile_msgs = [
-            self._squeak_profile_to_message(profile)
-            for profile in
-            profiles
+            self._squeak_profile_to_message(profile) for profile in profiles
         ]
-        return squeak_admin_pb2.GetContactProfilesReply(
-            squeak_profiles=profile_msgs
-        )
+        return squeak_admin_pb2.GetContactProfilesReply(squeak_profiles=profile_msgs)
 
     def GetSqueakProfile(self, request, context):
         profile_id = request.profile_id
         squeak_profile = self.handler.handle_get_squeak_profile(profile_id)
         squeak_profile_msg = self._squeak_profile_to_message(squeak_profile)
-        return squeak_admin_pb2.GetSqueakProfileReply(
-            squeak_profile=squeak_profile_msg
-        )
+        return squeak_admin_pb2.GetSqueakProfileReply(squeak_profile=squeak_profile_msg)
 
     def GetSqueakProfileByAddress(self, request, context):
         address = request.address
         squeak_profile = self.handler.handle_get_squeak_profile_by_address(address)
         squeak_profile_msg = self._squeak_profile_to_message(squeak_profile)
-        return squeak_admin_pb2.GetSqueakProfileReply(
-            squeak_profile=squeak_profile_msg
-        )
+        return squeak_admin_pb2.GetSqueakProfileReply(squeak_profile=squeak_profile_msg)
 
     def SetSqueakProfileWhitelisted(self, request, context):
         profile_id = request.profile_id
@@ -122,11 +107,12 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         )
 
     def GetFollowedSqueakDisplays(self, request, context):
-        squeak_entries_with_profile = self.handler.handle_get_followed_squeak_display_entries()
+        squeak_entries_with_profile = (
+            self.handler.handle_get_followed_squeak_display_entries()
+        )
         squeak_display_msgs = [
             self._squeak_entry_to_message(entry)
-            for entry in
-            squeak_entries_with_profile
+            for entry in squeak_entries_with_profile
         ]
         return squeak_admin_pb2.GetFollowedSqueakDisplaysReply(
             squeak_display_entries=squeak_display_msgs
@@ -137,14 +123,11 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         min_block = 0
         max_block = sys.maxsize
         squeak_entries_with_profile = self.handler.handle_get_squeak_display_entries_for_address(
-            address,
-            min_block,
-            max_block,
+            address, min_block, max_block,
         )
         squeak_display_msgs = [
             self._squeak_entry_to_message(entry)
-            for entry in
-            squeak_entries_with_profile
+            for entry in squeak_entries_with_profile
         ]
         return squeak_admin_pb2.GetAddressSqueakDisplaysReply(
             squeak_display_entries=squeak_display_msgs
@@ -157,8 +140,7 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         )
         squeak_display_msgs = [
             self._squeak_entry_to_message(entry)
-            for entry in
-            squeak_entries_with_profile
+            for entry in squeak_entries_with_profile
         ]
         return squeak_admin_pb2.GetAncestorSqueakDisplaysReply(
             squeak_display_entries=squeak_display_msgs
@@ -167,9 +149,7 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
     def DeleteSqueak(self, request, context):
         squeak_hash_str = request.squeak_hash
         squeak_hash = bytes.fromhex(squeak_hash_str)
-        self.handler.handle_delete_squeak(
-            squeak_hash
-        )
+        self.handler.handle_delete_squeak(squeak_hash)
         return squeak_admin_pb2.DeleteSqueakReply()
 
     def AddServer(self, request, context):
@@ -177,21 +157,15 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         server_host = request.host
         server_port = request.port
         server_id = self.handler.handle_add_server(
-            server_name,
-            server_host,
-            server_port,
+            server_name, server_host, server_port,
         )
-        return squeak_admin_pb2.AddServerReply(
-            server_id=server_id
-        )
+        return squeak_admin_pb2.AddServerReply(server_id=server_id)
 
     def GetSqueakServer(self, request, context):
         server_id = request.server_id
         squeak_server = self.handler.handle_get_squeak_server(server_id)
         squeak_server_msg = self._squeak_server_to_message(squeak_server)
-        return squeak_admin_pb2.GetSqueakServerReply(
-            squeak_server=squeak_server_msg
-        )
+        return squeak_admin_pb2.GetSqueakServerReply(squeak_server=squeak_server_msg)
 
     def _squeak_entry_to_message(self, squeak_entry_with_profile):
         if squeak_entry_with_profile is None:

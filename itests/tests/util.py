@@ -1,14 +1,11 @@
 from __future__ import print_function
 
-import logging
 import time
 
-import grpc
 from lnd_lightning_client import LNDLightningClient
-from squeak.core import HASH_LENGTH, CheckSqueak, CSqueak, MakeSqueakFromStr
-from squeak.core.encryption import CEncryptedDecryptionKey, generate_data_key
+from squeak.core import HASH_LENGTH, CSqueak, MakeSqueakFromStr
+from squeak.core.encryption import generate_data_key
 from squeak.core.signing import CSigningKey, CSqueakAddress
-from squeak.params import SelectParams
 
 from proto import lnd_pb2 as ln
 from proto import lnd_pb2_grpc as lnrpc

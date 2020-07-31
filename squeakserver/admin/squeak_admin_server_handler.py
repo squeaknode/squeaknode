@@ -31,8 +31,14 @@ class SqueakAdminServerHandler(object):
         return profile_id
 
     def handle_create_contact_profile(self, profile_name, squeak_address):
-        logger.info("Handle create contact profile with name: {}, address: {}".format(profile_name, squeak_address))
-        profile_id = self.squeak_node.create_contact_profile(profile_name, squeak_address)
+        logger.info(
+            "Handle create contact profile with name: {}, address: {}".format(
+                profile_name, squeak_address
+            )
+        )
+        profile_id = self.squeak_node.create_contact_profile(
+            profile_name, squeak_address
+        )
         logger.info("New profile_id: {}".format(profile_id))
         return profile_id
 
@@ -60,24 +66,27 @@ class SqueakAdminServerHandler(object):
         return squeak_profile
 
     def handle_set_squeak_profile_whitelisted(self, profile_id, whitelisted):
-        logger.info("Handle set squeak profile whitelisted with profile id: {}, whitelisted: {}".format(
-            profile_id,
-            whitelisted,
-        ))
+        logger.info(
+            "Handle set squeak profile whitelisted with profile id: {}, whitelisted: {}".format(
+                profile_id, whitelisted,
+            )
+        )
         self.squeak_node.set_squeak_profile_whitelisted(profile_id, whitelisted)
 
     def handle_set_squeak_profile_following(self, profile_id, following):
-        logger.info("Handle set squeak profile following with profile id: {}, following: {}".format(
-            profile_id,
-            following,
-        ))
+        logger.info(
+            "Handle set squeak profile following with profile id: {}, following: {}".format(
+                profile_id, following,
+            )
+        )
         self.squeak_node.set_squeak_profile_following(profile_id, following)
 
     def handle_set_squeak_profile_sharing(self, profile_id, sharing):
-        logger.info("Handle set squeak profile sharing with profile id: {}, sharing: {}".format(
-            profile_id,
-            sharing,
-        ))
+        logger.info(
+            "Handle set squeak profile sharing with profile id: {}, sharing: {}".format(
+                profile_id, sharing,
+            )
+        )
         self.squeak_node.set_squeak_profile_sharing(profile_id, sharing)
 
     def handle_make_squeak(self, profile_id, content_str, replyto_hash):
@@ -101,7 +110,9 @@ class SqueakAdminServerHandler(object):
 
     def handle_get_followed_squeak_display_entries(self):
         logger.info("Handle get followed squeak display entries.")
-        squeak_entries_with_profile = self.squeak_node.get_followed_squeak_entries_with_profile()
+        squeak_entries_with_profile = (
+            self.squeak_node.get_followed_squeak_entries_with_profile()
+        )
         logger.info(
             "Got number of followed squeak entries: {}".format(
                 len(squeak_entries_with_profile)
@@ -109,50 +120,46 @@ class SqueakAdminServerHandler(object):
         )
         return squeak_entries_with_profile
 
-    def handle_get_squeak_display_entries_for_address(self, address, min_block, max_block):
+    def handle_get_squeak_display_entries_for_address(
+        self, address, min_block, max_block
+    ):
         logger.info("Handle get squeak display entries for address: {}".format(address))
         squeak_entries_with_profile = self.squeak_node.get_squeak_entries_with_profile_for_address(
-            address,
-            min_block,
-            max_block,
+            address, min_block, max_block,
         )
         logger.info(
-            "Got number of squeak entries: {}".format(
+            "Got number of squeak entries: {}".format(len(squeak_entries_with_profile))
+        )
+        return squeak_entries_with_profile
+
+    def handle_get_ancestor_squeak_display_entries(self, squeak_hash_str):
+        logger.info(
+            "Handle get ancestor squeak display entries for squeak hash: {}".format(
+                squeak_hash_str
+            )
+        )
+        squeak_entries_with_profile = self.squeak_node.get_ancestor_squeak_entries_with_profile(
+            squeak_hash_str,
+        )
+        logger.info(
+            "Got number of ancestor squeak entries: {}".format(
                 len(squeak_entries_with_profile)
             )
         )
         return squeak_entries_with_profile
 
-    def handle_get_ancestor_squeak_display_entries(self, squeak_hash_str):
-        logger.info("Handle get ancestor squeak display entries for squeak hash: {}".format(squeak_hash_str))
-        squeak_entries_with_profile = self.squeak_node.get_ancestor_squeak_entries_with_profile(
-            squeak_hash_str,
-        )
-        logger.info("Got number of ancestor squeak entries: {}".format(len(squeak_entries_with_profile)))
-        return squeak_entries_with_profile
-
     def handle_delete_squeak(self, squeak_hash):
         logger.info("Handle delete squeak with hash: {}".format(squeak_hash))
-        self.squeak_node.delete_squeak(
-            squeak_hash
-        )
-        logger.info(
-            "Deleted squeak entry with hash: {}".format(
-                squeak_hash
-            )
-        )
+        self.squeak_node.delete_squeak(squeak_hash)
+        logger.info("Deleted squeak entry with hash: {}".format(squeak_hash))
 
     def handle_add_server(self, server_name, server_host, server_port):
-        logger.info("Handle add server with name: {}, host: {}, port: {}".format(
-            server_name,
-            server_host,
-            server_port,
-        ))
-        server_id = self.squeak_node.add_server(
-            server_name,
-            server_host,
-            server_port,
+        logger.info(
+            "Handle add server with name: {}, host: {}, port: {}".format(
+                server_name, server_host, server_port,
+            )
         )
+        server_id = self.squeak_node.add_server(server_name, server_host, server_port,)
         return server_id
 
     def handle_get_squeak_server(self, server_id):

@@ -1,8 +1,6 @@
 import logging
-import queue
 
 from squeakserver.server.util import get_hash
-from squeakserver.node.block_info import BlockInfo
 
 logger = logging.getLogger(__name__)
 
@@ -11,7 +9,13 @@ HOUR_IN_SECONDS = 3600
 
 
 class SqueakRateLimiter:
-    def __init__(self, postgres_db, blockchain_client, lightning_client, max_squeaks_per_address_per_hour):
+    def __init__(
+        self,
+        postgres_db,
+        blockchain_client,
+        lightning_client,
+        max_squeaks_per_address_per_hour,
+    ):
         self.postgres_db = postgres_db
         self.blockchain_client = blockchain_client
         self.lightning_client = lightning_client
@@ -21,7 +25,11 @@ class SqueakRateLimiter:
         squeak_hash = get_hash(squeak)
         logger.info("Checking rate limit for squeak: {}".format(squeak_hash))
         current_squeak_count = self._get_current_squeak_count(squeak)
-        logger.info("Current squeak count: {}, limit: {}".format(current_squeak_count, self.max_squeaks_per_address_per_hour))
+        logger.info(
+            "Current squeak count: {}, limit: {}".format(
+                current_squeak_count, self.max_squeaks_per_address_per_hour
+            )
+        )
         return current_squeak_count < self.max_squeaks_per_address_per_hour
 
     def _get_current_squeak_count(self, squeak):
@@ -29,11 +37,13 @@ class SqueakRateLimiter:
         return self._get_num_squeaks_in_last_hour(squeak_address)
 
     def _get_num_squeaks_in_last_hour(self, squeak_address):
-        logger.info("Getting squeak count for last hour for squeak address: {}".format(squeak_address))
+        logger.info(
+            "Getting squeak count for last hour for squeak address: {}".format(
+                squeak_address
+            )
+        )
         hashes = self.postgres_db.lookup_squeaks_by_time(
-            [squeak_address],
-            HOUR_IN_SECONDS,
-            include_unverified=True,
+            [squeak_address], HOUR_IN_SECONDS, include_unverified=True,
         )
         return len(hashes)
 

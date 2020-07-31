@@ -1,41 +1,40 @@
 from __future__ import print_function
 
-import pytest
-import logging
 import time
 
-import grpc
-from lnd_lightning_client import LNDLightningClient
-from squeak.core import HASH_LENGTH, CheckSqueak, CSqueak, MakeSqueakFromStr
-from squeak.core.encryption import CEncryptedDecryptionKey, generate_data_key
-from squeak.core.signing import CSigningKey, CSqueakAddress
+import pytest
+from squeak.core import CheckSqueak
+from squeak.core.encryption import CEncryptedDecryptionKey
 
 from proto import lnd_pb2 as ln
-from proto import lnd_pb2_grpc as lnrpc
 from proto import (
     squeak_admin_pb2,
     squeak_admin_pb2_grpc,
     squeak_server_pb2,
     squeak_server_pb2_grpc,
 )
+from tests.util import (
+    build_squeak_msg,
+    generate_challenge_proof,
+    generate_signing_key,
+    get_address,
+    get_challenge,
+    get_hash,
+    get_latest_block_info,
+    make_squeak,
+    squeak_from_msg,
+    string_to_hex,
+)
 
-from tests.util import build_squeak_msg
-from tests.util import squeak_from_msg
-from tests.util import generate_signing_key
-from tests.util import generate_challenge_proof
-from tests.util import get_challenge
-from tests.util import get_address
-from tests.util import get_latest_block_info
-from tests.util import make_squeak
-from tests.util import get_hash
-from tests.util import bxor
-from tests.util import string_to_hex
 
-
-def test_post_squeak(server_stub, admin_stub, lightning_client, whitelisted_signing_key):
+def test_post_squeak(
+    server_stub, admin_stub, lightning_client, whitelisted_signing_key
+):
     # Post a squeak with a direct request to the server
     block_height, block_hash = get_latest_block_info(lightning_client)
-    squeak = make_squeak(whitelisted_signing_key, "hello from itest!", block_hash, block_height)
+    squeak = make_squeak(
+        whitelisted_signing_key, "hello from itest!", block_hash, block_height
+    )
     squeak_hash = get_hash(squeak)
 
     squeak_msg = build_squeak_msg(squeak)
@@ -55,17 +54,21 @@ def test_post_squeak(server_stub, admin_stub, lightning_client, whitelisted_sign
 
     assert get_hash(get_response_squeak) == get_hash(squeak)
 
-def test_post_squeak_not_whitelisted(server_stub, admin_stub, lightning_client, nonwhitelisted_signing_key):
+
+def test_post_squeak_not_whitelisted(
+    server_stub, admin_stub, lightning_client, nonwhitelisted_signing_key
+):
     # Post a squeak with a direct request to the server
     block_height, block_hash = get_latest_block_info(lightning_client)
-    squeak = make_squeak(nonwhitelisted_signing_key, "hello from itest!", block_hash, block_height)
+    squeak = make_squeak(
+        nonwhitelisted_signing_key, "hello from itest!", block_hash, block_height
+    )
     squeak_hash = get_hash(squeak)
 
     squeak_msg = build_squeak_msg(squeak)
     with pytest.raises(Exception):
-        server_stub.PostSqueak(
-            squeak_server_pb2.PostSqueakRequest(squeak=squeak_msg)
-        )
+        server_stub.PostSqueak(squeak_server_pb2.PostSqueakRequest(squeak=squeak_msg))
+
 
 def test_lookup_squeaks(server_stub, admin_stub, signing_profile_id, saved_squeak_hash):
     # Get the squeak profile
@@ -78,13 +81,12 @@ def test_lookup_squeaks(server_stub, admin_stub, signing_profile_id, saved_squea
     addresses = [squeak_profile_address]
     lookup_response = server_stub.LookupSqueaks(
         squeak_server_pb2.LookupSqueaksRequest(
-            addresses=addresses,
-            min_block=0,
-            max_block=99999999,
+            addresses=addresses, min_block=0, max_block=99999999,
         )
     )
     assert len(lookup_response.hashes) == 1
     assert saved_squeak_hash in set(lookup_response.hashes)
+
 
 def test_lookup_squeaks_empty_result(server_stub, admin_stub):
     signing_key = generate_signing_key()
@@ -94,18 +96,15 @@ def test_lookup_squeaks_empty_result(server_stub, admin_stub):
     addresses = [address]
     lookup_response = server_stub.LookupSqueaks(
         squeak_server_pb2.LookupSqueaksRequest(
-            addresses=addresses,
-            min_block=0,
-            max_block=99999999,
+            addresses=addresses, min_block=0, max_block=99999999,
         )
     )
     assert len(lookup_response.hashes) == 0
 
+
 def test_sell_squeak(server_stub, admin_stub, lightning_client, saved_squeak_hash):
     # Check the server balance
-    get_balance_response = admin_stub.LndWalletBalance(
-        ln.WalletBalanceRequest()
-    )
+    get_balance_response = admin_stub.LndWalletBalance(ln.WalletBalanceRequest())
     initial_server_balance = get_balance_response.total_balance
 
     # Get the squeak from the server
@@ -151,9 +150,7 @@ def test_sell_squeak(server_stub, admin_stub, lightning_client, saved_squeak_has
     list_channels_response = lightning_client.list_channels()
 
     # Pay the invoice
-    payment = lightning_client.pay_invoice_sync(
-        buy_response.offer.payment_request
-    )
+    payment = lightning_client.pay_invoice_sync(buy_response.offer.payment_request)
     preimage = payment.payment_preimage
 
     # Verify with the payment preimage and decryption key ciphertext
@@ -178,11 +175,10 @@ def test_sell_squeak(server_stub, admin_stub, lightning_client, saved_squeak_has
             break
 
     # Check the server balance
-    get_balance_response = admin_stub.LndWalletBalance(
-        ln.WalletBalanceRequest()
-    )
+    get_balance_response = admin_stub.LndWalletBalance(ln.WalletBalanceRequest())
     final_server_balance = get_balance_response.total_balance
     assert final_server_balance - initial_server_balance == 1000
+
 
 def test_make_squeak(server_stub, admin_stub, signing_profile_id):
     # Create a new squeak using the new profile
@@ -193,7 +189,7 @@ def test_make_squeak(server_stub, admin_stub, signing_profile_id):
         )
     )
     make_squeak_hash = make_squeak_response.squeak_hash
-    assert len(make_squeak_hash) == 32*2
+    assert len(make_squeak_hash) == 32 * 2
 
     # Get the new squeak from the server
     get_squeak_response = server_stub.GetSqueak(
@@ -221,18 +217,19 @@ def test_make_squeak(server_stub, admin_stub, signing_profile_id):
 
     # Get all squeak displays for the known address
     get_address_squeak_display_response = admin_stub.GetAddressSqueakDisplays(
-        squeak_admin_pb2.GetAddressSqueakDisplaysRequest(
-            address=squeak_profile_address
-        )
+        squeak_admin_pb2.GetAddressSqueakDisplaysRequest(address=squeak_profile_address)
     )
-    assert (
-        len(get_address_squeak_display_response.squeak_display_entries) == 1
-    )
-    for squeak_display_entry in get_address_squeak_display_response.squeak_display_entries:
+    assert len(get_address_squeak_display_response.squeak_display_entries) == 1
+    for (
+        squeak_display_entry
+    ) in get_address_squeak_display_response.squeak_display_entries:
         assert squeak_display_entry.author_name == squeak_profile_name
         assert squeak_display_entry.author_address == squeak_profile_address
 
-def test_make_reply_squeak(server_stub, admin_stub, saved_squeak_hash, signing_profile_id):
+
+def test_make_reply_squeak(
+    server_stub, admin_stub, saved_squeak_hash, signing_profile_id
+):
     # Make another squeak as a reply
     reply_1_squeak_response = admin_stub.MakeSqueak(
         squeak_admin_pb2.MakeSqueakRequest(
@@ -255,15 +252,15 @@ def test_make_reply_squeak(server_stub, admin_stub, saved_squeak_hash, signing_p
 
     # Get the squeak and check that the reply field is correct
     get_reply_squeak_display_response = admin_stub.GetSqueakDisplay(
-        squeak_admin_pb2.GetSqueakDisplayRequest(
-            squeak_hash=reply_2_squeak_hash,
-        )
+        squeak_admin_pb2.GetSqueakDisplayRequest(squeak_hash=reply_2_squeak_hash,)
     )
     assert (
-        get_reply_squeak_display_response.squeak_display_entry.squeak_hash == reply_2_squeak_hash
+        get_reply_squeak_display_response.squeak_display_entry.squeak_hash
+        == reply_2_squeak_hash
     )
     assert (
-        get_reply_squeak_display_response.squeak_display_entry.reply_to == reply_1_squeak_hash
+        get_reply_squeak_display_response.squeak_display_entry.reply_to
+        == reply_1_squeak_hash
     )
 
     # Get the ancestors of the latest reply squeak
@@ -272,9 +269,8 @@ def test_make_reply_squeak(server_stub, admin_stub, saved_squeak_hash, signing_p
             squeak_hash=reply_2_squeak_hash,
         )
     )
-    assert (
-        len(get_ancestors_response.squeak_display_entries) == 3
-    )
+    assert len(get_ancestors_response.squeak_display_entries) == 3
+
 
 def test_rate_limit(server_stub, admin_stub, signing_profile_id):
     # Make 10 squeak
@@ -288,6 +284,7 @@ def test_rate_limit(server_stub, admin_stub, signing_profile_id):
         except Exception as e:
             make_extra_squeak_exception = e
     assert make_extra_squeak_exception is not None
+
 
 def test_make_signing_profile(server_stub, admin_stub):
     # Create a new signing profile
@@ -320,9 +317,8 @@ def test_make_signing_profile(server_stub, admin_stub):
             address=squeak_profile_address
         )
     )
-    assert (
-        get_profile_by_address_response.squeak_profile.profile_name == profile_name
-    )
+    assert get_profile_by_address_response.squeak_profile.profile_name == profile_name
+
 
 def test_make_contact_profile(server_stub, admin_stub):
     # Create a new contact profile
@@ -331,8 +327,7 @@ def test_make_contact_profile(server_stub, admin_stub):
     contact_address = get_address(contact_signing_key)
     create_contact_profile_response = admin_stub.CreateContactProfile(
         squeak_admin_pb2.CreateContactProfileRequest(
-            profile_name=contact_name,
-            address=contact_address,
+            profile_name=contact_name, address=contact_address,
         )
     )
     contact_profile_id = create_contact_profile_response.profile_id
@@ -347,6 +342,7 @@ def test_make_contact_profile(server_stub, admin_stub):
     ]
     assert contact_name in contact_profile_names
 
+
 def test_set_profile_whitelisted(server_stub, admin_stub, contact_profile_id):
     # Get the existing profile
     get_squeak_profile_response = admin_stub.GetSqueakProfile(
@@ -357,8 +353,7 @@ def test_set_profile_whitelisted(server_stub, admin_stub, contact_profile_id):
     # Set the profile to be whitelisted
     admin_stub.SetSqueakProfileWhitelisted(
         squeak_admin_pb2.SetSqueakProfileWhitelistedRequest(
-            profile_id=contact_profile_id,
-            whitelisted=True,
+            profile_id=contact_profile_id, whitelisted=True,
         )
     )
 
@@ -367,6 +362,7 @@ def test_set_profile_whitelisted(server_stub, admin_stub, contact_profile_id):
         squeak_admin_pb2.GetSqueakProfileRequest(profile_id=contact_profile_id,)
     )
     assert get_squeak_profile_response.squeak_profile.whitelisted == True
+
 
 def test_set_profile_following(server_stub, admin_stub, contact_profile_id):
     # Get the existing profile
@@ -378,8 +374,7 @@ def test_set_profile_following(server_stub, admin_stub, contact_profile_id):
     # Set the profile to be following
     admin_stub.SetSqueakProfileFollowing(
         squeak_admin_pb2.SetSqueakProfileFollowingRequest(
-            profile_id=contact_profile_id,
-            following=True,
+            profile_id=contact_profile_id, following=True,
         )
     )
 
@@ -388,6 +383,7 @@ def test_set_profile_following(server_stub, admin_stub, contact_profile_id):
         squeak_admin_pb2.GetSqueakProfileRequest(profile_id=contact_profile_id,)
     )
     assert get_squeak_profile_response.squeak_profile.following == True
+
 
 def test_set_profile_sharing(server_stub, admin_stub, contact_profile_id):
     # Get the existing profile
@@ -399,8 +395,7 @@ def test_set_profile_sharing(server_stub, admin_stub, contact_profile_id):
     # Set the profile to be sharing
     admin_stub.SetSqueakProfileSharing(
         squeak_admin_pb2.SetSqueakProfileSharingRequest(
-            profile_id=contact_profile_id,
-            sharing=True,
+            profile_id=contact_profile_id, sharing=True,
         )
     )
 
@@ -410,12 +405,14 @@ def test_set_profile_sharing(server_stub, admin_stub, contact_profile_id):
     )
     assert get_squeak_profile_response.squeak_profile.sharing == True
 
-def test_get_following_squeaks(server_stub, admin_stub, saved_squeak_hash, signing_profile_id):
+
+def test_get_following_squeaks(
+    server_stub, admin_stub, saved_squeak_hash, signing_profile_id
+):
     # Set the profile to be following
     admin_stub.SetSqueakProfileFollowing(
         squeak_admin_pb2.SetSqueakProfileFollowingRequest(
-            profile_id=signing_profile_id,
-            following=True,
+            profile_id=signing_profile_id, following=True,
         )
     )
 
@@ -423,45 +420,38 @@ def test_get_following_squeaks(server_stub, admin_stub, saved_squeak_hash, signi
     get_followed_squeak_display_response = admin_stub.GetFollowedSqueakDisplays(
         squeak_admin_pb2.GetFollowedSqueakDisplaysRequest()
     )
-    assert (
-        len(get_followed_squeak_display_response.squeak_display_entries) == 1
-    )
-    for squeak_display_entry in get_followed_squeak_display_response.squeak_display_entries:
+    assert len(get_followed_squeak_display_response.squeak_display_entries) == 1
+    for (
+        squeak_display_entry
+    ) in get_followed_squeak_display_response.squeak_display_entries:
         # TODO: check the profile id of the squeak display entry
         # assert squeak_display_entry.profile_id == signing_profile_id
         pass
 
+
 def test_delete_squeak(server_stub, admin_stub, saved_squeak_hash):
     # Delete the squeak
     admin_stub.DeleteSqueak(
-        squeak_admin_pb2.DeleteSqueakRequest(
-            squeak_hash=saved_squeak_hash.hex()
-        )
+        squeak_admin_pb2.DeleteSqueakRequest(squeak_hash=saved_squeak_hash.hex())
     )
 
     # Try to get the squeak and fail
     with pytest.raises(Exception):
         get_response = server_stub.GetSqueak(
-            squeak_server_pb2.GetSqueakRequest(
-                hash=saved_squeak_hash
-            )
+            squeak_server_pb2.GetSqueakRequest(hash=saved_squeak_hash)
         )
+
 
 def test_add_server(server_stub, admin_stub):
     # Add a new server
     add_server_response = admin_stub.AddServer(
-        squeak_admin_pb2.AddServerRequest(
-            host="fake_host",
-            port=1234,
-        )
+        squeak_admin_pb2.AddServerRequest(host="fake_host", port=1234,)
     )
     server_id = add_server_response.server_id
 
     # Get the new server
     get_squeak_server_response = admin_stub.GetSqueakServer(
-        squeak_admin_pb2.GetSqueakServerRequest(
-            server_id=server_id
-        )
+        squeak_admin_pb2.GetSqueakServerRequest(server_id=server_id)
     )
     assert get_squeak_server_response.squeak_server.host == "fake_host"
     assert get_squeak_server_response.squeak_server.port == 1234
