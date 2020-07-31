@@ -20,8 +20,6 @@ import Dashboard from "../../pages/dashboard";
 import SqueakAddress from "../../pages/squeakaddress";
 import Squeak from "../../pages/squeak";
 import Profile from "../../pages/profile";
-import CreateSigningProfile from "../../pages/createsigningprofile";
-import CreateContactProfile from "../../pages/createcontactprofile";
 import Lightning from "../../pages/lightning";
 import Notifications from "../../pages/notifications";
 import Maps from "../../pages/maps";
@@ -55,8 +53,6 @@ function Layout(props) {
               <Route path="/app/squeakaddress/:address" component={SqueakAddress} />
               <Route path="/app/squeak/:hash" component={Squeak} />
               <Route path="/app/profile/:id" component={Profile} />
-              <Route path="/app/createsigningprofile" component={CreateSigningProfile} />
-              <Route path="/app/createcontactprofile" component={CreateContactProfile} />
               <Route path="/app/profiles" component={Profiles} />
               <Route path="/app/lightning" component={Lightning} />
               <Route path="/app/notifications" component={Notifications} />

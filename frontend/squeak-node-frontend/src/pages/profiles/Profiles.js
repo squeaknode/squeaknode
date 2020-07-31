@@ -19,6 +19,8 @@ import {makeStyles} from '@material-ui/core/styles';
 import PageTitle from "../../components/PageTitle";
 import Widget from "../../components/Widget";
 import Table from "../dashboard/components/Table/Table";
+import CreateSigningProfileDialog from "../../components/CreateSigningProfileDialog";
+import CreateContactProfileDialog from "../../components/CreateContactProfileDialog";
 
 // data
 import mock from "../dashboard/mock";
@@ -99,6 +101,8 @@ export default function Profiles() {
   const classes = useStyles();
   const [signingProfiles, setSigningProfiles] = useState([]);
   const [contactProfiles, setContactProfiles] = useState([]);
+  const [createSigningProfileDialogOpen, setCreateSigningProfileDialogOpen] = useState(false);
+  const [createContactProfileDialogOpen, setCreateContactProfileDialogOpen] = useState(false);
   const [value, setValue] = useState(0);
   const history = useHistory();
 
@@ -155,16 +159,24 @@ export default function Profiles() {
     });
   };
 
-  const goToCreateSigningProfilePage = () => {
-    history.push("/app/createsigningprofile");
-  };
-
-  const goToCreateContactProfilePage = () => {
-    history.push("/app/createcontactprofile");
-  };
-
   const goToSqueakAddressPage = (squeakAddress) => {
     history.push("/app/squeakaddress/" + squeakAddress);
+  };
+
+  const handleClickOpenCreateSigningProfileDialog = () => {
+    setCreateSigningProfileDialogOpen(true);
+  };
+
+  const handleCloseCreateSigningProfileDialog = () => {
+     setCreateSigningProfileDialogOpen(false);
+  };
+
+  const handleClickOpenCreateContactProfileDialog = () => {
+    setCreateContactProfileDialogOpen(true);
+  };
+
+  const handleCloseCreateContactProfileDialog = () => {
+     setCreateContactProfileDialogOpen(false);
   };
 
   useEffect(() => {
@@ -222,7 +234,7 @@ export default function Profiles() {
           <Button
             variant="contained"
             onClick={() => {
-              goToCreateSigningProfilePage();
+              handleClickOpenCreateSigningProfileDialog();
             }}>Create Signing Profile
           </Button>
         </div>
@@ -239,7 +251,7 @@ export default function Profiles() {
           <Button
             variant="contained"
             onClick={() => {
-              goToCreateContactProfilePage();
+              handleClickOpenCreateContactProfileDialog();
             }}>Add contact
           </Button>
         </div>
@@ -314,9 +326,33 @@ export default function Profiles() {
     )
   }
 
+  function CreateSigningProfileDialogContent() {
+    return (
+      <>
+        <CreateSigningProfileDialog
+          open={createSigningProfileDialogOpen}
+          handleClose={handleCloseCreateSigningProfileDialog}
+          ></CreateSigningProfileDialog>
+      </>
+    )
+  }
+
+  function CreateContactProfileDialogContent() {
+    return (
+      <>
+        <CreateContactProfileDialog
+          open={createContactProfileDialogOpen}
+          handleClose={handleCloseCreateContactProfileDialog}
+          ></CreateContactProfileDialog>
+      </>
+    )
+  }
+
   return (
     <>
      < PageTitle title = "Profiles" />
     {ProfilesTabs()}
+    {CreateSigningProfileDialogContent()}
+    {CreateContactProfileDialogContent()}
    < />);
 }
