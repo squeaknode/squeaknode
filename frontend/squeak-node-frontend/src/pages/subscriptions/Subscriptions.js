@@ -67,6 +67,10 @@ export default function Subscriptions() {
     });
   };
 
+  const goToSubscriptionPage = (id) => {
+    history.push("/app/Subscription/" + id);
+  };
+
   const handleClickOpenCreateSubscriptionDialog = () => {
     setCreateSubscriptionDialogOpen(true);
   };
@@ -106,21 +110,33 @@ export default function Subscriptions() {
            title="Subscriptions"
            data={subscriptions.map(s =>
               [
+                s.getSubscriptionId(),
                 s.getSubscriptionName(),
                 s.getHost(),
                 s.getPort(),
               ]
             )}
-           columns={["Name", "Host", "Port"]}
+           columns={[
+             {
+               name: "Id",
+               options: {
+                 display: false,
+               }
+             },
+             "Name",
+             "Host",
+             "Port",
+           ]}
            options={{
              filter: false,
              print: false,
              viewColumns: false,
              selectableRows: "none",
              onRowClick: rowData => {
-               var host = rowData[1];
-               console.log("clicked on host" + host);
-             }
+               var id = rowData[0];
+               console.log("clicked on id" + id);
+               goToSubscriptionPage(id);
+             },
            }}/>
        </Grid>
      </Grid>
