@@ -108,9 +108,10 @@ export default function Subscriptions() {
               [
                 s.getSubscriptionName(),
                 s.getHost(),
+                s.getPort(),
               ]
             )}
-           columns={["Name", "Host"]}
+           columns={["Name", "Host", "Port"]}
            options={{
              filter: false,
              print: false,

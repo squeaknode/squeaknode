@@ -47,6 +47,7 @@ export default function CreateSubscriptionDialog({
 
   var [subscriptionName, setsubscriptionName] = useState('');
   var [host, setHost] = useState('');
+  var [port, setPort] = useState('');
 
   const handleChangeSubscriptionName = (event) => {
     setsubscriptionName(event.target.value);
@@ -56,14 +57,17 @@ export default function CreateSubscriptionDialog({
     setHost(event.target.value);
   };
 
+  const handleChangePort = (event) => {
+    setPort(event.target.value);
+  };
+
   const createSubscription = (subscriptionName, host, port) => {
     console.log("called createContactProfile");
 
     var createSubscriptionRequest = new CreateSubscriptionRequest()
     createSubscriptionRequest.setSubscriptionName(subscriptionName);
     createSubscriptionRequest.setHost(host);
-    // TODO: use real port here
-    // addServerRequest.setHost(0);
+    createSubscriptionRequest.setPort(port);
     console.log(createSubscriptionRequest);
 
     client.createSubscription(createSubscriptionRequest, {}, (err, response) => {
@@ -86,11 +90,16 @@ export default function CreateSubscriptionDialog({
     event.preventDefault();
     console.log( 'subscriptionName:', subscriptionName);
     console.log( 'host:', host);
+    console.log( 'port:', port);
     if (!host) {
       alert('Host cannot be empty.');
       return;
     }
-    createSubscription(subscriptionName, host);
+    if (!port) {
+      alert('Port cannot be empty.');
+      return;
+    }
+    createSubscription(subscriptionName, host, port);
     handleClose();
   }
 
@@ -99,7 +108,6 @@ export default function CreateSubscriptionDialog({
       <TextField
         id="standard-textarea"
         label="Subscription Name"
-        required
         autoFocus
         value={subscriptionName}
         onChange={handleChangeSubscriptionName}
@@ -118,6 +126,19 @@ export default function CreateSubscriptionDialog({
           value={host}
           onChange={handleChangeHost}
           inputProps={{ maxLength: 128 }}
+      />
+    )
+  }
+
+  function CreatePortInput() {
+    return (
+      <TextField required
+          id="standard-textarea"
+          label="Port"
+          required
+          value={port}
+          onChange={handleChangePort}
+          inputProps={{ maxLength: 8 }}
       />
     )
   }
@@ -152,8 +173,15 @@ export default function CreateSubscriptionDialog({
   <DialogTitle id="form-dialog-title">Create Contact Profile</DialogTitle>
   <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
   <DialogContent>
-    {CreateSubscriptionNameInput()}
-    {CreateHostInput()}
+    <div>
+      {CreateSubscriptionNameInput()}
+    </div>
+    <div>
+      {CreateHostInput()}
+    </div>
+    <div>
+      {CreatePortInput()}
+    </div>
   </DialogContent>
   <DialogActions>
     {CancelButton()}
