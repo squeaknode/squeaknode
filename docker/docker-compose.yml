@@ -51,6 +51,8 @@ services:
       - shared:/rpc
       - lnd_dir:/root/.lnd
       - ./config.ini:/app/config.ini
+    ports:
+      - 8774:8774
     links:
       - "btcd:btcd"
       - "lnd:lnd"
