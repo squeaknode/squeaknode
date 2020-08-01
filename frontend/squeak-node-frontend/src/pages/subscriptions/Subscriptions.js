@@ -114,6 +114,8 @@ export default function Subscriptions() {
                 s.getSubscriptionName(),
                 s.getHost(),
                 s.getPort(),
+                s.getSubscribed().toString(),
+                s.getPublishing().toString(),
               ]
             )}
            columns={[
@@ -126,6 +128,8 @@ export default function Subscriptions() {
              "Name",
              "Host",
              "Port",
+             "Subscribed",
+             "Publishing",
            ]}
            options={{
              filter: false,
