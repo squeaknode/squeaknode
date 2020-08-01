@@ -208,8 +208,8 @@ class SqueakNode:
             subscription_name=subscription_name,
             host=host,
             port=port,
-            sharing=False,
-            following=False,
+            publishing=False,
+            subscribed=False,
         )
         return self.postgres_db.insert_subscription(squeak_subscription)
 

@@ -373,7 +373,7 @@ class PostgresDb:
     def insert_subscription(self, squeak_subscription):
         """ Insert a new squeak subscription. """
         sql = """
-        INSERT INTO subscription(subscription_name, server_host, server_port, sharing, following)
+        INSERT INTO subscription(subscription_name, server_host, server_port, publishing, subscribed)
         VALUES(%s, %s, %s, %s, %s)
         RETURNING subscription_id;
         """
@@ -385,8 +385,8 @@ class PostgresDb:
                     squeak_subscription.subscription_name,
                     squeak_subscription.host,
                     squeak_subscription.port,
-                    squeak_subscription.sharing,
-                    squeak_subscription.following,
+                    squeak_subscription.publishing,
+                    squeak_subscription.subscribed,
                 ),
             )
             # get the new subscription id back
@@ -474,6 +474,6 @@ class PostgresDb:
             subscription_name=row["subscription_name"],
             host=row["server_host"],
             port=row["server_port"],
-            sharing=row["sharing"],
-            following=row["following"],
+            publishing=row["publishing"],
+            subscribed=row["subscribed"],
         )

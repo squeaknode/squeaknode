@@ -360,9 +360,9 @@ message SqueakSubscription {
     /// Port
     int32 port = 4;
 
-    /// Sharing
-    bool sharing = 5;
+    /// Publishing
+    bool publishing = 5;
 
-    /// Following
-    bool following = 6;
+    /// Subscribed
+    bool subscribed = 6;
 }
