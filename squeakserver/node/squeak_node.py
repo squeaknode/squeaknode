@@ -218,3 +218,9 @@ class SqueakNode:
 
     def get_subscriptions(self):
         return self.postgres_db.get_subscriptions()
+
+    def set_subscription_subscribed(self, subscription_id, subscribed):
+        self.postgres_db.set_subscription_subscribed(subscription_id, subscribed)
+
+    def set_subscription_publishing(self, subscription_id, publishing):
+        self.postgres_db.set_subscription_publishing(subscription_id, publishing)
