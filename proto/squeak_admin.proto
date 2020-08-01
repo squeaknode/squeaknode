@@ -82,17 +82,17 @@ service SqueakAdmin {
   */
   rpc DeleteSqueak (DeleteSqueakRequest) returns (DeleteSqueakReply) {}
 
-  /** sqkadmin: `addserver`
+  /** sqkadmin: `addsubscription`
   */
   rpc CreateSubscription (CreateSubscriptionRequest) returns (CreateSubscriptionReply) {}
 
-  /** sqkadmin: `getsqueakserver`
+  /** sqkadmin: `getsubscription`
   */
-  rpc GetSqueakServer (GetSqueakServerRequest) returns (GetSqueakServerReply) {}
+  rpc GetSubscription (GetSubscriptionRequest) returns (GetSubscriptionReply) {}
 
-  /** sqkadmin: `getsqueakservers`
+  /** sqkadmin: `getsubscriptions`
   */
-  rpc GetSqueakServers (GetSqueakServersRequest) returns (GetSqueakServersReply) {}
+  rpc GetSubscriptions (GetSubscriptionsRequest) returns (GetSubscriptionsReply) {}
 
 }
 
@@ -314,8 +314,8 @@ message DeleteSqueakReply {
 }
 
 message CreateSubscriptionRequest {
-    /// Name of the server
-    string server_name = 1;
+    /// Name of the subscription
+    string subscription_name = 1;
 
     /// Host
     string host = 2;
@@ -325,34 +325,34 @@ message CreateSubscriptionRequest {
 }
 
 message CreateSubscriptionReply {
-    /// The server id
-    int32 server_id = 1;
+    /// The subscription id
+    int32 subscription_id = 1;
 }
 
-message GetSqueakServerRequest {
-    /// The server id
-    int32 server_id = 1;
+message GetSubscriptionRequest {
+    /// The subscription id
+    int32 subscription_id = 1;
 }
 
-message GetSqueakServerReply {
-    /// The server
-    SqueakServerSubscription squeak_server = 1;
+message GetSubscriptionReply {
+    /// The subscription
+    SqueakSubscription squeak_subscription = 1;
 }
 
-message GetSqueakServersRequest {
+message GetSubscriptionsRequest {
 }
 
-message GetSqueakServersReply {
-    /// The servers
-    repeated SqueakServerSubscription squeak_servers = 1;
+message GetSubscriptionsReply {
+    /// The subscriptions
+    repeated SqueakSubscription squeak_subscriptions = 1;
 }
 
-message SqueakServerSubscription {
-    /// The server id
-    int32 server_id = 1;
+message SqueakSubscription {
+    /// The subscription id
+    int32 subscription_id = 1;
 
-    /// The server name
-    string server_name = 2;
+    /// The subscription name
+    string subscription_name = 2;
 
     /// Host
     string host = 3;

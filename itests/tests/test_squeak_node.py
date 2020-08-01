@@ -442,26 +442,28 @@ def test_delete_squeak(server_stub, admin_stub, saved_squeak_hash):
         )
 
 
-def test_add_server(server_stub, admin_stub):
-    # Add a new server
-    add_server_response = admin_stub.CreateSubscription(
+def test_create_subscription(server_stub, admin_stub):
+    # Add a new subscription
+    create_subscription_response = admin_stub.CreateSubscription(
         squeak_admin_pb2.CreateSubscriptionRequest(host="fake_host", port=1234,)
     )
-    server_id = add_server_response.server_id
+    subscription_id = create_subscription_response.subscription_id
 
-    # Get the new server
-    get_squeak_server_response = admin_stub.GetSqueakServer(
-        squeak_admin_pb2.GetSqueakServerRequest(server_id=server_id)
+    # Get the new subscription
+    get_subscription_response = admin_stub.GetSubscription(
+        squeak_admin_pb2.GetSubscriptionRequest(
+            subscription_id=subscription_id,
+        )
     )
-    assert get_squeak_server_response.squeak_server.host == "fake_host"
-    assert get_squeak_server_response.squeak_server.port == 1234
+    assert get_subscription_response.squeak_subscription.host == "fake_host"
+    assert get_subscription_response.squeak_subscription.port == 1234
 
-    # Get all servers
-    get_squeak_servers_response = admin_stub.GetSqueakServers(
-        squeak_admin_pb2.GetSqueakServersRequest()
+    # Get all subscriptions
+    get_subscriptions_response = admin_stub.GetSubscriptions(
+        squeak_admin_pb2.GetSubscriptionsRequest()
     )
-    squeak_server_hosts = [
-        server.host
-        for server in get_squeak_servers_response.squeak_servers
+    subscription_hosts = [
+        squeak_subscription.host
+        for squeak_subscription in get_subscriptions_response.squeak_subscriptions
     ]
-    assert "fake_host" in squeak_server_hosts
+    assert "fake_host" in subscription_hosts
