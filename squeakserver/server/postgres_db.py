@@ -51,7 +51,10 @@ class PostgresDb:
         create_schema_sql = sql.SQL("CREATE SCHEMA IF NOT EXISTS {};").format(
             sql.Identifier(schema_name)
         )
-        use_schema_sql = sql.SQL("ALTER ROLE {} SET search_path TO {};").format(
+        use_schema_sql = sql.SQL("SET search_path TO {};").format(
+            sql.Identifier(schema_name),
+        )
+        use_schema_for_user_sql = sql.SQL("ALTER ROLE {} SET search_path TO {};").format(
             sql.Identifier(self.user),
             sql.Identifier(schema_name),
         )
@@ -60,6 +63,7 @@ class PostgresDb:
             logger.info("Creating schema: {}".format(schema_name))
             curs.execute(create_schema_sql)
             curs.execute(use_schema_sql)
+            curs.execute(use_schema_for_user_sql)
 
     def init(self):
         """ Create the tables and indices in the database. """
