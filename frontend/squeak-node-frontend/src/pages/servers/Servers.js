@@ -19,6 +19,7 @@ import {makeStyles} from '@material-ui/core/styles';
 import PageTitle from "../../components/PageTitle";
 import Widget from "../../components/Widget";
 import Table from "../dashboard/components/Table/Table";
+import CreateSubscriptionDialog from "../../components/CreateSubscriptionDialog";
 
 // data
 import mock from "../dashboard/mock";
@@ -42,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Servers() {
   const classes = useStyles();
   const [servers, setServers] = useState([]);
-  const [createSqueakServerDialogOpen, setCreateSqueakServerDialogOpen] = useState(false);
+  const [createSubscriptionDialogOpen, setCreateSubscriptionDialogOpen] = useState(false);
   const history = useHistory();
 
   function a11yProps(index) {
@@ -67,6 +68,14 @@ export default function Servers() {
     });
   };
 
+  const handleClickOpenCreateSubscriptionDialog = () => {
+    setCreateSubscriptionDialogOpen(true);
+  };
+
+  const handleCloseCreateSubscriptionDialog = () => {
+    setCreateSubscriptionDialogOpen(false);
+  };
+
   useEffect(() => {
     getSqueakServers()
   }, []);
@@ -79,7 +88,7 @@ export default function Servers() {
           <Button
             variant="contained"
             onClick={() => {
-              console.log("Clicked create server button.");
+              handleClickOpenCreateSubscriptionDialog();
             }}>Create Server Subscription
           </Button>
         </div>
@@ -119,20 +128,21 @@ export default function Servers() {
     )
   }
 
-  // function CreateServerDialogContent() {
-  //   return (
-  //     <>
-  //       <CreateSigningProfileDialog
-  //         open={createSigningProfileDialogOpen}
-  //         handleClose={handleCloseCreateSigningProfileDialog}
-  //         ></CreateSigningProfileDialog>
-  //     </>
-  //   )
-  // }
+  function CreateServerDialogContent() {
+    return (
+      <>
+        <CreateSubscriptionDialog
+          open={createSubscriptionDialogOpen}
+          handleClose={handleCloseCreateSubscriptionDialog}
+          ></CreateSubscriptionDialog>
+      </>
+    )
+  }
 
   return (
     <>
      < PageTitle title = "Servers" />
     {ServersInfo()}
+    {CreateServerDialogContent()}
    < />);
 }
