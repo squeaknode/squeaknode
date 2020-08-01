@@ -71,12 +71,13 @@ def load_admin_handler(lightning_client, squeak_node):
     return SqueakAdminServerHandler(lightning_client, squeak_node,)
 
 
-def load_db_params(config):
-    return parse_db_params(config)
-
-
-def load_postgres_db(config):
+def load_db_params(config, schema):
     db_params = parse_db_params(config)
+    db_params['options'] = "--search_path={}".format(schema)
+    return db_params
+
+
+def load_postgres_db(db_params):
     return PostgresDb(db_params)
 
 
@@ -144,14 +145,13 @@ def run_server(config):
     SelectParams(network)
 
     # load the db params
-    db_params = load_db_params(config)
+    db_params = load_db_params(config, network)
     logger.info("db params: " + str(db_params))
 
     # load postgres db
-    postgres_db = load_postgres_db(config)
+    postgres_db = load_postgres_db(db_params)
     logger.info("postgres_db: " + str(postgres_db))
     postgres_db.get_version()
-    postgres_db.use_schema(network)
     postgres_db.init()
 
     # load the price

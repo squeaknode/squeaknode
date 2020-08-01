@@ -18,12 +18,8 @@ logger = logging.getLogger(__name__)
 
 class PostgresDb:
     def __init__(self, params):
+        logger.info("Starting connection pool with params: {}".format(params))
         self.connection_pool = pool.ThreadedConnectionPool(5, 20, **params)
-        self.params = params
-
-    @property
-    def user(self):
-        return self.params['user']
 
     # Get Cursor
     @contextmanager
@@ -45,21 +41,6 @@ class PostgresDb:
             # display the PostgreSQL database server version
             db_version = curs.fetchone()
             logger.info(db_version)
-
-    def use_schema(self, schema_name):
-        """ Create the schema for the given name. """
-        create_schema_sql = sql.SQL("CREATE SCHEMA IF NOT EXISTS {};").format(
-            sql.Identifier(schema_name)
-        )
-        use_schema_sql = sql.SQL("ALTER ROLE {} SET search_path TO {};").format(
-            sql.Identifier(self.user),
-            sql.Identifier(schema_name),
-        )
-        with self.get_cursor() as curs:
-            # execute a statement
-            logger.info("Creating schema: {}".format(schema_name))
-            curs.execute(create_schema_sql)
-            curs.execute(use_schema_sql)
 
     def init(self):
         """ Create the tables and indices in the database. """
