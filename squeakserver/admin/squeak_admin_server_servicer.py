@@ -192,6 +192,15 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         )
         return squeak_admin_pb2.SetSubscriptionSubscribedReply()
 
+    def SetSubscriptionPublishing(self, request, context):
+        subscription_id = request.subscription_id
+        publishing = request.publishing
+        self.handler.handle_set_squeak_subscription_publishing(
+            subscription_id,
+            publishing,
+        )
+        return squeak_admin_pb2.SetSubscriptionPublishingReply()
+
     def _squeak_entry_to_message(self, squeak_entry_with_profile):
         if squeak_entry_with_profile is None:
             return None

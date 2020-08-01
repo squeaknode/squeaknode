@@ -424,6 +424,16 @@ class PostgresDb:
         with self.get_cursor() as curs:
             curs.execute(sql, (subscribed, subscription_id,))
 
+    def set_subscription_publishing(self, subscription_id, publishing):
+        """ Set a subscription is publishing. """
+        sql = """
+        UPDATE subscription
+        SET publishing=%s
+        WHERE subscription_id=%s;
+        """
+        with self.get_cursor() as curs:
+            curs.execute(sql, (publishing, subscription_id,))
+
     def _parse_squeak_entry(self, row):
         vch_decryption_key_column = row["vch_decryption_key"]
         vch_decryption_key = (

@@ -168,7 +168,6 @@ def test_sell_squeak(server_stub, admin_stub, lightning_client, saved_squeak_has
     CheckSqueak(get_response_squeak)
 
     # Close the channel
-    time.sleep(10)
     for update in lightning_client.close_channel(channel_point):
         if update.HasField("chan_close"):
             print("Channel closed.")
@@ -491,3 +490,27 @@ def test_set_subscription_subscribed(server_stub, admin_stub, subscription_id):
         )
     )
     assert get_subscription_response.squeak_subscription.subscribed == True
+
+def test_set_subscription_publishing(server_stub, admin_stub, subscription_id):
+    # Get the subscription
+    get_subscription_response = admin_stub.GetSubscription(
+        squeak_admin_pb2.GetSubscriptionRequest(
+            subscription_id=subscription_id,
+        )
+    )
+    assert get_subscription_response.squeak_subscription.publishing == False
+
+    # Set the subscription to be publishing
+    admin_stub.SetSubscriptionPublishing(
+        squeak_admin_pb2.SetSubscriptionPublishingRequest(
+            subscription_id=subscription_id, publishing=True,
+        )
+    )
+
+    # Get the subscription again
+    get_subscription_response = admin_stub.GetSubscription(
+        squeak_admin_pb2.GetSubscriptionRequest(
+            subscription_id=subscription_id,
+        )
+    )
+    assert get_subscription_response.squeak_subscription.publishing == True

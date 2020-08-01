@@ -183,3 +183,11 @@ class SqueakAdminServerHandler(object):
             )
         )
         self.squeak_node.set_subscription_subscribed(subscription_id, subscribed)
+
+    def handle_set_squeak_subscription_publishing(self, subscription_id, publishing):
+        logger.info(
+            "Handle set subscription publishing with subscription id: {}, publishing: {}".format(
+                subscription_id, publishing,
+            )
+        )
+        self.squeak_node.set_subscription_publishing(subscription_id, publishing)

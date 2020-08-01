@@ -98,6 +98,10 @@ service SqueakAdmin {
   */
   rpc SetSubscriptionSubscribed (SetSubscriptionSubscribedRequest) returns (SetSubscriptionSubscribedReply) {}
 
+  /** sqkadmin: `setsubscriptionsubscribed`
+  */
+  rpc SetSubscriptionPublishing (SetSubscriptionPublishingRequest) returns (SetSubscriptionPublishingReply) {}
+
 }
 
 message HelloRequest {
@@ -380,4 +384,15 @@ message SetSubscriptionSubscribedRequest {
 }
 
 message SetSubscriptionSubscribedReply {
+}
+
+message SetSubscriptionPublishingRequest {
+    /// The subscription id
+    int32 subscription_id = 1;
+
+    /// Publishing
+    bool publishing = 2;
+}
+
+message SetSubscriptionPublishingReply {
 }
