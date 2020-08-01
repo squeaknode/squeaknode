@@ -39,6 +39,6 @@ CREATE TABLE IF NOT EXISTS subscription (
   subscription_name VARCHAR(64),
   server_host VARCHAR(256) NOT NULL,
   server_port INTEGER NOT NULL,
-  sharing BOOLEAN NOT NULL,
-  following BOOLEAN NOT NULL
+  publishing BOOLEAN NOT NULL,
+  subscribed BOOLEAN NOT NULL
 );

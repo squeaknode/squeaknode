@@ -232,8 +232,8 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
             subscription_name=squeak_subscription.subscription_name,
             host=squeak_subscription.host,
             port=squeak_subscription.port,
-            sharing=squeak_subscription.sharing,
-            following=squeak_subscription.following,
+            publishing=squeak_subscription.publishing,
+            subscribed=squeak_subscription.subscribed,
         )
 
     def serve(self):
