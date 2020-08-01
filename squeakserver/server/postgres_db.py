@@ -2,6 +2,7 @@ import logging
 from contextlib import contextmanager
 
 from psycopg2 import pool
+from psycopg2 import sql
 from psycopg2.extras import DictCursor
 from squeak.core import CSqueak
 
@@ -39,6 +40,20 @@ class PostgresDb:
             # display the PostgreSQL database server version
             db_version = curs.fetchone()
             logger.info(db_version)
+
+    def create_schema(self, schema_name):
+        """ Create the schema for the given name. """
+        create_schema_sql = sql.SQL("CREATE SCHEMA {};").format(
+            sql.Identifier(schema_name)
+        )
+        use_schema_sql = sql.SQL("SET search_path TO {}, public;").format(
+            sql.Identifier(schema_name)
+        )
+        with self.get_cursor() as curs:
+            # execute a statement
+            logger.info("Creating schema: {}".format(schema_name))
+            curs.execute(create_schema_sql)
+            curs.execute(use_schema_sql)
 
     def init(self):
         """ Create the tables and indices in the database. """
