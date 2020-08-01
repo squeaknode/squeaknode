@@ -45,13 +45,13 @@ class SqueakAdminServerHandler(object):
     def handle_get_signing_profiles(self):
         logger.info("Handle get signing profiles.")
         profiles = self.squeak_node.get_signing_profiles()
-        logger.info("Got number of profiles: {}".format(len(profiles)))
+        logger.info("Got number of signing profiles: {}".format(len(profiles)))
         return profiles
 
     def handle_get_contact_profiles(self):
         logger.info("Handle get contact profiles.")
         profiles = self.squeak_node.get_contact_profiles()
-        logger.info("Got number of profiles: {}".format(len(profiles)))
+        logger.info("Got number of contact profiles: {}".format(len(profiles)))
         return profiles
 
     def handle_get_squeak_profile(self, profile_id):
@@ -128,7 +128,7 @@ class SqueakAdminServerHandler(object):
             address, min_block, max_block,
         )
         logger.info(
-            "Got number of squeak entries: {}".format(len(squeak_entries_with_profile))
+            "Got number of squeak entries for address: {}".format(len(squeak_entries_with_profile))
         )
         return squeak_entries_with_profile
 
