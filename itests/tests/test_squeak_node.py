@@ -444,8 +444,8 @@ def test_delete_squeak(server_stub, admin_stub, saved_squeak_hash):
 
 def test_add_server(server_stub, admin_stub):
     # Add a new server
-    add_server_response = admin_stub.AddServer(
-        squeak_admin_pb2.AddServerRequest(host="fake_host", port=1234,)
+    add_server_response = admin_stub.CreateSubscription(
+        squeak_admin_pb2.CreateSubscriptionRequest(host="fake_host", port=1234,)
     )
     server_id = add_server_response.server_id
 

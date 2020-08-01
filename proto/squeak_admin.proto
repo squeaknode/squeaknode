@@ -84,7 +84,7 @@ service SqueakAdmin {
 
   /** sqkadmin: `addserver`
   */
-  rpc AddServer (AddServerRequest) returns (AddServerReply) {}
+  rpc CreateSubscription (CreateSubscriptionRequest) returns (CreateSubscriptionReply) {}
 
   /** sqkadmin: `getsqueakserver`
   */
@@ -313,7 +313,7 @@ message DeleteSqueakRequest {
 message DeleteSqueakReply {
 }
 
-message AddServerRequest {
+message CreateSubscriptionRequest {
     /// Name of the server
     string server_name = 1;
 
@@ -324,7 +324,7 @@ message AddServerRequest {
     int32 port = 3;
 }
 
-message AddServerReply {
+message CreateSubscriptionReply {
     /// The server id
     int32 server_id = 1;
 }

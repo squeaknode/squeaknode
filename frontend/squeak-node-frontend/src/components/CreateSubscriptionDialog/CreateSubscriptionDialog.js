@@ -31,7 +31,7 @@ import SqueakThreadItem from "../../components/SqueakThreadItem";
 
 import {
   CreateContactProfileRequest,
-  AddServerRequest,
+  CreateSubscriptionRequest,
 } from "../../proto/squeak_admin_pb"
 import {SqueakAdminClient} from "../../proto/squeak_admin_grpc_web_pb"
 
@@ -59,7 +59,7 @@ export default function CreateSubscriptionDialog({
   const createSubscription = (serverName, host, port) => {
     console.log("called createContactProfile");
 
-    var addServerRequest = new AddServerRequest()
+    var addServerRequest = new CreateSubscriptionRequest()
     addServerRequest.setServerName(serverName);
     addServerRequest.setHost(host);
     // TODO: use real port here
