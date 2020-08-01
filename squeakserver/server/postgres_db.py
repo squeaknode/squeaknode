@@ -414,6 +414,16 @@ class PostgresDb:
             subscriptions = [self._parse_squeak_subscription(row) for row in rows]
             return subscriptions
 
+    def set_subscription_subscribed(self, subscription_id, subscribed):
+        """ Set a subscription is subscribed. """
+        sql = """
+        UPDATE subscription
+        SET subscribed=%s
+        WHERE subscription_id=%s;
+        """
+        with self.get_cursor() as curs:
+            curs.execute(sql, (subscribed, subscription_id,))
+
     def _parse_squeak_entry(self, row):
         vch_decryption_key_column = row["vch_decryption_key"]
         vch_decryption_key = (

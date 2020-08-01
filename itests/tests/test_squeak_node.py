@@ -467,3 +467,27 @@ def test_create_subscription(server_stub, admin_stub):
         for squeak_subscription in get_subscriptions_response.squeak_subscriptions
     ]
     assert "fake_host" in subscription_hosts
+
+def test_set_subscription_subscribed(server_stub, admin_stub, subscription_id):
+    # Get the subscription
+    get_subscription_response = admin_stub.GetSubscription(
+        squeak_admin_pb2.GetSubscriptionRequest(
+            subscription_id=subscription_id,
+        )
+    )
+    assert get_subscription_response.squeak_subscription.subscribed == False
+
+    # Set the subscription to be subscribed
+    admin_stub.SetSubscriptionSubscribed(
+        squeak_admin_pb2.SetSubscriptionSubscribedRequest(
+            subscription_id=subscription_id, subscribed=True,
+        )
+    )
+
+    # Get the subscription again
+    get_subscription_response = admin_stub.GetSubscription(
+        squeak_admin_pb2.GetSubscriptionRequest(
+            subscription_id=subscription_id,
+        )
+    )
+    assert get_subscription_response.squeak_subscription.subscribed == True

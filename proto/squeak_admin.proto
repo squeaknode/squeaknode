@@ -94,6 +94,10 @@ service SqueakAdmin {
   */
   rpc GetSubscriptions (GetSubscriptionsRequest) returns (GetSubscriptionsReply) {}
 
+  /** sqkadmin: `setsubscriptionsubscribed`
+  */
+  rpc SetSubscriptionSubscribed (SetSubscriptionSubscribedRequest) returns (SetSubscriptionSubscribedReply) {}
+
 }
 
 message HelloRequest {
@@ -365,4 +369,15 @@ message SqueakSubscription {
 
     /// Subscribed
     bool subscribed = 6;
+}
+
+message SetSubscriptionSubscribedRequest {
+    /// The subscription id
+    int32 subscription_id = 1;
+
+    /// Subscribed
+    bool subscribed = 2;
+}
+
+message SetSubscriptionSubscribedReply {
 }

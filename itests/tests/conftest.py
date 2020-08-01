@@ -106,3 +106,12 @@ def saved_squeak_hash(server_stub, admin_stub, signing_profile_id):
     )
     squeak_hash_str = make_squeak_response.squeak_hash
     yield bytes.fromhex(squeak_hash_str)
+
+@pytest.fixture
+def subscription_id(server_stub, admin_stub):
+    # Create a new subscription
+    create_subscription_response = admin_stub.CreateSubscription(
+        squeak_admin_pb2.CreateSubscriptionRequest(host="fake_host", port=1234,)
+    )
+    subscription_id = create_subscription_response.subscription_id
+    yield subscription_id
