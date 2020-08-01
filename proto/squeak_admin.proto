@@ -90,6 +90,10 @@ service SqueakAdmin {
   */
   rpc GetSqueakServer (GetSqueakServerRequest) returns (GetSqueakServerReply) {}
 
+  /** sqkadmin: `getsqueakservers`
+  */
+  rpc GetSqueakServers (GetSqueakServersRequest) returns (GetSqueakServersReply) {}
+
 }
 
 message HelloRequest {
@@ -333,6 +337,14 @@ message GetSqueakServerRequest {
 message GetSqueakServerReply {
     /// The server
     SqueakServerSubscription squeak_server = 1;
+}
+
+message GetSqueakServersRequest {
+}
+
+message GetSqueakServersReply {
+    /// The servers
+    repeated SqueakServerSubscription squeak_servers = 1;
 }
 
 message SqueakServerSubscription {

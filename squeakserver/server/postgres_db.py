@@ -403,6 +403,17 @@ class PostgresDb:
             row = curs.fetchone()
             return self._parse_squeak_server(row)
 
+    def get_servers(self):
+        """ Get all servers. """
+        sql = """
+        SELECT * FROM server;
+        """
+        with self.get_cursor() as curs:
+            curs.execute(sql)
+            rows = curs.fetchall()
+            servers = [self._parse_squeak_server(row) for row in rows]
+            return servers
+
     def _parse_squeak_entry(self, row):
         vch_decryption_key_column = row["vch_decryption_key"]
         vch_decryption_key = (

@@ -215,3 +215,6 @@ class SqueakNode:
 
     def get_squeak_server(self, server_id):
         return self.postgres_db.get_server(server_id)
+
+    def get_squeak_servers(self):
+        return self.postgres_db.get_servers()

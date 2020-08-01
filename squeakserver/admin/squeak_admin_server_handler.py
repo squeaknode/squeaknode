@@ -166,3 +166,8 @@ class SqueakAdminServerHandler(object):
         logger.info("Handle get squeak server with id: {}".format(server_id))
         squeak_server = self.squeak_node.get_squeak_server(server_id)
         return squeak_server
+
+    def handle_get_squeak_servers(self):
+        logger.info("Handle get squeak servers")
+        squeak_servers = self.squeak_node.get_squeak_servers()
+        return squeak_servers
