@@ -41,9 +41,9 @@ class PostgresDb:
             db_version = curs.fetchone()
             logger.info(db_version)
 
-    def create_schema(self, schema_name):
+    def use_schema(self, schema_name):
         """ Create the schema for the given name. """
-        create_schema_sql = sql.SQL("CREATE SCHEMA {};").format(
+        create_schema_sql = sql.SQL("CREATE SCHEMA IF NOT EXISTS {};").format(
             sql.Identifier(schema_name)
         )
         use_schema_sql = sql.SQL("SET search_path TO {}, public;").format(

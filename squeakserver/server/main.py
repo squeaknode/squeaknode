@@ -151,7 +151,7 @@ def run_server(config):
     postgres_db = load_postgres_db(config)
     logger.info("postgres_db: " + str(postgres_db))
     postgres_db.get_version()
-    postgres_db.create_schema(network)
+    postgres_db.use_schema(network)
     postgres_db.init()
 
     # load the price
