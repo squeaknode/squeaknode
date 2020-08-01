@@ -138,6 +138,11 @@ def main():
 
 
 def run_server(config):
+    # load the network
+    network = load_network(config)
+    logger.info("network: " + network)
+    SelectParams(network)
+
     # load the db params
     db_params = load_db_params(config)
     logger.info("db params: " + str(db_params))
@@ -146,12 +151,8 @@ def run_server(config):
     postgres_db = load_postgres_db(config)
     logger.info("postgres_db: " + str(postgres_db))
     postgres_db.get_version()
+    postgres_db.create_schema(network)
     postgres_db.init()
-
-    # load the price
-    network = load_network(config)
-    logger.info("network: " + network)
-    SelectParams(network)
 
     # load the price
     price = load_price(config)
