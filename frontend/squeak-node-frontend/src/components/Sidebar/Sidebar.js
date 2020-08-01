@@ -9,7 +9,7 @@ import {
   LibraryBooks as LibraryIcon,
   HelpOutline as FAQIcon,
   ArrowBack as ArrowBackIcon,
-  CloudDownload as ServersIcon,
+  CloudDownload as SubscriptionIcon,
 } from "@material-ui/icons";
 import { useTheme } from "@material-ui/styles";
 import { withRouter } from "react-router-dom";
@@ -33,7 +33,7 @@ const structure = [
   { id: 0, label: "Timeline", link: "/app/timeline", icon: <HomeIcon /> },
   { id: 1, label: "Profiles", link: "/app/profiles", icon: <ProfilesIcon /> },
   { id: 2, label: "Lightning", link: "/app/lightning", icon: <LightningIcon /> },
-  { id: 3, label: "Servers", link: "/app/servers", icon: <ServersIcon /> },
+  { id: 3, label: "Subscriptions", link: "/app/subscriptions", icon: <SubscriptionIcon /> },
 ];
 
 function Sidebar({ location }) {

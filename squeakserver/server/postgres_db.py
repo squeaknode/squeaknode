@@ -10,7 +10,7 @@ from squeakserver.blockchain.util import parse_block_header
 from squeakserver.core.squeak_entry import SqueakEntry
 from squeakserver.core.squeak_entry_with_profile import SqueakEntryWithProfile
 from squeakserver.server.squeak_profile import SqueakProfile
-from squeakserver.server.squeak_server import SqueakServer
+from squeakserver.server.squeak_subscription import SqueakSubscription
 from squeakserver.server.util import get_hash
 
 logger = logging.getLogger(__name__)
@@ -370,49 +370,49 @@ class PostgresDb:
         with self.get_cursor() as curs:
             curs.execute(sql, (squeak_hash_str,))
 
-    def insert_server(self, squeak_server):
-        """ Insert a new squeak server. """
+    def insert_subscription(self, squeak_subscription):
+        """ Insert a new squeak subscription. """
         sql = """
-        INSERT INTO server(server_name, server_host, server_port, sharing, following)
+        INSERT INTO subscription(subscription_name, server_host, server_port, sharing, following)
         VALUES(%s, %s, %s, %s, %s)
-        RETURNING server_id;
+        RETURNING subscription_id;
         """
         with self.get_cursor() as curs:
             # execute the INSERT statement
             curs.execute(
                 sql,
                 (
-                    squeak_server.server_name,
-                    squeak_server.host,
-                    squeak_server.port,
-                    squeak_server.sharing,
-                    squeak_server.following,
+                    squeak_subscription.subscription_name,
+                    squeak_subscription.host,
+                    squeak_subscription.port,
+                    squeak_subscription.sharing,
+                    squeak_subscription.following,
                 ),
             )
-            # get the new server id back
+            # get the new subscription id back
             row = curs.fetchone()
-            return row["server_id"]
+            return row["subscription_id"]
 
-    def get_server(self, server_id):
-        """ Get a server. """
+    def get_subscription(self, subscription_id):
+        """ Get a subscription. """
         sql = """
-        SELECT * FROM server WHERE server_id=%s"""
+        SELECT * FROM subscription WHERE subscription_id=%s"""
 
         with self.get_cursor() as curs:
-            curs.execute(sql, (server_id,))
+            curs.execute(sql, (subscription_id,))
             row = curs.fetchone()
-            return self._parse_squeak_server(row)
+            return self._parse_squeak_subscription(row)
 
-    def get_servers(self):
-        """ Get all servers. """
+    def get_subscriptions(self):
+        """ Get all subscriptions. """
         sql = """
-        SELECT * FROM server;
+        SELECT * FROM subscription;
         """
         with self.get_cursor() as curs:
             curs.execute(sql)
             rows = curs.fetchall()
-            servers = [self._parse_squeak_server(row) for row in rows]
-            return servers
+            subscriptions = [self._parse_squeak_subscription(row) for row in rows]
+            return subscriptions
 
     def _parse_squeak_entry(self, row):
         vch_decryption_key_column = row["vch_decryption_key"]
@@ -466,12 +466,12 @@ class PostgresDb:
             squeak_entry=squeak_entry, squeak_profile=squeak_profile,
         )
 
-    def _parse_squeak_server(self, row):
+    def _parse_squeak_subscription(self, row):
         if row is None:
             return None
-        return SqueakServer(
-            server_id=row["server_id"],
-            server_name=row["server_name"],
+        return SqueakSubscription(
+            subscription_id=row["subscription_id"],
+            subscription_name=row["subscription_name"],
             host=row["server_host"],
             port=row["server_port"],
             sharing=row["sharing"],

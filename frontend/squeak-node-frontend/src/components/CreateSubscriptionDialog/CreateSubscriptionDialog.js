@@ -31,7 +31,7 @@ import SqueakThreadItem from "../../components/SqueakThreadItem";
 
 import {
   CreateContactProfileRequest,
-  AddServerRequest,
+  CreateSubscriptionRequest,
 } from "../../proto/squeak_admin_pb"
 import {SqueakAdminClient} from "../../proto/squeak_admin_grpc_web_pb"
 
@@ -56,24 +56,24 @@ export default function CreateSubscriptionDialog({
     setHost(event.target.value);
   };
 
-  const createSubscription = (serverName, host, port) => {
+  const createSubscription = (subscriptionName, host, port) => {
     console.log("called createContactProfile");
 
-    var addServerRequest = new AddServerRequest()
-    addServerRequest.setServerName(serverName);
-    addServerRequest.setHost(host);
+    var createSubscriptionRequest = new CreateSubscriptionRequest()
+    createSubscriptionRequest.setSubscriptionName(subscriptionName);
+    createSubscriptionRequest.setHost(host);
     // TODO: use real port here
     // addServerRequest.setHost(0);
-    console.log(addServerRequest);
+    console.log(createSubscriptionRequest);
 
-    client.addServer(addServerRequest, {}, (err, response) => {
+    client.createSubscription(createSubscriptionRequest, {}, (err, response) => {
       if (err) {
         console.log(err.message);
         alert('Error creating subscription: ' + err.message);
         return;
       }
       console.log(response);
-      console.log(response.getServerId());
+      console.log(response.getSubscriptionId());
       // goToProfilePage(response.getProfileId());
     });
   };

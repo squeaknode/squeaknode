@@ -153,21 +153,25 @@ class SqueakAdminServerHandler(object):
         self.squeak_node.delete_squeak(squeak_hash)
         logger.info("Deleted squeak entry with hash: {}".format(squeak_hash))
 
-    def handle_add_server(self, server_name, server_host, server_port):
+    def handle_create_subscription(self, subscription_name, host, port):
         logger.info(
-            "Handle add server with name: {}, host: {}, port: {}".format(
-                server_name, server_host, server_port,
+            "Handle create subscription with name: {}, host: {}, port: {}".format(
+                subscription_name, host, port,
             )
         )
-        server_id = self.squeak_node.add_server(server_name, server_host, server_port,)
-        return server_id
+        subscription_id = self.squeak_node.create_subscription(
+            subscription_name,
+            host,
+            port,
+        )
+        return subscription_id
 
-    def handle_get_squeak_server(self, server_id):
-        logger.info("Handle get squeak server with id: {}".format(server_id))
-        squeak_server = self.squeak_node.get_squeak_server(server_id)
-        return squeak_server
+    def handle_get_squeak_subscription(self, subscription_id):
+        logger.info("Handle get squeak subscription with id: {}".format(subscription_id))
+        squeak_subscription = self.squeak_node.get_subscription(subscription_id)
+        return squeak_subscription
 
-    def handle_get_squeak_servers(self):
-        logger.info("Handle get squeak servers")
-        squeak_servers = self.squeak_node.get_squeak_servers()
-        return squeak_servers
+    def handle_get_squeak_subscriptions(self):
+        logger.info("Handle get squeak subscriptions")
+        squeak_subscriptions = self.squeak_node.get_subscriptions()
+        return squeak_subscriptions

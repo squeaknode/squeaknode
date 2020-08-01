@@ -152,27 +152,36 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         self.handler.handle_delete_squeak(squeak_hash)
         return squeak_admin_pb2.DeleteSqueakReply()
 
-    def AddServer(self, request, context):
-        server_name = request.server_name if request.server_name else None
-        server_host = request.host
-        server_port = request.port
-        server_id = self.handler.handle_add_server(
-            server_name, server_host, server_port,
+    def CreateSubscription(self, request, context):
+        subscription_name = request.subscription_name if request.subscription_name else None
+        host = request.host
+        port = request.port
+        subscription_id = self.handler.handle_create_subscription(
+            subscription_name,
+            host,
+            port,
         )
-        return squeak_admin_pb2.AddServerReply(server_id=server_id)
+        return squeak_admin_pb2.CreateSubscriptionReply(
+            subscription_id=subscription_id,
+        )
 
-    def GetSqueakServer(self, request, context):
-        server_id = request.server_id
-        squeak_server = self.handler.handle_get_squeak_server(server_id)
-        squeak_server_msg = self._squeak_server_to_message(squeak_server)
-        return squeak_admin_pb2.GetSqueakServerReply(squeak_server=squeak_server_msg)
+    def GetSubscription(self, request, context):
+        subscription_id = request.subscription_id
+        squeak_subscription = self.handler.handle_get_squeak_subscription(subscription_id)
+        squeak_subscription_msg = self._squeak_subscription_to_message(squeak_subscription)
+        return squeak_admin_pb2.GetSubscriptionReply(
+            squeak_subscription=squeak_subscription_msg,
+        )
 
-    def GetSqueakServers(self, request, context):
-        squeak_servers = self.handler.handle_get_squeak_servers()
-        squeak_server_msgs = [
-            self._squeak_server_to_message(squeak_server) for squeak_server in squeak_servers
+    def GetSubscriptions(self, request, context):
+        squeak_subscriptions = self.handler.handle_get_squeak_subscriptions()
+        squeak_subscription_msgs = [
+            self._squeak_subscription_to_message(squeak_subscription)
+            for squeak_subscription in squeak_subscriptions
         ]
-        return squeak_admin_pb2.GetSqueakServersReply(squeak_servers=squeak_server_msgs)
+        return squeak_admin_pb2.GetSubscriptionsReply(
+            squeak_subscriptions=squeak_subscription_msgs,
+        )
 
     def _squeak_entry_to_message(self, squeak_entry_with_profile):
         if squeak_entry_with_profile is None:
@@ -215,16 +224,16 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
             whitelisted=squeak_profile.whitelisted,
         )
 
-    def _squeak_server_to_message(self, squeak_server):
-        if squeak_server is None:
+    def _squeak_subscription_to_message(self, squeak_subscription):
+        if squeak_subscription is None:
             return None
-        return squeak_admin_pb2.SqueakServerSubscription(
-            server_id=squeak_server.server_id,
-            server_name=squeak_server.server_name,
-            host=squeak_server.host,
-            port=squeak_server.port,
-            sharing=squeak_server.sharing,
-            following=squeak_server.following,
+        return squeak_admin_pb2.SqueakSubscription(
+            subscription_id=squeak_subscription.subscription_id,
+            subscription_name=squeak_subscription.subscription_name,
+            host=squeak_subscription.host,
+            port=squeak_subscription.port,
+            sharing=squeak_subscription.sharing,
+            following=squeak_subscription.following,
         )
 
     def serve(self):

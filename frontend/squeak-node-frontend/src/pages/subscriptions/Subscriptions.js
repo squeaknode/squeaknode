@@ -24,9 +24,8 @@ import CreateSubscriptionDialog from "../../components/CreateSubscriptionDialog"
 // data
 import mock from "../dashboard/mock";
 
-import {GetInfoRequest} from "../../proto/lnd_pb"
 import {
-  GetSqueakServersRequest,
+  GetSubscriptionsRequest,
 } from "../../proto/squeak_admin_pb"
 import {SqueakAdminClient} from "../../proto/squeak_admin_grpc_web_pb"
 
@@ -40,9 +39,9 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function Servers() {
+export default function Subscriptions() {
   const classes = useStyles();
-  const [servers, setServers] = useState([]);
+  const [subscriptions, setSubscriptions] = useState([]);
   const [createSubscriptionDialogOpen, setCreateSubscriptionDialogOpen] = useState(false);
   const history = useHistory();
 
@@ -56,15 +55,15 @@ export default function Servers() {
   const getSqueakServers = () => {
     console.log("called getSigningProfiles");
 
-    var getSqueakServersRequest = new GetSqueakServersRequest()
+    var getSubscriptionsRequest = new GetSubscriptionsRequest();
 
-    client.getSqueakServers(getSqueakServersRequest, {}, (err, response) => {
+    client.getSubscriptions(getSubscriptionsRequest, {}, (err, response) => {
       if (err) {
         console.log(err.message);
         return;
       }
       console.log(response);
-      setServers(response.getSqueakServersList());
+      setSubscriptions(response.getSqueakSubscriptionsList());
     });
   };
 
@@ -97,18 +96,18 @@ export default function Servers() {
     )
   }
 
-  function ServersInfo() {
+  function SubscriptionsInfo() {
     return (
       <>
       <Grid container spacing={4}>
         {CreateServerButton()}
        <Grid item xs={12}>
          <MUIDataTable
-           title="Servers"
-           data={servers.map(p =>
+           title="Subscriptions"
+           data={subscriptions.map(s =>
               [
-                p.getServerName(),
-                p.getHost(),
+                s.getSubscriptionName(),
+                s.getHost(),
               ]
             )}
            columns={["Name", "Host"]}
@@ -142,7 +141,7 @@ export default function Servers() {
   return (
     <>
      < PageTitle title = "Servers" />
-    {ServersInfo()}
+    {SubscriptionsInfo()}
     {CreateServerDialogContent()}
    < />);
 }

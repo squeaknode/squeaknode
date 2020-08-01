@@ -26,7 +26,7 @@ import Maps from "../../pages/maps";
 import Profiles from "../../pages/profiles";
 import Icons from "../../pages/icons";
 import Charts from "../../pages/charts";
-import Servers from "../../pages/servers";
+import Subscriptions from "../../pages/subscriptions";
 
 // context
 import { useLayoutState } from "../../context/LayoutContext";
@@ -56,7 +56,7 @@ function Layout(props) {
               <Route path="/app/profile/:id" component={Profile} />
               <Route path="/app/profiles" component={Profiles} />
               <Route path="/app/lightning" component={Lightning} />
-              <Route path="/app/servers" component={Servers} />
+              <Route path="/app/subscriptions" component={Subscriptions} />
               <Route path="/app/notifications" component={Notifications} />
               <Route
                 exact
