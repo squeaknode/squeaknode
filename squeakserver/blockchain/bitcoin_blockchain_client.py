@@ -19,7 +19,7 @@ class BitcoinBlockchainClient(BlockchainClient):
 
     def get_best_block_info(self) -> BlockInfo:
         block_height = self.get_block_count() - 1
-        return get_block_info_by_height(block_height)
+        return self.get_block_info_by_height(block_height)
 
     def get_block_info_by_height(self, block_height: int) -> BlockInfo:
         block_hash = self.get_block_hash(block_height)
