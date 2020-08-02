@@ -57,6 +57,7 @@ class SqueakNode:
         self.squeak_subscription_downloader = SqueakSubscriptionDownloader(
             postgres_db,
             self.squeak_store,
+            self.blockchain_client,
         )
 
     def start_running(self):
@@ -173,7 +174,7 @@ class SqueakNode:
 
     def make_squeak(self, profile_id, content_str, replyto_hash):
         squeak_profile = self.postgres_db.get_profile(profile_id)
-        squeak_maker = SqueakMaker(self.lightning_client)
+        squeak_maker = SqueakMaker(self.blockchain_client)
         squeak = squeak_maker.make_squeak(squeak_profile, content_str, replyto_hash)
         return self.save_created_squeak(squeak)
 
