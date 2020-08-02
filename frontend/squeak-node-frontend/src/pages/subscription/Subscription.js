@@ -19,6 +19,8 @@ import Widget from "../../components/Widget";
 
 import {
   GetSubscriptionRequest,
+  SetSubscriptionSubscribedRequest,
+  SetSubscriptionPublishingRequest,
 } from "../../proto/squeak_admin_pb"
 import { SqueakAdminClient } from "../../proto/squeak_admin_grpc_web_pb"
 
@@ -39,12 +41,44 @@ export default function SubscriptionPage() {
           setSubscription(response.getSqueakSubscription())
         });
   };
-
+  const setSubscribed = (id, subscribed) => {
+        console.log("called setSubscribed with subscriptionId: " + id + ", subscribed: " + subscribed);
+        var setSubscriptionSubscribedRequest = new SetSubscriptionSubscribedRequest()
+        setSubscriptionSubscribedRequest.setSubscriptionId(id);
+        setSubscriptionSubscribedRequest.setSubscribed(subscribed);
+        console.log(setSubscriptionSubscribedRequest);
+        client.setSubscriptionSubscribed(setSubscriptionSubscribedRequest, {}, (err, response) => {
+          console.log(response);
+          getSubscription(id);
+        });
+  };
+  const setPublishing = (id, publishing) => {
+        console.log("called setPublishing with subscriptionId: " + id + ", publishing: " + publishing);
+        var setSubscriptionPublishingRequest = new SetSubscriptionPublishingRequest()
+        setSubscriptionPublishingRequest.setSubscriptionId(id);
+        setSubscriptionPublishingRequest.setPublishing(publishing);
+        console.log(setSubscriptionPublishingRequest);
+        client.setSubscriptionPublishing(setSubscriptionPublishingRequest, {}, (err, response) => {
+          console.log(response);
+          getSubscription(id);
+        });
+  };
 
   useEffect(()=>{
     getSubscription(id)
   },[id]);
 
+  const handleSettingsSubscribedChange = (event) => {
+    console.log("Subscribed changed for subscription id: " + id);
+    console.log("Subscribed changed to: " + event.target.checked);
+    setSubscribed(id, event.target.checked);
+  };
+
+  const handleSettingsPublishingChange = (event) => {
+    console.log("Publishing changed for subscription id: " + id);
+    console.log("Publishing changed to: " + event.target.checked);
+    setPublishing(id, event.target.checked);
+  };
 
   function NoSubscriptionContent() {
     return (
@@ -60,7 +94,26 @@ export default function SubscriptionPage() {
         <p>
           Subscription name: {subscription.getSubscriptionName()}
         </p>
+        {SubscriptionSettingsForm()}
       </>
+    )
+  }
+
+  function SubscriptionSettingsForm() {
+    return (
+      <FormControl component="fieldset">
+        <FormLabel component="legend">Subscription settings</FormLabel>
+        <FormGroup>
+          <FormControlLabel
+            control={<Switch checked={subscription.getSubscribed()} onChange={handleSettingsSubscribedChange} />}
+            label="Subscribed"
+          />
+          <FormControlLabel
+            control={<Switch checked={subscription.getPublishing()} onChange={handleSettingsPublishingChange} />}
+            label="Publishing"
+          />
+        </FormGroup>
+      </FormControl>
     )
   }
 

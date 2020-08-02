@@ -31,11 +31,6 @@ export default function ProfilePage() {
   var classes = useStyles();
   const { id } = useParams();
   const [squeakProfile, setSqueakProfile] = useState(null);
-  const [state, setState] = useState({
-    gilad: true,
-    jason: false,
-    antoine: true,
-  });
 
   const getSqueakProfile = (id) => {
         console.log("called getSqueakProfile with profileId: " + id);
@@ -102,11 +97,6 @@ export default function ProfilePage() {
     console.log("Whitelisted changed for profile id: " + id);
     console.log("Whitelisted changed to: " + event.target.checked);
     setWhitelisted(id, event.target.checked);
-  };
-
-  const handleSettingsChange = (event) => {
-    console.log("Settings changed...");
-    setState({ ...state, [event.target.name]: event.target.checked });
   };
 
   function NoProfileContent() {
