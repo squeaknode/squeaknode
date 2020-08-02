@@ -11,6 +11,7 @@ from squeakserver.node.squeak_block_verifier import SqueakBlockVerifier
 from squeakserver.node.squeak_maker import SqueakMaker
 from squeakserver.node.squeak_rate_limiter import SqueakRateLimiter
 from squeakserver.node.squeak_whitelist import SqueakWhitelist
+from squeakserver.node.squeak_store import SqueakStore
 from squeakserver.server.buy_offer import BuyOffer
 from squeakserver.server.squeak_profile import SqueakProfile
 from squeakserver.server.squeak_subscription import SqueakSubscription
@@ -46,36 +47,25 @@ class SqueakNode:
             max_squeaks_per_address_per_hour,
         )
         self.squeak_whitelist = SqueakWhitelist(postgres_db,)
+        self.squeak_store = SqueakStore(
+            postgres_db,
+            self.squeak_block_verifier,
+            self.squeak_rate_limiter,
+            self.squeak_whitelist,
+        )
 
     def start_running(self):
         # self.squeak_block_periodic_worker.start_running()
         self.squeak_block_queue_worker.start_running()
 
-    def save_squeak(self, squeak):
-        if not self.squeak_whitelist.should_allow_squeak(squeak):
-            raise Exception("Squeak upload not allowed by whitelist.")
+    def save_uploaded_squeak(self, squeak):
+        return self.squeak_store.save_uploaded_squeak(squeak)
 
-        if not self.squeak_rate_limiter.should_rate_limit_allow(squeak):
-            raise Exception("Excedeed allowed number of squeaks per block.")
+    def save_created_squeak(self, squeak):
+        return self.squeak_store.save_created_squeak(squeak)
 
-        inserted_squeak_hash = self.postgres_db.insert_squeak(squeak)
-        self.squeak_block_verifier.add_squeak_to_queue(inserted_squeak_hash)
-        return inserted_squeak_hash
-
-    def save_squeak_and_verify(self, squeak):
-        if not self.squeak_rate_limiter.should_rate_limit_allow(squeak):
-            raise Exception("Excedeed allowed number of squeaks per block.")
-
-        inserted_squeak_hash = self.postgres_db.insert_squeak(squeak)
-        self.squeak_block_verifier.verify_squeak_block(inserted_squeak_hash)
-        return inserted_squeak_hash
-
-    def get_locked_squeak(self, squeak_hash):
-        squeak_entry = self.postgres_db.get_squeak_entry(squeak_hash)
-        squeak = squeak_entry.squeak
-        # Remove the decryption key before returning.
-        squeak.ClearDecryptionKey()
-        return squeak
+    def get_public_squeak(self, squeak_hash):
+        return self.squeak_store.get_public_squeak(squeak_hash)
 
     def get_squeak_entry(self, squeak_hash):
         return self.postgres_db.get_squeak_entry(squeak_hash)
@@ -179,28 +169,30 @@ class SqueakNode:
         squeak_profile = self.postgres_db.get_profile(profile_id)
         squeak_maker = SqueakMaker(self.lightning_client)
         squeak = squeak_maker.make_squeak(squeak_profile, content_str, replyto_hash)
-        return self.save_squeak_and_verify(squeak)
+        return self.save_created_squeak(squeak)
 
     def get_squeak_entry_with_profile(self, squeak_hash):
-        return self.postgres_db.get_squeak_entry_with_profile(squeak_hash)
+        return self.squeak_store.get_squeak_entry_with_profile(squeak_hash)
 
     def get_followed_squeak_entries_with_profile(self):
-        return self.postgres_db.get_followed_squeak_entries_with_profile()
+        return self.squeak_store.get_followed_squeak_entries_with_profile()
 
     def get_squeak_entries_with_profile_for_address(
         self, address, min_block, max_block
     ):
-        return self.postgres_db.get_squeak_entries_with_profile_for_address(
-            address, min_block, max_block,
+        return self.squeak_store.get_squeak_entries_with_profile_for_address(
+            address,
+            min_block,
+            max_block,
         )
 
     def get_ancestor_squeak_entries_with_profile(self, squeak_hash_str):
-        return self.postgres_db.get_thread_ancestor_squeak_entries_with_profile(
+        return self.squeak_store.get_ancestor_squeak_entries_with_profile(
             squeak_hash_str,
         )
 
     def delete_squeak(self, squeak_hash):
-        return self.postgres_db.delete_squeak(squeak_hash)
+        return self.squeak_store.delete_squeak(squeak_hash)
 
     def create_subscription(self, subscription_name, host, port):
         squeak_subscription = SqueakSubscription(
