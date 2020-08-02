@@ -63,7 +63,7 @@ class SqueakNode:
     def start_running(self):
         # self.squeak_block_periodic_worker.start_running()
         self.squeak_block_queue_worker.start_running()
-        # self.squeak_subscription_downloader.start_running()
+        self.squeak_subscription_downloader.start_running()
 
     def save_uploaded_squeak(self, squeak):
         return self.squeak_store.save_uploaded_squeak(squeak)
