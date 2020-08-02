@@ -25,3 +25,10 @@ class SqueakStore:
         inserted_squeak_hash = self.postgres_db.insert_squeak(squeak)
         self.squeak_block_verifier.verify_squeak_block(inserted_squeak_hash)
         return inserted_squeak_hash
+
+    def get_public_squeak(self, squeak_hash):
+        squeak_entry = self.postgres_db.get_squeak_entry(squeak_hash)
+        squeak = squeak_entry.squeak
+        # Remove the decryption key before returning.
+        squeak.ClearDecryptionKey()
+        return squeak

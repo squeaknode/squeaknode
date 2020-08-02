@@ -61,15 +61,11 @@ class SqueakNode:
     def save_uploaded_squeak(self, squeak):
         return self.squeak_store.save_uploaded_squeak(squeak)
 
-    def save_created_verify(self, squeak):
+    def save_created_squeak(self, squeak):
         return self.squeak_store.save_created_squeak(squeak)
 
-    def get_locked_squeak(self, squeak_hash):
-        squeak_entry = self.postgres_db.get_squeak_entry(squeak_hash)
-        squeak = squeak_entry.squeak
-        # Remove the decryption key before returning.
-        squeak.ClearDecryptionKey()
-        return squeak
+    def get_public_squeak(self, squeak_hash):
+        return self.squeak_store.get_public_squeak(squeak_hash)
 
     def get_squeak_entry(self, squeak_hash):
         return self.postgres_db.get_squeak_entry(squeak_hash)
@@ -173,7 +169,7 @@ class SqueakNode:
         squeak_profile = self.postgres_db.get_profile(profile_id)
         squeak_maker = SqueakMaker(self.lightning_client)
         squeak = squeak_maker.make_squeak(squeak_profile, content_str, replyto_hash)
-        return self.save_created_verify(squeak)
+        return self.save_created_squeak(squeak)
 
     def get_squeak_entry_with_profile(self, squeak_hash):
         return self.postgres_db.get_squeak_entry_with_profile(squeak_hash)

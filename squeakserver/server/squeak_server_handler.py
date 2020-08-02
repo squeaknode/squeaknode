@@ -20,7 +20,7 @@ class SqueakServerHandler(object):
 
     def handle_get_squeak(self, squeak_hash):
         logger.info("Handle get squeak by hash: {}".format(squeak_hash.hex()))
-        return self.squeak_node.get_locked_squeak(squeak_hash)
+        return self.squeak_node.get_public_squeak(squeak_hash)
 
     def handle_lookup_squeaks(self, addresses, min_block, max_block):
         logger.info(
