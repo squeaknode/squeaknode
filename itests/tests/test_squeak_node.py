@@ -168,6 +168,7 @@ def test_sell_squeak(server_stub, admin_stub, lightning_client, saved_squeak_has
     CheckSqueak(get_response_squeak)
 
     # Close the channel
+    time.sleep(2)
     for update in lightning_client.close_channel(channel_point):
         if update.HasField("chan_close"):
             print("Channel closed.")
