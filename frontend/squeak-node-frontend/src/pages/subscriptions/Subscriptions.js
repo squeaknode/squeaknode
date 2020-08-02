@@ -52,7 +52,7 @@ export default function Subscriptions() {
     };
   }
 
-  const getSqueakServers = () => {
+  const getSqueakSubscriptions = () => {
     console.log("called getSigningProfiles");
 
     var getSubscriptionsRequest = new GetSubscriptionsRequest();
@@ -80,10 +80,10 @@ export default function Subscriptions() {
   };
 
   useEffect(() => {
-    getSqueakServers()
+    getSqueakSubscriptions()
   }, []);
 
-  function CreateServerButton() {
+  function CreateSubscriptionButton() {
     return (
       <>
       <Grid item xs={12}>
@@ -92,7 +92,7 @@ export default function Subscriptions() {
             variant="contained"
             onClick={() => {
               handleClickOpenCreateSubscriptionDialog();
-            }}>Create Server Subscription
+            }}>Create Subscription
           </Button>
         </div>
       </Grid>
@@ -104,7 +104,7 @@ export default function Subscriptions() {
     return (
       <>
       <Grid container spacing={4}>
-        {CreateServerButton()}
+        {CreateSubscriptionButton()}
        <Grid item xs={12}>
          <MUIDataTable
            title="Subscriptions"
@@ -148,7 +148,7 @@ export default function Subscriptions() {
     )
   }
 
-  function CreateServerDialogContent() {
+  function CreateSubscriptionDialogContent() {
     return (
       <>
         <CreateSubscriptionDialog
@@ -161,8 +161,8 @@ export default function Subscriptions() {
 
   return (
     <>
-     < PageTitle title = "Servers" />
+     < PageTitle title = "Subscriptions" />
     {SubscriptionsInfo()}
-    {CreateServerDialogContent()}
+    {CreateSubscriptionDialogContent()}
    < />);
 }

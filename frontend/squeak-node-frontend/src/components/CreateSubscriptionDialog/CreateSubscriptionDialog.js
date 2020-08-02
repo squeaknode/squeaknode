@@ -30,7 +30,6 @@ import Widget from "../../components/Widget";
 import SqueakThreadItem from "../../components/SqueakThreadItem";
 
 import {
-  CreateContactProfileRequest,
   CreateSubscriptionRequest,
 } from "../../proto/squeak_admin_pb"
 import {SqueakAdminClient} from "../../proto/squeak_admin_grpc_web_pb"
@@ -62,7 +61,7 @@ export default function CreateSubscriptionDialog({
   };
 
   const createSubscription = (subscriptionName, host, port) => {
-    console.log("called createContactProfile");
+    console.log("called createSubscription");
 
     var createSubscriptionRequest = new CreateSubscriptionRequest()
     createSubscriptionRequest.setSubscriptionName(subscriptionName);
@@ -170,7 +169,7 @@ export default function CreateSubscriptionDialog({
 
   return (
     <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-  <DialogTitle id="form-dialog-title">Create Contact Profile</DialogTitle>
+  <DialogTitle id="form-dialog-title">Create Subscription</DialogTitle>
   <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
   <DialogContent>
     <div>
