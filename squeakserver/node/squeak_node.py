@@ -12,6 +12,7 @@ from squeakserver.node.squeak_maker import SqueakMaker
 from squeakserver.node.squeak_rate_limiter import SqueakRateLimiter
 from squeakserver.node.squeak_whitelist import SqueakWhitelist
 from squeakserver.node.squeak_store import SqueakStore
+from squeakserver.node.squeak_subscription_downloader import SqueakSubscriptionDownloader
 from squeakserver.server.buy_offer import BuyOffer
 from squeakserver.server.squeak_profile import SqueakProfile
 from squeakserver.server.squeak_subscription import SqueakSubscription
@@ -53,10 +54,15 @@ class SqueakNode:
             self.squeak_rate_limiter,
             self.squeak_whitelist,
         )
+        self.squeak_subscription_downloader = SqueakSubscriptionDownloader(
+            postgres_db,
+            self.squeak_store,
+        )
 
     def start_running(self):
         # self.squeak_block_periodic_worker.start_running()
         self.squeak_block_queue_worker.start_running()
+        self.squeak_subscription_downloader.start_running()
 
     def save_uploaded_squeak(self, squeak):
         return self.squeak_store.save_uploaded_squeak(squeak)
