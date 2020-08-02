@@ -20,6 +20,7 @@ import Widget from "../../components/Widget";
 import {
   GetSubscriptionRequest,
   SetSubscriptionSubscribedRequest,
+  SetSubscriptionPublishingRequest,
 } from "../../proto/squeak_admin_pb"
 import { SqueakAdminClient } from "../../proto/squeak_admin_grpc_web_pb"
 
@@ -51,7 +52,17 @@ export default function SubscriptionPage() {
           getSubscription(id);
         });
   };
-
+  const setPublishing = (id, publishing) => {
+        console.log("called setPublishing with subscriptionId: " + id + ", publishing: " + publishing);
+        var setSubscriptionPublishingRequest = new SetSubscriptionPublishingRequest()
+        setSubscriptionPublishingRequest.setSubscriptionId(id);
+        setSubscriptionPublishingRequest.setPublishing(publishing);
+        console.log(setSubscriptionPublishingRequest);
+        client.setSubscriptionPublishing(setSubscriptionPublishingRequest, {}, (err, response) => {
+          console.log(response);
+          getSubscription(id);
+        });
+  };
 
   useEffect(()=>{
     getSubscription(id)
@@ -61,6 +72,12 @@ export default function SubscriptionPage() {
     console.log("Subscribed changed for subscription id: " + id);
     console.log("Subscribed changed to: " + event.target.checked);
     setSubscribed(id, event.target.checked);
+  };
+
+  const handleSettingsPublishingChange = (event) => {
+    console.log("Publishing changed for subscription id: " + id);
+    console.log("Publishing changed to: " + event.target.checked);
+    setPublishing(id, event.target.checked);
   };
 
   function NoSubscriptionContent() {
@@ -90,6 +107,10 @@ export default function SubscriptionPage() {
           <FormControlLabel
             control={<Switch checked={subscription.getSubscribed()} onChange={handleSettingsSubscribedChange} />}
             label="Subscribed"
+          />
+          <FormControlLabel
+            control={<Switch checked={subscription.getPublishing()} onChange={handleSettingsPublishingChange} />}
+            label="Publishing"
           />
         </FormGroup>
       </FormControl>
