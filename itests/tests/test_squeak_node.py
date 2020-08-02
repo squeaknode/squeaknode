@@ -272,18 +272,19 @@ def test_make_reply_squeak(
     assert len(get_ancestors_response.squeak_display_entries) == 3
 
 
-def test_rate_limit(server_stub, admin_stub, signing_profile_id):
+def test_post_squeak_rate_limit(server_stub, admin_stub, whitelisted_signing_key):
     # Make 10 squeak
     for i in range(10):
         try:
-            make_extra_squeak_response = admin_stub.MakeSqueak(
-                squeak_admin_pb2.MakeSqueakRequest(
-                    profile_id=signing_profile_id, content="Hello number: {}".format(i),
-                )
+            block_height, block_hash = get_latest_block_info(lightning_client)
+            squeak = make_squeak(
+                nonwhitelisted_signing_key, "hello from itest!", block_hash, block_height
             )
+            squeak_msg = build_squeak_msg(squeak)
+            server_stub.PostSqueak(squeak_server_pb2.PostSqueakRequest(squeak=squeak_msg))
         except Exception as e:
-            make_extra_squeak_exception = e
-    assert make_extra_squeak_exception is not None
+            post_squeak_exception = e
+    assert post_squeak_exception is not None
 
 
 def test_make_signing_profile(server_stub, admin_stub):

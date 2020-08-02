@@ -61,13 +61,8 @@ class SqueakNode:
     def save_uploaded_squeak(self, squeak):
         return self.squeak_store.save_uploaded_squeak(squeak)
 
-    def save_squeak_and_verify(self, squeak):
-        if not self.squeak_rate_limiter.should_rate_limit_allow(squeak):
-            raise Exception("Excedeed allowed number of squeaks per block.")
-
-        inserted_squeak_hash = self.postgres_db.insert_squeak(squeak)
-        self.squeak_block_verifier.verify_squeak_block(inserted_squeak_hash)
-        return inserted_squeak_hash
+    def save_created_verify(self, squeak):
+        return self.squeak_store.save_created_squeak(squeak)
 
     def get_locked_squeak(self, squeak_hash):
         squeak_entry = self.postgres_db.get_squeak_entry(squeak_hash)
@@ -178,7 +173,7 @@ class SqueakNode:
         squeak_profile = self.postgres_db.get_profile(profile_id)
         squeak_maker = SqueakMaker(self.lightning_client)
         squeak = squeak_maker.make_squeak(squeak_profile, content_str, replyto_hash)
-        return self.save_squeak_and_verify(squeak)
+        return self.save_created_verify(squeak)
 
     def get_squeak_entry_with_profile(self, squeak_hash):
         return self.postgres_db.get_squeak_entry_with_profile(squeak_hash)

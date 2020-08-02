@@ -20,3 +20,8 @@ class SqueakStore:
         inserted_squeak_hash = self.postgres_db.insert_squeak(squeak)
         self.squeak_block_verifier.add_squeak_to_queue(inserted_squeak_hash)
         return inserted_squeak_hash
+
+    def save_created_squeak(self, squeak):
+        inserted_squeak_hash = self.postgres_db.insert_squeak(squeak)
+        self.squeak_block_verifier.verify_squeak_block(inserted_squeak_hash)
+        return inserted_squeak_hash
