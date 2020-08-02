@@ -172,25 +172,27 @@ class SqueakNode:
         return self.save_created_squeak(squeak)
 
     def get_squeak_entry_with_profile(self, squeak_hash):
-        return self.postgres_db.get_squeak_entry_with_profile(squeak_hash)
+        return self.squeak_store.get_squeak_entry_with_profile(squeak_hash)
 
     def get_followed_squeak_entries_with_profile(self):
-        return self.postgres_db.get_followed_squeak_entries_with_profile()
+        return self.squeak_store.get_followed_squeak_entries_with_profile()
 
     def get_squeak_entries_with_profile_for_address(
         self, address, min_block, max_block
     ):
-        return self.postgres_db.get_squeak_entries_with_profile_for_address(
-            address, min_block, max_block,
+        return self.squeak_store.get_squeak_entries_with_profile_for_address(
+            address,
+            min_block,
+            max_block,
         )
 
     def get_ancestor_squeak_entries_with_profile(self, squeak_hash_str):
-        return self.postgres_db.get_thread_ancestor_squeak_entries_with_profile(
+        return self.squeak_store.get_ancestor_squeak_entries_with_profile(
             squeak_hash_str,
         )
 
     def delete_squeak(self, squeak_hash):
-        return self.postgres_db.delete_squeak(squeak_hash)
+        return self.squeak_store.delete_squeak(squeak_hash)
 
     def create_subscription(self, subscription_name, host, port):
         squeak_subscription = SqueakSubscription(
