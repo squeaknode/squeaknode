@@ -24,7 +24,9 @@ class SqueakSubscriptionDownloader:
         logger.info("Syncing subscriptions...")
         subscriptions = self._get_subscriptions()
         for subscription in subscriptions:
-            logger.info("Syncing subscription: {}".format(subscription))
+            block_info = self.blockchain_client.get_best_block_info()
+            block_height = block_info.block_height
+            logger.info("Syncing subscription: {} with current block: {}".format(subscription, block_height))
 
     def start_running(self):
         threading.Timer(self.update_interval_s, self.start_running).start()
