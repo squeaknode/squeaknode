@@ -57,6 +57,7 @@ class SqueakNode:
         self.squeak_subscription_downloader = SqueakSubscriptionDownloader(
             postgres_db,
             self.squeak_store,
+            self.blockchain_client,
         )
 
     def start_running(self):
