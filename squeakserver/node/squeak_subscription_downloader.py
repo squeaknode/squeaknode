@@ -5,7 +5,7 @@ import threading
 logger = logging.getLogger(__name__)
 
 
-SUBSCRIBE_UPDATE_INTERVAL_S = 10.0
+SUBSCRIBE_UPDATE_INTERVAL_S = 60.0
 
 
 class SqueakSubscriptionDownloader:
