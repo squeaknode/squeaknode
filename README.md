@@ -31,8 +31,10 @@ $ make itest
 
 - Create a **config.ini** file and fill in the relevant values:
 	```
-	[DEFAULT]
+	[squeaknode]
 	network=testnet
+	price=<YOUR_SELLING_PRICE_IN_SATOSHIS>
+	max_squeaks_per_address_per_hour=<YOUR_RATE_LIMIT>
 
 	[lnd]
 	host=<YOUR_LND_HOST>
@@ -42,10 +44,19 @@ $ make itest
 	tls_cert_path=/root/.lnd/tls.cert
 	macaroon_path=/root/.lnd/data/chain/bitcoin/testnet/admin.macaroon
 
+	[bitcoin]
+	rpc_host=btcd
+	rpc_port=18334
+	rpc_user=devuser
+	rpc_pass=devpass
+
 	[server]
 	rpc_host=0.0.0.0
 	rpc_port=8774
-	price=<YOUR_SELLING_PRICE_IN_SATOSHIS>
+
+	[admin]
+	rpc_host=0.0.0.0
+	rpc_port=8994
 
 	[postgresql]
 	host=<YOUR_POSTGRES_HOST>
