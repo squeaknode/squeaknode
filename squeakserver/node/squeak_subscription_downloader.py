@@ -16,7 +16,13 @@ class SqueakSubscriptionDownloader:
 
     def sync_subscriptions(self):
         logger.info("Syncing subscriptions...")
+        subscriptions = self._get_subscriptions()
+        for subscription in subscriptions:
+            logger.info("Syncing subscription: {}".format(subscription))
 
     def start_running(self):
         threading.Timer(self.update_interval_s, self.start_running).start()
         self.sync_subscriptions()
+
+    def _get_subscriptions(self):
+        return self.postgres_db.get_subscriptions()
