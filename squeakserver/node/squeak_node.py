@@ -11,6 +11,7 @@ from squeakserver.node.squeak_block_verifier import SqueakBlockVerifier
 from squeakserver.node.squeak_maker import SqueakMaker
 from squeakserver.node.squeak_rate_limiter import SqueakRateLimiter
 from squeakserver.node.squeak_whitelist import SqueakWhitelist
+from squeakserver.node.squeak_store import SqueakStore
 from squeakserver.server.buy_offer import BuyOffer
 from squeakserver.server.squeak_profile import SqueakProfile
 from squeakserver.server.squeak_subscription import SqueakSubscription
@@ -46,21 +47,19 @@ class SqueakNode:
             max_squeaks_per_address_per_hour,
         )
         self.squeak_whitelist = SqueakWhitelist(postgres_db,)
+        self.squeak_store = SqueakStore(
+            postgres_db,
+            self.squeak_block_verifier,
+            self.squeak_rate_limiter,
+            self.squeak_whitelist,
+        )
 
     def start_running(self):
         # self.squeak_block_periodic_worker.start_running()
         self.squeak_block_queue_worker.start_running()
 
-    def save_squeak(self, squeak):
-        if not self.squeak_whitelist.should_allow_squeak(squeak):
-            raise Exception("Squeak upload not allowed by whitelist.")
-
-        if not self.squeak_rate_limiter.should_rate_limit_allow(squeak):
-            raise Exception("Excedeed allowed number of squeaks per block.")
-
-        inserted_squeak_hash = self.postgres_db.insert_squeak(squeak)
-        self.squeak_block_verifier.add_squeak_to_queue(inserted_squeak_hash)
-        return inserted_squeak_hash
+    def save_uploaded_squeak(self, squeak):
+        return self.squeak_store.save_uploaded_squeak(squeak)
 
     def save_squeak_and_verify(self, squeak):
         if not self.squeak_rate_limiter.should_rate_limit_allow(squeak):
