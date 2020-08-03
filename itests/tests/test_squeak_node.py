@@ -493,19 +493,19 @@ def test_set_peer_downloading(server_stub, admin_stub, peer_id):
     )
     assert get_peer_response.squeak_peer.downloading == True
 
-def test_set_peer_publishing(server_stub, admin_stub, peer_id):
+def test_set_peer_uploading(server_stub, admin_stub, peer_id):
     # Get the peer
     get_peer_response = admin_stub.GetPeer(
         squeak_admin_pb2.GetPeerRequest(
             peer_id=peer_id,
         )
     )
-    assert get_peer_response.squeak_peer.publishing == False
+    assert get_peer_response.squeak_peer.uploading == False
 
-    # Set the peer to be publishing
-    admin_stub.SetPeerPublishing(
-        squeak_admin_pb2.SetPeerPublishingRequest(
-            peer_id=peer_id, publishing=True,
+    # Set the peer to be uploading
+    admin_stub.SetPeerUploading(
+        squeak_admin_pb2.SetPeerUploadingRequest(
+            peer_id=peer_id, uploading=True,
         )
     )
 
@@ -515,4 +515,4 @@ def test_set_peer_publishing(server_stub, admin_stub, peer_id):
             peer_id=peer_id,
         )
     )
-    assert get_peer_response.squeak_peer.publishing == True
+    assert get_peer_response.squeak_peer.uploading == True

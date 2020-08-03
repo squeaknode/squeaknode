@@ -100,7 +100,7 @@ service SqueakAdmin {
 
   /** sqkadmin: `setpeerdownloading`
   */
-  rpc SetPeerPublishing (SetPeerPublishingRequest) returns (SetPeerPublishingReply) {}
+  rpc SetPeerUploading (SetPeerUploadingRequest) returns (SetPeerUploadingReply) {}
 
 }
 
@@ -368,8 +368,8 @@ message SqueakPeer {
     /// Port
     int32 port = 4;
 
-    /// Publishing
-    bool publishing = 5;
+    /// Uploading
+    bool uploading = 5;
 
     /// Downloading
     bool downloading = 6;
@@ -386,13 +386,13 @@ message SetPeerDownloadingRequest {
 message SetPeerDownloadingReply {
 }
 
-message SetPeerPublishingRequest {
+message SetPeerUploadingRequest {
     /// The peer id
     int32 peer_id = 1;
 
-    /// Publishing
-    bool publishing = 2;
+    /// Uploading
+    bool uploading = 2;
 }
 
-message SetPeerPublishingReply {
+message SetPeerUploadingReply {
 }

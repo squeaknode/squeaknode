@@ -115,7 +115,7 @@ export default function Peers() {
                 s.getHost(),
                 s.getPort(),
                 s.getDownloading().toString(),
-                s.getPublishing().toString(),
+                s.getUploading().toString(),
               ]
             )}
            columns={[
@@ -129,7 +129,7 @@ export default function Peers() {
              "Host",
              "Port",
              "Downloading",
-             "Publishing",
+             "Uploading",
            ]}
            options={{
              filter: false,

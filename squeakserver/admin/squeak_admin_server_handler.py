@@ -184,10 +184,10 @@ class SqueakAdminServerHandler(object):
         )
         self.squeak_node.set_peer_downloading(peer_id, downloading)
 
-    def handle_set_squeak_peer_publishing(self, peer_id, publishing):
+    def handle_set_squeak_peer_uploading(self, peer_id, uploading):
         logger.info(
-            "Handle set peer publishing with peer id: {}, publishing: {}".format(
-                peer_id, publishing,
+            "Handle set peer uploading with peer id: {}, uploading: {}".format(
+                peer_id, uploading,
             )
         )
-        self.squeak_node.set_peer_publishing(peer_id, publishing)
+        self.squeak_node.set_peer_uploading(peer_id, uploading)

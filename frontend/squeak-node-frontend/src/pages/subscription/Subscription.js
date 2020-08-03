@@ -20,7 +20,7 @@ import Widget from "../../components/Widget";
 import {
   GetPeerRequest,
   SetPeerDownloadingRequest,
-  SetPeerPublishingRequest,
+  SetPeerUploadingRequest,
 } from "../../proto/squeak_admin_pb"
 import { SqueakAdminClient } from "../../proto/squeak_admin_grpc_web_pb"
 
@@ -52,13 +52,13 @@ export default function PeerPage() {
           getPeer(id);
         });
   };
-  const setPublishing = (id, publishing) => {
-        console.log("called setPublishing with peerId: " + id + ", publishing: " + publishing);
-        var setPeerPublishingRequest = new SetPeerPublishingRequest()
-        setPeerPublishingRequest.setPeerId(id);
-        setPeerPublishingRequest.setPublishing(publishing);
-        console.log(setPeerPublishingRequest);
-        client.setPeerPublishing(setPeerPublishingRequest, {}, (err, response) => {
+  const setUploading = (id, uploading) => {
+        console.log("called setUploading with peerId: " + id + ", uploading: " + uploading);
+        var setPeerUploadingRequest = new SetPeerUploadingRequest()
+        setPeerUploadingRequest.setPeerId(id);
+        setPeerUploadingRequest.setUploading(uploading);
+        console.log(setPeerUploadingRequest);
+        client.setPeerUploading(setPeerUploadingRequest, {}, (err, response) => {
           console.log(response);
           getPeer(id);
         });
@@ -74,10 +74,10 @@ export default function PeerPage() {
     setDownloading(id, event.target.checked);
   };
 
-  const handleSettingsPublishingChange = (event) => {
-    console.log("Publishing changed for peer id: " + id);
-    console.log("Publishing changed to: " + event.target.checked);
-    setPublishing(id, event.target.checked);
+  const handleSettingsUploadingChange = (event) => {
+    console.log("Uploading changed for peer id: " + id);
+    console.log("Uploading changed to: " + event.target.checked);
+    setUploading(id, event.target.checked);
   };
 
   function NoPeerContent() {
@@ -109,8 +109,8 @@ export default function PeerPage() {
             label="Downloading"
           />
           <FormControlLabel
-            control={<Switch checked={peer.getPublishing()} onChange={handleSettingsPublishingChange} />}
-            label="Publishing"
+            control={<Switch checked={peer.getUploading()} onChange={handleSettingsUploadingChange} />}
+            label="Uploading"
           />
         </FormGroup>
       </FormControl>

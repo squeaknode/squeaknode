@@ -192,14 +192,14 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         )
         return squeak_admin_pb2.SetPeerDownloadingReply()
 
-    def SetPeerPublishing(self, request, context):
+    def SetPeerUploading(self, request, context):
         peer_id = request.peer_id
-        publishing = request.publishing
-        self.handler.handle_set_squeak_peer_publishing(
+        uploading = request.uploading
+        self.handler.handle_set_squeak_peer_uploading(
             peer_id,
-            publishing,
+            uploading,
         )
-        return squeak_admin_pb2.SetPeerPublishingReply()
+        return squeak_admin_pb2.SetPeerUploadingReply()
 
     def _squeak_entry_to_message(self, squeak_entry_with_profile):
         if squeak_entry_with_profile is None:
@@ -250,7 +250,7 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
             peer_name=squeak_peer.peer_name,
             host=squeak_peer.host,
             port=squeak_peer.port,
-            publishing=squeak_peer.publishing,
+            uploading=squeak_peer.uploading,
             downloading=squeak_peer.downloading,
         )
 

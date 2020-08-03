@@ -207,7 +207,7 @@ class SqueakNode:
             peer_name=peer_name,
             host=host,
             port=port,
-            publishing=False,
+            uploading=False,
             downloading=False,
         )
         return self.postgres_db.insert_peer(squeak_peer)
@@ -221,5 +221,5 @@ class SqueakNode:
     def set_peer_downloading(self, peer_id, downloading):
         self.postgres_db.set_peer_downloading(peer_id, downloading)
 
-    def set_peer_publishing(self, peer_id, publishing):
-        self.postgres_db.set_peer_publishing(peer_id, publishing)
+    def set_peer_uploading(self, peer_id, uploading):
+        self.postgres_db.set_peer_uploading(peer_id, uploading)

@@ -373,7 +373,7 @@ class PostgresDb:
     def insert_peer(self, squeak_peer):
         """ Insert a new squeak peer. """
         sql = """
-        INSERT INTO peer(peer_name, server_host, server_port, publishing, downloading)
+        INSERT INTO peer(peer_name, server_host, server_port, uploading, downloading)
         VALUES(%s, %s, %s, %s, %s)
         RETURNING peer_id;
         """
@@ -385,7 +385,7 @@ class PostgresDb:
                     squeak_peer.peer_name,
                     squeak_peer.host,
                     squeak_peer.port,
-                    squeak_peer.publishing,
+                    squeak_peer.uploading,
                     squeak_peer.downloading,
                 ),
             )
@@ -424,15 +424,15 @@ class PostgresDb:
         with self.get_cursor() as curs:
             curs.execute(sql, (downloading, peer_id,))
 
-    def set_peer_publishing(self, peer_id, publishing):
-        """ Set a peer is publishing. """
+    def set_peer_uploading(self, peer_id, uploading):
+        """ Set a peer is uploading. """
         sql = """
         UPDATE peer
-        SET publishing=%s
+        SET uploading=%s
         WHERE peer_id=%s;
         """
         with self.get_cursor() as curs:
-            curs.execute(sql, (publishing, peer_id,))
+            curs.execute(sql, (uploading, peer_id,))
 
     def _parse_squeak_entry(self, row):
         vch_decryption_key_column = row["vch_decryption_key"]
@@ -494,6 +494,6 @@ class PostgresDb:
             peer_name=row["peer_name"],
             host=row["server_host"],
             port=row["server_port"],
-            publishing=row["publishing"],
+            uploading=row["uploading"],
             downloading=row["downloading"],
         )
