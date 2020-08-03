@@ -94,11 +94,11 @@ service SqueakAdmin {
   */
   rpc GetPeers (GetPeersRequest) returns (GetPeersReply) {}
 
-  /** sqkadmin: `setpeersubscribed`
+  /** sqkadmin: `setpeerdownloading`
   */
-  rpc SetPeerSubscribed (SetPeerSubscribedRequest) returns (SetPeerSubscribedReply) {}
+  rpc SetPeerDownloading (SetPeerDownloadingRequest) returns (SetPeerDownloadingReply) {}
 
-  /** sqkadmin: `setpeersubscribed`
+  /** sqkadmin: `setpeerdownloading`
   */
   rpc SetPeerPublishing (SetPeerPublishingRequest) returns (SetPeerPublishingReply) {}
 
@@ -371,19 +371,19 @@ message SqueakPeer {
     /// Publishing
     bool publishing = 5;
 
-    /// Subscribed
-    bool subscribed = 6;
+    /// Downloading
+    bool downloading = 6;
 }
 
-message SetPeerSubscribedRequest {
+message SetPeerDownloadingRequest {
     /// The peer id
     int32 peer_id = 1;
 
-    /// Subscribed
-    bool subscribed = 2;
+    /// Downloading
+    bool downloading = 2;
 }
 
-message SetPeerSubscribedReply {
+message SetPeerDownloadingReply {
 }
 
 message SetPeerPublishingRequest {

@@ -373,7 +373,7 @@ class PostgresDb:
     def insert_peer(self, squeak_peer):
         """ Insert a new squeak peer. """
         sql = """
-        INSERT INTO peer(peer_name, server_host, server_port, publishing, subscribed)
+        INSERT INTO peer(peer_name, server_host, server_port, publishing, downloading)
         VALUES(%s, %s, %s, %s, %s)
         RETURNING peer_id;
         """
@@ -386,7 +386,7 @@ class PostgresDb:
                     squeak_peer.host,
                     squeak_peer.port,
                     squeak_peer.publishing,
-                    squeak_peer.subscribed,
+                    squeak_peer.downloading,
                 ),
             )
             # get the new peer id back
@@ -414,15 +414,15 @@ class PostgresDb:
             peers = [self._parse_squeak_peer(row) for row in rows]
             return peers
 
-    def set_peer_subscribed(self, peer_id, subscribed):
-        """ Set a peer is subscribed. """
+    def set_peer_downloading(self, peer_id, downloading):
+        """ Set a peer is downloading. """
         sql = """
         UPDATE peer
-        SET subscribed=%s
+        SET downloading=%s
         WHERE peer_id=%s;
         """
         with self.get_cursor() as curs:
-            curs.execute(sql, (subscribed, peer_id,))
+            curs.execute(sql, (downloading, peer_id,))
 
     def set_peer_publishing(self, peer_id, publishing):
         """ Set a peer is publishing. """
@@ -495,5 +495,5 @@ class PostgresDb:
             host=row["server_host"],
             port=row["server_port"],
             publishing=row["publishing"],
-            subscribed=row["subscribed"],
+            downloading=row["downloading"],
         )

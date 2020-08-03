@@ -176,13 +176,13 @@ class SqueakAdminServerHandler(object):
         squeak_peers = self.squeak_node.get_peers()
         return squeak_peers
 
-    def handle_set_squeak_peer_subscribed(self, peer_id, subscribed):
+    def handle_set_squeak_peer_downloading(self, peer_id, downloading):
         logger.info(
-            "Handle set peer subscribed with peer id: {}, subscribed: {}".format(
-                peer_id, subscribed,
+            "Handle set peer downloading with peer id: {}, downloading: {}".format(
+                peer_id, downloading,
             )
         )
-        self.squeak_node.set_peer_subscribed(peer_id, subscribed)
+        self.squeak_node.set_peer_downloading(peer_id, downloading)
 
     def handle_set_squeak_peer_publishing(self, peer_id, publishing):
         logger.info(

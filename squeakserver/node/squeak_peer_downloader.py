@@ -32,7 +32,7 @@ class SqueakPeerDownloader:
             return
 
         for peer in peers:
-            if peer.subscribed:
+            if peer.downloading:
                 logger.info("Syncing peer: {} with current block: {}".format(peer, block_height))
 
     def start_running(self):

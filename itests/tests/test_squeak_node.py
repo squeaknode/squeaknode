@@ -469,19 +469,19 @@ def test_create_peer(server_stub, admin_stub):
     ]
     assert "fake_host" in peer_hosts
 
-def test_set_peer_subscribed(server_stub, admin_stub, peer_id):
+def test_set_peer_downloading(server_stub, admin_stub, peer_id):
     # Get the peer
     get_peer_response = admin_stub.GetPeer(
         squeak_admin_pb2.GetPeerRequest(
             peer_id=peer_id,
         )
     )
-    assert get_peer_response.squeak_peer.subscribed == False
+    assert get_peer_response.squeak_peer.downloading == False
 
-    # Set the peer to be subscribed
-    admin_stub.SetPeerSubscribed(
-        squeak_admin_pb2.SetPeerSubscribedRequest(
-            peer_id=peer_id, subscribed=True,
+    # Set the peer to be downloading
+    admin_stub.SetPeerDownloading(
+        squeak_admin_pb2.SetPeerDownloadingRequest(
+            peer_id=peer_id, downloading=True,
         )
     )
 
@@ -491,7 +491,7 @@ def test_set_peer_subscribed(server_stub, admin_stub, peer_id):
             peer_id=peer_id,
         )
     )
-    assert get_peer_response.squeak_peer.subscribed == True
+    assert get_peer_response.squeak_peer.downloading == True
 
 def test_set_peer_publishing(server_stub, admin_stub, peer_id):
     # Get the peer

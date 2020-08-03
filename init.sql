@@ -40,5 +40,5 @@ CREATE TABLE IF NOT EXISTS peer (
   server_host VARCHAR(256) NOT NULL,
   server_port INTEGER NOT NULL,
   publishing BOOLEAN NOT NULL,
-  subscribed BOOLEAN NOT NULL
+  downloading BOOLEAN NOT NULL
 );

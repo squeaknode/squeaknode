@@ -183,14 +183,14 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
             squeak_peers=squeak_peer_msgs,
         )
 
-    def SetPeerSubscribed(self, request, context):
+    def SetPeerDownloading(self, request, context):
         peer_id = request.peer_id
-        subscribed = request.subscribed
-        self.handler.handle_set_squeak_peer_subscribed(
+        downloading = request.downloading
+        self.handler.handle_set_squeak_peer_downloading(
             peer_id,
-            subscribed,
+            downloading,
         )
-        return squeak_admin_pb2.SetPeerSubscribedReply()
+        return squeak_admin_pb2.SetPeerDownloadingReply()
 
     def SetPeerPublishing(self, request, context):
         peer_id = request.peer_id
@@ -251,7 +251,7 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
             host=squeak_peer.host,
             port=squeak_peer.port,
             publishing=squeak_peer.publishing,
-            subscribed=squeak_peer.subscribed,
+            downloading=squeak_peer.downloading,
         )
 
     def serve(self):

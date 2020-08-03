@@ -114,7 +114,7 @@ export default function Peers() {
                 s.getPeerName(),
                 s.getHost(),
                 s.getPort(),
-                s.getSubscribed().toString(),
+                s.getDownloading().toString(),
                 s.getPublishing().toString(),
               ]
             )}
@@ -128,7 +128,7 @@ export default function Peers() {
              "Name",
              "Host",
              "Port",
-             "Subscribed",
+             "Downloading",
              "Publishing",
            ]}
            options={{

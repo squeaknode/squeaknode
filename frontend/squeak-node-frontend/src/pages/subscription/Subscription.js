@@ -19,7 +19,7 @@ import Widget from "../../components/Widget";
 
 import {
   GetPeerRequest,
-  SetPeerSubscribedRequest,
+  SetPeerDownloadingRequest,
   SetPeerPublishingRequest,
 } from "../../proto/squeak_admin_pb"
 import { SqueakAdminClient } from "../../proto/squeak_admin_grpc_web_pb"
@@ -41,13 +41,13 @@ export default function PeerPage() {
           setPeer(response.getSqueakPeer())
         });
   };
-  const setSubscribed = (id, subscribed) => {
-        console.log("called setSubscribed with peerId: " + id + ", subscribed: " + subscribed);
-        var setPeerSubscribedRequest = new SetPeerSubscribedRequest()
-        setPeerSubscribedRequest.setPeerId(id);
-        setPeerSubscribedRequest.setSubscribed(subscribed);
-        console.log(setPeerSubscribedRequest);
-        client.setPeerSubscribed(setPeerSubscribedRequest, {}, (err, response) => {
+  const setDownloading = (id, downloading) => {
+        console.log("called setDownloading with peerId: " + id + ", downloading: " + downloading);
+        var setPeerDownloadingRequest = new SetPeerDownloadingRequest()
+        setPeerDownloadingRequest.setPeerId(id);
+        setPeerDownloadingRequest.setDownloading(downloading);
+        console.log(setPeerDownloadingRequest);
+        client.setPeerDownloading(setPeerDownloadingRequest, {}, (err, response) => {
           console.log(response);
           getPeer(id);
         });
@@ -68,10 +68,10 @@ export default function PeerPage() {
     getPeer(id)
   },[id]);
 
-  const handleSettingsSubscribedChange = (event) => {
-    console.log("Subscribed changed for peer id: " + id);
-    console.log("Subscribed changed to: " + event.target.checked);
-    setSubscribed(id, event.target.checked);
+  const handleSettingsDownloadingChange = (event) => {
+    console.log("Downloading changed for peer id: " + id);
+    console.log("Downloading changed to: " + event.target.checked);
+    setDownloading(id, event.target.checked);
   };
 
   const handleSettingsPublishingChange = (event) => {
@@ -105,8 +105,8 @@ export default function PeerPage() {
         <FormLabel component="legend">Peer settings</FormLabel>
         <FormGroup>
           <FormControlLabel
-            control={<Switch checked={peer.getSubscribed()} onChange={handleSettingsSubscribedChange} />}
-            label="Subscribed"
+            control={<Switch checked={peer.getDownloading()} onChange={handleSettingsDownloadingChange} />}
+            label="Downloading"
           />
           <FormControlLabel
             control={<Switch checked={peer.getPublishing()} onChange={handleSettingsPublishingChange} />}
