@@ -33,10 +33,10 @@ CREATE TABLE IF NOT EXISTS profile (
   whitelisted BOOLEAN NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS subscription (
-  subscription_id SERIAL PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS peer (
+  peer_id SERIAL PRIMARY KEY,
   created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  subscription_name VARCHAR(64),
+  peer_name VARCHAR(64),
   server_host VARCHAR(256) NOT NULL,
   server_port INTEGER NOT NULL,
   publishing BOOLEAN NOT NULL,

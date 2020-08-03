@@ -10655,9 +10655,9 @@ export default function IconsPage () {
               sm={4}
               xs={12}
             >
-              <Icons.Subscriptions />
+              <Icons.Peers />
               <Typography className={classes.materialIconText}>
-                Subscriptions
+                Peers
               </Typography>
             </Grid>
             <Grid

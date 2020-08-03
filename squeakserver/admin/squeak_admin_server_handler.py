@@ -153,41 +153,41 @@ class SqueakAdminServerHandler(object):
         self.squeak_node.delete_squeak(squeak_hash)
         logger.info("Deleted squeak entry with hash: {}".format(squeak_hash))
 
-    def handle_create_subscription(self, subscription_name, host, port):
+    def handle_create_peer(self, peer_name, host, port):
         logger.info(
-            "Handle create subscription with name: {}, host: {}, port: {}".format(
-                subscription_name, host, port,
+            "Handle create peer with name: {}, host: {}, port: {}".format(
+                peer_name, host, port,
             )
         )
-        subscription_id = self.squeak_node.create_subscription(
-            subscription_name,
+        peer_id = self.squeak_node.create_peer(
+            peer_name,
             host,
             port,
         )
-        return subscription_id
+        return peer_id
 
-    def handle_get_squeak_subscription(self, subscription_id):
-        logger.info("Handle get squeak subscription with id: {}".format(subscription_id))
-        squeak_subscription = self.squeak_node.get_subscription(subscription_id)
-        return squeak_subscription
+    def handle_get_squeak_peer(self, peer_id):
+        logger.info("Handle get squeak peer with id: {}".format(peer_id))
+        squeak_peer = self.squeak_node.get_peer(peer_id)
+        return squeak_peer
 
-    def handle_get_squeak_subscriptions(self):
-        logger.info("Handle get squeak subscriptions")
-        squeak_subscriptions = self.squeak_node.get_subscriptions()
-        return squeak_subscriptions
+    def handle_get_squeak_peers(self):
+        logger.info("Handle get squeak peers")
+        squeak_peers = self.squeak_node.get_peers()
+        return squeak_peers
 
-    def handle_set_squeak_subscription_subscribed(self, subscription_id, subscribed):
+    def handle_set_squeak_peer_subscribed(self, peer_id, subscribed):
         logger.info(
-            "Handle set subscription subscribed with subscription id: {}, subscribed: {}".format(
-                subscription_id, subscribed,
+            "Handle set peer subscribed with peer id: {}, subscribed: {}".format(
+                peer_id, subscribed,
             )
         )
-        self.squeak_node.set_subscription_subscribed(subscription_id, subscribed)
+        self.squeak_node.set_peer_subscribed(peer_id, subscribed)
 
-    def handle_set_squeak_subscription_publishing(self, subscription_id, publishing):
+    def handle_set_squeak_peer_publishing(self, peer_id, publishing):
         logger.info(
-            "Handle set subscription publishing with subscription id: {}, publishing: {}".format(
-                subscription_id, publishing,
+            "Handle set peer publishing with peer id: {}, publishing: {}".format(
+                peer_id, publishing,
             )
         )
-        self.squeak_node.set_subscription_publishing(subscription_id, publishing)
+        self.squeak_node.set_peer_publishing(peer_id, publishing)

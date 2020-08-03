@@ -131,7 +131,7 @@ service Lightning {
     the client in which any events relevant to the state of peers are sent
     over. Events include peers going online and offline.
     */
-    rpc SubscribePeerEvents (PeerEventSubscription) returns (stream PeerEvent);
+    rpc SubscribePeerEvents (PeerEventPeer) returns (stream PeerEvent);
 
     /* lncli: `getinfo`
     GetInfo returns general information concerning the lightning node including
@@ -170,7 +170,7 @@ service Lightning {
     sent over. Events include new active channels, inactive channels, and closed
     channels.
     */
-    rpc SubscribeChannelEvents (ChannelEventSubscription)
+    rpc SubscribeChannelEvents (ChannelEventPeer)
         returns (stream ChannelEventUpdate);
 
     /* lncli: `closedchannels`
@@ -312,7 +312,7 @@ service Lightning {
     of these fields can be set. If no fields are set, then we'll only send out
     the latest add/settle events.
     */
-    rpc SubscribeInvoices (InvoiceSubscription) returns (stream Invoice);
+    rpc SubscribeInvoices (InvoicePeer) returns (stream Invoice);
 
     /* lncli: `decodepayreq`
     DecodePayReq takes an encoded payment request string and attempts to decode
@@ -396,7 +396,7 @@ service Lightning {
     channels being advertised, updates in the routing policy for a directional
     channel edge, and when channels are closed on-chain.
     */
-    rpc SubscribeChannelGraph (GraphTopologySubscription)
+    rpc SubscribeChannelGraph (GraphTopologyPeer)
         returns (stream GraphTopologyUpdate);
 
     /* lncli: `debuglevel`
@@ -482,7 +482,7 @@ service Lightning {
     ups, but the updated set of encrypted multi-chan backups with the closed
     channel(s) removed.
     */
-    rpc SubscribeChannelBackups (ChannelBackupSubscription)
+    rpc SubscribeChannelBackups (ChannelBackupPeer)
         returns (stream ChanBackupSnapshot);
 
     /* lncli: `bakemacaroon`
@@ -1416,7 +1416,7 @@ message ListPeersResponse {
     repeated Peer peers = 1;
 }
 
-message PeerEventSubscription {
+message PeerEventPeer {
 }
 
 message PeerEvent {
@@ -2042,7 +2042,7 @@ message PendingChannelsResponse {
     repeated WaitingCloseChannel waiting_close_channels = 5;
 }
 
-message ChannelEventSubscription {
+message ChannelEventPeer {
 }
 
 message ChannelEventUpdate {
@@ -2515,7 +2515,7 @@ message StopRequest {
 message StopResponse {
 }
 
-message GraphTopologySubscription {
+message GraphTopologyPeer {
 }
 message GraphTopologyUpdate {
     repeated NodeUpdate node_updates = 1;
@@ -2845,7 +2845,7 @@ message ListInvoiceResponse {
     uint64 first_index_offset = 3;
 }
 
-message InvoiceSubscription {
+message InvoicePeer {
     /*
     If specified (non-zero), then we'll first start by sending out
     notifications for all added indexes with an add_index greater than this
@@ -3311,7 +3311,7 @@ message RestoreChanBackupRequest {
 message RestoreBackupResponse {
 }
 
-message ChannelBackupSubscription {
+message ChannelBackupPeer {
 }
 
 message VerifyChanBackupResponse {

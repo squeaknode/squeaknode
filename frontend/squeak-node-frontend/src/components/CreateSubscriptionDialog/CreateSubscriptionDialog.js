@@ -30,13 +30,13 @@ import Widget from "../../components/Widget";
 import SqueakThreadItem from "../../components/SqueakThreadItem";
 
 import {
-  CreateSubscriptionRequest,
+  CreatePeerRequest,
 } from "../../proto/squeak_admin_pb"
 import {SqueakAdminClient} from "../../proto/squeak_admin_grpc_web_pb"
 
 var client = new SqueakAdminClient('http://' + window.location.hostname + ':8080')
 
-export default function CreateSubscriptionDialog({
+export default function CreatePeerDialog({
   open,
   handleClose,
   ...props
@@ -44,12 +44,12 @@ export default function CreateSubscriptionDialog({
   var classes = useStyles();
   const history = useHistory();
 
-  var [subscriptionName, setsubscriptionName] = useState('');
+  var [peerName, setpeerName] = useState('');
   var [host, setHost] = useState('');
   var [port, setPort] = useState('');
 
-  const handleChangeSubscriptionName = (event) => {
-    setsubscriptionName(event.target.value);
+  const handleChangePeerName = (event) => {
+    setpeerName(event.target.value);
   };
 
   const handleChangeHost = (event) => {
@@ -60,23 +60,23 @@ export default function CreateSubscriptionDialog({
     setPort(event.target.value);
   };
 
-  const createSubscription = (subscriptionName, host, port) => {
-    console.log("called createSubscription");
+  const createPeer = (peerName, host, port) => {
+    console.log("called createPeer");
 
-    var createSubscriptionRequest = new CreateSubscriptionRequest()
-    createSubscriptionRequest.setSubscriptionName(subscriptionName);
-    createSubscriptionRequest.setHost(host);
-    createSubscriptionRequest.setPort(port);
-    console.log(createSubscriptionRequest);
+    var createPeerRequest = new CreatePeerRequest()
+    createPeerRequest.setPeerName(peerName);
+    createPeerRequest.setHost(host);
+    createPeerRequest.setPort(port);
+    console.log(createPeerRequest);
 
-    client.createSubscription(createSubscriptionRequest, {}, (err, response) => {
+    client.createPeer(createPeerRequest, {}, (err, response) => {
       if (err) {
         console.log(err.message);
-        alert('Error creating subscription: ' + err.message);
+        alert('Error creating peer: ' + err.message);
         return;
       }
       console.log(response);
-      console.log(response.getSubscriptionId());
+      console.log(response.getPeerId());
       // goToProfilePage(response.getProfileId());
     });
   };
@@ -87,7 +87,7 @@ export default function CreateSubscriptionDialog({
 
   function handleSubmit(event) {
     event.preventDefault();
-    console.log( 'subscriptionName:', subscriptionName);
+    console.log( 'peerName:', peerName);
     console.log( 'host:', host);
     console.log( 'port:', port);
     if (!host) {
@@ -98,18 +98,18 @@ export default function CreateSubscriptionDialog({
       alert('Port cannot be empty.');
       return;
     }
-    createSubscription(subscriptionName, host, port);
+    createPeer(peerName, host, port);
     handleClose();
   }
 
-  function CreateSubscriptionNameInput() {
+  function CreatePeerNameInput() {
     return (
       <TextField
         id="standard-textarea"
-        label="Subscription Name"
+        label="Peer Name"
         autoFocus
-        value={subscriptionName}
-        onChange={handleChangeSubscriptionName}
+        value={peerName}
+        onChange={handleChangePeerName}
         fullWidth
         inputProps={{ maxLength: 64 }}
       />
@@ -154,7 +154,7 @@ export default function CreateSubscriptionDialog({
     )
   }
 
-  function CreateSubscriptionButton() {
+  function CreatePeerButton() {
     return (
       <Button
        type="submit"
@@ -162,18 +162,18 @@ export default function CreateSubscriptionDialog({
        color="primary"
        className={classes.button}
        >
-       Create Subscription
+       Create Peer
        </Button>
     )
   }
 
   return (
     <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-  <DialogTitle id="form-dialog-title">Create Subscription</DialogTitle>
+  <DialogTitle id="form-dialog-title">Create Peer</DialogTitle>
   <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
   <DialogContent>
     <div>
-      {CreateSubscriptionNameInput()}
+      {CreatePeerNameInput()}
     </div>
     <div>
       {CreateHostInput()}
@@ -184,7 +184,7 @@ export default function CreateSubscriptionDialog({
   </DialogContent>
   <DialogActions>
     {CancelButton()}
-    {CreateSubscriptionButton()}
+    {CreatePeerButton()}
   </DialogActions>
   </form>
     </Dialog>

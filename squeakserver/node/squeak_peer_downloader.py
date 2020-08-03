@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 SUBSCRIBE_UPDATE_INTERVAL_S = 60.0
 
 
-class SqueakSubscriptionDownloader:
+class SqueakPeerDownloader:
     def __init__(self,
                  postgres_db,
                  squeak_store,
@@ -20,9 +20,9 @@ class SqueakSubscriptionDownloader:
         self.blockchain_client = blockchain_client
         self.update_interval_s = update_interval_s
 
-    def sync_subscriptions(self):
-        logger.info("Syncing subscriptions...")
-        subscriptions = self._get_subscriptions()
+    def sync_peers(self):
+        logger.info("Syncing peers...")
+        peers = self._get_peers()
 
         try:
             block_info = self.blockchain_client.get_best_block_info()
@@ -31,13 +31,13 @@ class SqueakSubscriptionDownloader:
             logger.error("Failed to sync because unable to get blockchain info.", exc_info=True)
             return
 
-        for subscription in subscriptions:
-            if subscription.subscribed:
-                logger.info("Syncing subscription: {} with current block: {}".format(subscription, block_height))
+        for peer in peers:
+            if peer.subscribed:
+                logger.info("Syncing peer: {} with current block: {}".format(peer, block_height))
 
     def start_running(self):
         threading.Timer(self.update_interval_s, self.start_running).start()
-        self.sync_subscriptions()
+        self.sync_peers()
 
-    def _get_subscriptions(self):
-        return self.postgres_db.get_subscriptions()
+    def _get_peers(self):
+        return self.postgres_db.get_peers()

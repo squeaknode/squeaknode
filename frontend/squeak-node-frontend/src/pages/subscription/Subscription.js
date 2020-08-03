@@ -18,98 +18,98 @@ import PageTitle from "../../components/PageTitle";
 import Widget from "../../components/Widget";
 
 import {
-  GetSubscriptionRequest,
-  SetSubscriptionSubscribedRequest,
-  SetSubscriptionPublishingRequest,
+  GetPeerRequest,
+  SetPeerSubscribedRequest,
+  SetPeerPublishingRequest,
 } from "../../proto/squeak_admin_pb"
 import { SqueakAdminClient } from "../../proto/squeak_admin_grpc_web_pb"
 
 var client = new SqueakAdminClient('http://' + window.location.hostname + ':8080')
 
-export default function SubscriptionPage() {
+export default function PeerPage() {
   var classes = useStyles();
   const { id } = useParams();
-  const [subscription, setSubscription] = useState(null);
+  const [peer, setPeer] = useState(null);
 
-  const getSubscription = (id) => {
-        console.log("called getSubscription with subscriptionId: " + id);
-        var getSubscriptionRequest = new GetSubscriptionRequest()
-        getSubscriptionRequest.setSubscriptionId(id);
-        console.log(getSubscriptionRequest);
-        client.getSubscription(getSubscriptionRequest, {}, (err, response) => {
+  const getPeer = (id) => {
+        console.log("called getPeer with peerId: " + id);
+        var getPeerRequest = new GetPeerRequest()
+        getPeerRequest.setPeerId(id);
+        console.log(getPeerRequest);
+        client.getPeer(getPeerRequest, {}, (err, response) => {
           console.log(response);
-          setSubscription(response.getSqueakSubscription())
+          setPeer(response.getSqueakPeer())
         });
   };
   const setSubscribed = (id, subscribed) => {
-        console.log("called setSubscribed with subscriptionId: " + id + ", subscribed: " + subscribed);
-        var setSubscriptionSubscribedRequest = new SetSubscriptionSubscribedRequest()
-        setSubscriptionSubscribedRequest.setSubscriptionId(id);
-        setSubscriptionSubscribedRequest.setSubscribed(subscribed);
-        console.log(setSubscriptionSubscribedRequest);
-        client.setSubscriptionSubscribed(setSubscriptionSubscribedRequest, {}, (err, response) => {
+        console.log("called setSubscribed with peerId: " + id + ", subscribed: " + subscribed);
+        var setPeerSubscribedRequest = new SetPeerSubscribedRequest()
+        setPeerSubscribedRequest.setPeerId(id);
+        setPeerSubscribedRequest.setSubscribed(subscribed);
+        console.log(setPeerSubscribedRequest);
+        client.setPeerSubscribed(setPeerSubscribedRequest, {}, (err, response) => {
           console.log(response);
-          getSubscription(id);
+          getPeer(id);
         });
   };
   const setPublishing = (id, publishing) => {
-        console.log("called setPublishing with subscriptionId: " + id + ", publishing: " + publishing);
-        var setSubscriptionPublishingRequest = new SetSubscriptionPublishingRequest()
-        setSubscriptionPublishingRequest.setSubscriptionId(id);
-        setSubscriptionPublishingRequest.setPublishing(publishing);
-        console.log(setSubscriptionPublishingRequest);
-        client.setSubscriptionPublishing(setSubscriptionPublishingRequest, {}, (err, response) => {
+        console.log("called setPublishing with peerId: " + id + ", publishing: " + publishing);
+        var setPeerPublishingRequest = new SetPeerPublishingRequest()
+        setPeerPublishingRequest.setPeerId(id);
+        setPeerPublishingRequest.setPublishing(publishing);
+        console.log(setPeerPublishingRequest);
+        client.setPeerPublishing(setPeerPublishingRequest, {}, (err, response) => {
           console.log(response);
-          getSubscription(id);
+          getPeer(id);
         });
   };
 
   useEffect(()=>{
-    getSubscription(id)
+    getPeer(id)
   },[id]);
 
   const handleSettingsSubscribedChange = (event) => {
-    console.log("Subscribed changed for subscription id: " + id);
+    console.log("Subscribed changed for peer id: " + id);
     console.log("Subscribed changed to: " + event.target.checked);
     setSubscribed(id, event.target.checked);
   };
 
   const handleSettingsPublishingChange = (event) => {
-    console.log("Publishing changed for subscription id: " + id);
+    console.log("Publishing changed for peer id: " + id);
     console.log("Publishing changed to: " + event.target.checked);
     setPublishing(id, event.target.checked);
   };
 
-  function NoSubscriptionContent() {
+  function NoPeerContent() {
     return (
       <p>
-        No subscription loaded
+        No peer loaded
       </p>
     )
   }
 
-  function SubscriptionContent() {
+  function PeerContent() {
     return (
       <>
         <p>
-          Subscription name: {subscription.getSubscriptionName()}
+          Peer name: {peer.getPeerName()}
         </p>
-        {SubscriptionSettingsForm()}
+        {PeerSettingsForm()}
       </>
     )
   }
 
-  function SubscriptionSettingsForm() {
+  function PeerSettingsForm() {
     return (
       <FormControl component="fieldset">
-        <FormLabel component="legend">Subscription settings</FormLabel>
+        <FormLabel component="legend">Peer settings</FormLabel>
         <FormGroup>
           <FormControlLabel
-            control={<Switch checked={subscription.getSubscribed()} onChange={handleSettingsSubscribedChange} />}
+            control={<Switch checked={peer.getSubscribed()} onChange={handleSettingsSubscribedChange} />}
             label="Subscribed"
           />
           <FormControlLabel
-            control={<Switch checked={subscription.getPublishing()} onChange={handleSettingsPublishingChange} />}
+            control={<Switch checked={peer.getPublishing()} onChange={handleSettingsPublishingChange} />}
             label="Publishing"
           />
         </FormGroup>
@@ -119,11 +119,11 @@ export default function SubscriptionPage() {
 
   return (
     <>
-      <PageTitle title={'Subscription: ' + (subscription ? subscription.getSubscriptionName() : null)} />
+      <PageTitle title={'Peer: ' + (peer ? peer.getPeerName() : null)} />
       <div>
-      {subscription
-        ? SubscriptionContent()
-        : NoSubscriptionContent()
+      {peer
+        ? PeerContent()
+        : NoPeerContent()
       }
       </div>
     </>

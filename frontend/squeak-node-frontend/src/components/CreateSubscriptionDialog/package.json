@@ -1,6 +1,6 @@
 {
-  "name": "CreateSubscriptionDialog",
+  "name": "CreatePeerDialog",
   "version": "0.0.0",
   "private": true,
-  "main": "CreateSubscriptionDialog.js"
+  "main": "CreatePeerDialog.js"
 }

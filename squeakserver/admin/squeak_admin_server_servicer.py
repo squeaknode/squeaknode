@@ -152,54 +152,54 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         self.handler.handle_delete_squeak(squeak_hash)
         return squeak_admin_pb2.DeleteSqueakReply()
 
-    def CreateSubscription(self, request, context):
-        subscription_name = request.subscription_name if request.subscription_name else None
+    def CreatePeer(self, request, context):
+        peer_name = request.peer_name if request.peer_name else None
         host = request.host
         port = request.port
-        subscription_id = self.handler.handle_create_subscription(
-            subscription_name,
+        peer_id = self.handler.handle_create_peer(
+            peer_name,
             host,
             port,
         )
-        return squeak_admin_pb2.CreateSubscriptionReply(
-            subscription_id=subscription_id,
+        return squeak_admin_pb2.CreatePeerReply(
+            peer_id=peer_id,
         )
 
-    def GetSubscription(self, request, context):
-        subscription_id = request.subscription_id
-        squeak_subscription = self.handler.handle_get_squeak_subscription(subscription_id)
-        squeak_subscription_msg = self._squeak_subscription_to_message(squeak_subscription)
-        return squeak_admin_pb2.GetSubscriptionReply(
-            squeak_subscription=squeak_subscription_msg,
+    def GetPeer(self, request, context):
+        peer_id = request.peer_id
+        squeak_peer = self.handler.handle_get_squeak_peer(peer_id)
+        squeak_peer_msg = self._squeak_peer_to_message(squeak_peer)
+        return squeak_admin_pb2.GetPeerReply(
+            squeak_peer=squeak_peer_msg,
         )
 
-    def GetSubscriptions(self, request, context):
-        squeak_subscriptions = self.handler.handle_get_squeak_subscriptions()
-        squeak_subscription_msgs = [
-            self._squeak_subscription_to_message(squeak_subscription)
-            for squeak_subscription in squeak_subscriptions
+    def GetPeers(self, request, context):
+        squeak_peers = self.handler.handle_get_squeak_peers()
+        squeak_peer_msgs = [
+            self._squeak_peer_to_message(squeak_peer)
+            for squeak_peer in squeak_peers
         ]
-        return squeak_admin_pb2.GetSubscriptionsReply(
-            squeak_subscriptions=squeak_subscription_msgs,
+        return squeak_admin_pb2.GetPeersReply(
+            squeak_peers=squeak_peer_msgs,
         )
 
-    def SetSubscriptionSubscribed(self, request, context):
-        subscription_id = request.subscription_id
+    def SetPeerSubscribed(self, request, context):
+        peer_id = request.peer_id
         subscribed = request.subscribed
-        self.handler.handle_set_squeak_subscription_subscribed(
-            subscription_id,
+        self.handler.handle_set_squeak_peer_subscribed(
+            peer_id,
             subscribed,
         )
-        return squeak_admin_pb2.SetSubscriptionSubscribedReply()
+        return squeak_admin_pb2.SetPeerSubscribedReply()
 
-    def SetSubscriptionPublishing(self, request, context):
-        subscription_id = request.subscription_id
+    def SetPeerPublishing(self, request, context):
+        peer_id = request.peer_id
         publishing = request.publishing
-        self.handler.handle_set_squeak_subscription_publishing(
-            subscription_id,
+        self.handler.handle_set_squeak_peer_publishing(
+            peer_id,
             publishing,
         )
-        return squeak_admin_pb2.SetSubscriptionPublishingReply()
+        return squeak_admin_pb2.SetPeerPublishingReply()
 
     def _squeak_entry_to_message(self, squeak_entry_with_profile):
         if squeak_entry_with_profile is None:
@@ -242,16 +242,16 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
             whitelisted=squeak_profile.whitelisted,
         )
 
-    def _squeak_subscription_to_message(self, squeak_subscription):
-        if squeak_subscription is None:
+    def _squeak_peer_to_message(self, squeak_peer):
+        if squeak_peer is None:
             return None
-        return squeak_admin_pb2.SqueakSubscription(
-            subscription_id=squeak_subscription.subscription_id,
-            subscription_name=squeak_subscription.subscription_name,
-            host=squeak_subscription.host,
-            port=squeak_subscription.port,
-            publishing=squeak_subscription.publishing,
-            subscribed=squeak_subscription.subscribed,
+        return squeak_admin_pb2.SqueakPeer(
+            peer_id=squeak_peer.peer_id,
+            peer_name=squeak_peer.peer_name,
+            host=squeak_peer.host,
+            port=squeak_peer.port,
+            publishing=squeak_peer.publishing,
+            subscribed=squeak_peer.subscribed,
         )
 
     def serve(self):

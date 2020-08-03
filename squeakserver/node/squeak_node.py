@@ -12,10 +12,10 @@ from squeakserver.node.squeak_maker import SqueakMaker
 from squeakserver.node.squeak_rate_limiter import SqueakRateLimiter
 from squeakserver.node.squeak_whitelist import SqueakWhitelist
 from squeakserver.node.squeak_store import SqueakStore
-from squeakserver.node.squeak_subscription_downloader import SqueakSubscriptionDownloader
+from squeakserver.node.squeak_peer_downloader import SqueakPeerDownloader
 from squeakserver.server.buy_offer import BuyOffer
 from squeakserver.server.squeak_profile import SqueakProfile
-from squeakserver.server.squeak_subscription import SqueakSubscription
+from squeakserver.server.squeak_peer import SqueakPeer
 from squeakserver.server.util import generate_offer_preimage
 
 
@@ -54,7 +54,7 @@ class SqueakNode:
             self.squeak_rate_limiter,
             self.squeak_whitelist,
         )
-        self.squeak_subscription_downloader = SqueakSubscriptionDownloader(
+        self.squeak_peer_downloader = SqueakPeerDownloader(
             postgres_db,
             self.squeak_store,
             self.blockchain_client,
@@ -63,7 +63,7 @@ class SqueakNode:
     def start_running(self):
         # self.squeak_block_periodic_worker.start_running()
         self.squeak_block_queue_worker.start_running()
-        self.squeak_subscription_downloader.start_running()
+        self.squeak_peer_downloader.start_running()
 
     def save_uploaded_squeak(self, squeak):
         return self.squeak_store.save_uploaded_squeak(squeak)
@@ -201,25 +201,25 @@ class SqueakNode:
     def delete_squeak(self, squeak_hash):
         return self.squeak_store.delete_squeak(squeak_hash)
 
-    def create_subscription(self, subscription_name, host, port):
-        squeak_subscription = SqueakSubscription(
-            subscription_id=None,
-            subscription_name=subscription_name,
+    def create_peer(self, peer_name, host, port):
+        squeak_peer = SqueakPeer(
+            peer_id=None,
+            peer_name=peer_name,
             host=host,
             port=port,
             publishing=False,
             subscribed=False,
         )
-        return self.postgres_db.insert_subscription(squeak_subscription)
+        return self.postgres_db.insert_peer(squeak_peer)
 
-    def get_subscription(self, subscription_id):
-        return self.postgres_db.get_subscription(subscription_id)
+    def get_peer(self, peer_id):
+        return self.postgres_db.get_peer(peer_id)
 
-    def get_subscriptions(self):
-        return self.postgres_db.get_subscriptions()
+    def get_peers(self):
+        return self.postgres_db.get_peers()
 
-    def set_subscription_subscribed(self, subscription_id, subscribed):
-        self.postgres_db.set_subscription_subscribed(subscription_id, subscribed)
+    def set_peer_subscribed(self, peer_id, subscribed):
+        self.postgres_db.set_peer_subscribed(peer_id, subscribed)
 
-    def set_subscription_publishing(self, subscription_id, publishing):
-        self.postgres_db.set_subscription_publishing(subscription_id, publishing)
+    def set_peer_publishing(self, peer_id, publishing):
+        self.postgres_db.set_peer_publishing(peer_id, publishing)

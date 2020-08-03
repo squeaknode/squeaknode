@@ -1,6 +1,6 @@
 {
-  "name": "Subscription",
+  "name": "Peer",
   "version": "0.0.0",
-  "main": "Subscription.js",
+  "main": "Peer.js",
   "private": true
 }
