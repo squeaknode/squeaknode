@@ -82,25 +82,25 @@ service SqueakAdmin {
   */
   rpc DeleteSqueak (DeleteSqueakRequest) returns (DeleteSqueakReply) {}
 
-  /** sqkadmin: `addsubscription`
+  /** sqkadmin: `addpeer`
   */
-  rpc CreateSubscription (CreateSubscriptionRequest) returns (CreateSubscriptionReply) {}
+  rpc CreatePeer (CreatePeerRequest) returns (CreatePeerReply) {}
 
-  /** sqkadmin: `getsubscription`
+  /** sqkadmin: `getpeer`
   */
-  rpc GetSubscription (GetSubscriptionRequest) returns (GetSubscriptionReply) {}
+  rpc GetPeer (GetPeerRequest) returns (GetPeerReply) {}
 
-  /** sqkadmin: `getsubscriptions`
+  /** sqkadmin: `getpeers`
   */
-  rpc GetSubscriptions (GetSubscriptionsRequest) returns (GetSubscriptionsReply) {}
+  rpc GetPeers (GetPeersRequest) returns (GetPeersReply) {}
 
-  /** sqkadmin: `setsubscriptionsubscribed`
+  /** sqkadmin: `setpeerdownloading`
   */
-  rpc SetSubscriptionSubscribed (SetSubscriptionSubscribedRequest) returns (SetSubscriptionSubscribedReply) {}
+  rpc SetPeerDownloading (SetPeerDownloadingRequest) returns (SetPeerDownloadingReply) {}
 
-  /** sqkadmin: `setsubscriptionsubscribed`
+  /** sqkadmin: `setpeerdownloading`
   */
-  rpc SetSubscriptionPublishing (SetSubscriptionPublishingRequest) returns (SetSubscriptionPublishingReply) {}
+  rpc SetPeerUploading (SetPeerUploadingRequest) returns (SetPeerUploadingReply) {}
 
 }
 
@@ -321,9 +321,9 @@ message DeleteSqueakRequest {
 message DeleteSqueakReply {
 }
 
-message CreateSubscriptionRequest {
-    /// Name of the subscription
-    string subscription_name = 1;
+message CreatePeerRequest {
+    /// Name of the peer
+    string peer_name = 1;
 
     /// Host
     string host = 2;
@@ -332,35 +332,35 @@ message CreateSubscriptionRequest {
     int32 port = 3;
 }
 
-message CreateSubscriptionReply {
-    /// The subscription id
-    int32 subscription_id = 1;
+message CreatePeerReply {
+    /// The peer id
+    int32 peer_id = 1;
 }
 
-message GetSubscriptionRequest {
-    /// The subscription id
-    int32 subscription_id = 1;
+message GetPeerRequest {
+    /// The peer id
+    int32 peer_id = 1;
 }
 
-message GetSubscriptionReply {
-    /// The subscription
-    SqueakSubscription squeak_subscription = 1;
+message GetPeerReply {
+    /// The peer
+    SqueakPeer squeak_peer = 1;
 }
 
-message GetSubscriptionsRequest {
+message GetPeersRequest {
 }
 
-message GetSubscriptionsReply {
-    /// The subscriptions
-    repeated SqueakSubscription squeak_subscriptions = 1;
+message GetPeersReply {
+    /// The peers
+    repeated SqueakPeer squeak_peers = 1;
 }
 
-message SqueakSubscription {
-    /// The subscription id
-    int32 subscription_id = 1;
+message SqueakPeer {
+    /// The peer id
+    int32 peer_id = 1;
 
-    /// The subscription name
-    string subscription_name = 2;
+    /// The peer name
+    string peer_name = 2;
 
     /// Host
     string host = 3;
@@ -368,31 +368,31 @@ message SqueakSubscription {
     /// Port
     int32 port = 4;
 
-    /// Publishing
-    bool publishing = 5;
+    /// Uploading
+    bool uploading = 5;
 
-    /// Subscribed
-    bool subscribed = 6;
+    /// Downloading
+    bool downloading = 6;
 }
 
-message SetSubscriptionSubscribedRequest {
-    /// The subscription id
-    int32 subscription_id = 1;
+message SetPeerDownloadingRequest {
+    /// The peer id
+    int32 peer_id = 1;
 
-    /// Subscribed
-    bool subscribed = 2;
+    /// Downloading
+    bool downloading = 2;
 }
 
-message SetSubscriptionSubscribedReply {
+message SetPeerDownloadingReply {
 }
 
-message SetSubscriptionPublishingRequest {
-    /// The subscription id
-    int32 subscription_id = 1;
+message SetPeerUploadingRequest {
+    /// The peer id
+    int32 peer_id = 1;
 
-    /// Publishing
-    bool publishing = 2;
+    /// Uploading
+    bool uploading = 2;
 }
 
-message SetSubscriptionPublishingReply {
+message SetPeerUploadingReply {
 }

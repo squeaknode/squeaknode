@@ -443,76 +443,76 @@ def test_delete_squeak(server_stub, admin_stub, saved_squeak_hash):
         )
 
 
-def test_create_subscription(server_stub, admin_stub):
-    # Add a new subscription
-    create_subscription_response = admin_stub.CreateSubscription(
-        squeak_admin_pb2.CreateSubscriptionRequest(host="fake_host", port=1234,)
+def test_create_peer(server_stub, admin_stub):
+    # Add a new peer
+    create_peer_response = admin_stub.CreatePeer(
+        squeak_admin_pb2.CreatePeerRequest(host="fake_host", port=1234,)
     )
-    subscription_id = create_subscription_response.subscription_id
+    peer_id = create_peer_response.peer_id
 
-    # Get the new subscription
-    get_subscription_response = admin_stub.GetSubscription(
-        squeak_admin_pb2.GetSubscriptionRequest(
-            subscription_id=subscription_id,
+    # Get the new peer
+    get_peer_response = admin_stub.GetPeer(
+        squeak_admin_pb2.GetPeerRequest(
+            peer_id=peer_id,
         )
     )
-    assert get_subscription_response.squeak_subscription.host == "fake_host"
-    assert get_subscription_response.squeak_subscription.port == 1234
+    assert get_peer_response.squeak_peer.host == "fake_host"
+    assert get_peer_response.squeak_peer.port == 1234
 
-    # Get all subscriptions
-    get_subscriptions_response = admin_stub.GetSubscriptions(
-        squeak_admin_pb2.GetSubscriptionsRequest()
+    # Get all peers
+    get_peers_response = admin_stub.GetPeers(
+        squeak_admin_pb2.GetPeersRequest()
     )
-    subscription_hosts = [
-        squeak_subscription.host
-        for squeak_subscription in get_subscriptions_response.squeak_subscriptions
+    peer_hosts = [
+        squeak_peer.host
+        for squeak_peer in get_peers_response.squeak_peers
     ]
-    assert "fake_host" in subscription_hosts
+    assert "fake_host" in peer_hosts
 
-def test_set_subscription_subscribed(server_stub, admin_stub, subscription_id):
-    # Get the subscription
-    get_subscription_response = admin_stub.GetSubscription(
-        squeak_admin_pb2.GetSubscriptionRequest(
-            subscription_id=subscription_id,
+def test_set_peer_downloading(server_stub, admin_stub, peer_id):
+    # Get the peer
+    get_peer_response = admin_stub.GetPeer(
+        squeak_admin_pb2.GetPeerRequest(
+            peer_id=peer_id,
         )
     )
-    assert get_subscription_response.squeak_subscription.subscribed == False
+    assert get_peer_response.squeak_peer.downloading == False
 
-    # Set the subscription to be subscribed
-    admin_stub.SetSubscriptionSubscribed(
-        squeak_admin_pb2.SetSubscriptionSubscribedRequest(
-            subscription_id=subscription_id, subscribed=True,
-        )
-    )
-
-    # Get the subscription again
-    get_subscription_response = admin_stub.GetSubscription(
-        squeak_admin_pb2.GetSubscriptionRequest(
-            subscription_id=subscription_id,
-        )
-    )
-    assert get_subscription_response.squeak_subscription.subscribed == True
-
-def test_set_subscription_publishing(server_stub, admin_stub, subscription_id):
-    # Get the subscription
-    get_subscription_response = admin_stub.GetSubscription(
-        squeak_admin_pb2.GetSubscriptionRequest(
-            subscription_id=subscription_id,
-        )
-    )
-    assert get_subscription_response.squeak_subscription.publishing == False
-
-    # Set the subscription to be publishing
-    admin_stub.SetSubscriptionPublishing(
-        squeak_admin_pb2.SetSubscriptionPublishingRequest(
-            subscription_id=subscription_id, publishing=True,
+    # Set the peer to be downloading
+    admin_stub.SetPeerDownloading(
+        squeak_admin_pb2.SetPeerDownloadingRequest(
+            peer_id=peer_id, downloading=True,
         )
     )
 
-    # Get the subscription again
-    get_subscription_response = admin_stub.GetSubscription(
-        squeak_admin_pb2.GetSubscriptionRequest(
-            subscription_id=subscription_id,
+    # Get the peer again
+    get_peer_response = admin_stub.GetPeer(
+        squeak_admin_pb2.GetPeerRequest(
+            peer_id=peer_id,
         )
     )
-    assert get_subscription_response.squeak_subscription.publishing == True
+    assert get_peer_response.squeak_peer.downloading == True
+
+def test_set_peer_uploading(server_stub, admin_stub, peer_id):
+    # Get the peer
+    get_peer_response = admin_stub.GetPeer(
+        squeak_admin_pb2.GetPeerRequest(
+            peer_id=peer_id,
+        )
+    )
+    assert get_peer_response.squeak_peer.uploading == False
+
+    # Set the peer to be uploading
+    admin_stub.SetPeerUploading(
+        squeak_admin_pb2.SetPeerUploadingRequest(
+            peer_id=peer_id, uploading=True,
+        )
+    )
+
+    # Get the peer again
+    get_peer_response = admin_stub.GetPeer(
+        squeak_admin_pb2.GetPeerRequest(
+            peer_id=peer_id,
+        )
+    )
+    assert get_peer_response.squeak_peer.uploading == True

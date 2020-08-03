@@ -19,13 +19,13 @@ import {makeStyles} from '@material-ui/core/styles';
 import PageTitle from "../../components/PageTitle";
 import Widget from "../../components/Widget";
 import Table from "../dashboard/components/Table/Table";
-import CreateSubscriptionDialog from "../../components/CreateSubscriptionDialog";
+import CreatePeerDialog from "../../components/CreatePeerDialog";
 
 // data
 import mock from "../dashboard/mock";
 
 import {
-  GetSubscriptionsRequest,
+  GetPeersRequest,
 } from "../../proto/squeak_admin_pb"
 import {SqueakAdminClient} from "../../proto/squeak_admin_grpc_web_pb"
 
@@ -39,10 +39,10 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function Subscriptions() {
+export default function Peers() {
   const classes = useStyles();
-  const [subscriptions, setSubscriptions] = useState([]);
-  const [createSubscriptionDialogOpen, setCreateSubscriptionDialogOpen] = useState(false);
+  const [peers, setPeers] = useState([]);
+  const [createPeerDialogOpen, setCreatePeerDialogOpen] = useState(false);
   const history = useHistory();
 
   function a11yProps(index) {
@@ -52,38 +52,38 @@ export default function Subscriptions() {
     };
   }
 
-  const getSqueakSubscriptions = () => {
+  const getSqueakPeers = () => {
     console.log("called getSigningProfiles");
 
-    var getSubscriptionsRequest = new GetSubscriptionsRequest();
+    var getPeersRequest = new GetPeersRequest();
 
-    client.getSubscriptions(getSubscriptionsRequest, {}, (err, response) => {
+    client.getPeers(getPeersRequest, {}, (err, response) => {
       if (err) {
         console.log(err.message);
         return;
       }
       console.log(response);
-      setSubscriptions(response.getSqueakSubscriptionsList());
+      setPeers(response.getSqueakPeersList());
     });
   };
 
-  const goToSubscriptionPage = (id) => {
-    history.push("/app/Subscription/" + id);
+  const goToPeerPage = (id) => {
+    history.push("/app/Peer/" + id);
   };
 
-  const handleClickOpenCreateSubscriptionDialog = () => {
-    setCreateSubscriptionDialogOpen(true);
+  const handleClickOpenCreatePeerDialog = () => {
+    setCreatePeerDialogOpen(true);
   };
 
-  const handleCloseCreateSubscriptionDialog = () => {
-    setCreateSubscriptionDialogOpen(false);
+  const handleCloseCreatePeerDialog = () => {
+    setCreatePeerDialogOpen(false);
   };
 
   useEffect(() => {
-    getSqueakSubscriptions()
+    getSqueakPeers()
   }, []);
 
-  function CreateSubscriptionButton() {
+  function CreatePeerButton() {
     return (
       <>
       <Grid item xs={12}>
@@ -91,8 +91,8 @@ export default function Subscriptions() {
           <Button
             variant="contained"
             onClick={() => {
-              handleClickOpenCreateSubscriptionDialog();
-            }}>Create Subscription
+              handleClickOpenCreatePeerDialog();
+            }}>Create Peer
           </Button>
         </div>
       </Grid>
@@ -100,22 +100,22 @@ export default function Subscriptions() {
     )
   }
 
-  function SubscriptionsInfo() {
+  function PeersInfo() {
     return (
       <>
       <Grid container spacing={4}>
-        {CreateSubscriptionButton()}
+        {CreatePeerButton()}
        <Grid item xs={12}>
          <MUIDataTable
-           title="Subscriptions"
-           data={subscriptions.map(s =>
+           title="Peers"
+           data={peers.map(s =>
               [
-                s.getSubscriptionId(),
-                s.getSubscriptionName(),
+                s.getPeerId(),
+                s.getPeerName(),
                 s.getHost(),
                 s.getPort(),
-                s.getSubscribed().toString(),
-                s.getPublishing().toString(),
+                s.getDownloading().toString(),
+                s.getUploading().toString(),
               ]
             )}
            columns={[
@@ -128,8 +128,8 @@ export default function Subscriptions() {
              "Name",
              "Host",
              "Port",
-             "Subscribed",
-             "Publishing",
+             "Downloading",
+             "Uploading",
            ]}
            options={{
              filter: false,
@@ -139,7 +139,7 @@ export default function Subscriptions() {
              onRowClick: rowData => {
                var id = rowData[0];
                console.log("clicked on id" + id);
-               goToSubscriptionPage(id);
+               goToPeerPage(id);
              },
            }}/>
        </Grid>
@@ -148,21 +148,21 @@ export default function Subscriptions() {
     )
   }
 
-  function CreateSubscriptionDialogContent() {
+  function CreatePeerDialogContent() {
     return (
       <>
-        <CreateSubscriptionDialog
-          open={createSubscriptionDialogOpen}
-          handleClose={handleCloseCreateSubscriptionDialog}
-          ></CreateSubscriptionDialog>
+        <CreatePeerDialog
+          open={createPeerDialogOpen}
+          handleClose={handleCloseCreatePeerDialog}
+          ></CreatePeerDialog>
       </>
     )
   }
 
   return (
     <>
-     < PageTitle title = "Subscriptions" />
-    {SubscriptionsInfo()}
-    {CreateSubscriptionDialogContent()}
+     < PageTitle title = "Peers" />
+    {PeersInfo()}
+    {CreatePeerDialogContent()}
    < />);
 }

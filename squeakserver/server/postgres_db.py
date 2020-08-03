@@ -10,7 +10,7 @@ from squeakserver.blockchain.util import parse_block_header
 from squeakserver.core.squeak_entry import SqueakEntry
 from squeakserver.core.squeak_entry_with_profile import SqueakEntryWithProfile
 from squeakserver.server.squeak_profile import SqueakProfile
-from squeakserver.server.squeak_subscription import SqueakSubscription
+from squeakserver.server.squeak_peer import SqueakPeer
 from squeakserver.server.util import get_hash
 
 logger = logging.getLogger(__name__)
@@ -370,69 +370,69 @@ class PostgresDb:
         with self.get_cursor() as curs:
             curs.execute(sql, (squeak_hash_str,))
 
-    def insert_subscription(self, squeak_subscription):
-        """ Insert a new squeak subscription. """
+    def insert_peer(self, squeak_peer):
+        """ Insert a new squeak peer. """
         sql = """
-        INSERT INTO subscription(subscription_name, server_host, server_port, publishing, subscribed)
+        INSERT INTO peer(peer_name, server_host, server_port, uploading, downloading)
         VALUES(%s, %s, %s, %s, %s)
-        RETURNING subscription_id;
+        RETURNING peer_id;
         """
         with self.get_cursor() as curs:
             # execute the INSERT statement
             curs.execute(
                 sql,
                 (
-                    squeak_subscription.subscription_name,
-                    squeak_subscription.host,
-                    squeak_subscription.port,
-                    squeak_subscription.publishing,
-                    squeak_subscription.subscribed,
+                    squeak_peer.peer_name,
+                    squeak_peer.host,
+                    squeak_peer.port,
+                    squeak_peer.uploading,
+                    squeak_peer.downloading,
                 ),
             )
-            # get the new subscription id back
+            # get the new peer id back
             row = curs.fetchone()
-            return row["subscription_id"]
+            return row["peer_id"]
 
-    def get_subscription(self, subscription_id):
-        """ Get a subscription. """
+    def get_peer(self, peer_id):
+        """ Get a peer. """
         sql = """
-        SELECT * FROM subscription WHERE subscription_id=%s"""
+        SELECT * FROM peer WHERE peer_id=%s"""
 
         with self.get_cursor() as curs:
-            curs.execute(sql, (subscription_id,))
+            curs.execute(sql, (peer_id,))
             row = curs.fetchone()
-            return self._parse_squeak_subscription(row)
+            return self._parse_squeak_peer(row)
 
-    def get_subscriptions(self):
-        """ Get all subscriptions. """
+    def get_peers(self):
+        """ Get all peers. """
         sql = """
-        SELECT * FROM subscription;
+        SELECT * FROM peer;
         """
         with self.get_cursor() as curs:
             curs.execute(sql)
             rows = curs.fetchall()
-            subscriptions = [self._parse_squeak_subscription(row) for row in rows]
-            return subscriptions
+            peers = [self._parse_squeak_peer(row) for row in rows]
+            return peers
 
-    def set_subscription_subscribed(self, subscription_id, subscribed):
-        """ Set a subscription is subscribed. """
+    def set_peer_downloading(self, peer_id, downloading):
+        """ Set a peer is downloading. """
         sql = """
-        UPDATE subscription
-        SET subscribed=%s
-        WHERE subscription_id=%s;
+        UPDATE peer
+        SET downloading=%s
+        WHERE peer_id=%s;
         """
         with self.get_cursor() as curs:
-            curs.execute(sql, (subscribed, subscription_id,))
+            curs.execute(sql, (downloading, peer_id,))
 
-    def set_subscription_publishing(self, subscription_id, publishing):
-        """ Set a subscription is publishing. """
+    def set_peer_uploading(self, peer_id, uploading):
+        """ Set a peer is uploading. """
         sql = """
-        UPDATE subscription
-        SET publishing=%s
-        WHERE subscription_id=%s;
+        UPDATE peer
+        SET uploading=%s
+        WHERE peer_id=%s;
         """
         with self.get_cursor() as curs:
-            curs.execute(sql, (publishing, subscription_id,))
+            curs.execute(sql, (uploading, peer_id,))
 
     def _parse_squeak_entry(self, row):
         vch_decryption_key_column = row["vch_decryption_key"]
@@ -486,14 +486,14 @@ class PostgresDb:
             squeak_entry=squeak_entry, squeak_profile=squeak_profile,
         )
 
-    def _parse_squeak_subscription(self, row):
+    def _parse_squeak_peer(self, row):
         if row is None:
             return None
-        return SqueakSubscription(
-            subscription_id=row["subscription_id"],
-            subscription_name=row["subscription_name"],
+        return SqueakPeer(
+            peer_id=row["peer_id"],
+            peer_name=row["peer_name"],
             host=row["server_host"],
             port=row["server_port"],
-            publishing=row["publishing"],
-            subscribed=row["subscribed"],
+            uploading=row["uploading"],
+            downloading=row["downloading"],
         )
