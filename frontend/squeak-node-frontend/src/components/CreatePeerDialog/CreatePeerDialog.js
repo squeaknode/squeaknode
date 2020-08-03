@@ -77,12 +77,12 @@ export default function CreatePeerDialog({
       }
       console.log(response);
       console.log(response.getPeerId());
-      // goToProfilePage(response.getProfileId());
+      goToPeerPage(response.getPeerId());
     });
   };
 
-  const goToProfilePage = (profileId) => {
-    history.push("/app/profile/" + profileId);
+  const goToPeerPage = (peerId) => {
+    history.push("/app/peer/" + peerId);
   };
 
   function handleSubmit(event) {
