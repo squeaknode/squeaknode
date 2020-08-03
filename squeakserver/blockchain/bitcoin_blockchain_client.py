@@ -37,10 +37,10 @@ class BitcoinBlockchainClient(BlockchainClient):
             self.url, data=json.dumps(payload), headers=self.headers,
         ).json()
 
-        logger.info("Got response for get_block_count: {}".format(response))
+        logger.debug("Got response for get_block_count: {}".format(response))
         result = response["result"]
         block_count = int(result)
-        logger.info("Got block_count: {}".format(block_count))
+        logger.debug("Got block_count: {}".format(block_count))
         return block_count
 
     def get_block_hash(self, block_height: int) -> Optional[str]:
@@ -54,10 +54,10 @@ class BitcoinBlockchainClient(BlockchainClient):
             self.url, data=json.dumps(payload), headers=self.headers,
         ).json()
 
-        logger.info("Got response for get_block_hash: {}".format(response))
+        logger.debug("Got response for get_block_hash: {}".format(response))
         result = response["result"]
         block_hash = result
-        logger.info("Got block_hash: {}".format(block_hash))
+        logger.debug("Got block_hash: {}".format(block_hash))
         return block_hash
 
     # def get_best_block_hash(self) -> Optional[bytes]:
@@ -86,7 +86,7 @@ class BitcoinBlockchainClient(BlockchainClient):
             self.url, data=json.dumps(payload), headers=self.headers,
         ).json()
 
-        logger.info("Got response for get_block_header: {}".format(response))
+        logger.debug("Got response for get_block_header: {}".format(response))
         result = response["result"]
-        logger.info("Got block_header: {}".format(result))
+        logger.debug("Got block_header: {}".format(result))
         return result

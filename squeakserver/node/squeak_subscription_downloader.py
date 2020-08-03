@@ -32,7 +32,8 @@ class SqueakSubscriptionDownloader:
             return
 
         for subscription in subscriptions:
-            logger.info("Syncing subscription: {} with current block: {}".format(subscription, block_height))
+            if subscription.subscribed:
+                logger.info("Syncing subscription: {} with current block: {}".format(subscription, block_height))
 
     def start_running(self):
         threading.Timer(self.update_interval_s, self.start_running).start()
