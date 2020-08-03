@@ -51,6 +51,7 @@
     ]
   },
   "devDependencies": {
-    "prettier": "^1.19.1"
+    "prettier": "^1.19.1",
+    "terser": "^3.14.1"
   }
 }
