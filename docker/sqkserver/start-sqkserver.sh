@@ -14,5 +14,5 @@ export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
 
 exec runsqueakserver \
      --config config.ini \
-     --log-level DEBUG \
+     --log-level INFO \
      run-server
