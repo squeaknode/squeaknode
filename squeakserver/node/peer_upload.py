@@ -24,6 +24,12 @@ class PeerUpload:
         self.squeak_store = squeak_store
         self.postgres_db = postgres_db
         self.lookup_block_interval = lookup_block_interval
+
+        self.peer_client = PeerClient(
+            self.peer.host,
+            self.peer.port,
+        )
+
         self._stop_event = threading.Event()
 
     def upload(self):
@@ -54,6 +60,12 @@ class PeerUpload:
         hashes_to_upload = set(local_hashes) - set(remote_hashes)
         logger.info("Hashes to upload: {}".format(hashes_to_upload))
 
+        # Upload squeak for the hashes
+        for hash in hashes_to_upload:
+            if self.stopped():
+                return
+            self._upload_squeak(hash)
+
     def stop(self):
         self._stop_event.set()
 
@@ -64,11 +76,15 @@ class PeerUpload:
         return self.squeak_store.lookup_squeaks(addresses, min_block, max_block)
 
     def _get_remote_hashes(self, addresses, min_block, max_block):
-        peer_client = PeerClient(
-            self.peer.host,
-            self.peer.port,
-        )
-        return peer_client.lookup_squeaks(addresses, min_block, max_block)
+        return self.peer_client.lookup_squeaks(addresses, min_block, max_block)
+
+    def _get_local_squeak(self, squeak_hash):
+        squeak_entry = self.squeak_store.get_squeak(squeak_hash)
+        return squeak_entry.squeak
+
+    def _upload_squeak(self, squeak_hash):
+        squeak = self._get_local_squeak(squeak_hash)
+        self.peer_client.post_squeak(squeak)
 
     def _get_sharing_addresses(self):
         sharing_profiles = self.postgres_db.get_sharing_profiles()

@@ -37,3 +37,22 @@ class PeerClient:
                 )
             )
             return lookup_response.hashes
+
+    def post_squeak(self, squeak):
+        squeak_msg = self._build_squeak_msg(squeak)
+        with self.get_stub() as stub:
+            stub.PostSqueak(
+                squeak_server_pb2.PostSqueakRequest(
+                    squeak=squeak_msg,
+                )
+            )
+
+    def _get_hash(self, squeak):
+        """ Needs to be reversed because hash is stored as little-endian """
+        return squeak.GetHash()[::-1]
+
+    def _build_squeak_msg(self, squeak):
+        return squeak_server_pb2.Squeak(
+            hash=self._get_hash(squeak),
+            serialized_squeak=squeak.serialize(),
+        )
