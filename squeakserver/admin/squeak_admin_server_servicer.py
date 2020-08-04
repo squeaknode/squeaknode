@@ -57,8 +57,14 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
     def GetSqueakProfile(self, request, context):
         profile_id = request.profile_id
         squeak_profile = self.handler.handle_get_squeak_profile(profile_id)
+        if squeak_profile is None:
+            context.set_code(grpc.StatusCode.NOT_FOUND)
+            context.set_details('Profile not found.')
+            return squeak_admin_pb2.GetSqueakProfileReply()
         squeak_profile_msg = self._squeak_profile_to_message(squeak_profile)
-        return squeak_admin_pb2.GetSqueakProfileReply(squeak_profile=squeak_profile_msg)
+        return squeak_admin_pb2.GetSqueakProfileReply(
+            squeak_profile=squeak_profile_msg,
+        )
 
     def GetSqueakProfileByAddress(self, request, context):
         address = request.address
@@ -83,6 +89,11 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         sharing = request.sharing
         self.handler.handle_set_squeak_profile_sharing(profile_id, sharing)
         return squeak_admin_pb2.SetSqueakProfileSharingReply()
+
+    def DeleteSqueakProfile(self, request, context):
+        profile_id = request.profile_id
+        self.handler.handle_delete_squeak_profile(profile_id)
+        return squeak_admin_pb2.DeleteSqueakProfileReply()
 
     def MakeSqueak(self, request, context):
         profile_id = request.profile_id

@@ -407,6 +407,24 @@ def test_set_profile_sharing(server_stub, admin_stub, contact_profile_id):
     assert get_squeak_profile_response.squeak_profile.sharing == True
 
 
+def test_delete_profile(server_stub, admin_stub, contact_profile_id):
+    # Delete the profile
+    admin_stub.DeleteSqueakProfile(
+        squeak_admin_pb2.DeleteSqueakProfileRequest(
+            profile_id=contact_profile_id,
+        )
+    )
+
+    # Try to get the profile and fail
+    with pytest.raises(Exception) as excinfo:
+        admin_stub.GetSqueakProfile(
+            squeak_admin_pb2.GetSqueakProfileRequest(
+                profile_id=contact_profile_id,
+            )
+        )
+    assert "Profile not found." in str(excinfo.value)
+
+
 def test_get_following_squeaks(
     server_stub, admin_stub, saved_squeak_hash, signing_profile_id
 ):
