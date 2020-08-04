@@ -3,6 +3,7 @@ import threading
 
 from squeakserver.server.util import get_hash
 from squeakserver.node.peer_download import PeerDownload
+from squeakserver.node.peer_upload import PeerUpload
 
 logger = logging.getLogger(__name__)
 
@@ -55,17 +56,17 @@ class SqueakSyncController:
             logger.error("Failed to sync because unable to get blockchain info.", exc_info=True)
             return
         self._download_from_peers(peers, block_height)
+        self._upload_to_peers(peers, block_height)
 
     def _download_from_peers(self, peers, block_height):
         for peer in peers:
             if peer.downloading:
-                logger.info("Downloading from peer: {} with current block: {}".format(peer, block_height))
                 self._download_from_peer(peer, block_height)
 
     def _upload_to_peers(self, peers, block_height):
         for peer in peers:
             if peer.uploading:
-                logger.info("Uploading to peer: {} with current block: {}".format(peer, block_height))
+                self._upload_to_peer(peer, block_height)
 
     def _download_from_peer(self, peer, block_height):
         peer_download = PeerDownload(
@@ -74,7 +75,6 @@ class SqueakSyncController:
             self.squeak_store,
             self.postgres_db,
         )
-        peer_download.download()
         try:
             logger.info("Trying to download from peer: {}".format(peer))
             with self.DownloadingContextManager(peer, peer_download, self.squeak_sync_status) as downloading_manager:
@@ -82,6 +82,21 @@ class SqueakSyncController:
                 download_thread.start()
         except Exception as e:
             logger.error("Download from peer failed.", exc_info=True)
+
+    def _upload_to_peer(self, peer, block_height):
+        peer_upload = PeerUpload(
+            peer,
+            block_height,
+            self.squeak_store,
+            self.postgres_db,
+        )
+        try:
+            logger.info("Trying to upload to peer: {}".format(peer))
+            with self.UploadingContextManager(peer, peer_upload, self.squeak_sync_status) as uploading_manager:
+                upload_thread = threading.Thread(target=peer_upload.upload)
+                upload_thread.start()
+        except Exception as e:
+            logger.error("Upload from peer failed.", exc_info=True)
 
     class DownloadingContextManager():
         def __init__(self, peer, peer_download, squeak_sync_status):
@@ -108,18 +123,18 @@ class SqueakSyncController:
         def __init__(self, peer, peer_upload, squeak_sync_status):
             logger.info('upload init method called')
             self.peer = peer
-            self.peer_download = peer_download
+            self.peer_upload = peer_upload
             self.squeak_sync_status = squeak_sync_status
 
-            if self.squeak_sync_status.is_downloading(self.peer):
-                raise Exception("Peer is already downloading: {}".format(self.peer))
+            if self.squeak_sync_status.is_uploading(self.peer):
+                raise Exception("Peer is already uploading: {}".format(self.peer))
 
         def __enter__(self):
             logger.info('upload enter method called')
-            self.squeak_sync_status.add_download(self.peer, self.peer_download)
-            logger.info('current downloads: {}'.format(self.squeak_sync_status.get_current_downloads()))
+            self.squeak_sync_status.add_upload(self.peer, self.peer_upload)
+            logger.info('current uploads: {}'.format(self.squeak_sync_status.get_current_uploads()))
             return self
 
         def __exit__(self, exc_type, exc_value, exc_traceback):
             logger.info('exit method called')
-            self.squeak_sync_status.remove_download(self.peer)
+            self.squeak_sync_status.remove_upload(self.peer)
