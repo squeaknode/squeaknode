@@ -79,10 +79,10 @@ class SqueakNode:
         return self.squeak_store.get_public_squeak(squeak_hash)
 
     def get_squeak_entry(self, squeak_hash):
-        return self.postgres_db.get_squeak_entry(squeak_hash)
+        return self.squeak_store.get_squeak(squeak_hash)
 
     def lookup_squeaks(self, addresses, min_block, max_block):
-        return self.postgres_db.lookup_squeaks(addresses, min_block, max_block)
+        return self.squeak_store.lookup_squeaks(addresses, min_block, max_block)
 
     def get_buy_offer(self, squeak_hash, challenge):
         # Get the squeak from the database

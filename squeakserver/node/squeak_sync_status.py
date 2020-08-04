@@ -1,6 +1,7 @@
 import logging
 
 from squeakserver.server.util import get_hash
+from squeakserver.node.squeak_peer_syncer import PeerDownloadTask
 
 logger = logging.getLogger(__name__)
 
@@ -32,6 +33,8 @@ class SqueakSyncController:
         for peer in peers:
             if peer.downloading:
                 logger.info("Downloading from peer: {} with current block: {}".format(peer, block_height))
+                peer_download_task = PeerDownloadTask(peer, block_height, self.squeak_store)
+                peer_download_task.download()
 
     def _upload_to_peers(self, peers, block_height):
         for peer in peers:

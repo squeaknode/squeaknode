@@ -1,5 +1,9 @@
 import logging
 
+from contextlib import contextmanager
+
+import grpc
+
 from squeakserver.server.util import get_hash
 
 from proto import lnd_pb2 as ln

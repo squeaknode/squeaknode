@@ -26,6 +26,9 @@ class SqueakStore:
         self.squeak_block_verifier.verify_squeak_block(inserted_squeak_hash)
         return inserted_squeak_hash
 
+    def get_squeak(self, squeak_hash):
+        return self.postgres_db.get_squeak_entry(squeak_hash)
+
     def get_public_squeak(self, squeak_hash):
         squeak_entry = self.postgres_db.get_squeak_entry(squeak_hash)
         squeak = squeak_entry.squeak
@@ -53,3 +56,6 @@ class SqueakStore:
 
     def delete_squeak(self, squeak_hash):
         return self.postgres_db.delete_squeak(squeak_hash)
+
+    def lookup_squeaks(self, addresses, min_block, max_block):
+        return self.postgres_db.lookup_squeaks(addresses, min_block, max_block)
