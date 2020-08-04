@@ -50,7 +50,7 @@ class PeerDownloadTask:
 
     def download(self):
         try:
-            with self.DownloadingContextManager(self.peer, None, self.squeak_sync_status) as downloading_manager:
+            with self.DownloadingContextManager(self.peer, self._stop_event, self.squeak_sync_status) as downloading_manager:
                 self.download_from_peer()
         except Exception as e:
             logger.error("Download from peer failed.", exc_info=True)
@@ -62,13 +62,22 @@ class PeerDownloadTask:
         min_block = self.block_height - self.lookup_block_interval
         max_block = self.block_height
 
+        if self.stopped():
+            return
+
         # Get remote hashes
         remote_hashes = self._get_remote_hashes(addresses, min_block, max_block)
         logger.info("Got remote hashes: {}".format(remote_hashes))
 
+        if self.stopped():
+            return
+
         # Get local hashes
         local_hashes = self._get_local_hashes(addresses, min_block, max_block)
         logger.info("Got local hashes: {}".format(local_hashes))
+
+        if self.stopped():
+            return
 
         # Get hashes to download
         hashes_to_download = set(remote_hashes) - set(local_hashes)
