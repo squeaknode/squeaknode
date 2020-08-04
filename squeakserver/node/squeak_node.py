@@ -13,6 +13,7 @@ from squeakserver.node.squeak_rate_limiter import SqueakRateLimiter
 from squeakserver.node.squeak_whitelist import SqueakWhitelist
 from squeakserver.node.squeak_store import SqueakStore
 from squeakserver.node.squeak_peer_downloader import SqueakPeerDownloader
+from squeakserver.node.squeak_sync_status import SqueakSyncController
 from squeakserver.server.buy_offer import BuyOffer
 from squeakserver.server.squeak_profile import SqueakProfile
 from squeakserver.server.squeak_peer import SqueakPeer
@@ -54,10 +55,13 @@ class SqueakNode:
             self.squeak_rate_limiter,
             self.squeak_whitelist,
         )
+        self.squeak_sync_controller = SqueakSyncController(
+            self.blockchain_client,
+            self.squeak_store,
+        )
         self.squeak_peer_downloader = SqueakPeerDownloader(
             postgres_db,
-            self.squeak_store,
-            self.blockchain_client,
+            self.squeak_sync_controller,
         )
 
     def start_running(self):
