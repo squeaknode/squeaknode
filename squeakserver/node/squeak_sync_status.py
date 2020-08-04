@@ -2,7 +2,7 @@ import logging
 import threading
 
 from squeakserver.server.util import get_hash
-from squeakserver.node.squeak_peer_syncer import PeerDownloadTask
+from squeakserver.node.peer_download import PeerDownload
 
 logger = logging.getLogger(__name__)
 
@@ -56,18 +56,17 @@ class SqueakSyncController:
                 logger.info("Uploading to peer: {} with current block: {}".format(peer, block_height))
 
     def _download_from_peer(self, peer, block_height):
-        peer_download_task = PeerDownloadTask(
+        peer_download = PeerDownload(
             peer,
             block_height,
             self.squeak_store,
             self.postgres_db,
-            self.squeak_sync_status,
         )
-        peer_download_task.download()
+        peer_download.download()
         try:
             logger.info("Trying to download from peer: {}".format(peer))
-            with self.DownloadingContextManager(peer, peer_download_task, self.squeak_sync_status) as downloading_manager:
-                download_thread = threading.Thread(target=peer_download_task.download)
+            with self.DownloadingContextManager(peer, peer_download, self.squeak_sync_status) as downloading_manager:
+                download_thread = threading.Thread(target=peer_download.download)
                 download_thread.start()
         except Exception as e:
             logger.error("Download from peer failed.", exc_info=True)

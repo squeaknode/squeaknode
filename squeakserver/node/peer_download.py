@@ -10,21 +10,19 @@ logger = logging.getLogger(__name__)
 LOOKUP_BLOCK_INTERVAL = 1008  # 1 week
 
 
-class PeerDownloadTask:
+class PeerDownload:
     def __init__(
             self,
             peer,
             block_height,
             squeak_store,
             postgres_db,
-            squeak_sync_status,
             lookup_block_interval=LOOKUP_BLOCK_INTERVAL,
     ):
         self.peer = peer
         self.block_height = block_height
         self.squeak_store = squeak_store
         self.postgres_db = postgres_db
-        self.squeak_sync_status = squeak_sync_status
         self.lookup_block_interval = lookup_block_interval
         self._stop_event = threading.Event()
 
