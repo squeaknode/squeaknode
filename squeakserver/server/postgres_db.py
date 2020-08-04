@@ -461,7 +461,7 @@ class PostgresDb:
     def _parse_squeak_entry(self, row):
         vch_decryption_key_column = row["vch_decryption_key"]
         vch_decryption_key = (
-            bytes(vch_decryption_key_column) if vch_decryption_key_column else None
+            bytes(vch_decryption_key_column) if vch_decryption_key_column else b''
         )
         squeak = CSqueak(
             nVersion=row["n_version"],

@@ -3,6 +3,8 @@ import logging
 from contextlib import contextmanager
 
 import grpc
+from squeak.core import CSqueak
+from squeak.core import CheckSqueak
 
 from squeakserver.server.util import get_hash
 
@@ -47,6 +49,17 @@ class PeerClient:
                 )
             )
 
+    def get_squeak(self, squeak_hash):
+        with self.get_stub() as stub:
+            get_response = stub.GetSqueak(
+                squeak_server_pb2.GetSqueakRequest(
+                    hash=squeak_hash,
+                )
+            )
+            get_response_squeak = self._squeak_from_msg(get_response.squeak)
+            CheckSqueak(get_response_squeak, skipDecryptionCheck=True)
+            return get_response_squeak
+
     def _get_hash(self, squeak):
         """ Needs to be reversed because hash is stored as little-endian """
         return squeak.GetHash()[::-1]
@@ -56,3 +69,10 @@ class PeerClient:
             hash=self._get_hash(squeak),
             serialized_squeak=squeak.serialize(),
         )
+
+    def _squeak_from_msg(self, squeak_msg):
+        if not squeak_msg:
+            return None
+        if not squeak_msg.serialized_squeak:
+            return None
+        return CSqueak.deserialize(squeak_msg.serialized_squeak)

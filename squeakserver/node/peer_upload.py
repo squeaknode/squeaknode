@@ -60,7 +60,7 @@ class PeerUpload:
         hashes_to_upload = set(local_hashes) - set(remote_hashes)
         logger.info("Hashes to upload: {}".format(hashes_to_upload))
 
-        # Upload squeak for the hashes
+        # Upload squeaks for the hashes
         for hash in hashes_to_upload:
             if self.stopped():
                 return
