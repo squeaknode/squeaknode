@@ -526,9 +526,10 @@ def test_delete_peer(server_stub, admin_stub, peer_id):
     )
 
     # Try to get the peer and fail
-    with pytest.raises(Exception):
+    with pytest.raises(Exception) as excinfo:
         admin_stub.GetPeer(
             squeak_admin_pb2.GetPeerRequest(
                 peer_id=peer_id,
             )
         )
+    assert "Peer not found." in str(excinfo.value)
