@@ -17,21 +17,45 @@ class PeerDownloadTask:
             block_height,
             squeak_store,
             postgres_db,
+            squeak_sync_status,
             lookup_block_interval=LOOKUP_BLOCK_INTERVAL,
     ):
         self.peer = peer
         self.block_height = block_height
         self.squeak_store = squeak_store
         self.postgres_db = postgres_db
+        self.squeak_sync_status = squeak_sync_status
         self.lookup_block_interval = lookup_block_interval
         self._stop_event = threading.Event()
 
-    def download(self):
-        logger.info("Downloading from peer: {} with current block: {}".format(
-            self.peer,
-            self.block_height,
-        ))
+    class DownloadingContextManager():
+        def __init__(self, peer, stopped, squeak_sync_status):
+            logger.info('init method called')
+            self.peer = peer
+            self.stopped = stopped
+            self.squeak_sync_status = squeak_sync_status
 
+            if self.squeak_sync_status.is_downloading(self.peer):
+                raise Exception("Peer is already downloading: {}".format(self.peer))
+
+        def __enter__(self):
+            logger.info('enter method called')
+            self.squeak_sync_status.add_download(self.peer, self.stopped)
+            logger.info('current downloads: {}'.format(self.squeak_sync_status.get_current_downloads()))
+            return self
+
+        def __exit__(self, exc_type, exc_value, exc_traceback):
+            logger.info('exit method called')
+            self.squeak_sync_status.remove_download(self.peer)
+
+    def download(self):
+        try:
+            with self.DownloadingContextManager(self.peer, None, self.squeak_sync_status) as downloading_manager:
+                self.download_from_peer()
+        except Exception as e:
+            logger.error("Download from peer failed.", exc_info=True)
+
+    def download_from_peer(self):
         # Get list of followed addresses.
         addresses = self._get_followed_addresses()
         logger.info("Followed addresses: {}".format(addresses))

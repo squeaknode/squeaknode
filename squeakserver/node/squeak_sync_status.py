@@ -11,7 +11,20 @@ HOUR_IN_SECONDS = 3600
 
 class SqueakSyncStatus:
     def __init__(self):
-        pass
+        self.downloads = {}
+        self.uploads = {}
+
+    def add_download(self, peer, stopped):
+        self.downloads[peer.peer_id] = stopped
+
+    def is_downloading(self, peer):
+        return peer.peer_id in self.downloads
+
+    def remove_download(self, peer):
+        del self.downloads[peer.peer_id]
+
+    def get_current_downloads(self):
+        self.downloads.keys
 
 
 class SqueakSyncController:
@@ -34,7 +47,13 @@ class SqueakSyncController:
         for peer in peers:
             if peer.downloading:
                 logger.info("Downloading from peer: {} with current block: {}".format(peer, block_height))
-                peer_download_task = PeerDownloadTask(peer, block_height, self.squeak_store, self.postgres_db)
+                peer_download_task = PeerDownloadTask(
+                    peer,
+                    block_height,
+                    self.squeak_store,
+                    self.postgres_db,
+                    self.squeak_sync_status,
+                )
                 peer_download_task.download()
 
     def _upload_to_peers(self, peers, block_height):
