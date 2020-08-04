@@ -13,10 +13,13 @@ class SqueakBlockVerifier:
     def verify_squeak_block(self, squeak_hash):
         logger.info("Verifying squeak hash: {}".format(squeak_hash))
         squeak = self._get_squeak(squeak_hash)
-        block_info = self._get_block_info_for_height(squeak.nBlockHeight)
 
-        logger.info("Checking block height: {}".format(squeak.nBlockHeight))
-        logger.info("Checking block hash: {}".format(squeak.hashBlock.hex()))
+        try:
+            block_info = self._get_block_info_for_height(squeak.nBlockHeight)
+        except Exception as e:
+            logger.error("Failed to sync because unable to get blockchain info.", exc_info=True)
+            return
+
         if squeak.hashBlock.hex() == block_info.block_hash:
             logger.info("block hash correct: {}".format(block_info))
             self._mark_squeak_verified(squeak_hash, block_info)
