@@ -168,6 +168,10 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
     def GetPeer(self, request, context):
         peer_id = request.peer_id
         squeak_peer = self.handler.handle_get_squeak_peer(peer_id)
+        if squeak_peer is None:
+            context.set_code(grpc.StatusCode.NOT_FOUND)
+            context.set_details('Peer not found.')
+            return squeak_admin_pb2.GetPeerReply()
         squeak_peer_msg = self._squeak_peer_to_message(squeak_peer)
         return squeak_admin_pb2.GetPeerReply(
             squeak_peer=squeak_peer_msg,
@@ -200,6 +204,11 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
             uploading,
         )
         return squeak_admin_pb2.SetPeerUploadingReply()
+
+    def DeletePeer(self, request, context):
+        peer_id = request.peer_id
+        self.handler.handle_delete_squeak_peer(peer_id)
+        return squeak_admin_pb2.DeletePeerReply()
 
     def _squeak_entry_to_message(self, squeak_entry_with_profile):
         if squeak_entry_with_profile is None:

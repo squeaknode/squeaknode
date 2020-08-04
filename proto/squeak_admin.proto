@@ -102,6 +102,10 @@ service SqueakAdmin {
   */
   rpc SetPeerUploading (SetPeerUploadingRequest) returns (SetPeerUploadingReply) {}
 
+  /** sqkadmin: `deletepeer`
+  */
+  rpc DeletePeer (DeletePeerRequest) returns (DeletePeerReply) {}
+
 }
 
 message HelloRequest {
@@ -395,4 +399,12 @@ message SetPeerUploadingRequest {
 }
 
 message SetPeerUploadingReply {
+}
+
+message DeletePeerRequest {
+    /// The peer id
+    int32 peer_id = 1;
+}
+
+message DeletePeerReply {
 }

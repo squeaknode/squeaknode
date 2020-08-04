@@ -191,3 +191,7 @@ class SqueakAdminServerHandler(object):
             )
         )
         self.squeak_node.set_peer_uploading(peer_id, uploading)
+
+    def handle_delete_squeak_peer(self, peer_id):
+        logger.info("Handle delete squeak peer with id: {}".format(peer_id))
+        self.squeak_node.delete_peer(peer_id)

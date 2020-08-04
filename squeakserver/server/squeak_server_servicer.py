@@ -43,7 +43,8 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
 
         squeak = self.handler.handle_get_squeak(squeak_hash)
         if squeak == None:
-            context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
+            context.set_code(grpc.StatusCode.NOT_FOUND)
+            context.set_details('Squeak not found.')
             return squeak_server_pb2.GetSqueakReply(squeak=None,)
 
         return squeak_server_pb2.GetSqueakReply(
@@ -67,15 +68,12 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
         buy_response = self.handler.handle_buy_squeak(squeak_hash, challenge)
 
         if buy_response == None:
-            context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
+            context.set_code(grpc.StatusCode.NOT_FOUND)
+            context.set_details('Squeak not found.')
             return squeak_server_pb2.BuySqueakReply(offer=None,)
 
         offer_squeak_hash = buy_response.squeak_hash
         amount = buy_response.amount
-
-        if offer_squeak_hash != squeak_hash:
-            context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
-            return squeak_server_pb2.BuySqueakReply(offer=None,)
 
         return squeak_server_pb2.BuySqueakReply(
             offer=squeak_server_pb2.SqueakBuyOffer(
