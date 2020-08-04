@@ -58,6 +58,7 @@ class SqueakNode:
         self.squeak_sync_controller = SqueakSyncController(
             self.blockchain_client,
             self.squeak_store,
+            self.postgres_db,
         )
         self.squeak_peer_downloader = SqueakPeerDownloader(
             postgres_db,
@@ -86,7 +87,7 @@ class SqueakNode:
 
     def get_buy_offer(self, squeak_hash, challenge):
         # Get the squeak from the database
-        squeak_entry = self.postgres_db.get_squeak_entry(squeak_hash)
+        squeak_entry = self.squeak_store.get_squeak(squeak_hash)
         squeak = squeak_entry.squeak
         # Get the decryption key from the squeak
         decryption_key = squeak.GetDecryptionKey()
