@@ -96,7 +96,10 @@ export default function SqueakDetailItem({
             <Typography
               variant="h4"
               style={{whiteSpace: 'pre-line'}}
-              >{squeak.getContentStr()}
+              >{squeak.getIsUnlocked()
+                  ? squeak.getContentStr()
+                  : "Content is locked."
+                }
             </Typography>
           </Grid>
           </Grid>

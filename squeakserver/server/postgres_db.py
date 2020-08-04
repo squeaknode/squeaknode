@@ -276,6 +276,30 @@ class PostgresDb:
             profiles = [self._parse_squeak_profile(row) for row in rows]
             return profiles
 
+    def get_following_profiles(self):
+        """ Get all following profiles. """
+        sql = """
+        SELECT * FROM profile
+        WHERE following;
+        """
+        with self.get_cursor() as curs:
+            curs.execute(sql)
+            rows = curs.fetchall()
+            profiles = [self._parse_squeak_profile(row) for row in rows]
+            return profiles
+
+    def get_sharing_profiles(self):
+        """ Get all sharing profiles. """
+        sql = """
+        SELECT * FROM profile
+        WHERE sharing;
+        """
+        with self.get_cursor() as curs:
+            curs.execute(sql)
+            rows = curs.fetchall()
+            profiles = [self._parse_squeak_profile(row) for row in rows]
+            return profiles
+
     def get_profile(self, profile_id):
         """ Get a profile. """
         sql = """
@@ -437,7 +461,7 @@ class PostgresDb:
     def _parse_squeak_entry(self, row):
         vch_decryption_key_column = row["vch_decryption_key"]
         vch_decryption_key = (
-            bytes(vch_decryption_key_column) if vch_decryption_key_column else None
+            bytes(vch_decryption_key_column) if vch_decryption_key_column else b''
         )
         squeak = CSqueak(
             nVersion=row["n_version"],

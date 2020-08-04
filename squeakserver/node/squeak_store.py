@@ -21,10 +21,21 @@ class SqueakStore:
         self.squeak_block_verifier.add_squeak_to_queue(inserted_squeak_hash)
         return inserted_squeak_hash
 
+    def save_downloaded_squeak(self, squeak):
+        if not self.squeak_rate_limiter.should_rate_limit_allow(squeak):
+            raise Exception("Excedeed allowed number of squeaks per block.")
+
+        inserted_squeak_hash = self.postgres_db.insert_squeak(squeak)
+        self.squeak_block_verifier.add_squeak_to_queue(inserted_squeak_hash)
+        return inserted_squeak_hash
+
     def save_created_squeak(self, squeak):
         inserted_squeak_hash = self.postgres_db.insert_squeak(squeak)
         self.squeak_block_verifier.verify_squeak_block(inserted_squeak_hash)
         return inserted_squeak_hash
+
+    def get_squeak(self, squeak_hash):
+        return self.postgres_db.get_squeak_entry(squeak_hash)
 
     def get_public_squeak(self, squeak_hash):
         squeak_entry = self.postgres_db.get_squeak_entry(squeak_hash)
@@ -53,3 +64,6 @@ class SqueakStore:
 
     def delete_squeak(self, squeak_hash):
         return self.postgres_db.delete_squeak(squeak_hash)
+
+    def lookup_squeaks(self, addresses, min_block, max_block):
+        return self.postgres_db.lookup_squeaks(addresses, min_block, max_block)

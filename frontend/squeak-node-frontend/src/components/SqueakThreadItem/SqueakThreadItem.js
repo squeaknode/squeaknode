@@ -81,7 +81,10 @@ export default function SqueakThreadItem({
             <Typography
               size="md"
               style={{whiteSpace: 'pre-line', overflow: "hidden", textOverflow: "ellipsis", height: '6rem'}}
-              >{squeak.getContentStr()}
+              >{squeak.getIsUnlocked()
+                  ? squeak.getContentStr()
+                  : "Content is locked."
+                }
             </Typography>
           </Grid>
           </Grid>
