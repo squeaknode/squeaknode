@@ -89,6 +89,10 @@ class SqueakAdminServerHandler(object):
         )
         self.squeak_node.set_squeak_profile_sharing(profile_id, sharing)
 
+    def handle_delete_squeak_profile(self, profile_id):
+        logger.info("Handle delete squeak profile with id: {}".format(profile_id))
+        self.squeak_node.delete_squeak_profile(profile_id)
+
     def handle_make_squeak(self, profile_id, content_str, replyto_hash):
         logger.info("Handle make squeak profile with id: {}".format(profile_id))
         inserted_squeak_hash = self.squeak_node.make_squeak(

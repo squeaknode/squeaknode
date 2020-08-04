@@ -304,7 +304,6 @@ class PostgresDb:
         """ Get a profile. """
         sql = """
         SELECT * FROM profile WHERE profile_id=%s"""
-
         with self.get_cursor() as curs:
             curs.execute(sql, (profile_id,))
             row = curs.fetchone()
@@ -350,6 +349,15 @@ class PostgresDb:
         """
         with self.get_cursor() as curs:
             curs.execute(sql, (sharing, profile_id,))
+
+    def delete_profile(self, profile_id):
+        """ Delete a profile. """
+        sql = """
+        DELETE FROM profile
+        WHERE profile_id=%s;
+        """
+        with self.get_cursor() as curs:
+            curs.execute(sql, (profile_id,))
 
     def get_unverified_block_squeaks(self):
         """ Get all squeaks without block header. """
