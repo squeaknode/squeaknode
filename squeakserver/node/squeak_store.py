@@ -39,6 +39,8 @@ class SqueakStore:
 
     def get_public_squeak(self, squeak_hash):
         squeak_entry = self.postgres_db.get_squeak_entry(squeak_hash)
+        if squeak_entry is None:
+            return None
         squeak = squeak_entry.squeak
         # Remove the decryption key before returning.
         squeak.ClearDecryptionKey()

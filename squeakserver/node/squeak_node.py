@@ -228,3 +228,6 @@ class SqueakNode:
 
     def set_peer_uploading(self, peer_id, uploading):
         self.postgres_db.set_peer_uploading(peer_id, uploading)
+
+    def delete_peer(self, peer_id):
+        self.postgres_db.delete_peer(peer_id)

@@ -458,7 +458,17 @@ class PostgresDb:
         with self.get_cursor() as curs:
             curs.execute(sql, (uploading, peer_id,))
 
+    def delete_peer(self, peer_id):
+        """ Delete a peer. """
+        sql = """
+        DELETE FROM peer WHERE peer_id=%s;
+        """
+        with self.get_cursor() as curs:
+            curs.execute(sql, (peer_id,))
+
     def _parse_squeak_entry(self, row):
+        if row is None:
+            return None
         vch_decryption_key_column = row["vch_decryption_key"]
         vch_decryption_key = (
             bytes(vch_decryption_key_column) if vch_decryption_key_column else b''

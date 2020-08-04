@@ -437,11 +437,11 @@ def test_delete_squeak(server_stub, admin_stub, saved_squeak_hash):
     )
 
     # Try to get the squeak and fail
-    with pytest.raises(Exception):
-        get_response = server_stub.GetSqueak(
+    with pytest.raises(Exception) as excinfo:
+        server_stub.GetSqueak(
             squeak_server_pb2.GetSqueakRequest(hash=saved_squeak_hash)
         )
-
+    assert "Squeak not found." in str(excinfo.value)
 
 def test_create_peer(server_stub, admin_stub):
     # Add a new peer
@@ -516,3 +516,19 @@ def test_set_peer_uploading(server_stub, admin_stub, peer_id):
         )
     )
     assert get_peer_response.squeak_peer.uploading == True
+
+def test_delete_peer(server_stub, admin_stub, peer_id):
+    # Delete the peer
+    admin_stub.DeletePeer(
+        squeak_admin_pb2.DeletePeerRequest(
+            peer_id=peer_id,
+        )
+    )
+
+    # Try to get the peer and fail
+    with pytest.raises(Exception):
+        admin_stub.GetPeer(
+            squeak_admin_pb2.GetPeerRequest(
+                peer_id=peer_id,
+            )
+        )

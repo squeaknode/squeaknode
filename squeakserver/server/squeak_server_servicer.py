@@ -43,7 +43,8 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
 
         squeak = self.handler.handle_get_squeak(squeak_hash)
         if squeak == None:
-            context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
+            context.set_code(grpc.StatusCode.NOT_FOUND)
+            context.set_details('Squeak not found.')
             return squeak_server_pb2.GetSqueakReply(squeak=None,)
 
         return squeak_server_pb2.GetSqueakReply(
