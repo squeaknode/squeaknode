@@ -18,14 +18,26 @@ class SqueakSyncStatus:
     def add_download(self, peer, peer_download):
         self.downloads[peer.peer_id] = peer_download
 
+    def add_upload(self, peer, peer_upload):
+        self.uploads[peer.peer_id] = peer_upload
+
     def is_downloading(self, peer):
         return peer.peer_id in self.downloads
+
+    def is_uploading(self, peer):
+        return peer.peer_id in self.uploads
 
     def remove_download(self, peer):
         del self.downloads[peer.peer_id]
 
+    def remove_upload(self, peer):
+        del self.uploads[peer.peer_id]
+
     def get_current_downloads(self):
-        self.downloads.keys
+        return self.downloads.values()
+
+    def get_current_uploads(self):
+        return self.uploads.values()
 
 
 class SqueakSyncController:
@@ -73,7 +85,7 @@ class SqueakSyncController:
 
     class DownloadingContextManager():
         def __init__(self, peer, peer_download, squeak_sync_status):
-            logger.info('init method called')
+            logger.info('download init method called')
             self.peer = peer
             self.peer_download = peer_download
             self.squeak_sync_status = squeak_sync_status
@@ -82,7 +94,28 @@ class SqueakSyncController:
                 raise Exception("Peer is already downloading: {}".format(self.peer))
 
         def __enter__(self):
-            logger.info('enter method called')
+            logger.info('download enter method called')
+            self.squeak_sync_status.add_download(self.peer, self.peer_download)
+            logger.info('current downloads: {}'.format(self.squeak_sync_status.get_current_downloads()))
+            logger.info('is downloading: {}'.format(self.squeak_sync_status.is_downloading(self.peer)))
+            return self
+
+        def __exit__(self, exc_type, exc_value, exc_traceback):
+            logger.info('exit method called')
+            self.squeak_sync_status.remove_download(self.peer)
+
+    class UploadingContextManager():
+        def __init__(self, peer, peer_upload, squeak_sync_status):
+            logger.info('upload init method called')
+            self.peer = peer
+            self.peer_download = peer_download
+            self.squeak_sync_status = squeak_sync_status
+
+            if self.squeak_sync_status.is_downloading(self.peer):
+                raise Exception("Peer is already downloading: {}".format(self.peer))
+
+        def __enter__(self):
+            logger.info('upload enter method called')
             self.squeak_sync_status.add_download(self.peer, self.peer_download)
             logger.info('current downloads: {}'.format(self.squeak_sync_status.get_current_downloads()))
             return self
