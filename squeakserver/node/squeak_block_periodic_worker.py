@@ -4,7 +4,7 @@ import threading
 logger = logging.getLogger(__name__)
 
 
-VERIFY_UPDATE_INTERVAL_S = 10.0
+VERIFY_UPDATE_INTERVAL_S = 60.0
 
 
 class SqueakBlockPeriodicWorker:

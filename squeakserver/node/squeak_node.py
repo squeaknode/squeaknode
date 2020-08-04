@@ -66,7 +66,7 @@ class SqueakNode:
         )
 
     def start_running(self):
-        # self.squeak_block_periodic_worker.start_running()
+        self.squeak_block_periodic_worker.start_running()
         self.squeak_block_queue_worker.start_running()
         self.squeak_peer_downloader.start_running()
 
