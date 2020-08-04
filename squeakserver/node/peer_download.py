@@ -35,7 +35,7 @@ class PeerDownload:
     def download(self):
         # Get list of followed addresses.
         addresses = self._get_followed_addresses()
-        logger.info("Followed addresses: {}".format(addresses))
+        logger.debug("Followed addresses: {}".format(addresses))
         min_block = self.block_height - self.lookup_block_interval
         max_block = self.block_height
 
@@ -44,21 +44,21 @@ class PeerDownload:
 
         # Get remote hashes
         remote_hashes = self._get_remote_hashes(addresses, min_block, max_block)
-        logger.info("Got remote hashes: {}".format(remote_hashes))
+        logger.debug("Got remote hashes: {}".format(remote_hashes))
 
         if self.stopped():
             return
 
         # Get local hashes
         local_hashes = self._get_local_hashes(addresses, min_block, max_block)
-        logger.info("Got local hashes: {}".format(local_hashes))
+        logger.debug("Got local hashes: {}".format(local_hashes))
 
         if self.stopped():
             return
 
         # Get hashes to download
         hashes_to_download = set(remote_hashes) - set(local_hashes)
-        logger.info("Hashes to download: {}".format(hashes_to_download))
+        logger.debug("Hashes to download: {}".format(hashes_to_download))
 
         # Download squeaks for the hashes
         for hash in hashes_to_download:
