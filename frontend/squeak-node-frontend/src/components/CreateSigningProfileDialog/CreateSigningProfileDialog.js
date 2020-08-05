@@ -46,6 +46,10 @@ export default function CreateSigningProfileDialog({
 
   var [profileName, setProfileName] = useState('');
 
+  const resetFields = () => {
+    setProfileName('');
+  };
+
   const handleChangeProfileName = (event) => {
     setProfileName(event.target.value);
   };
@@ -125,7 +129,7 @@ export default function CreateSigningProfileDialog({
   }
 
   return (
-    <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+    <Dialog open={open} onEnter={resetFields} onClose={handleClose} aria-labelledby="form-dialog-title">
   <DialogTitle id="form-dialog-title">Create Signing Profile</DialogTitle>
   <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
   <DialogContent>
