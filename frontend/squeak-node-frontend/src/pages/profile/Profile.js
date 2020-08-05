@@ -8,6 +8,7 @@ import {
   FormControlLabel,
   FormHelperText,
   Switch,
+  Button,
 } from "@material-ui/core";
 
 // styles
@@ -32,7 +33,7 @@ export default function ProfilePage() {
   var classes = useStyles();
   const { id } = useParams();
   const [squeakProfile, setSqueakProfile] = useState(null);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(true);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
 
   const getSqueakProfile = (id) => {
@@ -41,6 +42,11 @@ export default function ProfilePage() {
         getSqueakProfileRequest.setProfileId(id);
         console.log(getSqueakProfileRequest);
         client.getSqueakProfile(getSqueakProfileRequest, {}, (err, response) => {
+          if (err) {
+            console.log(err.message);
+            return;
+          }
+
           console.log(response);
           setSqueakProfile(response.getSqueakProfile())
         });
@@ -125,6 +131,7 @@ export default function ProfilePage() {
           Profile name: {squeakProfile.getProfileName()}
         </p>
         {ProfileSettingsForm()}
+        {DeleteProfileButton()}
       </>
     )
   }
@@ -148,6 +155,23 @@ export default function ProfilePage() {
           />
         </FormGroup>
       </FormControl>
+    )
+  }
+
+  function DeleteProfileButton() {
+    return (
+      <>
+      <Grid item xs={12}>
+        <div className={classes.root}>
+          <Button
+            variant="contained"
+            onClick={() => {
+              handleClickOpenDeleteDialog();
+            }}>Delete Profile
+          </Button>
+        </div>
+      </Grid>
+      </>
     )
   }
 
