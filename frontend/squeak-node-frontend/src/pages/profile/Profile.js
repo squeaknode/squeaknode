@@ -8,6 +8,7 @@ import {
   FormControlLabel,
   FormHelperText,
   Switch,
+  Button,
 } from "@material-ui/core";
 
 // styles
@@ -16,6 +17,7 @@ import useStyles from "./styles";
 // components
 import PageTitle from "../../components/PageTitle";
 import Widget from "../../components/Widget";
+import DeleteProfileDialog from "../../components/DeleteProfileDialog";
 
 import {
   GetSqueakProfileRequest,
@@ -31,6 +33,8 @@ export default function ProfilePage() {
   var classes = useStyles();
   const { id } = useParams();
   const [squeakProfile, setSqueakProfile] = useState(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
 
   const getSqueakProfile = (id) => {
         console.log("called getSqueakProfile with profileId: " + id);
@@ -38,6 +42,11 @@ export default function ProfilePage() {
         getSqueakProfileRequest.setProfileId(id);
         console.log(getSqueakProfileRequest);
         client.getSqueakProfile(getSqueakProfileRequest, {}, (err, response) => {
+          if (err) {
+            console.log(err.message);
+            return;
+          }
+
           console.log(response);
           setSqueakProfile(response.getSqueakProfile())
         });
@@ -81,6 +90,14 @@ export default function ProfilePage() {
     getSqueakProfile(id)
   },[id]);
 
+  const handleClickOpenDeleteDialog = () => {
+    setDeleteDialogOpen(true);
+  };
+
+  const handleCloseDeleteDialog = () => {
+     setDeleteDialogOpen(false);
+  };
+
   const handleSettingsFollowingChange = (event) => {
     console.log("Following changed for profile id: " + id);
     console.log("Following changed to: " + event.target.checked);
@@ -114,6 +131,7 @@ export default function ProfilePage() {
           Profile name: {squeakProfile.getProfileName()}
         </p>
         {ProfileSettingsForm()}
+        {DeleteProfileButton()}
       </>
     )
   }
@@ -140,6 +158,35 @@ export default function ProfilePage() {
     )
   }
 
+  function DeleteProfileButton() {
+    return (
+      <>
+      <Grid item xs={12}>
+        <div className={classes.root}>
+          <Button
+            variant="contained"
+            onClick={() => {
+              handleClickOpenDeleteDialog();
+            }}>Delete Profile
+          </Button>
+        </div>
+      </Grid>
+      </>
+    )
+  }
+
+  function DeleteProfileDialogContent() {
+    return (
+      <>
+        <DeleteProfileDialog
+          open={deleteDialogOpen}
+          handleClose={handleCloseDeleteDialog}
+          profile={squeakProfile}
+          ></DeleteProfileDialog>
+      </>
+    )
+  }
+
   return (
     <>
       <PageTitle title={'Squeak Profile: ' + (squeakProfile ? squeakProfile.getProfileName() : null)} />
@@ -149,6 +196,7 @@ export default function ProfilePage() {
         : NoProfileContent()
       }
       </div>
+      {DeleteProfileDialogContent()}
     </>
   );
 }
