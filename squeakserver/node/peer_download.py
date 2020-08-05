@@ -82,6 +82,7 @@ class PeerDownload:
         self.squeak_store.save_downloaded_squeak(squeak)
 
     def _download_squeak(self, squeak_hash):
+        logger.info("Downloading squeak: {}".format(squeak_hash.hex()))
         squeak = self.peer_client.get_squeak(squeak_hash)
         self._save_squeak(squeak)
 

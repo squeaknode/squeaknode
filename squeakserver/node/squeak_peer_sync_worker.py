@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 SUBSCRIBE_UPDATE_INTERVAL_S = 10.0
 
 
-class SqueakPeerDownloader:
+class SqueakPeerSyncWorker:
     def __init__(self,
                  postgres_db,
                  squeak_sync_controller,
