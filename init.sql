@@ -42,3 +42,20 @@ CREATE TABLE IF NOT EXISTS peer (
   uploading BOOLEAN NOT NULL,
   downloading BOOLEAN NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS offer (
+  offer_id SERIAL PRIMARY KEY,
+  created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  squeak_hash CHAR(64) NOT NULL,
+  key_cipher bytea NOT NULL,
+  iv bytea NOT NULL,
+  preimage_hash CHAR(64) NOT NULL,
+  amount INTEGER NOT NULL,
+  payment_request TEXT NOT NULL,
+  node_pubkey VARCHAR(66) NOT NULL,
+  node_host VARCHAR(256) NOT NULL,
+  node_port INTEGER NOT NULL,
+  peer_id INTEGER NOT NULL,
+  has_valid_preimage BOOLEAN NOT NULL,
+  preimage CHAR(64),
+);
