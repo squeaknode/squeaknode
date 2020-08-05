@@ -48,6 +48,12 @@ export default function CreatePeerDialog({
   var [host, setHost] = useState('');
   var [port, setPort] = useState('');
 
+  const resetFields = () => {
+    setpeerName('');
+    setHost('');
+    setPort('');
+  };
+
   const handleChangePeerName = (event) => {
     setpeerName(event.target.value);
   };
@@ -168,7 +174,7 @@ export default function CreatePeerDialog({
   }
 
   return (
-    <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+    <Dialog open={open} onEnter={resetFields} onClose={handleClose} aria-labelledby="form-dialog-title">
   <DialogTitle id="form-dialog-title">Create Peer</DialogTitle>
   <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
   <DialogContent>
