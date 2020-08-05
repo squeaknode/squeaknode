@@ -28,10 +28,6 @@ export default function SqueakThreadItem({
 }) {
   var classes = useStyles();
 
-  // local
-  // var [moreButtonRef, setMoreButtonRef] = useState(null);
-  // var [isMoreMenuOpen, setMoreMenuOpen] = useState(false);
-
   const history = useHistory();
 
   const onAddressClick = (event) => {
@@ -80,11 +76,25 @@ export default function SqueakThreadItem({
     )
   }
 
+  function SqueakLockedBackgroundColor() {
+    return {backgroundColor: 'lightgray'};
+  }
+
+  function SqueakUnlockedBackgroundColor() {
+    return {backgroundColor: 'white'};
+  }
+
+  function SqueakBackgroundColor() {
+    return squeak.getIsUnlocked()
+            ? SqueakUnlockedBackgroundColor()
+            : SqueakLockedBackgroundColor()
+  }
+
   return (
     <Box
       p={1}
       m={0}
-      bgcolor="background.paper"
+      style={SqueakBackgroundColor()}
       onClick={onSqueakClick}
       >
           <Grid
@@ -121,7 +131,7 @@ export default function SqueakThreadItem({
             alignItems="flex-start"
           >
             <Grid item>
-                <Box color="secondary.main">
+                <Box color="secondary.main" fontWeight="fontWeightBold">
                   {new Date(squeak.getBlockTime()*1000).toString()} (Block # {squeak.getBlockHeight()})
                 </Box>
             </Grid>
