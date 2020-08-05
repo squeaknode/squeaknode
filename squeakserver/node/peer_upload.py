@@ -83,6 +83,7 @@ class PeerUpload:
         return squeak_entry.squeak
 
     def _upload_squeak(self, squeak_hash):
+        logger.info("Uploading squeak: {}".format(squeak_hash.hex()))
         squeak = self._get_local_squeak(squeak_hash)
         self.peer_client.post_squeak(squeak)
 

@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 # we need to use that cipher suite otherwise there will be a handhsake
 # error when we communicate with the lnd rpc server.
 os.environ["GRPC_SSL_CIPHER_SUITES"] = "HIGH+ECDSA"
-os.environ["GRPC_VERBOSITY"] = "DEBUG"
+# os.environ["GRPC_VERBOSITY"] = "DEBUG"
 
 
 class LNDLightningClient:
