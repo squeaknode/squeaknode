@@ -13,6 +13,8 @@ import { MoreVert as MoreIcon } from "@material-ui/icons";
 import {useHistory} from "react-router-dom";
 import classnames from "classnames";
 
+import LockIcon from '@material-ui/icons/Lock';
+
 // styles
 import useStyles from "./styles";
 
@@ -25,10 +27,6 @@ export default function SqueakThreadItem({
   ...props
 }) {
   var classes = useStyles();
-
-  // local
-  // var [moreButtonRef, setMoreButtonRef] = useState(null);
-  // var [isMoreMenuOpen, setMoreMenuOpen] = useState(false);
 
   const history = useHistory();
 
@@ -49,11 +47,54 @@ export default function SqueakThreadItem({
     }
   }
 
+  function SqueakUnlockedContent() {
+    return (
+      <Typography
+        size="md"
+        style={{whiteSpace: 'pre-line', overflow: "hidden", textOverflow: "ellipsis", height: '6rem'}}
+        >{squeak.getContentStr()}
+      </Typography>
+    )
+  }
+
+  function SqueakLockedContent() {
+    return (
+      <>
+        <LockIcon />
+      </>
+    )
+  }
+
+  function SqueakContent() {
+    return (
+      <>
+      {squeak.getIsUnlocked()
+          ? SqueakUnlockedContent()
+          : SqueakLockedContent()
+        }
+      </>
+    )
+  }
+
+  function SqueakLockedBackgroundColor() {
+    return {backgroundColor: 'lightgray'};
+  }
+
+  function SqueakUnlockedBackgroundColor() {
+    return {backgroundColor: 'white'};
+  }
+
+  function SqueakBackgroundColor() {
+    return squeak.getIsUnlocked()
+            ? SqueakUnlockedBackgroundColor()
+            : SqueakLockedBackgroundColor()
+  }
+
   return (
     <Box
       p={1}
       m={0}
-      bgcolor="background.paper"
+      style={SqueakBackgroundColor()}
       onClick={onSqueakClick}
       >
           <Grid
@@ -80,14 +121,7 @@ export default function SqueakThreadItem({
             alignItems="flex-start"
           >
           <Grid item>
-            <Typography
-              size="md"
-              style={{whiteSpace: 'pre-line', overflow: "hidden", textOverflow: "ellipsis", height: '6rem'}}
-              >{squeak.getIsUnlocked()
-                  ? squeak.getContentStr()
-                  : "Content is locked."
-                }
-            </Typography>
+            {SqueakContent()}
           </Grid>
           </Grid>
           <Grid
@@ -97,7 +131,7 @@ export default function SqueakThreadItem({
             alignItems="flex-start"
           >
             <Grid item>
-                <Box color="secondary.main">
+                <Box color="secondary.main" fontWeight="fontWeightBold">
                   {new Date(squeak.getBlockTime()*1000).toString()} (Block # {squeak.getBlockHeight()})
                 </Box>
             </Grid>

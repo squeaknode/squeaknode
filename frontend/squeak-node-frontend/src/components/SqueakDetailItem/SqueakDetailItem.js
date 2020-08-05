@@ -14,6 +14,8 @@ import { MoreVert as MoreIcon } from "@material-ui/icons";
 import {useHistory} from "react-router-dom";
 import classnames from "classnames";
 
+import LockIcon from '@material-ui/icons/Lock';
+
 import ReplyIcon from '@material-ui/icons/Reply';
 import RepeatIcon from '@material-ui/icons/Repeat';
 import FavoriteIcon from '@material-ui/icons/Favorite';
@@ -65,11 +67,54 @@ export default function SqueakDetailItem({
     }
   }
 
+  function SqueakUnlockedContent() {
+    return (
+      <Typography
+        variant="h4"
+        style={{whiteSpace: 'pre-line'}}
+        >{squeak.getContentStr()}
+      </Typography>
+    )
+  }
+
+  function SqueakLockedContent() {
+    return (
+      <>
+        <LockIcon />
+      </>
+    )
+  }
+
+  function SqueakContent() {
+    return (
+      <>
+      {squeak.getIsUnlocked()
+          ? SqueakUnlockedContent()
+          : SqueakLockedContent()
+        }
+      </>
+    )
+  }
+
+  function SqueakLockedBackgroundColor() {
+    return {backgroundColor: 'lightgray'};
+  }
+
+  function SqueakUnlockedBackgroundColor() {
+    return {backgroundColor: 'white'};
+  }
+
+  function SqueakBackgroundColor() {
+    return squeak.getIsUnlocked()
+            ? SqueakUnlockedBackgroundColor()
+            : SqueakLockedBackgroundColor()
+  }
+
   return (
     <Box
       p={1}
       m={0}
-      bgcolor="background.paper"
+      style={SqueakBackgroundColor()}
       >
           <Grid
             container
@@ -95,14 +140,7 @@ export default function SqueakDetailItem({
             alignItems="flex-start"
           >
           <Grid item>
-            <Typography
-              variant="h4"
-              style={{whiteSpace: 'pre-line'}}
-              >{squeak.getIsUnlocked()
-                  ? squeak.getContentStr()
-                  : "Content is locked."
-                }
-            </Typography>
+            {SqueakContent()}
           </Grid>
           </Grid>
           <Grid
