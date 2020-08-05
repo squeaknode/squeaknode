@@ -55,7 +55,18 @@ CREATE TABLE IF NOT EXISTS offer (
   node_pubkey VARCHAR(66) NOT NULL,
   node_host VARCHAR(256) NOT NULL,
   node_port INTEGER NOT NULL,
+  peer_id INTEGER NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS sent_payment (
+  sent_payment_id SERIAL PRIMARY KEY,
+  created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  offer_id INTEGER NOT NULL,
   peer_id INTEGER NOT NULL,
-  has_valid_preimage BOOLEAN NOT NULL,
-  preimage CHAR(64),
+  squeak_hash CHAR(64) NOT NULL,
+  preimage_hash CHAR(64) NOT NULL,
+  preimage CHAR(64) NOT NULL,
+  amount INTEGER NOT NULL,
+  node_pubkey VARCHAR(66) NOT NULL,
+  preimage_is_valid BOOLEAN NOT NULL
 );
