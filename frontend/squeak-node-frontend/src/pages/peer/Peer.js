@@ -16,6 +16,7 @@ import useStyles from "./styles";
 // components
 import PageTitle from "../../components/PageTitle";
 import Widget from "../../components/Widget";
+import DeletePeerDialog from "../../components/DeletePeerDialog";
 
 import {
   GetPeerRequest,
@@ -30,6 +31,7 @@ export default function PeerPage() {
   var classes = useStyles();
   const { id } = useParams();
   const [peer, setPeer] = useState(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(true);
 
   const getPeer = (id) => {
         console.log("called getPeer with peerId: " + id);
@@ -37,6 +39,10 @@ export default function PeerPage() {
         getPeerRequest.setPeerId(id);
         console.log(getPeerRequest);
         client.getPeer(getPeerRequest, {}, (err, response) => {
+          if (err) {
+            console.log(err.message);
+            return;
+          }
           console.log(response);
           setPeer(response.getSqueakPeer())
         });
@@ -67,6 +73,15 @@ export default function PeerPage() {
   useEffect(()=>{
     getPeer(id)
   },[id]);
+
+  const handleClickOpenDeleteDialog = () => {
+    setDeleteDialogOpen(true);
+    console.log("deleteDialogOpen: " + deleteDialogOpen);
+  };
+
+  const handleCloseDeleteDialog = () => {
+     setDeleteDialogOpen(false);
+  };
 
   const handleSettingsDownloadingChange = (event) => {
     console.log("Downloading changed for peer id: " + id);
@@ -117,6 +132,18 @@ export default function PeerPage() {
     )
   }
 
+  function DeletePeerDialogContent() {
+    return (
+      <>
+        <DeletePeerDialog
+          open={deleteDialogOpen}
+          handleClose={handleCloseDeleteDialog}
+          peer={peer}
+          ></DeletePeerDialog>
+      </>
+    )
+  }
+
   return (
     <>
       <PageTitle title={'Peer: ' + (peer ? peer.getPeerName() : null)} />
@@ -126,6 +153,7 @@ export default function PeerPage() {
         : NoPeerContent()
       }
       </div>
+      {DeletePeerDialogContent()}
     </>
   );
 }
