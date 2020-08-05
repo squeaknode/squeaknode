@@ -51,6 +51,11 @@ export default function MakeSqueakDialog({
   // var [moreButtonRef, setMoreButtonRef] = useState(null);
   // var [isMoreMenuOpen, setMoreMenuOpen] = useState(false);
 
+  const resetFields = () => {
+    setProfileId(-1);
+    setContent('');
+  };
+
   const handleChange = (event) => {
     setProfileId(event.target.value);
   };
@@ -192,7 +197,7 @@ export default function MakeSqueakDialog({
   }
 
   return (
-    <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+    <Dialog open={open} onEnter={resetFields} onClose={handleClose} aria-labelledby="form-dialog-title">
   <DialogTitle id="form-dialog-title">Make Squeak</DialogTitle>
   <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
   <DialogContent>
