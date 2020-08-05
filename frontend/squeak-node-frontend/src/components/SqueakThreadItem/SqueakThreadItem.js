@@ -66,7 +66,9 @@ export default function SqueakThreadItem({
                 <Box fontWeight="fontWeightBold">
                   <Link href="#"
                     onClick={onAddressClick}>
-                    {squeak.getAuthorName()}
+                    {squeak.getIsAuthorKnown()
+                      ? squeak.getAuthorName()
+                      : squeak.getAuthorAddress()}
                   </Link>
                 </Box>
             </Grid>

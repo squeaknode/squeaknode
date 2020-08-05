@@ -132,7 +132,7 @@ class PostgresDb:
         """ Get a squeak. """
         sql = """
         SELECT * FROM squeak
-        JOIN profile
+        LEFT JOIN profile
         ON squeak.author_address=profile.address
         WHERE squeak.block_header IS NOT NULL
         AND squeak.author_address=%s
@@ -506,6 +506,8 @@ class PostgresDb:
 
     def _parse_squeak_profile(self, row):
         if row is None:
+            return None
+        if row["profile_id"] is None:
             return None
         private_key_column = row["private_key"]
         private_key = bytes(private_key_column) if private_key_column else None
