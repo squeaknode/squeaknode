@@ -14,6 +14,7 @@ import useStyles from "./styles";
 import PageTitle from "../../components/PageTitle";
 import Widget from "../../components/Widget";
 import SqueakThreadItem from "../../components/SqueakThreadItem";
+import CreateContactProfileDialog from "../../components/CreateContactProfileDialog";
 
 import {
    GetAddressSqueakDisplaysRequest,
@@ -29,6 +30,7 @@ export default function SqueakAddressPage() {
   const { address } = useParams();
   const [squeakProfile, setSqueakProfile] = useState(null);
   const [squeaks, setSqueaks] = useState([]);
+  const [createContactProfileDialogOpen, setCreateContactProfileDialogOpen] = useState(false);
 
   const getSqueakProfile = (address) => {
         var getSqueakProfileByAddressRequest = new GetSqueakProfileByAddressRequest()
@@ -60,6 +62,15 @@ export default function SqueakAddressPage() {
     history.push("/app/squeak/" + hash);
   };
 
+
+  const handleClickOpenCreateContactProfileDialog = () => {
+    setCreateContactProfileDialogOpen(true);
+  };
+
+  const handleCloseCreateContactProfileDialog = () => {
+    setCreateContactProfileDialogOpen(false);
+  };
+
   useEffect(()=>{
     getSqueakProfile(address)
   },[address]);
@@ -70,7 +81,10 @@ export default function SqueakAddressPage() {
   function NoProfileContent() {
     return (
       <div>
-        No profile loaded
+        No profile for address.
+        <Button variant="contained" onClick={() => {
+            handleClickOpenCreateContactProfileDialog();
+          }}>Create Profile</Button>
       </div>
     )
   }
@@ -115,6 +129,18 @@ export default function SqueakAddressPage() {
     )
   }
 
+  function CreateContactProfileDialogContent() {
+    return (
+      <>
+        <CreateContactProfileDialog
+          open={createContactProfileDialogOpen}
+          handleClose={handleCloseCreateContactProfileDialog}
+          initialAddress={address}
+          ></CreateContactProfileDialog>
+      </>
+    )
+  }
+
   return (
     <>
       <PageTitle title={'Squeak Address: ' + address} />
@@ -126,6 +152,7 @@ export default function SqueakAddressPage() {
         ? SqueaksContent()
         : NoSqueaksContent()
       }
+      {CreateContactProfileDialogContent()}
     </>
   );
 }
