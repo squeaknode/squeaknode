@@ -39,13 +39,14 @@ var client = new SqueakAdminClient('http://' + window.location.hostname + ':8080
 export default function CreateContactProfileDialog({
   open,
   handleClose,
+  initialAddress='',
   ...props
 }) {
   var classes = useStyles();
   const history = useHistory();
 
   var [profileName, setProfileName] = useState('');
-  var [address, setAddress] = useState('');
+  var [address, setAddress] = useState(initialAddress);
 
   const handleChangeProfileName = (event) => {
     setProfileName(event.target.value);
