@@ -81,6 +81,14 @@ export default function SqueakDetailItem({
     return (
       <>
         <LockIcon />
+        <Box
+          border={1}
+          p={2}
+          fontSize="h6.fontSize"
+          style={{backgroundColor: 'white'}}
+        >
+          Buy to unlock
+        </Box>
       </>
     )
   }
