@@ -13,6 +13,8 @@ import { MoreVert as MoreIcon } from "@material-ui/icons";
 import {useHistory} from "react-router-dom";
 import classnames from "classnames";
 
+import LockIcon from '@material-ui/icons/Lock';
+
 // styles
 import useStyles from "./styles";
 
@@ -49,6 +51,35 @@ export default function SqueakThreadItem({
     }
   }
 
+  function SqueakUnlockedContent() {
+    return (
+      <Typography
+        size="md"
+        style={{whiteSpace: 'pre-line', overflow: "hidden", textOverflow: "ellipsis", height: '6rem'}}
+        >{squeak.getContentStr()}
+      </Typography>
+    )
+  }
+
+  function SqueakLockedContent() {
+    return (
+      <>
+        <LockIcon />
+      </>
+    )
+  }
+
+  function SqueakContent() {
+    return (
+      <>
+      {squeak.getIsUnlocked()
+          ? SqueakUnlockedContent()
+          : SqueakLockedContent()
+        }
+      </>
+    )
+  }
+
   return (
     <Box
       p={1}
@@ -80,14 +111,7 @@ export default function SqueakThreadItem({
             alignItems="flex-start"
           >
           <Grid item>
-            <Typography
-              size="md"
-              style={{whiteSpace: 'pre-line', overflow: "hidden", textOverflow: "ellipsis", height: '6rem'}}
-              >{squeak.getIsUnlocked()
-                  ? squeak.getContentStr()
-                  : "Content is locked."
-                }
-            </Typography>
+            {SqueakContent()}
           </Grid>
           </Grid>
           <Grid
