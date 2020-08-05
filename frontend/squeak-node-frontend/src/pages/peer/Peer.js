@@ -8,6 +8,7 @@ import {
   FormControlLabel,
   FormHelperText,
   Switch,
+  Button,
 } from "@material-ui/core";
 
 // styles
@@ -31,7 +32,7 @@ export default function PeerPage() {
   var classes = useStyles();
   const { id } = useParams();
   const [peer, setPeer] = useState(null);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(true);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   const getPeer = (id) => {
         console.log("called getPeer with peerId: " + id);
@@ -110,6 +111,7 @@ export default function PeerPage() {
           Peer name: {peer.getPeerName()}
         </p>
         {PeerSettingsForm()}
+        {DeletePeerButton()}
       </>
     )
   }
@@ -129,6 +131,23 @@ export default function PeerPage() {
           />
         </FormGroup>
       </FormControl>
+    )
+  }
+
+  function DeletePeerButton() {
+    return (
+      <>
+      <Grid item xs={12}>
+        <div className={classes.root}>
+          <Button
+            variant="contained"
+            onClick={() => {
+              handleClickOpenDeleteDialog();
+            }}>Delete Peer
+          </Button>
+        </div>
+      </Grid>
+      </>
     )
   }
 
