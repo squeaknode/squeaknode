@@ -18,9 +18,6 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         self.port = port
         self.handler = handler
 
-    def SayHello(self, request, context):
-        return squeak_admin_pb2.HelloReply(message="Hello, %s!" % request.name)
-
     def LndGetInfo(self, request, context):
         return self.handler.handle_lnd_get_info()
 

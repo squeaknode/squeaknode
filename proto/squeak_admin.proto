@@ -12,8 +12,6 @@ import "proto/lnd.proto";
 // Interface exported by the server.
 service SqueakAdmin {
 
-  rpc SayHello (HelloRequest) returns (HelloReply);
-
   /** sqkadmin: `lndgetinfo`
   */
   rpc LndGetInfo (lnrpc.GetInfoRequest) returns (lnrpc.GetInfoResponse) {}
@@ -110,14 +108,6 @@ service SqueakAdmin {
   */
   rpc DeletePeer (DeletePeerRequest) returns (DeletePeerReply) {}
 
-}
-
-message HelloRequest {
-  string name = 1;
-}
-
-message HelloReply {
-  string message = 1;
 }
 
 message CreateSigningProfileRequest {

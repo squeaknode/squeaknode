@@ -34,7 +34,10 @@ import { Typography } from "../../components/Wrappers";
 import MakeSqueakDialog from "../../components/MakeSqueakDialog";
 
 import { GetInfoRequest, WalletBalanceRequest } from "../../proto/lnd_pb"
-import {HelloRequest, GetFollowedSqueakDisplaysRequest, GetSigningProfilesRequest} from "../../proto/squeak_admin_pb"
+import {
+  GetFollowedSqueakDisplaysRequest,
+  GetSigningProfilesRequest,
+} from "../../proto/squeak_admin_pb"
 import { SqueakAdminClient } from "../../proto/squeak_admin_grpc_web_pb"
 
 var client = new SqueakAdminClient('http://' + window.location.hostname + ':8080')
