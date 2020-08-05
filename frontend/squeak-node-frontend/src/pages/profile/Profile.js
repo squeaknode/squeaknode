@@ -16,6 +16,7 @@ import useStyles from "./styles";
 // components
 import PageTitle from "../../components/PageTitle";
 import Widget from "../../components/Widget";
+import DeleteProfileDialog from "../../components/DeleteProfileDialog";
 
 import {
   GetSqueakProfileRequest,
@@ -31,6 +32,8 @@ export default function ProfilePage() {
   var classes = useStyles();
   const { id } = useParams();
   const [squeakProfile, setSqueakProfile] = useState(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(true);
+
 
   const getSqueakProfile = (id) => {
         console.log("called getSqueakProfile with profileId: " + id);
@@ -80,6 +83,14 @@ export default function ProfilePage() {
   useEffect(()=>{
     getSqueakProfile(id)
   },[id]);
+
+  const handleClickOpenDeleteDialog = () => {
+    setDeleteDialogOpen(true);
+  };
+
+  const handleCloseDeleteDialog = () => {
+     setDeleteDialogOpen(false);
+  };
 
   const handleSettingsFollowingChange = (event) => {
     console.log("Following changed for profile id: " + id);
@@ -140,6 +151,18 @@ export default function ProfilePage() {
     )
   }
 
+  function DeleteProfileDialogContent() {
+    return (
+      <>
+        <DeleteProfileDialog
+          open={deleteDialogOpen}
+          handleClose={handleCloseDeleteDialog}
+          profile={squeakProfile}
+          ></DeleteProfileDialog>
+      </>
+    )
+  }
+
   return (
     <>
       <PageTitle title={'Squeak Profile: ' + (squeakProfile ? squeakProfile.getProfileName() : null)} />
@@ -149,6 +172,7 @@ export default function ProfilePage() {
         : NoProfileContent()
       }
       </div>
+      {DeleteProfileDialogContent()}
     </>
   );
 }
