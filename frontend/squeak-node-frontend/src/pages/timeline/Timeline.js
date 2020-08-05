@@ -101,6 +101,7 @@ export default function TimelinePage() {
         {squeaks.map(squeak =>
           <Box
             p={1}
+            key={squeak.getSqueakHash()}
             >
           <SqueakThreadItem
             key={squeak.getSqueakHash()}

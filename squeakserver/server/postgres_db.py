@@ -132,7 +132,7 @@ class PostgresDb:
         """ Get a squeak. """
         sql = """
         SELECT * FROM squeak
-        JOIN profile
+        LEFT JOIN profile
         ON squeak.author_address=profile.address
         WHERE squeak.block_header IS NOT NULL
         AND squeak.author_address=%s

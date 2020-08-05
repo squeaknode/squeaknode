@@ -101,6 +101,7 @@ export default function SqueakAddressPage() {
           {squeaks.map(squeak =>
             <Box
               p={1}
+              key={squeak.getSqueakHash()}
               >
             <SqueakThreadItem
               key={squeak.getSqueakHash()}
