@@ -3,6 +3,7 @@ import threading
 
 from squeak.core.encryption import generate_data_key
 
+from squeakserver.core.offer import Offer
 from squeakserver.server.util import get_hash
 from squeakserver.network.peer_client import PeerClient
 
@@ -49,6 +50,8 @@ class PeerGetOffer:
 
         # Check the proof
         proof = offer.proof
+        logger.info("Proof: {}".format(proof.hex()))
+        logger.info("Expected proof: {}".format(challenge_proof.hex()))
         if (proof != challenge_proof):
             raise Exception("Invalid offer proof: {}, expected: {}".format(
                 proof.hex(),
@@ -76,7 +79,27 @@ class PeerGetOffer:
 
     def _download_buy_offer(self, challenge):
         logger.info("Downloading buy offer for squeak hash: {}".format(self.squeak_hash.hex()))
-        return self.peer_client.buy_squeak(self.squeak_hash, challenge)
+        offer_msg = self.peer_client.buy_squeak(self.squeak_hash, challenge)
+        offer = self._offer_from_msg(offer_msg)
+        return offer
 
     def _save_offer(self, offer):
         logger.info("Saving offer: {}".format(offer))
+        self.postgres_db.insert_offer(offer)
+
+    def _offer_from_msg(self, offer_msg):
+        if not offer_msg:
+            return None
+        return Offer(
+            squeak_hash=offer_msg.squeak_hash,
+            key_cipher=offer_msg.key_cipher,
+            iv=offer_msg.iv,
+            amount=offer_msg.amount,
+            preimage_hash=offer_msg.preimage_hash,
+            payment_request=offer_msg.payment_request,
+            node_pubkey=offer_msg.pubkey,
+            node_host=offer_msg.host,
+            node_port=offer_msg.port,
+            proof=offer_msg.proof,
+            peer_id=self.peer.peer_id,
+        )

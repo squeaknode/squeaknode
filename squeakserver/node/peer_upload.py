@@ -61,6 +61,7 @@ class PeerUpload:
         logger.debug("Hashes to upload: {}".format(hashes_to_upload))
 
         # Upload squeaks for the hashes
+        # TODO: catch exception downloading individual squeak
         for hash in hashes_to_upload:
             if self.stopped():
                 return

@@ -70,7 +70,8 @@ class PeerClient:
                     challenge=challenge,
                 )
             )
-            return buy_response.offer
+            offer_msg = buy_response.offer
+            return offer_msg
 
     def _get_hash(self, squeak):
         """ Needs to be reversed because hash is stored as little-endian """
