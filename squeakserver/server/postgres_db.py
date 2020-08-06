@@ -474,6 +474,30 @@ class PostgresDb:
         with self.get_cursor() as curs:
             curs.execute(sql, (peer_id,))
 
+    def insert_offer(self, offer):
+        """ Insert a new offer. """
+        sql = """
+        INSERT INTO offer(profile_name, private_key, address, sharing, following, whitelisted)
+        VALUES(%s, %s, %s, %s, %s, %s)
+        RETURNING profile_id;
+        """
+        with self.get_cursor() as curs:
+            # execute the INSERT statement
+            curs.execute(
+                sql,
+                (
+                    squeak_profile.profile_name,
+                    squeak_profile.private_key,
+                    squeak_profile.address,
+                    squeak_profile.sharing,
+                    squeak_profile.following,
+                    squeak_profile.whitelisted,
+                ),
+            )
+            # get the new profile id back
+            row = curs.fetchone()
+            return row["profile_id"]
+
     def _parse_squeak_entry(self, row):
         if row is None:
             return None
