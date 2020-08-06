@@ -112,6 +112,10 @@ service SqueakAdmin {
   */
   rpc LoadBuyOffers (LoadBuyOffersRequest) returns (LoadBuyOffersReply) {}
 
+  /** sqkadmin: `getbuyoffers`
+  */
+  rpc GetBuyOffers (GetBuyOffersRequest) returns (GetBuyOffersReply) {}
+
 }
 
 message CreateSigningProfileRequest {
@@ -421,4 +425,19 @@ message LoadBuyOffersRequest {
 }
 
 message LoadBuyOffersReply {
+}
+
+message GetBuyOffersRequest {
+    /// Hash of the created squeak.
+    string squeak_hash = 1;
+}
+
+message GetBuyOffersReply {
+    /// The offers
+    repeated OfferDisplayEntry offers = 1;
+}
+
+message OfferDisplayEntry {
+    /// The squeak hash.
+    string squeak_hash = 1;
 }
