@@ -94,6 +94,10 @@ export default function SqueakPage() {
     history.push("/app/squeak/" + hash);
   };
 
+  const goToBuyPage = (hash) => {
+    history.push("/app/buy/" + hash);
+  };
+
   const showDeleteDialog = (hash) => {
     handleClickOpenDeleteDialog()
   };
@@ -139,6 +143,7 @@ export default function SqueakPage() {
             handleAddressClick={() => goToSqueakAddressPage(squeak.getAuthorAddress())}
             handleReplyClick={handleClickOpen}
             handleDeleteClick={showDeleteDialog}
+            handleUnlockClick={() => goToBuyPage(squeak.getSqueakHash())}
             squeak={squeak}>
           </SqueakDetailItem>
         </div>

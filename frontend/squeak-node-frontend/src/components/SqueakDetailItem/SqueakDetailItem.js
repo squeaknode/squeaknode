@@ -32,6 +32,7 @@ export default function SqueakDetailItem({
   handleSqueakClick,
   handleReplyClick,
   handleDeleteClick,
+  handleUnlockClick,
   ...props
 }) {
   var classes = useStyles();
@@ -67,6 +68,14 @@ export default function SqueakDetailItem({
     }
   }
 
+  const onUnlockClick = (event) => {
+    event.preventDefault();
+    console.log("Handling unlock click...");
+    if (handleUnlockClick) {
+      handleUnlockClick();
+    }
+  }
+
   function SqueakUnlockedContent() {
     return (
       <Typography
@@ -86,6 +95,7 @@ export default function SqueakDetailItem({
           p={2}
           fontSize="h6.fontSize"
           style={{backgroundColor: 'white'}}
+          onClick={onUnlockClick}
         >
           Buy to unlock
         </Box>
