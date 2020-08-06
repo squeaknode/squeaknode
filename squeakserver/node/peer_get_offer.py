@@ -49,6 +49,8 @@ class PeerGetOffer:
 
         # Check the proof
         proof = offer.proof
+        logger.info("Proof: {}".format(proof.hex()))
+        logger.info("Expected proof: {}".format(challenge_proof.hex()))
         if (proof != challenge_proof):
             raise Exception("Invalid offer proof: {}, expected: {}".format(
                 proof.hex(),
