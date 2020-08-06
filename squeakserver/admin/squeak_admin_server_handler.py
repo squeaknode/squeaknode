@@ -199,3 +199,7 @@ class SqueakAdminServerHandler(object):
     def handle_delete_squeak_peer(self, peer_id):
         logger.info("Handle delete squeak peer with id: {}".format(peer_id))
         self.squeak_node.delete_peer(peer_id)
+
+    def handle_load_buy_offers(self, squeak_hash_str):
+        logger.info("Handle load buy offers for hash: {}".format(squeak_hash_str))
+        self.squeak_node.load_buy_offers(squeak_hash_str)

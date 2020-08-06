@@ -218,6 +218,16 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         self.handler.handle_delete_squeak_peer(peer_id)
         return squeak_admin_pb2.DeletePeerReply()
 
+    def LoadBuyOffers(self, request, context):
+        squeak_hash_str = request.squeak_hash
+        self.handler.handle_load_buy_offers(squeak_hash_str)
+        return squeak_admin_pb2.LoadBuyOffersReply()
+
+    def GetBuyOffers(self, request, context):
+        squeak_hash_str = request.squeak_hash
+        # TODO: handle request
+        return squeak_admin_pb2.GetBuyOffersReply()
+
     def _squeak_entry_to_message(self, squeak_entry_with_profile):
         if squeak_entry_with_profile is None:
             return None

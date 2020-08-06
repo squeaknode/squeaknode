@@ -35,7 +35,9 @@ class PeerClient:
         with self.get_stub() as stub:
             lookup_response = stub.LookupSqueaks(
                 squeak_server_pb2.LookupSqueaksRequest(
-                    addresses=addresses, min_block=0, max_block=99999999,
+                    addresses=addresses,
+                    min_block=min_block,
+                    max_block=max_block,
                 )
             )
             return lookup_response.hashes
@@ -59,6 +61,16 @@ class PeerClient:
             get_response_squeak = self._squeak_from_msg(get_response.squeak)
             CheckSqueak(get_response_squeak, skipDecryptionCheck=True)
             return get_response_squeak
+
+    def buy_squeak(self, squeak_hash, challenge):
+        with self.get_stub() as stub:
+            buy_response = stub.BuySqueak(
+                squeak_server_pb2.BuySqueakRequest(
+                    hash=squeak_hash,
+                    challenge=challenge,
+                )
+            )
+            return buy_response.offer
 
     def _get_hash(self, squeak):
         """ Needs to be reversed because hash is stored as little-endian """
