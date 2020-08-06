@@ -44,24 +44,30 @@ class PeerUpload:
 
         # Get remote hashes
         remote_hashes = self._get_remote_hashes(addresses, min_block, max_block)
-        logger.debug("Got remote hashes: {}".format(remote_hashes))
+        logger.debug("Got remote hashes: {}".format(len(remote_hashes)))
+        for hash in remote_hashes:
+            logger.debug("remote hash: {}".format(hash.hex()))
 
         if self.stopped():
             return
 
         # Get local hashes
         local_hashes = self._get_local_hashes(addresses, min_block, max_block)
-        logger.debug("Got local hashes: {}".format(local_hashes))
+        logger.debug("Got local hashes: {}".format(len(local_hashes)))
+        for hash in local_hashes:
+            logger.debug("local hash: {}".format(hash.hex()))
 
         if self.stopped():
             return
 
         # Get hashes to upload
         hashes_to_upload = set(local_hashes) - set(remote_hashes)
-        logger.debug("Hashes to upload: {}".format(hashes_to_upload))
+        logger.debug("Hashes to upload: {}".format(len(hashes_to_upload)))
+        for hash in hashes_to_upload:
+            logger.debug("hash to upload: {}".format(hash.hex()))
 
         # Upload squeaks for the hashes
-        # TODO: catch exception downloading individual squeak
+        # TODO: catch exception uploading individual squeak
         for hash in hashes_to_upload:
             if self.stopped():
                 return

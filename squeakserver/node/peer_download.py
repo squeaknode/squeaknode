@@ -44,33 +44,27 @@ class PeerDownload:
 
         # Get remote hashes
         remote_hashes = self._get_remote_hashes(addresses, min_block, max_block)
-        # logger.info("Got remote hashes: {}".format(remote_hashes))
-        # logger.info("Got remote hashes: {}".format([hash.hex() for hash in remote_hashes]))
-        logger.info("Got remote hashes: {}".format(len(remote_hashes)))
+        logger.debug("Got remote hashes: {}".format(len(remote_hashes)))
         for hash in remote_hashes:
-            logger.info("remote hash: {}".format(hash.hex()))
+            logger.debug("remote hash: {}".format(hash.hex()))
 
         if self.stopped():
             return
 
         # Get local hashes
         local_hashes = self._get_local_hashes(addresses, min_block, max_block)
-        # logger.info("Got local hashes: {}".format(local_hashes))
-        # logger.info("Got local hashes: {}".format([hash.hex() for hash in local_hashes]))
-        logger.info("Got local hashes: {}".format(len(local_hashes)))
+        logger.debug("Got local hashes: {}".format(len(local_hashes)))
         for hash in local_hashes:
-            logger.info("local hash: {}".format(hash.hex()))
+            logger.debug("local hash: {}".format(hash.hex()))
 
         if self.stopped():
             return
 
         # Get hashes to download
         hashes_to_download = set(remote_hashes) - set(local_hashes)
-        # logger.info("Hashes to download: {}".format(hashes_to_download))
-        # logger.info("Hashes to download: {}".format([hash.hex() for hash in hashes_to_download]))
-        logger.info("Hashes to download: {}".format(len(hashes_to_download)))
+        logger.debug("Hashes to download: {}".format(len(hashes_to_download)))
         for hash in hashes_to_download:
-            logger.info("hash to download: {}".format(hash.hex()))
+            logger.debug("hash to download: {}".format(hash.hex()))
 
         # Download squeaks for the hashes
         # TODO: catch exception downloading individual squeak
