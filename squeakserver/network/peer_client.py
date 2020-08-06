@@ -35,7 +35,9 @@ class PeerClient:
         with self.get_stub() as stub:
             lookup_response = stub.LookupSqueaks(
                 squeak_server_pb2.LookupSqueaksRequest(
-                    addresses=addresses, min_block=0, max_block=99999999,
+                    addresses=addresses,
+                    min_block=min_block,
+                    max_block=max_block,
                 )
             )
             return lookup_response.hashes
