@@ -9,6 +9,7 @@ import {
   Box,
   Link,
   Divider,
+  Button,
 } from "@material-ui/core";
 import { MoreVert as MoreIcon } from "@material-ui/icons";
 import {useHistory} from "react-router-dom";
@@ -90,15 +91,12 @@ export default function SqueakDetailItem({
     return (
       <>
         <LockIcon />
-        <Box
-          border={1}
-          p={2}
-          fontSize="h6.fontSize"
-          style={{backgroundColor: 'white'}}
+        <Button
+          variant="contained"
           onClick={onUnlockClick}
-        >
-          Buy to unlock
-        </Box>
+          >Buy to unlock
+        </Button>
+
       </>
     )
   }
