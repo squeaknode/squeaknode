@@ -6,7 +6,6 @@ import grpc
 from squeak.core import CSqueak
 from squeak.core import CheckSqueak
 
-from squeakserver.core.offer import Offer
 from squeakserver.server.util import get_hash
 
 from proto import lnd_pb2 as ln
@@ -72,7 +71,7 @@ class PeerClient:
                 )
             )
             offer_msg = buy_response.offer
-            return self._offer_from_msg(offer_msg)
+            return offer_msg
 
     def _get_hash(self, squeak):
         """ Needs to be reversed because hash is stored as little-endian """
@@ -90,19 +89,3 @@ class PeerClient:
         if not squeak_msg.serialized_squeak:
             return None
         return CSqueak.deserialize(squeak_msg.serialized_squeak)
-
-    def _offer_from_msg(self, offer_msg):
-        if not offer_msg:
-            return None
-        return Offer(
-            squeak_hash=offer_msg.squeak_hash,
-            key_cipher=offer_msg.key_cipher,
-            iv=offer_msg.iv,
-            amount=offer_msg.amount,
-            preimage_hash=offer_msg.preimage_hash,
-            payment_request=offer_msg.payment_request,
-            pubkey=offer_msg.pubkey,
-            host=offer_msg.host,
-            port=offer_msg.port,
-            proof=offer_msg.proof,
-        )

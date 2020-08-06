@@ -7,8 +7,9 @@ Offer = namedtuple("Offer", [
     "amount",
     "preimage_hash",
     "payment_request",
-    "pubkey",
-    "host",
-    "port",
+    "node_pubkey",
+    "node_host",
+    "node_port",
     "proof",
+    "peer_id",
 ])

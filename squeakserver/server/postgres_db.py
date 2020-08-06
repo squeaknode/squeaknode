@@ -477,26 +477,30 @@ class PostgresDb:
     def insert_offer(self, offer):
         """ Insert a new offer. """
         sql = """
-        INSERT INTO offer(profile_name, private_key, address, sharing, following, whitelisted)
-        VALUES(%s, %s, %s, %s, %s, %s)
-        RETURNING profile_id;
+        INSERT INTO offer(squeak_hash, key_cipher, iv, amount, preimage_hash, payment_request, node_pubkey, node_host, node_port, peer_id)
+        VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        RETURNING offer_id;
         """
         with self.get_cursor() as curs:
             # execute the INSERT statement
             curs.execute(
                 sql,
                 (
-                    squeak_profile.profile_name,
-                    squeak_profile.private_key,
-                    squeak_profile.address,
-                    squeak_profile.sharing,
-                    squeak_profile.following,
-                    squeak_profile.whitelisted,
+                    offer.squeak_hash.hex(),
+                    offer.key_cipher,
+                    offer.iv,
+                    offer.amount,
+                    offer.preimage_hash.hex(),
+                    offer.payment_request,
+                    offer.node_pubkey,
+                    offer.node_host,
+                    offer.node_port,
+                    offer.peer_id,
                 ),
             )
-            # get the new profile id back
+            # get the new offer id back
             row = curs.fetchone()
-            return row["profile_id"]
+            return row["offer_id"]
 
     def _parse_squeak_entry(self, row):
         if row is None:
