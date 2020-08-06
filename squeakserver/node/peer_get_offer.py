@@ -45,7 +45,7 @@ class PeerGetOffer:
         challenge = self._get_challenge(challenge_proof, encryption_key)
 
         # Download the buy offer
-        offer = self._download_buy_offer()
+        offer = self._download_buy_offer(challenge)
 
         # Check the proof
         proof = offer.proof
@@ -74,9 +74,9 @@ class PeerGetOffer:
     def _get_challenge(self, challenge_proof, encryption_key):
         return encryption_key.encrypt(challenge_proof)
 
-    def _download_buy_offer(self):
+    def _download_buy_offer(self, challenge):
         logger.info("Downloading buy offer for squeak hash: {}".format(self.squeak_hash.hex()))
-        return self.peer_client.buy_squeak(self.squeak_hash)
+        return self.peer_client.buy_squeak(self.squeak_hash, challenge)
 
     def _save_offer(self, offer):
         logger.info("Saving offer: {}".format(offer))
