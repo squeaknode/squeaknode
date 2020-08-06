@@ -1,6 +1,7 @@
 from collections import namedtuple
 
 Offer = namedtuple("Offer", [
+    "offer_id",
     "squeak_hash",
     "key_cipher",
     "iv",

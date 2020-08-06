@@ -9,6 +9,7 @@ import {
   Box,
   Link,
   Divider,
+  Button,
 } from "@material-ui/core";
 import { MoreVert as MoreIcon } from "@material-ui/icons";
 import {useHistory} from "react-router-dom";
@@ -32,6 +33,7 @@ export default function SqueakDetailItem({
   handleSqueakClick,
   handleReplyClick,
   handleDeleteClick,
+  handleUnlockClick,
   ...props
 }) {
   var classes = useStyles();
@@ -67,6 +69,14 @@ export default function SqueakDetailItem({
     }
   }
 
+  const onUnlockClick = (event) => {
+    event.preventDefault();
+    console.log("Handling unlock click...");
+    if (handleUnlockClick) {
+      handleUnlockClick();
+    }
+  }
+
   function SqueakUnlockedContent() {
     return (
       <Typography
@@ -81,14 +91,12 @@ export default function SqueakDetailItem({
     return (
       <>
         <LockIcon />
-        <Box
-          border={1}
-          p={2}
-          fontSize="h6.fontSize"
-          style={{backgroundColor: 'white'}}
-        >
-          Buy to unlock
-        </Box>
+        <Button
+          variant="contained"
+          onClick={onUnlockClick}
+          >Buy to unlock
+        </Button>
+
       </>
     )
   }
