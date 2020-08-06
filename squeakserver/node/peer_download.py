@@ -73,6 +73,7 @@ class PeerDownload:
             logger.info("hash to download: {}".format(hash.hex()))
 
         # Download squeaks for the hashes
+        # TODO: catch exception downloading individual squeak
         for hash in hashes_to_download:
             if self.stopped():
                 return
