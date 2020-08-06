@@ -38,14 +38,14 @@ class SqueakGetOfferController:
         self.postgres_db = postgres_db
 
     def get_offers(self, peers, squeak_hash):
-        self._download_from_peers(peers, block_height)
+        self._download_from_peers(peers, squeak_hash)
 
     def _download_from_peers(self, peers, squeak_hash):
         for peer in peers:
             if peer.downloading:
                 download_thread = threading.Thread(
                     target=self._download_from_peer,
-                    args=(peer, block_height,),
+                    args=(peer, squeak_hash,),
                 )
                 download_thread.start()
 
@@ -77,8 +77,8 @@ class SqueakGetOfferController:
                 ))
 
         def __enter__(self):
-            self.squeak_sync_status.add_download(self.peer, self.squeak_hash, self.peer_download)
+            self.squeak_get_offer_status.add_download(self.peer, self.squeak_hash, self.peer_download)
             return self
 
         def __exit__(self, exc_type, exc_value, exc_traceback):
-            self.squeak_sync_status.remove_download(self.peer, self.squeak_hash)
+            self.squeak_get_offer_status.remove_download(self.peer, self.squeak_hash)

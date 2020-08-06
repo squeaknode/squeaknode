@@ -66,7 +66,6 @@ class SqueakNode:
             self.squeak_sync_controller,
         )
         self.squeak_get_offer_controller = SqueakGetOfferController(
-            self.blockchain_client,
             self.squeak_store,
             self.postgres_db,
         )
