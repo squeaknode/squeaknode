@@ -91,6 +91,7 @@ class PeerGetOffer:
         if not offer_msg:
             return None
         return Offer(
+            offer_id=None,
             squeak_hash=offer_msg.squeak_hash,
             key_cipher=offer_msg.key_cipher,
             iv=offer_msg.iv,
