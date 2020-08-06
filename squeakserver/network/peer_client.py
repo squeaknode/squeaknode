@@ -60,6 +60,16 @@ class PeerClient:
             CheckSqueak(get_response_squeak, skipDecryptionCheck=True)
             return get_response_squeak
 
+    def buy_squeak(self, squeak_hash, challenge):
+        with self.get_stub() as stub:
+            buy_response = stub.BuySqueak(
+                squeak_server_pb2.BuySqueakRequest(
+                    hash=squeak_hash,
+                    challenge=challenge,
+                )
+            )
+            return buy_response.offer
+
     def _get_hash(self, squeak):
         """ Needs to be reversed because hash is stored as little-endian """
         return squeak.GetHash()[::-1]

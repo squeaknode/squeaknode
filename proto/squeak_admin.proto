@@ -108,6 +108,10 @@ service SqueakAdmin {
   */
   rpc DeletePeer (DeletePeerRequest) returns (DeletePeerReply) {}
 
+  /** sqkadmin: `loadbuyoffers`
+  */
+  rpc LoadBuyOffers (LoadBuyOffersRequest) returns (LoadBuyOffersReply) {}
+
 }
 
 message CreateSigningProfileRequest {
@@ -409,4 +413,12 @@ message DeletePeerRequest {
 }
 
 message DeletePeerReply {
+}
+
+message LoadBuyOffersRequest {
+    /// Hash of the created squeak.
+    string squeak_hash = 1;
+}
+
+message LoadBuyOffersReply {
 }
