@@ -17,11 +17,13 @@ class PeerGetOffer:
             squeak_hash,
             squeak_store,
             postgres_db,
+            lightning_client
     ):
         self.peer = peer
         self.squeak_hash = squeak_hash
         self.squeak_store = squeak_store
         self.postgres_db = postgres_db
+        self.lightning_client = lightning_client
 
         self.peer_client = PeerClient(
             self.peer.host,
@@ -58,8 +60,11 @@ class PeerGetOffer:
                 challenge_proof.hex(),
             ))
 
+        # Get the decoded offer from the payment request string
+        decoded_offer = self._get_decoded_offer(offer)
+
         # Save the offer
-        self._save_offer(offer)
+        self._save_offer(decoded_offer)
 
     def stop(self):
         self._stop_event.set()
@@ -104,3 +109,12 @@ class PeerGetOffer:
             proof=offer_msg.proof,
             peer_id=self.peer.peer_id,
         )
+
+    def _decode_payment_request(self, payment_request):
+        return self.lightning_client.decode_pay_req(payment_request)
+
+    def _get_decoded_offer(self, offer):
+        pay_req = self._decode_payment_request(offer.payment_request)
+        logger.info("Decoded payment request: {}".format(pay_req))
+        # TODO create a new offer object with decoded fields
+        return offer

@@ -68,6 +68,7 @@ class SqueakNode:
         self.squeak_get_offer_controller = SqueakGetOfferController(
             self.squeak_store,
             self.postgres_db,
+            self.lightning_client,
         )
 
     def start_running(self):

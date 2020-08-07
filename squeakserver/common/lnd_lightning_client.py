@@ -156,3 +156,16 @@ class LNDLightningClient:
         return self.stub.CloseChannel(
             close_channel_request, metadata=[("macaroon", self.macaroon)]
         )
+
+    def decode_pay_req(self, payment_request):
+        """ Decode a payment request
+
+        args:
+        pay_req (str) -- The payment request string
+        """
+        decode_pay_req_request = self.ln_module.PayReqString(
+            pay_req=payment_request,
+        )
+        return self.stub.DecodePayReq(
+            decode_pay_req_request, metadata=[("macaroon", self.macaroon)]
+        )
