@@ -438,6 +438,24 @@ message GetBuyOffersReply {
 }
 
 message OfferDisplayEntry {
+    /// The offer id
+    int32 offer_id = 1;
+
     /// The squeak hash.
-    string squeak_hash = 1;
+    string squeak_hash = 2;
+
+    /// The amount
+    int64 amount = 3;
+
+    /// The seller node pubkey
+    string node_pubkey = 4;
+
+    /// The host of the seller lightning node
+    string node_host = 5;
+
+    /// The port of the seller lightning node
+    int32 node_port = 6;
+
+    /// The peer
+    SqueakPeer peer = 7;
 }

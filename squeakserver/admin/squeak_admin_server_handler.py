@@ -203,3 +203,7 @@ class SqueakAdminServerHandler(object):
     def handle_load_buy_offers(self, squeak_hash_str):
         logger.info("Handle load buy offers for hash: {}".format(squeak_hash_str))
         self.squeak_node.load_buy_offers(squeak_hash_str)
+
+    def handle_get_buy_offers(self, squeak_hash_str):
+        logger.info("Handle get buy offers for hash: {}".format(squeak_hash_str))
+        return self.squeak_node.get_buy_offers(squeak_hash_str)
