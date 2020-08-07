@@ -15,7 +15,7 @@ import useStyles from "./styles";
 import PageTitle from "../../components/PageTitle";
 import Widget from "../../components/Widget";
 import SqueakDetailItem from "../../components/SqueakDetailItem";
-import SqueakThreadItem from "../../components/SqueakThreadItem";
+import BuyOfferItem from "../../components/BuyOfferItem";
 import MakeSqueakDialog from "../../components/MakeSqueakDialog";
 import DeleteSqueakDialog from "../../components/DeleteSqueakDialog";
 
@@ -66,8 +66,9 @@ export default function BuyPage() {
       });
   };
 
-  const goToSqueakPage = (hash) => {
-    history.push("/app/squeak/" + hash);
+  const goToOfferPage = (offerId) => {
+    console.log("Go to offer page for id: " + offerId);
+    // history.push("/app/offer/" + offerId);
   };
 
 
@@ -78,11 +79,32 @@ export default function BuyPage() {
     getOffers(hash)
   },[hash]);
 
+  function OffersContent() {
+    return (
+      <>
+        <div>
+          {offers.map(offer =>
+            <Box
+              p={1}
+              key={offer.getOfferId()}
+              >
+            <BuyOfferItem
+              key={offer.getOfferId()}
+              handleOfferClick={() => goToOfferPage(offer.getOfferId())}
+              offer={offer}>
+            </BuyOfferItem>
+            </Box>
+          )}
+        </div>
+      </>
+    )
+  }
 
   return (
     <>
       <PageTitle title="Buy squeak" />
       Hello
+      {OffersContent()}
     </>
   );
 }
