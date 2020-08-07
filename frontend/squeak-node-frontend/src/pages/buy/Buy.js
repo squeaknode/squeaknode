@@ -23,6 +23,7 @@ import {
   GetSqueakDisplayRequest,
   GetAncestorSqueakDisplaysRequest,
   LoadBuyOffersRequest,
+  GetBuyOffersRequest,
 } from "../../proto/squeak_admin_pb"
 import { SqueakAdminClient } from "../../proto/squeak_admin_grpc_web_pb"
 
@@ -32,6 +33,7 @@ export default function BuyPage() {
   var classes = useStyles();
   const history = useHistory();
   const { hash } = useParams();
+  const [offers, setOffers] = useState([]);
 
   const loadOffers = (hash) => {
       var loadBuyOffersRequest = new LoadBuyOffersRequest()
@@ -47,6 +49,22 @@ export default function BuyPage() {
         console.log(response);
       });
   };
+  const getOffers = (hash) => {
+      var getBuyOffersRequest = new GetBuyOffersRequest()
+      getBuyOffersRequest.setSqueakHash(hash);
+      console.log(getBuyOffersRequest);
+
+      client.getBuyOffers(getBuyOffersRequest, {}, (err, response) => {
+        if (err) {
+          console.log(err.message);
+          alert('Error getting offers: ' + err.message);
+          return;
+        }
+        console.log(response);
+        console.log(response.getOffersList());
+        setOffers(response.getOffersList())
+      });
+  };
 
   const goToSqueakPage = (hash) => {
     history.push("/app/squeak/" + hash);
@@ -55,6 +73,9 @@ export default function BuyPage() {
 
   useEffect(()=>{
     loadOffers(hash)
+  },[hash]);
+  useEffect(()=>{
+    getOffers(hash)
   },[hash]);
 
 

@@ -244,3 +244,8 @@ class SqueakNode:
         peers = self.postgres_db.get_peers()
         squeak_hash = bytes.fromhex(squeak_hash_str)
         self.squeak_get_offer_controller.get_offers(peers, squeak_hash)
+
+    def get_buy_offers(self, squeak_hash_str):
+        squeak_hash = bytes.fromhex(squeak_hash_str)
+        return self.postgres_db.get_offers(squeak_hash_str)
+

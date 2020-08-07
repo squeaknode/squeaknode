@@ -9,6 +9,7 @@ from squeak.core import CSqueak
 from squeakserver.blockchain.util import parse_block_header
 from squeakserver.core.squeak_entry import SqueakEntry
 from squeakserver.core.squeak_entry_with_profile import SqueakEntryWithProfile
+from squeakserver.core.offer import Offer
 from squeakserver.server.squeak_profile import SqueakProfile
 from squeakserver.server.squeak_peer import SqueakPeer
 from squeakserver.server.util import get_hash
@@ -502,6 +503,18 @@ class PostgresDb:
             row = curs.fetchone()
             return row["offer_id"]
 
+    def get_offers(self, squeak_hash):
+        """ Get offers for a squeak hash. """
+        sql = """
+        SELECT * FROM offer
+        WHERE squeak_hash=%s;
+        """
+        with self.get_cursor() as curs:
+            curs.execute(sql, (squeak_hash,))
+            rows = curs.fetchall()
+            offers = [self._parse_offer(row) for row in rows]
+            return offers
+
     def _parse_squeak_entry(self, row):
         if row is None:
             return None
@@ -568,4 +581,22 @@ class PostgresDb:
             port=row["server_port"],
             uploading=row["uploading"],
             downloading=row["downloading"],
+        )
+
+    def _parse_offer(self, row):
+        if row is None:
+            return None
+        return Offer(
+            offer_id=row["offer_id"],
+            squeak_hash=row["squeak_hash"],
+            key_cipher=row["key_cipher"],
+            iv=row["iv"],
+            amount=row["amount"],
+            preimage_hash=row["preimage_hash"],
+            payment_request=row["payment_request"],
+            node_pubkey=row["node_pubkey"],
+            node_host=row["node_host"],
+            node_port=row["node_port"],
+            proof=None,
+            peer_id=row["peer_id"],
         )
