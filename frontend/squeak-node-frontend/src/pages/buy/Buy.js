@@ -6,6 +6,7 @@ import {
   Button,
   Divider,
   Box,
+  Typography,
 } from "@material-ui/core";
 
 // styles
@@ -82,6 +83,9 @@ export default function BuyPage() {
   function OffersContent() {
     return (
       <>
+        <Typography variant="h3">
+          Offers
+        </Typography>
         <div>
           {offers.map(offer =>
             <Box
@@ -103,7 +107,6 @@ export default function BuyPage() {
   return (
     <>
       <PageTitle title="Buy squeak" />
-      Hello
       {OffersContent()}
     </>
   );
