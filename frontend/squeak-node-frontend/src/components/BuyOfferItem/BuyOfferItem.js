@@ -41,25 +41,21 @@ export default function BuyOfferItem({
     return (
       <Typography
         size="md"
-        style={{whiteSpace: 'pre-line', overflow: "hidden", textOverflow: "ellipsis", height: '6rem'}}
-        >{offer.getAmount()}
+        >{offer.getAmount()} msats ({offer.getAmount() / 1000} sats)
       </Typography>
     )
   }
 
   function ProfileInfoContent(peer) {
     return (
-      <Typography
-        size="md"
-        style={{whiteSpace: 'pre-line', overflow: "hidden", textOverflow: "ellipsis", height: '6rem'}}
-        >{offer.getPeer()}
-      </Typography>
+      <Box>
+        <Typography
+          size="md"
+          >{peer.getPeerName()}
+          </Typography>
+      </Box>
     )
   }
-
-  console.log("offer: " + offer);
-  console.log("peer: " + offer.getPeer());
-  console.log("amount: " + offer.getAmount());
 
   return (
     <Box
@@ -77,8 +73,15 @@ export default function BuyOfferItem({
           <Grid item>
             {OfferContent()}
           </Grid>
+          </Grid>
+          <Grid
+            container
+            direction="row"
+            justify="flex-start"
+            alignItems="flex-start"
+          >
           <Grid item>
-            foo
+            {ProfileInfoContent(offer.getPeer())}
           </Grid>
           </Grid>
     </Box>
