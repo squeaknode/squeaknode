@@ -458,4 +458,10 @@ message OfferDisplayEntry {
 
     /// The peer
     SqueakPeer peer = 7;
+
+    /// The invoice timestamp
+    int32 invoice_timestamp = 8;
+
+    /// The invoice expiry
+    int32 invoice_expiry = 9;
 }
