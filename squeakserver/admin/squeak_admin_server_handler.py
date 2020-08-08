@@ -206,4 +206,4 @@ class SqueakAdminServerHandler(object):
 
     def handle_get_buy_offers(self, squeak_hash_str):
         logger.info("Handle get buy offers for hash: {}".format(squeak_hash_str))
-        return self.squeak_node.get_buy_offers(squeak_hash_str)
+        return self.squeak_node.get_buy_offers_with_peer(squeak_hash_str)

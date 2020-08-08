@@ -9,6 +9,7 @@ from squeak.core import CSqueak
 from squeakserver.blockchain.util import parse_block_header
 from squeakserver.core.squeak_entry import SqueakEntry
 from squeakserver.core.squeak_entry_with_profile import SqueakEntryWithProfile
+from squeakserver.core.offer_with_peer import OfferWithPeer
 from squeakserver.core.offer import Offer
 from squeakserver.server.squeak_profile import SqueakProfile
 from squeakserver.server.squeak_peer import SqueakPeer
@@ -517,6 +518,20 @@ class PostgresDb:
             offers = [self._parse_offer(row) for row in rows]
             return offers
 
+    def get_offers_with_peer(self, squeak_hash):
+        """ Get offers with peer for a squeak hash. """
+        sql = """
+        SELECT * FROM offer
+        LEFT JOIN peer
+        ON offer.peer_id=peer.peer_id
+        WHERE squeak_hash=%s;
+        """
+        with self.get_cursor() as curs:
+            curs.execute(sql, (squeak_hash,))
+            rows = curs.fetchall()
+            offers_with_peer = [self._parse_offer_with_peer(row) for row in rows]
+            return offers_with_peer
+
     def _parse_squeak_entry(self, row):
         if row is None:
             return None
@@ -603,4 +618,14 @@ class PostgresDb:
             node_port=row["node_port"],
             proof=None,
             peer_id=row["peer_id"],
+        )
+
+    def _parse_offer_with_peer(self, row):
+        if row is None:
+            return None
+        offer = self._parse_offer(row)
+        peer = self._parse_squeak_peer(row)
+        return OfferWithPeer(
+            offer=offer,
+            peer=peer,
         )

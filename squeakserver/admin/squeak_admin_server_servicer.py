@@ -227,7 +227,7 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         squeak_hash_str = request.squeak_hash
         offers = self.handler.handle_get_buy_offers(squeak_hash_str)
         offer_msgs = [
-            self._squeak_offer_to_message(offer)
+            self._offer_entry_to_message(offer)
             for offer in offers
         ]
         logger.info("Returning buy offers: {}".format(offer_msgs))
@@ -288,9 +288,11 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
             downloading=squeak_peer.downloading,
         )
 
-    def _squeak_offer_to_message(self, offer):
-        if offer is None:
+    def _offer_entry_to_message(self, offer_entry):
+        if offer_entry is None:
             return None
+        offer = offer_entry.offer
+        peer = self._squeak_peer_to_message(offer_entry.peer)
         return squeak_admin_pb2.OfferDisplayEntry(
             offer_id=offer.offer_id,
             squeak_hash=offer.squeak_hash,
@@ -298,7 +300,7 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
             node_pubkey=offer.destination,
             node_host=offer.node_host,
             node_port=offer.node_port,
-            peer=None,
+            peer=peer,
         )
 
     def serve(self):
