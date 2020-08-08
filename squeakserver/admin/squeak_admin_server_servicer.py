@@ -301,6 +301,8 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
             node_host=offer.node_host,
             node_port=offer.node_port,
             peer=peer,
+            invoice_timestamp=offer.invoice_timestamp,
+            invoice_expiry=offer.invoice_expiry,
         )
 
     def serve(self):

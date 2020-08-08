@@ -57,6 +57,21 @@ export default function BuyOfferItem({
     )
   }
 
+  function ExpiresInfoContent(offer) {
+    var invoiceTime = offer.getInvoiceTimestamp();
+    var invoiceExpiry = offer.getInvoiceExpiry();
+    var expireTime = invoiceTime + invoiceExpiry;
+    return (
+      <Box>
+        <Typography
+          size="md"
+          >
+            Expire time: {new Date(expireTime*1000).toString()}
+          </Typography>
+      </Box>
+    )
+  }
+
   return (
     <Box
       p={1}
@@ -82,6 +97,16 @@ export default function BuyOfferItem({
           >
           <Grid item>
             {ProfileInfoContent(offer.getPeer())}
+          </Grid>
+          </Grid>
+          <Grid
+            container
+            direction="row"
+            justify="flex-start"
+            alignItems="flex-start"
+          >
+          <Grid item>
+            {ExpiresInfoContent(offer)}
           </Grid>
           </Grid>
     </Box>
