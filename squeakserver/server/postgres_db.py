@@ -478,8 +478,8 @@ class PostgresDb:
     def insert_offer(self, offer):
         """ Insert a new offer. """
         sql = """
-        INSERT INTO offer(squeak_hash, key_cipher, iv, amount, preimage_hash, payment_request, node_pubkey, node_host, node_port, peer_id)
-        VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        INSERT INTO offer(squeak_hash, key_cipher, iv, price_msat, payment_hash, invoice_timestamp, invoice_expiry, payment_request, destination, node_host, node_port, peer_id)
+        VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         RETURNING offer_id;
         """
         with self.get_cursor() as curs:
@@ -490,10 +490,12 @@ class PostgresDb:
                     offer.squeak_hash.hex(),
                     offer.key_cipher,
                     offer.iv,
-                    offer.amount,
-                    offer.preimage_hash.hex(),
+                    offer.price_msat,
+                    offer.payment_hash.hex(),
+                    offer.invoice_timestamp,
+                    offer.invoice_expiry,
                     offer.payment_request,
-                    offer.node_pubkey,
+                    offer.destination,
                     offer.node_host,
                     offer.node_port,
                     offer.peer_id,
@@ -591,10 +593,12 @@ class PostgresDb:
             squeak_hash=row["squeak_hash"],
             key_cipher=row["key_cipher"],
             iv=row["iv"],
-            amount=row["amount"],
-            preimage_hash=row["preimage_hash"],
+            price_msat=row["price_msat"],
+            payment_hash=row["payment_hash"],
+            invoice_timestamp=row["invoice_timestamp"],
+            invoice_expiry=row["invoice_expiry"],
             payment_request=row["payment_request"],
-            node_pubkey=row["node_pubkey"],
+            destination=row["destination"],
             node_host=row["node_host"],
             node_port=row["node_port"],
             proof=None,

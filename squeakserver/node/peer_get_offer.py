@@ -17,11 +17,13 @@ class PeerGetOffer:
             squeak_hash,
             squeak_store,
             postgres_db,
+            lightning_client
     ):
         self.peer = peer
         self.squeak_hash = squeak_hash
         self.squeak_store = squeak_store
         self.postgres_db = postgres_db
+        self.lightning_client = lightning_client
 
         self.peer_client = PeerClient(
             self.peer.host,
@@ -58,8 +60,11 @@ class PeerGetOffer:
                 challenge_proof.hex(),
             ))
 
+        # Get the decoded offer from the payment request string
+        decoded_offer = self._get_decoded_offer(offer)
+
         # Save the offer
-        self._save_offer(offer)
+        self._save_offer(decoded_offer)
 
     def stop(self):
         self._stop_event.set()
@@ -95,12 +100,51 @@ class PeerGetOffer:
             squeak_hash=offer_msg.squeak_hash,
             key_cipher=offer_msg.key_cipher,
             iv=offer_msg.iv,
-            amount=offer_msg.amount,
-            preimage_hash=offer_msg.preimage_hash,
+            price_msat=None,
+            payment_hash=offer_msg.preimage_hash,
+            invoice_timestamp=None,
+            invoice_expiry=None,
             payment_request=offer_msg.payment_request,
-            node_pubkey=offer_msg.pubkey,
+            destination=None,
             node_host=offer_msg.host,
             node_port=offer_msg.port,
             proof=offer_msg.proof,
             peer_id=self.peer.peer_id,
         )
+
+    def _decode_payment_request(self, payment_request):
+        return self.lightning_client.decode_pay_req(payment_request)
+
+    def _get_decoded_offer(self, offer):
+        pay_req = self._decode_payment_request(offer.payment_request)
+        logger.info("Decoded payment request: {}".format(pay_req))
+        # TODO create a new offer object with decoded fields
+
+        price_msat = pay_req.num_msat
+        destination = pay_req.destination
+        invoice_timestamp = pay_req.timestamp
+        invoice_expiry = pay_req.expiry
+
+        logger.info("price_msat: {}".format(price_msat))
+        logger.info("destination: {}".format(destination))
+        logger.info("invoice_timestamp: {}".format(invoice_timestamp))
+        logger.info("invoice_expiry: {}".format(invoice_expiry))
+
+        decoded_offer = Offer(
+            offer_id=offer.offer_id,
+            squeak_hash=offer.squeak_hash,
+            key_cipher=offer.key_cipher,
+            iv=offer.iv,
+            price_msat=price_msat,
+            payment_hash=offer.payment_hash,
+            invoice_timestamp=invoice_timestamp,
+            invoice_expiry=invoice_expiry,
+            payment_request=offer.payment_request,
+            destination=destination,
+            node_host=offer.node_host,
+            node_port=offer.node_port,
+            proof=offer.proof,
+            peer_id=offer.peer_id,
+        )
+
+        return decoded_offer

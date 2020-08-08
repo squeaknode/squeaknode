@@ -166,7 +166,7 @@ export default function SqueakDetailItem({
             alignItems="flex-start"
           >
             <Grid item>
-                <Box color="secondary.main">
+                <Box color="secondary.main" fontWeight="fontWeightBold">
                   {new Date(squeak.getBlockTime()*1000).toString()} (Block # {squeak.getBlockHeight()})
                 </Box>
             </Grid>

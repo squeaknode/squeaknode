@@ -32,10 +32,11 @@ class SqueakGetOfferStatus:
 
 
 class SqueakGetOfferController:
-    def __init__(self, squeak_store, postgres_db):
+    def __init__(self, squeak_store, postgres_db, lightning_client):
         self.squeak_get_offer_status = SqueakGetOfferStatus()
         self.squeak_store = squeak_store
         self.postgres_db = postgres_db
+        self.lightning_client = lightning_client
 
     def get_offers(self, peers, squeak_hash):
         self._download_from_peers(peers, squeak_hash)
@@ -55,6 +56,7 @@ class SqueakGetOfferController:
             squeak_hash,
             self.squeak_store,
             self.postgres_db,
+            self.lightning_client,
         )
         try:
             logger.debug("Trying to get offer from peer: {} for squeak: {}".format(peer.peer_id, squeak_hash))
