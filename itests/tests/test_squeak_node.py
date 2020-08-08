@@ -128,16 +128,22 @@ def test_sell_squeak(server_stub, admin_stub, lightning_client, saved_squeak_has
     # Check the offer challenge proof
     assert buy_response.offer.proof == expected_proof
 
+    # Decode the payment request string
+    decode_pay_req_response = lightning_client.decode_pay_req(
+        buy_response.offer.payment_request
+    )
+    destination = decode_pay_req_response.destination
+
     # Connect to the server lightning node
     connect_peer_response = lightning_client.connect_peer(
-        buy_response.offer.pubkey, buy_response.offer.host
+        destination, buy_response.offer.host
     )
 
     # List peers
     list_peers_response = lightning_client.list_peers()
 
     # Open channel to the server lightning node
-    pubkey_bytes = string_to_hex(buy_response.offer.pubkey)
+    pubkey_bytes = string_to_hex(destination)
     open_channel_response = lightning_client.open_channel(pubkey_bytes, 1000000)
     print("Opening channel...")
     for update in open_channel_response:
