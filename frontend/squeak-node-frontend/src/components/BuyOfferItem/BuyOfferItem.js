@@ -58,12 +58,15 @@ export default function BuyOfferItem({
   }
 
   function ExpiresInfoContent(offer) {
+    var invoiceTime = offer.getInvoiceTimestamp();
+    var invoiceExpiry = offer.getInvoiceExpiry();
+    var expireTime = invoiceTime + invoiceExpiry;
     return (
       <Box>
         <Typography
           size="md"
           >
-            {new Date(offer.getInvoiceTimestamp()*1000).toString()}
+            Expire time: {new Date(expireTime*1000).toString()}
           </Typography>
       </Box>
     )
