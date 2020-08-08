@@ -73,17 +73,14 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
             return squeak_server_pb2.BuySqueakReply(offer=None,)
 
         offer_squeak_hash = buy_response.squeak_hash
-        amount = buy_response.amount
 
         return squeak_server_pb2.BuySqueakReply(
             offer=squeak_server_pb2.SqueakBuyOffer(
                 squeak_hash=offer_squeak_hash,
                 key_cipher=buy_response.key_cipher.cipher_bytes,
                 iv=buy_response.iv,
-                amount=amount,
                 preimage_hash=buy_response.preimage_hash,
                 payment_request=buy_response.payment_request,
-                pubkey=buy_response.pubkey,
                 host=buy_response.host,
                 port=buy_response.port,
                 proof=buy_response.proof,

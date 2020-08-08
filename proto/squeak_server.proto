@@ -91,17 +91,11 @@ message SqueakBuyOffer {
     /// The decryption iv
     bytes iv = 3;
 
-    /// The amount
-    int64 amount = 4;
-
     /// The invoice preimage hash.
     bytes preimage_hash = 5;
 
     /// The invoice
     string payment_request = 6;
-
-    /// The seller node pubkey
-    string pubkey = 7;
 
     /// The host of the seller lightning node
     string host = 8;
