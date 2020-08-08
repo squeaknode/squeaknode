@@ -47,6 +47,20 @@ export default function BuyOfferItem({
     )
   }
 
+  function ProfileInfoContent(peer) {
+    return (
+      <Typography
+        size="md"
+        style={{whiteSpace: 'pre-line', overflow: "hidden", textOverflow: "ellipsis", height: '6rem'}}
+        >{offer.getPeer()}
+      </Typography>
+    )
+  }
+
+  console.log("offer: " + offer);
+  console.log("peer: " + offer.getPeer());
+  console.log("amount: " + offer.getAmount());
+
   return (
     <Box
       p={1}
@@ -62,6 +76,9 @@ export default function BuyOfferItem({
           >
           <Grid item>
             {OfferContent()}
+          </Grid>
+          <Grid item>
+            foo
           </Grid>
           </Grid>
     </Box>
