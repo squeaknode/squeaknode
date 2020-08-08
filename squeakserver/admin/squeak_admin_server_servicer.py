@@ -294,8 +294,8 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         return squeak_admin_pb2.OfferDisplayEntry(
             offer_id=offer.offer_id,
             squeak_hash=offer.squeak_hash,
-            amount=offer.amount,
-            node_pubkey=offer.node_pubkey,
+            amount=offer.price_msat,
+            node_pubkey=offer.destination,
             node_host=offer.node_host,
             node_port=offer.node_port,
             peer=None,

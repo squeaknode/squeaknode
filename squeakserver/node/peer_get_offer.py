@@ -100,10 +100,10 @@ class PeerGetOffer:
             squeak_hash=offer_msg.squeak_hash,
             key_cipher=offer_msg.key_cipher,
             iv=offer_msg.iv,
-            amount=None,
-            preimage_hash=offer_msg.preimage_hash,
+            price_msat=None,
+            payment_hash=offer_msg.preimage_hash,
             payment_request=offer_msg.payment_request,
-            node_pubkey=None,
+            destination=None,
             node_host=offer_msg.host,
             node_port=offer_msg.port,
             proof=offer_msg.proof,
@@ -118,21 +118,21 @@ class PeerGetOffer:
         logger.info("Decoded payment request: {}".format(pay_req))
         # TODO create a new offer object with decoded fields
 
-        amount = pay_req.num_msat
-        node_pubkey = pay_req.destination
+        price_msat = pay_req.num_msat
+        destination = pay_req.destination
 
-        logger.info("amount: {}".format(amount))
-        logger.info("node_pubkey: {}".format(node_pubkey))
+        logger.info("price_msat: {}".format(price_msat))
+        logger.info("destination: {}".format(destination))
 
         decoded_offer = Offer(
             offer_id=offer.offer_id,
             squeak_hash=offer.squeak_hash,
             key_cipher=offer.key_cipher,
             iv=offer.iv,
-            amount=amount,
-            preimage_hash=offer.preimage_hash,
+            price_msat=price_msat,
+            payment_hash=offer.payment_hash,
             payment_request=offer.payment_request,
-            node_pubkey=node_pubkey,
+            destination=destination,
             node_host=offer.node_host,
             node_port=offer.node_port,
             proof=offer.proof,
