@@ -478,8 +478,8 @@ class PostgresDb:
     def insert_offer(self, offer):
         """ Insert a new offer. """
         sql = """
-        INSERT INTO offer(squeak_hash, key_cipher, iv, price_msat, payment_hash, payment_request, destination, node_host, node_port, peer_id)
-        VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        INSERT INTO offer(squeak_hash, key_cipher, iv, price_msat, payment_hash, invoice_timestamp, invoice_expiry, payment_request, destination, node_host, node_port, peer_id)
+        VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         RETURNING offer_id;
         """
         with self.get_cursor() as curs:
@@ -492,6 +492,8 @@ class PostgresDb:
                     offer.iv,
                     offer.price_msat,
                     offer.payment_hash.hex(),
+                    offer.invoice_timestamp,
+                    offer.invoice_expiry,
                     offer.payment_request,
                     offer.destination,
                     offer.node_host,
@@ -593,6 +595,8 @@ class PostgresDb:
             iv=row["iv"],
             price_msat=row["price_msat"],
             payment_hash=row["payment_hash"],
+            invoice_timestamp=row["invoice_timestamp"],
+            invoice_expiry=row["invoice_expiry"],
             payment_request=row["payment_request"],
             destination=row["destination"],
             node_host=row["node_host"],

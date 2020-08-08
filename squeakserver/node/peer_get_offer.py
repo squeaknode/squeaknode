@@ -102,6 +102,8 @@ class PeerGetOffer:
             iv=offer_msg.iv,
             price_msat=None,
             payment_hash=offer_msg.preimage_hash,
+            invoice_timestamp=None,
+            invoice_expiry=None,
             payment_request=offer_msg.payment_request,
             destination=None,
             node_host=offer_msg.host,
@@ -120,9 +122,13 @@ class PeerGetOffer:
 
         price_msat = pay_req.num_msat
         destination = pay_req.destination
+        invoice_timestamp = pay_req.timestamp
+        invoice_expiry = pay_req.expiry
 
         logger.info("price_msat: {}".format(price_msat))
         logger.info("destination: {}".format(destination))
+        logger.info("invoice_timestamp: {}".format(invoice_timestamp))
+        logger.info("invoice_expiry: {}".format(invoice_expiry))
 
         decoded_offer = Offer(
             offer_id=offer.offer_id,
@@ -131,6 +137,8 @@ class PeerGetOffer:
             iv=offer.iv,
             price_msat=price_msat,
             payment_hash=offer.payment_hash,
+            invoice_timestamp=invoice_timestamp,
+            invoice_expiry=invoice_expiry,
             payment_request=offer.payment_request,
             destination=destination,
             node_host=offer.node_host,

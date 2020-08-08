@@ -7,6 +7,8 @@ Offer = namedtuple("Offer", [
     "iv",
     "price_msat",
     "payment_hash",
+    "invoice_timestamp",
+    "invoice_expiry",
     "payment_request",
     "destination",
     "node_host",
