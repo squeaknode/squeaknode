@@ -60,16 +60,17 @@ class SqueakNode:
             self.blockchain_client,
             self.squeak_store,
             self.postgres_db,
+            self.lightning_client,
         )
         self.squeak_peer_sync_worker = SqueakPeerSyncWorker(
             postgres_db,
             self.squeak_sync_controller,
         )
-        self.squeak_get_offer_controller = SqueakGetOfferController(
-            self.squeak_store,
-            self.postgres_db,
-            self.lightning_client,
-        )
+        # self.squeak_get_offer_controller = SqueakGetOfferController(
+        #     self.squeak_store,
+        #     self.postgres_db,
+        #     self.lightning_client,
+        # )
 
     def start_running(self):
         self.squeak_block_periodic_worker.start_running()
@@ -241,10 +242,10 @@ class SqueakNode:
     def delete_peer(self, peer_id):
         self.postgres_db.delete_peer(peer_id)
 
-    def load_buy_offers(self, squeak_hash_str):
-        peers = self.postgres_db.get_peers()
-        squeak_hash = bytes.fromhex(squeak_hash_str)
-        self.squeak_get_offer_controller.get_offers(peers, squeak_hash)
+    # def load_buy_offers(self, squeak_hash_str):
+    #     peers = self.postgres_db.get_peers()
+    #     squeak_hash = bytes.fromhex(squeak_hash_str)
+    #     self.squeak_get_offer_controller.get_offers(peers, squeak_hash)
 
     def get_buy_offers_with_peer(self, squeak_hash_str):
         squeak_hash = bytes.fromhex(squeak_hash_str)

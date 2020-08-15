@@ -78,7 +78,7 @@ class PostgresDb:
                     squeak.encContent.hex(),
                     squeak.vchScriptSig,
                     str(squeak.GetAddress()),
-                    squeak.vchDecryptionKey,
+                    squeak.GetDecryptionKey().get_bytes() if squeak.HasDecryptionKey() else None,
                 ),
             )
             # get the generated hash back
@@ -169,14 +169,14 @@ class PostgresDb:
             rows = curs.fetchall()
             return [self._parse_squeak_entry_with_profile(row) for row in rows]
 
-    def lookup_squeaks(self, addresses, min_block, max_block, include_unverified=False):
+    def lookup_squeaks(self, addresses, min_block, max_block, include_unverified=False, include_locked=False):
         """ Lookup squeaks. """
         sql = """
         SELECT hash FROM squeak
         WHERE author_address IN %s
         AND n_block_height >= %s
         AND n_block_height <= %s
-        AND vch_decryption_key IS NOT NULL
+        AND (vch_decryption_key IS NOT NULL) OR %s
         AND ((block_header IS NOT NULL) OR %s);
         """
         addresses_tuple = tuple(addresses)
@@ -188,7 +188,7 @@ class PostgresDb:
             # mogrify to debug.
             # logger.info(curs.mogrify(sql, (addresses_tuple, min_block, max_block)))
             curs.execute(
-                sql, (addresses_tuple, min_block, max_block, include_unverified)
+                sql, (addresses_tuple, min_block, max_block, include_locked, include_unverified)
             )
             rows = curs.fetchall()
             hashes = [bytes.fromhex(row["hash"]) for row in rows]
@@ -214,6 +214,36 @@ class PostgresDb:
             # mogrify to debug.
             # logger.info(curs.mogrify(sql, (addresses_tuple, min_block, max_block)))
             curs.execute(sql, (addresses_tuple, interval_seconds, include_unverified))
+            rows = curs.fetchall()
+            hashes = [bytes.fromhex(row["hash"]) for row in rows]
+            return hashes
+
+    def lookup_squeaks_needing_offer(self, addresses, min_block, max_block, peer_id, include_unverified=False):
+        """ Lookup squeaks that are locked and don't have an offer. """
+        sql = """
+        SELECT hash FROM squeak
+        WHERE author_address IN %s
+        AND n_block_height >= %s
+        AND n_block_height <= %s
+        AND vch_decryption_key IS NULL
+        AND ((block_header IS NOT NULL) OR %s);
+        """
+
+        # LEFT JOIN offer
+        # ON squeak.hash=offer.squeak_hash
+
+        # AND offer.peer_id=%s;
+        addresses_tuple = tuple(addresses)
+
+        if not addresses:
+            return []
+
+        with self.get_cursor() as curs:
+            # mogrify to debug.
+            # logger.info(curs.mogrify(sql, (addresses_tuple, min_block, max_block)))
+            curs.execute(
+                sql, (addresses_tuple, min_block, max_block, include_unverified)
+            )
             rows = curs.fetchall()
             hashes = [bytes.fromhex(row["hash"]) for row in rows]
             return hashes

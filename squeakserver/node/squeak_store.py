@@ -68,4 +68,24 @@ class SqueakStore:
         return self.postgres_db.delete_squeak(squeak_hash)
 
     def lookup_squeaks(self, addresses, min_block, max_block):
-        return self.postgres_db.lookup_squeaks(addresses, min_block, max_block)
+        return self.postgres_db.lookup_squeaks(
+            addresses,
+            min_block,
+            max_block,
+        )
+
+    def lookup_squeaks_include_locked(self, addresses, min_block, max_block):
+        return self.postgres_db.lookup_squeaks(
+            addresses,
+            min_block,
+            max_block,
+            include_locked=True,
+        )
+
+    def lookup_squeaks_needing_offer(self, addresses, min_block, max_block, peer_id):
+        return self.postgres_db.lookup_squeaks_needing_offer(
+            addresses,
+            min_block,
+            max_block,
+            peer_id,
+        )
