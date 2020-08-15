@@ -222,11 +222,15 @@ class PostgresDb:
         """ Lookup squeaks that are locked and don't have an offer. """
         sql = """
         SELECT hash FROM squeak
+        LEFT JOIN offer
+        ON squeak.hash=offer.squeak_hash
+        AND offer.peer_id=%s
         WHERE author_address IN %s
         AND n_block_height >= %s
         AND n_block_height <= %s
         AND vch_decryption_key IS NULL
-        AND ((block_header IS NOT NULL) OR %s);
+        AND ((block_header IS NOT NULL) OR %s)
+        AND offer.squeak_hash IS NULL
         """
 
         # LEFT JOIN offer
@@ -242,7 +246,7 @@ class PostgresDb:
             # mogrify to debug.
             # logger.info(curs.mogrify(sql, (addresses_tuple, min_block, max_block)))
             curs.execute(
-                sql, (addresses_tuple, min_block, max_block, include_unverified)
+                sql, (peer_id, addresses_tuple, min_block, max_block, include_unverified)
             )
             rows = curs.fetchall()
             hashes = [bytes.fromhex(row["hash"]) for row in rows]
