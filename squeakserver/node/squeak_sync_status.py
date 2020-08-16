@@ -42,11 +42,12 @@ class SqueakSyncStatus:
 
 
 class SqueakSyncController:
-    def __init__(self, blockchain_client, squeak_store, postgres_db):
+    def __init__(self, blockchain_client, squeak_store, postgres_db, lightning_client):
         self.squeak_sync_status = SqueakSyncStatus()
         self.blockchain_client = blockchain_client
         self.squeak_store = squeak_store
         self.postgres_db = postgres_db
+        self.lightning_client = lightning_client
 
     def sync_peers(self, peers):
         try:
@@ -82,6 +83,7 @@ class SqueakSyncController:
             block_height,
             self.squeak_store,
             self.postgres_db,
+            self.lightning_client,
         )
         try:
             logger.debug("Trying to download from peer: {}".format(peer))
