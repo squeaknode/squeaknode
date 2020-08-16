@@ -92,17 +92,17 @@ message SqueakBuyOffer {
     bytes iv = 3;
 
     /// The invoice preimage hash.
-    bytes preimage_hash = 5;
+    bytes preimage_hash = 4;
 
     /// The invoice
-    string payment_request = 6;
+    string payment_request = 5;
 
     /// The host of the seller lightning node
-    string host = 8;
+    string host = 6;
 
     /// The port of the seller lightning node
-    int32 port = 9;
+    int32 port = 7;
 
     /// The challenge proof
-    bytes proof = 10;
+    bytes proof = 8;
 }
