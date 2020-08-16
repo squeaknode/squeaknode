@@ -26,11 +26,14 @@ class SqueakStore:
             raise Exception("Excedeed allowed number of squeaks per block.")
 
         inserted_squeak_hash = self.postgres_db.insert_squeak(squeak)
-        self.squeak_block_verifier.add_squeak_to_queue(inserted_squeak_hash)
+        # self.squeak_block_verifier.add_squeak_to_queue(inserted_squeak_hash)
+        # Slow operation because of blockchain lookup
+        self.squeak_block_verifier.verify_squeak_block(inserted_squeak_hash)
         return inserted_squeak_hash
 
     def save_created_squeak(self, squeak):
         inserted_squeak_hash = self.postgres_db.insert_squeak(squeak)
+        # Slow operation because of blockchain lookup
         self.squeak_block_verifier.verify_squeak_block(inserted_squeak_hash)
         return inserted_squeak_hash
 

@@ -63,26 +63,11 @@ class PeerDownload:
         if self.stopped():
             return
 
-        # Get local hashes of locked squeaks that don't have an offer from this peer.
-        locked_hashes = self._get_locked_hashes(addresses, min_block, max_block)
-        logger.info("Got locked hashes: {}".format(len(locked_hashes)))
-        for hash in locked_hashes:
-            logger.info("locked hash: {}".format(hash.hex()))
-
-        if self.stopped():
-            return
-
         # Get hashes to download
         hashes_to_download = set(remote_hashes) - set(local_hashes)
         logger.info("Hashes to download: {}".format(len(hashes_to_download)))
         for hash in hashes_to_download:
             logger.info("hash to download: {}".format(hash.hex()))
-
-        # Get hashes to get offer
-        hashes_to_get_offer = set(remote_hashes) & set(locked_hashes)
-        logger.info("Hashes to get offer: {}".format(len(hashes_to_get_offer)))
-        for hash in hashes_to_get_offer:
-            logger.info("hash to get offer: {}".format(hash.hex()))
 
         # Download squeaks for the hashes
         # TODO: catch exception downloading individual squeak
@@ -90,6 +75,21 @@ class PeerDownload:
             if self.stopped():
                 return
             self._download_squeak(hash)
+
+        if self.stopped():
+            return
+
+        # Get local hashes of locked squeaks that don't have an offer from this peer.
+        locked_hashes = self._get_locked_hashes(addresses, min_block, max_block)
+        logger.info("Got locked hashes: {}".format(len(locked_hashes)))
+        for hash in locked_hashes:
+            logger.info("locked hash: {}".format(hash.hex()))
+
+        # Get hashes to get offer
+        hashes_to_get_offer = set(remote_hashes) & set(locked_hashes)
+        logger.info("Hashes to get offer: {}".format(len(hashes_to_get_offer)))
+        for hash in hashes_to_get_offer:
+            logger.info("hash to get offer: {}".format(hash.hex()))
 
         # Download offers for the hashes
         # TODO: catch exception downloading individual squeak
