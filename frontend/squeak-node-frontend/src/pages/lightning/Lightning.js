@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import {useHistory} from "react-router-dom";
-import { Grid, Button } from "@material-ui/core";
+import {
+  Grid,
+  Button,
+  AppBar,
+  Tabs,
+  Tab,
+} from "@material-ui/core";
 import { useTheme } from "@material-ui/styles";
 import {
   ResponsiveContainer,
@@ -36,6 +42,18 @@ export default function LightningPage() {
 
   const [lndInfo, setLndInfo] = useState(null);
   const [walletBalance, setWalletBalance] = useState(null);
+  const [value, setValue] = useState(0);
+
+  function a11yProps(index) {
+    return {
+      id: `simple-tab-${index}`,
+      'aria-controls': `simple-tabpanel-${index}`,
+    };
+  }
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
 
   const getLndInfo = () => {
         console.log("called getLndInfo");
@@ -250,13 +268,50 @@ export default function LightningPage() {
     )
   }
 
+  function TabPanel(props) {
+    const { children, value, index, ...other } = props;
+
+    return (
+      <div
+        role="tabpanel"
+        hidden={value !== index}
+        id={`simple-tabpanel-${index}`}
+        aria-labelledby={`simple-tab-${index}`}
+        {...other}
+      >
+        {value === index && (
+          <div>{children}</div>
+        )}
+      </div>
+    );
+  }
+
+  function LightningTabs() {
+    return (
+      <>
+      <AppBar position="static" color="default">
+        <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
+          <Tab label="Balance" {...a11yProps(0)} />
+          <Tab label="Node Info" {...a11yProps(1)} />
+        </Tabs>
+      </AppBar>
+      <TabPanel value={value} index={0}>
+        {(lndInfo && walletBalance)
+          ? InfoContent()
+          : NoInfoContent()
+        }
+      </TabPanel>
+      <TabPanel value={value} index={1}>
+        foooo
+      </TabPanel>
+      </>
+    )
+  }
+
   return (
     <>
       <PageTitle title="Lightning" />
-      {(lndInfo && walletBalance)
-        ? InfoContent()
-        : NoInfoContent()
-      }
+      {LightningTabs()}
     </>
   );
 }
