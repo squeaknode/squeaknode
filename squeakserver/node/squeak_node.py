@@ -236,11 +236,6 @@ class SqueakNode:
     def delete_peer(self, peer_id):
         self.postgres_db.delete_peer(peer_id)
 
-    # def load_buy_offers(self, squeak_hash_str):
-    #     peers = self.postgres_db.get_peers()
-    #     squeak_hash = bytes.fromhex(squeak_hash_str)
-    #     self.squeak_get_offer_controller.get_offers(peers, squeak_hash)
-
     def get_buy_offers_with_peer(self, squeak_hash_str):
         squeak_hash = bytes.fromhex(squeak_hash_str)
         return self.postgres_db.get_offers_with_peer(squeak_hash_str)

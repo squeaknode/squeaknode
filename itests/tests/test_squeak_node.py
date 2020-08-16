@@ -557,12 +557,3 @@ def test_delete_peer(server_stub, admin_stub, peer_id):
             )
         )
     assert "Peer not found." in str(excinfo.value)
-
-
-# def test_load_buy_offers(server_stub, admin_stub, saved_squeak_hash):
-#     # Load buy offers for the squeak
-#     admin_stub.LoadBuyOffers(
-#         squeak_admin_pb2.LoadBuyOffersRequest(
-#             squeak_hash=saved_squeak_hash.hex(),
-#         )
-#     )
