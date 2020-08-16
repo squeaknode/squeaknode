@@ -12,6 +12,8 @@ from squeakserver.node.squeak_maker import SqueakMaker
 from squeakserver.node.squeak_rate_limiter import SqueakRateLimiter
 from squeakserver.node.squeak_whitelist import SqueakWhitelist
 from squeakserver.node.squeak_store import SqueakStore
+from squeakserver.node.squeak_offer_expiry_worker import SqueakOfferExpiryWorker
+from squeakserver.node.squeak_expired_offer_cleaner import SqueakExpiredOfferCleaner
 from squeakserver.node.squeak_peer_sync_worker import SqueakPeerSyncWorker
 from squeakserver.node.squeak_sync_status import SqueakSyncController
 from squeakserver.server.buy_offer import BuyOffer
@@ -65,11 +67,18 @@ class SqueakNode:
             postgres_db,
             self.squeak_sync_controller,
         )
+        self.squeak_expired_offer_cleaner = SqueakExpiredOfferCleaner(
+            self.postgres_db,
+        )
+        self.squeak_offer_expiry_worker = SqueakOfferExpiryWorker(
+            self.squeak_expired_offer_cleaner,
+        )
 
     def start_running(self):
         self.squeak_block_periodic_worker.start_running()
         self.squeak_block_queue_worker.start_running()
         self.squeak_peer_sync_worker.start_running()
+        self.squeak_offer_expiry_worker.start_running()
 
     def save_uploaded_squeak(self, squeak):
         return self.squeak_store.save_uploaded_squeak(squeak)

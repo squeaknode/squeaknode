@@ -561,6 +561,18 @@ class PostgresDb:
             offers_with_peer = [self._parse_offer_with_peer(row) for row in rows]
             return offers_with_peer
 
+    def delete_expired_offers(self):
+        """ Delete all expired offers. """
+        sql = """
+        DELETE FROM offer
+        WHERE now() > to_timestamp(invoice_timestamp + invoice_expiry)
+        RETURNING *;
+        """
+        with self.get_cursor() as curs:
+            curs.execute(sql)
+            rows = curs.fetchall()
+            return len(rows)
+
     def _parse_squeak_entry(self, row):
         if row is None:
             return None
