@@ -14,7 +14,6 @@ from squeakserver.node.squeak_whitelist import SqueakWhitelist
 from squeakserver.node.squeak_store import SqueakStore
 from squeakserver.node.squeak_peer_sync_worker import SqueakPeerSyncWorker
 from squeakserver.node.squeak_sync_status import SqueakSyncController
-from squeakserver.node.squeak_get_offer_controller import SqueakGetOfferController
 from squeakserver.server.buy_offer import BuyOffer
 from squeakserver.server.squeak_profile import SqueakProfile
 from squeakserver.server.squeak_peer import SqueakPeer
@@ -66,11 +65,6 @@ class SqueakNode:
             postgres_db,
             self.squeak_sync_controller,
         )
-        # self.squeak_get_offer_controller = SqueakGetOfferController(
-        #     self.squeak_store,
-        #     self.postgres_db,
-        #     self.lightning_client,
-        # )
 
     def start_running(self):
         self.squeak_block_periodic_worker.start_running()
