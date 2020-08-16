@@ -28,7 +28,7 @@ class SqueakBlockVerifier:
             self._delete_squeak(squeak_hash)
 
     def verify_all_unverified_squeaks(self):
-        logger.info("Calling verify_squeaks.")
+        logger.debug("Verifying all unverified squeaks.")
         squeaks_to_verify = self.postgres_db.get_unverified_block_squeaks()
         for squeak_hash in squeaks_to_verify:
             self.verify_squeak_block(squeak_hash)
