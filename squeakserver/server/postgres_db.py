@@ -232,11 +232,6 @@ class PostgresDb:
         AND ((block_header IS NOT NULL) OR %s)
         AND offer.squeak_hash IS NULL
         """
-
-        # LEFT JOIN offer
-        # ON squeak.hash=offer.squeak_hash
-
-        # AND offer.peer_id=%s;
         addresses_tuple = tuple(addresses)
 
         if not addresses:

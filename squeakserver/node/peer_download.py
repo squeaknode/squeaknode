@@ -38,7 +38,7 @@ class PeerDownload:
     def download(self):
         # Get list of followed addresses.
         addresses = self._get_followed_addresses()
-        logger.info("Followed addresses: {}".format(addresses))
+        logger.debug("Followed addresses: {}".format(addresses))
         min_block = self.block_height - self.lookup_block_interval
         max_block = self.block_height
 
@@ -47,27 +47,27 @@ class PeerDownload:
 
         # Get remote hashes
         remote_hashes = self._get_remote_hashes(addresses, min_block, max_block)
-        logger.info("Got remote hashes: {}".format(len(remote_hashes)))
+        logger.debug("Got remote hashes: {}".format(len(remote_hashes)))
         for hash in remote_hashes:
-            logger.info("remote hash: {}".format(hash.hex()))
+            logger.debug("remote hash: {}".format(hash.hex()))
 
         if self.stopped():
             return
 
         # Get local hashes of downloaded squeaks
         local_hashes = self._get_local_hashes(addresses, min_block, max_block)
-        logger.info("Got local hashes: {}".format(len(local_hashes)))
+        logger.debug("Got local hashes: {}".format(len(local_hashes)))
         for hash in local_hashes:
-            logger.info("local hash: {}".format(hash.hex()))
+            logger.debug("local hash: {}".format(hash.hex()))
 
         if self.stopped():
             return
 
         # Get hashes to download
         hashes_to_download = set(remote_hashes) - set(local_hashes)
-        logger.info("Hashes to download: {}".format(len(hashes_to_download)))
+        logger.debug("Hashes to download: {}".format(len(hashes_to_download)))
         for hash in hashes_to_download:
-            logger.info("hash to download: {}".format(hash.hex()))
+            logger.debug("hash to download: {}".format(hash.hex()))
 
         # Download squeaks for the hashes
         # TODO: catch exception downloading individual squeak
@@ -81,15 +81,15 @@ class PeerDownload:
 
         # Get local hashes of locked squeaks that don't have an offer from this peer.
         locked_hashes = self._get_locked_hashes(addresses, min_block, max_block)
-        logger.info("Got locked hashes: {}".format(len(locked_hashes)))
+        logger.debug("Got locked hashes: {}".format(len(locked_hashes)))
         for hash in locked_hashes:
-            logger.info("locked hash: {}".format(hash.hex()))
+            logger.debug("locked hash: {}".format(hash.hex()))
 
         # Get hashes to get offer
         hashes_to_get_offer = set(remote_hashes) & set(locked_hashes)
-        logger.info("Hashes to get offer: {}".format(len(hashes_to_get_offer)))
+        logger.debug("Hashes to get offer: {}".format(len(hashes_to_get_offer)))
         for hash in hashes_to_get_offer:
-            logger.info("hash to get offer: {}".format(hash.hex()))
+            logger.debug("hash to get offer: {}".format(hash.hex()))
 
         # Download offers for the hashes
         # TODO: catch exception downloading individual squeak
