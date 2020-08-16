@@ -35,8 +35,6 @@ class PeerGetOffer:
     def get_offer(self):
         logger.info("Getting offer for squeak hash: {}".format(self.squeak_hash.hex()))
 
-        # TODO: check if there is already an offer from this peer, and delete it
-
         # Get the squeak from the squeak hash
         squeak = self._get_squeak()
 
