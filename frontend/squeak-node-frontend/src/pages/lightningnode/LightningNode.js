@@ -7,7 +7,9 @@ import {
   AppBar,
   Tabs,
   Tab,
+  Typography,
 } from "@material-ui/core";
+import { useTheme } from "@material-ui/styles";
 
 // styles
 import useStyles from "./styles";
@@ -25,6 +27,8 @@ import { client } from "../../squeakclient/squeakclient"
 
 export default function LightningNodePage() {
   var classes = useStyles();
+  var theme = useTheme();
+
   const history = useHistory();
   const { pubkey, host } = useParams();
   const [value, setValue] = useState(0);
@@ -40,6 +44,56 @@ export default function LightningNodePage() {
     setValue(newValue);
   };
 
+  function NodeInfoGridItem() {
+    return (
+      <Grid item xs={12}>
+      <Widget disableWidgetMenu>
+      <Grid
+        container
+        direction="row"
+        justify="flex-start"
+        alignItems="center"
+      >
+        <Grid item>
+          <Typography color="text" colorBrightness="secondary">
+            pubkey
+          </Typography>
+          <Typography size="md">{pubkey}</Typography>
+        </Grid>
+      </Grid>
+
+      <Grid
+        container
+        direction="row"
+        justify="flex-start"
+        alignItems="center"
+      >
+        <Grid item>
+          <Typography color="text" colorBrightness="secondary">
+            host
+          </Typography>
+          <Typography size="md">{host}</Typography>
+        </Grid>
+      </Grid>
+
+      <Grid
+        container
+        direction="row"
+        justify="flex-start"
+        alignItems="center"
+      >
+        <Grid item>
+          <Typography color="text" colorBrightness="secondary">
+            connected
+          </Typography>
+          <Typography size="md">false</Typography>
+        </Grid>
+      </Grid>
+       </Widget>
+      </Grid>
+    )
+  }
+
   function NoPubkeyContent() {
     return (
       <div>
@@ -50,12 +104,11 @@ export default function LightningNodePage() {
 
   function PubkeyContent() {
     return (
-      <div className={classes.root}>
-        pubkey:
-        <Button variant="contained">{pubkey}</Button>
-        host:
-        <Button variant="contained">{host}</Button>
-      </div>
+      <>
+        <Grid container spacing={4}>
+          {NodeInfoGridItem()}
+        </Grid>
+      </>
     )
   }
 
@@ -82,8 +135,9 @@ export default function LightningNodePage() {
       <>
       <AppBar position="static" color="default">
         <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
-          <Tab label="Balance" {...a11yProps(0)} />
-          <Tab label="Node Info" {...a11yProps(1)} />
+          <Tab label="Node Info" {...a11yProps(0)} />
+          <Tab label="Channels" {...a11yProps(1)} />
+          <Tab label="Pending Channels" {...a11yProps(2)} />
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
@@ -91,6 +145,9 @@ export default function LightningNodePage() {
       </TabPanel>
       <TabPanel value={value} index={1}>
         fooo
+      </TabPanel>
+      <TabPanel value={value} index={2}>
+        barrr
       </TabPanel>
       </>
     )
