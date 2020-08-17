@@ -27,9 +27,8 @@ import mock from "../dashboard/mock";
 import {
   GetPeersRequest,
 } from "../../proto/squeak_admin_pb"
-import {SqueakAdminClient} from "../../proto/squeak_admin_grpc_web_pb"
+import { client } from "../../squeakclient/squeakclient"
 
-var client = new SqueakAdminClient('http://' + window.location.hostname + ':8080')
 
 const useStyles = makeStyles((theme) => ({
   root: {

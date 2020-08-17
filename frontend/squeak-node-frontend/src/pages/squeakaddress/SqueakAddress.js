@@ -19,10 +19,10 @@ import CreateContactProfileDialog from "../../components/CreateContactProfileDia
 import {
    GetAddressSqueakDisplaysRequest,
    GetSqueakProfileByAddressRequest,
-   GetSqueakProfileRequest } from "../../proto/squeak_admin_pb"
-import { SqueakAdminClient } from "../../proto/squeak_admin_grpc_web_pb"
+   GetSqueakProfileRequest,
+} from "../../proto/squeak_admin_pb"
+import { client } from "../../squeakclient/squeakclient"
 
-var client = new SqueakAdminClient('http://' + window.location.hostname + ':8080')
 
 export default function SqueakAddressPage() {
   var classes = useStyles();
