@@ -83,7 +83,7 @@ export default function LightningPage() {
     getWalletBalance()
   },[]);
 
-  function NoInfoContent() {
+  function NoBalanceContent() {
     return (
       <div>
         Unable to fetch lightning info.
@@ -108,81 +108,125 @@ export default function LightningPage() {
     )
   }
 
-  function InfoContent() {
+  function BalanceContent() {
     return (
       <>
         <Grid container spacing={4}>
-          {PubkeyGridItem()}
-        </Grid>
-        <Grid container spacing={4}>
-          {StatusGridItem()}
-          {ChannelsGridItem()}
           {BalanceGridItem()}
         </Grid>
       </>
     )
   }
 
-  function PubkeyGridItem() {
+  function NodeInfoContent() {
+    return (
+      <>
+        <Grid container spacing={4}>
+          {StatusGridItem()}
+        </Grid>
+      </>
+    )
+  }
+
+  function BalanceGridItem() {
     return (
       <Grid item xs={12}>
-        <Widget
-          title="Node info"
-          disableWidgetMenu
-          upperTitle
-          bodyClass={classes.fullHeightBody}
-          className={classes.card}
-        >
-          <div className={classes.visitsNumberContainer}>
-          <Typography color="text" colorBrightness="secondary">
-            pubkey
-          </Typography>
-            <Typography size="md" weight="medium">
-              {lndInfo.getIdentityPubkey()}
-            </Typography>
-          </div>
-        </Widget>
+      <Widget disableWidgetMenu>
+         <div>
+           <Typography variant="h1" className={classes.text}>
+             {walletBalance.getTotalBalance()} satoshis
+           </Typography>
+         </div>
+         <Grid
+           container
+           direction="row"
+           justify="flex-start"
+           alignItems="center"
+         >
+           <Grid item>
+             <Typography color="text" colorBrightness="secondary">
+               unconfirmed balance (satoshis)
+             </Typography>
+             <Typography size="md">{walletBalance.getUnconfirmedBalance()}</Typography>
+           </Grid>
+         </Grid>
+         <Grid
+           container
+           direction="row"
+           justify="flex-start"
+           alignItems="center"
+         >
+           <Grid item>
+             <Typography color="text" colorBrightness="secondary">
+               confirmed balance (satoshis):
+             </Typography>
+             <Typography size="md">{walletBalance.getConfirmedBalance()}</Typography>
+           </Grid>
+         </Grid>
+       </Widget>
       </Grid>
     )
   }
 
   function StatusGridItem() {
     return (
-        <Grid item lg={3} md={4} sm={6} xs={12}>
-          <Widget
-            title="Node status"
-            disableWidgetMenu
-            upperTitle
-            bodyClass={classes.fullHeightBody}
-            className={classes.card}
-          >
-            <Grid
-              container
-              direction="row"
-              justify="space-between"
-              alignItems="center"
-            >
-              <Grid item>
-                <Typography color="text" colorBrightness="secondary">
-                  synced to chain
-                </Typography>
-                <Typography size="md">{lndInfo.getSyncedToChain().toString()}</Typography>
-              </Grid>
-              <Grid item>
-                <Typography color="text" colorBrightness="secondary">
-                  synced to graph
-                </Typography>
-                <Typography size="md">{lndInfo.getSyncedToGraph().toString()}</Typography>
-              </Grid>
-              <Grid item>
-                <Typography color="text" colorBrightness="secondary">
-                  block height
-                </Typography>
-                <Typography size="md">{lndInfo.getBlockHeight()}</Typography>
-              </Grid>
-            </Grid>
-          </Widget>
+      <Grid item xs={12}>
+      <Widget disableWidgetMenu>
+      <Grid
+        container
+        direction="row"
+        justify="flex-start"
+        alignItems="center"
+      >
+        <Grid item>
+          <Typography color="text" colorBrightness="secondary">
+            node pubkey
+          </Typography>
+          <Typography size="md">{lndInfo.getIdentityPubkey()}</Typography>
         </Grid>
+      </Grid>
+
+      <Grid
+        container
+        direction="row"
+        justify="flex-start"
+        alignItems="center"
+      >
+        <Grid item>
+          <Typography color="text" colorBrightness="secondary">
+            synced to chain
+          </Typography>
+          <Typography size="md">{lndInfo.getSyncedToChain().toString()}</Typography>
+        </Grid>
+      </Grid>
+      <Grid
+        container
+        direction="row"
+        justify="flex-start"
+        alignItems="center"
+      >
+        <Grid item>
+          <Typography color="text" colorBrightness="secondary">
+            synced to graph
+          </Typography>
+          <Typography size="md">{lndInfo.getSyncedToGraph().toString()}</Typography>
+        </Grid>
+      </Grid>
+      <Grid
+        container
+        direction="row"
+        justify="flex-start"
+        alignItems="center"
+      >
+        <Grid item>
+          <Typography color="text" colorBrightness="secondary">
+            block height
+          </Typography>
+          <Typography size="md">{lndInfo.getBlockHeight()}</Typography>
+        </Grid>
+      </Grid>
+       </Widget>
+      </Grid>
     )
   }
 
@@ -226,46 +270,6 @@ export default function LightningPage() {
     )
   }
 
-  function BalanceGridItem() {
-    return (
-        <Grid item lg={3} md={4} sm={6} xs={12}>
-          <Widget
-            title="Balance"
-            disableWidgetMenu
-            upperTitle
-            bodyClass={classes.fullHeightBody}
-            className={classes.card}
-          >
-            <Grid
-              container
-              direction="row"
-              justify="space-between"
-              alignItems="center"
-            >
-              <Grid item>
-                <Typography color="text" colorBrightness="secondary">
-                  total balance
-                </Typography>
-                <Typography size="md">{walletBalance.getTotalBalance()}</Typography>
-              </Grid>
-              <Grid item>
-                <Typography color="text" colorBrightness="secondary">
-                  confirmed balance
-                </Typography>
-                <Typography size="md">{walletBalance.getConfirmedBalance()}</Typography>
-              </Grid>
-              <Grid item>
-                <Typography color="text" colorBrightness="secondary">
-                  unconfirmed balance
-                </Typography>
-                <Typography size="md">{walletBalance.getUnconfirmedBalance()}</Typography>
-              </Grid>
-            </Grid>
-          </Widget>
-        </Grid>
-    )
-  }
-
   function TabPanel(props) {
     const { children, value, index, ...other } = props;
 
@@ -295,12 +299,15 @@ export default function LightningPage() {
       </AppBar>
       <TabPanel value={value} index={0}>
         {(lndInfo && walletBalance)
-          ? InfoContent()
-          : NoInfoContent()
+          ? BalanceContent()
+          : NoBalanceContent()
         }
       </TabPanel>
       <TabPanel value={value} index={1}>
-        foooo
+        {(lndInfo && walletBalance)
+          ? NodeInfoContent()
+          : NoBalanceContent()
+        }
       </TabPanel>
       </>
     )
