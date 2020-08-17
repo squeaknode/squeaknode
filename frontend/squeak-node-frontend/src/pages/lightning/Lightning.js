@@ -180,6 +180,20 @@ export default function LightningPage() {
       >
         <Grid item>
           <Typography color="text" colorBrightness="secondary">
+            node pubkey
+          </Typography>
+          <Typography size="md">{lndInfo.getIdentityPubkey()}</Typography>
+        </Grid>
+      </Grid>
+
+      <Grid
+        container
+        direction="row"
+        justify="flex-start"
+        alignItems="center"
+      >
+        <Grid item>
+          <Typography color="text" colorBrightness="secondary">
             synced to chain
           </Typography>
           <Typography size="md">{lndInfo.getSyncedToChain().toString()}</Typography>
