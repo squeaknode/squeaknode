@@ -40,7 +40,7 @@ export default function LightningNodePage() {
   var theme = useTheme();
 
   const history = useHistory();
-  const { pubkey, host } = useParams();
+  const { pubkey, host, port } = useParams();
   const [value, setValue] = useState(0);
 
   function a11yProps(index) {
@@ -83,6 +83,20 @@ export default function LightningNodePage() {
             host
           </Typography>
           <Typography size="md">{host}</Typography>
+        </Grid>
+      </Grid>
+
+      <Grid
+        container
+        direction="row"
+        justify="flex-start"
+        alignItems="center"
+      >
+        <Grid item>
+          <Typography color="text" colorBrightness="secondary">
+            port
+          </Typography>
+          <Typography size="md">{port}</Typography>
         </Grid>
       </Grid>
 

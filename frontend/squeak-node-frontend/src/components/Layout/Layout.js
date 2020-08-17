@@ -60,6 +60,7 @@ function Layout(props) {
               <Route path="/app/profile/:id" component={Profile} />
               <Route path="/app/profiles" component={Profiles} />
               <Route path="/app/lightning" component={Lightning} />
+              <Route path="/app/lightningnode/:pubkey/:host/:port" component={LightningNode} />
               <Route path="/app/lightningnode/:pubkey/:host" component={LightningNode} />
               <Route path="/app/lightningnode/:pubkey" component={LightningNode} />
               <Route path="/app/peers" component={Peers} />
