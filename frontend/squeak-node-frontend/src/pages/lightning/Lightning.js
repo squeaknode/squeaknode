@@ -32,9 +32,7 @@ import Widget from "../../components/Widget";
 import { Typography } from "../../components/Wrappers";
 
 import { GetInfoRequest, WalletBalanceRequest } from "../../proto/lnd_pb"
-import { SqueakAdminClient } from "../../proto/squeak_admin_grpc_web_pb"
-
-var client = new SqueakAdminClient('http://' + window.location.hostname + ':8080')
+import { client } from "../../squeakclient/squeakclient"
 
 export default function LightningPage() {
   var classes = useStyles();

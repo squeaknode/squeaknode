@@ -32,9 +32,8 @@ import SqueakThreadItem from "../../components/SqueakThreadItem";
 import {
   CreateSigningProfileRequest,
 } from "../../proto/squeak_admin_pb"
-import {SqueakAdminClient} from "../../proto/squeak_admin_grpc_web_pb"
+import { client } from "../../squeakclient/squeakclient"
 
-var client = new SqueakAdminClient('http://' + window.location.hostname + ':8080')
 
 export default function CreateSigningProfileDialog({
   open,
