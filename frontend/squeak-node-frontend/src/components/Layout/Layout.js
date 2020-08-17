@@ -22,6 +22,7 @@ import Squeak from "../../pages/squeak";
 import Buy from "../../pages/buy";
 import Profile from "../../pages/profile";
 import Lightning from "../../pages/lightning";
+import LightningNode from "../../pages/lightningnode";
 import Notifications from "../../pages/notifications";
 import Maps from "../../pages/maps";
 import Profiles from "../../pages/profiles";
@@ -59,6 +60,9 @@ function Layout(props) {
               <Route path="/app/profile/:id" component={Profile} />
               <Route path="/app/profiles" component={Profiles} />
               <Route path="/app/lightning" component={Lightning} />
+              <Route path="/app/lightningnode/:pubkey/:host/:port" component={LightningNode} />
+              <Route path="/app/lightningnode/:pubkey/:host" component={LightningNode} />
+              <Route path="/app/lightningnode/:pubkey" component={LightningNode} />
               <Route path="/app/peers" component={Peers} />
               <Route path="/app/peer/:id" component={Peer} />
               <Route path="/app/notifications" component={Notifications} />
