@@ -20,6 +20,8 @@ import useStyles from "./styles";
 
 import Widget from "../../components/Widget";
 
+import moment from 'moment';
+
 export default function BuyOfferItem({
   offer,
   handleOfferClick,
@@ -66,7 +68,7 @@ export default function BuyOfferItem({
         <Typography
           size="md"
           >
-            Expire time: {new Date(expireTime*1000).toString()}
+            Expires: {moment(expireTime*1000).fromNow()}
           </Typography>
       </Box>
     )
