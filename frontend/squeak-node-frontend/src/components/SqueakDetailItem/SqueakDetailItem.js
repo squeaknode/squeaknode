@@ -27,6 +27,8 @@ import useStyles from "./styles";
 
 import Widget from "../../components/Widget";
 
+import moment from 'moment';
+
 export default function SqueakDetailItem({
   squeak,
   handleAddressClick,
@@ -167,7 +169,7 @@ export default function SqueakDetailItem({
           >
             <Grid item>
                 <Box color="secondary.main" fontWeight="fontWeightBold">
-                  {new Date(squeak.getBlockTime()*1000).toString()} (Block # {squeak.getBlockHeight()})
+                  {moment(squeak.getBlockTime()*1000).format('MMMM Do YYYY, h:mm:ss a')} (Block #{squeak.getBlockHeight()})
                 </Box>
             </Grid>
           </Grid>
