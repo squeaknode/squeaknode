@@ -4,7 +4,7 @@ import {
   Home as HomeIcon,
   NotificationsNone as NotificationsIcon,
   People as ProfilesIcon,
-  AttachMoney as LightningIcon,
+  AttachMoney as MoneyIcon,
   QuestionAnswer as SupportIcon,
   LibraryBooks as LibraryIcon,
   HelpOutline as FAQIcon,
@@ -32,7 +32,7 @@ import {
 const structure = [
   { id: 0, label: "Timeline", link: "/app/timeline", icon: <HomeIcon /> },
   { id: 1, label: "Profiles", link: "/app/profiles", icon: <ProfilesIcon /> },
-  { id: 2, label: "Lightning", link: "/app/lightning", icon: <LightningIcon /> },
+  { id: 2, label: "Wallet", link: "/app/wallet", icon: <MoneyIcon /> },
   { id: 3, label: "Peers", link: "/app/peers", icon: <PeerIcon /> },
 ];
 
