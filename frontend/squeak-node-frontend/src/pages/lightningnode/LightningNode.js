@@ -7,9 +7,21 @@ import {
   AppBar,
   Tabs,
   Tab,
-  Typography,
 } from "@material-ui/core";
 import { useTheme } from "@material-ui/styles";
+import {
+  ResponsiveContainer,
+  ComposedChart,
+  AreaChart,
+  LineChart,
+  Line,
+  Area,
+  PieChart,
+  Pie,
+  Cell,
+  YAxis,
+  XAxis,
+} from "recharts";
 
 // styles
 import useStyles from "./styles";
@@ -17,11 +29,9 @@ import useStyles from "./styles";
 // components
 import PageTitle from "../../components/PageTitle";
 import Widget from "../../components/Widget";
-import SqueakThreadItem from "../../components/SqueakThreadItem";
+import { Typography } from "../../components/Wrappers";
 
-import {
-   GetAddressSqueakDisplaysRequest,
-} from "../../proto/squeak_admin_pb"
+import { GetInfoRequest, WalletBalanceRequest } from "../../proto/lnd_pb"
 import { client } from "../../squeakclient/squeakclient"
 
 
