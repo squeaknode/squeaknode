@@ -34,7 +34,7 @@ import { Typography } from "../../components/Wrappers";
 import { GetInfoRequest, WalletBalanceRequest } from "../../proto/lnd_pb"
 import { client } from "../../squeakclient/squeakclient"
 
-export default function LightningPage() {
+export default function WalletPage() {
   var classes = useStyles();
   var theme = useTheme();
 
@@ -315,7 +315,7 @@ export default function LightningPage() {
 
   return (
     <>
-      <PageTitle title="Lightning" />
+      <PageTitle title="Wallet" />
       {LightningTabs()}
     </>
   );
