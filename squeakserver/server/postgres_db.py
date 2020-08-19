@@ -170,37 +170,31 @@ class PostgresDb:
 
     def insert_squeak(self, squeak):
         """ Insert a new squeak. """
-        sql = """
-        INSERT INTO squeak(hash, n_version, hash_enc_content, hash_reply_sqk, hash_block, n_block_height, vch_script_pub_key, vch_encryption_key, enc_data_key, iv, n_time, n_nonce, enc_content, vch_script_sig, author_address, vch_decryption_key)
-        VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-        RETURNING hash;"""
-
-        with self.get_cursor() as curs:
-            # execute the INSERT statement
-            curs.execute(
-                sql,
-                (
-                    get_hash(squeak).hex(),
-                    squeak.nVersion,
-                    squeak.hashEncContent.hex(),
-                    squeak.hashReplySqk.hex(),
-                    squeak.hashBlock.hex(),
-                    squeak.nBlockHeight,
-                    squeak.vchScriptPubKey,
-                    squeak.vchEncryptionKey,
-                    squeak.encDatakey.hex(),
-                    squeak.iv.hex(),
-                    squeak.nTime,
-                    squeak.nNonce,
-                    squeak.encContent.hex(),
-                    squeak.vchScriptSig,
-                    str(squeak.GetAddress()),
-                    squeak.GetDecryptionKey().get_bytes() if squeak.HasDecryptionKey() else None,
-                ),
-            )
-            # get the generated hash back
-            row = curs.fetchone()
-            return bytes.fromhex(row["hash"])
+        logger.info("Inserting squeak: {}".format(squeak))
+        ins = self.squeaks.insert().values(
+            hash=get_hash(squeak).hex(),
+            n_version=squeak.nVersion,
+            hash_enc_content=squeak.hashEncContent.hex(),
+            hash_reply_sqk=squeak.hashReplySqk.hex(),
+            hash_block=squeak.hashBlock.hex(),
+            n_block_height=squeak.nBlockHeight,
+            vch_script_pub_key=squeak.vchScriptPubKey,
+            vch_encryption_key=squeak.vchEncryptionKey,
+            enc_data_key=squeak.encDatakey.hex(),
+            iv=squeak.iv.hex(),
+            n_time=squeak.nTime,
+            n_nonce=squeak.nNonce,
+            enc_content=squeak.encContent.hex(),
+            vch_script_sig=squeak.vchScriptSig,
+            author_address=str(squeak.GetAddress()),
+            vch_decryption_key=squeak.GetDecryptionKey().get_bytes() if squeak.HasDecryptionKey() else None,
+        )
+        logger.info("Insert squeak params: {}".format(ins.compile().params))
+        with self.engine.connect() as connection:
+            res = connection.execute(ins)
+            squeak_hash = res.inserted_primary_key[0]
+            logger.info("Inserted squeak and got hash: {}".format(squeak_hash))
+            return bytes.fromhex(squeak_hash)
 
     def get_squeak_entry(self, squeak_hash):
         """ Get a squeak. """
