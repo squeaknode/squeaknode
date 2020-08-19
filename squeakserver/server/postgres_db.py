@@ -577,12 +577,10 @@ class PostgresDb:
 
     def get_peers(self):
         """ Get all peers. """
-        sql = """
-        SELECT * FROM peer;
-        """
-        with self.get_cursor() as curs:
-            curs.execute(sql)
-            rows = curs.fetchall()
+        s = select([self.peers])
+        with self.engine.connect() as connection:
+            result = connection.execute(s)
+            rows = result.fetchall()
             peers = [self._parse_squeak_peer(row) for row in rows]
             return peers
 
