@@ -6,6 +6,9 @@ from psycopg2 import sql
 from psycopg2.extras import DictCursor
 from squeak.core import CSqueak
 
+import sqlalchemy
+from sqlalchemy import create_engine
+
 from squeakserver.blockchain.util import parse_block_header
 from squeakserver.core.squeak_entry import SqueakEntry
 from squeakserver.core.squeak_entry_with_profile import SqueakEntryWithProfile
@@ -14,14 +17,18 @@ from squeakserver.core.offer import Offer
 from squeakserver.server.squeak_profile import SqueakProfile
 from squeakserver.server.squeak_peer import SqueakPeer
 from squeakserver.server.util import get_hash
+from squeakserver.db.tables import create_tables
 
 logger = logging.getLogger(__name__)
 
 
 class PostgresDb:
-    def __init__(self, params):
+    def __init__(self, params, schema):
         logger.info("Starting connection pool with params: {}".format(params))
+        self.schema = schema
         self.connection_pool = pool.ThreadedConnectionPool(5, 20, **params)
+        self.db_string = self.get_connection_string(params)
+        self.engine = create_engine(self.db_string)
 
     # Get Cursor
     @contextmanager
@@ -44,8 +51,23 @@ class PostgresDb:
             db_version = curs.fetchone()
             logger.info(db_version)
 
+    def get_connection_string(self, params):
+        return "postgresql://{}:{}@{}/{}".format(
+            params['user'],
+            params['password'],
+            params['host'],
+            params['database'],
+        )
+
     def init(self):
         """ Create the tables and indices in the database. """
+
+        logger.info("SqlAlchemy version: {}".format(sqlalchemy.__version__))
+
+        logger.info("Creating tables...")
+        create_tables(self.engine, self.schema)
+        logger.info("Created tables.")
+
         with self.get_cursor() as curs:
             # execute a statement
             logger.info("Setting up database tables...")

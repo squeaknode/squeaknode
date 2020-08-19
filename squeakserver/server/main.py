@@ -77,8 +77,8 @@ def load_db_params(config, schema):
     return db_params
 
 
-def load_postgres_db(db_params):
-    return PostgresDb(db_params)
+def load_postgres_db(db_params, schema):
+    return PostgresDb(db_params, schema)
 
 
 def load_blockchain_client(config):
@@ -149,7 +149,7 @@ def run_server(config):
     logger.info("db params: " + str(db_params))
 
     # load postgres db
-    postgres_db = load_postgres_db(db_params)
+    postgres_db = load_postgres_db(db_params, network)
     logger.info("postgres_db: " + str(postgres_db))
     postgres_db.get_version()
     postgres_db.init()
