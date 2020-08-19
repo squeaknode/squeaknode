@@ -66,5 +66,22 @@ def create_tables(engine, schema):
                   Column('downloading', Boolean, nullable=False),
     )
 
+    offers = Table('offer', metadata,
+                   Column('offer_id', Integer, primary_key=True),
+                   Column('created', DateTime, server_default=func.now(), nullable=False),
+                   Column('squeak_hash', String(64), nullable=False),
+                   Column('key_cipher', Binary, nullable=False),
+                   Column('iv', Binary, nullable=False),
+                   Column('payment_hash', String(64), nullable=False),
+                   Column('invoice_timestamp', Integer, nullable=False),
+                   Column('invoice_expiry', Integer, nullable=False),
+                   Column('price_msat', Integer, nullable=False),
+                   Column('payment_request', String, nullable=False),
+                   Column('destination', String(66), nullable=False),
+                   Column('node_host', String, nullable=False),
+                   Column('node_port', Integer, nullable=False),
+                   Column('peer_id', Integer, nullable=False),
+    )
+
     metadata.create_all(engine)
     logger.info("Called create_tables")
