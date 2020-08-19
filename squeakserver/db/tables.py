@@ -45,6 +45,17 @@ def create_tables(engine, schema):
                   Column('block_header', Binary, nullable=True),
     )
 
+    profiles = Table('profile', metadata,
+                  Column('profile_id', Integer, primary_key=True),
+                  Column('created', DateTime, server_default=func.now(), nullable=False),
+                  Column('profile_name', String, nullable=False),
+                  Column('private_key', Binary),
+                  Column('address', String(35), nullable=False),
+                  Column('sharing', Boolean, nullable=False),
+                  Column('following', Boolean, nullable=False),
+                  Column('whitelisted', Boolean, nullable=False),
+    )
+
     peers = Table('peer', metadata,
                   Column('peer_id', Integer, primary_key=True),
                   Column('created', DateTime, server_default=func.now(), nullable=False),
