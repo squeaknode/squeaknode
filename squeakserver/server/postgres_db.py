@@ -586,13 +586,11 @@ class PostgresDb:
 
     def set_peer_downloading(self, peer_id, downloading):
         """ Set a peer is downloading. """
-        sql = """
-        UPDATE peer
-        SET downloading=%s
-        WHERE peer_id=%s;
-        """
-        with self.get_cursor() as curs:
-            curs.execute(sql, (downloading, peer_id,))
+        stmt = self.peers.update().\
+            where(self.peers.c.peer_id == peer_id).\
+            values(downloading=downloading)
+        with self.engine.connect() as connection:
+            connection.execute(stmt)
 
     def set_peer_uploading(self, peer_id, uploading):
         """ Set a peer is uploading. """
