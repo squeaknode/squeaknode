@@ -551,26 +551,20 @@ class PostgresDb:
 
     def insert_peer(self, squeak_peer):
         """ Insert a new squeak peer. """
-        sql = """
-        INSERT INTO peer(peer_name, server_host, server_port, uploading, downloading)
-        VALUES(%s, %s, %s, %s, %s)
-        RETURNING peer_id;
-        """
-        with self.get_cursor() as curs:
-            # execute the INSERT statement
-            curs.execute(
-                sql,
-                (
-                    squeak_peer.peer_name,
-                    squeak_peer.host,
-                    squeak_peer.port,
-                    squeak_peer.uploading,
-                    squeak_peer.downloading,
-                ),
-            )
-            # get the new peer id back
-            row = curs.fetchone()
-            return row["peer_id"]
+        logger.info("Inserting peer: {}".format(squeak_peer))
+        ins = self.peers.insert().values(
+            peer_name=squeak_peer.peer_name,
+            server_host=squeak_peer.host,
+            server_port=squeak_peer.port,
+            uploading=squeak_peer.uploading,
+            downloading=squeak_peer.downloading,
+        )
+        logger.info("Insert peer params: {}".format(ins.compile().params))
+        with self.engine.connect() as connection:
+            res = connection.execute(ins)
+            peer_id = res.inserted_primary_key[0]
+            logger.info("Inserted peer and got id: {}".format(peer_id))
+            return peer_id
 
     def get_peer(self, peer_id):
         """ Get a peer. """
