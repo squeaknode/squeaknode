@@ -9,7 +9,7 @@ from squeak.core import CSqueak
 import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy import Table, Column, Integer, String, DateTime, Boolean, Binary, BigInteger, MetaData, ForeignKey
-from sqlalchemy import func
+from sqlalchemy import func, literal, null
 from sqlalchemy.sql import select
 
 from squeakserver.blockchain.util import parse_block_header
@@ -261,25 +261,63 @@ class PostgresDb:
 
     def get_thread_ancestor_squeak_entries_with_profile(self, squeak_hash_str):
         """ Get all reply ancestors of squeak hash. """
-        sql = """
-        WITH RECURSIVE is_thread_ancestor(hash, depth) AS (
-            VALUES(%s, 1)
-          UNION\n
-            SELECT squeak.hash_reply_sqk AS hash, is_thread_ancestor.depth + 1 AS depth FROM squeak, is_thread_ancestor
-            WHERE squeak.hash=is_thread_ancestor.hash
-          )
-          SELECT * FROM squeak
-          JOIN is_thread_ancestor
-            ON squeak.hash=is_thread_ancestor.hash
-          LEFT JOIN profile
-            ON squeak.author_address=profile.address
-          WHERE squeak.block_header IS NOT NULL
-          ORDER BY is_thread_ancestor.depth DESC;
-        """
-        with self.get_cursor() as curs:
-            curs.execute(sql, (squeak_hash_str,))
-            rows = curs.fetchall()
+        included_parts = select([
+            self.squeaks.c.hash.label("hash"),
+            literal(0).label('depth'),
+        ]).\
+        where(self.squeaks.c.hash==squeak_hash_str).\
+        cte(recursive=True)
+
+        ancestors_alias = included_parts.alias()
+        squeaks_alias = self.squeaks.alias()
+
+        included_parts = included_parts.union_all(
+            select([
+                squeaks_alias.c.hash_reply_sqk.label("hash"),
+                (ancestors_alias.c.depth + 1).label("depth"),
+            ]).
+            where(squeaks_alias.c.hash==ancestors_alias.c.hash)
+        )
+
+        s = select([self.squeaks, self.profiles]).\
+            select_from(
+                self.squeaks.join(
+                    included_parts,
+                    included_parts.c.hash == self.squeaks.c.hash,
+                ).outerjoin(
+                    self.profiles,
+                    self.profiles.c.address == self.squeaks.c.author_address,
+                )
+            ).\
+            where(self.squeaks.c.block_header != None).\
+            order_by(
+                included_parts.c.depth.desc(),
+            )
+
+        with self.engine.connect() as connection:
+            result = connection.execute(s)
+            rows = result.fetchall()
             return [self._parse_squeak_entry_with_profile(row) for row in rows]
+
+        # sql = """
+        # WITH RECURSIVE is_thread_ancestor(hash, depth) AS (
+        #     VALUES(%s, 1)
+        #   UNION\n
+        #     SELECT squeak.hash_reply_sqk AS hash, is_thread_ancestor.depth + 1 AS depth FROM squeak, is_thread_ancestor
+        #     WHERE squeak.hash=is_thread_ancestor.hash
+        #   )
+        #   SELECT * FROM squeak
+        #   JOIN is_thread_ancestor
+        #     ON squeak.hash=is_thread_ancestor.hash
+        #   LEFT JOIN profile
+        #     ON squeak.author_address=profile.address
+        #   WHERE squeak.block_header IS NOT NULL
+        #   ORDER BY is_thread_ancestor.depth DESC;
+        # """
+        # with self.get_cursor() as curs:
+        #     curs.execute(sql, (squeak_hash_str,))
+        #     rows = curs.fetchall()
+        #     return [self._parse_squeak_entry_with_profile(row) for row in rows]
 
     def lookup_squeaks(self, addresses, min_block, max_block, include_unverified=False, include_locked=False):
         """ Lookup squeaks. """
