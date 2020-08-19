@@ -221,17 +221,16 @@ class PostgresDb:
 
     def get_followed_squeak_entries_with_profile(self):
         """ Get all followed squeaks. """
-        sql = """
-        SELECT * FROM squeak
-        JOIN profile
-        ON squeak.author_address=profile.address
-        WHERE squeak.block_header IS NOT NULL
-        AND profile.following
-        ORDER BY n_block_height DESC, n_time DESC;
-        """
-        with self.get_cursor() as curs:
-            curs.execute(sql)
-            rows = curs.fetchall()
+        s = select([self.squeaks, self.profiles]).\
+            select_from(self.squeaks.outerjoin(
+                self.profiles,
+                self.profiles.c.address == self.squeaks.c.author_address,
+            )).\
+            where(self.profiles.c.following).\
+            where(self.squeaks.c.block_header != None)
+        with self.engine.connect() as connection:
+            result = connection.execute(s)
+            rows = result.fetchall()
             return [self._parse_squeak_entry_with_profile(row) for row in rows]
 
     def get_squeak_entries_with_profile_for_address(
