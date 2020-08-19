@@ -40,7 +40,7 @@ def create_tables(engine, schema):
                   Column('n_nonce', BigInteger, nullable=False),
                   Column('enc_content', String(2272), nullable=False),
                   Column('vch_script_sig', Binary, nullable=False),
-                  Column('author_address', String(35), nullable=False),
+                  Column('author_address', String(35), index=True, nullable=False),
                   Column('vch_decryption_key', Binary, nullable=True),
                   Column('block_header', Binary, nullable=True),
     )
