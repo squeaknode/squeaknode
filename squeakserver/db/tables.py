@@ -83,5 +83,18 @@ def create_tables(engine, schema):
                    Column('peer_id', Integer, nullable=False),
     )
 
+    sent_payments = Table('sent_payment', metadata,
+                          Column('sent_payment_id', Integer, primary_key=True),
+                          Column('created', DateTime, server_default=func.now(), nullable=False),
+                          Column('offer_id', Integer, nullable=False),
+                          Column('peer_id', Integer, nullable=False),
+                          Column('squeak_hash', String(64), nullable=False),
+                          Column('preimage_hash', String(64), nullable=False),
+                          Column('preimage', String(64), nullable=False),
+                          Column('amount', Integer, nullable=False),
+                          Column('node_pubkey', String(66), nullable=False),
+                          Column('preimage_is_valid', Boolean, nullable=False),
+    )
+
     metadata.create_all(engine)
     logger.info("Called create_tables")

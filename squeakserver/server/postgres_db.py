@@ -68,10 +68,10 @@ class PostgresDb:
         create_tables(self.engine, self.schema)
         logger.info("Created tables.")
 
-        with self.get_cursor() as curs:
-            # execute a statement
-            logger.info("Setting up database tables...")
-            curs.execute(open("init.sql", "r").read())
+        # with self.get_cursor() as curs:
+        #     # execute a statement
+        #     logger.info("Setting up database tables...")
+        #     curs.execute(open("init.sql", "r").read())
 
     def insert_squeak(self, squeak):
         """ Insert a new squeak. """
