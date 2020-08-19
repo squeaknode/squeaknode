@@ -198,14 +198,11 @@ class PostgresDb:
 
     def get_squeak_entry(self, squeak_hash):
         """ Get a squeak. """
-        sql = """
-        SELECT * FROM squeak WHERE hash=%s"""
-
         squeak_hash_str = squeak_hash.hex()
-
-        with self.get_cursor() as curs:
-            curs.execute(sql, (squeak_hash_str,))
-            row = curs.fetchone()
+        s = select([self.squeaks]).where(self.squeaks.c.hash == squeak_hash_str)
+        with self.engine.connect() as connection:
+            result = connection.execute(s)
+            row = result.fetchone()
             return self._parse_squeak_entry(row)
 
     def get_squeak_entry_with_profile(self, squeak_hash):
