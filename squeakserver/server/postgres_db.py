@@ -206,19 +206,17 @@ class PostgresDb:
             return self._parse_squeak_entry(row)
 
     def get_squeak_entry_with_profile(self, squeak_hash):
-        """ Get a squeak. """
-        sql = """
-        SELECT * FROM squeak
-        LEFT JOIN profile
-        ON squeak.author_address=profile.address
-        WHERE squeak.hash=%s
-        """
-
+        """ Get a squeak with the author profile. """
         squeak_hash_str = squeak_hash.hex()
-
-        with self.get_cursor() as curs:
-            curs.execute(sql, (squeak_hash_str,))
-            row = curs.fetchone()
+        s = select([self.squeaks, self.profiles]).\
+            select_from(self.squeaks.outerjoin(
+                self.profiles,
+                self.profiles.c.address == self.squeaks.c.author_address,
+            )).\
+            where(self.squeaks.c.hash == squeak_hash_str)
+        with self.engine.connect() as connection:
+            result = connection.execute(s)
+            row = result.fetchone()
             return self._parse_squeak_entry_with_profile(row)
 
     def get_followed_squeak_entries_with_profile(self):
