@@ -594,21 +594,18 @@ class PostgresDb:
 
     def set_peer_uploading(self, peer_id, uploading):
         """ Set a peer is uploading. """
-        sql = """
-        UPDATE peer
-        SET uploading=%s
-        WHERE peer_id=%s;
-        """
-        with self.get_cursor() as curs:
-            curs.execute(sql, (uploading, peer_id,))
+        stmt = self.peers.update().\
+            where(self.peers.c.peer_id == peer_id).\
+            values(uploading=uploading)
+        with self.engine.connect() as connection:
+            connection.execute(stmt)
 
     def delete_peer(self, peer_id):
         """ Delete a peer. """
-        sql = """
-        DELETE FROM peer WHERE peer_id=%s;
-        """
-        with self.get_cursor() as curs:
-            curs.execute(sql, (peer_id,))
+        delete_peer_stmt = self.peers.delete().\
+            where(self.peers.c.peer_id == peer_id)
+        with self.engine.connect() as connection:
+            connection.execute(delete_peer_stmt)
 
     def insert_offer(self, offer):
         """ Insert a new offer. """
