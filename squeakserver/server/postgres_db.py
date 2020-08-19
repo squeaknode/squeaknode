@@ -10,6 +10,7 @@ import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy import Table, Column, Integer, String, DateTime, Boolean, Binary, BigInteger, MetaData, ForeignKey
 from sqlalchemy import func
+from sqlalchemy.sql import select
 
 from squeakserver.blockchain.util import parse_block_header
 from squeakserver.core.squeak_entry import SqueakEntry
@@ -568,12 +569,10 @@ class PostgresDb:
 
     def get_peer(self, peer_id):
         """ Get a peer. """
-        sql = """
-        SELECT * FROM peer WHERE peer_id=%s"""
-
-        with self.get_cursor() as curs:
-            curs.execute(sql, (peer_id,))
-            row = curs.fetchone()
+        s = select([self.peers]).where(self.peers.c.peer_id == peer_id)
+        with self.engine.connect() as connection:
+            result = connection.execute(s)
+            row = result.fetchone()
             return self._parse_squeak_peer(row)
 
     def get_peers(self):
