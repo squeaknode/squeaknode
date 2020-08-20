@@ -1,6 +1,8 @@
 import logging
 from contextlib import contextmanager
 
+from datetime import datetime, timedelta
+
 from psycopg2 import pool
 from psycopg2 import sql
 from psycopg2.extras import DictCursor
@@ -367,28 +369,48 @@ class PostgresDb:
         #     return hashes
 
     def lookup_squeaks_by_time(
-        self, addresses, interval_seconds, include_unverified=False
+            self, addresses, interval_seconds, include_unverified=False, include_locked=False
     ):
         """ Lookup squeaks. """
-        sql = """
-        SELECT hash FROM squeak
-        WHERE author_address IN %s
-        AND created > now() - interval '%s seconds'
-        AND vch_decryption_key IS NOT NULL
-        AND ((block_header IS NOT NULL) OR %s);
-        """
-        addresses_tuple = tuple(addresses)
-
         if not addresses:
             return []
 
-        with self.get_cursor() as curs:
-            # mogrify to debug.
-            # logger.info(curs.mogrify(sql, (addresses_tuple, min_block, max_block)))
-            curs.execute(sql, (addresses_tuple, interval_seconds, include_unverified))
-            rows = curs.fetchall()
+        s = select([self.squeaks.c.hash]).\
+            where(self.squeaks.c.author_address.in_(addresses)).\
+            where(self.squeaks.c.created > datetime.utcnow() - timedelta(seconds=interval_seconds)).\
+            where(or_(
+                self.squeaks.c.vch_decryption_key != None,
+                include_locked,
+            )).\
+            where(or_(
+                self.squeaks.c.block_header != None,
+                include_unverified,
+            ))
+        with self.engine.connect() as connection:
+            result = connection.execute(s)
+            rows = result.fetchall()
             hashes = [bytes.fromhex(row["hash"]) for row in rows]
             return hashes
+
+        # sql = """
+        # SELECT hash FROM squeak
+        # WHERE author_address IN %s
+        # AND created > now() - interval '%s seconds'
+        # AND vch_decryption_key IS NOT NULL
+        # AND ((block_header IS NOT NULL) OR %s);
+        # """
+        # addresses_tuple = tuple(addresses)
+
+        # if not addresses:
+        #     return []
+
+        # with self.get_cursor() as curs:
+        #     # mogrify to debug.
+        #     # logger.info(curs.mogrify(sql, (addresses_tuple, min_block, max_block)))
+        #     curs.execute(sql, (addresses_tuple, interval_seconds, include_unverified))
+        #     rows = curs.fetchall()
+        #     hashes = [bytes.fromhex(row["hash"]) for row in rows]
+        #     return hashes
 
     def lookup_squeaks_needing_offer(self, addresses, min_block, max_block, peer_id, include_unverified=False):
         """ Lookup squeaks that are locked and don't have an offer. """
