@@ -471,107 +471,174 @@ class PostgresDb:
 
     def insert_profile(self, squeak_profile):
         """ Insert a new squeak profile. """
-        sql = """
-        INSERT INTO profile(profile_name, private_key, address, sharing, following, whitelisted)
-        VALUES(%s, %s, %s, %s, %s, %s)
-        RETURNING profile_id;
-        """
-        with self.get_cursor() as curs:
-            # execute the INSERT statement
-            curs.execute(
-                sql,
-                (
-                    squeak_profile.profile_name,
-                    squeak_profile.private_key,
-                    squeak_profile.address,
-                    squeak_profile.sharing,
-                    squeak_profile.following,
-                    squeak_profile.whitelisted,
-                ),
-            )
-            # get the new profile id back
-            row = curs.fetchone()
-            return row["profile_id"]
+        ins = self.profiles.insert().values(
+            profile_name=squeak_profile.profile_name,
+            private_key=squeak_profile.private_key,
+            address=squeak_profile.address,
+            sharing=squeak_profile.sharing,
+            following=squeak_profile.following,
+            whitelisted=squeak_profile.whitelisted,
+        )
+        with self.engine.connect() as connection:
+            res = connection.execute(ins)
+            profile_id = res.inserted_primary_key[0]
+            return profile_id
+
+        # sql = """
+        # INSERT INTO profile(profile_name, private_key, address, sharing, following, whitelisted)
+        # VALUES(%s, %s, %s, %s, %s, %s)
+        # RETURNING profile_id;
+        # """
+        # with self.get_cursor() as curs:
+        #     # execute the INSERT statement
+        #     curs.execute(
+        #         sql,
+        #         (
+        #             squeak_profile.profile_name,
+        #             squeak_profile.private_key,
+        #             squeak_profile.address,
+        #             squeak_profile.sharing,
+        #             squeak_profile.following,
+        #             squeak_profile.whitelisted,
+        #         ),
+        #     )
+        #     # get the new profile id back
+        #     row = curs.fetchone()
+        #     return row["profile_id"]
 
     def get_signing_profiles(self):
         """ Get all signing profiles. """
-        sql = """
-        SELECT * FROM profile
-        WHERE private_key IS NOT NULL;
-        """
-        with self.get_cursor() as curs:
-            curs.execute(sql)
-            rows = curs.fetchall()
+        s = select([self.profiles]).\
+            where(self.profiles.c.private_key != None)
+        with self.engine.connect() as connection:
+            result = connection.execute(s)
+            rows = result.fetchall()
             profiles = [self._parse_squeak_profile(row) for row in rows]
             return profiles
+
+        # sql = """
+        # SELECT * FROM profile
+        # WHERE private_key IS NOT NULL;
+        # """
+        # with self.get_cursor() as curs:
+        #     curs.execute(sql)
+        #     rows = curs.fetchall()
+        #     profiles = [self._parse_squeak_profile(row) for row in rows]
+        #     return profiles
 
     def get_contact_profiles(self):
         """ Get all contact profiles. """
-        sql = """
-        SELECT * FROM profile
-        WHERE private_key IS NULL;
-        """
-        with self.get_cursor() as curs:
-            curs.execute(sql)
-            rows = curs.fetchall()
+        s = select([self.profiles]).\
+            where(self.profiles.c.private_key == None)
+        with self.engine.connect() as connection:
+            result = connection.execute(s)
+            rows = result.fetchall()
             profiles = [self._parse_squeak_profile(row) for row in rows]
             return profiles
+
+        # sql = """
+        # SELECT * FROM profile
+        # WHERE private_key IS NULL;
+        # """
+        # with self.get_cursor() as curs:
+        #     curs.execute(sql)
+        #     rows = curs.fetchall()
+        #     profiles = [self._parse_squeak_profile(row) for row in rows]
+        #     return profiles
 
     def get_whitelisted_profiles(self):
         """ Get all whitelisted profiles. """
-        sql = """
-        SELECT * FROM profile
-        WHERE whitelisted;
-        """
-        with self.get_cursor() as curs:
-            curs.execute(sql)
-            rows = curs.fetchall()
+        s = select([self.profiles]).\
+            where(self.profiles.c.whitelisted)
+        with self.engine.connect() as connection:
+            result = connection.execute(s)
+            rows = result.fetchall()
             profiles = [self._parse_squeak_profile(row) for row in rows]
             return profiles
+
+        # sql = """
+        # SELECT * FROM profile
+        # WHERE whitelisted;
+        # """
+        # with self.get_cursor() as curs:
+        #     curs.execute(sql)
+        #     rows = curs.fetchall()
+        #     profiles = [self._parse_squeak_profile(row) for row in rows]
+        #     return profiles
 
     def get_following_profiles(self):
         """ Get all following profiles. """
-        sql = """
-        SELECT * FROM profile
-        WHERE following;
-        """
-        with self.get_cursor() as curs:
-            curs.execute(sql)
-            rows = curs.fetchall()
+        s = select([self.profiles]).\
+            where(self.profiles.c.following)
+        with self.engine.connect() as connection:
+            result = connection.execute(s)
+            rows = result.fetchall()
             profiles = [self._parse_squeak_profile(row) for row in rows]
             return profiles
+
+        # sql = """
+        # SELECT * FROM profile
+        # WHERE following;
+        # """
+        # with self.get_cursor() as curs:
+        #     curs.execute(sql)
+        #     rows = curs.fetchall()
+        #     profiles = [self._parse_squeak_profile(row) for row in rows]
+        #     return profiles
 
     def get_sharing_profiles(self):
         """ Get all sharing profiles. """
-        sql = """
-        SELECT * FROM profile
-        WHERE sharing;
-        """
-        with self.get_cursor() as curs:
-            curs.execute(sql)
-            rows = curs.fetchall()
+        s = select([self.profiles]).\
+            where(self.profiles.c.sharing)
+        with self.engine.connect() as connection:
+            result = connection.execute(s)
+            rows = result.fetchall()
             profiles = [self._parse_squeak_profile(row) for row in rows]
             return profiles
 
+        # sql = """
+        # SELECT * FROM profile
+        # WHERE sharing;
+        # """
+        # with self.get_cursor() as curs:
+        #     curs.execute(sql)
+        #     rows = curs.fetchall()
+        #     profiles = [self._parse_squeak_profile(row) for row in rows]
+        #     return profiles
+
     def get_profile(self, profile_id):
         """ Get a profile. """
-        sql = """
-        SELECT * FROM profile WHERE profile_id=%s"""
-        with self.get_cursor() as curs:
-            curs.execute(sql, (profile_id,))
-            row = curs.fetchone()
+        s = select([self.profiles]).\
+            where(self.profiles.c.profile_id == profile_id)
+        with self.engine.connect() as connection:
+            result = connection.execute(s)
+            row = result.fetchone()
             return self._parse_squeak_profile(row)
+
+        # sql = """
+        # SELECT * FROM profile WHERE profile_id=%s"""
+        # with self.get_cursor() as curs:
+        #     curs.execute(sql, (profile_id,))
+        #     row = curs.fetchone()
+        #     return self._parse_squeak_profile(row)
 
     def get_profile_by_address(self, address):
         """ Get a profile by address. """
-        sql = """
-        SELECT * FROM profile
-        WHERE address=%s;
-        """
-        with self.get_cursor() as curs:
-            curs.execute(sql, (address,))
-            row = curs.fetchone()
+        s = select([self.profiles]).\
+            where(self.profiles.c.address == address)
+        with self.engine.connect() as connection:
+            result = connection.execute(s)
+            row = result.fetchone()
             return self._parse_squeak_profile(row)
+
+        # sql = """
+        # SELECT * FROM profile
+        # WHERE address=%s;
+        # """
+        # with self.get_cursor() as curs:
+        #     curs.execute(sql, (address,))
+        #     row = curs.fetchone()
+        #     return self._parse_squeak_profile(row)
 
     def set_profile_whitelisted(self, profile_id, whitelisted):
         """ Set a profile is whitelisted. """
@@ -657,7 +724,6 @@ class PostgresDb:
 
     def insert_peer(self, squeak_peer):
         """ Insert a new squeak peer. """
-        logger.info("Inserting peer: {}".format(squeak_peer))
         ins = self.peers.insert().values(
             peer_name=squeak_peer.peer_name,
             server_host=squeak_peer.host,
@@ -665,11 +731,9 @@ class PostgresDb:
             uploading=squeak_peer.uploading,
             downloading=squeak_peer.downloading,
         )
-        logger.info("Insert peer params: {}".format(ins.compile().params))
         with self.engine.connect() as connection:
             res = connection.execute(ins)
             peer_id = res.inserted_primary_key[0]
-            logger.info("Inserted peer and got id: {}".format(peer_id))
             return peer_id
 
     def get_peer(self, peer_id):
