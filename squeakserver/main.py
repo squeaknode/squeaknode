@@ -6,8 +6,6 @@ from configparser import ConfigParser
 
 from squeak.params import SelectParams
 
-import proto.lnd_pb2 as ln
-import proto.lnd_pb2_grpc as lnrpc
 from squeakserver.admin.squeak_admin_server_handler import SqueakAdminServerHandler
 from squeakserver.admin.squeak_admin_server_servicer import SqueakAdminServerServicer
 from squeakserver.blockchain.bitcoin_blockchain_client import BitcoinBlockchainClient
@@ -29,8 +27,6 @@ def load_lightning_client(config) -> LNDLightningClient:
         config["lnd"]["rpc_port"],
         config["lnd"]["tls_cert_path"],
         config["lnd"]["macaroon_path"],
-        ln,
-        lnrpc,
     )
 
 
@@ -60,6 +56,10 @@ def load_price(config):
     return int(config["squeaknode"]["price"])
 
 
+def load_database(config):
+    return config["squeaknode"]["database"]
+
+
 def load_max_squeaks_per_address_per_hour(config):
     return int(config["squeaknode"]["max_squeaks_per_address_per_hour"])
 
@@ -73,8 +73,8 @@ def load_admin_handler(lightning_client, squeak_node):
 
 
 def load_db_engine(config):
-    # TODO: check if using postgres
-    if True:
+    database = load_database(config)
+    if database == "postgresql":
         return get_postgres_engine(
             config["postgresql"]["user"],
             config["postgresql"]["password"],

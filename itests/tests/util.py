@@ -7,8 +7,6 @@ from squeak.core import HASH_LENGTH, CSqueak, MakeSqueakFromStr
 from squeak.core.encryption import generate_data_key
 from squeak.core.signing import CSigningKey, CSqueakAddress
 
-from proto import lnd_pb2 as ln
-from proto import lnd_pb2_grpc as lnrpc
 from proto import (
     squeak_admin_pb2,
     squeak_admin_pb2_grpc,
@@ -75,7 +73,12 @@ def get_hash(squeak):
 def load_lightning_client() -> LNDLightningClient:
     tls_cert_path = "~/.lnd/tls.cert"
     macaroon_path = "~/.lnd/data/chain/bitcoin/simnet/admin.macaroon"
-    return LNDLightningClient("lnd", 10009, tls_cert_path, macaroon_path, ln, lnrpc,)
+    return LNDLightningClient(
+        "lnd",
+        10009,
+        tls_cert_path,
+        macaroon_path,
+    )
 
 
 def bxor(b1, b2):  # use xor for bytes
