@@ -642,42 +642,65 @@ class PostgresDb:
 
     def set_profile_whitelisted(self, profile_id, whitelisted):
         """ Set a profile is whitelisted. """
-        sql = """
-        UPDATE profile
-        SET whitelisted=%s
-        WHERE profile_id=%s;
-        """
-        with self.get_cursor() as curs:
-            curs.execute(sql, (whitelisted, profile_id,))
+        stmt = self.profiles.update().\
+            where(self.profiles.c.profile_id == profile_id).\
+            values(whitelisted=whitelisted)
+        with self.engine.connect() as connection:
+            connection.execute(stmt)
+
+        # sql = """
+        # UPDATE profile
+        # SET whitelisted=%s
+        # WHERE profile_id=%s;
+        # """
+        # with self.get_cursor() as curs:
+        #     curs.execute(sql, (whitelisted, profile_id,))
 
     def set_profile_following(self, profile_id, following):
         """ Set a profile is following. """
-        sql = """
-        UPDATE profile
-        SET following=%s
-        WHERE profile_id=%s;
-        """
-        with self.get_cursor() as curs:
-            curs.execute(sql, (following, profile_id,))
+        stmt = self.profiles.update().\
+            where(self.profiles.c.profile_id == profile_id).\
+            values(following=following)
+        with self.engine.connect() as connection:
+            connection.execute(stmt)
+
+        # sql = """
+        # UPDATE profile
+        # SET following=%s
+        # WHERE profile_id=%s;
+        # """
+        # with self.get_cursor() as curs:
+        #     curs.execute(sql, (following, profile_id,))
 
     def set_profile_sharing(self, profile_id, sharing):
         """ Set a profile is sharing. """
-        sql = """
-        UPDATE profile
-        SET sharing=%s
-        WHERE profile_id=%s;
-        """
-        with self.get_cursor() as curs:
-            curs.execute(sql, (sharing, profile_id,))
+        stmt = self.profiles.update().\
+            where(self.profiles.c.profile_id == profile_id).\
+            values(sharing=sharing)
+        with self.engine.connect() as connection:
+            connection.execute(stmt)
+
+        # sql = """
+        # UPDATE profile
+        # SET sharing=%s
+        # WHERE profile_id=%s;
+        # """
+        # with self.get_cursor() as curs:
+        #     curs.execute(sql, (sharing, profile_id,))
 
     def delete_profile(self, profile_id):
         """ Delete a profile. """
-        sql = """
-        DELETE FROM profile
-        WHERE profile_id=%s;
-        """
-        with self.get_cursor() as curs:
-            curs.execute(sql, (profile_id,))
+        delete_profile_stmt = self.profiles.delete().\
+            where(self.profiles.c.profile_id == profile_id)
+        with self.engine.connect() as connection:
+            connection.execute(delete_profile_stmt)
+
+        # sql = """
+        # DELETE FROM profile
+        # WHERE profile_id=%s;
+        # """
+        # with self.get_cursor() as curs:
+        #     curs.execute(sql, (profile_id,))
 
     def get_unverified_block_squeaks(self):
         """ Get all squeaks without block header. """
@@ -714,13 +737,19 @@ class PostgresDb:
 
     def delete_squeak(self, squeak_hash):
         """ Delete a squeak. """
-        sql = """
-        DELETE FROM squeak
-        WHERE squeak.hash=%s
-        """
         squeak_hash_str = squeak_hash.hex()
-        with self.get_cursor() as curs:
-            curs.execute(sql, (squeak_hash_str,))
+        delete_squeak_stmt = self.squeaks.delete().\
+            where(self.squeaks.c.hash == squeak_hash_str)
+        with self.engine.connect() as connection:
+            connection.execute(delete_squeak_stmt)
+
+        # sql = """
+        # DELETE FROM squeak
+        # WHERE squeak.hash=%s
+        # """
+        # squeak_hash_str = squeak_hash.hex()
+        # with self.get_cursor() as curs:
+        #     curs.execute(sql, (squeak_hash_str,))
 
     def insert_peer(self, squeak_peer):
         """ Insert a new squeak peer. """
