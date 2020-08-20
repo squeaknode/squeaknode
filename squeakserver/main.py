@@ -12,6 +12,7 @@ from squeakserver.blockchain.bitcoin_blockchain_client import BitcoinBlockchainC
 from squeakserver.common.lnd_lightning_client import LNDLightningClient
 from squeakserver.db.db_params import parse_db_params
 from squeakserver.db.db_engine import get_postgres_engine
+from squeakserver.db.db_engine import get_sqlite_engine
 from squeakserver.node.squeak_node import SqueakNode
 from squeakserver.server.lightning_address import LightningAddressHostPort
 from squeakserver.db.squeak_db import SqueakDb
@@ -72,20 +73,32 @@ def load_admin_handler(lightning_client, squeak_node):
     return SqueakAdminServerHandler(lightning_client, squeak_node,)
 
 
-def load_db_engine(config):
+# def load_db_engine(config):
+#     database = load_database(config)
+#     if database == "postgresql":
+#         return get_postgres_engine(
+#             config["postgresql"]["user"],
+#             config["postgresql"]["password"],
+#             config["postgresql"]["host"],
+#             config["postgresql"]["database"],
+#         )
+#     elif database == "sqlite":
+#         return get_sqlite_engine()
+
+
+def load_db(config, network):
     database = load_database(config)
     if database == "postgresql":
-        return get_postgres_engine(
+        engine = get_postgres_engine(
             config["postgresql"]["user"],
             config["postgresql"]["password"],
             config["postgresql"]["host"],
             config["postgresql"]["database"],
         )
-
-
-def load_db(config, schema):
-    engine = load_db_engine(config)
-    return SqueakDb(engine, schema)
+        return SqueakDb(engine, schema=network)
+    elif database == "sqlite":
+        engine = get_sqlite_engine()
+        return SqueakDb(engine)
 
 
 def load_blockchain_client(config):

@@ -15,3 +15,13 @@ def get_postgres_connection_string(user, password, host, database):
         host,
         database,
     )
+
+
+def get_sqlite_engine():
+    return create_engine(
+        get_sqlite_connection_string()
+    )
+
+
+def get_sqlite_connection_string():
+    return "sqlite:///squeakdb.db".format()
