@@ -11,6 +11,7 @@ from sqlalchemy import create_engine
 from sqlalchemy import Table, Column, Integer, String, DateTime, Boolean, Binary, BigInteger, MetaData, ForeignKey
 from sqlalchemy import func, literal, null
 from sqlalchemy.sql import select
+from sqlalchemy.sql import and_, or_, not_
 
 from squeakserver.blockchain.util import parse_block_header
 from squeakserver.core.squeak_entry import SqueakEntry
@@ -261,17 +262,17 @@ class PostgresDb:
 
     def get_thread_ancestor_squeak_entries_with_profile(self, squeak_hash_str):
         """ Get all reply ancestors of squeak hash. """
-        included_parts = select([
+        ancestors = select([
             self.squeaks.c.hash.label("hash"),
             literal(0).label('depth'),
         ]).\
         where(self.squeaks.c.hash==squeak_hash_str).\
         cte(recursive=True)
 
-        ancestors_alias = included_parts.alias()
+        ancestors_alias = ancestors.alias()
         squeaks_alias = self.squeaks.alias()
 
-        included_parts = included_parts.union_all(
+        ancestors = ancestors.union_all(
             select([
                 squeaks_alias.c.hash_reply_sqk.label("hash"),
                 (ancestors_alias.c.depth + 1).label("depth"),
@@ -282,8 +283,8 @@ class PostgresDb:
         s = select([self.squeaks, self.profiles]).\
             select_from(
                 self.squeaks.join(
-                    included_parts,
-                    included_parts.c.hash == self.squeaks.c.hash,
+                    ancestors,
+                    ancestors.c.hash == self.squeaks.c.hash,
                 ).outerjoin(
                     self.profiles,
                     self.profiles.c.address == self.squeaks.c.author_address,
@@ -291,7 +292,7 @@ class PostgresDb:
             ).\
             where(self.squeaks.c.block_header != None).\
             order_by(
-                included_parts.c.depth.desc(),
+                ancestors.c.depth.desc(),
             )
 
         with self.engine.connect() as connection:
@@ -321,28 +322,49 @@ class PostgresDb:
 
     def lookup_squeaks(self, addresses, min_block, max_block, include_unverified=False, include_locked=False):
         """ Lookup squeaks. """
-        sql = """
-        SELECT hash FROM squeak
-        WHERE author_address IN %s
-        AND n_block_height >= %s
-        AND n_block_height <= %s
-        AND (vch_decryption_key IS NOT NULL) OR %s
-        AND ((block_header IS NOT NULL) OR %s);
-        """
-        addresses_tuple = tuple(addresses)
-
         if not addresses:
             return []
 
-        with self.get_cursor() as curs:
-            # mogrify to debug.
-            # logger.info(curs.mogrify(sql, (addresses_tuple, min_block, max_block)))
-            curs.execute(
-                sql, (addresses_tuple, min_block, max_block, include_locked, include_unverified)
-            )
-            rows = curs.fetchall()
+        s = select([self.squeaks.c.hash]).\
+            where(self.squeaks.c.author_address.in_(addresses)).\
+            where(self.squeaks.c.n_block_height >= min_block).\
+            where(self.squeaks.c.n_block_height <= max_block).\
+            where(or_(
+                self.squeaks.c.vch_decryption_key != None,
+                include_locked,
+            )).\
+            where(or_(
+                self.squeaks.c.block_header != None,
+                include_unverified,
+            ))
+        with self.engine.connect() as connection:
+            result = connection.execute(s)
+            rows = result.fetchall()
             hashes = [bytes.fromhex(row["hash"]) for row in rows]
             return hashes
+
+        # sql = """
+        # SELECT hash FROM squeak
+        # WHERE author_address IN %s
+        # AND n_block_height >= %s
+        # AND n_block_height <= %s
+        # AND (vch_decryption_key IS NOT NULL) OR %s
+        # AND ((block_header IS NOT NULL) OR %s);
+        # """
+        # addresses_tuple = tuple(addresses)
+
+        # if not addresses:
+        #     return []
+
+        # with self.get_cursor() as curs:
+        #     # mogrify to debug.
+        #     # logger.info(curs.mogrify(sql, (addresses_tuple, min_block, max_block)))
+        #     curs.execute(
+        #         sql, (addresses_tuple, min_block, max_block, include_locked, include_unverified)
+        #     )
+        #     rows = curs.fetchall()
+        #     hashes = [bytes.fromhex(row["hash"]) for row in rows]
+        #     return hashes
 
     def lookup_squeaks_by_time(
         self, addresses, interval_seconds, include_unverified=False
