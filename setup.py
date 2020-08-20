@@ -17,7 +17,7 @@ setup(
     extras_require={"test": ["pytest", "coverage"]},
     entry_points={
         'console_scripts': [
-            'runsqueakserver = squeakserver.server.main:main',
+            'runsqueakserver = squeakserver.main:main',
         ],
     },
 )
