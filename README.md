@@ -57,18 +57,12 @@ $ make itest
 	[admin]
 	rpc_host=0.0.0.0
 	rpc_port=8994
-
-	[postgresql]
-	host=<YOUR_POSTGRES_HOST>
-	database=squeakserver
-	user=postgres
-	password=postgres
 	```
 - Run the **createdb.sql** script on the postgres server to initialize the database.
 - Install the server requirements:
 	```
 	$ pip3 install -r requirements.txt
-	$ install-rpc.sh
+	$ cp proto/* squeakserver/proto/
 	$ python3 setup.py install
 	```
 - Start the squeak server:
