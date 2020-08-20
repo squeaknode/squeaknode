@@ -16,7 +16,7 @@ from squeakserver.db.db_params import parse_db_params
 from squeakserver.db.db_engine import get_postgres_engine
 from squeakserver.node.squeak_node import SqueakNode
 from squeakserver.server.lightning_address import LightningAddressHostPort
-from squeakserver.server.postgres_db import PostgresDb
+from squeakserver.db.squeak_db import SqueakDb
 from squeakserver.server.squeak_server_handler import SqueakServerHandler
 from squeakserver.server.squeak_server_servicer import SqueakServerServicer
 
@@ -89,9 +89,9 @@ def load_db_engine(config):
         )
 
 
-def load_postgres_db(config, schema):
+def load_db(config, schema):
     engine = load_db_engine(config)
-    return PostgresDb(engine, schema)
+    return SqueakDb(engine, schema)
 
 
 def load_blockchain_client(config):
@@ -157,14 +157,10 @@ def run_server(config):
     logger.info("network: " + network)
     SelectParams(network)
 
-    # # load the db params
-    # db_params = load_db_params(config, network)
-    # logger.info("db params: " + str(db_params))
-
     # load postgres db
-    postgres_db = load_postgres_db(config, network)
-    logger.info("postgres_db: " + str(postgres_db))
-    postgres_db.init()
+    squeak_db = load_db(config, network)
+    logger.info("squeak_db: " + str(squeak_db))
+    squeak_db.init()
 
     # load the price
     price = load_price(config)
@@ -181,7 +177,7 @@ def run_server(config):
 
     # Create and start the squeak node
     squeak_node = SqueakNode(
-        postgres_db,
+        squeak_db,
         blockchain_client,
         lightning_client,
         lightning_host_port,

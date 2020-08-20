@@ -25,7 +25,7 @@ from squeakserver.server.util import get_hash
 logger = logging.getLogger(__name__)
 
 
-class PostgresDb:
+class SqueakDb:
     def __init__(self, engine, schema):
         self.schema = schema
         self.engine = engine
