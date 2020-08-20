@@ -26,12 +26,9 @@ logger = logging.getLogger(__name__)
 
 
 class PostgresDb:
-    def __init__(self, params, schema):
-        logger.info("Starting connection pool with params: {}".format(params))
+    def __init__(self, engine, schema):
         self.schema = schema
-        self.db_string = self.get_connection_string(params)
-        self.engine = create_engine(self.db_string)
-
+        self.engine = engine
         self.metadata = MetaData(schema=schema)
 
         self.users = Table('users', self.metadata,
