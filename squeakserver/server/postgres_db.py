@@ -133,18 +133,10 @@ class PostgresDb:
 
     def init(self):
         """ Create the tables and indices in the database. """
-
         logger.info("SqlAlchemy version: {}".format(sqlalchemy.__version__))
-
         logger.info("Creating tables...")
-        # create_tables(self.engine, self.schema)
         self.create_tables()
         logger.info("Created tables.")
-
-        # with self.get_cursor() as curs:
-        #     # execute a statement
-        #     logger.info("Setting up database tables...")
-        #     curs.execute(open("init.sql", "r").read())
 
     def insert_squeak(self, squeak):
         """ Insert a new squeak. """
