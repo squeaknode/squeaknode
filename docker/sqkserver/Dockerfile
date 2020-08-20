@@ -19,11 +19,7 @@ RUN git clone https://github.com/googleapis/googleapis.git
 # Copy the source code.
 COPY squeakserver ./squeakserver
 COPY proto ./proto
-COPY setup.py setup.cfg MANIFEST.in README.md install-rpc.sh wait-for-it.sh ./
-
-# Install the gRPC files.
-RUN chmod +x install-rpc.sh && \
-	./install-rpc.sh
+COPY setup.py setup.cfg MANIFEST.in README.md ./
 
 RUN python3 setup.py install
 
