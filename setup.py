@@ -1,6 +1,7 @@
 import io
 
 from setuptools import find_packages, setup
+import setuptools.command.build_py
 
 from grpc_tools.command import BuildPackageProtos
 
@@ -11,6 +12,15 @@ PACKAGE_DIRECTORIES = {
 
 with io.open("README.md", "rt", encoding="utf8") as f:
     readme = f.read()
+
+
+class BuildPyCommand(setuptools.command.build_py.build_py):
+  """Custom build command."""
+
+  def run(self):
+    self.run_command('build_proto_modules')
+    setuptools.command.build_py.build_py.run(self)
+
 
 setup(
     name="squeakserver",
@@ -30,5 +40,6 @@ setup(
     },
     cmdclass={
         'build_proto_modules': BuildPackageProtos,
+        'build_py': BuildPyCommand,
     },
 )
