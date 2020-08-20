@@ -803,33 +803,52 @@ class PostgresDb:
 
     def insert_offer(self, offer):
         """ Insert a new offer. """
-        sql = """
-        INSERT INTO offer(squeak_hash, key_cipher, iv, price_msat, payment_hash, invoice_timestamp, invoice_expiry, payment_request, destination, node_host, node_port, peer_id)
-        VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-        RETURNING offer_id;
-        """
-        with self.get_cursor() as curs:
-            # execute the INSERT statement
-            curs.execute(
-                sql,
-                (
-                    offer.squeak_hash.hex(),
-                    offer.key_cipher,
-                    offer.iv,
-                    offer.price_msat,
-                    offer.payment_hash.hex(),
-                    offer.invoice_timestamp,
-                    offer.invoice_expiry,
-                    offer.payment_request,
-                    offer.destination,
-                    offer.node_host,
-                    offer.node_port,
-                    offer.peer_id,
-                ),
-            )
-            # get the new offer id back
-            row = curs.fetchone()
-            return row["offer_id"]
+        ins = self.offers.insert().values(
+            squeak_hash=offer.squeak_hash.hex(),
+            key_cipher=offer.key_cipher,
+            iv=offer.iv,
+            price_msat=offer.price_msat,
+            payment_hash=offer.payment_hash.hex(),
+            invoice_timestamp=offer.invoice_timestamp,
+            invoice_expiry=offer.invoice_expiry,
+            payment_request=offer.payment_request,
+            destination=offer.destination,
+            node_host=offer.node_host,
+            node_port=offer.node_port,
+            peer_id=offer.peer_id,
+        )
+        with self.engine.connect() as connection:
+            res = connection.execute(ins)
+            offer_id = res.inserted_primary_key[0]
+            return offer_id
+
+        # sql = """
+        # INSERT INTO offer(squeak_hash, key_cipher, iv, price_msat, payment_hash, invoice_timestamp, invoice_expiry, payment_request, destination, node_host, node_port, peer_id)
+        # VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        # RETURNING offer_id;
+        # """
+        # with self.get_cursor() as curs:
+        #     # execute the INSERT statement
+        #     curs.execute(
+        #         sql,
+        #         (
+        #             offer.squeak_hash.hex(),
+        #             offer.key_cipher,
+        #             offer.iv,
+        #             offer.price_msat,
+        #             offer.payment_hash.hex(),
+        #             offer.invoice_timestamp,
+        #             offer.invoice_expiry,
+        #             offer.payment_request,
+        #             offer.destination,
+        #             offer.node_host,
+        #             offer.node_port,
+        #             offer.peer_id,
+        #         ),
+        #     )
+        #     # get the new offer id back
+        #     row = curs.fetchone()
+        #     return row["offer_id"]
 
     def get_offers(self, squeak_hash):
         """ Get offers for a squeak hash. """
