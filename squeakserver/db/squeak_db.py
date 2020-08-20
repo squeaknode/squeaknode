@@ -734,8 +734,6 @@ class SqueakDb:
 
     def get_peers(self):
         """ Get all peers. """
-        self.show_tables()
-
         s = select([self.peers])
         with self.get_connection() as connection:
             result = connection.execute(s)
@@ -863,8 +861,6 @@ class SqueakDb:
 
     def delete_expired_offers(self):
         """ Delete all expired offers. """
-        self.show_tables()
-
         s = self.offers.delete().\
             where(datetime.utcnow().timestamp() > self.offers.c.invoice_timestamp + self.offers.c.invoice_expiry)
         with self.get_connection() as connection:
