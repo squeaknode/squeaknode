@@ -80,8 +80,8 @@ class SqueakDb:
                        Column('key_cipher', Binary, nullable=False),
                        Column('iv', Binary, nullable=False),
                        Column('payment_hash', String(64), nullable=False),
-                       Column('invoice_timestamp', DateTime, nullable=False),
-                       Column('invoice_expiry', Interval, nullable=False),
+                       Column('invoice_timestamp', Integer, nullable=False),
+                       Column('invoice_expiry', Integer, nullable=False),
                        Column('price_msat', Integer, nullable=False),
                        Column('payment_request', String, nullable=False),
                        Column('destination', String(66), nullable=False),
@@ -866,7 +866,7 @@ class SqueakDb:
         self.show_tables()
 
         s = self.offers.delete().\
-            where(datetime.utcnow() > self.offers.c.invoice_timestamp + self.offers.c.invoice_expiry)
+            where(datetime.utcnow().timestamp() > self.offers.c.invoice_timestamp + self.offers.c.invoice_expiry)
         with self.get_connection() as connection:
             res = connection.execute(s)
             deleted_offers = res.rowcount
