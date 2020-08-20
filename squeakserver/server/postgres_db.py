@@ -83,7 +83,7 @@ class PostgresDb:
         )
 
         self.peers = Table('peer', self.metadata,
-                      Column('peer_id', Integer, primary_key=True),
+                      Column('id', Integer, primary_key=True),
                       Column('created', DateTime, server_default=func.now(), nullable=False),
                       Column('peer_name', String),
                       Column('server_host', String, nullable=False),
@@ -758,12 +758,12 @@ class PostgresDb:
         )
         with self.engine.connect() as connection:
             res = connection.execute(ins)
-            peer_id = res.inserted_primary_key[0]
-            return peer_id
+            id = res.inserted_primary_key[0]
+            return id
 
     def get_peer(self, peer_id):
         """ Get a peer. """
-        s = select([self.peers]).where(self.peers.c.peer_id == peer_id)
+        s = select([self.peers]).where(self.peers.c.id == peer_id)
         with self.engine.connect() as connection:
             result = connection.execute(s)
             row = result.fetchone()
@@ -781,7 +781,7 @@ class PostgresDb:
     def set_peer_downloading(self, peer_id, downloading):
         """ Set a peer is downloading. """
         stmt = self.peers.update().\
-            where(self.peers.c.peer_id == peer_id).\
+            where(self.peers.c.id == peer_id).\
             values(downloading=downloading)
         with self.engine.connect() as connection:
             connection.execute(stmt)
@@ -789,7 +789,7 @@ class PostgresDb:
     def set_peer_uploading(self, peer_id, uploading):
         """ Set a peer is uploading. """
         stmt = self.peers.update().\
-            where(self.peers.c.peer_id == peer_id).\
+            where(self.peers.c.id == peer_id).\
             values(uploading=uploading)
         with self.engine.connect() as connection:
             connection.execute(stmt)
@@ -797,7 +797,7 @@ class PostgresDb:
     def delete_peer(self, peer_id):
         """ Delete a peer. """
         delete_peer_stmt = self.peers.delete().\
-            where(self.peers.c.peer_id == peer_id)
+            where(self.peers.c.id == peer_id)
         with self.engine.connect() as connection:
             connection.execute(delete_peer_stmt)
 
@@ -852,29 +852,49 @@ class PostgresDb:
 
     def get_offers(self, squeak_hash):
         """ Get offers for a squeak hash. """
-        sql = """
-        SELECT * FROM offer
-        WHERE squeak_hash=%s;
-        """
-        with self.get_cursor() as curs:
-            curs.execute(sql, (squeak_hash,))
-            rows = curs.fetchall()
+        s = select([self.offers]).\
+            where(self.offers.c.squeak_hash == squeak_hash)
+        with self.engine.connect() as connection:
+            result = connection.execute(s)
+            rows = result.fetchall()
             offers = [self._parse_offer(row) for row in rows]
             return offers
 
+        # sql = """
+        # SELECT * FROM offer
+        # WHERE squeak_hash=%s;
+        # """
+        # with self.get_cursor() as curs:
+        #     curs.execute(sql, (squeak_hash,))
+        #     rows = curs.fetchall()
+        #     offers = [self._parse_offer(row) for row in rows]
+        #     return offers
+
     def get_offers_with_peer(self, squeak_hash):
         """ Get offers with peer for a squeak hash. """
-        sql = """
-        SELECT * FROM offer
-        LEFT JOIN peer
-        ON offer.peer_id=peer.peer_id
-        WHERE squeak_hash=%s;
-        """
-        with self.get_cursor() as curs:
-            curs.execute(sql, (squeak_hash,))
-            rows = curs.fetchall()
+        s = select([self.offers, self.peers]).\
+            select_from(self.offers.outerjoin(
+                self.peers,
+                self.peers.c.id == self.offers.c.peer_id,
+            )).\
+            where(self.offers.c.squeak_hash == squeak_hash)
+        with self.engine.connect() as connection:
+            result = connection.execute(s)
+            rows = result.fetchall()
             offers_with_peer = [self._parse_offer_with_peer(row) for row in rows]
             return offers_with_peer
+
+        # sql = """
+        # SELECT * FROM offer
+        # LEFT JOIN peer
+        # ON offer.peer_id=peer.peer_id
+        # WHERE squeak_hash=%s;
+        # """
+        # with self.get_cursor() as curs:
+        #     curs.execute(sql, (squeak_hash,))
+        #     rows = curs.fetchall()
+        #     offers_with_peer = [self._parse_offer_with_peer(row) for row in rows]
+        #     return offers_with_peer
 
     def delete_expired_offers(self):
         """ Delete all expired offers. """
@@ -948,7 +968,7 @@ class PostgresDb:
         if row is None:
             return None
         return SqueakPeer(
-            peer_id=row["peer_id"],
+            peer_id=row["id"],
             peer_name=row["peer_name"],
             host=row["server_host"],
             port=row["server_port"],
