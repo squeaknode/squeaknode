@@ -4,9 +4,8 @@ import os
 
 import grpc
 
-# import squeakserver.common.lnd_pb2 as ln
-# import squeakserver.common.lnd_pb2_grpc as lnrpc
-
+from proto import lnd_pb2
+from proto import lnd_pb2_grpc
 
 logger = logging.getLogger(__name__)
 
@@ -27,11 +26,7 @@ class LNDLightningClient:
         port: int,
         tls_cert_path: str,
         macaroon_path: str,
-        ln_module,
-        lnrpc_module,
     ) -> None:
-        self.ln_module = ln_module
-        self.lnrpc_module = lnrpc_module
         url = "{}:{}".format(host, port)
 
         # Lnd cert is at ~/.lnd/tls.cert on Linux and
@@ -39,7 +34,7 @@ class LNDLightningClient:
         cert = open(os.path.expanduser(tls_cert_path), "rb").read()
         creds = grpc.ssl_channel_credentials(cert)
         channel = grpc.secure_channel(url, creds)
-        self.stub = self.lnrpc_module.LightningStub(channel)
+        self.stub = lnd_pb2_grpc.LightningStub(channel)
 
         # Lnd admin macaroon is at ~/.lnd/data/chain/bitcoin/simnet/admin.macaroon on Linux and
         # ~/Library/Application Support/Lnd/data/chain/bitcoin/simnet/admin.macaroon on Mac
@@ -50,7 +45,7 @@ class LNDLightningClient:
     def get_wallet_balance(self):
         # Retrieve and display the wallet balance
         return self.stub.WalletBalance(
-            self.ln_module.WalletBalanceRequest(),
+            lnd_pb2.WalletBalanceRequest(),
             metadata=[("macaroon", self.macaroon)],
         )
 
@@ -61,7 +56,7 @@ class LNDLightningClient:
         preimage -- the preimage bytes used to create the invoice
         amount -- the value of the invoice
         """
-        invoice = self.ln_module.Invoice(r_preimage=preimage, value=amount,)
+        invoice = lnd_pb2.Invoice(r_preimage=preimage, value=amount,)
         return self.stub.AddInvoice(invoice, metadata=[("macaroon", self.macaroon)])
 
     def pay_invoice_sync(self, payment_request):
@@ -70,7 +65,7 @@ class LNDLightningClient:
         args:
         payment_request -- the payment_request as a string
         """
-        send_payment_request = self.ln_module.SendRequest(
+        send_payment_request = lnd_pb2.SendRequest(
             payment_request=payment_request,
         )
         return self.stub.SendPaymentSync(
@@ -84,8 +79,8 @@ class LNDLightningClient:
         pubkey -- The identity pubkey of the Lightning node
         host -- The network location of the lightning node
         """
-        lightning_address = self.ln_module.LightningAddress(pubkey=pubkey, host=host,)
-        connect_peer_request = self.ln_module.ConnectPeerRequest(
+        lightning_address = lnd_pb2.LightningAddress(pubkey=pubkey, host=host,)
+        connect_peer_request = lnd_pb2.ConnectPeerRequest(
             addr=lightning_address,
         )
         return self.stub.ConnectPeer(
@@ -95,7 +90,7 @@ class LNDLightningClient:
     def get_info(self):
         """ Get info about the lightning network node.
         """
-        get_info_request = self.ln_module.GetInfoRequest()
+        get_info_request = lnd_pb2.GetInfoRequest()
         return self.stub.GetInfo(
             get_info_request, metadata=[("macaroon", self.macaroon)]
         )
@@ -107,7 +102,7 @@ class LNDLightningClient:
         pubkey (str) -- The identity pubkey of the Lightning node
         local_amount -- The number of satoshis the wallet should commit to the channel
         """
-        open_channel_request = self.ln_module.OpenChannelRequest(
+        open_channel_request = lnd_pb2.OpenChannelRequest(
             node_pubkey_string=pubkey_str, local_funding_amount=local_amount,
         )
         return self.stub.OpenChannelSync(
@@ -117,7 +112,7 @@ class LNDLightningClient:
     def list_channels(self):
         """ List the channels
         """
-        list_channels_request = self.ln_module.ListChannelsRequest()
+        list_channels_request = lnd_pb2.ListChannelsRequest()
         return self.stub.ListChannels(
             list_channels_request, metadata=[("macaroon", self.macaroon)]
         )
@@ -125,7 +120,7 @@ class LNDLightningClient:
     def list_peers(self):
         """ List the peers
         """
-        list_peers_request = self.ln_module.ListPeersRequest()
+        list_peers_request = lnd_pb2.ListPeersRequest()
         return self.stub.ListPeers(
             list_peers_request, metadata=[("macaroon", self.macaroon)]
         )
@@ -137,7 +132,7 @@ class LNDLightningClient:
         pubkey (bytes) -- The identity pubkey of the Lightning node
         local_amount -- The number of satoshis the wallet should commit to the channel
         """
-        open_channel_request = self.ln_module.OpenChannelRequest(
+        open_channel_request = lnd_pb2.OpenChannelRequest(
             node_pubkey=pubkey, local_funding_amount=local_amount,
         )
         return self.stub.OpenChannel(
@@ -150,7 +145,7 @@ class LNDLightningClient:
         args:
         channel_point (str) -- The outpoint (txid:index) of the funding transaction.
         """
-        close_channel_request = self.ln_module.CloseChannelRequest(
+        close_channel_request = lnd_pb2.CloseChannelRequest(
             channel_point=channel_point,
         )
         return self.stub.CloseChannel(
@@ -163,7 +158,7 @@ class LNDLightningClient:
         args:
         pay_req (str) -- The payment request string
         """
-        decode_pay_req_request = self.ln_module.PayReqString(
+        decode_pay_req_request = lnd_pb2.PayReqString(
             pay_req=payment_request,
         )
         return self.stub.DecodePayReq(

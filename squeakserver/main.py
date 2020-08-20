@@ -6,9 +6,6 @@ from configparser import ConfigParser
 
 from squeak.params import SelectParams
 
-from proto import lnd_pb2 as ln
-from proto import lnd_pb2_grpc as lnrpc
-
 from squeakserver.admin.squeak_admin_server_handler import SqueakAdminServerHandler
 from squeakserver.admin.squeak_admin_server_servicer import SqueakAdminServerServicer
 from squeakserver.blockchain.bitcoin_blockchain_client import BitcoinBlockchainClient
@@ -30,8 +27,6 @@ def load_lightning_client(config) -> LNDLightningClient:
         config["lnd"]["rpc_port"],
         config["lnd"]["tls_cert_path"],
         config["lnd"]["macaroon_path"],
-        ln,
-        lnrpc,
     )
 
 
