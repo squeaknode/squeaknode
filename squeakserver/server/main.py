@@ -72,12 +72,6 @@ def load_admin_handler(lightning_client, squeak_node):
     return SqueakAdminServerHandler(lightning_client, squeak_node,)
 
 
-# def load_db_params(config, schema):
-#     db_params = parse_db_params(config)
-#     db_params['options'] = "--search_path={}".format(schema)
-#     return db_params
-
-
 def load_db_engine(config):
     # TODO: check if using postgres
     if True:
