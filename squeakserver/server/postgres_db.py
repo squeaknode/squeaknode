@@ -721,15 +721,22 @@ class PostgresDb:
 
     def mark_squeak_block_valid(self, squeak_hash, block_header):
         """ Add the block header to a squeak. """
-        sql = """
-        UPDATE squeak
-        SET block_header=%s
-        WHERE hash=%s;
-        """
         squeak_hash_str = squeak_hash.hex()
-        with self.get_cursor() as curs:
-            # execute the UPDATE statement
-            curs.execute(sql, (block_header, squeak_hash_str,))
+        stmt = self.squeaks.update().\
+            where(self.squeaks.c.hash == squeak_hash_str).\
+            values(block_header=block_header)
+        with self.engine.connect() as connection:
+            connection.execute(stmt)
+
+        # sql = """
+        # UPDATE squeak
+        # SET block_header=%s
+        # WHERE hash=%s;
+        # """
+        # squeak_hash_str = squeak_hash.hex()
+        # with self.get_cursor() as curs:
+        #     # execute the UPDATE statement
+        #     curs.execute(sql, (block_header, squeak_hash_str,))
 
     def delete_squeak(self, squeak_hash):
         """ Delete a squeak. """
@@ -898,15 +905,22 @@ class PostgresDb:
 
     def delete_expired_offers(self):
         """ Delete all expired offers. """
-        sql = """
-        DELETE FROM offer
-        WHERE now() > to_timestamp(invoice_timestamp + invoice_expiry)
-        RETURNING *;
-        """
-        with self.get_cursor() as curs:
-            curs.execute(sql)
-            rows = curs.fetchall()
-            return len(rows)
+        s = self.offers.delete().\
+            where(datetime.utcnow() > func.to_timestamp(self.offers.c.invoice_timestamp + self.offers.c.invoice_expiry))
+        with self.engine.connect() as connection:
+            res = connection.execute(s)
+            deleted_offers = res.rowcount
+            return deleted_offers
+
+        # sql = """
+        # DELETE FROM offer
+        # WHERE now() > to_timestamp(invoice_timestamp + invoice_expiry)
+        # RETURNING *;
+        # """
+        # with self.get_cursor() as curs:
+        #     curs.execute(sql)
+        #     rows = curs.fetchall()
+        #     return len(rows)
 
     def _parse_squeak_entry(self, row):
         if row is None:
