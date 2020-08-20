@@ -3,9 +3,6 @@ from contextlib import contextmanager
 
 from datetime import datetime, timedelta
 
-from psycopg2 import pool
-from psycopg2 import sql
-from psycopg2.extras import DictCursor
 from squeak.core import CSqueak
 
 import sqlalchemy
@@ -32,7 +29,6 @@ class PostgresDb:
     def __init__(self, params, schema):
         logger.info("Starting connection pool with params: {}".format(params))
         self.schema = schema
-        self.connection_pool = pool.ThreadedConnectionPool(5, 20, **params)
         self.db_string = self.get_connection_string(params)
         self.engine = create_engine(self.db_string)
 
@@ -126,27 +122,6 @@ class PostgresDb:
         logger.info("Calling create_tables")
         self.metadata.create_all(self.engine)
         logger.info("Called create_tables")
-
-    # Get Cursor
-    @contextmanager
-    def get_cursor(self):
-        con = self.connection_pool.getconn()
-        try:
-            yield con.cursor(cursor_factory=DictCursor)
-            con.commit()
-        finally:
-            self.connection_pool.putconn(con)
-
-    def get_version(self):
-        """ Connect to the PostgreSQL database server """
-        with self.get_cursor() as curs:
-            # execute a statement
-            logger.info("PostgreSQL database version:")
-            curs.execute("SELECT version()")
-
-            # display the PostgreSQL database server version
-            db_version = curs.fetchone()
-            logger.info(db_version)
 
     def get_connection_string(self, params):
         return "postgresql://{}:{}@{}/{}".format(
