@@ -25,26 +25,11 @@ from squeakserver.server.util import get_hash
 logger = logging.getLogger(__name__)
 
 
-class PostgresDb:
-    def __init__(self, params, schema):
-        logger.info("Starting connection pool with params: {}".format(params))
+class SqueakDb:
+    def __init__(self, engine, schema):
         self.schema = schema
-        self.db_string = self.get_connection_string(params)
-        self.engine = create_engine(self.db_string)
-
+        self.engine = engine
         self.metadata = MetaData(schema=schema)
-
-        self.users = Table('users', self.metadata,
-                      Column('id', Integer, primary_key=True),
-                      Column('name', String),
-                      Column('fullname', String),
-        )
-
-        self.addresses = Table('addresses', self.metadata,
-                          Column('id', Integer, primary_key=True),
-                          Column('user_id', None, ForeignKey('users.id')),
-                          Column('email_address', String, nullable=False)
-        )
 
         self.squeaks = Table('squeak', self.metadata,
                         Column('hash', String(64), primary_key=True),
@@ -122,14 +107,6 @@ class PostgresDb:
         logger.info("Calling create_tables")
         self.metadata.create_all(self.engine)
         logger.info("Called create_tables")
-
-    def get_connection_string(self, params):
-        return "postgresql://{}:{}@{}/{}".format(
-            params['user'],
-            params['password'],
-            params['host'],
-            params['database'],
-        )
 
     def init(self):
         """ Create the tables and indices in the database. """
