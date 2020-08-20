@@ -173,7 +173,6 @@ class PostgresDb:
 
     def insert_squeak(self, squeak):
         """ Insert a new squeak. """
-        logger.info("Inserting squeak: {}".format(squeak))
         ins = self.squeaks.insert().values(
             hash=get_hash(squeak).hex(),
             n_version=squeak.nVersion,
@@ -192,11 +191,9 @@ class PostgresDb:
             author_address=str(squeak.GetAddress()),
             vch_decryption_key=squeak.GetDecryptionKey().get_bytes() if squeak.HasDecryptionKey() else None,
         )
-        logger.info("Insert squeak params: {}".format(ins.compile().params))
         with self.engine.connect() as connection:
             res = connection.execute(ins)
             squeak_hash = res.inserted_primary_key[0]
-            logger.info("Inserted squeak and got hash: {}".format(squeak_hash))
             return bytes.fromhex(squeak_hash)
 
     def get_squeak_entry(self, squeak_hash):
