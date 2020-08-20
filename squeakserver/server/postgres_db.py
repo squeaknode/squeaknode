@@ -412,34 +412,62 @@ class PostgresDb:
         #     hashes = [bytes.fromhex(row["hash"]) for row in rows]
         #     return hashes
 
-    def lookup_squeaks_needing_offer(self, addresses, min_block, max_block, peer_id, include_unverified=False):
+    def lookup_squeaks_needing_offer(
+            self, addresses, min_block, max_block, peer_id, include_unverified=False
+    ):
         """ Lookup squeaks that are locked and don't have an offer. """
-        sql = """
-        SELECT hash FROM squeak
-        LEFT JOIN offer
-        ON squeak.hash=offer.squeak_hash
-        AND offer.peer_id=%s
-        WHERE author_address IN %s
-        AND n_block_height >= %s
-        AND n_block_height <= %s
-        AND vch_decryption_key IS NULL
-        AND ((block_header IS NOT NULL) OR %s)
-        AND offer.squeak_hash IS NULL
-        """
-        addresses_tuple = tuple(addresses)
-
         if not addresses:
             return []
 
-        with self.get_cursor() as curs:
-            # mogrify to debug.
-            # logger.info(curs.mogrify(sql, (addresses_tuple, min_block, max_block)))
-            curs.execute(
-                sql, (peer_id, addresses_tuple, min_block, max_block, include_unverified)
-            )
-            rows = curs.fetchall()
+        s = select([self.squeaks.c.hash]).\
+            select_from(self.squeaks.outerjoin(
+                self.offers,
+                and_(
+                    self.offers.c.squeak_hash == self.squeaks.c.hash,
+                    self.offers.c.peer_id == peer_id,
+                ),
+            )).\
+            where(self.squeaks.c.author_address.in_(addresses)).\
+            where(self.squeaks.c.n_block_height >= min_block).\
+            where(self.squeaks.c.n_block_height <= max_block).\
+            where(self.squeaks.c.vch_decryption_key == None).\
+            where(or_(
+                self.squeaks.c.block_header != None,
+                include_unverified,
+            )).\
+            where(self.offers.c.squeak_hash == None)
+        with self.engine.connect() as connection:
+            result = connection.execute(s)
+            rows = result.fetchall()
             hashes = [bytes.fromhex(row["hash"]) for row in rows]
             return hashes
+
+        # sql = """
+        # SELECT hash FROM squeak
+        # LEFT JOIN offer
+        # ON squeak.hash=offer.squeak_hash
+        # AND offer.peer_id=%s
+        # WHERE author_address IN %s
+        # AND n_block_height >= %s
+        # AND n_block_height <= %s
+        # AND vch_decryption_key IS NULL
+        # AND ((block_header IS NOT NULL) OR %s)
+        # AND offer.squeak_hash IS NULL
+        # """
+        # addresses_tuple = tuple(addresses)
+
+        # if not addresses:
+        #     return []
+
+        # with self.get_cursor() as curs:
+        #     # mogrify to debug.
+        #     # logger.info(curs.mogrify(sql, (addresses_tuple, min_block, max_block)))
+        #     curs.execute(
+        #         sql, (peer_id, addresses_tuple, min_block, max_block, include_unverified)
+        #     )
+        #     rows = curs.fetchall()
+        #     hashes = [bytes.fromhex(row["hash"]) for row in rows]
+        #     return hashes
 
     def insert_profile(self, squeak_profile):
         """ Insert a new squeak profile. """
