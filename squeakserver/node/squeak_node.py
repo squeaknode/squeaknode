@@ -31,12 +31,14 @@ class SqueakNode:
         lightning_host_port,
         price,
         max_squeaks_per_address_per_hour,
+        enable_sync=False,
     ):
         self.postgres_db = postgres_db
         self.blockchain_client = blockchain_client
         self.lightning_client = lightning_client
         self.lightning_host_port = lightning_host_port
         self.price = price
+        self.enable_sync = enable_sync
         self.squeak_block_verifier = SqueakBlockVerifier(postgres_db, blockchain_client)
         self.squeak_block_periodic_worker = SqueakBlockPeriodicWorker(
             self.squeak_block_verifier
@@ -77,7 +79,8 @@ class SqueakNode:
     def start_running(self):
         self.squeak_block_periodic_worker.start_running()
         self.squeak_block_queue_worker.start_running()
-        self.squeak_peer_sync_worker.start_running()
+        if self.enable_sync:
+            self.squeak_peer_sync_worker.start_running()
         self.squeak_offer_expiry_worker.start_running()
 
     def save_uploaded_squeak(self, squeak):
