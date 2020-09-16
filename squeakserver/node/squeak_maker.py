@@ -19,6 +19,7 @@ class SqueakMaker:
         logger.info("Creating squeak with signing key: {}".format(signing_key))
         logger.info("Creating squeak with replyto_hash: {}".format(replyto_hash))
         block_info = self._get_latest_block_info()
+        logger.info("Creating squeak with block_info: {}".format(block_info))
         block_height = block_info.block_height
         block_hash = bytes.fromhex(block_info.block_hash)
         timestamp = self._get_current_time_s()
