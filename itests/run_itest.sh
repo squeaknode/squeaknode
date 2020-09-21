@@ -14,12 +14,21 @@ function mine_blocks {
 
 cd itests
 docker-compose down --volumes
-docker-compose build
+# docker-compose build
 docker-compose up -d
 
 # Initialize the blockchain with miner rewards going to the test client.
-sleep 10
-client_address=$(docker exec -it test_lnd_client lncli --network=simnet newaddress np2wkh | jq .address -r)
+
+client_address=""
+while [ "$client_address" = "" ]
+do
+    new_address_output=$(docker exec -it test_lnd_client lncli --network=simnet newaddress np2wkh)
+    echo "new_address_output:"
+    echo $new_address_output
+    client_address=$(echo $new_address_output | jq .address -r)
+    sleep 10
+done
+
 MINING_ADDRESS=$client_address docker-compose up -d btcd
 echo "Mining 400 blocks to address: $client_address ..."
 docker-compose run btcctl generate 400
