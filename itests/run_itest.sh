@@ -18,27 +18,15 @@ docker-compose down --volumes
 docker-compose up -d
 
 # Initialize the blockchain with miner rewards going to the test client.
-sleep 10
-new_address_output=$(docker exec -it test_lnd_client lncli --network=simnet newaddress np2wkh)
 
-echo "new_address_output:"
-echo $new_address_output
-
-client_address=$(echo $new_address_output | jq .address -r)
-
-if [ "$client_address" = "" ]; then
-    # $client_address is empty
-    echo "client_address is empty";
-    # exit 1;
-fi
-
+client_address=""
 while [ "$client_address" = "" ]
 do
-    sleep 10
     new_address_output=$(docker exec -it test_lnd_client lncli --network=simnet newaddress np2wkh)
     echo "new_address_output:"
     echo $new_address_output
     client_address=$(echo $new_address_output | jq .address -r)
+    sleep 10
 done
 
 MINING_ADDRESS=$client_address docker-compose up -d btcd
