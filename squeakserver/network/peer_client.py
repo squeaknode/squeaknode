@@ -1,23 +1,12 @@
 import logging
-
 from contextlib import contextmanager
 
 import grpc
-from squeak.core import CSqueak
-from squeak.core import CheckSqueak
+from squeak.core import CheckSqueak, CSqueak
 
-from squeakserver.server.util import get_hash
-
-from proto import lnd_pb2 as ln
-from proto import (
-    squeak_admin_pb2,
-    squeak_admin_pb2_grpc,
-    squeak_server_pb2,
-    squeak_server_pb2_grpc,
-)
+from proto import squeak_server_pb2, squeak_server_pb2_grpc
 
 logger = logging.getLogger(__name__)
-
 
 
 class PeerClient:

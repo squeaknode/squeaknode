@@ -1,10 +1,8 @@
 import io
 
-from setuptools import find_packages, setup
 import setuptools.command.build_py
-
 from grpc_tools.command import BuildPackageProtos
-
+from setuptools import find_packages, setup
 
 PACKAGE_DIRECTORIES = {
     '': '.',
@@ -15,11 +13,11 @@ with io.open("README.md", "rt", encoding="utf8") as f:
 
 
 class BuildPyCommand(setuptools.command.build_py.build_py):
-  """Custom build command."""
+    """Custom build command."""
 
-  def run(self):
-    self.run_command('build_proto_modules')
-    setuptools.command.build_py.build_py.run(self)
+    def run(self):
+        self.run_command('build_proto_modules')
+        setuptools.command.build_py.build_py.run(self)
 
 
 setup(

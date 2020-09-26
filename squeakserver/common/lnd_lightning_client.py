@@ -4,8 +4,7 @@ import os
 
 import grpc
 
-from proto import lnd_pb2
-from proto import lnd_pb2_grpc
+from proto import lnd_pb2, lnd_pb2_grpc
 
 logger = logging.getLogger(__name__)
 
@@ -50,17 +49,20 @@ class LNDLightningClient:
         )
 
     def add_invoice(self, preimage, amount):
-        """ Create a new invoice with the given hash pre-image.
+        """Create a new invoice with the given hash pre-image.
 
         args:
         preimage -- the preimage bytes used to create the invoice
         amount -- the value of the invoice
         """
-        invoice = lnd_pb2.Invoice(r_preimage=preimage, value=amount,)
+        invoice = lnd_pb2.Invoice(
+            r_preimage=preimage,
+            value=amount,
+        )
         return self.stub.AddInvoice(invoice, metadata=[("macaroon", self.macaroon)])
 
     def pay_invoice_sync(self, payment_request):
-        """ Pay an invoice with a given payment_request
+        """Pay an invoice with a given payment_request
 
         args:
         payment_request -- the payment_request as a string
@@ -73,13 +75,16 @@ class LNDLightningClient:
         )
 
     def connect_peer(self, pubkey, host):
-        """ Connect to a lightning node peer.
+        """Connect to a lightning node peer.
 
         args:
         pubkey -- The identity pubkey of the Lightning node
         host -- The network location of the lightning node
         """
-        lightning_address = lnd_pb2.LightningAddress(pubkey=pubkey, host=host,)
+        lightning_address = lnd_pb2.LightningAddress(
+            pubkey=pubkey,
+            host=host,
+        )
         connect_peer_request = lnd_pb2.ConnectPeerRequest(
             addr=lightning_address,
         )
@@ -88,59 +93,58 @@ class LNDLightningClient:
         )
 
     def get_info(self):
-        """ Get info about the lightning network node.
-        """
+        """Get info about the lightning network node."""
         get_info_request = lnd_pb2.GetInfoRequest()
         return self.stub.GetInfo(
             get_info_request, metadata=[("macaroon", self.macaroon)]
         )
 
     def open_channel_sync(self, pubkey_str, local_amount):
-        """ Open a channel with a remote lightning node.
+        """Open a channel with a remote lightning node.
 
         args:
         pubkey (str) -- The identity pubkey of the Lightning node
         local_amount -- The number of satoshis the wallet should commit to the channel
         """
         open_channel_request = lnd_pb2.OpenChannelRequest(
-            node_pubkey_string=pubkey_str, local_funding_amount=local_amount,
+            node_pubkey_string=pubkey_str,
+            local_funding_amount=local_amount,
         )
         return self.stub.OpenChannelSync(
             open_channel_request, metadata=[("macaroon", self.macaroon)]
         )
 
     def list_channels(self):
-        """ List the channels
-        """
+        """List the channels"""
         list_channels_request = lnd_pb2.ListChannelsRequest()
         return self.stub.ListChannels(
             list_channels_request, metadata=[("macaroon", self.macaroon)]
         )
 
     def list_peers(self):
-        """ List the peers
-        """
+        """List the peers"""
         list_peers_request = lnd_pb2.ListPeersRequest()
         return self.stub.ListPeers(
             list_peers_request, metadata=[("macaroon", self.macaroon)]
         )
 
     def open_channel(self, pubkey, local_amount):
-        """ Open a channel
+        """Open a channel
 
         args:
         pubkey (bytes) -- The identity pubkey of the Lightning node
         local_amount -- The number of satoshis the wallet should commit to the channel
         """
         open_channel_request = lnd_pb2.OpenChannelRequest(
-            node_pubkey=pubkey, local_funding_amount=local_amount,
+            node_pubkey=pubkey,
+            local_funding_amount=local_amount,
         )
         return self.stub.OpenChannel(
             open_channel_request, metadata=[("macaroon", self.macaroon)]
         )
 
     def close_channel(self, channel_point):
-        """ Close a channel
+        """Close a channel
 
         args:
         channel_point (str) -- The outpoint (txid:index) of the funding transaction.
@@ -153,7 +157,7 @@ class LNDLightningClient:
         )
 
     def decode_pay_req(self, payment_request):
-        """ Decode a payment request
+        """Decode a payment request
 
         args:
         pay_req (str) -- The payment request string

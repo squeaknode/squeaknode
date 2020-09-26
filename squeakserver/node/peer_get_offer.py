@@ -4,21 +4,13 @@ import threading
 from squeak.core.encryption import generate_data_key
 
 from squeakserver.core.offer import Offer
-from squeakserver.server.util import get_hash
 from squeakserver.network.peer_client import PeerClient
 
 logger = logging.getLogger(__name__)
 
 
 class PeerGetOffer:
-    def __init__(
-            self,
-            peer,
-            squeak_hash,
-            squeak_store,
-            postgres_db,
-            lightning_client
-    ):
+    def __init__(self, peer, squeak_hash, squeak_store, postgres_db, lightning_client):
         self.peer = peer
         self.squeak_hash = squeak_hash
         self.squeak_store = squeak_store
@@ -52,11 +44,13 @@ class PeerGetOffer:
         proof = offer.proof
         logger.info("Proof: {}".format(proof.hex()))
         logger.info("Expected proof: {}".format(challenge_proof.hex()))
-        if (proof != challenge_proof):
-            raise Exception("Invalid offer proof: {}, expected: {}".format(
-                proof.hex(),
-                challenge_proof.hex(),
-            ))
+        if proof != challenge_proof:
+            raise Exception(
+                "Invalid offer proof: {}, expected: {}".format(
+                    proof.hex(),
+                    challenge_proof.hex(),
+                )
+            )
 
         # Get the decoded offer from the payment request string
         decoded_offer = self._get_decoded_offer(offer)
@@ -81,7 +75,9 @@ class PeerGetOffer:
         return encryption_key.encrypt(challenge_proof)
 
     def _download_buy_offer(self, challenge):
-        logger.info("Downloading buy offer for squeak hash: {}".format(self.squeak_hash.hex()))
+        logger.info(
+            "Downloading buy offer for squeak hash: {}".format(self.squeak_hash.hex())
+        )
         offer_msg = self.peer_client.buy_squeak(self.squeak_hash, challenge)
         offer = self._offer_from_msg(offer_msg)
         return offer

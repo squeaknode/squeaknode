@@ -6,8 +6,7 @@ logger = logging.getLogger(__name__)
 
 
 class SqueakValidator(object):
-    """Validates incoming squeaks
-    """
+    """Validates incoming squeaks"""
 
     def __init__(self) -> None:
         pass

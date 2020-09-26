@@ -2,12 +2,7 @@ import grpc
 import pytest
 from squeak.params import SelectParams
 
-from proto import (
-    squeak_admin_pb2,
-    squeak_admin_pb2_grpc,
-    squeak_server_pb2,
-    squeak_server_pb2_grpc,
-)
+from proto import squeak_admin_pb2, squeak_admin_pb2_grpc, squeak_server_pb2_grpc
 from tests.util import generate_signing_key, get_address, load_lightning_client
 
 
@@ -44,7 +39,8 @@ def whitelisted_signing_key(server_stub, admin_stub):
     profile_address = get_address(signing_key)
     create_contact_profile_response = admin_stub.CreateContactProfile(
         squeak_admin_pb2.CreateContactProfileRequest(
-            profile_name=profile_name, address=profile_address,
+            profile_name=profile_name,
+            address=profile_address,
         )
     )
     contact_profile_id = create_contact_profile_response.profile_id
@@ -52,7 +48,8 @@ def whitelisted_signing_key(server_stub, admin_stub):
     # Set the profile to be whitelisted
     admin_stub.SetSqueakProfileWhitelisted(
         squeak_admin_pb2.SetSqueakProfileWhitelistedRequest(
-            profile_id=contact_profile_id, whitelisted=True,
+            profile_id=contact_profile_id,
+            whitelisted=True,
         )
     )
 
@@ -74,7 +71,9 @@ def signing_profile_id(server_stub, admin_stub):
     # Create a new signing profile
     profile_name = "fake_signing_profile"
     create_signing_profile_response = admin_stub.CreateSigningProfile(
-        squeak_admin_pb2.CreateSigningProfileRequest(profile_name=profile_name,)
+        squeak_admin_pb2.CreateSigningProfileRequest(
+            profile_name=profile_name,
+        )
     )
     profile_id = create_signing_profile_response.profile_id
     yield profile_id
@@ -88,7 +87,8 @@ def contact_profile_id(server_stub, admin_stub):
     contact_address = get_address(contact_signing_key)
     create_contact_profile_response = admin_stub.CreateContactProfile(
         squeak_admin_pb2.CreateContactProfileRequest(
-            profile_name=contact_name, address=contact_address,
+            profile_name=contact_name,
+            address=contact_address,
         )
     )
     contact_profile_id = create_contact_profile_response.profile_id
@@ -101,17 +101,22 @@ def saved_squeak_hash(server_stub, admin_stub, signing_profile_id):
     make_squeak_content = "Hello from the profile on the server!"
     make_squeak_response = admin_stub.MakeSqueak(
         squeak_admin_pb2.MakeSqueakRequest(
-            profile_id=signing_profile_id, content=make_squeak_content,
+            profile_id=signing_profile_id,
+            content=make_squeak_content,
         )
     )
     squeak_hash_str = make_squeak_response.squeak_hash
     yield bytes.fromhex(squeak_hash_str)
 
+
 @pytest.fixture
 def peer_id(server_stub, admin_stub):
     # Create a new peer
     create_peer_response = admin_stub.CreatePeer(
-        squeak_admin_pb2.CreatePeerRequest(host="fake_host", port=1234,)
+        squeak_admin_pb2.CreatePeerRequest(
+            host="fake_host",
+            port=1234,
+        )
     )
     peer_id = create_peer_response.peer_id
     yield peer_id

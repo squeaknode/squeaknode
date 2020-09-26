@@ -1,7 +1,6 @@
 import logging
 import threading
 
-from squeakserver.server.util import get_hash
 from squeakserver.network.peer_client import PeerClient
 
 logger = logging.getLogger(__name__)
@@ -12,12 +11,12 @@ LOOKUP_BLOCK_INTERVAL = 1008  # 1 week
 
 class PeerUpload:
     def __init__(
-            self,
-            peer,
-            block_height,
-            squeak_store,
-            postgres_db,
-            lookup_block_interval=LOOKUP_BLOCK_INTERVAL,
+        self,
+        peer,
+        block_height,
+        squeak_store,
+        postgres_db,
+        lookup_block_interval=LOOKUP_BLOCK_INTERVAL,
     ):
         self.peer = peer
         self.block_height = block_height
@@ -96,7 +95,4 @@ class PeerUpload:
 
     def _get_sharing_addresses(self):
         sharing_profiles = self.postgres_db.get_sharing_profiles()
-        return [
-            profile.address
-            for profile in sharing_profiles
-        ]
+        return [profile.address for profile in sharing_profiles]

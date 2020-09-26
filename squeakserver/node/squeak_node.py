@@ -8,17 +8,17 @@ from squeakserver.core.squeak_address_validator import SqueakAddressValidator
 from squeakserver.node.squeak_block_periodic_worker import SqueakBlockPeriodicWorker
 from squeakserver.node.squeak_block_queue_worker import SqueakBlockQueueWorker
 from squeakserver.node.squeak_block_verifier import SqueakBlockVerifier
-from squeakserver.node.squeak_maker import SqueakMaker
-from squeakserver.node.squeak_rate_limiter import SqueakRateLimiter
-from squeakserver.node.squeak_whitelist import SqueakWhitelist
-from squeakserver.node.squeak_store import SqueakStore
-from squeakserver.node.squeak_offer_expiry_worker import SqueakOfferExpiryWorker
 from squeakserver.node.squeak_expired_offer_cleaner import SqueakExpiredOfferCleaner
+from squeakserver.node.squeak_maker import SqueakMaker
+from squeakserver.node.squeak_offer_expiry_worker import SqueakOfferExpiryWorker
 from squeakserver.node.squeak_peer_sync_worker import SqueakPeerSyncWorker
+from squeakserver.node.squeak_rate_limiter import SqueakRateLimiter
+from squeakserver.node.squeak_store import SqueakStore
 from squeakserver.node.squeak_sync_status import SqueakSyncController
+from squeakserver.node.squeak_whitelist import SqueakWhitelist
 from squeakserver.server.buy_offer import BuyOffer
-from squeakserver.server.squeak_profile import SqueakProfile
 from squeakserver.server.squeak_peer import SqueakPeer
+from squeakserver.server.squeak_profile import SqueakProfile
 from squeakserver.server.util import generate_offer_preimage
 
 
@@ -52,7 +52,9 @@ class SqueakNode:
             lightning_client,
             max_squeaks_per_address_per_hour,
         )
-        self.squeak_whitelist = SqueakWhitelist(postgres_db,)
+        self.squeak_whitelist = SqueakWhitelist(
+            postgres_db,
+        )
         self.squeak_store = SqueakStore(
             postgres_db,
             self.squeak_block_verifier,
@@ -251,4 +253,3 @@ class SqueakNode:
     def get_buy_offers_with_peer(self, squeak_hash_str):
         squeak_hash = bytes.fromhex(squeak_hash_str)
         return self.postgres_db.get_offers_with_peer(squeak_hash_str)
-
