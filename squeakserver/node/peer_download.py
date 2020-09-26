@@ -1,7 +1,6 @@
 import logging
 import threading
 
-from squeakserver.server.util import get_hash
 from squeakserver.network.peer_client import PeerClient
 from squeakserver.node.peer_get_offer import PeerGetOffer
 
@@ -13,13 +12,13 @@ LOOKUP_BLOCK_INTERVAL = 1008  # 1 week
 
 class PeerDownload:
     def __init__(
-            self,
-            peer,
-            block_height,
-            squeak_store,
-            postgres_db,
-            lightning_client,
-            lookup_block_interval=LOOKUP_BLOCK_INTERVAL,
+        self,
+        peer,
+        block_height,
+        squeak_store,
+        postgres_db,
+        lightning_client,
+        lookup_block_interval=LOOKUP_BLOCK_INTERVAL,
     ):
         self.peer = peer
         self.block_height = block_height
@@ -132,10 +131,7 @@ class PeerDownload:
 
     def _get_followed_addresses(self):
         followed_profiles = self.postgres_db.get_following_profiles()
-        return [
-            profile.address
-            for profile in followed_profiles
-        ]
+        return [profile.address for profile in followed_profiles]
 
     def _download_offer(self, squeak_hash):
         logger.info("Downloading offer for hash: {}".format(squeak_hash.hex()))

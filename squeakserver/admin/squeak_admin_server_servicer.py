@@ -27,15 +27,20 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
     def CreateSigningProfile(self, request, context):
         profile_name = request.profile_name
         profile_id = self.handler.handle_create_signing_profile(profile_name)
-        return squeak_admin_pb2.CreateSigningProfileReply(profile_id=profile_id,)
+        return squeak_admin_pb2.CreateSigningProfileReply(
+            profile_id=profile_id,
+        )
 
     def CreateContactProfile(self, request, context):
         profile_name = request.profile_name
         squeak_address = request.address
         profile_id = self.handler.handle_create_contact_profile(
-            profile_name, squeak_address,
+            profile_name,
+            squeak_address,
         )
-        return squeak_admin_pb2.CreateContactProfileReply(profile_id=profile_id,)
+        return squeak_admin_pb2.CreateContactProfileReply(
+            profile_id=profile_id,
+        )
 
     def GetSigningProfiles(self, request, context):
         profiles = self.handler.handle_get_signing_profiles()
@@ -56,7 +61,7 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         squeak_profile = self.handler.handle_get_squeak_profile(profile_id)
         if squeak_profile is None:
             context.set_code(grpc.StatusCode.NOT_FOUND)
-            context.set_details('Profile not found.')
+            context.set_details("Profile not found.")
             return squeak_admin_pb2.GetSqueakProfileReply()
         squeak_profile_msg = self._squeak_profile_to_message(squeak_profile)
         return squeak_admin_pb2.GetSqueakProfileReply(
@@ -101,7 +106,9 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
             profile_id, content_str, replyto_hash
         )
         squeak_hash_str = squeak_hash.hex()
-        return squeak_admin_pb2.MakeSqueakReply(squeak_hash=squeak_hash_str,)
+        return squeak_admin_pb2.MakeSqueakReply(
+            squeak_hash=squeak_hash_str,
+        )
 
     def GetSqueakDisplay(self, request, context):
         squeak_hash_str = request.squeak_hash
@@ -130,8 +137,12 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         address = request.address
         min_block = 0
         max_block = sys.maxsize
-        squeak_entries_with_profile = self.handler.handle_get_squeak_display_entries_for_address(
-            address, min_block, max_block,
+        squeak_entries_with_profile = (
+            self.handler.handle_get_squeak_display_entries_for_address(
+                address,
+                min_block,
+                max_block,
+            )
         )
         squeak_display_msgs = [
             self._squeak_entry_to_message(entry)
@@ -143,8 +154,10 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
 
     def GetAncestorSqueakDisplays(self, request, context):
         squeak_hash_str = request.squeak_hash
-        squeak_entries_with_profile = self.handler.handle_get_ancestor_squeak_display_entries(
-            squeak_hash_str,
+        squeak_entries_with_profile = (
+            self.handler.handle_get_ancestor_squeak_display_entries(
+                squeak_hash_str,
+            )
         )
         squeak_display_msgs = [
             self._squeak_entry_to_message(entry)
@@ -178,7 +191,7 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         squeak_peer = self.handler.handle_get_squeak_peer(peer_id)
         if squeak_peer is None:
             context.set_code(grpc.StatusCode.NOT_FOUND)
-            context.set_details('Peer not found.')
+            context.set_details("Peer not found.")
             return squeak_admin_pb2.GetPeerReply()
         squeak_peer_msg = self._squeak_peer_to_message(squeak_peer)
         return squeak_admin_pb2.GetPeerReply(
@@ -188,8 +201,7 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
     def GetPeers(self, request, context):
         squeak_peers = self.handler.handle_get_squeak_peers()
         squeak_peer_msgs = [
-            self._squeak_peer_to_message(squeak_peer)
-            for squeak_peer in squeak_peers
+            self._squeak_peer_to_message(squeak_peer) for squeak_peer in squeak_peers
         ]
         return squeak_admin_pb2.GetPeersReply(
             squeak_peers=squeak_peer_msgs,
@@ -221,10 +233,7 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
     def GetBuyOffers(self, request, context):
         squeak_hash_str = request.squeak_hash
         offers = self.handler.handle_get_buy_offers(squeak_hash_str)
-        offer_msgs = [
-            self._offer_entry_to_message(offer)
-            for offer in offers
-        ]
+        offer_msgs = [self._offer_entry_to_message(offer) for offer in offers]
         logger.info("Returning buy offers: {}".format(offer_msgs))
         return squeak_admin_pb2.GetBuyOffersReply(
             offers=offer_msgs,

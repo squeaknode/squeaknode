@@ -4,7 +4,9 @@ logger = logging.getLogger(__name__)
 
 
 class SqueakStore:
-    def __init__(self, postgres_db, squeak_block_verifier, squeak_rate_limiter, squeak_whitelist):
+    def __init__(
+        self, postgres_db, squeak_block_verifier, squeak_rate_limiter, squeak_whitelist
+    ):
         self.postgres_db = postgres_db
         self.squeak_block_verifier = squeak_block_verifier
         self.squeak_rate_limiter = squeak_rate_limiter
@@ -59,7 +61,9 @@ class SqueakStore:
         self, address, min_block, max_block
     ):
         return self.postgres_db.get_squeak_entries_with_profile_for_address(
-            address, min_block, max_block,
+            address,
+            min_block,
+            max_block,
         )
 
     def get_ancestor_squeak_entries_with_profile(self, squeak_hash_str):

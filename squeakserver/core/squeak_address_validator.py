@@ -8,8 +8,7 @@ logger = logging.getLogger(__name__)
 
 
 class SqueakAddressValidator(object):
-    """Validates addresses
-    """
+    """Validates addresses"""
 
     def __init__(self) -> None:
         pass

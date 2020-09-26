@@ -43,7 +43,9 @@ class SqueakRateLimiter:
             )
         )
         hashes = self.postgres_db.lookup_squeaks_by_time(
-            [squeak_address], HOUR_IN_SECONDS, include_unverified=True,
+            [squeak_address],
+            HOUR_IN_SECONDS,
+            include_unverified=True,
         )
         return len(hashes)
 

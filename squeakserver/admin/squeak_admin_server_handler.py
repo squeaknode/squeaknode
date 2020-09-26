@@ -7,11 +7,12 @@ logger = logging.getLogger(__name__)
 
 
 class SqueakAdminServerHandler(object):
-    """Handles admin server commands.
-    """
+    """Handles admin server commands."""
 
     def __init__(
-        self, lightning_client: LNDLightningClient, squeak_node: SqueakNode,
+        self,
+        lightning_client: LNDLightningClient,
+        squeak_node: SqueakNode,
     ):
         self.lightning_client = lightning_client
         self.squeak_node = squeak_node
@@ -68,7 +69,8 @@ class SqueakAdminServerHandler(object):
     def handle_set_squeak_profile_whitelisted(self, profile_id, whitelisted):
         logger.info(
             "Handle set squeak profile whitelisted with profile id: {}, whitelisted: {}".format(
-                profile_id, whitelisted,
+                profile_id,
+                whitelisted,
             )
         )
         self.squeak_node.set_squeak_profile_whitelisted(profile_id, whitelisted)
@@ -76,7 +78,8 @@ class SqueakAdminServerHandler(object):
     def handle_set_squeak_profile_following(self, profile_id, following):
         logger.info(
             "Handle set squeak profile following with profile id: {}, following: {}".format(
-                profile_id, following,
+                profile_id,
+                following,
             )
         )
         self.squeak_node.set_squeak_profile_following(profile_id, following)
@@ -84,7 +87,8 @@ class SqueakAdminServerHandler(object):
     def handle_set_squeak_profile_sharing(self, profile_id, sharing):
         logger.info(
             "Handle set squeak profile sharing with profile id: {}, sharing: {}".format(
-                profile_id, sharing,
+                profile_id,
+                sharing,
             )
         )
         self.squeak_node.set_squeak_profile_sharing(profile_id, sharing)
@@ -128,11 +132,17 @@ class SqueakAdminServerHandler(object):
         self, address, min_block, max_block
     ):
         logger.info("Handle get squeak display entries for address: {}".format(address))
-        squeak_entries_with_profile = self.squeak_node.get_squeak_entries_with_profile_for_address(
-            address, min_block, max_block,
+        squeak_entries_with_profile = (
+            self.squeak_node.get_squeak_entries_with_profile_for_address(
+                address,
+                min_block,
+                max_block,
+            )
         )
         logger.info(
-            "Got number of squeak entries for address: {}".format(len(squeak_entries_with_profile))
+            "Got number of squeak entries for address: {}".format(
+                len(squeak_entries_with_profile)
+            )
         )
         return squeak_entries_with_profile
 
@@ -142,8 +152,10 @@ class SqueakAdminServerHandler(object):
                 squeak_hash_str
             )
         )
-        squeak_entries_with_profile = self.squeak_node.get_ancestor_squeak_entries_with_profile(
-            squeak_hash_str,
+        squeak_entries_with_profile = (
+            self.squeak_node.get_ancestor_squeak_entries_with_profile(
+                squeak_hash_str,
+            )
         )
         logger.info(
             "Got number of ancestor squeak entries: {}".format(
@@ -160,7 +172,9 @@ class SqueakAdminServerHandler(object):
     def handle_create_peer(self, peer_name, host, port):
         logger.info(
             "Handle create peer with name: {}, host: {}, port: {}".format(
-                peer_name, host, port,
+                peer_name,
+                host,
+                port,
             )
         )
         peer_id = self.squeak_node.create_peer(
@@ -183,7 +197,8 @@ class SqueakAdminServerHandler(object):
     def handle_set_squeak_peer_downloading(self, peer_id, downloading):
         logger.info(
             "Handle set peer downloading with peer id: {}, downloading: {}".format(
-                peer_id, downloading,
+                peer_id,
+                downloading,
             )
         )
         self.squeak_node.set_peer_downloading(peer_id, downloading)
@@ -191,7 +206,8 @@ class SqueakAdminServerHandler(object):
     def handle_set_squeak_peer_uploading(self, peer_id, uploading):
         logger.info(
             "Handle set peer uploading with peer id: {}, uploading: {}".format(
-                peer_id, uploading,
+                peer_id,
+                uploading,
             )
         )
         self.squeak_node.set_peer_uploading(peer_id, uploading)

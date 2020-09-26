@@ -13,7 +13,13 @@ logger = logging.getLogger(__name__)
 class BitcoinBlockchainClient(BlockchainClient):
     """Access a bitcoin daemon using RPC."""
 
-    def __init__(self, host: str, port: int, rpc_user: str, rpc_password: str,) -> None:
+    def __init__(
+        self,
+        host: str,
+        port: int,
+        rpc_user: str,
+        rpc_password: str,
+    ) -> None:
         self.url = f"https://{rpc_user}:{rpc_password}@{host}:{port}"
         self.headers = {"content-type": "application/json"}
 
@@ -35,7 +41,9 @@ class BitcoinBlockchainClient(BlockchainClient):
             "id": 0,
         }
         response = requests.post(
-            self.url, data=json.dumps(payload), headers=self.headers,
+            self.url,
+            data=json.dumps(payload),
+            headers=self.headers,
         ).json()
 
         logger.debug("Got response for get_block_count: {}".format(response))
@@ -52,7 +60,9 @@ class BitcoinBlockchainClient(BlockchainClient):
             "id": 0,
         }
         response = requests.post(
-            self.url, data=json.dumps(payload), headers=self.headers,
+            self.url,
+            data=json.dumps(payload),
+            headers=self.headers,
         ).json()
 
         logger.debug("Got response for get_block_hash: {}".format(response))
@@ -84,7 +94,9 @@ class BitcoinBlockchainClient(BlockchainClient):
             "id": 0,
         }
         response = requests.post(
-            self.url, data=json.dumps(payload), headers=self.headers,
+            self.url,
+            data=json.dumps(payload),
+            headers=self.headers,
         ).json()
 
         logger.debug("Got response for get_block_header: {}".format(response))

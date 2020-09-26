@@ -7,8 +7,7 @@ logger = logging.getLogger(__name__)
 
 
 class SqueakServerHandler(object):
-    """Handles server commands.
-    """
+    """Handles server commands."""
 
     def __init__(self, squeak_node: SqueakNode):
         self.squeak_node = squeak_node

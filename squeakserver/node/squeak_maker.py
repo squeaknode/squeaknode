@@ -4,8 +4,6 @@ import time
 from squeak.core import MakeSqueakFromStr
 from squeak.core.signing import CSigningKey
 
-from squeakserver.node.block_info import BlockInfo
-
 logger = logging.getLogger(__name__)
 
 
@@ -27,7 +25,11 @@ class SqueakMaker:
         logger.info("Creating squeak with block hash: {}".format(block_hash))
         if replyto_hash is None or len(replyto_hash) == 0:
             return MakeSqueakFromStr(
-                signing_key, content_str, block_height, block_hash, timestamp,
+                signing_key,
+                content_str,
+                block_height,
+                block_hash,
+                timestamp,
             )
         else:
             return MakeSqueakFromStr(

@@ -3,7 +3,6 @@ import logging
 import sys
 import threading
 from configparser import ConfigParser
-
 from pathlib import Path
 
 from squeak.params import SelectParams
@@ -12,12 +11,10 @@ from squeakserver.admin.squeak_admin_server_handler import SqueakAdminServerHand
 from squeakserver.admin.squeak_admin_server_servicer import SqueakAdminServerServicer
 from squeakserver.blockchain.bitcoin_blockchain_client import BitcoinBlockchainClient
 from squeakserver.common.lnd_lightning_client import LNDLightningClient
-from squeakserver.db.db_params import parse_db_params
-from squeakserver.db.db_engine import get_postgres_engine
-from squeakserver.db.db_engine import get_sqlite_engine
+from squeakserver.db.db_engine import get_postgres_engine, get_sqlite_engine
+from squeakserver.db.squeak_db import SqueakDb
 from squeakserver.node.squeak_node import SqueakNode
 from squeakserver.server.lightning_address import LightningAddressHostPort
-from squeakserver.db.squeak_db import SqueakDb
 from squeakserver.server.squeak_server_handler import SqueakServerHandler
 from squeakserver.server.squeak_server_servicer import SqueakServerServicer
 
@@ -36,18 +33,25 @@ def load_lightning_client(config) -> LNDLightningClient:
 def load_lightning_host_port(config) -> LNDLightningClient:
     lnd_host = config.get("lnd", "external_host", fallback=None)
     lnd_port = int(config["lnd"]["port"])
-    return LightningAddressHostPort(lnd_host, lnd_port,)
+    return LightningAddressHostPort(
+        lnd_host,
+        lnd_port,
+    )
 
 
 def load_rpc_server(config, handler) -> SqueakServerServicer:
     return SqueakServerServicer(
-        config["server"]["rpc_host"], config["server"]["rpc_port"], handler,
+        config["server"]["rpc_host"],
+        config["server"]["rpc_port"],
+        handler,
     )
 
 
 def load_admin_rpc_server(config, handler) -> SqueakAdminServerServicer:
     return SqueakAdminServerServicer(
-        config["admin"]["rpc_host"], config["admin"]["rpc_port"], handler,
+        config["admin"]["rpc_host"],
+        config["admin"]["rpc_port"],
+        handler,
     )
 
 
@@ -76,7 +80,10 @@ def load_handler(squeak_node):
 
 
 def load_admin_handler(lightning_client, squeak_node):
-    return SqueakAdminServerHandler(lightning_client, squeak_node,)
+    return SqueakAdminServerHandler(
+        lightning_client,
+        squeak_node,
+    )
 
 
 def load_db(config, network):
@@ -112,7 +119,10 @@ def sigterm_handler(_signo, _stack_frame):
 
 def start_admin_rpc_server(rpc_server):
     logger.info("Calling start_admin_rpc_server...")
-    thread = threading.Thread(target=rpc_server.serve, args=(),)
+    thread = threading.Thread(
+        target=rpc_server.serve,
+        args=(),
+    )
     thread.daemon = True
     thread.start()
 
@@ -122,10 +132,17 @@ def parse_args():
         description="squeakserver runs a node using squeak protocol. ",
     )
     parser.add_argument(
-        "--config", dest="config", type=str, help="Path to the config file.",
+        "--config",
+        dest="config",
+        type=str,
+        help="Path to the config file.",
     )
     parser.add_argument(
-        "--log-level", dest="log_level", type=str, default="info", help="Logging level",
+        "--log-level",
+        dest="log_level",
+        type=str,
+        default="info",
+        help="Logging level",
     )
     subparsers = parser.add_subparsers(help="sub-command help")
 

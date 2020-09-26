@@ -1,26 +1,32 @@
 import logging
 from contextlib import contextmanager
-
 from datetime import datetime, timedelta
 
+import sqlalchemy
+from sqlalchemy import (
+    BigInteger,
+    Binary,
+    Boolean,
+    Column,
+    DateTime,
+    Integer,
+    MetaData,
+    String,
+    Table,
+    func,
+    literal,
+)
+from sqlalchemy.sql import and_, or_, select
 from squeak.core import CSqueak
 
-import sqlalchemy
-from sqlalchemy import create_engine
-from sqlalchemy import Table, Column, Integer, String, DateTime, Boolean, Binary, BigInteger, Interval, MetaData, ForeignKey
-from sqlalchemy import func, literal, null
-from sqlalchemy.sql import select
-from sqlalchemy.sql import and_, or_, not_
-
 from squeakserver.blockchain.util import parse_block_header
+from squeakserver.core.offer import Offer
+from squeakserver.core.offer_with_peer import OfferWithPeer
 from squeakserver.core.squeak_entry import SqueakEntry
 from squeakserver.core.squeak_entry_with_profile import SqueakEntryWithProfile
-from squeakserver.core.offer_with_peer import OfferWithPeer
-from squeakserver.core.offer import Offer
-from squeakserver.server.squeak_profile import SqueakProfile
 from squeakserver.server.squeak_peer import SqueakPeer
+from squeakserver.server.squeak_profile import SqueakProfile
 from squeakserver.server.util import get_hash
-
 
 logger = logging.getLogger(__name__)
 
@@ -31,76 +37,86 @@ class SqueakDb:
         self.schema = schema
         self.metadata = MetaData(schema=schema)
 
-        self.squeaks = Table('squeak', self.metadata,
-                        Column('hash', String(64), primary_key=True),
-                        Column('created', DateTime, server_default=func.now(), nullable=False),
-                        Column('n_version', Integer, nullable=False),
-                        Column('hash_enc_content', String(64), nullable=False),
-                        Column('hash_reply_sqk', String(64), nullable=False),
-                        Column('hash_block', String(64), nullable=False),
-                        Column('n_block_height', Integer, nullable=False),
-                        Column('vch_script_pub_key', Binary, nullable=False),
-                        Column('vch_encryption_key', Binary, nullable=False),
-                        Column('enc_data_key', String, nullable=False),
-                        Column('iv', String(64), nullable=False),
-                        Column('n_time', Integer, nullable=False),
-                        Column('n_nonce', BigInteger, nullable=False),
-                        Column('enc_content', String(2272), nullable=False),
-                        Column('vch_script_sig', Binary, nullable=False),
-                        Column('author_address', String(35), index=True, nullable=False),
-                        Column('vch_decryption_key', Binary, nullable=True),
-                        Column('block_header', Binary, nullable=True),
+        self.squeaks = Table(
+            "squeak",
+            self.metadata,
+            Column("hash", String(64), primary_key=True),
+            Column("created", DateTime, server_default=func.now(), nullable=False),
+            Column("n_version", Integer, nullable=False),
+            Column("hash_enc_content", String(64), nullable=False),
+            Column("hash_reply_sqk", String(64), nullable=False),
+            Column("hash_block", String(64), nullable=False),
+            Column("n_block_height", Integer, nullable=False),
+            Column("vch_script_pub_key", Binary, nullable=False),
+            Column("vch_encryption_key", Binary, nullable=False),
+            Column("enc_data_key", String, nullable=False),
+            Column("iv", String(64), nullable=False),
+            Column("n_time", Integer, nullable=False),
+            Column("n_nonce", BigInteger, nullable=False),
+            Column("enc_content", String(2272), nullable=False),
+            Column("vch_script_sig", Binary, nullable=False),
+            Column("author_address", String(35), index=True, nullable=False),
+            Column("vch_decryption_key", Binary, nullable=True),
+            Column("block_header", Binary, nullable=True),
         )
 
-        self.profiles = Table('profile', self.metadata,
-                         Column('profile_id', Integer, primary_key=True),
-                         Column('created', DateTime, server_default=func.now(), nullable=False),
-                         Column('profile_name', String, nullable=False),
-                         Column('private_key', Binary),
-                         Column('address', String(35), nullable=False),
-                         Column('sharing', Boolean, nullable=False),
-                         Column('following', Boolean, nullable=False),
-                         Column('whitelisted', Boolean, nullable=False),
+        self.profiles = Table(
+            "profile",
+            self.metadata,
+            Column("profile_id", Integer, primary_key=True),
+            Column("created", DateTime, server_default=func.now(), nullable=False),
+            Column("profile_name", String, nullable=False),
+            Column("private_key", Binary),
+            Column("address", String(35), nullable=False),
+            Column("sharing", Boolean, nullable=False),
+            Column("following", Boolean, nullable=False),
+            Column("whitelisted", Boolean, nullable=False),
         )
 
-        self.peers = Table('peer', self.metadata,
-                      Column('id', Integer, primary_key=True),
-                      Column('created', DateTime, server_default=func.now(), nullable=False),
-                      Column('peer_name', String),
-                      Column('server_host', String, nullable=False),
-                      Column('server_port', Integer, nullable=False),
-                      Column('uploading', Boolean, nullable=False),
-                      Column('downloading', Boolean, nullable=False),
+        self.peers = Table(
+            "peer",
+            self.metadata,
+            Column("id", Integer, primary_key=True),
+            Column("created", DateTime, server_default=func.now(), nullable=False),
+            Column("peer_name", String),
+            Column("server_host", String, nullable=False),
+            Column("server_port", Integer, nullable=False),
+            Column("uploading", Boolean, nullable=False),
+            Column("downloading", Boolean, nullable=False),
         )
 
-        self.offers = Table('offer', self.metadata,
-                       Column('offer_id', Integer, primary_key=True),
-                       Column('created', DateTime, server_default=func.now(), nullable=False),
-                       Column('squeak_hash', String(64), nullable=False),
-                       Column('key_cipher', Binary, nullable=False),
-                       Column('iv', Binary, nullable=False),
-                       Column('payment_hash', String(64), nullable=False),
-                       Column('invoice_timestamp', Integer, nullable=False),
-                       Column('invoice_expiry', Integer, nullable=False),
-                       Column('price_msat', Integer, nullable=False),
-                       Column('payment_request', String, nullable=False),
-                       Column('destination', String(66), nullable=False),
-                       Column('node_host', String, nullable=False),
-                       Column('node_port', Integer, nullable=False),
-                       Column('peer_id', Integer, nullable=False),
+        self.offers = Table(
+            "offer",
+            self.metadata,
+            Column("offer_id", Integer, primary_key=True),
+            Column("created", DateTime, server_default=func.now(), nullable=False),
+            Column("squeak_hash", String(64), nullable=False),
+            Column("key_cipher", Binary, nullable=False),
+            Column("iv", Binary, nullable=False),
+            Column("payment_hash", String(64), nullable=False),
+            Column("invoice_timestamp", Integer, nullable=False),
+            Column("invoice_expiry", Integer, nullable=False),
+            Column("price_msat", Integer, nullable=False),
+            Column("payment_request", String, nullable=False),
+            Column("destination", String(66), nullable=False),
+            Column("node_host", String, nullable=False),
+            Column("node_port", Integer, nullable=False),
+            Column("peer_id", Integer, nullable=False),
         )
 
-        self.sent_payments = Table('sent_payment', self.metadata,
-                              Column('sent_payment_id', Integer, primary_key=True),
-                              Column('created', DateTime, server_default=func.now(), nullable=False),
-                              Column('offer_id', Integer, nullable=False),
-                              Column('peer_id', Integer, nullable=False),
-                              Column('squeak_hash', String(64), nullable=False),
-                              Column('preimage_hash', String(64), nullable=False),
-                              Column('preimage', String(64), nullable=False),
-                              Column('amount', Integer, nullable=False),
-                              Column('node_pubkey', String(66), nullable=False),
-                              Column('preimage_is_valid', Boolean, nullable=False),
+        self.sent_payments = Table(
+            "sent_payment",
+            self.metadata,
+            Column("sent_payment_id", Integer, primary_key=True),
+            Column("created", DateTime, server_default=func.now(), nullable=False),
+            Column("offer_id", Integer, nullable=False),
+            Column("peer_id", Integer, nullable=False),
+            Column("squeak_hash", String(64), nullable=False),
+            Column("preimage_hash", String(64), nullable=False),
+            Column("preimage", String(64), nullable=False),
+            Column("amount", Integer, nullable=False),
+            Column("node_pubkey", String(66), nullable=False),
+            Column("preimage_is_valid", Boolean, nullable=False),
         )
 
     @contextmanager
@@ -145,7 +161,9 @@ class SqueakDb:
             enc_content=squeak.encContent.hex(),
             vch_script_sig=squeak.vchScriptSig,
             author_address=str(squeak.GetAddress()),
-            vch_decryption_key=squeak.GetDecryptionKey().get_bytes() if squeak.HasDecryptionKey() else None,
+            vch_decryption_key=squeak.GetDecryptionKey().get_bytes()
+            if squeak.HasDecryptionKey()
+            else None,
         )
         with self.get_connection() as connection:
             res = connection.execute(ins)
@@ -164,12 +182,16 @@ class SqueakDb:
     def get_squeak_entry_with_profile(self, squeak_hash):
         """ Get a squeak with the author profile. """
         squeak_hash_str = squeak_hash.hex()
-        s = select([self.squeaks, self.profiles]).\
-            select_from(self.squeaks.outerjoin(
-                self.profiles,
-                self.profiles.c.address == self.squeaks.c.author_address,
-            )).\
-            where(self.squeaks.c.hash == squeak_hash_str)
+        s = (
+            select([self.squeaks, self.profiles])
+            .select_from(
+                self.squeaks.outerjoin(
+                    self.profiles,
+                    self.profiles.c.address == self.squeaks.c.author_address,
+                )
+            )
+            .where(self.squeaks.c.hash == squeak_hash_str)
+        )
         with self.get_connection() as connection:
             result = connection.execute(s)
             row = result.fetchone()
@@ -177,17 +199,21 @@ class SqueakDb:
 
     def get_followed_squeak_entries_with_profile(self):
         """ Get all followed squeaks. """
-        s = select([self.squeaks, self.profiles]).\
-            select_from(self.squeaks.outerjoin(
-                self.profiles,
-                self.profiles.c.address == self.squeaks.c.author_address,
-            )).\
-            where(self.profiles.c.following).\
-            where(self.squeaks.c.block_header != None).\
-            order_by(
+        s = (
+            select([self.squeaks, self.profiles])
+            .select_from(
+                self.squeaks.outerjoin(
+                    self.profiles,
+                    self.profiles.c.address == self.squeaks.c.author_address,
+                )
+            )
+            .where(self.profiles.c.following)
+            .where(self.squeaks.c.block_header != None)
+            .order_by(
                 self.squeaks.c.n_block_height.desc(),
                 self.squeaks.c.n_time.desc(),
             )
+        )
         with self.get_connection() as connection:
             result = connection.execute(s)
             rows = result.fetchall()
@@ -197,19 +223,23 @@ class SqueakDb:
         self, address, min_block, max_block
     ):
         """ Get a squeak. """
-        s = select([self.squeaks, self.profiles]).\
-            select_from(self.squeaks.outerjoin(
-                self.profiles,
-                self.profiles.c.address == self.squeaks.c.author_address,
-            )).\
-            where(self.squeaks.c.block_header != None).\
-            where(self.squeaks.c.author_address == address).\
-            where(self.squeaks.c.n_block_height >= min_block).\
-            where(self.squeaks.c.n_block_height <= max_block).\
-            order_by(
+        s = (
+            select([self.squeaks, self.profiles])
+            .select_from(
+                self.squeaks.outerjoin(
+                    self.profiles,
+                    self.profiles.c.address == self.squeaks.c.author_address,
+                )
+            )
+            .where(self.squeaks.c.block_header != None)
+            .where(self.squeaks.c.author_address == address)
+            .where(self.squeaks.c.n_block_height >= min_block)
+            .where(self.squeaks.c.n_block_height <= max_block)
+            .order_by(
                 self.squeaks.c.n_block_height.desc(),
                 self.squeaks.c.n_time.desc(),
             )
+        )
         with self.get_connection() as connection:
             result = connection.execute(s)
             rows = result.fetchall()
@@ -217,26 +247,32 @@ class SqueakDb:
 
     def get_thread_ancestor_squeak_entries_with_profile(self, squeak_hash_str):
         """ Get all reply ancestors of squeak hash. """
-        ancestors = select([
-            self.squeaks.c.hash.label("hash"),
-            literal(0).label('depth'),
-        ]).\
-        where(self.squeaks.c.hash==squeak_hash_str).\
-        cte(recursive=True)
+        ancestors = (
+            select(
+                [
+                    self.squeaks.c.hash.label("hash"),
+                    literal(0).label("depth"),
+                ]
+            )
+            .where(self.squeaks.c.hash == squeak_hash_str)
+            .cte(recursive=True)
+        )
 
         ancestors_alias = ancestors.alias()
         squeaks_alias = self.squeaks.alias()
 
         ancestors = ancestors.union_all(
-            select([
-                squeaks_alias.c.hash_reply_sqk.label("hash"),
-                (ancestors_alias.c.depth + 1).label("depth"),
-            ]).
-            where(squeaks_alias.c.hash==ancestors_alias.c.hash)
+            select(
+                [
+                    squeaks_alias.c.hash_reply_sqk.label("hash"),
+                    (ancestors_alias.c.depth + 1).label("depth"),
+                ]
+            ).where(squeaks_alias.c.hash == ancestors_alias.c.hash)
         )
 
-        s = select([self.squeaks, self.profiles]).\
-            select_from(
+        s = (
+            select([self.squeaks, self.profiles])
+            .select_from(
                 self.squeaks.join(
                     ancestors,
                     ancestors.c.hash == self.squeaks.c.hash,
@@ -244,11 +280,12 @@ class SqueakDb:
                     self.profiles,
                     self.profiles.c.address == self.squeaks.c.author_address,
                 )
-            ).\
-            where(self.squeaks.c.block_header != None).\
-            order_by(
+            )
+            .where(self.squeaks.c.block_header != None)
+            .order_by(
                 ancestors.c.depth.desc(),
             )
+        )
 
         with self.get_connection() as connection:
             result = connection.execute(s)
@@ -275,23 +312,36 @@ class SqueakDb:
         #     rows = curs.fetchall()
         #     return [self._parse_squeak_entry_with_profile(row) for row in rows]
 
-    def lookup_squeaks(self, addresses, min_block, max_block, include_unverified=False, include_locked=False):
+    def lookup_squeaks(
+        self,
+        addresses,
+        min_block,
+        max_block,
+        include_unverified=False,
+        include_locked=False,
+    ):
         """ Lookup squeaks. """
         if not addresses:
             return []
 
-        s = select([self.squeaks.c.hash]).\
-            where(self.squeaks.c.author_address.in_(addresses)).\
-            where(self.squeaks.c.n_block_height >= min_block).\
-            where(self.squeaks.c.n_block_height <= max_block).\
-            where(or_(
-                self.squeaks.c.vch_decryption_key != None,
-                include_locked,
-            )).\
-            where(or_(
-                self.squeaks.c.block_header != None,
-                include_unverified,
-            ))
+        s = (
+            select([self.squeaks.c.hash])
+            .where(self.squeaks.c.author_address.in_(addresses))
+            .where(self.squeaks.c.n_block_height >= min_block)
+            .where(self.squeaks.c.n_block_height <= max_block)
+            .where(
+                or_(
+                    self.squeaks.c.vch_decryption_key != None,
+                    include_locked,
+                )
+            )
+            .where(
+                or_(
+                    self.squeaks.c.block_header != None,
+                    include_unverified,
+                )
+            )
+        )
         with self.get_connection() as connection:
             result = connection.execute(s)
             rows = result.fetchall()
@@ -322,23 +372,36 @@ class SqueakDb:
         #     return hashes
 
     def lookup_squeaks_by_time(
-            self, addresses, interval_seconds, include_unverified=False, include_locked=False
+        self,
+        addresses,
+        interval_seconds,
+        include_unverified=False,
+        include_locked=False,
     ):
         """ Lookup squeaks. """
         if not addresses:
             return []
 
-        s = select([self.squeaks.c.hash]).\
-            where(self.squeaks.c.author_address.in_(addresses)).\
-            where(self.squeaks.c.created > datetime.utcnow() - timedelta(seconds=interval_seconds)).\
-            where(or_(
-                self.squeaks.c.vch_decryption_key != None,
-                include_locked,
-            )).\
-            where(or_(
-                self.squeaks.c.block_header != None,
-                include_unverified,
-            ))
+        s = (
+            select([self.squeaks.c.hash])
+            .where(self.squeaks.c.author_address.in_(addresses))
+            .where(
+                self.squeaks.c.created
+                > datetime.utcnow() - timedelta(seconds=interval_seconds)
+            )
+            .where(
+                or_(
+                    self.squeaks.c.vch_decryption_key != None,
+                    include_locked,
+                )
+            )
+            .where(
+                or_(
+                    self.squeaks.c.block_header != None,
+                    include_unverified,
+                )
+            )
+        )
         with self.get_connection() as connection:
             result = connection.execute(s)
             rows = result.fetchall()
@@ -366,29 +429,35 @@ class SqueakDb:
         #     return hashes
 
     def lookup_squeaks_needing_offer(
-            self, addresses, min_block, max_block, peer_id, include_unverified=False
+        self, addresses, min_block, max_block, peer_id, include_unverified=False
     ):
         """ Lookup squeaks that are locked and don't have an offer. """
         if not addresses:
             return []
 
-        s = select([self.squeaks.c.hash]).\
-            select_from(self.squeaks.outerjoin(
-                self.offers,
-                and_(
-                    self.offers.c.squeak_hash == self.squeaks.c.hash,
-                    self.offers.c.peer_id == peer_id,
-                ),
-            )).\
-            where(self.squeaks.c.author_address.in_(addresses)).\
-            where(self.squeaks.c.n_block_height >= min_block).\
-            where(self.squeaks.c.n_block_height <= max_block).\
-            where(self.squeaks.c.vch_decryption_key == None).\
-            where(or_(
-                self.squeaks.c.block_header != None,
-                include_unverified,
-            )).\
-            where(self.offers.c.squeak_hash == None)
+        s = (
+            select([self.squeaks.c.hash])
+            .select_from(
+                self.squeaks.outerjoin(
+                    self.offers,
+                    and_(
+                        self.offers.c.squeak_hash == self.squeaks.c.hash,
+                        self.offers.c.peer_id == peer_id,
+                    ),
+                )
+            )
+            .where(self.squeaks.c.author_address.in_(addresses))
+            .where(self.squeaks.c.n_block_height >= min_block)
+            .where(self.squeaks.c.n_block_height <= max_block)
+            .where(self.squeaks.c.vch_decryption_key == None)
+            .where(
+                or_(
+                    self.squeaks.c.block_header != None,
+                    include_unverified,
+                )
+            )
+            .where(self.offers.c.squeak_hash == None)
+        )
         with self.get_connection() as connection:
             result = connection.execute(s)
             rows = result.fetchall()
@@ -461,8 +530,7 @@ class SqueakDb:
 
     def get_signing_profiles(self):
         """ Get all signing profiles. """
-        s = select([self.profiles]).\
-            where(self.profiles.c.private_key != None)
+        s = select([self.profiles]).where(self.profiles.c.private_key != None)
         with self.get_connection() as connection:
             result = connection.execute(s)
             rows = result.fetchall()
@@ -481,8 +549,7 @@ class SqueakDb:
 
     def get_contact_profiles(self):
         """ Get all contact profiles. """
-        s = select([self.profiles]).\
-            where(self.profiles.c.private_key == None)
+        s = select([self.profiles]).where(self.profiles.c.private_key == None)
         with self.get_connection() as connection:
             result = connection.execute(s)
             rows = result.fetchall()
@@ -501,8 +568,7 @@ class SqueakDb:
 
     def get_whitelisted_profiles(self):
         """ Get all whitelisted profiles. """
-        s = select([self.profiles]).\
-            where(self.profiles.c.whitelisted)
+        s = select([self.profiles]).where(self.profiles.c.whitelisted)
         with self.get_connection() as connection:
             result = connection.execute(s)
             rows = result.fetchall()
@@ -521,8 +587,7 @@ class SqueakDb:
 
     def get_following_profiles(self):
         """ Get all following profiles. """
-        s = select([self.profiles]).\
-            where(self.profiles.c.following)
+        s = select([self.profiles]).where(self.profiles.c.following)
         with self.get_connection() as connection:
             result = connection.execute(s)
             rows = result.fetchall()
@@ -541,8 +606,7 @@ class SqueakDb:
 
     def get_sharing_profiles(self):
         """ Get all sharing profiles. """
-        s = select([self.profiles]).\
-            where(self.profiles.c.sharing)
+        s = select([self.profiles]).where(self.profiles.c.sharing)
         with self.get_connection() as connection:
             result = connection.execute(s)
             rows = result.fetchall()
@@ -561,8 +625,7 @@ class SqueakDb:
 
     def get_profile(self, profile_id):
         """ Get a profile. """
-        s = select([self.profiles]).\
-            where(self.profiles.c.profile_id == profile_id)
+        s = select([self.profiles]).where(self.profiles.c.profile_id == profile_id)
         with self.get_connection() as connection:
             result = connection.execute(s)
             row = result.fetchone()
@@ -577,8 +640,7 @@ class SqueakDb:
 
     def get_profile_by_address(self, address):
         """ Get a profile by address. """
-        s = select([self.profiles]).\
-            where(self.profiles.c.address == address)
+        s = select([self.profiles]).where(self.profiles.c.address == address)
         with self.get_connection() as connection:
             result = connection.execute(s)
             row = result.fetchone()
@@ -595,9 +657,11 @@ class SqueakDb:
 
     def set_profile_whitelisted(self, profile_id, whitelisted):
         """ Set a profile is whitelisted. """
-        stmt = self.profiles.update().\
-            where(self.profiles.c.profile_id == profile_id).\
-            values(whitelisted=whitelisted)
+        stmt = (
+            self.profiles.update()
+            .where(self.profiles.c.profile_id == profile_id)
+            .values(whitelisted=whitelisted)
+        )
         with self.get_connection() as connection:
             connection.execute(stmt)
 
@@ -611,9 +675,11 @@ class SqueakDb:
 
     def set_profile_following(self, profile_id, following):
         """ Set a profile is following. """
-        stmt = self.profiles.update().\
-            where(self.profiles.c.profile_id == profile_id).\
-            values(following=following)
+        stmt = (
+            self.profiles.update()
+            .where(self.profiles.c.profile_id == profile_id)
+            .values(following=following)
+        )
         with self.get_connection() as connection:
             connection.execute(stmt)
 
@@ -627,9 +693,11 @@ class SqueakDb:
 
     def set_profile_sharing(self, profile_id, sharing):
         """ Set a profile is sharing. """
-        stmt = self.profiles.update().\
-            where(self.profiles.c.profile_id == profile_id).\
-            values(sharing=sharing)
+        stmt = (
+            self.profiles.update()
+            .where(self.profiles.c.profile_id == profile_id)
+            .values(sharing=sharing)
+        )
         with self.get_connection() as connection:
             connection.execute(stmt)
 
@@ -643,8 +711,9 @@ class SqueakDb:
 
     def delete_profile(self, profile_id):
         """ Delete a profile. """
-        delete_profile_stmt = self.profiles.delete().\
-            where(self.profiles.c.profile_id == profile_id)
+        delete_profile_stmt = self.profiles.delete().where(
+            self.profiles.c.profile_id == profile_id
+        )
         with self.get_connection() as connection:
             connection.execute(delete_profile_stmt)
 
@@ -657,8 +726,7 @@ class SqueakDb:
 
     def get_unverified_block_squeaks(self):
         """ Get all squeaks without block header. """
-        s = select([self.squeaks.c.hash]).\
-            where(self.squeaks.c.block_header == None)
+        s = select([self.squeaks.c.hash]).where(self.squeaks.c.block_header == None)
         with self.get_connection() as connection:
             result = connection.execute(s)
             rows = result.fetchall()
@@ -678,9 +746,11 @@ class SqueakDb:
     def mark_squeak_block_valid(self, squeak_hash, block_header):
         """ Add the block header to a squeak. """
         squeak_hash_str = squeak_hash.hex()
-        stmt = self.squeaks.update().\
-            where(self.squeaks.c.hash == squeak_hash_str).\
-            values(block_header=block_header)
+        stmt = (
+            self.squeaks.update()
+            .where(self.squeaks.c.hash == squeak_hash_str)
+            .values(block_header=block_header)
+        )
         with self.get_connection() as connection:
             connection.execute(stmt)
 
@@ -697,8 +767,9 @@ class SqueakDb:
     def delete_squeak(self, squeak_hash):
         """ Delete a squeak. """
         squeak_hash_str = squeak_hash.hex()
-        delete_squeak_stmt = self.squeaks.delete().\
-            where(self.squeaks.c.hash == squeak_hash_str)
+        delete_squeak_stmt = self.squeaks.delete().where(
+            self.squeaks.c.hash == squeak_hash_str
+        )
         with self.get_connection() as connection:
             connection.execute(delete_squeak_stmt)
 
@@ -743,24 +814,27 @@ class SqueakDb:
 
     def set_peer_downloading(self, peer_id, downloading):
         """ Set a peer is downloading. """
-        stmt = self.peers.update().\
-            where(self.peers.c.id == peer_id).\
-            values(downloading=downloading)
+        stmt = (
+            self.peers.update()
+            .where(self.peers.c.id == peer_id)
+            .values(downloading=downloading)
+        )
         with self.get_connection() as connection:
             connection.execute(stmt)
 
     def set_peer_uploading(self, peer_id, uploading):
         """ Set a peer is uploading. """
-        stmt = self.peers.update().\
-            where(self.peers.c.id == peer_id).\
-            values(uploading=uploading)
+        stmt = (
+            self.peers.update()
+            .where(self.peers.c.id == peer_id)
+            .values(uploading=uploading)
+        )
         with self.get_connection() as connection:
             connection.execute(stmt)
 
     def delete_peer(self, peer_id):
         """ Delete a peer. """
-        delete_peer_stmt = self.peers.delete().\
-            where(self.peers.c.id == peer_id)
+        delete_peer_stmt = self.peers.delete().where(self.peers.c.id == peer_id)
         with self.get_connection() as connection:
             connection.execute(delete_peer_stmt)
 
@@ -815,8 +889,7 @@ class SqueakDb:
 
     def get_offers(self, squeak_hash):
         """ Get offers for a squeak hash. """
-        s = select([self.offers]).\
-            where(self.offers.c.squeak_hash == squeak_hash)
+        s = select([self.offers]).where(self.offers.c.squeak_hash == squeak_hash)
         with self.get_connection() as connection:
             result = connection.execute(s)
             rows = result.fetchall()
@@ -835,12 +908,16 @@ class SqueakDb:
 
     def get_offers_with_peer(self, squeak_hash):
         """ Get offers with peer for a squeak hash. """
-        s = select([self.offers, self.peers]).\
-            select_from(self.offers.outerjoin(
-                self.peers,
-                self.peers.c.id == self.offers.c.peer_id,
-            )).\
-            where(self.offers.c.squeak_hash == squeak_hash)
+        s = (
+            select([self.offers, self.peers])
+            .select_from(
+                self.offers.outerjoin(
+                    self.peers,
+                    self.peers.c.id == self.offers.c.peer_id,
+                )
+            )
+            .where(self.offers.c.squeak_hash == squeak_hash)
+        )
         with self.get_connection() as connection:
             result = connection.execute(s)
             rows = result.fetchall()
@@ -861,8 +938,10 @@ class SqueakDb:
 
     def delete_expired_offers(self):
         """ Delete all expired offers. """
-        s = self.offers.delete().\
-            where(datetime.utcnow().timestamp() > self.offers.c.invoice_timestamp + self.offers.c.invoice_expiry)
+        s = self.offers.delete().where(
+            datetime.utcnow().timestamp()
+            > self.offers.c.invoice_timestamp + self.offers.c.invoice_expiry
+        )
         with self.get_connection() as connection:
             res = connection.execute(s)
             deleted_offers = res.rowcount
@@ -883,7 +962,7 @@ class SqueakDb:
             return None
         vch_decryption_key_column = row["vch_decryption_key"]
         vch_decryption_key = (
-            bytes(vch_decryption_key_column) if vch_decryption_key_column else b''
+            bytes(vch_decryption_key_column) if vch_decryption_key_column else b""
         )
         squeak = CSqueak(
             nVersion=row["n_version"],
@@ -931,7 +1010,8 @@ class SqueakDb:
         squeak_entry = self._parse_squeak_entry(row)
         squeak_profile = self._parse_squeak_profile(row)
         return SqueakEntryWithProfile(
-            squeak_entry=squeak_entry, squeak_profile=squeak_profile,
+            squeak_entry=squeak_entry,
+            squeak_profile=squeak_profile,
         )
 
     def _parse_squeak_peer(self, row):

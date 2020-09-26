@@ -7,17 +7,13 @@ from squeak.core import HASH_LENGTH, CSqueak, MakeSqueakFromStr
 from squeak.core.encryption import generate_data_key
 from squeak.core.signing import CSigningKey, CSqueakAddress
 
-from proto import (
-    squeak_admin_pb2,
-    squeak_admin_pb2_grpc,
-    squeak_server_pb2,
-    squeak_server_pb2_grpc,
-)
+from proto import squeak_server_pb2
 
 
 def build_squeak_msg(squeak):
     return squeak_server_pb2.Squeak(
-        hash=get_hash(squeak), serialized_squeak=squeak.serialize(),
+        hash=get_hash(squeak),
+        serialized_squeak=squeak.serialize(),
     )
 
 
@@ -62,7 +58,13 @@ def make_squeak(
     reply_to: bytes = b"\x00" * HASH_LENGTH,
 ):
     timestamp = int(time.time())
-    return MakeSqueakFromStr(signing_key, content, block_height, block_hash, timestamp,)
+    return MakeSqueakFromStr(
+        signing_key,
+        content,
+        block_height,
+        block_hash,
+        timestamp,
+    )
 
 
 def get_hash(squeak):
