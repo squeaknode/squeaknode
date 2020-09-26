@@ -17,11 +17,13 @@ def get_postgres_connection_string(user, password, host, database):
     )
 
 
-def get_sqlite_engine():
+def get_sqlite_engine(network):
     return create_engine(
-        get_sqlite_connection_string()
+        get_sqlite_connection_string(network)
     )
 
 
-def get_sqlite_connection_string():
-    return "sqlite:///squeakdb.db".format()
+def get_sqlite_connection_string(network):
+    return "sqlite:////{}.db".format(
+        network,
+    )

@@ -79,6 +79,7 @@ def load_admin_handler(lightning_client, squeak_node):
 
 def load_db(config, network):
     database = load_database(config)
+    logger.info("database: " + database)
     if database == "postgresql":
         engine = get_postgres_engine(
             config["postgresql"]["user"],
@@ -88,7 +89,7 @@ def load_db(config, network):
         )
         return SqueakDb(engine, schema=network)
     elif database == "sqlite":
-        engine = get_sqlite_engine()
+        engine = get_sqlite_engine(network)
         return SqueakDb(engine)
 
 
