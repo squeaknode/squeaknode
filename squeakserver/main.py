@@ -4,6 +4,8 @@ import sys
 import threading
 from configparser import ConfigParser
 
+from pathlib import Path
+
 from squeak.params import SelectParams
 
 from squeakserver.admin.squeak_admin_server_handler import SqueakAdminServerHandler
@@ -89,7 +91,8 @@ def load_db(config, network):
         )
         return SqueakDb(engine, schema=network)
     elif database == "sqlite":
-        engine = get_sqlite_engine(network)
+        Path("/squeak").mkdir(parents=True, exist_ok=True)
+        engine = get_sqlite_engine("squeak", network)
         return SqueakDb(engine)
 
 
