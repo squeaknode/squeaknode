@@ -32,6 +32,24 @@ services:
       - net.ipv6.conf.all.disable_ipv6=0
     entrypoint: ["./start-lnd.sh"]
 
+  lnd_other:
+    image: lnd
+    container_name: lnd_other
+    build:
+      context: ../
+      dockerfile: docker/lnd/Dockerfile
+    environment:
+      - NETWORK=testnet
+      - RPCHOST=btcd
+    volumes:
+      - shared:/rpc
+      - lnd_other_dir:/root/.lnd
+    links:
+      - "btcd:btcd"
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=0
+    entrypoint: ["./start-lnd.sh"]
+
   sqkserver:
     image: sqkserver
     container_name: sqkserver
@@ -51,6 +69,23 @@ services:
       - net.ipv6.conf.all.disable_ipv6=0
     entrypoint: ["./start-sqkserver.sh"]
 
+  sqkserver_other:
+    image: sqkserver
+    container_name: sqkserver_other
+    build:
+      context: ../
+      dockerfile: docker/sqkserver/Dockerfile
+    volumes:
+      - shared:/rpc
+      - lnd_other_dir:/root/.lnd
+      - ./config.ini:/app/config.ini
+    links:
+      - "btcd:btcd"
+      - "lnd_other:lnd"
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=0
+    entrypoint: ["./start-sqkserver.sh"]
+
   envoy:
     image: envoy
     container_name: envoy
@@ -59,6 +94,17 @@ services:
       dockerfile: docker/envoy/Dockerfile
     ports:
       - 8080:8080
+    links:
+      - "sqkserver:sqkserver"
+
+  envoy_other:
+    image: envoy
+    container_name: envoy_other
+    build:
+      context: ../
+      dockerfile: docker/envoy/Dockerfile
+    ports:
+      - 8090:8080
     links:
       - "sqkserver:sqkserver"
 
@@ -71,6 +117,15 @@ services:
     ports:
       - 8081:8081
 
+  frontend_other:
+    image: frontend
+    container_name: frontend_other
+    build:
+      context: ../
+      dockerfile: docker/frontend/Dockerfile
+    ports:
+      - 8091:8081
+
 volumes:
   bitcoin:
     driver: local
@@ -81,6 +136,10 @@ volumes:
 
   # lnd_dir volume is needed for sharing the lnd tls certificate
   lnd_dir:
+    driver: local
+
+  # lnd_other_dir volume is needed for sharing the lnd tls certificate
+  lnd_other_dir:
     driver: local
 
   postgres_dir:
