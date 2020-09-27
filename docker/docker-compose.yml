@@ -1,17 +1,6 @@
 version: '3'
 services:
 
-  db:
-    image: postgres
-    container_name: db
-    environment:
-      - POSTGRES_DB=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-    volumes:
-      - postgres_dir:/var/lib/postgresql/data
-      - ../createdb.sql:/docker-entrypoint-initdb.d/init.sql
-
   btcd:
     image: btcd
     container_name: btcd
@@ -39,6 +28,8 @@ services:
       - lnd_dir:/root/.lnd
     links:
       - "btcd:btcd"
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=0
     entrypoint: ["./start-lnd.sh"]
 
   sqkserver:
@@ -56,8 +47,6 @@ services:
     links:
       - "btcd:btcd"
       - "lnd:lnd"
-    depends_on:
-      - db
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=0
     entrypoint: ["./start-sqkserver.sh"]
