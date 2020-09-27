@@ -1,17 +1,6 @@
 version: '3'
 services:
 
-  db:
-    image: postgres
-    container_name: db
-    environment:
-      - POSTGRES_DB=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-    volumes:
-      - postgres_dir:/var/lib/postgresql/data
-      - ../createdb.sql:/docker-entrypoint-initdb.d/init.sql
-
   btcd:
     image: btcd
     container_name: btcd
@@ -39,6 +28,26 @@ services:
       - lnd_dir:/root/.lnd
     links:
       - "btcd:btcd"
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=0
+    entrypoint: ["./start-lnd.sh"]
+
+  lnd_other:
+    image: lnd_other
+    container_name: lnd_other
+    build:
+      context: ../
+      dockerfile: docker/lnd/Dockerfile
+    environment:
+      - NETWORK=testnet
+      - RPCHOST=btcd
+    volumes:
+      - shared:/rpc
+      - lnd_other_dir:/root/.lnd
+    links:
+      - "btcd:btcd"
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=0
     entrypoint: ["./start-lnd.sh"]
 
   sqkserver:
@@ -56,8 +65,23 @@ services:
     links:
       - "btcd:btcd"
       - "lnd:lnd"
-    depends_on:
-      - db
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=0
+    entrypoint: ["./start-sqkserver.sh"]
+
+  sqkserver_other:
+    image: sqkserver_other
+    container_name: sqkserver_other
+    build:
+      context: ../
+      dockerfile: docker/sqkserver/Dockerfile
+    volumes:
+      - shared:/rpc
+      - lnd_other_dir:/root/.lnd
+      - ./config.ini:/app/config.ini
+    links:
+      - "btcd:btcd"
+      - "lnd_other:lnd"
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=0
     entrypoint: ["./start-sqkserver.sh"]
@@ -72,6 +96,21 @@ services:
       - 8080:8080
     links:
       - "sqkserver:sqkserver"
+    environment:
+      - SERVICE_NAME=sqkserver
+
+  envoy_other:
+    image: envoy_other
+    container_name: envoy_other
+    build:
+      context: ../
+      dockerfile: docker/envoy/Dockerfile
+    ports:
+      - 8090:8080
+    links:
+      - "sqkserver_other:sqkserver_other"
+    environment:
+      - SERVICE_NAME=sqkserver_other
 
   frontend:
     image: frontend
@@ -79,8 +118,21 @@ services:
     build:
       context: ../
       dockerfile: docker/frontend/Dockerfile
+      args:
+        - PORT=8080
     ports:
       - 8081:8081
+
+  frontend_other:
+    image: frontend_other
+    container_name: frontend_other
+    build:
+      context: ../
+      dockerfile: docker/frontend/Dockerfile
+      args:
+        - PORT=8090
+    ports:
+      - 8091:8081
 
 volumes:
   bitcoin:
@@ -92,6 +144,10 @@ volumes:
 
   # lnd_dir volume is needed for sharing the lnd tls certificate
   lnd_dir:
+    driver: local
+
+  # lnd_other_dir volume is needed for sharing the lnd tls certificate
+  lnd_other_dir:
     driver: local
 
   postgres_dir:
