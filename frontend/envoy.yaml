@@ -50,5 +50,5 @@ static_resources:
             - endpoint:
                 address:
                   socket_address:
-                    address: sqkserver
+                    address: ${SERVICE_NAME}
                     port_value: 8994

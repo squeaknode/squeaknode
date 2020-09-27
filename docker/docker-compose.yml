@@ -33,7 +33,7 @@ services:
     entrypoint: ["./start-lnd.sh"]
 
   lnd_other:
-    image: lnd
+    image: lnd_other
     container_name: lnd_other
     build:
       context: ../
@@ -70,7 +70,7 @@ services:
     entrypoint: ["./start-sqkserver.sh"]
 
   sqkserver_other:
-    image: sqkserver
+    image: sqkserver_other
     container_name: sqkserver_other
     build:
       context: ../
@@ -96,9 +96,11 @@ services:
       - 8080:8080
     links:
       - "sqkserver:sqkserver"
+    environment:
+      - SERVICE_NAME=sqkserver
 
   envoy_other:
-    image: envoy
+    image: envoy_other
     container_name: envoy_other
     build:
       context: ../
@@ -106,7 +108,9 @@ services:
     ports:
       - 8090:8080
     links:
-      - "sqkserver:sqkserver"
+      - "sqkserver_other:sqkserver_other"
+    environment:
+      - SERVICE_NAME=sqkserver_other
 
   frontend:
     image: frontend
@@ -114,15 +118,19 @@ services:
     build:
       context: ../
       dockerfile: docker/frontend/Dockerfile
+      args:
+        - PORT=8080
     ports:
       - 8081:8081
 
   frontend_other:
-    image: frontend
+    image: frontend_other
     container_name: frontend_other
     build:
       context: ../
       dockerfile: docker/frontend/Dockerfile
+      args:
+        - PORT=8090
     ports:
       - 8091:8081
 
