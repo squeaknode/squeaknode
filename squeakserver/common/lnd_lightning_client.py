@@ -168,3 +168,13 @@ class LNDLightningClient:
         return self.stub.DecodePayReq(
             decode_pay_req_request, metadata=[("macaroon", self.macaroon)]
         )
+
+    def new_address(self, address_type):
+        # NewAddress creates a new address under control of the local wallet.
+        new_address_request = lnd_pb2.NewAddressRequest(
+            type=address_type,
+        )
+        return self.stub.NewAddress(
+            new_address_request,
+            metadata=[("macaroon", self.macaroon)],
+        )

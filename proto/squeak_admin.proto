@@ -20,6 +20,10 @@ service SqueakAdmin {
   */
   rpc LndWalletBalance (lnrpc.WalletBalanceRequest) returns (lnrpc.WalletBalanceResponse) {}
 
+  /** sqkadmin: `lndnewaddress`
+  */
+  rpc LndNewAddress (lnrpc.NewAddressRequest) returns (lnrpc.NewAddressResponse) {}
+
   /** sqkadmin: `createsigningprofile`
   */
   rpc CreateSigningProfile (CreateSigningProfileRequest) returns (CreateSigningProfileReply) {}

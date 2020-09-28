@@ -43,21 +43,21 @@ export default function ReceiveBitcoinDialog({
   var classes = useStyles();
   const history = useHistory();
 
-  var [profileName, setProfileName] = useState('');
+  var [address, setAddress] = useState('');
 
   const resetFields = () => {
-    setProfileName('');
+    setAddress('');
   };
 
-  const handleChangeProfileName = (event) => {
-    setProfileName(event.target.value);
+  const handleChangeAddress = (event) => {
+    setAddress(event.target.value);
   };
 
-  const createSigningProfile = (profileName) => {
+  const createSigningProfile = (address) => {
     console.log("called createSigningProfile");
 
     var createSigningProfileRequest = new CreateSigningProfileRequest()
-    createSigningProfileRequest.setProfileName(profileName);
+    createSigningProfileRequest.setProfileName(address);
     console.log(createSigningProfileRequest);
 
     client.createSigningProfile(createSigningProfileRequest, {}, (err, response) => {
@@ -78,12 +78,12 @@ export default function ReceiveBitcoinDialog({
 
   function handleSubmit(event) {
     event.preventDefault();
-    console.log( 'profileName:', profileName);
-    if (!profileName) {
-      alert('Profile Name cannot be empty.');
+    console.log( 'address:', address);
+    if (!address) {
+      alert('address cannot be empty.');
       return;
     }
-    createSigningProfile(profileName);
+    createSigningProfile(address);
     handleClose();
   }
 
@@ -91,11 +91,11 @@ export default function ReceiveBitcoinDialog({
     return (
       <TextField
         id="standard-textarea"
-        label="Profile Name"
+        label="Address"
         required
         autoFocus
-        value={profileName}
-        onChange={handleChangeProfileName}
+        value={address}
+        onChange={handleChangeAddress}
         fullWidth
         inputProps={{ maxLength: 64 }}
       />

@@ -25,6 +25,10 @@ class SqueakAdminServerHandler(object):
         logger.info("Handle lnd wallet balance")
         return self.lightning_client.get_wallet_balance()
 
+    def handle_lnd_new_address(self, address_type):
+        logger.info("Handle lnd new address with type: {}".format(address_type))
+        return self.lightning_client.new_address(address_type)
+
     def handle_create_signing_profile(self, profile_name):
         logger.info("Handle create signing profile with name: {}".format(profile_name))
         profile_id = self.squeak_node.create_signing_profile(profile_name)

@@ -24,6 +24,10 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
     def LndWalletBalance(self, request, context):
         return self.handler.handle_lnd_wallet_balance()
 
+    def LndNewAddress(self, request, context):
+        address_type = request.type
+        return self.handler.handle_lnd_new_address(address_type)
+
     def CreateSigningProfile(self, request, context):
         profile_name = request.profile_name
         profile_id = self.handler.handle_create_signing_profile(profile_name)
