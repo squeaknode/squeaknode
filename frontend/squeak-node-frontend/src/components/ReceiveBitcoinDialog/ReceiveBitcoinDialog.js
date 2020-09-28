@@ -87,7 +87,9 @@ export default function ReceiveBitcoinDialog({
         value={address}
         onChange={handleChangeAddress}
         fullWidth
-        inputProps={{ maxLength: 64 }}
+        inputProps={{
+           readOnly: true,
+        }}
       />
     )
   }
