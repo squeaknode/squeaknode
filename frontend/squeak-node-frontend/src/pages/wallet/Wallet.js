@@ -30,6 +30,7 @@ import useStyles from "./styles";
 import PageTitle from "../../components/PageTitle";
 import Widget from "../../components/Widget";
 import { Typography } from "../../components/Wrappers";
+import ReceiveBitcoinDialog from "../../components/ReceiveBitcoinDialog";
 
 import { GetInfoRequest, WalletBalanceRequest } from "../../proto/lnd_pb"
 import { client } from "../../squeakclient/squeakclient"
@@ -41,6 +42,7 @@ export default function WalletPage() {
   const [lndInfo, setLndInfo] = useState(null);
   const [walletBalance, setWalletBalance] = useState(null);
   const [value, setValue] = useState(0);
+  const [receiveBitcoinDialogOpen, setReceiveBitcoinDialogOpen] = useState(false);
 
   function a11yProps(index) {
     return {
@@ -51,6 +53,14 @@ export default function WalletPage() {
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
+  };
+
+  const handleClickOpenReceiveBitcoinDialog = () => {
+    setReceiveBitcoinDialogOpen(true);
+  };
+
+  const handleCloseReceiveBitcoinDialog = () => {
+     setReceiveBitcoinDialogOpen(false);
   };
 
   const getLndInfo = () => {
@@ -82,6 +92,23 @@ export default function WalletPage() {
   useEffect(()=>{
     getWalletBalance()
   },[]);
+
+  function ReceiveBitcoinButton() {
+    return (
+      <>
+      <Grid item xs={12}>
+        <div className={classes.root}>
+          <Button
+            variant="contained"
+            onClick={() => {
+              handleClickOpenReceiveBitcoinDialog();
+            }}>Receive Bitcoin
+          </Button>
+        </div>
+      </Grid>
+      </>
+    )
+  }
 
   function NoBalanceContent() {
     return (
@@ -161,6 +188,19 @@ export default function WalletPage() {
                confirmed balance (satoshis):
              </Typography>
              <Typography size="md">{walletBalance.getConfirmedBalance()}</Typography>
+           </Grid>
+         </Grid>
+         <Grid
+           container
+           direction="row"
+           justify="flex-start"
+           alignItems="center"
+         >
+           <Grid item>
+             <Typography color="text" colorBrightness="secondary">
+               receive bitcoin:
+             </Typography>
+             {ReceiveBitcoinButton()}
            </Grid>
          </Grid>
        </Widget>
@@ -313,10 +353,22 @@ export default function WalletPage() {
     )
   }
 
+  function ReceiveBitcoinDialogContent() {
+    return (
+      <>
+        <ReceiveBitcoinDialog
+          open={receiveBitcoinDialogOpen}
+          handleClose={handleCloseReceiveBitcoinDialog}
+          ></ReceiveBitcoinDialog>
+      </>
+    )
+  }
+
   return (
     <>
       <PageTitle title="Wallet" />
       {LightningTabs()}
+      {ReceiveBitcoinDialogContent()}
     </>
   );
 }
