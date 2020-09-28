@@ -29,9 +29,7 @@ import useStyles from "./styles";
 import Widget from "../../components/Widget";
 import SqueakThreadItem from "../../components/SqueakThreadItem";
 
-import {
-  CreateSigningProfileRequest,
-} from "../../proto/squeak_admin_pb"
+import { NewAddressRequest } from "../../proto/lnd_pb"
 import { client } from "../../squeakclient/squeakclient"
 
 
@@ -53,38 +51,30 @@ export default function ReceiveBitcoinDialog({
     setAddress(event.target.value);
   };
 
-  const createSigningProfile = (address) => {
-    console.log("called createSigningProfile");
+  const getNewAddress = () => {
+    console.log("called newAddress");
 
-    var createSigningProfileRequest = new CreateSigningProfileRequest()
-    createSigningProfileRequest.setProfileName(address);
-    console.log(createSigningProfileRequest);
+    var newAddressRequest = new NewAddressRequest()
+    console.log(newAddressRequest);
 
-    client.createSigningProfile(createSigningProfileRequest, {}, (err, response) => {
+    client.lndNewAddress(newAddressRequest, {}, (err, response) => {
       if (err) {
         console.log(err.message);
-        alert('Error creating signing profile: ' + err.message);
+        alert('Error getting new address: ' + err.message);
         return;
       }
       console.log(response);
-      console.log(response.getProfileId());
-      goToProfilePage(response.getProfileId());
-    });
-  };
+      console.log(response.getAddress());
+      // goToProfilePage(response.getProfileId());
 
-  const goToProfilePage = (profileId) => {
-    history.push("/app/profile/" + profileId);
+      setAddress(response.getAddress());
+    });
   };
 
   function handleSubmit(event) {
     event.preventDefault();
-    console.log( 'address:', address);
-    if (!address) {
-      alert('address cannot be empty.');
-      return;
-    }
-    createSigningProfile(address);
-    handleClose();
+    getNewAddress(address);
+    // handleClose();
   }
 
   function CreateSigningProfileNameInput() {
@@ -122,7 +112,7 @@ export default function ReceiveBitcoinDialog({
        color="primary"
        className={classes.button}
        >
-       Create Signing Profile
+       Get New Address
        </Button>
     )
   }
