@@ -98,8 +98,8 @@ def load_db(config, network):
         )
         return SqueakDb(engine, schema=network)
     elif database == "sqlite":
-        Path("/squeak").mkdir(parents=True, exist_ok=True)
-        engine = get_sqlite_engine("squeak", network)
+        Path("/.sqk").mkdir(parents=True, exist_ok=True)
+        engine = get_sqlite_engine(".sqk", network)
         return SqueakDb(engine)
 
 

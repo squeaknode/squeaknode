@@ -621,3 +621,13 @@ def test_delete_peer(server_stub, admin_stub, peer_id):
             )
         )
     assert "Peer not found." in str(excinfo.value)
+
+
+def test_new_address(server_stub, admin_stub, lightning_client):
+    # Get a new address
+    new_address_response = admin_stub.LndNewAddress(ln.NewAddressRequest())
+
+    print("address:")
+    print(new_address_response.address)
+
+    assert len(new_address_response.address) > 0

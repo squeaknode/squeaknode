@@ -60,6 +60,7 @@ services:
       - shared:/rpc
       - lnd_dir:/root/.lnd
       - ./config.ini:/app/config.ini
+      - sqk_dir:/root/.sqk
     ports:
       - 8774:8774
     links:
@@ -79,6 +80,7 @@ services:
       - shared:/rpc
       - lnd_other_dir:/root/.lnd
       - ./config.ini:/app/config.ini
+      - sqk_other_dir:/root/.sqk
     links:
       - "btcd:btcd"
       - "lnd_other:lnd"
@@ -148,6 +150,12 @@ volumes:
 
   # lnd_other_dir volume is needed for sharing the lnd tls certificate
   lnd_other_dir:
+    driver: local
+
+  sqk_dir:
+    driver: local
+
+  sqk_other_dir:
     driver: local
 
   postgres_dir:
