@@ -77,7 +77,7 @@ export default function ReceiveBitcoinDialog({
     // handleClose();
   }
 
-  function CreateSigningProfileNameInput() {
+  function ReceiveBitcoinAddess() {
     return (
       <TextField
         id="standard-textarea"
@@ -106,7 +106,7 @@ export default function ReceiveBitcoinDialog({
     )
   }
 
-  function CreateSigningProfilButton() {
+  function RenewAddressButton() {
     return (
       <Button
        type="submit"
@@ -124,11 +124,11 @@ export default function ReceiveBitcoinDialog({
   <DialogTitle id="form-dialog-title">Receive Bitcoin</DialogTitle>
   <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
   <DialogContent>
-    {CreateSigningProfileNameInput()}
+    {ReceiveBitcoinAddess()}
   </DialogContent>
   <DialogActions>
     {CancelButton()}
-    {CreateSigningProfilButton()}
+    {RenewAddressButton()}
   </DialogActions>
   </form>
     </Dialog>
