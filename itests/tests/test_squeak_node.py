@@ -603,16 +603,6 @@ def test_delete_peer(server_stub, admin_stub, peer_id):
     assert "Peer not found." in str(excinfo.value)
 
 
-def test_new_address(server_stub, admin_stub, lightning_client):
-    # Get a new address
-    new_address_response = admin_stub.LndNewAddress(ln.NewAddressRequest())
-
-    print("address:")
-    print(new_address_response.address)
-
-    assert len(new_address_response.address) > 0
-
-
 def test_list_channels(server_stub, admin_stub, lightning_client, saved_squeak_hash):
     # Get the squeak from the server
     get_response = server_stub.GetSqueak(
@@ -656,7 +646,13 @@ def test_list_channels(server_stub, admin_stub, lightning_client, saved_squeak_h
     assert len(list_channels_response.channels) == 0
 
 
-def test_get_transactions(server_stub, admin_stub, lightning_client):
+def test_send_coins(server_stub, admin_stub, lightning_client):
+    new_address_response = admin_stub.LndNewAddress(ln.NewAddressRequest())
+    send_coins_response = lightning_client.send_coins(new_address_response.address, 55555555)
+    time.sleep(40)
     get_transactions_response = admin_stub.LndGetTransactions(ln.GetTransactionsRequest())
 
-    assert len(get_transactions_response.transactions) == 0
+    assert any([
+        transaction.tx_hash == send_coins_response.txid
+        for transaction in get_transactions_response.transactions
+    ])

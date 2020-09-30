@@ -193,3 +193,13 @@ class LNDLightningClient:
             get_transactions_request,
             metadata=[("macaroon", self.macaroon)],
         )
+
+    def send_coins(self, addr, amount):
+        send_coins_request = lnd_pb2.SendCoinsRequest(
+            addr=addr,
+            amount=amount,
+        )
+        return self.stub.SendCoins(
+            send_coins_request,
+            metadata=[("macaroon", self.macaroon)],
+        )
