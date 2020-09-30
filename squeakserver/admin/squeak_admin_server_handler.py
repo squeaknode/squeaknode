@@ -30,7 +30,11 @@ class SqueakAdminServerHandler(object):
         return self.lightning_client.new_address(address_type)
 
     def handle_lnd_list_channels(self):
-        logger.info("Handle lnd list channels: {}")
+        logger.info("Handle lnd list channels")
+        return self.lightning_client.list_channels()
+
+    def handle_lnd_get_transactions(self):
+        logger.info("Handle lnd get transactions")
         return self.lightning_client.list_channels()
 
     def handle_create_signing_profile(self, profile_name):

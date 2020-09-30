@@ -180,9 +180,16 @@ class LNDLightningClient:
         )
 
     def list_channels(self):
-        # NewAddress creates a new address under control of the local wallet.
         list_channels_request = lnd_pb2.ListChannelsRequest()
         return self.stub.ListChannels(
             list_channels_request,
+            metadata=[("macaroon", self.macaroon)],
+        )
+
+    def get_transactions(self):
+        # Get transactions
+        get_transactions_request = lnd_pb2.GetTransactionsRequest()
+        return self.stub.GetTransactions(
+            get_transactions_request,
             metadata=[("macaroon", self.macaroon)],
         )
