@@ -31,6 +31,9 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
     def LndListChannels(self, request, context):
         return self.handler.handle_lnd_list_channels()
 
+    def LndGetTransactions(self, request, context):
+        return self.handler.handle_lnd_get_transactions()
+
     def CreateSigningProfile(self, request, context):
         profile_name = request.profile_name
         profile_id = self.handler.handle_create_signing_profile(profile_name)

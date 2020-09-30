@@ -2,6 +2,8 @@ from __future__ import print_function
 
 import time
 
+from contextlib import contextmanager
+
 from lnd_lightning_client import LNDLightningClient
 from squeak.core import HASH_LENGTH, CSqueak, MakeSqueakFromStr
 from squeak.core.encryption import generate_data_key
@@ -92,3 +94,34 @@ def bxor(b1, b2):  # use xor for bytes
 
 def string_to_hex(s):
     return bytes.fromhex(s)
+
+
+@contextmanager
+def open_channel(lightning_client, lightning_host, remote_pubkey, amount):
+    # Connect to the server lightning node
+    try:
+        connect_peer_response = lightning_client.connect_peer(
+            remote_pubkey, lightning_host
+        )
+    except Exception as e:
+        print("Failed to connect to peer: {}".format(e))
+
+    # Open channel to the server lightning node
+    pubkey_bytes = string_to_hex(remote_pubkey)
+    open_channel_response = lightning_client.open_channel(pubkey_bytes, amount)
+    print("Opening channel...")
+    for update in open_channel_response:
+        if update.HasField("chan_open"):
+            channel_point = update.chan_open.channel_point
+            print("Channel now open: " + str(channel_point))
+            break
+    try:
+        yield
+    finally:
+        # Code to release resource, e.g.:
+        # Close the channel
+        time.sleep(2)
+        for update in lightning_client.close_channel(channel_point):
+            if update.HasField("chan_close"):
+                print("Channel closed.")
+                break

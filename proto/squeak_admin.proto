@@ -28,6 +28,10 @@ service SqueakAdmin {
   */
   rpc LndListChannels (lnrpc.ListChannelsRequest) returns (lnrpc.ListChannelsResponse) {}
 
+  /** sqkadmin: `lndgettransactions`
+  */
+  rpc LndGetTransactions (lnrpc.GetTransactionsRequest) returns (lnrpc.TransactionDetails) {}
+
   /** sqkadmin: `createsigningprofile`
   */
   rpc CreateSigningProfile (CreateSigningProfileRequest) returns (CreateSigningProfileReply) {}
