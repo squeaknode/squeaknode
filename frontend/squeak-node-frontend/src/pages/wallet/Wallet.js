@@ -7,6 +7,7 @@ import {
   AppBar,
   Tabs,
   Tab,
+  Box,
 } from "@material-ui/core";
 import { useTheme } from "@material-ui/styles";
 import {
@@ -31,8 +32,13 @@ import PageTitle from "../../components/PageTitle";
 import Widget from "../../components/Widget";
 import { Typography } from "../../components/Wrappers";
 import ReceiveBitcoinDialog from "../../components/ReceiveBitcoinDialog";
+import TransactionItem from "../../components/TransactionItem";
 
-import { GetInfoRequest, WalletBalanceRequest } from "../../proto/lnd_pb"
+import {
+  GetInfoRequest,
+  WalletBalanceRequest,
+  GetTransactionsRequest,
+} from "../../proto/lnd_pb"
 import { client } from "../../squeakclient/squeakclient"
 
 export default function WalletPage() {
@@ -41,6 +47,7 @@ export default function WalletPage() {
 
   const [lndInfo, setLndInfo] = useState(null);
   const [walletBalance, setWalletBalance] = useState(null);
+  const [transactions, setTransactions] = useState([]);
   const [value, setValue] = useState(0);
   const [receiveBitcoinDialogOpen, setReceiveBitcoinDialogOpen] = useState(false);
 
@@ -85,12 +92,28 @@ export default function WalletPage() {
           setWalletBalance(response);
         });
   };
+  const getTransactions = () => {
+        console.log("called getTransactions");
+
+        var getTransactionsRequest = new GetTransactionsRequest()
+        console.log(getTransactionsRequest);
+
+        client.lndGetTransactions(getTransactionsRequest, {}, (err, response) => {
+          console.log(response);
+          console.log("response.getTransactionsList()");
+          console.log(response.getTransactionsList());
+          setTransactions(response.getTransactionsList());
+        });
+  };
 
   useEffect(()=>{
     getLndInfo()
   },[]);
   useEffect(()=>{
     getWalletBalance()
+  },[]);
+  useEffect(()=>{
+    getTransactions()
   },[]);
 
   function ReceiveBitcoinButton() {
@@ -151,6 +174,28 @@ export default function WalletPage() {
         <Grid container spacing={4}>
           {StatusGridItem()}
         </Grid>
+      </>
+    )
+  }
+
+  function TransactionsContent() {
+    return (
+      <>
+        <div>
+        {transactions.map(transaction =>
+          <Box
+            p={1}
+            key={transaction.getTxHash()}
+            >
+          <TransactionItem
+            key={transaction.getTxHash()}
+            // handleTransactionClick={() => goToSqueakPage(transaction.getSqueakHash())}
+            handleTransactionClick={() => console.log("clicked transaction")}
+            transaction={transaction}>
+          </TransactionItem>
+          </Box>
+        )}
+        </div>
       </>
     )
   }
@@ -352,7 +397,7 @@ export default function WalletPage() {
       </TabPanel>
       <TabPanel value={value} index={2}>
         {(lndInfo && walletBalance)
-          ? NodeInfoContent()
+          ? TransactionsContent()
           : NoBalanceContent()
         }
       </TabPanel>
