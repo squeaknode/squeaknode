@@ -335,6 +335,7 @@ export default function WalletPage() {
         <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
           <Tab label="Balance" {...a11yProps(0)} />
           <Tab label="Node Info" {...a11yProps(1)} />
+          <Tab label="Transactions" {...a11yProps(2)} />
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
@@ -344,6 +345,12 @@ export default function WalletPage() {
         }
       </TabPanel>
       <TabPanel value={value} index={1}>
+        {(lndInfo && walletBalance)
+          ? NodeInfoContent()
+          : NoBalanceContent()
+        }
+      </TabPanel>
+      <TabPanel value={value} index={2}>
         {(lndInfo && walletBalance)
           ? NodeInfoContent()
           : NoBalanceContent()

@@ -631,3 +631,68 @@ def test_new_address(server_stub, admin_stub, lightning_client):
     print(new_address_response.address)
 
     assert len(new_address_response.address) > 0
+
+
+def test_list_channels(server_stub, admin_stub, lightning_client, saved_squeak_hash):
+    # Get the squeak from the server
+    get_response = server_stub.GetSqueak(
+        squeak_server_pb2.GetSqueakRequest(hash=saved_squeak_hash)
+    )
+    get_response_squeak = squeak_from_msg(get_response.squeak)
+    CheckSqueak(get_response_squeak, skipDecryptionCheck=True)
+
+    # Generate a challenge to verify the offer
+    expected_proof = generate_challenge_proof()
+    encryption_key = get_response_squeak.GetEncryptionKey()
+    challenge = get_challenge(encryption_key, expected_proof)
+
+    # Buy the squeak data key
+    buy_response = server_stub.BuySqueak(
+        squeak_server_pb2.BuySqueakRequest(
+            hash=saved_squeak_hash,
+            challenge=challenge,
+        )
+    )
+    assert buy_response.offer.payment_request.startswith("ln")
+
+    # Decode the payment request string
+    decode_pay_req_response = lightning_client.decode_pay_req(
+        buy_response.offer.payment_request
+    )
+    destination = decode_pay_req_response.destination
+
+    # Connect to the server lightning node
+    try:
+        connect_peer_response = lightning_client.connect_peer(
+            destination, buy_response.offer.host
+        )
+    except:
+        pass
+
+    # Open channel to the server lightning node
+    pubkey_bytes = string_to_hex(destination)
+    open_channel_response = lightning_client.open_channel(pubkey_bytes, 1000000)
+    print("Opening channel...")
+    for update in open_channel_response:
+        if update.HasField("chan_open"):
+            channel_point = update.chan_open.channel_point
+            print("Channel now open: " + str(channel_point))
+            break
+
+    # List channels
+    list_channels_response = lightning_client.list_channels()
+
+    print(list_channels_response)
+
+    assert len(list_channels_response.channels) > 0
+    assert any([
+        channel.remote_pubkey == destination
+        for channel in list_channels_response.channels
+    ])
+
+    # Close the channel
+    time.sleep(2)
+    for update in lightning_client.close_channel(channel_point):
+        if update.HasField("chan_close"):
+            print("Channel closed.")
+            break
