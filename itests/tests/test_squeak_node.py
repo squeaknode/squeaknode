@@ -657,6 +657,12 @@ def test_list_channels(server_stub, admin_stub, lightning_client, saved_squeak_h
 
 
 def test_get_transactions(server_stub, admin_stub, lightning_client):
+    new_address_response = admin_stub.LndNewAddress(ln.NewAddressRequest())
+    send_coins_response = lightning_client.send_coins(new_address_response.address, 55555555)
+    time.sleep(40)
     get_transactions_response = admin_stub.LndGetTransactions(ln.GetTransactionsRequest())
 
-    assert len(get_transactions_response.transactions) == 0
+    assert any([
+        transaction.tx_hash == send_coins_response.txid
+        for transaction in get_transactions_response.transactions
+    ])
