@@ -680,13 +680,12 @@ def test_list_channels(server_stub, admin_stub, lightning_client, saved_squeak_h
             break
 
     # List channels
-    list_channels_response = lightning_client.list_channels()
-
-    print(list_channels_response)
+    get_info_response = lightning_client.get_info()
+    list_channels_response = admin_stub.LndListChannels(ln.ListChannelsRequest())
 
     assert len(list_channels_response.channels) > 0
     assert any([
-        channel.remote_pubkey == destination
+        channel.remote_pubkey == get_info_response.identity_pubkey
         for channel in list_channels_response.channels
     ])
 
