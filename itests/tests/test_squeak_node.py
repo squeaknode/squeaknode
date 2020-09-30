@@ -19,6 +19,7 @@ from tests.util import (
     make_squeak,
     squeak_from_msg,
     string_to_hex,
+    open_channel,
 )
 
 
@@ -169,43 +170,27 @@ def test_sell_squeak(server_stub, admin_stub, lightning_client, saved_squeak_has
     # List peers
     list_peers_response = lightning_client.list_peers()
 
-    # Open channel to the server lightning node
-    pubkey_bytes = string_to_hex(destination)
-    open_channel_response = lightning_client.open_channel(pubkey_bytes, 1000000)
-    print("Opening channel...")
-    for update in open_channel_response:
-        if update.HasField("chan_open"):
-            channel_point = update.chan_open.channel_point
-            print("Channel now open: " + str(channel_point))
-            break
+    with open_channel(lightning_client, destination, 1000000):
+        # List channels
+        list_channels_response = lightning_client.list_channels()
 
-    # List channels
-    list_channels_response = lightning_client.list_channels()
+        # Pay the invoice
+        payment = lightning_client.pay_invoice_sync(buy_response.offer.payment_request)
+        preimage = payment.payment_preimage
 
-    # Pay the invoice
-    payment = lightning_client.pay_invoice_sync(buy_response.offer.payment_request)
-    preimage = payment.payment_preimage
+        # Verify with the payment preimage and decryption key ciphertext
+        decryption_key_cipher_bytes = buy_response.offer.key_cipher
+        iv = buy_response.offer.iv
+        encrypted_decryption_key = CEncryptedDecryptionKey.from_bytes(
+            decryption_key_cipher_bytes
+        )
 
-    # Verify with the payment preimage and decryption key ciphertext
-    decryption_key_cipher_bytes = buy_response.offer.key_cipher
-    iv = buy_response.offer.iv
-    encrypted_decryption_key = CEncryptedDecryptionKey.from_bytes(
-        decryption_key_cipher_bytes
-    )
+        # Decrypt the decryption key
+        decryption_key = encrypted_decryption_key.get_decryption_key(preimage, iv)
+        serialized_decryption_key = decryption_key.get_bytes()
 
-    # Decrypt the decryption key
-    decryption_key = encrypted_decryption_key.get_decryption_key(preimage, iv)
-    serialized_decryption_key = decryption_key.get_bytes()
-
-    get_response_squeak.SetDecryptionKey(serialized_decryption_key)
-    CheckSqueak(get_response_squeak)
-
-    # Close the channel
-    time.sleep(2)
-    for update in lightning_client.close_channel(channel_point):
-        if update.HasField("chan_close"):
-            print("Channel closed.")
-            break
+        get_response_squeak.SetDecryptionKey(serialized_decryption_key)
+        CheckSqueak(get_response_squeak)
 
     # Check the server balance
     get_balance_response = admin_stub.LndWalletBalance(ln.WalletBalanceRequest())
@@ -669,32 +654,16 @@ def test_list_channels(server_stub, admin_stub, lightning_client, saved_squeak_h
     except:
         pass
 
-    # Open channel to the server lightning node
-    pubkey_bytes = string_to_hex(destination)
-    open_channel_response = lightning_client.open_channel(pubkey_bytes, 1000000)
-    print("Opening channel...")
-    for update in open_channel_response:
-        if update.HasField("chan_open"):
-            channel_point = update.chan_open.channel_point
-            print("Channel now open: " + str(channel_point))
-            break
+    with open_channel(lightning_client, destination, 1000000):
+        # List channels
+        get_info_response = lightning_client.get_info()
+        list_channels_response = admin_stub.LndListChannels(ln.ListChannelsRequest())
 
-    # List channels
-    get_info_response = lightning_client.get_info()
-    list_channels_response = admin_stub.LndListChannels(ln.ListChannelsRequest())
-
-    assert len(list_channels_response.channels) > 0
-    assert any([
-        channel.remote_pubkey == get_info_response.identity_pubkey
-        for channel in list_channels_response.channels
-    ])
-
-    # Close the channel
-    time.sleep(2)
-    for update in lightning_client.close_channel(channel_point):
-        if update.HasField("chan_close"):
-            print("Channel closed.")
-            break
+        assert len(list_channels_response.channels) > 0
+        assert any([
+            channel.remote_pubkey == get_info_response.identity_pubkey
+            for channel in list_channels_response.channels
+        ])
 
 def test_get_transactions(server_stub, admin_stub, lightning_client, saved_squeak_hash):
     # Get the squeak from the server
@@ -732,36 +701,20 @@ def test_get_transactions(server_stub, admin_stub, lightning_client, saved_squea
     except:
         pass
 
-    # Open channel to the server lightning node
-    pubkey_bytes = string_to_hex(destination)
-    open_channel_response = lightning_client.open_channel(pubkey_bytes, 1000000)
-    print("Opening channel...")
-    for update in open_channel_response:
-        if update.HasField("chan_open"):
-            channel_point = update.chan_open.channel_point
-            print("Channel now open: " + str(channel_point))
-            break
+    with open_channel(lightning_client, destination, 1000000):
+        # List channels
+        get_info_response = lightning_client.get_info()
+        list_channels_response = admin_stub.LndListChannels(ln.ListChannelsRequest())
 
-    # List channels
-    get_info_response = lightning_client.get_info()
-    list_channels_response = admin_stub.LndListChannels(ln.ListChannelsRequest())
-
-    assert len(list_channels_response.channels) > 0
-    assert any([
-        channel.remote_pubkey == get_info_response.identity_pubkey
-        for channel in list_channels_response.channels
-    ])
-
-    # Close the channel
-    time.sleep(2)
-    for update in lightning_client.close_channel(channel_point):
-        if update.HasField("chan_close"):
-            print("Channel closed.")
-            break
+        assert len(list_channels_response.channels) > 0
+        assert any([
+            channel.remote_pubkey == get_info_response.identity_pubkey
+            for channel in list_channels_response.channels
+        ])
 
     get_transactions_response = admin_stub.LndGetTransactions(ln.GetTransactionsRequest())
 
     print("get_transactions_response:")
     print(get_transactions_response)
 
-    assert len(get_transactions_response.transactions) > 0
+    assert len(get_transactions_response.transactions) == 0
