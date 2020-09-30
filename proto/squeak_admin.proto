@@ -24,6 +24,10 @@ service SqueakAdmin {
   */
   rpc LndNewAddress (lnrpc.NewAddressRequest) returns (lnrpc.NewAddressResponse) {}
 
+  /** sqkadmin: `lndlistchannels`
+  */
+  rpc LndListChannels (lnrpc.ListChannelsRequest) returns (lnrpc.ListChannelsResponse) {}
+
   /** sqkadmin: `createsigningprofile`
   */
   rpc CreateSigningProfile (CreateSigningProfileRequest) returns (CreateSigningProfileReply) {}
