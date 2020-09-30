@@ -97,7 +97,15 @@ def string_to_hex(s):
 
 
 @contextmanager
-def open_channel(lightning_client, remote_pubkey, amount):
+def open_channel(lightning_client, lightning_host, remote_pubkey, amount):
+    # Connect to the server lightning node
+    try:
+        connect_peer_response = lightning_client.connect_peer(
+            remote_pubkey, lightning_host
+        )
+    except Exception as e:
+        print("Failed to connect to peer: {}".format(e))
+
     # Open channel to the server lightning node
     pubkey_bytes = string_to_hex(remote_pubkey)
     open_channel_response = lightning_client.open_channel(pubkey_bytes, amount)
