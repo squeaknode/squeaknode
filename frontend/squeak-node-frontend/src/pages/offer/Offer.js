@@ -16,7 +16,7 @@ import useStyles from "./styles";
 import PageTitle from "../../components/PageTitle";
 import Widget from "../../components/Widget";
 import SqueakDetailItem from "../../components/SqueakDetailItem";
-import BuyOfferItem from "../../components/BuyOfferItem";
+import BuyOfferDetailItem from "../../components/BuyOfferDetailItem";
 import MakeSqueakDialog from "../../components/MakeSqueakDialog";
 import DeleteSqueakDialog from "../../components/DeleteSqueakDialog";
 
@@ -64,10 +64,10 @@ export default function OfferPage() {
               p={1}
               key={offer.getOfferId()}
               >
-            <BuyOfferItem
+            <BuyOfferDetailItem
               key={offer.getOfferId()}
               offer={offer}>
-            </BuyOfferItem>
+            </BuyOfferDetailItem>
             </Box>
         </div>
       </>
