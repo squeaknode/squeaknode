@@ -181,21 +181,9 @@ export default function WalletPage() {
   function TransactionsContent() {
     return (
       <>
-        <div>
-        {transactions.map(transaction =>
-          <Box
-            p={1}
-            key={transaction.getTxHash()}
-            >
-          <TransactionItem
-            key={transaction.getTxHash()}
-            // handleTransactionClick={() => goToSqueakPage(transaction.getSqueakHash())}
-            handleTransactionClick={() => console.log("clicked transaction")}
-            transaction={transaction}>
-          </TransactionItem>
-          </Box>
-        )}
-        </div>
+        <Grid container spacing={4}>
+          {TransactionsGridItem()}
+        </Grid>
       </>
     )
   }
@@ -312,6 +300,40 @@ export default function WalletPage() {
       </Grid>
        </Widget>
       </Grid>
+    )
+  }
+
+  function TransactionsGridItem() {
+    return (
+      <Grid item xs={12}>
+      <Widget disableWidgetMenu>
+      <Grid
+        container
+        direction="row"
+        justify="flex-start"
+        alignItems="center"
+      >
+        <Grid item xs={12}>
+        <div>
+        {transactions.map(transaction =>
+          <Box
+            p={1}
+            key={transaction.getTxHash()}
+            >
+          <TransactionItem
+            key={transaction.getTxHash()}
+            // handleTransactionClick={() => goToSqueakPage(transaction.getSqueakHash())}
+            handleTransactionClick={() => console.log("clicked transaction")}
+            transaction={transaction}>
+          </TransactionItem>
+          </Box>
+        )}
+        </div>
+        </Grid>
+      </Grid>
+      </Widget>
+      </Grid>
+
     )
   }
 
