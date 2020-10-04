@@ -253,3 +253,6 @@ class SqueakNode:
     def get_buy_offers_with_peer(self, squeak_hash_str):
         squeak_hash = bytes.fromhex(squeak_hash_str)
         return self.postgres_db.get_offers_with_peer(squeak_hash_str)
+
+    def get_buy_offer_with_peer(self, offer_id):
+        return self.postgres_db.get_offer_with_peer(offer_id)

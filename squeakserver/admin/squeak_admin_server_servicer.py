@@ -249,6 +249,15 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
             offers=offer_msgs,
         )
 
+    def GetBuyOffer(self, request, context):
+        offer_id = request.offer_id
+        offer = self.handler.handle_get_buy_offer(offer_id)
+        offer_msg = self._offer_entry_to_message(offer)
+        logger.info("Returning buy offer: {}".format(offer_msg))
+        return squeak_admin_pb2.GetBuyOfferReply(
+            offer=offer_msg,
+        )
+
     def _squeak_entry_to_message(self, squeak_entry_with_profile):
         if squeak_entry_with_profile is None:
             return None
