@@ -314,7 +314,6 @@ export default function WalletPage() {
         alignItems="center"
       >
         <Grid item xs={12}>
-        <div>
         {transactions.map(transaction =>
           <Box
             p={1}
@@ -328,7 +327,6 @@ export default function WalletPage() {
           </TransactionItem>
           </Box>
         )}
-        </div>
         </Grid>
       </Grid>
       </Widget>
