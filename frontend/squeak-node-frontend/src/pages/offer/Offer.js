@@ -23,71 +23,72 @@ import DeleteSqueakDialog from "../../components/DeleteSqueakDialog";
 import {
   GetSqueakDisplayRequest,
   GetAncestorSqueakDisplaysRequest,
-  GetBuyOffersRequest,
+  GetBuyOfferRequest,
 } from "../../proto/squeak_admin_pb"
 import { client } from "../../squeakclient/squeakclient"
 
 
-export default function BuyPage() {
+export default function OfferPage() {
   var classes = useStyles();
   const history = useHistory();
-  const { hash } = useParams();
-  const [offers, setOffers] = useState([]);
+  const { id } = useParams();
+  const [offer, setOffer] = useState(null);
 
-  const getOffers = (hash) => {
-      var getBuyOffersRequest = new GetBuyOffersRequest()
-      getBuyOffersRequest.setSqueakHash(hash);
-      console.log(getBuyOffersRequest);
+  const getOffer = (offerId) => {
+      console.log("Getting offer with offerId: " + offerId);
+      var getBuyOfferRequest = new GetBuyOfferRequest()
+      getBuyOfferRequest.setOfferId(offerId);
+      console.log(getBuyOfferRequest);
 
-      client.getBuyOffers(getBuyOffersRequest, {}, (err, response) => {
+      client.getBuyOffer(getBuyOfferRequest, {}, (err, response) => {
         if (err) {
           console.log(err.message);
-          alert('Error getting offers: ' + err.message);
+          alert('Error getting offer: ' + err.message);
           return;
         }
         console.log(response);
-        console.log(response.getOffersList());
-        setOffers(response.getOffersList())
+        console.log(response.getOffer());
+        setOffer(response.getOffer())
       });
   };
 
-  const goToOfferPage = (offerId) => {
-    console.log("Go to offer page for id: " + offerId);
-    history.push("/app/offer/" + offerId);
-  };
-
   useEffect(()=>{
-    getOffers(hash)
-  },[hash]);
+    getOffer(id)
+  },[id]);
 
-  function OffersContent() {
+  function OfferContent() {
     return (
       <>
-        <Typography variant="h3">
-          Offers
-        </Typography>
         <div>
-          {offers.map(offer =>
             <Box
               p={1}
               key={offer.getOfferId()}
               >
             <BuyOfferItem
               key={offer.getOfferId()}
-              handleOfferClick={() => goToOfferPage(offer.getOfferId())}
               offer={offer}>
             </BuyOfferItem>
             </Box>
-          )}
         </div>
       </>
     )
   }
 
+  function NoOfferContent() {
+    return (
+      <p>
+        No offer loaded
+      </p>
+    )
+  }
+
   return (
     <>
-      <PageTitle title="Buy squeak" />
-      {OffersContent()}
+      <PageTitle title="Offer" />
+      {offer
+        ? OfferContent()
+        : NoOfferContent()
+      }
     </>
   );
 }

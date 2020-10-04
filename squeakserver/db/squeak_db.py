@@ -936,6 +936,24 @@ class SqueakDb:
         #     offers_with_peer = [self._parse_offer_with_peer(row) for row in rows]
         #     return offers_with_peer
 
+    def get_offer_with_peer(self, offer_id):
+        """ Get offer with peer for an offer id. """
+        s = (
+            select([self.offers, self.peers])
+            .select_from(
+                self.offers.outerjoin(
+                    self.peers,
+                    self.peers.c.id == self.offers.c.peer_id,
+                )
+            )
+            .where(self.offers.c.offer_id == offer_id)
+        )
+        with self.get_connection() as connection:
+            result = connection.execute(s)
+            row = result.fetchone()
+            offer_with_peer = self._parse_offer_with_peer(row)
+            return offer_with_peer
+
     def delete_expired_offers(self):
         """ Delete all expired offers. """
         s = self.offers.delete().where(
