@@ -37,6 +37,10 @@ class SqueakAdminServerHandler(object):
         logger.info("Handle lnd get transactions")
         return self.lightning_client.get_transactions()
 
+    def handle_lnd_list_peers(self):
+        logger.info("Handle list peers")
+        return self.lightning_client.list_peers()
+
     def handle_create_signing_profile(self, profile_name):
         logger.info("Handle create signing profile with name: {}".format(profile_name))
         profile_id = self.squeak_node.create_signing_profile(profile_name)

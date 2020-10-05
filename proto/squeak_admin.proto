@@ -32,6 +32,10 @@ service SqueakAdmin {
   */
   rpc LndGetTransactions (lnrpc.GetTransactionsRequest) returns (lnrpc.TransactionDetails) {}
 
+  /** sqkadmin: `lndlistpeers`
+  */
+  rpc LndListPeers (lnrpc.ListPeersRequest) returns (lnrpc.ListPeersResponse) {}
+
   /** sqkadmin: `createsigningprofile`
   */
   rpc CreateSigningProfile (CreateSigningProfileRequest) returns (CreateSigningProfileReply) {}
