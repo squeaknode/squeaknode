@@ -37,6 +37,10 @@ class SqueakAdminServerHandler(object):
         logger.info("Handle lnd get transactions")
         return self.lightning_client.get_transactions()
 
+    def handle_lnd_list_peers(self):
+        logger.info("Handle list peers")
+        return self.lightning_client.list_peers()
+
     def handle_create_signing_profile(self, profile_name):
         logger.info("Handle create signing profile with name: {}".format(profile_name))
         profile_id = self.squeak_node.create_signing_profile(profile_name)
@@ -231,3 +235,7 @@ class SqueakAdminServerHandler(object):
     def handle_get_buy_offers(self, squeak_hash_str):
         logger.info("Handle get buy offers for hash: {}".format(squeak_hash_str))
         return self.squeak_node.get_buy_offers_with_peer(squeak_hash_str)
+
+    def handle_get_buy_offer(self, offer_id):
+        logger.info("Handle get buy offer for hash: {}".format(offer_id))
+        return self.squeak_node.get_buy_offer_with_peer(offer_id)

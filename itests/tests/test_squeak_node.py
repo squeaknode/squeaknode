@@ -656,3 +656,52 @@ def test_send_coins(server_stub, admin_stub, lightning_client):
         transaction.tx_hash == send_coins_response.txid
         for transaction in get_transactions_response.transactions
     ])
+
+def test_list_peers(server_stub, admin_stub, lightning_client, saved_squeak_hash):
+    # Get the squeak from the server
+    get_response = server_stub.GetSqueak(
+        squeak_server_pb2.GetSqueakRequest(hash=saved_squeak_hash)
+    )
+    get_response_squeak = squeak_from_msg(get_response.squeak)
+    CheckSqueak(get_response_squeak, skipDecryptionCheck=True)
+
+    # Generate a challenge to verify the offer
+    expected_proof = generate_challenge_proof()
+    encryption_key = get_response_squeak.GetEncryptionKey()
+    challenge = get_challenge(encryption_key, expected_proof)
+
+    # Buy the squeak data key
+    buy_response = server_stub.BuySqueak(
+        squeak_server_pb2.BuySqueakRequest(
+            hash=saved_squeak_hash,
+            challenge=challenge,
+        )
+    )
+    assert buy_response.offer.payment_request.startswith("ln")
+
+    # Decode the payment request string
+    decode_pay_req_response = lightning_client.decode_pay_req(
+        buy_response.offer.payment_request
+    )
+    destination = decode_pay_req_response.destination
+
+    with open_channel(lightning_client, buy_response.offer.host, destination, 1000000):
+        # List channels
+        get_info_response = lightning_client.get_info()
+        list_channels_response = admin_stub.LndListChannels(ln.ListChannelsRequest())
+
+        assert len(list_channels_response.channels) > 0
+        assert any([
+            channel.remote_pubkey == get_info_response.identity_pubkey
+            for channel in list_channels_response.channels
+        ])
+
+        list_peers_response = admin_stub.LndListPeers(ln.ListPeersRequest())
+        assert len(list_peers_response.peers) > 0
+        assert any([
+            peer.pub_key == get_info_response.identity_pubkey
+            for peer in list_peers_response.peers
+        ])
+
+    list_channels_response = admin_stub.LndListChannels(ln.ListChannelsRequest())
+    assert len(list_channels_response.channels) == 0

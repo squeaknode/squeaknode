@@ -32,6 +32,10 @@ service SqueakAdmin {
   */
   rpc LndGetTransactions (lnrpc.GetTransactionsRequest) returns (lnrpc.TransactionDetails) {}
 
+  /** sqkadmin: `lndlistpeers`
+  */
+  rpc LndListPeers (lnrpc.ListPeersRequest) returns (lnrpc.ListPeersResponse) {}
+
   /** sqkadmin: `createsigningprofile`
   */
   rpc CreateSigningProfile (CreateSigningProfileRequest) returns (CreateSigningProfileReply) {}
@@ -123,6 +127,10 @@ service SqueakAdmin {
   /** sqkadmin: `getbuyoffers`
   */
   rpc GetBuyOffers (GetBuyOffersRequest) returns (GetBuyOffersReply) {}
+
+  /** sqkadmin: `getbuyoffer`
+  */
+  rpc GetBuyOffer (GetBuyOfferRequest) returns (GetBuyOfferReply) {}
 
 }
 
@@ -443,6 +451,16 @@ message GetBuyOffersRequest {
 message GetBuyOffersReply {
     /// The offers
     repeated OfferDisplayEntry offers = 1;
+}
+
+message GetBuyOfferRequest {
+    /// Offer id
+    int32 offer_id = 1;
+}
+
+message GetBuyOfferReply {
+    /// The offer
+    OfferDisplayEntry offer = 1;
 }
 
 message OfferDisplayEntry {
