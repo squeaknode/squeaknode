@@ -4,6 +4,7 @@ import sys
 import threading
 from configparser import ConfigParser
 from pathlib import Path
+from os import environ
 
 from squeak.params import SelectParams
 
@@ -33,6 +34,8 @@ def load_lightning_client(config) -> LNDLightningClient:
 
 def load_lightning_host_port(config) -> LNDLightningClient:
     lnd_host = config.get("lnd", "external_host", fallback=None)
+    if environ.get('EXTERNAL_LND_HOST') is not None:
+        lnd_host = environ.get('EXTERNAL_LND_HOST')
     lnd_port = int(config["lnd"]["port"])
     return LightningAddressHostPort(
         lnd_host,
@@ -202,6 +205,7 @@ def run_server(config):
     # load the lightning client
     lightning_client = load_lightning_client(config)
     lightning_host_port = load_lightning_host_port(config)
+    logger.info("Loaded lightning_host_port: {}".format(lightning_host_port))
 
     # load the blockchain client
     blockchain_client = load_blockchain_client(config)

@@ -32,7 +32,7 @@ import {
   LightningAddress,
 } from "../../proto/lnd_pb"
 import {
-  DeleteSqueakProfileRequest,
+  ConnectPeerRequest,
 } from "../../proto/squeak_admin_pb"
 import { client } from "../../squeakclient/squeakclient"
 
@@ -75,11 +75,11 @@ export default function ConnectPeerDialog({
   function handleSubmit(event) {
     event.preventDefault();
     console.log( 'peer:', peer);
-    var pubkey = profile.getPubKey();
-    var address = profile.getAddress();
+    var pubkey = peer.getPubKey();
+    var address = peer.getAddress();
     console.log( 'pubkey:', pubkey);
     console.log( 'address:', address);
-    deleteProfile(pubkey, address);
+    connectPeer(pubkey, address);
     handleClose();
   }
 

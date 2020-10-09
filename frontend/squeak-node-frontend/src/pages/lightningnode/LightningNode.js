@@ -30,11 +30,14 @@ import useStyles from "./styles";
 import PageTitle from "../../components/PageTitle";
 import Widget from "../../components/Widget";
 import { Typography } from "../../components/Wrappers";
+import ConnectPeerDialog from "../../components/ConnectPeerDialog";
 
 import {
   GetInfoRequest,
   WalletBalanceRequest,
   ListPeersRequest,
+  LightningAddress,
+  ConnectPeerRequest,
 } from "../../proto/lnd_pb"
 import { client } from "../../squeakclient/squeakclient"
 
@@ -47,6 +50,7 @@ export default function LightningNodePage() {
   const { pubkey, host, port } = useParams();
   const [value, setValue] = useState(0);
   const [peers, setPeers] = useState([]);
+  const [connectPeerDialogOpen, setConnectPeerDialogOpen] = useState(false);
 
   function a11yProps(index) {
     return {
@@ -57,6 +61,20 @@ export default function LightningNodePage() {
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
+  };
+
+  const handleClickOpenConnectPeerDialog = () => {
+    // console.log("setting connectPeerDialogOpen:");
+    // setConnectPeerDialogOpen(true);
+    // console.log("connectPeerDialogOpen:");
+    // console.log(connectPeerDialogOpen);
+
+    var lightningHost = host + ":" + port;
+    connectPeer(pubkey, lightningHost);
+  };
+
+  const handleCloseConnectPeerDialog = () => {
+     setConnectPeerDialogOpen(false);
   };
 
   const listPeers = () => {
@@ -73,11 +91,37 @@ export default function LightningNodePage() {
         });
   };
 
+  const connectPeer = (pubkey, host) => {
+    console.log("called connectPeer");
+
+    var connectPeerRequest = new ConnectPeerRequest()
+    var address = new LightningAddress();
+    address.setPubkey(pubkey);
+    address.setHost(host);
+    connectPeerRequest.setAddr(address);
+    console.log(connectPeerRequest);
+
+    client.lndConnectPeer(connectPeerRequest, {}, (err, response) => {
+      if (err) {
+        console.log(err.message);
+        alert('Error connecting peer: ' + err.message);
+        return;
+      }
+
+      console.log(response);
+      reloadRoute();
+    });
+  };
+
+  const reloadRoute = () => {
+    history.go(0);
+  };
+
   useEffect(()=>{
     listPeers()
   },[]);
 
-  function ReceiveBitcoinButton() {
+  function ConnectPeerButton() {
     return (
       <>
       <Grid item xs={12}>
@@ -85,7 +129,7 @@ export default function LightningNodePage() {
           <Button
             variant="contained"
             onClick={() => {
-              console.log("");
+              handleClickOpenConnectPeerDialog();
             }}>Connect Peer
           </Button>
         </div>
@@ -161,9 +205,9 @@ export default function LightningNodePage() {
       >
         <Grid item>
           <Typography color="text" colorBrightness="secondary">
-            receive bitcoin:
+            connect peer:
           </Typography>
-          {ReceiveBitcoinButton()}
+          {ConnectPeerButton()}
         </Grid>
       </Grid>
        </Widget>
@@ -249,6 +293,17 @@ export default function LightningNodePage() {
     )
   }
 
+  function ConnectPeerDialogContent() {
+    return (
+      <>
+        <ConnectPeerDialog
+          open={connectPeerDialogOpen}
+          handleClose={handleCloseConnectPeerDialog}
+          ></ConnectPeerDialog>
+      </>
+    )
+  }
+
   return (
     <>
       <PageTitle title={'Lightning Node: ' + pubkey} />
@@ -256,6 +311,7 @@ export default function LightningNodePage() {
         ? LightningNodeTabs()
         : NoPubkeyContent()
       }
+      {ConnectPeerDialogContent()}
     </>
   );
 }

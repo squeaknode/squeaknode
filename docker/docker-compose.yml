@@ -66,6 +66,8 @@ services:
     links:
       - "btcd:btcd"
       - "lnd:lnd"
+    environment:
+      - EXTERNAL_LND_HOST=lnd
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=0
     entrypoint: ["./start-sqkserver.sh"]
@@ -84,6 +86,8 @@ services:
     links:
       - "btcd:btcd"
       - "lnd_other:lnd"
+    environment:
+      - EXTERNAL_LND_HOST=lnd_other
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=0
     entrypoint: ["./start-sqkserver.sh"]
