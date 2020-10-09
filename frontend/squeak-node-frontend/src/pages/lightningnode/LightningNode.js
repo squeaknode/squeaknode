@@ -31,7 +31,11 @@ import PageTitle from "../../components/PageTitle";
 import Widget from "../../components/Widget";
 import { Typography } from "../../components/Wrappers";
 
-import { GetInfoRequest, WalletBalanceRequest } from "../../proto/lnd_pb"
+import {
+  GetInfoRequest,
+  WalletBalanceRequest,
+  ListPeersRequest,
+} from "../../proto/lnd_pb"
 import { client } from "../../squeakclient/squeakclient"
 
 
@@ -42,6 +46,7 @@ export default function LightningNodePage() {
   const history = useHistory();
   const { pubkey, host, port } = useParams();
   const [value, setValue] = useState(0);
+  const [peers, setPeers] = useState([]);
 
   function a11yProps(index) {
     return {
@@ -53,6 +58,25 @@ export default function LightningNodePage() {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  const listPeers = () => {
+        console.log("called listPeers");
+
+        var listPeersRequest = new ListPeersRequest()
+        console.log(listPeersRequest);
+
+        client.lndListPeers(listPeersRequest, {}, (err, response) => {
+          console.log(response);
+          console.log("response.getPeersList()");
+          console.log(response.getPeersList());
+          setPeers(response.getPeersList());
+        });
+  };
+
+  useEffect(()=>{
+    listPeers()
+  },[]);
+
 
   function NodeInfoGridItem() {
     return (
@@ -110,11 +134,30 @@ export default function LightningNodePage() {
           <Typography color="text" colorBrightness="secondary">
             connected
           </Typography>
-          <Typography size="md">false</Typography>
+          <Typography size="md">{IsConnected()}</Typography>
         </Grid>
       </Grid>
        </Widget>
       </Grid>
+    )
+  }
+
+  function IsConnected() {
+    var hasPeerConnection = false;
+    var i;
+    for (i = 0; i < peers.length; i++) {
+      console.log("pubkey");
+      console.log(pubkey);
+      console.log("peers[i].getPubKey()");
+      console.log(peers[i].getPubKey());
+      if (pubkey == peers[i].getPubKey()) {
+        hasPeerConnection = true;
+      }
+    }
+    console.log(hasPeerConnection);
+
+    return (
+      hasPeerConnection.toString()
     )
   }
 
