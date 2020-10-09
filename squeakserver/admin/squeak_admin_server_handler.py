@@ -47,6 +47,10 @@ class SqueakAdminServerHandler(object):
         host = lightning_address.host
         return self.lightning_client.connect_peer(pubkey, host)
 
+    def handle_lnd_disconnect_peer(self, pubkey):
+        logger.info("Handle disconnect peer with pubkey: {}".format(pubkey))
+        return self.lightning_client.disconnect_peer(pubkey)
+
     def handle_create_signing_profile(self, profile_name):
         logger.info("Handle create signing profile with name: {}".format(profile_name))
         profile_id = self.squeak_node.create_signing_profile(profile_name)

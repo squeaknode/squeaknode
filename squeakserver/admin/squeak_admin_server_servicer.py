@@ -41,6 +41,10 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         lightning_address = request.addr
         return self.handler.handle_lnd_connect_peer(lightning_address)
 
+    def LndDisconnectPeer(self, request, context):
+        pubkey = request.pub_key
+        return self.handler.handle_lnd_disconnect_peer(pubkey)
+
     def CreateSigningProfile(self, request, context):
         profile_name = request.profile_name
         profile_id = self.handler.handle_create_signing_profile(profile_name)

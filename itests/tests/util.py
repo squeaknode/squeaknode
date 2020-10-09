@@ -125,3 +125,8 @@ def open_channel(lightning_client, lightning_host, remote_pubkey, amount):
             if update.HasField("chan_close"):
                 print("Channel closed.")
                 break
+
+        # Disconnect the peer
+        disconnect_peer_response = lightning_client.disconnect_peer(
+            remote_pubkey,
+        )

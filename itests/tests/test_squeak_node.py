@@ -685,25 +685,14 @@ def test_list_peers(server_stub, admin_stub, lightning_client, saved_squeak_hash
     )
     destination = decode_pay_req_response.destination
 
-    # # Connect to the server lightning node
-    # try:
-    #     connect_peer_response = lightning_client.connect_peer(
-    #         destination, buy_response.offer.host
-    #     )
-    # except Exception as e:
-    #     print("Failed to connect to peer: {}".format(e))
-
     get_info_response = lightning_client.get_info()
 
-    try:
-        admin_stub.LndConnectPeer(ln.ConnectPeerRequest(
-            addr=ln.LightningAddress(
-                pubkey=get_info_response.identity_pubkey,
-                host="lnd_client",
-            ),
-        ))
-    except:
-        pass
+    admin_stub.LndConnectPeer(ln.ConnectPeerRequest(
+        addr=ln.LightningAddress(
+            pubkey=get_info_response.identity_pubkey,
+            host="lnd_client",
+        ),
+    ))
 
     list_peers_response = admin_stub.LndListPeers(ln.ListPeersRequest())
     assert len(list_peers_response.peers) > 0
