@@ -20,6 +20,7 @@ from squeakserver.server.squeak_server_servicer import SqueakServerServicer
 
 logger = logging.getLogger(__name__)
 
+SQK_PATH = ".sqk"
 
 def load_lightning_client(config) -> LNDLightningClient:
     return LNDLightningClient(
@@ -98,8 +99,8 @@ def load_db(config, network):
         )
         return SqueakDb(engine, schema=network)
     elif database == "sqlite":
-        Path("/.sqk").mkdir(parents=True, exist_ok=True)
-        engine = get_sqlite_engine(".sqk", network)
+        Path("/" + SQK_PATH).mkdir(parents=True, exist_ok=True)
+        engine = get_sqlite_engine(SQK_PATH, network)
         return SqueakDb(engine)
 
 
