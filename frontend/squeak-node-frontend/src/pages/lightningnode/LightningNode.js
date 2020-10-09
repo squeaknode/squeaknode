@@ -77,6 +77,22 @@ export default function LightningNodePage() {
     listPeers()
   },[]);
 
+  function ReceiveBitcoinButton() {
+    return (
+      <>
+      <Grid item xs={12}>
+        <div className={classes.root}>
+          <Button
+            variant="contained"
+            onClick={() => {
+              console.log("");
+            }}>Connect Peer
+          </Button>
+        </div>
+      </Grid>
+      </>
+    )
+  }
 
   function NodeInfoGridItem() {
     return (
@@ -135,6 +151,19 @@ export default function LightningNodePage() {
             connected
           </Typography>
           <Typography size="md">{IsConnected()}</Typography>
+        </Grid>
+      </Grid>
+      <Grid
+        container
+        direction="row"
+        justify="flex-start"
+        alignItems="center"
+      >
+        <Grid item>
+          <Typography color="text" colorBrightness="secondary">
+            receive bitcoin:
+          </Typography>
+          {ReceiveBitcoinButton()}
         </Grid>
       </Grid>
        </Widget>
