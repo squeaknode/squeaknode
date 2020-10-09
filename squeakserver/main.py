@@ -87,6 +87,10 @@ def load_admin_handler(lightning_client, squeak_node):
     )
 
 
+def load_sqk_dir(config):
+    return Path.home().joinpath(SQK_PATH)
+
+
 def load_db(config, network):
     database = load_database(config)
     logger.info("database: " + database)
@@ -99,8 +103,12 @@ def load_db(config, network):
         )
         return SqueakDb(engine, schema=network)
     elif database == "sqlite":
-        Path("/" + SQK_PATH).mkdir(parents=True, exist_ok=True)
-        engine = get_sqlite_engine(SQK_PATH, network)
+        sqk_dir = load_sqk_dir(config)
+        logger.info("Loaded sqk_dir: {}".format(sqk_dir))
+        data_dir = sqk_dir.joinpath("data").joinpath(network)
+        logger.info("Loaded data_dir: {}".format(data_dir))
+        data_dir.mkdir(parents=True, exist_ok=True)
+        engine = get_sqlite_engine(data_dir)
         return SqueakDb(engine)
 
 

@@ -29,6 +29,9 @@ import useStyles from "./styles";
 import Widget from "../../components/Widget";
 
 import {
+  LightningAddress,
+} from "../../proto/lnd_pb"
+import {
   DeleteSqueakProfileRequest,
 } from "../../proto/squeak_admin_pb"
 import { client } from "../../squeakclient/squeakclient"
@@ -43,23 +46,26 @@ export default function ConnectPeerDialog({
   var classes = useStyles();
   const history = useHistory();
 
-  const connectPeer = (pubkey, address) => {
+  const connectPeer = (pubkey, host) => {
     console.log("called connectPeer");
 
-    // var deleteSqueakProfileRequest = new DeleteSqueakProfileRequest()
-    // deleteSqueakProfileRequest.setProfileId(profileId);
-    // console.log(deleteSqueakProfileRequest);
-    //
-    // client.deleteSqueakProfile(deleteSqueakProfileRequest, {}, (err, response) => {
-    //   if (err) {
-    //     console.log(err.message);
-    //     alert('Error deleting profile: ' + err.message);
-    //     return;
-    //   }
-    //
-    //   console.log(response);
-    //   reloadRoute();
-    // });
+    var connectPeerRequest = new ConnectPeerRequest()
+    var address = new LightningAddress();
+    address.setPubkey(pubkey);
+    address.setHost(host);
+    connectPeerRequest.setAddr(address);
+    console.log(connectPeerRequest);
+
+    client.connectPeer(connectPeerRequest, {}, (err, response) => {
+      if (err) {
+        console.log(err.message);
+        alert('Error connecting peer: ' + err.message);
+        return;
+      }
+
+      console.log(response);
+      reloadRoute();
+    });
   };
 
   const reloadRoute = () => {
