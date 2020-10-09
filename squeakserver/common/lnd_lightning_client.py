@@ -92,6 +92,19 @@ class LNDLightningClient:
             connect_peer_request, metadata=[("macaroon", self.macaroon)]
         )
 
+    def disconnect_peer(self, pubkey):
+        """Disconnect a lightning node peer.
+
+        args:
+        pubkey -- The identity pubkey of the Lightning node
+        """
+        disconnect_peer_request = lnd_pb2.DisconnectPeerRequest(
+            pub_key=pubkey,
+        )
+        return self.stub.DisconnectPeer(
+            disconnect_peer_request, metadata=[("macaroon", self.macaroon)]
+        )
+
     def get_info(self):
         """Get info about the lightning network node."""
         get_info_request = lnd_pb2.GetInfoRequest()

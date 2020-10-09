@@ -31,7 +31,13 @@ import PageTitle from "../../components/PageTitle";
 import Widget from "../../components/Widget";
 import { Typography } from "../../components/Wrappers";
 
-import { GetInfoRequest, WalletBalanceRequest } from "../../proto/lnd_pb"
+import {
+  GetInfoRequest,
+  WalletBalanceRequest,
+  ListPeersRequest,
+  LightningAddress,
+  ConnectPeerRequest,
+} from "../../proto/lnd_pb"
 import { client } from "../../squeakclient/squeakclient"
 
 
@@ -42,6 +48,7 @@ export default function LightningNodePage() {
   const history = useHistory();
   const { pubkey, host, port } = useParams();
   const [value, setValue] = useState(0);
+  const [peers, setPeers] = useState([]);
 
   function a11yProps(index) {
     return {
@@ -53,6 +60,72 @@ export default function LightningNodePage() {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  const handleClickConnectPeer = () => {
+    var lightningHost = host + ":" + port;
+    connectPeer(pubkey, lightningHost);
+  };
+
+  const listPeers = () => {
+        console.log("called listPeers");
+
+        var listPeersRequest = new ListPeersRequest()
+        console.log(listPeersRequest);
+
+        client.lndListPeers(listPeersRequest, {}, (err, response) => {
+          console.log(response);
+          console.log("response.getPeersList()");
+          console.log(response.getPeersList());
+          setPeers(response.getPeersList());
+        });
+  };
+
+  const connectPeer = (pubkey, host) => {
+    console.log("called connectPeer");
+
+    var connectPeerRequest = new ConnectPeerRequest()
+    var address = new LightningAddress();
+    address.setPubkey(pubkey);
+    address.setHost(host);
+    connectPeerRequest.setAddr(address);
+    console.log(connectPeerRequest);
+
+    client.lndConnectPeer(connectPeerRequest, {}, (err, response) => {
+      if (err) {
+        console.log(err.message);
+        alert('Error connecting peer: ' + err.message);
+        return;
+      }
+
+      console.log(response);
+      reloadRoute();
+    });
+  };
+
+  const reloadRoute = () => {
+    history.go(0);
+  };
+
+  useEffect(()=>{
+    listPeers()
+  },[]);
+
+  function ConnectPeerButton() {
+    return (
+      <>
+      <Grid item xs={12}>
+        <div className={classes.root}>
+          <Button
+            variant="contained"
+            onClick={() => {
+              handleClickConnectPeer();
+            }}>Connect Peer
+          </Button>
+        </div>
+      </Grid>
+      </>
+    )
+  }
 
   function NodeInfoGridItem() {
     return (
@@ -110,11 +183,43 @@ export default function LightningNodePage() {
           <Typography color="text" colorBrightness="secondary">
             connected
           </Typography>
-          <Typography size="md">false</Typography>
+          <Typography size="md">{IsConnected()}</Typography>
+        </Grid>
+      </Grid>
+      <Grid
+        container
+        direction="row"
+        justify="flex-start"
+        alignItems="center"
+      >
+        <Grid item>
+          <Typography color="text" colorBrightness="secondary">
+            connect peer:
+          </Typography>
+          {ConnectPeerButton()}
         </Grid>
       </Grid>
        </Widget>
       </Grid>
+    )
+  }
+
+  function IsConnected() {
+    var hasPeerConnection = false;
+    var i;
+    for (i = 0; i < peers.length; i++) {
+      console.log("pubkey");
+      console.log(pubkey);
+      console.log("peers[i].getPubKey()");
+      console.log(peers[i].getPubKey());
+      if (pubkey == peers[i].getPubKey()) {
+        hasPeerConnection = true;
+      }
+    }
+    console.log(hasPeerConnection);
+
+    return (
+      hasPeerConnection.toString()
     )
   }
 

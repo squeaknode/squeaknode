@@ -685,23 +685,28 @@ def test_list_peers(server_stub, admin_stub, lightning_client, saved_squeak_hash
     )
     destination = decode_pay_req_response.destination
 
-    with open_channel(lightning_client, buy_response.offer.host, destination, 1000000):
-        # List channels
-        get_info_response = lightning_client.get_info()
-        list_channels_response = admin_stub.LndListChannels(ln.ListChannelsRequest())
+    get_info_response = lightning_client.get_info()
 
-        assert len(list_channels_response.channels) > 0
-        assert any([
-            channel.remote_pubkey == get_info_response.identity_pubkey
-            for channel in list_channels_response.channels
-        ])
+    admin_stub.LndConnectPeer(ln.ConnectPeerRequest(
+        addr=ln.LightningAddress(
+            pubkey=get_info_response.identity_pubkey,
+            host="lnd_client",
+        ),
+    ))
 
-        list_peers_response = admin_stub.LndListPeers(ln.ListPeersRequest())
-        assert len(list_peers_response.peers) > 0
-        assert any([
-            peer.pub_key == get_info_response.identity_pubkey
-            for peer in list_peers_response.peers
-        ])
+    list_peers_response = admin_stub.LndListPeers(ln.ListPeersRequest())
+    assert any([
+        peer.pub_key == get_info_response.identity_pubkey
+        for peer in list_peers_response.peers
+    ])
 
-    list_channels_response = admin_stub.LndListChannels(ln.ListChannelsRequest())
-    assert len(list_channels_response.channels) == 0
+    # Disconnect the peer
+    admin_stub.LndDisconnectPeer(ln.DisconnectPeerRequest(
+        pub_key=get_info_response.identity_pubkey,
+    ))
+
+    list_peers_response = admin_stub.LndListPeers(ln.ListPeersRequest())
+    assert not any([
+        peer.pub_key == get_info_response.identity_pubkey
+        for peer in list_peers_response.peers
+    ])

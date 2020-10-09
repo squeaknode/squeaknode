@@ -4,6 +4,7 @@ import sys
 import threading
 from configparser import ConfigParser
 from pathlib import Path
+from os import environ
 
 from squeak.params import SelectParams
 
@@ -20,7 +21,7 @@ from squeakserver.server.squeak_server_servicer import SqueakServerServicer
 
 logger = logging.getLogger(__name__)
 
-SQK_PATH = ".sqk"
+SQK_DIR_NAME = ".sqk"
 
 def load_lightning_client(config) -> LNDLightningClient:
     return LNDLightningClient(
@@ -33,6 +34,8 @@ def load_lightning_client(config) -> LNDLightningClient:
 
 def load_lightning_host_port(config) -> LNDLightningClient:
     lnd_host = config.get("lnd", "external_host", fallback=None)
+    if environ.get('EXTERNAL_LND_HOST') is not None:
+        lnd_host = environ.get('EXTERNAL_LND_HOST')
     lnd_port = int(config["lnd"]["port"])
     return LightningAddressHostPort(
         lnd_host,
@@ -87,6 +90,14 @@ def load_admin_handler(lightning_client, squeak_node):
     )
 
 
+def load_sqk_dir_path(config):
+    sqk_dir = config.get("squeaknode", "sqk_dir", fallback=None)
+    if sqk_dir:
+        return Path(sqk_dir)
+    else:
+        return Path.home().joinpath(SQK_DIR_NAME)
+
+
 def load_db(config, network):
     database = load_database(config)
     logger.info("database: " + database)
@@ -99,8 +110,11 @@ def load_db(config, network):
         )
         return SqueakDb(engine, schema=network)
     elif database == "sqlite":
-        Path("/" + SQK_PATH).mkdir(parents=True, exist_ok=True)
-        engine = get_sqlite_engine(SQK_PATH, network)
+        sqk_dir = load_sqk_dir_path(config)
+        logger.info("Loaded sqk_dir: {}".format(sqk_dir))
+        data_dir = sqk_dir.joinpath("data").joinpath(network)
+        data_dir.mkdir(parents=True, exist_ok=True)
+        engine = get_sqlite_engine(data_dir)
         return SqueakDb(engine)
 
 
@@ -191,6 +205,7 @@ def run_server(config):
     # load the lightning client
     lightning_client = load_lightning_client(config)
     lightning_host_port = load_lightning_host_port(config)
+    logger.info("Loaded lightning_host_port: {}".format(lightning_host_port))
 
     # load the blockchain client
     blockchain_client = load_blockchain_client(config)
