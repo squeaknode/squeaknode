@@ -695,8 +695,18 @@ def test_list_peers(server_stub, admin_stub, lightning_client, saved_squeak_hash
     ))
 
     list_peers_response = admin_stub.LndListPeers(ln.ListPeersRequest())
-    assert len(list_peers_response.peers) > 0
     assert any([
+        peer.pub_key == get_info_response.identity_pubkey
+        for peer in list_peers_response.peers
+    ])
+
+    # Disconnect the peer
+    admin_stub.LndDisconnectPeer(ln.DisconnectPeerRequest(
+        pub_key=get_info_response.identity_pubkey,
+    ))
+
+    list_peers_response = admin_stub.LndListPeers(ln.ListPeersRequest())
+    assert not any([
         peer.pub_key == get_info_response.identity_pubkey
         for peer in list_peers_response.peers
     ])
