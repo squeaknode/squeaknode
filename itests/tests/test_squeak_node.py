@@ -685,23 +685,29 @@ def test_list_peers(server_stub, admin_stub, lightning_client, saved_squeak_hash
     )
     destination = decode_pay_req_response.destination
 
-    with open_channel(lightning_client, buy_response.offer.host, destination, 1000000):
-        # List channels
-        get_info_response = lightning_client.get_info()
-        list_channels_response = admin_stub.LndListChannels(ln.ListChannelsRequest())
+    # # Connect to the server lightning node
+    # try:
+    #     connect_peer_response = lightning_client.connect_peer(
+    #         destination, buy_response.offer.host
+    #     )
+    # except Exception as e:
+    #     print("Failed to connect to peer: {}".format(e))
 
-        assert len(list_channels_response.channels) > 0
-        assert any([
-            channel.remote_pubkey == get_info_response.identity_pubkey
-            for channel in list_channels_response.channels
-        ])
+    get_info_response = lightning_client.get_info()
 
-        list_peers_response = admin_stub.LndListPeers(ln.ListPeersRequest())
-        assert len(list_peers_response.peers) > 0
-        assert any([
-            peer.pub_key == get_info_response.identity_pubkey
-            for peer in list_peers_response.peers
-        ])
+    try:
+        admin_stub.LndConnectPeer(ln.ConnectPeerRequest(
+            addr=ln.LightningAddress(
+                pubkey=get_info_response.identity_pubkey,
+                host="lnd_client",
+            ),
+        ))
+    except:
+        pass
 
-    list_channels_response = admin_stub.LndListChannels(ln.ListChannelsRequest())
-    assert len(list_channels_response.channels) == 0
+    list_peers_response = admin_stub.LndListPeers(ln.ListPeersRequest())
+    assert len(list_peers_response.peers) > 0
+    assert any([
+        peer.pub_key == get_info_response.identity_pubkey
+        for peer in list_peers_response.peers
+    ])
