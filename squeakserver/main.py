@@ -20,7 +20,7 @@ from squeakserver.server.squeak_server_servicer import SqueakServerServicer
 
 logger = logging.getLogger(__name__)
 
-SQK_PATH = ".sqk"
+SQK_DIR_NAME = ".sqk"
 
 def load_lightning_client(config) -> LNDLightningClient:
     return LNDLightningClient(
@@ -87,8 +87,12 @@ def load_admin_handler(lightning_client, squeak_node):
     )
 
 
-def load_sqk_dir(config):
-    return Path.home().joinpath(SQK_PATH)
+def load_sqk_dir_path(config):
+    sqk_dir = config.get("squeaknode", "sqk_dir", fallback=None)
+    if sqk_dir:
+        return Path(sqk_dir)
+    else:
+        return Path.home().joinpath(SQK_DIR_NAME)
 
 
 def load_db(config, network):
@@ -103,10 +107,9 @@ def load_db(config, network):
         )
         return SqueakDb(engine, schema=network)
     elif database == "sqlite":
-        sqk_dir = load_sqk_dir(config)
+        sqk_dir = load_sqk_dir_path(config)
         logger.info("Loaded sqk_dir: {}".format(sqk_dir))
         data_dir = sqk_dir.joinpath("data").joinpath(network)
-        logger.info("Loaded data_dir: {}".format(data_dir))
         data_dir.mkdir(parents=True, exist_ok=True)
         engine = get_sqlite_engine(data_dir)
         return SqueakDb(engine)
