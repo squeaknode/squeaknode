@@ -30,7 +30,6 @@ import useStyles from "./styles";
 import PageTitle from "../../components/PageTitle";
 import Widget from "../../components/Widget";
 import { Typography } from "../../components/Wrappers";
-import ConnectPeerDialog from "../../components/ConnectPeerDialog";
 
 import {
   GetInfoRequest,
@@ -50,7 +49,6 @@ export default function LightningNodePage() {
   const { pubkey, host, port } = useParams();
   const [value, setValue] = useState(0);
   const [peers, setPeers] = useState([]);
-  const [connectPeerDialogOpen, setConnectPeerDialogOpen] = useState(false);
 
   function a11yProps(index) {
     return {
@@ -63,18 +61,9 @@ export default function LightningNodePage() {
     setValue(newValue);
   };
 
-  const handleClickOpenConnectPeerDialog = () => {
-    // console.log("setting connectPeerDialogOpen:");
-    // setConnectPeerDialogOpen(true);
-    // console.log("connectPeerDialogOpen:");
-    // console.log(connectPeerDialogOpen);
-
+  const handleClickConnectPeer = () => {
     var lightningHost = host + ":" + port;
     connectPeer(pubkey, lightningHost);
-  };
-
-  const handleCloseConnectPeerDialog = () => {
-     setConnectPeerDialogOpen(false);
   };
 
   const listPeers = () => {
@@ -129,7 +118,7 @@ export default function LightningNodePage() {
           <Button
             variant="contained"
             onClick={() => {
-              handleClickOpenConnectPeerDialog();
+              handleClickConnectPeer();
             }}>Connect Peer
           </Button>
         </div>
@@ -293,17 +282,6 @@ export default function LightningNodePage() {
     )
   }
 
-  function ConnectPeerDialogContent() {
-    return (
-      <>
-        <ConnectPeerDialog
-          open={connectPeerDialogOpen}
-          handleClose={handleCloseConnectPeerDialog}
-          ></ConnectPeerDialog>
-      </>
-    )
-  }
-
   return (
     <>
       <PageTitle title={'Lightning Node: ' + pubkey} />
@@ -311,7 +289,6 @@ export default function LightningNodePage() {
         ? LightningNodeTabs()
         : NoPubkeyContent()
       }
-      {ConnectPeerDialogContent()}
     </>
   );
 }
