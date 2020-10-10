@@ -37,6 +37,7 @@ import {
   ListPeersRequest,
   LightningAddress,
   ConnectPeerRequest,
+  DisconnectPeerRequest,
 } from "../../proto/lnd_pb"
 import { client } from "../../squeakclient/squeakclient"
 
@@ -64,6 +65,26 @@ export default function LightningNodePage() {
   const handleClickConnectPeer = () => {
     var lightningHost = host + ":" + port;
     connectPeer(pubkey, lightningHost);
+  };
+
+  const handleClickDisconnectPeer = () => {
+    disconnectPeer(pubkey);
+  };
+
+  const isConnected = () => {
+    var hasPeerConnection = false;
+    var i;
+    for (i = 0; i < peers.length; i++) {
+      console.log("pubkey");
+      console.log(pubkey);
+      console.log("peers[i].getPubKey()");
+      console.log(peers[i].getPubKey());
+      if (pubkey == peers[i].getPubKey()) {
+        hasPeerConnection = true;
+      }
+    }
+    console.log(hasPeerConnection);
+    return hasPeerConnection;
   };
 
   const listPeers = () => {
@@ -102,6 +123,25 @@ export default function LightningNodePage() {
     });
   };
 
+  const disconnectPeer = (pubkey) => {
+    console.log("called disconnectPeer");
+
+    var disconnectPeerRequest = new DisconnectPeerRequest()
+    disconnectPeerRequest.setPubKey(pubkey);
+    console.log(disconnectPeerRequest);
+
+    client.lndDisconnectPeer(disconnectPeerRequest, {}, (err, response) => {
+      if (err) {
+        console.log(err.message);
+        alert('Error disconnecting peer: ' + err.message);
+        return;
+      }
+
+      console.log(response);
+      reloadRoute();
+    });
+  };
+
   const reloadRoute = () => {
     history.go(0);
   };
@@ -120,6 +160,23 @@ export default function LightningNodePage() {
             onClick={() => {
               handleClickConnectPeer();
             }}>Connect Peer
+          </Button>
+        </div>
+      </Grid>
+      </>
+    )
+  }
+
+  function DisconnectPeerButton() {
+    return (
+      <>
+      <Grid item xs={12}>
+        <div className={classes.root}>
+          <Button
+            variant="contained"
+            onClick={() => {
+              handleClickDisconnectPeer();
+            }}>Disconnect Peer
           </Button>
         </div>
       </Grid>
@@ -183,43 +240,24 @@ export default function LightningNodePage() {
           <Typography color="text" colorBrightness="secondary">
             connected
           </Typography>
-          <Typography size="md">{IsConnected()}</Typography>
-        </Grid>
-      </Grid>
-      <Grid
-        container
-        direction="row"
-        justify="flex-start"
-        alignItems="center"
-      >
-        <Grid item>
-          <Typography color="text" colorBrightness="secondary">
-            connect peer:
+          <Typography size="md">
+          {IsConnected()}
           </Typography>
-          {ConnectPeerButton()}
+          {isConnected()
+            ? DisconnectPeerButton()
+            : ConnectPeerButton()
+          }
         </Grid>
       </Grid>
+
        </Widget>
       </Grid>
     )
   }
 
   function IsConnected() {
-    var hasPeerConnection = false;
-    var i;
-    for (i = 0; i < peers.length; i++) {
-      console.log("pubkey");
-      console.log(pubkey);
-      console.log("peers[i].getPubKey()");
-      console.log(peers[i].getPubKey());
-      if (pubkey == peers[i].getPubKey()) {
-        hasPeerConnection = true;
-      }
-    }
-    console.log(hasPeerConnection);
-
     return (
-      hasPeerConnection.toString()
+      isConnected().toString()
     )
   }
 
