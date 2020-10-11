@@ -33,11 +33,13 @@ import Widget from "../../components/Widget";
 import { Typography } from "../../components/Wrappers";
 import ReceiveBitcoinDialog from "../../components/ReceiveBitcoinDialog";
 import TransactionItem from "../../components/TransactionItem";
+import LightningPeerListItem from "../../components/LightningPeerListItem";
 
 import {
   GetInfoRequest,
   WalletBalanceRequest,
   GetTransactionsRequest,
+  ListPeersRequest,
 } from "../../proto/lnd_pb"
 import { client } from "../../squeakclient/squeakclient"
 
@@ -48,6 +50,7 @@ export default function WalletPage() {
   const [lndInfo, setLndInfo] = useState(null);
   const [walletBalance, setWalletBalance] = useState(null);
   const [transactions, setTransactions] = useState([]);
+  const [peers, setPeers] = useState(null);
   const [value, setValue] = useState(0);
   const [receiveBitcoinDialogOpen, setReceiveBitcoinDialogOpen] = useState(false);
 
@@ -106,6 +109,20 @@ export default function WalletPage() {
         });
   };
 
+  const listPeers = () => {
+        console.log("called listPeers");
+
+        var listPeersRequest = new ListPeersRequest()
+        console.log(listPeersRequest);
+
+        client.lndListPeers(listPeersRequest, {}, (err, response) => {
+          console.log(response);
+          console.log("response.getPeersList()");
+          console.log(response.getPeersList());
+          setPeers(response.getPeersList());
+        });
+  };
+
   useEffect(()=>{
     getLndInfo()
   },[]);
@@ -114,6 +131,9 @@ export default function WalletPage() {
   },[]);
   useEffect(()=>{
     getTransactions()
+  },[]);
+  useEffect(()=>{
+    listPeers()
   },[]);
 
   function ReceiveBitcoinButton() {
@@ -183,6 +203,16 @@ export default function WalletPage() {
       <>
         <Grid container spacing={4}>
           {TransactionsGridItem()}
+        </Grid>
+      </>
+    )
+  }
+
+  function PeersContent() {
+    return (
+      <>
+        <Grid container spacing={4}>
+          {PeersGridItem()}
         </Grid>
       </>
     )
@@ -375,6 +405,38 @@ export default function WalletPage() {
     )
   }
 
+  function PeersGridItem() {
+    return (
+      <Grid item xs={12}>
+      <Widget disableWidgetMenu>
+      <Grid
+        container
+        direction="row"
+        justify="flex-start"
+        alignItems="center"
+      >
+        <Grid item xs={12}>
+        {peers.map(peer =>
+          <Box
+            p={1}
+            key={peer.getPubKey()}
+            >
+          <LightningPeerListItem
+            key={peer.getPubKey()}
+            // handleTransactionClick={() => goToSqueakPage(transaction.getSqueakHash())}
+            handlePeerClick={() => console.log("clicked peer")}
+            peer={peer}>
+          </LightningPeerListItem>
+          </Box>
+        )}
+        </Grid>
+      </Grid>
+      </Widget>
+      </Grid>
+
+    )
+  }
+
   function TabPanel(props) {
     const { children, value, index, ...other } = props;
 
@@ -401,6 +463,7 @@ export default function WalletPage() {
           <Tab label="Balance" {...a11yProps(0)} />
           <Tab label="Node Info" {...a11yProps(1)} />
           <Tab label="Transactions" {...a11yProps(2)} />
+          <Tab label="Peers" {...a11yProps(3)} />
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
@@ -418,6 +481,12 @@ export default function WalletPage() {
       <TabPanel value={value} index={2}>
         {(lndInfo && walletBalance)
           ? TransactionsContent()
+          : NoBalanceContent()
+        }
+      </TabPanel>
+      <TabPanel value={value} index={3}>
+        {(peers != null)
+          ? PeersContent()
           : NoBalanceContent()
         }
       </TabPanel>
