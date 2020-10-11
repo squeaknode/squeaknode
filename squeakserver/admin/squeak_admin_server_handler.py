@@ -74,6 +74,10 @@ class SqueakAdminServerHandler(object):
             channel_point,
         )
 
+    def handle_lnd_subscribe_channel_events(self):
+        logger.info("Handle subscribe channel events")
+        return self.lightning_client.subscribe_channel_events()
+
     def handle_create_signing_profile(self, profile_name):
         logger.info("Handle create signing profile with name: {}".format(profile_name))
         profile_id = self.squeak_node.create_signing_profile(profile_name)

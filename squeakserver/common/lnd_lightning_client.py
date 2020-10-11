@@ -206,6 +206,13 @@ class LNDLightningClient:
             metadata=[("macaroon", self.macaroon)],
         )
 
+    def subscribe_channel_events(self):
+        subscribe_channel_events_request = lnd_pb2.ChannelEventSubscription()
+        return self.stub.SubscribeChannelEvents(
+            subscribe_channel_events_request,
+            metadata=[("macaroon", self.macaroon)],
+        )
+
     def get_transactions(self):
         # Get transactions
         get_transactions_request = lnd_pb2.GetTransactionsRequest()
