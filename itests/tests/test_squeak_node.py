@@ -20,6 +20,7 @@ from tests.util import (
     squeak_from_msg,
     string_to_hex,
     open_channel,
+    connect_peer,
 )
 
 
@@ -162,7 +163,8 @@ def test_sell_squeak(server_stub, admin_stub, lightning_client, saved_squeak_has
     )
     destination = decode_pay_req_response.destination
 
-    with open_channel(lightning_client, buy_response.offer.host, destination, 1000000):
+    with connect_peer(lightning_client, buy_response.offer.host, destination), \
+         open_channel(lightning_client, destination, 1000000):
         # List peers
         list_peers_response = lightning_client.list_peers()
 
@@ -631,7 +633,8 @@ def test_list_channels(server_stub, admin_stub, lightning_client, saved_squeak_h
     )
     destination = decode_pay_req_response.destination
 
-    with open_channel(lightning_client, buy_response.offer.host, destination, 1000000):
+    with connect_peer(lightning_client, buy_response.offer.host, destination), \
+         open_channel(lightning_client, destination, 1000000):
         # List channels
         get_info_response = lightning_client.get_info()
         list_channels_response = admin_stub.LndListChannels(ln.ListChannelsRequest())
