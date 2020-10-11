@@ -24,7 +24,6 @@ import moment from 'moment';
 
 export default function LightningPeerListItem({
   peer,
-  handlePeerClick,
   ...props
 }) {
   var classes = useStyles();
@@ -34,9 +33,35 @@ export default function LightningPeerListItem({
   const onPeerClick = (event) => {
     event.preventDefault();
     console.log("Handling peer click...");
-    if (handlePeerClick) {
-      handlePeerClick();
+    goToLightningNodePage();
+  }
+
+  const goToLightningNodePage = () => {
+    var pubkey = peer.getPubKey();
+    var host = getPeerHost();
+    var port = getPeerPort();
+    history.push("/app/lightningnode/" + pubkey + "/" + host + "/" + port);
+  };
+
+  const getPeerHost = () => {
+    var address = peer.getAddress();
+    if (address == null) {
+      return null;
     }
+    var pieces = address.split(":");
+    return pieces[0];
+  }
+
+  const getPeerPort = () => {
+    var address = peer.getAddress();
+    if (address == null) {
+      return null;
+    }
+    var pieces = address.split(":");
+    if (pieces.length < 2) {
+      return null;
+    }
+    return pieces[1];
   }
 
   function PeerContent() {
