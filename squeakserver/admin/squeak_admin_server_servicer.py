@@ -66,6 +66,9 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
             sat_per_byte,
         )
 
+    def LndSubscribeChannelEvents(self, request, context):
+        return self.handler.handle_lnd_subscribe_channel_events()
+
     def CreateSigningProfile(self, request, context):
         profile_name = request.profile_name
         profile_id = self.handler.handle_create_signing_profile(profile_name)

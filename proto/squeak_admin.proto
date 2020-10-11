@@ -56,6 +56,10 @@ service SqueakAdmin {
   */
   rpc LndCloseChannel (lnrpc.CloseChannelRequest) returns (stream lnrpc.CloseStatusUpdate) {}
 
+  /** sqkadmin: `lndsubscribechannelevents`
+  */
+  rpc LndSubscribeChannelEvents (lnrpc.ChannelEventSubscription) returns (stream lnrpc.ChannelEventUpdate) {}
+
   /** sqkadmin: `createsigningprofile`
   */
   rpc CreateSigningProfile (CreateSigningProfileRequest) returns (CreateSigningProfileReply) {}
