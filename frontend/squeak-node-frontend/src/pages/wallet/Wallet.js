@@ -188,6 +188,16 @@ export default function WalletPage() {
     )
   }
 
+  function PeersContent() {
+    return (
+      <>
+        <Grid container spacing={4}>
+          {PeersGridItem()}
+        </Grid>
+      </>
+    )
+  }
+
   function BalanceGridItem() {
     return (
       <Grid item xs={12}>
@@ -375,6 +385,38 @@ export default function WalletPage() {
     )
   }
 
+  function PeersGridItem() {
+    return (
+      <Grid item xs={12}>
+      <Widget disableWidgetMenu>
+      <Grid
+        container
+        direction="row"
+        justify="flex-start"
+        alignItems="center"
+      >
+        <Grid item xs={12}>
+        {transactions.map(transaction =>
+          <Box
+            p={1}
+            key={transaction.getTxHash()}
+            >
+          <TransactionItem
+            key={transaction.getTxHash()}
+            // handleTransactionClick={() => goToSqueakPage(transaction.getSqueakHash())}
+            handleTransactionClick={() => console.log("clicked transaction")}
+            transaction={transaction}>
+          </TransactionItem>
+          </Box>
+        )}
+        </Grid>
+      </Grid>
+      </Widget>
+      </Grid>
+
+    )
+  }
+
   function TabPanel(props) {
     const { children, value, index, ...other } = props;
 
@@ -401,6 +443,7 @@ export default function WalletPage() {
           <Tab label="Balance" {...a11yProps(0)} />
           <Tab label="Node Info" {...a11yProps(1)} />
           <Tab label="Transactions" {...a11yProps(2)} />
+          <Tab label="Peers" {...a11yProps(3)} />
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
@@ -416,6 +459,12 @@ export default function WalletPage() {
         }
       </TabPanel>
       <TabPanel value={value} index={2}>
+        {(lndInfo && walletBalance)
+          ? TransactionsContent()
+          : NoBalanceContent()
+        }
+      </TabPanel>
+      <TabPanel value={value} index={3}>
         {(lndInfo && walletBalance)
           ? TransactionsContent()
           : NoBalanceContent()
