@@ -51,6 +51,25 @@ class SqueakAdminServerHandler(object):
         logger.info("Handle disconnect peer with pubkey: {}".format(pubkey))
         return self.lightning_client.disconnect_peer(pubkey)
 
+    def handle_lnd_open_channel_sync(self, node_pubkey_string, local_funding_amount, sat_per_byte):
+        logger.info("Handle open channel to peer with pubkey: {}, amount: {}".format(
+            node_pubkey_string,
+            local_funding_amount,
+        ))
+        return self.lightning_client.open_channel_sync(
+            node_pubkey_string,
+            local_funding_amount,
+        )
+
+    def handle_lnd_close_channel(self, channel_point, sat_per_byte):
+        logger.info("Handle close channel with channel_point: {}".format(
+            channel_point,
+            sat_per_byte,
+        ))
+        return self.lightning_client.close_channel(
+            channel_point,
+        )
+
     def handle_create_signing_profile(self, profile_name):
         logger.info("Handle create signing profile with name: {}".format(profile_name))
         profile_id = self.squeak_node.create_signing_profile(profile_name)

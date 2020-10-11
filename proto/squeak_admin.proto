@@ -44,6 +44,14 @@ service SqueakAdmin {
   */
   rpc LndDisconnectPeer (lnrpc.DisconnectPeerRequest) returns (lnrpc.DisconnectPeerResponse) {}
 
+  /** sqkadmin: `lndopenchannelsync`
+  */
+  rpc LndOpenChannelSync (lnrpc.OpenChannelRequest) returns (lnrpc.ChannelPoint) {}
+
+  /** sqkadmin: `lndclosechannel`
+  */
+  rpc LndCloseChannel (lnrpc.CloseChannelRequest) returns (stream lnrpc.CloseStatusUpdate) {}
+
   /** sqkadmin: `createsigningprofile`
   */
   rpc CreateSigningProfile (CreateSigningProfileRequest) returns (CreateSigningProfileReply) {}
