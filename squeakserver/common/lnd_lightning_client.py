@@ -134,6 +134,13 @@ class LNDLightningClient:
             list_channels_request, metadata=[("macaroon", self.macaroon)]
         )
 
+    def pending_channels(self):
+        """List the pending channels"""
+        pending_channels_request = lnd_pb2.PendingChannelsRequest()
+        return self.stub.PendingChannels(
+            pending_channels_request, metadata=[("macaroon", self.macaroon)]
+        )
+
     def list_peers(self):
         """List the peers"""
         list_peers_request = lnd_pb2.ListPeersRequest()

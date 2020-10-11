@@ -28,6 +28,10 @@ service SqueakAdmin {
   */
   rpc LndListChannels (lnrpc.ListChannelsRequest) returns (lnrpc.ListChannelsResponse) {}
 
+  /** sqkadmin: `lndpendingchannels`
+  */
+  rpc LndPendingChannels (lnrpc.PendingChannelsRequest) returns (lnrpc.PendingChannelsResponse) {}
+
   /** sqkadmin: `lndgettransactions`
   */
   rpc LndGetTransactions (lnrpc.GetTransactionsRequest) returns (lnrpc.TransactionDetails) {}

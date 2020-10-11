@@ -31,6 +31,9 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
     def LndListChannels(self, request, context):
         return self.handler.handle_lnd_list_channels()
 
+    def LndPendingChannels(self, request, context):
+        return self.handler.handle_lnd_pending_channels()
+
     def LndGetTransactions(self, request, context):
         return self.handler.handle_lnd_get_transactions()
 

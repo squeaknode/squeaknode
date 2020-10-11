@@ -33,6 +33,10 @@ class SqueakAdminServerHandler(object):
         logger.info("Handle lnd list channels")
         return self.lightning_client.list_channels()
 
+    def handle_lnd_pending_channels(self):
+        logger.info("Handle lnd pending channels")
+        return self.lightning_client.pending_channels()
+
     def handle_lnd_get_transactions(self):
         logger.info("Handle lnd get transactions")
         return self.lightning_client.get_transactions()
