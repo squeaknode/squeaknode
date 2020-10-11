@@ -97,15 +97,20 @@ def string_to_hex(s):
 
 
 @contextmanager
-def open_channel(lightning_client, lightning_host, remote_pubkey, amount):
-    # Connect to the server lightning node
+def connect_peer(lightning_client, lightning_host, remote_pubkey):
+    connect_peer_response = lightning_client.connect_peer(
+        remote_pubkey, lightning_host
+    )
     try:
-        connect_peer_response = lightning_client.connect_peer(
-            remote_pubkey, lightning_host
+        yield
+    finally:
+        # Disconnect the peer
+        disconnect_peer_response = lightning_client.disconnect_peer(
+            remote_pubkey,
         )
-    except Exception as e:
-        print("Failed to connect to peer: {}".format(e))
 
+@contextmanager
+def open_channel(lightning_client, remote_pubkey, amount):
     # Open channel to the server lightning node
     pubkey_bytes = string_to_hex(remote_pubkey)
     open_channel_response = lightning_client.open_channel(pubkey_bytes, amount)
@@ -125,8 +130,3 @@ def open_channel(lightning_client, lightning_host, remote_pubkey, amount):
             if update.HasField("chan_close"):
                 print("Channel closed.")
                 break
-
-        # Disconnect the peer
-        disconnect_peer_response = lightning_client.disconnect_peer(
-            remote_pubkey,
-        )

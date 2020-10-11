@@ -20,6 +20,7 @@ from tests.util import (
     squeak_from_msg,
     string_to_hex,
     open_channel,
+    connect_peer,
 )
 
 
@@ -162,7 +163,8 @@ def test_sell_squeak(server_stub, admin_stub, lightning_client, saved_squeak_has
     )
     destination = decode_pay_req_response.destination
 
-    with open_channel(lightning_client, buy_response.offer.host, destination, 1000000):
+    with connect_peer(lightning_client, buy_response.offer.host, destination), \
+         open_channel(lightning_client, destination, 1000000):
         # List peers
         list_peers_response = lightning_client.list_peers()
 
@@ -631,7 +633,8 @@ def test_list_channels(server_stub, admin_stub, lightning_client, saved_squeak_h
     )
     destination = decode_pay_req_response.destination
 
-    with open_channel(lightning_client, buy_response.offer.host, destination, 1000000):
+    with connect_peer(lightning_client, buy_response.offer.host, destination), \
+         open_channel(lightning_client, destination, 1000000):
         # List channels
         get_info_response = lightning_client.get_info()
         list_channels_response = admin_stub.LndListChannels(ln.ListChannelsRequest())
@@ -710,3 +713,46 @@ def test_list_peers(server_stub, admin_stub, lightning_client, saved_squeak_hash
         peer.pub_key == get_info_response.identity_pubkey
         for peer in list_peers_response.peers
     ])
+
+def test_open_channel(server_stub, admin_stub, lightning_client, saved_squeak_hash):
+    # Get the squeak from the server
+    get_response = server_stub.GetSqueak(
+        squeak_server_pb2.GetSqueakRequest(hash=saved_squeak_hash)
+    )
+    get_response_squeak = squeak_from_msg(get_response.squeak)
+    CheckSqueak(get_response_squeak, skipDecryptionCheck=True)
+
+    # Generate a challenge to verify the offer
+    expected_proof = generate_challenge_proof()
+    encryption_key = get_response_squeak.GetEncryptionKey()
+    challenge = get_challenge(encryption_key, expected_proof)
+
+    # Buy the squeak data key
+    buy_response = server_stub.BuySqueak(
+        squeak_server_pb2.BuySqueakRequest(
+            hash=saved_squeak_hash,
+            challenge=challenge,
+        )
+    )
+    assert buy_response.offer.payment_request.startswith("ln")
+
+    # Decode the payment request string
+    decode_pay_req_response = lightning_client.decode_pay_req(
+        buy_response.offer.payment_request
+    )
+    destination = decode_pay_req_response.destination
+
+    with connect_peer(lightning_client, buy_response.offer.host, destination):
+        # List pending channels
+        get_info_response = lightning_client.get_info()
+        pending_channels_response = admin_stub.LndPendingChannels(ln.PendingChannelsRequest())
+        assert len(pending_channels_response.pending_open_channels) == 0
+
+        # Open the new channel
+        open_channel_response = admin_stub.LndOpenChannelSync(ln.OpenChannelRequest(
+            node_pubkey_string=get_info_response.identity_pubkey,
+            local_funding_amount=1000000,
+        ))
+
+        pending_channels_response = admin_stub.LndPendingChannels(ln.PendingChannelsRequest())
+        assert len(pending_channels_response.pending_open_channels) == 1

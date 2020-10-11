@@ -28,6 +28,10 @@ service SqueakAdmin {
   */
   rpc LndListChannels (lnrpc.ListChannelsRequest) returns (lnrpc.ListChannelsResponse) {}
 
+  /** sqkadmin: `lndpendingchannels`
+  */
+  rpc LndPendingChannels (lnrpc.PendingChannelsRequest) returns (lnrpc.PendingChannelsResponse) {}
+
   /** sqkadmin: `lndgettransactions`
   */
   rpc LndGetTransactions (lnrpc.GetTransactionsRequest) returns (lnrpc.TransactionDetails) {}
@@ -43,6 +47,14 @@ service SqueakAdmin {
   /** sqkadmin: `lnddisconnectpeer`
   */
   rpc LndDisconnectPeer (lnrpc.DisconnectPeerRequest) returns (lnrpc.DisconnectPeerResponse) {}
+
+  /** sqkadmin: `lndopenchannelsync`
+  */
+  rpc LndOpenChannelSync (lnrpc.OpenChannelRequest) returns (lnrpc.ChannelPoint) {}
+
+  /** sqkadmin: `lndclosechannel`
+  */
+  rpc LndCloseChannel (lnrpc.CloseChannelRequest) returns (stream lnrpc.CloseStatusUpdate) {}
 
   /** sqkadmin: `createsigningprofile`
   */
