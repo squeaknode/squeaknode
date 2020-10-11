@@ -52,7 +52,7 @@ export default function LightningPeerListItem({
     <Box
       p={1}
       m={0}
-      style={{backgroundColor: 'white'}}
+      style={{backgroundColor: 'lightgray'}}
       onClick={onPeerClick}
       >
           <Grid
@@ -62,7 +62,23 @@ export default function LightningPeerListItem({
             alignItems="flex-start"
           >
           <Grid item>
-            {PeerContent()}
+            <Typography
+              size="md"
+              >Pubkey: {peer.getPubKey()}
+            </Typography>
+          </Grid>
+          </Grid>
+          <Grid
+            container
+            direction="row"
+            justify="flex-start"
+            alignItems="flex-start"
+          >
+          <Grid item>
+            <Typography
+              size="md"
+              >Address: {peer.getAddress()}
+            </Typography>
           </Grid>
           </Grid>
     </Box>
