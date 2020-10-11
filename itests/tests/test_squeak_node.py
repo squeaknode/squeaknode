@@ -759,10 +759,22 @@ def test_open_channel(server_stub, admin_stub, lightning_client, saved_squeak_ha
 
         subscribe_channel_events_response = admin_stub.LndSubscribeChannelEvents(ln.ChannelEventSubscription())
         for update in subscribe_channel_events_response:
-            if update.HasField("open_channel"):
-                channel_point = update.chan_open.channel_point
+            if update.HasField("active_channel"):
+                channel_point = update.active_channel
                 print("Channel now open: " + str(channel_point))
                 break
 
         list_channels_response = admin_stub.LndListChannels(ln.ListChannelsRequest())
         assert len(list_channels_response.channels) == 1
+
+        # Close the channel
+        close_channel_response = admin_stub.LndCloseChannel(ln.CloseChannelRequest(
+            channel_point=channel_point,
+        ))
+        for update in close_channel_response:
+            if update.HasField("chan_close"):
+                print("Channel now closed.")
+                break
+
+        list_channels_response = admin_stub.LndListChannels(ln.ListChannelsRequest())
+        assert len(list_channels_response.channels) == 0
