@@ -32,12 +32,13 @@ import PageTitle from "../../components/PageTitle";
 import Widget from "../../components/Widget";
 import { Typography } from "../../components/Wrappers";
 import OpenChannelDialog from "../../components/OpenChannelDialog";
-import TransactionItem from "../../components/TransactionItem";
+import ChannelItem from "../../components/ChannelItem";
 
 import {
   GetInfoRequest,
   WalletBalanceRequest,
   ListPeersRequest,
+  ListChannelsRequest,
   LightningAddress,
   ConnectPeerRequest,
   DisconnectPeerRequest,
@@ -122,6 +123,19 @@ export default function LightningNodePage() {
           setPeers(response.getPeersList());
         });
   };
+  const listChannels = () => {
+        console.log("called listChannels");
+
+        var listChannelsRequest = new ListChannelsRequest()
+        console.log(listChannelsRequest);
+
+        client.lndListChannels(listChannelsRequest, {}, (err, response) => {
+          console.log(response);
+          console.log("response.getChannelsList()");
+          console.log(response.getChannelsList());
+          setChannels(response.getChannelsList());
+        });
+  };
 
   const connectPeer = (pubkey, host) => {
     console.log("called connectPeer");
@@ -170,6 +184,9 @@ export default function LightningNodePage() {
 
   useEffect(()=>{
     listPeers()
+  },[]);
+  useEffect(()=>{
+    listChannels()
   },[]);
 
   function ConnectPeerButton() {
@@ -345,11 +362,11 @@ export default function LightningNodePage() {
             p={1}
             key={channel.getChannelPoint()}
             >
-          <TransactionItem
+          <ChannelItem
             key={channel.getChannelPoint()}
-            handleTransactionClick={() => console.log("clicked channel")}
-            transaction={channel}>
-          </TransactionItem>
+            handleChannelClick={() => console.log("clicked channel")}
+            channel={channel}>
+          </ChannelItem>
           </Box>
         )}
         </Grid>

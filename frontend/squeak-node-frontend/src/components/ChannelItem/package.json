@@ -1,0 +1,6 @@
+{
+  "name": "ChannelItem",
+  "version": "0.0.0",
+  "private": true,
+  "main": "ChannelItem.js"
+}
