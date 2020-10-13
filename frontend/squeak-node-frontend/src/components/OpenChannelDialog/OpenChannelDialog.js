@@ -31,7 +31,7 @@ import SqueakThreadItem from "../../components/SqueakThreadItem";
 
 import {
   OpenChannelRequest,
-} from "../../proto/squeak_admin_pb"
+} from "../../proto/lnd_pb"
 import { client } from "../../squeakclient/squeakclient"
 
 
@@ -58,7 +58,7 @@ export default function OpenChannelDialog({
     console.log("called openChannel");
 
     var openChannelRequest = new OpenChannelRequest()
-    openChannelRequest.setNodePubkey(pubkey);
+    openChannelRequest.setNodePubkeyString(pubkey);
     openChannelRequest.setLocalFundingAmount(amount);
     console.log(openChannelRequest);
 
@@ -94,7 +94,7 @@ export default function OpenChannelDialog({
   function PubKeyInput() {
     return (
       <TextField
-        id="standard-textarea"
+        id="pubkey-textarea"
         label="Node Pub Key"
         required
         autoFocus
@@ -103,6 +103,21 @@ export default function OpenChannelDialog({
         inputProps={{
            readOnly: true,
         }}
+      />
+    )
+  }
+
+  function LocalFundingAmountInput() {
+    return (
+      <TextField
+        id="amount-textarea"
+        label="Local Funding Amount"
+        required
+        autoFocus
+        value={amount}
+        onChange={handleChangeAmount}
+        fullWidth
+        inputProps={{ maxLength: 64 }}
       />
     )
   }
@@ -138,6 +153,9 @@ export default function OpenChannelDialog({
   <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
   <DialogContent>
     {PubKeyInput()}
+  </DialogContent>
+  <DialogContent>
+    {LocalFundingAmountInput()}
   </DialogContent>
   <DialogActions>
     {CancelButton()}
