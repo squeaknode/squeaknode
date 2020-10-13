@@ -398,6 +398,7 @@ export default function LightningNodePage() {
       <>
         <OpenChannelDialog
           open={openChannelDialogOpen}
+          pubkey={pubkey}
           handleClose={handleCloseOpenChannelDialog}
           ></OpenChannelDialog>
       </>

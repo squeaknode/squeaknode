@@ -95,12 +95,14 @@ export default function OpenChannelDialog({
     return (
       <TextField
         id="standard-textarea"
-        label="Profile Name"
+        label="Node Pub Key"
         required
         autoFocus
         value={pubkey}
         fullWidth
-        inputProps={{ maxLength: 64 }}
+        inputProps={{
+           readOnly: true,
+        }}
       />
     )
   }
