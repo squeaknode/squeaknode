@@ -57,19 +57,10 @@ export default function TransactionItem({
     return {backgroundColor: 'lightred'};
   }
 
-  function transactionBackgroundColor() {
-    var amount = transaction.getAmount();
-    if (amount == 0) {
-      return 'white'
-    } else if (amount < 0) {
-      return '#ffcdd2';
-    } else if (amount > 0) {
-      return '#c8e6c9';
-    }
-  }
-
   function TransactionBackgroundColor() {
-    return {backgroundColor: transactionBackgroundColor()};
+    return transaction.getAmount() > 0
+            ? TransactionPositiveBackgroundColor()
+            : TransactionNegativeBackgroundColor()
   }
 
   return (

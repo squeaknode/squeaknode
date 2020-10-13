@@ -7,7 +7,6 @@ import {
   AppBar,
   Tabs,
   Tab,
-  Box,
 } from "@material-ui/core";
 import { useTheme } from "@material-ui/styles";
 import {
@@ -31,8 +30,6 @@ import useStyles from "./styles";
 import PageTitle from "../../components/PageTitle";
 import Widget from "../../components/Widget";
 import { Typography } from "../../components/Wrappers";
-import OpenChannelDialog from "../../components/OpenChannelDialog";
-import TransactionItem from "../../components/TransactionItem";
 
 import {
   GetInfoRequest,
@@ -52,9 +49,7 @@ export default function LightningNodePage() {
   const history = useHistory();
   const { pubkey, host, port } = useParams();
   const [value, setValue] = useState(0);
-  const [peers, setPeers] = useState(null);
-  const [channels, setChannels] = useState(null);
-  const [openChannelDialogOpen, setOpenChannelDialogOpen] = useState(false);
+  const [peers, setPeers] = useState([]);
 
   function a11yProps(index) {
     return {
@@ -72,24 +67,11 @@ export default function LightningNodePage() {
     connectPeer(pubkey, lightningHost);
   };
 
-  const handleClickOpenChannel = () => {
-    console.log("Handle click open channel.");
-    setOpenChannelDialogOpen(true);
-  };
-
-  const handleCloseOpenChannelDialog = () => {
-    setOpenChannelDialogOpen(false);
-  };
-
   const handleClickDisconnectPeer = () => {
     disconnectPeer(pubkey);
   };
 
   const isConnected = () => {
-    if (peers == null) {
-      return false;
-    }
-
     var hasPeerConnection = false;
     var i;
     for (i = 0; i < peers.length; i++) {
@@ -103,10 +85,6 @@ export default function LightningNodePage() {
     }
     console.log(hasPeerConnection);
     return hasPeerConnection;
-  };
-
-  const hasChannelToPeer = () => {
-    return false;
   };
 
   const listPeers = () => {
@@ -206,38 +184,6 @@ export default function LightningNodePage() {
     )
   }
 
-  function OpenChannelButton() {
-    return (
-      <>
-      <Grid item xs={12}>
-        <div className={classes.root}>
-          <Button
-            variant="contained"
-            onClick={() => {
-              handleClickOpenChannel();
-            }}>Open Channel
-          </Button>
-        </div>
-      </Grid>
-      </>
-    )
-  }
-
-  function CloseChannelButton() {
-    return (
-      <>
-      <Grid item xs={12}>
-        <div className={classes.root}>
-          <Button
-            variant="contained"
-            >Close Channel
-          </Button>
-        </div>
-      </Grid>
-      </>
-    )
-  }
-
   function NodeInfoGridItem() {
     return (
       <Grid item xs={12}>
@@ -304,57 +250,7 @@ export default function LightningNodePage() {
         </Grid>
       </Grid>
 
-      <Grid
-        container
-        direction="row"
-        justify="flex-start"
-        alignItems="center"
-      >
-        <Grid item>
-          <Typography color="text" colorBrightness="secondary">
-            channel to peer
-          </Typography>
-          <Typography size="md">
-          {HasChannelToPeer()}
-          </Typography>
-          {hasChannelToPeer()
-            ? CloseChannelButton()
-            : OpenChannelButton()
-          }
-        </Grid>
-      </Grid>
-
        </Widget>
-      </Grid>
-    )
-  }
-
-  function ChannelsGridItem() {
-    return (
-      <Grid item xs={12}>
-      <Widget disableWidgetMenu>
-      <Grid
-        container
-        direction="row"
-        justify="flex-start"
-        alignItems="center"
-      >
-        <Grid item xs={12}>
-        {channels.map(channel =>
-          <Box
-            p={1}
-            key={channel.getChannelPoint()}
-            >
-          <TransactionItem
-            key={channel.getChannelPoint()}
-            handleTransactionClick={() => console.log("clicked channel")}
-            transaction={channel}>
-          </TransactionItem>
-          </Box>
-        )}
-        </Grid>
-      </Grid>
-      </Widget>
       </Grid>
     )
   }
@@ -362,12 +258,6 @@ export default function LightningNodePage() {
   function IsConnected() {
     return (
       isConnected().toString()
-    )
-  }
-
-  function HasChannelToPeer() {
-    return (
-      hasChannelToPeer().toString()
     )
   }
 
@@ -384,39 +274,6 @@ export default function LightningNodePage() {
       <>
         <Grid container spacing={4}>
           {NodeInfoGridItem()}
-        </Grid>
-      </>
-    )
-  }
-
-  function ChannelsContent() {
-    if (channels == null) {
-      return (
-        <>
-          <Grid container spacing={4}>
-          <Grid item xs={12}>
-          <Widget disableWidgetMenu>
-          <Grid
-            container
-            direction="row"
-            justify="flex-start"
-            alignItems="center"
-          >
-            <Grid item xs={12}>
-              Unable to load channels
-            </Grid>
-          </Grid>
-          </Widget>
-          </Grid>
-          </Grid>
-        </>
-      )
-    }
-
-    return (
-      <>
-        <Grid container spacing={4}>
-          {ChannelsGridItem()}
         </Grid>
       </>
     )
@@ -454,23 +311,11 @@ export default function LightningNodePage() {
         {PubkeyContent()}
       </TabPanel>
       <TabPanel value={value} index={1}>
-        {ChannelsContent()}
+        fooo
       </TabPanel>
       <TabPanel value={value} index={2}>
         barrr
       </TabPanel>
-      </>
-    )
-  }
-
-  function OpenChannelDialogContent() {
-    return (
-      <>
-        <OpenChannelDialog
-          open={openChannelDialogOpen}
-          pubkey={pubkey}
-          handleClose={handleCloseOpenChannelDialog}
-          ></OpenChannelDialog>
       </>
     )
   }
@@ -482,7 +327,6 @@ export default function LightningNodePage() {
         ? LightningNodeTabs()
         : NoPubkeyContent()
       }
-      {OpenChannelDialogContent()}
     </>
   );
 }
