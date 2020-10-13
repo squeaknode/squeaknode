@@ -90,23 +90,25 @@ export default function LightningNodePage() {
     if (peers == null) {
       return false;
     }
-
-    var hasPeerConnection = false;
     var i;
     for (i = 0; i < peers.length; i++) {
-      console.log("pubkey");
-      console.log(pubkey);
-      console.log("peers[i].getPubKey()");
-      console.log(peers[i].getPubKey());
       if (pubkey == peers[i].getPubKey()) {
-        hasPeerConnection = true;
+        return true;
       }
     }
-    console.log(hasPeerConnection);
-    return hasPeerConnection;
+    return false;
   };
 
   const hasChannelToPeer = () => {
+    if (channels == null) {
+      return false;
+    }
+    var i;
+    for (i = 0; i < channels.length; i++) {
+      if (pubkey == channels[i].getRemotePubkey()) {
+        return true;
+      }
+    }
     return false;
   };
 
@@ -117,6 +119,11 @@ export default function LightningNodePage() {
         console.log(listPeersRequest);
 
         client.lndListPeers(listPeersRequest, {}, (err, response) => {
+          if (err) {
+            console.log(err.message);
+            alert('Error getting peers: ' + err.message);
+            return;
+          }
           console.log(response);
           console.log("response.getPeersList()");
           console.log(response.getPeersList());
@@ -130,6 +137,11 @@ export default function LightningNodePage() {
         console.log(listChannelsRequest);
 
         client.lndListChannels(listChannelsRequest, {}, (err, response) => {
+          if (err) {
+            console.log(err.message);
+            alert('Error getting channels: ' + err.message);
+            return;
+          }
           console.log(response);
           console.log("response.getChannelsList()");
           console.log(response.getChannelsList());
