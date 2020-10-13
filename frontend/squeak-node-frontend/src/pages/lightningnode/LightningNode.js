@@ -38,6 +38,7 @@ import {
   GetInfoRequest,
   WalletBalanceRequest,
   ListPeersRequest,
+  ListChannelsRequest,
   LightningAddress,
   ConnectPeerRequest,
   DisconnectPeerRequest,
@@ -122,6 +123,19 @@ export default function LightningNodePage() {
           setPeers(response.getPeersList());
         });
   };
+  const listChannels = () => {
+        console.log("called listChannels");
+
+        var listChannelsRequest = new ListChannelsRequest()
+        console.log(listChannelsRequest);
+
+        client.lndListChannels(listChannelsRequest, {}, (err, response) => {
+          console.log(response);
+          console.log("response.getChannelsList()");
+          console.log(response.getChannelsList());
+          setChannels(response.getChannelsList());
+        });
+  };
 
   const connectPeer = (pubkey, host) => {
     console.log("called connectPeer");
@@ -170,6 +184,9 @@ export default function LightningNodePage() {
 
   useEffect(()=>{
     listPeers()
+  },[]);
+  useEffect(()=>{
+    listChannels()
   },[]);
 
   function ConnectPeerButton() {
