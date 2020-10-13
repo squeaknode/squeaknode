@@ -32,7 +32,7 @@ import PageTitle from "../../components/PageTitle";
 import Widget from "../../components/Widget";
 import { Typography } from "../../components/Wrappers";
 import OpenChannelDialog from "../../components/OpenChannelDialog";
-import TransactionItem from "../../components/TransactionItem";
+import ChannelItem from "../../components/ChannelItem";
 
 import {
   GetInfoRequest,
@@ -362,11 +362,11 @@ export default function LightningNodePage() {
             p={1}
             key={channel.getChannelPoint()}
             >
-          <TransactionItem
+          <ChannelItem
             key={channel.getChannelPoint()}
-            handleTransactionClick={() => console.log("clicked channel")}
-            transaction={channel}>
-          </TransactionItem>
+            handleChannelClick={() => console.log("clicked channel")}
+            channel={channel}>
+          </ChannelItem>
           </Box>
         )}
         </Grid>
