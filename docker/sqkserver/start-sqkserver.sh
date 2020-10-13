@@ -12,6 +12,13 @@ update-ca-certificates
 # needs to be told to use it over its own embedded bundle
 export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
 
+# Wait for the lnd cert file to exist before starting
+while ! test -f "/root/.lnd/tls.cert"; do
+    sleep 10
+    echo "Still waiting for lnd cert file to exist..."
+done
+
+# Start using the run server command
 exec runsqueakserver \
      --config config.ini \
      --log-level INFO \
