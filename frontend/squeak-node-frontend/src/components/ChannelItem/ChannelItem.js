@@ -24,19 +24,43 @@ import moment from 'moment';
 
 export default function ChannelItem({
   channel,
-  handleChannelClick,
   ...props
 }) {
   var classes = useStyles();
 
   const history = useHistory();
 
+  const getTxId = (channel) => {
+    var channelPoint = channel.getChannelPoint();
+    if (channelPoint == null) {
+      return null;
+    }
+    var pieces = channelPoint.split(":");
+    return pieces[0];
+  }
+
+  const getOutputIndex = (channel) => {
+    var channelPoint = channel.getChannelPoint();
+    if (channelPoint == null) {
+      return null;
+    }
+    var pieces = channelPoint.split(":");
+    if (pieces.length < 2) {
+      return null;
+    }
+    return pieces[1];
+  }
+
+  const goToChannelPage = (txId, outputIndex) => {
+    history.push("/app/channel/" + txId + "/" + outputIndex);
+  };
+
   const onChannelClick = (event) => {
     event.preventDefault();
     console.log("Handling channel click...");
-    if (handleChannelClick) {
-      handleChannelClick();
-    }
+    var txId = getTxId(channel);
+    var outputIndex = getOutputIndex(channel);
+    goToChannelPage(txId, outputIndex);
   }
 
   function ChannelContent() {

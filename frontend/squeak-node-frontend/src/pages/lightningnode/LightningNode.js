@@ -362,7 +362,6 @@ export default function LightningNodePage() {
             >
           <ChannelItem
             key={channel.getChannelPoint()}
-            handleChannelClick={() => console.log("clicked channel")}
             channel={channel}>
           </ChannelItem>
           </Box>
