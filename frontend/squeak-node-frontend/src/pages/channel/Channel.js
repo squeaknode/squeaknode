@@ -31,7 +31,7 @@ import useStyles from "./styles";
 import PageTitle from "../../components/PageTitle";
 import Widget from "../../components/Widget";
 import { Typography } from "../../components/Wrappers";
-import OpenChannelDialog from "../../components/OpenChannelDialog";
+import CloseChannelDialog from "../../components/CloseChannelDialog";
 import ChannelItem from "../../components/ChannelItem";
 
 import {
@@ -55,7 +55,7 @@ export default function LightningNodePage() {
   const [value, setValue] = useState(0);
   const [peers, setPeers] = useState(null);
   const [channels, setChannels] = useState(null);
-  const [openChannelDialogOpen, setOpenChannelDialogOpen] = useState(false);
+  const [closeChannelDialogOpen, setCloseChannelDialogOpen] = useState(false);
 
   function a11yProps(index) {
     return {
@@ -66,6 +66,27 @@ export default function LightningNodePage() {
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
+  };
+
+  const getChannelPoint = () => {
+    return txId + ":" + outputIndex;
+  };
+
+  const handleCloseCloseChannelDialog = () => {
+    setCloseChannelDialogOpen(false);
+  };
+
+  const isChannelOpen = () => {
+    if (channels == null) {
+      return false;
+    }
+    var i;
+    for (i = 0; i < channels.length; i++) {
+      if (getChannelPoint() == channels[i].getChannelPoint()) {
+        return true;
+      }
+    }
+    return false;
   };
 
   const listPeers = () => {
@@ -105,46 +126,11 @@ export default function LightningNodePage() {
         });
   };
 
-  const connectPeer = (pubkey, host) => {
-    console.log("called connectPeer");
-
-    var connectPeerRequest = new ConnectPeerRequest()
-    var address = new LightningAddress();
-    address.setPubkey(pubkey);
-    address.setHost(host);
-    connectPeerRequest.setAddr(address);
-    console.log(connectPeerRequest);
-
-    client.lndConnectPeer(connectPeerRequest, {}, (err, response) => {
-      if (err) {
-        console.log(err.message);
-        alert('Error connecting peer: ' + err.message);
-        return;
-      }
-
-      console.log(response);
-      reloadRoute();
-    });
+  const handleClickCloseChannel = () => {
+    console.log("Handle click close channel.");
+    setCloseChannelDialogOpen(true);
   };
 
-  const disconnectPeer = (pubkey) => {
-    console.log("called disconnectPeer");
-
-    var disconnectPeerRequest = new DisconnectPeerRequest()
-    disconnectPeerRequest.setPubKey(pubkey);
-    console.log(disconnectPeerRequest);
-
-    client.lndDisconnectPeer(disconnectPeerRequest, {}, (err, response) => {
-      if (err) {
-        console.log(err.message);
-        alert('Error disconnecting peer: ' + err.message);
-        return;
-      }
-
-      console.log(response);
-      reloadRoute();
-    });
-  };
 
   const reloadRoute = () => {
     history.go(0);
@@ -156,6 +142,23 @@ export default function LightningNodePage() {
   useEffect(()=>{
     listChannels()
   },[]);
+
+  function CloseChannelButton() {
+    return (
+      <>
+      <Grid item xs={12}>
+        <div className={classes.root}>
+          <Button
+            variant="contained"
+            onClick={() => {
+              handleClickCloseChannel();
+            }}>Close Channel
+          </Button>
+        </div>
+      </Grid>
+      </>
+    )
+  }
 
   function ChannelInfoGridItem() {
     return (
@@ -186,6 +189,10 @@ export default function LightningNodePage() {
             channel status
           </Typography>
           <Typography size="md">{"channel status here"}</Typography>
+          {isChannelOpen()
+            ? CloseChannelButton()
+            : "no"
+          }
         </Grid>
       </Grid>
 
@@ -227,10 +234,24 @@ export default function LightningNodePage() {
     )
   }
 
+  function CloseChannelDialogContent() {
+    return (
+      <>
+        <CloseChannelDialog
+          open={closeChannelDialogOpen}
+          txId={txId}
+          outputIndex={outputIndex}
+          handleClose={handleCloseCloseChannelDialog}
+          ></CloseChannelDialog>
+      </>
+    )
+  }
+
   return (
     <>
       <PageTitle title={'Channel'} />
       {ChannelTabs()}
+      {CloseChannelDialogContent()}
     </>
   );
 }
