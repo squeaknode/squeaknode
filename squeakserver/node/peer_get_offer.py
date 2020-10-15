@@ -118,11 +118,15 @@ class PeerGetOffer:
         destination = pay_req.destination
         invoice_timestamp = pay_req.timestamp
         invoice_expiry = pay_req.expiry
+        node_host = offer.node_host or self.peer.host
+        node_port = offer.node_port
 
         logger.info("price_msat: {}".format(price_msat))
         logger.info("destination: {}".format(destination))
         logger.info("invoice_timestamp: {}".format(invoice_timestamp))
         logger.info("invoice_expiry: {}".format(invoice_expiry))
+        logger.info("node_host: {}".format(node_host))
+        logger.info("node_port: {}".format(node_port))
 
         decoded_offer = Offer(
             offer_id=offer.offer_id,
@@ -135,8 +139,8 @@ class PeerGetOffer:
             invoice_expiry=invoice_expiry,
             payment_request=offer.payment_request,
             destination=destination,
-            node_host=offer.node_host,
-            node_port=offer.node_port,
+            node_host=node_host,
+            node_port=node_port,
             proof=offer.proof,
             peer_id=offer.peer_id,
         )
