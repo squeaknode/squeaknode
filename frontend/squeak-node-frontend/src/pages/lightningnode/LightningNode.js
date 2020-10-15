@@ -252,21 +252,6 @@ export default function LightningNodePage() {
     )
   }
 
-  function CloseChannelButton() {
-    return (
-      <>
-      <Grid item xs={12}>
-        <div className={classes.root}>
-          <Button
-            variant="contained"
-            >Close Channel
-          </Button>
-        </div>
-      </Grid>
-      </>
-    )
-  }
-
   function NodeInfoGridItem() {
     return (
       <Grid item xs={12}>
@@ -347,7 +332,7 @@ export default function LightningNodePage() {
           {HasChannelToPeer()}
           </Typography>
           {hasChannelToPeer()
-            ? CloseChannelButton()
+            ? ""
             : OpenChannelButton()
           }
         </Grid>
