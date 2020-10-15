@@ -34,12 +34,14 @@ import { Typography } from "../../components/Wrappers";
 import ReceiveBitcoinDialog from "../../components/ReceiveBitcoinDialog";
 import TransactionItem from "../../components/TransactionItem";
 import LightningPeerListItem from "../../components/LightningPeerListItem";
+import ChannelItem from "../../components/ChannelItem";
 
 import {
   GetInfoRequest,
   WalletBalanceRequest,
   GetTransactionsRequest,
   ListPeersRequest,
+  ListChannelsRequest,
 } from "../../proto/lnd_pb"
 import { client } from "../../squeakclient/squeakclient"
 
@@ -51,6 +53,7 @@ export default function WalletPage() {
   const [walletBalance, setWalletBalance] = useState(null);
   const [transactions, setTransactions] = useState([]);
   const [peers, setPeers] = useState(null);
+  const [channels, setChannels] = useState(null);
   const [value, setValue] = useState(0);
   const [receiveBitcoinDialogOpen, setReceiveBitcoinDialogOpen] = useState(false);
 
@@ -108,7 +111,6 @@ export default function WalletPage() {
           setTransactions(response.getTransactionsList());
         });
   };
-
   const listPeers = () => {
         console.log("called listPeers");
 
@@ -120,6 +122,24 @@ export default function WalletPage() {
           console.log("response.getPeersList()");
           console.log(response.getPeersList());
           setPeers(response.getPeersList());
+        });
+  };
+  const listChannels = () => {
+        console.log("called listChannels");
+
+        var listChannelsRequest = new ListChannelsRequest()
+        console.log(listChannelsRequest);
+
+        client.lndListChannels(listChannelsRequest, {}, (err, response) => {
+          if (err) {
+            console.log(err.message);
+            alert('Error getting channels: ' + err.message);
+            return;
+          }
+          console.log(response);
+          console.log("response.getChannelsList()");
+          console.log(response.getChannelsList());
+          setChannels(response.getChannelsList());
         });
   };
 
@@ -134,6 +154,9 @@ export default function WalletPage() {
   },[]);
   useEffect(()=>{
     listPeers()
+  },[]);
+  useEffect(()=>{
+    listChannels()
   },[]);
 
   function ReceiveBitcoinButton() {
@@ -365,46 +388,6 @@ export default function WalletPage() {
     )
   }
 
-  function ChannelsGridItem() {
-    return (
-        <Grid item lg={3} md={4} sm={6} xs={12}>
-          <Widget
-            title="Channels"
-            disableWidgetMenu
-            upperTitle
-            bodyClass={classes.fullHeightBody}
-            className={classes.card}
-          >
-            <Grid
-              container
-              direction="row"
-              justify="space-between"
-              alignItems="center"
-            >
-              <Grid item>
-                <Typography color="text" colorBrightness="secondary">
-                  num pending channels
-                </Typography>
-                <Typography size="md">{lndInfo.getNumPendingChannels()}</Typography>
-              </Grid>
-              <Grid item>
-                <Typography color="text" colorBrightness="secondary">
-                  num active channels
-                </Typography>
-                <Typography size="md">{lndInfo.getNumActiveChannels()}</Typography>
-              </Grid>
-              <Grid item>
-                <Typography color="text" colorBrightness="secondary">
-                  num inactive channels
-                </Typography>
-                <Typography size="md">{lndInfo.getNumInactiveChannels()}</Typography>
-              </Grid>
-            </Grid>
-          </Widget>
-        </Grid>
-    )
-  }
-
   function PeersGridItem() {
     return (
       <Grid item xs={12}>
@@ -437,6 +420,35 @@ export default function WalletPage() {
     )
   }
 
+  function ChannelsGridItem() {
+    return (
+      <Grid item xs={12}>
+      <Widget disableWidgetMenu>
+      <Grid
+        container
+        direction="row"
+        justify="flex-start"
+        alignItems="center"
+      >
+        <Grid item xs={12}>
+        {channels.map(channel =>
+          <Box
+            p={1}
+            key={channel.getChannelPoint()}
+            >
+          <ChannelItem
+            key={channel.getChannelPoint()}
+            channel={channel}>
+          </ChannelItem>
+          </Box>
+        )}
+        </Grid>
+      </Grid>
+      </Widget>
+      </Grid>
+    )
+  }
+
   function TabPanel(props) {
     const { children, value, index, ...other } = props;
 
@@ -464,6 +476,7 @@ export default function WalletPage() {
           <Tab label="Node Info" {...a11yProps(1)} />
           <Tab label="Transactions" {...a11yProps(2)} />
           <Tab label="Peers" {...a11yProps(3)} />
+          <Tab label="Channels" {...a11yProps(4)} />
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
@@ -487,6 +500,12 @@ export default function WalletPage() {
       <TabPanel value={value} index={3}>
         {(peers != null)
           ? PeersContent()
+          : NoBalanceContent()
+        }
+      </TabPanel>
+      <TabPanel value={value} index={4}>
+        {(channels != null)
+          ? ChannelsGridItem()
           : NoBalanceContent()
         }
       </TabPanel>
