@@ -24,6 +24,7 @@ import Offer from "../../pages/offer";
 import Profile from "../../pages/profile";
 import Wallet from "../../pages/wallet";
 import LightningNode from "../../pages/lightningnode";
+import Channel from "../../pages/channel";
 import Notifications from "../../pages/notifications";
 import Maps from "../../pages/maps";
 import Profiles from "../../pages/profiles";
@@ -65,6 +66,7 @@ function Layout(props) {
               <Route path="/app/lightningnode/:pubkey/:host/:port" component={LightningNode} />
               <Route path="/app/lightningnode/:pubkey/:host" component={LightningNode} />
               <Route path="/app/lightningnode/:pubkey" component={LightningNode} />
+              <Route path="/app/channel/:txId/:outputIndex" component={Channel} />
               <Route path="/app/peers" component={Peers} />
               <Route path="/app/peer/:id" component={Peer} />
               <Route path="/app/notifications" component={Notifications} />
