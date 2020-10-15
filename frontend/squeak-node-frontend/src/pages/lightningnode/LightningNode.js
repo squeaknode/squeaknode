@@ -344,6 +344,7 @@ export default function LightningNodePage() {
   }
 
   function ChannelsGridItem() {
+    var nodeChannels = channels.filter(channel => channel.getRemotePubkey() == pubkey);
     return (
       <Grid item xs={12}>
       <Widget disableWidgetMenu>
@@ -354,7 +355,7 @@ export default function LightningNodePage() {
         alignItems="center"
       >
         <Grid item xs={12}>
-        {channels.map(channel =>
+        {nodeChannels.map(channel =>
           <Box
             p={1}
             key={channel.getChannelPoint()}
