@@ -30,7 +30,8 @@ import Widget from "../../components/Widget";
 import SqueakThreadItem from "../../components/SqueakThreadItem";
 
 import {
-  OpenChannelRequest,
+  CloseChannelRequest,
+  ChannelPoint,
 } from "../../proto/lnd_pb"
 import { client } from "../../squeakclient/squeakclient"
 
@@ -55,23 +56,23 @@ export default function CloseChannelDialog({
     setAmount(event.target.value);
   };
 
-  const openChannel = (pubkey, amount) => {
-    console.log("called openChannel");
+  const closeChannel = (txId, outputIndex) => {
+    console.log("called closeChannel");
 
-    var openChannelRequest = new OpenChannelRequest()
-    openChannelRequest.setNodePubkeyString(pubkey);
-    openChannelRequest.setLocalFundingAmount(amount);
-    console.log(openChannelRequest);
+    var closeChannelRequest = new CloseChannelRequest()
+    var channelPoint = new ChannelPoint();
+    channelPoint.setFundingTxidStr(txId);
+    channelPoint.setOutputIndex(outputIndex);
+    closeChannelRequest.setChannelPoint(channelPoint);
+    console.log(closeChannelRequest);
 
-    client.lndOpenChannelSync(openChannelRequest, {}, (err, response) => {
+    client.lndCloseChannel(closeChannelRequest, {}, (err, response) => {
       if (err) {
         console.log(err.message);
-        alert('Error opening channel: ' + err.message);
+        alert('Error closing channel: ' + err.message);
         return;
       }
       console.log(response);
-      console.log(response.getFundingTxidStr());
-      console.log(response.getOutputIndex());
       // goToProfilePage(response.getProfileId());
     });
   };
@@ -84,7 +85,7 @@ export default function CloseChannelDialog({
     event.preventDefault();
     console.log( 'txId:', txId);
     console.log( 'outputIndex:', outputIndex);
-    openChannel(txId, outputIndex);
+    closeChannel(txId, outputIndex);
     handleClose();
   }
 
@@ -147,7 +148,7 @@ export default function CloseChannelDialog({
     )
   }
 
-  function OpenChannelButton() {
+  function CloseChannelButton() {
     return (
       <Button
        type="submit"
@@ -155,7 +156,7 @@ export default function CloseChannelDialog({
        color="primary"
        className={classes.button}
        >
-       Open Channel
+       Close Channel
        </Button>
     )
   }
@@ -170,12 +171,9 @@ export default function CloseChannelDialog({
   <DialogContent>
     {OutputIndexInput()}
   </DialogContent>
-  <DialogContent>
-    {LocalFundingAmountInput()}
-  </DialogContent>
   <DialogActions>
     {CancelButton()}
-    {OpenChannelButton()}
+    {CloseChannelButton()}
   </DialogActions>
   </form>
     </Dialog>
