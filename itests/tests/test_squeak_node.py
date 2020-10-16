@@ -778,3 +778,11 @@ def test_open_channel(server_stub, admin_stub, lightning_client, saved_squeak_ha
 
         list_channels_response = admin_stub.LndListChannels(ln.ListChannelsRequest())
         assert len(list_channels_response.channels) == 0
+
+
+def test_connect_other_node(other_server_stub, other_admin_stub):
+    # Get all squeak displays
+    get_followed_squeak_display_response = other_admin_stub.GetFollowedSqueakDisplays(
+        squeak_admin_pb2.GetFollowedSqueakDisplaysRequest()
+    )
+    assert len(get_followed_squeak_display_response.squeak_display_entries) == 0
