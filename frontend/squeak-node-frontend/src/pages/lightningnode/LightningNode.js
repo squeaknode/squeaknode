@@ -462,6 +462,7 @@ export default function LightningNodePage() {
           <Tab label="Node Info" {...a11yProps(0)} />
           <Tab label="Channels" {...a11yProps(1)} />
           <Tab label="Pending Channels" {...a11yProps(2)} />
+          <Tab label="Routes" {...a11yProps(3)} />
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
@@ -472,6 +473,9 @@ export default function LightningNodePage() {
       </TabPanel>
       <TabPanel value={value} index={2}>
         barrr
+      </TabPanel>
+      <TabPanel value={value} index={3}>
+        Show routes here
       </TabPanel>
       </>
     )
