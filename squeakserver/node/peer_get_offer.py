@@ -112,7 +112,6 @@ class PeerGetOffer:
     def _get_decoded_offer(self, offer):
         pay_req = self._decode_payment_request(offer.payment_request)
         logger.info("Decoded payment request: {}".format(pay_req))
-        # TODO create a new offer object with decoded fields
 
         price_msat = pay_req.num_msat
         destination = pay_req.destination
