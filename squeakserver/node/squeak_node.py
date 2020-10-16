@@ -256,3 +256,17 @@ class SqueakNode:
 
     def get_buy_offer_with_peer(self, offer_id):
         return self.postgres_db.get_offer_with_peer(offer_id)
+
+    def pay_offer(self, offer_id):
+        # Get the offer from the database
+        offer = self.postgres_db.get_offer_with_peer(offer_id)
+
+        # Pay the invoice
+        payment = lightning_client.pay_invoice_sync(offer.payment_request)
+        preimage = payment.payment_preimage
+
+        # Save the preimage of the sent payment
+        sent_payment_id = self.postgres_db.insert_sent_payment(sent_payment)
+
+        # TODO: Unlock the squeak
+        return sent_payment_id

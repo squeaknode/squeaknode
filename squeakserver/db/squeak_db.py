@@ -975,6 +975,22 @@ class SqueakDb:
         #     rows = curs.fetchall()
         #     return len(rows)
 
+    def insert_sent_payment(self, sent_payment):
+        """ Insert a new sent payment. """
+        ins = self.sent_payments.insert().values(
+            offer_id=offer_id,
+            peer_id=offer.peer_id,
+            squeak_hash=offer.squeak_hash.hex(),
+            preimage_hash=preimage_hash,
+            amount=amount,
+            node_pubkey=node_pubkey,
+            preimage_is_valid=preimage_is_valid,
+        )
+        with self.get_connection() as connection:
+            res = connection.execute(ins)
+            sent_payment_id = res.inserted_primary_key[0]
+            return sent_payment_id
+
     def _parse_squeak_entry(self, row):
         if row is None:
             return None
