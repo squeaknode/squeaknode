@@ -70,24 +70,6 @@ services:
       - net.ipv6.conf.all.disable_ipv6=0
     entrypoint: ["./start-lnd.sh"]
 
-  lnd_server_other:
-    image: lnd
-    container_name: test_lnd_server_other
-    build:
-      context: ../
-      dockerfile: docker/lnd/Dockerfile
-    environment:
-      - NETWORK=simnet
-      - RPCHOST=btcd
-    volumes:
-      - test_shared:/rpc
-      - test_lnd_server_other_dir:/root/.lnd
-    links:
-      - "btcd:blockchain"
-    sysctls:
-      - net.ipv6.conf.all.disable_ipv6=0
-    entrypoint: ["./start-lnd.sh"]
-
   sqkserver:
     image: sqkserver
     container_name: test_sqkserver
@@ -113,11 +95,11 @@ services:
       dockerfile: docker/sqkserver/Dockerfile
     volumes:
       - test_shared:/rpc
-      - test_lnd_server_other_dir:/root/.lnd
+      - test_lnd_client_dir:/root/.lnd
       - ./config.ini:/app/config.ini
     links:
       - "btcd:btcd"
-      - "lnd_server_other:lnd"
+      - "lnd_client:lnd"
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=0
     entrypoint: ["./start-sqkserver.sh"]
@@ -149,6 +131,4 @@ volumes:
   test_lnd_client_dir:
     driver: local
   test_lnd_server_dir:
-    driver: local
-  test_lnd_server_other_dir:
     driver: local
