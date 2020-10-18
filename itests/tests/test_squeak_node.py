@@ -838,16 +838,6 @@ def test_connect_other_node(server_stub, admin_stub, other_server_stub, other_ad
         )
     )
 
-    # Get the squeak display entry for the saved squeak on the other server
-    print("saved_squeak_hash.hex(): {}".format(saved_squeak_hash.hex()))
-    get_squeak_display_response = other_admin_stub.GetSqueakDisplay(
-        squeak_admin_pb2.GetSqueakDisplayRequest(
-            squeak_hash=saved_squeak_hash.hex(),
-        )
-    )
-    print(get_squeak_display_response)
-    assert get_squeak_display_response is not None
-
     # Sync squeaks
     other_admin_stub.SyncSqueaks(
         squeak_admin_pb2.SyncSqueaksRequest(),
@@ -879,3 +869,14 @@ def test_connect_other_node(server_stub, admin_stub, other_server_stub, other_ad
         )
         print(pay_offer_response)
         assert pay_offer_response.sent_payment_id > 0
+
+        # Get the squeak display item
+        get_squeak_display_response = other_admin_stub.GetSqueakDisplay(
+            squeak_admin_pb2.GetSqueakDisplayRequest(
+                squeak_hash=saved_squeak_hash.hex(),
+            )
+        )
+        assert (
+            get_squeak_display_response.squeak_display_entry.content_str
+            == "Hello from the profile on the server!"
+        )
