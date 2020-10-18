@@ -274,6 +274,13 @@ class SqueakNode:
         preimage = payment.payment_preimage
 
         # TODO: Check if preimage is valid
+        from hashlib import sha256
+
+        logger.info("preimage: {}".format(preimage))
+        logger.info("offer.payment_hash: {}".format(offer.payment_hash))
+        preimage_hash = sha256(preimage).hexdigest()
+        logger.info("preimage hash: {}".format(preimage_hash))
+        assert preimage_hash == offer.payment_hash
         is_valid = True
 
         # Unlock the squeak
