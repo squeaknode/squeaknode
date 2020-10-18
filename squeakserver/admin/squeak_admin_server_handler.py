@@ -276,3 +276,11 @@ class SqueakAdminServerHandler(object):
     def handle_get_buy_offer(self, offer_id):
         logger.info("Handle get buy offer for hash: {}".format(offer_id))
         return self.squeak_node.get_buy_offer_with_peer(offer_id)
+
+    def handle_sync_squeaks(self):
+        logger.info("Handle get sync squeaks")
+        self.squeak_node.sync_squeaks()
+
+    def handle_pay_offer(self, offer_id):
+        logger.info("Handle pay offer for offer id: {}".format(offer_id))
+        return self.squeak_node.pay_offer(offer_id)

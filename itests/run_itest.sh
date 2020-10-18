@@ -13,7 +13,7 @@ function mine_blocks {
 
 
 cd itests
-docker-compose down --volumes
+docker-compose down --volumes --remove-orphans
 COMPOSE_DOCKER_CLI_BUILD=1 docker-compose build
 docker-compose up -d
 

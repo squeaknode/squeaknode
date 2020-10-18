@@ -156,6 +156,14 @@ service SqueakAdmin {
   */
   rpc GetBuyOffer (GetBuyOfferRequest) returns (GetBuyOfferReply) {}
 
+  /** sqkadmin: `syncsqueaks`
+  */
+  rpc SyncSqueaks (SyncSqueaksRequest) returns (SyncSqueaksReply) {}
+
+  /** sqkadmin: `payoffer`
+  */
+  rpc PayOffer (PayOfferRequest) returns (PayOfferReply) {}
+
 }
 
 message CreateSigningProfileRequest {
@@ -514,4 +522,20 @@ message OfferDisplayEntry {
 
     /// The invoice expiry
     int32 invoice_expiry = 9;
+}
+
+message SyncSqueaksRequest {
+}
+
+message SyncSqueaksReply {
+}
+
+message PayOfferRequest {
+    /// Offer id
+    int32 offer_id = 1;
+}
+
+message PayOfferReply {
+    /// Sent payment id
+    int32 sent_payment_id = 1;
 }

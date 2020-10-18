@@ -21,6 +21,7 @@ class SqueakPeerSyncWorker:
     def sync_peers(self):
         logger.info("Syncing peers...")
         peers = self._get_peers()
+        logger.info("Syncing peers: {}".format(peers))
         self.squeak_sync_controller.sync_peers(peers)
 
     def start_running(self):

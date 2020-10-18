@@ -778,3 +778,105 @@ def test_open_channel(server_stub, admin_stub, lightning_client, saved_squeak_ha
 
         list_channels_response = admin_stub.LndListChannels(ln.ListChannelsRequest())
         assert len(list_channels_response.channels) == 0
+
+
+def test_connect_other_node(server_stub, admin_stub, other_server_stub, other_admin_stub, lightning_client, signing_profile_id, saved_squeak_hash):
+    # Get all squeak displays
+    get_followed_squeak_display_response = other_admin_stub.GetFollowedSqueakDisplays(
+        squeak_admin_pb2.GetFollowedSqueakDisplaysRequest()
+    )
+    assert len(get_followed_squeak_display_response.squeak_display_entries) == 0
+
+    # Add the main node as a peer
+    create_peer_response = other_admin_stub.CreatePeer(
+        squeak_admin_pb2.CreatePeerRequest(
+            host="sqkserver",
+            port=8774,
+        )
+    )
+    peer_id = create_peer_response.peer_id
+
+    # Set the peer to be downloading
+    other_admin_stub.SetPeerDownloading(
+        squeak_admin_pb2.SetPeerDownloadingRequest(
+            peer_id=peer_id,
+            downloading=True,
+        )
+    )
+
+    # Get the squeak profile
+    get_squeak_profile_response = admin_stub.GetSqueakProfile(
+        squeak_admin_pb2.GetSqueakProfileRequest(
+            profile_id=signing_profile_id,
+        )
+    )
+    squeak_profile_address = get_squeak_profile_response.squeak_profile.address
+    squeak_profile_name = get_squeak_profile_response.squeak_profile.profile_name
+    print("Got squeak profile: {} with address: {}".format(squeak_profile_name, squeak_profile_address))
+
+
+    # Set the signing profile to be sharing on the main server
+    admin_stub.SetSqueakProfileSharing(
+        squeak_admin_pb2.SetSqueakProfileSharingRequest(
+            profile_id=signing_profile_id,
+            sharing=True,
+        )
+    )
+
+    # Add the contact profile to the other server and set the profile to be following
+    create_contact_profile_response = other_admin_stub.CreateContactProfile(
+        squeak_admin_pb2.CreateContactProfileRequest(
+            profile_name=squeak_profile_name,
+            address=squeak_profile_address,
+        )
+    )
+    contact_profile_id = create_contact_profile_response.profile_id
+    other_admin_stub.SetSqueakProfileFollowing(
+        squeak_admin_pb2.SetSqueakProfileFollowingRequest(
+            profile_id=contact_profile_id,
+            following=True,
+        )
+    )
+
+    # Sync squeaks
+    other_admin_stub.SyncSqueaks(
+        squeak_admin_pb2.SyncSqueaksRequest(),
+    )
+    time.sleep(10)
+
+    # Get the buy offer
+    get_buy_offers_response = other_admin_stub.GetBuyOffers(
+        squeak_admin_pb2.GetBuyOffersRequest(
+            squeak_hash=saved_squeak_hash.hex(),
+        )
+    )
+    print(get_buy_offers_response)
+    assert len(get_buy_offers_response.offers) > 0
+
+    offer = get_buy_offers_response.offers[0]
+
+    with connect_peer(lightning_client, offer.node_host, offer.node_pubkey), \
+         open_channel(lightning_client, offer.node_pubkey, 1000000):
+
+        list_channels_response = lightning_client.list_channels()
+        print(list_channels_response)
+
+        # Pay the offer
+        pay_offer_response = other_admin_stub.PayOffer(
+            squeak_admin_pb2.PayOfferRequest(
+                offer_id=offer.offer_id,
+            )
+        )
+        print(pay_offer_response)
+        assert pay_offer_response.sent_payment_id > 0
+
+        # Get the squeak display item
+        get_squeak_display_response = other_admin_stub.GetSqueakDisplay(
+            squeak_admin_pb2.GetSqueakDisplayRequest(
+                squeak_hash=saved_squeak_hash.hex(),
+            )
+        )
+        assert (
+            get_squeak_display_response.squeak_display_entry.content_str
+            == "Hello from the profile on the server!"
+        )
