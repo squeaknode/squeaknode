@@ -312,10 +312,13 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
             sent_payments=sent_payment_msgs,
         )
 
-    # def GetSentPayment(self, request, context):
-    #     return squeak_admin_pb2.GetSentPaymentReply(
-    #         sent_payment=None,
-    #     )
+    def GetSentPayment(self, request, context):
+        sent_payment_id = request.sent_payment_id
+        sent_payment = self.handler.handle_get_sent_payment(sent_payment_id)
+        sent_payment_msg = self._sent_payment_to_message(sent_payment)
+        return squeak_admin_pb2.GetSentPaymentReply(
+            sent_payment=sent_payment_msg,
+        )
 
     def _squeak_entry_to_message(self, squeak_entry_with_profile):
         if squeak_entry_with_profile is None:

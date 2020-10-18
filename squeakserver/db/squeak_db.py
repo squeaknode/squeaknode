@@ -1013,6 +1013,14 @@ class SqueakDb:
             sent_payments = [self._parse_sent_payment(row) for row in rows]
             return sent_payments
 
+    def get_sent_payment(self, sent_payment_id):
+        """ Get sent payment by id. """
+        s = select([self.sent_payments]).where(self.sent_payments.c.sent_payment_id == sent_payment_id)
+        with self.get_connection() as connection:
+            result = connection.execute(s)
+            row = result.fetchone()
+            return self._parse_sent_payment(row)
+
     def _parse_squeak_entry(self, row):
         if row is None:
             return None

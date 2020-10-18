@@ -168,6 +168,10 @@ service SqueakAdmin {
   */
   rpc GetSentPayments (GetSentPaymentsRequest) returns (GetSentPaymentsReply) {}
 
+  /** sqkadmin: `getsentpayment`
+  */
+  rpc GetSentPayment (GetSentPaymentRequest) returns (GetSentPaymentReply) {}
+
 }
 
 message CreateSigningProfileRequest {
@@ -552,15 +556,15 @@ message GetSentPaymentsReply {
     repeated SentPayment sent_payments = 1;
 }
 
-// message GetSentPaymentRequest {
-//     /// Sent payment id
-//     int32 sent_payment_id = 1;
-// }
+message GetSentPaymentRequest {
+    /// Sent payment id
+    int32 sent_payment_id = 1;
+}
 
-// message GetSentPaymentReply {
-//     /// The sent payment
-//     SentPayment sent_payment = 1;
-// }
+message GetSentPaymentReply {
+    /// The sent payment
+    SentPayment sent_payment = 1;
+}
 
 message SentPayment {
     /// The sent payment id
