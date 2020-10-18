@@ -285,7 +285,7 @@ class SqueakNode:
             peer_id=offer.peer_id,
             squeak_hash=offer.squeak_hash,
             preimage_hash=offer.payment_hash,
-            preimage=preimage,
+            preimage=preimage.hex(),
             amount=offer.price_msat,
             node_pubkey=offer.destination,
             preimage_is_valid=is_valid_preimage,
@@ -322,6 +322,8 @@ class SqueakNode:
             serialized_decryption_key,
         )
 
-
     def sync_squeaks(self):
         self.squeak_peer_sync_worker.sync_peers()
+
+    def get_sent_payments(self):
+        return self.postgres_db.get_sent_payments()

@@ -284,3 +284,7 @@ class SqueakAdminServerHandler(object):
     def handle_pay_offer(self, offer_id):
         logger.info("Handle pay offer for offer id: {}".format(offer_id))
         return self.squeak_node.pay_offer(offer_id)
+
+    def handle_get_sent_payments(self):
+        logger.info("Handle get sent payments")
+        return self.squeak_node.get_sent_payments()

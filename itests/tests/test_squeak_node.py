@@ -880,3 +880,10 @@ def test_connect_other_node(server_stub, admin_stub, other_server_stub, other_ad
             get_squeak_display_response.squeak_display_entry.content_str
             == "Hello from the profile on the server!"
         )
+
+        # Get all sent payments
+        get_sent_payments_response = other_admin_stub.GetSentPayments(
+            squeak_admin_pb2.GetSentPaymentsRequest(),
+        )
+        squeak_hashes = [sent_payment.squeak_hash for sent_payment in get_sent_payments_response.sent_payments]
+        assert saved_squeak_hash.hex() in squeak_hashes

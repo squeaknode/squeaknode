@@ -26,6 +26,7 @@ from squeakserver.core.squeak_entry import SqueakEntry
 from squeakserver.core.squeak_entry_with_profile import SqueakEntryWithProfile
 from squeakserver.server.squeak_peer import SqueakPeer
 from squeakserver.server.squeak_profile import SqueakProfile
+from squeakserver.server.sent_payment import SentPayment
 from squeakserver.server.util import get_hash
 
 logger = logging.getLogger(__name__)
@@ -1003,6 +1004,15 @@ class SqueakDb:
             sent_payment_id = res.inserted_primary_key[0]
             return sent_payment_id
 
+    def get_sent_payments(self):
+        """ Get all sent payments. """
+        s = select([self.sent_payments])
+        with self.get_connection() as connection:
+            result = connection.execute(s)
+            rows = result.fetchall()
+            sent_payments = [self._parse_sent_payment(row) for row in rows]
+            return sent_payments
+
     def _parse_squeak_entry(self, row):
         if row is None:
             return None
@@ -1100,4 +1110,19 @@ class SqueakDb:
         return OfferWithPeer(
             offer=offer,
             peer=peer,
+        )
+
+    def _parse_sent_payment(self, row):
+        if row is None:
+            return None
+        return SentPayment(
+            sent_payment_id=row["sent_payment_id"],
+            offer_id=row["offer_id"],
+            peer_id=row["peer_id"],
+            squeak_hash=row["squeak_hash"],
+            preimage_hash=row["preimage_hash"],
+            preimage=row["preimage"],
+            amount=row["amount"],
+            node_pubkey=row["node_pubkey"],
+            preimage_is_valid=row["preimage_is_valid"],
         )

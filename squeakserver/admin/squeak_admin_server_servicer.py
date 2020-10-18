@@ -304,6 +304,19 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
             sent_payment_id=sent_payment_id,
         )
 
+    def GetSentPayments(self, request, context):
+        sent_payments = self.handler.handle_get_sent_payments()
+        sent_payment_msgs = [self._sent_payment_to_message(sent_payment) for sent_payment in sent_payments]
+        logger.info("Returning sent payments: {}".format(sent_payment_msgs))
+        return squeak_admin_pb2.GetSentPaymentsReply(
+            sent_payments=sent_payment_msgs,
+        )
+
+    # def GetSentPayment(self, request, context):
+    #     return squeak_admin_pb2.GetSentPaymentReply(
+    #         sent_payment=None,
+    #     )
+
     def _squeak_entry_to_message(self, squeak_entry_with_profile):
         if squeak_entry_with_profile is None:
             return None
@@ -372,6 +385,22 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
             peer=peer,
             invoice_timestamp=offer.invoice_timestamp,
             invoice_expiry=offer.invoice_expiry,
+        )
+
+    def _sent_payment_to_message(self, sent_payment):
+        if sent_payment is None:
+            return None
+        logger.info("sent_payment: {}".format(sent_payment))
+        return squeak_admin_pb2.SentPayment(
+            sent_payment_id=sent_payment.sent_payment_id,
+            offer_id=sent_payment.offer_id,
+            peer_id=sent_payment.peer_id,
+            squeak_hash=sent_payment.squeak_hash,
+            preimage_hash=sent_payment.preimage_hash,
+            preimage=sent_payment.preimage,
+            amount=sent_payment.amount,
+            node_pubkey=sent_payment.node_pubkey,
+            preimage_is_valid=sent_payment.preimage_is_valid,
         )
 
     def serve(self):

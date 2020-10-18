@@ -164,6 +164,10 @@ service SqueakAdmin {
   */
   rpc PayOffer (PayOfferRequest) returns (PayOfferReply) {}
 
+  /** sqkadmin: `getsentpayments`
+  */
+  rpc GetSentPayments (GetSentPaymentsRequest) returns (GetSentPaymentsReply) {}
+
 }
 
 message CreateSigningProfileRequest {
@@ -538,4 +542,51 @@ message PayOfferRequest {
 message PayOfferReply {
     /// Sent payment id
     int32 sent_payment_id = 1;
+}
+
+message GetSentPaymentsRequest {
+}
+
+message GetSentPaymentsReply {
+    /// The sent payments
+    repeated SentPayment sent_payments = 1;
+}
+
+// message GetSentPaymentRequest {
+//     /// Sent payment id
+//     int32 sent_payment_id = 1;
+// }
+
+// message GetSentPaymentReply {
+//     /// The sent payment
+//     SentPayment sent_payment = 1;
+// }
+
+message SentPayment {
+    /// The sent payment id
+    int32 sent_payment_id = 1;
+
+    /// The offer id
+    int32 offer_id = 2;
+
+    /// The peer id
+    int32 peer_id = 3;
+
+    /// The squeak hash
+    string squeak_hash = 4;
+
+    /// The preimage hash
+    string preimage_hash = 5;
+
+    /// The preimage
+    string preimage = 6;
+
+    /// The amount
+    int64 amount = 7;
+
+    /// The seller node pubkey
+    string node_pubkey = 8;
+
+    /// Valid preimage
+    bool preimage_is_valid = 9;
 }
