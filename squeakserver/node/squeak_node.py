@@ -294,8 +294,6 @@ class SqueakNode:
         # Check the decryption key
         squeak.SetDecryptionKey(serialized_decryption_key)
         CheckSqueak(squeak)
-        logger.info("squeak.GetDecryptedContentStr():")
-        logger.info(squeak.GetDecryptedContentStr())
 
         # Set the decryption key in the database
         self.squeak_store.unlock_squeak(
