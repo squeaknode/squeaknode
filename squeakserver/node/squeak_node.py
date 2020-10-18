@@ -270,3 +270,6 @@ class SqueakNode:
 
         # TODO: Unlock the squeak
         return sent_payment_id
+
+    def sync_squeaks(self):
+        self.squeak_peer_sync_worker.sync_peers()
