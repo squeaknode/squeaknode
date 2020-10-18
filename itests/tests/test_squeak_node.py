@@ -780,7 +780,7 @@ def test_open_channel(server_stub, admin_stub, lightning_client, saved_squeak_ha
         assert len(list_channels_response.channels) == 0
 
 
-def test_connect_other_node(server_stub, admin_stub, other_server_stub, other_admin_stub, signing_profile_id, saved_squeak_hash):
+def test_connect_other_node(server_stub, admin_stub, other_server_stub, other_admin_stub, lightning_client, signing_profile_id, saved_squeak_hash):
     # Get all squeak displays
     get_followed_squeak_display_response = other_admin_stub.GetFollowedSqueakDisplays(
         squeak_admin_pb2.GetFollowedSqueakDisplaysRequest()
@@ -864,3 +864,11 @@ def test_connect_other_node(server_stub, admin_stub, other_server_stub, other_ad
     )
     print(get_buy_offers_response)
     assert len(get_buy_offers_response.offers) > 0
+
+    offer = get_buy_offers_response.offers[0]
+
+    with connect_peer(lightning_client, offer.node_host, offer.node_pubkey), \
+         open_channel(lightning_client, offer.node_pubkey, 1000000):
+
+        list_channels_response = lightning_client.list_channels()
+        print(list_channels_response)
