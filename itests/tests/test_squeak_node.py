@@ -849,12 +849,10 @@ def test_connect_other_node(server_stub, admin_stub, other_server_stub, other_ad
     assert get_squeak_display_response is not None
 
     # Sync squeaks
-    print("Syncing squeaks")
     other_admin_stub.SyncSqueaks(
         squeak_admin_pb2.SyncSqueaksRequest(),
     )
     time.sleep(10)
-    print("Synced squeaks")
 
     # Get the buy offer
     get_buy_offers_response = other_admin_stub.GetBuyOffers(
