@@ -153,7 +153,7 @@ export default function BuyOfferDetailItem({
       <>
         <BuyOfferDialog
           open={payOfferDialogOpen}
-          pubkey={null}
+          offer={offer}
           handleClose={handleClosePayOfferDialog}
           ></BuyOfferDialog>
       </>
