@@ -36,7 +36,7 @@ import {
 import { client } from "../../squeakclient/squeakclient"
 
 
-export default function CloseChannelDialog({
+export default function BuyOfferDialog({
   open,
   txId,
   outputIndex,
@@ -163,7 +163,7 @@ export default function CloseChannelDialog({
 
   return (
     <Dialog open={open} onEnter={resetFields} onClose={handleClose} aria-labelledby="form-dialog-title">
-  <DialogTitle id="form-dialog-title">Close Channel</DialogTitle>
+  <DialogTitle id="form-dialog-title">Buy Offer</DialogTitle>
   <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
   <DialogContent>
     {TxIdInput()}
