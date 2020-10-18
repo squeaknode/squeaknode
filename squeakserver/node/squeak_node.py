@@ -1,8 +1,11 @@
+import logging
+
 from squeak.core.encryption import (
     CEncryptedDecryptionKey,
     generate_initialization_vector,
 )
 from squeak.core.signing import CSigningKey, CSqueakAddress
+from squeak.core import CheckSqueak
 
 from squeakserver.core.squeak_address_validator import SqueakAddressValidator
 from squeakserver.node.squeak_block_periodic_worker import SqueakBlockPeriodicWorker
@@ -21,6 +24,9 @@ from squeakserver.server.squeak_peer import SqueakPeer
 from squeakserver.server.squeak_profile import SqueakProfile
 from squeakserver.server.sent_payment import SentPayment
 from squeakserver.server.util import generate_offer_preimage
+
+
+logger = logging.getLogger(__name__)
 
 
 class SqueakNode:
@@ -268,8 +274,34 @@ class SqueakNode:
         preimage = payment.payment_preimage
 
         # TODO: Check if preimage is valid
-        # TODO: Unlock the squeak
         is_valid = True
+
+        # Unlock the squeak
+        squeak_entry = self.postgres_db.get_squeak_entry(bytes.fromhex(offer.squeak_hash))
+        squeak = squeak_entry.squeak
+
+        # Verify with the payment preimage and decryption key ciphertext
+        decryption_key_cipher_bytes = offer.key_cipher
+        iv = offer.iv
+        encrypted_decryption_key = CEncryptedDecryptionKey.from_bytes(
+            decryption_key_cipher_bytes
+        )
+
+        # Decrypt the decryption key
+        decryption_key = encrypted_decryption_key.get_decryption_key(preimage, iv)
+        serialized_decryption_key = decryption_key.get_bytes()
+
+        # Check the decryption key
+        squeak.SetDecryptionKey(serialized_decryption_key)
+        CheckSqueak(squeak)
+        logger.info("squeak.GetDecryptedContentStr():")
+        logger.info(squeak.GetDecryptedContentStr())
+
+        # Set the decryption key in the database
+        self.squeak_store.unlock_squeak(
+            bytes.fromhex(offer.squeak_hash),
+            serialized_decryption_key,
+        )
 
         # Save the preimage of the sent payment
         sent_payment = SentPayment(

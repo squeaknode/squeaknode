@@ -96,3 +96,9 @@ class SqueakStore:
             max_block,
             peer_id,
         )
+
+    def unlock_squeak(self, squeak_hash, vch_decryption_key):
+        self.postgres_db.set_squeak_decryption_key(
+            squeak_hash,
+            vch_decryption_key,
+        )

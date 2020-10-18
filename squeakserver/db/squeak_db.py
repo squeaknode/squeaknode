@@ -764,6 +764,17 @@ class SqueakDb:
         #     # execute the UPDATE statement
         #     curs.execute(sql, (block_header, squeak_hash_str,))
 
+    def set_squeak_decryption_key(self, squeak_hash, vch_decryption_key):
+        """ Set the decryption key of a squeak. """
+        squeak_hash_str = squeak_hash.hex()
+        stmt = (
+            self.squeaks.update()
+            .where(self.squeaks.c.hash == squeak_hash_str)
+            .values(vch_decryption_key=vch_decryption_key)
+        )
+        with self.get_connection() as connection:
+            connection.execute(stmt)
+
     def delete_squeak(self, squeak_hash):
         """ Delete a squeak. """
         squeak_hash_str = squeak_hash.hex()
