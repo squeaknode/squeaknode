@@ -47,8 +47,6 @@ export default function BuyOfferDialog({
   var classes = useStyles();
   const history = useHistory();
 
-  var [amount, setAmount] = useState(0);
-
   const payOffer = (offerId) => {
     console.log("called payOffer");
 
