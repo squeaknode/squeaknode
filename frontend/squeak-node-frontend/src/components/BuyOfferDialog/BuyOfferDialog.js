@@ -33,8 +33,11 @@ import SqueakThreadItem from "../../components/SqueakThreadItem";
 import {
   CloseChannelRequest,
   ChannelPoint,
-  PayOfferRequest,
 } from "../../proto/lnd_pb"
+import {
+  PayOfferRequest,
+} from "../../proto/squeak_admin_pb"
+
 import { client } from "../../squeakclient/squeakclient"
 
 
@@ -50,7 +53,7 @@ export default function BuyOfferDialog({
   const payOffer = (offerId) => {
     console.log("called payOffer");
 
-    var payOfferRequest = new PayOfferRequest()
+    var payOfferRequest = new PayOfferRequest();
     payOfferRequest.setOfferId(offerId);
     console.log(payOfferRequest);
 
