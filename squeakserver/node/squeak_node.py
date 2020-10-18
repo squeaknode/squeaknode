@@ -1,4 +1,5 @@
 import logging
+from hashlib import sha256
 
 from squeak.core.encryption import (
     CEncryptedDecryptionKey,
@@ -273,17 +274,30 @@ class SqueakNode:
         payment = self.lightning_client.pay_invoice_sync(offer.payment_request)
         preimage = payment.payment_preimage
 
-        # TODO: Check if preimage is valid
-        from hashlib import sha256
-
-        logger.info("preimage: {}".format(preimage))
-        logger.info("offer.payment_hash: {}".format(offer.payment_hash))
+        # Check if preimage is valid
         preimage_hash = sha256(preimage).hexdigest()
-        logger.info("preimage hash: {}".format(preimage_hash))
-        assert preimage_hash == offer.payment_hash
-        is_valid = True
+        is_valid_preimage = (preimage_hash == offer.payment_hash)
 
-        # Unlock the squeak
+        # Save the preimage of the sent payment
+        sent_payment = SentPayment(
+            sent_payment_id=None,
+            offer_id=offer_id,
+            peer_id=offer.peer_id,
+            squeak_hash=offer.squeak_hash,
+            preimage_hash=offer.payment_hash,
+            preimage=preimage,
+            amount=offer.price_msat,
+            node_pubkey=offer.destination,
+            preimage_is_valid=is_valid_preimage,
+        )
+        sent_payment_id = self.postgres_db.insert_sent_payment(sent_payment)
+
+        if is_valid_preimage:
+            self.unlock_squeak(offer, preimage)
+
+        return sent_payment_id
+
+    def unlock_squeak(self, offer, preimage):
         squeak_entry = self.postgres_db.get_squeak_entry(bytes.fromhex(offer.squeak_hash))
         squeak = squeak_entry.squeak
 
@@ -308,20 +322,6 @@ class SqueakNode:
             serialized_decryption_key,
         )
 
-        # Save the preimage of the sent payment
-        sent_payment = SentPayment(
-            sent_payment_id=None,
-            offer_id=offer_id,
-            peer_id=offer.peer_id,
-            squeak_hash=offer.squeak_hash,
-            preimage_hash=offer.payment_hash,
-            preimage=preimage,
-            amount=offer.price_msat,
-            node_pubkey=offer.destination,
-            preimage_is_valid=is_valid,
-        )
-        sent_payment_id = self.postgres_db.insert_sent_payment(sent_payment)
-        return sent_payment_id
 
     def sync_squeaks(self):
         self.squeak_peer_sync_worker.sync_peers()
