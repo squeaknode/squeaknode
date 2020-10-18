@@ -327,3 +327,6 @@ class SqueakNode:
 
     def get_sent_payments(self):
         return self.postgres_db.get_sent_payments()
+
+    def get_sent_payment(self, sent_payment_id):
+        return self.postgres_db.get_sent_payment(sent_payment_id)

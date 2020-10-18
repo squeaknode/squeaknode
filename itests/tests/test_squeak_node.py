@@ -887,3 +887,14 @@ def test_connect_other_node(server_stub, admin_stub, other_server_stub, other_ad
         )
         squeak_hashes = [sent_payment.squeak_hash for sent_payment in get_sent_payments_response.sent_payments]
         assert saved_squeak_hash.hex() in squeak_hashes
+
+        # Get the single sent payment
+        for sent_payment in get_sent_payments_response.sent_payments:
+            if sent_payment.squeak_hash == saved_squeak_hash.hex():
+                sent_payment_id = sent_payment.sent_payment_id
+        get_sent_payment_response = other_admin_stub.GetSentPayment(
+            squeak_admin_pb2.GetSentPaymentRequest(
+                sent_payment_id=sent_payment_id,
+            ),
+        )
+        assert saved_squeak_hash.hex() == get_sent_payment_response.sent_payment.squeak_hash
