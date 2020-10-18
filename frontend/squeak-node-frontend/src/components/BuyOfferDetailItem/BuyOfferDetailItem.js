@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import {
   Paper,
+  Button,
   IconButton,
   Menu,
   MenuItem,
@@ -15,6 +16,9 @@ import classnames from "classnames";
 
 import LockIcon from '@material-ui/icons/Lock';
 
+// components
+import BuyOfferDialog from "../../components/BuyOfferDialog";
+
 // styles
 import useStyles from "./styles";
 
@@ -28,8 +32,9 @@ export default function BuyOfferDetailItem({
   ...props
 }) {
   var classes = useStyles();
-
   const history = useHistory();
+  const [payOfferDialogOpen, setPayOfferDialogOpen] = useState(false);
+
 
   const preventDefault = (event) => event.preventDefault();
 
@@ -50,6 +55,15 @@ export default function BuyOfferDetailItem({
       } else {
         history.push("/app/lightningnode/" + pubkey);
       }
+  };
+
+  const handleClickPayOffer = () => {
+    console.log("Handle click pay offer.");
+    setPayOfferDialogOpen(true);
+  };
+
+  const handleClosePayOfferDialog = () => {
+    setPayOfferDialogOpen(false);
   };
 
   function OfferContent() {
@@ -112,11 +126,42 @@ export default function BuyOfferDetailItem({
             {offer.getNodePubkey()}
           </Link>
         </Typography>
+
+        <Typography size="md">
+        {PayOfferButton()}
+        </Typography>
+
       </Box>
     )
   }
 
+  function PayOfferButton() {
+    return (
+      <>
+          <Button
+            variant="contained"
+            onClick={() => {
+              handleClickPayOffer();
+            }}>Pay Offer
+          </Button>
+      </>
+    )
+  }
+
+  function PayOfferDialogContent() {
+    return (
+      <>
+        <BuyOfferDialog
+          open={payOfferDialogOpen}
+          offer={offer}
+          handleClose={handleClosePayOfferDialog}
+          ></BuyOfferDialog>
+      </>
+    )
+  }
+
   return (
+    <>
     <Box
       p={1}
       m={0}
@@ -164,5 +209,7 @@ export default function BuyOfferDetailItem({
           </Grid>
           </Grid>
     </Box>
+      {PayOfferDialogContent()}
+    </>
   )
 }

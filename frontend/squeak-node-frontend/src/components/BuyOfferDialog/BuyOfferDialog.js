@@ -29,109 +29,68 @@ import useStyles from "./styles";
 import Widget from "../../components/Widget";
 import SqueakThreadItem from "../../components/SqueakThreadItem";
 
+
 import {
   CloseChannelRequest,
   ChannelPoint,
 } from "../../proto/lnd_pb"
+import {
+  PayOfferRequest,
+} from "../../proto/squeak_admin_pb"
+
 import { client } from "../../squeakclient/squeakclient"
 
 
-export default function CloseChannelDialog({
+export default function BuyOfferDialog({
   open,
-  txId,
-  outputIndex,
+  offer,
   handleClose,
   ...props
 }) {
   var classes = useStyles();
   const history = useHistory();
 
-  var [amount, setAmount] = useState(0);
+  const payOffer = (offerId) => {
+    console.log("called payOffer");
 
-  const resetFields = () => {
-    setAmount(0);
-  };
+    var payOfferRequest = new PayOfferRequest();
+    payOfferRequest.setOfferId(offerId);
+    console.log(payOfferRequest);
 
-  const handleChangeAmount = (event) => {
-    setAmount(event.target.value);
-  };
-
-  const closeChannel = (txId, outputIndex) => {
-    console.log("called closeChannel");
-
-    var closeChannelRequest = new CloseChannelRequest()
-    var channelPoint = new ChannelPoint();
-    channelPoint.setFundingTxidStr(txId);
-    channelPoint.setOutputIndex(outputIndex);
-    closeChannelRequest.setChannelPoint(channelPoint);
-    console.log(closeChannelRequest);
-
-    client.lndCloseChannel(closeChannelRequest, {}, (err, response) => {
+    client.payOffer(payOfferRequest, {}, (err, response) => {
       if (err) {
         console.log(err.message);
-        alert('Error closing channel: ' + err.message);
+        alert('Error paying offer: ' + err.message);
         return;
       }
       console.log(response);
-      // goToProfilePage(response.getProfileId());
+      goToSqueakPage(offer.getSqueakHash());
     });
   };
 
-  // const goToProfilePage = (profileId) => {
-  //   history.push("/app/profile/" + profileId);
-  // };
+  const goToSqueakPage = (squeakHash) => {
+    history.push("/app/squeak/" + squeakHash);
+  };
 
   function handleSubmit(event) {
     event.preventDefault();
-    console.log( 'txId:', txId);
-    console.log( 'outputIndex:', outputIndex);
-    closeChannel(txId, outputIndex);
+    console.log( 'Offer ID:', offer.getOfferId());
+    payOffer(offer.getOfferId());
     handleClose();
   }
 
-  function TxIdInput() {
+  function OfferIdInput() {
     return (
       <TextField
-        id="txid-textarea"
-        label="TxId"
+        id="offerid-textarea"
+        label="OfferId"
         required
         autoFocus
-        value={txId}
+        value={offer.getOfferId()}
         fullWidth
         inputProps={{
            readOnly: true,
         }}
-      />
-    )
-  }
-
-  function OutputIndexInput() {
-    return (
-      <TextField
-        id="outputindex-textarea"
-        label="Output Index"
-        required
-        autoFocus
-        value={outputIndex}
-        fullWidth
-        inputProps={{
-           readOnly: true,
-        }}
-      />
-    )
-  }
-
-  function LocalFundingAmountInput() {
-    return (
-      <TextField
-        id="amount-textarea"
-        label="Local Funding Amount"
-        required
-        autoFocus
-        value={amount}
-        onChange={handleChangeAmount}
-        fullWidth
-        inputProps={{ maxLength: 64 }}
       />
     )
   }
@@ -148,7 +107,7 @@ export default function CloseChannelDialog({
     )
   }
 
-  function CloseChannelButton() {
+  function PayOfferButton() {
     return (
       <Button
        type="submit"
@@ -156,24 +115,21 @@ export default function CloseChannelDialog({
        color="primary"
        className={classes.button}
        >
-       Close Channel
+       Pay
        </Button>
     )
   }
 
   return (
-    <Dialog open={open} onEnter={resetFields} onClose={handleClose} aria-labelledby="form-dialog-title">
-  <DialogTitle id="form-dialog-title">Close Channel</DialogTitle>
+    <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+  <DialogTitle id="form-dialog-title">Buy Offer</DialogTitle>
   <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
   <DialogContent>
-    {TxIdInput()}
-  </DialogContent>
-  <DialogContent>
-    {OutputIndexInput()}
+    {OfferIdInput()}
   </DialogContent>
   <DialogActions>
     {CancelButton()}
-    {CloseChannelButton()}
+    {PayOfferButton()}
   </DialogActions>
   </form>
     </Dialog>
