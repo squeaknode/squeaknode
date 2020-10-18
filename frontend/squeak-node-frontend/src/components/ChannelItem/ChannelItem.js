@@ -65,10 +65,25 @@ export default function ChannelItem({
 
   function ChannelContent() {
     return (
-      <Typography
-        size="md"
-        style={{whiteSpace: 'pre-line', overflow: "hidden", textOverflow: "ellipsis", height: '6rem'}}
-        >{channel.getCapacity()}
+      <Typography component="div">
+        <Box fontSize="h3.fontSize" m={1}>
+          Open Channel
+        </Box>
+        <Box m={1}>
+          Capacity: {channel.getCapacity()}
+        </Box>
+        <Box m={1}>
+          Local Balance: {channel.getLocalBalance()}
+        </Box>
+        <Box m={1}>
+          Remote Balance: {channel.getRemoteBalance()}
+        </Box>
+        <Box m={1}>
+          Pubkey: {channel.getRemotePubkey()}
+        </Box>
+        <Box m={1}>
+          Channel Point: {channel.getChannelPoint()}
+        </Box>
       </Typography>
     )
   }
@@ -89,18 +104,6 @@ export default function ChannelItem({
           <Grid item>
             {ChannelContent()}
           </Grid>
-          </Grid>
-          <Grid
-            container
-            direction="row"
-            justify="flex-start"
-            alignItems="flex-start"
-          >
-            <Grid item>
-                <Box color="secondary.main" fontWeight="fontWeightBold">
-                  {channel.getChannelPoint()}
-                </Box>
-            </Grid>
           </Grid>
     </Box>
   )
