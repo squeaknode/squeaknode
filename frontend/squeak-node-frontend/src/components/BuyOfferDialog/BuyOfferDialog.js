@@ -64,13 +64,13 @@ export default function BuyOfferDialog({
         return;
       }
       console.log(response);
-      // goToProfilePage(response.getProfileId());
+      goToSqueakPage(offer.getSqueakHash());
     });
   };
 
-  // const goToProfilePage = (profileId) => {
-  //   history.push("/app/profile/" + profileId);
-  // };
+  const goToSqueakPage = (squeakHash) => {
+    history.push("/app/squeak/" + squeakHash);
+  };
 
   function handleSubmit(event) {
     event.preventDefault();
