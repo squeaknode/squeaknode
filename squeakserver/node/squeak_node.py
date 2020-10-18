@@ -272,10 +272,7 @@ class SqueakNode:
 
         # Pay the invoice
         payment = self.lightning_client.pay_invoice_sync(offer.payment_request)
-        logger.info("Pay offer payment result: {}".format(payment))
         preimage = payment.payment_preimage
-        logger.info("Pay offer preimage: {}".format(preimage))
-        logger.info("Pay offer preimage hex: {}".format(preimage.hex()))
 
         if not preimage:
             raise Exception("Payment failed with error: {}".format(payment.payment_error))
