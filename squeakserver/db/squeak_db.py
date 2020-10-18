@@ -978,13 +978,14 @@ class SqueakDb:
     def insert_sent_payment(self, sent_payment):
         """ Insert a new sent payment. """
         ins = self.sent_payments.insert().values(
-            offer_id=offer_id,
-            peer_id=offer.peer_id,
-            squeak_hash=offer.squeak_hash.hex(),
-            preimage_hash=preimage_hash,
-            amount=amount,
-            node_pubkey=node_pubkey,
-            preimage_is_valid=preimage_is_valid,
+            offer_id=sent_payment.offer_id,
+            peer_id=sent_payment.peer_id,
+            squeak_hash=sent_payment.squeak_hash,
+            preimage_hash=sent_payment.preimage_hash,
+            preimage=sent_payment.preimage,
+            amount=sent_payment.amount,
+            node_pubkey=sent_payment.node_pubkey,
+            preimage_is_valid=sent_payment.preimage_is_valid,
         )
         with self.get_connection() as connection:
             res = connection.execute(ins)

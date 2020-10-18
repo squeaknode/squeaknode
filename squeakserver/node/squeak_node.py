@@ -19,6 +19,7 @@ from squeakserver.node.squeak_whitelist import SqueakWhitelist
 from squeakserver.server.buy_offer import BuyOffer
 from squeakserver.server.squeak_peer import SqueakPeer
 from squeakserver.server.squeak_profile import SqueakProfile
+from squeakserver.server.sent_payment import SentPayment
 from squeakserver.server.util import generate_offer_preimage
 
 
@@ -259,16 +260,30 @@ class SqueakNode:
 
     def pay_offer(self, offer_id):
         # Get the offer from the database
-        offer = self.postgres_db.get_offer_with_peer(offer_id)
+        offer_with_peer = self.postgres_db.get_offer_with_peer(offer_id)
+        offer = offer_with_peer.offer
 
         # Pay the invoice
-        payment = lightning_client.pay_invoice_sync(offer.payment_request)
+        payment = self.lightning_client.pay_invoice_sync(offer.payment_request)
         preimage = payment.payment_preimage
 
-        # Save the preimage of the sent payment
-        sent_payment_id = self.postgres_db.insert_sent_payment(sent_payment)
-
+        # TODO: Check if preimage is valid
         # TODO: Unlock the squeak
+        is_valid = True
+
+        # Save the preimage of the sent payment
+        sent_payment = SentPayment(
+            sent_payment_id=None,
+            offer_id=offer_id,
+            peer_id=offer.peer_id,
+            squeak_hash=offer.squeak_hash,
+            preimage_hash=offer.payment_hash,
+            preimage=preimage,
+            amount=offer.price_msat,
+            node_pubkey=offer.destination,
+            preimage_is_valid=is_valid,
+        )
+        sent_payment_id = self.postgres_db.insert_sent_payment(sent_payment)
         return sent_payment_id
 
     def sync_squeaks(self):

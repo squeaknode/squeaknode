@@ -294,9 +294,15 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         )
 
     def SyncSqueaks(self, request, context):
-        logger.info("Syncing squeaks")
         self.handler.handle_sync_squeaks()
         return squeak_admin_pb2.SyncSqueaksReply()
+
+    def PayOffer(self, request, context):
+        offer_id = request.offer_id
+        sent_payment_id = self.handler.handle_pay_offer(offer_id)
+        return squeak_admin_pb2.PayOfferReply(
+            sent_payment_id=sent_payment_id,
+        )
 
     def _squeak_entry_to_message(self, squeak_entry_with_profile):
         if squeak_entry_with_profile is None:

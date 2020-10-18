@@ -872,3 +872,12 @@ def test_connect_other_node(server_stub, admin_stub, other_server_stub, other_ad
 
         list_channels_response = lightning_client.list_channels()
         print(list_channels_response)
+
+        # Pay the offer
+        pay_offer_response = other_admin_stub.PayOffer(
+            squeak_admin_pb2.PayOfferRequest(
+                offer_id=offer.offer_id,
+            )
+        )
+        print(pay_offer_response)
+        assert pay_offer_response.sent_payment_id > 0

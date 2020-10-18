@@ -160,6 +160,10 @@ service SqueakAdmin {
   */
   rpc SyncSqueaks (SyncSqueaksRequest) returns (SyncSqueaksReply) {}
 
+  /** sqkadmin: `payoffer`
+  */
+  rpc PayOffer (PayOfferRequest) returns (PayOfferReply) {}
+
 }
 
 message CreateSigningProfileRequest {
@@ -524,4 +528,14 @@ message SyncSqueaksRequest {
 }
 
 message SyncSqueaksReply {
+}
+
+message PayOfferRequest {
+    /// Offer id
+    int32 offer_id = 1;
+}
+
+message PayOfferReply {
+    /// Sent payment id
+    int32 sent_payment_id = 1;
 }

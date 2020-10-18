@@ -280,3 +280,7 @@ class SqueakAdminServerHandler(object):
     def handle_sync_squeaks(self):
         logger.info("Handle get sync squeaks")
         self.squeak_node.sync_squeaks()
+
+    def handle_pay_offer(self, offer_id):
+        logger.info("Handle pay offer for offer id: {}".format(offer_id))
+        return self.squeak_node.pay_offer(offer_id)
