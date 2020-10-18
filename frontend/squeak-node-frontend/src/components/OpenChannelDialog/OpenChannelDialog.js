@@ -44,10 +44,10 @@ export default function OpenChannelDialog({
   var classes = useStyles();
   const history = useHistory();
 
-  var [amount, setAmount] = useState(0);
+  var [amount, setAmount] = useState("");
 
   const resetFields = () => {
-    setAmount(0);
+    setAmount("");
   };
 
   const handleChangeAmount = (event) => {
