@@ -107,7 +107,7 @@ export default function BuyOfferDialog({
     )
   }
 
-  function CloseChannelButton() {
+  function PayOfferButton() {
     return (
       <Button
        type="submit"
@@ -115,7 +115,7 @@ export default function BuyOfferDialog({
        color="primary"
        className={classes.button}
        >
-       Close Channel
+       Pay
        </Button>
     )
   }
@@ -129,7 +129,7 @@ export default function BuyOfferDialog({
   </DialogContent>
   <DialogActions>
     {CancelButton()}
-    {CloseChannelButton()}
+    {PayOfferButton()}
   </DialogActions>
   </form>
     </Dialog>
