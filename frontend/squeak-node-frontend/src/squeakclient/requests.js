@@ -34,7 +34,8 @@ import {
   GetSqueakProfileByAddressRequest,
   GetAddressSqueakDisplaysRequest,
   CreateContactProfileRequest,
-  CreateSigningProfileRequest
+  CreateSigningProfileRequest,
+  CreatePeerRequest,
 } from "../proto/squeak_admin_pb"
 
 
@@ -409,7 +410,7 @@ export function getAncestorSqueakDisplays(hash, handleResponse) {
 };
 
 export function getSqueakProfileByAddress(address, handleResponse) {
-      var getSqueakProfileByAddressRequest = new GetSqueakProfileByAddressRequest()
+      var getSqueakProfileByAddressRequest = new GetSqueakProfileByAddressRequest();
       getSqueakProfileByAddressRequest.setAddress(address);
       console.log(getSqueakProfileByAddressRequest);
       client.getSqueakProfileByAddress(getSqueakProfileByAddressRequest, {}, (err, response) => {
@@ -419,7 +420,7 @@ export function getSqueakProfileByAddress(address, handleResponse) {
 };
 
 export function getAddressSqueakDisplays(address, handleResponse) {
-    var getAddressSqueakDisplaysRequest = new GetAddressSqueakDisplaysRequest()
+    var getAddressSqueakDisplaysRequest = new GetAddressSqueakDisplaysRequest();
     getAddressSqueakDisplaysRequest.setAddress(address);
     console.log(getAddressSqueakDisplaysRequest);
     client.getAddressSqueakDisplays(getAddressSqueakDisplaysRequest, {}, (err, response) => {
@@ -431,7 +432,7 @@ export function getAddressSqueakDisplays(address, handleResponse) {
 
 export function createContactProfile(profileName, squeakAddress, handleResponse) {
   console.log("called createContactProfile");
-  var createContactProfileRequest = new CreateContactProfileRequest()
+  var createContactProfileRequest = new CreateContactProfileRequest();
   createContactProfileRequest.setProfileName(profileName);
   createContactProfileRequest.setAddress(squeakAddress);
   console.log(createContactProfileRequest);
@@ -449,7 +450,7 @@ export function createContactProfile(profileName, squeakAddress, handleResponse)
 
 export function createSigningProfile(profileName, handleResponse) {
   console.log("called createSigningProfile");
-  var createSigningProfileRequest = new CreateSigningProfileRequest()
+  var createSigningProfileRequest = new CreateSigningProfileRequest();
   createSigningProfileRequest.setProfileName(profileName);
   console.log(createSigningProfileRequest);
   client.createSigningProfile(createSigningProfileRequest, {}, (err, response) => {
@@ -460,6 +461,25 @@ export function createSigningProfile(profileName, handleResponse) {
     }
     console.log(response);
     console.log(response.getProfileId());
+    handleResponse(response);
+  });
+};
+
+export function createPeer(peerName, host, port, handleResponse) {
+  console.log("called createPeer");
+  var createPeerRequest = new CreatePeerRequest();
+  createPeerRequest.setPeerName(peerName);
+  createPeerRequest.setHost(host);
+  createPeerRequest.setPort(port);
+  console.log(createPeerRequest);
+  client.createPeer(createPeerRequest, {}, (err, response) => {
+    if (err) {
+      console.log(err.message);
+      alert('Error creating peer: ' + err.message);
+      return;
+    }
+    console.log(response);
+    console.log(response.getPeerId());
     handleResponse(response);
   });
 };
