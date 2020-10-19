@@ -10,6 +10,8 @@ import {
   ConnectPeerRequest,
   LightningAddress,
   DisconnectPeerRequest,
+  CloseChannelRequest,
+  ChannelPoint,
 } from "../proto/lnd_pb"
 import {
   GetSqueakProfileRequest,
@@ -221,6 +223,26 @@ export function payOffer(offerId, handleResponse) {
     }
     console.log(response);
     //goToSqueakPage(offer.getSqueakHash());
+    handleResponse(response);
+  });
+};
+
+export function lndCloseChannel(txId, outputIndex, handleResponse) {
+  console.log("called closeChannel");
+  var closeChannelRequest = new CloseChannelRequest();
+  var channelPoint = new ChannelPoint();
+  channelPoint.setFundingTxidStr(txId);
+  channelPoint.setOutputIndex(outputIndex);
+  closeChannelRequest.setChannelPoint(channelPoint);
+  console.log(closeChannelRequest);
+  client.lndCloseChannel(closeChannelRequest, {}, (err, response) => {
+    if (err) {
+      console.log(err.message);
+      alert('Error closing channel: ' + err.message);
+      return;
+    }
+    console.log(response);
+    // goToProfilePage(response.getProfileId());
     handleResponse(response);
   });
 };
