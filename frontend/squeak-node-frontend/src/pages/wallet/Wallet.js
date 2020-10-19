@@ -38,14 +38,13 @@ import ChannelItem from "../../components/ChannelItem";
 import PendingOpenChannelItem from "../../components/PendingOpenChannelItem";
 
 import {
-  GetInfoRequest,
-  WalletBalanceRequest,
-  GetTransactionsRequest,
-  ListPeersRequest,
-  ListChannelsRequest,
-  PendingChannelsRequest,
-} from "../../proto/lnd_pb"
-import { client } from "../../squeakclient/squeakclient"
+  lndGetInfo,
+  lndWalletBalanceRequest,
+  lndGetTransactions,
+  lndListPeers,
+  lndListChannels,
+  lndPendingChannels,
+} from "../../squeakclient/requests"
 
 export default function WalletPage() {
   var classes = useStyles();
@@ -80,86 +79,22 @@ export default function WalletPage() {
   };
 
   const getLndInfo = () => {
-        console.log("called getLndInfo");
-
-        var getInfoRequest = new GetInfoRequest()
-        console.log(getInfoRequest);
-
-        client.lndGetInfo(getInfoRequest, {}, (err, response) => {
-          console.log(response);
-          setLndInfo(response);
-        });
+    lndGetInfo(setLndInfo);
   };
   const getWalletBalance = () => {
-        console.log("called getWalletBalance");
-
-        var walletBalanceRequest = new WalletBalanceRequest()
-        console.log(walletBalanceRequest);
-
-        client.lndWalletBalance(walletBalanceRequest, {}, (err, response) => {
-          console.log(response);
-          setWalletBalance(response);
-        });
+    lndWalletBalanceRequest(setWalletBalance);
   };
   const getTransactions = () => {
-        console.log("called getTransactions");
-
-        var getTransactionsRequest = new GetTransactionsRequest()
-        console.log(getTransactionsRequest);
-
-        client.lndGetTransactions(getTransactionsRequest, {}, (err, response) => {
-          console.log(response);
-          console.log("response.getTransactionsList()");
-          console.log(response.getTransactionsList());
-          setTransactions(response.getTransactionsList());
-        });
+    lndGetTransactions(setTransactions)
   };
   const listPeers = () => {
-        console.log("called listPeers");
-
-        var listPeersRequest = new ListPeersRequest()
-        console.log(listPeersRequest);
-
-        client.lndListPeers(listPeersRequest, {}, (err, response) => {
-          console.log(response);
-          console.log("response.getPeersList()");
-          console.log(response.getPeersList());
-          setPeers(response.getPeersList());
-        });
+    lndListPeers(setPeers);
   };
   const listChannels = () => {
-        console.log("called listChannels");
-
-        var listChannelsRequest = new ListChannelsRequest()
-        console.log(listChannelsRequest);
-
-        client.lndListChannels(listChannelsRequest, {}, (err, response) => {
-          if (err) {
-            console.log(err.message);
-            alert('Error getting channels: ' + err.message);
-            return;
-          }
-          console.log(response);
-          console.log("response.getChannelsList()");
-          console.log(response.getChannelsList());
-          setChannels(response.getChannelsList());
-        });
+    lndListChannels(setChannels);
   };
   const getPendingChannels = () => {
-        console.log("called pendingChannels");
-
-        var pendingChannelsRequest = new PendingChannelsRequest()
-        console.log(pendingChannelsRequest);
-
-        client.lndPendingChannels(pendingChannelsRequest, {}, (err, response) => {
-          if (err) {
-            console.log(err.message);
-            alert('Error getting pending channels: ' + err.message);
-            return;
-          }
-          console.log(response);
-          setPendingChannels(response);
-        });
+    lndPendingChannels(setPendingChannels);
   };
 
   useEffect(()=>{
