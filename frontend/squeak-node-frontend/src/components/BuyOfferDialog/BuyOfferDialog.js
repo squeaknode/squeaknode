@@ -31,7 +31,7 @@ import SqueakThreadItem from "../../components/SqueakThreadItem";
 
 
 import {
-  payOffer,
+  payOfferRequest,
 } from "../../squeakclient/requests"
 
 
@@ -44,10 +44,16 @@ export default function BuyOfferDialog({
   var classes = useStyles();
   const history = useHistory();
 
+  const handleResponse = (response) => {
+    goToSqueakPage(offer.getSqueakHash());
+  };
+
+  const handleErr = (err) => {
+    alert('Error paying offer: ' + err.message);
+  };
+
   const pay = (offerId) => {
-    payOffer(offerId, () => {
-      goToSqueakPage(offer.getSqueakHash());
-    });
+    payOfferRequest(offerId, handleResponse, handleErr);
   };
 
   const goToSqueakPage = (squeakHash) => {

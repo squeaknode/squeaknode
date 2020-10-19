@@ -35,9 +35,9 @@ import CloseChannelDialog from "../../components/CloseChannelDialog";
 import ChannelItem from "../../components/ChannelItem";
 
 import {
-  lndListPeers,
-  lndListChannels,
-  lndPendingChannels,
+  lndListPeersRequest,
+  lndListChannelsRequest,
+  lndPendingChannelsRequest,
 } from "../../squeakclient/requests"
 
 
@@ -85,11 +85,11 @@ export default function LightningNodePage() {
   };
 
   const listPeers = () => {
-    lndListPeers(setPeers);
+    lndListPeersRequest(setPeers);
   };
 
   const listChannels = () => {
-    lndListChannels(setChannels);
+    lndListChannelsRequest(setChannels);
   };
 
   const handleClickCloseChannel = () => {

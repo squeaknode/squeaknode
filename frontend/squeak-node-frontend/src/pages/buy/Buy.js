@@ -21,7 +21,7 @@ import MakeSqueakDialog from "../../components/MakeSqueakDialog";
 import DeleteSqueakDialog from "../../components/DeleteSqueakDialog";
 
 import {
-  getBuyOffers,
+  getBuyOffersRequest,
 } from "../../squeakclient/requests"
 
 
@@ -32,7 +32,7 @@ export default function BuyPage() {
   const [offers, setOffers] = useState([]);
 
   const getOffers = (hash) => {
-      getBuyOffers(hash, setOffers);
+      getBuyOffersRequest(hash, setOffers);
   };
 
   const goToOfferPage = (offerId) => {

@@ -20,10 +20,10 @@ import Widget from "../../components/Widget";
 import DeleteProfileDialog from "../../components/DeleteProfileDialog";
 
 import {
-  getSqueakProfile,
-  setSqueakProfileFollowing,
-  setSqueakProfileSharing,
-  setSqueakProfileWhitelisted,
+  getSqueakProfileRequest,
+  setSqueakProfileFollowingRequest,
+  setSqueakProfileSharingRequest,
+  setSqueakProfileWhitelistedRequest,
 } from "../../squeakclient/requests"
 
 
@@ -34,28 +34,28 @@ export default function ProfilePage() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
 
-  const updateSqueakProfile = (id) => {
-    getSqueakProfile(id, setSqueakProfile);
+  const getSqueakProfile = (id) => {
+    getSqueakProfileRequest(id, setSqueakProfile);
   };
   const setFollowing = (id, following) => {
-    setSqueakProfileFollowing(id, following, () => {
-      updateSqueakProfile(id);
+    setSqueakProfileFollowingRequest(id, following, () => {
+      getSqueakProfile(id);
     })
   };
   const setSharing = (id, sharing) => {
-    setSqueakProfileSharing(id, sharing, () => {
-      updateSqueakProfile(id);
+    setSqueakProfileSharingRequest(id, sharing, () => {
+      getSqueakProfile(id);
     })
   };
   const setWhitelisted = (id, whitelisted) => {
-    setSqueakProfileWhitelisted(id, whitelisted, () => {
-      updateSqueakProfile(id);
+    setSqueakProfileWhitelistedRequest(id, whitelisted, () => {
+      getSqueakProfile(id);
     })
   };
 
 
   useEffect(()=>{
-    updateSqueakProfile(id)
+    getSqueakProfile(id)
   },[id]);
 
   const handleClickOpenDeleteDialog = () => {

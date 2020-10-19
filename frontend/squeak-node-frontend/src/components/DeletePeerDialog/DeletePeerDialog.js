@@ -29,7 +29,7 @@ import useStyles from "./styles";
 import Widget from "../../components/Widget";
 
 import {
-  deletePeer,
+  deletePeerRequest,
 } from "../../squeakclient/requests"
 
 
@@ -42,8 +42,8 @@ export default function DeletePeerDialog({
   var classes = useStyles();
   const history = useHistory();
 
-  const deleteSqueakPeer = (peerId) => {
-    deletePeer(peerId, (response) => {
+  const deletePeer = (peerId) => {
+    deletePeerRequest(peerId, (response) => {
       reloadRoute();
     });
   };
@@ -57,7 +57,7 @@ export default function DeletePeerDialog({
     console.log( 'peer:', peer);
     var peerId = peer.getPeerId();
     console.log( 'peerId:', peerId);
-    deleteSqueakPeer(peerId);
+    deletePeer(peerId);
     handleClose();
   }
 

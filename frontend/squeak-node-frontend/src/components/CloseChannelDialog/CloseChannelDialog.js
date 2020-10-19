@@ -30,7 +30,7 @@ import Widget from "../../components/Widget";
 import SqueakThreadItem from "../../components/SqueakThreadItem";
 
 import {
-  lndCloseChannel,
+  lndCloseChannelRequest,
 } from "../../squeakclient/requests"
 
 
@@ -54,8 +54,17 @@ export default function CloseChannelDialog({
     setAmount(event.target.value);
   };
 
+  const handleResponse = (response) => {
+    // TODO: go to channel page instead of showing alert.
+    alert('Close channel pending.');
+  };
+
+  const handleErr = (err) => {
+    alert('Error closing channel: ' + err.message);
+  };
+
   const closeChannel = (txId, outputIndex) => {
-    lndCloseChannel(txId, outputIndex, () => {});
+    lndCloseChannelRequest(txId, outputIndex, handleResponse, handleErr);
   };
 
   function handleSubmit(event) {

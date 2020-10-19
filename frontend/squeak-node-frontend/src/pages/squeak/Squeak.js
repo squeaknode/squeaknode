@@ -20,8 +20,8 @@ import MakeSqueakDialog from "../../components/MakeSqueakDialog";
 import DeleteSqueakDialog from "../../components/DeleteSqueakDialog";
 
 import {
-  getSqueakDisplay,
-  getAncestorSqueakDisplays,
+  getSqueakDisplayRequest,
+  getAncestorSqueakDisplaysRequest,
 } from "../../squeakclient/requests"
 
 
@@ -35,10 +35,10 @@ export default function SqueakPage() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   const getSqueak = (hash) => {
-      getSqueakDisplay(hash, setSqueak);
+      getSqueakDisplayRequest(hash, setSqueak);
   };
   const getAncestorSqueaks = (hash) => {
-      getAncestorSqueakDisplays(hash, setAncestorSqueaks);
+      getAncestorSqueakDisplaysRequest(hash, setAncestorSqueaks);
   };
 
   const handleClickOpen = () => {

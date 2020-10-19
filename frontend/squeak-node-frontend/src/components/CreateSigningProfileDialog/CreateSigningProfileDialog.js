@@ -30,7 +30,7 @@ import Widget from "../../components/Widget";
 import SqueakThreadItem from "../../components/SqueakThreadItem";
 
 import {
-  createSigningProfile,
+  createSigningProfileRequest,
 } from "../../squeakclient/requests"
 
 
@@ -52,10 +52,16 @@ export default function CreateSigningProfileDialog({
     setProfileName(event.target.value);
   };
 
-  const create = (profileName) => {
-    createSigningProfile(profileName, (response) => {
-      goToProfilePage(response.getProfileId());
-    })
+  const handleResponse = (response) => {
+    goToProfilePage(response.getProfileId());
+  };
+
+  const handleErr = (err) => {
+    alert('Error creating contact profile: ' + err.message);
+  };
+
+  const createSigningProfile = (profileName) => {
+    createSigningProfileRequest(profileName, handleResponse, handleErr);
   };
 
   const goToProfilePage = (profileId) => {
@@ -69,7 +75,7 @@ export default function CreateSigningProfileDialog({
       alert('Profile Name cannot be empty.');
       return;
     }
-    create(profileName);
+    createSigningProfile(profileName);
     handleClose();
   }
 

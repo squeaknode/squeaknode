@@ -20,9 +20,9 @@ import Widget from "../../components/Widget";
 import DeletePeerDialog from "../../components/DeletePeerDialog";
 
 import {
-  getPeer,
-  setPeerDownloading,
-  setPeerUploading,
+  getPeerRequest,
+  setPeerDownloadingRequest,
+  setPeerUploadingRequest,
 } from "../../squeakclient/requests"
 
 
@@ -34,15 +34,15 @@ export default function PeerPage() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   const getSqueakPeer = (id) => {
-    getPeer(id, setPeer);
+    getPeerRequest(id, setPeer);
   };
   const setDownloading = (id, downloading) => {
-    setPeerDownloading(id, downloading, () => {
+    setPeerDownloadingRequest(id, downloading, () => {
       getSqueakPeer(id);
     });
   };
   const setUploading = (id, uploading) => {
-    setPeerUploading(id, uploading, () => {
+    setPeerUploadingRequest(id, uploading, () => {
       getSqueakPeer(id);
     });
   };
