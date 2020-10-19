@@ -31,6 +31,8 @@ import {
   MakeSqueakRequest,
   GetSqueakDisplayRequest,
   GetAncestorSqueakDisplaysRequest,
+  GetSqueakProfileByAddressRequest,
+  GetAddressSqueakDisplaysRequest,
 } from "../proto/squeak_admin_pb"
 
 
@@ -400,6 +402,27 @@ export function getAncestorSqueakDisplays(hash, handleResponse) {
       }
       console.log(response);
       console.log(response.getSqueakDisplayEntriesList());
-      handleResponse(response.getSqueakDisplayEntriesList())
+      handleResponse(response.getSqueakDisplayEntriesList());
+    });
+};
+
+export function getSqueakProfileByAddress(address, handleResponse) {
+      var getSqueakProfileByAddressRequest = new GetSqueakProfileByAddressRequest()
+      getSqueakProfileByAddressRequest.setAddress(address);
+      console.log(getSqueakProfileByAddressRequest);
+      client.getSqueakProfileByAddress(getSqueakProfileByAddressRequest, {}, (err, response) => {
+        console.log(response);
+        handleResponse(response.getSqueakProfile());
+      });
+};
+
+export function getAddressSqueakDisplays(address, handleResponse) {
+    var getAddressSqueakDisplaysRequest = new GetAddressSqueakDisplaysRequest()
+    getAddressSqueakDisplaysRequest.setAddress(address);
+    console.log(getAddressSqueakDisplaysRequest);
+    client.getAddressSqueakDisplays(getAddressSqueakDisplaysRequest, {}, (err, response) => {
+      console.log(response);
+      console.log(response.getSqueakDisplayEntriesList());
+      handleResponse(response.getSqueakDisplayEntriesList());
     });
 };

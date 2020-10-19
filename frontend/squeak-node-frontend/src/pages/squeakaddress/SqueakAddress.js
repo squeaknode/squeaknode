@@ -17,11 +17,9 @@ import SqueakThreadItem from "../../components/SqueakThreadItem";
 import CreateContactProfileDialog from "../../components/CreateContactProfileDialog";
 
 import {
-   GetAddressSqueakDisplaysRequest,
-   GetSqueakProfileByAddressRequest,
-   GetSqueakProfileRequest,
-} from "../../proto/squeak_admin_pb"
-import { client } from "../../squeakclient/squeakclient"
+  getSqueakProfileByAddress,
+  getAddressSqueakDisplays,
+} from "../../squeakclient/requests"
 
 
 export default function SqueakAddressPage() {
@@ -33,26 +31,11 @@ export default function SqueakAddressPage() {
   const [createContactProfileDialogOpen, setCreateContactProfileDialogOpen] = useState(false);
 
   const getSqueakProfile = (address) => {
-        var getSqueakProfileByAddressRequest = new GetSqueakProfileByAddressRequest()
-        getSqueakProfileByAddressRequest.setAddress(address);
-        console.log(getSqueakProfileByAddressRequest);
-
-        client.getSqueakProfileByAddress(getSqueakProfileByAddressRequest, {}, (err, response) => {
-          console.log(response);
-          setSqueakProfile(response.getSqueakProfile())
-        });
+        getSqueakProfileByAddress(address, setSqueakProfile);
   };
   const getSqueaks = (address) => {
-      var getAddressSqueakDisplaysRequest = new GetAddressSqueakDisplaysRequest()
-      getAddressSqueakDisplaysRequest.setAddress(address);
-      console.log(getAddressSqueakDisplaysRequest);
-
-      client.getAddressSqueakDisplays(getAddressSqueakDisplaysRequest, {}, (err, response) => {
-        console.log(response);
-        console.log(response.getSqueakDisplayEntriesList());
-        setSqueaks(response.getSqueakDisplayEntriesList())
-      });
-};
+      getAddressSqueakDisplays(address, setSqueaks);
+  };
 
   const goToCreateProfilePage = (profileId) => {
     history.push("/app/profile/" + profileId);
