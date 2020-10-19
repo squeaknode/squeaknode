@@ -35,6 +35,7 @@ import ReceiveBitcoinDialog from "../../components/ReceiveBitcoinDialog";
 import TransactionItem from "../../components/TransactionItem";
 import LightningPeerListItem from "../../components/LightningPeerListItem";
 import ChannelItem from "../../components/ChannelItem";
+import PendingOpenChannelItem from "../../components/PendingOpenChannelItem";
 
 import {
   GetInfoRequest,
@@ -42,6 +43,7 @@ import {
   GetTransactionsRequest,
   ListPeersRequest,
   ListChannelsRequest,
+  PendingChannelsRequest,
 } from "../../proto/lnd_pb"
 import { client } from "../../squeakclient/squeakclient"
 
@@ -54,6 +56,7 @@ export default function WalletPage() {
   const [transactions, setTransactions] = useState([]);
   const [peers, setPeers] = useState(null);
   const [channels, setChannels] = useState(null);
+  const [pendingChannels, setPendingChannels] = useState(null);
   const [value, setValue] = useState(0);
   const [receiveBitcoinDialogOpen, setReceiveBitcoinDialogOpen] = useState(false);
 
@@ -142,6 +145,22 @@ export default function WalletPage() {
           setChannels(response.getChannelsList());
         });
   };
+  const getPendingChannels = () => {
+        console.log("called pendingChannels");
+
+        var pendingChannelsRequest = new PendingChannelsRequest()
+        console.log(pendingChannelsRequest);
+
+        client.lndPendingChannels(pendingChannelsRequest, {}, (err, response) => {
+          if (err) {
+            console.log(err.message);
+            alert('Error getting pending channels: ' + err.message);
+            return;
+          }
+          console.log(response);
+          setPendingChannels(response);
+        });
+  };
 
   useEffect(()=>{
     getLndInfo()
@@ -157,6 +176,9 @@ export default function WalletPage() {
   },[]);
   useEffect(()=>{
     listChannels()
+  },[]);
+  useEffect(()=>{
+    getPendingChannels()
   },[]);
 
   function ReceiveBitcoinButton() {
@@ -431,6 +453,17 @@ export default function WalletPage() {
         alignItems="center"
       >
         <Grid item xs={12}>
+        {pendingChannels.getPendingOpenChannelsList().map(pendingOpenChannel =>
+          <Box
+            p={1}
+            key={pendingOpenChannel.getChannel().getChannelPoint()}
+            >
+          <PendingOpenChannelItem
+            key={pendingOpenChannel.getChannel().getChannelPoint()}
+            pendingOpenChannel={pendingOpenChannel}>
+          </PendingOpenChannelItem>
+          </Box>
+        )}
         {channels.map(channel =>
           <Box
             p={1}
@@ -504,7 +537,7 @@ export default function WalletPage() {
         }
       </TabPanel>
       <TabPanel value={value} index={4}>
-        {(channels != null)
+        {(channels != null && pendingChannels != null)
           ? ChannelsGridItem()
           : NoBalanceContent()
         }
