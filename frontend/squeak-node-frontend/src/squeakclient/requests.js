@@ -24,6 +24,9 @@ import {
   PayOfferRequest,
   GetBuyOffersRequest,
   GetBuyOfferRequest,
+  GetPeerRequest,
+  SetPeerDownloadingRequest,
+  SetPeerUploadingRequest,
 } from "../proto/squeak_admin_pb"
 
 
@@ -267,7 +270,7 @@ export function getBuyOffers(hash, handleResponse) {
 
 export function getBuyOffer(offerId, handleResponse) {
     console.log("Getting offer with offerId: " + offerId);
-    var getBuyOfferRequest = new GetBuyOfferRequest()
+    var getBuyOfferRequest = new GetBuyOfferRequest();
     getBuyOfferRequest.setOfferId(offerId);
     console.log(getBuyOfferRequest);
     client.getBuyOffer(getBuyOfferRequest, {}, (err, response) => {
@@ -280,4 +283,43 @@ export function getBuyOffer(offerId, handleResponse) {
       console.log(response.getOffer());
       handleResponse(response.getOffer())
     });
+};
+
+export function getPeer(id, handleResponse) {
+      console.log("called getPeer with peerId: " + id);
+      var getPeerRequest = new GetPeerRequest();
+      getPeerRequest.setPeerId(id);
+      console.log(getPeerRequest);
+      client.getPeer(getPeerRequest, {}, (err, response) => {
+        if (err) {
+          console.log(err.message);
+          return;
+        }
+        console.log(response);
+        handleResponse(response.getSqueakPeer())
+      });
+};
+
+export function setPeerDownloading(id, downloading, handleResponse) {
+      console.log("called setDownloading with peerId: " + id + ", downloading: " + downloading);
+      var setPeerDownloadingRequest = new SetPeerDownloadingRequest()
+      setPeerDownloadingRequest.setPeerId(id);
+      setPeerDownloadingRequest.setDownloading(downloading);
+      console.log(setPeerDownloadingRequest);
+      client.setPeerDownloading(setPeerDownloadingRequest, {}, (err, response) => {
+        console.log(response);
+        handleResponse(response);
+      });
+};
+
+export function setPeerUploading(id, uploading, handleResponse) {
+      console.log("called setUploading with peerId: " + id + ", uploading: " + uploading);
+      var setPeerUploadingRequest = new SetPeerUploadingRequest()
+      setPeerUploadingRequest.setPeerId(id);
+      setPeerUploadingRequest.setUploading(uploading);
+      console.log(setPeerUploadingRequest);
+      client.setPeerUploading(setPeerUploadingRequest, {}, (err, response) => {
+        console.log(response);
+        handleResponse(response);
+      });
 };

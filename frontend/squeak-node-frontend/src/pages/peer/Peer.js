@@ -20,11 +20,11 @@ import Widget from "../../components/Widget";
 import DeletePeerDialog from "../../components/DeletePeerDialog";
 
 import {
-  GetPeerRequest,
-  SetPeerDownloadingRequest,
-  SetPeerUploadingRequest,
-} from "../../proto/squeak_admin_pb"
-import { client } from "../../squeakclient/squeakclient"
+  getPeer,
+  setPeerDownloading,
+  setPeerUploading,
+} from "../../squeakclient/requests"
+
 
 
 export default function PeerPage() {
@@ -33,45 +33,22 @@ export default function PeerPage() {
   const [peer, setPeer] = useState(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
-  const getPeer = (id) => {
-        console.log("called getPeer with peerId: " + id);
-        var getPeerRequest = new GetPeerRequest()
-        getPeerRequest.setPeerId(id);
-        console.log(getPeerRequest);
-        client.getPeer(getPeerRequest, {}, (err, response) => {
-          if (err) {
-            console.log(err.message);
-            return;
-          }
-          console.log(response);
-          setPeer(response.getSqueakPeer())
-        });
+  const getSqueakPeer = (id) => {
+    getPeer(id, setPeer);
   };
   const setDownloading = (id, downloading) => {
-        console.log("called setDownloading with peerId: " + id + ", downloading: " + downloading);
-        var setPeerDownloadingRequest = new SetPeerDownloadingRequest()
-        setPeerDownloadingRequest.setPeerId(id);
-        setPeerDownloadingRequest.setDownloading(downloading);
-        console.log(setPeerDownloadingRequest);
-        client.setPeerDownloading(setPeerDownloadingRequest, {}, (err, response) => {
-          console.log(response);
-          getPeer(id);
-        });
+    setPeerDownloading(id, downloading, () => {
+      getSqueakPeer(id);
+    });
   };
   const setUploading = (id, uploading) => {
-        console.log("called setUploading with peerId: " + id + ", uploading: " + uploading);
-        var setPeerUploadingRequest = new SetPeerUploadingRequest()
-        setPeerUploadingRequest.setPeerId(id);
-        setPeerUploadingRequest.setUploading(uploading);
-        console.log(setPeerUploadingRequest);
-        client.setPeerUploading(setPeerUploadingRequest, {}, (err, response) => {
-          console.log(response);
-          getPeer(id);
-        });
+    setPeerUploading(id, uploading, () => {
+      getSqueakPeer(id);
+    });
   };
 
   useEffect(()=>{
-    getPeer(id)
+    getSqueakPeer(id)
   },[id]);
 
   const handleClickOpenDeleteDialog = () => {
