@@ -43,9 +43,9 @@ export default function TimelinePage() {
   const [open, setOpen] = React.useState(false);
   const history = useHistory();
 
-  const getSqueaks = (setResponse) => {
+  const getSqueaks = () => {
     console.log("called getSqueaks with setResponse");
-    getFollowedSqueaks(setResponse);
+    getFollowedSqueaks(setSqueaks);
   };
 
   const goToSqueakAddressPage = (squeakAddress) => {
@@ -66,7 +66,7 @@ export default function TimelinePage() {
 
   useEffect(()=>{
     getSqueaks(setSqueaks)
-  },[setSqueaks]);
+  },[]);
 
   function NoSqueaksContent() {
     return (
