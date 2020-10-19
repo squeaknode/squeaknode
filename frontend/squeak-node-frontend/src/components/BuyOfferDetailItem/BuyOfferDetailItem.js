@@ -95,7 +95,7 @@ export default function BuyOfferDetailItem({
         <Typography
           size="md"
           >
-            Expires: {moment(expireTime*1000).fromNow()}
+            Expires: {moment(expireTime*1000).fromNow()} ({expireTime})
           </Typography>
       </Box>
     )

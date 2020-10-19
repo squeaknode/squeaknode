@@ -901,7 +901,9 @@ class SqueakDb:
 
     def get_offers(self, squeak_hash):
         """ Get offers for a squeak hash. """
-        s = select([self.offers]).where(self.offers.c.squeak_hash == squeak_hash)
+        s = select([self.offers]).where(
+            self.offers.c.squeak_hash == squeak_hash
+        )
         with self.get_connection() as connection:
             result = connection.execute(s)
             rows = result.fetchall()
@@ -986,6 +988,17 @@ class SqueakDb:
         #     curs.execute(sql)
         #     rows = curs.fetchall()
         #     return len(rows)
+
+    def delete_offers_for_squeak(self, squeak_hash):
+        """ Delete all offers for a squeak hash. """
+        squeak_hash_str = squeak_hash.hex()
+        s = self.offers.delete().where(
+            self.offers.c.squeak_hash == squeak_hash_str
+        )
+        with self.get_connection() as connection:
+            res = connection.execute(s)
+            deleted_offers = res.rowcount
+            return deleted_offers
 
     def insert_sent_payment(self, sent_payment):
         """ Insert a new sent payment. """
