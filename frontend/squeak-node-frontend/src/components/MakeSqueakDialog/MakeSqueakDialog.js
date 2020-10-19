@@ -61,10 +61,16 @@ export default function MakeSqueakDialog({
     setContent(event.target.value);
   };
 
+  const handleResponse = (response) => {
+    goToSqueakPage(response.getSqueakHash());
+  };
+
+  const handleErr = (err) => {
+    alert('Error making squeak: ' + err.message);
+  };
+
   const createSqueak = (profileId, content, replyto) => {
-    makeSqueakRequest(profileId, content, replyto, (response) => {
-      goToSqueakPage(response.getSqueakHash());
-    });
+    makeSqueakRequest(profileId, content, replyto, handleResponse, handleErr);
   };
   const loadSigningProfiles = () => {
     getSigningProfilesRequest(setSigningProfiles);

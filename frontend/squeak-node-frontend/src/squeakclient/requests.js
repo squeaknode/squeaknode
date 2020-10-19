@@ -285,13 +285,14 @@ export function getContactProfilesRequest(handleResponse) {
   });
 };
 
-export function makeSqueakRequest(profileId, content, replyto, handleResponse) {
+export function makeSqueakRequest(profileId, content, replyto, handleResponse, handleErr) {
   var request = new MakeSqueakRequest();
   request.setProfileId(profileId);
   request.setContent(content);
   request.setReplyto(replyto);
   client.makeSqueak(request, {}, (err, response) => {
     if (err) {
+      handleErr(err);
       return;
     }
     handleResponse(response);
