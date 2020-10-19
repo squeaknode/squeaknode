@@ -30,9 +30,8 @@ import Widget from "../../components/Widget";
 import SqueakThreadItem from "../../components/SqueakThreadItem";
 
 import {
-  OpenChannelRequest,
-} from "../../proto/lnd_pb"
-import { client } from "../../squeakclient/squeakclient"
+  lndOpenChannelSync,
+} from "../../squeakclient/requests"
 
 
 export default function OpenChannelDialog({
@@ -55,24 +54,7 @@ export default function OpenChannelDialog({
   };
 
   const openChannel = (pubkey, amount) => {
-    console.log("called openChannel");
-
-    var openChannelRequest = new OpenChannelRequest()
-    openChannelRequest.setNodePubkeyString(pubkey);
-    openChannelRequest.setLocalFundingAmount(amount);
-    console.log(openChannelRequest);
-
-    client.lndOpenChannelSync(openChannelRequest, {}, (err, response) => {
-      if (err) {
-        console.log(err.message);
-        alert('Error opening channel: ' + err.message);
-        return;
-      }
-      console.log(response);
-      console.log(response.getFundingTxidStr());
-      console.log(response.getOutputIndex());
-      // goToProfilePage(response.getProfileId());
-    });
+    lndOpenChannelSync(pubkey, amount, () => {});
   };
 
   // const goToProfilePage = (profileId) => {

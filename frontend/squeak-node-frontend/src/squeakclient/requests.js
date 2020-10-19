@@ -10,6 +10,7 @@ import {
   ConnectPeerRequest,
   LightningAddress,
   DisconnectPeerRequest,
+  OpenChannelRequest,
   CloseChannelRequest,
   ChannelPoint,
 } from "../proto/lnd_pb"
@@ -240,6 +241,27 @@ export function payOffer(offerId, handleResponse) {
     }
     console.log(response);
     //goToSqueakPage(offer.getSqueakHash());
+    handleResponse(response);
+  });
+};
+
+
+export function lndOpenChannelSync(pubkey, amount, handleResponse) {
+  console.log("called lndOpenChannelSync");
+  var openChannelRequest = new OpenChannelRequest()
+  openChannelRequest.setNodePubkeyString(pubkey);
+  openChannelRequest.setLocalFundingAmount(amount);
+  console.log(openChannelRequest);
+  client.lndOpenChannelSync(openChannelRequest, {}, (err, response) => {
+    if (err) {
+      console.log(err.message);
+      alert('Error opening channel: ' + err.message);
+      return;
+    }
+    console.log(response);
+    console.log(response.getFundingTxidStr());
+    console.log(response.getOutputIndex());
+    // goToProfilePage(response.getProfileId());
     handleResponse(response);
   });
 };
