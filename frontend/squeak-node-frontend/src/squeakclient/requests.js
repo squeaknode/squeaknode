@@ -37,6 +37,7 @@ import {
   CreateSigningProfileRequest,
   CreatePeerRequest,
   DeletePeerRequest,
+  DeleteSqueakProfileRequest,
 } from "../proto/squeak_admin_pb"
 
 
@@ -497,7 +498,22 @@ export function deletePeer(peerId, handleResponse) {
       return;
     }
     console.log(response);
-    // reloadRoute();
+    handleResponse(response);
+  });
+};
+
+export function deleteProfile(profileId, handleResponse) {
+  console.log("called deleteSqueak");
+  var deleteSqueakProfileRequest = new DeleteSqueakProfileRequest()
+  deleteSqueakProfileRequest.setProfileId(profileId);
+  console.log(deleteSqueakProfileRequest);
+  client.deleteSqueakProfile(deleteSqueakProfileRequest, {}, (err, response) => {
+    if (err) {
+      console.log(err.message);
+      alert('Error deleting profile: ' + err.message);
+      return;
+    }
+    console.log(response);
     handleResponse(response);
   });
 };
