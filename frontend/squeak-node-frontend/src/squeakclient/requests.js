@@ -29,6 +29,8 @@ import {
   GetSigningProfilesRequest,
   GetContactProfilesRequest,
   MakeSqueakRequest,
+  GetSqueakDisplayRequest,
+  GetAncestorSqueakDisplaysRequest,
 } from "../proto/squeak_admin_pb"
 
 
@@ -354,7 +356,7 @@ export function getContactProfiles(handleResponse) {
 
 export function makeSqueak(profileId, content, replyto, handleResponse) {
   console.log("called makeSqueak");
-  var makeSqueakRequest = new MakeSqueakRequest()
+  var makeSqueakRequest = new MakeSqueakRequest();
   makeSqueakRequest.setProfileId(profileId);
   makeSqueakRequest.setContent(content);
   makeSqueakRequest.setReplyto(replyto);
@@ -366,7 +368,38 @@ export function makeSqueak(profileId, content, replyto, handleResponse) {
       return;
     }
     console.log(response);
-    console.log(response.getSqueakHash());
     handleResponse(response);
   });
+};
+
+export function getSqueakDisplay(hash, handleResponse) {
+    var getSqueakDisplayRequest = new GetSqueakDisplayRequest();
+    getSqueakDisplayRequest.setSqueakHash(hash);
+    console.log(getSqueakDisplayRequest);
+    client.getSqueakDisplay(getSqueakDisplayRequest, {}, (err, response) => {
+      if (err) {
+        console.log(err.message);
+        alert('Error getting squeak with hash: ' + err.message);
+        return;
+      }
+      console.log(response);
+      console.log(response.getSqueakDisplayEntry());
+      handleResponse(response.getSqueakDisplayEntry())
+    });
+};
+
+export function getAncestorSqueakDisplays(hash, handleResponse) {
+    var getAncestorSqueakDisplaysRequest = new GetAncestorSqueakDisplaysRequest();
+    getAncestorSqueakDisplaysRequest.setSqueakHash(hash);
+    console.log(getAncestorSqueakDisplaysRequest);
+    client.getAncestorSqueakDisplays(getAncestorSqueakDisplaysRequest, {}, (err, response) => {
+      if (err) {
+        console.log(err.message);
+        alert('Error getting ancestor squeaks for hash: ' + err.message);
+        return;
+      }
+      console.log(response);
+      console.log(response.getSqueakDisplayEntriesList());
+      handleResponse(response.getSqueakDisplayEntriesList())
+    });
 };

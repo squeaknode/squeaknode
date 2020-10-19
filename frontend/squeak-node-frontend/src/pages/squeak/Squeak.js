@@ -20,10 +20,9 @@ import MakeSqueakDialog from "../../components/MakeSqueakDialog";
 import DeleteSqueakDialog from "../../components/DeleteSqueakDialog";
 
 import {
-  GetSqueakDisplayRequest,
-  GetAncestorSqueakDisplaysRequest,
-} from "../../proto/squeak_admin_pb"
-import { client } from "../../squeakclient/squeakclient"
+  getSqueakDisplay,
+  getAncestorSqueakDisplays,
+} from "../../squeakclient/requests"
 
 
 export default function SqueakPage() {
@@ -36,36 +35,10 @@ export default function SqueakPage() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   const getSqueak = (hash) => {
-      var getSqueakDisplayRequest = new GetSqueakDisplayRequest()
-      getSqueakDisplayRequest.setSqueakHash(hash);
-      console.log(getSqueakDisplayRequest);
-
-      client.getSqueakDisplay(getSqueakDisplayRequest, {}, (err, response) => {
-        if (err) {
-          console.log(err.message);
-          alert('Error getting squeak with hash: ' + err.message);
-          return;
-        }
-        console.log(response);
-        console.log(response.getSqueakDisplayEntry());
-        setSqueak(response.getSqueakDisplayEntry())
-      });
+      getSqueakDisplay(hash, setSqueak);
   };
   const getAncestorSqueaks = (hash) => {
-      var getAncestorSqueakDisplaysRequest = new GetAncestorSqueakDisplaysRequest()
-      getAncestorSqueakDisplaysRequest.setSqueakHash(hash);
-      console.log(getAncestorSqueakDisplaysRequest);
-
-      client.getAncestorSqueakDisplays(getAncestorSqueakDisplaysRequest, {}, (err, response) => {
-        if (err) {
-          console.log(err.message);
-          alert('Error getting ancestor squeaks for hash: ' + err.message);
-          return;
-        }
-        console.log(response);
-        console.log(response.getSqueakDisplayEntriesList());
-        setAncestorSqueaks(response.getSqueakDisplayEntriesList())
-      });
+      getAncestorSqueakDisplays(hash, setAncestorSqueaks);
   };
 
   const handleClickOpen = () => {
