@@ -22,6 +22,7 @@ import {
   SetSqueakProfileWhitelistedRequest,
   GetPeersRequest,
   PayOfferRequest,
+  GetBuyOffersRequest,
 } from "../proto/squeak_admin_pb"
 
 
@@ -245,4 +246,20 @@ export function lndCloseChannel(txId, outputIndex, handleResponse) {
     // goToProfilePage(response.getProfileId());
     handleResponse(response);
   });
+};
+
+export function getBuyOffers(hash, handleResponse) {
+    var getBuyOffersRequest = new GetBuyOffersRequest();
+    getBuyOffersRequest.setSqueakHash(hash);
+    console.log(getBuyOffersRequest);
+    client.getBuyOffers(getBuyOffersRequest, {}, (err, response) => {
+      if (err) {
+        console.log(err.message);
+        alert('Error getting offers: ' + err.message);
+        return;
+      }
+      console.log(response);
+      console.log(response.getOffersList());
+      handleResponse(response.getOffersList());
+    });
 };
