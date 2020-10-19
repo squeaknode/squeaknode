@@ -33,7 +33,7 @@ import SqueakThreadItem from "../../components/SqueakThreadItem";
 import { Typography } from "../../components/Wrappers";
 import MakeSqueakDialog from "../../components/MakeSqueakDialog";
 
-import { getFollowedSqueakDisplays } from "../../squeakclient/requests"
+import { getFollowedSqueakDisplaysRequest } from "../../squeakclient/requests"
 
 
 export default function TimelinePage() {
@@ -44,7 +44,7 @@ export default function TimelinePage() {
   const history = useHistory();
 
   const getSqueaks = () => {
-    getFollowedSqueakDisplays(setSqueaks);
+    getFollowedSqueakDisplaysRequest(setSqueaks);
   };
 
   const goToSqueakAddressPage = (squeakAddress) => {

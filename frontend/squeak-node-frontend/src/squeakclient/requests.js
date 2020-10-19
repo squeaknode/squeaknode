@@ -44,41 +44,41 @@ import {
 } from "../proto/squeak_admin_pb"
 
 
-export function getFollowedSqueakDisplays(handleResponse) {
+export function getFollowedSqueakDisplaysRequest(handleResponse) {
   console.log("called getSqueaks with handleResponse");
-  var getFollowedSqueakDisplaysRequest = new GetFollowedSqueakDisplaysRequest();
-  client.getFollowedSqueakDisplays(getFollowedSqueakDisplaysRequest, {}, (err, response) => {
+  var request = new GetFollowedSqueakDisplaysRequest();
+  client.getFollowedSqueakDisplays(request, {}, (err, response) => {
     console.log(response);
     handleResponse(response.getSqueakDisplayEntriesList())
   });
 };
 
 
-export function lndGetInfo(handleResponse) {
+export function lndGetInfoRequest(handleResponse) {
   console.log("called lndGetInfo");
-  var getInfoRequest = new GetInfoRequest();
-  console.log(getInfoRequest);
-  client.lndGetInfo(getInfoRequest, {}, (err, response) => {
+  var request = new GetInfoRequest();
+  console.log(request);
+  client.lndGetInfo(request, {}, (err, response) => {
     console.log(response);
     handleResponse(response);
   });
 };
 
-export function lndWalletBalance(handleResponse) {
-      console.log("called lndWalletBalanceRequest");
-      var walletBalanceRequest = new WalletBalanceRequest();
-      console.log(walletBalanceRequest);
-      client.lndWalletBalance(walletBalanceRequest, {}, (err, response) => {
+export function lndWalletBalanceRequest(handleResponse) {
+      console.log("called lndWalletBalance");
+      var request = new WalletBalanceRequest();
+      console.log(request);
+      client.lndWalletBalance(request, {}, (err, response) => {
         console.log(response);
         handleResponse(response);
       });
 };
 
-export function lndGetTransactions(handleResponse) {
+export function lndGetTransactionsRequest(handleResponse) {
       console.log("called lndGetTransactions");
-      var getTransactionsRequest = new GetTransactionsRequest();
-      console.log(getTransactionsRequest);
-      client.lndGetTransactions(getTransactionsRequest, {}, (err, response) => {
+      var request = new GetTransactionsRequest();
+      console.log(request);
+      client.lndGetTransactions(request, {}, (err, response) => {
         console.log(response);
         console.log("response.getTransactionsList()");
         console.log(response.getTransactionsList());
@@ -86,11 +86,11 @@ export function lndGetTransactions(handleResponse) {
       });
 };
 
-export function lndListPeers(handleResponse) {
+export function lndListPeersRequest(handleResponse) {
       console.log("called listPeers");
-      var listPeersRequest = new ListPeersRequest();
-      console.log(listPeersRequest);
-      client.lndListPeers(listPeersRequest, {}, (err, response) => {
+      var request = new ListPeersRequest();
+      console.log(request);
+      client.lndListPeers(request, {}, (err, response) => {
         console.log(response);
         console.log("response.getPeersList()");
         console.log(response.getPeersList());
@@ -100,9 +100,9 @@ export function lndListPeers(handleResponse) {
 
 export function lndListChannels(handleResponse) {
       console.log("called lndListChannels");
-      var listChannelsRequest = new ListChannelsRequest();
-      console.log(listChannelsRequest);
-      client.lndListChannels(listChannelsRequest, {}, (err, response) => {
+      var request = new ListChannelsRequest();
+      console.log(request);
+      client.lndListChannels(request, {}, (err, response) => {
         if (err) {
           console.log(err.message);
           alert('Error getting channels: ' + err.message);
@@ -117,9 +117,9 @@ export function lndListChannels(handleResponse) {
 
 export function lndPendingChannels(handleResponse) {
       console.log("called lndPendingChannels");
-      var pendingChannelsRequest = new PendingChannelsRequest();
-      console.log(pendingChannelsRequest);
-      client.lndPendingChannels(pendingChannelsRequest, {}, (err, response) => {
+      var request = new PendingChannelsRequest();
+      console.log(request);
+      client.lndPendingChannels(request, {}, (err, response) => {
         if (err) {
           console.log(err.message);
           alert('Error getting pending channels: ' + err.message);
@@ -132,10 +132,10 @@ export function lndPendingChannels(handleResponse) {
 
 export function getSqueakProfile(id, handleResponse) {
       console.log("called getSqueakProfile with profileId: " + id);
-      var getSqueakProfileRequest = new GetSqueakProfileRequest();
-      getSqueakProfileRequest.setProfileId(id);
-      console.log(getSqueakProfileRequest);
-      client.getSqueakProfile(getSqueakProfileRequest, {}, (err, response) => {
+      var request = new GetSqueakProfileRequest();
+      request.setProfileId(id);
+      console.log(request);
+      client.getSqueakProfile(request, {}, (err, response) => {
         if (err) {
           console.log(err.message);
           return;
@@ -147,11 +147,11 @@ export function getSqueakProfile(id, handleResponse) {
 
 export function setSqueakProfileFollowing(id, following, handleResponse) {
       console.log("called setFollowing with profileId: " + id + ", following: " + following);
-      var setSqueakProfileFollowingRequest = new SetSqueakProfileFollowingRequest();
-      setSqueakProfileFollowingRequest.setProfileId(id);
-      setSqueakProfileFollowingRequest.setFollowing(following);
-      console.log(setSqueakProfileFollowingRequest);
-      client.setSqueakProfileFollowing(setSqueakProfileFollowingRequest, {}, (err, response) => {
+      var request = new SetSqueakProfileFollowingRequest();
+      request.setProfileId(id);
+      request.setFollowing(following);
+      console.log(request);
+      client.setSqueakProfileFollowing(request, {}, (err, response) => {
         console.log(response);
         handleResponse(response);
       });
@@ -159,11 +159,11 @@ export function setSqueakProfileFollowing(id, following, handleResponse) {
 
 export function setSqueakProfileSharing(id, sharing, handleResponse) {
       console.log("called setSharing with profileId: " + id + ", sharing: " + sharing);
-      var setSqueakProfileSharingRequest = new SetSqueakProfileSharingRequest();
-      setSqueakProfileSharingRequest.setProfileId(id);
-      setSqueakProfileSharingRequest.setSharing(sharing);
-      console.log(setSqueakProfileSharingRequest);
-      client.setSqueakProfileSharing(setSqueakProfileSharingRequest, {}, (err, response) => {
+      var request = new SetSqueakProfileSharingRequest();
+      request.setProfileId(id);
+      request.setSharing(sharing);
+      console.log(request);
+      client.setSqueakProfileSharing(request, {}, (err, response) => {
         console.log(response);
         handleResponse(response);
       });
@@ -171,11 +171,11 @@ export function setSqueakProfileSharing(id, sharing, handleResponse) {
 
 export function setSqueakProfileWhitelisted(id, whitelisted, handleResponse) {
       console.log("called setWhitelisted with profileId: " + id + ", whitelisted: " + whitelisted);
-      var setSqueakProfileWhitelistedRequest = new SetSqueakProfileWhitelistedRequest()
-      setSqueakProfileWhitelistedRequest.setProfileId(id);
-      setSqueakProfileWhitelistedRequest.setWhitelisted(whitelisted);
-      console.log(setSqueakProfileWhitelistedRequest);
-      client.setSqueakProfileWhitelisted(setSqueakProfileWhitelistedRequest, {}, (err, response) => {
+      var request = new SetSqueakProfileWhitelistedRequest()
+      request.setProfileId(id);
+      request.setWhitelisted(whitelisted);
+      console.log(request);
+      client.setSqueakProfileWhitelisted(request, {}, (err, response) => {
         console.log(response);
         handleResponse(response);
       });
@@ -183,13 +183,13 @@ export function setSqueakProfileWhitelisted(id, whitelisted, handleResponse) {
 
 export function lndConnectPeer(pubkey, host, handleResponse) {
   console.log("called connectPeer");
-  var connectPeerRequest = new ConnectPeerRequest()
+  var request = new ConnectPeerRequest()
   var address = new LightningAddress();
   address.setPubkey(pubkey);
   address.setHost(host);
-  connectPeerRequest.setAddr(address);
-  console.log(connectPeerRequest);
-  client.lndConnectPeer(connectPeerRequest, {}, (err, response) => {
+  request.setAddr(address);
+  console.log(request);
+  client.lndConnectPeer(request, {}, (err, response) => {
     if (err) {
       console.log(err.message);
       alert('Error connecting peer: ' + err.message);
@@ -202,10 +202,10 @@ export function lndConnectPeer(pubkey, host, handleResponse) {
 
 export function lndDisconnectPeer(pubkey, handleResponse) {
   console.log("called disconnectPeer");
-  var disconnectPeerRequest = new DisconnectPeerRequest()
-  disconnectPeerRequest.setPubKey(pubkey);
-  console.log(disconnectPeerRequest);
-  client.lndDisconnectPeer(disconnectPeerRequest, {}, (err, response) => {
+  var request = new DisconnectPeerRequest()
+  request.setPubKey(pubkey);
+  console.log(request);
+  client.lndDisconnectPeer(request, {}, (err, response) => {
     if (err) {
       console.log(err.message);
       alert('Error disconnecting peer: ' + err.message);
@@ -218,8 +218,8 @@ export function lndDisconnectPeer(pubkey, handleResponse) {
 
 export function getPeers(handleResponse) {
   console.log("called getPeers");
-  var getPeersRequest = new GetPeersRequest();
-  client.getPeers(getPeersRequest, {}, (err, response) => {
+  var request = new GetPeersRequest();
+  client.getPeers(request, {}, (err, response) => {
     if (err) {
       console.log(err.message);
       return;
@@ -231,10 +231,10 @@ export function getPeers(handleResponse) {
 
 export function payOffer(offerId, handleResponse) {
   console.log("called payOffer");
-  var payOfferRequest = new PayOfferRequest();
-  payOfferRequest.setOfferId(offerId);
-  console.log(payOfferRequest);
-  client.payOffer(payOfferRequest, {}, (err, response) => {
+  var request = new PayOfferRequest();
+  request.setOfferId(offerId);
+  console.log(request);
+  client.payOffer(request, {}, (err, response) => {
     if (err) {
       console.log(err.message);
       alert('Error paying offer: ' + err.message);
@@ -249,11 +249,11 @@ export function payOffer(offerId, handleResponse) {
 
 export function lndOpenChannelSync(pubkey, amount, handleResponse) {
   console.log("called lndOpenChannelSync");
-  var openChannelRequest = new OpenChannelRequest()
-  openChannelRequest.setNodePubkeyString(pubkey);
-  openChannelRequest.setLocalFundingAmount(amount);
-  console.log(openChannelRequest);
-  client.lndOpenChannelSync(openChannelRequest, {}, (err, response) => {
+  var request = new OpenChannelRequest()
+  request.setNodePubkeyString(pubkey);
+  request.setLocalFundingAmount(amount);
+  console.log(request);
+  client.lndOpenChannelSync(request, {}, (err, response) => {
     if (err) {
       console.log(err.message);
       alert('Error opening channel: ' + err.message);
@@ -269,13 +269,13 @@ export function lndOpenChannelSync(pubkey, amount, handleResponse) {
 
 export function lndCloseChannel(txId, outputIndex, handleResponse) {
   console.log("called closeChannel");
-  var closeChannelRequest = new CloseChannelRequest();
+  var request = new CloseChannelRequest();
   var channelPoint = new ChannelPoint();
   channelPoint.setFundingTxidStr(txId);
   channelPoint.setOutputIndex(outputIndex);
-  closeChannelRequest.setChannelPoint(channelPoint);
-  console.log(closeChannelRequest);
-  client.lndCloseChannel(closeChannelRequest, {}, (err, response) => {
+  request.setChannelPoint(channelPoint);
+  console.log(request);
+  client.lndCloseChannel(request, {}, (err, response) => {
     if (err) {
       console.log(err.message);
       alert('Error closing channel: ' + err.message);
@@ -288,10 +288,10 @@ export function lndCloseChannel(txId, outputIndex, handleResponse) {
 };
 
 export function getBuyOffers(hash, handleResponse) {
-    var getBuyOffersRequest = new GetBuyOffersRequest();
-    getBuyOffersRequest.setSqueakHash(hash);
-    console.log(getBuyOffersRequest);
-    client.getBuyOffers(getBuyOffersRequest, {}, (err, response) => {
+    var request = new GetBuyOffersRequest();
+    request.setSqueakHash(hash);
+    console.log(request);
+    client.getBuyOffers(request, {}, (err, response) => {
       if (err) {
         console.log(err.message);
         alert('Error getting offers: ' + err.message);
@@ -305,10 +305,10 @@ export function getBuyOffers(hash, handleResponse) {
 
 export function getBuyOffer(offerId, handleResponse) {
     console.log("Getting offer with offerId: " + offerId);
-    var getBuyOfferRequest = new GetBuyOfferRequest();
-    getBuyOfferRequest.setOfferId(offerId);
-    console.log(getBuyOfferRequest);
-    client.getBuyOffer(getBuyOfferRequest, {}, (err, response) => {
+    var request = new GetBuyOfferRequest();
+    request.setOfferId(offerId);
+    console.log(request);
+    client.getBuyOffer(request, {}, (err, response) => {
       if (err) {
         console.log(err.message);
         alert('Error getting offer: ' + err.message);
@@ -322,10 +322,10 @@ export function getBuyOffer(offerId, handleResponse) {
 
 export function getPeer(id, handleResponse) {
       console.log("called getPeer with peerId: " + id);
-      var getPeerRequest = new GetPeerRequest();
-      getPeerRequest.setPeerId(id);
-      console.log(getPeerRequest);
-      client.getPeer(getPeerRequest, {}, (err, response) => {
+      var request = new GetPeerRequest();
+      request.setPeerId(id);
+      console.log(request);
+      client.getPeer(request, {}, (err, response) => {
         if (err) {
           console.log(err.message);
           return;
@@ -337,11 +337,11 @@ export function getPeer(id, handleResponse) {
 
 export function setPeerDownloading(id, downloading, handleResponse) {
       console.log("called setDownloading with peerId: " + id + ", downloading: " + downloading);
-      var setPeerDownloadingRequest = new SetPeerDownloadingRequest();
-      setPeerDownloadingRequest.setPeerId(id);
-      setPeerDownloadingRequest.setDownloading(downloading);
-      console.log(setPeerDownloadingRequest);
-      client.setPeerDownloading(setPeerDownloadingRequest, {}, (err, response) => {
+      var request = new SetPeerDownloadingRequest();
+      request.setPeerId(id);
+      request.setDownloading(downloading);
+      console.log(request);
+      client.setPeerDownloading(request, {}, (err, response) => {
         console.log(response);
         handleResponse(response);
       });
@@ -349,11 +349,11 @@ export function setPeerDownloading(id, downloading, handleResponse) {
 
 export function setPeerUploading(id, uploading, handleResponse) {
       console.log("called setUploading with peerId: " + id + ", uploading: " + uploading);
-      var setPeerUploadingRequest = new SetPeerUploadingRequest();
-      setPeerUploadingRequest.setPeerId(id);
-      setPeerUploadingRequest.setUploading(uploading);
-      console.log(setPeerUploadingRequest);
-      client.setPeerUploading(setPeerUploadingRequest, {}, (err, response) => {
+      var request = new SetPeerUploadingRequest();
+      request.setPeerId(id);
+      request.setUploading(uploading);
+      console.log(request);
+      client.setPeerUploading(request, {}, (err, response) => {
         console.log(response);
         handleResponse(response);
       });
@@ -361,8 +361,8 @@ export function setPeerUploading(id, uploading, handleResponse) {
 
 export function getSigningProfiles(handleResponse) {
   console.log("called getSigningProfiles");
-  var getSigningProfilesRequest = new GetSigningProfilesRequest();
-  client.getSigningProfiles(getSigningProfilesRequest, {}, (err, response) => {
+  var request = new GetSigningProfilesRequest();
+  client.getSigningProfiles(request, {}, (err, response) => {
     if (err) {
       console.log(err.message);
       return;
@@ -374,8 +374,8 @@ export function getSigningProfiles(handleResponse) {
 
 export function getContactProfiles(handleResponse) {
   console.log("called getContactProfiles");
-  var getContactProfilesRequest = new GetContactProfilesRequest();
-  client.getContactProfiles(getContactProfilesRequest, {}, (err, response) => {
+  var request = new GetContactProfilesRequest();
+  client.getContactProfiles(request, {}, (err, response) => {
     if (err) {
       console.log(err.message);
       return;
@@ -387,12 +387,12 @@ export function getContactProfiles(handleResponse) {
 
 export function makeSqueak(profileId, content, replyto, handleResponse) {
   console.log("called makeSqueak");
-  var makeSqueakRequest = new MakeSqueakRequest();
-  makeSqueakRequest.setProfileId(profileId);
-  makeSqueakRequest.setContent(content);
-  makeSqueakRequest.setReplyto(replyto);
-  console.log(makeSqueakRequest);
-  client.makeSqueak(makeSqueakRequest, {}, (err, response) => {
+  var request = new MakeSqueakRequest();
+  request.setProfileId(profileId);
+  request.setContent(content);
+  request.setReplyto(replyto);
+  console.log(request);
+  client.makeSqueak(request, {}, (err, response) => {
     if (err) {
       console.log(err.message);
       alert('Error making squeak: ' + err.message);
@@ -404,10 +404,10 @@ export function makeSqueak(profileId, content, replyto, handleResponse) {
 };
 
 export function getSqueakDisplay(hash, handleResponse) {
-    var getSqueakDisplayRequest = new GetSqueakDisplayRequest();
-    getSqueakDisplayRequest.setSqueakHash(hash);
-    console.log(getSqueakDisplayRequest);
-    client.getSqueakDisplay(getSqueakDisplayRequest, {}, (err, response) => {
+    var request = new GetSqueakDisplayRequest();
+    request.setSqueakHash(hash);
+    console.log(request);
+    client.getSqueakDisplay(request, {}, (err, response) => {
       if (err) {
         console.log(err.message);
         alert('Error getting squeak with hash: ' + err.message);
@@ -420,10 +420,10 @@ export function getSqueakDisplay(hash, handleResponse) {
 };
 
 export function getAncestorSqueakDisplays(hash, handleResponse) {
-    var getAncestorSqueakDisplaysRequest = new GetAncestorSqueakDisplaysRequest();
-    getAncestorSqueakDisplaysRequest.setSqueakHash(hash);
-    console.log(getAncestorSqueakDisplaysRequest);
-    client.getAncestorSqueakDisplays(getAncestorSqueakDisplaysRequest, {}, (err, response) => {
+    var request = new GetAncestorSqueakDisplaysRequest();
+    request.setSqueakHash(hash);
+    console.log(request);
+    client.getAncestorSqueakDisplays(request, {}, (err, response) => {
       if (err) {
         console.log(err.message);
         alert('Error getting ancestor squeaks for hash: ' + err.message);
@@ -436,20 +436,20 @@ export function getAncestorSqueakDisplays(hash, handleResponse) {
 };
 
 export function getSqueakProfileByAddress(address, handleResponse) {
-      var getSqueakProfileByAddressRequest = new GetSqueakProfileByAddressRequest();
-      getSqueakProfileByAddressRequest.setAddress(address);
-      console.log(getSqueakProfileByAddressRequest);
-      client.getSqueakProfileByAddress(getSqueakProfileByAddressRequest, {}, (err, response) => {
+      var request = new GetSqueakProfileByAddressRequest();
+      request.setAddress(address);
+      console.log(request);
+      client.getSqueakProfileByAddress(request, {}, (err, response) => {
         console.log(response);
         handleResponse(response.getSqueakProfile());
       });
 };
 
 export function getAddressSqueakDisplays(address, handleResponse) {
-    var getAddressSqueakDisplaysRequest = new GetAddressSqueakDisplaysRequest();
-    getAddressSqueakDisplaysRequest.setAddress(address);
-    console.log(getAddressSqueakDisplaysRequest);
-    client.getAddressSqueakDisplays(getAddressSqueakDisplaysRequest, {}, (err, response) => {
+    var request = new GetAddressSqueakDisplaysRequest();
+    request.setAddress(address);
+    console.log(request);
+    client.getAddressSqueakDisplays(request, {}, (err, response) => {
       console.log(response);
       console.log(response.getSqueakDisplayEntriesList());
       handleResponse(response.getSqueakDisplayEntriesList());
@@ -458,11 +458,11 @@ export function getAddressSqueakDisplays(address, handleResponse) {
 
 export function createContactProfile(profileName, squeakAddress, handleResponse) {
   console.log("called createContactProfile");
-  var createContactProfileRequest = new CreateContactProfileRequest();
-  createContactProfileRequest.setProfileName(profileName);
-  createContactProfileRequest.setAddress(squeakAddress);
-  console.log(createContactProfileRequest);
-  client.createContactProfile(createContactProfileRequest, {}, (err, response) => {
+  var request = new CreateContactProfileRequest();
+  request.setProfileName(profileName);
+  request.setAddress(squeakAddress);
+  console.log(request);
+  client.createContactProfile(request, {}, (err, response) => {
     if (err) {
       console.log(err.message);
       alert('Error creating contact profile: ' + err.message);
@@ -476,10 +476,10 @@ export function createContactProfile(profileName, squeakAddress, handleResponse)
 
 export function createSigningProfile(profileName, handleResponse) {
   console.log("called createSigningProfile");
-  var createSigningProfileRequest = new CreateSigningProfileRequest();
-  createSigningProfileRequest.setProfileName(profileName);
-  console.log(createSigningProfileRequest);
-  client.createSigningProfile(createSigningProfileRequest, {}, (err, response) => {
+  var request = new CreateSigningProfileRequest();
+  request.setProfileName(profileName);
+  console.log(request);
+  client.createSigningProfile(request, {}, (err, response) => {
     if (err) {
       console.log(err.message);
       alert('Error creating signing profile: ' + err.message);
@@ -493,12 +493,12 @@ export function createSigningProfile(profileName, handleResponse) {
 
 export function createPeer(peerName, host, port, handleResponse) {
   console.log("called createPeer");
-  var createPeerRequest = new CreatePeerRequest();
-  createPeerRequest.setPeerName(peerName);
-  createPeerRequest.setHost(host);
-  createPeerRequest.setPort(port);
-  console.log(createPeerRequest);
-  client.createPeer(createPeerRequest, {}, (err, response) => {
+  var request = new CreatePeerRequest();
+  request.setPeerName(peerName);
+  request.setHost(host);
+  request.setPort(port);
+  console.log(request);
+  client.createPeer(request, {}, (err, response) => {
     if (err) {
       console.log(err.message);
       alert('Error creating peer: ' + err.message);
@@ -512,10 +512,10 @@ export function createPeer(peerName, host, port, handleResponse) {
 
 export function deletePeer(peerId, handleResponse) {
   console.log("called deletePeer");
-  var deletePeerRequest = new DeletePeerRequest();
-  deletePeerRequest.setPeerId(peerId);
-  console.log(deletePeerRequest);
-  client.deletePeer(deletePeerRequest, {}, (err, response) => {
+  var request = new DeletePeerRequest();
+  request.setPeerId(peerId);
+  console.log(request);
+  client.deletePeer(request, {}, (err, response) => {
     if (err) {
       console.log(err.message);
       alert('Error deleting peer: ' + err.message);
@@ -528,10 +528,10 @@ export function deletePeer(peerId, handleResponse) {
 
 export function deleteProfile(profileId, handleResponse) {
   console.log("called deleteSqueak");
-  var deleteSqueakProfileRequest = new DeleteSqueakProfileRequest();
-  deleteSqueakProfileRequest.setProfileId(profileId);
-  console.log(deleteSqueakProfileRequest);
-  client.deleteSqueakProfile(deleteSqueakProfileRequest, {}, (err, response) => {
+  var request = new DeleteSqueakProfileRequest();
+  request.setProfileId(profileId);
+  console.log(request);
+  client.deleteSqueakProfile(request, {}, (err, response) => {
     if (err) {
       console.log(err.message);
       alert('Error deleting profile: ' + err.message);
@@ -544,10 +544,10 @@ export function deleteProfile(profileId, handleResponse) {
 
 export function deleteSqueak(squeakHash, handleResponse) {
   console.log("called deleteSqueak");
-  var deleteSqueakRequest = new DeleteSqueakRequest();
-  deleteSqueakRequest.setSqueakHash(squeakHash);
-  console.log(deleteSqueakRequest);
-  client.deleteSqueak(deleteSqueakRequest, {}, (err, response) => {
+  var request = new DeleteSqueakRequest();
+  request.setSqueakHash(squeakHash);
+  console.log(request);
+  client.deleteSqueak(request, {}, (err, response) => {
     if (err) {
       console.log(err.message);
       alert('Error deleting squeak: ' + err.message);
@@ -560,9 +560,9 @@ export function deleteSqueak(squeakHash, handleResponse) {
 
 export function lndNewAddress(handleResponse) {
   console.log("called newAddress");
-  var newAddressRequest = new NewAddressRequest();
-  console.log(newAddressRequest);
-  client.lndNewAddress(newAddressRequest, {}, (err, response) => {
+  var request = new NewAddressRequest();
+  console.log(request);
+  client.lndNewAddress(request, {}, (err, response) => {
     if (err) {
       console.log(err.message);
       alert('Error getting new address: ' + err.message);

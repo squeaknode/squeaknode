@@ -38,10 +38,10 @@ import ChannelItem from "../../components/ChannelItem";
 import PendingOpenChannelItem from "../../components/PendingOpenChannelItem";
 
 import {
-  lndGetInfo,
-  lndWalletBalance,
-  lndGetTransactions,
-  lndListPeers,
+  lndGetInfoRequest,
+  lndWalletBalanceRequest,
+  lndGetTransactionsRequest,
+  lndListPeersRequest,
   lndListChannels,
   lndPendingChannels,
 } from "../../squeakclient/requests"
@@ -79,16 +79,16 @@ export default function WalletPage() {
   };
 
   const getLndInfo = () => {
-    lndGetInfo(setLndInfo);
+    lndGetInfoRequest(setLndInfo);
   };
   const getWalletBalance = () => {
-    lndWalletBalance(setWalletBalance);
+    lndWalletBalanceRequest(setWalletBalance);
   };
   const getTransactions = () => {
-    lndGetTransactions(setTransactions)
+    lndGetTransactionsRequest(setTransactions)
   };
   const listPeers = () => {
-    lndListPeers(setPeers);
+    lndListPeersRequest(setPeers);
   };
   const listChannels = () => {
     lndListChannels(setChannels);

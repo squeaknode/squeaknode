@@ -39,7 +39,7 @@ import {
   lndGetInfo,
   lndWalletBalance,
   lndGetTransactions,
-  lndListPeers,
+  lndListPeersRequest,
   lndListChannels,
   lndPendingChannels,
   lndConnectPeer,
@@ -114,7 +114,7 @@ export default function LightningNodePage() {
   };
 
   const listPeers = () => {
-    lndListPeers(setPeers);
+    lndListPeersRequest(setPeers);
   };
   const listChannels = () => {
     lndListChannels(setChannels);
