@@ -20,15 +20,10 @@ import Widget from "../../components/Widget";
 import DeleteProfileDialog from "../../components/DeleteProfileDialog";
 
 import {
-  GetSqueakProfileRequest,
-  SetSqueakProfileFollowingRequest,
-  SetSqueakProfileSharingRequest,
-  SetSqueakProfileWhitelistedRequest,
-} from "../../proto/squeak_admin_pb"
-import { client } from "../../squeakclient/squeakclient"
-import {
   getSqueakProfile,
   setSqueakProfileFollowing,
+  setSqueakProfileSharing,
+  setSqueakProfileWhitelisted,
 } from "../../squeakclient/requests"
 
 
@@ -48,26 +43,14 @@ export default function ProfilePage() {
     })
   };
   const setSharing = (id, sharing) => {
-        console.log("called setSharing with profileId: " + id + ", sharing: " + sharing);
-        var setSqueakProfileSharingRequest = new SetSqueakProfileSharingRequest()
-        setSqueakProfileSharingRequest.setProfileId(id);
-        setSqueakProfileSharingRequest.setSharing(sharing);
-        console.log(setSqueakProfileSharingRequest);
-        client.setSqueakProfileSharing(setSqueakProfileSharingRequest, {}, (err, response) => {
-          console.log(response);
-          getSqueakProfile(id);
-        });
+    setSqueakProfileSharing(id, sharing, () => {
+      updateSqueakProfile(id);
+    })
   };
   const setWhitelisted = (id, whitelisted) => {
-        console.log("called setWhitelisted with profileId: " + id + ", whitelisted: " + whitelisted);
-        var setSqueakProfileWhitelistedRequest = new SetSqueakProfileWhitelistedRequest()
-        setSqueakProfileWhitelistedRequest.setProfileId(id);
-        setSqueakProfileWhitelistedRequest.setWhitelisted(whitelisted);
-        console.log(setSqueakProfileWhitelistedRequest);
-        client.setSqueakProfileWhitelisted(setSqueakProfileWhitelistedRequest, {}, (err, response) => {
-          console.log(response);
-          getSqueakProfile(id);
-        });
+    setSqueakProfileWhitelisted(id, whitelisted, () => {
+      updateSqueakProfile(id);
+    })
   };
 
 

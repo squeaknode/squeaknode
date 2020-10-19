@@ -121,11 +121,35 @@ export function getSqueakProfile(id, handleResponse) {
 
 export function setSqueakProfileFollowing(id, following, handleResponse) {
       console.log("called setFollowing with profileId: " + id + ", following: " + following);
-      var setSqueakProfileFollowingRequest = new SetSqueakProfileFollowingRequest()
+      var setSqueakProfileFollowingRequest = new SetSqueakProfileFollowingRequest();
       setSqueakProfileFollowingRequest.setProfileId(id);
       setSqueakProfileFollowingRequest.setFollowing(following);
       console.log(setSqueakProfileFollowingRequest);
       client.setSqueakProfileFollowing(setSqueakProfileFollowingRequest, {}, (err, response) => {
+        console.log(response);
+        handleResponse(response);
+      });
+};
+
+export function setSqueakProfileSharing(id, sharing, handleResponse) {
+      console.log("called setSharing with profileId: " + id + ", sharing: " + sharing);
+      var setSqueakProfileSharingRequest = new SetSqueakProfileSharingRequest();
+      setSqueakProfileSharingRequest.setProfileId(id);
+      setSqueakProfileSharingRequest.setSharing(sharing);
+      console.log(setSqueakProfileSharingRequest);
+      client.setSqueakProfileSharing(setSqueakProfileSharingRequest, {}, (err, response) => {
+        console.log(response);
+        handleResponse(response);
+      });
+};
+
+export function setSqueakProfileWhitelisted(id, whitelisted, handleResponse) {
+      console.log("called setWhitelisted with profileId: " + id + ", whitelisted: " + whitelisted);
+      var setSqueakProfileWhitelistedRequest = new SetSqueakProfileWhitelistedRequest()
+      setSqueakProfileWhitelistedRequest.setProfileId(id);
+      setSqueakProfileWhitelistedRequest.setWhitelisted(whitelisted);
+      console.log(setSqueakProfileWhitelistedRequest);
+      client.setSqueakProfileWhitelisted(setSqueakProfileWhitelistedRequest, {}, (err, response) => {
         console.log(response);
         handleResponse(response);
       });
