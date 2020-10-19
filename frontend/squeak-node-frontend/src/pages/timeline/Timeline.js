@@ -33,12 +33,7 @@ import SqueakThreadItem from "../../components/SqueakThreadItem";
 import { Typography } from "../../components/Wrappers";
 import MakeSqueakDialog from "../../components/MakeSqueakDialog";
 
-import { GetInfoRequest, WalletBalanceRequest } from "../../proto/lnd_pb"
-import {
-  GetFollowedSqueakDisplaysRequest,
-  GetSigningProfilesRequest,
-} from "../../proto/squeak_admin_pb"
-import { client } from "../../squeakclient/squeakclient"
+import { getFollowedSqueaks } from "../../squeakclient/requests"
 
 
 export default function TimelinePage() {
@@ -48,13 +43,9 @@ export default function TimelinePage() {
   const [open, setOpen] = React.useState(false);
   const history = useHistory();
 
-  const getSqueaks = () => {
-    console.log("called getSqueaks");
-    var getFollowedSqueakDisplaysRequest = new GetFollowedSqueakDisplaysRequest()
-    client.getFollowedSqueakDisplays(getFollowedSqueakDisplaysRequest, {}, (err, response) => {
-      console.log(response);
-      setSqueaks(response.getSqueakDisplayEntriesList())
-    });
+  const getSqueaks = (setResponse) => {
+    console.log("called getSqueaks with setResponse");
+    getFollowedSqueaks(setResponse);
   };
 
   const goToSqueakAddressPage = (squeakAddress) => {
@@ -74,8 +65,8 @@ export default function TimelinePage() {
   };
 
   useEffect(()=>{
-    getSqueaks()
-  },[]);
+    getSqueaks(setSqueaks)
+  },[setSqueaks]);
 
   function NoSqueaksContent() {
     return (
