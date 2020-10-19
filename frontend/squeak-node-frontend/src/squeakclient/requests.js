@@ -186,19 +186,20 @@ export function payOfferRequest(offerId, handleResponse, handleErr) {
 };
 
 
-export function lndOpenChannelSyncRequest(pubkey, amount, handleResponse) {
+export function lndOpenChannelSyncRequest(pubkey, amount, handleResponse, handleErr) {
   var request = new OpenChannelRequest()
   request.setNodePubkeyString(pubkey);
   request.setLocalFundingAmount(amount);
   client.lndOpenChannelSync(request, {}, (err, response) => {
     if (err) {
+      handleErr(err);
       return;
     }
     handleResponse(response);
   });
 };
 
-export function lndCloseChannelRequest(txId, outputIndex, handleResponse) {
+export function lndCloseChannelRequest(txId, outputIndex, handleResponse, handleErr) {
   var request = new CloseChannelRequest();
   var channelPoint = new ChannelPoint();
   channelPoint.setFundingTxidStr(txId);
@@ -206,6 +207,7 @@ export function lndCloseChannelRequest(txId, outputIndex, handleResponse) {
   request.setChannelPoint(channelPoint);
   client.lndCloseChannel(request, {}, (err, response) => {
     if (err) {
+      handleErr(err);
       return;
     }
     handleResponse(response);

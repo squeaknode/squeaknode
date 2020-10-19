@@ -53,8 +53,17 @@ export default function OpenChannelDialog({
     setAmount(event.target.value);
   };
 
+  const handleResponse = (response) => {
+    // TODO: go to channel page instead of showing alert.
+    alert('Open channel pending.');
+  };
+
+  const handleErr = (err) => {
+    alert('Error opening channel: ' + err.message);
+  };
+
   const openChannel = (pubkey, amount) => {
-    lndOpenChannelSyncRequest(pubkey, amount, () => {});
+    lndOpenChannelSyncRequest(pubkey, amount, handleResponse, handleErr);
   };
 
   // const goToProfilePage = (profileId) => {

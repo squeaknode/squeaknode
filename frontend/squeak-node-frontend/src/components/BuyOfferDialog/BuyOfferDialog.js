@@ -44,16 +44,16 @@ export default function BuyOfferDialog({
   var classes = useStyles();
   const history = useHistory();
 
-  const handleBuyResponse = (response) => {
+  const handleResponse = (response) => {
     goToSqueakPage(offer.getSqueakHash());
   };
 
-  const handleBuyErr = (err) => {
+  const handleErr = (err) => {
     alert('Error paying offer: ' + err.message);
   };
 
   const pay = (offerId) => {
-    payOfferRequest(offerId, handleBuyResponse, handleBuyErr);
+    payOfferRequest(offerId, handleResponse, handleErr);
   };
 
   const goToSqueakPage = (squeakHash) => {
