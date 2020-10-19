@@ -47,7 +47,6 @@ import {
 export function getFollowedSqueakDisplaysRequest(handleResponse) {
   var request = new GetFollowedSqueakDisplaysRequest();
   client.getFollowedSqueakDisplays(request, {}, (err, response) => {
-    console.log(response);
     handleResponse(response.getSqueakDisplayEntriesList())
   });
 };
