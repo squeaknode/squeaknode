@@ -173,11 +173,12 @@ export function getPeersRequest(handleResponse) {
   });
 };
 
-export function payOfferRequest(offerId, handleResponse) {
+export function payOfferRequest(offerId, handleResponse, handleErr) {
   var request = new PayOfferRequest();
   request.setOfferId(offerId);
   client.payOffer(request, {}, (err, response) => {
     if (err) {
+      handleErr(err);
       return;
     }
     handleResponse(response);
