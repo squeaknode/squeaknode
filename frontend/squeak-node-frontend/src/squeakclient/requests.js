@@ -38,6 +38,7 @@ import {
   CreatePeerRequest,
   DeletePeerRequest,
   DeleteSqueakProfileRequest,
+  DeleteSqueakRequest,
 } from "../proto/squeak_admin_pb"
 
 
@@ -511,6 +512,22 @@ export function deleteProfile(profileId, handleResponse) {
     if (err) {
       console.log(err.message);
       alert('Error deleting profile: ' + err.message);
+      return;
+    }
+    console.log(response);
+    handleResponse(response);
+  });
+};
+
+export function deleteSqueak(squeakHash, handleResponse) {
+  console.log("called deleteSqueak");
+  var deleteSqueakRequest = new DeleteSqueakRequest()
+  deleteSqueakRequest.setSqueakHash(squeakHash);
+  console.log(deleteSqueakRequest);
+  client.deleteSqueak(deleteSqueakRequest, {}, (err, response) => {
+    if (err) {
+      console.log(err.message);
+      alert('Error deleting squeak: ' + err.message);
       return;
     }
     console.log(response);

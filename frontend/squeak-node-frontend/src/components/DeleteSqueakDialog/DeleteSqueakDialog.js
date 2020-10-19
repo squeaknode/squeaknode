@@ -30,9 +30,8 @@ import Widget from "../../components/Widget";
 import SqueakThreadItem from "../../components/SqueakThreadItem";
 
 import {
-  DeleteSqueakRequest,
-} from "../../proto/squeak_admin_pb"
-import { client } from "../../squeakclient/squeakclient"
+  deleteSqueak,
+} from "../../squeakclient/requests"
 
 
 export default function DeleteSqueakDialog({
@@ -44,21 +43,8 @@ export default function DeleteSqueakDialog({
   var classes = useStyles();
   const history = useHistory();
 
-  const deleteSqueak = (squeakHash) => {
-    console.log("called deleteSqueak");
-
-    var deleteSqueakRequest = new DeleteSqueakRequest()
-    deleteSqueakRequest.setSqueakHash(squeakHash);
-    console.log(deleteSqueakRequest);
-
-    client.deleteSqueak(deleteSqueakRequest, {}, (err, response) => {
-      if (err) {
-        console.log(err.message);
-        alert('Error deleting squeak: ' + err.message);
-        return;
-      }
-
-      console.log(response);
+  const callDeleteSqueak = (squeakHash) => {
+    deleteSqueak(squeakHash, (response) => {
       reloadRoute();
     });
   };
@@ -76,7 +62,7 @@ export default function DeleteSqueakDialog({
     console.log( 'squeakToDelete:', squeakToDelete);
     var squeakHash = squeakToDelete.getSqueakHash();
     console.log( 'squeakHash:', squeakHash);
-    deleteSqueak(squeakHash);
+    callDeleteSqueak(squeakHash);
     handleClose();
   }
 
