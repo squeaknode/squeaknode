@@ -19,6 +19,7 @@ import {
   SetSqueakProfileSharingRequest,
   SetSqueakProfileWhitelistedRequest,
   GetPeersRequest,
+  PayOfferRequest,
 } from "../proto/squeak_admin_pb"
 
 
@@ -204,5 +205,22 @@ export function getPeers(handleResponse) {
     }
     console.log(response);
     handleResponse(response.getSqueakPeersList());
+  });
+};
+
+export function payOffer(offerId, handleResponse) {
+  console.log("called payOffer");
+  var payOfferRequest = new PayOfferRequest();
+  payOfferRequest.setOfferId(offerId);
+  console.log(payOfferRequest);
+  client.payOffer(payOfferRequest, {}, (err, response) => {
+    if (err) {
+      console.log(err.message);
+      alert('Error paying offer: ' + err.message);
+      return;
+    }
+    console.log(response);
+    //goToSqueakPage(offer.getSqueakHash());
+    handleResponse(response);
   });
 };

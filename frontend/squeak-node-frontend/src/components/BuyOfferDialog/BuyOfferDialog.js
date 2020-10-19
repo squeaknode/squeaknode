@@ -31,14 +31,8 @@ import SqueakThreadItem from "../../components/SqueakThreadItem";
 
 
 import {
-  CloseChannelRequest,
-  ChannelPoint,
-} from "../../proto/lnd_pb"
-import {
-  PayOfferRequest,
-} from "../../proto/squeak_admin_pb"
-
-import { client } from "../../squeakclient/squeakclient"
+  payOffer,
+} from "../../squeakclient/requests"
 
 
 export default function BuyOfferDialog({
@@ -50,20 +44,8 @@ export default function BuyOfferDialog({
   var classes = useStyles();
   const history = useHistory();
 
-  const payOffer = (offerId) => {
-    console.log("called payOffer");
-
-    var payOfferRequest = new PayOfferRequest();
-    payOfferRequest.setOfferId(offerId);
-    console.log(payOfferRequest);
-
-    client.payOffer(payOfferRequest, {}, (err, response) => {
-      if (err) {
-        console.log(err.message);
-        alert('Error paying offer: ' + err.message);
-        return;
-      }
-      console.log(response);
+  const pay = (offerId) => {
+    payOffer(offerId, () => {
       goToSqueakPage(offer.getSqueakHash());
     });
   };
@@ -75,7 +57,7 @@ export default function BuyOfferDialog({
   function handleSubmit(event) {
     event.preventDefault();
     console.log( 'Offer ID:', offer.getOfferId());
-    payOffer(offer.getOfferId());
+    pay(offer.getOfferId());
     handleClose();
   }
 
