@@ -36,17 +36,15 @@ import ChannelItem from "../../components/ChannelItem";
 import PendingOpenChannelItem from "../../components/PendingOpenChannelItem";
 
 import {
-  GetInfoRequest,
-  WalletBalanceRequest,
-  ListPeersRequest,
-  ListChannelsRequest,
-  PendingChannelsRequest,
-  LightningAddress,
-  ConnectPeerRequest,
-  DisconnectPeerRequest,
-} from "../../proto/lnd_pb"
-import { client } from "../../squeakclient/squeakclient"
-
+  lndGetInfo,
+  lndWalletBalance,
+  lndGetTransactions,
+  lndListPeers,
+  lndListChannels,
+  lndPendingChannels,
+  lndConnectPeer,
+  lndDisconnectPeer,
+} from "../../squeakclient/requests"
 
 export default function LightningNodePage() {
   var classes = useStyles();
@@ -116,94 +114,21 @@ export default function LightningNodePage() {
   };
 
   const listPeers = () => {
-        console.log("called listPeers");
-
-        var listPeersRequest = new ListPeersRequest()
-        console.log(listPeersRequest);
-
-        client.lndListPeers(listPeersRequest, {}, (err, response) => {
-          if (err) {
-            console.log(err.message);
-            alert('Error getting peers: ' + err.message);
-            return;
-          }
-          console.log(response);
-          console.log("response.getPeersList()");
-          console.log(response.getPeersList());
-          setPeers(response.getPeersList());
-        });
+    lndListPeers(setPeers);
   };
   const listChannels = () => {
-        console.log("called listChannels");
-
-        var listChannelsRequest = new ListChannelsRequest()
-        console.log(listChannelsRequest);
-
-        client.lndListChannels(listChannelsRequest, {}, (err, response) => {
-          if (err) {
-            console.log(err.message);
-            alert('Error getting channels: ' + err.message);
-            return;
-          }
-          console.log(response);
-          console.log("response.getChannelsList()");
-          console.log(response.getChannelsList());
-          setChannels(response.getChannelsList());
-        });
+    lndListChannels(setChannels);
   };
   const getPendingChannels = () => {
-        console.log("called pendingChannels");
-
-        var pendingChannelsRequest = new PendingChannelsRequest()
-        console.log(pendingChannelsRequest);
-
-        client.lndPendingChannels(pendingChannelsRequest, {}, (err, response) => {
-          if (err) {
-            console.log(err.message);
-            alert('Error getting pending channels: ' + err.message);
-            return;
-          }
-          console.log(response);
-          setPendingChannels(response);
-        });
+    lndPendingChannels(setPendingChannels);
   };
   const connectPeer = (pubkey, host) => {
-    console.log("called connectPeer");
-
-    var connectPeerRequest = new ConnectPeerRequest()
-    var address = new LightningAddress();
-    address.setPubkey(pubkey);
-    address.setHost(host);
-    connectPeerRequest.setAddr(address);
-    console.log(connectPeerRequest);
-
-    client.lndConnectPeer(connectPeerRequest, {}, (err, response) => {
-      if (err) {
-        console.log(err.message);
-        alert('Error connecting peer: ' + err.message);
-        return;
-      }
-
-      console.log(response);
+    lndConnectPeer(pubkey, host, () => {
       reloadRoute();
     });
   };
-
   const disconnectPeer = (pubkey) => {
-    console.log("called disconnectPeer");
-
-    var disconnectPeerRequest = new DisconnectPeerRequest()
-    disconnectPeerRequest.setPubKey(pubkey);
-    console.log(disconnectPeerRequest);
-
-    client.lndDisconnectPeer(disconnectPeerRequest, {}, (err, response) => {
-      if (err) {
-        console.log(err.message);
-        alert('Error disconnecting peer: ' + err.message);
-        return;
-      }
-
-      console.log(response);
+    lndDisconnectPeer(pubkey, () => {
       reloadRoute();
     });
   };

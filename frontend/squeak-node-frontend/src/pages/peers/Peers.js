@@ -25,9 +25,8 @@ import CreatePeerDialog from "../../components/CreatePeerDialog";
 import mock from "../dashboard/mock";
 
 import {
-  GetPeersRequest,
-} from "../../proto/squeak_admin_pb"
-import { client } from "../../squeakclient/squeakclient"
+  getPeers,
+} from "../../squeakclient/requests"
 
 
 const useStyles = makeStyles((theme) => ({
@@ -52,18 +51,7 @@ export default function Peers() {
   }
 
   const getSqueakPeers = () => {
-    console.log("called getSigningProfiles");
-
-    var getPeersRequest = new GetPeersRequest();
-
-    client.getPeers(getPeersRequest, {}, (err, response) => {
-      if (err) {
-        console.log(err.message);
-        return;
-      }
-      console.log(response);
-      setPeers(response.getSqueakPeersList());
-    });
+    getPeers(setPeers);
   };
 
   const goToPeerPage = (id) => {

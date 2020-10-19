@@ -20,12 +20,11 @@ import Widget from "../../components/Widget";
 import DeleteProfileDialog from "../../components/DeleteProfileDialog";
 
 import {
-  GetSqueakProfileRequest,
-  SetSqueakProfileFollowingRequest,
-  SetSqueakProfileSharingRequest,
-  SetSqueakProfileWhitelistedRequest,
-} from "../../proto/squeak_admin_pb"
-import { client } from "../../squeakclient/squeakclient"
+  getSqueakProfile,
+  setSqueakProfileFollowing,
+  setSqueakProfileSharing,
+  setSqueakProfileWhitelisted,
+} from "../../squeakclient/requests"
 
 
 export default function ProfilePage() {
@@ -35,58 +34,28 @@ export default function ProfilePage() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
 
-  const getSqueakProfile = (id) => {
-        console.log("called getSqueakProfile with profileId: " + id);
-        var getSqueakProfileRequest = new GetSqueakProfileRequest()
-        getSqueakProfileRequest.setProfileId(id);
-        console.log(getSqueakProfileRequest);
-        client.getSqueakProfile(getSqueakProfileRequest, {}, (err, response) => {
-          if (err) {
-            console.log(err.message);
-            return;
-          }
-
-          console.log(response);
-          setSqueakProfile(response.getSqueakProfile())
-        });
+  const updateSqueakProfile = (id) => {
+    getSqueakProfile(id, setSqueakProfile);
   };
   const setFollowing = (id, following) => {
-        console.log("called setFollowing with profileId: " + id + ", following: " + following);
-        var setSqueakProfileFollowingRequest = new SetSqueakProfileFollowingRequest()
-        setSqueakProfileFollowingRequest.setProfileId(id);
-        setSqueakProfileFollowingRequest.setFollowing(following);
-        console.log(setSqueakProfileFollowingRequest);
-        client.setSqueakProfileFollowing(setSqueakProfileFollowingRequest, {}, (err, response) => {
-          console.log(response);
-          getSqueakProfile(id);
-        });
+    setSqueakProfileFollowing(id, following, () => {
+      updateSqueakProfile(id);
+    })
   };
   const setSharing = (id, sharing) => {
-        console.log("called setSharing with profileId: " + id + ", sharing: " + sharing);
-        var setSqueakProfileSharingRequest = new SetSqueakProfileSharingRequest()
-        setSqueakProfileSharingRequest.setProfileId(id);
-        setSqueakProfileSharingRequest.setSharing(sharing);
-        console.log(setSqueakProfileSharingRequest);
-        client.setSqueakProfileSharing(setSqueakProfileSharingRequest, {}, (err, response) => {
-          console.log(response);
-          getSqueakProfile(id);
-        });
+    setSqueakProfileSharing(id, sharing, () => {
+      updateSqueakProfile(id);
+    })
   };
   const setWhitelisted = (id, whitelisted) => {
-        console.log("called setWhitelisted with profileId: " + id + ", whitelisted: " + whitelisted);
-        var setSqueakProfileWhitelistedRequest = new SetSqueakProfileWhitelistedRequest()
-        setSqueakProfileWhitelistedRequest.setProfileId(id);
-        setSqueakProfileWhitelistedRequest.setWhitelisted(whitelisted);
-        console.log(setSqueakProfileWhitelistedRequest);
-        client.setSqueakProfileWhitelisted(setSqueakProfileWhitelistedRequest, {}, (err, response) => {
-          console.log(response);
-          getSqueakProfile(id);
-        });
+    setSqueakProfileWhitelisted(id, whitelisted, () => {
+      updateSqueakProfile(id);
+    })
   };
 
 
   useEffect(()=>{
-    getSqueakProfile(id)
+    updateSqueakProfile(id)
   },[id]);
 
   const handleClickOpenDeleteDialog = () => {

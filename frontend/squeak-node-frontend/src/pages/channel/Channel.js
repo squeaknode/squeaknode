@@ -35,15 +35,10 @@ import CloseChannelDialog from "../../components/CloseChannelDialog";
 import ChannelItem from "../../components/ChannelItem";
 
 import {
-  GetInfoRequest,
-  WalletBalanceRequest,
-  ListPeersRequest,
-  ListChannelsRequest,
-  LightningAddress,
-  ConnectPeerRequest,
-  DisconnectPeerRequest,
-} from "../../proto/lnd_pb"
-import { client } from "../../squeakclient/squeakclient"
+  lndListPeers,
+  lndListChannels,
+  lndPendingChannels,
+} from "../../squeakclient/requests"
 
 
 export default function LightningNodePage() {
@@ -90,40 +85,11 @@ export default function LightningNodePage() {
   };
 
   const listPeers = () => {
-        console.log("called listPeers");
-
-        var listPeersRequest = new ListPeersRequest()
-        console.log(listPeersRequest);
-
-        client.lndListPeers(listPeersRequest, {}, (err, response) => {
-          if (err) {
-            console.log(err.message);
-            alert('Error getting peers: ' + err.message);
-            return;
-          }
-          console.log(response);
-          console.log("response.getPeersList()");
-          console.log(response.getPeersList());
-          setPeers(response.getPeersList());
-        });
+    lndListPeers(setPeers);
   };
+
   const listChannels = () => {
-        console.log("called listChannels");
-
-        var listChannelsRequest = new ListChannelsRequest()
-        console.log(listChannelsRequest);
-
-        client.lndListChannels(listChannelsRequest, {}, (err, response) => {
-          if (err) {
-            console.log(err.message);
-            alert('Error getting channels: ' + err.message);
-            return;
-          }
-          console.log(response);
-          console.log("response.getChannelsList()");
-          console.log(response.getChannelsList());
-          setChannels(response.getChannelsList());
-        });
+    lndListChannels(setChannels);
   };
 
   const handleClickCloseChannel = () => {

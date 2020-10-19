@@ -30,10 +30,8 @@ import Widget from "../../components/Widget";
 import SqueakThreadItem from "../../components/SqueakThreadItem";
 
 import {
-  CloseChannelRequest,
-  ChannelPoint,
-} from "../../proto/lnd_pb"
-import { client } from "../../squeakclient/squeakclient"
+  lndCloseChannel,
+} from "../../squeakclient/requests"
 
 
 export default function CloseChannelDialog({
@@ -57,29 +55,8 @@ export default function CloseChannelDialog({
   };
 
   const closeChannel = (txId, outputIndex) => {
-    console.log("called closeChannel");
-
-    var closeChannelRequest = new CloseChannelRequest()
-    var channelPoint = new ChannelPoint();
-    channelPoint.setFundingTxidStr(txId);
-    channelPoint.setOutputIndex(outputIndex);
-    closeChannelRequest.setChannelPoint(channelPoint);
-    console.log(closeChannelRequest);
-
-    client.lndCloseChannel(closeChannelRequest, {}, (err, response) => {
-      if (err) {
-        console.log(err.message);
-        alert('Error closing channel: ' + err.message);
-        return;
-      }
-      console.log(response);
-      // goToProfilePage(response.getProfileId());
-    });
+    lndCloseChannel(txId, outputIndex, () => {});
   };
-
-  // const goToProfilePage = (profileId) => {
-  //   history.push("/app/profile/" + profileId);
-  // };
 
   function handleSubmit(event) {
     event.preventDefault();

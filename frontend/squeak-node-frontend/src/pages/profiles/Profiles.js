@@ -25,12 +25,10 @@ import CreateContactProfileDialog from "../../components/CreateContactProfileDia
 // data
 import mock from "../dashboard/mock";
 
-import {GetInfoRequest} from "../../proto/lnd_pb"
 import {
-  GetSigningProfilesRequest,
-  GetContactProfilesRequest,
-} from "../../proto/squeak_admin_pb"
-import { client } from "../../squeakclient/squeakclient"
+  getSigningProfiles,
+  getContactProfiles,
+} from "../../squeakclient/requests"
 
 
 const useStyles = makeStyles((theme) => ({
@@ -61,46 +59,11 @@ export default function Profiles() {
     setValue(newValue);
   };
 
-  const getLndInfo = () => {
-    console.log("called getLndInfo");
-
-    var getInfoRequest = new GetInfoRequest()
-
-    client.lndGetInfo(getInfoRequest, {}, (err, response) => {
-      if (err) {
-        console.log(err.message);
-        return;
-      }
-      console.log(response);
-    });
+  const loadSigningProfiles = () => {
+    getSigningProfiles(setSigningProfiles);
   };
-  const getSigningProfiles = () => {
-    console.log("called getSigningProfiles");
-
-    var getSigningProfilesRequest = new GetSigningProfilesRequest()
-
-    client.getSigningProfiles(getSigningProfilesRequest, {}, (err, response) => {
-      if (err) {
-        console.log(err.message);
-        return;
-      }
-      console.log(response);
-      setSigningProfiles(response.getSqueakProfilesList());
-    });
-  };
-  const getContactProfiles = () => {
-    console.log("called getContactProfiles");
-
-    var getContactProfilesRequest = new GetContactProfilesRequest()
-
-    client.getContactProfiles(getContactProfilesRequest, {}, (err, response) => {
-      if (err) {
-        console.log(err.message);
-        return;
-      }
-      console.log(response);
-      setContactProfiles(response.getSqueakProfilesList());
-    });
+  const loadContactProfiles = () => {
+    getContactProfiles(setContactProfiles);
   };
 
   const goToSqueakAddressPage = (squeakAddress) => {
@@ -124,13 +87,10 @@ export default function Profiles() {
   };
 
   useEffect(() => {
-    getLndInfo()
+    loadSigningProfiles()
   }, []);
   useEffect(() => {
-    getSigningProfiles()
-  }, []);
-  useEffect(() => {
-    getContactProfiles()
+    loadContactProfiles()
   }, []);
 
   function TabPanel(props) {

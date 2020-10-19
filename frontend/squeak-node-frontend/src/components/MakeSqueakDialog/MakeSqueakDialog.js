@@ -29,8 +29,10 @@ import useStyles from "./styles";
 import Widget from "../../components/Widget";
 import SqueakThreadItem from "../../components/SqueakThreadItem";
 
-import {MakeSqueakRequest, GetSigningProfilesRequest} from "../../proto/squeak_admin_pb"
-import { client } from "../../squeakclient/squeakclient"
+import {
+  makeSqueak,
+  getSigningProfiles,
+} from "../../squeakclient/requests"
 
 
 export default function MakeSqueakDialog({
@@ -46,10 +48,6 @@ export default function MakeSqueakDialog({
   var [content, setContent] = useState('');
   var [signingProfiles, setSigningProfiles] = useState([]);
 
-  // local
-  // var [moreButtonRef, setMoreButtonRef] = useState(null);
-  // var [isMoreMenuOpen, setMoreMenuOpen] = useState(false);
-
   const resetFields = () => {
     setProfileId(-1);
     setContent('');
@@ -63,39 +61,17 @@ export default function MakeSqueakDialog({
     setContent(event.target.value);
   };
 
-  const makeSqueak = (profileId, content, replyto) => {
-    console.log("called makeSqueak");
-
-    var makeSqueakRequest = new MakeSqueakRequest()
-    makeSqueakRequest.setProfileId(profileId);
-    makeSqueakRequest.setContent(content);
-    makeSqueakRequest.setReplyto(replyto);
-    console.log(makeSqueakRequest);
-
-    client.makeSqueak(makeSqueakRequest, {}, (err, response) => {
-      if (err) {
-        console.log(err.message);
-        alert('Error making squeak: ' + err.message);
-        return;
-      }
-
-      console.log(response);
-      console.log(response.getSqueakHash());
+  const createSqueak = (profileId, content, replyto) => {
+    makeSqueak(profileId, content, replyto, (response) => {
       goToSqueakPage(response.getSqueakHash());
     });
   };
-  const getSigningProfiles = () => {
-    console.log("called getSigningProfiles");
-    var getSigningProfilesRequest = new GetSigningProfilesRequest()
-    client.getSigningProfiles(getSigningProfilesRequest, {}, (err, response) => {
-      console.log(response);
-      console.log(response.getSqueakProfilesList());
-      setSigningProfiles(response.getSqueakProfilesList());
-    });
+  const loadSigningProfiles = () => {
+    getSigningProfiles(setSigningProfiles);
   };
 
   useEffect(() => {
-    getSigningProfiles()
+    loadSigningProfiles()
   }, []);
 
   const goToSqueakPage = (squeakHash) => {
@@ -120,7 +96,7 @@ export default function MakeSqueakDialog({
       alert('Content cannot be empty.');
       return;
     }
-    makeSqueak(profileId, content, replyto);
+    createSqueak(profileId, content, replyto);
     handleClose();
   }
 

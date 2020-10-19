@@ -21,11 +21,8 @@ import MakeSqueakDialog from "../../components/MakeSqueakDialog";
 import DeleteSqueakDialog from "../../components/DeleteSqueakDialog";
 
 import {
-  GetSqueakDisplayRequest,
-  GetAncestorSqueakDisplaysRequest,
-  GetBuyOffersRequest,
-} from "../../proto/squeak_admin_pb"
-import { client } from "../../squeakclient/squeakclient"
+  getBuyOffers,
+} from "../../squeakclient/requests"
 
 
 export default function BuyPage() {
@@ -35,20 +32,7 @@ export default function BuyPage() {
   const [offers, setOffers] = useState([]);
 
   const getOffers = (hash) => {
-      var getBuyOffersRequest = new GetBuyOffersRequest()
-      getBuyOffersRequest.setSqueakHash(hash);
-      console.log(getBuyOffersRequest);
-
-      client.getBuyOffers(getBuyOffersRequest, {}, (err, response) => {
-        if (err) {
-          console.log(err.message);
-          alert('Error getting offers: ' + err.message);
-          return;
-        }
-        console.log(response);
-        console.log(response.getOffersList());
-        setOffers(response.getOffersList())
-      });
+      getBuyOffers(hash, setOffers);
   };
 
   const goToOfferPage = (offerId) => {
