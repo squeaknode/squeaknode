@@ -23,6 +23,7 @@ import {
   GetPeersRequest,
   PayOfferRequest,
   GetBuyOffersRequest,
+  GetBuyOfferRequest,
 } from "../proto/squeak_admin_pb"
 
 
@@ -261,5 +262,22 @@ export function getBuyOffers(hash, handleResponse) {
       console.log(response);
       console.log(response.getOffersList());
       handleResponse(response.getOffersList());
+    });
+};
+
+export function getBuyOffer(offerId, handleResponse) {
+    console.log("Getting offer with offerId: " + offerId);
+    var getBuyOfferRequest = new GetBuyOfferRequest()
+    getBuyOfferRequest.setOfferId(offerId);
+    console.log(getBuyOfferRequest);
+    client.getBuyOffer(getBuyOfferRequest, {}, (err, response) => {
+      if (err) {
+        console.log(err.message);
+        alert('Error getting offer: ' + err.message);
+        return;
+      }
+      console.log(response);
+      console.log(response.getOffer());
+      handleResponse(response.getOffer())
     });
 };

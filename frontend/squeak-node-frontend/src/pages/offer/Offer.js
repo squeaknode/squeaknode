@@ -21,11 +21,8 @@ import MakeSqueakDialog from "../../components/MakeSqueakDialog";
 import DeleteSqueakDialog from "../../components/DeleteSqueakDialog";
 
 import {
-  GetSqueakDisplayRequest,
-  GetAncestorSqueakDisplaysRequest,
-  GetBuyOfferRequest,
-} from "../../proto/squeak_admin_pb"
-import { client } from "../../squeakclient/squeakclient"
+  getBuyOffer,
+} from "../../squeakclient/requests"
 
 
 export default function OfferPage() {
@@ -35,21 +32,7 @@ export default function OfferPage() {
   const [offer, setOffer] = useState(null);
 
   const getOffer = (offerId) => {
-      console.log("Getting offer with offerId: " + offerId);
-      var getBuyOfferRequest = new GetBuyOfferRequest()
-      getBuyOfferRequest.setOfferId(offerId);
-      console.log(getBuyOfferRequest);
-
-      client.getBuyOffer(getBuyOfferRequest, {}, (err, response) => {
-        if (err) {
-          console.log(err.message);
-          alert('Error getting offer: ' + err.message);
-          return;
-        }
-        console.log(response);
-        console.log(response.getOffer());
-        setOffer(response.getOffer())
-      });
+      getBuyOffer(offerId, setOffer);
   };
 
   useEffect(()=>{
