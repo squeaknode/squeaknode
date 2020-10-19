@@ -36,6 +36,7 @@ import {
   CreateContactProfileRequest,
   CreateSigningProfileRequest,
   CreatePeerRequest,
+  DeletePeerRequest,
 } from "../proto/squeak_admin_pb"
 
 
@@ -480,6 +481,23 @@ export function createPeer(peerName, host, port, handleResponse) {
     }
     console.log(response);
     console.log(response.getPeerId());
+    handleResponse(response);
+  });
+};
+
+export function deletePeer(peerId, handleResponse) {
+  console.log("called deletePeer");
+  var deletePeerRequest = new DeletePeerRequest();
+  deletePeerRequest.setPeerId(peerId);
+  console.log(deletePeerRequest);
+  client.deletePeer(deletePeerRequest, {}, (err, response) => {
+    if (err) {
+      console.log(err.message);
+      alert('Error deleting peer: ' + err.message);
+      return;
+    }
+    console.log(response);
+    // reloadRoute();
     handleResponse(response);
   });
 };

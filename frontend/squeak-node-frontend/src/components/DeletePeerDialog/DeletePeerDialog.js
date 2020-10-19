@@ -29,9 +29,8 @@ import useStyles from "./styles";
 import Widget from "../../components/Widget";
 
 import {
-  DeletePeerRequest,
-} from "../../proto/squeak_admin_pb"
-import { client } from "../../squeakclient/squeakclient"
+  deletePeer,
+} from "../../squeakclient/requests"
 
 
 export default function DeletePeerDialog({
@@ -43,21 +42,8 @@ export default function DeletePeerDialog({
   var classes = useStyles();
   const history = useHistory();
 
-  const deletePeer = (peerId) => {
-    console.log("called deleteSqueak");
-
-    var deletePeerRequest = new DeletePeerRequest()
-    deletePeerRequest.setPeerId(peerId);
-    console.log(deletePeerRequest);
-
-    client.deletePeer(deletePeerRequest, {}, (err, response) => {
-      if (err) {
-        console.log(err.message);
-        alert('Error deleting peer: ' + err.message);
-        return;
-      }
-
-      console.log(response);
+  const deleteSqueakPeer = (peerId) => {
+    deletePeer(peerId, (response) => {
       reloadRoute();
     });
   };
@@ -71,7 +57,7 @@ export default function DeletePeerDialog({
     console.log( 'peer:', peer);
     var peerId = peer.getPeerId();
     console.log( 'peerId:', peerId);
-    deletePeer(peerId);
+    deleteSqueakPeer(peerId);
     handleClose();
   }
 
