@@ -27,7 +27,8 @@ import {
   SetPeerDownloadingRequest,
   SetPeerUploadingRequest,
   GetSigningProfilesRequest,
-  GetContactProfilesRequest
+  GetContactProfilesRequest,
+  MakeSqueakRequest,
 } from "../proto/squeak_admin_pb"
 
 
@@ -348,5 +349,24 @@ export function getContactProfiles(handleResponse) {
     }
     console.log(response);
     handleResponse(response.getSqueakProfilesList());
+  });
+};
+
+export function makeSqueak(profileId, content, replyto, handleResponse) {
+  console.log("called makeSqueak");
+  var makeSqueakRequest = new MakeSqueakRequest()
+  makeSqueakRequest.setProfileId(profileId);
+  makeSqueakRequest.setContent(content);
+  makeSqueakRequest.setReplyto(replyto);
+  console.log(makeSqueakRequest);
+  client.makeSqueak(makeSqueakRequest, {}, (err, response) => {
+    if (err) {
+      console.log(err.message);
+      alert('Error making squeak: ' + err.message);
+      return;
+    }
+    console.log(response);
+    console.log(response.getSqueakHash());
+    handleResponse(response);
   });
 };
