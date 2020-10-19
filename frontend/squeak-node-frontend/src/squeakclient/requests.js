@@ -18,6 +18,7 @@ import {
   SetSqueakProfileFollowingRequest,
   SetSqueakProfileSharingRequest,
   SetSqueakProfileWhitelistedRequest,
+  GetPeersRequest,
 } from "../proto/squeak_admin_pb"
 
 
@@ -190,5 +191,18 @@ export function lndDisconnectPeer(pubkey, handleResponse) {
     }
     console.log(response);
     handleResponse(response);
+  });
+};
+
+export function getPeers(handleResponse) {
+  console.log("called getPeers");
+  var getPeersRequest = new GetPeersRequest();
+  client.getPeers(getPeersRequest, {}, (err, response) => {
+    if (err) {
+      console.log(err.message);
+      return;
+    }
+    console.log(response);
+    handleResponse(response.getSqueakPeersList());
   });
 };
