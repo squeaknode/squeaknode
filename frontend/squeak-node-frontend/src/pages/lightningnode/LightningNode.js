@@ -40,8 +40,8 @@ import {
   lndWalletBalance,
   lndGetTransactions,
   lndListPeersRequest,
-  lndListChannels,
-  lndPendingChannels,
+  lndListChannelsRequest,
+  lndPendingChannelsRequest,
   lndConnectPeer,
   lndDisconnectPeer,
 } from "../../squeakclient/requests"
@@ -117,10 +117,10 @@ export default function LightningNodePage() {
     lndListPeersRequest(setPeers);
   };
   const listChannels = () => {
-    lndListChannels(setChannels);
+    lndListChannelsRequest(setChannels);
   };
   const getPendingChannels = () => {
-    lndPendingChannels(setPendingChannels);
+    lndPendingChannelsRequest(setPendingChannels);
   };
   const connectPeer = (pubkey, host) => {
     lndConnectPeer(pubkey, host, () => {

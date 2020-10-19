@@ -36,8 +36,8 @@ import ChannelItem from "../../components/ChannelItem";
 
 import {
   lndListPeersRequest,
-  lndListChannels,
-  lndPendingChannels,
+  lndListChannelsRequest,
+  lndPendingChannelsRequest,
 } from "../../squeakclient/requests"
 
 
@@ -89,7 +89,7 @@ export default function LightningNodePage() {
   };
 
   const listChannels = () => {
-    lndListChannels(setChannels);
+    lndListChannelsRequest(setChannels);
   };
 
   const handleClickCloseChannel = () => {

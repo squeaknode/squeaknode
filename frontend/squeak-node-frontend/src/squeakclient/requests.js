@@ -98,7 +98,7 @@ export function lndListPeersRequest(handleResponse) {
       });
 };
 
-export function lndListChannels(handleResponse) {
+export function lndListChannelsRequest(handleResponse) {
       console.log("called lndListChannels");
       var request = new ListChannelsRequest();
       console.log(request);
@@ -115,7 +115,7 @@ export function lndListChannels(handleResponse) {
       });
 };
 
-export function lndPendingChannels(handleResponse) {
+export function lndPendingChannelsRequest(handleResponse) {
       console.log("called lndPendingChannels");
       var request = new PendingChannelsRequest();
       console.log(request);
@@ -130,7 +130,7 @@ export function lndPendingChannels(handleResponse) {
       });
 };
 
-export function getSqueakProfile(id, handleResponse) {
+export function getSqueakProfileRequest(id, handleResponse) {
       console.log("called getSqueakProfile with profileId: " + id);
       var request = new GetSqueakProfileRequest();
       request.setProfileId(id);
@@ -145,7 +145,7 @@ export function getSqueakProfile(id, handleResponse) {
       });
 };
 
-export function setSqueakProfileFollowing(id, following, handleResponse) {
+export function setSqueakProfileFollowingRequest(id, following, handleResponse) {
       console.log("called setFollowing with profileId: " + id + ", following: " + following);
       var request = new SetSqueakProfileFollowingRequest();
       request.setProfileId(id);
@@ -157,7 +157,7 @@ export function setSqueakProfileFollowing(id, following, handleResponse) {
       });
 };
 
-export function setSqueakProfileSharing(id, sharing, handleResponse) {
+export function setSqueakProfileSharingRequest(id, sharing, handleResponse) {
       console.log("called setSharing with profileId: " + id + ", sharing: " + sharing);
       var request = new SetSqueakProfileSharingRequest();
       request.setProfileId(id);
@@ -169,7 +169,7 @@ export function setSqueakProfileSharing(id, sharing, handleResponse) {
       });
 };
 
-export function setSqueakProfileWhitelisted(id, whitelisted, handleResponse) {
+export function setSqueakProfileWhitelistedRequest(id, whitelisted, handleResponse) {
       console.log("called setWhitelisted with profileId: " + id + ", whitelisted: " + whitelisted);
       var request = new SetSqueakProfileWhitelistedRequest()
       request.setProfileId(id);
