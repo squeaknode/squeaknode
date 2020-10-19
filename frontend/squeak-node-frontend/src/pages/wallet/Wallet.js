@@ -39,7 +39,7 @@ import PendingOpenChannelItem from "../../components/PendingOpenChannelItem";
 
 import {
   lndGetInfo,
-  lndWalletBalanceRequest,
+  lndWalletBalance,
   lndGetTransactions,
   lndListPeers,
   lndListChannels,
@@ -82,7 +82,7 @@ export default function WalletPage() {
     lndGetInfo(setLndInfo);
   };
   const getWalletBalance = () => {
-    lndWalletBalanceRequest(setWalletBalance);
+    lndWalletBalance(setWalletBalance);
   };
   const getTransactions = () => {
     lndGetTransactions(setTransactions)

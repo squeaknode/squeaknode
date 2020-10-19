@@ -14,7 +14,7 @@ import {
 } from "../proto/squeak_admin_pb"
 
 
-export function getFollowedSqueaks(handleResponse) {
+export function getFollowedSqueakDisplays(handleResponse) {
   console.log("called getSqueaks with handleResponse");
   var getFollowedSqueakDisplaysRequest = new GetFollowedSqueakDisplaysRequest();
   client.getFollowedSqueakDisplays(getFollowedSqueakDisplaysRequest, {}, (err, response) => {
@@ -34,7 +34,7 @@ export function lndGetInfo(handleResponse) {
   });
 };
 
-export function lndWalletBalanceRequest(handleResponse) {
+export function lndWalletBalance(handleResponse) {
       console.log("called lndWalletBalanceRequest");
       var walletBalanceRequest = new WalletBalanceRequest();
       console.log(walletBalanceRequest);
