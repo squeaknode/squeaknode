@@ -67,22 +67,6 @@ export default function BuyOfferDialog({
     handleClose();
   }
 
-  function OfferIdInput() {
-    return (
-      <TextField
-        id="offerid-textarea"
-        label="OfferId"
-        required
-        autoFocus
-        value={offer.getOfferId()}
-        fullWidth
-        inputProps={{
-           readOnly: true,
-        }}
-      />
-    )
-  }
-
   function CancelButton() {
     return (
       <Button
@@ -113,7 +97,7 @@ export default function BuyOfferDialog({
   <DialogTitle id="form-dialog-title">Buy Offer</DialogTitle>
   <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
   <DialogContent>
-    {OfferIdInput()}
+    Are you sure you want to pay {offer.getAmount() / 1000} satoshis for this offer?
   </DialogContent>
   <DialogActions>
     {CancelButton()}
