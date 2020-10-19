@@ -26,8 +26,8 @@ import CreateContactProfileDialog from "../../components/CreateContactProfileDia
 import mock from "../dashboard/mock";
 
 import {
-  getSigningProfiles,
-  getContactProfiles,
+  getSigningProfilesRequest,
+  getContactProfilesRequest,
 } from "../../squeakclient/requests"
 
 
@@ -60,10 +60,10 @@ export default function Profiles() {
   };
 
   const loadSigningProfiles = () => {
-    getSigningProfiles(setSigningProfiles);
+    getSigningProfilesRequest(setSigningProfiles);
   };
   const loadContactProfiles = () => {
-    getContactProfiles(setContactProfiles);
+    getContactProfilesRequest(setContactProfiles);
   };
 
   const goToSqueakAddressPage = (squeakAddress) => {

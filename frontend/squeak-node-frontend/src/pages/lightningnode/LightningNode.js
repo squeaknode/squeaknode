@@ -42,8 +42,8 @@ import {
   lndListPeersRequest,
   lndListChannelsRequest,
   lndPendingChannelsRequest,
-  lndConnectPeer,
-  lndDisconnectPeer,
+  lndConnectPeerRequest,
+  lndDisconnectPeerRequest,
 } from "../../squeakclient/requests"
 
 export default function LightningNodePage() {
@@ -123,12 +123,12 @@ export default function LightningNodePage() {
     lndPendingChannelsRequest(setPendingChannels);
   };
   const connectPeer = (pubkey, host) => {
-    lndConnectPeer(pubkey, host, () => {
+    lndConnectPeerRequest(pubkey, host, () => {
       reloadRoute();
     });
   };
   const disconnectPeer = (pubkey) => {
-    lndDisconnectPeer(pubkey, () => {
+    lndDisconnectPeerRequest(pubkey, () => {
       reloadRoute();
     });
   };

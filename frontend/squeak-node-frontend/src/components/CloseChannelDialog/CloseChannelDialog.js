@@ -30,7 +30,7 @@ import Widget from "../../components/Widget";
 import SqueakThreadItem from "../../components/SqueakThreadItem";
 
 import {
-  lndCloseChannel,
+  lndCloseChannelRequest,
 } from "../../squeakclient/requests"
 
 
@@ -55,7 +55,7 @@ export default function CloseChannelDialog({
   };
 
   const closeChannel = (txId, outputIndex) => {
-    lndCloseChannel(txId, outputIndex, () => {});
+    lndCloseChannelRequest(txId, outputIndex, () => {});
   };
 
   function handleSubmit(event) {

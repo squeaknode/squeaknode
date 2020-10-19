@@ -181,7 +181,7 @@ export function setSqueakProfileWhitelistedRequest(id, whitelisted, handleRespon
       });
 };
 
-export function lndConnectPeer(pubkey, host, handleResponse) {
+export function lndConnectPeerRequest(pubkey, host, handleResponse) {
   console.log("called connectPeer");
   var request = new ConnectPeerRequest()
   var address = new LightningAddress();
@@ -200,7 +200,7 @@ export function lndConnectPeer(pubkey, host, handleResponse) {
   });
 };
 
-export function lndDisconnectPeer(pubkey, handleResponse) {
+export function lndDisconnectPeerRequest(pubkey, handleResponse) {
   console.log("called disconnectPeer");
   var request = new DisconnectPeerRequest()
   request.setPubKey(pubkey);
@@ -216,7 +216,7 @@ export function lndDisconnectPeer(pubkey, handleResponse) {
   });
 };
 
-export function getPeers(handleResponse) {
+export function getPeersRequest(handleResponse) {
   console.log("called getPeers");
   var request = new GetPeersRequest();
   client.getPeers(request, {}, (err, response) => {
@@ -229,7 +229,7 @@ export function getPeers(handleResponse) {
   });
 };
 
-export function payOffer(offerId, handleResponse) {
+export function payOfferRequest(offerId, handleResponse) {
   console.log("called payOffer");
   var request = new PayOfferRequest();
   request.setOfferId(offerId);
@@ -247,7 +247,7 @@ export function payOffer(offerId, handleResponse) {
 };
 
 
-export function lndOpenChannelSync(pubkey, amount, handleResponse) {
+export function lndOpenChannelSyncRequest(pubkey, amount, handleResponse) {
   console.log("called lndOpenChannelSync");
   var request = new OpenChannelRequest()
   request.setNodePubkeyString(pubkey);
@@ -267,7 +267,7 @@ export function lndOpenChannelSync(pubkey, amount, handleResponse) {
   });
 };
 
-export function lndCloseChannel(txId, outputIndex, handleResponse) {
+export function lndCloseChannelRequest(txId, outputIndex, handleResponse) {
   console.log("called closeChannel");
   var request = new CloseChannelRequest();
   var channelPoint = new ChannelPoint();
@@ -287,7 +287,7 @@ export function lndCloseChannel(txId, outputIndex, handleResponse) {
   });
 };
 
-export function getBuyOffers(hash, handleResponse) {
+export function getBuyOffersRequest(hash, handleResponse) {
     var request = new GetBuyOffersRequest();
     request.setSqueakHash(hash);
     console.log(request);
@@ -303,7 +303,7 @@ export function getBuyOffers(hash, handleResponse) {
     });
 };
 
-export function getBuyOffer(offerId, handleResponse) {
+export function getBuyOfferRequest(offerId, handleResponse) {
     console.log("Getting offer with offerId: " + offerId);
     var request = new GetBuyOfferRequest();
     request.setOfferId(offerId);
@@ -320,7 +320,7 @@ export function getBuyOffer(offerId, handleResponse) {
     });
 };
 
-export function getPeer(id, handleResponse) {
+export function getPeerRequest(id, handleResponse) {
       console.log("called getPeer with peerId: " + id);
       var request = new GetPeerRequest();
       request.setPeerId(id);
@@ -335,7 +335,7 @@ export function getPeer(id, handleResponse) {
       });
 };
 
-export function setPeerDownloading(id, downloading, handleResponse) {
+export function setPeerDownloadingRequest(id, downloading, handleResponse) {
       console.log("called setDownloading with peerId: " + id + ", downloading: " + downloading);
       var request = new SetPeerDownloadingRequest();
       request.setPeerId(id);
@@ -347,7 +347,7 @@ export function setPeerDownloading(id, downloading, handleResponse) {
       });
 };
 
-export function setPeerUploading(id, uploading, handleResponse) {
+export function setPeerUploadingRequest(id, uploading, handleResponse) {
       console.log("called setUploading with peerId: " + id + ", uploading: " + uploading);
       var request = new SetPeerUploadingRequest();
       request.setPeerId(id);
@@ -359,7 +359,7 @@ export function setPeerUploading(id, uploading, handleResponse) {
       });
 };
 
-export function getSigningProfiles(handleResponse) {
+export function getSigningProfilesRequest(handleResponse) {
   console.log("called getSigningProfiles");
   var request = new GetSigningProfilesRequest();
   client.getSigningProfiles(request, {}, (err, response) => {
@@ -372,7 +372,7 @@ export function getSigningProfiles(handleResponse) {
   });
 };
 
-export function getContactProfiles(handleResponse) {
+export function getContactProfilesRequest(handleResponse) {
   console.log("called getContactProfiles");
   var request = new GetContactProfilesRequest();
   client.getContactProfiles(request, {}, (err, response) => {
@@ -385,7 +385,7 @@ export function getContactProfiles(handleResponse) {
   });
 };
 
-export function makeSqueak(profileId, content, replyto, handleResponse) {
+export function makeSqueakRequest(profileId, content, replyto, handleResponse) {
   console.log("called makeSqueak");
   var request = new MakeSqueakRequest();
   request.setProfileId(profileId);
@@ -403,7 +403,7 @@ export function makeSqueak(profileId, content, replyto, handleResponse) {
   });
 };
 
-export function getSqueakDisplay(hash, handleResponse) {
+export function getSqueakDisplayRequest(hash, handleResponse) {
     var request = new GetSqueakDisplayRequest();
     request.setSqueakHash(hash);
     console.log(request);
@@ -419,7 +419,7 @@ export function getSqueakDisplay(hash, handleResponse) {
     });
 };
 
-export function getAncestorSqueakDisplays(hash, handleResponse) {
+export function getAncestorSqueakDisplaysRequest(hash, handleResponse) {
     var request = new GetAncestorSqueakDisplaysRequest();
     request.setSqueakHash(hash);
     console.log(request);

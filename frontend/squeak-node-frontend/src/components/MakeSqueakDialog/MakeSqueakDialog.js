@@ -30,8 +30,8 @@ import Widget from "../../components/Widget";
 import SqueakThreadItem from "../../components/SqueakThreadItem";
 
 import {
-  makeSqueak,
-  getSigningProfiles,
+  makeSqueakRequest,
+  getSigningProfilesRequest,
 } from "../../squeakclient/requests"
 
 
@@ -62,12 +62,12 @@ export default function MakeSqueakDialog({
   };
 
   const createSqueak = (profileId, content, replyto) => {
-    makeSqueak(profileId, content, replyto, (response) => {
+    makeSqueakRequest(profileId, content, replyto, (response) => {
       goToSqueakPage(response.getSqueakHash());
     });
   };
   const loadSigningProfiles = () => {
-    getSigningProfiles(setSigningProfiles);
+    getSigningProfilesRequest(setSigningProfiles);
   };
 
   useEffect(() => {

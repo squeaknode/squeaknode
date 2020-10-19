@@ -25,7 +25,7 @@ import CreatePeerDialog from "../../components/CreatePeerDialog";
 import mock from "../dashboard/mock";
 
 import {
-  getPeers,
+  getPeersRequest,
 } from "../../squeakclient/requests"
 
 
@@ -51,7 +51,7 @@ export default function Peers() {
   }
 
   const getSqueakPeers = () => {
-    getPeers(setPeers);
+    getPeersRequest(setPeers);
   };
 
   const goToPeerPage = (id) => {

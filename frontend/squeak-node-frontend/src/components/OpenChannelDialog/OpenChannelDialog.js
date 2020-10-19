@@ -30,7 +30,7 @@ import Widget from "../../components/Widget";
 import SqueakThreadItem from "../../components/SqueakThreadItem";
 
 import {
-  lndOpenChannelSync,
+  lndOpenChannelSyncRequest,
 } from "../../squeakclient/requests"
 
 
@@ -54,7 +54,7 @@ export default function OpenChannelDialog({
   };
 
   const openChannel = (pubkey, amount) => {
-    lndOpenChannelSync(pubkey, amount, () => {});
+    lndOpenChannelSyncRequest(pubkey, amount, () => {});
   };
 
   // const goToProfilePage = (profileId) => {
