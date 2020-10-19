@@ -33,6 +33,7 @@ import {
   GetAncestorSqueakDisplaysRequest,
   GetSqueakProfileByAddressRequest,
   GetAddressSqueakDisplaysRequest,
+  CreateContactProfileRequest,
 } from "../proto/squeak_admin_pb"
 
 
@@ -425,4 +426,23 @@ export function getAddressSqueakDisplays(address, handleResponse) {
       console.log(response.getSqueakDisplayEntriesList());
       handleResponse(response.getSqueakDisplayEntriesList());
     });
+};
+
+export function createContactProfile(profileName, squeakAddress, handleResponse) {
+  console.log("called createContactProfile");
+  var createContactProfileRequest = new CreateContactProfileRequest()
+  createContactProfileRequest.setProfileName(profileName);
+  createContactProfileRequest.setAddress(squeakAddress);
+  console.log(createContactProfileRequest);
+  client.createContactProfile(createContactProfileRequest, {}, (err, response) => {
+    if (err) {
+      console.log(err.message);
+      alert('Error creating contact profile: ' + err.message);
+      return;
+    }
+    console.log(response);
+    console.log(response.getProfileId());
+    // goToProfilePage(response.getProfileId());
+    handleResponse(response);
+  });
 };
