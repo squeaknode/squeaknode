@@ -230,6 +230,8 @@ class SqueakNode:
         )
 
     def delete_squeak(self, squeak_hash):
+        num_deleted_offers = self.postgres_db.delete_offers_for_squeak(squeak_hash)
+        logger.info("Deleted number of offers : {}".format(num_deleted_offers))
         return self.squeak_store.delete_squeak(squeak_hash)
 
     def create_peer(self, peer_name, host, port):
