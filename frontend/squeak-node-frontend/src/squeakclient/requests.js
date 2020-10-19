@@ -241,7 +241,6 @@ export function payOfferRequest(offerId, handleResponse) {
       return;
     }
     console.log(response);
-    //goToSqueakPage(offer.getSqueakHash());
     handleResponse(response);
   });
 };
@@ -262,7 +261,6 @@ export function lndOpenChannelSyncRequest(pubkey, amount, handleResponse) {
     console.log(response);
     console.log(response.getFundingTxidStr());
     console.log(response.getOutputIndex());
-    // goToProfilePage(response.getProfileId());
     handleResponse(response);
   });
 };
@@ -282,7 +280,6 @@ export function lndCloseChannelRequest(txId, outputIndex, handleResponse) {
       return;
     }
     console.log(response);
-    // goToProfilePage(response.getProfileId());
     handleResponse(response);
   });
 };
@@ -570,7 +567,6 @@ export function lndNewAddressRequest(handleResponse) {
     }
     console.log(response);
     console.log(response.getAddress());
-    // goToProfilePage(response.getProfileId());
     handleResponse(response);
   });
 };
