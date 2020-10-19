@@ -74,6 +74,7 @@ class PeerDownload:
             if self.stopped():
                 return
             self._download_squeak(hash)
+            self._clear_offers(hash)
 
         if self.stopped():
             return
@@ -128,6 +129,11 @@ class PeerDownload:
         logger.info("Downloading squeak: {}".format(squeak_hash.hex()))
         squeak = self.peer_client.get_squeak(squeak_hash)
         self._save_squeak(squeak)
+
+    def _clear_offers(self, squeak_hash):
+        logger.info("Deleting all offers for squeak: {}".format(squeak_hash.hex()))
+        num_deleted_offers = self.postgres_db.delete_offers_for_squeak(squeak_hash)
+        logger.info("Deleted number of offers : {}".format(num_deleted_offers))
 
     def _get_followed_addresses(self):
         followed_profiles = self.postgres_db.get_following_profiles()
