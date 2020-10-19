@@ -30,7 +30,7 @@ import Widget from "../../components/Widget";
 import SqueakThreadItem from "../../components/SqueakThreadItem";
 
 import {
-  createSigningProfile,
+  createSigningProfileRequest,
 } from "../../squeakclient/requests"
 
 
@@ -52,8 +52,8 @@ export default function CreateSigningProfileDialog({
     setProfileName(event.target.value);
   };
 
-  const create = (profileName) => {
-    createSigningProfile(profileName, (response) => {
+  const createSigningProfile = (profileName) => {
+    createSigningProfileRequest(profileName, (response) => {
       goToProfilePage(response.getProfileId());
     })
   };
@@ -69,7 +69,7 @@ export default function CreateSigningProfileDialog({
       alert('Profile Name cannot be empty.');
       return;
     }
-    create(profileName);
+    createSigningProfile(profileName);
     handleClose();
   }
 

@@ -30,7 +30,7 @@ import Widget from "../../components/Widget";
 import SqueakThreadItem from "../../components/SqueakThreadItem";
 
 import {
-  createContactProfile,
+  createContactProfileRequest,
 } from "../../squeakclient/requests"
 
 
@@ -59,8 +59,8 @@ export default function CreateContactProfileDialog({
     setAddress(event.target.value);
   };
 
-  const create = (profileName, squeakAddress) => {
-    createContactProfile(profileName, squeakAddress, (response) => {
+  const createContactProfile = (profileName, squeakAddress) => {
+    createContactProfileRequest(profileName, squeakAddress, (response) => {
       goToProfilePage(response.getProfileId());
     })
   };
@@ -81,7 +81,7 @@ export default function CreateContactProfileDialog({
       alert('Address Name cannot be empty.');
       return;
     }
-    create(profileName, address);
+    createContactProfile(profileName, address);
     handleClose();
   }
 

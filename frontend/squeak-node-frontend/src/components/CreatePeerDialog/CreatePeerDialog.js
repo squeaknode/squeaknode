@@ -30,7 +30,7 @@ import Widget from "../../components/Widget";
 import SqueakThreadItem from "../../components/SqueakThreadItem";
 
 import {
-  createPeer,
+  createPeerRequest,
 } from "../../squeakclient/requests"
 
 
@@ -64,8 +64,8 @@ export default function CreatePeerDialog({
     setPort(event.target.value);
   };
 
-  const create = (peerName, host, port) => {
-    createPeer(peerName, host, port, (response) => {
+  const createPeer = (peerName, host, port) => {
+    createPeerRequest(peerName, host, port, (response) => {
       goToPeerPage(response.getPeerId());
     });
   };
@@ -87,7 +87,7 @@ export default function CreatePeerDialog({
       alert('Port cannot be empty.');
       return;
     }
-    create(peerName, host, port);
+    createPeer(peerName, host, port);
     handleClose();
   }
 

@@ -435,7 +435,7 @@ export function getAncestorSqueakDisplaysRequest(hash, handleResponse) {
     });
 };
 
-export function getSqueakProfileByAddress(address, handleResponse) {
+export function getSqueakProfileByAddressRequest(address, handleResponse) {
       var request = new GetSqueakProfileByAddressRequest();
       request.setAddress(address);
       console.log(request);
@@ -445,7 +445,7 @@ export function getSqueakProfileByAddress(address, handleResponse) {
       });
 };
 
-export function getAddressSqueakDisplays(address, handleResponse) {
+export function getAddressSqueakDisplaysRequest(address, handleResponse) {
     var request = new GetAddressSqueakDisplaysRequest();
     request.setAddress(address);
     console.log(request);
@@ -456,7 +456,7 @@ export function getAddressSqueakDisplays(address, handleResponse) {
     });
 };
 
-export function createContactProfile(profileName, squeakAddress, handleResponse) {
+export function createContactProfileRequest(profileName, squeakAddress, handleResponse) {
   console.log("called createContactProfile");
   var request = new CreateContactProfileRequest();
   request.setProfileName(profileName);
@@ -474,7 +474,7 @@ export function createContactProfile(profileName, squeakAddress, handleResponse)
   });
 };
 
-export function createSigningProfile(profileName, handleResponse) {
+export function createSigningProfileRequest(profileName, handleResponse) {
   console.log("called createSigningProfile");
   var request = new CreateSigningProfileRequest();
   request.setProfileName(profileName);
@@ -491,7 +491,7 @@ export function createSigningProfile(profileName, handleResponse) {
   });
 };
 
-export function createPeer(peerName, host, port, handleResponse) {
+export function createPeerRequest(peerName, host, port, handleResponse) {
   console.log("called createPeer");
   var request = new CreatePeerRequest();
   request.setPeerName(peerName);
@@ -510,7 +510,7 @@ export function createPeer(peerName, host, port, handleResponse) {
   });
 };
 
-export function deletePeer(peerId, handleResponse) {
+export function deletePeerRequest(peerId, handleResponse) {
   console.log("called deletePeer");
   var request = new DeletePeerRequest();
   request.setPeerId(peerId);
@@ -526,7 +526,7 @@ export function deletePeer(peerId, handleResponse) {
   });
 };
 
-export function deleteProfile(profileId, handleResponse) {
+export function deleteProfileRequest(profileId, handleResponse) {
   console.log("called deleteSqueak");
   var request = new DeleteSqueakProfileRequest();
   request.setProfileId(profileId);
@@ -542,7 +542,7 @@ export function deleteProfile(profileId, handleResponse) {
   });
 };
 
-export function deleteSqueak(squeakHash, handleResponse) {
+export function deleteSqueakRequest(squeakHash, handleResponse) {
   console.log("called deleteSqueak");
   var request = new DeleteSqueakRequest();
   request.setSqueakHash(squeakHash);
@@ -558,7 +558,7 @@ export function deleteSqueak(squeakHash, handleResponse) {
   });
 };
 
-export function lndNewAddress(handleResponse) {
+export function lndNewAddressRequest(handleResponse) {
   console.log("called newAddress");
   var request = new NewAddressRequest();
   console.log(request);

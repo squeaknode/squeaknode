@@ -29,7 +29,7 @@ import useStyles from "./styles";
 import Widget from "../../components/Widget";
 
 import {
-  deleteProfile,
+  deleteProfileRequest,
 } from "../../squeakclient/requests"
 
 
@@ -42,8 +42,8 @@ export default function DeleteProfileDialog({
   var classes = useStyles();
   const history = useHistory();
 
-  const deleteSqueakProfile = (profileId) => {
-    deleteProfile(profileId, (response) => {
+  const deleteProfile = (profileId) => {
+    deleteProfileRequest(profileId, (response) => {
       reloadRoute();
     });
   };
@@ -57,7 +57,7 @@ export default function DeleteProfileDialog({
     console.log( 'profile:', profile);
     var profileId = profile.getProfileId();
     console.log( 'profileId:', profileId);
-    deleteSqueakProfile(profileId);
+    deleteProfile(profileId);
     handleClose();
   }
 

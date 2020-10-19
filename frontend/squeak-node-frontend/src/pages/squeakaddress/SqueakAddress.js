@@ -17,8 +17,8 @@ import SqueakThreadItem from "../../components/SqueakThreadItem";
 import CreateContactProfileDialog from "../../components/CreateContactProfileDialog";
 
 import {
-  getSqueakProfileByAddress,
-  getAddressSqueakDisplays,
+  getSqueakProfileByAddressRequest,
+  getAddressSqueakDisplaysRequest,
 } from "../../squeakclient/requests"
 
 
@@ -31,10 +31,10 @@ export default function SqueakAddressPage() {
   const [createContactProfileDialogOpen, setCreateContactProfileDialogOpen] = useState(false);
 
   const getSqueakProfile = (address) => {
-        getSqueakProfileByAddress(address, setSqueakProfile);
+        getSqueakProfileByAddressRequest(address, setSqueakProfile);
   };
   const getSqueaks = (address) => {
-      getAddressSqueakDisplays(address, setSqueaks);
+      getAddressSqueakDisplaysRequest(address, setSqueaks);
   };
 
   const goToCreateProfilePage = (profileId) => {
