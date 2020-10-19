@@ -26,6 +26,10 @@ import {
   SetSqueakProfileWhitelistedRequest,
 } from "../../proto/squeak_admin_pb"
 import { client } from "../../squeakclient/squeakclient"
+import {
+  getSqueakProfile,
+  setSqueakProfileFollowing,
+} from "../../squeakclient/requests"
 
 
 export default function ProfilePage() {
@@ -35,31 +39,13 @@ export default function ProfilePage() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
 
-  const getSqueakProfile = (id) => {
-        console.log("called getSqueakProfile with profileId: " + id);
-        var getSqueakProfileRequest = new GetSqueakProfileRequest()
-        getSqueakProfileRequest.setProfileId(id);
-        console.log(getSqueakProfileRequest);
-        client.getSqueakProfile(getSqueakProfileRequest, {}, (err, response) => {
-          if (err) {
-            console.log(err.message);
-            return;
-          }
-
-          console.log(response);
-          setSqueakProfile(response.getSqueakProfile())
-        });
+  const updateSqueakProfile = (id) => {
+    getSqueakProfile(id, setSqueakProfile);
   };
   const setFollowing = (id, following) => {
-        console.log("called setFollowing with profileId: " + id + ", following: " + following);
-        var setSqueakProfileFollowingRequest = new SetSqueakProfileFollowingRequest()
-        setSqueakProfileFollowingRequest.setProfileId(id);
-        setSqueakProfileFollowingRequest.setFollowing(following);
-        console.log(setSqueakProfileFollowingRequest);
-        client.setSqueakProfileFollowing(setSqueakProfileFollowingRequest, {}, (err, response) => {
-          console.log(response);
-          getSqueakProfile(id);
-        });
+    setSqueakProfileFollowing(id, following, () => {
+      updateSqueakProfile(id);
+    })
   };
   const setSharing = (id, sharing) => {
         console.log("called setSharing with profileId: " + id + ", sharing: " + sharing);
@@ -86,7 +72,7 @@ export default function ProfilePage() {
 
 
   useEffect(()=>{
-    getSqueakProfile(id)
+    updateSqueakProfile(id)
   },[id]);
 
   const handleClickOpenDeleteDialog = () => {

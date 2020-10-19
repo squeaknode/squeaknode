@@ -9,8 +9,12 @@ import {
   PendingChannelsRequest,
 } from "../proto/lnd_pb"
 import {
+  GetSqueakProfileRequest,
   GetFollowedSqueakDisplaysRequest,
   GetSigningProfilesRequest,
+  SetSqueakProfileFollowingRequest,
+  SetSqueakProfileSharingRequest,
+  SetSqueakProfileWhitelistedRequest,
 } from "../proto/squeak_admin_pb"
 
 
@@ -95,6 +99,33 @@ export function lndPendingChannels(handleResponse) {
           alert('Error getting pending channels: ' + err.message);
           return;
         }
+        console.log(response);
+        handleResponse(response);
+      });
+};
+
+export function getSqueakProfile(id, handleResponse) {
+      console.log("called getSqueakProfile with profileId: " + id);
+      var getSqueakProfileRequest = new GetSqueakProfileRequest();
+      getSqueakProfileRequest.setProfileId(id);
+      console.log(getSqueakProfileRequest);
+      client.getSqueakProfile(getSqueakProfileRequest, {}, (err, response) => {
+        if (err) {
+          console.log(err.message);
+          return;
+        }
+        console.log(response);
+        handleResponse(response.getSqueakProfile())
+      });
+};
+
+export function setSqueakProfileFollowing(id, following, handleResponse) {
+      console.log("called setFollowing with profileId: " + id + ", following: " + following);
+      var setSqueakProfileFollowingRequest = new SetSqueakProfileFollowingRequest()
+      setSqueakProfileFollowingRequest.setProfileId(id);
+      setSqueakProfileFollowingRequest.setFollowing(following);
+      console.log(setSqueakProfileFollowingRequest);
+      client.setSqueakProfileFollowing(setSqueakProfileFollowingRequest, {}, (err, response) => {
         console.log(response);
         handleResponse(response);
       });
