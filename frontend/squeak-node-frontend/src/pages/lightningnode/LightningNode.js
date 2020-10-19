@@ -33,12 +33,14 @@ import Widget from "../../components/Widget";
 import { Typography } from "../../components/Wrappers";
 import OpenChannelDialog from "../../components/OpenChannelDialog";
 import ChannelItem from "../../components/ChannelItem";
+import PendingOpenChannelItem from "../../components/PendingOpenChannelItem";
 
 import {
   GetInfoRequest,
   WalletBalanceRequest,
   ListPeersRequest,
   ListChannelsRequest,
+  PendingChannelsRequest,
   LightningAddress,
   ConnectPeerRequest,
   DisconnectPeerRequest,
@@ -55,6 +57,7 @@ export default function LightningNodePage() {
   const [value, setValue] = useState(0);
   const [peers, setPeers] = useState(null);
   const [channels, setChannels] = useState(null);
+  const [pendingChannels, setPendingChannels] = useState(null);
   const [openChannelDialogOpen, setOpenChannelDialogOpen] = useState(false);
 
   function a11yProps(index) {
@@ -148,7 +151,22 @@ export default function LightningNodePage() {
           setChannels(response.getChannelsList());
         });
   };
+  const getPendingChannels = () => {
+        console.log("called pendingChannels");
 
+        var pendingChannelsRequest = new PendingChannelsRequest()
+        console.log(pendingChannelsRequest);
+
+        client.lndPendingChannels(pendingChannelsRequest, {}, (err, response) => {
+          if (err) {
+            console.log(err.message);
+            alert('Error getting pending channels: ' + err.message);
+            return;
+          }
+          console.log(response);
+          setPendingChannels(response);
+        });
+  };
   const connectPeer = (pubkey, host) => {
     console.log("called connectPeer");
 
@@ -199,6 +217,9 @@ export default function LightningNodePage() {
   },[]);
   useEffect(()=>{
     listChannels()
+  },[]);
+  useEffect(()=>{
+    getPendingChannels()
   },[]);
 
   function ConnectPeerButton() {
@@ -345,6 +366,7 @@ export default function LightningNodePage() {
 
   function ChannelsGridItem() {
     var nodeChannels = channels.filter(channel => channel.getRemotePubkey() == pubkey);
+    var nodePendingOpenChannels = pendingChannels.getPendingOpenChannelsList().filter(pendingOpenChannel => pendingOpenChannel.getChannel().getRemoteNodePub() == pubkey);
     return (
       <Grid item xs={12}>
       <Widget disableWidgetMenu>
@@ -355,6 +377,17 @@ export default function LightningNodePage() {
         alignItems="center"
       >
         <Grid item xs={12}>
+        {nodePendingOpenChannels.map(pendingOpenChannel =>
+          <Box
+            p={1}
+            key={pendingOpenChannel.getChannel().getChannelPoint()}
+            >
+          <PendingOpenChannelItem
+            key={pendingOpenChannel.getChannel().getChannelPoint()}
+            pendingOpenChannel={pendingOpenChannel}>
+          </PendingOpenChannelItem>
+          </Box>
+        )}
         {nodeChannels.map(channel =>
           <Box
             p={1}
@@ -404,7 +437,7 @@ export default function LightningNodePage() {
   }
 
   function ChannelsContent() {
-    if (channels == null) {
+    if (channels == null || pendingChannels == null) {
       return (
         <>
           <Grid container spacing={4}>
@@ -461,8 +494,7 @@ export default function LightningNodePage() {
         <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
           <Tab label="Node Info" {...a11yProps(0)} />
           <Tab label="Channels" {...a11yProps(1)} />
-          <Tab label="Pending Channels" {...a11yProps(2)} />
-          <Tab label="Routes" {...a11yProps(3)} />
+          <Tab label="Routes" {...a11yProps(2)} />
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
@@ -472,9 +504,6 @@ export default function LightningNodePage() {
         {ChannelsContent()}
       </TabPanel>
       <TabPanel value={value} index={2}>
-        barrr
-      </TabPanel>
-      <TabPanel value={value} index={3}>
         Show routes here
       </TabPanel>
       </>
