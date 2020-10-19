@@ -34,6 +34,7 @@ import {
   GetSqueakProfileByAddressRequest,
   GetAddressSqueakDisplaysRequest,
   CreateContactProfileRequest,
+  CreateSigningProfileRequest
 } from "../proto/squeak_admin_pb"
 
 
@@ -442,7 +443,23 @@ export function createContactProfile(profileName, squeakAddress, handleResponse)
     }
     console.log(response);
     console.log(response.getProfileId());
-    // goToProfilePage(response.getProfileId());
+    handleResponse(response);
+  });
+};
+
+export function createSigningProfile(profileName, handleResponse) {
+  console.log("called createSigningProfile");
+  var createSigningProfileRequest = new CreateSigningProfileRequest()
+  createSigningProfileRequest.setProfileName(profileName);
+  console.log(createSigningProfileRequest);
+  client.createSigningProfile(createSigningProfileRequest, {}, (err, response) => {
+    if (err) {
+      console.log(err.message);
+      alert('Error creating signing profile: ' + err.message);
+      return;
+    }
+    console.log(response);
+    console.log(response.getProfileId());
     handleResponse(response);
   });
 };

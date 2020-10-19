@@ -30,9 +30,8 @@ import Widget from "../../components/Widget";
 import SqueakThreadItem from "../../components/SqueakThreadItem";
 
 import {
-  CreateSigningProfileRequest,
-} from "../../proto/squeak_admin_pb"
-import { client } from "../../squeakclient/squeakclient"
+  createSigningProfile,
+} from "../../squeakclient/requests"
 
 
 export default function CreateSigningProfileDialog({
@@ -53,23 +52,10 @@ export default function CreateSigningProfileDialog({
     setProfileName(event.target.value);
   };
 
-  const createSigningProfile = (profileName) => {
-    console.log("called createSigningProfile");
-
-    var createSigningProfileRequest = new CreateSigningProfileRequest()
-    createSigningProfileRequest.setProfileName(profileName);
-    console.log(createSigningProfileRequest);
-
-    client.createSigningProfile(createSigningProfileRequest, {}, (err, response) => {
-      if (err) {
-        console.log(err.message);
-        alert('Error creating signing profile: ' + err.message);
-        return;
-      }
-      console.log(response);
-      console.log(response.getProfileId());
+  const create = (profileName) => {
+    createSigningProfile(profileName, (response) => {
       goToProfilePage(response.getProfileId());
-    });
+    })
   };
 
   const goToProfilePage = (profileId) => {
@@ -83,7 +69,7 @@ export default function CreateSigningProfileDialog({
       alert('Profile Name cannot be empty.');
       return;
     }
-    createSigningProfile(profileName);
+    create(profileName);
     handleClose();
   }
 
