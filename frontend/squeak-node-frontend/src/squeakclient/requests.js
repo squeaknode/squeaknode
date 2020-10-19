@@ -16,7 +16,6 @@ import {
 import {
   GetSqueakProfileRequest,
   GetFollowedSqueakDisplaysRequest,
-  GetSigningProfilesRequest,
   SetSqueakProfileFollowingRequest,
   SetSqueakProfileSharingRequest,
   SetSqueakProfileWhitelistedRequest,
@@ -27,6 +26,8 @@ import {
   GetPeerRequest,
   SetPeerDownloadingRequest,
   SetPeerUploadingRequest,
+  GetSigningProfilesRequest,
+  GetContactProfilesRequest
 } from "../proto/squeak_admin_pb"
 
 
@@ -302,7 +303,7 @@ export function getPeer(id, handleResponse) {
 
 export function setPeerDownloading(id, downloading, handleResponse) {
       console.log("called setDownloading with peerId: " + id + ", downloading: " + downloading);
-      var setPeerDownloadingRequest = new SetPeerDownloadingRequest()
+      var setPeerDownloadingRequest = new SetPeerDownloadingRequest();
       setPeerDownloadingRequest.setPeerId(id);
       setPeerDownloadingRequest.setDownloading(downloading);
       console.log(setPeerDownloadingRequest);
@@ -314,7 +315,7 @@ export function setPeerDownloading(id, downloading, handleResponse) {
 
 export function setPeerUploading(id, uploading, handleResponse) {
       console.log("called setUploading with peerId: " + id + ", uploading: " + uploading);
-      var setPeerUploadingRequest = new SetPeerUploadingRequest()
+      var setPeerUploadingRequest = new SetPeerUploadingRequest();
       setPeerUploadingRequest.setPeerId(id);
       setPeerUploadingRequest.setUploading(uploading);
       console.log(setPeerUploadingRequest);
@@ -322,4 +323,30 @@ export function setPeerUploading(id, uploading, handleResponse) {
         console.log(response);
         handleResponse(response);
       });
+};
+
+export function getSigningProfiles(handleResponse) {
+  console.log("called getSigningProfiles");
+  var getSigningProfilesRequest = new GetSigningProfilesRequest();
+  client.getSigningProfiles(getSigningProfilesRequest, {}, (err, response) => {
+    if (err) {
+      console.log(err.message);
+      return;
+    }
+    console.log(response);
+    handleResponse(response.getSqueakProfilesList());
+  });
+};
+
+export function getContactProfiles(handleResponse) {
+  console.log("called getContactProfiles");
+  var getContactProfilesRequest = new GetContactProfilesRequest();
+  client.getContactProfiles(getContactProfilesRequest, {}, (err, response) => {
+    if (err) {
+      console.log(err.message);
+      return;
+    }
+    console.log(response);
+    handleResponse(response.getSqueakProfilesList());
+  });
 };
