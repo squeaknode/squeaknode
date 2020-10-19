@@ -7,6 +7,9 @@ import {
   ListPeersRequest,
   ListChannelsRequest,
   PendingChannelsRequest,
+  ConnectPeerRequest,
+  LightningAddress,
+  DisconnectPeerRequest,
 } from "../proto/lnd_pb"
 import {
   GetSqueakProfileRequest,
@@ -153,4 +156,39 @@ export function setSqueakProfileWhitelisted(id, whitelisted, handleResponse) {
         console.log(response);
         handleResponse(response);
       });
+};
+
+export function lndConnectPeer(pubkey, host, handleResponse) {
+  console.log("called connectPeer");
+  var connectPeerRequest = new ConnectPeerRequest()
+  var address = new LightningAddress();
+  address.setPubkey(pubkey);
+  address.setHost(host);
+  connectPeerRequest.setAddr(address);
+  console.log(connectPeerRequest);
+  client.lndConnectPeer(connectPeerRequest, {}, (err, response) => {
+    if (err) {
+      console.log(err.message);
+      alert('Error connecting peer: ' + err.message);
+      return;
+    }
+    console.log(response);
+    handleResponse(response);
+  });
+};
+
+export function lndDisconnectPeer(pubkey, handleResponse) {
+  console.log("called disconnectPeer");
+  var disconnectPeerRequest = new DisconnectPeerRequest()
+  disconnectPeerRequest.setPubKey(pubkey);
+  console.log(disconnectPeerRequest);
+  client.lndDisconnectPeer(disconnectPeerRequest, {}, (err, response) => {
+    if (err) {
+      console.log(err.message);
+      alert('Error disconnecting peer: ' + err.message);
+      return;
+    }
+    console.log(response);
+    handleResponse(response);
+  });
 };
