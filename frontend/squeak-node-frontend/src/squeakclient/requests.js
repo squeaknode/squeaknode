@@ -13,6 +13,7 @@ import {
   OpenChannelRequest,
   CloseChannelRequest,
   ChannelPoint,
+  NewAddressRequest,
 } from "../proto/lnd_pb"
 import {
   GetSqueakProfileRequest,
@@ -527,7 +528,7 @@ export function deletePeer(peerId, handleResponse) {
 
 export function deleteProfile(profileId, handleResponse) {
   console.log("called deleteSqueak");
-  var deleteSqueakProfileRequest = new DeleteSqueakProfileRequest()
+  var deleteSqueakProfileRequest = new DeleteSqueakProfileRequest();
   deleteSqueakProfileRequest.setProfileId(profileId);
   console.log(deleteSqueakProfileRequest);
   client.deleteSqueakProfile(deleteSqueakProfileRequest, {}, (err, response) => {
@@ -543,7 +544,7 @@ export function deleteProfile(profileId, handleResponse) {
 
 export function deleteSqueak(squeakHash, handleResponse) {
   console.log("called deleteSqueak");
-  var deleteSqueakRequest = new DeleteSqueakRequest()
+  var deleteSqueakRequest = new DeleteSqueakRequest();
   deleteSqueakRequest.setSqueakHash(squeakHash);
   console.log(deleteSqueakRequest);
   client.deleteSqueak(deleteSqueakRequest, {}, (err, response) => {
@@ -553,6 +554,23 @@ export function deleteSqueak(squeakHash, handleResponse) {
       return;
     }
     console.log(response);
+    handleResponse(response);
+  });
+};
+
+export function lndNewAddress(handleResponse) {
+  console.log("called newAddress");
+  var newAddressRequest = new NewAddressRequest();
+  console.log(newAddressRequest);
+  client.lndNewAddress(newAddressRequest, {}, (err, response) => {
+    if (err) {
+      console.log(err.message);
+      alert('Error getting new address: ' + err.message);
+      return;
+    }
+    console.log(response);
+    console.log(response.getAddress());
+    // goToProfilePage(response.getProfileId());
     handleResponse(response);
   });
 };

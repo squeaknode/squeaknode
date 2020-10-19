@@ -29,8 +29,10 @@ import useStyles from "./styles";
 import Widget from "../../components/Widget";
 import SqueakThreadItem from "../../components/SqueakThreadItem";
 
-import { NewAddressRequest } from "../../proto/lnd_pb"
-import { client } from "../../squeakclient/squeakclient"
+import {
+  lndNewAddress,
+} from "../../squeakclient/requests"
+
 
 
 export default function ReceiveBitcoinDialog({
@@ -52,21 +54,24 @@ export default function ReceiveBitcoinDialog({
   };
 
   const getNewAddress = () => {
-    console.log("called newAddress");
-
-    var newAddressRequest = new NewAddressRequest()
-    console.log(newAddressRequest);
-
-    client.lndNewAddress(newAddressRequest, {}, (err, response) => {
-      if (err) {
-        console.log(err.message);
-        alert('Error getting new address: ' + err.message);
-        return;
-      }
-      console.log(response);
-      console.log(response.getAddress());
-      // goToProfilePage(response.getProfileId());
-
+    // console.log("called newAddress");
+    //
+    // var newAddressRequest = new NewAddressRequest()
+    // console.log(newAddressRequest);
+    //
+    // client.lndNewAddress(newAddressRequest, {}, (err, response) => {
+    //   if (err) {
+    //     console.log(err.message);
+    //     alert('Error getting new address: ' + err.message);
+    //     return;
+    //   }
+    //   console.log(response);
+    //   console.log(response.getAddress());
+    //   // goToProfilePage(response.getProfileId());
+    //
+    //   setAddress(response.getAddress());
+    // });
+    lndNewAddress((response) => {
       setAddress(response.getAddress());
     });
   };
