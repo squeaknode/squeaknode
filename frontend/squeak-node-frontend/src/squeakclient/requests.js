@@ -337,23 +337,25 @@ export function getAddressSqueakDisplaysRequest(address, handleResponse) {
     });
 };
 
-export function createContactProfileRequest(profileName, squeakAddress, handleResponse) {
+export function createContactProfileRequest(profileName, squeakAddress, handleResponse, handleErr) {
   var request = new CreateContactProfileRequest();
   request.setProfileName(profileName);
   request.setAddress(squeakAddress);
   client.createContactProfile(request, {}, (err, response) => {
     if (err) {
+      handleErr(err);
       return;
     }
     handleResponse(response);
   });
 };
 
-export function createSigningProfileRequest(profileName, handleResponse) {
+export function createSigningProfileRequest(profileName, handleResponse, handleErr) {
   var request = new CreateSigningProfileRequest();
   request.setProfileName(profileName);
   client.createSigningProfile(request, {}, (err, response) => {
     if (err) {
+      handleErr(err);
       return;
     }
     handleResponse(response);

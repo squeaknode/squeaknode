@@ -52,10 +52,16 @@ export default function CreateSigningProfileDialog({
     setProfileName(event.target.value);
   };
 
+  const handleResponse = (response) => {
+    goToProfilePage(response.getProfileId());
+  };
+
+  const handleErr = (err) => {
+    alert('Error creating contact profile: ' + err.message);
+  };
+
   const createSigningProfile = (profileName) => {
-    createSigningProfileRequest(profileName, (response) => {
-      goToProfilePage(response.getProfileId());
-    })
+    createSigningProfileRequest(profileName, handleResponse, handleErr);
   };
 
   const goToProfilePage = (profileId) => {

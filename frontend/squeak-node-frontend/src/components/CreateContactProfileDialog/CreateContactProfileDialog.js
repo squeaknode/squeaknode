@@ -59,10 +59,16 @@ export default function CreateContactProfileDialog({
     setAddress(event.target.value);
   };
 
+  const handleResponse = (response) => {
+    goToProfilePage(response.getProfileId());
+  };
+
+  const handleErr = (err) => {
+    alert('Error creating contact profile: ' + err.message);
+  };
+
   const createContactProfile = (profileName, squeakAddress) => {
-    createContactProfileRequest(profileName, squeakAddress, (response) => {
-      goToProfilePage(response.getProfileId());
-    })
+    createContactProfileRequest(profileName, squeakAddress, handleResponse, handleErr);
   };
 
   const goToProfilePage = (profileId) => {
