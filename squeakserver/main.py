@@ -18,6 +18,8 @@ from squeakserver.node.squeak_node import SqueakNode
 from squeakserver.server.lightning_address import LightningAddressHostPort
 from squeakserver.server.squeak_server_handler import SqueakServerHandler
 from squeakserver.server.squeak_server_servicer import SqueakServerServicer
+from squeakserver.admin.squeak_admin_web_service import run_app
+
 
 logger = logging.getLogger(__name__)
 
@@ -57,6 +59,11 @@ def load_admin_rpc_server(config, handler) -> SqueakAdminServerServicer:
         config["admin"]["rpc_port"],
         handler,
     )
+
+
+def load_admin_web_server(config, handler):
+    # TODO
+    pass
 
 
 def load_network(config):
@@ -136,6 +143,16 @@ def start_admin_rpc_server(rpc_server):
     logger.info("Calling start_admin_rpc_server...")
     thread = threading.Thread(
         target=rpc_server.serve,
+        args=(),
+    )
+    thread.daemon = True
+    thread.start()
+
+
+def start_admin_web_server():
+    logger.info("Calling start_admin_web_server...")
+    thread = threading.Thread(
+        target=run_app,
         args=(),
     )
     thread.daemon = True
@@ -229,6 +246,9 @@ def run_server(config):
     admin_handler = load_admin_handler(lightning_client, squeak_node)
     admin_rpc_server = load_admin_rpc_server(config, admin_handler)
     start_admin_rpc_server(admin_rpc_server)
+
+    # start admin web server
+    start_admin_web_server()
 
     # start rpc server
     handler = load_handler(squeak_node)
