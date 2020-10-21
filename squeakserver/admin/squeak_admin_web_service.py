@@ -5,6 +5,9 @@ from flask import Flask
 from flask import request
 
 from google.protobuf import json_format
+from google.protobuf import message
+
+from proto import squeak_admin_pb2, squeak_admin_pb2_grpc
 
 
 logger = logging.getLogger(__name__)
@@ -37,6 +40,23 @@ def create_app(handler):
         logger.info("Request data: {}".format(data))
 
         reply = handler.handle_get_followed_squeak_display_entries()
+        logger.info("reply: {}".format(reply))
+        reply_data = reply.SerializeToString(reply)
+        logger.info("reply_data: {}".format(reply_data))
+        return reply_data
+
+    @app.route('/setsqueakprofilesharing', methods=["POST"])
+    def setsqueakprofilesharing():
+        logger.info("Getting setsqueakprofilesharing route.")
+        data = request.get_data()
+        logger.info("Request data: {}".format(data))
+        req = squeak_admin_pb2.SetSqueakProfileSharingRequest()
+        req.ParseFromString(data)
+        logger.info("Req: {}".format(req))
+        profile_id = req.profile_id
+        sharing = req.sharing
+
+        reply = handler.handle_set_squeak_profile_sharing(profile_id, sharing)
         logger.info("reply: {}".format(reply))
         reply_data = reply.SerializeToString(reply)
         logger.info("reply_data: {}".format(reply_data))

@@ -42,6 +42,7 @@ import {
   DeleteSqueakProfileRequest,
   DeleteSqueakRequest,
   GetFollowedSqueakDisplaysReply,
+  SetSqueakProfileSharingReply,
 } from "../proto/squeak_admin_pb"
 
 
@@ -150,12 +151,14 @@ export function setSqueakProfileFollowingRequest(id, following, handleResponse) 
 // };
 
 export function setSqueakProfileSharingRequest(id, sharing, handleResponse) {
-      var request = new SetSqueakProfileSharingRequest();
-      request.setProfileId(id);
-      request.setSharing(sharing);
-      client.setSqueakProfileSharing(request, {}, (err, response) => {
-        handleResponse(response);
-      });
+  var request = new SetSqueakProfileSharingRequest();
+  request.setProfileId(id);
+  request.setSharing(sharing);
+  makeRequest('setsqueakprofilesharing', request, (data) => {
+    var response = SetSqueakProfileSharingReply.deserializeBinary(data);
+    console.log('Got response:', response);
+    handleResponse(response);
+  });
 };
 
 export function setSqueakProfileWhitelistedRequest(id, whitelisted, handleResponse) {

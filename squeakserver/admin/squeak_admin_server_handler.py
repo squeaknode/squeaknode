@@ -149,6 +149,7 @@ class SqueakAdminServerHandler(object):
             )
         )
         self.squeak_node.set_squeak_profile_sharing(profile_id, sharing)
+        return squeak_admin_pb2.SetSqueakProfileSharingReply()
 
     def handle_delete_squeak_profile(self, profile_id):
         logger.info("Handle delete squeak profile with id: {}".format(profile_id))
