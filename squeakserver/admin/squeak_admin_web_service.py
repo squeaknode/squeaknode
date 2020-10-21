@@ -35,31 +35,22 @@ def create_app(handler):
 
     @app.route('/getfollowedsqueakdisplays', methods=["POST"])
     def getfollowedsqueakdisplays():
-        logger.info("Getting getfollowedsqueakdisplays route.")
         data = request.get_data()
-        logger.info("Request data: {}".format(data))
-
+        req = squeak_admin_pb2.GetFollowedSqueakDisplaysRequest()
+        req.ParseFromString(data)
         reply = handler.handle_get_followed_squeak_display_entries()
-        logger.info("reply: {}".format(reply))
         reply_data = reply.SerializeToString(reply)
-        logger.info("reply_data: {}".format(reply_data))
         return reply_data
 
     @app.route('/setsqueakprofilesharing', methods=["POST"])
     def setsqueakprofilesharing():
-        logger.info("Getting setsqueakprofilesharing route.")
         data = request.get_data()
-        logger.info("Request data: {}".format(data))
         req = squeak_admin_pb2.SetSqueakProfileSharingRequest()
         req.ParseFromString(data)
-        logger.info("Req: {}".format(req))
         profile_id = req.profile_id
         sharing = req.sharing
-
         reply = handler.handle_set_squeak_profile_sharing(profile_id, sharing)
-        logger.info("reply: {}".format(reply))
         reply_data = reply.SerializeToString(reply)
-        logger.info("reply_data: {}".format(reply_data))
         return reply_data
 
     return app
