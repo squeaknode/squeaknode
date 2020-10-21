@@ -63,6 +63,15 @@ def create_app(handler):
         reply_data = reply.SerializeToString(reply)
         return reply_data
 
+    @app.route('/lndwalletbalance', methods=["POST"])
+    def lndwalletbalance():
+        data = request.get_data()
+        req = lnd_pb2.WalletBalanceRequest()
+        req.ParseFromString(data)
+        reply = handler.handle_lnd_wallet_balance()
+        reply_data = reply.SerializeToString(reply)
+        return reply_data
+
     return app
 
 

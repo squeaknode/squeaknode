@@ -15,6 +15,7 @@ import {
   ChannelPoint,
   NewAddressRequest,
   GetInfoResponse,
+  WalletBalanceResponse,
 } from "../proto/lnd_pb"
 import {
   GetSqueakProfileRequest,
@@ -88,11 +89,19 @@ export function lndGetInfoRequest(handleResponse) {
   });
 };
 
+// export function lndWalletBalanceRequest(handleResponse) {
+//       var request = new WalletBalanceRequest();
+//       client.lndWalletBalance(request, {}, (err, response) => {
+//         handleResponse(response);
+//       });
+// };
+
 export function lndWalletBalanceRequest(handleResponse) {
-      var request = new WalletBalanceRequest();
-      client.lndWalletBalance(request, {}, (err, response) => {
-        handleResponse(response);
-      });
+  var request = new WalletBalanceRequest();
+  makeRequest('lndwalletbalance', request, (data) => {
+    var response = WalletBalanceResponse.deserializeBinary(data);
+    handleResponse(response);
+  });
 };
 
 export function lndGetTransactionsRequest(handleResponse) {
