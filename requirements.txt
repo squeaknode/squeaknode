@@ -8,3 +8,4 @@ psycopg2
 requests
 SQLAlchemy
 Flask
+protobuf

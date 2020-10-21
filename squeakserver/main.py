@@ -149,11 +149,11 @@ def start_admin_rpc_server(rpc_server):
     thread.start()
 
 
-def start_admin_web_server():
+def start_admin_web_server(handler):
     logger.info("Calling start_admin_web_server...")
     thread = threading.Thread(
         target=run_app,
-        args=(),
+        args=(handler,),
     )
     thread.daemon = True
     thread.start()
@@ -248,7 +248,7 @@ def run_server(config):
     start_admin_rpc_server(admin_rpc_server)
 
     # start admin web server
-    start_admin_web_server()
+    start_admin_web_server(admin_handler)
 
     # start rpc server
     handler = load_handler(squeak_node)

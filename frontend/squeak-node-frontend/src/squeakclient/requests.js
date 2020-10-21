@@ -41,16 +41,38 @@ import {
   DeletePeerRequest,
   DeleteSqueakProfileRequest,
   DeleteSqueakRequest,
+  GetFollowedSqueakDisplaysReply,
 } from "../proto/squeak_admin_pb"
 
 
+// export function getFollowedSqueakDisplaysRequest(handleResponse) {
+//   var request = new GetFollowedSqueakDisplaysRequest();
+//   client.getFollowedSqueakDisplays(request, {}, (err, response) => {
+//     handleResponse(response.getSqueakDisplayEntriesList())
+//   });
+// };
+
+function createGist(handleResponse) {
+  console.log('Getting getfollowedsqueakdisplays...');
+  fetch('http://localhost:5000/getfollowedsqueakdisplays', {
+    method: 'get'
+  }).then(function(response) {
+    console.log('Got response:', response);
+    return response.arrayBuffer();
+  }).then(function(data) {
+    console.log('Got data:', data);
+    handleResponse(data);
+  });
+}
+
 export function getFollowedSqueakDisplaysRequest(handleResponse) {
-  var request = new GetFollowedSqueakDisplaysRequest();
-  client.getFollowedSqueakDisplays(request, {}, (err, response) => {
-    handleResponse(response.getSqueakDisplayEntriesList())
+  createGist((data) => {
+    console.log('Got data:', data);
+    var response = GetFollowedSqueakDisplaysReply.deserializeBinary(data);
+    console.log('Got response:', response);
+    handleResponse(response.getSqueakDisplayEntriesList());
   });
 };
-
 
 export function lndGetInfoRequest(handleResponse) {
   var request = new GetInfoRequest();

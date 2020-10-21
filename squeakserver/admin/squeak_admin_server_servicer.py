@@ -167,16 +167,14 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         )
 
     def GetFollowedSqueakDisplays(self, request, context):
-        squeak_entries_with_profile = (
+        reply = (
             self.handler.handle_get_followed_squeak_display_entries()
         )
-        squeak_display_msgs = [
-            self._squeak_entry_to_message(entry)
-            for entry in squeak_entries_with_profile
-        ]
-        return squeak_admin_pb2.GetFollowedSqueakDisplaysReply(
-            squeak_display_entries=squeak_display_msgs
-        )
+        # squeak_display_msgs = [
+        #     self._squeak_entry_to_message(entry)
+        #     for entry in squeak_entries_with_profile
+        # ]
+        return reply
 
     def GetAddressSqueakDisplays(self, request, context):
         address = request.address
