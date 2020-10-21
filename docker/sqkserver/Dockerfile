@@ -21,6 +21,9 @@ COPY squeakserver ./squeakserver
 COPY proto ./proto
 COPY setup.py setup.cfg MANIFEST.in README.md ./
 
+# Copy the frontend code
+COPY frontend/squeak-node-frontend/build/ ./static/build
+
 RUN python3 setup.py install
 
 EXPOSE 8774
