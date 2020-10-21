@@ -52,9 +52,8 @@ import {
 //   });
 // };
 
-function createGist(handleResponse) {
-  console.log('Getting getfollowedsqueakdisplays...');
-  fetch('http://localhost:5000/getfollowedsqueakdisplays', {
+function makeRequest(route, handleResponse) {
+  fetch('http://localhost:5000/' + route, {
     method: 'get'
   }).then(function(response) {
     console.log('Got response:', response);
@@ -66,7 +65,7 @@ function createGist(handleResponse) {
 }
 
 export function getFollowedSqueakDisplaysRequest(handleResponse) {
-  createGist((data) => {
+  makeRequest('getfollowedsqueakdisplays', (data) => {
     console.log('Got data:', data);
     var response = GetFollowedSqueakDisplaysReply.deserializeBinary(data);
     console.log('Got response:', response);
