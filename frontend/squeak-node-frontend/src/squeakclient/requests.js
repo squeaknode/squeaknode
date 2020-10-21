@@ -52,21 +52,20 @@ import {
 //   });
 // };
 
-function makeRequest(route, handleResponse) {
+function makeRequest(route, request, handleResponse) {
   fetch('http://localhost:5000/' + route, {
-    method: 'get'
+    method: 'post',
+    body: request.serializeBinary()
   }).then(function(response) {
-    console.log('Got response:', response);
     return response.arrayBuffer();
   }).then(function(data) {
-    console.log('Got data:', data);
     handleResponse(data);
   });
 }
 
 export function getFollowedSqueakDisplaysRequest(handleResponse) {
-  makeRequest('getfollowedsqueakdisplays', (data) => {
-    console.log('Got data:', data);
+  var request = new GetFollowedSqueakDisplaysRequest();
+  makeRequest('getfollowedsqueakdisplays', request, (data) => {
     var response = GetFollowedSqueakDisplaysReply.deserializeBinary(data);
     console.log('Got response:', response);
     handleResponse(response.getSqueakDisplayEntriesList());
@@ -140,6 +139,15 @@ export function setSqueakProfileFollowingRequest(id, following, handleResponse) 
         handleResponse(response);
       });
 };
+
+// export function setSqueakProfileSharingRequest(id, sharing, handleResponse) {
+//       var request = new SetSqueakProfileSharingRequest();
+//       request.setProfileId(id);
+//       request.setSharing(sharing);
+//       client.setSqueakProfileSharing(request, {}, (err, response) => {
+//         handleResponse(response);
+//       });
+// };
 
 export function setSqueakProfileSharingRequest(id, sharing, handleResponse) {
       var request = new SetSqueakProfileSharingRequest();

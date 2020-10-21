@@ -2,9 +2,9 @@ import os
 import logging
 
 from flask import Flask
+from flask import request
 
 from google.protobuf import json_format
-# from google.protobuf import message
 
 
 logger = logging.getLogger(__name__)
@@ -30,9 +30,12 @@ def create_app(handler):
         logger.info("Getting hello route.")
         return 'Hello, World!'
 
-    @app.route('/getfollowedsqueakdisplays')
+    @app.route('/getfollowedsqueakdisplays', methods=["POST"])
     def getfollowedsqueakdisplays():
         logger.info("Getting getfollowedsqueakdisplays route.")
+        data = request.get_data()
+        logger.info("Request data: {}".format(data))
+
         reply = handler.handle_get_followed_squeak_display_entries()
         logger.info("reply: {}".format(reply))
         reply_data = reply.SerializeToString(reply)
