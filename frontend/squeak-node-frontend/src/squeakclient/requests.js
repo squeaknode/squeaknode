@@ -16,6 +16,7 @@ import {
   NewAddressRequest,
   GetInfoResponse,
   WalletBalanceResponse,
+  GetTransactionsResponse,
 } from "../proto/lnd_pb"
 import {
   GetSqueakProfileRequest,
@@ -104,11 +105,19 @@ export function lndWalletBalanceRequest(handleResponse) {
   });
 };
 
+// export function lndGetTransactionsRequest(handleResponse) {
+//       var request = new GetTransactionsRequest();
+//       client.lndGetTransactions(request, {}, (err, response) => {
+//         handleResponse(response.getTransactionsList());
+//       });
+// };
+
 export function lndGetTransactionsRequest(handleResponse) {
-      var request = new GetTransactionsRequest();
-      client.lndGetTransactions(request, {}, (err, response) => {
-        handleResponse(response.getTransactionsList());
-      });
+  var request = new GetTransactionsRequest();
+  makeRequest('gettransactions', request, (data) => {
+    var response = GetTransactionsResponse.deserializeBinary(data);
+    handleResponse(response);
+  });
 };
 
 export function lndListPeersRequest(handleResponse) {
