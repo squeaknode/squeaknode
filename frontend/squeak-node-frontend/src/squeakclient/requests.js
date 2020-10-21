@@ -14,6 +14,7 @@ import {
   CloseChannelRequest,
   ChannelPoint,
   NewAddressRequest,
+  GetInfoResponse,
 } from "../proto/lnd_pb"
 import {
   GetSqueakProfileRequest,
@@ -46,13 +47,6 @@ import {
 } from "../proto/squeak_admin_pb"
 
 
-// export function getFollowedSqueakDisplaysRequest(handleResponse) {
-//   var request = new GetFollowedSqueakDisplaysRequest();
-//   client.getFollowedSqueakDisplays(request, {}, (err, response) => {
-//     handleResponse(response.getSqueakDisplayEntriesList())
-//   });
-// };
-
 function makeRequest(route, request, handleResponse) {
   fetch('http://localhost:5000/' + route, {
     method: 'post',
@@ -64,18 +58,32 @@ function makeRequest(route, request, handleResponse) {
   });
 }
 
+// export function getFollowedSqueakDisplaysRequest(handleResponse) {
+//   var request = new GetFollowedSqueakDisplaysRequest();
+//   client.getFollowedSqueakDisplays(request, {}, (err, response) => {
+//     handleResponse(response.getSqueakDisplayEntriesList())
+//   });
+// };
+
 export function getFollowedSqueakDisplaysRequest(handleResponse) {
   var request = new GetFollowedSqueakDisplaysRequest();
   makeRequest('getfollowedsqueakdisplays', request, (data) => {
     var response = GetFollowedSqueakDisplaysReply.deserializeBinary(data);
-    console.log('Got response:', response);
     handleResponse(response.getSqueakDisplayEntriesList());
   });
 };
 
+// export function lndGetInfoRequest(handleResponse) {
+//   var request = new GetInfoRequest();
+//   client.lndGetInfo(request, {}, (err, response) => {
+//     handleResponse(response);
+//   });
+// };
+
 export function lndGetInfoRequest(handleResponse) {
   var request = new GetInfoRequest();
-  client.lndGetInfo(request, {}, (err, response) => {
+  makeRequest('lndgetinfo', request, (data) => {
+    var response = GetInfoResponse.deserializeBinary(data);
     handleResponse(response);
   });
 };

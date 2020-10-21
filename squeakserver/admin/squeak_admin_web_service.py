@@ -8,6 +8,7 @@ from google.protobuf import json_format
 from google.protobuf import message
 
 from proto import squeak_admin_pb2, squeak_admin_pb2_grpc
+from proto import lnd_pb2, lnd_pb2_grpc
 
 
 logger = logging.getLogger(__name__)
@@ -50,6 +51,15 @@ def create_app(handler):
         profile_id = req.profile_id
         sharing = req.sharing
         reply = handler.handle_set_squeak_profile_sharing(profile_id, sharing)
+        reply_data = reply.SerializeToString(reply)
+        return reply_data
+
+    @app.route('/lndgetinfo', methods=["POST"])
+    def lndgetinfo():
+        data = request.get_data()
+        req = lnd_pb2.GetInfoRequest()
+        req.ParseFromString(data)
+        reply = handler.handle_lnd_get_info()
         reply_data = reply.SerializeToString(reply)
         return reply_data
 
