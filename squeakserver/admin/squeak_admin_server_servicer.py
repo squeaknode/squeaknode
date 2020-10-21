@@ -103,15 +103,12 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
 
     def GetSqueakProfile(self, request, context):
         profile_id = request.profile_id
-        squeak_profile = self.handler.handle_get_squeak_profile(profile_id)
-        if squeak_profile is None:
+        reply = self.handler.handle_get_squeak_profile(profile_id)
+        if reply is None:
             context.set_code(grpc.StatusCode.NOT_FOUND)
             context.set_details("Profile not found.")
             return squeak_admin_pb2.GetSqueakProfileReply()
-        squeak_profile_msg = self._squeak_profile_to_message(squeak_profile)
-        return squeak_admin_pb2.GetSqueakProfileReply(
-            squeak_profile=squeak_profile_msg,
-        )
+        return reply
 
     def GetSqueakProfileByAddress(self, request, context):
         address = request.address

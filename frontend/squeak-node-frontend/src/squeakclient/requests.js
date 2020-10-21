@@ -16,7 +16,10 @@ import {
   NewAddressRequest,
   GetInfoResponse,
   WalletBalanceResponse,
-  GetTransactionsResponse,
+  TransactionDetails,
+  ListPeersResponse,
+  ListChannelsResponse,
+  PendingChannelsResponse,
 } from "../proto/lnd_pb"
 import {
   GetSqueakProfileRequest,
@@ -46,6 +49,7 @@ import {
   DeleteSqueakRequest,
   GetFollowedSqueakDisplaysReply,
   SetSqueakProfileSharingReply,
+  GetSqueakProfileReply,
 } from "../proto/squeak_admin_pb"
 
 
@@ -114,48 +118,81 @@ export function lndWalletBalanceRequest(handleResponse) {
 
 export function lndGetTransactionsRequest(handleResponse) {
   var request = new GetTransactionsRequest();
-  makeRequest('gettransactions', request, (data) => {
-    var response = GetTransactionsResponse.deserializeBinary(data);
-    handleResponse(response);
+  makeRequest('lndgettransactions', request, (data) => {
+    var response = TransactionDetails.deserializeBinary(data);
+    handleResponse(response.getTransactionsList());
   });
 };
 
+// export function lndListPeersRequest(handleResponse) {
+//       var request = new ListPeersRequest();
+//       client.lndListPeers(request, {}, (err, response) => {
+//         handleResponse(response.getPeersList());
+//       });
+// };
+
 export function lndListPeersRequest(handleResponse) {
       var request = new ListPeersRequest();
-      client.lndListPeers(request, {}, (err, response) => {
+      makeRequest('lndlistpeers', request, (data) => {
+        var response = ListPeersResponse.deserializeBinary(data);
         handleResponse(response.getPeersList());
       });
 };
 
+// export function lndListChannelsRequest(handleResponse) {
+//       var request = new ListChannelsRequest();
+//       client.lndListChannels(request, {}, (err, response) => {
+//         if (err) {
+//           return;
+//         }
+//         handleResponse(response.getChannelsList());
+//       });
+// };
+
 export function lndListChannelsRequest(handleResponse) {
-      var request = new ListChannelsRequest();
-      client.lndListChannels(request, {}, (err, response) => {
-        if (err) {
-          return;
-        }
-        handleResponse(response.getChannelsList());
-      });
+  var request = new ListChannelsRequest();
+  makeRequest('lndlistchannels', request, (data) => {
+    var response = ListChannelsResponse.deserializeBinary(data);
+    handleResponse(response.getChannelsList());
+  });
 };
+
+// export function lndPendingChannelsRequest(handleResponse) {
+//       var request = new PendingChannelsRequest();
+//       client.lndPendingChannels(request, {}, (err, response) => {
+//         if (err) {
+//           return;
+//         }
+//         handleResponse(response);
+//       });
+// };
 
 export function lndPendingChannelsRequest(handleResponse) {
-      var request = new PendingChannelsRequest();
-      client.lndPendingChannels(request, {}, (err, response) => {
-        if (err) {
-          return;
-        }
-        handleResponse(response);
-      });
+  var request = new PendingChannelsRequest();
+  makeRequest('lndpendingchannels', request, (data) => {
+    var response = PendingChannelsResponse.deserializeBinary(data);
+    handleResponse(response);
+  });
 };
 
+// export function getSqueakProfileRequest(id, handleResponse) {
+//       var request = new GetSqueakProfileRequest();
+//       request.setProfileId(id);
+//       client.getSqueakProfile(request, {}, (err, response) => {
+//         if (err) {
+//           return;
+//         }
+//         handleResponse(response.getSqueakProfile())
+//       });
+// };
+
 export function getSqueakProfileRequest(id, handleResponse) {
-      var request = new GetSqueakProfileRequest();
-      request.setProfileId(id);
-      client.getSqueakProfile(request, {}, (err, response) => {
-        if (err) {
-          return;
-        }
-        handleResponse(response.getSqueakProfile())
-      });
+  var request = new GetSqueakProfileRequest();
+  request.setProfileId(id);
+  makeRequest('getsqueakprofile', request, (data) => {
+    var response = GetSqueakProfileReply.deserializeBinary(data);
+    handleResponse(response.getSqueakProfile());
+  });
 };
 
 export function setSqueakProfileFollowingRequest(id, following, handleResponse) {

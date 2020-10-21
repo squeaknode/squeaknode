@@ -115,7 +115,12 @@ class SqueakAdminServerHandler(object):
     def handle_get_squeak_profile(self, profile_id):
         logger.info("Handle get squeak profile with id: {}".format(profile_id))
         squeak_profile = self.squeak_node.get_squeak_profile(profile_id)
-        return squeak_profile
+        if squeak_profile is None:
+            return None
+        squeak_profile_msg = self._squeak_profile_to_message(squeak_profile)
+        return squeak_admin_pb2.GetSqueakProfileReply(
+            squeak_profile=squeak_profile_msg,
+        )
 
     def handle_get_squeak_profile_by_address(self, address):
         logger.info("Handle get squeak profile with address: {}".format(address))

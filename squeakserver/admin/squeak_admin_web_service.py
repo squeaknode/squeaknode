@@ -72,12 +72,50 @@ def create_app(handler):
         reply_data = reply.SerializeToString(reply)
         return reply_data
 
-    @app.route('/gettransactions', methods=["POST"])
-    def gettransactions():
+    @app.route('/lndgettransactions', methods=["POST"])
+    def lndgettransactions():
         data = request.get_data()
-        req = lnd_pb2.WalletBalanceRequest()
+        req = lnd_pb2.GetTransactionsRequest()
         req.ParseFromString(data)
         reply = handler.handle_lnd_get_transactions()
+        logger.info("lndgettransactions reply: {}".format(reply))
+        reply_data = reply.SerializeToString(reply)
+        return reply_data
+
+    @app.route('/lndlistpeers', methods=["POST"])
+    def lndlistpeers():
+        data = request.get_data()
+        req = lnd_pb2.ListPeersRequest()
+        req.ParseFromString(data)
+        reply = handler.handle_lnd_list_peers()
+        reply_data = reply.SerializeToString(reply)
+        return reply_data
+
+    @app.route('/lndlistchannels', methods=["POST"])
+    def lndlistchannels():
+        data = request.get_data()
+        req = lnd_pb2.ListChannelsRequest()
+        req.ParseFromString(data)
+        reply = handler.handle_lnd_list_channels()
+        reply_data = reply.SerializeToString(reply)
+        return reply_data
+
+    @app.route('/lndpendingchannels', methods=["POST"])
+    def lndpendingchannels():
+        data = request.get_data()
+        req = lnd_pb2.PendingChannelsRequest()
+        req.ParseFromString(data)
+        reply = handler.handle_lnd_pending_channels()
+        reply_data = reply.SerializeToString(reply)
+        return reply_data
+
+    @app.route('/getsqueakprofile', methods=["POST"])
+    def getsqueakprofile():
+        data = request.get_data()
+        req = squeak_admin_pb2.GetSqueakProfileRequest()
+        req.ParseFromString(data)
+        profile_id = req.profile_id
+        reply = handler.handle_get_squeak_profile(profile_id)
         reply_data = reply.SerializeToString(reply)
         return reply_data
 
