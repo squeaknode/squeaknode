@@ -93,22 +93,13 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         return self.handler.handle_get_squeak_profile_by_address(request)
 
     def SetSqueakProfileWhitelisted(self, request, context):
-        profile_id = request.profile_id
-        whitelisted = request.whitelisted
-        self.handler.handle_set_squeak_profile_whitelisted(profile_id, whitelisted)
-        return squeak_admin_pb2.SetSqueakProfileWhitelistedReply()
+        return self.handler.handle_set_squeak_profile_whitelisted(request)
 
     def SetSqueakProfileFollowing(self, request, context):
-        profile_id = request.profile_id
-        following = request.following
-        self.handler.handle_set_squeak_profile_following(profile_id, following)
-        return squeak_admin_pb2.SetSqueakProfileFollowingReply()
+        return self.handler.handle_set_squeak_profile_following(request)
 
     def SetSqueakProfileSharing(self, request, context):
-        profile_id = request.profile_id
-        sharing = request.sharing
-        self.handler.handle_set_squeak_profile_sharing(profile_id, sharing)
-        return squeak_admin_pb2.SetSqueakProfileSharingReply()
+        return self.handler.handle_set_squeak_profile_sharing(request)
 
     def DeleteSqueakProfile(self, request, context):
         profile_id = request.profile_id
