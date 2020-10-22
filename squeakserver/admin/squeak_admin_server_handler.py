@@ -115,11 +115,14 @@ class SqueakAdminServerHandler(object):
         ]
         return squeak_admin_pb2.GetSigningProfilesReply(squeak_profiles=profile_msgs)
 
-    def handle_get_contact_profiles(self):
+    def handle_get_contact_profiles(self, request):
         logger.info("Handle get contact profiles.")
         profiles = self.squeak_node.get_contact_profiles()
         logger.info("Got number of contact profiles: {}".format(len(profiles)))
-        return profiles
+        profile_msgs = [
+            self._squeak_profile_to_message(profile) for profile in profiles
+        ]
+        return squeak_admin_pb2.GetContactProfilesReply(squeak_profiles=profile_msgs)
 
     def handle_get_squeak_profile(self, profile_id):
         logger.info("Handle get squeak profile with id: {}".format(profile_id))
