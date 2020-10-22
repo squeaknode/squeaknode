@@ -124,7 +124,8 @@ class SqueakAdminServerHandler(object):
         ]
         return squeak_admin_pb2.GetContactProfilesReply(squeak_profiles=profile_msgs)
 
-    def handle_get_squeak_profile(self, profile_id):
+    def handle_get_squeak_profile(self, request):
+        profile_id = request.profile_id
         logger.info("Handle get squeak profile with id: {}".format(profile_id))
         squeak_profile = self.squeak_node.get_squeak_profile(profile_id)
         if squeak_profile is None:

@@ -82,8 +82,7 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         return self.handler.handle_get_contact_profiles(request)
 
     def GetSqueakProfile(self, request, context):
-        profile_id = request.profile_id
-        reply = self.handler.handle_get_squeak_profile(profile_id)
+        reply = self.handler.handle_get_squeak_profile(request)
         if reply is None:
             context.set_code(grpc.StatusCode.NOT_FOUND)
             context.set_details("Profile not found.")
