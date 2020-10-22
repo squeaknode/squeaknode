@@ -105,17 +105,7 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         return self.handler.handle_delete_squeak_profile(request)
 
     def MakeSqueak(self, request, context):
-        profile_id = request.profile_id
-        content_str = request.content
-        replyto_hash_str = request.replyto
-        replyto_hash = bytes.fromhex(replyto_hash_str) if replyto_hash_str else None
-        squeak_hash = self.handler.handle_make_squeak(
-            profile_id, content_str, replyto_hash
-        )
-        squeak_hash_str = squeak_hash.hex()
-        return squeak_admin_pb2.MakeSqueakReply(
-            squeak_hash=squeak_hash_str,
-        )
+        return self.handler.handle_make_squeak(request)
 
     def GetSqueakDisplay(self, request, context):
         squeak_hash_str = request.squeak_hash

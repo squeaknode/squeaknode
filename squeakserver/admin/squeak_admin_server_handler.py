@@ -184,12 +184,19 @@ class SqueakAdminServerHandler(object):
         self.squeak_node.delete_squeak_profile(profile_id)
         return squeak_admin_pb2.DeleteSqueakProfileReply()
 
-    def handle_make_squeak(self, profile_id, content_str, replyto_hash):
+    def handle_make_squeak(self, request):
+        profile_id = request.profile_id
+        content_str = request.content
+        replyto_hash_str = request.replyto
+        replyto_hash = bytes.fromhex(replyto_hash_str) if replyto_hash_str else None
         logger.info("Handle make squeak profile with id: {}".format(profile_id))
         inserted_squeak_hash = self.squeak_node.make_squeak(
             profile_id, content_str, replyto_hash
         )
-        return inserted_squeak_hash
+        squeak_hash_str = inserted_squeak_hash.hex()
+        return squeak_admin_pb2.MakeSqueakReply(
+            squeak_hash=squeak_hash_str,
+        )
 
     def handle_get_squeak_display_entry(self, squeak_hash):
         logger.info("Handle get squeak display entry for hash: {}".format(squeak_hash))
