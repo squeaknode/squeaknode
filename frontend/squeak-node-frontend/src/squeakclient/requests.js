@@ -50,6 +50,8 @@ import {
   GetFollowedSqueakDisplaysReply,
   SetSqueakProfileSharingReply,
   GetSqueakProfileReply,
+  SetSqueakProfileFollowingReply,
+  SetSqueakProfileWhitelistedReply,
 } from "../proto/squeak_admin_pb"
 
 
@@ -195,13 +197,23 @@ export function getSqueakProfileRequest(id, handleResponse) {
   });
 };
 
+// export function setSqueakProfileFollowingRequest(id, following, handleResponse) {
+//       var request = new SetSqueakProfileFollowingRequest();
+//       request.setProfileId(id);
+//       request.setFollowing(following);
+//       client.setSqueakProfileFollowing(request, {}, (err, response) => {
+//         handleResponse(response);
+//       });
+// };
+
 export function setSqueakProfileFollowingRequest(id, following, handleResponse) {
-      var request = new SetSqueakProfileFollowingRequest();
-      request.setProfileId(id);
-      request.setFollowing(following);
-      client.setSqueakProfileFollowing(request, {}, (err, response) => {
-        handleResponse(response);
-      });
+  var request = new SetSqueakProfileFollowingRequest();
+  request.setProfileId(id);
+  request.setFollowing(following);
+  makeRequest('setsqueakprofilefollowing', request, (data) => {
+    var response = SetSqueakProfileFollowingReply.deserializeBinary(data);
+    handleResponse(response);
+  });
 };
 
 // export function setSqueakProfileSharingRequest(id, sharing, handleResponse) {
@@ -219,18 +231,27 @@ export function setSqueakProfileSharingRequest(id, sharing, handleResponse) {
   request.setSharing(sharing);
   makeRequest('setsqueakprofilesharing', request, (data) => {
     var response = SetSqueakProfileSharingReply.deserializeBinary(data);
-    console.log('Got response:', response);
     handleResponse(response);
   });
 };
 
+// export function setSqueakProfileWhitelistedRequest(id, whitelisted, handleResponse) {
+//       var request = new SetSqueakProfileWhitelistedRequest()
+//       request.setProfileId(id);
+//       request.setWhitelisted(whitelisted);
+//       client.setSqueakProfileWhitelisted(request, {}, (err, response) => {
+//         handleResponse(response);
+//       });
+// };
+
 export function setSqueakProfileWhitelistedRequest(id, whitelisted, handleResponse) {
-      var request = new SetSqueakProfileWhitelistedRequest()
-      request.setProfileId(id);
-      request.setWhitelisted(whitelisted);
-      client.setSqueakProfileWhitelisted(request, {}, (err, response) => {
-        handleResponse(response);
-      });
+  var request = new SetSqueakProfileWhitelistedRequest()
+  request.setProfileId(id);
+  request.setWhitelisted(whitelisted);
+  makeRequest('setsqueakprofilewhitelisted', request, (data) => {
+    var response = SetSqueakProfileWhitelistedReply.deserializeBinary(data);
+    handleResponse(response);
+  });
 };
 
 export function lndConnectPeerRequest(pubkey, host, handleResponse) {

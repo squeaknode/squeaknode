@@ -136,6 +136,7 @@ class SqueakAdminServerHandler(object):
             )
         )
         self.squeak_node.set_squeak_profile_whitelisted(profile_id, whitelisted)
+        return squeak_admin_pb2.SetSqueakProfileWhitelistedReply()
 
     def handle_set_squeak_profile_following(self, profile_id, following):
         logger.info(
@@ -145,6 +146,7 @@ class SqueakAdminServerHandler(object):
             )
         )
         self.squeak_node.set_squeak_profile_following(profile_id, following)
+        return squeak_admin_pb2.SetSqueakProfileFollowingReply()
 
     def handle_set_squeak_profile_sharing(self, profile_id, sharing):
         logger.info(

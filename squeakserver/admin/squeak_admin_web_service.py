@@ -43,17 +43,6 @@ def create_app(handler):
         reply_data = reply.SerializeToString(reply)
         return reply_data
 
-    @app.route('/setsqueakprofilesharing', methods=["POST"])
-    def setsqueakprofilesharing():
-        data = request.get_data()
-        req = squeak_admin_pb2.SetSqueakProfileSharingRequest()
-        req.ParseFromString(data)
-        profile_id = req.profile_id
-        sharing = req.sharing
-        reply = handler.handle_set_squeak_profile_sharing(profile_id, sharing)
-        reply_data = reply.SerializeToString(reply)
-        return reply_data
-
     @app.route('/lndgetinfo', methods=["POST"])
     def lndgetinfo():
         data = request.get_data()
@@ -116,6 +105,39 @@ def create_app(handler):
         req.ParseFromString(data)
         profile_id = req.profile_id
         reply = handler.handle_get_squeak_profile(profile_id)
+        reply_data = reply.SerializeToString(reply)
+        return reply_data
+
+    @app.route('/setsqueakprofilefollowing', methods=["POST"])
+    def setsqueakprofilefollowing():
+        data = request.get_data()
+        req = squeak_admin_pb2.SetSqueakProfileFollowingRequest()
+        req.ParseFromString(data)
+        profile_id = req.profile_id
+        following = req.following
+        reply = handler.handle_set_squeak_profile_following(profile_id, following)
+        reply_data = reply.SerializeToString(reply)
+        return reply_data
+
+    @app.route('/setsqueakprofilesharing', methods=["POST"])
+    def setsqueakprofilesharing():
+        data = request.get_data()
+        req = squeak_admin_pb2.SetSqueakProfileSharingRequest()
+        req.ParseFromString(data)
+        profile_id = req.profile_id
+        sharing = req.sharing
+        reply = handler.handle_set_squeak_profile_sharing(profile_id, sharing)
+        reply_data = reply.SerializeToString(reply)
+        return reply_data
+
+    @app.route('/setsqueakprofilewhitelisted', methods=["POST"])
+    def setsqueakprofilewhitelisted():
+        data = request.get_data()
+        req = squeak_admin_pb2.SetSqueakProfileWhitelistedRequest()
+        req.ParseFromString(data)
+        profile_id = req.profile_id
+        whitelisted = req.whitelisted
+        reply = handler.handle_set_squeak_profile_whitelisted(profile_id, whitelisted)
         reply_data = reply.SerializeToString(reply)
         return reply_data
 
