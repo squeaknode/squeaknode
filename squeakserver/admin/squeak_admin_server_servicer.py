@@ -70,22 +70,10 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         return self.handler.handle_lnd_subscribe_channel_events()
 
     def CreateSigningProfile(self, request, context):
-        profile_name = request.profile_name
-        profile_id = self.handler.handle_create_signing_profile(profile_name)
-        return squeak_admin_pb2.CreateSigningProfileReply(
-            profile_id=profile_id,
-        )
+        return self.handler.handle_create_signing_profile(request)
 
     def CreateContactProfile(self, request, context):
-        profile_name = request.profile_name
-        squeak_address = request.address
-        profile_id = self.handler.handle_create_contact_profile(
-            profile_name,
-            squeak_address,
-        )
-        return squeak_admin_pb2.CreateContactProfileReply(
-            profile_id=profile_id,
-        )
+        return self.handler.handle_create_contact_profile(request)
 
     def GetSigningProfiles(self, request, context):
         profiles = self.handler.handle_get_signing_profiles()

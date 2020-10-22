@@ -82,23 +82,29 @@ class SqueakAdminServerHandler(object):
         logger.info("Handle subscribe channel events")
         return self.lightning_client.subscribe_channel_events()
 
-    def handle_create_signing_profile(self, profile_name):
+    def handle_create_signing_profile(self, request):
+        profile_name = request.profile_name
         logger.info("Handle create signing profile with name: {}".format(profile_name))
         profile_id = self.squeak_node.create_signing_profile(profile_name)
         logger.info("New profile_id: {}".format(profile_id))
-        return profile_id
-
-    def handle_create_contact_profile(self, profile_name, squeak_address):
-        logger.info(
-            "Handle create contact profile with name: {}, address: {}".format(
-                profile_name, squeak_address
-            )
+        return squeak_admin_pb2.CreateSigningProfileReply(
+            profile_id=profile_id,
         )
+
+    def handle_create_contact_profile(self, request):
+        profile_name = request.profile_name
+        squeak_address = request.address
+        logger.info("Handle create contact profile with name: {}, address: {}".format(
+            profile_name,
+            squeak_address,
+        ))
         profile_id = self.squeak_node.create_contact_profile(
             profile_name, squeak_address
         )
         logger.info("New profile_id: {}".format(profile_id))
-        return profile_id
+        return squeak_admin_pb2.CreateContactProfileReply(
+            profile_id=profile_id,
+        )
 
     def handle_get_signing_profiles(self):
         logger.info("Handle get signing profiles.")
