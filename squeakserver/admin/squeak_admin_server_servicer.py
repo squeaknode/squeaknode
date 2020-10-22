@@ -108,15 +108,7 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         return self.handler.handle_make_squeak(request)
 
     def GetSqueakDisplay(self, request, context):
-        squeak_hash_str = request.squeak_hash
-        squeak_hash = bytes.fromhex(squeak_hash_str)
-        squeak_entry_with_profile = self.handler.handle_get_squeak_display_entry(
-            squeak_hash
-        )
-        display_message = self._squeak_entry_to_message(squeak_entry_with_profile)
-        return squeak_admin_pb2.GetSqueakDisplayReply(
-            squeak_display_entry=display_message
-        )
+        return self.handler.handle_get_squeak_display_entry(request)
 
     def GetFollowedSqueakDisplays(self, request, context):
         reply = (

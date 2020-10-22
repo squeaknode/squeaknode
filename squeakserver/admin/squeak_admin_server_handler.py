@@ -198,17 +198,17 @@ class SqueakAdminServerHandler(object):
             squeak_hash=squeak_hash_str,
         )
 
-    def handle_get_squeak_display_entry(self, squeak_hash):
+    def handle_get_squeak_display_entry(self, request):
+        squeak_hash_str = request.squeak_hash
+        squeak_hash = bytes.fromhex(squeak_hash_str)
         logger.info("Handle get squeak display entry for hash: {}".format(squeak_hash))
         squeak_entry_with_profile = self.squeak_node.get_squeak_entry_with_profile(
             squeak_hash
         )
-        logger.info(
-            "Got squeak entry with profile for hash: {}".format(
-                squeak_entry_with_profile
-            )
+        display_message = self._squeak_entry_to_message(squeak_entry_with_profile)
+        return squeak_admin_pb2.GetSqueakDisplayReply(
+            squeak_display_entry=display_message
         )
-        return squeak_entry_with_profile
 
     def handle_get_followed_squeak_display_entries(self):
         logger.info("Handle get followed squeak display entries.")
