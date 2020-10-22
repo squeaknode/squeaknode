@@ -76,11 +76,7 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         return self.handler.handle_create_contact_profile(request)
 
     def GetSigningProfiles(self, request, context):
-        profiles = self.handler.handle_get_signing_profiles()
-        profile_msgs = [
-            self._squeak_profile_to_message(profile) for profile in profiles
-        ]
-        return squeak_admin_pb2.GetSigningProfilesReply(squeak_profiles=profile_msgs)
+        return self.handler.handle_get_signing_profiles(request)
 
     def GetContactProfiles(self, request, context):
         profiles = self.handler.handle_get_contact_profiles()
