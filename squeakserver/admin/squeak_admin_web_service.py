@@ -159,6 +159,20 @@ def create_app(handler):
             handler.handle_pay_offer,
         )
 
+    @app.route('/getbuyoffers', methods=["POST"])
+    def getbuyoffers():
+        return handle_request(
+            squeak_admin_pb2.GetBuyOffersRequest(),
+            handler.handle_get_buy_offers,
+        )
+
+    @app.route('/getbuyoffer', methods=["POST"])
+    def getbuyoffer():
+        return handle_request(
+            squeak_admin_pb2.GetBuyOfferRequest(),
+            handler.handle_get_buy_offer,
+        )
+
     return app
 
 

@@ -57,6 +57,8 @@ import {
   SetSqueakProfileWhitelistedReply,
   GetPeersReply,
   PayOfferReply,
+  GetBuyOffersReply,
+  GetBuyOfferReply,
 } from "../proto/squeak_admin_pb"
 
 
@@ -395,26 +397,44 @@ export function lndCloseChannelRequest(txId, outputIndex, handleResponse, handle
   });
 };
 
+// export function getBuyOffersRequest(hash, handleResponse) {
+//     var request = new GetBuyOffersRequest();
+//     request.setSqueakHash(hash);
+//     client.getBuyOffers(request, {}, (err, response) => {
+//       if (err) {
+//         return;
+//       }
+//       handleResponse(response.getOffersList());
+//     });
+// };
+
 export function getBuyOffersRequest(hash, handleResponse) {
-    var request = new GetBuyOffersRequest();
-    request.setSqueakHash(hash);
-    client.getBuyOffers(request, {}, (err, response) => {
-      if (err) {
-        return;
-      }
-      handleResponse(response.getOffersList());
-    });
+  var request = new GetBuyOffersRequest();
+  request.setSqueakHash(hash);
+  makeRequest('getbuyoffers', request, (data) => {
+    var response = GetBuyOffersReply.deserializeBinary(data);
+    handleResponse(response.getOffersList());
+  });
 };
 
+// export function getBuyOfferRequest(offerId, handleResponse) {
+//     var request = new GetBuyOfferRequest();
+//     request.setOfferId(offerId);
+//     client.getBuyOffer(request, {}, (err, response) => {
+//       if (err) {
+//         return;
+//       }
+//       handleResponse(response.getOffer())
+//     });
+// };
+
 export function getBuyOfferRequest(offerId, handleResponse) {
-    var request = new GetBuyOfferRequest();
-    request.setOfferId(offerId);
-    client.getBuyOffer(request, {}, (err, response) => {
-      if (err) {
-        return;
-      }
-      handleResponse(response.getOffer())
-    });
+  var request = new GetBuyOfferRequest();
+  request.setOfferId(offerId);
+  makeRequest('getbuyoffer', request, (data) => {
+    var response = GetBuyOfferReply.deserializeBinary(data);
+    handleResponse(response.getOffer());
+  });
 };
 
 export function getPeerRequest(id, handleResponse) {
