@@ -254,7 +254,8 @@ class SqueakAdminServerHandler(object):
             squeak_display_entries=squeak_display_msgs
         )
 
-    def handle_get_ancestor_squeak_display_entries(self, squeak_hash_str):
+    def handle_get_ancestor_squeak_display_entries(self, request):
+        squeak_hash_str = request.squeak_hash
         logger.info(
             "Handle get ancestor squeak display entries for squeak hash: {}".format(
                 squeak_hash_str
@@ -270,7 +271,13 @@ class SqueakAdminServerHandler(object):
                 len(squeak_entries_with_profile)
             )
         )
-        return squeak_entries_with_profile
+        squeak_display_msgs = [
+            self._squeak_entry_to_message(entry)
+            for entry in squeak_entries_with_profile
+        ]
+        return squeak_admin_pb2.GetAncestorSqueakDisplaysReply(
+            squeak_display_entries=squeak_display_msgs
+        )
 
     def handle_delete_squeak(self, squeak_hash):
         logger.info("Handle delete squeak with hash: {}".format(squeak_hash))

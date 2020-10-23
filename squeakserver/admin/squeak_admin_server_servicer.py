@@ -117,19 +117,7 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         return self.handler.handle_get_squeak_display_entries_for_address(request)
 
     def GetAncestorSqueakDisplays(self, request, context):
-        squeak_hash_str = request.squeak_hash
-        squeak_entries_with_profile = (
-            self.handler.handle_get_ancestor_squeak_display_entries(
-                squeak_hash_str,
-            )
-        )
-        squeak_display_msgs = [
-            self._squeak_entry_to_message(entry)
-            for entry in squeak_entries_with_profile
-        ]
-        return squeak_admin_pb2.GetAncestorSqueakDisplaysReply(
-            squeak_display_entries=squeak_display_msgs
-        )
+        return self.handler.handle_get_ancestor_squeak_display_entries(request)
 
     def DeleteSqueak(self, request, context):
         squeak_hash_str = request.squeak_hash
