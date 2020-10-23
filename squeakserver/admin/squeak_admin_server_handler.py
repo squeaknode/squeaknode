@@ -35,58 +35,45 @@ class SqueakAdminServerHandler(object):
         logger.info("Handle lnd wallet balance")
         return self.lightning_client.stub.WalletBalance(request)
 
-    def handle_lnd_new_address(self, address_type):
-        logger.info("Handle lnd new address with type: {}".format(address_type))
-        return self.lightning_client.new_address(address_type)
+    def handle_lnd_new_address(self, request):
+        logger.info("Handle lnd new address: {}".format(request))
+        return self.lightning_client.stub.NewAddress(request)
 
-    def handle_lnd_list_channels(self):
+    def handle_lnd_list_channels(self, request):
         logger.info("Handle lnd list channels")
-        return self.lightning_client.list_channels()
+        return self.lightning_client.stub.ListChannels(request)
 
-    def handle_lnd_pending_channels(self):
+    def handle_lnd_pending_channels(self, request):
         logger.info("Handle lnd pending channels")
-        return self.lightning_client.pending_channels()
+        return self.lightning_client.stub.PendingChannels(request)
 
-    def handle_lnd_get_transactions(self):
+    def handle_lnd_get_transactions(self, request):
         logger.info("Handle lnd get transactions")
-        return self.lightning_client.get_transactions()
+        return self.lightning_client.stub.GetTransactions(request)
 
-    def handle_lnd_list_peers(self):
+    def handle_lnd_list_peers(self, request):
         logger.info("Handle list peers")
-        return self.lightning_client.list_peers()
+        return self.lightning_client.stub.ListPeers(request)
 
-    def handle_lnd_connect_peer(self, lightning_address):
-        logger.info("Handle connect peer with address: {}".format(lightning_address))
-        pubkey = lightning_address.pubkey
-        host = lightning_address.host
-        return self.lightning_client.connect_peer(pubkey, host)
+    def handle_lnd_connect_peer(self, request):
+        logger.info("Handle connect peer: {}".format(request))
+        return self.lightning_client.stub.ConnectPeer(request)
 
-    def handle_lnd_disconnect_peer(self, pubkey):
-        logger.info("Handle disconnect peer with pubkey: {}".format(pubkey))
-        return self.lightning_client.disconnect_peer(pubkey)
+    def handle_lnd_disconnect_peer(self, request):
+        logger.info("Handle disconnect peer: {}".format(request))
+        return self.lightning_client.stub.DisconnectPeer(request)
 
-    def handle_lnd_open_channel_sync(self, node_pubkey_string, local_funding_amount, sat_per_byte):
-        logger.info("Handle open channel to peer with pubkey: {}, amount: {}".format(
-            node_pubkey_string,
-            local_funding_amount,
-        ))
-        return self.lightning_client.open_channel_sync(
-            node_pubkey_string,
-            local_funding_amount,
-        )
+    def handle_lnd_open_channel_sync(self, request):
+        logger.info("Handle open channel: {}".format(request))
+        return self.lightning_client.stub.OpenChannelSync(request)
 
-    def handle_lnd_close_channel(self, channel_point, sat_per_byte):
-        logger.info("Handle close channel with channel_point: {}".format(
-            channel_point,
-            sat_per_byte,
-        ))
-        return self.lightning_client.close_channel(
-            channel_point,
-        )
+    def handle_lnd_close_channel(self, request):
+        logger.info("Handle close channel: {}".format(request))
+        return self.lightning_client.stub.CloseChannel(request)
 
-    def handle_lnd_subscribe_channel_events(self):
+    def handle_lnd_subscribe_channel_events(self, request):
         logger.info("Handle subscribe channel events")
-        return self.lightning_client.subscribe_channel_events()
+        return self.lightning_client.stub.SubscribeChannelEvents(request)
 
     def handle_create_signing_profile(self, request):
         profile_name = request.profile_name

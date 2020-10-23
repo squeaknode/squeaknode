@@ -25,49 +25,34 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         return self.handler.handle_lnd_wallet_balance(request)
 
     def LndNewAddress(self, request, context):
-        address_type = request.type
-        return self.handler.handle_lnd_new_address(address_type)
+        return self.handler.handle_lnd_new_address(request)
 
     def LndListChannels(self, request, context):
-        return self.handler.handle_lnd_list_channels()
+        return self.handler.handle_lnd_list_channels(request)
 
     def LndPendingChannels(self, request, context):
-        return self.handler.handle_lnd_pending_channels()
+        return self.handler.handle_lnd_pending_channels(request)
 
     def LndGetTransactions(self, request, context):
-        return self.handler.handle_lnd_get_transactions()
+        return self.handler.handle_lnd_get_transactions(request)
 
     def LndListPeers(self, request, context):
-        return self.handler.handle_lnd_list_peers()
+        return self.handler.handle_lnd_list_peers(request)
 
     def LndConnectPeer(self, request, context):
-        lightning_address = request.addr
-        return self.handler.handle_lnd_connect_peer(lightning_address)
+        return self.handler.handle_lnd_connect_peer(request)
 
     def LndDisconnectPeer(self, request, context):
-        pubkey = request.pub_key
-        return self.handler.handle_lnd_disconnect_peer(pubkey)
+        return self.handler.handle_lnd_disconnect_peer(request)
 
     def LndOpenChannelSync(self, request, context):
-        node_pubkey_string = request.node_pubkey_string
-        local_funding_amount = request.local_funding_amount
-        sat_per_byte = request.sat_per_byte
-        return self.handler.handle_lnd_open_channel_sync(
-            node_pubkey_string,
-            local_funding_amount,
-            sat_per_byte,
-        )
+        return self.handler.handle_lnd_open_channel_sync(request)
 
     def LndCloseChannel(self, request, context):
-        channel_point = request.channel_point
-        sat_per_byte = request.sat_per_byte
-        return self.handler.handle_lnd_close_channel(
-            channel_point,
-            sat_per_byte,
-        )
+        return self.handler.handle_lnd_close_channel(request)
 
     def LndSubscribeChannelEvents(self, request, context):
-        return self.handler.handle_lnd_subscribe_channel_events()
+        return self.handler.handle_lnd_subscribe_channel_events(request)
 
     def CreateSigningProfile(self, request, context):
         return self.handler.handle_create_signing_profile(request)
