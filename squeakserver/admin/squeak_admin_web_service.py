@@ -208,6 +208,20 @@ def create_app(handler):
             handler.handle_get_contact_profiles,
         )
 
+    @app.route('/makesqueakrequest', methods=["POST"])
+    def makesqueakrequest():
+        return handle_request(
+            squeak_admin_pb2.MakeSqueakRequest(),
+            handler.handle_make_squeak,
+        )
+
+    @app.route('/getsqueakdisplay', methods=["POST"])
+    def getsqueakdisplay():
+        return handle_request(
+            squeak_admin_pb2.GetSqueakDisplayRequest(),
+            handler.handle_get_squeak_display_entry,
+        )
+
     return app
 
 

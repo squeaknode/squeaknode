@@ -64,6 +64,8 @@ import {
   SetPeerUploadingReply,
   GetSigningProfilesReply,
   GetContactProfilesReply,
+  MakeSqueakReply,
+  GetSqueakDisplayReply,
 } from "../proto/squeak_admin_pb"
 
 
@@ -536,29 +538,49 @@ export function getContactProfilesRequest(handleResponse) {
   });
 };
 
+// export function makeSqueakRequest(profileId, content, replyto, handleResponse, handleErr) {
+//   var request = new MakeSqueakRequest();
+//   request.setProfileId(profileId);
+//   request.setContent(content);
+//   request.setReplyto(replyto);
+//   client.makeSqueak(request, {}, (err, response) => {
+//     if (err) {
+//       handleErr(err);
+//       return;
+//     }
+//     handleResponse(response);
+//   });
+// };
+
 export function makeSqueakRequest(profileId, content, replyto, handleResponse, handleErr) {
   var request = new MakeSqueakRequest();
   request.setProfileId(profileId);
   request.setContent(content);
   request.setReplyto(replyto);
-  client.makeSqueak(request, {}, (err, response) => {
-    if (err) {
-      handleErr(err);
-      return;
-    }
+  makeRequest('makesqueakrequest', request, (data) => {
+    var response = MakeSqueakReply.deserializeBinary(data);
     handleResponse(response);
   });
 };
 
+// export function getSqueakDisplayRequest(hash, handleResponse) {
+//     var request = new GetSqueakDisplayRequest();
+//     request.setSqueakHash(hash);
+//     client.getSqueakDisplay(request, {}, (err, response) => {
+//       if (err) {
+//         return;
+//       }
+//       handleResponse(response.getSqueakDisplayEntry())
+//     });
+// };
+
 export function getSqueakDisplayRequest(hash, handleResponse) {
-    var request = new GetSqueakDisplayRequest();
-    request.setSqueakHash(hash);
-    client.getSqueakDisplay(request, {}, (err, response) => {
-      if (err) {
-        return;
-      }
-      handleResponse(response.getSqueakDisplayEntry())
-    });
+  var request = new GetSqueakDisplayRequest();
+  request.setSqueakHash(hash);
+  makeRequest('getsqueakdisplay', request, (data) => {
+    var response = GetSqueakDisplayReply.deserializeBinary(data);
+    handleResponse(response.getSqueakDisplayEntry());
+  });
 };
 
 export function getAncestorSqueakDisplaysRequest(hash, handleResponse) {
