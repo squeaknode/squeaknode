@@ -173,6 +173,13 @@ def create_app(handler):
             handler.handle_get_buy_offer,
         )
 
+    @app.route('/getpeer', methods=["POST"])
+    def getpeer():
+        return handle_request(
+            squeak_admin_pb2.GetPeerRequest(),
+            handler.handle_get_squeak_peer,
+        )
+
     return app
 
 

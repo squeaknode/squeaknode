@@ -59,6 +59,7 @@ import {
   PayOfferReply,
   GetBuyOffersReply,
   GetBuyOfferReply,
+  GetPeerReply,
 } from "../proto/squeak_admin_pb"
 
 
@@ -321,7 +322,7 @@ export function getPeersRequest(handleResponse) {
   var request = new GetPeersRequest();
   makeRequest('getpeers', request, (data) => {
     var response = GetPeersReply.deserializeBinary(data);
-    handleResponse(response);
+    handleResponse(response.getSqueakPeersList());
   });
 };
 
@@ -437,15 +438,24 @@ export function getBuyOfferRequest(offerId, handleResponse) {
   });
 };
 
+// export function getPeerRequest(id, handleResponse) {
+//       var request = new GetPeerRequest();
+//       request.setPeerId(id);
+//       client.getPeer(request, {}, (err, response) => {
+//         if (err) {
+//           return;
+//         }
+//         handleResponse(response.getSqueakPeer())
+//       });
+// };
+
 export function getPeerRequest(id, handleResponse) {
-      var request = new GetPeerRequest();
-      request.setPeerId(id);
-      client.getPeer(request, {}, (err, response) => {
-        if (err) {
-          return;
-        }
-        handleResponse(response.getSqueakPeer())
-      });
+  var request = new GetPeerRequest();
+  request.setPeerId(id);
+  makeRequest('getpeer', request, (data) => {
+    var response = GetPeerReply.deserializeBinary(data);
+    handleResponse(response.getSqueakPeer());
+  });
 };
 
 export function setPeerDownloadingRequest(id, downloading, handleResponse) {
