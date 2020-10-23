@@ -131,6 +131,20 @@ def create_app(handler):
             handler.handle_set_squeak_profile_whitelisted,
         )
 
+    @app.route('/getpeers', methods=["POST"])
+    def getpeers():
+        return handle_request(
+            squeak_admin_pb2.GetPeersRequest(),
+            handler.handle_get_squeak_peers,
+        )
+
+    @app.route('/payoffer', methods=["POST"])
+    def payoffer():
+        return handle_request(
+            squeak_admin_pb2.PayOfferRequest(),
+            handler.handle_pay_offer,
+        )
+
     return app
 
 

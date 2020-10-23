@@ -20,6 +20,8 @@ import {
   ListPeersResponse,
   ListChannelsResponse,
   PendingChannelsResponse,
+  ConnectPeerResponse,
+  DisconnectPeerResponse,
 } from "../proto/lnd_pb"
 import {
   GetSqueakProfileRequest,
@@ -52,6 +54,8 @@ import {
   GetSqueakProfileReply,
   SetSqueakProfileFollowingReply,
   SetSqueakProfileWhitelistedReply,
+  GetPeersReply,
+  PayOfferReply,
 } from "../proto/squeak_admin_pb"
 
 
@@ -275,7 +279,7 @@ export function lndConnectPeerRequest(pubkey, host, handleResponse) {
   address.setHost(host);
   request.setAddr(address);
   makeRequest('lndconnectpeer', request, (data) => {
-    var response = SetSqueakProfileWhitelistedReply.deserializeBinary(data);
+    var response = ConnectPeerResponse.deserializeBinary(data);
     handleResponse(response);
   });
 };
@@ -295,33 +299,49 @@ export function lndDisconnectPeerRequest(pubkey, handleResponse) {
   var request = new DisconnectPeerRequest()
   request.setPubKey(pubkey);
   makeRequest('lnddisconnectpeer', request, (data) => {
-    var response = SetSqueakProfileWhitelistedReply.deserializeBinary(data);
+    var response = DisconnectPeerResponse.deserializeBinary(data);
     handleResponse(response);
   });
 };
 
+// export function getPeersRequest(handleResponse) {
+//   var request = new GetPeersRequest();
+//   client.getPeers(request, {}, (err, response) => {
+//     if (err) {
+//       return;
+//     }
+//     handleResponse(response.getSqueakPeersList());
+//   });
+// };
+
 export function getPeersRequest(handleResponse) {
   var request = new GetPeersRequest();
-  client.getPeers(request, {}, (err, response) => {
-    if (err) {
-      return;
-    }
-    handleResponse(response.getSqueakPeersList());
+  makeRequest('getpeers', request, (data) => {
+    var response = GetPeersReply.deserializeBinary(data);
+    handleResponse(response);
   });
 };
+
+// export function payOfferRequest(offerId, handleResponse, handleErr) {
+//   var request = new PayOfferRequest();
+//   request.setOfferId(offerId);
+//   client.payOffer(request, {}, (err, response) => {
+//     if (err) {
+//       handleErr(err);
+//       return;
+//     }
+//     handleResponse(response);
+//   });
+// };
 
 export function payOfferRequest(offerId, handleResponse, handleErr) {
   var request = new PayOfferRequest();
   request.setOfferId(offerId);
-  client.payOffer(request, {}, (err, response) => {
-    if (err) {
-      handleErr(err);
-      return;
-    }
+  makeRequest('payoffer', request, (data) => {
+    var response = PayOfferReply.deserializeBinary(data);
     handleResponse(response);
   });
 };
-
 
 export function lndOpenChannelSyncRequest(pubkey, amount, handleResponse, handleErr) {
   var request = new OpenChannelRequest()
