@@ -60,7 +60,7 @@ def offer_entry_to_message(offer_entry):
     if offer_entry is None:
         return None
     offer = offer_entry.offer
-    peer = self._squeak_peer_to_message(offer_entry.peer)
+    peer = squeak_peer_to_message(offer_entry.peer)
     return squeak_admin_pb2.OfferDisplayEntry(
         offer_id=offer.offer_id,
         squeak_hash=offer.squeak_hash,
