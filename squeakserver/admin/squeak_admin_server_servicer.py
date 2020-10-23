@@ -19,10 +19,10 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         self.handler = handler
 
     def LndGetInfo(self, request, context):
-        return self.handler.handle_lnd_get_info()
+        return self.handler.handle_lnd_get_info(request)
 
     def LndWalletBalance(self, request, context):
-        return self.handler.handle_lnd_wallet_balance()
+        return self.handler.handle_lnd_wallet_balance(request)
 
     def LndNewAddress(self, request, context):
         address_type = request.type

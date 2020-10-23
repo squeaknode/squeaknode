@@ -27,13 +27,13 @@ class SqueakAdminServerHandler(object):
         self.lightning_client = lightning_client
         self.squeak_node = squeak_node
 
-    def handle_lnd_get_info(self):
+    def handle_lnd_get_info(self, request):
         logger.info("Handle lnd get info")
-        return self.lightning_client.get_info()
+        return self.lightning_client.stub.GetInfo(request)
 
-    def handle_lnd_wallet_balance(self):
+    def handle_lnd_wallet_balance(self, request):
         logger.info("Handle lnd wallet balance")
-        return self.lightning_client.get_wallet_balance()
+        return self.lightning_client.stub.WalletBalance(request)
 
     def handle_lnd_new_address(self, address_type):
         logger.info("Handle lnd new address with type: {}".format(address_type))

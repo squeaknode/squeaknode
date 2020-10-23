@@ -49,21 +49,17 @@ def create_app(handler):
 
     @app.route('/lndgetinfo', methods=["POST"])
     def lndgetinfo():
-        data = request.get_data()
-        req = lnd_pb2.GetInfoRequest()
-        req.ParseFromString(data)
-        reply = handler.handle_lnd_get_info()
-        reply_data = reply.SerializeToString(reply)
-        return reply_data
+        return handle_request(
+            lnd_pb2.GetInfoRequest(),
+            handler.handle_lnd_get_info,
+        )
 
     @app.route('/lndwalletbalance', methods=["POST"])
     def lndwalletbalance():
-        data = request.get_data()
-        req = lnd_pb2.WalletBalanceRequest()
-        req.ParseFromString(data)
-        reply = handler.handle_lnd_wallet_balance()
-        reply_data = reply.SerializeToString(reply)
-        return reply_data
+        return handle_request(
+            lnd_pb2.WalletBalanceRequest(),
+            handler.handle_lnd_wallet_balance,
+        )
 
     @app.route('/lndgettransactions', methods=["POST"])
     def lndgettransactions():

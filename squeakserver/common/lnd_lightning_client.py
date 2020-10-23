@@ -56,32 +56,34 @@ class LNDLightningClient:
         self.stub = lnd_pb2_grpc.LightningStub(channel)
 
 
-    def WalletBalance(self, request):
-        return self.stub.WalletBalance(
-            request,
-        )
+    # def WalletBalance(self, request):
+    #     return self.stub.WalletBalance(request)
 
-    def AddInvoice(self, request):
-        return self.stub.AddInvoice(
-            request,
-        )
+    # def AddInvoice(self, request):
+    #     return self.stub.AddInvoice(request)
 
-    def SendPaymentSync(self, request):
-        return self.stub.SendPaymentSync(
-            request,
-        )
+    # def SendPaymentSync(self, request):
+    #     return self.stub.SendPaymentSync(request)
 
-    def ConnectPeer(self, request):
-        return self.stub.ConnectPeer(
-            request,
-        )
+    # def ConnectPeer(self, request):
+    #     return self.stub.ConnectPeer(request)
 
-    ### Convenience methods
+    # def DisconnectPeer(self, request):
+    #     return self.stub.DisconnectPeer(request)
+
+    # def GetInfoRequest(self, request):
+    #     return self.stub.GetInfoRequest(request)
+
+    # def OpenChannelSync(self, request):
+    #     return self.stub.OpenChannelSync(request)
+
+    # def CloseChannel(self, request):
+    #     return self.stub.CloseChannel(request)
 
     def get_wallet_balance(self):
         # Retrieve and display the wallet balance
         request = lnd_pb2.WalletBalanceRequest()
-        return self.WalletBalance(request)
+        return self.stub.WalletBalance(request)
 
     def add_invoice(self, preimage, amount):
         """Create a new invoice with the given hash pre-image.
@@ -94,7 +96,7 @@ class LNDLightningClient:
             r_preimage=preimage,
             value=amount,
         )
-        return self.AddInvoice(invoice)
+        return self.stub.AddInvoice(invoice)
 
     def pay_invoice_sync(self, payment_request):
         """Pay an invoice with a given payment_request
@@ -105,7 +107,7 @@ class LNDLightningClient:
         send_payment_request = lnd_pb2.SendRequest(
             payment_request=payment_request,
         )
-        return self.SendPaymentSync(send_payment_request)
+        return self.stub.SendPaymentSync(send_payment_request)
 
     def connect_peer(self, pubkey, host):
         """Connect to a lightning node peer.
@@ -121,7 +123,7 @@ class LNDLightningClient:
         connect_peer_request = lnd_pb2.ConnectPeerRequest(
             addr=lightning_address,
         )
-        return self.ConnectPeer(connect_peer_request)
+        return self.stub.ConnectPeer(connect_peer_request)
 
     def disconnect_peer(self, pubkey):
         """Disconnect a lightning node peer.
