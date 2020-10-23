@@ -158,12 +158,7 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         return self.handler.handle_pay_offer(request)
 
     def GetSentPayments(self, request, context):
-        sent_payments = self.handler.handle_get_sent_payments()
-        sent_payment_msgs = [self._sent_payment_to_message(sent_payment) for sent_payment in sent_payments]
-        logger.info("Returning sent payments: {}".format(sent_payment_msgs))
-        return squeak_admin_pb2.GetSentPaymentsReply(
-            sent_payments=sent_payment_msgs,
-        )
+        return self.handler.handle_get_sent_payments(request)
 
     def GetSentPayment(self, request, context):
         sent_payment_id = request.sent_payment_id

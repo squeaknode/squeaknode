@@ -392,9 +392,14 @@ class SqueakAdminServerHandler(object):
             sent_payment_id=sent_payment_id,
         )
 
-    def handle_get_sent_payments(self):
+    def handle_get_sent_payments(self, request):
         logger.info("Handle get sent payments")
-        return self.squeak_node.get_sent_payments()
+        sent_payments = self.squeak_node.get_sent_payments()
+        sent_payment_msgs = [self._sent_payment_to_message(sent_payment) for sent_payment in sent_payments]
+        logger.info("Returning sent payments: {}".format(sent_payment_msgs))
+        return squeak_admin_pb2.GetSentPaymentsReply(
+            sent_payments=sent_payment_msgs,
+        )
 
     def handle_get_sent_payment(self, sent_payment_id):
         logger.info("Handle get sent payment with id: {}".format(sent_payment_id))
