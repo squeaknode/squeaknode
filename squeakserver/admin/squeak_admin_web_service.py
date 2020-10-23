@@ -39,7 +39,7 @@ def create_app(handler):
         data = request.get_data()
         req = squeak_admin_pb2.GetFollowedSqueakDisplaysRequest()
         req.ParseFromString(data)
-        reply = handler.handle_get_followed_squeak_display_entries()
+        reply = handler.handle_get_followed_squeak_display_entries(req)
         reply_data = reply.SerializeToString(reply)
         return reply_data
 
@@ -48,7 +48,7 @@ def create_app(handler):
         data = request.get_data()
         req = lnd_pb2.GetInfoRequest()
         req.ParseFromString(data)
-        reply = handler.handle_lnd_get_info()
+        reply = handler.handle_lnd_get_info(req)
         reply_data = reply.SerializeToString(reply)
         return reply_data
 
@@ -57,7 +57,7 @@ def create_app(handler):
         data = request.get_data()
         req = lnd_pb2.WalletBalanceRequest()
         req.ParseFromString(data)
-        reply = handler.handle_lnd_wallet_balance()
+        reply = handler.handle_lnd_wallet_balance(req)
         reply_data = reply.SerializeToString(reply)
         return reply_data
 
@@ -66,7 +66,7 @@ def create_app(handler):
         data = request.get_data()
         req = lnd_pb2.GetTransactionsRequest()
         req.ParseFromString(data)
-        reply = handler.handle_lnd_get_transactions()
+        reply = handler.handle_lnd_get_transactions(req)
         logger.info("lndgettransactions reply: {}".format(reply))
         reply_data = reply.SerializeToString(reply)
         return reply_data
@@ -76,7 +76,7 @@ def create_app(handler):
         data = request.get_data()
         req = lnd_pb2.ListPeersRequest()
         req.ParseFromString(data)
-        reply = handler.handle_lnd_list_peers()
+        reply = handler.handle_lnd_list_peers(req)
         reply_data = reply.SerializeToString(reply)
         return reply_data
 
@@ -85,7 +85,7 @@ def create_app(handler):
         data = request.get_data()
         req = lnd_pb2.ListChannelsRequest()
         req.ParseFromString(data)
-        reply = handler.handle_lnd_list_channels()
+        reply = handler.handle_lnd_list_channels(req)
         reply_data = reply.SerializeToString(reply)
         return reply_data
 
@@ -94,7 +94,7 @@ def create_app(handler):
         data = request.get_data()
         req = lnd_pb2.PendingChannelsRequest()
         req.ParseFromString(data)
-        reply = handler.handle_lnd_pending_channels()
+        reply = handler.handle_lnd_pending_channels(req)
         reply_data = reply.SerializeToString(reply)
         return reply_data
 
@@ -104,7 +104,7 @@ def create_app(handler):
         req = squeak_admin_pb2.GetSqueakProfileRequest()
         req.ParseFromString(data)
         profile_id = req.profile_id
-        reply = handler.handle_get_squeak_profile(profile_id)
+        reply = handler.handle_get_squeak_profile(req)
         reply_data = reply.SerializeToString(reply)
         return reply_data
 
@@ -115,7 +115,7 @@ def create_app(handler):
         req.ParseFromString(data)
         profile_id = req.profile_id
         following = req.following
-        reply = handler.handle_set_squeak_profile_following(profile_id, following)
+        reply = handler.handle_set_squeak_profile_following(req)
         reply_data = reply.SerializeToString(reply)
         return reply_data
 
@@ -126,7 +126,7 @@ def create_app(handler):
         req.ParseFromString(data)
         profile_id = req.profile_id
         sharing = req.sharing
-        reply = handler.handle_set_squeak_profile_sharing(profile_id, sharing)
+        reply = handler.handle_set_squeak_profile_sharing(req)
         reply_data = reply.SerializeToString(reply)
         return reply_data
 
@@ -137,7 +137,7 @@ def create_app(handler):
         req.ParseFromString(data)
         profile_id = req.profile_id
         whitelisted = req.whitelisted
-        reply = handler.handle_set_squeak_profile_whitelisted(profile_id, whitelisted)
+        reply = handler.handle_set_squeak_profile_whitelisted(req)
         reply_data = reply.SerializeToString(reply)
         return reply_data
 
