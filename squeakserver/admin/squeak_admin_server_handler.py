@@ -279,10 +279,13 @@ class SqueakAdminServerHandler(object):
             squeak_display_entries=squeak_display_msgs
         )
 
-    def handle_delete_squeak(self, squeak_hash):
-        logger.info("Handle delete squeak with hash: {}".format(squeak_hash))
+    def handle_delete_squeak(self, request):
+        squeak_hash_str = request.squeak_hash
+        squeak_hash = bytes.fromhex(squeak_hash_str)
+        logger.info("Handle delete squeak with hash: {}".format(squeak_hash_str))
         self.squeak_node.delete_squeak(squeak_hash)
-        logger.info("Deleted squeak entry with hash: {}".format(squeak_hash))
+        logger.info("Deleted squeak entry with hash: {}".format(squeak_hash_str))
+        return squeak_admin_pb2.DeleteSqueakReply()
 
     def handle_create_peer(self, peer_name, host, port):
         logger.info(

@@ -120,10 +120,7 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         return self.handler.handle_get_ancestor_squeak_display_entries(request)
 
     def DeleteSqueak(self, request, context):
-        squeak_hash_str = request.squeak_hash
-        squeak_hash = bytes.fromhex(squeak_hash_str)
-        self.handler.handle_delete_squeak(squeak_hash)
-        return squeak_admin_pb2.DeleteSqueakReply()
+        return self.handler.handle_delete_squeak(request)
 
     def CreatePeer(self, request, context):
         peer_name = request.peer_name if request.peer_name else None
