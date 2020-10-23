@@ -96,6 +96,20 @@ def create_app(handler):
             handler.handle_lnd_disconnect_peer,
         )
 
+    @app.route('/lndopenchannelsync', methods=["POST"])
+    def lndopenchannelsync():
+        return handle_request(
+            lnd_pb2.OpenChannelRequest(),
+            handler.handle_lnd_open_channel_sync,
+        )
+
+    @app.route('/lndclosechannel', methods=["POST"])
+    def lndclosechannel():
+        return handle_request(
+            lnd_pb2.CloseChannelRequest(),
+            handler.handle_lnd_close_channel,
+        )
+
     @app.route('/getfollowedsqueakdisplays', methods=["POST"])
     def getfollowedsqueakdisplays():
         return handle_request(

@@ -22,6 +22,7 @@ import {
   PendingChannelsResponse,
   ConnectPeerResponse,
   DisconnectPeerResponse,
+  CloseStatusUpdate,
 } from "../proto/lnd_pb"
 import {
   GetSqueakProfileRequest,
@@ -343,18 +344,43 @@ export function payOfferRequest(offerId, handleResponse, handleErr) {
   });
 };
 
+// export function lndOpenChannelSyncRequest(pubkey, amount, handleResponse, handleErr) {
+//   var request = new OpenChannelRequest()
+//   request.setNodePubkeyString(pubkey);
+//   request.setLocalFundingAmount(amount);
+//   client.lndOpenChannelSync(request, {}, (err, response) => {
+//     if (err) {
+//       handleErr(err);
+//       return;
+//     }
+//     handleResponse(response);
+//   });
+// };
+
 export function lndOpenChannelSyncRequest(pubkey, amount, handleResponse, handleErr) {
   var request = new OpenChannelRequest()
   request.setNodePubkeyString(pubkey);
   request.setLocalFundingAmount(amount);
-  client.lndOpenChannelSync(request, {}, (err, response) => {
-    if (err) {
-      handleErr(err);
-      return;
-    }
+  makeRequest('lndopenchannelsync', request, (data) => {
+    var response = ChannelPoint.deserializeBinary(data);
     handleResponse(response);
   });
 };
+
+// export function lndCloseChannelRequest(txId, outputIndex, handleResponse, handleErr) {
+//   var request = new CloseChannelRequest();
+//   var channelPoint = new ChannelPoint();
+//   channelPoint.setFundingTxidStr(txId);
+//   channelPoint.setOutputIndex(outputIndex);
+//   request.setChannelPoint(channelPoint);
+//   client.lndCloseChannel(request, {}, (err, response) => {
+//     if (err) {
+//       handleErr(err);
+//       return;
+//     }
+//     handleResponse(response);
+//   });
+// };
 
 export function lndCloseChannelRequest(txId, outputIndex, handleResponse, handleErr) {
   var request = new CloseChannelRequest();
@@ -362,11 +388,9 @@ export function lndCloseChannelRequest(txId, outputIndex, handleResponse, handle
   channelPoint.setFundingTxidStr(txId);
   channelPoint.setOutputIndex(outputIndex);
   request.setChannelPoint(channelPoint);
-  client.lndCloseChannel(request, {}, (err, response) => {
-    if (err) {
-      handleErr(err);
-      return;
-    }
+  makeRequest('lndclosechannel', request, (data) => {
+    // TODO: handle streaming response
+    var response = CloseStatusUpdate.deserializeBinary(data);
     handleResponse(response);
   });
 };
