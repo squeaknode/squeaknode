@@ -97,7 +97,7 @@ def create_app(handler):
         data = request.get_data()
         req = lnd_pb2.PendingChannelsRequest()
         req.ParseFromString(data)
-        reply = handler.handle_lnd_pending_channels(req)
+        reply = handler.handle_lnd_pending_channels()
         reply_data = reply.SerializeToString(reply)
         return reply_data
 
