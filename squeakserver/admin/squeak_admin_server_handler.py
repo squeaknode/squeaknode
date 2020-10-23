@@ -287,7 +287,10 @@ class SqueakAdminServerHandler(object):
         logger.info("Deleted squeak entry with hash: {}".format(squeak_hash_str))
         return squeak_admin_pb2.DeleteSqueakReply()
 
-    def handle_create_peer(self, peer_name, host, port):
+    def handle_create_peer(self, request):
+        peer_name = request.peer_name if request.peer_name else None
+        host = request.host
+        port = request.port
         logger.info(
             "Handle create peer with name: {}, host: {}, port: {}".format(
                 peer_name,
@@ -300,12 +303,20 @@ class SqueakAdminServerHandler(object):
             host,
             port,
         )
-        return peer_id
+        return squeak_admin_pb2.CreatePeerReply(
+            peer_id=peer_id,
+        )
 
-    def handle_get_squeak_peer(self, peer_id):
+    def handle_get_squeak_peer(self, request):
+        peer_id = request.peer_id
         logger.info("Handle get squeak peer with id: {}".format(peer_id))
         squeak_peer = self.squeak_node.get_peer(peer_id)
-        return squeak_peer
+        if squeak_peer is None:
+            return None
+        squeak_peer_msg = self._squeak_peer_to_message(squeak_peer)
+        return squeak_admin_pb2.GetPeerReply(
+            squeak_peer=squeak_peer_msg,
+        )
 
     def handle_get_squeak_peers(self):
         logger.info("Handle get squeak peers")

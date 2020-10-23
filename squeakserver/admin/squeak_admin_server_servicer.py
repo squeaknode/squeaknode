@@ -123,29 +123,15 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         return self.handler.handle_delete_squeak(request)
 
     def CreatePeer(self, request, context):
-        peer_name = request.peer_name if request.peer_name else None
-        host = request.host
-        port = request.port
-        peer_id = self.handler.handle_create_peer(
-            peer_name,
-            host,
-            port,
-        )
-        return squeak_admin_pb2.CreatePeerReply(
-            peer_id=peer_id,
-        )
+        return self.handler.handle_create_peer(request)
 
     def GetPeer(self, request, context):
-        peer_id = request.peer_id
-        squeak_peer = self.handler.handle_get_squeak_peer(peer_id)
-        if squeak_peer is None:
+        reply = self.handler.handle_get_squeak_peer(request)
+        if reply is None:
             context.set_code(grpc.StatusCode.NOT_FOUND)
             context.set_details("Peer not found.")
             return squeak_admin_pb2.GetPeerReply()
-        squeak_peer_msg = self._squeak_peer_to_message(squeak_peer)
-        return squeak_admin_pb2.GetPeerReply(
-            squeak_peer=squeak_peer_msg,
-        )
+        return reply
 
     def GetPeers(self, request, context):
         squeak_peers = self.handler.handle_get_squeak_peers()
