@@ -60,6 +60,8 @@ import {
   GetBuyOffersReply,
   GetBuyOfferReply,
   GetPeerReply,
+  SetPeerDownloadingReply,
+  SetPeerUploadingReply,
 } from "../proto/squeak_admin_pb"
 
 
@@ -458,22 +460,42 @@ export function getPeerRequest(id, handleResponse) {
   });
 };
 
+// export function setPeerDownloadingRequest(id, downloading, handleResponse) {
+//       var request = new SetPeerDownloadingRequest();
+//       request.setPeerId(id);
+//       request.setDownloading(downloading);
+//       client.setPeerDownloading(request, {}, (err, response) => {
+//         handleResponse(response);
+//       });
+// };
+
 export function setPeerDownloadingRequest(id, downloading, handleResponse) {
-      var request = new SetPeerDownloadingRequest();
-      request.setPeerId(id);
-      request.setDownloading(downloading);
-      client.setPeerDownloading(request, {}, (err, response) => {
-        handleResponse(response);
-      });
+  var request = new SetPeerDownloadingRequest();
+  request.setPeerId(id);
+  request.setDownloading(downloading);
+  makeRequest('setpeerdownloading', request, (data) => {
+    var response = SetPeerDownloadingReply.deserializeBinary(data);
+    handleResponse(response);
+  });
 };
 
+// export function setPeerUploadingRequest(id, uploading, handleResponse) {
+//       var request = new SetPeerUploadingRequest();
+//       request.setPeerId(id);
+//       request.setUploading(uploading);
+//       client.setPeerUploading(request, {}, (err, response) => {
+//         handleResponse(response);
+//       });
+// };
+
 export function setPeerUploadingRequest(id, uploading, handleResponse) {
-      var request = new SetPeerUploadingRequest();
-      request.setPeerId(id);
-      request.setUploading(uploading);
-      client.setPeerUploading(request, {}, (err, response) => {
-        handleResponse(response);
-      });
+  var request = new SetPeerUploadingRequest();
+  request.setPeerId(id);
+  request.setUploading(uploading);
+  makeRequest('setpeeruploading', request, (data) => {
+    var response = SetPeerUploadingReply.deserializeBinary(data);
+    handleResponse(response);
+  });
 };
 
 export function getSigningProfilesRequest(handleResponse) {

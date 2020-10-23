@@ -180,6 +180,20 @@ def create_app(handler):
             handler.handle_get_squeak_peer,
         )
 
+    @app.route('/setpeerdownloading', methods=["POST"])
+    def setpeerdownloading():
+        return handle_request(
+            squeak_admin_pb2.SetPeerDownloadingRequest(),
+            handler.handle_set_squeak_peer_downloading,
+        )
+
+    @app.route('/setpeeruploading', methods=["POST"])
+    def setpeeruploading():
+        return handle_request(
+            squeak_admin_pb2.SetPeerUploadingRequest(),
+            handler.handle_set_squeak_peer_uploading,
+        )
+
     return app
 
 
