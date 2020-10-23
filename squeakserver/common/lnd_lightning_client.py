@@ -55,31 +55,6 @@ class LNDLightningClient:
         channel = grpc.secure_channel(url, combined_creds)
         self.stub = lnd_pb2_grpc.LightningStub(channel)
 
-
-    # def WalletBalance(self, request):
-    #     return self.stub.WalletBalance(request)
-
-    # def AddInvoice(self, request):
-    #     return self.stub.AddInvoice(request)
-
-    # def SendPaymentSync(self, request):
-    #     return self.stub.SendPaymentSync(request)
-
-    # def ConnectPeer(self, request):
-    #     return self.stub.ConnectPeer(request)
-
-    # def DisconnectPeer(self, request):
-    #     return self.stub.DisconnectPeer(request)
-
-    # def GetInfoRequest(self, request):
-    #     return self.stub.GetInfoRequest(request)
-
-    # def OpenChannelSync(self, request):
-    #     return self.stub.OpenChannelSync(request)
-
-    # def CloseChannel(self, request):
-    #     return self.stub.CloseChannel(request)
-
     def get_wallet_balance(self):
         # Retrieve and display the wallet balance
         request = lnd_pb2.WalletBalanceRequest()
