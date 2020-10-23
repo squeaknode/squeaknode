@@ -71,7 +71,6 @@ def create_app(handler):
         req = lnd_pb2.GetTransactionsRequest()
         req.ParseFromString(data)
         reply = handler.handle_lnd_get_transactions()
-        logger.info("lndgettransactions reply: {}".format(reply))
         reply_data = reply.SerializeToString(reply)
         return reply_data
 
