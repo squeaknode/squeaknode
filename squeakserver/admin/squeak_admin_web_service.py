@@ -194,6 +194,20 @@ def create_app(handler):
             handler.handle_set_squeak_peer_uploading,
         )
 
+    @app.route('/getsigningprofiles', methods=["POST"])
+    def getsigningprofiles():
+        return handle_request(
+            squeak_admin_pb2.GetSigningProfilesRequest(),
+            handler.handle_get_signing_profiles,
+        )
+
+    @app.route('/getcontactprofiles', methods=["POST"])
+    def getcontactprofiles():
+        return handle_request(
+            squeak_admin_pb2.GetContactProfilesRequest(),
+            handler.handle_get_contact_profiles,
+        )
+
     return app
 
 

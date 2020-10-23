@@ -62,6 +62,8 @@ import {
   GetPeerReply,
   SetPeerDownloadingReply,
   SetPeerUploadingReply,
+  GetSigningProfilesReply,
+  GetContactProfilesReply,
 } from "../proto/squeak_admin_pb"
 
 
@@ -498,22 +500,38 @@ export function setPeerUploadingRequest(id, uploading, handleResponse) {
   });
 };
 
+// export function getSigningProfilesRequest(handleResponse) {
+//   var request = new GetSigningProfilesRequest();
+//   client.getSigningProfiles(request, {}, (err, response) => {
+//     if (err) {
+//       return;
+//     }
+//     handleResponse(response.getSqueakProfilesList());
+//   });
+// };
+
 export function getSigningProfilesRequest(handleResponse) {
   var request = new GetSigningProfilesRequest();
-  client.getSigningProfiles(request, {}, (err, response) => {
-    if (err) {
-      return;
-    }
+  makeRequest('getsigningprofiles', request, (data) => {
+    var response = GetSigningProfilesReply.deserializeBinary(data);
     handleResponse(response.getSqueakProfilesList());
   });
 };
 
+// export function getContactProfilesRequest(handleResponse) {
+//   var request = new GetContactProfilesRequest();
+//   client.getContactProfiles(request, {}, (err, response) => {
+//     if (err) {
+//       return;
+//     }
+//     handleResponse(response.getSqueakProfilesList());
+//   });
+// };
+
 export function getContactProfilesRequest(handleResponse) {
   var request = new GetContactProfilesRequest();
-  client.getContactProfiles(request, {}, (err, response) => {
-    if (err) {
-      return;
-    }
+  makeRequest('getcontactprofiles', request, (data) => {
+    var response = GetContactProfilesReply.deserializeBinary(data);
     handleResponse(response.getSqueakProfilesList());
   });
 };
