@@ -134,31 +134,13 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         return reply
 
     def GetPeers(self, request, context):
-        squeak_peers = self.handler.handle_get_squeak_peers()
-        squeak_peer_msgs = [
-            self._squeak_peer_to_message(squeak_peer) for squeak_peer in squeak_peers
-        ]
-        return squeak_admin_pb2.GetPeersReply(
-            squeak_peers=squeak_peer_msgs,
-        )
+        return self.handler.handle_get_squeak_peers(request)
 
     def SetPeerDownloading(self, request, context):
-        peer_id = request.peer_id
-        downloading = request.downloading
-        self.handler.handle_set_squeak_peer_downloading(
-            peer_id,
-            downloading,
-        )
-        return squeak_admin_pb2.SetPeerDownloadingReply()
+        return self.handler.handle_set_squeak_peer_downloading(request)
 
     def SetPeerUploading(self, request, context):
-        peer_id = request.peer_id
-        uploading = request.uploading
-        self.handler.handle_set_squeak_peer_uploading(
-            peer_id,
-            uploading,
-        )
-        return squeak_admin_pb2.SetPeerUploadingReply()
+        return self.handler.handle_set_squeak_peer_uploading(request)
 
     def DeletePeer(self, request, context):
         peer_id = request.peer_id

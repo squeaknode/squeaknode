@@ -318,12 +318,20 @@ class SqueakAdminServerHandler(object):
             squeak_peer=squeak_peer_msg,
         )
 
-    def handle_get_squeak_peers(self):
+    def handle_get_squeak_peers(self, request):
         logger.info("Handle get squeak peers")
         squeak_peers = self.squeak_node.get_peers()
-        return squeak_peers
+        squeak_peer_msgs = [
+            self._squeak_peer_to_message(squeak_peer)
+            for squeak_peer in squeak_peers
+        ]
+        return squeak_admin_pb2.GetPeersReply(
+            squeak_peers=squeak_peer_msgs,
+        )
 
-    def handle_set_squeak_peer_downloading(self, peer_id, downloading):
+    def handle_set_squeak_peer_downloading(self, request):
+        peer_id = request.peer_id
+        downloading = request.downloading
         logger.info(
             "Handle set peer downloading with peer id: {}, downloading: {}".format(
                 peer_id,
@@ -331,8 +339,11 @@ class SqueakAdminServerHandler(object):
             )
         )
         self.squeak_node.set_peer_downloading(peer_id, downloading)
+        return squeak_admin_pb2.SetPeerDownloadingReply()
 
-    def handle_set_squeak_peer_uploading(self, peer_id, uploading):
+    def handle_set_squeak_peer_uploading(self, request):
+        peer_id = request.peer_id
+        uploading = request.uploading
         logger.info(
             "Handle set peer uploading with peer id: {}, uploading: {}".format(
                 peer_id,
@@ -340,6 +351,7 @@ class SqueakAdminServerHandler(object):
             )
         )
         self.squeak_node.set_peer_uploading(peer_id, uploading)
+        return squeak_admin_pb2.SetPeerUploadingReply()
 
     def handle_delete_squeak_peer(self, peer_id):
         logger.info("Handle delete squeak peer with id: {}".format(peer_id))
