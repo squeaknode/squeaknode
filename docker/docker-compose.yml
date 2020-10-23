@@ -63,6 +63,7 @@ services:
       - sqk_dir:/root/.sqk
     ports:
       - 8774:8774
+      - 5000:5000
     links:
       - "btcd:btcd"
       - "lnd:lnd"

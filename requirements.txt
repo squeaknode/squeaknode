@@ -7,3 +7,5 @@ grpcio-tools
 psycopg2
 requests
 SQLAlchemy
+Flask
+protobuf

@@ -1,9 +1,17 @@
-FROM node:10-stretch
+#FROM node:10-stretch
+FROM ubuntu:20.04
 
 ARG PORT
 
+ENV DEBIAN_FRONTEND=noninteractive
+
 RUN apt-get -qq update && apt-get -qq install -y \
-  unzip
+	curl \
+	unzip \
+	nodejs \
+	npm \
+	git \
+	git-core
 
 RUN npm install -g serve
 

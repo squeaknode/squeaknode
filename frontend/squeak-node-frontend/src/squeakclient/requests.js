@@ -14,6 +14,12 @@ import {
   CloseChannelRequest,
   ChannelPoint,
   NewAddressRequest,
+  GetInfoResponse,
+  WalletBalanceResponse,
+  TransactionDetails,
+  ListPeersResponse,
+  ListChannelsResponse,
+  PendingChannelsResponse,
 } from "../proto/lnd_pb"
 import {
   GetSqueakProfileRequest,
@@ -41,101 +47,211 @@ import {
   DeletePeerRequest,
   DeleteSqueakProfileRequest,
   DeleteSqueakRequest,
+  GetFollowedSqueakDisplaysReply,
+  SetSqueakProfileSharingReply,
+  GetSqueakProfileReply,
+  SetSqueakProfileFollowingReply,
+  SetSqueakProfileWhitelistedReply,
 } from "../proto/squeak_admin_pb"
 
 
+function makeRequest(route, request, handleResponse) {
+  fetch('http://localhost:5000/' + route, {
+    method: 'post',
+    body: request.serializeBinary()
+  }).then(function(response) {
+    return response.arrayBuffer();
+  }).then(function(data) {
+    handleResponse(data);
+  });
+}
+
+// export function getFollowedSqueakDisplaysRequest(handleResponse) {
+//   var request = new GetFollowedSqueakDisplaysRequest();
+//   client.getFollowedSqueakDisplays(request, {}, (err, response) => {
+//     handleResponse(response.getSqueakDisplayEntriesList())
+//   });
+// };
+
 export function getFollowedSqueakDisplaysRequest(handleResponse) {
   var request = new GetFollowedSqueakDisplaysRequest();
-  client.getFollowedSqueakDisplays(request, {}, (err, response) => {
-    handleResponse(response.getSqueakDisplayEntriesList())
+  makeRequest('getfollowedsqueakdisplays', request, (data) => {
+    var response = GetFollowedSqueakDisplaysReply.deserializeBinary(data);
+    handleResponse(response.getSqueakDisplayEntriesList());
   });
 };
 
+// export function lndGetInfoRequest(handleResponse) {
+//   var request = new GetInfoRequest();
+//   client.lndGetInfo(request, {}, (err, response) => {
+//     handleResponse(response);
+//   });
+// };
 
 export function lndGetInfoRequest(handleResponse) {
   var request = new GetInfoRequest();
-  client.lndGetInfo(request, {}, (err, response) => {
+  makeRequest('lndgetinfo', request, (data) => {
+    var response = GetInfoResponse.deserializeBinary(data);
     handleResponse(response);
   });
 };
 
+// export function lndWalletBalanceRequest(handleResponse) {
+//       var request = new WalletBalanceRequest();
+//       client.lndWalletBalance(request, {}, (err, response) => {
+//         handleResponse(response);
+//       });
+// };
+
 export function lndWalletBalanceRequest(handleResponse) {
-      var request = new WalletBalanceRequest();
-      client.lndWalletBalance(request, {}, (err, response) => {
-        handleResponse(response);
-      });
+  var request = new WalletBalanceRequest();
+  makeRequest('lndwalletbalance', request, (data) => {
+    var response = WalletBalanceResponse.deserializeBinary(data);
+    handleResponse(response);
+  });
 };
 
+// export function lndGetTransactionsRequest(handleResponse) {
+//       var request = new GetTransactionsRequest();
+//       client.lndGetTransactions(request, {}, (err, response) => {
+//         handleResponse(response.getTransactionsList());
+//       });
+// };
+
 export function lndGetTransactionsRequest(handleResponse) {
-      var request = new GetTransactionsRequest();
-      client.lndGetTransactions(request, {}, (err, response) => {
-        handleResponse(response.getTransactionsList());
-      });
+  var request = new GetTransactionsRequest();
+  makeRequest('lndgettransactions', request, (data) => {
+    var response = TransactionDetails.deserializeBinary(data);
+    handleResponse(response.getTransactionsList());
+  });
 };
+
+// export function lndListPeersRequest(handleResponse) {
+//       var request = new ListPeersRequest();
+//       client.lndListPeers(request, {}, (err, response) => {
+//         handleResponse(response.getPeersList());
+//       });
+// };
 
 export function lndListPeersRequest(handleResponse) {
       var request = new ListPeersRequest();
-      client.lndListPeers(request, {}, (err, response) => {
+      makeRequest('lndlistpeers', request, (data) => {
+        var response = ListPeersResponse.deserializeBinary(data);
         handleResponse(response.getPeersList());
       });
 };
 
+// export function lndListChannelsRequest(handleResponse) {
+//       var request = new ListChannelsRequest();
+//       client.lndListChannels(request, {}, (err, response) => {
+//         if (err) {
+//           return;
+//         }
+//         handleResponse(response.getChannelsList());
+//       });
+// };
+
 export function lndListChannelsRequest(handleResponse) {
-      var request = new ListChannelsRequest();
-      client.lndListChannels(request, {}, (err, response) => {
-        if (err) {
-          return;
-        }
-        handleResponse(response.getChannelsList());
-      });
+  var request = new ListChannelsRequest();
+  makeRequest('lndlistchannels', request, (data) => {
+    var response = ListChannelsResponse.deserializeBinary(data);
+    handleResponse(response.getChannelsList());
+  });
 };
+
+// export function lndPendingChannelsRequest(handleResponse) {
+//       var request = new PendingChannelsRequest();
+//       client.lndPendingChannels(request, {}, (err, response) => {
+//         if (err) {
+//           return;
+//         }
+//         handleResponse(response);
+//       });
+// };
 
 export function lndPendingChannelsRequest(handleResponse) {
-      var request = new PendingChannelsRequest();
-      client.lndPendingChannels(request, {}, (err, response) => {
-        if (err) {
-          return;
-        }
-        handleResponse(response);
-      });
+  var request = new PendingChannelsRequest();
+  makeRequest('lndpendingchannels', request, (data) => {
+    var response = PendingChannelsResponse.deserializeBinary(data);
+    handleResponse(response);
+  });
 };
+
+// export function getSqueakProfileRequest(id, handleResponse) {
+//       var request = new GetSqueakProfileRequest();
+//       request.setProfileId(id);
+//       client.getSqueakProfile(request, {}, (err, response) => {
+//         if (err) {
+//           return;
+//         }
+//         handleResponse(response.getSqueakProfile())
+//       });
+// };
 
 export function getSqueakProfileRequest(id, handleResponse) {
-      var request = new GetSqueakProfileRequest();
-      request.setProfileId(id);
-      client.getSqueakProfile(request, {}, (err, response) => {
-        if (err) {
-          return;
-        }
-        handleResponse(response.getSqueakProfile())
-      });
+  var request = new GetSqueakProfileRequest();
+  request.setProfileId(id);
+  makeRequest('getsqueakprofile', request, (data) => {
+    var response = GetSqueakProfileReply.deserializeBinary(data);
+    handleResponse(response.getSqueakProfile());
+  });
 };
+
+// export function setSqueakProfileFollowingRequest(id, following, handleResponse) {
+//       var request = new SetSqueakProfileFollowingRequest();
+//       request.setProfileId(id);
+//       request.setFollowing(following);
+//       client.setSqueakProfileFollowing(request, {}, (err, response) => {
+//         handleResponse(response);
+//       });
+// };
 
 export function setSqueakProfileFollowingRequest(id, following, handleResponse) {
-      var request = new SetSqueakProfileFollowingRequest();
-      request.setProfileId(id);
-      request.setFollowing(following);
-      client.setSqueakProfileFollowing(request, {}, (err, response) => {
-        handleResponse(response);
-      });
+  var request = new SetSqueakProfileFollowingRequest();
+  request.setProfileId(id);
+  request.setFollowing(following);
+  makeRequest('setsqueakprofilefollowing', request, (data) => {
+    var response = SetSqueakProfileFollowingReply.deserializeBinary(data);
+    handleResponse(response);
+  });
 };
+
+// export function setSqueakProfileSharingRequest(id, sharing, handleResponse) {
+//       var request = new SetSqueakProfileSharingRequest();
+//       request.setProfileId(id);
+//       request.setSharing(sharing);
+//       client.setSqueakProfileSharing(request, {}, (err, response) => {
+//         handleResponse(response);
+//       });
+// };
 
 export function setSqueakProfileSharingRequest(id, sharing, handleResponse) {
-      var request = new SetSqueakProfileSharingRequest();
-      request.setProfileId(id);
-      request.setSharing(sharing);
-      client.setSqueakProfileSharing(request, {}, (err, response) => {
-        handleResponse(response);
-      });
+  var request = new SetSqueakProfileSharingRequest();
+  request.setProfileId(id);
+  request.setSharing(sharing);
+  makeRequest('setsqueakprofilesharing', request, (data) => {
+    var response = SetSqueakProfileSharingReply.deserializeBinary(data);
+    handleResponse(response);
+  });
 };
 
+// export function setSqueakProfileWhitelistedRequest(id, whitelisted, handleResponse) {
+//       var request = new SetSqueakProfileWhitelistedRequest()
+//       request.setProfileId(id);
+//       request.setWhitelisted(whitelisted);
+//       client.setSqueakProfileWhitelisted(request, {}, (err, response) => {
+//         handleResponse(response);
+//       });
+// };
+
 export function setSqueakProfileWhitelistedRequest(id, whitelisted, handleResponse) {
-      var request = new SetSqueakProfileWhitelistedRequest()
-      request.setProfileId(id);
-      request.setWhitelisted(whitelisted);
-      client.setSqueakProfileWhitelisted(request, {}, (err, response) => {
-        handleResponse(response);
-      });
+  var request = new SetSqueakProfileWhitelistedRequest()
+  request.setProfileId(id);
+  request.setWhitelisted(whitelisted);
+  makeRequest('setsqueakprofilewhitelisted', request, (data) => {
+    var response = SetSqueakProfileWhitelistedReply.deserializeBinary(data);
+    handleResponse(response);
+  });
 };
 
 export function lndConnectPeerRequest(pubkey, host, handleResponse) {
