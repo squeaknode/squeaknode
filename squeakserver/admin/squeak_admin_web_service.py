@@ -222,6 +222,76 @@ def create_app(handler):
             handler.handle_get_squeak_display_entry,
         )
 
+    @app.route('/getancestorsqueakdisplays', methods=["POST"])
+    def getancestorsqueakdisplays():
+        return handle_request(
+            squeak_admin_pb2.GetAncestorSqueakDisplaysRequest(),
+            handler.handle_get_ancestor_squeak_display_entries,
+        )
+
+    @app.route('/getsqueakprofilebyaddress', methods=["POST"])
+    def getsqueakprofilebyaddress():
+        return handle_request(
+            squeak_admin_pb2.GetSqueakProfileByAddressRequest(),
+            handler.handle_get_squeak_profile_by_address,
+        )
+
+    @app.route('/getaddresssqueakdisplays', methods=["POST"])
+    def getaddresssqueakdisplays():
+        return handle_request(
+            squeak_admin_pb2.GetAddressSqueakDisplaysRequest(),
+            handler.handle_get_squeak_display_entries_for_address,
+        )
+
+    @app.route('/createcontactprofile', methods=["POST"])
+    def createcontactprofile():
+        return handle_request(
+            squeak_admin_pb2.CreateContactProfileRequest(),
+            handler.handle_create_contact_profile,
+        )
+
+    @app.route('/createsigningprofile', methods=["POST"])
+    def createsigningprofile():
+        return handle_request(
+            squeak_admin_pb2.CreateSigningProfileRequest(),
+            handler.handle_create_signing_profile,
+        )
+
+    @app.route('/createpeer', methods=["POST"])
+    def createpeer():
+        return handle_request(
+            squeak_admin_pb2.CreatePeerRequest(),
+            handler.handle_create_peer,
+        )
+
+    @app.route('/deletepeer', methods=["POST"])
+    def deletepeer():
+        return handle_request(
+            squeak_admin_pb2.DeletePeerRequest(),
+            handler.handle_delete_squeak_peer,
+        )
+
+    @app.route('/deleteprofile', methods=["POST"])
+    def deleteprofile():
+        return handle_request(
+            squeak_admin_pb2.DeleteSqueakProfileRequest(),
+            handler.handle_delete_squeak_profile,
+        )
+
+    @app.route('/deletesqueak', methods=["POST"])
+    def deletesqueak():
+        return handle_request(
+            squeak_admin_pb2.DeleteSqueakRequest(),
+            handler.handle_delete_squeak,
+        )
+
+    @app.route('/lndnewaddress', methods=["POST"])
+    def lndnewaddress():
+        return handle_request(
+            squeak_admin_pb2.NewAddressRequest(),
+            handler.handle_lnd_new_address,
+        )
+
     return app
 
 

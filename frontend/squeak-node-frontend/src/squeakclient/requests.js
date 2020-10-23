@@ -66,6 +66,16 @@ import {
   GetContactProfilesReply,
   MakeSqueakReply,
   GetSqueakDisplayReply,
+  GetAncestorSqueakDisplaysReply,
+  GetSqueakProfileByAddressReply,
+  GetAddressSqueakDisplaysReply,
+  CreateContactProfileReply,
+  CreateSigningProfileReply,
+  CreatePeerReply,
+  DeletePeerReply,
+  DeleteSqueakProfileReply,
+  DeleteSqueakReply,
+  NewAddressReply,
 } from "../proto/squeak_admin_pb"
 
 
@@ -583,110 +593,202 @@ export function getSqueakDisplayRequest(hash, handleResponse) {
   });
 };
 
+// export function getAncestorSqueakDisplaysRequest(hash, handleResponse) {
+//     var request = new GetAncestorSqueakDisplaysRequest();
+//     request.setSqueakHash(hash);
+//     client.getAncestorSqueakDisplays(request, {}, (err, response) => {
+//       if (err) {
+//         return;
+//       }
+//       handleResponse(response.getSqueakDisplayEntriesList());
+//     });
+// };
+
 export function getAncestorSqueakDisplaysRequest(hash, handleResponse) {
-    var request = new GetAncestorSqueakDisplaysRequest();
-    request.setSqueakHash(hash);
-    client.getAncestorSqueakDisplays(request, {}, (err, response) => {
-      if (err) {
-        return;
-      }
-      handleResponse(response.getSqueakDisplayEntriesList());
-    });
+  var request = new GetAncestorSqueakDisplaysRequest();
+  request.setSqueakHash(hash);
+  makeRequest('getancestorsqueakdisplays', request, (data) => {
+    var response = GetAncestorSqueakDisplaysReply.deserializeBinary(data);
+    handleResponse(response.getSqueakDisplayEntriesList());
+  });
 };
 
+// export function getSqueakProfileByAddressRequest(address, handleResponse) {
+//       var request = new GetSqueakProfileByAddressRequest();
+//       request.setAddress(address);
+//       client.getSqueakProfileByAddress(request, {}, (err, response) => {
+//         handleResponse(response.getSqueakProfile());
+//       });
+// };
+
 export function getSqueakProfileByAddressRequest(address, handleResponse) {
-      var request = new GetSqueakProfileByAddressRequest();
-      request.setAddress(address);
-      client.getSqueakProfileByAddress(request, {}, (err, response) => {
-        handleResponse(response.getSqueakProfile());
-      });
+  var request = new GetSqueakProfileByAddressRequest();
+  request.setAddress(address);
+  makeRequest('getsqueakprofilebyaddress', request, (data) => {
+    var response = GetSqueakProfileByAddressReply.deserializeBinary(data);
+    handleResponse(response.getSqueakProfile());
+  });
 };
+
+// export function getAddressSqueakDisplaysRequest(address, handleResponse) {
+//     var request = new GetAddressSqueakDisplaysRequest();
+//     request.setAddress(address);
+//     client.getAddressSqueakDisplays(request, {}, (err, response) => {
+//       handleResponse(response.getSqueakDisplayEntriesList());
+//     });
+// };
 
 export function getAddressSqueakDisplaysRequest(address, handleResponse) {
     var request = new GetAddressSqueakDisplaysRequest();
     request.setAddress(address);
-    client.getAddressSqueakDisplays(request, {}, (err, response) => {
+    makeRequest('getaddresssqueakdisplays', request, (data) => {
+      var response = GetAddressSqueakDisplaysReply.deserializeBinary(data);
       handleResponse(response.getSqueakDisplayEntriesList());
     });
 };
+
+// export function createContactProfileRequest(profileName, squeakAddress, handleResponse, handleErr) {
+//   var request = new CreateContactProfileRequest();
+//   request.setProfileName(profileName);
+//   request.setAddress(squeakAddress);
+//   client.createContactProfile(request, {}, (err, response) => {
+//     if (err) {
+//       handleErr(err);
+//       return;
+//     }
+//     handleResponse(response);
+//   });
+// };
 
 export function createContactProfileRequest(profileName, squeakAddress, handleResponse, handleErr) {
   var request = new CreateContactProfileRequest();
   request.setProfileName(profileName);
   request.setAddress(squeakAddress);
-  client.createContactProfile(request, {}, (err, response) => {
-    if (err) {
-      handleErr(err);
-      return;
-    }
+  makeRequest('createcontactprofile', request, (data) => {
+    var response = CreateContactProfileReply.deserializeBinary(data);
     handleResponse(response);
   });
 };
 
+// export function createSigningProfileRequest(profileName, handleResponse, handleErr) {
+//   var request = new CreateSigningProfileRequest();
+//   request.setProfileName(profileName);
+//   client.createSigningProfile(request, {}, (err, response) => {
+//     if (err) {
+//       handleErr(err);
+//       return;
+//     }
+//     handleResponse(response);
+//   });
+// };
+
 export function createSigningProfileRequest(profileName, handleResponse, handleErr) {
   var request = new CreateSigningProfileRequest();
   request.setProfileName(profileName);
-  client.createSigningProfile(request, {}, (err, response) => {
-    if (err) {
-      handleErr(err);
-      return;
-    }
+  makeRequest('createsigningprofile', request, (data) => {
+    var response = CreateSigningProfileReply.deserializeBinary(data);
     handleResponse(response);
   });
 };
+
+// export function createPeerRequest(peerName, host, port, handleResponse) {
+//   var request = new CreatePeerRequest();
+//   request.setPeerName(peerName);
+//   request.setHost(host);
+//   request.setPort(port);
+//   client.createPeer(request, {}, (err, response) => {
+//     if (err) {
+//       return;
+//     }
+//     handleResponse(response);
+//   });
+// };
 
 export function createPeerRequest(peerName, host, port, handleResponse) {
   var request = new CreatePeerRequest();
   request.setPeerName(peerName);
   request.setHost(host);
   request.setPort(port);
-  client.createPeer(request, {}, (err, response) => {
-    if (err) {
-      return;
-    }
+  makeRequest('createpeer', request, (data) => {
+    var response = CreatePeerReply.deserializeBinary(data);
     handleResponse(response);
   });
 };
+
+// export function deletePeerRequest(peerId, handleResponse) {
+//   var request = new DeletePeerRequest();
+//   request.setPeerId(peerId);
+//   client.deletePeer(request, {}, (err, response) => {
+//     if (err) {
+//       return;
+//     }
+//     handleResponse(response);
+//   });
+// };
 
 export function deletePeerRequest(peerId, handleResponse) {
   var request = new DeletePeerRequest();
   request.setPeerId(peerId);
-  client.deletePeer(request, {}, (err, response) => {
-    if (err) {
-      return;
-    }
+  makeRequest('deletepeer', request, (data) => {
+    var response = DeletePeerReply.deserializeBinary(data);
     handleResponse(response);
   });
 };
+
+// export function deleteProfileRequest(profileId, handleResponse) {
+//   var request = new DeleteSqueakProfileRequest();
+//   request.setProfileId(profileId);
+//   client.deleteSqueakProfile(request, {}, (err, response) => {
+//     if (err) {
+//       return;
+//     }
+//     handleResponse(response);
+//   });
+// };
 
 export function deleteProfileRequest(profileId, handleResponse) {
   var request = new DeleteSqueakProfileRequest();
   request.setProfileId(profileId);
-  client.deleteSqueakProfile(request, {}, (err, response) => {
-    if (err) {
-      return;
-    }
+  makeRequest('deleteprofile', request, (data) => {
+    var response = DeleteSqueakProfileReply.deserializeBinary(data);
     handleResponse(response);
   });
 };
+
+// export function deleteSqueakRequest(squeakHash, handleResponse) {
+//   var request = new DeleteSqueakRequest();
+//   request.setSqueakHash(squeakHash);
+//   client.deleteSqueak(request, {}, (err, response) => {
+//     if (err) {
+//       return;
+//     }
+//     handleResponse(response);
+//   });
+// };
 
 export function deleteSqueakRequest(squeakHash, handleResponse) {
   var request = new DeleteSqueakRequest();
   request.setSqueakHash(squeakHash);
-  client.deleteSqueak(request, {}, (err, response) => {
-    if (err) {
-      return;
-    }
+  makeRequest('deletesqueak', request, (data) => {
+    var response = DeleteSqueakReply.deserializeBinary(data);
     handleResponse(response);
   });
 };
 
+// export function lndNewAddressRequest(handleResponse) {
+//   var request = new NewAddressRequest();
+//   client.lndNewAddress(request, {}, (err, response) => {
+//     if (err) {
+//       return;
+//     }
+//     handleResponse(response);
+//   });
+// };
+
 export function lndNewAddressRequest(handleResponse) {
   var request = new NewAddressRequest();
-  client.lndNewAddress(request, {}, (err, response) => {
-    if (err) {
-      return;
-    }
+  makeRequest('lndnewaddress', request, (data) => {
+    var response = NewAddressReply.deserializeBinary(data);
     handleResponse(response);
   });
 };
