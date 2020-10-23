@@ -401,9 +401,14 @@ class SqueakAdminServerHandler(object):
             sent_payments=sent_payment_msgs,
         )
 
-    def handle_get_sent_payment(self, sent_payment_id):
+    def handle_get_sent_payment(self, request):
+        sent_payment_id = request.sent_payment_id
         logger.info("Handle get sent payment with id: {}".format(sent_payment_id))
-        return self.squeak_node.get_sent_payment(sent_payment_id)
+        sent_payment = self.squeak_node.get_sent_payment(sent_payment_id)
+        sent_payment_msg = self._sent_payment_to_message(sent_payment)
+        return squeak_admin_pb2.GetSentPaymentReply(
+            sent_payment=sent_payment_msg,
+        )
 
     def _squeak_entry_to_message(self, squeak_entry_with_profile):
         if squeak_entry_with_profile is None:
