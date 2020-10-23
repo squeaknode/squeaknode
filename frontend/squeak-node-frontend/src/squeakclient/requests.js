@@ -254,27 +254,48 @@ export function setSqueakProfileWhitelistedRequest(id, whitelisted, handleRespon
   });
 };
 
+// export function lndConnectPeerRequest(pubkey, host, handleResponse) {
+//   var request = new ConnectPeerRequest()
+//   var address = new LightningAddress();
+//   address.setPubkey(pubkey);
+//   address.setHost(host);
+//   request.setAddr(address);
+//   client.lndConnectPeer(request, {}, (err, response) => {
+//     if (err) {
+//       return;
+//     }
+//     handleResponse(response);
+//   });
+// };
+
 export function lndConnectPeerRequest(pubkey, host, handleResponse) {
   var request = new ConnectPeerRequest()
   var address = new LightningAddress();
   address.setPubkey(pubkey);
   address.setHost(host);
   request.setAddr(address);
-  client.lndConnectPeer(request, {}, (err, response) => {
-    if (err) {
-      return;
-    }
+  makeRequest('lndconnectpeer', request, (data) => {
+    var response = SetSqueakProfileWhitelistedReply.deserializeBinary(data);
     handleResponse(response);
   });
 };
 
+// export function lndDisconnectPeerRequest(pubkey, handleResponse) {
+//   var request = new DisconnectPeerRequest()
+//   request.setPubKey(pubkey);
+//   client.lndDisconnectPeer(request, {}, (err, response) => {
+//     if (err) {
+//       return;
+//     }
+//     handleResponse(response);
+//   });
+// };
+
 export function lndDisconnectPeerRequest(pubkey, handleResponse) {
   var request = new DisconnectPeerRequest()
   request.setPubKey(pubkey);
-  client.lndDisconnectPeer(request, {}, (err, response) => {
-    if (err) {
-      return;
-    }
+  makeRequest('lnddisconnectpeer', request, (data) => {
+    var response = SetSqueakProfileWhitelistedReply.deserializeBinary(data);
     handleResponse(response);
   });
 };

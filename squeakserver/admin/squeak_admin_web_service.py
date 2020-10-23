@@ -40,13 +40,6 @@ def create_app(handler):
         logger.info("Getting hello route.")
         return 'Hello, World!'
 
-    @app.route('/getfollowedsqueakdisplays', methods=["POST"])
-    def getfollowedsqueakdisplays():
-        return handle_request(
-            squeak_admin_pb2.GetFollowedSqueakDisplaysRequest(),
-            handler.handle_get_followed_squeak_display_entries,
-        )
-
     @app.route('/lndgetinfo', methods=["POST"])
     def lndgetinfo():
         return handle_request(
@@ -87,6 +80,27 @@ def create_app(handler):
         return handle_request(
             lnd_pb2.PendingChannelsRequest(),
             handler.handle_lnd_pending_channels,
+        )
+
+    @app.route('/lndconnectpeer', methods=["POST"])
+    def lndconnectpeer():
+        return handle_request(
+            lnd_pb2.ConnectPeerRequest(),
+            handler.handle_lnd_connect_peer,
+        )
+
+    @app.route('/lnddisconnectpeer', methods=["POST"])
+    def lnddisconnectpeer():
+        return handle_request(
+            lnd_pb2.DisconnectPeerRequest(),
+            handler.handle_lnd_disconnect_peer,
+        )
+
+    @app.route('/getfollowedsqueakdisplays', methods=["POST"])
+    def getfollowedsqueakdisplays():
+        return handle_request(
+            squeak_admin_pb2.GetFollowedSqueakDisplaysRequest(),
+            handler.handle_get_followed_squeak_display_entries,
         )
 
     @app.route('/getsqueakprofile', methods=["POST"])
