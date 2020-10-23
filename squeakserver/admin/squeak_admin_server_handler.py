@@ -369,9 +369,15 @@ class SqueakAdminServerHandler(object):
             offers=offer_msgs,
         )
 
-    def handle_get_buy_offer(self, offer_id):
+    def handle_get_buy_offer(self, request):
+        offer_id = request.offer_id
         logger.info("Handle get buy offer for hash: {}".format(offer_id))
-        return self.squeak_node.get_buy_offer_with_peer(offer_id)
+        offer = self.squeak_node.get_buy_offer_with_peer(offer_id)
+        offer_msg = self._offer_entry_to_message(offer)
+        logger.info("Returning buy offer: {}".format(offer_msg))
+        return squeak_admin_pb2.GetBuyOfferReply(
+            offer=offer_msg,
+        )
 
     def handle_sync_squeaks(self):
         logger.info("Handle get sync squeaks")

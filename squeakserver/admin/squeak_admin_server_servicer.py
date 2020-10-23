@@ -149,13 +149,7 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         return self.handler.handle_get_buy_offers(request)
 
     def GetBuyOffer(self, request, context):
-        offer_id = request.offer_id
-        offer = self.handler.handle_get_buy_offer(offer_id)
-        offer_msg = self._offer_entry_to_message(offer)
-        logger.info("Returning buy offer: {}".format(offer_msg))
-        return squeak_admin_pb2.GetBuyOfferReply(
-            offer=offer_msg,
-        )
+        return self.handler.handle_get_buy_offer(request)
 
     def SyncSqueaks(self, request, context):
         self.handler.handle_sync_squeaks()
