@@ -353,13 +353,21 @@ class SqueakAdminServerHandler(object):
         self.squeak_node.set_peer_uploading(peer_id, uploading)
         return squeak_admin_pb2.SetPeerUploadingReply()
 
-    def handle_delete_squeak_peer(self, peer_id):
+    def handle_delete_squeak_peer(self, request):
+        peer_id = request.peer_id
         logger.info("Handle delete squeak peer with id: {}".format(peer_id))
         self.squeak_node.delete_peer(peer_id)
+        return squeak_admin_pb2.DeletePeerReply()
 
-    def handle_get_buy_offers(self, squeak_hash_str):
+    def handle_get_buy_offers(self, request):
+        squeak_hash_str = request.squeak_hash
         logger.info("Handle get buy offers for hash: {}".format(squeak_hash_str))
-        return self.squeak_node.get_buy_offers_with_peer(squeak_hash_str)
+        offers = self.squeak_node.get_buy_offers_with_peer(squeak_hash_str)
+        offer_msgs = [self._offer_entry_to_message(offer) for offer in offers]
+        logger.info("Returning buy offers: {}".format(offer_msgs))
+        return squeak_admin_pb2.GetBuyOffersReply(
+            offers=offer_msgs,
+        )
 
     def handle_get_buy_offer(self, offer_id):
         logger.info("Handle get buy offer for hash: {}".format(offer_id))

@@ -143,18 +143,10 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         return self.handler.handle_set_squeak_peer_uploading(request)
 
     def DeletePeer(self, request, context):
-        peer_id = request.peer_id
-        self.handler.handle_delete_squeak_peer(peer_id)
-        return squeak_admin_pb2.DeletePeerReply()
+        return self.handler.handle_delete_squeak_peer(request)
 
     def GetBuyOffers(self, request, context):
-        squeak_hash_str = request.squeak_hash
-        offers = self.handler.handle_get_buy_offers(squeak_hash_str)
-        offer_msgs = [self._offer_entry_to_message(offer) for offer in offers]
-        logger.info("Returning buy offers: {}".format(offer_msgs))
-        return squeak_admin_pb2.GetBuyOffersReply(
-            offers=offer_msgs,
-        )
+        return self.handler.handle_get_buy_offers(request)
 
     def GetBuyOffer(self, request, context):
         offer_id = request.offer_id
