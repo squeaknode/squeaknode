@@ -1,3 +1,4 @@
+import sys
 import logging
 
 from squeakserver.common.lnd_lightning_client import LNDLightningClient
@@ -210,7 +211,7 @@ class SqueakAdminServerHandler(object):
             squeak_display_entry=display_message
         )
 
-    def handle_get_followed_squeak_display_entries(self):
+    def handle_get_followed_squeak_display_entries(self, request):
         logger.info("Handle get followed squeak display entries.")
         squeak_entries_with_profile = (
             self.squeak_node.get_followed_squeak_entries_with_profile()
@@ -228,9 +229,10 @@ class SqueakAdminServerHandler(object):
             squeak_display_entries=squeak_display_msgs
         )
 
-    def handle_get_squeak_display_entries_for_address(
-        self, address, min_block, max_block
-    ):
+    def handle_get_squeak_display_entries_for_address(self, request):
+        address = request.address
+        min_block = 0
+        max_block = sys.maxsize
         logger.info("Handle get squeak display entries for address: {}".format(address))
         squeak_entries_with_profile = (
             self.squeak_node.get_squeak_entries_with_profile_for_address(
@@ -244,7 +246,13 @@ class SqueakAdminServerHandler(object):
                 len(squeak_entries_with_profile)
             )
         )
-        return squeak_entries_with_profile
+        squeak_display_msgs = [
+            self._squeak_entry_to_message(entry)
+            for entry in squeak_entries_with_profile
+        ]
+        return squeak_admin_pb2.GetAddressSqueakDisplaysReply(
+            squeak_display_entries=squeak_display_msgs
+        )
 
     def handle_get_ancestor_squeak_display_entries(self, squeak_hash_str):
         logger.info(
