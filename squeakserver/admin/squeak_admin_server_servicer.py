@@ -152,15 +152,10 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         return self.handler.handle_get_buy_offer(request)
 
     def SyncSqueaks(self, request, context):
-        self.handler.handle_sync_squeaks()
-        return squeak_admin_pb2.SyncSqueaksReply()
+        return self.handler.handle_sync_squeaks(request)
 
     def PayOffer(self, request, context):
-        offer_id = request.offer_id
-        sent_payment_id = self.handler.handle_pay_offer(offer_id)
-        return squeak_admin_pb2.PayOfferReply(
-            sent_payment_id=sent_payment_id,
-        )
+        return self.handler.handle_pay_offer(request)
 
     def GetSentPayments(self, request, context):
         sent_payments = self.handler.handle_get_sent_payments()

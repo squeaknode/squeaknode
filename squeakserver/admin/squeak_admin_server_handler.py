@@ -379,13 +379,18 @@ class SqueakAdminServerHandler(object):
             offer=offer_msg,
         )
 
-    def handle_sync_squeaks(self):
+    def handle_sync_squeaks(self, request):
         logger.info("Handle get sync squeaks")
         self.squeak_node.sync_squeaks()
+        return squeak_admin_pb2.SyncSqueaksReply()
 
-    def handle_pay_offer(self, offer_id):
+    def handle_pay_offer(self, request):
+        offer_id = request.offer_id
         logger.info("Handle pay offer for offer id: {}".format(offer_id))
-        return self.squeak_node.pay_offer(offer_id)
+        sent_payment_id = self.squeak_node.pay_offer(offer_id)
+        return squeak_admin_pb2.PayOfferReply(
+            sent_payment_id=sent_payment_id,
+        )
 
     def handle_get_sent_payments(self):
         logger.info("Handle get sent payments")
