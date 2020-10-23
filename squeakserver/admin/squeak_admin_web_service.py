@@ -22,6 +22,12 @@ def create_app(handler):
         SECRET_KEY='dev',
     )
 
+    def handle_request(request_message, handle_rpc_request):
+        data = request.get_data()
+        request_message.ParseFromString(data)
+        reply = handle_rpc_request(request_message)
+        return reply.SerializeToString(reply)
+
     @app.route('/')
     def index():
         logger.info("Getting index route.")
@@ -36,19 +42,17 @@ def create_app(handler):
 
     @app.route('/getfollowedsqueakdisplays', methods=["POST"])
     def getfollowedsqueakdisplays():
-        data = request.get_data()
-        req = squeak_admin_pb2.GetFollowedSqueakDisplaysRequest()
-        req.ParseFromString(data)
-        reply = handler.handle_get_followed_squeak_display_entries(req)
-        reply_data = reply.SerializeToString(reply)
-        return reply_data
+        return handle_request(
+            squeak_admin_pb2.GetFollowedSqueakDisplaysRequest(),
+            handler.handle_get_followed_squeak_display_entries,
+        )
 
     @app.route('/lndgetinfo', methods=["POST"])
     def lndgetinfo():
         data = request.get_data()
         req = lnd_pb2.GetInfoRequest()
         req.ParseFromString(data)
-        reply = handler.handle_lnd_get_info(req)
+        reply = handler.handle_lnd_get_info()
         reply_data = reply.SerializeToString(reply)
         return reply_data
 
@@ -57,7 +61,7 @@ def create_app(handler):
         data = request.get_data()
         req = lnd_pb2.WalletBalanceRequest()
         req.ParseFromString(data)
-        reply = handler.handle_lnd_wallet_balance(req)
+        reply = handler.handle_lnd_wallet_balance()
         reply_data = reply.SerializeToString(reply)
         return reply_data
 
@@ -66,7 +70,7 @@ def create_app(handler):
         data = request.get_data()
         req = lnd_pb2.GetTransactionsRequest()
         req.ParseFromString(data)
-        reply = handler.handle_lnd_get_transactions(req)
+        reply = handler.handle_lnd_get_transactions()
         logger.info("lndgettransactions reply: {}".format(reply))
         reply_data = reply.SerializeToString(reply)
         return reply_data
@@ -76,7 +80,7 @@ def create_app(handler):
         data = request.get_data()
         req = lnd_pb2.ListPeersRequest()
         req.ParseFromString(data)
-        reply = handler.handle_lnd_list_peers(req)
+        reply = handler.handle_lnd_list_peers()
         reply_data = reply.SerializeToString(reply)
         return reply_data
 
@@ -85,7 +89,7 @@ def create_app(handler):
         data = request.get_data()
         req = lnd_pb2.ListChannelsRequest()
         req.ParseFromString(data)
-        reply = handler.handle_lnd_list_channels(req)
+        reply = handler.handle_lnd_list_channels()
         reply_data = reply.SerializeToString(reply)
         return reply_data
 
@@ -100,46 +104,31 @@ def create_app(handler):
 
     @app.route('/getsqueakprofile', methods=["POST"])
     def getsqueakprofile():
-        data = request.get_data()
-        req = squeak_admin_pb2.GetSqueakProfileRequest()
-        req.ParseFromString(data)
-        profile_id = req.profile_id
-        reply = handler.handle_get_squeak_profile(req)
-        reply_data = reply.SerializeToString(reply)
-        return reply_data
+        return handle_request(
+            squeak_admin_pb2.GetSqueakProfileRequest(),
+            handler.handle_get_squeak_profile,
+        )
 
     @app.route('/setsqueakprofilefollowing', methods=["POST"])
     def setsqueakprofilefollowing():
-        data = request.get_data()
-        req = squeak_admin_pb2.SetSqueakProfileFollowingRequest()
-        req.ParseFromString(data)
-        profile_id = req.profile_id
-        following = req.following
-        reply = handler.handle_set_squeak_profile_following(req)
-        reply_data = reply.SerializeToString(reply)
-        return reply_data
+        return handle_request(
+            squeak_admin_pb2.SetSqueakProfileFollowingRequest(),
+            handler.handle_set_squeak_profile_following,
+        )
 
     @app.route('/setsqueakprofilesharing', methods=["POST"])
     def setsqueakprofilesharing():
-        data = request.get_data()
-        req = squeak_admin_pb2.SetSqueakProfileSharingRequest()
-        req.ParseFromString(data)
-        profile_id = req.profile_id
-        sharing = req.sharing
-        reply = handler.handle_set_squeak_profile_sharing(req)
-        reply_data = reply.SerializeToString(reply)
-        return reply_data
+        return handle_request(
+            squeak_admin_pb2.SetSqueakProfileSharingRequest(),
+            handler.handle_set_squeak_profile_sharing,
+        )
 
     @app.route('/setsqueakprofilewhitelisted', methods=["POST"])
     def setsqueakprofilewhitelisted():
-        data = request.get_data()
-        req = squeak_admin_pb2.SetSqueakProfileWhitelistedRequest()
-        req.ParseFromString(data)
-        profile_id = req.profile_id
-        whitelisted = req.whitelisted
-        reply = handler.handle_set_squeak_profile_whitelisted(req)
-        reply_data = reply.SerializeToString(reply)
-        return reply_data
+        return handle_request(
+            squeak_admin_pb2.SetSqueakProfileWhitelistedRequest(),
+            handler.handle_set_squeak_profile_whitelisted,
+        )
 
     return app
 
