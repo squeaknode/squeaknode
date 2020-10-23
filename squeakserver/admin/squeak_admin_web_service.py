@@ -49,57 +49,45 @@ def create_app(handler):
 
     @app.route('/lndgetinfo', methods=["POST"])
     def lndgetinfo():
-        data = request.get_data()
-        req = lnd_pb2.GetInfoRequest()
-        req.ParseFromString(data)
-        reply = handler.handle_lnd_get_info()
-        reply_data = reply.SerializeToString(reply)
-        return reply_data
+        return handle_request(
+            lnd_pb2.GetInfoRequest(),
+            handler.handle_lnd_get_info,
+        )
 
     @app.route('/lndwalletbalance', methods=["POST"])
     def lndwalletbalance():
-        data = request.get_data()
-        req = lnd_pb2.WalletBalanceRequest()
-        req.ParseFromString(data)
-        reply = handler.handle_lnd_wallet_balance()
-        reply_data = reply.SerializeToString(reply)
-        return reply_data
+        return handle_request(
+            lnd_pb2.WalletBalanceRequest(),
+            handler.handle_lnd_wallet_balance,
+        )
 
     @app.route('/lndgettransactions', methods=["POST"])
     def lndgettransactions():
-        data = request.get_data()
-        req = lnd_pb2.GetTransactionsRequest()
-        req.ParseFromString(data)
-        reply = handler.handle_lnd_get_transactions()
-        reply_data = reply.SerializeToString(reply)
-        return reply_data
+        return handle_request(
+            lnd_pb2.GetTransactionsRequest(),
+            handler.handle_lnd_get_transactions,
+        )
 
     @app.route('/lndlistpeers', methods=["POST"])
     def lndlistpeers():
-        data = request.get_data()
-        req = lnd_pb2.ListPeersRequest()
-        req.ParseFromString(data)
-        reply = handler.handle_lnd_list_peers()
-        reply_data = reply.SerializeToString(reply)
-        return reply_data
+        return handle_request(
+            lnd_pb2.ListPeersRequest(),
+            handler.handle_lnd_list_peers,
+        )
 
     @app.route('/lndlistchannels', methods=["POST"])
     def lndlistchannels():
-        data = request.get_data()
-        req = lnd_pb2.ListChannelsRequest()
-        req.ParseFromString(data)
-        reply = handler.handle_lnd_list_channels()
-        reply_data = reply.SerializeToString(reply)
-        return reply_data
+        return handle_request(
+            lnd_pb2.ListChannelsRequest(),
+            handler.handle_lnd_list_channels,
+        )
 
     @app.route('/lndpendingchannels', methods=["POST"])
     def lndpendingchannels():
-        data = request.get_data()
-        req = lnd_pb2.PendingChannelsRequest()
-        req.ParseFromString(data)
-        reply = handler.handle_lnd_pending_channels(req)
-        reply_data = reply.SerializeToString(reply)
-        return reply_data
+        return handle_request(
+            lnd_pb2.PendingChannelsRequest(),
+            handler.handle_lnd_pending_channels,
+        )
 
     @app.route('/getsqueakprofile', methods=["POST"])
     def getsqueakprofile():

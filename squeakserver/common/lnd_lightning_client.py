@@ -31,22 +31,34 @@ class LNDLightningClient:
         # Lnd cert is at ~/.lnd/tls.cert on Linux and
         # ~/Library/Application Support/Lnd/tls.cert on Mac
         cert = open(os.path.expanduser(tls_cert_path), "rb").read()
-        creds = grpc.ssl_channel_credentials(cert)
-        channel = grpc.secure_channel(url, creds)
-        self.stub = lnd_pb2_grpc.LightningStub(channel)
+        cert_creds = grpc.ssl_channel_credentials(cert)
 
         # Lnd admin macaroon is at ~/.lnd/data/chain/bitcoin/simnet/admin.macaroon on Linux and
         # ~/Library/Application Support/Lnd/data/chain/bitcoin/simnet/admin.macaroon on Mac
         with open(os.path.expanduser(macaroon_path), "rb") as f:
             macaroon_bytes = f.read()
+            macaroon = codecs.encode(macaroon_bytes, "hex")
             self.macaroon = codecs.encode(macaroon_bytes, "hex")
+
+        def metadata_callback(context, callback):
+            # for more info see grpc docs
+            callback([('macaroon', macaroon)], None)
+
+        # now build meta data credentials
+        auth_creds = grpc.metadata_call_credentials(metadata_callback)
+
+        # combine the cert credentials and the macaroon auth credentials
+        # such that every call is properly encrypted and authenticated
+        combined_creds = grpc.composite_channel_credentials(cert_creds, auth_creds)
+
+        # finally pass in the combined credentials when creating a channel
+        channel = grpc.secure_channel(url, combined_creds)
+        self.stub = lnd_pb2_grpc.LightningStub(channel)
 
     def get_wallet_balance(self):
         # Retrieve and display the wallet balance
-        return self.stub.WalletBalance(
-            lnd_pb2.WalletBalanceRequest(),
-            metadata=[("macaroon", self.macaroon)],
-        )
+        request = lnd_pb2.WalletBalanceRequest()
+        return self.stub.WalletBalance(request)
 
     def add_invoice(self, preimage, amount):
         """Create a new invoice with the given hash pre-image.
@@ -59,7 +71,7 @@ class LNDLightningClient:
             r_preimage=preimage,
             value=amount,
         )
-        return self.stub.AddInvoice(invoice, metadata=[("macaroon", self.macaroon)])
+        return self.stub.AddInvoice(invoice)
 
     def pay_invoice_sync(self, payment_request):
         """Pay an invoice with a given payment_request
@@ -70,9 +82,7 @@ class LNDLightningClient:
         send_payment_request = lnd_pb2.SendRequest(
             payment_request=payment_request,
         )
-        return self.stub.SendPaymentSync(
-            send_payment_request, metadata=[("macaroon", self.macaroon)]
-        )
+        return self.stub.SendPaymentSync(send_payment_request)
 
     def connect_peer(self, pubkey, host):
         """Connect to a lightning node peer.
@@ -88,9 +98,7 @@ class LNDLightningClient:
         connect_peer_request = lnd_pb2.ConnectPeerRequest(
             addr=lightning_address,
         )
-        return self.stub.ConnectPeer(
-            connect_peer_request, metadata=[("macaroon", self.macaroon)]
-        )
+        return self.stub.ConnectPeer(connect_peer_request)
 
     def disconnect_peer(self, pubkey):
         """Disconnect a lightning node peer.
@@ -102,14 +110,14 @@ class LNDLightningClient:
             pub_key=pubkey,
         )
         return self.stub.DisconnectPeer(
-            disconnect_peer_request, metadata=[("macaroon", self.macaroon)]
+            disconnect_peer_request,
         )
 
     def get_info(self):
         """Get info about the lightning network node."""
         get_info_request = lnd_pb2.GetInfoRequest()
         return self.stub.GetInfo(
-            get_info_request, metadata=[("macaroon", self.macaroon)]
+            get_info_request,
         )
 
     def open_channel_sync(self, pubkey_str, local_amount):
@@ -124,28 +132,28 @@ class LNDLightningClient:
             local_funding_amount=local_amount,
         )
         return self.stub.OpenChannelSync(
-            open_channel_request, metadata=[("macaroon", self.macaroon)]
+            open_channel_request,
         )
 
     def list_channels(self):
         """List the channels"""
         list_channels_request = lnd_pb2.ListChannelsRequest()
         return self.stub.ListChannels(
-            list_channels_request, metadata=[("macaroon", self.macaroon)]
+            list_channels_request,
         )
 
     def pending_channels(self):
         """List the pending channels"""
         pending_channels_request = lnd_pb2.PendingChannelsRequest()
         return self.stub.PendingChannels(
-            pending_channels_request, metadata=[("macaroon", self.macaroon)]
+            pending_channels_request,
         )
 
     def list_peers(self):
         """List the peers"""
         list_peers_request = lnd_pb2.ListPeersRequest()
         return self.stub.ListPeers(
-            list_peers_request, metadata=[("macaroon", self.macaroon)]
+            list_peers_request,
         )
 
     def open_channel(self, pubkey, local_amount):
@@ -160,7 +168,7 @@ class LNDLightningClient:
             local_funding_amount=local_amount,
         )
         return self.stub.OpenChannel(
-            open_channel_request, metadata=[("macaroon", self.macaroon)]
+            open_channel_request,
         )
 
     def close_channel(self, channel_point):
@@ -173,7 +181,7 @@ class LNDLightningClient:
             channel_point=channel_point,
         )
         return self.stub.CloseChannel(
-            close_channel_request, metadata=[("macaroon", self.macaroon)]
+            close_channel_request,
         )
 
     def decode_pay_req(self, payment_request):
@@ -186,7 +194,7 @@ class LNDLightningClient:
             pay_req=payment_request,
         )
         return self.stub.DecodePayReq(
-            decode_pay_req_request, metadata=[("macaroon", self.macaroon)]
+            decode_pay_req_request,
         )
 
     def new_address(self, address_type):
@@ -196,21 +204,18 @@ class LNDLightningClient:
         )
         return self.stub.NewAddress(
             new_address_request,
-            metadata=[("macaroon", self.macaroon)],
         )
 
     def list_channels(self):
         list_channels_request = lnd_pb2.ListChannelsRequest()
         return self.stub.ListChannels(
             list_channels_request,
-            metadata=[("macaroon", self.macaroon)],
         )
 
     def subscribe_channel_events(self):
         subscribe_channel_events_request = lnd_pb2.ChannelEventSubscription()
         return self.stub.SubscribeChannelEvents(
             subscribe_channel_events_request,
-            metadata=[("macaroon", self.macaroon)],
         )
 
     def get_transactions(self):
@@ -218,7 +223,6 @@ class LNDLightningClient:
         get_transactions_request = lnd_pb2.GetTransactionsRequest()
         return self.stub.GetTransactions(
             get_transactions_request,
-            metadata=[("macaroon", self.macaroon)],
         )
 
     def send_coins(self, addr, amount):
@@ -228,5 +232,4 @@ class LNDLightningClient:
         )
         return self.stub.SendCoins(
             send_coins_request,
-            metadata=[("macaroon", self.macaroon)],
         )
