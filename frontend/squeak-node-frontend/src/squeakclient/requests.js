@@ -21,6 +21,7 @@ import {
   ConnectPeerResponse,
   DisconnectPeerResponse,
   CloseStatusUpdate,
+  NewAddressResponse
 } from "../proto/lnd_pb"
 import {
   GetSqueakProfileRequest,
@@ -73,7 +74,6 @@ import {
   DeletePeerReply,
   DeleteSqueakProfileReply,
   DeleteSqueakReply,
-  NewAddressReply,
 } from "../proto/squeak_admin_pb"
 
 
@@ -792,7 +792,7 @@ export function deleteSqueakRequest(squeakHash, handleResponse) {
 export function lndNewAddressRequest(handleResponse) {
   var request = new NewAddressRequest();
   makeRequest('lndnewaddress', request, (data) => {
-    var response = NewAddressReply.deserializeBinary(data);
+    var response = NewAddressResponse.deserializeBinary(data);
     handleResponse(response);
   });
 };

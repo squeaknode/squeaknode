@@ -110,6 +110,13 @@ def create_app(handler):
             handler.handle_lnd_close_channel,
         )
 
+    @app.route('/lndnewaddress', methods=["POST"])
+    def lndnewaddress():
+        return handle_request(
+            lnd_pb2.NewAddressRequest(),
+            handler.handle_lnd_new_address,
+        )
+
     @app.route('/getfollowedsqueakdisplays', methods=["POST"])
     def getfollowedsqueakdisplays():
         return handle_request(
@@ -283,13 +290,6 @@ def create_app(handler):
         return handle_request(
             squeak_admin_pb2.DeleteSqueakRequest(),
             handler.handle_delete_squeak,
-        )
-
-    @app.route('/lndnewaddress', methods=["POST"])
-    def lndnewaddress():
-        return handle_request(
-            squeak_admin_pb2.NewAddressRequest(),
-            handler.handle_lnd_new_address,
         )
 
     return app
