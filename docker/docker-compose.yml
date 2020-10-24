@@ -9,7 +9,7 @@ services:
       dockerfile: docker/btcd/Dockerfile
     volumes:
       - shared:/rpc
-      - bitcoin:/data
+      - ~/.btcd/data:/data
     environment:
       - NETWORK=testnet
     entrypoint: ["./start-btcd.sh"]
@@ -96,9 +96,6 @@ services:
     entrypoint: ["./start-sqkserver.sh"]
 
 volumes:
-  bitcoin:
-    driver: local
-
   # shared volume is needed for sharing the btcd certificate
   shared:
     driver: local
