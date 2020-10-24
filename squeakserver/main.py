@@ -63,8 +63,8 @@ def load_admin_rpc_server(config, handler) -> SqueakAdminServerServicer:
 
 def load_admin_web_server(config, handler) -> SqueakAdminWebServer:
     return SqueakAdminWebServer(
-        "0.0.0.0",
-        5000,
+        config["webadmin"]["host"],
+        config["webadmin"]["port"],
         handler,
     )
 
