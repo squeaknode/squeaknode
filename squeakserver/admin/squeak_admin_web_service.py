@@ -297,9 +297,10 @@ def create_app(handler):
 
 class SqueakAdminWebServer():
 
-    def __init__(self, host, port, handler):
+    def __init__(self, host, port, use_ssl, handler):
         self.host = host
         self.port = port
+        self.use_ssl = use_ssl
         self.handler = handler
         self.app = create_app(handler)
 
@@ -308,5 +309,5 @@ class SqueakAdminWebServer():
             self.host,
             self.port,
             debug=False,
-            ssl_context='adhoc',
+            ssl_context='adhoc' if self.use_ssl else None,
         )
