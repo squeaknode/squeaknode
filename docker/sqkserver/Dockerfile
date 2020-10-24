@@ -31,7 +31,7 @@ EXPOSE 8994
 EXPOSE 18774
 EXPOSE 18994
 # Web server
-EXPOSE 5000
+EXPOSE 12994
 
 # Copy the entrypoint script.
 COPY "docker/sqkserver/start-sqkserver.sh" .

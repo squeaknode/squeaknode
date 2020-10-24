@@ -63,7 +63,7 @@ services:
       - sqk_dir:/root/.sqk
     ports:
       - 8774:8774
-      - 5000:5000
+      - 12994:12994
     links:
       - "btcd:btcd"
       - "lnd:lnd"
@@ -85,7 +85,7 @@ services:
       - ./config.ini:/app/config.ini
       - sqk_other_dir:/root/.sqk
     ports:
-      - 5001:5000
+      - 12995:12994
     links:
       - "btcd:btcd"
       - "lnd_other:lnd"
