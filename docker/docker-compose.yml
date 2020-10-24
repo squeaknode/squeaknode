@@ -95,54 +95,6 @@ services:
       - net.ipv6.conf.all.disable_ipv6=0
     entrypoint: ["./start-sqkserver.sh"]
 
-  envoy:
-    image: envoy
-    container_name: envoy
-    build:
-      context: ../
-      dockerfile: docker/envoy/Dockerfile
-    ports:
-      - 8080:8080
-    links:
-      - "sqkserver:sqkserver"
-    environment:
-      - SERVICE_NAME=sqkserver
-
-  envoy_other:
-    image: envoy_other
-    container_name: envoy_other
-    build:
-      context: ../
-      dockerfile: docker/envoy/Dockerfile
-    ports:
-      - 8090:8080
-    links:
-      - "sqkserver_other:sqkserver_other"
-    environment:
-      - SERVICE_NAME=sqkserver_other
-
-  frontend:
-    image: frontend
-    container_name: frontend
-    build:
-      context: ../
-      dockerfile: docker/frontend/Dockerfile
-      args:
-        - PORT=8080
-    ports:
-      - 8081:8081
-
-  frontend_other:
-    image: frontend_other
-    container_name: frontend_other
-    build:
-      context: ../
-      dockerfile: docker/frontend/Dockerfile
-      args:
-        - PORT=8090
-    ports:
-      - 8091:8081
-
 volumes:
   bitcoin:
     driver: local
