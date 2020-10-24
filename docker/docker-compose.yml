@@ -116,6 +116,3 @@ volumes:
 
   sqk_other_dir:
     driver: local
-
-  postgres_dir:
-    driver: local
