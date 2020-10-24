@@ -77,7 +77,7 @@ import {
 } from "../proto/squeak_admin_pb"
 
 
-export let web_host_port = 'https://' + window.location.hostname + ':' + window.location.port;
+export let web_host_port = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port;
 
 console.log("web_host_port:");
 console.log(web_host_port);
