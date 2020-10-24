@@ -10,6 +10,7 @@ from squeak.params import SelectParams
 
 from squeakserver.admin.squeak_admin_server_handler import SqueakAdminServerHandler
 from squeakserver.admin.squeak_admin_server_servicer import SqueakAdminServerServicer
+from squeakserver.admin.squeak_admin_web_service import SqueakAdminWebServer
 from squeakserver.blockchain.bitcoin_blockchain_client import BitcoinBlockchainClient
 from squeakserver.common.lnd_lightning_client import LNDLightningClient
 from squeakserver.db.db_engine import get_postgres_engine, get_sqlite_engine
@@ -18,7 +19,6 @@ from squeakserver.node.squeak_node import SqueakNode
 from squeakserver.server.lightning_address import LightningAddressHostPort
 from squeakserver.server.squeak_server_handler import SqueakServerHandler
 from squeakserver.server.squeak_server_servicer import SqueakServerServicer
-from squeakserver.admin.squeak_admin_web_service import run_app
 
 
 logger = logging.getLogger(__name__)
@@ -61,9 +61,12 @@ def load_admin_rpc_server(config, handler) -> SqueakAdminServerServicer:
     )
 
 
-def load_admin_web_server(config, handler):
-    # TODO
-    pass
+def load_admin_web_server(config, handler) -> SqueakAdminWebServer:
+    return SqueakAdminWebServer(
+        "0.0.0.0",
+        5000,
+        handler,
+    )
 
 
 def load_network(config):
@@ -149,11 +152,11 @@ def start_admin_rpc_server(rpc_server):
     thread.start()
 
 
-def start_admin_web_server(handler):
+def start_admin_web_server(admin_web_server):
     logger.info("Calling start_admin_web_server...")
     thread = threading.Thread(
-        target=run_app,
-        args=(handler,),
+        target=admin_web_server.serve,
+        args=(),
     )
     thread.daemon = True
     thread.start()
@@ -248,7 +251,8 @@ def run_server(config):
     start_admin_rpc_server(admin_rpc_server)
 
     # start admin web server
-    start_admin_web_server(admin_handler)
+    admin_web_server = load_admin_web_server(config, admin_handler)
+    start_admin_web_server(admin_web_server)
 
     # start rpc server
     handler = load_handler(squeak_node)

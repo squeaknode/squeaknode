@@ -295,10 +295,17 @@ def create_app(handler):
     return app
 
 
-def run_app(handler):
-    app = create_app(handler)
-    app.run(
-        host="0.0.0.0",
-        port=5000,
-        debug=False,
-    )
+class SqueakAdminWebServer():
+
+    def __init__(self, host, port, handler):
+        self.host = host
+        self.port = port
+        self.handler = handler
+        self.app = create_app(handler)
+
+    def serve(self):
+        self.app.run(
+            self.host,
+            self.port,
+            debug=False,
+        )
