@@ -157,10 +157,6 @@ def load_admin_web_server_enabled(config):
     return config["webadmin"].getboolean("enabled")
 
 
-def load_admin_web_server_use_ssl(config):
-    return config["webadmin"].getboolean("use_ssl")
-
-
 def start_admin_web_server(admin_web_server):
     logger.info("Calling start_admin_web_server...")
     thread = threading.Thread(
