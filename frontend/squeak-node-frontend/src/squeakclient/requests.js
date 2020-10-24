@@ -79,9 +79,6 @@ import {
 
 export let web_host_port = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port;
 
-console.log("web_host_port:");
-console.log(web_host_port);
-
 
 function makeRequest(route, request, handleResponse) {
   fetch(web_host_port + '/' + route, {
