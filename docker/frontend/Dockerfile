@@ -1,8 +1,6 @@
 #FROM node:10-stretch
 FROM ubuntu:20.04
 
-ARG PORT
-
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get -qq update && apt-get -qq install -y \
@@ -42,7 +40,6 @@ RUN chmod +x pb_disable-eslint.sh && \
 	./pb_disable-eslint.sh src/proto/
 
 RUN npm install && \
-	REACT_APP_PORT=${PORT} \
 	npm run build
 
 EXPOSE 8081
