@@ -1,5 +1,3 @@
-import { client } from "../squeakclient/squeakclient"
-
 import {
   GetInfoRequest,
   WalletBalanceRequest,
@@ -79,8 +77,14 @@ import {
 } from "../proto/squeak_admin_pb"
 
 
+export let web_host_port = 'http://' + window.location.hostname + ':' + window.location.port;
+
+console.log("web_host_port:");
+console.log(web_host_port);
+
+
 function makeRequest(route, request, handleResponse) {
-  fetch('http://localhost:5000/' + route, {
+  fetch(web_host_port + '/' + route, {
     method: 'post',
     body: request.serializeBinary()
   }).then(function(response) {
