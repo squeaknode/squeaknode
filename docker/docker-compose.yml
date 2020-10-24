@@ -84,6 +84,8 @@ services:
       - lnd_other_dir:/root/.lnd
       - ./config.ini:/app/config.ini
       - sqk_other_dir:/root/.sqk
+    ports:
+      - 5001:5000
     links:
       - "btcd:btcd"
       - "lnd_other:lnd"
