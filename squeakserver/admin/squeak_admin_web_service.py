@@ -308,4 +308,5 @@ class SqueakAdminWebServer():
             self.host,
             self.port,
             debug=False,
+            ssl_context='adhoc',
         )
