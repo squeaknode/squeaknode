@@ -152,6 +152,10 @@ def start_admin_rpc_server(rpc_server):
     thread.start()
 
 
+def load_admin_web_server_enabled(config):
+    return config["webadmin"].getboolean("enabled")
+
+
 def start_admin_web_server(admin_web_server):
     logger.info("Calling start_admin_web_server...")
     thread = threading.Thread(
@@ -251,8 +255,10 @@ def run_server(config):
     start_admin_rpc_server(admin_rpc_server)
 
     # start admin web server
-    admin_web_server = load_admin_web_server(config, admin_handler)
-    start_admin_web_server(admin_web_server)
+    admin_web_server_enabled = load_admin_web_server_enabled(config)
+    if admin_web_server_enabled:
+        admin_web_server = load_admin_web_server(config, admin_handler)
+        start_admin_web_server(admin_web_server)
 
     # start rpc server
     handler = load_handler(squeak_node)
