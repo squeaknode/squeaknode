@@ -27,7 +27,6 @@ logger = logging.getLogger(__name__)
 def create_app(handler, username, password):
     # create and configure the app
     logger.info("Starting flask app from directory: {}".format(os.getcwd()))
-    logger.info("Starting flask app with __name__: {}".format(__name__))
     app = Flask(
         __name__,
         static_folder='/app/static/build',
@@ -46,9 +45,7 @@ def create_app(handler, username, password):
 
     @login.user_loader
     def load_user(id):
-        logger.info("Load user with id: {}".format(id))
         return valid_user.get_user_by_username(id)
-        # return valid_user
 
     @login.unauthorized_handler
     def unauthorized_callback():
@@ -67,14 +64,11 @@ def create_app(handler, username, password):
             return redirect(url_for('index'))
         form = LoginForm()
         if form.validate_on_submit():
-            logger.info("Login with username: {}, password: {}".format(form.username.data, form.password.data))
             user = valid_user.get_user_by_username(form.username.data)
-            logger.info("Login with user: {}".format(user))
             if user is None or not user.check_password(form.password.data):
                 flash('Invalid username or password')
                 return redirect(url_for('login'))
             login_user(user, remember=form.remember_me.data)
-            logger.info("Redirecting to index page.")
             return redirect(url_for('index'))
         return render_template('login.html', title='Sign In', form=form)
 
@@ -87,8 +81,6 @@ def create_app(handler, username, password):
     @login_required
     def index():
         logger.info("Getting index route.")
-        logger.info("os.getcwd(): {}".format(os.getcwd()))
-        logger.info("os.listdir(os.getcwd()): {}".format(os.listdir(os.getcwd())))
         return app.send_static_file('index.html')
 
     @app.route('/hello')
