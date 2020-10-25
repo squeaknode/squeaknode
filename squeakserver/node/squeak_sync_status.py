@@ -54,7 +54,7 @@ class SqueakSyncController:
             block_height = block_info.block_height
         except Exception as e:
             logger.error(
-                "Failed to sync because unable to get blockchain info.", exc_info=True
+                "Failed to sync because unable to get blockchain info.", exc_info=False
             )
             return
         self._download_from_peers(peers, block_height)

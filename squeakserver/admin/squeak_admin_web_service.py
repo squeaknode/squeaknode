@@ -3,6 +3,14 @@ import logging
 
 from flask import Flask
 from flask import request
+from flask import redirect, url_for
+from flask import render_template
+from flask import flash
+
+from flask_login import LoginManager
+from flask_login import current_user, login_user
+from flask_login import login_required
+from flask_login import logout_user
 
 from google.protobuf import json_format
 from google.protobuf import message
@@ -10,17 +18,38 @@ from google.protobuf import message
 from proto import squeak_admin_pb2, squeak_admin_pb2_grpc
 from proto import lnd_pb2, lnd_pb2_grpc
 
+from squeakserver.admin.squeak_admin_web_user import User
+from squeakserver.admin.forms import LoginForm
 
 logger = logging.getLogger(__name__)
 
 
-def create_app(handler):
+def create_app(handler, username, password):
     # create and configure the app
     logger.info("Starting flask app from directory: {}".format(os.getcwd()))
-    app = Flask(__name__, static_folder='/app/static/build', static_url_path='/')
+    app = Flask(
+        __name__,
+        static_folder='/app/static/build',
+        static_url_path='/',
+        template_folder='/app/squeakserver/admin/templates',
+    )
     app.config.from_mapping(
         SECRET_KEY='dev',
     )
+    login = LoginManager(app)
+    valid_user = User(
+        username,
+        password,
+    )
+
+
+    @login.user_loader
+    def load_user(id):
+        return valid_user.get_user_by_username(id)
+
+    @login.unauthorized_handler
+    def unauthorized_callback():
+        return redirect('/login')
 
     def handle_request(request_message, handle_rpc_request):
         data = request.get_data()
@@ -28,11 +57,30 @@ def create_app(handler):
         reply = handle_rpc_request(request_message)
         return reply.SerializeToString(reply)
 
+    @app.route('/login', methods=['GET', 'POST'])
+    def login():
+        logger.info("Trying to login")
+        if current_user.is_authenticated:
+            return redirect(url_for('index'))
+        form = LoginForm()
+        if form.validate_on_submit():
+            user = valid_user.get_user_by_username(form.username.data)
+            if user is None or not user.check_password(form.password.data):
+                flash('Invalid username or password')
+                return redirect(url_for('login'))
+            login_user(user, remember=form.remember_me.data)
+            return redirect(url_for('index'))
+        return render_template('login.html', title='Sign In', form=form)
+
+    @app.route('/logout')
+    def logout():
+        logout_user()
+        return redirect(url_for('index'))
+
     @app.route('/')
+    @login_required
     def index():
         logger.info("Getting index route.")
-        logger.info("os.getcwd(): {}".format(os.getcwd()))
-        logger.info("os.listdir(os.getcwd()): {}".format(os.listdir(os.getcwd())))
         return app.send_static_file('index.html')
 
     @app.route('/hello')
@@ -297,12 +345,11 @@ def create_app(handler):
 
 class SqueakAdminWebServer():
 
-    def __init__(self, host, port, use_ssl, handler):
+    def __init__(self, host, port, username, password, use_ssl, handler):
         self.host = host
         self.port = port
         self.use_ssl = use_ssl
-        self.handler = handler
-        self.app = create_app(handler)
+        self.app = create_app(handler, username, password)
 
     def serve(self):
         self.app.run(
