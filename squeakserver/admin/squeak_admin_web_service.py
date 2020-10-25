@@ -8,6 +8,7 @@ from flask import render_template
 from flask_login import LoginManager
 from flask_login import current_user, login_user
 from flask_login import login_required
+from flask_login import logout_user
 
 from google.protobuf import json_format
 from google.protobuf import message
@@ -66,6 +67,11 @@ def create_app(handler):
         return render_template('login.html', title='Sign In', form=form)
 
         # return render_template('hello.html', name="foooo")
+
+    @app.route('/logout')
+    def logout():
+        logout_user()
+        return redirect(url_for('index'))
 
     @app.route('/')
     @login_required
