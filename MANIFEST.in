@@ -1,1 +1,2 @@
+recursive-include squeakserver/admin/webapp/templates *
 global-exclude *.pyc
