@@ -66,8 +66,6 @@ def create_app(handler):
             return redirect(url_for('index'))
         return render_template('login.html', title='Sign In', form=form)
 
-        # return render_template('hello.html', name="foooo")
-
     @app.route('/logout')
     def logout():
         logout_user()
