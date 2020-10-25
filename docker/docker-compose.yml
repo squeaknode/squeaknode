@@ -32,24 +32,6 @@ services:
       - net.ipv6.conf.all.disable_ipv6=0
     entrypoint: ["./start-lnd.sh"]
 
-  lnd_other:
-    image: lnd_other
-    container_name: lnd_other
-    build:
-      context: ../
-      dockerfile: docker/lnd/Dockerfile
-    environment:
-      - NETWORK=testnet
-      - RPCHOST=btcd
-    volumes:
-      - shared:/rpc
-      - lnd_other_dir:/root/.lnd
-    links:
-      - "btcd:btcd"
-    sysctls:
-      - net.ipv6.conf.all.disable_ipv6=0
-    entrypoint: ["./start-lnd.sh"]
-
   sqkserver:
     image: sqkserver
     container_name: sqkserver
@@ -73,28 +55,6 @@ services:
       - net.ipv6.conf.all.disable_ipv6=0
     entrypoint: ["./start-sqkserver.sh"]
 
-  sqkserver_other:
-    image: sqkserver_other
-    container_name: sqkserver_other
-    build:
-      context: ../
-      dockerfile: docker/sqkserver/Dockerfile
-    volumes:
-      - shared:/rpc
-      - lnd_other_dir:/root/.lnd
-      - ./config.ini:/app/config.ini
-      - sqk_other_dir:/root/.sqk
-    ports:
-      - 12995:12994
-    links:
-      - "btcd:btcd"
-      - "lnd_other:lnd"
-    environment:
-      - EXTERNAL_LND_HOST=lnd_other
-    sysctls:
-      - net.ipv6.conf.all.disable_ipv6=0
-    entrypoint: ["./start-sqkserver.sh"]
-
 volumes:
   # shared volume is needed for sharing the btcd certificate
   shared:
@@ -104,12 +64,5 @@ volumes:
   lnd_dir:
     driver: local
 
-  # lnd_other_dir volume is needed for sharing the lnd tls certificate
-  lnd_other_dir:
-    driver: local
-
   sqk_dir:
-    driver: local
-
-  sqk_other_dir:
     driver: local
