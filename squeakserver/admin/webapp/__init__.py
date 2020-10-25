@@ -18,8 +18,8 @@ from google.protobuf import message
 from proto import squeak_admin_pb2, squeak_admin_pb2_grpc
 from proto import lnd_pb2, lnd_pb2_grpc
 
-from squeakserver.admin.squeak_admin_web_user import User
-from squeakserver.admin.forms import LoginForm
+from squeakserver.admin.webapp.squeak_admin_web_user import User
+from squeakserver.admin.webapp.forms import LoginForm
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +31,7 @@ def create_app(handler, username, password):
         __name__,
         static_folder='/app/static/build',
         static_url_path='/',
-        template_folder='/app/squeakserver/admin/templates',
+        template_folder='/app/squeakserver/admin/webapp/templates',
     )
     app.config.from_mapping(
         SECRET_KEY='dev',

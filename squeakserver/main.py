@@ -10,7 +10,7 @@ from squeak.params import SelectParams
 
 from squeakserver.admin.squeak_admin_server_handler import SqueakAdminServerHandler
 from squeakserver.admin.squeak_admin_server_servicer import SqueakAdminServerServicer
-from squeakserver.admin.squeak_admin_web_service import SqueakAdminWebServer
+from squeakserver.admin.webapp import SqueakAdminWebServer
 from squeakserver.blockchain.bitcoin_blockchain_client import BitcoinBlockchainClient
 from squeakserver.common.lnd_lightning_client import LNDLightningClient
 from squeakserver.db.db_engine import get_postgres_engine, get_sqlite_engine
