@@ -18,7 +18,7 @@ class SqueakBlockVerifier:
             block_info = self._get_block_info_for_height(squeak.nBlockHeight)
         except Exception as e:
             logger.error(
-                "Failed to sync because unable to get blockchain info.", exc_info=True
+                "Failed to sync because unable to get blockchain info.", exc_info=False
             )
             return
 

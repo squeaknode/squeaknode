@@ -4,6 +4,7 @@ import logging
 from flask import Flask
 from flask import request
 from flask import redirect, url_for
+from flask import render_template
 from flask_login import LoginManager
 from flask_login import current_user, login_user
 from flask_login import login_required
@@ -23,7 +24,13 @@ logger = logging.getLogger(__name__)
 def create_app(handler):
     # create and configure the app
     logger.info("Starting flask app from directory: {}".format(os.getcwd()))
-    app = Flask(__name__, static_folder='/app/static/build', static_url_path='/')
+    logger.info("Starting flask app with __name__: {}".format(__name__))
+    app = Flask(
+        __name__,
+        static_folder='/app/static/build',
+        static_url_path='/',
+        template_folder='/app/squeakserver/admin/templates',
+    )
     app.config.from_mapping(
         SECRET_KEY='dev',
     )
@@ -57,6 +64,7 @@ def create_app(handler):
         #     login_user(user, remember=form.remember_me.data)
         #     return redirect(url_for('index'))
         # return render_template('login.html', title='Sign In', form=form)
+        return render_template('hello.html', name="foooo")
 
     @app.route('/')
     @login_required
