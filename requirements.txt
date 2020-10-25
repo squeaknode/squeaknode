@@ -10,3 +10,4 @@ SQLAlchemy
 Flask
 protobuf
 flask-login
+Flask-WTF

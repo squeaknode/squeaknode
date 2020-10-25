@@ -14,3 +14,7 @@ class User(UserMixin):
 
     def get_id(self):
         return "fake-user"
+
+    def check_password(self, password):
+        # return check_password_hash(self.password_hash, password)
+        return True

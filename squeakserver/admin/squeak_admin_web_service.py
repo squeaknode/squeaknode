@@ -16,7 +16,7 @@ from proto import squeak_admin_pb2, squeak_admin_pb2_grpc
 from proto import lnd_pb2, lnd_pb2_grpc
 
 from squeakserver.admin.squeak_admin_web_user import User
-
+from squeakserver.admin.forms import LoginForm
 
 logger = logging.getLogger(__name__)
 
@@ -55,16 +55,17 @@ def create_app(handler):
     def login():
         if current_user.is_authenticated:
             return redirect(url_for('index'))
-        # form = LoginForm()
-        # if form.validate_on_submit():
-        #     user = User.query.filter_by(username=form.username.data).first()
-        #     if user is None or not user.check_password(form.password.data):
-        #         flash('Invalid username or password')
-        #         return redirect(url_for('login'))
-        #     login_user(user, remember=form.remember_me.data)
-        #     return redirect(url_for('index'))
-        # return render_template('login.html', title='Sign In', form=form)
-        return render_template('hello.html', name="foooo")
+        form = LoginForm()
+        if form.validate_on_submit():
+            user = User()
+            if user is None or not user.check_password(form.password.data):
+                flash('Invalid username or password')
+                return redirect(url_for('login'))
+            login_user(user, remember=form.remember_me.data)
+            return redirect(url_for('index'))
+        return render_template('login.html', title='Sign In', form=form)
+
+        # return render_template('hello.html', name="foooo")
 
     @app.route('/')
     @login_required
