@@ -28,13 +28,18 @@ logger = logging.getLogger(__name__)
 def create_app(handler, username, password):
     # create and configure the app
     logger.info("Starting flask app from directory: {}".format(os.getcwd()))
-    root_path = os.path.dirname(os.path.realpath(__file__))
+    root_path = 'squeakserver/admin/webapp'
+    # root_path = os.path.dirname(os.path.realpath(__file__))
     logger.info("Starting flask with root_path: {}".format(root_path))
+    # readme = open("README.md", "r").read()
+    # logger.info("Starting flask with README: {}".format(readme))
+    # base_template = open("squeakserver/admin/webapp/templates/base.html", "r").read()
+    # logger.info("Starting flask with template: {}".format(base_template))
     app = Flask(
         __name__,
         static_folder='/app/static/build',
         static_url_path='/',
-        # template_folder='/app/squeakserver/admin/webapp/templates',
+        template_folder='templates',
         root_path=root_path,
     )
     app.config.from_mapping(
@@ -49,6 +54,8 @@ def create_app(handler, username, password):
     logger.info("Files in root path: {}".format(os.listdir(app.root_path)))
     other_path = abspath(dirname(__file__))
     logger.info("Starting flask other_path: {}".format(other_path))
+    logger.info("template folder: {}".format(app.template_folder))
+    # logger.info("Files in template folder: {}".format(os.listdir(app.template_folder)))
 
 
     @login.user_loader
