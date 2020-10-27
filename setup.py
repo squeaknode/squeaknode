@@ -23,9 +23,6 @@ class BuildPyCommand(setuptools.command.build_py.build_py):
 setup(
     name="squeakserver",
     version="1.0.0",
-    url="https://github.com/yzernik/squeakserver",
-    description="Server for squeak protocol.",
-    long_description=readme,
     packages=find_packages(),
     package_dir=PACKAGE_DIRECTORIES,
     include_package_data=True,
@@ -41,3 +38,25 @@ setup(
         'build_py': BuildPyCommand,
     },
 )
+
+# setup(
+#     name="squeakserver",
+#     version="1.0.0",
+#     url="https://github.com/yzernik/squeakserver",
+#     description="Server for squeak protocol.",
+#     long_description=readme,
+#     packages=find_packages(),
+#     package_dir=PACKAGE_DIRECTORIES,
+#     include_package_data=True,
+#     zip_safe=False,
+#     extras_require={"test": ["pytest", "coverage"]},
+#     entry_points={
+#         'console_scripts': [
+#             'runsqueakserver = squeakserver.main:main',
+#         ],
+#     },
+#     cmdclass={
+#         'build_proto_modules': BuildPackageProtos,
+#         'build_py': BuildPyCommand,
+#     },
+# )

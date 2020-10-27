@@ -19,12 +19,15 @@ WORKDIR /app
 RUN git clone https://github.com/googleapis/googleapis.git
 
 # Copy the source code.
-COPY squeakserver ./squeakserver
-COPY proto ./proto
-COPY setup.py setup.cfg MANIFEST.in README.md ./
+COPY . ./
+# COPY proto ./proto
+# COPY setup.py setup.cfg MANIFEST.in README.md ./
+RUN cp -r proto/ squeakserver/proto
 
 # Copy the frontend build
-COPY frontend/squeak-node-frontend/build/ ./static/build
+# COPY frontend/squeak-node-frontend/build/ ./static/build
+RUN mkdir ./static && \
+	cp -r frontend/squeak-node-frontend/build/ ./static/build
 
 RUN python3 setup.py install
 
