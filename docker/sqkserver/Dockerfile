@@ -21,9 +21,6 @@ RUN git clone https://github.com/googleapis/googleapis.git
 # Copy the source code.
 COPY . ./
 
-# COPY proto files
-RUN cp -r proto/ squeakserver/proto
-
 # Copy the frontend build
 RUN mkdir ./static && \
 	cp -r frontend/squeak-node-frontend/build/ ./static/build
