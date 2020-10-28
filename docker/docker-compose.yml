@@ -26,6 +26,8 @@ services:
     volumes:
       - shared:/rpc
       - lnd_dir:/root/.lnd
+    ports:
+      - 9735:9735
     links:
       - "btcd:btcd"
     sysctls:
