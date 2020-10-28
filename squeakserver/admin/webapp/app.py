@@ -86,11 +86,13 @@ def create_app(handler, username, password):
         return app.send_static_file('index.html')
 
     @app.route('/hello')
+    @login_required
     def hello_world():
         logger.info("Getting hello route.")
         return 'Hello, World!'
 
     @app.route('/lndgetinfo', methods=["POST"])
+    @login_required
     def lndgetinfo():
         return handle_request(
             lnd_pb2.GetInfoRequest(),
@@ -98,6 +100,7 @@ def create_app(handler, username, password):
         )
 
     @app.route('/lndwalletbalance', methods=["POST"])
+    @login_required
     def lndwalletbalance():
         return handle_request(
             lnd_pb2.WalletBalanceRequest(),
@@ -105,6 +108,7 @@ def create_app(handler, username, password):
         )
 
     @app.route('/lndgettransactions', methods=["POST"])
+    @login_required
     def lndgettransactions():
         return handle_request(
             lnd_pb2.GetTransactionsRequest(),
@@ -112,6 +116,7 @@ def create_app(handler, username, password):
         )
 
     @app.route('/lndlistpeers', methods=["POST"])
+    @login_required
     def lndlistpeers():
         return handle_request(
             lnd_pb2.ListPeersRequest(),
@@ -119,6 +124,7 @@ def create_app(handler, username, password):
         )
 
     @app.route('/lndlistchannels', methods=["POST"])
+    @login_required
     def lndlistchannels():
         return handle_request(
             lnd_pb2.ListChannelsRequest(),
@@ -126,6 +132,7 @@ def create_app(handler, username, password):
         )
 
     @app.route('/lndpendingchannels', methods=["POST"])
+    @login_required
     def lndpendingchannels():
         return handle_request(
             lnd_pb2.PendingChannelsRequest(),
@@ -133,6 +140,7 @@ def create_app(handler, username, password):
         )
 
     @app.route('/lndconnectpeer', methods=["POST"])
+    @login_required
     def lndconnectpeer():
         return handle_request(
             lnd_pb2.ConnectPeerRequest(),
@@ -140,6 +148,7 @@ def create_app(handler, username, password):
         )
 
     @app.route('/lnddisconnectpeer', methods=["POST"])
+    @login_required
     def lnddisconnectpeer():
         return handle_request(
             lnd_pb2.DisconnectPeerRequest(),
@@ -147,6 +156,7 @@ def create_app(handler, username, password):
         )
 
     @app.route('/lndopenchannelsync', methods=["POST"])
+    @login_required
     def lndopenchannelsync():
         return handle_request(
             lnd_pb2.OpenChannelRequest(),
@@ -154,6 +164,7 @@ def create_app(handler, username, password):
         )
 
     @app.route('/lndclosechannel', methods=["POST"])
+    @login_required
     def lndclosechannel():
         return handle_request(
             lnd_pb2.CloseChannelRequest(),
@@ -161,6 +172,7 @@ def create_app(handler, username, password):
         )
 
     @app.route('/lndnewaddress', methods=["POST"])
+    @login_required
     def lndnewaddress():
         return handle_request(
             lnd_pb2.NewAddressRequest(),
@@ -168,6 +180,7 @@ def create_app(handler, username, password):
         )
 
     @app.route('/getfollowedsqueakdisplays', methods=["POST"])
+    @login_required
     def getfollowedsqueakdisplays():
         return handle_request(
             squeak_admin_pb2.GetFollowedSqueakDisplaysRequest(),
@@ -175,6 +188,7 @@ def create_app(handler, username, password):
         )
 
     @app.route('/getsqueakprofile', methods=["POST"])
+    @login_required
     def getsqueakprofile():
         return handle_request(
             squeak_admin_pb2.GetSqueakProfileRequest(),
@@ -182,6 +196,7 @@ def create_app(handler, username, password):
         )
 
     @app.route('/setsqueakprofilefollowing', methods=["POST"])
+    @login_required
     def setsqueakprofilefollowing():
         return handle_request(
             squeak_admin_pb2.SetSqueakProfileFollowingRequest(),
@@ -189,6 +204,7 @@ def create_app(handler, username, password):
         )
 
     @app.route('/setsqueakprofilesharing', methods=["POST"])
+    @login_required
     def setsqueakprofilesharing():
         return handle_request(
             squeak_admin_pb2.SetSqueakProfileSharingRequest(),
@@ -196,6 +212,7 @@ def create_app(handler, username, password):
         )
 
     @app.route('/setsqueakprofilewhitelisted', methods=["POST"])
+    @login_required
     def setsqueakprofilewhitelisted():
         return handle_request(
             squeak_admin_pb2.SetSqueakProfileWhitelistedRequest(),
@@ -203,6 +220,7 @@ def create_app(handler, username, password):
         )
 
     @app.route('/getpeers', methods=["POST"])
+    @login_required
     def getpeers():
         return handle_request(
             squeak_admin_pb2.GetPeersRequest(),
@@ -210,6 +228,7 @@ def create_app(handler, username, password):
         )
 
     @app.route('/payoffer', methods=["POST"])
+    @login_required
     def payoffer():
         return handle_request(
             squeak_admin_pb2.PayOfferRequest(),
@@ -217,6 +236,7 @@ def create_app(handler, username, password):
         )
 
     @app.route('/getbuyoffers', methods=["POST"])
+    @login_required
     def getbuyoffers():
         return handle_request(
             squeak_admin_pb2.GetBuyOffersRequest(),
@@ -224,6 +244,7 @@ def create_app(handler, username, password):
         )
 
     @app.route('/getbuyoffer', methods=["POST"])
+    @login_required
     def getbuyoffer():
         return handle_request(
             squeak_admin_pb2.GetBuyOfferRequest(),
@@ -231,6 +252,7 @@ def create_app(handler, username, password):
         )
 
     @app.route('/getpeer', methods=["POST"])
+    @login_required
     def getpeer():
         return handle_request(
             squeak_admin_pb2.GetPeerRequest(),
@@ -238,6 +260,7 @@ def create_app(handler, username, password):
         )
 
     @app.route('/setpeerdownloading', methods=["POST"])
+    @login_required
     def setpeerdownloading():
         return handle_request(
             squeak_admin_pb2.SetPeerDownloadingRequest(),
@@ -245,6 +268,7 @@ def create_app(handler, username, password):
         )
 
     @app.route('/setpeeruploading', methods=["POST"])
+    @login_required
     def setpeeruploading():
         return handle_request(
             squeak_admin_pb2.SetPeerUploadingRequest(),
@@ -252,6 +276,7 @@ def create_app(handler, username, password):
         )
 
     @app.route('/getsigningprofiles', methods=["POST"])
+    @login_required
     def getsigningprofiles():
         return handle_request(
             squeak_admin_pb2.GetSigningProfilesRequest(),
@@ -259,6 +284,7 @@ def create_app(handler, username, password):
         )
 
     @app.route('/getcontactprofiles', methods=["POST"])
+    @login_required
     def getcontactprofiles():
         return handle_request(
             squeak_admin_pb2.GetContactProfilesRequest(),
@@ -266,6 +292,7 @@ def create_app(handler, username, password):
         )
 
     @app.route('/makesqueakrequest', methods=["POST"])
+    @login_required
     def makesqueakrequest():
         return handle_request(
             squeak_admin_pb2.MakeSqueakRequest(),
@@ -273,6 +300,7 @@ def create_app(handler, username, password):
         )
 
     @app.route('/getsqueakdisplay', methods=["POST"])
+    @login_required
     def getsqueakdisplay():
         return handle_request(
             squeak_admin_pb2.GetSqueakDisplayRequest(),
@@ -280,6 +308,7 @@ def create_app(handler, username, password):
         )
 
     @app.route('/getancestorsqueakdisplays', methods=["POST"])
+    @login_required
     def getancestorsqueakdisplays():
         return handle_request(
             squeak_admin_pb2.GetAncestorSqueakDisplaysRequest(),
@@ -287,6 +316,7 @@ def create_app(handler, username, password):
         )
 
     @app.route('/getsqueakprofilebyaddress', methods=["POST"])
+    @login_required
     def getsqueakprofilebyaddress():
         return handle_request(
             squeak_admin_pb2.GetSqueakProfileByAddressRequest(),
@@ -294,6 +324,7 @@ def create_app(handler, username, password):
         )
 
     @app.route('/getaddresssqueakdisplays', methods=["POST"])
+    @login_required
     def getaddresssqueakdisplays():
         return handle_request(
             squeak_admin_pb2.GetAddressSqueakDisplaysRequest(),
@@ -301,6 +332,7 @@ def create_app(handler, username, password):
         )
 
     @app.route('/createcontactprofile', methods=["POST"])
+    @login_required
     def createcontactprofile():
         return handle_request(
             squeak_admin_pb2.CreateContactProfileRequest(),
@@ -308,6 +340,7 @@ def create_app(handler, username, password):
         )
 
     @app.route('/createsigningprofile', methods=["POST"])
+    @login_required
     def createsigningprofile():
         return handle_request(
             squeak_admin_pb2.CreateSigningProfileRequest(),
@@ -315,6 +348,7 @@ def create_app(handler, username, password):
         )
 
     @app.route('/createpeer', methods=["POST"])
+    @login_required
     def createpeer():
         return handle_request(
             squeak_admin_pb2.CreatePeerRequest(),
@@ -322,6 +356,7 @@ def create_app(handler, username, password):
         )
 
     @app.route('/deletepeer', methods=["POST"])
+    @login_required
     def deletepeer():
         return handle_request(
             squeak_admin_pb2.DeletePeerRequest(),
@@ -329,6 +364,7 @@ def create_app(handler, username, password):
         )
 
     @app.route('/deleteprofile', methods=["POST"])
+    @login_required
     def deleteprofile():
         return handle_request(
             squeak_admin_pb2.DeleteSqueakProfileRequest(),
@@ -336,6 +372,7 @@ def create_app(handler, username, password):
         )
 
     @app.route('/deletesqueak', methods=["POST"])
+    @login_required
     def deletesqueak():
         return handle_request(
             squeak_admin_pb2.DeleteSqueakRequest(),
