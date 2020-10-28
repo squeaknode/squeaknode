@@ -30,6 +30,7 @@ def create_app(handler, username, password):
     logger.info("Starting flask app from directory: {}".format(os.getcwd()))
     app = Flask(
         __name__,
+        static_url_path='/',
         static_folder='static/build',
     )
     app.config.from_mapping(
