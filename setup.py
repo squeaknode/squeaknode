@@ -35,7 +35,7 @@ class BuildPackageProtos(Command):
 
     def run(self):
         import grpc_tools.command
-        grpc_tools.command.build_package_protos('squeakserver')
+        grpc_tools.command.build_package_protos('.')
 
 setup(
     name="squeakserver",
