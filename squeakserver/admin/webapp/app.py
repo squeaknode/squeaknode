@@ -37,8 +37,8 @@ def create_app(handler, username, password):
     # logger.info("Starting flask with template: {}".format(base_template))
     app = Flask(
         __name__,
-        static_folder='/app/static/build',
-        static_url_path='/',
+        static_folder='static/build',
+        #static_url_path='/',
         # template_folder='templates',
         # root_path=root_path,
     )
