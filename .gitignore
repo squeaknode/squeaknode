@@ -14,3 +14,7 @@ dist/
 *~
 .tox/
 .mypy_cache/
+
+# Ignore generated python proto files
+*pb2.py
+*pb2_grpc.py
