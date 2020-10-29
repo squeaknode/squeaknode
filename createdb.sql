@@ -1,6 +1,6 @@
-CREATE DATABASE squeakserver;
+CREATE DATABASE squeaknode;
 
-\connect squeakserver;
+\connect squeaknode;
 
 CREATE SCHEMA IF NOT EXISTS mainnet;
 CREATE SCHEMA IF NOT EXISTS testnet;
