@@ -101,6 +101,16 @@ export function logoutRequest(handleResponse) {
   });
 }
 
+export function getUserRequest(handleResponse) {
+  fetch(web_host_port + '/' + 'user', {
+    method: 'get',
+  }).then(function(response) {
+    return response.text();
+  }).then(function(data) {
+    handleResponse(data);
+  });
+}
+
 // export function getFollowedSqueakDisplaysRequest(handleResponse) {
 //   var request = new GetFollowedSqueakDisplaysRequest();
 //   client.getFollowedSqueakDisplays(request, {}, (err, response) => {
