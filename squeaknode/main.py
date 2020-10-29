@@ -171,7 +171,7 @@ def start_admin_web_server(admin_web_server):
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description="squeakserver runs a node using squeak protocol. ",
+        description="squeaknode runs a node using squeak protocol. ",
     )
     parser.add_argument(
         "--config",
