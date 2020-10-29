@@ -91,6 +91,16 @@ function makeRequest(route, request, handleResponse) {
   });
 }
 
+export function logoutRequest(handleResponse) {
+  fetch(web_host_port + '/' + 'logout', {
+    method: 'get',
+  }).then(function(response) {
+    return response.arrayBuffer();
+  }).then(function(data) {
+    handleResponse(data);
+  });
+}
+
 // export function getFollowedSqueakDisplaysRequest(handleResponse) {
 //   var request = new GetFollowedSqueakDisplaysRequest();
 //   client.getFollowedSqueakDisplays(request, {}, (err, response) => {

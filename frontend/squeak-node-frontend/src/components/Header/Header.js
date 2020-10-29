@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import {useHistory} from "react-router-dom";
 import {
   AppBar,
   Toolbar,
@@ -36,10 +37,16 @@ import {
 } from "../../context/LayoutContext";
 import { useUserDispatch, signOut } from "../../context/UserContext";
 
+import {
+  logoutRequest,
+} from "../../squeakclient/requests"
+
 const notifications = [];
 
 export default function Header(props) {
   var classes = useStyles();
+
+  const history = useHistory();
 
   // global
   var layoutState = useLayoutState();
@@ -49,7 +56,12 @@ export default function Header(props) {
   // local
   var [notificationsMenu, setNotificationsMenu] = useState(null);
   var [isNotificationsUnread, setIsNotificationsUnread] = useState(true);
+  var [profileMenu, setProfileMenu] = useState(null);
   var [isSearchOpen, setSearchOpen] = useState(false);
+
+  const reloadRoute = () => {
+    history.go(0);
+  };
 
   return (
     <AppBar position="fixed" className={classes.appBar}>
@@ -124,6 +136,15 @@ export default function Header(props) {
             <NotificationsIcon classes={{ root: classes.headerIcon }} />
           </Badge>
         </IconButton>
+        <IconButton
+  aria-haspopup="true"
+  color="inherit"
+  className={classes.headerMenuButton}
+  aria-controls="profile-menu"
+  onClick={e => setProfileMenu(e.currentTarget)}
+>
+  <AccountIcon classes={{ root: classes.headerIcon }} />
+</IconButton>
         <Menu
           id="notifications-menu"
           open={Boolean(notificationsMenu)}
@@ -142,6 +163,36 @@ export default function Header(props) {
             </MenuItem>
           ))}
         </Menu>
+
+        <Menu
+           id="profile-menu"
+           open={Boolean(profileMenu)}
+           anchorEl={profileMenu}
+           onClose={() => setProfileMenu(null)}
+           className={classes.headerMenu}
+           classes={{ paper: classes.profileMenu }}
+           disableAutoFocusItem
+         >
+           <div className={classes.profileMenuUser}>
+             <Typography variant="h4" weight="medium">
+               John Smith
+             </Typography>
+           </div>
+           <div className={classes.profileMenuUser}>
+             <Typography
+               className={classes.profileMenuLink}
+               color="primary"
+               onClick={() => logoutRequest(
+                 () => {
+                   reloadRoute();
+                 }
+               )}
+             >
+               Sign Out
+             </Typography>
+           </div>
+         </Menu>
+
       </Toolbar>
     </AppBar>
   );
