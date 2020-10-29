@@ -76,8 +76,10 @@ import {
   DeleteSqueakReply,
 } from "../proto/squeak_admin_pb"
 
+console.log('The value of REACT_APP_SERVER_PORT is:', process.env.REACT_APP_SERVER_PORT);
+const SERVER_PORT = process.env.REACT_APP_SERVER_PORT || window.location.port;
 
-export let web_host_port = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port;
+export let web_host_port = window.location.protocol + '//' + window.location.hostname + ':' + SERVER_PORT;
 
 function handleErrorResponse(response, route) {
   response.text()

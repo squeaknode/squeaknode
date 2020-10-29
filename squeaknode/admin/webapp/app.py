@@ -13,6 +13,8 @@ from flask_login import current_user, login_user
 from flask_login import login_required
 from flask_login import logout_user
 
+from flask_cors import CORS
+
 from google.protobuf import json_format
 from google.protobuf import message
 
@@ -43,7 +45,6 @@ def create_app(handler, username, password):
     )
     logger.info("Starting flask with app.root_path: {}".format(app.root_path))
     logger.info("Files in root path: {}".format(os.listdir(app.root_path)))
-
 
     @login.user_loader
     def load_user(id):
@@ -394,13 +395,23 @@ def create_app(handler, username, password):
 
 class SqueakAdminWebServer():
 
-    def __init__(self, host, port, username, password, use_ssl, handler):
+    def __init__(self, host, port, username, password, use_ssl, login_disabled, allow_cors, handler):
         self.host = host
         self.port = port
         self.use_ssl = use_ssl
+        self.login_disabled = login_disabled
+        self.allow_cors = allow_cors
         self.app = create_app(handler, username, password)
 
     def serve(self):
+        # Set LOGIN_DISABLED and allow CORS if login not required.
+        if self.login_disabled:
+            self.app.config['LOGIN_DISABLED'] = True
+
+        # Allow CORS
+        if self.allow_cors:
+            CORS(self.app)
+
         self.app.run(
             self.host,
             self.port,
