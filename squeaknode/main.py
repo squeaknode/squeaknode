@@ -68,7 +68,8 @@ def load_admin_web_server(config, handler) -> SqueakAdminWebServer:
         config["webadmin"]["username"],
         config["webadmin"]["password"],
         config["webadmin"].getboolean("use_ssl", fallback=False),
-        config["webadmin"].getboolean("login_required", fallback=False),
+        config["webadmin"].getboolean("login_disabled", fallback=False),
+        config["webadmin"].getboolean("allow_cors", fallback=False),
         handler,
     )
 
