@@ -1,26 +1,12 @@
-# squeakserver
+# squeaknode
 
-Server for Squeak protocol
-
-## Test
-
-### Run unit tests:
-
-```
-$ make test
-```
-
-### Run integration tests:
-
-```
-$ make itest
-```
+Node for Squeak protocol
 
 ## Run
 
 ### Run with docker:
 
-- Edit **docker/config.ini** to use your external IP address for `external_host`
+- Edit **docker/config.ini** to change any configs
 - Start the squeak server:
 	```
 	$ cd docker
@@ -58,14 +44,30 @@ $ make itest
 	rpc_host=0.0.0.0
 	rpc_port=8994
 	```
-- Run the **createdb.sql** script on the postgres server to initialize the database.
-- Install the server requirements:
+- Install squeaknode:
 	```
-	$ pip3 install -r requirements.txt
-	$ cp proto/* squeakserver/proto/
-	$ python3 setup.py install
+	$ pip install squeaknode
 	```
+	or
+	```
+	$ python setup.py install
+	```
+
 - Start the squeak server:
  	```
-	$ runsqueakserver --config config.ini run-server
+	$ runsqueaknode --config config.ini run-server
 	```
+
+## Test
+
+### Run unit tests:
+
+```
+$ make test
+```
+
+### Run integration tests:
+
+```
+$ make itest
+```
