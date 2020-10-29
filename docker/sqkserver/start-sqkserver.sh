@@ -19,7 +19,7 @@ while ! test -f "/root/.lnd/tls.cert"; do
 done
 
 # Start using the run server command
-exec runsqueakserver \
+exec runsqueaknode \
      --config config.ini \
      --log-level INFO \
      run-server

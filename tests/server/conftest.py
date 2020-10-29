@@ -5,7 +5,7 @@ from bitcoin.core import lx
 from squeak.core import HASH_LENGTH, MakeSqueakFromStr
 from squeak.core.signing import CSigningKey
 
-from squeakserver.server.squeak_validator import SqueakValidator
+from squeaknode.server.squeak_validator import SqueakValidator
 
 # # read in SQL for populating test data
 # with open(os.path.join(os.path.dirname(__file__), "data.sql"), "rb") as f:

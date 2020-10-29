@@ -1,4 +1,4 @@
 include README.md
 include createdb.sql
-graft squeakserver/admin/webapp/templates
-graft squeakserver/admin/webapp/static
+graft squeaknode/admin/webapp/templates
+graft squeaknode/admin/webapp/static

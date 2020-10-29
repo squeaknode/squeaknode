@@ -38,9 +38,9 @@ class BuildPackageProtos(Command):
         grpc_tools.command.build_package_protos('.')
 
 setup(
-    name="squeakserver",
+    name="squeaknode",
     version="1.0.0",
-    url="https://github.com/yzernik/squeakserver",
+    url="https://github.com/yzernik/squeaknode",
     description="Server for squeak protocol.",
     long_description=readme,
     packages=find_packages(),
@@ -50,7 +50,7 @@ setup(
     extras_require={"test": ["pytest", "coverage"]},
     entry_points={
         'console_scripts': [
-            'runsqueakserver = squeakserver.main:main',
+            'runsqueaknode = squeaknode.main:main',
         ],
     },
     cmdclass={
