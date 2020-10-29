@@ -10,6 +10,7 @@ Node for Squeak protocol
 - Start the squeak server:
 	```
 	$ cd docker
+	$ docker-compose build
 	$ docker-compose up
 	```
 
