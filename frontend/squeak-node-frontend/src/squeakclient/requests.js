@@ -79,15 +79,32 @@ import {
 
 export let web_host_port = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port;
 
+function handleErrorResponse(response, route) {
+  response.text()
+  .then(function(data) {
+    console.error(data);
+    alert(route + " failed with error: " + data);
+  });
+}
+
+function handleSuccessResponse(response, handleResponse) {
+  response.arrayBuffer()
+  .then(function(data) {
+    console.log(data);
+    handleResponse(data);
+  });
+}
 
 function makeRequest(route, request, handleResponse) {
   fetch(web_host_port + '/' + route, {
     method: 'post',
     body: request.serializeBinary()
   }).then(function(response) {
-    return response.arrayBuffer();
-  }).then(function(data) {
-    handleResponse(data);
+    if(response.ok) {
+      handleSuccessResponse(response, handleResponse);
+    } else {
+      handleErrorResponse(response, route);
+    }
   });
 }
 

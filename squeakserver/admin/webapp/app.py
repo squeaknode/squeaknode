@@ -56,8 +56,12 @@ def create_app(handler, username, password):
     def handle_request(request_message, handle_rpc_request):
         data = request.get_data()
         request_message.ParseFromString(data)
-        reply = handle_rpc_request(request_message)
-        return reply.SerializeToString(reply)
+        try:
+            reply = handle_rpc_request(request_message)
+            return reply.SerializeToString(reply)
+        except Exception as e:
+            logger.info("Handling error: {}".format(e))
+            return str(e), 500
 
     @app.route('/login', methods=['GET', 'POST'])
     def login():
