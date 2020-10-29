@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from 'react';
 import {useHistory} from "react-router-dom";
 import {
   AppBar,
@@ -39,6 +39,7 @@ import { useUserDispatch, signOut } from "../../context/UserContext";
 
 import {
   logoutRequest,
+  getUserRequest,
 } from "../../squeakclient/requests"
 
 const notifications = [];
@@ -58,10 +59,19 @@ export default function Header(props) {
   var [isNotificationsUnread, setIsNotificationsUnread] = useState(true);
   var [profileMenu, setProfileMenu] = useState(null);
   var [isSearchOpen, setSearchOpen] = useState(false);
+  var [username, setUsername] = useState("bob smith");
 
   const reloadRoute = () => {
     history.go(0);
   };
+
+  const getUser = () => {
+    getUserRequest(setUsername);
+  };
+
+  useEffect(()=>{
+    getUser()
+  },[]);
 
   return (
     <AppBar position="fixed" className={classes.appBar}>
@@ -175,7 +185,7 @@ export default function Header(props) {
          >
            <div className={classes.profileMenuUser}>
              <Typography variant="h4" weight="medium">
-               John Smith
+               {username}
              </Typography>
            </div>
            <div className={classes.profileMenuUser}>

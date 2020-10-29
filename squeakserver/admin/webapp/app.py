@@ -85,6 +85,12 @@ def create_app(handler, username, password):
         logger.info("Getting index route.")
         return app.send_static_file('index.html')
 
+    @app.route('/user')
+    @login_required
+    def user():
+        logger.info("Getting user.")
+        return current_user.username
+
     @app.route('/hello')
     @login_required
     def hello_world():
