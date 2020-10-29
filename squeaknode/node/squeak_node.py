@@ -8,23 +8,23 @@ from squeak.core.encryption import (
 from squeak.core.signing import CSigningKey, CSqueakAddress
 from squeak.core import CheckSqueak
 
-from squeakserver.core.squeak_address_validator import SqueakAddressValidator
-from squeakserver.node.squeak_block_periodic_worker import SqueakBlockPeriodicWorker
-from squeakserver.node.squeak_block_queue_worker import SqueakBlockQueueWorker
-from squeakserver.node.squeak_block_verifier import SqueakBlockVerifier
-from squeakserver.node.squeak_expired_offer_cleaner import SqueakExpiredOfferCleaner
-from squeakserver.node.squeak_maker import SqueakMaker
-from squeakserver.node.squeak_offer_expiry_worker import SqueakOfferExpiryWorker
-from squeakserver.node.squeak_peer_sync_worker import SqueakPeerSyncWorker
-from squeakserver.node.squeak_rate_limiter import SqueakRateLimiter
-from squeakserver.node.squeak_store import SqueakStore
-from squeakserver.node.squeak_sync_status import SqueakSyncController
-from squeakserver.node.squeak_whitelist import SqueakWhitelist
-from squeakserver.server.buy_offer import BuyOffer
-from squeakserver.server.squeak_peer import SqueakPeer
-from squeakserver.server.squeak_profile import SqueakProfile
-from squeakserver.server.sent_payment import SentPayment
-from squeakserver.server.util import generate_offer_preimage
+from squeaknode.core.squeak_address_validator import SqueakAddressValidator
+from squeaknode.node.squeak_block_periodic_worker import SqueakBlockPeriodicWorker
+from squeaknode.node.squeak_block_queue_worker import SqueakBlockQueueWorker
+from squeaknode.node.squeak_block_verifier import SqueakBlockVerifier
+from squeaknode.node.squeak_expired_offer_cleaner import SqueakExpiredOfferCleaner
+from squeaknode.node.squeak_maker import SqueakMaker
+from squeaknode.node.squeak_offer_expiry_worker import SqueakOfferExpiryWorker
+from squeaknode.node.squeak_peer_sync_worker import SqueakPeerSyncWorker
+from squeaknode.node.squeak_rate_limiter import SqueakRateLimiter
+from squeaknode.node.squeak_store import SqueakStore
+from squeaknode.node.squeak_sync_status import SqueakSyncController
+from squeaknode.node.squeak_whitelist import SqueakWhitelist
+from squeaknode.server.buy_offer import BuyOffer
+from squeaknode.server.squeak_peer import SqueakPeer
+from squeaknode.server.squeak_profile import SqueakProfile
+from squeaknode.server.sent_payment import SentPayment
+from squeaknode.server.util import generate_offer_preimage
 
 
 logger = logging.getLogger(__name__)

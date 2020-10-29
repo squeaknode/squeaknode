@@ -1,7 +1,7 @@
 import logging
 import threading
 
-from squeakserver.network.peer_client import PeerClient
+from squeaknode.network.peer_client import PeerClient
 
 logger = logging.getLogger(__name__)
 

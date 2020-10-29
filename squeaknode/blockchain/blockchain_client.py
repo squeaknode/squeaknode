@@ -1,7 +1,7 @@
 import logging
 from abc import ABC, abstractmethod
 
-from squeakserver.blockchain.block_info import BlockInfo
+from squeaknode.blockchain.block_info import BlockInfo
 
 logger = logging.getLogger(__name__)
 

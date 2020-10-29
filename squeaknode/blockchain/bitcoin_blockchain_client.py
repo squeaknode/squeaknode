@@ -4,8 +4,8 @@ from typing import Optional
 
 import requests
 
-from squeakserver.blockchain.block_info import BlockInfo
-from squeakserver.blockchain.blockchain_client import BlockchainClient
+from squeaknode.blockchain.block_info import BlockInfo
+from squeaknode.blockchain.blockchain_client import BlockchainClient
 
 logger = logging.getLogger(__name__)
 

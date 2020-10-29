@@ -19,8 +19,8 @@ from google.protobuf import message
 from proto import squeak_admin_pb2, squeak_admin_pb2_grpc
 from proto import lnd_pb2, lnd_pb2_grpc
 
-from squeakserver.admin.webapp.squeak_admin_web_user import User
-from squeakserver.admin.webapp.forms import LoginForm
+from squeaknode.admin.webapp.squeak_admin_web_user import User
+from squeaknode.admin.webapp.forms import LoginForm
 
 logger = logging.getLogger(__name__)
 

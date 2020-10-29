@@ -8,17 +8,17 @@ from os import environ
 
 from squeak.params import SelectParams
 
-from squeakserver.admin.squeak_admin_server_handler import SqueakAdminServerHandler
-from squeakserver.admin.squeak_admin_server_servicer import SqueakAdminServerServicer
-from squeakserver.admin.webapp.app import SqueakAdminWebServer
-from squeakserver.blockchain.bitcoin_blockchain_client import BitcoinBlockchainClient
-from squeakserver.common.lnd_lightning_client import LNDLightningClient
-from squeakserver.db.db_engine import get_postgres_engine, get_sqlite_engine
-from squeakserver.db.squeak_db import SqueakDb
-from squeakserver.node.squeak_node import SqueakNode
-from squeakserver.server.lightning_address import LightningAddressHostPort
-from squeakserver.server.squeak_server_handler import SqueakServerHandler
-from squeakserver.server.squeak_server_servicer import SqueakServerServicer
+from squeaknode.admin.squeak_admin_server_handler import SqueakAdminServerHandler
+from squeaknode.admin.squeak_admin_server_servicer import SqueakAdminServerServicer
+from squeaknode.admin.webapp.app import SqueakAdminWebServer
+from squeaknode.blockchain.bitcoin_blockchain_client import BitcoinBlockchainClient
+from squeaknode.common.lnd_lightning_client import LNDLightningClient
+from squeaknode.db.db_engine import get_postgres_engine, get_sqlite_engine
+from squeaknode.db.squeak_db import SqueakDb
+from squeaknode.node.squeak_node import SqueakNode
+from squeaknode.server.lightning_address import LightningAddressHostPort
+from squeaknode.server.squeak_server_handler import SqueakServerHandler
+from squeaknode.server.squeak_server_servicer import SqueakServerServicer
 
 
 logger = logging.getLogger(__name__)

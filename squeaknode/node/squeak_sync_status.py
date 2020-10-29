@@ -1,8 +1,8 @@
 import logging
 import threading
 
-from squeakserver.node.peer_download import PeerDownload
-from squeakserver.node.peer_upload import PeerUpload
+from squeaknode.node.peer_download import PeerDownload
+from squeaknode.node.peer_upload import PeerUpload
 
 logger = logging.getLogger(__name__)
 

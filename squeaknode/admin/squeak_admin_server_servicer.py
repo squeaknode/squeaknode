@@ -5,7 +5,7 @@ from concurrent import futures
 import grpc
 
 from proto import squeak_admin_pb2, squeak_admin_pb2_grpc
-from squeakserver.server.util import get_hash, get_replyto
+from squeaknode.server.util import get_hash, get_replyto
 
 logger = logging.getLogger(__name__)
 

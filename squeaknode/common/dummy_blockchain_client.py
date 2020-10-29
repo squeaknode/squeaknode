@@ -2,7 +2,7 @@ from typing import Optional
 
 from bitcoin.core import lx
 
-from squeakserver.common.blockchain_client import BlockchainClient
+from squeaknode.common.blockchain_client import BlockchainClient
 
 
 class DummyBlockchainClient(BlockchainClient):

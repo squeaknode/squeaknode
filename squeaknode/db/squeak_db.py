@@ -19,15 +19,15 @@ from sqlalchemy import (
 from sqlalchemy.sql import and_, or_, select
 from squeak.core import CSqueak
 
-from squeakserver.blockchain.util import parse_block_header
-from squeakserver.core.offer import Offer
-from squeakserver.core.offer_with_peer import OfferWithPeer
-from squeakserver.core.squeak_entry import SqueakEntry
-from squeakserver.core.squeak_entry_with_profile import SqueakEntryWithProfile
-from squeakserver.server.squeak_peer import SqueakPeer
-from squeakserver.server.squeak_profile import SqueakProfile
-from squeakserver.server.sent_payment import SentPayment
-from squeakserver.server.util import get_hash
+from squeaknode.blockchain.util import parse_block_header
+from squeaknode.core.offer import Offer
+from squeaknode.core.offer_with_peer import OfferWithPeer
+from squeaknode.core.squeak_entry import SqueakEntry
+from squeaknode.core.squeak_entry_with_profile import SqueakEntryWithProfile
+from squeaknode.server.squeak_peer import SqueakPeer
+from squeaknode.server.squeak_profile import SqueakProfile
+from squeaknode.server.sent_payment import SentPayment
+from squeaknode.server.util import get_hash
 
 logger = logging.getLogger(__name__)
 

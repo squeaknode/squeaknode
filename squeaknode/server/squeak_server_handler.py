@@ -1,7 +1,7 @@
 import logging
 
-from squeakserver.node.squeak_node import SqueakNode
-from squeakserver.server.util import get_hash
+from squeaknode.node.squeak_node import SqueakNode
+from squeaknode.server.util import get_hash
 
 logger = logging.getLogger(__name__)
 

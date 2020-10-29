@@ -1,14 +1,14 @@
 import sys
 import logging
 
-from squeakserver.common.lnd_lightning_client import LNDLightningClient
-from squeakserver.node.squeak_node import SqueakNode
-from squeakserver.server.util import get_hash, get_replyto
-from squeakserver.admin.util import squeak_entry_to_message
-from squeakserver.admin.util import squeak_peer_to_message
-from squeakserver.admin.util import squeak_profile_to_message
-from squeakserver.admin.util import offer_entry_to_message
-from squeakserver.admin.util import sent_payment_to_message
+from squeaknode.common.lnd_lightning_client import LNDLightningClient
+from squeaknode.node.squeak_node import SqueakNode
+from squeaknode.server.util import get_hash, get_replyto
+from squeaknode.admin.util import squeak_entry_to_message
+from squeaknode.admin.util import squeak_peer_to_message
+from squeaknode.admin.util import squeak_profile_to_message
+from squeaknode.admin.util import offer_entry_to_message
+from squeaknode.admin.util import sent_payment_to_message
 
 from proto import squeak_admin_pb2, squeak_admin_pb2_grpc
 

@@ -3,8 +3,8 @@ import threading
 
 from squeak.core.encryption import generate_data_key
 
-from squeakserver.core.offer import Offer
-from squeakserver.network.peer_client import PeerClient
+from squeaknode.core.offer import Offer
+from squeaknode.network.peer_client import PeerClient
 
 logger = logging.getLogger(__name__)
 
