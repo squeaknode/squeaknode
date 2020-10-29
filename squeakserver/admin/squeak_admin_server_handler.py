@@ -356,7 +356,6 @@ class SqueakAdminServerHandler(object):
         logger.info("Handle get buy offers for hash: {}".format(squeak_hash_str))
         offers = self.squeak_node.get_buy_offers_with_peer(squeak_hash_str)
         offer_msgs = [offer_entry_to_message(offer) for offer in offers]
-        logger.info("Returning buy offers: {}".format(offer_msgs))
         return squeak_admin_pb2.GetBuyOffersReply(
             offers=offer_msgs,
         )
@@ -366,7 +365,6 @@ class SqueakAdminServerHandler(object):
         logger.info("Handle get buy offer for hash: {}".format(offer_id))
         offer = self.squeak_node.get_buy_offer_with_peer(offer_id)
         offer_msg = offer_entry_to_message(offer)
-        logger.info("Returning buy offer: {}".format(offer_msg))
         return squeak_admin_pb2.GetBuyOfferReply(
             offer=offer_msg,
         )
@@ -388,7 +386,6 @@ class SqueakAdminServerHandler(object):
         logger.info("Handle get sent payments")
         sent_payments = self.squeak_node.get_sent_payments()
         sent_payment_msgs = [sent_payment_to_message(sent_payment) for sent_payment in sent_payments]
-        logger.info("Returning sent payments: {}".format(sent_payment_msgs))
         return squeak_admin_pb2.GetSentPaymentsReply(
             sent_payments=sent_payment_msgs,
         )
