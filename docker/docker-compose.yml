@@ -25,7 +25,7 @@ services:
       - RPCHOST=btcd
     volumes:
       - shared:/rpc
-      - lnd_dir:/root/.lnd
+      - ~/.lnd:/root/.lnd
     ports:
       - 9735:9735
     links:
@@ -42,9 +42,9 @@ services:
       dockerfile: docker/sqkserver/Dockerfile
     volumes:
       - shared:/rpc
-      - lnd_dir:/root/.lnd
+      - ~/.lnd:/root/.lnd
       - ./config.ini:/app/config.ini
-      - sqk_dir:/root/.sqk
+      - ~/.sqk:/root/.sqk
     ports:
       - 8774:8774
       - 12994:12994
@@ -58,11 +58,4 @@ services:
 volumes:
   # shared volume is needed for sharing the btcd certificate
   shared:
-    driver: local
-
-  # lnd_dir volume is needed for sharing the lnd tls certificate
-  lnd_dir:
-    driver: local
-
-  sqk_dir:
     driver: local
