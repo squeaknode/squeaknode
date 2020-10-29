@@ -79,15 +79,30 @@ import {
 
 export let web_host_port = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port;
 
+function handleErrorResponse(route, errorResponse) {
+  errorResponse.text()
+  .then(function(data) {
+    console.log(data);
+    console.log('Error message:', data);
+    alert("Failed to handle " + route + " with error: " + data);
+  });
+}
 
 function makeRequest(route, request, handleResponse) {
   fetch(web_host_port + '/' + route, {
     method: 'post',
     body: request.serializeBinary()
   }).then(function(response) {
-    return response.arrayBuffer();
+    console.log('response:', response);
+    if(response.ok) {
+      return response.arrayBuffer();
+    }
+    handleErrorResponse(route, response);
+    throw new Error("Response has status: " + response.status);
   }).then(function(data) {
     handleResponse(data);
+  }).catch((error) => {
+    console.error('Error for route ' + route + ':', error);
   });
 }
 
