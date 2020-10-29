@@ -1,11 +1,11 @@
 syntax = "proto3";
 
 option java_multiple_files = true;
-option java_package = "io.github.yzernik.squeakserver";
+option java_package = "io.github.yzernik.squeaknode";
 option java_outer_classname = "SqueakAdminProto";
 option objc_class_prefix = "SQK";
 
-package squeakserver;
+package squeaknode;
 
 import "proto/lnd.proto";
 
