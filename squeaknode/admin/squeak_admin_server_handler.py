@@ -398,3 +398,10 @@ class SqueakAdminServerHandler(object):
         return squeak_admin_pb2.GetSentPaymentReply(
             sent_payment=sent_payment_msg,
         )
+
+    def handle_download_squeak(self, request):
+        squeak_hash_str = request.squeak_hash
+        logger.info("Handle download squeak with hash: {}".format(squeak_hash_str))
+        squeak_hash = bytes.fromhex(squeak_hash_str)
+        self.squeak_node.download_squeak(squeak_hash)
+        return squeak_admin_pb2.DownloadSqueakReply()

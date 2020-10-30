@@ -953,6 +953,14 @@ def test_download_single_squeak(server_stub, admin_stub, other_server_stub, othe
         )
     )
 
+
+    # Get the squeak display item (should be empty)
+    get_squeak_display_response = other_admin_stub.GetSqueakDisplay(
+        squeak_admin_pb2.GetSqueakDisplayRequest(
+            squeak_hash=saved_squeak_hash.hex(),
+        )
+    )
+    assert get_squeak_display_response.squeak_display_entry.squeak_hash == ""
     # Get the buy offer (should be empty)
     get_buy_offers_response = other_admin_stub.GetBuyOffers(
         squeak_admin_pb2.GetBuyOffersRequest(
@@ -962,12 +970,21 @@ def test_download_single_squeak(server_stub, admin_stub, other_server_stub, othe
     print(get_buy_offers_response)
     assert len(get_buy_offers_response.offers) == 0
 
-    # Sync squeaks
-    other_admin_stub.SyncSqueaks(
-        squeak_admin_pb2.SyncSqueaksRequest(),
+    # Download squeak
+    other_admin_stub.DownloadSqueak(
+        squeak_admin_pb2.DownloadSqueakRequest(
+            squeak_hash=saved_squeak_hash.hex(),
+        ),
     )
     time.sleep(10)
 
+    # Get the squeak display item
+    get_squeak_display_response = other_admin_stub.GetSqueakDisplay(
+        squeak_admin_pb2.GetSqueakDisplayRequest(
+            squeak_hash=saved_squeak_hash.hex(),
+        )
+    )
+    assert get_squeak_display_response.squeak_display_entry != None
     # Get the buy offer
     get_buy_offers_response = other_admin_stub.GetBuyOffers(
         squeak_admin_pb2.GetBuyOffersRequest(

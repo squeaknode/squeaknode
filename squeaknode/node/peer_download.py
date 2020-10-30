@@ -134,7 +134,7 @@ class PeerDownload:
                 return offer
 
     def _download_squeak(self, squeak_hash):
-        logger.info("Downloading squeak: {}".format(squeak_hash.hex()))
+        logger.info("Downloading squeak: {} from peer: {}".format(squeak_hash.hex(), self.peer.peer_id))
         squeak = self.peer_client.get_squeak(squeak_hash)
         self._save_squeak(squeak)
 
