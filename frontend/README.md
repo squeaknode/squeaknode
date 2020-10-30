@@ -4,7 +4,7 @@
 
 - Install `protoc` and `protoc-gen-grpc-web`:
 	https://github.com/grpc/grpc-web#code-generator-plugin
-- Run `build-protos.sh`
+- Run `./build-protos.sh`
 
 ## Run in dev mode
 
