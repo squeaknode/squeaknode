@@ -4,6 +4,14 @@
 
 - Install `protoc` and `protoc-gen-grpc-web`:
 	https://github.com/grpc/grpc-web#code-generator-plugin
+	```
+	curl -sSL https://github.com/protocolbuffers/protobuf/releases/download/v3.12.2/protoc-3.12.2-linux-x86_64.zip -o protoc.zip && \
+		unzip -qq protoc.zip && \
+		cp ./bin/protoc /usr/local/bin/protoc
+
+	curl -sSL https://github.com/grpc/grpc-web/releases/download/1.2.1/protoc-gen-grpc-web-1.2.1-linux-x86_64 -o /usr/local/bin/protoc-gen-grpc-web && \
+		chmod +x /usr/local/bin/protoc-gen-grpc-web
+	```
 - Run `./build-protos.sh`
 
 ## Run in dev mode
