@@ -6,6 +6,7 @@ from collections import defaultdict
 from squeaknode.node.peer_download import PeerDownload
 from squeaknode.node.peer_single_squeak_download import PeerSingleSqueakDownload
 from squeaknode.node.peer_upload import PeerUpload
+from squeaknode.node.network_task import TimelineNetworkSyncTask
 
 logger = logging.getLogger(__name__)
 
@@ -70,8 +71,15 @@ class SqueakSyncController:
                 "Failed to sync because unable to get blockchain info.", exc_info=False
             )
             return
-        self._download_from_peers(peers, block_height)
-        self._upload_to_peers(peers, block_height)
+        #self._download_from_peers(peers, block_height)
+        #self._upload_to_peers(peers, block_height)
+        timeline_sync_task = TimelineNetworkSyncTask(
+            self.squeak_store,
+            self.postgres_db,
+            self.lightning_client,
+            block_height,
+        )
+        timeline_sync_task.sync(peers)
 
     def download_single_squeak_from_peers(self, squeak_hash, peers):
         for peer in peers:
