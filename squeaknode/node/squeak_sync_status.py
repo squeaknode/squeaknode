@@ -4,6 +4,7 @@ import threading
 from collections import defaultdict
 
 from squeaknode.node.peer_download import PeerDownload
+from squeaknode.node.peer_single_squeak_download import PeerSingleSqueakDownload
 from squeaknode.node.peer_upload import PeerUpload
 
 logger = logging.getLogger(__name__)
@@ -141,7 +142,7 @@ class SqueakSyncController:
             logger.error("Upload from peer failed.", exc_info=True)
 
     def _download_single_squeak_from_peer(self, squeak_hash, peer):
-        peer_download = PeerDownload(
+        peer_download = PeerSingleSqueakDownload(
             peer,
             self.squeak_store,
             self.postgres_db,
