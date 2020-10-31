@@ -198,7 +198,6 @@ class PeerSyncTask:
 
     def _get_saved_squeak(self, squeak_hash):
         return self.squeak_store.get_squeak(squeak_hash)
-        return self.postgres_db.get_offers_with_peer(squeak_hash_str)
 
     def _get_saved_offer(self, squeak_hash):
         offers = self.postgres_db.get_offers_with_peer(squeak_hash)
@@ -217,13 +216,6 @@ class PeerSyncTask:
 
     def _download_offer(self, squeak_hash):
         logger.info("Downloading offer for hash: {}".format(squeak_hash.hex()))
-        # peer_get_offer = PeerGetOffer(
-        #     self.peer,
-        #     squeak_hash,
-        #     self.squeak_store,
-        #     self.postgres_db,
-        #     self.lightning_client,
-        # )
         self.get_offer(squeak_hash)
 
     def _get_local_squeak(self, squeak_hash):
@@ -238,10 +230,6 @@ class PeerSyncTask:
     def _get_sharing_addresses(self):
         sharing_profiles = self.postgres_db.get_sharing_profiles()
         return [profile.address for profile in sharing_profiles]
-
-    # def _get_squeak(self):
-    #     squeak_entry = self.squeak_store.get_squeak(self.squeak_hash)
-    #     return squeak_entry.squeak
 
     def _generate_challenge_proof(self):
         return generate_data_key()
