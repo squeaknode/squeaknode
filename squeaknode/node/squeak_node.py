@@ -9,7 +9,6 @@ from squeak.core.signing import CSigningKey, CSqueakAddress
 from squeak.core import CheckSqueak
 
 from squeaknode.core.squeak_address_validator import SqueakAddressValidator
-from squeaknode.node.peer_download import PeerDownload
 from squeaknode.node.squeak_block_periodic_worker import SqueakBlockPeriodicWorker
 from squeaknode.node.squeak_block_queue_worker import SqueakBlockQueueWorker
 from squeaknode.node.squeak_block_verifier import SqueakBlockVerifier

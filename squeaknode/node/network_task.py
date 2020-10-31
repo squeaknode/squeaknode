@@ -3,8 +3,7 @@ import threading
 
 from squeaknode.network.peer_client import PeerClient
 from squeaknode.node.peer_get_offer import PeerGetOffer
-from squeaknode.node.peer_download import PeerDownload
-from squeaknode.node.peer_single_squeak_download import PeerSingleSqueakDownload
+from squeaknode.node.peer_task import PeerSyncTask
 
 logger = logging.getLogger(__name__)
 
@@ -66,7 +65,7 @@ class TimelineNetworkSyncTask(NetworkSyncTask):
     def sync_peer(self, peer):
         if not peer.downloading:
             return
-        peer_download = PeerDownload(
+        peer_sync_task = PeerSyncTask(
             peer,
             self.squeak_store,
             self.postgres_db,
@@ -74,7 +73,7 @@ class TimelineNetworkSyncTask(NetworkSyncTask):
         )
         try:
             logger.info("Trying to download with block height: {}".format(self.block_height))
-            peer_download.download(self.block_height)
+            peer_sync_task.download(self.block_height)
         except Exception as e:
             logger.error("Download from peer failed.", exc_info=True)
 
@@ -92,7 +91,7 @@ class SingleSqueakNetworkSyncTask(NetworkSyncTask):
     def sync_peer(self, peer):
         if not peer.downloading:
             return
-        peer_single_squeak_download = PeerSingleSqueakDownload(
+        peer_sync_task = PeerSyncTask(
             peer,
             self.squeak_store,
             self.postgres_db,
@@ -100,6 +99,6 @@ class SingleSqueakNetworkSyncTask(NetworkSyncTask):
         )
         try:
             logger.info("Trying to download single squeak {}".format(self.squeak_hash))
-            peer_single_squeak_download.download_single_squeak(self.squeak_hash)
+            peer_sync_task.download_single_squeak(self.squeak_hash)
         except Exception as e:
             logger.error("Download single squeak from peer failed.", exc_info=True)

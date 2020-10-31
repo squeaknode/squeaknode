@@ -3,9 +3,6 @@ import threading
 
 from collections import defaultdict
 
-from squeaknode.node.peer_download import PeerDownload
-from squeaknode.node.peer_single_squeak_download import PeerSingleSqueakDownload
-from squeaknode.node.peer_upload import PeerUpload
 from squeaknode.node.network_task import TimelineNetworkSyncTask
 from squeaknode.node.network_task import SingleSqueakNetworkSyncTask
 
