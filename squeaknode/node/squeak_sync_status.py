@@ -102,45 +102,45 @@ class SqueakSyncController:
         timeline_sync_task.sync(peers)
 
 
-    def _download_from_peers(self, peers, block_height):
-        for peer in peers:
-            if peer.downloading:
-                download_thread = threading.Thread(
-                    target=self._download_from_peer,
-                    args=(
-                        peer,
-                        block_height,
-                    ),
-                )
-                download_thread.start()
+    # def _download_from_peers(self, peers, block_height):
+    #     for peer in peers:
+    #         if peer.downloading:
+    #             download_thread = threading.Thread(
+    #                 target=self._download_from_peer,
+    #                 args=(
+    #                     peer,
+    #                     block_height,
+    #                 ),
+    #             )
+    #             download_thread.start()
 
-    def _upload_to_peers(self, peers, block_height):
-        for peer in peers:
-            if peer.uploading:
-                upload_thread = threading.Thread(
-                    target=self._upload_to_peer,
-                    args=(
-                        peer,
-                        block_height,
-                    ),
-                )
-                upload_thread.start()
+    # def _upload_to_peers(self, peers, block_height):
+    #     for peer in peers:
+    #         if peer.uploading:
+    #             upload_thread = threading.Thread(
+    #                 target=self._upload_to_peer,
+    #                 args=(
+    #                     peer,
+    #                     block_height,
+    #                 ),
+    #             )
+    #             upload_thread.start()
 
-    def _download_from_peer(self, peer, block_height):
-        peer_download = PeerDownload(
-            peer,
-            self.squeak_store,
-            self.postgres_db,
-            self.lightning_client,
-        )
-        try:
-            logger.debug("Trying to download from peer: {}".format(peer))
-            with self.DownloadingContextManager(
-                peer, peer_download, self.squeak_sync_status
-            ) as downloading_manager:
-                peer_download.download(block_height)
-        except Exception as e:
-            logger.error("Download from peer failed.", exc_info=True)
+    # def _download_from_peer(self, peer, block_height):
+    #     peer_download = PeerDownload(
+    #         peer,
+    #         self.squeak_store,
+    #         self.postgres_db,
+    #         self.lightning_client,
+    #     )
+    #     try:
+    #         logger.debug("Trying to download from peer: {}".format(peer))
+    #         with self.DownloadingContextManager(
+    #             peer, peer_download, self.squeak_sync_status
+    #         ) as downloading_manager:
+    #             peer_download.download(block_height)
+    #     except Exception as e:
+    #         logger.error("Download from peer failed.", exc_info=True)
 
     def _upload_to_peer(self, peer, block_height):
         peer_upload = PeerUpload(
@@ -158,67 +158,67 @@ class SqueakSyncController:
         except Exception as e:
             logger.error("Upload from peer failed.", exc_info=True)
 
-    def _download_single_squeak_from_peer(self, squeak_hash, peer):
-        peer_download = PeerSingleSqueakDownload(
-            peer,
-            self.squeak_store,
-            self.postgres_db,
-            self.lightning_client,
-        )
-        try:
-            logger.debug("Trying to download single squeak {} from peer: {}".format(squeak_hash, peer))
-            with self.SingleSqueakDownloadingContextManager(
-                squeak_hash, peer, peer_download, self.squeak_sync_status
-            ) as downloading_manager:
-                peer_download.download_single_squeak(squeak_hash)
-        except Exception as e:
-            logger.error("Download single squeak from peer failed.", exc_info=True)
+    # def _download_single_squeak_from_peer(self, squeak_hash, peer):
+    #     peer_download = PeerSingleSqueakDownload(
+    #         peer,
+    #         self.squeak_store,
+    #         self.postgres_db,
+    #         self.lightning_client,
+    #     )
+    #     try:
+    #         logger.debug("Trying to download single squeak {} from peer: {}".format(squeak_hash, peer))
+    #         with self.SingleSqueakDownloadingContextManager(
+    #             squeak_hash, peer, peer_download, self.squeak_sync_status
+    #         ) as downloading_manager:
+    #             peer_download.download_single_squeak(squeak_hash)
+    #     except Exception as e:
+    #         logger.error("Download single squeak from peer failed.", exc_info=True)
 
-    class DownloadingContextManager:
-        def __init__(self, peer, peer_download, squeak_sync_status):
-            self.peer = peer
-            self.peer_download = peer_download
-            self.squeak_sync_status = squeak_sync_status
+    # class DownloadingContextManager:
+    #     def __init__(self, peer, peer_download, squeak_sync_status):
+    #         self.peer = peer
+    #         self.peer_download = peer_download
+    #         self.squeak_sync_status = squeak_sync_status
 
-            if self.squeak_sync_status.is_downloading(self.peer):
-                raise Exception("Peer is already downloading: {}".format(self.peer))
+    #         if self.squeak_sync_status.is_downloading(self.peer):
+    #             raise Exception("Peer is already downloading: {}".format(self.peer))
 
-        def __enter__(self):
-            self.squeak_sync_status.add_download(self.peer, self.peer_download)
-            return self
+    #     def __enter__(self):
+    #         self.squeak_sync_status.add_download(self.peer, self.peer_download)
+    #         return self
 
-        def __exit__(self, exc_type, exc_value, exc_traceback):
-            self.squeak_sync_status.remove_download(self.peer)
+    #     def __exit__(self, exc_type, exc_value, exc_traceback):
+    #         self.squeak_sync_status.remove_download(self.peer)
 
-    class UploadingContextManager:
-        def __init__(self, peer, peer_upload, squeak_sync_status):
-            self.peer = peer
-            self.peer_upload = peer_upload
-            self.squeak_sync_status = squeak_sync_status
+    # class UploadingContextManager:
+    #     def __init__(self, peer, peer_upload, squeak_sync_status):
+    #         self.peer = peer
+    #         self.peer_upload = peer_upload
+    #         self.squeak_sync_status = squeak_sync_status
 
-            if self.squeak_sync_status.is_uploading(self.peer):
-                raise Exception("Peer is already uploading: {}".format(self.peer))
+    #         if self.squeak_sync_status.is_uploading(self.peer):
+    #             raise Exception("Peer is already uploading: {}".format(self.peer))
 
-        def __enter__(self):
-            self.squeak_sync_status.add_upload(self.peer, self.peer_upload)
-            return self
+    #     def __enter__(self):
+    #         self.squeak_sync_status.add_upload(self.peer, self.peer_upload)
+    #         return self
 
-        def __exit__(self, exc_type, exc_value, exc_traceback):
-            self.squeak_sync_status.remove_upload(self.peer)
+    #     def __exit__(self, exc_type, exc_value, exc_traceback):
+    #         self.squeak_sync_status.remove_upload(self.peer)
 
-    class SingleSqueakDownloadingContextManager:
-        def __init__(self, squeak_hash, peer, peer_download, squeak_sync_status):
-            self.squeak_hash = squeak_hash
-            self.peer = peer
-            self.peer_download = peer_download
-            self.squeak_sync_status = squeak_sync_status
+    # class SingleSqueakDownloadingContextManager:
+    #     def __init__(self, squeak_hash, peer, peer_download, squeak_sync_status):
+    #         self.squeak_hash = squeak_hash
+    #         self.peer = peer
+    #         self.peer_download = peer_download
+    #         self.squeak_sync_status = squeak_sync_status
 
-            if self.squeak_sync_status.is_downloading_single_squeak(self.squeak_hash, self.peer):
-                raise Exception("Peer {} is already downloading hash: {}".format(self.peer, self.squeak_hash))
+    #         if self.squeak_sync_status.is_downloading_single_squeak(self.squeak_hash, self.peer):
+    #             raise Exception("Peer {} is already downloading hash: {}".format(self.peer, self.squeak_hash))
 
-        def __enter__(self):
-            self.squeak_sync_status.add_single_squeak_download(self.squeak_hash, self.peer, self.peer_download)
-            return self
+    #     def __enter__(self):
+    #         self.squeak_sync_status.add_single_squeak_download(self.squeak_hash, self.peer, self.peer_download)
+    #         return self
 
-        def __exit__(self, exc_type, exc_value, exc_traceback):
-            self.squeak_sync_status.remove_single_peer_download(self.squeak_hash, self.peer)
+    #     def __exit__(self, exc_type, exc_value, exc_traceback):
+    #         self.squeak_sync_status.remove_single_peer_download(self.squeak_hash, self.peer)
