@@ -111,7 +111,6 @@ class SqueakSyncController:
     def _download_from_peer(self, peer, block_height):
         peer_download = PeerDownload(
             peer,
-            block_height,
             self.squeak_store,
             self.postgres_db,
             self.lightning_client,
@@ -121,7 +120,7 @@ class SqueakSyncController:
             with self.DownloadingContextManager(
                 peer, peer_download, self.squeak_sync_status
             ) as downloading_manager:
-                peer_download.download()
+                peer_download.download(block_height)
         except Exception as e:
             logger.error("Download from peer failed.", exc_info=True)
 
@@ -144,7 +143,6 @@ class SqueakSyncController:
     def _download_single_squeak_from_peer(self, squeak_hash, peer):
         peer_download = PeerDownload(
             peer,
-            None,
             self.squeak_store,
             self.postgres_db,
             self.lightning_client,

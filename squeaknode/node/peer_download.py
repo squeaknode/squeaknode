@@ -14,18 +14,14 @@ class PeerDownload:
     def __init__(
         self,
         peer,
-        block_height,
         squeak_store,
         postgres_db,
         lightning_client,
-        lookup_block_interval=LOOKUP_BLOCK_INTERVAL,
     ):
         self.peer = peer
-        self.block_height = block_height
         self.squeak_store = squeak_store
         self.postgres_db = postgres_db
         self.lightning_client = lightning_client
-        self.lookup_block_interval = lookup_block_interval
 
         self.peer_client = PeerClient(
             self.peer.host,
@@ -34,12 +30,16 @@ class PeerDownload:
 
         self._stop_event = threading.Event()
 
-    def download(self):
+    def download(
+        self,
+        block_height,
+        lookup_block_interval=LOOKUP_BLOCK_INTERVAL,
+    ):
         # Get list of followed addresses.
         addresses = self._get_followed_addresses()
         logger.debug("Followed addresses: {}".format(addresses))
-        min_block = self.block_height - self.lookup_block_interval
-        max_block = self.block_height
+        min_block = block_height - lookup_block_interval
+        max_block = block_height
 
         # Get remote hashes
         remote_hashes = self._get_remote_hashes(addresses, min_block, max_block)
