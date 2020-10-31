@@ -86,3 +86,16 @@ class PeerSyncTask:
             self.lightning_client,
         )
         peer_get_offer.get_offer()
+
+    def _get_local_squeak(self, squeak_hash):
+        squeak_entry = self.squeak_store.get_squeak(squeak_hash)
+        return squeak_entry.squeak
+
+    def _upload_squeak(self, squeak_hash):
+        logger.info("Uploading squeak: {}".format(squeak_hash.hex()))
+        squeak = self._get_local_squeak(squeak_hash)
+        self.peer_client.post_squeak(squeak)
+
+    def _get_sharing_addresses(self):
+        sharing_profiles = self.postgres_db.get_sharing_profiles()
+        return [profile.address for profile in sharing_profiles]

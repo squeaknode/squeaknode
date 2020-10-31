@@ -128,16 +128,16 @@ class SqueakSyncController:
     def _upload_to_peer(self, peer, block_height):
         peer_upload = PeerUpload(
             peer,
-            block_height,
             self.squeak_store,
             self.postgres_db,
+            self.lightning_client,
         )
         try:
             logger.debug("Trying to upload to peer: {}".format(peer))
             with self.UploadingContextManager(
                 peer, peer_upload, self.squeak_sync_status
             ) as uploading_manager:
-                peer_upload.upload()
+                peer_upload.upload(block_height)
         except Exception as e:
             logger.error("Upload from peer failed.", exc_info=True)
 
