@@ -15,49 +15,48 @@ logger = logging.getLogger(__name__)
 HOUR_IN_SECONDS = 3600
 
 
-class SqueakSyncStatus:
-    def __init__(self):
-        self.downloads = {}
-        self.uploads = {}
-        self.single_squeak_downloads = defaultdict(dict)
+# class SqueakSyncStatus:
+#     def __init__(self):
+#         self.downloads = {}
+#         self.uploads = {}
+#         self.single_squeak_downloads = defaultdict(dict)
 
-    def add_download(self, peer, peer_download):
-        self.downloads[peer.peer_id] = peer_download
+#     def add_download(self, peer, peer_download):
+#         self.downloads[peer.peer_id] = peer_download
 
-    def add_upload(self, peer, peer_upload):
-        self.uploads[peer.peer_id] = peer_upload
+#     def add_upload(self, peer, peer_upload):
+#         self.uploads[peer.peer_id] = peer_upload
 
-    def add_single_squeak_download(self, squeak_hash, peer, peer_download):
-        self.single_squeak_downloads[squeak_hash][peer.peer_id] = peer_download
+#     def add_single_squeak_download(self, squeak_hash, peer, peer_download):
+#         self.single_squeak_downloads[squeak_hash][peer.peer_id] = peer_download
 
-    def is_downloading(self, peer):
-        return peer.peer_id in self.downloads
+#     def is_downloading(self, peer):
+#         return peer.peer_id in self.downloads
 
-    def is_uploading(self, peer):
-        return peer.peer_id in self.uploads
+#     def is_uploading(self, peer):
+#         return peer.peer_id in self.uploads
 
-    def is_downloading_single_squeak(self, squeak_hash, peer):
-        return peer.peer_id in self.single_squeak_downloads[squeak_hash]
+#     def is_downloading_single_squeak(self, squeak_hash, peer):
+#         return peer.peer_id in self.single_squeak_downloads[squeak_hash]
 
-    def remove_download(self, peer):
-        del self.downloads[peer.peer_id]
+#     def remove_download(self, peer):
+#         del self.downloads[peer.peer_id]
 
-    def remove_upload(self, peer):
-        del self.uploads[peer.peer_id]
+#     def remove_upload(self, peer):
+#         del self.uploads[peer.peer_id]
 
-    def remove_single_peer_download(self, squeak_hash, peer):
-        del self.single_squeak_downloads[squeak_hash][peer.peer_id]
+#     def remove_single_peer_download(self, squeak_hash, peer):
+#         del self.single_squeak_downloads[squeak_hash][peer.peer_id]
 
-    def get_current_downloads(self):
-        return self.downloads.values()
+#     def get_current_downloads(self):
+#         return self.downloads.values()
 
-    def get_current_uploads(self):
-        return self.uploads.values()
+#     def get_current_uploads(self):
+#         return self.uploads.values()
 
 
 class SqueakSyncController:
     def __init__(self, blockchain_client, squeak_store, postgres_db, lightning_client):
-        self.squeak_sync_status = SqueakSyncStatus()
         self.blockchain_client = blockchain_client
         self.squeak_store = squeak_store
         self.postgres_db = postgres_db
@@ -142,21 +141,21 @@ class SqueakSyncController:
     #     except Exception as e:
     #         logger.error("Download from peer failed.", exc_info=True)
 
-    def _upload_to_peer(self, peer, block_height):
-        peer_upload = PeerUpload(
-            peer,
-            self.squeak_store,
-            self.postgres_db,
-            self.lightning_client,
-        )
-        try:
-            logger.debug("Trying to upload to peer: {}".format(peer))
-            with self.UploadingContextManager(
-                peer, peer_upload, self.squeak_sync_status
-            ) as uploading_manager:
-                peer_upload.upload(block_height)
-        except Exception as e:
-            logger.error("Upload from peer failed.", exc_info=True)
+    # def _upload_to_peer(self, peer, block_height):
+    #     peer_upload = PeerUpload(
+    #         peer,
+    #         self.squeak_store,
+    #         self.postgres_db,
+    #         self.lightning_client,
+    #     )
+    #     try:
+    #         logger.debug("Trying to upload to peer: {}".format(peer))
+    #         with self.UploadingContextManager(
+    #             peer, peer_upload, self.squeak_sync_status
+    #         ) as uploading_manager:
+    #             peer_upload.upload(block_height)
+    #     except Exception as e:
+    #         logger.error("Upload from peer failed.", exc_info=True)
 
     # def _download_single_squeak_from_peer(self, squeak_hash, peer):
     #     peer_download = PeerSingleSqueakDownload(

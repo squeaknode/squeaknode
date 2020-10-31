@@ -370,7 +370,7 @@ class SqueakAdminServerHandler(object):
         )
 
     def handle_sync_squeaks(self, request):
-        logger.info("Handle get sync squeaks")
+        logger.info("Handle sync squeaks")
         self.squeak_node.sync_squeaks()
         return squeak_admin_pb2.SyncSqueaksReply()
 
