@@ -7,6 +7,7 @@ from squeaknode.node.peer_download import PeerDownload
 from squeaknode.node.peer_single_squeak_download import PeerSingleSqueakDownload
 from squeaknode.node.peer_upload import PeerUpload
 from squeaknode.node.network_task import TimelineNetworkSyncTask
+from squeaknode.node.network_task import SingleSqueakNetworkSyncTask
 
 logger = logging.getLogger(__name__)
 
@@ -82,16 +83,24 @@ class SqueakSyncController:
         timeline_sync_task.sync(peers)
 
     def download_single_squeak_from_peers(self, squeak_hash, peers):
-        for peer in peers:
-            if peer.downloading:
-                download_thread = threading.Thread(
-                    target=self._download_single_squeak_from_peer,
-                    args=(
-                        squeak_hash,
-                        peer,
-                    ),
-                )
-                download_thread.start()
+        # for peer in peers:
+        #     if peer.downloading:
+        #         download_thread = threading.Thread(
+        #             target=self._download_single_squeak_from_peer,
+        #             args=(
+        #                 squeak_hash,
+        #                 peer,
+        #             ),
+        #         )
+        #         download_thread.start()
+        timeline_sync_task = SingleSqueakNetworkSyncTask(
+            self.squeak_store,
+            self.postgres_db,
+            self.lightning_client,
+            squeak_hash,
+        )
+        timeline_sync_task.sync(peers)
+
 
     def _download_from_peers(self, peers, block_height):
         for peer in peers:
