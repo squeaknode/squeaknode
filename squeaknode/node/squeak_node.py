@@ -9,6 +9,7 @@ from squeak.core.signing import CSigningKey, CSqueakAddress
 from squeak.core import CheckSqueak
 
 from squeaknode.core.squeak_address_validator import SqueakAddressValidator
+from squeaknode.node.peer_download import PeerDownload
 from squeaknode.node.squeak_block_periodic_worker import SqueakBlockPeriodicWorker
 from squeaknode.node.squeak_block_queue_worker import SqueakBlockQueueWorker
 from squeaknode.node.squeak_block_verifier import SqueakBlockVerifier
@@ -335,3 +336,7 @@ class SqueakNode:
 
     def get_sent_payment(self, sent_payment_id):
         return self.postgres_db.get_sent_payment(sent_payment_id)
+
+    def download_squeak(self, squeak_hash):
+        peers = self.postgres_db.get_peers()
+        self.squeak_sync_controller.download_single_squeak_from_peers(squeak_hash, peers)

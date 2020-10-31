@@ -14,18 +14,14 @@ class PeerDownload:
     def __init__(
         self,
         peer,
-        block_height,
         squeak_store,
         postgres_db,
         lightning_client,
-        lookup_block_interval=LOOKUP_BLOCK_INTERVAL,
     ):
         self.peer = peer
-        self.block_height = block_height
         self.squeak_store = squeak_store
         self.postgres_db = postgres_db
         self.lightning_client = lightning_client
-        self.lookup_block_interval = lookup_block_interval
 
         self.peer_client = PeerClient(
             self.peer.host,
@@ -34,15 +30,16 @@ class PeerDownload:
 
         self._stop_event = threading.Event()
 
-    def download(self):
+    def download(
+        self,
+        block_height,
+        lookup_block_interval=LOOKUP_BLOCK_INTERVAL,
+    ):
         # Get list of followed addresses.
         addresses = self._get_followed_addresses()
         logger.debug("Followed addresses: {}".format(addresses))
-        min_block = self.block_height - self.lookup_block_interval
-        max_block = self.block_height
-
-        if self.stopped():
-            return
+        min_block = block_height - lookup_block_interval
+        max_block = block_height
 
         # Get remote hashes
         remote_hashes = self._get_remote_hashes(addresses, min_block, max_block)
@@ -50,17 +47,11 @@ class PeerDownload:
         for hash in remote_hashes:
             logger.debug("remote hash: {}".format(hash.hex()))
 
-        if self.stopped():
-            return
-
         # Get local hashes of downloaded squeaks
         local_hashes = self._get_local_hashes(addresses, min_block, max_block)
         logger.debug("Got local hashes: {}".format(len(local_hashes)))
         for hash in local_hashes:
             logger.debug("local hash: {}".format(hash.hex()))
-
-        if self.stopped():
-            return
 
         # Get hashes to download
         hashes_to_download = set(remote_hashes) - set(local_hashes)
@@ -74,9 +65,6 @@ class PeerDownload:
             if self.stopped():
                 return
             self._download_squeak(hash)
-
-        if self.stopped():
-            return
 
         # Get local hashes of locked squeaks that don't have an offer from this peer.
         locked_hashes = self._get_locked_hashes(addresses, min_block, max_block)
@@ -96,6 +84,17 @@ class PeerDownload:
             if self.stopped():
                 return
             self._download_offer(hash)
+
+    def download_single_squeak(self, squeak_hash):
+        # Download squeak if not already present.
+        saved_squeak = self._get_saved_squeak(squeak_hash)
+        if not saved_squeak:
+            self._download_squeak(squeak_hash)
+
+        # Download offer from peer if not already present.
+        saved_offer = self._get_saved_offer(squeak_hash)
+        if not saved_offer:
+            self._download_offer(squeak_hash)
 
     def stop(self):
         self._stop_event.set()
@@ -124,8 +123,18 @@ class PeerDownload:
     def _save_squeak(self, squeak):
         self.squeak_store.save_downloaded_squeak(squeak)
 
+    def _get_saved_squeak(self, squeak_hash):
+        return self.squeak_store.get_squeak(squeak_hash)
+        return self.postgres_db.get_offers_with_peer(squeak_hash_str)
+
+    def _get_saved_offer(self, squeak_hash):
+        offers = self.postgres_db.get_offers_with_peer(squeak_hash)
+        for offer in offers:
+            if offer.peer_id == peer_id:
+                return offer
+
     def _download_squeak(self, squeak_hash):
-        logger.info("Downloading squeak: {}".format(squeak_hash.hex()))
+        logger.info("Downloading squeak: {} from peer: {}".format(squeak_hash.hex(), self.peer.peer_id))
         squeak = self.peer_client.get_squeak(squeak_hash)
         self._save_squeak(squeak)
 

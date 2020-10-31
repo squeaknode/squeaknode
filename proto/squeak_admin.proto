@@ -172,6 +172,10 @@ service SqueakAdmin {
   */
   rpc GetSentPayment (GetSentPaymentRequest) returns (GetSentPaymentReply) {}
 
+  /** sqkadmin: `downloadsqueak`
+  */
+  rpc DownloadSqueak (DownloadSqueakRequest) returns (DownloadSqueakReply) {}
+
 }
 
 message CreateSigningProfileRequest {
@@ -593,4 +597,12 @@ message SentPayment {
 
     /// Valid preimage
     bool preimage_is_valid = 9;
+}
+
+message DownloadSqueakRequest {
+    /// The squeak hash.
+    string squeak_hash = 1;
+}
+
+message DownloadSqueakReply {
 }
