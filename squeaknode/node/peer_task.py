@@ -106,7 +106,7 @@ class PeerSyncTask:
             logger.debug("remote hash: {}".format(hash.hex()))
 
         # Get local hashes
-        local_hashes = self._get_local_hashes(addresses, min_block, max_block)
+        local_hashes = self._get_local_unlocked_hashes(addresses, min_block, max_block)
         logger.debug("Got local hashes: {}".format(len(local_hashes)))
         for hash in local_hashes:
             logger.debug("local hash: {}".format(hash.hex()))
@@ -181,6 +181,9 @@ class PeerSyncTask:
             min_block,
             max_block,
         )
+
+    def _get_local_unlocked_hashes(self, addresses, min_block, max_block):
+        return self.squeak_store.lookup_squeaks(addresses, min_block, max_block)
 
     def _get_locked_hashes(self, addresses, min_block, max_block):
         return self.squeak_store.lookup_squeaks_needing_offer(
