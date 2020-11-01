@@ -138,7 +138,10 @@ export default function SqueakThreadItem({
                 <Box color="secondary.main" fontWeight="fontWeightBold">
                   {moment(squeak.getBlockTime()*1000).fromNow()}
                   <span> </span>(Block
-                  <Link href={blockDetailUrl}
+                  <Link
+                    href={blockDetailUrl}
+                    target="_blank"
+                    rel="noopener"
                     onClick={(event) => event.stopPropagation()}>
                     <span> </span>#{squeak.getBlockHeight()}
                   </Link>

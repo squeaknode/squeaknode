@@ -173,7 +173,11 @@ export default function SqueakDetailItem({
                 <Box color="secondary.main" fontWeight="fontWeightBold">
                   {moment(squeak.getBlockTime()*1000).format('MMMM Do YYYY, h:mm:ss a')}
                   <span> </span>(Block
-                  <Link href={blockDetailUrl}>
+                  <Link
+                    href={blockDetailUrl}
+                    target="_blank"
+                    rel="noopener"
+                    onClick={(event) => event.stopPropagation()}>
                     <span> </span>#{squeak.getBlockHeight()}
                   </Link>
                   )
