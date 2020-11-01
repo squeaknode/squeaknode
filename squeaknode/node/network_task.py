@@ -22,7 +22,7 @@ class NetworkSyncTask:
         self.lightning_client = lightning_client
 
     def sync(self, peers):
-        logger.info("Network sync for class {}".format(
+        logger.debug("Network sync for class {}".format(
             self.__class__,
         ))
         for peer in peers:
@@ -71,7 +71,7 @@ class DownloadTimelineNetworkSyncTask(NetworkSyncTask):
             self.lightning_client,
         )
         try:
-            logger.info("Trying to download with block height: {}".format(self.block_height))
+            logger.debug("Trying to download with block height: {}".format(self.block_height))
             peer_sync_task.download(self.block_height)
         except Exception as e:
             logger.error("Download from peer failed.", exc_info=True)
@@ -97,7 +97,7 @@ class UploadTimelineNetworkSyncTask(NetworkSyncTask):
             self.lightning_client,
         )
         try:
-            logger.info("Trying to upload with block height: {}".format(self.block_height))
+            logger.debug("Trying to upload with block height: {}".format(self.block_height))
             peer_sync_task.upload(self.block_height)
         except Exception as e:
             logger.error("Upload from peer failed.", exc_info=True)
@@ -123,7 +123,7 @@ class SingleSqueakNetworkSyncTask(NetworkSyncTask):
             self.lightning_client,
         )
         try:
-            logger.info("Trying to download single squeak {}".format(self.squeak_hash))
+            logger.debug("Trying to download single squeak {}".format(self.squeak_hash))
             peer_sync_task.download_single_squeak(self.squeak_hash)
         except Exception as e:
             logger.error("Download single squeak from peer failed.", exc_info=True)
