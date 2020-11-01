@@ -40,6 +40,10 @@ services:
     build:
       context: ../
       dockerfile: docker/sqkserver/Dockerfile
+    environment:
+      - WEBADMIN_USE_SSL
+      - WEBADMIN_LOGIN_DISABLED
+      - WEBADMIN_ALLOW_CORS
     volumes:
       - shared:/rpc
       - ~/.lnd:/root/.lnd
