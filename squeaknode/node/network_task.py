@@ -50,7 +50,7 @@ class NetworkSyncTask:
         pass
 
 
-class TimelineNetworkSyncTask(NetworkSyncTask):
+class DownloadTimelineNetworkSyncTask(NetworkSyncTask):
     def __init__(
         self,
         squeak_store,
@@ -75,6 +75,32 @@ class TimelineNetworkSyncTask(NetworkSyncTask):
             peer_sync_task.download(self.block_height)
         except Exception as e:
             logger.error("Download from peer failed.", exc_info=True)
+
+class UploadTimelineNetworkSyncTask(NetworkSyncTask):
+    def __init__(
+        self,
+        squeak_store,
+        postgres_db,
+        lightning_client,
+        block_height,
+    ):
+        super().__init__(squeak_store, postgres_db, lightning_client)
+        self.block_height = block_height
+
+    def sync_peer(self, peer):
+        if not peer.uploading:
+            return
+        peer_sync_task = PeerSyncTask(
+            peer,
+            self.squeak_store,
+            self.postgres_db,
+            self.lightning_client,
+        )
+        try:
+            logger.info("Trying to upload with block height: {}".format(self.block_height))
+            peer_sync_task.upload(self.block_height)
+        except Exception as e:
+            logger.error("Upload from peer failed.", exc_info=True)
 
 class SingleSqueakNetworkSyncTask(NetworkSyncTask):
     def __init__(

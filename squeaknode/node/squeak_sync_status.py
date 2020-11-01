@@ -3,7 +3,8 @@ import threading
 
 from collections import defaultdict
 
-from squeaknode.node.network_task import TimelineNetworkSyncTask
+from squeaknode.node.network_task import DownloadTimelineNetworkSyncTask
+from squeaknode.node.network_task import UploadTimelineNetworkSyncTask
 from squeaknode.node.network_task import SingleSqueakNetworkSyncTask
 
 logger = logging.getLogger(__name__)
@@ -60,6 +61,10 @@ class SqueakSyncController:
         self.lightning_client = lightning_client
 
     def sync_peers(self, peers):
+        self.download_timeline(peers)
+        self.upload_timeline(peers)
+
+    def download_timeline(self, peers):
         try:
             block_info = self.blockchain_client.get_best_block_info()
             block_height = block_info.block_height
@@ -68,15 +73,30 @@ class SqueakSyncController:
                 "Failed to sync because unable to get blockchain info.", exc_info=False
             )
             return
-        #self._download_from_peers(peers, block_height)
-        #self._upload_to_peers(peers, block_height)
-        timeline_sync_task = TimelineNetworkSyncTask(
+        dowload_timeline_task = DownloadTimelineNetworkSyncTask(
             self.squeak_store,
             self.postgres_db,
             self.lightning_client,
             block_height,
         )
-        timeline_sync_task.sync(peers)
+        dowload_timeline_task.sync(peers)
+
+    def upload_timeline(self, peers):
+        try:
+            block_info = self.blockchain_client.get_best_block_info()
+            block_height = block_info.block_height
+        except Exception as e:
+            logger.error(
+                "Failed to sync because unable to get blockchain info.", exc_info=False
+            )
+            return
+        upload_timeline_task = UploadTimelineNetworkSyncTask(
+            self.squeak_store,
+            self.postgres_db,
+            self.lightning_client,
+            block_height,
+        )
+        upload_timeline_task.sync(peers)
 
     def download_single_squeak_from_peers(self, squeak_hash, peers):
         # for peer in peers:
