@@ -1,6 +1,46 @@
 import { makeStyles } from "@material-ui/styles";
 
 export default makeStyles(theme => ({
+  transactionItem: {
+    border: "1px solid grey",
+    borderRadius: "3px",
+
+    // backgroundColor: ({amount}) =>
+    //   amount > 0
+    //      ? "#c8e6c9"
+    //      : (amount < 0 ? "#ffcdd2" : "white")
+    // ,
+  },
+  transactionContent: {
+    whiteSpace: 'pre-line',
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    marginBottom: "0.5em",
+    // height: '3rem',
+    color: ({amount}) => amount > 0
+         ? "green"
+         : "red"
+  },
+  transactionDetails: {
+    whiteSpace: 'pre-line',
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    fontSize: "small"
+  },
+  transactionDetailField: {
+    // display: "table-cell",
+    paddingRight: "4px"
+  },
+  transactionDetail: {
+    // display: "table-cell",
+    padding: "0px 2px",
+    fontWeight: "bolder"
+  },
+  detailRow: {
+    display: "table-row"
+  },
+
+  // unused
   widgetWrapper: {
     display: "flex",
     minHeight: "100%",

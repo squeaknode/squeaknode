@@ -8,6 +8,7 @@ import {
   Grid,
   Box,
   Link,
+   Card
 } from "@material-ui/core";
 import { MoreVert as MoreIcon } from "@material-ui/icons";
 import {useHistory} from "react-router-dom";
@@ -27,7 +28,7 @@ export default function TransactionItem({
   handleTransactionClick,
   ...props
 }) {
-  var classes = useStyles();
+  // const classes = useStyles();
 
   const history = useHistory();
 
@@ -40,43 +41,63 @@ export default function TransactionItem({
   }
 
   function TransactionContent() {
+    const amount = transaction.getAmount()
+    const plusMinusSign = amount > 0 ? "+" : "-"
     return (
       <Typography
-        size="md"
-        style={{whiteSpace: 'pre-line', overflow: "hidden", textOverflow: "ellipsis", height: '6rem'}}
-        >{transaction.getAmount()}
+         size="md"
+         // style={{whiteSpace: 'pre-line', overflow: "hidden", textOverflow: "ellipsis", height: '6rem'}}
+         className={classes.transactionContent}
+      >{`${plusMinusSign}${transaction.getAmount()} satoshis`}
       </Typography>
     )
   }
 
-  function TransactionPositiveBackgroundColor() {
-    return {backgroundColor: 'lightgreen'};
+  function TransactionDetails() {
+    return (
+      // <Typography
+      //    size="xs"
+      //    style={{whiteSpace: 'pre-line', overflow: "hidden", textOverflow: "ellipsis", height: '6rem'}}
+
+       <div className={classes.transactionDetails}>
+          <div className={classes.detailRow}>
+             <span className={classes.transactionDetailLabel}># confirmations:</span>
+             <span className={classes.transactionDetail}>{transaction.getNumConfirmations()}</span>
+          </div>
+          <div className={classes.detailRow}>
+             <span className={classes.transactionDetailLabel}># dest addresses:</span>
+             <span className={classes.transactionDetail}>{transaction.getDestAddressesList().length}</span>
+          </div>
+          <div className={classes.detailRow}>
+             <span className={classes.transactionDetailLabel}>timestamp:</span>
+             <span className={classes.transactionDetail}>{transaction.getTimeStamp()}</span>
+          </div>
+          <div className={classes.detailRow}>
+             <span className={classes.transactionDetailLabel}>block height:</span>
+             <span className={classes.transactionDetail}>{transaction.getBlockHeight()}</span>
+          </div>
+          <div className={classes.detailRow}>
+             <span className={classes.transactionDetailLabel}>label:</span>
+             <span className={classes.transactionDetail}>{transaction.getLabel()}</span>
+          </div>
+          <div className={classes.detailRow}>
+             <span className={classes.transactionDetailLabel}>total fees:</span>
+             <span className={classes.transactionDetail}>{transaction.getTotalFees()}</span>
+          </div>
+          {/*</Typography>*/}
+       </div>
+    )
   }
 
-  function TransactionNegativeBackgroundColor() {
-    return {backgroundColor: 'lightred'};
-  }
-
-  function transactionBackgroundColor() {
-    var amount = transaction.getAmount();
-    if (amount == 0) {
-      return 'white'
-    } else if (amount < 0) {
-      return '#ffcdd2';
-    } else if (amount > 0) {
-      return '#c8e6c9';
-    }
-  }
-
-  function TransactionBackgroundColor() {
-    return {backgroundColor: transactionBackgroundColor()};
-  }
+  const classes = useStyles({
+    amount: transaction.getAmount(),
+  })
 
   return (
     <Box
       p={1}
       m={0}
-      style={TransactionBackgroundColor()}
+      className={classes.transactionItem}
       onClick={onTransactionClick}
       >
         <Grid
@@ -87,6 +108,7 @@ export default function TransactionItem({
           >
           <Grid item>
             {TransactionContent()}
+            {TransactionDetails()}
           </Grid>
           </Grid>
           <Grid
@@ -96,7 +118,7 @@ export default function TransactionItem({
             alignItems="flex-start"
           >
             <Grid item>
-                <Box color="secondary.main" fontWeight="fontWeightBold">
+                <Box color="blue" fontSize={"small"}>
                   {moment(transaction.getTimeStamp()*1000).fromNow()} (Block #{transaction.getBlockHeight()})
                 </Box>
             </Grid>
