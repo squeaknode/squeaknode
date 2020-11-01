@@ -26,16 +26,17 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
         # Check is squeak deserialized correctly
         if squeak == None:
             context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
-            return squeak_server_pb2.PostSqueakReply(
-                hash=None,
-            )
+            return squeak_server_pb2.PostSqueakReply()
 
-        # Check is squeak hash is correct
+        # Check if squeak hash is correct
         if get_hash(squeak) != squeak_hash:
             context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
-            return squeak_server_pb2.PostSqueakReply(
-                hash=None,
-            )
+            return squeak_server_pb2.PostSqueakReply()
+
+        # Check if squeak is unlocked
+        if not squeak.HasDecryptionKey():
+            context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
+            return squeak_server_pb2.PostSqueakReply()
 
         # Insert the squeak in database.
         self.handler.handle_posted_squeak(squeak)
