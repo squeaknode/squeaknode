@@ -22,6 +22,7 @@ def squeak_entry_to_message(squeak_entry_with_profile):
         is_unlocked=squeak.HasDecryptionKey(),
         content_str=content_str,
         block_height=squeak.nBlockHeight,
+        block_hash=squeak.hashBlock.hex(),
         block_time=block_header.nTime,
         is_author_known=is_author_known,
         author_name=author_name,

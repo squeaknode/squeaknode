@@ -32,6 +32,8 @@ export default function SqueakThreadItem({
 
   const history = useHistory();
 
+  const blockDetailUrl = "https://blockstream.info/testnet/block/" + squeak.getBlockHash();
+
   const onAddressClick = (event) => {
     event.preventDefault();
     event.stopPropagation();
@@ -134,7 +136,13 @@ export default function SqueakThreadItem({
           >
             <Grid item>
                 <Box color="secondary.main" fontWeight="fontWeightBold">
-                  {moment(squeak.getBlockTime()*1000).fromNow()} (Block #{squeak.getBlockHeight()})
+                  {moment(squeak.getBlockTime()*1000).fromNow()}
+                  <span> </span>(Block
+                  <Link href={blockDetailUrl}
+                    onClick={(event) => event.stopPropagation()}>
+                    <span> </span>#{squeak.getBlockHeight()}
+                  </Link>
+                  )
                 </Box>
             </Grid>
           </Grid>
