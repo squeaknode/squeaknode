@@ -46,6 +46,8 @@ export default function SqueakDetailItem({
 
   const history = useHistory();
 
+  const blockDetailUrl = "https://blockstream.info/testnet/block/" + squeak.getBlockHash();
+
   const onAddressClick = (event) => {
     event.preventDefault();
     event.stopPropagation();
@@ -169,7 +171,12 @@ export default function SqueakDetailItem({
           >
             <Grid item>
                 <Box color="secondary.main" fontWeight="fontWeightBold">
-                  {moment(squeak.getBlockTime()*1000).format('MMMM Do YYYY, h:mm:ss a')} (Block #{squeak.getBlockHeight()})
+                  {moment(squeak.getBlockTime()*1000).format('MMMM Do YYYY, h:mm:ss a')}
+                  <span> </span>(Block
+                  <Link href={blockDetailUrl}>
+                    <span> </span>#{squeak.getBlockHeight()}
+                  </Link>
+                  )
                 </Box>
             </Grid>
           </Grid>
