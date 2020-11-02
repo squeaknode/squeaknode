@@ -1,5 +1,11 @@
 import logging
 import threading
+import queue
+
+from dataclasses import dataclass
+from typing import Any
+
+from collections import namedtuple
 
 from squeaknode.network.peer_client import PeerClient
 from squeaknode.node.peer_task import PeerSyncTask
@@ -8,6 +14,13 @@ logger = logging.getLogger(__name__)
 
 
 LOOKUP_BLOCK_INTERVAL = 1008  # 1 week
+
+
+@dataclass
+class PeerSyncResult:
+    completed_peer_id: Any = None
+    failed_peer_id: Any = None
+    timeout: Any = None
 
 
 class NetworkSyncTask:
@@ -20,14 +33,35 @@ class NetworkSyncTask:
         self.squeak_store = squeak_store
         self.postgres_db = postgres_db
         self.lightning_client = lightning_client
+        self.queue = queue.Queue()
+        #self.in_progress_peers = dict()
 
     def sync(self, peers):
         logger.debug("Network sync for class {}".format(
             self.__class__,
         ))
+        run_sync_thread = threading.Thread(
+            target=self._run_sync,
+            args=(peers,),
+        )
+        run_sync_thread.start()
+        count = len(peers)
+        logger.info(f'Current count {count}')
+        while True:
+            item = self.queue.get()
+            logger.info(f'Working on {item}')
+            count -= 1
+            logger.info(f'Finished {item}')
+            logger.info(f'Current count {count}')
+            self.queue.task_done()
+            if count == 0:
+                logger.info(f'Returning from sync...')
+                return
+
+    def _run_sync(self, peers):
         for peer in peers:
             sync_peer_thread = threading.Thread(
-                target=self.sync_peer,
+                target=self._sync_peer,
                 args=(peer,),
             )
             sync_peer_thread.start()
@@ -48,6 +82,17 @@ class NetworkSyncTask:
         # except Exception as e:
         #     logger.error("Upload from peer failed.", exc_info=True)
         pass
+
+    def _sync_peer(self, peer):
+        try:
+            logger.debug("Trying to sync with peer: {}".format(peer.peer_id))
+            self.sync_peer(peer)
+            # self.queue.put("Finished sync with peer: {}".format(peer.peer_id))
+            self.queue.put(PeerSyncResult(completed_peer_id=peer.peer_id))
+        except Exception as e:
+            logger.error("Sync with peer failed.", exc_info=True)
+            # self.queue.put("Error while syncing from peer: {}".format(peer.peer_id))
+            self.queue.put(PeerSyncResult(failed_peer_id=peer.peer_id))
 
 
 class DownloadTimelineNetworkSyncTask(NetworkSyncTask):
@@ -70,11 +115,8 @@ class DownloadTimelineNetworkSyncTask(NetworkSyncTask):
             self.postgres_db,
             self.lightning_client,
         )
-        try:
-            logger.debug("Trying to download with block height: {}".format(self.block_height))
-            peer_sync_task.download(self.block_height)
-        except Exception as e:
-            logger.error("Download from peer failed.", exc_info=True)
+        peer_sync_task.download(self.block_height)
+
 
 class UploadTimelineNetworkSyncTask(NetworkSyncTask):
     def __init__(
@@ -96,11 +138,8 @@ class UploadTimelineNetworkSyncTask(NetworkSyncTask):
             self.postgres_db,
             self.lightning_client,
         )
-        try:
-            logger.debug("Trying to upload with block height: {}".format(self.block_height))
-            peer_sync_task.upload(self.block_height)
-        except Exception as e:
-            logger.error("Upload from peer failed.", exc_info=True)
+        peer_sync_task.upload(self.block_height)
+
 
 class SingleSqueakNetworkSyncTask(NetworkSyncTask):
     def __init__(
@@ -122,8 +161,4 @@ class SingleSqueakNetworkSyncTask(NetworkSyncTask):
             self.postgres_db,
             self.lightning_client,
         )
-        try:
-            logger.debug("Trying to download single squeak {}".format(self.squeak_hash))
-            peer_sync_task.download_single_squeak(self.squeak_hash)
-        except Exception as e:
-            logger.error("Download single squeak from peer failed.", exc_info=True)
+        peer_sync_task.download_single_squeak(self.squeak_hash)
