@@ -4,6 +4,7 @@ import queue
 
 from dataclasses import dataclass
 from typing import Any
+from typing import List
 
 from collections import namedtuple
 
@@ -21,6 +22,13 @@ class PeerSyncResult:
     completed_peer_id: Any = None
     failed_peer_id: Any = None
     timeout: Any = None
+
+
+@dataclass
+class NetworkSyncResult:
+    completed_peer_ids: List[int]
+    failed_peer_ids: List[int]
+    timeout_peer_ids: List[int]
 
 
 class NetworkSyncTask:
@@ -47,16 +55,29 @@ class NetworkSyncTask:
         run_sync_thread.start()
         count = len(peers)
         logger.info(f'Current count {count}')
+        remaining_peer_ids = set(peer.peer_id for peer in peers)
+        completed_peer_ids = set()
+        failed_peer_ids = set()
         while True:
             item = self.queue.get()
             logger.info(f'Working on {item}')
             count -= 1
+            if item.completed_peer_id:
+                completed_peer_ids.add(item.completed_peer_id)
+                remaining_peer_ids.remove(item.completed_peer_id)
+            if item.failed_peer_id:
+                failed_peer_ids.add(item.failed_peer_id)
+                remaining_peer_ids.remove(item.failed_peer_id)
             logger.info(f'Finished {item}')
             logger.info(f'Current count {count}')
             self.queue.task_done()
-            if count == 0:
+            if len(remaining_peer_ids) == 0:
                 logger.info(f'Returning from sync...')
-                return
+                return NetworkSyncResult(
+                    completed_peer_ids=list(completed_peer_ids),
+                    failed_peer_ids=list(failed_peer_ids),
+                    timeout_peer_ids=list(remaining_peer_ids),
+                )
 
     def _run_sync(self, peers):
         for peer in peers:

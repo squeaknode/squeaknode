@@ -79,7 +79,8 @@ class SqueakSyncController:
             self.lightning_client,
             block_height,
         )
-        dowload_timeline_task.sync(peers)
+        network_sync_result = dowload_timeline_task.sync(peers)
+        logger.info("Upload network_sync_result: {}".format(network_sync_result))
 
     def upload_timeline(self, peers):
         try:
@@ -96,7 +97,8 @@ class SqueakSyncController:
             self.lightning_client,
             block_height,
         )
-        upload_timeline_task.sync(peers)
+        network_sync_result = upload_timeline_task.sync(peers)
+        logger.info("Download network_sync_result: {}".format(network_sync_result))
 
     def download_single_squeak_from_peers(self, squeak_hash, peers):
         # for peer in peers:
@@ -115,7 +117,8 @@ class SqueakSyncController:
             self.lightning_client,
             squeak_hash,
         )
-        timeline_sync_task.sync(peers)
+        network_sync_result = timeline_sync_task.sync(peers)
+        logger.info("Download single squeak network_sync_result: {}".format(network_sync_result))
 
 
     # def _download_from_peers(self, peers, block_height):
