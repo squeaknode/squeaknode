@@ -10,6 +10,7 @@ from collections import namedtuple
 
 from squeaknode.network.peer_client import PeerClient
 from squeaknode.node.peer_task import PeerSyncTask
+from squeaknode.node.peer_connection import PeerConnection
 
 logger = logging.getLogger(__name__)
 
@@ -130,8 +131,9 @@ class DownloadTimelineNetworkSyncTask(NetworkSyncTask):
     def sync_peer(self, peer):
         if not peer.downloading:
             return
+        peer_connection = PeerConnection(peer)
         peer_sync_task = PeerSyncTask(
-            peer,
+            peer_connection,
             self.squeak_store,
             self.postgres_db,
             self.lightning_client,
@@ -153,8 +155,9 @@ class UploadTimelineNetworkSyncTask(NetworkSyncTask):
     def sync_peer(self, peer):
         if not peer.uploading:
             return
+        peer_connection = PeerConnection(peer)
         peer_sync_task = PeerSyncTask(
-            peer,
+            peer_connection,
             self.squeak_store,
             self.postgres_db,
             self.lightning_client,
@@ -176,8 +179,9 @@ class SingleSqueakNetworkSyncTask(NetworkSyncTask):
     def sync_peer(self, peer):
         if not peer.downloading:
             return
+        peer_connection = PeerConnection(peer)
         peer_sync_task = PeerSyncTask(
-            peer,
+            peer_connection,
             self.squeak_store,
             self.postgres_db,
             self.lightning_client,

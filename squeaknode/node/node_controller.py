@@ -16,23 +16,13 @@ LOOKUP_BLOCK_INTERVAL = 1008  # 1 week
 class PeerSyncTask:
     def __init__(
         self,
-        peer_connection,
         squeak_store,
         postgres_db,
         lightning_client,
     ):
-        self.peer_connection = peer_connection
         self.squeak_store = squeak_store
         self.postgres_db = postgres_db
         self.lightning_client = lightning_client
-
-    @property
-    def peer(self):
-        return self.peer_connection.peer
-
-    @property
-    def peer_client(self):
-        return self.peer_connection.peer_client
 
     def download(
         self,
@@ -66,7 +56,7 @@ class PeerSyncTask:
         # Download squeaks for the hashes
         # TODO: catch exception downloading individual squeak
         for hash in hashes_to_download:
-            if self.peer_connection.stopped():
+            if self.stopped():
                 return
             self._download_squeak(hash)
 
@@ -85,7 +75,7 @@ class PeerSyncTask:
         # Download offers for the hashes
         # TODO: catch exception downloading individual squeak
         for hash in hashes_to_get_offer:
-            if self.peer_connection.stopped():
+            if self.stopped():
                 return
             self._download_offer(hash)
 
@@ -121,7 +111,7 @@ class PeerSyncTask:
         # Upload squeaks for the hashes
         # TODO: catch exception uploading individual squeak
         for hash in hashes_to_upload:
-            if self.peer_connection.stopped():
+            if self.stopped():
                 return
             self._upload_squeak(hash)
 
@@ -169,6 +159,12 @@ class PeerSyncTask:
 
         # Save the offer
         self._save_offer(decoded_offer)
+
+    def stop(self):
+        self._stop_event.set()
+
+    def stopped(self):
+        return self._stop_event.is_set()
 
     def _get_local_hashes(self, addresses, min_block, max_block):
         return self.squeak_store.lookup_squeaks_include_locked(
