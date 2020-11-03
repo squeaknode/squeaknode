@@ -15,9 +15,6 @@ from squeaknode.node.peer_connection import PeerConnection
 logger = logging.getLogger(__name__)
 
 
-LOOKUP_BLOCK_INTERVAL = 1008  # 1 week
-
-
 @dataclass
 class PeerSyncResult:
     completed_peer_id: Any = None
@@ -85,31 +82,15 @@ class NetworkSyncTask:
             sync_peer_thread.start()
 
     def sync_peer(self, peer):
-        # peer_upload = PeerUpload(
-        #     peer,
-        #     self.squeak_store,
-        #     self.postgres_db,
-        #     self.lightning_client,
-        # )
-        # try:
-        #     logger.debug("Trying to upload to peer: {}".format(peer))
-        #     with self.UploadingContextManager(
-        #         peer, peer_upload, self.squeak_sync_status
-        #     ) as uploading_manager:
-        #         peer_upload.upload(block_height)
-        # except Exception as e:
-        #     logger.error("Upload from peer failed.", exc_info=True)
         pass
 
     def _sync_peer(self, peer):
         try:
             logger.debug("Trying to sync with peer: {}".format(peer.peer_id))
             self.sync_peer(peer)
-            # self.queue.put("Finished sync with peer: {}".format(peer.peer_id))
             self.queue.put(PeerSyncResult(completed_peer_id=peer.peer_id))
         except Exception as e:
             logger.error("Sync with peer failed.", exc_info=True)
-            # self.queue.put("Error while syncing from peer: {}".format(peer.peer_id))
             self.queue.put(PeerSyncResult(failed_peer_id=peer.peer_id))
 
 
