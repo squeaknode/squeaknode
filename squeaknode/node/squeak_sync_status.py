@@ -18,11 +18,7 @@ class SqueakSyncController:
         self.lightning_client = lightning_client
         self.network_sync = NetworkSync(squeak_store, postgres_db, lightning_client)
 
-    def sync_peers(self, peers):
-        self.download_timeline(peers)
-        # self.upload_timeline(peers)
-
-    def download_timeline(self, peers):
+    def sync_timeline(self):
         try:
             block_info = self.blockchain_client.get_best_block_info()
             block_height = block_info.block_height
@@ -31,6 +27,7 @@ class SqueakSyncController:
                 "Failed to sync because unable to get blockchain info.", exc_info=False
             )
             return
+        peers = self.postgres_db.get_peers()
         dowload_timeline_task = TimelineNetworkSyncTask(
             self.network_sync,
             block_height,

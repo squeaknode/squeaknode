@@ -76,7 +76,6 @@ class SqueakNode:
             self.lightning_client,
         )
         self.squeak_peer_sync_worker = SqueakPeerSyncWorker(
-            postgres_db,
             self.squeak_sync_controller,
         )
         self.squeak_expired_offer_cleaner = SqueakExpiredOfferCleaner(
@@ -328,7 +327,7 @@ class SqueakNode:
         )
 
     def sync_squeaks(self):
-        self.squeak_peer_sync_worker.sync_peers()
+        self.squeak_sync_controller.sync_timeline()
 
     def get_sent_payments(self):
         return self.postgres_db.get_sent_payments()
