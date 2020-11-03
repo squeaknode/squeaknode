@@ -327,7 +327,7 @@ class SqueakNode:
         )
 
     def sync_squeaks(self):
-        self.squeak_sync_controller.sync_timeline()
+        return self.squeak_sync_controller.sync_timeline()
 
     def get_sent_payments(self):
         return self.postgres_db.get_sent_payments()
@@ -337,4 +337,4 @@ class SqueakNode:
 
     def download_squeak(self, squeak_hash):
         peers = self.postgres_db.get_peers()
-        self.squeak_sync_controller.download_single_squeak_from_peers(squeak_hash, peers)
+        return self.squeak_sync_controller.download_single_squeak_from_peers(squeak_hash, peers)
