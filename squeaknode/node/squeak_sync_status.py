@@ -6,6 +6,7 @@ from collections import defaultdict
 from squeaknode.node.network_task import DownloadTimelineNetworkSyncTask
 from squeaknode.node.network_task import UploadTimelineNetworkSyncTask
 from squeaknode.node.network_task import SingleSqueakNetworkSyncTask
+from squeaknode.node.network_sync import NetworkSync
 
 logger = logging.getLogger(__name__)
 
@@ -59,6 +60,7 @@ class SqueakSyncController:
         self.squeak_store = squeak_store
         self.postgres_db = postgres_db
         self.lightning_client = lightning_client
+        self.network_sync = NetworkSync(squeak_store, postgres_db, lightning_client)
 
     def sync_peers(self, peers):
         self.download_timeline(peers)
@@ -74,9 +76,7 @@ class SqueakSyncController:
             )
             return
         dowload_timeline_task = DownloadTimelineNetworkSyncTask(
-            self.squeak_store,
-            self.postgres_db,
-            self.lightning_client,
+            self.network_sync,
             block_height,
         )
         network_sync_result = dowload_timeline_task.sync(peers)
@@ -92,9 +92,7 @@ class SqueakSyncController:
             )
             return
         upload_timeline_task = UploadTimelineNetworkSyncTask(
-            self.squeak_store,
-            self.postgres_db,
-            self.lightning_client,
+            self.network_sync,
             block_height,
         )
         network_sync_result = upload_timeline_task.sync(peers)
@@ -112,9 +110,7 @@ class SqueakSyncController:
         #         )
         #         download_thread.start()
         timeline_sync_task = SingleSqueakNetworkSyncTask(
-            self.squeak_store,
-            self.postgres_db,
-            self.lightning_client,
+            self.network_sync,
             squeak_hash,
         )
         network_sync_result = timeline_sync_task.sync(peers)
