@@ -64,7 +64,7 @@ class SqueakSyncController:
 
     def sync_peers(self, peers):
         self.download_timeline(peers)
-        self.upload_timeline(peers)
+        # self.upload_timeline(peers)
 
     def download_timeline(self, peers):
         try:
@@ -82,21 +82,21 @@ class SqueakSyncController:
         network_sync_result = dowload_timeline_task.sync(peers)
         logger.info("Upload network_sync_result: {}".format(network_sync_result))
 
-    def upload_timeline(self, peers):
-        try:
-            block_info = self.blockchain_client.get_best_block_info()
-            block_height = block_info.block_height
-        except Exception as e:
-            logger.error(
-                "Failed to sync because unable to get blockchain info.", exc_info=False
-            )
-            return
-        upload_timeline_task = UploadTimelineNetworkSyncTask(
-            self.network_sync,
-            block_height,
-        )
-        network_sync_result = upload_timeline_task.sync(peers)
-        logger.info("Download network_sync_result: {}".format(network_sync_result))
+    # def upload_timeline(self, peers):
+    #     try:
+    #         block_info = self.blockchain_client.get_best_block_info()
+    #         block_height = block_info.block_height
+    #     except Exception as e:
+    #         logger.error(
+    #             "Failed to sync because unable to get blockchain info.", exc_info=False
+    #         )
+    #         return
+    #     upload_timeline_task = UploadTimelineNetworkSyncTask(
+    #         self.network_sync,
+    #         block_height,
+    #     )
+    #     network_sync_result = upload_timeline_task.sync(peers)
+    #     logger.info("Download network_sync_result: {}".format(network_sync_result))
 
     def download_single_squeak_from_peers(self, squeak_hash, peers):
         # for peer in peers:

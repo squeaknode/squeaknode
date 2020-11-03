@@ -27,7 +27,7 @@ class NetworkSync:
         self.postgres_db = postgres_db
         self.lightning_client = lightning_client
 
-    def sync_timeline_download(self, peer, block_height):
+    def sync_timeline(self, peer, block_height):
         if not peer.downloading:
             return
         peer_connection = PeerConnection(peer)
@@ -37,19 +37,32 @@ class NetworkSync:
             self.postgres_db,
             self.lightning_client,
         )
+        peer_sync_task.upload(block_height)
         peer_sync_task.download(block_height)
 
-    def sync_timeline_upload(self, peer, block_height):
-        if not peer.uploading:
-            return
-        peer_connection = PeerConnection(peer)
-        peer_sync_task = PeerSyncTask(
-            peer_connection,
-            self.squeak_store,
-            self.postgres_db,
-            self.lightning_client,
-        )
-        peer_sync_task.upload(block_height)
+    # def sync_timeline_download(self, peer, block_height):
+    #     if not peer.downloading:
+    #         return
+    #     peer_connection = PeerConnection(peer)
+    #     peer_sync_task = PeerSyncTask(
+    #         peer_connection,
+    #         self.squeak_store,
+    #         self.postgres_db,
+    #         self.lightning_client,
+    #     )
+    #     peer_sync_task.download(block_height)
+
+    # def sync_timeline_upload(self, peer, block_height):
+    #     if not peer.uploading:
+    #         return
+    #     peer_connection = PeerConnection(peer)
+    #     peer_sync_task = PeerSyncTask(
+    #         peer_connection,
+    #         self.squeak_store,
+    #         self.postgres_db,
+    #         self.lightning_client,
+    #     )
+    #     peer_sync_task.upload(block_height)
 
     def sync_single_squeak_download(self, peer, squeak_hash):
         if not peer.downloading:

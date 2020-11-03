@@ -54,7 +54,8 @@ class NetworkSyncTask:
         remaining_peer_ids = set(peer.peer_id for peer in peers)
         completed_peer_ids = set()
         failed_peer_ids = set()
-        while True:
+
+        while len(remaining_peer_ids) > 0:
             item = self.queue.get()
             logger.info(f'Working on {item}')
             count -= 1
@@ -67,13 +68,13 @@ class NetworkSyncTask:
             logger.info(f'Finished {item}')
             logger.info(f'Current count {count}')
             self.queue.task_done()
-            if len(remaining_peer_ids) == 0:
-                logger.info(f'Returning from sync...')
-                return NetworkSyncResult(
-                    completed_peer_ids=list(completed_peer_ids),
-                    failed_peer_ids=list(failed_peer_ids),
-                    timeout_peer_ids=list(remaining_peer_ids),
-                )
+
+        logger.info(f'Returning from sync...')
+        return NetworkSyncResult(
+            completed_peer_ids=list(completed_peer_ids),
+            failed_peer_ids=list(failed_peer_ids),
+            timeout_peer_ids=list(remaining_peer_ids),
+        )
 
     def _run_sync(self, peers):
         for peer in peers:
@@ -122,7 +123,7 @@ class DownloadTimelineNetworkSyncTask(NetworkSyncTask):
         self.block_height = block_height
 
     def sync_peer(self, peer):
-        self.network_sync.sync_timeline_download(peer, self.block_height)
+        self.network_sync.sync_timeline(peer, self.block_height)
 
 
 class UploadTimelineNetworkSyncTask(NetworkSyncTask):
