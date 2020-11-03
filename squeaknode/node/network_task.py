@@ -94,7 +94,7 @@ class NetworkSyncTask:
             self.queue.put(PeerSyncResult(failed_peer_id=peer.peer_id))
 
 
-class DownloadTimelineNetworkSyncTask(NetworkSyncTask):
+class TimelineNetworkSyncTask(NetworkSyncTask):
     def __init__(
         self,
         network_sync,
@@ -107,19 +107,6 @@ class DownloadTimelineNetworkSyncTask(NetworkSyncTask):
         self.network_sync.sync_timeline(peer, self.block_height)
 
 
-class UploadTimelineNetworkSyncTask(NetworkSyncTask):
-    def __init__(
-        self,
-        network_sync,
-        block_height,
-    ):
-        super().__init__(network_sync)
-        self.block_height = block_height
-
-    def sync_peer(self, peer):
-        self.network_sync.sync_timeline_upload(peer, self.block_height)
-
-
 class SingleSqueakNetworkSyncTask(NetworkSyncTask):
     def __init__(
         self,
@@ -130,4 +117,4 @@ class SingleSqueakNetworkSyncTask(NetworkSyncTask):
         self.squeak_hash = squeak_hash
 
     def sync_peer(self, peer):
-        self.network_sync.sync_single_squeak_download(peer, self.squeak_hash)
+        self.network_sync.sync_single_squeak(peer, self.squeak_hash)

@@ -3,8 +3,7 @@ import threading
 
 from collections import defaultdict
 
-from squeaknode.node.network_task import DownloadTimelineNetworkSyncTask
-from squeaknode.node.network_task import UploadTimelineNetworkSyncTask
+from squeaknode.node.network_task import TimelineNetworkSyncTask
 from squeaknode.node.network_task import SingleSqueakNetworkSyncTask
 from squeaknode.node.network_sync import NetworkSync
 
@@ -32,7 +31,7 @@ class SqueakSyncController:
                 "Failed to sync because unable to get blockchain info.", exc_info=False
             )
             return
-        dowload_timeline_task = DownloadTimelineNetworkSyncTask(
+        dowload_timeline_task = TimelineNetworkSyncTask(
             self.network_sync,
             block_height,
         )

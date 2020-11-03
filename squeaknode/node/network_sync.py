@@ -37,10 +37,12 @@ class NetworkSync:
             self.postgres_db,
             self.lightning_client,
         )
-        peer_sync_task.upload(block_height)
-        peer_sync_task.download(block_height)
+        if peer.uploading:
+            peer_sync_task.upload(block_height)
+        if peer.downloading:
+            peer_sync_task.download(block_height)
 
-    def sync_single_squeak_download(self, peer, squeak_hash):
+    def sync_single_squeak(self, peer, squeak_hash):
         if not peer.downloading:
             return
         peer_connection = PeerConnection(peer)
@@ -50,4 +52,7 @@ class NetworkSync:
             self.postgres_db,
             self.lightning_client,
         )
-        peer_sync_task.download_single_squeak(squeak_hash)
+        if peer.uploading:
+            peer_sync_task.upload_single_squeak(squeak_hash)
+        if peer.downloading:
+            peer_sync_task.download_single_squeak(squeak_hash)

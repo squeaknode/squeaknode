@@ -136,6 +136,12 @@ class PeerSyncTask:
         if not saved_offer:
             self._download_offer(squeak_hash)
 
+    def upload_single_squeak(self, squeak_hash):
+        # Download squeak if not already present.
+        saved_squeak = self._get_saved_squeak(squeak_hash)
+        if saved_squeak:
+            self._upload_squeak(squeak_hash)
+
     def get_offer(self, squeak_hash):
         logger.info("Getting offer for squeak hash: {}".format(squeak_hash.hex()))
 
