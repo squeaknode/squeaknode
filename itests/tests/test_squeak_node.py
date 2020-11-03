@@ -839,10 +839,12 @@ def test_connect_other_node(server_stub, admin_stub, other_server_stub, other_ad
     )
 
     # Sync squeaks
-    other_admin_stub.SyncSqueaks(
+    sync_squeaks_response = other_admin_stub.SyncSqueaks(
         squeak_admin_pb2.SyncSqueaksRequest(),
     )
-    time.sleep(10)
+    #time.sleep(10)
+    print(sync_squeaks_response)
+    assert peer_id in sync_squeaks_response.sync_result.completed_peer_ids
 
     # Get the buy offer
     get_buy_offers_response = other_admin_stub.GetBuyOffers(
@@ -971,12 +973,14 @@ def test_download_single_squeak(server_stub, admin_stub, other_server_stub, othe
     assert len(get_buy_offers_response.offers) == 0
 
     # Download squeak
-    other_admin_stub.DownloadSqueak(
-        squeak_admin_pb2.DownloadSqueakRequest(
+    sync_squeak_response = other_admin_stub.SyncSqueak(
+        squeak_admin_pb2.SyncSqueakRequest(
             squeak_hash=saved_squeak_hash.hex(),
         ),
     )
-    time.sleep(10)
+    # time.sleep(10)
+    print(sync_squeak_response)
+    assert peer_id in sync_squeak_response.sync_result.completed_peer_ids
 
     # Get the squeak display item
     get_squeak_display_response = other_admin_stub.GetSqueakDisplay(

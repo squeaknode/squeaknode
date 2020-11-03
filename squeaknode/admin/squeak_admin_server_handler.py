@@ -9,6 +9,7 @@ from squeaknode.admin.util import squeak_peer_to_message
 from squeaknode.admin.util import squeak_profile_to_message
 from squeaknode.admin.util import offer_entry_to_message
 from squeaknode.admin.util import sent_payment_to_message
+from squeaknode.admin.util import sync_result_to_message
 
 from proto import squeak_admin_pb2, squeak_admin_pb2_grpc
 
@@ -371,8 +372,21 @@ class SqueakAdminServerHandler(object):
 
     def handle_sync_squeaks(self, request):
         logger.info("Handle sync squeaks")
-        self.squeak_node.sync_squeaks()
-        return squeak_admin_pb2.SyncSqueaksReply()
+        sync_result = self.squeak_node.sync_squeaks()
+        sync_result_msg = sync_result_to_message(sync_result)
+        return squeak_admin_pb2.SyncSqueaksReply(
+            sync_result=sync_result_msg,
+        )
+
+    def handle_sync_squeak(self, request):
+        squeak_hash_str = request.squeak_hash
+        logger.info("Handle download squeak with hash: {}".format(squeak_hash_str))
+        squeak_hash = bytes.fromhex(squeak_hash_str)
+        sync_result = self.squeak_node.sync_squeak(squeak_hash)
+        sync_result_msg = sync_result_to_message(sync_result)
+        return squeak_admin_pb2.SyncSqueakReply(
+            sync_result=sync_result_msg,
+        )
 
     def handle_pay_offer(self, request):
         offer_id = request.offer_id
@@ -398,10 +412,3 @@ class SqueakAdminServerHandler(object):
         return squeak_admin_pb2.GetSentPaymentReply(
             sent_payment=sent_payment_msg,
         )
-
-    def handle_download_squeak(self, request):
-        squeak_hash_str = request.squeak_hash
-        logger.info("Handle download squeak with hash: {}".format(squeak_hash_str))
-        squeak_hash = bytes.fromhex(squeak_hash_str)
-        self.squeak_node.download_squeak(squeak_hash)
-        return squeak_admin_pb2.DownloadSqueakReply()
