@@ -36,7 +36,7 @@ class SqueakSyncController:
         logger.info("Upload network_sync_result: {}".format(network_sync_result))
         return network_sync_result
 
-    def download_single_squeak_from_peers(self, squeak_hash, peers):
+    def sync_single_squeak(self, squeak_hash, peers):
         timeline_sync_task = SingleSqueakNetworkSyncTask(
             self.network_sync,
             squeak_hash,

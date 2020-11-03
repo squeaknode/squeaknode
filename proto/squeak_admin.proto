@@ -160,6 +160,10 @@ service SqueakAdmin {
   */
   rpc SyncSqueaks (SyncSqueaksRequest) returns (SyncSqueaksReply) {}
 
+  /** sqkadmin: `syncsqueak`
+  */
+  rpc SyncSqueak (SyncSqueakRequest) returns (SyncSqueakReply) {}
+
   /** sqkadmin: `payoffer`
   */
   rpc PayOffer (PayOfferRequest) returns (PayOfferReply) {}
@@ -171,10 +175,6 @@ service SqueakAdmin {
   /** sqkadmin: `getsentpayment`
   */
   rpc GetSentPayment (GetSentPaymentRequest) returns (GetSentPaymentReply) {}
-
-  /** sqkadmin: `downloadsqueak`
-  */
-  rpc DownloadSqueak (DownloadSqueakRequest) returns (DownloadSqueakReply) {}
 
 }
 
@@ -604,12 +604,12 @@ message SentPayment {
     bool preimage_is_valid = 9;
 }
 
-message DownloadSqueakRequest {
+message SyncSqueakRequest {
     /// The squeak hash.
     string squeak_hash = 1;
 }
 
-message DownloadSqueakReply {
+message SyncSqueakReply {
     /// The sync result
     SyncResult sync_result = 1;
 }

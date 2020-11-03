@@ -973,8 +973,8 @@ def test_download_single_squeak(server_stub, admin_stub, other_server_stub, othe
     assert len(get_buy_offers_response.offers) == 0
 
     # Download squeak
-    sync_squeak_response = other_admin_stub.DownloadSqueak(
-        squeak_admin_pb2.DownloadSqueakRequest(
+    sync_squeak_response = other_admin_stub.SyncSqueak(
+        squeak_admin_pb2.SyncSqueakRequest(
             squeak_hash=saved_squeak_hash.hex(),
         ),
     )

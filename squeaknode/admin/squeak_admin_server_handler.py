@@ -378,6 +378,16 @@ class SqueakAdminServerHandler(object):
             sync_result=sync_result_msg,
         )
 
+    def handle_sync_squeak(self, request):
+        squeak_hash_str = request.squeak_hash
+        logger.info("Handle download squeak with hash: {}".format(squeak_hash_str))
+        squeak_hash = bytes.fromhex(squeak_hash_str)
+        sync_result = self.squeak_node.sync_squeak(squeak_hash)
+        sync_result_msg = sync_result_to_message(sync_result)
+        return squeak_admin_pb2.SyncSqueakReply(
+            sync_result=sync_result_msg,
+        )
+
     def handle_pay_offer(self, request):
         offer_id = request.offer_id
         logger.info("Handle pay offer for offer id: {}".format(offer_id))
@@ -401,14 +411,4 @@ class SqueakAdminServerHandler(object):
         sent_payment_msg = sent_payment_to_message(sent_payment)
         return squeak_admin_pb2.GetSentPaymentReply(
             sent_payment=sent_payment_msg,
-        )
-
-    def handle_download_squeak(self, request):
-        squeak_hash_str = request.squeak_hash
-        logger.info("Handle download squeak with hash: {}".format(squeak_hash_str))
-        squeak_hash = bytes.fromhex(squeak_hash_str)
-        sync_result = self.squeak_node.download_squeak(squeak_hash)
-        sync_result_msg = sync_result_to_message(sync_result)
-        return squeak_admin_pb2.DownloadSqueakReply(
-            sync_result=sync_result_msg,
         )
