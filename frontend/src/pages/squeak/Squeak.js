@@ -31,7 +31,7 @@ export default function SqueakPage() {
   const { hash } = useParams();
   const [squeak, setSqueak] = useState(null);
   const [ancestorSqueaks, setAncestorSqueaks] = useState([]);
-  const [open, setOpen] = useState(false);
+  const [replyDialogOpen, setReplyDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   const getSqueak = (hash) => {
@@ -42,11 +42,11 @@ export default function SqueakPage() {
   };
 
   const handleClickOpen = () => {
-    setOpen(true);
+    setReplyDialogOpen(true);
   };
 
   const handleClose = () => {
-     setOpen(false);
+     setReplyDialogOpen(false);
   };
 
   const handleClickOpenDeleteDialog = () => {
@@ -157,7 +157,7 @@ export default function SqueakPage() {
     return (
       <>
         <MakeSqueakDialog
-          open={open}
+          open={replyDialogOpen}
           handleClose={handleClose}
           replytoSqueak={squeak}
           ></MakeSqueakDialog>
