@@ -60,7 +60,7 @@ export default function SqueakThreadItem({
       <Typography
         size="md"
         style={{whiteSpace: 'pre-line', overflow: "hidden", textOverflow: "ellipsis", height: '6rem'}}
-        >{hash + ' ' + squeak.getContentStr()}
+        >{squeak.getContentStr()}
       </Typography>
     )
   }
@@ -76,7 +76,7 @@ export default function SqueakThreadItem({
   function SqueakMissingContent() {
     return (
       <>
-        <DownloadIcon />
+        <DownloadIcon /> {hash}
       </>
     )
   }
