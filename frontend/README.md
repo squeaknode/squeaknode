@@ -36,3 +36,6 @@
 	$ npm run build
 	```
 - Copy the generated `build` folder into `squeaknode/admin/webapp/static/`.
+	```
+	$ cp -r build/ ../squeaknode/admin/webapp/static/
+	```
