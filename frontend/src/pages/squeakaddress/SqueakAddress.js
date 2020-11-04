@@ -101,6 +101,7 @@ export default function SqueakAddressPage() {
               key={squeak.getSqueakHash()}
               >
             <SqueakThreadItem
+              hash={squeak.getSqueakHash()}
               key={squeak.getSqueakHash()}
               handleSqueakClick={() => goToSqueakPage(squeak.getSqueakHash())}
               squeak={squeak}>

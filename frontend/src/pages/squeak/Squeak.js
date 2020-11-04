@@ -74,6 +74,16 @@ export default function SqueakPage() {
     handleClickOpenDeleteDialog()
   };
 
+  const unknownAncestorHash = () => {
+      if (!ancestorSqueaks) {
+        return null;
+      }
+      var oldestKnownAncestor = ancestorSqueaks[0];
+      console.log(oldestKnownAncestor);
+      console.log("oldestKnownAncestor");
+      return oldestKnownAncestor.getReplyTo();
+  };
+
   useEffect(()=>{
     getSqueak(hash)
   },[hash]);
@@ -89,26 +99,57 @@ export default function SqueakPage() {
     )
   }
 
+  function UnkownReplyToContent() {
+    var squeakHash = unknownAncestorHash();
+    if (!squeakHash) {
+      return (
+        <></>
+      )
+    }
+    return (
+      <div>
+          <Box
+            key={squeakHash}
+            >
+          <SqueakThreadItem
+            hash={squeakHash}
+            key={squeakHash}
+            squeak={null}>
+          </SqueakThreadItem>
+          <Divider />
+          </Box>
+      </div>
+    )
+  }
+
+  function AncestorsContent() {
+    return (
+      <div>
+        {ancestorSqueaks.slice(0, -1)
+          //.reverse()
+          .map(ancestorSqueak =>
+          <Box
+            key={ancestorSqueak.getSqueakHash()}
+            >
+          <SqueakThreadItem
+            hash={squeak.getSqueakHash()}
+            key={ancestorSqueak.getSqueakHash()}
+            handleAddressClick={() => goToSqueakAddressPage(ancestorSqueak.getAuthorAddress())}
+            handleSqueakClick={() => goToSqueakPage(ancestorSqueak.getSqueakHash())}
+            squeak={ancestorSqueak}>
+          </SqueakThreadItem>
+          <Divider />
+          </Box>
+        )}
+      </div>
+    )
+  }
+
   function SqueakContent() {
     return (
       <>
-        <div>
-          {ancestorSqueaks.slice(0, -1)
-            //.reverse()
-            .map(ancestorSqueak =>
-            <Box
-              key={ancestorSqueak.getSqueakHash()}
-              >
-            <SqueakThreadItem
-              key={ancestorSqueak.getSqueakHash()}
-              handleAddressClick={() => goToSqueakAddressPage(ancestorSqueak.getAuthorAddress())}
-              handleSqueakClick={() => goToSqueakPage(ancestorSqueak.getSqueakHash())}
-              squeak={ancestorSqueak}>
-            </SqueakThreadItem>
-            <Divider />
-            </Box>
-          )}
-        </div>
+        {UnkownReplyToContent()}
+        {AncestorsContent()}
         <div>
           <SqueakDetailItem
             key={squeak.getSqueakHash()}

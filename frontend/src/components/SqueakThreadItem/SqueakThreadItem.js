@@ -14,6 +14,7 @@ import {useHistory} from "react-router-dom";
 import classnames from "classnames";
 
 import LockIcon from '@material-ui/icons/Lock';
+import DownloadIcon from '@material-ui/icons/CloudDownload';
 
 // styles
 import useStyles from "./styles";
@@ -23,6 +24,7 @@ import Widget from "../../components/Widget";
 import moment from 'moment';
 
 export default function SqueakThreadItem({
+  hash,
   squeak,
   handleAddressClick,
   handleSqueakClick,
@@ -32,7 +34,9 @@ export default function SqueakThreadItem({
 
   const history = useHistory();
 
-  const blockDetailUrl = "https://blockstream.info/testnet/block/" + squeak.getBlockHash();
+  const blockDetailUrl = () => {
+    return "https://blockstream.info/testnet/block/" + squeak.getBlockHash();
+  };
 
   const onAddressClick = (event) => {
     event.preventDefault();
@@ -56,7 +60,7 @@ export default function SqueakThreadItem({
       <Typography
         size="md"
         style={{whiteSpace: 'pre-line', overflow: "hidden", textOverflow: "ellipsis", height: '6rem'}}
-        >{squeak.getContentStr()}
+        >{hash + ' ' + squeak.getContentStr()}
       </Typography>
     )
   }
@@ -69,7 +73,23 @@ export default function SqueakThreadItem({
     )
   }
 
+  function SqueakMissingContent() {
+    return (
+      <>
+        <DownloadIcon />
+      </>
+    )
+  }
+
   function SqueakContent() {
+    if (!squeak) {
+      return (
+        <>
+          {SqueakMissingContent()}
+        </>
+      )
+    }
+
     return (
       <>
       {squeak.getIsUnlocked()
@@ -77,6 +97,31 @@ export default function SqueakThreadItem({
           : SqueakLockedContent()
         }
       </>
+    )
+  }
+
+  function SqueakTime() {
+    if (!squeak) {
+      return (
+        <Box color="secondary.main" fontWeight="fontWeightBold">
+          Unknown time
+        </Box>
+      )
+    }
+
+    return (
+      <Box color="secondary.main" fontWeight="fontWeightBold">
+        {moment(squeak.getBlockTime()*1000).fromNow()}
+        <span> </span>(Block
+        <Link
+          href={blockDetailUrl()}
+          target="_blank"
+          rel="noopener"
+          onClick={(event) => event.stopPropagation()}>
+          <span> </span>#{squeak.getBlockHeight()}
+        </Link>
+        )
+      </Box>
     )
   }
 
@@ -88,7 +133,19 @@ export default function SqueakThreadItem({
     return {backgroundColor: 'white'};
   }
 
+  function getAddressDisplay() {
+    if (!squeak) {
+      return "Author unknown"
+    }
+    return squeak.getIsAuthorKnown()
+      ? squeak.getAuthorName()
+      : squeak.getAuthorAddress()
+  }
+
   function SqueakBackgroundColor() {
+    if (!squeak) {
+      return SqueakLockedBackgroundColor();
+    }
     return squeak.getIsUnlocked()
             ? SqueakUnlockedBackgroundColor()
             : SqueakLockedBackgroundColor()
@@ -111,9 +168,7 @@ export default function SqueakThreadItem({
                 <Box fontWeight="fontWeightBold">
                   <Link href="#"
                     onClick={onAddressClick}>
-                    {squeak.getIsAuthorKnown()
-                      ? squeak.getAuthorName()
-                      : squeak.getAuthorAddress()}
+                    {getAddressDisplay()}
                   </Link>
                 </Box>
             </Grid>
@@ -135,18 +190,7 @@ export default function SqueakThreadItem({
             alignItems="flex-start"
           >
             <Grid item>
-                <Box color="secondary.main" fontWeight="fontWeightBold">
-                  {moment(squeak.getBlockTime()*1000).fromNow()}
-                  <span> </span>(Block
-                  <Link
-                    href={blockDetailUrl}
-                    target="_blank"
-                    rel="noopener"
-                    onClick={(event) => event.stopPropagation()}>
-                    <span> </span>#{squeak.getBlockHeight()}
-                  </Link>
-                  )
-                </Box>
+              {SqueakTime()}
             </Grid>
           </Grid>
     </Box>
