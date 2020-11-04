@@ -114,6 +114,7 @@ export default function SqueakPage() {
           <SqueakThreadItem
             hash={squeakHash}
             key={squeakHash}
+            handleSqueakClick={() => goToSqueakPage(squeakHash)}
             squeak={null}>
           </SqueakThreadItem>
           <Divider />
