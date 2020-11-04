@@ -23,9 +23,11 @@ from squeaknode.server.squeak_server_servicer import SqueakServerServicer
 from squeaknode.config.config import Config
 
 
+SQK_DIR_NAME = ".sqk"
+
+
 logger = logging.getLogger(__name__)
 
-SQK_DIR_NAME = ".sqk"
 
 def load_lightning_client(config) -> LNDLightningClient:
     return LNDLightningClient(
@@ -73,23 +75,23 @@ def load_admin_web_server(config, handler) -> SqueakAdminWebServer:
 
 
 def load_network(config):
-    return config["squeaknode"]["network"]
+    return config.squeaknode_network
 
 
 def load_price(config):
-    return int(config["squeaknode"]["price"])
+    return config.squeaknode_price
 
 
 def load_database(config):
-    return config["squeaknode"]["database"]
+    return config.squeaknode_database
 
 
 def load_max_squeaks_per_address_per_hour(config):
-    return int(config["squeaknode"]["max_squeaks_per_address_per_hour"])
+    return config.squeaknode_max_squeaks_per_address_per_hour
 
 
 def load_enable_sync(config):
-    return config["squeaknode"].getboolean("enable_sync")
+    return config.squeaknode_enable_sync
 
 
 def load_handler(squeak_node):
@@ -104,7 +106,7 @@ def load_admin_handler(lightning_client, squeak_node):
 
 
 def load_sqk_dir_path(config):
-    sqk_dir = config.get("squeaknode", "sqk_dir", fallback=None)
+    sqk_dir = config.squeaknode_sqk_dir
     if sqk_dir:
         return Path(sqk_dir)
     else:
@@ -220,20 +222,20 @@ def main():
 
 def run_server(config, new_config):
     # load the network
-    network = load_network(config)
+    network = load_network(new_config)
     logger.info("network: " + network)
     SelectParams(network)
 
     # load postgres db
-    squeak_db = load_db(config, network)
+    squeak_db = load_db(new_config, network)
     logger.info("squeak_db: " + str(squeak_db))
     squeak_db.init()
 
     # load the price
-    price = load_price(config)
+    price = load_price(new_config)
 
     # load the max squeaks per block per address
-    max_squeaks_per_address_per_hour = load_max_squeaks_per_address_per_hour(config)
+    max_squeaks_per_address_per_hour = load_max_squeaks_per_address_per_hour(new_config)
 
     # load the lightning client
     lightning_client = load_lightning_client(new_config)
@@ -244,7 +246,7 @@ def run_server(config, new_config):
     blockchain_client = load_blockchain_client(new_config)
 
     # load enable sync config
-    enable_sync = load_enable_sync(config)
+    enable_sync = load_enable_sync(new_config)
 
     # Create and start the squeak node
     squeak_node = SqueakNode(

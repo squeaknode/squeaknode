@@ -49,6 +49,14 @@ class Config:
         self._configs['webadmin_login_disabled'] = self._get_webadmin_login_disabled()
         self._configs['webadmin_allow_cors'] = self._get_webadmin_allow_cors()
 
+        # squeaknode
+        self._configs['squeaknode_network'] = self._get_squeaknode_network()
+        self._configs['squeaknode_price'] = self._get_squeaknode_price()
+        self._configs['squeaknode_max_squeaks_per_address_per_hour'] = self._get_squeaknode_max_squeaks_per_address_per_hour()
+        self._configs['squeaknode_database'] = self._get_squeaknode_database()
+        self._configs['squeaknode_sqk_dir'] = self._get_squeaknode_sqk_dir()
+        self._configs['squeaknode_enable_sync'] = self._get_squeaknode_enable_sync()
+
         for key, value in self._configs.items():
             setattr(self, key, value)
 
@@ -128,3 +136,21 @@ class Config:
     def _get_webadmin_allow_cors(self):
         return environ.get('WEBADMIN_ALLOW_CORS') \
             or self.parser.getboolean("webadmin", "allow_cors", fallback=False)
+
+    def _get_squeaknode_network(self):
+        return self.parser.get("squeaknode", "network", fallback="testnet")
+
+    def _get_squeaknode_price(self):
+        return int(self.parser.get("squeaknode", "price", fallback="10"))
+
+    def _get_squeaknode_max_squeaks_per_address_per_hour(self):
+        return int(self.parser.get("squeaknode", "max_squeaks_per_address_per_hour", fallback="100"))
+
+    def _get_squeaknode_database(self):
+        return self.parser.get("squeaknode", "database", fallback="sqlite")
+
+    def _get_squeaknode_sqk_dir(self):
+        return self.parser.get("squeaknode", "sqk_dir", fallback=None)
+
+    def _get_squeaknode_enable_sync(self):
+        return self.parser.getboolean("squeaknode", "enable_sync", fallback=False)
