@@ -110,6 +110,7 @@ export default function MakeSqueakDialog({
     return (
       <>
         <SqueakThreadItem
+          hash={replytoSqueak.getSqueakHash()}
           squeak={replytoSqueak}>
         </SqueakThreadItem>
       </>

@@ -21,64 +21,114 @@ import ReplyIcon from '@material-ui/icons/Reply';
 import RepeatIcon from '@material-ui/icons/Repeat';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import DeleteIcon from '@material-ui/icons/Delete';
+import DownloadIcon from '@material-ui/icons/CloudDownload';
 
 // styles
 import useStyles from "./styles";
 
 import Widget from "../../components/Widget";
+import MakeSqueakDialog from "../../components/MakeSqueakDialog";
+import DeleteSqueakDialog from "../../components/DeleteSqueakDialog";
+
+import {
+  syncSqueakRequest,
+} from "../../squeakclient/requests"
 
 import moment from 'moment';
 
 export default function SqueakDetailItem({
+  hash,
   squeak,
-  handleAddressClick,
-  handleSqueakClick,
   handleReplyClick,
   handleDeleteClick,
-  handleUnlockClick,
   ...props
 }) {
   var classes = useStyles();
 
-  // local
-  // var [moreButtonRef, setMoreButtonRef] = useState(null);
-  // var [isMoreMenuOpen, setMoreMenuOpen] = useState(false);
-
   const history = useHistory();
+  const [replyDialogOpen, setReplyDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
-  const blockDetailUrl = "https://blockstream.info/testnet/block/" + squeak.getBlockHash();
+  const handleClickOpen = () => {
+    setReplyDialogOpen(true);
+  };
+
+  const handleClose = () => {
+     setReplyDialogOpen(false);
+  };
+
+  const handleClickOpenDeleteDialog = () => {
+    setDeleteDialogOpen(true);
+    console.log("deleteDialogOpen: " + deleteDialogOpen);
+  };
+
+  const handleCloseDeleteDialog = () => {
+     setDeleteDialogOpen(false);
+  };
+
+  const goToSqueakAddressPage = () => {
+    history.push("/app/squeakaddress/" + squeak.getAuthorAddress());
+  };
+
+  const goToBuyPage = (hash) => {
+    history.push("/app/buy/" + hash);
+  };
+
+  const reloadRoute = () => {
+    history.go(0);
+  };
+
+  const blockDetailUrl = () => {
+    return "https://blockstream.info/testnet/block/" + squeak.getBlockHash();
+  };
 
   const onAddressClick = (event) => {
     event.preventDefault();
     event.stopPropagation();
     console.log("Handling address click...");
-    if (handleAddressClick) {
-      handleAddressClick();
+    if (!squeak) {
+      return;
     }
+    goToSqueakAddressPage(squeak.getAuthorAddress());
   }
 
   const onReplyClick = (event) => {
     event.preventDefault();
     console.log("Handling reply click...");
-    if (handleReplyClick) {
-      handleReplyClick();
+    if (!squeak) {
+      return;
     }
+    handleClickOpen();
   }
 
   const onDeleteClick = (event) => {
     event.preventDefault();
     console.log("Handling delete click...");
-    if (handleDeleteClick) {
-      handleDeleteClick();
+    if (!squeak) {
+      return;
     }
+    handleClickOpenDeleteDialog();
   }
 
   const onUnlockClick = (event) => {
     event.preventDefault();
     console.log("Handling unlock click...");
-    if (handleUnlockClick) {
-      handleUnlockClick();
+    if (!squeak) {
+      return;
     }
+    goToBuyPage(squeak.getSqueakHash());
+  }
+
+  const onDownloadClick = (event) => {
+    event.preventDefault();
+    console.log("Handling download click...");
+    // goToBuyPage(squeak.getSqueakHash());
+    console.log("syncSqueakRequest with hash: " + hash);
+    syncSqueakRequest(hash, (response) => {
+      console.log("response:");
+      console.log(response);
+      reloadRoute();
+    });
   }
 
   function SqueakUnlockedContent() {
@@ -105,7 +155,28 @@ export default function SqueakDetailItem({
     )
   }
 
+  function SqueakMissingContent() {
+    return (
+      <>
+        <DownloadIcon />
+        <Button
+          variant="contained"
+          onClick={onDownloadClick}
+          >Download
+        </Button>
+      </>
+    )
+  }
+
   function SqueakContent() {
+    if (!squeak) {
+      return (
+        <>
+          {SqueakMissingContent()}
+        </>
+      )
+    }
+
     return (
       <>
       {squeak.getIsUnlocked()
@@ -125,12 +196,74 @@ export default function SqueakDetailItem({
   }
 
   function SqueakBackgroundColor() {
+    if (!squeak) {
+      return SqueakLockedBackgroundColor();
+    }
     return squeak.getIsUnlocked()
             ? SqueakUnlockedBackgroundColor()
             : SqueakLockedBackgroundColor()
   }
 
+  function getAddressDisplay() {
+    if (!squeak) {
+      return "Author unknown"
+    }
+    return squeak.getIsAuthorKnown()
+      ? squeak.getAuthorName()
+      : squeak.getAuthorAddress()
+  }
+
+  function SqueakTime() {
+    if (!squeak) {
+      return (
+        <Box color="secondary.main" fontWeight="fontWeightBold">
+          Unknown time
+        </Box>
+      )
+    }
+
+    return (
+      <Box color="secondary.main" fontWeight="fontWeightBold">
+        {moment(squeak.getBlockTime()*1000).fromNow()}
+        <span> </span>(Block
+        <Link
+          href={blockDetailUrl()}
+          target="_blank"
+          rel="noopener"
+          onClick={(event) => event.stopPropagation()}>
+          <span> </span>#{squeak.getBlockHeight()}
+        </Link>
+        )
+      </Box>
+    )
+  }
+
+  function MakeSqueakDialogContent() {
+    return (
+      <>
+        <MakeSqueakDialog
+          open={replyDialogOpen}
+          handleClose={handleClose}
+          replytoSqueak={squeak}
+          ></MakeSqueakDialog>
+      </>
+    )
+  }
+
+  function DeleteSqueakDialogContent() {
+    return (
+      <>
+        <DeleteSqueakDialog
+          open={deleteDialogOpen}
+          handleClose={handleCloseDeleteDialog}
+          squeakToDelete={squeak}
+          ></DeleteSqueakDialog>
+      </>
+    )
+  }
+
   return (
+    <>
     <Box
       p={1}
       m={0}
@@ -146,9 +279,7 @@ export default function SqueakDetailItem({
                 <Box fontWeight="fontWeightBold">
                   <Link href="#"
                     onClick={onAddressClick}>
-                    {squeak.getIsAuthorKnown()
-                      ? squeak.getAuthorName()
-                      : squeak.getAuthorAddress()}
+                    {getAddressDisplay()}
                   </Link>
                 </Box>
             </Grid>
@@ -170,14 +301,7 @@ export default function SqueakDetailItem({
             alignItems="flex-start"
           >
             <Grid item>
-                <Box color="secondary.main" fontWeight="fontWeightBold">
-                  {moment(squeak.getBlockTime()*1000).format('MMMM Do YYYY, h:mm:ss a')}
-                  <span> </span>(Block
-                  <Link href={blockDetailUrl}>
-                    <span> </span>#{squeak.getBlockHeight()}
-                  </Link>
-                  )
-                </Box>
+              {SqueakTime()}
             </Grid>
           </Grid>
           <Divider />
@@ -219,5 +343,8 @@ export default function SqueakDetailItem({
             </Grid>
           </Grid>
     </Box>
+    {MakeSqueakDialogContent()}
+    {DeleteSqueakDialogContent()}
+    </>
   )
 }

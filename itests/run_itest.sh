@@ -7,7 +7,7 @@ function mine_blocks {
     while true; do
 	printf "Mining 1 block to address: $MINING_ADDRESS ..."
 	docker-compose run btcctl generate 1
-	sleep 10
+	sleep 1
     done
 }
 
@@ -26,7 +26,7 @@ do
     echo "new_address_output:"
     echo $new_address_output
     client_address=$(echo $new_address_output | jq .address -r)
-    sleep 10
+    sleep 1
 done
 
 MINING_ADDRESS=$client_address docker-compose up -d btcd

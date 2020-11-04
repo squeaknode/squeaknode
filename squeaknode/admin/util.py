@@ -88,3 +88,13 @@ def sent_payment_to_message(sent_payment):
         node_pubkey=sent_payment.node_pubkey,
         preimage_is_valid=sent_payment.preimage_is_valid,
     )
+
+
+def sync_result_to_message(sync_result):
+    if sync_result is None:
+        return None
+    return squeak_admin_pb2.SyncResult(
+        completed_peer_ids=sync_result.completed_peer_ids,
+        failed_peer_ids=sync_result.failed_peer_ids,
+        timeout_peer_ids=sync_result.timeout_peer_ids,
+    )

@@ -139,6 +139,9 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
     def SyncSqueaks(self, request, context):
         return self.handler.handle_sync_squeaks(request)
 
+    def SyncSqueak(self, request, context):
+        return self.handler.handle_sync_squeak(request)
+
     def PayOffer(self, request, context):
         return self.handler.handle_pay_offer(request)
 
@@ -147,9 +150,6 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
 
     def GetSentPayment(self, request, context):
         return self.handler.handle_get_sent_payment(request)
-
-    def DownloadSqueak(self, request, context):
-        return self.handler.handle_download_squeak(request)
 
     def serve(self):
         server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))

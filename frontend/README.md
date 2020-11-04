@@ -17,12 +17,10 @@
 ## Run in dev mode
 
 - [Build protos](#build-protos)
-- Edit **config.ini** and add the following configs in the `webadmin` section
+- Start the squeak server with the `WEBADMIN_LOGIN_DISABLED` and `WEBADMIN_ALLOW_CORS` environment variables:
 	```
-	login_disabled=true
-	allow_cors=true
+	$ WEBADMIN_LOGIN_DISABLED=TRUE WEBADMIN_ALLOW_CORS=TRUE docker-compose up
 	```
-- Start the squeak server.
 - Start the frontend in dev mode with the `REACT_APP_SERVER_PORT` environment variable.
 	```
 	$ npm install
@@ -38,3 +36,6 @@
 	$ npm run build
 	```
 - Copy the generated `build` folder into `squeaknode/admin/webapp/static/`.
+	```
+	$ cp -r build/ ../squeaknode/admin/webapp/static/
+	```

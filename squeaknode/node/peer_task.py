@@ -16,22 +16,23 @@ LOOKUP_BLOCK_INTERVAL = 1008  # 1 week
 class PeerSyncTask:
     def __init__(
         self,
-        peer,
+        peer_connection,
         squeak_store,
         postgres_db,
         lightning_client,
     ):
-        self.peer = peer
+        self.peer_connection = peer_connection
         self.squeak_store = squeak_store
         self.postgres_db = postgres_db
         self.lightning_client = lightning_client
 
-        self.peer_client = PeerClient(
-            self.peer.host,
-            self.peer.port,
-        )
+    @property
+    def peer(self):
+        return self.peer_connection.peer
 
-        self._stop_event = threading.Event()
+    @property
+    def peer_client(self):
+        return self.peer_connection.peer_client
 
     def download(
         self,
@@ -45,7 +46,8 @@ class PeerSyncTask:
         max_block = block_height
 
         # Get remote hashes
-        remote_hashes = self._get_remote_hashes(addresses, min_block, max_block)
+        lookup_result = self._get_remote_hashes(addresses, min_block, max_block)
+        remote_hashes = lookup_result.hashes
         logger.debug("Got remote hashes: {}".format(len(remote_hashes)))
         for hash in remote_hashes:
             logger.debug("remote hash: {}".format(hash.hex()))
@@ -65,7 +67,7 @@ class PeerSyncTask:
         # Download squeaks for the hashes
         # TODO: catch exception downloading individual squeak
         for hash in hashes_to_download:
-            if self.stopped():
+            if self.peer_connection.stopped():
                 return
             self._download_squeak(hash)
 
@@ -84,7 +86,7 @@ class PeerSyncTask:
         # Download offers for the hashes
         # TODO: catch exception downloading individual squeak
         for hash in hashes_to_get_offer:
-            if self.stopped():
+            if self.peer_connection.stopped():
                 return
             self._download_offer(hash)
 
@@ -100,7 +102,9 @@ class PeerSyncTask:
         max_block = block_height
 
         # Get remote hashes
-        remote_hashes = self._get_remote_hashes(addresses, min_block, max_block)
+        lookup_result = self._get_remote_hashes(addresses, min_block, max_block)
+        remote_hashes = lookup_result.hashes
+        allowed_addresses = lookup_result.allowed_addresses
         logger.debug("Got remote hashes: {}".format(len(remote_hashes)))
         for hash in remote_hashes:
             logger.debug("remote hash: {}".format(hash.hex()))
@@ -120,9 +124,9 @@ class PeerSyncTask:
         # Upload squeaks for the hashes
         # TODO: catch exception uploading individual squeak
         for hash in hashes_to_upload:
-            if self.stopped():
+            if self.peer_connection.stopped():
                 return
-            self._upload_squeak(hash)
+            self._upload_squeak(hash, allowed_addresses)
 
     def download_single_squeak(self, squeak_hash):
         # Download squeak if not already present.
@@ -134,6 +138,12 @@ class PeerSyncTask:
         saved_offer = self._get_saved_offer(squeak_hash)
         if not saved_offer:
             self._download_offer(squeak_hash)
+
+    def upload_single_squeak(self, squeak_hash):
+        # Download squeak if not already present.
+        saved_squeak = self._get_saved_squeak(squeak_hash)
+        if saved_squeak:
+            self._upload_squeak(squeak_hash)
 
     def get_offer(self, squeak_hash):
         logger.info("Getting offer for squeak hash: {}".format(squeak_hash.hex()))
@@ -169,12 +179,6 @@ class PeerSyncTask:
         # Save the offer
         self._save_offer(decoded_offer)
 
-    def stop(self):
-        self._stop_event.set()
-
-    def stopped(self):
-        return self._stop_event.is_set()
-
     def _get_local_hashes(self, addresses, min_block, max_block):
         return self.squeak_store.lookup_squeaks_include_locked(
             addresses,
@@ -197,7 +201,7 @@ class PeerSyncTask:
         return self.peer_client.lookup_squeaks(addresses, min_block, max_block)
 
     def _save_squeak(self, squeak):
-        self.squeak_store.save_downloaded_squeak(squeak)
+        self.squeak_store.save_squeak(squeak, verify=True, skip_whitelist_check=True)
 
     def _get_saved_squeak(self, squeak_hash):
         return self.squeak_store.get_squeak(squeak_hash)
@@ -222,13 +226,14 @@ class PeerSyncTask:
         self.get_offer(squeak_hash)
 
     def _get_local_squeak(self, squeak_hash):
-        squeak_entry = self.squeak_store.get_squeak(squeak_hash)
-        return squeak_entry.squeak
+        return self.squeak_store.get_squeak(squeak_hash)
 
-    def _upload_squeak(self, squeak_hash):
-        logger.info("Uploading squeak: {}".format(squeak_hash.hex()))
+    def _upload_squeak(self, squeak_hash, allowed_addresses):
         squeak = self._get_local_squeak(squeak_hash)
-        self.peer_client.post_squeak(squeak)
+        squeak_address = str(squeak.GetAddress())
+        if squeak_address in allowed_addresses:
+            logger.info("Uploading squeak: {}".format(squeak_hash.hex()))
+            self.peer_client.post_squeak(squeak)
 
     def _get_sharing_addresses(self):
         sharing_profiles = self.postgres_db.get_sharing_profiles()

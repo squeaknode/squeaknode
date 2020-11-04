@@ -29,7 +29,7 @@ class PeerClient:
                     max_block=max_block,
                 )
             )
-            return lookup_response.hashes
+            return lookup_response
 
     def post_squeak(self, squeak):
         squeak_msg = self._build_squeak_msg(squeak)
@@ -53,8 +53,8 @@ class PeerClient:
 
     def buy_squeak(self, squeak_hash, challenge):
         with self.get_stub() as stub:
-            buy_response = stub.BuySqueak(
-                squeak_server_pb2.BuySqueakRequest(
+            buy_response = stub.GetOffer(
+                squeak_server_pb2.GetOfferRequest(
                     hash=squeak_hash,
                     challenge=challenge,
                 )

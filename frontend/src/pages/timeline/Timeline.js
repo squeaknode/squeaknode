@@ -51,10 +51,6 @@ export default function TimelinePage() {
     history.push("/app/squeakaddress/" + squeakAddress);
   };
 
-  const goToSqueakPage = (hash) => {
-    history.push("/app/squeak/" + hash);
-  };
-
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -97,8 +93,7 @@ export default function TimelinePage() {
             >
           <SqueakThreadItem
             key={squeak.getSqueakHash()}
-            handleAddressClick={() => goToSqueakAddressPage(squeak.getAuthorAddress())}
-            handleSqueakClick={() => goToSqueakPage(squeak.getSqueakHash())}
+            hash={squeak.getSqueakHash()}
             squeak={squeak}>
           </SqueakThreadItem>
           </Box>

@@ -76,7 +76,6 @@ class SqueakNode:
             self.lightning_client,
         )
         self.squeak_peer_sync_worker = SqueakPeerSyncWorker(
-            postgres_db,
             self.squeak_sync_controller,
         )
         self.squeak_expired_offer_cleaner = SqueakExpiredOfferCleaner(
@@ -94,24 +93,26 @@ class SqueakNode:
         self.squeak_offer_expiry_worker.start_running()
 
     def save_uploaded_squeak(self, squeak):
-        return self.squeak_store.save_uploaded_squeak(squeak)
+        return self.squeak_store.save_squeak(squeak)
 
     def save_created_squeak(self, squeak):
-        return self.squeak_store.save_created_squeak(squeak)
+        return self.squeak_store.save_squeak(squeak, verify=True, skip_whitelist_check=True)
 
     def get_public_squeak(self, squeak_hash):
-        return self.squeak_store.get_public_squeak(squeak_hash)
+        return self.squeak_store.get_squeak(squeak_hash, clear_decryption_key=True)
 
-    def get_squeak_entry(self, squeak_hash):
-        return self.squeak_store.get_squeak(squeak_hash)
+    # def get_squeak_entry(self, squeak_hash):
+    #     return self.squeak_store.get_squeak(squeak_hash)
 
     def lookup_squeaks(self, addresses, min_block, max_block):
         return self.squeak_store.lookup_squeaks(addresses, min_block, max_block)
 
+    def lookup_allowed_addresses(self, addresses):
+        return self.squeak_whitelist.get_allowed_addresses(addresses)
+
     def get_buy_offer(self, squeak_hash, challenge):
         # Get the squeak from the database
-        squeak_entry = self.squeak_store.get_squeak(squeak_hash)
-        squeak = squeak_entry.squeak
+        squeak = self.squeak_store.get_squeak(squeak_hash)
         # Get the decryption key from the squeak
         decryption_key = squeak.GetDecryptionKey()
         # Solve the proof
@@ -328,14 +329,14 @@ class SqueakNode:
         )
 
     def sync_squeaks(self):
-        self.squeak_peer_sync_worker.sync_peers()
+        return self.squeak_sync_controller.sync_timeline()
+
+    def sync_squeak(self, squeak_hash):
+        peers = self.postgres_db.get_peers()
+        return self.squeak_sync_controller.sync_single_squeak(squeak_hash, peers)
 
     def get_sent_payments(self):
         return self.postgres_db.get_sent_payments()
 
     def get_sent_payment(self, sent_payment_id):
         return self.postgres_db.get_sent_payment(sent_payment_id)
-
-    def download_squeak(self, squeak_hash):
-        peers = self.postgres_db.get_peers()
-        self.squeak_sync_controller.download_single_squeak_from_peers(squeak_hash, peers)

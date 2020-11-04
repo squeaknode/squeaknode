@@ -40,7 +40,7 @@ def test_post_squeak(
     )
 
     # Wait a few seconds for the squeak to be verified on the server.
-    time.sleep(5)
+    time.sleep(1)
 
     # Get the same squeak from the server
     get_response = server_stub.GetSqueak(
@@ -146,8 +146,8 @@ def test_sell_squeak(server_stub, admin_stub, lightning_client, saved_squeak_has
     challenge = get_challenge(encryption_key, expected_proof)
 
     # Buy the squeak data key
-    buy_response = server_stub.BuySqueak(
-        squeak_server_pb2.BuySqueakRequest(
+    buy_response = server_stub.GetOffer(
+        squeak_server_pb2.GetOfferRequest(
             hash=saved_squeak_hash,
             challenge=challenge,
         )
@@ -619,8 +619,8 @@ def test_list_channels(server_stub, admin_stub, lightning_client, saved_squeak_h
     challenge = get_challenge(encryption_key, expected_proof)
 
     # Buy the squeak data key
-    buy_response = server_stub.BuySqueak(
-        squeak_server_pb2.BuySqueakRequest(
+    buy_response = server_stub.GetOffer(
+        squeak_server_pb2.GetOfferRequest(
             hash=saved_squeak_hash,
             challenge=challenge,
         )
@@ -652,7 +652,7 @@ def test_list_channels(server_stub, admin_stub, lightning_client, saved_squeak_h
 def test_send_coins(server_stub, admin_stub, lightning_client):
     new_address_response = admin_stub.LndNewAddress(ln.NewAddressRequest())
     send_coins_response = lightning_client.send_coins(new_address_response.address, 55555555)
-    time.sleep(40)
+    time.sleep(10)
     get_transactions_response = admin_stub.LndGetTransactions(ln.GetTransactionsRequest())
 
     assert any([
@@ -674,8 +674,8 @@ def test_list_peers(server_stub, admin_stub, lightning_client, saved_squeak_hash
     challenge = get_challenge(encryption_key, expected_proof)
 
     # Buy the squeak data key
-    buy_response = server_stub.BuySqueak(
-        squeak_server_pb2.BuySqueakRequest(
+    buy_response = server_stub.GetOffer(
+        squeak_server_pb2.GetOfferRequest(
             hash=saved_squeak_hash,
             challenge=challenge,
         )
@@ -728,8 +728,8 @@ def test_open_channel(server_stub, admin_stub, lightning_client, saved_squeak_ha
     challenge = get_challenge(encryption_key, expected_proof)
 
     # Buy the squeak data key
-    buy_response = server_stub.BuySqueak(
-        squeak_server_pb2.BuySqueakRequest(
+    buy_response = server_stub.GetOffer(
+        squeak_server_pb2.GetOfferRequest(
             hash=saved_squeak_hash,
             challenge=challenge,
         )
@@ -839,10 +839,12 @@ def test_connect_other_node(server_stub, admin_stub, other_server_stub, other_ad
     )
 
     # Sync squeaks
-    other_admin_stub.SyncSqueaks(
+    sync_squeaks_response = other_admin_stub.SyncSqueaks(
         squeak_admin_pb2.SyncSqueaksRequest(),
     )
-    time.sleep(10)
+    #time.sleep(10)
+    print(sync_squeaks_response)
+    assert peer_id in sync_squeaks_response.sync_result.completed_peer_ids
 
     # Get the buy offer
     get_buy_offers_response = other_admin_stub.GetBuyOffers(
@@ -971,12 +973,14 @@ def test_download_single_squeak(server_stub, admin_stub, other_server_stub, othe
     assert len(get_buy_offers_response.offers) == 0
 
     # Download squeak
-    other_admin_stub.DownloadSqueak(
-        squeak_admin_pb2.DownloadSqueakRequest(
+    sync_squeak_response = other_admin_stub.SyncSqueak(
+        squeak_admin_pb2.SyncSqueakRequest(
             squeak_hash=saved_squeak_hash.hex(),
         ),
     )
-    time.sleep(10)
+    # time.sleep(10)
+    print(sync_squeak_response)
+    assert peer_id in sync_squeak_response.sync_result.completed_peer_ids
 
     # Get the squeak display item
     get_squeak_display_response = other_admin_stub.GetSqueakDisplay(
