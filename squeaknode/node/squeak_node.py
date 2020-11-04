@@ -93,10 +93,10 @@ class SqueakNode:
         self.squeak_offer_expiry_worker.start_running()
 
     def save_uploaded_squeak(self, squeak):
-        return self.squeak_store.save_uploaded_squeak(squeak)
+        return self.squeak_store.save_squeak(squeak)
 
     def save_created_squeak(self, squeak):
-        return self.squeak_store.save_created_squeak(squeak)
+        return self.squeak_store.save_squeak(squeak, verify=True, skip_whitelist_check=True)
 
     def get_public_squeak(self, squeak_hash):
         return self.squeak_store.get_public_squeak(squeak_hash)

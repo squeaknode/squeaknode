@@ -167,9 +167,12 @@ class SqueakDb:
             else None,
         )
         with self.get_connection() as connection:
-            res = connection.execute(ins)
-            squeak_hash = res.inserted_primary_key[0]
-            return bytes.fromhex(squeak_hash)
+            try:
+                res = connection.execute(ins)
+                inserted_squeak_hash = res.inserted_primary_key[0]
+            except sqlalchemy.exc.IntegrityError:
+                pass
+            return get_hash(squeak)
 
     def get_squeak_entry(self, squeak_hash):
         """ Get a squeak. """
