@@ -15,8 +15,6 @@ class Config:
         self.parser.read(config_path)
         self._configs = dict()
 
-        self._configs['foobar'] = 123
-
         # bitcoin
         self._configs['bitcoin_rpc_host'] = self._get_bitcoin_rpc_host()
         self._configs['bitcoin_rpc_port'] = self._get_bitcoin_rpc_port()
@@ -56,6 +54,12 @@ class Config:
         self._configs['squeaknode_database'] = self._get_squeaknode_database()
         self._configs['squeaknode_sqk_dir'] = self._get_squeaknode_sqk_dir()
         self._configs['squeaknode_enable_sync'] = self._get_squeaknode_enable_sync()
+
+        # postgresql
+        self._configs['postgresql_user'] = self._get_postgresql_user()
+        self._configs['postgresql_password'] = self._get_postgresql_password()
+        self._configs['postgresql_host'] = self._get_postgresql_host()
+        self._configs['postgresql_database'] = self._get_postgresql_database()
 
         for key, value in self._configs.items():
             setattr(self, key, value)
@@ -154,3 +158,15 @@ class Config:
 
     def _get_squeaknode_enable_sync(self):
         return self.parser.getboolean("squeaknode", "enable_sync", fallback=False)
+
+    def _get_postgresql_user(self):
+        return self.parser.get("postgresql", "user")
+
+    def _get_postgresql_password(self):
+        return self.parser.get("postgresql", "password")
+
+    def _get_postgresql_host(self):
+        return self.parser.get("postgresql", "host")
+
+    def _get_postgresql_database(self):
+        return self.parser.get("postgresql", "database")

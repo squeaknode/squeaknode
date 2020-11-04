@@ -118,10 +118,10 @@ def load_db(config, network):
     logger.info("database: " + database)
     if database == "postgresql":
         engine = get_postgres_engine(
-            config["postgresql"]["user"],
-            config["postgresql"]["password"],
-            config["postgresql"]["host"],
-            config["postgresql"]["database"],
+            config.postgresql_user,
+            config.postgresql_password,
+            config.postgresql_host,
+            config.postgresql_database,
         )
         return SqueakDb(engine, schema=network)
     elif database == "sqlite":
@@ -213,9 +213,6 @@ def main():
 
     new_config = Config(args.config)
     logger.info("config: {}".format(new_config))
-    logger.info("config.configs: {}".format(new_config.configs))
-    logger.info("new_config.foobar: {}".format(new_config.foobar))
-    logger.info("new_config.bitcoin_rpc_host: {}".format(new_config.bitcoin_rpc_host))
 
     args.func(config, new_config)
 
