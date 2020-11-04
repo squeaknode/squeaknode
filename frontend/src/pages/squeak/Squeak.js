@@ -58,14 +58,6 @@ export default function SqueakPage() {
      setDeleteDialogOpen(false);
   };
 
-  const goToSqueakAddressPage = (squeakAddress) => {
-    history.push("/app/squeakaddress/" + squeakAddress);
-  };
-
-  const goToSqueakPage = (hash) => {
-    history.push("/app/squeak/" + hash);
-  };
-
   const goToBuyPage = (hash) => {
     history.push("/app/buy/" + hash);
   };
@@ -117,7 +109,6 @@ export default function SqueakPage() {
           <SqueakThreadItem
             hash={squeakHash}
             key={squeakHash}
-            handleSqueakClick={() => goToSqueakPage(squeakHash)}
             squeak={null}>
           </SqueakThreadItem>
           <Divider />
@@ -136,9 +127,8 @@ export default function SqueakPage() {
             key={ancestorSqueak.getSqueakHash()}
             >
           <SqueakThreadItem
-            hash={squeak.getSqueakHash()}
+            hash={ancestorSqueak.getSqueakHash()}
             key={ancestorSqueak.getSqueakHash()}
-            handleSqueakClick={() => goToSqueakPage(ancestorSqueak.getSqueakHash())}
             squeak={ancestorSqueak}>
           </SqueakThreadItem>
           <Divider />

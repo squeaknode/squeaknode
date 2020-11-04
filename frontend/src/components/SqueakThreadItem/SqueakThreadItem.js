@@ -27,7 +27,6 @@ export default function SqueakThreadItem({
   hash,
   squeak,
   handleAddressClick,
-  handleSqueakClick,
   ...props
 }) {
   var classes = useStyles();
@@ -36,6 +35,10 @@ export default function SqueakThreadItem({
 
   const blockDetailUrl = () => {
     return "https://blockstream.info/testnet/block/" + squeak.getBlockHash();
+  };
+
+  const goToSqueakPage = (hash) => {
+    history.push("/app/squeak/" + hash);
   };
 
   const onAddressClick = (event) => {
@@ -49,9 +52,9 @@ export default function SqueakThreadItem({
 
   const onSqueakClick = (event) => {
     event.preventDefault();
-    console.log("Handling squeak click...");
-    if (handleSqueakClick) {
-      handleSqueakClick();
+    console.log("Handling squeak click for hash: " + hash);
+    if (goToSqueakPage) {
+      goToSqueakPage(hash);
     }
   }
 
