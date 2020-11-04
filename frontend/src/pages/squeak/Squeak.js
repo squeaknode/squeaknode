@@ -79,6 +79,9 @@ export default function SqueakPage() {
         return null;
       }
       var oldestKnownAncestor = ancestorSqueaks[0];
+      if (!oldestKnownAncestor) {
+        return null;
+      }
       console.log(oldestKnownAncestor);
       console.log("oldestKnownAncestor");
       return oldestKnownAncestor.getReplyTo();
