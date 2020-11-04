@@ -62,13 +62,7 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
         )
 
     def LookupSqueaks(self, request, context):
-        addresses = request.addresses
-        min_block = request.min_block
-        max_block = request.max_block
-        hashes = self.handler.handle_lookup_squeaks(addresses, min_block, max_block)
-        return squeak_server_pb2.LookupSqueaksReply(
-            hashes=hashes,
-        )
+        return self.handler.handle_lookup_squeaks(request)
 
     def BuySqueak(self, request, context):
         squeak_hash = request.hash
