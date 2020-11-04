@@ -198,7 +198,7 @@ class PeerSyncTask:
         return self.peer_client.lookup_squeaks(addresses, min_block, max_block)
 
     def _save_squeak(self, squeak):
-        self.squeak_store.save_downloaded_squeak(squeak)
+        self.squeak_store.save_squeak(squeak, verify=True, skip_whitelist_check=True)
 
     def _get_saved_squeak(self, squeak_hash):
         return self.squeak_store.get_squeak(squeak_hash)
