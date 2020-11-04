@@ -30,7 +30,7 @@ export default function SqueakPage() {
   const history = useHistory();
   const { hash } = useParams();
   const [squeak, setSqueak] = useState(null);
-  const [ancestorSqueaks, setAncestorSqueaks] = useState(null);
+  const [ancestorSqueaks, setAncestorSqueaks] = useState([]);
   const [open, setOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
@@ -138,7 +138,6 @@ export default function SqueakPage() {
           <SqueakThreadItem
             hash={squeak.getSqueakHash()}
             key={ancestorSqueak.getSqueakHash()}
-            handleAddressClick={() => goToSqueakAddressPage(ancestorSqueak.getAuthorAddress())}
             handleSqueakClick={() => goToSqueakPage(ancestorSqueak.getSqueakHash())}
             squeak={ancestorSqueak}>
           </SqueakThreadItem>
@@ -156,8 +155,7 @@ export default function SqueakPage() {
         {AncestorsContent()}
         <div>
           <SqueakDetailItem
-            key={squeak.getSqueakHash()}
-            handleAddressClick={() => goToSqueakAddressPage(squeak.getAuthorAddress())}
+            key={hash}
             handleReplyClick={handleClickOpen}
             handleDeleteClick={showDeleteDialog}
             handleUnlockClick={() => goToBuyPage(squeak.getSqueakHash())}
@@ -197,10 +195,7 @@ export default function SqueakPage() {
   return (
     <>
       <PageTitle title="Squeak" />
-      {(squeak && ancestorSqueaks)
-        ? SqueakContent()
-        : NoSqueakContent()
-      }
+      {SqueakContent()}
     </>
   );
 }
