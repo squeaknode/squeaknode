@@ -45,16 +45,16 @@ def load_lightning_host_port(config) -> LNDLightningClient:
 
 def load_rpc_server(config, handler) -> SqueakServerServicer:
     return SqueakServerServicer(
-        config["server"]["rpc_host"],
-        config["server"]["rpc_port"],
+        config.server_rpc_host,
+        config.server_rpc_port,
         handler,
     )
 
 
 def load_admin_rpc_server(config, handler) -> SqueakAdminServerServicer:
     return SqueakAdminServerServicer(
-        config["admin"]["rpc_host"],
-        config["admin"]["rpc_port"],
+        config.admin_rpc_host,
+        config.admin_rpc_port,
         handler,
     )
 
@@ -260,7 +260,7 @@ def run_server(config, new_config):
 
     # start admin rpc server
     admin_handler = load_admin_handler(lightning_client, squeak_node)
-    admin_rpc_server = load_admin_rpc_server(config, admin_handler)
+    admin_rpc_server = load_admin_rpc_server(new_config, admin_handler)
     start_admin_rpc_server(admin_rpc_server)
 
     # start admin web server
@@ -271,7 +271,7 @@ def run_server(config, new_config):
 
     # start rpc server
     handler = load_handler(squeak_node)
-    server = load_rpc_server(config, handler)
+    server = load_rpc_server(new_config, handler)
     server.serve()
 
 

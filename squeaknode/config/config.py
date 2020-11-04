@@ -30,6 +30,14 @@ class Config:
         self._configs['lnd_tls_cert_path'] = self._get_lnd_tls_cert_path()
         self._configs['lnd_macaroon_path'] = self._get_lnd_macaroon_path()
 
+        # server
+        self._configs['server_rpc_host'] = self._get_server_rpc_host()
+        self._configs['server_rpc_port'] = self._get_server_rpc_port()
+
+        # admin
+        self._configs['admin_rpc_host'] = self._get_admin_rpc_host()
+        self._configs['admin_rpc_port'] = self._get_admin_rpc_port()
+
         for key, value in self._configs.items():
             setattr(self, key, value)
 
@@ -70,3 +78,15 @@ class Config:
 
     def _get_lnd_macaroon_path(self):
         return self.parser["lnd"]["macaroon_path"]
+
+    def _get_server_rpc_host(self):
+        return self.parser["server"]["rpc_host"]
+
+    def _get_server_rpc_port(self):
+        return self.parser["server"]["rpc_port"]
+
+    def _get_admin_rpc_host(self):
+        return self.parser["admin"]["rpc_host"]
+
+    def _get_admin_rpc_port(self):
+        return self.parser["admin"]["rpc_port"]
