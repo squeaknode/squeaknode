@@ -223,8 +223,7 @@ class PeerSyncTask:
         self.get_offer(squeak_hash)
 
     def _get_local_squeak(self, squeak_hash):
-        squeak_entry = self.squeak_store.get_squeak(squeak_hash)
-        return squeak_entry.squeak
+        return self.squeak_store.get_squeak(squeak_hash)
 
     def _upload_squeak(self, squeak_hash):
         logger.info("Uploading squeak: {}".format(squeak_hash.hex()))

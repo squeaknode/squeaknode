@@ -29,16 +29,13 @@ class SqueakStore:
             self.squeak_block_verifier.add_squeak_to_queue(inserted_squeak_hash)
         return inserted_squeak_hash
 
-    def get_squeak(self, squeak_hash):
-        return self.postgres_db.get_squeak_entry(squeak_hash)
-
-    def get_public_squeak(self, squeak_hash):
+    def get_squeak(self, squeak_hash, clear_decryption_key=False):
         squeak_entry = self.postgres_db.get_squeak_entry(squeak_hash)
         if squeak_entry is None:
             return None
         squeak = squeak_entry.squeak
-        # Remove the decryption key before returning.
-        squeak.ClearDecryptionKey()
+        if clear_decryption_key:
+            squeak.ClearDecryptionKey()
         return squeak
 
     def get_squeak_entry_with_profile(self, squeak_hash):
