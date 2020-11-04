@@ -31,7 +31,7 @@ export default function SqueakPage() {
   const { hash } = useParams();
   const [squeak, setSqueak] = useState(null);
   const [ancestorSqueaks, setAncestorSqueaks] = useState([]);
-  const [replyDialogOpen, setReplyDialogOpen] = useState(false);
+  // const [replyDialogOpen, setReplyDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   const getSqueak = (hash) => {
@@ -41,13 +41,13 @@ export default function SqueakPage() {
       getAncestorSqueakDisplaysRequest(hash, setAncestorSqueaks);
   };
 
-  const handleClickOpen = () => {
-    setReplyDialogOpen(true);
-  };
-
-  const handleClose = () => {
-     setReplyDialogOpen(false);
-  };
+  // const handleClickOpen = () => {
+  //   setReplyDialogOpen(true);
+  // };
+  //
+  // const handleClose = () => {
+  //    setReplyDialogOpen(false);
+  // };
 
   const handleClickOpenDeleteDialog = () => {
     setDeleteDialogOpen(true);
@@ -142,28 +142,26 @@ export default function SqueakPage() {
         <div>
           <SqueakDetailItem
             key={hash}
-            handleReplyClick={handleClickOpen}
             handleDeleteClick={showDeleteDialog}
             squeak={squeak}>
           </SqueakDetailItem>
         </div>
-        {MakeSqueakDialogContent()}
         {DeleteSqueakDialogContent()}
       </>
     )
   }
 
-  function MakeSqueakDialogContent() {
-    return (
-      <>
-        <MakeSqueakDialog
-          open={replyDialogOpen}
-          handleClose={handleClose}
-          replytoSqueak={squeak}
-          ></MakeSqueakDialog>
-      </>
-    )
-  }
+  // function MakeSqueakDialogContent() {
+  //   return (
+  //     <>
+  //       <MakeSqueakDialog
+  //         open={replyDialogOpen}
+  //         handleClose={handleClose}
+  //         replytoSqueak={squeak}
+  //         ></MakeSqueakDialog>
+  //     </>
+  //   )
+  // }
 
   function DeleteSqueakDialogContent() {
     return (
