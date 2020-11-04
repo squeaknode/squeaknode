@@ -28,6 +28,7 @@ import useStyles from "./styles";
 
 import Widget from "../../components/Widget";
 import MakeSqueakDialog from "../../components/MakeSqueakDialog";
+import DeleteSqueakDialog from "../../components/DeleteSqueakDialog";
 
 import moment from 'moment';
 
@@ -40,12 +41,9 @@ export default function SqueakDetailItem({
 }) {
   var classes = useStyles();
 
-  // local
-  // var [moreButtonRef, setMoreButtonRef] = useState(null);
-  // var [isMoreMenuOpen, setMoreMenuOpen] = useState(false);
-
   const history = useHistory();
   const [replyDialogOpen, setReplyDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   const handleClickOpen = () => {
     setReplyDialogOpen(true);
@@ -53,6 +51,15 @@ export default function SqueakDetailItem({
 
   const handleClose = () => {
      setReplyDialogOpen(false);
+  };
+
+  const handleClickOpenDeleteDialog = () => {
+    setDeleteDialogOpen(true);
+    console.log("deleteDialogOpen: " + deleteDialogOpen);
+  };
+
+  const handleCloseDeleteDialog = () => {
+     setDeleteDialogOpen(false);
   };
 
   const goToSqueakAddressPage = () => {
@@ -89,9 +96,10 @@ export default function SqueakDetailItem({
   const onDeleteClick = (event) => {
     event.preventDefault();
     console.log("Handling delete click...");
-    if (handleDeleteClick) {
-      handleDeleteClick();
+    if (!squeak) {
+      return;
     }
+    handleClickOpenDeleteDialog();
   }
 
   const onUnlockClick = (event) => {
@@ -217,6 +225,18 @@ export default function SqueakDetailItem({
     )
   }
 
+  function DeleteSqueakDialogContent() {
+    return (
+      <>
+        <DeleteSqueakDialog
+          open={deleteDialogOpen}
+          handleClose={handleCloseDeleteDialog}
+          squeakToDelete={squeak}
+          ></DeleteSqueakDialog>
+      </>
+    )
+  }
+
   return (
     <>
     <Box
@@ -299,6 +319,7 @@ export default function SqueakDetailItem({
           </Grid>
     </Box>
     {MakeSqueakDialogContent()}
+    {DeleteSqueakDialogContent()}
     </>
   )
 }
