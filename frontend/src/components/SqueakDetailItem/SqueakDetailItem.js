@@ -27,6 +27,8 @@ import DownloadIcon from '@material-ui/icons/CloudDownload';
 import useStyles from "./styles";
 
 import Widget from "../../components/Widget";
+import MakeSqueakDialog from "../../components/MakeSqueakDialog";
+import DeleteSqueakDialog from "../../components/DeleteSqueakDialog";
 
 import moment from 'moment';
 
@@ -39,11 +41,26 @@ export default function SqueakDetailItem({
 }) {
   var classes = useStyles();
 
-  // local
-  // var [moreButtonRef, setMoreButtonRef] = useState(null);
-  // var [isMoreMenuOpen, setMoreMenuOpen] = useState(false);
-
   const history = useHistory();
+  const [replyDialogOpen, setReplyDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+  const handleClickOpen = () => {
+    setReplyDialogOpen(true);
+  };
+
+  const handleClose = () => {
+     setReplyDialogOpen(false);
+  };
+
+  const handleClickOpenDeleteDialog = () => {
+    setDeleteDialogOpen(true);
+    console.log("deleteDialogOpen: " + deleteDialogOpen);
+  };
+
+  const handleCloseDeleteDialog = () => {
+     setDeleteDialogOpen(false);
+  };
 
   const goToSqueakAddressPage = () => {
     history.push("/app/squeakaddress/" + squeak.getAuthorAddress());
@@ -70,17 +87,19 @@ export default function SqueakDetailItem({
   const onReplyClick = (event) => {
     event.preventDefault();
     console.log("Handling reply click...");
-    if (handleReplyClick) {
-      handleReplyClick();
+    if (!squeak) {
+      return;
     }
+    handleClickOpen();
   }
 
   const onDeleteClick = (event) => {
     event.preventDefault();
     console.log("Handling delete click...");
-    if (handleDeleteClick) {
-      handleDeleteClick();
+    if (!squeak) {
+      return;
     }
+    handleClickOpenDeleteDialog();
   }
 
   const onUnlockClick = (event) => {
@@ -194,7 +213,32 @@ export default function SqueakDetailItem({
     )
   }
 
+  function MakeSqueakDialogContent() {
+    return (
+      <>
+        <MakeSqueakDialog
+          open={replyDialogOpen}
+          handleClose={handleClose}
+          replytoSqueak={squeak}
+          ></MakeSqueakDialog>
+      </>
+    )
+  }
+
+  function DeleteSqueakDialogContent() {
+    return (
+      <>
+        <DeleteSqueakDialog
+          open={deleteDialogOpen}
+          handleClose={handleCloseDeleteDialog}
+          squeakToDelete={squeak}
+          ></DeleteSqueakDialog>
+      </>
+    )
+  }
+
   return (
+    <>
     <Box
       p={1}
       m={0}
@@ -274,5 +318,8 @@ export default function SqueakDetailItem({
             </Grid>
           </Grid>
     </Box>
+    {MakeSqueakDialogContent()}
+    {DeleteSqueakDialogContent()}
+    </>
   )
 }
