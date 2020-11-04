@@ -92,7 +92,6 @@ function handleErrorResponse(response, route) {
 function handleSuccessResponse(response, handleResponse) {
   response.arrayBuffer()
   .then(function(data) {
-    console.log(data);
     handleResponse(data);
   });
 }

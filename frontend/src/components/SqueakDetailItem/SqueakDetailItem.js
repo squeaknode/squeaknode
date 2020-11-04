@@ -21,6 +21,7 @@ import ReplyIcon from '@material-ui/icons/Reply';
 import RepeatIcon from '@material-ui/icons/Repeat';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import DeleteIcon from '@material-ui/icons/Delete';
+import DownloadIcon from '@material-ui/icons/CloudDownload';
 
 // styles
 import useStyles from "./styles";
@@ -30,12 +31,10 @@ import Widget from "../../components/Widget";
 import moment from 'moment';
 
 export default function SqueakDetailItem({
+  hash,
   squeak,
-  handleAddressClick,
-  handleSqueakClick,
   handleReplyClick,
   handleDeleteClick,
-  handleUnlockClick,
   ...props
 }) {
   var classes = useStyles();
@@ -46,15 +45,26 @@ export default function SqueakDetailItem({
 
   const history = useHistory();
 
-  const blockDetailUrl = "https://blockstream.info/testnet/block/" + squeak.getBlockHash();
+  const goToSqueakAddressPage = () => {
+    history.push("/app/squeakaddress/" + squeak.getAuthorAddress());
+  };
+
+  const goToBuyPage = (hash) => {
+    history.push("/app/buy/" + hash);
+  };
+
+  const blockDetailUrl = () => {
+    return "https://blockstream.info/testnet/block/" + squeak.getBlockHash();
+  };
 
   const onAddressClick = (event) => {
     event.preventDefault();
     event.stopPropagation();
     console.log("Handling address click...");
-    if (handleAddressClick) {
-      handleAddressClick();
+    if (!squeak) {
+      return;
     }
+    goToSqueakAddressPage(squeak.getAuthorAddress());
   }
 
   const onReplyClick = (event) => {
@@ -76,9 +86,10 @@ export default function SqueakDetailItem({
   const onUnlockClick = (event) => {
     event.preventDefault();
     console.log("Handling unlock click...");
-    if (handleUnlockClick) {
-      handleUnlockClick();
+    if (!squeak) {
+      return;
     }
+    goToBuyPage(squeak.getSqueakHash());
   }
 
   function SqueakUnlockedContent() {
@@ -105,7 +116,23 @@ export default function SqueakDetailItem({
     )
   }
 
+  function SqueakMissingContent() {
+    return (
+      <>
+        <DownloadIcon /> {hash}
+      </>
+    )
+  }
+
   function SqueakContent() {
+    if (!squeak) {
+      return (
+        <>
+          {SqueakMissingContent()}
+        </>
+      )
+    }
+
     return (
       <>
       {squeak.getIsUnlocked()
@@ -125,9 +152,46 @@ export default function SqueakDetailItem({
   }
 
   function SqueakBackgroundColor() {
+    if (!squeak) {
+      return SqueakLockedBackgroundColor();
+    }
     return squeak.getIsUnlocked()
             ? SqueakUnlockedBackgroundColor()
             : SqueakLockedBackgroundColor()
+  }
+
+  function getAddressDisplay() {
+    if (!squeak) {
+      return "Author unknown"
+    }
+    return squeak.getIsAuthorKnown()
+      ? squeak.getAuthorName()
+      : squeak.getAuthorAddress()
+  }
+
+  function SqueakTime() {
+    if (!squeak) {
+      return (
+        <Box color="secondary.main" fontWeight="fontWeightBold">
+          Unknown time
+        </Box>
+      )
+    }
+
+    return (
+      <Box color="secondary.main" fontWeight="fontWeightBold">
+        {moment(squeak.getBlockTime()*1000).fromNow()}
+        <span> </span>(Block
+        <Link
+          href={blockDetailUrl()}
+          target="_blank"
+          rel="noopener"
+          onClick={(event) => event.stopPropagation()}>
+          <span> </span>#{squeak.getBlockHeight()}
+        </Link>
+        )
+      </Box>
+    )
   }
 
   return (
@@ -146,9 +210,7 @@ export default function SqueakDetailItem({
                 <Box fontWeight="fontWeightBold">
                   <Link href="#"
                     onClick={onAddressClick}>
-                    {squeak.getIsAuthorKnown()
-                      ? squeak.getAuthorName()
-                      : squeak.getAuthorAddress()}
+                    {getAddressDisplay()}
                   </Link>
                 </Box>
             </Grid>
@@ -170,18 +232,7 @@ export default function SqueakDetailItem({
             alignItems="flex-start"
           >
             <Grid item>
-                <Box color="secondary.main" fontWeight="fontWeightBold">
-                  {moment(squeak.getBlockTime()*1000).format('MMMM Do YYYY, h:mm:ss a')}
-                  <span> </span>(Block
-                  <Link
-                    href={blockDetailUrl}
-                    target="_blank"
-                    rel="noopener"
-                    onClick={(event) => event.stopPropagation()}>
-                    <span> </span>#{squeak.getBlockHeight()}
-                  </Link>
-                  )
-                </Box>
+              {SqueakTime()}
             </Grid>
           </Grid>
           <Divider />

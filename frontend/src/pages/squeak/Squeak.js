@@ -30,7 +30,7 @@ export default function SqueakPage() {
   const history = useHistory();
   const { hash } = useParams();
   const [squeak, setSqueak] = useState(null);
-  const [ancestorSqueaks, setAncestorSqueaks] = useState(null);
+  const [ancestorSqueaks, setAncestorSqueaks] = useState([]);
   const [open, setOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
@@ -58,20 +58,21 @@ export default function SqueakPage() {
      setDeleteDialogOpen(false);
   };
 
-  const goToSqueakAddressPage = (squeakAddress) => {
-    history.push("/app/squeakaddress/" + squeakAddress);
-  };
-
-  const goToSqueakPage = (hash) => {
-    history.push("/app/squeak/" + hash);
-  };
-
-  const goToBuyPage = (hash) => {
-    history.push("/app/buy/" + hash);
-  };
-
   const showDeleteDialog = (hash) => {
     handleClickOpenDeleteDialog()
+  };
+
+  const unknownAncestorHash = () => {
+      if (!ancestorSqueaks) {
+        return null;
+      }
+      var oldestKnownAncestor = ancestorSqueaks[0];
+      if (!oldestKnownAncestor) {
+        return null;
+      }
+      console.log(oldestKnownAncestor);
+      console.log("oldestKnownAncestor");
+      return oldestKnownAncestor.getReplyTo();
   };
 
   useEffect(()=>{
@@ -89,33 +90,60 @@ export default function SqueakPage() {
     )
   }
 
+  function UnkownReplyToContent() {
+    var squeakHash = unknownAncestorHash();
+    if (!squeakHash) {
+      return (
+        <></>
+      )
+    }
+    return (
+      <div>
+          <Box
+            key={squeakHash}
+            >
+          <SqueakThreadItem
+            hash={squeakHash}
+            key={squeakHash}
+            squeak={null}>
+          </SqueakThreadItem>
+          <Divider />
+          </Box>
+      </div>
+    )
+  }
+
+  function AncestorsContent() {
+    return (
+      <div>
+        {ancestorSqueaks.slice(0, -1)
+          //.reverse()
+          .map(ancestorSqueak =>
+          <Box
+            key={ancestorSqueak.getSqueakHash()}
+            >
+          <SqueakThreadItem
+            hash={ancestorSqueak.getSqueakHash()}
+            key={ancestorSqueak.getSqueakHash()}
+            squeak={ancestorSqueak}>
+          </SqueakThreadItem>
+          <Divider />
+          </Box>
+        )}
+      </div>
+    )
+  }
+
   function SqueakContent() {
     return (
       <>
-        <div>
-          {ancestorSqueaks.slice(0, -1)
-            //.reverse()
-            .map(ancestorSqueak =>
-            <Box
-              key={ancestorSqueak.getSqueakHash()}
-              >
-            <SqueakThreadItem
-              key={ancestorSqueak.getSqueakHash()}
-              handleAddressClick={() => goToSqueakAddressPage(ancestorSqueak.getAuthorAddress())}
-              handleSqueakClick={() => goToSqueakPage(ancestorSqueak.getSqueakHash())}
-              squeak={ancestorSqueak}>
-            </SqueakThreadItem>
-            <Divider />
-            </Box>
-          )}
-        </div>
+        {UnkownReplyToContent()}
+        {AncestorsContent()}
         <div>
           <SqueakDetailItem
-            key={squeak.getSqueakHash()}
-            handleAddressClick={() => goToSqueakAddressPage(squeak.getAuthorAddress())}
+            key={hash}
             handleReplyClick={handleClickOpen}
             handleDeleteClick={showDeleteDialog}
-            handleUnlockClick={() => goToBuyPage(squeak.getSqueakHash())}
             squeak={squeak}>
           </SqueakDetailItem>
         </div>
@@ -152,10 +180,7 @@ export default function SqueakPage() {
   return (
     <>
       <PageTitle title="Squeak" />
-      {(squeak && ancestorSqueaks)
-        ? SqueakContent()
-        : NoSqueakContent()
-      }
+      {SqueakContent()}
     </>
   );
 }
