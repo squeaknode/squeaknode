@@ -41,11 +41,6 @@ export default function SqueakAddressPage() {
     history.push("/app/profile/" + profileId);
   };
 
-  const goToSqueakPage = (hash) => {
-    history.push("/app/squeak/" + hash);
-  };
-
-
   const handleClickOpenCreateContactProfileDialog = () => {
     setCreateContactProfileDialogOpen(true);
   };
@@ -103,7 +98,6 @@ export default function SqueakAddressPage() {
             <SqueakThreadItem
               hash={squeak.getSqueakHash()}
               key={squeak.getSqueakHash()}
-              handleSqueakClick={() => goToSqueakPage(squeak.getSqueakHash())}
               squeak={squeak}>
             </SqueakThreadItem>
             </Box>
