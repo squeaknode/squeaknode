@@ -72,47 +72,47 @@ class Config:
         return pprint.pformat(self._configs)
 
     def _get_bitcoin_rpc_host(self):
-        return self.parser["bitcoin"]["rpc_host"]
+        return self.parser.get("bitcoin", "rpc_host")
 
     def _get_bitcoin_rpc_port(self):
-        return self.parser["bitcoin"]["rpc_port"]
+        return self.parser.get("bitcoin", "rpc_port")
 
     def _get_bitcoin_rpc_user(self):
-        return self.parser["bitcoin"]["rpc_user"]
+        return self.parser.get("bitcoin", "rpc_user")
 
     def _get_bitcoin_rpc_pass(self):
-        return self.parser["bitcoin"]["rpc_pass"]
+        return self.parser.get("bitcoin", "rpc_pass")
 
     def _get_lnd_host(self):
-        return self.parser["lnd"]["host"]
+        return self.parser.get("lnd", "host")
 
     def _get_lnd_external_host(self):
         return environ.get('EXTERNAL_LND_HOST') \
             or self.parser.get("lnd", "external_host", fallback=None)
 
     def _get_lnd_port(self):
-        return int(self.parser["lnd"]["port"])
+        return int(self.parser.get("lnd", "port"))
 
     def _get_lnd_rpc_port(self):
-        return self.parser["lnd"]["rpc_port"]
+        return self.parser.get("lnd", "rpc_port")
 
     def _get_lnd_tls_cert_path(self):
-        return self.parser["lnd"]["tls_cert_path"]
+        return self.parser.get("lnd", "tls_cert_path")
 
     def _get_lnd_macaroon_path(self):
-        return self.parser["lnd"]["macaroon_path"]
+        return self.parser.get("lnd", "macaroon_path")
 
     def _get_server_rpc_host(self):
-        return self.parser["server"]["rpc_host"]
+        return self.parser.get("server", "rpc_host")
 
     def _get_server_rpc_port(self):
-        return self.parser["server"]["rpc_port"]
+        return self.parser.get("server", "rpc_port")
 
     def _get_admin_rpc_host(self):
-        return self.parser["admin"]["rpc_host"]
+        return self.parser.get("admin", "rpc_host")
 
     def _get_admin_rpc_port(self):
-        return self.parser["admin"]["rpc_port"]
+        return self.parser.get("admin", "rpc_port")
 
     def _get_webadmin_enabled(self):
         return self.parser.getboolean("webadmin", "enabled", fallback=False),
