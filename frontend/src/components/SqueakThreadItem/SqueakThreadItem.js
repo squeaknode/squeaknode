@@ -83,7 +83,7 @@ export default function SqueakThreadItem({
   function SqueakMissingContent() {
     return (
       <>
-        <DownloadIcon /> {hash}
+        <DownloadIcon />
       </>
     )
   }

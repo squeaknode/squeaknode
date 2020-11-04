@@ -390,6 +390,14 @@ def create_app(handler, username, password):
             handler.handle_delete_squeak,
         )
 
+    @app.route('/syncsqueak', methods=["POST"])
+    @login_required
+    def syncsqueak():
+        return handle_request(
+            squeak_admin_pb2.SyncSqueakRequest(),
+            handler.handle_sync_squeak,
+        )
+
     return app
 
 

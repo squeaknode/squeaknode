@@ -74,6 +74,8 @@ import {
   DeletePeerReply,
   DeleteSqueakProfileReply,
   DeleteSqueakReply,
+  SyncSqueakRequest,
+  SyncSqueakReply,
 } from "../proto/squeak_admin_pb"
 
 console.log('The value of REACT_APP_SERVER_PORT is:', process.env.REACT_APP_SERVER_PORT);
@@ -828,6 +830,15 @@ export function lndNewAddressRequest(handleResponse) {
   var request = new NewAddressRequest();
   makeRequest('lndnewaddress', request, (data) => {
     var response = NewAddressResponse.deserializeBinary(data);
+    handleResponse(response);
+  });
+};
+
+export function syncSqueakRequest(squeakHash, handleResponse) {
+  var request = new SyncSqueakRequest();
+  request.setSqueakHash(squeakHash);
+  makeRequest('syncsqueak', request, (data) => {
+    var response = SyncSqueakReply.deserializeBinary(data);
     handleResponse(response);
   });
 };
