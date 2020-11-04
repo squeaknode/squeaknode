@@ -15,11 +15,6 @@ class SqueakStore:
         self.squeak_whitelist = squeak_whitelist
 
     def save_squeak(self, squeak, verify=False, skip_whitelist_check=False):
-        squeak_hash = get_hash(squeak)
-        current_squeak = self.get_squeak(squeak_hash)
-        if current_squeak:
-            return squeak_hash
-
         if not skip_whitelist_check:
             if not self.squeak_whitelist.should_allow_squeak(squeak):
                 raise Exception("Squeak upload not allowed by whitelist.")
@@ -33,22 +28,6 @@ class SqueakStore:
         else:
             self.squeak_block_verifier.add_squeak_to_queue(inserted_squeak_hash)
         return inserted_squeak_hash
-
-    # def save_downloaded_squeak(self, squeak):
-    #     if not self.squeak_rate_limiter.should_rate_limit_allow(squeak):
-    #         raise Exception("Excedeed allowed number of squeaks per block.")
-
-    #     inserted_squeak_hash = self.postgres_db.insert_squeak(squeak)
-    #     # self.squeak_block_verifier.add_squeak_to_queue(inserted_squeak_hash)
-    #     # Slow operation because of blockchain lookup
-    #     self.squeak_block_verifier.verify_squeak_block(inserted_squeak_hash)
-    #     return inserted_squeak_hash
-
-    # def save_created_squeak(self, squeak):
-    #     inserted_squeak_hash = self.postgres_db.insert_squeak(squeak)
-    #     # Slow operation because of blockchain lookup
-    #     self.squeak_block_verifier.verify_squeak_block(inserted_squeak_hash)
-    #     return inserted_squeak_hash
 
     def get_squeak(self, squeak_hash):
         return self.postgres_db.get_squeak_entry(squeak_hash)
