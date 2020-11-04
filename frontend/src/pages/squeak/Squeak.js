@@ -116,7 +116,7 @@ export default function SqueakPage() {
         {AncestorsContent()}
         <div>
           <SqueakDetailItem
-            key={hash}
+            hash={hash}
             squeak={squeak}>
           </SqueakDetailItem>
         </div>

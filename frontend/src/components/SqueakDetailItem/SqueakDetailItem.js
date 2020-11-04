@@ -30,6 +30,10 @@ import Widget from "../../components/Widget";
 import MakeSqueakDialog from "../../components/MakeSqueakDialog";
 import DeleteSqueakDialog from "../../components/DeleteSqueakDialog";
 
+import {
+  syncSqueakRequest,
+} from "../../squeakclient/requests"
+
 import moment from 'moment';
 
 export default function SqueakDetailItem({
@@ -68,6 +72,10 @@ export default function SqueakDetailItem({
 
   const goToBuyPage = (hash) => {
     history.push("/app/buy/" + hash);
+  };
+
+  const reloadRoute = () => {
+    history.go(0);
   };
 
   const blockDetailUrl = () => {
@@ -111,6 +119,18 @@ export default function SqueakDetailItem({
     goToBuyPage(squeak.getSqueakHash());
   }
 
+  const onDownloadClick = (event) => {
+    event.preventDefault();
+    console.log("Handling download click...");
+    // goToBuyPage(squeak.getSqueakHash());
+    console.log("syncSqueakRequest with hash: " + hash);
+    syncSqueakRequest(hash, (response) => {
+      console.log("response:");
+      console.log(response);
+      reloadRoute();
+    });
+  }
+
   function SqueakUnlockedContent() {
     return (
       <Typography
@@ -138,7 +158,12 @@ export default function SqueakDetailItem({
   function SqueakMissingContent() {
     return (
       <>
-        <DownloadIcon /> {hash}
+        <DownloadIcon />
+        <Button
+          variant="contained"
+          onClick={onDownloadClick}
+          >Download
+        </Button>
       </>
     )
   }
