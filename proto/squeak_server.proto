@@ -22,9 +22,9 @@ service SqueakServer {
   */
   rpc LookupSqueaks (LookupSqueaksRequest) returns (LookupSqueaksReply) {}
 
-  /** sqk: `buysqueak`
+  /** sqk: `getoffer`
   */
-  rpc BuySqueak (BuySqueakRequest) returns (BuySqueakReply) {}
+  rpc GetOffer (GetOfferRequest) returns (GetOfferReply) {}
 
 }
 
@@ -47,7 +47,7 @@ message LookupSqueaksRequest {
     int32 max_block = 3;
 }
 
-message BuySqueakRequest {
+message GetOfferRequest {
     /// Hash of the squeak to buy.
     bytes hash = 1;
 
@@ -71,7 +71,7 @@ message LookupSqueaksReply {
     repeated string allowed_addresses = 2;
 }
 
-message BuySqueakReply {
+message GetOfferReply {
     /// The buy offer
     SqueakBuyOffer offer = 1;
 }
