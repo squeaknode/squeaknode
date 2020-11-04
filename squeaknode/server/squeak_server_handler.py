@@ -34,8 +34,11 @@ class SqueakServerHandler(object):
         )
         hashes = self.squeak_node.lookup_squeaks(addresses, min_block, max_block)
         logger.info("Got number of hashes from db: {}".format(len(hashes)))
+        allowed_addresses = self.squeak_node.lookup_allowed_addresses(addresses)
+        logger.info("Got number of allowed addresses from db: {}".format(len(allowed_addresses)))
         return squeak_server_pb2.LookupSqueaksReply(
             hashes=hashes,
+            allowed_addresses=allowed_addresses,
         )
 
     def handle_buy_squeak(self, squeak_hash, challenge):

@@ -29,7 +29,7 @@ class PeerClient:
                     max_block=max_block,
                 )
             )
-            return lookup_response.hashes
+            return lookup_response
 
     def post_squeak(self, squeak):
         squeak_msg = self._build_squeak_msg(squeak)

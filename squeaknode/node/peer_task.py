@@ -46,7 +46,8 @@ class PeerSyncTask:
         max_block = block_height
 
         # Get remote hashes
-        remote_hashes = self._get_remote_hashes(addresses, min_block, max_block)
+        lookup_result = self._get_remote_hashes(addresses, min_block, max_block)
+        remote_hashes = lookup_result.hashes
         logger.debug("Got remote hashes: {}".format(len(remote_hashes)))
         for hash in remote_hashes:
             logger.debug("remote hash: {}".format(hash.hex()))
@@ -101,7 +102,9 @@ class PeerSyncTask:
         max_block = block_height
 
         # Get remote hashes
-        remote_hashes = self._get_remote_hashes(addresses, min_block, max_block)
+        lookup_result = self._get_remote_hashes(addresses, min_block, max_block)
+        remote_hashes = lookup_result.hashes
+        allowed_addresses = lookup_result.allowed_addresses
         logger.debug("Got remote hashes: {}".format(len(remote_hashes)))
         for hash in remote_hashes:
             logger.debug("remote hash: {}".format(hash.hex()))
@@ -123,7 +126,7 @@ class PeerSyncTask:
         for hash in hashes_to_upload:
             if self.peer_connection.stopped():
                 return
-            self._upload_squeak(hash)
+            self._upload_squeak(hash, allowed_addresses)
 
     def download_single_squeak(self, squeak_hash):
         # Download squeak if not already present.
@@ -225,10 +228,12 @@ class PeerSyncTask:
     def _get_local_squeak(self, squeak_hash):
         return self.squeak_store.get_squeak(squeak_hash)
 
-    def _upload_squeak(self, squeak_hash):
+    def _upload_squeak(self, squeak_hash, allowed_addresses):
         logger.info("Uploading squeak: {}".format(squeak_hash.hex()))
         squeak = self._get_local_squeak(squeak_hash)
-        self.peer_client.post_squeak(squeak)
+        squeak_address = str(squeak.GetAddress())
+        if squeak_address in allowed_addresses:
+            self.peer_client.post_squeak(squeak)
 
     def _get_sharing_addresses(self):
         sharing_profiles = self.postgres_db.get_sharing_profiles()

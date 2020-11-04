@@ -107,6 +107,9 @@ class SqueakNode:
     def lookup_squeaks(self, addresses, min_block, max_block):
         return self.squeak_store.lookup_squeaks(addresses, min_block, max_block)
 
+    def lookup_allowed_addresses(self, addresses):
+        return self.squeak_whitelist.get_allowed_addresses(addresses)
+
     def get_buy_offer(self, squeak_hash, challenge):
         # Get the squeak from the database
         squeak = self.squeak_store.get_squeak(squeak_hash)
