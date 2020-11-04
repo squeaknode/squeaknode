@@ -61,13 +61,16 @@ def load_admin_rpc_server(config, handler) -> SqueakAdminServerServicer:
 
 def load_admin_web_server(config, handler) -> SqueakAdminWebServer:
     return SqueakAdminWebServer(
-        config["webadmin"]["host"],
-        config["webadmin"]["port"],
-        config["webadmin"]["username"],
-        config["webadmin"]["password"],
-        environ.get('WEBADMIN_USE_SSL') or config["webadmin"].getboolean("use_ssl", fallback=False),
-        environ.get('WEBADMIN_LOGIN_DISABLED') or config["webadmin"].getboolean("login_disabled", fallback=False),
-        environ.get('WEBADMIN_ALLOW_CORS') or config["webadmin"].getboolean("allow_cors", fallback=False),
+        config.webadmin_host,
+        config.webadmin_port,
+        config.webadmin_username,
+        config.webadmin_password,
+        # config.webadmin_use_ssl,
+        # config.webadmin_login_disabled,
+        # config.webadmin_allow_cors,
+        False,
+        False,
+        False,
         handler,
     )
 
@@ -156,7 +159,7 @@ def start_admin_rpc_server(rpc_server):
 
 
 def load_admin_web_server_enabled(config):
-    return config["webadmin"].getboolean("enabled")
+    return config.webadmin_enabled
 
 
 def start_admin_web_server(admin_web_server):
@@ -264,9 +267,9 @@ def run_server(config, new_config):
     start_admin_rpc_server(admin_rpc_server)
 
     # start admin web server
-    admin_web_server_enabled = load_admin_web_server_enabled(config)
+    admin_web_server_enabled = load_admin_web_server_enabled(new_config)
     if admin_web_server_enabled:
-        admin_web_server = load_admin_web_server(config, admin_handler)
+        admin_web_server = load_admin_web_server(new_config, admin_handler)
         start_admin_web_server(admin_web_server)
 
     # start rpc server

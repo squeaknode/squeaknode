@@ -2,6 +2,7 @@ import logging
 from configparser import ConfigParser
 from os import environ
 
+import pprint
 
 logger = logging.getLogger(__name__)
 
@@ -38,6 +39,16 @@ class Config:
         self._configs['admin_rpc_host'] = self._get_admin_rpc_host()
         self._configs['admin_rpc_port'] = self._get_admin_rpc_port()
 
+        # webadmin
+        self._configs['webadmin_enabled'] = self._get_webadmin_enabled()
+        self._configs['webadmin_host'] = self._get_webadmin_host()
+        self._configs['webadmin_port'] = self._get_webadmin_port()
+        self._configs['webadmin_username'] = self._get_webadmin_username()
+        self._configs['webadmin_password'] = self._get_webadmin_password()
+        self._configs['webadmin_use_ssl'] = self._get_webadmin_use_ssl()
+        self._configs['webadmin_login_disabled'] = self._get_webadmin_login_disabled()
+        self._configs['webadmin_allow_cors'] = self._get_webadmin_allow_cors()
+
         for key, value in self._configs.items():
             setattr(self, key, value)
 
@@ -46,7 +57,7 @@ class Config:
         return self._configs
 
     def __repr__(self):
-        return repr(self._configs)
+        return pprint.pformat(self._configs)
 
     def _get_bitcoin_rpc_host(self):
         return self.parser["bitcoin"]["rpc_host"]
@@ -90,3 +101,30 @@ class Config:
 
     def _get_admin_rpc_port(self):
         return self.parser["admin"]["rpc_port"]
+
+    def _get_webadmin_enabled(self):
+        return self.parser.getboolean("webadmin", "enabled", fallback=False),
+
+    def _get_webadmin_host(self):
+        return self.parser.get("webadmin", "host", fallback="0.0.0.0")
+
+    def _get_webadmin_port(self):
+        return self.parser.get("webadmin", "port", fallback=12994)
+
+    def _get_webadmin_username(self):
+        return self.parser.get("webadmin", "username", fallback="")
+
+    def _get_webadmin_password(self):
+        return self.parser.get("webadmin", "password", fallback="")
+
+    def _get_webadmin_use_ssl(self):
+        return environ.get('WEBADMIN_USE_SSL') \
+            or self.parser.getboolean("webadmin", "use_ssl", fallback=False),
+
+    def _get_webadmin_login_disabled(self):
+        return environ.get('WEBADMIN_LOGIN_DISABLED') \
+            or self.parser.getboolean("webadmin", "login_disabled", fallback=False),
+
+    def _get_webadmin_allow_cors(self):
+        return environ.get('WEBADMIN_ALLOW_CORS') \
+            or self.parser.getboolean("webadmin", "allow_cors", fallback=False),
