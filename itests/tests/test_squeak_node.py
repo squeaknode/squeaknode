@@ -40,7 +40,7 @@ def test_post_squeak(
     )
 
     # Wait a few seconds for the squeak to be verified on the server.
-    time.sleep(5)
+    time.sleep(1)
 
     # Get the same squeak from the server
     get_response = server_stub.GetSqueak(
@@ -652,7 +652,7 @@ def test_list_channels(server_stub, admin_stub, lightning_client, saved_squeak_h
 def test_send_coins(server_stub, admin_stub, lightning_client):
     new_address_response = admin_stub.LndNewAddress(ln.NewAddressRequest())
     send_coins_response = lightning_client.send_coins(new_address_response.address, 55555555)
-    time.sleep(40)
+    time.sleep(10)
     get_transactions_response = admin_stub.LndGetTransactions(ln.GetTransactionsRequest())
 
     assert any([
