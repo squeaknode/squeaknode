@@ -20,6 +20,8 @@ from squeaknode.server.lightning_address import LightningAddressHostPort
 from squeaknode.server.squeak_server_handler import SqueakServerHandler
 from squeaknode.server.squeak_server_servicer import SqueakServerServicer
 
+from squeaknode.config.config import Config
+
 
 logger = logging.getLogger(__name__)
 
@@ -135,10 +137,10 @@ def load_db(config, network):
 
 def load_blockchain_client(config):
     return BitcoinBlockchainClient(
-        config["bitcoin"]["rpc_host"],
-        config["bitcoin"]["rpc_port"],
-        config["bitcoin"]["rpc_user"],
-        config["bitcoin"]["rpc_pass"],
+        config.bitcoin_rpc_host,
+        config.bitcoin_rpc_port,
+        config.bitcoin_rpc_user,
+        config.bitcoin_rpc_pass,
     )
 
 
@@ -211,10 +213,16 @@ def main():
     config = ConfigParser()
     config.read(args.config)
 
-    args.func(config)
+    new_config = Config(args.config)
+    logger.info("config: {}".format(new_config))
+    logger.info("config.configs: {}".format(new_config.configs))
+    logger.info("new_config.foobar: {}".format(new_config.foobar))
+    logger.info("new_config.bitcoin_rpc_host: {}".format(new_config.bitcoin_rpc_host))
+
+    args.func(config, new_config)
 
 
-def run_server(config):
+def run_server(config, new_config):
     # load the network
     network = load_network(config)
     logger.info("network: " + network)
@@ -237,7 +245,7 @@ def run_server(config):
     logger.info("Loaded lightning_host_port: {}".format(lightning_host_port))
 
     # load the blockchain client
-    blockchain_client = load_blockchain_client(config)
+    blockchain_client = load_blockchain_client(new_config)
 
     # load enable sync config
     enable_sync = load_enable_sync(config)
