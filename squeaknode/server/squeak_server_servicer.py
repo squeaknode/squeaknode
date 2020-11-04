@@ -64,7 +64,7 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
     def LookupSqueaks(self, request, context):
         return self.handler.handle_lookup_squeaks(request)
 
-    def BuySqueak(self, request, context):
+    def GetOffer(self, request, context):
         squeak_hash = request.hash
         # TODO: check if hash is valid
         challenge = request.challenge
@@ -74,13 +74,13 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
         if buy_response == None:
             context.set_code(grpc.StatusCode.NOT_FOUND)
             context.set_details("Squeak not found.")
-            return squeak_server_pb2.BuySqueakReply(
+            return squeak_server_pb2.GetOfferReply(
                 offer=None,
             )
 
         offer_squeak_hash = buy_response.squeak_hash
 
-        return squeak_server_pb2.BuySqueakReply(
+        return squeak_server_pb2.GetOfferReply(
             offer=squeak_server_pb2.SqueakBuyOffer(
                 squeak_hash=offer_squeak_hash,
                 key_cipher=buy_response.key_cipher.cipher_bytes,
