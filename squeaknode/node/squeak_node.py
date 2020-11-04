@@ -99,18 +99,17 @@ class SqueakNode:
         return self.squeak_store.save_squeak(squeak, verify=True, skip_whitelist_check=True)
 
     def get_public_squeak(self, squeak_hash):
-        return self.squeak_store.get_public_squeak(squeak_hash)
+        return self.squeak_store.get_squeak(squeak_hash, clear_decryption_key=True)
 
-    def get_squeak_entry(self, squeak_hash):
-        return self.squeak_store.get_squeak(squeak_hash)
+    # def get_squeak_entry(self, squeak_hash):
+    #     return self.squeak_store.get_squeak(squeak_hash)
 
     def lookup_squeaks(self, addresses, min_block, max_block):
         return self.squeak_store.lookup_squeaks(addresses, min_block, max_block)
 
     def get_buy_offer(self, squeak_hash, challenge):
         # Get the squeak from the database
-        squeak_entry = self.squeak_store.get_squeak(squeak_hash)
-        squeak = squeak_entry.squeak
+        squeak = self.squeak_store.get_squeak(squeak_hash)
         # Get the decryption key from the squeak
         decryption_key = squeak.GetDecryptionKey()
         # Solve the proof
