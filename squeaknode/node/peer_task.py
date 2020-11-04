@@ -229,10 +229,10 @@ class PeerSyncTask:
         return self.squeak_store.get_squeak(squeak_hash)
 
     def _upload_squeak(self, squeak_hash, allowed_addresses):
-        logger.info("Uploading squeak: {}".format(squeak_hash.hex()))
         squeak = self._get_local_squeak(squeak_hash)
         squeak_address = str(squeak.GetAddress())
         if squeak_address in allowed_addresses:
+            logger.info("Uploading squeak: {}".format(squeak_hash.hex()))
             self.peer_client.post_squeak(squeak)
 
     def _get_sharing_addresses(self):
