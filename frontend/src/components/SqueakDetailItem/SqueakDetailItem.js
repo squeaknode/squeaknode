@@ -33,10 +33,8 @@ import moment from 'moment';
 export default function SqueakDetailItem({
   hash,
   squeak,
-  handleSqueakClick,
   handleReplyClick,
   handleDeleteClick,
-  handleUnlockClick,
   ...props
 }) {
   var classes = useStyles();
@@ -49,6 +47,10 @@ export default function SqueakDetailItem({
 
   const goToSqueakAddressPage = () => {
     history.push("/app/squeakaddress/" + squeak.getAuthorAddress());
+  };
+
+  const goToBuyPage = (hash) => {
+    history.push("/app/buy/" + hash);
   };
 
   const blockDetailUrl = () => {
@@ -84,9 +86,10 @@ export default function SqueakDetailItem({
   const onUnlockClick = (event) => {
     event.preventDefault();
     console.log("Handling unlock click...");
-    if (handleUnlockClick) {
-      handleUnlockClick();
+    if (!squeak) {
+      return;
     }
+    goToBuyPage(squeak.getSqueakHash());
   }
 
   function SqueakUnlockedContent() {

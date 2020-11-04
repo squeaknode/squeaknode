@@ -26,7 +26,6 @@ import moment from 'moment';
 export default function SqueakThreadItem({
   hash,
   squeak,
-  handleAddressClick,
   ...props
 }) {
   var classes = useStyles();
@@ -41,13 +40,18 @@ export default function SqueakThreadItem({
     history.push("/app/squeak/" + hash);
   };
 
+  const goToSqueakAddressPage = () => {
+    history.push("/app/squeakaddress/" + squeak.getAuthorAddress());
+  };
+
   const onAddressClick = (event) => {
     event.preventDefault();
     event.stopPropagation();
     console.log("Handling address click...");
-    if (handleAddressClick) {
-      handleAddressClick();
+    if (!squeak) {
+      return;
     }
+    goToSqueakAddressPage(squeak.getAuthorAddress());
   }
 
   const onSqueakClick = (event) => {

@@ -94,7 +94,6 @@ export default function TimelinePage() {
           <SqueakThreadItem
             key={squeak.getSqueakHash()}
             hash={squeak.getSqueakHash()}
-            handleAddressClick={() => goToSqueakAddressPage(squeak.getAuthorAddress())}
             squeak={squeak}>
           </SqueakThreadItem>
           </Box>
