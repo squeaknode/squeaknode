@@ -119,12 +119,12 @@ class Config:
 
     def _get_webadmin_use_ssl(self):
         return environ.get('WEBADMIN_USE_SSL') \
-            or self.parser.getboolean("webadmin", "use_ssl", fallback=False),
+            or self.parser.getboolean("webadmin", "use_ssl", fallback=False)
 
     def _get_webadmin_login_disabled(self):
         return environ.get('WEBADMIN_LOGIN_DISABLED') \
-            or self.parser.getboolean("webadmin", "login_disabled", fallback=False),
+            or self.parser.getboolean("webadmin", "login_disabled", fallback=False)
 
     def _get_webadmin_allow_cors(self):
         return environ.get('WEBADMIN_ALLOW_CORS') \
-            or self.parser.getboolean("webadmin", "allow_cors", fallback=False),
+            or self.parser.getboolean("webadmin", "allow_cors", fallback=False)
