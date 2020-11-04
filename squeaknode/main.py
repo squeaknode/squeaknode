@@ -29,21 +29,17 @@ SQK_DIR_NAME = ".sqk"
 
 def load_lightning_client(config) -> LNDLightningClient:
     return LNDLightningClient(
-        config["lnd"]["host"],
-        config["lnd"]["rpc_port"],
-        config["lnd"]["tls_cert_path"],
-        config["lnd"]["macaroon_path"],
+        config.lnd_host,
+        config.lnd_rpc_port,
+        config.lnd_tls_cert_path,
+        config.lnd_macaroon_path,
     )
 
 
 def load_lightning_host_port(config) -> LNDLightningClient:
-    lnd_host = config.get("lnd", "external_host", fallback=None)
-    if environ.get('EXTERNAL_LND_HOST') is not None:
-        lnd_host = environ.get('EXTERNAL_LND_HOST')
-    lnd_port = int(config["lnd"]["port"])
     return LightningAddressHostPort(
-        lnd_host,
-        lnd_port,
+        config.lnd_external_host,
+        config.lnd_port,
     )
 
 
@@ -240,8 +236,8 @@ def run_server(config, new_config):
     max_squeaks_per_address_per_hour = load_max_squeaks_per_address_per_hour(config)
 
     # load the lightning client
-    lightning_client = load_lightning_client(config)
-    lightning_host_port = load_lightning_host_port(config)
+    lightning_client = load_lightning_client(new_config)
+    lightning_host_port = load_lightning_host_port(new_config)
     logger.info("Loaded lightning_host_port: {}".format(lightning_host_port))
 
     # load the blockchain client
