@@ -67,7 +67,7 @@ Node for Squeak protocol
  	```
 	$ runsqueaknode --config config.ini run-server
 	```
-- Go to http://localhost:3000/ and use the username/password in **config.ini** to log in.
+- Go to http://localhost:12994/ and use the username/password in **config.ini** to log in.
 
 ## Test
 
