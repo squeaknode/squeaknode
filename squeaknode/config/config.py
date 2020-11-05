@@ -27,6 +27,9 @@ POSTGRES_HOST = "localhost"
 POSTGRES_DATABASE = "squeaknode"
 DEFAULT_SQK_DIR = ".sqk"
 DEFAULT_SQK_DIR_PATH = str(Path.home() / DEFAULT_SQK_DIR)
+DEFAULT_LND_DIR = ".lnd"
+DEFAULT_LND_TLS_CERT_NAME = "tls.cert"
+DEFAULT_LND_DIR_PATH = str(Path.home() / DEFAULT_LND_DIR)
 
 
 class Config:
@@ -50,6 +53,7 @@ class Config:
         self._configs['lnd_rpc_port'] = self._get_lnd_rpc_port()
         self._configs['lnd_tls_cert_path'] = self._get_lnd_tls_cert_path()
         self._configs['lnd_macaroon_path'] = self._get_lnd_macaroon_path()
+        self._configs['lnd_dir'] = self._get_lnd_dir()
 
         # server
         self._configs['server_rpc_host'] = self._get_server_rpc_host()
@@ -121,10 +125,15 @@ class Config:
         return self.parser.getint("lnd", "rpc_port", fallback=DEFAULT_LND_RPC_PORT)
 
     def _get_lnd_tls_cert_path(self):
-        return self.parser.get("lnd", "tls_cert_path")
+        lnd_dir_path = self._get_lnd_dir()
+        tls_cert_path = str(Path(lnd_dir_path) / DEFAULT_LND_TLS_CERT_NAME)
+        return self.parser.get("lnd", "tls_cert_path", fallback=tls_cert_path)
 
     def _get_lnd_macaroon_path(self):
         return self.parser.get("lnd", "macaroon_path")
+
+    def _get_lnd_dir(self):
+        return self.parser.get("lnd", "lnd_dir", fallback=DEFAULT_LND_DIR_PATH)
 
     def _get_server_rpc_host(self):
         return self.parser.get("server", "rpc_host", fallback=SERVER_RPC_HOST)
