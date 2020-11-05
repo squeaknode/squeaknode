@@ -37,7 +37,7 @@ export default function SqueakAddressPage() {
       getAddressSqueakDisplaysRequest(address, setSqueaks);
   };
 
-  const goToCreateProfilePage = (profileId) => {
+  const goToProfilePage = (profileId) => {
     history.push("/app/profile/" + profileId);
   };
 
@@ -72,7 +72,7 @@ export default function SqueakAddressPage() {
       <div className={classes.root}>
         Profile:
         <Button variant="contained" onClick={() => {
-            goToCreateProfilePage(squeakProfile.getProfileId());
+            goToProfilePage(squeakProfile.getProfileId());
           }}>{squeakProfile.getProfileName()}</Button>
       </div>
     )
