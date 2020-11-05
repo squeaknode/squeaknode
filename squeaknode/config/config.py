@@ -81,6 +81,7 @@ class Config:
         self._configs['squeaknode_database'] = self._get_squeaknode_database()
         self._configs['squeaknode_sqk_dir'] = self._get_squeaknode_sqk_dir()
         self._configs['squeaknode_enable_sync'] = self._get_squeaknode_enable_sync()
+        self._configs['squeaknode_log_level'] = self._get_squeaknode_log_level()
 
         # postgresql
         self._configs['postgresql_user'] = self._get_postgresql_user()
@@ -197,6 +198,10 @@ class Config:
 
     def _get_squeaknode_enable_sync(self):
         return self.parser.getboolean("squeaknode", "enable_sync", fallback=False)
+
+    def _get_squeaknode_log_level(self):
+        return environ.get('LOG_LEVEL') \
+            or self.parser.get("squeaknode", "log_level", fallback="INFO")
 
     def _get_postgresql_user(self):
         return self.parser.get("postgresql", "user", fallback="")

@@ -201,6 +201,10 @@ def main():
     config = Config(args.config)
     logger.info("config: {}".format(config))
 
+    # Set the log level again
+    level = config.squeaknode_log_level
+    logging.getLogger().setLevel(level)
+
     args.func(config)
 
 
