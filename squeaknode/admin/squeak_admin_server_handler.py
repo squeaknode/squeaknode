@@ -136,18 +136,6 @@ class SqueakAdminServerHandler(object):
         squeak_profile_msg = squeak_profile_to_message(squeak_profile)
         return squeak_admin_pb2.GetSqueakProfileReply(squeak_profile=squeak_profile_msg)
 
-    def handle_set_squeak_profile_whitelisted(self, request):
-        profile_id = request.profile_id
-        whitelisted = request.whitelisted
-        logger.info(
-            "Handle set squeak profile whitelisted with profile id: {}, whitelisted: {}".format(
-                profile_id,
-                whitelisted,
-            )
-        )
-        self.squeak_node.set_squeak_profile_whitelisted(profile_id, whitelisted)
-        return squeak_admin_pb2.SetSqueakProfileWhitelistedReply()
-
     def handle_set_squeak_profile_following(self, request):
         profile_id = request.profile_id
         following = request.following

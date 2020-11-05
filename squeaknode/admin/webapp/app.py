@@ -222,14 +222,6 @@ def create_app(handler, username, password):
             handler.handle_set_squeak_profile_sharing,
         )
 
-    @app.route('/setsqueakprofilewhitelisted', methods=["POST"])
-    @login_required
-    def setsqueakprofilewhitelisted():
-        return handle_request(
-            squeak_admin_pb2.SetSqueakProfileWhitelistedRequest(),
-            handler.handle_set_squeak_profile_whitelisted,
-        )
-
     @app.route('/getpeers', methods=["POST"])
     @login_required
     def getpeers():

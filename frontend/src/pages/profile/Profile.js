@@ -23,7 +23,6 @@ import {
   getSqueakProfileRequest,
   setSqueakProfileFollowingRequest,
   setSqueakProfileSharingRequest,
-  setSqueakProfileWhitelistedRequest,
 } from "../../squeakclient/requests"
 
 
@@ -44,11 +43,6 @@ export default function ProfilePage() {
   };
   const setSharing = (id, sharing) => {
     setSqueakProfileSharingRequest(id, sharing, () => {
-      getSqueakProfile(id);
-    })
-  };
-  const setWhitelisted = (id, whitelisted) => {
-    setSqueakProfileWhitelistedRequest(id, whitelisted, () => {
       getSqueakProfile(id);
     })
   };
@@ -76,12 +70,6 @@ export default function ProfilePage() {
     console.log("Sharing changed for profile id: " + id);
     console.log("Sharing changed to: " + event.target.checked);
     setSharing(id, event.target.checked);
-  };
-
-  const handleSettingsWhitelistedChange = (event) => {
-    console.log("Whitelisted changed for profile id: " + id);
-    console.log("Whitelisted changed to: " + event.target.checked);
-    setWhitelisted(id, event.target.checked);
   };
 
   function NoProfileContent() {
@@ -116,10 +104,6 @@ export default function ProfilePage() {
           <FormControlLabel
             control={<Switch checked={squeakProfile.getSharing()} onChange={handleSettingsSharingChange} />}
             label="Sharing"
-          />
-          <FormControlLabel
-            control={<Switch checked={squeakProfile.getWhitelisted()} onChange={handleSettingsWhitelistedChange} />}
-            label="Whitelisted"
           />
         </FormGroup>
       </FormControl>

@@ -42,7 +42,6 @@ def squeak_profile_to_message(squeak_profile):
         address=squeak_profile.address,
         sharing=squeak_profile.sharing,
         following=squeak_profile.following,
-        whitelisted=squeak_profile.whitelisted,
     )
 
 def squeak_peer_to_message(squeak_peer):

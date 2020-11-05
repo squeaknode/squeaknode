@@ -28,7 +28,6 @@ import {
   GetFollowedSqueakDisplaysRequest,
   SetSqueakProfileFollowingRequest,
   SetSqueakProfileSharingRequest,
-  SetSqueakProfileWhitelistedRequest,
   GetPeersRequest,
   PayOfferRequest,
   GetBuyOffersRequest,
@@ -53,7 +52,6 @@ import {
   SetSqueakProfileSharingReply,
   GetSqueakProfileReply,
   SetSqueakProfileFollowingReply,
-  SetSqueakProfileWhitelistedReply,
   GetPeersReply,
   PayOfferReply,
   GetBuyOffersReply,
@@ -296,25 +294,6 @@ export function setSqueakProfileSharingRequest(id, sharing, handleResponse) {
   request.setSharing(sharing);
   makeRequest('setsqueakprofilesharing', request, (data) => {
     var response = SetSqueakProfileSharingReply.deserializeBinary(data);
-    handleResponse(response);
-  });
-};
-
-// export function setSqueakProfileWhitelistedRequest(id, whitelisted, handleResponse) {
-//       var request = new SetSqueakProfileWhitelistedRequest()
-//       request.setProfileId(id);
-//       request.setWhitelisted(whitelisted);
-//       client.setSqueakProfileWhitelisted(request, {}, (err, response) => {
-//         handleResponse(response);
-//       });
-// };
-
-export function setSqueakProfileWhitelistedRequest(id, whitelisted, handleResponse) {
-  var request = new SetSqueakProfileWhitelistedRequest()
-  request.setProfileId(id);
-  request.setWhitelisted(whitelisted);
-  makeRequest('setsqueakprofilewhitelisted', request, (data) => {
-    var response = SetSqueakProfileWhitelistedReply.deserializeBinary(data);
     handleResponse(response);
   });
 };
