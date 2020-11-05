@@ -6,6 +6,7 @@ from squeak.core.encryption import generate_data_key
 
 from squeaknode.core.offer import Offer
 from squeaknode.network.peer_client import PeerClient
+from squeaknode.server.util import get_hash, get_replyto
 
 logger = logging.getLogger(__name__)
 
@@ -126,11 +127,11 @@ class PeerSyncTask:
         for hash in hashes_to_upload:
             if self.peer_connection.stopped():
                 return
-            self._upload_squeak(hash, allowed_addresses)
+            self._try_upload_squeak(hash, allowed_addresses)
 
     def download_single_squeak(self, squeak_hash):
         # Download squeak if not already present.
-        saved_squeak = self._get_saved_squeak(squeak_hash)
+        saved_squeak = self._get_local_squeak(squeak_hash)
         if not saved_squeak:
             self._download_squeak(squeak_hash)
 
@@ -141,9 +142,9 @@ class PeerSyncTask:
 
     def upload_single_squeak(self, squeak_hash):
         # Download squeak if not already present.
-        saved_squeak = self._get_saved_squeak(squeak_hash)
-        if saved_squeak:
-            self._upload_squeak(squeak_hash)
+        local_squeak = self._get_local_squeak(squeak_hash)
+        if local_squeak and local_squeak.HasDecryptionKey():
+            self._upload_squeak(local_squeak)
 
     def get_offer(self, squeak_hash):
         logger.info("Getting offer for squeak hash: {}".format(squeak_hash.hex()))
@@ -203,9 +204,6 @@ class PeerSyncTask:
     def _save_squeak(self, squeak):
         self.squeak_store.save_squeak(squeak, verify=True, skip_whitelist_check=True)
 
-    def _get_saved_squeak(self, squeak_hash):
-        return self.squeak_store.get_squeak(squeak_hash)
-
     def _get_saved_offer(self, squeak_hash):
         offers = self.postgres_db.get_offers_with_peer(squeak_hash)
         for offer in offers:
@@ -228,12 +226,16 @@ class PeerSyncTask:
     def _get_local_squeak(self, squeak_hash):
         return self.squeak_store.get_squeak(squeak_hash)
 
-    def _upload_squeak(self, squeak_hash, allowed_addresses):
+    def _try_upload_squeak(self, squeak_hash, allowed_addresses):
         squeak = self._get_local_squeak(squeak_hash)
         squeak_address = str(squeak.GetAddress())
         if squeak_address in allowed_addresses:
-            logger.info("Uploading squeak: {}".format(squeak_hash.hex()))
-            self.peer_client.post_squeak(squeak)
+            self._upload_squeak(squeak)
+
+    def _upload_squeak(self, squeak):
+        squeak_hash = get_hash(squeak)
+        logger.info("Uploading squeak: {}".format(squeak_hash.hex()))
+        self.peer_client.post_squeak(squeak)
 
     def _get_sharing_addresses(self):
         sharing_profiles = self.postgres_db.get_sharing_profiles()
