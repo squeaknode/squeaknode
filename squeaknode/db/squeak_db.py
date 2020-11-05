@@ -71,7 +71,6 @@ class SqueakDb:
             Column("address", String(35), nullable=False),
             Column("sharing", Boolean, nullable=False),
             Column("following", Boolean, nullable=False),
-            Column("whitelisted", Boolean, nullable=False),
         )
 
         self.peers = Table(
@@ -501,34 +500,11 @@ class SqueakDb:
             address=squeak_profile.address,
             sharing=squeak_profile.sharing,
             following=squeak_profile.following,
-            whitelisted=squeak_profile.whitelisted,
         )
         with self.get_connection() as connection:
             res = connection.execute(ins)
             profile_id = res.inserted_primary_key[0]
             return profile_id
-
-        # sql = """
-        # INSERT INTO profile(profile_name, private_key, address, sharing, following, whitelisted)
-        # VALUES(%s, %s, %s, %s, %s, %s)
-        # RETURNING profile_id;
-        # """
-        # with self.get_cursor() as curs:
-        #     # execute the INSERT statement
-        #     curs.execute(
-        #         sql,
-        #         (
-        #             squeak_profile.profile_name,
-        #             squeak_profile.private_key,
-        #             squeak_profile.address,
-        #             squeak_profile.sharing,
-        #             squeak_profile.following,
-        #             squeak_profile.whitelisted,
-        #         ),
-        #     )
-        #     # get the new profile id back
-        #     row = curs.fetchone()
-        #     return row["profile_id"]
 
     def get_signing_profiles(self):
         """ Get all signing profiles. """
@@ -561,25 +537,6 @@ class SqueakDb:
         # sql = """
         # SELECT * FROM profile
         # WHERE private_key IS NULL;
-        # """
-        # with self.get_cursor() as curs:
-        #     curs.execute(sql)
-        #     rows = curs.fetchall()
-        #     profiles = [self._parse_squeak_profile(row) for row in rows]
-        #     return profiles
-
-    def get_whitelisted_profiles(self):
-        """ Get all whitelisted profiles. """
-        s = select([self.profiles]).where(self.profiles.c.whitelisted)
-        with self.get_connection() as connection:
-            result = connection.execute(s)
-            rows = result.fetchall()
-            profiles = [self._parse_squeak_profile(row) for row in rows]
-            return profiles
-
-        # sql = """
-        # SELECT * FROM profile
-        # WHERE whitelisted;
         # """
         # with self.get_cursor() as curs:
         #     curs.execute(sql)
@@ -656,24 +613,6 @@ class SqueakDb:
         #     curs.execute(sql, (address,))
         #     row = curs.fetchone()
         #     return self._parse_squeak_profile(row)
-
-    def set_profile_whitelisted(self, profile_id, whitelisted):
-        """ Set a profile is whitelisted. """
-        stmt = (
-            self.profiles.update()
-            .where(self.profiles.c.profile_id == profile_id)
-            .values(whitelisted=whitelisted)
-        )
-        with self.get_connection() as connection:
-            connection.execute(stmt)
-
-        # sql = """
-        # UPDATE profile
-        # SET whitelisted=%s
-        # WHERE profile_id=%s;
-        # """
-        # with self.get_cursor() as curs:
-        #     curs.execute(sql, (whitelisted, profile_id,))
 
     def set_profile_following(self, profile_id, following):
         """ Set a profile is following. """
@@ -1075,7 +1014,6 @@ class SqueakDb:
             address=row["address"],
             sharing=row["sharing"],
             following=row["following"],
-            whitelisted=row["whitelisted"],
         )
 
     def _parse_squeak_entry_with_profile(self, row):

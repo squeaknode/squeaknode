@@ -25,12 +25,12 @@ from tests.util import (
 
 
 def test_post_squeak(
-    server_stub, admin_stub, lightning_client, whitelisted_signing_key
+    server_stub, admin_stub, lightning_client, following_signing_key
 ):
     # Post a squeak with a direct request to the server
     block_height, block_hash = get_latest_block_info(lightning_client)
     squeak = make_squeak(
-        whitelisted_signing_key, "hello from itest!", block_hash, block_height
+        following_signing_key, "hello from itest!", block_hash, block_height
     )
     squeak_hash = get_hash(squeak)
 
@@ -52,13 +52,13 @@ def test_post_squeak(
     assert get_hash(get_response_squeak) == get_hash(squeak)
 
 
-def test_post_squeak_not_whitelisted(
-    server_stub, admin_stub, lightning_client, nonwhitelisted_signing_key
+def test_post_squeak_not_following(
+    server_stub, admin_stub, lightning_client, nonfollowing_signing_key
 ):
     # Post a squeak with a direct request to the server
     block_height, block_hash = get_latest_block_info(lightning_client)
     squeak = make_squeak(
-        nonwhitelisted_signing_key, "hello from itest!", block_hash, block_height
+        nonfollowing_signing_key, "hello from itest!", block_hash, block_height
     )
     squeak_hash = get_hash(squeak)
 
@@ -294,13 +294,13 @@ def test_make_reply_squeak(
     assert len(get_ancestors_response.squeak_display_entries) == 3
 
 
-def test_post_squeak_rate_limit(server_stub, admin_stub, whitelisted_signing_key):
+def test_post_squeak_rate_limit(server_stub, admin_stub, following_signing_key):
     # Make 10 squeak
     for i in range(10):
         try:
             block_height, block_hash = get_latest_block_info(lightning_client)
             squeak = make_squeak(
-                nonwhitelisted_signing_key,
+                nonfollowing_signing_key,
                 "hello from itest!",
                 block_hash,
                 block_height,
@@ -374,32 +374,6 @@ def test_make_contact_profile(server_stub, admin_stub):
         for profile in get_contact_profiles_response.squeak_profiles
     ]
     assert contact_name in contact_profile_names
-
-
-def test_set_profile_whitelisted(server_stub, admin_stub, contact_profile_id):
-    # Get the existing profile
-    get_squeak_profile_response = admin_stub.GetSqueakProfile(
-        squeak_admin_pb2.GetSqueakProfileRequest(
-            profile_id=contact_profile_id,
-        )
-    )
-    assert get_squeak_profile_response.squeak_profile.whitelisted == False
-
-    # Set the profile to be whitelisted
-    admin_stub.SetSqueakProfileWhitelisted(
-        squeak_admin_pb2.SetSqueakProfileWhitelistedRequest(
-            profile_id=contact_profile_id,
-            whitelisted=True,
-        )
-    )
-
-    # Get the squeak profile again
-    get_squeak_profile_response = admin_stub.GetSqueakProfile(
-        squeak_admin_pb2.GetSqueakProfileRequest(
-            profile_id=contact_profile_id,
-        )
-    )
-    assert get_squeak_profile_response.squeak_profile.whitelisted == True
 
 
 def test_set_profile_following(server_stub, admin_stub, contact_profile_id):

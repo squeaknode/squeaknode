@@ -30,7 +30,7 @@ class SqueakWhitelist:
         self.allowed_addresses = whitelisted_addresses
 
     def _get_whitelisted_addresses(self):
-        whitelisted_profiles = self.postgres_db.get_whitelisted_profiles()
+        whitelisted_profiles = self.postgres_db.get_following_profiles()
         return [profile.address for profile in whitelisted_profiles]
 
     def get_allowed_addresses(self, addresses):

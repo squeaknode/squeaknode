@@ -84,10 +84,6 @@ service SqueakAdmin {
   */
   rpc GetSqueakProfileByAddress (GetSqueakProfileByAddressRequest) returns (GetSqueakProfileByAddressReply) {}
 
-  /** sqkadmin: `setsqueakprofilewhitelisted`
-  */
-  rpc SetSqueakProfileWhitelisted (SetSqueakProfileWhitelistedRequest) returns (SetSqueakProfileWhitelistedReply) {}
-
   /** sqkadmin: `setsqueakprofilefollowing`
   */
   rpc SetSqueakProfileFollowing (SetSqueakProfileFollowingRequest) returns (SetSqueakProfileFollowingReply) {}
@@ -237,17 +233,6 @@ message GetSqueakProfileByAddressReply {
     SqueakProfile squeak_profile = 1;
 }
 
-message SetSqueakProfileWhitelistedRequest {
-    /// The profile id
-    int32 profile_id = 1;
-
-    /// Whitelisted
-    bool whitelisted = 2;
-}
-
-message SetSqueakProfileWhitelistedReply {
-}
-
 message SetSqueakProfileFollowingRequest {
     /// The profile id
     int32 profile_id = 1;
@@ -296,9 +281,6 @@ message SqueakProfile {
 
     /// Following
     bool following = 6;
-
-    /// Whitelisted
-    bool whitelisted = 7;
 }
 
 message MakeSqueakRequest {
