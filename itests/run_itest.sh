@@ -26,7 +26,7 @@ do
     echo "new_address_output:"
     echo $new_address_output
     client_address=$(echo $new_address_output | jq .address -r)
-    sleep 1
+    sleep 2
 done
 
 MINING_ADDRESS=$client_address docker-compose up -d btcd
