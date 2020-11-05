@@ -125,23 +125,19 @@ class SqueakDb:
             yield connection
 
     def create_tables(self):
-        logger.info("Calling create_tables")
+        logger.debug("Creating tables...")
         self.metadata.create_all(self.engine)
-        logger.info("Called create_tables")
         self.show_tables()
 
     def show_tables(self):
-        logger.info("Calling show_tables")
         self.metadata.reflect(bind=self.engine)
-        logger.info(self.metadata.tables.keys())
-        logger.info("Called show_tables")
+        tables = self.metadata.tables.keys()
+        logger.debug("Database tables: {}".format(tables))
 
     def init(self):
         """ Create the tables and indices in the database. """
-        logger.info("SqlAlchemy version: {}".format(sqlalchemy.__version__))
-        logger.info("Creating tables...")
+        logger.debug("SqlAlchemy version: {}".format(sqlalchemy.__version__))
         self.create_tables()
-        logger.info("Created tables.")
 
     def insert_squeak(self, squeak):
         """ Insert a new squeak. """
