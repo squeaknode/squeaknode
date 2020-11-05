@@ -23,9 +23,6 @@ from squeaknode.server.squeak_server_servicer import SqueakServerServicer
 from squeaknode.config.config import Config
 
 
-SQK_DIR_NAME = ".sqk"
-
-
 logger = logging.getLogger(__name__)
 
 
@@ -107,10 +104,7 @@ def load_admin_handler(lightning_client, squeak_node):
 
 def load_sqk_dir_path(config):
     sqk_dir = config.squeaknode_sqk_dir
-    if sqk_dir:
-        return Path(sqk_dir)
-    else:
-        return Path.home().joinpath(SQK_DIR_NAME)
+    return Path(sqk_dir)
 
 
 def load_db(config, network):

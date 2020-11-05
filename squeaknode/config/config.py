@@ -2,6 +2,8 @@ import logging
 from configparser import ConfigParser
 from os import environ
 
+from pathlib import Path
+
 import pprint
 
 logger = logging.getLogger(__name__)
@@ -11,6 +13,8 @@ SERVER_RPC_HOST = "0.0.0.0"
 SERVER_RPC_PORT = 8774
 ADMIN_RPC_HOST = "0.0.0.0"
 ADMIN_RPC_PORT = 8994
+WEBADMIN_HOST = "0.0.0.0"
+WEBADMIN_PORT = 12994
 DEFAULT_BITCOIN_RPC_PORT = 8334
 BITCOIN_RPC_PORT = {
     'mainnet': 8334,
@@ -21,6 +25,12 @@ DEFAULT_LND_PORT = 9735
 DEFAULT_LND_RPC_PORT = 10009
 POSTGRES_HOST = "localhost"
 POSTGRES_DATABASE = "squeaknode"
+DEFAULT_SQK_DIR = ".sqk"
+DEFAULT_SQK_DIR_PATH = str(Path.home() / DEFAULT_SQK_DIR)
+DEFAULT_LND_DIR = ".lnd"
+DEFAULT_LND_TLS_CERT_NAME = "tls.cert"
+DEFAULT_LND_MACAROON_NAME = "admin.macaroon"
+DEFAULT_LND_DIR_PATH = str(Path.home() / DEFAULT_LND_DIR)
 
 
 class Config:
@@ -44,6 +54,7 @@ class Config:
         self._configs['lnd_rpc_port'] = self._get_lnd_rpc_port()
         self._configs['lnd_tls_cert_path'] = self._get_lnd_tls_cert_path()
         self._configs['lnd_macaroon_path'] = self._get_lnd_macaroon_path()
+        self._configs['lnd_dir'] = self._get_lnd_dir()
 
         # server
         self._configs['server_rpc_host'] = self._get_server_rpc_host()
@@ -115,10 +126,19 @@ class Config:
         return self.parser.getint("lnd", "rpc_port", fallback=DEFAULT_LND_RPC_PORT)
 
     def _get_lnd_tls_cert_path(self):
-        return self.parser.get("lnd", "tls_cert_path")
+        lnd_dir_path = self._get_lnd_dir()
+        tls_cert_path = str(Path(lnd_dir_path) / DEFAULT_LND_TLS_CERT_NAME)
+        return self.parser.get("lnd", "tls_cert_path", fallback=tls_cert_path)
 
     def _get_lnd_macaroon_path(self):
-        return self.parser.get("lnd", "macaroon_path")
+        lnd_dir_path = self._get_lnd_dir()
+        network = self._get_squeaknode_network()
+        lnd_network_dir = "data/chain/bitcoin/{}".format(network)
+        macaroon_path = str(Path(lnd_dir_path) / lnd_network_dir / DEFAULT_LND_MACAROON_NAME)
+        return self.parser.get("lnd", "macaroon_path", fallback=macaroon_path)
+
+    def _get_lnd_dir(self):
+        return self.parser.get("lnd", "lnd_dir", fallback=DEFAULT_LND_DIR_PATH)
 
     def _get_server_rpc_host(self):
         return self.parser.get("server", "rpc_host", fallback=SERVER_RPC_HOST)
@@ -136,10 +156,10 @@ class Config:
         return self.parser.getboolean("webadmin", "enabled", fallback=False)
 
     def _get_webadmin_host(self):
-        return self.parser.get("webadmin", "host", fallback="0.0.0.0")
+        return self.parser.get("webadmin", "host", fallback=WEBADMIN_HOST)
 
     def _get_webadmin_port(self):
-        return self.parser.get("webadmin", "port", fallback=12994)
+        return self.parser.get("webadmin", "port", fallback=WEBADMIN_PORT)
 
     def _get_webadmin_username(self):
         return self.parser.get("webadmin", "username", fallback="")
@@ -160,7 +180,8 @@ class Config:
             or self.parser.getboolean("webadmin", "allow_cors", fallback=False)
 
     def _get_squeaknode_network(self):
-        return self.parser.get("squeaknode", "network", fallback="testnet")
+        return environ.get('NETWORK') \
+            or self.parser.get("squeaknode", "network", fallback="testnet")
 
     def _get_squeaknode_price(self):
         return int(self.parser.get("squeaknode", "price", fallback="10"))
@@ -172,16 +193,16 @@ class Config:
         return self.parser.get("squeaknode", "database", fallback="sqlite")
 
     def _get_squeaknode_sqk_dir(self):
-        return self.parser.get("squeaknode", "sqk_dir", fallback=None)
+        return self.parser.get("squeaknode", "sqk_dir", fallback=DEFAULT_SQK_DIR_PATH)
 
     def _get_squeaknode_enable_sync(self):
         return self.parser.getboolean("squeaknode", "enable_sync", fallback=False)
 
     def _get_postgresql_user(self):
-        return self.parser.get("postgresql", "user")
+        return self.parser.get("postgresql", "user", fallback="")
 
     def _get_postgresql_password(self):
-        return self.parser.get("postgresql", "password")
+        return self.parser.get("postgresql", "password", fallback="")
 
     def _get_postgresql_host(self):
         return self.parser.get("postgresql", "host", fallback=POSTGRES_HOST)
