@@ -29,6 +29,7 @@ DEFAULT_SQK_DIR = ".sqk"
 DEFAULT_SQK_DIR_PATH = str(Path.home() / DEFAULT_SQK_DIR)
 DEFAULT_LND_DIR = ".lnd"
 DEFAULT_LND_TLS_CERT_NAME = "tls.cert"
+DEFAULT_LND_MACAROON_NAME = "admin.macaroon"
 DEFAULT_LND_DIR_PATH = str(Path.home() / DEFAULT_LND_DIR)
 
 
@@ -130,7 +131,11 @@ class Config:
         return self.parser.get("lnd", "tls_cert_path", fallback=tls_cert_path)
 
     def _get_lnd_macaroon_path(self):
-        return self.parser.get("lnd", "macaroon_path")
+        lnd_dir_path = self._get_lnd_dir()
+        network = self._get_squeaknode_network()
+        lnd_network_dir = "data/chain/bitcoin/{}".format(network)
+        macaroon_path = str(Path(lnd_dir_path) / lnd_network_dir / DEFAULT_LND_MACAROON_NAME)
+        return self.parser.get("lnd", "macaroon_path", fallback=macaroon_path)
 
     def _get_lnd_dir(self):
         return self.parser.get("lnd", "lnd_dir", fallback=DEFAULT_LND_DIR_PATH)
