@@ -109,7 +109,6 @@ def load_sqk_dir_path(config):
 
 def load_db(config, network):
     database = load_database(config)
-    logger.info("database: " + database)
     if database == "postgresql":
         engine = get_postgres_engine(
             config.postgresql_user,
@@ -120,7 +119,6 @@ def load_db(config, network):
         return SqueakDb(engine, schema=network)
     elif database == "sqlite":
         sqk_dir = load_sqk_dir_path(config)
-        logger.info("Loaded sqk_dir: {}".format(sqk_dir))
         data_dir = sqk_dir.joinpath("data").joinpath(network)
         data_dir.mkdir(parents=True, exist_ok=True)
         engine = get_sqlite_engine(data_dir)
@@ -142,7 +140,7 @@ def sigterm_handler(_signo, _stack_frame):
 
 
 def start_admin_rpc_server(rpc_server):
-    logger.info("Calling start_admin_rpc_server...")
+    logger.info("Starting admin RPC server...")
     thread = threading.Thread(
         target=rpc_server.serve,
         args=(),
@@ -156,7 +154,7 @@ def load_admin_web_server_enabled(config):
 
 
 def start_admin_web_server(admin_web_server):
-    logger.info("Calling start_admin_web_server...")
+    logger.info("Starting admin web server...")
     thread = threading.Thread(
         target=admin_web_server.serve,
         args=(),
@@ -192,13 +190,12 @@ def parse_args():
 
 
 def main():
-    logger.info("Running main() in server...")
+    logger.info("Starting squeaknode...")
     logging.basicConfig(level=logging.ERROR)
     args = parse_args()
 
     # Set the log level
     level = args.log_level.upper()
-    logger.info("level: " + level)
     logging.getLogger().setLevel(level)
 
     config = Config(args.config)
@@ -210,12 +207,10 @@ def main():
 def run_server(config):
     # load the network
     network = load_network(config)
-    logger.info("network: " + network)
     SelectParams(network)
 
     # load postgres db
     squeak_db = load_db(config, network)
-    logger.info("squeak_db: " + str(squeak_db))
     squeak_db.init()
 
     # load the price
@@ -227,7 +222,6 @@ def run_server(config):
     # load the lightning client
     lightning_client = load_lightning_client(config)
     lightning_host_port = load_lightning_host_port(config)
-    logger.info("Loaded lightning_host_port: {}".format(lightning_host_port))
 
     # load the blockchain client
     blockchain_client = load_blockchain_client(config)
