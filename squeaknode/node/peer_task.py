@@ -130,13 +130,17 @@ class PeerSyncTask:
             self._try_upload_squeak(hash, allowed_addresses)
 
     def download_single_squeak(self, squeak_hash):
+        logger.info("download_single_squeak with hash: {}".format(squeak_hash))
+
         # Download squeak if not already present.
         saved_squeak = self._get_local_squeak(squeak_hash)
+        logger.info("download_single_squeak with saved_squeak: {}".format(saved_squeak))
         if not saved_squeak:
             self._download_squeak(squeak_hash)
 
         # Download offer from peer if not already present.
         saved_offer = self._get_saved_offer(squeak_hash)
+        logger.info("download_single_squeak with saved_offer: {}".format(saved_offer))
         if not saved_offer:
             self._download_offer(squeak_hash)
 
@@ -205,10 +209,11 @@ class PeerSyncTask:
         self.squeak_store.save_squeak(squeak, verify=True, skip_whitelist_check=True)
 
     def _get_saved_offer(self, squeak_hash):
-        offers = self.postgres_db.get_offers_with_peer(squeak_hash)
-        for offer in offers:
-            if offer.peer_id == peer_id:
-                return offer
+        logger.info("Getting saved offer for hash: {}".format(squeak_hash.hex()))
+        offers = self.postgres_db.get_offers_with_peer(squeak_hash.hex())
+        for offer_with_peer in offers:
+            if offer_with_peer.offer.peer_id == self.peer.peer_id:
+                return offer_with_peer
 
     def _download_squeak(self, squeak_hash):
         logger.info("Downloading squeak: {} from peer: {}".format(squeak_hash.hex(), self.peer.peer_id))
