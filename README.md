@@ -6,7 +6,12 @@ Node for Squeak protocol
 
 ### Run with docker:
 
+##### Prerequisites
+* docker
+* docker-compose
+* Enough disk space for the bitcoin blockchain
 
+##### Steps
 - Edit **docker/config.ini** to change any configs from the default.
 - Build and start docker-compose with the `NETWORK` environment variable set:
 	```
@@ -17,6 +22,12 @@ Node for Squeak protocol
 
 ### Run without docker:
 
+##### Prerequisites
+* A running bitcoin node
+* A running lnd node
+* Python3.6
+
+##### Steps
 - Create a **config.ini** file and fill in the relevant values:
 	```
 	[squeaknode]
