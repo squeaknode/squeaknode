@@ -190,7 +190,6 @@ def parse_args():
 
 
 def main():
-    logger.info("Starting squeaknode...")
     logging.basicConfig(level=logging.ERROR)
     args = parse_args()
 
@@ -198,6 +197,7 @@ def main():
     level = args.log_level.upper()
     logging.getLogger().setLevel(level)
 
+    logger.info("Starting squeaknode...")
     config = Config(args.config)
     logger.info("config: {}".format(config))
 
