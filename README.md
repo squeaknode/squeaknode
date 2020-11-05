@@ -12,7 +12,6 @@ Node for Squeak protocol
 * Enough disk space for the bitcoin blockchain
 
 ##### Steps
-- Edit **docker/config.ini** to change any configs from the default.
 - Build and start docker-compose with the `NETWORK` environment variable set:
 	```
 	$ cd docker
@@ -28,7 +27,7 @@ Node for Squeak protocol
 * Python3.6
 
 ##### Steps
-- Create a **config.ini** file and fill in the relevant values:
+- Create a **config.ini** file and fill in the relevant sections to connect to your bitcoin and lnd nodes:
 	```
 	[squeaknode]
 	network=testnet
@@ -37,11 +36,16 @@ Node for Squeak protocol
 
 	[lnd]
 	host=localhost
+	port=9735
+	rpc_port=10009
 
 	[bitcoin]
 	rpc_host=localhost
+	rpc_port=18334
 	rpc_user=devuser
 	rpc_pass=devpass
+	tls_cert_path=~/.lnd/tls.cert
+	macaroon_path=~/.lnd/data/chain/bitcoin/testnet/admin.macaroon
 
 	[webadmin]
 	enabled=true
