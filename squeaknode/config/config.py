@@ -7,6 +7,14 @@ import pprint
 logger = logging.getLogger(__name__)
 
 
+DEFAULT_BITCOIN_RPC_PORT = 8334
+BITCOIN_RPC_PORT = {
+    'mainnet': 8334,
+    'testnet': 18334,
+    'simnet': 18556,
+}
+
+
 class Config:
 
     def __init__(self, config_path):
@@ -72,10 +80,12 @@ class Config:
         return pprint.pformat(self._configs)
 
     def _get_bitcoin_rpc_host(self):
-        return self.parser.get("bitcoin", "rpc_host")
+        return self.parser.get("bitcoin", "rpc_host", fallback="localhost")
 
     def _get_bitcoin_rpc_port(self):
-        return self.parser.get("bitcoin", "rpc_port")
+        network = self._get_squeaknode_network()
+        default_rpc_port = BITCOIN_RPC_PORT.get(network, DEFAULT_BITCOIN_RPC_PORT)
+        return self.parser.get("bitcoin", "rpc_port", fallback=default_rpc_port)
 
     def _get_bitcoin_rpc_user(self):
         return self.parser.get("bitcoin", "rpc_user")
