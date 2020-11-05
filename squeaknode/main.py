@@ -207,43 +207,39 @@ def main():
     logger.info("level: " + level)
     logging.getLogger().setLevel(level)
 
-    # Get the config object
-    config = ConfigParser()
-    config.read(args.config)
+    config = Config(args.config)
+    logger.info("config: {}".format(config))
 
-    new_config = Config(args.config)
-    logger.info("config: {}".format(new_config))
-
-    args.func(config, new_config)
+    args.func(config)
 
 
-def run_server(config, new_config):
+def run_server(config):
     # load the network
-    network = load_network(new_config)
+    network = load_network(config)
     logger.info("network: " + network)
     SelectParams(network)
 
     # load postgres db
-    squeak_db = load_db(new_config, network)
+    squeak_db = load_db(config, network)
     logger.info("squeak_db: " + str(squeak_db))
     squeak_db.init()
 
     # load the price
-    price = load_price(new_config)
+    price = load_price(config)
 
     # load the max squeaks per block per address
-    max_squeaks_per_address_per_hour = load_max_squeaks_per_address_per_hour(new_config)
+    max_squeaks_per_address_per_hour = load_max_squeaks_per_address_per_hour(config)
 
     # load the lightning client
-    lightning_client = load_lightning_client(new_config)
-    lightning_host_port = load_lightning_host_port(new_config)
+    lightning_client = load_lightning_client(config)
+    lightning_host_port = load_lightning_host_port(config)
     logger.info("Loaded lightning_host_port: {}".format(lightning_host_port))
 
     # load the blockchain client
-    blockchain_client = load_blockchain_client(new_config)
+    blockchain_client = load_blockchain_client(config)
 
     # load enable sync config
-    enable_sync = load_enable_sync(new_config)
+    enable_sync = load_enable_sync(config)
 
     # Create and start the squeak node
     squeak_node = SqueakNode(
@@ -259,18 +255,18 @@ def run_server(config, new_config):
 
     # start admin rpc server
     admin_handler = load_admin_handler(lightning_client, squeak_node)
-    admin_rpc_server = load_admin_rpc_server(new_config, admin_handler)
+    admin_rpc_server = load_admin_rpc_server(config, admin_handler)
     start_admin_rpc_server(admin_rpc_server)
 
     # start admin web server
-    admin_web_server_enabled = load_admin_web_server_enabled(new_config)
+    admin_web_server_enabled = load_admin_web_server_enabled(config)
     if admin_web_server_enabled:
-        admin_web_server = load_admin_web_server(new_config, admin_handler)
+        admin_web_server = load_admin_web_server(config, admin_handler)
         start_admin_web_server(admin_web_server)
 
     # start rpc server
     handler = load_handler(squeak_node)
-    server = load_rpc_server(new_config, handler)
+    server = load_rpc_server(config, handler)
     server.serve()
 
 

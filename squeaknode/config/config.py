@@ -115,7 +115,7 @@ class Config:
         return self.parser.get("admin", "rpc_port")
 
     def _get_webadmin_enabled(self):
-        return self.parser.getboolean("webadmin", "enabled", fallback=False),
+        return self.parser.getboolean("webadmin", "enabled", fallback=False)
 
     def _get_webadmin_host(self):
         return self.parser.get("webadmin", "host", fallback="0.0.0.0")
