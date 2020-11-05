@@ -790,7 +790,7 @@ def test_connect_other_node(server_stub, admin_stub, other_server_stub, other_ad
     # Add the main node as a peer
     create_peer_response = other_admin_stub.CreatePeer(
         squeak_admin_pb2.CreatePeerRequest(
-            host="sqkserver",
+            host="squeaknode",
             port=8774,
         )
     )
@@ -907,7 +907,7 @@ def test_download_single_squeak(server_stub, admin_stub, other_server_stub, othe
     # Add the main node as a peer
     create_peer_response = other_admin_stub.CreatePeer(
         squeak_admin_pb2.CreatePeerRequest(
-            host="sqkserver",
+            host="squeaknode",
             port=8774,
         )
     )

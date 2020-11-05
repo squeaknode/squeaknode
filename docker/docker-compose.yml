@@ -34,12 +34,12 @@ services:
       - net.ipv6.conf.all.disable_ipv6=0
     entrypoint: ["./start-lnd.sh"]
 
-  sqkserver:
-    image: sqkserver
-    container_name: sqkserver
+  squeaknode:
+    image: squeaknode
+    container_name: squeaknode
     build:
       context: ../
-      dockerfile: docker/sqkserver/Dockerfile
+      dockerfile: docker/squeaknode/Dockerfile
     environment:
       - WEBADMIN_USE_SSL
       - WEBADMIN_LOGIN_DISABLED
@@ -58,7 +58,7 @@ services:
       - "lnd:lnd"
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=0
-    entrypoint: ["./start-sqkserver.sh"]
+    entrypoint: ["./start-squeaknode.sh"]
 
 volumes:
   # shared volume is needed for sharing the btcd certificate
