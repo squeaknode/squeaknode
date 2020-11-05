@@ -6,12 +6,13 @@ Node for Squeak protocol
 
 ### Run with docker:
 
-- Edit **docker/config.ini** to change any configs
-- Start the squeak server:
+
+- Edit **docker/config.ini** to change any configs from the default.
+- Build and start docker-compose with the `NETWORK` environment variable set:
 	```
 	$ cd docker
 	$ docker-compose build
-	$ docker-compose up
+	$ NETWORK=testnet docker-compose up
 	```
 
 ### Run without docker:
@@ -20,30 +21,21 @@ Node for Squeak protocol
 	```
 	[squeaknode]
 	network=testnet
-	price=<YOUR_SELLING_PRICE_IN_SATOSHIS>
-	max_squeaks_per_address_per_hour=<YOUR_RATE_LIMIT>
+	price=100
+	enable_sync=true
 
 	[lnd]
-	host=<YOUR_LND_HOST>
-	external_host=<YOUR_LND_HOST>
-	port=9735
-	rpc_port=10009
-	tls_cert_path=/root/.lnd/tls.cert
-	macaroon_path=/root/.lnd/data/chain/bitcoin/testnet/admin.macaroon
+	host=localhost
 
 	[bitcoin]
-	rpc_host=btcd
-	rpc_port=18334
+	rpc_host=localhost
 	rpc_user=devuser
 	rpc_pass=devpass
 
-	[server]
-	rpc_host=0.0.0.0
-	rpc_port=8774
-
-	[admin]
-	rpc_host=0.0.0.0
-	rpc_port=8994
+	[webadmin]
+	enabled=true
+	username=devuser
+	password=devpass
 	```
 - Install squeaknode:
 	```
