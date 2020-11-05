@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import {useHistory} from "react-router-dom";
 import { useParams } from 'react-router-dom';
 import {
   Grid,
@@ -31,7 +32,7 @@ export default function ProfilePage() {
   const { id } = useParams();
   const [squeakProfile, setSqueakProfile] = useState(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-
+  const history = useHistory();
 
   const getSqueakProfile = (id) => {
     getSqueakProfileRequest(id, setSqueakProfile);
@@ -45,6 +46,10 @@ export default function ProfilePage() {
     setSqueakProfileSharingRequest(id, sharing, () => {
       getSqueakProfile(id);
     })
+  };
+
+  const goToSqueakAddressPage = (squeakAddress) => {
+    history.push("/app/squeakaddress/" + squeakAddress);
   };
 
 
@@ -87,6 +92,7 @@ export default function ProfilePage() {
           Profile name: {squeakProfile.getProfileName()}
         </p>
         {ProfileSettingsForm()}
+        {ViewSqueaksButton()}
         {DeleteProfileButton()}
       </>
     )
@@ -120,6 +126,23 @@ export default function ProfilePage() {
             onClick={() => {
               handleClickOpenDeleteDialog();
             }}>Delete Profile
+          </Button>
+        </div>
+      </Grid>
+      </>
+    )
+  }
+
+  function ViewSqueaksButton() {
+    return (
+      <>
+      <Grid item xs={12}>
+        <div className={classes.root}>
+          <Button
+            variant="contained"
+            onClick={() => {
+              goToSqueakAddressPage(squeakProfile.getAddress());
+            }}>View Squeaks
           </Button>
         </div>
       </Grid>

@@ -70,6 +70,10 @@ export default function Profiles() {
     history.push("/app/squeakaddress/" + squeakAddress);
   };
 
+  const goToProfilePage = (profileId) => {
+    history.push("/app/profile/" + profileId);
+  };
+
   const handleClickOpenCreateSigningProfileDialog = () => {
     setCreateSigningProfileDialogOpen(true);
   };
@@ -174,21 +178,32 @@ export default function Profiles() {
            title="Signing Profiles"
            data={signingProfiles.map(p =>
               [
+                p.getProfileId(),
                 p.getProfileName(),
                 p.getAddress(),
                 p.getFollowing().toString(),
                 p.getSharing().toString(),
               ]
             )}
-           columns={["Name", "Address", "Following", "Sharing"]}
+           columns={[
+             {
+               name: "Id",
+               options: {
+                 display: false,
+               }
+             },
+             "Name", "Address", "Following", "Sharing"
+           ]}
            options={{
              filter: false,
              print: false,
              viewColumns: false,
              selectableRows: "none",
              onRowClick: rowData => {
-               var address = rowData[1];
-               goToSqueakAddressPage(address);
+               var id = rowData[0];
+               var address = rowData[2];
+               //goToSqueakAddressPage(address);
+               goToProfilePage(id);
              }
            }}/>
        </Grid>
