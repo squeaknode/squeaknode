@@ -35,7 +35,7 @@ message PostSqueakRequest {
 
 message GetSqueakRequest {
     /// Hash of the squeak to get.
-    bytes hash = 1;
+    string hash = 1;
 }
 
 message LookupSqueaksRequest {
@@ -49,7 +49,7 @@ message LookupSqueaksRequest {
 
 message GetOfferRequest {
     /// Hash of the squeak to buy.
-    bytes hash = 1;
+    string hash = 1;
 
     /// Challenge bytes
     bytes challenge = 2;
@@ -65,7 +65,7 @@ message GetSqueakReply {
 
 message LookupSqueaksReply {
     /// Hash of the squeak to get.
-    repeated bytes hashes = 1;
+    repeated string hashes = 1;
 
     /// Hash of the squeak to get.
     repeated string allowed_addresses = 2;
@@ -78,7 +78,7 @@ message GetOfferReply {
 
 message Squeak {
     /// Hash of the squeak.
-    bytes hash = 1;
+    string hash = 1;
 
     /// Serialized squeak.
     bytes serialized_squeak = 2;
@@ -86,7 +86,7 @@ message Squeak {
 
 message SqueakBuyOffer {
     /// The squeak hash.
-    bytes squeak_hash = 1;
+    string squeak_hash = 1;
 
     /// The decrypted decryption key
     bytes key_cipher = 2;

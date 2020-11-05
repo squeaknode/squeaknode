@@ -71,7 +71,8 @@ def make_squeak(
 
 def get_hash(squeak):
     """ Needs to be reversed because hash is stored as little-endian """
-    return squeak.GetHash()[::-1]
+    hash_bytes = squeak.GetHash()[::-1]
+    return hash_bytes.hex()
 
 
 def load_lightning_client() -> LNDLightningClient:

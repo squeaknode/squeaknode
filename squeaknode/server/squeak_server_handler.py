@@ -15,12 +15,12 @@ class SqueakServerHandler(object):
         self.squeak_node = squeak_node
 
     def handle_posted_squeak(self, squeak):
-        logger.info("Handle posted squeak with hash: {}".format(get_hash(squeak).hex()))
+        logger.info("Handle posted squeak with hash: {}".format(get_hash(squeak)))
         # Save the squeak
         self.squeak_node.save_uploaded_squeak(squeak)
 
     def handle_get_squeak(self, squeak_hash):
-        logger.info("Handle get squeak by hash: {}".format(squeak_hash.hex()))
+        logger.info("Handle get squeak by hash: {}".format(squeak_hash))
         return self.squeak_node.get_public_squeak(squeak_hash)
 
     def handle_lookup_squeaks(self, request):
@@ -42,6 +42,6 @@ class SqueakServerHandler(object):
         )
 
     def handle_buy_squeak(self, squeak_hash, challenge):
-        logger.info("Handle buy squeak by hash: {}".format(squeak_hash.hex()))
+        logger.info("Handle buy squeak by hash: {}".format(squeak_hash))
         buy_offer = self.squeak_node.get_buy_offer(squeak_hash, challenge)
         return buy_offer

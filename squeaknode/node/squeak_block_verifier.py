@@ -11,7 +11,7 @@ class SqueakBlockVerifier:
         self.unverified_queue = queue.Queue()
 
     def verify_squeak_block(self, squeak_hash):
-        logger.info("Verifying squeak hash: {}".format(squeak_hash.hex()))
+        logger.info("Verifying squeak hash: {}".format(squeak_hash))
         squeak = self._get_squeak(squeak_hash)
 
         try:

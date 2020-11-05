@@ -117,8 +117,8 @@ def saved_squeak_hash(server_stub, admin_stub, signing_profile_id):
             content=make_squeak_content,
         )
     )
-    squeak_hash_str = make_squeak_response.squeak_hash
-    yield bytes.fromhex(squeak_hash_str)
+    squeak_hash = make_squeak_response.squeak_hash
+    yield squeak_hash
 
 
 @pytest.fixture

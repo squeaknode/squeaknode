@@ -147,7 +147,7 @@ class SqueakDb:
     def insert_squeak(self, squeak):
         """ Insert a new squeak. """
         ins = self.squeaks.insert().values(
-            hash=get_hash(squeak).hex(),
+            hash=get_hash(squeak),
             n_version=squeak.nVersion,
             hash_enc_content=squeak.hashEncContent.hex(),
             hash_reply_sqk=squeak.hashReplySqk.hex(),
@@ -176,8 +176,7 @@ class SqueakDb:
 
     def get_squeak_entry(self, squeak_hash):
         """ Get a squeak. """
-        squeak_hash_str = squeak_hash.hex()
-        s = select([self.squeaks]).where(self.squeaks.c.hash == squeak_hash_str)
+        s = select([self.squeaks]).where(self.squeaks.c.hash == squeak_hash)
         with self.get_connection() as connection:
             result = connection.execute(s)
             row = result.fetchone()
@@ -185,7 +184,6 @@ class SqueakDb:
 
     def get_squeak_entry_with_profile(self, squeak_hash):
         """ Get a squeak with the author profile. """
-        squeak_hash_str = squeak_hash.hex()
         s = (
             select([self.squeaks, self.profiles])
             .select_from(
@@ -194,7 +192,7 @@ class SqueakDb:
                     self.profiles.c.address == self.squeaks.c.author_address,
                 )
             )
-            .where(self.squeaks.c.hash == squeak_hash_str)
+            .where(self.squeaks.c.hash == squeak_hash)
         )
         with self.get_connection() as connection:
             result = connection.execute(s)
@@ -249,7 +247,7 @@ class SqueakDb:
             rows = result.fetchall()
             return [self._parse_squeak_entry_with_profile(row) for row in rows]
 
-    def get_thread_ancestor_squeak_entries_with_profile(self, squeak_hash_str):
+    def get_thread_ancestor_squeak_entries_with_profile(self, squeak_hash):
         """ Get all reply ancestors of squeak hash. """
         ancestors = (
             select(
@@ -258,7 +256,7 @@ class SqueakDb:
                     literal(0).label("depth"),
                 ]
             )
-            .where(self.squeaks.c.hash == squeak_hash_str)
+            .where(self.squeaks.c.hash == squeak_hash)
             .cte(recursive=True)
         )
 
@@ -349,7 +347,7 @@ class SqueakDb:
         with self.get_connection() as connection:
             result = connection.execute(s)
             rows = result.fetchall()
-            hashes = [bytes.fromhex(row["hash"]) for row in rows]
+            hashes = [row["hash"] for row in rows]
             return hashes
 
         # sql = """
@@ -409,7 +407,7 @@ class SqueakDb:
         with self.get_connection() as connection:
             result = connection.execute(s)
             rows = result.fetchall()
-            hashes = [bytes.fromhex(row["hash"]) for row in rows]
+            hashes = [row["hash"] for row in rows]
             return hashes
 
         # sql = """
@@ -465,7 +463,7 @@ class SqueakDb:
         with self.get_connection() as connection:
             result = connection.execute(s)
             rows = result.fetchall()
-            hashes = [bytes.fromhex(row["hash"]) for row in rows]
+            hashes = [row["hash"] for row in rows]
             return hashes
 
         # sql = """
@@ -734,7 +732,7 @@ class SqueakDb:
         with self.get_connection() as connection:
             result = connection.execute(s)
             rows = result.fetchall()
-            hashes = [bytes.fromhex(row["hash"]) for row in rows]
+            hashes = [row["hash"] for row in rows]
             return hashes
 
         # sql = """
@@ -749,10 +747,9 @@ class SqueakDb:
 
     def mark_squeak_block_valid(self, squeak_hash, block_header):
         """ Add the block header to a squeak. """
-        squeak_hash_str = squeak_hash.hex()
         stmt = (
             self.squeaks.update()
-            .where(self.squeaks.c.hash == squeak_hash_str)
+            .where(self.squeaks.c.hash == squeak_hash)
             .values(block_header=block_header)
         )
         with self.get_connection() as connection:
@@ -770,10 +767,9 @@ class SqueakDb:
 
     def set_squeak_decryption_key(self, squeak_hash, vch_decryption_key):
         """ Set the decryption key of a squeak. """
-        squeak_hash_str = squeak_hash.hex()
         stmt = (
             self.squeaks.update()
-            .where(self.squeaks.c.hash == squeak_hash_str)
+            .where(self.squeaks.c.hash == squeak_hash)
             .values(vch_decryption_key=vch_decryption_key)
         )
         with self.get_connection() as connection:
@@ -781,9 +777,8 @@ class SqueakDb:
 
     def delete_squeak(self, squeak_hash):
         """ Delete a squeak. """
-        squeak_hash_str = squeak_hash.hex()
         delete_squeak_stmt = self.squeaks.delete().where(
-            self.squeaks.c.hash == squeak_hash_str
+            self.squeaks.c.hash == squeak_hash
         )
         with self.get_connection() as connection:
             connection.execute(delete_squeak_stmt)
@@ -856,7 +851,7 @@ class SqueakDb:
     def insert_offer(self, offer):
         """ Insert a new offer. """
         ins = self.offers.insert().values(
-            squeak_hash=offer.squeak_hash.hex(),
+            squeak_hash=offer.squeak_hash,
             key_cipher=offer.key_cipher,
             iv=offer.iv,
             price_msat=offer.price_msat,
@@ -994,9 +989,8 @@ class SqueakDb:
 
     def delete_offers_for_squeak(self, squeak_hash):
         """ Delete all offers for a squeak hash. """
-        squeak_hash_str = squeak_hash.hex()
         s = self.offers.delete().where(
-            self.offers.c.squeak_hash == squeak_hash_str
+            self.offers.c.squeak_hash == squeak_hash
         )
         with self.get_connection() as connection:
             res = connection.execute(s)
