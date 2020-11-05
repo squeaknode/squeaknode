@@ -20,78 +20,78 @@ from squeaknode.server.lightning_address import LightningAddressHostPort
 from squeaknode.server.squeak_server_handler import SqueakServerHandler
 from squeaknode.server.squeak_server_servicer import SqueakServerServicer
 
+from squeaknode.config.config import Config
 
-logger = logging.getLogger(__name__)
 
 SQK_DIR_NAME = ".sqk"
 
+
+logger = logging.getLogger(__name__)
+
+
 def load_lightning_client(config) -> LNDLightningClient:
     return LNDLightningClient(
-        config["lnd"]["host"],
-        config["lnd"]["rpc_port"],
-        config["lnd"]["tls_cert_path"],
-        config["lnd"]["macaroon_path"],
+        config.lnd_host,
+        config.lnd_rpc_port,
+        config.lnd_tls_cert_path,
+        config.lnd_macaroon_path,
     )
 
 
 def load_lightning_host_port(config) -> LNDLightningClient:
-    lnd_host = config.get("lnd", "external_host", fallback=None)
-    if environ.get('EXTERNAL_LND_HOST') is not None:
-        lnd_host = environ.get('EXTERNAL_LND_HOST')
-    lnd_port = int(config["lnd"]["port"])
     return LightningAddressHostPort(
-        lnd_host,
-        lnd_port,
+        config.lnd_external_host,
+        config.lnd_port,
     )
 
 
 def load_rpc_server(config, handler) -> SqueakServerServicer:
     return SqueakServerServicer(
-        config["server"]["rpc_host"],
-        config["server"]["rpc_port"],
+        config.server_rpc_host,
+        config.server_rpc_port,
         handler,
     )
 
 
 def load_admin_rpc_server(config, handler) -> SqueakAdminServerServicer:
     return SqueakAdminServerServicer(
-        config["admin"]["rpc_host"],
-        config["admin"]["rpc_port"],
+        config.admin_rpc_host,
+        config.admin_rpc_port,
         handler,
     )
 
 
 def load_admin_web_server(config, handler) -> SqueakAdminWebServer:
     return SqueakAdminWebServer(
-        config["webadmin"]["host"],
-        config["webadmin"]["port"],
-        config["webadmin"]["username"],
-        config["webadmin"]["password"],
-        environ.get('WEBADMIN_USE_SSL') or config["webadmin"].getboolean("use_ssl", fallback=False),
-        environ.get('WEBADMIN_LOGIN_DISABLED') or config["webadmin"].getboolean("login_disabled", fallback=False),
-        environ.get('WEBADMIN_ALLOW_CORS') or config["webadmin"].getboolean("allow_cors", fallback=False),
+        config.webadmin_host,
+        config.webadmin_port,
+        config.webadmin_username,
+        config.webadmin_password,
+        config.webadmin_use_ssl,
+        config.webadmin_login_disabled,
+        config.webadmin_allow_cors,
         handler,
     )
 
 
 def load_network(config):
-    return config["squeaknode"]["network"]
+    return config.squeaknode_network
 
 
 def load_price(config):
-    return int(config["squeaknode"]["price"])
+    return config.squeaknode_price
 
 
 def load_database(config):
-    return config["squeaknode"]["database"]
+    return config.squeaknode_database
 
 
 def load_max_squeaks_per_address_per_hour(config):
-    return int(config["squeaknode"]["max_squeaks_per_address_per_hour"])
+    return config.squeaknode_max_squeaks_per_address_per_hour
 
 
 def load_enable_sync(config):
-    return config["squeaknode"].getboolean("enable_sync")
+    return config.squeaknode_enable_sync
 
 
 def load_handler(squeak_node):
@@ -106,7 +106,7 @@ def load_admin_handler(lightning_client, squeak_node):
 
 
 def load_sqk_dir_path(config):
-    sqk_dir = config.get("squeaknode", "sqk_dir", fallback=None)
+    sqk_dir = config.squeaknode_sqk_dir
     if sqk_dir:
         return Path(sqk_dir)
     else:
@@ -118,10 +118,10 @@ def load_db(config, network):
     logger.info("database: " + database)
     if database == "postgresql":
         engine = get_postgres_engine(
-            config["postgresql"]["user"],
-            config["postgresql"]["password"],
-            config["postgresql"]["host"],
-            config["postgresql"]["database"],
+            config.postgresql_user,
+            config.postgresql_password,
+            config.postgresql_host,
+            config.postgresql_database,
         )
         return SqueakDb(engine, schema=network)
     elif database == "sqlite":
@@ -135,10 +135,10 @@ def load_db(config, network):
 
 def load_blockchain_client(config):
     return BitcoinBlockchainClient(
-        config["bitcoin"]["rpc_host"],
-        config["bitcoin"]["rpc_port"],
-        config["bitcoin"]["rpc_user"],
-        config["bitcoin"]["rpc_pass"],
+        config.bitcoin_rpc_host,
+        config.bitcoin_rpc_port,
+        config.bitcoin_rpc_user,
+        config.bitcoin_rpc_pass,
     )
 
 
@@ -158,7 +158,7 @@ def start_admin_rpc_server(rpc_server):
 
 
 def load_admin_web_server_enabled(config):
-    return config["webadmin"].getboolean("enabled")
+    return config.webadmin_enabled
 
 
 def start_admin_web_server(admin_web_server):
@@ -207,9 +207,8 @@ def main():
     logger.info("level: " + level)
     logging.getLogger().setLevel(level)
 
-    # Get the config object
-    config = ConfigParser()
-    config.read(args.config)
+    config = Config(args.config)
+    logger.info("config: {}".format(config))
 
     args.func(config)
 
