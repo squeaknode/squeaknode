@@ -209,11 +209,11 @@ def test_make_squeak(server_stub, admin_stub, signing_profile_id):
 
     # Get the new squeak from the server
     get_squeak_response = server_stub.GetSqueak(
-        squeak_server_pb2.GetSqueakRequest(hash=bytes.fromhex(make_squeak_hash))
+        squeak_server_pb2.GetSqueakRequest(hash=make_squeak_hash)
     )
     get_squeak_response_squeak = squeak_from_msg(get_squeak_response.squeak)
     CheckSqueak(get_squeak_response_squeak, skipDecryptionCheck=True)
-    assert get_hash(get_squeak_response_squeak) == bytes.fromhex(make_squeak_hash)
+    assert get_hash(get_squeak_response_squeak) == make_squeak_hash
 
     # Get the squeak display item
     get_squeak_display_response = admin_stub.GetSqueakDisplay(
@@ -255,7 +255,7 @@ def test_make_reply_squeak(
         squeak_admin_pb2.MakeSqueakRequest(
             profile_id=signing_profile_id,
             content="Reply #1",
-            replyto=saved_squeak_hash.hex(),
+            replyto=saved_squeak_hash,
         )
     )
     reply_1_squeak_hash = reply_1_squeak_response.squeak_hash
@@ -499,7 +499,7 @@ def test_get_following_squeaks(
 def test_delete_squeak(server_stub, admin_stub, saved_squeak_hash):
     # Delete the squeak
     admin_stub.DeleteSqueak(
-        squeak_admin_pb2.DeleteSqueakRequest(squeak_hash=saved_squeak_hash.hex())
+        squeak_admin_pb2.DeleteSqueakRequest(squeak_hash=saved_squeak_hash)
     )
 
     # Try to get the squeak and fail
@@ -849,7 +849,7 @@ def test_connect_other_node(server_stub, admin_stub, other_server_stub, other_ad
     # Get the buy offer
     get_buy_offers_response = other_admin_stub.GetBuyOffers(
         squeak_admin_pb2.GetBuyOffersRequest(
-            squeak_hash=saved_squeak_hash.hex(),
+            squeak_hash=saved_squeak_hash,
         )
     )
     print(get_buy_offers_response)
@@ -875,7 +875,7 @@ def test_connect_other_node(server_stub, admin_stub, other_server_stub, other_ad
         # Get the squeak display item
         get_squeak_display_response = other_admin_stub.GetSqueakDisplay(
             squeak_admin_pb2.GetSqueakDisplayRequest(
-                squeak_hash=saved_squeak_hash.hex(),
+                squeak_hash=saved_squeak_hash,
             )
         )
         assert (
@@ -888,18 +888,18 @@ def test_connect_other_node(server_stub, admin_stub, other_server_stub, other_ad
             squeak_admin_pb2.GetSentPaymentsRequest(),
         )
         squeak_hashes = [sent_payment.squeak_hash for sent_payment in get_sent_payments_response.sent_payments]
-        assert saved_squeak_hash.hex() in squeak_hashes
+        assert saved_squeak_hash in squeak_hashes
 
         # Get the single sent payment
         for sent_payment in get_sent_payments_response.sent_payments:
-            if sent_payment.squeak_hash == saved_squeak_hash.hex():
+            if sent_payment.squeak_hash == saved_squeak_hash:
                 sent_payment_id = sent_payment.sent_payment_id
         get_sent_payment_response = other_admin_stub.GetSentPayment(
             squeak_admin_pb2.GetSentPaymentRequest(
                 sent_payment_id=sent_payment_id,
             ),
         )
-        assert saved_squeak_hash.hex() == get_sent_payment_response.sent_payment.squeak_hash
+        assert saved_squeak_hash == get_sent_payment_response.sent_payment.squeak_hash
 
 
 def test_download_single_squeak(server_stub, admin_stub, other_server_stub, other_admin_stub, lightning_client, signing_profile_id, saved_squeak_hash):
@@ -959,14 +959,14 @@ def test_download_single_squeak(server_stub, admin_stub, other_server_stub, othe
     # Get the squeak display item (should be empty)
     get_squeak_display_response = other_admin_stub.GetSqueakDisplay(
         squeak_admin_pb2.GetSqueakDisplayRequest(
-            squeak_hash=saved_squeak_hash.hex(),
+            squeak_hash=saved_squeak_hash,
         )
     )
     assert get_squeak_display_response.squeak_display_entry.squeak_hash == ""
     # Get the buy offer (should be empty)
     get_buy_offers_response = other_admin_stub.GetBuyOffers(
         squeak_admin_pb2.GetBuyOffersRequest(
-            squeak_hash=saved_squeak_hash.hex(),
+            squeak_hash=saved_squeak_hash,
         )
     )
     print(get_buy_offers_response)
@@ -975,7 +975,7 @@ def test_download_single_squeak(server_stub, admin_stub, other_server_stub, othe
     # Download squeak
     sync_squeak_response = other_admin_stub.SyncSqueak(
         squeak_admin_pb2.SyncSqueakRequest(
-            squeak_hash=saved_squeak_hash.hex(),
+            squeak_hash=saved_squeak_hash,
         ),
     )
     # time.sleep(10)
@@ -985,14 +985,14 @@ def test_download_single_squeak(server_stub, admin_stub, other_server_stub, othe
     # Get the squeak display item
     get_squeak_display_response = other_admin_stub.GetSqueakDisplay(
         squeak_admin_pb2.GetSqueakDisplayRequest(
-            squeak_hash=saved_squeak_hash.hex(),
+            squeak_hash=saved_squeak_hash,
         )
     )
     assert get_squeak_display_response.squeak_display_entry != None
     # Get the buy offer
     get_buy_offers_response = other_admin_stub.GetBuyOffers(
         squeak_admin_pb2.GetBuyOffersRequest(
-            squeak_hash=saved_squeak_hash.hex(),
+            squeak_hash=saved_squeak_hash,
         )
     )
     print(get_buy_offers_response)

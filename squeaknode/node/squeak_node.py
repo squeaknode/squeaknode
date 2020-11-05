@@ -261,9 +261,8 @@ class SqueakNode:
     def delete_peer(self, peer_id):
         self.postgres_db.delete_peer(peer_id)
 
-    def get_buy_offers_with_peer(self, squeak_hash_str):
-        squeak_hash = bytes.fromhex(squeak_hash_str)
-        return self.postgres_db.get_offers_with_peer(squeak_hash_str)
+    def get_buy_offers_with_peer(self, squeak_hash):
+        return self.postgres_db.get_offers_with_peer(squeak_hash)
 
     def get_buy_offer_with_peer(self, offer_id):
         return self.postgres_db.get_offer_with_peer(offer_id)
@@ -304,7 +303,7 @@ class SqueakNode:
         return sent_payment_id
 
     def unlock_squeak(self, offer, preimage):
-        squeak_entry = self.postgres_db.get_squeak_entry(bytes.fromhex(offer.squeak_hash))
+        squeak_entry = self.postgres_db.get_squeak_entry(offer.squeak_hash)
         squeak = squeak_entry.squeak
 
         # Verify with the payment preimage and decryption key ciphertext
@@ -324,7 +323,7 @@ class SqueakNode:
 
         # Set the decryption key in the database
         self.squeak_store.unlock_squeak(
-            bytes.fromhex(offer.squeak_hash),
+            offer.squeak_hash,
             serialized_decryption_key,
         )
 
