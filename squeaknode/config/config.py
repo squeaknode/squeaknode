@@ -11,6 +11,8 @@ SERVER_RPC_HOST = "0.0.0.0"
 SERVER_RPC_PORT = 8774
 ADMIN_RPC_HOST = "0.0.0.0"
 ADMIN_RPC_PORT = 8994
+WEBADMIN_HOST = "0.0.0.0"
+WEBADMIN_PORT = 12994
 DEFAULT_BITCOIN_RPC_PORT = 8334
 BITCOIN_RPC_PORT = {
     'mainnet': 8334,
@@ -136,10 +138,10 @@ class Config:
         return self.parser.getboolean("webadmin", "enabled", fallback=False)
 
     def _get_webadmin_host(self):
-        return self.parser.get("webadmin", "host", fallback="0.0.0.0")
+        return self.parser.get("webadmin", "host", fallback=WEBADMIN_HOST)
 
     def _get_webadmin_port(self):
-        return self.parser.get("webadmin", "port", fallback=12994)
+        return self.parser.get("webadmin", "port", fallback=WEBADMIN_PORT)
 
     def _get_webadmin_username(self):
         return self.parser.get("webadmin", "username", fallback="")
@@ -178,10 +180,10 @@ class Config:
         return self.parser.getboolean("squeaknode", "enable_sync", fallback=False)
 
     def _get_postgresql_user(self):
-        return self.parser.get("postgresql", "user")
+        return self.parser.get("postgresql", "user", fallback="")
 
     def _get_postgresql_password(self):
-        return self.parser.get("postgresql", "password")
+        return self.parser.get("postgresql", "password", fallback="")
 
     def _get_postgresql_host(self):
         return self.parser.get("postgresql", "host", fallback=POSTGRES_HOST)
