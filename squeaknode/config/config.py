@@ -2,6 +2,8 @@ import logging
 from configparser import ConfigParser
 from os import environ
 
+from pathlib import Path
+
 import pprint
 
 logger = logging.getLogger(__name__)
@@ -23,6 +25,8 @@ DEFAULT_LND_PORT = 9735
 DEFAULT_LND_RPC_PORT = 10009
 POSTGRES_HOST = "localhost"
 POSTGRES_DATABASE = "squeaknode"
+DEFAULT_SQK_DIR = ".sqk"
+DEFAULT_SQK_DIR_PATH = str(Path.home() / DEFAULT_SQK_DIR)
 
 
 class Config:
@@ -174,7 +178,7 @@ class Config:
         return self.parser.get("squeaknode", "database", fallback="sqlite")
 
     def _get_squeaknode_sqk_dir(self):
-        return self.parser.get("squeaknode", "sqk_dir", fallback=None)
+        return self.parser.get("squeaknode", "sqk_dir", fallback=DEFAULT_SQK_DIR_PATH)
 
     def _get_squeaknode_enable_sync(self):
         return self.parser.getboolean("squeaknode", "enable_sync", fallback=False)
