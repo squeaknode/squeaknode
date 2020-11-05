@@ -191,6 +191,7 @@ class SqueakNode:
 
     def set_squeak_profile_following(self, profile_id, following):
         self.postgres_db.set_profile_following(profile_id, following)
+        self.squeak_whitelist.refresh()
 
     def set_squeak_profile_sharing(self, profile_id, sharing):
         self.postgres_db.set_profile_sharing(profile_id, sharing)

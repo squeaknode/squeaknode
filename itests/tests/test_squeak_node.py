@@ -461,7 +461,7 @@ def test_get_following_squeaks(
     get_followed_squeak_display_response = admin_stub.GetFollowedSqueakDisplays(
         squeak_admin_pb2.GetFollowedSqueakDisplaysRequest()
     )
-    assert len(get_followed_squeak_display_response.squeak_display_entries) == 1
+    assert len(get_followed_squeak_display_response.squeak_display_entries) >= 1
     for (
         squeak_display_entry
     ) in get_followed_squeak_display_response.squeak_display_entries:
