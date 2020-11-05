@@ -18,6 +18,8 @@ Node for Squeak protocol
 	$ docker-compose build
 	$ NETWORK=testnet docker-compose up
 	```
+- Go to http://localhost:12994/ and use the username/password in **docker/config.ini** to log in.
+
 
 ### Run without docker:
 
@@ -65,6 +67,7 @@ Node for Squeak protocol
  	```
 	$ runsqueaknode --config config.ini run-server
 	```
+- Go to http://localhost:3000/ and use the username/password in **config.ini** to log in.
 
 ## Test
 
