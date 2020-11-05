@@ -14,25 +14,25 @@ def select_mainnet_params():
 
 @pytest.fixture
 def server_stub():
-    with grpc.insecure_channel("sqkserver:8774") as server_channel:
+    with grpc.insecure_channel("squeaknode:8774") as server_channel:
         yield squeak_server_pb2_grpc.SqueakServerStub(server_channel)
 
 
 @pytest.fixture
 def other_server_stub():
-    with grpc.insecure_channel("sqkserver_other:8774") as server_channel:
+    with grpc.insecure_channel("squeaknode_other:8774") as server_channel:
         yield squeak_server_pb2_grpc.SqueakServerStub(server_channel)
 
 
 @pytest.fixture
 def admin_stub():
-    with grpc.insecure_channel("sqkserver:8994") as admin_channel:
+    with grpc.insecure_channel("squeaknode:8994") as admin_channel:
         yield squeak_admin_pb2_grpc.SqueakAdminStub(admin_channel)
 
 
 @pytest.fixture
 def other_admin_stub():
-    with grpc.insecure_channel("sqkserver_other:8994") as admin_channel:
+    with grpc.insecure_channel("squeaknode_other:8994") as admin_channel:
         yield squeak_admin_pb2_grpc.SqueakAdminStub(admin_channel)
 
 

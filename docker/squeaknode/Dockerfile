@@ -35,5 +35,5 @@ EXPOSE 18994
 EXPOSE 12994
 
 # Copy the entrypoint script.
-COPY "docker/sqkserver/start-sqkserver.sh" .
-RUN chmod +x start-sqkserver.sh
+COPY "docker/squeaknode/start-squeaknode.sh" .
+RUN chmod +x start-squeaknode.sh

@@ -70,12 +70,12 @@ services:
       - net.ipv6.conf.all.disable_ipv6=0
     entrypoint: ["./start-lnd.sh"]
 
-  sqkserver:
-    image: sqkserver
-    container_name: test_sqkserver
+  squeaknode:
+    image: squeaknode
+    container_name: test_squeaknode
     build:
       context: ../
-      dockerfile: docker/sqkserver/Dockerfile
+      dockerfile: docker/squeaknode/Dockerfile
     volumes:
       - test_shared:/rpc
       - test_lnd_server_dir:/root/.lnd
@@ -85,14 +85,14 @@ services:
       - "lnd_server:lnd"
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=0
-    entrypoint: ["./start-sqkserver.sh"]
+    entrypoint: ["./start-squeaknode.sh"]
 
-  sqkserver_other:
-    image: sqkserver
-    container_name: test_sqkserver_other
+  squeaknode_other:
+    image: squeaknode
+    container_name: test_squeaknode_other
     build:
       context: ../
-      dockerfile: docker/sqkserver/Dockerfile
+      dockerfile: docker/squeaknode/Dockerfile
     volumes:
       - test_shared:/rpc
       - test_lnd_client_dir:/root/.lnd
@@ -102,7 +102,7 @@ services:
       - "lnd_client:lnd"
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=0
-    entrypoint: ["./start-sqkserver.sh"]
+    entrypoint: ["./start-squeaknode.sh"]
 
   test:
     image: test
