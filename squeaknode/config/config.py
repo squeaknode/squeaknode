@@ -7,6 +7,22 @@ import pprint
 logger = logging.getLogger(__name__)
 
 
+SERVER_RPC_HOST = "0.0.0.0"
+SERVER_RPC_PORT = 8774
+ADMIN_RPC_HOST = "0.0.0.0"
+ADMIN_RPC_PORT = 8994
+DEFAULT_BITCOIN_RPC_PORT = 8334
+BITCOIN_RPC_PORT = {
+    'mainnet': 8334,
+    'testnet': 18334,
+    'simnet': 18556,
+}
+DEFAULT_LND_PORT = 9735
+DEFAULT_LND_RPC_PORT = 10009
+POSTGRES_HOST = "localhost"
+POSTGRES_DATABASE = "squeaknode"
+
+
 class Config:
 
     def __init__(self, config_path):
@@ -72,10 +88,12 @@ class Config:
         return pprint.pformat(self._configs)
 
     def _get_bitcoin_rpc_host(self):
-        return self.parser.get("bitcoin", "rpc_host")
+        return self.parser.get("bitcoin", "rpc_host", fallback="localhost")
 
     def _get_bitcoin_rpc_port(self):
-        return self.parser.get("bitcoin", "rpc_port")
+        network = self._get_squeaknode_network()
+        default_rpc_port = BITCOIN_RPC_PORT.get(network, DEFAULT_BITCOIN_RPC_PORT)
+        return self.parser.getint("bitcoin", "rpc_port", fallback=default_rpc_port)
 
     def _get_bitcoin_rpc_user(self):
         return self.parser.get("bitcoin", "rpc_user")
@@ -91,10 +109,10 @@ class Config:
             or self.parser.get("lnd", "external_host", fallback=None)
 
     def _get_lnd_port(self):
-        return int(self.parser.get("lnd", "port"))
+        return self.parser.getint("lnd", "port", fallback=DEFAULT_LND_PORT)
 
     def _get_lnd_rpc_port(self):
-        return self.parser.get("lnd", "rpc_port")
+        return self.parser.getint("lnd", "rpc_port", fallback=DEFAULT_LND_RPC_PORT)
 
     def _get_lnd_tls_cert_path(self):
         return self.parser.get("lnd", "tls_cert_path")
@@ -103,16 +121,16 @@ class Config:
         return self.parser.get("lnd", "macaroon_path")
 
     def _get_server_rpc_host(self):
-        return self.parser.get("server", "rpc_host")
+        return self.parser.get("server", "rpc_host", fallback=SERVER_RPC_HOST)
 
     def _get_server_rpc_port(self):
-        return self.parser.get("server", "rpc_port")
+        return self.parser.get("server", "rpc_port", fallback=SERVER_RPC_PORT)
 
     def _get_admin_rpc_host(self):
-        return self.parser.get("admin", "rpc_host")
+        return self.parser.get("admin", "rpc_host", fallback=ADMIN_RPC_HOST)
 
     def _get_admin_rpc_port(self):
-        return self.parser.get("admin", "rpc_port")
+        return self.parser.get("admin", "rpc_port", fallback=ADMIN_RPC_PORT)
 
     def _get_webadmin_enabled(self):
         return self.parser.getboolean("webadmin", "enabled", fallback=False)
@@ -166,7 +184,7 @@ class Config:
         return self.parser.get("postgresql", "password")
 
     def _get_postgresql_host(self):
-        return self.parser.get("postgresql", "host")
+        return self.parser.get("postgresql", "host", fallback=POSTGRES_HOST)
 
     def _get_postgresql_database(self):
-        return self.parser.get("postgresql", "database")
+        return self.parser.get("postgresql", "database", fallback=POSTGRES_DATABASE)
