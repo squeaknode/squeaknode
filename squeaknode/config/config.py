@@ -180,7 +180,8 @@ class Config:
             or self.parser.getboolean("webadmin", "allow_cors", fallback=False)
 
     def _get_squeaknode_network(self):
-        return self.parser.get("squeaknode", "network", fallback="testnet")
+        return environ.get('NETWORK') \
+            or self.parser.get("squeaknode", "network", fallback="testnet")
 
     def _get_squeaknode_price(self):
         return int(self.parser.get("squeaknode", "price", fallback="10"))

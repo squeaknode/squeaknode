@@ -11,7 +11,7 @@ services:
       - shared:/rpc
       - ~/.btcd/data:/data
     environment:
-      - NETWORK=testnet
+      - NETWORK
     entrypoint: ["./start-btcd.sh"]
 
   lnd:
@@ -21,7 +21,7 @@ services:
       context: ../
       dockerfile: docker/lnd/Dockerfile
     environment:
-      - NETWORK=testnet
+      - NETWORK
       - RPCHOST=btcd
     volumes:
       - shared:/rpc
@@ -44,6 +44,7 @@ services:
       - WEBADMIN_USE_SSL
       - WEBADMIN_LOGIN_DISABLED
       - WEBADMIN_ALLOW_CORS
+      - NETWORK
     volumes:
       - shared:/rpc
       - ~/.lnd:/root/.lnd
