@@ -36,16 +36,16 @@ Node for Squeak protocol
 	price=100
 	enable_sync=true
 
-	[lnd]
-	host=localhost
-	port=9735
-	rpc_port=10009
-
 	[bitcoin]
 	rpc_host=localhost
 	rpc_port=18334
 	rpc_user=devuser
 	rpc_pass=devpass
+
+	[lnd]
+	host=localhost
+	port=9735
+	rpc_port=10009
 	tls_cert_path=~/.lnd/tls.cert
 	macaroon_path=~/.lnd/data/chain/bitcoin/testnet/admin.macaroon
 
