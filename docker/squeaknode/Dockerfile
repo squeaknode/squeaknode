@@ -21,10 +21,6 @@ RUN git clone https://github.com/googleapis/googleapis.git
 # Copy the source code.
 COPY . ./
 
-# # Copy the frontend build
-# RUN mkdir ./static && \
-# 	cp -r frontend/squeak-node-frontend/build/ ./static/build
-
 RUN python3 setup.py install
 
 EXPOSE 8774
