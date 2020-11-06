@@ -66,10 +66,6 @@ export default function Profiles() {
     getContactProfilesRequest(setContactProfiles);
   };
 
-  const goToSqueakAddressPage = (squeakAddress) => {
-    history.push("/app/squeakaddress/" + squeakAddress);
-  };
-
   const goToProfilePage = (profileId) => {
     history.push("/app/profile/" + profileId);
   };
@@ -125,10 +121,10 @@ export default function Profiles() {
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
-        {SigningProfiles()}
+        {ShowProfiles("Signing profiles", signingProfiles)}
       </TabPanel>
       <TabPanel value={value} index={1}>
-        {ContactProfiles()}
+        {ShowProfiles("Contact profiles", contactProfiles)}
       </TabPanel>
       </>
     )
@@ -168,15 +164,15 @@ export default function Profiles() {
     )
   }
 
-  function SigningProfiles() {
+  function ShowProfiles(title, profiles) {
     return (
       <>
       <Grid container spacing={4}>
         {CreateSigningProfileButton()}
        <Grid item xs={12}>
          <MUIDataTable
-           title="Signing Profiles"
-           data={signingProfiles.map(p =>
+           title={title}
+           data={profiles.map(p =>
               [
                 p.getProfileId(),
                 p.getProfileName(),
@@ -204,39 +200,6 @@ export default function Profiles() {
                var address = rowData[2];
                //goToSqueakAddressPage(address);
                goToProfilePage(id);
-             }
-           }}/>
-       </Grid>
-     </Grid>
-      </>
-    )
-  }
-
-  function ContactProfiles() {
-    return (
-      <>
-      <Grid container spacing={4}>
-      {CreateContactProfileButton()}
-       <Grid item xs={12}>
-         <MUIDataTable
-           title="Contact Profiles"
-           data={contactProfiles.map(p =>
-              [
-                p.getProfileName(),
-                p.getAddress(),
-                p.getFollowing().toString(),
-                p.getSharing().toString(),
-              ]
-            )}
-           columns={["Name", "Address", "Following", "Sharing"]}
-           options={{
-             filter: false,
-             print: false,
-             viewColumns: false,
-             selectableRows: "none",
-             onRowClick: rowData => {
-               var address = rowData[1];
-               goToSqueakAddressPage(address);
              }
            }}/>
        </Grid>

@@ -19,7 +19,7 @@
 - [Build protos](#build-protos)
 - Start the squeak server with the `WEBADMIN_LOGIN_DISABLED` and `WEBADMIN_ALLOW_CORS` environment variables:
 	```
-	$ WEBADMIN_LOGIN_DISABLED=TRUE WEBADMIN_ALLOW_CORS=TRUE docker-compose up
+	$ WEBADMIN_LOGIN_DISABLED=TRUE WEBADMIN_ALLOW_CORS=TRUE NETWORK=testnet docker-compose up
 	```
 - Start the frontend in dev mode with the `REACT_APP_SERVER_PORT` environment variable.
 	```
