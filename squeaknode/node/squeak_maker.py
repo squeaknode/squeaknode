@@ -21,8 +21,6 @@ class SqueakMaker:
         block_height = block_info.block_height
         block_hash = bytes.fromhex(block_info.block_hash)
         timestamp = self._get_current_time_s()
-        logger.info("Creating squeak with block height: {}".format(block_height))
-        logger.info("Creating squeak with block hash: {}".format(block_hash))
         if replyto_hash is None or len(replyto_hash) == 0:
             return MakeSqueakFromStr(
                 signing_key,
