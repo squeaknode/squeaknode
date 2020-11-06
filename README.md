@@ -6,7 +6,7 @@ Node for Squeak protocol
 
 ### Run with docker:
 
-##### Prerequisites
+##### Requirements
 * docker
 * docker-compose
 * Enough disk space for the bitcoin blockchain
@@ -23,7 +23,7 @@ Node for Squeak protocol
 
 ### Run without docker:
 
-##### Prerequisites
+##### Requirements
 * A running bitcoin node
 * A running lnd node
 * Python3.6
