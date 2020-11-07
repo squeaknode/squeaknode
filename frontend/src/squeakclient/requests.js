@@ -425,6 +425,7 @@ export function payOfferRequest(offerId, handleResponse, handleErr) {
     request,
     PayOfferReply.deserializeBinary,
     handleResponse,
+    handleErr,
   );
 };
 
@@ -450,6 +451,7 @@ export function lndOpenChannelSyncRequest(pubkey, amount, handleResponse, handle
     request,
     ChannelPoint.deserializeBinary,
     handleResponse,
+    handleErr,
   );
 };
 
