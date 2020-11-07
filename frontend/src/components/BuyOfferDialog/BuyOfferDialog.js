@@ -49,7 +49,7 @@ export default function BuyOfferDialog({
   };
 
   const handleErr = (err) => {
-    alert('Error paying offer: ' + err.message);
+    alert('Payment failure: ' + err);
   };
 
   const pay = (offerId) => {

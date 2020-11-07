@@ -425,6 +425,7 @@ export function payOfferRequest(offerId, handleResponse, handleErr) {
     request,
     PayOfferReply.deserializeBinary,
     handleResponse,
+    handleErr,
   );
 };
 
