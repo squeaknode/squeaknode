@@ -451,6 +451,7 @@ export function lndOpenChannelSyncRequest(pubkey, amount, handleResponse, handle
     request,
     ChannelPoint.deserializeBinary,
     handleResponse,
+    handleErr,
   );
 };
 

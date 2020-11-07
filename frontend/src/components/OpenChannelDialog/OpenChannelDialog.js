@@ -59,7 +59,7 @@ export default function OpenChannelDialog({
   };
 
   const handleErr = (err) => {
-    alert('Error opening channel: ' + err.message);
+    alert('Error opening channel: ' + err);
   };
 
   const openChannel = (pubkey, amount) => {
