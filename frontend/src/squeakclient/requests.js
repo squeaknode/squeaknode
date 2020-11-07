@@ -88,7 +88,6 @@ function handleErrorResponse(response, route, handleError) {
     if (handleError) {
       handleError(data);
     }
-    // alert(route + " failed with error: " + data);
   });
 }
 
