@@ -81,11 +81,14 @@ const SERVER_PORT = process.env.REACT_APP_SERVER_PORT || window.location.port;
 
 export let web_host_port = window.location.protocol + '//' + window.location.hostname + ':' + SERVER_PORT;
 
-function handleErrorResponse(response, route) {
+function handleErrorResponse(response, route, handleError) {
   response.text()
   .then(function(data) {
     console.error(data);
-    alert(route + " failed with error: " + data);
+    if (handleError) {
+      handleError(data);
+    }
+    // alert(route + " failed with error: " + data);
   });
 }
 
@@ -96,7 +99,7 @@ function handleSuccessResponse(response, handleResponse) {
   });
 }
 
-function makeRequest(route, request, handleResponse) {
+function makeRequest(route, request, handleResponse, handleError) {
   fetch(web_host_port + '/' + route, {
     method: 'post',
     body: request.serializeBinary()
@@ -104,7 +107,7 @@ function makeRequest(route, request, handleResponse) {
     if(response.ok) {
       handleSuccessResponse(response, handleResponse);
     } else {
-      handleErrorResponse(response, route);
+      handleErrorResponse(response, route, handleError);
     }
   });
 }
@@ -151,12 +154,13 @@ export function getFollowedSqueakDisplaysRequest(handleResponse) {
 //   });
 // };
 
-export function lndGetInfoRequest(handleResponse) {
+export function lndGetInfoRequest(handleResponse, handleErr) {
   var request = new GetInfoRequest();
   makeRequest('lndgetinfo', request, (data) => {
     var response = GetInfoResponse.deserializeBinary(data);
     handleResponse(response);
-  });
+  },
+  handleErr);
 };
 
 // export function lndWalletBalanceRequest(handleResponse) {

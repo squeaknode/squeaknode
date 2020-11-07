@@ -79,7 +79,9 @@ export default function WalletPage() {
   };
 
   const getLndInfo = () => {
-    lndGetInfoRequest(setLndInfo);
+    lndGetInfoRequest(setLndInfo, (err) => {
+      alert("Hello!: " + err);
+    });
   };
   const getWalletBalance = () => {
     lndWalletBalanceRequest(setWalletBalance);
