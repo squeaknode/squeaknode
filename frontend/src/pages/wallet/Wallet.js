@@ -32,6 +32,7 @@ import PageTitle from "../../components/PageTitle";
 import Widget from "../../components/Widget";
 import { Typography } from "../../components/Wrappers";
 import ReceiveBitcoinDialog from "../../components/ReceiveBitcoinDialog";
+import LndUnavailableDialog from "../../components/LndUnavailableDialog";
 import TransactionItem from "../../components/TransactionItem";
 import LightningPeerListItem from "../../components/LightningPeerListItem";
 import ChannelItem from "../../components/ChannelItem";
@@ -96,6 +97,11 @@ export default function WalletPage() {
   const getPendingChannels = () => {
     lndPendingChannelsRequest(setPendingChannels);
   };
+
+  const lndUnavailableDialogOpen = () => {
+    return lndInfo != null;
+  };
+
 
   useEffect(()=>{
     getLndInfo()
@@ -492,11 +498,22 @@ export default function WalletPage() {
     )
   }
 
+  function LndUnavailableDialogContent() {
+    return (
+      <>
+        <LndUnavailableDialog
+          open={lndUnavailableDialogOpen()}
+          ></LndUnavailableDialog>
+      </>
+    )
+  }
+
   return (
     <>
       <PageTitle title="Wallet" />
       {LightningTabs()}
       {ReceiveBitcoinDialogContent()}
+      {LndUnavailableDialogContent()}
     </>
   );
 }
