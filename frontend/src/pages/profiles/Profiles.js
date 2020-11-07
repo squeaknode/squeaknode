@@ -121,11 +121,41 @@ export default function Profiles() {
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
-        {ShowProfiles("Signing profiles", signingProfiles)}
+        {SigningProfilesContent()}
       </TabPanel>
       <TabPanel value={value} index={1}>
-        {ShowProfiles("Contact profiles", contactProfiles)}
+        {ContactProfilesContent()}
       </TabPanel>
+      </>
+    )
+  }
+
+  function SigningProfilesContent() {
+    return (
+      <>
+      <Grid container spacing={4}>
+        <Grid item xs={12}>
+          <Widget disableWidgetMenu>
+            {CreateSigningProfileButton()}
+            {ShowProfiles("Signing profiles", signingProfiles)}
+          </Widget>
+        </Grid>
+      </Grid>
+      </>
+    )
+  }
+
+  function ContactProfilesContent() {
+    return (
+      <>
+      <Grid container spacing={4}>
+        <Grid item xs={12}>
+          <Widget disableWidgetMenu>
+            {CreateContactProfileButton()}
+            {ShowProfiles("Contact profiles", contactProfiles)}
+          </Widget>
+        </Grid>
+      </Grid>
       </>
     )
   }
@@ -168,7 +198,6 @@ export default function Profiles() {
     return (
       <>
       <Grid container spacing={4}>
-        {CreateSigningProfileButton()}
        <Grid item xs={12}>
          <MUIDataTable
            title={title}
