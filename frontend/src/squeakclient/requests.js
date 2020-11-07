@@ -94,7 +94,6 @@ function handleErrorResponse(response, route, handleError) {
 function handleSuccessResponse(deserializeMsg, response, handleResponse) {
   response.arrayBuffer()
   .then(function(data) {
-    console.log(deserializeMsg);
     var response = deserializeMsg(data);
     handleResponse(response);
   });
