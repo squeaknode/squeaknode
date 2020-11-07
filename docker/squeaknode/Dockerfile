@@ -15,9 +15,6 @@ RUN pip3 install --upgrade pip && \
 
 WORKDIR /app
 
-# Download the rpc files.
-RUN git clone https://github.com/googleapis/googleapis.git
-
 # Copy the source code.
 COPY . ./
 
