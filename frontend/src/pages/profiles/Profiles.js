@@ -121,9 +121,11 @@ export default function Profiles() {
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
+        {CreateSigningProfileButton()}
         {ShowProfiles("Signing profiles", signingProfiles)}
       </TabPanel>
       <TabPanel value={value} index={1}>
+        {CreateContactProfileButton()}
         {ShowProfiles("Contact profiles", contactProfiles)}
       </TabPanel>
       </>
@@ -168,7 +170,6 @@ export default function Profiles() {
     return (
       <>
       <Grid container spacing={4}>
-        {CreateSigningProfileButton()}
        <Grid item xs={12}>
          <MUIDataTable
            title={title}
