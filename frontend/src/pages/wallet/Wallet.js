@@ -99,7 +99,7 @@ export default function WalletPage() {
   };
 
   const lndUnavailableDialogOpen = () => {
-    return lndInfo != null;
+    return lndInfo == null;
   };
 
 
