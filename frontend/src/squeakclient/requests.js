@@ -167,9 +167,7 @@ export function lndGetInfoRequest(handleResponse, handleErr) {
     'lndgetinfo',
     request,
     GetInfoResponse.deserializeBinary,
-    (response) => {
-      handleResponse(response);
-    },
+    handleResponse,
     handleErr
   );
 };
@@ -187,9 +185,7 @@ export function lndWalletBalanceRequest(handleResponse) {
     'lndwalletbalance',
     request,
     WalletBalanceResponse.deserializeBinary,
-    (response) => {
-      handleResponse(response);
-    }
+    handleResponse,
   );
 };
 
@@ -269,9 +265,7 @@ export function lndPendingChannelsRequest(handleResponse) {
     'lndpendingchannels',
     request,
     PendingChannelsResponse.deserializeBinary,
-    (response) => {
-      handleResponse(response);
-    }
+    handleResponse,
   );
 };
 
@@ -316,9 +310,7 @@ export function setSqueakProfileFollowingRequest(id, following, handleResponse) 
     'setsqueakprofilefollowing',
     request,
     SetSqueakProfileFollowingReply.deserializeBinary,
-    (response) => {
-      handleResponse(response);
-    }
+    handleResponse,
   );
 };
 
@@ -339,9 +331,7 @@ export function setSqueakProfileSharingRequest(id, sharing, handleResponse) {
     'setsqueakprofilesharing',
     request,
     SetSqueakProfileSharingReply.deserializeBinary,
-    (response) => {
-      handleResponse(response);
-    }
+    handleResponse,
   );
 };
 
@@ -369,9 +359,7 @@ export function lndConnectPeerRequest(pubkey, host, handleResponse) {
     'lndconnectpeer',
     request,
     ConnectPeerResponse.deserializeBinary,
-    (response) => {
-      handleResponse(response);
-    }
+    handleResponse,
   );
 };
 
@@ -393,9 +381,7 @@ export function lndDisconnectPeerRequest(pubkey, handleResponse) {
     'lnddisconnectpeer',
     request,
     DisconnectPeerResponse.deserializeBinary,
-    (response) => {
-      handleResponse(response);
-    }
+    handleResponse,
   );
 };
 
@@ -440,9 +426,7 @@ export function payOfferRequest(offerId, handleResponse, handleErr) {
     'payoffer',
     request,
     PayOfferReply.deserializeBinary,
-    (response) => {
-      handleResponse(response);
-    }
+    handleResponse,
   );
 };
 
@@ -467,9 +451,7 @@ export function lndOpenChannelSyncRequest(pubkey, amount, handleResponse, handle
     'lndopenchannelsync',
     request,
     ChannelPoint.deserializeBinary,
-    (response) => {
-      handleResponse(response);
-    }
+    handleResponse,
   );
 };
 
@@ -498,10 +480,8 @@ export function lndCloseChannelRequest(txId, outputIndex, handleResponse, handle
     'lndclosechannel',
     request,
     CloseStatusUpdate.deserializeBinary,
-    (response) => {
     // TODO: handle streaming response
-      handleResponse(response);
-    }
+    handleResponse,
   );
 };
 
@@ -593,9 +573,7 @@ export function setPeerDownloadingRequest(id, downloading, handleResponse) {
     'setpeerdownloading',
     request,
     SetPeerDownloadingReply.deserializeBinary,
-    (response) => {
-      handleResponse(response);
-    }
+    handleResponse,
   );
 };
 
@@ -616,9 +594,7 @@ export function setPeerUploadingRequest(id, uploading, handleResponse) {
     'setpeeruploading',
     request,
     SetPeerUploadingReply.deserializeBinary,
-    (response) => {
-      handleResponse(response);
-    }
+    handleResponse,
   );
 };
 
@@ -689,9 +665,7 @@ export function makeSqueakRequest(profileId, content, replyto, handleResponse, h
     'makesqueakrequest',
     request,
     MakeSqueakReply.deserializeBinary,
-    (response) => {
-      handleResponse(response);
-    }
+    handleResponse,
   );
 };
 
@@ -806,9 +780,7 @@ export function createContactProfileRequest(profileName, squeakAddress, handleRe
     'createcontactprofile',
     request,
     CreateContactProfileReply.deserializeBinary,
-    (response) => {
-      handleResponse(response);
-    }
+    handleResponse,
   );
 };
 
@@ -831,9 +803,7 @@ export function createSigningProfileRequest(profileName, handleResponse, handleE
     'createsigningprofile',
     request,
     CreateSigningProfileReply.deserializeBinary,
-    (response) => {
-      handleResponse(response);
-    }
+    handleResponse,
   );
 };
 
@@ -859,9 +829,7 @@ export function createPeerRequest(peerName, host, port, handleResponse) {
     'createpeer',
     request,
     CreatePeerReply.deserializeBinary,
-    (response) => {
-      handleResponse(response);
-    }
+    handleResponse,
   );
 };
 
@@ -883,9 +851,7 @@ export function deletePeerRequest(peerId, handleResponse) {
     'deletepeer',
     request,
     DeletePeerReply.deserializeBinary,
-    (response) => {
-      handleResponse(response);
-    }
+    handleResponse,
   );
 };
 
@@ -907,9 +873,7 @@ export function deleteProfileRequest(profileId, handleResponse) {
     'deleteprofile',
     request,
     DeleteSqueakProfileReply.deserializeBinary,
-    (response) => {
-      handleResponse(response);
-    }
+    handleResponse,
   );
 };
 
@@ -931,9 +895,7 @@ export function deleteSqueakRequest(squeakHash, handleResponse) {
     'deletesqueak',
     request,
     DeleteSqueakReply.deserializeBinary,
-    (response) => {
-      handleResponse(response);
-    }
+    handleResponse,
   );
 };
 
@@ -953,9 +915,7 @@ export function lndNewAddressRequest(handleResponse) {
     'lndnewaddress',
     request,
     NewAddressResponse.deserializeBinary,
-    (response) => {
-      handleResponse(response);
-    }
+    handleResponse,
   );
 };
 
@@ -966,8 +926,6 @@ export function syncSqueakRequest(squeakHash, handleResponse) {
     'syncsqueak',
     request,
     SyncSqueakReply.deserializeBinary,
-    (response) => {
-      handleResponse(response);
-    }
+    handleResponse,
   );
 };
