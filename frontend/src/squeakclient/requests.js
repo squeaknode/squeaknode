@@ -81,30 +81,34 @@ const SERVER_PORT = process.env.REACT_APP_SERVER_PORT || window.location.port;
 
 export let web_host_port = window.location.protocol + '//' + window.location.hostname + ':' + SERVER_PORT;
 
-function handleErrorResponse(response, route) {
+function handleErrorResponse(response, route, handleError) {
   response.text()
   .then(function(data) {
     console.error(data);
-    alert(route + " failed with error: " + data);
+    if (handleError) {
+      handleError(data);
+    }
   });
 }
 
-function handleSuccessResponse(response, handleResponse) {
+function handleSuccessResponse(deserializeMsg, response, handleResponse) {
   response.arrayBuffer()
   .then(function(data) {
-    handleResponse(data);
+    console.log(deserializeMsg);
+    var response = deserializeMsg(data);
+    handleResponse(response);
   });
 }
 
-function makeRequest(route, request, handleResponse) {
+function makeRequest(route, request, deserializeMsg, handleResponse, handleError) {
   fetch(web_host_port + '/' + route, {
     method: 'post',
     body: request.serializeBinary()
   }).then(function(response) {
     if(response.ok) {
-      handleSuccessResponse(response, handleResponse);
+      handleSuccessResponse(deserializeMsg, response, handleResponse);
     } else {
-      handleErrorResponse(response, route);
+      handleErrorResponse(response, route, handleError);
     }
   });
 }
@@ -138,10 +142,15 @@ export function getUserRequest(handleResponse) {
 
 export function getFollowedSqueakDisplaysRequest(handleResponse) {
   var request = new GetFollowedSqueakDisplaysRequest();
-  makeRequest('getfollowedsqueakdisplays', request, (data) => {
-    var response = GetFollowedSqueakDisplaysReply.deserializeBinary(data);
-    handleResponse(response.getSqueakDisplayEntriesList());
-  });
+  console.log(GetFollowedSqueakDisplaysReply);
+  makeRequest(
+    'getfollowedsqueakdisplays',
+    request,
+    GetFollowedSqueakDisplaysReply.deserializeBinary,
+    (response) => {
+      handleResponse(response.getSqueakDisplayEntriesList());
+    }
+  );
 };
 
 // export function lndGetInfoRequest(handleResponse) {
@@ -151,12 +160,15 @@ export function getFollowedSqueakDisplaysRequest(handleResponse) {
 //   });
 // };
 
-export function lndGetInfoRequest(handleResponse) {
+export function lndGetInfoRequest(handleResponse, handleErr) {
   var request = new GetInfoRequest();
-  makeRequest('lndgetinfo', request, (data) => {
-    var response = GetInfoResponse.deserializeBinary(data);
-    handleResponse(response);
-  });
+  makeRequest(
+    'lndgetinfo',
+    request,
+    GetInfoResponse.deserializeBinary,
+    handleResponse,
+    handleErr
+  );
 };
 
 // export function lndWalletBalanceRequest(handleResponse) {
@@ -168,10 +180,12 @@ export function lndGetInfoRequest(handleResponse) {
 
 export function lndWalletBalanceRequest(handleResponse) {
   var request = new WalletBalanceRequest();
-  makeRequest('lndwalletbalance', request, (data) => {
-    var response = WalletBalanceResponse.deserializeBinary(data);
-    handleResponse(response);
-  });
+  makeRequest(
+    'lndwalletbalance',
+    request,
+    WalletBalanceResponse.deserializeBinary,
+    handleResponse,
+  );
 };
 
 // export function lndGetTransactionsRequest(handleResponse) {
@@ -183,10 +197,14 @@ export function lndWalletBalanceRequest(handleResponse) {
 
 export function lndGetTransactionsRequest(handleResponse) {
   var request = new GetTransactionsRequest();
-  makeRequest('lndgettransactions', request, (data) => {
-    var response = TransactionDetails.deserializeBinary(data);
-    handleResponse(response.getTransactionsList());
-  });
+  makeRequest(
+    'lndgettransactions',
+    request,
+    TransactionDetails.deserializeBinary,
+    (response) => {
+      handleResponse(response.getTransactionsList());
+    }
+  );
 };
 
 // export function lndListPeersRequest(handleResponse) {
@@ -198,10 +216,14 @@ export function lndGetTransactionsRequest(handleResponse) {
 
 export function lndListPeersRequest(handleResponse) {
       var request = new ListPeersRequest();
-      makeRequest('lndlistpeers', request, (data) => {
-        var response = ListPeersResponse.deserializeBinary(data);
-        handleResponse(response.getPeersList());
-      });
+      makeRequest(
+        'lndlistpeers',
+        request,
+        ListPeersResponse.deserializeBinary,
+        (response) => {
+          handleResponse(response.getPeersList());
+        }
+      );
 };
 
 // export function lndListChannelsRequest(handleResponse) {
@@ -216,10 +238,14 @@ export function lndListPeersRequest(handleResponse) {
 
 export function lndListChannelsRequest(handleResponse) {
   var request = new ListChannelsRequest();
-  makeRequest('lndlistchannels', request, (data) => {
-    var response = ListChannelsResponse.deserializeBinary(data);
-    handleResponse(response.getChannelsList());
-  });
+  makeRequest(
+    'lndlistchannels',
+    request,
+    ListChannelsResponse.deserializeBinary,
+    (response) => {
+      handleResponse(response.getChannelsList());
+    }
+  );
 };
 
 // export function lndPendingChannelsRequest(handleResponse) {
@@ -234,10 +260,12 @@ export function lndListChannelsRequest(handleResponse) {
 
 export function lndPendingChannelsRequest(handleResponse) {
   var request = new PendingChannelsRequest();
-  makeRequest('lndpendingchannels', request, (data) => {
-    var response = PendingChannelsResponse.deserializeBinary(data);
-    handleResponse(response);
-  });
+  makeRequest(
+    'lndpendingchannels',
+    request,
+    PendingChannelsResponse.deserializeBinary,
+    handleResponse,
+  );
 };
 
 // export function getSqueakProfileRequest(id, handleResponse) {
@@ -254,10 +282,14 @@ export function lndPendingChannelsRequest(handleResponse) {
 export function getSqueakProfileRequest(id, handleResponse) {
   var request = new GetSqueakProfileRequest();
   request.setProfileId(id);
-  makeRequest('getsqueakprofile', request, (data) => {
-    var response = GetSqueakProfileReply.deserializeBinary(data);
-    handleResponse(response.getSqueakProfile());
-  });
+  makeRequest(
+    'getsqueakprofile',
+    request,
+    GetSqueakProfileReply.deserializeBinary,
+    (response) => {
+      handleResponse(response.getSqueakProfile());
+    }
+  );
 };
 
 // export function setSqueakProfileFollowingRequest(id, following, handleResponse) {
@@ -273,10 +305,12 @@ export function setSqueakProfileFollowingRequest(id, following, handleResponse) 
   var request = new SetSqueakProfileFollowingRequest();
   request.setProfileId(id);
   request.setFollowing(following);
-  makeRequest('setsqueakprofilefollowing', request, (data) => {
-    var response = SetSqueakProfileFollowingReply.deserializeBinary(data);
-    handleResponse(response);
-  });
+  makeRequest(
+    'setsqueakprofilefollowing',
+    request,
+    SetSqueakProfileFollowingReply.deserializeBinary,
+    handleResponse,
+  );
 };
 
 // export function setSqueakProfileSharingRequest(id, sharing, handleResponse) {
@@ -292,10 +326,12 @@ export function setSqueakProfileSharingRequest(id, sharing, handleResponse) {
   var request = new SetSqueakProfileSharingRequest();
   request.setProfileId(id);
   request.setSharing(sharing);
-  makeRequest('setsqueakprofilesharing', request, (data) => {
-    var response = SetSqueakProfileSharingReply.deserializeBinary(data);
-    handleResponse(response);
-  });
+  makeRequest(
+    'setsqueakprofilesharing',
+    request,
+    SetSqueakProfileSharingReply.deserializeBinary,
+    handleResponse,
+  );
 };
 
 // export function lndConnectPeerRequest(pubkey, host, handleResponse) {
@@ -318,10 +354,12 @@ export function lndConnectPeerRequest(pubkey, host, handleResponse) {
   address.setPubkey(pubkey);
   address.setHost(host);
   request.setAddr(address);
-  makeRequest('lndconnectpeer', request, (data) => {
-    var response = ConnectPeerResponse.deserializeBinary(data);
-    handleResponse(response);
-  });
+  makeRequest(
+    'lndconnectpeer',
+    request,
+    ConnectPeerResponse.deserializeBinary,
+    handleResponse,
+  );
 };
 
 // export function lndDisconnectPeerRequest(pubkey, handleResponse) {
@@ -338,10 +376,12 @@ export function lndConnectPeerRequest(pubkey, host, handleResponse) {
 export function lndDisconnectPeerRequest(pubkey, handleResponse) {
   var request = new DisconnectPeerRequest()
   request.setPubKey(pubkey);
-  makeRequest('lnddisconnectpeer', request, (data) => {
-    var response = DisconnectPeerResponse.deserializeBinary(data);
-    handleResponse(response);
-  });
+  makeRequest(
+    'lnddisconnectpeer',
+    request,
+    DisconnectPeerResponse.deserializeBinary,
+    handleResponse,
+  );
 };
 
 // export function getPeersRequest(handleResponse) {
@@ -356,10 +396,14 @@ export function lndDisconnectPeerRequest(pubkey, handleResponse) {
 
 export function getPeersRequest(handleResponse) {
   var request = new GetPeersRequest();
-  makeRequest('getpeers', request, (data) => {
-    var response = GetPeersReply.deserializeBinary(data);
-    handleResponse(response.getSqueakPeersList());
-  });
+  makeRequest(
+    'getpeers',
+    request,
+    GetPeersReply.deserializeBinary,
+    (response) => {
+      handleResponse(response.getSqueakPeersList());
+    }
+  );
 };
 
 // export function payOfferRequest(offerId, handleResponse, handleErr) {
@@ -377,10 +421,12 @@ export function getPeersRequest(handleResponse) {
 export function payOfferRequest(offerId, handleResponse, handleErr) {
   var request = new PayOfferRequest();
   request.setOfferId(offerId);
-  makeRequest('payoffer', request, (data) => {
-    var response = PayOfferReply.deserializeBinary(data);
-    handleResponse(response);
-  });
+  makeRequest(
+    'payoffer',
+    request,
+    PayOfferReply.deserializeBinary,
+    handleResponse,
+  );
 };
 
 // export function lndOpenChannelSyncRequest(pubkey, amount, handleResponse, handleErr) {
@@ -400,10 +446,12 @@ export function lndOpenChannelSyncRequest(pubkey, amount, handleResponse, handle
   var request = new OpenChannelRequest()
   request.setNodePubkeyString(pubkey);
   request.setLocalFundingAmount(amount);
-  makeRequest('lndopenchannelsync', request, (data) => {
-    var response = ChannelPoint.deserializeBinary(data);
-    handleResponse(response);
-  });
+  makeRequest(
+    'lndopenchannelsync',
+    request,
+    ChannelPoint.deserializeBinary,
+    handleResponse,
+  );
 };
 
 // export function lndCloseChannelRequest(txId, outputIndex, handleResponse, handleErr) {
@@ -427,11 +475,13 @@ export function lndCloseChannelRequest(txId, outputIndex, handleResponse, handle
   channelPoint.setFundingTxidStr(txId);
   channelPoint.setOutputIndex(outputIndex);
   request.setChannelPoint(channelPoint);
-  makeRequest('lndclosechannel', request, (data) => {
+  makeRequest(
+    'lndclosechannel',
+    request,
+    CloseStatusUpdate.deserializeBinary,
     // TODO: handle streaming response
-    var response = CloseStatusUpdate.deserializeBinary(data);
-    handleResponse(response);
-  });
+    handleResponse,
+  );
 };
 
 // export function getBuyOffersRequest(hash, handleResponse) {
@@ -448,10 +498,13 @@ export function lndCloseChannelRequest(txId, outputIndex, handleResponse, handle
 export function getBuyOffersRequest(hash, handleResponse) {
   var request = new GetBuyOffersRequest();
   request.setSqueakHash(hash);
-  makeRequest('getbuyoffers', request, (data) => {
-    var response = GetBuyOffersReply.deserializeBinary(data);
-    handleResponse(response.getOffersList());
-  });
+  makeRequest(
+    'getbuyoffers',
+    request,
+    GetBuyOffersReply.deserializeBinary,
+    (response) => {
+      handleResponse(response.getOffersList());
+    });
 };
 
 // export function getBuyOfferRequest(offerId, handleResponse) {
@@ -468,10 +521,14 @@ export function getBuyOffersRequest(hash, handleResponse) {
 export function getBuyOfferRequest(offerId, handleResponse) {
   var request = new GetBuyOfferRequest();
   request.setOfferId(offerId);
-  makeRequest('getbuyoffer', request, (data) => {
-    var response = GetBuyOfferReply.deserializeBinary(data);
-    handleResponse(response.getOffer());
-  });
+  makeRequest(
+    'getbuyoffer',
+    request,
+    GetBuyOfferReply.deserializeBinary,
+    (response) => {
+      handleResponse(response.getOffer());
+    }
+  );
 };
 
 // export function getPeerRequest(id, handleResponse) {
@@ -488,10 +545,14 @@ export function getBuyOfferRequest(offerId, handleResponse) {
 export function getPeerRequest(id, handleResponse) {
   var request = new GetPeerRequest();
   request.setPeerId(id);
-  makeRequest('getpeer', request, (data) => {
-    var response = GetPeerReply.deserializeBinary(data);
-    handleResponse(response.getSqueakPeer());
-  });
+  makeRequest(
+    'getpeer',
+    request,
+    GetPeerReply.deserializeBinary,
+    (response) => {
+      handleResponse(response.getSqueakPeer());
+    }
+  );
 };
 
 // export function setPeerDownloadingRequest(id, downloading, handleResponse) {
@@ -507,10 +568,12 @@ export function setPeerDownloadingRequest(id, downloading, handleResponse) {
   var request = new SetPeerDownloadingRequest();
   request.setPeerId(id);
   request.setDownloading(downloading);
-  makeRequest('setpeerdownloading', request, (data) => {
-    var response = SetPeerDownloadingReply.deserializeBinary(data);
-    handleResponse(response);
-  });
+  makeRequest(
+    'setpeerdownloading',
+    request,
+    SetPeerDownloadingReply.deserializeBinary,
+    handleResponse,
+  );
 };
 
 // export function setPeerUploadingRequest(id, uploading, handleResponse) {
@@ -526,10 +589,12 @@ export function setPeerUploadingRequest(id, uploading, handleResponse) {
   var request = new SetPeerUploadingRequest();
   request.setPeerId(id);
   request.setUploading(uploading);
-  makeRequest('setpeeruploading', request, (data) => {
-    var response = SetPeerUploadingReply.deserializeBinary(data);
-    handleResponse(response);
-  });
+  makeRequest(
+    'setpeeruploading',
+    request,
+    SetPeerUploadingReply.deserializeBinary,
+    handleResponse,
+  );
 };
 
 // export function getSigningProfilesRequest(handleResponse) {
@@ -544,10 +609,14 @@ export function setPeerUploadingRequest(id, uploading, handleResponse) {
 
 export function getSigningProfilesRequest(handleResponse) {
   var request = new GetSigningProfilesRequest();
-  makeRequest('getsigningprofiles', request, (data) => {
-    var response = GetSigningProfilesReply.deserializeBinary(data);
-    handleResponse(response.getSqueakProfilesList());
-  });
+  makeRequest(
+    'getsigningprofiles',
+    request,
+    GetSigningProfilesReply.deserializeBinary,
+    (response) => {
+      handleResponse(response.getSqueakProfilesList());
+    }
+  );
 };
 
 // export function getContactProfilesRequest(handleResponse) {
@@ -562,10 +631,14 @@ export function getSigningProfilesRequest(handleResponse) {
 
 export function getContactProfilesRequest(handleResponse) {
   var request = new GetContactProfilesRequest();
-  makeRequest('getcontactprofiles', request, (data) => {
-    var response = GetContactProfilesReply.deserializeBinary(data);
-    handleResponse(response.getSqueakProfilesList());
-  });
+  makeRequest(
+    'getcontactprofiles',
+    request,
+    GetContactProfilesReply.deserializeBinary,
+    (response) => {
+      handleResponse(response.getSqueakProfilesList());
+    }
+  );
 };
 
 // export function makeSqueakRequest(profileId, content, replyto, handleResponse, handleErr) {
@@ -587,10 +660,12 @@ export function makeSqueakRequest(profileId, content, replyto, handleResponse, h
   request.setProfileId(profileId);
   request.setContent(content);
   request.setReplyto(replyto);
-  makeRequest('makesqueakrequest', request, (data) => {
-    var response = MakeSqueakReply.deserializeBinary(data);
-    handleResponse(response);
-  });
+  makeRequest(
+    'makesqueakrequest',
+    request,
+    MakeSqueakReply.deserializeBinary,
+    handleResponse,
+  );
 };
 
 // export function getSqueakDisplayRequest(hash, handleResponse) {
@@ -607,10 +682,14 @@ export function makeSqueakRequest(profileId, content, replyto, handleResponse, h
 export function getSqueakDisplayRequest(hash, handleResponse) {
   var request = new GetSqueakDisplayRequest();
   request.setSqueakHash(hash);
-  makeRequest('getsqueakdisplay', request, (data) => {
-    var response = GetSqueakDisplayReply.deserializeBinary(data);
-    handleResponse(response.getSqueakDisplayEntry());
-  });
+  makeRequest(
+    'getsqueakdisplay',
+    request,
+    GetSqueakDisplayReply.deserializeBinary,
+    (response) => {
+      handleResponse(response.getSqueakDisplayEntry());
+    }
+  );
 };
 
 // export function getAncestorSqueakDisplaysRequest(hash, handleResponse) {
@@ -627,10 +706,14 @@ export function getSqueakDisplayRequest(hash, handleResponse) {
 export function getAncestorSqueakDisplaysRequest(hash, handleResponse) {
   var request = new GetAncestorSqueakDisplaysRequest();
   request.setSqueakHash(hash);
-  makeRequest('getancestorsqueakdisplays', request, (data) => {
-    var response = GetAncestorSqueakDisplaysReply.deserializeBinary(data);
-    handleResponse(response.getSqueakDisplayEntriesList());
-  });
+  makeRequest(
+    'getancestorsqueakdisplays',
+    request,
+    GetAncestorSqueakDisplaysReply.deserializeBinary,
+    (response) => {
+      handleResponse(response.getSqueakDisplayEntriesList());
+    }
+  );
 };
 
 // export function getSqueakProfileByAddressRequest(address, handleResponse) {
@@ -644,10 +727,14 @@ export function getAncestorSqueakDisplaysRequest(hash, handleResponse) {
 export function getSqueakProfileByAddressRequest(address, handleResponse) {
   var request = new GetSqueakProfileByAddressRequest();
   request.setAddress(address);
-  makeRequest('getsqueakprofilebyaddress', request, (data) => {
-    var response = GetSqueakProfileByAddressReply.deserializeBinary(data);
-    handleResponse(response.getSqueakProfile());
-  });
+  makeRequest(
+    'getsqueakprofilebyaddress',
+    request,
+    GetSqueakProfileByAddressReply.deserializeBinary,
+    (response) => {
+      handleResponse(response.getSqueakProfile());
+    }
+  );
 };
 
 // export function getAddressSqueakDisplaysRequest(address, handleResponse) {
@@ -661,10 +748,14 @@ export function getSqueakProfileByAddressRequest(address, handleResponse) {
 export function getAddressSqueakDisplaysRequest(address, handleResponse) {
     var request = new GetAddressSqueakDisplaysRequest();
     request.setAddress(address);
-    makeRequest('getaddresssqueakdisplays', request, (data) => {
-      var response = GetAddressSqueakDisplaysReply.deserializeBinary(data);
-      handleResponse(response.getSqueakDisplayEntriesList());
-    });
+    makeRequest(
+      'getaddresssqueakdisplays',
+      request,
+      GetAddressSqueakDisplaysReply.deserializeBinary,
+      (response) => {
+        handleResponse(response.getSqueakDisplayEntriesList());
+      }
+    );
 };
 
 // export function createContactProfileRequest(profileName, squeakAddress, handleResponse, handleErr) {
@@ -684,10 +775,12 @@ export function createContactProfileRequest(profileName, squeakAddress, handleRe
   var request = new CreateContactProfileRequest();
   request.setProfileName(profileName);
   request.setAddress(squeakAddress);
-  makeRequest('createcontactprofile', request, (data) => {
-    var response = CreateContactProfileReply.deserializeBinary(data);
-    handleResponse(response);
-  });
+  makeRequest(
+    'createcontactprofile',
+    request,
+    CreateContactProfileReply.deserializeBinary,
+    handleResponse,
+  );
 };
 
 // export function createSigningProfileRequest(profileName, handleResponse, handleErr) {
@@ -705,10 +798,12 @@ export function createContactProfileRequest(profileName, squeakAddress, handleRe
 export function createSigningProfileRequest(profileName, handleResponse, handleErr) {
   var request = new CreateSigningProfileRequest();
   request.setProfileName(profileName);
-  makeRequest('createsigningprofile', request, (data) => {
-    var response = CreateSigningProfileReply.deserializeBinary(data);
-    handleResponse(response);
-  });
+  makeRequest(
+    'createsigningprofile',
+    request,
+    CreateSigningProfileReply.deserializeBinary,
+    handleResponse,
+  );
 };
 
 // export function createPeerRequest(peerName, host, port, handleResponse) {
@@ -729,10 +824,12 @@ export function createPeerRequest(peerName, host, port, handleResponse) {
   request.setPeerName(peerName);
   request.setHost(host);
   request.setPort(port);
-  makeRequest('createpeer', request, (data) => {
-    var response = CreatePeerReply.deserializeBinary(data);
-    handleResponse(response);
-  });
+  makeRequest(
+    'createpeer',
+    request,
+    CreatePeerReply.deserializeBinary,
+    handleResponse,
+  );
 };
 
 // export function deletePeerRequest(peerId, handleResponse) {
@@ -749,10 +846,12 @@ export function createPeerRequest(peerName, host, port, handleResponse) {
 export function deletePeerRequest(peerId, handleResponse) {
   var request = new DeletePeerRequest();
   request.setPeerId(peerId);
-  makeRequest('deletepeer', request, (data) => {
-    var response = DeletePeerReply.deserializeBinary(data);
-    handleResponse(response);
-  });
+  makeRequest(
+    'deletepeer',
+    request,
+    DeletePeerReply.deserializeBinary,
+    handleResponse,
+  );
 };
 
 // export function deleteProfileRequest(profileId, handleResponse) {
@@ -769,10 +868,12 @@ export function deletePeerRequest(peerId, handleResponse) {
 export function deleteProfileRequest(profileId, handleResponse) {
   var request = new DeleteSqueakProfileRequest();
   request.setProfileId(profileId);
-  makeRequest('deleteprofile', request, (data) => {
-    var response = DeleteSqueakProfileReply.deserializeBinary(data);
-    handleResponse(response);
-  });
+  makeRequest(
+    'deleteprofile',
+    request,
+    DeleteSqueakProfileReply.deserializeBinary,
+    handleResponse,
+  );
 };
 
 // export function deleteSqueakRequest(squeakHash, handleResponse) {
@@ -789,10 +890,12 @@ export function deleteProfileRequest(profileId, handleResponse) {
 export function deleteSqueakRequest(squeakHash, handleResponse) {
   var request = new DeleteSqueakRequest();
   request.setSqueakHash(squeakHash);
-  makeRequest('deletesqueak', request, (data) => {
-    var response = DeleteSqueakReply.deserializeBinary(data);
-    handleResponse(response);
-  });
+  makeRequest(
+    'deletesqueak',
+    request,
+    DeleteSqueakReply.deserializeBinary,
+    handleResponse,
+  );
 };
 
 // export function lndNewAddressRequest(handleResponse) {
@@ -807,17 +910,21 @@ export function deleteSqueakRequest(squeakHash, handleResponse) {
 
 export function lndNewAddressRequest(handleResponse) {
   var request = new NewAddressRequest();
-  makeRequest('lndnewaddress', request, (data) => {
-    var response = NewAddressResponse.deserializeBinary(data);
-    handleResponse(response);
-  });
+  makeRequest(
+    'lndnewaddress',
+    request,
+    NewAddressResponse.deserializeBinary,
+    handleResponse,
+  );
 };
 
 export function syncSqueakRequest(squeakHash, handleResponse) {
   var request = new SyncSqueakRequest();
   request.setSqueakHash(squeakHash);
-  makeRequest('syncsqueak', request, (data) => {
-    var response = SyncSqueakReply.deserializeBinary(data);
-    handleResponse(response);
-  });
+  makeRequest(
+    'syncsqueak',
+    request,
+    SyncSqueakReply.deserializeBinary,
+    handleResponse,
+  );
 };
