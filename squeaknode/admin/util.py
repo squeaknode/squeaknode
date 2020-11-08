@@ -97,3 +97,22 @@ def sync_result_to_message(sync_result):
         failed_peer_ids=sync_result.failed_peer_ids,
         timeout_peer_ids=sync_result.timeout_peer_ids,
     )
+
+def squeak_entry_to_detail_message(squeak_entry_with_profile):
+    if squeak_entry_with_profile is None:
+        return None
+    squeak_entry = squeak_entry_with_profile.squeak_entry
+    squeak = squeak_entry.squeak
+    block_header = squeak_entry.block_header
+    is_unlocked = squeak.HasDecryptionKey()
+    content_str = squeak.GetDecryptedContentStr() if is_unlocked else None
+    squeak_profile = squeak_entry_with_profile.squeak_profile
+    is_author_known = squeak_profile is not None
+    author_name = squeak_profile.profile_name if squeak_profile else None
+    author_address = str(squeak.GetAddress())
+    is_reply = squeak.is_reply
+    reply_to = get_replyto(squeak) if is_reply else None
+    serialized_squeak = squeak.serialize()
+    return squeak_admin_pb2.SqueakDetailEntry(
+        serialized_squeak_hex=serialized_squeak.hex(),
+    )

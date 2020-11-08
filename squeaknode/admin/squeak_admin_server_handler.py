@@ -10,6 +10,7 @@ from squeaknode.admin.util import squeak_profile_to_message
 from squeaknode.admin.util import offer_entry_to_message
 from squeaknode.admin.util import sent_payment_to_message
 from squeaknode.admin.util import sync_result_to_message
+from squeaknode.admin.util import squeak_entry_to_detail_message
 
 from proto import squeak_admin_pb2, squeak_admin_pb2_grpc
 
@@ -395,4 +396,15 @@ class SqueakAdminServerHandler(object):
         sent_payment_msg = sent_payment_to_message(sent_payment)
         return squeak_admin_pb2.GetSentPaymentReply(
             sent_payment=sent_payment_msg,
+        )
+
+    def handle_get_squeak_details(self, request):
+        squeak_hash = request.squeak_hash
+        logger.info("Handle get squeak details for hash: {}".format(squeak_hash))
+        squeak_entry_with_profile = self.squeak_node.get_squeak_entry_with_profile(
+            squeak_hash
+        )
+        detail_message = squeak_entry_to_detail_message(squeak_entry_with_profile)
+        return squeak_admin_pb2.GetSqueakDetailsReply(
+            squeak_detail_entry=detail_message
         )
