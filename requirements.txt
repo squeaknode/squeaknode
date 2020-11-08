@@ -12,3 +12,4 @@ protobuf
 flask-login
 Flask-WTF
 flask-cors
+alembic
