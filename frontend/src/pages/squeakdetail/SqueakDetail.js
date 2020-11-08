@@ -70,6 +70,16 @@ export default function SqueakDetailPage() {
           <Grid container spacing={2}>
             <Grid item xs={6}>
               <div>
+                <div key="hash" className={classes.legendItemContainer}>
+
+                  <Typography color="text" colorBrightness="secondary">
+                    Hash
+                  </Typography>
+                  <Typography color="text">
+                      &nbsp;{squeak.getSqueakHash()}
+                  </Typography>
+                </div>
+
                 <div key="address" className={classes.legendItemContainer}>
 
                   <Typography color="text" colorBrightness="secondary">
