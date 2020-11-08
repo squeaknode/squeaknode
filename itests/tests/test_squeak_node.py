@@ -3,6 +3,7 @@ from __future__ import print_function
 import time
 
 import pytest
+from squeak.core import CSqueak
 from squeak.core import CheckSqueak
 from squeak.core.encryption import CEncryptedDecryptionKey
 
@@ -971,3 +972,20 @@ def test_download_single_squeak(server_stub, admin_stub, other_server_stub, othe
     )
     print(get_buy_offers_response)
     assert len(get_buy_offers_response.offers) > 0
+
+
+def test_get_squeak_details(server_stub, admin_stub, saved_squeak_hash):
+    # Get the squeak details
+    get_squeak_details_response = admin_stub.GetSqueakDetails(
+        squeak_admin_pb2.GetSqueakDetailsRequest(
+            squeak_hash=saved_squeak_hash,
+        )
+    )
+    serialized_squeak_hex = get_squeak_details_response.squeak_detail_entry.serialized_squeak_hex
+    print("serialized_squeak_hex: {}".format(serialized_squeak_hex))
+    assert len(serialized_squeak_hex) > 200
+
+    serialized_squeak = bytes.fromhex(serialized_squeak_hex)
+    deserialized_squeak = CSqueak.deserialize(serialized_squeak)
+    assert get_hash(deserialized_squeak) == saved_squeak_hash
+    CheckSqueak(deserialized_squeak)
