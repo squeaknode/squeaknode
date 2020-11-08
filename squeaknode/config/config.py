@@ -197,7 +197,8 @@ class Config:
         return self.parser.get("squeaknode", "sqk_dir", fallback=DEFAULT_SQK_DIR_PATH)
 
     def _get_squeaknode_enable_sync(self):
-        return self.parser.getboolean("squeaknode", "enable_sync", fallback=False)
+        return environ.get('SQUEAKNODE_ENABLE_SYNC') \
+            or self.parser.getboolean("squeaknode", "enable_sync", fallback=False)
 
     def _get_squeaknode_log_level(self):
         return environ.get('LOG_LEVEL') \
