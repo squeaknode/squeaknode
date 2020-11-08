@@ -20,7 +20,7 @@ import SqueakThreadItem from "../../components/SqueakThreadItem";
 
 import {
   getSqueakDisplayRequest,
-  getAncestorSqueakDisplaysRequest,
+  getSqueakDetailsRequest,
 } from "../../squeakclient/requests"
 
 
@@ -29,13 +29,20 @@ export default function SqueakDetailPage() {
   const history = useHistory();
   const { hash } = useParams();
   const [squeak, setSqueak] = useState(null);
+  const [squeakDetails, setSqueakDetails] = useState(null);
 
   const getSqueak = (hash) => {
       getSqueakDisplayRequest(hash, setSqueak);
   };
+  const getSqueakDetails = (hash) => {
+      getSqueakDetailsRequest(hash, setSqueakDetails);
+  };
 
   useEffect(()=>{
     getSqueak(hash)
+  },[hash]);
+  useEffect(()=>{
+    getSqueakDetails(hash)
   },[hash]);
 
   function NoSqueakContent() {
@@ -61,8 +68,8 @@ export default function SqueakDetailPage() {
         <Widget title="Squeak details" upperTitle className={classes.card}>
           <Grid container spacing={2}>
             <Grid item xs={6}>
-              <div className={classes.pieChartLegendWrapper}>
-                <div key="yellow" className={classes.legendItemContainer}>
+              <div>
+                <div key="address" className={classes.legendItemContainer}>
                   <Typography style={{ whiteSpace: "nowrap" }}>
                       &nbsp;content&nbsp;
                   </Typography>
@@ -70,6 +77,16 @@ export default function SqueakDetailPage() {
                       &nbsp;{squeak.getAuthorAddress()}
                   </Typography>
                 </div>
+
+                <div key="rawdata" className={classes.legendItemContainer}>
+                  <Typography style={{  }}>
+                      &nbsp;raw data&nbsp;
+                  </Typography>
+                  <Typography color="text" colorBrightness="secondary">
+                      &nbsp;{squeakDetails.getSqueakDetailEntry().getSerializedSqueakHex()}
+                  </Typography>
+                </div>
+
               </div>
             </Grid>
           </Grid>
@@ -81,7 +98,7 @@ export default function SqueakDetailPage() {
   return (
     <>
       <PageTitle title="Squeak" />
-      {squeak
+      {(squeak && squeakDetails)
         ? SqueakContent()
         : NoSqueakContent()
       }
