@@ -6,6 +6,7 @@ import {
   Button,
   Divider,
   Box,
+  TextField,
 } from "@material-ui/core";
 
 // styles
@@ -65,26 +66,32 @@ export default function SqueakDetailPage() {
   function SqueakDetailsContent() {
     return (
       <>
-        <Widget title="Squeak details" upperTitle className={classes.card}>
+        <Widget disableWidgetMenu>
           <Grid container spacing={2}>
             <Grid item xs={6}>
               <div>
                 <div key="address" className={classes.legendItemContainer}>
-                  <Typography style={{ whiteSpace: "nowrap" }}>
-                      &nbsp;content&nbsp;
-                  </Typography>
+
                   <Typography color="text" colorBrightness="secondary">
+                    Address
+                  </Typography>
+                  <Typography color="text">
                       &nbsp;{squeak.getAuthorAddress()}
                   </Typography>
                 </div>
 
                 <div key="rawdata" className={classes.legendItemContainer}>
-                  <Typography style={{ whiteSpace: "nowrap" }}>
-                      &nbsp;raw data&nbsp;
-                  </Typography>
                   <Typography color="text" colorBrightness="secondary">
-                      &nbsp;{squeakDetails.getSqueakDetailEntry().getSerializedSqueakHex()}
+                    Raw Data
                   </Typography>
+                  <TextField
+                    id="standard-textarea"
+                    placeholder="Placeholder"
+                    value={squeakDetails.getSqueakDetailEntry().getSerializedSqueakHex()}
+                    fullWidth="true"
+                    variant="outlined"
+                    multiline
+                  />
                 </div>
 
               </div>
@@ -97,7 +104,7 @@ export default function SqueakDetailPage() {
 
   return (
     <>
-      <PageTitle title="Squeak" />
+      <PageTitle title="Squeak Details" />
       {(squeak && squeakDetails)
         ? SqueakContent()
         : NoSqueakContent()
