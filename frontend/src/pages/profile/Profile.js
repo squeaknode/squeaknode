@@ -89,7 +89,7 @@ export default function ProfilePage() {
     return (
       <>
         <p>
-          Profile name: {squeakProfile.getProfileName()}
+          Address: {squeakProfile.getAddress()}
         </p>
         {ProfileSettingsForm()}
         {ViewSqueaksButton()}
