@@ -1,3 +1,5 @@
+import uuid
+
 import grpc
 import pytest
 from squeak.params import SelectParams
@@ -47,7 +49,7 @@ def following_signing_key(server_stub, admin_stub):
     signing_key = generate_signing_key()
 
     # Create a new contact profile
-    profile_name = "following_contact"
+    profile_name = "following_contact_{}".format(uuid.uuid1())
     profile_address = get_address(signing_key)
     create_contact_profile_response = admin_stub.CreateContactProfile(
         squeak_admin_pb2.CreateContactProfileRequest(
@@ -81,7 +83,7 @@ def nonfollowing_signing_key(server_stub, admin_stub):
 @pytest.fixture
 def signing_profile_id(server_stub, admin_stub):
     # Create a new signing profile
-    profile_name = "fake_signing_profile"
+    profile_name = "fake_signing_profile_{}".format(uuid.uuid1())
     create_signing_profile_response = admin_stub.CreateSigningProfile(
         squeak_admin_pb2.CreateSigningProfileRequest(
             profile_name=profile_name,
@@ -94,7 +96,7 @@ def signing_profile_id(server_stub, admin_stub):
 @pytest.fixture
 def contact_profile_id(server_stub, admin_stub):
     # Create a new contact profile
-    contact_name = "fake_contact_profile"
+    contact_name = "fake_contact_profile_{}".format(uuid.uuid1())
     contact_signing_key = generate_signing_key()
     contact_address = get_address(contact_signing_key)
     create_contact_profile_response = admin_stub.CreateContactProfile(
