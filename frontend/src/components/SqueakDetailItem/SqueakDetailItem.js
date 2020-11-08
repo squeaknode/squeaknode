@@ -22,6 +22,7 @@ import RepeatIcon from '@material-ui/icons/Repeat';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import DeleteIcon from '@material-ui/icons/Delete';
 import DownloadIcon from '@material-ui/icons/CloudDownload';
+import ZoomInIcon from '@material-ui/icons/ZoomIn';
 
 // styles
 import useStyles from "./styles";
@@ -74,6 +75,10 @@ export default function SqueakDetailItem({
     history.push("/app/buy/" + hash);
   };
 
+  const goToSqueakDetailPage = () => {
+    history.push("/app/squeakdetail/" + hash);
+  };
+
   const reloadRoute = () => {
     history.go(0);
   };
@@ -108,6 +113,16 @@ export default function SqueakDetailItem({
       return;
     }
     handleClickOpenDeleteDialog();
+  }
+
+  const onZoomInClick = (event) => {
+    event.preventDefault();
+    console.log("Handling zoomin click...");
+    if (!squeak) {
+      return;
+    }
+    //handleClickOpenDeleteDialog();
+    goToSqueakDetailPage();
   }
 
   const onUnlockClick = (event) => {
@@ -339,6 +354,14 @@ export default function SqueakDetailItem({
                   onClick={onDeleteClick}
                   >
                   <DeleteIcon />
+                </Box>
+            </Grid>
+            <Grid item xs={3} sm={1}>
+                <Box
+                  p={1}
+                  onClick={onZoomInClick}
+                  >
+                  <ZoomInIcon />
                 </Box>
             </Grid>
           </Grid>
