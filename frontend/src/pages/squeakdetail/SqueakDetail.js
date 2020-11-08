@@ -79,7 +79,7 @@ export default function SqueakDetailPage() {
                 </div>
 
                 <div key="rawdata" className={classes.legendItemContainer}>
-                  <Typography style={{  }}>
+                  <Typography style={{ whiteSpace: "nowrap" }}>
                       &nbsp;raw data&nbsp;
                   </Typography>
                   <Typography color="text" colorBrightness="secondary">
