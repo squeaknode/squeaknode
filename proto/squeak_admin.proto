@@ -84,6 +84,10 @@ service SqueakAdmin {
   */
   rpc GetSqueakProfileByAddress (GetSqueakProfileByAddressRequest) returns (GetSqueakProfileByAddressReply) {}
 
+  /** sqkadmin: `getsqueakprofilebyname`
+  */
+  rpc GetSqueakProfileByName (GetSqueakProfileByNameRequest) returns (GetSqueakProfileByNameReply) {}
+
   /** sqkadmin: `setsqueakprofilefollowing`
   */
   rpc SetSqueakProfileFollowing (SetSqueakProfileFollowingRequest) returns (SetSqueakProfileFollowingReply) {}
@@ -233,6 +237,16 @@ message GetSqueakProfileByAddressRequest {
 }
 
 message GetSqueakProfileByAddressReply {
+    /// The squeak profile
+    SqueakProfile squeak_profile = 1;
+}
+
+message GetSqueakProfileByNameRequest {
+    /// The name
+    string name = 1;
+}
+
+message GetSqueakProfileByNameReply {
     /// The squeak profile
     SqueakProfile squeak_profile = 1;
 }

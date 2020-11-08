@@ -135,7 +135,14 @@ class SqueakAdminServerHandler(object):
         logger.info("Handle get squeak profile with address: {}".format(address))
         squeak_profile = self.squeak_node.get_squeak_profile_by_address(address)
         squeak_profile_msg = squeak_profile_to_message(squeak_profile)
-        return squeak_admin_pb2.GetSqueakProfileReply(squeak_profile=squeak_profile_msg)
+        return squeak_admin_pb2.GetSqueakProfileByAddressReply(squeak_profile=squeak_profile_msg)
+
+    def handle_get_squeak_profile_by_name(self, request):
+        name = request.name
+        logger.info("Handle get squeak profile with name: {}".format(name))
+        squeak_profile = self.squeak_node.get_squeak_profile_by_name(name)
+        squeak_profile_msg = squeak_profile_to_message(squeak_profile)
+        return squeak_admin_pb2.GetSqueakProfileByNameReply(squeak_profile=squeak_profile_msg)
 
     def handle_set_squeak_profile_following(self, request):
         profile_id = request.profile_id

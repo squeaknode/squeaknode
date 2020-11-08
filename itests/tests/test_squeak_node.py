@@ -25,6 +25,36 @@ from tests.util import (
 )
 
 
+
+def test_get_profile(server_stub, admin_stub, signing_profile_id):
+    # Get the squeak profile
+    get_squeak_profile_response = admin_stub.GetSqueakProfile(
+        squeak_admin_pb2.GetSqueakProfileRequest(
+            profile_id=signing_profile_id,
+        )
+    )
+    address = get_squeak_profile_response.squeak_profile.address
+    name = get_squeak_profile_response.squeak_profile.profile_name
+
+    # Get the same squeak profile by address
+    get_squeak_profile_by_address_response = admin_stub.GetSqueakProfileByAddress(
+        squeak_admin_pb2.GetSqueakProfileByAddressRequest(
+            address=address,
+        )
+    )
+    assert address == get_squeak_profile_by_address_response.squeak_profile.address
+    assert name == get_squeak_profile_by_address_response.squeak_profile.profile_name
+
+    # Get the same squeak profile by name
+    get_squeak_profile_by_name_response = admin_stub.GetSqueakProfileByName(
+        squeak_admin_pb2.GetSqueakProfileByNameRequest(
+            name=name,
+        )
+    )
+    assert address == get_squeak_profile_by_name_response.squeak_profile.address
+    assert name == get_squeak_profile_by_name_response.squeak_profile.profile_name
+
+
 def test_post_squeak(
     server_stub, admin_stub, lightning_client, following_signing_key
 ):
