@@ -189,6 +189,9 @@ class SqueakNode:
     def get_squeak_profile_by_address(self, address):
         return self.postgres_db.get_profile_by_address(address)
 
+    def get_squeak_profile_by_name(self, name):
+        return self.postgres_db.get_profile_by_name(name)
+
     def set_squeak_profile_following(self, profile_id, following):
         self.postgres_db.set_profile_following(profile_id, following)
         self.squeak_whitelist.refresh()

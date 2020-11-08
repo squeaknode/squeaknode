@@ -610,6 +610,14 @@ class SqueakDb:
         #     row = curs.fetchone()
         #     return self._parse_squeak_profile(row)
 
+    def get_profile_by_name(self, name):
+        """ Get a profile by name. """
+        s = select([self.profiles]).where(self.profiles.c.profile_name == name)
+        with self.get_connection() as connection:
+            result = connection.execute(s)
+            row = result.fetchone()
+            return self._parse_squeak_profile(row)
+
     def set_profile_following(self, profile_id, following):
         """ Set a profile is following. """
         stmt = (
