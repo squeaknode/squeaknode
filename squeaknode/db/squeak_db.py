@@ -66,9 +66,9 @@ class SqueakDb:
             self.metadata,
             Column("profile_id", Integer, primary_key=True),
             Column("created", DateTime, server_default=func.now(), nullable=False),
-            Column("profile_name", String, nullable=False),
+            Column("profile_name", String, unique=True, nullable=False),
             Column("private_key", Binary),
-            Column("address", String(35), nullable=False),
+            Column("address", String(35), unique=True, nullable=False),
             Column("sharing", Boolean, nullable=False),
             Column("following", Boolean, nullable=False),
         )
