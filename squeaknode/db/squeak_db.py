@@ -28,116 +28,56 @@ from squeaknode.server.squeak_peer import SqueakPeer
 from squeaknode.server.squeak_profile import SqueakProfile
 from squeaknode.server.sent_payment import SentPayment
 from squeaknode.server.util import get_hash
+from squeaknode.db.models import Models
+from squeaknode.db.migrations import run_migrations
+
 
 logger = logging.getLogger(__name__)
+
+
+# def run_migrations(script_location: str, dsn: str) -> None:
+#     LOG.info('Running DB migrations in %r on %r', script_location, dsn)
+#     alembic_cfg = Config()
+#     #alembic_cfg.set_main_option('script_location', script_location)
+#     alembic_cfg.set_main_option('sqlalchemy.url', dsn)
+#     command.upgrade(alembic_cfg, 'head')
 
 
 class SqueakDb:
     def __init__(self, engine, schema=None):
         self.engine = engine
         self.schema = schema
-        self.metadata = MetaData(schema=schema)
-
-        self.squeaks = Table(
-            "squeak",
-            self.metadata,
-            Column("hash", String(64), primary_key=True),
-            Column("created", DateTime, server_default=func.now(), nullable=False),
-            Column("n_version", Integer, nullable=False),
-            Column("hash_enc_content", String(64), nullable=False),
-            Column("hash_reply_sqk", String(64), nullable=False),
-            Column("hash_block", String(64), nullable=False),
-            Column("n_block_height", Integer, nullable=False),
-            Column("vch_script_pub_key", Binary, nullable=False),
-            Column("vch_encryption_key", Binary, nullable=False),
-            Column("enc_data_key", String, nullable=False),
-            Column("iv", String(64), nullable=False),
-            Column("n_time", Integer, nullable=False),
-            Column("n_nonce", BigInteger, nullable=False),
-            Column("enc_content", String(2272), nullable=False),
-            Column("vch_script_sig", Binary, nullable=False),
-            Column("author_address", String(35), index=True, nullable=False),
-            Column("vch_decryption_key", Binary, nullable=True),
-            Column("block_header", Binary, nullable=True),
-        )
-
-        self.profiles = Table(
-            "profile",
-            self.metadata,
-            Column("profile_id", Integer, primary_key=True),
-            Column("created", DateTime, server_default=func.now(), nullable=False),
-            Column("profile_name", String, unique=True, nullable=False),
-            Column("private_key", Binary),
-            Column("address", String(35), unique=True, nullable=False),
-            Column("sharing", Boolean, nullable=False),
-            Column("following", Boolean, nullable=False),
-        )
-
-        self.peers = Table(
-            "peer",
-            self.metadata,
-            Column("id", Integer, primary_key=True),
-            Column("created", DateTime, server_default=func.now(), nullable=False),
-            Column("peer_name", String),
-            Column("server_host", String, nullable=False),
-            Column("server_port", Integer, nullable=False),
-            Column("uploading", Boolean, nullable=False),
-            Column("downloading", Boolean, nullable=False),
-        )
-
-        self.offers = Table(
-            "offer",
-            self.metadata,
-            Column("offer_id", Integer, primary_key=True),
-            Column("created", DateTime, server_default=func.now(), nullable=False),
-            Column("squeak_hash", String(64), nullable=False),
-            Column("key_cipher", Binary, nullable=False),
-            Column("iv", Binary, nullable=False),
-            Column("payment_hash", String(64), nullable=False),
-            Column("invoice_timestamp", Integer, nullable=False),
-            Column("invoice_expiry", Integer, nullable=False),
-            Column("price_msat", Integer, nullable=False),
-            Column("payment_request", String, nullable=False),
-            Column("destination", String(66), nullable=False),
-            Column("node_host", String, nullable=False),
-            Column("node_port", Integer, nullable=False),
-            Column("peer_id", Integer, nullable=False),
-        )
-
-        self.sent_payments = Table(
-            "sent_payment",
-            self.metadata,
-            Column("sent_payment_id", Integer, primary_key=True),
-            Column("created", DateTime, server_default=func.now(), nullable=False),
-            Column("offer_id", Integer, nullable=False),
-            Column("peer_id", Integer, nullable=False),
-            Column("squeak_hash", String(64), nullable=False),
-            Column("preimage_hash", String(64), nullable=False),
-            Column("preimage", String(64), nullable=False),
-            Column("amount", Integer, nullable=False),
-            Column("node_pubkey", String(66), nullable=False),
-            Column("preimage_is_valid", Boolean, nullable=False),
-        )
+        self.models = Models(schema=schema)
 
     @contextmanager
     def get_connection(self):
         with self.engine.connect() as connection:
             yield connection
 
-    def create_tables(self):
-        logger.debug("Creating tables...")
-        self.metadata.create_all(self.engine)
-        self.show_tables()
-
-    def show_tables(self):
-        self.metadata.reflect(bind=self.engine)
-        tables = self.metadata.tables.keys()
-        logger.debug("Database tables: {}".format(tables))
-
     def init(self):
         """ Create the tables and indices in the database. """
         logger.debug("SqlAlchemy version: {}".format(sqlalchemy.__version__))
-        self.create_tables()
+        run_migrations(self.engine)
+
+    @property
+    def squeaks(self):
+        return self.models.squeaks
+
+    @property
+    def profiles(self):
+        return self.models.profiles
+
+    @property
+    def peers(self):
+        return self.models.peers
+
+    @property
+    def offers(self):
+        return self.models.offers
+
+    @property
+    def sent_payments(self):
+        return self.models.sent_payments
 
     def insert_squeak(self, squeak):
         """ Insert a new squeak. """
