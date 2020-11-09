@@ -2,11 +2,6 @@ import logging
 from contextlib import contextmanager
 from datetime import datetime, timedelta
 
-
-from alembic.config import Config
-from alembic import command
-
-
 import sqlalchemy
 from sqlalchemy import (
     BigInteger,
@@ -34,6 +29,7 @@ from squeaknode.server.squeak_profile import SqueakProfile
 from squeaknode.server.sent_payment import SentPayment
 from squeaknode.server.util import get_hash
 from squeaknode.db.models import Models
+from squeaknode.db.migrations import run_migrations
 
 
 logger = logging.getLogger(__name__)
@@ -58,25 +54,10 @@ class SqueakDb:
         with self.engine.connect() as connection:
             yield connection
 
-    def create_tables(self):
-        logger.debug("Creating tables...")
-        self.models.metadata.create_all(self.engine)
-        self.show_tables()
-
-    def show_tables(self):
-        self.models.metadata.reflect(bind=self.engine)
-        tables = self.models.metadata.tables.keys()
-        logger.debug("Database tables: {}".format(tables))
-
     def init(self):
         """ Create the tables and indices in the database. """
         logger.debug("SqlAlchemy version: {}".format(sqlalchemy.__version__))
-        # self.create_tables()
-
-        alembic_cfg = Config("alembic.ini")
-        with self.engine.begin() as connection:
-            alembic_cfg.attributes['connection'] = connection
-            command.upgrade(alembic_cfg, "head")
+        run_migrations(self.engine)
 
     @property
     def squeaks(self):
