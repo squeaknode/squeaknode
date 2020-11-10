@@ -73,13 +73,16 @@ def offer_entry_to_message(offer_entry):
         invoice_expiry=offer.invoice_expiry,
     )
 
-def sent_payment_to_message(sent_payment):
-    if sent_payment is None:
+def sent_payment_with_peer_to_message(sent_payment_with_peer):
+    if sent_payment_with_peer is None:
         return None
+    sent_payment = sent_payment_with_peer.sent_payment
+    peer = sent_payment_with_peer.peer
     return squeak_admin_pb2.SentPayment(
         sent_payment_id=sent_payment.sent_payment_id,
         offer_id=sent_payment.offer_id,
         peer_id=sent_payment.peer_id,
+        peer_name=peer.peer_name,
         squeak_hash=sent_payment.squeak_hash,
         preimage_hash=sent_payment.preimage_hash,
         preimage=sent_payment.preimage,

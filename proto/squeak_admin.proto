@@ -585,26 +585,29 @@ message SentPayment {
     /// The peer id
     int32 peer_id = 3;
 
+    /// The peer name
+    string peer_name = 4;
+
     /// The squeak hash
-    string squeak_hash = 4;
+    string squeak_hash = 5;
 
     /// The preimage hash
-    string preimage_hash = 5;
+    string preimage_hash = 6;
 
     /// The preimage
-    string preimage = 6;
+    string preimage = 7;
 
     /// The price_msat
-    int64 price_msat = 7;
+    int64 price_msat = 8;
 
     /// The seller node pubkey
-    string node_pubkey = 8;
+    string node_pubkey = 9;
 
     /// Valid preimage
-    bool preimage_is_valid = 9;
+    bool preimage_is_valid = 10;
 
     /// time_ms
-    int64 time_ms = 10;
+    int64 time_ms = 11;
 }
 
 message SyncSqueakRequest {

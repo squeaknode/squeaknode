@@ -31,6 +31,10 @@ export default function SentPayment({
 
   const history = useHistory();
 
+  const peerName = sentPayment.getPeerName();
+  const peerId = sentPayment.getPeerId();
+  const peerDisplay = peerName ? peerName : peerId;
+
   const goToSqueakPage = (hash) => {
     history.push("/app/squeak/" + hash);
   };
@@ -132,7 +136,7 @@ export default function SentPayment({
                 <Link href="#"
                   onClick={onPeerClick}
                   >
-                  <span> </span>{sentPayment.getPeerId()}
+                  <span> </span>{peerDisplay}
                 </Link>
             </Grid>
           </Grid>
