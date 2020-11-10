@@ -204,7 +204,7 @@ def run_server(config):
     network = load_network(config)
     SelectParams(network)
 
-    # load postgres db
+    # load the db
     squeak_db = load_db(config, network)
     squeak_db.init()
 

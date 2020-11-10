@@ -11,12 +11,12 @@ logger = logging.getLogger(__name__)
 
 
 class SqueakSyncController:
-    def __init__(self, blockchain_client, squeak_store, postgres_db, lightning_client):
+    def __init__(self, blockchain_client, squeak_store, squeak_db, lightning_client):
         self.blockchain_client = blockchain_client
         self.squeak_store = squeak_store
-        self.postgres_db = postgres_db
+        self.squeak_db = squeak_db
         self.lightning_client = lightning_client
-        self.network_sync = NetworkSync(squeak_store, postgres_db, lightning_client)
+        self.network_sync = NetworkSync(squeak_store, squeak_db, lightning_client)
 
     def sync_timeline(self):
         try:
@@ -27,7 +27,7 @@ class SqueakSyncController:
                 "Failed to sync because unable to get blockchain info.", exc_info=False
             )
             return
-        peers = self.postgres_db.get_peers()
+        peers = self.squeak_db.get_peers()
         dowload_timeline_task = TimelineNetworkSyncTask(
             self.network_sync,
             block_height,

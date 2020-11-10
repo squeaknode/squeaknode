@@ -6,8 +6,8 @@ logger = logging.getLogger(__name__)
 
 
 class SqueakWhitelist:
-    def __init__(self, postgres_db):
-        self.postgres_db = postgres_db
+    def __init__(self, squeak_db):
+        self.squeak_db = squeak_db
         self.allowed_addresses = []
         self.refresh()
 
@@ -30,7 +30,7 @@ class SqueakWhitelist:
         self.allowed_addresses = whitelisted_addresses
 
     def _get_whitelisted_addresses(self):
-        whitelisted_profiles = self.postgres_db.get_following_profiles()
+        whitelisted_profiles = self.squeak_db.get_following_profiles()
         return [profile.address for profile in whitelisted_profiles]
 
     def get_allowed_addresses(self, addresses):
