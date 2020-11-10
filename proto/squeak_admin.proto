@@ -594,8 +594,8 @@ message SentPayment {
     /// The preimage
     string preimage = 6;
 
-    /// The amount
-    int64 amount = 7;
+    /// The price_msat
+    int64 price_msat = 7;
 
     /// The seller node pubkey
     string node_pubkey = 8;

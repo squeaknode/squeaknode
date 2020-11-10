@@ -83,7 +83,7 @@ def sent_payment_to_message(sent_payment):
         squeak_hash=sent_payment.squeak_hash,
         preimage_hash=sent_payment.preimage_hash,
         preimage=sent_payment.preimage,
-        amount=sent_payment.amount,
+        price_msat=sent_payment.price_msat,
         node_pubkey=sent_payment.node_pubkey,
         preimage_is_valid=sent_payment.preimage_is_valid,
     )

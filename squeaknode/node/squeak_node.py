@@ -287,7 +287,7 @@ class SqueakNode:
             squeak_hash=offer.squeak_hash,
             preimage_hash=offer.payment_hash,
             preimage=preimage.hex(),
-            amount=offer.price_msat,
+            price_msat=offer.price_msat,
             node_pubkey=offer.destination,
             preimage_is_valid=is_valid_preimage,
         )
