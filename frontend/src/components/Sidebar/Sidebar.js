@@ -10,6 +10,7 @@ import {
   HelpOutline as FAQIcon,
   ArrowBack as ArrowBackIcon,
   CloudDownload as PeerIcon,
+  History as HistoryIcon,
 } from "@material-ui/icons";
 import { useTheme } from "@material-ui/styles";
 import { withRouter } from "react-router-dom";
@@ -34,6 +35,7 @@ const structure = [
   { id: 1, label: "Profiles", link: "/app/profiles", icon: <ProfilesIcon /> },
   { id: 2, label: "Wallet", link: "/app/wallet", icon: <MoneyIcon /> },
   { id: 3, label: "Peers", link: "/app/peers", icon: <PeerIcon /> },
+  { id: 4, label: "Payments", link: "/app/payments", icon: <HistoryIcon /> },
 ];
 
 function Sidebar({ location }) {

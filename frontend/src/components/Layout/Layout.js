@@ -29,6 +29,7 @@ import Channel from "../../pages/channel";
 import Notifications from "../../pages/notifications";
 import Maps from "../../pages/maps";
 import Profiles from "../../pages/profiles";
+import Payments from "../../pages/payments";
 import Icons from "../../pages/icons";
 import Charts from "../../pages/charts";
 import Peers from "../../pages/peers";
@@ -64,6 +65,7 @@ function Layout(props) {
               <Route path="/app/offer/:id" component={Offer} />
               <Route path="/app/profile/:id" component={Profile} />
               <Route path="/app/profiles" component={Profiles} />
+              <Route path="/app/payments" component={Payments} />
               <Route path="/app/wallet" component={Wallet} />
               <Route path="/app/lightningnode/:pubkey/:host/:port" component={LightningNode} />
               <Route path="/app/lightningnode/:pubkey/:host" component={LightningNode} />
