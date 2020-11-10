@@ -37,7 +37,7 @@ class SqueakNode:
         blockchain_client,
         lightning_client,
         lightning_host_port,
-        price,
+        price_msat,
         max_squeaks_per_address_per_hour,
         sync_interval_s,
     ):
@@ -45,7 +45,7 @@ class SqueakNode:
         self.blockchain_client = blockchain_client
         self.lightning_client = lightning_client
         self.lightning_host_port = lightning_host_port
-        self.price = price
+        self.price_msat = price_msat
         self.sync_interval_s = sync_interval_s
         self.squeak_block_verifier = SqueakBlockVerifier(postgres_db, blockchain_client)
         self.squeak_block_periodic_worker = SqueakBlockPeriodicWorker(
@@ -124,10 +124,8 @@ class SqueakNode:
         encrypted_decryption_key = CEncryptedDecryptionKey.from_decryption_key(
             decryption_key, preimage, iv
         )
-        # Get the offer price
-        amount = self.price
         # Create the lightning invoice
-        add_invoice_response = self.lightning_client.add_invoice(preimage, amount)
+        add_invoice_response = self.lightning_client.add_invoice(preimage, self.price_msat)
         preimage_hash = add_invoice_response.r_hash
         invoice_payment_request = add_invoice_response.payment_request
         # Get the lightning network node pubkey
@@ -138,7 +136,7 @@ class SqueakNode:
             squeak_hash,
             encrypted_decryption_key,
             iv,
-            amount,
+            self.price_msat,
             preimage_hash,
             invoice_payment_request,
             pubkey,

@@ -60,7 +60,7 @@ class LNDLightningClient:
         request = lnd_pb2.WalletBalanceRequest()
         return self.stub.WalletBalance(request)
 
-    def add_invoice(self, preimage, amount):
+    def add_invoice(self, preimage, amount_msat):
         """Create a new invoice with the given hash pre-image.
 
         args:
@@ -69,7 +69,7 @@ class LNDLightningClient:
         """
         invoice = lnd_pb2.Invoice(
             r_preimage=preimage,
-            value=amount,
+            value_msat=amount_msat,
         )
         return self.stub.AddInvoice(invoice)
 

@@ -74,7 +74,7 @@ class Config:
 
         # squeaknode
         self._configs['squeaknode_network'] = self._get_squeaknode_network()
-        self._configs['squeaknode_price'] = self._get_squeaknode_price()
+        self._configs['squeaknode_price_msat'] = self._get_squeaknode_price_msat()
         self._configs['squeaknode_max_squeaks_per_address_per_hour'] = self._get_squeaknode_max_squeaks_per_address_per_hour()
         self._configs['squeaknode_database'] = self._get_squeaknode_database()
         self._configs['squeaknode_sqk_dir'] = self._get_squeaknode_sqk_dir()
@@ -179,8 +179,8 @@ class Config:
         return environ.get('NETWORK') \
             or self.parser.get("squeaknode", "network", fallback="testnet")
 
-    def _get_squeaknode_price(self):
-        return int(self.parser.get("squeaknode", "price", fallback="10"))
+    def _get_squeaknode_price_msat(self):
+        return int(self.parser.get("squeaknode", "price_msat", fallback="10000"))
 
     def _get_squeaknode_max_squeaks_per_address_per_hour(self):
         return int(self.parser.get("squeaknode", "max_squeaks_per_address_per_hour", fallback="100"))
