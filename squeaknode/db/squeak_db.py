@@ -1025,4 +1025,5 @@ class SqueakDb:
             price_msat=row["price_msat"],
             node_pubkey=row["node_pubkey"],
             preimage_is_valid=row["preimage_is_valid"],
+            time_ms=row["created"],
         )
