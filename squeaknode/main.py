@@ -13,7 +13,7 @@ from squeaknode.admin.squeak_admin_server_servicer import SqueakAdminServerServi
 from squeaknode.admin.webapp.app import SqueakAdminWebServer
 from squeaknode.blockchain.bitcoin_blockchain_client import BitcoinBlockchainClient
 from squeaknode.common.lnd_lightning_client import LNDLightningClient
-from squeaknode.db.db_engine import get_postgres_engine, get_sqlite_engine
+from squeaknode.db.db_engine import get_engine, get_sqlite_engine, get_sqlite_connection_string, get_data_dir
 from squeaknode.db.squeak_db import SqueakDb
 from squeaknode.node.squeak_node import SqueakNode
 from squeaknode.server.lightning_address import LightningAddressHostPort
@@ -108,21 +108,12 @@ def load_sqk_dir_path(config):
 
 
 def load_db(config, network):
-    database = load_database(config)
-    if database == "postgresql":
-        engine = get_postgres_engine(
-            config.postgresql_user,
-            config.postgresql_password,
-            config.postgresql_host,
-            config.postgresql_database,
-        )
-        return SqueakDb(engine, schema=network)
-    elif database == "sqlite":
+    connection_string = config.db_connection_string
+    if not connection_string:
         sqk_dir = load_sqk_dir_path(config)
-        data_dir = sqk_dir.joinpath("data").joinpath(network)
-        data_dir.mkdir(parents=True, exist_ok=True)
-        engine = get_sqlite_engine(data_dir)
-        return SqueakDb(engine)
+        connection_string = get_sqlite_connection_string(sqk_dir, network)
+    engine = get_engine(connection_string)
+    return SqueakDb(engine)
 
 
 def load_blockchain_client(config):
