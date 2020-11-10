@@ -192,7 +192,7 @@ class Config:
         return self.parser.get("squeaknode", "sqk_dir", fallback=DEFAULT_SQK_DIR_PATH)
 
     def _get_squeaknode_sync_interval_s(self):
-        return int(environ.get('SQUEAKNODE_SYNC_INTERVAL_S')) \
+        return int(environ.get('SQUEAKNODE_SYNC_INTERVAL_S') or 0) \
             or self.parser.getint("squeaknode", "sync_interval_s", fallback=None)
 
     def _get_squeaknode_log_level(self):
