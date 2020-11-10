@@ -35,6 +35,17 @@ export default function SentPayment({
     history.push("/app/squeak/" + hash);
   };
 
+  const goToLightningNodePage = (pubkey, host, port) => {
+      console.log("Go to lightning node for pubkey: " + pubkey);
+      if (pubkey && host && port) {
+        history.push("/app/lightningnode/" + pubkey + "/" + host + "/" + port);
+      } else if (pubkey && host) {
+        history.push("/app/lightningnode/" + pubkey + "/" + host);
+      } else {
+        history.push("/app/lightningnode/" + pubkey);
+      }
+  };
+
   const onSqueakClick = (event) => {
     event.preventDefault();
     var hash = sentPayment.getSqueakHash();
@@ -44,10 +55,20 @@ export default function SentPayment({
     }
   }
 
+  const onLightningNodeClick = (event) => {
+    event.preventDefault();
+    var nodePubkey = sentPayment.getSqueakHash();
+    console.log("Handling lightning node click for nodePubkey: " + nodePubkey);
+    if (goToLightningNodePage) {
+      goToLightningNodePage(nodePubkey);
+    }
+  }
+
   return (
     <Box
       p={1}
       m={0}
+      style={{ backgroundColor: "lightgray" }}
       >
           <Grid
             container
@@ -57,9 +78,7 @@ export default function SentPayment({
           >
             <Grid item>
                 <Box fontWeight="fontWeightBold">
-                  <Link href="#">
-                    Show something here
-                  </Link>
+                  {sentPayment.getPriceMsat()} mSats
                 </Box>
             </Grid>
           </Grid>
@@ -69,9 +88,29 @@ export default function SentPayment({
             justify="flex-start"
             alignItems="flex-start"
           >
-          <Grid item>
-            Sent payment content here
+            <Grid item>
+              Squeak hash:
+                <Link href="#"
+                  onClick={onSqueakClick}
+                  >
+                  <span> </span>{sentPayment.getSqueakHash()}
+                  </Link>
+            </Grid>
           </Grid>
+          <Grid
+            container
+            direction="row"
+            justify="flex-start"
+            alignItems="flex-start"
+          >
+            <Grid item>
+              Lightning node:
+                <Link href="#"
+                  onClick={onLightningNodeClick}
+                  >
+                  <span> </span>{sentPayment.getNodePubkey()}
+                </Link>
+            </Grid>
           </Grid>
     </Box>
   )
