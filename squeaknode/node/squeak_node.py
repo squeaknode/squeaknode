@@ -33,7 +33,7 @@ logger = logging.getLogger(__name__)
 class SqueakNode:
     def __init__(
         self,
-        postgres_db,
+        squeak_db,
         blockchain_client,
         lightning_client,
         lightning_host_port,
@@ -41,13 +41,13 @@ class SqueakNode:
         max_squeaks_per_address_per_hour,
         sync_interval_s,
     ):
-        self.postgres_db = postgres_db
+        self.squeak_db = squeak_db
         self.blockchain_client = blockchain_client
         self.lightning_client = lightning_client
         self.lightning_host_port = lightning_host_port
         self.price_msat = price_msat
         self.sync_interval_s = sync_interval_s
-        self.squeak_block_verifier = SqueakBlockVerifier(postgres_db, blockchain_client)
+        self.squeak_block_verifier = SqueakBlockVerifier(squeak_db, blockchain_client)
         self.squeak_block_periodic_worker = SqueakBlockPeriodicWorker(
             self.squeak_block_verifier
         )
@@ -55,16 +55,16 @@ class SqueakNode:
             self.squeak_block_verifier
         )
         self.squeak_rate_limiter = SqueakRateLimiter(
-            postgres_db,
+            squeak_db,
             blockchain_client,
             lightning_client,
             max_squeaks_per_address_per_hour,
         )
         self.squeak_whitelist = SqueakWhitelist(
-            postgres_db,
+            squeak_db,
         )
         self.squeak_store = SqueakStore(
-            postgres_db,
+            squeak_db,
             self.squeak_block_verifier,
             self.squeak_rate_limiter,
             self.squeak_whitelist,
@@ -72,7 +72,7 @@ class SqueakNode:
         self.squeak_sync_controller = SqueakSyncController(
             self.blockchain_client,
             self.squeak_store,
-            self.postgres_db,
+            self.squeak_db,
             self.lightning_client,
         )
         self.squeak_peer_sync_worker = SqueakPeerSyncWorker(
@@ -80,7 +80,7 @@ class SqueakNode:
             self.sync_interval_s,
         )
         self.squeak_expired_offer_cleaner = SqueakExpiredOfferCleaner(
-            self.postgres_db,
+            self.squeak_db,
         )
         self.squeak_offer_expiry_worker = SqueakOfferExpiryWorker(
             self.squeak_expired_offer_cleaner,
@@ -159,7 +159,7 @@ class SqueakNode:
             sharing=False,
             following=False,
         )
-        return self.postgres_db.insert_profile(squeak_profile)
+        return self.squeak_db.insert_profile(squeak_profile)
 
     def create_contact_profile(self, profile_name, squeak_address):
         address_validator = SqueakAddressValidator()
@@ -173,35 +173,35 @@ class SqueakNode:
             sharing=False,
             following=False,
         )
-        return self.postgres_db.insert_profile(squeak_profile)
+        return self.squeak_db.insert_profile(squeak_profile)
 
     def get_signing_profiles(self):
-        return self.postgres_db.get_signing_profiles()
+        return self.squeak_db.get_signing_profiles()
 
     def get_contact_profiles(self):
-        return self.postgres_db.get_contact_profiles()
+        return self.squeak_db.get_contact_profiles()
 
     def get_squeak_profile(self, profile_id):
-        return self.postgres_db.get_profile(profile_id)
+        return self.squeak_db.get_profile(profile_id)
 
     def get_squeak_profile_by_address(self, address):
-        return self.postgres_db.get_profile_by_address(address)
+        return self.squeak_db.get_profile_by_address(address)
 
     def get_squeak_profile_by_name(self, name):
-        return self.postgres_db.get_profile_by_name(name)
+        return self.squeak_db.get_profile_by_name(name)
 
     def set_squeak_profile_following(self, profile_id, following):
-        self.postgres_db.set_profile_following(profile_id, following)
+        self.squeak_db.set_profile_following(profile_id, following)
         self.squeak_whitelist.refresh()
 
     def set_squeak_profile_sharing(self, profile_id, sharing):
-        self.postgres_db.set_profile_sharing(profile_id, sharing)
+        self.squeak_db.set_profile_sharing(profile_id, sharing)
 
     def delete_squeak_profile(self, profile_id):
-        self.postgres_db.delete_profile(profile_id)
+        self.squeak_db.delete_profile(profile_id)
 
     def make_squeak(self, profile_id, content_str, replyto_hash):
-        squeak_profile = self.postgres_db.get_profile(profile_id)
+        squeak_profile = self.squeak_db.get_profile(profile_id)
         squeak_maker = SqueakMaker(self.blockchain_client)
         squeak = squeak_maker.make_squeak(squeak_profile, content_str, replyto_hash)
         return self.save_created_squeak(squeak)
@@ -227,7 +227,7 @@ class SqueakNode:
         )
 
     def delete_squeak(self, squeak_hash):
-        num_deleted_offers = self.postgres_db.delete_offers_for_squeak(squeak_hash)
+        num_deleted_offers = self.squeak_db.delete_offers_for_squeak(squeak_hash)
         logger.info("Deleted number of offers : {}".format(num_deleted_offers))
         return self.squeak_store.delete_squeak(squeak_hash)
 
@@ -240,32 +240,32 @@ class SqueakNode:
             uploading=False,
             downloading=False,
         )
-        return self.postgres_db.insert_peer(squeak_peer)
+        return self.squeak_db.insert_peer(squeak_peer)
 
     def get_peer(self, peer_id):
-        return self.postgres_db.get_peer(peer_id)
+        return self.squeak_db.get_peer(peer_id)
 
     def get_peers(self):
-        return self.postgres_db.get_peers()
+        return self.squeak_db.get_peers()
 
     def set_peer_downloading(self, peer_id, downloading):
-        self.postgres_db.set_peer_downloading(peer_id, downloading)
+        self.squeak_db.set_peer_downloading(peer_id, downloading)
 
     def set_peer_uploading(self, peer_id, uploading):
-        self.postgres_db.set_peer_uploading(peer_id, uploading)
+        self.squeak_db.set_peer_uploading(peer_id, uploading)
 
     def delete_peer(self, peer_id):
-        self.postgres_db.delete_peer(peer_id)
+        self.squeak_db.delete_peer(peer_id)
 
     def get_buy_offers_with_peer(self, squeak_hash):
-        return self.postgres_db.get_offers_with_peer(squeak_hash)
+        return self.squeak_db.get_offers_with_peer(squeak_hash)
 
     def get_buy_offer_with_peer(self, offer_id):
-        return self.postgres_db.get_offer_with_peer(offer_id)
+        return self.squeak_db.get_offer_with_peer(offer_id)
 
     def pay_offer(self, offer_id):
         # Get the offer from the database
-        offer_with_peer = self.postgres_db.get_offer_with_peer(offer_id)
+        offer_with_peer = self.squeak_db.get_offer_with_peer(offer_id)
         offer = offer_with_peer.offer
 
         # Pay the invoice
@@ -292,7 +292,7 @@ class SqueakNode:
             preimage_is_valid=is_valid_preimage,
             time_ms=None,
         )
-        sent_payment_id = self.postgres_db.insert_sent_payment(sent_payment)
+        sent_payment_id = self.squeak_db.insert_sent_payment(sent_payment)
 
         if is_valid_preimage:
             self.unlock_squeak(offer, preimage)
@@ -300,7 +300,7 @@ class SqueakNode:
         return sent_payment_id
 
     def unlock_squeak(self, offer, preimage):
-        squeak_entry = self.postgres_db.get_squeak_entry(offer.squeak_hash)
+        squeak_entry = self.squeak_db.get_squeak_entry(offer.squeak_hash)
         squeak = squeak_entry.squeak
 
         # Verify with the payment preimage and decryption key ciphertext
@@ -328,11 +328,11 @@ class SqueakNode:
         return self.squeak_sync_controller.sync_timeline()
 
     def sync_squeak(self, squeak_hash):
-        peers = self.postgres_db.get_peers()
+        peers = self.squeak_db.get_peers()
         return self.squeak_sync_controller.sync_single_squeak(squeak_hash, peers)
 
     def get_sent_payments(self):
-        return self.postgres_db.get_sent_payments()
+        return self.squeak_db.get_sent_payments()
 
     def get_sent_payment(self, sent_payment_id):
-        return self.postgres_db.get_sent_payment(sent_payment_id)
+        return self.squeak_db.get_sent_payment(sent_payment_id)

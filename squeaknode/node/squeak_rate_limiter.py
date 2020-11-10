@@ -11,12 +11,12 @@ HOUR_IN_SECONDS = 3600
 class SqueakRateLimiter:
     def __init__(
         self,
-        postgres_db,
+        squeak_db,
         blockchain_client,
         lightning_client,
         max_squeaks_per_address_per_hour,
     ):
-        self.postgres_db = postgres_db
+        self.squeak_db = squeak_db
         self.blockchain_client = blockchain_client
         self.lightning_client = lightning_client
         self.max_squeaks_per_address_per_hour = max_squeaks_per_address_per_hour
@@ -42,7 +42,7 @@ class SqueakRateLimiter:
                 squeak_address
             )
         )
-        hashes = self.postgres_db.lookup_squeaks_by_time(
+        hashes = self.squeak_db.lookup_squeaks_by_time(
             [squeak_address],
             HOUR_IN_SECONDS,
             include_unverified=True,
