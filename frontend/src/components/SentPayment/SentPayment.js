@@ -77,6 +77,7 @@ export default function SentPayment({
     }
   }
 
+  console.log(sentPayment);
   return (
     <Box
       p={1}
@@ -93,6 +94,16 @@ export default function SentPayment({
                 <Box fontWeight="fontWeightBold">
                   {sentPayment.getPriceMsat()} msats
                 </Box>
+            </Grid>
+          </Grid>
+          <Grid
+            container
+            direction="row"
+            justify="flex-start"
+            alignItems="flex-start"
+          >
+            <Grid item>
+              {moment(sentPayment.getTimeMs()).format("DD MMM YYYY hh:mm a")}
             </Grid>
           </Grid>
           <Grid
