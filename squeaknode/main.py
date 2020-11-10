@@ -13,7 +13,7 @@ from squeaknode.admin.squeak_admin_server_servicer import SqueakAdminServerServi
 from squeaknode.admin.webapp.app import SqueakAdminWebServer
 from squeaknode.blockchain.bitcoin_blockchain_client import BitcoinBlockchainClient
 from squeaknode.common.lnd_lightning_client import LNDLightningClient
-from squeaknode.db.db_engine import get_engine, get_sqlite_engine, get_sqlite_connection_string, get_data_dir
+from squeaknode.db.db_engine import get_engine, get_sqlite_connection_string
 from squeaknode.db.squeak_db import SqueakDb
 from squeaknode.node.squeak_node import SqueakNode
 from squeaknode.server.lightning_address import LightningAddressHostPort
