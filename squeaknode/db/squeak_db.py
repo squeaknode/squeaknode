@@ -19,7 +19,7 @@ from sqlalchemy import (
 from sqlalchemy.sql import and_, or_, select
 from squeak.core import CSqueak
 
-from squeaknode.blockchain.util import parse_block_header
+from squeaknode.bitcoin.util import parse_block_header
 from squeaknode.core.offer import Offer
 from squeaknode.core.offer_with_peer import OfferWithPeer
 from squeaknode.core.sent_payment_with_peer import SentPaymentWithPeer
