@@ -290,6 +290,7 @@ class SqueakNode:
             price_msat=offer.price_msat,
             node_pubkey=offer.destination,
             preimage_is_valid=is_valid_preimage,
+            time_ms=None,
         )
         sent_payment_id = self.postgres_db.insert_sent_payment(sent_payment)
 

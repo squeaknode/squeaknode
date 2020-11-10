@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 import time
+import datetime
 
 import pytest
 from squeak.core import CSqueak
@@ -905,7 +906,12 @@ def test_connect_other_node(server_stub, admin_stub, other_server_stub, other_ad
             ),
         )
         assert saved_squeak_hash == get_sent_payment_response.sent_payment.squeak_hash
-        assert 1000000 == get_sent_payment_response.sent_payment.price_msat
+        assert get_sent_payment_response.sent_payment.price_msat == 1000000
+        sent_payment_time_ms = get_sent_payment_response.sent_payment.time_ms
+        sent_payment_time = datetime.datetime.fromtimestamp(sent_payment_time_ms/1000.0)
+        five_minutes = datetime.timedelta(minutes=5)
+        assert sent_payment_time > datetime.datetime.now() - five_minutes
+        assert sent_payment_time < datetime.datetime.now()
 
 
 def test_download_single_squeak(server_stub, admin_stub, other_server_stub, other_admin_stub, lightning_client, signing_profile_id, saved_squeak_hash):

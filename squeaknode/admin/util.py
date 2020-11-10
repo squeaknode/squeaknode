@@ -86,6 +86,7 @@ def sent_payment_to_message(sent_payment):
         price_msat=sent_payment.price_msat,
         node_pubkey=sent_payment.node_pubkey,
         preimage_is_valid=sent_payment.preimage_is_valid,
+        time_ms=int(sent_payment.time_ms.timestamp()) * 1000,
     )
 
 

@@ -602,6 +602,9 @@ message SentPayment {
 
     /// Valid preimage
     bool preimage_is_valid = 9;
+
+    /// time_ms
+    int64 time_ms = 10;
 }
 
 message SyncSqueakRequest {
