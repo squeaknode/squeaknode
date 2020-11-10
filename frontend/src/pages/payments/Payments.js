@@ -19,12 +19,14 @@ import {makeStyles} from '@material-ui/core/styles';
 import PageTitle from "../../components/PageTitle";
 import Widget from "../../components/Widget";
 import Table from "../dashboard/components/Table/Table";
+import SentPayment from "../../components/SentPayment";
+
 
 // data
 import mock from "../dashboard/mock";
 
 import {
-  getSigningProfilesRequest,
+  getSentPaymentsRequest,
 } from "../../squeakclient/requests"
 
 const useStyles = makeStyles((theme) => ({
@@ -53,8 +55,15 @@ export default function Payments() {
   };
 
   const loadSentPayments = () => {
-    getSigningProfilesRequest(setSentPayments);
+    getSentPaymentsRequest((sentPaymentsReply) => {
+      setSentPayments(sentPaymentsReply.getSentPaymentsList());
+    });
   };
+
+  useEffect(() => {
+    loadSentPayments()
+  }, []);
+
 
   function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -99,7 +108,18 @@ export default function Payments() {
       <Grid container spacing={4}>
         <Grid item xs={12}>
           <Widget disableWidgetMenu>
-            Show sent payments here.
+          <div>
+          {sentPayments.map(sentPayment =>
+            <Box
+              p={1}
+              key={sentPayment.getSentPaymentId()}
+              >
+            <SentPayment
+              sentPayment={sentPayment}>
+            </SentPayment>
+            </Box>
+          )}
+          </div>
           </Widget>
         </Grid>
       </Grid>
@@ -113,7 +133,7 @@ export default function Payments() {
       <Grid container spacing={4}>
         <Grid item xs={12}>
           <Widget disableWidgetMenu>
-            Show sent payments here.
+            Show received payments here.
           </Widget>
         </Grid>
       </Grid>

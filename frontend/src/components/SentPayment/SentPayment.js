@@ -37,6 +37,7 @@ export default function SentPayment({
 
   const onSqueakClick = (event) => {
     event.preventDefault();
+    var hash = sentPayment.getSqueakHash();
     console.log("Handling squeak click for hash: " + hash);
     if (goToSqueakPage) {
       goToSqueakPage(hash);
@@ -47,7 +48,6 @@ export default function SentPayment({
     <Box
       p={1}
       m={0}
-      style={backgroundColor: 'lightgray'}
       >
           <Grid
             container
@@ -57,7 +57,7 @@ export default function SentPayment({
           >
             <Grid item>
                 <Box fontWeight="fontWeightBold">
-                  <Link href="#"
+                  <Link href="#">
                     Show something here
                   </Link>
                 </Box>
