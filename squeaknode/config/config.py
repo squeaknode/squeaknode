@@ -200,4 +200,5 @@ class Config:
             or self.parser.get("squeaknode", "log_level", fallback="INFO")
 
     def _get_db_connection_string(self):
-        return self.parser.get("db", "connection_string", fallback=None)
+        return environ.get('DB_CONNECTION_STRING') \
+            or self.parser.get("db", "connection_string", fallback=None)
