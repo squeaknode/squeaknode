@@ -12,7 +12,7 @@ from squeaknode.admin.squeak_admin_server_handler import SqueakAdminServerHandle
 from squeaknode.admin.squeak_admin_server_servicer import SqueakAdminServerServicer
 from squeaknode.admin.webapp.app import SqueakAdminWebServer
 from squeaknode.bitcoin.bitcoin_blockchain_client import BitcoinBlockchainClient
-from squeaknode.common.lnd_lightning_client import LNDLightningClient
+from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
 from squeaknode.db.db_engine import get_engine, get_sqlite_connection_string
 from squeaknode.db.squeak_db import SqueakDb
 from squeaknode.node.squeak_node import SqueakNode
