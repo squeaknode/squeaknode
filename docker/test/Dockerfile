@@ -16,7 +16,7 @@ WORKDIR /app
 RUN git clone https://github.com/googleapis/googleapis.git
 
 COPY proto ./proto
-COPY install-rpc.sh itests/test.sh squeaknode/common/lnd_lightning_client.py ./
+COPY install-rpc.sh itests/test.sh squeaknode/lightning/lnd_lightning_client.py ./
 COPY itests/tests ./tests
 
 # Install the gRPC files.

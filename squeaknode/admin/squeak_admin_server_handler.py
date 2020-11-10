@@ -1,7 +1,7 @@
 import sys
 import logging
 
-from squeaknode.common.lnd_lightning_client import LNDLightningClient
+from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
 from squeaknode.node.squeak_node import SqueakNode
 from squeaknode.server.util import get_hash, get_replyto
 from squeaknode.admin.util import squeak_entry_to_message
