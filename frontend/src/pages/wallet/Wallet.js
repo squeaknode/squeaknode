@@ -210,7 +210,7 @@ export default function WalletPage() {
       <Widget disableWidgetMenu>
          <div>
            <Typography variant="h1" className={classes.text}>
-             {walletBalance.getTotalBalance()} satoshis
+             {walletBalance.getTotalBalance()} sats
            </Typography>
          </div>
          <Grid
@@ -221,7 +221,7 @@ export default function WalletPage() {
          >
            <Grid item>
              <Typography color="text" colorBrightness="secondary">
-               unconfirmed balance (satoshis)
+               unconfirmed balance (sats)
              </Typography>
              <Typography size="md">{walletBalance.getUnconfirmedBalance()}</Typography>
            </Grid>
@@ -234,7 +234,7 @@ export default function WalletPage() {
          >
            <Grid item>
              <Typography color="text" colorBrightness="secondary">
-               confirmed balance (satoshis):
+               confirmed balance (sats):
              </Typography>
              <Typography size="md">{walletBalance.getConfirmedBalance()}</Typography>
            </Grid>
