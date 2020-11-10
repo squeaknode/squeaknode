@@ -899,7 +899,12 @@ class SqueakDb:
 
     def get_sent_payments(self):
         """ Get all sent payments. """
-        s = select([self.sent_payments])
+        s = (
+            select([self.sent_payments])
+            .order_by(
+                self.sent_payments.c.created.desc(),
+            )
+        )
         with self.get_connection() as connection:
             result = connection.execute(s)
             rows = result.fetchall()
