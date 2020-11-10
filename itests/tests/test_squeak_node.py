@@ -905,6 +905,7 @@ def test_connect_other_node(server_stub, admin_stub, other_server_stub, other_ad
             ),
         )
         assert saved_squeak_hash == get_sent_payment_response.sent_payment.squeak_hash
+        assert 1000000 == get_sent_payment_response.sent_payment.price_msat
 
 
 def test_download_single_squeak(server_stub, admin_stub, other_server_stub, other_admin_stub, lightning_client, signing_profile_id, saved_squeak_hash):

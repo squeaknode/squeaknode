@@ -517,8 +517,8 @@ message OfferDisplayEntry {
     /// The squeak hash.
     string squeak_hash = 2;
 
-    /// The amount
-    int64 amount = 3;
+    /// The price in msats
+    int64 price_msat = 3;
 
     /// The seller node pubkey
     string node_pubkey = 4;
@@ -594,8 +594,8 @@ message SentPayment {
     /// The preimage
     string preimage = 6;
 
-    /// The amount
-    int64 amount = 7;
+    /// The price_msat
+    int64 price_msat = 7;
 
     /// The seller node pubkey
     string node_pubkey = 8;

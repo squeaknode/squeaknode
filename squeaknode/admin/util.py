@@ -64,7 +64,7 @@ def offer_entry_to_message(offer_entry):
     return squeak_admin_pb2.OfferDisplayEntry(
         offer_id=offer.offer_id,
         squeak_hash=offer.squeak_hash,
-        amount=offer.price_msat,
+        price_msat=offer.price_msat,
         node_pubkey=offer.destination,
         node_host=offer.node_host,
         node_port=offer.node_port,
@@ -83,7 +83,7 @@ def sent_payment_to_message(sent_payment):
         squeak_hash=sent_payment.squeak_hash,
         preimage_hash=sent_payment.preimage_hash,
         preimage=sent_payment.preimage,
-        amount=sent_payment.amount,
+        price_msat=sent_payment.price_msat,
         node_pubkey=sent_payment.node_pubkey,
         preimage_is_valid=sent_payment.preimage_is_valid,
     )

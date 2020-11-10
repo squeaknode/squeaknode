@@ -888,7 +888,7 @@ class SqueakDb:
             squeak_hash=sent_payment.squeak_hash,
             preimage_hash=sent_payment.preimage_hash,
             preimage=sent_payment.preimage,
-            amount=sent_payment.amount,
+            price_msat=sent_payment.price_msat,
             node_pubkey=sent_payment.node_pubkey,
             preimage_is_valid=sent_payment.preimage_is_valid,
         )
@@ -1022,7 +1022,7 @@ class SqueakDb:
             squeak_hash=row["squeak_hash"],
             preimage_hash=row["preimage_hash"],
             preimage=row["preimage"],
-            amount=row["amount"],
+            price_msat=row["price_msat"],
             node_pubkey=row["node_pubkey"],
             preimage_is_valid=row["preimage_is_valid"],
         )

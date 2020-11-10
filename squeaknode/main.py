@@ -75,8 +75,8 @@ def load_network(config):
     return config.squeaknode_network
 
 
-def load_price(config):
-    return config.squeaknode_price
+def load_price_msat(config):
+    return config.squeaknode_price_msat
 
 
 def load_database(config):
@@ -209,7 +209,7 @@ def run_server(config):
     squeak_db.init()
 
     # load the price
-    price = load_price(config)
+    price_msat = load_price_msat(config)
 
     # load the max squeaks per block per address
     max_squeaks_per_address_per_hour = load_max_squeaks_per_address_per_hour(config)
@@ -230,7 +230,7 @@ def run_server(config):
         blockchain_client,
         lightning_client,
         lightning_host_port,
-        price,
+        price_msat,
         max_squeaks_per_address_per_hour,
         sync_interval_s,
     )

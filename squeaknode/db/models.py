@@ -113,7 +113,7 @@ class Models:
             Column("squeak_hash", String(64), nullable=False),
             Column("preimage_hash", String(64), nullable=False),
             Column("preimage", String(64), nullable=False),
-            Column("amount", Integer, nullable=False),
+            Column("price_msat", Integer, nullable=False, default=0),
             Column("node_pubkey", String(66), nullable=False),
             Column("preimage_is_valid", Boolean, nullable=False),
         )
