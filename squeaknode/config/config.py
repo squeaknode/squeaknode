@@ -78,7 +78,7 @@ class Config:
         self._configs['squeaknode_max_squeaks_per_address_per_hour'] = self._get_squeaknode_max_squeaks_per_address_per_hour()
         self._configs['squeaknode_database'] = self._get_squeaknode_database()
         self._configs['squeaknode_sqk_dir'] = self._get_squeaknode_sqk_dir()
-        self._configs['squeaknode_enable_sync'] = self._get_squeaknode_enable_sync()
+        self._configs['squeaknode_sync_interval_s'] = self._get_squeaknode_sync_interval_s()
         self._configs['squeaknode_log_level'] = self._get_squeaknode_log_level()
 
         # db
@@ -191,9 +191,9 @@ class Config:
     def _get_squeaknode_sqk_dir(self):
         return self.parser.get("squeaknode", "sqk_dir", fallback=DEFAULT_SQK_DIR_PATH)
 
-    def _get_squeaknode_enable_sync(self):
-        return environ.get('SQUEAKNODE_ENABLE_SYNC') \
-            or self.parser.getboolean("squeaknode", "enable_sync", fallback=False)
+    def _get_squeaknode_sync_interval_s(self):
+        return int(environ.get('SQUEAKNODE_SYNC_INTERVAL_S')) \
+            or self.parser.getint("squeaknode", "sync_interval_s", fallback=None)
 
     def _get_squeaknode_log_level(self):
         return environ.get('LOG_LEVEL') \

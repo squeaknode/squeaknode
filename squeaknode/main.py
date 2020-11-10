@@ -87,8 +87,8 @@ def load_max_squeaks_per_address_per_hour(config):
     return config.squeaknode_max_squeaks_per_address_per_hour
 
 
-def load_enable_sync(config):
-    return config.squeaknode_enable_sync
+def load_sync_interval_s(config):
+    return config.squeaknode_sync_interval_s
 
 
 def load_handler(squeak_node):
@@ -222,7 +222,7 @@ def run_server(config):
     blockchain_client = load_blockchain_client(config)
 
     # load enable sync config
-    enable_sync = load_enable_sync(config)
+    sync_interval_s = load_sync_interval_s(config)
 
     # Create and start the squeak node
     squeak_node = SqueakNode(
@@ -232,7 +232,7 @@ def run_server(config):
         lightning_host_port,
         price,
         max_squeaks_per_address_per_hour,
-        enable_sync,
+        sync_interval_s,
     )
     squeak_node.start_running()
 
