@@ -57,7 +57,7 @@ export default function SentPayment({
 
   const onLightningNodeClick = (event) => {
     event.preventDefault();
-    var nodePubkey = sentPayment.getSqueakHash();
+    var nodePubkey = sentPayment.getNodePubkey();
     console.log("Handling lightning node click for nodePubkey: " + nodePubkey);
     if (goToLightningNodePage) {
       goToLightningNodePage(nodePubkey);
