@@ -398,6 +398,14 @@ def create_app(handler, username, password):
             handler.handle_get_squeak_details,
         )
 
+    @app.route('/getsentpayments', methods=["POST"])
+    @login_required
+    def getsentpayments():
+        return handle_request(
+            squeak_admin_pb2.GetSentPaymentsRequest(),
+            handler.handle_get_sent_payments,
+        )
+
     return app
 
 

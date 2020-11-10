@@ -35,7 +35,7 @@ const structure = [
   { id: 1, label: "Profiles", link: "/app/profiles", icon: <ProfilesIcon /> },
   { id: 2, label: "Wallet", link: "/app/wallet", icon: <MoneyIcon /> },
   { id: 3, label: "Peers", link: "/app/peers", icon: <PeerIcon /> },
-  { id: 3, label: "Payments", link: "/app/payments", icon: <HistoryIcon /> },
+  { id: 4, label: "Payments", link: "/app/payments", icon: <HistoryIcon /> },
 ];
 
 function Sidebar({ location }) {

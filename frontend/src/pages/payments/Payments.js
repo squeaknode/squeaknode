@@ -23,6 +23,9 @@ import Table from "../dashboard/components/Table/Table";
 // data
 import mock from "../dashboard/mock";
 
+import {
+  getSigningProfilesRequest,
+} from "../../squeakclient/requests"
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -35,6 +38,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Payments() {
   const classes = useStyles();
   const [value, setValue] = useState(0);
+  const [sentPayments, setSentPayments] = useState([]);
   const history = useHistory();
 
   function a11yProps(index) {
@@ -46,6 +50,10 @@ export default function Payments() {
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
+  };
+
+  const loadSentPayments = () => {
+    getSigningProfilesRequest(setSentPayments);
   };
 
   function TabPanel(props) {
