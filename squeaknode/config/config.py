@@ -23,8 +23,6 @@ BITCOIN_RPC_PORT = {
 }
 DEFAULT_LND_PORT = 9735
 DEFAULT_LND_RPC_PORT = 10009
-POSTGRES_HOST = "localhost"
-POSTGRES_DATABASE = "squeaknode"
 DEFAULT_SQK_DIR = ".sqk"
 DEFAULT_SQK_DIR_PATH = str(Path.home() / DEFAULT_SQK_DIR)
 DEFAULT_LND_DIR = ".lnd"
@@ -83,11 +81,8 @@ class Config:
         self._configs['squeaknode_enable_sync'] = self._get_squeaknode_enable_sync()
         self._configs['squeaknode_log_level'] = self._get_squeaknode_log_level()
 
-        # postgresql
-        self._configs['postgresql_user'] = self._get_postgresql_user()
-        self._configs['postgresql_password'] = self._get_postgresql_password()
-        self._configs['postgresql_host'] = self._get_postgresql_host()
-        self._configs['postgresql_database'] = self._get_postgresql_database()
+        # db
+        self._configs['db_connection_string'] = self._get_db_connection_string()
 
         for key, value in self._configs.items():
             setattr(self, key, value)
@@ -204,14 +199,5 @@ class Config:
         return environ.get('LOG_LEVEL') \
             or self.parser.get("squeaknode", "log_level", fallback="INFO")
 
-    def _get_postgresql_user(self):
-        return self.parser.get("postgresql", "user", fallback="")
-
-    def _get_postgresql_password(self):
-        return self.parser.get("postgresql", "password", fallback="")
-
-    def _get_postgresql_host(self):
-        return self.parser.get("postgresql", "host", fallback=POSTGRES_HOST)
-
-    def _get_postgresql_database(self):
-        return self.parser.get("postgresql", "database", fallback=POSTGRES_DATABASE)
+    def _get_db_connection_string(self):
+        return self.parser.get("db", "connection_string", fallback=None)
