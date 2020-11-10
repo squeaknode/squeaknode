@@ -35,6 +35,10 @@ export default function SentPayment({
     history.push("/app/squeak/" + hash);
   };
 
+  const goToPeerPage = (id) => {
+    history.push("/app/Peer/" + id);
+  };
+
   const goToLightningNodePage = (pubkey, host, port) => {
       console.log("Go to lightning node for pubkey: " + pubkey);
       if (pubkey && host && port) {
@@ -52,6 +56,15 @@ export default function SentPayment({
     console.log("Handling squeak click for hash: " + hash);
     if (goToSqueakPage) {
       goToSqueakPage(hash);
+    }
+  }
+
+  const onPeerClick = (event) => {
+    event.preventDefault();
+    var peerId = sentPayment.getPeerId();
+    console.log("Handling peer click for peerId: " + peerId);
+    if (goToPeerPage) {
+      goToPeerPage(peerId);
     }
   }
 
@@ -95,6 +108,21 @@ export default function SentPayment({
                   >
                   <span> </span>{sentPayment.getSqueakHash()}
                   </Link>
+            </Grid>
+          </Grid>
+          <Grid
+            container
+            direction="row"
+            justify="flex-start"
+            alignItems="flex-start"
+          >
+            <Grid item>
+              Peer:
+                <Link href="#"
+                  onClick={onPeerClick}
+                  >
+                  <span> </span>{sentPayment.getPeerId()}
+                </Link>
             </Grid>
           </Grid>
           <Grid
