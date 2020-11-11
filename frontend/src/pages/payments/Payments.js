@@ -140,6 +140,8 @@ export default function Payments() {
   }
 
   function ReceivedPaymentsContent() {
+    console.log("receivedPayments:");
+    console.log(receivedPayments);
     return (
       <>
       <Grid container spacing={4}>
