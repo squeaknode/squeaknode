@@ -20,6 +20,7 @@ import PageTitle from "../../components/PageTitle";
 import Widget from "../../components/Widget";
 import Table from "../dashboard/components/Table/Table";
 import SentPayment from "../../components/SentPayment";
+import ReceivedPayment from "../../components/ReceivedPayment";
 
 
 // data
@@ -27,6 +28,7 @@ import mock from "../dashboard/mock";
 
 import {
   getSentPaymentsRequest,
+  getReceivedPaymentsRequest,
 } from "../../squeakclient/requests"
 
 const useStyles = makeStyles((theme) => ({
@@ -41,6 +43,7 @@ export default function Payments() {
   const classes = useStyles();
   const [value, setValue] = useState(0);
   const [sentPayments, setSentPayments] = useState([]);
+  const [receivedPayments, setReceivedPayments] = useState([]);
   const history = useHistory();
 
   function a11yProps(index) {
@@ -60,8 +63,17 @@ export default function Payments() {
     });
   };
 
+  const loadReceivedPayments = () => {
+    getReceivedPaymentsRequest((receivedPaymentsReply) => {
+      setReceivedPayments(receivedPaymentsReply.getReceivedPaymentsList());
+    });
+  };
+
   useEffect(() => {
     loadSentPayments()
+  }, []);
+  useEffect(() => {
+    loadReceivedPayments()
   }, []);
 
 
@@ -133,7 +145,18 @@ export default function Payments() {
       <Grid container spacing={4}>
         <Grid item xs={12}>
           <Widget disableWidgetMenu>
-            Show received payments here.
+          <div>
+          {receivedPayments.map(receivedPayment =>
+            <Box
+              p={1}
+              key={receivedPayments.getSentPaymentId()}
+              >
+            <ReceivedPayment
+              sentPayment={receivedPayment}>
+            </ReceivedPayment>
+            </Box>
+          )}
+          </div>
           </Widget>
         </Grid>
       </Grid>
