@@ -28,6 +28,7 @@ from squeaknode.core.squeak_entry_with_profile import SqueakEntryWithProfile
 from squeaknode.server.squeak_peer import SqueakPeer
 from squeaknode.server.squeak_profile import SqueakProfile
 from squeaknode.server.sent_payment import SentPayment
+from squeaknode.server.received_payment import ReceivedPayment
 from squeaknode.server.util import get_hash
 from squeaknode.db.models import Models
 from squeaknode.db.migrations import run_migrations
@@ -79,6 +80,10 @@ class SqueakDb:
     @property
     def sent_payments(self):
         return self.models.sent_payments
+
+    @property
+    def received_payments(self):
+        return self.models.received_payments
 
     def insert_squeak(self, squeak):
         """ Insert a new squeak. """
@@ -927,6 +932,33 @@ class SqueakDb:
             row = result.fetchone()
             return self._parse_sent_payment_with_peer(row)
 
+    def insert_received_payment(self, received_payment):
+        """ Insert a new received payment. """
+        ins = self.received_payments.insert().values(
+            squeak_hash=received_payment.squeak_hash,
+            preimage_hash=received_payment.preimage_hash,
+            price_msat=received_payment.price_msat,
+            is_paid=received_payment.is_paid,
+        )
+        with self.get_connection() as connection:
+            res = connection.execute(ins)
+            received_payment_id = res.inserted_primary_key[0]
+            return received_payment_id
+
+    def get_received_payments(self):
+        """ Get all received payments. """
+        s = (
+            select([self.received_payments])
+            .order_by(
+                self.received_payments.c.created.desc(),
+            )
+        )
+        with self.get_connection() as connection:
+            result = connection.execute(s)
+            rows = result.fetchall()
+            received_payments = [self._parse_received_payment(row) for row in rows]
+            return received_payments
+
     def _parse_squeak_entry(self, row):
         if row is None:
             return None
@@ -1036,4 +1068,16 @@ class SqueakDb:
         return SentPaymentWithPeer(
             sent_payment=sent_payment,
             peer=peer,
+        )
+
+    def _parse_received_payment(self, row):
+        if row is None:
+            return None
+        return ReceivedPayment(
+            received_payment_id=row["received_payment_id"],
+            squeak_hash=row["squeak_hash"],
+            preimage_hash=row["preimage_hash"],
+            price_msat=row["price_msat"],
+            is_paid=row["is_paid"],
+            payment_time=row["payment_time"],
         )
