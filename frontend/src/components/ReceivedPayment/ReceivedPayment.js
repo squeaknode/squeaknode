@@ -28,6 +28,8 @@ export default function ReceivedPayment({
 
   const history = useHistory();
 
+  const paymentTimeMs = receivedPayment.setPaymentTimeMs();
+
   const goToSqueakPage = (hash) => {
     history.push("/app/squeak/" + hash);
   };
@@ -68,7 +70,8 @@ export default function ReceivedPayment({
             alignItems="flex-start"
           >
             <Grid item>
-              {moment(receivedPayment.setPaymentTimeMs()).format("DD MMM YYYY hh:mm a")}
+              {paymentTimeMs ?
+                moment(receivedPayment.setPaymentTimeMs()).format("DD MMM YYYY hh:mm a") : "Not paid"}
             </Grid>
           </Grid>
           <Grid
