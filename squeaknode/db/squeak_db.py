@@ -82,25 +82,17 @@ class SqueakDb:
 
     def insert_squeak(self, squeak):
         """ Insert a new squeak. """
+        vch_decryption_key = squeak.GetDecryptionKey().get_bytes() if squeak.HasDecryptionKey() else None
+        squeak.ClearDecryptionKey()
         ins = self.squeaks.insert().values(
             hash=get_hash(squeak),
-            n_version=squeak.nVersion,
-            hash_enc_content=squeak.hashEncContent.hex(),
+            squeak=squeak.serialize(),
             hash_reply_sqk=squeak.hashReplySqk.hex(),
             hash_block=squeak.hashBlock.hex(),
             n_block_height=squeak.nBlockHeight,
-            vch_script_pub_key=squeak.vchScriptPubKey,
-            vch_encryption_key=squeak.vchEncryptionKey,
-            enc_data_key=squeak.encDatakey.hex(),
-            iv=squeak.iv.hex(),
             n_time=squeak.nTime,
-            n_nonce=squeak.nNonce,
-            enc_content=squeak.encContent.hex(),
-            vch_script_sig=squeak.vchScriptSig,
             author_address=str(squeak.GetAddress()),
-            vch_decryption_key=squeak.GetDecryptionKey().get_bytes()
-            if squeak.HasDecryptionKey()
-            else None,
+            vch_decryption_key=vch_decryption_key,
         )
         with self.get_connection() as connection:
             try:
@@ -942,22 +934,9 @@ class SqueakDb:
         vch_decryption_key = (
             bytes(vch_decryption_key_column) if vch_decryption_key_column else b""
         )
-        squeak = CSqueak(
-            nVersion=row["n_version"],
-            hashEncContent=bytes.fromhex(row["hash_enc_content"]),
-            hashReplySqk=bytes.fromhex(row["hash_reply_sqk"]),
-            hashBlock=bytes.fromhex(row["hash_block"]),
-            nBlockHeight=row["n_block_height"],
-            vchScriptPubKey=bytes(row["vch_script_pub_key"]),
-            vchEncryptionKey=bytes(row["vch_encryption_key"]),
-            encDatakey=bytes.fromhex(row["enc_data_key"]),
-            iv=bytes.fromhex((row["iv"])),
-            nTime=row["n_time"],
-            nNonce=row["n_nonce"],
-            encContent=bytes.fromhex((row["enc_content"])),
-            vchScriptSig=bytes(row["vch_script_sig"]),
-            vchDecryptionKey=vch_decryption_key,
-        )
+        squeak = CSqueak.deserialize(row["squeak"])
+        if vch_decryption_key:
+            squeak.SetDecryptionKey(vch_decryption_key)
         block_header_column = row["block_header"]
         block_header_bytes = bytes(block_header_column) if block_header_column else None
         block_header = (
