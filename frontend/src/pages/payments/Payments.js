@@ -148,13 +148,13 @@ export default function Payments() {
         <Grid item xs={12}>
           <Widget disableWidgetMenu>
           <div>
-          {receivedPayments.map(receivedPayments =>
+          {receivedPayments.map(receivedPayment =>
             <Box
               p={1}
-              key={receivedPayments.setReceivedPaymentId()}
+              key={receivedPayment.getReceivedPaymentId()}
               >
             <ReceivedPayment
-              sentPayment={receivedPayments}>
+              sentPayment={receivedPayment}>
             </ReceivedPayment>
             </Box>
           )}

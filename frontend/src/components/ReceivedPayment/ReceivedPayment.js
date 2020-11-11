@@ -41,6 +41,7 @@ export default function ReceivedPayment({
     }
   }
 
+  console.log("receivedPayment:");
   console.log(receivedPayment);
   return (
     <Box
