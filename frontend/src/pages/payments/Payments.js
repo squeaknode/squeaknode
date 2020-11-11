@@ -149,7 +149,7 @@ export default function Payments() {
           {receivedPayments.map(receivedPayment =>
             <Box
               p={1}
-              key={receivedPayments.getSentPaymentId()}
+              key={receivedPayments.getReceivedPaymentId()}
               >
             <ReceivedPayment
               sentPayment={receivedPayment}>
