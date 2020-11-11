@@ -154,7 +154,7 @@ export default function Payments() {
               key={receivedPayment.getReceivedPaymentId()}
               >
             <ReceivedPayment
-              sentPayment={receivedPayment}>
+              receivedPayment={receivedPayment}>
             </ReceivedPayment>
             </Box>
           )}
