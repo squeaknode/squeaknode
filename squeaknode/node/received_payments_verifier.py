@@ -15,19 +15,25 @@ class ReceivedPaymentsVerifier:
 
     def verify_received_payment(self, invoice):
         logger.info("Verifying invoice: {}".format(invoice))
+        preimage_hash = invoice.r_hash.hex()
+        self._mark_received_payment_paid(preimage_hash)
 
     def process_subscribed_invoices(self):
         while True:
-            try:
-                for invoice in self.lightning_client.subscribe_invoices():
-                    self.verify_received_payment(invoice)
-            except:
-                logger.error(
-                    "Unable to subscribe invoices from lnd. Retrying in {} seconds".format(LND_CONNECT_RETRY_S),
-                    exc_info=True,
-                )
-                time.sleep(LND_CONNECT_RETRY_S)
+            self.try_processing()
+
+    def try_processing(self):
+        try:
+            for invoice in self.lightning_client.subscribe_invoices():
+                self.verify_received_payment(invoice)
+        except:
+            logger.error(
+                "Unable to subscribe invoices from lnd. Retrying in {} seconds".format(LND_CONNECT_RETRY_S),
+                exc_info=True,
+            )
+            time.sleep(LND_CONNECT_RETRY_S)
 
     def _mark_received_payment_paid(self, preimage_hash):
         # self.squeak_db.mark_squeak_block_valid(squeak_hash, block_header_bytes)
-        pass
+        logger.info("Marking received payment paid for preimage_hash: {}".format(preimage_hash))
+        self.squeak_db.mark_received_payment_paid(preimage_hash)

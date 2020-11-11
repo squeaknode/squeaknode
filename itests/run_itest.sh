@@ -33,7 +33,7 @@ MINING_ADDRESS=$client_address docker-compose up -d btcd
 echo "Mining 400 blocks to address: $client_address ..."
 docker-compose run btcctl generate 400
 echo "Finished mining blocks."
-sleep 10
+sleep 20
 
 echo "Continue mining blocks, 1 every 10 seconds."
 mine_blocks &
