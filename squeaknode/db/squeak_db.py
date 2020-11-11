@@ -900,7 +900,7 @@ class SqueakDb:
         s = (
             select([self.sent_payments, self.peers])
             .select_from(
-                self.offers.outerjoin(
+                self.sent_payments.outerjoin(
                     self.peers,
                     self.peers.c.id == self.sent_payments.c.peer_id,
                 )
@@ -920,7 +920,7 @@ class SqueakDb:
         s = (
             select([self.sent_payments, self.peers])
             .select_from(
-                self.offers.outerjoin(
+                self.sent_payments.outerjoin(
                     self.peers,
                     self.peers.c.id == self.sent_payments.c.peer_id,
                 )
