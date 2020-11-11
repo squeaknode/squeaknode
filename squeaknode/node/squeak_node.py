@@ -26,6 +26,8 @@ from squeaknode.server.squeak_peer import SqueakPeer
 from squeaknode.server.squeak_profile import SqueakProfile
 from squeaknode.server.sent_payment import SentPayment
 from squeaknode.server.util import generate_offer_preimage
+from squeaknode.node.received_payments_verifier import ReceivedPaymentsVerifier
+from squeaknode.node.received_payments_worker import ReceivedPaymentsWorker
 
 
 logger = logging.getLogger(__name__)
@@ -86,12 +88,20 @@ class SqueakNode:
         self.squeak_offer_expiry_worker = SqueakOfferExpiryWorker(
             self.squeak_expired_offer_cleaner,
         )
+        self.received_payments_verifier = ReceivedPaymentsVerifier(
+            self.squeak_db,
+            self.lightning_client,
+        )
+        self.received_payments_worker = ReceivedPaymentsWorker(
+            self.received_payments_verifier,
+        )
 
     def start_running(self):
         self.squeak_block_periodic_worker.start_running()
         self.squeak_block_queue_worker.start_running()
         self.squeak_peer_sync_worker.start_running()
         self.squeak_offer_expiry_worker.start_running()
+        self.received_payments_worker.start_running()
 
     def save_uploaded_squeak(self, squeak):
         return self.squeak_store.save_squeak(squeak)

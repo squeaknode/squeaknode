@@ -233,3 +233,9 @@ class LNDLightningClient:
         return self.stub.SendCoins(
             send_coins_request,
         )
+
+    def subscribe_invoices(self):
+        subscribe_invoices_request = lnd_pb2.InvoiceSubscription()
+        return self.stub.SubscribeInvoices(
+            subscribe_invoices_request,
+        )
