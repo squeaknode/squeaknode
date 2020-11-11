@@ -22,7 +22,10 @@ class ReceivedPaymentsVerifier:
                 for invoice in self.lightning_client.subscribe_invoices():
                     self.verify_received_payment(invoice)
             except:
-                logger.error("Unable to subscribe invoices from lnd", exc_info=True)
+                logger.error(
+                    "Unable to subscribe invoices from lnd. Retrying in {} seconds".format(LND_CONNECT_RETRY_S),
+                    exc_info=True,
+                )
                 time.sleep(LND_CONNECT_RETRY_S)
 
     def _mark_received_payment_paid(self, preimage_hash):
