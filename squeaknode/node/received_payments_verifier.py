@@ -15,8 +15,9 @@ class ReceivedPaymentsVerifier:
 
     def verify_received_payment(self, invoice):
         logger.info("Verifying invoice: {}".format(invoice))
-        preimage_hash = invoice.r_hash.hex()
-        self._mark_received_payment_paid(preimage_hash)
+        if invoice.settled:
+            preimage_hash = invoice.r_hash.hex()
+            self._mark_received_payment_paid(preimage_hash)
 
     def process_subscribed_invoices(self):
         while True:
