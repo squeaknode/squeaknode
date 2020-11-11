@@ -2,8 +2,6 @@
 
 Node for Squeak protocol
 
-## Run
-
 ### Run with docker:
 
 ##### Requirements
