@@ -120,3 +120,17 @@ def squeak_entry_to_detail_message(squeak_entry_with_profile):
     return squeak_admin_pb2.SqueakDetailEntry(
         serialized_squeak_hex=serialized_squeak.hex(),
     )
+
+def received_payment_to_message(received_payment):
+    if received_payment is None:
+        return None
+    return squeak_admin_pb2.ReceivedPayment(
+        received_payment_id=received_payment.received_payment_id,
+        squeak_hash=received_payment.squeak_hash,
+        preimage_hash=received_payment.preimage_hash,
+        price_msat=received_payment.price_msat,
+        is_paid=received_payment.is_paid,
+        payment_time_ms=int(received_payment.payment_time.timestamp()) * 1000
+        if received_payment.payment_time
+        else None,
+    )

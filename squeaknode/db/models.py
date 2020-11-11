@@ -108,3 +108,15 @@ class Models:
             Column("node_pubkey", String(66), nullable=False),
             Column("preimage_is_valid", Boolean, nullable=False),
         )
+
+        self.received_payments = Table(
+            "received_payment",
+            self.metadata,
+            Column("received_payment_id", Integer, primary_key=True),
+            Column("created", DateTime, server_default=func.now(), nullable=False),
+            Column("squeak_hash", String(64), nullable=False),
+            Column("preimage_hash", String(64), unique=True, nullable=False),
+            Column("price_msat", Integer, nullable=False, default=0),
+            Column("is_paid", Boolean, nullable=False),
+            Column("payment_time", DateTime, nullable=True),
+        )

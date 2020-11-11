@@ -11,6 +11,7 @@ from squeaknode.admin.util import offer_entry_to_message
 from squeaknode.admin.util import sent_payment_with_peer_to_message
 from squeaknode.admin.util import sync_result_to_message
 from squeaknode.admin.util import squeak_entry_to_detail_message
+from squeaknode.admin.util import received_payment_to_message
 
 from proto import squeak_admin_pb2, squeak_admin_pb2_grpc
 
@@ -414,4 +415,13 @@ class SqueakAdminServerHandler(object):
         detail_message = squeak_entry_to_detail_message(squeak_entry_with_profile)
         return squeak_admin_pb2.GetSqueakDetailsReply(
             squeak_detail_entry=detail_message
+        )
+
+    def handle_get_received_payments(self, request):
+        logger.info("Handle get received payments")
+        received_payments = self.squeak_node.get_received_payments()
+        logger.info("Received payments: {}".format(received_payments))
+        received_payment_msgs = [received_payment_to_message(received_payment) for received_payment in received_payments]
+        return squeak_admin_pb2.GetReceivedPaymentsReply(
+            received_payments=received_payment_msgs,
         )

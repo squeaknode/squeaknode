@@ -180,6 +180,10 @@ service SqueakAdmin {
   */
   rpc GetSqueakDetails (GetSqueakDetailsRequest) returns (GetSqueakDetailsReply) {}
 
+  /** sqkadmin: `getreceivedpayments`
+  */
+  rpc GetReceivedPayments (GetReceivedPaymentsRequest) returns (GetReceivedPaymentsReply) {}
+
 }
 
 message CreateSigningProfileRequest {
@@ -644,4 +648,32 @@ message GetSqueakDetailsReply {
 message SqueakDetailEntry {
     /// The seriallized squeak in hex encoding
     string serialized_squeak_hex = 1;
+}
+
+message GetReceivedPaymentsRequest {
+}
+
+message GetReceivedPaymentsReply {
+    /// The received payments
+    repeated ReceivedPayment received_payments = 1;
+}
+
+message ReceivedPayment {
+    /// The received payment id
+    int32 received_payment_id = 1;
+
+    /// The squeak hash
+    string squeak_hash = 2;
+
+    /// The preimage hash
+    string preimage_hash = 3;
+
+    /// The price_msat
+    int64 price_msat = 4;
+
+    /// Is the payment paid
+    bool is_paid = 5;
+
+    /// Time of payment
+    int64 payment_time_ms = 6;
 }
