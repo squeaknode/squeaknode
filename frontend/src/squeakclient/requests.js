@@ -973,7 +973,7 @@ export function getSentPaymentsRequest(handleResponse) {
 //   );
 // };
 
-export function getSentOffersRequest(handleResponse) {
+export function getReceivedPaymentsRequest(handleResponse) {
   var request = new GetReceivedPaymentsRequest();
   makeRequest(
     'getreceivedpayments',
