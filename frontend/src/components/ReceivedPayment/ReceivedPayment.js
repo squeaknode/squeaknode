@@ -28,7 +28,7 @@ export default function ReceivedPayment({
 
   const history = useHistory();
 
-  const paymentTimeMs = receivedPayment.setPaymentTimeMs();
+  const paymentTimeMs = receivedPayment.getPaymentTimeMs();
 
   const goToSqueakPage = (hash) => {
     history.push("/app/squeak/" + hash);

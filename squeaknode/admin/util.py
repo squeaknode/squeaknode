@@ -1,6 +1,11 @@
+import logging
+
 from squeaknode.server.util import get_hash, get_replyto
 
 from proto import squeak_admin_pb2, squeak_admin_pb2_grpc
+
+
+logger = logging.getLogger(__name__)
 
 
 def squeak_entry_to_message(squeak_entry_with_profile):

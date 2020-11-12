@@ -421,7 +421,6 @@ class SqueakAdminServerHandler(object):
     def handle_get_sent_offers(self, request):
         logger.info("Handle get sent offers")
         sent_offers = self.squeak_node.get_sent_offers()
-        logger.info("Sent offers: {}".format(sent_offers))
         sent_offer_msgs = [sent_offer_to_message(sent_offer) for sent_offer in sent_offers]
         return squeak_admin_pb2.GetSentOffersReply(
             sent_offers=sent_offer_msgs,
@@ -430,7 +429,6 @@ class SqueakAdminServerHandler(object):
     def handle_get_received_payments(self, request):
         logger.info("Handle get received payments")
         received_payments = self.squeak_node.get_received_payments()
-        logger.info("Received payments: {}".format(received_payments))
         received_payment_msgs = [received_payments_to_message(received_payment) for received_payment in received_payments]
         return squeak_admin_pb2.GetReceivedPaymentsReply(
             received_payments=received_payment_msgs,
