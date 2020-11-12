@@ -704,5 +704,5 @@ message ReceivedPayment {
     int64 price_msat = 4;
 
     /// Time of payment
-    int64 payment_time_ms = 6;
+    int64 payment_time_ms = 5;
 }
