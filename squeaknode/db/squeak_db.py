@@ -978,7 +978,6 @@ class SqueakDb:
         """ Get the lnd settled index of the most recent received payment. """
         s = (
             select([
-                self.received_payments.c.received_payment_id,
                 func.max(self.received_payments.c.settle_index)],
             )
             .select_from(self.received_payments)
@@ -987,7 +986,7 @@ class SqueakDb:
             result = connection.execute(s)
             row = result.fetchone()
             logger.info("Row for get_latest_received_payment_index: {}".format(row))
-            latest_index = row[1]
+            latest_index = row[0]
             return latest_index
 
     def _parse_squeak_entry(self, row):
