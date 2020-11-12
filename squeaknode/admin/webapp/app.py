@@ -414,6 +414,14 @@ def create_app(handler, username, password):
             handler.handle_get_sent_offers,
         )
 
+    @app.route('/getreceivedpayments', methods=["POST"])
+    @login_required
+    def getreceivedpayments():
+        return handle_request(
+            squeak_admin_pb2.GetReceivedPaymentsRequest(),
+            handler.handle_get_received_payments,
+        )
+
     return app
 
 
