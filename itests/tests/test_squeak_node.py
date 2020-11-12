@@ -932,6 +932,12 @@ def test_connect_other_node(server_stub, admin_stub, other_server_stub, other_ad
             for received_payment in get_received_payments_response.received_payments
         ]
         assert sent_payment.preimage_hash in preimage_hashes
+        for received_payment in get_received_payments_response.received_payments:
+            received_payment_time_ms = received_payment.payment_time_ms
+            print("received_payment_time_ms: {}".format(received_payment_time_ms))
+            received_payment_time = datetime.datetime.fromtimestamp(received_payment_time_ms/1000.0)
+            assert received_payment_time > datetime.datetime.now() - five_minutes
+            assert received_payment_time < datetime.datetime.now()
 
 
 def test_download_single_squeak(server_stub, admin_stub, other_server_stub, other_admin_stub, lightning_client, signing_profile_id, saved_squeak_hash):

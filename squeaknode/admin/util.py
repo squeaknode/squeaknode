@@ -1,6 +1,11 @@
+import logging
+
 from squeaknode.server.util import get_hash, get_replyto
 
 from proto import squeak_admin_pb2, squeak_admin_pb2_grpc
+
+
+logger = logging.getLogger(__name__)
 
 
 def squeak_entry_to_message(squeak_entry_with_profile):
@@ -136,6 +141,7 @@ def sent_offer_to_message(sent_offer):
     )
 
 def received_payments_to_message(received_payment):
+    logger.info("Converting received_payment to message: {}".format(received_payment))
     if received_payment is None:
         return None
     return squeak_admin_pb2.ReceivedPayment(
