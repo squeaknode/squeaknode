@@ -432,6 +432,7 @@ class SqueakAdminServerHandler(object):
         received_payments = self.squeak_node.get_received_payments()
         logger.info("Received payments: {}".format(received_payments))
         received_payment_msgs = [received_payments_to_message(received_payment) for received_payment in received_payments]
+        logger.info("Returning received_payment_msgs: {}".format(received_payment_msgs))
         return squeak_admin_pb2.GetReceivedPaymentsReply(
             received_payments=received_payment_msgs,
         )
