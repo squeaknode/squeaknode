@@ -20,7 +20,7 @@ import PageTitle from "../../components/PageTitle";
 import Widget from "../../components/Widget";
 import Table from "../dashboard/components/Table/Table";
 import SentPayment from "../../components/SentPayment";
-import ReceivedPayment from "../../components/ReceivedPayment";
+import SentOffer from "../../components/SentOffer";
 
 
 // data
@@ -28,7 +28,7 @@ import mock from "../dashboard/mock";
 
 import {
   getSentPaymentsRequest,
-  getReceivedPaymentsRequest,
+  getSentOffersRequest,
 } from "../../squeakclient/requests"
 
 const useStyles = makeStyles((theme) => ({
@@ -43,7 +43,7 @@ export default function Payments() {
   const classes = useStyles();
   const [value, setValue] = useState(0);
   const [sentPayments, setSentPayments] = useState([]);
-  const [receivedPayments, setReceivedPayments] = useState([]);
+  const [receivedPayments, setSentOffers] = useState([]);
   const history = useHistory();
 
   function a11yProps(index) {
@@ -63,9 +63,9 @@ export default function Payments() {
     });
   };
 
-  const loadReceivedPayments = () => {
-    getReceivedPaymentsRequest((receivedPaymentsReply) => {
-      setReceivedPayments(receivedPaymentsReply.getReceivedPaymentsList());
+  const loadSentOffers = () => {
+    getSentOffersRequest((receivedPaymentsReply) => {
+      setSentOffers(receivedPaymentsReply.getSentOffersList());
     });
   };
 
@@ -73,7 +73,7 @@ export default function Payments() {
     loadSentPayments()
   }, []);
   useEffect(() => {
-    loadReceivedPayments()
+    loadSentOffers()
   }, []);
 
 
@@ -108,7 +108,7 @@ export default function Payments() {
         {SentPaymentsContent()}
       </TabPanel>
       <TabPanel value={value} index={1}>
-        {ReceivedPaymentsContent()}
+        {SentOffersContent()}
       </TabPanel>
       </>
     )
@@ -139,7 +139,7 @@ export default function Payments() {
     )
   }
 
-  function ReceivedPaymentsContent() {
+  function SentOffersContent() {
     return (
       <>
       <Grid container spacing={4}>
@@ -149,11 +149,11 @@ export default function Payments() {
           {receivedPayments.map(receivedPayment =>
             <Box
               p={1}
-              key={receivedPayment.getReceivedPaymentId()}
+              key={receivedPayment.getSentOfferId()}
               >
-            <ReceivedPayment
+            <SentOffer
               receivedPayment={receivedPayment}>
-            </ReceivedPayment>
+            </SentOffer>
             </Box>
           )}
           </div>

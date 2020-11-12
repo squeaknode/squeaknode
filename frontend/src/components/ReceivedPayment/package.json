@@ -1,6 +1,6 @@
 {
-  "name": "ReceivedPayment",
+  "name": "SentOffer",
   "version": "0.0.0",
   "private": true,
-  "main": "ReceivedPayment.js"
+  "main": "SentOffer.js"
 }

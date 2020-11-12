@@ -121,16 +121,16 @@ def squeak_entry_to_detail_message(squeak_entry_with_profile):
         serialized_squeak_hex=serialized_squeak.hex(),
     )
 
-def received_payment_to_message(received_payment):
-    if received_payment is None:
+def sent_offer_to_message(sent_offer):
+    if sent_offer is None:
         return None
-    return squeak_admin_pb2.ReceivedPayment(
-        received_payment_id=received_payment.received_payment_id,
-        squeak_hash=received_payment.squeak_hash,
-        preimage_hash=received_payment.preimage_hash,
-        price_msat=received_payment.price_msat,
-        is_paid=received_payment.is_paid,
-        payment_time_ms=int(received_payment.payment_time.timestamp()) * 1000
-        if received_payment.payment_time
+    return squeak_admin_pb2.SentOffer(
+        sent_offer_id=sent_offer.sent_offer_id,
+        squeak_hash=sent_offer.squeak_hash,
+        preimage_hash=sent_offer.preimage_hash,
+        price_msat=sent_offer.price_msat,
+        is_paid=sent_offer.is_paid,
+        payment_time_ms=int(sent_offer.payment_time.timestamp()) * 1000
+        if sent_offer.payment_time
         else None,
     )

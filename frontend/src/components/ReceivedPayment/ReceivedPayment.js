@@ -20,7 +20,7 @@ import Widget from "../../components/Widget";
 
 import moment from 'moment';
 
-export default function ReceivedPayment({
+export default function SentOffer({
   receivedPayment,
   ...props
 }) {

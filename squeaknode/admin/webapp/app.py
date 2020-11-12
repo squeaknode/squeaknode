@@ -406,12 +406,12 @@ def create_app(handler, username, password):
             handler.handle_get_sent_payments,
         )
 
-    @app.route('/getreceivedpayments', methods=["POST"])
+    @app.route('/getsentoffers', methods=["POST"])
     @login_required
-    def getreceivedpayments():
+    def getsentoffers():
         return handle_request(
-            squeak_admin_pb2.GetReceivedPaymentsRequest(),
-            handler.handle_get_received_payments,
+            squeak_admin_pb2.GetSentOffersRequest(),
+            handler.handle_get_sent_offers,
         )
 
     return app

@@ -180,9 +180,9 @@ service SqueakAdmin {
   */
   rpc GetSqueakDetails (GetSqueakDetailsRequest) returns (GetSqueakDetailsReply) {}
 
-  /** sqkadmin: `getreceivedpayments`
+  /** sqkadmin: `getsentoffers`
   */
-  rpc GetReceivedPayments (GetReceivedPaymentsRequest) returns (GetReceivedPaymentsReply) {}
+  rpc GetSentOffers (GetSentOffersRequest) returns (GetSentOffersReply) {}
 
 }
 
@@ -650,17 +650,17 @@ message SqueakDetailEntry {
     string serialized_squeak_hex = 1;
 }
 
-message GetReceivedPaymentsRequest {
+message GetSentOffersRequest {
 }
 
-message GetReceivedPaymentsReply {
+message GetSentOffersReply {
     /// The received payments
-    repeated ReceivedPayment received_payments = 1;
+    repeated SentOffer sent_offers = 1;
 }
 
-message ReceivedPayment {
+message SentOffer {
     /// The received payment id
-    int32 received_payment_id = 1;
+    int32 sent_offer_id = 1;
 
     /// The squeak hash
     string squeak_hash = 2;

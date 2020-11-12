@@ -78,8 +78,8 @@ import {
   GetSqueakDetailsReply,
   GetSentPaymentsRequest,
   GetSentPaymentsReply,
-  GetReceivedPaymentsRequest,
-  GetReceivedPaymentsReply,
+  GetSentOffersRequest,
+  GetSentOffersReply,
 } from "../proto/squeak_admin_pb"
 
 console.log('The value of REACT_APP_SERVER_PORT is:', process.env.REACT_APP_SERVER_PORT);
@@ -959,12 +959,12 @@ export function getSentPaymentsRequest(handleResponse) {
   );
 };
 
-export function getReceivedPaymentsRequest(handleResponse) {
-  var request = new GetReceivedPaymentsRequest();
+export function getSentOffersRequest(handleResponse) {
+  var request = new GetSentOffersRequest();
   makeRequest(
-    'getreceivedpayments',
+    'getsentoffers',
     request,
-    GetReceivedPaymentsReply.deserializeBinary,
+    GetSentOffersReply.deserializeBinary,
     (response) => {
       handleResponse(response);
     }

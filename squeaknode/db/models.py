@@ -109,10 +109,10 @@ class Models:
             Column("preimage_is_valid", Boolean, nullable=False),
         )
 
-        self.received_payments = Table(
-            "received_payment",
+        self.sent_offers = Table(
+            "sent_offer",
             self.metadata,
-            Column("received_payment_id", Integer, primary_key=True),
+            Column("sent_offer_id", Integer, primary_key=True),
             Column("created", DateTime, server_default=func.now(), nullable=False),
             Column("squeak_hash", String(64), nullable=False),
             Column("preimage_hash", String(64), unique=True, nullable=False),
