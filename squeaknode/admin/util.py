@@ -141,7 +141,6 @@ def sent_offer_to_message(sent_offer):
     )
 
 def received_payments_to_message(received_payment):
-    logger.info("Converting received_payment to message: {}".format(received_payment))
     if received_payment is None:
         return None
     return squeak_admin_pb2.ReceivedPayment(
