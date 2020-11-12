@@ -967,6 +967,7 @@ class SqueakDb:
             .values(
                 is_paid=True,
                 payment_time=datetime.utcnow(),
+                settle_index=settle_index,
             )
         )
         with self.get_connection() as connection:

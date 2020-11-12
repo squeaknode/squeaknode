@@ -119,4 +119,5 @@ class Models:
             Column("price_msat", Integer, nullable=False, default=0),
             Column("is_paid", Boolean, nullable=False),
             Column("payment_time", DateTime, nullable=True),
+            Column("settle_index", Integer, nullable=True),
         )
