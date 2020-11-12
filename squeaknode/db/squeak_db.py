@@ -32,6 +32,7 @@ from squeaknode.server.sent_offer import SentOffer
 from squeaknode.server.util import get_hash
 from squeaknode.db.models import Models
 from squeaknode.db.migrations import run_migrations
+from squeaknode.server.received_payment import ReceivedPayment
 
 
 logger = logging.getLogger(__name__)
@@ -1016,6 +1017,20 @@ class SqueakDb:
             received_payment_id = res.inserted_primary_key[0]
             return received_payment_id
 
+    def get_received_payments(self):
+        """ Get all received payments. """
+        s = (
+            select([self.received_payments])
+            .order_by(
+                self.received_payments.c.created.desc(),
+            )
+        )
+        with self.get_connection() as connection:
+            result = connection.execute(s)
+            rows = result.fetchall()
+            received_payments = [self._parse_received_payment(row) for row in rows]
+            return received_payments
+
     def _parse_squeak_entry(self, row):
         if row is None:
             return None
@@ -1137,4 +1152,15 @@ class SqueakDb:
             price_msat=row["price_msat"],
             is_paid=row["is_paid"],
             payment_time=row["payment_time"],
+        )
+
+    def _parse_received_payment(self, row):
+        if row is None:
+            return None
+        return ReceivedPayment(
+            received_payment_id=row["received_payment_id"],
+            created=row["created"],
+            squeak_hash=row["squeak_hash"],
+            preimage_hash=row["preimage_hash"],
+            price_msat=row["price_msat"],
         )

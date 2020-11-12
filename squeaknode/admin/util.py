@@ -134,3 +134,14 @@ def sent_offer_to_message(sent_offer):
         if sent_offer.payment_time
         else None,
     )
+
+def received_payments_to_message(received_payment):
+    if received_payment is None:
+        return None
+    return squeak_admin_pb2.ReceivedPayment(
+        received_payment_id=received_payment.received_payment_id,
+        squeak_hash=received_payment.squeak_hash,
+        preimage_hash=received_payment.preimage_hash,
+        price_msat=sent_offer.price_msat,
+        payment_time_ms=int(sent_offer.payment_time.timestamp()) * 1000
+    )

@@ -361,3 +361,6 @@ class SqueakNode:
 
     def get_sent_offers(self):
         return self.squeak_db.get_sent_offers()
+
+    def get_received_payments(self):
+        return self.squeak_db.get_received_payments()
