@@ -61,7 +61,7 @@ def create_app(handler, username, password):
             reply = handle_rpc_request(request_message)
             return reply.SerializeToString(reply)
         except Exception as e:
-            logger.info("Handling error: {}".format(e))
+            logger.error("Error in handle admin web request.", exc_info=True)
             return str(e), 500
 
     @app.route('/login', methods=['GET', 'POST'])
@@ -404,6 +404,14 @@ def create_app(handler, username, password):
         return handle_request(
             squeak_admin_pb2.GetSentPaymentsRequest(),
             handler.handle_get_sent_payments,
+        )
+
+    @app.route('/getsentoffers', methods=["POST"])
+    @login_required
+    def getsentoffers():
+        return handle_request(
+            squeak_admin_pb2.GetSentOffersRequest(),
+            handler.handle_get_sent_offers,
         )
 
     @app.route('/getreceivedpayments', methods=["POST"])

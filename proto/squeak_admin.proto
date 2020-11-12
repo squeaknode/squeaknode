@@ -180,6 +180,10 @@ service SqueakAdmin {
   */
   rpc GetSqueakDetails (GetSqueakDetailsRequest) returns (GetSqueakDetailsReply) {}
 
+  /** sqkadmin: `getsentoffers`
+  */
+  rpc GetSentOffers (GetSentOffersRequest) returns (GetSentOffersReply) {}
+
   /** sqkadmin: `getreceivedpayments`
   */
   rpc GetReceivedPayments (GetReceivedPaymentsRequest) returns (GetReceivedPaymentsReply) {}
@@ -650,6 +654,34 @@ message SqueakDetailEntry {
     string serialized_squeak_hex = 1;
 }
 
+message GetSentOffersRequest {
+}
+
+message GetSentOffersReply {
+    /// The received payments
+    repeated SentOffer sent_offers = 1;
+}
+
+message SentOffer {
+    /// The received payment id
+    int32 sent_offer_id = 1;
+
+    /// The squeak hash
+    string squeak_hash = 2;
+
+    /// The preimage hash
+    string preimage_hash = 3;
+
+    /// The price_msat
+    int64 price_msat = 4;
+
+    /// Is the payment paid
+    bool is_paid = 5;
+
+    /// Time of payment
+    int64 payment_time_ms = 6;
+}
+
 message GetReceivedPaymentsRequest {
 }
 
@@ -670,9 +702,6 @@ message ReceivedPayment {
 
     /// The price_msat
     int64 price_msat = 4;
-
-    /// Is the payment paid
-    bool is_paid = 5;
 
     /// Time of payment
     int64 payment_time_ms = 6;

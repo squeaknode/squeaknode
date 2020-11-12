@@ -28,10 +28,11 @@ from squeaknode.core.squeak_entry_with_profile import SqueakEntryWithProfile
 from squeaknode.server.squeak_peer import SqueakPeer
 from squeaknode.server.squeak_profile import SqueakProfile
 from squeaknode.server.sent_payment import SentPayment
-from squeaknode.server.received_payment import ReceivedPayment
+from squeaknode.server.sent_offer import SentOffer
 from squeaknode.server.util import get_hash
 from squeaknode.db.models import Models
 from squeaknode.db.migrations import run_migrations
+from squeaknode.server.received_payment import ReceivedPayment
 
 
 logger = logging.getLogger(__name__)
@@ -84,6 +85,10 @@ class SqueakDb:
     @property
     def received_payments(self):
         return self.models.received_payments
+
+    @property
+    def sent_offers(self):
+        return self.models.sent_offers
 
     def insert_squeak(self, squeak):
         """ Insert a new squeak. """
@@ -932,49 +937,60 @@ class SqueakDb:
             row = result.fetchone()
             return self._parse_sent_payment_with_peer(row)
 
-    def insert_received_payment(self, received_payment):
+    def insert_sent_offer(self, sent_offer):
         """ Insert a new received payment. """
-        ins = self.received_payments.insert().values(
-            squeak_hash=received_payment.squeak_hash,
-            preimage_hash=received_payment.preimage_hash,
-            price_msat=received_payment.price_msat,
-            is_paid=received_payment.is_paid,
+        ins = self.sent_offers.insert().values(
+            squeak_hash=sent_offer.squeak_hash,
+            preimage_hash=sent_offer.preimage_hash,
+            price_msat=sent_offer.price_msat,
+            is_paid=sent_offer.is_paid,
         )
         with self.get_connection() as connection:
             res = connection.execute(ins)
-            received_payment_id = res.inserted_primary_key[0]
-            return received_payment_id
+            sent_offer_id = res.inserted_primary_key[0]
+            return sent_offer_id
 
-    def get_received_payments(self):
+    def get_sent_offers(self):
         """ Get all received payments. """
         s = (
-            select([self.received_payments])
-            .where(self.received_payments.c.is_paid)
+            select([self.sent_offers])
             .order_by(
-                self.received_payments.c.created.desc(),
+                self.sent_offers.c.created.desc(),
             )
         )
         with self.get_connection() as connection:
             result = connection.execute(s)
             rows = result.fetchall()
-            received_payments = [self._parse_received_payment(row) for row in rows]
-            return received_payments
+            sent_offers = [self._parse_sent_offer(row) for row in rows]
+            return sent_offers
 
-    def mark_received_payment_paid(self, preimage_hash, settle_index):
-        """ Mark a single received payment as paid. """
-        stmt = (
-            self.received_payments.update()
-            .where(self.received_payments.c.preimage_hash == preimage_hash)
-            .values(
-                is_paid=True,
-                payment_time=datetime.utcnow(),
-                settle_index=settle_index,
-            )
+    def get_sent_offer_by_preimage_hash(self, preimage_hash):
+        """ Get a sent offer by preimage hash. """
+        s = (
+            select([self.sent_offers])
+            .where(self.sent_offers.c.preimage_hash == preimage_hash)
         )
         with self.get_connection() as connection:
-            connection.execute(stmt)
+            result = connection.execute(s)
+            row = result.fetchone()
+            sent_offer = self._parse_sent_offer(row)
+            return sent_offer
 
-    def get_latest_received_payment_index(self):
+    # def mark_sent_offer_paid(self, preimage_hash, settle_index):
+    #     """ Mark a single received payment as paid. """
+    #     stmt = (
+    #         self.sent_offers.update()
+    #         .where(self.sent_offers.c.preimage_hash == preimage_hash)
+    #         .values(
+    #             is_paid=True,
+    #             payment_time=datetime.utcnow(),
+    #             settle_index=settle_index,
+    #         )
+    #     )
+    #     with self.get_connection() as connection:
+    #         connection.execute(stmt)
+
+    def get_latest_settle_index(self):
         """ Get the lnd settled index of the most recent received payment. """
         s = (
             select([
@@ -985,9 +1001,35 @@ class SqueakDb:
         with self.get_connection() as connection:
             result = connection.execute(s)
             row = result.fetchone()
-            logger.info("Row for get_latest_received_payment_index: {}".format(row))
+            logger.info("Row for get_latest_settle_index: {}".format(row))
             latest_index = row[0]
             return latest_index
+
+    def insert_received_payment(self, received_payment):
+        """ Insert a new received payment. """
+        ins = self.received_payments.insert().values(
+            squeak_hash=received_payment.squeak_hash,
+            preimage_hash=received_payment.preimage_hash,
+            price_msat=received_payment.price_msat,
+        )
+        with self.get_connection() as connection:
+            res = connection.execute(ins)
+            received_payment_id = res.inserted_primary_key[0]
+            return received_payment_id
+
+    def get_received_payments(self):
+        """ Get all received payments. """
+        s = (
+            select([self.received_payments])
+            .order_by(
+                self.received_payments.c.created.desc(),
+            )
+        )
+        with self.get_connection() as connection:
+            result = connection.execute(s)
+            rows = result.fetchall()
+            received_payments = [self._parse_received_payment(row) for row in rows]
+            return received_payments
 
     def _parse_squeak_entry(self, row):
         if row is None:
@@ -1100,14 +1142,25 @@ class SqueakDb:
             peer=peer,
         )
 
-    def _parse_received_payment(self, row):
+    def _parse_sent_offer(self, row):
         if row is None:
             return None
-        return ReceivedPayment(
-            received_payment_id=row["received_payment_id"],
+        return SentOffer(
+            sent_offer_id=row["sent_offer_id"],
             squeak_hash=row["squeak_hash"],
             preimage_hash=row["preimage_hash"],
             price_msat=row["price_msat"],
             is_paid=row["is_paid"],
             payment_time=row["payment_time"],
+        )
+
+    def _parse_received_payment(self, row):
+        if row is None:
+            return None
+        return ReceivedPayment(
+            received_payment_id=row["received_payment_id"],
+            created=row["created"],
+            squeak_hash=row["squeak_hash"],
+            preimage_hash=row["preimage_hash"],
+            price_msat=row["price_msat"],
         )

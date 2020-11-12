@@ -21,13 +21,13 @@ from squeaknode.node.squeak_store import SqueakStore
 from squeaknode.node.squeak_sync_status import SqueakSyncController
 from squeaknode.node.squeak_whitelist import SqueakWhitelist
 from squeaknode.server.buy_offer import BuyOffer
-from squeaknode.server.received_payment import ReceivedPayment
+from squeaknode.server.sent_offer import SentOffer
 from squeaknode.server.squeak_peer import SqueakPeer
 from squeaknode.server.squeak_profile import SqueakProfile
 from squeaknode.server.sent_payment import SentPayment
 from squeaknode.server.util import generate_offer_preimage
-from squeaknode.node.received_payments_verifier import ReceivedPaymentsVerifier
-from squeaknode.node.received_payments_worker import ReceivedPaymentsWorker
+from squeaknode.node.sent_offers_verifier import SentOffersVerifier
+from squeaknode.node.sent_offers_worker import SentOffersWorker
 
 
 logger = logging.getLogger(__name__)
@@ -88,12 +88,12 @@ class SqueakNode:
         self.squeak_offer_expiry_worker = SqueakOfferExpiryWorker(
             self.squeak_expired_offer_cleaner,
         )
-        self.received_payments_verifier = ReceivedPaymentsVerifier(
+        self.sent_offers_verifier = SentOffersVerifier(
             self.squeak_db,
             self.lightning_client,
         )
-        self.received_payments_worker = ReceivedPaymentsWorker(
-            self.received_payments_verifier,
+        self.sent_offers_worker = SentOffersWorker(
+            self.sent_offers_verifier,
         )
 
     def start_running(self):
@@ -101,7 +101,7 @@ class SqueakNode:
         self.squeak_block_queue_worker.start_running()
         self.squeak_peer_sync_worker.start_running()
         self.squeak_offer_expiry_worker.start_running()
-        self.received_payments_worker.start_running()
+        self.sent_offers_worker.start_running()
 
     def save_uploaded_squeak(self, squeak):
         return self.squeak_store.save_squeak(squeak)
@@ -143,9 +143,9 @@ class SqueakNode:
         get_info_response = self.lightning_client.get_info()
         pubkey = get_info_response.identity_pubkey
         # Save the incoming potential payment in the databse.
-        self.squeak_db.insert_received_payment(
-            ReceivedPayment(
-                received_payment_id=None,
+        self.squeak_db.insert_sent_offer(
+            SentOffer(
+                sent_offer_id=None,
                 squeak_hash=squeak_hash,
                 preimage_hash=preimage_hash.hex(),
                 price_msat=self.price_msat,
@@ -358,6 +358,9 @@ class SqueakNode:
 
     def get_sent_payment(self, sent_payment_id):
         return self.squeak_db.get_sent_payment(sent_payment_id)
+
+    def get_sent_offers(self):
+        return self.squeak_db.get_sent_offers()
 
     def get_received_payments(self):
         return self.squeak_db.get_received_payments()

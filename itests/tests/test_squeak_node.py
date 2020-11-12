@@ -913,15 +913,25 @@ def test_connect_other_node(server_stub, admin_stub, other_server_stub, other_ad
         assert sent_payment_time > datetime.datetime.now() - five_minutes
         assert sent_payment_time < datetime.datetime.now()
 
+        # Get the sent offers from the seller node
+        get_sent_offers_response = admin_stub.GetSentOffers(
+            squeak_admin_pb2.GetSentOffersRequest(),
+        )
+        squeak_hashes = [
+            sent_offer.squeak_hash
+            for sent_offer in get_sent_offers_response.sent_offers
+        ]
+        assert saved_squeak_hash in squeak_hashes
+
         # Get the received payment from the seller node
         get_received_payments_response = admin_stub.GetReceivedPayments(
             squeak_admin_pb2.GetReceivedPaymentsRequest(),
         )
-        squeak_hashes = [received_payment.squeak_hash for received_payment in get_received_payments_response.received_payments]
-        assert saved_squeak_hash in squeak_hashes
-        for received_payment in get_received_payments_response.received_payments:
-            if received_payment.preimage_hash == sent_payment.preimage_hash:
-                assert received_payment.is_paid
+        preimage_hashes = [
+            received_payment.preimage_hash
+            for received_payment in get_received_payments_response.received_payments
+        ]
+        assert sent_payment.preimage_hash in preimage_hashes
 
 
 def test_download_single_squeak(server_stub, admin_stub, other_server_stub, other_admin_stub, lightning_client, signing_profile_id, saved_squeak_hash):

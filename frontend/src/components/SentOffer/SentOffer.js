@@ -20,7 +20,7 @@ import Widget from "../../components/Widget";
 
 import moment from 'moment';
 
-export default function ReceivedPayment({
+export default function SentOffer({
   receivedPayment,
   ...props
 }) {
@@ -71,7 +71,7 @@ export default function ReceivedPayment({
           >
             <Grid item>
               {paymentTimeMs ?
-                moment(receivedPayment.getPaymentTimeMs()).format("DD MMM YYYY hh:mm a") : "Not paid"}
+                moment(receivedPayment.setPaymentTimeMs()).format("DD MMM YYYY hh:mm a") : "Not paid"}
             </Grid>
           </Grid>
           <Grid

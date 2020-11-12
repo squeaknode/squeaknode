@@ -78,6 +78,8 @@ import {
   GetSqueakDetailsReply,
   GetSentPaymentsRequest,
   GetSentPaymentsReply,
+  GetSentOffersRequest,
+  GetSentOffersReply,
   GetReceivedPaymentsRequest,
   GetReceivedPaymentsReply,
 } from "../proto/squeak_admin_pb"
@@ -959,14 +961,24 @@ export function getSentPaymentsRequest(handleResponse) {
   );
 };
 
+// export function getSentOffersRequest(handleResponse) {
+//   var request = new GetSentOffersRequest();
+//   makeRequest(
+//     'getsentoffers',
+//     request,
+//     GetSentOffersReply.deserializeBinary,
+//     (response) => {
+//       handleResponse(response);
+//     }
+//   );
+// };
+
 export function getReceivedPaymentsRequest(handleResponse) {
   var request = new GetReceivedPaymentsRequest();
   makeRequest(
     'getreceivedpayments',
     request,
     GetReceivedPaymentsReply.deserializeBinary,
-    (response) => {
-      handleResponse(response);
-    }
+    handleResponse,
   );
 };
