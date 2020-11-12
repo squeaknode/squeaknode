@@ -949,6 +949,7 @@ class SqueakDb:
         """ Get all received payments. """
         s = (
             select([self.received_payments])
+            .where(self.received_payments.c.is_paid)
             .order_by(
                 self.received_payments.c.created.desc(),
             )
