@@ -66,6 +66,7 @@ export default function Payments() {
   const loadReceivedPayments = () => {
     getReceivedPaymentsRequest((receivedPaymentsReply) => {
       console.log(receivedPaymentsReply);
+      console.log(receivedPaymentsReply.getReceivedPaymentsList());
       setReceivedPayments(receivedPaymentsReply.getReceivedPaymentsList());
     });
   };
