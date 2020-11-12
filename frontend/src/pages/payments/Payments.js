@@ -142,6 +142,11 @@ export default function Payments() {
   }
 
   function ReceivedPaymentsContent() {
+
+    receivedPayments.map(receivedPayment => {
+      console.log(receivedPayment);
+    });
+
     return (
       <>
       <Grid container spacing={4}>
