@@ -82,6 +82,10 @@ class SqueakDb:
         return self.models.sent_payments
 
     @property
+    def received_payments(self):
+        return self.models.received_payments
+
+    @property
     def sent_offers(self):
         return self.models.sent_offers
 
@@ -949,7 +953,6 @@ class SqueakDb:
         """ Get all received payments. """
         s = (
             select([self.sent_offers])
-            .where(self.sent_offers.c.is_paid)
             .order_by(
                 self.sent_offers.c.created.desc(),
             )
@@ -960,34 +963,58 @@ class SqueakDb:
             sent_offers = [self._parse_sent_offer(row) for row in rows]
             return sent_offers
 
-    def mark_sent_offer_paid(self, preimage_hash, settle_index):
-        """ Mark a single received payment as paid. """
-        stmt = (
-            self.sent_offers.update()
-            .where(self.sent_offers.c.preimage_hash == preimage_hash)
-            .values(
-                is_paid=True,
-                payment_time=datetime.utcnow(),
-                settle_index=settle_index,
-            )
-        )
-        with self.get_connection() as connection:
-            connection.execute(stmt)
-
-    def get_latest_sent_offer_index(self):
-        """ Get the lnd settled index of the most recent received payment. """
+    def get_sent_offer_by_preimage_hash(self, preimage_hash):
+        """ Get a sent offer by preimage hash. """
         s = (
-            select([
-                func.max(self.sent_offers.c.settle_index)],
-            )
-            .select_from(self.sent_offers)
+            select([self.sent_offers])
+            .where(self.sent_offers.c.preimage_hash == preimage_hash)
         )
         with self.get_connection() as connection:
             result = connection.execute(s)
             row = result.fetchone()
-            logger.info("Row for get_latest_sent_offer_index: {}".format(row))
+            sent_offer = self._parse_sent_offer(row)
+            return sent_offer
+
+    # def mark_sent_offer_paid(self, preimage_hash, settle_index):
+    #     """ Mark a single received payment as paid. """
+    #     stmt = (
+    #         self.sent_offers.update()
+    #         .where(self.sent_offers.c.preimage_hash == preimage_hash)
+    #         .values(
+    #             is_paid=True,
+    #             payment_time=datetime.utcnow(),
+    #             settle_index=settle_index,
+    #         )
+    #     )
+    #     with self.get_connection() as connection:
+    #         connection.execute(stmt)
+
+    def get_latest_settle_index(self):
+        """ Get the lnd settled index of the most recent received payment. """
+        s = (
+            select([
+                func.max(self.received_payments.c.settle_index)],
+            )
+            .select_from(self.received_payments)
+        )
+        with self.get_connection() as connection:
+            result = connection.execute(s)
+            row = result.fetchone()
+            logger.info("Row for get_latest_settle_index: {}".format(row))
             latest_index = row[0]
             return latest_index
+
+    def insert_received_payment(self, received_payment):
+        """ Insert a new received payment. """
+        ins = self.received_payments.insert().values(
+            squeak_hash=received_payment.squeak_hash,
+            preimage_hash=received_payment.preimage_hash,
+            price_msat=received_payment.price_msat,
+        )
+        with self.get_connection() as connection:
+            res = connection.execute(ins)
+            received_payment_id = res.inserted_primary_key[0]
+            return received_payment_id
 
     def _parse_squeak_entry(self, row):
         if row is None:

@@ -920,6 +920,7 @@ def test_connect_other_node(server_stub, admin_stub, other_server_stub, other_ad
         squeak_hashes = [sent_offer.squeak_hash for sent_offer in get_sent_offers_response.sent_offers]
         assert saved_squeak_hash in squeak_hashes
         for sent_offer in get_sent_offers_response.sent_offers:
+            print(sent_offer)
             if sent_offer.preimage_hash == sent_payment.preimage_hash:
                 assert sent_offer.is_paid
 
