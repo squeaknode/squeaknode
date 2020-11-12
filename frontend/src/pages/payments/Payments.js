@@ -65,8 +65,6 @@ export default function Payments() {
 
   const loadReceivedPayments = () => {
     getReceivedPaymentsRequest((receivedPaymentsReply) => {
-      console.log(receivedPaymentsReply);
-      console.log(receivedPaymentsReply.getReceivedPaymentsList());
       setReceivedPayments(receivedPaymentsReply.getReceivedPaymentsList());
     });
   };
@@ -142,11 +140,6 @@ export default function Payments() {
   }
 
   function ReceivedPaymentsContent() {
-
-    receivedPayments.map(receivedPayment => {
-      console.log(receivedPayment);
-    });
-
     return (
       <>
       <Grid container spacing={4}>
