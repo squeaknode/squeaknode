@@ -959,7 +959,7 @@ class SqueakDb:
             received_payments = [self._parse_received_payment(row) for row in rows]
             return received_payments
 
-    def mark_received_payment_paid(self, preimage_hash):
+    def mark_received_payment_paid(self, preimage_hash, settle_index):
         """ Mark a single received payment as paid. """
         stmt = (
             self.received_payments.update()
