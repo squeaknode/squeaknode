@@ -973,19 +973,21 @@ class SqueakDb:
         with self.get_connection() as connection:
             connection.execute(stmt)
 
-    # def get_latest_received_payment_index(self):
-    #     """ Get the lnd settled index of the most recent received payment. """
-    #     s = (
-    #         select([self.received_payments])
-    #         .order_by(
-    #             self.received_payments.c.created.desc(),
-    #         )
-    #     )
-    #     with self.get_connection() as connection:
-    #         result = connection.execute(s)
-    #         rows = result.fetchall()
-    #         received_payments = [self._parse_received_payment(row) for row in rows]
-    #         return received_payments
+    def get_latest_received_payment_index(self):
+        """ Get the lnd settled index of the most recent received payment. """
+        s = (
+            select([
+                self.received_payments.c.received_payment_id,
+                func.max(self.received_payments.c.settle_index)],
+            )
+            .select_from(self.received_payments)
+        )
+        with self.get_connection() as connection:
+            result = connection.execute(s)
+            row = result.fetchone()
+            logger.info("Row for get_latest_received_payment_index: {}".format(row))
+            latest_index = row[1]
+            return latest_index
 
     def _parse_squeak_entry(self, row):
         if row is None:

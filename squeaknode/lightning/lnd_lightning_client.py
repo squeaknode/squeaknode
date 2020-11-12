@@ -234,8 +234,10 @@ class LNDLightningClient:
             send_coins_request,
         )
 
-    def subscribe_invoices(self):
-        subscribe_invoices_request = lnd_pb2.InvoiceSubscription()
+    def subscribe_invoices(self, settle_index):
+        subscribe_invoices_request = lnd_pb2.InvoiceSubscription(
+            settle_index=settle_index,
+        )
         return self.stub.SubscribeInvoices(
             subscribe_invoices_request,
         )

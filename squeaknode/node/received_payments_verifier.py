@@ -25,8 +25,12 @@ class ReceivedPaymentsVerifier:
             self.try_processing()
 
     def try_processing(self):
+        latest_settle_index = self._get_latest_settle_index() or 0
+        logger.info("latest settle index: {}".format(latest_settle_index))
         try:
-            for invoice in self.lightning_client.subscribe_invoices():
+            for invoice in self.lightning_client.subscribe_invoices(
+                    settle_index=latest_settle_index,
+            ):
                 self.verify_received_payment(invoice)
         except:
             logger.error(
@@ -36,9 +40,12 @@ class ReceivedPaymentsVerifier:
             time.sleep(LND_CONNECT_RETRY_S)
 
     def _mark_received_payment_paid(self, preimage_hash, settle_index):
-        # self.squeak_db.mark_squeak_block_valid(squeak_hash, block_header_bytes)
         logger.info("Marking received payment paid for preimage_hash: {} with settle_index: {}".format(
             preimage_hash,
             settle_index,
         ))
         self.squeak_db.mark_received_payment_paid(preimage_hash, settle_index)
+
+    def _get_latest_settle_index(self):
+        logger.info("Getting latest settle index from db...")
+        return self.squeak_db.get_latest_received_payment_index()
