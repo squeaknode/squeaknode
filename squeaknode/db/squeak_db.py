@@ -949,6 +949,7 @@ class SqueakDb:
         """ Get all received payments. """
         s = (
             select([self.received_payments])
+            .where(self.received_payments.c.is_paid)
             .order_by(
                 self.received_payments.c.created.desc(),
             )
@@ -958,6 +959,35 @@ class SqueakDb:
             rows = result.fetchall()
             received_payments = [self._parse_received_payment(row) for row in rows]
             return received_payments
+
+    def mark_received_payment_paid(self, preimage_hash, settle_index):
+        """ Mark a single received payment as paid. """
+        stmt = (
+            self.received_payments.update()
+            .where(self.received_payments.c.preimage_hash == preimage_hash)
+            .values(
+                is_paid=True,
+                payment_time=datetime.utcnow(),
+                settle_index=settle_index,
+            )
+        )
+        with self.get_connection() as connection:
+            connection.execute(stmt)
+
+    def get_latest_received_payment_index(self):
+        """ Get the lnd settled index of the most recent received payment. """
+        s = (
+            select([
+                func.max(self.received_payments.c.settle_index)],
+            )
+            .select_from(self.received_payments)
+        )
+        with self.get_connection() as connection:
+            result = connection.execute(s)
+            row = result.fetchone()
+            logger.info("Row for get_latest_received_payment_index: {}".format(row))
+            latest_index = row[0]
+            return latest_index
 
     def _parse_squeak_entry(self, row):
         if row is None:

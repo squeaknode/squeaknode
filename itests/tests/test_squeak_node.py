@@ -919,6 +919,9 @@ def test_connect_other_node(server_stub, admin_stub, other_server_stub, other_ad
         )
         squeak_hashes = [received_payment.squeak_hash for received_payment in get_received_payments_response.received_payments]
         assert saved_squeak_hash in squeak_hashes
+        for received_payment in get_received_payments_response.received_payments:
+            if received_payment.preimage_hash == sent_payment.preimage_hash:
+                assert received_payment.is_paid
 
 
 def test_download_single_squeak(server_stub, admin_stub, other_server_stub, other_admin_stub, lightning_client, signing_profile_id, saved_squeak_hash):
