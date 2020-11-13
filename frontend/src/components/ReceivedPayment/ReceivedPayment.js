@@ -89,6 +89,16 @@ export default function ReceivedPayment({
                   </Link>
             </Grid>
           </Grid>
+          <Grid
+            container
+            direction="row"
+            justify="flex-start"
+            alignItems="flex-start"
+          >
+            <Grid item>
+              Buyer address:<span> </span>{receivedPayment.getClientAddr()}
+            </Grid>
+          </Grid>
     </Box>
   )
 }
