@@ -15,7 +15,7 @@ from squeaknode.bitcoin.bitcoin_blockchain_client import BitcoinBlockchainClient
 from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
 from squeaknode.db.db_engine import get_engine, get_sqlite_connection_string
 from squeaknode.db.squeak_db import SqueakDb
-from squeaknode.node.squeak_controller import SqueakNode
+from squeaknode.node.squeak_controller import SqueakController
 from squeaknode.server.lightning_address import LightningAddressHostPort
 from squeaknode.server.squeak_server_handler import SqueakServerHandler
 from squeaknode.server.squeak_server_servicer import SqueakServerServicer
@@ -225,7 +225,7 @@ def run_server(config):
     sync_interval_s = load_sync_interval_s(config)
 
     # Create and start the squeak node
-    squeak_controller = SqueakNode(
+    squeak_controller = SqueakController(
         squeak_db,
         blockchain_client,
         lightning_client,

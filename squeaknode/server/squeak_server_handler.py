@@ -1,6 +1,6 @@
 import logging
 
-from squeaknode.node.squeak_controller import SqueakNode
+from squeaknode.node.squeak_controller import SqueakController
 from squeaknode.server.util import get_hash
 
 from proto import squeak_server_pb2, squeak_server_pb2_grpc
@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 class SqueakServerHandler(object):
     """Handles server commands."""
 
-    def __init__(self, squeak_controller: SqueakNode):
+    def __init__(self, squeak_controller: SqueakController):
         self.squeak_controller = squeak_controller
 
     def handle_posted_squeak(self, squeak):

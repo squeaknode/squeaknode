@@ -33,7 +33,7 @@ from squeaknode.node.sent_offers_worker import SentOffersWorker
 logger = logging.getLogger(__name__)
 
 
-class SqueakNode:
+class SqueakController:
     def __init__(
         self,
         squeak_db,

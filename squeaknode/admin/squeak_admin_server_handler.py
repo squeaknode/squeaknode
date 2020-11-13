@@ -2,7 +2,7 @@ import sys
 import logging
 
 from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
-from squeaknode.node.squeak_controller import SqueakNode
+from squeaknode.node.squeak_controller import SqueakController
 from squeaknode.server.util import get_hash, get_replyto
 from squeaknode.admin.util import squeak_entry_to_message
 from squeaknode.admin.util import squeak_peer_to_message
@@ -26,7 +26,7 @@ class SqueakAdminServerHandler(object):
     def __init__(
         self,
         lightning_client: LNDLightningClient,
-        squeak_controller: SqueakNode,
+        squeak_controller: SqueakController,
     ):
         self.lightning_client = lightning_client
         self.squeak_controller = squeak_controller
