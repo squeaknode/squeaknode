@@ -1011,6 +1011,7 @@ class SqueakDb:
             squeak_hash=received_payment.squeak_hash,
             preimage_hash=received_payment.preimage_hash,
             price_msat=received_payment.price_msat,
+            settle_index=received_payment.settle_index,
         )
         with self.get_connection() as connection:
             res = connection.execute(ins)
@@ -1163,4 +1164,5 @@ class SqueakDb:
             squeak_hash=row["squeak_hash"],
             preimage_hash=row["preimage_hash"],
             price_msat=row["price_msat"],
+            settle_index=row["settle_index"],
         )

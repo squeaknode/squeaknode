@@ -65,5 +65,6 @@ class SentOffersVerifier:
             squeak_hash=sent_offer.squeak_hash,
             preimage_hash=sent_offer.preimage_hash,
             price_msat=sent_offer.price_msat,
+            settle_index=settle_index,
         )
         self.squeak_db.insert_received_payment(received_payment)
