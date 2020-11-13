@@ -945,6 +945,7 @@ class SqueakDb:
             price_msat=sent_offer.price_msat,
             invoice_timestamp=sent_offer.invoice_time,
             invoice_expiry=sent_offer.invoice_expiry,
+            client_addr=sent_offer.client_addr,
         )
         with self.get_connection() as connection:
             res = connection.execute(ins)
@@ -1013,6 +1014,7 @@ class SqueakDb:
             preimage_hash=received_payment.preimage_hash,
             price_msat=received_payment.price_msat,
             settle_index=received_payment.settle_index,
+            client_addr=received_payment.client_addr,
         )
         with self.get_connection() as connection:
             res = connection.execute(ins)
@@ -1154,6 +1156,7 @@ class SqueakDb:
             price_msat=row["price_msat"],
             invoice_time=row["invoice_timestamp"],
             invoice_expiry=row["invoice_expiry"],
+            client_addr=row["client_addr"],
         )
 
     def _parse_received_payment(self, row):
@@ -1166,4 +1169,5 @@ class SqueakDb:
             preimage_hash=row["preimage_hash"],
             price_msat=row["price_msat"],
             settle_index=row["settle_index"],
+            client_addr=row["client_addr"],
         )

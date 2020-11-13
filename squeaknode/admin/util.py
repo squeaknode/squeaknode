@@ -144,5 +144,6 @@ def received_payments_to_message(received_payment):
         squeak_hash=received_payment.squeak_hash,
         preimage_hash=received_payment.preimage_hash,
         price_msat=received_payment.price_msat,
-        payment_time_ms=int(received_payment.created.timestamp()) * 1000
+        payment_time_ms=int(received_payment.created.timestamp()) * 1000,
+        client_addr=received_payment.client_addr,
     )
