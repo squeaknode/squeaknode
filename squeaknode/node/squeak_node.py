@@ -149,8 +149,6 @@ class SqueakNode:
                 squeak_hash=squeak_hash,
                 preimage_hash=preimage_hash.hex(),
                 price_msat=self.price_msat,
-                is_paid=False,
-                payment_time=None,
             )
         )
         # Return the buy offer

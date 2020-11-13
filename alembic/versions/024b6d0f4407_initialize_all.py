@@ -1,8 +1,8 @@
 """Initialize all
 
-Revision ID: ccc641c2ce52
+Revision ID: 024b6d0f4407
 Revises: 
-Create Date: 2020-11-10 23:45:44.333190
+Create Date: 2020-11-12 23:33:57.135895
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'ccc641c2ce52'
+revision = '024b6d0f4407'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -57,6 +57,25 @@ def upgrade():
     sa.UniqueConstraint('address'),
     sa.UniqueConstraint('profile_name')
     )
+    op.create_table('received_payment',
+    sa.Column('received_payment_id', sa.Integer(), nullable=False),
+    sa.Column('created', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
+    sa.Column('squeak_hash', sa.String(length=64), nullable=False),
+    sa.Column('preimage_hash', sa.String(length=64), nullable=False),
+    sa.Column('price_msat', sa.Integer(), nullable=False),
+    sa.Column('settle_index', sa.Integer(), nullable=False),
+    sa.PrimaryKeyConstraint('received_payment_id'),
+    sa.UniqueConstraint('preimage_hash')
+    )
+    op.create_table('sent_offer',
+    sa.Column('sent_offer_id', sa.Integer(), nullable=False),
+    sa.Column('created', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
+    sa.Column('squeak_hash', sa.String(length=64), nullable=False),
+    sa.Column('preimage_hash', sa.String(length=64), nullable=False),
+    sa.Column('price_msat', sa.Integer(), nullable=False),
+    sa.PrimaryKeyConstraint('sent_offer_id'),
+    sa.UniqueConstraint('preimage_hash')
+    )
     op.create_table('sent_payment',
     sa.Column('sent_payment_id', sa.Integer(), nullable=False),
     sa.Column('created', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
@@ -96,6 +115,8 @@ def downgrade():
 
     op.drop_table('squeak')
     op.drop_table('sent_payment')
+    op.drop_table('sent_offer')
+    op.drop_table('received_payment')
     op.drop_table('profile')
     op.drop_table('peer')
     op.drop_table('offer')

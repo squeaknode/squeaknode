@@ -117,8 +117,6 @@ class Models:
             Column("squeak_hash", String(64), nullable=False),
             Column("preimage_hash", String(64), unique=True, nullable=False),
             Column("price_msat", Integer, nullable=False, default=0),
-            Column("is_paid", Boolean, nullable=False),
-            Column("payment_time", DateTime, nullable=True),
         )
 
         self.received_payments = Table(
@@ -128,6 +126,6 @@ class Models:
             Column("created", DateTime, server_default=func.now(), nullable=False),
             Column("squeak_hash", String(64), nullable=False),
             Column("preimage_hash", String(64), unique=True, nullable=False),
-            Column("price_msat", Integer, nullable=False, default=0),
-            Column("settle_index", Integer, nullable=True),
+            Column("price_msat", Integer, nullable=False),
+            Column("settle_index", Integer, nullable=False),
         )
