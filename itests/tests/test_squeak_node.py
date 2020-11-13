@@ -934,6 +934,7 @@ def test_connect_other_node(server_stub, admin_stub, other_server_stub, other_ad
             five_minutes = datetime.timedelta(minutes=5)
             assert received_payment_time > datetime.datetime.now() - five_minutes
             assert received_payment_time < datetime.datetime.now()
+            assert len(received_payment.client_addr) > 4
 
 
 def test_download_single_squeak(server_stub, admin_stub, other_server_stub, other_admin_stub, lightning_client, signing_profile_id, saved_squeak_hash):

@@ -121,7 +121,7 @@ class SqueakNode:
     def lookup_allowed_addresses(self, addresses):
         return self.squeak_whitelist.get_allowed_addresses(addresses)
 
-    def get_buy_offer(self, squeak_hash, challenge):
+    def get_buy_offer(self, squeak_hash, challenge, client_addr):
         # Get the squeak from the database
         squeak = self.squeak_store.get_squeak(squeak_hash)
         # Get the decryption key from the squeak
@@ -156,6 +156,7 @@ class SqueakNode:
                 price_msat=self.price_msat,
                 invoice_time=invoice_time,
                 invoice_expiry=invoice_expiry,
+                client_addr=client_addr,
             )
         )
         # Return the buy offer

@@ -68,8 +68,9 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
         squeak_hash = request.hash
         # TODO: check if hash is valid
         challenge = request.challenge
+        client_addr = context.peer()
 
-        buy_response = self.handler.handle_buy_squeak(squeak_hash, challenge)
+        buy_response = self.handler.handle_buy_squeak(squeak_hash, challenge, client_addr)
 
         if buy_response == None:
             context.set_code(grpc.StatusCode.NOT_FOUND)

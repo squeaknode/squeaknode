@@ -699,4 +699,7 @@ message ReceivedPayment {
 
     /// Time of payment
     int64 payment_time_ms = 5;
+
+    /// The address of the buyer client
+    string client_addr = 6;
 }
