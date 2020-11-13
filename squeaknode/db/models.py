@@ -117,6 +117,8 @@ class Models:
             Column("squeak_hash", String(64), nullable=False),
             Column("preimage_hash", String(64), unique=True, nullable=False),
             Column("price_msat", Integer, nullable=False, default=0),
+            Column("invoice_timestamp", Integer, nullable=False),
+            Column("invoice_expiry", Integer, nullable=False),
         )
 
         self.received_payments = Table(

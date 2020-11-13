@@ -241,3 +241,14 @@ class LNDLightningClient:
         return self.stub.SubscribeInvoices(
             subscribe_invoices_request,
         )
+
+    def lookup_invoice(self, r_hash_str):
+        """Look up an invoice.
+
+        args:
+        r_hash_str -- The hex-encoded payment hash of the invoice to be looked up.
+        """
+        payment_hash = lnd_pb2.PaymentHash(
+            r_hash_str=r_hash_str,
+        )
+        return self.stub.LookupInvoice(payment_hash)

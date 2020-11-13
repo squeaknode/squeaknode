@@ -137,8 +137,13 @@ class SqueakNode:
         )
         # Create the lightning invoice
         add_invoice_response = self.lightning_client.add_invoice(preimage, self.price_msat)
+        logger.info("add_invoice_response: {}".format(add_invoice_response))
         preimage_hash = add_invoice_response.r_hash
         invoice_payment_request = add_invoice_response.payment_request
+        # invoice_expiry = add_invoice_response.expiry
+        lookup_invoice_response = self.lightning_client.lookup_invoice(preimage_hash.hex())
+        invoice_time = lookup_invoice_response.creation_date
+        invoice_expiry = lookup_invoice_response.expiry
         # Get the lightning network node pubkey
         get_info_response = self.lightning_client.get_info()
         pubkey = get_info_response.identity_pubkey
@@ -149,6 +154,8 @@ class SqueakNode:
                 squeak_hash=squeak_hash,
                 preimage_hash=preimage_hash.hex(),
                 price_msat=self.price_msat,
+                invoice_time=invoice_time,
+                invoice_expiry=invoice_expiry,
             )
         )
         # Return the buy offer
