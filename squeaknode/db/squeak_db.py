@@ -943,7 +943,6 @@ class SqueakDb:
             squeak_hash=sent_offer.squeak_hash,
             preimage_hash=sent_offer.preimage_hash,
             price_msat=sent_offer.price_msat,
-            is_paid=sent_offer.is_paid,
         )
         with self.get_connection() as connection:
             res = connection.execute(ins)
@@ -1151,8 +1150,6 @@ class SqueakDb:
             squeak_hash=row["squeak_hash"],
             preimage_hash=row["preimage_hash"],
             price_msat=row["price_msat"],
-            is_paid=row["is_paid"],
-            payment_time=row["payment_time"],
         )
 
     def _parse_received_payment(self, row):

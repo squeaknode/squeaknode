@@ -134,10 +134,6 @@ def sent_offer_to_message(sent_offer):
         squeak_hash=sent_offer.squeak_hash,
         preimage_hash=sent_offer.preimage_hash,
         price_msat=sent_offer.price_msat,
-        is_paid=sent_offer.is_paid,
-        payment_time_ms=int(sent_offer.payment_time.timestamp()) * 1000
-        if sent_offer.payment_time
-        else None,
     )
 
 def received_payments_to_message(received_payment):

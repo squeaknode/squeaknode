@@ -674,12 +674,6 @@ message SentOffer {
 
     /// The price_msat
     int64 price_msat = 4;
-
-    /// Is the payment paid
-    bool is_paid = 5;
-
-    /// Time of payment
-    int64 payment_time_ms = 6;
 }
 
 message GetReceivedPaymentsRequest {

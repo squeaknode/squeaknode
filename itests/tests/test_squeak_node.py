@@ -907,11 +907,6 @@ def test_connect_other_node(server_stub, admin_stub, other_server_stub, other_ad
         )
         assert saved_squeak_hash == get_sent_payment_response.sent_payment.squeak_hash
         assert get_sent_payment_response.sent_payment.price_msat == 1000000
-        sent_payment_time_ms = get_sent_payment_response.sent_payment.time_ms
-        sent_payment_time = datetime.datetime.fromtimestamp(sent_payment_time_ms/1000.0)
-        five_minutes = datetime.timedelta(minutes=5)
-        assert sent_payment_time > datetime.datetime.now() - five_minutes
-        assert sent_payment_time < datetime.datetime.now()
 
         # Get the sent offers from the seller node
         get_sent_offers_response = admin_stub.GetSentOffers(
@@ -936,6 +931,7 @@ def test_connect_other_node(server_stub, admin_stub, other_server_stub, other_ad
             received_payment_time_ms = received_payment.payment_time_ms
             print("received_payment_time_ms: {}".format(received_payment_time_ms))
             received_payment_time = datetime.datetime.fromtimestamp(received_payment_time_ms/1000.0)
+            five_minutes = datetime.timedelta(minutes=5)
             assert received_payment_time > datetime.datetime.now() - five_minutes
             assert received_payment_time < datetime.datetime.now()
 
