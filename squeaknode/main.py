@@ -15,7 +15,7 @@ from squeaknode.bitcoin.bitcoin_blockchain_client import BitcoinBlockchainClient
 from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
 from squeaknode.db.db_engine import get_engine, get_sqlite_connection_string
 from squeaknode.db.squeak_db import SqueakDb
-from squeaknode.node.squeak_node import SqueakNode
+from squeaknode.node.squeak_controller import SqueakNode
 from squeaknode.server.lightning_address import LightningAddressHostPort
 from squeaknode.server.squeak_server_handler import SqueakServerHandler
 from squeaknode.server.squeak_server_servicer import SqueakServerServicer
@@ -91,14 +91,14 @@ def load_sync_interval_s(config):
     return config.squeaknode_sync_interval_s
 
 
-def load_handler(squeak_node):
-    return SqueakServerHandler(squeak_node)
+def load_handler(squeak_controller):
+    return SqueakServerHandler(squeak_controller)
 
 
-def load_admin_handler(lightning_client, squeak_node):
+def load_admin_handler(lightning_client, squeak_controller):
     return SqueakAdminServerHandler(
         lightning_client,
-        squeak_node,
+        squeak_controller,
     )
 
 
@@ -225,7 +225,7 @@ def run_server(config):
     sync_interval_s = load_sync_interval_s(config)
 
     # Create and start the squeak node
-    squeak_node = SqueakNode(
+    squeak_controller = SqueakNode(
         squeak_db,
         blockchain_client,
         lightning_client,
@@ -234,10 +234,10 @@ def run_server(config):
         max_squeaks_per_address_per_hour,
         sync_interval_s,
     )
-    squeak_node.start_running()
+    squeak_controller.start_running()
 
     # start admin rpc server
-    admin_handler = load_admin_handler(lightning_client, squeak_node)
+    admin_handler = load_admin_handler(lightning_client, squeak_controller)
     admin_rpc_server = load_admin_rpc_server(config, admin_handler)
     start_admin_rpc_server(admin_rpc_server)
 
@@ -248,7 +248,7 @@ def run_server(config):
         start_admin_web_server(admin_web_server)
 
     # start rpc server
-    handler = load_handler(squeak_node)
+    handler = load_handler(squeak_controller)
     server = load_rpc_server(config, handler)
     server.serve()
 

@@ -83,7 +83,7 @@ class SqueakNode:
             self.sync_interval_s,
         )
         self.squeak_expired_offer_cleaner = SqueakExpiredOfferCleaner(
-            self.squeak_db,
+            self,
         )
         self.squeak_offer_expiry_worker = SqueakOfferExpiryWorker(
             self.squeak_expired_offer_cleaner,
@@ -370,3 +370,9 @@ class SqueakNode:
 
     def get_received_payments(self):
         return self.squeak_db.get_received_payments()
+
+    def delete_all_expired_offers(self):
+        logger.debug("Deleting expired offers.")
+        num_expired_offers = self.squeak_db.delete_expired_offers()
+        if num_expired_offers > 0:
+            logger.info("Deleted number of offers: {}".format(num_expired_offers))
