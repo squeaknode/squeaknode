@@ -9,13 +9,8 @@ from squeak.core.signing import CSigningKey, CSqueakAddress
 from squeak.core import CheckSqueak
 
 from squeaknode.core.squeak_address_validator import SqueakAddressValidator
-from squeaknode.node.squeak_block_periodic_worker import SqueakBlockPeriodicWorker
-from squeaknode.node.squeak_block_queue_worker import SqueakBlockQueueWorker
 from squeaknode.node.squeak_block_verifier import SqueakBlockVerifier
-from squeaknode.node.squeak_expired_offer_cleaner import SqueakExpiredOfferCleaner
 from squeaknode.node.squeak_maker import SqueakMaker
-from squeaknode.node.squeak_offer_expiry_worker import SqueakOfferExpiryWorker
-from squeaknode.node.squeak_peer_sync_worker import SqueakPeerSyncWorker
 from squeaknode.node.squeak_rate_limiter import SqueakRateLimiter
 from squeaknode.node.squeak_store import SqueakStore
 from squeaknode.node.squeak_sync_status import SqueakSyncController
@@ -42,21 +37,13 @@ class SqueakController:
         lightning_host_port,
         price_msat,
         max_squeaks_per_address_per_hour,
-        sync_interval_s,
     ):
         self.squeak_db = squeak_db
         self.blockchain_client = blockchain_client
         self.lightning_client = lightning_client
         self.lightning_host_port = lightning_host_port
         self.price_msat = price_msat
-        self.sync_interval_s = sync_interval_s
         self.squeak_block_verifier = SqueakBlockVerifier(squeak_db, blockchain_client)
-        self.squeak_block_periodic_worker = SqueakBlockPeriodicWorker(
-            self.squeak_block_verifier
-        )
-        self.squeak_block_queue_worker = SqueakBlockQueueWorker(
-            self.squeak_block_verifier
-        )
         self.squeak_rate_limiter = SqueakRateLimiter(
             squeak_db,
             blockchain_client,
@@ -78,30 +65,17 @@ class SqueakController:
             self.squeak_db,
             self.lightning_client,
         )
-        self.squeak_peer_sync_worker = SqueakPeerSyncWorker(
-            self.squeak_sync_controller,
-            self.sync_interval_s,
-        )
-        self.squeak_expired_offer_cleaner = SqueakExpiredOfferCleaner(
-            self,
-        )
-        self.squeak_offer_expiry_worker = SqueakOfferExpiryWorker(
-            self.squeak_expired_offer_cleaner,
-        )
         self.sent_offers_verifier = SentOffersVerifier(
             self.squeak_db,
             self.lightning_client,
         )
-        self.sent_offers_worker = SentOffersWorker(
-            self.sent_offers_verifier,
-        )
 
-    def start_running(self):
-        self.squeak_block_periodic_worker.start_running()
-        self.squeak_block_queue_worker.start_running()
-        self.squeak_peer_sync_worker.start_running()
-        self.squeak_offer_expiry_worker.start_running()
-        self.sent_offers_worker.start_running()
+    # def start_running(self):
+    #     self.squeak_block_periodic_worker.start_running()
+    #     self.squeak_block_queue_worker.start_running()
+    #     self.squeak_peer_sync_worker.start_running()
+    #     self.squeak_offer_expiry_worker.start_running()
+    #     self.sent_offers_worker.start_running()
 
     def save_uploaded_squeak(self, squeak):
         return self.squeak_store.save_squeak(squeak)
@@ -376,3 +350,12 @@ class SqueakController:
         num_expired_offers = self.squeak_db.delete_expired_offers()
         if num_expired_offers > 0:
             logger.info("Deleted number of offers: {}".format(num_expired_offers))
+
+    def verify_all_unverified_squeaks(self):
+        self.squeak_block_verifier.verify_all_unverified_squeaks()
+
+    def verify_from_queue(self):
+        self.squeak_block_verifier.verify_from_queue()
+
+    def process_subscribed_invoices(self):
+        self.sent_offers_verifier.process_subscribed_invoices()

@@ -19,6 +19,7 @@ from squeaknode.node.squeak_controller import SqueakController
 from squeaknode.server.lightning_address import LightningAddressHostPort
 from squeaknode.server.squeak_server_handler import SqueakServerHandler
 from squeaknode.server.squeak_server_servicer import SqueakServerServicer
+from squeaknode.node.squeak_node import SqueakNode
 
 from squeaknode.config.config import Config
 
@@ -224,7 +225,6 @@ def run_server(config):
     # load enable sync config
     sync_interval_s = load_sync_interval_s(config)
 
-    # Create and start the squeak node
     squeak_controller = SqueakController(
         squeak_db,
         blockchain_client,
@@ -232,9 +232,11 @@ def run_server(config):
         lightning_host_port,
         price_msat,
         max_squeaks_per_address_per_hour,
-        sync_interval_s,
     )
-    squeak_controller.start_running()
+
+    # Create and start the squeak node
+    squeak_node = SqueakNode(squeak_controller, sync_interval_s)
+    squeak_node.start_running()
 
     # start admin rpc server
     admin_handler = load_admin_handler(lightning_client, squeak_controller)
