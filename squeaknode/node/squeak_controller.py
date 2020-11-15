@@ -119,9 +119,6 @@ class SqueakController:
         # Get the lightning network node pubkey
         get_info_response = self.lightning_client.get_info()
         pubkey = get_info_response.identity_pubkey
-        # Get the invoice details
-        #lookup_invoice_response = self.lightning_client.lookup_invoice(sent_offer.preimage_hash)
-        #invoice_payment_request = lookup_invoice_response.payment_request
         # Return the buy offer
         return BuyOffer(
             squeak_hash,
