@@ -120,8 +120,8 @@ class SqueakController:
         get_info_response = self.lightning_client.get_info()
         pubkey = get_info_response.identity_pubkey
         # Get the invoice details
-        lookup_invoice_response = self.lightning_client.lookup_invoice(sent_offer.preimage_hash)
-        invoice_payment_request = lookup_invoice_response.payment_request
+        #lookup_invoice_response = self.lightning_client.lookup_invoice(sent_offer.preimage_hash)
+        #invoice_payment_request = lookup_invoice_response.payment_request
         # Return the buy offer
         return BuyOffer(
             squeak_hash,
@@ -129,7 +129,7 @@ class SqueakController:
             iv,
             self.price_msat,
             bytes.fromhex(sent_offer.preimage_hash),
-            invoice_payment_request,
+            sent_offer.payment_request,
             pubkey,
             self.lightning_host_port.host,
             self.lightning_host_port.port,
@@ -155,6 +155,7 @@ class SqueakController:
             preimage_hash=preimage_hash.hex(),
             preimage=preimage.hex(),
             price_msat=self.price_msat,
+            payment_request=invoice_payment_request,
             invoice_time=invoice_time,
             invoice_expiry=invoice_expiry,
             client_addr=client_addr,

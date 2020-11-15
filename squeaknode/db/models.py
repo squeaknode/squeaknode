@@ -118,6 +118,7 @@ class Models:
             Column("preimage_hash", String(64), unique=True, nullable=False),
             Column("preimage", String(64), nullable=False),
             Column("price_msat", Integer, nullable=False, default=0),
+            Column("payment_request", String, nullable=False),
             Column("invoice_timestamp", Integer, nullable=False),
             Column("invoice_expiry", Integer, nullable=False),
             Column("client_addr", String(64), nullable=False),

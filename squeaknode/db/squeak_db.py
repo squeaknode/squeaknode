@@ -1169,6 +1169,7 @@ class SqueakDb:
             preimage_hash=row["preimage_hash"],
             preimage=row["preimage"],
             price_msat=row["price_msat"],
+            payment_request=row["payment_request"],
             invoice_time=row["invoice_timestamp"],
             invoice_expiry=row["invoice_expiry"],
             client_addr=row["client_addr"],
