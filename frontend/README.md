@@ -19,12 +19,16 @@
 - [Build protos](#build-protos)
 - Start the squeak server with the `WEBADMIN_LOGIN_DISABLED` and `WEBADMIN_ALLOW_CORS` environment variables:
 	```
-	$ WEBADMIN_LOGIN_DISABLED=TRUE WEBADMIN_ALLOW_CORS=TRUE docker-compose up
+	$ WEBADMIN_LOGIN_DISABLED=TRUE WEBADMIN_ALLOW_CORS=TRUE NETWORK=testnet docker-compose up
 	```
 - Start the frontend in dev mode with the `REACT_APP_SERVER_PORT` environment variable.
 	```
 	$ npm install
 	$ REACT_APP_SERVER_PORT=12994 npm start
+	```
+Or run the following instead:
+	```
+	$ make rundev
 	```
 
 ## Build for production
@@ -38,4 +42,8 @@
 - Copy the generated `build` folder into `squeaknode/admin/webapp/static/`.
 	```
 	$ cp -r build/ ../squeaknode/admin/webapp/static/
+	```
+Or run the following instead:
+	```
+	$ make build
 	```

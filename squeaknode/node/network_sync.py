@@ -20,11 +20,11 @@ class NetworkSync:
     def __init__(
         self,
         squeak_store,
-        postgres_db,
+        squeak_db,
         lightning_client,
     ):
         self.squeak_store = squeak_store
-        self.postgres_db = postgres_db
+        self.squeak_db = squeak_db
         self.lightning_client = lightning_client
 
     def sync_timeline(self, peer, block_height):
@@ -34,7 +34,7 @@ class NetworkSync:
         peer_sync_task = PeerSyncTask(
             peer_connection,
             self.squeak_store,
-            self.postgres_db,
+            self.squeak_db,
             self.lightning_client,
         )
         if peer.uploading:
@@ -49,7 +49,7 @@ class NetworkSync:
         peer_sync_task = PeerSyncTask(
             peer_connection,
             self.squeak_store,
-            self.postgres_db,
+            self.squeak_db,
             self.lightning_client,
         )
         if peer.uploading:

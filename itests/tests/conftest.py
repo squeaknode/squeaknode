@@ -1,3 +1,5 @@
+import uuid
+
 import grpc
 import pytest
 from squeak.params import SelectParams
@@ -14,25 +16,25 @@ def select_mainnet_params():
 
 @pytest.fixture
 def server_stub():
-    with grpc.insecure_channel("sqkserver:8774") as server_channel:
+    with grpc.insecure_channel("squeaknode:8774") as server_channel:
         yield squeak_server_pb2_grpc.SqueakServerStub(server_channel)
 
 
 @pytest.fixture
 def other_server_stub():
-    with grpc.insecure_channel("sqkserver_other:8774") as server_channel:
+    with grpc.insecure_channel("squeaknode_other:8774") as server_channel:
         yield squeak_server_pb2_grpc.SqueakServerStub(server_channel)
 
 
 @pytest.fixture
 def admin_stub():
-    with grpc.insecure_channel("sqkserver:8994") as admin_channel:
+    with grpc.insecure_channel("squeaknode:8994") as admin_channel:
         yield squeak_admin_pb2_grpc.SqueakAdminStub(admin_channel)
 
 
 @pytest.fixture
 def other_admin_stub():
-    with grpc.insecure_channel("sqkserver_other:8994") as admin_channel:
+    with grpc.insecure_channel("squeaknode_other:8994") as admin_channel:
         yield squeak_admin_pb2_grpc.SqueakAdminStub(admin_channel)
 
 
@@ -42,12 +44,12 @@ def lightning_client():
 
 
 @pytest.fixture
-def whitelisted_signing_key(server_stub, admin_stub):
+def following_signing_key(server_stub, admin_stub):
     # Create a signing key
     signing_key = generate_signing_key()
 
     # Create a new contact profile
-    profile_name = "whitelisted_contact"
+    profile_name = "following_contact_{}".format(uuid.uuid1())
     profile_address = get_address(signing_key)
     create_contact_profile_response = admin_stub.CreateContactProfile(
         squeak_admin_pb2.CreateContactProfileRequest(
@@ -57,11 +59,11 @@ def whitelisted_signing_key(server_stub, admin_stub):
     )
     contact_profile_id = create_contact_profile_response.profile_id
 
-    # Set the profile to be whitelisted
-    admin_stub.SetSqueakProfileWhitelisted(
-        squeak_admin_pb2.SetSqueakProfileWhitelistedRequest(
+    # Set the profile to be following
+    admin_stub.SetSqueakProfileFollowing(
+        squeak_admin_pb2.SetSqueakProfileFollowingRequest(
             profile_id=contact_profile_id,
-            whitelisted=True,
+            following=True,
         )
     )
 
@@ -70,7 +72,7 @@ def whitelisted_signing_key(server_stub, admin_stub):
 
 
 @pytest.fixture
-def nonwhitelisted_signing_key(server_stub, admin_stub):
+def nonfollowing_signing_key(server_stub, admin_stub):
     # Create a signing key
     signing_key = generate_signing_key()
 
@@ -81,7 +83,7 @@ def nonwhitelisted_signing_key(server_stub, admin_stub):
 @pytest.fixture
 def signing_profile_id(server_stub, admin_stub):
     # Create a new signing profile
-    profile_name = "fake_signing_profile"
+    profile_name = "fake_signing_profile_{}".format(uuid.uuid1())
     create_signing_profile_response = admin_stub.CreateSigningProfile(
         squeak_admin_pb2.CreateSigningProfileRequest(
             profile_name=profile_name,
@@ -94,7 +96,7 @@ def signing_profile_id(server_stub, admin_stub):
 @pytest.fixture
 def contact_profile_id(server_stub, admin_stub):
     # Create a new contact profile
-    contact_name = "fake_contact_profile"
+    contact_name = "fake_contact_profile_{}".format(uuid.uuid1())
     contact_signing_key = generate_signing_key()
     contact_address = get_address(contact_signing_key)
     create_contact_profile_response = admin_stub.CreateContactProfile(
@@ -117,8 +119,8 @@ def saved_squeak_hash(server_stub, admin_stub, signing_profile_id):
             content=make_squeak_content,
         )
     )
-    squeak_hash_str = make_squeak_response.squeak_hash
-    yield bytes.fromhex(squeak_hash_str)
+    squeak_hash = make_squeak_response.squeak_hash
+    yield squeak_hash
 
 
 @pytest.fixture

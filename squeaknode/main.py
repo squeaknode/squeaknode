@@ -11,134 +11,118 @@ from squeak.params import SelectParams
 from squeaknode.admin.squeak_admin_server_handler import SqueakAdminServerHandler
 from squeaknode.admin.squeak_admin_server_servicer import SqueakAdminServerServicer
 from squeaknode.admin.webapp.app import SqueakAdminWebServer
-from squeaknode.blockchain.bitcoin_blockchain_client import BitcoinBlockchainClient
-from squeaknode.common.lnd_lightning_client import LNDLightningClient
-from squeaknode.db.db_engine import get_postgres_engine, get_sqlite_engine
+from squeaknode.bitcoin.bitcoin_blockchain_client import BitcoinBlockchainClient
+from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
+from squeaknode.db.db_engine import get_engine, get_sqlite_connection_string
 from squeaknode.db.squeak_db import SqueakDb
-from squeaknode.node.squeak_node import SqueakNode
+from squeaknode.node.squeak_controller import SqueakController
 from squeaknode.server.lightning_address import LightningAddressHostPort
 from squeaknode.server.squeak_server_handler import SqueakServerHandler
 from squeaknode.server.squeak_server_servicer import SqueakServerServicer
+from squeaknode.node.squeak_node import SqueakNode
+
+from squeaknode.config.config import Config
 
 
 logger = logging.getLogger(__name__)
 
-SQK_DIR_NAME = ".sqk"
 
 def load_lightning_client(config) -> LNDLightningClient:
     return LNDLightningClient(
-        config["lnd"]["host"],
-        config["lnd"]["rpc_port"],
-        config["lnd"]["tls_cert_path"],
-        config["lnd"]["macaroon_path"],
+        config.lnd_host,
+        config.lnd_rpc_port,
+        config.lnd_tls_cert_path,
+        config.lnd_macaroon_path,
     )
 
 
 def load_lightning_host_port(config) -> LNDLightningClient:
-    lnd_host = config.get("lnd", "external_host", fallback=None)
-    if environ.get('EXTERNAL_LND_HOST') is not None:
-        lnd_host = environ.get('EXTERNAL_LND_HOST')
-    lnd_port = int(config["lnd"]["port"])
     return LightningAddressHostPort(
-        lnd_host,
-        lnd_port,
+        config.lnd_external_host,
+        config.lnd_port,
     )
 
 
 def load_rpc_server(config, handler) -> SqueakServerServicer:
     return SqueakServerServicer(
-        config["server"]["rpc_host"],
-        config["server"]["rpc_port"],
+        config.server_rpc_host,
+        config.server_rpc_port,
         handler,
     )
 
 
 def load_admin_rpc_server(config, handler) -> SqueakAdminServerServicer:
     return SqueakAdminServerServicer(
-        config["admin"]["rpc_host"],
-        config["admin"]["rpc_port"],
+        config.admin_rpc_host,
+        config.admin_rpc_port,
         handler,
     )
 
 
 def load_admin_web_server(config, handler) -> SqueakAdminWebServer:
     return SqueakAdminWebServer(
-        config["webadmin"]["host"],
-        config["webadmin"]["port"],
-        config["webadmin"]["username"],
-        config["webadmin"]["password"],
-        environ.get('WEBADMIN_USE_SSL') or config["webadmin"].getboolean("use_ssl", fallback=False),
-        environ.get('WEBADMIN_LOGIN_DISABLED') or config["webadmin"].getboolean("login_disabled", fallback=False),
-        environ.get('WEBADMIN_ALLOW_CORS') or config["webadmin"].getboolean("allow_cors", fallback=False),
+        config.webadmin_host,
+        config.webadmin_port,
+        config.webadmin_username,
+        config.webadmin_password,
+        config.webadmin_use_ssl,
+        config.webadmin_login_disabled,
+        config.webadmin_allow_cors,
         handler,
     )
 
 
 def load_network(config):
-    return config["squeaknode"]["network"]
+    return config.squeaknode_network
 
 
-def load_price(config):
-    return int(config["squeaknode"]["price"])
+def load_price_msat(config):
+    return config.squeaknode_price_msat
 
 
 def load_database(config):
-    return config["squeaknode"]["database"]
+    return config.squeaknode_database
 
 
 def load_max_squeaks_per_address_per_hour(config):
-    return int(config["squeaknode"]["max_squeaks_per_address_per_hour"])
+    return config.squeaknode_max_squeaks_per_address_per_hour
 
 
-def load_enable_sync(config):
-    return config["squeaknode"].getboolean("enable_sync")
+def load_sync_interval_s(config):
+    return config.squeaknode_sync_interval_s
 
 
-def load_handler(squeak_node):
-    return SqueakServerHandler(squeak_node)
+def load_handler(squeak_controller):
+    return SqueakServerHandler(squeak_controller)
 
 
-def load_admin_handler(lightning_client, squeak_node):
+def load_admin_handler(lightning_client, squeak_controller):
     return SqueakAdminServerHandler(
         lightning_client,
-        squeak_node,
+        squeak_controller,
     )
 
 
 def load_sqk_dir_path(config):
-    sqk_dir = config.get("squeaknode", "sqk_dir", fallback=None)
-    if sqk_dir:
-        return Path(sqk_dir)
-    else:
-        return Path.home().joinpath(SQK_DIR_NAME)
+    sqk_dir = config.squeaknode_sqk_dir
+    return Path(sqk_dir)
 
 
 def load_db(config, network):
-    database = load_database(config)
-    logger.info("database: " + database)
-    if database == "postgresql":
-        engine = get_postgres_engine(
-            config["postgresql"]["user"],
-            config["postgresql"]["password"],
-            config["postgresql"]["host"],
-            config["postgresql"]["database"],
-        )
-        return SqueakDb(engine, schema=network)
-    elif database == "sqlite":
+    connection_string = config.db_connection_string
+    if not connection_string:
         sqk_dir = load_sqk_dir_path(config)
-        logger.info("Loaded sqk_dir: {}".format(sqk_dir))
-        data_dir = sqk_dir.joinpath("data").joinpath(network)
-        data_dir.mkdir(parents=True, exist_ok=True)
-        engine = get_sqlite_engine(data_dir)
-        return SqueakDb(engine)
+        connection_string = get_sqlite_connection_string(sqk_dir, network)
+    engine = get_engine(connection_string)
+    return SqueakDb(engine)
 
 
 def load_blockchain_client(config):
     return BitcoinBlockchainClient(
-        config["bitcoin"]["rpc_host"],
-        config["bitcoin"]["rpc_port"],
-        config["bitcoin"]["rpc_user"],
-        config["bitcoin"]["rpc_pass"],
+        config.bitcoin_rpc_host,
+        config.bitcoin_rpc_port,
+        config.bitcoin_rpc_user,
+        config.bitcoin_rpc_pass,
     )
 
 
@@ -148,7 +132,7 @@ def sigterm_handler(_signo, _stack_frame):
 
 
 def start_admin_rpc_server(rpc_server):
-    logger.info("Calling start_admin_rpc_server...")
+    logger.info("Starting admin RPC server...")
     thread = threading.Thread(
         target=rpc_server.serve,
         args=(),
@@ -158,11 +142,11 @@ def start_admin_rpc_server(rpc_server):
 
 
 def load_admin_web_server_enabled(config):
-    return config["webadmin"].getboolean("enabled")
+    return config.webadmin_enabled
 
 
 def start_admin_web_server(admin_web_server):
-    logger.info("Calling start_admin_web_server...")
+    logger.info("Starting admin web server...")
     thread = threading.Thread(
         target=admin_web_server.serve,
         args=(),
@@ -198,18 +182,20 @@ def parse_args():
 
 
 def main():
-    logger.info("Running main() in server...")
     logging.basicConfig(level=logging.ERROR)
     args = parse_args()
 
     # Set the log level
     level = args.log_level.upper()
-    logger.info("level: " + level)
     logging.getLogger().setLevel(level)
 
-    # Get the config object
-    config = ConfigParser()
-    config.read(args.config)
+    logger.info("Starting squeaknode...")
+    config = Config(args.config)
+    logger.info("config: {}".format(config))
+
+    # Set the log level again
+    level = config.squeaknode_log_level
+    logging.getLogger().setLevel(level)
 
     args.func(config)
 
@@ -217,16 +203,14 @@ def main():
 def run_server(config):
     # load the network
     network = load_network(config)
-    logger.info("network: " + network)
     SelectParams(network)
 
-    # load postgres db
+    # load the db
     squeak_db = load_db(config, network)
-    logger.info("squeak_db: " + str(squeak_db))
     squeak_db.init()
 
     # load the price
-    price = load_price(config)
+    price_msat = load_price_msat(config)
 
     # load the max squeaks per block per address
     max_squeaks_per_address_per_hour = load_max_squeaks_per_address_per_hour(config)
@@ -234,28 +218,28 @@ def run_server(config):
     # load the lightning client
     lightning_client = load_lightning_client(config)
     lightning_host_port = load_lightning_host_port(config)
-    logger.info("Loaded lightning_host_port: {}".format(lightning_host_port))
 
     # load the blockchain client
     blockchain_client = load_blockchain_client(config)
 
     # load enable sync config
-    enable_sync = load_enable_sync(config)
+    sync_interval_s = load_sync_interval_s(config)
 
-    # Create and start the squeak node
-    squeak_node = SqueakNode(
+    squeak_controller = SqueakController(
         squeak_db,
         blockchain_client,
         lightning_client,
         lightning_host_port,
-        price,
+        price_msat,
         max_squeaks_per_address_per_hour,
-        enable_sync,
     )
+
+    # Create and start the squeak node
+    squeak_node = SqueakNode(squeak_controller, sync_interval_s)
     squeak_node.start_running()
 
     # start admin rpc server
-    admin_handler = load_admin_handler(lightning_client, squeak_node)
+    admin_handler = load_admin_handler(lightning_client, squeak_controller)
     admin_rpc_server = load_admin_rpc_server(config, admin_handler)
     start_admin_rpc_server(admin_rpc_server)
 
@@ -266,7 +250,7 @@ def run_server(config):
         start_admin_web_server(admin_web_server)
 
     # start rpc server
-    handler = load_handler(squeak_node)
+    handler = load_handler(squeak_controller)
     server = load_rpc_server(config, handler)
     server.serve()
 

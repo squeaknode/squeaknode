@@ -84,9 +84,9 @@ service SqueakAdmin {
   */
   rpc GetSqueakProfileByAddress (GetSqueakProfileByAddressRequest) returns (GetSqueakProfileByAddressReply) {}
 
-  /** sqkadmin: `setsqueakprofilewhitelisted`
+  /** sqkadmin: `getsqueakprofilebyname`
   */
-  rpc SetSqueakProfileWhitelisted (SetSqueakProfileWhitelistedRequest) returns (SetSqueakProfileWhitelistedReply) {}
+  rpc GetSqueakProfileByName (GetSqueakProfileByNameRequest) returns (GetSqueakProfileByNameReply) {}
 
   /** sqkadmin: `setsqueakprofilefollowing`
   */
@@ -176,6 +176,18 @@ service SqueakAdmin {
   */
   rpc GetSentPayment (GetSentPaymentRequest) returns (GetSentPaymentReply) {}
 
+  /** sqkadmin: `getsqueakdetails`
+  */
+  rpc GetSqueakDetails (GetSqueakDetailsRequest) returns (GetSqueakDetailsReply) {}
+
+  /** sqkadmin: `getsentoffers`
+  */
+  rpc GetSentOffers (GetSentOffersRequest) returns (GetSentOffersReply) {}
+
+  /** sqkadmin: `getreceivedpayments`
+  */
+  rpc GetReceivedPayments (GetReceivedPaymentsRequest) returns (GetReceivedPaymentsReply) {}
+
 }
 
 message CreateSigningProfileRequest {
@@ -237,15 +249,14 @@ message GetSqueakProfileByAddressReply {
     SqueakProfile squeak_profile = 1;
 }
 
-message SetSqueakProfileWhitelistedRequest {
-    /// The profile id
-    int32 profile_id = 1;
-
-    /// Whitelisted
-    bool whitelisted = 2;
+message GetSqueakProfileByNameRequest {
+    /// The name
+    string name = 1;
 }
 
-message SetSqueakProfileWhitelistedReply {
+message GetSqueakProfileByNameReply {
+    /// The squeak profile
+    SqueakProfile squeak_profile = 1;
 }
 
 message SetSqueakProfileFollowingRequest {
@@ -296,9 +307,6 @@ message SqueakProfile {
 
     /// Following
     bool following = 6;
-
-    /// Whitelisted
-    bool whitelisted = 7;
 }
 
 message MakeSqueakRequest {
@@ -517,8 +525,8 @@ message OfferDisplayEntry {
     /// The squeak hash.
     string squeak_hash = 2;
 
-    /// The amount
-    int64 amount = 3;
+    /// The price in msats
+    int64 price_msat = 3;
 
     /// The seller node pubkey
     string node_pubkey = 4;
@@ -585,23 +593,29 @@ message SentPayment {
     /// The peer id
     int32 peer_id = 3;
 
+    /// The peer name
+    string peer_name = 4;
+
     /// The squeak hash
-    string squeak_hash = 4;
+    string squeak_hash = 5;
 
     /// The preimage hash
-    string preimage_hash = 5;
+    string preimage_hash = 6;
 
     /// The preimage
-    string preimage = 6;
+    string preimage = 7;
 
-    /// The amount
-    int64 amount = 7;
+    /// The price_msat
+    int64 price_msat = 8;
 
     /// The seller node pubkey
-    string node_pubkey = 8;
+    string node_pubkey = 9;
 
     /// Valid preimage
-    bool preimage_is_valid = 9;
+    bool preimage_is_valid = 10;
+
+    /// time_ms
+    int64 time_ms = 11;
 }
 
 message SyncSqueakRequest {
@@ -623,4 +637,69 @@ message SyncResult {
 
     /// The ids of timed out peers
     repeated int32 timeout_peer_ids = 3;
+}
+
+message GetSqueakDetailsRequest {
+    /// Hash of the squeak.
+    string squeak_hash = 1;
+}
+
+message GetSqueakDetailsReply {
+    /// The squeak detail entry
+    SqueakDetailEntry squeak_detail_entry = 1;
+}
+
+message SqueakDetailEntry {
+    /// The seriallized squeak in hex encoding
+    string serialized_squeak_hex = 1;
+}
+
+message GetSentOffersRequest {
+}
+
+message GetSentOffersReply {
+    /// The received payments
+    repeated SentOffer sent_offers = 1;
+}
+
+message SentOffer {
+    /// The received payment id
+    int32 sent_offer_id = 1;
+
+    /// The squeak hash
+    string squeak_hash = 2;
+
+    /// The preimage hash
+    string preimage_hash = 3;
+
+    /// The price_msat
+    int64 price_msat = 4;
+}
+
+message GetReceivedPaymentsRequest {
+}
+
+message GetReceivedPaymentsReply {
+    /// The received payments
+    repeated ReceivedPayment received_payments = 1;
+}
+
+message ReceivedPayment {
+    /// The received payment id
+    int32 received_payment_id = 1;
+
+    /// The squeak hash
+    string squeak_hash = 2;
+
+    /// The preimage hash
+    string preimage_hash = 3;
+
+    /// The price_msat
+    int64 price_msat = 4;
+
+    /// Time of payment
+    int64 payment_time_ms = 5;
+
+    /// The address of the buyer client
+    string client_addr = 6;
 }

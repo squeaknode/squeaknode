@@ -5,13 +5,13 @@ logger = logging.getLogger(__name__)
 
 
 class SqueakBlockVerifier:
-    def __init__(self, postgres_db, blockchain_client):
-        self.postgres_db = postgres_db
+    def __init__(self, squeak_db, blockchain_client):
+        self.squeak_db = squeak_db
         self.blockchain_client = blockchain_client
         self.unverified_queue = queue.Queue()
 
     def verify_squeak_block(self, squeak_hash):
-        logger.info("Verifying squeak hash: {}".format(squeak_hash.hex()))
+        logger.info("Verifying squeak hash: {}".format(squeak_hash))
         squeak = self._get_squeak(squeak_hash)
 
         try:
@@ -31,7 +31,7 @@ class SqueakBlockVerifier:
 
     def verify_all_unverified_squeaks(self):
         logger.debug("Verifying all unverified squeaks.")
-        squeaks_to_verify = self.postgres_db.get_unverified_block_squeaks()
+        squeaks_to_verify = self.squeak_db.get_unverified_block_squeaks()
         for squeak_hash in squeaks_to_verify:
             self.verify_squeak_block(squeak_hash)
 
@@ -47,15 +47,15 @@ class SqueakBlockVerifier:
                 logger.error("something bad happened", exc_info=True)
 
     def _get_squeak(self, squeak_hash):
-        squeak_entry = self.postgres_db.get_squeak_entry(squeak_hash)
+        squeak_entry = self.squeak_db.get_squeak_entry(squeak_hash)
         return squeak_entry.squeak
 
     def _mark_squeak_verified(self, squeak_hash, block_info):
         block_header_bytes = bytes.fromhex(block_info.block_header)
-        self.postgres_db.mark_squeak_block_valid(squeak_hash, block_header_bytes)
+        self.squeak_db.mark_squeak_block_valid(squeak_hash, block_header_bytes)
 
     def _delete_squeak(self, squeak_hash):
-        self.postgres_db.delete_squeak(squeak_hash)
+        self.squeak_db.delete_squeak(squeak_hash)
 
     def _get_block_info_for_height(self, block_height):
         return self.blockchain_client.get_block_info_by_height(block_height)

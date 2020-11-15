@@ -11,7 +11,7 @@ services:
       - shared:/rpc
       - ~/.btcd/data:/data
     environment:
-      - NETWORK=testnet
+      - NETWORK
     entrypoint: ["./start-btcd.sh"]
 
   lnd:
@@ -21,7 +21,7 @@ services:
       context: ../
       dockerfile: docker/lnd/Dockerfile
     environment:
-      - NETWORK=testnet
+      - NETWORK
       - RPCHOST=btcd
     volumes:
       - shared:/rpc
@@ -34,16 +34,19 @@ services:
       - net.ipv6.conf.all.disable_ipv6=0
     entrypoint: ["./start-lnd.sh"]
 
-  sqkserver:
-    image: sqkserver
-    container_name: sqkserver
+  squeaknode:
+    image: squeaknode
+    container_name: squeaknode
     build:
       context: ../
-      dockerfile: docker/sqkserver/Dockerfile
+      dockerfile: docker/squeaknode/Dockerfile
     environment:
       - WEBADMIN_USE_SSL
       - WEBADMIN_LOGIN_DISABLED
       - WEBADMIN_ALLOW_CORS
+      - NETWORK
+      - LOG_LEVEL
+      - SQUEAKNODE_SYNC_INTERVAL_S
     volumes:
       - shared:/rpc
       - ~/.lnd:/root/.lnd
@@ -57,7 +60,7 @@ services:
       - "lnd:lnd"
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=0
-    entrypoint: ["./start-sqkserver.sh"]
+    entrypoint: ["./start-squeaknode.sh"]
 
 volumes:
   # shared volume is needed for sharing the btcd certificate

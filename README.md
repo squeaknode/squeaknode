@@ -2,48 +2,55 @@
 
 Node for Squeak protocol
 
-## Run
-
 ### Run with docker:
 
-- Edit **docker/config.ini** to change any configs
-- Start the squeak server:
+##### Requirements
+* docker
+* docker-compose
+* Enough disk space for the bitcoin blockchain
+
+##### Steps
+- Build and start docker-compose with the `NETWORK` environment variable set:
 	```
 	$ cd docker
 	$ docker-compose build
-	$ docker-compose up
+	$ NETWORK=testnet docker-compose up
 	```
+- Go to http://localhost:12994/ and use the username/password in **docker/config.ini** to log in.
+
 
 ### Run without docker:
 
-- Create a **config.ini** file and fill in the relevant values:
+##### Requirements
+* A running bitcoin node
+* A running lnd node
+* Python3.6
+
+##### Steps
+- Create a **config.ini** file and fill in the relevant sections to connect to your bitcoin and lnd nodes:
 	```
 	[squeaknode]
 	network=testnet
-	price=<YOUR_SELLING_PRICE_IN_SATOSHIS>
-	max_squeaks_per_address_per_hour=<YOUR_RATE_LIMIT>
-
-	[lnd]
-	host=<YOUR_LND_HOST>
-	external_host=<YOUR_LND_HOST>
-	port=9735
-	rpc_port=10009
-	tls_cert_path=/root/.lnd/tls.cert
-	macaroon_path=/root/.lnd/data/chain/bitcoin/testnet/admin.macaroon
+	price=100
+	enable_sync=true
 
 	[bitcoin]
-	rpc_host=btcd
+	rpc_host=localhost
 	rpc_port=18334
 	rpc_user=devuser
 	rpc_pass=devpass
 
-	[server]
-	rpc_host=0.0.0.0
-	rpc_port=8774
+	[lnd]
+	host=localhost
+	port=9735
+	rpc_port=10009
+	tls_cert_path=~/.lnd/tls.cert
+	macaroon_path=~/.lnd/data/chain/bitcoin/testnet/admin.macaroon
 
-	[admin]
-	rpc_host=0.0.0.0
-	rpc_port=8994
+	[webadmin]
+	enabled=true
+	username=devuser
+	password=devpass
 	```
 - Install squeaknode:
 	```
@@ -58,6 +65,7 @@ Node for Squeak protocol
  	```
 	$ runsqueaknode --config config.ini run-server
 	```
+- Go to http://localhost:12994/ and use the username/password in **config.ini** to log in.
 
 ## Test
 

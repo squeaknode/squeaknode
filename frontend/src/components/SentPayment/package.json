@@ -1,0 +1,6 @@
+{
+  "name": "SentPayment",
+  "version": "0.0.0",
+  "private": true,
+  "main": "SentPayment.js"
+}

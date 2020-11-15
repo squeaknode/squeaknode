@@ -55,8 +55,8 @@ export default function CloseChannelDialog({
   };
 
   const handleResponse = (response) => {
+    // TODO: handle streaming response.
     // TODO: go to channel page instead of showing alert.
-    alert('Close channel pending.');
   };
 
   const handleErr = (err) => {

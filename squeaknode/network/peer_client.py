@@ -4,6 +4,8 @@ from contextlib import contextmanager
 import grpc
 from squeak.core import CheckSqueak, CSqueak
 
+from squeaknode.server.util import get_hash
+
 from proto import squeak_server_pb2, squeak_server_pb2_grpc
 
 logger = logging.getLogger(__name__)
@@ -62,13 +64,9 @@ class PeerClient:
             offer_msg = buy_response.offer
             return offer_msg
 
-    def _get_hash(self, squeak):
-        """ Needs to be reversed because hash is stored as little-endian """
-        return squeak.GetHash()[::-1]
-
     def _build_squeak_msg(self, squeak):
         return squeak_server_pb2.Squeak(
-            hash=self._get_hash(squeak),
+            hash=get_hash(squeak),
             serialized_squeak=squeak.serialize(),
         )
 

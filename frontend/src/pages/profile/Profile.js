@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import {useHistory} from "react-router-dom";
 import { useParams } from 'react-router-dom';
 import {
   Grid,
@@ -23,7 +24,6 @@ import {
   getSqueakProfileRequest,
   setSqueakProfileFollowingRequest,
   setSqueakProfileSharingRequest,
-  setSqueakProfileWhitelistedRequest,
 } from "../../squeakclient/requests"
 
 
@@ -32,7 +32,7 @@ export default function ProfilePage() {
   const { id } = useParams();
   const [squeakProfile, setSqueakProfile] = useState(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-
+  const history = useHistory();
 
   const getSqueakProfile = (id) => {
     getSqueakProfileRequest(id, setSqueakProfile);
@@ -47,10 +47,9 @@ export default function ProfilePage() {
       getSqueakProfile(id);
     })
   };
-  const setWhitelisted = (id, whitelisted) => {
-    setSqueakProfileWhitelistedRequest(id, whitelisted, () => {
-      getSqueakProfile(id);
-    })
+
+  const goToSqueakAddressPage = (squeakAddress) => {
+    history.push("/app/squeakaddress/" + squeakAddress);
   };
 
 
@@ -78,12 +77,6 @@ export default function ProfilePage() {
     setSharing(id, event.target.checked);
   };
 
-  const handleSettingsWhitelistedChange = (event) => {
-    console.log("Whitelisted changed for profile id: " + id);
-    console.log("Whitelisted changed to: " + event.target.checked);
-    setWhitelisted(id, event.target.checked);
-  };
-
   function NoProfileContent() {
     return (
       <p>
@@ -96,9 +89,10 @@ export default function ProfilePage() {
     return (
       <>
         <p>
-          Profile name: {squeakProfile.getProfileName()}
+          Address: {squeakProfile.getAddress()}
         </p>
         {ProfileSettingsForm()}
+        {ViewSqueaksButton()}
         {DeleteProfileButton()}
       </>
     )
@@ -117,10 +111,6 @@ export default function ProfilePage() {
             control={<Switch checked={squeakProfile.getSharing()} onChange={handleSettingsSharingChange} />}
             label="Sharing"
           />
-          <FormControlLabel
-            control={<Switch checked={squeakProfile.getWhitelisted()} onChange={handleSettingsWhitelistedChange} />}
-            label="Whitelisted"
-          />
         </FormGroup>
       </FormControl>
     )
@@ -136,6 +126,23 @@ export default function ProfilePage() {
             onClick={() => {
               handleClickOpenDeleteDialog();
             }}>Delete Profile
+          </Button>
+        </div>
+      </Grid>
+      </>
+    )
+  }
+
+  function ViewSqueaksButton() {
+    return (
+      <>
+      <Grid item xs={12}>
+        <div className={classes.root}>
+          <Button
+            variant="contained"
+            onClick={() => {
+              goToSqueakAddressPage(squeakProfile.getAddress());
+            }}>View Squeaks
           </Button>
         </div>
       </Grid>

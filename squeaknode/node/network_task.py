@@ -46,8 +46,6 @@ class NetworkSyncTask:
             args=(peers,),
         )
         run_sync_thread.start()
-        count = len(peers)
-        logger.info(f'Current count {count}')
         remaining_peer_ids = set(peer.peer_id for peer in peers)
         completed_peer_ids = set()
         failed_peer_ids = set()
@@ -55,7 +53,6 @@ class NetworkSyncTask:
         while len(remaining_peer_ids) > 0:
             item = self.queue.get()
             logger.info(f'Working on {item}')
-            count -= 1
             if item.completed_peer_id:
                 completed_peer_ids.add(item.completed_peer_id)
                 remaining_peer_ids.remove(item.completed_peer_id)
@@ -63,7 +60,6 @@ class NetworkSyncTask:
                 failed_peer_ids.add(item.failed_peer_id)
                 remaining_peer_ids.remove(item.failed_peer_id)
             logger.info(f'Finished {item}')
-            logger.info(f'Current count {count}')
             self.queue.task_done()
 
         logger.info(f'Returning from sync...')

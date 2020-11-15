@@ -61,7 +61,7 @@ def create_app(handler, username, password):
             reply = handle_rpc_request(request_message)
             return reply.SerializeToString(reply)
         except Exception as e:
-            logger.info("Handling error: {}".format(e))
+            logger.error("Error in handle admin web request.", exc_info=True)
             return str(e), 500
 
     @app.route('/login', methods=['GET', 'POST'])
@@ -220,14 +220,6 @@ def create_app(handler, username, password):
         return handle_request(
             squeak_admin_pb2.SetSqueakProfileSharingRequest(),
             handler.handle_set_squeak_profile_sharing,
-        )
-
-    @app.route('/setsqueakprofilewhitelisted', methods=["POST"])
-    @login_required
-    def setsqueakprofilewhitelisted():
-        return handle_request(
-            squeak_admin_pb2.SetSqueakProfileWhitelistedRequest(),
-            handler.handle_set_squeak_profile_whitelisted,
         )
 
     @app.route('/getpeers', methods=["POST"])
@@ -396,6 +388,38 @@ def create_app(handler, username, password):
         return handle_request(
             squeak_admin_pb2.SyncSqueakRequest(),
             handler.handle_sync_squeak,
+        )
+
+    @app.route('/getsqueakdetails', methods=["POST"])
+    @login_required
+    def getsqueakdetails():
+        return handle_request(
+            squeak_admin_pb2.GetSqueakDetailsRequest(),
+            handler.handle_get_squeak_details,
+        )
+
+    @app.route('/getsentpayments', methods=["POST"])
+    @login_required
+    def getsentpayments():
+        return handle_request(
+            squeak_admin_pb2.GetSentPaymentsRequest(),
+            handler.handle_get_sent_payments,
+        )
+
+    @app.route('/getsentoffers', methods=["POST"])
+    @login_required
+    def getsentoffers():
+        return handle_request(
+            squeak_admin_pb2.GetSentOffersRequest(),
+            handler.handle_get_sent_offers,
+        )
+
+    @app.route('/getreceivedpayments', methods=["POST"])
+    @login_required
+    def getreceivedpayments():
+        return handle_request(
+            squeak_admin_pb2.GetReceivedPaymentsRequest(),
+            handler.handle_get_received_payments,
         )
 
     return app

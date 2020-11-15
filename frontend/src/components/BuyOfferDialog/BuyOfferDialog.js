@@ -49,7 +49,7 @@ export default function BuyOfferDialog({
   };
 
   const handleErr = (err) => {
-    alert('Error paying offer: ' + err.message);
+    alert('Payment failure: ' + err);
   };
 
   const pay = (offerId) => {
@@ -97,7 +97,7 @@ export default function BuyOfferDialog({
   <DialogTitle id="form-dialog-title">Buy Offer</DialogTitle>
   <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
   <DialogContent>
-    Are you sure you want to pay {offer.getAmount() / 1000} satoshis for this offer?
+    Are you sure you want to pay {offer.getPriceMsat() / 1000} satoshis for this offer?
   </DialogContent>
   <DialogActions>
     {CancelButton()}

@@ -97,6 +97,16 @@ export default function WalletPage() {
     lndPendingChannelsRequest(setPendingChannels);
   };
 
+  const lndAvailable = () => {
+    return lndInfo &&
+      walletBalance &&
+      transactions &&
+      peers &&
+      channels &&
+      pendingChannels;
+  };
+
+
   useEffect(()=>{
     getLndInfo()
   },[]);
@@ -136,7 +146,7 @@ export default function WalletPage() {
   function NoBalanceContent() {
     return (
       <div>
-        Unable to fetch lightning info.
+        Unable to connect to lightning node. Make sure that lnd is running and reload the page.
       </div>
     )
   }
@@ -204,7 +214,7 @@ export default function WalletPage() {
       <Widget disableWidgetMenu>
          <div>
            <Typography variant="h1" className={classes.text}>
-             {walletBalance.getTotalBalance()} satoshis
+             {walletBalance.getTotalBalance()} sats
            </Typography>
          </div>
          <Grid
@@ -215,7 +225,7 @@ export default function WalletPage() {
          >
            <Grid item>
              <Typography color="text" colorBrightness="secondary">
-               unconfirmed balance (satoshis)
+               unconfirmed balance (sats)
              </Typography>
              <Typography size="md">{walletBalance.getUnconfirmedBalance()}</Typography>
            </Grid>
@@ -228,7 +238,7 @@ export default function WalletPage() {
          >
            <Grid item>
              <Typography color="text" colorBrightness="secondary">
-               confirmed balance (satoshis):
+               confirmed balance (sats):
              </Typography>
              <Typography size="md">{walletBalance.getConfirmedBalance()}</Typography>
            </Grid>
@@ -448,34 +458,19 @@ export default function WalletPage() {
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
-        {(lndInfo && walletBalance)
-          ? BalanceContent()
-          : NoBalanceContent()
-        }
+        {BalanceContent()}
       </TabPanel>
       <TabPanel value={value} index={1}>
-        {(lndInfo && walletBalance)
-          ? NodeInfoContent()
-          : NoBalanceContent()
-        }
+        {NodeInfoContent()}
       </TabPanel>
       <TabPanel value={value} index={2}>
-        {(lndInfo && walletBalance)
-          ? TransactionsContent()
-          : NoBalanceContent()
-        }
+        {TransactionsContent()}
       </TabPanel>
       <TabPanel value={value} index={3}>
-        {(peers != null)
-          ? PeersContent()
-          : NoBalanceContent()
-        }
+        {PeersContent()}
       </TabPanel>
       <TabPanel value={value} index={4}>
-        {(channels != null && pendingChannels != null)
-          ? ChannelsGridItem()
-          : NoBalanceContent()
-        }
+        {ChannelsGridItem()}
       </TabPanel>
       </>
     )
@@ -495,7 +490,10 @@ export default function WalletPage() {
   return (
     <>
       <PageTitle title="Wallet" />
-      {LightningTabs()}
+      {lndAvailable()
+        ? LightningTabs()
+        : NoBalanceContent()
+      }
       {ReceiveBitcoinDialogContent()}
     </>
   );

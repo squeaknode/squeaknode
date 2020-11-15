@@ -66,8 +66,8 @@ export default function Profiles() {
     getContactProfilesRequest(setContactProfiles);
   };
 
-  const goToSqueakAddressPage = (squeakAddress) => {
-    history.push("/app/squeakaddress/" + squeakAddress);
+  const goToProfilePage = (profileId) => {
+    history.push("/app/profile/" + profileId);
   };
 
   const handleClickOpenCreateSigningProfileDialog = () => {
@@ -121,11 +121,41 @@ export default function Profiles() {
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
-        {SigningProfiles()}
+        {SigningProfilesContent()}
       </TabPanel>
       <TabPanel value={value} index={1}>
-        {ContactProfiles()}
+        {ContactProfilesContent()}
       </TabPanel>
+      </>
+    )
+  }
+
+  function SigningProfilesContent() {
+    return (
+      <>
+      <Grid container spacing={4}>
+        <Grid item xs={12}>
+          <Widget disableWidgetMenu>
+            {CreateSigningProfileButton()}
+            {ShowProfiles("Signing profiles", signingProfiles)}
+          </Widget>
+        </Grid>
+      </Grid>
+      </>
+    )
+  }
+
+  function ContactProfilesContent() {
+    return (
+      <>
+      <Grid container spacing={4}>
+        <Grid item xs={12}>
+          <Widget disableWidgetMenu>
+            {CreateContactProfileButton()}
+            {ShowProfiles("Contact profiles", contactProfiles)}
+          </Widget>
+        </Grid>
+      </Grid>
       </>
     )
   }
@@ -164,64 +194,41 @@ export default function Profiles() {
     )
   }
 
-  function SigningProfiles() {
+  function ShowProfiles(title, profiles) {
     return (
       <>
       <Grid container spacing={4}>
-        {CreateSigningProfileButton()}
        <Grid item xs={12}>
          <MUIDataTable
-           title="Signing Profiles"
-           data={signingProfiles.map(p =>
+           title={title}
+           data={profiles.map(p =>
               [
+                p.getProfileId(),
                 p.getProfileName(),
                 p.getAddress(),
                 p.getFollowing().toString(),
                 p.getSharing().toString(),
               ]
             )}
-           columns={["Name", "Address", "Following", "Sharing"]}
+           columns={[
+             {
+               name: "Id",
+               options: {
+                 display: false,
+               }
+             },
+             "Name", "Address", "Following", "Sharing"
+           ]}
            options={{
              filter: false,
              print: false,
              viewColumns: false,
              selectableRows: "none",
              onRowClick: rowData => {
-               var address = rowData[1];
-               goToSqueakAddressPage(address);
-             }
-           }}/>
-       </Grid>
-     </Grid>
-      </>
-    )
-  }
-
-  function ContactProfiles() {
-    return (
-      <>
-      <Grid container spacing={4}>
-      {CreateContactProfileButton()}
-       <Grid item xs={12}>
-         <MUIDataTable
-           title="Contact Profiles"
-           data={contactProfiles.map(p =>
-              [
-                p.getProfileName(),
-                p.getAddress(),
-                p.getFollowing().toString(),
-                p.getSharing().toString(),
-              ]
-            )}
-           columns={["Name", "Address", "Following", "Sharing"]}
-           options={{
-             filter: false,
-             print: false,
-             viewColumns: false,
-             selectableRows: "none",
-             onRowClick: rowData => {
-               var address = rowData[1];
-               goToSqueakAddressPage(address);
+               var id = rowData[0];
+               var address = rowData[2];
+               //goToSqueakAddressPage(address);
+               goToProfilePage(id);
              }
            }}/>
        </Grid>

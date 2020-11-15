@@ -77,8 +77,8 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
     def GetSqueakProfileByAddress(self, request, context):
         return self.handler.handle_get_squeak_profile_by_address(request)
 
-    def SetSqueakProfileWhitelisted(self, request, context):
-        return self.handler.handle_set_squeak_profile_whitelisted(request)
+    def GetSqueakProfileByName(self, request, context):
+        return self.handler.handle_get_squeak_profile_by_name(request)
 
     def SetSqueakProfileFollowing(self, request, context):
         return self.handler.handle_set_squeak_profile_following(request)
@@ -150,6 +150,15 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
 
     def GetSentPayment(self, request, context):
         return self.handler.handle_get_sent_payment(request)
+
+    def GetSqueakDetails(self, request, context):
+        return self.handler.handle_get_squeak_details(request)
+
+    def GetSentOffers(self, request, context):
+        return self.handler.handle_get_sent_offers(request)
+
+    def GetReceivedPayments(self, request, context):
+        return self.handler.handle_get_received_payments(request)
 
     def serve(self):
         server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))

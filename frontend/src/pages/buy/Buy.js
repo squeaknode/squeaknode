@@ -22,6 +22,7 @@ import DeleteSqueakDialog from "../../components/DeleteSqueakDialog";
 
 import {
   getBuyOffersRequest,
+  syncSqueakRequest,
 } from "../../squeakclient/requests"
 
 
@@ -40,6 +41,22 @@ export default function BuyPage() {
     history.push("/app/offer/" + offerId);
   };
 
+  const reloadRoute = () => {
+    history.go(0);
+  };
+
+  const onDownloadClick = (event) => {
+    event.preventDefault();
+    console.log("Handling download click...");
+    // goToBuyPage(squeak.getSqueakHash());
+    console.log("syncSqueakRequest with hash: " + hash);
+    syncSqueakRequest(hash, (response) => {
+      console.log("response:");
+      console.log(response);
+      reloadRoute();
+    });
+  }
+
   useEffect(()=>{
     getOffers(hash)
   },[hash]);
@@ -50,6 +67,11 @@ export default function BuyPage() {
         <Typography variant="h3">
           Offers
         </Typography>
+        <Button
+          variant="contained"
+          onClick={onDownloadClick}
+          >Load offers
+        </Button>
         <div>
           {offers.map(offer =>
             <Box

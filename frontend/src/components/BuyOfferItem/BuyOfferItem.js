@@ -43,7 +43,7 @@ export default function BuyOfferItem({
     return (
       <Typography
         size="md"
-        >{offer.getAmount()} msats ({offer.getAmount() / 1000} sats)
+        >{offer.getPriceMsat()} msats ({offer.getPriceMsat() / 1000} sats)
       </Typography>
     )
   }
