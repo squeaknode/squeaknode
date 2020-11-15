@@ -369,6 +369,12 @@ class SqueakController:
         if num_expired_offers > 0:
             logger.info("Deleted number of offers: {}".format(num_expired_offers))
 
+    def delete_all_expired_sent_offers(self):
+        logger.debug("Deleting expired sent offers.")
+        num_expired_sent_offers = self.squeak_db.delete_expired_offers()
+        if num_expired_sent_offers > 0:
+            logger.info("Deleted number of sent offers: {}".format(num_expired_sent_offers))
+
     def verify_all_unverified_squeaks(self):
         self.squeak_block_verifier.verify_all_unverified_squeaks()
 
