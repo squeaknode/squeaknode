@@ -97,12 +97,7 @@ class SqueakController:
 
     def get_buy_offer(self, squeak_hash, challenge, client_addr):
         # Check if there is an existing offer for the hash/client_addr combination
-        sent_offer = self.squeak_db.get_sent_offer_by_squeak_hash_and_client_addr(squeak_hash, client_addr)
-        if sent_offer:
-            return None
-        sent_offer = self.create_offer(squeak_hash, challenge, client_addr)
-        # Save the incoming potential payment in the databse.
-        self.squeak_db.insert_sent_offer(sent_offer)
+        sent_offer = self.get_saved_sent_offer(squeak_hash, client_addr)
         # Get the squeak from the database
         squeak = self.squeak_store.get_squeak(squeak_hash)
         # Get the decryption key from the squeak
@@ -133,7 +128,7 @@ class SqueakController:
             proof,
         )
 
-    def create_offer(self, squeak_hash, challenge, client_addr):
+    def create_offer(self, squeak_hash, client_addr):
         # Generate a new random preimage
         preimage = generate_offer_preimage()
         # Create the lightning invoice
@@ -157,6 +152,18 @@ class SqueakController:
             invoice_expiry=invoice_expiry,
             client_addr=client_addr,
         )
+
+    def get_saved_sent_offer(self, squeak_hash, client_addr):
+        # Check if there is an existing offer for the hash/client_addr combination
+        sent_offer = self.squeak_db.get_sent_offer_by_squeak_hash_and_client_addr(
+            squeak_hash,
+            client_addr,
+        )
+        if sent_offer:
+            return sent_offer
+        sent_offer = self.create_offer(squeak_hash, client_addr)
+        self.squeak_db.insert_sent_offer(sent_offer)
+        return sent_offer
 
     def create_signing_profile(self, profile_name):
         signing_key = CSigningKey.generate()
