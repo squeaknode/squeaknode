@@ -10,10 +10,10 @@ CLEAN_INTERVAL_S = 10.0
 class SqueakOfferExpiryWorker:
     def __init__(
         self,
-        squeak_expired_offer_cleaner,
+        squeak_controller,
         clean_interval_s=CLEAN_INTERVAL_S,
     ):
-        self.squeak_expired_offer_cleaner = squeak_expired_offer_cleaner
+        self.squeak_controller = squeak_controller
         self.clean_interval_s = clean_interval_s
 
     def start_running(self):
@@ -21,4 +21,4 @@ class SqueakOfferExpiryWorker:
         self.remove_expired_offers()
 
     def remove_expired_offers(self):
-        self.squeak_expired_offer_cleaner.delete_all_expired_offers()
+        self.squeak_controller.delete_all_expired_offers()

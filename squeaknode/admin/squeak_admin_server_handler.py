@@ -2,7 +2,7 @@ import sys
 import logging
 
 from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
-from squeaknode.node.squeak_node import SqueakNode
+from squeaknode.node.squeak_controller import SqueakController
 from squeaknode.server.util import get_hash, get_replyto
 from squeaknode.admin.util import squeak_entry_to_message
 from squeaknode.admin.util import squeak_peer_to_message
@@ -26,10 +26,10 @@ class SqueakAdminServerHandler(object):
     def __init__(
         self,
         lightning_client: LNDLightningClient,
-        squeak_node: SqueakNode,
+        squeak_controller: SqueakController,
     ):
         self.lightning_client = lightning_client
-        self.squeak_node = squeak_node
+        self.squeak_controller = squeak_controller
 
     def handle_lnd_get_info(self, request):
         logger.info("Handle lnd get info")
@@ -82,7 +82,7 @@ class SqueakAdminServerHandler(object):
     def handle_create_signing_profile(self, request):
         profile_name = request.profile_name
         logger.info("Handle create signing profile with name: {}".format(profile_name))
-        profile_id = self.squeak_node.create_signing_profile(profile_name)
+        profile_id = self.squeak_controller.create_signing_profile(profile_name)
         logger.info("New profile_id: {}".format(profile_id))
         return squeak_admin_pb2.CreateSigningProfileReply(
             profile_id=profile_id,
@@ -95,7 +95,7 @@ class SqueakAdminServerHandler(object):
             profile_name,
             squeak_address,
         ))
-        profile_id = self.squeak_node.create_contact_profile(
+        profile_id = self.squeak_controller.create_contact_profile(
             profile_name, squeak_address
         )
         logger.info("New profile_id: {}".format(profile_id))
@@ -105,7 +105,7 @@ class SqueakAdminServerHandler(object):
 
     def handle_get_signing_profiles(self, request):
         logger.info("Handle get signing profiles.")
-        profiles = self.squeak_node.get_signing_profiles()
+        profiles = self.squeak_controller.get_signing_profiles()
         logger.info("Got number of signing profiles: {}".format(len(profiles)))
         profile_msgs = [
             squeak_profile_to_message(profile) for profile in profiles
@@ -114,7 +114,7 @@ class SqueakAdminServerHandler(object):
 
     def handle_get_contact_profiles(self, request):
         logger.info("Handle get contact profiles.")
-        profiles = self.squeak_node.get_contact_profiles()
+        profiles = self.squeak_controller.get_contact_profiles()
         logger.info("Got number of contact profiles: {}".format(len(profiles)))
         profile_msgs = [
             squeak_profile_to_message(profile) for profile in profiles
@@ -124,7 +124,7 @@ class SqueakAdminServerHandler(object):
     def handle_get_squeak_profile(self, request):
         profile_id = request.profile_id
         logger.info("Handle get squeak profile with id: {}".format(profile_id))
-        squeak_profile = self.squeak_node.get_squeak_profile(profile_id)
+        squeak_profile = self.squeak_controller.get_squeak_profile(profile_id)
         if squeak_profile is None:
             return None
         squeak_profile_msg = squeak_profile_to_message(squeak_profile)
@@ -135,14 +135,14 @@ class SqueakAdminServerHandler(object):
     def handle_get_squeak_profile_by_address(self, request):
         address = request.address
         logger.info("Handle get squeak profile with address: {}".format(address))
-        squeak_profile = self.squeak_node.get_squeak_profile_by_address(address)
+        squeak_profile = self.squeak_controller.get_squeak_profile_by_address(address)
         squeak_profile_msg = squeak_profile_to_message(squeak_profile)
         return squeak_admin_pb2.GetSqueakProfileByAddressReply(squeak_profile=squeak_profile_msg)
 
     def handle_get_squeak_profile_by_name(self, request):
         name = request.name
         logger.info("Handle get squeak profile with name: {}".format(name))
-        squeak_profile = self.squeak_node.get_squeak_profile_by_name(name)
+        squeak_profile = self.squeak_controller.get_squeak_profile_by_name(name)
         squeak_profile_msg = squeak_profile_to_message(squeak_profile)
         return squeak_admin_pb2.GetSqueakProfileByNameReply(squeak_profile=squeak_profile_msg)
 
@@ -155,7 +155,7 @@ class SqueakAdminServerHandler(object):
                 following,
             )
         )
-        self.squeak_node.set_squeak_profile_following(profile_id, following)
+        self.squeak_controller.set_squeak_profile_following(profile_id, following)
         return squeak_admin_pb2.SetSqueakProfileFollowingReply()
 
     def handle_set_squeak_profile_sharing(self, request):
@@ -167,13 +167,13 @@ class SqueakAdminServerHandler(object):
                 sharing,
             )
         )
-        self.squeak_node.set_squeak_profile_sharing(profile_id, sharing)
+        self.squeak_controller.set_squeak_profile_sharing(profile_id, sharing)
         return squeak_admin_pb2.SetSqueakProfileSharingReply()
 
     def handle_delete_squeak_profile(self, request):
         profile_id = request.profile_id
         logger.info("Handle delete squeak profile with id: {}".format(profile_id))
-        self.squeak_node.delete_squeak_profile(profile_id)
+        self.squeak_controller.delete_squeak_profile(profile_id)
         return squeak_admin_pb2.DeleteSqueakProfileReply()
 
     def handle_make_squeak(self, request):
@@ -182,7 +182,7 @@ class SqueakAdminServerHandler(object):
         replyto_hash_str = request.replyto
         replyto_hash = bytes.fromhex(replyto_hash_str) if replyto_hash_str else None
         logger.info("Handle make squeak profile with id: {}".format(profile_id))
-        inserted_squeak_hash = self.squeak_node.make_squeak(
+        inserted_squeak_hash = self.squeak_controller.make_squeak(
             profile_id, content_str, replyto_hash
         )
         return squeak_admin_pb2.MakeSqueakReply(
@@ -192,7 +192,7 @@ class SqueakAdminServerHandler(object):
     def handle_get_squeak_display_entry(self, request):
         squeak_hash = request.squeak_hash
         logger.info("Handle get squeak display entry for hash: {}".format(squeak_hash))
-        squeak_entry_with_profile = self.squeak_node.get_squeak_entry_with_profile(
+        squeak_entry_with_profile = self.squeak_controller.get_squeak_entry_with_profile(
             squeak_hash
         )
         display_message = squeak_entry_to_message(squeak_entry_with_profile)
@@ -203,7 +203,7 @@ class SqueakAdminServerHandler(object):
     def handle_get_followed_squeak_display_entries(self, request):
         logger.info("Handle get followed squeak display entries.")
         squeak_entries_with_profile = (
-            self.squeak_node.get_followed_squeak_entries_with_profile()
+            self.squeak_controller.get_followed_squeak_entries_with_profile()
         )
         logger.info(
             "Got number of followed squeak entries: {}".format(
@@ -224,7 +224,7 @@ class SqueakAdminServerHandler(object):
         max_block = sys.maxsize
         logger.info("Handle get squeak display entries for address: {}".format(address))
         squeak_entries_with_profile = (
-            self.squeak_node.get_squeak_entries_with_profile_for_address(
+            self.squeak_controller.get_squeak_entries_with_profile_for_address(
                 address,
                 min_block,
                 max_block,
@@ -251,7 +251,7 @@ class SqueakAdminServerHandler(object):
             )
         )
         squeak_entries_with_profile = (
-            self.squeak_node.get_ancestor_squeak_entries_with_profile(
+            self.squeak_controller.get_ancestor_squeak_entries_with_profile(
                 squeak_hash,
             )
         )
@@ -271,7 +271,7 @@ class SqueakAdminServerHandler(object):
     def handle_delete_squeak(self, request):
         squeak_hash = request.squeak_hash
         logger.info("Handle delete squeak with hash: {}".format(squeak_hash))
-        self.squeak_node.delete_squeak(squeak_hash)
+        self.squeak_controller.delete_squeak(squeak_hash)
         logger.info("Deleted squeak entry with hash: {}".format(squeak_hash))
         return squeak_admin_pb2.DeleteSqueakReply()
 
@@ -286,7 +286,7 @@ class SqueakAdminServerHandler(object):
                 port,
             )
         )
-        peer_id = self.squeak_node.create_peer(
+        peer_id = self.squeak_controller.create_peer(
             peer_name,
             host,
             port,
@@ -298,7 +298,7 @@ class SqueakAdminServerHandler(object):
     def handle_get_squeak_peer(self, request):
         peer_id = request.peer_id
         logger.info("Handle get squeak peer with id: {}".format(peer_id))
-        squeak_peer = self.squeak_node.get_peer(peer_id)
+        squeak_peer = self.squeak_controller.get_peer(peer_id)
         if squeak_peer is None:
             return None
         squeak_peer_msg = squeak_peer_to_message(squeak_peer)
@@ -308,7 +308,7 @@ class SqueakAdminServerHandler(object):
 
     def handle_get_squeak_peers(self, request):
         logger.info("Handle get squeak peers")
-        squeak_peers = self.squeak_node.get_peers()
+        squeak_peers = self.squeak_controller.get_peers()
         squeak_peer_msgs = [
             squeak_peer_to_message(squeak_peer)
             for squeak_peer in squeak_peers
@@ -326,7 +326,7 @@ class SqueakAdminServerHandler(object):
                 downloading,
             )
         )
-        self.squeak_node.set_peer_downloading(peer_id, downloading)
+        self.squeak_controller.set_peer_downloading(peer_id, downloading)
         return squeak_admin_pb2.SetPeerDownloadingReply()
 
     def handle_set_squeak_peer_uploading(self, request):
@@ -338,19 +338,19 @@ class SqueakAdminServerHandler(object):
                 uploading,
             )
         )
-        self.squeak_node.set_peer_uploading(peer_id, uploading)
+        self.squeak_controller.set_peer_uploading(peer_id, uploading)
         return squeak_admin_pb2.SetPeerUploadingReply()
 
     def handle_delete_squeak_peer(self, request):
         peer_id = request.peer_id
         logger.info("Handle delete squeak peer with id: {}".format(peer_id))
-        self.squeak_node.delete_peer(peer_id)
+        self.squeak_controller.delete_peer(peer_id)
         return squeak_admin_pb2.DeletePeerReply()
 
     def handle_get_buy_offers(self, request):
         squeak_hash = request.squeak_hash
         logger.info("Handle get buy offers for hash: {}".format(squeak_hash))
-        offers = self.squeak_node.get_buy_offers_with_peer(squeak_hash)
+        offers = self.squeak_controller.get_buy_offers_with_peer(squeak_hash)
         offer_msgs = [offer_entry_to_message(offer) for offer in offers]
         return squeak_admin_pb2.GetBuyOffersReply(
             offers=offer_msgs,
@@ -359,7 +359,7 @@ class SqueakAdminServerHandler(object):
     def handle_get_buy_offer(self, request):
         offer_id = request.offer_id
         logger.info("Handle get buy offer for hash: {}".format(offer_id))
-        offer = self.squeak_node.get_buy_offer_with_peer(offer_id)
+        offer = self.squeak_controller.get_buy_offer_with_peer(offer_id)
         offer_msg = offer_entry_to_message(offer)
         return squeak_admin_pb2.GetBuyOfferReply(
             offer=offer_msg,
@@ -367,7 +367,7 @@ class SqueakAdminServerHandler(object):
 
     def handle_sync_squeaks(self, request):
         logger.info("Handle sync squeaks")
-        sync_result = self.squeak_node.sync_squeaks()
+        sync_result = self.squeak_controller.sync_squeaks()
         sync_result_msg = sync_result_to_message(sync_result)
         return squeak_admin_pb2.SyncSqueaksReply(
             sync_result=sync_result_msg,
@@ -376,7 +376,7 @@ class SqueakAdminServerHandler(object):
     def handle_sync_squeak(self, request):
         squeak_hash = request.squeak_hash
         logger.info("Handle download squeak with hash: {}".format(squeak_hash))
-        sync_result = self.squeak_node.sync_squeak(squeak_hash)
+        sync_result = self.squeak_controller.sync_squeak(squeak_hash)
         sync_result_msg = sync_result_to_message(sync_result)
         return squeak_admin_pb2.SyncSqueakReply(
             sync_result=sync_result_msg,
@@ -385,14 +385,14 @@ class SqueakAdminServerHandler(object):
     def handle_pay_offer(self, request):
         offer_id = request.offer_id
         logger.info("Handle pay offer for offer id: {}".format(offer_id))
-        sent_payment_id = self.squeak_node.pay_offer(offer_id)
+        sent_payment_id = self.squeak_controller.pay_offer(offer_id)
         return squeak_admin_pb2.PayOfferReply(
             sent_payment_id=sent_payment_id,
         )
 
     def handle_get_sent_payments(self, request):
         logger.info("Handle get sent payments")
-        sent_payments = self.squeak_node.get_sent_payments()
+        sent_payments = self.squeak_controller.get_sent_payments()
         sent_payment_msgs = [sent_payment_with_peer_to_message(sent_payment) for sent_payment in sent_payments]
         return squeak_admin_pb2.GetSentPaymentsReply(
             sent_payments=sent_payment_msgs,
@@ -401,7 +401,7 @@ class SqueakAdminServerHandler(object):
     def handle_get_sent_payment(self, request):
         sent_payment_id = request.sent_payment_id
         logger.info("Handle get sent payment with id: {}".format(sent_payment_id))
-        sent_payment = self.squeak_node.get_sent_payment(sent_payment_id)
+        sent_payment = self.squeak_controller.get_sent_payment(sent_payment_id)
         sent_payment_msg = sent_payment_with_peer_to_message(sent_payment)
         return squeak_admin_pb2.GetSentPaymentReply(
             sent_payment=sent_payment_msg,
@@ -410,7 +410,7 @@ class SqueakAdminServerHandler(object):
     def handle_get_squeak_details(self, request):
         squeak_hash = request.squeak_hash
         logger.info("Handle get squeak details for hash: {}".format(squeak_hash))
-        squeak_entry_with_profile = self.squeak_node.get_squeak_entry_with_profile(
+        squeak_entry_with_profile = self.squeak_controller.get_squeak_entry_with_profile(
             squeak_hash
         )
         detail_message = squeak_entry_to_detail_message(squeak_entry_with_profile)
@@ -420,7 +420,7 @@ class SqueakAdminServerHandler(object):
 
     def handle_get_sent_offers(self, request):
         logger.info("Handle get sent offers")
-        sent_offers = self.squeak_node.get_sent_offers()
+        sent_offers = self.squeak_controller.get_sent_offers()
         sent_offer_msgs = [sent_offer_to_message(sent_offer) for sent_offer in sent_offers]
         return squeak_admin_pb2.GetSentOffersReply(
             sent_offers=sent_offer_msgs,
@@ -428,7 +428,7 @@ class SqueakAdminServerHandler(object):
 
     def handle_get_received_payments(self, request):
         logger.info("Handle get received payments")
-        received_payments = self.squeak_node.get_received_payments()
+        received_payments = self.squeak_controller.get_received_payments()
         received_payment_msgs = [received_payments_to_message(received_payment) for received_payment in received_payments]
         return squeak_admin_pb2.GetReceivedPaymentsReply(
             received_payments=received_payment_msgs,
