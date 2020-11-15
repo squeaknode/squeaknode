@@ -978,6 +978,19 @@ class SqueakDb:
             sent_offer = self._parse_sent_offer(row)
             return sent_offer
 
+    def get_sent_offer_by_squeak_hash_and_client_addr(self, squeak_hash, client_addr):
+        """ Get a sent offer by squeak hash and client addr. """
+        s = (
+            select([self.sent_offers])
+            .where(self.sent_offers.c.squeak_hash == squeak_hash)
+            .where(self.sent_offers.c.client_addr == client_addr)
+        )
+        with self.get_connection() as connection:
+            result = connection.execute(s)
+            row = result.fetchone()
+            sent_offer = self._parse_sent_offer(row)
+            return sent_offer
+
     # def mark_sent_offer_paid(self, preimage_hash, settle_index):
     #     """ Mark a single received payment as paid. """
     #     stmt = (

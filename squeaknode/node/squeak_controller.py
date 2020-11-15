@@ -96,6 +96,11 @@ class SqueakController:
         return self.squeak_whitelist.get_allowed_addresses(addresses)
 
     def get_buy_offer(self, squeak_hash, challenge, client_addr):
+        # Check if there is an existing offer for the hash/client_addr combination
+        sent_offer = self.squeak_db.get_sent_offer_by_squeak_hash_and_client_addr(squeak_hash, client_addr)
+        if sent_offer:
+            return None
+
         # Get the squeak from the database
         squeak = self.squeak_store.get_squeak(squeak_hash)
         # Get the decryption key from the squeak
