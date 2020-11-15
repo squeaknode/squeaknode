@@ -100,20 +100,45 @@ class SqueakController:
         sent_offer = self.squeak_db.get_sent_offer_by_squeak_hash_and_client_addr(squeak_hash, client_addr)
         if sent_offer:
             return None
-
+        sent_offer = self.create_offer(squeak_hash, challenge, client_addr)
+        # Save the incoming potential payment in the databse.
+        self.squeak_db.insert_sent_offer(sent_offer)
         # Get the squeak from the database
         squeak = self.squeak_store.get_squeak(squeak_hash)
         # Get the decryption key from the squeak
         decryption_key = squeak.GetDecryptionKey()
         # Solve the proof
         proof = decryption_key.decrypt(challenge)
-        # Generate a new random preimage
-        preimage = generate_offer_preimage()
         # Encrypt the decryption key
         iv = generate_initialization_vector()
         encrypted_decryption_key = CEncryptedDecryptionKey.from_decryption_key(
-            decryption_key, preimage, iv
+            decryption_key,
+            bytes.fromhex(sent_offer.preimage),
+            iv,
         )
+        # Get the lightning network node pubkey
+        get_info_response = self.lightning_client.get_info()
+        pubkey = get_info_response.identity_pubkey
+        # Get the invoice details
+        lookup_invoice_response = self.lightning_client.lookup_invoice(sent_offer.preimage_hash)
+        invoice_payment_request = lookup_invoice_response.payment_request
+        # Return the buy offer
+        return BuyOffer(
+            squeak_hash,
+            encrypted_decryption_key,
+            iv,
+            self.price_msat,
+            bytes.fromhex(sent_offer.preimage_hash),
+            invoice_payment_request,
+            pubkey,
+            self.lightning_host_port.host,
+            self.lightning_host_port.port,
+            proof,
+        )
+
+    def create_offer(self, squeak_hash, challenge, client_addr):
+        # Generate a new random preimage
+        preimage = generate_offer_preimage()
         # Create the lightning invoice
         add_invoice_response = self.lightning_client.add_invoice(preimage, self.price_msat)
         logger.info("add_invoice_response: {}".format(add_invoice_response))
@@ -123,33 +148,16 @@ class SqueakController:
         lookup_invoice_response = self.lightning_client.lookup_invoice(preimage_hash.hex())
         invoice_time = lookup_invoice_response.creation_date
         invoice_expiry = lookup_invoice_response.expiry
-        # Get the lightning network node pubkey
-        get_info_response = self.lightning_client.get_info()
-        pubkey = get_info_response.identity_pubkey
         # Save the incoming potential payment in the databse.
-        self.squeak_db.insert_sent_offer(
-            SentOffer(
-                sent_offer_id=None,
-                squeak_hash=squeak_hash,
-                preimage_hash=preimage_hash.hex(),
-                price_msat=self.price_msat,
-                invoice_time=invoice_time,
-                invoice_expiry=invoice_expiry,
-                client_addr=client_addr,
-            )
-        )
-        # Return the buy offer
-        return BuyOffer(
-            squeak_hash,
-            encrypted_decryption_key,
-            iv,
-            self.price_msat,
-            preimage_hash,
-            invoice_payment_request,
-            pubkey,
-            self.lightning_host_port.host,
-            self.lightning_host_port.port,
-            proof,
+        return SentOffer(
+            sent_offer_id=None,
+            squeak_hash=squeak_hash,
+            preimage_hash=preimage_hash.hex(),
+            preimage=preimage.hex(),
+            price_msat=self.price_msat,
+            invoice_time=invoice_time,
+            invoice_expiry=invoice_expiry,
+            client_addr=client_addr,
         )
 
     def create_signing_profile(self, profile_name):

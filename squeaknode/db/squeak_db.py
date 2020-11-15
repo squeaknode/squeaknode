@@ -942,6 +942,7 @@ class SqueakDb:
         ins = self.sent_offers.insert().values(
             squeak_hash=sent_offer.squeak_hash,
             preimage_hash=sent_offer.preimage_hash,
+            preimage=sent_offer.preimage,
             price_msat=sent_offer.price_msat,
             invoice_timestamp=sent_offer.invoice_time,
             invoice_expiry=sent_offer.invoice_expiry,
@@ -1166,6 +1167,7 @@ class SqueakDb:
             sent_offer_id=row["sent_offer_id"],
             squeak_hash=row["squeak_hash"],
             preimage_hash=row["preimage_hash"],
+            preimage=row["preimage"],
             price_msat=row["price_msat"],
             invoice_time=row["invoice_timestamp"],
             invoice_expiry=row["invoice_expiry"],
