@@ -942,6 +942,7 @@ class SqueakDb:
         ins = self.sent_offers.insert().values(
             squeak_hash=sent_offer.squeak_hash,
             preimage_hash=sent_offer.preimage_hash,
+            preimage=sent_offer.preimage,
             price_msat=sent_offer.price_msat,
             invoice_timestamp=sent_offer.invoice_time,
             invoice_expiry=sent_offer.invoice_expiry,
@@ -971,6 +972,19 @@ class SqueakDb:
         s = (
             select([self.sent_offers])
             .where(self.sent_offers.c.preimage_hash == preimage_hash)
+        )
+        with self.get_connection() as connection:
+            result = connection.execute(s)
+            row = result.fetchone()
+            sent_offer = self._parse_sent_offer(row)
+            return sent_offer
+
+    def get_sent_offer_by_squeak_hash_and_client_addr(self, squeak_hash, client_addr):
+        """ Get a sent offer by squeak hash and client addr. """
+        s = (
+            select([self.sent_offers])
+            .where(self.sent_offers.c.squeak_hash == squeak_hash)
+            .where(self.sent_offers.c.client_addr == client_addr)
         )
         with self.get_connection() as connection:
             result = connection.execute(s)
@@ -1153,7 +1167,9 @@ class SqueakDb:
             sent_offer_id=row["sent_offer_id"],
             squeak_hash=row["squeak_hash"],
             preimage_hash=row["preimage_hash"],
+            preimage=row["preimage"],
             price_msat=row["price_msat"],
+            payment_request=row["payment_request"],
             invoice_time=row["invoice_timestamp"],
             invoice_expiry=row["invoice_expiry"],
             client_addr=row["client_addr"],
