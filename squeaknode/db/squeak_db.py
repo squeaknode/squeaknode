@@ -992,6 +992,17 @@ class SqueakDb:
             sent_offer = self._parse_sent_offer(row)
             return sent_offer
 
+    def delete_expired_sent_offers(self):
+        """ Delete all expired sent offers. """
+        s = self.sent_offers.delete().where(
+            datetime.utcnow().timestamp()
+            > self.sent_offers.c.invoice_timestamp + self.sent_offers.c.invoice_expiry
+        )
+        with self.get_connection() as connection:
+            res = connection.execute(s)
+            deleted_sent_offers = res.rowcount
+            return deleted_sent_offers
+
     # def mark_sent_offer_paid(self, preimage_hash, settle_index):
     #     """ Mark a single received payment as paid. """
     #     stmt = (

@@ -22,3 +22,4 @@ class SqueakOfferExpiryWorker:
 
     def remove_expired_offers(self):
         self.squeak_controller.delete_all_expired_offers()
+        self.squeak_controller.delete_all_expired_sent_offers()
