@@ -13,7 +13,8 @@ export default makeStyles(theme => ({
     alignItems: "center",
   },
   widgetRoot: {
-    boxShadow: theme.customShadows.widget,
+    // boxShadow: theme.customShadows.widget,
+    backgroundColor: "#fafafa",
   },
   widgetBody: {
     paddingBottom: theme.spacing(3),

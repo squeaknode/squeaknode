@@ -1,36 +1,33 @@
 import React, { useState } from "react";
-import {
-  Paper,
-  IconButton,
-  Menu,
-  MenuItem,
-  Typography,
-  Grid,
-  Box,
-  Link,
-   Card
-} from "@material-ui/core";
-import { MoreVert as MoreIcon } from "@material-ui/icons";
-import {useHistory} from "react-router-dom";
-import classnames from "classnames";
 
-import LockIcon from '@material-ui/icons/Lock';
+// icons
+import CallMadeIcon from '@material-ui/icons/CallMade';
+import CallReceivedIcon from '@material-ui/icons/CallReceived';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+
 
 // styles
-import useStyles from "./styles";
-
-import Widget from "../../components/Widget";
+import useStyles from "../../pages/wallet/styles";
 
 import moment from 'moment';
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
+import CardHeader from "@material-ui/core/CardHeader";
+import IconButton from "@material-ui/core/IconButton";
+import Collapse from "@material-ui/core/Collapse";
+import Box from "@material-ui/core/Box";
+import Typography from "@material-ui/core/Typography";
 
 export default function TransactionItem({
   transaction,
   handleTransactionClick,
   ...props
 }) {
-  // const classes = useStyles();
+  const [expanded, setExpanded] = useState(false);
 
-  const history = useHistory();
+  const handleExpandClick = () => {
+    setExpanded(!expanded);
+  };
 
   const onTransactionClick = (event) => {
     event.preventDefault();
@@ -40,52 +37,26 @@ export default function TransactionItem({
     }
   }
 
-  function TransactionContent() {
-    const amount = transaction.getAmount()
-    const plusMinusSign = amount > 0 ? "+" : "-"
-    return (
-      <Typography
-         size="md"
-         // style={{whiteSpace: 'pre-line', overflow: "hidden", textOverflow: "ellipsis", height: '6rem'}}
-         className={classes.transactionContent}
-      >{`${plusMinusSign}${transaction.getAmount()} satoshis`}
-      </Typography>
-    )
-  }
+   function TransactionDetailItem(label, value) {
+      return <Box display='flex'>
+         <Typography className={classes.detailItemLabel}>
+            {label}
+         </Typography>
+         <Typography className={classes.detailItemValue}>
+            {value}
+         </Typography>
+      </Box>
+   }
 
-  function TransactionDetails() {
-    return (
-      // <Typography
-      //    size="xs"
-      //    style={{whiteSpace: 'pre-line', overflow: "hidden", textOverflow: "ellipsis", height: '6rem'}}
-
-       <div className={classes.transactionDetails}>
-          <div className={classes.detailRow}>
-             <span className={classes.transactionDetailLabel}># confirmations:</span>
-             <span className={classes.transactionDetail}>{transaction.getNumConfirmations()}</span>
-          </div>
-          <div className={classes.detailRow}>
-             <span className={classes.transactionDetailLabel}># dest addresses:</span>
-             <span className={classes.transactionDetail}>{transaction.getDestAddressesList().length}</span>
-          </div>
-          <div className={classes.detailRow}>
-             <span className={classes.transactionDetailLabel}>timestamp:</span>
-             <span className={classes.transactionDetail}>{transaction.getTimeStamp()}</span>
-          </div>
-          <div className={classes.detailRow}>
-             <span className={classes.transactionDetailLabel}>block height:</span>
-             <span className={classes.transactionDetail}>{transaction.getBlockHeight()}</span>
-          </div>
-          <div className={classes.detailRow}>
-             <span className={classes.transactionDetailLabel}>label:</span>
-             <span className={classes.transactionDetail}>{transaction.getLabel()}</span>
-          </div>
-          <div className={classes.detailRow}>
-             <span className={classes.transactionDetailLabel}>total fees:</span>
-             <span className={classes.transactionDetail}>{transaction.getTotalFees()}</span>
-          </div>
-          {/*</Typography>*/}
-       </div>
+   function TransactionMoreDetails() {
+      return (
+         <CardContent className={classes.transactionMoreDetails}>
+            {TransactionDetailItem("Timestamp", moment.unix(transaction.getTimeStamp()).format('lll'))}
+            {TransactionDetailItem("Block Height", transaction.getBlockHeight())}
+            {TransactionDetailItem("Total Fees", transaction.getTotalFees())}
+            {TransactionDetailItem("Dest Addresses", transaction.getDestAddressesList().length)}
+            {TransactionDetailItem("Confirmations", transaction.getNumConfirmations())}
+         </CardContent>
     )
   }
 
@@ -93,36 +64,40 @@ export default function TransactionItem({
     amount: transaction.getAmount(),
   })
 
+  const amountGtZero = transaction.getAmount() >= 0
+
+  function TransactionIcon() {
+     if (amountGtZero) {
+        return <CallReceivedIcon className={classes.transactionIcon}/>
+     } else {
+        return <CallMadeIcon className={classes.transactionIcon}/>
+     }
+  }
+
   return (
-    <Box
-      p={1}
-      m={0}
-      className={classes.transactionItem}
-      onClick={onTransactionClick}
+      <Card
+         className={classes.root}
+         onClick={onTransactionClick}
       >
-        <Grid
-            container
-            direction="row"
-            justify="flex-start"
-            alignItems="flex-start"
-          >
-          <Grid item>
-            {TransactionContent()}
-            {TransactionDetails()}
-          </Grid>
-          </Grid>
-          <Grid
-            container
-            direction="row"
-            justify="flex-start"
-            alignItems="flex-start"
-          >
-            <Grid item>
-                <Box color="blue" fontSize={"small"}>
-                  {moment(transaction.getTimeStamp()*1000).fromNow()} (Block #{transaction.getBlockHeight()})
-                </Box>
-            </Grid>
-          </Grid>
-    </Box>
-  )
+         <CardHeader
+            className={classes.transactionItemHeader}
+            title={`${Math.abs(transaction.getAmount())} sats`}
+            subheader={moment.unix(transaction.getTimeStamp()).fromNow()}
+            avatar={TransactionIcon()}
+            action={
+               <IconButton
+                  className={expanded ? classes.collapseBtn : classes.expandBtn}
+                  onClick={handleExpandClick}
+                  aria-expanded={expanded}
+                  aria-label="show more"
+               >
+                  <ExpandMoreIcon />
+               </IconButton>
+            }
+         />
+         <Collapse in={expanded} timeout="auto" unmountOnExit>
+            {TransactionMoreDetails()}
+         </Collapse>
+      </Card>
+)
 }

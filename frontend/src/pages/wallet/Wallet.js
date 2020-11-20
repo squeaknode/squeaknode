@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import {useHistory} from "react-router-dom";
+// import { useParams } from 'react-router-dom';
+// import {useHistory} from "react-router-dom";
 import {
   Grid,
   Button,
@@ -9,20 +9,7 @@ import {
   Tab,
   Box,
 } from "@material-ui/core";
-import { useTheme } from "@material-ui/styles";
-import {
-  ResponsiveContainer,
-  ComposedChart,
-  AreaChart,
-  LineChart,
-  Line,
-  Area,
-  PieChart,
-  Pie,
-  Cell,
-  YAxis,
-  XAxis,
-} from "recharts";
+// import { useTheme } from "@material-ui/styles";
 
 // styles
 import useStyles from "./styles";
@@ -45,10 +32,10 @@ import {
   lndListChannelsRequest,
   lndPendingChannelsRequest,
 } from "../../squeakclient/requests"
+import FormLabel from "@material-ui/core/FormLabel";
 
 export default function WalletPage() {
-  var classes = useStyles();
-  var theme = useTheme();
+  const classes = useStyles();
 
   const [lndInfo, setLndInfo] = useState(null);
   const [walletBalance, setWalletBalance] = useState(null);
@@ -128,18 +115,13 @@ export default function WalletPage() {
 
   function ReceiveBitcoinButton() {
     return (
-      <>
-      <Grid item xs={12}>
-        <div className={classes.root}>
-          <Button
-            variant="contained"
-            onClick={() => {
-              handleClickOpenReceiveBitcoinDialog();
-            }}>Receive Bitcoin
-          </Button>
-        </div>
-      </Grid>
-      </>
+       <Button
+          variant="contained"
+          className={classes.button}
+          onClick={() => {
+            handleClickOpenReceiveBitcoinDialog();
+          }}>Receive Bitcoin
+       </Button>
     )
   }
 
@@ -211,219 +193,196 @@ export default function WalletPage() {
   function BalanceGridItem() {
     return (
       <Grid item xs={12}>
-      <Widget disableWidgetMenu>
-         <div>
-           <Typography variant="h1" className={classes.text}>
-             {walletBalance.getTotalBalance()} sats
-           </Typography>
-         </div>
-         <Grid
-           container
-           direction="row"
-           justify="flex-start"
-           alignItems="center"
-         >
-           <Grid item>
-             <Typography color="text" colorBrightness="secondary">
-               unconfirmed balance (sats)
-             </Typography>
-             <Typography size="md">{walletBalance.getUnconfirmedBalance()}</Typography>
-           </Grid>
-         </Grid>
-         <Grid
-           container
-           direction="row"
-           justify="flex-start"
-           alignItems="center"
-         >
-           <Grid item>
-             <Typography color="text" colorBrightness="secondary">
-               confirmed balance (sats):
-             </Typography>
-             <Typography size="md">{walletBalance.getConfirmedBalance()}</Typography>
-           </Grid>
-         </Grid>
-         <Grid
-           container
-           direction="row"
-           justify="flex-start"
-           alignItems="center"
-         >
-           <Grid item>
-             <Typography color="text" colorBrightness="secondary">
-               receive bitcoin:
-             </Typography>
-             {ReceiveBitcoinButton()}
-           </Grid>
-         </Grid>
-       </Widget>
+        <Widget disableWidgetMenu>
+          <Grid
+             container
+             direction="column"
+             justify="flex-start"
+             spacing={2}
+          >
+            <Grid item>
+              <Typography variant="h1">
+                {walletBalance.getTotalBalance()} sats
+              </Typography>
+            </Grid>
+            <Grid item>
+              <FormLabel>
+                Unconfirmed Balance (sats)
+              </FormLabel>
+              <Typography size="md">
+                {walletBalance.getUnconfirmedBalance()}
+              </Typography>
+            </Grid>
+            <Grid item>
+              <FormLabel>
+                Confirmed Balance (sats)
+              </FormLabel>
+              <Typography size="md">
+                {walletBalance.getConfirmedBalance()}
+              </Typography>
+            </Grid>
+          </Grid>
+          {ReceiveBitcoinButton()}
+        </Widget>
       </Grid>
     )
   }
 
   function StatusGridItem() {
     return (
-      <Grid item xs={12}>
-      <Widget disableWidgetMenu>
-      <Grid
-        container
-        direction="row"
-        justify="flex-start"
-        alignItems="center"
-      >
-        <Grid item>
-          <Typography color="text" colorBrightness="secondary">
-            node pubkey
-          </Typography>
-          <Typography size="md">{lndInfo.getIdentityPubkey()}</Typography>
-        </Grid>
-      </Grid>
-
-      <Grid
-        container
-        direction="row"
-        justify="flex-start"
-        alignItems="center"
-      >
-        <Grid item>
-          <Typography color="text" colorBrightness="secondary">
-            synced to chain
-          </Typography>
-          <Typography size="md">{lndInfo.getSyncedToChain().toString()}</Typography>
-        </Grid>
-      </Grid>
-      <Grid
-        container
-        direction="row"
-        justify="flex-start"
-        alignItems="center"
-      >
-        <Grid item>
-          <Typography color="text" colorBrightness="secondary">
-            synced to graph
-          </Typography>
-          <Typography size="md">{lndInfo.getSyncedToGraph().toString()}</Typography>
-        </Grid>
-      </Grid>
-      <Grid
-        container
-        direction="row"
-        justify="flex-start"
-        alignItems="center"
-      >
-        <Grid item>
-          <Typography color="text" colorBrightness="secondary">
-            block height
-          </Typography>
-          <Typography size="md">{lndInfo.getBlockHeight()}</Typography>
-        </Grid>
-      </Grid>
-       </Widget>
-      </Grid>
+       <Grid item xs={12}>
+         <Widget disableWidgetMenu>
+           <Grid
+              container
+              direction="column"
+              justify="flex-start"
+              spacing={2}
+           >
+             <Grid item>
+               <FormLabel>
+                 Node Pubkey
+               </FormLabel>
+               <Typography size="md">{lndInfo.getIdentityPubkey()}</Typography>
+             </Grid>
+             <Grid item>
+               <FormLabel>
+                 Synced to Chain
+               </FormLabel>
+               <Typography size="md">{lndInfo.getSyncedToChain().toString()}</Typography>
+             </Grid>
+             <Grid item>
+               <FormLabel>
+                 Synced to Graph
+               </FormLabel>
+               <Typography size="md">{lndInfo.getSyncedToGraph().toString()}</Typography>
+             </Grid>
+             <Grid item>
+               <FormLabel>
+                 Block Height
+               </FormLabel>
+               <Typography size="md">{lndInfo.getBlockHeight()}</Typography>
+             </Grid>
+           </Grid>
+         </Widget>
+       </Grid>
     )
   }
 
   function TransactionsGridItem() {
     return (
-      <Grid item xs={12}>
-      <Widget disableWidgetMenu>
-      <Grid
-        container
-        direction="row"
-        justify="flex-start"
-        alignItems="center"
-      >
-        <Grid item xs={12}>
-        {transactions.map(transaction =>
-          <Box
-            p={1}
-            key={transaction.getTxHash()}
-            >
-          <TransactionItem
-            key={transaction.getTxHash()}
-            // handleTransactionClick={() => goToSqueakPage(transaction.getSqueakHash())}
-            handleTransactionClick={() => console.log("clicked transaction")}
-            transaction={transaction}>
-          </TransactionItem>
-          </Box>
-        )}
-        </Grid>
-      </Grid>
-      </Widget>
-      </Grid>
-
+       <Grid item xs={12}>
+         <Widget disableWidgetMenu>
+           <Grid
+              container
+              direction="row"
+              justify="flex-start"
+              alignItems="center"
+           >
+             <Grid item xs={6}>
+               {transactions.map(transaction =>
+                  <Box
+                     p={1}
+                     key={transaction.getTxHash()}
+                  >
+                    <TransactionItem
+                       key={transaction.getTxHash()}
+                       // handleTransactionClick={() => goToSqueakPage(transaction.getSqueakHash())}
+                       handleTransactionClick={() => console.log("clicked transaction")}
+                       transaction={transaction}>
+                    </TransactionItem>
+                  </Box>
+               )}
+             </Grid>
+           </Grid>
+         </Widget>
+       </Grid>
     )
   }
 
   function PeersGridItem() {
     return (
-      <Grid item xs={12}>
-      <Widget disableWidgetMenu>
-      <Grid
-        container
-        direction="row"
-        justify="flex-start"
-        alignItems="center"
-      >
-        <Grid item xs={12}>
-        {peers.map(peer =>
-          <Box
-            p={1}
-            key={peer.getPubKey()}
-            >
-          <LightningPeerListItem
-            key={peer.getPubKey()}
-            // handleTransactionClick={() => goToSqueakPage(transaction.getSqueakHash())}
-            handlePeerClick={() => console.log("clicked peer")}
-            peer={peer}>
-          </LightningPeerListItem>
-          </Box>
-        )}
-        </Grid>
-      </Grid>
-      </Widget>
-      </Grid>
-
+       <Grid item xs={12}>
+         <Widget disableWidgetMenu>
+           <Grid
+              container
+              direction="row"
+              justify="flex-start"
+              alignItems="center"
+           >
+             <Grid item xs={6}>
+               {peers.map(peer =>
+                  <Box
+                     p={1}
+                     key={peer.getPubKey()}
+                  >
+                    <LightningPeerListItem
+                       key={peer.getPubKey()}
+                       // handleTransactionClick={() => goToSqueakPage(transaction.getSqueakHash())}
+                       handlePeerClick={() => console.log("clicked peer")}
+                       peer={peer}>
+                    </LightningPeerListItem>
+                  </Box>
+               )}
+             </Grid>
+           </Grid>
+         </Widget>
+       </Grid>
     )
   }
 
   function ChannelsGridItem() {
     return (
-      <Grid item xs={12}>
-      <Widget disableWidgetMenu>
-      <Grid
-        container
-        direction="row"
-        justify="flex-start"
-        alignItems="center"
-      >
-        <Grid item xs={12}>
-        {pendingChannels.getPendingOpenChannelsList().map(pendingOpenChannel =>
-          <Box
-            p={1}
-            key={pendingOpenChannel.getChannel().getChannelPoint()}
-            >
-          <PendingOpenChannelItem
-            key={pendingOpenChannel.getChannel().getChannelPoint()}
-            pendingOpenChannel={pendingOpenChannel}>
-          </PendingOpenChannelItem>
-          </Box>
-        )}
-        {channels.map(channel =>
-          <Box
-            p={1}
-            key={channel.getChannelPoint()}
-            >
-          <ChannelItem
-            key={channel.getChannelPoint()}
-            channel={channel}>
-          </ChannelItem>
-          </Box>
-        )}
-        </Grid>
-      </Grid>
-      </Widget>
-      </Grid>
+       <Grid item xs={12}>
+         <Widget disableWidgetMenu>
+           <Grid
+              container
+              direction="row"
+              justify="flex-start"
+              alignItems="center"
+           >
+             <Grid item xs={6}>
+               {pendingChannels.getPendingOpenChannelsList().map(pendingOpenChannel =>
+                  <Box
+                     p={1}
+                     key={pendingOpenChannel.getChannel().getChannelPoint()}
+                  >
+                    <ChannelItem
+                       key={pendingOpenChannel.getChannel().getChannelPoint()}
+                       pendingOpenChannel={pendingOpenChannel}
+                       status={'pending-open'}
+                    >
+                    </ChannelItem>
+                  </Box>
+               )}
+               {channels.map(channel =>
+                  <Box
+                     p={1}
+                     key={channel.getChannelPoint()}
+                  >
+                    <ChannelItem
+                       key={channel.getChannelPoint()}
+                       channel={channel}
+                       status={'open'}>
+                    </ChannelItem>
+                  </Box>
+               )}
+               {pendingChannels.getPendingClosingChannelsList().map(pendingClosingChannel =>
+                  <Box
+                     p={1}
+                     key={pendingClosingChannel.getChannel().getChannelPoint()}
+                  >
+                    <ChannelItem
+                       key={pendingClosingChannel.getChannel().getChannelPoint()}
+                       pendingOpenChannel={pendingClosingChannel}
+                       status={'pending-closing'}
+                    >
+                    </ChannelItem>
+                  </Box>
+               )}
+             </Grid>
+           </Grid>
+         </Widget>
+       </Grid>
     )
   }
 
