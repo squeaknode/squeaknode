@@ -1059,6 +1059,21 @@ class SqueakDb:
             received_payments = [self._parse_received_payment(row) for row in rows]
             return received_payments
 
+    def yield_received_payments_from_index(self, start_index=0):
+        """ Get all received payments. """
+        s = (
+            select([self.received_payments])
+            .order_by(
+                self.received_payments.c.received_payment_id.asc(),
+            )
+            .where(self.received_payments.c.received_payment_id >= start_index)
+        )
+        with self.get_connection() as connection:
+            result = connection.execute(s)
+            for row in result:
+                received_payment = self._parse_received_payment(row)
+                yield received_payment
+
     def _parse_squeak_entry(self, row):
         if row is None:
             return None
