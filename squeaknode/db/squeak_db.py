@@ -137,7 +137,7 @@ class SqueakDb:
             row = result.fetchone()
             return self._parse_squeak_entry_with_profile(row)
 
-    def get_followed_squeak_entries_with_profile(self):
+    def get_timeline_squeak_entries_with_profile(self):
         """ Get all followed squeaks. """
         s = (
             select([self.squeaks, self.profiles])
@@ -147,7 +147,6 @@ class SqueakDb:
                     self.profiles.c.address == self.squeaks.c.author_address,
                 )
             )
-            .where(self.profiles.c.following)
             .where(self.squeaks.c.block_header != None)
             .order_by(
                 self.squeaks.c.n_block_height.desc(),
