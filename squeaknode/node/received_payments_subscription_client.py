@@ -70,14 +70,16 @@ class ReceivedPaymentsSubscriptionClient:
         self._stopped.set()
 
     def _populate_queue(self):
+        payment_index = self.initial_index
         while not self._stopped.is_set():
-            for payment in self._get_received_payments_from_db():
+            for payment in self._get_received_payments_from_db(payment_index):
                 self._queue.put(payment)
+                payment_index = payment.received_payment_id
                 logger.info("Added payment to queue. Size: {}".format(self._queue.qsize()))
             time.sleep(self.update_interval_s)
 
-    def _get_received_payments_from_db(self):
-        return self.squeak_db.yield_received_payments_from_index(self.initial_index)
+    def _get_received_payments_from_db(self, payment_index):
+        return self.squeak_db.yield_received_payments_from_index(payment_index)
 
     def get_received_payments(self):
         while True:

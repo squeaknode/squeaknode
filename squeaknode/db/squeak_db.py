@@ -1066,7 +1066,7 @@ class SqueakDb:
             .order_by(
                 self.received_payments.c.received_payment_id.asc(),
             )
-            .where(self.received_payments.c.received_payment_id >= start_index)
+            .where(self.received_payments.c.received_payment_id > start_index)
         )
         with self.get_connection() as connection:
             result = connection.execute(s)
