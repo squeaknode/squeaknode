@@ -188,6 +188,10 @@ service SqueakAdmin {
   */
   rpc GetReceivedPayments (GetReceivedPaymentsRequest) returns (GetReceivedPaymentsReply) {}
 
+  /** sqkadmin: `subscribereceivedpayments`
+  */
+  rpc SubscribeReceivedPayments (SubscribeReceivedPaymentsRequest) returns (stream ReceivedPayment) {}
+
 }
 
 message CreateSigningProfileRequest {
@@ -702,4 +706,9 @@ message ReceivedPayment {
 
     /// The address of the buyer client
     string client_addr = 6;
+}
+
+message SubscribeReceivedPaymentsRequest {
+    /// Payment index to start consuming from
+    int64 payment_index = 1;
 }

@@ -23,6 +23,7 @@ from squeaknode.server.sent_payment import SentPayment
 from squeaknode.server.util import generate_offer_preimage
 from squeaknode.node.sent_offers_verifier import SentOffersVerifier
 from squeaknode.node.sent_offers_worker import SentOffersWorker
+from squeaknode.node.received_payments_subscription_client import OpenReceivedPaymentsSubscriptionClient
 
 
 logger = logging.getLogger(__name__)
@@ -383,3 +384,11 @@ class SqueakController:
 
     def process_subscribed_invoices(self):
         self.sent_offers_verifier.process_subscribed_invoices()
+
+    def subscribe_received_payments(self, initial_index):
+        with OpenReceivedPaymentsSubscriptionClient(
+                self.squeak_db,
+                initial_index,
+        ) as client:
+            for payment in client.get_received_payments():
+                yield payment

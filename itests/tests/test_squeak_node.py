@@ -936,6 +936,16 @@ def test_connect_other_node(server_stub, admin_stub, other_server_stub, other_ad
             assert received_payment_time < datetime.datetime.now()
             assert len(received_payment.client_addr) > 4
 
+        # Subscribe to received payments starting from index zero
+        subscribe_received_payments_response = admin_stub.SubscribeReceivedPayments(
+            squeak_admin_pb2.SubscribeReceivedPaymentsRequest(
+                payment_index=0,
+            ),
+        )
+        for payment in subscribe_received_payments_response:
+            print("Got payment from subscription: {}".format(payment))
+            break
+
 
 def test_download_single_squeak(server_stub, admin_stub, other_server_stub, other_admin_stub, lightning_client, signing_profile_id, saved_squeak_hash):
 

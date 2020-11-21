@@ -433,3 +433,11 @@ class SqueakAdminServerHandler(object):
         return squeak_admin_pb2.GetReceivedPaymentsReply(
             received_payments=received_payment_msgs,
         )
+
+    def handle_subscribe_received_payments(self, request):
+        payment_index = request.payment_index
+        logger.info("Handle subscribe received payments with index: {}".format(payment_index))
+        received_payments_stream = self.squeak_controller.subscribe_received_payments(payment_index)
+        for received_payment in received_payments_stream:
+            received_payment_msg = received_payments_to_message(received_payment)
+            yield received_payment_msg
