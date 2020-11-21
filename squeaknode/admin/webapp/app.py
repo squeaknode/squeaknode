@@ -190,12 +190,12 @@ def create_app(handler, username, password):
             handler.handle_lnd_new_address,
         )
 
-    @app.route('/getfollowedsqueakdisplays', methods=["POST"])
+    @app.route('/gettimelinesqueakdisplays', methods=["POST"])
     @login_required
-    def getfollowedsqueakdisplays():
+    def gettimelinesqueakdisplays():
         return handle_request(
-            squeak_admin_pb2.GetFollowedSqueakDisplaysRequest(),
-            handler.handle_get_followed_squeak_display_entries,
+            squeak_admin_pb2.GetTimelineSqueakDisplaysRequest(),
+            handler.handle_get_timeline_squeak_display_entries,
         )
 
     @app.route('/getsqueakprofile', methods=["POST"])

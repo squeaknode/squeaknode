@@ -200,13 +200,13 @@ class SqueakAdminServerHandler(object):
             squeak_display_entry=display_message
         )
 
-    def handle_get_followed_squeak_display_entries(self, request):
-        logger.info("Handle get followed squeak display entries.")
+    def handle_get_timeline_squeak_display_entries(self, request):
+        logger.info("Handle get timeline squeak display entries.")
         squeak_entries_with_profile = (
-            self.squeak_controller.get_followed_squeak_entries_with_profile()
+            self.squeak_controller.get_timeline_squeak_entries_with_profile()
         )
         logger.info(
-            "Got number of followed squeak entries: {}".format(
+            "Got number of timeline squeak entries: {}".format(
                 len(squeak_entries_with_profile)
             )
         )
@@ -214,7 +214,7 @@ class SqueakAdminServerHandler(object):
             squeak_entry_to_message(entry)
             for entry in squeak_entries_with_profile
         ]
-        return squeak_admin_pb2.GetFollowedSqueakDisplaysReply(
+        return squeak_admin_pb2.GetTimelineSqueakDisplaysReply(
             squeak_display_entries=squeak_display_msgs
         )
 

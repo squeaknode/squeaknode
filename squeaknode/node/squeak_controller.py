@@ -229,8 +229,8 @@ class SqueakController:
     def get_squeak_entry_with_profile(self, squeak_hash):
         return self.squeak_store.get_squeak_entry_with_profile(squeak_hash)
 
-    def get_followed_squeak_entries_with_profile(self):
-        return self.squeak_store.get_followed_squeak_entries_with_profile()
+    def get_timeline_squeak_entries_with_profile(self):
+        return self.squeak_store.get_timeline_squeak_entries_with_profile()
 
     def get_squeak_entries_with_profile_for_address(
         self, address, min_block, max_block
