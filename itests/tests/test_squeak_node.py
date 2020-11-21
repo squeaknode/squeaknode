@@ -944,6 +944,7 @@ def test_connect_other_node(server_stub, admin_stub, other_server_stub, other_ad
         )
         for payment in subscribe_received_payments_response:
             print("Got payment from subscription: {}".format(payment))
+            assert payment.received_payment_id == 1
             break
 
 
