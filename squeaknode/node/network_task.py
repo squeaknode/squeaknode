@@ -94,13 +94,15 @@ class TimelineNetworkSyncTask(NetworkSyncTask):
     def __init__(
         self,
         network_sync,
-        block_height,
+        min_block,
+        max_block,
     ):
         super().__init__(network_sync)
-        self.block_height = block_height
+        self.min_block = min_block
+        self.max_block = max_block
 
     def sync_peer(self, peer):
-        self.network_sync.sync_timeline(peer, self.block_height)
+        self.network_sync.sync_timeline(peer, self.min_block, self.max_block)
 
 
 class SingleSqueakNetworkSyncTask(NetworkSyncTask):
