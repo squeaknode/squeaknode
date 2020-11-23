@@ -14,9 +14,9 @@ services:
   #     - NETWORK
   #   entrypoint: ["./start-btcd.sh"]
 
-  btcd:
+  bitcoin-core:
     image: ruimarinho/bitcoin-core
-    container_name: btcd
+    container_name: bitcoin-core
     volumes:
       - ~/.bitcoin:/home/bitcoin/.bitcoin
     command:
@@ -38,7 +38,7 @@ services:
       dockerfile: docker/lnd/Dockerfile
     environment:
       - NETWORK
-      - RPCHOST=btcd
+      - RPCHOST=bitcoin-core
       - BACKEND=bitcoind
     volumes:
       - shared:/rpc
@@ -46,7 +46,7 @@ services:
     ports:
       - 9735:9735
     links:
-      - "btcd:btcd"
+      - "bitcoin-core:bitcoin-core"
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=0
     entrypoint: ["./start-lnd.sh"]
@@ -73,7 +73,7 @@ services:
       - 8774:8774
       - 12994:12994
     links:
-      - "btcd:btcd"
+      - "bitcoin-core:bitcoin-core"
       - "lnd:lnd"
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=0
