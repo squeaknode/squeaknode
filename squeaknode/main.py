@@ -119,6 +119,7 @@ def load_blockchain_client(config):
         config.bitcoin_rpc_port,
         config.bitcoin_rpc_user,
         config.bitcoin_rpc_pass,
+        config.bitcoin_rpc_use_ssl,
     )
 
 

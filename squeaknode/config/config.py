@@ -44,6 +44,7 @@ class Config:
         self._configs['bitcoin_rpc_port'] = self._get_bitcoin_rpc_port()
         self._configs['bitcoin_rpc_user'] = self._get_bitcoin_rpc_user()
         self._configs['bitcoin_rpc_pass'] = self._get_bitcoin_rpc_pass()
+        self._configs['bitcoin_rpc_use_ssl'] = self._get_bitcoin_rpc_use_ssl()
 
         #lnd
         self._configs['lnd_host'] = self._get_lnd_host()
@@ -106,6 +107,9 @@ class Config:
 
     def _get_bitcoin_rpc_pass(self):
         return self.parser.get("bitcoin", "rpc_pass")
+
+    def _get_bitcoin_rpc_use_ssl(self):
+        return self.parser.getboolean("bitcoin", "rpc_use_ssl", fallback=False)
 
     def _get_lnd_host(self):
         return self.parser.get("lnd", "host")
