@@ -11,9 +11,6 @@ from squeaknode.server.util import get_hash, get_replyto
 logger = logging.getLogger(__name__)
 
 
-LOOKUP_BLOCK_INTERVAL = 1008  # 1 week
-
-
 class PeerSyncTask:
     def __init__(
         self,
@@ -37,14 +34,12 @@ class PeerSyncTask:
 
     def download(
         self,
-        block_height,
-        lookup_block_interval=LOOKUP_BLOCK_INTERVAL,
+        min_block,
+        max_block,
     ):
         # Get list of followed addresses.
         addresses = self._get_followed_addresses()
         logger.debug("Followed addresses: {}".format(addresses))
-        min_block = block_height - lookup_block_interval
-        max_block = block_height
 
         # Get remote hashes
         lookup_result = self._get_remote_hashes(addresses, min_block, max_block)
@@ -93,14 +88,12 @@ class PeerSyncTask:
 
     def upload(
         self,
-        block_height,
-        lookup_block_interval=LOOKUP_BLOCK_INTERVAL,
+        min_block,
+        max_block,
     ):
         # Get list of sharing addresses.
         addresses = self._get_sharing_addresses()
         logger.debug("Sharing addresses: {}".format(addresses))
-        min_block = block_height - lookup_block_interval
-        max_block = block_height
 
         # Get remote hashes
         lookup_result = self._get_remote_hashes(addresses, min_block, max_block)

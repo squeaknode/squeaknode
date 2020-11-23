@@ -27,7 +27,7 @@ class NetworkSync:
         self.squeak_db = squeak_db
         self.lightning_client = lightning_client
 
-    def sync_timeline(self, peer, block_height):
+    def sync_timeline(self, peer, min_block, max_block):
         if not peer.downloading:
             return
         peer_connection = PeerConnection(peer)
@@ -38,9 +38,9 @@ class NetworkSync:
             self.lightning_client,
         )
         if peer.uploading:
-            peer_sync_task.upload(block_height)
+            peer_sync_task.upload(min_block, max_block)
         if peer.downloading:
-            peer_sync_task.download(block_height)
+            peer_sync_task.download(min_block, max_block)
 
     def sync_single_squeak(self, peer, squeak_hash):
         if not peer.downloading:
