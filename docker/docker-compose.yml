@@ -1,18 +1,34 @@
 version: '3'
 services:
 
+  # btcd:
+  #   image: btcd
+  #   container_name: btcd
+  #   build:
+  #     context: ../
+  #     dockerfile: docker/btcd/Dockerfile
+  #   volumes:
+  #     - shared:/rpc
+  #     - ~/.btcd/data:/data
+  #   environment:
+  #     - NETWORK
+  #   entrypoint: ["./start-btcd.sh"]
+
   btcd:
-    image: btcd
+    image: ruimarinho/bitcoin-core
     container_name: btcd
-    build:
-      context: ../
-      dockerfile: docker/btcd/Dockerfile
     volumes:
-      - shared:/rpc
-      - ~/.btcd/data:/data
-    environment:
-      - NETWORK
-    entrypoint: ["./start-btcd.sh"]
+      - ~/.bitcoin:/home/bitcoin/.bitcoin
+    command:
+      -printtoconsole
+      -testnet=1
+      -server=1
+      -rpcbind=0.0.0.0
+      -rpcallowip=0.0.0.0/0
+      -rpcuser=devuser
+      -rpcpassword=devpass
+      -zmqpubrawblock=tcp://0.0.0.0:28332
+      -zmqpubrawtx=tcp://0.0.0.0:28333
 
   lnd:
     image: lnd
@@ -23,6 +39,7 @@ services:
     environment:
       - NETWORK
       - RPCHOST=btcd
+      - BACKEND=bitcoind
     volumes:
       - shared:/rpc
       - ~/.lnd:/root/.lnd

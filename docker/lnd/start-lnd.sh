@@ -58,6 +58,40 @@ if [[ "$BACKEND" == "neutrino" ]]; then
 	 --debuglevel="$DEBUG" \
 	 --tlsextradomain=lnd \
 	 "$@"
+elif [[ "$BACKEND" == "bitcoind" ]]; then
+
+    sleep 60
+    echo lnd \
+	 --noseedbackup \
+	 --logdir="/data" \
+	 "--$CHAIN.active" \
+	 "--$CHAIN.$NETWORK" \
+	 "--$CHAIN.node"="$BACKEND" \
+	 "--$BACKEND.rpchost"="$RPCHOST" \
+	 "--$BACKEND.rpcuser"="$RPCUSER" \
+	 "--$BACKEND.rpcpass"="$RPCPASS" \
+	 "--$BACKEND.zmqpubrawblock"="tcp://${RPCHOST}:28332" \
+	 "--$BACKEND.zmqpubrawtx"="tcp://${RPCHOST}:28333" \
+	 --rpclisten=0.0.0.0:10009 \
+	 --debuglevel="$DEBUG" \
+	 --tlsextradomain=lnd \
+	 "$@"
+
+    exec lnd \
+	 --noseedbackup \
+	 --logdir="/data" \
+	 "--$CHAIN.active" \
+	 "--$CHAIN.$NETWORK" \
+	 "--$CHAIN.node"="$BACKEND" \
+	 "--$BACKEND.rpchost"="$RPCHOST" \
+	 "--$BACKEND.rpcuser"="$RPCUSER" \
+	 "--$BACKEND.rpcpass"="$RPCPASS" \
+	 "--$BACKEND.zmqpubrawblock"="tcp://${RPCHOST}:28332" \
+	 "--$BACKEND.zmqpubrawtx"="tcp://${RPCHOST}:28333" \
+	 --rpclisten=0.0.0.0:10009 \
+	 --debuglevel="$DEBUG" \
+	 --tlsextradomain=lnd \
+	 "$@"
 else
     exec lnd \
 	 --noseedbackup \

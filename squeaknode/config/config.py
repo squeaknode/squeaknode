@@ -17,8 +17,8 @@ WEBADMIN_HOST = "0.0.0.0"
 WEBADMIN_PORT = 12994
 DEFAULT_BITCOIN_RPC_PORT = 8334
 BITCOIN_RPC_PORT = {
-    'mainnet': 8334,
-    'testnet': 18334,
+    'mainnet': 8332,
+    'testnet': 18332,
     'simnet': 18556,
 }
 DEFAULT_LND_PORT = 9735
