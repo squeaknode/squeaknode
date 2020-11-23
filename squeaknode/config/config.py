@@ -76,7 +76,6 @@ class Config:
         self._configs['squeaknode_network'] = self._get_squeaknode_network()
         self._configs['squeaknode_price_msat'] = self._get_squeaknode_price_msat()
         self._configs['squeaknode_max_squeaks_per_address_per_hour'] = self._get_squeaknode_max_squeaks_per_address_per_hour()
-        self._configs['squeaknode_database'] = self._get_squeaknode_database()
         self._configs['squeaknode_sqk_dir'] = self._get_squeaknode_sqk_dir()
         self._configs['squeaknode_sync_interval_s'] = self._get_squeaknode_sync_interval_s()
         self._configs['squeaknode_log_level'] = self._get_squeaknode_log_level()
