@@ -36,9 +36,9 @@ class SentOffersVerifier:
             ):
                 self.verify_sent_offer(invoice)
         except:
-            logger.error(
-                "Unable to subscribe invoices from lnd. Retrying in {} seconds".format(LND_CONNECT_RETRY_S),
-                exc_info=True,
+            logger.info(
+                "Unable to subscribe invoices from lnd. Retrying in " \
+                "{} seconds.".format(LND_CONNECT_RETRY_S),
             )
             time.sleep(LND_CONNECT_RETRY_S)
 
