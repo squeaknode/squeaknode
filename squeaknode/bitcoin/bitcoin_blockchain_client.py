@@ -19,8 +19,10 @@ class BitcoinBlockchainClient(BlockchainClient):
         port: int,
         rpc_user: str,
         rpc_password: str,
+        use_ssl: bool,
     ) -> None:
-        self.url = f"https://{rpc_user}:{rpc_password}@{host}:{port}"
+        protocol = "https" if use_ssl else "http"
+        self.url = f"{protocol}://{rpc_user}:{rpc_password}@{host}:{port}"
         self.headers = {"content-type": "application/json"}
 
     def get_best_block_info(self) -> BlockInfo:
