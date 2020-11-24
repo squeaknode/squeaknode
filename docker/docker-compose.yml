@@ -17,7 +17,6 @@ services:
       - RPCHOST=bitcoin-core
       - BACKEND=bitcoind
     volumes:
-      - shared:/rpc
       - ~/.lnd:/root/.lnd
     ports:
       - 9735:9735
@@ -40,7 +39,6 @@ services:
       - LOG_LEVEL
       - SQUEAKNODE_SYNC_INTERVAL_S
     volumes:
-      - shared:/rpc
       - ~/.lnd:/root/.lnd
       - ./config.ini:/app/config.ini
       - ~/.sqk:/root/.sqk
@@ -53,8 +51,3 @@ services:
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=0
     entrypoint: ["./start-squeaknode.sh"]
-
-volumes:
-  # shared volume is needed for sharing the btcd certificate
-  shared:
-    driver: local
