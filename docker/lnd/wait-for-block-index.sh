@@ -12,10 +12,9 @@ do
     echo "Trying to run cmd: $CMD" >&2
     eval $CMD &
     last_pid=$!
-    sleep 5
+    sleep 30
     if kill $last_pid > /dev/null 2>&1; then
 	echo "Found running process for pid: $last_pid" >&2
 	READY=1
     fi
-    sleep 10
 done
