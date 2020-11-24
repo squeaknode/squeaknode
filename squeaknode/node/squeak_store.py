@@ -14,19 +14,15 @@ class SqueakStore:
         self.squeak_rate_limiter = squeak_rate_limiter
         self.squeak_whitelist = squeak_whitelist
 
-    def save_squeak(self, squeak, verify=False, skip_whitelist_check=False):
+    def save_squeak(self, squeak, skip_whitelist_check=False):
         if not skip_whitelist_check:
             if not self.squeak_whitelist.should_allow_squeak(squeak):
                 raise Exception("Squeak upload not allowed by whitelist.")
 
             if not self.squeak_rate_limiter.should_rate_limit_allow(squeak):
                 raise Exception("Excedeed allowed number of squeaks per block.")
-
-        inserted_squeak_hash = self.squeak_db.insert_squeak(squeak)
-        if verify:
-            self.squeak_block_verifier.verify_squeak_block(inserted_squeak_hash)
-        else:
-            self.squeak_block_verifier.add_squeak_to_queue(inserted_squeak_hash)
+        block_header_bytes = self.squeak_block_verifier.get_block_header(squeak)
+        inserted_squeak_hash = self.squeak_db.insert_squeak(squeak, block_header_bytes)
         return inserted_squeak_hash
 
     def get_squeak(self, squeak_hash, clear_decryption_key=False):

@@ -90,7 +90,7 @@ class SqueakDb:
     def sent_offers(self):
         return self.models.sent_offers
 
-    def insert_squeak(self, squeak):
+    def insert_squeak(self, squeak, block_header_bytes):
         """ Insert a new squeak. """
         vch_decryption_key = squeak.GetDecryptionKey().get_bytes() if squeak.HasDecryptionKey() else None
         squeak.ClearDecryptionKey()
@@ -103,6 +103,7 @@ class SqueakDb:
             n_time=squeak.nTime,
             author_address=str(squeak.GetAddress()),
             vch_decryption_key=vch_decryption_key,
+            block_header=block_header_bytes,
         )
         with self.get_connection() as connection:
             try:

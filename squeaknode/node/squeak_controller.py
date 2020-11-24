@@ -44,7 +44,7 @@ class SqueakController:
         self.lightning_client = lightning_client
         self.lightning_host_port = lightning_host_port
         self.price_msat = price_msat
-        self.squeak_block_verifier = SqueakBlockVerifier(squeak_db, blockchain_client)
+        self.squeak_block_verifier = SqueakBlockVerifier(blockchain_client)
         self.squeak_rate_limiter = SqueakRateLimiter(
             squeak_db,
             blockchain_client,
@@ -82,7 +82,7 @@ class SqueakController:
         return self.squeak_store.save_squeak(squeak)
 
     def save_created_squeak(self, squeak):
-        return self.squeak_store.save_squeak(squeak, verify=True, skip_whitelist_check=True)
+        return self.squeak_store.save_squeak(squeak, skip_whitelist_check=True)
 
     def get_public_squeak(self, squeak_hash):
         return self.squeak_store.get_squeak(squeak_hash, clear_decryption_key=True)
@@ -375,12 +375,6 @@ class SqueakController:
         num_expired_sent_offers = self.squeak_db.delete_expired_offers()
         if num_expired_sent_offers > 0:
             logger.info("Deleted number of sent offers: {}".format(num_expired_sent_offers))
-
-    def verify_all_unverified_squeaks(self):
-        self.squeak_block_verifier.verify_all_unverified_squeaks()
-
-    def verify_from_queue(self):
-        self.squeak_block_verifier.verify_from_queue()
 
     def process_subscribed_invoices(self):
         self.sent_offers_verifier.process_subscribed_invoices()
