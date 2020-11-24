@@ -1,34 +1,11 @@
 version: '3'
 services:
 
-  # btcd:
-  #   image: btcd
-  #   container_name: btcd
-  #   build:
-  #     context: ../
-  #     dockerfile: docker/btcd/Dockerfile
-  #   volumes:
-  #     - shared:/rpc
-  #     - ~/.btcd/data:/data
-  #   environment:
-  #     - NETWORK
-  #   entrypoint: ["./start-btcd.sh"]
-
   bitcoin-core:
     image: ruimarinho/bitcoin-core
     container_name: bitcoin-core
     volumes:
       - ~/.bitcoin:/home/bitcoin/.bitcoin
-    command:
-      -printtoconsole
-      -testnet=1
-      -server=1
-      -rpcbind=0.0.0.0
-      -rpcallowip=0.0.0.0/0
-      -rpcuser=devuser
-      -rpcpassword=devpass
-      -zmqpubrawblock=tcp://0.0.0.0:28332
-      -zmqpubrawtx=tcp://0.0.0.0:28333
 
   lnd:
     image: lnd
@@ -36,10 +13,6 @@ services:
     build:
       context: ../
       dockerfile: docker/lnd/Dockerfile
-    environment:
-      - NETWORK
-      - RPCHOST=bitcoin-core
-      - BACKEND=bitcoind
     volumes:
       - shared:/rpc
       - ~/.lnd:/root/.lnd
@@ -57,13 +30,6 @@ services:
     build:
       context: ../
       dockerfile: docker/squeaknode/Dockerfile
-    environment:
-      - WEBADMIN_USE_SSL
-      - WEBADMIN_LOGIN_DISABLED
-      - WEBADMIN_ALLOW_CORS
-      - NETWORK
-      - LOG_LEVEL
-      - SQUEAKNODE_SYNC_INTERVAL_S
     volumes:
       - shared:/rpc
       - ~/.lnd:/root/.lnd
