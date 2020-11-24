@@ -13,6 +13,9 @@ services:
     build:
       context: ../
       dockerfile: docker/lnd/Dockerfile
+    environment:
+      - RPCHOST=bitcoin-core
+      - BACKEND=bitcoind
     volumes:
       - shared:/rpc
       - ~/.lnd:/root/.lnd
@@ -30,6 +33,12 @@ services:
     build:
       context: ../
       dockerfile: docker/squeaknode/Dockerfile
+    environment:
+      - WEBADMIN_USE_SSL
+      - WEBADMIN_LOGIN_DISABLED
+      - WEBADMIN_ALLOW_CORS
+      - LOG_LEVEL
+      - SQUEAKNODE_SYNC_INTERVAL_S
     volumes:
       - shared:/rpc
       - ~/.lnd:/root/.lnd

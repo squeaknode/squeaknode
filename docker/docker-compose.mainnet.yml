@@ -16,17 +16,10 @@ services:
   lnd:
     environment:
       - NETWORK=mainnet
-      - RPCHOST=bitcoin-core
-      - BACKEND=bitcoind
 
   squeaknode:
     environment:
-      - WEBADMIN_USE_SSL
-      - WEBADMIN_LOGIN_DISABLED
-      - WEBADMIN_ALLOW_CORS
       - NETWORK=mainnet
-      - LOG_LEVEL
-      - SQUEAKNODE_SYNC_INTERVAL_S
 
 volumes:
   # shared volume is needed for sharing the btcd certificate
