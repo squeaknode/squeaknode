@@ -82,7 +82,7 @@ class SqueakController:
         return self.squeak_store.save_squeak(squeak)
 
     def save_created_squeak(self, squeak):
-        return self.squeak_store.save_squeak(squeak, verify=True, skip_whitelist_check=True)
+        return self.squeak_store.save_squeak(squeak, skip_whitelist_check=True)
 
     def get_public_squeak(self, squeak_hash):
         return self.squeak_store.get_squeak(squeak_hash, clear_decryption_key=True)
