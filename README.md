@@ -16,9 +16,9 @@ Node for Squeak protocol
 	$ docker-compose build
 	$ docker-compose up
 	```
-- If you want to use mainnet, run with the `NETWORK` environment variable:
+- If you want to use mainnet, run with the `docker-compose.mainnet.yml` override file:
 	```
-	$ NETWORK=mainnet docker-compose up
+	$ docker-compose -f docker-compose.yml -f docker-compose.mainnet.yml up
 	```
 - Go to http://localhost:12994/ and use the username/password in **docker/config.ini** to log in.
 
