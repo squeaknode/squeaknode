@@ -16,7 +16,6 @@ do
     if kill $last_pid > /dev/null 2>&1; then
 	echo "Found running process for pid: $last_pid" >&2
 	READY=1
-	kill -KILL $last_pid
     fi
     sleep 10
 done
