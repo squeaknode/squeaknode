@@ -347,12 +347,10 @@ export default function WalletPage() {
                      p={1}
                      key={pendingOpenChannel.getChannel().getChannelPoint()}
                   >
-                    <ChannelItem
+                    <PendingOpenChannelItem
                        key={pendingOpenChannel.getChannel().getChannelPoint()}
                        pendingOpenChannel={pendingOpenChannel}
-                       status={'pending-open'}
-                    >
-                    </ChannelItem>
+                    />
                   </Box>
                )}
                {channels.map(channel =>
@@ -363,23 +361,22 @@ export default function WalletPage() {
                     <ChannelItem
                        key={channel.getChannelPoint()}
                        channel={channel}
-                       status={'open'}>
-                    </ChannelItem>
+                    />
                   </Box>
                )}
-               {pendingChannels.getPendingClosingChannelsList().map(pendingClosingChannel =>
-                  <Box
-                     p={1}
-                     key={pendingClosingChannel.getChannel().getChannelPoint()}
-                  >
-                    <ChannelItem
-                       key={pendingClosingChannel.getChannel().getChannelPoint()}
-                       pendingOpenChannel={pendingClosingChannel}
-                       status={'pending-closing'}
-                    >
-                    </ChannelItem>
-                  </Box>
-               )}
+               {/*{pendingChannels.getPendingClosingChannelsList().map(pendingClosingChannel =>*/}
+               {/*   <Box*/}
+               {/*      p={1}*/}
+               {/*      key={pendingClosingChannel.getChannel().getChannelPoint()}*/}
+               {/*   >*/}
+               {/*     <ChannelItem*/}
+               {/*        key={pendingClosingChannel.getChannel().getChannelPoint()}*/}
+               {/*        pendingOpenChannel={pendingClosingChannel}*/}
+               {/*        status={'pending-closing'}*/}
+               {/*     >*/}
+               {/*     </ChannelItem>*/}
+               {/*   </Box>*/}
+               {/*)}*/}
              </Grid>
            </Grid>
          </Widget>

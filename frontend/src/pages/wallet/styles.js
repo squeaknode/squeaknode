@@ -36,12 +36,12 @@ export default makeStyles(theme => ({
     padding: '1.5rem 1rem 1rem 1rem',
   },
   channelIcon: {
-    color: ({status}) => {
-      if (status === 'open') {
+    color: ({channelStatus}) => {
+      if (channelStatus === 'open') {
         return 'green'
-      } else if (status === 'pending-open') {
+      } else if (channelStatus === 'pending-open') {
         return '#e2e200'
-      } else if (status === 'pending-closed') {
+      } else if (channelStatus === 'pending-closed') {
         return 'red'
       }
     }

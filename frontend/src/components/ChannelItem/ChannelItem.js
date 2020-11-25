@@ -29,7 +29,7 @@ export default function ChannelItem({
   ...props
 }) {
    const classes = useStyles({
-      status: props.status,
+      channelStatus: 'open',
       clickable: true,
    })
 
@@ -100,18 +100,6 @@ export default function ChannelItem({
       )
    }
 
-  function ChannelStatusText() {
-     switch(props.status) {
-        case 'open':
-           return 'Open'
-        case 'pending-open':
-           return 'Opening'
-        case 'pending-closed':
-           return 'Closing'
-        default:
-           return 'Unknown'
-     }
-  }
   return (
      <Card
         className={classes.root}
@@ -119,7 +107,7 @@ export default function ChannelItem({
      >
         <CardHeader
             className={classes.transactionItemHeader}
-            title={ChannelStatusText()}
+            title={'Open'}
             subheader={props.status === 'open' ? channel.getRemotePubkey(): null}
             avatar={<SwapHorizontalCircleIcon className={classes.channelIcon}/>}
             action={

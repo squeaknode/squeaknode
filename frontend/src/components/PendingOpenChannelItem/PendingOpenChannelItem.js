@@ -16,19 +16,34 @@ import classnames from "classnames";
 import LockIcon from '@material-ui/icons/Lock';
 
 // styles
-import useStyles from "./styles";
+import useStyles from "../../pages/wallet/styles";
 
 import Widget from "../../components/Widget";
 
 import moment from 'moment';
+import CardHeader from "@material-ui/core/CardHeader";
+import SwapHorizontalCircleIcon from "@material-ui/icons/SwapHorizontalCircle";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import Collapse from "@material-ui/core/Collapse";
+import Card from "@material-ui/core/Card";
 
 export default function PendingOpenChannelItem({
   pendingOpenChannel,
   ...props
 }) {
-  var classes = useStyles();
+  const classes = useStyles({
+     channelStatus: 'pending-open',
+     clickable: true,
+  })
 
   const history = useHistory();
+
+  const [expanded, setExpanded] = useState(false);
+
+   const handleExpandClick = (evt) => {
+      evt.stopPropagation()
+      setExpanded(!expanded);
+   };
 
   const getTxId = (channel) => {
     var channelPoint = channel.getChannelPoint();
@@ -91,22 +106,29 @@ export default function PendingOpenChannelItem({
   }
 
   return (
-    <Box
-      p={1}
-      m={0}
-      style={{backgroundColor: '#e0e0e0'}}
-      onClick={onChannelClick}
-      >
-        <Grid
-            container
-            direction="row"
-            justify="flex-start"
-            alignItems="flex-start"
-          >
-          <Grid item>
-            {ChannelContent()}
-          </Grid>
-          </Grid>
-    </Box>
-  )
+     <Card
+        className={classes.root}
+        onClick={onChannelClick}
+     >
+       <CardHeader
+          className={classes.transactionItemHeader}
+          title={'Opening test'}
+          // subheader={props.status === 'open' ? channel.getRemotePubkey(): null}
+          avatar={<SwapHorizontalCircleIcon className={classes.channelIcon}/>}
+          action={
+            <IconButton
+               className={expanded ? classes.collapseBtn : classes.expandBtn}
+               onClick={handleExpandClick}
+               aria-expanded={expanded}
+               aria-label="show more"
+            >
+              <ExpandMoreIcon />
+            </IconButton>
+          }
+       />
+       <Collapse in={expanded} timeout="auto" unmountOnExit>
+         {ChannelContent()}
+       </Collapse>
+     </Card>
+)
 }
