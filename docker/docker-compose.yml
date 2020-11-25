@@ -1,18 +1,11 @@
 version: '3'
 services:
 
-  btcd:
-    image: btcd
-    container_name: btcd
-    build:
-      context: ../
-      dockerfile: docker/btcd/Dockerfile
+  bitcoin-core:
+    image: ruimarinho/bitcoin-core
+    container_name: bitcoin-core
     volumes:
-      - shared:/rpc
-      - ~/.btcd/data:/data
-    environment:
-      - NETWORK
-    entrypoint: ["./start-btcd.sh"]
+      - ~/.bitcoin:/home/bitcoin/.bitcoin
 
   lnd:
     image: lnd
@@ -21,15 +14,14 @@ services:
       context: ../
       dockerfile: docker/lnd/Dockerfile
     environment:
-      - NETWORK
-      - RPCHOST=btcd
+      - RPCHOST=bitcoin-core
+      - BACKEND=bitcoind
     volumes:
-      - shared:/rpc
       - ~/.lnd:/root/.lnd
     ports:
       - 9735:9735
     links:
-      - "btcd:btcd"
+      - "bitcoin-core:bitcoin-core"
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=0
     entrypoint: ["./start-lnd.sh"]
@@ -44,11 +36,9 @@ services:
       - WEBADMIN_USE_SSL
       - WEBADMIN_LOGIN_DISABLED
       - WEBADMIN_ALLOW_CORS
-      - NETWORK
       - LOG_LEVEL
       - SQUEAKNODE_SYNC_INTERVAL_S
     volumes:
-      - shared:/rpc
       - ~/.lnd:/root/.lnd
       - ./config.ini:/app/config.ini
       - ~/.sqk:/root/.sqk
@@ -56,13 +46,8 @@ services:
       - 8774:8774
       - 12994:12994
     links:
-      - "btcd:btcd"
+      - "bitcoin-core:bitcoin-core"
       - "lnd:lnd"
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=0
     entrypoint: ["./start-squeaknode.sh"]
-
-volumes:
-  # shared volume is needed for sharing the btcd certificate
-  shared:
-    driver: local

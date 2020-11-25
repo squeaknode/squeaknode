@@ -48,7 +48,7 @@ class Models:
             Column("n_time", Integer, nullable=False),
             Column("author_address", String(35), index=True, nullable=False),
             Column("vch_decryption_key", Binary, nullable=True),
-            Column("block_header", Binary, nullable=True),
+            Column("block_header", Binary, nullable=False),
         )
 
         self.profiles = Table(

@@ -95,8 +95,8 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
     def GetSqueakDisplay(self, request, context):
         return self.handler.handle_get_squeak_display_entry(request)
 
-    def GetFollowedSqueakDisplays(self, request, context):
-        return self.handler.handle_get_followed_squeak_display_entries(request)
+    def GetTimelineSqueakDisplays(self, request, context):
+        return self.handler.handle_get_timeline_squeak_display_entries(request)
 
     def GetAddressSqueakDisplays(self, request, context):
         return self.handler.handle_get_squeak_display_entries_for_address(request)
@@ -159,6 +159,9 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
 
     def GetReceivedPayments(self, request, context):
         return self.handler.handle_get_received_payments(request)
+
+    def SubscribeReceivedPayments(self, request, context):
+        return self.handler.handle_subscribe_received_payments(request)
 
     def serve(self):
         server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))

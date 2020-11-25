@@ -10,6 +10,9 @@ from squeaknode.node.network_sync import NetworkSync
 logger = logging.getLogger(__name__)
 
 
+LOOKUP_BLOCK_INTERVAL = 1008  # 1 week
+
+
 class SqueakSyncController:
     def __init__(self, blockchain_client, squeak_store, squeak_db, lightning_client):
         self.blockchain_client = blockchain_client
@@ -27,10 +30,13 @@ class SqueakSyncController:
                 "Failed to sync because unable to get blockchain info.", exc_info=False
             )
             return
+        min_block = block_height - LOOKUP_BLOCK_INTERVAL
+        max_block = block_height
         peers = self.squeak_db.get_peers()
         dowload_timeline_task = TimelineNetworkSyncTask(
             self.network_sync,
-            block_height,
+            min_block,
+            max_block,
         )
         network_sync_result = dowload_timeline_task.sync(peers)
         logger.info("Upload network_sync_result: {}".format(network_sync_result))

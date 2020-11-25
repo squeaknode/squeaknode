@@ -17,8 +17,8 @@ WEBADMIN_HOST = "0.0.0.0"
 WEBADMIN_PORT = 12994
 DEFAULT_BITCOIN_RPC_PORT = 8334
 BITCOIN_RPC_PORT = {
-    'mainnet': 8334,
-    'testnet': 18334,
+    'mainnet': 8332,
+    'testnet': 18332,
     'simnet': 18556,
 }
 DEFAULT_LND_PORT = 9735
@@ -44,6 +44,8 @@ class Config:
         self._configs['bitcoin_rpc_port'] = self._get_bitcoin_rpc_port()
         self._configs['bitcoin_rpc_user'] = self._get_bitcoin_rpc_user()
         self._configs['bitcoin_rpc_pass'] = self._get_bitcoin_rpc_pass()
+        self._configs['bitcoin_rpc_use_ssl'] = self._get_bitcoin_rpc_use_ssl()
+        self._configs['bitcoin_rpc_ssl_cert'] = self._get_bitcoin_rpc_ssl_cert()
 
         #lnd
         self._configs['lnd_host'] = self._get_lnd_host()
@@ -76,7 +78,6 @@ class Config:
         self._configs['squeaknode_network'] = self._get_squeaknode_network()
         self._configs['squeaknode_price_msat'] = self._get_squeaknode_price_msat()
         self._configs['squeaknode_max_squeaks_per_address_per_hour'] = self._get_squeaknode_max_squeaks_per_address_per_hour()
-        self._configs['squeaknode_database'] = self._get_squeaknode_database()
         self._configs['squeaknode_sqk_dir'] = self._get_squeaknode_sqk_dir()
         self._configs['squeaknode_sync_interval_s'] = self._get_squeaknode_sync_interval_s()
         self._configs['squeaknode_log_level'] = self._get_squeaknode_log_level()
@@ -107,6 +108,12 @@ class Config:
 
     def _get_bitcoin_rpc_pass(self):
         return self.parser.get("bitcoin", "rpc_pass")
+
+    def _get_bitcoin_rpc_use_ssl(self):
+        return self.parser.getboolean("bitcoin", "rpc_use_ssl", fallback=False)
+
+    def _get_bitcoin_rpc_ssl_cert(self):
+        return self.parser.get("bitcoin", "rpc_ssl_cert", fallback=None)
 
     def _get_lnd_host(self):
         return self.parser.get("lnd", "host")

@@ -490,13 +490,13 @@ def test_get_following_squeaks(
     )
 
     # Get all squeak displays for the known address
-    get_followed_squeak_display_response = admin_stub.GetFollowedSqueakDisplays(
-        squeak_admin_pb2.GetFollowedSqueakDisplaysRequest()
+    get_timeline_squeak_display_response = admin_stub.GetTimelineSqueakDisplays(
+        squeak_admin_pb2.GetTimelineSqueakDisplaysRequest()
     )
-    assert len(get_followed_squeak_display_response.squeak_display_entries) >= 1
+    assert len(get_timeline_squeak_display_response.squeak_display_entries) >= 1
     for (
         squeak_display_entry
-    ) in get_followed_squeak_display_response.squeak_display_entries:
+    ) in get_timeline_squeak_display_response.squeak_display_entries:
         # TODO: check the profile id of the squeak display entry
         # assert squeak_display_entry.profile_id == signing_profile_id
         pass
@@ -788,10 +788,10 @@ def test_open_channel(server_stub, admin_stub, lightning_client, saved_squeak_ha
 
 def test_connect_other_node(server_stub, admin_stub, other_server_stub, other_admin_stub, lightning_client, signing_profile_id, saved_squeak_hash):
     # Get all squeak displays
-    get_followed_squeak_display_response = other_admin_stub.GetFollowedSqueakDisplays(
-        squeak_admin_pb2.GetFollowedSqueakDisplaysRequest()
+    get_timeline_squeak_display_response = other_admin_stub.GetTimelineSqueakDisplays(
+        squeak_admin_pb2.GetTimelineSqueakDisplaysRequest()
     )
-    assert len(get_followed_squeak_display_response.squeak_display_entries) == 0
+    assert len(get_timeline_squeak_display_response.squeak_display_entries) == 0
 
     # Add the main node as a peer
     create_peer_response = other_admin_stub.CreatePeer(
@@ -935,6 +935,17 @@ def test_connect_other_node(server_stub, admin_stub, other_server_stub, other_ad
             assert received_payment_time > datetime.datetime.now() - five_minutes
             assert received_payment_time < datetime.datetime.now()
             assert len(received_payment.client_addr) > 4
+
+        # Subscribe to received payments starting from index zero
+        subscribe_received_payments_response = admin_stub.SubscribeReceivedPayments(
+            squeak_admin_pb2.SubscribeReceivedPaymentsRequest(
+                payment_index=0,
+            ),
+        )
+        for payment in subscribe_received_payments_response:
+            print("Got payment from subscription: {}".format(payment))
+            assert payment.received_payment_id == 1
+            break
 
 
 def test_download_single_squeak(server_stub, admin_stub, other_server_stub, other_admin_stub, lightning_client, signing_profile_id, saved_squeak_hash):

@@ -108,9 +108,9 @@ service SqueakAdmin {
   */
   rpc GetSqueakDisplay (GetSqueakDisplayRequest) returns (GetSqueakDisplayReply) {}
 
-  /** sqkadmin: `getfollowedsqueakdisplays`
+  /** sqkadmin: `gettimelinesqueakdisplays`
   */
-  rpc GetFollowedSqueakDisplays (GetFollowedSqueakDisplaysRequest) returns (GetFollowedSqueakDisplaysReply) {}
+  rpc GetTimelineSqueakDisplays (GetTimelineSqueakDisplaysRequest) returns (GetTimelineSqueakDisplaysReply) {}
 
   /** sqkadmin: `getaddresssqueakdisplays`
   */
@@ -187,6 +187,10 @@ service SqueakAdmin {
   /** sqkadmin: `getreceivedpayments`
   */
   rpc GetReceivedPayments (GetReceivedPaymentsRequest) returns (GetReceivedPaymentsReply) {}
+
+  /** sqkadmin: `subscribereceivedpayments`
+  */
+  rpc SubscribeReceivedPayments (SubscribeReceivedPaymentsRequest) returns (stream ReceivedPayment) {}
 
 }
 
@@ -370,10 +374,10 @@ message SqueakDisplayEntry {
     string author_name = 11;
 }
 
-message GetFollowedSqueakDisplaysRequest {
+message GetTimelineSqueakDisplaysRequest {
 }
 
-message GetFollowedSqueakDisplaysReply {
+message GetTimelineSqueakDisplaysReply {
     /// Multiple squeak display entries
     repeated SqueakDisplayEntry squeak_display_entries = 1;
 }
@@ -702,4 +706,9 @@ message ReceivedPayment {
 
     /// The address of the buyer client
     string client_addr = 6;
+}
+
+message SubscribeReceivedPaymentsRequest {
+    /// Payment index to start consuming from
+    int64 payment_index = 1;
 }

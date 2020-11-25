@@ -10,11 +10,15 @@ Node for Squeak protocol
 * Enough disk space for the bitcoin blockchain
 
 ##### Steps
-- Build and start docker-compose with the `NETWORK` environment variable set:
+- Build and start docker-compose:
 	```
 	$ cd docker
 	$ docker-compose build
-	$ NETWORK=testnet docker-compose up
+	$ docker-compose up
+	```
+- If you want to use mainnet, run with the `docker-compose.mainnet.yml` override file:
+	```
+	$ docker-compose -f docker-compose.yml -f docker-compose.mainnet.yml up
 	```
 - Go to http://localhost:12994/ and use the username/password in **docker/config.ini** to log in.
 
@@ -31,8 +35,8 @@ Node for Squeak protocol
 	```
 	[squeaknode]
 	network=testnet
-	price=100
-	enable_sync=true
+	price_msat=1000000
+	sync_interval_s=10
 
 	[bitcoin]
 	rpc_host=localhost

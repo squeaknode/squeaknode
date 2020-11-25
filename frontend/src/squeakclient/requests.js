@@ -25,7 +25,7 @@ import {
 } from "../proto/lnd_pb"
 import {
   GetSqueakProfileRequest,
-  GetFollowedSqueakDisplaysRequest,
+  GetTimelineSqueakDisplaysRequest,
   SetSqueakProfileFollowingRequest,
   SetSqueakProfileSharingRequest,
   GetPeersRequest,
@@ -48,7 +48,7 @@ import {
   DeletePeerRequest,
   DeleteSqueakProfileRequest,
   DeleteSqueakRequest,
-  GetFollowedSqueakDisplaysReply,
+  GetTimelineSqueakDisplaysReply,
   SetSqueakProfileSharingReply,
   GetSqueakProfileReply,
   SetSqueakProfileFollowingReply,
@@ -140,20 +140,13 @@ export function getUserRequest(handleResponse) {
   });
 }
 
-// export function getFollowedSqueakDisplaysRequest(handleResponse) {
-//   var request = new GetFollowedSqueakDisplaysRequest();
-//   client.getFollowedSqueakDisplays(request, {}, (err, response) => {
-//     handleResponse(response.getSqueakDisplayEntriesList())
-//   });
-// };
-
-export function getFollowedSqueakDisplaysRequest(handleResponse) {
-  var request = new GetFollowedSqueakDisplaysRequest();
-  console.log(GetFollowedSqueakDisplaysReply);
+export function getTimelineSqueakDisplaysRequest(handleResponse) {
+  var request = new GetTimelineSqueakDisplaysRequest();
+  console.log(GetTimelineSqueakDisplaysReply);
   makeRequest(
-    'getfollowedsqueakdisplays',
+    'gettimelinesqueakdisplays',
     request,
-    GetFollowedSqueakDisplaysReply.deserializeBinary,
+    GetTimelineSqueakDisplaysReply.deserializeBinary,
     (response) => {
       handleResponse(response.getSqueakDisplayEntriesList());
     }

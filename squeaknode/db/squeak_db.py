@@ -90,7 +90,7 @@ class SqueakDb:
     def sent_offers(self):
         return self.models.sent_offers
 
-    def insert_squeak(self, squeak):
+    def insert_squeak(self, squeak, block_header_bytes):
         """ Insert a new squeak. """
         vch_decryption_key = squeak.GetDecryptionKey().get_bytes() if squeak.HasDecryptionKey() else None
         squeak.ClearDecryptionKey()
@@ -103,6 +103,7 @@ class SqueakDb:
             n_time=squeak.nTime,
             author_address=str(squeak.GetAddress()),
             vch_decryption_key=vch_decryption_key,
+            block_header=block_header_bytes,
         )
         with self.get_connection() as connection:
             try:
@@ -137,7 +138,7 @@ class SqueakDb:
             row = result.fetchone()
             return self._parse_squeak_entry_with_profile(row)
 
-    def get_followed_squeak_entries_with_profile(self):
+    def get_timeline_squeak_entries_with_profile(self):
         """ Get all followed squeaks. """
         s = (
             select([self.squeaks, self.profiles])
@@ -147,7 +148,6 @@ class SqueakDb:
                     self.profiles.c.address == self.squeaks.c.author_address,
                 )
             )
-            .where(self.profiles.c.following)
             .where(self.squeaks.c.block_header != None)
             .order_by(
                 self.squeaks.c.n_block_height.desc(),
@@ -1059,6 +1059,21 @@ class SqueakDb:
             rows = result.fetchall()
             received_payments = [self._parse_received_payment(row) for row in rows]
             return received_payments
+
+    def yield_received_payments_from_index(self, start_index=0):
+        """ Get all received payments. """
+        s = (
+            select([self.received_payments])
+            .order_by(
+                self.received_payments.c.received_payment_id.asc(),
+            )
+            .where(self.received_payments.c.received_payment_id > start_index)
+        )
+        with self.get_connection() as connection:
+            result = connection.execute(s)
+            for row in result:
+                received_payment = self._parse_received_payment(row)
+                yield received_payment
 
     def _parse_squeak_entry(self, row):
         if row is None:

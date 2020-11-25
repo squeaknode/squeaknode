@@ -23,6 +23,7 @@ from squeaknode.server.sent_payment import SentPayment
 from squeaknode.server.util import generate_offer_preimage
 from squeaknode.node.sent_offers_verifier import SentOffersVerifier
 from squeaknode.node.sent_offers_worker import SentOffersWorker
+from squeaknode.node.received_payments_subscription_client import OpenReceivedPaymentsSubscriptionClient
 
 
 logger = logging.getLogger(__name__)
@@ -43,7 +44,7 @@ class SqueakController:
         self.lightning_client = lightning_client
         self.lightning_host_port = lightning_host_port
         self.price_msat = price_msat
-        self.squeak_block_verifier = SqueakBlockVerifier(squeak_db, blockchain_client)
+        self.squeak_block_verifier = SqueakBlockVerifier(blockchain_client)
         self.squeak_rate_limiter = SqueakRateLimiter(
             squeak_db,
             blockchain_client,
@@ -81,7 +82,7 @@ class SqueakController:
         return self.squeak_store.save_squeak(squeak)
 
     def save_created_squeak(self, squeak):
-        return self.squeak_store.save_squeak(squeak, verify=True, skip_whitelist_check=True)
+        return self.squeak_store.save_squeak(squeak, skip_whitelist_check=True)
 
     def get_public_squeak(self, squeak_hash):
         return self.squeak_store.get_squeak(squeak_hash, clear_decryption_key=True)
@@ -229,8 +230,8 @@ class SqueakController:
     def get_squeak_entry_with_profile(self, squeak_hash):
         return self.squeak_store.get_squeak_entry_with_profile(squeak_hash)
 
-    def get_followed_squeak_entries_with_profile(self):
-        return self.squeak_store.get_followed_squeak_entries_with_profile()
+    def get_timeline_squeak_entries_with_profile(self):
+        return self.squeak_store.get_timeline_squeak_entries_with_profile()
 
     def get_squeak_entries_with_profile_for_address(
         self, address, min_block, max_block
@@ -375,11 +376,13 @@ class SqueakController:
         if num_expired_sent_offers > 0:
             logger.info("Deleted number of sent offers: {}".format(num_expired_sent_offers))
 
-    def verify_all_unverified_squeaks(self):
-        self.squeak_block_verifier.verify_all_unverified_squeaks()
-
-    def verify_from_queue(self):
-        self.squeak_block_verifier.verify_from_queue()
-
     def process_subscribed_invoices(self):
         self.sent_offers_verifier.process_subscribed_invoices()
+
+    def subscribe_received_payments(self, initial_index):
+        with OpenReceivedPaymentsSubscriptionClient(
+                self.squeak_db,
+                initial_index,
+        ) as client:
+            for payment in client.get_received_payments():
+                yield payment

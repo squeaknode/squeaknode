@@ -42,7 +42,7 @@ set_default() {
 RPCUSER=$(set_default "$RPCUSER" "devuser")
 RPCPASS=$(set_default "$RPCPASS" "devpass")
 DEBUG=$(set_default "$DEBUG" "info")
-NETWORK=$(set_default "$NETWORK" "simnet")
+NETWORK=$(set_default "$NETWORK" "testnet")
 
 PARAMS=""
 if [ "$NETWORK" != "mainnet" ]; then

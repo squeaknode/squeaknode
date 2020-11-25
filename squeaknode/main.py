@@ -80,10 +80,6 @@ def load_price_msat(config):
     return config.squeaknode_price_msat
 
 
-def load_database(config):
-    return config.squeaknode_database
-
-
 def load_max_squeaks_per_address_per_hour(config):
     return config.squeaknode_max_squeaks_per_address_per_hour
 
@@ -123,6 +119,8 @@ def load_blockchain_client(config):
         config.bitcoin_rpc_port,
         config.bitcoin_rpc_user,
         config.bitcoin_rpc_pass,
+        config.bitcoin_rpc_use_ssl,
+        config.bitcoin_rpc_ssl_cert,
     )
 
 

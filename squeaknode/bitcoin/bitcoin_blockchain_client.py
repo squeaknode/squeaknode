@@ -1,3 +1,4 @@
+import os
 import json
 import logging
 from typing import Optional
@@ -19,9 +20,17 @@ class BitcoinBlockchainClient(BlockchainClient):
         port: int,
         rpc_user: str,
         rpc_password: str,
+        use_ssl: bool,
+        ssl_cert: str,
     ) -> None:
-        self.url = f"https://{rpc_user}:{rpc_password}@{host}:{port}"
+        protocol = "https" if use_ssl else "http"
+        self.url = f"{protocol}://{rpc_user}:{rpc_password}@{host}:{port}"
         self.headers = {"content-type": "application/json"}
+        s = requests.Session()
+        if ssl_cert:
+            os.environ['SSL_CERT_FILE'] = ssl_cert
+            os.environ['REQUESTS_CA_BUNDLE'] = ssl_cert
+            s.cert = ssl_cert
 
     def get_best_block_info(self) -> BlockInfo:
         block_height = self.get_block_count()
