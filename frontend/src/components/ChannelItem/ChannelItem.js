@@ -86,9 +86,6 @@ export default function ChannelItem({
       </Box>
    }
    function ChannelContent() {
-      if (props.status !== 'open') {
-         return <CardContent className={classes.cardContentRoot}/>
-      }
       return (
          <CardContent className={classes.transactionMoreDetails}>
             {ChannelDetailItem("Capacity", `${channel.getCapacity()} sats`)}

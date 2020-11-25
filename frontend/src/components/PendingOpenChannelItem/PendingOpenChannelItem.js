@@ -26,6 +26,7 @@ import SwapHorizontalCircleIcon from "@material-ui/icons/SwapHorizontalCircle";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import Collapse from "@material-ui/core/Collapse";
 import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
 
 export default function PendingOpenChannelItem({
   pendingOpenChannel,
@@ -79,31 +80,29 @@ export default function PendingOpenChannelItem({
     goToChannelPage(txId, outputIndex);
   }
 
-  function ChannelContent() {
-    var channel = pendingOpenChannel.getChannel();
-    return (
-      <Typography component="div">
-        <Box fontSize="h3.fontSize" m={1}>
-          Pending Open Channel
-        </Box>
-        <Box m={1}>
-          Capacity: {channel.getCapacity()}
-        </Box>
-        <Box m={1}>
-          Local Balance: {channel.getLocalBalance()}
-        </Box>
-        <Box m={1}>
-          Remote Balance: {channel.getRemoteBalance()}
-        </Box>
-        <Box m={1}>
-          Pubkey: {channel.getRemoteNodePub()}
-        </Box>
-        <Box m={1}>
-          Channel Point: {channel.getChannelPoint()}
-        </Box>
-      </Typography>
-    )
-  }
+   function ChannelDetailItem(label, value) {
+      return <Box display='flex'>
+         <Typography className={classes.detailItemLabel}>
+            {label}
+         </Typography>
+         <Typography className={classes.detailItemValue}>
+            {value}
+         </Typography>
+      </Box>
+   }
+
+   function ChannelContent() {
+      const channel = pendingOpenChannel.getChannel();
+      return (
+         <CardContent className={classes.transactionMoreDetails}>
+            {ChannelDetailItem("Capacity", `${channel.getCapacity()} sats`)}
+            {ChannelDetailItem("Local Balance", `${channel.getLocalBalance()} sats`)}
+            {ChannelDetailItem("Remote Balance", `${channel.getRemoteBalance()} sats`)}
+            {ChannelDetailItem("Pubkey", channel.getRemoteNodePub())}
+            {ChannelDetailItem("Channel Point", channel.getChannelPoint())}
+         </CardContent>
+      )
+   }
 
   return (
      <Card
