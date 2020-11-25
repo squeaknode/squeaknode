@@ -29,7 +29,7 @@ export default function Widget({
 
   return (
     <div className={classes.widgetWrapper}>
-      <Paper className={classes.paper} classes={{ root: classes.widgetRoot }}>
+      <Paper className={classes.paper} classes={{ root: classes.widgetRoot }}  elevation={3} square>
         <div className={classes.widgetHeader}>
           {header ? (
             header

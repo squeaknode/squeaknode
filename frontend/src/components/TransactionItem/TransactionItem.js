@@ -1,35 +1,33 @@
 import React, { useState } from "react";
-import {
-  Paper,
-  IconButton,
-  Menu,
-  MenuItem,
-  Typography,
-  Grid,
-  Box,
-  Link,
-} from "@material-ui/core";
-import { MoreVert as MoreIcon } from "@material-ui/icons";
-import {useHistory} from "react-router-dom";
-import classnames from "classnames";
 
-import LockIcon from '@material-ui/icons/Lock';
+// icons
+import CallMadeIcon from '@material-ui/icons/CallMade';
+import CallReceivedIcon from '@material-ui/icons/CallReceived';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+
 
 // styles
-import useStyles from "./styles";
-
-import Widget from "../../components/Widget";
+import useStyles from "../../pages/wallet/styles";
 
 import moment from 'moment';
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
+import CardHeader from "@material-ui/core/CardHeader";
+import IconButton from "@material-ui/core/IconButton";
+import Collapse from "@material-ui/core/Collapse";
+import Box from "@material-ui/core/Box";
+import Typography from "@material-ui/core/Typography";
 
 export default function TransactionItem({
   transaction,
   handleTransactionClick,
   ...props
 }) {
-  var classes = useStyles();
+  const [expanded, setExpanded] = useState(false);
 
-  const history = useHistory();
+  const handleExpandClick = () => {
+    setExpanded(!expanded);
+  };
 
   const onTransactionClick = (event) => {
     event.preventDefault();
@@ -39,68 +37,76 @@ export default function TransactionItem({
     }
   }
 
-  function TransactionContent() {
-    return (
-      <Typography
-        size="md"
-        style={{whiteSpace: 'pre-line', overflow: "hidden", textOverflow: "ellipsis", height: '6rem'}}
-        >{transaction.getAmount()}
-      </Typography>
+   function TransactionDetailItem(label, value) {
+      return <Box display='flex'>
+         <Typography className={classes.detailItemLabel}>
+            {label}
+         </Typography>
+         <Typography className={classes.detailItemValue}>
+            {value}
+         </Typography>
+      </Box>
+   }
+
+   function TransactionMoreDetails() {
+      return (
+         <CardContent className={classes.transactionMoreDetails}>
+            {TransactionDetailItem("Timestamp", moment.unix(transaction.getTimeStamp()).format('lll'))}
+            {TransactionDetailItem("Block Height", transaction.getBlockHeight())}
+            {TransactionDetailItem("Total Fees", transaction.getTotalFees())}
+            {/*{TransactionDetailItem("Dest Addresses", transaction.getDestAddressesList().length)}*/}
+            {TransactionDetailItem("Confirmations", transaction.getNumConfirmations())}
+         </CardContent>
     )
   }
 
-  function TransactionPositiveBackgroundColor() {
-    return {backgroundColor: 'lightgreen'};
-  }
+  const classes = useStyles({
+     amount: transaction.getAmount(),
+     clickable: false,
+  })
 
-  function TransactionNegativeBackgroundColor() {
-    return {backgroundColor: 'lightred'};
-  }
+  const amountGtZero = transaction.getAmount() >= 0
 
-  function transactionBackgroundColor() {
-    var amount = transaction.getAmount();
-    if (amount == 0) {
-      return 'white'
-    } else if (amount < 0) {
-      return '#ffcdd2';
-    } else if (amount > 0) {
-      return '#c8e6c9';
-    }
-  }
+   function PlusMinusSymbol() {
+     if (transaction.getAmount() > 0) {
+        return '+'
+     } else if (transaction.getAmount() < 0) {
+        return '-'
+     }
+   }
 
-  function TransactionBackgroundColor() {
-    return {backgroundColor: transactionBackgroundColor()};
+  function TransactionIcon() {
+     if (amountGtZero) {
+        return <CallReceivedIcon className={classes.transactionIcon}/>
+     } else {
+        return <CallMadeIcon className={classes.transactionIcon}/>
+     }
   }
 
   return (
-    <Box
-      p={1}
-      m={0}
-      style={TransactionBackgroundColor()}
-      onClick={onTransactionClick}
+      <Card
+         className={classes.root}
+         onClick={onTransactionClick}
       >
-        <Grid
-            container
-            direction="row"
-            justify="flex-start"
-            alignItems="flex-start"
-          >
-          <Grid item>
-            {TransactionContent()}
-          </Grid>
-          </Grid>
-          <Grid
-            container
-            direction="row"
-            justify="flex-start"
-            alignItems="flex-start"
-          >
-            <Grid item>
-                <Box color="secondary.main" fontWeight="fontWeightBold">
-                  {moment(transaction.getTimeStamp()*1000).fromNow()} (Block #{transaction.getBlockHeight()})
-                </Box>
-            </Grid>
-          </Grid>
-    </Box>
-  )
+         <CardHeader
+            className={classes.transactionItemHeader}
+            title={`${PlusMinusSymbol()}${Math.abs(transaction.getAmount())} sats`}
+            subheader={moment.unix(transaction.getTimeStamp()).fromNow()}
+            avatar={TransactionIcon()}
+            action={
+               <IconButton
+                  className={expanded ? classes.collapseBtn : classes.expandBtn}
+                  onClick={handleExpandClick}
+                  aria-expanded={expanded}
+                  aria-label="show more"
+               >
+                  <ExpandMoreIcon />
+               </IconButton>
+            }
+         />
+         <Collapse in={expanded} timeout="auto" unmountOnExit>
+            {TransactionMoreDetails()}
+         </Collapse>
+      </Card>
+)
 }

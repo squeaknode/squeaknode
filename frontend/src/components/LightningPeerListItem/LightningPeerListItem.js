@@ -1,32 +1,23 @@
-import React, { useState } from "react";
-import {
-  Paper,
-  IconButton,
-  Menu,
-  MenuItem,
-  Typography,
-  Grid,
-  Box,
-  Link,
-} from "@material-ui/core";
-import { MoreVert as MoreIcon } from "@material-ui/icons";
+import React from "react";
 import {useHistory} from "react-router-dom";
-import classnames from "classnames";
 
-import LockIcon from '@material-ui/icons/Lock';
+import Card from '@material-ui/core/Card';
+import Button from '@material-ui/core/Button';
+import CardHeader from "@material-ui/core/CardHeader";
 
-// styles
-import useStyles from "./styles";
+// icons
+import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';
 
-import Widget from "../../components/Widget";
+import useStyles from "../../pages/wallet/styles";
 
-import moment from 'moment';
 
 export default function LightningPeerListItem({
   peer,
   ...props
 }) {
-  var classes = useStyles();
+  const classes = useStyles({
+    clickable: true,
+  });
 
   const history = useHistory();
 
@@ -37,75 +28,44 @@ export default function LightningPeerListItem({
   }
 
   const goToLightningNodePage = () => {
-    var pubkey = peer.getPubKey();
-    var host = getPeerHost();
-    var port = getPeerPort();
+    const pubkey = peer.getPubKey();
+    const host = getPeerHost();
+    const port = getPeerPort();
     history.push("/app/lightningnode/" + pubkey + "/" + host + "/" + port);
   };
 
   const getPeerHost = () => {
-    var address = peer.getAddress();
+    const address = peer.getAddress();
     if (address == null) {
       return null;
     }
-    var pieces = address.split(":");
+    const pieces = address.split(":");
     return pieces[0];
   }
 
   const getPeerPort = () => {
-    var address = peer.getAddress();
+    const address = peer.getAddress();
     if (address == null) {
       return null;
     }
-    var pieces = address.split(":");
+    const pieces = address.split(":");
     if (pieces.length < 2) {
       return null;
     }
     return pieces[1];
   }
 
-  function PeerContent() {
-    return (
-      <Typography
-        size="md"
-        >{peer.getPubKey()}
-      </Typography>
-    )
-  }
-
   return (
-    <Box
-      p={1}
-      m={0}
-      style={{backgroundColor: 'lightgray'}}
-      onClick={onPeerClick}
-      >
-          <Grid
-            container
-            direction="row"
-            justify="flex-start"
-            alignItems="flex-start"
-          >
-          <Grid item>
-            <Typography
-              size="md"
-              >Pubkey: {peer.getPubKey()}
-            </Typography>
-          </Grid>
-          </Grid>
-          <Grid
-            container
-            direction="row"
-            justify="flex-start"
-            alignItems="flex-start"
-          >
-          <Grid item>
-            <Typography
-              size="md"
-              >Address: {peer.getAddress()}
-            </Typography>
-          </Grid>
-          </Grid>
-    </Box>
+     <Card
+        className={classes.root}
+        onClick={onPeerClick}
+     >
+       <CardHeader
+          avatar={<RecordVoiceOverIcon/>}
+          title={`Pubkey: ${peer.getPubKey()}`}
+          subheader={`Address: ${peer.getAddress()}`}
+          // action={<Button size="small">View Peer</Button>}
+       />
+     </Card>
   )
 }
