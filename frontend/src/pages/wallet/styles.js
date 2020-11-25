@@ -5,6 +5,12 @@ export default makeStyles(theme => ({
     paddingTop: '0.5rem',
     minWidth: 275,
     alignItems: 'center',   // LightningPeerListItem.js
+    '&:hover': {
+      boxShadow: ({clickable}) => clickable ?
+         '0px 4px 3px -1px rgba(0,0,0,0.2), 0 3px 3px -2px #B2B2B21A, 0 1px 8px 0 #9A9A9A1A' :
+         null,
+      cursor: ({clickable}) => clickable ? 'pointer' : 'default',
+    }
   },
   balanceGridItemLabel: {  // BalanceGridItem
     fontWeight: 'bolder',
@@ -59,6 +65,8 @@ export default makeStyles(theme => ({
     paddingLeft: '0.75rem',
     display: 'flex',
     alignItems: 'center',
+    color: ({amount}) => isNaN(amount) ? null :
+      amount > 0 ? 'green' : 'red'
   },
   transactionIcon: {
     color: ({amount}) => amount > 0

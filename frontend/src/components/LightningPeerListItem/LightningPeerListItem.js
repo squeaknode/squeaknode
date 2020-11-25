@@ -15,7 +15,9 @@ export default function LightningPeerListItem({
   peer,
   ...props
 }) {
-  const classes = useStyles();
+  const classes = useStyles({
+    clickable: true,
+  });
 
   const history = useHistory();
 
@@ -62,7 +64,7 @@ export default function LightningPeerListItem({
           avatar={<RecordVoiceOverIcon/>}
           title={`Pubkey: ${peer.getPubKey()}`}
           subheader={`Address: ${peer.getAddress()}`}
-          action={<Button size="small">View Peer</Button>}
+          // action={<Button size="small">View Peer</Button>}
        />
      </Card>
   )

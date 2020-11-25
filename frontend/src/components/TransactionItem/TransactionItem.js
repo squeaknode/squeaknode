@@ -54,17 +54,26 @@ export default function TransactionItem({
             {TransactionDetailItem("Timestamp", moment.unix(transaction.getTimeStamp()).format('lll'))}
             {TransactionDetailItem("Block Height", transaction.getBlockHeight())}
             {TransactionDetailItem("Total Fees", transaction.getTotalFees())}
-            {TransactionDetailItem("Dest Addresses", transaction.getDestAddressesList().length)}
+            {/*{TransactionDetailItem("Dest Addresses", transaction.getDestAddressesList().length)}*/}
             {TransactionDetailItem("Confirmations", transaction.getNumConfirmations())}
          </CardContent>
     )
   }
 
   const classes = useStyles({
-    amount: transaction.getAmount(),
+     amount: transaction.getAmount(),
+     clickable: false,
   })
 
   const amountGtZero = transaction.getAmount() >= 0
+
+   function PlusMinusSymbol() {
+     if (transaction.getAmount() > 0) {
+        return '+'
+     } else if (transaction.getAmount() < 0) {
+        return '-'
+     }
+   }
 
   function TransactionIcon() {
      if (amountGtZero) {
@@ -81,7 +90,7 @@ export default function TransactionItem({
       >
          <CardHeader
             className={classes.transactionItemHeader}
-            title={`${Math.abs(transaction.getAmount())} sats`}
+            title={`${PlusMinusSymbol()}${Math.abs(transaction.getAmount())} sats`}
             subheader={moment.unix(transaction.getTimeStamp()).fromNow()}
             avatar={TransactionIcon()}
             action={

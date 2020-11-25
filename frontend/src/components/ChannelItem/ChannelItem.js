@@ -30,13 +30,15 @@ export default function ChannelItem({
 }) {
    const classes = useStyles({
       status: props.status,
+      clickable: true,
    })
 
    const history = useHistory();
 
    const [expanded, setExpanded] = useState(false);
 
-   const handleExpandClick = () => {
+   const handleExpandClick = (evt) => {
+      evt.stopPropagation()
       setExpanded(!expanded);
    };
 
@@ -113,7 +115,7 @@ export default function ChannelItem({
   return (
      <Card
         className={classes.root}
-        // onClick={onChannelClick}
+        onClick={onChannelClick}
      >
         <CardHeader
             className={classes.transactionItemHeader}

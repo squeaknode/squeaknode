@@ -278,7 +278,7 @@ export default function WalletPage() {
               justify="flex-start"
               alignItems="center"
            >
-             <Grid item xs={6}>
+             <Grid item xs={12}>
                {transactions.map(transaction =>
                   <Box
                      p={1}
@@ -309,7 +309,7 @@ export default function WalletPage() {
               justify="flex-start"
               alignItems="center"
            >
-             <Grid item xs={6}>
+             <Grid item xs={12}>
                {peers.map(peer =>
                   <Box
                      p={1}
@@ -340,7 +340,8 @@ export default function WalletPage() {
               justify="flex-start"
               alignItems="center"
            >
-             <Grid item xs={6}>
+             {/*<Grid item xs={6}>*/}
+             <Grid item xs={12}>
                {pendingChannels.getPendingOpenChannelsList().map(pendingOpenChannel =>
                   <Box
                      p={1}
