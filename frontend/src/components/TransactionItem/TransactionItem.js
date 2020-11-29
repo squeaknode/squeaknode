@@ -17,6 +17,7 @@ import IconButton from "@material-ui/core/IconButton";
 import Collapse from "@material-ui/core/Collapse";
 import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
+import SwapHorizontalCircleIcon from "@material-ui/icons/SwapHorizontalCircle";
 
 export default function TransactionItem({
   transaction,
@@ -50,7 +51,7 @@ export default function TransactionItem({
 
    function TransactionMoreDetails() {
       return (
-         <CardContent className={classes.transactionMoreDetails}>
+         <CardContent className={classes.cardContent}>
             {TransactionDetailItem("Timestamp", moment.unix(transaction.getTimeStamp()).format('lll'))}
             {TransactionDetailItem("Block Height", transaction.getBlockHeight())}
             {TransactionDetailItem("Total Fees", transaction.getTotalFees())}
@@ -88,25 +89,24 @@ export default function TransactionItem({
          className={classes.root}
          onClick={onTransactionClick}
       >
-         <CardHeader
-            className={classes.transactionItemHeader}
-            title={`${PlusMinusSymbol()}${Math.abs(transaction.getAmount())} sats`}
-            subheader={moment.unix(transaction.getTimeStamp()).fromNow()}
-            avatar={TransactionIcon()}
-            action={
-               <IconButton
-                  className={expanded ? classes.collapseBtn : classes.expandBtn}
-                  onClick={handleExpandClick}
-                  aria-expanded={expanded}
-                  aria-label="show more"
-               >
-                  <ExpandMoreIcon />
-               </IconButton>
-            }
-         />
-         <Collapse in={expanded} timeout="auto" unmountOnExit>
+        <Box className={classes.cardContentContainer}>
+          <Box className={classes.cardHeaderContainer}>
+            <Box className={classes.cardHeaderRow}>
+              {TransactionIcon()}
+              <Typography className={classes.transactionAmt}>
+                {PlusMinusSymbol()}{Math.abs(transaction.getAmount())} sats
+              </Typography>
+            </Box>
+            <Box className={classes.cardHeaderRow}>
+              <Typography className={classes.cardSubheaderText}>
+                {moment.unix(transaction.getTimeStamp()).fromNow()}
+              </Typography>
+            </Box>
+          </Box>
+          <Collapse in={expanded} timeout="auto" unmountOnExit>
             {TransactionMoreDetails()}
-         </Collapse>
+          </Collapse>
+        </Box>
       </Card>
-)
+  )
 }

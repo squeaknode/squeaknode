@@ -1,32 +1,13 @@
-import React, { useState } from "react";
-import {
-  Paper,
-  IconButton,
-  Menu,
-  MenuItem,
-  Typography,
-  Grid,
-  Box,
-  Link,
-} from "@material-ui/core";
-import { MoreVert as MoreIcon } from "@material-ui/icons";
+import React, {useState} from "react";
+import {Box, Chip, Typography,} from "@material-ui/core";
 import {useHistory} from "react-router-dom";
-import classnames from "classnames";
-
-import LockIcon from '@material-ui/icons/Lock';
 
 // styles
 import useStyles from "../../pages/wallet/styles";
 
-import Widget from "../../components/Widget";
-
 import moment from 'moment';
-import CardHeader from "@material-ui/core/CardHeader";
-import SwapHorizontalCircleIcon from "@material-ui/icons/SwapHorizontalCircle";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import Collapse from "@material-ui/core/Collapse";
 import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
+import ChannelBalanceBar from "../ChannelItem/ChannelBalanceBar";
 
 export default function PendingOpenChannelItem({
   pendingOpenChannel,
@@ -80,54 +61,46 @@ export default function PendingOpenChannelItem({
     goToChannelPage(txId, outputIndex);
   }
 
-   function ChannelDetailItem(label, value) {
-      return <Box display='flex'>
-         <Typography className={classes.detailItemLabel}>
-            {label}
-         </Typography>
-         <Typography className={classes.detailItemValue}>
-            {value}
-         </Typography>
-      </Box>
-   }
+  function ChannelDetailItem(label, value) {
+    return <Box className={classes.detailItem}>
+      <Typography className={classes.detailItemLabel}>
+        {label}
+      </Typography>
+      <Typography className={classes.detailItemValue}>
+        {value}
+      </Typography>
+    </Box>
+  }
 
-   function ChannelContent() {
-      const channel = pendingOpenChannel.getChannel();
-      return (
-         <CardContent className={classes.transactionMoreDetails}>
-            {ChannelDetailItem("Capacity", `${channel.getCapacity()} sats`)}
-            {ChannelDetailItem("Local Balance", `${channel.getLocalBalance()} sats`)}
-            {ChannelDetailItem("Remote Balance", `${channel.getRemoteBalance()} sats`)}
-            {ChannelDetailItem("Pubkey", channel.getRemoteNodePub())}
-            {ChannelDetailItem("Channel Point", channel.getChannelPoint())}
-         </CardContent>
-      )
-   }
-
+  const channel = pendingOpenChannel.getChannel();
   return (
-     <Card
-        className={classes.root}
-        onClick={onChannelClick}
-     >
-       <CardHeader
-          className={classes.transactionItemHeader}
-          title={'Opening test'}
-          // subheader={props.status === 'open' ? channel.getRemotePubkey(): null}
-          avatar={<SwapHorizontalCircleIcon className={classes.channelIcon}/>}
-          action={
-            <IconButton
-               className={expanded ? classes.collapseBtn : classes.expandBtn}
-               onClick={handleExpandClick}
-               aria-expanded={expanded}
-               aria-label="show more"
-            >
-              <ExpandMoreIcon />
-            </IconButton>
-          }
-       />
-       <Collapse in={expanded} timeout="auto" unmountOnExit>
-         {ChannelContent()}
-       </Collapse>
-     </Card>
-)
+    <Card
+      className={classes.root}
+      onClick={onChannelClick}
+    >
+      <Box className={classes.cardContentContainerVertical}>
+        <Box className={classes.cardContentFlexColumn}>
+          <Box className={classes.cardHeaderContainer}>
+            <Box className={classes.cardHeaderRow}>
+              <Chip
+                label="Opening"
+                size="small"
+                className={classes.channelStatusChip}/>
+            </Box>
+          </Box>
+          <Box className={classes.cardContentSection}>
+            {ChannelDetailItem("Pubkey", `${channel.getRemoteNodePub()}`)}
+            {ChannelDetailItem("Channel Point", `${channel.getChannelPoint()}`)}
+            {/*{ChannelDetailItem("Lifetime", `${moment.duration(channel.getLifetime(), 'seconds').humanize()}`)}*/}
+            {/*{ChannelDetailItem("Uptime", `${moment.duration(channel.getUptime(), 'seconds').humanize()}`)}*/}
+          </Box>
+        </Box>
+        <Box className={classes.cardContentFlexColumn}>
+          <ChannelBalanceBar
+            channel={channel}
+          />
+        </Box>
+      </Box>
+    </Card>
+  )
 }
