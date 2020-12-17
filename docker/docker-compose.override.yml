@@ -17,6 +17,10 @@ services:
     environment:
       - NETWORK=testnet
 
+  eclair:
+    environment:
+      - NETWORK=testnet
+
   squeaknode:
     environment:
       - NETWORK=testnet

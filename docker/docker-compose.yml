@@ -26,6 +26,24 @@ services:
       - net.ipv6.conf.all.disable_ipv6=0
     entrypoint: ["./start-lnd.sh"]
 
+  eclair:
+    image: eclair
+    container_name: eclair
+    build:
+      context: ../
+      dockerfile: docker/eclair/Dockerfile
+    environment:
+      - FOO=foo
+    volumes:
+      - ~/.eclair:/root/.eclair
+    ports:
+      - 9736:9735
+    links:
+      - "bitcoin-core:bitcoin-core"
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=0
+    entrypoint: ["./start-eclair.sh"]
+
   squeaknode:
     image: squeaknode
     container_name: squeaknode
