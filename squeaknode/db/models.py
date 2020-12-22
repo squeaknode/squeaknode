@@ -47,7 +47,7 @@ class Models:
             Column("n_block_height", Integer, nullable=False),
             Column("n_time", Integer, nullable=False),
             Column("author_address", String(35), index=True, nullable=False),
-            Column("vch_decryption_key", Binary, nullable=True),
+            Column("secret_key", String(64), nullable=True),
             Column("block_header", Binary, nullable=False),
         )
 

@@ -92,7 +92,7 @@ class SqueakDb:
 
     def insert_squeak(self, squeak, block_header_bytes):
         """ Insert a new squeak. """
-        vch_decryption_key = squeak.GetDecryptionKey().get_bytes() if squeak.HasDecryptionKey() else None
+        secret_key = squeak.GetDecryptionKey() if squeak.HasDecryptionKey() else None
         squeak.ClearDecryptionKey()
         ins = self.squeaks.insert().values(
             hash=get_hash(squeak),
@@ -102,7 +102,7 @@ class SqueakDb:
             n_block_height=squeak.nBlockHeight,
             n_time=squeak.nTime,
             author_address=str(squeak.GetAddress()),
-            vch_decryption_key=vch_decryption_key,
+            secret_key=secret_key,
             block_header=block_header_bytes,
         )
         with self.get_connection() as connection:
@@ -271,7 +271,7 @@ class SqueakDb:
             .where(self.squeaks.c.n_block_height <= max_block)
             .where(
                 or_(
-                    self.squeaks.c.vch_decryption_key != None,
+                    self.squeaks.c.secret_key != None,
                     include_locked,
                 )
             )
@@ -293,7 +293,7 @@ class SqueakDb:
         # WHERE author_address IN %s
         # AND n_block_height >= %s
         # AND n_block_height <= %s
-        # AND (vch_decryption_key IS NOT NULL) OR %s
+        # AND (secret_key IS NOT NULL) OR %s
         # AND ((block_header IS NOT NULL) OR %s);
         # """
         # addresses_tuple = tuple(addresses)
@@ -331,7 +331,7 @@ class SqueakDb:
             )
             .where(
                 or_(
-                    self.squeaks.c.vch_decryption_key != None,
+                    self.squeaks.c.secret_key != None,
                     include_locked,
                 )
             )
@@ -352,7 +352,7 @@ class SqueakDb:
         # SELECT hash FROM squeak
         # WHERE author_address IN %s
         # AND created > now() - interval '%s seconds'
-        # AND vch_decryption_key IS NOT NULL
+        # AND secret_key IS NOT NULL
         # AND ((block_header IS NOT NULL) OR %s);
         # """
         # addresses_tuple = tuple(addresses)
@@ -389,7 +389,7 @@ class SqueakDb:
             .where(self.squeaks.c.author_address.in_(addresses))
             .where(self.squeaks.c.n_block_height >= min_block)
             .where(self.squeaks.c.n_block_height <= max_block)
-            .where(self.squeaks.c.vch_decryption_key == None)
+            .where(self.squeaks.c.secret_key == None)
             .where(
                 or_(
                     self.squeaks.c.block_header != None,
@@ -412,7 +412,7 @@ class SqueakDb:
         # WHERE author_address IN %s
         # AND n_block_height >= %s
         # AND n_block_height <= %s
-        # AND vch_decryption_key IS NULL
+        # AND secret_key IS NULL
         # AND ((block_header IS NOT NULL) OR %s)
         # AND offer.squeak_hash IS NULL
         # """
@@ -651,12 +651,12 @@ class SqueakDb:
         #     # execute the UPDATE statement
         #     curs.execute(sql, (block_header, squeak_hash_str,))
 
-    def set_squeak_decryption_key(self, squeak_hash, vch_decryption_key):
+    def set_squeak_decryption_key(self, squeak_hash, secret_key):
         """ Set the decryption key of a squeak. """
         stmt = (
             self.squeaks.update()
             .where(self.squeaks.c.hash == squeak_hash)
-            .values(vch_decryption_key=vch_decryption_key)
+            .values(secret_key=secret_key)
         )
         with self.get_connection() as connection:
             connection.execute(stmt)
@@ -1078,13 +1078,13 @@ class SqueakDb:
     def _parse_squeak_entry(self, row):
         if row is None:
             return None
-        vch_decryption_key_column = row["vch_decryption_key"]
-        vch_decryption_key = (
-            bytes(vch_decryption_key_column) if vch_decryption_key_column else b""
+        secret_key_column = row["secret_key"]
+        secret_key = (
+            bytes(secret_key_column) if secret_key_column else b""
         )
         squeak = CSqueak.deserialize(row["squeak"])
-        if vch_decryption_key:
-            squeak.SetDecryptionKey(vch_decryption_key)
+        if secret_key:
+            squeak.SetDecryptionKey(secret_key)
         block_header_column = row["block_header"]
         block_header_bytes = bytes(block_header_column) if block_header_column else None
         block_header = (

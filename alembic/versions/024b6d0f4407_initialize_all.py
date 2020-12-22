@@ -98,7 +98,7 @@ def upgrade():
     sa.Column('n_block_height', sa.Integer(), nullable=False),
     sa.Column('n_time', sa.Integer(), nullable=False),
     sa.Column('author_address', sa.String(length=35), nullable=False),
-    sa.Column('vch_decryption_key', sa.Binary(), nullable=True),
+    sa.Column('secret_key', sa.Binary(), nullable=True),
     sa.Column('block_header', sa.Binary(), nullable=True),
     sa.PrimaryKeyConstraint('hash')
     )
