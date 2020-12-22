@@ -18,3 +18,5 @@ dist/
 # Ignore generated python proto files
 *pb2.py
 *pb2_grpc.py
+
+libs/

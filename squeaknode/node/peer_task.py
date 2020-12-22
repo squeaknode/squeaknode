@@ -149,25 +149,19 @@ class PeerSyncTask:
         # Get the squeak from the squeak hash
         squeak = self._get_local_squeak(squeak_hash)
 
-        # Get the encryption key
-        encryption_key = squeak.GetEncryptionKey()
-
-        # Create a new challenge
-        challenge_proof = self._generate_challenge_proof()
-        challenge = self._get_challenge(challenge_proof, encryption_key)
-
         # Download the buy offer
-        offer = self._download_buy_offer(squeak_hash, challenge)
+        offer = self._download_buy_offer(squeak_hash)
 
-        # Check the proof
-        proof = offer.proof
-        logger.info("Proof: {}".format(proof.hex()))
-        logger.info("Expected proof: {}".format(challenge_proof.hex()))
-        if proof != challenge_proof:
+        # Check the payment point
+        payment_point = offer.payment_point
+        expected_payment_point = squeak.paymentPoint
+        logger.info("Payment point: {}".format(payment_point.hex()))
+        logger.info("Expected payment point: {}".format(expected_payment_point.hex()))
+        if payment_point != expected_payment_point:
             raise Exception(
-                "Invalid offer proof: {}, expected: {}".format(
-                    proof.hex(),
-                    challenge_proof.hex(),
+                "Invalid offer payment point: {}, expected: {}".format(
+                    payment_point.hex(),
+                    expected_payment_point.hex(),
                 )
             )
 
@@ -239,17 +233,11 @@ class PeerSyncTask:
         sharing_profiles = self.squeak_db.get_sharing_profiles()
         return [profile.address for profile in sharing_profiles]
 
-    def _generate_challenge_proof(self):
-        return generate_data_key()
-
-    def _get_challenge(self, challenge_proof, encryption_key):
-        return encryption_key.encrypt(challenge_proof)
-
-    def _download_buy_offer(self, squeak_hash, challenge):
+    def _download_buy_offer(self, squeak_hash):
         logger.info(
             "Downloading buy offer for squeak hash: {}".format(squeak_hash)
         )
-        offer_msg = self.peer_client.buy_squeak(squeak_hash, challenge)
+        offer_msg = self.peer_client.buy_squeak(squeak_hash)
         offer = self._offer_from_msg(offer_msg)
         return offer
 
@@ -263,17 +251,14 @@ class PeerSyncTask:
         return Offer(
             offer_id=None,
             squeak_hash=offer_msg.squeak_hash,
-            key_cipher=offer_msg.key_cipher,
-            iv=offer_msg.iv,
             price_msat=None,
-            payment_hash=offer_msg.preimage_hash,
+            payment_point=offer_msg.payment_point,
             invoice_timestamp=None,
             invoice_expiry=None,
             payment_request=offer_msg.payment_request,
             destination=None,
             node_host=offer_msg.host,
             node_port=offer_msg.port,
-            proof=offer_msg.proof,
             peer_id=self.peer.peer_id,
         )
 
@@ -301,17 +286,14 @@ class PeerSyncTask:
         decoded_offer = Offer(
             offer_id=offer.offer_id,
             squeak_hash=offer.squeak_hash,
-            key_cipher=offer.key_cipher,
-            iv=offer.iv,
             price_msat=price_msat,
-            payment_hash=offer.payment_hash,
+            payment_point=offer.payment_point,
             invoice_timestamp=invoice_timestamp,
             invoice_expiry=invoice_expiry,
             payment_request=offer.payment_request,
             destination=destination,
             node_host=node_host,
             node_port=node_port,
-            proof=offer.proof,
             peer_id=offer.peer_id,
         )
 

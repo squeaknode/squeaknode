@@ -9,6 +9,9 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /
 
 COPY requirements.txt /
+COPY libs /libs
+
+RUN ls -l
 
 RUN pip3 install --upgrade pip && \
 	pip3 install -r requirements.txt

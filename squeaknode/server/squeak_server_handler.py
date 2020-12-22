@@ -41,7 +41,7 @@ class SqueakServerHandler(object):
             allowed_addresses=allowed_addresses,
         )
 
-    def handle_get_offer(self, squeak_hash, challenge, client_addr):
+    def handle_get_offer(self, squeak_hash, client_addr):
         logger.info("Handle get offer by hash: {} from client_addr: {}".format(squeak_hash, client_addr))
-        buy_offer = self.squeak_controller.get_buy_offer(squeak_hash, challenge, client_addr)
+        buy_offer = self.squeak_controller.get_buy_offer(squeak_hash, client_addr)
         return buy_offer
