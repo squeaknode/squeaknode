@@ -889,11 +889,10 @@ class SqueakDb:
             offer_id=sent_payment.offer_id,
             peer_id=sent_payment.peer_id,
             squeak_hash=sent_payment.squeak_hash,
-            preimage_hash=sent_payment.preimage_hash,
-            preimage=sent_payment.preimage,
+            payment_hash=sent_payment.payment_hash,
+            secret_key=sent_payment.secret_key,
             price_msat=sent_payment.price_msat,
             node_pubkey=sent_payment.node_pubkey,
-            preimage_is_valid=sent_payment.preimage_is_valid,
         )
         with self.get_connection() as connection:
             res = connection.execute(ins)
@@ -938,12 +937,13 @@ class SqueakDb:
             return self._parse_sent_payment_with_peer(row)
 
     def insert_sent_offer(self, sent_offer):
-        """ Insert a new received payment. """
+        """ Insert a new sent offer. """
         ins = self.sent_offers.insert().values(
             squeak_hash=sent_offer.squeak_hash,
-            preimage_hash=sent_offer.preimage_hash,
-            preimage=sent_offer.preimage,
+            payment_hash=sent_offer.payment_hash,
+            secret_key=sent_offer.secret_key,
             price_msat=sent_offer.price_msat,
+            payment_request=sent_offer.payment_request,
             invoice_timestamp=sent_offer.invoice_time,
             invoice_expiry=sent_offer.invoice_expiry,
             client_addr=sent_offer.client_addr,
@@ -967,11 +967,11 @@ class SqueakDb:
             sent_offers = [self._parse_sent_offer(row) for row in rows]
             return sent_offers
 
-    def get_sent_offer_by_preimage_hash(self, preimage_hash):
+    def get_sent_offer_by_preimage_hash(self, payment_hash):
         """ Get a sent offer by preimage hash. """
         s = (
             select([self.sent_offers])
-            .where(self.sent_offers.c.preimage_hash == preimage_hash)
+            .where(self.sent_offers.c.payment_hash == payment_hash)
         )
         with self.get_connection() as connection:
             result = connection.execute(s)
@@ -1036,7 +1036,7 @@ class SqueakDb:
         """ Insert a new received payment. """
         ins = self.received_payments.insert().values(
             squeak_hash=received_payment.squeak_hash,
-            preimage_hash=received_payment.preimage_hash,
+            payment_hash=received_payment.payment_hash,
             price_msat=received_payment.price_msat,
             settle_index=received_payment.settle_index,
             client_addr=received_payment.client_addr,
@@ -1168,11 +1168,10 @@ class SqueakDb:
             offer_id=row["offer_id"],
             peer_id=row["peer_id"],
             squeak_hash=row["squeak_hash"],
-            preimage_hash=row["preimage_hash"],
-            preimage=row["preimage"],
+            payment_hash=row["payment_hash"],
+            secret_key=row["secret_key"],
             price_msat=row["price_msat"],
             node_pubkey=row["node_pubkey"],
-            preimage_is_valid=row["preimage_is_valid"],
             time_ms=row[self.sent_payments.c.created],
         )
 
@@ -1192,8 +1191,8 @@ class SqueakDb:
         return SentOffer(
             sent_offer_id=row["sent_offer_id"],
             squeak_hash=row["squeak_hash"],
-            preimage_hash=row["preimage_hash"],
-            preimage=row["preimage"],
+            payment_hash=row["payment_hash"],
+            secret_key=row["secret_key"],
             price_msat=row["price_msat"],
             payment_request=row["payment_request"],
             invoice_time=row["invoice_timestamp"],
@@ -1208,7 +1207,7 @@ class SqueakDb:
             received_payment_id=row["received_payment_id"],
             created=row["created"],
             squeak_hash=row["squeak_hash"],
-            preimage_hash=row["preimage_hash"],
+            payment_hash=row["payment_hash"],
             price_msat=row["price_msat"],
             settle_index=row["settle_index"],
             client_addr=row["client_addr"],

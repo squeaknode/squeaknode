@@ -6,7 +6,6 @@ import datetime
 import pytest
 from squeak.core import CSqueak
 from squeak.core import CheckSqueak
-from squeak.core.encryption import CEncryptedDecryptionKey
 
 from proto import lnd_pb2 as ln
 from proto import squeak_admin_pb2, squeak_server_pb2
@@ -207,18 +206,12 @@ def test_sell_squeak(server_stub, admin_stub, lightning_client, saved_squeak_has
         payment = lightning_client.pay_invoice_sync(buy_response.offer.payment_request)
         preimage = payment.payment_preimage
 
-        # Verify with the payment preimage and decryption key ciphertext
+        # Verify with the payment preimage and decryption key ciphertext (TODO: switch to using payment point)
+        preimage_hash = sha256(preimage).hexdigest()
         decryption_key_cipher_bytes = buy_response.offer.key_cipher
-        iv = buy_response.offer.iv
-        encrypted_decryption_key = CEncryptedDecryptionKey.from_bytes(
-            decryption_key_cipher_bytes
-        )
+        # assert preimage_hash == 
 
-        # Decrypt the decryption key
-        decryption_key = encrypted_decryption_key.get_decryption_key(preimage, iv)
-        serialized_decryption_key = decryption_key.get_bytes()
-
-        get_response_squeak.SetDecryptionKey(serialized_decryption_key)
+        get_response_squeak.SetDecryptionKey(preimage)
         CheckSqueak(get_response_squeak)
 
     # Check the server balance

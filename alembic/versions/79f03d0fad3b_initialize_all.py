@@ -1,8 +1,8 @@
 """Initialize all
 
-Revision ID: 024b6d0f4407
+Revision ID: 79f03d0fad3b
 Revises: 
-Create Date: 2020-11-12 23:33:57.135895
+Create Date: 2020-12-22 16:27:06.785571
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '024b6d0f4407'
+revision = '79f03d0fad3b'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -22,9 +22,8 @@ def upgrade():
     sa.Column('offer_id', sa.Integer(), nullable=False),
     sa.Column('created', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
     sa.Column('squeak_hash', sa.String(length=64), nullable=False),
-    sa.Column('key_cipher', sa.Binary(), nullable=False),
-    sa.Column('iv', sa.Binary(), nullable=False),
     sa.Column('payment_hash', sa.String(length=64), nullable=False),
+    sa.Column('payment_point', sa.String(length=66), nullable=False),
     sa.Column('invoice_timestamp', sa.Integer(), nullable=False),
     sa.Column('invoice_expiry', sa.Integer(), nullable=False),
     sa.Column('price_msat', sa.Integer(), nullable=False),
@@ -61,20 +60,26 @@ def upgrade():
     sa.Column('received_payment_id', sa.Integer(), nullable=False),
     sa.Column('created', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
     sa.Column('squeak_hash', sa.String(length=64), nullable=False),
-    sa.Column('preimage_hash', sa.String(length=64), nullable=False),
+    sa.Column('payment_hash', sa.String(length=64), nullable=False),
     sa.Column('price_msat', sa.Integer(), nullable=False),
     sa.Column('settle_index', sa.Integer(), nullable=False),
+    sa.Column('client_addr', sa.String(length=64), nullable=False),
     sa.PrimaryKeyConstraint('received_payment_id'),
-    sa.UniqueConstraint('preimage_hash')
+    sa.UniqueConstraint('payment_hash')
     )
     op.create_table('sent_offer',
     sa.Column('sent_offer_id', sa.Integer(), nullable=False),
     sa.Column('created', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
     sa.Column('squeak_hash', sa.String(length=64), nullable=False),
-    sa.Column('preimage_hash', sa.String(length=64), nullable=False),
+    sa.Column('payment_hash', sa.String(length=64), nullable=False),
+    sa.Column('secret_key', sa.String(length=64), nullable=False),
     sa.Column('price_msat', sa.Integer(), nullable=False),
+    sa.Column('payment_request', sa.String(), nullable=False),
+    sa.Column('invoice_timestamp', sa.Integer(), nullable=False),
+    sa.Column('invoice_expiry', sa.Integer(), nullable=False),
+    sa.Column('client_addr', sa.String(length=64), nullable=False),
     sa.PrimaryKeyConstraint('sent_offer_id'),
-    sa.UniqueConstraint('preimage_hash')
+    sa.UniqueConstraint('payment_hash')
     )
     op.create_table('sent_payment',
     sa.Column('sent_payment_id', sa.Integer(), nullable=False),
@@ -82,11 +87,10 @@ def upgrade():
     sa.Column('offer_id', sa.Integer(), nullable=False),
     sa.Column('peer_id', sa.Integer(), nullable=False),
     sa.Column('squeak_hash', sa.String(length=64), nullable=False),
-    sa.Column('preimage_hash', sa.String(length=64), nullable=False),
-    sa.Column('preimage', sa.String(length=64), nullable=False),
+    sa.Column('payment_hash', sa.String(length=64), nullable=False),
+    sa.Column('secret_key', sa.String(length=64), nullable=False),
     sa.Column('price_msat', sa.Integer(), nullable=False),
     sa.Column('node_pubkey', sa.String(length=66), nullable=False),
-    sa.Column('preimage_is_valid', sa.Boolean(), nullable=False),
     sa.PrimaryKeyConstraint('sent_payment_id')
     )
     op.create_table('squeak',
@@ -98,8 +102,8 @@ def upgrade():
     sa.Column('n_block_height', sa.Integer(), nullable=False),
     sa.Column('n_time', sa.Integer(), nullable=False),
     sa.Column('author_address', sa.String(length=35), nullable=False),
-    sa.Column('secret_key', sa.Binary(), nullable=True),
-    sa.Column('block_header', sa.Binary(), nullable=True),
+    sa.Column('secret_key', sa.String(length=64), nullable=True),
+    sa.Column('block_header', sa.Binary(), nullable=False),
     sa.PrimaryKeyConstraint('hash')
     )
     with op.batch_alter_table('squeak', schema=None) as batch_op:

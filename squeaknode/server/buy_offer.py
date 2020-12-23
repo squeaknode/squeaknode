@@ -7,7 +7,6 @@ class BuyOffer:
         pubkey,
         host,
         port,
-        proof,
     ):
         self.squeak_hash = squeak_hash
         self.price_msat = price_msat
@@ -15,4 +14,3 @@ class BuyOffer:
         self.pubkey = pubkey
         self.host = host
         self.port = port
-        self.proof = proof

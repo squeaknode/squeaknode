@@ -101,13 +101,12 @@ class SqueakController:
         pubkey = get_info_response.identity_pubkey
         # Return the buy offer
         return BuyOffer(
-            squeak_hash,
-            self.price_msat,
-            sent_offer.payment_request,
-            pubkey,
-            self.lightning_host_port.host,
-            self.lightning_host_port.port,
-            proof,
+            squeak_hash=squeak_hash,
+            price_msat=self.price_msat,
+            payment_request=sent_offer.payment_request,
+            pubkey=pubkey,
+            host=self.lightning_host_port.host,
+            port=self.lightning_host_port.port,
         )
 
     def create_offer(self, squeak_hash, client_addr):
@@ -121,7 +120,7 @@ class SqueakController:
         payment_hash = add_invoice_response.r_hash
         invoice_payment_request = add_invoice_response.payment_request
         # invoice_expiry = add_invoice_response.expiry
-        lookup_invoice_response = self.lightning_client.lookup_invoice(secret_key.hex())
+        lookup_invoice_response = self.lightning_client.lookup_invoice(payment_hash.hex())
         invoice_time = lookup_invoice_response.creation_date
         invoice_expiry = lookup_invoice_response.expiry
         # Save the incoming potential payment in the databse.

@@ -252,7 +252,7 @@ class PeerSyncTask:
             offer_id=None,
             squeak_hash=offer_msg.squeak_hash,
             price_msat=None,
-            payment_point=offer_msg.payment_point,
+            payment_point=None,
             invoice_timestamp=None,
             invoice_expiry=None,
             payment_request=offer_msg.payment_request,
