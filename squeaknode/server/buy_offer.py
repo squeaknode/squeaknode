@@ -3,6 +3,7 @@ class BuyOffer:
         self,
         squeak_hash,
         price_msat,
+        nonce,
         payment_request,
         pubkey,
         host,
@@ -10,6 +11,7 @@ class BuyOffer:
     ):
         self.squeak_hash = squeak_hash
         self.price_msat = price_msat
+        self.nonce = nonce
         self.payment_request = payment_request
         self.pubkey = pubkey
         self.host = host

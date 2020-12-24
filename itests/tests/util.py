@@ -31,14 +31,6 @@ def generate_signing_key():
     return CSigningKey.generate()
 
 
-def generate_challenge_proof():
-    return generate_data_key()
-
-
-def get_challenge(encryption_key, challenge_proof):
-    return encryption_key.encrypt(challenge_proof)
-
-
 def get_address(signing_key):
     verifying_key = signing_key.get_verifying_key()
     address = CSqueakAddress.from_verifying_key(verifying_key)

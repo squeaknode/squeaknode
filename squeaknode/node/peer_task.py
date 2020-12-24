@@ -152,18 +152,18 @@ class PeerSyncTask:
         # Download the buy offer
         offer = self._download_buy_offer(squeak_hash)
 
-        # Check the payment point
-        payment_point = offer.payment_point
-        expected_payment_point = squeak.paymentPoint
-        logger.info("Payment point: {}".format(payment_point.hex()))
-        logger.info("Expected payment point: {}".format(expected_payment_point.hex()))
-        if payment_point != expected_payment_point:
-            raise Exception(
-                "Invalid offer payment point: {}, expected: {}".format(
-                    payment_point.hex(),
-                    expected_payment_point.hex(),
-                )
-            )
+        # TODO: Check the payment point
+        # payment_point = offer.payment_point
+        # logger.info("Payment point: {}".format(payment_point.hex()))
+        # expected_payment_point = squeak.paymentPoint
+        # logger.info("Expected payment point: {}".format(expected_payment_point.hex()))
+        # if payment_point != expected_payment_point:
+        #     raise Exception(
+        #         "Invalid offer payment point: {}, expected: {}".format(
+        #             payment_point.hex(),
+        #             expected_payment_point.hex(),
+        #         )
+        #     )
 
         # Get the decoded offer from the payment request string
         decoded_offer = self._get_decoded_offer(offer)
@@ -252,6 +252,8 @@ class PeerSyncTask:
             offer_id=None,
             squeak_hash=offer_msg.squeak_hash,
             price_msat=None,
+            payment_hash=None,
+            nonce=offer_msg.nonce,
             payment_point=None,
             invoice_timestamp=None,
             invoice_expiry=None,
@@ -269,6 +271,9 @@ class PeerSyncTask:
         pay_req = self._decode_payment_request(offer.payment_request)
         logger.info("Decoded payment request: {}".format(pay_req))
 
+        # TODO: Use the real payment point, not a fake value.
+        payment_point = b''
+        payment_hash = bytes.fromhex(pay_req.payment_hash)
         price_msat = pay_req.num_msat
         destination = pay_req.destination
         invoice_timestamp = pay_req.timestamp
@@ -287,7 +292,9 @@ class PeerSyncTask:
             offer_id=offer.offer_id,
             squeak_hash=offer.squeak_hash,
             price_msat=price_msat,
-            payment_point=offer.payment_point,
+            payment_hash=payment_hash,
+            nonce=offer.nonce,
+            payment_point=payment_point,
             invoice_timestamp=invoice_timestamp,
             invoice_expiry=invoice_expiry,
             payment_request=offer.payment_request,

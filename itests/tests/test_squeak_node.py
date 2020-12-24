@@ -3,6 +3,8 @@ from __future__ import print_function
 import time
 import datetime
 
+from hashlib import sha256
+
 import pytest
 from squeak.core import CSqueak
 from squeak.core import CheckSqueak
@@ -11,10 +13,8 @@ from proto import lnd_pb2 as ln
 from proto import squeak_admin_pb2, squeak_server_pb2
 from tests.util import (
     build_squeak_msg,
-    generate_challenge_proof,
     generate_signing_key,
     get_address,
-    get_challenge,
     get_hash,
     get_latest_block_info,
     make_squeak,
@@ -22,6 +22,7 @@ from tests.util import (
     string_to_hex,
     open_channel,
     connect_peer,
+    bxor,
 )
 
 
@@ -171,22 +172,13 @@ def test_sell_squeak(server_stub, admin_stub, lightning_client, saved_squeak_has
     get_response_squeak = squeak_from_msg(get_response.squeak)
     CheckSqueak(get_response_squeak, skipDecryptionCheck=True)
 
-    # Generate a challenge to verify the offer
-    expected_proof = generate_challenge_proof()
-    encryption_key = get_response_squeak.GetEncryptionKey()
-    challenge = get_challenge(encryption_key, expected_proof)
-
     # Buy the squeak data key
     buy_response = server_stub.GetOffer(
         squeak_server_pb2.GetOfferRequest(
             hash=saved_squeak_hash,
-            challenge=challenge,
         )
     )
     assert buy_response.offer.payment_request.startswith("ln")
-
-    # Check the offer challenge proof
-    assert buy_response.offer.proof == expected_proof
 
     # Decode the payment request string
     decode_pay_req_response = lightning_client.decode_pay_req(
@@ -208,10 +200,13 @@ def test_sell_squeak(server_stub, admin_stub, lightning_client, saved_squeak_has
 
         # Verify with the payment preimage and decryption key ciphertext (TODO: switch to using payment point)
         preimage_hash = sha256(preimage).hexdigest()
-        decryption_key_cipher_bytes = buy_response.offer.key_cipher
-        # assert preimage_hash == 
+        assert preimage_hash == decode_pay_req_response.payment_hash
 
-        get_response_squeak.SetDecryptionKey(preimage)
+        # Calculate the secret key using the nonce and preimage
+        nonce = buy_response.offer.nonce
+        secret_key = bxor(preimage, nonce)
+
+        get_response_squeak.SetDecryptionKey(secret_key)
         CheckSqueak(get_response_squeak)
 
     # Check the server balance
@@ -612,16 +607,10 @@ def test_list_channels(server_stub, admin_stub, lightning_client, saved_squeak_h
     get_response_squeak = squeak_from_msg(get_response.squeak)
     CheckSqueak(get_response_squeak, skipDecryptionCheck=True)
 
-    # Generate a challenge to verify the offer
-    expected_proof = generate_challenge_proof()
-    encryption_key = get_response_squeak.GetEncryptionKey()
-    challenge = get_challenge(encryption_key, expected_proof)
-
     # Buy the squeak data key
     buy_response = server_stub.GetOffer(
         squeak_server_pb2.GetOfferRequest(
             hash=saved_squeak_hash,
-            challenge=challenge,
         )
     )
     assert buy_response.offer.payment_request.startswith("ln")
@@ -667,16 +656,10 @@ def test_list_peers(server_stub, admin_stub, lightning_client, saved_squeak_hash
     get_response_squeak = squeak_from_msg(get_response.squeak)
     CheckSqueak(get_response_squeak, skipDecryptionCheck=True)
 
-    # Generate a challenge to verify the offer
-    expected_proof = generate_challenge_proof()
-    encryption_key = get_response_squeak.GetEncryptionKey()
-    challenge = get_challenge(encryption_key, expected_proof)
-
     # Buy the squeak data key
     buy_response = server_stub.GetOffer(
         squeak_server_pb2.GetOfferRequest(
             hash=saved_squeak_hash,
-            challenge=challenge,
         )
     )
     assert buy_response.offer.payment_request.startswith("ln")
@@ -721,16 +704,10 @@ def test_open_channel(server_stub, admin_stub, lightning_client, saved_squeak_ha
     get_response_squeak = squeak_from_msg(get_response.squeak)
     CheckSqueak(get_response_squeak, skipDecryptionCheck=True)
 
-    # Generate a challenge to verify the offer
-    expected_proof = generate_challenge_proof()
-    encryption_key = get_response_squeak.GetEncryptionKey()
-    challenge = get_challenge(encryption_key, expected_proof)
-
     # Buy the squeak data key
     buy_response = server_stub.GetOffer(
         squeak_server_pb2.GetOfferRequest(
             hash=saved_squeak_hash,
-            challenge=challenge,
         )
     )
     assert buy_response.offer.payment_request.startswith("ln")

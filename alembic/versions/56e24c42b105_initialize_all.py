@@ -1,8 +1,8 @@
 """Initialize all
 
-Revision ID: 79f03d0fad3b
+Revision ID: 56e24c42b105
 Revises: 
-Create Date: 2020-12-22 16:27:06.785571
+Create Date: 2020-12-22 19:30:23.837560
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '79f03d0fad3b'
+revision = '56e24c42b105'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -23,6 +23,7 @@ def upgrade():
     sa.Column('created', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
     sa.Column('squeak_hash', sa.String(length=64), nullable=False),
     sa.Column('payment_hash', sa.String(length=64), nullable=False),
+    sa.Column('nonce', sa.String(length=64), nullable=False),
     sa.Column('payment_point', sa.String(length=66), nullable=False),
     sa.Column('invoice_timestamp', sa.Integer(), nullable=False),
     sa.Column('invoice_expiry', sa.Integer(), nullable=False),
@@ -73,6 +74,7 @@ def upgrade():
     sa.Column('squeak_hash', sa.String(length=64), nullable=False),
     sa.Column('payment_hash', sa.String(length=64), nullable=False),
     sa.Column('secret_key', sa.String(length=64), nullable=False),
+    sa.Column('nonce', sa.String(length=64), nullable=False),
     sa.Column('price_msat', sa.Integer(), nullable=False),
     sa.Column('payment_request', sa.String(), nullable=False),
     sa.Column('invoice_timestamp', sa.Integer(), nullable=False),

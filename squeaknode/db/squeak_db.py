@@ -738,12 +738,12 @@ class SqueakDb:
         """ Insert a new offer. """
         ins = self.offers.insert().values(
             squeak_hash=offer.squeak_hash,
-            key_cipher=offer.key_cipher,
-            iv=offer.iv,
-            price_msat=offer.price_msat,
-            payment_hash=offer.payment_hash.hex(),
+            payment_hash=offer.payment_hash,
+            nonce=offer.nonce,
+            payment_point=offer.payment_point,
             invoice_timestamp=offer.invoice_timestamp,
             invoice_expiry=offer.invoice_expiry,
+            price_msat=offer.price_msat,
             payment_request=offer.payment_request,
             destination=offer.destination,
             node_host=offer.node_host,
@@ -942,6 +942,7 @@ class SqueakDb:
             squeak_hash=sent_offer.squeak_hash,
             payment_hash=sent_offer.payment_hash,
             secret_key=sent_offer.secret_key,
+            nonce=sent_offer.nonce,
             price_msat=sent_offer.price_msat,
             payment_request=sent_offer.payment_request,
             invoice_timestamp=sent_offer.invoice_time,
@@ -1076,6 +1077,7 @@ class SqueakDb:
                 yield received_payment
 
     def _parse_squeak_entry(self, row):
+        logger.info("Parsing squeak entry with row: {}".format(row))
         if row is None:
             return None
         secret_key_column = row["secret_key"]
@@ -1090,6 +1092,7 @@ class SqueakDb:
         block_header = (
             parse_block_header(block_header_bytes) if block_header_bytes else None
         )
+        logger.info("Returning squeak entry with squeak: {}".format(squeak))
         return SqueakEntry(squeak=squeak, block_header=block_header)
 
     def _parse_squeak_profile(self, row):
@@ -1136,17 +1139,16 @@ class SqueakDb:
         return Offer(
             offer_id=row["offer_id"],
             squeak_hash=row["squeak_hash"],
-            key_cipher=row["key_cipher"],
-            iv=row["iv"],
-            price_msat=row["price_msat"],
             payment_hash=row["payment_hash"],
+            nonce=row["payment_hash"],
+            payment_point=row["payment_point"],
             invoice_timestamp=row["invoice_timestamp"],
             invoice_expiry=row["invoice_expiry"],
+            price_msat=row["price_msat"],
             payment_request=row["payment_request"],
             destination=row["destination"],
             node_host=row["node_host"],
             node_port=row["node_port"],
-            proof=None,
             peer_id=row["peer_id"],
         )
 
@@ -1193,6 +1195,7 @@ class SqueakDb:
             squeak_hash=row["squeak_hash"],
             payment_hash=row["payment_hash"],
             secret_key=row["secret_key"],
+            nonce=row["nonce"],
             price_msat=row["price_msat"],
             payment_request=row["payment_request"],
             invoice_time=row["invoice_timestamp"],

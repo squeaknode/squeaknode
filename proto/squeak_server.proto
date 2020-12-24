@@ -85,12 +85,15 @@ message SqueakBuyOffer {
     /// The squeak hash.
     string squeak_hash = 1;
 
+    /// Nonce
+    bytes nonce = 2;
+
     /// The invoice
-    string payment_request = 2;
+    string payment_request = 3;
 
     /// The host of the seller lightning node
-    string host = 3;
+    string host = 4;
 
     /// The port of the seller lightning node
-    int32 port = 4;
+    int32 port = 5;
 }

@@ -7,6 +7,7 @@ Offer = namedtuple(
         "squeak_hash",
         "price_msat",
         "payment_hash",
+        "nonce",
         "payment_point",
         "invoice_timestamp",
         "invoice_expiry",
