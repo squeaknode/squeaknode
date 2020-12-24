@@ -5,7 +5,6 @@ import threading
 from squeak.core.encryption import generate_data_key
 
 from squeaknode.core.offer import Offer
-from squeaknode.network.peer_client import PeerClient
 from squeaknode.server.util import get_hash, get_replyto
 
 logger = logging.getLogger(__name__)

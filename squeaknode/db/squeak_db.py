@@ -25,14 +25,14 @@ from squeaknode.core.offer_with_peer import OfferWithPeer
 from squeaknode.core.sent_payment_with_peer import SentPaymentWithPeer
 from squeaknode.core.squeak_entry import SqueakEntry
 from squeaknode.core.squeak_entry_with_profile import SqueakEntryWithProfile
-from squeaknode.server.squeak_peer import SqueakPeer
-from squeaknode.server.squeak_profile import SqueakProfile
-from squeaknode.server.sent_payment import SentPayment
-from squeaknode.server.sent_offer import SentOffer
+from squeaknode.core.squeak_peer import SqueakPeer
+from squeaknode.core.squeak_profile import SqueakProfile
+from squeaknode.core.sent_payment import SentPayment
+from squeaknode.core.sent_offer import SentOffer
 from squeaknode.server.util import get_hash
 from squeaknode.db.models import Models
 from squeaknode.db.migrations import run_migrations
-from squeaknode.server.received_payment import ReceivedPayment
+from squeaknode.core.received_payment import ReceivedPayment
 
 
 logger = logging.getLogger(__name__)

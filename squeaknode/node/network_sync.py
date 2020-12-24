@@ -8,7 +8,6 @@ from typing import List
 
 from collections import namedtuple
 
-from squeaknode.network.peer_client import PeerClient
 from squeaknode.node.peer_task import PeerSyncTask
 from squeaknode.node.peer_connection import PeerConnection
 
@@ -22,15 +21,17 @@ class NetworkSync:
         squeak_store,
         squeak_db,
         lightning_client,
+        squeak_server_client,
     ):
         self.squeak_store = squeak_store
         self.squeak_db = squeak_db
         self.lightning_client = lightning_client
+        self.squeak_server_client = squeak_server_client
 
     def sync_timeline(self, peer, min_block, max_block):
         if not peer.downloading:
             return
-        peer_connection = PeerConnection(peer)
+        peer_connection = PeerConnection(peer, self.squeak_server_client)
         peer_sync_task = PeerSyncTask(
             peer_connection,
             self.squeak_store,
@@ -45,7 +46,7 @@ class NetworkSync:
     def sync_single_squeak(self, peer, squeak_hash):
         if not peer.downloading:
             return
-        peer_connection = PeerConnection(peer)
+        peer_connection = PeerConnection(peer, self.squeak_server_client)
         peer_sync_task = PeerSyncTask(
             peer_connection,
             self.squeak_store,

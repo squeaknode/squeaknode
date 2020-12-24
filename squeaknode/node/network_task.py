@@ -8,9 +8,7 @@ from typing import List
 
 from collections import namedtuple
 
-from squeaknode.network.peer_client import PeerClient
 from squeaknode.node.peer_task import PeerSyncTask
-from squeaknode.node.peer_connection import PeerConnection
 
 logger = logging.getLogger(__name__)
 

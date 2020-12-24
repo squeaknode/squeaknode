@@ -2,7 +2,7 @@ import logging
 import queue
 import time
 
-from squeaknode.server.received_payment import ReceivedPayment
+from squeaknode.core.received_payment import ReceivedPayment
 
 
 logger = logging.getLogger(__name__)
