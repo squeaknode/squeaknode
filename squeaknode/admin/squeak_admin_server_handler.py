@@ -196,10 +196,6 @@ class SqueakAdminServerHandler(object):
             squeak_hash
         )
         logger.info("Squeak display entry: {}".format(squeak_entry_with_profile))
-        squeak = squeak_entry_with_profile.squeak_entry.squeak
-        logger.info("Squeak serialized: {}".format(squeak.serialize()))
-        logger.info("Squeak secret key: {}".format(squeak.GetDecryptionKey()))
-        logger.info("Squeak decrypted content: {}".format(squeak.GetDecryptedContentStr()))
         display_message = squeak_entry_to_message(squeak_entry_with_profile)
         logger.info("Returning squeak display entry message: {}".format(display_message))
         return squeak_admin_pb2.GetSqueakDisplayReply(

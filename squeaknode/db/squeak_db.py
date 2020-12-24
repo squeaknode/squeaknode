@@ -739,7 +739,7 @@ class SqueakDb:
         ins = self.offers.insert().values(
             squeak_hash=offer.squeak_hash,
             payment_hash=offer.payment_hash,
-            nonce=offer.nonce,
+            nonce=offer.nonce.hex(),
             payment_point=offer.payment_point,
             invoice_timestamp=offer.invoice_timestamp,
             invoice_expiry=offer.invoice_expiry,
@@ -968,7 +968,7 @@ class SqueakDb:
             sent_offers = [self._parse_sent_offer(row) for row in rows]
             return sent_offers
 
-    def get_sent_offer_by_preimage_hash(self, payment_hash):
+    def get_sent_offer_by_payment_hash(self, payment_hash):
         """ Get a sent offer by preimage hash. """
         s = (
             select([self.sent_offers])
@@ -1003,20 +1003,6 @@ class SqueakDb:
             res = connection.execute(s)
             deleted_sent_offers = res.rowcount
             return deleted_sent_offers
-
-    # def mark_sent_offer_paid(self, preimage_hash, settle_index):
-    #     """ Mark a single received payment as paid. """
-    #     stmt = (
-    #         self.sent_offers.update()
-    #         .where(self.sent_offers.c.preimage_hash == preimage_hash)
-    #         .values(
-    #             is_paid=True,
-    #             payment_time=datetime.utcnow(),
-    #             settle_index=settle_index,
-    #         )
-    #     )
-    #     with self.get_connection() as connection:
-    #         connection.execute(stmt)
 
     def get_latest_settle_index(self):
         """ Get the lnd settled index of the most recent received payment. """
@@ -1140,7 +1126,7 @@ class SqueakDb:
             offer_id=row["offer_id"],
             squeak_hash=row["squeak_hash"],
             payment_hash=row["payment_hash"],
-            nonce=row["payment_hash"],
+            nonce=bytes.fromhex(row["nonce"]),
             payment_point=row["payment_point"],
             invoice_timestamp=row["invoice_timestamp"],
             invoice_expiry=row["invoice_expiry"],

@@ -603,11 +603,11 @@ message SentPayment {
     /// The squeak hash
     string squeak_hash = 5;
 
-    /// The preimage hash
-    string preimage_hash = 6;
+    /// The payment hash
+    string payment_hash = 6;
 
-    /// The preimage
-    string preimage = 7;
+    /// The secret key
+    string secret_key = 7;
 
     /// The price_msat
     int64 price_msat = 8;
@@ -615,11 +615,8 @@ message SentPayment {
     /// The seller node pubkey
     string node_pubkey = 9;
 
-    /// Valid preimage
-    bool preimage_is_valid = 10;
-
     /// time_ms
-    int64 time_ms = 11;
+    int64 time_ms = 10;
 }
 
 message SyncSqueakRequest {
@@ -673,11 +670,17 @@ message SentOffer {
     /// The squeak hash
     string squeak_hash = 2;
 
-    /// The preimage hash
-    string preimage_hash = 3;
+    /// The payment hash
+    string payment_hash = 3;
+
+    /// The secret key
+    string secret_key = 4;
+
+    /// The nonce
+    string nonce = 5;
 
     /// The price_msat
-    int64 price_msat = 4;
+    int64 price_msat = 6;
 }
 
 message GetReceivedPaymentsRequest {
@@ -695,8 +698,8 @@ message ReceivedPayment {
     /// The squeak hash
     string squeak_hash = 2;
 
-    /// The preimage hash
-    string preimage_hash = 3;
+    /// The payment hash
+    string payment_hash = 3;
 
     /// The price_msat
     int64 price_msat = 4;

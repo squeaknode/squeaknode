@@ -892,11 +892,12 @@ def test_connect_other_node(server_stub, admin_stub, other_server_stub, other_ad
         get_received_payments_response = admin_stub.GetReceivedPayments(
             squeak_admin_pb2.GetReceivedPaymentsRequest(),
         )
-        preimage_hashes = [
-            received_payment.preimage_hash
+        print("get_received_payments_response: {}".format(get_received_payments_response))
+        payment_hashes = [
+            received_payment.payment_hash
             for received_payment in get_received_payments_response.received_payments
         ]
-        assert sent_payment.preimage_hash in preimage_hashes
+        assert sent_payment.payment_hash in payment_hashes
         for received_payment in get_received_payments_response.received_payments:
             received_payment_time_ms = received_payment.payment_time_ms
             print("received_payment_time_ms: {}".format(received_payment_time_ms))
