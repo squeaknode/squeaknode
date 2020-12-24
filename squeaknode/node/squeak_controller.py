@@ -3,7 +3,6 @@ from hashlib import sha256
 
 from squeak.core.signing import CSigningKey, CSqueakAddress
 from squeak.core import CheckSqueak
-from squeak.core.elliptic import payment_point_from_secret_key
 
 from squeaknode.core.squeak_address_validator import SqueakAddressValidator
 from squeaknode.node.squeak_block_verifier import SqueakBlockVerifier
