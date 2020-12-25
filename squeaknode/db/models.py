@@ -26,7 +26,7 @@ from squeaknode.core.squeak_entry_with_profile import SqueakEntryWithProfile
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.sent_payment import SentPayment
-from squeaknode.server.util import get_hash
+from squeaknode.core.util import get_hash
 
 logger = logging.getLogger(__name__)
 

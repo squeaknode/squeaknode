@@ -1,7 +1,7 @@
 import logging
 
 from squeaknode.node.squeak_controller import SqueakController
-from squeaknode.server.util import get_hash
+from squeaknode.core.util import get_hash
 
 from proto import squeak_server_pb2, squeak_server_pb2_grpc
 

@@ -16,11 +16,11 @@ from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.sent_payment import SentPayment
-from squeaknode.server.util import generate_offer_preimage
-from squeaknode.server.util import generate_tweak
-from squeaknode.server.util import bxor
-from squeaknode.server.util import add_tweak
-from squeaknode.server.util import subtract_tweak
+from squeaknode.core.util import generate_offer_preimage
+from squeaknode.core.util import generate_tweak
+from squeaknode.core.util import bxor
+from squeaknode.core.util import add_tweak
+from squeaknode.core.util import subtract_tweak
 from squeaknode.node.sent_offers_verifier import SentOffersVerifier
 from squeaknode.node.sent_offers_worker import SentOffersWorker
 from squeaknode.node.received_payments_subscription_client import OpenReceivedPaymentsSubscriptionClient

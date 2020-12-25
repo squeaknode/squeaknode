@@ -1,6 +1,6 @@
 import logging
 
-from squeaknode.server.util import get_hash, get_replyto
+from squeaknode.core.util import get_hash, get_replyto
 
 from proto import squeak_admin_pb2, squeak_admin_pb2_grpc
 

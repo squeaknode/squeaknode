@@ -4,7 +4,7 @@ from contextlib import contextmanager
 import grpc
 from squeak.core import CheckSqueak, CSqueak
 
-from squeaknode.server.util import get_hash
+from squeaknode.core.util import get_hash
 
 from proto import squeak_server_pb2, squeak_server_pb2_grpc
 

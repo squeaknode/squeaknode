@@ -3,7 +3,7 @@ import logging
 
 from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
 from squeaknode.node.squeak_controller import SqueakController
-from squeaknode.server.util import get_hash, get_replyto
+from squeaknode.core.util import get_hash, get_replyto
 from squeaknode.admin.util import squeak_entry_to_message
 from squeaknode.admin.util import squeak_peer_to_message
 from squeaknode.admin.util import squeak_profile_to_message

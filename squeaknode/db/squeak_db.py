@@ -29,7 +29,7 @@ from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.sent_payment import SentPayment
 from squeaknode.core.sent_offer import SentOffer
-from squeaknode.server.util import get_hash
+from squeaknode.core.util import get_hash
 from squeaknode.db.models import Models
 from squeaknode.db.migrations import run_migrations
 from squeaknode.core.received_payment import ReceivedPayment
