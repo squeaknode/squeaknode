@@ -8,6 +8,9 @@ from lnd_lightning_client import LNDLightningClient
 from squeak.core import HASH_LENGTH, CSqueak, MakeSqueakFromStr
 from squeak.core.encryption import generate_data_key
 from squeak.core.signing import CSigningKey, CSqueakAddress
+from squeak.core.elliptic import scalar_from_bytes
+from squeak.core.elliptic import scalar_to_bytes
+from squeak.core.elliptic import scalar_difference
 
 from proto import squeak_server_pb2
 
@@ -87,6 +90,13 @@ def bxor(b1, b2):  # use xor for bytes
 
 def string_to_hex(s):
     return bytes.fromhex(s)
+
+
+def subtract_tweak(n, tweak):
+    n_int = scalar_from_bytes(n)
+    tweak_int = scalar_from_bytes(tweak)
+    sum_int = scalar_difference(n_int, tweak_int)
+    return scalar_to_bytes(sum_int)
 
 
 @contextmanager

@@ -22,7 +22,7 @@ from tests.util import (
     string_to_hex,
     open_channel,
     connect_peer,
-    bxor,
+    subtract_tweak,
 )
 
 
@@ -204,7 +204,8 @@ def test_sell_squeak(server_stub, admin_stub, lightning_client, saved_squeak_has
 
         # Calculate the secret key using the nonce and preimage
         nonce = buy_response.offer.nonce
-        secret_key = bxor(preimage, nonce)
+        #secret_key = bxor(preimage, nonce)
+        secret_key = subtract_tweak(preimage, nonce)
 
         get_response_squeak.SetDecryptionKey(secret_key)
         CheckSqueak(get_response_squeak)

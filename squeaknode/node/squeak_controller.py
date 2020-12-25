@@ -17,8 +17,10 @@ from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.sent_payment import SentPayment
 from squeaknode.server.util import generate_offer_preimage
-from squeaknode.server.util import generate_offer_nonce
+from squeaknode.server.util import generate_tweak
 from squeaknode.server.util import bxor
+from squeaknode.server.util import add_tweak
+from squeaknode.server.util import subtract_tweak
 from squeaknode.node.sent_offers_verifier import SentOffersVerifier
 from squeaknode.node.sent_offers_worker import SentOffersWorker
 from squeaknode.node.received_payments_subscription_client import OpenReceivedPaymentsSubscriptionClient
@@ -116,12 +118,13 @@ class SqueakController:
 
     def create_offer(self, squeak_hash, client_addr):
         # Generate a new random nonce
-        nonce = generate_offer_nonce()
+        nonce = generate_tweak()
         # Get the squeak secret key
         squeak = self.squeak_store.get_squeak(squeak_hash)
         secret_key = squeak.GetDecryptionKey()
         # Calculate the preimage
-        preimage = bxor(nonce, secret_key)
+        #preimage = bxor(nonce, secret_key)
+        preimage = add_tweak(secret_key, nonce)
         logger.info("Create offer with secret key: {} nonce: {} preimage: {}".format(secret_key, nonce, preimage))
         # Create the lightning invoice
         add_invoice_response = self.lightning_client.add_invoice(preimage, self.price_msat)
@@ -290,7 +293,8 @@ class SqueakController:
 
         # Calculate the secret key
         nonce = offer.nonce
-        secret_key = bxor(nonce, preimage)
+        #secret_key = bxor(nonce, preimage)
+        secret_key = subtract_tweak(preimage, nonce)
         logger.info("Pay offer with secret key: {} nonce: {} preimage: {}".format(secret_key, nonce, preimage))
 
         # Save the preimage of the sent payment

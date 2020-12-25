@@ -1,5 +1,5 @@
 importlib_resources==1.4.0
-squeaklib==0.5.0
+squeaklib==0.5.1
 argparse
 googleapis-common-protos
 grpcio
