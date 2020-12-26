@@ -97,12 +97,13 @@ def subtract_tweak(n, tweak):
 
 @contextmanager
 def connect_peer(lightning_client, lightning_host, remote_pubkey):
-    connect_peer_response = lightning_client.connect_peer(remote_pubkey, lightning_host)
+    # Connect the peer
+    lightning_client.connect_peer(remote_pubkey, lightning_host)
     try:
         yield
     finally:
         # Disconnect the peer
-        disconnect_peer_response = lightning_client.disconnect_peer(
+        lightning_client.disconnect_peer(
             remote_pubkey,
         )
 
