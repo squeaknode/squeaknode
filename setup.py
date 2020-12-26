@@ -1,15 +1,12 @@
 import io
 import os
-import pkg_resources
 import sys
 
+import pkg_resources
 import setuptools.command.build_py
 import setuptools.command.test
-from setuptools import find_packages, setup
-from setuptools import Command
-
 from grpc_tools import protoc
-
+from setuptools import Command, find_packages, setup
 
 PACKAGE_DIRECTORIES = {
     '': '.',
@@ -72,6 +69,7 @@ class BuildPackageProtos(Command):
         # grpc_tools.command.build_package_protos('.')
         build_package_protos('.')
 
+
 setup(
     name="squeaknode",
     version="1.0.0",
@@ -79,7 +77,7 @@ setup(
     description="Server for squeak protocol.",
     long_description=readme,
     packages=find_packages(),
-    #package_dir=PACKAGE_DIRECTORIES,
+    # package_dir=PACKAGE_DIRECTORIES,
     include_package_data=True,
     zip_safe=False,
     extras_require={"test": ["pytest", "coverage"]},

@@ -1,11 +1,12 @@
 import os
 
-from squeak.core.elliptic import generate_random_scalar
-from squeak.core.elliptic import scalar_from_bytes
-from squeak.core.elliptic import scalar_to_bytes
-from squeak.core.elliptic import scalar_sum
-from squeak.core.elliptic import scalar_difference
-
+from squeak.core.elliptic import (
+    generate_random_scalar,
+    scalar_difference,
+    scalar_from_bytes,
+    scalar_sum,
+    scalar_to_bytes,
+)
 
 DATA_KEY_LENGTH = 32
 

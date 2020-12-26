@@ -1,30 +1,26 @@
 from __future__ import print_function
 
-import time
 import datetime
-
+import time
 from hashlib import sha256
 
 import pytest
-from squeak.core import CSqueak
-from squeak.core import CheckSqueak
+from squeak.core import CheckSqueak, CSqueak
 
 from proto import lnd_pb2 as ln
 from proto import squeak_admin_pb2, squeak_server_pb2
 from tests.util import (
     build_squeak_msg,
+    connect_peer,
     generate_signing_key,
     get_address,
     get_hash,
     get_latest_block_info,
     make_squeak,
-    squeak_from_msg,
-    string_to_hex,
     open_channel,
-    connect_peer,
+    squeak_from_msg,
     subtract_tweak,
 )
-
 
 
 def test_get_profile(server_stub, admin_stub, signing_profile_id):
@@ -56,9 +52,7 @@ def test_get_profile(server_stub, admin_stub, signing_profile_id):
     assert name == get_squeak_profile_by_name_response.squeak_profile.profile_name
 
 
-def test_post_squeak(
-    server_stub, admin_stub, lightning_client, following_signing_key
-):
+def test_post_squeak(server_stub, admin_stub, lightning_client, following_signing_key):
     # Post a squeak with a direct request to the server
     block_height, block_hash = get_latest_block_info(lightning_client)
     squeak = make_squeak(
@@ -186,8 +180,9 @@ def test_sell_squeak(server_stub, admin_stub, lightning_client, saved_squeak_has
     )
     destination = decode_pay_req_response.destination
 
-    with connect_peer(lightning_client, buy_response.offer.host, destination), \
-         open_channel(lightning_client, destination, 1000000):
+    with connect_peer(
+        lightning_client, buy_response.offer.host, destination
+    ), open_channel(lightning_client, destination, 1000000):
         # List peers
         list_peers_response = lightning_client.list_peers()
 
@@ -204,7 +199,7 @@ def test_sell_squeak(server_stub, admin_stub, lightning_client, saved_squeak_has
 
         # Calculate the secret key using the nonce and preimage
         nonce = buy_response.offer.nonce
-        #secret_key = bxor(preimage, nonce)
+        # secret_key = bxor(preimage, nonce)
         secret_key = subtract_tweak(preimage, nonce)
 
         get_response_squeak.SetDecryptionKey(secret_key)
@@ -622,17 +617,20 @@ def test_list_channels(server_stub, admin_stub, lightning_client, saved_squeak_h
     )
     destination = decode_pay_req_response.destination
 
-    with connect_peer(lightning_client, buy_response.offer.host, destination), \
-         open_channel(lightning_client, destination, 1000000):
+    with connect_peer(
+        lightning_client, buy_response.offer.host, destination
+    ), open_channel(lightning_client, destination, 1000000):
         # List channels
         get_info_response = lightning_client.get_info()
         list_channels_response = admin_stub.LndListChannels(ln.ListChannelsRequest())
 
         assert len(list_channels_response.channels) > 0
-        assert any([
-            channel.remote_pubkey == get_info_response.identity_pubkey
-            for channel in list_channels_response.channels
-        ])
+        assert any(
+            [
+                channel.remote_pubkey == get_info_response.identity_pubkey
+                for channel in list_channels_response.channels
+            ]
+        )
 
     list_channels_response = admin_stub.LndListChannels(ln.ListChannelsRequest())
     assert len(list_channels_response.channels) == 0
@@ -640,14 +638,21 @@ def test_list_channels(server_stub, admin_stub, lightning_client, saved_squeak_h
 
 def test_send_coins(server_stub, admin_stub, lightning_client):
     new_address_response = admin_stub.LndNewAddress(ln.NewAddressRequest())
-    send_coins_response = lightning_client.send_coins(new_address_response.address, 55555555)
+    send_coins_response = lightning_client.send_coins(
+        new_address_response.address, 55555555
+    )
     time.sleep(10)
-    get_transactions_response = admin_stub.LndGetTransactions(ln.GetTransactionsRequest())
+    get_transactions_response = admin_stub.LndGetTransactions(
+        ln.GetTransactionsRequest()
+    )
 
-    assert any([
-        transaction.tx_hash == send_coins_response.txid
-        for transaction in get_transactions_response.transactions
-    ])
+    assert any(
+        [
+            transaction.tx_hash == send_coins_response.txid
+            for transaction in get_transactions_response.transactions
+        ]
+    )
+
 
 def test_list_peers(server_stub, admin_stub, lightning_client, saved_squeak_hash):
     # Get the squeak from the server
@@ -673,29 +678,38 @@ def test_list_peers(server_stub, admin_stub, lightning_client, saved_squeak_hash
 
     get_info_response = lightning_client.get_info()
 
-    admin_stub.LndConnectPeer(ln.ConnectPeerRequest(
-        addr=ln.LightningAddress(
-            pubkey=get_info_response.identity_pubkey,
-            host="lnd_client",
-        ),
-    ))
+    admin_stub.LndConnectPeer(
+        ln.ConnectPeerRequest(
+            addr=ln.LightningAddress(
+                pubkey=get_info_response.identity_pubkey,
+                host="lnd_client",
+            ),
+        )
+    )
 
     list_peers_response = admin_stub.LndListPeers(ln.ListPeersRequest())
-    assert any([
-        peer.pub_key == get_info_response.identity_pubkey
-        for peer in list_peers_response.peers
-    ])
+    assert any(
+        [
+            peer.pub_key == get_info_response.identity_pubkey
+            for peer in list_peers_response.peers
+        ]
+    )
 
     # Disconnect the peer
-    admin_stub.LndDisconnectPeer(ln.DisconnectPeerRequest(
-        pub_key=get_info_response.identity_pubkey,
-    ))
+    admin_stub.LndDisconnectPeer(
+        ln.DisconnectPeerRequest(
+            pub_key=get_info_response.identity_pubkey,
+        )
+    )
 
     list_peers_response = admin_stub.LndListPeers(ln.ListPeersRequest())
-    assert not any([
-        peer.pub_key == get_info_response.identity_pubkey
-        for peer in list_peers_response.peers
-    ])
+    assert not any(
+        [
+            peer.pub_key == get_info_response.identity_pubkey
+            for peer in list_peers_response.peers
+        ]
+    )
+
 
 def test_open_channel(server_stub, admin_stub, lightning_client, saved_squeak_hash):
     # Get the squeak from the server
@@ -722,19 +736,27 @@ def test_open_channel(server_stub, admin_stub, lightning_client, saved_squeak_ha
     with connect_peer(lightning_client, buy_response.offer.host, destination):
         # List pending channels
         get_info_response = lightning_client.get_info()
-        pending_channels_response = admin_stub.LndPendingChannels(ln.PendingChannelsRequest())
+        pending_channels_response = admin_stub.LndPendingChannels(
+            ln.PendingChannelsRequest()
+        )
         assert len(pending_channels_response.pending_open_channels) == 0
 
         # Open the new channel
-        open_channel_response = admin_stub.LndOpenChannelSync(ln.OpenChannelRequest(
-            node_pubkey_string=get_info_response.identity_pubkey,
-            local_funding_amount=1000000,
-        ))
+        open_channel_response = admin_stub.LndOpenChannelSync(
+            ln.OpenChannelRequest(
+                node_pubkey_string=get_info_response.identity_pubkey,
+                local_funding_amount=1000000,
+            )
+        )
 
-        pending_channels_response = admin_stub.LndPendingChannels(ln.PendingChannelsRequest())
+        pending_channels_response = admin_stub.LndPendingChannels(
+            ln.PendingChannelsRequest()
+        )
         assert len(pending_channels_response.pending_open_channels) == 1
 
-        subscribe_channel_events_response = admin_stub.LndSubscribeChannelEvents(ln.ChannelEventSubscription())
+        subscribe_channel_events_response = admin_stub.LndSubscribeChannelEvents(
+            ln.ChannelEventSubscription()
+        )
         for update in subscribe_channel_events_response:
             if update.HasField("active_channel"):
                 channel_point = update.active_channel
@@ -745,9 +767,11 @@ def test_open_channel(server_stub, admin_stub, lightning_client, saved_squeak_ha
         assert len(list_channels_response.channels) == 1
 
         # Close the channel
-        close_channel_response = admin_stub.LndCloseChannel(ln.CloseChannelRequest(
-            channel_point=channel_point,
-        ))
+        close_channel_response = admin_stub.LndCloseChannel(
+            ln.CloseChannelRequest(
+                channel_point=channel_point,
+            )
+        )
         for update in close_channel_response:
             if update.HasField("chan_close"):
                 print("Channel now closed.")
@@ -757,7 +781,15 @@ def test_open_channel(server_stub, admin_stub, lightning_client, saved_squeak_ha
         assert len(list_channels_response.channels) == 0
 
 
-def test_connect_other_node(server_stub, admin_stub, other_server_stub, other_admin_stub, lightning_client, signing_profile_id, saved_squeak_hash):
+def test_connect_other_node(
+    server_stub,
+    admin_stub,
+    other_server_stub,
+    other_admin_stub,
+    lightning_client,
+    signing_profile_id,
+    saved_squeak_hash,
+):
     # Get all squeak displays
     get_timeline_squeak_display_response = other_admin_stub.GetTimelineSqueakDisplays(
         squeak_admin_pb2.GetTimelineSqueakDisplaysRequest()
@@ -789,8 +821,11 @@ def test_connect_other_node(server_stub, admin_stub, other_server_stub, other_ad
     )
     squeak_profile_address = get_squeak_profile_response.squeak_profile.address
     squeak_profile_name = get_squeak_profile_response.squeak_profile.profile_name
-    print("Got squeak profile: {} with address: {}".format(squeak_profile_name, squeak_profile_address))
-
+    print(
+        "Got squeak profile: {} with address: {}".format(
+            squeak_profile_name, squeak_profile_address
+        )
+    )
 
     # Set the signing profile to be sharing on the main server
     admin_stub.SetSqueakProfileSharing(
@@ -819,7 +854,7 @@ def test_connect_other_node(server_stub, admin_stub, other_server_stub, other_ad
     sync_squeaks_response = other_admin_stub.SyncSqueaks(
         squeak_admin_pb2.SyncSqueaksRequest(),
     )
-    #time.sleep(10)
+    # time.sleep(10)
     print(sync_squeaks_response)
     assert peer_id in sync_squeaks_response.sync_result.completed_peer_ids
 
@@ -834,8 +869,9 @@ def test_connect_other_node(server_stub, admin_stub, other_server_stub, other_ad
 
     offer = get_buy_offers_response.offers[0]
 
-    with connect_peer(lightning_client, offer.node_host, offer.node_pubkey), \
-         open_channel(lightning_client, offer.node_pubkey, 1000000):
+    with connect_peer(
+        lightning_client, offer.node_host, offer.node_pubkey
+    ), open_channel(lightning_client, offer.node_pubkey, 1000000):
 
         list_channels_response = lightning_client.list_channels()
         print(list_channels_response)
@@ -864,7 +900,10 @@ def test_connect_other_node(server_stub, admin_stub, other_server_stub, other_ad
         get_sent_payments_response = other_admin_stub.GetSentPayments(
             squeak_admin_pb2.GetSentPaymentsRequest(),
         )
-        squeak_hashes = [sent_payment.squeak_hash for sent_payment in get_sent_payments_response.sent_payments]
+        squeak_hashes = [
+            sent_payment.squeak_hash
+            for sent_payment in get_sent_payments_response.sent_payments
+        ]
         assert saved_squeak_hash in squeak_hashes
 
         # Get the single sent payment
@@ -893,7 +932,9 @@ def test_connect_other_node(server_stub, admin_stub, other_server_stub, other_ad
         get_received_payments_response = admin_stub.GetReceivedPayments(
             squeak_admin_pb2.GetReceivedPaymentsRequest(),
         )
-        print("get_received_payments_response: {}".format(get_received_payments_response))
+        print(
+            "get_received_payments_response: {}".format(get_received_payments_response)
+        )
         payment_hashes = [
             received_payment.payment_hash
             for received_payment in get_received_payments_response.received_payments
@@ -902,7 +943,9 @@ def test_connect_other_node(server_stub, admin_stub, other_server_stub, other_ad
         for received_payment in get_received_payments_response.received_payments:
             received_payment_time_ms = received_payment.payment_time_ms
             print("received_payment_time_ms: {}".format(received_payment_time_ms))
-            received_payment_time = datetime.datetime.fromtimestamp(received_payment_time_ms/1000.0)
+            received_payment_time = datetime.datetime.fromtimestamp(
+                received_payment_time_ms / 1000.0
+            )
             five_minutes = datetime.timedelta(minutes=5)
             assert received_payment_time > datetime.datetime.now() - five_minutes
             assert received_payment_time < datetime.datetime.now()
@@ -920,7 +963,15 @@ def test_connect_other_node(server_stub, admin_stub, other_server_stub, other_ad
             break
 
 
-def test_download_single_squeak(server_stub, admin_stub, other_server_stub, other_admin_stub, lightning_client, signing_profile_id, saved_squeak_hash):
+def test_download_single_squeak(
+    server_stub,
+    admin_stub,
+    other_server_stub,
+    other_admin_stub,
+    lightning_client,
+    signing_profile_id,
+    saved_squeak_hash,
+):
 
     # Add the main node as a peer
     create_peer_response = other_admin_stub.CreatePeer(
@@ -947,8 +998,11 @@ def test_download_single_squeak(server_stub, admin_stub, other_server_stub, othe
     )
     squeak_profile_address = get_squeak_profile_response.squeak_profile.address
     squeak_profile_name = get_squeak_profile_response.squeak_profile.profile_name
-    print("Got squeak profile: {} with address: {}".format(squeak_profile_name, squeak_profile_address))
-
+    print(
+        "Got squeak profile: {} with address: {}".format(
+            squeak_profile_name, squeak_profile_address
+        )
+    )
 
     # Set the signing profile to be sharing on the main server
     admin_stub.SetSqueakProfileSharing(
@@ -972,7 +1026,6 @@ def test_download_single_squeak(server_stub, admin_stub, other_server_stub, othe
             following=True,
         )
     )
-
 
     # Get the squeak display item (should be empty)
     get_squeak_display_response = other_admin_stub.GetSqueakDisplay(
@@ -1024,7 +1077,9 @@ def test_get_squeak_details(server_stub, admin_stub, saved_squeak_hash):
             squeak_hash=saved_squeak_hash,
         )
     )
-    serialized_squeak_hex = get_squeak_details_response.squeak_detail_entry.serialized_squeak_hex
+    serialized_squeak_hex = (
+        get_squeak_details_response.squeak_detail_entry.serialized_squeak_hex
+    )
     print("serialized_squeak_hex: {}".format(serialized_squeak_hex))
     assert len(serialized_squeak_hex) > 200
 

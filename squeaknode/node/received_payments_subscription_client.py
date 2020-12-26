@@ -1,16 +1,13 @@
 import logging
+import queue
+import threading
 import time
-import threading, queue
-
 from contextlib import contextmanager
-
-from squeaknode.core.util import get_hash
 
 logger = logging.getLogger(__name__)
 
 DEFAULT_MAX_QUEUE_SIZE = 1000
 DEFAULT_UPDATE_INTERVAL_S = 1
-
 
 
 @contextmanager
@@ -22,7 +19,7 @@ def OpenReceivedPaymentsSubscriptionClient(
 ):
     """Custom context manager for opening a received payments client."""
 
-    #f = open(filename, method)
+    # f = open(filename, method)
     client = ReceivedPaymentsSubscriptionClient(
         squeak_db,
         initial_index,
@@ -75,7 +72,9 @@ class ReceivedPaymentsSubscriptionClient:
             for payment in self._get_received_payments_from_db(payment_index):
                 self._queue.put(payment)
                 payment_index = payment.received_payment_id
-                logger.info("Added payment to queue. Size: {}".format(self._queue.qsize()))
+                logger.info(
+                    "Added payment to queue. Size: {}".format(self._queue.qsize())
+                )
             time.sleep(self.update_interval_s)
 
     def _get_received_payments_from_db(self, payment_index):
@@ -86,4 +85,6 @@ class ReceivedPaymentsSubscriptionClient:
             payment = self._queue.get()
             yield payment
             self._queue.task_done()
-            logger.info("Removed payment from queue. Size: {}".format(self._queue.qsize()))
+            logger.info(
+                "Removed payment from queue. Size: {}".format(self._queue.qsize())
+            )

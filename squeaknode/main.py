@@ -2,9 +2,7 @@ import argparse
 import logging
 import sys
 import threading
-from configparser import ConfigParser
 from pathlib import Path
-from os import environ
 
 from squeak.params import SelectParams
 
@@ -12,17 +10,15 @@ from squeaknode.admin.squeak_admin_server_handler import SqueakAdminServerHandle
 from squeaknode.admin.squeak_admin_server_servicer import SqueakAdminServerServicer
 from squeaknode.admin.webapp.app import SqueakAdminWebServer
 from squeaknode.bitcoin.bitcoin_blockchain_client import BitcoinBlockchainClient
-from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
+from squeaknode.config.config import Config
+from squeaknode.core.lightning_address import LightningAddressHostPort
 from squeaknode.db.db_engine import get_engine, get_sqlite_connection_string
 from squeaknode.db.squeak_db import SqueakDb
+from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
 from squeaknode.node.squeak_controller import SqueakController
-from squeaknode.core.lightning_address import LightningAddressHostPort
+from squeaknode.node.squeak_node import SqueakNode
 from squeaknode.server.squeak_server_handler import SqueakServerHandler
 from squeaknode.server.squeak_server_servicer import SqueakServerServicer
-from squeaknode.node.squeak_node import SqueakNode
-
-from squeaknode.config.config import Config
-
 
 logger = logging.getLogger(__name__)
 

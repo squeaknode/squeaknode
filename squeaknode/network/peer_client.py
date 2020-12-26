@@ -4,9 +4,8 @@ from contextlib import contextmanager
 import grpc
 from squeak.core import CheckSqueak, CSqueak
 
-from squeaknode.core.util import get_hash
-
 from proto import squeak_server_pb2, squeak_server_pb2_grpc
+from squeaknode.core.util import get_hash
 
 logger = logging.getLogger(__name__)
 

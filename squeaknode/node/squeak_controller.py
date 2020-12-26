@@ -1,30 +1,25 @@
 import logging
-from hashlib import sha256
 
-from squeak.core.signing import CSigningKey, CSqueakAddress
 from squeak.core import CheckSqueak
+from squeak.core.signing import CSigningKey, CSqueakAddress
 
+from squeaknode.core.buy_offer import BuyOffer
+from squeaknode.core.sent_offer import SentOffer
+from squeaknode.core.sent_payment import SentPayment
 from squeaknode.core.squeak_address_validator import SqueakAddressValidator
+from squeaknode.core.squeak_peer import SqueakPeer
+from squeaknode.core.squeak_profile import SqueakProfile
+from squeaknode.core.util import add_tweak, generate_tweak, subtract_tweak
+from squeaknode.node.received_payments_subscription_client import (
+    OpenReceivedPaymentsSubscriptionClient,
+)
+from squeaknode.node.sent_offers_verifier import SentOffersVerifier
 from squeaknode.node.squeak_block_verifier import SqueakBlockVerifier
 from squeaknode.node.squeak_maker import SqueakMaker
 from squeaknode.node.squeak_rate_limiter import SqueakRateLimiter
 from squeaknode.node.squeak_store import SqueakStore
 from squeaknode.node.squeak_sync_status import SqueakSyncController
 from squeaknode.node.squeak_whitelist import SqueakWhitelist
-from squeaknode.core.buy_offer import BuyOffer
-from squeaknode.core.sent_offer import SentOffer
-from squeaknode.core.squeak_peer import SqueakPeer
-from squeaknode.core.squeak_profile import SqueakProfile
-from squeaknode.core.sent_payment import SentPayment
-from squeaknode.core.util import generate_offer_preimage
-from squeaknode.core.util import generate_tweak
-from squeaknode.core.util import bxor
-from squeaknode.core.util import add_tweak
-from squeaknode.core.util import subtract_tweak
-from squeaknode.node.sent_offers_verifier import SentOffersVerifier
-from squeaknode.node.sent_offers_worker import SentOffersWorker
-from squeaknode.node.received_payments_subscription_client import OpenReceivedPaymentsSubscriptionClient
-
 
 logger = logging.getLogger(__name__)
 
@@ -120,16 +115,24 @@ class SqueakController:
         squeak = self.squeak_store.get_squeak(squeak_hash)
         secret_key = squeak.GetDecryptionKey()
         # Calculate the preimage
-        #preimage = bxor(nonce, secret_key)
+        # preimage = bxor(nonce, secret_key)
         preimage = add_tweak(secret_key, nonce)
-        logger.info("Create offer with secret key: {} nonce: {} preimage: {}".format(secret_key, nonce, preimage))
+        logger.info(
+            "Create offer with secret key: {} nonce: {} preimage: {}".format(
+                secret_key, nonce, preimage
+            )
+        )
         # Create the lightning invoice
-        add_invoice_response = self.lightning_client.add_invoice(preimage, self.price_msat)
+        add_invoice_response = self.lightning_client.add_invoice(
+            preimage, self.price_msat
+        )
         logger.info("add_invoice_response: {}".format(add_invoice_response))
         payment_hash = add_invoice_response.r_hash
         invoice_payment_request = add_invoice_response.payment_request
         # invoice_expiry = add_invoice_response.expiry
-        lookup_invoice_response = self.lightning_client.lookup_invoice(payment_hash.hex())
+        lookup_invoice_response = self.lightning_client.lookup_invoice(
+            payment_hash.hex()
+        )
         invoice_time = lookup_invoice_response.creation_date
         invoice_expiry = lookup_invoice_response.expiry
         # Save the incoming potential payment in the databse.
@@ -286,13 +289,19 @@ class SqueakController:
         preimage = payment.payment_preimage
 
         if not preimage:
-            raise Exception("Payment failed with error: {}".format(payment.payment_error))
+            raise Exception(
+                "Payment failed with error: {}".format(payment.payment_error)
+            )
 
         # Calculate the secret key
         nonce = offer.nonce
-        #secret_key = bxor(nonce, preimage)
+        # secret_key = bxor(nonce, preimage)
         secret_key = subtract_tweak(preimage, nonce)
-        logger.info("Pay offer with secret key: {} nonce: {} preimage: {}".format(secret_key, nonce, preimage))
+        logger.info(
+            "Pay offer with secret key: {} nonce: {} preimage: {}".format(
+                secret_key, nonce, preimage
+            )
+        )
 
         # Save the preimage of the sent payment
         sent_payment = SentPayment(
@@ -355,15 +364,17 @@ class SqueakController:
         logger.debug("Deleting expired sent offers.")
         num_expired_sent_offers = self.squeak_db.delete_expired_offers()
         if num_expired_sent_offers > 0:
-            logger.info("Deleted number of sent offers: {}".format(num_expired_sent_offers))
+            logger.info(
+                "Deleted number of sent offers: {}".format(num_expired_sent_offers)
+            )
 
     def process_subscribed_invoices(self):
         self.sent_offers_verifier.process_subscribed_invoices()
 
     def subscribe_received_payments(self, initial_index):
         with OpenReceivedPaymentsSubscriptionClient(
-                self.squeak_db,
-                initial_index,
+            self.squeak_db,
+            initial_index,
         ) as client:
             for payment in client.get_received_payments():
                 yield payment

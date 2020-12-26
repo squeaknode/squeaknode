@@ -1,16 +1,12 @@
 from __future__ import print_function
 
 import time
-
 from contextlib import contextmanager
 
 from lnd_lightning_client import LNDLightningClient
 from squeak.core import HASH_LENGTH, CSqueak, MakeSqueakFromStr
-from squeak.core.encryption import generate_data_key
+from squeak.core.elliptic import scalar_difference, scalar_from_bytes, scalar_to_bytes
 from squeak.core.signing import CSigningKey, CSqueakAddress
-from squeak.core.elliptic import scalar_from_bytes
-from squeak.core.elliptic import scalar_to_bytes
-from squeak.core.elliptic import scalar_difference
 
 from proto import squeak_server_pb2
 
@@ -101,9 +97,7 @@ def subtract_tweak(n, tweak):
 
 @contextmanager
 def connect_peer(lightning_client, lightning_host, remote_pubkey):
-    connect_peer_response = lightning_client.connect_peer(
-        remote_pubkey, lightning_host
-    )
+    connect_peer_response = lightning_client.connect_peer(remote_pubkey, lightning_host)
     try:
         yield
     finally:
@@ -111,6 +105,7 @@ def connect_peer(lightning_client, lightning_host, remote_pubkey):
         disconnect_peer_response = lightning_client.disconnect_peer(
             remote_pubkey,
         )
+
 
 @contextmanager
 def open_channel(lightning_client, remote_pubkey, amount):

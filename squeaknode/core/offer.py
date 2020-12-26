@@ -1,11 +1,11 @@
 from dataclasses import dataclass
-
 from typing import Optional
 
 
 @dataclass
 class Offer:
     """Class for saving an offer from a remote peer."""
+
     offer_id: Optional[int]
     squeak_hash: str
     price_msat: bytes

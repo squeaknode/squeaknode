@@ -3,37 +3,24 @@ from contextlib import contextmanager
 from datetime import datetime, timedelta
 
 import sqlalchemy
-from sqlalchemy import (
-    BigInteger,
-    Binary,
-    Boolean,
-    Column,
-    DateTime,
-    Integer,
-    MetaData,
-    String,
-    Table,
-    func,
-    literal,
-)
+from sqlalchemy import func, literal
 from sqlalchemy.sql import and_, or_, select
 from squeak.core import CSqueak
 
 from squeaknode.bitcoin.util import parse_block_header
 from squeaknode.core.offer import Offer
 from squeaknode.core.offer_with_peer import OfferWithPeer
+from squeaknode.core.received_payment import ReceivedPayment
+from squeaknode.core.sent_offer import SentOffer
+from squeaknode.core.sent_payment import SentPayment
 from squeaknode.core.sent_payment_with_peer import SentPaymentWithPeer
 from squeaknode.core.squeak_entry import SqueakEntry
 from squeaknode.core.squeak_entry_with_profile import SqueakEntryWithProfile
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
-from squeaknode.core.sent_payment import SentPayment
-from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.util import get_hash
-from squeaknode.db.models import Models
 from squeaknode.db.migrations import run_migrations
-from squeaknode.core.received_payment import ReceivedPayment
-
+from squeaknode.db.models import Models
 
 logger = logging.getLogger(__name__)
 
@@ -84,7 +71,9 @@ class SqueakDb:
 
     def insert_squeak(self, squeak, block_header_bytes):
         """ Insert a new squeak. """
-        secret_key_hex = squeak.GetDecryptionKey().hex() if squeak.HasDecryptionKey() else None
+        secret_key_hex = (
+            squeak.GetDecryptionKey().hex() if squeak.HasDecryptionKey() else None
+        )
         squeak.ClearDecryptionKey()
         ins = self.squeaks.insert().values(
             hash=get_hash(squeak),
@@ -777,9 +766,7 @@ class SqueakDb:
 
     def get_offers(self, squeak_hash):
         """ Get offers for a squeak hash. """
-        s = select([self.offers]).where(
-            self.offers.c.squeak_hash == squeak_hash
-        )
+        s = select([self.offers]).where(self.offers.c.squeak_hash == squeak_hash)
         with self.get_connection() as connection:
             result = connection.execute(s)
             rows = result.fetchall()
@@ -867,9 +854,7 @@ class SqueakDb:
 
     def delete_offers_for_squeak(self, squeak_hash):
         """ Delete all offers for a squeak hash. """
-        s = self.offers.delete().where(
-            self.offers.c.squeak_hash == squeak_hash
-        )
+        s = self.offers.delete().where(self.offers.c.squeak_hash == squeak_hash)
         with self.get_connection() as connection:
             res = connection.execute(s)
             deleted_offers = res.rowcount
@@ -948,11 +933,8 @@ class SqueakDb:
 
     def get_sent_offers(self):
         """ Get all received payments. """
-        s = (
-            select([self.sent_offers])
-            .order_by(
-                self.sent_offers.c.created.desc(),
-            )
+        s = select([self.sent_offers]).order_by(
+            self.sent_offers.c.created.desc(),
         )
         with self.get_connection() as connection:
             result = connection.execute(s)
@@ -962,9 +944,8 @@ class SqueakDb:
 
     def get_sent_offer_by_payment_hash(self, payment_hash):
         """ Get a sent offer by preimage hash. """
-        s = (
-            select([self.sent_offers])
-            .where(self.sent_offers.c.payment_hash == payment_hash)
+        s = select([self.sent_offers]).where(
+            self.sent_offers.c.payment_hash == payment_hash
         )
         with self.get_connection() as connection:
             result = connection.execute(s)
@@ -998,12 +979,9 @@ class SqueakDb:
 
     def get_latest_settle_index(self):
         """ Get the lnd settled index of the most recent received payment. """
-        s = (
-            select([
-                func.max(self.received_payments.c.settle_index)],
-            )
-            .select_from(self.received_payments)
-        )
+        s = select(
+            [func.max(self.received_payments.c.settle_index)],
+        ).select_from(self.received_payments)
         with self.get_connection() as connection:
             result = connection.execute(s)
             row = result.fetchone()
@@ -1027,11 +1005,8 @@ class SqueakDb:
 
     def get_received_payments(self):
         """ Get all received payments. """
-        s = (
-            select([self.received_payments])
-            .order_by(
-                self.received_payments.c.created.desc(),
-            )
+        s = select([self.received_payments]).order_by(
+            self.received_payments.c.created.desc(),
         )
         with self.get_connection() as connection:
             result = connection.execute(s)
@@ -1059,9 +1034,7 @@ class SqueakDb:
         if row is None:
             return None
         secret_key_column = row["secret_key"]
-        secret_key = (
-            bytes.fromhex(secret_key_column) if secret_key_column else b""
-        )
+        secret_key = bytes.fromhex(secret_key_column) if secret_key_column else b""
         squeak = CSqueak.deserialize(row["squeak"])
         if secret_key:
             squeak.SetDecryptionKey(secret_key)
