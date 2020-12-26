@@ -35,7 +35,6 @@ class SqueakController:
         squeak_db,
         blockchain_client,
         lightning_client,
-        squeak_server_client,
         lightning_host_port,
         price_msat,
         max_squeaks_per_address_per_hour,
@@ -43,7 +42,6 @@ class SqueakController:
         self.squeak_db = squeak_db
         self.blockchain_client = blockchain_client
         self.lightning_client = lightning_client
-        self.squeak_server_client = squeak_server_client
         self.lightning_host_port = lightning_host_port
         self.price_msat = price_msat
         self.squeak_block_verifier = SqueakBlockVerifier(blockchain_client)
@@ -64,7 +62,6 @@ class SqueakController:
         )
         self.squeak_sync_controller = SqueakSyncController(
             self.blockchain_client,
-            self.squeak_server_client,
             self.squeak_store,
             self.squeak_db,
             self.lightning_client,
