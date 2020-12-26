@@ -19,7 +19,7 @@ class SqueakBlockVerifier:
                 "Failed to get block info for squeak.", exc_info=False
             )
             return None
-        if squeak.hashBlock.hex() != block_info.block_hash:
+        if squeak.hashBlock != block_info.block_hash:
             logger.info("block hash incorrect: {}".format(block_info))
             return None
-        return bytes.fromhex(block_info.block_header)
+        return block_info.block_header
