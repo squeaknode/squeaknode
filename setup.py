@@ -5,7 +5,6 @@ import sys
 
 import setuptools.command.build_py
 import setuptools.command.test
-# from grpc_tools.command import BuildPackageProtos
 from setuptools import find_packages, setup
 from setuptools import Command
 
@@ -26,15 +25,6 @@ class BuildPyCommand(setuptools.command.build_py.build_py):
     def run(self):
         self.run_command('build_proto_modules')
         setuptools.command.build_py.build_py.run(self)
-
-
-# class TestCommand(setuptools.command.test.test):
-#     """Custom test command."""
-
-#     def run(self):
-#         print("Running custom test command...")
-#         self.run_command('build_proto_modules')
-#         # setuptools.command.test.test.run(self)
 
 
 def build_package_protos(package_root, strict_mode=False):
@@ -101,6 +91,5 @@ setup(
     cmdclass={
         'build_proto_modules': BuildPackageProtos,
         'build_py': BuildPyCommand,
-        # 'test': TestCommand,
     },
 )

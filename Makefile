@@ -13,6 +13,7 @@ clean:
 test:
 	tox
 	tox -e codechecks
+	tox -e mypy
 
 codeformat:
 	tox -e autoflake
