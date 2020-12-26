@@ -24,7 +24,7 @@ class SqueakSyncController:
         try:
             block_info = self.blockchain_client.get_best_block_info()
             block_height = block_info.block_height
-        except Exception as e:
+        except Exception:
             logger.error(
                 "Failed to sync because unable to get blockchain info.", exc_info=False
             )

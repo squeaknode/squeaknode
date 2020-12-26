@@ -30,7 +30,7 @@ class ReceivedPaymentsVerifier:
                 settle_index=latest_settle_index,
             ):
                 self.verify_received_payment(invoice)
-        except:
+        except Exception:
             logger.error(
                 "Unable to subscribe invoices from lnd. Retrying in {} seconds".format(
                     LND_CONNECT_RETRY_S

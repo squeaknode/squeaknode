@@ -13,7 +13,7 @@ class SqueakBlockVerifier:
     def get_block_header(self, squeak):
         try:
             block_info = self._get_block_info_for_height(squeak.nBlockHeight)
-        except Exception as e:
+        except Exception:
             logger.error("Failed to get block info for squeak.", exc_info=False)
             return None
         if squeak.hashBlock != block_info.block_hash:

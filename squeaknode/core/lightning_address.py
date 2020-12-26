@@ -1,3 +1,9 @@
-from collections import namedtuple
+from dataclasses import dataclass
 
-LightningAddressHostPort = namedtuple("LightningAddress", ["host", "port"])
+
+@dataclass
+class LightningAddressHostPort:
+    """Class for representing a remote lightning peer address."""
+
+    host: str
+    port: int

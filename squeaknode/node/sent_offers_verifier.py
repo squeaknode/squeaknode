@@ -32,7 +32,7 @@ class SentOffersVerifier:
                 settle_index=latest_settle_index,
             ):
                 self.verify_sent_offer(invoice)
-        except:
+        except Exception:
             logger.info(
                 "Unable to subscribe invoices from lnd. Retrying in "
                 "{} seconds.".format(LND_CONNECT_RETRY_S),
