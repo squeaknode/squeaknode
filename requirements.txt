@@ -4,6 +4,7 @@ argparse
 googleapis-common-protos
 grpcio
 grpcio-tools
+mypy-protobuf
 psycopg2
 requests
 SQLAlchemy
