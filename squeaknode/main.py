@@ -37,7 +37,7 @@ def load_lightning_client(config) -> LNDLightningClient:
     )
 
 
-def load_lightning_host_port(config) -> LNDLightningClient:
+def load_lightning_host_port(config) -> LightningAddressHostPort:
     return LightningAddressHostPort(
         config.lnd_external_host,
         config.lnd_port,

@@ -206,12 +206,6 @@ class LNDLightningClient:
             new_address_request,
         )
 
-    def list_channels(self):
-        list_channels_request = lnd_pb2.ListChannelsRequest()
-        return self.stub.ListChannels(
-            list_channels_request,
-        )
-
     def subscribe_channel_events(self):
         subscribe_channel_events_request = lnd_pb2.ChannelEventSubscription()
         return self.stub.SubscribeChannelEvents(
