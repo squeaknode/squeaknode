@@ -155,19 +155,6 @@ class PeerSyncTask:
         pay_req = self._decode_payment_request(offer_msg.payment_request)
         logger.info("Decoded payment request: {}".format(pay_req))
 
-        # TODO: Check the payment point
-        # payment_point = offer.payment_point
-        # logger.info("Payment point: {}".format(payment_point.hex()))
-        # expected_payment_point = squeak.paymentPoint
-        # logger.info("Expected payment point: {}".format(expected_payment_point.hex()))
-        # if payment_point != expected_payment_point:
-        #     raise Exception(
-        #         "Invalid offer payment point: {}, expected: {}".format(
-        #             payment_point.hex(),
-        #             expected_payment_point.hex(),
-        #         )
-        #     )
-
         # TODO: Use the real payment point, not a fake value.
         squeak_payment_point = squeak.paymentPoint
         payment_point = b''
@@ -286,75 +273,9 @@ class PeerSyncTask:
         )
         return self.peer_client.buy_squeak(squeak_hash)
 
-    # def _download_buy_offer(self, squeak_hash):
-    #     logger.info(
-    #         "Downloading buy offer for squeak hash: {}".format(squeak_hash)
-    #     )
-    #     offer_msg = self.peer_client.buy_squeak(squeak_hash)
-    #     offer = self._offer_from_msg(offer_msg)
-    #     return offer
-
     def _save_offer(self, offer):
         logger.info("Saving offer: {}".format(offer))
         self.squeak_db.insert_offer(offer)
 
-    # def _offer_from_msg(self, offer_msg):
-    #     if not offer_msg:
-    #         return None
-    #     return Offer(
-    #         offer_id=None,
-    #         squeak_hash=offer_msg.squeak_hash,
-    #         price_msat=None,
-    #         payment_hash=None,
-    #         nonce=offer_msg.nonce,
-    #         payment_point=None,
-    #         invoice_timestamp=None,
-    #         invoice_expiry=None,
-    #         payment_request=offer_msg.payment_request,
-    #         destination=None,
-    #         node_host=offer_msg.host,
-    #         node_port=offer_msg.port,
-    #         peer_id=self.peer.peer_id,
-    #     )
-
     def _decode_payment_request(self, payment_request):
         return self.lightning_client.decode_pay_req(payment_request)
-
-    # def _get_decoded_offer(self, offer):
-    #     pay_req = self._decode_payment_request(offer.payment_request)
-    #     logger.info("Decoded payment request: {}".format(pay_req))
-
-    #     # TODO: Use the real payment point, not a fake value.
-    #     payment_point = b''
-    #     payment_hash = bytes.fromhex(pay_req.payment_hash)
-    #     price_msat = pay_req.num_msat
-    #     destination = pay_req.destination
-    #     invoice_timestamp = pay_req.timestamp
-    #     invoice_expiry = pay_req.expiry
-    #     node_host = offer.node_host or self.peer.host
-    #     node_port = offer.node_port
-
-    #     logger.info("price_msat: {}".format(price_msat))
-    #     logger.info("destination: {}".format(destination))
-    #     logger.info("invoice_timestamp: {}".format(invoice_timestamp))
-    #     logger.info("invoice_expiry: {}".format(invoice_expiry))
-    #     logger.info("node_host: {}".format(node_host))
-    #     logger.info("node_port: {}".format(node_port))
-
-    #     decoded_offer = Offer(
-    #         offer_id=offer.offer_id,
-    #         squeak_hash=offer.squeak_hash,
-    #         price_msat=price_msat,
-    #         payment_hash=payment_hash,
-    #         nonce=offer.nonce,
-    #         payment_point=payment_point,
-    #         invoice_timestamp=invoice_timestamp,
-    #         invoice_expiry=invoice_expiry,
-    #         payment_request=offer.payment_request,
-    #         destination=destination,
-    #         node_host=node_host,
-    #         node_port=node_port,
-    #         peer_id=offer.peer_id,
-    #     )
-
-    #     return decoded_offer
