@@ -92,7 +92,7 @@ class SqueakDb:
 
     def insert_squeak(self, squeak, block_header_bytes):
         """ Insert a new squeak. """
-        secret_key = squeak.GetDecryptionKey() if squeak.HasDecryptionKey() else None
+        secret_key_hex = squeak.GetDecryptionKey().hex() if squeak.HasDecryptionKey() else None
         squeak.ClearDecryptionKey()
         ins = self.squeaks.insert().values(
             hash=get_hash(squeak),
@@ -102,7 +102,7 @@ class SqueakDb:
             n_block_height=squeak.nBlockHeight,
             n_time=squeak.nTime,
             author_address=str(squeak.GetAddress()),
-            secret_key=secret_key,
+            secret_key=secret_key_hex,
             block_header=block_header_bytes,
         )
         with self.get_connection() as connection:
@@ -656,7 +656,7 @@ class SqueakDb:
         stmt = (
             self.squeaks.update()
             .where(self.squeaks.c.hash == squeak_hash)
-            .values(secret_key=secret_key)
+            .values(secret_key=secret_key.hex())
         )
         with self.get_connection() as connection:
             connection.execute(stmt)
@@ -1068,7 +1068,7 @@ class SqueakDb:
             return None
         secret_key_column = row["secret_key"]
         secret_key = (
-            bytes(secret_key_column) if secret_key_column else b""
+            bytes.fromhex(secret_key_column) if secret_key_column else b""
         )
         squeak = CSqueak.deserialize(row["squeak"])
         if secret_key:
