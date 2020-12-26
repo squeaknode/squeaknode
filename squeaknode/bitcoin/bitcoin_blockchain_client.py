@@ -1,7 +1,6 @@
-import os
 import json
 import logging
-from typing import Optional
+import os
 
 import requests
 
@@ -28,8 +27,8 @@ class BitcoinBlockchainClient(BlockchainClient):
         self.headers = {"content-type": "application/json"}
         s = requests.Session()
         if ssl_cert:
-            os.environ['SSL_CERT_FILE'] = ssl_cert
-            os.environ['REQUESTS_CA_BUNDLE'] = ssl_cert
+            os.environ["SSL_CERT_FILE"] = ssl_cert
+            os.environ["REQUESTS_CA_BUNDLE"] = ssl_cert
             s.cert = ssl_cert
 
     def get_best_block_info(self) -> BlockInfo:

@@ -1,9 +1,7 @@
 import logging
 
+from proto import squeak_admin_pb2
 from squeaknode.core.util import get_hash, get_replyto
-
-from proto import squeak_admin_pb2, squeak_admin_pb2_grpc
-
 
 logger = logging.getLogger(__name__)
 
@@ -36,6 +34,7 @@ def squeak_entry_to_message(squeak_entry_with_profile):
         reply_to=reply_to,
     )
 
+
 def squeak_profile_to_message(squeak_profile):
     if squeak_profile is None:
         return None
@@ -49,6 +48,7 @@ def squeak_profile_to_message(squeak_profile):
         following=squeak_profile.following,
     )
 
+
 def squeak_peer_to_message(squeak_peer):
     if squeak_peer is None:
         return None
@@ -60,6 +60,7 @@ def squeak_peer_to_message(squeak_peer):
         uploading=squeak_peer.uploading,
         downloading=squeak_peer.downloading,
     )
+
 
 def offer_entry_to_message(offer_entry):
     if offer_entry is None:
@@ -77,6 +78,7 @@ def offer_entry_to_message(offer_entry):
         invoice_timestamp=offer.invoice_timestamp,
         invoice_expiry=offer.invoice_expiry,
     )
+
 
 def sent_payment_with_peer_to_message(sent_payment_with_peer):
     if sent_payment_with_peer is None:
@@ -106,6 +108,7 @@ def sync_result_to_message(sync_result):
         timeout_peer_ids=sync_result.timeout_peer_ids,
     )
 
+
 def squeak_entry_to_detail_message(squeak_entry_with_profile):
     if squeak_entry_with_profile is None:
         return None
@@ -125,6 +128,7 @@ def squeak_entry_to_detail_message(squeak_entry_with_profile):
         serialized_squeak_hex=serialized_squeak.hex(),
     )
 
+
 def sent_offer_to_message(sent_offer):
     if sent_offer is None:
         return None
@@ -136,6 +140,7 @@ def sent_offer_to_message(sent_offer):
         nonce=sent_offer.nonce.hex(),
         price_msat=sent_offer.price_msat,
     )
+
 
 def received_payments_to_message(received_payment):
     if received_payment is None:

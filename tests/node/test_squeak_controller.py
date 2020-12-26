@@ -1,9 +1,9 @@
 import pytest
 
-from squeaknode.node.squeak_controller import SqueakController
 from squeaknode.bitcoin.blockchain_client import BlockchainClient
 from squeaknode.core.lightning_address import LightningAddressHostPort
 from squeaknode.db.squeak_db import SqueakDb
+from squeaknode.node.squeak_controller import SqueakController
 
 
 @pytest.fixture
@@ -24,10 +24,7 @@ def lightning_client():
 
 @pytest.fixture
 def lightning_host_port():
-    return LightningAddressHostPort(
-        host="my_lightning_host",
-        port=8765
-    )
+    return LightningAddressHostPort(host="my_lightning_host", port=8765)
 
 
 @pytest.fixture
@@ -41,7 +38,14 @@ def max_squeaks_per_address_per_hour():
 
 
 @pytest.fixture
-def squeak_controller(squeak_db, blockchain_client, lightning_client, lightning_host_port, price_msat, max_squeaks_per_address_per_hour):
+def squeak_controller(
+    squeak_db,
+    blockchain_client,
+    lightning_client,
+    lightning_host_port,
+    price_msat,
+    max_squeaks_per_address_per_hour,
+):
     return SqueakController(
         squeak_db,
         blockchain_client,
@@ -53,7 +57,6 @@ def squeak_controller(squeak_db, blockchain_client, lightning_client, lightning_
 
 
 class SqueakControllerTest:
-
     def test_nothing():
         assert True
 

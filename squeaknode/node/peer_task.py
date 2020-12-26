@@ -1,11 +1,7 @@
 import logging
-import threading
-
-
-from squeak.core.encryption import generate_data_key
 
 from squeaknode.core.offer import Offer
-from squeaknode.core.util import get_hash, get_replyto
+from squeaknode.core.util import get_hash
 
 logger = logging.getLogger(__name__)
 
@@ -157,7 +153,7 @@ class PeerSyncTask:
 
         # TODO: Use the real payment point, not a fake value.
         squeak_payment_point = squeak.paymentPoint
-        payment_point = b''
+        payment_point = b""
         payment_hash = bytes.fromhex(pay_req.payment_hash)
         price_msat = pay_req.num_msat
         destination = pay_req.destination
@@ -237,7 +233,11 @@ class PeerSyncTask:
                 return offer_with_peer
 
     def _download_squeak(self, squeak_hash):
-        logger.info("Downloading squeak: {} from peer: {}".format(squeak_hash, self.peer.peer_id))
+        logger.info(
+            "Downloading squeak: {} from peer: {}".format(
+                squeak_hash, self.peer.peer_id
+            )
+        )
         squeak = self.peer_client.get_squeak(squeak_hash)
         self._save_squeak(squeak)
 
@@ -268,9 +268,7 @@ class PeerSyncTask:
         return [profile.address for profile in sharing_profiles]
 
     def _download_offer_msg(self, squeak_hash):
-        logger.info(
-            "Downloading buy offer for squeak hash: {}".format(squeak_hash)
-        )
+        logger.info("Downloading buy offer for squeak hash: {}".format(squeak_hash))
         return self.peer_client.buy_squeak(squeak_hash)
 
     def _save_offer(self, offer):

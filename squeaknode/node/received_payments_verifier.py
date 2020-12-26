@@ -1,7 +1,5 @@
 import logging
-import queue
 import time
-
 
 logger = logging.getLogger(__name__)
 
@@ -29,21 +27,25 @@ class ReceivedPaymentsVerifier:
         logger.info("latest settle index: {}".format(latest_settle_index))
         try:
             for invoice in self.lightning_client.subscribe_invoices(
-                    settle_index=latest_settle_index,
+                settle_index=latest_settle_index,
             ):
                 self.verify_received_payment(invoice)
         except:
             logger.error(
-                "Unable to subscribe invoices from lnd. Retrying in {} seconds".format(LND_CONNECT_RETRY_S),
+                "Unable to subscribe invoices from lnd. Retrying in {} seconds".format(
+                    LND_CONNECT_RETRY_S
+                ),
                 exc_info=True,
             )
             time.sleep(LND_CONNECT_RETRY_S)
 
     def _mark_received_payment_paid(self, payment_hash, settle_index):
-        logger.info("Marking received payment paid for payment_hash: {} with settle_index: {}".format(
-            payment_hash,
-            settle_index,
-        ))
+        logger.info(
+            "Marking received payment paid for payment_hash: {} with settle_index: {}".format(
+                payment_hash,
+                settle_index,
+            )
+        )
         self.squeak_db.mark_received_payment_paid(payment_hash, settle_index)
 
     def _get_latest_settle_index(self):

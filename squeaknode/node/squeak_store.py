@@ -1,7 +1,5 @@
 import logging
 
-from squeaknode.core.util import get_hash, get_replyto
-
 logger = logging.getLogger(__name__)
 
 

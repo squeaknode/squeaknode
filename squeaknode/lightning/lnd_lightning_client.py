@@ -42,7 +42,7 @@ class LNDLightningClient:
 
         def metadata_callback(context, callback):
             # for more info see grpc docs
-            callback([('macaroon', macaroon)], None)
+            callback([("macaroon", macaroon)], None)
 
         # now build meta data credentials
         auth_creds = grpc.metadata_call_credentials(metadata_callback)

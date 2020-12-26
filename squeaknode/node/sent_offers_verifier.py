@@ -1,9 +1,7 @@
 import logging
-import queue
 import time
 
 from squeaknode.core.received_payment import ReceivedPayment
-
 
 logger = logging.getLogger(__name__)
 
@@ -31,12 +29,12 @@ class SentOffersVerifier:
         logger.info("latest settle index: {}".format(latest_settle_index))
         try:
             for invoice in self.lightning_client.subscribe_invoices(
-                    settle_index=latest_settle_index,
+                settle_index=latest_settle_index,
             ):
                 self.verify_sent_offer(invoice)
         except:
             logger.info(
-                "Unable to subscribe invoices from lnd. Retrying in " \
+                "Unable to subscribe invoices from lnd. Retrying in "
                 "{} seconds.".format(LND_CONNECT_RETRY_S),
             )
             time.sleep(LND_CONNECT_RETRY_S)
@@ -46,10 +44,12 @@ class SentOffersVerifier:
         return self.squeak_db.get_latest_settle_index()
 
     def _record_payment(self, payment_hash, settle_index):
-        logger.info("Saving received payment for payment_hash: {} with settle_index: {}".format(
-            payment_hash,
-            settle_index,
-        ))
+        logger.info(
+            "Saving received payment for payment_hash: {} with settle_index: {}".format(
+                payment_hash,
+                settle_index,
+            )
+        )
         sent_offer = self.squeak_db.get_sent_offer_by_payment_hash(payment_hash)
         received_payment = ReceivedPayment(
             received_payment_id=None,

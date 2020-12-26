@@ -7,7 +7,6 @@ logger = logging.getLogger(__name__)
 
 
 class BlockchainClient(ABC):
-
     @abstractmethod
     def get_best_block_info(self) -> BlockInfo:
         pass

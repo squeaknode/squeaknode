@@ -1,9 +1,9 @@
 from logging.config import fileConfig
 
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
+from sqlalchemy import engine_from_config, pool
 
 from alembic import context
+from squeaknode.db.models import Models
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -18,7 +18,6 @@ if config.attributes.get('configure_logger', True):
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-from squeaknode.db.models import Models
 target_metadata = Models().metadata
 
 # other values from the config, defined by the needs of env.py,

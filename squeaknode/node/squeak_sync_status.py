@@ -1,11 +1,10 @@
 import logging
-import threading
 
-from collections import defaultdict
-
-from squeaknode.node.network_task import TimelineNetworkSyncTask
-from squeaknode.node.network_task import SingleSqueakNetworkSyncTask
 from squeaknode.node.network_sync import NetworkSync
+from squeaknode.node.network_task import (
+    SingleSqueakNetworkSyncTask,
+    TimelineNetworkSyncTask,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -48,5 +47,7 @@ class SqueakSyncController:
             squeak_hash,
         )
         network_sync_result = timeline_sync_task.sync(peers)
-        logger.info("Download single squeak network_sync_result: {}".format(network_sync_result))
+        logger.info(
+            "Download single squeak network_sync_result: {}".format(network_sync_result)
+        )
         return network_sync_result
