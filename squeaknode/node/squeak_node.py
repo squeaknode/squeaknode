@@ -1,10 +1,6 @@
 import logging
 from hashlib import sha256
 
-from squeak.core.encryption import (
-    CEncryptedDecryptionKey,
-    generate_initialization_vector,
-)
 from squeak.core.signing import CSigningKey, CSqueakAddress
 from squeak.core import CheckSqueak
 

@@ -23,10 +23,10 @@ from squeaknode.core.offer import Offer
 from squeaknode.core.offer_with_peer import OfferWithPeer
 from squeaknode.core.squeak_entry import SqueakEntry
 from squeaknode.core.squeak_entry_with_profile import SqueakEntryWithProfile
-from squeaknode.server.squeak_peer import SqueakPeer
-from squeaknode.server.squeak_profile import SqueakProfile
-from squeaknode.server.sent_payment import SentPayment
-from squeaknode.server.util import get_hash
+from squeaknode.core.squeak_peer import SqueakPeer
+from squeaknode.core.squeak_profile import SqueakProfile
+from squeaknode.core.sent_payment import SentPayment
+from squeaknode.core.util import get_hash
 
 logger = logging.getLogger(__name__)
 
@@ -47,7 +47,7 @@ class Models:
             Column("n_block_height", Integer, nullable=False),
             Column("n_time", Integer, nullable=False),
             Column("author_address", String(35), index=True, nullable=False),
-            Column("vch_decryption_key", Binary, nullable=True),
+            Column("secret_key", String(64), nullable=True),
             Column("block_header", Binary, nullable=False),
         )
 
@@ -81,9 +81,9 @@ class Models:
             Column("offer_id", Integer, primary_key=True),
             Column("created", DateTime, server_default=func.now(), nullable=False),
             Column("squeak_hash", String(64), nullable=False),
-            Column("key_cipher", Binary, nullable=False),
-            Column("iv", Binary, nullable=False),
             Column("payment_hash", String(64), nullable=False),
+            Column("nonce", String(64), nullable=False),
+            Column("payment_point", String(66), nullable=False),
             Column("invoice_timestamp", Integer, nullable=False),
             Column("invoice_expiry", Integer, nullable=False),
             Column("price_msat", Integer, nullable=False),
@@ -102,11 +102,10 @@ class Models:
             Column("offer_id", Integer, nullable=False),
             Column("peer_id", Integer, nullable=False),
             Column("squeak_hash", String(64), nullable=False),
-            Column("preimage_hash", String(64), nullable=False),
-            Column("preimage", String(64), nullable=False),
+            Column("payment_hash", String(64), nullable=False),
+            Column("secret_key", String(64), nullable=False),
             Column("price_msat", Integer, nullable=False, default=0),
             Column("node_pubkey", String(66), nullable=False),
-            Column("preimage_is_valid", Boolean, nullable=False),
         )
 
         self.sent_offers = Table(
@@ -115,8 +114,9 @@ class Models:
             Column("sent_offer_id", Integer, primary_key=True),
             Column("created", DateTime, server_default=func.now(), nullable=False),
             Column("squeak_hash", String(64), nullable=False),
-            Column("preimage_hash", String(64), unique=True, nullable=False),
-            Column("preimage", String(64), nullable=False),
+            Column("payment_hash", String(64), unique=True, nullable=False),
+            Column("secret_key", String(64), nullable=False),
+            Column("nonce", String(64), nullable=False),
             Column("price_msat", Integer, nullable=False, default=0),
             Column("payment_request", String, nullable=False),
             Column("invoice_timestamp", Integer, nullable=False),
@@ -130,7 +130,7 @@ class Models:
             Column("received_payment_id", Integer, primary_key=True),
             Column("created", DateTime, server_default=func.now(), nullable=False),
             Column("squeak_hash", String(64), nullable=False),
-            Column("preimage_hash", String(64), unique=True, nullable=False),
+            Column("payment_hash", String(64), unique=True, nullable=False),
             Column("price_msat", Integer, nullable=False),
             Column("settle_index", Integer, nullable=False),
             Column("client_addr", String(64), nullable=False),

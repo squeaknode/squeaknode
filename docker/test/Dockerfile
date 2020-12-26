@@ -6,6 +6,7 @@ RUN apt-get update && apt-get install -y \
 	git
 
 COPY requirements-itest.txt /
+COPY libs /libs
 
 RUN pip3 install --upgrade pip && \
 	pip3 install -r requirements-itest.txt

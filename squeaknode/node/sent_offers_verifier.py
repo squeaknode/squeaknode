@@ -2,7 +2,7 @@ import logging
 import queue
 import time
 
-from squeaknode.server.received_payment import ReceivedPayment
+from squeaknode.core.received_payment import ReceivedPayment
 
 
 logger = logging.getLogger(__name__)
@@ -18,10 +18,9 @@ class SentOffersVerifier:
     def verify_sent_offer(self, invoice):
         logger.info("Verifying invoice: {}".format(invoice))
         if invoice.settled:
-            preimage_hash = invoice.r_hash.hex()
+            payment_hash = invoice.r_hash.hex()
             settle_index = invoice.settle_index
-            #self._mark_sent_offer_paid(preimage_hash, settle_index)
-            self._record_payment(preimage_hash, settle_index)
+            self._record_payment(payment_hash, settle_index)
 
     def process_subscribed_invoices(self):
         while True:
@@ -42,28 +41,21 @@ class SentOffersVerifier:
             )
             time.sleep(LND_CONNECT_RETRY_S)
 
-    # def _mark_sent_offer_paid(self, preimage_hash, settle_index):
-    #     logger.info("Marking received payment paid for preimage_hash: {} with settle_index: {}".format(
-    #         preimage_hash,
-    #         settle_index,
-    #     ))
-    #     self.squeak_db.mark_sent_offer_paid(preimage_hash, settle_index)
-
     def _get_latest_settle_index(self):
         logger.info("Getting latest settle index from db...")
         return self.squeak_db.get_latest_settle_index()
 
-    def _record_payment(self, preimage_hash, settle_index):
-        logger.info("Saving received payment for preimage_hash: {} with settle_index: {}".format(
-            preimage_hash,
+    def _record_payment(self, payment_hash, settle_index):
+        logger.info("Saving received payment for payment_hash: {} with settle_index: {}".format(
+            payment_hash,
             settle_index,
         ))
-        sent_offer = self.squeak_db.get_sent_offer_by_preimage_hash(preimage_hash)
+        sent_offer = self.squeak_db.get_sent_offer_by_payment_hash(payment_hash)
         received_payment = ReceivedPayment(
             received_payment_id=None,
             created=None,
             squeak_hash=sent_offer.squeak_hash,
-            preimage_hash=sent_offer.preimage_hash,
+            payment_hash=sent_offer.payment_hash,
             price_msat=sent_offer.price_msat,
             settle_index=settle_index,
             client_addr=sent_offer.client_addr,

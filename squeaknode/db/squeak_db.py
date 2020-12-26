@@ -25,14 +25,14 @@ from squeaknode.core.offer_with_peer import OfferWithPeer
 from squeaknode.core.sent_payment_with_peer import SentPaymentWithPeer
 from squeaknode.core.squeak_entry import SqueakEntry
 from squeaknode.core.squeak_entry_with_profile import SqueakEntryWithProfile
-from squeaknode.server.squeak_peer import SqueakPeer
-from squeaknode.server.squeak_profile import SqueakProfile
-from squeaknode.server.sent_payment import SentPayment
-from squeaknode.server.sent_offer import SentOffer
-from squeaknode.server.util import get_hash
+from squeaknode.core.squeak_peer import SqueakPeer
+from squeaknode.core.squeak_profile import SqueakProfile
+from squeaknode.core.sent_payment import SentPayment
+from squeaknode.core.sent_offer import SentOffer
+from squeaknode.core.util import get_hash
 from squeaknode.db.models import Models
 from squeaknode.db.migrations import run_migrations
-from squeaknode.server.received_payment import ReceivedPayment
+from squeaknode.core.received_payment import ReceivedPayment
 
 
 logger = logging.getLogger(__name__)
@@ -92,7 +92,7 @@ class SqueakDb:
 
     def insert_squeak(self, squeak, block_header_bytes):
         """ Insert a new squeak. """
-        vch_decryption_key = squeak.GetDecryptionKey().get_bytes() if squeak.HasDecryptionKey() else None
+        secret_key_hex = squeak.GetDecryptionKey().hex() if squeak.HasDecryptionKey() else None
         squeak.ClearDecryptionKey()
         ins = self.squeaks.insert().values(
             hash=get_hash(squeak),
@@ -102,7 +102,7 @@ class SqueakDb:
             n_block_height=squeak.nBlockHeight,
             n_time=squeak.nTime,
             author_address=str(squeak.GetAddress()),
-            vch_decryption_key=vch_decryption_key,
+            secret_key=secret_key_hex,
             block_header=block_header_bytes,
         )
         with self.get_connection() as connection:
@@ -271,7 +271,7 @@ class SqueakDb:
             .where(self.squeaks.c.n_block_height <= max_block)
             .where(
                 or_(
-                    self.squeaks.c.vch_decryption_key != None,
+                    self.squeaks.c.secret_key != None,
                     include_locked,
                 )
             )
@@ -293,7 +293,7 @@ class SqueakDb:
         # WHERE author_address IN %s
         # AND n_block_height >= %s
         # AND n_block_height <= %s
-        # AND (vch_decryption_key IS NOT NULL) OR %s
+        # AND (secret_key IS NOT NULL) OR %s
         # AND ((block_header IS NOT NULL) OR %s);
         # """
         # addresses_tuple = tuple(addresses)
@@ -331,7 +331,7 @@ class SqueakDb:
             )
             .where(
                 or_(
-                    self.squeaks.c.vch_decryption_key != None,
+                    self.squeaks.c.secret_key != None,
                     include_locked,
                 )
             )
@@ -352,7 +352,7 @@ class SqueakDb:
         # SELECT hash FROM squeak
         # WHERE author_address IN %s
         # AND created > now() - interval '%s seconds'
-        # AND vch_decryption_key IS NOT NULL
+        # AND secret_key IS NOT NULL
         # AND ((block_header IS NOT NULL) OR %s);
         # """
         # addresses_tuple = tuple(addresses)
@@ -389,7 +389,7 @@ class SqueakDb:
             .where(self.squeaks.c.author_address.in_(addresses))
             .where(self.squeaks.c.n_block_height >= min_block)
             .where(self.squeaks.c.n_block_height <= max_block)
-            .where(self.squeaks.c.vch_decryption_key == None)
+            .where(self.squeaks.c.secret_key == None)
             .where(
                 or_(
                     self.squeaks.c.block_header != None,
@@ -412,7 +412,7 @@ class SqueakDb:
         # WHERE author_address IN %s
         # AND n_block_height >= %s
         # AND n_block_height <= %s
-        # AND vch_decryption_key IS NULL
+        # AND secret_key IS NULL
         # AND ((block_header IS NOT NULL) OR %s)
         # AND offer.squeak_hash IS NULL
         # """
@@ -651,12 +651,12 @@ class SqueakDb:
         #     # execute the UPDATE statement
         #     curs.execute(sql, (block_header, squeak_hash_str,))
 
-    def set_squeak_decryption_key(self, squeak_hash, vch_decryption_key):
+    def set_squeak_decryption_key(self, squeak_hash, secret_key):
         """ Set the decryption key of a squeak. """
         stmt = (
             self.squeaks.update()
             .where(self.squeaks.c.hash == squeak_hash)
-            .values(vch_decryption_key=vch_decryption_key)
+            .values(secret_key=secret_key.hex())
         )
         with self.get_connection() as connection:
             connection.execute(stmt)
@@ -738,12 +738,12 @@ class SqueakDb:
         """ Insert a new offer. """
         ins = self.offers.insert().values(
             squeak_hash=offer.squeak_hash,
-            key_cipher=offer.key_cipher,
-            iv=offer.iv,
-            price_msat=offer.price_msat,
-            payment_hash=offer.payment_hash.hex(),
+            payment_hash=offer.payment_hash,
+            nonce=offer.nonce.hex(),
+            payment_point=offer.payment_point,
             invoice_timestamp=offer.invoice_timestamp,
             invoice_expiry=offer.invoice_expiry,
+            price_msat=offer.price_msat,
             payment_request=offer.payment_request,
             destination=offer.destination,
             node_host=offer.node_host,
@@ -889,11 +889,10 @@ class SqueakDb:
             offer_id=sent_payment.offer_id,
             peer_id=sent_payment.peer_id,
             squeak_hash=sent_payment.squeak_hash,
-            preimage_hash=sent_payment.preimage_hash,
-            preimage=sent_payment.preimage,
+            payment_hash=sent_payment.payment_hash,
+            secret_key=sent_payment.secret_key,
             price_msat=sent_payment.price_msat,
             node_pubkey=sent_payment.node_pubkey,
-            preimage_is_valid=sent_payment.preimage_is_valid,
         )
         with self.get_connection() as connection:
             res = connection.execute(ins)
@@ -938,12 +937,14 @@ class SqueakDb:
             return self._parse_sent_payment_with_peer(row)
 
     def insert_sent_offer(self, sent_offer):
-        """ Insert a new received payment. """
+        """ Insert a new sent offer. """
         ins = self.sent_offers.insert().values(
             squeak_hash=sent_offer.squeak_hash,
-            preimage_hash=sent_offer.preimage_hash,
-            preimage=sent_offer.preimage,
+            payment_hash=sent_offer.payment_hash,
+            secret_key=sent_offer.secret_key,
+            nonce=sent_offer.nonce.hex(),
             price_msat=sent_offer.price_msat,
+            payment_request=sent_offer.payment_request,
             invoice_timestamp=sent_offer.invoice_time,
             invoice_expiry=sent_offer.invoice_expiry,
             client_addr=sent_offer.client_addr,
@@ -967,11 +968,11 @@ class SqueakDb:
             sent_offers = [self._parse_sent_offer(row) for row in rows]
             return sent_offers
 
-    def get_sent_offer_by_preimage_hash(self, preimage_hash):
+    def get_sent_offer_by_payment_hash(self, payment_hash):
         """ Get a sent offer by preimage hash. """
         s = (
             select([self.sent_offers])
-            .where(self.sent_offers.c.preimage_hash == preimage_hash)
+            .where(self.sent_offers.c.payment_hash == payment_hash)
         )
         with self.get_connection() as connection:
             result = connection.execute(s)
@@ -1003,20 +1004,6 @@ class SqueakDb:
             deleted_sent_offers = res.rowcount
             return deleted_sent_offers
 
-    # def mark_sent_offer_paid(self, preimage_hash, settle_index):
-    #     """ Mark a single received payment as paid. """
-    #     stmt = (
-    #         self.sent_offers.update()
-    #         .where(self.sent_offers.c.preimage_hash == preimage_hash)
-    #         .values(
-    #             is_paid=True,
-    #             payment_time=datetime.utcnow(),
-    #             settle_index=settle_index,
-    #         )
-    #     )
-    #     with self.get_connection() as connection:
-    #         connection.execute(stmt)
-
     def get_latest_settle_index(self):
         """ Get the lnd settled index of the most recent received payment. """
         s = (
@@ -1036,7 +1023,7 @@ class SqueakDb:
         """ Insert a new received payment. """
         ins = self.received_payments.insert().values(
             squeak_hash=received_payment.squeak_hash,
-            preimage_hash=received_payment.preimage_hash,
+            payment_hash=received_payment.payment_hash,
             price_msat=received_payment.price_msat,
             settle_index=received_payment.settle_index,
             client_addr=received_payment.client_addr,
@@ -1076,20 +1063,22 @@ class SqueakDb:
                 yield received_payment
 
     def _parse_squeak_entry(self, row):
+        logger.info("Parsing squeak entry with row: {}".format(row))
         if row is None:
             return None
-        vch_decryption_key_column = row["vch_decryption_key"]
-        vch_decryption_key = (
-            bytes(vch_decryption_key_column) if vch_decryption_key_column else b""
+        secret_key_column = row["secret_key"]
+        secret_key = (
+            bytes.fromhex(secret_key_column) if secret_key_column else b""
         )
         squeak = CSqueak.deserialize(row["squeak"])
-        if vch_decryption_key:
-            squeak.SetDecryptionKey(vch_decryption_key)
+        if secret_key:
+            squeak.SetDecryptionKey(secret_key)
         block_header_column = row["block_header"]
         block_header_bytes = bytes(block_header_column) if block_header_column else None
         block_header = (
             parse_block_header(block_header_bytes) if block_header_bytes else None
         )
+        logger.info("Returning squeak entry with squeak: {}".format(squeak))
         return SqueakEntry(squeak=squeak, block_header=block_header)
 
     def _parse_squeak_profile(self, row):
@@ -1136,17 +1125,16 @@ class SqueakDb:
         return Offer(
             offer_id=row["offer_id"],
             squeak_hash=row["squeak_hash"],
-            key_cipher=row["key_cipher"],
-            iv=row["iv"],
-            price_msat=row["price_msat"],
             payment_hash=row["payment_hash"],
+            nonce=bytes.fromhex(row["nonce"]),
+            payment_point=row["payment_point"],
             invoice_timestamp=row["invoice_timestamp"],
             invoice_expiry=row["invoice_expiry"],
+            price_msat=row["price_msat"],
             payment_request=row["payment_request"],
             destination=row["destination"],
             node_host=row["node_host"],
             node_port=row["node_port"],
-            proof=None,
             peer_id=row["peer_id"],
         )
 
@@ -1168,11 +1156,10 @@ class SqueakDb:
             offer_id=row["offer_id"],
             peer_id=row["peer_id"],
             squeak_hash=row["squeak_hash"],
-            preimage_hash=row["preimage_hash"],
-            preimage=row["preimage"],
+            payment_hash=row["payment_hash"],
+            secret_key=row["secret_key"],
             price_msat=row["price_msat"],
             node_pubkey=row["node_pubkey"],
-            preimage_is_valid=row["preimage_is_valid"],
             time_ms=row[self.sent_payments.c.created],
         )
 
@@ -1192,8 +1179,9 @@ class SqueakDb:
         return SentOffer(
             sent_offer_id=row["sent_offer_id"],
             squeak_hash=row["squeak_hash"],
-            preimage_hash=row["preimage_hash"],
-            preimage=row["preimage"],
+            payment_hash=row["payment_hash"],
+            secret_key=row["secret_key"],
+            nonce=bytes.fromhex(row["nonce"]),
             price_msat=row["price_msat"],
             payment_request=row["payment_request"],
             invoice_time=row["invoice_timestamp"],
@@ -1208,7 +1196,7 @@ class SqueakDb:
             received_payment_id=row["received_payment_id"],
             created=row["created"],
             squeak_hash=row["squeak_hash"],
-            preimage_hash=row["preimage_hash"],
+            payment_hash=row["payment_hash"],
             price_msat=row["price_msat"],
             settle_index=row["settle_index"],
             client_addr=row["client_addr"],

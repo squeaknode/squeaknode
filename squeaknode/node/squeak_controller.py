@@ -1,10 +1,6 @@
 import logging
 from hashlib import sha256
 
-from squeak.core.encryption import (
-    CEncryptedDecryptionKey,
-    generate_initialization_vector,
-)
 from squeak.core.signing import CSigningKey, CSqueakAddress
 from squeak.core import CheckSqueak
 
@@ -15,12 +11,16 @@ from squeaknode.node.squeak_rate_limiter import SqueakRateLimiter
 from squeaknode.node.squeak_store import SqueakStore
 from squeaknode.node.squeak_sync_status import SqueakSyncController
 from squeaknode.node.squeak_whitelist import SqueakWhitelist
-from squeaknode.server.buy_offer import BuyOffer
-from squeaknode.server.sent_offer import SentOffer
-from squeaknode.server.squeak_peer import SqueakPeer
-from squeaknode.server.squeak_profile import SqueakProfile
-from squeaknode.server.sent_payment import SentPayment
-from squeaknode.server.util import generate_offer_preimage
+from squeaknode.core.buy_offer import BuyOffer
+from squeaknode.core.sent_offer import SentOffer
+from squeaknode.core.squeak_peer import SqueakPeer
+from squeaknode.core.squeak_profile import SqueakProfile
+from squeaknode.core.sent_payment import SentPayment
+from squeaknode.core.util import generate_offer_preimage
+from squeaknode.core.util import generate_tweak
+from squeaknode.core.util import bxor
+from squeaknode.core.util import add_tweak
+from squeaknode.core.util import subtract_tweak
 from squeaknode.node.sent_offers_verifier import SentOffersVerifier
 from squeaknode.node.sent_offers_worker import SentOffersWorker
 from squeaknode.node.received_payments_subscription_client import OpenReceivedPaymentsSubscriptionClient
@@ -35,6 +35,7 @@ class SqueakController:
         squeak_db,
         blockchain_client,
         lightning_client,
+        squeak_server_client,
         lightning_host_port,
         price_msat,
         max_squeaks_per_address_per_hour,
@@ -42,6 +43,7 @@ class SqueakController:
         self.squeak_db = squeak_db
         self.blockchain_client = blockchain_client
         self.lightning_client = lightning_client
+        self.squeak_server_client = squeak_server_client
         self.lightning_host_port = lightning_host_port
         self.price_msat = price_msat
         self.squeak_block_verifier = SqueakBlockVerifier(blockchain_client)
@@ -62,6 +64,7 @@ class SqueakController:
         )
         self.squeak_sync_controller = SqueakSyncController(
             self.blockchain_client,
+            self.squeak_server_client,
             self.squeak_store,
             self.squeak_db,
             self.lightning_client,
@@ -96,57 +99,49 @@ class SqueakController:
     def lookup_allowed_addresses(self, addresses):
         return self.squeak_whitelist.get_allowed_addresses(addresses)
 
-    def get_buy_offer(self, squeak_hash, challenge, client_addr):
+    def get_buy_offer(self, squeak_hash, client_addr):
         # Check if there is an existing offer for the hash/client_addr combination
         sent_offer = self.get_saved_sent_offer(squeak_hash, client_addr)
-        # Get the squeak from the database
-        squeak = self.squeak_store.get_squeak(squeak_hash)
-        # Get the decryption key from the squeak
-        decryption_key = squeak.GetDecryptionKey()
-        # Solve the proof
-        proof = decryption_key.decrypt(challenge)
-        # Encrypt the decryption key
-        iv = generate_initialization_vector()
-        encrypted_decryption_key = CEncryptedDecryptionKey.from_decryption_key(
-            decryption_key,
-            bytes.fromhex(sent_offer.preimage),
-            iv,
-        )
         # Get the lightning network node pubkey
         get_info_response = self.lightning_client.get_info()
         pubkey = get_info_response.identity_pubkey
         # Return the buy offer
         return BuyOffer(
-            squeak_hash,
-            encrypted_decryption_key,
-            iv,
-            self.price_msat,
-            bytes.fromhex(sent_offer.preimage_hash),
-            sent_offer.payment_request,
-            pubkey,
-            self.lightning_host_port.host,
-            self.lightning_host_port.port,
-            proof,
+            squeak_hash=squeak_hash,
+            price_msat=self.price_msat,
+            nonce=sent_offer.nonce,
+            payment_request=sent_offer.payment_request,
+            pubkey=pubkey,
+            host=self.lightning_host_port.host,
+            port=self.lightning_host_port.port,
         )
 
     def create_offer(self, squeak_hash, client_addr):
-        # Generate a new random preimage
-        preimage = generate_offer_preimage()
+        # Generate a new random nonce
+        nonce = generate_tweak()
+        # Get the squeak secret key
+        squeak = self.squeak_store.get_squeak(squeak_hash)
+        secret_key = squeak.GetDecryptionKey()
+        # Calculate the preimage
+        #preimage = bxor(nonce, secret_key)
+        preimage = add_tweak(secret_key, nonce)
+        logger.info("Create offer with secret key: {} nonce: {} preimage: {}".format(secret_key, nonce, preimage))
         # Create the lightning invoice
         add_invoice_response = self.lightning_client.add_invoice(preimage, self.price_msat)
         logger.info("add_invoice_response: {}".format(add_invoice_response))
-        preimage_hash = add_invoice_response.r_hash
+        payment_hash = add_invoice_response.r_hash
         invoice_payment_request = add_invoice_response.payment_request
         # invoice_expiry = add_invoice_response.expiry
-        lookup_invoice_response = self.lightning_client.lookup_invoice(preimage_hash.hex())
+        lookup_invoice_response = self.lightning_client.lookup_invoice(payment_hash.hex())
         invoice_time = lookup_invoice_response.creation_date
         invoice_expiry = lookup_invoice_response.expiry
         # Save the incoming potential payment in the databse.
         return SentOffer(
             sent_offer_id=None,
             squeak_hash=squeak_hash,
-            preimage_hash=preimage_hash.hex(),
-            preimage=preimage.hex(),
+            payment_hash=payment_hash.hex(),
+            secret_key=preimage.hex(),
+            nonce=nonce,
             price_msat=self.price_msat,
             payment_request=invoice_payment_request,
             invoice_time=invoice_time,
@@ -296,9 +291,11 @@ class SqueakController:
         if not preimage:
             raise Exception("Payment failed with error: {}".format(payment.payment_error))
 
-        # Check if preimage is valid
-        preimage_hash = sha256(preimage).hexdigest()
-        is_valid_preimage = (preimage_hash == offer.payment_hash)
+        # Calculate the secret key
+        nonce = offer.nonce
+        #secret_key = bxor(nonce, preimage)
+        secret_key = subtract_tweak(preimage, nonce)
+        logger.info("Pay offer with secret key: {} nonce: {} preimage: {}".format(secret_key, nonce, preimage))
 
         # Save the preimage of the sent payment
         sent_payment = SentPayment(
@@ -306,43 +303,30 @@ class SqueakController:
             offer_id=offer_id,
             peer_id=offer.peer_id,
             squeak_hash=offer.squeak_hash,
-            preimage_hash=offer.payment_hash,
-            preimage=preimage.hex(),
+            payment_hash=offer.payment_hash,
+            secret_key=secret_key.hex(),
             price_msat=offer.price_msat,
             node_pubkey=offer.destination,
-            preimage_is_valid=is_valid_preimage,
             time_ms=None,
         )
         sent_payment_id = self.squeak_db.insert_sent_payment(sent_payment)
 
-        if is_valid_preimage:
-            self.unlock_squeak(offer, preimage)
+        self.unlock_squeak(offer, secret_key)
 
         return sent_payment_id
 
-    def unlock_squeak(self, offer, preimage):
+    def unlock_squeak(self, offer, secret_key):
         squeak_entry = self.squeak_db.get_squeak_entry(offer.squeak_hash)
         squeak = squeak_entry.squeak
 
-        # Verify with the payment preimage and decryption key ciphertext
-        decryption_key_cipher_bytes = offer.key_cipher
-        iv = offer.iv
-        encrypted_decryption_key = CEncryptedDecryptionKey.from_bytes(
-            decryption_key_cipher_bytes
-        )
-
-        # Decrypt the decryption key
-        decryption_key = encrypted_decryption_key.get_decryption_key(preimage, iv)
-        serialized_decryption_key = decryption_key.get_bytes()
-
         # Check the decryption key
-        squeak.SetDecryptionKey(serialized_decryption_key)
+        squeak.SetDecryptionKey(secret_key)
         CheckSqueak(squeak)
 
         # Set the decryption key in the database
         self.squeak_store.unlock_squeak(
             offer.squeak_hash,
-            serialized_decryption_key,
+            secret_key,
         )
 
     def sync_squeaks(self):
