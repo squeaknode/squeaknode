@@ -20,7 +20,6 @@ from squeaknode.core.lightning_address import LightningAddressHostPort
 from squeaknode.server.squeak_server_handler import SqueakServerHandler
 from squeaknode.server.squeak_server_servicer import SqueakServerServicer
 from squeaknode.node.squeak_node import SqueakNode
-from squeaknode.network.squeak_server_client import SqueakServerClient
 
 from squeaknode.config.config import Config
 
@@ -125,10 +124,6 @@ def load_blockchain_client(config):
     )
 
 
-def load_squeak_server_client(config):
-    return SqueakServerClient()
-
-
 def sigterm_handler(_signo, _stack_frame):
     # Raises SystemExit(0):
     sys.exit(0)
@@ -225,9 +220,6 @@ def run_server(config):
     # load the blockchain client
     blockchain_client = load_blockchain_client(config)
 
-    # load the squeak server client
-    squeak_server_client = load_squeak_server_client(config)
-
     # load enable sync config
     sync_interval_s = load_sync_interval_s(config)
 
@@ -235,7 +227,6 @@ def run_server(config):
         squeak_db,
         blockchain_client,
         lightning_client,
-        squeak_server_client,
         lightning_host_port,
         price_msat,
         max_squeaks_per_address_per_hour,

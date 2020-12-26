@@ -7,12 +7,11 @@ logger = logging.getLogger(__name__)
 
 
 class PeerConnection:
-    def __init__(self, peer, squeak_server_client):
+    def __init__(self, peer):
         self.peer = peer
         self.peer_client = PeerClient(
             self.peer.host,
             self.peer.port,
-            squeak_server_client,
         )
         self._stop_event = threading.Event()
 
