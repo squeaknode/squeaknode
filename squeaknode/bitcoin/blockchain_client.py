@@ -7,10 +7,19 @@ logger = logging.getLogger(__name__)
 
 
 class BlockchainClient(ABC):
+
     @abstractmethod
     def get_best_block_info(self) -> BlockInfo:
         pass
 
     @abstractmethod
-    def get_block_info_by_height(self) -> BlockInfo:
+    def get_block_info_by_height(self, block_height: int) -> BlockInfo:
+        pass
+
+    @abstractmethod
+    def get_block_hash(self, block_height: int) -> str:
+        pass
+
+    @abstractmethod
+    def get_block_header(self, block_hash: str, verbose: bool) -> bytes:
         pass
