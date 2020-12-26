@@ -7,6 +7,7 @@ clean:
 	find . -name '*~' -delete
 	find . -name '*pb2_grpc.py' -delete
 	find . -name '*pb2.py' -delete
+	find . -name '*.pyi' -delete
 	make --directory=frontend clean;
 
 test:
