@@ -80,21 +80,6 @@ class BitcoinBlockchainClient(BlockchainClient):
         logger.debug("Got block_hash: {}".format(block_hash))
         return block_hash
 
-    # def get_best_block_hash(self) -> Optional[bytes]:
-    #     payload = {
-    #         "method": "getblockhash",
-    #         "params": [],
-    #         "jsonrpc": "2.0",
-    #         "id": 0,
-    #     }
-    #     response = requests.post(
-    #         self.url, data=json.dumps(payload), headers=self.headers,
-    #     ).json()
-
-    #     result = response["result"]
-    #     block_hash = bytes.fromhex(result)
-    #     return block_hash
-
     def get_block_header(self, block_hash: str, verbose: bool) -> bytes:
         payload = {
             "method": "getblockheader",
