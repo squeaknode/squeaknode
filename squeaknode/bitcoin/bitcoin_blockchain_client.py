@@ -61,7 +61,7 @@ class BitcoinBlockchainClient(BlockchainClient):
         logger.debug("Got block_count: {}".format(block_count))
         return block_count
 
-    def get_block_hash(self, block_height: int) -> str:
+    def get_block_hash(self, block_height: int) -> bytes:
         payload = {
             "method": "getblockhash",
             "params": [block_height],
@@ -78,12 +78,12 @@ class BitcoinBlockchainClient(BlockchainClient):
         result = response["result"]
         block_hash = result
         logger.debug("Got block_hash: {}".format(block_hash))
-        return block_hash
+        return bytes.fromhex(block_hash)
 
-    def get_block_header(self, block_hash: str, verbose: bool) -> bytes:
+    def get_block_header(self, block_hash: bytes, verbose: bool) -> bytes:
         payload = {
             "method": "getblockheader",
-            "params": [block_hash, verbose],
+            "params": [block_hash.hex(), verbose],
             "jsonrpc": "2.0",
             "id": 0,
         }
@@ -96,4 +96,4 @@ class BitcoinBlockchainClient(BlockchainClient):
         logger.debug("Got response for get_block_header: {}".format(response))
         result = response["result"]
         logger.debug("Got block_header: {}".format(result))
-        return result
+        return bytes.fromhex(result)

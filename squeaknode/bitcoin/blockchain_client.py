@@ -17,9 +17,9 @@ class BlockchainClient(ABC):
         pass
 
     @abstractmethod
-    def get_block_hash(self, block_height: int) -> str:
+    def get_block_hash(self, block_height: int) -> bytes:
         pass
 
     @abstractmethod
-    def get_block_header(self, block_hash: str, verbose: bool) -> bytes:
+    def get_block_header(self, block_hash: bytes, verbose: bool) -> bytes:
         pass
