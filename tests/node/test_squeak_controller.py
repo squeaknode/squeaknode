@@ -1,4 +1,5 @@
 import pytest
+import mock
 
 from squeaknode.bitcoin.blockchain_client import BlockchainClient
 from squeaknode.core.lightning_address import LightningAddressHostPort
@@ -9,17 +10,17 @@ from squeaknode.node.squeak_controller import SqueakController
 @pytest.fixture
 def squeak_db():
     # return SqueakDb(None, None, None)
-    return Mock(spec=SqueakDb)
+    return mock.Mock(spec=SqueakDb)
 
 
 @pytest.fixture
 def blockchain_client():
-    return Mock(spec=BlockchainClient)
+    return mock.Mock(spec=BlockchainClient)
 
 
 @pytest.fixture
 def lightning_client():
-    return Mock()
+    return mock.Mock()
 
 
 @pytest.fixture

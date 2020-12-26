@@ -61,7 +61,7 @@ def test_post_squeak(server_stub, admin_stub, lightning_client, following_signin
     squeak_hash = get_hash(squeak)
 
     squeak_msg = build_squeak_msg(squeak)
-    post_response = server_stub.PostSqueak(
+    server_stub.PostSqueak(
         squeak_server_pb2.PostSqueakRequest(squeak=squeak_msg)
     )
 
@@ -86,7 +86,6 @@ def test_post_squeak_not_following(
     squeak = make_squeak(
         nonfollowing_signing_key, "hello from itest!", block_hash, block_height
     )
-    squeak_hash = get_hash(squeak)
 
     squeak_msg = build_squeak_msg(squeak)
     with pytest.raises(Exception):
@@ -184,10 +183,10 @@ def test_sell_squeak(server_stub, admin_stub, lightning_client, saved_squeak_has
         lightning_client, buy_response.offer.host, destination
     ), open_channel(lightning_client, destination, 1000000):
         # List peers
-        list_peers_response = lightning_client.list_peers()
+        # list_peers_response = lightning_client.list_peers()
 
         # List channels
-        list_channels_response = lightning_client.list_channels()
+        # list_channels_response = lightning_client.list_channels()
 
         # Pay the invoice
         payment = lightning_client.pay_invoice_sync(buy_response.offer.payment_request)
@@ -238,8 +237,7 @@ def test_make_squeak(server_stub, admin_stub, signing_profile_id):
         )
     )
     assert (
-        get_squeak_display_response.squeak_display_entry.content_str
-        == "Hello from the profile on the server!"
+        get_squeak_display_response.squeak_display_entry.content_str == "Hello from the profile on the server!"
     )
 
     # Get the squeak profile
@@ -293,12 +291,10 @@ def test_make_reply_squeak(
         )
     )
     assert (
-        get_reply_squeak_display_response.squeak_display_entry.squeak_hash
-        == reply_2_squeak_hash
+        get_reply_squeak_display_response.squeak_display_entry.squeak_hash == reply_2_squeak_hash
     )
     assert (
-        get_reply_squeak_display_response.squeak_display_entry.reply_to
-        == reply_1_squeak_hash
+        get_reply_squeak_display_response.squeak_display_entry.reply_to == reply_1_squeak_hash
     )
 
     # Get the ancestors of the latest reply squeak
@@ -310,7 +306,7 @@ def test_make_reply_squeak(
     assert len(get_ancestors_response.squeak_display_entries) == 3
 
 
-def test_post_squeak_rate_limit(server_stub, admin_stub, following_signing_key):
+def test_post_squeak_rate_limit(server_stub, admin_stub, lightning_client, nonfollowing_signing_key):
     # Make 10 squeak
     for i in range(10):
         try:
@@ -389,7 +385,12 @@ def test_make_contact_profile(server_stub, admin_stub):
         profile.profile_name
         for profile in get_contact_profiles_response.squeak_profiles
     ]
+    contact_profile_ids = [
+        profile.profile_id
+        for profile in get_contact_profiles_response.squeak_profiles
+    ]
     assert contact_name in contact_profile_names
+    assert contact_profile_id in contact_profile_ids
 
 
 def test_set_profile_following(server_stub, admin_stub, contact_profile_id):
@@ -399,7 +400,7 @@ def test_set_profile_following(server_stub, admin_stub, contact_profile_id):
             profile_id=contact_profile_id,
         )
     )
-    assert get_squeak_profile_response.squeak_profile.following == False
+    assert not get_squeak_profile_response.squeak_profile.following
 
     # Set the profile to be following
     admin_stub.SetSqueakProfileFollowing(
@@ -415,7 +416,7 @@ def test_set_profile_following(server_stub, admin_stub, contact_profile_id):
             profile_id=contact_profile_id,
         )
     )
-    assert get_squeak_profile_response.squeak_profile.following == True
+    assert get_squeak_profile_response.squeak_profile.following
 
 
 def test_set_profile_sharing(server_stub, admin_stub, contact_profile_id):
@@ -425,7 +426,7 @@ def test_set_profile_sharing(server_stub, admin_stub, contact_profile_id):
             profile_id=contact_profile_id,
         )
     )
-    assert get_squeak_profile_response.squeak_profile.sharing == False
+    assert not get_squeak_profile_response.squeak_profile.sharing
 
     # Set the profile to be sharing
     admin_stub.SetSqueakProfileSharing(
@@ -441,7 +442,7 @@ def test_set_profile_sharing(server_stub, admin_stub, contact_profile_id):
             profile_id=contact_profile_id,
         )
     )
-    assert get_squeak_profile_response.squeak_profile.sharing == True
+    assert get_squeak_profile_response.squeak_profile.sharing
 
 
 def test_delete_profile(server_stub, admin_stub, contact_profile_id):
@@ -532,7 +533,7 @@ def test_set_peer_downloading(server_stub, admin_stub, peer_id):
             peer_id=peer_id,
         )
     )
-    assert get_peer_response.squeak_peer.downloading == False
+    assert not get_peer_response.squeak_peer.downloading
 
     # Set the peer to be downloading
     admin_stub.SetPeerDownloading(
@@ -548,7 +549,7 @@ def test_set_peer_downloading(server_stub, admin_stub, peer_id):
             peer_id=peer_id,
         )
     )
-    assert get_peer_response.squeak_peer.downloading == True
+    assert get_peer_response.squeak_peer.downloading
 
 
 def test_set_peer_uploading(server_stub, admin_stub, peer_id):
@@ -558,7 +559,7 @@ def test_set_peer_uploading(server_stub, admin_stub, peer_id):
             peer_id=peer_id,
         )
     )
-    assert get_peer_response.squeak_peer.uploading == False
+    assert not get_peer_response.squeak_peer.uploading
 
     # Set the peer to be uploading
     admin_stub.SetPeerUploading(
@@ -574,7 +575,7 @@ def test_set_peer_uploading(server_stub, admin_stub, peer_id):
             peer_id=peer_id,
         )
     )
-    assert get_peer_response.squeak_peer.uploading == True
+    assert get_peer_response.squeak_peer.uploading
 
 
 def test_delete_peer(server_stub, admin_stub, peer_id):
@@ -670,12 +671,6 @@ def test_list_peers(server_stub, admin_stub, lightning_client, saved_squeak_hash
     )
     assert buy_response.offer.payment_request.startswith("ln")
 
-    # Decode the payment request string
-    decode_pay_req_response = lightning_client.decode_pay_req(
-        buy_response.offer.payment_request
-    )
-    destination = decode_pay_req_response.destination
-
     get_info_response = lightning_client.get_info()
 
     admin_stub.LndConnectPeer(
@@ -742,7 +737,7 @@ def test_open_channel(server_stub, admin_stub, lightning_client, saved_squeak_ha
         assert len(pending_channels_response.pending_open_channels) == 0
 
         # Open the new channel
-        open_channel_response = admin_stub.LndOpenChannelSync(
+        admin_stub.LndOpenChannelSync(
             ln.OpenChannelRequest(
                 node_pubkey_string=get_info_response.identity_pubkey,
                 local_funding_amount=1000000,
@@ -892,8 +887,7 @@ def test_connect_other_node(
             )
         )
         assert (
-            get_squeak_display_response.squeak_display_entry.content_str
-            == "Hello from the profile on the server!"
+            get_squeak_display_response.squeak_display_entry.content_str == "Hello from the profile on the server!"
         )
 
         # Get all sent payments
@@ -1059,7 +1053,7 @@ def test_download_single_squeak(
             squeak_hash=saved_squeak_hash,
         )
     )
-    assert get_squeak_display_response.squeak_display_entry != None
+    assert get_squeak_display_response.squeak_display_entry is not None
     # Get the buy offer
     get_buy_offers_response = other_admin_stub.GetBuyOffers(
         squeak_admin_pb2.GetBuyOffersRequest(
