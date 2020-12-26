@@ -19,7 +19,10 @@ RUN pip3 install --upgrade pip && \
 WORKDIR /app
 
 # Copy the source code.
-COPY . ./
+COPY alembic ./alembic
+COPY squeaknode ./squeaknode
+COPY proto ./proto
+COPY alembic.ini LICENSE MANIFEST.in README.md requirements.txt setup.cfg setup.py  ./
 
 RUN python3 setup.py install
 

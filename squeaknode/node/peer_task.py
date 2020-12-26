@@ -153,7 +153,7 @@ class PeerSyncTask:
 
         # TODO: Use the real payment point, not a fake value.
         squeak_payment_point = squeak.paymentPoint
-        payment_point = b""
+        # payment_point = b""
         payment_hash = bytes.fromhex(pay_req.payment_hash)
         price_msat = pay_req.num_msat
         destination = pay_req.destination

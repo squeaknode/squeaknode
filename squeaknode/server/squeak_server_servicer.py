@@ -24,7 +24,7 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
         squeak_hash = squeak_msg.hash
         squeak = CSqueak.deserialize(squeak_msg.serialized_squeak)
         # Check is squeak deserialized correctly
-        if squeak == None:
+        if squeak is None:
             context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
             return squeak_server_pb2.PostSqueakReply()
 
@@ -47,7 +47,7 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
         # TODO: check if hash is valid
 
         squeak = self.handler.handle_get_squeak(squeak_hash)
-        if squeak == None:
+        if squeak is None:
             context.set_code(grpc.StatusCode.NOT_FOUND)
             context.set_details("Squeak not found.")
             return squeak_server_pb2.GetSqueakReply(
@@ -71,7 +71,7 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
 
         buy_response = self.handler.handle_get_offer(squeak_hash, client_addr)
 
-        if buy_response == None:
+        if buy_response is None:
             context.set_code(grpc.StatusCode.NOT_FOUND)
             context.set_details("Offer not found.")
             return squeak_server_pb2.GetOfferReply(

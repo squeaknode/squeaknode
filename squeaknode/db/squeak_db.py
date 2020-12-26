@@ -88,8 +88,8 @@ class SqueakDb:
         )
         with self.get_connection() as connection:
             try:
-                res = connection.execute(ins)
-                inserted_squeak_hash = res.inserted_primary_key[0]
+                connection.execute(ins)
+                # inserted_squeak_hash = res.inserted_primary_key[0]
             except sqlalchemy.exc.IntegrityError:
                 pass
             return get_hash(squeak)
@@ -129,7 +129,7 @@ class SqueakDb:
                     self.profiles.c.address == self.squeaks.c.author_address,
                 )
             )
-            .where(self.squeaks.c.block_header != None)
+            .where(self.squeaks.c.block_header != None)  # noqa: E711
             .order_by(
                 self.squeaks.c.n_block_height.desc(),
                 self.squeaks.c.n_time.desc(),
@@ -152,7 +152,7 @@ class SqueakDb:
                     self.profiles.c.address == self.squeaks.c.author_address,
                 )
             )
-            .where(self.squeaks.c.block_header != None)
+            .where(self.squeaks.c.block_header != None)  # noqa: E711
             .where(self.squeaks.c.author_address == address)
             .where(self.squeaks.c.n_block_height >= min_block)
             .where(self.squeaks.c.n_block_height <= max_block)
@@ -202,7 +202,7 @@ class SqueakDb:
                     self.profiles.c.address == self.squeaks.c.author_address,
                 )
             )
-            .where(self.squeaks.c.block_header != None)
+            .where(self.squeaks.c.block_header != None)  # noqa: E711
             .order_by(
                 ancestors.c.depth.desc(),
             )
@@ -252,13 +252,13 @@ class SqueakDb:
             .where(self.squeaks.c.n_block_height <= max_block)
             .where(
                 or_(
-                    self.squeaks.c.secret_key != None,
+                    self.squeaks.c.secret_key != None,  # noqa: E711
                     include_locked,
                 )
             )
             .where(
                 or_(
-                    self.squeaks.c.block_header != None,
+                    self.squeaks.c.block_header != None,  # noqa: E711
                     include_unverified,
                 )
             )
@@ -307,18 +307,17 @@ class SqueakDb:
             select([self.squeaks.c.hash])
             .where(self.squeaks.c.author_address.in_(addresses))
             .where(
-                self.squeaks.c.created
-                > datetime.utcnow() - timedelta(seconds=interval_seconds)
+                self.squeaks.c.created > datetime.utcnow() - timedelta(seconds=interval_seconds)
             )
             .where(
                 or_(
-                    self.squeaks.c.secret_key != None,
+                    self.squeaks.c.secret_key != None,  # noqa: E711
                     include_locked,
                 )
             )
             .where(
                 or_(
-                    self.squeaks.c.block_header != None,
+                    self.squeaks.c.block_header != None,  # noqa: E711
                     include_unverified,
                 )
             )
@@ -370,14 +369,14 @@ class SqueakDb:
             .where(self.squeaks.c.author_address.in_(addresses))
             .where(self.squeaks.c.n_block_height >= min_block)
             .where(self.squeaks.c.n_block_height <= max_block)
-            .where(self.squeaks.c.secret_key == None)
+            .where(self.squeaks.c.secret_key == None)  # noqa: E711
             .where(
                 or_(
-                    self.squeaks.c.block_header != None,
+                    self.squeaks.c.block_header != None,  # noqa: E711
                     include_unverified,
                 )
             )
-            .where(self.offers.c.squeak_hash == None)
+            .where(self.offers.c.squeak_hash == None)  # noqa: E711
         )
         with self.get_connection() as connection:
             result = connection.execute(s)
@@ -428,7 +427,7 @@ class SqueakDb:
 
     def get_signing_profiles(self):
         """ Get all signing profiles. """
-        s = select([self.profiles]).where(self.profiles.c.private_key != None)
+        s = select([self.profiles]).where(self.profiles.c.private_key != None)  # noqa: E711
         with self.get_connection() as connection:
             result = connection.execute(s)
             rows = result.fetchall()
@@ -447,7 +446,7 @@ class SqueakDb:
 
     def get_contact_profiles(self):
         """ Get all contact profiles. """
-        s = select([self.profiles]).where(self.profiles.c.private_key == None)
+        s = select([self.profiles]).where(self.profiles.c.private_key == None)  # noqa: E711
         with self.get_connection() as connection:
             result = connection.execute(s)
             rows = result.fetchall()
@@ -595,7 +594,7 @@ class SqueakDb:
 
     def get_unverified_block_squeaks(self):
         """ Get all squeaks without block header. """
-        s = select([self.squeaks.c.hash]).where(self.squeaks.c.block_header == None)
+        s = select([self.squeaks.c.hash]).where(self.squeaks.c.block_header == None)  # noqa: E711
         with self.get_connection() as connection:
             result = connection.execute(s)
             rows = result.fetchall()
@@ -834,8 +833,7 @@ class SqueakDb:
     def delete_expired_offers(self):
         """ Delete all expired offers. """
         s = self.offers.delete().where(
-            datetime.utcnow().timestamp()
-            > self.offers.c.invoice_timestamp + self.offers.c.invoice_expiry
+            datetime.utcnow().timestamp() > self.offers.c.invoice_timestamp + self.offers.c.invoice_expiry
         )
         with self.get_connection() as connection:
             res = connection.execute(s)
@@ -969,8 +967,7 @@ class SqueakDb:
     def delete_expired_sent_offers(self):
         """ Delete all expired sent offers. """
         s = self.sent_offers.delete().where(
-            datetime.utcnow().timestamp()
-            > self.sent_offers.c.invoice_timestamp + self.sent_offers.c.invoice_expiry
+            datetime.utcnow().timestamp() > self.sent_offers.c.invoice_timestamp + self.sent_offers.c.invoice_expiry
         )
         with self.get_connection() as connection:
             res = connection.execute(s)
