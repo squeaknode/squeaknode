@@ -10,12 +10,12 @@ clean:
 	find . -name '*.pyi' -delete
 	make --directory=frontend clean;
 
-test:
+test: gen-protos
 	tox
 	tox -e codechecks
 	tox -e mypy
 
-codeformat:
+codeformat: gen-protos
 	tox -e autoflake
 	tox -e autopep8
 	tox -e isort
@@ -27,10 +27,13 @@ itest:
 coverage:
 	tox -e coverage
 
-mypy:
+mypy: gen-protos
 	tox -e mypy
 
-run:
+run: gen-protos
 	tox -e run
+
+gen-protos:
+	tox -e setup
 
 .PHONY: all clean test itest coverage mypy run
