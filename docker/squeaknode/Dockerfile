@@ -5,8 +5,6 @@ WORKDIR /
 COPY requirements.txt /
 COPY libs /libs
 
-RUN ls -l
-
 RUN apt-get update && apt-get install -y libpq-dev gcc libffi-dev
 RUN pip install psycopg2 && \
 	pip install -r requirements.txt
