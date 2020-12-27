@@ -4,4 +4,3 @@ graft squeaknode/admin/webapp/templates
 graft squeaknode/admin/webapp/static
 include squeaknode/db/alembic.ini
 graft squeaknode/db/alembic
-graft alembic
