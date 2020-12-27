@@ -78,9 +78,6 @@ setup(
     long_description=readme,
     packages=find_packages(),
     # package_dir=PACKAGE_DIRECTORIES,
-    # package_data={
-    #     'squeaknode': ['alembic.ini', 'alembic/*', 'alembic/**/*'],
-    # },
     include_package_data=True,
     zip_safe=False,
     extras_require={"test": ["pytest", "coverage"]},
