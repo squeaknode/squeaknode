@@ -21,7 +21,7 @@ COPY proto ./proto
 COPY LICENSE MANIFEST.in README.md requirements.txt setup.cfg setup.py  ./
 
 RUN python3 setup.py install
-# RUN rm -r alembic/
+RUN rm -r alembic/
 
 EXPOSE 8774
 EXPOSE 8994
