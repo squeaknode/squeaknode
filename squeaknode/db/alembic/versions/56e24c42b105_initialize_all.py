@@ -1,7 +1,7 @@
 """Initialize all
 
 Revision ID: 56e24c42b105
-Revises: 
+Revises:
 Create Date: 2020-12-22 19:30:23.837560
 
 """
