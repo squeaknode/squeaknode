@@ -2,12 +2,14 @@ FROM python:3.8-slim
 
 WORKDIR /
 
+RUN apt-get update && apt-get install -y libpq-dev gcc libffi-dev
+
 COPY requirements.txt /
 COPY libs /libs
 
-RUN apt-get update && apt-get install -y libpq-dev gcc libffi-dev
 RUN pip install psycopg2 && \
 	pip install -r requirements.txt
+
 RUN apt-get autoremove -y gcc
 
 WORKDIR /app
