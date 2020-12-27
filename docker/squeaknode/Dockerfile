@@ -27,8 +27,6 @@ FROM python:3.8-slim
 
 COPY --from=compile-image /opt/venv /opt/venv
 
-WORKDIR /app
-
 EXPOSE 8774
 EXPOSE 8994
 EXPOSE 18774

@@ -40,7 +40,7 @@ services:
       - SQUEAKNODE_SYNC_INTERVAL_S
     volumes:
       - ~/.lnd:/root/.lnd
-      - ./config.ini:/app/config.ini
+      - ./config.ini:/config.ini
       - ~/.sqk:/root/.sqk
     ports:
       - 8774:8774
