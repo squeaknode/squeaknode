@@ -1,28 +1,31 @@
-FROM ubuntu:20.04
+FROM python:3.8-slim
 
-ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get update && apt-get install -y \
-	python3-pip \
-	git
+# RUN apt-get update && apt-get install -y \
+# 	git
 
 COPY requirements-itest.txt /
 COPY libs /libs
 
-RUN pip3 install --upgrade pip && \
-	pip3 install -r requirements-itest.txt
+RUN pip3 install -r requirements-itest.txt
 
 WORKDIR /app
 
 # Download the rpc files.
-RUN git clone https://github.com/googleapis/googleapis.git
+# RUN git clone https://github.com/googleapis/googleapis.git
 
 COPY proto ./proto
-COPY install-rpc.sh itests/test.sh squeaknode/lightning/lnd_lightning_client.py ./
+COPY itests/test.sh squeaknode/lightning/lnd_lightning_client.py ./
 COPY itests/tests ./tests
 
-# Install the gRPC files.
-RUN chmod +x install-rpc.sh && \
-	./install-rpc.sh
+# # Install the gRPC files.
+# RUN chmod +x install-rpc.sh && \
+# 	./install-rpc.sh
+
+RUN python3 -m grpc_tools.protoc --proto_path=. --python_out=. --grpc_python_out=. \
+	proto/lnd.proto \
+	proto/squeak_server.proto \
+	proto/squeak_admin.proto
+
 
 RUN chmod +x test.sh
 

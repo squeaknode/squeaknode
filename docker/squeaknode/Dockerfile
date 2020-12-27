@@ -1,10 +1,4 @@
-FROM ubuntu:20.04
-
-ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get update && apt-get install -y \
-	python3-pip \
-	python3-psycopg2 \
-	git
+FROM python:3.8-slim
 
 WORKDIR /
 
@@ -13,8 +7,10 @@ COPY libs /libs
 
 RUN ls -l
 
-RUN pip3 install --upgrade pip && \
-	pip3 install -r requirements.txt
+RUN apt-get update && apt-get install -y libpq-dev gcc libffi-dev
+RUN pip install psycopg2 && \
+	pip install -r requirements.txt
+RUN apt-get autoremove -y gcc
 
 WORKDIR /app
 
