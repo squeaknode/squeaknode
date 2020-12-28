@@ -1,4 +1,3 @@
-import io
 import os
 import sys
 
@@ -8,12 +7,11 @@ import setuptools.command.test
 from grpc_tools import protoc
 from setuptools import Command, find_packages, setup
 
+from squeaknode import __version__
+
 PACKAGE_DIRECTORIES = {
     '': '.',
 }
-
-with io.open("README.md", "rt", encoding="utf8") as f:
-    readme = f.read()
 
 
 class BuildPyCommand(setuptools.command.build_py.build_py):
@@ -72,10 +70,9 @@ class BuildPackageProtos(Command):
 
 setup(
     name="squeaknode",
-    version="1.0.0",
+    version=__version__,
     url="https://github.com/yzernik/squeaknode",
     description="Server for squeak protocol.",
-    long_description=readme,
     packages=find_packages(),
     # package_dir=PACKAGE_DIRECTORIES,
     include_package_data=True,
