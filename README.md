@@ -2,26 +2,16 @@
 
 Node for Squeak protocol
 
-### Run with docker:
+### Run a node:
 
 ##### Requirements
-* docker
-* docker-compose
-* Enough disk space for the bitcoin blockchain
+* a bitcoin node
+* a LND node
+* Python 3.7 or later
+
+If you don't already have a bitcoin node or lightning node, you can [follow the instructions](docs/DOCKER.md) follow the instructions here to launch them in Docker.
 
 ##### Steps
-- Build and start docker-compose:
-	```
-	$ cd docker
-	$ docker-compose build
-	$ docker-compose up
-	```
-- If you want to use mainnet, run with the `docker-compose.mainnet.yml` override file:
-	```
-	$ docker-compose -f docker-compose.yml -f docker-compose.mainnet.yml up
-	```
-- Go to http://localhost:12994/ and use the username/password in **docker/config.ini** to log in.
-
 
 ### Run without docker:
 
@@ -38,18 +28,18 @@ Node for Squeak protocol
 	price_msat=1000000
 	sync_interval_s=10
 
-	[bitcoin]
-	rpc_host=localhost
-	rpc_port=18334
-	rpc_user=devuser
-	rpc_pass=devpass
-
 	[lnd]
 	host=localhost
 	port=9735
 	rpc_port=10009
 	tls_cert_path=~/.lnd/tls.cert
 	macaroon_path=~/.lnd/data/chain/bitcoin/testnet/admin.macaroon
+
+	[bitcoin]
+	rpc_host=localhost
+	rpc_port=18334
+	rpc_user=devuser
+	rpc_pass=devpass
 
 	[webadmin]
 	enabled=true
