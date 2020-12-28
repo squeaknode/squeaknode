@@ -27,6 +27,8 @@ FROM python:3.8-slim
 
 COPY --from=compile-image /opt/venv /opt/venv
 
+RUN apt-get update && apt-get install -y libpq-dev
+
 EXPOSE 8774
 EXPOSE 8994
 EXPOSE 18774
