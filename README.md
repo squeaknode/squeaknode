@@ -6,7 +6,7 @@ Node for Squeak protocol
 
 ##### Requirements
 * a bitcoin node
-* a LND node
+* an LND node
 * Python 3.7 or later
 
 If you don't already have a bitcoin node or lightning node, you can [follow the instructions](docs/DOCKER.md) follow the instructions here to launch them in Docker.
