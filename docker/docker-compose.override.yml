@@ -17,9 +17,9 @@ services:
     environment:
       - NETWORK=testnet
 
-  squeaknode:
-    environment:
-      - NETWORK=testnet
+  # squeaknode:
+  #   environment:
+  #     - NETWORK=testnet
 
 volumes:
   # shared volume is needed for sharing the btcd certificate
