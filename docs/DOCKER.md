@@ -2,7 +2,8 @@
 
 If you don't already have your own bitcoin node and lightning node, you can use docker-compose to launch new ones.
 
-##### Steps
+#### Steps
+
 - Build and start docker-compose:
 	```
 	$ cd docker
