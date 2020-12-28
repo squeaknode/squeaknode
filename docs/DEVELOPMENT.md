@@ -18,5 +18,6 @@ To change any database model, follow these steps.
 	$ virtuelenv venv
 	$ pip install -r requirements.txt
 	$ pip install -e .
-	$ alembic revision --autogenerate -m "<YOUR_MESSAGE>"
+	$ alembic -c squeaknode/db/alembic.ini revision --autogenerate -m "<YOUR_MESSAGE>"
 	```
+- To generate a new initial version revision, follow the same steps as above, but the `/home/<USER>/.sqk/data/testnet/data.db` file should be an empty file.
