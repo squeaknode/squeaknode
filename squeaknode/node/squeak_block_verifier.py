@@ -1,5 +1,4 @@
 import logging
-import queue
 
 logger = logging.getLogger(__name__)
 
@@ -14,12 +13,11 @@ class SqueakBlockVerifier:
     def get_block_header(self, squeak):
         try:
             block_info = self._get_block_info_for_height(squeak.nBlockHeight)
-        except Exception as e:
-            logger.error(
-                "Failed to get block info for squeak.", exc_info=False
-            )
+        except Exception:
+            logger.error("Failed to get block info for squeak.",
+                         exc_info=False)
             return None
-        if squeak.hashBlock.hex() != block_info.block_hash:
+        if squeak.hashBlock != block_info.block_hash:
             logger.info("block hash incorrect: {}".format(block_info))
             return None
-        return bytes.fromhex(block_info.block_header)
+        return block_info.block_header

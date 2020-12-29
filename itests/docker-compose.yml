@@ -79,7 +79,7 @@ services:
     volumes:
       - test_shared:/rpc
       - test_lnd_server_dir:/root/.lnd
-      - ./config.ini:/app/config.ini
+      - ./config.ini:/config.ini
     links:
       - "btcd:btcd"
       - "lnd_server:lnd"
@@ -96,7 +96,7 @@ services:
     volumes:
       - test_shared:/rpc
       - test_lnd_client_dir:/root/.lnd
-      - ./config.ini:/app/config.ini
+      - ./config.ini:/config.ini
     links:
       - "btcd:btcd"
       - "lnd_client:lnd"

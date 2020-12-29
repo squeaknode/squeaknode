@@ -4,7 +4,8 @@ import os
 
 import grpc
 
-from proto import lnd_pb2, lnd_pb2_grpc
+from proto import lnd_pb2
+from proto import lnd_pb2_grpc
 
 logger = logging.getLogger(__name__)
 
@@ -42,14 +43,15 @@ class LNDLightningClient:
 
         def metadata_callback(context, callback):
             # for more info see grpc docs
-            callback([('macaroon', macaroon)], None)
+            callback([("macaroon", macaroon)], None)
 
         # now build meta data credentials
         auth_creds = grpc.metadata_call_credentials(metadata_callback)
 
         # combine the cert credentials and the macaroon auth credentials
         # such that every call is properly encrypted and authenticated
-        combined_creds = grpc.composite_channel_credentials(cert_creds, auth_creds)
+        combined_creds = grpc.composite_channel_credentials(
+            cert_creds, auth_creds)
 
         # finally pass in the combined credentials when creating a channel
         channel = grpc.secure_channel(url, combined_creds)
@@ -204,12 +206,6 @@ class LNDLightningClient:
         )
         return self.stub.NewAddress(
             new_address_request,
-        )
-
-    def list_channels(self):
-        list_channels_request = lnd_pb2.ListChannelsRequest()
-        return self.stub.ListChannels(
-            list_channels_request,
         )
 
     def subscribe_channel_events(self):

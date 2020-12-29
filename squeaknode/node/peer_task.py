@@ -1,12 +1,7 @@
 import logging
-import threading
-
-
-from squeak.core.encryption import generate_data_key
 
 from squeaknode.core.offer import Offer
-from squeaknode.network.peer_client import PeerClient
-from squeaknode.server.util import get_hash, get_replyto
+from squeaknode.core.util import get_hash
 
 logger = logging.getLogger(__name__)
 
@@ -42,7 +37,8 @@ class PeerSyncTask:
         logger.debug("Followed addresses: {}".format(addresses))
 
         # Get remote hashes
-        lookup_result = self._get_remote_hashes(addresses, min_block, max_block)
+        lookup_result = self._get_remote_hashes(
+            addresses, min_block, max_block)
         remote_hashes = lookup_result.hashes
         logger.debug("Got remote hashes: {}".format(len(remote_hashes)))
         for hash in remote_hashes:
@@ -68,14 +64,16 @@ class PeerSyncTask:
             self._download_squeak(hash)
 
         # Get local hashes of locked squeaks that don't have an offer from this peer.
-        locked_hashes = self._get_locked_hashes(addresses, min_block, max_block)
+        locked_hashes = self._get_locked_hashes(
+            addresses, min_block, max_block)
         logger.debug("Got locked hashes: {}".format(len(locked_hashes)))
         for hash in locked_hashes:
             logger.debug("locked hash: {}".format(hash))
 
         # Get hashes to get offer
         hashes_to_get_offer = set(remote_hashes) & set(locked_hashes)
-        logger.debug("Hashes to get offer: {}".format(len(hashes_to_get_offer)))
+        logger.debug("Hashes to get offer: {}".format(
+            len(hashes_to_get_offer)))
         for hash in hashes_to_get_offer:
             logger.debug("hash to get offer: {}".format(hash))
 
@@ -96,7 +94,8 @@ class PeerSyncTask:
         logger.debug("Sharing addresses: {}".format(addresses))
 
         # Get remote hashes
-        lookup_result = self._get_remote_hashes(addresses, min_block, max_block)
+        lookup_result = self._get_remote_hashes(
+            addresses, min_block, max_block)
         remote_hashes = lookup_result.hashes
         allowed_addresses = lookup_result.allowed_addresses
         logger.debug("Got remote hashes: {}".format(len(remote_hashes)))
@@ -104,7 +103,8 @@ class PeerSyncTask:
             logger.debug("remote hash: {}".format(hash))
 
         # Get local hashes
-        local_hashes = self._get_local_unlocked_hashes(addresses, min_block, max_block)
+        local_hashes = self._get_local_unlocked_hashes(
+            addresses, min_block, max_block)
         logger.debug("Got local hashes: {}".format(len(local_hashes)))
         for hash in local_hashes:
             logger.debug("local hash: {}".format(hash))
@@ -127,13 +127,15 @@ class PeerSyncTask:
 
         # Download squeak if not already present.
         saved_squeak = self._get_local_squeak(squeak_hash)
-        logger.info("download_single_squeak with saved_squeak: {}".format(saved_squeak))
+        logger.info(
+            "download_single_squeak with saved_squeak: {}".format(saved_squeak))
         if not saved_squeak:
             self._download_squeak(squeak_hash)
 
         # Download offer from peer if not already present.
         saved_offer = self._get_saved_offer(squeak_hash)
-        logger.info("download_single_squeak with saved_offer: {}".format(saved_offer))
+        logger.info(
+            "download_single_squeak with saved_offer: {}".format(saved_offer))
         if not saved_offer:
             self._download_offer(squeak_hash)
 
@@ -149,30 +151,59 @@ class PeerSyncTask:
         # Get the squeak from the squeak hash
         squeak = self._get_local_squeak(squeak_hash)
 
-        # Get the encryption key
-        encryption_key = squeak.GetEncryptionKey()
-
-        # Create a new challenge
-        challenge_proof = self._generate_challenge_proof()
-        challenge = self._get_challenge(challenge_proof, encryption_key)
-
         # Download the buy offer
-        offer = self._download_buy_offer(squeak_hash, challenge)
+        offer_msg = self._download_offer_msg(squeak_hash)
 
-        # Check the proof
-        proof = offer.proof
-        logger.info("Proof: {}".format(proof.hex()))
-        logger.info("Expected proof: {}".format(challenge_proof.hex()))
-        if proof != challenge_proof:
-            raise Exception(
-                "Invalid offer proof: {}, expected: {}".format(
-                    proof.hex(),
-                    challenge_proof.hex(),
-                )
-            )
+        # Decode the payment request
+        pay_req = self._decode_payment_request(offer_msg.payment_request)
+        logger.info("Decoded payment request: {}".format(pay_req))
 
-        # Get the decoded offer from the payment request string
-        decoded_offer = self._get_decoded_offer(offer)
+        # TODO: Use the real payment point, not a fake value.
+        squeak_payment_point = squeak.paymentPoint
+        # payment_point = b""
+        payment_hash = bytes.fromhex(pay_req.payment_hash)
+        price_msat = pay_req.num_msat
+        destination = pay_req.destination
+        invoice_timestamp = pay_req.timestamp
+        invoice_expiry = pay_req.expiry
+        node_host = offer_msg.host or self.peer.host
+        node_port = offer_msg.port
+
+        logger.info("price_msat: {}".format(price_msat))
+        logger.info("destination: {}".format(destination))
+        logger.info("invoice_timestamp: {}".format(invoice_timestamp))
+        logger.info("invoice_expiry: {}".format(invoice_expiry))
+        logger.info("node_host: {}".format(node_host))
+        logger.info("node_port: {}".format(node_port))
+
+        decoded_offer = Offer(
+            offer_id=None,
+            squeak_hash=offer_msg.squeak_hash,
+            price_msat=price_msat,
+            payment_hash=payment_hash,
+            nonce=offer_msg.nonce,
+            payment_point=squeak_payment_point,
+            invoice_timestamp=invoice_timestamp,
+            invoice_expiry=invoice_expiry,
+            payment_request=offer_msg.payment_request,
+            destination=destination,
+            node_host=node_host,
+            node_port=node_port,
+            peer_id=self.peer.peer_id,
+        )
+
+        # TODO: Check the payment point
+        # payment_point = offer.payment_point
+        # logger.info("Payment point: {}".format(payment_point.hex()))
+        # expected_payment_point = squeak.paymentPoint
+        # logger.info("Expected payment point: {}".format(expected_payment_point.hex()))
+        # if payment_point != expected_payment_point:
+        #     raise Exception(
+        #         "Invalid offer payment point: {}, expected: {}".format(
+        #             payment_point.hex(),
+        #             expected_payment_point.hex(),
+        #         )
+        #     )
 
         # Save the offer
         self._save_offer(decoded_offer)
@@ -209,7 +240,11 @@ class PeerSyncTask:
                 return offer_with_peer
 
     def _download_squeak(self, squeak_hash):
-        logger.info("Downloading squeak: {} from peer: {}".format(squeak_hash, self.peer.peer_id))
+        logger.info(
+            "Downloading squeak: {} from peer: {}".format(
+                squeak_hash, self.peer.peer_id
+            )
+        )
         squeak = self.peer_client.get_squeak(squeak_hash)
         self._save_squeak(squeak)
 
@@ -239,80 +274,14 @@ class PeerSyncTask:
         sharing_profiles = self.squeak_db.get_sharing_profiles()
         return [profile.address for profile in sharing_profiles]
 
-    def _generate_challenge_proof(self):
-        return generate_data_key()
-
-    def _get_challenge(self, challenge_proof, encryption_key):
-        return encryption_key.encrypt(challenge_proof)
-
-    def _download_buy_offer(self, squeak_hash, challenge):
+    def _download_offer_msg(self, squeak_hash):
         logger.info(
-            "Downloading buy offer for squeak hash: {}".format(squeak_hash)
-        )
-        offer_msg = self.peer_client.buy_squeak(squeak_hash, challenge)
-        offer = self._offer_from_msg(offer_msg)
-        return offer
+            "Downloading buy offer for squeak hash: {}".format(squeak_hash))
+        return self.peer_client.buy_squeak(squeak_hash)
 
     def _save_offer(self, offer):
         logger.info("Saving offer: {}".format(offer))
         self.squeak_db.insert_offer(offer)
 
-    def _offer_from_msg(self, offer_msg):
-        if not offer_msg:
-            return None
-        return Offer(
-            offer_id=None,
-            squeak_hash=offer_msg.squeak_hash,
-            key_cipher=offer_msg.key_cipher,
-            iv=offer_msg.iv,
-            price_msat=None,
-            payment_hash=offer_msg.preimage_hash,
-            invoice_timestamp=None,
-            invoice_expiry=None,
-            payment_request=offer_msg.payment_request,
-            destination=None,
-            node_host=offer_msg.host,
-            node_port=offer_msg.port,
-            proof=offer_msg.proof,
-            peer_id=self.peer.peer_id,
-        )
-
     def _decode_payment_request(self, payment_request):
         return self.lightning_client.decode_pay_req(payment_request)
-
-    def _get_decoded_offer(self, offer):
-        pay_req = self._decode_payment_request(offer.payment_request)
-        logger.info("Decoded payment request: {}".format(pay_req))
-
-        price_msat = pay_req.num_msat
-        destination = pay_req.destination
-        invoice_timestamp = pay_req.timestamp
-        invoice_expiry = pay_req.expiry
-        node_host = offer.node_host or self.peer.host
-        node_port = offer.node_port
-
-        logger.info("price_msat: {}".format(price_msat))
-        logger.info("destination: {}".format(destination))
-        logger.info("invoice_timestamp: {}".format(invoice_timestamp))
-        logger.info("invoice_expiry: {}".format(invoice_expiry))
-        logger.info("node_host: {}".format(node_host))
-        logger.info("node_port: {}".format(node_port))
-
-        decoded_offer = Offer(
-            offer_id=offer.offer_id,
-            squeak_hash=offer.squeak_hash,
-            key_cipher=offer.key_cipher,
-            iv=offer.iv,
-            price_msat=price_msat,
-            payment_hash=offer.payment_hash,
-            invoice_timestamp=invoice_timestamp,
-            invoice_expiry=invoice_expiry,
-            payment_request=offer.payment_request,
-            destination=destination,
-            node_host=node_host,
-            node_port=node_port,
-            proof=offer.proof,
-            peer_id=offer.peer_id,
-        )
-
-        return decoded_offer

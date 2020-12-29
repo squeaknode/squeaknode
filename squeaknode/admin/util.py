@@ -1,9 +1,8 @@
 import logging
 
-from squeaknode.server.util import get_hash, get_replyto
-
-from proto import squeak_admin_pb2, squeak_admin_pb2_grpc
-
+from proto import squeak_admin_pb2
+from squeaknode.core.util import get_hash
+from squeaknode.core.util import get_replyto
 
 logger = logging.getLogger(__name__)
 
@@ -36,6 +35,7 @@ def squeak_entry_to_message(squeak_entry_with_profile):
         reply_to=reply_to,
     )
 
+
 def squeak_profile_to_message(squeak_profile):
     if squeak_profile is None:
         return None
@@ -49,6 +49,7 @@ def squeak_profile_to_message(squeak_profile):
         following=squeak_profile.following,
     )
 
+
 def squeak_peer_to_message(squeak_peer):
     if squeak_peer is None:
         return None
@@ -60,6 +61,7 @@ def squeak_peer_to_message(squeak_peer):
         uploading=squeak_peer.uploading,
         downloading=squeak_peer.downloading,
     )
+
 
 def offer_entry_to_message(offer_entry):
     if offer_entry is None:
@@ -78,6 +80,7 @@ def offer_entry_to_message(offer_entry):
         invoice_expiry=offer.invoice_expiry,
     )
 
+
 def sent_payment_with_peer_to_message(sent_payment_with_peer):
     if sent_payment_with_peer is None:
         return None
@@ -89,11 +92,10 @@ def sent_payment_with_peer_to_message(sent_payment_with_peer):
         peer_id=sent_payment.peer_id,
         peer_name=peer.peer_name,
         squeak_hash=sent_payment.squeak_hash,
-        preimage_hash=sent_payment.preimage_hash,
-        preimage=sent_payment.preimage,
+        payment_hash=sent_payment.payment_hash.hex(),
+        secret_key=sent_payment.secret_key,
         price_msat=sent_payment.price_msat,
         node_pubkey=sent_payment.node_pubkey,
-        preimage_is_valid=sent_payment.preimage_is_valid,
         time_ms=int(sent_payment.time_ms.timestamp()) * 1000,
     )
 
@@ -107,24 +109,26 @@ def sync_result_to_message(sync_result):
         timeout_peer_ids=sync_result.timeout_peer_ids,
     )
 
+
 def squeak_entry_to_detail_message(squeak_entry_with_profile):
     if squeak_entry_with_profile is None:
         return None
     squeak_entry = squeak_entry_with_profile.squeak_entry
     squeak = squeak_entry.squeak
-    block_header = squeak_entry.block_header
-    is_unlocked = squeak.HasDecryptionKey()
-    content_str = squeak.GetDecryptedContentStr() if is_unlocked else None
-    squeak_profile = squeak_entry_with_profile.squeak_profile
-    is_author_known = squeak_profile is not None
-    author_name = squeak_profile.profile_name if squeak_profile else None
-    author_address = str(squeak.GetAddress())
-    is_reply = squeak.is_reply
-    reply_to = get_replyto(squeak) if is_reply else None
+    # block_header = squeak_entry.block_header
+    # is_unlocked = squeak.HasDecryptionKey()
+    # content_str = squeak.GetDecryptedContentStr() if is_unlocked else None
+    # squeak_profile = squeak_entry_with_profile.squeak_profile
+    # is_author_known = squeak_profile is not None
+    # author_name = squeak_profile.profile_name if squeak_profile else None
+    # author_address = str(squeak.GetAddress())
+    # is_reply = squeak.is_reply
+    # reply_to = get_replyto(squeak) if is_reply else None
     serialized_squeak = squeak.serialize()
     return squeak_admin_pb2.SqueakDetailEntry(
         serialized_squeak_hex=serialized_squeak.hex(),
     )
+
 
 def sent_offer_to_message(sent_offer):
     if sent_offer is None:
@@ -132,9 +136,12 @@ def sent_offer_to_message(sent_offer):
     return squeak_admin_pb2.SentOffer(
         sent_offer_id=sent_offer.sent_offer_id,
         squeak_hash=sent_offer.squeak_hash,
-        preimage_hash=sent_offer.preimage_hash,
+        payment_hash=sent_offer.payment_hash,
+        secret_key=sent_offer.secret_key,
+        nonce=sent_offer.nonce.hex(),
         price_msat=sent_offer.price_msat,
     )
+
 
 def received_payments_to_message(received_payment):
     if received_payment is None:
@@ -142,7 +149,7 @@ def received_payments_to_message(received_payment):
     return squeak_admin_pb2.ReceivedPayment(
         received_payment_id=received_payment.received_payment_id,
         squeak_hash=received_payment.squeak_hash,
-        preimage_hash=received_payment.preimage_hash,
+        payment_hash=received_payment.payment_hash,
         price_msat=received_payment.price_msat,
         payment_time_ms=int(received_payment.created.timestamp()) * 1000,
         client_addr=received_payment.client_addr,

@@ -340,43 +340,17 @@ export default function WalletPage() {
               justify="flex-start"
               alignItems="center"
            >
-             {/*<Grid item xs={6}>*/}
              <Grid item xs={12}>
                {pendingChannels.getPendingOpenChannelsList().map(pendingOpenChannel =>
-                  <Box
-                     p={1}
-                     key={pendingOpenChannel.getChannel().getChannelPoint()}
-                  >
-                    <PendingOpenChannelItem
-                       key={pendingOpenChannel.getChannel().getChannelPoint()}
-                       pendingOpenChannel={pendingOpenChannel}
-                    />
+                  <Box p={1} key={pendingOpenChannel.getChannel().getChannelPoint()}>
+                    <PendingOpenChannelItem pendingOpenChannel={pendingOpenChannel} />
                   </Box>
                )}
                {channels.map(channel =>
-                  <Box
-                     p={1}
-                     key={channel.getChannelPoint()}
-                  >
-                    <ChannelItem
-                       key={channel.getChannelPoint()}
-                       channel={channel}
-                    />
+                  <Box p={1} key={channel.getChannelPoint()}>
+                    <ChannelItem channel={channel} />
                   </Box>
                )}
-               {/*{pendingChannels.getPendingClosingChannelsList().map(pendingClosingChannel =>*/}
-               {/*   <Box*/}
-               {/*      p={1}*/}
-               {/*      key={pendingClosingChannel.getChannel().getChannelPoint()}*/}
-               {/*   >*/}
-               {/*     <ChannelItem*/}
-               {/*        key={pendingClosingChannel.getChannel().getChannelPoint()}*/}
-               {/*        pendingOpenChannel={pendingClosingChannel}*/}
-               {/*        status={'pending-closing'}*/}
-               {/*     >*/}
-               {/*     </ChannelItem>*/}
-               {/*   </Box>*/}
-               {/*)}*/}
              </Grid>
            </Grid>
          </Widget>

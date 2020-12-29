@@ -1,18 +1,8 @@
 import logging
-from hashlib import sha256
 
-from squeak.core.encryption import (
-    CEncryptedDecryptionKey,
-    generate_initialization_vector,
-)
-from squeak.core.signing import CSigningKey, CSqueakAddress
-from squeak.core import CheckSqueak
-
-from squeaknode.node.squeak_controller import SqueakController
-from squeaknode.node.squeak_peer_sync_worker import SqueakPeerSyncWorker
-from squeaknode.node.squeak_offer_expiry_worker import SqueakOfferExpiryWorker
 from squeaknode.node.sent_offers_worker import SentOffersWorker
-
+from squeaknode.node.squeak_offer_expiry_worker import SqueakOfferExpiryWorker
+from squeaknode.node.squeak_peer_sync_worker import SqueakPeerSyncWorker
 
 logger = logging.getLogger(__name__)
 

@@ -278,7 +278,7 @@ export default function LightningNodePage() {
           {HasChannelToPeer()}
           </Typography>
           {hasChannelToPeer()
-            ? ""
+            ? OpenChannelButton()
             : OpenChannelButton()
           }
         </Grid>

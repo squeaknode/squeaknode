@@ -1,6 +1,6 @@
 import logging
 
-from squeaknode.server.util import get_hash
+from squeaknode.core.util import get_hash
 
 logger = logging.getLogger(__name__)
 

@@ -1,15 +1,13 @@
 import logging
 
 from flask_login import UserMixin
-
-from werkzeug.security import generate_password_hash, check_password_hash
-
+from werkzeug.security import check_password_hash
+from werkzeug.security import generate_password_hash
 
 logger = logging.getLogger(__name__)
 
 
 class User(UserMixin):
-
     def __init__(self, username, password):
         self.username = username
         self.password_hash = generate_password_hash(password)

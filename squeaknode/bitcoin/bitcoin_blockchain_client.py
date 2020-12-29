@@ -1,7 +1,6 @@
-import os
 import json
 import logging
-from typing import Optional
+import os
 
 import requests
 
@@ -28,8 +27,8 @@ class BitcoinBlockchainClient(BlockchainClient):
         self.headers = {"content-type": "application/json"}
         s = requests.Session()
         if ssl_cert:
-            os.environ['SSL_CERT_FILE'] = ssl_cert
-            os.environ['REQUESTS_CA_BUNDLE'] = ssl_cert
+            os.environ["SSL_CERT_FILE"] = ssl_cert
+            os.environ["REQUESTS_CA_BUNDLE"] = ssl_cert
             s.cert = ssl_cert
 
     def get_best_block_info(self) -> BlockInfo:
@@ -42,7 +41,7 @@ class BitcoinBlockchainClient(BlockchainClient):
         block_header = self.get_block_header(block_hash, False)
         return BlockInfo(block_height, block_hash, block_header)
 
-    def get_block_count(self) -> Optional[int]:
+    def get_block_count(self) -> int:
         payload = {
             "method": "getblockcount",
             "params": [],
@@ -61,7 +60,7 @@ class BitcoinBlockchainClient(BlockchainClient):
         logger.debug("Got block_count: {}".format(block_count))
         return block_count
 
-    def get_block_hash(self, block_height: int) -> Optional[str]:
+    def get_block_hash(self, block_height: int) -> bytes:
         payload = {
             "method": "getblockhash",
             "params": [block_height],
@@ -78,27 +77,12 @@ class BitcoinBlockchainClient(BlockchainClient):
         result = response["result"]
         block_hash = result
         logger.debug("Got block_hash: {}".format(block_hash))
-        return block_hash
+        return bytes.fromhex(block_hash)
 
-    # def get_best_block_hash(self) -> Optional[bytes]:
-    #     payload = {
-    #         "method": "getblockhash",
-    #         "params": [],
-    #         "jsonrpc": "2.0",
-    #         "id": 0,
-    #     }
-    #     response = requests.post(
-    #         self.url, data=json.dumps(payload), headers=self.headers,
-    #     ).json()
-
-    #     result = response["result"]
-    #     block_hash = bytes.fromhex(result)
-    #     return block_hash
-
-    def get_block_header(self, block_hash: str, verbose: bool) -> Optional[bytes]:
+    def get_block_header(self, block_hash: bytes, verbose: bool) -> bytes:
         payload = {
             "method": "getblockheader",
-            "params": [block_hash, verbose],
+            "params": [block_hash.hex(), verbose],
             "jsonrpc": "2.0",
             "id": 0,
         }
@@ -111,4 +95,4 @@ class BitcoinBlockchainClient(BlockchainClient):
         logger.debug("Got response for get_block_header: {}".format(response))
         result = response["result"]
         logger.debug("Got block_header: {}".format(result))
-        return result
+        return bytes.fromhex(result)

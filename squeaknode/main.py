@@ -2,9 +2,7 @@ import argparse
 import logging
 import sys
 import threading
-from configparser import ConfigParser
 from pathlib import Path
-from os import environ
 
 from squeak.params import SelectParams
 
@@ -12,17 +10,16 @@ from squeaknode.admin.squeak_admin_server_handler import SqueakAdminServerHandle
 from squeaknode.admin.squeak_admin_server_servicer import SqueakAdminServerServicer
 from squeaknode.admin.webapp.app import SqueakAdminWebServer
 from squeaknode.bitcoin.bitcoin_blockchain_client import BitcoinBlockchainClient
-from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
-from squeaknode.db.db_engine import get_engine, get_sqlite_connection_string
+from squeaknode.config.config import Config
+from squeaknode.core.lightning_address import LightningAddressHostPort
+from squeaknode.db.db_engine import get_engine
+from squeaknode.db.db_engine import get_sqlite_connection_string
 from squeaknode.db.squeak_db import SqueakDb
+from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
 from squeaknode.node.squeak_controller import SqueakController
-from squeaknode.server.lightning_address import LightningAddressHostPort
+from squeaknode.node.squeak_node import SqueakNode
 from squeaknode.server.squeak_server_handler import SqueakServerHandler
 from squeaknode.server.squeak_server_servicer import SqueakServerServicer
-from squeaknode.node.squeak_node import SqueakNode
-
-from squeaknode.config.config import Config
-
 
 logger = logging.getLogger(__name__)
 
@@ -36,7 +33,7 @@ def load_lightning_client(config) -> LNDLightningClient:
     )
 
 
-def load_lightning_host_port(config) -> LNDLightningClient:
+def load_lightning_host_port(config) -> LightningAddressHostPort:
     return LightningAddressHostPort(
         config.lnd_external_host,
         config.lnd_port,
@@ -173,7 +170,8 @@ def parse_args():
     subparsers = parser.add_subparsers(help="sub-command help")
 
     # create the parser for the "run-server" command
-    parser_run_server = subparsers.add_parser("run-server", help="run-server help")
+    parser_run_server = subparsers.add_parser(
+        "run-server", help="run-server help")
     parser_run_server.set_defaults(func=run_server)
 
     return parser.parse_args()
@@ -211,7 +209,8 @@ def run_server(config):
     price_msat = load_price_msat(config)
 
     # load the max squeaks per block per address
-    max_squeaks_per_address_per_hour = load_max_squeaks_per_address_per_hour(config)
+    max_squeaks_per_address_per_hour = load_max_squeaks_per_address_per_hour(
+        config)
 
     # load the lightning client
     lightning_client = load_lightning_client(config)

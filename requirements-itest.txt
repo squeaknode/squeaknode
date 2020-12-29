@@ -1,7 +1,7 @@
-importlib_resources==1.4.0
-squeaklib==0.3.3
 argparse
 googleapis-common-protos
 grpcio
 grpcio-tools
+importlib_resources==1.4.0
 pytest
+squeaklib==0.5.1

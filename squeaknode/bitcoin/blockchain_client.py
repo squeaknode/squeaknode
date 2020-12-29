@@ -1,5 +1,6 @@
 import logging
-from abc import ABC, abstractmethod
+from abc import ABC
+from abc import abstractmethod
 
 from squeaknode.bitcoin.block_info import BlockInfo
 
@@ -12,5 +13,13 @@ class BlockchainClient(ABC):
         pass
 
     @abstractmethod
-    def get_block_info_by_height(self) -> BlockInfo:
+    def get_block_info_by_height(self, block_height: int) -> BlockInfo:
+        pass
+
+    @abstractmethod
+    def get_block_hash(self, block_height: int) -> bytes:
+        pass
+
+    @abstractmethod
+    def get_block_header(self, block_hash: bytes, verbose: bool) -> bytes:
         pass

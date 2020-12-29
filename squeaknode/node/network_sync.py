@@ -1,22 +1,12 @@
 import logging
-import threading
-import queue
 
-from dataclasses import dataclass
-from typing import Any
-from typing import List
-
-from collections import namedtuple
-
-from squeaknode.network.peer_client import PeerClient
-from squeaknode.node.peer_task import PeerSyncTask
 from squeaknode.node.peer_connection import PeerConnection
+from squeaknode.node.peer_task import PeerSyncTask
 
 logger = logging.getLogger(__name__)
 
 
 class NetworkSync:
-
     def __init__(
         self,
         squeak_store,

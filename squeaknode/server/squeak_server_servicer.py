@@ -4,8 +4,9 @@ from concurrent import futures
 import grpc
 from squeak.core import CSqueak
 
-from proto import squeak_server_pb2, squeak_server_pb2_grpc
-from squeaknode.server.util import get_hash
+from proto import squeak_server_pb2
+from proto import squeak_server_pb2_grpc
+from squeaknode.core.util import get_hash
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +25,7 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
         squeak_hash = squeak_msg.hash
         squeak = CSqueak.deserialize(squeak_msg.serialized_squeak)
         # Check is squeak deserialized correctly
-        if squeak == None:
+        if squeak is None:
             context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
             return squeak_server_pb2.PostSqueakReply()
 
@@ -47,7 +48,7 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
         # TODO: check if hash is valid
 
         squeak = self.handler.handle_get_squeak(squeak_hash)
-        if squeak == None:
+        if squeak is None:
             context.set_code(grpc.StatusCode.NOT_FOUND)
             context.set_details("Squeak not found.")
             return squeak_server_pb2.GetSqueakReply(
@@ -67,12 +68,11 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
     def GetOffer(self, request, context):
         squeak_hash = request.hash
         # TODO: check if hash is valid
-        challenge = request.challenge
         client_addr = context.peer()
 
-        buy_response = self.handler.handle_get_offer(squeak_hash, challenge, client_addr)
+        buy_response = self.handler.handle_get_offer(squeak_hash, client_addr)
 
-        if buy_response == None:
+        if buy_response is None:
             context.set_code(grpc.StatusCode.NOT_FOUND)
             context.set_details("Offer not found.")
             return squeak_server_pb2.GetOfferReply(
@@ -84,13 +84,10 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
         return squeak_server_pb2.GetOfferReply(
             offer=squeak_server_pb2.SqueakBuyOffer(
                 squeak_hash=offer_squeak_hash,
-                key_cipher=buy_response.key_cipher.cipher_bytes,
-                iv=buy_response.iv,
-                preimage_hash=buy_response.preimage_hash,
+                nonce=buy_response.nonce,
                 payment_request=buy_response.payment_request,
                 host=buy_response.host,
                 port=buy_response.port,
-                proof=buy_response.proof,
             ),
         )
 

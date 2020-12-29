@@ -1,0 +1,6 @@
+coverage==4.5.4
+flake8==3.7.9
+mock
+pre-commit
+pytest
+requirements-tools==1.2.4

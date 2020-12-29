@@ -1,3 +1,11 @@
-from collections import namedtuple
+from dataclasses import dataclass
 
-SqueakEntry = namedtuple("SqueakEntry", ["squeak", "block_header"])
+from squeak.core import CSqueak
+
+
+@dataclass
+class SqueakEntry:
+    """Class for saving an offer from a remote peer."""
+
+    squeak: CSqueak
+    block_header: bytes

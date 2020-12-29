@@ -1,7 +1,5 @@
 import logging
 
-from squeaknode.server.util import get_hash, get_replyto
-
 logger = logging.getLogger(__name__)
 
 
@@ -20,9 +18,12 @@ class SqueakStore:
                 raise Exception("Squeak upload not allowed by whitelist.")
 
             if not self.squeak_rate_limiter.should_rate_limit_allow(squeak):
-                raise Exception("Excedeed allowed number of squeaks per block.")
-        block_header_bytes = self.squeak_block_verifier.get_block_header(squeak)
-        inserted_squeak_hash = self.squeak_db.insert_squeak(squeak, block_header_bytes)
+                raise Exception(
+                    "Excedeed allowed number of squeaks per block.")
+        block_header_bytes = self.squeak_block_verifier.get_block_header(
+            squeak)
+        inserted_squeak_hash = self.squeak_db.insert_squeak(
+            squeak, block_header_bytes)
         return inserted_squeak_hash
 
     def get_squeak(self, squeak_hash, clear_decryption_key=False):
@@ -80,8 +81,8 @@ class SqueakStore:
             peer_id,
         )
 
-    def unlock_squeak(self, squeak_hash, vch_decryption_key):
+    def unlock_squeak(self, squeak_hash, secret_key):
         self.squeak_db.set_squeak_decryption_key(
             squeak_hash,
-            vch_decryption_key,
+            secret_key,
         )

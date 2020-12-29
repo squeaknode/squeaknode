@@ -6,6 +6,9 @@ services:
     container_name: bitcoin-core
     volumes:
       - ~/.bitcoin:/home/bitcoin/.bitcoin
+    ports:
+      - 8332:8332
+      - 18332:18332
 
   lnd:
     image: lnd
@@ -17,37 +20,38 @@ services:
       - RPCHOST=bitcoin-core
       - BACKEND=bitcoind
     volumes:
-      - ~/.lnd:/root/.lnd
+      - ~/.lnd:/root/.lnd:rw
     ports:
       - 9735:9735
+      - 10009:10009
     links:
       - "bitcoin-core:bitcoin-core"
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=0
     entrypoint: ["./start-lnd.sh"]
 
-  squeaknode:
-    image: squeaknode
-    container_name: squeaknode
-    build:
-      context: ../
-      dockerfile: docker/squeaknode/Dockerfile
-    environment:
-      - WEBADMIN_USE_SSL
-      - WEBADMIN_LOGIN_DISABLED
-      - WEBADMIN_ALLOW_CORS
-      - LOG_LEVEL
-      - SQUEAKNODE_SYNC_INTERVAL_S
-    volumes:
-      - ~/.lnd:/root/.lnd
-      - ./config.ini:/app/config.ini
-      - ~/.sqk:/root/.sqk
-    ports:
-      - 8774:8774
-      - 12994:12994
-    links:
-      - "bitcoin-core:bitcoin-core"
-      - "lnd:lnd"
-    sysctls:
-      - net.ipv6.conf.all.disable_ipv6=0
-    entrypoint: ["./start-squeaknode.sh"]
+  # squeaknode:
+  #   image: squeaknode
+  #   container_name: squeaknode
+  #   build:
+  #     context: ../
+  #     dockerfile: docker/squeaknode/Dockerfile
+  #   environment:
+  #     - WEBADMIN_USE_SSL
+  #     - WEBADMIN_LOGIN_DISABLED
+  #     - WEBADMIN_ALLOW_CORS
+#     - LOG_LEVEL
+  #     - SQUEAKNODE_SYNC_INTERVAL_S
+  #   volumes:
+  #     - ~/.lnd:/root/.lnd
+  #     - ./config.ini:/config.ini
+  #     - ~/.sqk:/root/.sqk
+  #   ports:
+  #     - 8774:8774
+  #     - 12994:12994
+  #   links:
+  #     - "bitcoin-core:bitcoin-core"
+  #     - "lnd:lnd"
+  #   sysctls:
+  #     - net.ipv6.conf.all.disable_ipv6=0
+  #   entrypoint: ["./start-squeaknode.sh"]

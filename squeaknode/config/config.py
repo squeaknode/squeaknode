@@ -1,10 +1,8 @@
 import logging
+import pprint
 from configparser import ConfigParser
 from os import environ
-
 from pathlib import Path
-
-import pprint
 
 logger = logging.getLogger(__name__)
 
@@ -17,9 +15,9 @@ WEBADMIN_HOST = "0.0.0.0"
 WEBADMIN_PORT = 12994
 DEFAULT_BITCOIN_RPC_PORT = 8334
 BITCOIN_RPC_PORT = {
-    'mainnet': 8332,
-    'testnet': 18332,
-    'simnet': 18556,
+    "mainnet": 8332,
+    "testnet": 18332,
+    "simnet": 18556,
 }
 DEFAULT_LND_PORT = 9735
 DEFAULT_LND_RPC_PORT = 10009
@@ -32,7 +30,6 @@ DEFAULT_LND_DIR_PATH = str(Path.home() / DEFAULT_LND_DIR)
 
 
 class Config:
-
     def __init__(self, config_path):
         # Get the config object
         self.parser = ConfigParser()
@@ -40,50 +37,54 @@ class Config:
         self._configs = dict()
 
         # bitcoin
-        self._configs['bitcoin_rpc_host'] = self._get_bitcoin_rpc_host()
-        self._configs['bitcoin_rpc_port'] = self._get_bitcoin_rpc_port()
-        self._configs['bitcoin_rpc_user'] = self._get_bitcoin_rpc_user()
-        self._configs['bitcoin_rpc_pass'] = self._get_bitcoin_rpc_pass()
-        self._configs['bitcoin_rpc_use_ssl'] = self._get_bitcoin_rpc_use_ssl()
-        self._configs['bitcoin_rpc_ssl_cert'] = self._get_bitcoin_rpc_ssl_cert()
+        self._configs["bitcoin_rpc_host"] = self._get_bitcoin_rpc_host()
+        self._configs["bitcoin_rpc_port"] = self._get_bitcoin_rpc_port()
+        self._configs["bitcoin_rpc_user"] = self._get_bitcoin_rpc_user()
+        self._configs["bitcoin_rpc_pass"] = self._get_bitcoin_rpc_pass()
+        self._configs["bitcoin_rpc_use_ssl"] = self._get_bitcoin_rpc_use_ssl()
+        self._configs["bitcoin_rpc_ssl_cert"] = self._get_bitcoin_rpc_ssl_cert()
 
-        #lnd
-        self._configs['lnd_host'] = self._get_lnd_host()
-        self._configs['lnd_external_host'] = self._get_lnd_external_host()
-        self._configs['lnd_port'] = self._get_lnd_port()
-        self._configs['lnd_rpc_port'] = self._get_lnd_rpc_port()
-        self._configs['lnd_tls_cert_path'] = self._get_lnd_tls_cert_path()
-        self._configs['lnd_macaroon_path'] = self._get_lnd_macaroon_path()
-        self._configs['lnd_dir'] = self._get_lnd_dir()
+        # lnd
+        self._configs["lnd_host"] = self._get_lnd_host()
+        self._configs["lnd_external_host"] = self._get_lnd_external_host()
+        self._configs["lnd_port"] = self._get_lnd_port()
+        self._configs["lnd_rpc_port"] = self._get_lnd_rpc_port()
+        self._configs["lnd_tls_cert_path"] = self._get_lnd_tls_cert_path()
+        self._configs["lnd_macaroon_path"] = self._get_lnd_macaroon_path()
+        self._configs["lnd_dir"] = self._get_lnd_dir()
 
         # server
-        self._configs['server_rpc_host'] = self._get_server_rpc_host()
-        self._configs['server_rpc_port'] = self._get_server_rpc_port()
+        self._configs["server_rpc_host"] = self._get_server_rpc_host()
+        self._configs["server_rpc_port"] = self._get_server_rpc_port()
 
         # admin
-        self._configs['admin_rpc_host'] = self._get_admin_rpc_host()
-        self._configs['admin_rpc_port'] = self._get_admin_rpc_port()
+        self._configs["admin_rpc_host"] = self._get_admin_rpc_host()
+        self._configs["admin_rpc_port"] = self._get_admin_rpc_port()
 
         # webadmin
-        self._configs['webadmin_enabled'] = self._get_webadmin_enabled()
-        self._configs['webadmin_host'] = self._get_webadmin_host()
-        self._configs['webadmin_port'] = self._get_webadmin_port()
-        self._configs['webadmin_username'] = self._get_webadmin_username()
-        self._configs['webadmin_password'] = self._get_webadmin_password()
-        self._configs['webadmin_use_ssl'] = self._get_webadmin_use_ssl()
-        self._configs['webadmin_login_disabled'] = self._get_webadmin_login_disabled()
-        self._configs['webadmin_allow_cors'] = self._get_webadmin_allow_cors()
+        self._configs["webadmin_enabled"] = self._get_webadmin_enabled()
+        self._configs["webadmin_host"] = self._get_webadmin_host()
+        self._configs["webadmin_port"] = self._get_webadmin_port()
+        self._configs["webadmin_username"] = self._get_webadmin_username()
+        self._configs["webadmin_password"] = self._get_webadmin_password()
+        self._configs["webadmin_use_ssl"] = self._get_webadmin_use_ssl()
+        self._configs["webadmin_login_disabled"] = self._get_webadmin_login_disabled()
+        self._configs["webadmin_allow_cors"] = self._get_webadmin_allow_cors()
 
         # squeaknode
-        self._configs['squeaknode_network'] = self._get_squeaknode_network()
-        self._configs['squeaknode_price_msat'] = self._get_squeaknode_price_msat()
-        self._configs['squeaknode_max_squeaks_per_address_per_hour'] = self._get_squeaknode_max_squeaks_per_address_per_hour()
-        self._configs['squeaknode_sqk_dir'] = self._get_squeaknode_sqk_dir()
-        self._configs['squeaknode_sync_interval_s'] = self._get_squeaknode_sync_interval_s()
-        self._configs['squeaknode_log_level'] = self._get_squeaknode_log_level()
+        self._configs["squeaknode_network"] = self._get_squeaknode_network()
+        self._configs["squeaknode_price_msat"] = self._get_squeaknode_price_msat()
+        self._configs[
+            "squeaknode_max_squeaks_per_address_per_hour"
+        ] = self._get_squeaknode_max_squeaks_per_address_per_hour()
+        self._configs["squeaknode_sqk_dir"] = self._get_squeaknode_sqk_dir()
+        self._configs[
+            "squeaknode_sync_interval_s"
+        ] = self._get_squeaknode_sync_interval_s()
+        self._configs["squeaknode_log_level"] = self._get_squeaknode_log_level()
 
         # db
-        self._configs['db_connection_string'] = self._get_db_connection_string()
+        self._configs["db_connection_string"] = self._get_db_connection_string()
 
         for key, value in self._configs.items():
             setattr(self, key, value)
@@ -100,7 +101,8 @@ class Config:
 
     def _get_bitcoin_rpc_port(self):
         network = self._get_squeaknode_network()
-        default_rpc_port = BITCOIN_RPC_PORT.get(network, DEFAULT_BITCOIN_RPC_PORT)
+        default_rpc_port = BITCOIN_RPC_PORT.get(
+            network, DEFAULT_BITCOIN_RPC_PORT)
         return self.parser.getint("bitcoin", "rpc_port", fallback=default_rpc_port)
 
     def _get_bitcoin_rpc_user(self):
@@ -119,8 +121,9 @@ class Config:
         return self.parser.get("lnd", "host")
 
     def _get_lnd_external_host(self):
-        return environ.get('EXTERNAL_LND_HOST') \
-            or self.parser.get("lnd", "external_host", fallback=None)
+        return environ.get("EXTERNAL_LND_HOST") or self.parser.get(
+            "lnd", "external_host", fallback=None
+        )
 
     def _get_lnd_port(self):
         return self.parser.getint("lnd", "port", fallback=DEFAULT_LND_PORT)
@@ -137,7 +140,9 @@ class Config:
         lnd_dir_path = self._get_lnd_dir()
         network = self._get_squeaknode_network()
         lnd_network_dir = "data/chain/bitcoin/{}".format(network)
-        macaroon_path = str(Path(lnd_dir_path) / lnd_network_dir / DEFAULT_LND_MACAROON_NAME)
+        macaroon_path = str(
+            Path(lnd_dir_path) / lnd_network_dir / DEFAULT_LND_MACAROON_NAME
+        )
         return self.parser.get("lnd", "macaroon_path", fallback=macaroon_path)
 
     def _get_lnd_dir(self):
@@ -171,26 +176,34 @@ class Config:
         return self.parser.get("webadmin", "password", fallback="")
 
     def _get_webadmin_use_ssl(self):
-        return environ.get('WEBADMIN_USE_SSL') \
-            or self.parser.getboolean("webadmin", "use_ssl", fallback=False)
+        return environ.get("WEBADMIN_USE_SSL") or self.parser.getboolean(
+            "webadmin", "use_ssl", fallback=False
+        )
 
     def _get_webadmin_login_disabled(self):
-        return environ.get('WEBADMIN_LOGIN_DISABLED') \
-            or self.parser.getboolean("webadmin", "login_disabled", fallback=False)
+        return environ.get("WEBADMIN_LOGIN_DISABLED") or self.parser.getboolean(
+            "webadmin", "login_disabled", fallback=False
+        )
 
     def _get_webadmin_allow_cors(self):
-        return environ.get('WEBADMIN_ALLOW_CORS') \
-            or self.parser.getboolean("webadmin", "allow_cors", fallback=False)
+        return environ.get("WEBADMIN_ALLOW_CORS") or self.parser.getboolean(
+            "webadmin", "allow_cors", fallback=False
+        )
 
     def _get_squeaknode_network(self):
-        return environ.get('NETWORK') \
-            or self.parser.get("squeaknode", "network", fallback="testnet")
+        return environ.get("NETWORK") or self.parser.get(
+            "squeaknode", "network", fallback="testnet"
+        )
 
     def _get_squeaknode_price_msat(self):
         return int(self.parser.get("squeaknode", "price_msat", fallback="10000"))
 
     def _get_squeaknode_max_squeaks_per_address_per_hour(self):
-        return int(self.parser.get("squeaknode", "max_squeaks_per_address_per_hour", fallback="100"))
+        return int(
+            self.parser.get(
+                "squeaknode", "max_squeaks_per_address_per_hour", fallback="100"
+            )
+        )
 
     def _get_squeaknode_database(self):
         return self.parser.get("squeaknode", "database", fallback="sqlite")
@@ -199,13 +212,16 @@ class Config:
         return self.parser.get("squeaknode", "sqk_dir", fallback=DEFAULT_SQK_DIR_PATH)
 
     def _get_squeaknode_sync_interval_s(self):
-        return int(environ.get('SQUEAKNODE_SYNC_INTERVAL_S') or 0) \
-            or self.parser.getint("squeaknode", "sync_interval_s", fallback=None)
+        return int(
+            environ.get("SQUEAKNODE_SYNC_INTERVAL_S") or 0
+        ) or self.parser.getint("squeaknode", "sync_interval_s", fallback=None)
 
     def _get_squeaknode_log_level(self):
-        return environ.get('LOG_LEVEL') \
-            or self.parser.get("squeaknode", "log_level", fallback="INFO")
+        return environ.get("LOG_LEVEL") or self.parser.get(
+            "squeaknode", "log_level", fallback="INFO"
+        )
 
     def _get_db_connection_string(self):
-        return environ.get('DB_CONNECTION_STRING') \
-            or self.parser.get("db", "connection_string", fallback=None)
+        return environ.get("DB_CONNECTION_STRING") or self.parser.get(
+            "db", "connection_string", fallback=None
+        )

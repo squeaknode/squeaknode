@@ -1,16 +1,9 @@
 import logging
-import threading
 import queue
-
+import threading
 from dataclasses import dataclass
 from typing import Any
 from typing import List
-
-from collections import namedtuple
-
-from squeaknode.network.peer_client import PeerClient
-from squeaknode.node.peer_task import PeerSyncTask
-from squeaknode.node.peer_connection import PeerConnection
 
 logger = logging.getLogger(__name__)
 
@@ -38,9 +31,11 @@ class NetworkSyncTask:
         self.queue = queue.Queue()
 
     def sync(self, peers):
-        logger.debug("Network sync for class {}".format(
-            self.__class__,
-        ))
+        logger.debug(
+            "Network sync for class {}".format(
+                self.__class__,
+            )
+        )
         run_sync_thread = threading.Thread(
             target=self._run_sync,
             args=(peers,),
@@ -52,17 +47,17 @@ class NetworkSyncTask:
 
         while len(remaining_peer_ids) > 0:
             item = self.queue.get()
-            logger.info(f'Working on {item}')
+            logger.info(f"Working on {item}")
             if item.completed_peer_id:
                 completed_peer_ids.add(item.completed_peer_id)
                 remaining_peer_ids.remove(item.completed_peer_id)
             if item.failed_peer_id:
                 failed_peer_ids.add(item.failed_peer_id)
                 remaining_peer_ids.remove(item.failed_peer_id)
-            logger.info(f'Finished {item}')
+            logger.info(f"Finished {item}")
             self.queue.task_done()
 
-        logger.info(f'Returning from sync...')
+        logger.info("Returning from sync...")
         return NetworkSyncResult(
             completed_peer_ids=list(completed_peer_ids),
             failed_peer_ids=list(failed_peer_ids),
@@ -85,7 +80,7 @@ class NetworkSyncTask:
             logger.debug("Trying to sync with peer: {}".format(peer.peer_id))
             self.sync_peer(peer)
             self.queue.put(PeerSyncResult(completed_peer_id=peer.peer_id))
-        except Exception as e:
+        except Exception:
             logger.error("Sync with peer failed.", exc_info=True)
             self.queue.put(PeerSyncResult(failed_peer_id=peer.peer_id))
 

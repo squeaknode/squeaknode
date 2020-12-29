@@ -2,11 +2,12 @@ import logging
 from contextlib import contextmanager
 
 import grpc
-from squeak.core import CheckSqueak, CSqueak
+from squeak.core import CheckSqueak
+from squeak.core import CSqueak
 
-from squeaknode.server.util import get_hash
-
-from proto import squeak_server_pb2, squeak_server_pb2_grpc
+from proto import squeak_server_pb2
+from proto import squeak_server_pb2_grpc
+from squeaknode.core.util import get_hash
 
 logger = logging.getLogger(__name__)
 
@@ -53,12 +54,11 @@ class PeerClient:
             CheckSqueak(get_response_squeak, skipDecryptionCheck=True)
             return get_response_squeak
 
-    def buy_squeak(self, squeak_hash, challenge):
+    def buy_squeak(self, squeak_hash):
         with self.get_stub() as stub:
             buy_response = stub.GetOffer(
                 squeak_server_pb2.GetOfferRequest(
                     hash=squeak_hash,
-                    challenge=challenge,
                 )
             )
             offer_msg = buy_response.offer

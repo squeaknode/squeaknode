@@ -1,6 +1,10 @@
-from collections import namedtuple
+from dataclasses import dataclass
 
-BlockInfo = namedtuple(
-    "BlockInfo",
-    "block_height, block_hash, block_header",
-)
+
+@dataclass
+class BlockInfo:
+    """Class for getting block info from blockchain."""
+
+    block_height: int
+    block_hash: bytes
+    block_header: bytes
