@@ -2,7 +2,8 @@ import logging
 import queue
 import threading
 from dataclasses import dataclass
-from typing import Any, List
+from typing import Any
+from typing import List
 
 logger = logging.getLogger(__name__)
 

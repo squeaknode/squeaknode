@@ -15,7 +15,8 @@ class SqueakMaker:
         signing_key_str = signing_profile.private_key.decode()
         signing_key = CSigningKey(signing_key_str)
         logger.info("Creating squeak with signing key: {}".format(signing_key))
-        logger.info("Creating squeak with replyto_hash: {}".format(replyto_hash))
+        logger.info(
+            "Creating squeak with replyto_hash: {}".format(replyto_hash))
         block_info = self._get_latest_block_info()
         logger.info("Creating squeak with block_info: {}".format(block_info))
         block_height = block_info.block_height

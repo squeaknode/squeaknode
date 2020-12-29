@@ -101,7 +101,8 @@ class Config:
 
     def _get_bitcoin_rpc_port(self):
         network = self._get_squeaknode_network()
-        default_rpc_port = BITCOIN_RPC_PORT.get(network, DEFAULT_BITCOIN_RPC_PORT)
+        default_rpc_port = BITCOIN_RPC_PORT.get(
+            network, DEFAULT_BITCOIN_RPC_PORT)
         return self.parser.getint("bitcoin", "rpc_port", fallback=default_rpc_port)
 
     def _get_bitcoin_rpc_user(self):

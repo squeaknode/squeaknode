@@ -1,5 +1,5 @@
-import pytest
 import mock
+import pytest
 
 from squeaknode.bitcoin.blockchain_client import BlockchainClient
 from squeaknode.core.lightning_address import LightningAddressHostPort

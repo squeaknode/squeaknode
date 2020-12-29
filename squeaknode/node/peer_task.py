@@ -37,7 +37,8 @@ class PeerSyncTask:
         logger.debug("Followed addresses: {}".format(addresses))
 
         # Get remote hashes
-        lookup_result = self._get_remote_hashes(addresses, min_block, max_block)
+        lookup_result = self._get_remote_hashes(
+            addresses, min_block, max_block)
         remote_hashes = lookup_result.hashes
         logger.debug("Got remote hashes: {}".format(len(remote_hashes)))
         for hash in remote_hashes:
@@ -63,14 +64,16 @@ class PeerSyncTask:
             self._download_squeak(hash)
 
         # Get local hashes of locked squeaks that don't have an offer from this peer.
-        locked_hashes = self._get_locked_hashes(addresses, min_block, max_block)
+        locked_hashes = self._get_locked_hashes(
+            addresses, min_block, max_block)
         logger.debug("Got locked hashes: {}".format(len(locked_hashes)))
         for hash in locked_hashes:
             logger.debug("locked hash: {}".format(hash))
 
         # Get hashes to get offer
         hashes_to_get_offer = set(remote_hashes) & set(locked_hashes)
-        logger.debug("Hashes to get offer: {}".format(len(hashes_to_get_offer)))
+        logger.debug("Hashes to get offer: {}".format(
+            len(hashes_to_get_offer)))
         for hash in hashes_to_get_offer:
             logger.debug("hash to get offer: {}".format(hash))
 
@@ -91,7 +94,8 @@ class PeerSyncTask:
         logger.debug("Sharing addresses: {}".format(addresses))
 
         # Get remote hashes
-        lookup_result = self._get_remote_hashes(addresses, min_block, max_block)
+        lookup_result = self._get_remote_hashes(
+            addresses, min_block, max_block)
         remote_hashes = lookup_result.hashes
         allowed_addresses = lookup_result.allowed_addresses
         logger.debug("Got remote hashes: {}".format(len(remote_hashes)))
@@ -99,7 +103,8 @@ class PeerSyncTask:
             logger.debug("remote hash: {}".format(hash))
 
         # Get local hashes
-        local_hashes = self._get_local_unlocked_hashes(addresses, min_block, max_block)
+        local_hashes = self._get_local_unlocked_hashes(
+            addresses, min_block, max_block)
         logger.debug("Got local hashes: {}".format(len(local_hashes)))
         for hash in local_hashes:
             logger.debug("local hash: {}".format(hash))
@@ -122,13 +127,15 @@ class PeerSyncTask:
 
         # Download squeak if not already present.
         saved_squeak = self._get_local_squeak(squeak_hash)
-        logger.info("download_single_squeak with saved_squeak: {}".format(saved_squeak))
+        logger.info(
+            "download_single_squeak with saved_squeak: {}".format(saved_squeak))
         if not saved_squeak:
             self._download_squeak(squeak_hash)
 
         # Download offer from peer if not already present.
         saved_offer = self._get_saved_offer(squeak_hash)
-        logger.info("download_single_squeak with saved_offer: {}".format(saved_offer))
+        logger.info(
+            "download_single_squeak with saved_offer: {}".format(saved_offer))
         if not saved_offer:
             self._download_offer(squeak_hash)
 
@@ -268,7 +275,8 @@ class PeerSyncTask:
         return [profile.address for profile in sharing_profiles]
 
     def _download_offer_msg(self, squeak_hash):
-        logger.info("Downloading buy offer for squeak hash: {}".format(squeak_hash))
+        logger.info(
+            "Downloading buy offer for squeak hash: {}".format(squeak_hash))
         return self.peer_client.buy_squeak(squeak_hash)
 
     def _save_offer(self, offer):

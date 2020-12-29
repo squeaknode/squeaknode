@@ -2,9 +2,11 @@ import logging
 from contextlib import contextmanager
 
 import grpc
-from squeak.core import CheckSqueak, CSqueak
+from squeak.core import CheckSqueak
+from squeak.core import CSqueak
 
-from proto import squeak_server_pb2, squeak_server_pb2_grpc
+from proto import squeak_server_pb2
+from proto import squeak_server_pb2_grpc
 from squeaknode.core.util import get_hash
 
 logger = logging.getLogger(__name__)

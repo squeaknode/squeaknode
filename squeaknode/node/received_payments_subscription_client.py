@@ -73,7 +73,8 @@ class ReceivedPaymentsSubscriptionClient:
                 self._queue.put(payment)
                 payment_index = payment.received_payment_id
                 logger.info(
-                    "Added payment to queue. Size: {}".format(self._queue.qsize())
+                    "Added payment to queue. Size: {}".format(
+                        self._queue.qsize())
                 )
             time.sleep(self.update_interval_s)
 
@@ -86,5 +87,6 @@ class ReceivedPaymentsSubscriptionClient:
             yield payment
             self._queue.task_done()
             logger.info(
-                "Removed payment from queue. Size: {}".format(self._queue.qsize())
+                "Removed payment from queue. Size: {}".format(
+                    self._queue.qsize())
             )

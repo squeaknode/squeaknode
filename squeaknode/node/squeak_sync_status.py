@@ -1,10 +1,8 @@
 import logging
 
 from squeaknode.node.network_sync import NetworkSync
-from squeaknode.node.network_task import (
-    SingleSqueakNetworkSyncTask,
-    TimelineNetworkSyncTask,
-)
+from squeaknode.node.network_task import SingleSqueakNetworkSyncTask
+from squeaknode.node.network_task import TimelineNetworkSyncTask
 
 logger = logging.getLogger(__name__)
 
@@ -18,7 +16,8 @@ class SqueakSyncController:
         self.squeak_store = squeak_store
         self.squeak_db = squeak_db
         self.lightning_client = lightning_client
-        self.network_sync = NetworkSync(squeak_store, squeak_db, lightning_client)
+        self.network_sync = NetworkSync(
+            squeak_store, squeak_db, lightning_client)
 
     def sync_timeline(self):
         try:
@@ -38,7 +37,8 @@ class SqueakSyncController:
             max_block,
         )
         network_sync_result = dowload_timeline_task.sync(peers)
-        logger.info("Upload network_sync_result: {}".format(network_sync_result))
+        logger.info("Upload network_sync_result: {}".format(
+            network_sync_result))
         return network_sync_result
 
     def sync_single_squeak(self, squeak_hash, peers):
@@ -48,6 +48,7 @@ class SqueakSyncController:
         )
         network_sync_result = timeline_sync_task.sync(peers)
         logger.info(
-            "Download single squeak network_sync_result: {}".format(network_sync_result)
+            "Download single squeak network_sync_result: {}".format(
+                network_sync_result)
         )
         return network_sync_result

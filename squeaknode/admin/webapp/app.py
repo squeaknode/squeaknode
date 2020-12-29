@@ -1,17 +1,21 @@
 import logging
 import os
 
-from flask import Flask, flash, redirect, render_template, request, url_for
+from flask import flash
+from flask import Flask
+from flask import redirect
+from flask import render_template
+from flask import request
+from flask import url_for
 from flask_cors import CORS
-from flask_login import (
-    LoginManager,
-    current_user,
-    login_required,
-    login_user,
-    logout_user,
-)
+from flask_login import current_user
+from flask_login import login_required
+from flask_login import login_user
+from flask_login import LoginManager
+from flask_login import logout_user
 
-from proto import lnd_pb2, squeak_admin_pb2
+from proto import lnd_pb2
+from proto import squeak_admin_pb2
 from squeaknode.admin.webapp.forms import LoginForm
 from squeaknode.admin.webapp.squeak_admin_web_user import User
 

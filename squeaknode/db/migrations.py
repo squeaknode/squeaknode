@@ -1,9 +1,8 @@
 import logging
 
-from pkg_resources import resource_filename
-
 from alembic import command
 from alembic.config import Config
+from pkg_resources import resource_filename
 
 
 logger = logging.getLogger(__name__)
