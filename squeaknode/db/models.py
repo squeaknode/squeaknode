@@ -1,5 +1,6 @@
 import logging
 
+from sqlalchemy.types import TypeDecorator
 from sqlalchemy import (
     Binary,
     Boolean,
@@ -11,9 +12,28 @@ from sqlalchemy import (
     Table,
     func,
 )
-from sqlalchemy.types import TIMESTAMP
 
 logger = logging.getLogger(__name__)
+
+
+import datetime
+
+class TZDateTime(TypeDecorator):
+    impl = DateTime
+
+    def process_bind_param(self, value, dialect):
+        if value is not None:
+            if not value.tzinfo:
+                raise TypeError("tzinfo is required")
+            value = value.astimezone(datetime.timezone.utc).replace(
+                tzinfo=None
+            )
+        return value
+
+    def process_result_value(self, value, dialect):
+        if value is not None:
+            value = value.replace(tzinfo=datetime.timezone.utc)
+        return value
 
 
 class Models:
@@ -25,7 +45,7 @@ class Models:
             "squeak",
             self.metadata,
             Column("hash", String(64), primary_key=True),
-            Column("created", TIMESTAMP, server_default=func.now(), nullable=False),
+            Column("created", TZDateTime, server_default=func.now(), nullable=False),
             Column("squeak", Binary, nullable=False),
             Column("hash_reply_sqk", String(64), nullable=False),
             Column("hash_block", String(64), nullable=False),
@@ -40,7 +60,7 @@ class Models:
             "profile",
             self.metadata,
             Column("profile_id", Integer, primary_key=True),
-            Column("created", TIMESTAMP, server_default=func.now(), nullable=False),
+            Column("created", TZDateTime, server_default=func.now(), nullable=False),
             Column("profile_name", String, unique=True, nullable=False),
             Column("private_key", Binary),
             Column("address", String(35), unique=True, nullable=False),
@@ -52,7 +72,7 @@ class Models:
             "peer",
             self.metadata,
             Column("id", Integer, primary_key=True),
-            Column("created", TIMESTAMP, server_default=func.now(), nullable=False),
+            Column("created", TZDateTime, server_default=func.now(), nullable=False),
             Column("peer_name", String),
             Column("server_host", String, nullable=False),
             Column("server_port", Integer, nullable=False),
@@ -64,7 +84,7 @@ class Models:
             "offer",
             self.metadata,
             Column("offer_id", Integer, primary_key=True),
-            Column("created", TIMESTAMP, server_default=func.now(), nullable=False),
+            Column("created", TZDateTime, server_default=func.now(), nullable=False),
             Column("squeak_hash", String(64), nullable=False),
             Column("payment_hash", String(64), nullable=False),
             Column("nonce", String(64), nullable=False),
@@ -83,7 +103,7 @@ class Models:
             "sent_payment",
             self.metadata,
             Column("sent_payment_id", Integer, primary_key=True),
-            Column("created", TIMESTAMP, server_default=func.now(), nullable=False),
+            Column("created", TZDateTime, server_default=func.now(), nullable=False),
             Column("offer_id", Integer, nullable=False),
             Column("peer_id", Integer, nullable=False),
             Column("squeak_hash", String(64), nullable=False),
@@ -97,7 +117,7 @@ class Models:
             "sent_offer",
             self.metadata,
             Column("sent_offer_id", Integer, primary_key=True),
-            Column("created", TIMESTAMP, server_default=func.now(), nullable=False),
+            Column("created", TZDateTime, server_default=func.now(), nullable=False),
             Column("squeak_hash", String(64), nullable=False),
             Column("payment_hash", String(64), unique=True, nullable=False),
             Column("secret_key", String(64), nullable=False),
@@ -113,7 +133,7 @@ class Models:
             "received_payment",
             self.metadata,
             Column("received_payment_id", Integer, primary_key=True),
-            Column("created", TIMESTAMP, server_default=func.now(), nullable=False),
+            Column("created", TZDateTime, server_default=func.now(), nullable=False),
             Column("squeak_hash", String(64), nullable=False),
             Column("payment_hash", String(64), unique=True, nullable=False),
             Column("price_msat", Integer, nullable=False),

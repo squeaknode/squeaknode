@@ -1,7 +1,6 @@
 import logging
 from contextlib import contextmanager
-from datetime import datetime, timedelta
-import time
+from datetime import datetime, timedelta, timezone
 
 import sqlalchemy
 from sqlalchemy import func, literal
@@ -308,7 +307,7 @@ class SqueakDb:
             select([self.squeaks.c.hash])
             .where(self.squeaks.c.author_address.in_(addresses))
             .where(
-                self.squeaks.c.created > time.time() - interval_seconds
+                self.squeaks.c.created > datetime.now(timezone.utc) - timedelta(seconds=interval_seconds)
             )
             .where(
                 or_(
@@ -834,7 +833,7 @@ class SqueakDb:
     def delete_expired_offers(self):
         """ Delete all expired offers. """
         s = self.offers.delete().where(
-            time.time() > self.offers.c.invoice_timestamp + self.offers.c.invoice_expiry
+            datetime.now(timezone.utc).timestamp() > self.offers.c.invoice_timestamp + self.offers.c.invoice_expiry
         )
         with self.get_connection() as connection:
             res = connection.execute(s)
@@ -968,7 +967,7 @@ class SqueakDb:
     def delete_expired_sent_offers(self):
         """ Delete all expired sent offers. """
         s = self.sent_offers.delete().where(
-            time.time() > self.sent_offers.c.invoice_timestamp + self.sent_offers.c.invoice_expiry
+            datetime.now(timezone.utc).timestamp() > self.sent_offers.c.invoice_timestamp + self.sent_offers.c.invoice_expiry
         )
         with self.get_connection() as connection:
             res = connection.execute(s)
