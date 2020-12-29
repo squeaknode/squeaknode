@@ -4,8 +4,12 @@ import grpc
 import pytest
 from squeak.params import SelectParams
 
-from proto import squeak_admin_pb2, squeak_admin_pb2_grpc, squeak_server_pb2_grpc
-from tests.util import generate_signing_key, get_address, load_lightning_client
+from proto import squeak_admin_pb2
+from proto import squeak_admin_pb2_grpc
+from proto import squeak_server_pb2_grpc
+from tests.util import generate_signing_key
+from tests.util import get_address
+from tests.util import load_lightning_client
 
 
 @pytest.fixture(autouse=True)

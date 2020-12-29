@@ -5,22 +5,22 @@ import time
 from hashlib import sha256
 
 import pytest
-from squeak.core import CheckSqueak, CSqueak
+from squeak.core import CheckSqueak
+from squeak.core import CSqueak
 
 from proto import lnd_pb2 as ln
-from proto import squeak_admin_pb2, squeak_server_pb2
-from tests.util import (
-    build_squeak_msg,
-    connect_peer,
-    generate_signing_key,
-    get_address,
-    get_hash,
-    get_latest_block_info,
-    make_squeak,
-    open_channel,
-    squeak_from_msg,
-    subtract_tweak,
-)
+from proto import squeak_admin_pb2
+from proto import squeak_server_pb2
+from tests.util import build_squeak_msg
+from tests.util import connect_peer
+from tests.util import generate_signing_key
+from tests.util import get_address
+from tests.util import get_hash
+from tests.util import get_latest_block_info
+from tests.util import make_squeak
+from tests.util import open_channel
+from tests.util import squeak_from_msg
+from tests.util import subtract_tweak
 
 
 def test_get_profile(server_stub, admin_stub, signing_profile_id):
@@ -89,7 +89,8 @@ def test_post_squeak_not_following(
 
     squeak_msg = build_squeak_msg(squeak)
     with pytest.raises(Exception):
-        server_stub.PostSqueak(squeak_server_pb2.PostSqueakRequest(squeak=squeak_msg))
+        server_stub.PostSqueak(
+            squeak_server_pb2.PostSqueakRequest(squeak=squeak_msg))
 
 
 def test_lookup_squeaks(server_stub, admin_stub, signing_profile_id, saved_squeak_hash):
@@ -155,7 +156,8 @@ def test_lookup_squeaks_empty_result_block_ranges(
 
 def test_sell_squeak(server_stub, admin_stub, lightning_client, saved_squeak_hash):
     # Check the server balance
-    get_balance_response = admin_stub.LndWalletBalance(ln.WalletBalanceRequest())
+    get_balance_response = admin_stub.LndWalletBalance(
+        ln.WalletBalanceRequest())
     initial_server_balance = get_balance_response.total_balance
 
     # Get the squeak from the server
@@ -189,7 +191,8 @@ def test_sell_squeak(server_stub, admin_stub, lightning_client, saved_squeak_has
         # list_channels_response = lightning_client.list_channels()
 
         # Pay the invoice
-        payment = lightning_client.pay_invoice_sync(buy_response.offer.payment_request)
+        payment = lightning_client.pay_invoice_sync(
+            buy_response.offer.payment_request)
         preimage = payment.payment_preimage
 
         # Verify with the payment preimage and decryption key ciphertext (TODO: switch to using payment point)
@@ -205,7 +208,8 @@ def test_sell_squeak(server_stub, admin_stub, lightning_client, saved_squeak_has
         CheckSqueak(get_response_squeak)
 
     # Check the server balance
-    get_balance_response = admin_stub.LndWalletBalance(ln.WalletBalanceRequest())
+    get_balance_response = admin_stub.LndWalletBalance(
+        ln.WalletBalanceRequest())
     final_server_balance = get_balance_response.total_balance
     assert final_server_balance - initial_server_balance == 1000
 
@@ -251,7 +255,8 @@ def test_make_squeak(server_stub, admin_stub, signing_profile_id):
 
     # Get all squeak displays for the known address
     get_address_squeak_display_response = admin_stub.GetAddressSqueakDisplays(
-        squeak_admin_pb2.GetAddressSqueakDisplaysRequest(address=squeak_profile_address)
+        squeak_admin_pb2.GetAddressSqueakDisplaysRequest(
+            address=squeak_profile_address)
     )
     assert len(get_address_squeak_display_response.squeak_display_entries) == 1
     for (
@@ -521,8 +526,10 @@ def test_create_peer(server_stub, admin_stub):
     assert get_peer_response.squeak_peer.port == 1234
 
     # Get all peers
-    get_peers_response = admin_stub.GetPeers(squeak_admin_pb2.GetPeersRequest())
-    peer_hosts = [squeak_peer.host for squeak_peer in get_peers_response.squeak_peers]
+    get_peers_response = admin_stub.GetPeers(
+        squeak_admin_pb2.GetPeersRequest())
+    peer_hosts = [
+        squeak_peer.host for squeak_peer in get_peers_response.squeak_peers]
     assert "fake_host" in peer_hosts
 
 
@@ -623,7 +630,8 @@ def test_list_channels(server_stub, admin_stub, lightning_client, saved_squeak_h
     ), open_channel(lightning_client, destination, 1000000):
         # List channels
         get_info_response = lightning_client.get_info()
-        list_channels_response = admin_stub.LndListChannels(ln.ListChannelsRequest())
+        list_channels_response = admin_stub.LndListChannels(
+            ln.ListChannelsRequest())
 
         assert len(list_channels_response.channels) > 0
         assert any(
@@ -633,7 +641,8 @@ def test_list_channels(server_stub, admin_stub, lightning_client, saved_squeak_h
             ]
         )
 
-    list_channels_response = admin_stub.LndListChannels(ln.ListChannelsRequest())
+    list_channels_response = admin_stub.LndListChannels(
+        ln.ListChannelsRequest())
     assert len(list_channels_response.channels) == 0
 
 
@@ -758,7 +767,8 @@ def test_open_channel(server_stub, admin_stub, lightning_client, saved_squeak_ha
                 print("Channel now open: " + str(channel_point))
                 break
 
-        list_channels_response = admin_stub.LndListChannels(ln.ListChannelsRequest())
+        list_channels_response = admin_stub.LndListChannels(
+            ln.ListChannelsRequest())
         assert len(list_channels_response.channels) == 1
 
         # Close the channel
@@ -772,7 +782,8 @@ def test_open_channel(server_stub, admin_stub, lightning_client, saved_squeak_ha
                 print("Channel now closed.")
                 break
 
-        list_channels_response = admin_stub.LndListChannels(ln.ListChannelsRequest())
+        list_channels_response = admin_stub.LndListChannels(
+            ln.ListChannelsRequest())
         assert len(list_channels_response.channels) == 0
 
 
@@ -927,7 +938,8 @@ def test_connect_other_node(
             squeak_admin_pb2.GetReceivedPaymentsRequest(),
         )
         print(
-            "get_received_payments_response: {}".format(get_received_payments_response)
+            "get_received_payments_response: {}".format(
+                get_received_payments_response)
         )
         payment_hashes = [
             received_payment.payment_hash
@@ -936,7 +948,8 @@ def test_connect_other_node(
         assert sent_payment.payment_hash in payment_hashes
         for received_payment in get_received_payments_response.received_payments:
             received_payment_time_ms = received_payment.payment_time_ms
-            print("received_payment_time_ms: {}".format(received_payment_time_ms))
+            print("received_payment_time_ms: {}".format(
+                received_payment_time_ms))
             received_payment_time = datetime.datetime.fromtimestamp(
                 received_payment_time_ms / 1000.0
             )

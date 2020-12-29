@@ -1,5 +1,6 @@
 import logging
-from abc import ABC, abstractmethod
+from abc import ABC
+from abc import abstractmethod
 
 from squeaknode.bitcoin.block_info import BlockInfo
 

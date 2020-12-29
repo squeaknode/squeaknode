@@ -50,7 +50,8 @@ class SentOffersVerifier:
                 settle_index,
             )
         )
-        sent_offer = self.squeak_db.get_sent_offer_by_payment_hash(payment_hash)
+        sent_offer = self.squeak_db.get_sent_offer_by_payment_hash(
+            payment_hash)
         received_payment = ReceivedPayment(
             received_payment_id=None,
             created=None,

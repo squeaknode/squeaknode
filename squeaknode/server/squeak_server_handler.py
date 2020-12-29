@@ -14,7 +14,8 @@ class SqueakServerHandler(object):
         self.squeak_controller = squeak_controller
 
     def handle_posted_squeak(self, squeak):
-        logger.info("Handle posted squeak with hash: {}".format(get_hash(squeak)))
+        logger.info(
+            "Handle posted squeak with hash: {}".format(get_hash(squeak)))
         # Save the squeak
         self.squeak_controller.save_uploaded_squeak(squeak)
 
@@ -31,11 +32,14 @@ class SqueakServerHandler(object):
                 str(addresses), min_block, max_block
             )
         )
-        hashes = self.squeak_controller.lookup_squeaks(addresses, min_block, max_block)
+        hashes = self.squeak_controller.lookup_squeaks(
+            addresses, min_block, max_block)
         logger.info("Got number of hashes from db: {}".format(len(hashes)))
-        allowed_addresses = self.squeak_controller.lookup_allowed_addresses(addresses)
+        allowed_addresses = self.squeak_controller.lookup_allowed_addresses(
+            addresses)
         logger.info(
-            "Got number of allowed addresses from db: {}".format(len(allowed_addresses))
+            "Got number of allowed addresses from db: {}".format(
+                len(allowed_addresses))
         )
         return squeak_server_pb2.LookupSqueaksReply(
             hashes=hashes,
@@ -48,5 +52,6 @@ class SqueakServerHandler(object):
                 squeak_hash, client_addr
             )
         )
-        buy_offer = self.squeak_controller.get_buy_offer(squeak_hash, client_addr)
+        buy_offer = self.squeak_controller.get_buy_offer(
+            squeak_hash, client_addr)
         return buy_offer

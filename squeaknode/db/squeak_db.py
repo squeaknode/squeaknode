@@ -1,10 +1,15 @@
 import logging
 from contextlib import contextmanager
-from datetime import datetime, timedelta, timezone
+from datetime import datetime
+from datetime import timedelta
+from datetime import timezone
 
 import sqlalchemy
-from sqlalchemy import func, literal
-from sqlalchemy.sql import and_, or_, select
+from sqlalchemy import func
+from sqlalchemy import literal
+from sqlalchemy.sql import and_
+from sqlalchemy.sql import or_
+from sqlalchemy.sql import select
 from squeak.core import CSqueak
 
 from squeaknode.bitcoin.util import parse_block_header
@@ -307,7 +312,8 @@ class SqueakDb:
             select([self.squeaks.c.hash])
             .where(self.squeaks.c.author_address.in_(addresses))
             .where(
-                self.squeaks.c.created > datetime.now(timezone.utc) - timedelta(seconds=interval_seconds)
+                self.squeaks.c.created > datetime.now(
+                    timezone.utc) - timedelta(seconds=interval_seconds)
             )
             .where(
                 or_(
@@ -503,7 +509,8 @@ class SqueakDb:
 
     def get_profile(self, profile_id):
         """ Get a profile. """
-        s = select([self.profiles]).where(self.profiles.c.profile_id == profile_id)
+        s = select([self.profiles]).where(
+            self.profiles.c.profile_id == profile_id)
         with self.get_connection() as connection:
             result = connection.execute(s)
             row = result.fetchone()
@@ -765,7 +772,8 @@ class SqueakDb:
 
     def get_offers(self, squeak_hash):
         """ Get offers for a squeak hash. """
-        s = select([self.offers]).where(self.offers.c.squeak_hash == squeak_hash)
+        s = select([self.offers]).where(
+            self.offers.c.squeak_hash == squeak_hash)
         with self.get_connection() as connection:
             result = connection.execute(s)
             rows = result.fetchall()
@@ -797,7 +805,8 @@ class SqueakDb:
         with self.get_connection() as connection:
             result = connection.execute(s)
             rows = result.fetchall()
-            offers_with_peer = [self._parse_offer_with_peer(row) for row in rows]
+            offers_with_peer = [
+                self._parse_offer_with_peer(row) for row in rows]
             return offers_with_peer
 
         # sql = """
@@ -833,7 +842,8 @@ class SqueakDb:
     def delete_expired_offers(self):
         """ Delete all expired offers. """
         s = self.offers.delete().where(
-            datetime.now(timezone.utc).timestamp() > self.offers.c.invoice_timestamp + self.offers.c.invoice_expiry
+            datetime.now(timezone.utc).timestamp(
+            ) > self.offers.c.invoice_timestamp + self.offers.c.invoice_expiry
         )
         with self.get_connection() as connection:
             res = connection.execute(s)
@@ -891,7 +901,8 @@ class SqueakDb:
         with self.get_connection() as connection:
             result = connection.execute(s)
             rows = result.fetchall()
-            sent_payments = [self._parse_sent_payment_with_peer(row) for row in rows]
+            sent_payments = [
+                self._parse_sent_payment_with_peer(row) for row in rows]
             return sent_payments
 
     def get_sent_payment(self, sent_payment_id):
@@ -967,7 +978,8 @@ class SqueakDb:
     def delete_expired_sent_offers(self):
         """ Delete all expired sent offers. """
         s = self.sent_offers.delete().where(
-            datetime.now(timezone.utc).timestamp() > self.sent_offers.c.invoice_timestamp + self.sent_offers.c.invoice_expiry
+            datetime.now(timezone.utc).timestamp(
+            ) > self.sent_offers.c.invoice_timestamp + self.sent_offers.c.invoice_expiry
         )
         with self.get_connection() as connection:
             res = connection.execute(s)
@@ -1008,7 +1020,8 @@ class SqueakDb:
         with self.get_connection() as connection:
             result = connection.execute(s)
             rows = result.fetchall()
-            received_payments = [self._parse_received_payment(row) for row in rows]
+            received_payments = [
+                self._parse_received_payment(row) for row in rows]
             return received_payments
 
     def yield_received_payments_from_index(self, start_index=0):
@@ -1031,14 +1044,17 @@ class SqueakDb:
         if row is None:
             return None
         secret_key_column = row["secret_key"]
-        secret_key = bytes.fromhex(secret_key_column) if secret_key_column else b""
+        secret_key = bytes.fromhex(
+            secret_key_column) if secret_key_column else b""
         squeak = CSqueak.deserialize(row["squeak"])
         if secret_key:
             squeak.SetDecryptionKey(secret_key)
         block_header_column = row["block_header"]
-        block_header_bytes = bytes(block_header_column) if block_header_column else None
+        block_header_bytes = bytes(
+            block_header_column) if block_header_column else None
         block_header = (
-            parse_block_header(block_header_bytes) if block_header_bytes else None
+            parse_block_header(
+                block_header_bytes) if block_header_bytes else None
         )
         logger.info("Returning squeak entry with squeak: {}".format(squeak))
         return SqueakEntry(squeak=squeak, block_header=block_header)

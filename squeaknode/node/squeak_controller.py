@@ -1,7 +1,8 @@
 import logging
 
 from squeak.core import CheckSqueak
-from squeak.core.signing import CSigningKey, CSqueakAddress
+from squeak.core.signing import CSigningKey
+from squeak.core.signing import CSqueakAddress
 
 from squeaknode.core.buy_offer import BuyOffer
 from squeaknode.core.sent_offer import SentOffer
@@ -9,7 +10,9 @@ from squeaknode.core.sent_payment import SentPayment
 from squeaknode.core.squeak_address_validator import SqueakAddressValidator
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
-from squeaknode.core.util import add_tweak, generate_tweak, subtract_tweak
+from squeaknode.core.util import add_tweak
+from squeaknode.core.util import generate_tweak
+from squeaknode.core.util import subtract_tweak
 from squeaknode.node.received_payments_subscription_client import (
     OpenReceivedPaymentsSubscriptionClient,
 )
@@ -180,7 +183,8 @@ class SqueakController:
     def create_contact_profile(self, profile_name, squeak_address):
         address_validator = SqueakAddressValidator()
         if not address_validator.validate(squeak_address):
-            raise Exception("Invalid squeak address: {}".format(squeak_address))
+            raise Exception(
+                "Invalid squeak address: {}".format(squeak_address))
         squeak_profile = SqueakProfile(
             profile_id=None,
             profile_name=profile_name,
@@ -219,7 +223,8 @@ class SqueakController:
     def make_squeak(self, profile_id, content_str, replyto_hash):
         squeak_profile = self.squeak_db.get_profile(profile_id)
         squeak_maker = SqueakMaker(self.blockchain_client)
-        squeak = squeak_maker.make_squeak(squeak_profile, content_str, replyto_hash)
+        squeak = squeak_maker.make_squeak(
+            squeak_profile, content_str, replyto_hash)
         return self.save_created_squeak(squeak)
 
     def get_squeak_entry_with_profile(self, squeak_hash):
@@ -243,7 +248,8 @@ class SqueakController:
         )
 
     def delete_squeak(self, squeak_hash):
-        num_deleted_offers = self.squeak_db.delete_offers_for_squeak(squeak_hash)
+        num_deleted_offers = self.squeak_db.delete_offers_for_squeak(
+            squeak_hash)
         logger.info("Deleted number of offers : {}".format(num_deleted_offers))
         return self.squeak_store.delete_squeak(squeak_hash)
 
@@ -358,14 +364,16 @@ class SqueakController:
         logger.debug("Deleting expired offers.")
         num_expired_offers = self.squeak_db.delete_expired_offers()
         if num_expired_offers > 0:
-            logger.info("Deleted number of offers: {}".format(num_expired_offers))
+            logger.info("Deleted number of offers: {}".format(
+                num_expired_offers))
 
     def delete_all_expired_sent_offers(self):
         logger.debug("Deleting expired sent offers.")
         num_expired_sent_offers = self.squeak_db.delete_expired_offers()
         if num_expired_sent_offers > 0:
             logger.info(
-                "Deleted number of sent offers: {}".format(num_expired_sent_offers)
+                "Deleted number of sent offers: {}".format(
+                    num_expired_sent_offers)
             )
 
     def process_subscribed_invoices(self):

@@ -4,9 +4,14 @@ import time
 from contextlib import contextmanager
 
 from lnd_lightning_client import LNDLightningClient
-from squeak.core import HASH_LENGTH, CSqueak, MakeSqueakFromStr
-from squeak.core.elliptic import scalar_difference, scalar_from_bytes, scalar_to_bytes
-from squeak.core.signing import CSigningKey, CSqueakAddress
+from squeak.core import CSqueak
+from squeak.core import HASH_LENGTH
+from squeak.core import MakeSqueakFromStr
+from squeak.core.elliptic import scalar_difference
+from squeak.core.elliptic import scalar_from_bytes
+from squeak.core.elliptic import scalar_to_bytes
+from squeak.core.signing import CSigningKey
+from squeak.core.signing import CSqueakAddress
 
 from proto import squeak_server_pb2
 

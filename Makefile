@@ -12,8 +12,6 @@ clean:
 
 test: gen-protos
 	tox
-	tox -e codechecks
-	tox -e mypy
 
 codeformat: gen-protos
 	tox -e autoflake

@@ -4,7 +4,8 @@ import os
 
 import grpc
 
-from proto import lnd_pb2, lnd_pb2_grpc
+from proto import lnd_pb2
+from proto import lnd_pb2_grpc
 
 logger = logging.getLogger(__name__)
 
@@ -49,7 +50,8 @@ class LNDLightningClient:
 
         # combine the cert credentials and the macaroon auth credentials
         # such that every call is properly encrypted and authenticated
-        combined_creds = grpc.composite_channel_credentials(cert_creds, auth_creds)
+        combined_creds = grpc.composite_channel_credentials(
+            cert_creds, auth_creds)
 
         # finally pass in the combined credentials when creating a channel
         channel = grpc.secure_channel(url, combined_creds)

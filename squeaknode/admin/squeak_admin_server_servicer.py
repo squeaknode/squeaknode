@@ -3,7 +3,8 @@ from concurrent import futures
 
 import grpc
 
-from proto import squeak_admin_pb2, squeak_admin_pb2_grpc
+from proto import squeak_admin_pb2
+from proto import squeak_admin_pb2_grpc
 
 logger = logging.getLogger(__name__)
 
