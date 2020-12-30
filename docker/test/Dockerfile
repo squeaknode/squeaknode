@@ -1,7 +1,6 @@
 FROM python:3.8-slim
 
 COPY requirements-itest.txt /
-COPY libs /libs
 
 RUN pip3 install -r requirements-itest.txt
 

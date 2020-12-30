@@ -9,7 +9,6 @@ RUN python -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
 COPY requirements.txt /
-COPY libs /libs
 
 RUN pip install psycopg2 && \
 	pip install -r requirements.txt
