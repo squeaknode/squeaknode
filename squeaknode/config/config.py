@@ -209,7 +209,9 @@ class Config:
         return self.parser.get("squeaknode", "database", fallback="sqlite")
 
     def _get_squeaknode_sqk_dir(self):
-        return self.parser.get("squeaknode", "sqk_dir", fallback=DEFAULT_SQK_DIR_PATH)
+        return environ.get("SQK_DIR_PATH") or self.parser.get(
+            "squeaknode", "sqk_dir", fallback=DEFAULT_SQK_DIR_PATH
+        )
 
     def _get_squeaknode_sync_interval_s(self):
         return int(
