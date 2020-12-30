@@ -2,7 +2,7 @@ FROM python:3.8-slim-buster AS compile-image
 
 WORKDIR /
 
-RUN apt-get update && apt-get install -y libpq-dev gcc libffi-dev
+RUN apt-get update && apt-get install -y libpq-dev gcc libffi-dev build-essential
 
 RUN python -m venv /opt/venv
 # Make sure we use the virtualenv:
