@@ -23,7 +23,7 @@ COPY LICENSE MANIFEST.in README.md requirements.txt setup.cfg setup.py  ./
 
 RUN python3 setup.py install
 
-FROM python:3.8-slim
+FROM python:3.8-slim-buster
 
 COPY --from=compile-image /opt/venv /opt/venv
 
@@ -40,5 +40,5 @@ EXPOSE 12994
 ENV PATH="/opt/venv/bin:$PATH"
 
 # Copy the entrypoint script.
-COPY "docker/squeaknode/start-squeaknode.sh" .
+COPY "start-squeaknode.sh" .
 RUN chmod +x start-squeaknode.sh
