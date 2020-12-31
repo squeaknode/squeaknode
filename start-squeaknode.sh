@@ -9,6 +9,8 @@ set -e
 #     echo "Still waiting for lnd cert file to exist..."
 # done
 
+sleep 10
+
 # Start using the run server command
 exec runsqueaknode \
      --config config.ini \
