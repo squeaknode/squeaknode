@@ -54,7 +54,7 @@ def create_app(handler, username, password):
         request_message.ParseFromString(data)
         try:
             reply = handle_rpc_request(request_message)
-            return reply.SerializeToString(reply)
+            return reply.SerializeToString()
         except Exception as e:
             logger.error("Error in handle admin web request.", exc_info=True)
             return str(e), 500
