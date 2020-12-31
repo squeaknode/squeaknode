@@ -43,7 +43,6 @@ COPY "start-squeaknode.sh" .
 RUN chmod +x start-squeaknode.sh
 
 RUN ls -l .
-RUN ls -l /.lnd
 
 RUN touch config.ini
 CMD ["./start-squeaknode.sh"]
