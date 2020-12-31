@@ -52,6 +52,7 @@ def create_app(handler, username, password):
     def handle_request(request_message, handle_rpc_request):
         data = request.get_data()
         request_message.ParseFromString(data)
+        logger.info("handle request_message: {}".format(request_message))
         try:
             reply = handle_rpc_request(request_message)
             logger.info("handle_rpc_request reply: {}".format(reply))
