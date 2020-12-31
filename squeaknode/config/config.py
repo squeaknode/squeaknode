@@ -183,7 +183,9 @@ class Config:
         return self.parser.get("admin", "rpc_port", fallback=ADMIN_RPC_PORT)
 
     def _get_webadmin_enabled(self):
-        return self.parser.getboolean("webadmin", "enabled", fallback=False)
+        return environ.get("SQUEAKNODE_WEBADMIN_ENABLED") or self.parser.getboolean(
+            "webadmin", "enabled", fallback=False
+        )
 
     def _get_webadmin_host(self):
         return self.parser.get("webadmin", "host", fallback=WEBADMIN_HOST)
@@ -192,23 +194,27 @@ class Config:
         return self.parser.get("webadmin", "port", fallback=WEBADMIN_PORT)
 
     def _get_webadmin_username(self):
-        return self.parser.get("webadmin", "username", fallback="")
+        return environ.get("SQUEAKNODE_WEBADMIN_USERNAME") or self.parser.get(
+            "webadmin", "username", fallback=""
+        )
 
     def _get_webadmin_password(self):
-        return self.parser.get("webadmin", "password", fallback="")
+        return environ.get("SQUEAKNODE_WEBADMIN_PASSWORD") or self.parser.get(
+            "webadmin", "password", fallback=""
+        )
 
     def _get_webadmin_use_ssl(self):
-        return environ.get("WEBADMIN_USE_SSL") or self.parser.getboolean(
+        return environ.get("SQUEAKNODE_WEBADMIN_USE_SSL") or self.parser.getboolean(
             "webadmin", "use_ssl", fallback=False
         )
 
     def _get_webadmin_login_disabled(self):
-        return environ.get("WEBADMIN_LOGIN_DISABLED") or self.parser.getboolean(
+        return environ.get("SQUEAKNODE_WEBADMIN_LOGIN_DISABLED") or self.parser.getboolean(
             "webadmin", "login_disabled", fallback=False
         )
 
     def _get_webadmin_allow_cors(self):
-        return environ.get("WEBADMIN_ALLOW_CORS") or self.parser.getboolean(
+        return environ.get("SQUEAKNODE_WEBADMIN_ALLOW_CORS") or self.parser.getboolean(
             "webadmin", "allow_cors", fallback=False
         )
 
