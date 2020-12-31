@@ -97,19 +97,29 @@ class Config:
         return pprint.pformat(self._configs)
 
     def _get_bitcoin_rpc_host(self):
-        return self.parser.get("bitcoin", "rpc_host", fallback="localhost")
+        return environ.get("SQUEAKNODE_BITCOIND_HOST") or self.parser.get(
+            "bitcoin", "rpc_host", fallback="localhost"
+        )
 
     def _get_bitcoin_rpc_port(self):
         network = self._get_squeaknode_network()
         default_rpc_port = BITCOIN_RPC_PORT.get(
             network, DEFAULT_BITCOIN_RPC_PORT)
-        return self.parser.getint("bitcoin", "rpc_port", fallback=default_rpc_port)
+        return int(
+            environ.get("SQUEAKNODE_BITCOIND_PORT") or 0
+        ) or self.parser.getint(
+            "bitcoin", "rpc_port", fallback=default_rpc_port
+        )
 
     def _get_bitcoin_rpc_user(self):
-        return self.parser.get("bitcoin", "rpc_user")
+        return environ.get("SQUEAKNODE_BITCOIND_USER") or self.parser.get(
+            "bitcoin", "rpc_user"
+        )
 
     def _get_bitcoin_rpc_pass(self):
-        return self.parser.get("bitcoin", "rpc_pass")
+        return environ.get("SQUEAKNODE_BITCOIND_PASS") or self.parser.get(
+            "bitcoin", "rpc_pass"
+        )
 
     def _get_bitcoin_rpc_use_ssl(self):
         return self.parser.getboolean("bitcoin", "rpc_use_ssl", fallback=False)
@@ -118,18 +128,24 @@ class Config:
         return self.parser.get("bitcoin", "rpc_ssl_cert", fallback=None)
 
     def _get_lnd_host(self):
-        return self.parser.get("lnd", "host")
+        return environ.get("SQUEAKNODE_LND_HOST") or self.parser.get(
+            "lnd", "host"
+        )
 
     def _get_lnd_external_host(self):
-        return environ.get("EXTERNAL_LND_HOST") or self.parser.get(
+        return environ.get("SQUEAKNODE_EXTERNAL_LND_HOST") or self.parser.get(
             "lnd", "external_host", fallback=None
         )
 
     def _get_lnd_port(self):
-        return self.parser.getint("lnd", "port", fallback=DEFAULT_LND_PORT)
+        return int(
+            environ.get("SQUEAKNODE_LND_PORT") or 0
+        ) or self.parser.getint("lnd", "port", fallback=DEFAULT_LND_PORT)
 
     def _get_lnd_rpc_port(self):
-        return self.parser.getint("lnd", "rpc_port", fallback=DEFAULT_LND_RPC_PORT)
+        return int(
+            environ.get("SQUEAKNODE_LND_GRPC_PORT") or 0
+        ) or self.parser.getint("lnd", "rpc_port", fallback=DEFAULT_LND_RPC_PORT)
 
     def _get_lnd_tls_cert_path(self):
         lnd_dir_path = self._get_lnd_dir()
@@ -191,12 +207,14 @@ class Config:
         )
 
     def _get_squeaknode_network(self):
-        return environ.get("NETWORK") or self.parser.get(
+        return environ.get("SQUEAKNODE_NETWORK") or self.parser.get(
             "squeaknode", "network", fallback="testnet"
         )
 
     def _get_squeaknode_price_msat(self):
-        return int(self.parser.get("squeaknode", "price_msat", fallback="10000"))
+        return int(
+            environ.get("SQUEAKNODE_PRICE_MSAT") or 0
+        ) or int(self.parser.get("squeaknode", "price_msat", fallback="10000"))
 
     def _get_squeaknode_max_squeaks_per_address_per_hour(self):
         return int(
@@ -209,7 +227,7 @@ class Config:
         return self.parser.get("squeaknode", "database", fallback="sqlite")
 
     def _get_squeaknode_sqk_dir(self):
-        return environ.get("SQK_DIR_PATH") or self.parser.get(
+        return environ.get("SQUEAKNODE_SQK_DIR_PATH") or self.parser.get(
             "squeaknode", "sqk_dir", fallback=DEFAULT_SQK_DIR_PATH
         )
 
