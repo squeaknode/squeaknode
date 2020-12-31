@@ -41,3 +41,8 @@ ENV PATH="/opt/venv/bin:$PATH"
 # Copy the entrypoint script.
 COPY "start-squeaknode.sh" .
 RUN chmod +x start-squeaknode.sh
+
+RUN ls -l .
+
+RUN touch config.ini
+CMD ["./start-squeaknode.sh"]

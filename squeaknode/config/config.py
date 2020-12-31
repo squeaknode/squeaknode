@@ -51,7 +51,7 @@ class Config:
         self._configs["lnd_rpc_port"] = self._get_lnd_rpc_port()
         self._configs["lnd_tls_cert_path"] = self._get_lnd_tls_cert_path()
         self._configs["lnd_macaroon_path"] = self._get_lnd_macaroon_path()
-        self._configs["lnd_dir"] = self._get_lnd_dir()
+        # self._configs["lnd_dir"] = self._get_lnd_dir()
 
         # server
         self._configs["server_rpc_host"] = self._get_server_rpc_host()
@@ -148,11 +148,17 @@ class Config:
         ) or self.parser.getint("lnd", "rpc_port", fallback=DEFAULT_LND_RPC_PORT)
 
     def _get_lnd_tls_cert_path(self):
+        env_val = environ.get("SQUEAKNODE_LND_TLS_CERT_PATH")
+        if env_val:
+            return env_val
         lnd_dir_path = self._get_lnd_dir()
         tls_cert_path = str(Path(lnd_dir_path) / DEFAULT_LND_TLS_CERT_NAME)
         return self.parser.get("lnd", "tls_cert_path", fallback=tls_cert_path)
 
     def _get_lnd_macaroon_path(self):
+        env_val = environ.get("SQUEAKNODE_LND_MACAROON_PATH")
+        if env_val:
+            return env_val
         lnd_dir_path = self._get_lnd_dir()
         network = self._get_squeaknode_network()
         lnd_network_dir = "data/chain/bitcoin/{}".format(network)
@@ -177,7 +183,9 @@ class Config:
         return self.parser.get("admin", "rpc_port", fallback=ADMIN_RPC_PORT)
 
     def _get_webadmin_enabled(self):
-        return self.parser.getboolean("webadmin", "enabled", fallback=False)
+        return environ.get("SQUEAKNODE_WEBADMIN_ENABLED") or self.parser.getboolean(
+            "webadmin", "enabled", fallback=False
+        )
 
     def _get_webadmin_host(self):
         return self.parser.get("webadmin", "host", fallback=WEBADMIN_HOST)
@@ -186,23 +194,27 @@ class Config:
         return self.parser.get("webadmin", "port", fallback=WEBADMIN_PORT)
 
     def _get_webadmin_username(self):
-        return self.parser.get("webadmin", "username", fallback="")
+        return environ.get("SQUEAKNODE_WEBADMIN_USERNAME") or self.parser.get(
+            "webadmin", "username", fallback=""
+        )
 
     def _get_webadmin_password(self):
-        return self.parser.get("webadmin", "password", fallback="")
+        return environ.get("SQUEAKNODE_WEBADMIN_PASSWORD") or self.parser.get(
+            "webadmin", "password", fallback=""
+        )
 
     def _get_webadmin_use_ssl(self):
-        return environ.get("WEBADMIN_USE_SSL") or self.parser.getboolean(
+        return environ.get("SQUEAKNODE_WEBADMIN_USE_SSL") or self.parser.getboolean(
             "webadmin", "use_ssl", fallback=False
         )
 
     def _get_webadmin_login_disabled(self):
-        return environ.get("WEBADMIN_LOGIN_DISABLED") or self.parser.getboolean(
+        return environ.get("SQUEAKNODE_WEBADMIN_LOGIN_DISABLED") or self.parser.getboolean(
             "webadmin", "login_disabled", fallback=False
         )
 
     def _get_webadmin_allow_cors(self):
-        return environ.get("WEBADMIN_ALLOW_CORS") or self.parser.getboolean(
+        return environ.get("SQUEAKNODE_WEBADMIN_ALLOW_CORS") or self.parser.getboolean(
             "webadmin", "allow_cors", fallback=False
         )
 

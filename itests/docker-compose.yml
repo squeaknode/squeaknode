@@ -76,6 +76,8 @@ services:
     build:
       context: ../
       dockerfile: Dockerfile
+    depends_on:
+      - "lnd_server"
     volumes:
       - test_shared:/rpc
       - test_lnd_server_dir:/root/.lnd
@@ -110,6 +112,8 @@ services:
     build:
       context: ../
       dockerfile: docker/test/Dockerfile
+    depends_on:
+      - "lnd_client"
     volumes:
       - test_shared:/rpc
       - test_lnd_client_dir:/root/.lnd
