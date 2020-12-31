@@ -1,15 +1,14 @@
-FROM python:3.8-slim AS compile-image
+FROM python:3.8-slim-buster AS compile-image
 
 WORKDIR /
 
-RUN apt-get update && apt-get install -y libpq-dev gcc libffi-dev
+RUN apt-get update && apt-get install -y libpq-dev gcc libffi-dev build-essential
 
 RUN python -m venv /opt/venv
 # Make sure we use the virtualenv:
 ENV PATH="/opt/venv/bin:$PATH"
 
 COPY requirements.txt /
-COPY libs /libs
 
 RUN pip install psycopg2 && \
 	pip install -r requirements.txt
@@ -23,7 +22,7 @@ COPY LICENSE MANIFEST.in README.md requirements.txt setup.cfg setup.py  ./
 
 RUN python3 setup.py install
 
-FROM python:3.8-slim
+FROM python:3.8-slim-buster
 
 COPY --from=compile-image /opt/venv /opt/venv
 
@@ -40,5 +39,5 @@ EXPOSE 12994
 ENV PATH="/opt/venv/bin:$PATH"
 
 # Copy the entrypoint script.
-COPY "docker/squeaknode/start-squeaknode.sh" .
+COPY "start-squeaknode.sh" .
 RUN chmod +x start-squeaknode.sh

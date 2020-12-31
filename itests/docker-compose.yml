@@ -75,7 +75,7 @@ services:
     container_name: test_squeaknode
     build:
       context: ../
-      dockerfile: docker/squeaknode/Dockerfile
+      dockerfile: Dockerfile
     volumes:
       - test_shared:/rpc
       - test_lnd_server_dir:/root/.lnd
@@ -92,7 +92,7 @@ services:
     container_name: test_squeaknode_other
     build:
       context: ../
-      dockerfile: docker/squeaknode/Dockerfile
+      dockerfile: Dockerfile
     volumes:
       - test_shared:/rpc
       - test_lnd_client_dir:/root/.lnd
