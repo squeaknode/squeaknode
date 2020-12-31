@@ -12,7 +12,14 @@ set -e
 sleep 10
 
 # Start using the run server command
-exec runsqueaknode \
-     --config config.ini \
-     --log-level INFO \
-     run-server
+if [ -f config.ini ]; then
+    exec runsqueaknode \
+	 --config config.ini \
+	 --log-level INFO \
+	 run-server
+else
+    exec runsqueaknode \
+	 --config config.ini \
+	 --log-level INFO \
+	 run-server
+fi
