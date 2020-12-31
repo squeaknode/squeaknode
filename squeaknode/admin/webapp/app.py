@@ -52,13 +52,8 @@ def create_app(handler, username, password):
     def handle_request(request_message, handle_rpc_request):
         data = request.get_data()
         request_message.ParseFromString(data)
-        logger.info("handle request_message: {}".format(request_message))
-        logger.info("type(request_message): {}".format(type(request_message)))
         try:
             reply = handle_rpc_request(request_message)
-            logger.info("handle_rpc_request reply: {}".format(reply))
-            logger.info(
-                "handle_rpc_request type(reply): {}".format(type(reply)))
             return reply.SerializeToString()
         except Exception as e:
             logger.error("Error in handle admin web request.", exc_info=True)
