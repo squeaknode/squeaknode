@@ -195,9 +195,6 @@ def main():
 def run_server(config):
     # load the network
     network = load_network(config)
-    if network == "mainnet":
-        logger.error("Squeaknode is not ready for mainnet.")
-        sys.exit(1)
     SelectParams(network)
 
     # load the db
