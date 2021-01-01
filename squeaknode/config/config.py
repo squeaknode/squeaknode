@@ -58,6 +58,7 @@ class Config:
         self._configs["server_rpc_port"] = self._get_server_rpc_port()
 
         # admin
+        self._configs["admin_rpc_enabled"] = self._get_admin_rpc_enabled()
         self._configs["admin_rpc_host"] = self._get_admin_rpc_host()
         self._configs["admin_rpc_port"] = self._get_admin_rpc_port()
 
@@ -175,6 +176,10 @@ class Config:
 
     def _get_server_rpc_port(self):
         return self.parser.get("server", "rpc_port", fallback=SERVER_RPC_PORT)
+
+    def _get_admin_rpc_enabled(self):
+        return environ.get("SQUEAKNODE_ADMIN_RPC_ENABLED") or self.parser.getboolean(
+            "admin", "rpc_enabled", fallback=False)
 
     def _get_admin_rpc_host(self):
         return self.parser.get("admin", "rpc_host", fallback=ADMIN_RPC_HOST)
