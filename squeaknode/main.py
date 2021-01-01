@@ -69,14 +69,6 @@ def load_admin_web_server(config, handler) -> SqueakAdminWebServer:
     )
 
 
-def load_network(config):
-    return config.squeaknode_network
-
-
-def load_sync_interval_s(config):
-    return config.squeaknode_sync_interval_s
-
-
 def load_handler(squeak_controller):
     return SqueakServerHandler(squeak_controller)
 
@@ -190,7 +182,7 @@ def main():
 
 def run_server(config):
     # load the network
-    network = load_network(config)
+    network = config.squeaknode_network
     SelectParams(network)
 
     # load the db
@@ -204,9 +196,6 @@ def run_server(config):
     # load the blockchain client
     blockchain_client = load_blockchain_client(config)
 
-    # load enable sync config
-    sync_interval_s = load_sync_interval_s(config)
-
     squeak_controller = SqueakController(
         squeak_db,
         blockchain_client,
@@ -217,7 +206,10 @@ def run_server(config):
     )
 
     # Create and start the squeak node
-    squeak_node = SqueakNode(squeak_controller, sync_interval_s)
+    squeak_node = SqueakNode(
+        squeak_controller,
+        config.squeaknode_sync_interval_s,
+    )
     squeak_node.start_running()
 
     admin_handler = load_admin_handler(lightning_client, squeak_controller)
