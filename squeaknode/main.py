@@ -73,10 +73,6 @@ def load_network(config):
     return config.squeaknode_network
 
 
-def load_max_squeaks_per_address_per_hour(config):
-    return config.squeaknode_max_squeaks_per_address_per_hour
-
-
 def load_sync_interval_s(config):
     return config.squeaknode_sync_interval_s
 
@@ -201,10 +197,6 @@ def run_server(config):
     squeak_db = load_db(config, network)
     squeak_db.init()
 
-    # load the max squeaks per block per address
-    max_squeaks_per_address_per_hour = load_max_squeaks_per_address_per_hour(
-        config)
-
     # load the lightning client
     lightning_client = load_lightning_client(config)
     lightning_host_port = load_lightning_host_port(config)
@@ -221,7 +213,7 @@ def run_server(config):
         lightning_client,
         lightning_host_port,
         config.squeaknode_price_msat,
-        max_squeaks_per_address_per_hour,
+        config.squeaknode_max_squeaks_per_address_per_hour,
     )
 
     # Create and start the squeak node
