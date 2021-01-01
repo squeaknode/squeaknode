@@ -73,10 +73,6 @@ def load_network(config):
     return config.squeaknode_network
 
 
-def load_price_msat(config):
-    return config.squeaknode_price_msat
-
-
 def load_max_squeaks_per_address_per_hour(config):
     return config.squeaknode_max_squeaks_per_address_per_hour
 
@@ -208,9 +204,6 @@ def run_server(config):
     squeak_db = load_db(config, network)
     squeak_db.init()
 
-    # load the price
-    price_msat = load_price_msat(config)
-
     # load the max squeaks per block per address
     max_squeaks_per_address_per_hour = load_max_squeaks_per_address_per_hour(
         config)
@@ -230,7 +223,7 @@ def run_server(config):
         blockchain_client,
         lightning_client,
         lightning_host_port,
-        price_msat,
+        config.squeaknode_price_msat,
         max_squeaks_per_address_per_hour,
     )
 
@@ -238,14 +231,15 @@ def run_server(config):
     squeak_node = SqueakNode(squeak_controller, sync_interval_s)
     squeak_node.start_running()
 
-    # start admin rpc server
     admin_handler = load_admin_handler(lightning_client, squeak_controller)
-    admin_rpc_server = load_admin_rpc_server(config, admin_handler)
-    start_admin_rpc_server(admin_rpc_server)
+
+    # start admin rpc server
+    if config.admin_rpc_enabled:
+        admin_rpc_server = load_admin_rpc_server(config, admin_handler)
+        start_admin_rpc_server(admin_rpc_server)
 
     # start admin web server
-    admin_web_server_enabled = load_admin_web_server_enabled(config)
-    if admin_web_server_enabled:
+    if config.webadmin_enabled:
         admin_web_server = load_admin_web_server(config, admin_handler)
         start_admin_web_server(admin_web_server)
 
