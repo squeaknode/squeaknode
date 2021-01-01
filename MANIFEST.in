@@ -1,5 +1,4 @@
 include README.md
-include createdb.sql
 graft squeaknode/admin/webapp/templates
 graft squeaknode/admin/webapp/static
 include squeaknode/db/alembic.ini
