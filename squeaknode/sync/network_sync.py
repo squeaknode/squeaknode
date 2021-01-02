@@ -9,13 +9,15 @@ logger = logging.getLogger(__name__)
 class NetworkSync:
     def __init__(
         self,
-        squeak_store,
-        squeak_db,
-        lightning_client,
+        # squeak_store,
+        # squeak_db,
+        # lightning_client,
+        squeak_controller,
     ):
-        self.squeak_store = squeak_store
-        self.squeak_db = squeak_db
-        self.lightning_client = lightning_client
+        # self.squeak_store = squeak_store
+        # self.squeak_db = squeak_db
+        # self.lightning_client = lightning_client
+        self.squeak_controller = squeak_controller
 
     def sync_timeline(self, peer, min_block, max_block):
         if not peer.downloading:
@@ -23,9 +25,9 @@ class NetworkSync:
         peer_connection = PeerConnection(peer)
         peer_sync_task = PeerSyncTask(
             peer_connection,
-            self.squeak_store,
-            self.squeak_db,
-            self.lightning_client,
+            self.squeak_controller.squeak_store,
+            self.squeak_controller.squeak_db,
+            self.squeak_controller.lightning_client,
         )
         if peer.uploading:
             peer_sync_task.upload(min_block, max_block)
@@ -38,9 +40,9 @@ class NetworkSync:
         peer_connection = PeerConnection(peer)
         peer_sync_task = PeerSyncTask(
             peer_connection,
-            self.squeak_store,
-            self.squeak_db,
-            self.lightning_client,
+            self.squeak_controller.squeak_store,
+            self.squeak_controller.squeak_db,
+            self.squeak_controller.lightning_client,
         )
         if peer.uploading:
             peer_sync_task.upload_single_squeak(squeak_hash)

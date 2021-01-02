@@ -233,10 +233,7 @@ def run_server(config):
     squeak_node.start_running()
 
     sync_controller = SqueakSyncController(
-        blockchain_client,
-        squeak_controller.squeak_store,
-        squeak_controller.squeak_db,
-        squeak_controller.lightning_client,
+        squeak_controller,
     )
 
     admin_handler = load_admin_handler(
