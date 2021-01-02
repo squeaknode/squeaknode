@@ -28,3 +28,4 @@ repos:
     rev: v0.790
     hooks:
     -   id: mypy
+        additional_dependencies: [tokenize-rt==3.2.0]
