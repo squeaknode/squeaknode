@@ -21,8 +21,8 @@ from squeaknode.node.squeak_block_verifier import SqueakBlockVerifier
 from squeaknode.node.squeak_maker import SqueakMaker
 from squeaknode.node.squeak_rate_limiter import SqueakRateLimiter
 from squeaknode.node.squeak_store import SqueakStore
-from squeaknode.node.squeak_sync_status import SqueakSyncController
 from squeaknode.node.squeak_whitelist import SqueakWhitelist
+from squeaknode.sync.squeak_sync_status import SqueakSyncController
 
 logger = logging.getLogger(__name__)
 

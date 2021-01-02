@@ -1,7 +1,7 @@
 import logging
 
-from squeaknode.node.peer_connection import PeerConnection
-from squeaknode.node.peer_task import PeerSyncTask
+from squeaknode.sync.peer_connection import PeerConnection
+from squeaknode.sync.peer_task import PeerSyncTask
 
 logger = logging.getLogger(__name__)
 

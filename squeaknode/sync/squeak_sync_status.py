@@ -1,8 +1,8 @@
 import logging
 
-from squeaknode.node.network_sync import NetworkSync
-from squeaknode.node.network_task import SingleSqueakNetworkSyncTask
-from squeaknode.node.network_task import TimelineNetworkSyncTask
+from squeaknode.sync.network_sync import NetworkSync
+from squeaknode.sync.network_task import SingleSqueakNetworkSyncTask
+from squeaknode.sync.network_task import TimelineNetworkSyncTask
 
 logger = logging.getLogger(__name__)
 
