@@ -25,9 +25,10 @@ class NetworkSync:
         peer_connection = PeerConnection(peer)
         peer_sync_task = PeerSyncTask(
             peer_connection,
-            self.squeak_controller.squeak_store,
-            self.squeak_controller.squeak_db,
-            self.squeak_controller.lightning_client,
+            # self.squeak_controller.squeak_store,
+            # self.squeak_controller.squeak_db,
+            # self.squeak_controller.lightning_client,
+            self.squeak_controller,
         )
         if peer.uploading:
             peer_sync_task.upload(min_block, max_block)
@@ -40,9 +41,10 @@ class NetworkSync:
         peer_connection = PeerConnection(peer)
         peer_sync_task = PeerSyncTask(
             peer_connection,
-            self.squeak_controller.squeak_store,
-            self.squeak_controller.squeak_db,
-            self.squeak_controller.lightning_client,
+            # self.squeak_controller.squeak_store,
+            # self.squeak_controller.squeak_db,
+            # self.squeak_controller.lightning_client,
+            self.squeak_controller,
         )
         if peer.uploading:
             peer_sync_task.upload_single_squeak(squeak_hash)
