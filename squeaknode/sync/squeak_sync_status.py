@@ -41,7 +41,8 @@ class SqueakSyncController:
             network_sync_result))
         return network_sync_result
 
-    def sync_single_squeak(self, squeak_hash, peers):
+    def sync_single_squeak(self, squeak_hash):
+        peers = self.squeak_db.get_peers()
         timeline_sync_task = SingleSqueakNetworkSyncTask(
             self.network_sync,
             squeak_hash,

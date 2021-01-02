@@ -2,7 +2,6 @@ import logging
 
 from squeaknode.node.sent_offers_worker import SentOffersWorker
 from squeaknode.node.squeak_offer_expiry_worker import SqueakOfferExpiryWorker
-from squeaknode.node.squeak_peer_sync_worker import SqueakPeerSyncWorker
 
 logger = logging.getLogger(__name__)
 

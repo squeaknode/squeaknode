@@ -18,9 +18,10 @@ from squeaknode.db.squeak_db import SqueakDb
 from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
 from squeaknode.node.squeak_controller import SqueakController
 from squeaknode.node.squeak_node import SqueakNode
-from squeaknode.node.squeak_peer_sync_worker import SqueakPeerSyncWorker
 from squeaknode.server.squeak_server_handler import SqueakServerHandler
 from squeaknode.server.squeak_server_servicer import SqueakServerServicer
+from squeaknode.sync.squeak_peer_sync_worker import SqueakPeerSyncWorker
+from squeaknode.sync.squeak_sync_status import SqueakSyncController
 
 logger = logging.getLogger(__name__)
 
@@ -70,9 +71,9 @@ def load_admin_web_server(config, handler) -> SqueakAdminWebServer:
     )
 
 
-def load_sync_worker(config, squeak_controller) -> SqueakPeerSyncWorker:
+def load_sync_worker(config, sync_controller) -> SqueakPeerSyncWorker:
     return SqueakPeerSyncWorker(
-        squeak_controller,
+        sync_controller,
         config.sync_interval_s,
     )
 
@@ -81,10 +82,11 @@ def load_handler(squeak_controller):
     return SqueakServerHandler(squeak_controller)
 
 
-def load_admin_handler(lightning_client, squeak_controller):
+def load_admin_handler(lightning_client, squeak_controller, sync_controller):
     return SqueakAdminServerHandler(
         lightning_client,
         squeak_controller,
+        sync_controller,
     )
 
 
@@ -230,7 +232,15 @@ def run_server(config):
     )
     squeak_node.start_running()
 
-    admin_handler = load_admin_handler(lightning_client, squeak_controller)
+    sync_controller = SqueakSyncController(
+        blockchain_client,
+        squeak_controller.squeak_store,
+        squeak_controller.squeak_db,
+        squeak_controller.lightning_client,
+    )
+
+    admin_handler = load_admin_handler(
+        lightning_client, squeak_controller, sync_controller)
 
     # start admin rpc server
     if config.admin_rpc_enabled:
@@ -244,7 +254,7 @@ def run_server(config):
 
     # start sync worker
     if config.sync_enabled:
-        sync_worker = load_sync_worker(config, squeak_controller)
+        sync_worker = load_sync_worker(config, sync_controller)
         start_sync_worker(sync_worker)
 
     # start rpc server
