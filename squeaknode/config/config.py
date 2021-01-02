@@ -28,6 +28,7 @@ DEFAULT_LND_TLS_CERT_NAME = "tls.cert"
 DEFAULT_LND_MACAROON_NAME = "admin.macaroon"
 DEFAULT_LND_DIR_PATH = str(Path.home() / DEFAULT_LND_DIR)
 DEFAULT_LND_HOST = "localhost"
+DEFAULT_SYNC_INTERVAL_S = 10
 
 
 class Config:
@@ -81,10 +82,11 @@ class Config:
             "squeaknode_max_squeaks_per_address_per_hour"
         ] = self._get_squeaknode_max_squeaks_per_address_per_hour()
         self._configs["squeaknode_sqk_dir"] = self._get_squeaknode_sqk_dir()
-        self._configs[
-            "squeaknode_sync_interval_s"
-        ] = self._get_squeaknode_sync_interval_s()
         self._configs["squeaknode_log_level"] = self._get_squeaknode_log_level()
+
+        # sync
+        self._configs["sync_enabled"] = self._get_sync_enabled()
+        self._configs["sync_interval_s"] = self._get_sync_interval_s()
 
         # db
         self._configs["db_connection_string"] = self._get_db_connection_string()
@@ -250,10 +252,14 @@ class Config:
             "squeaknode", "sqk_dir", fallback=DEFAULT_SQK_DIR_PATH
         )
 
-    def _get_squeaknode_sync_interval_s(self):
+    def _get_sync_enabled(self):
+        return environ.get("SQUEAKNODE_SYNC_ENABLED") or self.parser.getboolean(
+            "sync", "enabled", fallback=True)
+
+    def _get_sync_interval_s(self):
         return int(
             environ.get("SQUEAKNODE_SYNC_INTERVAL_S") or 0
-        ) or self.parser.getint("squeaknode", "sync_interval_s", fallback=None)
+        ) or self.parser.getint("sync", "interval_s", fallback=DEFAULT_SYNC_INTERVAL_S)
 
     def _get_squeaknode_log_level(self):
         return environ.get("LOG_LEVEL") or self.parser.get(
