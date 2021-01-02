@@ -13,7 +13,7 @@
 	$ source venv/bin/activate
 	$ pip install -r requirements.txt
 	$ python setup.py install
-	$ SQUEAKNODE_WEBADMIN_ENABLED=TRUE SQUEAKNODE_WEBADMIN_LOGIN_DISABLED=TRUE SQUEAKNODE_WEBADMIN_ALLOW_CORS=TRUE SQUEAKNODE_NETWORK=testnet runsqueaknode run-server
+	$ SQUEAKNODE_WEBADMIN_ENABLED=TRUE SQUEAKNODE_WEBADMIN_LOGIN_DISABLED=TRUE SQUEAKNODE_WEBADMIN_ALLOW_CORS=TRUE SQUEAKNODE_NETWORK=testnet runsqueaknode --config config.ini run-server
 	```
 - Start the frontend in development mode:
 	```
