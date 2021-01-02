@@ -1,5 +1,7 @@
 import os
 import sys
+from typing import List
+from typing import Tuple
 
 import pkg_resources
 import setuptools.command.build_py
@@ -56,7 +58,7 @@ class BuildPackageProtos(Command):
     """Command to generate project *_pb2.py modules from proto files."""
 
     description = 'build grpc protobuf modules'
-    user_options = []
+    user_options: List[Tuple[str, str, str]] = []
 
     def initialize_options(self):
         pass

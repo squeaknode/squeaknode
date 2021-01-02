@@ -69,22 +69,6 @@ def load_admin_web_server(config, handler) -> SqueakAdminWebServer:
     )
 
 
-def load_network(config):
-    return config.squeaknode_network
-
-
-def load_price_msat(config):
-    return config.squeaknode_price_msat
-
-
-def load_max_squeaks_per_address_per_hour(config):
-    return config.squeaknode_max_squeaks_per_address_per_hour
-
-
-def load_sync_interval_s(config):
-    return config.squeaknode_sync_interval_s
-
-
 def load_handler(squeak_controller):
     return SqueakServerHandler(squeak_controller)
 
@@ -198,19 +182,12 @@ def main():
 
 def run_server(config):
     # load the network
-    network = load_network(config)
+    network = config.squeaknode_network
     SelectParams(network)
 
     # load the db
     squeak_db = load_db(config, network)
     squeak_db.init()
-
-    # load the price
-    price_msat = load_price_msat(config)
-
-    # load the max squeaks per block per address
-    max_squeaks_per_address_per_hour = load_max_squeaks_per_address_per_hour(
-        config)
 
     # load the lightning client
     lightning_client = load_lightning_client(config)
@@ -219,30 +196,31 @@ def run_server(config):
     # load the blockchain client
     blockchain_client = load_blockchain_client(config)
 
-    # load enable sync config
-    sync_interval_s = load_sync_interval_s(config)
-
     squeak_controller = SqueakController(
         squeak_db,
         blockchain_client,
         lightning_client,
         lightning_host_port,
-        price_msat,
-        max_squeaks_per_address_per_hour,
+        config.squeaknode_price_msat,
+        config.squeaknode_max_squeaks_per_address_per_hour,
     )
 
     # Create and start the squeak node
-    squeak_node = SqueakNode(squeak_controller, sync_interval_s)
+    squeak_node = SqueakNode(
+        squeak_controller,
+        config.squeaknode_sync_interval_s,
+    )
     squeak_node.start_running()
 
-    # start admin rpc server
     admin_handler = load_admin_handler(lightning_client, squeak_controller)
-    admin_rpc_server = load_admin_rpc_server(config, admin_handler)
-    start_admin_rpc_server(admin_rpc_server)
+
+    # start admin rpc server
+    if config.admin_rpc_enabled:
+        admin_rpc_server = load_admin_rpc_server(config, admin_handler)
+        start_admin_rpc_server(admin_rpc_server)
 
     # start admin web server
-    admin_web_server_enabled = load_admin_web_server_enabled(config)
-    if admin_web_server_enabled:
+    if config.webadmin_enabled:
         admin_web_server = load_admin_web_server(config, admin_handler)
         start_admin_web_server(admin_web_server)
 

@@ -1,49 +1,30 @@
 # frontend
 
-## Build protos
-
-- Install `protoc` and `protoc-gen-grpc-web`:
-	https://github.com/grpc/grpc-web#code-generator-plugin
-	```
-	curl -sSL https://github.com/protocolbuffers/protobuf/releases/download/v3.12.2/protoc-3.12.2-linux-x86_64.zip -o protoc.zip && \
-		unzip -qq protoc.zip && \
-		cp ./bin/protoc /usr/local/bin/protoc
-
-	curl -sSL https://github.com/grpc/grpc-web/releases/download/1.2.1/protoc-gen-grpc-web-1.2.1-linux-x86_64 -o /usr/local/bin/protoc-gen-grpc-web && \
-		chmod +x /usr/local/bin/protoc-gen-grpc-web
-	```
-- Run `./build-protos.sh`
-
 ## Run in dev mode
 
-- [Build protos](#build-protos)
-- Start the squeak server with the `WEBADMIN_LOGIN_DISABLED` and `WEBADMIN_ALLOW_CORS` environment variables:
+- Start bitcoin-core and lnd in docker-compose:
 	```
-	$ WEBADMIN_LOGIN_DISABLED=TRUE WEBADMIN_ALLOW_CORS=TRUE NETWORK=testnet docker-compose up
+	$ cd docker
+	$ docker-compose up
 	```
-- Start the frontend in dev mode with the `REACT_APP_SERVER_PORT` environment variable.
+- Start the backend with the `SQUEAKNODE_WEBADMIN_ENABLED`, `SQUEAKNODE_WEBADMIN_LOGIN_DISABLED`, and `SQUEAKNODE_WEBADMIN_ALLOW_CORS` environment variables:
 	```
-	$ npm install
-	$ REACT_APP_SERVER_PORT=12994 npm start
+	$ virtualenv venv
+	$ source venv/bin/activate
+	$ pip install -r requirements.txt
+	$ python setup.py install
+	$ SQUEAKNODE_WEBADMIN_ENABLED=TRUE SQUEAKNODE_WEBADMIN_LOGIN_DISABLED=TRUE SQUEAKNODE_WEBADMIN_ALLOW_CORS=TRUE SQUEAKNODE_NETWORK=testnet runsqueaknode --config config.ini run-server
 	```
-Or run the following instead:
+- Start the frontend in development mode:
 	```
+	$ cd frontend
 	$ make rundev
 	```
 
 ## Build for production
 
-- [Build protos](#build-protos)
-- Make the build:
+- Run the build command:
 	```
-	$ npm install
-	$ npm run build
-	```
-- Copy the generated `build` folder into `squeaknode/admin/webapp/static/`.
-	```
-	$ cp -r build/ ../squeaknode/admin/webapp/static/
-	```
-Or run the following instead:
-	```
+	$ cd frontend
 	$ make build
 	```

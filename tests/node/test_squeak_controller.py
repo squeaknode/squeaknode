@@ -58,8 +58,8 @@ def squeak_controller(
 
 
 class SqueakControllerTest:
-    def test_nothing():
+    def test_nothing(self):
         assert True
 
-    def test_get_buy_offer(squeak_controller):
+    def test_get_buy_offer(self, squeak_controller):
         assert squeak_controller.get_buy_offer is not None
