@@ -12,15 +12,8 @@ LOOKUP_BLOCK_INTERVAL = 1008  # 1 week
 
 class SqueakSyncController:
     def __init__(self, squeak_controller):
-        # self.blockchain_client = blockchain_client
-        # self.squeak_store = squeak_store
-        # self.squeak_db = squeak_db
-        # self.lightning_client = lightning_client
         self.squeak_controller = squeak_controller
         self.network_sync = NetworkSync(
-            # self.squeak_controller.squeak_store,
-            # self.squeak_controller.squeak_db,
-            # self.squeak_controller.lightning_client,
             squeak_controller,
         )
 

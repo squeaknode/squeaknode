@@ -10,15 +10,9 @@ class PeerSyncTask:
     def __init__(
         self,
         peer_connection,
-        # squeak_store,
-        # squeak_db,
-        # lightning_client,
         squeak_controller,
     ):
         self.peer_connection = peer_connection
-        # self.squeak_store = squeak_store
-        # self.squeak_db = squeak_db
-        # self.lightning_client = lightning_client
         self.squeak_controller = squeak_controller
 
     @property
