@@ -26,14 +26,18 @@ class NetworkSyncTask:
     def __init__(
         self,
         network_sync,
+        squeak_controller,
     ):
         self.network_sync = network_sync
+        self.squeak_controller = squeak_controller
         self.queue = queue.Queue()
 
-    def sync(self, peers):
+    def sync(self):
+        peers = self.squeak_controller.get_peers()
         logger.debug(
-            "Network sync for class {}".format(
+            "Network sync for class {} with peers: {}".format(
                 self.__class__,
+                peers,
             )
         )
         run_sync_thread = threading.Thread(
@@ -89,10 +93,11 @@ class TimelineNetworkSyncTask(NetworkSyncTask):
     def __init__(
         self,
         network_sync,
+        squeak_controller,
         min_block,
         max_block,
     ):
-        super().__init__(network_sync)
+        super().__init__(network_sync, squeak_controller)
         self.min_block = min_block
         self.max_block = max_block
 
@@ -104,9 +109,10 @@ class SingleSqueakNetworkSyncTask(NetworkSyncTask):
     def __init__(
         self,
         network_sync,
+        squeak_controller,
         squeak_hash,
     ):
-        super().__init__(network_sync)
+        super().__init__(network_sync, squeak_controller)
         self.squeak_hash = squeak_hash
 
     def sync_peer(self, peer):

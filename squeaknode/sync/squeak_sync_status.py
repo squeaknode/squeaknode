@@ -27,24 +27,24 @@ class SqueakSyncController:
             return
         min_block = block_height - LOOKUP_BLOCK_INTERVAL
         max_block = block_height
-        peers = self.squeak_controller.squeak_db.get_peers()
         dowload_timeline_task = TimelineNetworkSyncTask(
             self.network_sync,
+            self.squeak_controller,
             min_block,
             max_block,
         )
-        network_sync_result = dowload_timeline_task.sync(peers)
+        network_sync_result = dowload_timeline_task.sync()
         logger.info("Upload network_sync_result: {}".format(
             network_sync_result))
         return network_sync_result
 
     def sync_single_squeak(self, squeak_hash):
-        peers = self.squeak_controller.squeak_db.get_peers()
         timeline_sync_task = SingleSqueakNetworkSyncTask(
             self.network_sync,
+            self.squeak_controller,
             squeak_hash,
         )
-        network_sync_result = timeline_sync_task.sync(peers)
+        network_sync_result = timeline_sync_task.sync()
         logger.info(
             "Download single squeak network_sync_result: {}".format(
                 network_sync_result)
