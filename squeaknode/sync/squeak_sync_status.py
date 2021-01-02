@@ -19,13 +19,11 @@ class SqueakSyncController:
 
     def sync_timeline(self):
         try:
-            block_info = self.squeak_controller.blockchain_client.get_best_block_info()
-            block_height = block_info.block_height
-        except Exception as e:
+            block_height = self.squeak_controller.get_best_block_height()
+        except Exception:
             logger.error(
-                "Failed to sync because unable to get blockchain info.", exc_info=False
+                "Failed to sync timeline because unable to get best block height.", exc_info=False
             )
-            logger.error("Error e: {}".format(e))
             return
         min_block = block_height - LOOKUP_BLOCK_INTERVAL
         max_block = block_height
