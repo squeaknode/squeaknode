@@ -17,16 +17,21 @@
 ## Run in dev mode
 
 - [Build protos](#build-protos)
-- Start the squeak server with the `WEBADMIN_LOGIN_DISABLED` and `WEBADMIN_ALLOW_CORS` environment variables:
+- Start bitcoin-core and lnd in docker-compose:
 	```
-	$ WEBADMIN_LOGIN_DISABLED=TRUE WEBADMIN_ALLOW_CORS=TRUE NETWORK=testnet docker-compose up
+	$ cd ../docker
+	$ docker-compose up
 	```
-- Start the frontend in dev mode with the `REACT_APP_SERVER_PORT` environment variable.
+- Start the squeak node backend with the `SQUEAKNODE_WEBADMIN_ENABLED`, `SQUEAKNODE_WEBADMIN_LOGIN_DISABLED`, and `SQUEAKNODE_WEBADMIN_ALLOW_CORS` environment variables:
 	```
-	$ npm install
-	$ REACT_APP_SERVER_PORT=12994 npm start
+	$ cd ..
+	$ virtualenv venv
+	$ source venv/bin/activate
+	$ pip install -r requirements.txt
+	$ python setup.py install
+	$ SQUEAKNODE_WEBADMIN_ENABLED=TRUE SQUEAKNODE_WEBADMIN_LOGIN_DISABLED=TRUE SQUEAKNODE_WEBADMIN_ALLOW_CORS=TRUE SQUEAKNODE_NETWORK=testnet runsqueaknode run-server
 	```
-Or run the following instead:
+- Run the frontend in development mode:
 	```
 	$ make rundev
 	```
