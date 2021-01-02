@@ -5,6 +5,8 @@ from dataclasses import dataclass
 from typing import Any
 from typing import List
 
+from squeaknode.sync.network_sync import NetworkSync
+
 logger = logging.getLogger(__name__)
 
 
@@ -25,15 +27,17 @@ class NetworkSyncResult:
 class NetworkSyncTask:
     def __init__(
         self,
-        network_sync,
+        squeak_controller,
     ):
-        self.network_sync = network_sync
+        self.squeak_controller = squeak_controller
         self.queue = queue.Queue()
 
-    def sync(self, peers):
+    def sync(self):
+        peers = self.squeak_controller.get_peers()
         logger.debug(
-            "Network sync for class {}".format(
+            "Network sync for class {} with peers: {}".format(
                 self.__class__,
+                peers,
             )
         )
         run_sync_thread = threading.Thread(
@@ -88,26 +92,32 @@ class NetworkSyncTask:
 class TimelineNetworkSyncTask(NetworkSyncTask):
     def __init__(
         self,
-        network_sync,
+        squeak_controller,
         min_block,
         max_block,
     ):
-        super().__init__(network_sync)
+        super().__init__(squeak_controller)
         self.min_block = min_block
         self.max_block = max_block
 
     def sync_peer(self, peer):
-        self.network_sync.sync_timeline(peer, self.min_block, self.max_block)
+        network_sync = NetworkSync(
+            self.squeak_controller,
+        )
+        network_sync.sync_timeline(peer, self.min_block, self.max_block)
 
 
 class SingleSqueakNetworkSyncTask(NetworkSyncTask):
     def __init__(
         self,
-        network_sync,
+        squeak_controller,
         squeak_hash,
     ):
-        super().__init__(network_sync)
+        super().__init__(squeak_controller)
         self.squeak_hash = squeak_hash
 
     def sync_peer(self, peer):
-        self.network_sync.sync_single_squeak(peer, self.squeak_hash)
+        network_sync = NetworkSync(
+            self.squeak_controller,
+        )
+        network_sync.sync_single_squeak(peer, self.squeak_hash)

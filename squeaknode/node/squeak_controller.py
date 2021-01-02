@@ -21,8 +21,8 @@ from squeaknode.node.squeak_block_verifier import SqueakBlockVerifier
 from squeaknode.node.squeak_maker import SqueakMaker
 from squeaknode.node.squeak_rate_limiter import SqueakRateLimiter
 from squeaknode.node.squeak_store import SqueakStore
-from squeaknode.node.squeak_sync_status import SqueakSyncController
 from squeaknode.node.squeak_whitelist import SqueakWhitelist
+from squeaknode.sync.squeak_sync_status import SqueakSyncController
 
 logger = logging.getLogger(__name__)
 
@@ -58,12 +58,12 @@ class SqueakController:
             self.squeak_rate_limiter,
             self.squeak_whitelist,
         )
-        self.squeak_sync_controller = SqueakSyncController(
-            self.blockchain_client,
-            self.squeak_store,
-            self.squeak_db,
-            self.lightning_client,
-        )
+        # self.squeak_sync_controller = SqueakSyncController(
+        #     self.blockchain_client,
+        #     self.squeak_store,
+        #     self.squeak_db,
+        #     self.lightning_client,
+        # )
         self.sent_offers_verifier = SentOffersVerifier(
             self.squeak_db,
             self.lightning_client,
@@ -341,12 +341,12 @@ class SqueakController:
             secret_key,
         )
 
-    def sync_squeaks(self):
-        return self.squeak_sync_controller.sync_timeline()
+    # def sync_squeaks(self):
+    #     return self.squeak_sync_controller.sync_timeline()
 
-    def sync_squeak(self, squeak_hash):
-        peers = self.squeak_db.get_peers()
-        return self.squeak_sync_controller.sync_single_squeak(squeak_hash, peers)
+    # def sync_squeak(self, squeak_hash):
+    #     peers = self.squeak_db.get_peers()
+    #     return self.squeak_sync_controller.sync_single_squeak(squeak_hash, peers)
 
     def get_sent_payments(self):
         return self.squeak_db.get_sent_payments()
@@ -386,3 +386,7 @@ class SqueakController:
         ) as client:
             for payment in client.get_received_payments():
                 yield payment
+
+    def get_best_block_height(self):
+        block_info = self.blockchain_client.get_best_block_info()
+        return block_info.block_height

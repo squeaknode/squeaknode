@@ -13,6 +13,7 @@ from squeaknode.admin.util import squeak_profile_to_message
 from squeaknode.admin.util import sync_result_to_message
 from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
 from squeaknode.node.squeak_controller import SqueakController
+from squeaknode.sync.squeak_sync_status import SqueakSyncController
 
 logger = logging.getLogger(__name__)
 
@@ -24,9 +25,11 @@ class SqueakAdminServerHandler(object):
         self,
         lightning_client: LNDLightningClient,
         squeak_controller: SqueakController,
+        sync_controller: SqueakSyncController,
     ):
         self.lightning_client = lightning_client
         self.squeak_controller = squeak_controller
+        self.sync_controller = sync_controller
 
     def handle_lnd_get_info(self, request):
         logger.info("Handle lnd get info")
@@ -380,7 +383,8 @@ class SqueakAdminServerHandler(object):
 
     def handle_sync_squeaks(self, request):
         logger.info("Handle sync squeaks")
-        sync_result = self.squeak_controller.sync_squeaks()
+        # sync_result = self.squeak_controller.sync_squeaks()
+        sync_result = self.sync_controller.sync_timeline()
         sync_result_msg = sync_result_to_message(sync_result)
         return squeak_admin_pb2.SyncSqueaksReply(
             sync_result=sync_result_msg,
@@ -389,7 +393,8 @@ class SqueakAdminServerHandler(object):
     def handle_sync_squeak(self, request):
         squeak_hash = request.squeak_hash
         logger.info("Handle download squeak with hash: {}".format(squeak_hash))
-        sync_result = self.squeak_controller.sync_squeak(squeak_hash)
+        # sync_result = self.squeak_controller.sync_squeak(squeak_hash)
+        sync_result = self.sync_controller.sync_single_squeak(squeak_hash)
         sync_result_msg = sync_result_to_message(sync_result)
         return squeak_admin_pb2.SyncSqueakReply(
             sync_result=sync_result_msg,

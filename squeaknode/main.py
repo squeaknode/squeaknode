@@ -20,6 +20,8 @@ from squeaknode.node.squeak_controller import SqueakController
 from squeaknode.node.squeak_node import SqueakNode
 from squeaknode.server.squeak_server_handler import SqueakServerHandler
 from squeaknode.server.squeak_server_servicer import SqueakServerServicer
+from squeaknode.sync.squeak_peer_sync_worker import SqueakPeerSyncWorker
+from squeaknode.sync.squeak_sync_status import SqueakSyncController
 
 logger = logging.getLogger(__name__)
 
@@ -69,14 +71,22 @@ def load_admin_web_server(config, handler) -> SqueakAdminWebServer:
     )
 
 
+def load_sync_worker(config, sync_controller) -> SqueakPeerSyncWorker:
+    return SqueakPeerSyncWorker(
+        sync_controller,
+        config.sync_interval_s,
+    )
+
+
 def load_handler(squeak_controller):
     return SqueakServerHandler(squeak_controller)
 
 
-def load_admin_handler(lightning_client, squeak_controller):
+def load_admin_handler(lightning_client, squeak_controller, sync_controller):
     return SqueakAdminServerHandler(
         lightning_client,
         squeak_controller,
+        sync_controller,
     )
 
 
@@ -128,6 +138,16 @@ def start_admin_web_server(admin_web_server):
     logger.info("Starting admin web server...")
     thread = threading.Thread(
         target=admin_web_server.serve,
+        args=(),
+    )
+    thread.daemon = True
+    thread.start()
+
+
+def start_sync_worker(sync_worker):
+    logger.info("Starting sync worker...")
+    thread = threading.Thread(
+        target=sync_worker.start_running,
         args=(),
     )
     thread.daemon = True
@@ -208,11 +228,16 @@ def run_server(config):
     # Create and start the squeak node
     squeak_node = SqueakNode(
         squeak_controller,
-        config.squeaknode_sync_interval_s,
+        # config.sync_interval_s,
     )
     squeak_node.start_running()
 
-    admin_handler = load_admin_handler(lightning_client, squeak_controller)
+    sync_controller = SqueakSyncController(
+        squeak_controller,
+    )
+
+    admin_handler = load_admin_handler(
+        lightning_client, squeak_controller, sync_controller)
 
     # start admin rpc server
     if config.admin_rpc_enabled:
@@ -223,6 +248,11 @@ def run_server(config):
     if config.webadmin_enabled:
         admin_web_server = load_admin_web_server(config, admin_handler)
         start_admin_web_server(admin_web_server)
+
+    # start sync worker
+    if config.sync_enabled:
+        sync_worker = load_sync_worker(config, sync_controller)
+        start_sync_worker(sync_worker)
 
     # start rpc server
     handler = load_handler(squeak_controller)
