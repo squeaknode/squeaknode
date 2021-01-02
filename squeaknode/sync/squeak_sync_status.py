@@ -13,9 +13,6 @@ LOOKUP_BLOCK_INTERVAL = 1008  # 1 week
 class SqueakSyncController:
     def __init__(self, squeak_controller):
         self.squeak_controller = squeak_controller
-        self.network_sync = NetworkSync(
-            squeak_controller,
-        )
 
     def sync_timeline(self):
         try:
@@ -28,7 +25,6 @@ class SqueakSyncController:
         min_block = block_height - LOOKUP_BLOCK_INTERVAL
         max_block = block_height
         dowload_timeline_task = TimelineNetworkSyncTask(
-            self.network_sync,
             self.squeak_controller,
             min_block,
             max_block,
@@ -40,7 +36,6 @@ class SqueakSyncController:
 
     def sync_single_squeak(self, squeak_hash):
         timeline_sync_task = SingleSqueakNetworkSyncTask(
-            self.network_sync,
             self.squeak_controller,
             squeak_hash,
         )
