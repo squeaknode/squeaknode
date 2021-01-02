@@ -27,13 +27,15 @@ DEFAULT_LND_DIR = ".lnd"
 DEFAULT_LND_TLS_CERT_NAME = "tls.cert"
 DEFAULT_LND_MACAROON_NAME = "admin.macaroon"
 DEFAULT_LND_DIR_PATH = str(Path.home() / DEFAULT_LND_DIR)
+DEFAULT_LND_HOST = "localhost"
 
 
 class Config:
     def __init__(self, config_path):
         # Get the config object
         self.parser = ConfigParser()
-        self.parser.read(config_path)
+        if config_path is not None:
+            self.parser.read(config_path)
         self._configs = dict()
 
         # bitcoin
@@ -114,12 +116,12 @@ class Config:
 
     def _get_bitcoin_rpc_user(self):
         return environ.get("SQUEAKNODE_BITCOIND_USER") or self.parser.get(
-            "bitcoin", "rpc_user"
+            "bitcoin", "rpc_user", fallback=""
         )
 
     def _get_bitcoin_rpc_pass(self):
         return environ.get("SQUEAKNODE_BITCOIND_PASS") or self.parser.get(
-            "bitcoin", "rpc_pass"
+            "bitcoin", "rpc_pass", fallback=""
         )
 
     def _get_bitcoin_rpc_use_ssl(self):
@@ -130,7 +132,7 @@ class Config:
 
     def _get_lnd_host(self):
         return environ.get("SQUEAKNODE_LND_HOST") or self.parser.get(
-            "lnd", "host"
+            "lnd", "host", fallback=DEFAULT_LND_HOST
         )
 
     def _get_lnd_external_host(self):
