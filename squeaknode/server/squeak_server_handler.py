@@ -1,8 +1,8 @@
 import logging
 
 from proto import squeak_server_pb2
+from squeaknode.core.squeak_controller import SqueakController
 from squeaknode.core.util import get_hash
-from squeaknode.node.squeak_controller import SqueakController
 
 logger = logging.getLogger(__name__)
 

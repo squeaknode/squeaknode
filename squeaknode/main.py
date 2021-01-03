@@ -12,11 +12,11 @@ from squeaknode.admin.webapp.app import SqueakAdminWebServer
 from squeaknode.bitcoin.bitcoin_blockchain_client import BitcoinBlockchainClient
 from squeaknode.config.config import Config
 from squeaknode.core.lightning_address import LightningAddressHostPort
+from squeaknode.core.squeak_controller import SqueakController
 from squeaknode.db.db_engine import get_engine
 from squeaknode.db.db_engine import get_sqlite_connection_string
 from squeaknode.db.squeak_db import SqueakDb
 from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
-from squeaknode.node.squeak_controller import SqueakController
 from squeaknode.node.squeak_node import SqueakNode
 from squeaknode.server.squeak_server_handler import SqueakServerHandler
 from squeaknode.server.squeak_server_servicer import SqueakServerServicer

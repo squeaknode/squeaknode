@@ -3,8 +3,8 @@ import pytest
 
 from squeaknode.bitcoin.blockchain_client import BlockchainClient
 from squeaknode.core.lightning_address import LightningAddressHostPort
+from squeaknode.core.squeak_controller import SqueakController
 from squeaknode.db.squeak_db import SqueakDb
-from squeaknode.node.squeak_controller import SqueakController
 
 
 @pytest.fixture
