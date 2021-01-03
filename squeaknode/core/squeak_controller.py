@@ -33,16 +33,11 @@ class SqueakController:
         squeak_db,
         blockchain_client,
         lightning_client,
-        # lightning_host_port,
-        # price_msat,
-        # max_squeaks_per_address_per_hour,
         config,
     ):
         self.squeak_db = squeak_db
         self.blockchain_client = blockchain_client
         self.lightning_client = lightning_client
-        # self.lightning_host_port = lightning_host_port
-        # self.price_msat = price_msat
         self.config = config
         self.squeak_block_verifier = SqueakBlockVerifier(blockchain_client)
         self.squeak_rate_limiter = SqueakRateLimiter(
@@ -60,12 +55,6 @@ class SqueakController:
             self.squeak_rate_limiter,
             self.squeak_whitelist,
         )
-        # self.squeak_sync_controller = SqueakSyncController(
-        #     self.blockchain_client,
-        #     self.squeak_store,
-        #     self.squeak_db,
-        #     self.lightning_client,
-        # )
         self.sent_offers_verifier = SentOffersVerifier(
             self.squeak_db,
             self.lightning_client,
@@ -342,13 +331,6 @@ class SqueakController:
             offer.squeak_hash,
             secret_key,
         )
-
-    # def sync_squeaks(self):
-    #     return self.squeak_sync_controller.sync_timeline()
-
-    # def sync_squeak(self, squeak_hash):
-    #     peers = self.squeak_db.get_peers()
-    #     return self.squeak_sync_controller.sync_single_squeak(squeak_hash, peers)
 
     def get_sent_payments(self):
         return self.squeak_db.get_sent_payments()
