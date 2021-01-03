@@ -1,64 +1,79 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState } from 'react';
 import {
-  Paper,
-  IconButton,
-  Menu,
-  MenuItem,
-  Typography,
-  Grid,
-  Box,
-  Link,
+  Button,
   Dialog,
+  DialogActions,
   DialogTitle,
   DialogContent,
-  DialogContentText,
+  FormControlLabel,
+  Switch,
   TextField,
-  DialogActions,
-  Button,
-  FormControl,
-  InputLabel,
-  Select,
 } from "@material-ui/core";
-import { MoreVert as MoreIcon } from "@material-ui/icons";
-import {useHistory} from "react-router-dom";
-import classnames from "classnames";
+import { useHistory } from "react-router-dom";
 
 // styles
-import useStyles from "./styles";
-
-import Widget from "../../components/Widget";
-import SqueakThreadItem from "../../components/SqueakThreadItem";
+import {makeStyles} from '@material-ui/core/styles';
 
 import {
   createPeerRequest,
 } from "../../squeakclient/requests"
 
+const useStyles = makeStyles((theme) => ({
+  form: {
+    margin: 'auto',
+    width: 'fit-content',
+    '& .MuiDialogContent-root': {
+      overflow: `hidden`
+    },
+    '& .MuiTextField-root': {
+      margin: theme.spacing(1),
+    },
+    '& .MuiDialogActions-root': {
+      padding: `1rem`,
+    },
+  },
+  formControlLabel: {
+    position: `absolute`,
+    left: `2rem`,
+  },
+}));
+
+const portDefaultValue = '0';
 
 export default function CreatePeerDialog({
   open,
   handleClose,
   ...props
 }) {
-  var classes = useStyles();
+  const classes = useStyles();
   const history = useHistory();
 
-  var [peerName, setpeerName] = useState('');
-  var [host, setHost] = useState('');
-  var [port, setPort] = useState('');
+  const [peerName, setPeerName] = useState('');
+  const [host, setHost] = useState('');
+  const [port, setPort] = useState('');
+  const [customPortChecked, setCustomPortChecked] = React.useState(false)
 
   const resetFields = () => {
-    setpeerName('');
+    setPeerName('');
     setHost('');
     setPort('');
+    setCustomPortChecked(false)
   };
 
   const handleChangePeerName = (event) => {
-    setpeerName(event.target.value);
+    setPeerName(event.target.value);
   };
 
   const handleChangeHost = (event) => {
     setHost(event.target.value);
   };
+
+  const handleChangeCustomPortChecked = (event) => {
+    setPort(
+      event.target.checked ? '' : portDefaultValue
+    );
+    setCustomPortChecked(event.target.checked);
+  }
 
   const handleChangePort = (event) => {
     setPort(event.target.value);
@@ -94,42 +109,66 @@ export default function CreatePeerDialog({
   function CreatePeerNameInput() {
     return (
       <TextField
-        id="standard-textarea"
+        required
+        variant="outlined"
         label="Peer Name"
         autoFocus
         value={peerName}
         onChange={handleChangePeerName}
         fullWidth
         inputProps={{ maxLength: 64 }}
+        margin="normal"
       />
     )
   }
 
   function CreateHostInput() {
     return (
-      <TextField required
-          id="standard-textarea"
-          label="Host"
-          required
-          value={host}
-          onChange={handleChangeHost}
-          inputProps={{ maxLength: 128 }}
+      <TextField
+        required
+        variant="outlined"
+        label="Host"
+        value={host}
+        onChange={handleChangeHost}
+        inputProps={{ maxLength: 128 }}
+        margin="normal"
       />
     )
   }
 
   function CreatePortInput() {
     return (
-      <TextField required
-          id="standard-textarea"
-          label="Port"
-          required
-          value={port}
-          onChange={handleChangePort}
-          inputProps={{ maxLength: 8 }}
+      <TextField
+        required={customPortChecked}
+        variant="outlined"
+        label="Port"
+        value={customPortChecked ? port : ''}
+        onChange={handleChangePort}
+        inputProps={{ maxLength: 8 }}
+        disabled={!customPortChecked}
+        margin="normal"
       />
     )
   }
+
+
+  function CustomPortSwitch() {
+    return (
+      <FormControlLabel
+        className={classes.formControlLabel}
+        control={
+          <Switch
+            checked={customPortChecked}
+            onChange={handleChangeCustomPortChecked}
+            name="use-custom-port"
+            size="small"
+          />
+        }
+        label="Use custom port"
+      />
+    )
+  }
+
 
   function CancelButton() {
     return (
@@ -146,36 +185,44 @@ export default function CreatePeerDialog({
   function CreatePeerButton() {
     return (
       <Button
-       type="submit"
-       variant="contained"
-       color="primary"
-       className={classes.button}
-       >
-       Create Peer
-       </Button>
+        type="submit"
+        variant="contained"
+        color="primary"
+        className={classes.button}
+      >
+        Create Peer
+      </Button>
     )
   }
 
   return (
-    <Dialog open={open} onEnter={resetFields} onClose={handleClose} aria-labelledby="form-dialog-title">
-  <DialogTitle id="form-dialog-title">Create Peer</DialogTitle>
-  <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
-  <DialogContent>
-    <div>
-      {CreatePeerNameInput()}
-    </div>
-    <div>
-      {CreateHostInput()}
-    </div>
-    <div>
-      {CreatePortInput()}
-    </div>
-  </DialogContent>
-  <DialogActions>
-    {CancelButton()}
-    {CreatePeerButton()}
-  </DialogActions>
-  </form>
+    <Dialog
+      open={open}
+      onEnter={resetFields}
+      onClose={handleClose}
+      aria-labelledby="form-dialog-title"
+      maxWidth="sm"
+    >
+      <DialogTitle id="form-dialog-title">
+        Create Peer
+      </DialogTitle>
+      <form
+        className={classes.form}
+        onSubmit={handleSubmit}
+        noValidate
+        autoComplete="off"
+      >
+        <DialogContent>
+          {CreatePeerNameInput()}
+          {CreateHostInput()}
+          {CreatePortInput()}
+        </DialogContent>
+        <DialogActions>
+          {CustomPortSwitch()}
+          {CancelButton()}
+          {CreatePeerButton()}
+        </DialogActions>
+      </form>
     </Dialog>
   )
 }
