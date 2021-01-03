@@ -35,11 +35,11 @@ def load_lightning_client(config) -> LNDLightningClient:
     )
 
 
-def load_lightning_host_port(config) -> LightningAddressHostPort:
-    return LightningAddressHostPort(
-        config.lnd_external_host,
-        config.lnd_port,
-    )
+# def load_lightning_host_port(config) -> LightningAddressHostPort:
+#     return LightningAddressHostPort(
+#         config.lnd_external_host,
+#         config.lnd_port,
+#     )
 
 
 def load_rpc_server(config, handler) -> SqueakServerServicer:
@@ -211,7 +211,7 @@ def run_server(config):
 
     # load the lightning client
     lightning_client = load_lightning_client(config)
-    lightning_host_port = load_lightning_host_port(config)
+    # lightning_host_port = load_lightning_host_port(config)
 
     # load the blockchain client
     blockchain_client = load_blockchain_client(config)
@@ -220,9 +220,10 @@ def run_server(config):
         squeak_db,
         blockchain_client,
         lightning_client,
-        lightning_host_port,
-        config.squeaknode_price_msat,
-        config.squeaknode_max_squeaks_per_address_per_hour,
+        # lightning_host_port,
+        # config.squeaknode_price_msat,
+        # config.squeaknode_max_squeaks_per_address_per_hour,
+        config,
     )
 
     # Create and start the squeak node

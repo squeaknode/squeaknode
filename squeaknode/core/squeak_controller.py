@@ -33,21 +33,23 @@ class SqueakController:
         squeak_db,
         blockchain_client,
         lightning_client,
-        lightning_host_port,
-        price_msat,
-        max_squeaks_per_address_per_hour,
+        # lightning_host_port,
+        # price_msat,
+        # max_squeaks_per_address_per_hour,
+        config,
     ):
         self.squeak_db = squeak_db
         self.blockchain_client = blockchain_client
         self.lightning_client = lightning_client
-        self.lightning_host_port = lightning_host_port
-        self.price_msat = price_msat
+        # self.lightning_host_port = lightning_host_port
+        # self.price_msat = price_msat
+        self.config = config
         self.squeak_block_verifier = SqueakBlockVerifier(blockchain_client)
         self.squeak_rate_limiter = SqueakRateLimiter(
             squeak_db,
             blockchain_client,
             lightning_client,
-            max_squeaks_per_address_per_hour,
+            config.squeaknode_max_squeaks_per_address_per_hour,
         )
         self.squeak_whitelist = SqueakWhitelist(
             squeak_db,
@@ -103,12 +105,12 @@ class SqueakController:
         # Return the buy offer
         return BuyOffer(
             squeak_hash=squeak_hash,
-            price_msat=self.price_msat,
+            price_msat=self.config.squeaknode_price_msat,
             nonce=sent_offer.nonce,
             payment_request=sent_offer.payment_request,
             pubkey=pubkey,
-            host=self.lightning_host_port.host,
-            port=self.lightning_host_port.port,
+            host=self.config.lnd_external_host,
+            port=self.config.lnd_port,
         )
 
     def create_offer(self, squeak_hash, client_addr):
@@ -127,7 +129,7 @@ class SqueakController:
         )
         # Create the lightning invoice
         add_invoice_response = self.lightning_client.add_invoice(
-            preimage, self.price_msat
+            preimage, self.config.squeaknode_price_msat
         )
         logger.info("add_invoice_response: {}".format(add_invoice_response))
         payment_hash = add_invoice_response.r_hash
@@ -145,7 +147,7 @@ class SqueakController:
             payment_hash=payment_hash.hex(),
             secret_key=preimage.hex(),
             nonce=nonce,
-            price_msat=self.price_msat,
+            price_msat=self.config.squeaknode_price_msat,
             payment_request=invoice_payment_request,
             invoice_time=invoice_time,
             invoice_expiry=invoice_expiry,
