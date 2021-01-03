@@ -2,9 +2,15 @@ import mock
 import pytest
 
 from squeaknode.bitcoin.blockchain_client import BlockchainClient
+from squeaknode.config.config import Config
 from squeaknode.core.lightning_address import LightningAddressHostPort
 from squeaknode.core.squeak_controller import SqueakController
 from squeaknode.db.squeak_db import SqueakDb
+
+
+@pytest.fixture
+def config():
+    return Config(None)
 
 
 @pytest.fixture
@@ -43,23 +49,23 @@ def squeak_controller(
     squeak_db,
     blockchain_client,
     lightning_client,
-    lightning_host_port,
-    price_msat,
-    max_squeaks_per_address_per_hour,
+    config,
 ):
     return SqueakController(
         squeak_db,
         blockchain_client,
         lightning_client,
-        lightning_host_port,
-        price_msat,
-        max_squeaks_per_address_per_hour,
+        config,
     )
 
 
-class SqueakControllerTest:
-    def test_nothing(self):
-        assert True
+def test_nothing():
+    assert True
 
-    def test_get_buy_offer(self, squeak_controller):
-        assert squeak_controller.get_buy_offer is not None
+
+def test_get_buy_offer(squeak_controller):
+    assert squeak_controller.get_buy_offer is not None
+
+
+def test_create_peer(squeak_controller):
+    assert squeak_controller.get_buy_offer is not None
