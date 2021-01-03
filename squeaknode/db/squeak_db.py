@@ -1040,7 +1040,6 @@ class SqueakDb:
                 yield received_payment
 
     def _parse_squeak_entry(self, row):
-        logger.info("Parsing squeak entry with row: {}".format(row))
         if row is None:
             return None
         secret_key_column = row["secret_key"]
@@ -1056,7 +1055,6 @@ class SqueakDb:
             parse_block_header(
                 block_header_bytes) if block_header_bytes else None
         )
-        logger.info("Returning squeak entry with squeak: {}".format(squeak))
         return SqueakEntry(squeak=squeak, block_header=block_header)
 
     def _parse_squeak_profile(self, row):
