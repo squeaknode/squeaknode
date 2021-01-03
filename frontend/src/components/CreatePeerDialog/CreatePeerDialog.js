@@ -56,8 +56,8 @@ export default function CreatePeerDialog({
   const resetFields = () => {
     setPeerName('');
     setHost('');
-    setPort('');
-    setCustomPortChecked(false)
+    setPort(portDefaultValue);
+    setCustomPortChecked(false);
   };
 
   const handleChangePeerName = (event) => {
