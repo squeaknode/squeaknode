@@ -10,7 +10,6 @@ grpcio-tools
 importlib_resources==1.4.0
 mypy-protobuf
 protobuf
-psycopg2
 requests
 SQLAlchemy
 squeaklib==0.5.1
