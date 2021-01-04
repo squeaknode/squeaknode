@@ -10,18 +10,38 @@ from squeaknode.admin.squeak_admin_server_handler import SqueakAdminServerHandle
 from squeaknode.admin.squeak_admin_server_servicer import SqueakAdminServerServicer
 from squeaknode.admin.webapp.app import SqueakAdminWebServer
 from squeaknode.bitcoin.bitcoin_blockchain_client import BitcoinBlockchainClient
+from squeaknode.bitcoin.blockchain_client import BlockchainClient
 from squeaknode.config.config import Config
+from squeaknode.core.buy_offer import BuyOffer
 from squeaknode.core.lightning_address import LightningAddressHostPort
+from squeaknode.core.sent_offer import SentOffer
+from squeaknode.core.sent_payment import SentPayment
+from squeaknode.core.squeak_address_validator import SqueakAddressValidator
+from squeaknode.core.squeak_controller import SqueakController
+from squeaknode.core.squeak_peer import SqueakPeer
+from squeaknode.core.squeak_profile import SqueakProfile
+from squeaknode.core.util import add_tweak
+from squeaknode.core.util import generate_tweak
+from squeaknode.core.util import subtract_tweak
 from squeaknode.db.db_engine import get_engine
 from squeaknode.db.db_engine import get_sqlite_connection_string
 from squeaknode.db.squeak_db import SqueakDb
 from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
-from squeaknode.node.squeak_controller import SqueakController
+from squeaknode.node.received_payments_subscription_client import (
+    OpenReceivedPaymentsSubscriptionClient,
+)
+from squeaknode.node.sent_offers_verifier import SentOffersVerifier
+from squeaknode.node.squeak_block_verifier import SqueakBlockVerifier
+from squeaknode.node.squeak_maker import SqueakMaker
 from squeaknode.node.squeak_node import SqueakNode
+from squeaknode.node.squeak_rate_limiter import SqueakRateLimiter
+from squeaknode.node.squeak_store import SqueakStore
+from squeaknode.node.squeak_whitelist import SqueakWhitelist
 from squeaknode.server.squeak_server_handler import SqueakServerHandler
 from squeaknode.server.squeak_server_servicer import SqueakServerServicer
 from squeaknode.sync.squeak_peer_sync_worker import SqueakPeerSyncWorker
 from squeaknode.sync.squeak_sync_status import SqueakSyncController
+
 
 logger = logging.getLogger(__name__)
 
@@ -32,13 +52,6 @@ def load_lightning_client(config) -> LNDLightningClient:
         config.lnd_rpc_port,
         config.lnd_tls_cert_path,
         config.lnd_macaroon_path,
-    )
-
-
-def load_lightning_host_port(config) -> LightningAddressHostPort:
-    return LightningAddressHostPort(
-        config.lnd_external_host,
-        config.lnd_port,
     )
 
 
@@ -211,24 +224,39 @@ def run_server(config):
 
     # load the lightning client
     lightning_client = load_lightning_client(config)
-    lightning_host_port = load_lightning_host_port(config)
 
     # load the blockchain client
     blockchain_client = load_blockchain_client(config)
+
+    squeak_block_verifier = SqueakBlockVerifier(blockchain_client)
+    squeak_rate_limiter = SqueakRateLimiter(
+        squeak_db,
+        blockchain_client,
+        lightning_client,
+        config.squeaknode_max_squeaks_per_address_per_hour,
+    )
+    squeak_whitelist = SqueakWhitelist(
+        squeak_db,
+    )
+    squeak_store = SqueakStore(
+        squeak_db,
+        squeak_block_verifier,
+        squeak_rate_limiter,
+        squeak_whitelist,
+    )
 
     squeak_controller = SqueakController(
         squeak_db,
         blockchain_client,
         lightning_client,
-        lightning_host_port,
-        config.squeaknode_price_msat,
-        config.squeaknode_max_squeaks_per_address_per_hour,
+        squeak_store,
+        squeak_whitelist,
+        config,
     )
 
     # Create and start the squeak node
     squeak_node = SqueakNode(
         squeak_controller,
-        # config.sync_interval_s,
     )
     squeak_node.start_running()
 

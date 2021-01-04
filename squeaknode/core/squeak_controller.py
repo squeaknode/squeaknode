@@ -33,41 +33,33 @@ class SqueakController:
         squeak_db,
         blockchain_client,
         lightning_client,
-        lightning_host_port,
-        price_msat,
-        max_squeaks_per_address_per_hour,
+        squeak_store,
+        squeak_whitelist,
+        config,
     ):
         self.squeak_db = squeak_db
         self.blockchain_client = blockchain_client
         self.lightning_client = lightning_client
-        self.lightning_host_port = lightning_host_port
-        self.price_msat = price_msat
-        self.squeak_block_verifier = SqueakBlockVerifier(blockchain_client)
-        self.squeak_rate_limiter = SqueakRateLimiter(
-            squeak_db,
-            blockchain_client,
-            lightning_client,
-            max_squeaks_per_address_per_hour,
-        )
-        self.squeak_whitelist = SqueakWhitelist(
-            squeak_db,
-        )
-        self.squeak_store = SqueakStore(
-            squeak_db,
-            self.squeak_block_verifier,
-            self.squeak_rate_limiter,
-            self.squeak_whitelist,
-        )
-        # self.squeak_sync_controller = SqueakSyncController(
-        #     self.blockchain_client,
-        #     self.squeak_store,
-        #     self.squeak_db,
-        #     self.lightning_client,
+        # self.squeak_block_verifier = SqueakBlockVerifier(blockchain_client)
+        # self.squeak_rate_limiter = SqueakRateLimiter(
+        #     squeak_db,
+        #     blockchain_client,
+        #     lightning_client,
+        #     config.squeaknode_max_squeaks_per_address_per_hour,
+        # )
+        self.squeak_store = squeak_store
+        self.squeak_whitelist = squeak_whitelist
+        # self.squeak_store = SqueakStore(
+        #     squeak_db,
+        #     self.squeak_block_verifier,
+        #     self.squeak_rate_limiter,
+        #     self.squeak_whitelist,
         # )
         self.sent_offers_verifier = SentOffersVerifier(
             self.squeak_db,
             self.lightning_client,
         )
+        self.config = config
 
     # def start_running(self):
     #     self.squeak_block_periodic_worker.start_running()
@@ -103,12 +95,12 @@ class SqueakController:
         # Return the buy offer
         return BuyOffer(
             squeak_hash=squeak_hash,
-            price_msat=self.price_msat,
+            price_msat=self.config.squeaknode_price_msat,
             nonce=sent_offer.nonce,
             payment_request=sent_offer.payment_request,
             pubkey=pubkey,
-            host=self.lightning_host_port.host,
-            port=self.lightning_host_port.port,
+            host=self.config.lnd_external_host,
+            port=self.config.lnd_port,
         )
 
     def create_offer(self, squeak_hash, client_addr):
@@ -127,7 +119,7 @@ class SqueakController:
         )
         # Create the lightning invoice
         add_invoice_response = self.lightning_client.add_invoice(
-            preimage, self.price_msat
+            preimage, self.config.squeaknode_price_msat
         )
         logger.info("add_invoice_response: {}".format(add_invoice_response))
         payment_hash = add_invoice_response.r_hash
@@ -145,7 +137,7 @@ class SqueakController:
             payment_hash=payment_hash.hex(),
             secret_key=preimage.hex(),
             nonce=nonce,
-            price_msat=self.price_msat,
+            price_msat=self.config.squeaknode_price_msat,
             payment_request=invoice_payment_request,
             invoice_time=invoice_time,
             invoice_expiry=invoice_expiry,
@@ -341,13 +333,6 @@ class SqueakController:
             secret_key,
         )
 
-    # def sync_squeaks(self):
-    #     return self.squeak_sync_controller.sync_timeline()
-
-    # def sync_squeak(self, squeak_hash):
-    #     peers = self.squeak_db.get_peers()
-    #     return self.squeak_sync_controller.sync_single_squeak(squeak_hash, peers)
-
     def get_sent_payments(self):
         return self.squeak_db.get_sent_payments()
 
@@ -390,3 +375,6 @@ class SqueakController:
     def get_best_block_height(self):
         block_info = self.blockchain_client.get_best_block_info()
         return block_info.block_height
+
+    def get_network(self):
+        return self.config.squeaknode_network
