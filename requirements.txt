@@ -5,11 +5,12 @@ flask-cors
 flask-login
 Flask-WTF
 googleapis-common-protos
-grpcio==1.21.1
+grpcio==1.34.0
 grpcio-tools
 importlib_resources==1.4.0
 mypy-protobuf
 protobuf
+psycopg2
 requests
 SQLAlchemy
 squeaklib==0.5.1
