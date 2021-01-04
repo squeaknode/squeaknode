@@ -40,33 +40,13 @@ class SqueakController:
         self.squeak_db = squeak_db
         self.blockchain_client = blockchain_client
         self.lightning_client = lightning_client
-        # self.squeak_block_verifier = SqueakBlockVerifier(blockchain_client)
-        # self.squeak_rate_limiter = SqueakRateLimiter(
-        #     squeak_db,
-        #     blockchain_client,
-        #     lightning_client,
-        #     config.squeaknode_max_squeaks_per_address_per_hour,
-        # )
         self.squeak_store = squeak_store
         self.squeak_whitelist = squeak_whitelist
-        # self.squeak_store = SqueakStore(
-        #     squeak_db,
-        #     self.squeak_block_verifier,
-        #     self.squeak_rate_limiter,
-        #     self.squeak_whitelist,
-        # )
         self.sent_offers_verifier = SentOffersVerifier(
             self.squeak_db,
             self.lightning_client,
         )
         self.config = config
-
-    # def start_running(self):
-    #     self.squeak_block_periodic_worker.start_running()
-    #     self.squeak_block_queue_worker.start_running()
-    #     self.squeak_peer_sync_worker.start_running()
-    #     self.squeak_offer_expiry_worker.start_running()
-    #     self.sent_offers_worker.start_running()
 
     def save_uploaded_squeak(self, squeak):
         return self.squeak_store.save_squeak(squeak)
@@ -76,9 +56,6 @@ class SqueakController:
 
     def get_public_squeak(self, squeak_hash):
         return self.squeak_store.get_squeak(squeak_hash, clear_decryption_key=True)
-
-    # def get_squeak_entry(self, squeak_hash):
-    #     return self.squeak_store.get_squeak(squeak_hash)
 
     def lookup_squeaks(self, addresses, min_block, max_block):
         return self.squeak_store.lookup_squeaks(addresses, min_block, max_block)
