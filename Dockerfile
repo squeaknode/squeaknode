@@ -10,7 +10,7 @@ ENV PATH="/opt/venv/bin:$PATH"
 
 COPY requirements.txt /
 
-RUN pip install psycopg2 && \
+RUN pip install --upgrade pip && \
 	pip install -r requirements.txt
 
 WORKDIR /app
