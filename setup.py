@@ -86,7 +86,7 @@ setup(
         'importlib_resources',
         'argparse',
         'googleapis-common-protos',
-        'grpcio>=1.27.0',
+        'grpcio>=1.21.0',
         'grpcio-tools',
         'mypy-protobuf',
         'psycopg2',

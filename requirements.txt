@@ -5,7 +5,7 @@ flask-cors
 flask-login
 Flask-WTF
 googleapis-common-protos
-grpcio==1.27.2
+grpcio==1.21.1
 grpcio-tools
 importlib_resources==1.4.0
 mypy-protobuf
