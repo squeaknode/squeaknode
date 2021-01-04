@@ -6,6 +6,8 @@ from squeaknode.config.config import Config
 from squeaknode.core.lightning_address import LightningAddressHostPort
 from squeaknode.core.squeak_controller import SqueakController
 from squeaknode.db.squeak_db import SqueakDb
+from squeaknode.node.squeak_store import SqueakStore
+from squeaknode.node.squeak_whitelist import SqueakWhitelist
 
 
 @pytest.fixture
@@ -45,16 +47,30 @@ def max_squeaks_per_address_per_hour():
 
 
 @pytest.fixture
+def squeak_whitelist():
+    return mock.Mock(spec=SqueakWhitelist)
+
+
+@pytest.fixture
+def squeak_store():
+    return mock.Mock(spec=SqueakStore)
+
+
+@pytest.fixture
 def squeak_controller(
     squeak_db,
     blockchain_client,
     lightning_client,
+    squeak_store,
+    squeak_whitelist,
     config,
 ):
     return SqueakController(
         squeak_db,
         blockchain_client,
         lightning_client,
+        squeak_store,
+        squeak_whitelist,
         config,
     )
 
@@ -67,5 +83,5 @@ def test_get_buy_offer(squeak_controller):
     assert squeak_controller.get_buy_offer is not None
 
 
-def test_create_peer(squeak_controller):
-    assert squeak_controller.get_buy_offer is not None
+def test_get_network(squeak_controller):
+    assert squeak_controller.get_network() == "testnet"

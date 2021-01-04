@@ -33,32 +33,33 @@ class SqueakController:
         squeak_db,
         blockchain_client,
         lightning_client,
+        squeak_store,
+        squeak_whitelist,
         config,
     ):
         self.squeak_db = squeak_db
         self.blockchain_client = blockchain_client
         self.lightning_client = lightning_client
-        self.config = config
-        self.squeak_block_verifier = SqueakBlockVerifier(blockchain_client)
-        self.squeak_rate_limiter = SqueakRateLimiter(
-            squeak_db,
-            blockchain_client,
-            lightning_client,
-            config.squeaknode_max_squeaks_per_address_per_hour,
-        )
-        self.squeak_whitelist = SqueakWhitelist(
-            squeak_db,
-        )
-        self.squeak_store = SqueakStore(
-            squeak_db,
-            self.squeak_block_verifier,
-            self.squeak_rate_limiter,
-            self.squeak_whitelist,
-        )
+        # self.squeak_block_verifier = SqueakBlockVerifier(blockchain_client)
+        # self.squeak_rate_limiter = SqueakRateLimiter(
+        #     squeak_db,
+        #     blockchain_client,
+        #     lightning_client,
+        #     config.squeaknode_max_squeaks_per_address_per_hour,
+        # )
+        self.squeak_store = squeak_store
+        self.squeak_whitelist = squeak_whitelist
+        # self.squeak_store = SqueakStore(
+        #     squeak_db,
+        #     self.squeak_block_verifier,
+        #     self.squeak_rate_limiter,
+        #     self.squeak_whitelist,
+        # )
         self.sent_offers_verifier = SentOffersVerifier(
             self.squeak_db,
             self.lightning_client,
         )
+        self.config = config
 
     # def start_running(self):
     #     self.squeak_block_periodic_worker.start_running()
@@ -374,3 +375,6 @@ class SqueakController:
     def get_best_block_height(self):
         block_info = self.blockchain_client.get_best_block_info()
         return block_info.block_height
+
+    def get_network(self):
+        return self.config.squeaknode_network
