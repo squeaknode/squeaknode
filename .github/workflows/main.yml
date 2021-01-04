@@ -3,12 +3,29 @@
 name: CI
 
 on:
+  schedule:
+    - cron: '0 10 * * *' # everyday at 10am
   push:
+    branches:
+      - '**'
+    tags:
+      - 'v*.*.*'
+  pull_request:
 
 jobs:
   main:
     runs-on: ubuntu-latest
     steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v2
+      -
+        name: Docker meta
+        id: docker_meta
+        uses: crazy-max/ghaction-docker-meta@v1
+        with:
+          images: name/app # list of Docker images to use as base name for tags
+          tag-sha: true # add git short SHA as Docker tag
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -35,8 +52,9 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           platforms: linux/arm64,linux/amd64
-          push: true
-          tags: yzernik/squeaknode:latest
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.docker_meta.outputs.tags }}
+          labels: ${{ steps.docker_meta.outputs.labels }}
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
