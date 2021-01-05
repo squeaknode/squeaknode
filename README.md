@@ -19,7 +19,6 @@ If you don't already have a bitcoin node or lightning node, you can [follow the 
 
 	[lnd]
 	host=localhost
-	port=9735
 	rpc_port=10009
 	tls_cert_path=~/.lnd/tls.cert
 	macaroon_path=~/.lnd/data/chain/bitcoin/testnet/admin.macaroon
