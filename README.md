@@ -16,8 +16,6 @@ If you don't already have a bitcoin node or lightning node, you can [follow the 
 	```
 	[squeaknode]
 	network=testnet
-	price_msat=1000000
-	sync_interval_s=10
 
 	[lnd]
 	host=localhost
