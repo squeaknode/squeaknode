@@ -192,6 +192,10 @@ service SqueakAdmin {
   */
   rpc SubscribeReceivedPayments (SubscribeReceivedPaymentsRequest) returns (stream ReceivedPayment) {}
 
+  /** sqkadmin: `getnetwork`
+  */
+  rpc GetNetwork (GetNetworkRequest) returns (GetNetworkReply) {}
+
 }
 
 message CreateSigningProfileRequest {
@@ -714,4 +718,12 @@ message ReceivedPayment {
 message SubscribeReceivedPaymentsRequest {
     /// Payment index to start consuming from
     int64 payment_index = 1;
+}
+
+message GetNetworkRequest {
+}
+
+message GetNetworkReply {
+    /// The network
+    string network = 1;
 }

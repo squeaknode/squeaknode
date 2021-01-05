@@ -476,3 +476,10 @@ class SqueakAdminServerHandler(object):
             received_payment_msg = received_payments_to_message(
                 received_payment)
             yield received_payment_msg
+
+    def handle_get_network(self, request):
+        logger.info("Handle get network")
+        network = self.squeak_controller.get_network()
+        return squeak_admin_pb2.GetNetworkReply(
+            network=network,
+        )
