@@ -23,6 +23,16 @@ from tests.util import squeak_from_msg
 from tests.util import subtract_tweak
 
 
+def test_get_network(admin_stub):
+    # Get the network
+    get_network_response = admin_stub.GetNetwork(
+        squeak_admin_pb2.GetNetworkRequest()
+    )
+    network = get_network_response.network
+
+    assert network == "simnet"
+
+
 def test_get_profile(server_stub, admin_stub, signing_profile_id):
     # Get the squeak profile
     get_squeak_profile_response = admin_stub.GetSqueakProfile(
