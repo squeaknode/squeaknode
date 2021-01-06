@@ -53,11 +53,11 @@ class BitcoinConfig(Config):
 @section('lnd')
 class LndConfig(Config):
     host = key(cast=str, required=False, default=DEFAULT_LND_HOST)
-    external_host = key(cast=str, required=False, default=None)
+    external_host = key(cast=str, required=False, default="")
     port = key(cast=int, required=False, default=DEFAULT_LND_PORT)
     rpc_port = key(cast=int, required=False, default=DEFAULT_LND_RPC_PORT)
-    tls_cert_path = key(cast=str, required=False, default=None)
-    macaroon_path = key(cast=str, required=False, default=None)
+    tls_cert_path = key(cast=str, required=False, default="")
+    macaroon_path = key(cast=str, required=False, default="")
 
 
 @section('server')
