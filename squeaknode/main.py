@@ -104,7 +104,7 @@ def load_admin_handler(lightning_client, squeak_controller, sync_controller):
 
 
 def load_sqk_dir_path(config):
-    sqk_dir = config.core.sqk_dir
+    sqk_dir = config.core.sqk_dir_path
     return Path(sqk_dir)
 
 
