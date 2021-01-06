@@ -18,6 +18,15 @@ def config():
 
 
 @pytest.fixture
+def regtest_config():
+    squeaknode_config = SqueaknodeConfig(
+        dict_config={'core': {'network': 'regtest'}}
+    )
+    squeaknode_config.read()
+    return squeaknode_config
+
+
+@pytest.fixture
 def squeak_db():
     # return SqueakDb(None, None, None)
     return mock.Mock(spec=SqueakDb)
@@ -77,6 +86,25 @@ def squeak_controller(
     )
 
 
+@pytest.fixture
+def regtest_squeak_controller(
+    squeak_db,
+    blockchain_client,
+    lightning_client,
+    squeak_store,
+    squeak_whitelist,
+    regtest_config,
+):
+    return SqueakController(
+        squeak_db,
+        blockchain_client,
+        lightning_client,
+        squeak_store,
+        squeak_whitelist,
+        regtest_config,
+    )
+
+
 def test_nothing():
     assert True
 
@@ -87,6 +115,10 @@ def test_get_buy_offer(squeak_controller):
 
 def test_get_network_default(squeak_controller):
     assert squeak_controller.get_network() == "testnet"
+
+
+def test_get_network_regtest(regtest_squeak_controller):
+    assert regtest_squeak_controller.get_network() == "regtest"
 
 
 # def test_get_network_regtest(config, squeak_controller):

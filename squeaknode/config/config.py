@@ -9,6 +9,7 @@ from typedconfig import Config
 from typedconfig import group_key
 from typedconfig import key
 from typedconfig import section
+from typedconfig.source import DictConfigSource
 from typedconfig.source import EnvironmentConfigSource
 from typedconfig.source import IniFileConfigSource
 
@@ -118,12 +119,15 @@ class SqueaknodeConfig(Config):
     db = group_key(DbConfig)
     # description = key(cast=str, section_name="general")
 
-    def __init__(self, config_path=None):
+    def __init__(self, config_path=None, dict_config=None):
         super().__init__()
         self.prefix = "SQUEAKNODE"
         self.config_path = config_path
+        self.dict_config = dict_config
 
     def read(self):
+        if self.dict_config is not None:
+            self.add_source(DictConfigSource(self.dict_config))
         self.add_source(EnvironmentConfigSource(prefix=self.prefix))
         if self.config_path is not None:
             self.add_source(IniFileConfigSource(self.config_path))
