@@ -148,3 +148,22 @@ def test_create_peer(squeak_db, squeak_controller):
             downloading=False,
         )
     )
+
+
+def test_create_peer_default_port(config, squeak_db, squeak_controller):
+    squeak_controller.create_peer(
+        "fake_name",
+        "fake_host",
+        0,
+    )
+
+    squeak_db.insert_peer.assert_called_with(
+        SqueakPeer(
+            peer_id=None,
+            peer_name="fake_name",
+            host="fake_host",
+            port=config.core.default_peer_rpc_port,
+            uploading=False,
+            downloading=False,
+        )
+    )

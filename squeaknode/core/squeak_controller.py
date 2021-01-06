@@ -223,6 +223,7 @@ class SqueakController:
         return self.squeak_store.delete_squeak(squeak_hash)
 
     def create_peer(self, peer_name, host, port):
+        port = port or self.config.core.default_peer_rpc_port
         squeak_peer = SqueakPeer(
             peer_id=None,
             peer_name=peer_name,
