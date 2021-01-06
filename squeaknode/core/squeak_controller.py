@@ -354,4 +354,6 @@ class SqueakController:
         return block_info.block_height
 
     def get_network(self):
-        return self.config.squeaknode_network
+        print(self.config)
+        print(self.config.core)
+        return self.config.core.network
