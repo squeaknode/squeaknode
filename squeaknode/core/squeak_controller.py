@@ -72,12 +72,12 @@ class SqueakController:
         # Return the buy offer
         return BuyOffer(
             squeak_hash=squeak_hash,
-            price_msat=self.config.squeaknode_price_msat,
+            price_msat=self.config.core.price_msat,
             nonce=sent_offer.nonce,
             payment_request=sent_offer.payment_request,
             pubkey=pubkey,
-            host=self.config.lnd_external_host,
-            port=self.config.lnd_port,
+            host=self.config.lnd.external_host,
+            port=self.config.lnd.port,
         )
 
     def create_offer(self, squeak_hash, client_addr):
@@ -96,7 +96,7 @@ class SqueakController:
         )
         # Create the lightning invoice
         add_invoice_response = self.lightning_client.add_invoice(
-            preimage, self.config.squeaknode_price_msat
+            preimage, self.config.core.price_msat
         )
         logger.info("add_invoice_response: {}".format(add_invoice_response))
         payment_hash = add_invoice_response.r_hash
@@ -114,7 +114,7 @@ class SqueakController:
             payment_hash=payment_hash.hex(),
             secret_key=preimage.hex(),
             nonce=nonce,
-            price_msat=self.config.squeaknode_price_msat,
+            price_msat=self.config.core.price_msat,
             payment_request=invoice_payment_request,
             invoice_time=invoice_time,
             invoice_expiry=invoice_expiry,
@@ -354,4 +354,6 @@ class SqueakController:
         return block_info.block_height
 
     def get_network(self):
-        return self.config.squeaknode_network
+        print(self.config)
+        print(self.config.core)
+        return self.config.core.network

@@ -11,7 +11,7 @@ from squeaknode.admin.squeak_admin_server_servicer import SqueakAdminServerServi
 from squeaknode.admin.webapp.app import SqueakAdminWebServer
 from squeaknode.bitcoin.bitcoin_blockchain_client import BitcoinBlockchainClient
 from squeaknode.bitcoin.blockchain_client import BlockchainClient
-from squeaknode.config.config import Config
+from squeaknode.config.config import SqueaknodeConfig
 from squeaknode.core.buy_offer import BuyOffer
 from squeaknode.core.lightning_address import LightningAddressHostPort
 from squeaknode.core.sent_offer import SentOffer
@@ -48,38 +48,38 @@ logger = logging.getLogger(__name__)
 
 def load_lightning_client(config) -> LNDLightningClient:
     return LNDLightningClient(
-        config.lnd_host,
-        config.lnd_rpc_port,
-        config.lnd_tls_cert_path,
-        config.lnd_macaroon_path,
+        config.lnd.host,
+        config.lnd.rpc_port,
+        config.lnd.tls_cert_path,
+        config.lnd.macaroon_path,
     )
 
 
 def load_rpc_server(config, handler) -> SqueakServerServicer:
     return SqueakServerServicer(
-        config.server_rpc_host,
-        config.server_rpc_port,
+        config.server.rpc_host,
+        config.server.rpc_port,
         handler,
     )
 
 
 def load_admin_rpc_server(config, handler) -> SqueakAdminServerServicer:
     return SqueakAdminServerServicer(
-        config.admin_rpc_host,
-        config.admin_rpc_port,
+        config.admin.rpc_host,
+        config.admin.rpc_port,
         handler,
     )
 
 
 def load_admin_web_server(config, handler) -> SqueakAdminWebServer:
     return SqueakAdminWebServer(
-        config.webadmin_host,
-        config.webadmin_port,
-        config.webadmin_username,
-        config.webadmin_password,
-        config.webadmin_use_ssl,
-        config.webadmin_login_disabled,
-        config.webadmin_allow_cors,
+        config.webadmin.host,
+        config.webadmin.port,
+        config.webadmin.username,
+        config.webadmin.password,
+        config.webadmin.use_ssl,
+        config.webadmin.login_disabled,
+        config.webadmin.allow_cors,
         handler,
     )
 
@@ -87,7 +87,7 @@ def load_admin_web_server(config, handler) -> SqueakAdminWebServer:
 def load_sync_worker(config, sync_controller) -> SqueakPeerSyncWorker:
     return SqueakPeerSyncWorker(
         sync_controller,
-        config.sync_interval_s,
+        config.sync.interval_s,
     )
 
 
@@ -104,27 +104,33 @@ def load_admin_handler(lightning_client, squeak_controller, sync_controller):
 
 
 def load_sqk_dir_path(config):
-    sqk_dir = config.squeaknode_sqk_dir
+    sqk_dir = config.core.sqk_dir_path
     return Path(sqk_dir)
 
 
 def load_db(config, network):
-    connection_string = config.db_connection_string
+    connection_string = config.db.connection_string
+    logger.info("connection string: {}".format(connection_string))
+    logger.info("connection string type: {}".format(type(connection_string)))
     if not connection_string:
         sqk_dir = load_sqk_dir_path(config)
+        logger.info(
+            "Getting connection string from sqk dir: {}".format(sqk_dir))
         connection_string = get_sqlite_connection_string(sqk_dir, network)
+    logger.info("Getting engine from connection string: {}".format(
+        connection_string))
     engine = get_engine(connection_string)
     return SqueakDb(engine)
 
 
 def load_blockchain_client(config):
     return BitcoinBlockchainClient(
-        config.bitcoin_rpc_host,
-        config.bitcoin_rpc_port,
-        config.bitcoin_rpc_user,
-        config.bitcoin_rpc_pass,
-        config.bitcoin_rpc_use_ssl,
-        config.bitcoin_rpc_ssl_cert,
+        config.bitcoin.rpc_host,
+        config.bitcoin.rpc_port,
+        config.bitcoin.rpc_user,
+        config.bitcoin.rpc_pass,
+        config.bitcoin.rpc_use_ssl,
+        config.bitcoin.rpc_ssl_cert,
     )
 
 
@@ -144,7 +150,7 @@ def start_admin_rpc_server(rpc_server):
 
 
 def load_admin_web_server_enabled(config):
-    return config.webadmin_enabled
+    return config.webadmin.enabled
 
 
 def start_admin_web_server(admin_web_server):
@@ -203,11 +209,20 @@ def main():
     logging.getLogger().setLevel(level)
 
     logger.info("Starting squeaknode...")
-    config = Config(args.config)
+    config = SqueaknodeConfig(args.config)
+    config.read()
     logger.info("config: {}".format(config))
+    logger.info("bitcoin rpc host: {}, rpc port: {}, rpc user: {}, rpc pass: {}, rpc use_ssl: {}, rpc ssl cert: {}".format(
+        config.bitcoin.rpc_host,
+        config.bitcoin.rpc_port,
+        config.bitcoin.rpc_user,
+        config.bitcoin.rpc_pass,
+        config.bitcoin.rpc_use_ssl,
+        config.bitcoin.rpc_ssl_cert,
+    ))
 
     # Set the log level again
-    level = config.squeaknode_log_level
+    level = config.core.log_level
     logging.getLogger().setLevel(level)
 
     args.func(config)
@@ -215,7 +230,7 @@ def main():
 
 def run_server(config):
     # load the network
-    network = config.squeaknode_network
+    network = config.core.network
     SelectParams(network)
 
     # load the db
@@ -233,7 +248,7 @@ def run_server(config):
         squeak_db,
         blockchain_client,
         lightning_client,
-        config.squeaknode_max_squeaks_per_address_per_hour,
+        config.core.max_squeaks_per_address_per_hour,
     )
     squeak_whitelist = SqueakWhitelist(
         squeak_db,
@@ -268,17 +283,17 @@ def run_server(config):
         lightning_client, squeak_controller, sync_controller)
 
     # start admin rpc server
-    if config.admin_rpc_enabled:
+    if config.admin.rpc_enabled:
         admin_rpc_server = load_admin_rpc_server(config, admin_handler)
         start_admin_rpc_server(admin_rpc_server)
 
     # start admin web server
-    if config.webadmin_enabled:
+    if config.webadmin.enabled:
         admin_web_server = load_admin_web_server(config, admin_handler)
         start_admin_web_server(admin_web_server)
 
     # start sync worker
-    if config.sync_enabled:
+    if config.sync.enabled:
         sync_worker = load_sync_worker(config, sync_controller)
         start_sync_worker(sync_worker)
 
