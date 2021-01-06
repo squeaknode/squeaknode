@@ -98,7 +98,7 @@ class CoreConfig(Config):
 
 @section('sync')
 class SyncConfig(Config):
-    enabled = key(cast=bool, required=False, default=False)
+    enabled = key(cast=bool, required=False, default=True)
     interval_s = key(cast=int, required=False, default=DEFAULT_SYNC_INTERVAL_S)
 
 
