@@ -3,6 +3,7 @@ import pprint
 from configparser import ConfigParser
 from os import environ
 from pathlib import Path
+from typing import Optional
 
 from typedconfig import Config
 from typedconfig import group_key
@@ -35,10 +36,6 @@ DEFAULT_LND_PORT = 9735
 DEFAULT_LND_RPC_PORT = 10009
 DEFAULT_SQK_DIR = ".sqk"
 DEFAULT_SQK_DIR_PATH = str(Path.home() / DEFAULT_SQK_DIR)
-DEFAULT_LND_DIR = ".lnd"
-DEFAULT_LND_TLS_CERT_NAME = "tls.cert"
-DEFAULT_LND_MACAROON_NAME = "admin.macaroon"
-DEFAULT_LND_DIR_PATH = str(Path.home() / DEFAULT_LND_DIR)
 DEFAULT_LND_HOST = "localhost"
 DEFAULT_SYNC_INTERVAL_S = 10
 
@@ -49,6 +46,8 @@ class BitcoinConfig(Config):
     rpc_port = key(cast=int, required=False, default=DEFAULT_BITCOIN_RPC_PORT)
     rpc_user = key(cast=str, required=False, default="")
     rpc_pass = key(cast=str, required=False, default="")
+    rpc_use_ssl = key(cast=bool, required=False, default=False)
+    rpc_ssl_cert = key(cast=str, required=False, default="")
 
 
 @section('lnd')
@@ -57,10 +56,8 @@ class LndConfig(Config):
     external_host = key(cast=str, required=False, default=None)
     port = key(cast=int, required=False, default=DEFAULT_LND_PORT)
     rpc_port = key(cast=int, required=False, default=DEFAULT_LND_RPC_PORT)
-    tls_cert_path = key(cast=str, required=False,
-                        default=DEFAULT_LND_TLS_CERT_NAME)
-    macaroon_path = key(cast=str, required=False,
-                        default=DEFAULT_LND_MACAROON_NAME)
+    tls_cert_path = key(cast=str, required=False, default=None)
+    macaroon_path = key(cast=str, required=False, default=None)
 
 
 @section('server')
@@ -107,7 +104,7 @@ class SyncConfig(Config):
 
 @section('db')
 class DbConfig(Config):
-    connection_string = key(cast=str, required=False, default=None)
+    connection_string = key(cast=str, required=False, default="")
 
 
 class SqueaknodeConfig(Config):
