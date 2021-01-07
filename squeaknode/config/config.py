@@ -89,6 +89,8 @@ class WebadminConfig(Config):
 @section('core')
 class CoreConfig(Config):
     network = key(cast=str, required=False, default=DEFAULT_NETWORK)
+    default_peer_rpc_port = key(
+        cast=int, required=False, default=DEFAULT_SERVER_RPC_PORT)
     price_msat = key(cast=int, required=False, default=DEFAULT_PRICE_MSAT)
     max_squeaks_per_address_per_hour = key(
         cast=int, required=False, default=DEFAULT_MAX_SQUEAKS_PER_ADDRESS_PER_HOUR)

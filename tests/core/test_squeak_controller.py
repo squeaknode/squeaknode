@@ -5,6 +5,7 @@ from squeaknode.bitcoin.blockchain_client import BlockchainClient
 from squeaknode.config.config import SqueaknodeConfig
 from squeaknode.core.lightning_address import LightningAddressHostPort
 from squeaknode.core.squeak_controller import SqueakController
+from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.db.squeak_db import SqueakDb
 from squeaknode.node.squeak_store import SqueakStore
 from squeaknode.node.squeak_whitelist import SqueakWhitelist
@@ -128,3 +129,41 @@ def test_get_network_regtest(regtest_squeak_controller):
 #     print(config.squeaknode_network)
 
 #     assert squeak_controller.get_network() == "regtest"
+
+
+def test_create_peer(squeak_db, squeak_controller):
+    squeak_controller.create_peer(
+        "fake_peer_name",
+        "fake_host",
+        5678,
+    )
+
+    squeak_db.insert_peer.assert_called_with(
+        SqueakPeer(
+            peer_id=None,
+            peer_name="fake_peer_name",
+            host="fake_host",
+            port=5678,
+            uploading=False,
+            downloading=False,
+        )
+    )
+
+
+def test_create_peer_default_port(config, squeak_db, squeak_controller):
+    squeak_controller.create_peer(
+        "fake_peer_name",
+        "fake_host",
+        0,
+    )
+
+    squeak_db.insert_peer.assert_called_with(
+        SqueakPeer(
+            peer_id=None,
+            peer_name="fake_peer_name",
+            host="fake_host",
+            port=config.core.default_peer_rpc_port,
+            uploading=False,
+            downloading=False,
+        )
+    )

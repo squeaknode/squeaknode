@@ -1,6 +1,11 @@
-from collections import namedtuple
+from typing import NamedTuple
+from typing import Optional
 
-SqueakPeer = namedtuple(
-    "SqueakPeer",
-    "peer_id, peer_name, host, port, uploading, downloading",
-)
+
+class SqueakPeer(NamedTuple):
+    peer_id: Optional[int]
+    peer_name: str
+    host: str
+    port: int
+    uploading: bool
+    downloading: bool
