@@ -20,10 +20,10 @@ from squeaknode.node.received_payments_subscription_client import (
     OpenReceivedPaymentsSubscriptionClient,
 )
 from squeaknode.node.squeak_block_verifier import SqueakBlockVerifier
+from squeaknode.node.squeak_memory_whitelist import SqueakMemoryWhitelist
 from squeaknode.node.squeak_node import SqueakNode
 from squeaknode.node.squeak_rate_limiter import SqueakRateLimiter
 from squeaknode.node.squeak_store import SqueakStore
-from squeaknode.node.squeak_whitelist import SqueakWhitelist
 from squeaknode.server.squeak_server_handler import SqueakServerHandler
 from squeaknode.server.squeak_server_servicer import SqueakServerServicer
 from squeaknode.sync.squeak_peer_sync_worker import SqueakPeerSyncWorker
@@ -237,7 +237,7 @@ def run_server(config):
         lightning_client,
         config.core.max_squeaks_per_address_per_hour,
     )
-    squeak_whitelist = SqueakWhitelist(
+    squeak_whitelist = SqueakMemoryWhitelist(
         squeak_db,
     )
     squeak_store = SqueakStore(
