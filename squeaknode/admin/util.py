@@ -22,7 +22,7 @@ def squeak_entry_to_message(squeak_entry_with_profile):
     is_reply = squeak.is_reply
     reply_to = get_replyto(squeak) if is_reply else None
     return squeak_admin_pb2.SqueakDisplayEntry(
-        squeak_hash=get_hash(squeak),
+        squeak_hash=get_hash(squeak).hex(),
         is_unlocked=squeak.HasDecryptionKey(),
         content_str=content_str,
         block_height=squeak.nBlockHeight,

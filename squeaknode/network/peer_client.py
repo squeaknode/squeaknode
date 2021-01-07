@@ -66,7 +66,7 @@ class PeerClient:
 
     def _build_squeak_msg(self, squeak):
         return squeak_server_pb2.Squeak(
-            hash=get_hash(squeak),
+            hash=get_hash(squeak).hex(),
             serialized_squeak=squeak.serialize(),
         )
 

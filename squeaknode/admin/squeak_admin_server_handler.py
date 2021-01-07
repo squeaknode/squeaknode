@@ -198,7 +198,7 @@ class SqueakAdminServerHandler(object):
             profile_id, content_str, replyto_hash
         )
         return squeak_admin_pb2.MakeSqueakReply(
-            squeak_hash=inserted_squeak_hash,
+            squeak_hash=inserted_squeak_hash.hex(),
         )
 
     def handle_get_squeak_display_entry(self, request):

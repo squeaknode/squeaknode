@@ -274,8 +274,9 @@ class PeerSyncTask:
             self._upload_squeak(squeak)
 
     def _upload_squeak(self, squeak):
-        squeak_hash = get_hash(squeak)
-        logger.info("Uploading squeak: {}".format(squeak_hash))
+        logger.info("Uploading squeak: {}".format(
+            get_hash(squeak).hex()
+        ))
         self.peer_client.post_squeak(squeak)
 
     def _get_sharing_addresses(self):

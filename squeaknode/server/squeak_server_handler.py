@@ -15,7 +15,7 @@ class SqueakServerHandler(object):
 
     def handle_posted_squeak(self, squeak):
         logger.info(
-            "Handle posted squeak with hash: {}".format(get_hash(squeak)))
+            "Handle posted squeak with hash: {}".format(get_hash(squeak).hex()))
         # Save the squeak
         self.squeak_controller.save_uploaded_squeak(squeak)
 

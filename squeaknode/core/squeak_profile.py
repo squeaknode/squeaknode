@@ -5,7 +5,7 @@ from typing import Optional
 class SqueakProfile(NamedTuple):
     profile_id: Optional[int]
     profile_name: str
-    private_key: bytes
+    private_key: Optional[bytes]
     address: str
     sharing: bool
     following: bool

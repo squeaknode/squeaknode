@@ -75,13 +75,16 @@ class SqueakDb:
         return self.models.sent_offers
 
     def insert_squeak(self, squeak, block_header_bytes):
-        """ Insert a new squeak. """
+        """ Insert a new squeak.
+
+        Return the hash (bytes) of the inserted squeak.
+        """
         secret_key_hex = (
             squeak.GetDecryptionKey().hex() if squeak.HasDecryptionKey() else None
         )
         squeak.ClearDecryptionKey()
         ins = self.squeaks.insert().values(
-            hash=get_hash(squeak),
+            hash=get_hash(squeak).hex(),
             squeak=squeak.serialize(),
             hash_reply_sqk=squeak.hashReplySqk.hex(),
             hash_block=squeak.hashBlock.hex(),

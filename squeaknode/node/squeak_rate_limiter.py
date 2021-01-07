@@ -22,8 +22,9 @@ class SqueakRateLimiter:
         self.max_squeaks_per_address_per_hour = max_squeaks_per_address_per_hour
 
     def should_rate_limit_allow(self, squeak):
-        squeak_hash = get_hash(squeak)
-        logger.info("Checking rate limit for squeak: {}".format(squeak_hash))
+        logger.info("Checking rate limit for squeak: {}".format(
+            get_hash(squeak).hex()
+        ))
         current_squeak_count = self._get_current_squeak_count(squeak)
         logger.info(
             "Current squeak count: {}, limit: {}".format(

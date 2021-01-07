@@ -30,7 +30,7 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
             return squeak_server_pb2.PostSqueakReply()
 
         # Check if squeak hash is correct
-        if get_hash(squeak) != squeak_hash:
+        if get_hash(squeak).hex() != squeak_hash:
             context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
             return squeak_server_pb2.PostSqueakReply()
 
@@ -57,7 +57,7 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
 
         return squeak_server_pb2.GetSqueakReply(
             squeak=squeak_server_pb2.Squeak(
-                hash=get_hash(squeak),
+                hash=get_hash(squeak).hex(),
                 serialized_squeak=squeak.serialize(),
             )
         )
