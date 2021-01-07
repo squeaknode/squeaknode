@@ -1,6 +1,11 @@
-from collections import namedtuple
+from typing import NamedTuple
+from typing import Optional
 
-SqueakProfile = namedtuple(
-    "SqueakProfile",
-    "profile_id, profile_name, private_key, address, sharing, following",
-)
+
+class SqueakProfile(NamedTuple):
+    profile_id: Optional[int]
+    profile_name: str
+    private_key: bytes
+    address: str
+    sharing: bool
+    following: bool
