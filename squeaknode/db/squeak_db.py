@@ -1129,6 +1129,7 @@ class SqueakDb:
             return None
         return SentPayment(
             sent_payment_id=row["sent_payment_id"],
+            created=row[self.sent_payments.c.created],
             offer_id=row["offer_id"],
             peer_id=row["peer_id"],
             squeak_hash=row["squeak_hash"],
@@ -1136,7 +1137,6 @@ class SqueakDb:
             secret_key=row["secret_key"],
             price_msat=row["price_msat"],
             node_pubkey=row["node_pubkey"],
-            time_ms=row[self.sent_payments.c.created],
         )
 
     def _parse_sent_payment_with_peer(self, row):

@@ -277,6 +277,7 @@ class SqueakController:
         # Save the preimage of the sent payment
         sent_payment = SentPayment(
             sent_payment_id=None,
+            created=None,
             offer_id=offer_id,
             peer_id=offer.peer_id,
             squeak_hash=offer.squeak_hash,
@@ -284,7 +285,6 @@ class SqueakController:
             secret_key=secret_key.hex(),
             price_msat=offer.price_msat,
             node_pubkey=offer.destination,
-            time_ms=None,
         )
         sent_payment_id = self.squeak_db.insert_sent_payment(sent_payment)
 
