@@ -1,5 +1,4 @@
 from typing import NamedTuple
-from typing import Optional
 
 from squeaknode.core.squeak_entry import SqueakEntry
 from squeaknode.core.squeak_profile import SqueakProfile

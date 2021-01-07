@@ -1,9 +1,5 @@
 import logging
-import pprint
-from configparser import ConfigParser
-from os import environ
 from pathlib import Path
-from typing import Optional
 
 from typedconfig import Config
 from typedconfig import group_key

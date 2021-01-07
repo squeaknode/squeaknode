@@ -1,6 +1,5 @@
 import logging
 
-from squeaknode.sync.network_sync import NetworkSync
 from squeaknode.sync.network_task import SingleSqueakNetworkSyncTask
 from squeaknode.sync.network_task import TimelineNetworkSyncTask
 

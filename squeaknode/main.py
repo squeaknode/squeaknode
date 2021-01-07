@@ -10,19 +10,8 @@ from squeaknode.admin.squeak_admin_server_handler import SqueakAdminServerHandle
 from squeaknode.admin.squeak_admin_server_servicer import SqueakAdminServerServicer
 from squeaknode.admin.webapp.app import SqueakAdminWebServer
 from squeaknode.bitcoin.bitcoin_blockchain_client import BitcoinBlockchainClient
-from squeaknode.bitcoin.blockchain_client import BlockchainClient
 from squeaknode.config.config import SqueaknodeConfig
-from squeaknode.core.buy_offer import BuyOffer
-from squeaknode.core.lightning_address import LightningAddressHostPort
-from squeaknode.core.sent_offer import SentOffer
-from squeaknode.core.sent_payment import SentPayment
-from squeaknode.core.squeak_address_validator import SqueakAddressValidator
 from squeaknode.core.squeak_controller import SqueakController
-from squeaknode.core.squeak_peer import SqueakPeer
-from squeaknode.core.squeak_profile import SqueakProfile
-from squeaknode.core.util import add_tweak
-from squeaknode.core.util import generate_tweak
-from squeaknode.core.util import subtract_tweak
 from squeaknode.db.db_engine import get_engine
 from squeaknode.db.db_engine import get_sqlite_connection_string
 from squeaknode.db.squeak_db import SqueakDb
@@ -30,9 +19,7 @@ from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
 from squeaknode.node.received_payments_subscription_client import (
     OpenReceivedPaymentsSubscriptionClient,
 )
-from squeaknode.node.sent_offers_verifier import SentOffersVerifier
 from squeaknode.node.squeak_block_verifier import SqueakBlockVerifier
-from squeaknode.node.squeak_maker import SqueakMaker
 from squeaknode.node.squeak_node import SqueakNode
 from squeaknode.node.squeak_rate_limiter import SqueakRateLimiter
 from squeaknode.node.squeak_store import SqueakStore
