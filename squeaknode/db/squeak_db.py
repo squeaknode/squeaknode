@@ -664,7 +664,7 @@ class SqueakDb:
         # with self.get_cursor() as curs:
         #     curs.execute(sql, (squeak_hash_str,))
 
-    def insert_peer(self, squeak_peer):
+    def insert_peer(self, squeak_peer: SqueakPeer):
         """ Insert a new squeak peer. """
         ins = self.peers.insert().values(
             peer_name=squeak_peer.peer_name,
