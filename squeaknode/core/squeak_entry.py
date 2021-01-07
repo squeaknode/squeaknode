@@ -1,11 +1,8 @@
-from dataclasses import dataclass
+from typing import NamedTuple
 
 from squeak.core import CSqueak
 
 
-@dataclass
-class SqueakEntry:
-    """Class for saving an offer from a remote peer."""
-
+class SqueakEntry(NamedTuple):
     squeak: CSqueak
     block_header: bytes

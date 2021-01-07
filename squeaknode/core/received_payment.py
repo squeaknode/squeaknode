@@ -1,6 +1,13 @@
-from collections import namedtuple
+from datetime import datetime
+from typing import NamedTuple
+from typing import Optional
 
-ReceivedPayment = namedtuple(
-    "ReceivedPayment",
-    "received_payment_id, created, squeak_hash, payment_hash, price_msat, settle_index, client_addr",
-)
+
+class ReceivedPayment(NamedTuple):
+    received_payment_id: Optional[int]
+    created: Optional[datetime]
+    squeak_hash: bytes
+    payment_hash: bytes
+    price_msat: int
+    settle_index: int
+    client_addr: str

@@ -29,3 +29,8 @@ repos:
     hooks:
     -   id: mypy
         additional_dependencies: [tokenize-rt==3.2.0]
+-   repo: git@github.com:humitos/mirrors-autoflake.git
+    rev: v1.1
+    hooks:
+    - id: autoflake
+      args: ['--in-place', '--remove-all-unused-imports', '--remove-unused-variable']

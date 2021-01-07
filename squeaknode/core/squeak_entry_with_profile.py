@@ -1,5 +1,9 @@
-from collections import namedtuple
+from typing import NamedTuple
 
-SqueakEntryWithProfile = namedtuple(
-    "SqueakEntryWithProfile", ["squeak_entry", "squeak_profile"]
-)
+from squeaknode.core.squeak_entry import SqueakEntry
+from squeaknode.core.squeak_profile import SqueakProfile
+
+
+class SqueakEntryWithProfile(NamedTuple):
+    squeak_entry: SqueakEntry
+    squeak_profile: SqueakProfile

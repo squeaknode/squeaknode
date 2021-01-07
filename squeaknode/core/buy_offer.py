@@ -1,10 +1,8 @@
-from dataclasses import dataclass
+from typing import NamedTuple
 
 
-@dataclass
-class BuyOffer:
+class BuyOffer(NamedTuple):
     """Class for representing a generated offer on a seller node."""
-
     squeak_hash: str
     price_msat: int
     nonce: bytes
