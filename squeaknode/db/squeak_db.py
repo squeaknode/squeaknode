@@ -478,15 +478,18 @@ class SqueakDb:
             profiles = [self._parse_squeak_profile(row) for row in rows]
             return profiles
 
-        # sql = """
-        # SELECT * FROM profile
-        # WHERE following;
-        # """
-        # with self.get_cursor() as curs:
-        #     curs.execute(sql)
-        #     rows = curs.fetchall()
-        #     profiles = [self._parse_squeak_profile(row) for row in rows]
-        #     return profiles
+    def get_following_profiles_from_addreses(self, addresses):
+        """ Get all following profiles. """
+        s = (
+            select([self.profiles])
+            .where(self.profiles.c.following)
+            .where(self.profiles.c.address.in_(addresses))
+        )
+        with self.get_connection() as connection:
+            result = connection.execute(s)
+            rows = result.fetchall()
+            profiles = [self._parse_squeak_profile(row) for row in rows]
+            return profiles
 
     def get_sharing_profiles(self):
         """ Get all sharing profiles. """
