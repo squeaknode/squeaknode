@@ -13,12 +13,10 @@ sleep 10
 
 # Start using the run server command
 if [ -f config.ini ]; then
-    exec runsqueaknode \
+    exec squeaknode \
 	 --config config.ini \
-	 --log-level INFO \
-	 run-server
+	 --log-level INFO
 else
-    exec runsqueaknode \
-	 --log-level INFO \
-	 run-server
+    exec squeaknode \
+	 --log-level INFO
 fi

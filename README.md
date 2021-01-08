@@ -46,7 +46,7 @@ If you don't already have a bitcoin node or lightning node, you can follow the i
 
 - Start the squeak server:
  	```
-	$ runsqueaknode --config config.ini run-server
+	$ squeaknode --config config.ini
 	```
 - Go to http://localhost:12994/ and use the username/password in **config.ini** to log in.
 
