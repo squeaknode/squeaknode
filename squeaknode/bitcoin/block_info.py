@@ -1,10 +1,8 @@
-from dataclasses import dataclass
+from typing import NamedTuple
 
 
-@dataclass
-class BlockInfo:
+class BlockInfo(NamedTuple):
     """Class for getting block info from blockchain."""
-
     block_height: int
     block_hash: bytes
     block_header: bytes

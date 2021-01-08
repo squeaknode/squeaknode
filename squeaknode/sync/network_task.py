@@ -1,24 +1,22 @@
 import logging
 import queue
 import threading
-from dataclasses import dataclass
 from typing import Any
 from typing import List
+from typing import NamedTuple
 
 from squeaknode.sync.network_sync import NetworkSync
 
 logger = logging.getLogger(__name__)
 
 
-@dataclass
-class PeerSyncResult:
+class PeerSyncResult(NamedTuple):
     completed_peer_id: Any = None
     failed_peer_id: Any = None
     timeout: Any = None
 
 
-@dataclass
-class NetworkSyncResult:
+class NetworkSyncResult(NamedTuple):
     completed_peer_ids: List[int]
     failed_peer_ids: List[int]
     timeout_peer_ids: List[int]
