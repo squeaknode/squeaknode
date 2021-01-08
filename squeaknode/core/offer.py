@@ -5,11 +5,11 @@ from typing import Optional
 class Offer(NamedTuple):
     """Class for saving an offer from a remote peer."""
     offer_id: Optional[int]
-    squeak_hash: str
+    squeak_hash: bytes
     price_msat: bytes
-    payment_hash: str
+    payment_hash: bytes
     nonce: str
-    payment_point: str
+    payment_point: bytes
     invoice_timestamp: int
     invoice_expiry: int
     payment_request: str

@@ -1,5 +1,6 @@
 import logging
 from contextlib import contextmanager
+from typing import List
 
 import grpc
 from squeak.core import CheckSqueak
@@ -23,7 +24,7 @@ class PeerClient:
         with grpc.insecure_channel(host_port_str) as server_channel:
             yield squeak_server_pb2_grpc.SqueakServerStub(server_channel)
 
-    def lookup_squeaks(self, addresses, min_block, max_block):
+    def lookup_squeaks(self, addresses: List[str], min_block: int, max_block: int):
         with self.get_stub() as stub:
             lookup_response = stub.LookupSqueaks(
                 squeak_server_pb2.LookupSqueaksRequest(
@@ -34,7 +35,7 @@ class PeerClient:
             )
             return lookup_response
 
-    def post_squeak(self, squeak):
+    def post_squeak(self, squeak: CSqueak):
         squeak_msg = self._build_squeak_msg(squeak)
         with self.get_stub() as stub:
             stub.PostSqueak(
@@ -43,34 +44,34 @@ class PeerClient:
                 )
             )
 
-    def get_squeak(self, squeak_hash):
+    def get_squeak(self, squeak_hash: bytes):
         with self.get_stub() as stub:
             get_response = stub.GetSqueak(
                 squeak_server_pb2.GetSqueakRequest(
-                    hash=squeak_hash,
+                    hash=squeak_hash.hex(),
                 )
             )
             get_response_squeak = self._squeak_from_msg(get_response.squeak)
             CheckSqueak(get_response_squeak, skipDecryptionCheck=True)
             return get_response_squeak
 
-    def buy_squeak(self, squeak_hash):
+    def buy_squeak(self, squeak_hash: bytes):
         with self.get_stub() as stub:
             buy_response = stub.GetOffer(
                 squeak_server_pb2.GetOfferRequest(
-                    hash=squeak_hash,
+                    hash=squeak_hash.hex(),
                 )
             )
             offer_msg = buy_response.offer
             return offer_msg
 
-    def _build_squeak_msg(self, squeak):
+    def _build_squeak_msg(self, squeak: CSqueak):
         return squeak_server_pb2.Squeak(
-            hash=get_hash(squeak),
+            hash=get_hash(squeak).hex(),
             serialized_squeak=squeak.serialize(),
         )
 
-    def _squeak_from_msg(self, squeak_msg):
+    def _squeak_from_msg(self, squeak_msg: squeak_server_pb2.Squeak):
         if not squeak_msg:
             return None
         if not squeak_msg.serialized_squeak:

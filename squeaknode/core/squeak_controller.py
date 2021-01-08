@@ -1,10 +1,13 @@
 import logging
+from typing import List
 
 from squeak.core import CheckSqueak
+from squeak.core import CSqueak
 from squeak.core.signing import CSigningKey
 from squeak.core.signing import CSqueakAddress
 
 from squeaknode.core.buy_offer import BuyOffer
+from squeaknode.core.offer import Offer
 from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.sent_payment import SentPayment
 from squeaknode.core.squeak_address_validator import SqueakAddressValidator
@@ -43,22 +46,22 @@ class SqueakController:
         )
         self.config = config
 
-    def save_uploaded_squeak(self, squeak):
+    def save_uploaded_squeak(self, squeak: CSqueak):
         return self.squeak_store.save_squeak(squeak)
 
-    def save_created_squeak(self, squeak):
+    def save_created_squeak(self, squeak: CSqueak):
         return self.squeak_store.save_squeak(squeak, skip_whitelist_check=True)
 
-    def get_public_squeak(self, squeak_hash):
+    def get_public_squeak(self, squeak_hash: bytes):
         return self.squeak_store.get_squeak(squeak_hash, clear_decryption_key=True)
 
-    def lookup_squeaks(self, addresses, min_block, max_block):
+    def lookup_squeaks(self, addresses: str, min_block: int, max_block: int):
         return self.squeak_store.lookup_squeaks(addresses, min_block, max_block)
 
-    def lookup_allowed_addresses(self, addresses):
+    def lookup_allowed_addresses(self, addresses: List[str]):
         return self.squeak_whitelist.get_allowed_addresses(addresses)
 
-    def get_buy_offer(self, squeak_hash, client_addr):
+    def get_buy_offer(self, squeak_hash: bytes, client_addr: str):
         # Check if there is an existing offer for the hash/client_addr combination
         sent_offer = self.get_saved_sent_offer(squeak_hash, client_addr)
         # Get the lightning network node pubkey
@@ -75,7 +78,7 @@ class SqueakController:
             port=self.config.lnd.port,
         )
 
-    def create_offer(self, squeak_hash, client_addr):
+    def create_offer(self, squeak_hash: bytes, client_addr: str):
         # Generate a new random nonce
         nonce = generate_tweak()
         # Get the squeak secret key
@@ -116,7 +119,7 @@ class SqueakController:
             client_addr=client_addr,
         )
 
-    def get_saved_sent_offer(self, squeak_hash, client_addr):
+    def get_saved_sent_offer(self, squeak_hash: bytes, client_addr: str):
         # Check if there is an existing offer for the hash/client_addr combination
         sent_offer = self.squeak_db.get_sent_offer_by_squeak_hash_and_client_addr(
             squeak_hash,
@@ -128,7 +131,7 @@ class SqueakController:
         self.squeak_db.insert_sent_offer(sent_offer)
         return sent_offer
 
-    def create_signing_profile(self, profile_name):
+    def create_signing_profile(self, profile_name: str):
         signing_key = CSigningKey.generate()
         verifying_key = signing_key.get_verifying_key()
         address = CSqueakAddress.from_verifying_key(verifying_key)
@@ -144,7 +147,7 @@ class SqueakController:
         )
         return self.squeak_db.insert_profile(squeak_profile)
 
-    def create_contact_profile(self, profile_name, squeak_address):
+    def create_contact_profile(self, profile_name: str, squeak_address: str):
         address_validator = SqueakAddressValidator()
         if not address_validator.validate(squeak_address):
             raise Exception(
@@ -165,40 +168,40 @@ class SqueakController:
     def get_contact_profiles(self):
         return self.squeak_db.get_contact_profiles()
 
-    def get_squeak_profile(self, profile_id):
+    def get_squeak_profile(self, profile_id: int):
         return self.squeak_db.get_profile(profile_id)
 
-    def get_squeak_profile_by_address(self, address):
+    def get_squeak_profile_by_address(self, address: str):
         return self.squeak_db.get_profile_by_address(address)
 
-    def get_squeak_profile_by_name(self, name):
+    def get_squeak_profile_by_name(self, name: str):
         return self.squeak_db.get_profile_by_name(name)
 
-    def set_squeak_profile_following(self, profile_id, following):
+    def set_squeak_profile_following(self, profile_id: int, following: bool):
         self.squeak_db.set_profile_following(profile_id, following)
         self.squeak_whitelist.refresh()
 
-    def set_squeak_profile_sharing(self, profile_id, sharing):
+    def set_squeak_profile_sharing(self, profile_id: int, sharing: bool):
         self.squeak_db.set_profile_sharing(profile_id, sharing)
 
-    def delete_squeak_profile(self, profile_id):
+    def delete_squeak_profile(self, profile_id: int):
         self.squeak_db.delete_profile(profile_id)
 
-    def make_squeak(self, profile_id, content_str, replyto_hash):
+    def make_squeak(self, profile_id: int, content_str: str, replyto_hash: bytes):
         squeak_profile = self.squeak_db.get_profile(profile_id)
         squeak_maker = SqueakMaker(self.blockchain_client)
         squeak = squeak_maker.make_squeak(
             squeak_profile, content_str, replyto_hash)
         return self.save_created_squeak(squeak)
 
-    def get_squeak_entry_with_profile(self, squeak_hash):
+    def get_squeak_entry_with_profile(self, squeak_hash: bytes):
         return self.squeak_store.get_squeak_entry_with_profile(squeak_hash)
 
     def get_timeline_squeak_entries_with_profile(self):
         return self.squeak_store.get_timeline_squeak_entries_with_profile()
 
     def get_squeak_entries_with_profile_for_address(
-        self, address, min_block, max_block
+        self, address: str, min_block: int, max_block: int
     ):
         return self.squeak_store.get_squeak_entries_with_profile_for_address(
             address,
@@ -206,12 +209,12 @@ class SqueakController:
             max_block,
         )
 
-    def get_ancestor_squeak_entries_with_profile(self, squeak_hash_str):
+    def get_ancestor_squeak_entries_with_profile(self, squeak_hash_str: str):
         return self.squeak_store.get_ancestor_squeak_entries_with_profile(
             squeak_hash_str,
         )
 
-    def delete_squeak(self, squeak_hash):
+    def delete_squeak(self, squeak_hash: bytes):
         num_deleted_offers = self.squeak_db.delete_offers_for_squeak(
             squeak_hash)
         logger.info("Deleted number of offers : {}".format(num_deleted_offers))
@@ -229,31 +232,32 @@ class SqueakController:
         )
         return self.squeak_db.insert_peer(squeak_peer)
 
-    def get_peer(self, peer_id):
+    def get_peer(self, peer_id: int):
         return self.squeak_db.get_peer(peer_id)
 
     def get_peers(self):
         return self.squeak_db.get_peers()
 
-    def set_peer_downloading(self, peer_id, downloading):
+    def set_peer_downloading(self, peer_id: int, downloading: bool):
         self.squeak_db.set_peer_downloading(peer_id, downloading)
 
-    def set_peer_uploading(self, peer_id, uploading):
+    def set_peer_uploading(self, peer_id: int, uploading: bool):
         self.squeak_db.set_peer_uploading(peer_id, uploading)
 
-    def delete_peer(self, peer_id):
+    def delete_peer(self, peer_id: int):
         self.squeak_db.delete_peer(peer_id)
 
-    def get_buy_offers_with_peer(self, squeak_hash):
+    def get_buy_offers_with_peer(self, squeak_hash: bytes):
         return self.squeak_db.get_offers_with_peer(squeak_hash)
 
-    def get_buy_offer_with_peer(self, offer_id):
+    def get_buy_offer_with_peer(self, offer_id: int):
         return self.squeak_db.get_offer_with_peer(offer_id)
 
-    def pay_offer(self, offer_id):
+    def pay_offer(self, offer_id: int):
         # Get the offer from the database
         offer_with_peer = self.squeak_db.get_offer_with_peer(offer_id)
         offer = offer_with_peer.offer
+        logger.info("Paying offer: {}".format(offer))
 
         # Pay the invoice
         payment = self.lightning_client.pay_invoice_sync(offer.payment_request)
@@ -292,7 +296,7 @@ class SqueakController:
 
         return sent_payment_id
 
-    def unlock_squeak(self, offer, secret_key):
+    def unlock_squeak(self, offer: Offer, secret_key: bytes):
         squeak_entry = self.squeak_db.get_squeak_entry(offer.squeak_hash)
         squeak = squeak_entry.squeak
 
@@ -309,7 +313,7 @@ class SqueakController:
     def get_sent_payments(self):
         return self.squeak_db.get_sent_payments()
 
-    def get_sent_payment(self, sent_payment_id):
+    def get_sent_payment(self, sent_payment_id: int):
         return self.squeak_db.get_sent_payment(sent_payment_id)
 
     def get_sent_offers(self):
@@ -337,7 +341,7 @@ class SqueakController:
     def process_subscribed_invoices(self):
         self.sent_offers_verifier.process_subscribed_invoices()
 
-    def subscribe_received_payments(self, initial_index):
+    def subscribe_received_payments(self, initial_index: int):
         with OpenReceivedPaymentsSubscriptionClient(
             self.squeak_db,
             initial_index,

@@ -198,13 +198,14 @@ class SqueakAdminServerHandler(object):
             profile_id, content_str, replyto_hash
         )
         return squeak_admin_pb2.MakeSqueakReply(
-            squeak_hash=inserted_squeak_hash,
+            squeak_hash=inserted_squeak_hash.hex(),
         )
 
     def handle_get_squeak_display_entry(self, request):
-        squeak_hash = request.squeak_hash
+        squeak_hash_str = request.squeak_hash
+        squeak_hash = bytes.fromhex(squeak_hash_str)
         logger.info(
-            "Handle get squeak display entry for hash: {}".format(squeak_hash))
+            "Handle get squeak display entry for hash: {}".format(squeak_hash_str))
         squeak_entry_with_profile = (
             self.squeak_controller.get_squeak_entry_with_profile(squeak_hash)
         )
@@ -262,10 +263,11 @@ class SqueakAdminServerHandler(object):
         )
 
     def handle_get_ancestor_squeak_display_entries(self, request):
-        squeak_hash = request.squeak_hash
+        squeak_hash_str = request.squeak_hash
+        squeak_hash = bytes.fromhex(squeak_hash_str)
         logger.info(
             "Handle get ancestor squeak display entries for squeak hash: {}".format(
-                squeak_hash
+                squeak_hash_str
             )
         )
         squeak_entries_with_profile = (
@@ -286,8 +288,10 @@ class SqueakAdminServerHandler(object):
         )
 
     def handle_delete_squeak(self, request):
-        squeak_hash = request.squeak_hash
-        logger.info("Handle delete squeak with hash: {}".format(squeak_hash))
+        squeak_hash_str = request.squeak_hash
+        squeak_hash = bytes.fromhex(squeak_hash_str)
+        logger.info(
+            "Handle delete squeak with hash: {}".format(squeak_hash_str))
         self.squeak_controller.delete_squeak(squeak_hash)
         logger.info("Deleted squeak entry with hash: {}".format(squeak_hash))
         return squeak_admin_pb2.DeleteSqueakReply()
@@ -364,8 +368,10 @@ class SqueakAdminServerHandler(object):
         return squeak_admin_pb2.DeletePeerReply()
 
     def handle_get_buy_offers(self, request):
-        squeak_hash = request.squeak_hash
-        logger.info("Handle get buy offers for hash: {}".format(squeak_hash))
+        squeak_hash_str = request.squeak_hash
+        squeak_hash = bytes.fromhex(squeak_hash_str)
+        logger.info(
+            "Handle get buy offers for hash: {}".format(squeak_hash_str))
         offers = self.squeak_controller.get_buy_offers_with_peer(squeak_hash)
         offer_msgs = [offer_entry_to_message(offer) for offer in offers]
         return squeak_admin_pb2.GetBuyOffersReply(
@@ -391,8 +397,10 @@ class SqueakAdminServerHandler(object):
         )
 
     def handle_sync_squeak(self, request):
-        squeak_hash = request.squeak_hash
-        logger.info("Handle download squeak with hash: {}".format(squeak_hash))
+        squeak_hash_str = request.squeak_hash
+        squeak_hash = bytes.fromhex(squeak_hash_str)
+        logger.info(
+            "Handle download squeak with hash: {}".format(squeak_hash_str))
         # sync_result = self.squeak_controller.sync_squeak(squeak_hash)
         sync_result = self.sync_controller.sync_single_squeak(squeak_hash)
         sync_result_msg = sync_result_to_message(sync_result)
@@ -429,10 +437,11 @@ class SqueakAdminServerHandler(object):
             sent_payment=sent_payment_msg,
         )
 
-    def handle_get_squeak_details(self, request):
-        squeak_hash = request.squeak_hash
+    def handle_get_squeak_details(self, request: squeak_admin_pb2.GetSqueakDetailsRequest):
+        squeak_hash_str = request.squeak_hash
+        squeak_hash = bytes.fromhex(squeak_hash_str)
         logger.info(
-            "Handle get squeak details for hash: {}".format(squeak_hash))
+            "Handle get squeak details for hash: {}".format(squeak_hash_str))
         squeak_entry_with_profile = (
             self.squeak_controller.get_squeak_entry_with_profile(squeak_hash)
         )

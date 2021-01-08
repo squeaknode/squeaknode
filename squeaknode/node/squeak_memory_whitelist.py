@@ -13,12 +13,11 @@ class SqueakMemoryWhitelist(SqueakWhitelist):
         self.refresh()
 
     def should_allow_squeak(self, squeak):
-        squeak_hash = get_hash(squeak)
         squeak_address = squeak.GetAddress()
         squeak_address_str = str(squeak_address)
         logger.info(
             "Checking whitelist for squeak hash: {}, squeak address: {}".format(
-                squeak_hash, squeak_address_str
+                get_hash(squeak).hex(), squeak_address_str
             )
         )
         logger.info("Allowed addresses: {}".format(self.allowed_addresses))

@@ -109,7 +109,7 @@ class SingleSqueakNetworkSyncTask(NetworkSyncTask):
     def __init__(
         self,
         squeak_controller,
-        squeak_hash,
+        squeak_hash: bytes,
     ):
         super().__init__(squeak_controller)
         self.squeak_hash = squeak_hash
