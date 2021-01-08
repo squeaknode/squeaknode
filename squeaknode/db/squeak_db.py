@@ -932,7 +932,7 @@ class SqueakDb:
     def insert_sent_offer(self, sent_offer):
         """ Insert a new sent offer. """
         ins = self.sent_offers.insert().values(
-            squeak_hash=sent_offer.squeak_hash,
+            squeak_hash=sent_offer.squeak_hash.hex(),
             payment_hash=sent_offer.payment_hash,
             secret_key=sent_offer.secret_key,
             nonce=sent_offer.nonce.hex(),
@@ -1008,7 +1008,7 @@ class SqueakDb:
     def insert_received_payment(self, received_payment):
         """ Insert a new received payment. """
         ins = self.received_payments.insert().values(
-            squeak_hash=received_payment.squeak_hash,
+            squeak_hash=received_payment.squeak_hash.hex(),
             payment_hash=received_payment.payment_hash,
             price_msat=received_payment.price_msat,
             settle_index=received_payment.settle_index,
@@ -1161,7 +1161,7 @@ class SqueakDb:
             return None
         return SentOffer(
             sent_offer_id=row["sent_offer_id"],
-            squeak_hash=row["squeak_hash"],
+            squeak_hash=bytes.fromhex(row["squeak_hash"]),
             payment_hash=row["payment_hash"],
             secret_key=row["secret_key"],
             nonce=bytes.fromhex(row["nonce"]),
@@ -1178,7 +1178,7 @@ class SqueakDb:
         return ReceivedPayment(
             received_payment_id=row["received_payment_id"],
             created=row["created"],
-            squeak_hash=row["squeak_hash"],
+            squeak_hash=bytes.fromhex(row["squeak_hash"]),
             payment_hash=row["payment_hash"],
             price_msat=row["price_msat"],
             settle_index=row["settle_index"],
