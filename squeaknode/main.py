@@ -187,6 +187,7 @@ def parse_args():
     # return parser.parse_args()
 
     parser.set_defaults(func=run_node)
+    return parser.parse_args()
 
 
 def main():
