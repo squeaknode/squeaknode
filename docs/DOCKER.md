@@ -18,3 +18,7 @@ If you don't already have your own bitcoin node and lightning node, you can use 
 	```
 	$ docker-compose -f docker-compose.yml -f docker-compose.mainnet.yml up
 	```
+- You may need to change the permissions of the `~/.lnd` directory on your host after docker containers start.
+	```
+	$ sudo chmod -R 755 ~/.lnd/
+	```
