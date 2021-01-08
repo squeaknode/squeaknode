@@ -43,8 +43,10 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
         self.handler.handle_posted_squeak(squeak)
         return squeak_server_pb2.PostSqueakReply()
 
-    def GetSqueak(self, request, context):
-        squeak_hash = request.hash
+    def GetSqueak(self, request: squeak_server_pb2.GetSqueakRequest, context):
+        # squeak_hash = request.hash
+        squeak_hash_str = request.hash
+        squeak_hash = bytes.fromhex(squeak_hash_str)
         # TODO: check if hash is valid
 
         squeak = self.handler.handle_get_squeak(squeak_hash)
@@ -66,7 +68,8 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
         return self.handler.handle_lookup_squeaks(request)
 
     def GetOffer(self, request, context):
-        squeak_hash = request.hash
+        squeak_hash_str = request.hash
+        squeak_hash = bytes.fromhex(squeak_hash_str)
         # TODO: check if hash is valid
         client_addr = context.peer()
 
@@ -83,7 +86,7 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
 
         return squeak_server_pb2.GetOfferReply(
             offer=squeak_server_pb2.SqueakBuyOffer(
-                squeak_hash=offer_squeak_hash,
+                squeak_hash=offer_squeak_hash.hex(),
                 nonce=buy_response.nonce,
                 payment_request=buy_response.payment_request,
                 host=buy_response.host,

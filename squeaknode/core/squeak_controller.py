@@ -214,7 +214,7 @@ class SqueakController:
             squeak_hash_str,
         )
 
-    def delete_squeak(self, squeak_hash):
+    def delete_squeak(self, squeak_hash: bytes):
         num_deleted_offers = self.squeak_db.delete_offers_for_squeak(
             squeak_hash)
         logger.info("Deleted number of offers : {}".format(num_deleted_offers))
@@ -257,6 +257,7 @@ class SqueakController:
         # Get the offer from the database
         offer_with_peer = self.squeak_db.get_offer_with_peer(offer_id)
         offer = offer_with_peer.offer
+        logger.info("Paying offer: {}".format(offer))
 
         # Pay the invoice
         payment = self.lightning_client.pay_invoice_sync(offer.payment_request)

@@ -26,7 +26,7 @@ class NetworkSync:
         if peer.downloading:
             peer_sync_task.download(min_block, max_block)
 
-    def sync_single_squeak(self, peer, squeak_hash):
+    def sync_single_squeak(self, peer, squeak_hash: bytes):
         if not peer.downloading:
             return
         peer_connection = PeerConnection(peer)
