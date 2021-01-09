@@ -30,6 +30,7 @@ import moment from 'moment';
 export default function SqueakThreadItem({
   hash,
   squeak,
+  network,
   ...props
 }) {
   var classes = useStyles();
@@ -38,7 +39,7 @@ export default function SqueakThreadItem({
 
   const blockDetailUrl = () => {
     // return "https://blockstream.info/testnet/block/" + squeak.getBlockHash();
-    return getBlockDetailUrl(squeak.getBlockHash(), "testnet");
+    return getBlockDetailUrl(squeak.getBlockHash(), network);
   };
 
   const goToSqueakPage = (hash) => {

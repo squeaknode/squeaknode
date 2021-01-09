@@ -108,7 +108,8 @@ export default function SqueakPage() {
           <SqueakThreadItem
             hash={ancestorSqueak.getSqueakHash()}
             key={ancestorSqueak.getSqueakHash()}
-            squeak={ancestorSqueak}>
+            squeak={ancestorSqueak}
+            network={network}>
           </SqueakThreadItem>
           <Divider />
           </Box>
