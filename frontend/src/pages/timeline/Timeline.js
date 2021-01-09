@@ -33,7 +33,10 @@ import SqueakThreadItem from "../../components/SqueakThreadItem";
 import { Typography } from "../../components/Wrappers";
 import MakeSqueakDialog from "../../components/MakeSqueakDialog";
 
-import { getTimelineSqueakDisplaysRequest } from "../../squeakclient/requests"
+import {
+  getTimelineSqueakDisplaysRequest,
+  getNetworkRequest,
+} from "../../squeakclient/requests"
 
 
 export default function TimelinePage() {
@@ -41,10 +44,15 @@ export default function TimelinePage() {
   var theme = useTheme();
   const [squeaks, setSqueaks] = useState([]);
   const [open, setOpen] = React.useState(false);
+  const [network, setNetwork] = useState("");
+
   const history = useHistory();
 
   const getSqueaks = () => {
     getTimelineSqueakDisplaysRequest(setSqueaks);
+  };
+  const getNetwork = () => {
+      getNetworkRequest(setNetwork);
   };
 
   const goToSqueakAddressPage = (squeakAddress) => {
@@ -61,6 +69,9 @@ export default function TimelinePage() {
 
   useEffect(()=>{
     getSqueaks(setSqueaks)
+  },[]);
+  useEffect(()=>{
+    getNetwork()
   },[]);
 
   function NoSqueaksContent() {
@@ -94,7 +105,8 @@ export default function TimelinePage() {
           <SqueakThreadItem
             key={squeak.getSqueakHash()}
             hash={squeak.getSqueakHash()}
-            squeak={squeak}>
+            squeak={squeak}
+            network={network}>
           </SqueakThreadItem>
           </Box>
         )}

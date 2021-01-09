@@ -35,11 +35,16 @@ import {
   syncSqueakRequest,
 } from "../../squeakclient/requests"
 
+import {
+  getBlockDetailUrl,
+} from "../../bitcoin/blockexplorer"
+
 import moment from 'moment';
 
 export default function SqueakDetailItem({
   hash,
   squeak,
+  network,
   handleReplyClick,
   handleDeleteClick,
   ...props
@@ -84,7 +89,8 @@ export default function SqueakDetailItem({
   };
 
   const blockDetailUrl = () => {
-    return "https://blockstream.info/testnet/block/" + squeak.getBlockHash();
+    // return "https://blockstream.info/testnet/block/" + squeak.getBlockHash();
+    return getBlockDetailUrl(squeak.getBlockHash(), network);
   };
 
   const onAddressClick = (event) => {

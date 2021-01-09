@@ -20,6 +20,7 @@ import SqueakThreadItem from "../../components/SqueakThreadItem";
 import {
   getSqueakDisplayRequest,
   getAncestorSqueakDisplaysRequest,
+  getNetworkRequest,
 } from "../../squeakclient/requests"
 
 
@@ -29,12 +30,16 @@ export default function SqueakPage() {
   const { hash } = useParams();
   const [squeak, setSqueak] = useState(null);
   const [ancestorSqueaks, setAncestorSqueaks] = useState([]);
+  const [network, setNetwork] = useState("");
 
   const getSqueak = (hash) => {
       getSqueakDisplayRequest(hash, setSqueak);
   };
   const getAncestorSqueaks = (hash) => {
       getAncestorSqueakDisplaysRequest(hash, setAncestorSqueaks);
+  };
+  const getNetwork = () => {
+      getNetworkRequest(setNetwork);
   };
 
   const unknownAncestorHash = () => {
@@ -56,6 +61,9 @@ export default function SqueakPage() {
   useEffect(()=>{
     getAncestorSqueaks(hash)
   },[hash]);
+  useEffect(()=>{
+    getNetwork()
+  },[]);
 
   function NoSqueakContent() {
     return (
@@ -100,7 +108,8 @@ export default function SqueakPage() {
           <SqueakThreadItem
             hash={ancestorSqueak.getSqueakHash()}
             key={ancestorSqueak.getSqueakHash()}
-            squeak={ancestorSqueak}>
+            squeak={ancestorSqueak}
+            network={network}>
           </SqueakThreadItem>
           <Divider />
           </Box>
@@ -117,7 +126,8 @@ export default function SqueakPage() {
         <div>
           <SqueakDetailItem
             hash={hash}
-            squeak={squeak}>
+            squeak={squeak}
+            network={network}>
           </SqueakDetailItem>
         </div>
       </>

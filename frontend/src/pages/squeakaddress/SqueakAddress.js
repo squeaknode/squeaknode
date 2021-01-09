@@ -19,6 +19,7 @@ import CreateContactProfileDialog from "../../components/CreateContactProfileDia
 import {
   getSqueakProfileByAddressRequest,
   getAddressSqueakDisplaysRequest,
+  getNetworkRequest,
 } from "../../squeakclient/requests"
 
 
@@ -29,12 +30,16 @@ export default function SqueakAddressPage() {
   const [squeakProfile, setSqueakProfile] = useState(null);
   const [squeaks, setSqueaks] = useState([]);
   const [createContactProfileDialogOpen, setCreateContactProfileDialogOpen] = useState(false);
+  const [network, setNetwork] = useState("");
 
   const getSqueakProfile = (address) => {
         getSqueakProfileByAddressRequest(address, setSqueakProfile);
   };
   const getSqueaks = (address) => {
       getAddressSqueakDisplaysRequest(address, setSqueaks);
+  };
+  const getNetwork = () => {
+      getNetworkRequest(setNetwork);
   };
 
   const goToProfilePage = (profileId) => {
@@ -55,6 +60,9 @@ export default function SqueakAddressPage() {
   useEffect(()=>{
     getSqueaks(address)
   },[address]);
+  useEffect(()=>{
+    getNetwork()
+  },[]);
 
   function NoProfileContent() {
     return (
@@ -98,7 +106,8 @@ export default function SqueakAddressPage() {
             <SqueakThreadItem
               hash={squeak.getSqueakHash()}
               key={squeak.getSqueakHash()}
-              squeak={squeak}>
+              squeak={squeak}
+              network={network}>
             </SqueakThreadItem>
             </Box>
           )}

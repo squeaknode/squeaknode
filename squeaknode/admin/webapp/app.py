@@ -417,6 +417,14 @@ def create_app(handler, username, password):
             handler.handle_get_received_payments,
         )
 
+    @app.route("/getnetwork", methods=["POST"])
+    @login_required
+    def getnetwork():
+        return handle_request(
+            squeak_admin_pb2.GetNetworkRequest(),
+            handler.handle_get_network,
+        )
+
     return app
 
 
