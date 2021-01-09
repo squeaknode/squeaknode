@@ -14,4 +14,4 @@ build:
 	npm run build
 	cp -r build/ ../squeaknode/admin/webapp/static/
 
-.PHONY: all clean
+.PHONY: all clean rundev build
