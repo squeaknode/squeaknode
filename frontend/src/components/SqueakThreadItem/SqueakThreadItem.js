@@ -21,6 +21,10 @@ import useStyles from "./styles";
 
 import Widget from "../../components/Widget";
 
+import {
+  getBlockDetailUrl,
+} from "../../bitcoin/blockexplorer"
+
 import moment from 'moment';
 
 export default function SqueakThreadItem({
@@ -33,7 +37,8 @@ export default function SqueakThreadItem({
   const history = useHistory();
 
   const blockDetailUrl = () => {
-    return "https://blockstream.info/testnet/block/" + squeak.getBlockHash();
+    // return "https://blockstream.info/testnet/block/" + squeak.getBlockHash();
+    return getBlockDetailUrl(squeak.getBlockHash(), "testnet");
   };
 
   const goToSqueakPage = (hash) => {
