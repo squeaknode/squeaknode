@@ -1,4 +1,5 @@
 import logging
+import time
 from typing import List
 
 from squeak.core import CheckSqueak
@@ -252,19 +253,24 @@ class SqueakController:
             )
 
     def process_subscribed_invoices(self, retry_s: int = 10):
-        # self.sent_offers_verifier.process_subscribed_invoices()
         def get_sent_offer_for_payment_hash(payment_hash: bytes) -> SentOffer:
             return self.squeak_db.get_sent_offer_by_payment_hash(
                 payment_hash
             )
         while True:
-            latest_settle_index = self.squeak_db.get_latest_settle_index() or 0
-            for received_payment in self.squeak_core.get_received_payments(
-                    get_sent_offer_for_payment_hash,
-                    latest_settle_index,
-                    retry_s,
-            ):
-                self.squeak_db.insert_received_payment(received_payment)
+            try:
+                latest_settle_index = self.squeak_db.get_latest_settle_index() or 0
+                for received_payment in self.squeak_core.get_received_payments(
+                        get_sent_offer_for_payment_hash,
+                        latest_settle_index,
+                ):
+                    self.squeak_db.insert_received_payment(received_payment)
+            except Exception:
+                logger.info(
+                    "Unable to subscribe invoices from lnd. Retrying in "
+                    "{} seconds.".format(retry_s),
+                )
+                time.sleep(retry_s)
 
     def subscribe_received_payments(self, initial_index: int):
         with OpenReceivedPaymentsSubscriptionClient(
