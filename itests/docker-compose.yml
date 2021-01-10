@@ -81,6 +81,17 @@ services:
       - ../createdb.sql:/docker-entrypoint-initdb.d/init.sql
       - squeaknode_pgdata:/var/lib/postgresql
 
+  squeaknode_other_db:
+    image: postgres
+    container_name: test_squeaknode_other_db
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - ../createdb.sql:/docker-entrypoint-initdb.d/init.sql
+      - squeaknode_other_pgdata:/var/lib/postgresql
+
   squeaknode:
     image: squeaknode
     container_name: test_squeaknode
@@ -110,6 +121,8 @@ services:
     build:
       context: ../
       dockerfile: Dockerfile
+    environment:
+      - SQUEAKNODE_DB_CONNECTION_STRING=postgresql://postgres:postgres@squeaknode_other_db/squeaknode
     volumes:
       - test_shared:/rpc
       - test_lnd_client_dir:/root/.lnd
@@ -117,6 +130,7 @@ services:
     links:
       - "btcd:btcd"
       - "lnd_client:lnd"
+      - "squeaknode_other_db:squeaknode_other_db"
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=0
     entrypoint: ["./start-squeaknode.sh"]
@@ -154,4 +168,6 @@ volumes:
 
   # postgres db data
   squeaknode_pgdata:
+    driver: local
+  squeaknode_other_pgdata:
     driver: local

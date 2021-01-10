@@ -732,9 +732,9 @@ class SqueakDb:
         """ Insert a new offer. """
         ins = self.offers.insert().values(
             squeak_hash=offer.squeak_hash.hex(),
-            payment_hash=offer.payment_hash,
+            payment_hash=offer.payment_hash.hex(),
             nonce=offer.nonce.hex(),
-            payment_point=offer.payment_point,
+            payment_point=offer.payment_point.hex(),
             invoice_timestamp=offer.invoice_timestamp,
             invoice_expiry=offer.invoice_expiry,
             price_msat=offer.price_msat,
@@ -881,7 +881,7 @@ class SqueakDb:
             offer_id=sent_payment.offer_id,
             peer_id=sent_payment.peer_id,
             squeak_hash=sent_payment.squeak_hash.hex(),
-            payment_hash=sent_payment.payment_hash,
+            payment_hash=sent_payment.payment_hash.hex(),
             secret_key=sent_payment.secret_key.hex(),
             price_msat=sent_payment.price_msat,
             node_pubkey=sent_payment.node_pubkey,
@@ -933,7 +933,7 @@ class SqueakDb:
         """ Insert a new sent offer. """
         ins = self.sent_offers.insert().values(
             squeak_hash=sent_offer.squeak_hash.hex(),
-            payment_hash=sent_offer.payment_hash,
+            payment_hash=sent_offer.payment_hash.hex(),
             secret_key=sent_offer.secret_key,
             nonce=sent_offer.nonce.hex(),
             price_msat=sent_offer.price_msat,
@@ -958,10 +958,10 @@ class SqueakDb:
             sent_offers = [self._parse_sent_offer(row) for row in rows]
             return sent_offers
 
-    def get_sent_offer_by_payment_hash(self, payment_hash):
+    def get_sent_offer_by_payment_hash(self, payment_hash: bytes):
         """ Get a sent offer by preimage hash. """
         s = select([self.sent_offers]).where(
-            self.sent_offers.c.payment_hash == payment_hash
+            self.sent_offers.c.payment_hash == payment_hash.hex()
         )
         with self.get_connection() as connection:
             result = connection.execute(s)
@@ -1009,7 +1009,7 @@ class SqueakDb:
         """ Insert a new received payment. """
         ins = self.received_payments.insert().values(
             squeak_hash=received_payment.squeak_hash.hex(),
-            payment_hash=received_payment.payment_hash,
+            payment_hash=received_payment.payment_hash.hex(),
             price_msat=received_payment.price_msat,
             settle_index=received_payment.settle_index,
             client_addr=received_payment.client_addr,
@@ -1108,9 +1108,9 @@ class SqueakDb:
         return Offer(
             offer_id=row["offer_id"],
             squeak_hash=bytes.fromhex(row["squeak_hash"]),
-            payment_hash=row["payment_hash"],
+            payment_hash=bytes.fromhex(row["payment_hash"]),
             nonce=bytes.fromhex(row["nonce"]),
-            payment_point=row["payment_point"],
+            payment_point=bytes.fromhex(row["payment_point"]),
             invoice_timestamp=row["invoice_timestamp"],
             invoice_expiry=row["invoice_expiry"],
             price_msat=row["price_msat"],
@@ -1140,7 +1140,7 @@ class SqueakDb:
             offer_id=row["offer_id"],
             peer_id=row["peer_id"],
             squeak_hash=bytes.fromhex(row["squeak_hash"]),
-            payment_hash=row["payment_hash"],
+            payment_hash=bytes.fromhex(row["payment_hash"]),
             secret_key=bytes.fromhex(row["secret_key"]),
             price_msat=row["price_msat"],
             node_pubkey=row["node_pubkey"],
@@ -1162,7 +1162,7 @@ class SqueakDb:
         return SentOffer(
             sent_offer_id=row["sent_offer_id"],
             squeak_hash=bytes.fromhex(row["squeak_hash"]),
-            payment_hash=row["payment_hash"],
+            payment_hash=bytes.fromhex(row["payment_hash"]),
             secret_key=row["secret_key"],
             nonce=bytes.fromhex(row["nonce"]),
             price_msat=row["price_msat"],
@@ -1179,7 +1179,7 @@ class SqueakDb:
             received_payment_id=row["received_payment_id"],
             created=row["created"],
             squeak_hash=bytes.fromhex(row["squeak_hash"]),
-            payment_hash=row["payment_hash"],
+            payment_hash=bytes.fromhex(row["payment_hash"]),
             price_msat=row["price_msat"],
             settle_index=row["settle_index"],
             client_addr=row["client_addr"],

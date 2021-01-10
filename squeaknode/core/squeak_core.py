@@ -108,7 +108,7 @@ class SqueakCore:
         return SentOffer(
             sent_offer_id=None,
             squeak_hash=squeak_hash,
-            payment_hash=payment_hash.hex(),
+            payment_hash=payment_hash,
             secret_key=preimage.hex(),
             nonce=nonce,
             price_msat=price_msat,
@@ -167,7 +167,7 @@ class SqueakCore:
                 settle_index=latest_settle_index,
             ):
                 if invoice.settled:
-                    payment_hash = invoice.r_hash.hex()
+                    payment_hash = invoice.r_hash
                     settle_index = invoice.settle_index
                     # sent_offer = self.squeak_db.get_sent_offer_by_payment_hash(
                     #     payment_hash)
