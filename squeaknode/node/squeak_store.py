@@ -8,10 +8,10 @@ logger = logging.getLogger(__name__)
 
 class SqueakStore:
     def __init__(
-        self, squeak_db, squeak_block_verifier, squeak_rate_limiter, squeak_whitelist
+        self, squeak_db, squeak_core, squeak_rate_limiter, squeak_whitelist
     ):
         self.squeak_db = squeak_db
-        self.squeak_block_verifier = squeak_block_verifier
+        self.squeak_core = squeak_core
         self.squeak_rate_limiter = squeak_rate_limiter
         self.squeak_whitelist = squeak_whitelist
 
@@ -23,10 +23,9 @@ class SqueakStore:
             if not self.squeak_rate_limiter.should_rate_limit_allow(squeak):
                 raise Exception(
                     "Excedeed allowed number of squeaks per block.")
-        block_header_bytes = self.squeak_block_verifier.get_block_header(
-            squeak)
+        block_info = self.squeak_core.validate_squeak(squeak)
         inserted_squeak_hash = self.squeak_db.insert_squeak(
-            squeak, block_header_bytes)
+            squeak, block_info.block_header)
         return inserted_squeak_hash
 
     def get_squeak(self, squeak_hash: bytes, clear_decryption_key: bool = False):
