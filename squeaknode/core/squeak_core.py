@@ -8,9 +8,6 @@ from squeak.core.signing import CSigningKey
 
 from squeaknode.core.squeak_entry import SqueakEntry
 from squeaknode.core.squeak_profile import SqueakProfile
-from squeaknode.node.received_payments_subscription_client import (
-    OpenReceivedPaymentsSubscriptionClient,
-)
 
 logger = logging.getLogger(__name__)
 
