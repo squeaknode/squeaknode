@@ -59,19 +59,6 @@ class SqueakController:
     def get_buy_offer(self, squeak_hash: bytes, client_addr: str):
         # Check if there is an existing offer for the hash/client_addr combination
         sent_offer = self.get_saved_sent_offer(squeak_hash, client_addr)
-        # # Get the lightning network node pubkey
-        # get_info_response = self.lightning_client.get_info()
-        # pubkey = get_info_response.identity_pubkey
-        # # Return the buy offer
-        # return BuyOffer(
-        #     squeak_hash=squeak_hash,
-        #     price_msat=self.config.core.price_msat,
-        #     nonce=sent_offer.nonce,
-        #     payment_request=sent_offer.payment_request,
-        #     pubkey=pubkey,
-        #     host=self.config.lnd.external_host,
-        #     port=self.config.lnd.port,
-        # )
         return self.squeak_core.create_buy_offer(
             sent_offer,
             self.config.lnd.external_host,
