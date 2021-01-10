@@ -143,7 +143,6 @@ class SqueakCore:
             raise Exception(
                 "Payment failed with error: {}".format(payment.payment_error)
             )
-
         # Calculate the secret key
         nonce = offer.nonce
         # secret_key = bxor(nonce, preimage)
@@ -183,7 +182,6 @@ class SqueakCore:
                     )
                     # self.squeak_db.insert_received_payment(received_payment)
                     yield received_payment
-
         except Exception:
             logger.info(
                 "Unable to subscribe invoices from lnd. Retrying in "
@@ -194,15 +192,11 @@ class SqueakCore:
     def get_offer(self, squeak: CSqueak, offer_msg: squeak_server_pb2.SqueakBuyOffer, peer: SqueakPeer) -> Offer:
         if peer.peer_id is None:
             raise Exception("Peer must have a non-null peer_id.")
-
         # Get the squeak hash
         squeak_hash = get_hash(squeak)
-
         # Decode the payment request
         pay_req = self.lightning_client.decode_pay_req(
             offer_msg.payment_request)
-        logger.info("Decoded payment request: {}".format(pay_req))
-
         squeak_payment_point = squeak.paymentPoint
         payment_hash = bytes.fromhex(pay_req.payment_hash)
         price_msat = pay_req.num_msat
@@ -211,14 +205,6 @@ class SqueakCore:
         invoice_expiry = pay_req.expiry
         node_host = offer_msg.host or peer.host
         node_port = offer_msg.port
-
-        logger.info("price_msat: {}".format(price_msat))
-        logger.info("destination: {}".format(destination))
-        logger.info("invoice_timestamp: {}".format(invoice_timestamp))
-        logger.info("invoice_expiry: {}".format(invoice_expiry))
-        logger.info("node_host: {}".format(node_host))
-        logger.info("node_port: {}".format(node_port))
-
         decoded_offer = Offer(
             offer_id=None,
             squeak_hash=squeak_hash,
@@ -234,7 +220,6 @@ class SqueakCore:
             node_port=node_port,
             peer_id=peer.peer_id,
         )
-
         # TODO: Check the payment point
         # payment_point = offer.payment_point
         # logger.info("Payment point: {}".format(payment_point.hex()))
@@ -247,5 +232,4 @@ class SqueakCore:
         #             expected_payment_point.hex(),
         #         )
         #     )
-
         return decoded_offer

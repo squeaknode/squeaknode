@@ -202,7 +202,7 @@ class SqueakController:
     def get_buy_offer_with_peer(self, offer_id: int):
         return self.squeak_db.get_offer_with_peer(offer_id)
 
-    def pay_offer(self, offer_id: int):
+    def pay_offer(self, offer_id: int) -> int:
         # Get the offer from the database
         offer_with_peer = self.squeak_db.get_offer_with_peer(offer_id)
         offer = offer_with_peer.offer
@@ -210,22 +210,17 @@ class SqueakController:
         sent_payment = self.squeak_core.pay_offer(offer)
         sent_payment_id = self.squeak_db.insert_sent_payment(sent_payment)
         secret_key = sent_payment.secret_key
-        self.unlock_squeak(offer, secret_key)
-        return sent_payment_id
-
-    def unlock_squeak(self, offer: Offer, secret_key: bytes):
         squeak_entry = self.squeak_db.get_squeak_entry(offer.squeak_hash)
         squeak = squeak_entry.squeak
-
         # Check the decryption key
         squeak.SetDecryptionKey(secret_key)
         CheckSqueak(squeak)
-
         # Set the decryption key in the database
         self.squeak_store.unlock_squeak(
             offer.squeak_hash,
             secret_key,
         )
+        return sent_payment_id
 
     def get_sent_payments(self):
         return self.squeak_db.get_sent_payments()
