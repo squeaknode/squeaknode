@@ -109,7 +109,7 @@ class SqueakCore:
             sent_offer_id=None,
             squeak_hash=squeak_hash,
             payment_hash=payment_hash,
-            secret_key=preimage.hex(),
+            secret_key=preimage,
             nonce=nonce,
             price_msat=price_msat,
             payment_request=invoice_payment_request,

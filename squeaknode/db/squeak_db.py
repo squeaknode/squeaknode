@@ -934,7 +934,7 @@ class SqueakDb:
         ins = self.sent_offers.insert().values(
             squeak_hash=sent_offer.squeak_hash.hex(),
             payment_hash=sent_offer.payment_hash.hex(),
-            secret_key=sent_offer.secret_key,
+            secret_key=sent_offer.secret_key.hex(),
             nonce=sent_offer.nonce.hex(),
             price_msat=sent_offer.price_msat,
             payment_request=sent_offer.payment_request,
@@ -1163,7 +1163,7 @@ class SqueakDb:
             sent_offer_id=row["sent_offer_id"],
             squeak_hash=bytes.fromhex(row["squeak_hash"]),
             payment_hash=bytes.fromhex(row["payment_hash"]),
-            secret_key=row["secret_key"],
+            secret_key=bytes.fromhex(row["secret_key"]),
             nonce=bytes.fromhex(row["nonce"]),
             price_msat=row["price_msat"],
             payment_request=row["payment_request"],
