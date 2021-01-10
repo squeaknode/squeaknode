@@ -6,9 +6,9 @@ class Offer(NamedTuple):
     """Class for saving an offer from a remote peer."""
     offer_id: Optional[int]
     squeak_hash: bytes
-    price_msat: bytes
+    price_msat: int
     payment_hash: bytes
-    nonce: str
+    nonce: bytes
     payment_point: bytes
     invoice_timestamp: int
     invoice_expiry: int

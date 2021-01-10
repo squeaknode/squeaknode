@@ -93,7 +93,7 @@ def sent_payment_with_peer_to_message(sent_payment_with_peer):
         peer_name=peer.peer_name,
         squeak_hash=sent_payment.squeak_hash.hex(),
         payment_hash=sent_payment.payment_hash.hex(),
-        secret_key=sent_payment.secret_key,
+        secret_key=sent_payment.secret_key.hex(),
         price_msat=sent_payment.price_msat,
         node_pubkey=sent_payment.node_pubkey,
         time_ms=int(sent_payment.created.timestamp()) * 1000,
@@ -136,8 +136,8 @@ def sent_offer_to_message(sent_offer):
     return squeak_admin_pb2.SentOffer(
         sent_offer_id=sent_offer.sent_offer_id,
         squeak_hash=sent_offer.squeak_hash.hex(),
-        payment_hash=sent_offer.payment_hash,
-        secret_key=sent_offer.secret_key,
+        payment_hash=sent_offer.payment_hash.hex(),
+        secret_key=sent_offer.secret_key.hex(),
         nonce=sent_offer.nonce.hex(),
         price_msat=sent_offer.price_msat,
     )
@@ -149,7 +149,7 @@ def received_payments_to_message(received_payment):
     return squeak_admin_pb2.ReceivedPayment(
         received_payment_id=received_payment.received_payment_id,
         squeak_hash=received_payment.squeak_hash.hex(),
-        payment_hash=received_payment.payment_hash,
+        payment_hash=received_payment.payment_hash.hex(),
         price_msat=received_payment.price_msat,
         payment_time_ms=int(received_payment.created.timestamp()) * 1000,
         client_addr=received_payment.client_addr,

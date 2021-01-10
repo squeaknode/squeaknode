@@ -12,4 +12,4 @@ class SentPayment(NamedTuple):
     payment_hash: bytes
     secret_key: bytes
     price_msat: int
-    node_pubkey: bytes
+    node_pubkey: str

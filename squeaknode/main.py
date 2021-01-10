@@ -12,6 +12,7 @@ from squeaknode.admin.webapp.app import SqueakAdminWebServer
 from squeaknode.bitcoin.bitcoin_blockchain_client import BitcoinBlockchainClient
 from squeaknode.config.config import SqueaknodeConfig
 from squeaknode.core.squeak_controller import SqueakController
+from squeaknode.core.squeak_core import SqueakCore
 from squeaknode.db.db_engine import get_engine
 from squeaknode.db.db_engine import get_sqlite_connection_string
 from squeaknode.db.squeak_db import SqueakDb
@@ -19,7 +20,6 @@ from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
 from squeaknode.node.received_payments_subscription_client import (
     OpenReceivedPaymentsSubscriptionClient,
 )
-from squeaknode.node.squeak_block_verifier import SqueakBlockVerifier
 from squeaknode.node.squeak_memory_whitelist import SqueakMemoryWhitelist
 from squeaknode.node.squeak_node import SqueakNode
 from squeaknode.node.squeak_rate_limiter import SqueakRateLimiter
@@ -233,7 +233,10 @@ def run_node(config):
     # load the blockchain client
     blockchain_client = load_blockchain_client(config)
 
-    squeak_block_verifier = SqueakBlockVerifier(blockchain_client)
+    squeak_core = SqueakCore(
+        blockchain_client,
+        lightning_client,
+    )
     squeak_rate_limiter = SqueakRateLimiter(
         squeak_db,
         blockchain_client,
@@ -245,15 +248,14 @@ def run_node(config):
     )
     squeak_store = SqueakStore(
         squeak_db,
-        squeak_block_verifier,
+        squeak_core,
         squeak_rate_limiter,
         squeak_whitelist,
     )
 
     squeak_controller = SqueakController(
         squeak_db,
-        blockchain_client,
-        lightning_client,
+        squeak_core,
         squeak_store,
         squeak_whitelist,
         config,
