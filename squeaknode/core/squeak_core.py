@@ -70,11 +70,11 @@ class SqueakCore:
             block_header=block_info.block_header,
         )
 
-    def get_best_block_height(self):
+    def get_best_block_height(self) -> int:
         block_info = self.blockchain_client.get_best_block_info()
         return block_info.block_height
 
-    def create_offer(self, squeak: CSqueak, client_addr: str, price_msat: int):
+    def create_offer(self, squeak: CSqueak, client_addr: str, price_msat: int) -> SentOffer:
         # Get the squeak hash
         squeak_hash = get_hash(squeak)
         # Generate a new random nonce
