@@ -35,7 +35,7 @@ class SqueakController:
         self.squeak_whitelist = squeak_whitelist
         self.sent_offers_verifier = SentOffersVerifier(
             self.squeak_db,
-            self.lightning_client,
+            self.squeak_core,
         )
         self.config = config
 

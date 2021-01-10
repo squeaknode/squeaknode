@@ -1,5 +1,6 @@
 import logging
 import time
+from typing import Iterator
 from typing import Optional
 
 from squeak.core import CSqueak
@@ -8,6 +9,7 @@ from squeak.core.signing import CSigningKey
 
 from squeaknode.core.buy_offer import BuyOffer
 from squeaknode.core.offer import Offer
+from squeaknode.core.received_payment import ReceivedPayment
 from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.sent_payment import SentPayment
 from squeaknode.core.squeak_entry import SqueakEntry
@@ -156,3 +158,33 @@ class SqueakCore:
             price_msat=offer.price_msat,
             node_pubkey=offer.destination,
         )
+
+    def get_received_payments(self, get_sent_offer_fn, latest_settle_index, retry_s) -> Iterator[ReceivedPayment]:
+        try:
+            for invoice in self.lightning_client.subscribe_invoices(
+                settle_index=latest_settle_index,
+            ):
+                if invoice.settled:
+                    payment_hash = invoice.r_hash.hex()
+                    settle_index = invoice.settle_index
+                    # sent_offer = self.squeak_db.get_sent_offer_by_payment_hash(
+                    #     payment_hash)
+                    sent_offer = get_sent_offer_fn(payment_hash)
+                    received_payment = ReceivedPayment(
+                        received_payment_id=None,
+                        created=None,
+                        squeak_hash=sent_offer.squeak_hash,
+                        payment_hash=sent_offer.payment_hash,
+                        price_msat=sent_offer.price_msat,
+                        settle_index=settle_index,
+                        client_addr=sent_offer.client_addr,
+                    )
+                    # self.squeak_db.insert_received_payment(received_payment)
+                    yield received_payment
+
+        except Exception:
+            logger.info(
+                "Unable to subscribe invoices from lnd. Retrying in "
+                "{} seconds.".format(retry_s),
+            )
+            time.sleep(retry_s)
