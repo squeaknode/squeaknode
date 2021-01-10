@@ -1,4 +1,5 @@
 import logging
+import time
 from typing import List
 
 from squeak.core import CheckSqueak
@@ -8,13 +9,13 @@ from squeak.core.signing import CSqueakAddress
 
 from proto import squeak_server_pb2
 from squeaknode.core.offer import Offer
+from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.squeak_address_validator import SqueakAddressValidator
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.node.received_payments_subscription_client import (
     OpenReceivedPaymentsSubscriptionClient,
 )
-from squeaknode.node.sent_offers_verifier import SentOffersVerifier
 
 logger = logging.getLogger(__name__)
 
@@ -32,10 +33,6 @@ class SqueakController:
         self.squeak_core = squeak_core
         self.squeak_store = squeak_store
         self.squeak_whitelist = squeak_whitelist
-        self.sent_offers_verifier = SentOffersVerifier(
-            self.squeak_db,
-            self.squeak_core,
-        )
         self.config = config
 
     def save_uploaded_squeak(self, squeak: CSqueak):
@@ -250,8 +247,25 @@ class SqueakController:
                     num_expired_sent_offers)
             )
 
-    def process_subscribed_invoices(self):
-        self.sent_offers_verifier.process_subscribed_invoices()
+    def process_subscribed_invoices(self, retry_s: int = 10):
+        def get_sent_offer_for_payment_hash(payment_hash: bytes) -> SentOffer:
+            return self.squeak_db.get_sent_offer_by_payment_hash(
+                payment_hash
+            )
+        while True:
+            try:
+                latest_settle_index = self.squeak_db.get_latest_settle_index() or 0
+                for received_payment in self.squeak_core.get_received_payments(
+                        get_sent_offer_for_payment_hash,
+                        latest_settle_index,
+                ):
+                    self.squeak_db.insert_received_payment(received_payment)
+            except Exception:
+                logger.info(
+                    "Unable to subscribe invoices from lnd. Retrying in "
+                    "{} seconds.".format(retry_s),
+                )
+                time.sleep(retry_s)
 
     def subscribe_received_payments(self, initial_index: int):
         with OpenReceivedPaymentsSubscriptionClient(
