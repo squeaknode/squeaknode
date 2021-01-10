@@ -1,7 +1,6 @@
 import logging
 from typing import List
 
-from squeak.core import CSqueak
 
 logger = logging.getLogger(__name__)
 
@@ -15,18 +14,18 @@ class SqueakStore:
         self.squeak_rate_limiter = squeak_rate_limiter
         self.squeak_whitelist = squeak_whitelist
 
-    def save_squeak(self, squeak: CSqueak, skip_whitelist_check: bool = False):
-        if not skip_whitelist_check:
-            if not self.squeak_whitelist.should_allow_squeak(squeak):
-                raise Exception("Squeak upload not allowed by whitelist.")
+    # def save_squeak(self, squeak: CSqueak, skip_whitelist_check: bool = False):
+    #     if not skip_whitelist_check:
+    #         if not self.squeak_whitelist.should_allow_squeak(squeak):
+    #             raise Exception("Squeak upload not allowed by whitelist.")
 
-            if not self.squeak_rate_limiter.should_rate_limit_allow(squeak):
-                raise Exception(
-                    "Excedeed allowed number of squeaks per block.")
-        block_info = self.squeak_core.validate_squeak(squeak)
-        inserted_squeak_hash = self.squeak_db.insert_squeak(
-            squeak, block_info.block_header)
-        return inserted_squeak_hash
+    #         if not self.squeak_rate_limiter.should_rate_limit_allow(squeak):
+    #             raise Exception(
+    #                 "Excedeed allowed number of squeaks per block.")
+    #     block_info = self.squeak_core.validate_squeak(squeak)
+    #     inserted_squeak_hash = self.squeak_db.insert_squeak(
+    #         squeak, block_info.block_header)
+    #     return inserted_squeak_hash
 
     def get_squeak(self, squeak_hash: bytes, clear_decryption_key: bool = False):
         squeak_entry = self.squeak_db.get_squeak_entry(squeak_hash)

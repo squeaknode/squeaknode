@@ -258,6 +258,7 @@ def run_node(config):
         squeak_core,
         squeak_store,
         squeak_whitelist,
+        squeak_rate_limiter,
         config,
     )
 

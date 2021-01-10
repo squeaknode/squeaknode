@@ -27,19 +27,45 @@ class SqueakController:
         squeak_core,
         squeak_store,
         squeak_whitelist,
+        squeak_rate_limiter,
         config,
     ):
         self.squeak_db = squeak_db
         self.squeak_core = squeak_core
         self.squeak_store = squeak_store
         self.squeak_whitelist = squeak_whitelist
+        self.squeak_rate_limiter = squeak_rate_limiter
         self.config = config
 
-    def save_uploaded_squeak(self, squeak: CSqueak):
-        return self.squeak_store.save_squeak(squeak)
+    def save_uploaded_squeak(self, squeak: CSqueak) -> bytes:
+        # return self.squeak_store.save_squeak(squeak)
+        if not self.squeak_whitelist.should_allow_squeak(squeak):
+            raise Exception("Squeak upload not allowed by whitelist.")
+        if not self.squeak_rate_limiter.should_rate_limit_allow(squeak):
+            raise Exception(
+                "Excedeed allowed number of squeaks per block.")
+        # TODO: Only allow uploaded squeak if decryption key included.
+        squeak_entry = self.squeak_core.validate_squeak(squeak)
+        inserted_squeak_hash = self.squeak_db.insert_squeak(
+            squeak, squeak_entry.block_header)
+        return inserted_squeak_hash
 
-    def save_created_squeak(self, squeak: CSqueak):
-        return self.squeak_store.save_squeak(squeak, skip_whitelist_check=True)
+    def save_downloaded_squeak(self, squeak: CSqueak) -> bytes:
+        # return self.squeak_store.save_squeak(squeak)
+        if not self.squeak_rate_limiter.should_rate_limit_allow(squeak):
+            raise Exception(
+                "Excedeed allowed number of squeaks per block.")
+        squeak_entry = self.squeak_core.validate_squeak(squeak)
+        inserted_squeak_hash = self.squeak_db.insert_squeak(
+            squeak, squeak_entry.block_header)
+        return inserted_squeak_hash
+
+    # def save_created_squeak(self, squeak: CSqueak):
+    #     # return self.squeak_store.save_squeak(squeak, skip_whitelist_check=True)
+    #     squeak_entry = self.squeak_core.validate_squeak(squeak)
+    #     inserted_squeak_hash = self.squeak_db.insert_squeak(
+    #         squeak, squeak_entry.block_header)
+    #     return inserted_squeak_hash
 
     def get_public_squeak(self, squeak_hash: bytes):
         return self.squeak_store.get_squeak(squeak_hash, clear_decryption_key=True)
@@ -138,7 +164,10 @@ class SqueakController:
         squeak_profile = self.squeak_db.get_profile(profile_id)
         squeak_entry = self.squeak_core.make_squeak(
             squeak_profile, content_str, replyto_hash)
-        return self.save_created_squeak(squeak_entry.squeak)
+        # return self.save_created_squeak(squeak_entry.squeak)
+        inserted_squeak_hash = self.squeak_db.insert_squeak(
+            squeak_entry.squeak, squeak_entry.block_header)
+        return inserted_squeak_hash
 
     def get_squeak_entry_with_profile(self, squeak_hash: bytes):
         return self.squeak_store.get_squeak_entry_with_profile(squeak_hash)
