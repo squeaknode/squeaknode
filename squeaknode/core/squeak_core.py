@@ -6,6 +6,7 @@ from squeak.core import CSqueak
 from squeak.core import MakeSqueakFromStr
 from squeak.core.signing import CSigningKey
 
+from squeaknode.core.buy_offer import BuyOffer
 from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.squeak_entry import SqueakEntry
 from squeaknode.core.squeak_profile import SqueakProfile
@@ -108,4 +109,19 @@ class SqueakCore:
             invoice_time=invoice_time,
             invoice_expiry=invoice_expiry,
             client_addr=client_addr,
+        )
+
+    def create_buy_offer(self, sent_offer: SentOffer, lnd_external_host: str, lnd_port: int) -> BuyOffer:
+        # Get the lightning network node pubkey
+        get_info_response = self.lightning_client.get_info()
+        pubkey = get_info_response.identity_pubkey
+        # Return the buy offer
+        return BuyOffer(
+            squeak_hash=sent_offer.squeak_hash,
+            price_msat=sent_offer.price_msat,
+            nonce=sent_offer.nonce,
+            payment_request=sent_offer.payment_request,
+            pubkey=pubkey,
+            host=lnd_external_host,
+            port=lnd_port,
         )
