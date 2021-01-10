@@ -7,12 +7,15 @@ from squeak.core import MakeSqueakFromStr
 from squeak.core.signing import CSigningKey
 
 from squeaknode.core.buy_offer import BuyOffer
+from squeaknode.core.offer import Offer
 from squeaknode.core.sent_offer import SentOffer
+from squeaknode.core.sent_payment import SentPayment
 from squeaknode.core.squeak_entry import SqueakEntry
 from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.util import add_tweak
 from squeaknode.core.util import generate_tweak
 from squeaknode.core.util import get_hash
+from squeaknode.core.util import subtract_tweak
 from squeaknode.node.received_payments_subscription_client import (
     OpenReceivedPaymentsSubscriptionClient,
 )
@@ -124,4 +127,32 @@ class SqueakCore:
             pubkey=pubkey,
             host=lnd_external_host,
             port=lnd_port,
+        )
+
+    def pay_offer(self, offer: Offer) -> SentPayment:
+        if offer.offer_id is None:
+            raise Exception("Offer must have a non-null offer_id.")
+        # Pay the invoice
+        payment = self.lightning_client.pay_invoice_sync(offer.payment_request)
+        preimage = payment.payment_preimage
+        if not preimage:
+            raise Exception(
+                "Payment failed with error: {}".format(payment.payment_error)
+            )
+
+        # Calculate the secret key
+        nonce = offer.nonce
+        # secret_key = bxor(nonce, preimage)
+        secret_key = subtract_tweak(preimage, nonce)
+        # Save the preimage of the sent payment
+        return SentPayment(
+            sent_payment_id=None,
+            created=None,
+            offer_id=offer.offer_id,
+            peer_id=offer.peer_id,
+            squeak_hash=offer.squeak_hash,
+            payment_hash=offer.payment_hash,
+            secret_key=secret_key,
+            price_msat=offer.price_msat,
+            node_pubkey=offer.destination,
         )

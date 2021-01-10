@@ -7,11 +7,9 @@ from squeak.core.signing import CSigningKey
 from squeak.core.signing import CSqueakAddress
 
 from squeaknode.core.offer import Offer
-from squeaknode.core.sent_payment import SentPayment
 from squeaknode.core.squeak_address_validator import SqueakAddressValidator
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
-from squeaknode.core.util import subtract_tweak
 from squeaknode.node.received_payments_subscription_client import (
     OpenReceivedPaymentsSubscriptionClient,
 )
@@ -210,42 +208,10 @@ class SqueakController:
         offer_with_peer = self.squeak_db.get_offer_with_peer(offer_id)
         offer = offer_with_peer.offer
         logger.info("Paying offer: {}".format(offer))
-
-        # Pay the invoice
-        payment = self.lightning_client.pay_invoice_sync(offer.payment_request)
-        preimage = payment.payment_preimage
-
-        if not preimage:
-            raise Exception(
-                "Payment failed with error: {}".format(payment.payment_error)
-            )
-
-        # Calculate the secret key
-        nonce = offer.nonce
-        # secret_key = bxor(nonce, preimage)
-        secret_key = subtract_tweak(preimage, nonce)
-        logger.info(
-            "Pay offer with secret key: {} nonce: {} preimage: {}".format(
-                secret_key, nonce, preimage
-            )
-        )
-
-        # Save the preimage of the sent payment
-        sent_payment = SentPayment(
-            sent_payment_id=None,
-            created=None,
-            offer_id=offer_id,
-            peer_id=offer.peer_id,
-            squeak_hash=offer.squeak_hash,
-            payment_hash=offer.payment_hash,
-            secret_key=secret_key.hex(),
-            price_msat=offer.price_msat,
-            node_pubkey=offer.destination,
-        )
+        sent_payment = self.squeak_core.pay_offer(offer)
         sent_payment_id = self.squeak_db.insert_sent_payment(sent_payment)
-
+        secret_key = sent_payment.secret_key
         self.unlock_squeak(offer, secret_key)
-
         return sent_payment_id
 
     def unlock_squeak(self, offer: Offer, secret_key: bytes):

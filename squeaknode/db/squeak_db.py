@@ -882,7 +882,7 @@ class SqueakDb:
             peer_id=sent_payment.peer_id,
             squeak_hash=sent_payment.squeak_hash.hex(),
             payment_hash=sent_payment.payment_hash,
-            secret_key=sent_payment.secret_key,
+            secret_key=sent_payment.secret_key.hex(),
             price_msat=sent_payment.price_msat,
             node_pubkey=sent_payment.node_pubkey,
         )
@@ -1141,7 +1141,7 @@ class SqueakDb:
             peer_id=row["peer_id"],
             squeak_hash=bytes.fromhex(row["squeak_hash"]),
             payment_hash=row["payment_hash"],
-            secret_key=row["secret_key"],
+            secret_key=bytes.fromhex(row["secret_key"]),
             price_msat=row["price_msat"],
             node_pubkey=row["node_pubkey"],
         )
