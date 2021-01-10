@@ -29,7 +29,6 @@ class SqueakController:
         self,
         squeak_db,
         squeak_core,
-        blockchain_client,
         lightning_client,
         squeak_store,
         squeak_whitelist,
@@ -37,7 +36,6 @@ class SqueakController:
     ):
         self.squeak_db = squeak_db
         self.squeak_core = squeak_core
-        self.blockchain_client = blockchain_client
         self.lightning_client = lightning_client
         self.squeak_store = squeak_store
         self.squeak_whitelist = squeak_whitelist
@@ -350,8 +348,7 @@ class SqueakController:
                 yield payment
 
     def get_best_block_height(self):
-        block_info = self.blockchain_client.get_best_block_info()
-        return block_info.block_height
+        return self.squeak_core.get_best_block_height()
 
     def get_network(self):
         print(self.config)

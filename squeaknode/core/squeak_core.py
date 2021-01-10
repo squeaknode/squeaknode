@@ -61,3 +61,7 @@ class SqueakCore:
             squeak=squeak,
             block_header=block_info.block_header,
         )
+
+    def get_best_block_height(self):
+        block_info = self.blockchain_client.get_best_block_info()
+        return block_info.block_height
