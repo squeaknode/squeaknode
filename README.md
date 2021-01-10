@@ -44,7 +44,7 @@ If you don't already have a bitcoin node or lightning node, you can follow the i
 	$ python setup.py install
 	```
 
-- Start the squeak server:
+- Start the squeaknode:
  	```
 	$ squeaknode --config config.ini
 	```
