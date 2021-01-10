@@ -270,8 +270,6 @@ class SqueakController:
         return self.squeak_core.get_best_block_height()
 
     def get_network(self):
-        print(self.config)
-        print(self.config.core)
         return self.config.core.network
 
     def get_offer(self, squeak: CSqueak, offer_msg: squeak_server_pb2.SqueakBuyOffer, peer: SqueakPeer) -> Offer:
