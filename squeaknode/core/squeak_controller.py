@@ -16,7 +16,6 @@ from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.node.received_payments_subscription_client import (
     OpenReceivedPaymentsSubscriptionClient,
 )
-from squeaknode.node.sent_offers_verifier import SentOffersVerifier
 
 logger = logging.getLogger(__name__)
 
@@ -34,10 +33,6 @@ class SqueakController:
         self.squeak_core = squeak_core
         self.squeak_store = squeak_store
         self.squeak_whitelist = squeak_whitelist
-        self.sent_offers_verifier = SentOffersVerifier(
-            self.squeak_db,
-            self.squeak_core,
-        )
         self.config = config
 
     def save_uploaded_squeak(self, squeak: CSqueak):
