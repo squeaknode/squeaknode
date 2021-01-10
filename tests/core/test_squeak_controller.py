@@ -5,6 +5,7 @@ from squeaknode.bitcoin.blockchain_client import BlockchainClient
 from squeaknode.config.config import SqueaknodeConfig
 from squeaknode.core.lightning_address import LightningAddressHostPort
 from squeaknode.core.squeak_controller import SqueakController
+from squeaknode.core.squeak_core import SqueakCore
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.db.squeak_db import SqueakDb
 from squeaknode.node.squeak_store import SqueakStore
@@ -36,6 +37,11 @@ def squeak_db():
 @pytest.fixture
 def blockchain_client():
     return mock.Mock(spec=BlockchainClient)
+
+
+@pytest.fixture
+def squeak_core():
+    return mock.Mock(spec=SqueakCore)
 
 
 @pytest.fixture
@@ -71,6 +77,7 @@ def squeak_store():
 @pytest.fixture
 def squeak_controller(
     squeak_db,
+    squeak_core,
     blockchain_client,
     lightning_client,
     squeak_store,
@@ -79,6 +86,7 @@ def squeak_controller(
 ):
     return SqueakController(
         squeak_db,
+        squeak_core,
         blockchain_client,
         lightning_client,
         squeak_store,
@@ -90,6 +98,7 @@ def squeak_controller(
 @pytest.fixture
 def regtest_squeak_controller(
     squeak_db,
+    squeak_core,
     blockchain_client,
     lightning_client,
     squeak_store,
@@ -98,6 +107,7 @@ def regtest_squeak_controller(
 ):
     return SqueakController(
         squeak_db,
+        squeak_core,
         blockchain_client,
         lightning_client,
         squeak_store,

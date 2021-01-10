@@ -20,7 +20,6 @@ from squeaknode.node.received_payments_subscription_client import (
     OpenReceivedPaymentsSubscriptionClient,
 )
 from squeaknode.node.sent_offers_verifier import SentOffersVerifier
-from squeaknode.node.squeak_maker import SqueakMaker
 
 logger = logging.getLogger(__name__)
 
@@ -29,6 +28,7 @@ class SqueakController:
     def __init__(
         self,
         squeak_db,
+        squeak_core,
         blockchain_client,
         lightning_client,
         squeak_store,
@@ -36,6 +36,7 @@ class SqueakController:
         config,
     ):
         self.squeak_db = squeak_db
+        self.squeak_core = squeak_core
         self.blockchain_client = blockchain_client
         self.lightning_client = lightning_client
         self.squeak_store = squeak_store
@@ -189,10 +190,9 @@ class SqueakController:
 
     def make_squeak(self, profile_id: int, content_str: str, replyto_hash: bytes):
         squeak_profile = self.squeak_db.get_profile(profile_id)
-        squeak_maker = SqueakMaker(self.blockchain_client)
-        squeak = squeak_maker.make_squeak(
+        squeak_entry = self.squeak_core.make_squeak(
             squeak_profile, content_str, replyto_hash)
-        return self.save_created_squeak(squeak)
+        return self.save_created_squeak(squeak_entry.squeak)
 
     def get_squeak_entry_with_profile(self, squeak_hash: bytes):
         return self.squeak_store.get_squeak_entry_with_profile(squeak_hash)
