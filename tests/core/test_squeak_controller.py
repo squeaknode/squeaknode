@@ -39,11 +39,6 @@ def squeak_core():
 
 
 @pytest.fixture
-def lightning_client():
-    return mock.Mock()
-
-
-@pytest.fixture
 def lightning_host_port():
     return LightningAddressHostPort(host="my_lightning_host", port=8765)
 
@@ -72,7 +67,6 @@ def squeak_store():
 def squeak_controller(
     squeak_db,
     squeak_core,
-    lightning_client,
     squeak_store,
     squeak_whitelist,
     config,
@@ -80,7 +74,6 @@ def squeak_controller(
     return SqueakController(
         squeak_db,
         squeak_core,
-        lightning_client,
         squeak_store,
         squeak_whitelist,
         config,
@@ -91,7 +84,6 @@ def squeak_controller(
 def regtest_squeak_controller(
     squeak_db,
     squeak_core,
-    lightning_client,
     squeak_store,
     squeak_whitelist,
     regtest_config,
@@ -99,7 +91,6 @@ def regtest_squeak_controller(
     return SqueakController(
         squeak_db,
         squeak_core,
-        lightning_client,
         squeak_store,
         squeak_whitelist,
         regtest_config,

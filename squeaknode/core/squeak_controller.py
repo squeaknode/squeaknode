@@ -6,6 +6,7 @@ from squeak.core import CSqueak
 from squeak.core.signing import CSigningKey
 from squeak.core.signing import CSqueakAddress
 
+from proto import squeak_server_pb2
 from squeaknode.core.offer import Offer
 from squeaknode.core.squeak_address_validator import SqueakAddressValidator
 from squeaknode.core.squeak_peer import SqueakPeer
@@ -23,14 +24,12 @@ class SqueakController:
         self,
         squeak_db,
         squeak_core,
-        lightning_client,
         squeak_store,
         squeak_whitelist,
         config,
     ):
         self.squeak_db = squeak_db
         self.squeak_core = squeak_core
-        self.lightning_client = lightning_client
         self.squeak_store = squeak_store
         self.squeak_whitelist = squeak_whitelist
         self.sent_offers_verifier = SentOffersVerifier(
@@ -274,3 +273,6 @@ class SqueakController:
         print(self.config)
         print(self.config.core)
         return self.config.core.network
+
+    def get_offer(self, squeak: CSqueak, offer_msg: squeak_server_pb2.SqueakBuyOffer, peer: SqueakPeer) -> Offer:
+        return self.squeak_core.get_offer(squeak, offer_msg, peer)

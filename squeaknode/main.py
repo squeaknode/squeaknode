@@ -256,7 +256,6 @@ def run_node(config):
     squeak_controller = SqueakController(
         squeak_db,
         squeak_core,
-        lightning_client,
         squeak_store,
         squeak_whitelist,
         config,

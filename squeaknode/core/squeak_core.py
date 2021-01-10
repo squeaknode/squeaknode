@@ -7,12 +7,14 @@ from squeak.core import CSqueak
 from squeak.core import MakeSqueakFromStr
 from squeak.core.signing import CSigningKey
 
+from proto import squeak_server_pb2
 from squeaknode.core.buy_offer import BuyOffer
 from squeaknode.core.offer import Offer
 from squeaknode.core.received_payment import ReceivedPayment
 from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.sent_payment import SentPayment
 from squeaknode.core.squeak_entry import SqueakEntry
+from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.util import add_tweak
 from squeaknode.core.util import generate_tweak
@@ -188,3 +190,62 @@ class SqueakCore:
                 "{} seconds.".format(retry_s),
             )
             time.sleep(retry_s)
+
+    def get_offer(self, squeak: CSqueak, offer_msg: squeak_server_pb2.SqueakBuyOffer, peer: SqueakPeer) -> Offer:
+        if peer.peer_id is None:
+            raise Exception("Peer must have a non-null peer_id.")
+
+        # Get the squeak hash
+        squeak_hash = get_hash(squeak)
+
+        # Decode the payment request
+        pay_req = self.lightning_client.decode_pay_req(
+            offer_msg.payment_request)
+        logger.info("Decoded payment request: {}".format(pay_req))
+
+        squeak_payment_point = squeak.paymentPoint
+        payment_hash = bytes.fromhex(pay_req.payment_hash)
+        price_msat = pay_req.num_msat
+        destination = pay_req.destination
+        invoice_timestamp = pay_req.timestamp
+        invoice_expiry = pay_req.expiry
+        node_host = offer_msg.host or peer.host
+        node_port = offer_msg.port
+
+        logger.info("price_msat: {}".format(price_msat))
+        logger.info("destination: {}".format(destination))
+        logger.info("invoice_timestamp: {}".format(invoice_timestamp))
+        logger.info("invoice_expiry: {}".format(invoice_expiry))
+        logger.info("node_host: {}".format(node_host))
+        logger.info("node_port: {}".format(node_port))
+
+        decoded_offer = Offer(
+            offer_id=None,
+            squeak_hash=squeak_hash,
+            price_msat=price_msat,
+            payment_hash=payment_hash,
+            nonce=offer_msg.nonce,
+            payment_point=squeak_payment_point,
+            invoice_timestamp=invoice_timestamp,
+            invoice_expiry=invoice_expiry,
+            payment_request=offer_msg.payment_request,
+            destination=destination,
+            node_host=node_host,
+            node_port=node_port,
+            peer_id=peer.peer_id,
+        )
+
+        # TODO: Check the payment point
+        # payment_point = offer.payment_point
+        # logger.info("Payment point: {}".format(payment_point.hex()))
+        # expected_payment_point = squeak.paymentPoint
+        # logger.info("Expected payment point: {}".format(expected_payment_point.hex()))
+        # if payment_point != expected_payment_point:
+        #     raise Exception(
+        #         "Invalid offer payment point: {}, expected: {}".format(
+        #             payment_point.hex(),
+        #             expected_payment_point.hex(),
+        #         )
+        #     )
+
+        return decoded_offer

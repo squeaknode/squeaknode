@@ -8,7 +8,7 @@ class Offer(NamedTuple):
     squeak_hash: bytes
     price_msat: int
     payment_hash: bytes
-    nonce: str
+    nonce: bytes
     payment_point: bytes
     invoice_timestamp: int
     invoice_expiry: int
