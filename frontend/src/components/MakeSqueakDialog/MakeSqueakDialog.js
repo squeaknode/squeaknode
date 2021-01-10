@@ -19,6 +19,7 @@ import {
   InputLabel,
   Select,
 } from "@material-ui/core";
+
 import { MoreVert as MoreIcon } from "@material-ui/icons";
 import {useHistory} from "react-router-dom";
 import classnames from "classnames";
@@ -66,7 +67,7 @@ export default function MakeSqueakDialog({
   };
 
   const handleErr = (err) => {
-    alert('Error making squeak: ' + err.message);
+    alert('Error making squeak: ' + err);
   };
 
   const createSqueak = (profileId, content, replyto) => {

@@ -669,6 +669,7 @@ export function makeSqueakRequest(profileId, content, replyto, handleResponse, h
     request,
     MakeSqueakReply.deserializeBinary,
     handleResponse,
+    handleErr,
   );
 };
 
