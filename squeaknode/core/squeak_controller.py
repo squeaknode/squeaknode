@@ -8,13 +8,10 @@ from squeak.core.signing import CSqueakAddress
 
 from squeaknode.core.buy_offer import BuyOffer
 from squeaknode.core.offer import Offer
-from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.sent_payment import SentPayment
 from squeaknode.core.squeak_address_validator import SqueakAddressValidator
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
-from squeaknode.core.util import add_tweak
-from squeaknode.core.util import generate_tweak
 from squeaknode.core.util import subtract_tweak
 from squeaknode.node.received_payments_subscription_client import (
     OpenReceivedPaymentsSubscriptionClient,
@@ -77,47 +74,6 @@ class SqueakController:
             port=self.config.lnd.port,
         )
 
-    def create_offer(self, squeak_hash: bytes, client_addr: str):
-        # Generate a new random nonce
-        nonce = generate_tweak()
-        # Get the squeak secret key
-        squeak = self.squeak_store.get_squeak(squeak_hash)
-        secret_key = squeak.GetDecryptionKey()
-        # Calculate the preimage
-        # preimage = bxor(nonce, secret_key)
-        preimage = add_tweak(secret_key, nonce)
-        logger.info(
-            "Create offer with secret key: {} nonce: {} preimage: {}".format(
-                secret_key, nonce, preimage
-            )
-        )
-        # Create the lightning invoice
-        add_invoice_response = self.lightning_client.add_invoice(
-            preimage, self.config.core.price_msat
-        )
-        logger.info("add_invoice_response: {}".format(add_invoice_response))
-        payment_hash = add_invoice_response.r_hash
-        invoice_payment_request = add_invoice_response.payment_request
-        # invoice_expiry = add_invoice_response.expiry
-        lookup_invoice_response = self.lightning_client.lookup_invoice(
-            payment_hash.hex()
-        )
-        invoice_time = lookup_invoice_response.creation_date
-        invoice_expiry = lookup_invoice_response.expiry
-        # Save the incoming potential payment in the databse.
-        return SentOffer(
-            sent_offer_id=None,
-            squeak_hash=squeak_hash,
-            payment_hash=payment_hash.hex(),
-            secret_key=preimage.hex(),
-            nonce=nonce,
-            price_msat=self.config.core.price_msat,
-            payment_request=invoice_payment_request,
-            invoice_time=invoice_time,
-            invoice_expiry=invoice_expiry,
-            client_addr=client_addr,
-        )
-
     def get_saved_sent_offer(self, squeak_hash: bytes, client_addr: str):
         # Check if there is an existing offer for the hash/client_addr combination
         sent_offer = self.squeak_db.get_sent_offer_by_squeak_hash_and_client_addr(
@@ -126,7 +82,14 @@ class SqueakController:
         )
         if sent_offer:
             return sent_offer
-        sent_offer = self.create_offer(squeak_hash, client_addr)
+        squeak = self.squeak_store.get_squeak(squeak_hash)
+        # sent_offer = self.create_offer(
+        #     squeak, client_addr, self.config.core.price_msat)
+        sent_offer = self.squeak_core.create_offer(
+            squeak,
+            client_addr,
+            self.config.core.price_msat,
+        )
         self.squeak_db.insert_sent_offer(sent_offer)
         return sent_offer
 
