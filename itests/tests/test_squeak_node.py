@@ -874,6 +874,16 @@ def test_connect_other_node(
     print(sync_squeaks_response)
     assert peer_id in sync_squeaks_response.sync_result.completed_peer_ids
 
+    # Get the sent offers from the seller node
+    get_sent_offers_response = admin_stub.GetSentOffers(
+        squeak_admin_pb2.GetSentOffersRequest(),
+    )
+    squeak_hashes = [
+        sent_offer.squeak_hash
+        for sent_offer in get_sent_offers_response.sent_offers
+    ]
+    assert saved_squeak_hash in squeak_hashes
+
     # Get the buy offer
     get_buy_offers_response = other_admin_stub.GetBuyOffers(
         squeak_admin_pb2.GetBuyOffersRequest(
@@ -932,16 +942,6 @@ def test_connect_other_node(
         )
         assert saved_squeak_hash == get_sent_payment_response.sent_payment.squeak_hash
         assert get_sent_payment_response.sent_payment.price_msat == 1000000
-
-        # Get the sent offers from the seller node
-        get_sent_offers_response = admin_stub.GetSentOffers(
-            squeak_admin_pb2.GetSentOffersRequest(),
-        )
-        squeak_hashes = [
-            sent_offer.squeak_hash
-            for sent_offer in get_sent_offers_response.sent_offers
-        ]
-        assert saved_squeak_hash in squeak_hashes
 
         # Get the received payment from the seller node
         get_received_payments_response = admin_stub.GetReceivedPayments(
