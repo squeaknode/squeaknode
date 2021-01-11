@@ -7,6 +7,7 @@ from squeak.core import CSqueak
 from proto import squeak_server_pb2
 from proto import squeak_server_pb2_grpc
 from squeaknode.core.util import get_hash
+from squeaknode.server.util import parse_ip_address
 
 logger = logging.getLogger(__name__)
 
@@ -72,8 +73,9 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
         squeak_hash = bytes.fromhex(squeak_hash_str)
         # TODO: check if hash is valid
         client_addr = context.peer()
+        ip_addr = parse_ip_address(client_addr)
 
-        buy_response = self.handler.handle_get_offer(squeak_hash, client_addr)
+        buy_response = self.handler.handle_get_offer(squeak_hash, ip_addr)
 
         if buy_response is None:
             context.set_code(grpc.StatusCode.NOT_FOUND)
