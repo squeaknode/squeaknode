@@ -80,8 +80,8 @@ class Models:
             Column("downloading", Boolean, nullable=False),
         )
 
-        self.offers = Table(
-            "offer",
+        self.received_offers = Table(
+            "received_offer",
             self.metadata,
             Column("offer_id", Integer, primary_key=True),
             Column("created", TZDateTime,
