@@ -25,27 +25,48 @@ class SqueakController:
         self,
         squeak_db,
         squeak_core,
-        squeak_store,
         squeak_whitelist,
+        squeak_rate_limiter,
         config,
     ):
         self.squeak_db = squeak_db
         self.squeak_core = squeak_core
-        self.squeak_store = squeak_store
         self.squeak_whitelist = squeak_whitelist
+        self.squeak_rate_limiter = squeak_rate_limiter
         self.config = config
 
-    def save_uploaded_squeak(self, squeak: CSqueak):
-        return self.squeak_store.save_squeak(squeak)
+    def save_uploaded_squeak(self, squeak: CSqueak) -> bytes:
+        if not self.squeak_whitelist.should_allow_squeak(squeak):
+            raise Exception("Squeak upload not allowed by whitelist.")
+        if not self.squeak_rate_limiter.should_rate_limit_allow(squeak):
+            raise Exception(
+                "Excedeed allowed number of squeaks per block.")
+        # TODO: Only allow uploaded squeak if decryption key included.
+        squeak_entry = self.squeak_core.validate_squeak(squeak)
+        inserted_squeak_hash = self.squeak_db.insert_squeak(
+            squeak, squeak_entry.block_header)
+        return inserted_squeak_hash
 
-    def save_created_squeak(self, squeak: CSqueak):
-        return self.squeak_store.save_squeak(squeak, skip_whitelist_check=True)
+    def save_downloaded_squeak(self, squeak: CSqueak) -> bytes:
+        if not self.squeak_rate_limiter.should_rate_limit_allow(squeak):
+            raise Exception(
+                "Excedeed allowed number of squeaks per block.")
+        squeak_entry = self.squeak_core.validate_squeak(squeak)
+        inserted_squeak_hash = self.squeak_db.insert_squeak(
+            squeak, squeak_entry.block_header)
+        return inserted_squeak_hash
+
+    def get_squeak(self, squeak_hash: bytes, clear_decryption_key: bool = False):
+        squeak_entry = self.squeak_db.get_squeak_entry(squeak_hash)
+        if squeak_entry is None:
+            return None
+        squeak = squeak_entry.squeak
+        if clear_decryption_key:
+            squeak.ClearDecryptionKey()
+        return squeak
 
     def get_public_squeak(self, squeak_hash: bytes):
-        return self.squeak_store.get_squeak(squeak_hash, clear_decryption_key=True)
-
-    def lookup_squeaks(self, addresses: str, min_block: int, max_block: int):
-        return self.squeak_store.lookup_squeaks(addresses, min_block, max_block)
+        return self.get_squeak(squeak_hash, clear_decryption_key=True)
 
     def lookup_allowed_addresses(self, addresses: List[str]):
         return self.squeak_whitelist.get_allowed_addresses(addresses)
@@ -67,7 +88,7 @@ class SqueakController:
         )
         if sent_offer:
             return sent_offer
-        squeak = self.squeak_store.get_squeak(squeak_hash)
+        squeak = self.get_squeak(squeak_hash)
         # sent_offer = self.create_offer(
         #     squeak, client_addr, self.config.core.price_msat)
         sent_offer = self.squeak_core.create_offer(
@@ -138,33 +159,16 @@ class SqueakController:
         squeak_profile = self.squeak_db.get_profile(profile_id)
         squeak_entry = self.squeak_core.make_squeak(
             squeak_profile, content_str, replyto_hash)
-        return self.save_created_squeak(squeak_entry.squeak)
-
-    def get_squeak_entry_with_profile(self, squeak_hash: bytes):
-        return self.squeak_store.get_squeak_entry_with_profile(squeak_hash)
-
-    def get_timeline_squeak_entries_with_profile(self):
-        return self.squeak_store.get_timeline_squeak_entries_with_profile()
-
-    def get_squeak_entries_with_profile_for_address(
-        self, address: str, min_block: int, max_block: int
-    ):
-        return self.squeak_store.get_squeak_entries_with_profile_for_address(
-            address,
-            min_block,
-            max_block,
-        )
-
-    def get_ancestor_squeak_entries_with_profile(self, squeak_hash_str: str):
-        return self.squeak_store.get_ancestor_squeak_entries_with_profile(
-            squeak_hash_str,
-        )
+        # return self.save_created_squeak(squeak_entry.squeak)
+        inserted_squeak_hash = self.squeak_db.insert_squeak(
+            squeak_entry.squeak, squeak_entry.block_header)
+        return inserted_squeak_hash
 
     def delete_squeak(self, squeak_hash: bytes):
         num_deleted_offers = self.squeak_db.delete_offers_for_squeak(
             squeak_hash)
         logger.info("Deleted number of offers : {}".format(num_deleted_offers))
-        return self.squeak_store.delete_squeak(squeak_hash)
+        return self.squeak_db.delete_squeak(squeak_hash)
 
     def create_peer(self, peer_name: str, host: str, port: int):
         port = port or self.config.core.default_peer_rpc_port
@@ -213,11 +217,17 @@ class SqueakController:
         squeak.SetDecryptionKey(secret_key)
         CheckSqueak(squeak)
         # Set the decryption key in the database
-        self.squeak_store.unlock_squeak(
+        self.unlock_squeak(
             offer.squeak_hash,
             secret_key,
         )
         return sent_payment_id
+
+    def unlock_squeak(self, squeak_hash: bytes, secret_key: bytes):
+        self.squeak_db.set_squeak_decryption_key(
+            squeak_hash,
+            secret_key,
+        )
 
     def get_sent_payments(self):
         return self.squeak_db.get_sent_payments()
@@ -283,3 +293,58 @@ class SqueakController:
 
     def get_offer(self, squeak: CSqueak, offer_msg: squeak_server_pb2.SqueakBuyOffer, peer: SqueakPeer) -> Offer:
         return self.squeak_core.get_offer(squeak, offer_msg, peer)
+
+    def get_squeak_entry_with_profile(self, squeak_hash: bytes):
+        return self.squeak_db.get_squeak_entry_with_profile(squeak_hash)
+
+    def get_timeline_squeak_entries_with_profile(self):
+        return self.squeak_db.get_timeline_squeak_entries_with_profile()
+
+    def get_squeak_entries_with_profile_for_address(
+        self, address: str, min_block: int, max_block: int
+    ):
+        return self.squeak_db.get_squeak_entries_with_profile_for_address(
+            address,
+            min_block,
+            max_block,
+        )
+
+    def get_ancestor_squeak_entries_with_profile(self, squeak_hash: bytes):
+        return self.squeak_db.get_thread_ancestor_squeak_entries_with_profile(
+            squeak_hash,
+        )
+
+    def lookup_squeaks(self, addresses: List[str], min_block: int, max_block: int):
+        return self.squeak_db.lookup_squeaks(
+            addresses,
+            min_block,
+            max_block,
+        )
+
+    def lookup_squeaks_include_locked(self, addresses: List[str], min_block: int, max_block: int):
+        return self.squeak_db.lookup_squeaks(
+            addresses,
+            min_block,
+            max_block,
+            include_locked=True,
+        )
+
+    def lookup_squeaks_needing_offer(self, addresses: List[str], min_block, max_block, peer_id):
+        return self.squeak_db.lookup_squeaks_needing_offer(
+            addresses,
+            min_block,
+            max_block,
+            peer_id,
+        )
+
+    def save_offer(self, offer: Offer):
+        logger.info("Saving offer: {}".format(offer))
+        self.squeak_db.insert_offer(offer)
+
+    def get_followed_addresses(self):
+        followed_profiles = self.squeak_db.get_following_profiles()
+        return [profile.address for profile in followed_profiles]
+
+    def get_sharing_addresses(self):
+        sharing_profiles = self.squeak_db.get_sharing_profiles()
+        return [profile.address for profile in sharing_profiles]

@@ -7,7 +7,7 @@ from squeaknode.core.squeak_controller import SqueakController
 from squeaknode.core.squeak_core import SqueakCore
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.db.squeak_db import SqueakDb
-from squeaknode.node.squeak_store import SqueakStore
+from squeaknode.node.squeak_rate_limiter import SqueakRateLimiter
 from squeaknode.node.squeak_whitelist import SqueakWhitelist
 
 
@@ -59,23 +59,23 @@ def squeak_whitelist():
 
 
 @pytest.fixture
-def squeak_store():
-    return mock.Mock(spec=SqueakStore)
+def squeak_rate_limiter():
+    return mock.Mock(spec=SqueakRateLimiter)
 
 
 @pytest.fixture
 def squeak_controller(
     squeak_db,
     squeak_core,
-    squeak_store,
     squeak_whitelist,
+    squeak_rate_limiter,
     config,
 ):
     return SqueakController(
         squeak_db,
         squeak_core,
-        squeak_store,
         squeak_whitelist,
+        squeak_rate_limiter,
         config,
     )
 
@@ -84,15 +84,15 @@ def squeak_controller(
 def regtest_squeak_controller(
     squeak_db,
     squeak_core,
-    squeak_store,
     squeak_whitelist,
+    squeak_rate_limiter,
     regtest_config,
 ):
     return SqueakController(
         squeak_db,
         squeak_core,
-        squeak_store,
         squeak_whitelist,
+        squeak_rate_limiter,
         regtest_config,
     )
 
