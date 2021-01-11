@@ -253,11 +253,17 @@ class SqueakController:
         squeak.SetDecryptionKey(secret_key)
         CheckSqueak(squeak)
         # Set the decryption key in the database
-        self.squeak_store.unlock_squeak(
+        self.unlock_squeak(
             offer.squeak_hash,
             secret_key,
         )
         return sent_payment_id
+
+    def unlock_squeak(self, squeak_hash: bytes, secret_key: bytes):
+        self.squeak_db.set_squeak_decryption_key(
+            squeak_hash,
+            secret_key,
+        )
 
     def get_sent_payments(self):
         return self.squeak_db.get_sent_payments()

@@ -82,8 +82,8 @@ class SqueakStore:
             peer_id,
         )
 
-    def unlock_squeak(self, squeak_hash: bytes, secret_key: bytes):
-        self.squeak_db.set_squeak_decryption_key(
-            squeak_hash,
-            secret_key,
-        )
+    # def unlock_squeak(self, squeak_hash: bytes, secret_key: bytes):
+    #     self.squeak_db.set_squeak_decryption_key(
+    #         squeak_hash,
+    #         secret_key,
+    #     )
