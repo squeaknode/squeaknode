@@ -170,7 +170,9 @@ class SqueakCore:
         squeak_hash = get_hash(squeak)
         # TODO: check if squeak hash matches squeak_hash in buy_offer.
         if squeak_hash != offer.squeak_hash:
-            raise Exception("Squeak hash in offer does not match.")
+            raise Exception("Squeak hash in offer {!r} does not match squeak hash {!r}.".format(
+                offer.squeak_hash, squeak_hash
+            ))
         # Decode the payment request
         pay_req = self.lightning_client.decode_pay_req(
             offer.payment_request)

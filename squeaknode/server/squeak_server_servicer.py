@@ -82,11 +82,11 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
                 offer=None,
             )
 
-        offer_squeak_hash = buy_response.squeak_hash
+        logger.info("Sending buy offer: {}".format(buy_response))
 
         return squeak_server_pb2.GetOfferReply(
             offer=squeak_server_pb2.SqueakBuyOffer(
-                squeak_hash=offer_squeak_hash,
+                squeak_hash=buy_response.squeak_hash,
                 nonce=buy_response.nonce,
                 payment_request=buy_response.payment_request,
                 host=buy_response.host,
