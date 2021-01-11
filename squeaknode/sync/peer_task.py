@@ -19,10 +19,6 @@ class PeerSyncTask:
         return self.peer_connection.peer
 
     @property
-    def squeak_db(self):
-        return self.squeak_controller.squeak_db
-
-    @property
     def peer_client(self):
         return self.peer_connection.peer_client
 
@@ -32,7 +28,7 @@ class PeerSyncTask:
         max_block,
     ):
         # Get list of followed addresses.
-        addresses = self._get_followed_addresses()
+        addresses = self.squeak_controller.get_followed_addresses()
         logger.debug("Followed addresses: {}".format(addresses))
 
         # Get remote hashes
@@ -89,7 +85,7 @@ class PeerSyncTask:
         max_block,
     ):
         # Get list of sharing addresses.
-        addresses = self._get_sharing_addresses()
+        addresses = self.squeak_controller.get_sharing_addresses()
         logger.debug("Sharing addresses: {}".format(addresses))
 
         # Get remote hashes
@@ -206,9 +202,9 @@ class PeerSyncTask:
         squeak = self.peer_client.get_squeak(squeak_hash)
         self._save_squeak(squeak)
 
-    def _get_followed_addresses(self):
-        followed_profiles = self.squeak_db.get_following_profiles()
-        return [profile.address for profile in followed_profiles]
+    # def _get_followed_addresses(self):
+    #     followed_profiles = self.squeak_db.get_following_profiles()
+    #     return [profile.address for profile in followed_profiles]
 
     def _download_offer(self, squeak_hash: bytes):
         logger.info("Downloading offer for hash: {}".format(squeak_hash.hex()))
@@ -229,9 +225,9 @@ class PeerSyncTask:
         ))
         self.peer_client.post_squeak(squeak)
 
-    def _get_sharing_addresses(self):
-        sharing_profiles = self.squeak_db.get_sharing_profiles()
-        return [profile.address for profile in sharing_profiles]
+    # def _get_sharing_addresses(self):
+    #     sharing_profiles = self.squeak_db.get_sharing_profiles()
+    #     return [profile.address for profile in sharing_profiles]
 
     def _download_offer_msg(self, squeak_hash: bytes):
         logger.info(

@@ -353,3 +353,11 @@ class SqueakController:
     def save_offer(self, offer: Offer):
         logger.info("Saving offer: {}".format(offer))
         self.squeak_db.insert_offer(offer)
+
+    def get_followed_addresses(self):
+        followed_profiles = self.squeak_db.get_following_profiles()
+        return [profile.address for profile in followed_profiles]
+
+    def get_sharing_addresses(self):
+        sharing_profiles = self.squeak_db.get_sharing_profiles()
+        return [profile.address for profile in sharing_profiles]
