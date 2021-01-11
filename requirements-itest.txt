@@ -4,4 +4,4 @@ grpcio
 grpcio-tools
 importlib_resources==1.4.0
 pytest
-squeaklib==0.5.1
+squeaklib==0.5.3
