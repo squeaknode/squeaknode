@@ -7,7 +7,6 @@ from squeak.core import CSqueak
 from squeak.core import MakeSqueakFromStr
 from squeak.core.signing import CSigningKey
 
-from proto import squeak_server_pb2
 from squeaknode.core.buy_offer import BuyOffer
 from squeaknode.core.offer import Offer
 from squeaknode.core.received_payment import ReceivedPayment
@@ -170,7 +169,8 @@ class SqueakCore:
                 )
                 yield received_payment
 
-    def get_offer(self, squeak: CSqueak, offer_msg: squeak_server_pb2.SqueakBuyOffer, peer: SqueakPeer) -> Offer:
+    def get_offer(self, squeak: CSqueak, offer_msg: BuyOffer, peer: SqueakPeer) -> Offer:
+        # TODO: check if squeak hash matches squeak_hash in buy_offer.
         if peer.peer_id is None:
             raise Exception("Peer must have a non-null peer_id.")
         # Get the squeak hash

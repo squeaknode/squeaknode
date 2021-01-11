@@ -86,7 +86,7 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
 
         return squeak_server_pb2.GetOfferReply(
             offer=squeak_server_pb2.SqueakBuyOffer(
-                squeak_hash=offer_squeak_hash.hex(),
+                squeak_hash=offer_squeak_hash,
                 nonce=buy_response.nonce,
                 payment_request=buy_response.payment_request,
                 host=buy_response.host,

@@ -1,6 +1,7 @@
 import logging
 
 from squeaknode.core.util import get_hash
+from squeaknode.sync.util import parse_buy_offer
 
 logger = logging.getLogger(__name__)
 
@@ -153,9 +154,10 @@ class PeerSyncTask:
 
         # Download the buy offer
         offer_msg = self._download_offer_msg(squeak_hash)
+        buy_offer = parse_buy_offer(offer_msg)
 
         decoded_offer = self.squeak_controller.get_offer(
-            squeak, offer_msg, self.peer)
+            squeak, buy_offer, self.peer)
 
         # Save the offer
         self.squeak_controller.save_offer(decoded_offer)

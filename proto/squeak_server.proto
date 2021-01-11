@@ -83,7 +83,7 @@ message Squeak {
 
 message SqueakBuyOffer {
     /// The squeak hash.
-    string squeak_hash = 1;
+    bytes squeak_hash = 1;
 
     /// Nonce
     bytes nonce = 2;
