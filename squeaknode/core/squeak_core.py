@@ -7,7 +7,6 @@ from squeak.core import CSqueak
 from squeak.core import MakeSqueakFromStr
 from squeak.core.signing import CSigningKey
 
-from proto import squeak_server_pb2
 from squeaknode.core.buy_offer import BuyOffer
 from squeaknode.core.offer import Offer
 from squeaknode.core.received_payment import ReceivedPayment
@@ -110,16 +109,10 @@ class SqueakCore:
         )
 
     def create_buy_offer(self, sent_offer: SentOffer, lnd_external_host: str, lnd_port: int) -> BuyOffer:
-        # Get the lightning network node pubkey
-        get_info_response = self.lightning_client.get_info()
-        pubkey = get_info_response.identity_pubkey
-        # Return the buy offer
         return BuyOffer(
             squeak_hash=sent_offer.squeak_hash,
-            price_msat=sent_offer.price_msat,
             nonce=sent_offer.nonce,
             payment_request=sent_offer.payment_request,
-            pubkey=pubkey,
             host=lnd_external_host,
             port=lnd_port,
         )
@@ -170,32 +163,37 @@ class SqueakCore:
                 )
                 yield received_payment
 
-    def get_offer(self, squeak: CSqueak, offer_msg: squeak_server_pb2.SqueakBuyOffer, peer: SqueakPeer) -> Offer:
+    def get_offer(self, squeak: CSqueak, offer: BuyOffer, peer: SqueakPeer) -> Offer:
         if peer.peer_id is None:
             raise Exception("Peer must have a non-null peer_id.")
         # Get the squeak hash
         squeak_hash = get_hash(squeak)
+        # TODO: check if squeak hash matches squeak_hash in buy_offer.
+        if squeak_hash != offer.squeak_hash:
+            raise Exception("Squeak hash in offer {!r} does not match squeak hash {!r}.".format(
+                offer.squeak_hash, squeak_hash
+            ))
         # Decode the payment request
         pay_req = self.lightning_client.decode_pay_req(
-            offer_msg.payment_request)
+            offer.payment_request)
         squeak_payment_point = squeak.paymentPoint
         payment_hash = bytes.fromhex(pay_req.payment_hash)
         price_msat = pay_req.num_msat
         destination = pay_req.destination
         invoice_timestamp = pay_req.timestamp
         invoice_expiry = pay_req.expiry
-        node_host = offer_msg.host or peer.host
-        node_port = offer_msg.port
+        node_host = offer.host or peer.host
+        node_port = offer.port
         decoded_offer = Offer(
             offer_id=None,
             squeak_hash=squeak_hash,
             price_msat=price_msat,
             payment_hash=payment_hash,
-            nonce=offer_msg.nonce,
+            nonce=offer.nonce,
             payment_point=squeak_payment_point,
             invoice_timestamp=invoice_timestamp,
             invoice_expiry=invoice_expiry,
-            payment_request=offer_msg.payment_request,
+            payment_request=offer.payment_request,
             destination=destination,
             node_host=node_host,
             node_port=node_port,
