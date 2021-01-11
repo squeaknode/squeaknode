@@ -82,7 +82,7 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=[
-        'squeaklib==0.5.1',
+        'squeaklib>=0.5.3',
         'importlib_resources',
         'argparse',
         'googleapis-common-protos',
