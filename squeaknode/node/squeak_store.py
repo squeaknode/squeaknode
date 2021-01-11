@@ -1,5 +1,4 @@
 import logging
-from typing import List
 
 
 logger = logging.getLogger(__name__)
@@ -36,51 +35,51 @@ class SqueakStore:
     #         squeak.ClearDecryptionKey()
     #     return squeak
 
-    def get_squeak_entry_with_profile(self, squeak_hash: bytes):
-        return self.squeak_db.get_squeak_entry_with_profile(squeak_hash)
+    # def get_squeak_entry_with_profile(self, squeak_hash: bytes):
+    #     return self.squeak_db.get_squeak_entry_with_profile(squeak_hash)
 
-    def get_timeline_squeak_entries_with_profile(self):
-        return self.squeak_db.get_timeline_squeak_entries_with_profile()
+    # def get_timeline_squeak_entries_with_profile(self):
+    #     return self.squeak_db.get_timeline_squeak_entries_with_profile()
 
-    def get_squeak_entries_with_profile_for_address(
-        self, address: str, min_block: int, max_block: int
-    ):
-        return self.squeak_db.get_squeak_entries_with_profile_for_address(
-            address,
-            min_block,
-            max_block,
-        )
+    # def get_squeak_entries_with_profile_for_address(
+    #     self, address: str, min_block: int, max_block: int
+    # ):
+    #     return self.squeak_db.get_squeak_entries_with_profile_for_address(
+    #         address,
+    #         min_block,
+    #         max_block,
+    #     )
 
-    def get_ancestor_squeak_entries_with_profile(self, squeak_hash: bytes):
-        return self.squeak_db.get_thread_ancestor_squeak_entries_with_profile(
-            squeak_hash,
-        )
+    # def get_ancestor_squeak_entries_with_profile(self, squeak_hash: bytes):
+    #     return self.squeak_db.get_thread_ancestor_squeak_entries_with_profile(
+    #         squeak_hash,
+    #     )
 
     # def delete_squeak(self, squeak_hash: bytes):
     #     return self.squeak_db.delete_squeak(squeak_hash)
 
-    def lookup_squeaks(self, addresses: List[str], min_block: int, max_block: int):
-        return self.squeak_db.lookup_squeaks(
-            addresses,
-            min_block,
-            max_block,
-        )
+    # def lookup_squeaks(self, addresses: List[str], min_block: int, max_block: int):
+    #     return self.squeak_db.lookup_squeaks(
+    #         addresses,
+    #         min_block,
+    #         max_block,
+    #     )
 
-    def lookup_squeaks_include_locked(self, addresses: List[str], min_block: int, max_block: int):
-        return self.squeak_db.lookup_squeaks(
-            addresses,
-            min_block,
-            max_block,
-            include_locked=True,
-        )
+    # def lookup_squeaks_include_locked(self, addresses: List[str], min_block: int, max_block: int):
+    #     return self.squeak_db.lookup_squeaks(
+    #         addresses,
+    #         min_block,
+    #         max_block,
+    #         include_locked=True,
+    #     )
 
-    def lookup_squeaks_needing_offer(self, addresses: List[str], min_block, max_block, peer_id):
-        return self.squeak_db.lookup_squeaks_needing_offer(
-            addresses,
-            min_block,
-            max_block,
-            peer_id,
-        )
+    # def lookup_squeaks_needing_offer(self, addresses: List[str], min_block, max_block, peer_id):
+    #     return self.squeak_db.lookup_squeaks_needing_offer(
+    #         addresses,
+    #         min_block,
+    #         max_block,
+    #         peer_id,
+    #     )
 
     # def unlock_squeak(self, squeak_hash: bytes, secret_key: bytes):
     #     self.squeak_db.set_squeak_decryption_key(

@@ -19,10 +19,6 @@ class PeerSyncTask:
         return self.peer_connection.peer
 
     @property
-    def squeak_store(self):
-        return self.squeak_controller.squeak_store
-
-    @property
     def squeak_db(self):
         return self.squeak_controller.squeak_db
 
@@ -169,17 +165,17 @@ class PeerSyncTask:
         self._save_offer(decoded_offer)
 
     def _get_local_hashes(self, addresses, min_block, max_block):
-        return self.squeak_store.lookup_squeaks_include_locked(
+        return self.squeak_controller.lookup_squeaks_include_locked(
             addresses,
             min_block,
             max_block,
         )
 
     def _get_local_unlocked_hashes(self, addresses, min_block, max_block):
-        return self.squeak_store.lookup_squeaks(addresses, min_block, max_block)
+        return self.squeak_controller.lookup_squeaks(addresses, min_block, max_block)
 
     def _get_locked_hashes(self, addresses, min_block, max_block):
-        return self.squeak_store.lookup_squeaks_needing_offer(
+        return self.squeak_controller.lookup_squeaks_needing_offer(
             addresses,
             min_block,
             max_block,
@@ -190,7 +186,6 @@ class PeerSyncTask:
         return self.peer_client.lookup_squeaks(addresses, min_block, max_block)
 
     def _save_squeak(self, squeak):
-        # self.squeak_store.save_squeak(squeak, skip_whitelist_check=True)
         self.squeak_controller.save_downloaded_squeak(squeak)
 
     def _get_saved_offer(self, squeak_hash: bytes):
@@ -219,7 +214,6 @@ class PeerSyncTask:
         self.get_offer(squeak_hash)
 
     def _get_local_squeak(self, squeak_hash: bytes):
-        # return self.squeak_store.get_squeak(squeak_hash)
         return self.squeak_controller.get_squeak(squeak_hash)
 
     def _try_upload_squeak(self, squeak_hash: bytes, allowed_addresses):

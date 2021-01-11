@@ -80,9 +80,6 @@ class SqueakController:
         # return self.squeak_store.get_squeak(squeak_hash, clear_decryption_key=True)
         return self.get_squeak(squeak_hash, clear_decryption_key=True)
 
-    def lookup_squeaks(self, addresses: str, min_block: int, max_block: int):
-        return self.squeak_store.lookup_squeaks(addresses, min_block, max_block)
-
     def lookup_allowed_addresses(self, addresses: List[str]):
         return self.squeak_whitelist.get_allowed_addresses(addresses)
 
@@ -178,26 +175,6 @@ class SqueakController:
         inserted_squeak_hash = self.squeak_db.insert_squeak(
             squeak_entry.squeak, squeak_entry.block_header)
         return inserted_squeak_hash
-
-    def get_squeak_entry_with_profile(self, squeak_hash: bytes):
-        return self.squeak_store.get_squeak_entry_with_profile(squeak_hash)
-
-    def get_timeline_squeak_entries_with_profile(self):
-        return self.squeak_store.get_timeline_squeak_entries_with_profile()
-
-    def get_squeak_entries_with_profile_for_address(
-        self, address: str, min_block: int, max_block: int
-    ):
-        return self.squeak_store.get_squeak_entries_with_profile_for_address(
-            address,
-            min_block,
-            max_block,
-        )
-
-    def get_ancestor_squeak_entries_with_profile(self, squeak_hash_str: str):
-        return self.squeak_store.get_ancestor_squeak_entries_with_profile(
-            squeak_hash_str,
-        )
 
     def delete_squeak(self, squeak_hash: bytes):
         num_deleted_offers = self.squeak_db.delete_offers_for_squeak(
@@ -329,3 +306,46 @@ class SqueakController:
 
     def get_offer(self, squeak: CSqueak, offer_msg: squeak_server_pb2.SqueakBuyOffer, peer: SqueakPeer) -> Offer:
         return self.squeak_core.get_offer(squeak, offer_msg, peer)
+
+    def get_squeak_entry_with_profile(self, squeak_hash: bytes):
+        return self.squeak_db.get_squeak_entry_with_profile(squeak_hash)
+
+    def get_timeline_squeak_entries_with_profile(self):
+        return self.squeak_db.get_timeline_squeak_entries_with_profile()
+
+    def get_squeak_entries_with_profile_for_address(
+        self, address: str, min_block: int, max_block: int
+    ):
+        return self.squeak_db.get_squeak_entries_with_profile_for_address(
+            address,
+            min_block,
+            max_block,
+        )
+
+    def get_ancestor_squeak_entries_with_profile(self, squeak_hash: bytes):
+        return self.squeak_db.get_thread_ancestor_squeak_entries_with_profile(
+            squeak_hash,
+        )
+
+    def lookup_squeaks(self, addresses: List[str], min_block: int, max_block: int):
+        return self.squeak_db.lookup_squeaks(
+            addresses,
+            min_block,
+            max_block,
+        )
+
+    def lookup_squeaks_include_locked(self, addresses: List[str], min_block: int, max_block: int):
+        return self.squeak_db.lookup_squeaks(
+            addresses,
+            min_block,
+            max_block,
+            include_locked=True,
+        )
+
+    def lookup_squeaks_needing_offer(self, addresses: List[str], min_block, max_block, peer_id):
+        return self.squeak_db.lookup_squeaks_needing_offer(
+            addresses,
+            min_block,
+            max_block,
+            peer_id,
+        )
