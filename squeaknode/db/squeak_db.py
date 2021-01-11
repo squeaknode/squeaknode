@@ -13,8 +13,8 @@ from sqlalchemy.sql import select
 from squeak.core import CSqueak
 
 from squeaknode.bitcoin.util import parse_block_header
-from squeaknode.core.offer import Offer
-from squeaknode.core.offer_with_peer import OfferWithPeer
+from squeaknode.core.offer_with_peer import ReceivedOfferWithPeer
+from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.received_payment import ReceivedPayment
 from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.sent_payment import SentPayment
@@ -1122,7 +1122,7 @@ class SqueakDb:
     def _parse_offer(self, row):
         if row is None:
             return None
-        return Offer(
+        return ReceivedOffer(
             offer_id=row["offer_id"],
             squeak_hash=bytes.fromhex(row["squeak_hash"]),
             payment_hash=bytes.fromhex(row["payment_hash"]),
@@ -1143,8 +1143,8 @@ class SqueakDb:
             return None
         offer = self._parse_offer(row)
         peer = self._parse_squeak_peer(row)
-        return OfferWithPeer(
-            offer=offer,
+        return ReceivedOfferWithPeer(
+            received_offer=offer,
             peer=peer,
         )
 

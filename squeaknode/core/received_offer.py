@@ -2,7 +2,7 @@ from typing import NamedTuple
 from typing import Optional
 
 
-class Offer(NamedTuple):
+class ReceivedOffer(NamedTuple):
     """Class for saving an offer from a remote peer."""
     offer_id: Optional[int]
     squeak_hash: bytes

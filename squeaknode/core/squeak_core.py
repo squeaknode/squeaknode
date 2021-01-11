@@ -8,7 +8,7 @@ from squeak.core import MakeSqueakFromStr
 from squeak.core.signing import CSigningKey
 
 from squeaknode.core.buy_offer import BuyOffer
-from squeaknode.core.offer import Offer
+from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.received_payment import ReceivedPayment
 from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.sent_payment import SentPayment
@@ -117,31 +117,32 @@ class SqueakCore:
             port=lnd_port,
         )
 
-    def pay_offer(self, offer: Offer) -> SentPayment:
-        if offer.offer_id is None:
-            raise Exception("Offer must have a non-null offer_id.")
+    def pay_offer(self, received_offer: ReceivedOffer) -> SentPayment:
+        if received_offer.offer_id is None:
+            raise Exception("Received offer must have a non-null offer_id.")
         # Pay the invoice
-        payment = self.lightning_client.pay_invoice_sync(offer.payment_request)
+        payment = self.lightning_client.pay_invoice_sync(
+            received_offer.payment_request)
         preimage = payment.payment_preimage
         if not preimage:
             raise Exception(
                 "Payment failed with error: {}".format(payment.payment_error)
             )
         # Calculate the secret key
-        nonce = offer.nonce
+        nonce = received_offer.nonce
         # secret_key = bxor(nonce, preimage)
         secret_key = subtract_tweak(preimage, nonce)
         # Save the preimage of the sent payment
         return SentPayment(
             sent_payment_id=None,
             created=None,
-            offer_id=offer.offer_id,
-            peer_id=offer.peer_id,
-            squeak_hash=offer.squeak_hash,
-            payment_hash=offer.payment_hash,
+            offer_id=received_offer.offer_id,
+            peer_id=received_offer.peer_id,
+            squeak_hash=received_offer.squeak_hash,
+            payment_hash=received_offer.payment_hash,
             secret_key=secret_key,
-            price_msat=offer.price_msat,
-            node_pubkey=offer.destination,
+            price_msat=received_offer.price_msat,
+            node_pubkey=received_offer.destination,
         )
 
     def get_received_payments(self, get_sent_offer_fn, latest_settle_index) -> Iterator[ReceivedPayment]:
@@ -163,7 +164,7 @@ class SqueakCore:
                 )
                 yield received_payment
 
-    def get_offer(self, squeak: CSqueak, offer: BuyOffer, peer: SqueakPeer) -> Offer:
+    def get_offer(self, squeak: CSqueak, offer: BuyOffer, peer: SqueakPeer) -> ReceivedOffer:
         if peer.peer_id is None:
             raise Exception("Peer must have a non-null peer_id.")
         # Get the squeak hash
@@ -184,7 +185,7 @@ class SqueakCore:
         invoice_expiry = pay_req.expiry
         node_host = offer.host or peer.host
         node_port = offer.port
-        decoded_offer = Offer(
+        decoded_offer = ReceivedOffer(
             offer_id=None,
             squeak_hash=squeak_hash,
             price_msat=price_msat,
