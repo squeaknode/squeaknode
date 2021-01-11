@@ -875,6 +875,14 @@ class SqueakDb:
             deleted_offers = res.rowcount
             return deleted_offers
 
+    def delete_offer(self, payment_hash: bytes):
+        """ Delete a received offer by payment hash. """
+        s = self.offers.delete().where(
+            self.offers.c.payment_hash == payment_hash.hex()
+        )
+        with self.get_connection() as connection:
+            connection.execute(s)
+
     def insert_sent_payment(self, sent_payment):
         """ Insert a new sent payment. """
         ins = self.sent_payments.insert().values(
@@ -981,6 +989,14 @@ class SqueakDb:
             row = result.fetchone()
             sent_offer = self._parse_sent_offer(row)
             return sent_offer
+
+    def delete_sent_offer(self, payment_hash: bytes):
+        """ Delete a sent offer by payment hash. """
+        s = self.sent_offers.delete().where(
+            self.sent_offers.c.payment_hash == payment_hash.hex()
+        )
+        with self.get_connection() as connection:
+            connection.execute(s)
 
     def delete_expired_sent_offers(self):
         """ Delete all expired sent offers. """
