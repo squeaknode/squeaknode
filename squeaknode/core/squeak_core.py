@@ -46,23 +46,14 @@ class SqueakCore:
         block_height = block_info.block_height
         block_hash = block_info.block_hash
         timestamp = int(time.time())
-        if replyto_hash is None or len(replyto_hash) == 0:
-            squeak = MakeSqueakFromStr(
-                signing_key,
-                content_str,
-                block_height,
-                block_hash,
-                timestamp,
-            )
-        else:
-            squeak = MakeSqueakFromStr(
-                signing_key,
-                content_str,
-                block_height,
-                block_hash,
-                timestamp,
-                replyto_hash,
-            )
+        squeak = MakeSqueakFromStr(
+            signing_key,
+            content_str,
+            block_height,
+            block_hash,
+            timestamp,
+            replyto_hash,
+        )
         return SqueakEntry(
             squeak=squeak,
             block_header=block_info.block_header,
