@@ -349,3 +349,7 @@ class SqueakController:
             max_block,
             peer_id,
         )
+
+    def save_offer(self, offer: Offer):
+        logger.info("Saving offer: {}".format(offer))
+        self.squeak_db.insert_offer(offer)

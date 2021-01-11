@@ -162,7 +162,7 @@ class PeerSyncTask:
             squeak, offer_msg, self.peer)
 
         # Save the offer
-        self._save_offer(decoded_offer)
+        self.squeak_controller.save_offer(decoded_offer)
 
     def _get_local_hashes(self, addresses, min_block, max_block):
         return self.squeak_controller.lookup_squeaks_include_locked(
@@ -191,7 +191,8 @@ class PeerSyncTask:
     def _get_saved_offer(self, squeak_hash: bytes):
         logger.info("Getting saved offer for hash: {}".format(
             squeak_hash.hex()))
-        offers = self.squeak_db.get_offers_with_peer(squeak_hash)
+        # offers = self.squeak_db.get_offers_with_peer(squeak_hash)
+        offers = self.squeak_controller.get_buy_offers_with_peer(squeak_hash)
         for offer_with_peer in offers:
             if offer_with_peer.offer.peer_id == self.peer.peer_id:
                 return offer_with_peer
@@ -237,6 +238,6 @@ class PeerSyncTask:
             "Downloading buy offer for squeak hash: {}".format(squeak_hash.hex()))
         return self.peer_client.buy_squeak(squeak_hash)
 
-    def _save_offer(self, offer):
-        logger.info("Saving offer: {}".format(offer))
-        self.squeak_db.insert_offer(offer)
+    # def _save_offer(self, offer):
+    #     logger.info("Saving offer: {}".format(offer))
+    #     self.squeak_db.insert_offer(offer)
