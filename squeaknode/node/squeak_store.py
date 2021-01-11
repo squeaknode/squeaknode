@@ -27,14 +27,14 @@ class SqueakStore:
     #         squeak, block_info.block_header)
     #     return inserted_squeak_hash
 
-    def get_squeak(self, squeak_hash: bytes, clear_decryption_key: bool = False):
-        squeak_entry = self.squeak_db.get_squeak_entry(squeak_hash)
-        if squeak_entry is None:
-            return None
-        squeak = squeak_entry.squeak
-        if clear_decryption_key:
-            squeak.ClearDecryptionKey()
-        return squeak
+    # def get_squeak(self, squeak_hash: bytes, clear_decryption_key: bool = False):
+    #     squeak_entry = self.squeak_db.get_squeak_entry(squeak_hash)
+    #     if squeak_entry is None:
+    #         return None
+    #     squeak = squeak_entry.squeak
+    #     if clear_decryption_key:
+    #         squeak.ClearDecryptionKey()
+    #     return squeak
 
     def get_squeak_entry_with_profile(self, squeak_hash: bytes):
         return self.squeak_db.get_squeak_entry_with_profile(squeak_hash)

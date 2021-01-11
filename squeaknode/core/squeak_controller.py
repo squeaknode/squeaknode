@@ -67,8 +67,18 @@ class SqueakController:
     #         squeak, squeak_entry.block_header)
     #     return inserted_squeak_hash
 
+    def get_squeak(self, squeak_hash: bytes, clear_decryption_key: bool = False):
+        squeak_entry = self.squeak_db.get_squeak_entry(squeak_hash)
+        if squeak_entry is None:
+            return None
+        squeak = squeak_entry.squeak
+        if clear_decryption_key:
+            squeak.ClearDecryptionKey()
+        return squeak
+
     def get_public_squeak(self, squeak_hash: bytes):
-        return self.squeak_store.get_squeak(squeak_hash, clear_decryption_key=True)
+        # return self.squeak_store.get_squeak(squeak_hash, clear_decryption_key=True)
+        return self.get_squeak(squeak_hash, clear_decryption_key=True)
 
     def lookup_squeaks(self, addresses: str, min_block: int, max_block: int):
         return self.squeak_store.lookup_squeaks(addresses, min_block, max_block)
@@ -93,7 +103,7 @@ class SqueakController:
         )
         if sent_offer:
             return sent_offer
-        squeak = self.squeak_store.get_squeak(squeak_hash)
+        squeak = self.get_squeak(squeak_hash)
         # sent_offer = self.create_offer(
         #     squeak, client_addr, self.config.core.price_msat)
         sent_offer = self.squeak_core.create_offer(
