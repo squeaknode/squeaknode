@@ -56,8 +56,8 @@ class SqueakStore:
             squeak_hash,
         )
 
-    def delete_squeak(self, squeak_hash: bytes):
-        return self.squeak_db.delete_squeak(squeak_hash)
+    # def delete_squeak(self, squeak_hash: bytes):
+    #     return self.squeak_db.delete_squeak(squeak_hash)
 
     def lookup_squeaks(self, addresses: List[str], min_block: int, max_block: int):
         return self.squeak_db.lookup_squeaks(

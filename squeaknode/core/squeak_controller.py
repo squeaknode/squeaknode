@@ -203,7 +203,8 @@ class SqueakController:
         num_deleted_offers = self.squeak_db.delete_offers_for_squeak(
             squeak_hash)
         logger.info("Deleted number of offers : {}".format(num_deleted_offers))
-        return self.squeak_store.delete_squeak(squeak_hash)
+        # return self.squeak_store.delete_squeak(squeak_hash)
+        return self.squeak_db.delete_squeak(squeak_hash)
 
     def create_peer(self, peer_name: str, host: str, port: int):
         port = port or self.config.core.default_peer_rpc_port
