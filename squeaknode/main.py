@@ -23,7 +23,6 @@ from squeaknode.node.received_payments_subscription_client import (
 from squeaknode.node.squeak_memory_whitelist import SqueakMemoryWhitelist
 from squeaknode.node.squeak_node import SqueakNode
 from squeaknode.node.squeak_rate_limiter import SqueakRateLimiter
-from squeaknode.node.squeak_store import SqueakStore
 from squeaknode.server.squeak_server_handler import SqueakServerHandler
 from squeaknode.server.squeak_server_servicer import SqueakServerServicer
 from squeaknode.sync.squeak_peer_sync_worker import SqueakPeerSyncWorker
@@ -246,17 +245,10 @@ def run_node(config):
     squeak_whitelist = SqueakMemoryWhitelist(
         squeak_db,
     )
-    squeak_store = SqueakStore(
-        squeak_db,
-        squeak_core,
-        squeak_rate_limiter,
-        squeak_whitelist,
-    )
 
     squeak_controller = SqueakController(
         squeak_db,
         squeak_core,
-        squeak_store,
         squeak_whitelist,
         squeak_rate_limiter,
         config,

@@ -25,20 +25,17 @@ class SqueakController:
         self,
         squeak_db,
         squeak_core,
-        squeak_store,
         squeak_whitelist,
         squeak_rate_limiter,
         config,
     ):
         self.squeak_db = squeak_db
         self.squeak_core = squeak_core
-        self.squeak_store = squeak_store
         self.squeak_whitelist = squeak_whitelist
         self.squeak_rate_limiter = squeak_rate_limiter
         self.config = config
 
     def save_uploaded_squeak(self, squeak: CSqueak) -> bytes:
-        # return self.squeak_store.save_squeak(squeak)
         if not self.squeak_whitelist.should_allow_squeak(squeak):
             raise Exception("Squeak upload not allowed by whitelist.")
         if not self.squeak_rate_limiter.should_rate_limit_allow(squeak):
@@ -51,7 +48,6 @@ class SqueakController:
         return inserted_squeak_hash
 
     def save_downloaded_squeak(self, squeak: CSqueak) -> bytes:
-        # return self.squeak_store.save_squeak(squeak)
         if not self.squeak_rate_limiter.should_rate_limit_allow(squeak):
             raise Exception(
                 "Excedeed allowed number of squeaks per block.")
@@ -59,13 +55,6 @@ class SqueakController:
         inserted_squeak_hash = self.squeak_db.insert_squeak(
             squeak, squeak_entry.block_header)
         return inserted_squeak_hash
-
-    # def save_created_squeak(self, squeak: CSqueak):
-    #     # return self.squeak_store.save_squeak(squeak, skip_whitelist_check=True)
-    #     squeak_entry = self.squeak_core.validate_squeak(squeak)
-    #     inserted_squeak_hash = self.squeak_db.insert_squeak(
-    #         squeak, squeak_entry.block_header)
-    #     return inserted_squeak_hash
 
     def get_squeak(self, squeak_hash: bytes, clear_decryption_key: bool = False):
         squeak_entry = self.squeak_db.get_squeak_entry(squeak_hash)
@@ -77,7 +66,6 @@ class SqueakController:
         return squeak
 
     def get_public_squeak(self, squeak_hash: bytes):
-        # return self.squeak_store.get_squeak(squeak_hash, clear_decryption_key=True)
         return self.get_squeak(squeak_hash, clear_decryption_key=True)
 
     def lookup_allowed_addresses(self, addresses: List[str]):
@@ -180,7 +168,6 @@ class SqueakController:
         num_deleted_offers = self.squeak_db.delete_offers_for_squeak(
             squeak_hash)
         logger.info("Deleted number of offers : {}".format(num_deleted_offers))
-        # return self.squeak_store.delete_squeak(squeak_hash)
         return self.squeak_db.delete_squeak(squeak_hash)
 
     def create_peer(self, peer_name: str, host: str, port: int):
