@@ -1,7 +1,7 @@
 import logging
 
 from proto import squeak_admin_pb2
-from squeaknode.core.offer_with_peer import ReceivedOfferWithPeer
+from squeaknode.core.received_offer_with_peer import ReceivedOfferWithPeer
 from squeaknode.core.util import get_hash
 from squeaknode.core.util import get_replyto
 

@@ -13,8 +13,8 @@ from sqlalchemy.sql import select
 from squeak.core import CSqueak
 
 from squeaknode.bitcoin.util import parse_block_header
-from squeaknode.core.offer_with_peer import ReceivedOfferWithPeer
 from squeaknode.core.received_offer import ReceivedOffer
+from squeaknode.core.received_offer_with_peer import ReceivedOfferWithPeer
 from squeaknode.core.received_payment import ReceivedPayment
 from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.sent_payment import SentPayment
