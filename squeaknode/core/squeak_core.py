@@ -7,7 +7,7 @@ from squeak.core import CSqueak
 from squeak.core import MakeSqueakFromStr
 from squeak.core.signing import CSigningKey
 
-from squeaknode.core.buy_offer import BuyOffer
+from squeaknode.core.offer import Offer
 from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.received_payment import ReceivedPayment
 from squeaknode.core.sent_offer import SentOffer
@@ -148,7 +148,7 @@ class SqueakCore:
             client_addr=client_addr,
         )
 
-    def package_offer(self, sent_offer: SentOffer, lnd_external_host: str, lnd_port: int) -> BuyOffer:
+    def package_offer(self, sent_offer: SentOffer, lnd_external_host: str, lnd_port: int) -> Offer:
         """Package the offer details into a message that will be sent from
         seller to buyer.
 
@@ -160,7 +160,7 @@ class SqueakCore:
         Returns:
             SentOffer: A record of the details of the offer for the seller.
         """
-        return BuyOffer(
+        return Offer(
             squeak_hash=sent_offer.squeak_hash,
             nonce=sent_offer.nonce,
             payment_request=sent_offer.payment_request,
@@ -168,7 +168,7 @@ class SqueakCore:
             port=lnd_port,
         )
 
-    def unpack_offer(self, squeak: CSqueak, offer: BuyOffer, peer: SqueakPeer) -> ReceivedOffer:
+    def unpack_offer(self, squeak: CSqueak, offer: Offer, peer: SqueakPeer) -> ReceivedOffer:
         """Get the offer details from the message that the buyer
         receives from the seller.
 
