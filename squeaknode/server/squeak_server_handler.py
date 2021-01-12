@@ -16,25 +16,16 @@ class SqueakServerHandler(object):
         self.squeak_controller = squeak_controller
 
     def handle_posted_squeak(self, squeak: CSqueak):
-        if not self.squeak_controller.is_blockchain_synced():
-            raise Exception("Blockchain not synced.")
-
         logger.info(
             "Handle posted squeak with hash: {}".format(get_hash(squeak).hex()))
         # Save the squeak
         self.squeak_controller.save_uploaded_squeak(squeak)
 
     def handle_get_squeak(self, squeak_hash: bytes):
-        if not self.squeak_controller.is_blockchain_synced():
-            raise Exception("Blockchain not synced.")
-
         logger.info("Handle get squeak by hash: {}".format(squeak_hash.hex()))
         return self.squeak_controller.get_public_squeak(squeak_hash)
 
     def handle_lookup_squeaks(self, request):
-        if not self.squeak_controller.is_blockchain_synced():
-            raise Exception("Blockchain not synced.")
-
         addresses = request.addresses
         min_block = request.min_block
         max_block = request.max_block
@@ -58,9 +49,6 @@ class SqueakServerHandler(object):
         )
 
     def handle_get_offer(self, squeak_hash: bytes, client_addr: str):
-        if not self.squeak_controller.is_blockchain_synced():
-            raise Exception("Blockchain not synced.")
-
         logger.info(
             "Handle get offer by hash: {} from client_addr: {}".format(
                 squeak_hash.hex(), client_addr
