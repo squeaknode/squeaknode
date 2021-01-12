@@ -290,3 +290,12 @@ class SqueakCore:
                     client_addr=sent_offer.client_addr,
                 )
                 yield received_payment
+
+    def is_blockchain_synced(self) -> bool:
+        """Check if the blockchain is synced.
+
+        Returns:
+            bool: True if the blockchain is synced.
+        """
+        get_info_response = self.lightning_client.get_info()
+        return get_info_response.synced_to_chain

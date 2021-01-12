@@ -296,6 +296,9 @@ class SqueakController:
     def get_network(self):
         return self.config.core.network
 
+    def is_blockchain_synced(self):
+        return self.squeak_core.is_blockchain_synced()
+
     def get_offer(self, squeak: CSqueak, offer: Offer, peer: SqueakPeer) -> ReceivedOffer:
         return self.squeak_core.unpack_offer(squeak, offer, peer)
 
