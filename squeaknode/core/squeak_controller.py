@@ -7,7 +7,7 @@ from squeak.core import CSqueak
 from squeak.core.signing import CSigningKey
 from squeak.core.signing import CSqueakAddress
 
-from proto import squeak_server_pb2
+from squeaknode.core.offer import Offer
 from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.squeak_address_validator import SqueakAddressValidator
@@ -297,8 +297,8 @@ class SqueakController:
     def get_network(self):
         return self.config.core.network
 
-    def get_offer(self, squeak: CSqueak, offer_msg: squeak_server_pb2.SqueakBuyOffer, peer: SqueakPeer) -> ReceivedOffer:
-        return self.squeak_core.unpack_offer(squeak, offer_msg, peer)
+    def get_offer(self, squeak: CSqueak, offer: Offer, peer: SqueakPeer) -> ReceivedOffer:
+        return self.squeak_core.unpack_offer(squeak, offer, peer)
 
     def get_squeak_entry_with_profile(self, squeak_hash: bytes):
         return self.squeak_db.get_squeak_entry_with_profile(squeak_hash)

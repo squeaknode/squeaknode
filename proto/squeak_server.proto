@@ -69,8 +69,8 @@ message LookupSqueaksReply {
 }
 
 message GetOfferReply {
-    /// The buy offer
-    SqueakBuyOffer offer = 1;
+    /// The offer
+    Offer offer = 1;
 }
 
 message Squeak {
@@ -81,7 +81,7 @@ message Squeak {
     bytes serialized_squeak = 2;
 }
 
-message SqueakBuyOffer {
+message Offer {
     /// The squeak hash.
     bytes squeak_hash = 1;
 

@@ -7,7 +7,7 @@ from squeaknode.core.offer import Offer
 logger = logging.getLogger(__name__)
 
 
-def parse_buy_offer(buy_offer_msg: squeak_server_pb2.SqueakBuyOffer) -> Offer:
+def parse_buy_offer(buy_offer_msg: squeak_server_pb2.Offer) -> Offer:
     return Offer(
         squeak_hash=buy_offer_msg.squeak_hash,
         nonce=buy_offer_msg.nonce,
