@@ -74,7 +74,7 @@ class SqueakController:
     def get_buy_offer(self, squeak_hash: bytes, client_addr: str):
         # Check if there is an existing offer for the hash/client_addr combination
         sent_offer = self.get_saved_sent_offer(squeak_hash, client_addr)
-        return self.squeak_core.create_buy_offer(
+        return self.squeak_core.package_offer(
             sent_offer,
             self.config.lnd.external_host,
             self.config.lnd.port,
@@ -298,7 +298,7 @@ class SqueakController:
         return self.config.core.network
 
     def get_offer(self, squeak: CSqueak, offer_msg: squeak_server_pb2.SqueakBuyOffer, peer: SqueakPeer) -> ReceivedOffer:
-        return self.squeak_core.get_offer(squeak, offer_msg, peer)
+        return self.squeak_core.unpack_offer(squeak, offer_msg, peer)
 
     def get_squeak_entry_with_profile(self, squeak_hash: bytes):
         return self.squeak_db.get_squeak_entry_with_profile(squeak_hash)

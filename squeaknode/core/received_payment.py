@@ -4,6 +4,7 @@ from typing import Optional
 
 
 class ReceivedPayment(NamedTuple):
+    """Represents an payment received by a seller."""
     received_payment_id: Optional[int]
     created: Optional[datetime]
     squeak_hash: bytes
