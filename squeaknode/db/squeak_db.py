@@ -13,8 +13,8 @@ from sqlalchemy.sql import select
 from squeak.core import CSqueak
 
 from squeaknode.bitcoin.util import parse_block_header
-from squeaknode.core.offer import Offer
-from squeaknode.core.offer_with_peer import OfferWithPeer
+from squeaknode.core.received_offer import ReceivedOffer
+from squeaknode.core.received_offer_with_peer import ReceivedOfferWithPeer
 from squeaknode.core.received_payment import ReceivedPayment
 from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.sent_payment import SentPayment
@@ -59,8 +59,8 @@ class SqueakDb:
         return self.models.peers
 
     @property
-    def offers(self):
-        return self.models.offers
+    def received_offers(self):
+        return self.models.received_offers
 
     @property
     def sent_payments(self):
@@ -369,10 +369,10 @@ class SqueakDb:
             select([self.squeaks.c.hash])
             .select_from(
                 self.squeaks.outerjoin(
-                    self.offers,
+                    self.received_offers,
                     and_(
-                        self.offers.c.squeak_hash == self.squeaks.c.hash,
-                        self.offers.c.peer_id == peer_id,
+                        self.received_offers.c.squeak_hash == self.squeaks.c.hash,
+                        self.received_offers.c.peer_id == peer_id,
                     ),
                 )
             )
@@ -386,7 +386,7 @@ class SqueakDb:
                     include_unverified,
                 )
             )
-            .where(self.offers.c.squeak_hash == None)  # noqa: E711
+            .where(self.received_offers.c.squeak_hash == None)  # noqa: E711
         )
         with self.get_connection() as connection:
             result = connection.execute(s)
@@ -730,7 +730,7 @@ class SqueakDb:
 
     def insert_offer(self, offer):
         """ Insert a new offer. """
-        ins = self.offers.insert().values(
+        ins = self.received_offers.insert().values(
             squeak_hash=offer.squeak_hash.hex(),
             payment_hash=offer.payment_hash.hex(),
             nonce=offer.nonce.hex(),
@@ -746,8 +746,8 @@ class SqueakDb:
         )
         with self.get_connection() as connection:
             res = connection.execute(ins)
-            offer_id = res.inserted_primary_key[0]
-            return offer_id
+            received_offer_id = res.inserted_primary_key[0]
+            return received_offer_id
 
         # sql = """
         # INSERT INTO offer(squeak_hash, key_cipher, iv, price_msat, payment_hash, invoice_timestamp, invoice_expiry, payment_request, destination, node_host, node_port, peer_id)
@@ -779,8 +779,8 @@ class SqueakDb:
 
     def get_offers(self, squeak_hash: bytes):
         """ Get offers for a squeak hash. """
-        s = select([self.offers]).where(
-            self.offers.c.squeak_hash == squeak_hash.hex())
+        s = select([self.received_offers]).where(
+            self.received_offers.c.squeak_hash == squeak_hash.hex())
         with self.get_connection() as connection:
             result = connection.execute(s)
             rows = result.fetchall()
@@ -800,14 +800,14 @@ class SqueakDb:
     def get_offers_with_peer(self, squeak_hash: bytes):
         """ Get offers with peer for a squeak hash. """
         s = (
-            select([self.offers, self.peers])
+            select([self.received_offers, self.peers])
             .select_from(
-                self.offers.outerjoin(
+                self.received_offers.outerjoin(
                     self.peers,
-                    self.peers.c.id == self.offers.c.peer_id,
+                    self.peers.c.id == self.received_offers.c.peer_id,
                 )
             )
-            .where(self.offers.c.squeak_hash == squeak_hash.hex())
+            .where(self.received_offers.c.squeak_hash == squeak_hash.hex())
         )
         with self.get_connection() as connection:
             result = connection.execute(s)
@@ -828,17 +828,17 @@ class SqueakDb:
         #     offers_with_peer = [self._parse_offer_with_peer(row) for row in rows]
         #     return offers_with_peer
 
-    def get_offer_with_peer(self, offer_id):
+    def get_offer_with_peer(self, received_offer_id):
         """ Get offer with peer for an offer id. """
         s = (
-            select([self.offers, self.peers])
+            select([self.received_offers, self.peers])
             .select_from(
-                self.offers.outerjoin(
+                self.received_offers.outerjoin(
                     self.peers,
-                    self.peers.c.id == self.offers.c.peer_id,
+                    self.peers.c.id == self.received_offers.c.peer_id,
                 )
             )
-            .where(self.offers.c.offer_id == offer_id)
+            .where(self.received_offers.c.received_offer_id == received_offer_id)
         )
         with self.get_connection() as connection:
             result = connection.execute(s)
@@ -848,9 +848,9 @@ class SqueakDb:
 
     def delete_expired_offers(self):
         """ Delete all expired offers. """
-        s = self.offers.delete().where(
+        s = self.received_offers.delete().where(
             datetime.now(timezone.utc).timestamp(
-            ) > self.offers.c.invoice_timestamp + self.offers.c.invoice_expiry
+            ) > self.received_offers.c.invoice_timestamp + self.received_offers.c.invoice_expiry
         )
         with self.get_connection() as connection:
             res = connection.execute(s)
@@ -869,7 +869,8 @@ class SqueakDb:
 
     def delete_offers_for_squeak(self, squeak_hash: bytes):
         """ Delete all offers for a squeak hash. """
-        s = self.offers.delete().where(self.offers.c.squeak_hash == squeak_hash.hex())
+        s = self.received_offers.delete().where(
+            self.received_offers.c.squeak_hash == squeak_hash.hex())
         with self.get_connection() as connection:
             res = connection.execute(s)
             deleted_offers = res.rowcount
@@ -877,8 +878,8 @@ class SqueakDb:
 
     def delete_offer(self, payment_hash: bytes):
         """ Delete a received offer by payment hash. """
-        s = self.offers.delete().where(
-            self.offers.c.payment_hash == payment_hash.hex()
+        s = self.received_offers.delete().where(
+            self.received_offers.c.payment_hash == payment_hash.hex()
         )
         with self.get_connection() as connection:
             connection.execute(s)
@@ -886,7 +887,6 @@ class SqueakDb:
     def insert_sent_payment(self, sent_payment):
         """ Insert a new sent payment. """
         ins = self.sent_payments.insert().values(
-            offer_id=sent_payment.offer_id,
             peer_id=sent_payment.peer_id,
             squeak_hash=sent_payment.squeak_hash.hex(),
             payment_hash=sent_payment.payment_hash.hex(),
@@ -1121,8 +1121,8 @@ class SqueakDb:
     def _parse_offer(self, row):
         if row is None:
             return None
-        return Offer(
-            offer_id=row["offer_id"],
+        return ReceivedOffer(
+            received_offer_id=row["received_offer_id"],
             squeak_hash=bytes.fromhex(row["squeak_hash"]),
             payment_hash=bytes.fromhex(row["payment_hash"]),
             nonce=bytes.fromhex(row["nonce"]),
@@ -1142,8 +1142,8 @@ class SqueakDb:
             return None
         offer = self._parse_offer(row)
         peer = self._parse_squeak_peer(row)
-        return OfferWithPeer(
-            offer=offer,
+        return ReceivedOfferWithPeer(
+            received_offer=offer,
             peer=peer,
         )
 
@@ -1153,7 +1153,6 @@ class SqueakDb:
         return SentPayment(
             sent_payment_id=row["sent_payment_id"],
             created=row[self.sent_payments.c.created],
-            offer_id=row["offer_id"],
             peer_id=row["peer_id"],
             squeak_hash=bytes.fromhex(row["squeak_hash"]),
             payment_hash=bytes.fromhex(row["payment_hash"]),

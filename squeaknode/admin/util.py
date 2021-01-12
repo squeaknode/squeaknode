@@ -1,6 +1,7 @@
 import logging
 
 from proto import squeak_admin_pb2
+from squeaknode.core.received_offer_with_peer import ReceivedOfferWithPeer
 from squeaknode.core.util import get_hash
 from squeaknode.core.util import get_replyto
 
@@ -63,21 +64,21 @@ def squeak_peer_to_message(squeak_peer):
     )
 
 
-def offer_entry_to_message(offer_entry):
-    if offer_entry is None:
+def offer_entry_to_message(received_offer_entry: ReceivedOfferWithPeer):
+    if received_offer_entry is None:
         return None
-    offer = offer_entry.offer
-    peer = squeak_peer_to_message(offer_entry.peer)
+    received_offer = received_offer_entry.received_offer
+    peer = squeak_peer_to_message(received_offer_entry.peer)
     return squeak_admin_pb2.OfferDisplayEntry(
-        offer_id=offer.offer_id,
-        squeak_hash=offer.squeak_hash.hex(),
-        price_msat=offer.price_msat,
-        node_pubkey=offer.destination,
-        node_host=offer.node_host,
-        node_port=offer.node_port,
+        offer_id=received_offer.received_offer_id,
+        squeak_hash=received_offer.squeak_hash.hex(),
+        price_msat=received_offer.price_msat,
+        node_pubkey=received_offer.destination,
+        node_host=received_offer.node_host,
+        node_port=received_offer.node_port,
         peer=peer,
-        invoice_timestamp=offer.invoice_timestamp,
-        invoice_expiry=offer.invoice_expiry,
+        invoice_timestamp=received_offer.invoice_timestamp,
+        invoice_expiry=received_offer.invoice_expiry,
     )
 
 
@@ -88,7 +89,6 @@ def sent_payment_with_peer_to_message(sent_payment_with_peer):
     peer = sent_payment_with_peer.peer
     return squeak_admin_pb2.SentPayment(
         sent_payment_id=sent_payment.sent_payment_id,
-        offer_id=sent_payment.offer_id,
         peer_id=sent_payment.peer_id,
         peer_name=peer.peer_name,
         squeak_hash=sent_payment.squeak_hash.hex(),

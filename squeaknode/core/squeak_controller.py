@@ -8,7 +8,7 @@ from squeak.core.signing import CSigningKey
 from squeak.core.signing import CSqueakAddress
 
 from proto import squeak_server_pb2
-from squeaknode.core.offer import Offer
+from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.squeak_address_validator import SqueakAddressValidator
 from squeaknode.core.squeak_peer import SqueakPeer
@@ -203,24 +203,25 @@ class SqueakController:
     def get_buy_offer_with_peer(self, offer_id: int):
         return self.squeak_db.get_offer_with_peer(offer_id)
 
-    def pay_offer(self, offer_id: int) -> int:
+    def pay_offer(self, received_offer_id: int) -> int:
         # Get the offer from the database
-        offer_with_peer = self.squeak_db.get_offer_with_peer(offer_id)
-        offer = offer_with_peer.offer
-        logger.info("Paying offer: {}".format(offer))
-        sent_payment = self.squeak_core.pay_offer(offer)
+        offer_with_peer = self.squeak_db.get_offer_with_peer(received_offer_id)
+        received_offer = offer_with_peer.received_offer
+        logger.info("Paying received offer: {}".format(received_offer))
+        sent_payment = self.squeak_core.pay_offer(received_offer)
         sent_payment_id = self.squeak_db.insert_sent_payment(sent_payment)
-        # Delete the offer
+        # Delete the received offer
         self.squeak_db.delete_offer(sent_payment.payment_hash)
         secret_key = sent_payment.secret_key
-        squeak_entry = self.squeak_db.get_squeak_entry(offer.squeak_hash)
+        squeak_entry = self.squeak_db.get_squeak_entry(
+            received_offer.squeak_hash)
         squeak = squeak_entry.squeak
         # Check the decryption key
         squeak.SetDecryptionKey(secret_key)
         CheckSqueak(squeak)
         # Set the decryption key in the database
         self.unlock_squeak(
-            offer.squeak_hash,
+            received_offer.squeak_hash,
             secret_key,
         )
         return sent_payment_id
@@ -296,7 +297,7 @@ class SqueakController:
     def get_network(self):
         return self.config.core.network
 
-    def get_offer(self, squeak: CSqueak, offer_msg: squeak_server_pb2.SqueakBuyOffer, peer: SqueakPeer) -> Offer:
+    def get_offer(self, squeak: CSqueak, offer_msg: squeak_server_pb2.SqueakBuyOffer, peer: SqueakPeer) -> ReceivedOffer:
         return self.squeak_core.get_offer(squeak, offer_msg, peer)
 
     def get_squeak_entry_with_profile(self, squeak_hash: bytes):
@@ -342,9 +343,9 @@ class SqueakController:
             peer_id,
         )
 
-    def save_offer(self, offer: Offer):
-        logger.info("Saving offer: {}".format(offer))
-        self.squeak_db.insert_offer(offer)
+    def save_offer(self, received_offer: ReceivedOffer):
+        logger.info("Saving received offer: {}".format(received_offer))
+        self.squeak_db.insert_offer(received_offer)
 
     def get_followed_addresses(self):
         followed_profiles = self.squeak_db.get_following_profiles()
