@@ -70,7 +70,7 @@ class Models:
         self.peers = Table(
             "peer",
             self.metadata,
-            Column("id", Integer, primary_key=True),
+            Column("peer_id", Integer, primary_key=True),
             Column("created", TZDateTime,
                    server_default=func.now(), nullable=False),
             Column("peer_name", String),
