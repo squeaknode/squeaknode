@@ -1,7 +1,7 @@
 from typing import NamedTuple
 
 
-class BuyOffer(NamedTuple):
+class Offer(NamedTuple):
     """Represents the offer details that are sent from seller
     to buyer.
     """

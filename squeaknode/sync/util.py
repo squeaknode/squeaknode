@@ -1,14 +1,14 @@
 import logging
 
 from proto import squeak_server_pb2
-from squeaknode.core.buy_offer import BuyOffer
+from squeaknode.core.offer import Offer
 
 
 logger = logging.getLogger(__name__)
 
 
-def parse_buy_offer(buy_offer_msg: squeak_server_pb2.SqueakBuyOffer) -> BuyOffer:
-    return BuyOffer(
+def parse_buy_offer(buy_offer_msg: squeak_server_pb2.Offer) -> Offer:
+    return Offer(
         squeak_hash=buy_offer_msg.squeak_hash,
         nonce=buy_offer_msg.nonce,
         payment_request=buy_offer_msg.payment_request,
