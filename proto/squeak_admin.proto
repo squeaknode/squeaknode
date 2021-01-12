@@ -595,32 +595,29 @@ message SentPayment {
     /// The sent payment id
     int32 sent_payment_id = 1;
 
-    /// The offer id
-    int32 offer_id = 2;
-
     /// The peer id
-    int32 peer_id = 3;
+    int32 peer_id = 2;
 
     /// The peer name
-    string peer_name = 4;
+    string peer_name = 3;
 
     /// The squeak hash
-    string squeak_hash = 5;
+    string squeak_hash = 4;
 
     /// The payment hash
-    string payment_hash = 6;
+    string payment_hash = 5;
 
     /// The secret key
-    string secret_key = 7;
+    string secret_key = 6;
 
     /// The price_msat
-    int64 price_msat = 8;
+    int64 price_msat = 7;
 
     /// The seller node pubkey
-    string node_pubkey = 9;
+    string node_pubkey = 8;
 
     /// time_ms
-    int64 time_ms = 10;
+    int64 time_ms = 9;
 }
 
 message SyncSqueakRequest {

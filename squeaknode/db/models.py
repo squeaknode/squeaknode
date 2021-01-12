@@ -83,7 +83,7 @@ class Models:
         self.received_offers = Table(
             "received_offer",
             self.metadata,
-            Column("offer_id", Integer, primary_key=True),
+            Column("received_offer_id", Integer, primary_key=True),
             Column("created", TZDateTime,
                    server_default=func.now(), nullable=False),
             Column("squeak_hash", String(64), nullable=False),
@@ -106,7 +106,6 @@ class Models:
             Column("sent_payment_id", Integer, primary_key=True),
             Column("created", TZDateTime,
                    server_default=func.now(), nullable=False),
-            Column("offer_id", Integer, nullable=False),
             Column("peer_id", Integer, nullable=False),
             Column("squeak_hash", String(64), nullable=False),
             Column("payment_hash", String(64), nullable=False),

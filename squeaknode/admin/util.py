@@ -70,7 +70,7 @@ def offer_entry_to_message(received_offer_entry: ReceivedOfferWithPeer):
     received_offer = received_offer_entry.received_offer
     peer = squeak_peer_to_message(received_offer_entry.peer)
     return squeak_admin_pb2.OfferDisplayEntry(
-        offer_id=received_offer.offer_id,
+        offer_id=received_offer.received_offer_id,
         squeak_hash=received_offer.squeak_hash.hex(),
         price_msat=received_offer.price_msat,
         node_pubkey=received_offer.destination,
@@ -89,7 +89,6 @@ def sent_payment_with_peer_to_message(sent_payment_with_peer):
     peer = sent_payment_with_peer.peer
     return squeak_admin_pb2.SentPayment(
         sent_payment_id=sent_payment.sent_payment_id,
-        offer_id=sent_payment.offer_id,
         peer_id=sent_payment.peer_id,
         peer_name=peer.peer_name,
         squeak_hash=sent_payment.squeak_hash.hex(),

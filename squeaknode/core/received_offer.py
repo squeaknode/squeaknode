@@ -4,7 +4,7 @@ from typing import Optional
 
 class ReceivedOffer(NamedTuple):
     """Class for saving an offer from a remote peer."""
-    offer_id: Optional[int]
+    received_offer_id: Optional[int]
     squeak_hash: bytes
     price_msat: int
     payment_hash: bytes

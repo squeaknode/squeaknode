@@ -118,7 +118,7 @@ class SqueakCore:
         )
 
     def pay_offer(self, received_offer: ReceivedOffer) -> SentPayment:
-        if received_offer.offer_id is None:
+        if received_offer.received_offer_id is None:
             raise Exception("Received offer must have a non-null offer_id.")
         # Pay the invoice
         payment = self.lightning_client.pay_invoice_sync(
@@ -136,7 +136,6 @@ class SqueakCore:
         return SentPayment(
             sent_payment_id=None,
             created=None,
-            offer_id=received_offer.offer_id,
             peer_id=received_offer.peer_id,
             squeak_hash=received_offer.squeak_hash,
             payment_hash=received_offer.payment_hash,
@@ -186,7 +185,7 @@ class SqueakCore:
         node_host = offer.host or peer.host
         node_port = offer.port
         decoded_offer = ReceivedOffer(
-            offer_id=None,
+            received_offer_id=None,
             squeak_hash=squeak_hash,
             price_msat=price_msat,
             payment_hash=payment_hash,

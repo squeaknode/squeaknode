@@ -1,8 +1,8 @@
 """Initialize all
 
-Revision ID: 4e74afd4348d
+Revision ID: afb1f38de2cb
 Revises:
-Create Date: 2021-01-11 14:11:56.722647
+Create Date: 2021-01-11 16:10:46.633311
 
 """
 import sqlalchemy as sa
@@ -10,7 +10,7 @@ from alembic import op
 
 
 # revision identifiers, used by Alembic.
-revision = '4e74afd4348d'
+revision = 'afb1f38de2cb'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -43,7 +43,8 @@ def upgrade():
                     sa.UniqueConstraint('profile_name')
                     )
     op.create_table('received_offer',
-                    sa.Column('offer_id', sa.Integer(), nullable=False),
+                    sa.Column('received_offer_id',
+                              sa.Integer(), nullable=False),
                     sa.Column('created', sa.DateTime(), server_default=sa.text(
                         '(CURRENT_TIMESTAMP)'), nullable=False),
                     sa.Column('squeak_hash', sa.String(
@@ -63,7 +64,7 @@ def upgrade():
                     sa.Column('node_host', sa.String(), nullable=False),
                     sa.Column('node_port', sa.Integer(), nullable=False),
                     sa.Column('peer_id', sa.Integer(), nullable=False),
-                    sa.PrimaryKeyConstraint('offer_id')
+                    sa.PrimaryKeyConstraint('received_offer_id')
                     )
     op.create_table('received_payment',
                     sa.Column('received_payment_id',
@@ -106,7 +107,6 @@ def upgrade():
                     sa.Column('sent_payment_id', sa.Integer(), nullable=False),
                     sa.Column('created', sa.DateTime(), server_default=sa.text(
                         '(CURRENT_TIMESTAMP)'), nullable=False),
-                    sa.Column('offer_id', sa.Integer(), nullable=False),
                     sa.Column('peer_id', sa.Integer(), nullable=False),
                     sa.Column('squeak_hash', sa.String(
                         length=64), nullable=False),
