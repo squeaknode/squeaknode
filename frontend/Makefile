@@ -10,7 +10,8 @@ rundev:	gen-protos
 build:  gen-protos
 	npm install
 	npm run build
-	cp -r build/ ../squeaknode/admin/webapp/static/
+	rm -r ../squeaknode/admin/webapp/static/build
+	cp -r build/ ../squeaknode/admin/webapp/static/build
 
 gen-protos:
 	./build-protos.sh
