@@ -1,10 +1,13 @@
 import os
 
+from bitcoin.base58 import Base58ChecksumError
+from bitcoin.wallet import CBitcoinAddressError
 from squeak.core.elliptic import generate_random_scalar
 from squeak.core.elliptic import scalar_difference
 from squeak.core.elliptic import scalar_from_bytes
 from squeak.core.elliptic import scalar_sum
 from squeak.core.elliptic import scalar_to_bytes
+from squeak.core.signing import CSqueakAddress
 
 DATA_KEY_LENGTH = 32
 
@@ -51,3 +54,13 @@ def subtract_tweak(n, tweak):
     tweak_int = scalar_from_bytes(tweak)
     sum_int = scalar_difference(n_int, tweak_int)
     return scalar_to_bytes(sum_int)
+
+
+def is_address_valid(address: str) -> bool:
+    if not address:
+        return False
+    try:
+        CSqueakAddress(address)
+    except (Base58ChecksumError, CBitcoinAddressError):
+        return False
+    return True

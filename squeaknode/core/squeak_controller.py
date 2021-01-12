@@ -10,9 +10,9 @@ from squeak.core.signing import CSqueakAddress
 from squeaknode.core.offer import Offer
 from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.sent_offer import SentOffer
-from squeaknode.core.squeak_address_validator import SqueakAddressValidator
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
+from squeaknode.core.util import is_address_valid
 from squeaknode.node.received_payments_subscription_client import (
     OpenReceivedPaymentsSubscriptionClient,
 )
@@ -116,8 +116,7 @@ class SqueakController:
         return self.squeak_db.insert_profile(squeak_profile)
 
     def create_contact_profile(self, profile_name: str, squeak_address: str):
-        address_validator = SqueakAddressValidator()
-        if not address_validator.validate(squeak_address):
+        if not is_address_valid(squeak_address):
             raise Exception(
                 "Invalid squeak address: {}".format(squeak_address))
         squeak_profile = SqueakProfile(
