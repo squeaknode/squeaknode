@@ -271,8 +271,9 @@ class SqueakController:
                         get_sent_offer_for_payment_hash,
                         latest_settle_index,
                 ):
+                    logger.info(
+                        "Got received payment: {}".format(received_payment))
                     self.squeak_db.insert_received_payment(received_payment)
-                    # Delete the sent offer
                     self.squeak_db.delete_sent_offer(
                         received_payment.payment_hash)
             except Exception:
