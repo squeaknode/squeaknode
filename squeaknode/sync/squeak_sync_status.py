@@ -14,6 +14,10 @@ class SqueakSyncController:
         self.squeak_controller = squeak_controller
 
     def sync_timeline(self):
+        if not self.squeak_controller.is_blockchain_synced():
+            logger.error(
+                "Failed to sync timeline because blockchain out of sync.")
+            return
         try:
             block_height = self.squeak_controller.get_best_block_height()
         except Exception:
