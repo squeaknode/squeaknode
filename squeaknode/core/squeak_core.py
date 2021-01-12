@@ -7,6 +7,7 @@ from squeak.core import CSqueak
 from squeak.core import MakeSqueakFromStr
 from squeak.core.signing import CSigningKey
 
+from squeaknode.bitcoin.blockchain_client import BlockchainClient
 from squeaknode.core.offer import Offer
 from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.received_payment import ReceivedPayment
@@ -19,6 +20,7 @@ from squeaknode.core.util import add_tweak
 from squeaknode.core.util import generate_tweak
 from squeaknode.core.util import get_hash
 from squeaknode.core.util import subtract_tweak
+from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
 from squeaknode.node.received_payments_subscription_client import (
     OpenReceivedPaymentsSubscriptionClient,
 )
@@ -30,8 +32,8 @@ logger = logging.getLogger(__name__)
 class SqueakCore:
     def __init__(
         self,
-        blockchain_client,
-        lightning_client,
+        blockchain_client: BlockchainClient,
+        lightning_client: LNDLightningClient,
     ):
         self.blockchain_client = blockchain_client
         self.lightning_client = lightning_client
