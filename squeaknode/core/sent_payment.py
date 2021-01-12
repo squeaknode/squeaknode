@@ -4,6 +4,7 @@ from typing import Optional
 
 
 class SentPayment(NamedTuple):
+    """Represents a payment made by a buyer."""
     sent_payment_id: Optional[int]
     created: Optional[datetime]
     peer_id: int
