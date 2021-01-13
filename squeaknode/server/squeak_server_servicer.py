@@ -45,9 +45,9 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
         return squeak_server_pb2.PostSqueakReply()
 
     def GetSqueak(self, request: squeak_server_pb2.GetSqueakRequest, context):
-        # squeak_hash = request.hash
-        squeak_hash_str = request.hash
-        squeak_hash = bytes.fromhex(squeak_hash_str)
+        squeak_hash = request.hash
+        # squeak_hash_str = request.hash
+        # squeak_hash = bytes.fromhex(squeak_hash_str)
         # TODO: check if hash is valid
 
         squeak = self.handler.handle_get_squeak(squeak_hash)

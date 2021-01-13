@@ -35,7 +35,7 @@ message PostSqueakRequest {
 
 message GetSqueakRequest {
     /// Hash of the squeak to get.
-    string hash = 1;
+    bytes hash = 1;
 }
 
 message LookupSqueaksRequest {

@@ -80,7 +80,7 @@ def test_post_squeak(server_stub, admin_stub, lightning_client, following_signin
 
     # Get the same squeak from the server
     get_response = server_stub.GetSqueak(
-        squeak_server_pb2.GetSqueakRequest(hash=squeak_hash)
+        squeak_server_pb2.GetSqueakRequest(hash=bytes.fromhex(squeak_hash))
     )
     get_response_squeak = squeak_from_msg(get_response.squeak)
     CheckSqueak(get_response_squeak, skipDecryptionCheck=True)
@@ -172,7 +172,8 @@ def test_sell_squeak(server_stub, admin_stub, lightning_client, saved_squeak_has
 
     # Get the squeak from the server
     get_response = server_stub.GetSqueak(
-        squeak_server_pb2.GetSqueakRequest(hash=saved_squeak_hash)
+        squeak_server_pb2.GetSqueakRequest(
+            hash=bytes.fromhex(saved_squeak_hash))
     )
     get_response_squeak = squeak_from_msg(get_response.squeak)
     CheckSqueak(get_response_squeak, skipDecryptionCheck=True)
@@ -238,7 +239,8 @@ def test_make_squeak(server_stub, admin_stub, signing_profile_id):
 
     # Get the new squeak from the server
     get_squeak_response = server_stub.GetSqueak(
-        squeak_server_pb2.GetSqueakRequest(hash=make_squeak_hash)
+        squeak_server_pb2.GetSqueakRequest(
+            hash=bytes.fromhex(make_squeak_hash))
     )
     get_squeak_response_squeak = squeak_from_msg(get_squeak_response.squeak)
     CheckSqueak(get_squeak_response_squeak, skipDecryptionCheck=True)
@@ -511,7 +513,8 @@ def test_delete_squeak(server_stub, admin_stub, saved_squeak_hash):
     # Try to get the squeak and fail
     with pytest.raises(Exception) as excinfo:
         server_stub.GetSqueak(
-            squeak_server_pb2.GetSqueakRequest(hash=saved_squeak_hash)
+            squeak_server_pb2.GetSqueakRequest(
+                hash=bytes.fromhex(saved_squeak_hash))
         )
     assert "Squeak not found." in str(excinfo.value)
 
@@ -616,7 +619,8 @@ def test_delete_peer(server_stub, admin_stub, peer_id):
 def test_list_channels(server_stub, admin_stub, lightning_client, saved_squeak_hash):
     # Get the squeak from the server
     get_response = server_stub.GetSqueak(
-        squeak_server_pb2.GetSqueakRequest(hash=saved_squeak_hash)
+        squeak_server_pb2.GetSqueakRequest(
+            hash=bytes.fromhex(saved_squeak_hash))
     )
     get_response_squeak = squeak_from_msg(get_response.squeak)
     CheckSqueak(get_response_squeak, skipDecryptionCheck=True)
@@ -677,7 +681,8 @@ def test_send_coins(server_stub, admin_stub, lightning_client):
 def test_list_peers(server_stub, admin_stub, lightning_client, saved_squeak_hash):
     # Get the squeak from the server
     get_response = server_stub.GetSqueak(
-        squeak_server_pb2.GetSqueakRequest(hash=saved_squeak_hash)
+        squeak_server_pb2.GetSqueakRequest(
+            hash=bytes.fromhex(saved_squeak_hash))
     )
     get_response_squeak = squeak_from_msg(get_response.squeak)
     CheckSqueak(get_response_squeak, skipDecryptionCheck=True)
@@ -728,7 +733,8 @@ def test_list_peers(server_stub, admin_stub, lightning_client, saved_squeak_hash
 def test_open_channel(server_stub, admin_stub, lightning_client, saved_squeak_hash):
     # Get the squeak from the server
     get_response = server_stub.GetSqueak(
-        squeak_server_pb2.GetSqueakRequest(hash=saved_squeak_hash)
+        squeak_server_pb2.GetSqueakRequest(
+            hash=bytes.fromhex(saved_squeak_hash))
     )
     get_response_squeak = squeak_from_msg(get_response.squeak)
     CheckSqueak(get_response_squeak, skipDecryptionCheck=True)

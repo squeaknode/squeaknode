@@ -54,7 +54,7 @@ class PeerClient:
         with self.get_stub() as stub:
             get_response = stub.GetSqueak(
                 squeak_server_pb2.GetSqueakRequest(
-                    hash=squeak_hash.hex(),
+                    hash=squeak_hash,
                 )
             )
             get_response_squeak = self._squeak_from_msg(get_response.squeak)
