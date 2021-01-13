@@ -35,6 +35,7 @@ DEFAULT_SQK_DIR = ".sqk"
 DEFAULT_SQK_DIR_PATH = str(Path.home() / DEFAULT_SQK_DIR)
 DEFAULT_LND_HOST = "localhost"
 DEFAULT_SYNC_INTERVAL_S = 10
+DEFAULT_SYNC_BLOCK_RANGE = 2016
 
 
 @section('bitcoin')
@@ -98,6 +99,8 @@ class CoreConfig(Config):
 class SyncConfig(Config):
     enabled = key(cast=bool, required=False, default=True)
     interval_s = key(cast=int, required=False, default=DEFAULT_SYNC_INTERVAL_S)
+    block_range = key(cast=int, required=False,
+                      default=DEFAULT_SYNC_BLOCK_RANGE)
 
 
 @section('db')

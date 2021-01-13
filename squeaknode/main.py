@@ -262,6 +262,7 @@ def run_node(config):
 
     sync_controller = SqueakSyncController(
         squeak_controller,
+        config.sync.block_range,
     )
 
     admin_handler = load_admin_handler(
