@@ -219,16 +219,9 @@ class SqueakCore:
         )
         # TODO: Check the payment point
         # payment_point = offer.payment_point
-        # logger.info("Payment point: {}".format(payment_point.hex()))
         # expected_payment_point = squeak.paymentPoint
-        # logger.info("Expected payment point: {}".format(expected_payment_point.hex()))
         # if payment_point != expected_payment_point:
-        #     raise Exception(
-        #         "Invalid offer payment point: {}, expected: {}".format(
-        #             payment_point.hex(),
-        #             expected_payment_point.hex(),
-        #         )
-        #     )
+        #     Do something
         return decoded_offer
 
     def pay_offer(self, received_offer: ReceivedOffer) -> SentPayment:
