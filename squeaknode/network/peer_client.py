@@ -69,10 +69,9 @@ class PeerClient:
             offer_msg = buy_response.offer
             return offer_msg
 
-    # TODO: use bytes, not string
     def _build_squeak_msg(self, squeak: CSqueak):
         return squeak_server_pb2.Squeak(
-            hash=get_hash(squeak).hex(),
+            hash=get_hash(squeak),
             serialized_squeak=squeak.serialize(),
         )
 
