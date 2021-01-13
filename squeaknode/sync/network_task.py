@@ -49,17 +49,17 @@ class NetworkSyncTask:
 
         while len(remaining_peer_ids) > 0:
             item = self.queue.get()
-            logger.info(f"Working on {item}")
+            logger.debug(f"Working on {item}")
             if item.completed_peer_id:
                 completed_peer_ids.add(item.completed_peer_id)
                 remaining_peer_ids.remove(item.completed_peer_id)
             if item.failed_peer_id:
                 failed_peer_ids.add(item.failed_peer_id)
                 remaining_peer_ids.remove(item.failed_peer_id)
-            logger.info(f"Finished {item}")
+            logger.debug(f"Finished {item}")
             self.queue.task_done()
 
-        logger.info("Returning from sync...")
+        logger.info("Finished sync with peers.")
         return NetworkSyncResult(
             completed_peer_ids=list(completed_peer_ids),
             failed_peer_ids=list(failed_peer_ids),
@@ -82,8 +82,10 @@ class NetworkSyncTask:
             logger.debug("Trying to sync with peer: {}".format(peer.peer_id))
             self.sync_peer(peer)
             self.queue.put(PeerSyncResult(completed_peer_id=peer.peer_id))
+            logger.info("Finished sync with peer: {}".format(peer))
         except Exception:
-            logger.error("Sync with peer failed.", exc_info=True)
+            logger.error("Failed Sync with peer: {}.".format(
+                peer), exc_info=True)
             self.queue.put(PeerSyncResult(failed_peer_id=peer.peer_id))
 
 
