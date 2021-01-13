@@ -39,7 +39,8 @@ class PeerSyncTask:
         hashes_to_download = set(remote_hashes) - set(local_hashes)
 
         # Download squeaks for the hashes
-        # TODO: catch exception downloading individual squeak
+        # TODO: catch exception downloading individual squeak.
+        # TODO: check if hash belongs to correct range after downloading.
         for hash in hashes_to_download:
             if self.peer_connection.stopped():
                 return
@@ -70,6 +71,11 @@ class PeerSyncTask:
             addresses, min_block, max_block)
         remote_hashes = lookup_result.hashes
         allowed_addresses = lookup_result.allowed_addresses
+        peer_latest_block = lookup_result.latest_block_height
+
+        max_block = min(max_block, peer_latest_block)
+        if max_block < min_block:
+            return
 
         # Get local hashes
         local_hashes = self._get_local_unlocked_hashes(

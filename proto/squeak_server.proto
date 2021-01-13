@@ -61,11 +61,14 @@ message GetSqueakReply {
 }
 
 message LookupSqueaksReply {
-    /// Hash of the squeak to get.
-    repeated bytes hashes = 1;
+    /// Height of the latest block.
+    int32 latest_block_height = 1;
 
     /// Hash of the squeak to get.
-    repeated string allowed_addresses = 2;
+    repeated bytes hashes = 2;
+
+    /// Hash of the squeak to get.
+    repeated string allowed_addresses = 3;
 }
 
 message GetOfferReply {
