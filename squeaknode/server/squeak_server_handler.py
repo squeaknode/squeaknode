@@ -44,9 +44,7 @@ class SqueakServerHandler(object):
                 len(allowed_addresses))
         )
         return squeak_server_pb2.LookupSqueaksReply(
-            hashes=[
-                hash.hex()
-                for hash in hashes],
+            hashes=hashes,
             allowed_addresses=allowed_addresses,
         )
 

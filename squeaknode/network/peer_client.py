@@ -35,9 +35,7 @@ class PeerClient:
                 )
             )
             return LookupResponse(
-                hashes=[
-                    bytes.fromhex(hash)
-                    for hash in lookup_response.hashes],
+                hashes=lookup_response.hashes,
                 allowed_addresses=lookup_response.allowed_addresses,
             )
 
@@ -54,7 +52,7 @@ class PeerClient:
         with self.get_stub() as stub:
             get_response = stub.GetSqueak(
                 squeak_server_pb2.GetSqueakRequest(
-                    hash=squeak_hash.hex(),
+                    hash=squeak_hash,
                 )
             )
             get_response_squeak = self._squeak_from_msg(get_response.squeak)
@@ -65,7 +63,7 @@ class PeerClient:
         with self.get_stub() as stub:
             buy_response = stub.GetOffer(
                 squeak_server_pb2.GetOfferRequest(
-                    hash=squeak_hash.hex(),
+                    hash=squeak_hash,
                 )
             )
             offer_msg = buy_response.offer
@@ -73,7 +71,7 @@ class PeerClient:
 
     def _build_squeak_msg(self, squeak: CSqueak):
         return squeak_server_pb2.Squeak(
-            hash=get_hash(squeak).hex(),
+            hash=get_hash(squeak),
             serialized_squeak=squeak.serialize(),
         )
 
