@@ -18,7 +18,7 @@ from proto import squeak_server_pb2
 
 def build_squeak_msg(squeak):
     return squeak_server_pb2.Squeak(
-        hash=get_hash(squeak),
+        hash=bytes.fromhex(get_hash(squeak)),
         serialized_squeak=squeak.serialize(),
     )
 

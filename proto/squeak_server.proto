@@ -75,7 +75,7 @@ message GetOfferReply {
 
 message Squeak {
     /// Hash of the squeak.
-    string hash = 1;
+    bytes hash = 1;
 
     /// Serialized squeak.
     bytes serialized_squeak = 2;
