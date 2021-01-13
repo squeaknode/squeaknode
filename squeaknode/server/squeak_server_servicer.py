@@ -69,8 +69,9 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
         return self.handler.handle_lookup_squeaks(request)
 
     def GetOffer(self, request, context):
-        squeak_hash_str = request.hash
-        squeak_hash = bytes.fromhex(squeak_hash_str)
+        squeak_hash = request.hash
+        # squeak_hash_str = request.hash
+        # squeak_hash = bytes.fromhex(squeak_hash_str)
         # TODO: check if hash is valid
         client_addr = context.peer()
         ip_addr = parse_ip_address(client_addr)

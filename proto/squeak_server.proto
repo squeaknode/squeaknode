@@ -49,7 +49,7 @@ message LookupSqueaksRequest {
 
 message GetOfferRequest {
     /// Hash of the squeak to buy.
-    string hash = 1;
+    bytes hash = 1;
 }
 
 message PostSqueakReply {

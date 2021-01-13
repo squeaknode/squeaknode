@@ -181,7 +181,7 @@ def test_sell_squeak(server_stub, admin_stub, lightning_client, saved_squeak_has
     # Buy the squeak data key
     buy_response = server_stub.GetOffer(
         squeak_server_pb2.GetOfferRequest(
-            hash=saved_squeak_hash,
+            hash=bytes.fromhex(saved_squeak_hash),
         )
     )
     assert buy_response.offer.payment_request.startswith("ln")
@@ -628,7 +628,7 @@ def test_list_channels(server_stub, admin_stub, lightning_client, saved_squeak_h
     # Buy the squeak data key
     buy_response = server_stub.GetOffer(
         squeak_server_pb2.GetOfferRequest(
-            hash=saved_squeak_hash,
+            hash=bytes.fromhex(saved_squeak_hash),
         )
     )
     assert buy_response.offer.payment_request.startswith("ln")
@@ -690,7 +690,7 @@ def test_list_peers(server_stub, admin_stub, lightning_client, saved_squeak_hash
     # Buy the squeak data key
     buy_response = server_stub.GetOffer(
         squeak_server_pb2.GetOfferRequest(
-            hash=saved_squeak_hash,
+            hash=bytes.fromhex(saved_squeak_hash),
         )
     )
     assert buy_response.offer.payment_request.startswith("ln")
@@ -742,7 +742,7 @@ def test_open_channel(server_stub, admin_stub, lightning_client, saved_squeak_ha
     # Buy the squeak data key
     buy_response = server_stub.GetOffer(
         squeak_server_pb2.GetOfferRequest(
-            hash=saved_squeak_hash,
+            hash=bytes.fromhex(saved_squeak_hash),
         )
     )
     assert buy_response.offer.payment_request.startswith("ln")

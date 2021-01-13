@@ -65,7 +65,7 @@ class PeerClient:
         with self.get_stub() as stub:
             buy_response = stub.GetOffer(
                 squeak_server_pb2.GetOfferRequest(
-                    hash=squeak_hash.hex(),
+                    hash=squeak_hash,
                 )
             )
             offer_msg = buy_response.offer
