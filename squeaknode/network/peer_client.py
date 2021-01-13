@@ -35,9 +35,6 @@ class PeerClient:
                 )
             )
             return LookupResponse(
-                # hashes=[
-                #     bytes.fromhex(hash)
-                #     for hash in lookup_response.hashes],
                 hashes=lookup_response.hashes,
                 allowed_addresses=lookup_response.allowed_addresses,
             )
