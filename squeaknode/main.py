@@ -74,6 +74,7 @@ def load_sync_worker(config, sync_controller) -> SqueakPeerSyncWorker:
     return SqueakPeerSyncWorker(
         sync_controller,
         config.sync.interval_s,
+        config.sync.block_range,
     )
 
 

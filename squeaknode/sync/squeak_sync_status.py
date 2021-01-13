@@ -6,14 +6,11 @@ from squeaknode.sync.network_task import TimelineNetworkSyncTask
 logger = logging.getLogger(__name__)
 
 
-LOOKUP_BLOCK_INTERVAL = 1008  # 1 week
-
-
 class SqueakSyncController:
     def __init__(self, squeak_controller):
         self.squeak_controller = squeak_controller
 
-    def sync_timeline(self):
+    def sync_timeline(self, block_range):
         try:
             block_height = self.squeak_controller.get_best_block_height()
         except Exception:
@@ -21,7 +18,7 @@ class SqueakSyncController:
                 "Failed to sync timeline because unable to get best block height.", exc_info=False
             )
             return
-        min_block = block_height - LOOKUP_BLOCK_INTERVAL
+        min_block = block_height - block_range
         max_block = block_height
         dowload_timeline_task = TimelineNetworkSyncTask(
             self.squeak_controller,

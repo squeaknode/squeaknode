@@ -9,14 +9,16 @@ class SqueakPeerSyncWorker:
         self,
         squeak_sync_controller,
         sync_interval_s,
+        sync_block_range,
     ):
         self.squeak_sync_controller = squeak_sync_controller
         self.sync_interval_s = sync_interval_s
+        self.sync_block_range = sync_block_range
 
     def sync_timeline(self):
         logger.info("Syncing timeline with peers...")
         # self.squeak_sync_controller.sync_squeaks()
-        self.squeak_sync_controller.sync_timeline()
+        self.squeak_sync_controller.sync_timeline(self.sync_block_range)
 
     def start_running(self):
         if self.sync_interval_s:
