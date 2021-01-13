@@ -3,7 +3,6 @@ import logging
 from proto import squeak_admin_pb2
 from squeaknode.core.received_offer_with_peer import ReceivedOfferWithPeer
 from squeaknode.core.util import get_hash
-from squeaknode.core.util import get_replyto
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +20,7 @@ def squeak_entry_to_message(squeak_entry_with_profile):
     author_name = squeak_profile.profile_name if squeak_profile else None
     author_address = str(squeak.GetAddress())
     is_reply = squeak.is_reply
-    reply_to = get_replyto(squeak) if is_reply else None
+    reply_to = squeak.hashReplySqk.hex() if is_reply else None
     return squeak_admin_pb2.SqueakDisplayEntry(
         squeak_hash=get_hash(squeak).hex(),
         is_unlocked=squeak.HasDecryptionKey(),

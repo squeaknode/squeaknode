@@ -13,13 +13,7 @@ DATA_KEY_LENGTH = 32
 
 
 def get_hash(squeak):
-    # hash_bytes = squeak.GetHash()[::-1]
-    # return hash_bytes.hex()
     return squeak.GetHash()[::-1]
-
-
-def get_replyto(squeak):
-    return squeak.hashReplySqk.hex()
 
 
 def generate_offer_nonce():

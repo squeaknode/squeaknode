@@ -16,8 +16,8 @@ class SqueakMemoryWhitelist(SqueakWhitelist):
         squeak_address = squeak.GetAddress()
         squeak_address_str = str(squeak_address)
         logger.info(
-            "Checking whitelist for squeak hash: {}, squeak address: {}".format(
-                get_hash(squeak).hex(), squeak_address_str
+            "Checking whitelist for squeak hash: {!r}, squeak address: {}".format(
+                get_hash(squeak), squeak_address_str
             )
         )
         logger.info("Allowed addresses: {}".format(self.allowed_addresses))

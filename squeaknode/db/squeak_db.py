@@ -275,7 +275,7 @@ class SqueakDb:
         with self.get_connection() as connection:
             result = connection.execute(s)
             rows = result.fetchall()
-            hashes = [row["hash"] for row in rows]
+            hashes = [bytes.fromhex(row["hash"]) for row in rows]
             return hashes
 
         # sql = """
@@ -335,7 +335,7 @@ class SqueakDb:
         with self.get_connection() as connection:
             result = connection.execute(s)
             rows = result.fetchall()
-            hashes = [row["hash"] for row in rows]
+            hashes = [bytes.fromhex(row["hash"]) for row in rows]
             return hashes
 
         # sql = """
@@ -391,7 +391,7 @@ class SqueakDb:
         with self.get_connection() as connection:
             result = connection.execute(s)
             rows = result.fetchall()
-            hashes = [row["hash"] for row in rows]
+            hashes = [bytes.fromhex(row["hash"]) for row in rows]
             return hashes
 
         # sql = """
@@ -612,7 +612,7 @@ class SqueakDb:
         with self.get_connection() as connection:
             result = connection.execute(s)
             rows = result.fetchall()
-            hashes = [row["hash"] for row in rows]
+            hashes = [bytes.fromhex(row["hash"]) for row in rows]
             return hashes
 
         # sql = """
