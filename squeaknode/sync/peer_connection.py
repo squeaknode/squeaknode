@@ -1,5 +1,6 @@
 import logging
 import threading
+from contextlib import contextmanager
 
 from squeaknode.network.peer_client import PeerClient
 
@@ -14,6 +15,11 @@ class PeerConnection:
             self.peer.port,
         )
         self._stop_event = threading.Event()
+
+    @contextmanager
+    def open_connection(self):
+        with self.peer_client.open_stub():
+            yield self
 
     def stop(self):
         self._stop_event.set()
