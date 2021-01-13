@@ -35,9 +35,10 @@ class PeerClient:
                 )
             )
             return LookupResponse(
-                hashes=[
-                    bytes.fromhex(hash)
-                    for hash in lookup_response.hashes],
+                # hashes=[
+                #     bytes.fromhex(hash)
+                #     for hash in lookup_response.hashes],
+                hashes=lookup_response.hashes,
                 allowed_addresses=lookup_response.allowed_addresses,
             )
 
@@ -71,6 +72,7 @@ class PeerClient:
             offer_msg = buy_response.offer
             return offer_msg
 
+    # TODO: use bytes, not string
     def _build_squeak_msg(self, squeak: CSqueak):
         return squeak_server_pb2.Squeak(
             hash=get_hash(squeak).hex(),

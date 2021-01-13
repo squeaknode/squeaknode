@@ -122,7 +122,7 @@ def test_lookup_squeaks(server_stub, admin_stub, signing_profile_id, saved_squea
         )
     )
     assert len(lookup_response.hashes) == 1
-    assert saved_squeak_hash in set(lookup_response.hashes)
+    assert bytes.fromhex(saved_squeak_hash) in set(lookup_response.hashes)
 
 
 def test_lookup_squeaks_empty_result_addresses(server_stub, admin_stub):

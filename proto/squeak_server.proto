@@ -62,7 +62,7 @@ message GetSqueakReply {
 
 message LookupSqueaksReply {
     /// Hash of the squeak to get.
-    repeated string hashes = 1;
+    repeated bytes hashes = 1;
 
     /// Hash of the squeak to get.
     repeated string allowed_addresses = 2;
