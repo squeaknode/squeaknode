@@ -7,10 +7,12 @@ logger = logging.getLogger(__name__)
 
 
 class SqueakSyncController:
-    def __init__(self, squeak_controller):
+    def __init__(self, squeak_controller, sync_block_range):
         self.squeak_controller = squeak_controller
+        self.sync_block_range = sync_block_range
 
-    def sync_timeline(self, block_range):
+    def sync_timeline(self, block_range=None):
+        block_range = block_range or self.sync_block_range
         try:
             block_height = self.squeak_controller.get_best_block_height()
         except Exception:
