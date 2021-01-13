@@ -43,7 +43,9 @@ class SqueakServerHandler(object):
             "Got number of allowed addresses from db: {}".format(
                 len(allowed_addresses))
         )
+        latest_block_height = self.squeak_controller.get_best_block_height()
         return squeak_server_pb2.LookupSqueaksReply(
+            latest_block_height=latest_block_height,
             hashes=hashes,
             allowed_addresses=allowed_addresses,
         )
