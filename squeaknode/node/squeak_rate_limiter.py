@@ -12,13 +12,9 @@ class SqueakRateLimiter:
     def __init__(
         self,
         squeak_db,
-        blockchain_client,
-        lightning_client,
         max_squeaks_per_address_per_hour,
     ):
         self.squeak_db = squeak_db
-        self.blockchain_client = blockchain_client
-        self.lightning_client = lightning_client
         self.max_squeaks_per_address_per_hour = max_squeaks_per_address_per_hour
 
     def should_rate_limit_allow(self, squeak):

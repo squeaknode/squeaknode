@@ -238,8 +238,6 @@ def run_node(config):
     )
     squeak_rate_limiter = SqueakRateLimiter(
         squeak_db,
-        blockchain_client,
-        lightning_client,
         config.core.max_squeaks_per_address_per_hour,
     )
     squeak_whitelist = SqueakMemoryWhitelist(
