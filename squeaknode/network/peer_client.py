@@ -9,7 +9,6 @@ from squeak.core import CSqueak
 from proto import squeak_server_pb2
 from proto import squeak_server_pb2_grpc
 from squeaknode.core.util import get_hash
-from squeaknode.sync.lookup_response import LookupResponse
 
 logger = logging.getLogger(__name__)
 
@@ -34,10 +33,7 @@ class PeerClient:
                     max_block=max_block,
                 )
             )
-            return LookupResponse(
-                hashes=lookup_response.hashes,
-                allowed_addresses=lookup_response.allowed_addresses,
-            )
+            return lookup_response
 
     def post_squeak(self, squeak: CSqueak):
         squeak_msg = self._build_squeak_msg(squeak)
