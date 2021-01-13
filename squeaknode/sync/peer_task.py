@@ -43,7 +43,7 @@ class PeerSyncTask:
         for hash in hashes_to_download:
             if self.peer_connection.stopped():
                 return
-            self._download_squeak(bytes.fromhex(hash))
+            self._download_squeak(hash)
 
         # Get local hashes of locked squeaks that don't have an offer from this peer.
         locked_hashes = self._get_locked_hashes(
@@ -55,7 +55,7 @@ class PeerSyncTask:
         for hash in hashes_to_get_offer:
             if self.peer_connection.stopped():
                 return
-            self._download_offer(bytes.fromhex(hash))
+            self._download_offer(hash)
 
     def upload(
         self,
@@ -84,14 +84,11 @@ class PeerSyncTask:
             if self.peer_connection.stopped():
                 return
             self._try_upload_squeak(
-                bytes.fromhex(hash),
+                hash,
                 allowed_addresses,
             )
 
     def download_single_squeak(self, squeak_hash: bytes):
-        logger.info("download_single_squeak with hash: {}".format(
-            squeak_hash.hex()))
-
         # Download squeak if not already present.
         saved_squeak = self._get_local_squeak(squeak_hash)
         if not saved_squeak:
