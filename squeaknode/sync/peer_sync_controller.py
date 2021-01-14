@@ -7,7 +7,7 @@ from squeaknode.sync.util import parse_buy_offer
 logger = logging.getLogger(__name__)
 
 
-class PeerSyncTask:
+class PeerSyncController:
 
     def __init__(
         self,
@@ -24,23 +24,10 @@ class PeerSyncTask:
         )
         self.stopped = stopped
 
-    # @contextmanager
-    # def open_peer_sync_task(self):
-    #     with PeerConnection(self.peer).open_connection() as peer_connection:
-    #         self.peer_connection = peer_connection
-    #         yield self
-    #         self.peer_connection = None
-
     @contextmanager
     def open_connection(self):
         with self.peer_client.open_stub():
             yield self
-
-    # @property
-    # def peer_client(self):
-    #     if self.peer_connection is None:
-    #         return None
-    #     return self.peer_connection.peer_client
 
     def download(
         self,
@@ -180,10 +167,6 @@ class PeerSyncTask:
         squeak = self.peer_client.get_squeak(squeak_hash)
         self._save_squeak(squeak)
 
-    # def _get_followed_addresses(self):
-    #     followed_profiles = self.squeak_db.get_following_profiles()
-    #     return [profile.address for profile in followed_profiles]
-
     def _download_offer(self, squeak_hash: bytes):
         self.get_offer(squeak_hash)
 
@@ -199,13 +182,5 @@ class PeerSyncTask:
     def _upload_squeak(self, squeak):
         self.peer_client.post_squeak(squeak)
 
-    # def _get_sharing_addresses(self):
-    #     sharing_profiles = self.squeak_db.get_sharing_profiles()
-    #     return [profile.address for profile in sharing_profiles]
-
     def _download_offer_msg(self, squeak_hash: bytes):
         return self.peer_client.buy_squeak(squeak_hash)
-
-    # def _save_offer(self, offer):
-    #     logger.info("Saving offer: {}".format(offer))
-    #     self.squeak_db.insert_offer(offer)
