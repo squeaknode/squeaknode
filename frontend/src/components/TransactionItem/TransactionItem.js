@@ -33,9 +33,10 @@ export default function TransactionItem({
   const onTransactionClick = (event) => {
     event.preventDefault();
     console.log("Handling transaction click...");
-    if (handleTransactionClick) {
-      handleTransactionClick();
-    }
+    // if (handleTransactionClick) {
+    //   handleTransactionClick();
+    // }
+    handleExpandClick();
   }
 
    function TransactionDetailItem(label, value) {
@@ -52,6 +53,7 @@ export default function TransactionItem({
    function TransactionMoreDetails() {
       return (
          <CardContent className={classes.cardContent}>
+            {TransactionDetailItem("Tx Hash", transaction.getTxHash())}
             {TransactionDetailItem("Timestamp", moment.unix(transaction.getTimeStamp()).format('lll'))}
             {TransactionDetailItem("Block Height", transaction.getBlockHeight())}
             {TransactionDetailItem("Total Fees", transaction.getTotalFees())}
