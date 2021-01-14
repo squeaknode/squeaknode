@@ -39,17 +39,11 @@ class NetworkSync(ABC):
         # TODO: sleep for timeout and then call self._stop()
 
     def _sync_peer(self, peer):
-        # with PeerConnection(peer) as peer_connection:
-        #     self.sync_peer(peer_connection)
         with PeerSyncTask(
                 self.squeak_controller,
                 peer,
                 self.stopped,
-        ).open_peer_sync_task() as peer_sync_task:
-            # if peer.uploading:
-            #     peer_sync_task.upload(min_block, max_block)
-            # if peer.downloading:
-            #     peer_sync_task.download(min_block, max_block)
+        ).open_connection() as peer_sync_task:
             self.sync_peer(peer_sync_task)
 
 
