@@ -702,6 +702,24 @@ class SqueakDb:
             peers = [self._parse_squeak_peer(row) for row in rows]
             return peers
 
+    def get_downloading_peers(self):
+        """ Get peers that are set to be downloading. """
+        s = select([self.peers]).where(self.peers.c.downloading)
+        with self.get_connection() as connection:
+            result = connection.execute(s)
+            rows = result.fetchall()
+            peers = [self._parse_squeak_peer(row) for row in rows]
+            return peers
+
+    def get_uploading_peers(self):
+        """ Get peers that are set to be uploading. """
+        s = select([self.peers]).where(self.peers.c.uploading)
+        with self.get_connection() as connection:
+            result = connection.execute(s)
+            rows = result.fetchall()
+            peers = [self._parse_squeak_peer(row) for row in rows]
+            return peers
+
     def set_peer_downloading(self, peer_id, downloading):
         """ Set a peer is downloading. """
         stmt = (

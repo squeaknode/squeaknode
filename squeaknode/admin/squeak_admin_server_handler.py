@@ -10,7 +10,6 @@ from squeaknode.admin.util import squeak_entry_to_detail_message
 from squeaknode.admin.util import squeak_entry_to_message
 from squeaknode.admin.util import squeak_peer_to_message
 from squeaknode.admin.util import squeak_profile_to_message
-from squeaknode.admin.util import sync_result_to_message
 from squeaknode.core.squeak_controller import SqueakController
 from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
 from squeaknode.sync.squeak_sync_status import SqueakSyncController
@@ -390,10 +389,10 @@ class SqueakAdminServerHandler(object):
     def handle_sync_squeaks(self, request):
         logger.info("Handle sync squeaks")
         # sync_result = self.squeak_controller.sync_squeaks()
-        sync_result = self.sync_controller.sync_timeline()
-        sync_result_msg = sync_result_to_message(sync_result)
+        self.sync_controller.download_timeline()
+        self.sync_controller.upload_timeline()
         return squeak_admin_pb2.SyncSqueaksReply(
-            sync_result=sync_result_msg,
+            sync_result=None,
         )
 
     def handle_sync_squeak(self, request):
@@ -401,11 +400,11 @@ class SqueakAdminServerHandler(object):
         squeak_hash = bytes.fromhex(squeak_hash_str)
         logger.info(
             "Handle download squeak with hash: {}".format(squeak_hash_str))
-        # sync_result = self.squeak_controller.sync_squeak(squeak_hash)
-        sync_result = self.sync_controller.sync_single_squeak(squeak_hash)
-        sync_result_msg = sync_result_to_message(sync_result)
+        # TODO: Add a separate method for download squeak and upload squeak.
+        self.sync_controller.download_single_squeak(squeak_hash)
+        self.sync_controller.upload_single_squeak(squeak_hash)
         return squeak_admin_pb2.SyncSqueakReply(
-            sync_result=sync_result_msg,
+            sync_result=None,
         )
 
     def handle_pay_offer(self, request):
