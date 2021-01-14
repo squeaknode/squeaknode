@@ -33,20 +33,24 @@ class PeerSyncController:
         min_block,
         max_block,
     ):
-        # Get list of followed addresses.
+        # Get list of followed addresses
         followed_addresses = self.squeak_controller.get_followed_addresses()
         # Get remote hashes
-        lookup_result = self._get_remote_hashes(
-            followed_addresses, min_block, max_block)
+        lookup_result = self.peer_client.lookup_squeaks(
+            followed_addresses,
+            min_block,
+            max_block,
+        )
         remote_hashes = lookup_result.hashes
-        # Get local hashes of downloaded squeaks
-        local_hashes = self._get_local_hashes(
-            followed_addresses, min_block, max_block)
+        # Get local hashes of saved squeaks
+        local_hashes = self.squeak_controller.lookup_squeaks_include_locked(
+            followed_addresses,
+            min_block,
+            max_block,
+        )
         # Get hashes to download
         hashes_to_download = set(remote_hashes) - set(local_hashes)
-
         # Download squeaks for the hashes
-        # TODO: catch exception downloading individual squeak.
         # TODO: check if hash belongs to correct range after downloading.
         for hash in hashes_to_download:
             # if self.peer_connection.stopped():
@@ -54,8 +58,12 @@ class PeerSyncController:
             self._download_squeak(hash)
 
         # Get local hashes of locked squeaks that don't have an offer from this peer.
-        locked_hashes = self._get_locked_hashes(
-            followed_addresses, min_block, max_block)
+        locked_hashes = self.squeak_controller.lookup_squeaks_needing_offer(
+            followed_addresses,
+            min_block,
+            max_block,
+            self.peer.peer_id,
+        )
         # Get hashes to get offer
         hashes_to_get_offer = set(remote_hashes) & set(locked_hashes)
         # Download offers for the hashes
@@ -72,26 +80,27 @@ class PeerSyncController:
     ):
         # Get list of sharing addresses.
         sharing_addresses = self.squeak_controller.get_sharing_addresses()
-
         # Get remote hashes
-        lookup_result = self._get_remote_hashes(
-            sharing_addresses, min_block, max_block)
+        lookup_result = self.peer_client.lookup_squeaks(
+            sharing_addresses,
+            min_block,
+            max_block,
+        )
         remote_hashes = lookup_result.hashes
         allowed_addresses = lookup_result.allowed_addresses
         peer_latest_block = lookup_result.latest_block_height
-
         max_block = min(max_block, peer_latest_block)
         if max_block < min_block:
             return
-
         # Get local hashes
         addresses_to_search = set(allowed_addresses) & set(sharing_addresses)
-        local_hashes = self._get_local_unlocked_hashes(
-            addresses_to_search, min_block, max_block)
-
+        local_hashes = self.squeak_controller.lookup_squeaks(
+            addresses_to_search,
+            min_block,
+            max_block,
+        )
         # Get hashes to upload
         hashes_to_upload = set(local_hashes) - set(remote_hashes)
-
         # Upload squeaks for the hashes
         # TODO: catch exception uploading individual squeak
         for hash in hashes_to_upload:
@@ -101,42 +110,18 @@ class PeerSyncController:
 
     def download_single_squeak(self, squeak_hash: bytes):
         """Downloads a single squeak and the corresponding offer. """
-        # Download squeak if not already present.
         saved_squeak = self.squeak_controller.get_squeak(squeak_hash)
         if not saved_squeak:
             self._download_squeak(squeak_hash)
-        # Download offer from peer if not already present.
         saved_offer = self._get_saved_offer(squeak_hash)
         if not saved_offer:
             self._download_offer(squeak_hash)
 
     def upload_single_squeak(self, squeak_hash: bytes):
         """Uploads a single squeak. """
-        # Upload the squeak if it exists locally.
         local_squeak = self.squeak_controller.get_squeak(squeak_hash)
         if local_squeak and local_squeak.HasDecryptionKey():
             self._upload_squeak(squeak_hash)
-
-    def _get_local_hashes(self, addresses, min_block, max_block):
-        return self.squeak_controller.lookup_squeaks_include_locked(
-            addresses,
-            min_block,
-            max_block,
-        )
-
-    def _get_local_unlocked_hashes(self, addresses, min_block, max_block):
-        return self.squeak_controller.lookup_squeaks(addresses, min_block, max_block)
-
-    def _get_locked_hashes(self, addresses, min_block, max_block):
-        return self.squeak_controller.lookup_squeaks_needing_offer(
-            addresses,
-            min_block,
-            max_block,
-            self.peer.peer_id,
-        )
-
-    def _get_remote_hashes(self, addresses, min_block, max_block):
-        return self.peer_client.lookup_squeaks(addresses, min_block, max_block)
 
     def _get_saved_offer(self, squeak_hash: bytes):
         offers = self.squeak_controller.get_buy_offers_with_peer(squeak_hash)
