@@ -78,6 +78,10 @@ class SqueakAdminServerHandler(object):
         logger.info("Handle subscribe channel events")
         return self.lightning_client.stub.SubscribeChannelEvents(request)
 
+    def handle_lnd_send_coins(self, request):
+        logger.info("Handle send coins.")
+        return self.lightning_client.stub.SendCoins(request)
+
     def handle_create_signing_profile(self, request):
         profile_name = request.profile_name
         logger.info(
