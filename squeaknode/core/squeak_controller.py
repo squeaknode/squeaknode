@@ -187,6 +187,12 @@ class SqueakController:
     def get_peers(self):
         return self.squeak_db.get_peers()
 
+    def get_downloading_peers(self):
+        return self.squeak_db.get_downloading_peers()
+
+    def get_uploading_peers(self):
+        return self.squeak_db.get_uploading_peers()
+
     def set_peer_downloading(self, peer_id: int, downloading: bool):
         self.squeak_db.set_peer_downloading(peer_id, downloading)
 
