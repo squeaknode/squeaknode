@@ -1,25 +1,36 @@
 import logging
+from contextlib import contextmanager
 
+from squeaknode.sync.peer_connection import PeerConnection
 from squeaknode.sync.util import parse_buy_offer
 
 logger = logging.getLogger(__name__)
 
 
 class PeerSyncTask:
+
     def __init__(
         self,
-        peer_connection,
         squeak_controller,
+        peer,
+        stopped,
     ):
-        self.peer_connection = peer_connection
         self.squeak_controller = squeak_controller
+        self.peer = peer
+        self.peer_connection = None
+        self.stopped = stopped
 
-    @property
-    def peer(self):
-        return self.peer_connection.peer
+    @contextmanager
+    def open_peer_sync_task(self):
+        with PeerConnection(self.peer).open_connection() as peer_connection:
+            self.peer_connection = peer_connection
+            yield self
+            self.peer_connection = None
 
     @property
     def peer_client(self):
+        if self.peer_connection is None:
+            return None
         return self.peer_connection.peer_client
 
     def download(
@@ -42,8 +53,8 @@ class PeerSyncTask:
         # TODO: catch exception downloading individual squeak.
         # TODO: check if hash belongs to correct range after downloading.
         for hash in hashes_to_download:
-            if self.peer_connection.stopped():
-                return
+            # if self.peer_connection.stopped():
+            #     return
             self._download_squeak(hash)
 
         # Get local hashes of locked squeaks that don't have an offer from this peer.
@@ -54,8 +65,8 @@ class PeerSyncTask:
         # Download offers for the hashes
         # TODO: catch exception downloading individual squeak
         for hash in hashes_to_get_offer:
-            if self.peer_connection.stopped():
-                return
+            # if self.peer_connection.stopped():
+            #     return
             self._download_offer(hash)
 
     def upload(
@@ -87,8 +98,8 @@ class PeerSyncTask:
         # Upload squeaks for the hashes
         # TODO: catch exception uploading individual squeak
         for hash in hashes_to_upload:
-            if self.peer_connection.stopped():
-                return
+            # if self.peer_connection.stopped():
+            #     return
             self._try_upload_squeak(
                 hash,
                 allowed_addresses,

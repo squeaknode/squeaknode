@@ -1,6 +1,5 @@
 import logging
 
-from squeaknode.sync.peer_connection import PeerConnection
 from squeaknode.sync.peer_task import PeerSyncTask
 
 logger = logging.getLogger(__name__)
@@ -17,11 +16,12 @@ class NetworkSync:
         if not peer.downloading:
             return
         # peer_connection = PeerConnection(peer)
-        with PeerConnection(peer).open_connection() as peer_connection:
-            peer_sync_task = PeerSyncTask(
-                peer_connection,
+        # with PeerConnection(peer).open_connection() as peer_connection:
+        with PeerSyncTask(
                 self.squeak_controller,
-            )
+                peer,
+                None,
+        ).open_peer_sync_task() as peer_sync_task:
             if peer.uploading:
                 peer_sync_task.upload(min_block, max_block)
             if peer.downloading:
@@ -31,11 +31,12 @@ class NetworkSync:
         if not peer.downloading:
             return
         # peer_connection = PeerConnection(peer)
-        with PeerConnection(peer).open_connection() as peer_connection:
-            peer_sync_task = PeerSyncTask(
-                peer_connection,
+        # with PeerConnection(peer).open_connection() as peer_connection:
+        with PeerSyncTask(
                 self.squeak_controller,
-            )
+                peer,
+                None,
+        ).open_peer_sync_task() as peer_sync_task:
             if peer.uploading:
                 peer_sync_task.upload_single_squeak(squeak_hash)
             if peer.downloading:
