@@ -185,6 +185,14 @@ def create_app(handler, username, password):
             handler.handle_lnd_new_address,
         )
 
+    @app.route("/lndsendcoins", methods=["POST"])
+    @login_required
+    def lndsendcoins():
+        return handle_request(
+            lnd_pb2.SendCoinsRequest(),
+            handler.handle_lnd_send_coins,
+        )
+
     @app.route("/gettimelinesqueakdisplays", methods=["POST"])
     @login_required
     def gettimelinesqueakdisplays():
