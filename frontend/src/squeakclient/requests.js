@@ -445,10 +445,11 @@ export function payOfferRequest(offerId, handleResponse, handleErr) {
 //   });
 // };
 
-export function lndOpenChannelSyncRequest(pubkey, amount, handleResponse, handleErr) {
+export function lndOpenChannelSyncRequest(pubkey, amount, satperbyte, handleResponse, handleErr) {
   var request = new OpenChannelRequest()
   request.setNodePubkeyString(pubkey);
   request.setLocalFundingAmount(amount);
+  request.setSatPerByte(satperbyte);
   makeRequest(
     'lndopenchannelsync',
     request,

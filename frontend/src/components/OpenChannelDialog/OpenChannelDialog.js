@@ -44,13 +44,19 @@ export default function OpenChannelDialog({
   const history = useHistory();
 
   var [amount, setAmount] = useState("");
+  var [satperbyte, setSatperbyte] = useState("");
 
   const resetFields = () => {
     setAmount("");
+    setSatperbyte("");
   };
 
   const handleChangeAmount = (event) => {
     setAmount(event.target.value);
+  };
+
+  const handleChangeSatPerBytes = (event) => {
+    setSatperbyte(event.target.value);
   };
 
   const handleResponse = (response) => {
@@ -63,7 +69,7 @@ export default function OpenChannelDialog({
   };
 
   const openChannel = (pubkey, amount) => {
-    lndOpenChannelSyncRequest(pubkey, amount, handleResponse, handleErr);
+    lndOpenChannelSyncRequest(pubkey, amount, satperbyte, handleResponse, handleErr);
   };
 
   // const goToProfilePage = (profileId) => {
@@ -74,11 +80,12 @@ export default function OpenChannelDialog({
     event.preventDefault();
     console.log( 'pubkey:', pubkey);
     console.log( 'amount:', amount);
+    console.log( 'satperbyte:', satperbyte);
     if (!amount) {
       alert('Amount cannot be empty.');
       return;
     }
-    openChannel(pubkey, amount);
+    openChannel(pubkey, amount, satperbyte);
     handleClose();
   }
 
@@ -107,6 +114,21 @@ export default function OpenChannelDialog({
         autoFocus
         value={amount}
         onChange={handleChangeAmount}
+        fullWidth
+        inputProps={{ maxLength: 64 }}
+      />
+    )
+  }
+
+  function SatPerByteInput() {
+    return (
+      <TextField
+        id="satperbyte-textarea"
+        label="Sats Per Byte"
+        required
+        autoFocus
+        value={satperbyte}
+        onChange={handleChangeSatPerBytes}
         fullWidth
         inputProps={{ maxLength: 64 }}
       />
@@ -147,6 +169,9 @@ export default function OpenChannelDialog({
   </DialogContent>
   <DialogContent>
     {LocalFundingAmountInput()}
+  </DialogContent>
+  <DialogContent>
+    {SatPerByteInput()}
   </DialogContent>
   <DialogActions>
     {CancelButton()}
