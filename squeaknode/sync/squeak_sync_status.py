@@ -1,9 +1,9 @@
 import logging
 
-from squeaknode.sync.network_task import SingleSqueakDownloadSync
-from squeaknode.sync.network_task import SingleSqueakUploadSync
-from squeaknode.sync.network_task import TimelineDownloadSync
-from squeaknode.sync.network_task import TimelineUploadSync
+from squeaknode.sync.network_sync import SingleSqueakDownloadSync
+from squeaknode.sync.network_sync import SingleSqueakUploadSync
+from squeaknode.sync.network_sync import TimelineDownloadSync
+from squeaknode.sync.network_sync import TimelineUploadSync
 
 logger = logging.getLogger(__name__)
 

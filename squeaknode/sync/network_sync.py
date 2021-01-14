@@ -3,7 +3,7 @@ import threading
 from abc import ABC
 from abc import abstractmethod
 
-from squeaknode.sync.peer_task import PeerSyncTask
+from squeaknode.sync.peer_sync_controller import PeerSyncController
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +39,7 @@ class NetworkSync(ABC):
         # TODO: sleep for timeout and then call self._stop()
 
     def _sync_peer(self, peer):
-        with PeerSyncTask(
+        with PeerSyncController(
                 self.squeak_controller,
                 peer,
                 self.stopped,
