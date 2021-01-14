@@ -20,7 +20,6 @@ class PeerSyncController:
     ):
         self.squeak_controller = squeak_controller
         self.peer = peer
-        # self.peer_connection = None
         self.peer_client = PeerClient(
             self.peer.host,
             self.peer.port,
