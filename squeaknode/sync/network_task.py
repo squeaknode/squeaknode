@@ -170,7 +170,7 @@ class NetworkSync(ABC):
 class DownloadSync(NetworkSync):
 
     def get_peers_to_sync(self):
-        return self.squeak_controller.get_uploading_peers()
+        return self.squeak_controller.get_downloading_peers()
 
     @abstractmethod
     def sync_peer(self, peer_sync_task):
