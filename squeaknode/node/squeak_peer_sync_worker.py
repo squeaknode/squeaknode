@@ -1,7 +1,7 @@
 import logging
 import threading
 
-from squeaknode.sync.squeak_sync_status import SqueakSyncController
+from squeaknode.sync.squeak_sync_controller import SqueakSyncController
 
 logger = logging.getLogger(__name__)
 

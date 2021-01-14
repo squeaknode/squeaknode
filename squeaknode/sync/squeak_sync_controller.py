@@ -9,6 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 class SqueakSyncController:
+
     def __init__(self, squeak_controller, sync_block_range):
         self.squeak_controller = squeak_controller
         self.sync_block_range = sync_block_range
@@ -24,12 +25,6 @@ class SqueakSyncController:
             return
         min_block = block_height - block_range
         max_block = block_height
-        # dowload_timeline_task = DownloadTimelineSync(
-        #     self.squeak_controller,
-        #     min_block,
-        #     max_block,
-        # )
-        # dowload_timeline_task.sync()
         TimelineDownloadSync(
             self.squeak_controller,
             min_block,
@@ -47,12 +42,6 @@ class SqueakSyncController:
             return
         min_block = block_height - block_range
         max_block = block_height
-        # dowload_timeline_task = DownloadTimelineSync(
-        #     self.squeak_controller,
-        #     min_block,
-        #     max_block,
-        # )
-        # dowload_timeline_task.sync()
         TimelineUploadSync(
             self.squeak_controller,
             min_block,

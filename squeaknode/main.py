@@ -26,7 +26,7 @@ from squeaknode.node.squeak_peer_sync_worker import SqueakPeerSyncWorker
 from squeaknode.node.squeak_rate_limiter import SqueakRateLimiter
 from squeaknode.server.squeak_server_handler import SqueakServerHandler
 from squeaknode.server.squeak_server_servicer import SqueakServerServicer
-from squeaknode.sync.squeak_sync_status import SqueakSyncController
+from squeaknode.sync.squeak_sync_controller import SqueakSyncController
 
 
 logger = logging.getLogger(__name__)
