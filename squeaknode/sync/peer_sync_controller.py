@@ -1,9 +1,6 @@
 import logging
 from contextlib import contextmanager
 
-from squeak.core import CSqueak
-
-from squeaknode.core.util import get_hash
 from squeaknode.network.peer_client import PeerClient
 from squeaknode.sync.util import parse_buy_offer
 
@@ -100,39 +97,25 @@ class PeerSyncController:
         for hash in hashes_to_upload:
             # if self.peer_connection.stopped():
             #     return
-            squeak = self._get_local_squeak(hash)
-            self._upload_squeak(squeak)
+            self._upload_squeak(hash)
 
     def download_single_squeak(self, squeak_hash: bytes):
+        """Downloads a single squeak and the corresponding offer. """
         # Download squeak if not already present.
-        saved_squeak = self._get_local_squeak(squeak_hash)
+        saved_squeak = self.squeak_controller.get_squeak(squeak_hash)
         if not saved_squeak:
             self._download_squeak(squeak_hash)
-
         # Download offer from peer if not already present.
         saved_offer = self._get_saved_offer(squeak_hash)
         if not saved_offer:
             self._download_offer(squeak_hash)
 
     def upload_single_squeak(self, squeak_hash: bytes):
+        """Uploads a single squeak. """
         # Upload the squeak if it exists locally.
-        local_squeak = self._get_local_squeak(squeak_hash)
+        local_squeak = self.squeak_controller.get_squeak(squeak_hash)
         if local_squeak and local_squeak.HasDecryptionKey():
-            self._upload_squeak(local_squeak)
-
-    def get_offer(self, squeak_hash: bytes):
-        # Get the squeak from the squeak hash
-        squeak = self._get_local_squeak(squeak_hash)
-
-        # Download the buy offer
-        offer_msg = self._download_offer_msg(squeak_hash)
-        buy_offer = parse_buy_offer(offer_msg)
-
-        decoded_offer = self.squeak_controller.get_offer(
-            squeak, buy_offer, self.peer)
-
-        # Save the offer
-        self.squeak_controller.save_offer(decoded_offer)
+            self._upload_squeak(squeak_hash)
 
     def _get_local_hashes(self, addresses, min_block, max_block):
         return self.squeak_controller.lookup_squeaks_include_locked(
@@ -155,11 +138,7 @@ class PeerSyncController:
     def _get_remote_hashes(self, addresses, min_block, max_block):
         return self.peer_client.lookup_squeaks(addresses, min_block, max_block)
 
-    def _save_squeak(self, squeak: CSqueak):
-        self.squeak_controller.save_downloaded_squeak(squeak)
-
     def _get_saved_offer(self, squeak_hash: bytes):
-        # offers = self.squeak_db.get_offers_with_peer(squeak_hash)
         offers = self.squeak_controller.get_buy_offers_with_peer(squeak_hash)
         for offer_with_peer in offers:
             if offer_with_peer.offer.peer_id == self.peer.peer_id:
@@ -167,25 +146,25 @@ class PeerSyncController:
 
     def _download_squeak(self, squeak_hash: bytes):
         squeak = self.peer_client.get_squeak(squeak_hash)
-        self._save_squeak(squeak)
+        self.squeak_controller.save_downloaded_squeak(squeak)
         logger.info("Downloaded squeak {} from peer {}".format(
             squeak_hash.hex(), self.peer
         ))
 
     def _download_offer(self, squeak_hash: bytes):
-        self.get_offer(squeak_hash)
+        squeak = self.squeak_controller.get_squeak(squeak_hash)
+        offer_msg = self.peer_client.buy_squeak(squeak_hash)
+        buy_offer = parse_buy_offer(offer_msg)
+        decoded_offer = self.squeak_controller.get_offer(
+            squeak, buy_offer, self.peer)
+        self.squeak_controller.save_offer(decoded_offer)
         logger.info("Downloaded offer for squeak {} from peer {}".format(
             squeak_hash.hex(), self.peer
         ))
 
-    def _get_local_squeak(self, squeak_hash: bytes):
-        return self.squeak_controller.get_squeak(squeak_hash)
-
-    def _upload_squeak(self, squeak: CSqueak):
+    def _upload_squeak(self, squeak_hash: bytes):
+        squeak = self.squeak_controller.get_squeak(squeak_hash)
         self.peer_client.post_squeak(squeak)
         logger.info("Uploaded squeak {} to peer {}".format(
-            get_hash(squeak).hex(), self.peer
+            squeak_hash.hex(), self.peer
         ))
-
-    def _download_offer_msg(self, squeak_hash: bytes):
-        return self.peer_client.buy_squeak(squeak_hash)
