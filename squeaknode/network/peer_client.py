@@ -55,13 +55,13 @@ class PeerClient:
         CheckSqueak(get_response_squeak, skipDecryptionCheck=True)
         return get_response_squeak
 
-    def buy_squeak(self, squeak_hash: bytes):
-        buy_response = self.stub.GetOffer(
+    def get_offer(self, squeak_hash: bytes):
+        get_offer_response = self.stub.GetOffer(
             squeak_server_pb2.GetOfferRequest(
                 hash=squeak_hash,
             )
         )
-        offer_msg = buy_response.offer
+        offer_msg = get_offer_response.offer
         return offer_msg
 
     def _build_squeak_msg(self, squeak: CSqueak):

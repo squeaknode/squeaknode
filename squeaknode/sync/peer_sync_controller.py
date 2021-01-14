@@ -138,7 +138,7 @@ class PeerSyncController:
 
     def _download_offer(self, squeak_hash: bytes):
         squeak = self.squeak_controller.get_squeak(squeak_hash)
-        offer_msg = self.peer_client.buy_squeak(squeak_hash)
+        offer_msg = self.peer_client.get_offer(squeak_hash)
         buy_offer = parse_buy_offer(offer_msg)
         decoded_offer = self.squeak_controller.get_offer(
             squeak, buy_offer, self.peer)
