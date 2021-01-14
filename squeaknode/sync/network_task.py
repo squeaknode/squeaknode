@@ -30,8 +30,7 @@ class NetworkSync(ABC):
         self.stopped.set()
 
     def sync(self):
-        peers = self.squeak_controller.get_peers()
-        for peer in peers:
+        for peer in self.get_peers_to_sync():
             sync_peer_thread = threading.Thread(
                 target=self._sync_peer,
                 args=(peer,),
