@@ -1,7 +1,7 @@
 import logging
 from contextlib import contextmanager
 
-from squeaknode.sync.peer_connection import PeerConnection
+from squeaknode.network.peer_client import PeerClient
 from squeaknode.sync.util import parse_buy_offer
 
 logger = logging.getLogger(__name__)
@@ -17,21 +17,30 @@ class PeerSyncTask:
     ):
         self.squeak_controller = squeak_controller
         self.peer = peer
-        self.peer_connection = None
+        # self.peer_connection = None
+        self.peer_client = PeerClient(
+            self.peer.host,
+            self.peer.port,
+        )
         self.stopped = stopped
 
-    @contextmanager
-    def open_peer_sync_task(self):
-        with PeerConnection(self.peer).open_connection() as peer_connection:
-            self.peer_connection = peer_connection
-            yield self
-            self.peer_connection = None
+    # @contextmanager
+    # def open_peer_sync_task(self):
+    #     with PeerConnection(self.peer).open_connection() as peer_connection:
+    #         self.peer_connection = peer_connection
+    #         yield self
+    #         self.peer_connection = None
 
-    @property
-    def peer_client(self):
-        if self.peer_connection is None:
-            return None
-        return self.peer_connection.peer_client
+    @contextmanager
+    def open_connection(self):
+        with self.peer_client.open_stub():
+            yield self
+
+    # @property
+    # def peer_client(self):
+    #     if self.peer_connection is None:
+    #         return None
+    #     return self.peer_connection.peer_client
 
     def download(
         self,
