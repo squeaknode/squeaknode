@@ -54,8 +54,8 @@ class PeerClient:
         )
 
     def get_squeak(self, squeak_hash: bytes):
-        get_response = self.stub.GetSqueak(
-            squeak_server_pb2.GetSqueakRequest(
+        get_response = self.stub.DownloadSqueak(
+            squeak_server_pb2.DownloadSqueakRequest(
                 hash=squeak_hash,
             )
         )

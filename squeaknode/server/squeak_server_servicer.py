@@ -44,7 +44,7 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
         self.handler.handle_posted_squeak(squeak)
         return squeak_server_pb2.UploadSqueakReply()
 
-    def GetSqueak(self, request: squeak_server_pb2.GetSqueakRequest, context):
+    def DownloadSqueak(self, request: squeak_server_pb2.DownloadSqueakRequest, context):
         squeak_hash = request.hash
         # TODO: check if hash is valid
 
@@ -52,11 +52,11 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
         if squeak is None:
             context.set_code(grpc.StatusCode.NOT_FOUND)
             context.set_details("Squeak not found.")
-            return squeak_server_pb2.GetSqueakReply(
+            return squeak_server_pb2.DownloadSqueakReply(
                 squeak=None,
             )
 
-        return squeak_server_pb2.GetSqueakReply(
+        return squeak_server_pb2.DownloadSqueakReply(
             squeak=squeak_server_pb2.Squeak(
                 hash=get_hash(squeak),
                 serialized_squeak=squeak.serialize(),
