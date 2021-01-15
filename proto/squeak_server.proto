@@ -22,6 +22,10 @@ service SqueakServer {
   */
   rpc LookupSqueaks (LookupSqueaksRequest) returns (LookupSqueaksReply) {}
 
+  /** sqk: `lookupsqueakstodownload`
+  */
+  rpc LookupSqueaksToDownload (LookupSqueaksToDownloadRequest) returns (LookupSqueaksToDownloadReply) {}
+
   /** sqk: `getoffer`
   */
   rpc GetOffer (GetOfferRequest) returns (GetOfferReply) {}
@@ -39,6 +43,15 @@ message GetSqueakRequest {
 }
 
 message LookupSqueaksRequest {
+    /// List of the author addresses
+    repeated string addresses = 1;
+    /// Minimum block to look for
+    int32 min_block = 2;
+    /// Maximum block to look for
+    int32 max_block = 3;
+}
+
+message LookupSqueaksToDownloadRequest {
     /// List of the author addresses
     repeated string addresses = 1;
     /// Minimum block to look for
@@ -71,6 +84,11 @@ message LookupSqueaksReply {
     repeated string allowed_addresses = 3;
 }
 
+message LookupSqueaksToDownloadReply {
+    /// Hash of the squeak to get.
+    repeated bytes hashes = 1;
+}
+
 message GetOfferReply {
     /// The offer
     Offer offer = 1;
@@ -100,3 +118,12 @@ message Offer {
     /// The port of the seller lightning node
     int32 port = 5;
 }
+
+// message Interested {
+//     /// List of the author addresses
+//     repeated string addresses = 1;
+//     /// Minimum block to look for
+//     int32 min_block = 2;
+//     /// Maximum block to look for
+//     int32 max_block = 3;
+// }

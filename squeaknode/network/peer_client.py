@@ -37,6 +37,16 @@ class PeerClient:
         )
         return lookup_response
 
+    def lookup_squeaks_to_download(self, addresses: List[str], min_block: int, max_block: int):
+        lookup_response = self.stub.LookupSqueaksToDownload(
+            squeak_server_pb2.LookupSqueaksToDownloadRequest(
+                addresses=addresses,
+                min_block=min_block,
+                max_block=max_block,
+            )
+        )
+        return lookup_response
+
     def post_squeak(self, squeak: CSqueak):
         squeak_msg = self._build_squeak_msg(squeak)
         self.stub.PostSqueak(

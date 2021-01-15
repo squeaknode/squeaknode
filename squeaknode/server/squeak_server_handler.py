@@ -50,6 +50,23 @@ class SqueakServerHandler(object):
             allowed_addresses=allowed_addresses,
         )
 
+    def handle_lookup_squeaks_to_download(self, request):
+        addresses = request.addresses
+        min_block = request.min_block
+        max_block = request.max_block
+        logger.info(
+            "Handle lookup squeaks to download with addresses: {}, min_block: {}, max_block: {}".format(
+                str(addresses), min_block, max_block
+            )
+        )
+        hashes = self.squeak_controller.lookup_squeaks(
+            addresses, min_block, max_block)
+        logger.info(
+            "Got number of hashes to download from db: {}".format(len(hashes)))
+        return squeak_server_pb2.LookupSqueaksToDownloadReply(
+            hashes=hashes,
+        )
+
     def handle_get_offer(self, squeak_hash: bytes, client_addr: str):
         logger.info(
             "Handle get offer by hash: {} from client_addr: {}".format(
