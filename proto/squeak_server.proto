@@ -12,7 +12,7 @@ service SqueakServer {
 
   /** sqk: `postsqueak`
   */
-  rpc PostSqueak (PostSqueakRequest) returns (PostSqueakReply) {}
+  rpc DownloadSqueak (DownloadSqueakRequest) returns (DownloadSqueakReply) {}
 
   /** sqk: `getsqueak`
   */
@@ -32,7 +32,7 @@ service SqueakServer {
 
 }
 
-message PostSqueakRequest {
+message DownloadSqueakRequest {
     /// Content of the squeak to be made.
     Squeak squeak = 1;
 }
@@ -61,7 +61,7 @@ message GetOfferRequest {
     bytes hash = 1;
 }
 
-message PostSqueakReply {
+message DownloadSqueakReply {
 }
 
 message GetSqueakReply {
