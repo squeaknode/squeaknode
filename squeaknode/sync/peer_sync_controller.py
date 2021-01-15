@@ -125,7 +125,7 @@ class PeerSyncController:
                 return offer_with_peer
 
     def _download_squeak(self, squeak_hash: bytes):
-        squeak = self.peer_client.get_squeak(squeak_hash)
+        squeak = self.peer_client.download_squeak(squeak_hash)
         self.squeak_controller.save_downloaded_squeak(squeak)
         logger.info("Downloaded squeak {} from peer {}".format(
             squeak_hash.hex(), self.peer
@@ -133,7 +133,7 @@ class PeerSyncController:
 
     def _download_offer(self, squeak_hash: bytes):
         squeak = self.squeak_controller.get_squeak(squeak_hash)
-        offer_msg = self.peer_client.get_offer(squeak_hash)
+        offer_msg = self.peer_client.download_offer(squeak_hash)
         buy_offer = parse_buy_offer(offer_msg)
         decoded_offer = self.squeak_controller.get_offer(
             squeak, buy_offer, self.peer)
@@ -144,7 +144,7 @@ class PeerSyncController:
 
     def _upload_squeak(self, squeak_hash: bytes):
         squeak = self.squeak_controller.get_squeak(squeak_hash)
-        self.peer_client.post_squeak(squeak)
+        self.peer_client.upload_squeak(squeak)
         logger.info("Uploaded squeak {} to peer {}".format(
             squeak_hash.hex(), self.peer
         ))
