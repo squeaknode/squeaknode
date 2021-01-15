@@ -26,6 +26,10 @@ service SqueakServer {
   */
   rpc LookupSqueaksToDownload (LookupSqueaksToDownloadRequest) returns (LookupSqueaksToDownloadReply) {}
 
+  /** sqk: `lookupsqueakstoupload`
+  */
+  rpc LookupSqueaksToUpload (LookupSqueaksToUploadRequest) returns (LookupSqueaksToUploadReply) {}
+
   /** sqk: `getoffer`
   */
   rpc GetOffer (GetOfferRequest) returns (GetOfferReply) {}
@@ -60,6 +64,11 @@ message LookupSqueaksToDownloadRequest {
     int32 max_block = 3;
 }
 
+message LookupSqueaksToUploadRequest {
+    /// List of the author addresses
+    repeated string addresses = 1;
+}
+
 message GetOfferRequest {
     /// Hash of the squeak to buy.
     bytes hash = 1;
@@ -87,6 +96,17 @@ message LookupSqueaksReply {
 message LookupSqueaksToDownloadReply {
     /// Hash of the squeak to get.
     repeated bytes hashes = 1;
+}
+
+message LookupSqueaksToUploadReply {
+    /// Hash of the squeak to get.
+    repeated bytes hashes = 1;
+    /// List of the author addresses
+    repeated string addresses = 2;
+    /// Minimum block to look for
+    int32 min_block = 3;
+    /// Maximum block to look for
+    int32 max_block = 4;
 }
 
 message GetOfferReply {

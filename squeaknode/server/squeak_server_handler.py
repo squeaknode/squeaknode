@@ -67,6 +67,36 @@ class SqueakServerHandler(object):
             hashes=hashes,
         )
 
+    def handle_lookup_squeaks_to_upload(self, request):
+        addresses = request.addresses
+        logger.info(
+            "Handle lookup squeaks to upload with addresses: {}".format(
+                str(addresses)
+            )
+        )
+        allowed_addresses = self.squeak_controller.lookup_allowed_addresses(
+            addresses)
+        latest_block_height = self.squeak_controller.get_best_block_height()
+        block_range = self.squeak_controller.get_block_range()
+        max_block = latest_block_height
+        min_block = latest_block_height - block_range
+        hashes = self.squeak_controller.lookup_squeaks(
+            addresses, min_block, max_block)
+        logger.info(
+            "Got number of hashes to already uploaded from db: {}, number of allowed addresses: {} with min_block: {} and max_block: {}".format(
+                len(hashes),
+                len(allowed_addresses),
+                min_block,
+                max_block,
+            )
+        )
+        return squeak_server_pb2.LookupSqueaksToUploadReply(
+            hashes=hashes,
+            addresses=allowed_addresses,
+            min_block=min_block,
+            max_block=max_block,
+        )
+
     def handle_get_offer(self, squeak_hash: bytes, client_addr: str):
         logger.info(
             "Handle get offer by hash: {} from client_addr: {}".format(

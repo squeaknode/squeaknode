@@ -47,6 +47,14 @@ class PeerClient:
         )
         return lookup_response
 
+    def lookup_squeaks_to_upload(self, addresses: List[str]):
+        lookup_response = self.stub.LookupSqueaksToUpload(
+            squeak_server_pb2.LookupSqueaksToUploadRequest(
+                addresses=addresses,
+            )
+        )
+        return lookup_response
+
     def post_squeak(self, squeak: CSqueak):
         squeak_msg = self._build_squeak_msg(squeak)
         self.stub.PostSqueak(
