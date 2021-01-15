@@ -10,11 +10,11 @@ package squeaknode;
 // Interface exported by the server.
 service SqueakServer {
 
-  /** sqk: `postsqueak`
+  /** sqk: `uploadsqueak`
   */
   rpc UploadSqueak (UploadSqueakRequest) returns (UploadSqueakReply) {}
 
-  /** sqk: `getsqueak`
+  /** sqk: `downloadsqueak`
   */
   rpc DownloadSqueak (DownloadSqueakRequest) returns (DownloadSqueakReply) {}
 
@@ -26,7 +26,7 @@ service SqueakServer {
   */
   rpc LookupSqueaksToUpload (LookupSqueaksToUploadRequest) returns (LookupSqueaksToUploadReply) {}
 
-  /** sqk: `getoffer`
+  /** sqk: `downloadoffer`
   */
   rpc DownloadOffer (DownloadOfferRequest) returns (DownloadOfferReply) {}
 
