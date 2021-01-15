@@ -71,16 +71,17 @@ def test_post_squeak(server_stub, admin_stub, lightning_client, following_signin
     squeak_hash = get_hash(squeak)
 
     squeak_msg = build_squeak_msg(squeak)
-    server_stub.PostSqueak(
-        squeak_server_pb2.PostSqueakRequest(squeak=squeak_msg)
+    server_stub.UploadSqueak(
+        squeak_server_pb2.UploadSqueakRequest(squeak=squeak_msg)
     )
 
     # Wait a few seconds for the squeak to be verified on the server.
     time.sleep(1)
 
     # Get the same squeak from the server
-    get_response = server_stub.GetSqueak(
-        squeak_server_pb2.GetSqueakRequest(hash=bytes.fromhex(squeak_hash))
+    get_response = server_stub.DownloadSqueak(
+        squeak_server_pb2.DownloadSqueakRequest(
+            hash=bytes.fromhex(squeak_hash))
     )
     get_response_squeak = squeak_from_msg(get_response.squeak)
     CheckSqueak(get_response_squeak, skipDecryptionCheck=True)
@@ -99,8 +100,8 @@ def test_post_squeak_not_following(
 
     squeak_msg = build_squeak_msg(squeak)
     with pytest.raises(Exception):
-        server_stub.PostSqueak(
-            squeak_server_pb2.PostSqueakRequest(squeak=squeak_msg))
+        server_stub.UploadSqueak(
+            squeak_server_pb2.UploadSqueakRequest(squeak=squeak_msg))
 
 
 def test_lookup_squeaks(server_stub, admin_stub, signing_profile_id, saved_squeak_hash):
@@ -190,16 +191,16 @@ def test_sell_squeak(server_stub, admin_stub, lightning_client, saved_squeak_has
     initial_server_balance = get_balance_response.total_balance
 
     # Get the squeak from the server
-    get_response = server_stub.GetSqueak(
-        squeak_server_pb2.GetSqueakRequest(
+    get_response = server_stub.DownloadSqueak(
+        squeak_server_pb2.DownloadSqueakRequest(
             hash=bytes.fromhex(saved_squeak_hash))
     )
     get_response_squeak = squeak_from_msg(get_response.squeak)
     CheckSqueak(get_response_squeak, skipDecryptionCheck=True)
 
     # Buy the squeak data key
-    buy_response = server_stub.GetOffer(
-        squeak_server_pb2.GetOfferRequest(
+    buy_response = server_stub.DownloadOffer(
+        squeak_server_pb2.DownloadOfferRequest(
             hash=bytes.fromhex(saved_squeak_hash),
         )
     )
@@ -257,8 +258,8 @@ def test_make_squeak(server_stub, admin_stub, signing_profile_id):
     assert len(make_squeak_hash) == 32 * 2
 
     # Get the new squeak from the server
-    get_squeak_response = server_stub.GetSqueak(
-        squeak_server_pb2.GetSqueakRequest(
+    get_squeak_response = server_stub.DownloadSqueak(
+        squeak_server_pb2.DownloadSqueakRequest(
             hash=bytes.fromhex(make_squeak_hash))
     )
     get_squeak_response_squeak = squeak_from_msg(get_squeak_response.squeak)
@@ -354,8 +355,8 @@ def test_post_squeak_rate_limit(server_stub, admin_stub, lightning_client, nonfo
                 block_height,
             )
             squeak_msg = build_squeak_msg(squeak)
-            server_stub.PostSqueak(
-                squeak_server_pb2.PostSqueakRequest(squeak=squeak_msg)
+            server_stub.UploadSqueak(
+                squeak_server_pb2.UploadSqueakRequest(squeak=squeak_msg)
             )
         except Exception as e:
             post_squeak_exception = e
@@ -531,8 +532,8 @@ def test_delete_squeak(server_stub, admin_stub, saved_squeak_hash):
 
     # Try to get the squeak and fail
     with pytest.raises(Exception) as excinfo:
-        server_stub.GetSqueak(
-            squeak_server_pb2.GetSqueakRequest(
+        server_stub.DownloadSqueak(
+            squeak_server_pb2.DownloadSqueakRequest(
                 hash=bytes.fromhex(saved_squeak_hash))
         )
     assert "Squeak not found." in str(excinfo.value)
@@ -637,16 +638,16 @@ def test_delete_peer(server_stub, admin_stub, peer_id):
 
 def test_list_channels(server_stub, admin_stub, lightning_client, saved_squeak_hash):
     # Get the squeak from the server
-    get_response = server_stub.GetSqueak(
-        squeak_server_pb2.GetSqueakRequest(
+    get_response = server_stub.DownloadSqueak(
+        squeak_server_pb2.DownloadSqueakRequest(
             hash=bytes.fromhex(saved_squeak_hash))
     )
     get_response_squeak = squeak_from_msg(get_response.squeak)
     CheckSqueak(get_response_squeak, skipDecryptionCheck=True)
 
     # Buy the squeak data key
-    buy_response = server_stub.GetOffer(
-        squeak_server_pb2.GetOfferRequest(
+    buy_response = server_stub.DownloadOffer(
+        squeak_server_pb2.DownloadOfferRequest(
             hash=bytes.fromhex(saved_squeak_hash),
         )
     )
@@ -699,16 +700,16 @@ def test_send_coins(server_stub, admin_stub, lightning_client):
 
 def test_list_peers(server_stub, admin_stub, lightning_client, saved_squeak_hash):
     # Get the squeak from the server
-    get_response = server_stub.GetSqueak(
-        squeak_server_pb2.GetSqueakRequest(
+    get_response = server_stub.DownloadSqueak(
+        squeak_server_pb2.DownloadSqueakRequest(
             hash=bytes.fromhex(saved_squeak_hash))
     )
     get_response_squeak = squeak_from_msg(get_response.squeak)
     CheckSqueak(get_response_squeak, skipDecryptionCheck=True)
 
     # Buy the squeak data key
-    buy_response = server_stub.GetOffer(
-        squeak_server_pb2.GetOfferRequest(
+    buy_response = server_stub.DownloadOffer(
+        squeak_server_pb2.DownloadOfferRequest(
             hash=bytes.fromhex(saved_squeak_hash),
         )
     )
@@ -751,16 +752,16 @@ def test_list_peers(server_stub, admin_stub, lightning_client, saved_squeak_hash
 
 def test_open_channel(server_stub, admin_stub, lightning_client, saved_squeak_hash):
     # Get the squeak from the server
-    get_response = server_stub.GetSqueak(
-        squeak_server_pb2.GetSqueakRequest(
+    get_response = server_stub.DownloadSqueak(
+        squeak_server_pb2.DownloadSqueakRequest(
             hash=bytes.fromhex(saved_squeak_hash))
     )
     get_response_squeak = squeak_from_msg(get_response.squeak)
     CheckSqueak(get_response_squeak, skipDecryptionCheck=True)
 
     # Buy the squeak data key
-    buy_response = server_stub.GetOffer(
-        squeak_server_pb2.GetOfferRequest(
+    buy_response = server_stub.DownloadOffer(
+        squeak_server_pb2.DownloadOfferRequest(
             hash=bytes.fromhex(saved_squeak_hash),
         )
     )

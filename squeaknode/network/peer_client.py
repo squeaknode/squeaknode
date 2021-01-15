@@ -45,17 +45,17 @@ class PeerClient:
         )
         return lookup_response
 
-    def post_squeak(self, squeak: CSqueak):
+    def upload_squeak(self, squeak: CSqueak):
         squeak_msg = self._build_squeak_msg(squeak)
-        self.stub.PostSqueak(
-            squeak_server_pb2.PostSqueakRequest(
+        self.stub.UploadSqueak(
+            squeak_server_pb2.UploadSqueakRequest(
                 squeak=squeak_msg,
             )
         )
 
-    def get_squeak(self, squeak_hash: bytes):
-        get_response = self.stub.GetSqueak(
-            squeak_server_pb2.GetSqueakRequest(
+    def download_squeak(self, squeak_hash: bytes):
+        get_response = self.stub.DownloadSqueak(
+            squeak_server_pb2.DownloadSqueakRequest(
                 hash=squeak_hash,
             )
         )
@@ -63,13 +63,13 @@ class PeerClient:
         CheckSqueak(get_response_squeak, skipDecryptionCheck=True)
         return get_response_squeak
 
-    def get_offer(self, squeak_hash: bytes):
-        get_offer_response = self.stub.GetOffer(
-            squeak_server_pb2.GetOfferRequest(
+    def download_offer(self, squeak_hash: bytes):
+        download_offer_response = self.stub.DownloadOffer(
+            squeak_server_pb2.DownloadOfferRequest(
                 hash=squeak_hash,
             )
         )
-        offer_msg = get_offer_response.offer
+        offer_msg = download_offer_response.offer
         return offer_msg
 
     def _build_squeak_msg(self, squeak: CSqueak):

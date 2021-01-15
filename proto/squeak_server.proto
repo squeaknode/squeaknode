@@ -10,13 +10,13 @@ package squeaknode;
 // Interface exported by the server.
 service SqueakServer {
 
-  /** sqk: `postsqueak`
+  /** sqk: `uploadsqueak`
   */
-  rpc PostSqueak (PostSqueakRequest) returns (PostSqueakReply) {}
+  rpc UploadSqueak (UploadSqueakRequest) returns (UploadSqueakReply) {}
 
-  /** sqk: `getsqueak`
+  /** sqk: `downloadsqueak`
   */
-  rpc GetSqueak (GetSqueakRequest) returns (GetSqueakReply) {}
+  rpc DownloadSqueak (DownloadSqueakRequest) returns (DownloadSqueakReply) {}
 
   /** sqk: `lookupsqueakstodownload`
   */
@@ -26,18 +26,18 @@ service SqueakServer {
   */
   rpc LookupSqueaksToUpload (LookupSqueaksToUploadRequest) returns (LookupSqueaksToUploadReply) {}
 
-  /** sqk: `getoffer`
+  /** sqk: `downloadoffer`
   */
-  rpc GetOffer (GetOfferRequest) returns (GetOfferReply) {}
+  rpc DownloadOffer (DownloadOfferRequest) returns (DownloadOfferReply) {}
 
 }
 
-message PostSqueakRequest {
+message UploadSqueakRequest {
     /// Content of the squeak to be made.
     Squeak squeak = 1;
 }
 
-message GetSqueakRequest {
+message DownloadSqueakRequest {
     /// Hash of the squeak to get.
     bytes hash = 1;
 }
@@ -56,15 +56,15 @@ message LookupSqueaksToUploadRequest {
     repeated string addresses = 1;
 }
 
-message GetOfferRequest {
+message DownloadOfferRequest {
     /// Hash of the squeak to buy.
     bytes hash = 1;
 }
 
-message PostSqueakReply {
+message UploadSqueakReply {
 }
 
-message GetSqueakReply {
+message DownloadSqueakReply {
     /// The squeak.
     Squeak squeak = 1;
 }
@@ -85,7 +85,7 @@ message LookupSqueaksToUploadReply {
     int32 max_block = 4;
 }
 
-message GetOfferReply {
+message DownloadOfferReply {
     /// The offer
     Offer offer = 1;
 }
