@@ -8,6 +8,13 @@ import {
   Box,
 } from "@material-ui/core";
 
+import Timeline from '@material-ui/lab/Timeline';
+import TimelineItem from '@material-ui/lab/TimelineItem';
+import TimelineSeparator from '@material-ui/lab/TimelineSeparator';
+import TimelineConnector from '@material-ui/lab/TimelineConnector';
+import TimelineContent from '@material-ui/lab/TimelineContent';
+import TimelineDot from '@material-ui/lab/TimelineDot';
+
 // styles
 import useStyles from "./styles";
 
@@ -106,23 +113,34 @@ export default function SqueakPage() {
 
   function AncestorsContent() {
     return (
-      <div>
+      <Timeline>
         {ancestorSqueaks.slice(0, -1)
           //.reverse()
           .map(ancestorSqueak =>
-          <Box
-            key={ancestorSqueak.getSqueakHash()}
-            >
-          <SqueakThreadItem
-            hash={ancestorSqueak.getSqueakHash()}
-            key={ancestorSqueak.getSqueakHash()}
-            squeak={ancestorSqueak}
-            network={network}>
-          </SqueakThreadItem>
-          <Divider />
-          </Box>
+            <TimelineItem>
+  <TimelineSeparator>
+    <TimelineDot />
+    <TimelineConnector />
+  </TimelineSeparator>
+  <TimelineContent>
+
+  <Box
+    key={ancestorSqueak.getSqueakHash()}
+    >
+  <SqueakThreadItem
+    hash={ancestorSqueak.getSqueakHash()}
+    key={ancestorSqueak.getSqueakHash()}
+    squeak={ancestorSqueak}
+    network={network}>
+  </SqueakThreadItem>
+  <Divider />
+  </Box>
+
+  </TimelineContent>
+</TimelineItem>
+
         )}
-      </div>
+      </Timeline>
     )
   }
 
