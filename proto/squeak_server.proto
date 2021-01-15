@@ -28,7 +28,7 @@ service SqueakServer {
 
   /** sqk: `getoffer`
   */
-  rpc GetOffer (GetOfferRequest) returns (GetOfferReply) {}
+  rpc DownloadOffer (DownloadOfferRequest) returns (DownloadOfferReply) {}
 
 }
 
@@ -56,7 +56,7 @@ message LookupSqueaksToUploadRequest {
     repeated string addresses = 1;
 }
 
-message GetOfferRequest {
+message DownloadOfferRequest {
     /// Hash of the squeak to buy.
     bytes hash = 1;
 }
@@ -85,7 +85,7 @@ message LookupSqueaksToUploadReply {
     int32 max_block = 4;
 }
 
-message GetOfferReply {
+message DownloadOfferReply {
     /// The offer
     Offer offer = 1;
 }

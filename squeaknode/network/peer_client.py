@@ -64,8 +64,8 @@ class PeerClient:
         return get_response_squeak
 
     def get_offer(self, squeak_hash: bytes):
-        get_offer_response = self.stub.GetOffer(
-            squeak_server_pb2.GetOfferRequest(
+        get_offer_response = self.stub.DownloadOffer(
+            squeak_server_pb2.DownloadOfferRequest(
                 hash=squeak_hash,
             )
         )

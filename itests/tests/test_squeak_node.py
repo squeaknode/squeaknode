@@ -199,8 +199,8 @@ def test_sell_squeak(server_stub, admin_stub, lightning_client, saved_squeak_has
     CheckSqueak(get_response_squeak, skipDecryptionCheck=True)
 
     # Buy the squeak data key
-    buy_response = server_stub.GetOffer(
-        squeak_server_pb2.GetOfferRequest(
+    buy_response = server_stub.DownloadOffer(
+        squeak_server_pb2.DownloadOfferRequest(
             hash=bytes.fromhex(saved_squeak_hash),
         )
     )
@@ -646,8 +646,8 @@ def test_list_channels(server_stub, admin_stub, lightning_client, saved_squeak_h
     CheckSqueak(get_response_squeak, skipDecryptionCheck=True)
 
     # Buy the squeak data key
-    buy_response = server_stub.GetOffer(
-        squeak_server_pb2.GetOfferRequest(
+    buy_response = server_stub.DownloadOffer(
+        squeak_server_pb2.DownloadOfferRequest(
             hash=bytes.fromhex(saved_squeak_hash),
         )
     )
@@ -708,8 +708,8 @@ def test_list_peers(server_stub, admin_stub, lightning_client, saved_squeak_hash
     CheckSqueak(get_response_squeak, skipDecryptionCheck=True)
 
     # Buy the squeak data key
-    buy_response = server_stub.GetOffer(
-        squeak_server_pb2.GetOfferRequest(
+    buy_response = server_stub.DownloadOffer(
+        squeak_server_pb2.DownloadOfferRequest(
             hash=bytes.fromhex(saved_squeak_hash),
         )
     )
@@ -760,8 +760,8 @@ def test_open_channel(server_stub, admin_stub, lightning_client, saved_squeak_ha
     CheckSqueak(get_response_squeak, skipDecryptionCheck=True)
 
     # Buy the squeak data key
-    buy_response = server_stub.GetOffer(
-        squeak_server_pb2.GetOfferRequest(
+    buy_response = server_stub.DownloadOffer(
+        squeak_server_pb2.DownloadOfferRequest(
             hash=bytes.fromhex(saved_squeak_hash),
         )
     )
