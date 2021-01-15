@@ -67,7 +67,7 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
         return self.handler.handle_lookup_squeaks_to_download(request)
 
     def LookupSqueaksToUpload(self, request, context):
-        return self.handler.handle_lookup_squeaks_to_download(request)
+        return self.handler.handle_lookup_squeaks_to_upload(request)
 
     def GetOffer(self, request, context):
         squeak_hash = request.hash
