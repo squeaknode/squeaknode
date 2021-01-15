@@ -60,6 +60,10 @@ service SqueakAdmin {
   */
   rpc LndSubscribeChannelEvents (lnrpc.ChannelEventSubscription) returns (stream lnrpc.ChannelEventUpdate) {}
 
+  /** sqkadmin: `lndsendcoins`
+  */
+  rpc LndSendCoins (lnrpc.SendCoinsRequest) returns (lnrpc.SendCoinsResponse) {}
+
   /** sqkadmin: `createsigningprofile`
   */
   rpc CreateSigningProfile (CreateSigningProfileRequest) returns (CreateSigningProfileReply) {}
