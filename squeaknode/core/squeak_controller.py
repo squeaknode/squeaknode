@@ -300,6 +300,9 @@ class SqueakController:
     def get_best_block_height(self):
         return self.squeak_core.get_best_block_height()
 
+    def get_block_range(self):
+        return self.config.sync.block_range
+
     def get_network(self):
         return self.config.core.network
 

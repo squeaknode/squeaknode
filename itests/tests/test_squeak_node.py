@@ -114,8 +114,8 @@ def test_lookup_squeaks(server_stub, admin_stub, signing_profile_id, saved_squea
 
     # Lookup squeaks for the given signing profile
     addresses = [squeak_profile_address]
-    lookup_response = server_stub.LookupSqueaks(
-        squeak_server_pb2.LookupSqueaksRequest(
+    lookup_response = server_stub.LookupSqueaksToDownload(
+        squeak_server_pb2.LookupSqueaksToDownloadRequest(
             addresses=addresses,
             min_block=0,
             max_block=99999999,
@@ -131,8 +131,8 @@ def test_lookup_squeaks_empty_result_addresses(server_stub, admin_stub):
 
     # Lookup squeaks for the given address
     addresses = [address]
-    lookup_response = server_stub.LookupSqueaks(
-        squeak_server_pb2.LookupSqueaksRequest(
+    lookup_response = server_stub.LookupSqueaksToDownload(
+        squeak_server_pb2.LookupSqueaksToDownloadRequest(
             addresses=addresses,
             min_block=0,
             max_block=99999999,
@@ -154,14 +154,33 @@ def test_lookup_squeaks_empty_result_block_ranges(
 
     # Lookup squeaks for the given signing profile
     addresses = [squeak_profile_address]
-    lookup_response = server_stub.LookupSqueaks(
-        squeak_server_pb2.LookupSqueaksRequest(
+    lookup_response = server_stub.LookupSqueaksToDownload(
+        squeak_server_pb2.LookupSqueaksToDownloadRequest(
             addresses=addresses,
             min_block=99999999,
             max_block=99999999,
         )
     )
     assert len(lookup_response.hashes) == 0
+
+
+def test_lookup_squeaks_to_upload(server_stub, admin_stub, signing_profile_id, saved_squeak_hash):
+    # Get the squeak profile
+    get_squeak_profile_response = admin_stub.GetSqueakProfile(
+        squeak_admin_pb2.GetSqueakProfileRequest(
+            profile_id=signing_profile_id,
+        )
+    )
+    squeak_profile_address = get_squeak_profile_response.squeak_profile.address
+
+    # Lookup squeaks for the given signing profile
+    addresses = [squeak_profile_address]
+    lookup_response = server_stub.LookupSqueaksToUpload(
+        squeak_server_pb2.LookupSqueaksToUploadRequest(
+            addresses=addresses,
+        )
+    )
+    assert bytes.fromhex(saved_squeak_hash) in set(lookup_response.hashes)
 
 
 def test_sell_squeak(server_stub, admin_stub, lightning_client, saved_squeak_hash):

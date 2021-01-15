@@ -36,7 +36,7 @@ class PeerSyncController:
         # Get list of followed addresses
         followed_addresses = self.squeak_controller.get_followed_addresses()
         # Get remote hashes
-        lookup_result = self.peer_client.lookup_squeaks(
+        lookup_result = self.peer_client.lookup_squeaks_to_download(
             followed_addresses,
             min_block,
             max_block,
@@ -81,21 +81,16 @@ class PeerSyncController:
         # Get list of sharing addresses.
         sharing_addresses = self.squeak_controller.get_sharing_addresses()
         # Get remote hashes
-        lookup_result = self.peer_client.lookup_squeaks(
+        lookup_result = self.peer_client.lookup_squeaks_to_upload(
             sharing_addresses,
-            min_block,
-            max_block,
         )
         remote_hashes = lookup_result.hashes
-        allowed_addresses = lookup_result.allowed_addresses
-        peer_latest_block = lookup_result.latest_block_height
-        max_block = min(max_block, peer_latest_block)
-        if max_block < min_block:
-            return
+        remote_addresses = lookup_result.addresses
+        min_block = lookup_result.min_block
+        max_block = lookup_result.max_block
         # Get local hashes
-        addresses_to_search = set(allowed_addresses) & set(sharing_addresses)
         local_hashes = self.squeak_controller.lookup_squeaks(
-            addresses_to_search,
+            remote_addresses,
             min_block,
             max_block,
         )

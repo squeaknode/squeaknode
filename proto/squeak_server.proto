@@ -18,9 +18,13 @@ service SqueakServer {
   */
   rpc GetSqueak (GetSqueakRequest) returns (GetSqueakReply) {}
 
-  /** sqk: `lookupsqueaks`
+  /** sqk: `lookupsqueakstodownload`
   */
-  rpc LookupSqueaks (LookupSqueaksRequest) returns (LookupSqueaksReply) {}
+  rpc LookupSqueaksToDownload (LookupSqueaksToDownloadRequest) returns (LookupSqueaksToDownloadReply) {}
+
+  /** sqk: `lookupsqueakstoupload`
+  */
+  rpc LookupSqueaksToUpload (LookupSqueaksToUploadRequest) returns (LookupSqueaksToUploadReply) {}
 
   /** sqk: `getoffer`
   */
@@ -38,13 +42,18 @@ message GetSqueakRequest {
     bytes hash = 1;
 }
 
-message LookupSqueaksRequest {
+message LookupSqueaksToDownloadRequest {
     /// List of the author addresses
     repeated string addresses = 1;
     /// Minimum block to look for
     int32 min_block = 2;
     /// Maximum block to look for
     int32 max_block = 3;
+}
+
+message LookupSqueaksToUploadRequest {
+    /// List of the author addresses
+    repeated string addresses = 1;
 }
 
 message GetOfferRequest {
@@ -60,15 +69,20 @@ message GetSqueakReply {
     Squeak squeak = 1;
 }
 
-message LookupSqueaksReply {
-    /// Height of the latest block.
-    int32 latest_block_height = 1;
-
+message LookupSqueaksToDownloadReply {
     /// Hash of the squeak to get.
-    repeated bytes hashes = 2;
+    repeated bytes hashes = 1;
+}
 
+message LookupSqueaksToUploadReply {
     /// Hash of the squeak to get.
-    repeated string allowed_addresses = 3;
+    repeated bytes hashes = 1;
+    /// List of the author addresses
+    repeated string addresses = 2;
+    /// Minimum block to look for
+    int32 min_block = 3;
+    /// Maximum block to look for
+    int32 max_block = 4;
 }
 
 message GetOfferReply {
@@ -100,3 +114,12 @@ message Offer {
     /// The port of the seller lightning node
     int32 port = 5;
 }
+
+// message Interested {
+//     /// List of the author addresses
+//     repeated string addresses = 1;
+//     /// Minimum block to look for
+//     int32 min_block = 2;
+//     /// Maximum block to look for
+//     int32 max_block = 3;
+// }
