@@ -3,7 +3,7 @@ import threading
 from abc import ABC
 from abc import abstractmethod
 
-from squeaknode.sync.peer_sync_controller import PeerConnection
+from squeaknode.sync.peer_connection import PeerConnection
 
 logger = logging.getLogger(__name__)
 
