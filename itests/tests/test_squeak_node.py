@@ -114,8 +114,8 @@ def test_lookup_squeaks(server_stub, admin_stub, signing_profile_id, saved_squea
 
     # Lookup squeaks for the given signing profile
     addresses = [squeak_profile_address]
-    lookup_response = server_stub.LookupSqueaks(
-        squeak_server_pb2.LookupSqueaksRequest(
+    lookup_response = server_stub.LookupSqueaksToDownload(
+        squeak_server_pb2.LookupSqueaksToDownloadRequest(
             addresses=addresses,
             min_block=0,
             max_block=99999999,
@@ -131,8 +131,8 @@ def test_lookup_squeaks_empty_result_addresses(server_stub, admin_stub):
 
     # Lookup squeaks for the given address
     addresses = [address]
-    lookup_response = server_stub.LookupSqueaks(
-        squeak_server_pb2.LookupSqueaksRequest(
+    lookup_response = server_stub.LookupSqueaksToDownload(
+        squeak_server_pb2.LookupSqueaksToDownloadRequest(
             addresses=addresses,
             min_block=0,
             max_block=99999999,
@@ -154,8 +154,8 @@ def test_lookup_squeaks_empty_result_block_ranges(
 
     # Lookup squeaks for the given signing profile
     addresses = [squeak_profile_address]
-    lookup_response = server_stub.LookupSqueaks(
-        squeak_server_pb2.LookupSqueaksRequest(
+    lookup_response = server_stub.LookupSqueaksToDownload(
+        squeak_server_pb2.LookupSqueaksToDownloadRequest(
             addresses=addresses,
             min_block=99999999,
             max_block=99999999,
