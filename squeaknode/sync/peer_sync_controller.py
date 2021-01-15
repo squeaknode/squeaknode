@@ -7,7 +7,7 @@ from squeaknode.sync.util import parse_buy_offer
 logger = logging.getLogger(__name__)
 
 
-class PeerSyncController:
+class PeerConnection:
 
     def __init__(
         self,
