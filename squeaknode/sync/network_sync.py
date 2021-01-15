@@ -3,7 +3,7 @@ import threading
 from abc import ABC
 from abc import abstractmethod
 
-from squeaknode.sync.peer_sync_controller import PeerSyncController
+from squeaknode.sync.peer_sync_controller import PeerConnection
 
 logger = logging.getLogger(__name__)
 
@@ -21,9 +21,8 @@ class NetworkSync(ABC):
     def get_peers_to_sync(self):
         pass
 
-    # TODO: Rename peer_sync_task to peer_connection or something.
     @abstractmethod
-    def sync_peer(self, peer_sync_task):
+    def sync_peer(self, peer_connection):
         pass
 
     def stop(self):
@@ -39,12 +38,12 @@ class NetworkSync(ABC):
         # TODO: sleep for timeout and then call self._stop()
 
     def _sync_peer(self, peer):
-        with PeerSyncController(
+        with PeerConnection(
                 self.squeak_controller,
                 peer,
                 self.stopped,
-        ).open_connection() as peer_sync_task:
-            self.sync_peer(peer_sync_task)
+        ).open_connection() as peer_connection:
+            self.sync_peer(peer_connection)
 
 
 class DownloadSync(NetworkSync):
@@ -53,7 +52,7 @@ class DownloadSync(NetworkSync):
         return self.squeak_controller.get_downloading_peers()
 
     @abstractmethod
-    def sync_peer(self, peer_sync_task):
+    def sync_peer(self, peer_connection):
         pass
 
 
@@ -63,7 +62,7 @@ class UploadSync(NetworkSync):
         return self.squeak_controller.get_uploading_peers()
 
     @abstractmethod
-    def sync_peer(self, peer_sync_task):
+    def sync_peer(self, peer_connection):
         pass
 
 
@@ -79,8 +78,8 @@ class TimelineDownloadSync(DownloadSync):
         self.min_block = min_block
         self.max_block = max_block
 
-    def sync_peer(self, peer_sync_task):
-        peer_sync_task.download(self.min_block, self.max_block)
+    def sync_peer(self, peer_connection):
+        peer_connection.download(self.min_block, self.max_block)
 
 
 class SingleSqueakDownloadSync(DownloadSync):
@@ -93,8 +92,8 @@ class SingleSqueakDownloadSync(DownloadSync):
         super().__init__(squeak_controller)
         self.squeak_hash = squeak_hash
 
-    def sync_peer(self, peer_sync_task):
-        peer_sync_task.download_single_squeak(self.squeak_hash)
+    def sync_peer(self, peer_connection):
+        peer_connection.download_single_squeak(self.squeak_hash)
 
 
 class TimelineUploadSync(UploadSync):
@@ -109,8 +108,8 @@ class TimelineUploadSync(UploadSync):
         self.min_block = min_block
         self.max_block = max_block
 
-    def sync_peer(self, peer_sync_task):
-        peer_sync_task.upload(self.min_block, self.max_block)
+    def sync_peer(self, peer_connection):
+        peer_connection.upload(self.min_block, self.max_block)
 
 
 class SingleSqueakUploadSync(UploadSync):
@@ -123,5 +122,5 @@ class SingleSqueakUploadSync(UploadSync):
         super().__init__(squeak_controller)
         self.squeak_hash = squeak_hash
 
-    def sync_peer(self, peer_sync_task):
-        peer_sync_task.upload_single_squeak(self.squeak_hash)
+    def sync_peer(self, peer_connection):
+        peer_connection.upload_single_squeak(self.squeak_hash)
