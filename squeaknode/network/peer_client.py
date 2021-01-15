@@ -47,8 +47,8 @@ class PeerClient:
 
     def post_squeak(self, squeak: CSqueak):
         squeak_msg = self._build_squeak_msg(squeak)
-        self.stub.DownloadSqueak(
-            squeak_server_pb2.DownloadSqueakRequest(
+        self.stub.UploadSqueak(
+            squeak_server_pb2.UploadSqueakRequest(
                 squeak=squeak_msg,
             )
         )

@@ -20,7 +20,7 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
         self.port = port
         self.handler = handler
 
-    def DownloadSqueak(self, request, context):
+    def UploadSqueak(self, request, context):
         squeak_msg = request.squeak
 
         squeak_hash = squeak_msg.hash
@@ -28,21 +28,21 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
         # Check is squeak deserialized correctly
         if squeak is None:
             context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
-            return squeak_server_pb2.DownloadSqueakReply()
+            return squeak_server_pb2.UploadSqueakReply()
 
         # Check if squeak hash is correct
         if get_hash(squeak) != squeak_hash:
             context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
-            return squeak_server_pb2.DownloadSqueakReply()
+            return squeak_server_pb2.UploadSqueakReply()
 
         # Check if squeak is unlocked
         if not squeak.HasDecryptionKey():
             context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
-            return squeak_server_pb2.DownloadSqueakReply()
+            return squeak_server_pb2.UploadSqueakReply()
 
         # Insert the squeak in database.
         self.handler.handle_posted_squeak(squeak)
-        return squeak_server_pb2.DownloadSqueakReply()
+        return squeak_server_pb2.UploadSqueakReply()
 
     def GetSqueak(self, request: squeak_server_pb2.GetSqueakRequest, context):
         squeak_hash = request.hash

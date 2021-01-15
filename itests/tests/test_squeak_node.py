@@ -71,8 +71,8 @@ def test_post_squeak(server_stub, admin_stub, lightning_client, following_signin
     squeak_hash = get_hash(squeak)
 
     squeak_msg = build_squeak_msg(squeak)
-    server_stub.DownloadSqueak(
-        squeak_server_pb2.DownloadSqueakRequest(squeak=squeak_msg)
+    server_stub.UploadSqueak(
+        squeak_server_pb2.UploadSqueakRequest(squeak=squeak_msg)
     )
 
     # Wait a few seconds for the squeak to be verified on the server.
@@ -99,8 +99,8 @@ def test_post_squeak_not_following(
 
     squeak_msg = build_squeak_msg(squeak)
     with pytest.raises(Exception):
-        server_stub.DownloadSqueak(
-            squeak_server_pb2.DownloadSqueakRequest(squeak=squeak_msg))
+        server_stub.UploadSqueak(
+            squeak_server_pb2.UploadSqueakRequest(squeak=squeak_msg))
 
 
 def test_lookup_squeaks(server_stub, admin_stub, signing_profile_id, saved_squeak_hash):
@@ -354,8 +354,8 @@ def test_post_squeak_rate_limit(server_stub, admin_stub, lightning_client, nonfo
                 block_height,
             )
             squeak_msg = build_squeak_msg(squeak)
-            server_stub.DownloadSqueak(
-                squeak_server_pb2.DownloadSqueakRequest(squeak=squeak_msg)
+            server_stub.UploadSqueak(
+                squeak_server_pb2.UploadSqueakRequest(squeak=squeak_msg)
             )
         except Exception as e:
             post_squeak_exception = e
