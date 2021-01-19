@@ -19,6 +19,7 @@ import PageTitle from "../../components/PageTitle";
 import Widget from "../../components/Widget";
 import { Typography } from "../../components/Wrappers";
 import ReceiveBitcoinDialog from "../../components/ReceiveBitcoinDialog";
+import SendBitcoinDialog from "../../components/SendBitcoinDialog";
 import TransactionItem from "../../components/TransactionItem";
 import LightningPeerListItem from "../../components/LightningPeerListItem";
 import ChannelItem from "../../components/ChannelItem";
@@ -45,6 +46,7 @@ export default function WalletPage() {
   const [pendingChannels, setPendingChannels] = useState(null);
   const [value, setValue] = useState(0);
   const [receiveBitcoinDialogOpen, setReceiveBitcoinDialogOpen] = useState(false);
+  const [sendBitcoinDialogOpen, setSendBitcoinDialogOpen] = useState(false);
 
   function a11yProps(index) {
     return {
@@ -63,6 +65,14 @@ export default function WalletPage() {
 
   const handleCloseReceiveBitcoinDialog = () => {
      setReceiveBitcoinDialogOpen(false);
+  };
+
+  const handleClickOpenSendBitcoinDialog = () => {
+    setSendBitcoinDialogOpen(true);
+  };
+
+  const handleCloseSendBitcoinDialog = () => {
+     setSendBitcoinDialogOpen(false);
   };
 
   const getLndInfo = () => {
@@ -121,6 +131,18 @@ export default function WalletPage() {
           onClick={() => {
             handleClickOpenReceiveBitcoinDialog();
           }}>Receive Bitcoin
+       </Button>
+    )
+  }
+
+  function SendBitcoinButton() {
+    return (
+       <Button
+          variant="contained"
+          className={classes.button}
+          onClick={() => {
+            handleClickOpenSendBitcoinDialog();
+          }}>Send Bitcoin
        </Button>
     )
   }
@@ -223,6 +245,7 @@ export default function WalletPage() {
             </Grid>
           </Grid>
           {ReceiveBitcoinButton()}
+          {SendBitcoinButton()}
         </Widget>
       </Grid>
     )
@@ -418,6 +441,17 @@ export default function WalletPage() {
     )
   }
 
+  function SendBitcoinDialogContent() {
+    return (
+      <>
+        <SendBitcoinDialog
+          open={sendBitcoinDialogOpen}
+          handleClose={handleCloseSendBitcoinDialog}
+          ></SendBitcoinDialog>
+      </>
+    )
+  }
+
   return (
     <>
       <PageTitle title="Wallet" />
@@ -426,6 +460,7 @@ export default function WalletPage() {
         : NoBalanceContent()
       }
       {ReceiveBitcoinDialogContent()}
+      {SendBitcoinDialogContent()}
     </>
   );
 }

@@ -12,6 +12,8 @@ import {
   CloseChannelRequest,
   ChannelPoint,
   NewAddressRequest,
+  SendCoinsRequest,
+  SendCoinsResponse,
   GetInfoResponse,
   WalletBalanceResponse,
   TransactionDetails,
@@ -920,6 +922,20 @@ export function lndNewAddressRequest(handleResponse) {
     'lndnewaddress',
     request,
     NewAddressResponse.deserializeBinary,
+    handleResponse,
+  );
+};
+
+export function lndSendCoins(address, amount, satperbyte, sendall, handleResponse) {
+  var request = new SendCoinsRequest();
+  request.setAddr(address);
+  request.setAmount(amount);
+  request.setSatPerByte(satperbyte);
+  request.setSendAll(sendall);
+  makeRequest(
+    'lndsendcoins',
+    request,
+    SendCoinsResponse.deserializeBinary,
     handleResponse,
   );
 };
