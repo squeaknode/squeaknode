@@ -118,6 +118,7 @@ export default function SendBitcoinDialog({
         autoFocus
         value={amount}
         onChange={handleChangeAmount}
+        disabled={sendall}
         fullWidth
       />
     )
