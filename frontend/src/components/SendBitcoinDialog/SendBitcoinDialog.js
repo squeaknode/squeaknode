@@ -74,7 +74,7 @@ export default function SendBitcoinDialog({
   };
 
   const sendBitcoin = (address, amount, satperbyte, sendall) => {
-    lndSendCoins((response) => {
+    lndSendCoins(address, amount, satperbyte, sendall, (response) => {
       // setAddress(response.getAddress());
       goToWalletPage();
     });
