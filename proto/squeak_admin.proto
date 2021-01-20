@@ -100,6 +100,10 @@ service SqueakAdmin {
   */
   rpc SetSqueakProfileSharing (SetSqueakProfileSharingRequest) returns (SetSqueakProfileSharingReply) {}
 
+  /** sqkadmin: `getsqueakprofileprivatekey`
+  */
+  rpc GetSqueakProfilePrivateKey (GetSqueakProfilePrivateKeyRequest) returns (GetSqueakProfilePrivateKeyReply) {}
+
   /** sqkadmin: `deletesqueakprofile`
   */
   rpc DeleteSqueakProfile (DeleteSqueakProfileRequest) returns (DeleteSqueakProfileReply) {}
@@ -291,6 +295,16 @@ message SetSqueakProfileSharingRequest {
 }
 
 message SetSqueakProfileSharingReply {
+}
+
+message GetSqueakProfilePrivateKeyRequest {
+    /// The profile id
+    int32 profile_id = 1;
+}
+
+message GetSqueakProfilePrivateKeyReply {
+    /// The private key
+    string private_key = 1;
 }
 
 message DeleteSqueakProfileRequest {

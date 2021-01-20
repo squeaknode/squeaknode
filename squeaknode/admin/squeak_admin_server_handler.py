@@ -190,6 +190,16 @@ class SqueakAdminServerHandler(object):
         self.squeak_controller.delete_squeak_profile(profile_id)
         return squeak_admin_pb2.DeleteSqueakProfileReply()
 
+    def handle_get_squeak_profile_private_key(self, request):
+        profile_id = request.profile_id
+        logger.info(
+            "Handle get squeak profile private key for id: {}".format(profile_id))
+        private_key = self.squeak_controller.get_squeak_profile_private_key(
+            profile_id)
+        return squeak_admin_pb2.GetSqueakProfilePrivateKeyReply(
+            private_key=private_key
+        )
+
     def handle_make_squeak(self, request):
         profile_id = request.profile_id
         content_str = request.content
