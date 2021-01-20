@@ -84,6 +84,7 @@ class PeerConnection:
         lookup_result = self.peer_client.lookup_squeaks_to_upload(
             sharing_addresses,
         )
+        logger.info("Got lookup result: {}".format(lookup_result))
         remote_hashes = lookup_result.hashes
         remote_addresses = lookup_result.addresses
         min_block = lookup_result.min_block
