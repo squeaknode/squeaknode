@@ -400,6 +400,35 @@ def test_make_signing_profile(server_stub, admin_stub):
     )
     assert get_profile_by_address_response.squeak_profile.profile_name == profile_name
 
+    # Export the private key, delete the profile, and re-import it.
+    get_private_key_response = admin_stub.GetSqueakProfilePrivateKey(
+        squeak_admin_pb2.GetSqueakProfilePrivateKeyRequest(
+            profile_id=profile_id,
+        )
+    )
+    private_key = get_private_key_response.private_key
+    admin_stub.DeleteSqueakProfile(
+        squeak_admin_pb2.DeleteSqueakProfileRequest(
+            profile_id=profile_id,
+        )
+    )
+    import_response = admin_stub.ImportSigningProfile(
+        squeak_admin_pb2.ImportSigningProfileRequest(
+            profile_name="imported_profile_name",
+            private_key=private_key,
+        )
+    )
+    new_profile_id = import_response.profile_id
+
+    # Get the new imported profile
+    get_imported_squeak_profile_response = admin_stub.GetSqueakProfile(
+        squeak_admin_pb2.GetSqueakProfileRequest(
+            profile_id=new_profile_id,
+        )
+    )
+    assert get_imported_squeak_profile_response.squeak_profile.profile_name == "imported_profile_name"
+    assert get_imported_squeak_profile_response.squeak_profile.address == squeak_profile_address
+
 
 def test_make_contact_profile(server_stub, admin_stub):
     # Create a new contact profile
