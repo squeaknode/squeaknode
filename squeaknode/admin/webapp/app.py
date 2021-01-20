@@ -433,6 +433,14 @@ def create_app(handler, username, password):
             handler.handle_get_network,
         )
 
+    @app.route("/getsqueakprofileprivatekey", methods=["POST"])
+    @login_required
+    def getsqueakprofileprivatekey():
+        return handle_request(
+            squeak_admin_pb2.GetSqueakProfilePrivateKeyRequest(),
+            handler.handle_get_squeak_profile_private_key,
+        )
+
     return app
 
 

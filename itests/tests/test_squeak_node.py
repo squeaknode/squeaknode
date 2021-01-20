@@ -500,6 +500,18 @@ def test_delete_profile(server_stub, admin_stub, contact_profile_id):
     assert "Profile not found." in str(excinfo.value)
 
 
+def test_get_profile_private_key(server_stub, admin_stub, signing_profile_id):
+    # Get the private key
+    private_key_response = admin_stub.GetSqueakProfilePrivateKey(
+        squeak_admin_pb2.GetSqueakProfilePrivateKeyRequest(
+            profile_id=signing_profile_id,
+        )
+    )
+
+    print(private_key_response.private_key)
+    assert len(private_key_response.private_key) > 0
+
+
 def test_get_following_squeaks(
     server_stub, admin_stub, saved_squeak_hash, signing_profile_id
 ):

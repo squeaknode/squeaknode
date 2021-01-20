@@ -19,6 +19,7 @@ import useStyles from "./styles";
 import PageTitle from "../../components/PageTitle";
 import Widget from "../../components/Widget";
 import DeleteProfileDialog from "../../components/DeleteProfileDialog";
+import ExportPrivateKeyDialog from "../../components/ExportPrivateKeyDialog";
 
 import {
   getSqueakProfileRequest,
@@ -32,6 +33,7 @@ export default function ProfilePage() {
   const { id } = useParams();
   const [squeakProfile, setSqueakProfile] = useState(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [exportPrivateKeyDialogOpen, setExportPrivateKeyDialogOpen] = useState(false);
   const history = useHistory();
 
   const getSqueakProfile = (id) => {
@@ -61,8 +63,16 @@ export default function ProfilePage() {
     setDeleteDialogOpen(true);
   };
 
+  const handleClickOpenExportPrivateKeyDialog = () => {
+    setExportPrivateKeyDialogOpen(true);
+  };
+
   const handleCloseDeleteDialog = () => {
      setDeleteDialogOpen(false);
+  };
+
+  const handleCloseExportPrivateKeyDialog = () => {
+     setExportPrivateKeyDialogOpen(false);
   };
 
   const handleSettingsFollowingChange = (event) => {
@@ -94,6 +104,9 @@ export default function ProfilePage() {
         {ProfileSettingsForm()}
         {ViewSqueaksButton()}
         {DeleteProfileButton()}
+        {squeakProfile.getHasPrivateKey() &&
+          ExportPrivateKeyButton()
+        }
       </>
     )
   }
@@ -133,6 +146,23 @@ export default function ProfilePage() {
     )
   }
 
+  function ExportPrivateKeyButton() {
+    return (
+      <>
+      <Grid item xs={12}>
+        <div className={classes.root}>
+          <Button
+            variant="contained"
+            onClick={() => {
+              handleClickOpenExportPrivateKeyDialog();
+            }}>Export Private Key
+          </Button>
+        </div>
+      </Grid>
+      </>
+    )
+  }
+
   function ViewSqueaksButton() {
     return (
       <>
@@ -162,6 +192,18 @@ export default function ProfilePage() {
     )
   }
 
+  function ExportPrivateKeyDialogContent() {
+    return (
+      <>
+        <ExportPrivateKeyDialog
+          open={exportPrivateKeyDialogOpen}
+          handleClose={handleCloseExportPrivateKeyDialog}
+          profile={squeakProfile}
+          ></ExportPrivateKeyDialog>
+      </>
+    )
+  }
+
   return (
     <>
       <PageTitle title={'Squeak Profile: ' + (squeakProfile ? squeakProfile.getProfileName() : null)} />
@@ -172,6 +214,7 @@ export default function ProfilePage() {
       }
       </div>
       {DeleteProfileDialogContent()}
+      {ExportPrivateKeyDialogContent()}
     </>
   );
 }

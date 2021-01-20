@@ -154,6 +154,14 @@ class SqueakController:
     def delete_squeak_profile(self, profile_id: int):
         self.squeak_db.delete_profile(profile_id)
 
+    def get_squeak_profile_private_key(self, profile_id: int):
+        profile = self.get_squeak_profile(profile_id)
+        if profile.private_key is None:
+            raise Exception("Profile with id: {} does not have a private key.".format(
+                profile_id
+            ))
+        return profile.private_key
+
     def make_squeak(self, profile_id: int, content_str: str, replyto_hash: bytes):
         squeak_profile = self.squeak_db.get_profile(profile_id)
         squeak_entry = self.squeak_core.make_squeak(

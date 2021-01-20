@@ -91,6 +91,9 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
     def DeleteSqueakProfile(self, request, context):
         return self.handler.handle_delete_squeak_profile(request)
 
+    def GetSqueakProfilePrivateKey(self, request, context):
+        return self.handler.handle_get_squeak_profile_private_key(request)
+
     def MakeSqueak(self, request, context):
         return self.handler.handle_make_squeak(request)
 
