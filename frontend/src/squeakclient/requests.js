@@ -46,6 +46,7 @@ import {
   GetAddressSqueakDisplaysRequest,
   CreateContactProfileRequest,
   CreateSigningProfileRequest,
+  ImportSigningProfileRequest,
   CreatePeerRequest,
   DeletePeerRequest,
   DeleteSqueakProfileRequest,
@@ -70,6 +71,7 @@ import {
   GetAddressSqueakDisplaysReply,
   CreateContactProfileReply,
   CreateSigningProfileReply,
+  ImportSigningProfileReply,
   CreatePeerReply,
   DeletePeerReply,
   DeleteSqueakProfileReply,
@@ -812,6 +814,18 @@ export function createSigningProfileRequest(profileName, handleResponse, handleE
     'createsigningprofile',
     request,
     CreateSigningProfileReply.deserializeBinary,
+    handleResponse,
+  );
+};
+
+export function importSigningProfileRequest(profileName, privateKey, handleResponse, handleErr) {
+  var request = new ImportSigningProfileRequest();
+  request.setProfileName(profileName);
+  request.setPrivateKey(privateKey);
+  makeRequest(
+    'importsigningprofile',
+    request,
+    ImportSigningProfileReply.deserializeBinary,
     handleResponse,
   );
 };
