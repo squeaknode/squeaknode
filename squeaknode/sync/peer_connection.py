@@ -86,6 +86,9 @@ class PeerConnection:
         )
         logger.info("Got lookup result: {}".format(lookup_result))
         remote_hashes = lookup_result.hashes
+        logger.info("Got remote hashes: {}".format(
+            [hash.hex() for hash in remote_hashes]
+        ))
         remote_addresses = lookup_result.addresses
         min_block = lookup_result.min_block
         max_block = lookup_result.max_block
@@ -95,8 +98,14 @@ class PeerConnection:
             min_block,
             max_block,
         )
+        logger.info("Got local hashes: {}".format(
+            [hash.hex() for hash in local_hashes]
+        ))
         # Get hashes to upload
         hashes_to_upload = set(local_hashes) - set(remote_hashes)
+        logger.info("Got hashes to upload: {}".format(
+            [hash.hex() for hash in hashes_to_upload]
+        ))
         # Upload squeaks for the hashes
         # TODO: catch exception uploading individual squeak
         for hash in hashes_to_upload:
