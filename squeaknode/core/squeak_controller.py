@@ -157,7 +157,9 @@ class SqueakController:
     def get_squeak_profile_private_key(self, profile_id: int):
         profile = self.get_squeak_profile(profile_id)
         if profile.private_key is None:
-            raise Exception("Profile with id: {} does not have a private key.")
+            raise Exception("Profile with id: {} does not have a private key.".format(
+                profile_id
+            ))
         return profile.private_key
 
     def make_squeak(self, profile_id: int, content_str: str, replyto_hash: bytes):
