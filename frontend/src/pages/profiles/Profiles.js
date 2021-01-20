@@ -20,6 +20,7 @@ import PageTitle from "../../components/PageTitle";
 import Widget from "../../components/Widget";
 import Table from "../dashboard/components/Table/Table";
 import CreateSigningProfileDialog from "../../components/CreateSigningProfileDialog";
+import ImportSigningProfileDialog from "../../components/ImportSigningProfileDialog";
 import CreateContactProfileDialog from "../../components/CreateContactProfileDialog";
 
 // data
@@ -44,6 +45,7 @@ export default function Profiles() {
   const [signingProfiles, setSigningProfiles] = useState([]);
   const [contactProfiles, setContactProfiles] = useState([]);
   const [createSigningProfileDialogOpen, setCreateSigningProfileDialogOpen] = useState(false);
+  const [importSigningProfileDialogOpen, setImportSigningProfileDialogOpen] = useState(false);
   const [createContactProfileDialogOpen, setCreateContactProfileDialogOpen] = useState(false);
   const [value, setValue] = useState(0);
   const history = useHistory();
@@ -84,6 +86,14 @@ export default function Profiles() {
 
   const handleCloseCreateContactProfileDialog = () => {
      setCreateContactProfileDialogOpen(false);
+  };
+
+  const handleClickOpenImportSigningProfileDialog = () => {
+    setImportSigningProfileDialogOpen(true);
+  };
+
+  const handleCloseImportSigningProfileDialog = () => {
+     setImportSigningProfileDialogOpen(false);
   };
 
   useEffect(() => {
@@ -137,6 +147,7 @@ export default function Profiles() {
         <Grid item xs={12}>
           <Widget disableWidgetMenu>
             {CreateSigningProfileButton()}
+            {ImportSigningProfileButton()}
             {ShowProfiles("Signing profiles", signingProfiles)}
           </Widget>
         </Grid>
@@ -170,6 +181,23 @@ export default function Profiles() {
             onClick={() => {
               handleClickOpenCreateSigningProfileDialog();
             }}>Create Signing Profile
+          </Button>
+        </div>
+      </Grid>
+      </>
+    )
+  }
+
+  function ImportSigningProfileButton() {
+    return (
+      <>
+      <Grid item xs={12}>
+        <div className={classes.root}>
+          <Button
+            variant="contained"
+            onClick={() => {
+              handleClickOpenImportSigningProfileDialog();
+            }}>Import Signing Profile
           </Button>
         </div>
       </Grid>
@@ -248,6 +276,17 @@ export default function Profiles() {
     )
   }
 
+  function ImportSigningProfileDialogContent() {
+    return (
+      <>
+        <ImportSigningProfileDialog
+          open={importSigningProfileDialogOpen}
+          handleClose={handleCloseImportSigningProfileDialog}
+          ></ImportSigningProfileDialog>
+      </>
+    )
+  }
+
   function CreateContactProfileDialogContent() {
     return (
       <>
@@ -264,6 +303,7 @@ export default function Profiles() {
      < PageTitle title = "Profiles" />
     {ProfilesTabs()}
     {CreateSigningProfileDialogContent()}
+    {ImportSigningProfileDialogContent()}
     {CreateContactProfileDialogContent()}
    < />);
 }

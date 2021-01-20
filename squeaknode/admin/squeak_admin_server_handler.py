@@ -93,6 +93,18 @@ class SqueakAdminServerHandler(object):
             profile_id=profile_id,
         )
 
+    def handle_import_signing_profile(self, request):
+        profile_name = request.profile_name
+        private_key = request.private_key
+        logger.info(
+            "Handle import signing profile with name: {}".format(profile_name))
+        profile_id = self.squeak_controller.import_signing_profile(
+            profile_name, private_key)
+        logger.info("New profile_id: {}".format(profile_id))
+        return squeak_admin_pb2.ImportSigningProfileReply(
+            profile_id=profile_id,
+        )
+
     def handle_create_contact_profile(self, request):
         profile_name = request.profile_name
         squeak_address = request.address

@@ -115,6 +115,22 @@ class SqueakController:
         )
         return self.squeak_db.insert_profile(squeak_profile)
 
+    def import_signing_profile(self, profile_name: str, private_key: str):
+        signing_key = CSigningKey(private_key)
+        verifying_key = signing_key.get_verifying_key()
+        address = CSqueakAddress.from_verifying_key(verifying_key)
+        signing_key_str = str(signing_key)
+        signing_key_bytes = signing_key_str.encode()
+        squeak_profile = SqueakProfile(
+            profile_id=None,
+            profile_name=profile_name,
+            private_key=signing_key_bytes,
+            address=str(address),
+            sharing=False,
+            following=False,
+        )
+        return self.squeak_db.insert_profile(squeak_profile)
+
     def create_contact_profile(self, profile_name: str, squeak_address: str):
         if not is_address_valid(squeak_address):
             raise Exception(

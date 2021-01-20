@@ -59,6 +59,9 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
     def CreateSigningProfile(self, request, context):
         return self.handler.handle_create_signing_profile(request)
 
+    def ImportSigningProfile(self, request, context):
+        return self.handler.handle_import_signing_profile(request)
+
     def CreateContactProfile(self, request, context):
         return self.handler.handle_create_contact_profile(request)
 

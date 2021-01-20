@@ -353,6 +353,14 @@ def create_app(handler, username, password):
             handler.handle_create_signing_profile,
         )
 
+    @app.route("/importsigningprofile", methods=["POST"])
+    @login_required
+    def importsigningprofile():
+        return handle_request(
+            squeak_admin_pb2.ImportSigningProfileRequest(),
+            handler.handle_import_signing_profile,
+        )
+
     @app.route("/createpeer", methods=["POST"])
     @login_required
     def createpeer():

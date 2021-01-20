@@ -72,6 +72,10 @@ service SqueakAdmin {
   */
   rpc CreateContactProfile (CreateContactProfileRequest) returns (CreateContactProfileReply) {}
 
+  /** sqkadmin: `importsigningprofile`
+  */
+  rpc ImportSigningProfile (ImportSigningProfileRequest) returns (ImportSigningProfileReply) {}
+
   /** sqkadmin: `getsigningprofiles`
   */
   rpc GetSigningProfiles (GetSigningProfilesRequest) returns (GetSigningProfilesReply) {}
@@ -212,6 +216,19 @@ message CreateSigningProfileRequest {
 }
 
 message CreateSigningProfileReply {
+    /// The profile id
+    int32 profile_id = 1;
+}
+
+message ImportSigningProfileRequest {
+    /// The name of the signing profile
+    string profile_name = 1;
+
+    /// The private key of the signing profile
+    string private_key = 2;
+}
+
+message ImportSigningProfileReply {
     /// The profile id
     int32 profile_id = 1;
 }
