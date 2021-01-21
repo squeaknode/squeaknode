@@ -73,11 +73,7 @@ class PeerConnection:
             #     return
             self._download_offer(hash)
 
-    def upload(
-        self,
-        min_block,
-        max_block,
-    ):
+    def upload(self):
         # Get list of sharing addresses.
         sharing_addresses = self.squeak_controller.get_sharing_addresses()
         # Get remote hashes
