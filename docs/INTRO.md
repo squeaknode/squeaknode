@@ -7,7 +7,7 @@ The following instructions are modified from here: https://github.com/getumbrel/
 
 #### Steps
 
-- SSH into your umbrel
+1\. SSH into your umbrel
 
 ```sh
 ssh umbrel@umbrel.local
@@ -15,13 +15,13 @@ ssh umbrel@umbrel.local
 
 Password `moneyprintergobrrr`
 
-- Switch the umbrel installation to my fork with squeaknode.
+2\. Switch the umbrel installation to my fork with squeaknode.
 
 ```sh
 sudo scripts/update/update --repo yzernik/umbrel#master
 ```
 
-Install the squeaknode app
+3\. Install the squeaknode app
 
 ```sh
 scripts/app install squeaknode
