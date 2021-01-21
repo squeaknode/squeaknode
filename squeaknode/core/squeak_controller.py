@@ -41,10 +41,17 @@ class SqueakController:
         if not self.squeak_rate_limiter.should_rate_limit_allow(squeak):
             raise Exception(
                 "Excedeed allowed number of squeaks per block.")
-        # TODO: Only allow uploaded squeak if decryption key included.
+        # Only allow uploaded squeak if decryption key included.
+        if not squeak.HasDecryptionKey():
+            raise Exception(
+                "Uploaded squeak must contain decryption key.")
+        decryption_key = squeak.GetDecryptionKey()
         squeak_entry = self.squeak_core.validate_squeak(squeak)
         inserted_squeak_hash = self.squeak_db.insert_squeak(
             squeak, squeak_entry.block_header)
+        self.squeak_db.set_squeak_decryption_key(
+            inserted_squeak_hash, decryption_key
+        )
         return inserted_squeak_hash
 
     def save_downloaded_squeak(self, squeak: CSqueak) -> bytes:
