@@ -1,6 +1,6 @@
 # Getting started
 
-## Umbrel:
+## Umbrel
 
 Umbrel is the easiest way to run your own squeaknode.
 The following instructions are modified from here: https://github.com/getumbrel/umbrel/blob/master/apps/README.md#32-testing-on-umbrel-os-raspberry-pi-4
