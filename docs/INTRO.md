@@ -28,7 +28,9 @@ scripts/app install squeaknode
 ```
 
 The app should now be accessible at http://umbrel.local:12994
+
 Use username `umbrel` and password `moneyprintergobrrr` to sign in.
 
 Lastly, configure your router to port forward ports `8774` and `9735` if you want your node to sell squeaks.
+
 Configure port forwarding for port `12994` if you want to access the web interface from outside of your home.
