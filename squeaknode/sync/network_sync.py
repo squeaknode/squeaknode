@@ -101,15 +101,11 @@ class TimelineUploadSync(UploadSync):
     def __init__(
         self,
         squeak_controller,
-        min_block,
-        max_block,
     ):
         super().__init__(squeak_controller)
-        self.min_block = min_block
-        self.max_block = max_block
 
     def sync_peer(self, peer_connection):
-        peer_connection.upload(self.min_block, self.max_block)
+        peer_connection.upload()
 
 
 class SingleSqueakUploadSync(UploadSync):
