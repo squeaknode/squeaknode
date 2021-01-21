@@ -49,12 +49,12 @@ class SqueakController:
         decryption_key = squeak.GetDecryptionKey()
         squeak_entry = self.squeak_core.validate_squeak(squeak)
         logger.info("Saving uploaded squeak: {}".format(
-            get_hash(squeak)
+            get_hash(squeak).hex()
         ))
         inserted_squeak_hash = self.squeak_db.insert_squeak(
             squeak, squeak_entry.block_header)
         logger.info("Unlocking uploaded squeak: {}".format(
-            get_hash(squeak)
+            get_hash(squeak).hex()
         ))
         self.squeak_db.set_squeak_decryption_key(
             inserted_squeak_hash, decryption_key
