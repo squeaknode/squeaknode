@@ -12,6 +12,7 @@ from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
+from squeaknode.core.util import get_hash
 from squeaknode.core.util import is_address_valid
 from squeaknode.node.received_payments_subscription_client import (
     OpenReceivedPaymentsSubscriptionClient,
@@ -47,8 +48,14 @@ class SqueakController:
                 "Uploaded squeak must contain decryption key.")
         decryption_key = squeak.GetDecryptionKey()
         squeak_entry = self.squeak_core.validate_squeak(squeak)
+        logger.info("Saving uploaded squeak: {}".format(
+            get_hash(squeak)
+        ))
         inserted_squeak_hash = self.squeak_db.insert_squeak(
             squeak, squeak_entry.block_header)
+        logger.info("Unlocking uploaded squeak: {}".format(
+            get_hash(squeak)
+        ))
         self.squeak_db.set_squeak_decryption_key(
             inserted_squeak_hash, decryption_key
         )
