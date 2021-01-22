@@ -7,10 +7,11 @@ The following instructions are modified from here: https://github.com/getumbrel/
 
 #### Steps
 
-1\. SSH into your umbrel
+1\. SSH into your umbrel and cd into the umbrel directory
 
 ```sh
 ssh umbrel@umbrel.local
+cd umbrel
 ```
 
 Password `moneyprintergobrrr`

@@ -651,8 +651,11 @@ message SentPayment {
     /// The seller node pubkey
     string node_pubkey = 8;
 
+    /// Does the payment unlock a valid key
+    bool valid = 9;
+
     /// time_ms
-    int64 time_ms = 9;
+    int64 time_ms = 10;
 }
 
 message SyncSqueakRequest {

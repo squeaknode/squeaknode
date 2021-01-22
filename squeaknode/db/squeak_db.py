@@ -911,6 +911,7 @@ class SqueakDb:
             secret_key=sent_payment.secret_key.hex(),
             price_msat=sent_payment.price_msat,
             node_pubkey=sent_payment.node_pubkey,
+            valid=sent_payment.valid,
         )
         with self.get_connection() as connection:
             res = connection.execute(ins)
@@ -1177,6 +1178,7 @@ class SqueakDb:
             secret_key=bytes.fromhex(row["secret_key"]),
             price_msat=row["price_msat"],
             node_pubkey=row["node_pubkey"],
+            valid=row["valid"],
         )
 
     def _parse_sent_payment_with_peer(self, row):
