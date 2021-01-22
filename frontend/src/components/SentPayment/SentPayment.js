@@ -155,6 +155,17 @@ export default function SentPayment({
                 </Link>
             </Grid>
           </Grid>
+          <Grid
+            container
+            direction="row"
+            justify="flex-start"
+            alignItems="flex-start"
+          >
+            <Grid item>
+              Valid:
+                <span> </span>{sentPayment.getValid().toString()}
+            </Grid>
+          </Grid>
     </Box>
   )
 }
