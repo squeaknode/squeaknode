@@ -96,7 +96,7 @@ def sent_payment_with_peer_to_message(sent_payment_with_peer):
         price_msat=sent_payment.price_msat,
         node_pubkey=sent_payment.node_pubkey,
         valid=sent_payment.valid,
-        time_ms=int(sent_payment.created.timestamp()) * 1000,
+        time_s=int(sent_payment.created.timestamp()),
     )
 
 
@@ -151,6 +151,6 @@ def received_payments_to_message(received_payment):
         squeak_hash=received_payment.squeak_hash.hex(),
         payment_hash=received_payment.payment_hash.hex(),
         price_msat=received_payment.price_msat,
-        payment_time_ms=int(received_payment.created.timestamp()) * 1000,
+        time_s=int(received_payment.created.timestamp()),
         client_addr=received_payment.client_addr,
     )
