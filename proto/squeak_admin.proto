@@ -654,8 +654,8 @@ message SentPayment {
     /// Does the payment unlock a valid key
     bool valid = 9;
 
-    /// time_ms
-    int64 time_ms = 10;
+    /// Time of payment
+    int64 time_s = 10;
 }
 
 message SyncSqueakRequest {
@@ -744,7 +744,7 @@ message ReceivedPayment {
     int64 price_msat = 4;
 
     /// Time of payment
-    int64 payment_time_ms = 5;
+    int64 time_s = 5;
 
     /// The address of the buyer client
     string client_addr = 6;
