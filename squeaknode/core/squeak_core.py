@@ -203,7 +203,12 @@ class SqueakCore:
         invoice_expiry = pay_req.expiry
         node_host = offer.host or peer.host
         node_port = offer.port
-        decoded_offer = ReceivedOffer(
+        # TODO: Check the payment point
+        # payment_point = offer.payment_point
+        # expected_payment_point = squeak.paymentPoint
+        # if payment_point != expected_payment_point:
+        #     raise Exception("Invalid payment point.")
+        return ReceivedOffer(
             received_offer_id=None,
             squeak_hash=squeak_hash,
             price_msat=price_msat,
@@ -218,12 +223,6 @@ class SqueakCore:
             node_port=node_port,
             peer_id=peer.peer_id,
         )
-        # TODO: Check the payment point
-        # payment_point = offer.payment_point
-        # expected_payment_point = squeak.paymentPoint
-        # if payment_point != expected_payment_point:
-        #     Do something
-        return decoded_offer
 
     def pay_offer(self, received_offer: ReceivedOffer) -> SentPayment:
         """Pay the offer that the buyer received from the seller.
