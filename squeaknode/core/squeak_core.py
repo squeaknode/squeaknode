@@ -5,6 +5,7 @@ from typing import Optional
 
 from squeak.core import CSqueak
 from squeak.core import MakeSqueakFromStr
+from squeak.core.elliptic import payment_point_bytes_from_scalar_bytes
 from squeak.core.signing import CSigningKey
 
 from squeaknode.bitcoin.blockchain_client import BlockchainClient
@@ -245,6 +246,9 @@ class SqueakCore:
         nonce = received_offer.nonce
         # secret_key = bxor(nonce, preimage)
         secret_key = subtract_tweak(preimage, nonce)
+        # Check if the secret key is valid for the preimage
+        point = payment_point_bytes_from_scalar_bytes(secret_key)
+        valid = point == received_offer.payment_point
         # Save the preimage of the sent payment
         return SentPayment(
             sent_payment_id=None,
@@ -255,6 +259,7 @@ class SqueakCore:
             secret_key=secret_key,
             price_msat=received_offer.price_msat,
             node_pubkey=received_offer.destination,
+            valid=valid,
         )
 
     def get_received_payments(self, get_sent_offer_fn, latest_settle_index) -> Iterator[ReceivedPayment]:

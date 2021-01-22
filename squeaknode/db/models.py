@@ -112,6 +112,7 @@ class Models:
             Column("secret_key", String(64), nullable=False),
             Column("price_msat", Integer, nullable=False, default=0),
             Column("node_pubkey", String(66), nullable=False),
+            Column("valid", Boolean, nullable=False),
         )
 
         self.sent_offers = Table(

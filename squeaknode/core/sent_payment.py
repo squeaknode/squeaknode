@@ -13,3 +13,4 @@ class SentPayment(NamedTuple):
     secret_key: bytes
     price_msat: int
     node_pubkey: str
+    valid: bool

@@ -95,6 +95,7 @@ def sent_payment_with_peer_to_message(sent_payment_with_peer):
         secret_key=sent_payment.secret_key.hex(),
         price_msat=sent_payment.price_msat,
         node_pubkey=sent_payment.node_pubkey,
+        valid=sent_payment.valid,
         time_ms=int(sent_payment.created.timestamp()) * 1000,
     )
 

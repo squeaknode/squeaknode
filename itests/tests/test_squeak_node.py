@@ -1009,6 +1009,7 @@ def test_connect_other_node(
         )
         assert saved_squeak_hash == get_sent_payment_response.sent_payment.squeak_hash
         assert get_sent_payment_response.sent_payment.price_msat == 1000000
+        assert get_sent_payment_response.sent_payment.valid
 
         # Get the received payment from the seller node
         get_received_payments_response = admin_stub.GetReceivedPayments(
