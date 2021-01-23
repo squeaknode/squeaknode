@@ -1,6 +1,8 @@
 import logging
 from contextlib import contextmanager
+from typing import Optional
 
+from squeaknode.core.received_offer_with_peer import ReceivedOfferWithPeer
 from squeaknode.network.peer_client import PeerClient
 from squeaknode.sync.util import parse_buy_offer
 
@@ -114,11 +116,12 @@ class PeerConnection:
         if local_squeak and local_squeak.HasDecryptionKey():
             self._upload_squeak(squeak_hash)
 
-    def _get_saved_offer(self, squeak_hash: bytes):
+    def _get_saved_offer(self, squeak_hash: bytes) -> Optional[ReceivedOfferWithPeer]:
         offers = self.squeak_controller.get_buy_offers_with_peer(squeak_hash)
         for offer_with_peer in offers:
-            if offer_with_peer.offer.peer_id == self.peer.peer_id:
+            if offer_with_peer.received_offer.peer_id == self.peer.peer_id:
                 return offer_with_peer
+        return None
 
     def _download_squeak(self, squeak_hash: bytes):
         squeak = self.peer_client.download_squeak(squeak_hash)
