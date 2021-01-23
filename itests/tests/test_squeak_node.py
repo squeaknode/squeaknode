@@ -349,6 +349,10 @@ def test_make_reply_squeak(
         )
     )
     assert len(get_replies_response.squeak_display_entries) == 1
+    assert reply_1_squeak_hash in [
+        entry.hash
+        for entry in get_replies_response.squeak_display_entries
+    ]
 
 
 def test_post_squeak_rate_limit(server_stub, admin_stub, lightning_client, nonfollowing_signing_key):
