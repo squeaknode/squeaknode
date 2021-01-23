@@ -321,6 +321,14 @@ def create_app(handler, username, password):
             handler.handle_get_ancestor_squeak_display_entries,
         )
 
+    @app.route("/getreplysqueakdisplays", methods=["POST"])
+    @login_required
+    def getreplysqueakdisplays():
+        return handle_request(
+            squeak_admin_pb2.GetReplySqueakDisplaysRequest(),
+            handler.handle_get_reply_squeak_display_entries,
+        )
+
     @app.route("/getsqueakprofilebyaddress", methods=["POST"])
     @login_required
     def getsqueakprofilebyaddress():

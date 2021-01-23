@@ -112,6 +112,9 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
     def GetAncestorSqueakDisplays(self, request, context):
         return self.handler.handle_get_ancestor_squeak_display_entries(request)
 
+    def GetReplySqueakDisplays(self, request, context):
+        return self.handler.handle_get_reply_squeak_display_entries(request)
+
     def DeleteSqueak(self, request, context):
         return self.handler.handle_delete_squeak(request)
 

@@ -242,6 +242,28 @@ class SqueakDb:
         #     rows = curs.fetchall()
         #     return [self._parse_squeak_entry_with_profile(row) for row in rows]
 
+    def get_thread_reply_squeak_entries_with_profile(self, squeak_hash: bytes):
+        """ Get all replies for a squeak hash. """
+        s = (
+            select([self.squeaks, self.profiles])
+            .select_from(
+                self.squeaks.outerjoin(
+                    self.profiles,
+                    self.profiles.c.address == self.squeaks.c.author_address,
+                )
+            )
+            .where(self.squeaks.c.block_header != None)  # noqa: E711
+            .where(self.squeaks.c.hash_reply_sqk == squeak_hash.hex())
+            .order_by(
+                self.squeaks.c.n_block_height.desc(),
+                self.squeaks.c.n_time.desc(),
+            )
+        )
+        with self.get_connection() as connection:
+            result = connection.execute(s)
+            rows = result.fetchall()
+            return [self._parse_squeak_entry_with_profile(row) for row in rows]
+
     def lookup_squeaks(
         self,
         addresses,

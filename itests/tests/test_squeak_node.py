@@ -342,6 +342,18 @@ def test_make_reply_squeak(
     )
     assert len(get_ancestors_response.squeak_display_entries) == 3
 
+    # Get the replies of the original squeak
+    get_replies_response = admin_stub.GetReplySqueakDisplays(
+        squeak_admin_pb2.GetReplySqueakDisplaysRequest(
+            squeak_hash=saved_squeak_hash,
+        )
+    )
+    assert len(get_replies_response.squeak_display_entries) == 1
+    assert reply_1_squeak_hash in [
+        entry.hash
+        for entry in get_replies_response.squeak_display_entries
+    ]
+
 
 def test_post_squeak_rate_limit(server_stub, admin_stub, lightning_client, nonfollowing_signing_key):
     # Make 10 squeak

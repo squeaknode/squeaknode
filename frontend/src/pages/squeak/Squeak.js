@@ -20,6 +20,7 @@ import SqueakThreadItem from "../../components/SqueakThreadItem";
 import {
   getSqueakDisplayRequest,
   getAncestorSqueakDisplaysRequest,
+  getReplySqueakDisplaysRequest,
   getNetworkRequest,
 } from "../../squeakclient/requests"
 
@@ -30,6 +31,7 @@ export default function SqueakPage() {
   const { hash } = useParams();
   const [squeak, setSqueak] = useState(null);
   const [ancestorSqueaks, setAncestorSqueaks] = useState([]);
+  const [replySqueaks, setReplySqueaks] = useState([]);
   const [network, setNetwork] = useState("");
 
   const getSqueak = (hash) => {
@@ -37,6 +39,9 @@ export default function SqueakPage() {
   };
   const getAncestorSqueaks = (hash) => {
       getAncestorSqueakDisplaysRequest(hash, setAncestorSqueaks);
+  };
+  const getReplySqueaks = (hash) => {
+      getReplySqueakDisplaysRequest(hash, setReplySqueaks);
   };
   const getNetwork = () => {
       getNetworkRequest(setNetwork);
@@ -60,6 +65,9 @@ export default function SqueakPage() {
   },[hash]);
   useEffect(()=>{
     getAncestorSqueaks(hash)
+  },[hash]);
+  useEffect(()=>{
+    getReplySqueaks(hash)
   },[hash]);
   useEffect(()=>{
     getNetwork()
@@ -118,6 +126,29 @@ export default function SqueakPage() {
     )
   }
 
+  function RepliesContent() {
+    console.log("replySqueaks: " + replySqueaks);
+    return (
+      <div>
+        {replySqueaks
+          .map(replySqueak =>
+          <Box
+            p={1}
+            key={replySqueak.getSqueakHash()}
+            >
+          <SqueakThreadItem
+            hash={replySqueak.getSqueakHash()}
+            key={replySqueak.getSqueakHash()}
+            squeak={replySqueak}
+            network={network}>
+          </SqueakThreadItem>
+          <Divider />
+          </Box>
+        )}
+      </div>
+    )
+  }
+
   function SqueakContent() {
     return (
       <>
@@ -130,6 +161,7 @@ export default function SqueakPage() {
             network={network}>
           </SqueakDetailItem>
         </div>
+        {RepliesContent()}
       </>
     )
   }

@@ -312,6 +312,31 @@ class SqueakAdminServerHandler(object):
             squeak_display_entries=squeak_display_msgs
         )
 
+    def handle_get_reply_squeak_display_entries(self, request):
+        squeak_hash_str = request.squeak_hash
+        squeak_hash = bytes.fromhex(squeak_hash_str)
+        logger.info(
+            "Handle get reply squeak display entries for squeak hash: {}".format(
+                squeak_hash_str
+            )
+        )
+        squeak_entries_with_profile = (
+            self.squeak_controller.get_reply_squeak_entries_with_profile(
+                squeak_hash,
+            )
+        )
+        logger.info(
+            "Got number of reply squeak entries: {}".format(
+                len(squeak_entries_with_profile)
+            )
+        )
+        squeak_display_msgs = [
+            squeak_entry_to_message(entry) for entry in squeak_entries_with_profile
+        ]
+        return squeak_admin_pb2.GetReplySqueakDisplaysReply(
+            squeak_display_entries=squeak_display_msgs
+        )
+
     def handle_delete_squeak(self, request):
         squeak_hash_str = request.squeak_hash
         squeak_hash = bytes.fromhex(squeak_hash_str)

@@ -132,6 +132,10 @@ service SqueakAdmin {
   */
   rpc GetAncestorSqueakDisplays (GetAncestorSqueakDisplaysRequest) returns (GetAncestorSqueakDisplaysReply) {}
 
+  /** sqkadmin: `getreplysqueakdisplays`
+  */
+  rpc GetReplySqueakDisplays (GetReplySqueakDisplaysRequest) returns (GetReplySqueakDisplaysReply) {}
+
   /** sqkadmin: `deletesqueak`
   */
   rpc DeleteSqueak (DeleteSqueakRequest) returns (DeleteSqueakReply) {}
@@ -437,6 +441,16 @@ message GetAncestorSqueakDisplaysRequest {
 }
 
 message GetAncestorSqueakDisplaysReply {
+    /// Multiple squeak display entries
+    repeated SqueakDisplayEntry squeak_display_entries = 1;
+}
+
+message GetReplySqueakDisplaysRequest {
+    /// Hash of the squeak.
+    string squeak_hash = 1;
+}
+
+message GetReplySqueakDisplaysReply {
     /// Multiple squeak display entries
     repeated SqueakDisplayEntry squeak_display_entries = 1;
 }
