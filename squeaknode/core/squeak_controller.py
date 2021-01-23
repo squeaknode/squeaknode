@@ -367,6 +367,11 @@ class SqueakController:
             squeak_hash,
         )
 
+    def get_reply_squeak_entries_with_profile(self, squeak_hash: bytes):
+        return self.squeak_db.get_thread_reply_squeak_entries_with_profile(
+            squeak_hash,
+        )
+
     def lookup_squeaks(self, addresses: List[str], min_block: int, max_block: int):
         return self.squeak_db.lookup_squeaks(
             addresses,
