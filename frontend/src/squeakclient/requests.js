@@ -42,6 +42,7 @@ import {
   MakeSqueakRequest,
   GetSqueakDisplayRequest,
   GetAncestorSqueakDisplaysRequest,
+  GetReplySqueakDisplaysRequest,
   GetSqueakProfileByAddressRequest,
   GetAddressSqueakDisplaysRequest,
   CreateContactProfileRequest,
@@ -67,6 +68,7 @@ import {
   MakeSqueakReply,
   GetSqueakDisplayReply,
   GetAncestorSqueakDisplaysReply,
+  GetReplySqueakDisplaysReply,
   GetSqueakProfileByAddressReply,
   GetAddressSqueakDisplaysReply,
   CreateContactProfileReply,
@@ -722,6 +724,19 @@ export function getAncestorSqueakDisplaysRequest(hash, handleResponse) {
     'getancestorsqueakdisplays',
     request,
     GetAncestorSqueakDisplaysReply.deserializeBinary,
+    (response) => {
+      handleResponse(response.getSqueakDisplayEntriesList());
+    }
+  );
+};
+
+export function getReplySqueakDisplaysRequest(hash, handleResponse) {
+  var request = new GetReplySqueakDisplaysRequest();
+  request.setSqueakHash(hash);
+  makeRequest(
+    'getreplysqueakdisplays',
+    request,
+    GetReplySqueakDisplaysReply.deserializeBinary,
     (response) => {
       handleResponse(response.getSqueakDisplayEntriesList());
     }
