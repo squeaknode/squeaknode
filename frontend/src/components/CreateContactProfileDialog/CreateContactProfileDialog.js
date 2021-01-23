@@ -1,33 +1,16 @@
 import React, {useState, useEffect} from 'react';
 import {
-  Paper,
-  IconButton,
-  Menu,
-  MenuItem,
-  Typography,
-  Grid,
-  Box,
-  Link,
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogContentText,
   TextField,
   DialogActions,
   Button,
-  FormControl,
-  InputLabel,
-  Select,
 } from "@material-ui/core";
-import { MoreVert as MoreIcon } from "@material-ui/icons";
 import {useHistory} from "react-router-dom";
-import classnames from "classnames";
 
 // styles
 import useStyles from "./styles";
-
-import Widget from "../../components/Widget";
-import SqueakThreadItem from "../../components/SqueakThreadItem";
 
 import {
   createContactProfileRequest,
@@ -35,11 +18,11 @@ import {
 
 
 export default function CreateContactProfileDialog({
-  open,
-  handleClose,
-  initialAddress='',
-  ...props
-}) {
+                                                     open,
+                                                     handleClose,
+                                                     initialAddress='',
+                                                     ...props
+                                                   }) {
   var classes = useStyles();
   const history = useHistory();
 
@@ -64,7 +47,7 @@ export default function CreateContactProfileDialog({
   };
 
   const handleErr = (err) => {
-    alert('Error creating contact profile: ' + err.message);
+    alert('Error creating contact profile: ' + err);
   };
 
   const createContactProfile = (profileName, squeakAddress) => {
@@ -109,12 +92,12 @@ export default function CreateContactProfileDialog({
   function CreateContactAddressInput() {
     return (
       <TextField required
-          id="standard-textarea"
-          label="Address"
-          required
-          value={address}
-          onChange={handleChangeAddress}
-          inputProps={{ maxLength: 35 }}
+                 id="standard-textarea"
+                 label="Address"
+                 required
+                 value={address}
+                 onChange={handleChangeAddress}
+                 inputProps={{ maxLength: 35 }}
       />
     )
   }
@@ -134,29 +117,29 @@ export default function CreateContactProfileDialog({
   function CreateContactProfilButton() {
     return (
       <Button
-       type="submit"
-       variant="contained"
-       color="primary"
-       className={classes.button}
-       >
-       Create Contact Profile
-       </Button>
+        type="submit"
+        variant="contained"
+        color="primary"
+        className={classes.button}
+      >
+        Create Contact Profile
+      </Button>
     )
   }
 
   return (
     <Dialog open={open} onEnter={resetFields} onClose={handleClose} aria-labelledby="form-dialog-title">
-  <DialogTitle id="form-dialog-title">Create Contact Profile</DialogTitle>
-  <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
-  <DialogContent>
-    {CreateContactProfileNameInput()}
-    {CreateContactAddressInput()}
-  </DialogContent>
-  <DialogActions>
-    {CancelButton()}
-    {CreateContactProfilButton()}
-  </DialogActions>
-  </form>
+      <DialogTitle id="form-dialog-title">Create Contact Profile</DialogTitle>
+      <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
+        <DialogContent>
+          {CreateContactProfileNameInput()}
+          {CreateContactAddressInput()}
+        </DialogContent>
+        <DialogActions>
+          {CancelButton()}
+          {CreateContactProfilButton()}
+        </DialogActions>
+      </form>
     </Dialog>
   )
 }

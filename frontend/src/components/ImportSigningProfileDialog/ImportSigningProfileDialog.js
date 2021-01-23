@@ -62,7 +62,7 @@ export default function ImportSigningProfileDialog({
   };
 
   const handleErr = (err) => {
-    alert('Error creating contact profile: ' + err.message);
+    alert('Error creating contact profile: ' + err);
   };
 
   const goToProfilePage = (profileId) => {

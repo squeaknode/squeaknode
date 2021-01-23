@@ -60,7 +60,7 @@ export default function CloseChannelDialog({
   };
 
   const handleErr = (err) => {
-    alert('Error closing channel: ' + err.message);
+    alert('Error closing channel: ' + err);
   };
 
   const closeChannel = (txId, outputIndex) => {
