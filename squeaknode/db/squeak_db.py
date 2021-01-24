@@ -3,6 +3,7 @@ from contextlib import contextmanager
 from datetime import datetime
 from datetime import timedelta
 from datetime import timezone
+from typing import Iterator
 from typing import List
 from typing import Optional
 
@@ -1007,7 +1008,7 @@ class SqueakDb:
             sent_offer_id = res.inserted_primary_key[0]
             return sent_offer_id
 
-    def get_sent_offers(self):
+    def get_sent_offers(self) -> List[SentOffer]:
         """ Get all received payments. """
         s = select([self.sent_offers]).order_by(
             self.sent_offers.c.created.desc(),
@@ -1018,7 +1019,7 @@ class SqueakDb:
             sent_offers = [self._parse_sent_offer(row) for row in rows]
             return sent_offers
 
-    def get_sent_offer_by_payment_hash(self, payment_hash: bytes):
+    def get_sent_offer_by_payment_hash(self, payment_hash: bytes) -> Optional[SentOffer]:
         """ Get a sent offer by preimage hash. """
         s = select([self.sent_offers]).where(
             self.sent_offers.c.payment_hash == payment_hash.hex()
@@ -1026,10 +1027,12 @@ class SqueakDb:
         with self.get_connection() as connection:
             result = connection.execute(s)
             row = result.fetchone()
+            if row is None:
+                return None
             sent_offer = self._parse_sent_offer(row)
             return sent_offer
 
-    def get_sent_offer_by_squeak_hash_and_client_addr(self, squeak_hash: bytes, client_addr):
+    def get_sent_offer_by_squeak_hash_and_client_addr(self, squeak_hash: bytes, client_addr) -> Optional[SentOffer]:
         """ Get a sent offer by squeak hash and client addr. """
         s = (
             select([self.sent_offers])
@@ -1039,6 +1042,8 @@ class SqueakDb:
         with self.get_connection() as connection:
             result = connection.execute(s)
             row = result.fetchone()
+            if row is None:
+                return None
             sent_offer = self._parse_sent_offer(row)
             return sent_offer
 
@@ -1087,7 +1092,7 @@ class SqueakDb:
             received_payment_id = res.inserted_primary_key[0]
             return received_payment_id
 
-    def get_received_payments(self):
+    def get_received_payments(self) -> List[ReceivedPayment]:
         """ Get all received payments. """
         s = select([self.received_payments]).order_by(
             self.received_payments.c.created.desc(),
@@ -1099,7 +1104,7 @@ class SqueakDb:
                 self._parse_received_payment(row) for row in rows]
             return received_payments
 
-    def yield_received_payments_from_index(self, start_index=0):
+    def yield_received_payments_from_index(self, start_index=0) -> Iterator[ReceivedPayment]:
         """ Get all received payments. """
         s = (
             select([self.received_payments])
@@ -1221,9 +1226,7 @@ class SqueakDb:
             peer=peer,
         )
 
-    def _parse_sent_offer(self, row):
-        if row is None:
-            return None
+    def _parse_sent_offer(self, row) -> SentOffer:
         return SentOffer(
             sent_offer_id=row["sent_offer_id"],
             squeak_hash=bytes.fromhex(row["squeak_hash"]),
@@ -1237,9 +1240,7 @@ class SqueakDb:
             client_addr=row["client_addr"],
         )
 
-    def _parse_received_payment(self, row):
-        if row is None:
-            return None
+    def _parse_received_payment(self, row) -> ReceivedPayment:
         return ReceivedPayment(
             received_payment_id=row["received_payment_id"],
             created=row["created"],
