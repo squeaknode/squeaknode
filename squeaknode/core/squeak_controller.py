@@ -397,7 +397,7 @@ class SqueakController:
 
     def save_offer(self, received_offer: ReceivedOffer):
         logger.info("Saving received offer: {}".format(received_offer))
-        self.squeak_db.insert_offer(received_offer)
+        self.squeak_db.insert_received_offer(received_offer)
 
     def get_followed_addresses(self):
         followed_profiles = self.squeak_db.get_following_profiles()
