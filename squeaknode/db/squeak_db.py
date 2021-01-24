@@ -1203,9 +1203,7 @@ class SqueakDb:
             peer=peer,
         )
 
-    def _parse_sent_payment(self, row):
-        if row is None:
-            return None
+    def _parse_sent_payment(self, row) -> SentPayment:
         return SentPayment(
             sent_payment_id=row["sent_payment_id"],
             created=row[self.sent_payments.c.created],
@@ -1220,7 +1218,10 @@ class SqueakDb:
 
     def _parse_sent_payment_with_peer(self, row) -> SentPaymentWithPeer:
         sent_payment = self._parse_sent_payment(row)
-        peer = self._parse_squeak_peer(row)
+        if row[self.peers.c.peer_id] is None:
+            peer = None
+        else:
+            peer = self._parse_squeak_peer(row)
         return SentPaymentWithPeer(
             sent_payment=sent_payment,
             peer=peer,
