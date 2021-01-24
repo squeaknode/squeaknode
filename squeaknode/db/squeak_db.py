@@ -829,25 +829,15 @@ class SqueakDb:
         #     row = curs.fetchone()
         #     return row["offer_id"]
 
-    def get_offers(self, squeak_hash: bytes):
+    def get_offers(self, squeak_hash: bytes) -> List[ReceivedOffer]:
         """ Get offers for a squeak hash. """
         s = select([self.received_offers]).where(
             self.received_offers.c.squeak_hash == squeak_hash.hex())
         with self.get_connection() as connection:
             result = connection.execute(s)
             rows = result.fetchall()
-            offers = [self._parse_offer(row) for row in rows]
+            offers = [self._parse_received_offer(row) for row in rows]
             return offers
-
-        # sql = """
-        # SELECT * FROM offer
-        # WHERE squeak_hash=%s;
-        # """
-        # with self.get_cursor() as curs:
-        #     curs.execute(sql, (squeak_hash,))
-        #     rows = curs.fetchall()
-        #     offers = [self._parse_offer(row) for row in rows]
-        #     return offers
 
     def get_offers_with_peer(self, squeak_hash: bytes) -> List[ReceivedOfferWithPeer]:
         """ Get offers with peer for a squeak hash. """
@@ -1164,9 +1154,7 @@ class SqueakDb:
             downloading=row["downloading"],
         )
 
-    def _parse_offer(self, row):
-        if row is None:
-            return None
+    def _parse_received_offer(self, row) -> ReceivedOffer:
         return ReceivedOffer(
             received_offer_id=row["received_offer_id"],
             squeak_hash=bytes.fromhex(row["squeak_hash"]),
@@ -1184,7 +1172,7 @@ class SqueakDb:
         )
 
     def _parse_received_offer_with_peer(self, row) -> ReceivedOfferWithPeer:
-        offer = self._parse_offer(row)
+        offer = self._parse_received_offer(row)
         if row[self.peers.c.peer_id] is None:
             peer = None
         else:
