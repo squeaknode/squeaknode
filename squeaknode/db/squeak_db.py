@@ -719,15 +719,17 @@ class SqueakDb:
             id = res.inserted_primary_key[0]
             return id
 
-    def get_peer(self, peer_id):
+    def get_peer(self, peer_id) -> Optional[SqueakPeer]:
         """ Get a peer. """
         s = select([self.peers]).where(self.peers.c.peer_id == peer_id)
         with self.get_connection() as connection:
             result = connection.execute(s)
             row = result.fetchone()
+            if row is None:
+                return None
             return self._parse_squeak_peer(row)
 
-    def get_peers(self):
+    def get_peers(self) -> List[SqueakPeer]:
         """ Get all peers. """
         s = select([self.peers])
         with self.get_connection() as connection:
@@ -736,7 +738,7 @@ class SqueakDb:
             peers = [self._parse_squeak_peer(row) for row in rows]
             return peers
 
-    def get_downloading_peers(self):
+    def get_downloading_peers(self) -> List[SqueakPeer]:
         """ Get peers that are set to be downloading. """
         s = select([self.peers]).where(self.peers.c.downloading)
         with self.get_connection() as connection:
@@ -745,7 +747,7 @@ class SqueakDb:
             peers = [self._parse_squeak_peer(row) for row in rows]
             return peers
 
-    def get_uploading_peers(self):
+    def get_uploading_peers(self) -> List[SqueakPeer]:
         """ Get peers that are set to be uploading. """
         s = select([self.peers]).where(self.peers.c.uploading)
         with self.get_connection() as connection:
@@ -1142,9 +1144,7 @@ class SqueakDb:
             squeak_profile=squeak_profile,
         )
 
-    def _parse_squeak_peer(self, row):
-        if row is None:
-            return None
+    def _parse_squeak_peer(self, row) -> SqueakPeer:
         return SqueakPeer(
             peer_id=row[self.peers.c.peer_id],
             peer_name=row["peer_name"],
