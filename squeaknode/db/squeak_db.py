@@ -106,13 +106,15 @@ class SqueakDb:
                 pass
             return get_hash(squeak)
 
-    def get_squeak_entry(self, squeak_hash: bytes):
+    def get_squeak_entry(self, squeak_hash: bytes) -> Optional[SqueakEntry]:
         """ Get a squeak. """
         s = select([self.squeaks]).where(
             self.squeaks.c.hash == squeak_hash.hex())
         with self.get_connection() as connection:
             result = connection.execute(s)
             row = result.fetchone()
+            if row is None:
+                return None
             return self._parse_squeak_entry(row)
 
     def get_squeak_entry_with_profile(self, squeak_hash: bytes) -> Optional[SqueakEntryWithProfile]:
@@ -1103,9 +1105,7 @@ class SqueakDb:
                 received_payment = self._parse_received_payment(row)
                 yield received_payment
 
-    def _parse_squeak_entry(self, row):
-        if row is None:
-            return None
+    def _parse_squeak_entry(self, row) -> SqueakEntry:
         secret_key_column = row["secret_key"]
         secret_key = bytes.fromhex(
             secret_key_column) if secret_key_column else b""
