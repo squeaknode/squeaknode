@@ -57,7 +57,7 @@ export default function CreateSigningProfileDialog({
   };
 
   const handleErr = (err) => {
-    alert('Error creating contact profile: ' + err.message);
+    alert('Error creating signing profile: ' + err);
   };
 
   const createSigningProfile = (profileName) => {

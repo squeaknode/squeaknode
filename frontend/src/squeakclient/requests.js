@@ -161,14 +161,7 @@ export function getTimelineSqueakDisplaysRequest(handleResponse) {
       handleResponse(response.getSqueakDisplayEntriesList());
     }
   );
-};
-
-// export function lndGetInfoRequest(handleResponse) {
-//   var request = new GetInfoRequest();
-//   client.lndGetInfo(request, {}, (err, response) => {
-//     handleResponse(response);
-//   });
-// };
+}
 
 export function lndGetInfoRequest(handleResponse, handleErr) {
   var request = new GetInfoRequest();
@@ -179,14 +172,7 @@ export function lndGetInfoRequest(handleResponse, handleErr) {
     handleResponse,
     handleErr
   );
-};
-
-// export function lndWalletBalanceRequest(handleResponse) {
-//       var request = new WalletBalanceRequest();
-//       client.lndWalletBalance(request, {}, (err, response) => {
-//         handleResponse(response);
-//       });
-// };
+}
 
 export function lndWalletBalanceRequest(handleResponse) {
   var request = new WalletBalanceRequest();
@@ -196,14 +182,7 @@ export function lndWalletBalanceRequest(handleResponse) {
     WalletBalanceResponse.deserializeBinary,
     handleResponse,
   );
-};
-
-// export function lndGetTransactionsRequest(handleResponse) {
-//       var request = new GetTransactionsRequest();
-//       client.lndGetTransactions(request, {}, (err, response) => {
-//         handleResponse(response.getTransactionsList());
-//       });
-// };
+}
 
 export function lndGetTransactionsRequest(handleResponse) {
   var request = new GetTransactionsRequest();
@@ -215,14 +194,7 @@ export function lndGetTransactionsRequest(handleResponse) {
       handleResponse(response.getTransactionsList());
     }
   );
-};
-
-// export function lndListPeersRequest(handleResponse) {
-//       var request = new ListPeersRequest();
-//       client.lndListPeers(request, {}, (err, response) => {
-//         handleResponse(response.getPeersList());
-//       });
-// };
+}
 
 export function lndListPeersRequest(handleResponse) {
       var request = new ListPeersRequest();
@@ -234,17 +206,7 @@ export function lndListPeersRequest(handleResponse) {
           handleResponse(response.getPeersList());
         }
       );
-};
-
-// export function lndListChannelsRequest(handleResponse) {
-//       var request = new ListChannelsRequest();
-//       client.lndListChannels(request, {}, (err, response) => {
-//         if (err) {
-//           return;
-//         }
-//         handleResponse(response.getChannelsList());
-//       });
-// };
+}
 
 export function lndListChannelsRequest(handleResponse) {
   var request = new ListChannelsRequest();
@@ -256,17 +218,7 @@ export function lndListChannelsRequest(handleResponse) {
       handleResponse(response.getChannelsList());
     }
   );
-};
-
-// export function lndPendingChannelsRequest(handleResponse) {
-//       var request = new PendingChannelsRequest();
-//       client.lndPendingChannels(request, {}, (err, response) => {
-//         if (err) {
-//           return;
-//         }
-//         handleResponse(response);
-//       });
-// };
+}
 
 export function lndPendingChannelsRequest(handleResponse) {
   var request = new PendingChannelsRequest();
@@ -276,18 +228,7 @@ export function lndPendingChannelsRequest(handleResponse) {
     PendingChannelsResponse.deserializeBinary,
     handleResponse,
   );
-};
-
-// export function getSqueakProfileRequest(id, handleResponse) {
-//       var request = new GetSqueakProfileRequest();
-//       request.setProfileId(id);
-//       client.getSqueakProfile(request, {}, (err, response) => {
-//         if (err) {
-//           return;
-//         }
-//         handleResponse(response.getSqueakProfile())
-//       });
-// };
+}
 
 export function getSqueakProfileRequest(id, handleResponse) {
   var request = new GetSqueakProfileRequest();
@@ -300,16 +241,7 @@ export function getSqueakProfileRequest(id, handleResponse) {
       handleResponse(response.getSqueakProfile());
     }
   );
-};
-
-// export function setSqueakProfileFollowingRequest(id, following, handleResponse) {
-//       var request = new SetSqueakProfileFollowingRequest();
-//       request.setProfileId(id);
-//       request.setFollowing(following);
-//       client.setSqueakProfileFollowing(request, {}, (err, response) => {
-//         handleResponse(response);
-//       });
-// };
+}
 
 export function setSqueakProfileFollowingRequest(id, following, handleResponse) {
   var request = new SetSqueakProfileFollowingRequest();
@@ -321,16 +253,7 @@ export function setSqueakProfileFollowingRequest(id, following, handleResponse) 
     SetSqueakProfileFollowingReply.deserializeBinary,
     handleResponse,
   );
-};
-
-// export function setSqueakProfileSharingRequest(id, sharing, handleResponse) {
-//       var request = new SetSqueakProfileSharingRequest();
-//       request.setProfileId(id);
-//       request.setSharing(sharing);
-//       client.setSqueakProfileSharing(request, {}, (err, response) => {
-//         handleResponse(response);
-//       });
-// };
+}
 
 export function setSqueakProfileSharingRequest(id, sharing, handleResponse) {
   var request = new SetSqueakProfileSharingRequest();
@@ -342,21 +265,7 @@ export function setSqueakProfileSharingRequest(id, sharing, handleResponse) {
     SetSqueakProfileSharingReply.deserializeBinary,
     handleResponse,
   );
-};
-
-// export function lndConnectPeerRequest(pubkey, host, handleResponse) {
-//   var request = new ConnectPeerRequest()
-//   var address = new LightningAddress();
-//   address.setPubkey(pubkey);
-//   address.setHost(host);
-//   request.setAddr(address);
-//   client.lndConnectPeer(request, {}, (err, response) => {
-//     if (err) {
-//       return;
-//     }
-//     handleResponse(response);
-//   });
-// };
+}
 
 export function lndConnectPeerRequest(pubkey, host, handleResponse) {
   var request = new ConnectPeerRequest()
@@ -370,18 +279,7 @@ export function lndConnectPeerRequest(pubkey, host, handleResponse) {
     ConnectPeerResponse.deserializeBinary,
     handleResponse,
   );
-};
-
-// export function lndDisconnectPeerRequest(pubkey, handleResponse) {
-//   var request = new DisconnectPeerRequest()
-//   request.setPubKey(pubkey);
-//   client.lndDisconnectPeer(request, {}, (err, response) => {
-//     if (err) {
-//       return;
-//     }
-//     handleResponse(response);
-//   });
-// };
+}
 
 export function lndDisconnectPeerRequest(pubkey, handleResponse) {
   var request = new DisconnectPeerRequest()
@@ -392,17 +290,7 @@ export function lndDisconnectPeerRequest(pubkey, handleResponse) {
     DisconnectPeerResponse.deserializeBinary,
     handleResponse,
   );
-};
-
-// export function getPeersRequest(handleResponse) {
-//   var request = new GetPeersRequest();
-//   client.getPeers(request, {}, (err, response) => {
-//     if (err) {
-//       return;
-//     }
-//     handleResponse(response.getSqueakPeersList());
-//   });
-// };
+}
 
 export function getPeersRequest(handleResponse) {
   var request = new GetPeersRequest();
@@ -414,19 +302,7 @@ export function getPeersRequest(handleResponse) {
       handleResponse(response.getSqueakPeersList());
     }
   );
-};
-
-// export function payOfferRequest(offerId, handleResponse, handleErr) {
-//   var request = new PayOfferRequest();
-//   request.setOfferId(offerId);
-//   client.payOffer(request, {}, (err, response) => {
-//     if (err) {
-//       handleErr(err);
-//       return;
-//     }
-//     handleResponse(response);
-//   });
-// };
+}
 
 export function payOfferRequest(offerId, handleResponse, handleErr) {
   var request = new PayOfferRequest();
@@ -438,20 +314,7 @@ export function payOfferRequest(offerId, handleResponse, handleErr) {
     handleResponse,
     handleErr,
   );
-};
-
-// export function lndOpenChannelSyncRequest(pubkey, amount, handleResponse, handleErr) {
-//   var request = new OpenChannelRequest()
-//   request.setNodePubkeyString(pubkey);
-//   request.setLocalFundingAmount(amount);
-//   client.lndOpenChannelSync(request, {}, (err, response) => {
-//     if (err) {
-//       handleErr(err);
-//       return;
-//     }
-//     handleResponse(response);
-//   });
-// };
+}
 
 export function lndOpenChannelSyncRequest(pubkey, amount, satperbyte, handleResponse, handleErr) {
   var request = new OpenChannelRequest()
@@ -465,22 +328,7 @@ export function lndOpenChannelSyncRequest(pubkey, amount, satperbyte, handleResp
     handleResponse,
     handleErr,
   );
-};
-
-// export function lndCloseChannelRequest(txId, outputIndex, handleResponse, handleErr) {
-//   var request = new CloseChannelRequest();
-//   var channelPoint = new ChannelPoint();
-//   channelPoint.setFundingTxidStr(txId);
-//   channelPoint.setOutputIndex(outputIndex);
-//   request.setChannelPoint(channelPoint);
-//   client.lndCloseChannel(request, {}, (err, response) => {
-//     if (err) {
-//       handleErr(err);
-//       return;
-//     }
-//     handleResponse(response);
-//   });
-// };
+}
 
 export function lndCloseChannelRequest(txId, outputIndex, handleResponse, handleErr) {
   var request = new CloseChannelRequest();
@@ -494,19 +342,9 @@ export function lndCloseChannelRequest(txId, outputIndex, handleResponse, handle
     CloseStatusUpdate.deserializeBinary,
     // TODO: handle streaming response
     handleResponse,
+    handleErr,
   );
-};
-
-// export function getBuyOffersRequest(hash, handleResponse) {
-//     var request = new GetBuyOffersRequest();
-//     request.setSqueakHash(hash);
-//     client.getBuyOffers(request, {}, (err, response) => {
-//       if (err) {
-//         return;
-//       }
-//       handleResponse(response.getOffersList());
-//     });
-// };
+}
 
 export function getBuyOffersRequest(hash, handleResponse) {
   var request = new GetBuyOffersRequest();
@@ -518,18 +356,7 @@ export function getBuyOffersRequest(hash, handleResponse) {
     (response) => {
       handleResponse(response.getOffersList());
     });
-};
-
-// export function getBuyOfferRequest(offerId, handleResponse) {
-//     var request = new GetBuyOfferRequest();
-//     request.setOfferId(offerId);
-//     client.getBuyOffer(request, {}, (err, response) => {
-//       if (err) {
-//         return;
-//       }
-//       handleResponse(response.getOffer())
-//     });
-// };
+}
 
 export function getBuyOfferRequest(offerId, handleResponse) {
   var request = new GetBuyOfferRequest();
@@ -542,18 +369,7 @@ export function getBuyOfferRequest(offerId, handleResponse) {
       handleResponse(response.getOffer());
     }
   );
-};
-
-// export function getPeerRequest(id, handleResponse) {
-//       var request = new GetPeerRequest();
-//       request.setPeerId(id);
-//       client.getPeer(request, {}, (err, response) => {
-//         if (err) {
-//           return;
-//         }
-//         handleResponse(response.getSqueakPeer())
-//       });
-// };
+}
 
 export function getPeerRequest(id, handleResponse) {
   var request = new GetPeerRequest();
@@ -566,16 +382,7 @@ export function getPeerRequest(id, handleResponse) {
       handleResponse(response.getSqueakPeer());
     }
   );
-};
-
-// export function setPeerDownloadingRequest(id, downloading, handleResponse) {
-//       var request = new SetPeerDownloadingRequest();
-//       request.setPeerId(id);
-//       request.setDownloading(downloading);
-//       client.setPeerDownloading(request, {}, (err, response) => {
-//         handleResponse(response);
-//       });
-// };
+}
 
 export function setPeerDownloadingRequest(id, downloading, handleResponse) {
   var request = new SetPeerDownloadingRequest();
@@ -587,16 +394,7 @@ export function setPeerDownloadingRequest(id, downloading, handleResponse) {
     SetPeerDownloadingReply.deserializeBinary,
     handleResponse,
   );
-};
-
-// export function setPeerUploadingRequest(id, uploading, handleResponse) {
-//       var request = new SetPeerUploadingRequest();
-//       request.setPeerId(id);
-//       request.setUploading(uploading);
-//       client.setPeerUploading(request, {}, (err, response) => {
-//         handleResponse(response);
-//       });
-// };
+}
 
 export function setPeerUploadingRequest(id, uploading, handleResponse) {
   var request = new SetPeerUploadingRequest();
@@ -608,17 +406,7 @@ export function setPeerUploadingRequest(id, uploading, handleResponse) {
     SetPeerUploadingReply.deserializeBinary,
     handleResponse,
   );
-};
-
-// export function getSigningProfilesRequest(handleResponse) {
-//   var request = new GetSigningProfilesRequest();
-//   client.getSigningProfiles(request, {}, (err, response) => {
-//     if (err) {
-//       return;
-//     }
-//     handleResponse(response.getSqueakProfilesList());
-//   });
-// };
+}
 
 export function getSigningProfilesRequest(handleResponse) {
   var request = new GetSigningProfilesRequest();
@@ -630,17 +418,7 @@ export function getSigningProfilesRequest(handleResponse) {
       handleResponse(response.getSqueakProfilesList());
     }
   );
-};
-
-// export function getContactProfilesRequest(handleResponse) {
-//   var request = new GetContactProfilesRequest();
-//   client.getContactProfiles(request, {}, (err, response) => {
-//     if (err) {
-//       return;
-//     }
-//     handleResponse(response.getSqueakProfilesList());
-//   });
-// };
+}
 
 export function getContactProfilesRequest(handleResponse) {
   var request = new GetContactProfilesRequest();
@@ -652,21 +430,7 @@ export function getContactProfilesRequest(handleResponse) {
       handleResponse(response.getSqueakProfilesList());
     }
   );
-};
-
-// export function makeSqueakRequest(profileId, content, replyto, handleResponse, handleErr) {
-//   var request = new MakeSqueakRequest();
-//   request.setProfileId(profileId);
-//   request.setContent(content);
-//   request.setReplyto(replyto);
-//   client.makeSqueak(request, {}, (err, response) => {
-//     if (err) {
-//       handleErr(err);
-//       return;
-//     }
-//     handleResponse(response);
-//   });
-// };
+}
 
 export function makeSqueakRequest(profileId, content, replyto, handleResponse, handleErr) {
   var request = new MakeSqueakRequest();
@@ -680,18 +444,7 @@ export function makeSqueakRequest(profileId, content, replyto, handleResponse, h
     handleResponse,
     handleErr,
   );
-};
-
-// export function getSqueakDisplayRequest(hash, handleResponse) {
-//     var request = new GetSqueakDisplayRequest();
-//     request.setSqueakHash(hash);
-//     client.getSqueakDisplay(request, {}, (err, response) => {
-//       if (err) {
-//         return;
-//       }
-//       handleResponse(response.getSqueakDisplayEntry())
-//     });
-// };
+}
 
 export function getSqueakDisplayRequest(hash, handleResponse) {
   var request = new GetSqueakDisplayRequest();
@@ -704,18 +457,7 @@ export function getSqueakDisplayRequest(hash, handleResponse) {
       handleResponse(response.getSqueakDisplayEntry());
     }
   );
-};
-
-// export function getAncestorSqueakDisplaysRequest(hash, handleResponse) {
-//     var request = new GetAncestorSqueakDisplaysRequest();
-//     request.setSqueakHash(hash);
-//     client.getAncestorSqueakDisplays(request, {}, (err, response) => {
-//       if (err) {
-//         return;
-//       }
-//       handleResponse(response.getSqueakDisplayEntriesList());
-//     });
-// };
+}
 
 export function getAncestorSqueakDisplaysRequest(hash, handleResponse) {
   var request = new GetAncestorSqueakDisplaysRequest();
@@ -728,7 +470,7 @@ export function getAncestorSqueakDisplaysRequest(hash, handleResponse) {
       handleResponse(response.getSqueakDisplayEntriesList());
     }
   );
-};
+}
 
 export function getReplySqueakDisplaysRequest(hash, handleResponse) {
   var request = new GetReplySqueakDisplaysRequest();
@@ -741,15 +483,7 @@ export function getReplySqueakDisplaysRequest(hash, handleResponse) {
       handleResponse(response.getSqueakDisplayEntriesList());
     }
   );
-};
-
-// export function getSqueakProfileByAddressRequest(address, handleResponse) {
-//       var request = new GetSqueakProfileByAddressRequest();
-//       request.setAddress(address);
-//       client.getSqueakProfileByAddress(request, {}, (err, response) => {
-//         handleResponse(response.getSqueakProfile());
-//       });
-// };
+}
 
 export function getSqueakProfileByAddressRequest(address, handleResponse) {
   var request = new GetSqueakProfileByAddressRequest();
@@ -762,15 +496,7 @@ export function getSqueakProfileByAddressRequest(address, handleResponse) {
       handleResponse(response.getSqueakProfile());
     }
   );
-};
-
-// export function getAddressSqueakDisplaysRequest(address, handleResponse) {
-//     var request = new GetAddressSqueakDisplaysRequest();
-//     request.setAddress(address);
-//     client.getAddressSqueakDisplays(request, {}, (err, response) => {
-//       handleResponse(response.getSqueakDisplayEntriesList());
-//     });
-// };
+}
 
 export function getAddressSqueakDisplaysRequest(address, handleResponse) {
     var request = new GetAddressSqueakDisplaysRequest();
@@ -783,23 +509,10 @@ export function getAddressSqueakDisplaysRequest(address, handleResponse) {
         handleResponse(response.getSqueakDisplayEntriesList());
       }
     );
-};
-
-// export function createContactProfileRequest(profileName, squeakAddress, handleResponse, handleErr) {
-//   var request = new CreateContactProfileRequest();
-//   request.setProfileName(profileName);
-//   request.setAddress(squeakAddress);
-//   client.createContactProfile(request, {}, (err, response) => {
-//     if (err) {
-//       handleErr(err);
-//       return;
-//     }
-//     handleResponse(response);
-//   });
-// };
+}
 
 export function createContactProfileRequest(profileName, squeakAddress, handleResponse, handleErr) {
-  var request = new CreateContactProfileRequest();
+  const request = new CreateContactProfileRequest();
   request.setProfileName(profileName);
   request.setAddress(squeakAddress);
   makeRequest(
@@ -807,20 +520,9 @@ export function createContactProfileRequest(profileName, squeakAddress, handleRe
     request,
     CreateContactProfileReply.deserializeBinary,
     handleResponse,
+    handleErr,
   );
-};
-
-// export function createSigningProfileRequest(profileName, handleResponse, handleErr) {
-//   var request = new CreateSigningProfileRequest();
-//   request.setProfileName(profileName);
-//   client.createSigningProfile(request, {}, (err, response) => {
-//     if (err) {
-//       handleErr(err);
-//       return;
-//     }
-//     handleResponse(response);
-//   });
-// };
+}
 
 export function createSigningProfileRequest(profileName, handleResponse, handleErr) {
   var request = new CreateSigningProfileRequest();
@@ -830,11 +532,12 @@ export function createSigningProfileRequest(profileName, handleResponse, handleE
     request,
     CreateSigningProfileReply.deserializeBinary,
     handleResponse,
+    handleErr,
   );
-};
+}
 
 export function importSigningProfileRequest(profileName, privateKey, handleResponse, handleErr) {
-  var request = new ImportSigningProfileRequest();
+  const request = new ImportSigningProfileRequest();
   request.setProfileName(profileName);
   request.setPrivateKey(privateKey);
   makeRequest(
@@ -842,21 +545,9 @@ export function importSigningProfileRequest(profileName, privateKey, handleRespo
     request,
     ImportSigningProfileReply.deserializeBinary,
     handleResponse,
+    handleErr,
   );
-};
-
-// export function createPeerRequest(peerName, host, port, handleResponse) {
-//   var request = new CreatePeerRequest();
-//   request.setPeerName(peerName);
-//   request.setHost(host);
-//   request.setPort(port);
-//   client.createPeer(request, {}, (err, response) => {
-//     if (err) {
-//       return;
-//     }
-//     handleResponse(response);
-//   });
-// };
+}
 
 export function createPeerRequest(peerName, host, port, handleResponse) {
   var request = new CreatePeerRequest();
@@ -869,18 +560,7 @@ export function createPeerRequest(peerName, host, port, handleResponse) {
     CreatePeerReply.deserializeBinary,
     handleResponse,
   );
-};
-
-// export function deletePeerRequest(peerId, handleResponse) {
-//   var request = new DeletePeerRequest();
-//   request.setPeerId(peerId);
-//   client.deletePeer(request, {}, (err, response) => {
-//     if (err) {
-//       return;
-//     }
-//     handleResponse(response);
-//   });
-// };
+}
 
 export function deletePeerRequest(peerId, handleResponse) {
   var request = new DeletePeerRequest();
@@ -891,18 +571,7 @@ export function deletePeerRequest(peerId, handleResponse) {
     DeletePeerReply.deserializeBinary,
     handleResponse,
   );
-};
-
-// export function deleteProfileRequest(profileId, handleResponse) {
-//   var request = new DeleteSqueakProfileRequest();
-//   request.setProfileId(profileId);
-//   client.deleteSqueakProfile(request, {}, (err, response) => {
-//     if (err) {
-//       return;
-//     }
-//     handleResponse(response);
-//   });
-// };
+}
 
 export function deleteProfileRequest(profileId, handleResponse) {
   var request = new DeleteSqueakProfileRequest();
@@ -913,18 +582,7 @@ export function deleteProfileRequest(profileId, handleResponse) {
     DeleteSqueakProfileReply.deserializeBinary,
     handleResponse,
   );
-};
-
-// export function deleteSqueakRequest(squeakHash, handleResponse) {
-//   var request = new DeleteSqueakRequest();
-//   request.setSqueakHash(squeakHash);
-//   client.deleteSqueak(request, {}, (err, response) => {
-//     if (err) {
-//       return;
-//     }
-//     handleResponse(response);
-//   });
-// };
+}
 
 export function deleteSqueakRequest(squeakHash, handleResponse) {
   var request = new DeleteSqueakRequest();
@@ -935,17 +593,7 @@ export function deleteSqueakRequest(squeakHash, handleResponse) {
     DeleteSqueakReply.deserializeBinary,
     handleResponse,
   );
-};
-
-// export function lndNewAddressRequest(handleResponse) {
-//   var request = new NewAddressRequest();
-//   client.lndNewAddress(request, {}, (err, response) => {
-//     if (err) {
-//       return;
-//     }
-//     handleResponse(response);
-//   });
-// };
+}
 
 export function lndNewAddressRequest(handleResponse) {
   var request = new NewAddressRequest();
@@ -955,7 +603,7 @@ export function lndNewAddressRequest(handleResponse) {
     NewAddressResponse.deserializeBinary,
     handleResponse,
   );
-};
+}
 
 export function lndSendCoins(address, amount, satperbyte, sendall, handleResponse) {
   var request = new SendCoinsRequest();
@@ -969,7 +617,7 @@ export function lndSendCoins(address, amount, satperbyte, sendall, handleRespons
     SendCoinsResponse.deserializeBinary,
     handleResponse,
   );
-};
+}
 
 export function syncSqueakRequest(squeakHash, handleResponse) {
   var request = new SyncSqueakRequest();
@@ -980,7 +628,7 @@ export function syncSqueakRequest(squeakHash, handleResponse) {
     SyncSqueakReply.deserializeBinary,
     handleResponse,
   );
-};
+}
 
 export function getSqueakDetailsRequest(hash, handleResponse) {
   var request = new GetSqueakDetailsRequest();
@@ -991,7 +639,7 @@ export function getSqueakDetailsRequest(hash, handleResponse) {
     GetSqueakDetailsReply.deserializeBinary,
     handleResponse,
   );
-};
+}
 
 export function getSentPaymentsRequest(handleResponse) {
   var request = new GetSentPaymentsRequest();
@@ -1003,7 +651,7 @@ export function getSentPaymentsRequest(handleResponse) {
       handleResponse(response);
     }
   );
-};
+}
 
 // export function getSentOffersRequest(handleResponse) {
 //   var request = new GetSentOffersRequest();
@@ -1015,7 +663,7 @@ export function getSentPaymentsRequest(handleResponse) {
 //       handleResponse(response);
 //     }
 //   );
-// };
+// }
 
 export function getReceivedPaymentsRequest(handleResponse) {
   var request = new GetReceivedPaymentsRequest();
@@ -1025,7 +673,7 @@ export function getReceivedPaymentsRequest(handleResponse) {
     GetReceivedPaymentsReply.deserializeBinary,
     handleResponse,
   );
-};
+}
 
 export function getNetworkRequest(handleResponse) {
   var request = new GetNetworkRequest();
@@ -1037,7 +685,7 @@ export function getNetworkRequest(handleResponse) {
       handleResponse(response.getNetwork());
     }
   );
-};
+}
 
 export function getSqueakProfilePrivateKey(id, handleResponse) {
   var request = new GetSqueakProfilePrivateKeyRequest();
@@ -1048,4 +696,4 @@ export function getSqueakProfilePrivateKey(id, handleResponse) {
     GetSqueakProfilePrivateKeyReply.deserializeBinary,
     handleResponse,
   );
-};
+}
