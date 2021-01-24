@@ -34,6 +34,7 @@ import {
   makeSqueakRequest,
   getSigningProfilesRequest,
 } from "../../squeakclient/requests"
+import {navigateTo, PROFILE_VIEW, SQUEAK_VIEW} from "../../navigation/routes";
 
 
 export default function MakeSqueakDialog({
@@ -63,7 +64,7 @@ export default function MakeSqueakDialog({
   };
 
   const handleResponse = (response) => {
-    goToSqueakPage(response.getSqueakHash());
+    navigateTo(history, SQUEAK_VIEW, [response.getSqueakHash()]);
   };
 
   const handleErr = (err) => {
@@ -80,10 +81,6 @@ export default function MakeSqueakDialog({
   useEffect(() => {
     loadSigningProfiles()
   }, []);
-
-  const goToSqueakPage = (squeakHash) => {
-    history.push("/app/squeak/" + squeakHash);
-  };
 
   function handleSubmit(event) {
     event.preventDefault();

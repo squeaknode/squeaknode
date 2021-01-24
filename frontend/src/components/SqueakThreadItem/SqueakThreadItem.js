@@ -1,31 +1,19 @@
-import React, { useState } from "react";
+import React from "react";
 import {
-  Paper,
-  IconButton,
-  Menu,
-  MenuItem,
   Typography,
   Grid,
   Box,
   Link,
 } from "@material-ui/core";
-import { MoreVert as MoreIcon } from "@material-ui/icons";
 import {useHistory} from "react-router-dom";
-import classnames from "classnames";
-
 import LockIcon from '@material-ui/icons/Lock';
 import DownloadIcon from '@material-ui/icons/CloudDownload';
-
-// styles
-import useStyles from "./styles";
-
-import Widget from "../../components/Widget";
-
-import {
-  getBlockDetailUrl,
-} from "../../bitcoin/blockexplorer"
-
 import moment from 'moment';
+import {
+  getBlockDetailUrl
+} from "../../bitcoin/blockexplorer"
+import {navigateTo, PROFILE_VIEW, SQUEAK_ADDRESS_VIEW, SQUEAK_VIEW} from "../../navigation/routes";
+
 
 export default function SqueakThreadItem({
   hash,
@@ -33,21 +21,11 @@ export default function SqueakThreadItem({
   network,
   ...props
 }) {
-  var classes = useStyles();
-
   const history = useHistory();
 
   const blockDetailUrl = () => {
     // return "https://blockstream.info/testnet/block/" + squeak.getBlockHash();
     return getBlockDetailUrl(squeak.getBlockHash(), network);
-  };
-
-  const goToSqueakPage = (hash) => {
-    history.push("/app/squeak/" + hash);
-  };
-
-  const goToSqueakAddressPage = () => {
-    history.push("/app/squeakaddress/" + squeak.getAuthorAddress());
   };
 
   const onAddressClick = (event) => {
@@ -57,15 +35,13 @@ export default function SqueakThreadItem({
     if (!squeak) {
       return;
     }
-    goToSqueakAddressPage(squeak.getAuthorAddress());
+    navigateTo(history, SQUEAK_ADDRESS_VIEW, [squeak.getAuthorAddress()]);
   }
 
   const onSqueakClick = (event) => {
     event.preventDefault();
     console.log("Handling squeak click for hash: " + hash);
-    if (goToSqueakPage) {
-      goToSqueakPage(hash);
-    }
+    navigateTo(history, SQUEAK_VIEW, [hash]);
   }
 
   function SqueakUnlockedContent() {

@@ -49,10 +49,6 @@ export default function DeleteSqueakDialog({
     });
   };
 
-  const goToSqueakPage = (squeakHash) => {
-    history.push("/app/squeak/" + squeakHash);
-  };
-
   const reloadRoute = () => {
     history.go(0);
   };

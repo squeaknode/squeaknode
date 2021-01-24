@@ -26,6 +26,7 @@ import {
   setSqueakProfileFollowingRequest,
   setSqueakProfileSharingRequest,
 } from "../../squeakclient/requests"
+import {navigateTo, PROFILE_VIEW, SQUEAK_ADDRESS_VIEW} from "../../navigation/routes";
 
 
 export default function ProfilePage() {
@@ -49,11 +50,6 @@ export default function ProfilePage() {
       getSqueakProfile(id);
     })
   };
-
-  const goToSqueakAddressPage = (squeakAddress) => {
-    history.push("/app/squeakaddress/" + squeakAddress);
-  };
-
 
   useEffect(()=>{
     getSqueakProfile(id)
@@ -171,7 +167,7 @@ export default function ProfilePage() {
           <Button
             variant="contained"
             onClick={() => {
-              goToSqueakAddressPage(squeakProfile.getAddress());
+              navigateTo(history, SQUEAK_ADDRESS_VIEW, [squeakProfile.getAddress()]);
             }}>View Squeaks
           </Button>
         </div>

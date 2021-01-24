@@ -32,6 +32,7 @@ import SqueakThreadItem from "../../components/SqueakThreadItem";
 import {
   importSigningProfileRequest,
 } from "../../squeakclient/requests"
+import {navigateTo, PEER_VIEW, PROFILE_VIEW} from "../../navigation/routes";
 
 
 export default function ImportSigningProfileDialog({
@@ -58,15 +59,11 @@ export default function ImportSigningProfileDialog({
   };
 
   const handleResponse = (response) => {
-    goToProfilePage(response.getProfileId());
+    navigateTo(history, PROFILE_VIEW, [response.getProfileId()]);
   };
 
   const handleErr = (err) => {
     alert('Error creating contact profile: ' + err);
-  };
-
-  const goToProfilePage = (profileId) => {
-    history.push("/app/profile/" + profileId);
   };
 
   function handleSubmit(event) {

@@ -9,6 +9,7 @@ import CardHeader from "@material-ui/core/CardHeader";
 import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';
 
 import useStyles from "../../pages/wallet/styles";
+import {LIGHTNING_NODE_PORT_VIEW, navigateTo, SQUEAK_VIEW} from "../../navigation/routes";
 
 
 export default function LightningPeerListItem({
@@ -24,15 +25,12 @@ export default function LightningPeerListItem({
   const onPeerClick = (event) => {
     event.preventDefault();
     console.log("Handling peer click...");
-    goToLightningNodePage();
+    navigateTo(
+      history,
+      LIGHTNING_NODE_PORT_VIEW,
+      [peer.getPubKey(), getPeerHost(), getPeerPort()]
+    );
   }
-
-  const goToLightningNodePage = () => {
-    const pubkey = peer.getPubKey();
-    const host = getPeerHost();
-    const port = getPeerPort();
-    history.push("/app/lightningnode/" + pubkey + "/" + host + "/" + port);
-  };
 
   const getPeerHost = () => {
     const address = peer.getAddress();

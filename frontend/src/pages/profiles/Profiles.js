@@ -30,6 +30,7 @@ import {
   getSigningProfilesRequest,
   getContactProfilesRequest,
 } from "../../squeakclient/requests"
+import {navigateTo, PROFILE_VIEW} from "../../navigation/routes";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -66,10 +67,6 @@ export default function Profiles() {
   };
   const loadContactProfiles = () => {
     getContactProfilesRequest(setContactProfiles);
-  };
-
-  const goToProfilePage = (profileId) => {
-    history.push("/app/profile/" + profileId);
   };
 
   const handleClickOpenCreateSigningProfileDialog = () => {
@@ -256,7 +253,7 @@ export default function Profiles() {
                var id = rowData[0];
                var address = rowData[2];
                //goToSqueakAddressPage(address);
-               goToProfilePage(id);
+               navigateTo(history, PROFILE_VIEW, [id]);
              }
            }}/>
        </Grid>
@@ -271,7 +268,7 @@ export default function Profiles() {
         <CreateSigningProfileDialog
           open={createSigningProfileDialogOpen}
           handleClose={handleCloseCreateSigningProfileDialog}
-          ></CreateSigningProfileDialog>
+        />
       </>
     )
   }
@@ -282,7 +279,7 @@ export default function Profiles() {
         <ImportSigningProfileDialog
           open={importSigningProfileDialogOpen}
           handleClose={handleCloseImportSigningProfileDialog}
-          ></ImportSigningProfileDialog>
+        />
       </>
     )
   }
@@ -293,17 +290,18 @@ export default function Profiles() {
         <CreateContactProfileDialog
           open={createContactProfileDialogOpen}
           handleClose={handleCloseCreateContactProfileDialog}
-          ></CreateContactProfileDialog>
+         />
       </>
     )
   }
 
   return (
     <>
-     < PageTitle title = "Profiles" />
-    {ProfilesTabs()}
-    {CreateSigningProfileDialogContent()}
-    {ImportSigningProfileDialogContent()}
-    {CreateContactProfileDialogContent()}
-   < />);
+      < PageTitle title = "Profiles" />
+      {ProfilesTabs()}
+      {CreateSigningProfileDialogContent()}
+      {ImportSigningProfileDialogContent()}
+      {CreateContactProfileDialogContent()}
+    </>
+  )
 }

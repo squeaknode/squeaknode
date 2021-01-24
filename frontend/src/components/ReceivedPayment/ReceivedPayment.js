@@ -19,6 +19,7 @@ import useStyles from "./styles";
 import Widget from "../../components/Widget";
 
 import moment from 'moment';
+import {navigateTo, PROFILE_VIEW, SQUEAK_VIEW} from "../../navigation/routes";
 
 export default function ReceivedPayment({
   receivedPayment,
@@ -28,17 +29,11 @@ export default function ReceivedPayment({
 
   const history = useHistory();
 
-  const goToSqueakPage = (hash) => {
-    history.push("/app/squeak/" + hash);
-  };
-
   const onSqueakClick = (event) => {
     event.preventDefault();
     var hash = receivedPayment.getSqueakHash();
     console.log("Handling squeak click for hash: " + hash);
-    if (goToSqueakPage) {
-      goToSqueakPage(hash);
-    }
+    navigateTo(history, SQUEAK_VIEW, [hash]);
   }
 
   console.log("receivedPayment:");

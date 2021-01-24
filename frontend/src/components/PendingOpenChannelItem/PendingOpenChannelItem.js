@@ -8,6 +8,7 @@ import useStyles from "../../pages/wallet/styles";
 import moment from 'moment';
 import Card from "@material-ui/core/Card";
 import ChannelBalanceBar from "../ChannelItem/ChannelBalanceBar";
+import {CHANNEL_VIEW, navigateTo, PROFILE_VIEW} from "../../navigation/routes";
 
 export default function PendingOpenChannelItem({
   pendingOpenChannel,
@@ -48,17 +49,13 @@ export default function PendingOpenChannelItem({
     return pieces[1];
   }
 
-  const goToChannelPage = (txId, outputIndex) => {
-    history.push("/app/channel/" + txId + "/" + outputIndex);
-  };
-
   const onChannelClick = (event) => {
     event.preventDefault();
     console.log("Handling channel click...");
     var channel = pendingOpenChannel.getChannel();
     var txId = getTxId(channel);
     var outputIndex = getOutputIndex(channel);
-    goToChannelPage(txId, outputIndex);
+    navigateTo(history, CHANNEL_VIEW, [txId, outputIndex]);
   }
 
   function ChannelDetailItem(label, value) {

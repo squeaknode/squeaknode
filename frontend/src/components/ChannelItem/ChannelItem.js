@@ -9,6 +9,7 @@ import {useHistory} from "react-router-dom";
 import useStyles from "../../pages/wallet/styles";
 import moment from 'moment';
 import ChannelBalanceBar from "./ChannelBalanceBar";
+import {CHANNEL_VIEW, navigateTo} from "../../navigation/routes";
 
 
 export default function ChannelItem({
@@ -43,16 +44,12 @@ export default function ChannelItem({
       return pieces[1];
    }
 
-   const goToChannelPage = (txId, outputIndex) => {
-      history.push("/app/channel/" + txId + "/" + outputIndex);
-   };
-
    const onChannelClick = (event) => {
       event.preventDefault();
       console.log("Handling channel click...");
       var txId = getTxId(channel);
       var outputIndex = getOutputIndex(channel);
-      goToChannelPage(txId, outputIndex);
+      navigateTo(history, CHANNEL_VIEW, [txId, outputIndex]);
    }
 
    function ChannelDetailItem(label, value) {

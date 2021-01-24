@@ -25,6 +25,7 @@ import useStyles from "./styles";
 import Widget from "../../components/Widget";
 
 import moment from 'moment';
+import {LIGHTNING_NODE_PORT_VIEW, navigateTo} from "../../navigation/routes";
 
 export default function BuyOfferDetailItem({
   offer,
@@ -45,17 +46,6 @@ export default function BuyOfferDetailItem({
       handleOfferClick();
     }
   }
-
-  const goToLightningNodePage = (pubkey, host, port) => {
-      console.log("Go to lightning node for pubkey: " + pubkey);
-      if (pubkey && host && port) {
-        history.push("/app/lightningnode/" + pubkey + "/" + host + "/" + port);
-      } else if (pubkey && host) {
-        history.push("/app/lightningnode/" + pubkey + "/" + host);
-      } else {
-        history.push("/app/lightningnode/" + pubkey);
-      }
-  };
 
   const handleClickPayOffer = () => {
     console.log("Handle click pay offer.");
@@ -117,11 +107,11 @@ export default function BuyOfferDetailItem({
           >Node Pubkey:
           <Link href="#" onClick={() => {
             console.info("I'm a button.");
-            goToLightningNodePage(
-              offer.getNodePubkey(),
-              offer.getNodeHost(),
-              offer.getNodePort(),
-            )
+            navigateTo(
+              history,
+              LIGHTNING_NODE_PORT_VIEW,
+              [offer.getNodePubkey(), offer.getNodeHost(), offer.getNodePort()]
+            );
           }}>
             {offer.getNodePubkey()}
           </Link>

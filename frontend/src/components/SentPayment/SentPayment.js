@@ -22,6 +22,7 @@ import useStyles from "./styles";
 import Widget from "../../components/Widget";
 
 import moment from 'moment';
+import {LIGHTNING_NODE_PUBKEY_VIEW, navigateTo, PEER_VIEW, SQUEAK_VIEW} from "../../navigation/routes";
 
 export default function SentPayment({
   sentPayment,
@@ -35,50 +36,25 @@ export default function SentPayment({
   const peerId = sentPayment.getPeerId();
   const peerDisplay = peerName ? peerName : peerId;
 
-  const goToSqueakPage = (hash) => {
-    history.push("/app/squeak/" + hash);
-  };
-
-  const goToPeerPage = (id) => {
-    history.push("/app/Peer/" + id);
-  };
-
-  const goToLightningNodePage = (pubkey, host, port) => {
-      console.log("Go to lightning node for pubkey: " + pubkey);
-      if (pubkey && host && port) {
-        history.push("/app/lightningnode/" + pubkey + "/" + host + "/" + port);
-      } else if (pubkey && host) {
-        history.push("/app/lightningnode/" + pubkey + "/" + host);
-      } else {
-        history.push("/app/lightningnode/" + pubkey);
-      }
-  };
-
   const onSqueakClick = (event) => {
     event.preventDefault();
     var hash = sentPayment.getSqueakHash();
     console.log("Handling squeak click for hash: " + hash);
-    if (goToSqueakPage) {
-      goToSqueakPage(hash);
-    }
+    navigateTo(history, SQUEAK_VIEW, [hash]);
   }
 
   const onPeerClick = (event) => {
     event.preventDefault();
     var peerId = sentPayment.getPeerId();
     console.log("Handling peer click for peerId: " + peerId);
-    if (goToPeerPage) {
-      goToPeerPage(peerId);
-    }
+    navigateTo(history, PEER_VIEW, [peerId]);
   }
 
   const onLightningNodeClick = (event) => {
     event.preventDefault();
     var nodePubkey = sentPayment.getNodePubkey();
     console.log("Handling lightning node click for nodePubkey: " + nodePubkey);
-    if (goToLightningNodePage) {
-      goToLightningNodePage(nodePubkey);
-    }
+    navigateTo(history, LIGHTNING_NODE_PUBKEY_VIEW, [nodePubkey]);
   }
 
   console.log(sentPayment);

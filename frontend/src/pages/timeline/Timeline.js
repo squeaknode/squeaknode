@@ -55,10 +55,6 @@ export default function TimelinePage() {
       getNetworkRequest(setNetwork);
   };
 
-  const goToSqueakAddressPage = (squeakAddress) => {
-    history.push("/app/squeakaddress/" + squeakAddress);
-  };
-
   const handleClickOpen = () => {
     setOpen(true);
   };

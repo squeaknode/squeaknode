@@ -40,6 +40,7 @@ import {
 } from "../../bitcoin/blockexplorer"
 
 import moment from 'moment';
+import {navigateTo, BUY_VIEW, PROFILE_VIEW, SQUEAK_DETAIL_VIEW} from "../../navigation/routes";
 
 export default function SqueakDetailItem({
   hash,
@@ -72,18 +73,6 @@ export default function SqueakDetailItem({
      setDeleteDialogOpen(false);
   };
 
-  const goToSqueakAddressPage = () => {
-    history.push("/app/squeakaddress/" + squeak.getAuthorAddress());
-  };
-
-  const goToBuyPage = (hash) => {
-    history.push("/app/buy/" + hash);
-  };
-
-  const goToSqueakDetailPage = () => {
-    history.push("/app/squeakdetail/" + hash);
-  };
-
   const reloadRoute = () => {
     history.go(0);
   };
@@ -100,7 +89,7 @@ export default function SqueakDetailItem({
     if (!squeak) {
       return;
     }
-    goToSqueakAddressPage(squeak.getAuthorAddress());
+    navigateTo(history, PROFILE_VIEW, [squeak.getAuthorAddress()]);
   }
 
   const onReplyClick = (event) => {
@@ -128,7 +117,7 @@ export default function SqueakDetailItem({
       return;
     }
     //handleClickOpenDeleteDialog();
-    goToSqueakDetailPage();
+    navigateTo(history, SQUEAK_DETAIL_VIEW, [hash]);
   }
 
   const onUnlockClick = (event) => {
@@ -137,7 +126,7 @@ export default function SqueakDetailItem({
     if (!squeak) {
       return;
     }
-    goToBuyPage(squeak.getSqueakHash());
+    navigateTo(history, BUY_VIEW, [squeak.getSqueakHash()]);
   }
 
   const onDownloadClick = (event) => {

@@ -21,6 +21,7 @@ import {
   getAddressSqueakDisplaysRequest,
   getNetworkRequest,
 } from "../../squeakclient/requests"
+import {navigateTo, PROFILE_VIEW} from "../../navigation/routes";
 
 
 export default function SqueakAddressPage() {
@@ -40,10 +41,6 @@ export default function SqueakAddressPage() {
   };
   const getNetwork = () => {
       getNetworkRequest(setNetwork);
-  };
-
-  const goToProfilePage = (profileId) => {
-    history.push("/app/profile/" + profileId);
   };
 
   const handleClickOpenCreateContactProfileDialog = () => {
@@ -80,7 +77,7 @@ export default function SqueakAddressPage() {
       <div className={classes.root}>
         Profile:
         <Button variant="contained" onClick={() => {
-            goToProfilePage(squeakProfile.getProfileId());
+            navigateTo(history, PROFILE_VIEW, [squeakProfile.getProfileId()]);
           }}>{squeakProfile.getProfileName()}</Button>
       </div>
     )

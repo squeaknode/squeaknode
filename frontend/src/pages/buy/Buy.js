@@ -24,6 +24,7 @@ import {
   getBuyOffersRequest,
   syncSqueakRequest,
 } from "../../squeakclient/requests"
+import {BUY_VIEW, navigateTo, OFFER_VIEW, PROFILE_VIEW} from "../../navigation/routes";
 
 
 export default function BuyPage() {
@@ -34,11 +35,6 @@ export default function BuyPage() {
 
   const getOffers = (hash) => {
       getBuyOffersRequest(hash, setOffers);
-  };
-
-  const goToOfferPage = (offerId) => {
-    console.log("Go to offer page for id: " + offerId);
-    history.push("/app/offer/" + offerId);
   };
 
   const reloadRoute = () => {
@@ -80,7 +76,7 @@ export default function BuyPage() {
               >
             <BuyOfferItem
               key={offer.getOfferId()}
-              handleOfferClick={() => goToOfferPage(offer.getOfferId())}
+              handleOfferClick={() => navigateTo(history, OFFER_VIEW, [offer.getOfferId()])}
               offer={offer}>
             </BuyOfferItem>
             </Box>

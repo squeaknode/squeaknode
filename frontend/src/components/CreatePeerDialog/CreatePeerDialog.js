@@ -17,6 +17,7 @@ import {makeStyles} from '@material-ui/core/styles';
 import {
   createPeerRequest,
 } from "../../squeakclient/requests"
+import {navigateTo, PEER_VIEW} from "../../navigation/routes";
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -81,12 +82,8 @@ export default function CreatePeerDialog({
 
   const createPeer = (peerName, host, port) => {
     createPeerRequest(peerName, host, port, (response) => {
-      goToPeerPage(response.getPeerId());
+      navigateTo(history, PEER_VIEW, [response.getPeerId()]);
     });
-  };
-
-  const goToPeerPage = (peerId) => {
-    history.push("/app/peer/" + peerId);
   };
 
   function handleSubmit(event) {

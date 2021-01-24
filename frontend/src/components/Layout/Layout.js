@@ -6,6 +6,7 @@ import {
   withRouter,
 } from "react-router-dom";
 import classnames from "classnames";
+import routes from "../../navigation/routes"
 
 // styles
 import useStyles from "./styles";
@@ -14,35 +15,14 @@ import useStyles from "./styles";
 import Header from "../Header";
 import Sidebar from "../Sidebar";
 
-// pages
-import Timeline from "../../pages/timeline";
-import Dashboard from "../../pages/dashboard";
-import SqueakAddress from "../../pages/squeakaddress";
-import Squeak from "../../pages/squeak";
-import SqueakDetail from "../../pages/squeakdetail";
-import Buy from "../../pages/buy";
-import Offer from "../../pages/offer";
-import Profile from "../../pages/profile";
-import Wallet from "../../pages/wallet";
-import LightningNode from "../../pages/lightningnode";
-import Channel from "../../pages/channel";
-import Notifications from "../../pages/notifications";
-import Maps from "../../pages/maps";
-import Profiles from "../../pages/profiles";
-import Payments from "../../pages/payments";
-import Icons from "../../pages/icons";
-import Charts from "../../pages/charts";
-import Peers from "../../pages/peers";
-import Peer from "../../pages/peer";
-
 // context
 import { useLayoutState } from "../../context/LayoutContext";
 
 function Layout(props) {
-  var classes = useStyles();
+  const classes = useStyles();
 
   // global
-  var layoutState = useLayoutState();
+  const layoutState = useLayoutState();
 
   return (
     <div className={classes.root}>
@@ -56,32 +36,18 @@ function Layout(props) {
           >
             <div className={classes.fakeToolbar} />
             <Switch>
-              <Route path="/app/timeline" component={Timeline} />
-              <Route path="/app/dashboard" component={Dashboard} />
-              <Route path="/app/squeakaddress/:address" component={SqueakAddress} />
-              <Route path="/app/squeak/:hash" component={Squeak} />
-              <Route path="/app/squeakdetail/:hash" component={SqueakDetail} />
-              <Route path="/app/buy/:hash" component={Buy} />
-              <Route path="/app/offer/:id" component={Offer} />
-              <Route path="/app/profile/:id" component={Profile} />
-              <Route path="/app/profiles" component={Profiles} />
-              <Route path="/app/payments" component={Payments} />
-              <Route path="/app/wallet" component={Wallet} />
-              <Route path="/app/lightningnode/:pubkey/:host/:port" component={LightningNode} />
-              <Route path="/app/lightningnode/:pubkey/:host" component={LightningNode} />
-              <Route path="/app/lightningnode/:pubkey" component={LightningNode} />
-              <Route path="/app/channel/:txId/:outputIndex" component={Channel} />
-              <Route path="/app/peers" component={Peers} />
-              <Route path="/app/peer/:id" component={Peer} />
-              <Route path="/app/notifications" component={Notifications} />
-              <Route
-                exact
-                path="/app/ui"
-                render={() => <Redirect to="/app/ui/icons" />}
-              />
-              <Route path="/app/ui/maps" component={Maps} />
-              <Route path="/app/ui/icons" component={Icons} />
-              <Route path="/app/ui/charts" component={Charts} />
+              {routes.map(route => (
+                <Route
+                  key={route.path}
+                  path={route.path}
+                  exact={route.exact}
+                  render={props => (
+                   route.redirectPath
+                   ? <Redirect to={route.redirectPath} />
+                   : <route.component props={props} />
+                  )}
+                />
+              ))}
             </Switch>
           </div>
         </>
