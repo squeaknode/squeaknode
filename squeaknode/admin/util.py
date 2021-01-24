@@ -2,12 +2,13 @@ import logging
 
 from proto import squeak_admin_pb2
 from squeaknode.core.received_offer_with_peer import ReceivedOfferWithPeer
+from squeaknode.core.squeak_entry_with_profile import SqueakEntryWithProfile
 from squeaknode.core.util import get_hash
 
 logger = logging.getLogger(__name__)
 
 
-def squeak_entry_to_message(squeak_entry_with_profile):
+def squeak_entry_to_message(squeak_entry_with_profile: SqueakEntryWithProfile):
     if squeak_entry_with_profile is None:
         return None
     squeak_entry = squeak_entry_with_profile.squeak_entry
@@ -110,7 +111,7 @@ def sync_result_to_message(sync_result):
     )
 
 
-def squeak_entry_to_detail_message(squeak_entry_with_profile):
+def squeak_entry_to_detail_message(squeak_entry_with_profile: SqueakEntryWithProfile):
     if squeak_entry_with_profile is None:
         return None
     squeak_entry = squeak_entry_with_profile.squeak_entry

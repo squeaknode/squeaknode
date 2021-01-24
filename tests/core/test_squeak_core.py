@@ -35,7 +35,7 @@ class MockBitcoinClient(BlockchainClient):
     genesis_block_info = BlockInfo(
         block_height=0,
         block_hash=CoreMainParams.GENESIS_BLOCK.GetHash(),
-        block_header=CoreMainParams.GENESIS_BLOCK.serialize(),
+        block_header=CoreMainParams.GENESIS_BLOCK.get_header().serialize(),
     )
 
     def get_best_block_info(self) -> BlockInfo:

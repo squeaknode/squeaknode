@@ -9,6 +9,7 @@ from squeak.core.elliptic import payment_point_bytes_from_scalar_bytes
 from squeak.core.signing import CSigningKey
 
 from squeaknode.bitcoin.blockchain_client import BlockchainClient
+from squeaknode.bitcoin.util import parse_block_header
 from squeaknode.core.offer import Offer
 from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.received_payment import ReceivedPayment
@@ -69,9 +70,10 @@ class SqueakCore:
             timestamp,
             replyto_hash,
         )
+        block_header = parse_block_header(block_info.block_header)
         return SqueakEntry(
             squeak=squeak,
-            block_header=block_info.block_header,
+            block_header=block_header,
         )
 
     def validate_squeak(self, squeak: CSqueak) -> SqueakEntry:
@@ -91,9 +93,10 @@ class SqueakCore:
             squeak.nBlockHeight)
         if squeak.hashBlock != block_info.block_hash:
             raise Exception("Block hash incorrect.")
+        block_header = parse_block_header(block_info.block_header)
         return SqueakEntry(
             squeak=squeak,
-            block_header=block_info.block_header,
+            block_header=block_header,
         )
 
     def get_best_block_height(self) -> int:
