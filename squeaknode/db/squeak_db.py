@@ -849,7 +849,7 @@ class SqueakDb:
         #     offers = [self._parse_offer(row) for row in rows]
         #     return offers
 
-    def get_offers_with_peer(self, squeak_hash: bytes):
+    def get_offers_with_peer(self, squeak_hash: bytes) -> List[ReceivedOfferWithPeer]:
         """ Get offers with peer for a squeak hash. """
         s = (
             select([self.received_offers, self.peers])
@@ -880,7 +880,7 @@ class SqueakDb:
         #     offers_with_peer = [self._parse_offer_with_peer(row) for row in rows]
         #     return offers_with_peer
 
-    def get_offer_with_peer(self, received_offer_id):
+    def get_offer_with_peer(self, received_offer_id) -> Optional[ReceivedOfferWithPeer]:
         """ Get offer with peer for an offer id. """
         s = (
             select([self.received_offers, self.peers])
@@ -895,6 +895,8 @@ class SqueakDb:
         with self.get_connection() as connection:
             result = connection.execute(s)
             row = result.fetchone()
+            if row is None:
+                return None
             offer_with_peer = self._parse_offer_with_peer(row)
             return offer_with_peer
 
@@ -1193,11 +1195,12 @@ class SqueakDb:
             peer_id=row[self.peers.c.peer_id],
         )
 
-    def _parse_offer_with_peer(self, row):
-        if row is None:
-            return None
+    def _parse_offer_with_peer(self, row) -> ReceivedOfferWithPeer:
         offer = self._parse_offer(row)
-        peer = self._parse_squeak_peer(row)
+        if row[self.peers.c.peer_id] is None:
+            peer = None
+        else:
+            peer = self._parse_squeak_peer(row)
         return ReceivedOfferWithPeer(
             received_offer=offer,
             peer=peer,
