@@ -462,7 +462,7 @@ class SqueakDb:
             profile_id = res.inserted_primary_key[0]
             return profile_id
 
-    def get_signing_profiles(self):
+    def get_signing_profiles(self) -> List[SqueakProfile]:
         """ Get all signing profiles. """
         s = select([self.profiles]).where(self.profiles.c.private_key != None)  # noqa: E711
         with self.get_connection() as connection:
@@ -481,7 +481,7 @@ class SqueakDb:
         #     profiles = [self._parse_squeak_profile(row) for row in rows]
         #     return profiles
 
-    def get_contact_profiles(self):
+    def get_contact_profiles(self) -> List[SqueakProfile]:
         """ Get all contact profiles. """
         s = select([self.profiles]).where(self.profiles.c.private_key == None)  # noqa: E711
         with self.get_connection() as connection:
@@ -500,7 +500,7 @@ class SqueakDb:
         #     profiles = [self._parse_squeak_profile(row) for row in rows]
         #     return profiles
 
-    def get_following_profiles(self):
+    def get_following_profiles(self) -> List[SqueakProfile]:
         """ Get all following profiles. """
         s = select([self.profiles]).where(self.profiles.c.following)
         with self.get_connection() as connection:
@@ -509,7 +509,7 @@ class SqueakDb:
             profiles = [self._parse_squeak_profile(row) for row in rows]
             return profiles
 
-    def get_following_profiles_from_addreses(self, addresses):
+    def get_following_profiles_from_addreses(self, addresses) -> List[SqueakProfile]:
         """ Get all following profiles. """
         s = (
             select([self.profiles])
@@ -522,7 +522,7 @@ class SqueakDb:
             profiles = [self._parse_squeak_profile(row) for row in rows]
             return profiles
 
-    def get_sharing_profiles(self):
+    def get_sharing_profiles(self) -> List[SqueakProfile]:
         """ Get all sharing profiles. """
         s = select([self.profiles]).where(self.profiles.c.sharing)
         with self.get_connection() as connection:
@@ -541,13 +541,15 @@ class SqueakDb:
         #     profiles = [self._parse_squeak_profile(row) for row in rows]
         #     return profiles
 
-    def get_profile(self, profile_id):
+    def get_profile(self, profile_id) -> Optional[SqueakProfile]:
         """ Get a profile. """
         s = select([self.profiles]).where(
             self.profiles.c.profile_id == profile_id)
         with self.get_connection() as connection:
             result = connection.execute(s)
             row = result.fetchone()
+            if row is None:
+                return None
             return self._parse_squeak_profile(row)
 
         # sql = """
@@ -557,12 +559,14 @@ class SqueakDb:
         #     row = curs.fetchone()
         #     return self._parse_squeak_profile(row)
 
-    def get_profile_by_address(self, address):
+    def get_profile_by_address(self, address) -> Optional[SqueakProfile]:
         """ Get a profile by address. """
         s = select([self.profiles]).where(self.profiles.c.address == address)
         with self.get_connection() as connection:
             result = connection.execute(s)
             row = result.fetchone()
+            if row is None:
+                return None
             return self._parse_squeak_profile(row)
 
         # sql = """
@@ -574,12 +578,14 @@ class SqueakDb:
         #     row = curs.fetchone()
         #     return self._parse_squeak_profile(row)
 
-    def get_profile_by_name(self, name):
+    def get_profile_by_name(self, name) -> Optional[SqueakProfile]:
         """ Get a profile by name. """
         s = select([self.profiles]).where(self.profiles.c.profile_name == name)
         with self.get_connection() as connection:
             result = connection.execute(s)
             row = result.fetchone()
+            if row is None:
+                return None
             return self._parse_squeak_profile(row)
 
     def set_profile_following(self, profile_id, following):
@@ -1126,11 +1132,7 @@ class SqueakDb:
         )
         return SqueakEntry(squeak=squeak, block_header=block_header)
 
-    def _parse_squeak_profile(self, row):
-        if row is None:
-            return None
-        if row["profile_id"] is None:
-            return None
+    def _parse_squeak_profile(self, row) -> SqueakProfile:
         private_key_column = row["private_key"]
         private_key = bytes(private_key_column) if private_key_column else None
         return SqueakProfile(
