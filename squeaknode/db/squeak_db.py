@@ -865,20 +865,8 @@ class SqueakDb:
             result = connection.execute(s)
             rows = result.fetchall()
             offers_with_peer = [
-                self._parse_offer_with_peer(row) for row in rows]
+                self._parse_received_offer_with_peer(row) for row in rows]
             return offers_with_peer
-
-        # sql = """
-        # SELECT * FROM offer
-        # LEFT JOIN peer
-        # ON offer.peer_id=peer.peer_id
-        # WHERE squeak_hash=%s;
-        # """
-        # with self.get_cursor() as curs:
-        #     curs.execute(sql, (squeak_hash,))
-        #     rows = curs.fetchall()
-        #     offers_with_peer = [self._parse_offer_with_peer(row) for row in rows]
-        #     return offers_with_peer
 
     def get_offer_with_peer(self, received_offer_id) -> Optional[ReceivedOfferWithPeer]:
         """ Get offer with peer for an offer id. """
@@ -897,7 +885,7 @@ class SqueakDb:
             row = result.fetchone()
             if row is None:
                 return None
-            offer_with_peer = self._parse_offer_with_peer(row)
+            offer_with_peer = self._parse_received_offer_with_peer(row)
             return offer_with_peer
 
     def delete_expired_offers(self):
@@ -1195,7 +1183,7 @@ class SqueakDb:
             peer_id=row[self.peers.c.peer_id],
         )
 
-    def _parse_offer_with_peer(self, row) -> ReceivedOfferWithPeer:
+    def _parse_received_offer_with_peer(self, row) -> ReceivedOfferWithPeer:
         offer = self._parse_offer(row)
         if row[self.peers.c.peer_id] is None:
             peer = None
