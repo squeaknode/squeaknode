@@ -632,6 +632,16 @@ class SqueakDb:
         # with self.get_cursor() as curs:
         #     curs.execute(sql, (sharing, profile_id,))
 
+    def set_profile_name(self, profile_id: int, profile_name: str):
+        """ Set a profile name. """
+        stmt = (
+            self.profiles.update()
+            .where(self.profiles.c.profile_id == profile_id)
+            .values(profile_name=profile_name)
+        )
+        with self.get_connection() as connection:
+            connection.execute(stmt)
+
     def delete_profile(self, profile_id: int):
         """ Delete a profile. """
         delete_profile_stmt = self.profiles.delete().where(

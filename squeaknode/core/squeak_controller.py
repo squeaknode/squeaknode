@@ -181,6 +181,9 @@ class SqueakController:
     def set_squeak_profile_sharing(self, profile_id: int, sharing: bool):
         self.squeak_db.set_profile_sharing(profile_id, sharing)
 
+    def rename_squeak_profile(self, profile_id: int, profile_name: str):
+        self.squeak_db.set_profile_name(profile_id, profile_name)
+
     def delete_squeak_profile(self, profile_id: int):
         self.squeak_db.delete_profile(profile_id)
 
