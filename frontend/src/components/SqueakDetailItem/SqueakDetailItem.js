@@ -31,6 +31,7 @@ import Widget from "../../components/Widget";
 import MakeSqueakDialog from "../../components/MakeSqueakDialog";
 import DeleteSqueakDialog from "../../components/DeleteSqueakDialog";
 import BuySqueakDialog from "../../components/BuySqueakDialog";
+import SqueakDetailsDialog from "../../components/SqueakDetailsDialog";
 
 
 import {
@@ -57,6 +58,7 @@ export default function SqueakDetailItem({
   const [replyDialogOpen, setReplyDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [buyDialogOpen, setBuyDialogOpen] = useState(false);
+  const [viewDetailsDialogOpen, setViewDetailsDialogOpen] = useState(false);
 
   const handleClickOpen = () => {
     setReplyDialogOpen(true);
@@ -81,6 +83,14 @@ export default function SqueakDetailItem({
 
   const handleCloseBuyDialog = () => {
     setBuyDialogOpen(false);
+  };
+
+  const handleClickOpenViewDetailsDialog = () => {
+    setViewDetailsDialogOpen(true);
+  };
+
+  const handleCloseViewDetailsDialog = () => {
+    setViewDetailsDialogOpen(false);
   };
 
   const goToSqueakAddressPage = () => {
@@ -139,7 +149,8 @@ export default function SqueakDetailItem({
       return;
     }
     //handleClickOpenDeleteDialog();
-    goToSqueakDetailPage();
+    // goToSqueakDetailPage();
+    handleClickOpenViewDetailsDialog();
   }
 
   const onUnlockClick = (event) => {
@@ -307,6 +318,19 @@ export default function SqueakDetailItem({
     )
   }
 
+  function ViewDetailsDialogContent() {
+    return (
+      <>
+        <SqueakDetailsDialog
+          open={viewDetailsDialogOpen}
+          handleClose={handleCloseViewDetailsDialog}
+          hash={hash}
+          squeak={squeak}
+          ></SqueakDetailsDialog>
+      </>
+    )
+  }
+
   return (
     <>
     <Box
@@ -399,6 +423,7 @@ export default function SqueakDetailItem({
     {MakeSqueakDialogContent()}
     {DeleteSqueakDialogContent()}
     {BuyDialogContent()}
+    {ViewDetailsDialogContent()}
     </>
   )
 }
