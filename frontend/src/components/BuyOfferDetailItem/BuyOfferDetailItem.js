@@ -95,7 +95,7 @@ export default function BuyOfferDetailItem({
         <Typography
           size="md"
           >
-            Expires: {moment(expireTime*1000).fromNow()} ({expireTime})
+            Expires: {moment(expireTime*1000).fromNow()}
           </Typography>
       </Box>
     )
@@ -114,9 +114,7 @@ export default function BuyOfferDetailItem({
         </Typography>
         <Typography
           size="md"
-          >Node Pubkey:
-          <Link href="#" onClick={() => {
-            console.info("I'm a button.");
+          >Node Pubkey: <Link href="#" onClick={() => {
             goToLightningNodePage(
               offer.getNodePubkey(),
               offer.getNodeHost(),
