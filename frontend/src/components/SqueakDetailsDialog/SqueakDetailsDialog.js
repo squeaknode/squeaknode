@@ -100,7 +100,7 @@ export default function SqueakDetailsDialog({
                   <TextField
                     id="standard-textarea"
                     placeholder="Placeholder"
-                    value={squeakDetails.getSqueakDetailEntry().getSerializedSqueakHex()}
+                    value={squeakDetails.getSerializedSqueakHex()}
                     fullWidth="true"
                     variant="outlined"
                     multiline
@@ -115,12 +115,13 @@ export default function SqueakDetailsDialog({
     )
   }
 
+console.log("squeak: " + squeak + ", and squeakDetails: " + squeakDetails);
   return (
     <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
   <DialogTitle id="form-dialog-title">View Squeak Details</DialogTitle>
   <form className={classes.root} noValidate autoComplete="off">
   <DialogContent>
-    {squeak && squeakDetails &&
+    {(squeak && squeakDetails) &&
       SqueakDetailsContent()
     }
   </DialogContent>
