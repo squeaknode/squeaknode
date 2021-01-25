@@ -686,20 +686,17 @@ message SentPayment {
     /// The payment hash
     string payment_hash = 5;
 
-    /// The secret key
-    string secret_key = 6;
-
     /// The price_msat
-    int64 price_msat = 7;
+    int64 price_msat = 6;
 
     /// The seller node pubkey
-    string node_pubkey = 8;
+    string node_pubkey = 7;
 
     /// Does the payment unlock a valid key
-    bool valid = 9;
+    bool valid = 8;
 
     /// Time of payment
-    int64 time_s = 10;
+    int64 time_s = 9;
 }
 
 message SyncSqueakRequest {
@@ -756,14 +753,8 @@ message SentOffer {
     /// The payment hash
     string payment_hash = 3;
 
-    /// The secret key
-    string secret_key = 4;
-
-    /// The nonce
-    string nonce = 5;
-
     /// The price_msat
-    int64 price_msat = 6;
+    int64 price_msat = 4;
 }
 
 message GetReceivedPaymentsRequest {
