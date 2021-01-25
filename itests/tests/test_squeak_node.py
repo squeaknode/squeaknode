@@ -523,6 +523,24 @@ def test_set_profile_sharing(server_stub, admin_stub, contact_profile_id):
     assert get_squeak_profile_response.squeak_profile.sharing
 
 
+def test_rename_profile(server_stub, admin_stub, contact_profile_id, random_name):
+    # Rename the profile to something new
+    admin_stub.RenameSqueakProfile(
+        squeak_admin_pb2.RenameSqueakProfileRequest(
+            profile_id=contact_profile_id,
+            profile_name=random_name,
+        )
+    )
+
+    # Get the squeak profile
+    get_squeak_profile_response = admin_stub.GetSqueakProfile(
+        squeak_admin_pb2.GetSqueakProfileRequest(
+            profile_id=contact_profile_id,
+        )
+    )
+    assert get_squeak_profile_response.squeak_profile.profile_name == random_name
+
+
 def test_delete_profile(server_stub, admin_stub, contact_profile_id):
     # Delete the profile
     admin_stub.DeleteSqueakProfile(

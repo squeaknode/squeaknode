@@ -91,6 +91,9 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
     def SetSqueakProfileSharing(self, request, context):
         return self.handler.handle_set_squeak_profile_sharing(request)
 
+    def RenameSqueakProfile(self, request, context):
+        return self.handler.handle_rename_squeak_profile(request)
+
     def DeleteSqueakProfile(self, request, context):
         return self.handler.handle_delete_squeak_profile(request)
 

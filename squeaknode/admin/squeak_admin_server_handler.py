@@ -195,6 +195,18 @@ class SqueakAdminServerHandler(object):
         self.squeak_controller.set_squeak_profile_sharing(profile_id, sharing)
         return squeak_admin_pb2.SetSqueakProfileSharingReply()
 
+    def handle_rename_squeak_profile(self, request):
+        profile_id = request.profile_id
+        profile_name = request.profile_name
+        logger.info(
+            "Handle rename squeak profile with profile id: {}, new name: {}".format(
+                profile_id,
+                profile_name,
+            )
+        )
+        self.squeak_controller.rename_squeak_profile(profile_id, profile_name)
+        return squeak_admin_pb2.RenameSqueakProfileReply()
+
     def handle_delete_squeak_profile(self, request):
         profile_id = request.profile_id
         logger.info(

@@ -104,6 +104,10 @@ service SqueakAdmin {
   */
   rpc SetSqueakProfileSharing (SetSqueakProfileSharingRequest) returns (SetSqueakProfileSharingReply) {}
 
+  /** sqkadmin: `renamesqueakprofile`
+  */
+  rpc RenameSqueakProfile (RenameSqueakProfileRequest) returns (RenameSqueakProfileReply) {}
+
   /** sqkadmin: `getsqueakprofileprivatekey`
   */
   rpc GetSqueakProfilePrivateKey (GetSqueakProfilePrivateKeyRequest) returns (GetSqueakProfilePrivateKeyReply) {}
@@ -316,6 +320,17 @@ message SetSqueakProfileSharingRequest {
 }
 
 message SetSqueakProfileSharingReply {
+}
+
+message RenameSqueakProfileRequest {
+    /// The profile id
+    int32 profile_id = 1;
+
+    /// The new profile name
+    string profile_name = 2;
+}
+
+message RenameSqueakProfileReply {
 }
 
 message GetSqueakProfilePrivateKeyRequest {

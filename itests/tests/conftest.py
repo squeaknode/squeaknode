@@ -138,3 +138,8 @@ def peer_id(server_stub, admin_stub):
     )
     peer_id = create_peer_response.peer_id
     yield peer_id
+
+
+@pytest.fixture
+def random_name():
+    yield "random_name_{}".format(uuid.uuid1())
