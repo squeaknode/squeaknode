@@ -164,6 +164,10 @@ service SqueakAdmin {
   */
   rpc SetPeerUploading (SetPeerUploadingRequest) returns (SetPeerUploadingReply) {}
 
+  /** sqkadmin: `renamepeer`
+  */
+  rpc RenamePeer (RenamePeerRequest) returns (RenamePeerReply) {}
+
   /** sqkadmin: `deletepeer`
   */
   rpc DeletePeer (DeletePeerRequest) returns (DeletePeerReply) {}
@@ -552,6 +556,17 @@ message SetPeerUploadingRequest {
 }
 
 message SetPeerUploadingReply {
+}
+
+message RenamePeerRequest {
+    /// The peer id
+    int32 peer_id = 1;
+
+    /// Name of the peer
+    string peer_name = 2;
+}
+
+message RenamePeerReply {
 }
 
 message DeletePeerRequest {

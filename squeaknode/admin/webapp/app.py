@@ -289,6 +289,14 @@ def create_app(handler, username, password):
             handler.handle_set_squeak_peer_uploading,
         )
 
+    @app.route("/renamepeer", methods=["POST"])
+    @login_required
+    def renamepeer():
+        return handle_request(
+            squeak_admin_pb2.RenamePeerRequest(),
+            handler.handle_rename_squeak_peer,
+        )
+
     @app.route("/getsigningprofiles", methods=["POST"])
     @login_required
     def getsigningprofiles():
