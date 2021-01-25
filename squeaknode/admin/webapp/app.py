@@ -225,6 +225,14 @@ def create_app(handler, username, password):
             handler.handle_set_squeak_profile_sharing,
         )
 
+    @app.route("/renamesqueakprofile", methods=["POST"])
+    @login_required
+    def renamesqueakprofile():
+        return handle_request(
+            squeak_admin_pb2.RenameSqueakProfileRequest(),
+            handler.handle_rename_squeak_profile,
+        )
+
     @app.route("/getpeers", methods=["POST"])
     @login_required
     def getpeers():
