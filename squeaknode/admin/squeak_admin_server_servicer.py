@@ -141,6 +141,9 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
     def SetPeerUploading(self, request, context):
         return self.handler.handle_set_squeak_peer_uploading(request)
 
+    def RenamePeer(self, request, context):
+        return self.handler.handle_rename_squeak_peer(request)
+
     def DeletePeer(self, request, context):
         return self.handler.handle_delete_squeak_peer(request)
 

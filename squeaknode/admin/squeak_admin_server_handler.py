@@ -411,6 +411,18 @@ class SqueakAdminServerHandler(object):
         self.squeak_controller.set_peer_downloading(peer_id, downloading)
         return squeak_admin_pb2.SetPeerDownloadingReply()
 
+    def handle_rename_squeak_peer(self, request):
+        peer_id = request.peer_id
+        peer_name = request.peer_name
+        logger.info(
+            "Handle rename peer with peer id: {}, new name: {}".format(
+                peer_id,
+                peer_name,
+            )
+        )
+        self.squeak_controller.rename_peer(peer_id, peer_name)
+        return squeak_admin_pb2.RenamePeerReply()
+
     def handle_set_squeak_peer_uploading(self, request):
         peer_id = request.peer_id
         uploading = request.uploading

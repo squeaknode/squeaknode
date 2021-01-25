@@ -793,6 +793,16 @@ class SqueakDb:
         with self.get_connection() as connection:
             connection.execute(stmt)
 
+    def set_peer_name(self, peer_id: int, peer_name: str):
+        """ Set a peer name. """
+        stmt = (
+            self.peers.update()
+            .where(self.peers.c.peer_id == peer_id)
+            .values(peer_name=peer_name)
+        )
+        with self.get_connection() as connection:
+            connection.execute(stmt)
+
     def delete_peer(self, peer_id: int):
         """ Delete a peer. """
         delete_peer_stmt = self.peers.delete().where(self.peers.c.peer_id == peer_id)

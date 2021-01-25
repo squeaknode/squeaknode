@@ -689,6 +689,24 @@ def test_set_peer_uploading(server_stub, admin_stub, peer_id):
     assert get_peer_response.squeak_peer.uploading
 
 
+def test_rename_peer(server_stub, admin_stub, peer_id, random_name):
+    # Rename the peer
+    admin_stub.RenamePeer(
+        squeak_admin_pb2.RenamePeerRequest(
+            peer_id=peer_id,
+            peer_name=random_name,
+        )
+    )
+
+    # Get the peer again
+    get_peer_response = admin_stub.GetPeer(
+        squeak_admin_pb2.GetPeerRequest(
+            peer_id=peer_id,
+        )
+    )
+    assert get_peer_response.squeak_peer.peer_name == random_name
+
+
 def test_delete_peer(server_stub, admin_stub, peer_id):
     # Delete the peer
     admin_stub.DeletePeer(

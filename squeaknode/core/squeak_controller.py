@@ -240,6 +240,9 @@ class SqueakController:
     def set_peer_uploading(self, peer_id: int, uploading: bool):
         self.squeak_db.set_peer_uploading(peer_id, uploading)
 
+    def rename_peer(self, peer_id: int, peer_name: str):
+        self.squeak_db.set_peer_name(peer_id, peer_name)
+
     def delete_peer(self, peer_id: int):
         self.squeak_db.delete_peer(peer_id)
 
