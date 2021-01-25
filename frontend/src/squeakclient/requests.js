@@ -637,7 +637,9 @@ export function getSqueakDetailsRequest(hash, handleResponse) {
     'getsqueakdetails',
     request,
     GetSqueakDetailsReply.deserializeBinary,
-    handleResponse,
+    (response) => {
+      handleResponse(response.getSqueakDetailEntry());
+    }
   );
 }
 
