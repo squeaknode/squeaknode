@@ -19,7 +19,6 @@ import Timeline from "../../pages/timeline";
 import Dashboard from "../../pages/dashboard";
 import SqueakAddress from "../../pages/squeakaddress";
 import Squeak from "../../pages/squeak";
-import Offer from "../../pages/offer";
 import Profile from "../../pages/profile";
 import Wallet from "../../pages/wallet";
 import LightningNode from "../../pages/lightningnode";
@@ -58,7 +57,6 @@ function Layout(props) {
               <Route path="/app/dashboard" component={Dashboard} />
               <Route path="/app/squeakaddress/:address" component={SqueakAddress} />
               <Route path="/app/squeak/:hash" component={Squeak} />
-              <Route path="/app/offer/:id" component={Offer} />
               <Route path="/app/profile/:id" component={Profile} />
               <Route path="/app/profiles" component={Profiles} />
               <Route path="/app/payments" component={Payments} />
