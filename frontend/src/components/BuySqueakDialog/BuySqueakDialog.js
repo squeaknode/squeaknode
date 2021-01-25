@@ -95,6 +95,17 @@ export default function BuySqueakDialog({
     payOfferRequest(offerId, handlePayResponse, handlePayErr);
   };
 
+  const onDownloadClick = (event) => {
+    event.preventDefault();
+    console.log("Handling download click...");
+    console.log("syncSqueakRequest with hash: " + hash);
+    syncSqueakRequest(hash, (response) => {
+      console.log("response:");
+      console.log(response);
+      reloadRoute();
+    });
+  }
+
   const reloadRoute = () => {
     history.go(0);
   };
@@ -141,6 +152,16 @@ export default function BuySqueakDialog({
           )}
         </Select>
       </FormControl>
+    )
+  }
+
+  function LoadOffersButton() {
+    return (
+      <Button
+        variant="contained"
+        onClick={onDownloadClick}
+        >Load offers
+      </Button>
     )
   }
 
@@ -192,7 +213,7 @@ export default function BuySqueakDialog({
   <DialogTitle id="form-dialog-title">Buy Squeak</DialogTitle>
   <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
   <DialogContent>
-    {MakeSelectSigningProfile()}
+    {MakeSelectSigningProfile()} {LoadOffersButton()}
     {MakeSqueakContentInput()}
   </DialogContent>
   <DialogActions>
