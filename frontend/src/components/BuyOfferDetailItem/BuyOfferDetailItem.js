@@ -126,11 +126,6 @@ export default function BuyOfferDetailItem({
             {offer.getNodePubkey()}
           </Link>
         </Typography>
-
-        <Typography size="md">
-        {PayOfferButton()}
-        </Typography>
-
       </Box>
     )
   }
