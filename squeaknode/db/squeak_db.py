@@ -23,6 +23,7 @@ from squeaknode.core.received_payment import ReceivedPayment
 from squeaknode.core.received_payment_summary import ReceivedPaymentSummary
 from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.sent_payment import SentPayment
+from squeaknode.core.sent_payment_summary import SentPaymentSummary
 from squeaknode.core.sent_payment_with_peer import SentPaymentWithPeer
 from squeaknode.core.squeak_entry import SqueakEntry
 from squeaknode.core.squeak_entry_with_profile import SqueakEntryWithProfile
@@ -1104,7 +1105,7 @@ class SqueakDb:
                 yield received_payment
 
     def get_received_payment_summary(self) -> ReceivedPaymentSummary:
-        """ Get payment summary. """
+        """ Get received payment summary. """
         s = select([
             func.count().label("num_payments_received"),
             func.sum(self.received_payments.c.price_msat).label(
@@ -1113,8 +1114,22 @@ class SqueakDb:
         with self.get_connection() as connection:
             result = connection.execute(s)
             row = result.fetchone()
-            received_payment_summary = self._parse_payment_summary(row)
+            received_payment_summary = self._parse_received_payment_summary(
+                row)
             return received_payment_summary
+
+    def get_sent_payment_summary(self) -> SentPaymentSummary:
+        """ Get sent payment summary. """
+        s = select([
+            func.count().label("num_payments_sent"),
+            func.sum(self.sent_payments.c.price_msat).label(
+                "total_amount_sent_msat"),
+        ]).select_from(self.sent_payments)
+        with self.get_connection() as connection:
+            result = connection.execute(s)
+            row = result.fetchone()
+            sent_payment_summary = self._parse_sent_payment_summary(row)
+            return sent_payment_summary
 
     def _parse_squeak_entry(self, row) -> SqueakEntry:
         secret_key_column = row["secret_key"]
@@ -1242,11 +1257,17 @@ class SqueakDb:
             client_addr=row["client_addr"],
         )
 
-    def _parse_payment_summary(self, row) -> ReceivedPaymentSummary:
+    def _parse_received_payment_summary(self, row) -> ReceivedPaymentSummary:
         return ReceivedPaymentSummary(
             num_received_payments=row["num_payments_received"],
             num_sent_payments=0,
             total_amount_received_msat=row["total_amount_received_msat"],
             # total_amount_received_msat=0,
             total_amount_sent_msat=0,
+        )
+
+    def _parse_sent_payment_summary(self, row) -> SentPaymentSummary:
+        return SentPaymentSummary(
+            num_sent_payments=row["num_payments_sent"],
+            total_amount_sent_msat=row["total_amount_sent_msat"],
         )

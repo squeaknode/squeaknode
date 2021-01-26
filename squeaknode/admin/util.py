@@ -3,6 +3,7 @@ import logging
 from proto import squeak_admin_pb2
 from squeaknode.core.received_offer_with_peer import ReceivedOfferWithPeer
 from squeaknode.core.received_payment_summary import ReceivedPaymentSummary
+from squeaknode.core.sent_payment_summary import SentPaymentSummary
 from squeaknode.core.squeak_entry_with_profile import SqueakEntryWithProfile
 from squeaknode.core.util import get_hash
 
@@ -155,10 +156,13 @@ def received_payments_to_message(received_payment):
     )
 
 
-def payment_summary_to_message(payment_summary: ReceivedPaymentSummary):
+def payment_summary_to_message(
+        received_payment_summary: ReceivedPaymentSummary,
+        sent_payment_summary: SentPaymentSummary,
+):
     return squeak_admin_pb2.PaymentSummary(
-        num_received_payments=payment_summary.num_received_payments,
-        num_sent_payments=payment_summary.num_sent_payments,
-        amount_earned_msat=payment_summary.total_amount_received_msat,
-        amount_spent_msat=payment_summary.total_amount_sent_msat,
+        num_received_payments=received_payment_summary.num_received_payments,
+        num_sent_payments=sent_payment_summary.num_sent_payments,
+        amount_earned_msat=received_payment_summary.total_amount_received_msat,
+        amount_spent_msat=sent_payment_summary.total_amount_sent_msat,
     )
