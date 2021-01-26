@@ -11,6 +11,7 @@ import {
     Typography,
   } from "@material-ui/core";
 import MUIDataTable from "mui-datatables";
+import FormLabel from "@material-ui/core/FormLabel";
 
 // styles
 import {makeStyles} from '@material-ui/core/styles';
@@ -29,6 +30,7 @@ import mock from "../dashboard/mock";
 import {
   getSentPaymentsRequest,
   getReceivedPaymentsRequest,
+  getPaymentSummaryRequest
 } from "../../squeakclient/requests"
 
 const useStyles = makeStyles((theme) => ({
@@ -42,6 +44,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Payments() {
   const classes = useStyles();
   const [value, setValue] = useState(0);
+  const [paymentSummary, setPaymentSummary] = useState(null);
   const [sentPayments, setSentPayments] = useState([]);
   const [receivedPayments, setReceivedPayments] = useState([]);
   const history = useHistory();
@@ -69,12 +72,70 @@ export default function Payments() {
     });
   };
 
+  const loadPaymentSummary = () => {
+    getPaymentSummaryRequest((paymentsSummaryReply) => {
+      setPaymentSummary(paymentsSummaryReply.getPaymentSummary());
+    });
+  };
+
   useEffect(() => {
-    loadSentPayments()
+    loadSentPayments();
   }, []);
   useEffect(() => {
-    loadReceivedPayments()
+    loadReceivedPayments();
   }, []);
+  useEffect(() => {
+    loadPaymentSummary();
+  }, []);
+
+  function PaymentSummaryContent() {
+    return (
+      <>
+      <Grid container spacing={4}>
+      <Grid item xs={6}>
+        <Widget disableWidgetMenu>
+        <Grid item>
+          <FormLabel>
+            Total amount spent
+          </FormLabel>
+          <Typography size="md">
+            {paymentSummary.getAmountSpentMsat() / 1000} sats
+          </Typography>
+        </Grid>
+        <Grid item>
+          <FormLabel>
+            Number of sent payments
+          </FormLabel>
+          <Typography size="md">
+            {paymentSummary.getNumSentPayments()}
+          </Typography>
+        </Grid>
+        </Widget>
+      </Grid>
+        <Grid item xs={6}>
+          <Widget disableWidgetMenu>
+          <Grid item>
+            <FormLabel>
+              Total amount earned
+            </FormLabel>
+            <Typography size="md">
+              {paymentSummary.getAmountEarnedMsat() / 1000} sats
+            </Typography>
+          </Grid>
+          <Grid item>
+            <FormLabel>
+              Number of received payments
+            </FormLabel>
+            <Typography size="md">
+              {paymentSummary.getNumReceivedPayments()}
+            </Typography>
+          </Grid>
+          </Widget>
+        </Grid>
+      </Grid>
+      </>
+    )
+  }
 
 
   function TabPanel(props) {
@@ -167,6 +228,7 @@ export default function Payments() {
   return (
     <>
      < PageTitle title = "Payments" />
-    {PaymentsTabs()}
+     {paymentSummary && PaymentSummaryContent()}
+     {PaymentsTabs()}
    < />);
 }

@@ -92,6 +92,8 @@ import {
   GetNetworkReply,
   GetSqueakProfilePrivateKeyRequest,
   GetSqueakProfilePrivateKeyReply,
+  GetPaymentSummaryRequest,
+  GetPaymentSummaryReply,
 } from "../proto/squeak_admin_pb"
 
 console.log('The value of REACT_APP_SERVER_PORT is:', process.env.REACT_APP_SERVER_PORT);
@@ -696,6 +698,16 @@ export function getSqueakProfilePrivateKey(id, handleResponse) {
     'getsqueakprofileprivatekey',
     request,
     GetSqueakProfilePrivateKeyReply.deserializeBinary,
+    handleResponse,
+  );
+}
+
+export function getPaymentSummaryRequest(handleResponse) {
+  var request = new GetPaymentSummaryRequest();
+  makeRequest(
+    'getpaymentsummary',
+    request,
+    GetPaymentSummaryReply.deserializeBinary,
     handleResponse,
   );
 }
