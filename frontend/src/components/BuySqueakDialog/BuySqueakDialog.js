@@ -128,7 +128,7 @@ export default function BuySqueakDialog({
     event.preventDefault();
     console.log( 'selectedOfferId:', selectedOfferId);
     if (selectedOfferId == -1) {
-      alert('Selected Offer Id must be selected.');
+      alert('Offer must be selected.');
       return;
     }
     pay(selectedOfferId);
