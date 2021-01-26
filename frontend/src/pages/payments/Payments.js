@@ -91,8 +91,8 @@ export default function Payments() {
   function PaymentSummaryContent() {
     return (
       <>
-      <Grid container spacing={4}>
-      <Grid item xs={6}>
+      <Grid container spacing={2}>
+      <Grid item xs={4}>
         <Widget disableWidgetMenu>
         <Grid item>
           <FormLabel>
@@ -112,7 +112,7 @@ export default function Payments() {
         </Grid>
         </Widget>
       </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={4}>
           <Widget disableWidgetMenu>
           <Grid item>
             <FormLabel>
