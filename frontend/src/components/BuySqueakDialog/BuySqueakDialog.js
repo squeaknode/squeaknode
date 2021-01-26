@@ -147,7 +147,7 @@ export default function BuySqueakDialog({
         >
           {offers.map(offer =>
             <MenuItem key={offer.getOfferId()} value={offer.getOfferId()}>
-              {offer.getPeer().getPeerName()} ({offer.getPriceMsat()} msats)
+              {offer.getPeer().getPeerName()} ({offer.getPriceMsat() / 1000} sats)
             </MenuItem>
           )}
         </Select>
