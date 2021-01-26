@@ -1095,6 +1095,17 @@ def test_connect_other_node(
             assert payment.received_payment_id == 1
             break
 
+        # Get the payment summary from the seller node
+        get_payment_summary_response = admin_stub.GetPaymentSummary(
+            squeak_admin_pb2.GetPaymentSummaryRequest(),
+        )
+        print(
+            "get_payment_summary_response: {}".format(
+                get_payment_summary_response)
+        )
+        assert get_payment_summary_response.payment_summary.num_received_payments > 0
+        assert get_payment_summary_response.payment_summary.amount_earned_msat > 0
+
 
 def test_download_single_squeak(
     server_stub,

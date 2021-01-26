@@ -412,3 +412,6 @@ class SqueakController:
     def get_sharing_addresses(self):
         sharing_profiles = self.squeak_db.get_sharing_profiles()
         return [profile.address for profile in sharing_profiles]
+
+    def get_payment_summary(self):
+        return self.squeak_db.get_payment_summary()

@@ -3,6 +3,7 @@ import sys
 
 from proto import squeak_admin_pb2
 from squeaknode.admin.util import offer_entry_to_message
+from squeaknode.admin.util import payment_summary_to_message
 from squeaknode.admin.util import received_payments_to_message
 from squeaknode.admin.util import sent_offer_to_message
 from squeaknode.admin.util import sent_payment_with_peer_to_message
@@ -565,4 +566,12 @@ class SqueakAdminServerHandler(object):
         network = self.squeak_controller.get_network()
         return squeak_admin_pb2.GetNetworkReply(
             network=network,
+        )
+
+    def handle_get_payment_summary(self, request):
+        logger.info("Handle get payment summary")
+        payment_summary = self.squeak_controller.get_payment_summary()
+        payment_summary_msg = payment_summary_to_message(payment_summary)
+        return squeak_admin_pb2.GetPaymentSummaryReply(
+            payment_summary=payment_summary_msg,
         )

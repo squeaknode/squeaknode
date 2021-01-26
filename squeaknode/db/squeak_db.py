@@ -20,6 +20,7 @@ from squeaknode.bitcoin.util import parse_block_header
 from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.received_offer_with_peer import ReceivedOfferWithPeer
 from squeaknode.core.received_payment import ReceivedPayment
+from squeaknode.core.received_payment_summary import ReceivedPaymentSummary
 from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.sent_payment import SentPayment
 from squeaknode.core.sent_payment_with_peer import SentPaymentWithPeer
@@ -1102,6 +1103,19 @@ class SqueakDb:
                 received_payment = self._parse_received_payment(row)
                 yield received_payment
 
+    def get_payment_summary(self) -> ReceivedPaymentSummary:
+        """ Get payment summary. """
+        s = select([
+            func.count().label("num_payments_received"),
+            func.sum(self.received_payments.c.price_msat).label(
+                "total_amount_received_msat"),
+        ]).select_from(self.received_payments)
+        with self.get_connection() as connection:
+            result = connection.execute(s)
+            row = result.fetchone()
+            received_payment_summary = self._parse_payment_summary(row)
+            return received_payment_summary
+
     def _parse_squeak_entry(self, row) -> SqueakEntry:
         secret_key_column = row["secret_key"]
         secret_key = bytes.fromhex(
@@ -1226,4 +1240,13 @@ class SqueakDb:
             price_msat=row["price_msat"],
             settle_index=row["settle_index"],
             client_addr=row["client_addr"],
+        )
+
+    def _parse_payment_summary(self, row) -> ReceivedPaymentSummary:
+        return ReceivedPaymentSummary(
+            num_received_payments=row["num_payments_received"],
+            num_sent_payments=0,
+            total_amount_received_msat=row["total_amount_received_msat"],
+            # total_amount_received_msat=0,
+            total_amount_sent_msat=0,
         )
