@@ -102,26 +102,20 @@ export default function BuyOfferDetailItem({
   }
 
   function PeerNodeInfoContent(offer) {
+    const lightningAddress =  offer.getNodeHost() + ":" + offer.getNodePort();
+    const lightningPubkey = offer.getNodePubkey();
     return (
       <Box>
         <Typography
           size="md"
-          >Node Host: {offer.getNodeHost()}
-        </Typography>
-        <Typography
-          size="md"
-          >Node Port: {offer.getNodePort()}
-        </Typography>
-        <Typography
-          size="md"
-          >Node Pubkey: <Link href="#" onClick={() => {
+          >Lightning Node: <Link href="#" onClick={() => {
             goToLightningNodePage(
               offer.getNodePubkey(),
               offer.getNodeHost(),
               offer.getNodePort(),
             )
           }}>
-            {offer.getNodePubkey()}
+            {lightningPubkey + "@" + lightningAddress}
           </Link>
         </Typography>
       </Box>
@@ -188,7 +182,7 @@ export default function BuyOfferDetailItem({
             alignItems="flex-start"
           >
           <Grid item>
-            {ExpiresInfoContent(offer)}
+            {PeerNodeInfoContent(offer)}
           </Grid>
           </Grid>
           <Grid
@@ -198,7 +192,7 @@ export default function BuyOfferDetailItem({
             alignItems="flex-start"
           >
           <Grid item>
-            {PeerNodeInfoContent(offer)}
+            {ExpiresInfoContent(offer)}
           </Grid>
           </Grid>
     </Box>
