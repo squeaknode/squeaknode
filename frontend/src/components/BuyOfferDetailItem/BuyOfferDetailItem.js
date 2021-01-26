@@ -46,6 +46,10 @@ export default function BuyOfferDetailItem({
     }
   }
 
+  const goToPeerPage = (peerId) => {
+    history.push("/app/peer/" + peerId);
+  };
+
   const goToLightningNodePage = (pubkey, host, port) => {
       console.log("Go to lightning node for pubkey: " + pubkey);
       if (pubkey && host && port) {
@@ -70,7 +74,7 @@ export default function BuyOfferDetailItem({
     return (
       <Typography
         size="md"
-        >{offer.getPriceMsat()} msats ({offer.getPriceMsat() / 1000} sats)
+        >Price: {offer.getPriceMsat() / 1000} sats
       </Typography>
     )
   }
@@ -80,7 +84,13 @@ export default function BuyOfferDetailItem({
       <Box>
         <Typography
           size="md"
-          >{peer.getPeerName()}
+          >Peer: <Link href="#" onClick={() => {
+            goToPeerPage(
+              peer.getPeerId(),
+            )
+          }}>
+            {peer.getPeerName()}
+          </Link>
           </Typography>
       </Box>
     )
@@ -102,26 +112,20 @@ export default function BuyOfferDetailItem({
   }
 
   function PeerNodeInfoContent(offer) {
+    const lightningAddress =  offer.getNodeHost() + ":" + offer.getNodePort();
+    const lightningPubkey = offer.getNodePubkey();
     return (
       <Box>
         <Typography
           size="md"
-          >Node Host: {offer.getNodeHost()}
-        </Typography>
-        <Typography
-          size="md"
-          >Node Port: {offer.getNodePort()}
-        </Typography>
-        <Typography
-          size="md"
-          >Node Pubkey: <Link href="#" onClick={() => {
+          >Lightning Node: <Link href="#" onClick={() => {
             goToLightningNodePage(
               offer.getNodePubkey(),
               offer.getNodeHost(),
               offer.getNodePort(),
             )
           }}>
-            {offer.getNodePubkey()}
+            {lightningPubkey + "@" + lightningAddress}
           </Link>
         </Typography>
       </Box>
@@ -188,7 +192,7 @@ export default function BuyOfferDetailItem({
             alignItems="flex-start"
           >
           <Grid item>
-            {ExpiresInfoContent(offer)}
+            {PeerNodeInfoContent(offer)}
           </Grid>
           </Grid>
           <Grid
@@ -198,7 +202,7 @@ export default function BuyOfferDetailItem({
             alignItems="flex-start"
           >
           <Grid item>
-            {PeerNodeInfoContent(offer)}
+            {ExpiresInfoContent(offer)}
           </Grid>
           </Grid>
     </Box>
