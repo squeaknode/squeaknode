@@ -9,6 +9,7 @@ from squeak.core.signing import CSqueakAddress
 
 from squeaknode.core.offer import Offer
 from squeaknode.core.received_offer import ReceivedOffer
+from squeaknode.core.received_payment_summary import ReceivedPaymentSummary
 from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
@@ -413,5 +414,5 @@ class SqueakController:
         sharing_profiles = self.squeak_db.get_sharing_profiles()
         return [profile.address for profile in sharing_profiles]
 
-    def get_payment_summary(self):
-        return self.squeak_db.get_payment_summary()
+    def get_received_payment_summary(self) -> ReceivedPaymentSummary:
+        return self.squeak_db.get_received_payment_summary()

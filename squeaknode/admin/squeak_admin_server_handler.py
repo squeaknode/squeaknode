@@ -570,8 +570,9 @@ class SqueakAdminServerHandler(object):
 
     def handle_get_payment_summary(self, request):
         logger.info("Handle get payment summary")
-        payment_summary = self.squeak_controller.get_payment_summary()
-        payment_summary_msg = payment_summary_to_message(payment_summary)
+        received_payment_summary = self.squeak_controller.get_received_payment_summary()
+        payment_summary_msg = payment_summary_to_message(
+            received_payment_summary)
         return squeak_admin_pb2.GetPaymentSummaryReply(
             payment_summary=payment_summary_msg,
         )

@@ -1103,7 +1103,7 @@ class SqueakDb:
                 received_payment = self._parse_received_payment(row)
                 yield received_payment
 
-    def get_payment_summary(self) -> ReceivedPaymentSummary:
+    def get_received_payment_summary(self) -> ReceivedPaymentSummary:
         """ Get payment summary. """
         s = select([
             func.count().label("num_payments_received"),
