@@ -473,6 +473,14 @@ def create_app(handler, username, password):
             handler.handle_get_squeak_profile_private_key,
         )
 
+    @app.route("/getpaymentsummary", methods=["POST"])
+    @login_required
+    def getpaymentsummary():
+        return handle_request(
+            squeak_admin_pb2.GetPaymentSummaryRequest(),
+            handler.handle_get_payment_summary,
+        )
+
     return app
 
 
