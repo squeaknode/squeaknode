@@ -46,6 +46,10 @@ export default function BuyOfferDetailItem({
     }
   }
 
+  const goToPeerPage = (peerId) => {
+    history.push("/app/peer/" + peerId);
+  };
+
   const goToLightningNodePage = (pubkey, host, port) => {
       console.log("Go to lightning node for pubkey: " + pubkey);
       if (pubkey && host && port) {
@@ -70,7 +74,7 @@ export default function BuyOfferDetailItem({
     return (
       <Typography
         size="md"
-        >{offer.getPriceMsat()} msats ({offer.getPriceMsat() / 1000} sats)
+        >Price: {offer.getPriceMsat() / 1000} sats
       </Typography>
     )
   }
@@ -80,7 +84,13 @@ export default function BuyOfferDetailItem({
       <Box>
         <Typography
           size="md"
-          >{peer.getPeerName()}
+          >Peer: <Link href="#" onClick={() => {
+            goToPeerPage(
+              peer.getPeerId(),
+            )
+          }}>
+            {peer.getPeerName()}
+          </Link>
           </Typography>
       </Box>
     )
