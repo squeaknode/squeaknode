@@ -1100,11 +1100,22 @@ def test_connect_other_node(
             squeak_admin_pb2.GetPaymentSummaryRequest(),
         )
         print(
-            "get_payment_summary_response: {}".format(
+            "get_payment_summary_response from seller: {}".format(
                 get_payment_summary_response)
         )
         assert get_payment_summary_response.payment_summary.num_received_payments > 0
         assert get_payment_summary_response.payment_summary.amount_earned_msat > 0
+
+        # Get the payment summary from the buyer node
+        get_payment_summary_response = other_admin_stub.GetPaymentSummary(
+            squeak_admin_pb2.GetPaymentSummaryRequest(),
+        )
+        print(
+            "get_payment_summary_response from buyer: {}".format(
+                get_payment_summary_response)
+        )
+        assert get_payment_summary_response.payment_summary.num_sent_payments > 0
+        assert get_payment_summary_response.payment_summary.amount_spent_msat > 0
 
 
 def test_download_single_squeak(
