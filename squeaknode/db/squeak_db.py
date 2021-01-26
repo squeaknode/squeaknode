@@ -1260,10 +1260,7 @@ class SqueakDb:
     def _parse_received_payment_summary(self, row) -> ReceivedPaymentSummary:
         return ReceivedPaymentSummary(
             num_received_payments=row["num_payments_received"],
-            num_sent_payments=0,
             total_amount_received_msat=row["total_amount_received_msat"],
-            # total_amount_received_msat=0,
-            total_amount_sent_msat=0,
         )
 
     def _parse_sent_payment_summary(self, row) -> SentPaymentSummary:
