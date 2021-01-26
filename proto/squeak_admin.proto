@@ -220,6 +220,10 @@ service SqueakAdmin {
   */
   rpc GetNetwork (GetNetworkRequest) returns (GetNetworkReply) {}
 
+  /** sqkadmin: `getpaymentsummary`
+  */
+  rpc GetPaymentSummary (GetPaymentSummaryRequest) returns (GetPaymentSummaryReply) {}
+
 }
 
 message CreateSigningProfileRequest {
@@ -796,4 +800,26 @@ message GetNetworkRequest {
 message GetNetworkReply {
     /// The network
     string network = 1;
+}
+
+message GetPaymentSummaryRequest {
+}
+
+message GetPaymentSummaryReply {
+    // Payment summary of the node
+    PaymentSummary payment_summary = 1;
+}
+
+message PaymentSummary {
+    // Number of received payments
+    int32 num_received_payments = 1;
+
+    // Number of sent payments
+    int32 num_sent_payments = 2;
+
+    /// Amount earned in msats
+    int64 amount_earned_msat = 3;
+
+    /// Amount spent in msats
+    int64 amount_spent_msat = 4;
 }
