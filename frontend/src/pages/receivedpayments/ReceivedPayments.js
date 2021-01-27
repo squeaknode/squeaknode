@@ -20,7 +20,6 @@ import {makeStyles} from '@material-ui/core/styles';
 import PageTitle from "../../components/PageTitle";
 import Widget from "../../components/Widget";
 import Table from "../dashboard/components/Table/Table";
-import SentPayment from "../../components/SentPayment";
 import ReceivedPayment from "../../components/ReceivedPayment";
 
 
@@ -100,6 +99,7 @@ export default function ReceivedPayments() {
   }
 
   function ReceivedPaymentsContent() {
+    console.log("receivedPayments: " + receivedPayments);
     return (
       <>
       <Grid container spacing={4}>
