@@ -57,6 +57,10 @@ export default function SqueakPage() {
       getNetworkRequest(setNetwork);
   };
 
+  const goToSqueakAddressPage = (squeakAddress) => {
+    history.push("/app/squeakaddress/" + squeakAddress);
+  };
+
   const unknownAncestorHash = () => {
       if (!ancestorSqueaks) {
         return null;
@@ -91,6 +95,23 @@ export default function SqueakPage() {
     )
   }
 
+  function TimelineUserAvatar(squeak) {
+    const handleAvatarClick = () => {
+      console.log("Avatar clicked...");
+      if (squeak) {
+        goToSqueakAddressPage(squeak.getAuthorAddress());
+      }
+    };
+    return (
+      <TimelineDot
+      onClick={handleAvatarClick}
+      style={{cursor: 'pointer'}}
+      >
+        <FaceIcon />
+      </TimelineDot>
+    )
+  }
+
   function UnkownReplyToContent() {
     var squeakHash = unknownAncestorHash();
     if (!squeakHash) {
@@ -105,9 +126,7 @@ export default function SqueakPage() {
   color="textSecondary"
 ></TimelineOppositeContent>
 <TimelineSeparator>
-  <TimelineDot>
-    <FaceIcon />
-  </TimelineDot>
+  {TimelineUserAvatar(squeak)}
   <TimelineConnector />
 </TimelineSeparator>
 <TimelineContent>
@@ -133,9 +152,7 @@ export default function SqueakPage() {
     color="textSecondary"
   ></TimelineOppositeContent>
   <TimelineSeparator>
-    <TimelineDot>
-      <FaceIcon />
-    </TimelineDot>
+    {TimelineUserAvatar(ancestorSqueak)}
     <TimelineConnector />
   </TimelineSeparator>
   <TimelineContent>
@@ -164,9 +181,7 @@ export default function SqueakPage() {
   color="textSecondary"
 ></TimelineOppositeContent>
 <TimelineSeparator>
-  <TimelineDot>
-    <FaceIcon />
-  </TimelineDot>
+  {TimelineUserAvatar(squeak)}
 </TimelineSeparator>
 <TimelineContent>
 <SqueakDetailItem
@@ -192,9 +207,7 @@ export default function SqueakPage() {
     color="textSecondary"
   ></TimelineOppositeContent>
   <TimelineSeparator>
-    <TimelineDot>
-      <FaceIcon />
-    </TimelineDot>
+    {TimelineUserAvatar(replySqueak)}
   </TimelineSeparator>
   <TimelineContent>
   <Box

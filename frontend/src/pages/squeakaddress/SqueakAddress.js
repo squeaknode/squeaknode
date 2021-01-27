@@ -56,6 +56,10 @@ export default function SqueakAddressPage() {
     history.push("/app/profile/" + profileId);
   };
 
+  const goToSqueakAddressPage = (squeakAddress) => {
+    history.push("/app/squeakaddress/" + squeakAddress);
+  };
+
   const handleClickOpenCreateContactProfileDialog = () => {
     setCreateContactProfileDialogOpen(true);
   };
@@ -104,6 +108,21 @@ export default function SqueakAddressPage() {
     )
   }
 
+  function TimelineUserAvatar(squeak) {
+    const handleAvatarClick = () => {
+      console.log("Avatar clicked...");
+      goToSqueakAddressPage(squeak.getAuthorAddress());
+    };
+    return (
+      <TimelineDot
+      onClick={handleAvatarClick}
+      style={{cursor: 'pointer'}}
+      >
+        <FaceIcon />
+      </TimelineDot>
+    )
+  }
+
   function SqueaksContent() {
     return (
       <>
@@ -117,9 +136,7 @@ export default function SqueakAddressPage() {
     color="textSecondary"
       ></TimelineOppositeContent>
       <TimelineSeparator>
-        <TimelineDot>
-          <FaceIcon />
-        </TimelineDot>
+        {TimelineUserAvatar(squeak)}
       </TimelineSeparator>
       <TimelineContent>
       <SqueakThreadItem
