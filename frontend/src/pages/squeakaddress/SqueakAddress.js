@@ -16,6 +16,16 @@ import Widget from "../../components/Widget";
 import SqueakThreadItem from "../../components/SqueakThreadItem";
 import CreateContactProfileDialog from "../../components/CreateContactProfileDialog";
 
+import Timeline from '@material-ui/lab/Timeline';
+import TimelineItem from '@material-ui/lab/TimelineItem';
+import TimelineSeparator from '@material-ui/lab/TimelineSeparator';
+import TimelineConnector from '@material-ui/lab/TimelineConnector';
+import TimelineContent from '@material-ui/lab/TimelineContent';
+import TimelineOppositeContent from '@material-ui/lab/TimelineOppositeContent';
+import TimelineDot from '@material-ui/lab/TimelineDot';
+
+import FaceIcon from '@material-ui/icons/Face';
+
 import {
   getSqueakProfileByAddressRequest,
   getAddressSqueakDisplaysRequest,
@@ -99,17 +109,29 @@ export default function SqueakAddressPage() {
       <>
         <div>
           {squeaks.map(squeak =>
-            <Box
-              p={1}
-              key={squeak.getSqueakHash()}
-              >
-            <SqueakThreadItem
-              hash={squeak.getSqueakHash()}
-              key={squeak.getSqueakHash()}
-              squeak={squeak}
-              network={network}>
-            </SqueakThreadItem>
-            </Box>
+            <Timeline align="left">
+
+            <TimelineItem>
+      <TimelineOppositeContent
+    className={classes.oppositeContent}
+    color="textSecondary"
+      ></TimelineOppositeContent>
+      <TimelineSeparator>
+        <TimelineDot>
+          <FaceIcon />
+        </TimelineDot>
+      </TimelineSeparator>
+      <TimelineContent>
+      <SqueakThreadItem
+        hash={squeak.getSqueakHash()}
+        key={squeak.getSqueakHash()}
+        squeak={squeak}
+        network={network}>
+      </SqueakThreadItem>
+      </TimelineContent>
+      </TimelineItem>
+
+            </Timeline>
           )}
         </div>
       </>
