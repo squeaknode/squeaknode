@@ -24,7 +24,7 @@ export default makeStyles(theme => ({
     padding: 0,
   },
   paper: {
-    padding: '6px 16px',
+    padding: '6px 12px',
   },
   secondaryTail: {
     backgroundColor: theme.palette.secondary.main,
