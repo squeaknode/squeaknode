@@ -16,7 +16,12 @@ import {
   DialogActions,
   Button,
   FormControl,
+  FormLabel,
+  FormGroup,
   InputLabel,
+  FormControlLabel,
+  FormHelperText,
+  Switch,
   Select,
 } from "@material-ui/core";
 import { MoreVert as MoreIcon } from "@material-ui/icons";
@@ -30,7 +35,8 @@ import Widget from "../../components/Widget";
 import SqueakThreadItem from "../../components/SqueakThreadItem";
 
 import {
-  deleteSqueakRequest,
+  setSqueakProfileFollowingRequest,
+  setSqueakProfileSharingRequest,
 } from "../../squeakclient/requests"
 
 
@@ -44,20 +50,28 @@ export default function ConfigureProfileDialog({
   var classes = useStyles();
   const history = useHistory();
 
-  const deleteSqueak = (squeakHash) => {
-    deleteSqueakRequest(squeakHash, (response) => {
-      reloadRoute();
-    });
+  const setFollowing = (id, following) => {
+    setSqueakProfileFollowingRequest(id, following, () => {
+      reloadProfile();
+    })
+  };
+  const setSharing = (id, sharing) => {
+    setSqueakProfileSharingRequest(id, sharing, () => {
+      reloadProfile();
+    })
   };
 
-  function handleSubmit(event) {
-    event.preventDefault();
-    console.log( 'squeakToDelete:', squeakToDelete);
-    var squeakHash = squeakToDelete.getSqueakHash();
-    console.log( 'squeakHash:', squeakHash);
-    deleteSqueak(squeakHash);
-    handleClose();
-  }
+  const handleSettingsFollowingChange = (event) => {
+    console.log("Following changed for profile id: " + squeakProfile.getProfileId());
+    console.log("Following changed to: " + event.target.checked);
+    setFollowing(squeakProfile.getProfileId(), event.target.checked);
+  };
+
+  const handleSettingsSharingChange = (event) => {
+    console.log("Sharing changed for profile id: " + squeakProfile.getProfileId());
+    console.log("Sharing changed to: " + event.target.checked);
+    setSharing(squeakProfile.getProfileId(), event.target.checked);
+  };
 
   function MakeCancelButton() {
     return (
@@ -71,29 +85,34 @@ export default function ConfigureProfileDialog({
     )
   }
 
-  function DeleteSqueakButton() {
+  function ProfileSettingsForm() {
     return (
-      <Button
-       type="submit"
-       variant="contained"
-       color="primary"
-       className={classes.button}
-       >
-        Delete Squeak
-       </Button>
+      <FormControl component="fieldset">
+        <FormLabel component="legend">Profile settings</FormLabel>
+        <FormGroup>
+          <FormControlLabel
+            control={<Switch checked={squeakProfile.getFollowing()} onChange={handleSettingsFollowingChange} />}
+            label="Following"
+          />
+          <FormControlLabel
+            control={<Switch checked={squeakProfile.getSharing()} onChange={handleSettingsSharingChange} />}
+            label="Sharing"
+          />
+        </FormGroup>
+      </FormControl>
     )
   }
 
   return (
     <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-  <DialogTitle id="form-dialog-title">Delete Squeak</DialogTitle>
-  <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
+  <DialogTitle id="form-dialog-title">Configure Profile</DialogTitle>
+  <form className={classes.root} noValidate autoComplete="off">
   <DialogContent>
-    Are you sure you want to delete this squeak?
+    {squeakProfile
+      && ProfileSettingsForm()}
   </DialogContent>
   <DialogActions>
     {MakeCancelButton()}
-    {DeleteSqueakButton()}
   </DialogActions>
   </form>
     </Dialog>
