@@ -96,24 +96,26 @@ export default function SqueakPage() {
       )
     }
     return (
-      <div>
-          <Box
-            key={squeakHash}
-            >
-          <SqueakThreadItem
-            hash={squeakHash}
-            key={squeakHash}
-            squeak={null}>
-          </SqueakThreadItem>
-          <Divider />
-          </Box>
-      </div>
+      <TimelineItem>
+<TimelineSeparator>
+  <TimelineDot />
+  <TimelineConnector />
+</TimelineSeparator>
+<TimelineContent>
+<SqueakThreadItem
+  hash={squeakHash}
+  key={squeakHash}
+  squeak={null}>
+</SqueakThreadItem>
+<Divider />
+</TimelineContent>
+</TimelineItem>
     )
   }
 
   function AncestorsContent() {
     return (
-      <Timeline>
+      <>
         {ancestorSqueaks.slice(0, -1)
           //.reverse()
           .map(ancestorSqueak =>
@@ -123,7 +125,6 @@ export default function SqueakPage() {
     <TimelineConnector />
   </TimelineSeparator>
   <TimelineContent>
-
   <Box
     key={ancestorSqueak.getSqueakHash()}
     >
@@ -135,52 +136,71 @@ export default function SqueakPage() {
   </SqueakThreadItem>
   <Divider />
   </Box>
-
   </TimelineContent>
 </TimelineItem>
-
         )}
-      </Timeline>
+      </>
+    )
+  }
+
+  function CurrentSqueakContent() {
+    return (
+      <TimelineItem>
+<TimelineSeparator>
+  <TimelineDot />
+</TimelineSeparator>
+<TimelineContent>
+<SqueakDetailItem
+  hash={hash}
+  squeak={squeak}
+  network={network}>
+</SqueakDetailItem>
+<Divider />
+</TimelineContent>
+</TimelineItem>
     )
   }
 
   function RepliesContent() {
     console.log("replySqueaks: " + replySqueaks);
     return (
-      <div>
+      <>
         {replySqueaks
           .map(replySqueak =>
-          <Box
-            p={1}
-            key={replySqueak.getSqueakHash()}
-            >
-          <SqueakThreadItem
-            hash={replySqueak.getSqueakHash()}
-            key={replySqueak.getSqueakHash()}
-            squeak={replySqueak}
-            network={network}>
-          </SqueakThreadItem>
-          <Divider />
-          </Box>
+            <TimelineItem>
+  <TimelineSeparator>
+    <TimelineDot />
+  </TimelineSeparator>
+  <TimelineContent>
+  <Box
+    p={1}
+    key={replySqueak.getSqueakHash()}
+    >
+  <SqueakThreadItem
+    hash={replySqueak.getSqueakHash()}
+    key={replySqueak.getSqueakHash()}
+    squeak={replySqueak}
+    network={network}>
+  </SqueakThreadItem>
+  <Divider />
+  </Box>
+  </TimelineContent>
+</TimelineItem>
         )}
-      </div>
+      </>
     )
   }
 
   function SqueakContent() {
     return (
-      <>
+      <Timeline align="left">
+
         {UnkownReplyToContent()}
         {AncestorsContent()}
-        <div>
-          <SqueakDetailItem
-            hash={hash}
-            squeak={squeak}
-            network={network}>
-          </SqueakDetailItem>
-        </div>
+        {CurrentSqueakContent()}
         {RepliesContent()}
-      </>
+
+      </Timeline>
     )
   }
 
