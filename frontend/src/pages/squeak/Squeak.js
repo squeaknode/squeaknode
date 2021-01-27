@@ -120,6 +120,12 @@ export default function SqueakPage() {
     setViewDetailsDialogOpen(false);
   };
 
+  const handlePaymentComplete = () => {
+    getSqueak(hash);
+
+    // TODO: show snackbar.
+  };
+
 
   useEffect(()=>{
     getSqueak(hash)
@@ -331,6 +337,7 @@ export default function SqueakPage() {
           <BuySqueakDialog
             open={buyDialogOpen}
             handleClose={handleCloseBuyDialog}
+            handlePaymentComplete={handlePaymentComplete}
             hash={hash}
             ></BuySqueakDialog>
         </>
