@@ -12,4 +12,8 @@ export default makeStyles(theme => ({
   text: {
     marginBottom: theme.spacing(2),
   },
+  oppositeContent: {
+  // TODO: adjust this value accordingly
+    flex: 0.0
+  }
 }));

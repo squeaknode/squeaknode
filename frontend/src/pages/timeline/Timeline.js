@@ -23,6 +23,16 @@ import {
 } from "recharts";
 import EditIcon from '@material-ui/icons/Edit';
 
+import Timeline from '@material-ui/lab/Timeline';
+import TimelineItem from '@material-ui/lab/TimelineItem';
+import TimelineSeparator from '@material-ui/lab/TimelineSeparator';
+import TimelineConnector from '@material-ui/lab/TimelineConnector';
+import TimelineContent from '@material-ui/lab/TimelineContent';
+import TimelineOppositeContent from '@material-ui/lab/TimelineOppositeContent';
+import TimelineDot from '@material-ui/lab/TimelineDot';
+
+import FaceIcon from '@material-ui/icons/Face';
+
 // styles
 import useStyles from "./styles";
 
@@ -98,17 +108,29 @@ export default function TimelinePage() {
       <>
         <div>
         {squeaks.map(squeak =>
-          <Box
-            p={1}
-            key={squeak.getSqueakHash()}
-            >
-          <SqueakThreadItem
-            key={squeak.getSqueakHash()}
-            hash={squeak.getSqueakHash()}
-            squeak={squeak}
-            network={network}>
-          </SqueakThreadItem>
-          </Box>
+          <Timeline align="left">
+
+          <TimelineItem>
+    <TimelineOppositeContent
+  className={classes.oppositeContent}
+  color="textSecondary"
+    ></TimelineOppositeContent>
+    <TimelineSeparator>
+      <TimelineDot>
+        <FaceIcon />
+      </TimelineDot>
+    </TimelineSeparator>
+    <TimelineContent>
+    <SqueakThreadItem
+      key={squeak.getSqueakHash()}
+      hash={squeak.getSqueakHash()}
+      squeak={squeak}
+      network={network}>
+    </SqueakThreadItem>
+    </TimelineContent>
+    </TimelineItem>
+
+          </Timeline>
         )}
         </div>
       </>
