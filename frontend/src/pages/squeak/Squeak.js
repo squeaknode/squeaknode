@@ -107,7 +107,6 @@ export default function SqueakPage() {
   key={squeakHash}
   squeak={null}>
 </SqueakThreadItem>
-<Divider />
 </TimelineContent>
 </TimelineItem>
     )
@@ -134,7 +133,6 @@ export default function SqueakPage() {
     squeak={ancestorSqueak}
     network={network}>
   </SqueakThreadItem>
-  <Divider />
   </Box>
   </TimelineContent>
 </TimelineItem>
@@ -182,7 +180,6 @@ export default function SqueakPage() {
     squeak={replySqueak}
     network={network}>
   </SqueakThreadItem>
-  <Divider />
   </Box>
   </TimelineContent>
 </TimelineItem>
