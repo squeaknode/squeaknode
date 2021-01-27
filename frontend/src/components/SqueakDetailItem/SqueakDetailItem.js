@@ -28,10 +28,7 @@ import ZoomInIcon from '@material-ui/icons/ZoomIn';
 import useStyles from "./styles";
 
 import Widget from "../../components/Widget";
-import MakeSqueakDialog from "../../components/MakeSqueakDialog";
-import DeleteSqueakDialog from "../../components/DeleteSqueakDialog";
-import BuySqueakDialog from "../../components/BuySqueakDialog";
-import SqueakDetailsDialog from "../../components/SqueakDetailsDialog";
+
 
 
 import {
@@ -50,59 +47,16 @@ export default function SqueakDetailItem({
   network,
   handleReplyClick,
   handleDeleteClick,
+  handleViewDetailsClick,
+  handleUnlockClick,
   ...props
 }) {
   var classes = useStyles();
 
   const history = useHistory();
-  const [replyDialogOpen, setReplyDialogOpen] = useState(false);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [buyDialogOpen, setBuyDialogOpen] = useState(false);
-  const [viewDetailsDialogOpen, setViewDetailsDialogOpen] = useState(false);
-
-  const handleClickOpen = () => {
-    setReplyDialogOpen(true);
-  };
-
-  const handleClose = () => {
-     setReplyDialogOpen(false);
-  };
-
-  const handleClickOpenDeleteDialog = () => {
-    setDeleteDialogOpen(true);
-    console.log("deleteDialogOpen: " + deleteDialogOpen);
-  };
-
-  const handleCloseDeleteDialog = () => {
-     setDeleteDialogOpen(false);
-  };
-
-  const handleClickOpenBuyDialog = () => {
-    setBuyDialogOpen(true);
-  };
-
-  const handleCloseBuyDialog = () => {
-    setBuyDialogOpen(false);
-  };
-
-  const handleClickOpenViewDetailsDialog = () => {
-    setViewDetailsDialogOpen(true);
-  };
-
-  const handleCloseViewDetailsDialog = () => {
-    setViewDetailsDialogOpen(false);
-  };
 
   const goToSqueakAddressPage = () => {
     history.push("/app/squeakaddress/" + squeak.getAuthorAddress());
-  };
-
-  const goToBuyPage = (hash) => {
-    history.push("/app/buy/" + hash);
-  };
-
-  const goToSqueakDetailPage = () => {
-    history.push("/app/squeakdetail/" + hash);
   };
 
   const reloadRoute = () => {
@@ -130,7 +84,7 @@ export default function SqueakDetailItem({
     if (!squeak) {
       return;
     }
-    handleClickOpen();
+    handleReplyClick();
   }
 
   const onDeleteClick = (event) => {
@@ -139,7 +93,7 @@ export default function SqueakDetailItem({
     if (!squeak) {
       return;
     }
-    handleClickOpenDeleteDialog();
+    handleDeleteClick();
   }
 
   const onZoomInClick = (event) => {
@@ -150,7 +104,7 @@ export default function SqueakDetailItem({
     }
     //handleClickOpenDeleteDialog();
     // goToSqueakDetailPage();
-    handleClickOpenViewDetailsDialog();
+    handleViewDetailsClick();
   }
 
   const onUnlockClick = (event) => {
@@ -160,7 +114,7 @@ export default function SqueakDetailItem({
       return;
     }
     // goToBuyPage(squeak.getSqueakHash());
-    handleClickOpenBuyDialog();
+    handleUnlockClick();
   }
 
   const onDownloadClick = (event) => {
@@ -282,54 +236,6 @@ export default function SqueakDetailItem({
     )
   }
 
-  function MakeSqueakDialogContent() {
-    return (
-      <>
-        <MakeSqueakDialog
-          open={replyDialogOpen}
-          handleClose={handleClose}
-          replytoSqueak={squeak}
-          ></MakeSqueakDialog>
-      </>
-    )
-  }
-
-  function DeleteSqueakDialogContent() {
-    return (
-      <>
-        <DeleteSqueakDialog
-          open={deleteDialogOpen}
-          handleClose={handleCloseDeleteDialog}
-          squeakToDelete={squeak}
-          ></DeleteSqueakDialog>
-      </>
-    )
-  }
-
-  function BuyDialogContent() {
-    return (
-      <>
-        <BuySqueakDialog
-          open={buyDialogOpen}
-          handleClose={handleCloseBuyDialog}
-          hash={hash}
-          ></BuySqueakDialog>
-      </>
-    )
-  }
-
-  function ViewDetailsDialogContent() {
-    return (
-      <>
-        <SqueakDetailsDialog
-          open={viewDetailsDialogOpen}
-          handleClose={handleCloseViewDetailsDialog}
-          hash={hash}
-          squeak={squeak}
-          ></SqueakDetailsDialog>
-      </>
-    )
-  }
 
   return (
     <>
@@ -420,10 +326,6 @@ export default function SqueakDetailItem({
             </Grid>
           </Grid>
     </Paper>
-    {MakeSqueakDialogContent()}
-    {DeleteSqueakDialogContent()}
-    {BuyDialogContent()}
-    {ViewDetailsDialogContent()}
     </>
   )
 }
