@@ -88,10 +88,10 @@ export default function ReceivedPayments() {
       <>
       <AppBar position="static" color="default">
         <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
-          <Tab label="Received Payments" {...a11yProps(1)} />
+          <Tab label="Received Payments" {...a11yProps(0)} />
         </Tabs>
       </AppBar>
-      <TabPanel value={value} index={1}>
+      <TabPanel value={value} index={0}>
         {ReceivedPaymentsContent()}
       </TabPanel>
       </>
