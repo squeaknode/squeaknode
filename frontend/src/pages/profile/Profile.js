@@ -10,6 +10,8 @@ import {
   FormHelperText,
   Switch,
   Button,
+  Link,
+  Typography,
 } from "@material-ui/core";
 
 // styles
@@ -79,26 +81,37 @@ export default function ProfilePage() {
     getSqueakProfile(id);
   };
 
-  function NoProfileContent() {
-    return (
-      <p>
-        No profile loaded
-      </p>
-    )
-  }
-
   function ProfileContent() {
     return (
       <>
-        <p>
-          Address: {squeakProfile.getAddress()}
-        </p>
-        {ViewSqueaksButton()}
-        {DeleteProfileButton()}
+        {SqueakAddressLink()}
         {ConfigureProfileButton()}
         {squeakProfile.getHasPrivateKey() &&
           ExportPrivateKeyButton()
         }
+        {DeleteProfileButton()}
+      </>
+    )
+  }
+
+  function SqueakAddressLink() {
+    const squeakAddress = squeakProfile.getAddress();
+    return (
+      <>
+      <Grid item xs={12}>
+        <div className={classes.root}>
+          <Typography
+            size="md"
+            >Squeak Address: <Link
+            href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              goToSqueakAddressPage(squeakAddress);
+            }}>{squeakAddress}
+          </Link>
+          </Typography>
+        </div>
+      </Grid>
       </>
     )
   }
@@ -212,10 +225,8 @@ export default function ProfilePage() {
     <>
       <PageTitle title={'Squeak Profile: ' + (squeakProfile ? squeakProfile.getProfileName() : null)} />
       <div>
-      {squeakProfile
-        ? ProfileContent()
-        : NoProfileContent()
-      }
+      {squeakProfile &&
+        ProfileContent()}
       </div>
       {DeleteProfileDialogContent()}
       {ExportPrivateKeyDialogContent()}
