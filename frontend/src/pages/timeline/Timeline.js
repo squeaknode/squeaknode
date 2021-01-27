@@ -30,6 +30,8 @@ import TimelineConnector from '@material-ui/lab/TimelineConnector';
 import TimelineContent from '@material-ui/lab/TimelineContent';
 import TimelineDot from '@material-ui/lab/TimelineDot';
 
+import FaceIcon from '@material-ui/icons/Face';
+
 // styles
 import useStyles from "./styles";
 
@@ -109,7 +111,9 @@ export default function TimelinePage() {
 
           <TimelineItem>
     <TimelineSeparator>
-      <TimelineDot />
+      <TimelineDot>
+        <FaceIcon />
+      </TimelineDot>
     </TimelineSeparator>
     <TimelineContent>
     <SqueakThreadItem

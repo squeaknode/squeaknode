@@ -15,6 +15,8 @@ import TimelineConnector from '@material-ui/lab/TimelineConnector';
 import TimelineContent from '@material-ui/lab/TimelineContent';
 import TimelineDot from '@material-ui/lab/TimelineDot';
 
+import FaceIcon from '@material-ui/icons/Face';
+
 // styles
 import useStyles from "./styles";
 
@@ -98,7 +100,9 @@ export default function SqueakPage() {
     return (
       <TimelineItem>
 <TimelineSeparator>
-  <TimelineDot />
+  <TimelineDot>
+    <FaceIcon />
+  </TimelineDot>
   <TimelineConnector />
 </TimelineSeparator>
 <TimelineContent>
@@ -120,7 +124,9 @@ export default function SqueakPage() {
           .map(ancestorSqueak =>
             <TimelineItem>
   <TimelineSeparator>
-    <TimelineDot />
+    <TimelineDot>
+      <FaceIcon />
+    </TimelineDot>
     <TimelineConnector />
   </TimelineSeparator>
   <TimelineContent>
@@ -145,7 +151,9 @@ export default function SqueakPage() {
     return (
       <TimelineItem>
 <TimelineSeparator>
-  <TimelineDot />
+  <TimelineDot>
+    <FaceIcon />
+  </TimelineDot>
 </TimelineSeparator>
 <TimelineContent>
 <SqueakDetailItem
@@ -167,7 +175,9 @@ export default function SqueakPage() {
           .map(replySqueak =>
             <TimelineItem>
   <TimelineSeparator>
-    <TimelineDot />
+    <TimelineDot>
+      <FaceIcon />
+    </TimelineDot>
   </TimelineSeparator>
   <TimelineContent>
   <Box
