@@ -20,6 +20,7 @@ import PageTitle from "../../components/PageTitle";
 import Widget from "../../components/Widget";
 import DeleteProfileDialog from "../../components/DeleteProfileDialog";
 import ExportPrivateKeyDialog from "../../components/ExportPrivateKeyDialog";
+import ConfigureProfileDialog from "../../components/ConfigureProfileDialog";
 
 import {
   getSqueakProfileRequest,
@@ -34,20 +35,11 @@ export default function ProfilePage() {
   const [squeakProfile, setSqueakProfile] = useState(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [exportPrivateKeyDialogOpen, setExportPrivateKeyDialogOpen] = useState(false);
+  const [configureDialogOpen, setConfigureDialogOpen] = useState(false);
   const history = useHistory();
 
   const getSqueakProfile = (id) => {
     getSqueakProfileRequest(id, setSqueakProfile);
-  };
-  const setFollowing = (id, following) => {
-    setSqueakProfileFollowingRequest(id, following, () => {
-      getSqueakProfile(id);
-    })
-  };
-  const setSharing = (id, sharing) => {
-    setSqueakProfileSharingRequest(id, sharing, () => {
-      getSqueakProfile(id);
-    })
   };
 
   const goToSqueakAddressPage = (squeakAddress) => {
@@ -67,6 +59,10 @@ export default function ProfilePage() {
     setExportPrivateKeyDialogOpen(true);
   };
 
+  const handleClickOpenConfigureDialog = () => {
+    setConfigureDialogOpen(true);
+  };
+
   const handleCloseDeleteDialog = () => {
      setDeleteDialogOpen(false);
   };
@@ -75,16 +71,12 @@ export default function ProfilePage() {
      setExportPrivateKeyDialogOpen(false);
   };
 
-  const handleSettingsFollowingChange = (event) => {
-    console.log("Following changed for profile id: " + id);
-    console.log("Following changed to: " + event.target.checked);
-    setFollowing(id, event.target.checked);
+  const handleCloseConfigureDialog = () => {
+     setConfigureDialogOpen(false);
   };
 
-  const handleSettingsSharingChange = (event) => {
-    console.log("Sharing changed for profile id: " + id);
-    console.log("Sharing changed to: " + event.target.checked);
-    setSharing(id, event.target.checked);
+  const handleReloadProfile = () => {
+    getSqueakProfile(id);
   };
 
   function NoProfileContent() {
@@ -101,31 +93,13 @@ export default function ProfilePage() {
         <p>
           Address: {squeakProfile.getAddress()}
         </p>
-        {ProfileSettingsForm()}
         {ViewSqueaksButton()}
         {DeleteProfileButton()}
+        {ConfigureProfileButton()}
         {squeakProfile.getHasPrivateKey() &&
           ExportPrivateKeyButton()
         }
       </>
-    )
-  }
-
-  function ProfileSettingsForm() {
-    return (
-      <FormControl component="fieldset">
-        <FormLabel component="legend">Profile settings</FormLabel>
-        <FormGroup>
-          <FormControlLabel
-            control={<Switch checked={squeakProfile.getFollowing()} onChange={handleSettingsFollowingChange} />}
-            label="Following"
-          />
-          <FormControlLabel
-            control={<Switch checked={squeakProfile.getSharing()} onChange={handleSettingsSharingChange} />}
-            label="Sharing"
-          />
-        </FormGroup>
-      </FormControl>
     )
   }
 
@@ -180,6 +154,23 @@ export default function ProfilePage() {
     )
   }
 
+  function ConfigureProfileButton() {
+    return (
+      <>
+      <Grid item xs={12}>
+        <div className={classes.root}>
+          <Button
+            variant="contained"
+            onClick={() => {
+              handleClickOpenConfigureDialog();
+            }}>Configure Profile
+          </Button>
+        </div>
+      </Grid>
+      </>
+    )
+  }
+
   function DeleteProfileDialogContent() {
     return (
       <>
@@ -204,6 +195,19 @@ export default function ProfilePage() {
     )
   }
 
+  function ConfigureProfileDialogContent() {
+    return (
+      <>
+        <ConfigureProfileDialog
+          open={configureDialogOpen}
+          handleClose={handleCloseConfigureDialog}
+          squeakProfile={squeakProfile}
+          reloadProfile={handleReloadProfile}
+          ></ConfigureProfileDialog>
+      </>
+    )
+  }
+
   return (
     <>
       <PageTitle title={'Squeak Profile: ' + (squeakProfile ? squeakProfile.getProfileName() : null)} />
@@ -215,6 +219,7 @@ export default function ProfilePage() {
       </div>
       {DeleteProfileDialogContent()}
       {ExportPrivateKeyDialogContent()}
+      {ConfigureProfileDialogContent()}
     </>
   );
 }
