@@ -28,6 +28,12 @@ import SqueakDetailItem from "../../components/SqueakDetailItem";
 import SqueakThreadItem from "../../components/SqueakThreadItem";
 import SqueakUserAvatar from "../../components/SqueakUserAvatar";
 
+import MakeSqueakDialog from "../../components/MakeSqueakDialog";
+import DeleteSqueakDialog from "../../components/DeleteSqueakDialog";
+import BuySqueakDialog from "../../components/BuySqueakDialog";
+import SqueakDetailsDialog from "../../components/SqueakDetailsDialog";
+
+
 import {
   getSqueakDisplayRequest,
   getAncestorSqueakDisplaysRequest,
@@ -44,6 +50,12 @@ export default function SqueakPage() {
   const [ancestorSqueaks, setAncestorSqueaks] = useState([]);
   const [replySqueaks, setReplySqueaks] = useState([]);
   const [network, setNetwork] = useState("");
+
+  const [replyDialogOpen, setReplyDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [buyDialogOpen, setBuyDialogOpen] = useState(false);
+  const [viewDetailsDialogOpen, setViewDetailsDialogOpen] = useState(false);
+
 
   const getSqueak = (hash) => {
       getSqueakDisplayRequest(hash, setSqueak);
@@ -74,6 +86,40 @@ export default function SqueakPage() {
       console.log("oldestKnownAncestor");
       return oldestKnownAncestor.getReplyTo();
   };
+
+  const handleClickOpen = () => {
+    setReplyDialogOpen(true);
+  };
+
+  const handleClose = () => {
+     setReplyDialogOpen(false);
+  };
+
+  const handleClickOpenDeleteDialog = () => {
+    setDeleteDialogOpen(true);
+    console.log("deleteDialogOpen: " + deleteDialogOpen);
+  };
+
+  const handleCloseDeleteDialog = () => {
+     setDeleteDialogOpen(false);
+  };
+
+  const handleClickOpenBuyDialog = () => {
+    setBuyDialogOpen(true);
+  };
+
+  const handleCloseBuyDialog = () => {
+    setBuyDialogOpen(false);
+  };
+
+  const handleClickOpenViewDetailsDialog = () => {
+    setViewDetailsDialogOpen(true);
+  };
+
+  const handleCloseViewDetailsDialog = () => {
+    setViewDetailsDialogOpen(false);
+  };
+
 
   useEffect(()=>{
     getSqueak(hash)
@@ -194,6 +240,10 @@ export default function SqueakPage() {
 <SqueakDetailItem
   hash={hash}
   squeak={squeak}
+  handleReplyClick={handleClickOpen}
+  handleDeleteClick={handleClickOpenDeleteDialog}
+  handleViewDetailsClick={handleClickOpenViewDetailsDialog}
+  handleUnlockClick={handleClickOpenBuyDialog}
   network={network}>
 </SqueakDetailItem>
 <Divider />
@@ -250,10 +300,64 @@ export default function SqueakPage() {
     )
   }
 
+
+    function MakeSqueakDialogContent() {
+      return (
+        <>
+          <MakeSqueakDialog
+            open={replyDialogOpen}
+            handleClose={handleClose}
+            replytoSqueak={squeak}
+            ></MakeSqueakDialog>
+        </>
+      )
+    }
+
+    function DeleteSqueakDialogContent() {
+      return (
+        <>
+          <DeleteSqueakDialog
+            open={deleteDialogOpen}
+            handleClose={handleCloseDeleteDialog}
+            squeakToDelete={squeak}
+            ></DeleteSqueakDialog>
+        </>
+      )
+    }
+
+    function BuyDialogContent() {
+      return (
+        <>
+          <BuySqueakDialog
+            open={buyDialogOpen}
+            handleClose={handleCloseBuyDialog}
+            hash={hash}
+            ></BuySqueakDialog>
+        </>
+      )
+    }
+
+    function ViewDetailsDialogContent() {
+      return (
+        <>
+          <SqueakDetailsDialog
+            open={viewDetailsDialogOpen}
+            handleClose={handleCloseViewDetailsDialog}
+            hash={hash}
+            squeak={squeak}
+            ></SqueakDetailsDialog>
+        </>
+      )
+    }
+
   return (
     <>
       <PageTitle title="Squeak" />
       {SqueakContent()}
+      {MakeSqueakDialogContent()}
+      {DeleteSqueakDialogContent()}
+      {BuyDialogContent()}
+      {ViewDetailsDialogContent()}
     </>
   );
 }
