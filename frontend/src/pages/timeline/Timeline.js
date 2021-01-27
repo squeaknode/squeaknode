@@ -103,6 +103,21 @@ export default function TimelinePage() {
     )
   }
 
+  function TimelineUserAvatar(squeak) {
+    const handleAvatarClick = () => {
+      console.log("Avatar clicked...");
+      goToSqueakAddressPage(squeak.getAuthorAddress());
+    };
+    return (
+      <TimelineDot
+      onClick={handleAvatarClick}
+      style={{cursor: 'pointer'}}
+      >
+        <FaceIcon />
+      </TimelineDot>
+    )
+  }
+
   function SqueaksContent() {
     return (
       <>
@@ -116,9 +131,7 @@ export default function TimelinePage() {
   color="textSecondary"
     ></TimelineOppositeContent>
     <TimelineSeparator>
-      <TimelineDot>
-        <FaceIcon />
-      </TimelineDot>
+      {TimelineUserAvatar(squeak)}
     </TimelineSeparator>
     <TimelineContent>
     <SqueakThreadItem
