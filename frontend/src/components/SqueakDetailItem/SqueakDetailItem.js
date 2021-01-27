@@ -333,7 +333,7 @@ export default function SqueakDetailItem({
 
   return (
     <>
-    <Box
+    <Paper elevation={3} className={classes.paper}
       p={1}
       m={0}
       style={SqueakBackgroundColor()}
@@ -419,7 +419,7 @@ export default function SqueakDetailItem({
                 </Box>
             </Grid>
           </Grid>
-    </Box>
+    </Paper>
     {MakeSqueakDialogContent()}
     {DeleteSqueakDialogContent()}
     {BuyDialogContent()}

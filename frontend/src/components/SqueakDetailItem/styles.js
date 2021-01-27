@@ -24,10 +24,10 @@ export default makeStyles(theme => ({
     padding: 0,
   },
   paper: {
-    display: "flex",
-    flexDirection: "column",
-    flexGrow: 1,
-    overflow: "hidden",
+    padding: '6px 12px',
+  },
+  secondaryTail: {
+    backgroundColor: theme.palette.secondary.main,
   },
   moreButton: {
     margin: -theme.spacing(1),
