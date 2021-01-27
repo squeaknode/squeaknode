@@ -20,7 +20,6 @@ import {makeStyles} from '@material-ui/core/styles';
 import PageTitle from "../../components/PageTitle";
 import Widget from "../../components/Widget";
 import Table from "../dashboard/components/Table/Table";
-import SentPayment from "../../components/SentPayment";
 import ReceivedPayment from "../../components/ReceivedPayment";
 
 
@@ -89,10 +88,10 @@ export default function ReceivedPayments() {
       <>
       <AppBar position="static" color="default">
         <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
-          <Tab label="Received Payments" {...a11yProps(1)} />
+          <Tab label="Received Payments" {...a11yProps(0)} />
         </Tabs>
       </AppBar>
-      <TabPanel value={value} index={1}>
+      <TabPanel value={value} index={0}>
         {ReceivedPaymentsContent()}
       </TabPanel>
       </>
@@ -100,6 +99,7 @@ export default function ReceivedPayments() {
   }
 
   function ReceivedPaymentsContent() {
+    console.log("receivedPayments: " + receivedPayments);
     return (
       <>
       <Grid container spacing={4}>
