@@ -45,32 +45,7 @@ export default function Payments() {
   const classes = useStyles();
   const [value, setValue] = useState(0);
   const [paymentSummary, setPaymentSummary] = useState(null);
-  const [sentPayments, setSentPayments] = useState([]);
-  const [receivedPayments, setReceivedPayments] = useState([]);
   const history = useHistory();
-
-  function a11yProps(index) {
-    return {
-      id: `simple-tab-${index}`,
-      'aria-controls': `simple-tabpanel-${index}`,
-    };
-  }
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-
-  const loadSentPayments = () => {
-    getSentPaymentsRequest((sentPaymentsReply) => {
-      setSentPayments(sentPaymentsReply.getSentPaymentsList());
-    });
-  };
-
-  const loadReceivedPayments = () => {
-    getReceivedPaymentsRequest((receivedPaymentsReply) => {
-      setReceivedPayments(receivedPaymentsReply.getReceivedPaymentsList());
-    });
-  };
 
   const loadPaymentSummary = () => {
     getPaymentSummaryRequest((paymentsSummaryReply) => {
@@ -78,12 +53,14 @@ export default function Payments() {
     });
   };
 
-  useEffect(() => {
-    loadSentPayments();
-  }, []);
-  useEffect(() => {
-    loadReceivedPayments();
-  }, []);
+  const goToSentPaymentsPage = () => {
+    history.push("/app/sentpayments/");
+  };
+
+  const goToReceivedPaymentsPage = () => {
+    history.push("/app/receivedpayments/");
+  };
+
   useEffect(() => {
     loadPaymentSummary();
   }, []);
@@ -109,6 +86,7 @@ export default function Payments() {
           <Typography size="md">
             {paymentSummary.getNumSentPayments()}
           </Typography>
+          {ViewSentPaymentsButton()}
         </Grid>
         </Widget>
       </Grid>
@@ -129,6 +107,7 @@ export default function Payments() {
             <Typography size="md">
               {paymentSummary.getNumReceivedPayments()}
             </Typography>
+            {ViewReceivedPaymentsButton()}
           </Grid>
           </Widget>
         </Grid>
@@ -137,89 +116,35 @@ export default function Payments() {
     )
   }
 
-
-  function TabPanel(props) {
-    const { children, value, index, ...other } = props;
-
-    return (
-      <div
-        role="tabpanel"
-        hidden={value !== index}
-        id={`simple-tabpanel-${index}`}
-        aria-labelledby={`simple-tab-${index}`}
-        {...other}
-      >
-        {value === index && (
-          <div>{children}</div>
-        )}
-      </div>
-    );
-  }
-
-  function PaymentsTabs() {
+  function ViewSentPaymentsButton() {
     return (
       <>
-      <AppBar position="static" color="default">
-        <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
-          <Tab label="Sent Payments" {...a11yProps(0)} />
-          <Tab label="Received Payments" {...a11yProps(1)} />
-        </Tabs>
-      </AppBar>
-      <TabPanel value={value} index={0}>
-        {SentPaymentsContent()}
-      </TabPanel>
-      <TabPanel value={value} index={1}>
-        {ReceivedPaymentsContent()}
-      </TabPanel>
-      </>
-    )
-  }
-
-  function SentPaymentsContent() {
-    return (
-      <>
-      <Grid container spacing={4}>
-        <Grid item xs={12}>
-          <Widget disableWidgetMenu>
-          <div>
-          {sentPayments.map(sentPayment =>
-            <Box
-              p={1}
-              key={sentPayment.getSentPaymentId()}
-              >
-            <SentPayment
-              sentPayment={sentPayment}>
-            </SentPayment>
-            </Box>
-          )}
-          </div>
-          </Widget>
-        </Grid>
+      <Grid item xs={12}>
+        <div className={classes.root}>
+          <Button
+            variant="contained"
+            onClick={() => {
+              goToSentPaymentsPage();
+            }}>View Sent Payments
+          </Button>
+        </div>
       </Grid>
       </>
     )
   }
 
-  function ReceivedPaymentsContent() {
+  function ViewReceivedPaymentsButton() {
     return (
       <>
-      <Grid container spacing={4}>
-        <Grid item xs={12}>
-          <Widget disableWidgetMenu>
-          <div>
-          {receivedPayments.map(receivedPayment =>
-            <Box
-              p={1}
-              key={receivedPayment.getReceivedPaymentId()}
-              >
-            <ReceivedPayment
-              receivedPayment={receivedPayment}>
-            </ReceivedPayment>
-            </Box>
-          )}
-          </div>
-          </Widget>
-        </Grid>
+      <Grid item xs={12}>
+        <div className={classes.root}>
+          <Button
+            variant="contained"
+            onClick={() => {
+              goToReceivedPaymentsPage();
+            }}>View Received Payments
+          </Button>
+        </div>
       </Grid>
       </>
     )
@@ -229,6 +154,5 @@ export default function Payments() {
     <>
      < PageTitle title = "Payments" />
      {paymentSummary && PaymentSummaryContent()}
-     {PaymentsTabs()}
    < />);
 }
