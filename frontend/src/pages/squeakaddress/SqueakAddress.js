@@ -15,6 +15,7 @@ import PageTitle from "../../components/PageTitle";
 import Widget from "../../components/Widget";
 import SqueakThreadItem from "../../components/SqueakThreadItem";
 import CreateContactProfileDialog from "../../components/CreateContactProfileDialog";
+import SqueakUserAvatar from "../../components/SqueakUserAvatar";
 
 import Timeline from '@material-ui/lab/Timeline';
 import TimelineItem from '@material-ui/lab/TimelineItem';
@@ -136,7 +137,9 @@ export default function SqueakAddressPage() {
     color="textSecondary"
       ></TimelineOppositeContent>
       <TimelineSeparator>
-        {TimelineUserAvatar(squeak)}
+        <SqueakUserAvatar
+          squeak={squeak}
+        />
       </TimelineSeparator>
       <TimelineContent>
       <SqueakThreadItem

@@ -42,6 +42,7 @@ import Widget from "../../components/Widget";
 import SqueakThreadItem from "../../components/SqueakThreadItem";
 import { Typography } from "../../components/Wrappers";
 import MakeSqueakDialog from "../../components/MakeSqueakDialog";
+import SqueakUserAvatar from "../../components/SqueakUserAvatar";
 
 import {
   getTimelineSqueakDisplaysRequest,
@@ -131,7 +132,9 @@ export default function TimelinePage() {
   color="textSecondary"
     ></TimelineOppositeContent>
     <TimelineSeparator>
-      {TimelineUserAvatar(squeak)}
+      <SqueakUserAvatar
+        squeak={squeak}
+      />
     </TimelineSeparator>
     <TimelineContent>
     <SqueakThreadItem

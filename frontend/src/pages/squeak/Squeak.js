@@ -26,6 +26,7 @@ import PageTitle from "../../components/PageTitle";
 import Widget from "../../components/Widget";
 import SqueakDetailItem from "../../components/SqueakDetailItem";
 import SqueakThreadItem from "../../components/SqueakThreadItem";
+import SqueakUserAvatar from "../../components/SqueakUserAvatar";
 
 import {
   getSqueakDisplayRequest,
@@ -126,7 +127,9 @@ export default function SqueakPage() {
   color="textSecondary"
 ></TimelineOppositeContent>
 <TimelineSeparator>
-  {TimelineUserAvatar(squeak)}
+  <SqueakUserAvatar
+    squeak={squeak}
+  />
   <TimelineConnector />
 </TimelineSeparator>
 <TimelineContent>
@@ -152,7 +155,9 @@ export default function SqueakPage() {
     color="textSecondary"
   ></TimelineOppositeContent>
   <TimelineSeparator>
-    {TimelineUserAvatar(ancestorSqueak)}
+    <SqueakUserAvatar
+      squeak={ancestorSqueak}
+    />
     <TimelineConnector />
   </TimelineSeparator>
   <TimelineContent>
@@ -181,7 +186,9 @@ export default function SqueakPage() {
   color="textSecondary"
 ></TimelineOppositeContent>
 <TimelineSeparator>
-  {TimelineUserAvatar(squeak)}
+  <SqueakUserAvatar
+    squeak={squeak}
+  />
 </TimelineSeparator>
 <TimelineContent>
 <SqueakDetailItem
@@ -207,7 +214,9 @@ export default function SqueakPage() {
     color="textSecondary"
   ></TimelineOppositeContent>
   <TimelineSeparator>
-    {TimelineUserAvatar(replySqueak)}
+    <SqueakUserAvatar
+      squeak={replySqueak}
+    />
   </TimelineSeparator>
   <TimelineContent>
   <Box
