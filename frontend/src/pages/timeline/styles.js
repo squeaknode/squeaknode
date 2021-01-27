@@ -17,4 +17,8 @@ export default makeStyles(theme => ({
     bottom: theme.spacing(4),
     right: theme.spacing(4),
   },
+  oppositeContent: {
+    // TODO: adjust this value accordingly
+    flex: 0.0
+  }
 }));

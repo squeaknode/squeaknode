@@ -13,6 +13,7 @@ import TimelineItem from '@material-ui/lab/TimelineItem';
 import TimelineSeparator from '@material-ui/lab/TimelineSeparator';
 import TimelineConnector from '@material-ui/lab/TimelineConnector';
 import TimelineContent from '@material-ui/lab/TimelineContent';
+import TimelineOppositeContent from '@material-ui/lab/TimelineOppositeContent';
 import TimelineDot from '@material-ui/lab/TimelineDot';
 
 import FaceIcon from '@material-ui/icons/Face';
@@ -99,6 +100,10 @@ export default function SqueakPage() {
     }
     return (
       <TimelineItem>
+<TimelineOppositeContent
+  className={classes.oppositeContent}
+  color="textSecondary"
+></TimelineOppositeContent>
 <TimelineSeparator>
   <TimelineDot>
     <FaceIcon />
@@ -123,6 +128,10 @@ export default function SqueakPage() {
           //.reverse()
           .map(ancestorSqueak =>
             <TimelineItem>
+  <TimelineOppositeContent
+    className={classes.oppositeContent}
+    color="textSecondary"
+  ></TimelineOppositeContent>
   <TimelineSeparator>
     <TimelineDot>
       <FaceIcon />
@@ -150,6 +159,10 @@ export default function SqueakPage() {
   function CurrentSqueakContent() {
     return (
       <TimelineItem>
+<TimelineOppositeContent
+  className={classes.oppositeContent}
+  color="textSecondary"
+></TimelineOppositeContent>
 <TimelineSeparator>
   <TimelineDot>
     <FaceIcon />
@@ -174,6 +187,10 @@ export default function SqueakPage() {
         {replySqueaks
           .map(replySqueak =>
             <TimelineItem>
+  <TimelineOppositeContent
+    className={classes.oppositeContent}
+    color="textSecondary"
+  ></TimelineOppositeContent>
   <TimelineSeparator>
     <TimelineDot>
       <FaceIcon />
