@@ -5,6 +5,7 @@ import {
   Grid,
   Button,
   Divider,
+  Snackbar,
   Box,
 } from "@material-ui/core";
 
@@ -15,6 +16,7 @@ import TimelineConnector from '@material-ui/lab/TimelineConnector';
 import TimelineContent from '@material-ui/lab/TimelineContent';
 import TimelineOppositeContent from '@material-ui/lab/TimelineOppositeContent';
 import TimelineDot from '@material-ui/lab/TimelineDot';
+import MuiAlert from '@material-ui/lab/Alert';
 
 import FaceIcon from '@material-ui/icons/Face';
 
@@ -42,6 +44,11 @@ import {
 } from "../../squeakclient/requests"
 
 
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
+
+
 export default function SqueakPage() {
   var classes = useStyles();
   const history = useHistory();
@@ -55,7 +62,7 @@ export default function SqueakPage() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [buyDialogOpen, setBuyDialogOpen] = useState(false);
   const [viewDetailsDialogOpen, setViewDetailsDialogOpen] = useState(false);
-
+  const [unlockedSnackbarOpen, setUnlockedSnackbarOpen] = useState(false);
 
   const getSqueak = (hash) => {
       getSqueakDisplayRequest(hash, setSqueak);
@@ -120,10 +127,17 @@ export default function SqueakPage() {
     setViewDetailsDialogOpen(false);
   };
 
+  const handleCloseUnlockedSnackbar = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setUnlockedSnackbarOpen(false);
+  };
+
   const handlePaymentComplete = () => {
     getSqueak(hash);
-
     // TODO: show snackbar.
+    setUnlockedSnackbarOpen(true);
   };
 
 
@@ -357,6 +371,17 @@ export default function SqueakPage() {
       )
     }
 
+
+    function SqueakUnlockedContent() {
+      return (
+        <Snackbar open={unlockedSnackbarOpen} autoHideDuration={6000} onClose={handleCloseUnlockedSnackbar}>
+          <Alert onClose={handleCloseUnlockedSnackbar} severity="success">
+            Squeak unlocked!
+          </Alert>
+        </Snackbar>
+      )
+    }
+
   return (
     <>
       <PageTitle title="Squeak" />
@@ -365,6 +390,7 @@ export default function SqueakPage() {
       {DeleteSqueakDialogContent()}
       {BuyDialogContent()}
       {ViewDetailsDialogContent()}
+      {SqueakUnlockedContent()}
     </>
   );
 }
