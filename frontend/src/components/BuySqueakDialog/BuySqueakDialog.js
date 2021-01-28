@@ -48,6 +48,7 @@ import {
 export default function BuySqueakDialog({
   open,
   handleClose,
+  handlePaymentComplete,
   hash,
   ...props
 }) {
@@ -84,7 +85,8 @@ export default function BuySqueakDialog({
 
   const handlePayResponse = (response) => {
     // goToSqueakPage(offer.getSqueakHash());
-    reloadRoute();
+    // reloadRoute();
+    handlePaymentComplete();
   };
 
   const handlePayErr = (err) => {
