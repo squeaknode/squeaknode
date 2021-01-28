@@ -136,7 +136,6 @@ export default function SqueakPage() {
 
   const handlePaymentComplete = () => {
     getSqueak(hash);
-    // TODO: show snackbar.
     setUnlockedSnackbarOpen(true);
   };
 
