@@ -87,7 +87,7 @@ class Models:
             Column("created", TZDateTime,
                    server_default=func.now(), nullable=False),
             Column("squeak_hash", String(64), nullable=False),
-            Column("payment_hash", String(64), nullable=False),
+            Column("payment_hash", String(64), unique=True, nullable=False),
             Column("nonce", String(64), nullable=False),
             Column("payment_point", String(66), nullable=False),
             Column("invoice_timestamp", Integer, nullable=False),
