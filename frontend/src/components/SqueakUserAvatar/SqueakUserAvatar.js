@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import TimelineDot from '@material-ui/lab/TimelineDot';
 
 import FaceIcon from '@material-ui/icons/Face';
+import Avatar from '@material-ui/core/Avatar';
 
 import {useHistory} from "react-router-dom";
 
@@ -27,7 +28,7 @@ export default function SqueakUserAvatar({
     onClick={handleAvatarClick}
     style={{cursor: 'pointer'}}
     >
-      <FaceIcon />
+         <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
     </TimelineDot>
   )
 }
