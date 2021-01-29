@@ -1,8 +1,8 @@
 import logging
 
-from pkg_resources import resource_stream
-
 from proto import squeak_admin_pb2
+from squeaknode.admin.profile_image_util import bytes_to_base64_string
+from squeaknode.admin.profile_image_util import load_default_profile_image
 from squeaknode.core.received_offer_with_peer import ReceivedOfferWithPeer
 from squeaknode.core.received_payment_summary import ReceivedPaymentSummary
 from squeaknode.core.sent_payment_summary import SentPaymentSummary
@@ -13,11 +13,13 @@ from squeaknode.core.util import get_hash
 logger = logging.getLogger(__name__)
 
 
+DEFAULT_PROFILE_IMAGE = load_default_profile_image()
+
+
 def squeak_entry_to_message(squeak_entry_with_profile: SqueakEntryWithProfile):
     if squeak_entry_with_profile is None:
         return None
-    default_profile_image = load_default_profile_image()
-    logger.info("Default profile image: {}".format(default_profile_image))
+    logger.info("Default profile image: {}".format(DEFAULT_PROFILE_IMAGE))
     squeak_entry = squeak_entry_with_profile.squeak_entry
     squeak = squeak_entry.squeak
     block_header = squeak_entry.block_header
@@ -29,6 +31,7 @@ def squeak_entry_to_message(squeak_entry_with_profile: SqueakEntryWithProfile):
     author_address = str(squeak.GetAddress())
     is_reply = squeak.is_reply
     reply_to = squeak.hashReplySqk.hex() if is_reply else None
+    image_base64_str = bytes_to_base64_string(DEFAULT_PROFILE_IMAGE.read())
     return squeak_admin_pb2.SqueakDisplayEntry(
         squeak_hash=get_hash(squeak).hex(),
         is_unlocked=squeak.HasDecryptionKey(),
@@ -41,6 +44,7 @@ def squeak_entry_to_message(squeak_entry_with_profile: SqueakEntryWithProfile):
         author_address=author_address,
         is_reply=is_reply,
         reply_to=reply_to,
+        author_image=image_base64_str,
     )
 
 
@@ -171,7 +175,3 @@ def payment_summary_to_message(
         amount_earned_msat=received_payment_summary.total_amount_received_msat,
         amount_spent_msat=sent_payment_summary.total_amount_sent_msat,
     )
-
-
-def load_default_profile_image():
-    return resource_stream(__name__, 'default_profile_image.jpg')

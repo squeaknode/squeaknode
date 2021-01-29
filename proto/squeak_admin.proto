@@ -438,6 +438,9 @@ message SqueakDisplayEntry {
 
     /// The author name
     string author_name = 11;
+
+    /// The author image
+    string author_image = 12;
 }
 
 message GetTimelineSqueakDisplaysRequest {
