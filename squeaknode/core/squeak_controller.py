@@ -256,8 +256,13 @@ class SqueakController:
 
     def pay_offer(self, received_offer_id: int) -> int:
         # Get the offer from the database
-        offer_with_peer = self.squeak_db.get_offer_with_peer(received_offer_id)
-        received_offer = offer_with_peer.received_offer
+        received_offer_with_peer = self.squeak_db.get_offer_with_peer(
+            received_offer_id)
+        if received_offer_with_peer is None:
+            raise Exception("Received offer with id {} not found.".format(
+                received_offer_id,
+            ))
+        received_offer = received_offer_with_peer.received_offer
         logger.info("Paying received offer: {}".format(received_offer))
         sent_payment = self.squeak_core.pay_offer(received_offer)
         sent_payment_id = self.squeak_db.insert_sent_payment(sent_payment)
