@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import TimelineDot from '@material-ui/lab/TimelineDot';
 
 import FaceIcon from '@material-ui/icons/Face';
+import HelpIcon from '@material-ui/icons/Help';
 import Avatar from '@material-ui/core/Avatar';
 
 import {useHistory} from "react-router-dom";
@@ -48,7 +49,10 @@ export default function SqueakUserAvatar({
     onClick={handleAvatarClick}
     style={{cursor: 'pointer'}}
     >
-      {squeak && AvatarImage()}
+      {squeak ?
+        AvatarImage() :
+        <HelpIcon fontSize="large" />
+      }
     </TimelineDot>
   )
 }
