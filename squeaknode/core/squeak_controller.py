@@ -199,6 +199,9 @@ class SqueakController:
     def set_squeak_profile_image(self, profile_id: int, profile_image: bytes):
         self.squeak_db.set_profile_image(profile_id, profile_image)
 
+    def clear_squeak_profile_image(self, profile_id: int):
+        self.squeak_db.set_profile_image(profile_id, None)
+
     def get_squeak_profile_private_key(self, profile_id: int):
         profile = self.get_squeak_profile(profile_id)
         if profile.private_key is None:

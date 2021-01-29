@@ -236,6 +236,18 @@ class SqueakAdminServerHandler(object):
             profile_id, profile_image)
         return squeak_admin_pb2.SetSqueakProfileImageReply()
 
+    def handle_clear_squeak_profile_image(self, request):
+        profile_id = request.profile_id
+        logger.info(
+            "Handle clear squeak profile image with profile id: {}".format(
+                profile_id,
+            )
+        )
+        self.squeak_controller.clear_squeak_profile_image(
+            profile_id,
+        )
+        return squeak_admin_pb2.ClearSqueakProfileImageReply()
+
     def handle_get_squeak_profile_private_key(self, request):
         profile_id = request.profile_id
         logger.info(
