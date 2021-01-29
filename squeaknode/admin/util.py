@@ -1,13 +1,19 @@
 import logging
 
 from proto import squeak_admin_pb2
+from squeaknode.admin.profile_image_util import bytes_to_base64_string
+from squeaknode.admin.profile_image_util import load_default_profile_image
 from squeaknode.core.received_offer_with_peer import ReceivedOfferWithPeer
 from squeaknode.core.received_payment_summary import ReceivedPaymentSummary
 from squeaknode.core.sent_payment_summary import SentPaymentSummary
 from squeaknode.core.squeak_entry_with_profile import SqueakEntryWithProfile
 from squeaknode.core.util import get_hash
 
+
 logger = logging.getLogger(__name__)
+
+
+DEFAULT_PROFILE_IMAGE = load_default_profile_image()
 
 
 def squeak_entry_to_message(squeak_entry_with_profile: SqueakEntryWithProfile):
@@ -24,6 +30,10 @@ def squeak_entry_to_message(squeak_entry_with_profile: SqueakEntryWithProfile):
     author_address = str(squeak.GetAddress())
     is_reply = squeak.is_reply
     reply_to = squeak.hashReplySqk.hex() if is_reply else None
+    image_base64_str = bytes_to_base64_string(DEFAULT_PROFILE_IMAGE)
+    logger.info("image_base64_str len: {}".format(
+        len(image_base64_str),
+    ))
     return squeak_admin_pb2.SqueakDisplayEntry(
         squeak_hash=get_hash(squeak).hex(),
         is_unlocked=squeak.HasDecryptionKey(),
@@ -36,6 +46,7 @@ def squeak_entry_to_message(squeak_entry_with_profile: SqueakEntryWithProfile):
         author_address=author_address,
         is_reply=is_reply,
         reply_to=reply_to,
+        author_image=image_base64_str,
     )
 
 

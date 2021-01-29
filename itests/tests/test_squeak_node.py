@@ -275,6 +275,9 @@ def test_make_squeak(server_stub, admin_stub, signing_profile_id):
     assert (
         get_squeak_display_response.squeak_display_entry.content_str == "Hello from the profile on the server!"
     )
+    print("get_squeak_display_response.squeak_display_entry.author_image: {}".format(
+        get_squeak_display_response.squeak_display_entry.author_image,
+    ))
 
     # Get the squeak profile
     get_squeak_profile_response = admin_stub.GetSqueakProfile(

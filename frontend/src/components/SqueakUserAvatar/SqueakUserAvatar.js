@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import TimelineDot from '@material-ui/lab/TimelineDot';
 
 import FaceIcon from '@material-ui/icons/Face';
+import Avatar from '@material-ui/core/Avatar';
 
 import {useHistory} from "react-router-dom";
 
@@ -22,12 +23,32 @@ export default function SqueakUserAvatar({
       goToSqueakAddressPage(squeak.getAuthorAddress());
     }
   };
+
+  const getAuthorImage = () => {
+    console.log(squeak);
+    console.log("squeak image: " + squeak.getAuthorImage());
+    return squeak.getAuthorImage();
+  }
+
+  function ImageSrcString() {
+    console.log("getAuthorImage" + getAuthorImage());
+    return "data:image/jpeg;base64," + getAuthorImage();
+  }
+
+  function AvatarImage() {
+    console.log("ImageSrcString: " + ImageSrcString());
+    return (
+      <Avatar alt="Remy Sharp" src={`${ImageSrcString()}`} />
+    )
+  }
+
+  console.log("show avatar");
   return (
     <TimelineDot
     onClick={handleAvatarClick}
     style={{cursor: 'pointer'}}
     >
-      <FaceIcon />
+      {squeak && AvatarImage()}
     </TimelineDot>
   )
 }
