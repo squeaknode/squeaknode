@@ -8,6 +8,11 @@ import Avatar from '@material-ui/core/Avatar';
 
 import {useHistory} from "react-router-dom";
 
+import {
+  getAuthorImageSrcString,
+} from "../../squeakimages/images"
+
+
 export default function SqueakUserAvatar({
   squeak,
   ...props
@@ -24,17 +29,9 @@ export default function SqueakUserAvatar({
     }
   };
 
-  const getAuthorImage = () => {
-    return squeak.getAuthorImage();
-  }
-
-  function ImageSrcString() {
-    return "data:image/jpeg;base64," + getAuthorImage();
-  }
-
   function AvatarImage() {
     return (
-      <Avatar src={`${ImageSrcString()}`} />
+      <Avatar src={`${getAuthorImageSrcString(squeak)}`} />
     )
   }
 

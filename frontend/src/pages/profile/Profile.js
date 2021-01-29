@@ -14,6 +14,12 @@ import {
   Typography,
 } from "@material-ui/core";
 
+import Card from '@material-ui/core/Card';
+import CardActionArea from '@material-ui/core/CardActionArea';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import CardMedia from '@material-ui/core/CardMedia';
+
 // styles
 import useStyles from "./styles";
 
@@ -29,6 +35,11 @@ import {
   setSqueakProfileFollowingRequest,
   setSqueakProfileSharingRequest,
 } from "../../squeakclient/requests"
+
+import {
+  getProfileImageSrcString,
+} from "../../squeakimages/images"
+
 
 
 export default function ProfilePage() {
@@ -84,8 +95,7 @@ export default function ProfilePage() {
   function ProfileContent() {
     return (
       <>
-        {SqueakAddressLink()}
-        {ConfigureProfileButton()}
+        {SqueakProfileImageDisplay()}
         {squeakProfile.getHasPrivateKey() &&
           ExportPrivateKeyButton()
         }
@@ -94,26 +104,43 @@ export default function ProfilePage() {
     )
   }
 
-  function SqueakAddressLink() {
-    const squeakAddress = squeakProfile.getAddress();
+  function SqueakProfileImageDisplay() {
+    const profileImageBase64String = squeakProfile.getProfileImage();
     return (
-      <>
-      <Grid item xs={12}>
-        <div className={classes.root}>
-          <Typography
-            size="md"
-            >Squeak Address: <Link
-            href="#"
-            onClick={(e) => {
-              e.preventDefault();
-              goToSqueakAddressPage(squeakAddress);
-            }}>{squeakAddress}
-          </Link>
-          </Typography>
-        </div>
-      </Grid>
-      </>
-    )
+        <Card className={classes.root}>
+          <CardActionArea
+            onClick={() => {
+              goToSqueakAddressPage(squeakProfile.getAddress());
+            }}
+            >
+            <CardMedia
+              className={classes.media}
+              image={`${getProfileImageSrcString(squeakProfile)}`}
+              title="Contemplative Reptile"
+            />
+            <CardContent>
+              <Typography gutterBottom variant="h5" component="h2">
+                {squeakProfile.getProfileName()}
+              </Typography>
+              <Typography variant="body2" color="textSecondary" component="p">
+                {squeakProfile.getAddress()}
+              </Typography>
+            </CardContent>
+          </CardActionArea>
+          <CardActions>
+            <Button
+              onClick={() => {
+                handleClickOpenConfigureDialog();
+              }}
+              size="small" color="primary">
+              Configure
+            </Button>
+            <Button size="small" color="primary">
+              Rename
+            </Button>
+          </CardActions>
+        </Card>
+      );
   }
 
   function DeleteProfileButton() {
