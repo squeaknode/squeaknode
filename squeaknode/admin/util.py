@@ -1,5 +1,7 @@
 import logging
 
+from pkg_resources import resource_stream
+
 from proto import squeak_admin_pb2
 from squeaknode.core.received_offer_with_peer import ReceivedOfferWithPeer
 from squeaknode.core.received_payment_summary import ReceivedPaymentSummary
@@ -7,12 +9,15 @@ from squeaknode.core.sent_payment_summary import SentPaymentSummary
 from squeaknode.core.squeak_entry_with_profile import SqueakEntryWithProfile
 from squeaknode.core.util import get_hash
 
+
 logger = logging.getLogger(__name__)
 
 
 def squeak_entry_to_message(squeak_entry_with_profile: SqueakEntryWithProfile):
     if squeak_entry_with_profile is None:
         return None
+    default_profile_image = load_default_profile_image()
+    logger.info("Default profile image: {}".format(default_profile_image))
     squeak_entry = squeak_entry_with_profile.squeak_entry
     squeak = squeak_entry.squeak
     block_header = squeak_entry.block_header
@@ -166,3 +171,7 @@ def payment_summary_to_message(
         amount_earned_msat=received_payment_summary.total_amount_received_msat,
         amount_spent_msat=sent_payment_summary.total_amount_sent_msat,
     )
+
+
+def load_default_profile_image():
+    return resource_stream(__name__, 'default_profile_image.jpg')
