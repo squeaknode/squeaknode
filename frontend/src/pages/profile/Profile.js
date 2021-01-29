@@ -20,6 +20,8 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 
+import VpnKeyIcon from '@material-ui/icons/VpnKey';
+
 // styles
 import useStyles from "./styles";
 
@@ -108,35 +110,33 @@ export default function ProfilePage() {
     const profileImageBase64String = squeakProfile.getProfileImage();
     return (
         <Card className={classes.root}>
-          <CardActionArea
-            onClick={() => {
-              goToSqueakAddressPage(squeakProfile.getAddress());
-            }}
-            >
             <CardMedia
               className={classes.media}
               image={`${getProfileImageSrcString(squeakProfile)}`}
-              title="Contemplative Reptile"
+              title="Profile Image"
             />
             <CardContent>
               <Typography gutterBottom variant="h5" component="h2">
-                {squeakProfile.getProfileName()}
+                {squeakProfile.getProfileName()} {squeakProfile.getHasPrivateKey() && <VpnKeyIcon />}
               </Typography>
               <Typography variant="body2" color="textSecondary" component="p">
                 {squeakProfile.getAddress()}
               </Typography>
             </CardContent>
-          </CardActionArea>
           <CardActions>
+            <Button
+              onClick={() => {
+                goToSqueakAddressPage(squeakProfile.getAddress());
+              }}
+              size="small" color="primary">
+              View Squeaks
+            </Button>
             <Button
               onClick={() => {
                 handleClickOpenConfigureDialog();
               }}
               size="small" color="primary">
               Configure
-            </Button>
-            <Button size="small" color="primary">
-              Rename
             </Button>
           </CardActions>
         </Card>
