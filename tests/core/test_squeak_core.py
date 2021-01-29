@@ -75,6 +75,7 @@ def signing_profile():
         address=str(address),
         sharing=False,
         following=False,
+        profile_image=None,
     )
 
 

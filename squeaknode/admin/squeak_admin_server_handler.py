@@ -145,7 +145,11 @@ class SqueakAdminServerHandler(object):
         squeak_profile = self.squeak_controller.get_squeak_profile(profile_id)
         if squeak_profile is None:
             return None
+        logger.info("Got squeak profile with image: {}".format(
+            squeak_profile.profile_image))
         squeak_profile_msg = squeak_profile_to_message(squeak_profile)
+        logger.info("Got squeak profile msg with image: {}".format(
+            squeak_profile_msg.profile_image))
         return squeak_admin_pb2.GetSqueakProfileReply(
             squeak_profile=squeak_profile_msg,
         )
@@ -214,6 +218,23 @@ class SqueakAdminServerHandler(object):
             "Handle delete squeak profile with id: {}".format(profile_id))
         self.squeak_controller.delete_squeak_profile(profile_id)
         return squeak_admin_pb2.DeleteSqueakProfileReply()
+
+    def handle_set_squeak_profile_image(self, request):
+        profile_id = request.profile_id
+        profile_image = request.profile_image
+        logger.info(
+            "Handle set squeak profile image with profile id: {}".format(
+                profile_id,
+            )
+        )
+        logger.info(
+            "Handle set squeak profile image with image: {}".format(
+                profile_image,
+            )
+        )
+        self.squeak_controller.set_squeak_profile_image(
+            profile_id, profile_image)
+        return squeak_admin_pb2.SetSqueakProfileImageReply()
 
     def handle_get_squeak_profile_private_key(self, request):
         profile_id = request.profile_id

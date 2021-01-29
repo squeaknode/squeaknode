@@ -130,8 +130,9 @@ class SqueakController:
             profile_name=profile_name,
             private_key=signing_key_bytes,
             address=str(address),
-            sharing=False,
-            following=False,
+            sharing=True,
+            following=True,
+            profile_image=None,
         )
         return self.squeak_db.insert_profile(squeak_profile)
 
@@ -148,6 +149,7 @@ class SqueakController:
             address=str(address),
             sharing=False,
             following=False,
+            profile_image=None,
         )
         return self.squeak_db.insert_profile(squeak_profile)
 
@@ -161,7 +163,8 @@ class SqueakController:
             private_key=None,
             address=squeak_address,
             sharing=False,
-            following=False,
+            following=True,
+            profile_image=None,
         )
         return self.squeak_db.insert_profile(squeak_profile)
 
@@ -192,6 +195,9 @@ class SqueakController:
 
     def delete_squeak_profile(self, profile_id: int):
         self.squeak_db.delete_profile(profile_id)
+
+    def set_squeak_profile_image(self, profile_id: int, profile_image: bytes):
+        self.squeak_db.set_profile_image(profile_id, profile_image)
 
     def get_squeak_profile_private_key(self, profile_id: int):
         profile = self.get_squeak_profile(profile_id)

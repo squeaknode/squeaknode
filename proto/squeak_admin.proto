@@ -116,6 +116,10 @@ service SqueakAdmin {
   */
   rpc DeleteSqueakProfile (DeleteSqueakProfileRequest) returns (DeleteSqueakProfileReply) {}
 
+  /** sqkadmin: `setsqueakprofileimage`
+  */
+  rpc SetSqueakProfileImage (SetSqueakProfileImageRequest) returns (SetSqueakProfileImageReply) {}
+
   /** sqkadmin: `makesqueak`
   */
   rpc MakeSqueak (MakeSqueakRequest) returns (MakeSqueakReply) {}
@@ -359,6 +363,17 @@ message DeleteSqueakProfileRequest {
 message DeleteSqueakProfileReply {
 }
 
+message SetSqueakProfileImageRequest {
+    /// The profile id
+    int32 profile_id = 1;
+
+    /// The profile image
+    bytes profile_image = 2;
+}
+
+message SetSqueakProfileImageReply {
+}
+
 message SqueakProfile {
     /// The profile id
     int32 profile_id = 1;
@@ -377,6 +392,9 @@ message SqueakProfile {
 
     /// Following
     bool following = 6;
+
+    /// The profile image
+    string profile_image = 7;
 }
 
 message MakeSqueakRequest {
