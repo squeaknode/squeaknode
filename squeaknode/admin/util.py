@@ -19,7 +19,6 @@ DEFAULT_PROFILE_IMAGE = load_default_profile_image()
 def squeak_entry_to_message(squeak_entry_with_profile: SqueakEntryWithProfile):
     if squeak_entry_with_profile is None:
         return None
-    logger.info("Default profile image: {}".format(DEFAULT_PROFILE_IMAGE))
     squeak_entry = squeak_entry_with_profile.squeak_entry
     squeak = squeak_entry.squeak
     block_header = squeak_entry.block_header
@@ -31,7 +30,10 @@ def squeak_entry_to_message(squeak_entry_with_profile: SqueakEntryWithProfile):
     author_address = str(squeak.GetAddress())
     is_reply = squeak.is_reply
     reply_to = squeak.hashReplySqk.hex() if is_reply else None
-    image_base64_str = bytes_to_base64_string(DEFAULT_PROFILE_IMAGE.read())
+    image_base64_str = bytes_to_base64_string(DEFAULT_PROFILE_IMAGE)
+    logger.info("image_base64_str len: {}".format(
+        len(image_base64_str),
+    ))
     return squeak_admin_pb2.SqueakDisplayEntry(
         squeak_hash=get_hash(squeak).hex(),
         is_unlocked=squeak.HasDecryptionKey(),

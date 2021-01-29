@@ -4,7 +4,7 @@ from pkg_resources import resource_stream
 
 
 def load_default_profile_image():
-    return resource_stream(__name__, 'default_profile_image.jpg')
+    return resource_stream(__name__, 'default_profile_image.jpg').read()
 
 
 def bytes_to_base64_string(data: bytes) -> str:

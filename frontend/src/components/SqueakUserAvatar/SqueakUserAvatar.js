@@ -23,12 +23,32 @@ export default function SqueakUserAvatar({
       goToSqueakAddressPage(squeak.getAuthorAddress());
     }
   };
+
+  const getAuthorImage = () => {
+    console.log(squeak);
+    console.log("squeak image: " + squeak.getAuthorImage());
+    return squeak.getAuthorImage();
+  }
+
+  function ImageSrcString() {
+    console.log("getAuthorImage" + getAuthorImage());
+    return "data:image/jpeg;base64," + getAuthorImage();
+  }
+
+  function AvatarImage() {
+    console.log("ImageSrcString: " + ImageSrcString());
+    return (
+      <Avatar alt="Remy Sharp" src={`${ImageSrcString()}`} />
+    )
+  }
+
+  console.log("show avatar");
   return (
     <TimelineDot
     onClick={handleAvatarClick}
     style={{cursor: 'pointer'}}
     >
-         <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
+      {squeak && AvatarImage()}
     </TimelineDot>
   )
 }
