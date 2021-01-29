@@ -66,6 +66,7 @@ class Models:
             Column("address", String(35), unique=True, nullable=False),
             Column("sharing", Boolean, nullable=False),
             Column("following", Boolean, nullable=False),
+            Column("profile_image", Binary, nullable=True),
         )
 
         self.peers = Table(
