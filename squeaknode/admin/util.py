@@ -55,6 +55,7 @@ def squeak_profile_to_message(squeak_profile):
         return None
     has_private_key = squeak_profile.private_key is not None
     profile_image = squeak_profile.profile_image or DEFAULT_PROFILE_IMAGE
+    has_custom_profile_image = squeak_profile.profile_image is not None
     image_base64_str = bytes_to_base64_string(profile_image)
     return squeak_admin_pb2.SqueakProfile(
         profile_id=squeak_profile.profile_id,
@@ -64,6 +65,7 @@ def squeak_profile_to_message(squeak_profile):
         sharing=squeak_profile.sharing,
         following=squeak_profile.following,
         profile_image=image_base64_str,
+        has_custom_profile_image=has_custom_profile_image,
     )
 
 

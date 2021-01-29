@@ -410,6 +410,9 @@ message SqueakProfile {
 
     /// The profile image
     string profile_image = 7;
+
+    /// Has custom profile image
+    bool has_custom_profile_image = 8;
 }
 
 message MakeSqueakRequest {

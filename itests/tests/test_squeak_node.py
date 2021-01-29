@@ -581,6 +581,7 @@ def test_set_profile_image(server_stub, admin_stub, contact_profile_id, random_i
         get_squeak_profile_response.squeak_profile.profile_image,
     ))
     assert get_squeak_profile_response.squeak_profile.profile_image == random_image_base64_string
+    assert get_squeak_profile_response.squeak_profile.has_custom_profile_image
 
     # Clear the profile image
     admin_stub.ClearSqueakProfileImage(
@@ -599,6 +600,7 @@ def test_set_profile_image(server_stub, admin_stub, contact_profile_id, random_i
         get_squeak_profile_response.squeak_profile.profile_image,
     ))
     assert get_squeak_profile_response.squeak_profile.profile_image != random_image_base64_string
+    assert not get_squeak_profile_response.squeak_profile.has_custom_profile_image
 
 
 def test_delete_profile(server_stub, admin_stub, contact_profile_id):
