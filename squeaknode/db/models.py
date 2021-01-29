@@ -10,6 +10,7 @@ from sqlalchemy import Integer
 from sqlalchemy import MetaData
 from sqlalchemy import String
 from sqlalchemy import Table
+from sqlalchemy import UniqueConstraint
 from sqlalchemy.types import TypeDecorator
 
 logger = logging.getLogger(__name__)
@@ -130,6 +131,8 @@ class Models:
             Column("invoice_timestamp", Integer, nullable=False),
             Column("invoice_expiry", Integer, nullable=False),
             Column("client_addr", String(64), nullable=False),
+            UniqueConstraint('squeak_hash', 'client_addr',
+                             name='uq_sent_offer_squeak_hash_client_addr')
         )
 
         self.received_payments = Table(
