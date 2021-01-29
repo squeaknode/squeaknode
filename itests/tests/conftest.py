@@ -1,3 +1,4 @@
+import os
 import uuid
 
 import grpc
@@ -7,6 +8,7 @@ from squeak.params import SelectParams
 from proto import squeak_admin_pb2
 from proto import squeak_admin_pb2_grpc
 from proto import squeak_server_pb2_grpc
+from tests.util import bytes_to_base64_string
 from tests.util import generate_signing_key
 from tests.util import get_address
 from tests.util import load_lightning_client
@@ -143,3 +145,13 @@ def peer_id(server_stub, admin_stub):
 @pytest.fixture
 def random_name():
     yield "random_name_{}".format(uuid.uuid1())
+
+
+@pytest.fixture
+def random_image():
+    yield os.urandom(567)
+
+
+@pytest.fixture
+def random_image_base64_string(random_image):
+    yield bytes_to_base64_string(random_image)

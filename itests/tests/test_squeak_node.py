@@ -475,14 +475,6 @@ def test_make_contact_profile(server_stub, admin_stub):
 
 
 def test_set_profile_following(server_stub, admin_stub, contact_profile_id):
-    # Get the existing profile
-    get_squeak_profile_response = admin_stub.GetSqueakProfile(
-        squeak_admin_pb2.GetSqueakProfileRequest(
-            profile_id=contact_profile_id,
-        )
-    )
-    assert not get_squeak_profile_response.squeak_profile.following
-
     # Set the profile to be following
     admin_stub.SetSqueakProfileFollowing(
         squeak_admin_pb2.SetSqueakProfileFollowingRequest(
@@ -499,16 +491,24 @@ def test_set_profile_following(server_stub, admin_stub, contact_profile_id):
     )
     assert get_squeak_profile_response.squeak_profile.following
 
+    # Set the profile to be not following
+    admin_stub.SetSqueakProfileFollowing(
+        squeak_admin_pb2.SetSqueakProfileFollowingRequest(
+            profile_id=contact_profile_id,
+            following=False,
+        )
+    )
 
-def test_set_profile_sharing(server_stub, admin_stub, contact_profile_id):
-    # Get the existing profile
+    # Get the squeak profile again
     get_squeak_profile_response = admin_stub.GetSqueakProfile(
         squeak_admin_pb2.GetSqueakProfileRequest(
             profile_id=contact_profile_id,
         )
     )
-    assert not get_squeak_profile_response.squeak_profile.sharing
+    assert not get_squeak_profile_response.squeak_profile.following
 
+
+def test_set_profile_sharing(server_stub, admin_stub, contact_profile_id):
     # Set the profile to be sharing
     admin_stub.SetSqueakProfileSharing(
         squeak_admin_pb2.SetSqueakProfileSharingRequest(
@@ -524,6 +524,22 @@ def test_set_profile_sharing(server_stub, admin_stub, contact_profile_id):
         )
     )
     assert get_squeak_profile_response.squeak_profile.sharing
+
+    # Set the profile to be not sharing
+    admin_stub.SetSqueakProfileSharing(
+        squeak_admin_pb2.SetSqueakProfileSharingRequest(
+            profile_id=contact_profile_id,
+            sharing=False,
+        )
+    )
+
+    # Get the squeak profile again
+    get_squeak_profile_response = admin_stub.GetSqueakProfile(
+        squeak_admin_pb2.GetSqueakProfileRequest(
+            profile_id=contact_profile_id,
+        )
+    )
+    assert not get_squeak_profile_response.squeak_profile.sharing
 
 
 def test_rename_profile(server_stub, admin_stub, contact_profile_id, random_name):
@@ -542,6 +558,49 @@ def test_rename_profile(server_stub, admin_stub, contact_profile_id, random_name
         )
     )
     assert get_squeak_profile_response.squeak_profile.profile_name == random_name
+
+
+def test_set_profile_image(server_stub, admin_stub, contact_profile_id, random_image, random_image_base64_string):
+    print("random_image: {}".format(random_image))
+    print("random_image_base64_string: {}".format(random_image_base64_string))
+    # Set the profile image to something new
+    admin_stub.SetSqueakProfileImage(
+        squeak_admin_pb2.SetSqueakProfileImageRequest(
+            profile_id=contact_profile_id,
+            profile_image=random_image,
+        )
+    )
+
+    # Get the squeak profile
+    get_squeak_profile_response = admin_stub.GetSqueakProfile(
+        squeak_admin_pb2.GetSqueakProfileRequest(
+            profile_id=contact_profile_id,
+        )
+    )
+    print("get_squeak_profile_response.squeak_profile.profile_image: {}".format(
+        get_squeak_profile_response.squeak_profile.profile_image,
+    ))
+    assert get_squeak_profile_response.squeak_profile.profile_image == random_image_base64_string
+    assert get_squeak_profile_response.squeak_profile.has_custom_profile_image
+
+    # Clear the profile image
+    admin_stub.ClearSqueakProfileImage(
+        squeak_admin_pb2.ClearSqueakProfileImageRequest(
+            profile_id=contact_profile_id,
+        )
+    )
+
+    # Get the squeak profile
+    get_squeak_profile_response = admin_stub.GetSqueakProfile(
+        squeak_admin_pb2.GetSqueakProfileRequest(
+            profile_id=contact_profile_id,
+        )
+    )
+    print("get_squeak_profile_response.squeak_profile.profile_image: {}".format(
+        get_squeak_profile_response.squeak_profile.profile_image,
+    ))
+    assert get_squeak_profile_response.squeak_profile.profile_image != random_image_base64_string
+    assert not get_squeak_profile_response.squeak_profile.has_custom_profile_image
 
 
 def test_delete_profile(server_stub, admin_stub, contact_profile_id):

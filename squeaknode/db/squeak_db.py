@@ -652,12 +652,15 @@ class SqueakDb:
         with self.get_connection() as connection:
             connection.execute(delete_profile_stmt)
 
-        # sql = """
-        # DELETE FROM profile
-        # WHERE profile_id=%s;
-        # """
-        # with self.get_cursor() as curs:
-        #     curs.execute(sql, (profile_id,))
+    def set_profile_image(self, profile_id: int, profile_image: bytes):
+        """ Set a profile image. """
+        stmt = (
+            self.profiles.update()
+            .where(self.profiles.c.profile_id == profile_id)
+            .values(profile_image=profile_image)
+        )
+        with self.get_connection() as connection:
+            connection.execute(stmt)
 
     def get_unverified_block_squeaks(self) -> List[bytes]:
         """ Get all squeaks without block header. """
@@ -1157,6 +1160,7 @@ class SqueakDb:
             address=row["address"],
             sharing=row["sharing"],
             following=row["following"],
+            profile_image=row["profile_image"],
         )
 
     def _parse_squeak_entry_with_profile(self, row) -> SqueakEntryWithProfile:

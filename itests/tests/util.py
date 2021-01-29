@@ -1,5 +1,6 @@
 from __future__ import print_function
 
+import base64
 import time
 from contextlib import contextmanager
 
@@ -98,6 +99,11 @@ def subtract_tweak(n, tweak):
     tweak_int = scalar_from_bytes(tweak)
     sum_int = scalar_difference(n_int, tweak_int)
     return scalar_to_bytes(sum_int)
+
+
+def bytes_to_base64_string(data: bytes) -> str:
+    encoded_string = base64.b64encode(data)
+    return encoded_string.decode('utf-8')
 
 
 @contextmanager
