@@ -20,6 +20,13 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import CardHeader from '@material-ui/core/CardHeader';
+import Avatar from '@material-ui/core/Avatar';
+import IconButton from '@material-ui/core/IconButton';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
 
 // styles
@@ -52,6 +59,16 @@ export default function ProfilePage() {
   const [exportPrivateKeyDialogOpen, setExportPrivateKeyDialogOpen] = useState(false);
   const [configureDialogOpen, setConfigureDialogOpen] = useState(false);
   const history = useHistory();
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   const getSqueakProfile = (id) => {
     getSqueakProfileRequest(id, setSqueakProfile);
@@ -98,10 +115,6 @@ export default function ProfilePage() {
     return (
       <>
         {SqueakProfileImageDisplay()}
-        {squeakProfile.getHasPrivateKey() &&
-          ExportPrivateKeyButton()
-        }
-        {DeleteProfileButton()}
       </>
     )
   }
@@ -110,6 +123,33 @@ export default function ProfilePage() {
     const profileImageBase64String = squeakProfile.getProfileImage();
     return (
         <Card className={classes.root}>
+
+        <CardHeader
+  action={
+    <>
+    <IconButton aria-label="settings" onClick={handleClick}>
+      <MoreVertIcon />
+    </IconButton>
+    <Menu
+      id="simple-menu"
+      anchorEl={anchorEl}
+      keepMounted
+      open={Boolean(anchorEl)}
+      onClose={handleClose}
+    >
+      <MenuItem onClick={handleClickOpenConfigureDialog}>Configure</MenuItem>
+      <MenuItem onClick={handleClose}>Rename</MenuItem>
+      <MenuItem onClick={handleClose}>Change Image</MenuItem>
+      {squeakProfile.getHasPrivateKey() &&
+        <MenuItem onClick={handleClickOpenExportPrivateKeyDialog}>Export</MenuItem>
+      }
+      <MenuItem onClick={handleClickOpenDeleteDialog}>Delete</MenuItem>
+    </Menu>
+    </>
+  }
+  title={squeakProfile.getProfileName()}
+/>
+
             <CardMedia
               className={classes.media}
               image={`${getProfileImageSrcString(squeakProfile)}`}
@@ -117,7 +157,7 @@ export default function ProfilePage() {
             />
             <CardContent>
               <Typography gutterBottom variant="h5" component="h2">
-                {squeakProfile.getProfileName()} {squeakProfile.getHasPrivateKey() && <VpnKeyIcon />}
+                {squeakProfile.getHasPrivateKey() && <VpnKeyIcon />}
               </Typography>
               <Typography variant="body2" color="textSecondary" component="p">
                 {squeakProfile.getAddress()}
@@ -131,84 +171,9 @@ export default function ProfilePage() {
               size="small" color="primary">
               View Squeaks
             </Button>
-            <Button
-              onClick={() => {
-                handleClickOpenConfigureDialog();
-              }}
-              size="small" color="primary">
-              Configure
-            </Button>
           </CardActions>
         </Card>
       );
-  }
-
-  function DeleteProfileButton() {
-    return (
-      <>
-      <Grid item xs={12}>
-        <div className={classes.root}>
-          <Button
-            variant="contained"
-            onClick={() => {
-              handleClickOpenDeleteDialog();
-            }}>Delete Profile
-          </Button>
-        </div>
-      </Grid>
-      </>
-    )
-  }
-
-  function ExportPrivateKeyButton() {
-    return (
-      <>
-      <Grid item xs={12}>
-        <div className={classes.root}>
-          <Button
-            variant="contained"
-            onClick={() => {
-              handleClickOpenExportPrivateKeyDialog();
-            }}>Export Private Key
-          </Button>
-        </div>
-      </Grid>
-      </>
-    )
-  }
-
-  function ViewSqueaksButton() {
-    return (
-      <>
-      <Grid item xs={12}>
-        <div className={classes.root}>
-          <Button
-            variant="contained"
-            onClick={() => {
-              goToSqueakAddressPage(squeakProfile.getAddress());
-            }}>View Squeaks
-          </Button>
-        </div>
-      </Grid>
-      </>
-    )
-  }
-
-  function ConfigureProfileButton() {
-    return (
-      <>
-      <Grid item xs={12}>
-        <div className={classes.root}>
-          <Button
-            variant="contained"
-            onClick={() => {
-              handleClickOpenConfigureDialog();
-            }}>Configure Profile
-          </Button>
-        </div>
-      </Grid>
-      </>
-    )
   }
 
   function DeleteProfileDialogContent() {
