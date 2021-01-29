@@ -124,7 +124,10 @@ export default function TimelinePage() {
       <>
         <div>
         {squeaks.map(squeak =>
-          <Timeline align="left">
+          <Timeline
+            align="left"
+            key={squeak.getSqueakHash()}
+          >
 
           <TimelineItem>
     <TimelineOppositeContent

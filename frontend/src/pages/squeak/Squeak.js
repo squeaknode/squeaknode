@@ -214,7 +214,9 @@ export default function SqueakPage() {
         {ancestorSqueaks.slice(0, -1)
           //.reverse()
           .map(ancestorSqueak =>
-            <TimelineItem>
+            <TimelineItem
+            key={ancestorSqueak.getSqueakHash()}
+            >
   <TimelineOppositeContent
     className={classes.oppositeContent}
     color="textSecondary"
@@ -277,7 +279,9 @@ export default function SqueakPage() {
       <>
         {replySqueaks
           .map(replySqueak =>
-            <TimelineItem>
+            <TimelineItem
+            key={replySqueak.getSqueakHash()}
+            >
   <TimelineOppositeContent
     className={classes.oppositeContent}
     color="textSecondary"
