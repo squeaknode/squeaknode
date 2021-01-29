@@ -193,7 +193,7 @@ export default function SqueakPage() {
 ></TimelineOppositeContent>
 <TimelineSeparator>
   <SqueakUserAvatar
-    squeak={squeak}
+    squeak={null}
   />
   <TimelineConnector />
 </TimelineSeparator>
