@@ -45,10 +45,10 @@ export default function UpdateProfileImageDialog({
   const history = useHistory();
 
   var [selectedFile, setSelectedFile] = useState(null);
-  var [imageBytes, setImageBytes] = useState([]);
+  var [imageBase64, setImageBase64] = useState(null);
 
   const resetFields = () => {
-    setImageBytes([]);
+    setImageBase64(null);
   };
 
   const reloadRoute = () => {
@@ -64,10 +64,10 @@ export default function UpdateProfileImageDialog({
     alert('Error creating signing profile: ' + err);
   };
 
-  const updateProfileImage = (imageBytes) => {
+  const updateProfileImage = (imageStr) => {
     setSqueakProfileImageRequest(
       squeakProfile.getProfileId(),
-      imageBytes,
+      imageStr,
       handleResponse,
       handleErr,
     );
@@ -75,10 +75,12 @@ export default function UpdateProfileImageDialog({
 
   function handleSubmit(event) {
     event.preventDefault();
-    // openChannel(pubkey, amount, satperbyte);
-
-    // const imageBytes = selectedFile.
-
+    if (imageBase64 == null) {
+      alert("Invalid image data.")
+      return;
+    }
+    const imageBase64Stripped = imageBase64.split(',')[1];
+    updateProfileImage(imageBase64Stripped);
     handleClose();
   }
 
@@ -88,7 +90,24 @@ export default function UpdateProfileImageDialog({
       alert("Invalid file selected");
       setSelectedFile(null);
     }
-    setSelectedFile(event.target.files[0]);
+    const file = event.target.files[0];
+    setSelectedFile(file);
+    getFileAsBase64(file);
+  };
+
+  const getFileAsBase64 = (file) => {
+    if (file == null) {
+      setImageBase64(null);
+    }
+    const reader = new FileReader();
+    reader.addEventListener("load", function () {
+      // convert image file to base64 string
+      // preview.src = reader.result;
+      setImageBase64(reader.result);
+    }, false);
+    if (file) {
+      reader.readAsDataURL(file);
+    }
   };
 
   function FileInput() {
@@ -109,7 +128,7 @@ export default function UpdateProfileImageDialog({
     )
   }
 
-  function DisplaySelectedImageFile() {
+  function DisplaySelectedImageFileName() {
     const fileName = selectedFile ? selectedFile.name : "";
     return (
       <TextField
@@ -123,6 +142,13 @@ export default function UpdateProfileImageDialog({
            readOnly: true,
         }}
       />
+    )
+  }
+
+  function DisplaySelectedImageFile() {
+    const imageStr = imageBase64 ? imageBase64 : "";
+    return (
+<img src={imageStr} height="200" alt="Image preview..."/>
     )
   }
 
@@ -157,7 +183,12 @@ export default function UpdateProfileImageDialog({
   <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
   <DialogContent>
     {FileInput()}
+  </DialogContent>
+  <DialogContent>
     {DisplaySelectedImageFile()}
+  </DialogContent>
+  <DialogContent>
+    {DisplaySelectedImageFileName()}
   </DialogContent>
   <DialogActions>
     {CancelButton()}
