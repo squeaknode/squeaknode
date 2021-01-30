@@ -9,8 +9,11 @@ class SentOffersWorker:
         self.squeak_controller = squeak_controller
 
     def start_running(self):
+        logger.info("Starting SentOffersWorker...")
         threading.Thread(
-            target=self.process_subscribed_invoices, daemon=True).start()
+            target=self.process_subscribed_invoices,
+            daemon=True,
+        ).start()
 
     def process_subscribed_invoices(self):
         self.squeak_controller.process_subscribed_invoices()

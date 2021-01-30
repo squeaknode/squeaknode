@@ -1,5 +1,6 @@
 import logging
 import os
+import threading
 
 from flask import flash
 from flask import Flask
@@ -13,6 +14,7 @@ from flask_login import login_required
 from flask_login import login_user
 from flask_login import LoginManager
 from flask_login import logout_user
+from werkzeug.serving import make_server
 
 from proto import lnd_pb2
 from proto import squeak_admin_pb2
@@ -511,6 +513,7 @@ class SqueakAdminWebServer:
         login_disabled,
         allow_cors,
         handler,
+        stopped,
     ):
         self.host = host
         self.port = port
@@ -518,8 +521,10 @@ class SqueakAdminWebServer:
         self.login_disabled = login_disabled
         self.allow_cors = allow_cors
         self.app = create_app(handler, username, password)
+        self.stopped = stopped
 
-    def serve(self):
+    def get_app(self):
+
         # Set LOGIN_DISABLED and allow CORS if login not required.
         if self.login_disabled:
             self.app.config["LOGIN_DISABLED"] = True
@@ -528,9 +533,28 @@ class SqueakAdminWebServer:
         if self.allow_cors:
             CORS(self.app)
 
-        self.app.run(
+        # self.app.run(
+        #     self.host,
+        #     self.port,
+        #     debug=False,
+        #     ssl_context="adhoc" if self.use_ssl else None,
+        # )
+
+        return self.app
+
+    def serve(self):
+        server = make_server(
             self.host,
             self.port,
-            debug=False,
+            self.get_app(),
             ssl_context="adhoc" if self.use_ssl else None,
         )
+
+        logger.info("Starting SqueakAdminWebServer...")
+        threading.Thread(
+            target=server.serve_forever,
+        ).start()
+        self.stopped.wait()
+        logger.info("Stopping SqueakAdminWebServer....")
+        server.shutdown()
+        logger.info("Stopped SqueakAdminWebServer.")

@@ -17,7 +17,12 @@ class SqueakOfferExpiryWorker:
         self.clean_interval_s = clean_interval_s
 
     def start_running(self):
-        threading.Timer(self.clean_interval_s, self.start_running).start()
+        timer = threading.Timer(
+            self.clean_interval_s,
+            self.start_running,
+        )
+        timer.daemon = True
+        timer.start()
         self.remove_expired_offers()
 
     def remove_expired_offers(self):

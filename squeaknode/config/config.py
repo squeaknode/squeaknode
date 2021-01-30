@@ -60,6 +60,7 @@ class LndConfig(Config):
 
 @section('server')
 class ServerConfig(Config):
+    rpc_enabled = key(cast=bool, required=False, default=True)
     rpc_host = key(cast=str, required=False, default=DEFAULT_SERVER_RPC_HOST)
     rpc_port = key(cast=int, required=False, default=DEFAULT_SERVER_RPC_PORT)
 
