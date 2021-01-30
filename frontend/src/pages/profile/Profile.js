@@ -38,6 +38,7 @@ import Widget from "../../components/Widget";
 import DeleteProfileDialog from "../../components/DeleteProfileDialog";
 import ExportPrivateKeyDialog from "../../components/ExportPrivateKeyDialog";
 import ConfigureProfileDialog from "../../components/ConfigureProfileDialog";
+import UpdateProfileImageDialog from "../../components/UpdateProfileImageDialog";
 import SqueakProfileDetailItem from "../../components/SqueakProfileDetailItem";
 
 import {
@@ -59,6 +60,7 @@ export default function ProfilePage() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [exportPrivateKeyDialogOpen, setExportPrivateKeyDialogOpen] = useState(false);
   const [configureDialogOpen, setConfigureDialogOpen] = useState(false);
+  const [updateImageDialogOpen, setUpdateImageDialogOpen] = useState(false);
   const history = useHistory();
 
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -96,6 +98,10 @@ export default function ProfilePage() {
     setConfigureDialogOpen(true);
   };
 
+  const handleClickOpenUpdateImageDialog = () => {
+    setUpdateImageDialogOpen(true);
+  };
+
   const handleCloseDeleteDialog = () => {
      setDeleteDialogOpen(false);
   };
@@ -106,6 +112,10 @@ export default function ProfilePage() {
 
   const handleCloseConfigureDialog = () => {
      setConfigureDialogOpen(false);
+  };
+
+  const handleCloseUpdateImageDialog = () => {
+     setUpdateImageDialogOpen(false);
   };
 
   const handleReloadProfile = () => {
@@ -132,7 +142,7 @@ export default function ProfilePage() {
           handleViewSqueaksClick={handleViewSqueaks}
           handleConfigureClick={handleClickOpenConfigureDialog}
           handleRenameClick={null}
-          handleChangeImageClick={null}
+          handleChangeImageClick={handleClickOpenUpdateImageDialog}
           handleExportClick={handleClickOpenExportPrivateKeyDialog}
           handleDeleteClick={handleClickOpenDeleteDialog}
         />
@@ -176,6 +186,19 @@ export default function ProfilePage() {
     )
   }
 
+  function UpdateImageDialogContent() {
+    return (
+      <>
+        <UpdateProfileImageDialog
+          open={updateImageDialogOpen}
+          handleClose={handleCloseUpdateImageDialog}
+          squeakProfile={squeakProfile}
+          reloadProfile={handleReloadProfile}
+          ></UpdateProfileImageDialog>
+      </>
+    )
+  }
+
   return (
     <>
       <PageTitle title={'Squeak Profile: ' + (squeakProfile ? squeakProfile.getProfileName() : null)} />
@@ -186,6 +209,7 @@ export default function ProfilePage() {
       {DeleteProfileDialogContent()}
       {ExportPrivateKeyDialogContent()}
       {ConfigureProfileDialogContent()}
+      {UpdateImageDialogContent()}
     </>
   );
 }

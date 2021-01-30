@@ -1,0 +1,107 @@
+import React, {useState, useEffect} from 'react';
+import {
+  Paper,
+  IconButton,
+  Menu,
+  MenuItem,
+  Typography,
+  Grid,
+  Box,
+  Link,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  TextField,
+  DialogActions,
+  Button,
+  FormControl,
+  InputLabel,
+  Select,
+} from "@material-ui/core";
+import { MoreVert as MoreIcon } from "@material-ui/icons";
+import {useHistory} from "react-router-dom";
+import classnames from "classnames";
+
+// styles
+import useStyles from "./styles";
+
+import Widget from "../../components/Widget";
+import SqueakThreadItem from "../../components/SqueakThreadItem";
+
+import {
+  lndOpenChannelSyncRequest,
+} from "../../squeakclient/requests"
+
+
+export default function UpdateProfileImageDialog({
+  open,
+  handleClose,
+  squeakProfile,
+  reloadProfile,
+  ...props
+}) {
+  var classes = useStyles();
+  const history = useHistory();
+
+  var [imageBytes, setImageBytes] = useState([]);
+
+  const resetFields = () => {
+    setImageBytes([]);
+  };
+
+  function handleSubmit(event) {
+    event.preventDefault();
+    // openChannel(pubkey, amount, satperbyte);
+    handleClose();
+  }
+
+  function CancelButton() {
+    return (
+      <Button
+        onClick={handleClose}
+        variant="contained"
+        color="secondary"
+      >
+        Cancel
+      </Button>
+    )
+  }
+
+  function SetProfileImageButton() {
+    return (
+      <Button
+       type="submit"
+       variant="contained"
+       color="primary"
+       className={classes.button}
+       >
+       Set Profile Image
+       </Button>
+    )
+  }
+
+  return (
+    <Dialog open={open} onEnter={resetFields} onClose={handleClose} aria-labelledby="form-dialog-title">
+  <DialogTitle id="form-dialog-title">Set Profile Image</DialogTitle>
+  <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
+  <DialogContent>
+  <Button
+    variant="contained"
+    component="label"
+  >
+    Upload File
+    <input
+      type="file"
+      hidden
+    />
+  </Button>
+  </DialogContent>
+  <DialogActions>
+    {CancelButton()}
+    {SetProfileImageButton()}
+  </DialogActions>
+  </form>
+    </Dialog>
+  )
+}

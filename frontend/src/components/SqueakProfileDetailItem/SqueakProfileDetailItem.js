@@ -147,8 +147,8 @@ export default function SqueakProfileDetailItem({
       onClose={handleClose}
     >
       <MenuItem onClick={onConfigureClick}>Configure</MenuItem>
-      <MenuItem onClick={handleClose}>Rename</MenuItem>
-      <MenuItem onClick={handleClose}>Change Image</MenuItem>
+      <MenuItem onClick={onRenameClick}>Rename</MenuItem>
+      <MenuItem onClick={onChangeImageClick}>Change Image</MenuItem>
       {squeakProfile.getHasPrivateKey() &&
         <MenuItem onClick={onExportClick}>Export</MenuItem>
       }
