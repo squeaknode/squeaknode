@@ -571,7 +571,7 @@ def test_set_profile_image(server_stub, admin_stub, contact_profile_id, random_i
     admin_stub.SetSqueakProfileImage(
         squeak_admin_pb2.SetSqueakProfileImageRequest(
             profile_id=contact_profile_id,
-            profile_image=random_image,
+            profile_image=random_image_base64_string,
         )
     )
 

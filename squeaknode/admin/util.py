@@ -30,7 +30,12 @@ def squeak_entry_to_message(squeak_entry_with_profile: SqueakEntryWithProfile):
     author_address = str(squeak.GetAddress())
     is_reply = squeak.is_reply
     reply_to = squeak.hashReplySqk.hex() if is_reply else None
-    image_base64_str = bytes_to_base64_string(DEFAULT_PROFILE_IMAGE)
+    if squeak_profile:
+        profile_image = squeak_profile.profile_image or DEFAULT_PROFILE_IMAGE
+    else:
+        profile_image = DEFAULT_PROFILE_IMAGE
+    # has_custom_profile_image = squeak_profile.profile_image is not None
+    image_base64_str = bytes_to_base64_string(profile_image)
     logger.info("image_base64_str len: {}".format(
         len(image_base64_str),
     ))

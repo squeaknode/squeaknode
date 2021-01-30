@@ -233,6 +233,22 @@ def create_app(handler, username, password):
             handler.handle_rename_squeak_profile,
         )
 
+    @app.route("/setsqueakprofileimage", methods=["POST"])
+    @login_required
+    def setsqueakprofileimage():
+        return handle_request(
+            squeak_admin_pb2.SetSqueakProfileImageRequest(),
+            handler.handle_set_squeak_profile_image,
+        )
+
+    @app.route("/clearsqueakprofileimage", methods=["POST"])
+    @login_required
+    def clearsqueakprofileimage():
+        return handle_request(
+            squeak_admin_pb2.ClearSqueakProfileImage(),
+            handler.handle_clear_squeak_profile_image,
+        )
+
     @app.route("/getpeers", methods=["POST"])
     @login_required
     def getpeers():
