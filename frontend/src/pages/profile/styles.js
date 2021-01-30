@@ -12,10 +12,4 @@ export default makeStyles(theme => ({
   text: {
     marginBottom: theme.spacing(2),
   },
-    root: {
-    maxWidth: 345,
-  },
-  media: {
-    height: 180,
-  },
 }));
