@@ -38,6 +38,7 @@ import Widget from "../../components/Widget";
 import DeleteProfileDialog from "../../components/DeleteProfileDialog";
 import ExportPrivateKeyDialog from "../../components/ExportPrivateKeyDialog";
 import ConfigureProfileDialog from "../../components/ConfigureProfileDialog";
+import SqueakProfileDetailItem from "../../components/SqueakProfileDetailItem";
 
 import {
   getSqueakProfileRequest,
@@ -111,6 +112,10 @@ export default function ProfilePage() {
     getSqueakProfile(id);
   };
 
+  const handleViewSqueaks = () => {
+    goToSqueakAddressPage(squeakProfile.getAddress());
+  };
+
   function ProfileContent() {
     return (
       <>
@@ -122,57 +127,15 @@ export default function ProfilePage() {
   function SqueakProfileImageDisplay() {
     const profileImageBase64String = squeakProfile.getProfileImage();
     return (
-        <Card className={classes.root}>
-
-        <CardHeader
-  action={
-    <>
-    <IconButton aria-label="settings" onClick={handleClick}>
-      <MoreVertIcon />
-    </IconButton>
-    <Menu
-      id="simple-menu"
-      anchorEl={anchorEl}
-      keepMounted
-      open={Boolean(anchorEl)}
-      onClose={handleClose}
-    >
-      <MenuItem onClick={handleClickOpenConfigureDialog}>Configure</MenuItem>
-      <MenuItem onClick={handleClose}>Rename</MenuItem>
-      <MenuItem onClick={handleClose}>Change Image</MenuItem>
-      {squeakProfile.getHasPrivateKey() &&
-        <MenuItem onClick={handleClickOpenExportPrivateKeyDialog}>Export</MenuItem>
-      }
-      <MenuItem onClick={handleClickOpenDeleteDialog}>Delete</MenuItem>
-    </Menu>
-    </>
-  }
-  title={squeakProfile.getProfileName()}
-/>
-
-            <CardMedia
-              className={classes.media}
-              image={`${getProfileImageSrcString(squeakProfile)}`}
-              title="Profile Image"
-            />
-            <CardContent>
-              <Typography gutterBottom variant="h5" component="h2">
-                {squeakProfile.getHasPrivateKey() && <VpnKeyIcon />}
-              </Typography>
-              <Typography variant="body2" color="textSecondary" component="p">
-                {squeakProfile.getAddress()}
-              </Typography>
-            </CardContent>
-          <CardActions>
-            <Button
-              onClick={() => {
-                goToSqueakAddressPage(squeakProfile.getAddress());
-              }}
-              size="small" color="primary">
-              View Squeaks
-            </Button>
-          </CardActions>
-        </Card>
+        <SqueakProfileDetailItem
+          squeakProfile={squeakProfile}
+          handleViewSqueaksClick={handleViewSqueaks}
+          handleConfigureClick={handleClickOpenConfigureDialog}
+          handleRenameClick={null}
+          handleChangeImageClick={null}
+          handleExportClick={handleClickOpenExportPrivateKeyDialog}
+          handleDeleteClick={handleClickOpenDeleteDialog}
+        />
       );
   }
 
