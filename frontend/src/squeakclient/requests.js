@@ -94,6 +94,12 @@ import {
   GetSqueakProfilePrivateKeyReply,
   GetPaymentSummaryRequest,
   GetPaymentSummaryReply,
+  RenameSqueakProfileRequest,
+  RenameSqueakProfileReply,
+  SetSqueakProfileImageRequest,
+  SetSqueakProfileImageReply,
+  ClearSqueakProfileImageRequest,
+  ClearSqueakProfileImageReply,
 } from "../proto/squeak_admin_pb"
 
 console.log('The value of REACT_APP_SERVER_PORT is:', process.env.REACT_APP_SERVER_PORT);
@@ -265,6 +271,41 @@ export function setSqueakProfileSharingRequest(id, sharing, handleResponse) {
     'setsqueakprofilesharing',
     request,
     SetSqueakProfileSharingReply.deserializeBinary,
+    handleResponse,
+  );
+}
+
+export function renameSqueakProfileRequest(id, profileName, handleResponse) {
+  var request = new RenameSqueakProfileRequest();
+  request.setProfileId(id);
+  request.setProfileName(profileName);
+  makeRequest(
+    'renamesqueakprofile',
+    request,
+    RenameSqueakProfileReply.deserializeBinary,
+    handleResponse,
+  );
+}
+
+export function setSqueakProfileImageRequest(id, profileImage, handleResponse) {
+  var request = new SetSqueakProfileImageRequest();
+  request.setProfileId(id);
+  request.setProfileImage(profileImage);
+  makeRequest(
+    'setsqueakprofileimage',
+    request,
+    SetSqueakProfileImageReply.deserializeBinary,
+    handleResponse,
+  );
+}
+
+export function clearSqueakProfileImageRequest(id, handleResponse) {
+  var request = new ClearSqueakProfileImageRequest();
+  request.setProfileId(id);
+  makeRequest(
+    'clearsqueakprofileimage',
+    request,
+    ClearSqueakProfileImageReply.deserializeBinary,
     handleResponse,
   );
 }
