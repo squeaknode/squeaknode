@@ -15,10 +15,11 @@ logger = logging.getLogger(__name__)
 class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
     """Provides methods that implement functionality of squeak server."""
 
-    def __init__(self, host, port, handler):
+    def __init__(self, host, port, handler, stopped):
         self.host = host
         self.port = port
         self.handler = handler
+        self.stopped = stopped
 
     def UploadSqueak(self, request, context):
         squeak_msg = request.squeak
@@ -101,5 +102,9 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
         squeak_server_pb2_grpc.add_SqueakServerServicer_to_server(self, server)
         # server.add_insecure_port('0.0.0.0:50052')
         server.add_insecure_port("{}:{}".format(self.host, self.port))
+        logger.info("Starting SqueakServerServicer...")
         server.start()
-        server.wait_for_termination()
+        # server.wait_for_termination()
+        self.stopped.wait()
+        server.stop(None)
+        logger.info("Stopped SqueakServerServicer.")

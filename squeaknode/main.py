@@ -1,6 +1,10 @@
 import argparse
 import logging
-import sys
+from signal import SIGHUP
+from signal import SIGINT
+from signal import signal
+from signal import SIGTERM
+from threading import Event
 
 from squeaknode.config.config import SqueaknodeConfig
 from squeaknode.node.received_payments_subscription_client import (
@@ -12,9 +16,11 @@ from squeaknode.node.squeak_node import SqueakNode
 logger = logging.getLogger(__name__)
 
 
-def sigterm_handler(_signo, _stack_frame):
-    # Raises SystemExit(0):
-    sys.exit(0)
+stop_event = Event()
+
+
+def handler(signum, frame):
+    stop_event.set()
 
 
 def parse_args():
@@ -76,8 +82,15 @@ def main():
 
 
 def run_node(config):
+    signal(SIGTERM, handler)
+    signal(SIGINT, handler)
+    signal(SIGHUP, handler)
     squeak_node = SqueakNode(config)
+    print('Starting Squeaknode...')
     squeak_node.start_running()
+    stop_event.wait()
+    print('Shutting down Squeaknode...')
+    squeak_node.stop_running()
 
 
 if __name__ == "__main__":

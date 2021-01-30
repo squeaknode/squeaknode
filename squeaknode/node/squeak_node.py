@@ -31,9 +31,13 @@ logger = logging.getLogger(__name__)
 
 
 class SqueakNode:
+
     def __init__(self, config: SqueaknodeConfig):
         self.config = config
+        self.stopped = threading.Event()
+        self._initialize()
 
+    def _initialize(self):
         # load the network
         network = self.config.core.network
         SelectParams(network)
@@ -77,12 +81,13 @@ class SqueakNode:
             lightning_client, squeak_controller, sync_controller)
 
         self.admin_rpc_server = load_admin_rpc_server(
-            self.config, admin_handler)
+            self.config, admin_handler, self.stopped)
 
         self.admin_web_server = load_admin_web_server(
-            self.config, admin_handler)
+            self.config, admin_handler, self.stopped)
 
-        self.sync_worker = load_sync_worker(self.config, sync_controller)
+        self.sync_worker = load_sync_worker(
+            self.config, sync_controller)
 
         self.squeak_offer_expiry_worker = SqueakOfferExpiryWorker(
             squeak_controller,
@@ -91,9 +96,9 @@ class SqueakNode:
             squeak_controller,
         )
 
-        # start rpc server
         handler = load_handler(squeak_controller)
-        self.server = load_rpc_server(self.config, handler)
+        self.server = load_rpc_server(
+            self.config, handler, self.stopped)
 
     def start_running(self):
         # start admin rpc server
@@ -111,8 +116,12 @@ class SqueakNode:
         self.squeak_offer_expiry_worker.start_running()
         self.sent_offers_worker.start_running()
 
-        # start rpc server
-        self.server.serve()
+        # start peer rpc server
+        if self.config.server.rpc_enabled:
+            start_peer_web_server(self.server)
+
+    def stop_running(self):
+        self.stopped.set()
 
 
 def load_lightning_client(config) -> LNDLightningClient:
@@ -124,23 +133,25 @@ def load_lightning_client(config) -> LNDLightningClient:
     )
 
 
-def load_rpc_server(config, handler) -> SqueakServerServicer:
+def load_rpc_server(config, handler, stopped_event) -> SqueakServerServicer:
     return SqueakServerServicer(
         config.server.rpc_host,
         config.server.rpc_port,
         handler,
+        stopped_event,
     )
 
 
-def load_admin_rpc_server(config, handler) -> SqueakAdminServerServicer:
+def load_admin_rpc_server(config, handler, stopped_event) -> SqueakAdminServerServicer:
     return SqueakAdminServerServicer(
         config.admin.rpc_host,
         config.admin.rpc_port,
         handler,
+        stopped_event,
     )
 
 
-def load_admin_web_server(config, handler) -> SqueakAdminWebServer:
+def load_admin_web_server(config, handler, stopped_event) -> SqueakAdminWebServer:
     return SqueakAdminWebServer(
         config.webadmin.host,
         config.webadmin.port,
@@ -150,6 +161,7 @@ def load_admin_web_server(config, handler) -> SqueakAdminWebServer:
         config.webadmin.login_disabled,
         config.webadmin.allow_cors,
         handler,
+        stopped_event,
     )
 
 
@@ -209,7 +221,6 @@ def start_admin_rpc_server(rpc_server):
         target=rpc_server.serve,
         args=(),
     )
-    thread.daemon = True
     thread.start()
 
 
@@ -223,7 +234,15 @@ def start_admin_web_server(admin_web_server):
         target=admin_web_server.serve,
         args=(),
     )
-    thread.daemon = True
+    thread.start()
+
+
+def start_peer_web_server(peer_web_server):
+    logger.info("Starting peer web server...")
+    thread = threading.Thread(
+        target=peer_web_server.serve,
+        args=(),
+    )
     thread.start()
 
 
@@ -233,5 +252,4 @@ def start_sync_worker(sync_worker):
         target=sync_worker.start_running,
         args=(),
     )
-    thread.daemon = True
     thread.start()

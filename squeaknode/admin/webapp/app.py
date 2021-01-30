@@ -1,5 +1,6 @@
 import logging
 import os
+from multiprocessing import Process
 
 from flask import flash
 from flask import Flask
@@ -511,6 +512,7 @@ class SqueakAdminWebServer:
         login_disabled,
         allow_cors,
         handler,
+        stopped,
     ):
         self.host = host
         self.port = port
@@ -518,8 +520,9 @@ class SqueakAdminWebServer:
         self.login_disabled = login_disabled
         self.allow_cors = allow_cors
         self.app = create_app(handler, username, password)
+        self.stopped = stopped
 
-    def serve(self):
+    def run_app(self):
         # Set LOGIN_DISABLED and allow CORS if login not required.
         if self.login_disabled:
             self.app.config["LOGIN_DISABLED"] = True
@@ -534,3 +537,12 @@ class SqueakAdminWebServer:
             debug=False,
             ssl_context="adhoc" if self.use_ssl else None,
         )
+
+    def serve(self):
+        server = Process(target=self.run_app)
+        logger.info("Starting SqueakAdminWebServer...")
+        server.start()
+        self.stopped.wait()
+        server.terminate()
+        logger.info("Stopped SqueakAdminWebServer.")
+        server.join()

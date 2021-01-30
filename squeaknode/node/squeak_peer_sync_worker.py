@@ -22,5 +22,10 @@ class SqueakPeerSyncWorker:
 
     def start_running(self):
         if self.sync_interval_s:
-            threading.Timer(self.sync_interval_s, self.start_running).start()
+            timer = threading.Timer(
+                self.sync_interval_s,
+                self.start_running,
+            )
+            timer.daemon = True
+            timer.start()
             self.sync_timeline()
