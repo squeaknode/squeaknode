@@ -14,6 +14,7 @@ from flask_login import login_required
 from flask_login import login_user
 from flask_login import LoginManager
 from flask_login import logout_user
+from werkzeug.serving import make_server
 
 from proto import lnd_pb2
 from proto import squeak_admin_pb2
@@ -542,7 +543,6 @@ class SqueakAdminWebServer:
         return self.app
 
     def serve(self):
-        from werkzeug.serving import make_server
         server = make_server(
             self.host,
             self.port,
