@@ -35,10 +35,13 @@ class PeerConnection:
         min_block,
         max_block,
     ):
+        # Get the network
+        network = self.squeak_controller.get_network()
         # Get list of followed addresses
         followed_addresses = self.squeak_controller.get_followed_addresses()
         # Get remote hashes
         lookup_result = self.peer_client.lookup_squeaks_to_download(
+            network,
             followed_addresses,
             min_block,
             max_block,
@@ -76,10 +79,13 @@ class PeerConnection:
             self._download_offer(hash)
 
     def upload(self):
+        # Get the network
+        network = self.squeak_controller.get_network()
         # Get list of sharing addresses.
         sharing_addresses = self.squeak_controller.get_sharing_addresses()
         # Get remote hashes
         lookup_result = self.peer_client.lookup_squeaks_to_upload(
+            network,
             sharing_addresses,
         )
         remote_hashes = lookup_result.hashes

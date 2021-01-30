@@ -117,6 +117,7 @@ def test_lookup_squeaks(server_stub, admin_stub, signing_profile_id, saved_squea
     addresses = [squeak_profile_address]
     lookup_response = server_stub.LookupSqueaksToDownload(
         squeak_server_pb2.LookupSqueaksToDownloadRequest(
+            network="simnet",
             addresses=addresses,
             min_block=0,
             max_block=99999999,
@@ -134,6 +135,7 @@ def test_lookup_squeaks_empty_result_addresses(server_stub, admin_stub):
     addresses = [address]
     lookup_response = server_stub.LookupSqueaksToDownload(
         squeak_server_pb2.LookupSqueaksToDownloadRequest(
+            network="simnet",
             addresses=addresses,
             min_block=0,
             max_block=99999999,
@@ -157,6 +159,7 @@ def test_lookup_squeaks_empty_result_block_ranges(
     addresses = [squeak_profile_address]
     lookup_response = server_stub.LookupSqueaksToDownload(
         squeak_server_pb2.LookupSqueaksToDownloadRequest(
+            network="simnet",
             addresses=addresses,
             min_block=99999999,
             max_block=99999999,
@@ -178,6 +181,7 @@ def test_lookup_squeaks_to_upload(server_stub, admin_stub, signing_profile_id, s
     addresses = [squeak_profile_address]
     lookup_response = server_stub.LookupSqueaksToUpload(
         squeak_server_pb2.LookupSqueaksToUploadRequest(
+            network="simnet",
             addresses=addresses,
         )
     )

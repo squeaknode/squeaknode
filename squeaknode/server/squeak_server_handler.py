@@ -51,9 +51,12 @@ class SqueakServerHandler(object):
         )
 
     def handle_lookup_squeaks_to_download(self, request):
+        network = request.network
         addresses = request.addresses
         min_block = request.min_block
         max_block = request.max_block
+        if network != self.squeak_controller.get_network():
+            raise Exception("Wrong network.")
         logger.info(
             "Handle lookup squeaks to download with addresses: {}, min_block: {}, max_block: {}".format(
                 str(addresses), min_block, max_block
@@ -68,12 +71,16 @@ class SqueakServerHandler(object):
         )
 
     def handle_lookup_squeaks_to_upload(self, request):
+        network = request.network
         addresses = request.addresses
+        if network != self.squeak_controller.get_network():
+            raise Exception("Wrong network.")
         logger.info(
             "Handle lookup squeaks to upload with addresses: {}".format(
                 str(addresses)
             )
         )
+        network = self.squeak_controller.get_network()
         allowed_addresses = self.squeak_controller.lookup_allowed_addresses(
             addresses)
         latest_block_height = self.squeak_controller.get_best_block_height()
