@@ -27,19 +27,25 @@ class PeerClient:
             yield self
             self.stub = None
 
-    def lookup_squeaks_to_download(self, addresses: List[str], min_block: int, max_block: int):
+    def lookup_squeaks_to_download(self, network: str, addresses: List[str], min_block: int, max_block: int):
+        request = squeak_server_pb2.LookupSqueaksToDownloadRequest(
+            network=network,
+            addresses=addresses,
+            min_block=min_block,
+            max_block=max_block,
+        )
+        logger.info("Making lookup request: {}".format(
+            request
+        ))
         lookup_response = self.stub.LookupSqueaksToDownload(
-            squeak_server_pb2.LookupSqueaksToDownloadRequest(
-                addresses=addresses,
-                min_block=min_block,
-                max_block=max_block,
-            )
+            request
         )
         return lookup_response
 
-    def lookup_squeaks_to_upload(self, addresses: List[str]):
+    def lookup_squeaks_to_upload(self, network: str, addresses: List[str]):
         lookup_response = self.stub.LookupSqueaksToUpload(
             squeak_server_pb2.LookupSqueaksToUploadRequest(
+                network=network,
                 addresses=addresses,
             )
         )

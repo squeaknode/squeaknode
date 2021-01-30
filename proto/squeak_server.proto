@@ -43,17 +43,21 @@ message DownloadSqueakRequest {
 }
 
 message LookupSqueaksToDownloadRequest {
+    /// The bitcoin network
+    string network = 1;
     /// List of the author addresses
-    repeated string addresses = 1;
+    repeated string addresses = 2;
     /// Minimum block to look for
-    int32 min_block = 2;
+    int32 min_block = 3;
     /// Maximum block to look for
-    int32 max_block = 3;
+    int32 max_block = 4;
 }
 
 message LookupSqueaksToUploadRequest {
+    /// The bitcoin network
+    string network = 1;
     /// List of the author addresses
-    repeated string addresses = 1;
+    repeated string addresses = 2;
 }
 
 message DownloadOfferRequest {

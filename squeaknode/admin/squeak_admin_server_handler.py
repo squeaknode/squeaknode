@@ -145,11 +145,7 @@ class SqueakAdminServerHandler(object):
         squeak_profile = self.squeak_controller.get_squeak_profile(profile_id)
         if squeak_profile is None:
             return None
-        logger.info("Got squeak profile with image: {}".format(
-            squeak_profile.profile_image))
         squeak_profile_msg = squeak_profile_to_message(squeak_profile)
-        logger.info("Got squeak profile msg with image: {}".format(
-            squeak_profile_msg.profile_image))
         return squeak_admin_pb2.GetSqueakProfileReply(
             squeak_profile=squeak_profile_msg,
         )
