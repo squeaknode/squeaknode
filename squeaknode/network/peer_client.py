@@ -34,9 +34,6 @@ class PeerClient:
             min_block=min_block,
             max_block=max_block,
         )
-        logger.info("Making lookup request: {}".format(
-            request
-        ))
         lookup_response = self.stub.LookupSqueaksToDownload(
             request
         )
