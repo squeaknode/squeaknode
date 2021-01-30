@@ -2,6 +2,7 @@ import logging
 import sys
 
 from proto import squeak_admin_pb2
+from squeaknode.admin.profile_image_util import base64_string_to_bytes
 from squeaknode.admin.util import offer_entry_to_message
 from squeaknode.admin.util import payment_summary_to_message
 from squeaknode.admin.util import received_payments_to_message
@@ -223,13 +224,9 @@ class SqueakAdminServerHandler(object):
                 profile_id,
             )
         )
-        logger.info(
-            "Handle set squeak profile image with image: {}".format(
-                profile_image,
-            )
-        )
+        profile_image_bytes = base64_string_to_bytes(profile_image)
         self.squeak_controller.set_squeak_profile_image(
-            profile_id, profile_image)
+            profile_id, profile_image_bytes)
         return squeak_admin_pb2.SetSqueakProfileImageReply()
 
     def handle_clear_squeak_profile_image(self, request):

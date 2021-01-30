@@ -372,7 +372,7 @@ message SetSqueakProfileImageRequest {
     int32 profile_id = 1;
 
     /// The profile image
-    bytes profile_image = 2;
+    string profile_image = 2;
 }
 
 message SetSqueakProfileImageReply {
