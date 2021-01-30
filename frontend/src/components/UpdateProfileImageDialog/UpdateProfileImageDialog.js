@@ -56,6 +56,28 @@ export default function UpdateProfileImageDialog({
     handleClose();
   }
 
+  const handleChangeSelectedImage = (event) => {
+    alert("selected image changed.");
+  };
+
+  function FileInput() {
+    return (
+<>
+<Button
+  variant="contained"
+  component="label"
+>
+  Select File
+  <input
+    type="file"
+    hidden
+    onChange={handleChangeSelectedImage}
+  />
+</Button>
+</>
+    )
+  }
+
   function CancelButton() {
     return (
       <Button
@@ -86,16 +108,7 @@ export default function UpdateProfileImageDialog({
   <DialogTitle id="form-dialog-title">Set Profile Image</DialogTitle>
   <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
   <DialogContent>
-  <Button
-    variant="contained"
-    component="label"
-  >
-    Upload File
-    <input
-      type="file"
-      hidden
-    />
-  </Button>
+    {FileInput()}
   </DialogContent>
   <DialogActions>
     {CancelButton()}
