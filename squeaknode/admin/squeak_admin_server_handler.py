@@ -273,13 +273,7 @@ class SqueakAdminServerHandler(object):
         squeak_entry_with_profile = (
             self.squeak_controller.get_squeak_entry_with_profile(squeak_hash)
         )
-        logger.info("Squeak display entry: {}".format(
-            squeak_entry_with_profile))
         display_message = squeak_entry_to_message(squeak_entry_with_profile)
-        logger.info(
-            "Returning squeak display entry message: {}".format(
-                display_message)
-        )
         return squeak_admin_pb2.GetSqueakDisplayReply(
             squeak_display_entry=display_message
         )
