@@ -33,12 +33,7 @@ logger = logging.getLogger(__name__)
 class SqueakNode:
     def __init__(self, config: SqueaknodeConfig):
         self.config = config
-        # self.squeak_peer_sync_worker = SqueakPeerSyncWorker(
-        #     self.squeak_controller,
-        #     sync_interval_s,
-        # )
 
-    def start_running(self):
         # load the network
         network = self.config.core.network
         SelectParams(network)
@@ -73,12 +68,6 @@ class SqueakNode:
             self.config,
         )
 
-        # Create and start the squeak node
-        # squeak_node = SqueakNode(
-        #     squeak_controller,
-        # )
-        # squeak_node.start_running()
-
         sync_controller = SqueakSyncController(
             squeak_controller,
             self.config.sync.block_range,
@@ -87,36 +76,43 @@ class SqueakNode:
         admin_handler = load_admin_handler(
             lightning_client, squeak_controller, sync_controller)
 
-        # start admin rpc server
-        if self.config.admin.rpc_enabled:
-            admin_rpc_server = load_admin_rpc_server(
-                self.config, admin_handler)
-            start_admin_rpc_server(admin_rpc_server)
+        self.admin_rpc_server = load_admin_rpc_server(
+            self.config, admin_handler)
 
-        # start admin web server
-        if self.config.webadmin.enabled:
-            admin_web_server = load_admin_web_server(
-                self.config, admin_handler)
-            start_admin_web_server(admin_web_server)
+        self.admin_web_server = load_admin_web_server(
+            self.config, admin_handler)
 
-        # start sync worker
-        if self.config.sync.enabled:
-            sync_worker = load_sync_worker(self.config, sync_controller)
-            start_sync_worker(sync_worker)
+        self.sync_worker = load_sync_worker(self.config, sync_controller)
 
-        squeak_offer_expiry_worker = SqueakOfferExpiryWorker(
+        self.squeak_offer_expiry_worker = SqueakOfferExpiryWorker(
             squeak_controller,
         )
-        sent_offers_worker = SentOffersWorker(
+        self.sent_offers_worker = SentOffersWorker(
             squeak_controller,
         )
-        squeak_offer_expiry_worker.start_running()
-        sent_offers_worker.start_running()
 
         # start rpc server
         handler = load_handler(squeak_controller)
-        server = load_rpc_server(self.config, handler)
-        server.serve()
+        self.server = load_rpc_server(self.config, handler)
+
+    def start_running(self):
+        # start admin rpc server
+        if self.config.admin.rpc_enabled:
+            start_admin_rpc_server(self.admin_rpc_server)
+
+        # start admin web server
+        if self.config.webadmin.enabled:
+            start_admin_web_server(self.admin_web_server)
+
+        # start sync worker
+        if self.config.sync.enabled:
+            start_sync_worker(self.sync_worker)
+
+        self.squeak_offer_expiry_worker.start_running()
+        self.sent_offers_worker.start_running()
+
+        # start rpc server
+        self.server.serve()
 
 
 def load_lightning_client(config) -> LNDLightningClient:
