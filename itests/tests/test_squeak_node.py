@@ -708,6 +708,7 @@ def test_create_peer(server_stub, admin_stub):
     # Add a new peer
     create_peer_response = admin_stub.CreatePeer(
         squeak_admin_pb2.CreatePeerRequest(
+            peer_name="fake_peer_name",
             host="fake_host",
             port=1234,
         )
@@ -729,6 +730,19 @@ def test_create_peer(server_stub, admin_stub):
     peer_hosts = [
         squeak_peer.host for squeak_peer in get_peers_response.squeak_peers]
     assert "fake_host" in peer_hosts
+
+
+def test_create_peer_empty_name(server_stub, admin_stub):
+    # Try to create a new signing profile with an empty name
+    with pytest.raises(Exception) as excinfo:
+        admin_stub.CreatePeer(
+            squeak_admin_pb2.CreatePeerRequest(
+                peer_name="",
+                host="another_fake_host",
+                port=1234,
+            )
+        )
+    assert "Peer name cannot be empty." in str(excinfo.value)
 
 
 def test_set_peer_downloading(server_stub, admin_stub, peer_id):
@@ -1024,6 +1038,7 @@ def test_connect_other_node(
     # Add the main node as a peer
     create_peer_response = other_admin_stub.CreatePeer(
         squeak_admin_pb2.CreatePeerRequest(
+            peer_name="test_peer",
             host="squeaknode",
             port=8774,
         )
@@ -1225,6 +1240,7 @@ def test_download_single_squeak(
     # Add the main node as a peer
     create_peer_response = other_admin_stub.CreatePeer(
         squeak_admin_pb2.CreatePeerRequest(
+            peer_name="test_peer",
             host="squeaknode",
             port=8774,
         )

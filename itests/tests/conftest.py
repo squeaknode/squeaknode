@@ -134,6 +134,7 @@ def peer_id(server_stub, admin_stub):
     # Create a new peer
     create_peer_response = admin_stub.CreatePeer(
         squeak_admin_pb2.CreatePeerRequest(
+            peer_name="fake_peer_name",
             host="fake_host",
             port=1234,
         )

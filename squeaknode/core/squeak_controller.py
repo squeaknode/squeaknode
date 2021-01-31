@@ -237,6 +237,10 @@ class SqueakController:
         return self.squeak_db.delete_squeak(squeak_hash)
 
     def create_peer(self, peer_name: str, host: str, port: int):
+        if len(peer_name) == 0:
+            raise Exception(
+                "Peer name cannot be empty.",
+            )
         port = port or self.config.core.default_peer_rpc_port
         squeak_peer = SqueakPeer(
             peer_id=None,
