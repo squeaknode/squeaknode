@@ -467,13 +467,7 @@ message SqueakDisplayEntry {
     bool is_author_known = 9;
 
     /// The author name
-    string author_address = 10;
-
-    /// The author name
-    string author_name = 11;
-
-    /// The author image
-    string author_image = 12;
+    SqueakProfile author = 10;
 }
 
 message GetTimelineSqueakDisplaysRequest {

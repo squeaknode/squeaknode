@@ -25,17 +25,22 @@ def squeak_entry_to_message(squeak_entry_with_profile: SqueakEntryWithProfile):
     is_unlocked = squeak.HasDecryptionKey()
     content_str = squeak.GetDecryptedContentStr() if is_unlocked else None
     squeak_profile = squeak_entry_with_profile.squeak_profile
-    is_author_known = squeak_profile is not None
-    author_name = squeak_profile.profile_name if squeak_profile else None
-    author_address = str(squeak.GetAddress())
+    # author_name = squeak_profile.profile_name if squeak_profile else None
+    # author_address = str(squeak.GetAddress())
     is_reply = squeak.is_reply
     reply_to = squeak.hashReplySqk.hex() if is_reply else None
-    if squeak_profile:
-        profile_image = squeak_profile.profile_image or DEFAULT_PROFILE_IMAGE
+    # if squeak_profile:
+    #     profile_image = squeak_profile.profile_image or DEFAULT_PROFILE_IMAGE
+    # else:
+    #     profile_image = DEFAULT_PROFILE_IMAGE
+    # # has_custom_profile_image = squeak_profile.profile_image is not None
+    # image_base64_str = bytes_to_base64_string(profile_image)
+    if squeak_profile is not None:
+        is_author_known = True
+        profile_msg = squeak_profile_to_message(squeak_profile)
     else:
-        profile_image = DEFAULT_PROFILE_IMAGE
-    # has_custom_profile_image = squeak_profile.profile_image is not None
-    image_base64_str = bytes_to_base64_string(profile_image)
+        is_author_known = False
+        profile_msg = None
     return squeak_admin_pb2.SqueakDisplayEntry(
         squeak_hash=get_hash(squeak).hex(),
         is_unlocked=squeak.HasDecryptionKey(),
@@ -43,12 +48,10 @@ def squeak_entry_to_message(squeak_entry_with_profile: SqueakEntryWithProfile):
         block_height=squeak.nBlockHeight,
         block_hash=squeak.hashBlock.hex(),
         block_time=block_header.nTime,
-        is_author_known=is_author_known,
-        author_name=author_name,
-        author_address=author_address,
         is_reply=is_reply,
         reply_to=reply_to,
-        author_image=image_base64_str,
+        is_author_known=is_author_known,
+        author=profile_msg,
     )
 
 
