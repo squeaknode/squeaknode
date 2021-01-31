@@ -29,11 +29,21 @@ def squeak_from_msg(squeak_msg: squeak_server_pb2.Squeak) -> CSqueak:
     return squeak
 
 
-def offer_from_msg(buy_offer_msg: squeak_server_pb2.Offer) -> Offer:
+def offer_from_msg(offer_msg: squeak_server_pb2.Offer) -> Offer:
     return Offer(
-        squeak_hash=buy_offer_msg.squeak_hash,
-        nonce=buy_offer_msg.nonce,
-        payment_request=buy_offer_msg.payment_request,
-        host=buy_offer_msg.host,
-        port=buy_offer_msg.port,
+        squeak_hash=offer_msg.squeak_hash,
+        nonce=offer_msg.nonce,
+        payment_request=offer_msg.payment_request,
+        host=offer_msg.host,
+        port=offer_msg.port,
+    )
+
+
+def offer_to_msg(offer: Offer) -> squeak_server_pb2.Offer:
+    return squeak_server_pb2.Offer(
+        squeak_hash=offer.squeak_hash,
+        nonce=offer.nonce,
+        payment_request=offer.payment_request,
+        host=offer.host,
+        port=offer.port,
     )
