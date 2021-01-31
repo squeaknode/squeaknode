@@ -548,8 +548,12 @@ class SqueakAdminServerHandler(object):
         logger.info(
             "Handle get squeak details for hash: {}".format(squeak_hash_str))
         squeak_entry_with_profile = (
-            self.squeak_controller.get_squeak_entry_with_profile(squeak_hash)
+            self.squeak_controller.get_squeak_entry_with_profile(
+                squeak_hash
+            )
         )
+        if squeak_entry_with_profile is None:
+            raise Exception("Squeak details not found.")
         detail_message = squeak_entry_to_detail_message(
             squeak_entry_with_profile)
         return squeak_admin_pb2.GetSqueakDetailsReply(
