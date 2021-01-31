@@ -101,14 +101,14 @@ def offer_entry_to_message(received_offer_entry: ReceivedOfferWithPeer) -> squea
 def sent_payment_with_peer_to_message(sent_payment_with_peer: SentPaymentWithPeer) -> squeak_admin_pb2.SentPayment:
     sent_payment = sent_payment_with_peer.sent_payment
     peer = sent_payment_with_peer.peer
-    if peer is None:
-        raise Exception("Peer not found.")
+    peer_msg = None
+    if peer is not None:
+        peer_msg = squeak_peer_to_message(peer)
     if sent_payment.created is None:
         raise Exception("SentPayment created time not found.")
     return squeak_admin_pb2.SentPayment(
         sent_payment_id=sent_payment.sent_payment_id,
-        peer_id=sent_payment.peer_id,
-        peer_name=peer.peer_name,
+        peer=peer_msg,
         squeak_hash=sent_payment.squeak_hash.hex(),
         payment_hash=sent_payment.payment_hash.hex(),
         price_msat=sent_payment.price_msat,
