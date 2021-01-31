@@ -9,29 +9,29 @@ import Avatar from '@material-ui/core/Avatar';
 import {useHistory} from "react-router-dom";
 
 import {
-  getAuthorImageSrcString,
+  getProfileImageSrcString,
 } from "../../squeakimages/images"
 
 
 export default function SqueakUserAvatar({
-  squeak,
+  squeakProfile,
   ...props
 }) {
   const history = useHistory();
 
-  const goToSqueakAddressPage = () => {
-    history.push("/app/squeakaddress/" + squeak.getAuthorAddress());
+  const goToSqueakAddressPage = (squeakAddress) => {
+    history.push("/app/squeakaddress/" + squeakAddress);
   };
 
   const handleAvatarClick = () => {
-    if (squeak) {
-      goToSqueakAddressPage(squeak.getAuthorAddress());
+    if (squeakProfile) {
+      goToSqueakAddressPage(squeakProfile.getAddress());
     }
   };
 
   function AvatarImage() {
     return (
-      <Avatar src={`${getAuthorImageSrcString(squeak)}`} />
+      <Avatar src={`${getProfileImageSrcString(squeakProfile)}`} />
     )
   }
 
@@ -40,7 +40,7 @@ export default function SqueakUserAvatar({
     onClick={handleAvatarClick}
     style={{cursor: 'pointer'}}
     >
-      {squeak ?
+      {squeakProfile ?
         AvatarImage() :
         <HelpIcon fontSize="large" />
       }

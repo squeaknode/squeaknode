@@ -89,8 +89,6 @@ export default function SqueakPage() {
       if (!oldestKnownAncestor) {
         return null;
       }
-      console.log(oldestKnownAncestor);
-      console.log("oldestKnownAncestor");
       return oldestKnownAncestor.getReplyTo();
   };
 
@@ -223,7 +221,7 @@ export default function SqueakPage() {
   ></TimelineOppositeContent>
   <TimelineSeparator>
     <SqueakUserAvatar
-      squeak={ancestorSqueak}
+      squeakProfile={ancestorSqueak.getAuthor()}
     />
     <TimelineConnector />
   </TimelineSeparator>
@@ -254,7 +252,7 @@ export default function SqueakPage() {
 ></TimelineOppositeContent>
 <TimelineSeparator>
   <SqueakUserAvatar
-    squeak={squeak}
+    squeakProfile={squeak && squeak.getAuthor()}
   />
 </TimelineSeparator>
 <TimelineContent>
@@ -274,7 +272,6 @@ export default function SqueakPage() {
   }
 
   function RepliesContent() {
-    console.log("replySqueaks: " + replySqueaks);
     return (
       <>
         {replySqueaks
@@ -288,7 +285,7 @@ export default function SqueakPage() {
   ></TimelineOppositeContent>
   <TimelineSeparator>
     <SqueakUserAvatar
-      squeak={replySqueak}
+      squeakProfile={replySqueak.getAuthor()}
     />
   </TimelineSeparator>
   <TimelineContent>

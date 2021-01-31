@@ -151,7 +151,7 @@ export default function SqueakThreadItem({
       return "Author unknown"
     }
     return squeak.getIsAuthorKnown()
-      ? squeak.getAuthorName()
+      ? squeak.getAuthor().getProfileName()
       : squeak.getAuthorAddress()
   }
 

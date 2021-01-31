@@ -120,11 +120,7 @@ export default function SqueakDetailItem({
   const onDownloadClick = (event) => {
     event.preventDefault();
     console.log("Handling download click...");
-    // goToBuyPage(squeak.getSqueakHash());
-    console.log("syncSqueakRequest with hash: " + hash);
     syncSqueakRequest(hash, (response) => {
-      console.log("response:");
-      console.log(response);
       reloadRoute();
     });
   }
@@ -207,7 +203,7 @@ export default function SqueakDetailItem({
       return "Author unknown"
     }
     return squeak.getIsAuthorKnown()
-      ? squeak.getAuthorName()
+      ? squeak.getAuthor().getProfileName()
       : squeak.getAuthorAddress()
   }
 

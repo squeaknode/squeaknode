@@ -141,7 +141,7 @@ export default function SqueakAddressPage() {
       ></TimelineOppositeContent>
       <TimelineSeparator>
         <SqueakUserAvatar
-          squeak={squeak}
+          squeakProfile={squeak.getAuthor()}
         />
       </TimelineSeparator>
       <TimelineContent>
