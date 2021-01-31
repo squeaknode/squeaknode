@@ -2,16 +2,16 @@ import logging
 import sys
 
 from proto import squeak_admin_pb2
+from squeaknode.admin.messages import offer_entry_to_message
+from squeaknode.admin.messages import payment_summary_to_message
+from squeaknode.admin.messages import received_payments_to_message
+from squeaknode.admin.messages import sent_offer_to_message
+from squeaknode.admin.messages import sent_payment_with_peer_to_message
+from squeaknode.admin.messages import squeak_entry_to_detail_message
+from squeaknode.admin.messages import squeak_entry_to_message
+from squeaknode.admin.messages import squeak_peer_to_message
+from squeaknode.admin.messages import squeak_profile_to_message
 from squeaknode.admin.profile_image_util import base64_string_to_bytes
-from squeaknode.admin.util import offer_entry_to_message
-from squeaknode.admin.util import payment_summary_to_message
-from squeaknode.admin.util import received_payments_to_message
-from squeaknode.admin.util import sent_offer_to_message
-from squeaknode.admin.util import sent_payment_with_peer_to_message
-from squeaknode.admin.util import squeak_entry_to_detail_message
-from squeaknode.admin.util import squeak_entry_to_message
-from squeaknode.admin.util import squeak_peer_to_message
-from squeaknode.admin.util import squeak_profile_to_message
 from squeaknode.core.squeak_controller import SqueakController
 from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
 from squeaknode.sync.squeak_sync_controller import SqueakSyncController
@@ -145,7 +145,7 @@ class SqueakAdminServerHandler(object):
         logger.info("Handle get squeak profile with id: {}".format(profile_id))
         squeak_profile = self.squeak_controller.get_squeak_profile(profile_id)
         if squeak_profile is None:
-            return None
+            raise Exception("Profile not found.")
         squeak_profile_msg = squeak_profile_to_message(squeak_profile)
         return squeak_admin_pb2.GetSqueakProfileReply(
             squeak_profile=squeak_profile_msg,
@@ -157,6 +157,8 @@ class SqueakAdminServerHandler(object):
             "Handle get squeak profile with address: {}".format(address))
         squeak_profile = self.squeak_controller.get_squeak_profile_by_address(
             address)
+        if squeak_profile is None:
+            raise Exception("Profile not found.")
         squeak_profile_msg = squeak_profile_to_message(squeak_profile)
         return squeak_admin_pb2.GetSqueakProfileByAddressReply(
             squeak_profile=squeak_profile_msg
@@ -167,6 +169,8 @@ class SqueakAdminServerHandler(object):
         logger.info("Handle get squeak profile with name: {}".format(name))
         squeak_profile = self.squeak_controller.get_squeak_profile_by_name(
             name)
+        if squeak_profile is None:
+            raise Exception("Profile not found.")
         squeak_profile_msg = squeak_profile_to_message(squeak_profile)
         return squeak_admin_pb2.GetSqueakProfileByNameReply(
             squeak_profile=squeak_profile_msg
@@ -273,7 +277,11 @@ class SqueakAdminServerHandler(object):
         squeak_entry_with_profile = (
             self.squeak_controller.get_squeak_entry_with_profile(squeak_hash)
         )
-        display_message = squeak_entry_to_message(squeak_entry_with_profile)
+        if squeak_entry_with_profile is None:
+            display_message = None
+        else:
+            display_message = squeak_entry_to_message(
+                squeak_entry_with_profile)
         return squeak_admin_pb2.GetSqueakDisplayReply(
             squeak_display_entry=display_message
         )

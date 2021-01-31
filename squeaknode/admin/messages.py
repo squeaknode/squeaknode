@@ -7,6 +7,7 @@ from squeaknode.core.received_offer_with_peer import ReceivedOfferWithPeer
 from squeaknode.core.received_payment_summary import ReceivedPaymentSummary
 from squeaknode.core.sent_payment_summary import SentPaymentSummary
 from squeaknode.core.squeak_entry_with_profile import SqueakEntryWithProfile
+from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.util import get_hash
 
 
@@ -16,31 +17,21 @@ logger = logging.getLogger(__name__)
 DEFAULT_PROFILE_IMAGE = load_default_profile_image()
 
 
-def squeak_entry_to_message(squeak_entry_with_profile: SqueakEntryWithProfile):
-    if squeak_entry_with_profile is None:
-        return None
+def squeak_entry_to_message(squeak_entry_with_profile: SqueakEntryWithProfile) -> squeak_admin_pb2.SqueakDisplayEntry:
     squeak_entry = squeak_entry_with_profile.squeak_entry
     squeak = squeak_entry.squeak
     block_header = squeak_entry.block_header
     is_unlocked = squeak.HasDecryptionKey()
     content_str = squeak.GetDecryptedContentStr() if is_unlocked else None
-    squeak_profile = squeak_entry_with_profile.squeak_profile
-    # author_name = squeak_profile.profile_name if squeak_profile else None
     is_reply = squeak.is_reply
     reply_to = squeak.hashReplySqk.hex() if is_reply else None
-    # if squeak_profile:
-    #     profile_image = squeak_profile.profile_image or DEFAULT_PROFILE_IMAGE
-    # else:
-    #     profile_image = DEFAULT_PROFILE_IMAGE
-    # # has_custom_profile_image = squeak_profile.profile_image is not None
-    # image_base64_str = bytes_to_base64_string(profile_image)
     author_address = str(squeak.GetAddress())
+    squeak_profile = squeak_entry_with_profile.squeak_profile
+    is_author_known = False
+    profile_msg = None
     if squeak_profile is not None:
         is_author_known = True
         profile_msg = squeak_profile_to_message(squeak_profile)
-    else:
-        is_author_known = False
-        profile_msg = None
     return squeak_admin_pb2.SqueakDisplayEntry(
         squeak_hash=get_hash(squeak).hex(),
         is_unlocked=squeak.HasDecryptionKey(),
@@ -56,9 +47,7 @@ def squeak_entry_to_message(squeak_entry_with_profile: SqueakEntryWithProfile):
     )
 
 
-def squeak_profile_to_message(squeak_profile):
-    if squeak_profile is None:
-        return None
+def squeak_profile_to_message(squeak_profile: SqueakProfile) -> squeak_admin_pb2.SqueakProfile:
     has_private_key = squeak_profile.private_key is not None
     profile_image = squeak_profile.profile_image or DEFAULT_PROFILE_IMAGE
     has_custom_profile_image = squeak_profile.profile_image is not None
