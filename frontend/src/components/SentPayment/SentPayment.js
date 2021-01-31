@@ -66,9 +66,7 @@ export default function SentPayment({
       return;
     }
     console.log("Handling peer click for peerId: " + peerId);
-    if (goToPeerPage) {
-      goToPeerPage(peerId);
-    }
+    goToPeerPage(peerId);
   }
 
   const onLightningNodeClick = (event) => {
@@ -90,12 +88,40 @@ export default function SentPayment({
 
   const getPeerDisplay = () => {
     if (!sentPayment.getHasPeer()) {
-      return null;
+      return "Unknown peer";
     }
     const peer = sentPayment.getPeer();
     const peerName = peer.getPeerName();
     const peerId = peer.getPeerId();
     return peerName ? peerName : peerId;
+  }
+
+  function PeerDisplay() {
+    if (sentPayment.getHasPeer()) {
+      return HasPeerDisplay(sentPayment.getPeer());
+    } else {
+      return HasNoPeerDisplay();
+    }
+  }
+
+  function HasPeerDisplay(peer) {
+    const peerId = peer.getPeerId();
+    const peerName = peer.getPeerName();
+    const peerDisplayName = peerName ? peerName : peerId;
+    return (
+      <Link href="#"
+        onClick={onPeerClick}
+        >{peerDisplayName}
+      </Link>
+    )
+  }
+
+  function HasNoPeerDisplay() {
+    return (
+      <>
+        Unknown Peer
+      </>
+    )
   }
 
   console.log(sentPayment);
@@ -149,12 +175,7 @@ export default function SentPayment({
             alignItems="flex-start"
           >
             <Grid item>
-              Peer:
-                <Link href="#"
-                  onClick={onPeerClick}
-                  >
-                  <span> </span>{getPeerDisplay()}
-                </Link>
+              Peer: {PeerDisplay()}
             </Grid>
           </Grid>
           <Grid

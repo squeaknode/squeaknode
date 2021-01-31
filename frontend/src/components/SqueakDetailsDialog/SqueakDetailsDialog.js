@@ -115,7 +115,6 @@ export default function SqueakDetailsDialog({
     )
   }
 
-console.log("squeak: " + squeak + ", and squeakDetails: " + squeakDetails);
   return (
     <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
   <DialogTitle id="form-dialog-title">View Squeak Details</DialogTitle>

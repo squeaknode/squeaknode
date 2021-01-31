@@ -46,6 +46,24 @@ export default function BuyOfferDetailItem({
     }
   }
 
+  const onPeerClick = (event) => {
+    event.preventDefault();
+    const peerId = getPeerId();
+    if (peerId == null) {
+      return;
+    }
+    console.log("Handling peer click for peerId: " + peerId);
+    goToPeerPage(peerId);
+  }
+
+  const getPeerId = () => {
+    if (!offer.getHasPeer()) {
+      return null;
+    }
+    const peer = offer.getPeer();
+    return peer.getPeerId();
+  }
+
   const goToPeerPage = (peerId) => {
     history.push("/app/peer/" + peerId);
   };
@@ -79,18 +97,42 @@ export default function BuyOfferDetailItem({
     )
   }
 
-  function ProfileInfoContent(peer) {
+
+  function PeerDisplay() {
+    if (offer.getHasPeer()) {
+      return HasPeerDisplay(offer.getPeer());
+    } else {
+      return HasNoPeerDisplay();
+    }
+  }
+
+  function HasPeerDisplay(peer) {
+    const peerId = peer.getPeerId();
+    const peerName = peer.getPeerName();
+    const peerDisplayName = peerName ? peerName : peerId;
+    return (
+      <Link href="#"
+        onClick={onPeerClick}
+        >{peerDisplayName}
+      </Link>
+    )
+  }
+
+  function HasNoPeerDisplay() {
+    return (
+      <>
+        Unknown Peer
+      </>
+    )
+  }
+
+
+  function ProfileInfoContent() {
     return (
       <Box>
         <Typography
           size="md"
-          >Peer: <Link href="#" onClick={() => {
-            goToPeerPage(
-              peer.getPeerId(),
-            )
-          }}>
-            {peer.getPeerName()}
-          </Link>
+          >Peer: {PeerDisplay()}
           </Typography>
       </Box>
     )
@@ -182,7 +224,7 @@ export default function BuyOfferDetailItem({
             alignItems="flex-start"
           >
           <Grid item>
-            {ProfileInfoContent(offer.getPeer())}
+            {ProfileInfoContent()}
           </Grid>
           </Grid>
           <Grid
