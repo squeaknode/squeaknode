@@ -712,28 +712,25 @@ message SentPayment {
     int32 sent_payment_id = 1;
 
     /// The peer id
-    int32 peer_id = 2;
-
-    /// The peer name
-    string peer_name = 3;
+    SqueakPeer peer = 2;
 
     /// The squeak hash
-    string squeak_hash = 4;
+    string squeak_hash = 3;
 
     /// The payment hash
-    string payment_hash = 5;
+    string payment_hash = 4;
 
     /// The price_msat
-    int64 price_msat = 6;
+    int64 price_msat = 5;
 
     /// The seller node pubkey
-    string node_pubkey = 7;
+    string node_pubkey = 6;
 
     /// Does the payment unlock a valid key
-    bool valid = 8;
+    bool valid = 7;
 
     /// Time of payment
-    int64 time_s = 9;
+    int64 time_s = 8;
 }
 
 message SyncSqueakRequest {
