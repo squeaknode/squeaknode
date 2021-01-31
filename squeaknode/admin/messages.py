@@ -64,9 +64,7 @@ def squeak_profile_to_message(squeak_profile: SqueakProfile) -> squeak_admin_pb2
     )
 
 
-def squeak_peer_to_message(squeak_peer):
-    if squeak_peer is None:
-        return None
+def squeak_peer_to_message(squeak_peer) -> squeak_admin_pb2.SqueakPeer:
     return squeak_admin_pb2.SqueakPeer(
         peer_id=squeak_peer.peer_id,
         peer_name=squeak_peer.peer_name,
@@ -77,11 +75,12 @@ def squeak_peer_to_message(squeak_peer):
     )
 
 
-def offer_entry_to_message(received_offer_entry: ReceivedOfferWithPeer):
-    if received_offer_entry is None:
-        return None
+def offer_entry_to_message(received_offer_entry: ReceivedOfferWithPeer) -> squeak_admin_pb2.OfferDisplayEntry:
     received_offer = received_offer_entry.received_offer
-    peer = squeak_peer_to_message(received_offer_entry.peer)
+    peer = received_offer_entry.peer
+    peer_msg = None
+    if peer is not None:
+        peer_msg = squeak_peer_to_message(peer)
     return squeak_admin_pb2.OfferDisplayEntry(
         offer_id=received_offer.received_offer_id,
         squeak_hash=received_offer.squeak_hash.hex(),
@@ -89,7 +88,7 @@ def offer_entry_to_message(received_offer_entry: ReceivedOfferWithPeer):
         node_pubkey=received_offer.destination,
         node_host=received_offer.node_host,
         node_port=received_offer.node_port,
-        peer=peer,
+        peer=peer_msg,
         invoice_timestamp=received_offer.invoice_timestamp,
         invoice_expiry=received_offer.invoice_expiry,
     )
