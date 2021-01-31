@@ -481,6 +481,17 @@ def test_make_contact_profile(server_stub, admin_stub):
     assert contact_profile_id in contact_profile_ids
 
 
+def test_make_signing_profile_empty_name(server_stub, admin_stub):
+    # Try to create a new signing profile with an empty name
+    with pytest.raises(Exception) as excinfo:
+        admin_stub.CreateSigningProfile(
+            squeak_admin_pb2.CreateSigningProfileRequest(
+                profile_name="",
+            )
+        )
+    assert "Profile name cannot be empty." in str(excinfo.value)
+
+
 def test_make_contact_profile_empty_name(server_stub, admin_stub):
     # Try to create a new contact profile with an empty name
     contact_signing_key = generate_signing_key()

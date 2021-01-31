@@ -120,6 +120,10 @@ class SqueakController:
             return sent_offer
 
     def create_signing_profile(self, profile_name: str):
+        if len(profile_name) == 0:
+            raise Exception(
+                "Profile name cannot be empty.",
+            )
         signing_key = CSigningKey.generate()
         verifying_key = signing_key.get_verifying_key()
         address = CSqueakAddress.from_verifying_key(verifying_key)
