@@ -4,7 +4,6 @@ from typing import Optional
 
 from squeaknode.core.received_offer_with_peer import ReceivedOfferWithPeer
 from squeaknode.network.peer_client import PeerClient
-from squeaknode.sync.util import parse_buy_offer
 
 logger = logging.getLogger(__name__)
 
@@ -138,10 +137,10 @@ class PeerConnection:
 
     def _download_offer(self, squeak_hash: bytes):
         squeak = self.squeak_controller.get_squeak(squeak_hash)
-        offer_msg = self.peer_client.download_offer(squeak_hash)
-        buy_offer = parse_buy_offer(offer_msg)
+        offer = self.peer_client.download_offer(squeak_hash)
+        # buy_offer = parse_buy_offer(offer_msg)
         decoded_offer = self.squeak_controller.get_offer(
-            squeak, buy_offer, self.peer)
+            squeak, offer, self.peer)
         self.squeak_controller.save_offer(decoded_offer)
         logger.info("Downloaded offer for squeak {} from peer {}".format(
             squeak_hash.hex(), self.peer
