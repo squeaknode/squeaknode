@@ -82,8 +82,10 @@ def squeak_peer_to_message(squeak_peer: SqueakPeer) -> squeak_admin_pb2.SqueakPe
 def offer_entry_to_message(received_offer_entry: ReceivedOfferWithPeer) -> squeak_admin_pb2.OfferDisplayEntry:
     received_offer = received_offer_entry.received_offer
     peer = received_offer_entry.peer
+    has_peer = False
     peer_msg = None
     if peer is not None:
+        has_peer = True
         peer_msg = squeak_peer_to_message(peer)
     return squeak_admin_pb2.OfferDisplayEntry(
         offer_id=received_offer.received_offer_id,
@@ -92,6 +94,7 @@ def offer_entry_to_message(received_offer_entry: ReceivedOfferWithPeer) -> squea
         node_pubkey=received_offer.destination,
         node_host=received_offer.node_host,
         node_port=received_offer.node_port,
+        has_peer=has_peer,
         peer=peer_msg,
         invoice_timestamp=received_offer.invoice_timestamp,
         invoice_expiry=received_offer.invoice_expiry,
@@ -101,13 +104,16 @@ def offer_entry_to_message(received_offer_entry: ReceivedOfferWithPeer) -> squea
 def sent_payment_with_peer_to_message(sent_payment_with_peer: SentPaymentWithPeer) -> squeak_admin_pb2.SentPayment:
     sent_payment = sent_payment_with_peer.sent_payment
     peer = sent_payment_with_peer.peer
+    has_peer = False
     peer_msg = None
     if peer is not None:
+        has_peer = True
         peer_msg = squeak_peer_to_message(peer)
     if sent_payment.created is None:
         raise Exception("SentPayment created time not found.")
     return squeak_admin_pb2.SentPayment(
         sent_payment_id=sent_payment.sent_payment_id,
+        has_peer=has_peer,
         peer=peer_msg,
         squeak_hash=sent_payment.squeak_hash.hex(),
         payment_hash=sent_payment.payment_hash.hex(),

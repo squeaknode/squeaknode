@@ -31,11 +31,6 @@ export default function SentPayment({
 
   const history = useHistory();
 
-  const peer = sentPayment.getPeer();
-  const peerName = peer.getPeerName();
-  const peerId = peer.getPeerId();
-  const peerDisplay = peerName ? peerName : peerId;
-
   const goToSqueakPage = (hash) => {
     history.push("/app/squeak/" + hash);
   };
@@ -66,11 +61,12 @@ export default function SentPayment({
 
   const onPeerClick = (event) => {
     event.preventDefault();
-    const peerId = peer.getPeerId();
-    console.log("Handling peer click for peerId: " + peerId);
-    if (goToPeerPage) {
-      goToPeerPage(peerId);
+    const peerId = getPeerId();
+    if (peerId == null) {
+      return;
     }
+    console.log("Handling peer click for peerId: " + peerId);
+    goToPeerPage(peerId);
   }
 
   const onLightningNodeClick = (event) => {
@@ -80,6 +76,52 @@ export default function SentPayment({
     if (goToLightningNodePage) {
       goToLightningNodePage(nodePubkey);
     }
+  }
+
+  const getPeerId = () => {
+    if (!sentPayment.getHasPeer()) {
+      return null;
+    }
+    const peer = sentPayment.getPeer();
+    return peer.getPeerId();
+  }
+
+  const getPeerDisplay = () => {
+    if (!sentPayment.getHasPeer()) {
+      return "Unknown peer";
+    }
+    const peer = sentPayment.getPeer();
+    const peerName = peer.getPeerName();
+    const peerId = peer.getPeerId();
+    return peerName ? peerName : peerId;
+  }
+
+  function PeerDisplay() {
+    if (sentPayment.getHasPeer()) {
+      return HasPeerDisplay(sentPayment.getPeer());
+    } else {
+      return HasNoPeerDisplay();
+    }
+  }
+
+  function HasPeerDisplay(peer) {
+    const peerId = peer.getPeerId();
+    const peerName = peer.getPeerName();
+    const peerDisplayName = peerName ? peerName : peerId;
+    return (
+      <Link href="#"
+        onClick={onPeerClick}
+        >{peerDisplayName}
+      </Link>
+    )
+  }
+
+  function HasNoPeerDisplay() {
+    return (
+      <>
+        Unknown Peer
+      </>
+    )
   }
 
   console.log(sentPayment);
@@ -133,12 +175,7 @@ export default function SentPayment({
             alignItems="flex-start"
           >
             <Grid item>
-              Peer:
-                <Link href="#"
-                  onClick={onPeerClick}
-                  >
-                  <span> </span>{peerDisplay}
-                </Link>
+              Peer: {PeerDisplay()}
             </Grid>
           </Grid>
           <Grid
