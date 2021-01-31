@@ -279,6 +279,8 @@ def test_make_squeak(server_stub, admin_stub, signing_profile_id):
     assert (
         get_squeak_display_response.squeak_display_entry.content_str == "Hello from the profile on the server!"
     )
+    assert get_squeak_display_response.squeak_display_entry.author_address == str(
+        get_squeak_response_squeak.GetAddress())
     assert get_squeak_display_response.squeak_display_entry.is_author_known
     assert get_squeak_display_response.squeak_display_entry.author is not None
     assert len(

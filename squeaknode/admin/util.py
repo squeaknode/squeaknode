@@ -26,7 +26,6 @@ def squeak_entry_to_message(squeak_entry_with_profile: SqueakEntryWithProfile):
     content_str = squeak.GetDecryptedContentStr() if is_unlocked else None
     squeak_profile = squeak_entry_with_profile.squeak_profile
     # author_name = squeak_profile.profile_name if squeak_profile else None
-    # author_address = str(squeak.GetAddress())
     is_reply = squeak.is_reply
     reply_to = squeak.hashReplySqk.hex() if is_reply else None
     # if squeak_profile:
@@ -35,6 +34,7 @@ def squeak_entry_to_message(squeak_entry_with_profile: SqueakEntryWithProfile):
     #     profile_image = DEFAULT_PROFILE_IMAGE
     # # has_custom_profile_image = squeak_profile.profile_image is not None
     # image_base64_str = bytes_to_base64_string(profile_image)
+    author_address = str(squeak.GetAddress())
     if squeak_profile is not None:
         is_author_known = True
         profile_msg = squeak_profile_to_message(squeak_profile)
@@ -50,6 +50,7 @@ def squeak_entry_to_message(squeak_entry_with_profile: SqueakEntryWithProfile):
         block_time=block_header.nTime,
         is_reply=is_reply,
         reply_to=reply_to,
+        author_address=author_address,
         is_author_known=is_author_known,
         author=profile_msg,
     )
