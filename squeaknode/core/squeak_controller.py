@@ -154,9 +154,16 @@ class SqueakController:
         return self.squeak_db.insert_profile(squeak_profile)
 
     def create_contact_profile(self, profile_name: str, squeak_address: str):
+        if len(profile_name) == 0:
+            raise Exception(
+                "Profile name cannot be empty.",
+            )
         if not is_address_valid(squeak_address):
             raise Exception(
-                "Invalid squeak address: {}".format(squeak_address))
+                "Invalid squeak address: {}".format(
+                    squeak_address
+                ),
+            )
         squeak_profile = SqueakProfile(
             profile_id=None,
             profile_name=profile_name,

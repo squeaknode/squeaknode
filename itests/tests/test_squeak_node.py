@@ -481,6 +481,20 @@ def test_make_contact_profile(server_stub, admin_stub):
     assert contact_profile_id in contact_profile_ids
 
 
+def test_make_contact_profile_empty_name(server_stub, admin_stub):
+    # Try to create a new contact profile with an empty name
+    contact_signing_key = generate_signing_key()
+    contact_address = get_address(contact_signing_key)
+    with pytest.raises(Exception) as excinfo:
+        admin_stub.CreateContactProfile(
+            squeak_admin_pb2.CreateContactProfileRequest(
+                profile_name="",
+                address=contact_address,
+            )
+        )
+    assert "Profile name cannot be empty." in str(excinfo.value)
+
+
 def test_set_profile_following(server_stub, admin_stub, contact_profile_id):
     # Set the profile to be following
     admin_stub.SetSqueakProfileFollowing(
