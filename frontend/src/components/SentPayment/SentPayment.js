@@ -31,11 +31,6 @@ export default function SentPayment({
 
   const history = useHistory();
 
-  const peer = sentPayment.getPeer();
-  const peerName = peer.getPeerName();
-  const peerId = peer.getPeerId();
-  const peerDisplay = peerName ? peerName : peerId;
-
   const goToSqueakPage = (hash) => {
     history.push("/app/squeak/" + hash);
   };
@@ -66,7 +61,10 @@ export default function SentPayment({
 
   const onPeerClick = (event) => {
     event.preventDefault();
-    const peerId = peer.getPeerId();
+    const peerId = getPeerId();
+    if (peerId == null) {
+      return;
+    }
     console.log("Handling peer click for peerId: " + peerId);
     if (goToPeerPage) {
       goToPeerPage(peerId);
@@ -80,6 +78,24 @@ export default function SentPayment({
     if (goToLightningNodePage) {
       goToLightningNodePage(nodePubkey);
     }
+  }
+
+  const getPeerId = () => {
+    if (!sentPayment.getHasPeer()) {
+      return null;
+    }
+    const peer = sentPayment.getPeer();
+    return peer.getPeerId();
+  }
+
+  const getPeerDisplay = () => {
+    if (!sentPayment.getHasPeer()) {
+      return null;
+    }
+    const peer = sentPayment.getPeer();
+    const peerName = peer.getPeerName();
+    const peerId = peer.getPeerId();
+    return peerName ? peerName : peerId;
   }
 
   console.log(sentPayment);
@@ -137,7 +153,7 @@ export default function SentPayment({
                 <Link href="#"
                   onClick={onPeerClick}
                   >
-                  <span> </span>{peerDisplay}
+                  <span> </span>{getPeerDisplay()}
                 </Link>
             </Grid>
           </Grid>
