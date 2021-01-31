@@ -99,8 +99,6 @@ def offer_entry_to_message(received_offer_entry: ReceivedOfferWithPeer) -> squea
 
 
 def sent_payment_with_peer_to_message(sent_payment_with_peer: SentPaymentWithPeer) -> squeak_admin_pb2.SentPayment:
-    if sent_payment_with_peer is None:
-        return None
     sent_payment = sent_payment_with_peer.sent_payment
     peer = sent_payment_with_peer.peer
     if peer is None:
@@ -130,8 +128,6 @@ def squeak_entry_to_detail_message(squeak_entry_with_profile: SqueakEntryWithPro
 
 
 def sent_offer_to_message(sent_offer: SentOffer) -> squeak_admin_pb2.SentOffer:
-    if sent_offer is None:
-        return None
     return squeak_admin_pb2.SentOffer(
         sent_offer_id=sent_offer.sent_offer_id,
         squeak_hash=sent_offer.squeak_hash.hex(),
@@ -141,8 +137,6 @@ def sent_offer_to_message(sent_offer: SentOffer) -> squeak_admin_pb2.SentOffer:
 
 
 def received_payments_to_message(received_payment: ReceivedPayment) -> squeak_admin_pb2.ReceivedPayment:
-    if received_payment is None:
-        return None
     if received_payment.created is None:
         raise Exception("ReceivedPayment created time not found.")
     return squeak_admin_pb2.ReceivedPayment(

@@ -537,6 +537,8 @@ class SqueakAdminServerHandler(object):
         logger.info(
             "Handle get sent payment with id: {}".format(sent_payment_id))
         sent_payment = self.squeak_controller.get_sent_payment(sent_payment_id)
+        if sent_payment is None:
+            raise Exception("SentPayment not found.")
         sent_payment_msg = sent_payment_with_peer_to_message(sent_payment)
         return squeak_admin_pb2.GetSentPaymentReply(
             sent_payment=sent_payment_msg,
