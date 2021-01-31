@@ -279,9 +279,12 @@ def test_make_squeak(server_stub, admin_stub, signing_profile_id):
     assert (
         get_squeak_display_response.squeak_display_entry.content_str == "Hello from the profile on the server!"
     )
-    print("get_squeak_display_response.squeak_display_entry.author_image: {}".format(
-        get_squeak_display_response.squeak_display_entry.author_image,
-    ))
+    assert get_squeak_display_response.squeak_display_entry.author_address == str(
+        get_squeak_response_squeak.GetAddress())
+    assert get_squeak_display_response.squeak_display_entry.is_author_known
+    assert get_squeak_display_response.squeak_display_entry.author is not None
+    assert len(
+        get_squeak_display_response.squeak_display_entry.author.profile_image) > 0
 
     # Get the squeak profile
     get_squeak_profile_response = admin_stub.GetSqueakProfile(
@@ -301,8 +304,8 @@ def test_make_squeak(server_stub, admin_stub, signing_profile_id):
     for (
         squeak_display_entry
     ) in get_address_squeak_display_response.squeak_display_entries:
-        assert squeak_display_entry.author_name == squeak_profile_name
-        assert squeak_display_entry.author_address == squeak_profile_address
+        assert squeak_display_entry.author.profile_name == squeak_profile_name
+        assert squeak_display_entry.author.address == squeak_profile_address
 
 
 def test_make_reply_squeak(

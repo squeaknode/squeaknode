@@ -463,17 +463,14 @@ message SqueakDisplayEntry {
     /// Block time
     int64 block_time = 8;
 
+    /// The author name
+    string author_address = 9;
+
     /// Is author address known
-    bool is_author_known = 9;
+    bool is_author_known = 10;
 
     /// The author name
-    string author_address = 10;
-
-    /// The author name
-    string author_name = 11;
-
-    /// The author image
-    string author_image = 12;
+    SqueakProfile author = 11;
 }
 
 message GetTimelineSqueakDisplaysRequest {
