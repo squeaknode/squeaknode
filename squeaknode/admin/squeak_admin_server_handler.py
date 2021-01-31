@@ -412,7 +412,7 @@ class SqueakAdminServerHandler(object):
         logger.info("Handle get squeak peer with id: {}".format(peer_id))
         squeak_peer = self.squeak_controller.get_peer(peer_id)
         if squeak_peer is None:
-            return None
+            raise Exception("Peer not found.")
         squeak_peer_msg = squeak_peer_to_message(squeak_peer)
         return squeak_admin_pb2.GetPeerReply(
             squeak_peer=squeak_peer_msg,
@@ -485,6 +485,8 @@ class SqueakAdminServerHandler(object):
         offer_id = request.offer_id
         logger.info("Handle get buy offer for hash: {}".format(offer_id))
         offer = self.squeak_controller.get_buy_offer_with_peer(offer_id)
+        if offer is None:
+            raise Exception("Offer not found.")
         offer_msg = offer_entry_to_message(offer)
         return squeak_admin_pb2.GetBuyOfferReply(
             offer=offer_msg,
@@ -535,6 +537,8 @@ class SqueakAdminServerHandler(object):
         logger.info(
             "Handle get sent payment with id: {}".format(sent_payment_id))
         sent_payment = self.squeak_controller.get_sent_payment(sent_payment_id)
+        if sent_payment is None:
+            raise Exception("SentPayment not found.")
         sent_payment_msg = sent_payment_with_peer_to_message(sent_payment)
         return squeak_admin_pb2.GetSentPaymentReply(
             sent_payment=sent_payment_msg,
@@ -546,8 +550,12 @@ class SqueakAdminServerHandler(object):
         logger.info(
             "Handle get squeak details for hash: {}".format(squeak_hash_str))
         squeak_entry_with_profile = (
-            self.squeak_controller.get_squeak_entry_with_profile(squeak_hash)
+            self.squeak_controller.get_squeak_entry_with_profile(
+                squeak_hash
+            )
         )
+        if squeak_entry_with_profile is None:
+            raise Exception("Squeak details not found.")
         detail_message = squeak_entry_to_detail_message(
             squeak_entry_with_profile)
         return squeak_admin_pb2.GetSqueakDetailsReply(

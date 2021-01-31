@@ -4,9 +4,13 @@ from proto import squeak_admin_pb2
 from squeaknode.admin.profile_image_util import bytes_to_base64_string
 from squeaknode.admin.profile_image_util import load_default_profile_image
 from squeaknode.core.received_offer_with_peer import ReceivedOfferWithPeer
+from squeaknode.core.received_payment import ReceivedPayment
 from squeaknode.core.received_payment_summary import ReceivedPaymentSummary
+from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.sent_payment_summary import SentPaymentSummary
+from squeaknode.core.sent_payment_with_peer import SentPaymentWithPeer
 from squeaknode.core.squeak_entry_with_profile import SqueakEntryWithProfile
+from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.util import get_hash
 
@@ -64,9 +68,7 @@ def squeak_profile_to_message(squeak_profile: SqueakProfile) -> squeak_admin_pb2
     )
 
 
-def squeak_peer_to_message(squeak_peer):
-    if squeak_peer is None:
-        return None
+def squeak_peer_to_message(squeak_peer: SqueakPeer) -> squeak_admin_pb2.SqueakPeer:
     return squeak_admin_pb2.SqueakPeer(
         peer_id=squeak_peer.peer_id,
         peer_name=squeak_peer.peer_name,
@@ -77,11 +79,12 @@ def squeak_peer_to_message(squeak_peer):
     )
 
 
-def offer_entry_to_message(received_offer_entry: ReceivedOfferWithPeer):
-    if received_offer_entry is None:
-        return None
+def offer_entry_to_message(received_offer_entry: ReceivedOfferWithPeer) -> squeak_admin_pb2.OfferDisplayEntry:
     received_offer = received_offer_entry.received_offer
-    peer = squeak_peer_to_message(received_offer_entry.peer)
+    peer = received_offer_entry.peer
+    peer_msg = None
+    if peer is not None:
+        peer_msg = squeak_peer_to_message(peer)
     return squeak_admin_pb2.OfferDisplayEntry(
         offer_id=received_offer.received_offer_id,
         squeak_hash=received_offer.squeak_hash.hex(),
@@ -89,17 +92,19 @@ def offer_entry_to_message(received_offer_entry: ReceivedOfferWithPeer):
         node_pubkey=received_offer.destination,
         node_host=received_offer.node_host,
         node_port=received_offer.node_port,
-        peer=peer,
+        peer=peer_msg,
         invoice_timestamp=received_offer.invoice_timestamp,
         invoice_expiry=received_offer.invoice_expiry,
     )
 
 
-def sent_payment_with_peer_to_message(sent_payment_with_peer):
-    if sent_payment_with_peer is None:
-        return None
+def sent_payment_with_peer_to_message(sent_payment_with_peer: SentPaymentWithPeer) -> squeak_admin_pb2.SentPayment:
     sent_payment = sent_payment_with_peer.sent_payment
     peer = sent_payment_with_peer.peer
+    if peer is None:
+        raise Exception("Peer not found.")
+    if sent_payment.created is None:
+        raise Exception("SentPayment created time not found.")
     return squeak_admin_pb2.SentPayment(
         sent_payment_id=sent_payment.sent_payment_id,
         peer_id=sent_payment.peer_id,
@@ -113,39 +118,16 @@ def sent_payment_with_peer_to_message(sent_payment_with_peer):
     )
 
 
-def sync_result_to_message(sync_result):
-    if sync_result is None:
-        return None
-    return squeak_admin_pb2.SyncResult(
-        completed_peer_ids=sync_result.completed_peer_ids,
-        failed_peer_ids=sync_result.failed_peer_ids,
-        timeout_peer_ids=sync_result.timeout_peer_ids,
-    )
-
-
-def squeak_entry_to_detail_message(squeak_entry_with_profile: SqueakEntryWithProfile):
-    if squeak_entry_with_profile is None:
-        return None
+def squeak_entry_to_detail_message(squeak_entry_with_profile: SqueakEntryWithProfile) -> squeak_admin_pb2.SqueakDetailEntry:
     squeak_entry = squeak_entry_with_profile.squeak_entry
     squeak = squeak_entry.squeak
-    # block_header = squeak_entry.block_header
-    # is_unlocked = squeak.HasDecryptionKey()
-    # content_str = squeak.GetDecryptedContentStr() if is_unlocked else None
-    # squeak_profile = squeak_entry_with_profile.squeak_profile
-    # is_author_known = squeak_profile is not None
-    # author_name = squeak_profile.profile_name if squeak_profile else None
-    # author_address = str(squeak.GetAddress())
-    # is_reply = squeak.is_reply
-    # reply_to = get_replyto(squeak) if is_reply else None
     serialized_squeak = squeak.serialize()
     return squeak_admin_pb2.SqueakDetailEntry(
         serialized_squeak_hex=serialized_squeak.hex(),
     )
 
 
-def sent_offer_to_message(sent_offer):
-    if sent_offer is None:
-        return None
+def sent_offer_to_message(sent_offer: SentOffer) -> squeak_admin_pb2.SentOffer:
     return squeak_admin_pb2.SentOffer(
         sent_offer_id=sent_offer.sent_offer_id,
         squeak_hash=sent_offer.squeak_hash.hex(),
@@ -154,9 +136,9 @@ def sent_offer_to_message(sent_offer):
     )
 
 
-def received_payments_to_message(received_payment):
-    if received_payment is None:
-        return None
+def received_payments_to_message(received_payment: ReceivedPayment) -> squeak_admin_pb2.ReceivedPayment:
+    if received_payment.created is None:
+        raise Exception("ReceivedPayment created time not found.")
     return squeak_admin_pb2.ReceivedPayment(
         received_payment_id=received_payment.received_payment_id,
         squeak_hash=received_payment.squeak_hash.hex(),
@@ -170,7 +152,7 @@ def received_payments_to_message(received_payment):
 def payment_summary_to_message(
         received_payment_summary: ReceivedPaymentSummary,
         sent_payment_summary: SentPaymentSummary,
-):
+) -> squeak_admin_pb2.PaymentSummary:
     return squeak_admin_pb2.PaymentSummary(
         num_received_payments=received_payment_summary.num_received_payments,
         num_sent_payments=sent_payment_summary.num_sent_payments,
