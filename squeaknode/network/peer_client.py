@@ -3,12 +3,15 @@ from contextlib import contextmanager
 from typing import List
 
 import grpc
-from squeak.core import CheckSqueak
 from squeak.core import CSqueak
 
 from proto import squeak_server_pb2
 from proto import squeak_server_pb2_grpc
-from squeaknode.core.util import get_hash
+from squeaknode.core.offer import Offer
+from squeaknode.network.messages import offer_from_msg
+from squeaknode.network.messages import squeak_from_msg
+from squeaknode.network.messages import squeak_to_msg
+
 
 logger = logging.getLogger(__name__)
 
@@ -48,42 +51,26 @@ class PeerClient:
         )
         return lookup_response
 
-    def upload_squeak(self, squeak: CSqueak):
-        squeak_msg = self._build_squeak_msg(squeak)
+    def upload_squeak(self, squeak: CSqueak) -> None:
+        squeak_msg = squeak_to_msg(squeak)
         self.stub.UploadSqueak(
             squeak_server_pb2.UploadSqueakRequest(
                 squeak=squeak_msg,
             )
         )
 
-    def download_squeak(self, squeak_hash: bytes):
+    def download_squeak(self, squeak_hash: bytes) -> CSqueak:
         get_response = self.stub.DownloadSqueak(
             squeak_server_pb2.DownloadSqueakRequest(
                 hash=squeak_hash,
             )
         )
-        get_response_squeak = self._squeak_from_msg(get_response.squeak)
-        CheckSqueak(get_response_squeak, skipDecryptionCheck=True)
-        return get_response_squeak
+        return squeak_from_msg(get_response.squeak)
 
-    def download_offer(self, squeak_hash: bytes):
+    def download_offer(self, squeak_hash: bytes) -> Offer:
         download_offer_response = self.stub.DownloadOffer(
             squeak_server_pb2.DownloadOfferRequest(
                 hash=squeak_hash,
             )
         )
-        offer_msg = download_offer_response.offer
-        return offer_msg
-
-    def _build_squeak_msg(self, squeak: CSqueak):
-        return squeak_server_pb2.Squeak(
-            hash=get_hash(squeak),
-            serialized_squeak=squeak.serialize(),
-        )
-
-    def _squeak_from_msg(self, squeak_msg: squeak_server_pb2.Squeak):
-        if not squeak_msg:
-            return None
-        if not squeak_msg.serialized_squeak:
-            return None
-        return CSqueak.deserialize(squeak_msg.serialized_squeak)
+        return offer_from_msg(download_offer_response.offer)
