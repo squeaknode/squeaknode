@@ -31,8 +31,9 @@ export default function SentPayment({
 
   const history = useHistory();
 
-  const peerName = sentPayment.getPeerName();
-  const peerId = sentPayment.getPeerId();
+  const peer = sentPayment.getPeer();
+  const peerName = peer.getPeerName();
+  const peerId = peer.getPeerId();
   const peerDisplay = peerName ? peerName : peerId;
 
   const goToSqueakPage = (hash) => {
@@ -65,7 +66,7 @@ export default function SentPayment({
 
   const onPeerClick = (event) => {
     event.preventDefault();
-    var peerId = sentPayment.getPeerId();
+    const peerId = peer.getPeerId();
     console.log("Handling peer click for peerId: " + peerId);
     if (goToPeerPage) {
       goToPeerPage(peerId);
