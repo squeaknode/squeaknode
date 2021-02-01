@@ -44,9 +44,6 @@ import {
 import {
   getProfileImageSrcString,
 } from "../../squeakimages/images"
-import {
-  goToSqueakAddressPage,
-} from "../../navigation/navigation"
 
 
 import moment from 'moment';
@@ -80,7 +77,8 @@ export default function SqueakProfileDetailItem({
     if (!squeakProfile) {
       return;
     }
-    goToSqueakAddressPage(history, squeakProfile.getAddress());
+    //goToSqueakAddressPage(history, squeakProfile.getAddress());
+    handleViewSqueaksClick();
   }
 
   const onConfigureClick = () => {

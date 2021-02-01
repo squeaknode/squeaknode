@@ -50,7 +50,9 @@ import {
 import {
   getProfileImageSrcString,
 } from "../../squeakimages/images"
-
+import {
+  goToSqueakAddressPage,
+} from "../../navigation/navigation"
 
 
 export default function ProfilePage() {
@@ -76,11 +78,6 @@ export default function ProfilePage() {
   const getSqueakProfile = (id) => {
     getSqueakProfileRequest(id, setSqueakProfile);
   };
-
-  const goToSqueakAddressPage = (squeakAddress) => {
-    history.push("/app/squeakaddress/" + squeakAddress);
-  };
-
 
   useEffect(()=>{
     getSqueakProfile(id)
@@ -123,7 +120,7 @@ export default function ProfilePage() {
   };
 
   const handleViewSqueaks = () => {
-    goToSqueakAddressPage(squeakProfile.getAddress());
+    goToSqueakAddressPage(history, squeakProfile.getAddress());
   };
 
   function ProfileContent() {
