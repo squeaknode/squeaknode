@@ -21,6 +21,10 @@ export const goToSqueakPage = (history, squeakHash) => {
   history.push("/app/squeak/" + squeakHash);
 };
 
+export const goToSqueakAddressPage = (history, squeakAddress) => {
+  history.push("/app/squeakaddress/" + squeakAddress);
+};
+
 export const goToChannelPage = (history, txId, outputIndex) => {
    history.push("/app/channel/" + txId + "/" + outputIndex);
 };

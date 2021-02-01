@@ -41,6 +41,11 @@ import {
 
 import moment from 'moment';
 
+import {
+  goToSqueakAddressPage,
+} from "../../navigation/navigation"
+
+
 export default function SqueakDetailItem({
   hash,
   squeak,
@@ -54,10 +59,6 @@ export default function SqueakDetailItem({
   var classes = useStyles();
 
   const history = useHistory();
-
-  const goToSqueakAddressPage = () => {
-    history.push("/app/squeakaddress/" + squeak.getAuthorAddress());
-  };
 
   const reloadRoute = () => {
     history.go(0);
@@ -75,7 +76,7 @@ export default function SqueakDetailItem({
     if (!squeak) {
       return;
     }
-    goToSqueakAddressPage(squeak.getAuthorAddress());
+    goToSqueakAddressPage(history, squeak.getAuthorAddress());
   }
 
   const onReplyClick = (event) => {
