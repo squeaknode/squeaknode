@@ -55,11 +55,11 @@ export default function BuySqueakDialog({
   var classes = useStyles();
   const history = useHistory();
 
-  var [selectedOfferId, setSelectedOfferId] = useState(-1);
+  var [selectedOfferId, setSelectedOfferId] = useState("");
   const [offers, setOffers] = useState([]);
 
   const resetFields = () => {
-    setSelectedOfferId(-1);
+    setSelectedOfferId("");
   };
 
   const handleChange = (event) => {
@@ -137,7 +137,7 @@ export default function BuySqueakDialog({
   function handleSubmit(event) {
     event.preventDefault();
     console.log( 'selectedOfferId:', selectedOfferId);
-    if (selectedOfferId == -1) {
+    if (selectedOfferId == "") {
       alert('Offer must be selected.');
       return;
     }
