@@ -43,6 +43,9 @@ import {
 import {
   payOfferRequest,
 } from "../../squeakclient/requests"
+import {
+  reloadRoute,
+} from "../../navigation/navigation"
 
 
 export default function BuySqueakDialog({
@@ -102,13 +105,9 @@ export default function BuySqueakDialog({
     syncSqueakRequest(hash, (response) => {
       console.log("response:");
       console.log(response);
-      reloadRoute();
+      reloadRoute(history);
     });
   }
-
-  const reloadRoute = () => {
-    history.go(0);
-  };
 
   const getSelectedOffer = () => {
     var offer;
