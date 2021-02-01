@@ -13,3 +13,11 @@ export const goToLightningNodePage = (history, pubkey, host, port) => {
       history.push("/app/lightningnode/" + pubkey);
     }
 };
+
+export const goToSqueakPage = (history, squeakHash) => {
+  history.push("/app/squeak/" + squeakHash);
+};
+
+export const goToChannelPage = (history, txId, outputIndex) => {
+   history.push("/app/channel/" + txId + "/" + outputIndex);
+};

@@ -16,9 +16,6 @@ import classnames from "classnames";
 
 import LockIcon from '@material-ui/icons/Lock';
 
-// components
-import BuyOfferDialog from "../../components/BuyOfferDialog";
-
 // styles
 import useStyles from "./styles";
 

@@ -10,6 +10,9 @@ import useStyles from "../../pages/wallet/styles";
 import moment from 'moment';
 import ChannelBalanceBar from "./ChannelBalanceBar";
 
+import {
+  goToChannelPage,
+} from "../../navigation/navigation"
 
 export default function ChannelItem({
   channel,
@@ -43,16 +46,12 @@ export default function ChannelItem({
       return pieces[1];
    }
 
-   const goToChannelPage = (txId, outputIndex) => {
-      history.push("/app/channel/" + txId + "/" + outputIndex);
-   };
-
    const onChannelClick = (event) => {
       event.preventDefault();
       console.log("Handling channel click...");
       var txId = getTxId(channel);
       var outputIndex = getOutputIndex(channel);
-      goToChannelPage(txId, outputIndex);
+      goToChannelPage(history, txId, outputIndex);
    }
 
    function ChannelDetailItem(label, value) {
