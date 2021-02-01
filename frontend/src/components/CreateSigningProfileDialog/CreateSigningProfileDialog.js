@@ -32,6 +32,9 @@ import SqueakThreadItem from "../../components/SqueakThreadItem";
 import {
   createSigningProfileRequest,
 } from "../../squeakclient/requests"
+import {
+  goToProfilePage,
+} from "../../navigation/navigation"
 
 
 export default function CreateSigningProfileDialog({
@@ -53,7 +56,7 @@ export default function CreateSigningProfileDialog({
   };
 
   const handleResponse = (response) => {
-    goToProfilePage(response.getProfileId());
+    goToProfilePage(history, response.getProfileId());
   };
 
   const handleErr = (err) => {
@@ -62,10 +65,6 @@ export default function CreateSigningProfileDialog({
 
   const createSigningProfile = (profileName) => {
     createSigningProfileRequest(profileName, handleResponse, handleErr);
-  };
-
-  const goToProfilePage = (profileId) => {
-    history.push("/app/profile/" + profileId);
   };
 
   function handleSubmit(event) {
