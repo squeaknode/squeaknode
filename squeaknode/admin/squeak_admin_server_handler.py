@@ -388,7 +388,7 @@ class SqueakAdminServerHandler(object):
         return squeak_admin_pb2.DeleteSqueakReply()
 
     def handle_create_peer(self, request):
-        peer_name = request.peer_name if request.peer_name else None
+        peer_name = request.peer_name
         host = request.host
         port = request.port
         logger.info(

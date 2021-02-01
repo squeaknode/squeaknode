@@ -120,6 +120,10 @@ class SqueakController:
             return sent_offer
 
     def create_signing_profile(self, profile_name: str):
+        if len(profile_name) == 0:
+            raise Exception(
+                "Profile name cannot be empty.",
+            )
         signing_key = CSigningKey.generate()
         verifying_key = signing_key.get_verifying_key()
         address = CSqueakAddress.from_verifying_key(verifying_key)
@@ -154,9 +158,16 @@ class SqueakController:
         return self.squeak_db.insert_profile(squeak_profile)
 
     def create_contact_profile(self, profile_name: str, squeak_address: str):
+        if len(profile_name) == 0:
+            raise Exception(
+                "Profile name cannot be empty.",
+            )
         if not is_address_valid(squeak_address):
             raise Exception(
-                "Invalid squeak address: {}".format(squeak_address))
+                "Invalid squeak address: {}".format(
+                    squeak_address
+                ),
+            )
         squeak_profile = SqueakProfile(
             profile_id=None,
             profile_name=profile_name,
@@ -226,6 +237,10 @@ class SqueakController:
         return self.squeak_db.delete_squeak(squeak_hash)
 
     def create_peer(self, peer_name: str, host: str, port: int):
+        if len(peer_name) == 0:
+            raise Exception(
+                "Peer name cannot be empty.",
+            )
         port = port or self.config.core.default_peer_rpc_port
         squeak_peer = SqueakPeer(
             peer_id=None,
