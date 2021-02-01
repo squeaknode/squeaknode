@@ -32,6 +32,10 @@ import {
   getAddressSqueakDisplaysRequest,
   getNetworkRequest,
 } from "../../squeakclient/requests"
+import {
+  goToSqueakAddressPage,
+  goToProfilePage,
+} from "../../navigation/navigation"
 
 
 export default function SqueakAddressPage() {
@@ -51,14 +55,6 @@ export default function SqueakAddressPage() {
   };
   const getNetwork = () => {
       getNetworkRequest(setNetwork);
-  };
-
-  const goToProfilePage = (profileId) => {
-    history.push("/app/profile/" + profileId);
-  };
-
-  const goToSqueakAddressPage = (squeakAddress) => {
-    history.push("/app/squeakaddress/" + squeakAddress);
   };
 
   const handleClickOpenCreateContactProfileDialog = () => {
@@ -95,7 +91,7 @@ export default function SqueakAddressPage() {
       <div className={classes.root}>
         Profile:
         <Button variant="contained" onClick={() => {
-            goToProfilePage(squeakProfile.getProfileId());
+            goToProfilePage(history, squeakProfile.getProfileId());
           }}>{squeakProfile.getProfileName()}</Button>
       </div>
     )
@@ -112,7 +108,7 @@ export default function SqueakAddressPage() {
   function TimelineUserAvatar(squeak) {
     const handleAvatarClick = () => {
       console.log("Avatar clicked...");
-      goToSqueakAddressPage(squeak.getAuthorAddress());
+      goToSqueakAddressPage(history, squeak.getAuthorAddress());
     };
     return (
       <TimelineDot
