@@ -44,6 +44,10 @@ import {
 import {
   getProfileImageSrcString,
 } from "../../squeakimages/images"
+import {
+  goToSqueakAddressPage,
+} from "../../navigation/navigation"
+
 
 import moment from 'moment';
 
@@ -70,17 +74,13 @@ export default function SqueakProfileDetailItem({
 
   const history = useHistory();
 
-  const goToSqueakAddressPage = () => {
-    history.push("/app/squeakaddress/" + squeakProfile.getAddress());
-  };
-
   const onViewSqueaksClick = () => {
     console.log("Handling view squeaks click...");
     handleClose();
     if (!squeakProfile) {
       return;
     }
-    goToSqueakAddressPage();
+    goToSqueakAddressPage(history, squeakProfile.getAddress());
   }
 
   const onConfigureClick = () => {
