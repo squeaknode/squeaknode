@@ -10,6 +10,10 @@ import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';
 
 import useStyles from "../../pages/wallet/styles";
 
+import {
+  goToLightningNodePage,
+} from "../../navigation/navigation"
+
 
 export default function LightningPeerListItem({
   peer,
@@ -24,15 +28,11 @@ export default function LightningPeerListItem({
   const onPeerClick = (event) => {
     event.preventDefault();
     console.log("Handling peer click...");
-    goToLightningNodePage();
-  }
-
-  const goToLightningNodePage = () => {
     const pubkey = peer.getPubKey();
     const host = getPeerHost();
     const port = getPeerPort();
-    history.push("/app/lightningnode/" + pubkey + "/" + host + "/" + port);
-  };
+    goToLightningNodePage(history, pubkey, host, port);
+  }
 
   const getPeerHost = () => {
     const address = peer.getAddress();
