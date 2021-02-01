@@ -33,23 +33,13 @@ import {
 
 export default function BuyOfferDetailItem({
   offer,
-  handleOfferClick,
   ...props
 }) {
   var classes = useStyles();
   const history = useHistory();
   const [payOfferDialogOpen, setPayOfferDialogOpen] = useState(false);
 
-
   const preventDefault = (event) => event.preventDefault();
-
-  const onOfferClick = (event) => {
-    event.preventDefault();
-    console.log("Handling offer click...");
-    if (handleOfferClick) {
-      handleOfferClick();
-    }
-  }
 
   const onPeerClick = (event) => {
     event.preventDefault();
@@ -59,6 +49,16 @@ export default function BuyOfferDetailItem({
     }
     console.log("Handling peer click for peerId: " + peerId);
     goToPeerPage(history, peerId);
+  }
+
+  const onLightningNodeClick = (event) => {
+    event.preventDefault();
+    goToLightningNodePage(
+      history,
+      offer.getNodePubkey(),
+      offer.getNodeHost(),
+      offer.getNodePort(),
+    )
   }
 
   const getPeerId = () => {
@@ -152,43 +152,11 @@ export default function BuyOfferDetailItem({
       <Box>
         <Typography
           size="md"
-          >Lightning Node: <Link href="#" onClick={() => {
-            goToLightningNodePage(
-              history,
-              offer.getNodePubkey(),
-              offer.getNodeHost(),
-              offer.getNodePort(),
-            )
-          }}>
+          >Lightning Node: <Link href="#" onClick={onLightningNodeClick}>
             {lightningPubkey + "@" + lightningAddress}
           </Link>
         </Typography>
       </Box>
-    )
-  }
-
-  function PayOfferButton() {
-    return (
-      <>
-          <Button
-            variant="contained"
-            onClick={() => {
-              handleClickPayOffer();
-            }}>Pay Offer
-          </Button>
-      </>
-    )
-  }
-
-  function PayOfferDialogContent() {
-    return (
-      <>
-        <BuyOfferDialog
-          open={payOfferDialogOpen}
-          offer={offer}
-          handleClose={handleClosePayOfferDialog}
-          ></BuyOfferDialog>
-      </>
     )
   }
 
@@ -198,7 +166,6 @@ export default function BuyOfferDetailItem({
       p={1}
       m={0}
       style={{backgroundColor: 'white'}}
-      onClick={onOfferClick}
       >
           <Grid
             container
@@ -241,7 +208,6 @@ export default function BuyOfferDetailItem({
           </Grid>
           </Grid>
     </Box>
-      {PayOfferDialogContent()}
     </>
   )
 }
