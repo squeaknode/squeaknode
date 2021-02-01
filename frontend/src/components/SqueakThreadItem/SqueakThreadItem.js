@@ -27,6 +27,11 @@ import {
 
 import moment from 'moment';
 
+import {
+  goToSqueakPage,
+  goToSqueakAddressPage,
+} from "../../navigation/navigation"
+
 export default function SqueakThreadItem({
   hash,
   squeak,
@@ -42,14 +47,6 @@ export default function SqueakThreadItem({
     return getBlockDetailUrl(squeak.getBlockHash(), network);
   };
 
-  const goToSqueakPage = (hash) => {
-    history.push("/app/squeak/" + hash);
-  };
-
-  const goToSqueakAddressPage = () => {
-    history.push("/app/squeakaddress/" + squeak.getAuthorAddress());
-  };
-
   const onAddressClick = (event) => {
     event.preventDefault();
     event.stopPropagation();
@@ -57,15 +54,13 @@ export default function SqueakThreadItem({
     if (!squeak) {
       return;
     }
-    goToSqueakAddressPage(squeak.getAuthorAddress());
+    goToSqueakAddressPage(history, squeak.getAuthorAddress());
   }
 
   const onSqueakClick = (event) => {
     event.preventDefault();
     console.log("Handling squeak click for hash: " + hash);
-    if (goToSqueakPage) {
-      goToSqueakPage(hash);
-    }
+    goToSqueakPage(history, hash);
   }
 
   function SqueakUnlockedContent() {
