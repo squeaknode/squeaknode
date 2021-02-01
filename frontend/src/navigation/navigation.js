@@ -36,3 +36,11 @@ export const goToProfilePage = (history, profileId) => {
 export const goToWalletPage = (history) => {
   history.push("/app/wallet/");
 };
+
+export const goToSentPaymentsPage = (history) => {
+  history.push("/app/sentpayments/");
+};
+
+export const goToReceivedPaymentsPage = (history) => {
+  history.push("/app/receivedpayments/");
+};
