@@ -11,6 +11,9 @@ import {useHistory} from "react-router-dom";
 import {
   getProfileImageSrcString,
 } from "../../squeakimages/images"
+import {
+  goToSqueakAddressPage,
+} from "../../navigation/navigation"
 
 
 export default function SqueakUserAvatar({
@@ -19,13 +22,9 @@ export default function SqueakUserAvatar({
 }) {
   const history = useHistory();
 
-  const goToSqueakAddressPage = (squeakAddress) => {
-    history.push("/app/squeakaddress/" + squeakAddress);
-  };
-
   const handleAvatarClick = () => {
     if (squeakProfile) {
-      goToSqueakAddressPage(squeakProfile.getAddress());
+      goToSqueakAddressPage(history, squeakProfile.getAddress());
     }
   };
 
