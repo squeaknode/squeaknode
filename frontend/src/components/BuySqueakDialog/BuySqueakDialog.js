@@ -84,8 +84,6 @@ export default function BuySqueakDialog({
   };
 
   const handlePayResponse = (response) => {
-    // goToSqueakPage(offer.getSqueakHash());
-    // reloadRoute();
     handlePaymentComplete();
   };
 
