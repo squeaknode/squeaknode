@@ -41,6 +41,12 @@ import {
 
 import moment from 'moment';
 
+import {
+  goToSqueakAddressPage,
+  reloadRoute,
+} from "../../navigation/navigation"
+
+
 export default function SqueakDetailItem({
   hash,
   squeak,
@@ -55,14 +61,6 @@ export default function SqueakDetailItem({
 
   const history = useHistory();
 
-  const goToSqueakAddressPage = () => {
-    history.push("/app/squeakaddress/" + squeak.getAuthorAddress());
-  };
-
-  const reloadRoute = () => {
-    history.go(0);
-  };
-
   const blockDetailUrl = () => {
     // return "https://blockstream.info/testnet/block/" + squeak.getBlockHash();
     return getBlockDetailUrl(squeak.getBlockHash(), network);
@@ -75,7 +73,7 @@ export default function SqueakDetailItem({
     if (!squeak) {
       return;
     }
-    goToSqueakAddressPage(squeak.getAuthorAddress());
+    goToSqueakAddressPage(history, squeak.getAuthorAddress());
   }
 
   const onReplyClick = (event) => {
@@ -121,7 +119,7 @@ export default function SqueakDetailItem({
     event.preventDefault();
     console.log("Handling download click...");
     syncSqueakRequest(hash, (response) => {
-      reloadRoute();
+      reloadRoute(history);
     });
   }
 

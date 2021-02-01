@@ -45,6 +45,10 @@ import {
   lndConnectPeerRequest,
   lndDisconnectPeerRequest,
 } from "../../squeakclient/requests"
+import {
+  reloadRoute,
+} from "../../navigation/navigation"
+
 
 export default function LightningNodePage() {
   var classes = useStyles();
@@ -124,17 +128,13 @@ export default function LightningNodePage() {
   };
   const connectPeer = (pubkey, host) => {
     lndConnectPeerRequest(pubkey, host, () => {
-      reloadRoute();
+      reloadRoute(history);
     });
   };
   const disconnectPeer = (pubkey) => {
     lndDisconnectPeerRequest(pubkey, () => {
-      reloadRoute();
+      reloadRoute(history);
     });
-  };
-
-  const reloadRoute = () => {
-    history.go(0);
   };
 
   useEffect(()=>{
@@ -277,7 +277,7 @@ export default function LightningNodePage() {
           <Typography size="md">
           {HasChannelToPeer()}
           </Typography>
-          {!hasChannelToPeer &&
+          {!hasChannelToPeer() &&
             OpenChannelButton()
           }
         </Grid>

@@ -42,6 +42,9 @@ import {
   getReplySqueakDisplaysRequest,
   getNetworkRequest,
 } from "../../squeakclient/requests"
+import {
+  goToSqueakAddressPage,
+} from "../../navigation/navigation"
 
 
 function Alert(props) {
@@ -75,10 +78,6 @@ export default function SqueakPage() {
   };
   const getNetwork = () => {
       getNetworkRequest(setNetwork);
-  };
-
-  const goToSqueakAddressPage = (squeakAddress) => {
-    history.push("/app/squeakaddress/" + squeakAddress);
   };
 
   const unknownAncestorHash = () => {
@@ -163,7 +162,7 @@ export default function SqueakPage() {
     const handleAvatarClick = () => {
       console.log("Avatar clicked...");
       if (squeak) {
-        goToSqueakAddressPage(squeak.getAuthorAddress());
+        goToSqueakAddressPage(history, squeak.getAuthorAddress());
       }
     };
     return (

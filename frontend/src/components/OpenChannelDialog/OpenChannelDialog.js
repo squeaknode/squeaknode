@@ -72,10 +72,6 @@ export default function OpenChannelDialog({
     lndOpenChannelSyncRequest(pubkey, amount, satperbyte, handleResponse, handleErr);
   };
 
-  // const goToProfilePage = (profileId) => {
-  //   history.push("/app/profile/" + profileId);
-  // };
-
   function handleSubmit(event) {
     event.preventDefault();
     console.log( 'pubkey:', pubkey);

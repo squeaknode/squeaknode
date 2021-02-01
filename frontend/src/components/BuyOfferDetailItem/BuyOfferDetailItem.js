@@ -16,9 +16,6 @@ import classnames from "classnames";
 
 import LockIcon from '@material-ui/icons/Lock';
 
-// components
-import BuyOfferDialog from "../../components/BuyOfferDialog";
-
 // styles
 import useStyles from "./styles";
 
@@ -26,25 +23,20 @@ import Widget from "../../components/Widget";
 
 import moment from 'moment';
 
+import {
+  goToPeerPage,
+  goToLightningNodePage,
+} from "../../navigation/navigation"
+
 export default function BuyOfferDetailItem({
   offer,
-  handleOfferClick,
   ...props
 }) {
   var classes = useStyles();
   const history = useHistory();
   const [payOfferDialogOpen, setPayOfferDialogOpen] = useState(false);
 
-
   const preventDefault = (event) => event.preventDefault();
-
-  const onOfferClick = (event) => {
-    event.preventDefault();
-    console.log("Handling offer click...");
-    if (handleOfferClick) {
-      handleOfferClick();
-    }
-  }
 
   const onPeerClick = (event) => {
     event.preventDefault();
@@ -53,7 +45,17 @@ export default function BuyOfferDetailItem({
       return;
     }
     console.log("Handling peer click for peerId: " + peerId);
-    goToPeerPage(peerId);
+    goToPeerPage(history, peerId);
+  }
+
+  const onLightningNodeClick = (event) => {
+    event.preventDefault();
+    goToLightningNodePage(
+      history,
+      offer.getNodePubkey(),
+      offer.getNodeHost(),
+      offer.getNodePort(),
+    )
   }
 
   const getPeerId = () => {
@@ -64,20 +66,7 @@ export default function BuyOfferDetailItem({
     return peer.getPeerId();
   }
 
-  const goToPeerPage = (peerId) => {
-    history.push("/app/peer/" + peerId);
-  };
 
-  const goToLightningNodePage = (pubkey, host, port) => {
-      console.log("Go to lightning node for pubkey: " + pubkey);
-      if (pubkey && host && port) {
-        history.push("/app/lightningnode/" + pubkey + "/" + host + "/" + port);
-      } else if (pubkey && host) {
-        history.push("/app/lightningnode/" + pubkey + "/" + host);
-      } else {
-        history.push("/app/lightningnode/" + pubkey);
-      }
-  };
 
   const handleClickPayOffer = () => {
     console.log("Handle click pay offer.");
@@ -160,42 +149,11 @@ export default function BuyOfferDetailItem({
       <Box>
         <Typography
           size="md"
-          >Lightning Node: <Link href="#" onClick={() => {
-            goToLightningNodePage(
-              offer.getNodePubkey(),
-              offer.getNodeHost(),
-              offer.getNodePort(),
-            )
-          }}>
+          >Lightning Node: <Link href="#" onClick={onLightningNodeClick}>
             {lightningPubkey + "@" + lightningAddress}
           </Link>
         </Typography>
       </Box>
-    )
-  }
-
-  function PayOfferButton() {
-    return (
-      <>
-          <Button
-            variant="contained"
-            onClick={() => {
-              handleClickPayOffer();
-            }}>Pay Offer
-          </Button>
-      </>
-    )
-  }
-
-  function PayOfferDialogContent() {
-    return (
-      <>
-        <BuyOfferDialog
-          open={payOfferDialogOpen}
-          offer={offer}
-          handleClose={handleClosePayOfferDialog}
-          ></BuyOfferDialog>
-      </>
     )
   }
 
@@ -205,7 +163,6 @@ export default function BuyOfferDetailItem({
       p={1}
       m={0}
       style={{backgroundColor: 'white'}}
-      onClick={onOfferClick}
       >
           <Grid
             container
@@ -248,7 +205,6 @@ export default function BuyOfferDetailItem({
           </Grid>
           </Grid>
     </Box>
-      {PayOfferDialogContent()}
     </>
   )
 }

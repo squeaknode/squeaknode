@@ -9,6 +9,11 @@ import moment from 'moment';
 import Card from "@material-ui/core/Card";
 import ChannelBalanceBar from "../ChannelItem/ChannelBalanceBar";
 
+import {
+  goToChannelPage,
+} from "../../navigation/navigation"
+
+
 export default function PendingOpenChannelItem({
   pendingOpenChannel,
   ...props
@@ -47,10 +52,6 @@ export default function PendingOpenChannelItem({
     }
     return pieces[1];
   }
-
-  const goToChannelPage = (txId, outputIndex) => {
-    history.push("/app/channel/" + txId + "/" + outputIndex);
-  };
 
   const onChannelClick = (event) => {
     event.preventDefault();

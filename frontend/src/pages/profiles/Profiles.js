@@ -30,6 +30,9 @@ import {
   getSigningProfilesRequest,
   getContactProfilesRequest,
 } from "../../squeakclient/requests"
+import {
+  goToProfilePage,
+} from "../../navigation/navigation"
 
 
 const useStyles = makeStyles((theme) => ({
@@ -66,10 +69,6 @@ export default function Profiles() {
   };
   const loadContactProfiles = () => {
     getContactProfilesRequest(setContactProfiles);
-  };
-
-  const goToProfilePage = (profileId) => {
-    history.push("/app/profile/" + profileId);
   };
 
   const handleClickOpenCreateSigningProfileDialog = () => {
@@ -255,8 +254,7 @@ export default function Profiles() {
              onRowClick: rowData => {
                var id = rowData[0];
                var address = rowData[2];
-               //goToSqueakAddressPage(address);
-               goToProfilePage(id);
+               goToProfilePage(history, id);
              }
            }}/>
        </Grid>

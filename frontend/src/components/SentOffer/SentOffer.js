@@ -20,6 +20,11 @@ import Widget from "../../components/Widget";
 
 import moment from 'moment';
 
+import {
+  goToSqueakPage,
+} from "../../navigation/navigation"
+
+
 export default function SentOffer({
   receivedPayment,
   ...props
@@ -30,17 +35,11 @@ export default function SentOffer({
 
   const paymentTimeMs = receivedPayment.setPaymentTimeMs();
 
-  const goToSqueakPage = (hash) => {
-    history.push("/app/squeak/" + hash);
-  };
-
   const onSqueakClick = (event) => {
     event.preventDefault();
     var hash = receivedPayment.getSqueakHash();
     console.log("Handling squeak click for hash: " + hash);
-    if (goToSqueakPage) {
-      goToSqueakPage(hash);
-    }
+    goToSqueakPage(history, hash);
   }
 
   console.log("receivedPayment:");

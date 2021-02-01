@@ -32,6 +32,9 @@ import SqueakThreadItem from "../../components/SqueakThreadItem";
 import {
   deleteSqueakRequest,
 } from "../../squeakclient/requests"
+import {
+  reloadRoute,
+} from "../../navigation/navigation"
 
 
 export default function DeleteSqueakDialog({
@@ -45,16 +48,8 @@ export default function DeleteSqueakDialog({
 
   const deleteSqueak = (squeakHash) => {
     deleteSqueakRequest(squeakHash, (response) => {
-      reloadRoute();
+      reloadRoute(history);
     });
-  };
-
-  const goToSqueakPage = (squeakHash) => {
-    history.push("/app/squeak/" + squeakHash);
-  };
-
-  const reloadRoute = () => {
-    history.go(0);
   };
 
   function handleSubmit(event) {

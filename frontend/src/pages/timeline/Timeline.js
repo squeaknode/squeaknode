@@ -48,6 +48,9 @@ import {
   getTimelineSqueakDisplaysRequest,
   getNetworkRequest,
 } from "../../squeakclient/requests"
+import {
+  goToSqueakAddressPage,
+} from "../../navigation/navigation"
 
 
 export default function TimelinePage() {
@@ -64,10 +67,6 @@ export default function TimelinePage() {
   };
   const getNetwork = () => {
       getNetworkRequest(setNetwork);
-  };
-
-  const goToSqueakAddressPage = (squeakAddress) => {
-    history.push("/app/squeakaddress/" + squeakAddress);
   };
 
   const handleClickOpen = () => {
@@ -107,7 +106,7 @@ export default function TimelinePage() {
   function TimelineUserAvatar(squeak) {
     const handleAvatarClick = () => {
       console.log("Avatar clicked...");
-      goToSqueakAddressPage(squeak.getAuthorAddress());
+      goToSqueakAddressPage(history, squeak.getAuthorAddress());
     };
     return (
       <TimelineDot

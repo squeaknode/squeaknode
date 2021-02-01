@@ -43,6 +43,9 @@ import {
 import {
   payOfferRequest,
 } from "../../squeakclient/requests"
+import {
+  reloadRoute,
+} from "../../navigation/navigation"
 
 
 export default function BuySqueakDialog({
@@ -55,11 +58,11 @@ export default function BuySqueakDialog({
   var classes = useStyles();
   const history = useHistory();
 
-  var [selectedOfferId, setSelectedOfferId] = useState(-1);
+  var [selectedOfferId, setSelectedOfferId] = useState("");
   const [offers, setOffers] = useState([]);
 
   const resetFields = () => {
-    setSelectedOfferId(-1);
+    setSelectedOfferId("");
   };
 
   const handleChange = (event) => {
@@ -84,8 +87,6 @@ export default function BuySqueakDialog({
   };
 
   const handlePayResponse = (response) => {
-    // goToSqueakPage(offer.getSqueakHash());
-    // reloadRoute();
     handlePaymentComplete();
   };
 
@@ -104,13 +105,9 @@ export default function BuySqueakDialog({
     syncSqueakRequest(hash, (response) => {
       console.log("response:");
       console.log(response);
-      reloadRoute();
+      reloadRoute(history);
     });
   }
-
-  const reloadRoute = () => {
-    history.go(0);
-  };
 
   const getSelectedOffer = () => {
     var offer;
@@ -137,7 +134,7 @@ export default function BuySqueakDialog({
   function handleSubmit(event) {
     event.preventDefault();
     console.log( 'selectedOfferId:', selectedOfferId);
-    if (selectedOfferId == -1) {
+    if (selectedOfferId == "") {
       alert('Offer must be selected.');
       return;
     }

@@ -15,6 +15,9 @@ import useStyles from "./styles";
 import {
   createContactProfileRequest,
 } from "../../squeakclient/requests"
+import {
+  goToProfilePage,
+} from "../../navigation/navigation"
 
 
 export default function CreateContactProfileDialog({
@@ -43,7 +46,7 @@ export default function CreateContactProfileDialog({
   };
 
   const handleResponse = (response) => {
-    goToProfilePage(response.getProfileId());
+    goToProfilePage(history, response.getProfileId());
   };
 
   const handleErr = (err) => {
@@ -52,10 +55,6 @@ export default function CreateContactProfileDialog({
 
   const createContactProfile = (profileName, squeakAddress) => {
     createContactProfileRequest(profileName, squeakAddress, handleResponse, handleErr);
-  };
-
-  const goToProfilePage = (profileId) => {
-    history.push("/app/profile/" + profileId);
   };
 
   function handleSubmit(event) {

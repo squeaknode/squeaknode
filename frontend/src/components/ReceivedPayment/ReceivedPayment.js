@@ -20,6 +20,11 @@ import Widget from "../../components/Widget";
 
 import moment from 'moment';
 
+import {
+  goToSqueakPage,
+} from "../../navigation/navigation"
+
+
 export default function ReceivedPayment({
   receivedPayment,
   ...props
@@ -28,17 +33,11 @@ export default function ReceivedPayment({
 
   const history = useHistory();
 
-  const goToSqueakPage = (hash) => {
-    history.push("/app/squeak/" + hash);
-  };
-
   const onSqueakClick = (event) => {
     event.preventDefault();
     var hash = receivedPayment.getSqueakHash();
     console.log("Handling squeak click for hash: " + hash);
-    if (goToSqueakPage) {
-      goToSqueakPage(hash);
-    }
+    goToSqueakPage(history, hash);
   }
 
   console.log("receivedPayment:");

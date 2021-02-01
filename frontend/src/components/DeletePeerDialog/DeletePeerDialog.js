@@ -31,6 +31,9 @@ import Widget from "../../components/Widget";
 import {
   deletePeerRequest,
 } from "../../squeakclient/requests"
+import {
+  reloadRoute,
+} from "../../navigation/navigation"
 
 
 export default function DeletePeerDialog({
@@ -44,12 +47,8 @@ export default function DeletePeerDialog({
 
   const deletePeer = (peerId) => {
     deletePeerRequest(peerId, (response) => {
-      reloadRoute();
+      reloadRoute(history);
     });
-  };
-
-  const reloadRoute = () => {
-    history.go(0);
   };
 
   function handleSubmit(event) {

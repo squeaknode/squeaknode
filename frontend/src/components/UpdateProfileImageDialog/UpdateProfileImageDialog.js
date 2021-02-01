@@ -32,6 +32,9 @@ import SqueakThreadItem from "../../components/SqueakThreadItem";
 import {
   setSqueakProfileImageRequest,
 } from "../../squeakclient/requests"
+import {
+  reloadRoute,
+} from "../../navigation/navigation"
 
 
 export default function UpdateProfileImageDialog({
@@ -51,13 +54,9 @@ export default function UpdateProfileImageDialog({
     setImageBase64(null);
   };
 
-  const reloadRoute = () => {
-    history.go(0);
-  };
-
   const handleResponse = (response) => {
     // TODO: reload profile only.
-    reloadRoute();
+    reloadRoute(history);
   };
 
   const handleErr = (err) => {

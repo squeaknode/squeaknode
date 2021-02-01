@@ -41,6 +41,9 @@ import {
   logoutRequest,
   getUserRequest,
 } from "../../squeakclient/requests"
+import {
+  reloadRoute,
+} from "../../navigation/navigation"
 
 const notifications = [];
 
@@ -60,10 +63,6 @@ export default function Header(props) {
   var [profileMenu, setProfileMenu] = useState(null);
   var [isSearchOpen, setSearchOpen] = useState(false);
   var [username, setUsername] = useState("bob smith");
-
-  const reloadRoute = () => {
-    history.go(0);
-  };
 
   const getUser = () => {
     getUserRequest(setUsername);
@@ -194,7 +193,7 @@ export default function Header(props) {
                color="primary"
                onClick={() => logoutRequest(
                  () => {
-                   reloadRoute();
+                   reloadRoute(history);
                  }
                )}
              >

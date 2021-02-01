@@ -23,7 +23,6 @@ import Table from "../dashboard/components/Table/Table";
 import SentPayment from "../../components/SentPayment";
 import ReceivedPayment from "../../components/ReceivedPayment";
 
-
 // data
 import mock from "../dashboard/mock";
 
@@ -32,6 +31,10 @@ import {
   getReceivedPaymentsRequest,
   getPaymentSummaryRequest
 } from "../../squeakclient/requests"
+import {
+  goToSentPaymentsPage,
+  goToReceivedPaymentsPage,
+} from "../../navigation/navigation"
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -51,14 +54,6 @@ export default function Payments() {
     getPaymentSummaryRequest((paymentsSummaryReply) => {
       setPaymentSummary(paymentsSummaryReply.getPaymentSummary());
     });
-  };
-
-  const goToSentPaymentsPage = () => {
-    history.push("/app/sentpayments/");
-  };
-
-  const goToReceivedPaymentsPage = () => {
-    history.push("/app/receivedpayments/");
   };
 
   useEffect(() => {
@@ -138,7 +133,7 @@ export default function Payments() {
           <Button
             variant="contained"
             onClick={() => {
-              goToSentPaymentsPage();
+              goToSentPaymentsPage(history);
             }}>View Sent Payments
           </Button>
         </div>
@@ -155,7 +150,7 @@ export default function Payments() {
           <Button
             variant="contained"
             onClick={() => {
-              goToReceivedPaymentsPage();
+              goToReceivedPaymentsPage(history);
             }}>View Received Payments
           </Button>
         </div>

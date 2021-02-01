@@ -97,11 +97,6 @@ export default function LightningNodePage() {
     setCloseChannelDialogOpen(true);
   };
 
-
-  const reloadRoute = () => {
-    history.go(0);
-  };
-
   useEffect(()=>{
     listPeers()
   },[]);
