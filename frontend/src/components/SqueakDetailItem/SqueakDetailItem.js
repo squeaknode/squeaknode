@@ -43,6 +43,7 @@ import moment from 'moment';
 
 import {
   goToSqueakAddressPage,
+  reloadRoute,
 } from "../../navigation/navigation"
 
 
@@ -59,10 +60,6 @@ export default function SqueakDetailItem({
   var classes = useStyles();
 
   const history = useHistory();
-
-  const reloadRoute = () => {
-    history.go(0);
-  };
 
   const blockDetailUrl = () => {
     // return "https://blockstream.info/testnet/block/" + squeak.getBlockHash();
@@ -122,7 +119,7 @@ export default function SqueakDetailItem({
     event.preventDefault();
     console.log("Handling download click...");
     syncSqueakRequest(hash, (response) => {
-      reloadRoute();
+      reloadRoute(history);
     });
   }
 
