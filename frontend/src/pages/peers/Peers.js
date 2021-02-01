@@ -27,6 +27,9 @@ import mock from "../dashboard/mock";
 import {
   getPeersRequest,
 } from "../../squeakclient/requests"
+import {
+  goToPeerPage,
+} from "../../navigation/navigation"
 
 
 const useStyles = makeStyles((theme) => ({
@@ -52,10 +55,6 @@ export default function Peers() {
 
   const getSqueakPeers = () => {
     getPeersRequest(setPeers);
-  };
-
-  const goToPeerPage = (id) => {
-    history.push("/app/Peer/" + id);
   };
 
   const handleClickOpenCreatePeerDialog = () => {
@@ -126,7 +125,7 @@ export default function Peers() {
              onRowClick: rowData => {
                var id = rowData[0];
                console.log("clicked on id" + id);
-               goToPeerPage(id);
+               goToPeerPage(history, id);
              },
            }}/>
        </Grid>
