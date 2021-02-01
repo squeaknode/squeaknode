@@ -31,6 +31,9 @@ import Widget from "../../components/Widget";
 import {
   deleteProfileRequest,
 } from "../../squeakclient/requests"
+import {
+  reloadRoute,
+} from "../../navigation/navigation"
 
 
 export default function DeleteProfileDialog({
@@ -44,12 +47,8 @@ export default function DeleteProfileDialog({
 
   const deleteProfile = (profileId) => {
     deleteProfileRequest(profileId, (response) => {
-      reloadRoute();
+      reloadRoute(history);
     });
-  };
-
-  const reloadRoute = () => {
-    history.go(0);
   };
 
   function handleSubmit(event) {
