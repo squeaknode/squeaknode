@@ -1,3 +1,6 @@
+export const reloadRoute = (history) => {
+  history.go(0);
+};
 
 export const goToPeerPage = (history, peerId) => {
   history.push("/app/peer/" + peerId);
@@ -24,4 +27,8 @@ export const goToChannelPage = (history, txId, outputIndex) => {
 
 export const goToProfilePage = (history, profileId) => {
   history.push("/app/profile/" + profileId);
+};
+
+export const goToWalletPage = (history) => {
+  history.push("/app/wallet/");
 };

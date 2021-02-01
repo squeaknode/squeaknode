@@ -34,7 +34,9 @@ import SqueakThreadItem from "../../components/SqueakThreadItem";
 import {
   lndSendCoins,
 } from "../../squeakclient/requests"
-
+import {
+  reloadRoute,
+} from "../../navigation/navigation"
 
 
 export default function SendBitcoinDialog({
@@ -76,12 +78,9 @@ export default function SendBitcoinDialog({
   const sendBitcoin = (address, amount, satperbyte, sendall) => {
     lndSendCoins(address, amount, satperbyte, sendall, (response) => {
       // setAddress(response.getAddress());
-      goToWalletPage();
+      // goToWalletPage(history);
+      reloadRoute();
     });
-  };
-
-  const goToWalletPage = () => {
-    history.push("/app/wallet/");
   };
 
   function handleSubmit(event) {
