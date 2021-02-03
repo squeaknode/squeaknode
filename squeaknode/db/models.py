@@ -67,6 +67,7 @@ class Models:
             Column("sharing", Boolean, nullable=False),
             Column("following", Boolean, nullable=False),
             Column("profile_image", Binary, nullable=True),
+            sqlite_autoincrement=True,
         )
 
         self.peers = Table(
@@ -80,6 +81,7 @@ class Models:
             Column("server_port", Integer, nullable=False),
             Column("uploading", Boolean, nullable=False),
             Column("downloading", Boolean, nullable=False),
+            sqlite_autoincrement=True,
         )
 
         self.received_offers = Table(
@@ -100,6 +102,7 @@ class Models:
             Column("node_host", String, nullable=False),
             Column("node_port", Integer, nullable=False),
             Column("peer_id", Integer, nullable=False),
+            sqlite_autoincrement=True,
         )
 
         self.sent_payments = Table(
@@ -115,6 +118,7 @@ class Models:
             Column("price_msat", Integer, nullable=False, default=0),
             Column("node_pubkey", String(66), nullable=False),
             Column("valid", Boolean, nullable=False),
+            sqlite_autoincrement=True,
         )
 
         self.sent_offers = Table(
@@ -133,7 +137,8 @@ class Models:
             Column("invoice_expiry", Integer, nullable=False),
             Column("client_addr", String(64), nullable=False),
             UniqueConstraint('squeak_hash', 'client_addr',
-                             name='uq_sent_offer_squeak_hash_client_addr')
+                             name='uq_sent_offer_squeak_hash_client_addr'),
+            sqlite_autoincrement=True,
         )
 
         self.received_payments = Table(
@@ -147,4 +152,5 @@ class Models:
             Column("price_msat", Integer, nullable=False),
             Column("settle_index", Integer, nullable=False),
             Column("client_addr", String(64), nullable=False),
+            sqlite_autoincrement=True,
         )
