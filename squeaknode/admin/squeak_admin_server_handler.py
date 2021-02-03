@@ -387,19 +387,19 @@ class SqueakAdminServerHandler(object):
                 port,
             )
         )
-        peer_id = self.squeak_controller.create_peer(
+        peer_hash = self.squeak_controller.create_peer(
             peer_name,
             host,
             port,
         )
         return squeak_admin_pb2.CreatePeerReply(
-            peer_id=peer_id,
+            peer_hash=peer_hash,
         )
 
     def handle_get_squeak_peer(self, request):
-        peer_id = request.peer_id
-        logger.info("Handle get squeak peer with id: {}".format(peer_id))
-        squeak_peer = self.squeak_controller.get_peer(peer_id)
+        peer_hash = request.peer_hash
+        logger.info("Handle get squeak peer with hash: {}".format(peer_hash))
+        squeak_peer = self.squeak_controller.get_peer(peer_hash)
         if squeak_peer is None:
             raise Exception("Peer not found.")
         squeak_peer_msg = squeak_peer_to_message(squeak_peer)
@@ -418,45 +418,45 @@ class SqueakAdminServerHandler(object):
         )
 
     def handle_set_squeak_peer_downloading(self, request):
-        peer_id = request.peer_id
+        peer_hash = request.peer_hash
         downloading = request.downloading
         logger.info(
             "Handle set peer downloading with peer id: {}, downloading: {}".format(
-                peer_id,
+                peer_hash,
                 downloading,
             )
         )
-        self.squeak_controller.set_peer_downloading(peer_id, downloading)
+        self.squeak_controller.set_peer_downloading(peer_hash, downloading)
         return squeak_admin_pb2.SetPeerDownloadingReply()
 
     def handle_rename_squeak_peer(self, request):
-        peer_id = request.peer_id
+        peer_hash = request.peer_hash
         peer_name = request.peer_name
         logger.info(
             "Handle rename peer with peer id: {}, new name: {}".format(
-                peer_id,
+                peer_hash,
                 peer_name,
             )
         )
-        self.squeak_controller.rename_peer(peer_id, peer_name)
+        self.squeak_controller.rename_peer(peer_hash, peer_name)
         return squeak_admin_pb2.RenamePeerReply()
 
     def handle_set_squeak_peer_uploading(self, request):
-        peer_id = request.peer_id
+        peer_hash = request.peer_hash
         uploading = request.uploading
         logger.info(
             "Handle set peer uploading with peer id: {}, uploading: {}".format(
-                peer_id,
+                peer_hash,
                 uploading,
             )
         )
-        self.squeak_controller.set_peer_uploading(peer_id, uploading)
+        self.squeak_controller.set_peer_uploading(peer_hash, uploading)
         return squeak_admin_pb2.SetPeerUploadingReply()
 
     def handle_delete_squeak_peer(self, request):
-        peer_id = request.peer_id
-        logger.info("Handle delete squeak peer with id: {}".format(peer_id))
-        self.squeak_controller.delete_peer(peer_id)
+        peer_hash = request.peer_hash
+        logger.info("Handle delete squeak peer with hash: {}".format(peer_hash))
+        self.squeak_controller.delete_peer(peer_hash)
         return squeak_admin_pb2.DeletePeerReply()
 
     def handle_get_buy_offers(self, request):

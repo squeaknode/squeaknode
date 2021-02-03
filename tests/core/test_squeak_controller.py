@@ -6,6 +6,7 @@ from squeaknode.core.lightning_address import LightningAddressHostPort
 from squeaknode.core.squeak_controller import SqueakController
 from squeaknode.core.squeak_core import SqueakCore
 from squeaknode.core.squeak_peer import SqueakPeer
+from squeaknode.core.util import get_peer_hash
 from squeaknode.db.squeak_db import SqueakDb
 from squeaknode.node.squeak_rate_limiter import SqueakRateLimiter
 from squeaknode.node.squeak_whitelist import SqueakWhitelist
@@ -131,7 +132,7 @@ def test_create_peer(squeak_db, squeak_controller):
 
     squeak_db.insert_peer.assert_called_with(
         SqueakPeer(
-            peer_id=None,
+            peer_hash=get_peer_hash("fake_host", 5678),
             peer_name="fake_peer_name",
             host="fake_host",
             port=5678,
@@ -150,7 +151,10 @@ def test_create_peer_default_port(config, squeak_db, squeak_controller):
 
     squeak_db.insert_peer.assert_called_with(
         SqueakPeer(
-            peer_id=None,
+            peer_hash=get_peer_hash(
+                "fake_host",
+                config.core.default_peer_rpc_port,
+            ),
             peer_name="fake_peer_name",
             host="fake_host",
             port=config.core.default_peer_rpc_port,

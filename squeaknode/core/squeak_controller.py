@@ -13,6 +13,7 @@ from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.received_payment_summary import ReceivedPaymentSummary
 from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.sent_payment_summary import SentPaymentSummary
+from squeaknode.core.squeak_peer import make_squeak_peer
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.util import get_hash
@@ -236,8 +237,7 @@ class SqueakController:
                 "Peer name cannot be empty.",
             )
         port = port or self.config.core.default_peer_rpc_port
-        squeak_peer = SqueakPeer(
-            peer_id=None,
+        squeak_peer = make_squeak_peer(
             peer_name=peer_name,
             host=host,
             port=port,

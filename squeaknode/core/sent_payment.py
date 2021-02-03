@@ -7,7 +7,7 @@ class SentPayment(NamedTuple):
     """Represents a payment made by a buyer."""
     sent_payment_id: Optional[int]
     created: Optional[datetime]
-    peer_id: int
+    peer_hash: bytes
     squeak_hash: bytes
     payment_hash: bytes
     secret_key: bytes

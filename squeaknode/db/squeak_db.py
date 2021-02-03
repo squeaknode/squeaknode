@@ -395,7 +395,7 @@ class SqueakDb:
             addresses: List[str],
             min_block: int,
             max_block: int,
-            peer_id: int,
+            peer_hash: bytes,
             include_unverified: bool = False
     ) -> List[bytes]:
         """ Lookup squeaks that are locked and don't have an offer. """
@@ -409,7 +409,7 @@ class SqueakDb:
                     self.received_offers,
                     and_(
                         self.received_offers.c.squeak_hash == self.squeaks.c.hash,
-                        self.received_offers.c.peer_id == peer_id,
+                        self.received_offers.c.peer_hash == peer_hash.hex(),
                     ),
                 )
             )
@@ -435,7 +435,7 @@ class SqueakDb:
         # SELECT hash FROM squeak
         # LEFT JOIN offer
         # ON squeak.hash=offer.squeak_hash
-        # AND offer.peer_id=%s
+        # AND offer.peer_hash=%s
         # WHERE author_address IN %s
         # AND n_block_height >= %s
         # AND n_block_height <= %s
@@ -452,7 +452,7 @@ class SqueakDb:
         #     # mogrify to debug.
         #     # logger.info(curs.mogrify(sql, (addresses_tuple, min_block, max_block)))
         #     curs.execute(
-        #         sql, (peer_id, addresses_tuple, min_block, max_block, include_unverified)
+        #         sql, (peer_hash, addresses_tuple, min_block, max_block, include_unverified)
         #     )
         #     rows = curs.fetchall()
         #     hashes = [bytes.fromhex(row["hash"]) for row in rows]
@@ -686,6 +686,7 @@ class SqueakDb:
     def insert_peer(self, squeak_peer: SqueakPeer) -> int:
         """ Insert a new squeak peer. """
         ins = self.peers.insert().values(
+            peer_hash=squeak_peer.peer_hash.hex(),
             peer_name=squeak_peer.peer_name,
             server_host=squeak_peer.host,
             server_port=squeak_peer.port,
@@ -694,12 +695,14 @@ class SqueakDb:
         )
         with self.get_connection() as connection:
             res = connection.execute(ins)
-            id = res.inserted_primary_key[0]
-            return id
+            peer_hash = res.inserted_primary_key[0]
+            return peer_hash
 
-    def get_peer(self, peer_id: int) -> Optional[SqueakPeer]:
+    def get_peer(self, peer_hash: bytes) -> Optional[SqueakPeer]:
         """ Get a peer. """
-        s = select([self.peers]).where(self.peers.c.peer_id == peer_id)
+        s = select([self.peers]).where(
+            self.peers.c.peer_hash == peer_hash.hex()
+        )
         with self.get_connection() as connection:
             result = connection.execute(s)
             row = result.fetchone()
@@ -734,39 +737,40 @@ class SqueakDb:
             peers = [self._parse_squeak_peer(row) for row in rows]
             return peers
 
-    def set_peer_downloading(self, peer_id: int, downloading: bool):
+    def set_peer_downloading(self, peer_hash: bytes, downloading: bool):
         """ Set a peer is downloading. """
         stmt = (
             self.peers.update()
-            .where(self.peers.c.peer_id == peer_id)
+            .where(self.peers.c.peer_hash == peer_hash.hex())
             .values(downloading=downloading)
         )
         with self.get_connection() as connection:
             connection.execute(stmt)
 
-    def set_peer_uploading(self, peer_id: int, uploading: bool):
+    def set_peer_uploading(self, peer_hash: bytes, uploading: bool):
         """ Set a peer is uploading. """
         stmt = (
             self.peers.update()
-            .where(self.peers.c.peer_id == peer_id)
+            .where(self.peers.c.peer_hash == peer_hash.hex())
             .values(uploading=uploading)
         )
         with self.get_connection() as connection:
             connection.execute(stmt)
 
-    def set_peer_name(self, peer_id: int, peer_name: str):
+    def set_peer_name(self, peer_hash: bytes, peer_name: str):
         """ Set a peer name. """
         stmt = (
             self.peers.update()
-            .where(self.peers.c.peer_id == peer_id)
+            .where(self.peers.c.peer_hash == peer_hash.hex())
             .values(peer_name=peer_name)
         )
         with self.get_connection() as connection:
             connection.execute(stmt)
 
-    def delete_peer(self, peer_id: int):
+    def delete_peer(self, peer_hash: bytes):
         """ Delete a peer. """
-        delete_peer_stmt = self.peers.delete().where(self.peers.c.peer_id == peer_id)
+        delete_peer_stmt = self.peers.delete().where(
+            self.peers.c.peer_hash == peer_hash.hex())
         with self.get_connection() as connection:
             connection.execute(delete_peer_stmt)
 
@@ -784,7 +788,7 @@ class SqueakDb:
             destination=received_offer.destination,
             node_host=received_offer.node_host,
             node_port=received_offer.node_port,
-            peer_id=received_offer.peer_id,
+            peer_hash=received_offer.peer_hash.hex(),
         )
         with self.get_connection() as connection:
             res = connection.execute(ins)
@@ -808,7 +812,7 @@ class SqueakDb:
             .select_from(
                 self.received_offers.outerjoin(
                     self.peers,
-                    self.peers.c.peer_id == self.received_offers.c.peer_id,
+                    self.peers.c.peer_hash == self.received_offers.c.peer_hash,
                 )
             )
             .where(self.received_offers.c.squeak_hash == squeak_hash.hex())
@@ -827,7 +831,7 @@ class SqueakDb:
             .select_from(
                 self.received_offers.outerjoin(
                     self.peers,
-                    self.peers.c.peer_id == self.received_offers.c.peer_id,
+                    self.peers.c.peer_hash == self.received_offers.c.peer_hash,
                 )
             )
             .where(self.received_offers.c.received_offer_id == received_offer_id)
@@ -881,7 +885,7 @@ class SqueakDb:
     def insert_sent_payment(self, sent_payment: SentPayment):
         """ Insert a new sent payment. """
         ins = self.sent_payments.insert().values(
-            peer_id=sent_payment.peer_id,
+            peer_hash=sent_payment.peer_hash.hex(),
             squeak_hash=sent_payment.squeak_hash.hex(),
             payment_hash=sent_payment.payment_hash.hex(),
             secret_key=sent_payment.secret_key.hex(),
@@ -901,7 +905,7 @@ class SqueakDb:
             .select_from(
                 self.sent_payments.outerjoin(
                     self.peers,
-                    self.peers.c.peer_id == self.sent_payments.c.peer_id,
+                    self.peers.c.peer_hash == self.sent_payments.c.peer_hash,
                 )
             )
             .order_by(
@@ -922,7 +926,7 @@ class SqueakDb:
             .select_from(
                 self.sent_payments.outerjoin(
                     self.peers,
-                    self.peers.c.peer_id == self.sent_payments.c.peer_id,
+                    self.peers.c.peer_hash == self.sent_payments.c.peer_hash,
                 )
             )
             .where(self.sent_payments.c.sent_payment_id == sent_payment_id)
@@ -1128,7 +1132,7 @@ class SqueakDb:
 
     def _parse_squeak_peer(self, row) -> SqueakPeer:
         return SqueakPeer(
-            peer_id=row[self.peers.c.peer_id],
+            peer_hash=bytes.fromhex(row[self.peers.c.peer_hash]),
             peer_name=row["peer_name"],
             host=row["server_host"],
             port=row["server_port"],
@@ -1150,12 +1154,12 @@ class SqueakDb:
             destination=row["destination"],
             node_host=row["node_host"],
             node_port=row["node_port"],
-            peer_id=row[self.peers.c.peer_id],
+            peer_hash=bytes.fromhex(row[self.peers.c.peer_hash]),
         )
 
     def _parse_received_offer_with_peer(self, row) -> ReceivedOfferWithPeer:
         offer = self._parse_received_offer(row)
-        if row[self.peers.c.peer_id] is None:
+        if row[self.peers.c.peer_hash] is None:
             peer = None
         else:
             peer = self._parse_squeak_peer(row)
@@ -1168,7 +1172,7 @@ class SqueakDb:
         return SentPayment(
             sent_payment_id=row["sent_payment_id"],
             created=row[self.sent_payments.c.created],
-            peer_id=row[self.sent_payments.c.peer_id],
+            peer_hash=bytes.fromhex(row[self.sent_payments.c.peer_hash]),
             squeak_hash=bytes.fromhex(row["squeak_hash"]),
             payment_hash=bytes.fromhex(row["payment_hash"]),
             secret_key=bytes.fromhex(row["secret_key"]),
@@ -1179,7 +1183,7 @@ class SqueakDb:
 
     def _parse_sent_payment_with_peer(self, row) -> SentPaymentWithPeer:
         sent_payment = self._parse_sent_payment(row)
-        if row[self.peers.c.peer_id] is None:
+        if row[self.peers.c.peer_hash] is None:
             peer = None
         else:
             peer = self._parse_squeak_peer(row)
