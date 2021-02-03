@@ -88,6 +88,10 @@ service SqueakAdmin {
   */
   rpc GetSqueakProfile (GetSqueakProfileRequest) returns (GetSqueakProfileReply) {}
 
+  /** sqkadmin: `getsqueakprofilebyaddress`
+  */
+  rpc GetSqueakProfileByAddress (GetSqueakProfileByAddressRequest) returns (GetSqueakProfileByAddressReply) {}
+
   /** sqkadmin: `getsqueakprofilebyname`
   */
   rpc GetSqueakProfileByName (GetSqueakProfileByNameRequest) returns (GetSqueakProfileByNameReply) {}
@@ -236,8 +240,8 @@ message CreateSigningProfileRequest {
 }
 
 message CreateSigningProfileReply {
-    /// The address
-    string address = 1;
+    /// The profile id
+    int32 profile_id = 1;
 }
 
 message ImportSigningProfileRequest {
@@ -249,8 +253,8 @@ message ImportSigningProfileRequest {
 }
 
 message ImportSigningProfileReply {
-    /// The address
-    string address = 1;
+    /// The profile id
+    int32 profile_id = 1;
 }
 
 message CreateContactProfileRequest {
@@ -262,8 +266,8 @@ message CreateContactProfileRequest {
 }
 
 message CreateContactProfileReply {
-    /// The address
-    string address = 1;
+    /// The profile id
+    int32 profile_id = 1;
 }
 
 message GetSigningProfilesRequest {
@@ -283,11 +287,21 @@ message GetContactProfilesReply {
 }
 
 message GetSqueakProfileRequest {
-    /// The profile address
-    string address = 1;
+    /// The profile id
+    int32 profile_id = 1;
 }
 
 message GetSqueakProfileReply {
+    /// The squeak profile
+    SqueakProfile squeak_profile = 1;
+}
+
+message GetSqueakProfileByAddressRequest {
+    /// The address
+    string address = 1;
+}
+
+message GetSqueakProfileByAddressReply {
     /// The squeak profile
     SqueakProfile squeak_profile = 1;
 }
@@ -303,8 +317,8 @@ message GetSqueakProfileByNameReply {
 }
 
 message SetSqueakProfileFollowingRequest {
-    /// The profile address
-    string address = 1;
+    /// The profile id
+    int32 profile_id = 1;
 
     /// Following
     bool following = 2;
@@ -314,8 +328,8 @@ message SetSqueakProfileFollowingReply {
 }
 
 message SetSqueakProfileSharingRequest {
-    /// The profile address
-    string address = 1;
+    /// The profile id
+    int32 profile_id = 1;
 
     /// Sharing
     bool sharing = 2;
@@ -325,8 +339,8 @@ message SetSqueakProfileSharingReply {
 }
 
 message RenameSqueakProfileRequest {
-    /// The profile address
-    string address = 1;
+    /// The profile id
+    int32 profile_id = 1;
 
     /// The new profile name
     string profile_name = 2;
@@ -336,8 +350,8 @@ message RenameSqueakProfileReply {
 }
 
 message GetSqueakProfilePrivateKeyRequest {
-    /// The profile address
-    string address = 1;
+    /// The profile id
+    int32 profile_id = 1;
 }
 
 message GetSqueakProfilePrivateKeyReply {
@@ -346,16 +360,16 @@ message GetSqueakProfilePrivateKeyReply {
 }
 
 message DeleteSqueakProfileRequest {
-    /// The profile address
-    string address = 1;
+    /// The profile id
+    int32 profile_id = 1;
 }
 
 message DeleteSqueakProfileReply {
 }
 
 message SetSqueakProfileImageRequest {
-    /// The profile address
-    string address = 1;
+    /// The profile id
+    int32 profile_id = 1;
 
     /// The profile image
     string profile_image = 2;
@@ -365,16 +379,16 @@ message SetSqueakProfileImageReply {
 }
 
 message ClearSqueakProfileImageRequest {
-    /// The profile address
-    string address = 1;
+    /// The profile id
+    int32 profile_id = 1;
 }
 
 message ClearSqueakProfileImageReply {
 }
 
 message SqueakProfile {
-    /// The address
-    string address = 1;
+    /// The profile id
+    int32 profile_id = 1;
 
     /// The profile name
     string profile_name = 2;
@@ -382,22 +396,25 @@ message SqueakProfile {
     /// Has private key
     bool has_private_key = 3;
 
+    /// The address
+    string address = 4;
+
     /// Sharing
-    bool sharing = 4;
+    bool sharing = 5;
 
     /// Following
-    bool following = 5;
+    bool following = 6;
 
     /// The profile image
-    string profile_image = 6;
+    string profile_image = 7;
 
     /// Has custom profile image
-    bool has_custom_profile_image = 7;
+    bool has_custom_profile_image = 8;
 }
 
 message MakeSqueakRequest {
-    /// The profile address
-    string address = 1;
+    /// The profile id
+    int32 profile_id = 1;
 
     /// The content
     string content = 2;

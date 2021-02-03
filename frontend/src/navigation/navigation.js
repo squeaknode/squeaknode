@@ -29,8 +29,8 @@ export const goToChannelPage = (history, txId, outputIndex) => {
    history.push("/app/channel/" + txId + "/" + outputIndex);
 };
 
-export const goToProfilePage = (history, squeakAddress) => {
-  history.push("/app/profile/" + squeakAddress);
+export const goToProfilePage = (history, profileId) => {
+  history.push("/app/profile/" + profileId);
 };
 
 export const goToWalletPage = (history) => {

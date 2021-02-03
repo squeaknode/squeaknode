@@ -69,6 +69,7 @@ def signing_profile():
     signing_key_str = str(signing_key)
     signing_key_bytes = signing_key_str.encode()
     return SqueakProfile(
+        profile_id=None,
         profile_name=profile_name,
         private_key=signing_key_bytes,
         address=str(address),
