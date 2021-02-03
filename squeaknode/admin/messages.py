@@ -52,6 +52,8 @@ def squeak_entry_to_message(squeak_entry_with_profile: SqueakEntryWithProfile) -
 
 
 def squeak_profile_to_message(squeak_profile: SqueakProfile) -> squeak_admin_pb2.SqueakProfile:
+    if squeak_profile.profile_id is None:
+        raise Exception("Profile id cannot be None.")
     has_private_key = squeak_profile.private_key is not None
     profile_image = squeak_profile.profile_image or DEFAULT_PROFILE_IMAGE
     has_custom_profile_image = squeak_profile.profile_image is not None
@@ -69,6 +71,8 @@ def squeak_profile_to_message(squeak_profile: SqueakProfile) -> squeak_admin_pb2
 
 
 def squeak_peer_to_message(squeak_peer: SqueakPeer) -> squeak_admin_pb2.SqueakPeer:
+    if squeak_peer.peer_id is None:
+        raise Exception("Peer id cannot be None.")
     return squeak_admin_pb2.SqueakPeer(
         peer_id=squeak_peer.peer_id,
         peer_name=squeak_peer.peer_name,
@@ -81,6 +85,8 @@ def squeak_peer_to_message(squeak_peer: SqueakPeer) -> squeak_admin_pb2.SqueakPe
 
 def offer_entry_to_message(received_offer_entry: ReceivedOfferWithPeer) -> squeak_admin_pb2.OfferDisplayEntry:
     received_offer = received_offer_entry.received_offer
+    if received_offer.received_offer_id is None:
+        raise Exception("Received offer id cannot be None.")
     peer = received_offer_entry.peer
     has_peer = False
     peer_msg = None
@@ -103,6 +109,8 @@ def offer_entry_to_message(received_offer_entry: ReceivedOfferWithPeer) -> squea
 
 def sent_payment_with_peer_to_message(sent_payment_with_peer: SentPaymentWithPeer) -> squeak_admin_pb2.SentPayment:
     sent_payment = sent_payment_with_peer.sent_payment
+    if sent_payment.sent_payment_id is None:
+        raise Exception("Sent payment id cannot be None.")
     peer = sent_payment_with_peer.peer
     has_peer = False
     peer_msg = None
@@ -110,7 +118,7 @@ def sent_payment_with_peer_to_message(sent_payment_with_peer: SentPaymentWithPee
         has_peer = True
         peer_msg = squeak_peer_to_message(peer)
     if sent_payment.created is None:
-        raise Exception("SentPayment created time not found.")
+        raise Exception("Sent payment created time not found.")
     return squeak_admin_pb2.SentPayment(
         sent_payment_id=sent_payment.sent_payment_id,
         has_peer=has_peer,
@@ -134,6 +142,8 @@ def squeak_entry_to_detail_message(squeak_entry_with_profile: SqueakEntryWithPro
 
 
 def sent_offer_to_message(sent_offer: SentOffer) -> squeak_admin_pb2.SentOffer:
+    if sent_offer.sent_offer_id is None:
+        raise Exception("Sent offer id cannot be None.")
     return squeak_admin_pb2.SentOffer(
         sent_offer_id=sent_offer.sent_offer_id,
         squeak_hash=sent_offer.squeak_hash.hex(),
@@ -143,8 +153,10 @@ def sent_offer_to_message(sent_offer: SentOffer) -> squeak_admin_pb2.SentOffer:
 
 
 def received_payments_to_message(received_payment: ReceivedPayment) -> squeak_admin_pb2.ReceivedPayment:
+    if received_payment.received_payment_id is None:
+        raise Exception("Received payment id cannot be None.")
     if received_payment.created is None:
-        raise Exception("ReceivedPayment created time not found.")
+        raise Exception("Received payment created time not found.")
     return squeak_admin_pb2.ReceivedPayment(
         received_payment_id=received_payment.received_payment_id,
         squeak_hash=received_payment.squeak_hash.hex(),
