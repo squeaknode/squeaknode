@@ -65,7 +65,7 @@ export default function UpdateProfileImageDialog({
 
   const updateProfileImage = (imageStr) => {
     setSqueakProfileImageRequest(
-      squeakProfile.getAddress(),
+      squeakProfile.getProfileId(),
       imageStr,
       handleResponse,
       handleErr,

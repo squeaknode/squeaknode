@@ -4,9 +4,10 @@ from typing import Optional
 
 class SqueakProfile(NamedTuple):
     """Represents a user who can author squeaks."""
-    address: str
+    profile_id: Optional[int]
     profile_name: str
     private_key: Optional[bytes]
+    address: str
     sharing: bool
     following: bool
     profile_image: Optional[bytes]

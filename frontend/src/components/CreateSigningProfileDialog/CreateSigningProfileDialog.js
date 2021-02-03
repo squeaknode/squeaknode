@@ -56,7 +56,7 @@ export default function CreateSigningProfileDialog({
   };
 
   const handleResponse = (response) => {
-    goToProfilePage(history, response.getAddress());
+    goToProfilePage(history, response.getProfileId());
   };
 
   const handleErr = (err) => {

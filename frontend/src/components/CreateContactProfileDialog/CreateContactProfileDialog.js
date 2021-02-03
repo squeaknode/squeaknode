@@ -46,7 +46,7 @@ export default function CreateContactProfileDialog({
   };
 
   const handleResponse = (response) => {
-    goToProfilePage(history, response.getAddress());
+    goToProfilePage(history, response.getProfileId());
   };
 
   const handleErr = (err) => {
