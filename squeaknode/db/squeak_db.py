@@ -541,34 +541,6 @@ class SqueakDb:
             profiles = [self._parse_squeak_profile(row) for row in rows]
             return profiles
 
-        # sql = """
-        # SELECT * FROM profile
-        # WHERE sharing;
-        # """
-        # with self.get_cursor() as curs:
-        #     curs.execute(sql)
-        #     rows = curs.fetchall()
-        #     profiles = [self._parse_squeak_profile(row) for row in rows]
-        #     return profiles
-
-    # def get_profile(self, profile_id: int) -> Optional[SqueakProfile]:
-    #     """ Get a profile. """
-    #     s = select([self.profiles]).where(
-    #         self.profiles.c.profile_id == profile_id)
-    #     with self.get_connection() as connection:
-    #         result = connection.execute(s)
-    #         row = result.fetchone()
-    #         if row is None:
-    #             return None
-    #         return self._parse_squeak_profile(row)
-
-        # sql = """
-        # SELECT * FROM profile WHERE profile_id=%s"""
-        # with self.get_cursor() as curs:
-        #     curs.execute(sql, (profile_id,))
-        #     row = curs.fetchone()
-        #     return self._parse_squeak_profile(row)
-
     def get_profile(self, address: str) -> Optional[SqueakProfile]:
         """ Get a profile by address. """
         s = select([self.profiles]).where(self.profiles.c.address == address)
@@ -608,14 +580,6 @@ class SqueakDb:
         with self.get_connection() as connection:
             connection.execute(stmt)
 
-        # sql = """
-        # UPDATE profile
-        # SET following=%s
-        # WHERE profile_id=%s;
-        # """
-        # with self.get_cursor() as curs:
-        #     curs.execute(sql, (following, profile_id,))
-
     def set_profile_sharing(self, address: str, sharing: bool):
         """ Set a profile is sharing. """
         stmt = (
@@ -625,14 +589,6 @@ class SqueakDb:
         )
         with self.get_connection() as connection:
             connection.execute(stmt)
-
-        # sql = """
-        # UPDATE profile
-        # SET sharing=%s
-        # WHERE profile_id=%s;
-        # """
-        # with self.get_cursor() as curs:
-        #     curs.execute(sql, (sharing, profile_id,))
 
     def set_profile_name(self, address: str, profile_name: str):
         """ Set a profile name. """
