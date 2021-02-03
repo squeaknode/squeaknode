@@ -458,7 +458,7 @@ class SqueakDb:
         #     hashes = [bytes.fromhex(row["hash"]) for row in rows]
         #     return hashes
 
-    def insert_profile(self, squeak_profile: SqueakProfile) -> int:
+    def insert_profile(self, squeak_profile: SqueakProfile) -> str:
         """ Insert a new squeak profile. """
         ins = self.profiles.insert().values(
             profile_name=squeak_profile.profile_name,
@@ -469,8 +469,8 @@ class SqueakDb:
         )
         with self.get_connection() as connection:
             res = connection.execute(ins)
-            profile_id = res.inserted_primary_key[0]
-            return profile_id
+            address = res.inserted_primary_key[0]
+            return address
 
     def get_signing_profiles(self) -> List[SqueakProfile]:
         """ Get all signing profiles. """
@@ -551,16 +551,16 @@ class SqueakDb:
         #     profiles = [self._parse_squeak_profile(row) for row in rows]
         #     return profiles
 
-    def get_profile(self, profile_id: int) -> Optional[SqueakProfile]:
-        """ Get a profile. """
-        s = select([self.profiles]).where(
-            self.profiles.c.profile_id == profile_id)
-        with self.get_connection() as connection:
-            result = connection.execute(s)
-            row = result.fetchone()
-            if row is None:
-                return None
-            return self._parse_squeak_profile(row)
+    # def get_profile(self, profile_id: int) -> Optional[SqueakProfile]:
+    #     """ Get a profile. """
+    #     s = select([self.profiles]).where(
+    #         self.profiles.c.profile_id == profile_id)
+    #     with self.get_connection() as connection:
+    #         result = connection.execute(s)
+    #         row = result.fetchone()
+    #         if row is None:
+    #             return None
+    #         return self._parse_squeak_profile(row)
 
         # sql = """
         # SELECT * FROM profile WHERE profile_id=%s"""
@@ -569,7 +569,7 @@ class SqueakDb:
         #     row = curs.fetchone()
         #     return self._parse_squeak_profile(row)
 
-    def get_profile_by_address(self, address: str) -> Optional[SqueakProfile]:
+    def get_profile(self, address: str) -> Optional[SqueakProfile]:
         """ Get a profile by address. """
         s = select([self.profiles]).where(self.profiles.c.address == address)
         with self.get_connection() as connection:
@@ -598,11 +598,11 @@ class SqueakDb:
                 return None
             return self._parse_squeak_profile(row)
 
-    def set_profile_following(self, profile_id: int, following: bool):
+    def set_profile_following(self, address: str, following: bool):
         """ Set a profile is following. """
         stmt = (
             self.profiles.update()
-            .where(self.profiles.c.profile_id == profile_id)
+            .where(self.profiles.c.address == address)
             .values(following=following)
         )
         with self.get_connection() as connection:
@@ -616,11 +616,11 @@ class SqueakDb:
         # with self.get_cursor() as curs:
         #     curs.execute(sql, (following, profile_id,))
 
-    def set_profile_sharing(self, profile_id: int, sharing: bool):
+    def set_profile_sharing(self, address: str, sharing: bool):
         """ Set a profile is sharing. """
         stmt = (
             self.profiles.update()
-            .where(self.profiles.c.profile_id == profile_id)
+            .where(self.profiles.c.address == address)
             .values(sharing=sharing)
         )
         with self.get_connection() as connection:
@@ -634,29 +634,29 @@ class SqueakDb:
         # with self.get_cursor() as curs:
         #     curs.execute(sql, (sharing, profile_id,))
 
-    def set_profile_name(self, profile_id: int, profile_name: str):
+    def set_profile_name(self, address: str, profile_name: str):
         """ Set a profile name. """
         stmt = (
             self.profiles.update()
-            .where(self.profiles.c.profile_id == profile_id)
+            .where(self.profiles.c.address == address)
             .values(profile_name=profile_name)
         )
         with self.get_connection() as connection:
             connection.execute(stmt)
 
-    def delete_profile(self, profile_id: int):
+    def delete_profile(self, address: str):
         """ Delete a profile. """
         delete_profile_stmt = self.profiles.delete().where(
-            self.profiles.c.profile_id == profile_id
+            self.profiles.c.address == address
         )
         with self.get_connection() as connection:
             connection.execute(delete_profile_stmt)
 
-    def set_profile_image(self, profile_id: int, profile_image: bytes):
+    def set_profile_image(self, address: str, profile_image: bytes):
         """ Set a profile image. """
         stmt = (
             self.profiles.update()
-            .where(self.profiles.c.profile_id == profile_id)
+            .where(self.profiles.c.address == address)
             .values(profile_image=profile_image)
         )
         with self.get_connection() as connection:
@@ -1154,7 +1154,6 @@ class SqueakDb:
         private_key_column = row["private_key"]
         private_key = bytes(private_key_column) if private_key_column else None
         return SqueakProfile(
-            profile_id=row["profile_id"],
             profile_name=row["profile_name"],
             private_key=private_key,
             address=row["address"],
@@ -1165,10 +1164,7 @@ class SqueakDb:
 
     def _parse_squeak_entry_with_profile(self, row) -> SqueakEntryWithProfile:
         squeak_entry = self._parse_squeak_entry(row)
-        if row["profile_id"] is None:
-            squeak_profile = None
-        else:
-            squeak_profile = self._parse_squeak_profile(row)
+        squeak_profile = self._parse_squeak_profile(row)
         return SqueakEntryWithProfile(
             squeak_entry=squeak_entry,
             squeak_profile=squeak_profile,
