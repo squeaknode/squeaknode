@@ -58,12 +58,11 @@ class Models:
         self.profiles = Table(
             "profile",
             self.metadata,
-            Column("profile_id", Integer, primary_key=True),
+            Column("address", String(35), primary_key=True),
             Column("created", TZDateTime,
                    server_default=func.now(), nullable=False),
             Column("profile_name", String, unique=True, nullable=False),
             Column("private_key", Binary),
-            Column("address", String(35), unique=True, nullable=False),
             Column("sharing", Boolean, nullable=False),
             Column("following", Boolean, nullable=False),
             Column("profile_image", Binary, nullable=True),

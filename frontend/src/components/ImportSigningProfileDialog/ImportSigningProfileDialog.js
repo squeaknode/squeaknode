@@ -61,7 +61,8 @@ export default function ImportSigningProfileDialog({
   };
 
   const handleResponse = (response) => {
-    goToProfilePage(history, response.getProfileId());
+    const profileAddress = response.getAddress();
+    goToProfilePage(history, profileAddress);
   };
 
   const handleErr = (err) => {

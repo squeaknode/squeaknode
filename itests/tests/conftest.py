@@ -63,12 +63,12 @@ def following_signing_key(server_stub, admin_stub):
             address=profile_address,
         )
     )
-    contact_profile_id = create_contact_profile_response.profile_id
+    contact_profile_address = create_contact_profile_response.address
 
     # Set the profile to be following
     admin_stub.SetSqueakProfileFollowing(
         squeak_admin_pb2.SetSqueakProfileFollowingRequest(
-            profile_id=contact_profile_id,
+            address=contact_profile_address,
             following=True,
         )
     )
@@ -87,7 +87,7 @@ def nonfollowing_signing_key(server_stub, admin_stub):
 
 
 @pytest.fixture
-def signing_profile_id(server_stub, admin_stub):
+def signing_profile_address(server_stub, admin_stub):
     # Create a new signing profile
     profile_name = "fake_signing_profile_{}".format(uuid.uuid1())
     create_signing_profile_response = admin_stub.CreateSigningProfile(
@@ -95,12 +95,12 @@ def signing_profile_id(server_stub, admin_stub):
             profile_name=profile_name,
         )
     )
-    profile_id = create_signing_profile_response.profile_id
-    yield profile_id
+    profile_address = create_signing_profile_response.address
+    yield profile_address
 
 
 @pytest.fixture
-def contact_profile_id(server_stub, admin_stub):
+def contact_profile_address(server_stub, admin_stub):
     # Create a new contact profile
     contact_name = "fake_contact_profile_{}".format(uuid.uuid1())
     contact_signing_key = generate_signing_key()
@@ -111,17 +111,17 @@ def contact_profile_id(server_stub, admin_stub):
             address=contact_address,
         )
     )
-    contact_profile_id = create_contact_profile_response.profile_id
-    yield contact_profile_id
+    contact_profile_address = create_contact_profile_response.address
+    yield contact_profile_address
 
 
 @pytest.fixture
-def saved_squeak_hash(server_stub, admin_stub, signing_profile_id):
+def saved_squeak_hash(server_stub, admin_stub, signing_profile_address):
     # Create a new squeak using the new profile
     make_squeak_content = "Hello from the profile on the server!"
     make_squeak_response = admin_stub.MakeSqueak(
         squeak_admin_pb2.MakeSqueakRequest(
-            profile_id=signing_profile_id,
+            address=signing_profile_address,
             content=make_squeak_content,
         )
     )

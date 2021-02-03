@@ -54,9 +54,9 @@ export default function DeleteProfileDialog({
   function handleSubmit(event) {
     event.preventDefault();
     console.log( 'profile:', profile);
-    var profileId = profile.getProfileId();
-    console.log( 'profileId:', profileId);
-    deleteProfile(profileId);
+    var squeakAddress = profile.getAddress();
+    console.log( 'squeakAddress:', squeakAddress);
+    deleteProfile(squeakAddress);
     handleClose();
   }
 
