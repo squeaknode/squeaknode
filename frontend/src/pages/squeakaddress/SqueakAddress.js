@@ -28,7 +28,7 @@ import TimelineDot from '@material-ui/lab/TimelineDot';
 import FaceIcon from '@material-ui/icons/Face';
 
 import {
-  getSqueakProfileByAddressRequest,
+  getSqueakProfileRequest,
   getAddressSqueakDisplaysRequest,
   getNetworkRequest,
 } from "../../squeakclient/requests"
@@ -48,7 +48,7 @@ export default function SqueakAddressPage() {
   const [network, setNetwork] = useState("");
 
   const getSqueakProfile = (address) => {
-        getSqueakProfileByAddressRequest(address, setSqueakProfile);
+        getSqueakProfileRequest(address, setSqueakProfile);
   };
   const getSqueaks = (address) => {
       getAddressSqueakDisplaysRequest(address, setSqueaks);
@@ -91,7 +91,7 @@ export default function SqueakAddressPage() {
       <div className={classes.root}>
         Profile:
         <Button variant="contained" onClick={() => {
-            goToProfilePage(history, squeakProfile.getProfileId());
+            goToProfilePage(history, squeakProfile.getAddress());
           }}>{squeakProfile.getProfileName()}</Button>
       </div>
     )
