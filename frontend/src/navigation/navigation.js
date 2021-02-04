@@ -2,8 +2,8 @@ export const reloadRoute = (history) => {
   history.go(0);
 };
 
-export const goToPeerPage = (history, peerId) => {
-  history.push("/app/peer/" + peerId);
+export const goToPeerPage = (history, peerHash) => {
+  history.push("/app/peer/" + peerHash);
 };
 
 export const goToLightningNodePage = (history, pubkey, host, port) => {

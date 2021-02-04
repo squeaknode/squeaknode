@@ -69,7 +69,7 @@ def squeak_profile_to_message(squeak_profile: SqueakProfile) -> squeak_admin_pb2
 
 def squeak_peer_to_message(squeak_peer: SqueakPeer) -> squeak_admin_pb2.SqueakPeer:
     return squeak_admin_pb2.SqueakPeer(
-        peer_hash=squeak_peer.peer_hash,
+        peer_hash=squeak_peer.peer_hash.hex(),
         peer_name=squeak_peer.peer_name,
         host=squeak_peer.host,
         port=squeak_peer.port,

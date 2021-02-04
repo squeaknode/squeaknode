@@ -515,12 +515,12 @@ message CreatePeerRequest {
 
 message CreatePeerReply {
     /// The peer hash
-    bytes peer_hash = 1;
+    string peer_hash = 1;
 }
 
 message GetPeerRequest {
     /// The peer hash
-    bytes peer_hash = 1;
+    string peer_hash = 1;
 }
 
 message GetPeerReply {
@@ -538,7 +538,7 @@ message GetPeersReply {
 
 message SqueakPeer {
     /// The peer hash
-    bytes peer_hash = 1;
+    string peer_hash = 1;
 
     /// The peer name
     string peer_name = 2;
@@ -558,7 +558,7 @@ message SqueakPeer {
 
 message SetPeerDownloadingRequest {
     /// The peer hash
-    bytes peer_hash = 1;
+    string peer_hash = 1;
 
     /// Downloading
     bool downloading = 2;
@@ -569,7 +569,7 @@ message SetPeerDownloadingReply {
 
 message SetPeerUploadingRequest {
     /// The peer hash
-    bytes peer_hash = 1;
+    string peer_hash = 1;
 
     /// Uploading
     bool uploading = 2;
@@ -580,7 +580,7 @@ message SetPeerUploadingReply {
 
 message RenamePeerRequest {
     /// The peer hash
-    bytes peer_hash = 1;
+    string peer_hash = 1;
 
     /// Name of the peer
     string peer_name = 2;
@@ -591,7 +591,7 @@ message RenamePeerReply {
 
 message DeletePeerRequest {
     /// The peer hash
-    bytes peer_hash = 1;
+    string peer_hash = 1;
 }
 
 message DeletePeerReply {
