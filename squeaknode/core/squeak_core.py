@@ -21,7 +21,6 @@ from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.util import add_tweak
 from squeaknode.core.util import generate_tweak
 from squeaknode.core.util import get_hash
-from squeaknode.core.util import get_peer_hash
 from squeaknode.core.util import subtract_tweak
 from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
 from squeaknode.node.received_payments_subscription_client import (
@@ -205,7 +204,6 @@ class SqueakCore:
         invoice_expiry = pay_req.expiry
         node_host = offer.host or peer.host
         node_port = offer.port
-        node_peer_hash = get_peer_hash(node_host, node_port)
         # TODO: Check the payment point
         # payment_point = offer.payment_point
         # expected_payment_point = squeak.paymentPoint
@@ -224,7 +222,7 @@ class SqueakCore:
             destination=destination,
             node_host=node_host,
             node_port=node_port,
-            peer_hash=node_peer_hash,
+            peer_hash=peer.peer_hash,
         )
 
     def pay_offer(self, received_offer: ReceivedOffer) -> SentPayment:

@@ -683,7 +683,7 @@ class SqueakDb:
         # with self.get_cursor() as curs:
         #     curs.execute(sql, (squeak_hash_str,))
 
-    def insert_peer(self, squeak_peer: SqueakPeer) -> int:
+    def insert_peer(self, squeak_peer: SqueakPeer) -> bytes:
         """ Insert a new squeak peer. """
         ins = self.peers.insert().values(
             peer_hash=squeak_peer.peer_hash.hex(),
@@ -695,8 +695,8 @@ class SqueakDb:
         )
         with self.get_connection() as connection:
             res = connection.execute(ins)
-            peer_hash = res.inserted_primary_key[0]
-            return peer_hash
+            peer_hash_str = res.inserted_primary_key[0]
+            return bytes.fromhex(peer_hash_str)
 
     def get_peer(self, peer_hash: bytes) -> Optional[SqueakPeer]:
         """ Get a peer. """
@@ -1154,7 +1154,7 @@ class SqueakDb:
             destination=row["destination"],
             node_host=row["node_host"],
             node_port=row["node_port"],
-            peer_hash=bytes.fromhex(row[self.peers.c.peer_hash]),
+            peer_hash=bytes.fromhex(row[self.received_offers.c.peer_hash]),
         )
 
     def _parse_received_offer_with_peer(self, row) -> ReceivedOfferWithPeer:

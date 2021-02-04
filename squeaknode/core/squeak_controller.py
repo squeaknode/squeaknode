@@ -246,8 +246,8 @@ class SqueakController:
         )
         return self.squeak_db.insert_peer(squeak_peer)
 
-    def get_peer(self, peer_id: int):
-        return self.squeak_db.get_peer(peer_id)
+    def get_peer(self, peer_hash: bytes):
+        return self.squeak_db.get_peer(peer_hash)
 
     def get_peers(self):
         return self.squeak_db.get_peers()
@@ -258,17 +258,17 @@ class SqueakController:
     def get_uploading_peers(self):
         return self.squeak_db.get_uploading_peers()
 
-    def set_peer_downloading(self, peer_id: int, downloading: bool):
-        self.squeak_db.set_peer_downloading(peer_id, downloading)
+    def set_peer_downloading(self, peer_hash: bytes, downloading: bool):
+        self.squeak_db.set_peer_downloading(peer_hash, downloading)
 
-    def set_peer_uploading(self, peer_id: int, uploading: bool):
-        self.squeak_db.set_peer_uploading(peer_id, uploading)
+    def set_peer_uploading(self, peer_hash: bytes, uploading: bool):
+        self.squeak_db.set_peer_uploading(peer_hash, uploading)
 
-    def rename_peer(self, peer_id: int, peer_name: str):
-        self.squeak_db.set_peer_name(peer_id, peer_name)
+    def rename_peer(self, peer_hash: bytes, peer_name: str):
+        self.squeak_db.set_peer_name(peer_hash, peer_name)
 
-    def delete_peer(self, peer_id: int):
-        self.squeak_db.delete_peer(peer_id)
+    def delete_peer(self, peer_hash: bytes):
+        self.squeak_db.delete_peer(peer_hash)
 
     def get_buy_offers_with_peer(self, squeak_hash: bytes):
         return self.squeak_db.get_offers_with_peer(squeak_hash)
@@ -422,12 +422,12 @@ class SqueakController:
             include_locked=True,
         )
 
-    def lookup_squeaks_needing_offer(self, addresses: List[str], min_block, max_block, peer_id):
+    def lookup_squeaks_needing_offer(self, addresses: List[str], min_block, max_block, peer_hash: bytes):
         return self.squeak_db.lookup_squeaks_needing_offer(
             addresses,
             min_block,
             max_block,
-            peer_id,
+            peer_hash,
         )
 
     def save_offer(self, received_offer: ReceivedOffer):

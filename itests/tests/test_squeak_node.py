@@ -745,11 +745,11 @@ def test_create_peer_empty_name(server_stub, admin_stub):
     assert "Peer name cannot be empty." in str(excinfo.value)
 
 
-def test_set_peer_downloading(server_stub, admin_stub, peer_hash):
+def test_set_peer_downloading(server_stub, admin_stub, random_peer_hash):
     # Get the peer
     get_peer_response = admin_stub.GetPeer(
         squeak_admin_pb2.GetPeerRequest(
-            peer_hash=peer_hash,
+            peer_hash=random_peer_hash,
         )
     )
     assert not get_peer_response.squeak_peer.downloading
@@ -757,7 +757,7 @@ def test_set_peer_downloading(server_stub, admin_stub, peer_hash):
     # Set the peer to be downloading
     admin_stub.SetPeerDownloading(
         squeak_admin_pb2.SetPeerDownloadingRequest(
-            peer_hash=peer_hash,
+            peer_hash=random_peer_hash,
             downloading=True,
         )
     )
@@ -765,17 +765,17 @@ def test_set_peer_downloading(server_stub, admin_stub, peer_hash):
     # Get the peer again
     get_peer_response = admin_stub.GetPeer(
         squeak_admin_pb2.GetPeerRequest(
-            peer_hash=peer_hash,
+            peer_hash=random_peer_hash,
         )
     )
     assert get_peer_response.squeak_peer.downloading
 
 
-def test_set_peer_uploading(server_stub, admin_stub, peer_hash):
+def test_set_peer_uploading(server_stub, admin_stub, random_peer_hash):
     # Get the peer
     get_peer_response = admin_stub.GetPeer(
         squeak_admin_pb2.GetPeerRequest(
-            peer_hash=peer_hash,
+            peer_hash=random_peer_hash,
         )
     )
     assert not get_peer_response.squeak_peer.uploading
@@ -783,7 +783,7 @@ def test_set_peer_uploading(server_stub, admin_stub, peer_hash):
     # Set the peer to be uploading
     admin_stub.SetPeerUploading(
         squeak_admin_pb2.SetPeerUploadingRequest(
-            peer_hash=peer_hash,
+            peer_hash=random_peer_hash,
             uploading=True,
         )
     )
@@ -791,17 +791,17 @@ def test_set_peer_uploading(server_stub, admin_stub, peer_hash):
     # Get the peer again
     get_peer_response = admin_stub.GetPeer(
         squeak_admin_pb2.GetPeerRequest(
-            peer_hash=peer_hash,
+            peer_hash=random_peer_hash,
         )
     )
     assert get_peer_response.squeak_peer.uploading
 
 
-def test_rename_peer(server_stub, admin_stub, peer_hash, random_name):
+def test_rename_peer(server_stub, admin_stub, random_peer_hash, random_name):
     # Rename the peer
     admin_stub.RenamePeer(
         squeak_admin_pb2.RenamePeerRequest(
-            peer_hash=peer_hash,
+            peer_hash=random_peer_hash,
             peer_name=random_name,
         )
     )
@@ -809,17 +809,17 @@ def test_rename_peer(server_stub, admin_stub, peer_hash, random_name):
     # Get the peer again
     get_peer_response = admin_stub.GetPeer(
         squeak_admin_pb2.GetPeerRequest(
-            peer_hash=peer_hash,
+            peer_hash=random_peer_hash,
         )
     )
     assert get_peer_response.squeak_peer.peer_name == random_name
 
 
-def test_delete_peer(server_stub, admin_stub, peer_hash):
+def test_delete_peer(server_stub, admin_stub, random_peer_hash):
     # Delete the peer
     admin_stub.DeletePeer(
         squeak_admin_pb2.DeletePeerRequest(
-            peer_hash=peer_hash,
+            peer_hash=random_peer_hash,
         )
     )
 
@@ -827,7 +827,7 @@ def test_delete_peer(server_stub, admin_stub, peer_hash):
     with pytest.raises(Exception) as excinfo:
         admin_stub.GetPeer(
             squeak_admin_pb2.GetPeerRequest(
-                peer_hash=peer_hash,
+                peer_hash=random_peer_hash,
             )
         )
     assert "Peer not found." in str(excinfo.value)
@@ -1025,6 +1025,7 @@ def test_connect_other_node(
     admin_stub,
     other_server_stub,
     other_admin_stub,
+    connected_peer_hash,
     lightning_client,
     signing_profile_address,
     saved_squeak_hash,
@@ -1034,24 +1035,6 @@ def test_connect_other_node(
         squeak_admin_pb2.GetTimelineSqueakDisplaysRequest()
     )
     assert len(get_timeline_squeak_display_response.squeak_display_entries) == 0
-
-    # Add the main node as a peer
-    create_peer_response = other_admin_stub.CreatePeer(
-        squeak_admin_pb2.CreatePeerRequest(
-            peer_name="test_peer",
-            host="squeaknode",
-            port=8774,
-        )
-    )
-    peer_hash = create_peer_response.peer_hash
-
-    # Set the peer to be downloading
-    other_admin_stub.SetPeerDownloading(
-        squeak_admin_pb2.SetPeerDownloadingRequest(
-            peer_hash=peer_hash,
-            downloading=True,
-        )
-    )
 
     # Get the squeak profile
     get_squeak_profile_response = admin_stub.GetSqueakProfile(
@@ -1232,28 +1215,11 @@ def test_download_single_squeak(
     admin_stub,
     other_server_stub,
     other_admin_stub,
+    connected_peer_hash,
     lightning_client,
     signing_profile_address,
     saved_squeak_hash,
 ):
-
-    # Add the main node as a peer
-    create_peer_response = other_admin_stub.CreatePeer(
-        squeak_admin_pb2.CreatePeerRequest(
-            peer_name="test_peer",
-            host="squeaknode",
-            port=8774,
-        )
-    )
-    peer_hash = create_peer_response.peer_hash
-
-    # Set the peer to be downloading
-    other_admin_stub.SetPeerDownloading(
-        squeak_admin_pb2.SetPeerDownloadingRequest(
-            peer_hash=peer_hash,
-            downloading=True,
-        )
-    )
 
     # Get the squeak profile
     get_squeak_profile_response = admin_stub.GetSqueakProfile(
