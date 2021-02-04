@@ -71,7 +71,7 @@ class Models:
         self.peers = Table(
             "peer",
             self.metadata,
-            Column("peer_id", Integer, primary_key=True),
+            Column("peer_hash", String(64), primary_key=True),
             Column("created", TZDateTime,
                    server_default=func.now(), nullable=False),
             Column("peer_name", String),
@@ -98,7 +98,7 @@ class Models:
             Column("destination", String(66), nullable=False),
             Column("node_host", String, nullable=False),
             Column("node_port", Integer, nullable=False),
-            Column("peer_id", Integer, nullable=False),
+            Column("peer_hash", String(64), nullable=False),
         )
 
         self.sent_payments = Table(
@@ -107,7 +107,7 @@ class Models:
             Column("sent_payment_id", Integer, primary_key=True),
             Column("created", TZDateTime,
                    server_default=func.now(), nullable=False),
-            Column("peer_id", Integer, nullable=False),
+            Column("peer_hash", String(64), nullable=False),
             Column("squeak_hash", String(64), nullable=False),
             Column("payment_hash", String(64), nullable=False),
             Column("secret_key", String(64), nullable=False),

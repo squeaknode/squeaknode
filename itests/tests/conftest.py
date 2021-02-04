@@ -130,17 +130,49 @@ def saved_squeak_hash(server_stub, admin_stub, signing_profile_address):
 
 
 @pytest.fixture
-def peer_id(server_stub, admin_stub):
+def random_peer_host():
+    yield "random_host_name_{}".format(uuid.uuid1())
+
+
+@pytest.fixture
+def random_peer_hash(server_stub, admin_stub, random_peer_host):
     # Create a new peer
     create_peer_response = admin_stub.CreatePeer(
         squeak_admin_pb2.CreatePeerRequest(
-            peer_name="fake_peer_name",
-            host="fake_host",
+            peer_name=random_peer_host,
+            host=random_peer_host,
             port=1234,
         )
     )
-    peer_id = create_peer_response.peer_id
-    yield peer_id
+    peer_hash = create_peer_response.peer_hash
+    yield peer_hash
+
+
+@pytest.fixture
+def connected_peer_hash(other_admin_stub, admin_stub):
+    # Add the main node as a peer
+    create_peer_response = other_admin_stub.CreatePeer(
+        squeak_admin_pb2.CreatePeerRequest(
+            peer_name="test_peer",
+            host="squeaknode",
+            port=8774,
+        )
+    )
+    peer_hash = create_peer_response.peer_hash
+    # Set the peer to be downloading
+    other_admin_stub.SetPeerDownloading(
+        squeak_admin_pb2.SetPeerDownloadingRequest(
+            peer_hash=peer_hash,
+            downloading=True,
+        )
+    )
+    yield peer_hash
+    # Delete the peer
+    other_admin_stub.DeletePeer(
+        squeak_admin_pb2.DeletePeerRequest(
+            peer_hash=peer_hash,
+        )
+    )
 
 
 @pytest.fixture

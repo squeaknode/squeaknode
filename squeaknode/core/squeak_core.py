@@ -186,8 +186,6 @@ class SqueakCore:
         Returns:
             ReceivedOffer: A record of the details of the offer for the buyer.
         """
-        if peer.peer_id is None:
-            raise Exception("Peer must have a non-null peer_id.")
         # Get the squeak hash
         squeak_hash = get_hash(squeak)
         # TODO: check if squeak hash matches squeak_hash in buy_offer.
@@ -224,7 +222,7 @@ class SqueakCore:
             destination=destination,
             node_host=node_host,
             node_port=node_port,
-            peer_id=peer.peer_id,
+            peer_hash=peer.peer_hash,
         )
 
     def pay_offer(self, received_offer: ReceivedOffer) -> SentPayment:
@@ -255,7 +253,7 @@ class SqueakCore:
         return SentPayment(
             sent_payment_id=None,
             created=None,
-            peer_id=received_offer.peer_id,
+            peer_hash=received_offer.peer_hash,
             squeak_hash=received_offer.squeak_hash,
             payment_hash=received_offer.payment_hash,
             secret_key=secret_key,

@@ -412,9 +412,9 @@ export function getBuyOfferRequest(offerId, handleResponse) {
   );
 }
 
-export function getPeerRequest(id, handleResponse) {
+export function getPeerRequest(peerHash, handleResponse) {
   var request = new GetPeerRequest();
-  request.setPeerId(id);
+  request.setPeerHash(peerHash);
   makeRequest(
     'getpeer',
     request,
@@ -425,9 +425,9 @@ export function getPeerRequest(id, handleResponse) {
   );
 }
 
-export function setPeerDownloadingRequest(id, downloading, handleResponse) {
+export function setPeerDownloadingRequest(peerHash, downloading, handleResponse) {
   var request = new SetPeerDownloadingRequest();
-  request.setPeerId(id);
+  request.setPeerHash(peerHash);
   request.setDownloading(downloading);
   makeRequest(
     'setpeerdownloading',
@@ -437,9 +437,9 @@ export function setPeerDownloadingRequest(id, downloading, handleResponse) {
   );
 }
 
-export function setPeerUploadingRequest(id, uploading, handleResponse) {
+export function setPeerUploadingRequest(peerHash, uploading, handleResponse) {
   var request = new SetPeerUploadingRequest();
-  request.setPeerId(id);
+  request.setPeerHash(peerHash);
   request.setUploading(uploading);
   makeRequest(
     'setpeeruploading',
@@ -590,9 +590,9 @@ export function createPeerRequest(peerName, host, port, handleResponse) {
   );
 }
 
-export function deletePeerRequest(peerId, handleResponse) {
+export function deletePeerRequest(peerHash, handleResponse) {
   var request = new DeletePeerRequest();
-  request.setPeerId(peerId);
+  request.setPeerHash(peerHash);
   makeRequest(
     'deletepeer',
     request,

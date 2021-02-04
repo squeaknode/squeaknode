@@ -66,7 +66,7 @@ class PeerConnection:
             followed_addresses,
             min_block,
             max_block,
-            self.peer.peer_id,
+            self.peer.peer_hash,
         )
         # Get hashes to get offer
         hashes_to_get_offer = set(remote_hashes) & set(locked_hashes)
@@ -124,7 +124,7 @@ class PeerConnection:
     def _get_saved_offer(self, squeak_hash: bytes) -> Optional[ReceivedOfferWithPeer]:
         offers = self.squeak_controller.get_buy_offers_with_peer(squeak_hash)
         for offer_with_peer in offers:
-            if offer_with_peer.received_offer.peer_id == self.peer.peer_id:
+            if offer_with_peer.received_offer.peer_hash == self.peer.peer_hash:
                 return offer_with_peer
         return None
 

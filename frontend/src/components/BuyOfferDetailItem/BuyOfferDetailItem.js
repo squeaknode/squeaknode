@@ -40,12 +40,12 @@ export default function BuyOfferDetailItem({
 
   const onPeerClick = (event) => {
     event.preventDefault();
-    const peerId = getPeerId();
-    if (peerId == null) {
+    const peerHash = getPeerHash();
+    if (peerHash == null) {
       return;
     }
-    console.log("Handling peer click for peerId: " + peerId);
-    goToPeerPage(history, peerId);
+    console.log("Handling peer click for peerHash: " + peerHash);
+    goToPeerPage(history, peerHash);
   }
 
   const onLightningNodeClick = (event) => {
@@ -58,12 +58,12 @@ export default function BuyOfferDetailItem({
     )
   }
 
-  const getPeerId = () => {
+  const getPeerHash = () => {
     if (!offer.getHasPeer()) {
       return null;
     }
     const peer = offer.getPeer();
-    return peer.getPeerId();
+    return peer.getPeerHash();
   }
 
 
@@ -96,9 +96,9 @@ export default function BuyOfferDetailItem({
   }
 
   function HasPeerDisplay(peer) {
-    const peerId = peer.getPeerId();
+    const peerHash = peer.getPeerHash();
     const peerName = peer.getPeerName();
-    const peerDisplayName = peerName ? peerName : peerId;
+    const peerDisplayName = peerName ? peerName : peerHash;
     return (
       <Link href="#"
         onClick={onPeerClick}
