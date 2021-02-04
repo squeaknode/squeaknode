@@ -128,7 +128,7 @@ export default function MakeSqueakDialog({
           onChange={handleChange}
         >
           {signingProfiles.map(p =>
-            <MenuItem key={p.getProfileId()} value={p.getProfileId()}>{p.getProfileName()}</MenuItem>
+            <MenuItem key={p.getAddress()} value={p.getAddress()}>{p.getProfileName()}</MenuItem>
           )}
         </Select>
       </FormControl>

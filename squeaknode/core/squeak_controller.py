@@ -130,7 +130,6 @@ class SqueakController:
         signing_key_str = str(signing_key)
         signing_key_bytes = signing_key_str.encode()
         squeak_profile = SqueakProfile(
-            profile_id=None,
             profile_name=profile_name,
             private_key=signing_key_bytes,
             address=str(address),
@@ -147,7 +146,6 @@ class SqueakController:
         signing_key_str = str(signing_key)
         signing_key_bytes = signing_key_str.encode()
         squeak_profile = SqueakProfile(
-            profile_id=None,
             profile_name=profile_name,
             private_key=signing_key_bytes,
             address=str(address),
@@ -169,7 +167,6 @@ class SqueakController:
                 ),
             )
         squeak_profile = SqueakProfile(
-            profile_id=None,
             profile_name=profile_name,
             private_key=None,
             address=squeak_address,
@@ -185,44 +182,41 @@ class SqueakController:
     def get_contact_profiles(self):
         return self.squeak_db.get_contact_profiles()
 
-    def get_squeak_profile(self, profile_id: int):
-        return self.squeak_db.get_profile(profile_id)
-
-    def get_squeak_profile_by_address(self, address: str):
-        return self.squeak_db.get_profile_by_address(address)
+    def get_squeak_profile(self, address: str):
+        return self.squeak_db.get_profile(address)
 
     def get_squeak_profile_by_name(self, name: str):
         return self.squeak_db.get_profile_by_name(name)
 
-    def set_squeak_profile_following(self, profile_id: int, following: bool):
-        self.squeak_db.set_profile_following(profile_id, following)
+    def set_squeak_profile_following(self, address: str, following: bool):
+        self.squeak_db.set_profile_following(address, following)
         self.squeak_whitelist.refresh()
 
-    def set_squeak_profile_sharing(self, profile_id: int, sharing: bool):
-        self.squeak_db.set_profile_sharing(profile_id, sharing)
+    def set_squeak_profile_sharing(self, address: str, sharing: bool):
+        self.squeak_db.set_profile_sharing(address, sharing)
 
-    def rename_squeak_profile(self, profile_id: int, profile_name: str):
-        self.squeak_db.set_profile_name(profile_id, profile_name)
+    def rename_squeak_profile(self, address: str, profile_name: str):
+        self.squeak_db.set_profile_name(address, profile_name)
 
-    def delete_squeak_profile(self, profile_id: int):
-        self.squeak_db.delete_profile(profile_id)
+    def delete_squeak_profile(self, address: str):
+        self.squeak_db.delete_profile(address)
 
-    def set_squeak_profile_image(self, profile_id: int, profile_image: bytes):
-        self.squeak_db.set_profile_image(profile_id, profile_image)
+    def set_squeak_profile_image(self, address: str, profile_image: bytes):
+        self.squeak_db.set_profile_image(address, profile_image)
 
-    def clear_squeak_profile_image(self, profile_id: int):
-        self.squeak_db.set_profile_image(profile_id, None)
+    def clear_squeak_profile_image(self, address: str):
+        self.squeak_db.set_profile_image(address, None)
 
-    def get_squeak_profile_private_key(self, profile_id: int):
-        profile = self.get_squeak_profile(profile_id)
+    def get_squeak_profile_private_key(self, address: str):
+        profile = self.get_squeak_profile(address)
         if profile.private_key is None:
-            raise Exception("Profile with id: {} does not have a private key.".format(
-                profile_id
+            raise Exception("Profile with address: {} does not have a private key.".format(
+                address
             ))
         return profile.private_key
 
-    def make_squeak(self, profile_id: int, content_str: str, replyto_hash: bytes):
-        squeak_profile = self.squeak_db.get_profile(profile_id)
+    def make_squeak(self, address: str, content_str: str, replyto_hash: bytes):
+        squeak_profile = self.squeak_db.get_profile(address)
         squeak_entry = self.squeak_core.make_squeak(
             squeak_profile, content_str, replyto_hash)
         # return self.save_created_squeak(squeak_entry.squeak)

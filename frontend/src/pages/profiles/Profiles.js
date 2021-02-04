@@ -230,21 +230,14 @@ export default function Profiles() {
            title={title}
            data={profiles.map(p =>
               [
-                p.getProfileId(),
-                p.getProfileName(),
                 p.getAddress(),
+                p.getProfileName(),
                 p.getFollowing().toString(),
                 p.getSharing().toString(),
               ]
             )}
            columns={[
-             {
-               name: "Id",
-               options: {
-                 display: false,
-               }
-             },
-             "Name", "Address", "Following", "Sharing"
+             "Address", "Name", "Following", "Sharing"
            ]}
            options={{
              filter: false,
