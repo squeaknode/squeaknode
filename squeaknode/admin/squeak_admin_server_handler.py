@@ -88,11 +88,11 @@ class SqueakAdminServerHandler(object):
         profile_name = request.profile_name
         logger.info(
             "Handle create signing profile with name: {}".format(profile_name))
-        address = self.squeak_controller.create_signing_profile(
+        profile_id = self.squeak_controller.create_signing_profile(
             profile_name)
-        logger.info("New profile address: {}".format(address))
+        logger.info("New profile_id: {}".format(profile_id))
         return squeak_admin_pb2.CreateSigningProfileReply(
-            address=address,
+            profile_id=profile_id,
         )
 
     def handle_import_signing_profile(self, request):
@@ -100,11 +100,11 @@ class SqueakAdminServerHandler(object):
         private_key = request.private_key
         logger.info(
             "Handle import signing profile with name: {}".format(profile_name))
-        address = self.squeak_controller.import_signing_profile(
+        profile_id = self.squeak_controller.import_signing_profile(
             profile_name, private_key)
-        logger.info("New profile address: {}".format(address))
+        logger.info("New profile_id: {}".format(profile_id))
         return squeak_admin_pb2.ImportSigningProfileReply(
-            address=address,
+            profile_id=profile_id,
         )
 
     def handle_create_contact_profile(self, request):
@@ -116,12 +116,12 @@ class SqueakAdminServerHandler(object):
                 squeak_address,
             )
         )
-        address = self.squeak_controller.create_contact_profile(
+        profile_id = self.squeak_controller.create_contact_profile(
             profile_name, squeak_address
         )
-        logger.info("New profile address: {}".format(address))
+        logger.info("New profile_id: {}".format(profile_id))
         return squeak_admin_pb2.CreateContactProfileReply(
-            address=address,
+            profile_id=profile_id,
         )
 
     def handle_get_signing_profiles(self, request):
@@ -141,15 +141,27 @@ class SqueakAdminServerHandler(object):
         return squeak_admin_pb2.GetContactProfilesReply(squeak_profiles=profile_msgs)
 
     def handle_get_squeak_profile(self, request):
-        address = request.address
-        logger.info(
-            "Handle get squeak profile with address: {}".format(address))
-        squeak_profile = self.squeak_controller.get_squeak_profile(address)
+        profile_id = request.profile_id
+        logger.info("Handle get squeak profile with id: {}".format(profile_id))
+        squeak_profile = self.squeak_controller.get_squeak_profile(profile_id)
         if squeak_profile is None:
             raise Exception("Profile not found.")
         squeak_profile_msg = squeak_profile_to_message(squeak_profile)
         return squeak_admin_pb2.GetSqueakProfileReply(
             squeak_profile=squeak_profile_msg,
+        )
+
+    def handle_get_squeak_profile_by_address(self, request):
+        address = request.address
+        logger.info(
+            "Handle get squeak profile with address: {}".format(address))
+        squeak_profile = self.squeak_controller.get_squeak_profile_by_address(
+            address)
+        if squeak_profile is None:
+            raise Exception("Profile not found.")
+        squeak_profile_msg = squeak_profile_to_message(squeak_profile)
+        return squeak_admin_pb2.GetSqueakProfileByAddressReply(
+            squeak_profile=squeak_profile_msg
         )
 
     def handle_get_squeak_profile_by_name(self, request):
@@ -165,94 +177,93 @@ class SqueakAdminServerHandler(object):
         )
 
     def handle_set_squeak_profile_following(self, request):
-        address = request.address
+        profile_id = request.profile_id
         following = request.following
         logger.info(
             "Handle set squeak profile following with profile id: {}, following: {}".format(
-                address,
+                profile_id,
                 following,
             )
         )
         self.squeak_controller.set_squeak_profile_following(
-            address, following)
+            profile_id, following)
         return squeak_admin_pb2.SetSqueakProfileFollowingReply()
 
     def handle_set_squeak_profile_sharing(self, request):
-        address = request.address
+        profile_id = request.profile_id
         sharing = request.sharing
         logger.info(
             "Handle set squeak profile sharing with profile id: {}, sharing: {}".format(
-                address,
+                profile_id,
                 sharing,
             )
         )
-        self.squeak_controller.set_squeak_profile_sharing(address, sharing)
+        self.squeak_controller.set_squeak_profile_sharing(profile_id, sharing)
         return squeak_admin_pb2.SetSqueakProfileSharingReply()
 
     def handle_rename_squeak_profile(self, request):
-        address = request.address
+        profile_id = request.profile_id
         profile_name = request.profile_name
         logger.info(
             "Handle rename squeak profile with profile id: {}, new name: {}".format(
-                address,
+                profile_id,
                 profile_name,
             )
         )
-        self.squeak_controller.rename_squeak_profile(address, profile_name)
+        self.squeak_controller.rename_squeak_profile(profile_id, profile_name)
         return squeak_admin_pb2.RenameSqueakProfileReply()
 
     def handle_delete_squeak_profile(self, request):
-        address = request.address
+        profile_id = request.profile_id
         logger.info(
-            "Handle delete squeak profile with address: {}".format(address))
-        self.squeak_controller.delete_squeak_profile(address)
+            "Handle delete squeak profile with id: {}".format(profile_id))
+        self.squeak_controller.delete_squeak_profile(profile_id)
         return squeak_admin_pb2.DeleteSqueakProfileReply()
 
     def handle_set_squeak_profile_image(self, request):
-        address = request.address
+        profile_id = request.profile_id
         profile_image = request.profile_image
         logger.info(
             "Handle set squeak profile image with profile id: {}".format(
-                address,
+                profile_id,
             )
         )
         profile_image_bytes = base64_string_to_bytes(profile_image)
         self.squeak_controller.set_squeak_profile_image(
-            address, profile_image_bytes)
+            profile_id, profile_image_bytes)
         return squeak_admin_pb2.SetSqueakProfileImageReply()
 
     def handle_clear_squeak_profile_image(self, request):
-        address = request.address
+        profile_id = request.profile_id
         logger.info(
             "Handle clear squeak profile image with profile id: {}".format(
-                address,
+                profile_id,
             )
         )
         self.squeak_controller.clear_squeak_profile_image(
-            address,
+            profile_id,
         )
         return squeak_admin_pb2.ClearSqueakProfileImageReply()
 
     def handle_get_squeak_profile_private_key(self, request):
-        address = request.address
+        profile_id = request.profile_id
         logger.info(
-            "Handle get squeak profile private key for id: {}".format(address))
+            "Handle get squeak profile private key for id: {}".format(profile_id))
         private_key = self.squeak_controller.get_squeak_profile_private_key(
-            address)
+            profile_id)
         return squeak_admin_pb2.GetSqueakProfilePrivateKeyReply(
             private_key=private_key
         )
 
     def handle_make_squeak(self, request):
-        address = request.address
+        profile_id = request.profile_id
         content_str = request.content
         replyto_hash_str = request.replyto
         replyto_hash = bytes.fromhex(
             replyto_hash_str) if replyto_hash_str else None
-        logger.info(
-            "Handle make squeak profile with address: {}".format(address))
+        logger.info("Handle make squeak profile with id: {}".format(profile_id))
         inserted_squeak_hash = self.squeak_controller.make_squeak(
-            address, content_str, replyto_hash
+            profile_id, content_str, replyto_hash
         )
         return squeak_admin_pb2.MakeSqueakReply(
             squeak_hash=inserted_squeak_hash.hex(),
@@ -387,21 +398,19 @@ class SqueakAdminServerHandler(object):
                 port,
             )
         )
-        peer_hash = self.squeak_controller.create_peer(
+        peer_id = self.squeak_controller.create_peer(
             peer_name,
             host,
             port,
         )
         return squeak_admin_pb2.CreatePeerReply(
-            peer_hash=peer_hash.hex(),
+            peer_id=peer_id,
         )
 
     def handle_get_squeak_peer(self, request):
-        peer_hash_str = request.peer_hash
-        peer_hash = bytes.fromhex(peer_hash_str)
-        logger.info(
-            "Handle get squeak peer with hash: {}".format(peer_hash_str))
-        squeak_peer = self.squeak_controller.get_peer(peer_hash)
+        peer_id = request.peer_id
+        logger.info("Handle get squeak peer with id: {}".format(peer_id))
+        squeak_peer = self.squeak_controller.get_peer(peer_id)
         if squeak_peer is None:
             raise Exception("Peer not found.")
         squeak_peer_msg = squeak_peer_to_message(squeak_peer)
@@ -420,50 +429,45 @@ class SqueakAdminServerHandler(object):
         )
 
     def handle_set_squeak_peer_downloading(self, request):
-        peer_hash_str = request.peer_hash
-        peer_hash = bytes.fromhex(peer_hash_str)
+        peer_id = request.peer_id
         downloading = request.downloading
         logger.info(
             "Handle set peer downloading with peer id: {}, downloading: {}".format(
-                peer_hash,
+                peer_id,
                 downloading,
             )
         )
-        self.squeak_controller.set_peer_downloading(peer_hash, downloading)
+        self.squeak_controller.set_peer_downloading(peer_id, downloading)
         return squeak_admin_pb2.SetPeerDownloadingReply()
 
     def handle_rename_squeak_peer(self, request):
-        peer_hash_str = request.peer_hash
-        peer_hash = bytes.fromhex(peer_hash_str)
+        peer_id = request.peer_id
         peer_name = request.peer_name
         logger.info(
             "Handle rename peer with peer id: {}, new name: {}".format(
-                peer_hash_str,
+                peer_id,
                 peer_name,
             )
         )
-        self.squeak_controller.rename_peer(peer_hash, peer_name)
+        self.squeak_controller.rename_peer(peer_id, peer_name)
         return squeak_admin_pb2.RenamePeerReply()
 
     def handle_set_squeak_peer_uploading(self, request):
-        peer_hash_str = request.peer_hash
-        peer_hash = bytes.fromhex(peer_hash_str)
+        peer_id = request.peer_id
         uploading = request.uploading
         logger.info(
             "Handle set peer uploading with peer id: {}, uploading: {}".format(
-                peer_hash,
+                peer_id,
                 uploading,
             )
         )
-        self.squeak_controller.set_peer_uploading(peer_hash, uploading)
+        self.squeak_controller.set_peer_uploading(peer_id, uploading)
         return squeak_admin_pb2.SetPeerUploadingReply()
 
     def handle_delete_squeak_peer(self, request):
-        peer_hash_str = request.peer_hash
-        peer_hash = bytes.fromhex(peer_hash_str)
-        logger.info(
-            "Handle delete squeak peer with hash: {}".format(peer_hash_str))
-        self.squeak_controller.delete_peer(peer_hash)
+        peer_id = request.peer_id
+        logger.info("Handle delete squeak peer with id: {}".format(peer_id))
+        self.squeak_controller.delete_peer(peer_id)
         return squeak_admin_pb2.DeletePeerReply()
 
     def handle_get_buy_offers(self, request):

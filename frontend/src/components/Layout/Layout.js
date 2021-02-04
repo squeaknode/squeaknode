@@ -70,7 +70,7 @@ function Layout(props) {
               <Route path="/app/lightningnode/:pubkey" component={LightningNode} />
               <Route path="/app/channel/:txId/:outputIndex" component={Channel} />
               <Route path="/app/peers" component={Peers} />
-              <Route path="/app/peer/:hash" component={Peer} />
+              <Route path="/app/peer/:id" component={Peer} />
               <Route path="/app/notifications" component={Notifications} />
               <Route
                 exact

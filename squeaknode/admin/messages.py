@@ -52,14 +52,17 @@ def squeak_entry_to_message(squeak_entry_with_profile: SqueakEntryWithProfile) -
 
 
 def squeak_profile_to_message(squeak_profile: SqueakProfile) -> squeak_admin_pb2.SqueakProfile:
+    if squeak_profile.profile_id is None:
+        raise Exception("Profile id cannot be None.")
     has_private_key = squeak_profile.private_key is not None
     profile_image = squeak_profile.profile_image or DEFAULT_PROFILE_IMAGE
     has_custom_profile_image = squeak_profile.profile_image is not None
     image_base64_str = bytes_to_base64_string(profile_image)
     return squeak_admin_pb2.SqueakProfile(
-        address=squeak_profile.address,
+        profile_id=squeak_profile.profile_id,
         profile_name=squeak_profile.profile_name,
         has_private_key=has_private_key,
+        address=squeak_profile.address,
         sharing=squeak_profile.sharing,
         following=squeak_profile.following,
         profile_image=image_base64_str,
@@ -68,8 +71,10 @@ def squeak_profile_to_message(squeak_profile: SqueakProfile) -> squeak_admin_pb2
 
 
 def squeak_peer_to_message(squeak_peer: SqueakPeer) -> squeak_admin_pb2.SqueakPeer:
+    if squeak_peer.peer_id is None:
+        raise Exception("Peer id cannot be None.")
     return squeak_admin_pb2.SqueakPeer(
-        peer_hash=squeak_peer.peer_hash.hex(),
+        peer_id=squeak_peer.peer_id,
         peer_name=squeak_peer.peer_name,
         host=squeak_peer.host,
         port=squeak_peer.port,

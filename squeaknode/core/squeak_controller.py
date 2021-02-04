@@ -13,7 +13,6 @@ from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.received_payment_summary import ReceivedPaymentSummary
 from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.sent_payment_summary import SentPaymentSummary
-from squeaknode.core.squeak_peer import make_squeak_peer
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.util import get_hash
@@ -131,6 +130,7 @@ class SqueakController:
         signing_key_str = str(signing_key)
         signing_key_bytes = signing_key_str.encode()
         squeak_profile = SqueakProfile(
+            profile_id=None,
             profile_name=profile_name,
             private_key=signing_key_bytes,
             address=str(address),
@@ -147,6 +147,7 @@ class SqueakController:
         signing_key_str = str(signing_key)
         signing_key_bytes = signing_key_str.encode()
         squeak_profile = SqueakProfile(
+            profile_id=None,
             profile_name=profile_name,
             private_key=signing_key_bytes,
             address=str(address),
@@ -168,6 +169,7 @@ class SqueakController:
                 ),
             )
         squeak_profile = SqueakProfile(
+            profile_id=None,
             profile_name=profile_name,
             private_key=None,
             address=squeak_address,
@@ -183,41 +185,44 @@ class SqueakController:
     def get_contact_profiles(self):
         return self.squeak_db.get_contact_profiles()
 
-    def get_squeak_profile(self, address: str):
-        return self.squeak_db.get_profile(address)
+    def get_squeak_profile(self, profile_id: int):
+        return self.squeak_db.get_profile(profile_id)
+
+    def get_squeak_profile_by_address(self, address: str):
+        return self.squeak_db.get_profile_by_address(address)
 
     def get_squeak_profile_by_name(self, name: str):
         return self.squeak_db.get_profile_by_name(name)
 
-    def set_squeak_profile_following(self, address: str, following: bool):
-        self.squeak_db.set_profile_following(address, following)
+    def set_squeak_profile_following(self, profile_id: int, following: bool):
+        self.squeak_db.set_profile_following(profile_id, following)
         self.squeak_whitelist.refresh()
 
-    def set_squeak_profile_sharing(self, address: str, sharing: bool):
-        self.squeak_db.set_profile_sharing(address, sharing)
+    def set_squeak_profile_sharing(self, profile_id: int, sharing: bool):
+        self.squeak_db.set_profile_sharing(profile_id, sharing)
 
-    def rename_squeak_profile(self, address: str, profile_name: str):
-        self.squeak_db.set_profile_name(address, profile_name)
+    def rename_squeak_profile(self, profile_id: int, profile_name: str):
+        self.squeak_db.set_profile_name(profile_id, profile_name)
 
-    def delete_squeak_profile(self, address: str):
-        self.squeak_db.delete_profile(address)
+    def delete_squeak_profile(self, profile_id: int):
+        self.squeak_db.delete_profile(profile_id)
 
-    def set_squeak_profile_image(self, address: str, profile_image: bytes):
-        self.squeak_db.set_profile_image(address, profile_image)
+    def set_squeak_profile_image(self, profile_id: int, profile_image: bytes):
+        self.squeak_db.set_profile_image(profile_id, profile_image)
 
-    def clear_squeak_profile_image(self, address: str):
-        self.squeak_db.set_profile_image(address, None)
+    def clear_squeak_profile_image(self, profile_id: int):
+        self.squeak_db.set_profile_image(profile_id, None)
 
-    def get_squeak_profile_private_key(self, address: str):
-        profile = self.get_squeak_profile(address)
+    def get_squeak_profile_private_key(self, profile_id: int):
+        profile = self.get_squeak_profile(profile_id)
         if profile.private_key is None:
-            raise Exception("Profile with address: {} does not have a private key.".format(
-                address
+            raise Exception("Profile with id: {} does not have a private key.".format(
+                profile_id
             ))
         return profile.private_key
 
-    def make_squeak(self, address: str, content_str: str, replyto_hash: bytes):
-        squeak_profile = self.squeak_db.get_profile(address)
+    def make_squeak(self, profile_id: int, content_str: str, replyto_hash: bytes):
+        squeak_profile = self.squeak_db.get_profile(profile_id)
         squeak_entry = self.squeak_core.make_squeak(
             squeak_profile, content_str, replyto_hash)
         # return self.save_created_squeak(squeak_entry.squeak)
@@ -237,7 +242,8 @@ class SqueakController:
                 "Peer name cannot be empty.",
             )
         port = port or self.config.core.default_peer_rpc_port
-        squeak_peer = make_squeak_peer(
+        squeak_peer = SqueakPeer(
+            peer_id=None,
             peer_name=peer_name,
             host=host,
             port=port,
@@ -246,8 +252,8 @@ class SqueakController:
         )
         return self.squeak_db.insert_peer(squeak_peer)
 
-    def get_peer(self, peer_hash: bytes):
-        return self.squeak_db.get_peer(peer_hash)
+    def get_peer(self, peer_id: int):
+        return self.squeak_db.get_peer(peer_id)
 
     def get_peers(self):
         return self.squeak_db.get_peers()
@@ -258,17 +264,17 @@ class SqueakController:
     def get_uploading_peers(self):
         return self.squeak_db.get_uploading_peers()
 
-    def set_peer_downloading(self, peer_hash: bytes, downloading: bool):
-        self.squeak_db.set_peer_downloading(peer_hash, downloading)
+    def set_peer_downloading(self, peer_id: int, downloading: bool):
+        self.squeak_db.set_peer_downloading(peer_id, downloading)
 
-    def set_peer_uploading(self, peer_hash: bytes, uploading: bool):
-        self.squeak_db.set_peer_uploading(peer_hash, uploading)
+    def set_peer_uploading(self, peer_id: int, uploading: bool):
+        self.squeak_db.set_peer_uploading(peer_id, uploading)
 
-    def rename_peer(self, peer_hash: bytes, peer_name: str):
-        self.squeak_db.set_peer_name(peer_hash, peer_name)
+    def rename_peer(self, peer_id: int, peer_name: str):
+        self.squeak_db.set_peer_name(peer_id, peer_name)
 
-    def delete_peer(self, peer_hash: bytes):
-        self.squeak_db.delete_peer(peer_hash)
+    def delete_peer(self, peer_id: int):
+        self.squeak_db.delete_peer(peer_id)
 
     def get_buy_offers_with_peer(self, squeak_hash: bytes):
         return self.squeak_db.get_offers_with_peer(squeak_hash)
@@ -422,12 +428,12 @@ class SqueakController:
             include_locked=True,
         )
 
-    def lookup_squeaks_needing_offer(self, addresses: List[str], min_block, max_block, peer_hash: bytes):
+    def lookup_squeaks_needing_offer(self, addresses: List[str], min_block, max_block, peer_id):
         return self.squeak_db.lookup_squeaks_needing_offer(
             addresses,
             min_block,
             max_block,
-            peer_hash,
+            peer_id,
         )
 
     def save_offer(self, received_offer: ReceivedOffer):

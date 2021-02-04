@@ -16,4 +16,4 @@ class ReceivedOffer(NamedTuple):
     destination: str
     node_host: str
     node_port: int
-    peer_hash: bytes
+    peer_id: int

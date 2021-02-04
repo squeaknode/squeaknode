@@ -2,8 +2,8 @@ export const reloadRoute = (history) => {
   history.go(0);
 };
 
-export const goToPeerPage = (history, peerHash) => {
-  history.push("/app/peer/" + peerHash);
+export const goToPeerPage = (history, peerId) => {
+  history.push("/app/peer/" + peerId);
 };
 
 export const goToLightningNodePage = (history, pubkey, host, port) => {
@@ -29,8 +29,8 @@ export const goToChannelPage = (history, txId, outputIndex) => {
    history.push("/app/channel/" + txId + "/" + outputIndex);
 };
 
-export const goToProfilePage = (history, squeakAddress) => {
-  history.push("/app/profile/" + squeakAddress);
+export const goToProfilePage = (history, profileId) => {
+  history.push("/app/profile/" + profileId);
 };
 
 export const goToWalletPage = (history) => {

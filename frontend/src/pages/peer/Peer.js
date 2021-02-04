@@ -29,27 +29,27 @@ import {
 
 export default function PeerPage() {
   var classes = useStyles();
-  const { hash } = useParams();
+  const { id } = useParams();
   const [peer, setPeer] = useState(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
-  const getSqueakPeer = (hash) => {
-    getPeerRequest(hash, setPeer);
+  const getSqueakPeer = (id) => {
+    getPeerRequest(id, setPeer);
   };
-  const setDownloading = (hash, downloading) => {
-    setPeerDownloadingRequest(hash, downloading, () => {
-      getSqueakPeer(hash);
+  const setDownloading = (id, downloading) => {
+    setPeerDownloadingRequest(id, downloading, () => {
+      getSqueakPeer(id);
     });
   };
-  const setUploading = (hash, uploading) => {
-    setPeerUploadingRequest(hash, uploading, () => {
-      getSqueakPeer(hash);
+  const setUploading = (id, uploading) => {
+    setPeerUploadingRequest(id, uploading, () => {
+      getSqueakPeer(id);
     });
   };
 
   useEffect(()=>{
-    getSqueakPeer(hash)
-  },[hash]);
+    getSqueakPeer(id)
+  },[id]);
 
   const handleClickOpenDeleteDialog = () => {
     setDeleteDialogOpen(true);
@@ -61,15 +61,15 @@ export default function PeerPage() {
   };
 
   const handleSettingsDownloadingChange = (event) => {
-    console.log("Downloading changed for peer hash: " + hash);
+    console.log("Downloading changed for peer id: " + id);
     console.log("Downloading changed to: " + event.target.checked);
-    setDownloading(hash, event.target.checked);
+    setDownloading(id, event.target.checked);
   };
 
   const handleSettingsUploadingChange = (event) => {
-    console.log("Uploading changed for peer hash: " + hash);
+    console.log("Uploading changed for peer id: " + id);
     console.log("Uploading changed to: " + event.target.checked);
-    setUploading(hash, event.target.checked);
+    setUploading(id, event.target.checked);
   };
 
   function NoPeerContent() {

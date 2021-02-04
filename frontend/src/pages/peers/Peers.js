@@ -96,7 +96,7 @@ export default function Peers() {
            title="Peers"
            data={peers.map(s =>
               [
-                s.getPeerHash(),
+                s.getPeerId(),
                 s.getPeerName(),
                 s.getHost(),
                 s.getPort(),

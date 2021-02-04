@@ -62,17 +62,15 @@ export default function ConfigureProfileDialog({
   };
 
   const handleSettingsFollowingChange = (event) => {
-    const profileAddress = squeakProfile.getAddress();
-    console.log("Following changed for profile with address: " + profileAddress);
+    console.log("Following changed for profile id: " + squeakProfile.getProfileId());
     console.log("Following changed to: " + event.target.checked);
-    setFollowing(profileAddress, event.target.checked);
+    setFollowing(squeakProfile.getProfileId(), event.target.checked);
   };
 
   const handleSettingsSharingChange = (event) => {
-    const profileAddress = squeakProfile.getAddress();
-    console.log("Sharing changed for profile with address: " + profileAddress);
+    console.log("Sharing changed for profile id: " + squeakProfile.getProfileId());
     console.log("Sharing changed to: " + event.target.checked);
-    setSharing(profileAddress, event.target.checked);
+    setSharing(squeakProfile.getProfileId(), event.target.checked);
   };
 
   function MakeCancelButton() {

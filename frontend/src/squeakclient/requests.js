@@ -43,6 +43,7 @@ import {
   GetSqueakDisplayRequest,
   GetAncestorSqueakDisplaysRequest,
   GetReplySqueakDisplaysRequest,
+  GetSqueakProfileByAddressRequest,
   GetAddressSqueakDisplaysRequest,
   CreateContactProfileRequest,
   CreateSigningProfileRequest,
@@ -68,6 +69,7 @@ import {
   GetSqueakDisplayReply,
   GetAncestorSqueakDisplaysReply,
   GetReplySqueakDisplaysReply,
+  GetSqueakProfileByAddressReply,
   GetAddressSqueakDisplaysReply,
   CreateContactProfileReply,
   CreateSigningProfileReply,
@@ -236,9 +238,9 @@ export function lndPendingChannelsRequest(handleResponse) {
   );
 }
 
-export function getSqueakProfileRequest(address, handleResponse) {
+export function getSqueakProfileRequest(id, handleResponse) {
   var request = new GetSqueakProfileRequest();
-  request.setAddress(address);
+  request.setProfileId(id);
   makeRequest(
     'getsqueakprofile',
     request,
@@ -249,9 +251,9 @@ export function getSqueakProfileRequest(address, handleResponse) {
   );
 }
 
-export function setSqueakProfileFollowingRequest(squeakAddress, following, handleResponse) {
+export function setSqueakProfileFollowingRequest(id, following, handleResponse) {
   var request = new SetSqueakProfileFollowingRequest();
-  request.setAddress(squeakAddress);
+  request.setProfileId(id);
   request.setFollowing(following);
   makeRequest(
     'setsqueakprofilefollowing',
@@ -261,9 +263,9 @@ export function setSqueakProfileFollowingRequest(squeakAddress, following, handl
   );
 }
 
-export function setSqueakProfileSharingRequest(squeakAddress, sharing, handleResponse) {
+export function setSqueakProfileSharingRequest(id, sharing, handleResponse) {
   var request = new SetSqueakProfileSharingRequest();
-  request.setAddress(squeakAddress);
+  request.setProfileId(id);
   request.setSharing(sharing);
   makeRequest(
     'setsqueakprofilesharing',
@@ -273,9 +275,9 @@ export function setSqueakProfileSharingRequest(squeakAddress, sharing, handleRes
   );
 }
 
-export function renameSqueakProfileRequest(squeakAddress, profileName, handleResponse) {
+export function renameSqueakProfileRequest(id, profileName, handleResponse) {
   var request = new RenameSqueakProfileRequest();
-  request.setAddress(squeakAddress);
+  request.setProfileId(id);
   request.setProfileName(profileName);
   makeRequest(
     'renamesqueakprofile',
@@ -285,9 +287,9 @@ export function renameSqueakProfileRequest(squeakAddress, profileName, handleRes
   );
 }
 
-export function setSqueakProfileImageRequest(squeakAddress, profileImage, handleResponse) {
+export function setSqueakProfileImageRequest(id, profileImage, handleResponse) {
   var request = new SetSqueakProfileImageRequest();
-  request.setAddress(squeakAddress);
+  request.setProfileId(id);
   request.setProfileImage(profileImage);
   makeRequest(
     'setsqueakprofileimage',
@@ -297,9 +299,9 @@ export function setSqueakProfileImageRequest(squeakAddress, profileImage, handle
   );
 }
 
-export function clearSqueakProfileImageRequest(squeakAddress, handleResponse) {
+export function clearSqueakProfileImageRequest(id, handleResponse) {
   var request = new ClearSqueakProfileImageRequest();
-  request.setAddress(squeakAddress);
+  request.setProfileId(id);
   makeRequest(
     'clearsqueakprofileimage',
     request,
@@ -412,9 +414,9 @@ export function getBuyOfferRequest(offerId, handleResponse) {
   );
 }
 
-export function getPeerRequest(peerHash, handleResponse) {
+export function getPeerRequest(id, handleResponse) {
   var request = new GetPeerRequest();
-  request.setPeerHash(peerHash);
+  request.setPeerId(id);
   makeRequest(
     'getpeer',
     request,
@@ -425,9 +427,9 @@ export function getPeerRequest(peerHash, handleResponse) {
   );
 }
 
-export function setPeerDownloadingRequest(peerHash, downloading, handleResponse) {
+export function setPeerDownloadingRequest(id, downloading, handleResponse) {
   var request = new SetPeerDownloadingRequest();
-  request.setPeerHash(peerHash);
+  request.setPeerId(id);
   request.setDownloading(downloading);
   makeRequest(
     'setpeerdownloading',
@@ -437,9 +439,9 @@ export function setPeerDownloadingRequest(peerHash, downloading, handleResponse)
   );
 }
 
-export function setPeerUploadingRequest(peerHash, uploading, handleResponse) {
+export function setPeerUploadingRequest(id, uploading, handleResponse) {
   var request = new SetPeerUploadingRequest();
-  request.setPeerHash(peerHash);
+  request.setPeerId(id);
   request.setUploading(uploading);
   makeRequest(
     'setpeeruploading',
@@ -473,9 +475,9 @@ export function getContactProfilesRequest(handleResponse) {
   );
 }
 
-export function makeSqueakRequest(squeakAddress, content, replyto, handleResponse, handleErr) {
+export function makeSqueakRequest(profileId, content, replyto, handleResponse, handleErr) {
   var request = new MakeSqueakRequest();
-  request.setAddress(squeakAddress);
+  request.setProfileId(profileId);
   request.setContent(content);
   request.setReplyto(replyto);
   makeRequest(
@@ -522,6 +524,19 @@ export function getReplySqueakDisplaysRequest(hash, handleResponse) {
     GetReplySqueakDisplaysReply.deserializeBinary,
     (response) => {
       handleResponse(response.getSqueakDisplayEntriesList());
+    }
+  );
+}
+
+export function getSqueakProfileByAddressRequest(address, handleResponse) {
+  var request = new GetSqueakProfileByAddressRequest();
+  request.setAddress(address);
+  makeRequest(
+    'getsqueakprofilebyaddress',
+    request,
+    GetSqueakProfileByAddressReply.deserializeBinary,
+    (response) => {
+      handleResponse(response.getSqueakProfile());
     }
   );
 }
@@ -590,9 +605,9 @@ export function createPeerRequest(peerName, host, port, handleResponse) {
   );
 }
 
-export function deletePeerRequest(peerHash, handleResponse) {
+export function deletePeerRequest(peerId, handleResponse) {
   var request = new DeletePeerRequest();
-  request.setPeerHash(peerHash);
+  request.setPeerId(peerId);
   makeRequest(
     'deletepeer',
     request,
@@ -601,9 +616,9 @@ export function deletePeerRequest(peerHash, handleResponse) {
   );
 }
 
-export function deleteProfileRequest(squeakAddress, handleResponse) {
+export function deleteProfileRequest(profileId, handleResponse) {
   var request = new DeleteSqueakProfileRequest();
-  request.setAddress(squeakAddress);
+  request.setProfileId(profileId);
   makeRequest(
     'deleteprofile',
     request,
@@ -717,9 +732,9 @@ export function getNetworkRequest(handleResponse) {
   );
 }
 
-export function getSqueakProfilePrivateKey(squeakAddress, handleResponse) {
+export function getSqueakProfilePrivateKey(id, handleResponse) {
   var request = new GetSqueakProfilePrivateKeyRequest();
-  request.setAddress(squeakAddress);
+  request.setProfileId(id);
   makeRequest(
     'getsqueakprofileprivatekey',
     request,

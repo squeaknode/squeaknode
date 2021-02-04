@@ -47,12 +47,12 @@ export default function SentPayment({
 
   const onPeerClick = (event) => {
     event.preventDefault();
-    const peerHash = getPeerHash();
-    if (peerHash == null) {
+    const peerId = getPeerId();
+    if (peerId == null) {
       return;
     }
-    console.log("Handling peer click for peerHash: " + peerHash);
-    goToPeerPage(history, peerHash);
+    console.log("Handling peer click for peerId: " + peerId);
+    goToPeerPage(history, peerId);
   }
 
   const onLightningNodeClick = (event) => {
@@ -62,12 +62,12 @@ export default function SentPayment({
     goToLightningNodePage(history, nodePubkey);
   }
 
-  const getPeerHash = () => {
+  const getPeerId = () => {
     if (!sentPayment.getHasPeer()) {
       return null;
     }
     const peer = sentPayment.getPeer();
-    return peer.getPeerHash();
+    return peer.getPeerId();
   }
 
   const getPeerDisplay = () => {
@@ -76,8 +76,8 @@ export default function SentPayment({
     }
     const peer = sentPayment.getPeer();
     const peerName = peer.getPeerName();
-    const peerHash = peer.getPeerHash();
-    return peerName ? peerName : peerHash;
+    const peerId = peer.getPeerId();
+    return peerName ? peerName : peerId;
   }
 
   function PeerDisplay() {
@@ -89,9 +89,9 @@ export default function SentPayment({
   }
 
   function HasPeerDisplay(peer) {
-    const peerHash = peer.getPeerHash();
+    const peerId = peer.getPeerId();
     const peerName = peer.getPeerName();
-    const peerDisplayName = peerName ? peerName : peerHash;
+    const peerDisplayName = peerName ? peerName : peerId;
     return (
       <Link href="#"
         onClick={onPeerClick}

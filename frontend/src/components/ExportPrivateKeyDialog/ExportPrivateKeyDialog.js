@@ -55,8 +55,8 @@ export default function ExportPrivateKeyDialog({
   };
 
   const getPrivateKey = () => {
-    var profileAddress = profile.getAddress();
-    getSqueakProfilePrivateKey(profileAddress, (response) => {
+    var profileId = profile.getProfileId();
+    getSqueakProfilePrivateKey(profileId, (response) => {
       setPrivateKey(response.getPrivateKey());
     });
   };

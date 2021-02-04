@@ -1,5 +1,4 @@
 import os
-from hashlib import sha256
 
 from bitcoin.base58 import Base58ChecksumError
 from bitcoin.wallet import CBitcoinAddressError
@@ -59,8 +58,3 @@ def is_address_valid(address: str) -> bool:
     except (Base58ChecksumError, CBitcoinAddressError):
         return False
     return True
-
-
-def get_peer_hash(host: str, port: int) -> bytes:
-    host_port_str = "{}:{}".format(host, port)
-    return sha256(host_port_str.encode()).digest()

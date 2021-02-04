@@ -85,7 +85,7 @@ export default function CreatePeerDialog({
 
   const createPeer = (peerName, host, port) => {
     createPeerRequest(peerName, host, port, (response) => {
-      goToPeerPage(history, response.getPeerHash());
+      goToPeerPage(history, response.getPeerId());
     });
   };
 

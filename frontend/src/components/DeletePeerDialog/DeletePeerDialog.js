@@ -45,8 +45,8 @@ export default function DeletePeerDialog({
   var classes = useStyles();
   const history = useHistory();
 
-  const deletePeer = (peerHash) => {
-    deletePeerRequest(peerHash, (response) => {
+  const deletePeer = (peerId) => {
+    deletePeerRequest(peerId, (response) => {
       reloadRoute(history);
     });
   };
@@ -54,9 +54,9 @@ export default function DeletePeerDialog({
   function handleSubmit(event) {
     event.preventDefault();
     console.log( 'peer:', peer);
-    var peerHash = peer.getPeerHash();
-    console.log( 'peerHash:', peerHash);
-    deletePeer(peerHash);
+    var peerId = peer.getPeerId();
+    console.log( 'peerId:', peerId);
+    deletePeer(peerId);
     handleClose();
   }
 

@@ -63,12 +63,12 @@ def following_signing_key(server_stub, admin_stub):
             address=profile_address,
         )
     )
-    contact_profile_address = create_contact_profile_response.address
+    contact_profile_id = create_contact_profile_response.profile_id
 
     # Set the profile to be following
     admin_stub.SetSqueakProfileFollowing(
         squeak_admin_pb2.SetSqueakProfileFollowingRequest(
-            address=contact_profile_address,
+            profile_id=contact_profile_id,
             following=True,
         )
     )
@@ -87,7 +87,7 @@ def nonfollowing_signing_key(server_stub, admin_stub):
 
 
 @pytest.fixture
-def signing_profile_address(server_stub, admin_stub):
+def signing_profile_id(server_stub, admin_stub):
     # Create a new signing profile
     profile_name = "fake_signing_profile_{}".format(uuid.uuid1())
     create_signing_profile_response = admin_stub.CreateSigningProfile(
@@ -95,12 +95,12 @@ def signing_profile_address(server_stub, admin_stub):
             profile_name=profile_name,
         )
     )
-    profile_address = create_signing_profile_response.address
-    yield profile_address
+    profile_id = create_signing_profile_response.profile_id
+    yield profile_id
 
 
 @pytest.fixture
-def contact_profile_address(server_stub, admin_stub):
+def contact_profile_id(server_stub, admin_stub):
     # Create a new contact profile
     contact_name = "fake_contact_profile_{}".format(uuid.uuid1())
     contact_signing_key = generate_signing_key()
@@ -111,17 +111,17 @@ def contact_profile_address(server_stub, admin_stub):
             address=contact_address,
         )
     )
-    contact_profile_address = create_contact_profile_response.address
-    yield contact_profile_address
+    contact_profile_id = create_contact_profile_response.profile_id
+    yield contact_profile_id
 
 
 @pytest.fixture
-def saved_squeak_hash(server_stub, admin_stub, signing_profile_address):
+def saved_squeak_hash(server_stub, admin_stub, signing_profile_id):
     # Create a new squeak using the new profile
     make_squeak_content = "Hello from the profile on the server!"
     make_squeak_response = admin_stub.MakeSqueak(
         squeak_admin_pb2.MakeSqueakRequest(
-            address=signing_profile_address,
+            profile_id=signing_profile_id,
             content=make_squeak_content,
         )
     )
@@ -130,49 +130,17 @@ def saved_squeak_hash(server_stub, admin_stub, signing_profile_address):
 
 
 @pytest.fixture
-def random_peer_host():
-    yield "random_host_name_{}".format(uuid.uuid1())
-
-
-@pytest.fixture
-def random_peer_hash(server_stub, admin_stub, random_peer_host):
+def peer_id(server_stub, admin_stub):
     # Create a new peer
     create_peer_response = admin_stub.CreatePeer(
         squeak_admin_pb2.CreatePeerRequest(
-            peer_name=random_peer_host,
-            host=random_peer_host,
+            peer_name="fake_peer_name",
+            host="fake_host",
             port=1234,
         )
     )
-    peer_hash = create_peer_response.peer_hash
-    yield peer_hash
-
-
-@pytest.fixture
-def connected_peer_hash(other_admin_stub, admin_stub):
-    # Add the main node as a peer
-    create_peer_response = other_admin_stub.CreatePeer(
-        squeak_admin_pb2.CreatePeerRequest(
-            peer_name="test_peer",
-            host="squeaknode",
-            port=8774,
-        )
-    )
-    peer_hash = create_peer_response.peer_hash
-    # Set the peer to be downloading
-    other_admin_stub.SetPeerDownloading(
-        squeak_admin_pb2.SetPeerDownloadingRequest(
-            peer_hash=peer_hash,
-            downloading=True,
-        )
-    )
-    yield peer_hash
-    # Delete the peer
-    other_admin_stub.DeletePeer(
-        squeak_admin_pb2.DeletePeerRequest(
-            peer_hash=peer_hash,
-        )
-    )
+    peer_id = create_peer_response.peer_id
+    yield peer_id
 
 
 @pytest.fixture
