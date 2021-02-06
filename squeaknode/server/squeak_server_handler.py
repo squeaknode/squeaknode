@@ -18,6 +18,10 @@ class SqueakServerHandler(object):
     def handle_posted_squeak(self, squeak: CSqueak):
         logger.info(
             "Handle posted squeak with hash: {}".format(get_hash(squeak).hex()))
+        block_range = self.squeak_controller.get_block_range()
+        if squeak.nBlockHeight < block_range.min_block or\
+           squeak.nBlockHeight > block_range.max_block:
+            raise Exception("Invalid block range for upload.")
         # Save the squeak
         self.squeak_controller.save_uploaded_squeak(squeak)
 
