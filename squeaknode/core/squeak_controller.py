@@ -377,9 +377,6 @@ class SqueakController:
             for payment in client.get_received_payments():
                 yield payment
 
-    def get_best_block_height(self):
-        return self.squeak_core.get_best_block_height()
-
     def get_block_range(self):
         max_block = self.squeak_core.get_best_block_height()
         block_interval = self.config.sync.block_range
