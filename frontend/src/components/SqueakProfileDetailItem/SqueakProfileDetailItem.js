@@ -157,11 +157,12 @@ export default function SqueakProfileDetailItem({
   title={squeakProfile.getProfileName()}
 />
 
-            <CardMedia
-              className={classes.media}
-              image={`${getProfileImageSrcString(squeakProfile)}`}
-              title="Profile Image"
-            />
+<CardMedia
+  component="img"
+  className={classes.media}
+  image={`${getProfileImageSrcString(squeakProfile)}`}
+  title="Profile Image"
+/>
             <CardContent>
               <Typography gutterBottom variant="h5" component="h2">
                 {squeakProfile.getHasPrivateKey() && <VpnKeyIcon />}
