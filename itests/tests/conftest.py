@@ -53,7 +53,6 @@ def lightning_client():
 def following_signing_key(server_stub, admin_stub):
     # Create a signing key
     signing_key = generate_signing_key()
-
     # Create a new contact profile
     profile_name = "following_contact_{}".format(uuid.uuid1())
     profile_address = get_address(signing_key)
@@ -64,7 +63,6 @@ def following_signing_key(server_stub, admin_stub):
         )
     )
     contact_profile_id = create_contact_profile_response.profile_id
-
     # Set the profile to be following
     admin_stub.SetSqueakProfileFollowing(
         squeak_admin_pb2.SetSqueakProfileFollowingRequest(
@@ -72,9 +70,14 @@ def following_signing_key(server_stub, admin_stub):
             following=True,
         )
     )
-
     # Yield the signing key
     yield signing_key
+    # Delete the profile
+    admin_stub.DeleteSqueakProfile(
+        squeak_admin_pb2.DeleteSqueakProfileRequest(
+            profile_id=contact_profile_id,
+        )
+    )
 
 
 @pytest.fixture
@@ -97,6 +100,12 @@ def signing_profile_id(server_stub, admin_stub):
     )
     profile_id = create_signing_profile_response.profile_id
     yield profile_id
+    # Delete the profile
+    admin_stub.DeleteSqueakProfile(
+        squeak_admin_pb2.DeleteSqueakProfileRequest(
+            profile_id=profile_id,
+        )
+    )
 
 
 @pytest.fixture
@@ -113,6 +122,12 @@ def contact_profile_id(server_stub, admin_stub):
     )
     contact_profile_id = create_contact_profile_response.profile_id
     yield contact_profile_id
+    # Delete the profile
+    admin_stub.DeleteSqueakProfile(
+        squeak_admin_pb2.DeleteSqueakProfileRequest(
+            profile_id=contact_profile_id,
+        )
+    )
 
 
 @pytest.fixture
@@ -127,11 +142,18 @@ def saved_squeak_hash(server_stub, admin_stub, signing_profile_id):
     )
     squeak_hash = make_squeak_response.squeak_hash
     yield squeak_hash
+    # Delete the squeak
+    admin_stub.DeleteSqueak(
+        squeak_admin_pb2.DeleteSqueakRequest(
+            squeak_hash=squeak_hash,
+        )
+    )
 
 
 @pytest.fixture
-def peer_id(server_stub, admin_stub, random_peer_name):
+def peer_id(server_stub, admin_stub):
     # Create a new peer
+    random_peer_name = "random_peer_name_{}".format(uuid.uuid1())
     create_peer_response = admin_stub.CreatePeer(
         squeak_admin_pb2.CreatePeerRequest(
             peer_name=random_peer_name,
@@ -152,11 +174,6 @@ def peer_id(server_stub, admin_stub, random_peer_name):
 @pytest.fixture
 def random_name():
     yield "random_name_{}".format(uuid.uuid1())
-
-
-@pytest.fixture
-def random_peer_name():
-    yield "random_peer_name_{}".format(uuid.uuid1())
 
 
 @pytest.fixture
