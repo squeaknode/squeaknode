@@ -117,6 +117,7 @@ def connect_peer(lightning_client, lightning_host, remote_pubkey):
         lightning_client.disconnect_peer(
             remote_pubkey,
         )
+        time.sleep(2)
 
 
 @contextmanager
