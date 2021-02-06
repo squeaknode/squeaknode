@@ -1,6 +1,7 @@
 import datetime
 import logging
 
+from sqlalchemy import BigInteger
 from sqlalchemy import Binary
 from sqlalchemy import Boolean
 from sqlalchemy import Column
@@ -11,7 +12,9 @@ from sqlalchemy import MetaData
 from sqlalchemy import String
 from sqlalchemy import Table
 from sqlalchemy import UniqueConstraint
+from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.types import TypeDecorator
+
 
 logger = logging.getLogger(__name__)
 
@@ -32,6 +35,20 @@ class TZDateTime(TypeDecorator):
         if value is not None:
             value = value.replace(tzinfo=datetime.timezone.utc)
         return value
+
+
+class SLBigInteger(BigInteger):
+    pass
+
+
+@compiles(SLBigInteger, 'sqlite')
+def bi_c_sqlite(element, compiler, **kw):
+    return "INTEGER"
+
+
+@compiles(SLBigInteger)
+def bi_c(element, compiler, **kw):
+    return compiler.visit_BIGINT(element, **kw)
 
 
 class Models:
@@ -67,6 +84,7 @@ class Models:
             Column("sharing", Boolean, nullable=False),
             Column("following", Boolean, nullable=False),
             Column("profile_image", Binary, nullable=True),
+            sqlite_autoincrement=True,
         )
 
         self.peers = Table(
@@ -80,12 +98,13 @@ class Models:
             Column("server_port", Integer, nullable=False),
             Column("uploading", Boolean, nullable=False),
             Column("downloading", Boolean, nullable=False),
+            sqlite_autoincrement=True,
         )
 
         self.received_offers = Table(
             "received_offer",
             self.metadata,
-            Column("received_offer_id", Integer, primary_key=True),
+            Column("received_offer_id", SLBigInteger, primary_key=True),
             Column("created", TZDateTime,
                    server_default=func.now(), nullable=False),
             Column("squeak_hash", String(64), nullable=False),
@@ -100,12 +119,13 @@ class Models:
             Column("node_host", String, nullable=False),
             Column("node_port", Integer, nullable=False),
             Column("peer_id", Integer, nullable=False),
+            sqlite_autoincrement=True,
         )
 
         self.sent_payments = Table(
             "sent_payment",
             self.metadata,
-            Column("sent_payment_id", Integer, primary_key=True),
+            Column("sent_payment_id", SLBigInteger, primary_key=True),
             Column("created", TZDateTime,
                    server_default=func.now(), nullable=False),
             Column("peer_id", Integer, nullable=False),
@@ -115,12 +135,13 @@ class Models:
             Column("price_msat", Integer, nullable=False, default=0),
             Column("node_pubkey", String(66), nullable=False),
             Column("valid", Boolean, nullable=False),
+            sqlite_autoincrement=True,
         )
 
         self.sent_offers = Table(
             "sent_offer",
             self.metadata,
-            Column("sent_offer_id", Integer, primary_key=True),
+            Column("sent_offer_id", SLBigInteger, primary_key=True),
             Column("created", TZDateTime,
                    server_default=func.now(), nullable=False),
             Column("squeak_hash", String(64), nullable=False),
@@ -133,13 +154,14 @@ class Models:
             Column("invoice_expiry", Integer, nullable=False),
             Column("client_addr", String(64), nullable=False),
             UniqueConstraint('squeak_hash', 'client_addr',
-                             name='uq_sent_offer_squeak_hash_client_addr')
+                             name='uq_sent_offer_squeak_hash_client_addr'),
+            sqlite_autoincrement=True,
         )
 
         self.received_payments = Table(
             "received_payment",
             self.metadata,
-            Column("received_payment_id", Integer, primary_key=True),
+            Column("received_payment_id", SLBigInteger, primary_key=True),
             Column("created", TZDateTime,
                    server_default=func.now(), nullable=False),
             Column("squeak_hash", String(64), nullable=False),
@@ -147,4 +169,5 @@ class Models:
             Column("price_msat", Integer, nullable=False),
             Column("settle_index", Integer, nullable=False),
             Column("client_addr", String(64), nullable=False),
+            sqlite_autoincrement=True,
         )
