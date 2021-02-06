@@ -1025,6 +1025,7 @@ def test_connect_other_node(
     admin_stub,
     other_server_stub,
     other_admin_stub,
+    connected_peer_id,
     lightning_client,
     signing_profile_id,
     saved_squeak_hash,
@@ -1034,24 +1035,6 @@ def test_connect_other_node(
         squeak_admin_pb2.GetTimelineSqueakDisplaysRequest()
     )
     assert len(get_timeline_squeak_display_response.squeak_display_entries) == 0
-
-    # Add the main node as a peer
-    create_peer_response = other_admin_stub.CreatePeer(
-        squeak_admin_pb2.CreatePeerRequest(
-            peer_name="test_peer",
-            host="squeaknode",
-            port=8774,
-        )
-    )
-    peer_id = create_peer_response.peer_id
-
-    # Set the peer to be downloading
-    other_admin_stub.SetPeerDownloading(
-        squeak_admin_pb2.SetPeerDownloadingRequest(
-            peer_id=peer_id,
-            downloading=True,
-        )
-    )
 
     # Get the squeak profile
     get_squeak_profile_response = admin_stub.GetSqueakProfile(
@@ -1232,29 +1215,11 @@ def test_download_single_squeak(
     admin_stub,
     other_server_stub,
     other_admin_stub,
+    connected_peer_id,
     lightning_client,
     signing_profile_id,
     saved_squeak_hash,
 ):
-
-    # Add the main node as a peer
-    create_peer_response = other_admin_stub.CreatePeer(
-        squeak_admin_pb2.CreatePeerRequest(
-            peer_name="test_peer",
-            host="squeaknode",
-            port=8774,
-        )
-    )
-    peer_id = create_peer_response.peer_id
-
-    # Set the peer to be downloading
-    other_admin_stub.SetPeerDownloading(
-        squeak_admin_pb2.SetPeerDownloadingRequest(
-            peer_id=peer_id,
-            downloading=True,
-        )
-    )
-
     # Get the squeak profile
     get_squeak_profile_response = admin_stub.GetSqueakProfile(
         squeak_admin_pb2.GetSqueakProfileRequest(

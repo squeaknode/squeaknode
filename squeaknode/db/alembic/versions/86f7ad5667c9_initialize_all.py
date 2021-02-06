@@ -1,8 +1,8 @@
 """Initialize all
 
-Revision ID: ec9dc84d94c2
+Revision ID: 86f7ad5667c9
 Revises:
-Create Date: 2021-02-06 00:14:04.246901
+Create Date: 2021-02-06 00:29:45.755247
 
 """
 import sqlalchemy as sa
@@ -11,8 +11,9 @@ from alembic import op
 from squeaknode.db.models import SLBigInteger
 from squeaknode.db.models import TZDateTime
 
+
 # revision identifiers, used by Alembic.
-revision = 'ec9dc84d94c2'
+revision = '86f7ad5667c9'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -24,12 +25,14 @@ def upgrade():
                     sa.Column('peer_id', sa.Integer(), nullable=False),
                     sa.Column('created', TZDateTime(), server_default=sa.text(
                         '(CURRENT_TIMESTAMP)'), nullable=False),
-                    sa.Column('peer_name', sa.String(), nullable=True),
+                    sa.Column('peer_name', sa.String(), nullable=False),
                     sa.Column('server_host', sa.String(), nullable=False),
                     sa.Column('server_port', sa.Integer(), nullable=False),
                     sa.Column('uploading', sa.Boolean(), nullable=False),
                     sa.Column('downloading', sa.Boolean(), nullable=False),
                     sa.PrimaryKeyConstraint('peer_id'),
+                    sa.UniqueConstraint('server_host', 'server_port',
+                                        name='uq_peer_server_host_server_port'),
                     sqlite_autoincrement=True
                     )
     op.create_table('profile',
@@ -131,6 +134,7 @@ def upgrade():
                         length=66), nullable=False),
                     sa.Column('valid', sa.Boolean(), nullable=False),
                     sa.PrimaryKeyConstraint('sent_payment_id'),
+                    sa.UniqueConstraint('payment_hash'),
                     sqlite_autoincrement=True
                     )
     op.create_table('squeak',
