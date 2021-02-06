@@ -58,10 +58,7 @@ class SqueakServerHandler(object):
         network = self.squeak_controller.get_network()
         allowed_addresses = self.squeak_controller.lookup_allowed_addresses(
             addresses)
-        # latest_block_height = self.squeak_controller.get_best_block_height()
         block_range = self.squeak_controller.get_block_range()
-        # max_block = latest_block_height
-        # min_block = latest_block_height - block_range
         hashes = self.squeak_controller.lookup_squeaks(
             addresses,
             block_range.min_block,

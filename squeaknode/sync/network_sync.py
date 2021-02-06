@@ -71,15 +71,13 @@ class TimelineDownloadSync(DownloadSync):
     def __init__(
         self,
         squeak_controller,
-        min_block,
-        max_block,
+        block_range,
     ):
         super().__init__(squeak_controller)
-        self.min_block = min_block
-        self.max_block = max_block
+        self.block_range = block_range
 
     def sync_peer(self, peer_connection):
-        peer_connection.download(self.min_block, self.max_block)
+        peer_connection.download(self.block_range)
 
 
 class SingleSqueakDownloadSync(DownloadSync):
