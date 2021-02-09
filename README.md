@@ -36,10 +36,6 @@ If you don't already have a bitcoin node or lightning node, you can follow the i
 	```
 - Install squeaknode:
 	```
-	$ pip install squeaknode
-	```
-	or
-	```
 	$ pip install -r requirements.txt
 	$ python setup.py install
 	```
