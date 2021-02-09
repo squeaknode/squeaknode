@@ -17,9 +17,10 @@ logger = logging.getLogger(__name__)
 
 
 class PeerClient:
-    def __init__(self, host, port):
+    def __init__(self, host, port, timeout_s):
         self.host = host
         self.port = port
+        self.timeout_s = timeout_s
         self.stub = None
 
     @contextmanager
@@ -38,39 +39,48 @@ class PeerClient:
             max_block=max_block,
         )
         lookup_response = self.stub.LookupSqueaksToDownload(
-            request
+            request,
+            timeout=self.timeout_s,
         )
         return lookup_response
 
     def lookup_squeaks_to_upload(self, network: str, addresses: List[str]):
+        request = squeak_server_pb2.LookupSqueaksToUploadRequest(
+            network=network,
+            addresses=addresses,
+        )
         lookup_response = self.stub.LookupSqueaksToUpload(
-            squeak_server_pb2.LookupSqueaksToUploadRequest(
-                network=network,
-                addresses=addresses,
-            )
+            request,
+            timeout=self.timeout_s,
         )
         return lookup_response
 
     def upload_squeak(self, squeak: CSqueak) -> None:
         squeak_msg = squeak_to_msg(squeak)
+        request = squeak_server_pb2.UploadSqueakRequest(
+            squeak=squeak_msg,
+        )
         self.stub.UploadSqueak(
-            squeak_server_pb2.UploadSqueakRequest(
-                squeak=squeak_msg,
-            )
+            request,
+            timeout=self.timeout_s,
         )
 
     def download_squeak(self, squeak_hash: bytes) -> CSqueak:
+        request = squeak_server_pb2.DownloadSqueakRequest(
+            hash=squeak_hash,
+        )
         get_response = self.stub.DownloadSqueak(
-            squeak_server_pb2.DownloadSqueakRequest(
-                hash=squeak_hash,
-            )
+            request,
+            timeout=self.timeout_s,
         )
         return squeak_from_msg(get_response.squeak)
 
     def download_offer(self, squeak_hash: bytes) -> Offer:
+        request = squeak_server_pb2.DownloadOfferRequest(
+            hash=squeak_hash,
+        )
         download_offer_response = self.stub.DownloadOffer(
-            squeak_server_pb2.DownloadOfferRequest(
-                hash=squeak_hash,
-            )
+            request,
+            timeout=self.timeout_s,
         )
         return offer_from_msg(download_offer_response.offer)

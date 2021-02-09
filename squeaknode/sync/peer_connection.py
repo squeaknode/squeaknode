@@ -15,13 +15,16 @@ class PeerConnection:
         self,
         squeak_controller,
         peer,
+        timeout_s,
         stopped,
     ):
         self.squeak_controller = squeak_controller
         self.peer = peer
+        self.timeout_s = timeout_s
         self.peer_client = PeerClient(
             self.peer.host,
             self.peer.port,
+            self.timeout_s,
         )
         self.stopped = stopped
 

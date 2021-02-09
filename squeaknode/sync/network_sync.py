@@ -13,9 +13,11 @@ class NetworkSync(ABC):
     def __init__(
         self,
         squeak_controller,
+        timeout_s,
     ):
         self.squeak_controller = squeak_controller
         self.stopped = threading.Event()
+        self.timeout_s = timeout_s
 
     @abstractmethod
     def get_peers_to_sync(self):
@@ -41,6 +43,7 @@ class NetworkSync(ABC):
         with PeerConnection(
                 self.squeak_controller,
                 peer,
+                self.timeout_s,
                 self.stopped,
         ).open_connection() as peer_connection:
             self.sync_peer(peer_connection)
@@ -71,9 +74,13 @@ class TimelineDownloadSync(DownloadSync):
     def __init__(
         self,
         squeak_controller,
+        timeout_s,
         block_range,
     ):
-        super().__init__(squeak_controller)
+        super().__init__(
+            squeak_controller,
+            timeout_s,
+        )
         self.block_range = block_range
 
     def sync_peer(self, peer_connection):
@@ -85,9 +92,13 @@ class SingleSqueakDownloadSync(DownloadSync):
     def __init__(
         self,
         squeak_controller,
+        timeout_s,
         squeak_hash: bytes,
     ):
-        super().__init__(squeak_controller)
+        super().__init__(
+            squeak_controller,
+            timeout_s,
+        )
         self.squeak_hash = squeak_hash
 
     def sync_peer(self, peer_connection):
@@ -99,8 +110,12 @@ class TimelineUploadSync(UploadSync):
     def __init__(
         self,
         squeak_controller,
+        timeout_s,
     ):
-        super().__init__(squeak_controller)
+        super().__init__(
+            squeak_controller,
+            timeout_s,
+        )
 
     def sync_peer(self, peer_connection):
         peer_connection.upload()
@@ -111,9 +126,13 @@ class SingleSqueakUploadSync(UploadSync):
     def __init__(
         self,
         squeak_controller,
+        timeout_s,
         squeak_hash: bytes,
     ):
-        super().__init__(squeak_controller)
+        super().__init__(
+            squeak_controller,
+            timeout_s,
+        )
         self.squeak_hash = squeak_hash
 
     def sync_peer(self, peer_connection):
