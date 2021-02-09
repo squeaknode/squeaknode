@@ -1,4 +1,5 @@
 import logging
+import time
 from contextlib import contextmanager
 from typing import List
 
@@ -22,14 +23,26 @@ class PeerClient:
         self.port = port
         self.timeout_s = timeout_s
         self.stub = None
+        self.start_time_s = None
 
     @contextmanager
     def open_stub(self):
         host_port_str = "{}:{}".format(self.host, self.port)
         with grpc.insecure_channel(host_port_str) as server_channel:
             self.stub = squeak_server_pb2_grpc.SqueakServerStub(server_channel)
+            self.start_time_s = time.time()
             yield self
             self.stub = None
+            self.start_time_s = None
+
+    @property
+    def ellapsed_time_s(self):
+        return time.time() - self.start_time_s
+
+    @property
+    def remaining_time_s(self):
+        if self.timeout_s is not None:
+            return self.timeout_s - self.ellapsed_time_s
 
     def lookup_squeaks_to_download(self, network: str, addresses: List[str], min_block: int, max_block: int):
         request = squeak_server_pb2.LookupSqueaksToDownloadRequest(
@@ -40,7 +53,7 @@ class PeerClient:
         )
         lookup_response = self.stub.LookupSqueaksToDownload(
             request,
-            timeout=self.timeout_s,
+            timeout=self.remaining_time_s,
         )
         return lookup_response
 
@@ -51,7 +64,7 @@ class PeerClient:
         )
         lookup_response = self.stub.LookupSqueaksToUpload(
             request,
-            timeout=self.timeout_s,
+            timeout=self.remaining_time_s,
         )
         return lookup_response
 
@@ -62,7 +75,7 @@ class PeerClient:
         )
         self.stub.UploadSqueak(
             request,
-            timeout=self.timeout_s,
+            timeout=self.remaining_time_s,
         )
 
     def download_squeak(self, squeak_hash: bytes) -> CSqueak:
@@ -71,7 +84,7 @@ class PeerClient:
         )
         get_response = self.stub.DownloadSqueak(
             request,
-            timeout=self.timeout_s,
+            timeout=self.remaining_time_s,
         )
         return squeak_from_msg(get_response.squeak)
 
@@ -81,6 +94,6 @@ class PeerClient:
         )
         download_offer_response = self.stub.DownloadOffer(
             request,
-            timeout=self.timeout_s,
+            timeout=self.remaining_time_s,
         )
         return offer_from_msg(download_offer_response.offer)
