@@ -4,8 +4,8 @@ from bitcoin.core import CoreMainParams
 from squeak.core.signing import CSigningKey
 from squeak.core.signing import CSqueakAddress
 
+from squeaknode.bitcoin.bitcoin_client import BitcoinClient
 from squeaknode.bitcoin.block_info import BlockInfo
-from squeaknode.bitcoin.blockchain_client import BlockchainClient
 from squeaknode.core.lightning_address import LightningAddressHostPort
 from squeaknode.core.squeak_core import SqueakCore
 from squeaknode.core.squeak_profile import SqueakProfile
@@ -31,7 +31,7 @@ def max_squeaks_per_address_per_hour():
     return 5000
 
 
-class MockBitcoinClient(BlockchainClient):
+class MockBitcoinClient(BitcoinClient):
     genesis_block_info = BlockInfo(
         block_height=0,
         block_hash=CoreMainParams.GENESIS_BLOCK.GetHash(),

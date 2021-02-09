@@ -8,7 +8,7 @@ from squeak.core import MakeSqueakFromStr
 from squeak.core.elliptic import payment_point_bytes_from_scalar_bytes
 from squeak.core.signing import CSigningKey
 
-from squeaknode.bitcoin.blockchain_client import BlockchainClient
+from squeaknode.bitcoin.bitcoin_client import BitcoinClient
 from squeaknode.bitcoin.util import parse_block_header
 from squeaknode.core.offer import Offer
 from squeaknode.core.received_offer import ReceivedOffer
@@ -34,10 +34,10 @@ logger = logging.getLogger(__name__)
 class SqueakCore:
     def __init__(
         self,
-        blockchain_client: BlockchainClient,
+        bitcoin_client: BitcoinClient,
         lightning_client: LNDLightningClient,
     ):
-        self.blockchain_client = blockchain_client
+        self.bitcoin_client = bitcoin_client
         self.lightning_client = lightning_client
 
     def make_squeak(self, signing_profile: SqueakProfile, content_str: str, replyto_hash: Optional[bytes] = None) -> SqueakEntry:
@@ -58,7 +58,7 @@ class SqueakCore:
             raise Exception("Can't make squeak with a contact profile.")
         signing_key_str = signing_profile.private_key.decode()
         signing_key = CSigningKey(signing_key_str)
-        block_info = self.blockchain_client.get_best_block_info()
+        block_info = self.bitcoin_client.get_best_block_info()
         block_height = block_info.block_height
         block_hash = block_info.block_hash
         timestamp = int(time.time())
@@ -89,7 +89,7 @@ class SqueakCore:
         Raises:
             Exception: If the block hash is not valid.
         """
-        block_info = self.blockchain_client.get_block_info_by_height(
+        block_info = self.bitcoin_client.get_block_info_by_height(
             squeak.nBlockHeight)
         if squeak.hashBlock != block_info.block_hash:
             raise Exception("Block hash incorrect.")
@@ -105,7 +105,7 @@ class SqueakCore:
         Returns:
             int: the current latest block height.
         """
-        block_info = self.blockchain_client.get_best_block_info()
+        block_info = self.bitcoin_client.get_best_block_info()
         return block_info.block_height
 
     def create_offer(self, squeak: CSqueak, client_addr: str, price_msat: int) -> SentOffer:

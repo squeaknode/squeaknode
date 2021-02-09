@@ -4,13 +4,13 @@ import os
 
 import requests
 
+from squeaknode.bitcoin.bitcoin_client import BitcoinClient
 from squeaknode.bitcoin.block_info import BlockInfo
-from squeaknode.bitcoin.blockchain_client import BlockchainClient
 
 logger = logging.getLogger(__name__)
 
 
-class BitcoinBlockchainClient(BlockchainClient):
+class BitcoinCoreBitcoinClient(BitcoinClient):
     """Access a bitcoin daemon using RPC."""
 
     def __init__(
