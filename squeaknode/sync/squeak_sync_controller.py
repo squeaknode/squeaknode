@@ -10,16 +10,16 @@ logger = logging.getLogger(__name__)
 
 class SqueakSyncController:
 
-    def __init__(self, squeak_controller, sync_block_range, timeout_s):
+    def __init__(self, squeak_controller, sync_block_interval, timeout_s):
         self.squeak_controller = squeak_controller
-        self.sync_block_range = sync_block_range
+        self.sync_block_interval = sync_block_interval
         self.timeout_s = timeout_s
 
-    def download_timeline(self, block_range=None):
+    def download_timeline(self, block_interval=None):
         TimelineDownloadSync(
             self.squeak_controller,
             self.timeout_s,
-            block_range,
+            block_interval,
         ).sync()
 
     def upload_timeline(self):

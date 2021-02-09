@@ -69,7 +69,7 @@ class SqueakNode:
 
         sync_controller = SqueakSyncController(
             squeak_controller,
-            self.config.sync.block_range,
+            self.config.sync.block_interval,
             self.config.sync.timeout_s,
         )
 
