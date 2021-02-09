@@ -1,5 +1,6 @@
 import logging
 from contextlib import contextmanager
+from typing import List
 from typing import Optional
 
 from squeaknode.core.block_range import BlockRange
@@ -59,9 +60,8 @@ class PeerConnection:
         # Get hashes to download
         hashes_to_download = set(remote_hashes) - set(local_hashes)
         # Download squeaks for the hashes
-        # TODO: check if hash belongs to correct range after downloading.
         for hash in hashes_to_download:
-            self._download_squeak(hash)
+            self._download_squeak(hash, block_range, followed_addresses)
 
         # Get local hashes of locked squeaks that don't have an offer from this peer.
         locked_hashes = self.squeak_controller.lookup_squeaks_needing_offer(
@@ -108,7 +108,7 @@ class PeerConnection:
         """Downloads a single squeak and the corresponding offer. """
         saved_squeak = self.squeak_controller.get_squeak(squeak_hash)
         if not saved_squeak:
-            self._download_squeak(squeak_hash)
+            self._force_download_squeak(squeak_hash)
         saved_offer = self._get_saved_offer(squeak_hash)
         if not saved_offer:
             self._download_offer(squeak_hash)
@@ -126,14 +126,29 @@ class PeerConnection:
                 return offer_with_peer
         return None
 
-    def _download_squeak(self, squeak_hash: bytes, block_range: Optional[BlockRange] = None):
+    def _download_squeak(
+            self,
+            squeak_hash: bytes,
+            block_range: BlockRange,
+            followed_addresses: List[str],
+    ):
         squeak = self.peer_client.download_squeak(squeak_hash)
-        if block_range is not None:
-            if squeak.nBlockHeight < block_range.min_block or \
-               squeak.nBlockHeight > block_range.max_block:
-                raise Exception("Invalid block range for download.")
+        if squeak.nBlockHeight < block_range.min_block or \
+           squeak.nBlockHeight > block_range.max_block:
+            raise Exception("Invalid block range for download.")
+        squeak_address = squeak.GetAddress()
+        squeak_address_str = str(squeak_address)
+        if squeak_address_str not in followed_addresses:
+            raise Exception("Invalid squeak address for download.")
         self.squeak_controller.save_downloaded_squeak(squeak)
         logger.info("Downloaded squeak {} from peer {}".format(
+            squeak_hash.hex(), self.peer
+        ))
+
+    def _force_download_squeak(self, squeak_hash: bytes):
+        squeak = self.peer_client.download_squeak(squeak_hash)
+        self.squeak_controller.save_downloaded_squeak(squeak)
+        logger.info("Force downloaded squeak {} from peer {}".format(
             squeak_hash.hex(), self.peer
         ))
 
