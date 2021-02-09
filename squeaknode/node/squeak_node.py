@@ -7,7 +7,7 @@ from squeak.params import SelectParams
 from squeaknode.admin.squeak_admin_server_handler import SqueakAdminServerHandler
 from squeaknode.admin.squeak_admin_server_servicer import SqueakAdminServerServicer
 from squeaknode.admin.webapp.app import SqueakAdminWebServer
-from squeaknode.bitcoin.bitcoin_blockchain_client import BitcoinBlockchainClient
+from squeaknode.bitcoin.bitcoin_core_bitcoin_client import BitcoinCoreBitcoinClient
 from squeaknode.config.config import SqueaknodeConfig
 from squeaknode.core.squeak_controller import SqueakController
 from squeaknode.core.squeak_core import SqueakCore
@@ -48,11 +48,11 @@ class SqueakNode:
         # load the lightning client
         lightning_client = load_lightning_client(self.config)
 
-        # load the blockchain client
-        blockchain_client = load_blockchain_client(self.config)
+        # load the bitcoin client
+        bitcoin_client = load_bitcoin_client(self.config)
 
         squeak_core = SqueakCore(
-            blockchain_client,
+            bitcoin_client,
             lightning_client,
         )
         squeak_rate_limiter = SqueakRateLimiter(
@@ -200,8 +200,8 @@ def load_db(config, network):
     return SqueakDb(engine)
 
 
-def load_blockchain_client(config):
-    return BitcoinBlockchainClient(
+def load_bitcoin_client(config):
+    return BitcoinCoreBitcoinClient(
         config.bitcoin.rpc_host,
         config.bitcoin.rpc_port,
         config.bitcoin.rpc_user,

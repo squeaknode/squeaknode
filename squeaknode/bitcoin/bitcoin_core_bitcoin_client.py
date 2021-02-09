@@ -4,13 +4,13 @@ import os
 
 import requests
 
+from squeaknode.bitcoin.bitcoin_client import BitcoinClient
 from squeaknode.bitcoin.block_info import BlockInfo
-from squeaknode.bitcoin.blockchain_client import BlockchainClient
 
 logger = logging.getLogger(__name__)
 
 
-class BitcoinBlockchainClient(BlockchainClient):
+class BitcoinCoreBitcoinClient(BitcoinClient):
     """Access a bitcoin daemon using RPC."""
 
     def __init__(
@@ -33,7 +33,7 @@ class BitcoinBlockchainClient(BlockchainClient):
 
     def get_best_block_info(self) -> BlockInfo:
         block_height = self.get_block_count()
-        logger.info("Best block height: {}".format(block_height))
+        logger.debug("Best block height: {}".format(block_height))
         return self.get_block_info_by_height(block_height)
 
     def get_block_info_by_height(self, block_height: int) -> BlockInfo:

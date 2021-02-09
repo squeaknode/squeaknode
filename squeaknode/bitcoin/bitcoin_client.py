@@ -7,7 +7,8 @@ from squeaknode.bitcoin.block_info import BlockInfo
 logger = logging.getLogger(__name__)
 
 
-class BlockchainClient(ABC):
+class BitcoinClient(ABC):
+
     @abstractmethod
     def get_best_block_info(self) -> BlockInfo:
         pass
