@@ -16,7 +16,6 @@ class NetworkSync(ABC):
         timeout_s,
     ):
         self.squeak_controller = squeak_controller
-        self.stopped = threading.Event()
         self.timeout_s = timeout_s
 
     @abstractmethod
@@ -27,9 +26,6 @@ class NetworkSync(ABC):
     def sync_peer(self, peer_connection):
         pass
 
-    def stop(self):
-        self.stopped.set()
-
     def sync(self):
         for peer in self.get_peers_to_sync():
             sync_peer_thread = threading.Thread(
@@ -37,14 +33,12 @@ class NetworkSync(ABC):
                 args=(peer,),
             )
             sync_peer_thread.start()
-        # TODO: sleep for timeout and then call self._stop()
 
     def _sync_peer(self, peer):
         with PeerConnection(
                 self.squeak_controller,
                 peer,
                 self.timeout_s,
-                self.stopped,
         ).open_connection() as peer_connection:
             self.sync_peer(peer_connection)
 
