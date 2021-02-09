@@ -382,7 +382,7 @@ class SqueakController:
 
     def get_block_range(self):
         max_block = self.squeak_core.get_best_block_height()
-        block_interval = self.config.sync.block_range
+        block_interval = self.config.sync.block_interval
         min_block = max(0, max_block - block_interval)
         return BlockRange(min_block, max_block)
 

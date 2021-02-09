@@ -69,16 +69,16 @@ class TimelineDownloadSync(DownloadSync):
         self,
         squeak_controller,
         timeout_s,
-        block_range,
+        block_interval,
     ):
         super().__init__(
             squeak_controller,
             timeout_s,
         )
-        self.block_range = block_range
+        self.block_interval = block_interval
 
     def sync_peer(self, peer_connection):
-        peer_connection.download(self.block_range)
+        peer_connection.download(self.block_interval)
 
 
 class SingleSqueakDownloadSync(DownloadSync):
