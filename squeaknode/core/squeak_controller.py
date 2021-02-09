@@ -31,20 +31,16 @@ class SqueakController:
         self,
         squeak_db,
         squeak_core,
-        squeak_whitelist,
         squeak_rate_limiter,
         config,
     ):
         self.squeak_db = squeak_db
         self.squeak_core = squeak_core
-        self.squeak_whitelist = squeak_whitelist
         self.squeak_rate_limiter = squeak_rate_limiter
         self.config = config
         self.create_offer_lock = threading.Lock()
 
     def save_uploaded_squeak(self, squeak: CSqueak) -> bytes:
-        if not self.squeak_whitelist.should_allow_squeak(squeak):
-            raise Exception("Squeak upload not allowed by whitelist.")
         if not self.squeak_rate_limiter.should_rate_limit_allow(squeak):
             raise Exception(
                 "Excedeed allowed number of squeaks per block.")
@@ -89,7 +85,15 @@ class SqueakController:
         return self.get_squeak(squeak_hash, clear_decryption_key=True)
 
     def lookup_allowed_addresses(self, addresses: List[str]):
-        return self.squeak_whitelist.get_allowed_addresses(addresses)
+        # TODO: Implement db_whitelist class
+        # following_profiles_from_addresses = self.squeak_db.get_following_profiles_from_addreses(
+        #     addresses)
+        # return [
+        #     profile.address
+        #     for profile in following_profiles_from_addresses
+        # ]
+        followed_addresses = self.get_followed_addresses()
+        return set(followed_addresses) & set(addresses)
 
     def get_buy_offer(self, squeak_hash: bytes, client_addr: str):
         # Check if there is an existing offer for the hash/client_addr combination
@@ -197,7 +201,6 @@ class SqueakController:
 
     def set_squeak_profile_following(self, profile_id: int, following: bool):
         self.squeak_db.set_profile_following(profile_id, following)
-        self.squeak_whitelist.refresh()
 
     def set_squeak_profile_sharing(self, profile_id: int, sharing: bool):
         self.squeak_db.set_profile_sharing(profile_id, sharing)

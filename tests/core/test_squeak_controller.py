@@ -8,7 +8,6 @@ from squeaknode.core.squeak_core import SqueakCore
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.db.squeak_db import SqueakDb
 from squeaknode.node.squeak_rate_limiter import SqueakRateLimiter
-from squeaknode.node.squeak_whitelist import SqueakWhitelist
 
 
 @pytest.fixture
@@ -54,11 +53,6 @@ def max_squeaks_per_address_per_hour():
 
 
 @pytest.fixture
-def squeak_whitelist():
-    return mock.Mock(spec=SqueakWhitelist)
-
-
-@pytest.fixture
 def squeak_rate_limiter():
     return mock.Mock(spec=SqueakRateLimiter)
 
@@ -67,14 +61,12 @@ def squeak_rate_limiter():
 def squeak_controller(
     squeak_db,
     squeak_core,
-    squeak_whitelist,
     squeak_rate_limiter,
     config,
 ):
     return SqueakController(
         squeak_db,
         squeak_core,
-        squeak_whitelist,
         squeak_rate_limiter,
         config,
     )
@@ -84,14 +76,12 @@ def squeak_controller(
 def regtest_squeak_controller(
     squeak_db,
     squeak_core,
-    squeak_whitelist,
     squeak_rate_limiter,
     regtest_config,
 ):
     return SqueakController(
         squeak_db,
         squeak_core,
-        squeak_whitelist,
         squeak_rate_limiter,
         regtest_config,
     )

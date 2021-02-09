@@ -19,7 +19,6 @@ from squeaknode.node.received_payments_subscription_client import (
     OpenReceivedPaymentsSubscriptionClient,
 )
 from squeaknode.node.sent_offers_worker import SentOffersWorker
-from squeaknode.node.squeak_memory_whitelist import SqueakMemoryWhitelist
 from squeaknode.node.squeak_offer_expiry_worker import SqueakOfferExpiryWorker
 from squeaknode.node.squeak_peer_sync_worker import SqueakPeerSyncWorker
 from squeaknode.node.squeak_rate_limiter import SqueakRateLimiter
@@ -60,14 +59,10 @@ class SqueakNode:
             squeak_db,
             self.config.core.max_squeaks_per_address_per_hour,
         )
-        squeak_whitelist = SqueakMemoryWhitelist(
-            squeak_db,
-        )
 
         squeak_controller = SqueakController(
             squeak_db,
             squeak_core,
-            squeak_whitelist,
             squeak_rate_limiter,
             self.config,
         )
