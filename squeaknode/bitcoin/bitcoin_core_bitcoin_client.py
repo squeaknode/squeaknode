@@ -33,7 +33,7 @@ class BitcoinCoreBitcoinClient(BitcoinClient):
 
     def get_best_block_info(self) -> BlockInfo:
         block_height = self.get_block_count()
-        logger.info("Best block height: {}".format(block_height))
+        logger.debug("Best block height: {}".format(block_height))
         return self.get_block_info_by_height(block_height)
 
     def get_block_info_by_height(self, block_height: int) -> BlockInfo:
