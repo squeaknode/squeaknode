@@ -1,5 +1,4 @@
 import logging
-import time
 
 from squeak.core import CSqueak
 
@@ -27,9 +26,6 @@ class SqueakServerHandler(object):
         self.squeak_controller.save_uploaded_squeak(squeak)
 
     def handle_get_squeak(self, squeak_hash: bytes):
-        logger.info("Sleeping in handle_get_squeak...")
-        time.sleep(5)
-        logger.info("Finished sleeping.")
         logger.info("Handle get squeak by hash: {}".format(squeak_hash.hex()))
         return self.squeak_controller.get_public_squeak(squeak_hash)
 
