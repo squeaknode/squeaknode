@@ -126,8 +126,12 @@ class PeerConnection:
                 return offer_with_peer
         return None
 
-    def _download_squeak(self, squeak_hash: bytes):
+    def _download_squeak(self, squeak_hash: bytes, block_range: Optional[BlockRange] = None):
         squeak = self.peer_client.download_squeak(squeak_hash)
+        if block_range is not None:
+            if squeak.nBlockHeight < block_range.min_block or \
+               squeak.nBlockHeight > block_range.max_block:
+                raise Exception("Invalid block range for download.")
         self.squeak_controller.save_downloaded_squeak(squeak)
         logger.info("Downloaded squeak {} from peer {}".format(
             squeak_hash.hex(), self.peer
