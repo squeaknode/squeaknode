@@ -18,37 +18,16 @@ class SqueakServerHandler(object):
     def handle_posted_squeak(self, squeak: CSqueak):
         logger.info(
             "Handle posted squeak with hash: {}".format(get_hash(squeak).hex()))
+        block_range = self.squeak_controller.get_block_range()
+        if squeak.nBlockHeight < block_range.min_block or\
+           squeak.nBlockHeight > block_range.max_block:
+            raise Exception("Invalid block range for upload.")
         # Save the squeak
         self.squeak_controller.save_uploaded_squeak(squeak)
 
     def handle_get_squeak(self, squeak_hash: bytes):
         logger.info("Handle get squeak by hash: {}".format(squeak_hash.hex()))
         return self.squeak_controller.get_public_squeak(squeak_hash)
-
-    def handle_lookup_squeaks(self, request):
-        addresses = request.addresses
-        min_block = request.min_block
-        max_block = request.max_block
-        logger.info(
-            "Handle lookup squeaks with addresses: {}, min_block: {}, max_block: {}".format(
-                str(addresses), min_block, max_block
-            )
-        )
-        hashes = self.squeak_controller.lookup_squeaks(
-            addresses, min_block, max_block)
-        logger.info("Got number of hashes from db: {}".format(len(hashes)))
-        allowed_addresses = self.squeak_controller.lookup_allowed_addresses(
-            addresses)
-        logger.info(
-            "Got number of allowed addresses from db: {}".format(
-                len(allowed_addresses))
-        )
-        latest_block_height = self.squeak_controller.get_best_block_height()
-        return squeak_server_pb2.LookupSqueaksReply(
-            latest_block_height=latest_block_height,
-            hashes=hashes,
-            allowed_addresses=allowed_addresses,
-        )
 
     def handle_lookup_squeaks_to_download(self, request):
         network = request.network
@@ -83,25 +62,24 @@ class SqueakServerHandler(object):
         network = self.squeak_controller.get_network()
         allowed_addresses = self.squeak_controller.lookup_allowed_addresses(
             addresses)
-        latest_block_height = self.squeak_controller.get_best_block_height()
         block_range = self.squeak_controller.get_block_range()
-        max_block = latest_block_height
-        min_block = latest_block_height - block_range
         hashes = self.squeak_controller.lookup_squeaks(
-            addresses, min_block, max_block)
+            addresses,
+            block_range.min_block,
+            block_range.max_block,
+        )
         logger.info(
-            "Got number of hashes to already uploaded from db: {}, number of allowed addresses: {} with min_block: {} and max_block: {}".format(
+            "Got number of hashes to already uploaded from db: {}, number of allowed addresses: {} with block_range: {}".format(
                 len(hashes),
                 len(allowed_addresses),
-                min_block,
-                max_block,
+                block_range,
             )
         )
         return squeak_server_pb2.LookupSqueaksToUploadReply(
             hashes=hashes,
             addresses=allowed_addresses,
-            min_block=min_block,
-            max_block=max_block,
+            min_block=block_range.min_block,
+            max_block=block_range.max_block,
         )
 
     def handle_get_offer(self, squeak_hash: bytes, client_addr: str):

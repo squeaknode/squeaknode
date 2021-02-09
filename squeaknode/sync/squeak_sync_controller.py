@@ -15,20 +15,9 @@ class SqueakSyncController:
         self.sync_block_range = sync_block_range
 
     def download_timeline(self, block_range=None):
-        block_range = block_range or self.sync_block_range
-        try:
-            block_height = self.squeak_controller.get_best_block_height()
-        except Exception:
-            logger.error(
-                "Failed to download timeline because unable to get best block height.", exc_info=False
-            )
-            return
-        min_block = block_height - block_range
-        max_block = block_height
         TimelineDownloadSync(
             self.squeak_controller,
-            min_block,
-            max_block,
+            block_range,
         ).sync()
 
     def upload_timeline(self):

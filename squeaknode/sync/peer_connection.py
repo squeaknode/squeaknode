@@ -2,6 +2,7 @@ import logging
 from contextlib import contextmanager
 from typing import Optional
 
+from squeaknode.core.block_range import BlockRange
 from squeaknode.core.received_offer_with_peer import ReceivedOfferWithPeer
 from squeaknode.network.peer_client import PeerClient
 
@@ -31,26 +32,28 @@ class PeerConnection:
 
     def download(
         self,
-        min_block,
-        max_block,
+        block_range: BlockRange = None,
     ):
         # Get the network
         network = self.squeak_controller.get_network()
+        # Get the block range
+        if block_range is None:
+            block_range = self.squeak_controller.get_block_range()
         # Get list of followed addresses
         followed_addresses = self.squeak_controller.get_followed_addresses()
         # Get remote hashes
         lookup_result = self.peer_client.lookup_squeaks_to_download(
             network,
             followed_addresses,
-            min_block,
-            max_block,
+            block_range.min_block,
+            block_range.max_block,
         )
         remote_hashes = lookup_result.hashes
         # Get local hashes of saved squeaks
         local_hashes = self.squeak_controller.lookup_squeaks_include_locked(
             followed_addresses,
-            min_block,
-            max_block,
+            block_range.min_block,
+            block_range.max_block,
         )
         # Get hashes to download
         hashes_to_download = set(remote_hashes) - set(local_hashes)
@@ -64,8 +67,8 @@ class PeerConnection:
         # Get local hashes of locked squeaks that don't have an offer from this peer.
         locked_hashes = self.squeak_controller.lookup_squeaks_needing_offer(
             followed_addresses,
-            min_block,
-            max_block,
+            block_range.min_block,
+            block_range.max_block,
             self.peer.peer_id,
         )
         # Get hashes to get offer

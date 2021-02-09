@@ -8,6 +8,7 @@ from squeak.core import CSqueak
 from squeak.core.signing import CSigningKey
 from squeak.core.signing import CSqueakAddress
 
+from squeaknode.core.block_range import BlockRange
 from squeaknode.core.offer import Offer
 from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.received_payment_summary import ReceivedPaymentSummary
@@ -376,11 +377,11 @@ class SqueakController:
             for payment in client.get_received_payments():
                 yield payment
 
-    def get_best_block_height(self):
-        return self.squeak_core.get_best_block_height()
-
     def get_block_range(self):
-        return self.config.sync.block_range
+        max_block = self.squeak_core.get_best_block_height()
+        block_interval = self.config.sync.block_range
+        min_block = max(0, max_block - block_interval)
+        return BlockRange(min_block, max_block)
 
     def get_network(self):
         return self.config.core.network
