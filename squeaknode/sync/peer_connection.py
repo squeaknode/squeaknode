@@ -15,15 +15,16 @@ class PeerConnection:
         self,
         squeak_controller,
         peer,
-        stopped,
+        timeout_s,
     ):
         self.squeak_controller = squeak_controller
         self.peer = peer
+        self.timeout_s = timeout_s
         self.peer_client = PeerClient(
             self.peer.host,
             self.peer.port,
+            self.timeout_s,
         )
-        self.stopped = stopped
 
     @contextmanager
     def open_connection(self):
@@ -60,8 +61,6 @@ class PeerConnection:
         # Download squeaks for the hashes
         # TODO: check if hash belongs to correct range after downloading.
         for hash in hashes_to_download:
-            # if self.peer_connection.stopped():
-            #     return
             self._download_squeak(hash)
 
         # Get local hashes of locked squeaks that don't have an offer from this peer.
@@ -76,8 +75,6 @@ class PeerConnection:
         # Download offers for the hashes
         # TODO: catch exception downloading individual squeak
         for hash in hashes_to_get_offer:
-            # if self.peer_connection.stopped():
-            #     return
             self._download_offer(hash)
 
     def upload(self):
@@ -105,8 +102,6 @@ class PeerConnection:
         # Upload squeaks for the hashes
         # TODO: catch exception uploading individual squeak
         for hash in hashes_to_upload:
-            # if self.peer_connection.stopped():
-            #     return
             self._upload_squeak(hash)
 
     def download_single_squeak(self, squeak_hash: bytes):
