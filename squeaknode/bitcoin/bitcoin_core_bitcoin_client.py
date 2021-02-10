@@ -56,6 +56,8 @@ class BitcoinCoreBitcoinClient(BitcoinClient):
 
         logger.debug("Got response for get_block_count: {}".format(response))
         result = response["result"]
+        if result is None:
+            raise Exception("Unable to get block count from bitcoin node.")
         block_count = int(result)
         logger.debug("Got block_count: {}".format(block_count))
         return block_count
