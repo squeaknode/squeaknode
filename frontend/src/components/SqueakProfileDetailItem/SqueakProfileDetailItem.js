@@ -32,6 +32,7 @@ import useStyles from "./styles";
 
 import Widget from "../../components/Widget";
 import DeleteProfileDialog from "../../components/DeleteProfileDialog";
+import RenameProfileDialog from "../../components/RenameProfileDialog";
 import ExportPrivateKeyDialog from "../../components/ExportPrivateKeyDialog";
 import ConfigureProfileDialog from "../../components/ConfigureProfileDialog";
 import UpdateProfileImageDialog from "../../components/UpdateProfileImageDialog";
@@ -63,6 +64,7 @@ export default function SqueakProfileDetailItem({
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [renameDialogOpen, setRenameDialogOpen] = useState(false);
   const [exportPrivateKeyDialogOpen, setExportPrivateKeyDialogOpen] = useState(false);
   const [configureDialogOpen, setConfigureDialogOpen] = useState(false);
   const [updateImageDialogOpen, setUpdateImageDialogOpen] = useState(false);
@@ -101,7 +103,7 @@ export default function SqueakProfileDetailItem({
     if (!squeakProfile) {
       return;
     }
-    //handleRenameClick();
+    setRenameDialogOpen(true);
   }
 
   const onChangeImageClick = () => {
@@ -135,6 +137,10 @@ export default function SqueakProfileDetailItem({
      setDeleteDialogOpen(false);
   };
 
+  const handleCloseRenameDialog = () => {
+     setRenameDialogOpen(false);
+  };
+
   const handleCloseExportPrivateKeyDialog = () => {
      setExportPrivateKeyDialogOpen(false);
   };
@@ -158,6 +164,18 @@ export default function SqueakProfileDetailItem({
               handleClose={handleCloseDeleteDialog}
               profile={squeakProfile}
               ></DeleteProfileDialog>
+          </>
+        )
+      }
+
+      function RenameProfileDialogContent() {
+        return (
+          <>
+            <RenameProfileDialog
+              open={renameDialogOpen}
+              handleClose={handleCloseRenameDialog}
+              profile={squeakProfile}
+              ></RenameProfileDialog>
           </>
         )
       }
@@ -256,6 +274,7 @@ export default function SqueakProfileDetailItem({
           </CardActions>
         </Card>
         {DeleteProfileDialogContent()}
+        {RenameProfileDialogContent()}
         {ExportPrivateKeyDialogContent()}
         {ConfigureProfileDialogContent()}
         {UpdateImageDialogContent()}
