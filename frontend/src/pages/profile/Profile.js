@@ -83,38 +83,6 @@ export default function ProfilePage() {
     getSqueakProfile(id)
   },[id]);
 
-  const handleClickOpenDeleteDialog = () => {
-    setDeleteDialogOpen(true);
-  };
-
-  const handleClickOpenExportPrivateKeyDialog = () => {
-    setExportPrivateKeyDialogOpen(true);
-  };
-
-  const handleClickOpenConfigureDialog = () => {
-    setConfigureDialogOpen(true);
-  };
-
-  const handleClickOpenUpdateImageDialog = () => {
-    setUpdateImageDialogOpen(true);
-  };
-
-  const handleCloseDeleteDialog = () => {
-     setDeleteDialogOpen(false);
-  };
-
-  const handleCloseExportPrivateKeyDialog = () => {
-     setExportPrivateKeyDialogOpen(false);
-  };
-
-  const handleCloseConfigureDialog = () => {
-     setConfigureDialogOpen(false);
-  };
-
-  const handleCloseUpdateImageDialog = () => {
-     setUpdateImageDialogOpen(false);
-  };
-
   const handleReloadProfile = () => {
     getSqueakProfile(id);
   };
@@ -136,64 +104,9 @@ export default function ProfilePage() {
     return (
         <SqueakProfileDetailItem
           squeakProfile={squeakProfile}
-          handleViewSqueaksClick={handleViewSqueaks}
-          handleConfigureClick={handleClickOpenConfigureDialog}
-          handleRenameClick={null}
-          handleChangeImageClick={handleClickOpenUpdateImageDialog}
-          handleExportClick={handleClickOpenExportPrivateKeyDialog}
-          handleDeleteClick={handleClickOpenDeleteDialog}
+          handleReloadProfile={handleReloadProfile}
         />
       );
-  }
-
-  function DeleteProfileDialogContent() {
-    return (
-      <>
-        <DeleteProfileDialog
-          open={deleteDialogOpen}
-          handleClose={handleCloseDeleteDialog}
-          profile={squeakProfile}
-          ></DeleteProfileDialog>
-      </>
-    )
-  }
-
-  function ExportPrivateKeyDialogContent() {
-    return (
-      <>
-        <ExportPrivateKeyDialog
-          open={exportPrivateKeyDialogOpen}
-          handleClose={handleCloseExportPrivateKeyDialog}
-          profile={squeakProfile}
-          ></ExportPrivateKeyDialog>
-      </>
-    )
-  }
-
-  function ConfigureProfileDialogContent() {
-    return (
-      <>
-        <ConfigureProfileDialog
-          open={configureDialogOpen}
-          handleClose={handleCloseConfigureDialog}
-          squeakProfile={squeakProfile}
-          reloadProfile={handleReloadProfile}
-          ></ConfigureProfileDialog>
-      </>
-    )
-  }
-
-  function UpdateImageDialogContent() {
-    return (
-      <>
-        <UpdateProfileImageDialog
-          open={updateImageDialogOpen}
-          handleClose={handleCloseUpdateImageDialog}
-          squeakProfile={squeakProfile}
-          reloadProfile={handleReloadProfile}
-          ></UpdateProfileImageDialog>
-      </>
-    )
   }
 
   return (
@@ -203,10 +116,6 @@ export default function ProfilePage() {
       {squeakProfile &&
         ProfileContent()}
       </div>
-      {DeleteProfileDialogContent()}
-      {ExportPrivateKeyDialogContent()}
-      {ConfigureProfileDialogContent()}
-      {UpdateImageDialogContent()}
     </>
   );
 }
