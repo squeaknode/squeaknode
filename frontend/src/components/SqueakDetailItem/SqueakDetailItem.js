@@ -5,6 +5,7 @@ import {
   Menu,
   MenuItem,
   Typography,
+  Snackbar,
   Grid,
   Box,
   Link,
@@ -23,12 +24,16 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import DeleteIcon from '@material-ui/icons/Delete';
 import DownloadIcon from '@material-ui/icons/CloudDownload';
 import ZoomInIcon from '@material-ui/icons/ZoomIn';
+import MuiAlert from '@material-ui/lab/Alert';
 
 // styles
 import useStyles from "./styles";
 
 import Widget from "../../components/Widget";
-
+import MakeSqueakDialog from "../../components/MakeSqueakDialog";
+import DeleteSqueakDialog from "../../components/DeleteSqueakDialog";
+import BuySqueakDialog from "../../components/BuySqueakDialog";
+import SqueakDetailsDialog from "../../components/SqueakDetailsDialog";
 
 
 import {
@@ -46,24 +51,68 @@ import {
   reloadRoute,
 } from "../../navigation/navigation"
 
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 export default function SqueakDetailItem({
   hash,
   squeak,
   network,
-  handleReplyClick,
-  handleDeleteClick,
-  handleViewDetailsClick,
-  handleUnlockClick,
+  // handleReplyClick,
+  // handleDeleteClick,
+  // handleViewDetailsClick,
+  // handleUnlockClick,
+  reloadSqueak,
   ...props
 }) {
   var classes = useStyles();
 
   const history = useHistory();
 
+  const [replyDialogOpen, setReplyDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [buyDialogOpen, setBuyDialogOpen] = useState(false);
+  const [viewDetailsDialogOpen, setViewDetailsDialogOpen] = useState(false);
+  const [unlockedSnackbarOpen, setUnlockedSnackbarOpen] = useState(false);
+
+
   const blockDetailUrl = () => {
     // return "https://blockstream.info/testnet/block/" + squeak.getBlockHash();
     return getBlockDetailUrl(squeak.getBlockHash(), network);
+  };
+
+  const handleClickOpenReplyDialog = () => {
+    setReplyDialogOpen(true);
+  };
+
+  const handleCloseReplyDialog = () => {
+     setReplyDialogOpen(false);
+  };
+
+  const handleClickOpenDeleteDialog = () => {
+    setDeleteDialogOpen(true);
+    console.log("deleteDialogOpen: " + deleteDialogOpen);
+  };
+
+  const handleCloseDeleteDialog = () => {
+     setDeleteDialogOpen(false);
+  };
+
+  const handleClickOpenBuyDialog = () => {
+    setBuyDialogOpen(true);
+  };
+
+  const handleCloseBuyDialog = () => {
+    setBuyDialogOpen(false);
+  };
+
+  const handleClickOpenViewDetailsDialog = () => {
+    setViewDetailsDialogOpen(true);
+  };
+
+  const handleCloseViewDetailsDialog = () => {
+    setViewDetailsDialogOpen(false);
   };
 
   const onAddressClick = (event) => {
@@ -82,7 +131,8 @@ export default function SqueakDetailItem({
     if (!squeak) {
       return;
     }
-    handleReplyClick();
+    // handleReplyClick();
+    handleClickOpenReplyDialog();
   }
 
   const onDeleteClick = (event) => {
@@ -91,7 +141,8 @@ export default function SqueakDetailItem({
     if (!squeak) {
       return;
     }
-    handleDeleteClick();
+    // handleDeleteClick();
+    handleClickOpenDeleteDialog();
   }
 
   const onZoomInClick = (event) => {
@@ -102,7 +153,8 @@ export default function SqueakDetailItem({
     }
     //handleClickOpenDeleteDialog();
     // goToSqueakDetailPage();
-    handleViewDetailsClick();
+    // handleViewDetailsClick();
+    handleClickOpenViewDetailsDialog();
   }
 
   const onUnlockClick = (event) => {
@@ -112,7 +164,8 @@ export default function SqueakDetailItem({
       return;
     }
     // goToBuyPage(squeak.getSqueakHash());
-    handleUnlockClick();
+    // handleUnlockClick();
+    handleClickOpenBuyDialog();
   }
 
   const onDownloadClick = (event) => {
@@ -122,6 +175,19 @@ export default function SqueakDetailItem({
       reloadRoute(history);
     });
   }
+
+  const handleCloseUnlockedSnackbar = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setUnlockedSnackbarOpen(false);
+  };
+
+  const handlePaymentComplete = () => {
+    // getSqueak(hash);
+    reloadSqueak();
+    setUnlockedSnackbarOpen(true);
+  };
 
   function SqueakUnlockedContent() {
     return (
@@ -168,7 +234,6 @@ export default function SqueakDetailItem({
         </>
       )
     }
-
     return (
       <>
       {squeak.getIsUnlocked()
@@ -230,6 +295,66 @@ export default function SqueakDetailItem({
     )
   }
 
+
+      function MakeSqueakDialogContent() {
+        return (
+          <>
+            <MakeSqueakDialog
+              open={replyDialogOpen}
+              handleClose={handleCloseReplyDialog}
+              replytoSqueak={squeak}
+              ></MakeSqueakDialog>
+          </>
+        )
+      }
+
+      function DeleteSqueakDialogContent() {
+        return (
+          <>
+            <DeleteSqueakDialog
+              open={deleteDialogOpen}
+              handleClose={handleCloseDeleteDialog}
+              squeakToDelete={squeak}
+              ></DeleteSqueakDialog>
+          </>
+        )
+      }
+
+      function BuyDialogContent() {
+        return (
+          <>
+            <BuySqueakDialog
+              open={buyDialogOpen}
+              handleClose={handleCloseBuyDialog}
+              handlePaymentComplete={handlePaymentComplete}
+              hash={hash}
+              ></BuySqueakDialog>
+          </>
+        )
+      }
+
+      function ViewDetailsDialogContent() {
+        return (
+          <>
+            <SqueakDetailsDialog
+              open={viewDetailsDialogOpen}
+              handleClose={handleCloseViewDetailsDialog}
+              hash={hash}
+              squeak={squeak}
+              ></SqueakDetailsDialog>
+          </>
+        )
+      }
+
+      function SqueakUnlockedActionContent() {
+        return (
+          <Snackbar open={unlockedSnackbarOpen} autoHideDuration={6000} onClose={handleCloseUnlockedSnackbar}>
+            <Alert onClose={handleCloseUnlockedSnackbar} severity="success">
+              Squeak unlocked!
+            </Alert>
+          </Snackbar>
+        )
+      }
 
   return (
     <>
@@ -320,6 +445,11 @@ export default function SqueakDetailItem({
             </Grid>
           </Grid>
     </Paper>
+    {MakeSqueakDialogContent()}
+    {DeleteSqueakDialogContent()}
+    {BuyDialogContent()}
+    {ViewDetailsDialogContent()}
+    {SqueakUnlockedActionContent()}
     </>
   )
 }
