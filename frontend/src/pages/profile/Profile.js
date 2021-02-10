@@ -75,8 +75,12 @@ export default function ProfilePage() {
     setAnchorEl(null);
   };
 
+  const handleGetSqueakProfileErr = (err) => {
+    setSqueakProfile(null);
+  };
+
   const getSqueakProfile = (id) => {
-    getSqueakProfileRequest(id, setSqueakProfile);
+    getSqueakProfileRequest(id, setSqueakProfile, handleGetSqueakProfileErr);
   };
 
   useEffect(()=>{

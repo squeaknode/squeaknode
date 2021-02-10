@@ -247,7 +247,7 @@ def create_app(handler, username, password):
     @login_required
     def clearsqueakprofileimage():
         return handle_request(
-            squeak_admin_pb2.ClearSqueakProfileImage(),
+            squeak_admin_pb2.ClearSqueakProfileImageRequest(),
             handler.handle_clear_squeak_profile_image,
         )
 

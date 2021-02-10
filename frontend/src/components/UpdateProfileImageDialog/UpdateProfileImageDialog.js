@@ -55,8 +55,7 @@ export default function UpdateProfileImageDialog({
   };
 
   const handleResponse = (response) => {
-    // TODO: reload profile only.
-    reloadRoute(history);
+    reloadProfile();
   };
 
   const handleErr = (err) => {

@@ -36,6 +36,7 @@ import RenameProfileDialog from "../../components/RenameProfileDialog";
 import ExportPrivateKeyDialog from "../../components/ExportPrivateKeyDialog";
 import ConfigureProfileDialog from "../../components/ConfigureProfileDialog";
 import UpdateProfileImageDialog from "../../components/UpdateProfileImageDialog";
+import ClearProfileImageDialog from "../../components/ClearProfileImageDialog";
 
 
 import {
@@ -68,6 +69,7 @@ export default function SqueakProfileDetailItem({
   const [exportPrivateKeyDialogOpen, setExportPrivateKeyDialogOpen] = useState(false);
   const [configureDialogOpen, setConfigureDialogOpen] = useState(false);
   const [updateImageDialogOpen, setUpdateImageDialogOpen] = useState(false);
+  const [clearImageDialogOpen, setClearImageDialogOpen] = useState(false);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -115,6 +117,15 @@ export default function SqueakProfileDetailItem({
     setUpdateImageDialogOpen(true);
   }
 
+  const onClearImageClick = () => {
+    console.log("Handling clear image click...");
+    handleClose();
+    if (!squeakProfile) {
+      return;
+    }
+    setClearImageDialogOpen(true);
+  }
+
   const onExportClick = () => {
     console.log("Handling export click...");
     handleClose();
@@ -153,6 +164,10 @@ export default function SqueakProfileDetailItem({
      setUpdateImageDialogOpen(false);
   };
 
+  const handleCloseClearImageDialog = () => {
+     setClearImageDialogOpen(false);
+  };
+
     const profileImageBase64String = squeakProfile.getProfileImage();
 
 
@@ -163,6 +178,7 @@ export default function SqueakProfileDetailItem({
               open={deleteDialogOpen}
               handleClose={handleCloseDeleteDialog}
               profile={squeakProfile}
+              reloadProfile={handleReloadProfile}
               ></DeleteProfileDialog>
           </>
         )
@@ -175,6 +191,7 @@ export default function SqueakProfileDetailItem({
               open={renameDialogOpen}
               handleClose={handleCloseRenameDialog}
               profile={squeakProfile}
+              reloadProfile={handleReloadProfile}
               ></RenameProfileDialog>
           </>
         )
@@ -218,6 +235,19 @@ export default function SqueakProfileDetailItem({
         )
       }
 
+      function ClearImageDialogContent() {
+        return (
+          <>
+            <ClearProfileImageDialog
+              open={clearImageDialogOpen}
+              handleClose={handleCloseClearImageDialog}
+              squeakProfile={squeakProfile}
+              reloadProfile={handleReloadProfile}
+              ></ClearProfileImageDialog>
+          </>
+        )
+      }
+
 
     return (
       <>
@@ -239,6 +269,7 @@ export default function SqueakProfileDetailItem({
       <MenuItem onClick={onConfigureClick}>Configure</MenuItem>
       <MenuItem onClick={onRenameClick}>Rename</MenuItem>
       <MenuItem onClick={onChangeImageClick}>Change Image</MenuItem>
+      <MenuItem onClick={onClearImageClick}>Clear Image</MenuItem>
       {squeakProfile.getHasPrivateKey() &&
         <MenuItem onClick={onExportClick}>Export</MenuItem>
       }
@@ -278,6 +309,7 @@ export default function SqueakProfileDetailItem({
         {ExportPrivateKeyDialogContent()}
         {ConfigureProfileDialogContent()}
         {UpdateImageDialogContent()}
+        {ClearImageDialogContent()}
         </>
       );
 }
