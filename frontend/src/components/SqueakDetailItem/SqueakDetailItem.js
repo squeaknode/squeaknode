@@ -59,10 +59,6 @@ export default function SqueakDetailItem({
   hash,
   squeak,
   network,
-  // handleReplyClick,
-  // handleDeleteClick,
-  // handleViewDetailsClick,
-  // handleUnlockClick,
   reloadSqueak,
   ...props
 }) {
@@ -78,7 +74,6 @@ export default function SqueakDetailItem({
 
 
   const blockDetailUrl = () => {
-    // return "https://blockstream.info/testnet/block/" + squeak.getBlockHash();
     return getBlockDetailUrl(squeak.getBlockHash(), network);
   };
 
@@ -131,7 +126,6 @@ export default function SqueakDetailItem({
     if (!squeak) {
       return;
     }
-    // handleReplyClick();
     handleClickOpenReplyDialog();
   }
 
@@ -141,7 +135,6 @@ export default function SqueakDetailItem({
     if (!squeak) {
       return;
     }
-    // handleDeleteClick();
     handleClickOpenDeleteDialog();
   }
 
@@ -151,9 +144,6 @@ export default function SqueakDetailItem({
     if (!squeak) {
       return;
     }
-    //handleClickOpenDeleteDialog();
-    // goToSqueakDetailPage();
-    // handleViewDetailsClick();
     handleClickOpenViewDetailsDialog();
   }
 
@@ -163,8 +153,6 @@ export default function SqueakDetailItem({
     if (!squeak) {
       return;
     }
-    // goToBuyPage(squeak.getSqueakHash());
-    // handleUnlockClick();
     handleClickOpenBuyDialog();
   }
 
@@ -184,7 +172,6 @@ export default function SqueakDetailItem({
   };
 
   const handlePaymentComplete = () => {
-    // getSqueak(hash);
     reloadSqueak();
     setUnlockedSnackbarOpen(true);
   };
