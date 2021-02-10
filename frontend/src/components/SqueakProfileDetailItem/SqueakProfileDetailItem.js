@@ -178,6 +178,7 @@ export default function SqueakProfileDetailItem({
               open={deleteDialogOpen}
               handleClose={handleCloseDeleteDialog}
               profile={squeakProfile}
+              reloadProfile={handleReloadProfile}
               ></DeleteProfileDialog>
           </>
         )
@@ -190,6 +191,7 @@ export default function SqueakProfileDetailItem({
               open={renameDialogOpen}
               handleClose={handleCloseRenameDialog}
               profile={squeakProfile}
+              reloadProfile={handleReloadProfile}
               ></RenameProfileDialog>
           </>
         )

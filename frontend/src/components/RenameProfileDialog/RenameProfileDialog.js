@@ -41,6 +41,7 @@ export default function RenameProfileDialog({
   open,
   handleClose,
   profile,
+  reloadProfile,
   ...props
 }) {
   var classes = useStyles();
@@ -57,7 +58,7 @@ export default function RenameProfileDialog({
   };
 
   const handleResponse = (response) => {
-    reloadRoute(history);
+    reloadProfile();
   };
 
   const handleErr = (err) => {

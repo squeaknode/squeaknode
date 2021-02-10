@@ -40,6 +40,7 @@ export default function DeleteProfileDialog({
   open,
   handleClose,
   profile,
+  reloadProfile,
   ...props
 }) {
   var classes = useStyles();
@@ -47,7 +48,7 @@ export default function DeleteProfileDialog({
 
   const deleteProfile = (profileId) => {
     deleteProfileRequest(profileId, (response) => {
-      reloadRoute(history);
+      reloadProfile();
     });
   };
 

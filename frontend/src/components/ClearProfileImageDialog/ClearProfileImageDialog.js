@@ -48,8 +48,7 @@ export default function ClearProfileImageDialog({
   const history = useHistory();
 
   const handleResponse = (response) => {
-    // TODO: reload profile only.
-    reloadRoute(history);
+    reloadProfile();
   };
 
   const handleErr = (err) => {

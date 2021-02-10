@@ -238,7 +238,7 @@ export function lndPendingChannelsRequest(handleResponse) {
   );
 }
 
-export function getSqueakProfileRequest(id, handleResponse) {
+export function getSqueakProfileRequest(id, handleResponse, handleErr) {
   var request = new GetSqueakProfileRequest();
   request.setProfileId(id);
   makeRequest(
@@ -247,7 +247,8 @@ export function getSqueakProfileRequest(id, handleResponse) {
     GetSqueakProfileReply.deserializeBinary,
     (response) => {
       handleResponse(response.getSqueakProfile());
-    }
+    },
+    handleErr,
   );
 }
 
