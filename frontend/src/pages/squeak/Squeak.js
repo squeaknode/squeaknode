@@ -29,11 +29,6 @@ import SqueakDetailItem from "../../components/SqueakDetailItem";
 import SqueakThreadItem from "../../components/SqueakThreadItem";
 import SqueakUserAvatar from "../../components/SqueakUserAvatar";
 
-// import MakeSqueakDialog from "../../components/MakeSqueakDialog";
-// import DeleteSqueakDialog from "../../components/DeleteSqueakDialog";
-// import BuySqueakDialog from "../../components/BuySqueakDialog";
-// import SqueakDetailsDialog from "../../components/SqueakDetailsDialog";
-
 
 import {
   getSqueakDisplayRequest,
@@ -46,11 +41,6 @@ import {
 } from "../../navigation/navigation"
 
 
-// function Alert(props) {
-//   return <MuiAlert elevation={6} variant="filled" {...props} />;
-// }
-
-
 export default function SqueakPage() {
   var classes = useStyles();
   const history = useHistory();
@@ -59,12 +49,6 @@ export default function SqueakPage() {
   const [ancestorSqueaks, setAncestorSqueaks] = useState([]);
   const [replySqueaks, setReplySqueaks] = useState([]);
   const [network, setNetwork] = useState("");
-
-  // const [replyDialogOpen, setReplyDialogOpen] = useState(false);
-  // const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  // const [buyDialogOpen, setBuyDialogOpen] = useState(false);
-  // const [viewDetailsDialogOpen, setViewDetailsDialogOpen] = useState(false);
-  // const [unlockedSnackbarOpen, setUnlockedSnackbarOpen] = useState(false);
 
   const getSqueak = (hash) => {
       getSqueakDisplayRequest(hash, setSqueak);
@@ -89,51 +73,6 @@ export default function SqueakPage() {
       }
       return oldestKnownAncestor.getReplyTo();
   };
-
-  // const handleClickOpen = () => {
-  //   setReplyDialogOpen(true);
-  // };
-  //
-  // const handleClose = () => {
-  //    setReplyDialogOpen(false);
-  // };
-  //
-  // const handleClickOpenDeleteDialog = () => {
-  //   setDeleteDialogOpen(true);
-  //   console.log("deleteDialogOpen: " + deleteDialogOpen);
-  // };
-  //
-  // const handleCloseDeleteDialog = () => {
-  //    setDeleteDialogOpen(false);
-  // };
-  //
-  // const handleClickOpenBuyDialog = () => {
-  //   setBuyDialogOpen(true);
-  // };
-  //
-  // const handleCloseBuyDialog = () => {
-  //   setBuyDialogOpen(false);
-  // };
-  //
-  // const handleClickOpenViewDetailsDialog = () => {
-  //   setViewDetailsDialogOpen(true);
-  // };
-  //
-  // const handleCloseViewDetailsDialog = () => {
-  //   setViewDetailsDialogOpen(false);
-  // };
-
-  // const handleCloseUnlockedSnackbar = (event, reason) => {
-  //   if (reason === 'clickaway') {
-  //     return;
-  //   }
-  //   setUnlockedSnackbarOpen(false);
-  // };
-  //
-  // const handlePaymentComplete = () => {
-  //   getSqueak(hash);
-  //   setUnlockedSnackbarOpen(true);
-  // };
 
   const getCurrentSqueak = () => {
       getSqueak(hash);
@@ -317,68 +256,6 @@ export default function SqueakPage() {
       </Timeline>
     )
   }
-
-    //
-    // function MakeSqueakDialogContent() {
-    //   return (
-    //     <>
-    //       <MakeSqueakDialog
-    //         open={replyDialogOpen}
-    //         handleClose={handleClose}
-    //         replytoSqueak={squeak}
-    //         ></MakeSqueakDialog>
-    //     </>
-    //   )
-    // }
-    //
-    // function DeleteSqueakDialogContent() {
-    //   return (
-    //     <>
-    //       <DeleteSqueakDialog
-    //         open={deleteDialogOpen}
-    //         handleClose={handleCloseDeleteDialog}
-    //         squeakToDelete={squeak}
-    //         ></DeleteSqueakDialog>
-    //     </>
-    //   )
-    // }
-    //
-    // function BuyDialogContent() {
-    //   return (
-    //     <>
-    //       <BuySqueakDialog
-    //         open={buyDialogOpen}
-    //         handleClose={handleCloseBuyDialog}
-    //         handlePaymentComplete={handlePaymentComplete}
-    //         hash={hash}
-    //         ></BuySqueakDialog>
-    //     </>
-    //   )
-    // }
-    //
-    // function ViewDetailsDialogContent() {
-    //   return (
-    //     <>
-    //       <SqueakDetailsDialog
-    //         open={viewDetailsDialogOpen}
-    //         handleClose={handleCloseViewDetailsDialog}
-    //         hash={hash}
-    //         squeak={squeak}
-    //         ></SqueakDetailsDialog>
-    //     </>
-    //   )
-    // }
-    //
-    //
-    // function SqueakUnlockedContent() {
-    //   return (
-    //     <Snackbar open={unlockedSnackbarOpen} autoHideDuration={6000} onClose={handleCloseUnlockedSnackbar}>
-    //       <Alert onClose={handleCloseUnlockedSnackbar} severity="success">
-    //         Squeak unlocked!
-    //       </Alert>
-    //     </Snackbar>
-    //   )
-    // }
 
   return (
     <>
