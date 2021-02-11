@@ -11,13 +11,11 @@ from squeaknode.core.block_range import BlockRange
 from squeaknode.core.offer import Offer
 from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.received_payment_summary import ReceivedPaymentSummary
-from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.sent_payment_summary import SentPaymentSummary
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.util import get_hash
 from squeaknode.core.util import is_address_valid
-from squeaknode.db.exception import DuplicateReceivedPaymentError
 from squeaknode.node.received_payments_subscription_client import (
     OpenReceivedPaymentsSubscriptionClient,
 )
@@ -32,11 +30,13 @@ class SqueakController:
         squeak_db,
         squeak_core,
         squeak_rate_limiter,
+        payment_processor,
         config,
     ):
         self.squeak_db = squeak_db
         self.squeak_core = squeak_core
         self.squeak_rate_limiter = squeak_rate_limiter
+        self.payment_processor = payment_processor
         self.config = config
         self.create_offer_lock = threading.Lock()
 
@@ -347,35 +347,6 @@ class SqueakController:
                 "Deleted number of expired sent offers: {}".format(
                     num_expired_sent_offers)
             )
-
-    def process_subscribed_invoices(self, stopped: threading.Event, retry_s: int = 10):
-        def get_sent_offer_for_payment_hash(payment_hash: bytes) -> SentOffer:
-            return self.squeak_db.get_sent_offer_by_payment_hash(
-                payment_hash
-            )
-        while not stopped.is_set():
-            try:
-                latest_settle_index = self.squeak_db.get_latest_settle_index() or 0
-                for received_payment in self.squeak_core.get_received_payments(
-                        get_sent_offer_for_payment_hash,
-                        latest_settle_index,
-                        stopped,
-                ):
-                    logger.info(
-                        "Got received payment: {}".format(received_payment))
-                    try:
-                        self.squeak_db.insert_received_payment(
-                            received_payment)
-                    except DuplicateReceivedPaymentError:
-                        pass
-                    self.squeak_db.delete_sent_offer(
-                        received_payment.payment_hash)
-            except Exception:
-                logger.info(
-                    "Unable to subscribe invoices from lnd. Retrying in "
-                    "{} seconds.".format(retry_s),
-                )
-                stopped.wait(retry_s)
 
     def subscribe_received_payments(self, initial_index: int):
         with OpenReceivedPaymentsSubscriptionClient(

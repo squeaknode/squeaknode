@@ -7,6 +7,7 @@ from squeaknode.core.squeak_controller import SqueakController
 from squeaknode.core.squeak_core import SqueakCore
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.db.squeak_db import SqueakDb
+from squeaknode.node.payment_processor import PaymentProcessor
 from squeaknode.node.squeak_rate_limiter import SqueakRateLimiter
 
 
@@ -58,16 +59,23 @@ def squeak_rate_limiter():
 
 
 @pytest.fixture
+def payment_processor():
+    return mock.Mock(spec=PaymentProcessor)
+
+
+@pytest.fixture
 def squeak_controller(
     squeak_db,
     squeak_core,
     squeak_rate_limiter,
+    payment_processor,
     config,
 ):
     return SqueakController(
         squeak_db,
         squeak_core,
         squeak_rate_limiter,
+        payment_processor,
         config,
     )
 
@@ -77,12 +85,14 @@ def regtest_squeak_controller(
     squeak_db,
     squeak_core,
     squeak_rate_limiter,
+    payment_processor,
     regtest_config,
 ):
     return SqueakController(
         squeak_db,
         squeak_core,
         squeak_rate_limiter,
+        payment_processor,
         regtest_config,
     )
 

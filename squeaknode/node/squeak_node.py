@@ -60,11 +60,16 @@ class SqueakNode:
             squeak_db,
             self.config.core.max_squeaks_per_address_per_hour,
         )
+        payment_processor = PaymentProcessor(
+            squeak_db,
+            squeak_core,
+        )
 
         squeak_controller = SqueakController(
             squeak_db,
             squeak_core,
             squeak_rate_limiter,
+            payment_processor,
             self.config,
         )
 
@@ -72,10 +77,6 @@ class SqueakNode:
             squeak_controller,
             self.config.sync.block_interval,
             self.config.sync.timeout_s,
-        )
-
-        payment_processor = PaymentProcessor(
-            squeak_controller,
         )
 
         admin_handler = load_admin_handler(
