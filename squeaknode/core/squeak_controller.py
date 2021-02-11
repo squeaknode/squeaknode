@@ -349,17 +349,18 @@ class SqueakController:
                     num_expired_sent_offers)
             )
 
-    def process_subscribed_invoices(self, retry_s: int = 10):
+    def process_subscribed_invoices(self, stopped: threading.Event, retry_s: int = 10):
         def get_sent_offer_for_payment_hash(payment_hash: bytes) -> SentOffer:
             return self.squeak_db.get_sent_offer_by_payment_hash(
                 payment_hash
             )
-        while True:
+        while not stopped.is_set():
             try:
                 latest_settle_index = self.squeak_db.get_latest_settle_index() or 0
                 for received_payment in self.squeak_core.get_received_payments(
                         get_sent_offer_for_payment_hash,
                         latest_settle_index,
+                        stopped,
                 ):
                     logger.info(
                         "Got received payment: {}".format(received_payment))

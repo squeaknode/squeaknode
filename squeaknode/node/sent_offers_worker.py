@@ -5,15 +5,18 @@ logger = logging.getLogger(__name__)
 
 
 class SentOffersWorker:
-    def __init__(self, squeak_controller):
+    def __init__(self, squeak_controller, stopped: threading.Event):
         self.squeak_controller = squeak_controller
+        self.stopped = stopped
 
     def start_running(self):
         logger.info("Starting SentOffersWorker...")
         threading.Thread(
             target=self.process_subscribed_invoices,
-            daemon=True,
+            # daemon=True,
         ).start()
 
     def process_subscribed_invoices(self):
-        self.squeak_controller.process_subscribed_invoices()
+        self.squeak_controller.process_subscribed_invoices(
+            self.stopped,
+        )

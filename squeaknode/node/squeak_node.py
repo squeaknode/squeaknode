@@ -89,7 +89,7 @@ class SqueakNode:
             squeak_controller,
         )
         self.sent_offers_worker = SentOffersWorker(
-            squeak_controller,
+            squeak_controller, self.stopped,
         )
 
         handler = load_handler(squeak_controller)

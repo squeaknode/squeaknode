@@ -1,4 +1,5 @@
 import logging
+import threading
 import time
 from typing import Iterator
 from typing import Optional
@@ -264,20 +265,35 @@ class SqueakCore:
             valid=valid,
         )
 
-    def get_received_payments(self, get_sent_offer_fn, latest_settle_index) -> Iterator[ReceivedPayment]:
+    def get_received_payments(self, get_sent_offer_fn, latest_settle_index, stopped: threading.Event) -> Iterator[ReceivedPayment]:
         """Get an iterator of received payments.
 
         Args:
             get_sent_offer_fn: Function that takes a payment hash and returns
                 the corresponding SentOffer.
             latest_settle_index: The latest settle index of the lnd invoice database.
+            stopped: Event that can be set to stop yielding received payments.
 
         Returns:
             Iterator[ReceivedPayment]: An iterator of received payments.
         """
-        for invoice in self.lightning_client.subscribe_invoices(
-                settle_index=latest_settle_index,
-        ):
+        def wait_for_stop(result_generator):
+            logger.info("Waiting for stop event in get_received_payments...")
+            stopped.wait()
+            logger.info("Cancelled subscription in get_received_payments.")
+            result_generator.cancel()
+
+        # Get the stream of invoices.
+        result_stream = self.lightning_client.subscribe_invoices(
+            settle_index=latest_settle_index,
+        )
+
+        # Start the thread to wait for stop event.
+        t = threading.Thread(target=wait_for_stop, args=(result_stream,))
+        t.start()
+
+        # Process the invoices.
+        for invoice in result_stream:
             if invoice.settled:
                 payment_hash = invoice.r_hash
                 settle_index = invoice.settle_index
