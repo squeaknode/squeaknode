@@ -1,6 +1,5 @@
 import logging
 import threading
-import time
 from typing import List
 
 from squeak.core import CheckSqueak
@@ -376,7 +375,7 @@ class SqueakController:
                     "Unable to subscribe invoices from lnd. Retrying in "
                     "{} seconds.".format(retry_s),
                 )
-                time.sleep(retry_s)
+                stopped.wait(retry_s)
 
     def subscribe_received_payments(self, initial_index: int):
         with OpenReceivedPaymentsSubscriptionClient(
