@@ -98,6 +98,21 @@ export default function ReceivedPayments() {
     )
   }
 
+  function ReprocessReceivedPaymentsButton() {
+    return (
+      <>
+      <Grid item xs={12}>
+        <div className={classes.root}>
+          <Button
+            variant="contained"
+            onClick={() => {}}>View Sent Payments
+          </Button>
+        </div>
+      </Grid>
+      </>
+    )
+  }
+
   function ReceivedPaymentsContent() {
     console.log("receivedPayments: " + receivedPayments);
     return (
@@ -105,6 +120,9 @@ export default function ReceivedPayments() {
       <Grid container spacing={4}>
         <Grid item xs={12}>
           <Widget disableWidgetMenu>
+
+          {ReprocessReceivedPaymentsButton()}
+
           <div>
           {receivedPayments.map(receivedPayment =>
             <Box
