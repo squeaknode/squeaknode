@@ -18,6 +18,7 @@ from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.util import get_hash
 from squeaknode.core.util import is_address_valid
+from squeaknode.db.exception import DuplicateReceivedPaymentError
 from squeaknode.node.received_payments_subscription_client import (
     OpenReceivedPaymentsSubscriptionClient,
 )
@@ -362,7 +363,11 @@ class SqueakController:
                 ):
                     logger.info(
                         "Got received payment: {}".format(received_payment))
-                    self.squeak_db.insert_received_payment(received_payment)
+                    try:
+                        self.squeak_db.insert_received_payment(
+                            received_payment)
+                    except DuplicateReceivedPaymentError:
+                        pass
                     self.squeak_db.delete_sent_offer(
                         received_payment.payment_hash)
             except Exception:

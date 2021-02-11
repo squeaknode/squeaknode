@@ -30,8 +30,10 @@ from squeaknode.core.squeak_entry_with_profile import SqueakEntryWithProfile
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.util import get_hash
+from squeaknode.db.exception import DuplicateReceivedPaymentError
 from squeaknode.db.migrations import run_migrations
 from squeaknode.db.models import Models
+
 
 logger = logging.getLogger(__name__)
 
@@ -1076,9 +1078,12 @@ class SqueakDb:
             client_addr=received_payment.client_addr,
         )
         with self.get_connection() as connection:
-            res = connection.execute(ins)
-            received_payment_id = res.inserted_primary_key[0]
-            return received_payment_id
+            try:
+                res = connection.execute(ins)
+                received_payment_id = res.inserted_primary_key[0]
+                return received_payment_id
+            except sqlalchemy.exc.IntegrityError:
+                raise DuplicateReceivedPaymentError()
 
     def get_received_payments(self) -> List[ReceivedPayment]:
         """ Get all received payments. """
