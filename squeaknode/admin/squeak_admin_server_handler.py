@@ -615,3 +615,8 @@ class SqueakAdminServerHandler(object):
         return squeak_admin_pb2.GetPaymentSummaryReply(
             payment_summary=payment_summary_msg,
         )
+
+    def handle_reprocess_received_payments(self, request):
+        logger.info("Handle reprocess received payments")
+        self.squeak_controller.reprocess_received_payments()
+        return squeak_admin_pb2.ReprocessReceivedPaymentsReply()

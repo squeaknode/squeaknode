@@ -232,6 +232,10 @@ service SqueakAdmin {
   */
   rpc GetPaymentSummary (GetPaymentSummaryRequest) returns (GetPaymentSummaryReply) {}
 
+  /** sqkadmin: `reprocessreceivedpayments`
+  */
+  rpc ReprocessReceivedPayments (ReprocessReceivedPaymentsRequest) returns (ReprocessReceivedPaymentsReply) {}
+
 }
 
 message CreateSigningProfileRequest {
@@ -858,4 +862,10 @@ message PaymentSummary {
 
     /// Amount spent in msats
     int64 amount_spent_msat = 4;
+}
+
+message ReprocessReceivedPaymentsRequest {
+}
+
+message ReprocessReceivedPaymentsReply {
 }
