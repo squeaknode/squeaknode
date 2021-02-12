@@ -4,6 +4,7 @@ import time
 from typing import Iterator
 from typing import Optional
 
+import grpc
 from squeak.core import CSqueak
 from squeak.core import MakeSqueakFromStr
 from squeak.core.elliptic import payment_point_bytes_from_scalar_bytes
@@ -11,6 +12,7 @@ from squeak.core.signing import CSigningKey
 
 from squeaknode.bitcoin.bitcoin_client import BitcoinClient
 from squeaknode.bitcoin.util import parse_block_header
+from squeaknode.core.exception import ProcessReceivedPaymentError
 from squeaknode.core.offer import Offer
 from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.received_payment import ReceivedPayment
@@ -265,7 +267,11 @@ class SqueakCore:
             valid=valid,
         )
 
-    def get_received_payments(self, get_sent_offer_fn, latest_settle_index, stopped: threading.Event) -> Iterator[ReceivedPayment]:
+    def get_received_payments(
+            self,
+            get_sent_offer_fn,
+            latest_settle_index,
+            stopped: threading.Event) -> Iterator[ReceivedPayment]:
         """Get an iterator of received payments.
 
         Args:
@@ -293,18 +299,22 @@ class SqueakCore:
         t.start()
 
         # Process the invoices.
-        for invoice in result_stream:
-            if invoice.settled:
-                payment_hash = invoice.r_hash
-                settle_index = invoice.settle_index
-                sent_offer = get_sent_offer_fn(payment_hash)
-                received_payment = ReceivedPayment(
-                    received_payment_id=None,
-                    created=None,
-                    squeak_hash=sent_offer.squeak_hash,
-                    payment_hash=sent_offer.payment_hash,
-                    price_msat=sent_offer.price_msat,
-                    settle_index=settle_index,
-                    client_addr=sent_offer.client_addr,
-                )
-                yield received_payment
+        try:
+            for invoice in result_stream:
+                if invoice.settled:
+                    payment_hash = invoice.r_hash
+                    settle_index = invoice.settle_index
+                    sent_offer = get_sent_offer_fn(payment_hash)
+                    received_payment = ReceivedPayment(
+                        received_payment_id=None,
+                        created=None,
+                        squeak_hash=sent_offer.squeak_hash,
+                        payment_hash=sent_offer.payment_hash,
+                        price_msat=sent_offer.price_msat,
+                        settle_index=settle_index,
+                        client_addr=sent_offer.client_addr,
+                    )
+                    yield received_payment
+        except grpc.RpcError as e:
+            if e.code() != grpc.StatusCode.CANCELLED:
+                raise ProcessReceivedPaymentError()

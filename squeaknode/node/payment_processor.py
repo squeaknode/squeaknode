@@ -1,6 +1,7 @@
 import logging
 import threading
 
+from squeaknode.core.exception import ProcessReceivedPaymentError
 from squeaknode.core.sent_offer import SentOffer
 from squeaknode.db.exception import DuplicateReceivedPaymentError
 
@@ -62,9 +63,9 @@ class PaymentProcessor:
                         pass
                     self.squeak_db.delete_sent_offer(
                         received_payment.payment_hash)
-            except Exception:
-                logger.info(
+            except ProcessReceivedPaymentError:
+                logger.error(
                     "Unable to subscribe invoices from lnd. Retrying in "
                     "{} seconds.".format(self.retry_s),
                 )
-                stopped.wait(self.retry_s)
+            stopped.wait(self.retry_s)
