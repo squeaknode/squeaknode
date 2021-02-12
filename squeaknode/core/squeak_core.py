@@ -302,6 +302,9 @@ class SqueakCore:
         try:
             for invoice in result_stream:
                 if invoice.settled:
+                    logger.info(
+                        "Processing settled invoice: {}".format(invoice)
+                    )
                     payment_hash = invoice.r_hash
                     settle_index = invoice.settle_index
                     sent_offer = get_sent_offer_fn(payment_hash)
