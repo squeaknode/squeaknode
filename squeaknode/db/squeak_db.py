@@ -1064,7 +1064,6 @@ class SqueakDb:
         with self.get_connection() as connection:
             result = connection.execute(s)
             row = result.fetchone()
-            logger.info("Row for get_latest_settle_index: {}".format(row))
             latest_index = row[0]
             return latest_index
 
