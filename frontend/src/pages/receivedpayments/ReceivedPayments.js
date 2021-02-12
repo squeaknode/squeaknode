@@ -28,6 +28,7 @@ import mock from "../dashboard/mock";
 
 import {
   getReceivedPaymentsRequest,
+  reprocessReceivedPaymentsRequest,
 } from "../../squeakclient/requests"
 
 const useStyles = makeStyles((theme) => ({
@@ -58,6 +59,12 @@ export default function ReceivedPayments() {
   const loadReceivedPayments = () => {
     getReceivedPaymentsRequest((receivedPaymentsReply) => {
       setReceivedPayments(receivedPaymentsReply.getReceivedPaymentsList());
+    });
+  };
+
+  const reprocessReceivedPayments = () => {
+    reprocessReceivedPaymentsRequest((response) => {
+        console.log("Successfully called reprocess received payments.");
     });
   };
 
@@ -98,6 +105,23 @@ export default function ReceivedPayments() {
     )
   }
 
+  function ReprocessReceivedPaymentsButton() {
+    return (
+      <>
+      <Grid item xs={12}>
+        <div className={classes.root}>
+          <Button
+            variant="contained"
+            onClick={() => {
+              reprocessReceivedPayments();
+            }}>Reprocess Received Payments
+          </Button>
+        </div>
+      </Grid>
+      </>
+    )
+  }
+
   function ReceivedPaymentsContent() {
     console.log("receivedPayments: " + receivedPayments);
     return (
@@ -105,6 +129,9 @@ export default function ReceivedPayments() {
       <Grid container spacing={4}>
         <Grid item xs={12}>
           <Widget disableWidgetMenu>
+
+          {ReprocessReceivedPaymentsButton()}
+
           <div>
           {receivedPayments.map(receivedPayment =>
             <Box

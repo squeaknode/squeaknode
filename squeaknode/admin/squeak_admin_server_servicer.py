@@ -193,6 +193,9 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
     def GetPaymentSummary(self, request, context):
         return self.handler.handle_get_payment_summary(request)
 
+    def ReprocessReceivedPayments(self, request, context):
+        return self.handler.handle_reprocess_received_payments(request)
+
     def serve(self):
         server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
         squeak_admin_pb2_grpc.add_SqueakAdminServicer_to_server(self, server)

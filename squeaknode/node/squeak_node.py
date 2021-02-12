@@ -15,6 +15,7 @@ from squeaknode.db.db_engine import get_engine
 from squeaknode.db.db_engine import get_sqlite_connection_string
 from squeaknode.db.squeak_db import SqueakDb
 from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
+from squeaknode.node.payment_processor import PaymentProcessor
 from squeaknode.node.received_payments_subscription_client import (
     OpenReceivedPaymentsSubscriptionClient,
 )
@@ -59,11 +60,16 @@ class SqueakNode:
             squeak_db,
             self.config.core.max_squeaks_per_address_per_hour,
         )
+        payment_processor = PaymentProcessor(
+            squeak_db,
+            squeak_core,
+        )
 
         squeak_controller = SqueakController(
             squeak_db,
             squeak_core,
             squeak_rate_limiter,
+            payment_processor,
             self.config,
         )
 
@@ -89,7 +95,7 @@ class SqueakNode:
             squeak_controller,
         )
         self.sent_offers_worker = SentOffersWorker(
-            squeak_controller,
+            payment_processor, self.stopped,
         )
 
         handler = load_handler(squeak_controller)

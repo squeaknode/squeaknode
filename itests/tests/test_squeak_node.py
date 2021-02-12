@@ -33,6 +33,15 @@ def test_get_network(admin_stub):
     assert network == "simnet"
 
 
+def test_reprocess_received_payments(admin_stub):
+    # Reprocess received payments
+    reprocess_received_payments_response = admin_stub.ReprocessReceivedPayments(
+        squeak_admin_pb2.ReprocessReceivedPaymentsRequest()
+    )
+
+    assert reprocess_received_payments_response is not None
+
+
 def test_get_profile(server_stub, admin_stub, signing_profile_id):
     # Get the squeak profile
     get_squeak_profile_response = admin_stub.GetSqueakProfile(

@@ -30,8 +30,10 @@ from squeaknode.core.squeak_entry_with_profile import SqueakEntryWithProfile
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.util import get_hash
+from squeaknode.db.exception import DuplicateReceivedPaymentError
 from squeaknode.db.migrations import run_migrations
 from squeaknode.db.models import Models
+
 
 logger = logging.getLogger(__name__)
 
@@ -1076,9 +1078,12 @@ class SqueakDb:
             client_addr=received_payment.client_addr,
         )
         with self.get_connection() as connection:
-            res = connection.execute(ins)
-            received_payment_id = res.inserted_primary_key[0]
-            return received_payment_id
+            try:
+                res = connection.execute(ins)
+                received_payment_id = res.inserted_primary_key[0]
+                return received_payment_id
+            except sqlalchemy.exc.IntegrityError:
+                raise DuplicateReceivedPaymentError()
 
     def get_received_payments(self) -> List[ReceivedPayment]:
         """ Get all received payments. """
@@ -1091,6 +1096,15 @@ class SqueakDb:
             received_payments = [
                 self._parse_received_payment(row) for row in rows]
             return received_payments
+
+    def clear_received_payment_settle_indices(self) -> None:
+        """ Set settle_index to zero for all received payments. """
+        stmt = (
+            self.received_payments.update()
+            .values(settle_index=0)
+        )
+        with self.get_connection() as connection:
+            connection.execute(stmt)
 
     def yield_received_payments_from_index(self, start_index: int = 0) -> Iterator[ReceivedPayment]:
         """ Get all received payments. """
