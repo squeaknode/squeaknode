@@ -1100,7 +1100,7 @@ class SqueakDb:
         """ Set settle_index to zero for all received payments. """
         stmt = (
             self.received_payments.update()
-            .values(settle_index=0)
+            .values(settle_index=-1)
         )
         with self.get_connection() as connection:
             connection.execute(stmt)
