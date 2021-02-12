@@ -1097,6 +1097,15 @@ class SqueakDb:
                 self._parse_received_payment(row) for row in rows]
             return received_payments
 
+    def clear_received_payment_settle_indices(self) -> None:
+        """ Set settle_index to zero for all received payments. """
+        stmt = (
+            self.received_payments.update()
+            .values(settle_index=0)
+        )
+        with self.get_connection() as connection:
+            connection.execute(stmt)
+
     def yield_received_payments_from_index(self, start_index: int = 0) -> Iterator[ReceivedPayment]:
         """ Get all received payments. """
         s = (

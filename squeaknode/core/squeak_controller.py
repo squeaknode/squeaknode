@@ -435,4 +435,5 @@ class SqueakController:
         return self.squeak_db.get_sent_payment_summary()
 
     def reprocess_received_payments(self) -> None:
+        self.squeak_db.clear_received_payment_settle_indices()
         self.payment_processor.start_processing()
