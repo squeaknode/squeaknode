@@ -290,6 +290,10 @@ class SqueakCore:
             result_generator.cancel()
 
         # Get the stream of invoices.
+        logger.info(
+            "Getting invoices from settle_index: {}".format(
+                latest_settle_index)
+        )
         result_stream = self.lightning_client.subscribe_invoices(
             settle_index=latest_settle_index,
         )
