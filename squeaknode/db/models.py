@@ -169,7 +169,7 @@ class Models:
             Column("squeak_hash", String(64), nullable=False),
             Column("payment_hash", String(64), unique=True, nullable=False),
             Column("price_msat", Integer, nullable=False),
-            Column("settle_index", Integer, nullable=False),
+            Column("settle_index", SLBigInteger, nullable=False),
             Column("client_addr", String(64), nullable=False),
             sqlite_autoincrement=True,
         )
