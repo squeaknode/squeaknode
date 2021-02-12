@@ -49,6 +49,10 @@ class PaymentProcessor:
         while not stopped.is_set():
             try:
                 latest_settle_index = self.squeak_db.get_latest_settle_index() or 0
+                logger.info(
+                    "Processing from settle_index: {}".format(
+                        latest_settle_index)
+                )
                 for received_payment in self.squeak_core.get_received_payments(
                         get_sent_offer_for_payment_hash,
                         latest_settle_index,
