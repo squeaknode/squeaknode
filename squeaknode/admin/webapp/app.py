@@ -499,6 +499,14 @@ def create_app(handler, username, password):
             handler.handle_get_payment_summary,
         )
 
+    @app.route("/reprocessreceivedpayments", methods=["POST"])
+    @login_required
+    def reprocessreceivedpayments():
+        return handle_request(
+            squeak_admin_pb2.ReprocessReceivedPaymentsRequest(),
+            handler.handle_reprocess_received_payments,
+        )
+
     return app
 
 
