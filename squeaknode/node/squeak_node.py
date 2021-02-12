@@ -16,10 +16,10 @@ from squeaknode.db.db_engine import get_sqlite_connection_string
 from squeaknode.db.squeak_db import SqueakDb
 from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
 from squeaknode.node.payment_processor import PaymentProcessor
+from squeaknode.node.process_received_payments_worker import ProcessReceivedPaymentsWorker
 from squeaknode.node.received_payments_subscription_client import (
     OpenReceivedPaymentsSubscriptionClient,
 )
-from squeaknode.node.sent_offers_worker import SentOffersWorker
 from squeaknode.node.squeak_offer_expiry_worker import SqueakOfferExpiryWorker
 from squeaknode.node.squeak_peer_sync_worker import SqueakPeerSyncWorker
 from squeaknode.node.squeak_rate_limiter import SqueakRateLimiter
@@ -94,7 +94,7 @@ class SqueakNode:
         self.squeak_offer_expiry_worker = SqueakOfferExpiryWorker(
             squeak_controller,
         )
-        self.sent_offers_worker = SentOffersWorker(
+        self.sent_offers_worker = ProcessReceivedPaymentsWorker(
             payment_processor, self.stopped,
         )
 
