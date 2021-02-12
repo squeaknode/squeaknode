@@ -116,6 +116,7 @@ export default function ReceivedPayments() {
               reprocessReceivedPayments();
             }}>Reprocess Received Payments
           </Button>
+          This only needs to be used if the LND node is replaced.
         </div>
       </Grid>
       </>
