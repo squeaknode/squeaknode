@@ -82,6 +82,10 @@ class SqueakDb:
     def sent_offers(self):
         return self.models.sent_offers
 
+    @property
+    def squeak_has_secret_key(self):
+        return self.squeaks.c.secret_key != None  # noqa: E711
+
     def insert_squeak(self, squeak: CSqueak, block_header: CBlockHeader) -> bytes:
         """ Insert a new squeak.
 
@@ -290,12 +294,15 @@ class SqueakDb:
             .where(self.squeaks.c.n_block_height <= max_block)
             .where(
                 or_(
-                    self.squeaks.c.secret_key != None,  # noqa: E711
+                    self.squeak_has_secret_key,
                     include_locked,
                 )
             )
         )
         with self.get_connection() as connection:
+            # logger.info("Mogrify lookup_squeaks: {}.".format(
+            #     connection.connection.cursor().mogrify(s),
+            # ))
             result = connection.execute(s)
             rows = result.fetchall()
             hashes = [bytes.fromhex(row["hash"]) for row in rows]
@@ -320,7 +327,7 @@ class SqueakDb:
             )
             .where(
                 or_(
-                    self.squeaks.c.secret_key != None,  # noqa: E711
+                    self.squeak_has_secret_key,
                     include_locked,
                 )
             )
