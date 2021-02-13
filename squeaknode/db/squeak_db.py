@@ -580,45 +580,6 @@ class SqueakDb:
         with self.get_connection() as connection:
             connection.execute(stmt)
 
-    def get_unverified_block_squeaks(self) -> List[bytes]:
-        """ Get all squeaks without block header. """
-        s = select([self.squeaks.c.hash]).where(self.squeaks.c.block_header == None)  # noqa: E711
-        with self.get_connection() as connection:
-            result = connection.execute(s)
-            rows = result.fetchall()
-            hashes = [bytes.fromhex(row["hash"]) for row in rows]
-            return hashes
-
-        # sql = """
-        # SELECT hash FROM squeak
-        # WHERE block_header IS NULL;
-        # """
-        # with self.get_cursor() as curs:
-        #     curs.execute(sql)
-        #     rows = curs.fetchall()
-        #     hashes = [bytes.fromhex(row["hash"]) for row in rows]
-        #     return hashes
-
-    def mark_squeak_block_valid(self, squeak_hash: bytes, block_header):
-        """ Add the block header to a squeak. """
-        stmt = (
-            self.squeaks.update()
-            .where(self.squeaks.c.hash == squeak_hash.hex())
-            .values(block_header=block_header)
-        )
-        with self.get_connection() as connection:
-            connection.execute(stmt)
-
-        # sql = """
-        # UPDATE squeak
-        # SET block_header=%s
-        # WHERE hash=%s;
-        # """
-        # squeak_hash_str = squeak_hash.hex()
-        # with self.get_cursor() as curs:
-        #     # execute the UPDATE statement
-        #     curs.execute(sql, (block_header, squeak_hash_str,))
-
     def set_squeak_decryption_key(self, squeak_hash: bytes, secret_key: bytes):
         """ Set the decryption key of a squeak. """
         stmt = (
