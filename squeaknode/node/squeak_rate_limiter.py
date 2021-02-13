@@ -12,10 +12,10 @@ class SqueakRateLimiter:
     def __init__(
         self,
         squeak_db,
-        max_squeaks_per_address_per_hour,
+        max_squeaks_per_address_per_block,
     ):
         self.squeak_db = squeak_db
-        self.max_squeaks_per_address_per_hour = max_squeaks_per_address_per_hour
+        self.max_squeaks_per_address_per_block = max_squeaks_per_address_per_block
 
     def should_rate_limit_allow(self, squeak):
         logger.info("Checking rate limit for squeak: {!r}".format(
@@ -25,10 +25,10 @@ class SqueakRateLimiter:
             squeak)
         logger.info(
             "Current squeak count: {}, limit: {}".format(
-                current_squeak_count, self.max_squeaks_per_address_per_hour
+                current_squeak_count, self.max_squeaks_per_address_per_block
             )
         )
-        return current_squeak_count < self.max_squeaks_per_address_per_hour
+        return current_squeak_count < self.max_squeaks_per_address_per_block
 
     def _get_num_squeaks_with_address_with_block(self, squeak):
         address = str(squeak.GetAddress())

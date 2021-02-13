@@ -58,7 +58,7 @@ class SqueakNode:
         )
         squeak_rate_limiter = SqueakRateLimiter(
             squeak_db,
-            self.config.core.max_squeaks_per_address_per_hour,
+            self.config.core.max_squeaks_per_address_per_block,
         )
         payment_processor = PaymentProcessor(
             squeak_db,

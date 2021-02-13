@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 DEFAULT_NETWORK = "testnet"
 DEFAULT_PRICE_MSAT = 10000
 DEFAULT_LOG_LEVEL = "INFO"
-DEFAULT_MAX_SQUEAKS_PER_ADDRESS_PER_HOUR = 100
+DEFAULT_MAX_SQUEAKS_PER_ADDRESS_PER_BLOCK = 100
 DEFAULT_SERVER_RPC_HOST = "0.0.0.0"
 DEFAULT_SERVER_RPC_PORT = 8774
 DEFAULT_ADMIN_RPC_HOST = "0.0.0.0"
@@ -91,8 +91,8 @@ class CoreConfig(Config):
     default_peer_rpc_port = key(
         cast=int, required=False, default=DEFAULT_SERVER_RPC_PORT)
     price_msat = key(cast=int, required=False, default=DEFAULT_PRICE_MSAT)
-    max_squeaks_per_address_per_hour = key(
-        cast=int, required=False, default=DEFAULT_MAX_SQUEAKS_PER_ADDRESS_PER_HOUR)
+    max_squeaks_per_address_per_block = key(
+        cast=int, required=False, default=DEFAULT_MAX_SQUEAKS_PER_ADDRESS_PER_BLOCK)
     sqk_dir_path = key(cast=str, required=False, default=DEFAULT_SQK_DIR_PATH)
     log_level = key(cast=str, required=False, default=DEFAULT_LOG_LEVEL)
 
