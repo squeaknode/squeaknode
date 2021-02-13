@@ -25,7 +25,7 @@ class SqueakServerHandler(object):
         followed_addresses = self.squeak_controller.get_followed_addresses()
         squeak_address = str(squeak.GetAddress())
         if squeak_address not in followed_addresses:
-            raise Exception("Invalid squeak address for upload.")
+            raise Exception("Squeak address not in followed list.")
         # Save the uploaded squeak
         self.squeak_controller.save_uploaded_squeak(squeak)
 

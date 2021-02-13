@@ -108,9 +108,29 @@ def test_post_squeak_not_following(
     )
 
     squeak_msg = build_squeak_msg(squeak)
-    with pytest.raises(Exception):
+    with pytest.raises(Exception) as e:
         server_stub.UploadSqueak(
             squeak_server_pb2.UploadSqueakRequest(squeak=squeak_msg))
+        assert "Squeak address not in followed list." in e.details()
+
+
+def test_post_squeak_without_decryption_key(
+    server_stub, admin_stub, lightning_client, following_signing_key
+):
+    # Post a squeak with a direct request to the server
+    block_height, block_hash = get_latest_block_info(lightning_client)
+    squeak = make_squeak(
+        following_signing_key, "hello from itest!", block_hash, block_height
+    )
+
+    # Clear the decryption key from the squeak
+    squeak.ClearDecryptionKey()
+
+    squeak_msg = build_squeak_msg(squeak)
+    with pytest.raises(Exception) as e:
+        server_stub.UploadSqueak(
+            squeak_server_pb2.UploadSqueakRequest(squeak=squeak_msg))
+        assert "Squeak must contain decryption key." in e.details()
 
 
 def test_lookup_squeaks(server_stub, admin_stub, signing_profile_id, saved_squeak_hash):
@@ -375,8 +395,8 @@ def test_make_reply_squeak(
 
 
 def test_post_squeak_rate_limit(server_stub, admin_stub, lightning_client, following_signing_key):
-    # Make 10 squeak
-    for i in range(10):
+    # Make 11 squeak (rate limit is 5, so this should fail even with two blocks)
+    for i in range(11):
         try:
             block_height, block_hash = get_latest_block_info(lightning_client)
             squeak = make_squeak(
