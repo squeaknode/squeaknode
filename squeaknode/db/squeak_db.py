@@ -86,6 +86,10 @@ class SqueakDb:
     def squeak_has_secret_key(self):
         return self.squeaks.c.secret_key != None  # noqa: E711
 
+    @property
+    def squeak_has_no_secret_key(self):
+        return self.squeaks.c.secret_key == None  # noqa: E711
+
     def insert_squeak(self, squeak: CSqueak, block_header: CBlockHeader) -> bytes:
         """ Insert a new squeak.
 
@@ -363,7 +367,7 @@ class SqueakDb:
             .where(self.squeaks.c.author_address.in_(addresses))
             .where(self.squeaks.c.n_block_height >= min_block)
             .where(self.squeaks.c.n_block_height <= max_block)
-            .where(self.squeaks.c.secret_key == None)  # noqa: E711
+            .where(self.squeak_has_no_secret_key)
             .where(self.received_offers.c.squeak_hash == None)  # noqa: E711
         )
         with self.get_connection() as connection:
