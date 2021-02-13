@@ -5,6 +5,7 @@ from typing import Optional
 
 from squeaknode.core.block_range import BlockRange
 from squeaknode.core.received_offer_with_peer import ReceivedOfferWithPeer
+from squeaknode.core.squeak_controller import SqueakController
 from squeaknode.network.peer_client import PeerClient
 
 logger = logging.getLogger(__name__)
@@ -14,7 +15,7 @@ class PeerConnection:
 
     def __init__(
         self,
-        squeak_controller,
+        squeak_controller: SqueakController,
         peer,
         timeout_s,
     ):
@@ -140,14 +141,20 @@ class PeerConnection:
         squeak_address_str = str(squeak_address)
         if squeak_address_str not in followed_addresses:
             raise Exception("Invalid squeak address for download.")
-        self.squeak_controller.save_downloaded_squeak(squeak)
+        self.squeak_controller.save_squeak(
+            squeak,
+            require_decryption_key=False,
+        )
         logger.info("Downloaded squeak {} from peer {}".format(
             squeak_hash.hex(), self.peer
         ))
 
     def _force_download_squeak(self, squeak_hash: bytes):
         squeak = self.peer_client.download_squeak(squeak_hash)
-        self.squeak_controller.save_downloaded_squeak(squeak)
+        self.squeak_controller.save_squeak(
+            squeak,
+            require_decryption_key=False,
+        )
         logger.info("Force downloaded squeak {} from peer {}".format(
             squeak_hash.hex(), self.peer
         ))

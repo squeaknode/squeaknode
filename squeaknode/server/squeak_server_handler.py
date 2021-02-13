@@ -23,12 +23,14 @@ class SqueakServerHandler(object):
            squeak.nBlockHeight > block_range.max_block:
             raise Exception("Invalid block range for upload.")
         followed_addresses = self.squeak_controller.get_followed_addresses()
-        squeak_address = squeak.GetAddress()
-        squeak_address_str = str(squeak_address)
-        if squeak_address_str not in followed_addresses:
+        squeak_address = str(squeak.GetAddress())
+        if squeak_address not in followed_addresses:
             raise Exception("Invalid squeak address for upload.")
-        # Save the squeak
-        self.squeak_controller.save_uploaded_squeak(squeak)
+        # Save the uploaded squeak
+        self.squeak_controller.save_squeak(
+            squeak,
+            require_decryption_key=True,
+        )
 
     def handle_get_squeak(self, squeak_hash: bytes):
         logger.info("Handle get squeak by hash: {}".format(squeak_hash.hex()))

@@ -393,7 +393,8 @@ def test_post_squeak_rate_limit(server_stub, admin_stub, lightning_client, follo
         except Exception as e:
             post_squeak_exception = e
     assert post_squeak_exception is not None
-    assert "Excedeed allowed number of squeaks per block" in post_squeak_exception.details()
+    assert "Exceeded allowed number of squeaks per address per block." in \
+        post_squeak_exception.details()
 
 
 def test_make_signing_profile(server_stub, admin_stub):
