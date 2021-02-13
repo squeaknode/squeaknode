@@ -12,8 +12,8 @@ from squeaknode.admin.messages import squeak_entry_to_message
 from squeaknode.admin.messages import squeak_peer_to_message
 from squeaknode.admin.messages import squeak_profile_to_message
 from squeaknode.admin.profile_image_util import base64_string_to_bytes
-from squeaknode.core.squeak_controller import SqueakController
 from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
+from squeaknode.node.squeak_controller import SqueakController
 from squeaknode.sync.squeak_sync_controller import SqueakSyncController
 
 logger = logging.getLogger(__name__)

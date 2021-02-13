@@ -4,8 +4,8 @@ from typing import Optional
 
 from squeaknode.core.block_range import BlockRange
 from squeaknode.core.received_offer_with_peer import ReceivedOfferWithPeer
-from squeaknode.core.squeak_controller import SqueakController
 from squeaknode.network.peer_client import PeerClient
+from squeaknode.node.squeak_controller import SqueakController
 
 logger = logging.getLogger(__name__)
 
