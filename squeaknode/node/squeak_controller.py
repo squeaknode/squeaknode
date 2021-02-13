@@ -10,6 +10,7 @@ from squeak.core.signing import CSqueakAddress
 from squeaknode.core.block_range import BlockRange
 from squeaknode.core.offer import Offer
 from squeaknode.core.received_offer import ReceivedOffer
+from squeaknode.core.received_offer_with_peer import ReceivedOfferWithPeer
 from squeaknode.core.received_payment_summary import ReceivedPaymentSummary
 from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.sent_payment_summary import SentPaymentSummary
@@ -26,6 +27,7 @@ logger = logging.getLogger(__name__)
 
 
 class SqueakController:
+
     def __init__(
         self,
         squeak_db,
@@ -220,40 +222,55 @@ class SqueakController:
         )
         return self.squeak_db.insert_profile(squeak_profile)
 
-    def get_signing_profiles(self):
+    def get_signing_profiles(self) -> List[SqueakProfile]:
         return self.squeak_db.get_signing_profiles()
 
-    def get_contact_profiles(self):
+    def get_contact_profiles(self) -> List[SqueakProfile]:
         return self.squeak_db.get_contact_profiles()
 
-    def get_squeak_profile(self, profile_id: int):
-        return self.squeak_db.get_profile(profile_id)
+    def get_squeak_profile(self, profile_id: int) -> SqueakProfile:
+        profile = self.squeak_db.get_profile(profile_id)
+        if profile is None:
+            raise Exception("Profile not found with id: {}.".format(
+                profile_id,
+            ))
+        return profile
 
-    def get_squeak_profile_by_address(self, address: str):
-        return self.squeak_db.get_profile_by_address(address)
+    def get_squeak_profile_by_address(self, address: str) -> SqueakProfile:
+        profile = self.squeak_db.get_profile_by_address(address)
+        if profile is None:
+            raise Exception("Profile not found with address: {}.".format(
+                address,
+            ))
+        return profile
 
-    def get_squeak_profile_by_name(self, name: str):
-        return self.squeak_db.get_profile_by_name(name)
+    def get_squeak_profile_by_name(self, name: str) -> SqueakProfile:
+        profile = self.squeak_db.get_profile_by_name(name)
+        if profile is None:
+            raise Exception("Profile not found with name: {}.".format(
+                name,
+            ))
+        return profile
 
-    def set_squeak_profile_following(self, profile_id: int, following: bool):
+    def set_squeak_profile_following(self, profile_id: int, following: bool) -> None:
         self.squeak_db.set_profile_following(profile_id, following)
 
-    def set_squeak_profile_sharing(self, profile_id: int, sharing: bool):
+    def set_squeak_profile_sharing(self, profile_id: int, sharing: bool) -> None:
         self.squeak_db.set_profile_sharing(profile_id, sharing)
 
-    def rename_squeak_profile(self, profile_id: int, profile_name: str):
+    def rename_squeak_profile(self, profile_id: int, profile_name: str) -> None:
         self.squeak_db.set_profile_name(profile_id, profile_name)
 
-    def delete_squeak_profile(self, profile_id: int):
+    def delete_squeak_profile(self, profile_id: int) -> None:
         self.squeak_db.delete_profile(profile_id)
 
-    def set_squeak_profile_image(self, profile_id: int, profile_image: bytes):
+    def set_squeak_profile_image(self, profile_id: int, profile_image: bytes) -> None:
         self.squeak_db.set_profile_image(profile_id, profile_image)
 
-    def clear_squeak_profile_image(self, profile_id: int):
+    def clear_squeak_profile_image(self, profile_id: int) -> None:
         self.squeak_db.set_profile_image(profile_id, None)
 
-    def get_squeak_profile_private_key(self, profile_id: int):
+    def get_squeak_profile_private_key(self, profile_id: int) -> bytes:
         profile = self.get_squeak_profile(profile_id)
         if profile.private_key is None:
             raise Exception("Profile with id: {} does not have a private key.".format(
@@ -261,20 +278,17 @@ class SqueakController:
             ))
         return profile.private_key
 
-    def make_squeak(self, profile_id: int, content_str: str, replyto_hash: bytes):
+    def make_squeak(self, profile_id: int, content_str: str, replyto_hash: bytes) -> bytes:
         squeak_profile = self.squeak_db.get_profile(profile_id)
         squeak_entry = self.squeak_core.make_squeak(
             squeak_profile, content_str, replyto_hash)
         return self.save_created_squeak(squeak_entry.squeak)
-        # inserted_squeak_hash = self.squeak_db.insert_squeak(
-        #     squeak_entry.squeak, squeak_entry.block_header)
-        # return inserted_squeak_hash
 
-    def delete_squeak(self, squeak_hash: bytes):
+    def delete_squeak(self, squeak_hash: bytes) -> None:
         num_deleted_offers = self.squeak_db.delete_offers_for_squeak(
             squeak_hash)
         logger.info("Deleted number of offers : {}".format(num_deleted_offers))
-        return self.squeak_db.delete_squeak(squeak_hash)
+        self.squeak_db.delete_squeak(squeak_hash)
 
     def create_peer(self, peer_name: str, host: str, port: int):
         if len(peer_name) == 0:
@@ -319,8 +333,14 @@ class SqueakController:
     def get_buy_offers_with_peer(self, squeak_hash: bytes):
         return self.squeak_db.get_offers_with_peer(squeak_hash)
 
-    def get_buy_offer_with_peer(self, offer_id: int):
-        return self.squeak_db.get_offer_with_peer(offer_id)
+    def get_buy_offer_with_peer(self, received_offer_id: int) -> ReceivedOfferWithPeer:
+        received_offer_with_peer = self.squeak_db.get_offer_with_peer(
+            received_offer_id)
+        if received_offer_with_peer is None:
+            raise Exception("Received offer with id {} not found.".format(
+                received_offer_id,
+            ))
+        return received_offer_with_peer
 
     def pay_offer(self, received_offer_id: int) -> int:
         # Get the offer from the database
@@ -395,13 +415,13 @@ class SqueakController:
             for payment in client.get_received_payments():
                 yield payment
 
-    def get_block_range(self):
+    def get_block_range(self) -> BlockRange:
         max_block = self.squeak_core.get_best_block_height()
         block_interval = self.config.sync.block_interval
         min_block = max(0, max_block - block_interval)
         return BlockRange(min_block, max_block)
 
-    def get_network(self):
+    def get_network(self) -> str:
         return self.config.core.network
 
     def get_offer(self, squeak: CSqueak, offer: Offer, peer: SqueakPeer) -> ReceivedOffer:
@@ -455,15 +475,15 @@ class SqueakController:
             peer_id,
         )
 
-    def save_offer(self, received_offer: ReceivedOffer):
+    def save_offer(self, received_offer: ReceivedOffer) -> None:
         logger.info("Saving received offer: {}".format(received_offer))
         self.squeak_db.insert_received_offer(received_offer)
 
-    def get_followed_addresses(self):
+    def get_followed_addresses(self) -> List[str]:
         followed_profiles = self.squeak_db.get_following_profiles()
         return [profile.address for profile in followed_profiles]
 
-    def get_sharing_addresses(self):
+    def get_sharing_addresses(self) -> List[str]:
         sharing_profiles = self.squeak_db.get_sharing_profiles()
         return [profile.address for profile in sharing_profiles]
 

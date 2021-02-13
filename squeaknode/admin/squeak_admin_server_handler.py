@@ -144,8 +144,6 @@ class SqueakAdminServerHandler(object):
         profile_id = request.profile_id
         logger.info("Handle get squeak profile with id: {}".format(profile_id))
         squeak_profile = self.squeak_controller.get_squeak_profile(profile_id)
-        if squeak_profile is None:
-            raise Exception("Profile not found.")
         squeak_profile_msg = squeak_profile_to_message(squeak_profile)
         return squeak_admin_pb2.GetSqueakProfileReply(
             squeak_profile=squeak_profile_msg,
@@ -157,8 +155,6 @@ class SqueakAdminServerHandler(object):
             "Handle get squeak profile with address: {}".format(address))
         squeak_profile = self.squeak_controller.get_squeak_profile_by_address(
             address)
-        if squeak_profile is None:
-            raise Exception("Profile not found.")
         squeak_profile_msg = squeak_profile_to_message(squeak_profile)
         return squeak_admin_pb2.GetSqueakProfileByAddressReply(
             squeak_profile=squeak_profile_msg
@@ -169,8 +165,6 @@ class SqueakAdminServerHandler(object):
         logger.info("Handle get squeak profile with name: {}".format(name))
         squeak_profile = self.squeak_controller.get_squeak_profile_by_name(
             name)
-        if squeak_profile is None:
-            raise Exception("Profile not found.")
         squeak_profile_msg = squeak_profile_to_message(squeak_profile)
         return squeak_admin_pb2.GetSqueakProfileByNameReply(
             squeak_profile=squeak_profile_msg
@@ -485,8 +479,6 @@ class SqueakAdminServerHandler(object):
         offer_id = request.offer_id
         logger.info("Handle get buy offer for hash: {}".format(offer_id))
         offer = self.squeak_controller.get_buy_offer_with_peer(offer_id)
-        if offer is None:
-            raise Exception("Offer not found.")
         offer_msg = offer_entry_to_message(offer)
         return squeak_admin_pb2.GetBuyOfferReply(
             offer=offer_msg,

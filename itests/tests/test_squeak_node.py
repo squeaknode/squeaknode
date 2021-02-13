@@ -682,7 +682,10 @@ def test_delete_profile(server_stub, admin_stub, contact_profile_id):
                 profile_id=contact_profile_id,
             )
         )
-    assert "Profile not found." in str(excinfo.value)
+    assert (
+        "Profile not found with id: {}.".format(contact_profile_id)
+        in str(excinfo.value)
+    )
 
 
 def test_get_profile_private_key(server_stub, admin_stub, signing_profile_id):
