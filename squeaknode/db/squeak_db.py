@@ -98,9 +98,23 @@ class SqueakDb:
     def profile_has_no_private_key(self):
         return self.profiles.c.private_key == None  # noqa: E711
 
+    @property
+    def datetime_now(self):
+        return datetime.now(timezone.utc)
+
     def squeak_newer_than_interval_s(self, interval_s):
         return self.squeaks.c.created > \
-            datetime.now(timezone.utc) - timedelta(seconds=interval_s)
+            self.datetime_now - timedelta(seconds=interval_s)
+
+    def received_offer_is_expired(self):
+        self.datetime_now.timestamp() > \
+            self.received_offers.c.invoice_timestamp + \
+            self.received_offers.c.invoice_expiry
+
+    def sent_offer_is_expired(self):
+        self.datetime_now.timestamp() > \
+            self.sent_offers.c.invoice_timestamp + \
+            self.sent_offers.c.invoice_expiry
 
     def insert_squeak(self, squeak: CSqueak, block_header: CBlockHeader) -> bytes:
         """ Insert a new squeak.
@@ -777,8 +791,7 @@ class SqueakDb:
     def delete_expired_offers(self):
         """ Delete all expired offers. """
         s = self.received_offers.delete().where(
-            datetime.now(timezone.utc).timestamp(
-            ) > self.received_offers.c.invoice_timestamp + self.received_offers.c.invoice_expiry
+            self.received_offer_is_expired()
         )
         with self.get_connection() as connection:
             res = connection.execute(s)
@@ -936,8 +949,7 @@ class SqueakDb:
     def delete_expired_sent_offers(self):
         """ Delete all expired sent offers. """
         s = self.sent_offers.delete().where(
-            datetime.now(timezone.utc).timestamp(
-            ) > self.sent_offers.c.invoice_timestamp + self.sent_offers.c.invoice_expiry
+            self.sent_offer_is_expired()
         )
         with self.get_connection() as connection:
             res = connection.execute(s)
