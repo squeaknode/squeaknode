@@ -49,11 +49,6 @@ def price_msat():
 
 
 @pytest.fixture
-def max_squeaks_per_address_per_hour():
-    return 5000
-
-
-@pytest.fixture
 def squeak_rate_limiter():
     return mock.Mock(spec=SqueakRateLimiter)
 

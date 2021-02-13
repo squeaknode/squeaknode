@@ -26,11 +26,6 @@ def price_msat():
     return 777
 
 
-@pytest.fixture
-def max_squeaks_per_address_per_hour():
-    return 5000
-
-
 class MockBitcoinClient(BitcoinClient):
     genesis_block_info = BlockInfo(
         block_height=0,
