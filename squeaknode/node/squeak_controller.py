@@ -419,10 +419,11 @@ class SqueakController:
                     num_expired_sent_offers)
             )
 
-    def subscribe_received_payments(self, initial_index: int):
+    def subscribe_received_payments(self, initial_index: int, stopped: threading.Event):
         with OpenReceivedPaymentsSubscriptionClient(
             self.squeak_db,
             initial_index,
+            stopped,
         ) as client:
             for payment in client.get_received_payments():
                 yield payment

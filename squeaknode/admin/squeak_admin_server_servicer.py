@@ -185,7 +185,10 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         return self.handler.handle_get_received_payments(request)
 
     def SubscribeReceivedPayments(self, request, context):
-        return self.handler.handle_subscribe_received_payments(request)
+        return self.handler.handle_subscribe_received_payments(
+            request,
+            self.stopped,
+        )
 
     def GetNetwork(self, request, context):
         return self.handler.handle_get_network(request)

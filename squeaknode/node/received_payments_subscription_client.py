@@ -14,25 +14,44 @@ DEFAULT_UPDATE_INTERVAL_S = 1
 def OpenReceivedPaymentsSubscriptionClient(
     squeak_db,
     initial_index,
+    stopped,
     max_queue_size=DEFAULT_MAX_QUEUE_SIZE,
     update_interval_s=DEFAULT_UPDATE_INTERVAL_S,
 ):
     """Custom context manager for opening a received payments client."""
+    def wait_for_stop(payment_queue: queue.Queue):
+        logger.info(
+            "Waiting for stop event in OpenReceivedPaymentsSubscriptionClient...")
+        stopped.wait()
+        logger.info(
+            "Cancelled subscription in OpenReceivedPaymentsSubscriptionClient.")
+        # Put the poison pill
+        payment_queue.put(None)
 
-    # f = open(filename, method)
+    # Create the payment queue
+    q = queue.Queue(max_queue_size)
+
+    # Start the thread to wait for stop event.
+    t = threading.Thread(
+        target=wait_for_stop,
+        args=(q,),
+    )
+    t.start()
+
+    # Create the client
     client = ReceivedPaymentsSubscriptionClient(
         squeak_db,
         initial_index,
-        max_queue_size,
+        q,
         update_interval_s,
     )
+
+    # Start the client
     client.start()
     try:
-        # yield f
         yield client
-
     finally:
-        # f.close()
+        # Stop the client
         client.stop()
 
 
@@ -41,13 +60,13 @@ class ReceivedPaymentsSubscriptionClient:
         self,
         squeak_db,
         initial_index,
-        max_queue_size=DEFAULT_MAX_QUEUE_SIZE,
-        update_interval_s=DEFAULT_UPDATE_INTERVAL_S,
+        payment_queue,
+        update_interval_s,
     ):
         self.squeak_db = squeak_db
         self.initial_index = initial_index
         self.update_interval_s = update_interval_s
-        self._queue = queue.Queue(max_queue_size)
+        self._queue = payment_queue
         self._stopped = threading.Event()
 
     @property
@@ -90,6 +109,8 @@ class ReceivedPaymentsSubscriptionClient:
     def get_received_payments(self):
         while True:
             payment = self._queue.get()
+            if payment is None:
+                raise Exception("Poison pill swallowed.")
             yield payment
             self._queue.task_done()
             logger.info(
