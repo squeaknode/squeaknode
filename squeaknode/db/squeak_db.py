@@ -488,7 +488,7 @@ class SqueakDb:
                 return None
             return self._parse_squeak_profile(row)
 
-    def set_profile_following(self, profile_id: int, following: bool):
+    def set_profile_following(self, profile_id: int, following: bool) -> None:
         """ Set a profile is following. """
         stmt = (
             self.profiles.update()
@@ -498,7 +498,7 @@ class SqueakDb:
         with self.get_connection() as connection:
             connection.execute(stmt)
 
-    def set_profile_sharing(self, profile_id: int, sharing: bool):
+    def set_profile_sharing(self, profile_id: int, sharing: bool) -> None:
         """ Set a profile is sharing. """
         stmt = (
             self.profiles.update()
@@ -508,7 +508,7 @@ class SqueakDb:
         with self.get_connection() as connection:
             connection.execute(stmt)
 
-    def set_profile_name(self, profile_id: int, profile_name: str):
+    def set_profile_name(self, profile_id: int, profile_name: str) -> None:
         """ Set a profile name. """
         stmt = (
             self.profiles.update()
@@ -518,7 +518,7 @@ class SqueakDb:
         with self.get_connection() as connection:
             connection.execute(stmt)
 
-    def delete_profile(self, profile_id: int):
+    def delete_profile(self, profile_id: int) -> None:
         """ Delete a profile. """
         delete_profile_stmt = self.profiles.delete().where(
             self.profiles.c.profile_id == profile_id
@@ -526,7 +526,7 @@ class SqueakDb:
         with self.get_connection() as connection:
             connection.execute(delete_profile_stmt)
 
-    def set_profile_image(self, profile_id: int, profile_image: bytes):
+    def set_profile_image(self, profile_id: int, profile_image: bytes) -> None:
         """ Set a profile image. """
         stmt = (
             self.profiles.update()
@@ -536,7 +536,7 @@ class SqueakDb:
         with self.get_connection() as connection:
             connection.execute(stmt)
 
-    def set_squeak_decryption_key(self, squeak_hash: bytes, secret_key: bytes):
+    def set_squeak_decryption_key(self, squeak_hash: bytes, secret_key: bytes) -> None:
         """ Set the decryption key of a squeak. """
         stmt = (
             self.squeaks.update()
@@ -546,7 +546,7 @@ class SqueakDb:
         with self.get_connection() as connection:
             connection.execute(stmt)
 
-    def delete_squeak(self, squeak_hash: bytes):
+    def delete_squeak(self, squeak_hash: bytes) -> None:
         """ Delete a squeak. """
         delete_squeak_stmt = self.squeaks.delete().where(
             self.squeaks.c.hash == squeak_hash.hex()

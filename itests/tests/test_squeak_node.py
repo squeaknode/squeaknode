@@ -682,7 +682,10 @@ def test_delete_profile(server_stub, admin_stub, contact_profile_id):
                 profile_id=contact_profile_id,
             )
         )
-    assert "Profile not found." in str(excinfo.value)
+    assert (
+        "Profile not found with id: {}.".format(contact_profile_id)
+        in str(excinfo.value)
+    )
 
 
 def test_get_profile_private_key(server_stub, admin_stub, signing_profile_id):
@@ -862,7 +865,10 @@ def test_delete_peer(server_stub, admin_stub, peer_id):
                 peer_id=peer_id,
             )
         )
-    assert "Peer not found." in str(excinfo.value)
+    assert (
+        "Peer with id {} not found.".format(peer_id)
+        in str(excinfo.value)
+    )
 
 
 def test_list_channels(server_stub, admin_stub, lightning_client, saved_squeak_hash):
@@ -1290,13 +1296,18 @@ def test_download_single_squeak(
     )
 
     # Get the squeak display item (should be empty)
-    get_squeak_display_response = other_admin_stub.GetSqueakDisplay(
-        squeak_admin_pb2.GetSqueakDisplayRequest(
-            squeak_hash=saved_squeak_hash,
+    with pytest.raises(Exception) as excinfo:
+        get_squeak_display_response = other_admin_stub.GetSqueakDisplay(
+            squeak_admin_pb2.GetSqueakDisplayRequest(
+                squeak_hash=saved_squeak_hash,
+            )
         )
+    assert (
+        "Squeak not found with hash: {}.".format(saved_squeak_hash)
+        in str(excinfo.value)
     )
-    assert get_squeak_display_response.squeak_display_entry.squeak_hash == ""
-    # Get the buy offer (should be empty)
+
+    # Get buy offers for the squeak hash (should be empty)
     get_buy_offers_response = other_admin_stub.GetBuyOffers(
         squeak_admin_pb2.GetBuyOffersRequest(
             squeak_hash=saved_squeak_hash,
