@@ -60,10 +60,8 @@ class SqueakController:
         if require_decryption_key and not squeak.HasDecryptionKey():
             raise Exception(
                 "Squeak must contain decryption key.")
-        # Check if rate limit is violated.
-        if not self.squeak_rate_limiter.should_rate_limit_allow(squeak):
-            raise Exception(
-                "Exceeded allowed number of squeaks per address per block.")
+        # Check if interested
+        self.check_interested(squeak)
         # Save the squeak.
         logger.info("Saving squeak: {}".format(
             get_hash(squeak).hex(),
@@ -73,15 +71,29 @@ class SqueakController:
         # Unlock the squeak if decryption key exists.
         if squeak.HasDecryptionKey():
             decryption_key = squeak.GetDecryptionKey()
-            logger.info("Unlocking squeak: {}".format(
-                get_hash(squeak).hex(),
-            ))
             self.unlock_squeak(
                 inserted_squeak_hash,
                 decryption_key,
             )
         # Return the squeak hash.
         return inserted_squeak_hash
+
+    def check_interested(self, squeak: CSqueak) -> None:
+        # Check block range.
+        block_range = self.get_block_range()
+        if squeak.nBlockHeight < block_range.min_block or \
+           squeak.nBlockHeight > block_range.max_block:
+            raise Exception("Invalid block range for upload.")
+        # Check if address is in followed list.
+        # Use special database query to check if address in followed list.
+        followed_addresses = self.get_followed_addresses()
+        squeak_address = str(squeak.GetAddress())
+        if squeak_address not in followed_addresses:
+            raise Exception("Squeak address not in followed list.")
+        # Check if rate limit is violated.
+        if not self.squeak_rate_limiter.should_rate_limit_allow(squeak):
+            raise Exception(
+                "Exceeded allowed number of squeaks per address per block.")
 
     def get_squeak(self, squeak_hash: bytes, clear_decryption_key: bool = False):
         squeak_entry = self.squeak_db.get_squeak_entry(squeak_hash)
@@ -319,6 +331,9 @@ class SqueakController:
         return sent_payment_id
 
     def unlock_squeak(self, squeak_hash: bytes, secret_key: bytes):
+        logger.info("Unlocking squeak: {}".format(
+            squeak_hash.hex(),
+        ))
         self.squeak_db.set_squeak_decryption_key(
             squeak_hash,
             secret_key,
