@@ -47,29 +47,24 @@ class SqueakController:
     ) -> bytes:
         # Check if squeak is valid.
         squeak_entry = self.squeak_core.validate_squeak(squeak)
-
         # Check if squeak has decryption key.
         if require_decryption_key and not squeak.HasDecryptionKey():
             raise Exception(
                 "Squeak must contain decryption key.")
-
         # Check if rate limit is violated.
         if not self.squeak_rate_limiter.should_rate_limit_allow(squeak):
             raise Exception(
                 "Exceeded allowed number of squeaks per address per block.")
-
         # Save decryption key if it exists.
         decryption_key = None
         if squeak.HasDecryptionKey():
             decryption_key = squeak.GetDecryptionKey()
-
         # Save the squeak.
         logger.info("Saving squeak: {}".format(
             get_hash(squeak).hex(),
         ))
         inserted_squeak_hash = self.squeak_db.insert_squeak(
             squeak, squeak_entry.block_header)
-
         # Unlock the squeak if decryption key exists.
         if decryption_key is not None:
             logger.info("Unlocking squeak: {}".format(
@@ -79,41 +74,8 @@ class SqueakController:
                 inserted_squeak_hash,
                 decryption_key,
             )
-
         # Return the squeak hash.
         return inserted_squeak_hash
-
-    # def save_uploaded_squeak(self, squeak: CSqueak) -> bytes:
-    #     if not self.squeak_rate_limiter.should_rate_limit_allow(squeak):
-    #         raise Exception(
-    #             "Excedeed allowed number of squeaks per block.")
-    #     # Only allow uploaded squeak if decryption key included.
-    #     if not squeak.HasDecryptionKey():
-    #         raise Exception(
-    #             "Uploaded squeak must contain decryption key.")
-    #     decryption_key = squeak.GetDecryptionKey()
-    #     squeak_entry = self.squeak_core.validate_squeak(squeak)
-    #     logger.info("Saving uploaded squeak: {}".format(
-    #         get_hash(squeak).hex()
-    #     ))
-    #     inserted_squeak_hash = self.squeak_db.insert_squeak(
-    #         squeak, squeak_entry.block_header)
-    #     logger.info("Unlocking uploaded squeak: {}".format(
-    #         get_hash(squeak).hex()
-    #     ))
-    #     self.squeak_db.set_squeak_decryption_key(
-    #         inserted_squeak_hash, decryption_key
-    #     )
-    #     return inserted_squeak_hash
-
-    # def save_downloaded_squeak(self, squeak: CSqueak) -> bytes:
-    #     if not self.squeak_rate_limiter.should_rate_limit_allow(squeak):
-    #         raise Exception(
-    #             "Excedeed allowed number of squeaks per block.")
-    #     squeak_entry = self.squeak_core.validate_squeak(squeak)
-    #     inserted_squeak_hash = self.squeak_db.insert_squeak(
-    #         squeak, squeak_entry.block_header)
-    #     return inserted_squeak_hash
 
     def get_squeak(self, squeak_hash: bytes, clear_decryption_key: bool = False):
         squeak_entry = self.squeak_db.get_squeak_entry(squeak_hash)
@@ -128,13 +90,6 @@ class SqueakController:
         return self.get_squeak(squeak_hash, clear_decryption_key=True)
 
     def lookup_allowed_addresses(self, addresses: List[str]):
-        # TODO: Implement db_whitelist class
-        # following_profiles_from_addresses = self.squeak_db.get_following_profiles_from_addreses(
-        #     addresses)
-        # return [
-        #     profile.address
-        #     for profile in following_profiles_from_addresses
-        # ]
         followed_addresses = self.get_followed_addresses()
         return set(followed_addresses) & set(addresses)
 
