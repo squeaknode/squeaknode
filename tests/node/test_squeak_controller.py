@@ -3,11 +3,11 @@ import pytest
 
 from squeaknode.config.config import SqueaknodeConfig
 from squeaknode.core.lightning_address import LightningAddressHostPort
-from squeaknode.core.squeak_controller import SqueakController
 from squeaknode.core.squeak_core import SqueakCore
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.db.squeak_db import SqueakDb
 from squeaknode.node.payment_processor import PaymentProcessor
+from squeaknode.node.squeak_controller import SqueakController
 from squeaknode.node.squeak_rate_limiter import SqueakRateLimiter
 
 
