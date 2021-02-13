@@ -150,7 +150,6 @@ class SqueakDb:
                     self.profiles.c.address == self.squeaks.c.author_address,
                 )
             )
-            .where(self.squeaks.c.block_header != None)  # noqa: E711
             .order_by(
                 self.squeaks.c.n_block_height.desc(),
                 self.squeaks.c.n_time.desc(),
@@ -173,7 +172,6 @@ class SqueakDb:
                     self.profiles.c.address == self.squeaks.c.author_address,
                 )
             )
-            .where(self.squeaks.c.block_header != None)  # noqa: E711
             .where(self.squeaks.c.author_address == address)
             .where(self.squeaks.c.n_block_height >= min_block)
             .where(self.squeaks.c.n_block_height <= max_block)
@@ -223,7 +221,6 @@ class SqueakDb:
                     self.profiles.c.address == self.squeaks.c.author_address,
                 )
             )
-            .where(self.squeaks.c.block_header != None)  # noqa: E711
             .order_by(
                 ancestors.c.depth.desc(),
             )
@@ -264,7 +261,6 @@ class SqueakDb:
                     self.profiles.c.address == self.squeaks.c.author_address,
                 )
             )
-            .where(self.squeaks.c.block_header != None)  # noqa: E711
             .where(self.squeaks.c.hash_reply_sqk == squeak_hash.hex())
             .order_by(
                 self.squeaks.c.n_block_height.desc(),
@@ -281,7 +277,6 @@ class SqueakDb:
         addresses: List[str],
         min_block: int,
         max_block: int,
-        include_unverified: bool = False,
         include_locked: bool = False,
     ) -> List[bytes]:
         """ Lookup squeaks. """
@@ -299,12 +294,6 @@ class SqueakDb:
                     include_locked,
                 )
             )
-            .where(
-                or_(
-                    self.squeaks.c.block_header != None,  # noqa: E711
-                    include_unverified,
-                )
-            )
         )
         with self.get_connection() as connection:
             result = connection.execute(s)
@@ -312,34 +301,10 @@ class SqueakDb:
             hashes = [bytes.fromhex(row["hash"]) for row in rows]
             return hashes
 
-        # sql = """
-        # SELECT hash FROM squeak
-        # WHERE author_address IN %s
-        # AND n_block_height >= %s
-        # AND n_block_height <= %s
-        # AND (secret_key IS NOT NULL) OR %s
-        # AND ((block_header IS NOT NULL) OR %s);
-        # """
-        # addresses_tuple = tuple(addresses)
-
-        # if not addresses:
-        #     return []
-
-        # with self.get_cursor() as curs:
-        #     # mogrify to debug.
-        #     # logger.info(curs.mogrify(sql, (addresses_tuple, min_block, max_block)))
-        #     curs.execute(
-        #         sql, (addresses_tuple, min_block, max_block, include_locked, include_unverified)
-        #     )
-        #     rows = curs.fetchall()
-        #     hashes = [bytes.fromhex(row["hash"]) for row in rows]
-        #     return hashes
-
     def lookup_squeaks_by_time(
         self,
         addresses: List[str],
         interval_seconds: int,
-        include_unverified: bool = False,
         include_locked: bool = False,
     ) -> List[bytes]:
         """ Lookup squeaks. """
@@ -359,12 +324,6 @@ class SqueakDb:
                     include_locked,
                 )
             )
-            .where(
-                or_(
-                    self.squeaks.c.block_header != None,  # noqa: E711
-                    include_unverified,
-                )
-            )
         )
         with self.get_connection() as connection:
             result = connection.execute(s)
@@ -372,33 +331,12 @@ class SqueakDb:
             hashes = [bytes.fromhex(row["hash"]) for row in rows]
             return hashes
 
-        # sql = """
-        # SELECT hash FROM squeak
-        # WHERE author_address IN %s
-        # AND created > now() - interval '%s seconds'
-        # AND secret_key IS NOT NULL
-        # AND ((block_header IS NOT NULL) OR %s);
-        # """
-        # addresses_tuple = tuple(addresses)
-
-        # if not addresses:
-        #     return []
-
-        # with self.get_cursor() as curs:
-        #     # mogrify to debug.
-        #     # logger.info(curs.mogrify(sql, (addresses_tuple, min_block, max_block)))
-        #     curs.execute(sql, (addresses_tuple, interval_seconds, include_unverified))
-        #     rows = curs.fetchall()
-        #     hashes = [bytes.fromhex(row["hash"]) for row in rows]
-        #     return hashes
-
     def lookup_squeaks_needing_offer(
             self,
             addresses: List[str],
             min_block: int,
             max_block: int,
             peer_id: int,
-            include_unverified: bool = False
     ) -> List[bytes]:
         """ Lookup squeaks that are locked and don't have an offer. """
         if not addresses:
@@ -419,12 +357,6 @@ class SqueakDb:
             .where(self.squeaks.c.n_block_height >= min_block)
             .where(self.squeaks.c.n_block_height <= max_block)
             .where(self.squeaks.c.secret_key == None)  # noqa: E711
-            .where(
-                or_(
-                    self.squeaks.c.block_header != None,  # noqa: E711
-                    include_unverified,
-                )
-            )
             .where(self.received_offers.c.squeak_hash == None)  # noqa: E711
         )
         with self.get_connection() as connection:
@@ -432,33 +364,6 @@ class SqueakDb:
             rows = result.fetchall()
             hashes = [bytes.fromhex(row["hash"]) for row in rows]
             return hashes
-
-        # sql = """
-        # SELECT hash FROM squeak
-        # LEFT JOIN offer
-        # ON squeak.hash=offer.squeak_hash
-        # AND offer.peer_id=%s
-        # WHERE author_address IN %s
-        # AND n_block_height >= %s
-        # AND n_block_height <= %s
-        # AND secret_key IS NULL
-        # AND ((block_header IS NOT NULL) OR %s)
-        # AND offer.squeak_hash IS NULL
-        # """
-        # addresses_tuple = tuple(addresses)
-
-        # if not addresses:
-        #     return []
-
-        # with self.get_cursor() as curs:
-        #     # mogrify to debug.
-        #     # logger.info(curs.mogrify(sql, (addresses_tuple, min_block, max_block)))
-        #     curs.execute(
-        #         sql, (peer_id, addresses_tuple, min_block, max_block, include_unverified)
-        #     )
-        #     rows = curs.fetchall()
-        #     hashes = [bytes.fromhex(row["hash"]) for row in rows]
-        #     return hashes
 
     def insert_profile(self, squeak_profile: SqueakProfile) -> int:
         """ Insert a new squeak profile. """
