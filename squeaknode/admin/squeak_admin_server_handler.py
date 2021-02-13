@@ -487,9 +487,7 @@ class SqueakAdminServerHandler(object):
         # sync_result = self.squeak_controller.sync_squeaks()
         self.sync_controller.download_timeline()
         self.sync_controller.upload_timeline()
-        return squeak_admin_pb2.SyncSqueaksReply(
-            sync_result=None,
-        )
+        return squeak_admin_pb2.SyncSqueaksReply()
 
     def handle_sync_squeak(self, request):
         squeak_hash_str = request.squeak_hash
@@ -499,9 +497,7 @@ class SqueakAdminServerHandler(object):
         # TODO: Add a separate method for download squeak and upload squeak.
         self.sync_controller.download_single_squeak(squeak_hash)
         self.sync_controller.upload_single_squeak(squeak_hash)
-        return squeak_admin_pb2.SyncSqueakReply(
-            sync_result=None,
-        )
+        return squeak_admin_pb2.SyncSqueakReply()
 
     def handle_pay_offer(self, request):
         offer_id = request.offer_id

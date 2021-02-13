@@ -682,8 +682,6 @@ message SyncSqueaksRequest {
 }
 
 message SyncSqueaksReply {
-    /// The sync result
-    SyncResult sync_result = 1;
 }
 
 message PayOfferRequest {
@@ -749,19 +747,6 @@ message SyncSqueakRequest {
 }
 
 message SyncSqueakReply {
-    /// The sync result
-    SyncResult sync_result = 1;
-}
-
-message SyncResult {
-    /// The ids of completed peers
-    repeated int32 completed_peer_ids = 1;
-
-    /// The ids of failed peers
-    repeated int32 failed_peer_ids = 2;
-
-    /// The ids of timed out peers
-    repeated int32 timeout_peer_ids = 3;
 }
 
 message GetSqueakDetailsRequest {
