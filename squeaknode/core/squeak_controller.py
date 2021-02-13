@@ -11,6 +11,7 @@ from squeaknode.core.block_range import BlockRange
 from squeaknode.core.offer import Offer
 from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.received_payment_summary import ReceivedPaymentSummary
+from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.sent_payment_summary import SentPaymentSummary
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
@@ -107,7 +108,11 @@ class SqueakController:
             raise Exception(
                 "Exceeded allowed number of squeaks per address per block.")
 
-    def get_squeak(self, squeak_hash: bytes, clear_decryption_key: bool = False):
+    def get_squeak(
+            self,
+            squeak_hash: bytes,
+            clear_decryption_key: bool = False,
+    ) -> CSqueak:
         squeak_entry = self.squeak_db.get_squeak_entry(squeak_hash)
         if squeak_entry is None:
             return None
@@ -116,14 +121,17 @@ class SqueakController:
             squeak.ClearDecryptionKey()
         return squeak
 
-    def get_squeak_without_decryption_key(self, squeak_hash: bytes):
+    def get_squeak_without_decryption_key(
+            self,
+            squeak_hash: bytes,
+    ) -> CSqueak:
         return self.get_squeak(squeak_hash, clear_decryption_key=True)
 
     def lookup_allowed_addresses(self, addresses: List[str]):
         followed_addresses = self.get_followed_addresses()
         return set(followed_addresses) & set(addresses)
 
-    def get_buy_offer(self, squeak_hash: bytes, client_addr: str):
+    def get_buy_offer(self, squeak_hash: bytes, client_addr: str) -> Offer:
         # Check if there is an existing offer for the hash/client_addr combination
         sent_offer = self.get_saved_sent_offer(squeak_hash, client_addr)
         return self.squeak_core.package_offer(
@@ -132,7 +140,7 @@ class SqueakController:
             self.config.lnd.port,
         )
 
-    def get_saved_sent_offer(self, squeak_hash: bytes, client_addr: str):
+    def get_saved_sent_offer(self, squeak_hash: bytes, client_addr: str) -> SentOffer:
         with self.create_offer_lock:
             # Check if there is an existing offer for the hash/client_addr combination
             sent_offer = self.squeak_db.get_sent_offer_by_squeak_hash_and_client_addr(
@@ -152,7 +160,7 @@ class SqueakController:
             self.squeak_db.insert_sent_offer(sent_offer)
             return sent_offer
 
-    def create_signing_profile(self, profile_name: str):
+    def create_signing_profile(self, profile_name: str) -> int:
         if len(profile_name) == 0:
             raise Exception(
                 "Profile name cannot be empty.",
@@ -173,7 +181,7 @@ class SqueakController:
         )
         return self.squeak_db.insert_profile(squeak_profile)
 
-    def import_signing_profile(self, profile_name: str, private_key: str):
+    def import_signing_profile(self, profile_name: str, private_key: str) -> int:
         signing_key = CSigningKey(private_key)
         verifying_key = signing_key.get_verifying_key()
         address = CSqueakAddress.from_verifying_key(verifying_key)
@@ -190,7 +198,7 @@ class SqueakController:
         )
         return self.squeak_db.insert_profile(squeak_profile)
 
-    def create_contact_profile(self, profile_name: str, squeak_address: str):
+    def create_contact_profile(self, profile_name: str, squeak_address: str) -> int:
         if len(profile_name) == 0:
             raise Exception(
                 "Profile name cannot be empty.",
