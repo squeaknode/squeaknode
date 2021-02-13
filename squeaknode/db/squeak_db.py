@@ -371,6 +371,26 @@ class SqueakDb:
             hashes = [bytes.fromhex(row["hash"]) for row in rows]
             return hashes
 
+    def number_of_squeaks_with_address_with_block(
+        self,
+        address: str,
+        block_height: int,
+    ) -> int:
+        """ Get number of squeaks with address with block height. """
+        s = (
+            select([
+                func.count().label("num_squeaks"),
+            ])
+            .select_from(self.received_payments)
+            .where(self.squeaks.c.author_address == address)
+            .where(self.squeaks.c.n_block_height == block_height)
+        )
+        with self.get_connection() as connection:
+            result = connection.execute(s)
+            row = result.fetchone()
+            num_squeaks = row["num_squeaks"]
+            return num_squeaks
+
     def lookup_squeaks_needing_offer(
             self,
             addresses: List[str],
