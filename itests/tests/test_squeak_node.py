@@ -393,7 +393,6 @@ def test_post_squeak_rate_limit(server_stub, admin_stub, lightning_client, follo
         except Exception as e:
             post_squeak_exception = e
     assert post_squeak_exception is not None
-    print("post_squeak_exception: {}".format(post_squeak_exception))
     assert "Excedeed allowed number of squeaks per block" in post_squeak_exception.details()
 
 
