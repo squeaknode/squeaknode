@@ -962,19 +962,26 @@ class SqueakDb:
 
     def _parse_squeak_entry(self, row) -> SqueakEntry:
         secret_key_column = row["secret_key"]
-        secret_key = bytes.fromhex(
-            secret_key_column) if secret_key_column else b""
+        secret_key = (
+            bytes.fromhex(secret_key_column) if
+            secret_key_column else b""
+        )
         squeak = CSqueak.deserialize(row["squeak"])
         if secret_key:
             squeak.SetDecryptionKey(secret_key)
         block_header_column = row["block_header"]
-        block_header_bytes = bytes(
-            block_header_column) if block_header_column else None
-        block_header = (
-            parse_block_header(
-                block_header_bytes) if block_header_bytes else None
+        block_header_bytes = (
+            bytes(block_header_column) if
+            block_header_column else None
         )
-        return SqueakEntry(squeak=squeak, block_header=block_header)
+        block_header = (
+            parse_block_header(block_header_bytes) if
+            block_header_bytes else None
+        )
+        return SqueakEntry(
+            squeak=squeak,
+            block_header=block_header,
+        )
 
     def _parse_squeak_profile(self, row) -> SqueakProfile:
         private_key_column = row["private_key"]
