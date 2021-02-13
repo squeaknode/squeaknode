@@ -98,6 +98,10 @@ class SqueakDb:
     def profile_has_no_private_key(self):
         return self.profiles.c.private_key == None  # noqa: E711
 
+    def squeak_older_than_interval_s(self, interval_s):
+        return self.squeaks.c.created > \
+            datetime.now(timezone.utc) - timedelta(seconds=interval_s)
+
     def insert_squeak(self, squeak: CSqueak, block_header: CBlockHeader) -> bytes:
         """ Insert a new squeak.
 
@@ -334,8 +338,7 @@ class SqueakDb:
             select([self.squeaks.c.hash])
             .where(self.squeaks.c.author_address.in_(addresses))
             .where(
-                self.squeaks.c.created > datetime.now(
-                    timezone.utc) - timedelta(seconds=interval_seconds)
+                self.squeak_older_than_interval_s(interval_seconds)
             )
             .where(
                 or_(
