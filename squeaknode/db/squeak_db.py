@@ -122,13 +122,10 @@ class SqueakDb:
 
     def insert_squeak(self, squeak: CSqueak, block_header: CBlockHeader) -> bytes:
         """ Insert a new squeak.
+        TODO: This method should not modify the squeak object (decryption key).
 
         Return the hash (bytes) of the inserted squeak.
         """
-        secret_key_hex = (
-            squeak.GetDecryptionKey().hex() if squeak.HasDecryptionKey() else None
-        )
-        squeak.ClearDecryptionKey()
         ins = self.squeaks.insert().values(
             hash=get_hash(squeak).hex(),
             squeak=squeak.serialize(),
@@ -137,7 +134,7 @@ class SqueakDb:
             n_block_height=squeak.nBlockHeight,
             n_time=squeak.nTime,
             author_address=str(squeak.GetAddress()),
-            secret_key=secret_key_hex,
+            secret_key=None,
             block_header=block_header.serialize(),
         )
         with self.get_connection() as connection:

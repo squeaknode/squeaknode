@@ -31,7 +31,9 @@ class SqueakServerHandler(object):
 
     def handle_get_squeak(self, squeak_hash: bytes):
         logger.info("Handle get squeak by hash: {}".format(squeak_hash.hex()))
-        return self.squeak_controller.get_public_squeak(squeak_hash)
+        return self.squeak_controller.get_squeak_without_decryption_key(
+            squeak_hash,
+        )
 
     def handle_lookup_squeaks_to_download(self, request):
         network = request.network

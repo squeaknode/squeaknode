@@ -46,7 +46,6 @@ class SqueakController:
     def save_downloaded_squeak(self, squeak: CSqueak) -> bytes:
         return self.save_squeak(squeak, require_decryption_key=False)
 
-    # TODO
     def save_created_squeak(self, squeak: CSqueak) -> bytes:
         return self.save_squeak(squeak, require_decryption_key=True)
 
@@ -65,10 +64,6 @@ class SqueakController:
         if not self.squeak_rate_limiter.should_rate_limit_allow(squeak):
             raise Exception(
                 "Exceeded allowed number of squeaks per address per block.")
-        # Save decryption key if it exists.
-        decryption_key = None
-        if squeak.HasDecryptionKey():
-            decryption_key = squeak.GetDecryptionKey()
         # Save the squeak.
         logger.info("Saving squeak: {}".format(
             get_hash(squeak).hex(),
@@ -76,7 +71,8 @@ class SqueakController:
         inserted_squeak_hash = self.squeak_db.insert_squeak(
             squeak, squeak_entry.block_header)
         # Unlock the squeak if decryption key exists.
-        if decryption_key is not None:
+        if squeak.HasDecryptionKey():
+            decryption_key = squeak.GetDecryptionKey()
             logger.info("Unlocking squeak: {}".format(
                 get_hash(squeak).hex(),
             ))
@@ -96,7 +92,7 @@ class SqueakController:
             squeak.ClearDecryptionKey()
         return squeak
 
-    def get_public_squeak(self, squeak_hash: bytes):
+    def get_squeak_without_decryption_key(self, squeak_hash: bytes):
         return self.get_squeak(squeak_hash, clear_decryption_key=True)
 
     def lookup_allowed_addresses(self, addresses: List[str]):
@@ -237,10 +233,10 @@ class SqueakController:
         squeak_profile = self.squeak_db.get_profile(profile_id)
         squeak_entry = self.squeak_core.make_squeak(
             squeak_profile, content_str, replyto_hash)
-        # return self.save_created_squeak(squeak_entry.squeak)
-        inserted_squeak_hash = self.squeak_db.insert_squeak(
-            squeak_entry.squeak, squeak_entry.block_header)
-        return inserted_squeak_hash
+        return self.save_created_squeak(squeak_entry.squeak)
+        # inserted_squeak_hash = self.squeak_db.insert_squeak(
+        #     squeak_entry.squeak, squeak_entry.block_header)
+        # return inserted_squeak_hash
 
     def delete_squeak(self, squeak_hash: bytes):
         num_deleted_offers = self.squeak_db.delete_offers_for_squeak(
