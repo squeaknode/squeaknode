@@ -428,16 +428,6 @@ class SqueakDb:
             profiles = [self._parse_squeak_profile(row) for row in rows]
             return profiles
 
-        # sql = """
-        # SELECT * FROM profile
-        # WHERE private_key IS NOT NULL;
-        # """
-        # with self.get_cursor() as curs:
-        #     curs.execute(sql)
-        #     rows = curs.fetchall()
-        #     profiles = [self._parse_squeak_profile(row) for row in rows]
-        #     return profiles
-
     def get_contact_profiles(self) -> List[SqueakProfile]:
         """ Get all contact profiles. """
         s = select([self.profiles]).where(self.profile_has_no_private_key)
@@ -446,16 +436,6 @@ class SqueakDb:
             rows = result.fetchall()
             profiles = [self._parse_squeak_profile(row) for row in rows]
             return profiles
-
-        # sql = """
-        # SELECT * FROM profile
-        # WHERE private_key IS NULL;
-        # """
-        # with self.get_cursor() as curs:
-        #     curs.execute(sql)
-        #     rows = curs.fetchall()
-        #     profiles = [self._parse_squeak_profile(row) for row in rows]
-        #     return profiles
 
     def get_following_profiles(self) -> List[SqueakProfile]:
         """ Get all following profiles. """
@@ -488,16 +468,6 @@ class SqueakDb:
             profiles = [self._parse_squeak_profile(row) for row in rows]
             return profiles
 
-        # sql = """
-        # SELECT * FROM profile
-        # WHERE sharing;
-        # """
-        # with self.get_cursor() as curs:
-        #     curs.execute(sql)
-        #     rows = curs.fetchall()
-        #     profiles = [self._parse_squeak_profile(row) for row in rows]
-        #     return profiles
-
     def get_profile(self, profile_id: int) -> Optional[SqueakProfile]:
         """ Get a profile. """
         s = select([self.profiles]).where(
@@ -509,13 +479,6 @@ class SqueakDb:
                 return None
             return self._parse_squeak_profile(row)
 
-        # sql = """
-        # SELECT * FROM profile WHERE profile_id=%s"""
-        # with self.get_cursor() as curs:
-        #     curs.execute(sql, (profile_id,))
-        #     row = curs.fetchone()
-        #     return self._parse_squeak_profile(row)
-
     def get_profile_by_address(self, address: str) -> Optional[SqueakProfile]:
         """ Get a profile by address. """
         s = select([self.profiles]).where(self.profiles.c.address == address)
@@ -525,15 +488,6 @@ class SqueakDb:
             if row is None:
                 return None
             return self._parse_squeak_profile(row)
-
-        # sql = """
-        # SELECT * FROM profile
-        # WHERE address=%s;
-        # """
-        # with self.get_cursor() as curs:
-        #     curs.execute(sql, (address,))
-        #     row = curs.fetchone()
-        #     return self._parse_squeak_profile(row)
 
     def get_profile_by_name(self, name: str) -> Optional[SqueakProfile]:
         """ Get a profile by name. """
@@ -555,14 +509,6 @@ class SqueakDb:
         with self.get_connection() as connection:
             connection.execute(stmt)
 
-        # sql = """
-        # UPDATE profile
-        # SET following=%s
-        # WHERE profile_id=%s;
-        # """
-        # with self.get_cursor() as curs:
-        #     curs.execute(sql, (following, profile_id,))
-
     def set_profile_sharing(self, profile_id: int, sharing: bool):
         """ Set a profile is sharing. """
         stmt = (
@@ -572,14 +518,6 @@ class SqueakDb:
         )
         with self.get_connection() as connection:
             connection.execute(stmt)
-
-        # sql = """
-        # UPDATE profile
-        # SET sharing=%s
-        # WHERE profile_id=%s;
-        # """
-        # with self.get_cursor() as curs:
-        #     curs.execute(sql, (sharing, profile_id,))
 
     def set_profile_name(self, profile_id: int, profile_name: str):
         """ Set a profile name. """
@@ -626,14 +564,6 @@ class SqueakDb:
         )
         with self.get_connection() as connection:
             connection.execute(delete_squeak_stmt)
-
-        # sql = """
-        # DELETE FROM squeak
-        # WHERE squeak.hash=%s
-        # """
-        # squeak_hash_str = squeak_hash.hex()
-        # with self.get_cursor() as curs:
-        #     curs.execute(sql, (squeak_hash_str,))
 
     def insert_peer(self, squeak_peer: SqueakPeer) -> int:
         """ Insert a new squeak peer. """
@@ -801,16 +731,6 @@ class SqueakDb:
             res = connection.execute(s)
             deleted_offers = res.rowcount
             return deleted_offers
-
-        # sql = """
-        # DELETE FROM offer
-        # WHERE now() > to_timestamp(invoice_timestamp + invoice_expiry)
-        # RETURNING *;
-        # """
-        # with self.get_cursor() as curs:
-        #     curs.execute(sql)
-        #     rows = curs.fetchall()
-        #     return len(rows)
 
     def delete_offers_for_squeak(self, squeak_hash: bytes):
         """ Delete all offers for a squeak hash. """
