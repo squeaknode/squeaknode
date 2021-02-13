@@ -90,6 +90,14 @@ class SqueakDb:
     def squeak_has_no_secret_key(self):
         return self.squeaks.c.secret_key == None  # noqa: E711
 
+    @property
+    def profile_has_private_key(self):
+        return self.profiles.c.private_key != None  # noqa: E711
+
+    @property
+    def profile_has_no_private_key(self):
+        return self.profiles.c.private_key == None  # noqa: E711
+
     def insert_squeak(self, squeak: CSqueak, block_header: CBlockHeader) -> bytes:
         """ Insert a new squeak.
 
@@ -392,7 +400,7 @@ class SqueakDb:
 
     def get_signing_profiles(self) -> List[SqueakProfile]:
         """ Get all signing profiles. """
-        s = select([self.profiles]).where(self.profiles.c.private_key != None)  # noqa: E711
+        s = select([self.profiles]).where(self.profile_has_private_key)
         with self.get_connection() as connection:
             result = connection.execute(s)
             rows = result.fetchall()
@@ -411,7 +419,7 @@ class SqueakDb:
 
     def get_contact_profiles(self) -> List[SqueakProfile]:
         """ Get all contact profiles. """
-        s = select([self.profiles]).where(self.profiles.c.private_key == None)  # noqa: E711
+        s = select([self.profiles]).where(self.profile_has_no_private_key)
         with self.get_connection() as connection:
             result = connection.execute(s)
             rows = result.fetchall()
