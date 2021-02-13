@@ -47,12 +47,17 @@ def OpenReceivedPaymentsSubscriptionClient(
     )
 
     # Start the client
+    logger.info("Starting received payment client...")
     client.start()
     try:
+        logger.info("Before yielding received payment client...")
         yield client
+        logger.info("After yielding received payment client...")
     finally:
+        logger.info("Stopping received payment client...")
         # Stop the client
         client.stop()
+        logger.info("Stopped received payment client...")
 
 
 class ReceivedPaymentsSubscriptionClient:
