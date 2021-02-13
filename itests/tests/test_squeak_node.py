@@ -374,13 +374,13 @@ def test_make_reply_squeak(
     ]
 
 
-def test_post_squeak_rate_limit(server_stub, admin_stub, lightning_client, nonfollowing_signing_key):
+def test_post_squeak_rate_limit(server_stub, admin_stub, lightning_client, following_signing_key):
     # Make 10 squeak
     for i in range(10):
         try:
             block_height, block_hash = get_latest_block_info(lightning_client)
             squeak = make_squeak(
-                nonfollowing_signing_key,
+                following_signing_key,
                 "hello from itest!",
                 block_hash,
                 block_height,
@@ -389,9 +389,12 @@ def test_post_squeak_rate_limit(server_stub, admin_stub, lightning_client, nonfo
             server_stub.UploadSqueak(
                 squeak_server_pb2.UploadSqueakRequest(squeak=squeak_msg)
             )
+            post_squeak_exception = None
         except Exception as e:
             post_squeak_exception = e
     assert post_squeak_exception is not None
+    print("post_squeak_exception: {}".format(post_squeak_exception))
+    assert "Excedeed allowed number of squeaks per block" in post_squeak_exception.details()
 
 
 def test_make_signing_profile(server_stub, admin_stub):
