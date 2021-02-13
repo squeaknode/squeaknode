@@ -98,7 +98,7 @@ class SqueakDb:
     def profile_has_no_private_key(self):
         return self.profiles.c.private_key == None  # noqa: E711
 
-    def squeak_older_than_interval_s(self, interval_s):
+    def squeak_newer_than_interval_s(self, interval_s):
         return self.squeaks.c.created > \
             datetime.now(timezone.utc) - timedelta(seconds=interval_s)
 
@@ -338,7 +338,7 @@ class SqueakDb:
             select([self.squeaks.c.hash])
             .where(self.squeaks.c.author_address.in_(addresses))
             .where(
-                self.squeak_older_than_interval_s(interval_seconds)
+                self.squeak_newer_than_interval_s(interval_seconds)
             )
             .where(
                 or_(
