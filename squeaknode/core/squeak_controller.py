@@ -41,18 +41,29 @@ class SqueakController:
         self.create_offer_lock = threading.Lock()
 
     def save_uploaded_squeak(self, squeak: CSqueak) -> bytes:
-        return self.save_squeak(squeak, require_decryption_key=True)
+        return self.save_squeak(
+            squeak,
+            require_decryption_key=True,
+        )
 
-    def save_downloaded_squeak(self, squeak: CSqueak) -> bytes:
-        return self.save_squeak(squeak, require_decryption_key=False)
+    def save_downloaded_squeak(self, squeak: CSqueak, skip_interested_check: bool = False) -> bytes:
+        return self.save_squeak(
+            squeak,
+            require_decryption_key=False,
+            skip_interested_check=skip_interested_check,
+        )
 
     def save_created_squeak(self, squeak: CSqueak) -> bytes:
-        return self.save_squeak(squeak, require_decryption_key=True)
+        return self.save_squeak(
+            squeak,
+            require_decryption_key=True,
+        )
 
     def save_squeak(
             self,
             squeak: CSqueak,
             require_decryption_key: bool,
+            skip_interested_check: bool = False,
     ) -> bytes:
         # Check if squeak is valid.
         squeak_entry = self.squeak_core.validate_squeak(squeak)
@@ -61,7 +72,8 @@ class SqueakController:
             raise Exception(
                 "Squeak must contain decryption key.")
         # Check if interested
-        self.check_interested(squeak)
+        if not skip_interested_check:
+            self.check_interested(squeak)
         # Save the squeak.
         logger.info("Saving squeak: {}".format(
             get_hash(squeak).hex(),

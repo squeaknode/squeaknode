@@ -136,6 +136,7 @@ class PeerConnection:
         squeak = self.peer_client.download_squeak(squeak_hash)
         self.squeak_controller.save_downloaded_squeak(
             squeak,
+            skip_interested_check=True,
         )
 
     def _download_offer(self, squeak_hash: bytes):
