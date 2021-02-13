@@ -99,6 +99,10 @@ class SqueakDb:
         return self.profiles.c.private_key == None  # noqa: E711
 
     @property
+    def received_offer_does_not_exist(self):
+        return self.received_offers.c.squeak_hash == None  # noqa: E711
+
+    @property
     def datetime_now(self):
         return datetime.now(timezone.utc)
 
@@ -393,7 +397,7 @@ class SqueakDb:
             .where(self.squeaks.c.n_block_height >= min_block)
             .where(self.squeaks.c.n_block_height <= max_block)
             .where(self.squeak_has_no_secret_key)
-            .where(self.received_offers.c.squeak_hash == None)  # noqa: E711
+            .where(self.received_offer_does_not_exist)
         )
         with self.get_connection() as connection:
             result = connection.execute(s)
