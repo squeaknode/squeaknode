@@ -141,9 +141,8 @@ class PeerConnection:
         squeak_address_str = str(squeak_address)
         if squeak_address_str not in followed_addresses:
             raise Exception("Invalid squeak address for download.")
-        self.squeak_controller.save_squeak(
+        self.squeak_controller.save_downloaded_squeak(
             squeak,
-            require_decryption_key=False,
         )
         logger.info("Downloaded squeak {} from peer {}".format(
             squeak_hash.hex(), self.peer
@@ -151,9 +150,8 @@ class PeerConnection:
 
     def _force_download_squeak(self, squeak_hash: bytes):
         squeak = self.peer_client.download_squeak(squeak_hash)
-        self.squeak_controller.save_squeak(
+        self.squeak_controller.save_downloaded_squeak(
             squeak,
-            require_decryption_key=False,
         )
         logger.info("Force downloaded squeak {} from peer {}".format(
             squeak_hash.hex(), self.peer

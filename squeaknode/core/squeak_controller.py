@@ -40,6 +40,16 @@ class SqueakController:
         self.config = config
         self.create_offer_lock = threading.Lock()
 
+    def save_uploaded_squeak(self, squeak: CSqueak) -> bytes:
+        return self.save_squeak(squeak, require_decryption_key=True)
+
+    def save_downloaded_squeak(self, squeak: CSqueak) -> bytes:
+        return self.save_squeak(squeak, require_decryption_key=False)
+
+    # TODO
+    def save_created_squeak(self, squeak: CSqueak) -> bytes:
+        return self.save_squeak(squeak, require_decryption_key=True)
+
     def save_squeak(
             self,
             squeak: CSqueak,
