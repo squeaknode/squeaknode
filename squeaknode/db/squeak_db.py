@@ -342,34 +342,25 @@ class SqueakDb:
             hashes = [bytes.fromhex(row["hash"]) for row in rows]
             return hashes
 
-    def lookup_squeaks_by_time(
+    def number_of_squeaks_with_address_with_block(
         self,
-        addresses: List[str],
-        interval_seconds: int,
-        include_locked: bool = False,
-    ) -> List[bytes]:
-        """ Lookup squeaks. """
-        if not addresses:
-            return []
-
+        address: str,
+        block_height: int,
+    ) -> int:
+        """ Get number of squeaks with address with block height. """
         s = (
-            select([self.squeaks.c.hash])
-            .where(self.squeaks.c.author_address.in_(addresses))
-            .where(
-                self.squeak_newer_than_interval_s(interval_seconds)
-            )
-            .where(
-                or_(
-                    self.squeak_has_secret_key,
-                    include_locked,
-                )
-            )
+            select([
+                func.count().label("num_squeaks"),
+            ])
+            .select_from(self.received_payments)
+            .where(self.squeaks.c.author_address == address)
+            .where(self.squeaks.c.n_block_height == block_height)
         )
         with self.get_connection() as connection:
             result = connection.execute(s)
-            rows = result.fetchall()
-            hashes = [bytes.fromhex(row["hash"]) for row in rows]
-            return hashes
+            row = result.fetchone()
+            num_squeaks = row["num_squeaks"]
+            return num_squeaks
 
     def lookup_squeaks_needing_offer(
             self,

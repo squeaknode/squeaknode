@@ -19,9 +19,10 @@ class SqueakRateLimiter:
 
     def should_rate_limit_allow(self, squeak):
         logger.info("Checking rate limit for squeak: {!r}".format(
-            get_hash(squeak)
+            get_hash(squeak).hex(),
         ))
-        current_squeak_count = self._get_current_squeak_count(squeak)
+        current_squeak_count = self._get_num_squeaks_with_address_with_block(
+            squeak)
         logger.info(
             "Current squeak count: {}, limit: {}".format(
                 current_squeak_count, self.max_squeaks_per_address_per_hour
@@ -29,22 +30,16 @@ class SqueakRateLimiter:
         )
         return current_squeak_count < self.max_squeaks_per_address_per_hour
 
-    def _get_current_squeak_count(self, squeak):
-        squeak_address = self._get_squeak_address(squeak)
-        return self._get_num_squeaks_in_last_hour(squeak_address)
-
-    def _get_num_squeaks_in_last_hour(self, squeak_address):
+    def _get_num_squeaks_with_address_with_block(self, squeak):
+        address = str(squeak.GetAddress())
+        block_height = squeak.nBlockHeight
         logger.info(
-            "Getting squeak count for last hour for squeak address: {}".format(
-                squeak_address
+            "Getting squeak count for address: {} with height: {}".format(
+                address,
+                block_height,
             )
         )
-        hashes = self.squeak_db.lookup_squeaks_by_time(
-            [squeak_address],
-            HOUR_IN_SECONDS,
+        return self.squeak_db.number_of_squeaks_with_address_with_block(
+            address,
+            block_height,
         )
-        return len(hashes)
-
-    def _get_squeak_address(self, squeak):
-        address = squeak.GetAddress()
-        return str(address)
