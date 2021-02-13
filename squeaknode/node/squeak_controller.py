@@ -14,6 +14,8 @@ from squeaknode.core.received_offer_with_peer import ReceivedOfferWithPeer
 from squeaknode.core.received_payment_summary import ReceivedPaymentSummary
 from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.sent_payment_summary import SentPaymentSummary
+from squeaknode.core.sent_payment_with_peer import SentPaymentWithPeer
+from squeaknode.core.squeak_entry_with_profile import SqueakEntryWithProfile
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.util import get_hash
@@ -306,8 +308,13 @@ class SqueakController:
         )
         return self.squeak_db.insert_peer(squeak_peer)
 
-    def get_peer(self, peer_id: int):
-        return self.squeak_db.get_peer(peer_id)
+    def get_peer(self, peer_id: int) -> SqueakPeer:
+        peer = self.squeak_db.get_peer(peer_id)
+        if peer is None:
+            raise Exception("Peer with id {} not found.".format(
+                peer_id,
+            ))
+        return peer
 
     def get_peers(self):
         return self.squeak_db.get_peers()
@@ -379,11 +386,16 @@ class SqueakController:
             secret_key,
         )
 
-    def get_sent_payments(self):
+    def get_sent_payments(self) -> List[SentPaymentWithPeer]:
         return self.squeak_db.get_sent_payments()
 
-    def get_sent_payment(self, sent_payment_id: int):
-        return self.squeak_db.get_sent_payment(sent_payment_id)
+    def get_sent_payment(self, sent_payment_id: int) -> SentPaymentWithPeer:
+        sent_payment = self.squeak_db.get_sent_payment(sent_payment_id)
+        if sent_payment is None:
+            raise Exception("Sent payment not found with id: {}.".format(
+                sent_payment_id,
+            ))
+        return sent_payment
 
     def get_sent_offers(self):
         return self.squeak_db.get_sent_offers()
@@ -427,8 +439,14 @@ class SqueakController:
     def get_offer(self, squeak: CSqueak, offer: Offer, peer: SqueakPeer) -> ReceivedOffer:
         return self.squeak_core.unpack_offer(squeak, offer, peer)
 
-    def get_squeak_entry_with_profile(self, squeak_hash: bytes):
-        return self.squeak_db.get_squeak_entry_with_profile(squeak_hash)
+    def get_squeak_entry_with_profile(self, squeak_hash: bytes) -> SqueakEntryWithProfile:
+        squeak_entry_with_profile = self.squeak_db.get_squeak_entry_with_profile(
+            squeak_hash)
+        if squeak_entry_with_profile is None:
+            raise Exception("Squeak not found with hash: {}.".format(
+                squeak_hash.hex(),
+            ))
+        return squeak_entry_with_profile
 
     def get_timeline_squeak_entries_with_profile(self):
         return self.squeak_db.get_timeline_squeak_entries_with_profile()

@@ -269,13 +269,12 @@ class SqueakAdminServerHandler(object):
         logger.info(
             "Handle get squeak display entry for hash: {}".format(squeak_hash_str))
         squeak_entry_with_profile = (
-            self.squeak_controller.get_squeak_entry_with_profile(squeak_hash)
+            self.squeak_controller.get_squeak_entry_with_profile(
+                squeak_hash
+            )
         )
-        if squeak_entry_with_profile is None:
-            display_message = None
-        else:
-            display_message = squeak_entry_to_message(
-                squeak_entry_with_profile)
+        display_message = squeak_entry_to_message(
+            squeak_entry_with_profile)
         return squeak_admin_pb2.GetSqueakDisplayReply(
             squeak_display_entry=display_message
         )
@@ -405,8 +404,6 @@ class SqueakAdminServerHandler(object):
         peer_id = request.peer_id
         logger.info("Handle get squeak peer with id: {}".format(peer_id))
         squeak_peer = self.squeak_controller.get_peer(peer_id)
-        if squeak_peer is None:
-            raise Exception("Peer not found.")
         squeak_peer_msg = squeak_peer_to_message(squeak_peer)
         return squeak_admin_pb2.GetPeerReply(
             squeak_peer=squeak_peer_msg,
@@ -416,7 +413,8 @@ class SqueakAdminServerHandler(object):
         logger.info("Handle get squeak peers")
         squeak_peers = self.squeak_controller.get_peers()
         squeak_peer_msgs = [
-            squeak_peer_to_message(squeak_peer) for squeak_peer in squeak_peers
+            squeak_peer_to_message(squeak_peer)
+            for squeak_peer in squeak_peers
         ]
         return squeak_admin_pb2.GetPeersReply(
             squeak_peers=squeak_peer_msgs,
@@ -529,8 +527,6 @@ class SqueakAdminServerHandler(object):
         logger.info(
             "Handle get sent payment with id: {}".format(sent_payment_id))
         sent_payment = self.squeak_controller.get_sent_payment(sent_payment_id)
-        if sent_payment is None:
-            raise Exception("SentPayment not found.")
         sent_payment_msg = sent_payment_with_peer_to_message(sent_payment)
         return squeak_admin_pb2.GetSentPaymentReply(
             sent_payment=sent_payment_msg,
@@ -546,8 +542,6 @@ class SqueakAdminServerHandler(object):
                 squeak_hash
             )
         )
-        if squeak_entry_with_profile is None:
-            raise Exception("Squeak details not found.")
         detail_message = squeak_entry_to_detail_message(
             squeak_entry_with_profile)
         return squeak_admin_pb2.GetSqueakDetailsReply(
