@@ -9,9 +9,6 @@ from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
 
 logger = logging.getLogger(__name__)
 
-DEFAULT_MAX_QUEUE_SIZE = 1000
-DEFAULT_UPDATE_INTERVAL_S = 1
-
 
 class SettledInvoiceSubscriptionClient:
     def __init__(
