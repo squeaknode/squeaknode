@@ -7,9 +7,6 @@ from signal import SIGTERM
 from threading import Event
 
 from squeaknode.config.config import SqueaknodeConfig
-from squeaknode.node.received_payments_subscription_client import (
-    OpenReceivedPaymentsSubscriptionClient,
-)
 from squeaknode.node.squeak_node import SqueakNode
 
 
