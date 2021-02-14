@@ -4,7 +4,6 @@ import time
 from typing import Iterator
 from typing import Optional
 
-import grpc
 from squeak.core import CSqueak
 from squeak.core import MakeSqueakFromStr
 from squeak.core.elliptic import payment_point_bytes_from_scalar_bytes
@@ -12,7 +11,6 @@ from squeak.core.signing import CSigningKey
 
 from squeaknode.bitcoin.bitcoin_client import BitcoinClient
 from squeaknode.bitcoin.util import parse_block_header
-from squeaknode.core.exception import ProcessReceivedPaymentError
 from squeaknode.core.offer import Offer
 from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.received_payment import ReceivedPayment
@@ -26,6 +24,7 @@ from squeaknode.core.util import generate_tweak
 from squeaknode.core.util import get_hash
 from squeaknode.core.util import subtract_tweak
 from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
+from squeaknode.lightning.settled_invoice_subscription_client import SettledInvoiceSubscriptionClient
 
 
 logger = logging.getLogger(__name__)
@@ -280,45 +279,24 @@ class SqueakCore:
         Returns:
             Iterator[ReceivedPayment]: An iterator of received payments.
         """
-        def wait_for_stop(result_generator):
-            logger.info("Waiting for stop event in get_received_payments...")
-            stopped.wait()
-            logger.info("Cancelled subscription in get_received_payments.")
-            result_generator.cancel()
-
-        # Get the stream of invoices.
-        logger.info(
-            "Getting invoices from settle_index: {}".format(
-                latest_settle_index)
-        )
-        result_stream = self.lightning_client.subscribe_invoices(
-            settle_index=latest_settle_index,
-        )
-
-        # Start the thread to wait for stop event.
-        t = threading.Thread(target=wait_for_stop, args=(result_stream,))
-        t.start()
-
-        # Process the invoices.
-        try:
-            for invoice in result_stream:
-                if invoice.settled:
-                    logger.info(
-                        "Processing settled invoice: {}".format(invoice)
-                    )
-                    payment_hash = invoice.r_hash
-                    settle_index = invoice.settle_index
-                    sent_offer = get_sent_offer_fn(payment_hash)
-                    received_payment = ReceivedPayment(
-                        received_payment_id=None,
-                        created=None,
-                        squeak_hash=sent_offer.squeak_hash,
-                        payment_hash=sent_offer.payment_hash,
-                        price_msat=sent_offer.price_msat,
-                        settle_index=settle_index,
-                        client_addr=sent_offer.client_addr,
-                    )
-                    yield received_payment
-        except grpc.RpcError as e:
-            if e.code() != grpc.StatusCode.CANCELLED:
-                raise ProcessReceivedPaymentError()
+        with SettledInvoiceSubscriptionClient(
+                self.lightning_client,
+                latest_settle_index,
+                stopped,
+        ).open_subscription() as client:
+            for invoice in client.get_settled_invoices():
+                logger.info(
+                    "Processing settled invoice: {}".format(invoice)
+                )
+                payment_hash = invoice.r_hash
+                settle_index = invoice.settle_index
+                sent_offer = get_sent_offer_fn(payment_hash)
+                yield ReceivedPayment(
+                    received_payment_id=None,
+                    created=None,
+                    squeak_hash=sent_offer.squeak_hash,
+                    payment_hash=sent_offer.payment_hash,
+                    price_msat=sent_offer.price_msat,
+                    settle_index=settle_index,
+                    client_addr=sent_offer.client_addr,
+                )
