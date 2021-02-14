@@ -16,9 +16,6 @@ from squeaknode.db.squeak_db import SqueakDb
 from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
 from squeaknode.node.payment_processor import PaymentProcessor
 from squeaknode.node.process_received_payments_worker import ProcessReceivedPaymentsWorker
-from squeaknode.node.received_payments_subscription_client import (
-    OpenReceivedPaymentsSubscriptionClient,
-)
 from squeaknode.node.squeak_controller import SqueakController
 from squeaknode.node.squeak_offer_expiry_worker import SqueakOfferExpiryWorker
 from squeaknode.node.squeak_peer_sync_worker import SqueakPeerSyncWorker

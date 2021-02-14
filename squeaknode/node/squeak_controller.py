@@ -20,9 +20,7 @@ from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.util import get_hash
 from squeaknode.core.util import is_address_valid
-from squeaknode.node.received_payments_subscription_client import (
-    OpenReceivedPaymentsSubscriptionClient,
-)
+from squeaknode.node.received_payments_subscription_client import ReceivedPaymentsSubscriptionClient
 
 
 logger = logging.getLogger(__name__)
@@ -419,11 +417,12 @@ class SqueakController:
                     num_expired_sent_offers)
             )
 
-    def subscribe_received_payments(self, initial_index: int):
-        with OpenReceivedPaymentsSubscriptionClient(
+    def subscribe_received_payments(self, initial_index: int, stopped: threading.Event):
+        with ReceivedPaymentsSubscriptionClient(
             self.squeak_db,
             initial_index,
-        ) as client:
+            stopped,
+        ).open_subscription() as client:
             for payment in client.get_received_payments():
                 yield payment
 

@@ -565,14 +565,15 @@ class SqueakAdminServerHandler(object):
             received_payments=received_payment_msgs,
         )
 
-    def handle_subscribe_received_payments(self, request):
+    def handle_subscribe_received_payments(self, request, stopped):
         payment_index = request.payment_index
         logger.info(
             "Handle subscribe received payments with index: {}".format(
                 payment_index)
         )
         received_payments_stream = self.squeak_controller.subscribe_received_payments(
-            payment_index
+            payment_index,
+            stopped,
         )
         for received_payment in received_payments_stream:
             received_payment_msg = received_payments_to_message(

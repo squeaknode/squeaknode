@@ -1,4 +1,5 @@
 import logging
+import threading
 from concurrent import futures
 
 import grpc
@@ -185,7 +186,16 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         return self.handler.handle_get_received_payments(request)
 
     def SubscribeReceivedPayments(self, request, context):
-        return self.handler.handle_subscribe_received_payments(request)
+        stopped = threading.Event()
+
+        def on_rpc_done():
+            logger.info("Called on_rpc_done using add_callback.")
+            stopped.set()
+        context.add_callback(on_rpc_done)
+        return self.handler.handle_subscribe_received_payments(
+            request,
+            stopped,
+        )
 
     def GetNetwork(self, request, context):
         return self.handler.handle_get_network(request)

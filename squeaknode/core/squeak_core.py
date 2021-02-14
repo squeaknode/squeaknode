@@ -26,9 +26,6 @@ from squeaknode.core.util import generate_tweak
 from squeaknode.core.util import get_hash
 from squeaknode.core.util import subtract_tweak
 from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
-from squeaknode.node.received_payments_subscription_client import (
-    OpenReceivedPaymentsSubscriptionClient,
-)
 
 
 logger = logging.getLogger(__name__)
