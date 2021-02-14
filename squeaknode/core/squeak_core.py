@@ -285,9 +285,6 @@ class SqueakCore:
                 stopped,
         ).open_subscription() as client:
             for invoice in client.get_settled_invoices():
-                logger.info(
-                    "Processing settled invoice: {}".format(invoice)
-                )
                 payment_hash = invoice.r_hash
                 settle_index = invoice.settle_index
                 sent_offer = get_sent_offer_fn(payment_hash)
