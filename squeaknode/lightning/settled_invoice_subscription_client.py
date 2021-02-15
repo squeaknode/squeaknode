@@ -38,18 +38,12 @@ class SettledInvoiceSubscriptionClient:
             target=self.wait_for_stop,
         ).start()
         try:
-            logger.info("Before yielding settled invoice client...")
             yield self
-            logger.info("After yielding settled invoice client...")
         finally:
-            logger.info("Stopping settled invoice client...")
             self.stopped.set()
-            logger.info("Stopped settled invoice client...")
 
     def wait_for_stop(self):
-        logger.info("Waiting for stop event.")
         self.stopped.wait()
-        logger.info("Cancelled subscription.")
         self.result_stream.cancel()
 
     def get_settled_invoices(self):
@@ -68,5 +62,6 @@ class SettledInvoiceSubscriptionClient:
                     logger.error(
                         "Unable to subscribe invoices from lnd. Retrying in "
                         "{} seconds.".format(self.retry_s),
+                        exc_info=True,
                     )
             self.stopped.wait(self.retry_s)
