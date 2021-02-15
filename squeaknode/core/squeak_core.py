@@ -266,8 +266,10 @@ class SqueakCore:
     def get_received_payments(
             self,
             get_sent_offer_fn,
-            latest_settle_index,
-            stopped: threading.Event) -> Iterator[ReceivedPayment]:
+            get_latest_settle_index_fn,
+            stopped: threading.Event,
+            retry_s: int = 10,
+    ) -> Iterator[ReceivedPayment]:
         """Get an iterator of received payments.
 
         Args:
@@ -281,8 +283,9 @@ class SqueakCore:
         """
         with SettledInvoiceSubscriptionClient(
                 self.lightning_client,
-                latest_settle_index,
+                get_latest_settle_index_fn,
                 stopped,
+                retry_s=retry_s,
         ).open_subscription() as client:
             for invoice in client.get_settled_invoices():
                 payment_hash = invoice.r_hash
