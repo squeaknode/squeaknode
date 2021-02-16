@@ -54,11 +54,13 @@ class PaymentProcessorTask:
         self.payments_result = None
 
     def start_processing(self):
+        logger.info("Starting payment processor task.")
         threading.Thread(
             target=self.process_subscribed_invoices,
         ).start()
 
     def stop_processing(self):
+        logger.info("Stopping payment processor task.")
         self.stopped.set()
         if self.payments_result is not None:
             self.payments_result.cancel_fn()
@@ -66,8 +68,12 @@ class PaymentProcessorTask:
     def process_subscribed_invoices(self):
         while not self.stopped.is_set():
             try:
+                latest_settle_index = self.get_latest_settle_index()
+                logger.info("Starting payment subscription with settle index: {}".format(
+                    latest_settle_index,
+                ))
                 self.payments_result = self.squeak_core.get_received_payments(
-                    self.get_latest_settle_index(),
+                    latest_settle_index,
                     self.get_sent_offer_for_payment_hash,
                 )
 
@@ -86,7 +92,9 @@ class PaymentProcessorTask:
                         received_payment.payment_hash)
             except Exception:
                 logger.error(
-                    "Error processing received payments.", exc_info=True)
+                    "Error processing received payments. Retrying in {} seconds.".format(
+                        self.retry_s),
+                )
             self.stopped.wait(self.retry_s)
 
     def get_latest_settle_index(self):
