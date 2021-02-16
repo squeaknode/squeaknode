@@ -13,6 +13,7 @@ from squeak.core.signing import CSigningKey
 
 from squeaknode.bitcoin.bitcoin_client import BitcoinClient
 from squeaknode.bitcoin.util import parse_block_header
+from squeaknode.core.exception import InvoiceSubscriptionError
 from squeaknode.core.offer import Offer
 from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.received_payment import ReceivedPayment
@@ -313,7 +314,7 @@ class SqueakCore:
                         )
             except grpc.RpcError as e:
                 if e.code() != grpc.StatusCode.CANCELLED:
-                    raise
+                    raise InvoiceSubscriptionError()
 
         return ReceivedPaymentsResult(
             cancel_fn=cancel_subscription,

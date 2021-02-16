@@ -1,6 +1,7 @@
 import logging
 import threading
 
+from squeaknode.core.exception import InvoiceSubscriptionError
 from squeaknode.core.sent_offer import SentOffer
 from squeaknode.db.exception import DuplicateReceivedPaymentError
 
@@ -90,12 +91,13 @@ class PaymentProcessorTask:
                         pass
                     self.squeak_db.delete_sent_offer(
                         received_payment.payment_hash)
-            except Exception:
+            except InvoiceSubscriptionError:
                 logger.error(
-                    "Error processing received payments. Retrying in {} seconds.".format(
-                        self.retry_s),
+                    "Unable to subscribe invoices. Retrying in {} seconds.".format(
+                        self.retry_s,
+                    ),
                 )
-            self.stopped.wait(self.retry_s)
+                self.stopped.wait(self.retry_s)
 
     def get_latest_settle_index(self):
         return self.squeak_db.get_latest_settle_index() or 0
