@@ -20,4 +20,4 @@ class ProcessReceivedPaymentsWorker:
         self.payment_processor.start_processing()
         self.stopped.wait()
         logger.info("Stopping ProcessReceivedPaymentsWorker...")
-        self.payment_processor.stop_processing(permanent=True)
+        self.payment_processor.stop_processing()

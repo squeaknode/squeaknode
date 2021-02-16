@@ -1,9 +1,11 @@
 import logging
-import threading
 import time
+from typing import Callable
 from typing import Iterator
+from typing import NamedTuple
 from typing import Optional
 
+import grpc
 from squeak.core import CSqueak
 from squeak.core import MakeSqueakFromStr
 from squeak.core.elliptic import payment_point_bytes_from_scalar_bytes
@@ -11,6 +13,7 @@ from squeak.core.signing import CSigningKey
 
 from squeaknode.bitcoin.bitcoin_client import BitcoinClient
 from squeaknode.bitcoin.util import parse_block_header
+from squeaknode.core.exception import InvoiceSubscriptionError
 from squeaknode.core.offer import Offer
 from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.received_payment import ReceivedPayment
@@ -24,10 +27,15 @@ from squeaknode.core.util import generate_tweak
 from squeaknode.core.util import get_hash
 from squeaknode.core.util import subtract_tweak
 from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
-from squeaknode.lightning.settled_invoice_subscription_client import SettledInvoiceSubscriptionClient
 
 
 logger = logging.getLogger(__name__)
+
+
+class ReceivedPaymentsResult(NamedTuple):
+    """Represents the result of a received payment subscription."""
+    cancel_fn: Callable[[], None]
+    result_stream: Iterator[ReceivedPayment]
 
 
 class SqueakCore:
@@ -265,35 +273,50 @@ class SqueakCore:
 
     def get_received_payments(
             self,
-            get_sent_offer_fn,
-            latest_settle_index,
-            stopped: threading.Event) -> Iterator[ReceivedPayment]:
+            latest_settle_index: int,
+            get_sent_offer_fn: Callable[[bytes], SentOffer],
+    ) -> ReceivedPaymentsResult:
         """Get an iterator of received payments.
 
         Args:
+            latest_settle_index: The latest settle index of the lnd invoice database.
             get_sent_offer_fn: Function that takes a payment hash and returns
                 the corresponding SentOffer.
-            latest_settle_index: The latest settle index of the lnd invoice database.
-            stopped: Event that can be set to stop yielding received payments.
 
         Returns:
-            Iterator[ReceivedPayment]: An iterator of received payments.
+            ReceivedPaymentsResult: An object containing an iterator of received
+            payments and a callback function to cancel the iteration.
         """
-        with SettledInvoiceSubscriptionClient(
-                self.lightning_client,
-                latest_settle_index,
-                stopped,
-        ).open_subscription() as client:
-            for invoice in client.get_settled_invoices():
-                payment_hash = invoice.r_hash
-                settle_index = invoice.settle_index
-                sent_offer = get_sent_offer_fn(payment_hash)
-                yield ReceivedPayment(
-                    received_payment_id=None,
-                    created=None,
-                    squeak_hash=sent_offer.squeak_hash,
-                    payment_hash=sent_offer.payment_hash,
-                    price_msat=sent_offer.price_msat,
-                    settle_index=settle_index,
-                    client_addr=sent_offer.client_addr,
-                )
+        # Get the stream of settled invoices.
+        invoice_stream = self.lightning_client.subscribe_invoices(
+            settle_index=latest_settle_index,
+        )
+
+        def cancel_subscription():
+            invoice_stream.cancel()
+
+        def get_payment_stream():
+            # Yield the received payments.
+            try:
+                for invoice in invoice_stream:
+                    if invoice.settled:
+                        payment_hash = invoice.r_hash
+                        settle_index = invoice.settle_index
+                        sent_offer = get_sent_offer_fn(payment_hash)
+                        yield ReceivedPayment(
+                            received_payment_id=None,
+                            created=None,
+                            squeak_hash=sent_offer.squeak_hash,
+                            payment_hash=sent_offer.payment_hash,
+                            price_msat=sent_offer.price_msat,
+                            settle_index=settle_index,
+                            client_addr=sent_offer.client_addr,
+                        )
+            except grpc.RpcError as e:
+                if e.code() != grpc.StatusCode.CANCELLED:
+                    raise InvoiceSubscriptionError()
+
+        return ReceivedPaymentsResult(
+            cancel_fn=cancel_subscription,
+            result_stream=get_payment_stream(),
+        )
