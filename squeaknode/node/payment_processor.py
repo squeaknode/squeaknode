@@ -35,21 +35,27 @@ class PaymentProcessor:
             self.stopped.set()
 
     def process_subscribed_invoices(self):
-        for received_payment in self.squeak_core.get_received_payments(
-                self.get_latest_settle_index(),
-                self.get_sent_offer_for_payment_hash,
-                self.stopped,
-                retry_s=self.retry_s,
-        ):
-            logger.info(
-                "Got received payment: {}".format(received_payment))
+        while not self.stopped.is_set():
             try:
-                self.squeak_db.insert_received_payment(
-                    received_payment)
-            except DuplicateReceivedPaymentError:
-                pass
-            self.squeak_db.delete_sent_offer(
-                received_payment.payment_hash)
+                for received_payment in self.squeak_core.get_received_payments(
+                        self.get_latest_settle_index(),
+                        self.get_sent_offer_for_payment_hash,
+                        self.stopped,
+                        retry_s=self.retry_s,
+                ):
+                    logger.info(
+                        "Got received payment: {}".format(received_payment))
+                    try:
+                        self.squeak_db.insert_received_payment(
+                            received_payment)
+                    except DuplicateReceivedPaymentError:
+                        pass
+                    self.squeak_db.delete_sent_offer(
+                        received_payment.payment_hash)
+            except Exception:
+                logger.error(
+                    "Error processing received payments.", exc_info=True)
+            self.stopped.wait(self.retry_s)
 
     def get_latest_settle_index(self):
         return self.squeak_db.get_latest_settle_index() or 0

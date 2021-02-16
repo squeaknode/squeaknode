@@ -24,7 +24,6 @@ from squeaknode.core.util import generate_tweak
 from squeaknode.core.util import get_hash
 from squeaknode.core.util import subtract_tweak
 from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
-from squeaknode.lightning.settled_invoice_subscription_client import SettledInvoiceSubscriptionClient
 
 
 logger = logging.getLogger(__name__)
@@ -281,13 +280,14 @@ class SqueakCore:
         Returns:
             Iterator[ReceivedPayment]: An iterator of received payments.
         """
-        with SettledInvoiceSubscriptionClient(
-                self.lightning_client,
-                latest_settle_index,
-                stopped,
-                retry_s=retry_s,
-        ).open_subscription() as client:
-            for invoice in client.get_settled_invoices():
+        # Get the stream of settled invoices.
+        result_stream = self.lightning_client.subscribe_invoices(
+            settle_index=latest_settle_index,
+        )
+
+        # Yield the received payments.
+        for invoice in result_stream:
+            if invoice.settled:
                 payment_hash = invoice.r_hash
                 settle_index = invoice.settle_index
                 sent_offer = get_sent_offer_fn(payment_hash)
