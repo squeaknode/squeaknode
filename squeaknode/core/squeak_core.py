@@ -274,7 +274,7 @@ class SqueakCore:
     def get_received_payments(
             self,
             latest_settle_index: int,
-            get_sent_offer_fn,
+            get_sent_offer_fn: Callable[[bytes], SentOffer],
     ) -> ReceivedPaymentsResult:
         """Get an iterator of received payments.
 
