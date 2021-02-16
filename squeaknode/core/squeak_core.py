@@ -1,7 +1,9 @@
 import logging
 import threading
 import time
+from typing import Callable
 from typing import Iterator
+from typing import NamedTuple
 from typing import Optional
 
 from squeak.core import CSqueak
@@ -27,6 +29,12 @@ from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
 
 
 logger = logging.getLogger(__name__)
+
+
+class ReceivedPaymentsResult(NamedTuple):
+    """Represents the result of a received payment subscription."""
+    cancel_fn: Callable[[], None]
+    result_stream: Iterator[ReceivedPayment]
 
 
 class SqueakCore:
@@ -268,7 +276,7 @@ class SqueakCore:
             get_sent_offer_fn,
             stopped: threading.Event,
             retry_s: int = 10,
-    ) -> Iterator[ReceivedPayment]:
+    ) -> ReceivedPaymentsResult:
         """Get an iterator of received payments.
 
         Args:
@@ -281,22 +289,31 @@ class SqueakCore:
             Iterator[ReceivedPayment]: An iterator of received payments.
         """
         # Get the stream of settled invoices.
-        result_stream = self.lightning_client.subscribe_invoices(
+        invoice_stream = self.lightning_client.subscribe_invoices(
             settle_index=latest_settle_index,
         )
 
-        # Yield the received payments.
-        for invoice in result_stream:
-            if invoice.settled:
-                payment_hash = invoice.r_hash
-                settle_index = invoice.settle_index
-                sent_offer = get_sent_offer_fn(payment_hash)
-                yield ReceivedPayment(
-                    received_payment_id=None,
-                    created=None,
-                    squeak_hash=sent_offer.squeak_hash,
-                    payment_hash=sent_offer.payment_hash,
-                    price_msat=sent_offer.price_msat,
-                    settle_index=settle_index,
-                    client_addr=sent_offer.client_addr,
-                )
+        def cancel_subscription():
+            pass
+
+        def get_payment_stream():
+            # Yield the received payments.
+            for invoice in invoice_stream:
+                if invoice.settled:
+                    payment_hash = invoice.r_hash
+                    settle_index = invoice.settle_index
+                    sent_offer = get_sent_offer_fn(payment_hash)
+                    yield ReceivedPayment(
+                        received_payment_id=None,
+                        created=None,
+                        squeak_hash=sent_offer.squeak_hash,
+                        payment_hash=sent_offer.payment_hash,
+                        price_msat=sent_offer.price_msat,
+                        settle_index=settle_index,
+                        client_addr=sent_offer.client_addr,
+                    )
+
+        return ReceivedPaymentsResult(
+            cancel_fn=cancel_subscription,
+            result_stream=get_payment_stream(),
+        )

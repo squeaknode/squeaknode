@@ -37,12 +37,13 @@ class PaymentProcessor:
     def process_subscribed_invoices(self):
         while not self.stopped.is_set():
             try:
-                for received_payment in self.squeak_core.get_received_payments(
-                        self.get_latest_settle_index(),
-                        self.get_sent_offer_for_payment_hash,
-                        self.stopped,
-                        retry_s=self.retry_s,
-                ):
+                received_payments_result = self.squeak_core.get_received_payments(
+                    self.get_latest_settle_index(),
+                    self.get_sent_offer_for_payment_hash,
+                    self.stopped,
+                    retry_s=self.retry_s,
+                )
+                for received_payment in received_payments_result.result_stream:
                     logger.info(
                         "Got received payment: {}".format(received_payment))
                     try:
