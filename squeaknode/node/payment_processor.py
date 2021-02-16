@@ -35,16 +35,9 @@ class PaymentProcessor:
             self.stopped.set()
 
     def process_subscribed_invoices(self):
-        def get_sent_offer_for_payment_hash(payment_hash: bytes) -> SentOffer:
-            return self.squeak_db.get_sent_offer_by_payment_hash(
-                payment_hash
-            )
-
-        def get_latest_settle_index():
-            return self.squeak_db.get_latest_settle_index() or 0
         for received_payment in self.squeak_core.get_received_payments(
-                get_sent_offer_for_payment_hash,
-                get_latest_settle_index,
+                self.get_latest_settle_index(),
+                self.get_sent_offer_for_payment_hash,
                 self.stopped,
                 retry_s=self.retry_s,
         ):
@@ -57,3 +50,11 @@ class PaymentProcessor:
                 pass
             self.squeak_db.delete_sent_offer(
                 received_payment.payment_hash)
+
+    def get_latest_settle_index(self):
+        return self.squeak_db.get_latest_settle_index() or 0
+
+    def get_sent_offer_for_payment_hash(self, payment_hash: bytes) -> SentOffer:
+        return self.squeak_db.get_sent_offer_by_payment_hash(
+            payment_hash
+        )

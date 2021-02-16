@@ -265,17 +265,17 @@ class SqueakCore:
 
     def get_received_payments(
             self,
+            latest_settle_index: int,
             get_sent_offer_fn,
-            get_latest_settle_index_fn,
             stopped: threading.Event,
             retry_s: int = 10,
     ) -> Iterator[ReceivedPayment]:
         """Get an iterator of received payments.
 
         Args:
+            latest_settle_index: The latest settle index of the lnd invoice database.
             get_sent_offer_fn: Function that takes a payment hash and returns
                 the corresponding SentOffer.
-            latest_settle_index: The latest settle index of the lnd invoice database.
             stopped: Event that can be set to stop yielding received payments.
 
         Returns:
@@ -283,7 +283,7 @@ class SqueakCore:
         """
         with SettledInvoiceSubscriptionClient(
                 self.lightning_client,
-                get_latest_settle_index_fn,
+                latest_settle_index,
                 stopped,
                 retry_s=retry_s,
         ).open_subscription() as client:

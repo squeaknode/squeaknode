@@ -13,26 +13,25 @@ class SettledInvoiceSubscriptionClient:
     def __init__(
         self,
         lightning_client: LNDLightningClient,
-        get_latest_settle_index_fn,
+        latest_settle_index: int,
         stopped: threading.Event,
         retry_s: int = 10,
     ):
         self.lightning_client = lightning_client
-        self.get_latest_settle_index_fn = get_latest_settle_index_fn
+        self.latest_settle_index = latest_settle_index
         self.stopped = stopped
         self.retry_s = retry_s
         self.result_stream = None
 
     @contextmanager
     def open_subscription(self):
-        settle_index = self.get_latest_settle_index_fn()
         logger.info(
             "Getting invoices from settle_index: {}".format(
-                settle_index,
+                self.latest_settle_index,
             )
         )
         self.result_stream = self.lightning_client.subscribe_invoices(
-            settle_index=settle_index,
+            settle_index=self.latest_settle_index,
         )
         threading.Thread(
             target=self.wait_for_stop,
