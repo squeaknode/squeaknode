@@ -5,6 +5,7 @@ from typing import Iterator
 from typing import NamedTuple
 from typing import Optional
 
+import grpc
 from squeak.core import CSqueak
 from squeak.core import MakeSqueakFromStr
 from squeak.core.elliptic import payment_point_bytes_from_scalar_bytes
@@ -296,20 +297,24 @@ class SqueakCore:
 
         def get_payment_stream():
             # Yield the received payments.
-            for invoice in invoice_stream:
-                if invoice.settled:
-                    payment_hash = invoice.r_hash
-                    settle_index = invoice.settle_index
-                    sent_offer = get_sent_offer_fn(payment_hash)
-                    yield ReceivedPayment(
-                        received_payment_id=None,
-                        created=None,
-                        squeak_hash=sent_offer.squeak_hash,
-                        payment_hash=sent_offer.payment_hash,
-                        price_msat=sent_offer.price_msat,
-                        settle_index=settle_index,
-                        client_addr=sent_offer.client_addr,
-                    )
+            try:
+                for invoice in invoice_stream:
+                    if invoice.settled:
+                        payment_hash = invoice.r_hash
+                        settle_index = invoice.settle_index
+                        sent_offer = get_sent_offer_fn(payment_hash)
+                        yield ReceivedPayment(
+                            received_payment_id=None,
+                            created=None,
+                            squeak_hash=sent_offer.squeak_hash,
+                            payment_hash=sent_offer.payment_hash,
+                            price_msat=sent_offer.price_msat,
+                            settle_index=settle_index,
+                            client_addr=sent_offer.client_addr,
+                        )
+            except grpc.RpcError as e:
+                if e.code() != grpc.StatusCode.CANCELLED:
+                    raise
 
         return ReceivedPaymentsResult(
             cancel_fn=cancel_subscription,
