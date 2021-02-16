@@ -294,7 +294,8 @@ class SqueakCore:
         )
 
         def cancel_subscription():
-            pass
+            logger.info("Cancelled subscription.")
+            invoice_stream.cancel()
 
         def get_payment_stream():
             # Yield the received payments.

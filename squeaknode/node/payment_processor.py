@@ -19,31 +19,64 @@ class PaymentProcessor:
         self.squeak_db = squeak_db
         self.squeak_core = squeak_core
         self.retry_s = retry_s
-        self.stopped = threading.Event()
         self.lock = threading.Lock()
+        self.current_task = None
 
     def start_processing(self):
         with self.lock:
-            self.stopped.set()
-            self.stopped.clear()
-            threading.Thread(
-                target=self.process_subscribed_invoices,
-            ).start()
+            if self.current_task is not None:
+                self.current_task.stop_processing()
+            self.current_task = PaymentProcessorTask(
+                self.squeak_db,
+                self.squeak_core,
+                retry_s=self.retry_s,
+            )
+            self.current_task.start_processing()
 
     def stop_processing(self):
         with self.lock:
-            self.stopped.set()
+            if self.current_task is not None:
+                self.current_task.stop_processing()
+
+
+class PaymentProcessorTask:
+
+    def __init__(
+        self,
+        squeak_db,
+        squeak_core,
+        retry_s: int = 10,
+    ):
+        self.squeak_db = squeak_db
+        self.squeak_core = squeak_core
+        self.retry_s = retry_s
+        self.stopped = threading.Event()
+        self.payments_result = None
+
+    def start_processing(self):
+        threading.Thread(
+            target=self.process_subscribed_invoices,
+        ).start()
+
+    def stop_processing(self):
+        self.stopped.set()
+        if self.payments_result is not None:
+            self.payments_result.cancel_fn()
 
     def process_subscribed_invoices(self):
         while not self.stopped.is_set():
             try:
-                received_payments_result = self.squeak_core.get_received_payments(
+                self.payments_result = self.squeak_core.get_received_payments(
                     self.get_latest_settle_index(),
                     self.get_sent_offer_for_payment_hash,
                     self.stopped,
                     retry_s=self.retry_s,
                 )
-                for received_payment in received_payments_result.result_stream:
+
+                if self.stopped.is_set():
+                    return
+
+                for received_payment in self.payments_result.result_stream:
                     logger.info(
                         "Got received payment: {}".format(received_payment))
                     try:
