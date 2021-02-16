@@ -1,8 +1,8 @@
 """Initialize all
 
-Revision ID: b703368566fe
+Revision ID: 67e84bbfd641
 Revises:
-Create Date: 2021-02-12 01:39:23.841767
+Create Date: 2021-02-16 14:58:44.662161
 
 """
 import sqlalchemy as sa
@@ -12,7 +12,7 @@ import squeaknode.db.models
 
 
 # revision identifiers, used by Alembic.
-revision = 'b703368566fe'
+revision = '67e84bbfd641'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -114,8 +114,6 @@ def upgrade():
                         length=64), nullable=False),
                     sa.PrimaryKeyConstraint('sent_offer_id'),
                     sa.UniqueConstraint('payment_hash'),
-                    sa.UniqueConstraint('squeak_hash', 'client_addr',
-                                        name='uq_sent_offer_squeak_hash_client_addr'),
                     sqlite_autoincrement=True
                     )
     op.create_table('sent_payment',
