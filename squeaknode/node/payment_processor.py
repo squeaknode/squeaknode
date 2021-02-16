@@ -29,7 +29,7 @@ class PaymentProcessor:
             self.current_task = PaymentProcessorTask(
                 self.squeak_db,
                 self.squeak_core,
-                retry_s=self.retry_s,
+                self.retry_s,
             )
             self.current_task.start_processing()
 
@@ -45,7 +45,7 @@ class PaymentProcessorTask:
         self,
         squeak_db,
         squeak_core,
-        retry_s: int = 10,
+        retry_s: int,
     ):
         self.squeak_db = squeak_db
         self.squeak_core = squeak_core
