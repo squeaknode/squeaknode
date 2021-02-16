@@ -2,6 +2,7 @@ import logging
 import threading
 
 from squeaknode.core.exception import InvoiceSubscriptionError
+from squeaknode.core.received_payment import ReceivedPayment
 from squeaknode.core.sent_offer import SentOffer
 from squeaknode.db.exception import DuplicateReceivedPaymentError
 
@@ -77,20 +78,10 @@ class PaymentProcessorTask:
                     latest_settle_index,
                     self.get_sent_offer_for_payment_hash,
                 )
-
                 if self.stopped.is_set():
                     self.payments_result.cancel_fn()
-
                 for received_payment in self.payments_result.result_stream:
-                    logger.info(
-                        "Got received payment: {}".format(received_payment))
-                    try:
-                        self.squeak_db.insert_received_payment(
-                            received_payment)
-                    except DuplicateReceivedPaymentError:
-                        pass
-                    self.squeak_db.delete_sent_offer(
-                        received_payment.payment_hash)
+                    self.handle_received_payment(received_payment)
             except InvoiceSubscriptionError:
                 logger.error(
                     "Unable to subscribe invoices. Retrying in {} seconds.".format(
@@ -105,4 +96,18 @@ class PaymentProcessorTask:
     def get_sent_offer_for_payment_hash(self, payment_hash: bytes) -> SentOffer:
         return self.squeak_db.get_sent_offer_by_payment_hash(
             payment_hash
+        )
+
+    def handle_received_payment(self, received_payment: ReceivedPayment):
+        logger.info(
+            "Got received payment: {}".format(received_payment))
+        try:
+            self.squeak_db.insert_received_payment(
+                received_payment,
+            )
+        except DuplicateReceivedPaymentError:
+            pass
+        # TODO: Should not be deleting sent offer.
+        self.squeak_db.delete_sent_offer(
+            received_payment.payment_hash,
         )
