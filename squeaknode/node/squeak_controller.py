@@ -41,7 +41,6 @@ class SqueakController:
         self.squeak_rate_limiter = squeak_rate_limiter
         self.payment_processor = payment_processor
         self.config = config
-        self.create_offer_lock = threading.Lock()
 
     def save_uploaded_squeak(self, squeak: CSqueak) -> bytes:
         return self.save_squeak(
@@ -143,24 +142,21 @@ class SqueakController:
         )
 
     def get_saved_sent_offer(self, squeak_hash: bytes, client_addr: str) -> SentOffer:
-        with self.create_offer_lock:
-            # Check if there is an existing offer for the hash/client_addr combination
-            sent_offer = self.squeak_db.get_sent_offer_by_squeak_hash_and_client_addr(
-                squeak_hash,
-                client_addr,
-            )
-            if sent_offer:
-                return sent_offer
-            squeak = self.get_squeak(squeak_hash)
-            # sent_offer = self.create_offer(
-            #     squeak, client_addr, self.config.core.price_msat)
-            sent_offer = self.squeak_core.create_offer(
-                squeak,
-                client_addr,
-                self.config.core.price_msat,
-            )
-            self.squeak_db.insert_sent_offer(sent_offer)
+        # Check if there is an existing offer for the hash/client_addr combination
+        sent_offer = self.squeak_db.get_sent_offer_by_squeak_hash_and_client_addr(
+            squeak_hash,
+            client_addr,
+        )
+        if sent_offer:
             return sent_offer
+        squeak = self.get_squeak(squeak_hash)
+        sent_offer = self.squeak_core.create_offer(
+            squeak,
+            client_addr,
+            self.config.core.price_msat,
+        )
+        self.squeak_db.insert_sent_offer(sent_offer)
+        return sent_offer
 
     def create_signing_profile(self, profile_name: str) -> int:
         if len(profile_name) == 0:

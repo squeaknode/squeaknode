@@ -155,8 +155,6 @@ class Models:
             Column("invoice_timestamp", Integer, nullable=False),
             Column("invoice_expiry", Integer, nullable=False),
             Column("client_addr", String(64), nullable=False),
-            UniqueConstraint('squeak_hash', 'client_addr',
-                             name='uq_sent_offer_squeak_hash_client_addr'),
             sqlite_autoincrement=True,
         )
 
