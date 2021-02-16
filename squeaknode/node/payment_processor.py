@@ -69,12 +69,10 @@ class PaymentProcessorTask:
                 self.payments_result = self.squeak_core.get_received_payments(
                     self.get_latest_settle_index(),
                     self.get_sent_offer_for_payment_hash,
-                    self.stopped,
-                    retry_s=self.retry_s,
                 )
 
                 if self.stopped.is_set():
-                    return
+                    self.payments_result.cancel_fn()
 
                 for received_payment in self.payments_result.result_stream:
                     logger.info(
