@@ -402,15 +402,15 @@ class SqueakController:
     def get_received_payments(self):
         return self.squeak_db.get_received_payments()
 
-    def delete_all_expired_offers(self):
-        logger.debug("Deleting expired offers.")
-        num_expired_offers = self.squeak_db.delete_expired_offers()
-        if num_expired_offers > 0:
-            logger.info("Deleted number of expired offers: {}".format(
-                num_expired_offers))
+    def delete_all_expired_received_offers(self):
+        logger.info("Deleting expired received offers.")
+        num_expired_received_offers = self.squeak_db.delete_expired_received_offers()
+        if num_expired_received_offers > 0:
+            logger.info("Deleted number of expired received offers: {}".format(
+                num_expired_received_offers))
 
     def delete_all_expired_sent_offers(self):
-        logger.debug("Deleting expired sent offers.")
+        logger.info("Deleting expired sent offers.")
         num_expired_sent_offers = self.squeak_db.delete_expired_sent_offers()
         if num_expired_sent_offers > 0:
             logger.info(

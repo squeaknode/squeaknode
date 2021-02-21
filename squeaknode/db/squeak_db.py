@@ -719,7 +719,7 @@ class SqueakDb:
             offer_with_peer = self._parse_received_offer_with_peer(row)
             return offer_with_peer
 
-    def delete_expired_offers(self):
+    def delete_expired_received_offers(self):
         """ Delete all expired offers. """
         s = self.received_offers.delete().where(
             self.received_offer_is_expired()
