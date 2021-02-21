@@ -110,27 +110,43 @@ class SqueakDb:
         return self.squeaks.c.created > \
             self.datetime_now - timedelta(seconds=interval_s)
 
-    def received_offer_is_expired(self):
+    def received_offer_should_be_deleted(self):
         expire_time = (
             self.received_offers.c.invoice_timestamp
             + self.received_offers.c.invoice_expiry
         )
-        return self.datetime_now.timestamp() > expire_time
+        return self.datetime_now.timestamp() >= expire_time
 
     @property
     def received_offer_is_not_paid(self):
         return self.received_offers.c.paid == False  # noqa: E711
 
-    def sent_offer_is_expired(self):
+    @property
+    def received_offer_is_not_expired(self):
+        expire_time = (
+            self.received_offers.c.invoice_timestamp
+            + self.received_offers.c.invoice_expiry
+        )
+        return self.datetime_now.timestamp() < expire_time
+
+    def sent_offer_should_be_deleted(self, interval_s):
         expire_time = (
             self.sent_offers.c.invoice_timestamp
             + self.sent_offers.c.invoice_expiry
         )
-        return self.datetime_now.timestamp() > expire_time
+        return self.datetime_now.timestamp() >= expire_time + interval_s
 
     @property
     def sent_offer_is_not_paid(self):
         return self.sent_offers.c.paid == False  # noqa: E711
+
+    @property
+    def sent_offer_is_not_expired(self):
+        expire_time = (
+            self.sent_offers.c.invoice_timestamp
+            + self.sent_offers.c.invoice_expiry
+        )
+        return self.datetime_now.timestamp() < expire_time
 
     def insert_squeak(self, squeak: CSqueak, block_header: CBlockHeader) -> bytes:
         """ Insert a new squeak.
@@ -686,6 +702,7 @@ class SqueakDb:
             )
             .where(self.received_offers.c.squeak_hash == squeak_hash.hex())
             .where(self.received_offer_is_not_paid)
+            .where(self.received_offer_is_not_expired)
         )
         with self.get_connection() as connection:
             result = connection.execute(s)
@@ -717,7 +734,7 @@ class SqueakDb:
     def delete_expired_received_offers(self):
         """ Delete all expired offers. """
         s = self.received_offers.delete().where(
-            self.received_offer_is_expired()
+            self.received_offer_should_be_deleted()
         )
         with self.get_connection() as connection:
             res = connection.execute(s)
@@ -850,12 +867,16 @@ class SqueakDb:
             return sent_offer
 
     def get_sent_offer_by_squeak_hash_and_client_addr(self, squeak_hash: bytes, client_addr: str) -> Optional[SentOffer]:
-        """ Get a sent offer by squeak hash and client addr. """
+        """
+        Get a sent offer by squeak hash and client addr. Only
+        return sent offer if it's not expired and not paid.
+        """
         s = (
             select([self.sent_offers])
             .where(self.sent_offers.c.squeak_hash == squeak_hash.hex())
             .where(self.sent_offers.c.client_addr == client_addr)
             .where(self.sent_offer_is_not_paid)
+            .where(self.sent_offer_is_not_expired)
         )
         with self.get_connection() as connection:
             result = connection.execute(s)
@@ -873,10 +894,13 @@ class SqueakDb:
         with self.get_connection() as connection:
             connection.execute(s)
 
-    def delete_expired_sent_offers(self):
-        """ Delete all expired sent offers. """
+    def delete_expired_sent_offers(self, interval_s):
+        """
+        Delete all expired sent offers. Only delete sent
+        offers that have been expired for more than interval_s seconds.
+        """
         s = self.sent_offers.delete().where(
-            self.sent_offer_is_expired()
+            self.sent_offer_should_be_deleted(interval_s)
         )
         with self.get_connection() as connection:
             res = connection.execute(s)

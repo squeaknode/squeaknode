@@ -37,6 +37,7 @@ DEFAULT_LND_HOST = "localhost"
 DEFAULT_SYNC_INTERVAL_S = 10
 DEFAULT_SYNC_TIMEOUT_S = 10
 DEFAULT_SYNC_BLOCK_INTERVAL = 2016
+DEFAULT_SENT_OFFER_RETENTION_S = 86400
 
 
 @section('bitcoin')
@@ -95,6 +96,8 @@ class CoreConfig(Config):
         cast=int, required=False, default=DEFAULT_MAX_SQUEAKS_PER_ADDRESS_PER_BLOCK)
     sqk_dir_path = key(cast=str, required=False, default=DEFAULT_SQK_DIR_PATH)
     log_level = key(cast=str, required=False, default=DEFAULT_LOG_LEVEL)
+    sent_offer_retention_s = key(
+        cast=int, required=False, default=DEFAULT_SENT_OFFER_RETENTION_S)
 
 
 @section('sync')
