@@ -107,7 +107,11 @@ class PaymentProcessorTask:
             )
         except DuplicateReceivedPaymentError:
             pass
-        # TODO: Should not be deleting sent offer.
-        self.squeak_db.delete_sent_offer(
+        # # TODO: Should not be deleting sent offer.
+        # self.squeak_db.delete_sent_offer(
+        #     received_payment.payment_hash,
+        # )
+        self.squeak_db.set_sent_offer_paid(
             received_payment.payment_hash,
+            paid=True,
         )

@@ -355,8 +355,13 @@ class SqueakController:
         logger.info("Paying received offer: {}".format(received_offer))
         sent_payment = self.squeak_core.pay_offer(received_offer)
         sent_payment_id = self.squeak_db.insert_sent_payment(sent_payment)
-        # Delete the received offer
-        self.squeak_db.delete_offer(sent_payment.payment_hash)
+        # # Delete the received offer
+        # self.squeak_db.delete_offer(sent_payment.payment_hash)
+        # Mark the received offer as paid
+        self.squeak_db.set_received_offer_paid(
+            sent_payment.payment_hash,
+            paid=True,
+        )
         secret_key = sent_payment.secret_key
         squeak_entry = self.squeak_db.get_squeak_entry(
             received_offer.squeak_hash)
