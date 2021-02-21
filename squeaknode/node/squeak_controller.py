@@ -355,8 +355,13 @@ class SqueakController:
         logger.info("Paying received offer: {}".format(received_offer))
         sent_payment = self.squeak_core.pay_offer(received_offer)
         sent_payment_id = self.squeak_db.insert_sent_payment(sent_payment)
-        # Delete the received offer
-        self.squeak_db.delete_offer(sent_payment.payment_hash)
+        # # Delete the received offer
+        # self.squeak_db.delete_offer(sent_payment.payment_hash)
+        # Mark the received offer as paid
+        self.squeak_db.set_received_offer_paid(
+            sent_payment.payment_hash,
+            paid=True,
+        )
         secret_key = sent_payment.secret_key
         squeak_entry = self.squeak_db.get_squeak_entry(
             received_offer.squeak_hash)
@@ -397,15 +402,15 @@ class SqueakController:
     def get_received_payments(self):
         return self.squeak_db.get_received_payments()
 
-    def delete_all_expired_offers(self):
-        logger.debug("Deleting expired offers.")
-        num_expired_offers = self.squeak_db.delete_expired_offers()
-        if num_expired_offers > 0:
-            logger.info("Deleted number of expired offers: {}".format(
-                num_expired_offers))
+    def delete_all_expired_received_offers(self):
+        logger.info("Deleting expired received offers.")
+        num_expired_received_offers = self.squeak_db.delete_expired_received_offers()
+        if num_expired_received_offers > 0:
+            logger.info("Deleted number of expired received offers: {}".format(
+                num_expired_received_offers))
 
     def delete_all_expired_sent_offers(self):
-        logger.debug("Deleting expired sent offers.")
+        logger.info("Deleting expired sent offers.")
         num_expired_sent_offers = self.squeak_db.delete_expired_sent_offers()
         if num_expired_sent_offers > 0:
             logger.info(

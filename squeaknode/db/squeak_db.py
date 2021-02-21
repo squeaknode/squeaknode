@@ -111,14 +111,26 @@ class SqueakDb:
             self.datetime_now - timedelta(seconds=interval_s)
 
     def received_offer_is_expired(self):
-        self.datetime_now.timestamp() > \
-            self.received_offers.c.invoice_timestamp + \
-            self.received_offers.c.invoice_expiry
+        expire_time = (
+            self.received_offers.c.invoice_timestamp
+            + self.received_offers.c.invoice_expiry
+        )
+        return self.datetime_now.timestamp() > expire_time
+
+    @property
+    def received_offer_is_not_paid(self):
+        return self.received_offers.c.paid == False  # noqa: E711
 
     def sent_offer_is_expired(self):
-        self.datetime_now.timestamp() > \
-            self.sent_offers.c.invoice_timestamp + \
-            self.sent_offers.c.invoice_expiry
+        expire_time = (
+            self.sent_offers.c.invoice_timestamp
+            + self.sent_offers.c.invoice_expiry
+        )
+        return self.datetime_now.timestamp() > expire_time
+
+    @property
+    def sent_offer_is_not_paid(self):
+        return self.sent_offers.c.paid == False  # noqa: E711
 
     def insert_squeak(self, squeak: CSqueak, block_header: CBlockHeader) -> bytes:
         """ Insert a new squeak.
@@ -711,7 +723,7 @@ class SqueakDb:
             offer_with_peer = self._parse_received_offer_with_peer(row)
             return offer_with_peer
 
-    def delete_expired_offers(self):
+    def delete_expired_received_offers(self):
         """ Delete all expired offers. """
         s = self.received_offers.delete().where(
             self.received_offer_is_expired()
@@ -737,6 +749,16 @@ class SqueakDb:
         )
         with self.get_connection() as connection:
             connection.execute(s)
+
+    def set_received_offer_paid(self, payment_hash: bytes, paid: bool) -> None:
+        """ Set a received offer is paid. """
+        stmt = (
+            self.received_offers.update()
+            .where(self.received_offers.c.payment_hash == payment_hash.hex())
+            .values(paid=paid)
+        )
+        with self.get_connection() as connection:
+            connection.execute(stmt)
 
     def insert_sent_payment(self, sent_payment: SentPayment):
         """ Insert a new sent payment. """
@@ -842,6 +864,7 @@ class SqueakDb:
             select([self.sent_offers])
             .where(self.sent_offers.c.squeak_hash == squeak_hash.hex())
             .where(self.sent_offers.c.client_addr == client_addr)
+            .where(self.sent_offer_is_not_paid)
         )
         with self.get_connection() as connection:
             result = connection.execute(s)
@@ -868,6 +891,16 @@ class SqueakDb:
             res = connection.execute(s)
             deleted_sent_offers = res.rowcount
             return deleted_sent_offers
+
+    def set_sent_offer_paid(self, payment_hash: bytes, paid: bool) -> None:
+        """ Set a sent offer is paid. """
+        stmt = (
+            self.sent_offers.update()
+            .where(self.sent_offers.c.payment_hash == payment_hash.hex())
+            .values(paid=paid)
+        )
+        with self.get_connection() as connection:
+            connection.execute(stmt)
 
     def get_latest_settle_index(self):
         """ Get the lnd settled index of the most recent received payment. """

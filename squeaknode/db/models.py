@@ -121,6 +121,7 @@ class Models:
             Column("node_host", String, nullable=False),
             Column("node_port", Integer, nullable=False),
             Column("peer_id", Integer, nullable=False),
+            Column("paid", Boolean, nullable=False, default=False),
             sqlite_autoincrement=True,
         )
 
@@ -155,6 +156,7 @@ class Models:
             Column("invoice_timestamp", Integer, nullable=False),
             Column("invoice_expiry", Integer, nullable=False),
             Column("client_addr", String(64), nullable=False),
+            Column("paid", Boolean, nullable=False, default=False),
             sqlite_autoincrement=True,
         )
 
