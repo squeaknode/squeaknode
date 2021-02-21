@@ -411,7 +411,10 @@ class SqueakController:
 
     def delete_all_expired_sent_offers(self):
         logger.info("Deleting expired sent offers.")
-        num_expired_sent_offers = self.squeak_db.delete_expired_sent_offers()
+        sent_offer_retention_s = self.config.core.sent_offer_retention_s
+        num_expired_sent_offers = self.squeak_db.delete_expired_sent_offers(
+            sent_offer_retention_s,
+        )
         if num_expired_sent_offers > 0:
             logger.info(
                 "Deleted number of expired sent offers: {}".format(
