@@ -111,22 +111,26 @@ class SqueakDb:
             self.datetime_now - timedelta(seconds=interval_s)
 
     def received_offer_is_expired(self):
-        self.datetime_now.timestamp() > \
-            self.received_offers.c.invoice_timestamp + \
-            self.received_offers.c.invoice_expiry
+        expire_time = (
+            self.received_offers.c.invoice_timestamp
+            + self.received_offers.c.invoice_expiry
+        )
+        return self.datetime_now.timestamp() > expire_time
 
     @property
     def received_offer_is_not_paid(self):
-        self.received_offers.c.paid == False  # noqa: E711
+        return self.received_offers.c.paid == False  # noqa: E711
 
     def sent_offer_is_expired(self):
-        self.datetime_now.timestamp() > \
-            self.sent_offers.c.invoice_timestamp + \
-            self.sent_offers.c.invoice_expiry
+        expire_time = (
+            self.sent_offers.c.invoice_timestamp
+            + self.sent_offers.c.invoice_expiry
+        )
+        return self.datetime_now.timestamp() > expire_time
 
     @property
     def sent_offer_is_not_paid(self):
-        self.sent_offers.c.paid == False  # noqa: E711
+        return self.sent_offers.c.paid == False  # noqa: E711
 
     def insert_squeak(self, squeak: CSqueak, block_header: CBlockHeader) -> bytes:
         """ Insert a new squeak.
