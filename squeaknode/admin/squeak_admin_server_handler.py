@@ -466,8 +466,9 @@ class SqueakAdminServerHandler(object):
         squeak_hash_str = request.squeak_hash
         squeak_hash = bytes.fromhex(squeak_hash_str)
         logger.info(
-            "Handle get buy offers for hash: {}".format(squeak_hash_str))
-        offers = self.squeak_controller.get_buy_offers_with_peer(squeak_hash)
+            "Handle get received offers for hash: {}".format(squeak_hash_str))
+        offers = self.squeak_controller.get_received_offers_with_peer(
+            squeak_hash)
         offer_msgs = [offer_entry_to_message(offer) for offer in offers]
         return squeak_admin_pb2.GetBuyOffersReply(
             offers=offer_msgs,

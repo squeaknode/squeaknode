@@ -674,17 +674,7 @@ class SqueakDb:
             received_offer_id = res.inserted_primary_key[0]
             return received_offer_id
 
-    def get_offers(self, squeak_hash: bytes) -> List[ReceivedOffer]:
-        """ Get offers for a squeak hash. """
-        s = select([self.received_offers]).where(
-            self.received_offers.c.squeak_hash == squeak_hash.hex())
-        with self.get_connection() as connection:
-            result = connection.execute(s)
-            rows = result.fetchall()
-            offers = [self._parse_received_offer(row) for row in rows]
-            return offers
-
-    def get_offers_with_peer(self, squeak_hash: bytes) -> List[ReceivedOfferWithPeer]:
+    def get_received_offers_with_peer(self, squeak_hash: bytes) -> List[ReceivedOfferWithPeer]:
         """ Get offers with peer for a squeak hash. """
         s = (
             select([self.received_offers, self.peers])
@@ -695,6 +685,7 @@ class SqueakDb:
                 )
             )
             .where(self.received_offers.c.squeak_hash == squeak_hash.hex())
+            .where(self.received_offer_is_not_paid)
         )
         with self.get_connection() as connection:
             result = connection.execute(s)

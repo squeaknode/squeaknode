@@ -331,8 +331,8 @@ class SqueakController:
     def delete_peer(self, peer_id: int):
         self.squeak_db.delete_peer(peer_id)
 
-    def get_buy_offers_with_peer(self, squeak_hash: bytes):
-        return self.squeak_db.get_offers_with_peer(squeak_hash)
+    def get_received_offers_with_peer(self, squeak_hash: bytes):
+        return self.squeak_db.get_received_offers_with_peer(squeak_hash)
 
     def get_buy_offer_with_peer(self, received_offer_id: int) -> ReceivedOfferWithPeer:
         received_offer_with_peer = self.squeak_db.get_offer_with_peer(
