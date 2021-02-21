@@ -120,7 +120,8 @@ class PeerConnection:
             self._upload_squeak(squeak_hash)
 
     def _get_saved_offer(self, squeak_hash: bytes) -> Optional[ReceivedOfferWithPeer]:
-        offers = self.squeak_controller.get_buy_offers_with_peer(squeak_hash)
+        offers = self.squeak_controller.get_received_offers_with_peer(
+            squeak_hash)
         for offer_with_peer in offers:
             if offer_with_peer.received_offer.peer_id == self.peer.peer_id:
                 return offer_with_peer
