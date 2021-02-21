@@ -9,6 +9,7 @@ from squeak.core.signing import CSqueakAddress
 
 from squeaknode.core.block_range import BlockRange
 from squeaknode.core.offer import Offer
+from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.received_offer_with_peer import ReceivedOfferWithPeer
 from squeaknode.core.received_payment_summary import ReceivedPaymentSummary
@@ -292,11 +293,14 @@ class SqueakController:
                 "Peer name cannot be empty.",
             )
         port = port or self.config.core.default_peer_rpc_port
+        peer_address = PeerAddress(
+            host=host,
+            port=port,
+        )
         squeak_peer = SqueakPeer(
             peer_id=None,
             peer_name=peer_name,
-            host=host,
-            port=port,
+            address=peer_address,
             uploading=False,
             downloading=False,
         )
@@ -313,10 +317,10 @@ class SqueakController:
     def get_peers(self):
         return self.squeak_db.get_peers()
 
-    def get_downloading_peers(self):
+    def get_downloading_peers(self) -> List[SqueakPeer]:
         return self.squeak_db.get_downloading_peers()
 
-    def get_uploading_peers(self):
+    def get_uploading_peers(self) -> List[SqueakPeer]:
         return self.squeak_db.get_uploading_peers()
 
     def set_peer_downloading(self, peer_id: int, downloading: bool):
@@ -331,7 +335,7 @@ class SqueakController:
     def delete_peer(self, peer_id: int):
         self.squeak_db.delete_peer(peer_id)
 
-    def get_received_offers_with_peer(self, squeak_hash: bytes):
+    def get_received_offers_with_peer(self, squeak_hash: bytes) -> List[ReceivedOfferWithPeer]:
         return self.squeak_db.get_received_offers_with_peer(squeak_hash)
 
     def get_buy_offer_with_peer(self, received_offer_id: int) -> ReceivedOfferWithPeer:
@@ -439,8 +443,8 @@ class SqueakController:
     def get_network(self) -> str:
         return self.config.core.network
 
-    def get_offer(self, squeak: CSqueak, offer: Offer, peer: SqueakPeer) -> ReceivedOffer:
-        return self.squeak_core.unpack_offer(squeak, offer, peer)
+    def get_offer(self, squeak: CSqueak, offer: Offer, peer_address: PeerAddress) -> ReceivedOffer:
+        return self.squeak_core.unpack_offer(squeak, offer, peer_address)
 
     def get_squeak_entry_with_profile(self, squeak_hash: bytes) -> SqueakEntryWithProfile:
         squeak_entry_with_profile = self.squeak_db.get_squeak_entry_with_profile(
@@ -488,12 +492,12 @@ class SqueakController:
             include_locked=True,
         )
 
-    def lookup_squeaks_needing_offer(self, addresses: List[str], min_block, max_block, peer_id):
+    def lookup_squeaks_needing_offer(self, addresses: List[str], min_block, max_block, peer_address: PeerAddress):
         return self.squeak_db.lookup_squeaks_needing_offer(
             addresses,
             min_block,
             max_block,
-            peer_id,
+            peer_address,
         )
 
     def save_offer(self, received_offer: ReceivedOffer) -> None:

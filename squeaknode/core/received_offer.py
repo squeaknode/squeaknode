@@ -1,6 +1,8 @@
 from typing import NamedTuple
 from typing import Optional
 
+from squeaknode.core.peer_address import PeerAddress
+
 
 class ReceivedOffer(NamedTuple):
     """Represents an offer received by a buyer."""
@@ -16,4 +18,4 @@ class ReceivedOffer(NamedTuple):
     destination: str
     node_host: str
     node_port: int
-    peer_id: int
+    peer_address: PeerAddress

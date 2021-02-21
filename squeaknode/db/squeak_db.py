@@ -17,6 +17,7 @@ from sqlalchemy.sql import select
 from squeak.core import CSqueak
 
 from squeaknode.bitcoin.util import parse_block_header
+from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.received_offer_with_peer import ReceivedOfferWithPeer
 from squeaknode.core.received_payment import ReceivedPayment
@@ -393,7 +394,7 @@ class SqueakDb:
             addresses: List[str],
             min_block: int,
             max_block: int,
-            peer_id: int,
+            peer_address: PeerAddress,
     ) -> List[bytes]:
         """ Lookup squeaks that are locked and don't have an offer. """
         if not addresses:
@@ -406,7 +407,8 @@ class SqueakDb:
                     self.received_offers,
                     and_(
                         self.received_offers.c.squeak_hash == self.squeaks.c.hash,
-                        self.received_offers.c.peer_id == peer_id,
+                        self.received_offers.c.peer_host == peer_address.host,
+                        self.received_offers.c.peer_port == peer_address.port,
                     ),
                 )
             )
@@ -586,8 +588,8 @@ class SqueakDb:
         """ Insert a new squeak peer. """
         ins = self.peers.insert().values(
             peer_name=squeak_peer.peer_name,
-            server_host=squeak_peer.host,
-            server_port=squeak_peer.port,
+            host=squeak_peer.address.host,
+            port=squeak_peer.address.port,
             uploading=squeak_peer.uploading,
             downloading=squeak_peer.downloading,
         )
@@ -683,7 +685,8 @@ class SqueakDb:
             destination=received_offer.destination,
             node_host=received_offer.node_host,
             node_port=received_offer.node_port,
-            peer_id=received_offer.peer_id,
+            peer_host=received_offer.peer_address.host,
+            peer_port=received_offer.peer_address.port,
         )
         with self.get_connection() as connection:
             res = connection.execute(ins)
@@ -697,7 +700,8 @@ class SqueakDb:
             .select_from(
                 self.received_offers.outerjoin(
                     self.peers,
-                    self.peers.c.peer_id == self.received_offers.c.peer_id,
+                    self.peers.c.host == self.received_offers.c.peer_host,
+                    self.peers.c.port == self.received_offers.c.peer_port,
                 )
             )
             .where(self.received_offers.c.squeak_hash == squeak_hash.hex())
@@ -718,7 +722,8 @@ class SqueakDb:
             .select_from(
                 self.received_offers.outerjoin(
                     self.peers,
-                    self.peers.c.peer_id == self.received_offers.c.peer_id,
+                    self.peers.c.host == self.received_offers.c.peer_host,
+                    self.peers.c.port == self.received_offers.c.peer_port,
                 )
             )
             .where(self.received_offers.c.received_offer_id == received_offer_id)
@@ -771,7 +776,8 @@ class SqueakDb:
     def insert_sent_payment(self, sent_payment: SentPayment):
         """ Insert a new sent payment. """
         ins = self.sent_payments.insert().values(
-            peer_id=sent_payment.peer_id,
+            peer_host=sent_payment.peer_address.host,
+            peer_port=sent_payment.peer_address.port,
             squeak_hash=sent_payment.squeak_hash.hex(),
             payment_hash=sent_payment.payment_hash.hex(),
             secret_key=sent_payment.secret_key.hex(),
@@ -791,7 +797,8 @@ class SqueakDb:
             .select_from(
                 self.sent_payments.outerjoin(
                     self.peers,
-                    self.peers.c.peer_id == self.sent_payments.c.peer_id,
+                    self.peers.c.host == self.sent_payments.c.peer_host,
+                    self.peers.c.port == self.sent_payments.c.peer_port,
                 )
             )
             .order_by(
@@ -812,7 +819,8 @@ class SqueakDb:
             .select_from(
                 self.sent_payments.outerjoin(
                     self.peers,
-                    self.peers.c.peer_id == self.sent_payments.c.peer_id,
+                    self.peers.c.host == self.sent_payments.c.peer_host,
+                    self.peers.c.port == self.sent_payments.c.peer_port,
                 )
             )
             .where(self.sent_payments.c.sent_payment_id == sent_payment_id)
@@ -1055,17 +1063,24 @@ class SqueakDb:
             squeak_profile=squeak_profile,
         )
 
+    def _parse_squeak_peer_address(self, row) -> PeerAddress:
+        return PeerAddress(
+            host=row["host"],
+            port=row["port"],
+        )
+
     def _parse_squeak_peer(self, row) -> SqueakPeer:
+        peer_addresss = self._parse_squeak_peer_address(row)
         return SqueakPeer(
             peer_id=row[self.peers.c.peer_id],
             peer_name=row["peer_name"],
-            host=row["server_host"],
-            port=row["server_port"],
+            address=peer_addresss,
             uploading=row["uploading"],
             downloading=row["downloading"],
         )
 
     def _parse_received_offer(self, row) -> ReceivedOffer:
+        peer_address = self._parse_squeak_peer_address(row)
         return ReceivedOffer(
             received_offer_id=row["received_offer_id"],
             squeak_hash=bytes.fromhex(row["squeak_hash"]),
@@ -1079,7 +1094,7 @@ class SqueakDb:
             destination=row["destination"],
             node_host=row["node_host"],
             node_port=row["node_port"],
-            peer_id=row[self.peers.c.peer_id],
+            peer_address=peer_address,
         )
 
     def _parse_received_offer_with_peer(self, row) -> ReceivedOfferWithPeer:
@@ -1094,10 +1109,11 @@ class SqueakDb:
         )
 
     def _parse_sent_payment(self, row) -> SentPayment:
+        peer_address = self._parse_squeak_peer_address(row)
         return SentPayment(
             sent_payment_id=row["sent_payment_id"],
             created=row[self.sent_payments.c.created],
-            peer_id=row[self.sent_payments.c.peer_id],
+            peer_address=peer_address,
             squeak_hash=bytes.fromhex(row["squeak_hash"]),
             payment_hash=bytes.fromhex(row["payment_hash"]),
             secret_key=bytes.fromhex(row["secret_key"]),

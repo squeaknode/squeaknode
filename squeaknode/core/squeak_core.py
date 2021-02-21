@@ -15,12 +15,12 @@ from squeaknode.bitcoin.bitcoin_client import BitcoinClient
 from squeaknode.bitcoin.util import parse_block_header
 from squeaknode.core.exception import InvoiceSubscriptionError
 from squeaknode.core.offer import Offer
+from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.received_payment import ReceivedPayment
 from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.sent_payment import SentPayment
 from squeaknode.core.squeak_entry import SqueakEntry
-from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.util import add_tweak
 from squeaknode.core.util import generate_tweak
@@ -181,7 +181,7 @@ class SqueakCore:
             port=lnd_port,
         )
 
-    def unpack_offer(self, squeak: CSqueak, offer: Offer, peer: SqueakPeer) -> ReceivedOffer:
+    def unpack_offer(self, squeak: CSqueak, offer: Offer, peer_address: PeerAddress) -> ReceivedOffer:
         """Get the offer details from the message that the buyer
         receives from the seller.
 
@@ -193,8 +193,6 @@ class SqueakCore:
         Returns:
             ReceivedOffer: A record of the details of the offer for the buyer.
         """
-        if peer.peer_id is None:
-            raise Exception("Peer must have a non-null peer_id.")
         # Get the squeak hash
         squeak_hash = get_hash(squeak)
         # TODO: check if squeak hash matches squeak_hash in buy_offer.
@@ -211,7 +209,7 @@ class SqueakCore:
         destination = pay_req.destination
         invoice_timestamp = pay_req.timestamp
         invoice_expiry = pay_req.expiry
-        node_host = offer.host or peer.host
+        node_host = offer.host or peer_address.host
         node_port = offer.port
         # TODO: Check the payment point
         # payment_point = offer.payment_point
@@ -231,7 +229,7 @@ class SqueakCore:
             destination=destination,
             node_host=node_host,
             node_port=node_port,
-            peer_id=peer.peer_id,
+            peer_address=peer_address,
         )
 
     def pay_offer(self, received_offer: ReceivedOffer) -> SentPayment:
@@ -259,10 +257,14 @@ class SqueakCore:
         point = payment_point_bytes_from_scalar_bytes(secret_key)
         valid = point == received_offer.payment_point
         # Save the preimage of the sent payment
+        peer_address = PeerAddress(
+            host=received_offer.peer_address.host,
+            port=received_offer.peer_address.port,
+        )
         return SentPayment(
             sent_payment_id=None,
             created=None,
-            peer_id=received_offer.peer_id,
+            peer_address=peer_address,
             squeak_hash=received_offer.squeak_hash,
             payment_hash=received_offer.payment_hash,
             secret_key=secret_key,

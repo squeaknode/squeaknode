@@ -76,8 +76,8 @@ def squeak_peer_to_message(squeak_peer: SqueakPeer) -> squeak_admin_pb2.SqueakPe
     return squeak_admin_pb2.SqueakPeer(
         peer_id=squeak_peer.peer_id,
         peer_name=squeak_peer.peer_name,
-        host=squeak_peer.host,
-        port=squeak_peer.port,
+        host=squeak_peer.address.host,
+        port=squeak_peer.address.port,
         uploading=squeak_peer.uploading,
         downloading=squeak_peer.downloading,
     )
