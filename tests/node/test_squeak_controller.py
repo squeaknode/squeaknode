@@ -3,6 +3,7 @@ import pytest
 
 from squeaknode.config.config import SqueaknodeConfig
 from squeaknode.core.lightning_address import LightningAddressHostPort
+from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.squeak_core import SqueakCore
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.db.squeak_db import SqueakDb
@@ -128,8 +129,10 @@ def test_create_peer(squeak_db, squeak_controller):
         SqueakPeer(
             peer_id=None,
             peer_name="fake_peer_name",
-            host="fake_host",
-            port=5678,
+            address=PeerAddress(
+                host="fake_host",
+                port=5678,
+            ),
             uploading=False,
             downloading=False,
         )
@@ -147,8 +150,10 @@ def test_create_peer_default_port(config, squeak_db, squeak_controller):
         SqueakPeer(
             peer_id=None,
             peer_name="fake_peer_name",
-            host="fake_host",
-            port=config.core.default_peer_rpc_port,
+            address=PeerAddress(
+                host="fake_host",
+                port=config.core.default_peer_rpc_port,
+            ),
             uploading=False,
             downloading=False,
         )

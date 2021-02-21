@@ -3,6 +3,7 @@ from contextlib import contextmanager
 from typing import Optional
 
 from squeaknode.core.block_range import BlockRange
+from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.received_offer_with_peer import ReceivedOfferWithPeer
 from squeaknode.network.peer_client import PeerClient
 from squeaknode.node.squeak_controller import SqueakController
@@ -15,15 +16,15 @@ class PeerConnection:
     def __init__(
         self,
         squeak_controller: SqueakController,
-        peer,
+        peer_address: PeerAddress,
         timeout_s,
     ):
         self.squeak_controller = squeak_controller
-        self.peer = peer
+        self.peer_address = peer_address
         self.timeout_s = timeout_s
         self.peer_client = PeerClient(
-            self.peer.host,
-            self.peer.port,
+            self.peer_address.host,
+            self.peer_address.port,
             self.timeout_s,
         )
 
@@ -68,7 +69,7 @@ class PeerConnection:
             followed_addresses,
             block_range.min_block,
             block_range.max_block,
-            self.peer.peer_id,
+            self.peer_address,
         )
         # Get hashes to get offer
         hashes_to_get_offer = set(remote_hashes) & set(locked_hashes)
@@ -123,7 +124,8 @@ class PeerConnection:
         offers = self.squeak_controller.get_received_offers_with_peer(
             squeak_hash)
         for offer_with_peer in offers:
-            if offer_with_peer.received_offer.peer_id == self.peer.peer_id:
+            if offer_with_peer.received_offer.peer_address.host == self.peer_address.host \
+               and offer_with_peer.received_offer.peer_address.port == self.peer_address.port:
                 return offer_with_peer
         return None
 
@@ -143,17 +145,19 @@ class PeerConnection:
     def _download_offer(self, squeak_hash: bytes):
         squeak = self.squeak_controller.get_squeak(squeak_hash)
         offer = self.peer_client.download_offer(squeak_hash)
-        # buy_offer = parse_buy_offer(offer_msg)
         decoded_offer = self.squeak_controller.get_offer(
-            squeak, offer, self.peer)
+            squeak,
+            offer,
+            self.peer_address,
+        )
         self.squeak_controller.save_offer(decoded_offer)
-        logger.info("Downloaded offer for squeak {} from peer {}".format(
-            squeak_hash.hex(), self.peer
+        logger.info("Downloaded offer for squeak {} from peer with address: {}".format(
+            squeak_hash.hex(), self.peer_address
         ))
 
     def _upload_squeak(self, squeak_hash: bytes):
         squeak = self.squeak_controller.get_squeak(squeak_hash)
         self.peer_client.upload_squeak(squeak)
-        logger.info("Uploaded squeak {} to peer {}".format(
-            squeak_hash.hex(), self.peer
+        logger.info("Uploaded squeak {} to peer with address: {}".format(
+            squeak_hash.hex(), self.peer_address
         ))

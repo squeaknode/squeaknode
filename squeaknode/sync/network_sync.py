@@ -2,7 +2,9 @@ import logging
 import threading
 from abc import ABC
 from abc import abstractmethod
+from typing import List
 
+from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.sync.peer_connection import PeerConnection
 
 logger = logging.getLogger(__name__)
@@ -19,7 +21,7 @@ class NetworkSync(ABC):
         self.timeout_s = timeout_s
 
     @abstractmethod
-    def get_peers_to_sync(self):
+    def get_peers_to_sync(self) -> List[SqueakPeer]:
         pass
 
     @abstractmethod
@@ -34,10 +36,10 @@ class NetworkSync(ABC):
             )
             sync_peer_thread.start()
 
-    def _sync_peer(self, peer):
+    def _sync_peer(self, peer: SqueakPeer):
         with PeerConnection(
                 self.squeak_controller,
-                peer,
+                peer.address,
                 self.timeout_s,
         ).open_connection() as peer_connection:
             self.sync_peer(peer_connection)

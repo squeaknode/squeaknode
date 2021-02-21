@@ -1,8 +1,8 @@
 """Initialize all
 
-Revision ID: 67e84bbfd641
+Revision ID: c9c2ff1d5fcd
 Revises:
-Create Date: 2021-02-16 14:58:44.662161
+Create Date: 2021-02-21 15:02:13.744742
 
 """
 import sqlalchemy as sa
@@ -12,7 +12,7 @@ import squeaknode.db.models
 
 
 # revision identifiers, used by Alembic.
-revision = '67e84bbfd641'
+revision = 'c9c2ff1d5fcd'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -25,13 +25,13 @@ def upgrade():
                     sa.Column('created', squeaknode.db.models.TZDateTime(
                     ), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
                     sa.Column('peer_name', sa.String(), nullable=False),
-                    sa.Column('server_host', sa.String(), nullable=False),
-                    sa.Column('server_port', sa.Integer(), nullable=False),
+                    sa.Column('host', sa.String(), nullable=False),
+                    sa.Column('port', sa.Integer(), nullable=False),
                     sa.Column('uploading', sa.Boolean(), nullable=False),
                     sa.Column('downloading', sa.Boolean(), nullable=False),
                     sa.PrimaryKeyConstraint('peer_id'),
-                    sa.UniqueConstraint('server_host', 'server_port',
-                                        name='uq_peer_server_host_server_port'),
+                    sa.UniqueConstraint(
+                        'host', 'port', name='uq_peer_host_port'),
                     sqlite_autoincrement=True
                     )
     op.create_table('profile',
@@ -70,7 +70,9 @@ def upgrade():
                         length=66), nullable=False),
                     sa.Column('node_host', sa.String(), nullable=False),
                     sa.Column('node_port', sa.Integer(), nullable=False),
-                    sa.Column('peer_id', sa.Integer(), nullable=False),
+                    sa.Column('peer_host', sa.String(), nullable=False),
+                    sa.Column('peer_port', sa.Integer(), nullable=False),
+                    sa.Column('paid', sa.Boolean(), nullable=False),
                     sa.PrimaryKeyConstraint('received_offer_id'),
                     sa.UniqueConstraint('payment_hash'),
                     sqlite_autoincrement=True
@@ -112,6 +114,7 @@ def upgrade():
                     sa.Column('invoice_expiry', sa.Integer(), nullable=False),
                     sa.Column('client_addr', sa.String(
                         length=64), nullable=False),
+                    sa.Column('paid', sa.Boolean(), nullable=False),
                     sa.PrimaryKeyConstraint('sent_offer_id'),
                     sa.UniqueConstraint('payment_hash'),
                     sqlite_autoincrement=True
@@ -121,7 +124,8 @@ def upgrade():
                         'sent_payment_id', squeaknode.db.models.SLBigInteger(), nullable=False),
                     sa.Column('created', squeaknode.db.models.TZDateTime(
                     ), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
-                    sa.Column('peer_id', sa.Integer(), nullable=False),
+                    sa.Column('peer_host', sa.String(), nullable=False),
+                    sa.Column('peer_port', sa.Integer(), nullable=False),
                     sa.Column('squeak_hash', sa.String(
                         length=64), nullable=False),
                     sa.Column('payment_hash', sa.String(
