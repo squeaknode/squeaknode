@@ -1070,25 +1070,20 @@ class SqueakDb:
             port=row["lightning_port"],
         )
 
-    def _parse_squeak_peer_address(self, row) -> PeerAddress:
-        return PeerAddress(
-            host=row["host"],
-            port=row["port"],
-        )
-
     def _parse_squeak_peer(self, row) -> SqueakPeer:
-        peer_addresss = self._parse_squeak_peer_address(row)
         return SqueakPeer(
             peer_id=row[self.peers.c.peer_id],
             peer_name=row["peer_name"],
-            address=peer_addresss,
+            address=PeerAddress(
+                host=row["host"],
+                port=row["port"],
+            ),
             uploading=row["uploading"],
             downloading=row["downloading"],
         )
 
     def _parse_received_offer(self, row) -> ReceivedOffer:
         lightning_address = self._parse_lightning_address(row)
-        peer_address = self._parse_squeak_peer_address(row)
         return ReceivedOffer(
             received_offer_id=row["received_offer_id"],
             squeak_hash=bytes.fromhex(row["squeak_hash"]),
@@ -1101,7 +1096,10 @@ class SqueakDb:
             payment_request=row["payment_request"],
             destination=row["destination"],
             lightning_address=lightning_address,
-            peer_address=peer_address,
+            peer_address=PeerAddress(
+                host=row["peer_host"],
+                port=row["peer_port"],
+            ),
         )
 
     def _parse_received_offer_with_peer(self, row) -> ReceivedOfferWithPeer:
@@ -1116,11 +1114,13 @@ class SqueakDb:
         )
 
     def _parse_sent_payment(self, row) -> SentPayment:
-        peer_address = self._parse_squeak_peer_address(row)
         return SentPayment(
             sent_payment_id=row["sent_payment_id"],
             created=row[self.sent_payments.c.created],
-            peer_address=peer_address,
+            peer_address=PeerAddress(
+                host=row["peer_host"],
+                port=row["peer_port"],
+            ),
             squeak_hash=bytes.fromhex(row["squeak_hash"]),
             payment_hash=bytes.fromhex(row["payment_hash"]),
             secret_key=bytes.fromhex(row["secret_key"]),
