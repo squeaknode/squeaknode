@@ -17,6 +17,7 @@ from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
 from squeaknode.node.payment_processor import PaymentProcessor
 from squeaknode.node.process_received_payments_worker import ProcessReceivedPaymentsWorker
 from squeaknode.node.squeak_controller import SqueakController
+from squeaknode.node.squeak_deletion_worker import SqueakDeletionWorker
 from squeaknode.node.squeak_offer_expiry_worker import SqueakOfferExpiryWorker
 from squeaknode.node.squeak_peer_sync_worker import SqueakPeerSyncWorker
 from squeaknode.node.squeak_rate_limiter import SqueakRateLimiter
@@ -94,6 +95,10 @@ class SqueakNode:
         )
         self.sent_offers_worker = ProcessReceivedPaymentsWorker(
             payment_processor, self.stopped,
+        )
+        self.squeak_deletion_worker = SqueakDeletionWorker(
+            squeak_controller,
+            self.config.core.squeak_deletion_interval_s,
         )
 
         handler = load_handler(squeak_controller)
