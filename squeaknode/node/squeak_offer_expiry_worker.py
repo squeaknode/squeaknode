@@ -26,6 +26,5 @@ class SqueakOfferExpiryWorker:
         self.remove_expired_offers()
 
     def remove_expired_offers(self):
-        logger.info("Deleting expired offers.")
         self.squeak_controller.delete_all_expired_received_offers()
         self.squeak_controller.delete_all_expired_sent_offers()
