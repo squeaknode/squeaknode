@@ -120,6 +120,7 @@ class SqueakNode:
 
         self.squeak_offer_expiry_worker.start_running()
         self.sent_offers_worker.start_running()
+        self.squeak_deletion_worker.start_running()
 
         # start peer rpc server
         if self.config.server.rpc_enabled:
