@@ -519,3 +519,17 @@ class SqueakController:
     def reprocess_received_payments(self) -> None:
         self.squeak_db.clear_received_payment_settle_indices()
         self.payment_processor.start_processing()
+
+    def delete_old_squeaks(self):
+        squeaks_to_delete = self.squeak_db.get_old_squeaks_to_delete(
+            self.config.core.squeak_retention_s,
+        )
+        for squeak_entry_with_profile in squeaks_to_delete:
+            squeak = squeak_entry_with_profile.squeak_entry.squeak
+            squeak_hash = get_hash(squeak)
+            self.squeak_db.delete_squeak(
+                squeak_hash,
+            )
+            logger.info("Deleted squeak: {}".format(
+                squeak_hash.hex(),
+            ))

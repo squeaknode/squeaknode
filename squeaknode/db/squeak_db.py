@@ -92,6 +92,10 @@ class SqueakDb:
     def squeak_has_no_secret_key(self):
         return self.squeaks.c.secret_key == None  # noqa: E711
 
+    def squeak_is_older_than_retention(self, interval_s):
+        return self.datetime_now - timedelta(seconds=interval_s) > \
+            self.squeaks.c.created
+
     @property
     def profile_has_private_key(self):
         return self.profiles.c.private_key != None  # noqa: E711
@@ -108,9 +112,9 @@ class SqueakDb:
     def datetime_now(self):
         return datetime.now(timezone.utc)
 
-    def squeak_newer_than_interval_s(self, interval_s):
-        return self.squeaks.c.created > \
-            self.datetime_now - timedelta(seconds=interval_s)
+    # def squeak_newer_than_interval_s(self, interval_s):
+    #     return self.squeaks.c.created > \
+    #         self.datetime_now - timedelta(seconds=interval_s)
 
     def received_offer_should_be_deleted(self):
         expire_time = (
@@ -424,6 +428,29 @@ class SqueakDb:
             rows = result.fetchall()
             hashes = [bytes.fromhex(row["hash"]) for row in rows]
             return hashes
+
+    def get_old_squeaks_to_delete(
+            self,
+            interval_s: int,
+    ) -> List[SqueakEntryWithProfile]:
+        """ Get squeaks older than retention that meet the
+        criteria for deletion.
+        """
+        s = (
+            select([self.squeaks, self.profiles])
+            .select_from(
+                self.squeaks.outerjoin(
+                    self.profiles,
+                    self.profiles.c.address == self.squeaks.c.author_address,
+                )
+            )
+            .where(self.squeak_is_older_than_retention(interval_s))
+            .where(self.profile_has_no_private_key)
+        )
+        with self.get_connection() as connection:
+            result = connection.execute(s)
+            rows = result.fetchall()
+            return [self._parse_squeak_entry_with_profile(row) for row in rows]
 
     def insert_profile(self, squeak_profile: SqueakProfile) -> int:
         """ Insert a new squeak profile. """
