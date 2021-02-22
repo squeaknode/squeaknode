@@ -1064,12 +1064,6 @@ class SqueakDb:
             squeak_profile=squeak_profile,
         )
 
-    def _parse_lightning_address(self, row) -> LightningAddressHostPort:
-        return LightningAddressHostPort(
-            host=row["lightning_host"],
-            port=row["lightning_port"],
-        )
-
     def _parse_squeak_peer(self, row) -> SqueakPeer:
         return SqueakPeer(
             peer_id=row[self.peers.c.peer_id],
@@ -1083,7 +1077,6 @@ class SqueakDb:
         )
 
     def _parse_received_offer(self, row) -> ReceivedOffer:
-        lightning_address = self._parse_lightning_address(row)
         return ReceivedOffer(
             received_offer_id=row["received_offer_id"],
             squeak_hash=bytes.fromhex(row["squeak_hash"]),
@@ -1095,7 +1088,10 @@ class SqueakDb:
             price_msat=row["price_msat"],
             payment_request=row["payment_request"],
             destination=row["destination"],
-            lightning_address=lightning_address,
+            lightning_address=LightningAddressHostPort(
+                host=row["lightning_host"],
+                port=row["lightning_port"],
+            ),
             peer_address=PeerAddress(
                 host=row["peer_host"],
                 port=row["peer_port"],
