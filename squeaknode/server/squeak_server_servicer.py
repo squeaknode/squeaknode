@@ -8,7 +8,7 @@ from proto import squeak_server_pb2_grpc
 from squeaknode.network.messages import offer_to_msg
 from squeaknode.network.messages import squeak_from_msg
 from squeaknode.network.messages import squeak_to_msg
-from squeaknode.server.util import parse_ip_address
+from squeaknode.server.util import parse_client_address
 
 logger = logging.getLogger(__name__)
 
@@ -51,9 +51,9 @@ class SqueakServerServicer(squeak_server_pb2_grpc.SqueakServerServicer):
     def DownloadOffer(self, request, context):
         squeak_hash = request.hash
         # TODO: check if hash is valid
-        client_addr = context.peer()
-        ip_addr = parse_ip_address(client_addr)
-        offer = self.handler.handle_get_offer(squeak_hash, ip_addr)
+        grpc_address = context.peer()
+        client_addr = parse_client_address(grpc_address)
+        offer = self.handler.handle_get_offer(squeak_hash, client_addr)
         if offer is None:
             raise Exception("Offer not found.")
         logger.info("Sending offer: {}".format(offer))

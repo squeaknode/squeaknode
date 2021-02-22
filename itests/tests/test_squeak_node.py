@@ -1212,7 +1212,7 @@ def test_connect_other_node(
             five_minutes = datetime.timedelta(minutes=5)
             assert received_payment_time > datetime.datetime.now() - five_minutes
             assert received_payment_time < datetime.datetime.now()
-            assert len(received_payment.client_addr) > 4
+            assert len(received_payment.client_host) > 4
 
         # Subscribe to received payments starting from index zero
         subscribe_received_payments_response = admin_stub.SubscribeReceivedPayments(

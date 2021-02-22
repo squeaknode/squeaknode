@@ -810,8 +810,11 @@ message ReceivedPayment {
     /// Time of payment
     int64 time_s = 5;
 
-    /// The address of the buyer client
-    string client_addr = 6;
+    /// The host of the buyer client
+    string client_host = 6;
+
+    /// The port of the buyer client
+    int32 client_port = 7;
 }
 
 message SubscribeReceivedPaymentsRequest {

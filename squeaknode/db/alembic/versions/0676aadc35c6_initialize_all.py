@@ -1,8 +1,8 @@
 """Initialize all
 
-Revision ID: d0b60e721ff7
+Revision ID: 0676aadc35c6
 Revises:
-Create Date: 2021-02-21 16:00:52.473818
+Create Date: 2021-02-21 17:28:39.366082
 
 """
 import sqlalchemy as sa
@@ -12,7 +12,7 @@ import squeaknode.db.models
 
 
 # revision identifiers, used by Alembic.
-revision = 'd0b60e721ff7'
+revision = '0676aadc35c6'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -89,8 +89,8 @@ def upgrade():
                     sa.Column('price_msat', sa.Integer(), nullable=False),
                     sa.Column('settle_index',
                               squeaknode.db.models.SLBigInteger(), nullable=False),
-                    sa.Column('client_addr', sa.String(
-                        length=64), nullable=False),
+                    sa.Column('client_host', sa.String(), nullable=False),
+                    sa.Column('client_port', sa.Integer(), nullable=False),
                     sa.PrimaryKeyConstraint('received_payment_id'),
                     sa.UniqueConstraint('payment_hash'),
                     sqlite_autoincrement=True
@@ -112,8 +112,8 @@ def upgrade():
                     sa.Column('invoice_timestamp',
                               sa.Integer(), nullable=False),
                     sa.Column('invoice_expiry', sa.Integer(), nullable=False),
-                    sa.Column('client_addr', sa.String(
-                        length=64), nullable=False),
+                    sa.Column('client_host', sa.String(), nullable=False),
+                    sa.Column('client_port', sa.Integer(), nullable=False),
                     sa.Column('paid', sa.Boolean(), nullable=False),
                     sa.PrimaryKeyConstraint('sent_offer_id'),
                     sa.UniqueConstraint('payment_hash'),

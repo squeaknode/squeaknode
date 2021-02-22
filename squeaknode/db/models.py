@@ -157,7 +157,8 @@ class Models:
             Column("payment_request", String, nullable=False),
             Column("invoice_timestamp", Integer, nullable=False),
             Column("invoice_expiry", Integer, nullable=False),
-            Column("client_addr", String(64), nullable=False),
+            Column("client_host", String, nullable=False),
+            Column("client_port", Integer, nullable=False),
             Column("paid", Boolean, nullable=False, default=False),
             sqlite_autoincrement=True,
         )
@@ -172,6 +173,7 @@ class Models:
             Column("payment_hash", String(64), unique=True, nullable=False),
             Column("price_msat", Integer, nullable=False),
             Column("settle_index", SLBigInteger, nullable=False),
-            Column("client_addr", String(64), nullable=False),
+            Column("client_host", String, nullable=False),
+            Column("client_port", Integer, nullable=False),
             sqlite_autoincrement=True,
         )

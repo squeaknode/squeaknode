@@ -116,12 +116,12 @@ class SqueakCore:
         block_info = self.bitcoin_client.get_best_block_info()
         return block_info.block_height
 
-    def create_offer(self, squeak: CSqueak, client_addr: str, price_msat: int) -> SentOffer:
+    def create_offer(self, squeak: CSqueak, client_address: PeerAddress, price_msat: int) -> SentOffer:
         """Creates an offer to sell a squeak key to another node.
 
         Args:
             squeak: The squeak to be sold.
-            client_addr: The IP address of the buyer.
+            client_address: The address of the buyer.
             price_msat: The price in msats.
 
         Returns:
@@ -159,7 +159,7 @@ class SqueakCore:
             payment_request=invoice_payment_request,
             invoice_time=invoice_time,
             invoice_expiry=invoice_expiry,
-            client_addr=client_addr,
+            client_addr=client_address,
         )
 
     def package_offer(self, sent_offer: SentOffer, lnd_external_host: str, lnd_port: int) -> Offer:

@@ -3,6 +3,7 @@ import logging
 from squeak.core import CSqueak
 
 from proto import squeak_server_pb2
+from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.util import get_hash
 from squeaknode.node.squeak_controller import SqueakController
 
@@ -80,12 +81,14 @@ class SqueakServerHandler(object):
             max_block=block_range.max_block,
         )
 
-    def handle_get_offer(self, squeak_hash: bytes, client_addr: str):
+    def handle_get_offer(self, squeak_hash: bytes, client_address: PeerAddress):
         logger.info(
             "Handle get offer by hash: {} from client_addr: {}".format(
-                squeak_hash.hex(), client_addr
+                squeak_hash.hex(), client_address,
             )
         )
         buy_offer = self.squeak_controller.get_buy_offer(
-            squeak_hash, client_addr)
+            squeak_hash,
+            client_address,
+        )
         return buy_offer
