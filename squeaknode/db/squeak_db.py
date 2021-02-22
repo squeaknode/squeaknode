@@ -362,9 +362,10 @@ class SqueakDb:
             )
         )
         with self.get_connection() as connection:
-            # logger.info("Mogrify lookup_squeaks: {}.".format(
-            #     connection.connection.cursor().mogrify(s),
-            # ))
+            logger.info("Mogrify lookup_squeaks: {}.".format(
+                connection.connection.cursor().mogrify(s),
+            ))
+
             result = connection.execute(s)
             rows = result.fetchall()
             hashes = [bytes.fromhex(row["hash"]) for row in rows]
