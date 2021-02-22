@@ -2,6 +2,8 @@ from datetime import datetime
 from typing import NamedTuple
 from typing import Optional
 
+from squeaknode.core.peer_address import PeerAddress
+
 
 class ReceivedPayment(NamedTuple):
     """Represents an payment received by a seller."""
@@ -11,4 +13,4 @@ class ReceivedPayment(NamedTuple):
     payment_hash: bytes
     price_msat: int
     settle_index: int
-    client_addr: str
+    client_addr: PeerAddress
