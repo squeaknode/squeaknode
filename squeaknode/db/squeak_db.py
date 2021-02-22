@@ -429,10 +429,10 @@ class SqueakDb:
             hashes = [bytes.fromhex(row["hash"]) for row in rows]
             return hashes
 
-    def get_old_squeaks_to_delete(
+    def yield_old_squeaks_to_delete(
             self,
             interval_s: int,
-    ) -> List[SqueakEntryWithProfile]:
+    ) -> Iterator[SqueakEntryWithProfile]:
         """ Get squeaks older than retention that meet the
         criteria for deletion.
         """
@@ -449,8 +449,8 @@ class SqueakDb:
         )
         with self.get_connection() as connection:
             result = connection.execute(s)
-            rows = result.fetchall()
-            return [self._parse_squeak_entry_with_profile(row) for row in rows]
+            for row in result:
+                yield self._parse_squeak_entry_with_profile(row)
 
     def insert_profile(self, squeak_profile: SqueakProfile) -> int:
         """ Insert a new squeak profile. """
