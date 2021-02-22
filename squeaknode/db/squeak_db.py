@@ -357,7 +357,7 @@ class SqueakDb:
             .where(
                 or_(
                     self.squeak_has_secret_key,
-                    include_locked,
+                    include_locked == True,  # noqa: E711
                 )
             )
         )
