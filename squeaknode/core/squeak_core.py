@@ -14,6 +14,7 @@ from squeak.core.signing import CSigningKey
 from squeaknode.bitcoin.bitcoin_client import BitcoinClient
 from squeaknode.bitcoin.util import parse_block_header
 from squeaknode.core.exception import InvoiceSubscriptionError
+from squeaknode.core.lightning_address import LightningAddressHostPort
 from squeaknode.core.offer import Offer
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.received_offer import ReceivedOffer
@@ -209,8 +210,10 @@ class SqueakCore:
         destination = pay_req.destination
         invoice_timestamp = pay_req.timestamp
         invoice_expiry = pay_req.expiry
-        node_host = offer.host or peer_address.host
-        node_port = offer.port
+        lightning_address = LightningAddressHostPort(
+            host=offer.host or peer_address.host,
+            port=offer.port,
+        )
         # TODO: Check the payment point
         # payment_point = offer.payment_point
         # expected_payment_point = squeak.paymentPoint
@@ -227,8 +230,7 @@ class SqueakCore:
             invoice_expiry=invoice_expiry,
             payment_request=offer.payment_request,
             destination=destination,
-            node_host=node_host,
-            node_port=node_port,
+            lightning_address=lightning_address,
             peer_address=peer_address,
         )
 

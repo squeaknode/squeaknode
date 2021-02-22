@@ -17,6 +17,7 @@ from sqlalchemy.sql import select
 from squeak.core import CSqueak
 
 from squeaknode.bitcoin.util import parse_block_header
+from squeaknode.core.lightning_address import LightningAddressHostPort
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.received_offer_with_peer import ReceivedOfferWithPeer
@@ -683,8 +684,8 @@ class SqueakDb:
             price_msat=received_offer.price_msat,
             payment_request=received_offer.payment_request,
             destination=received_offer.destination,
-            node_host=received_offer.node_host,
-            node_port=received_offer.node_port,
+            lightning_host=received_offer.lightning_address.host,
+            lightning_port=received_offer.lightning_address.port,
             peer_host=received_offer.peer_address.host,
             peer_port=received_offer.peer_address.port,
         )
@@ -1063,6 +1064,12 @@ class SqueakDb:
             squeak_profile=squeak_profile,
         )
 
+    def _parse_lightning_address(self, row) -> LightningAddressHostPort:
+        return LightningAddressHostPort(
+            host=row["lightning_host"],
+            port=row["lightning_port"],
+        )
+
     def _parse_squeak_peer_address(self, row) -> PeerAddress:
         return PeerAddress(
             host=row["host"],
@@ -1080,6 +1087,7 @@ class SqueakDb:
         )
 
     def _parse_received_offer(self, row) -> ReceivedOffer:
+        lightning_address = self._parse_lightning_address(row)
         peer_address = self._parse_squeak_peer_address(row)
         return ReceivedOffer(
             received_offer_id=row["received_offer_id"],
@@ -1092,8 +1100,7 @@ class SqueakDb:
             price_msat=row["price_msat"],
             payment_request=row["payment_request"],
             destination=row["destination"],
-            node_host=row["node_host"],
-            node_port=row["node_port"],
+            lightning_address=lightning_address,
             peer_address=peer_address,
         )
 
