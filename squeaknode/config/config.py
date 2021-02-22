@@ -38,6 +38,7 @@ DEFAULT_SYNC_INTERVAL_S = 10
 DEFAULT_SYNC_TIMEOUT_S = 10
 DEFAULT_SYNC_BLOCK_INTERVAL = 2016
 DEFAULT_SENT_OFFER_RETENTION_S = 86400
+DEFAULT_OFFER_DELETION_INTERVAL_S = 10
 DEFAULT_SUBSCRIBE_INVOICES_RETRY_S = 10
 DEFAULT_SQUEAK_RETENTION_S = 604800
 DEFAULT_SQUEAK_DELETION_INTERVAL_S = 10
@@ -107,6 +108,8 @@ class CoreConfig(Config):
         cast=int, required=False, default=DEFAULT_SQUEAK_RETENTION_S)
     squeak_deletion_interval_s = key(
         cast=int, required=False, default=DEFAULT_SQUEAK_DELETION_INTERVAL_S)
+    offer_deletion_interval_s = key(
+        cast=int, required=False, default=DEFAULT_OFFER_DELETION_INTERVAL_S)
 
 
 @section('sync')

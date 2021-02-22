@@ -92,6 +92,7 @@ class SqueakNode:
 
         self.squeak_offer_expiry_worker = SqueakOfferExpiryWorker(
             squeak_controller,
+            self.config.core.offer_deletion_interval_s,
         )
         self.sent_offers_worker = ProcessReceivedPaymentsWorker(
             payment_processor, self.stopped,
