@@ -12,7 +12,6 @@ from bitcoin.core import CBlockHeader
 from sqlalchemy import func
 from sqlalchemy import literal
 from sqlalchemy.sql import and_
-from sqlalchemy.sql import or_
 from sqlalchemy.sql import select
 from squeak.core import CSqueak
 
@@ -354,12 +353,7 @@ class SqueakDb:
             .where(self.squeaks.c.author_address.in_(addresses))
             .where(self.squeaks.c.n_block_height >= min_block)
             .where(self.squeaks.c.n_block_height <= max_block)
-            .where(
-                or_(
-                    self.squeak_has_secret_key,
-                    include_locked == True,  # noqa: E711
-                )
-            )
+            .where(self.squeak_has_secret_key)
         )
         with self.get_connection() as connection:
             logger.info("Mogrify lookup_squeaks: {}.".format(
