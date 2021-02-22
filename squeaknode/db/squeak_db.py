@@ -1064,9 +1064,11 @@ class SqueakDb:
             parse_block_header(block_header_bytes) if
             block_header_bytes else None
         )
+        liked = row["liked"]
         return SqueakEntry(
             squeak=squeak,
             block_header=block_header,
+            liked=liked,
         )
 
     def _parse_squeak_profile(self, row) -> SqueakProfile:
