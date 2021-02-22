@@ -92,7 +92,17 @@ export default function ReceivedPayment({
             alignItems="flex-start"
           >
             <Grid item>
-              Buyer address:<span> </span>{receivedPayment.getClientAddr()}
+              Buyer host:<span> </span>{receivedPayment.getClientHost()}
+            </Grid>
+          </Grid>
+          <Grid
+            container
+            direction="row"
+            justify="flex-start"
+            alignItems="flex-start"
+          >
+            <Grid item>
+              Buyer port:<span> </span>{receivedPayment.getClientPort()}
             </Grid>
           </Grid>
     </Box>
