@@ -28,4 +28,4 @@ class SqueakDeletionWorker:
         self.delete_old_squeaks()
 
     def delete_old_squeaks(self):
-        self.squeak_controller.delete_old_received_squeaks()
+        self.squeak_controller.delete_old_squeaks()

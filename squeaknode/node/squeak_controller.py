@@ -520,7 +520,7 @@ class SqueakController:
         self.squeak_db.clear_received_payment_settle_indices()
         self.payment_processor.start_processing()
 
-    def delete_old_received_squeaks(self):
+    def delete_old_squeaks(self):
         num_deleted_squeaks = self.squeak_db.delete_old_squeaks(
             self.config.core.squeak_retention_s,
         )
