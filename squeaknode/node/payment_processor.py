@@ -16,7 +16,7 @@ class PaymentProcessor:
         self,
         squeak_db,
         squeak_core,
-        retry_s: int = 10,
+        retry_s: int,
     ):
         self.squeak_db = squeak_db
         self.squeak_core = squeak_core
