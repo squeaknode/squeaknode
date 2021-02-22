@@ -25,7 +25,7 @@ class NetworkSync(ABC):
         pass
 
     @abstractmethod
-    def sync_peer(self, peer_connection):
+    def sync_peer(self, peer_connection: PeerConnection):
         pass
 
     def sync(self):
@@ -51,7 +51,7 @@ class DownloadSync(NetworkSync):
         return self.squeak_controller.get_downloading_peers()
 
     @abstractmethod
-    def sync_peer(self, peer_connection):
+    def sync_peer(self, peer_connection: PeerConnection):
         pass
 
 
@@ -61,7 +61,7 @@ class UploadSync(NetworkSync):
         return self.squeak_controller.get_uploading_peers()
 
     @abstractmethod
-    def sync_peer(self, peer_connection):
+    def sync_peer(self, peer_connection: PeerConnection):
         pass
 
 
@@ -79,8 +79,13 @@ class TimelineDownloadSync(DownloadSync):
         )
         self.block_interval = block_interval
 
-    def sync_peer(self, peer_connection):
-        peer_connection.download(self.block_interval)
+    def sync_peer(self, peer_connection: PeerConnection):
+        try:
+            peer_connection.download(self.block_interval)
+        except Exception:
+            logger.info("Failed to download timeline from peer: {}".format(
+                peer_connection.peer_address,
+            ))
 
 
 class SingleSqueakDownloadSync(DownloadSync):
@@ -97,8 +102,14 @@ class SingleSqueakDownloadSync(DownloadSync):
         )
         self.squeak_hash = squeak_hash
 
-    def sync_peer(self, peer_connection):
-        peer_connection.download_single_squeak(self.squeak_hash)
+    def sync_peer(self, peer_connection: PeerConnection):
+        try:
+            peer_connection.download_single_squeak(self.squeak_hash)
+        except Exception:
+            logger.info("Failed to download single squeak: {} from peer: {}".format(
+                self.squeak_hash.hex(),
+                peer_connection.peer_address,
+            ))
 
 
 class TimelineUploadSync(UploadSync):
@@ -114,7 +125,12 @@ class TimelineUploadSync(UploadSync):
         )
 
     def sync_peer(self, peer_connection):
-        peer_connection.upload()
+        try:
+            peer_connection.upload()
+        except Exception:
+            logger.info("Failed to upload timeline to peer: {}".format(
+                peer_connection.peer_address,
+            ))
 
 
 class SingleSqueakUploadSync(UploadSync):
@@ -132,4 +148,10 @@ class SingleSqueakUploadSync(UploadSync):
         self.squeak_hash = squeak_hash
 
     def sync_peer(self, peer_connection):
-        peer_connection.upload_single_squeak(self.squeak_hash)
+        try:
+            peer_connection.upload_single_squeak(self.squeak_hash)
+        except Exception:
+            logger.info("Failed to upload single squeak: {} from peer: {}".format(
+                self.squeak_hash.hex(),
+                peer_connection.peer_address,
+            ))
