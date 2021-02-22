@@ -42,8 +42,6 @@ class SqueakServerHandler(object):
         )
         hashes = self.squeak_controller.lookup_squeaks(
             addresses, min_block, max_block)
-        logger.info(
-            "Got number of hashes to download from db: {}".format(len(hashes)))
         return squeak_server_pb2.LookupSqueaksToDownloadReply(
             hashes=hashes,
         )
@@ -66,13 +64,6 @@ class SqueakServerHandler(object):
             addresses,
             block_range.min_block,
             block_range.max_block,
-        )
-        logger.info(
-            "Got number of hashes to already uploaded from db: {}, number of allowed addresses: {} with block_range: {}".format(
-                len(hashes),
-                len(allowed_addresses),
-                block_range,
-            )
         )
         return squeak_server_pb2.LookupSqueaksToUploadReply(
             hashes=hashes,
