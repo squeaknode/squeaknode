@@ -1,6 +1,7 @@
 from typing import NamedTuple
 from typing import Optional
 
+from squeaknode.core.lightning_address import LightningAddressHostPort
 from squeaknode.core.peer_address import PeerAddress
 
 
@@ -16,6 +17,5 @@ class ReceivedOffer(NamedTuple):
     invoice_expiry: int
     payment_request: str
     destination: str
-    node_host: str
-    node_port: int
+    lightning_address: LightningAddressHostPort
     peer_address: PeerAddress

@@ -1,8 +1,8 @@
 """Initialize all
 
-Revision ID: c9c2ff1d5fcd
+Revision ID: d0b60e721ff7
 Revises:
-Create Date: 2021-02-21 15:02:13.744742
+Create Date: 2021-02-21 16:00:52.473818
 
 """
 import sqlalchemy as sa
@@ -12,7 +12,7 @@ import squeaknode.db.models
 
 
 # revision identifiers, used by Alembic.
-revision = 'c9c2ff1d5fcd'
+revision = 'd0b60e721ff7'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -68,8 +68,8 @@ def upgrade():
                     sa.Column('payment_request', sa.String(), nullable=False),
                     sa.Column('destination', sa.String(
                         length=66), nullable=False),
-                    sa.Column('node_host', sa.String(), nullable=False),
-                    sa.Column('node_port', sa.Integer(), nullable=False),
+                    sa.Column('lightning_host', sa.String(), nullable=False),
+                    sa.Column('lightning_port', sa.Integer(), nullable=False),
                     sa.Column('peer_host', sa.String(), nullable=False),
                     sa.Column('peer_port', sa.Integer(), nullable=False),
                     sa.Column('paid', sa.Boolean(), nullable=False),

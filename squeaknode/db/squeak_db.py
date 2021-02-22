@@ -17,6 +17,7 @@ from sqlalchemy.sql import select
 from squeak.core import CSqueak
 
 from squeaknode.bitcoin.util import parse_block_header
+from squeaknode.core.lightning_address import LightningAddressHostPort
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.received_offer_with_peer import ReceivedOfferWithPeer
@@ -683,8 +684,8 @@ class SqueakDb:
             price_msat=received_offer.price_msat,
             payment_request=received_offer.payment_request,
             destination=received_offer.destination,
-            node_host=received_offer.node_host,
-            node_port=received_offer.node_port,
+            lightning_host=received_offer.lightning_address.host,
+            lightning_port=received_offer.lightning_address.port,
             peer_host=received_offer.peer_address.host,
             peer_port=received_offer.peer_address.port,
         )
@@ -1063,24 +1064,19 @@ class SqueakDb:
             squeak_profile=squeak_profile,
         )
 
-    def _parse_squeak_peer_address(self, row) -> PeerAddress:
-        return PeerAddress(
-            host=row["host"],
-            port=row["port"],
-        )
-
     def _parse_squeak_peer(self, row) -> SqueakPeer:
-        peer_addresss = self._parse_squeak_peer_address(row)
         return SqueakPeer(
             peer_id=row[self.peers.c.peer_id],
             peer_name=row["peer_name"],
-            address=peer_addresss,
+            address=PeerAddress(
+                host=row["host"],
+                port=row["port"],
+            ),
             uploading=row["uploading"],
             downloading=row["downloading"],
         )
 
     def _parse_received_offer(self, row) -> ReceivedOffer:
-        peer_address = self._parse_squeak_peer_address(row)
         return ReceivedOffer(
             received_offer_id=row["received_offer_id"],
             squeak_hash=bytes.fromhex(row["squeak_hash"]),
@@ -1092,9 +1088,14 @@ class SqueakDb:
             price_msat=row["price_msat"],
             payment_request=row["payment_request"],
             destination=row["destination"],
-            node_host=row["node_host"],
-            node_port=row["node_port"],
-            peer_address=peer_address,
+            lightning_address=LightningAddressHostPort(
+                host=row["lightning_host"],
+                port=row["lightning_port"],
+            ),
+            peer_address=PeerAddress(
+                host=row["peer_host"],
+                port=row["peer_port"],
+            ),
         )
 
     def _parse_received_offer_with_peer(self, row) -> ReceivedOfferWithPeer:
@@ -1109,11 +1110,13 @@ class SqueakDb:
         )
 
     def _parse_sent_payment(self, row) -> SentPayment:
-        peer_address = self._parse_squeak_peer_address(row)
         return SentPayment(
             sent_payment_id=row["sent_payment_id"],
             created=row[self.sent_payments.c.created],
-            peer_address=peer_address,
+            peer_address=PeerAddress(
+                host=row["peer_host"],
+                port=row["peer_port"],
+            ),
             squeak_hash=bytes.fromhex(row["squeak_hash"]),
             payment_hash=bytes.fromhex(row["payment_hash"]),
             secret_key=bytes.fromhex(row["secret_key"]),
