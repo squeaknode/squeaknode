@@ -38,6 +38,7 @@ DEFAULT_SYNC_INTERVAL_S = 10
 DEFAULT_SYNC_TIMEOUT_S = 10
 DEFAULT_SYNC_BLOCK_INTERVAL = 2016
 DEFAULT_SENT_OFFER_RETENTION_S = 86400
+DEFAULT_SUBSCRIBE_INVOICES_RETRY_S = 10
 
 
 @section('bitcoin')
@@ -98,6 +99,8 @@ class CoreConfig(Config):
     log_level = key(cast=str, required=False, default=DEFAULT_LOG_LEVEL)
     sent_offer_retention_s = key(
         cast=int, required=False, default=DEFAULT_SENT_OFFER_RETENTION_S)
+    subscribe_invoices_retry_s = key(
+        cast=int, required=False, default=DEFAULT_SUBSCRIBE_INVOICES_RETRY_S)
 
 
 @section('sync')

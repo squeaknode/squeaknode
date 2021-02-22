@@ -60,6 +60,7 @@ class SqueakNode:
         payment_processor = PaymentProcessor(
             squeak_db,
             squeak_core,
+            self.config.core.subscribe_invoices_retry_s,
         )
 
         squeak_controller = SqueakController(
