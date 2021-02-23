@@ -244,6 +244,10 @@ service SqueakAdmin {
   */
   rpc UnlikeSqueak (UnlikeSqueakRequest) returns (UnlikeSqueakReply) {}
 
+  /** sqkadmin: `getlikedsqueakdisplays`
+  */
+  rpc GetLikedSqueakDisplays (GetLikedSqueakDisplaysRequest) returns (GetLikedSqueakDisplaysReply) {}
+
 }
 
 message CreateSigningProfileRequest {
@@ -885,3 +889,10 @@ message UnlikeSqueakRequest {
 message UnlikeSqueakReply {
 }
 
+message GetLikedSqueakDisplaysRequest {
+}
+
+message GetLikedSqueakDisplaysReply {
+    /// Multiple squeak display entries
+    repeated SqueakDisplayEntry squeak_display_entries = 1;
+}

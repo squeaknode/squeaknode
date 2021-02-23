@@ -627,3 +627,15 @@ class SqueakAdminServerHandler(object):
             squeak_hash
         )
         return squeak_admin_pb2.UnlikeSqueakReply()
+
+    def handle_get_liked_squeak_display_entries(self, request):
+        logger.info("Handle get liked squeak display entries.")
+        squeak_entries_with_profile = (
+            self.squeak_controller.get_liked_squeak_entries_with_profile()
+        )
+        squeak_display_msgs = [
+            squeak_entry_to_message(entry) for entry in squeak_entries_with_profile
+        ]
+        return squeak_admin_pb2.GetTimelineSqueakDisplaysReply(
+            squeak_display_entries=squeak_display_msgs
+        )

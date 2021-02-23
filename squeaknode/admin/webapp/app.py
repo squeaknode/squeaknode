@@ -523,6 +523,14 @@ def create_app(handler, username, password):
             handler.handle_unlike_squeak,
         )
 
+    @app.route("/getlikedsqueakdisplays", methods=["POST"])
+    @login_required
+    def getlikedsqueakdisplays():
+        return handle_request(
+            squeak_admin_pb2.GetLikedSqueakDisplaysRequest(),
+            handler.handle_get_liked_squeak_display_entries,
+        )
+
     return app
 
 

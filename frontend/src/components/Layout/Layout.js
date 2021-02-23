@@ -29,6 +29,7 @@ import Profiles from "../../pages/profiles";
 import Payments from "../../pages/payments";
 import SentPayments from "../../pages/sentpayments";
 import ReceivedPayments from "../../pages/receivedpayments";
+import Liked from "../../pages/liked";
 import Icons from "../../pages/icons";
 import Charts from "../../pages/charts";
 import Peers from "../../pages/peers";
@@ -64,6 +65,7 @@ function Layout(props) {
               <Route path="/app/payments" component={Payments} />
               <Route path="/app/sentpayments" component={SentPayments} />
               <Route path="/app/receivedpayments" component={ReceivedPayments} />
+              <Route path="/app/liked" component={Liked} />
               <Route path="/app/wallet" component={Wallet} />
               <Route path="/app/lightningnode/:pubkey/:host/:port" component={LightningNode} />
               <Route path="/app/lightningnode/:pubkey/:host" component={LightningNode} />
