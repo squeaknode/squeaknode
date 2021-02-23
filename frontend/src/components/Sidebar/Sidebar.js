@@ -11,6 +11,7 @@ import {
   ArrowBack as ArrowBackIcon,
   CloudDownload as PeerIcon,
   History as HistoryIcon,
+  Favorite as LikedIcon,
 } from "@material-ui/icons";
 import { useTheme } from "@material-ui/styles";
 import { withRouter } from "react-router-dom";
@@ -33,9 +34,10 @@ import {
 const structure = [
   { id: 0, label: "Timeline", link: "/app/timeline", icon: <HomeIcon /> },
   { id: 1, label: "Profiles", link: "/app/profiles", icon: <ProfilesIcon /> },
-  { id: 2, label: "Wallet", link: "/app/wallet", icon: <MoneyIcon /> },
-  { id: 3, label: "Peers", link: "/app/peers", icon: <PeerIcon /> },
-  { id: 4, label: "Payments", link: "/app/payments", icon: <HistoryIcon /> },
+  { id: 2, label: "Liked", link: "/app/liked", icon: <LikedIcon /> },
+  { id: 3, label: "Wallet", link: "/app/wallet", icon: <MoneyIcon /> },
+  { id: 4, label: "Peers", link: "/app/peers", icon: <PeerIcon /> },
+  { id: 5, label: "Payments", link: "/app/payments", icon: <HistoryIcon /> },
 ];
 
 function Sidebar({ location }) {

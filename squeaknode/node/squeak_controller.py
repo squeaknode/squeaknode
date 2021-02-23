@@ -456,6 +456,11 @@ class SqueakController:
     def get_timeline_squeak_entries_with_profile(self):
         return self.squeak_db.get_timeline_squeak_entries_with_profile()
 
+    def get_liked_squeak_entries_with_profile(self):
+        return self.squeak_db.get_timeline_squeak_entries_with_profile(
+            only_liked=True,
+        )
+
     def get_squeak_entries_with_profile_for_address(
         self, address: str, min_block: int, max_block: int
     ):

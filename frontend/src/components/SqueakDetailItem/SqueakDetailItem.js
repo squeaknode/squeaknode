@@ -376,6 +376,36 @@ export default function SqueakDetailItem({
         )
       }
 
+      function ActionBarContent() {
+          return (
+            <>
+            <Divider />
+            <Grid
+              container
+              direction="row"
+              justify="flex-start"
+              alignItems="flex-start"
+            >
+              <Grid item xs={3} sm={1}>
+                {ReplyIconContent()}
+              </Grid>
+              <Grid item xs={3} sm={1}>
+                {ResqueakIconContent()}
+              </Grid>
+              <Grid item xs={3} sm={1}>
+                {LikeIconContent()}
+              </Grid>
+              <Grid item xs={3} sm={1}>
+                {DeleteIconContent()}
+              </Grid>
+              <Grid item xs={3} sm={1}>
+                {DetailsIconContent()}
+              </Grid>
+            </Grid>
+            </>
+          )
+      }
+
       function ReplyIconContent() {
           return (
             <IconButton aria-label="reply"
@@ -479,29 +509,7 @@ export default function SqueakDetailItem({
               {SqueakTime()}
             </Grid>
           </Grid>
-          <Divider />
-          <Grid
-            container
-            direction="row"
-            justify="flex-start"
-            alignItems="flex-start"
-          >
-            <Grid item xs={3} sm={1}>
-              {ReplyIconContent()}
-            </Grid>
-            <Grid item xs={3} sm={1}>
-              {ResqueakIconContent()}
-            </Grid>
-            <Grid item xs={3} sm={1}>
-              {LikeIconContent()}
-            </Grid>
-            <Grid item xs={3} sm={1}>
-              {DeleteIconContent()}
-            </Grid>
-            <Grid item xs={3} sm={1}>
-              {DetailsIconContent()}
-            </Grid>
-          </Grid>
+          {squeak && ActionBarContent()}
     </Paper>
     {MakeSqueakDialogContent()}
     {DeleteSqueakDialogContent()}

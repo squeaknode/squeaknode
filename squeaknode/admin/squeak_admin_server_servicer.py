@@ -222,3 +222,6 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         self.stopped.wait()
         server.stop(None)
         logger.info("Stopped SqueakAdminServerServicer.")
+
+    def GetLikedSqueakDisplays(self, request, context):
+        return self.handler.handle_get_(request)

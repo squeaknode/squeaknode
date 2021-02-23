@@ -106,6 +106,8 @@ import {
   LikeSqueakReply,
   UnlikeSqueakRequest,
   UnlikeSqueakReply,
+  GetLikedSqueakDisplaysRequest,
+  GetLikedSqueakDisplaysReply,
 } from "../proto/squeak_admin_pb"
 
 console.log('The value of REACT_APP_SERVER_PORT is:', process.env.REACT_APP_SERVER_PORT);
@@ -166,7 +168,6 @@ export function getUserRequest(handleResponse) {
 
 export function getTimelineSqueakDisplaysRequest(handleResponse) {
   var request = new GetTimelineSqueakDisplaysRequest();
-  console.log(GetTimelineSqueakDisplaysReply);
   makeRequest(
     'gettimelinesqueakdisplays',
     request,
@@ -789,5 +790,17 @@ export function unlikeSqueakRequest(hash, handleResponse) {
     request,
     UnlikeSqueakReply.deserializeBinary,
     handleResponse,
+  );
+}
+
+export function getLikedSqueakDisplaysRequest(handleResponse) {
+  var request = new GetLikedSqueakDisplaysRequest();
+  makeRequest(
+    'getlikedsqueakdisplays',
+    request,
+    GetLikedSqueakDisplaysReply.deserializeBinary,
+    (response) => {
+      handleResponse(response.getSqueakDisplayEntriesList());
+    }
   );
 }
