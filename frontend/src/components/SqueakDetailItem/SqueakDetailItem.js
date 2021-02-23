@@ -38,6 +38,8 @@ import SqueakDetailsDialog from "../../components/SqueakDetailsDialog";
 
 import {
   syncSqueakRequest,
+  likeSqueakRequest,
+  unlikeSqueakRequest,
 } from "../../squeakclient/requests"
 
 import {
@@ -48,7 +50,6 @@ import moment from 'moment';
 
 import {
   goToSqueakAddressPage,
-  reloadRoute,
 } from "../../navigation/navigation"
 
 function Alert(props) {
@@ -110,6 +111,20 @@ export default function SqueakDetailItem({
     setViewDetailsDialogOpen(false);
   };
 
+  const handleLikeSqueak = () => {
+    console.log("liked.");
+    likeSqueakRequest(hash, (response) => {
+      reloadSqueak();
+    });
+  };
+
+  const handleUnlikeSqueak = () => {
+    console.log("unliked.");
+    unlikeSqueakRequest(hash, (response) => {
+      reloadSqueak();
+    });
+  };
+
   const onAddressClick = (event) => {
     event.preventDefault();
     event.stopPropagation();
@@ -127,6 +142,24 @@ export default function SqueakDetailItem({
       return;
     }
     handleClickOpenReplyDialog();
+  }
+
+  const onLikeClick = (event) => {
+    event.preventDefault();
+    console.log("Handling like click...");
+    if (!squeak) {
+      return;
+    }
+    handleLikeSqueak();
+  }
+
+  const onUnlikeClick = (event) => {
+    event.preventDefault();
+    console.log("Handling like click...");
+    if (!squeak) {
+      return;
+    }
+    handleUnlikeSqueak();
   }
 
   const onDeleteClick = (event) => {
@@ -160,7 +193,7 @@ export default function SqueakDetailItem({
     event.preventDefault();
     console.log("Handling download click...");
     syncSqueakRequest(hash, (response) => {
-      reloadRoute(history);
+      reloadSqueak();
     });
   }
 
@@ -343,6 +376,67 @@ export default function SqueakDetailItem({
         )
       }
 
+      function ReplyIconContent() {
+          return (
+            <IconButton aria-label="reply"
+              onClick={onReplyClick}
+              >
+              <ReplyIcon />
+            </IconButton>
+          )
+      }
+
+      function ResqueakIconContent() {
+          return (
+            <IconButton aria-label="resqueak"
+              >
+              <RepeatIcon />
+            </IconButton>
+          )
+      }
+
+      function LikeIconContent() {
+        if (squeak && !squeak.getLiked()) {
+          return (
+            <IconButton aria-label="like"
+              onClick={onLikeClick}
+              >
+              <FavoriteIcon />
+            </IconButton>
+          )
+        } else {
+          return (
+            <IconButton aria-label="unlike"
+              onClick={onUnlikeClick}
+              >
+              <FavoriteIcon
+              color="secondary"
+                />
+            </IconButton>
+          )
+        }
+      }
+
+      function DeleteIconContent() {
+          return (
+            <IconButton aria-label="delete"
+              onClick={onDeleteClick}
+              >
+              <DeleteIcon />
+            </IconButton>
+          )
+      }
+
+      function DetailsIconContent() {
+          return (
+            <IconButton aria-label="details"
+              onClick={onZoomInClick}
+              >
+              <ZoomInIcon />
+            </IconButton>
+          )
+      }
+
   return (
     <>
     <Paper elevation={3} className={classes.paper}
@@ -393,42 +487,19 @@ export default function SqueakDetailItem({
             alignItems="flex-start"
           >
             <Grid item xs={3} sm={1}>
-              <Box
-                p={1}
-                onClick={onReplyClick}
-                >
-              <ReplyIcon />
-            </Box>
+              {ReplyIconContent()}
             </Grid>
             <Grid item xs={3} sm={1}>
-                <Box
-                  p={1}
-                  >
-                  <RepeatIcon />
-                </Box>
+              {ResqueakIconContent()}
             </Grid>
             <Grid item xs={3} sm={1}>
-                <Box
-                  p={1}
-                  >
-                  <FavoriteIcon />
-                </Box>
+              {LikeIconContent()}
             </Grid>
             <Grid item xs={3} sm={1}>
-                <Box
-                  p={1}
-                  onClick={onDeleteClick}
-                  >
-                  <DeleteIcon />
-                </Box>
+              {DeleteIconContent()}
             </Grid>
             <Grid item xs={3} sm={1}>
-                <Box
-                  p={1}
-                  onClick={onZoomInClick}
-                  >
-                  <ZoomInIcon />
-                </Box>
+              {DetailsIconContent()}
             </Grid>
           </Grid>
     </Paper>

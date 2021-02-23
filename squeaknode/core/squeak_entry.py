@@ -7,3 +7,4 @@ from squeak.core import CSqueak
 class SqueakEntry(NamedTuple):
     squeak: CSqueak
     block_header: CBlockHeader
+    liked: bool = False

@@ -236,6 +236,14 @@ service SqueakAdmin {
   */
   rpc ReprocessReceivedPayments (ReprocessReceivedPaymentsRequest) returns (ReprocessReceivedPaymentsReply) {}
 
+  /** sqkadmin: `likesqueak`
+  */
+  rpc LikeSqueak (LikeSqueakRequest) returns (LikeSqueakReply) {}
+
+  /** sqkadmin: `unlikesqueak`
+  */
+  rpc UnlikeSqueak (UnlikeSqueakRequest) returns (UnlikeSqueakReply) {}
+
 }
 
 message CreateSigningProfileRequest {
@@ -475,6 +483,9 @@ message SqueakDisplayEntry {
 
     /// The author name
     SqueakProfile author = 11;
+
+    /// Is liked
+    bool liked = 12;
 }
 
 message GetTimelineSqueakDisplaysRequest {
@@ -857,3 +868,20 @@ message ReprocessReceivedPaymentsRequest {
 
 message ReprocessReceivedPaymentsReply {
 }
+
+message LikeSqueakRequest {
+    /// Hash of the squeak.
+    string squeak_hash = 1;
+}
+
+message LikeSqueakReply {
+}
+
+message UnlikeSqueakRequest {
+    /// Hash of the squeak.
+    string squeak_hash = 1;
+}
+
+message UnlikeSqueakReply {
+}
+

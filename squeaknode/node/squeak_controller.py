@@ -533,3 +533,21 @@ class SqueakController:
             logger.info("Deleted squeak: {}".format(
                 squeak_hash.hex(),
             ))
+
+    def like_squeak(self, squeak_hash: bytes):
+        logger.info("Liking squeak: {}".format(
+            squeak_hash.hex(),
+        ))
+        self.squeak_db.set_squeak_liked(
+            squeak_hash,
+            True,
+        )
+
+    def unlike_squeak(self, squeak_hash: bytes):
+        logger.info("Unliking squeak: {}".format(
+            squeak_hash.hex(),
+        ))
+        self.squeak_db.set_squeak_liked(
+            squeak_hash,
+            False,
+        )
