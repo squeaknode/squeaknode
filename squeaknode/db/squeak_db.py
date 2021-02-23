@@ -90,7 +90,11 @@ class SqueakDb:
 
     @property
     def squeak_is_liked(self):
-        return self.squeaks.c.liked  # noqa: E711
+        return self.squeaks.c.liked
+
+    @property
+    def squeak_is_not_liked(self):
+        return self.squeaks.c.liked == False  # noqa: E711
 
     @property
     def squeak_has_no_secret_key(self):
@@ -442,10 +446,10 @@ class SqueakDb:
             hashes = [bytes.fromhex(row["hash"]) for row in rows]
             return hashes
 
-    def yield_old_squeaks_to_delete(
+    def get_old_squeaks_to_delete(
             self,
             interval_s: int,
-    ) -> Iterator[SqueakEntryWithProfile]:
+    ) -> List[SqueakEntryWithProfile]:
         """ Get squeaks older than retention that meet the
         criteria for deletion.
         """
@@ -459,11 +463,12 @@ class SqueakDb:
             )
             .where(self.squeak_is_older_than_retention(interval_s))
             .where(self.profile_has_no_private_key)
+            .where(self.squeak_is_not_liked)
         )
         with self.get_connection() as connection:
             result = connection.execute(s)
-            for row in result:
-                yield self._parse_squeak_entry_with_profile(row)
+            rows = result.fetchall()
+            return [self._parse_squeak_entry_with_profile(row) for row in rows]
 
     def insert_profile(self, squeak_profile: SqueakProfile) -> int:
         """ Insert a new squeak profile. """
