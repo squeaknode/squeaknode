@@ -376,28 +376,65 @@ export default function SqueakDetailItem({
         )
       }
 
+      function ReplyIconContent() {
+          return (
+            <IconButton aria-label="reply"
+              onClick={onReplyClick}
+              >
+              <ReplyIcon />
+            </IconButton>
+          )
+      }
+
+      function ResqueakIconContent() {
+          return (
+            <IconButton aria-label="resqueak"
+              >
+              <RepeatIcon />
+            </IconButton>
+          )
+      }
+
       function LikeIconContent() {
         if (squeak && !squeak.getLiked()) {
           return (
-            <Box
-              p={1}
+            <IconButton aria-label="like"
               onClick={onLikeClick}
               >
               <FavoriteIcon />
-            </Box>
+            </IconButton>
           )
         } else {
           return (
-            <Box
-              p={1}
+            <IconButton aria-label="unlike"
               onClick={onUnlikeClick}
               >
               <FavoriteIcon
               color="secondary"
                 />
-            </Box>
+            </IconButton>
           )
         }
+      }
+
+      function DeleteIconContent() {
+          return (
+            <IconButton aria-label="delete"
+              onClick={onDeleteClick}
+              >
+              <DeleteIcon />
+            </IconButton>
+          )
+      }
+
+      function DetailsIconContent() {
+          return (
+            <IconButton aria-label="details"
+              onClick={onZoomInClick}
+              >
+              <ZoomInIcon />
+            </IconButton>
+          )
       }
 
   return (
@@ -450,38 +487,19 @@ export default function SqueakDetailItem({
             alignItems="flex-start"
           >
             <Grid item xs={3} sm={1}>
-              <Box
-                p={1}
-                onClick={onReplyClick}
-                >
-              <ReplyIcon />
-            </Box>
+              {ReplyIconContent()}
             </Grid>
             <Grid item xs={3} sm={1}>
-                <Box
-                  p={1}
-                  >
-                  <RepeatIcon />
-                </Box>
+              {ResqueakIconContent()}
             </Grid>
             <Grid item xs={3} sm={1}>
               {LikeIconContent()}
             </Grid>
             <Grid item xs={3} sm={1}>
-                <Box
-                  p={1}
-                  onClick={onDeleteClick}
-                  >
-                  <DeleteIcon />
-                </Box>
+              {DeleteIconContent()}
             </Grid>
             <Grid item xs={3} sm={1}>
-                <Box
-                  p={1}
-                  onClick={onZoomInClick}
-                  >
-                  <ZoomInIcon />
-                </Box>
+              {DetailsIconContent()}
             </Grid>
           </Grid>
     </Paper>
