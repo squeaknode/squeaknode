@@ -526,7 +526,7 @@ class SqueakController:
         self.payment_processor.start_processing()
 
     def delete_old_squeaks(self):
-        squeaks_to_delete = self.squeak_db.yield_old_squeaks_to_delete(
+        squeaks_to_delete = self.squeak_db.get_old_squeaks_to_delete(
             self.config.core.squeak_retention_s,
         )
         for squeak_entry_with_profile in squeaks_to_delete:
