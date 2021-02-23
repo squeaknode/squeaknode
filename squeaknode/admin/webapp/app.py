@@ -507,6 +507,22 @@ def create_app(handler, username, password):
             handler.handle_reprocess_received_payments,
         )
 
+    @app.route("/likesqueak", methods=["POST"])
+    @login_required
+    def likesqueak():
+        return handle_request(
+            squeak_admin_pb2.LikeSqueakRequest(),
+            handler.handle_like_squeak,
+        )
+
+    @app.route("/unlikesqueak", methods=["POST"])
+    @login_required
+    def unlikesqueak():
+        return handle_request(
+            squeak_admin_pb2.UnlikeSqueakRequest(),
+            handler.handle_unlike_squeak,
+        )
+
     return app
 
 

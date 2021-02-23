@@ -38,6 +38,8 @@ import SqueakDetailsDialog from "../../components/SqueakDetailsDialog";
 
 import {
   syncSqueakRequest,
+  likeSqueakRequest,
+  unlikeSqueakRequest,
 } from "../../squeakclient/requests"
 
 import {
@@ -110,6 +112,20 @@ export default function SqueakDetailItem({
     setViewDetailsDialogOpen(false);
   };
 
+  const handleLikeSqueak = () => {
+    console.log("liked.");
+    likeSqueakRequest(hash, (response) => {
+      reloadRoute(history);
+    });
+  };
+
+  const handleUnlikeSqueak = () => {
+    console.log("unliked.");
+    unlikeSqueakRequest(hash, (response) => {
+      reloadRoute(history);
+    });
+  };
+
   const onAddressClick = (event) => {
     event.preventDefault();
     event.stopPropagation();
@@ -127,6 +143,24 @@ export default function SqueakDetailItem({
       return;
     }
     handleClickOpenReplyDialog();
+  }
+
+  const onLikeClick = (event) => {
+    event.preventDefault();
+    console.log("Handling like click...");
+    if (!squeak) {
+      return;
+    }
+    handleLikeSqueak();
+  }
+
+  const onUnlikeClick = (event) => {
+    event.preventDefault();
+    console.log("Handling like click...");
+    if (!squeak) {
+      return;
+    }
+    handleUnlikeSqueak();
   }
 
   const onDeleteClick = (event) => {
@@ -343,6 +377,30 @@ export default function SqueakDetailItem({
         )
       }
 
+      function LikeIconContent() {
+        if (squeak && !squeak.getLiked()) {
+          return (
+            <Box
+              p={1}
+              onClick={onLikeClick}
+              >
+              <FavoriteIcon />
+            </Box>
+          )
+        } else {
+          return (
+            <Box
+              p={1}
+              onClick={onUnlikeClick}
+              >
+              <FavoriteIcon
+              color="secondary"
+                />
+            </Box>
+          )
+        }
+      }
+
   return (
     <>
     <Paper elevation={3} className={classes.paper}
@@ -408,11 +466,7 @@ export default function SqueakDetailItem({
                 </Box>
             </Grid>
             <Grid item xs={3} sm={1}>
-                <Box
-                  p={1}
-                  >
-                  <FavoriteIcon />
-                </Box>
+              {LikeIconContent()}
             </Grid>
             <Grid item xs={3} sm={1}>
                 <Box

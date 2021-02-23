@@ -102,6 +102,10 @@ import {
   ClearSqueakProfileImageReply,
   ReprocessReceivedPaymentsRequest,
   ReprocessReceivedPaymentsReply,
+  LikeSqueakRequest,
+  LikeSqueakReply,
+  UnlikeSqueakRequest,
+  UnlikeSqueakReply,
 } from "../proto/squeak_admin_pb"
 
 console.log('The value of REACT_APP_SERVER_PORT is:', process.env.REACT_APP_SERVER_PORT);
@@ -762,6 +766,28 @@ export function reprocessReceivedPaymentsRequest(handleResponse) {
     'reprocessreceivedpayments',
     request,
     ReprocessReceivedPaymentsReply.deserializeBinary,
+    handleResponse,
+  );
+}
+
+export function likeSqueakRequest(hash, handleResponse) {
+  var request = new LikeSqueakRequest();
+  request.setSqueakHash(hash);
+  makeRequest(
+    'likesqueak',
+    request,
+    LikeSqueakReply.deserializeBinary,
+    handleResponse,
+  );
+}
+
+export function unlikeSqueakRequest(hash, handleResponse) {
+  var request = new UnlikeSqueakRequest();
+  request.setSqueakHash(hash);
+  makeRequest(
+    'unlikesqueak',
+    request,
+    UnlikeSqueakReply.deserializeBinary,
     handleResponse,
   );
 }
