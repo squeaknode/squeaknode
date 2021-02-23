@@ -36,8 +36,6 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
 
 EXPOSE 8774
 EXPOSE 8994
-EXPOSE 18774
-EXPOSE 18994
 # Web server
 EXPOSE 12994
 
