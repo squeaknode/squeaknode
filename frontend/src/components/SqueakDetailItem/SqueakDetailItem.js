@@ -115,14 +115,14 @@ export default function SqueakDetailItem({
   const handleLikeSqueak = () => {
     console.log("liked.");
     likeSqueakRequest(hash, (response) => {
-      reloadRoute(history);
+      reloadSqueak();
     });
   };
 
   const handleUnlikeSqueak = () => {
     console.log("unliked.");
     unlikeSqueakRequest(hash, (response) => {
-      reloadRoute(history);
+      reloadSqueak();
     });
   };
 
