@@ -50,7 +50,6 @@ import moment from 'moment';
 
 import {
   goToSqueakAddressPage,
-  reloadRoute,
 } from "../../navigation/navigation"
 
 function Alert(props) {
@@ -194,7 +193,7 @@ export default function SqueakDetailItem({
     event.preventDefault();
     console.log("Handling download click...");
     syncSqueakRequest(hash, (response) => {
-      reloadRoute(history);
+      reloadSqueak();
     });
   }
 
