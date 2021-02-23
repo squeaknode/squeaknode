@@ -604,6 +604,16 @@ class SqueakDb:
         with self.get_connection() as connection:
             connection.execute(stmt)
 
+    def set_squeak_liked(self, squeak_hash: bytes, liked: bool) -> None:
+        """ Set the liked value of a squeak. """
+        stmt = (
+            self.squeaks.update()
+            .where(self.squeaks.c.hash == squeak_hash.hex())
+            .values(liked=liked)
+        )
+        with self.get_connection() as connection:
+            connection.execute(stmt)
+
     def delete_squeak(self, squeak_hash: bytes) -> None:
         """ Delete a squeak. """
         delete_squeak_stmt = self.squeaks.delete().where(

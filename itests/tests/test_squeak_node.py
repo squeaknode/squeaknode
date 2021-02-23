@@ -1360,3 +1360,39 @@ def test_get_squeak_details(server_stub, admin_stub, saved_squeak_hash):
     deserialized_squeak = CSqueak.deserialize(serialized_squeak)
     assert get_hash(deserialized_squeak) == saved_squeak_hash
     CheckSqueak(deserialized_squeak)
+
+
+def test_like_squeak(server_stub, admin_stub, saved_squeak_hash):
+    # Like the squeak
+    admin_stub.LikeSqueak(
+        squeak_admin_pb2.LikeSqueakRequest(
+            squeak_hash=saved_squeak_hash,
+        )
+    )
+
+    # Get the squeak display item
+    get_squeak_display_response = admin_stub.GetSqueakDisplay(
+        squeak_admin_pb2.GetSqueakDisplayRequest(
+            squeak_hash=saved_squeak_hash,
+        )
+    )
+    assert (
+        get_squeak_display_response.squeak_display_entry.liked
+    )
+
+    # Unlike the squeak
+    admin_stub.UnlikeSqueak(
+        squeak_admin_pb2.UnlikeSqueakRequest(
+            squeak_hash=saved_squeak_hash,
+        )
+    )
+
+    # Get the squeak display item
+    get_squeak_display_response = admin_stub.GetSqueakDisplay(
+        squeak_admin_pb2.GetSqueakDisplayRequest(
+            squeak_hash=saved_squeak_hash,
+        )
+    )
+    assert (
+        not get_squeak_display_response.squeak_display_entry.liked
+    )

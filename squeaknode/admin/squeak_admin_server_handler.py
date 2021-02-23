@@ -604,3 +604,23 @@ class SqueakAdminServerHandler(object):
         logger.info("Handle reprocess received payments")
         self.squeak_controller.reprocess_received_payments()
         return squeak_admin_pb2.ReprocessReceivedPaymentsReply()
+
+    def handle_like_squeak(self, request: squeak_admin_pb2.LikeSqueakRequest):
+        squeak_hash_str = request.squeak_hash
+        squeak_hash = bytes.fromhex(squeak_hash_str)
+        logger.info(
+            "Handle like squeak with hash: {}".format(squeak_hash_str))
+        self.squeak_controller.like_squeak(
+            squeak_hash
+        )
+        return squeak_admin_pb2.LikeSqueakReply()
+
+    def handle_unlike_squeak(self, request: squeak_admin_pb2.UnlikeSqueakRequest):
+        squeak_hash_str = request.squeak_hash
+        squeak_hash = bytes.fromhex(squeak_hash_str)
+        logger.info(
+            "Handle unlike squeak with hash: {}".format(squeak_hash_str))
+        self.squeak_controller.unlike_squeak(
+            squeak_hash
+        )
+        return squeak_admin_pb2.UnlikeSqueakReply()
