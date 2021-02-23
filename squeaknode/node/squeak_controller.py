@@ -1,6 +1,7 @@
 import logging
 import threading
 from typing import List
+from typing import Optional
 
 from squeak.core import CheckSqueak
 from squeak.core import CSqueak
@@ -337,6 +338,16 @@ class SqueakController:
 
     def get_received_offers_with_peer(self, squeak_hash: bytes) -> List[ReceivedOfferWithPeer]:
         return self.squeak_db.get_received_offers_with_peer(squeak_hash)
+
+    def get_received_offer_for_squeak_and_peer(
+            self,
+            squeak_hash: bytes,
+            peer_addresss: PeerAddress,
+    ) -> Optional[ReceivedOfferWithPeer]:
+        return self.squeak_db.get_received_offer_for_squeak_and_peer(
+            squeak_hash,
+            peer_addresss,
+        )
 
     def get_buy_offer_with_peer(self, received_offer_id: int) -> ReceivedOfferWithPeer:
         received_offer_with_peer = self.squeak_db.get_offer_with_peer(

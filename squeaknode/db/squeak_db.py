@@ -792,6 +792,35 @@ class SqueakDb:
             offer_with_peer = self._parse_received_offer_with_peer(row)
             return offer_with_peer
 
+    def get_received_offer_for_squeak_and_peer(
+            self,
+            squeak_hash: bytes,
+            peer_address: PeerAddress,
+    ) -> Optional[ReceivedOfferWithPeer]:
+        """ Get offer with peer for a given peer address and squeak hash . """
+        s = (
+            select([self.received_offers, self.peers])
+            .select_from(
+                self.received_offers.outerjoin(
+                    self.peers,
+                    self.peers.c.host == self.received_offers.c.peer_host,
+                    self.peers.c.port == self.received_offers.c.peer_port,
+                )
+            )
+            .where(self.received_offers.c.squeak_hash == squeak_hash.hex())
+            .where(self.received_offers.c.peer_host == peer_address.host)
+            .where(self.received_offers.c.peer_port == peer_address.port)
+            .where(self.received_offer_is_not_paid)
+            .where(self.received_offer_is_not_expired)
+        )
+        with self.get_connection() as connection:
+            result = connection.execute(s)
+            row = result.fetchone()
+            if row is None:
+                return None
+            offer_with_peer = self._parse_received_offer_with_peer(row)
+            return offer_with_peer
+
     def delete_expired_received_offers(self):
         """ Delete all expired offers. """
         s = self.received_offers.delete().where(

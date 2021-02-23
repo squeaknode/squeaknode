@@ -121,13 +121,10 @@ class PeerConnection:
             self._upload_squeak(squeak_hash)
 
     def _get_saved_offer(self, squeak_hash: bytes) -> Optional[ReceivedOfferWithPeer]:
-        offers = self.squeak_controller.get_received_offers_with_peer(
-            squeak_hash)
-        for offer_with_peer in offers:
-            if offer_with_peer.received_offer.peer_address.host == self.peer_address.host \
-               and offer_with_peer.received_offer.peer_address.port == self.peer_address.port:
-                return offer_with_peer
-        return None
+        return self.squeak_controller.get_received_offer_for_squeak_and_peer(
+            squeak_hash,
+            self.peer_address,
+        )
 
     def _download_squeak(self, squeak_hash: bytes):
         squeak = self.peer_client.download_squeak(squeak_hash)
