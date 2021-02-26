@@ -52,31 +52,40 @@ class PeerConnection:
             block_range.max_block,
         )
         remote_hashes = lookup_result.hashes
-        # Get local hashes of saved squeaks
-        local_hashes = self.squeak_controller.lookup_squeaks_include_locked(
-            followed_addresses,
-            block_range.min_block,
-            block_range.max_block,
-        )
-        # Get hashes to download
-        hashes_to_download = set(remote_hashes) - set(local_hashes)
-        # Download squeaks for the hashes
-        for hash in hashes_to_download:
-            self._download_squeak(hash)
+        # Download squeaks and offers
+        for squeak_hash in remote_hashes:
+            local_squeak = self.squeak_controller.get_squeak(squeak_hash)
+            if local_squeak is None:
+                self._download_squeak(squeak_hash)
+                self._download_offer(squeak_hash)
+            elif local_squeak.HasDecryptionKey():
+                self._download_offer(squeak_hash)
 
-        # Get local hashes of locked squeaks that don't have an offer from this peer.
-        locked_hashes = self.squeak_controller.lookup_squeaks_needing_offer(
-            followed_addresses,
-            block_range.min_block,
-            block_range.max_block,
-            self.peer_address,
-        )
-        # Get hashes to get offer
-        hashes_to_get_offer = set(remote_hashes) & set(locked_hashes)
-        # Download offers for the hashes
-        # TODO: catch exception downloading individual squeak
-        for hash in hashes_to_get_offer:
-            self._download_offer(hash)
+        # # Get local hashes of saved squeaks
+        # local_hashes = self.squeak_controller.lookup_squeaks_include_locked(
+        #     followed_addresses,
+        #     block_range.min_block,
+        #     block_range.max_block,
+        # )
+        # # Get hashes to download
+        # hashes_to_download = set(remote_hashes) - set(local_hashes)
+        # # Download squeaks for the hashes
+        # for hash in hashes_to_download:
+        #     self._download_squeak(hash)
+
+        # # Get local hashes of locked squeaks that don't have an offer from this peer.
+        # locked_hashes = self.squeak_controller.lookup_squeaks_needing_offer(
+        #     followed_addresses,
+        #     block_range.min_block,
+        #     block_range.max_block,
+        #     self.peer_address,
+        # )
+        # # Get hashes to get offer
+        # hashes_to_get_offer = set(remote_hashes) & set(locked_hashes)
+        # # Download offers for the hashes
+        # # TODO: catch exception downloading individual squeak
+        # for hash in hashes_to_get_offer:
+        #     self._download_offer(hash)
 
     def upload(self):
         # Get the network
