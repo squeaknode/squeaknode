@@ -498,22 +498,6 @@ class SqueakController:
             max_block,
         )
 
-    def lookup_squeaks_include_locked(self, addresses: List[str], min_block: int, max_block: int):
-        return self.squeak_db.lookup_squeaks(
-            addresses,
-            min_block,
-            max_block,
-            include_locked=True,
-        )
-
-    def lookup_squeaks_needing_offer(self, addresses: List[str], min_block, max_block, peer_address: PeerAddress):
-        return self.squeak_db.lookup_squeaks_needing_offer(
-            addresses,
-            min_block,
-            max_block,
-            peer_address,
-        )
-
     def save_offer(self, received_offer: ReceivedOffer) -> None:
         logger.info("Saving received offer: {}".format(received_offer))
         self.squeak_db.insert_received_offer(received_offer)
