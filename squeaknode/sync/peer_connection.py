@@ -52,31 +52,9 @@ class PeerConnection:
             block_range.max_block,
         )
         remote_hashes = lookup_result.hashes
-        # Get local hashes of saved squeaks
-        local_hashes = self.squeak_controller.lookup_squeaks_include_locked(
-            followed_addresses,
-            block_range.min_block,
-            block_range.max_block,
-        )
-        # Get hashes to download
-        hashes_to_download = set(remote_hashes) - set(local_hashes)
-        # Download squeaks for the hashes
-        for hash in hashes_to_download:
-            self._download_squeak(hash)
-
-        # Get local hashes of locked squeaks that don't have an offer from this peer.
-        locked_hashes = self.squeak_controller.lookup_squeaks_needing_offer(
-            followed_addresses,
-            block_range.min_block,
-            block_range.max_block,
-            self.peer_address,
-        )
-        # Get hashes to get offer
-        hashes_to_get_offer = set(remote_hashes) & set(locked_hashes)
-        # Download offers for the hashes
-        # TODO: catch exception downloading individual squeak
-        for hash in hashes_to_get_offer:
-            self._download_offer(hash)
+        # Download squeaks and offers
+        for squeak_hash in remote_hashes:
+            self._download_squeak(squeak_hash)
 
     def upload(self):
         # Get the network
@@ -107,9 +85,13 @@ class PeerConnection:
 
     def download_single_squeak(self, squeak_hash: bytes):
         """Downloads a single squeak and the corresponding offer. """
+        self._download_squeak(squeak_hash, force=True)
+
+    def _download_squeak(self, squeak_hash: bytes, force: bool = False):
+        """Downloads a single squeak and the corresponding offer. """
         saved_squeak = self.squeak_controller.get_squeak(squeak_hash)
         if not saved_squeak:
-            self._force_download_squeak(squeak_hash)
+            self._download_squeak_object(squeak_hash, force)
         saved_offer = self._get_saved_offer(squeak_hash)
         if not saved_offer:
             self._download_offer(squeak_hash)
@@ -126,17 +108,12 @@ class PeerConnection:
             self.peer_address,
         )
 
-    def _download_squeak(self, squeak_hash: bytes):
+    def _download_squeak_object(self, squeak_hash: bytes, force: bool):
         squeak = self.peer_client.download_squeak(squeak_hash)
+        skip_interested = not force
         self.squeak_controller.save_downloaded_squeak(
             squeak,
-        )
-
-    def _force_download_squeak(self, squeak_hash: bytes):
-        squeak = self.peer_client.download_squeak(squeak_hash)
-        self.squeak_controller.save_downloaded_squeak(
-            squeak,
-            skip_interested_check=True,
+            skip_interested_check=skip_interested,
         )
 
     def _download_offer(self, squeak_hash: bytes):

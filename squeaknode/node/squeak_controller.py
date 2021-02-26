@@ -115,7 +115,7 @@ class SqueakController:
             self,
             squeak_hash: bytes,
             clear_decryption_key: bool = False,
-    ) -> CSqueak:
+    ) -> Optional[CSqueak]:
         squeak_entry = self.squeak_db.get_squeak_entry(squeak_hash)
         if squeak_entry is None:
             return None
@@ -127,7 +127,7 @@ class SqueakController:
     def get_squeak_without_decryption_key(
             self,
             squeak_hash: bytes,
-    ) -> CSqueak:
+    ) -> Optional[CSqueak]:
         return self.get_squeak(squeak_hash, clear_decryption_key=True)
 
     def lookup_allowed_addresses(self, addresses: List[str]):
@@ -496,22 +496,6 @@ class SqueakController:
             addresses,
             min_block,
             max_block,
-        )
-
-    def lookup_squeaks_include_locked(self, addresses: List[str], min_block: int, max_block: int):
-        return self.squeak_db.lookup_squeaks(
-            addresses,
-            min_block,
-            max_block,
-            include_locked=True,
-        )
-
-    def lookup_squeaks_needing_offer(self, addresses: List[str], min_block, max_block, peer_address: PeerAddress):
-        return self.squeak_db.lookup_squeaks_needing_offer(
-            addresses,
-            min_block,
-            max_block,
-            peer_address,
         )
 
     def save_offer(self, received_offer: ReceivedOffer) -> None:
