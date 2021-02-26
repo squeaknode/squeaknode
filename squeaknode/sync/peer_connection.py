@@ -54,14 +54,7 @@ class PeerConnection:
         remote_hashes = lookup_result.hashes
         # Download squeaks and offers
         for squeak_hash in remote_hashes:
-            self.download_single_squeak(squeak_hash)
-
-            # local_squeak = self.squeak_controller.get_squeak(squeak_hash)
-            # if local_squeak is None:
-            #     self._download_squeak(squeak_hash)
-            #     self._download_offer(squeak_hash)
-            # elif local_squeak.HasDecryptionKey():
-            #     self._download_offer(squeak_hash)
+            self._download_squeak(squeak_hash)
 
     def upload(self):
         # Get the network
@@ -92,9 +85,13 @@ class PeerConnection:
 
     def download_single_squeak(self, squeak_hash: bytes):
         """Downloads a single squeak and the corresponding offer. """
+        self._download_squeak(squeak_hash, force=True)
+
+    def _download_squeak(self, squeak_hash: bytes, force: bool = False):
+        """Downloads a single squeak and the corresponding offer. """
         saved_squeak = self.squeak_controller.get_squeak(squeak_hash)
         if not saved_squeak:
-            self._force_download_squeak(squeak_hash)
+            self._download_squeak_object(squeak_hash, force)
         saved_offer = self._get_saved_offer(squeak_hash)
         if not saved_offer:
             self._download_offer(squeak_hash)
@@ -111,17 +108,12 @@ class PeerConnection:
             self.peer_address,
         )
 
-    def _download_squeak(self, squeak_hash: bytes):
+    def _download_squeak_object(self, squeak_hash: bytes, force: bool):
         squeak = self.peer_client.download_squeak(squeak_hash)
+        skip_interested = not force
         self.squeak_controller.save_downloaded_squeak(
             squeak,
-        )
-
-    def _force_download_squeak(self, squeak_hash: bytes):
-        squeak = self.peer_client.download_squeak(squeak_hash)
-        self.squeak_controller.save_downloaded_squeak(
-            squeak,
-            skip_interested_check=True,
+            skip_interested_check=skip_interested,
         )
 
     def _download_offer(self, squeak_hash: bytes):
