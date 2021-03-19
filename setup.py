@@ -91,7 +91,7 @@ setup(
         'mypy-protobuf',
         'psycopg2',
         'requests',
-        'SQLAlchemy',
+        'SQLAlchemy>=1.3.0,<1.4.0',
         'Flask',
         'protobuf',
         'flask-login',
