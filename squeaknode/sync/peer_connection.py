@@ -102,9 +102,6 @@ class PeerConnection:
 
     def _download_squeak(self, squeak_hash: bytes, criteria: DownloadCriteria):
         """Downloads a single squeak and the corresponding offer. """
-        logger.info("Downloading squeak {} from peer with address: {}".format(
-            squeak_hash.hex(), self.peer_address
-        ))
         saved_squeak = self.squeak_controller.get_squeak(squeak_hash)
         if not saved_squeak:
             self._download_squeak_object(squeak_hash, criteria)
