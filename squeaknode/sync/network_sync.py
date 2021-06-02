@@ -110,6 +110,7 @@ class SingleSqueakDownloadSync(DownloadSync):
                 self.squeak_hash.hex(),
                 peer_connection.peer_address,
             ))
+            logger.error("Download single squeak error:", exc_info=True)
 
 
 class TimelineUploadSync(UploadSync):

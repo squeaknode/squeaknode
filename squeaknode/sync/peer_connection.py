@@ -7,6 +7,9 @@ from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.received_offer_with_peer import ReceivedOfferWithPeer
 from squeaknode.network.peer_client import PeerClient
 from squeaknode.node.squeak_controller import SqueakController
+from squeaknode.sync.download_criteria import DownloadCriteria
+from squeaknode.sync.download_criteria import HashCriteria
+from squeaknode.sync.download_criteria import RangeCriteria
 
 logger = logging.getLogger(__name__)
 
@@ -53,8 +56,12 @@ class PeerConnection:
         )
         remote_hashes = lookup_result.hashes
         # Download squeaks and offers
+        criteria = RangeCriteria(
+            block_range=block_range,
+            follow_list=followed_addresses,
+        )
         for squeak_hash in remote_hashes:
-            self._download_squeak(squeak_hash)
+            self._download_squeak(squeak_hash, criteria)
 
     def upload(self):
         # Get the network
@@ -85,16 +92,25 @@ class PeerConnection:
 
     def download_single_squeak(self, squeak_hash: bytes):
         """Downloads a single squeak and the corresponding offer. """
-        self._download_squeak(squeak_hash, force=True)
+        logger.info("Downloading single squeak {} from peer with address: {}".format(
+            squeak_hash.hex(), self.peer_address
+        ))
+        criteria = HashCriteria(
+            squeak_hash=squeak_hash,
+        )
+        self._download_squeak(squeak_hash, criteria)
 
-    def _download_squeak(self, squeak_hash: bytes, force: bool = False):
+    def _download_squeak(self, squeak_hash: bytes, criteria: DownloadCriteria):
         """Downloads a single squeak and the corresponding offer. """
+        logger.info("Downloading squeak {} from peer with address: {}".format(
+            squeak_hash.hex(), self.peer_address
+        ))
         saved_squeak = self.squeak_controller.get_squeak(squeak_hash)
         if not saved_squeak:
-            self._download_squeak_object(squeak_hash, force)
+            self._download_squeak_object(squeak_hash, criteria)
         saved_offer = self._get_saved_offer(squeak_hash)
         if not saved_offer:
-            self._download_offer(squeak_hash)
+            self._download_offer(squeak_hash, criteria)
 
     def upload_single_squeak(self, squeak_hash: bytes):
         """Uploads a single squeak. """
@@ -108,15 +124,17 @@ class PeerConnection:
             self.peer_address,
         )
 
-    def _download_squeak_object(self, squeak_hash: bytes, force: bool):
+    def _download_squeak_object(self, squeak_hash: bytes, criteria: DownloadCriteria):
         squeak = self.peer_client.download_squeak(squeak_hash)
-        skip_interested = not force
+        if criteria.is_interested(squeak):
+            self._save_squeak(squeak)
+
+    def _save_squeak(self, squeak):
         self.squeak_controller.save_downloaded_squeak(
             squeak,
-            skip_interested_check=skip_interested,
         )
 
-    def _download_offer(self, squeak_hash: bytes):
+    def _download_offer(self, squeak_hash: bytes, criteria: DownloadCriteria):
         squeak = self.squeak_controller.get_squeak(squeak_hash)
         offer = self.peer_client.download_offer(squeak_hash)
         decoded_offer = self.squeak_controller.get_offer(
@@ -124,7 +142,8 @@ class PeerConnection:
             offer,
             self.peer_address,
         )
-        self.squeak_controller.save_offer(decoded_offer)
+        if criteria.is_interested(squeak):
+            self.squeak_controller.save_offer(decoded_offer)
         logger.info("Downloaded offer for squeak {} from peer with address: {}".format(
             squeak_hash.hex(), self.peer_address
         ))
