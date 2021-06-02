@@ -380,7 +380,8 @@ class SqueakAdminServerHandler(object):
         logger.info(
             "Handle delete squeak with hash: {}".format(squeak_hash_str))
         self.squeak_controller.delete_squeak(squeak_hash)
-        logger.info("Deleted squeak entry with hash: {}".format(squeak_hash))
+        logger.info(
+            "Deleted squeak entry with hash: {}".format(squeak_hash_str))
         return squeak_admin_pb2.DeleteSqueakReply()
 
     def handle_create_peer(self, request):

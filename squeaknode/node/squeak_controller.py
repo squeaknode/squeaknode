@@ -50,11 +50,10 @@ class SqueakController:
             require_decryption_key=True,
         )
 
-    def save_downloaded_squeak(self, squeak: CSqueak, skip_interested_check: bool = False) -> bytes:
+    def save_downloaded_squeak(self, squeak: CSqueak) -> bytes:
         return self.save_squeak(
             squeak,
             require_decryption_key=False,
-            skip_interested_check=skip_interested_check,
         )
 
     def save_created_squeak(self, squeak: CSqueak) -> bytes:
@@ -67,7 +66,6 @@ class SqueakController:
             self,
             squeak: CSqueak,
             require_decryption_key: bool,
-            skip_interested_check: bool = False,
     ) -> bytes:
         # Check if squeak is valid.
         squeak_entry = self.squeak_core.validate_squeak(squeak)
@@ -75,9 +73,10 @@ class SqueakController:
         if require_decryption_key and not squeak.HasDecryptionKey():
             raise Exception(
                 "Squeak must contain decryption key.")
-        # Check if interested
-        if not skip_interested_check:
-            self.check_interested(squeak)
+        # Check if rate limit is violated.
+        if not self.squeak_rate_limiter.should_rate_limit_allow(squeak):
+            raise Exception(
+                "Exceeded allowed number of squeaks per address per block.")
         # Save the squeak.
         logger.info("Saving squeak: {}".format(
             get_hash(squeak).hex(),
@@ -93,23 +92,6 @@ class SqueakController:
             )
         # Return the squeak hash.
         return inserted_squeak_hash
-
-    def check_interested(self, squeak: CSqueak) -> None:
-        # Check block range.
-        block_range = self.get_block_range()
-        if squeak.nBlockHeight < block_range.min_block or \
-           squeak.nBlockHeight > block_range.max_block:
-            raise Exception("Invalid block range for upload.")
-        # Check if address is in followed list.
-        # Use special database query to check if address in followed list.
-        followed_addresses = self.get_followed_addresses()
-        squeak_address = str(squeak.GetAddress())
-        if squeak_address not in followed_addresses:
-            raise Exception("Squeak address not in followed list.")
-        # Check if rate limit is violated.
-        if not self.squeak_rate_limiter.should_rate_limit_allow(squeak):
-            raise Exception(
-                "Exceeded allowed number of squeaks per address per block.")
 
     def get_squeak(
             self,
