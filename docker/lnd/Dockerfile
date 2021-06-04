@@ -7,7 +7,7 @@ RUN apk update && \
     apk add git
 
 # Copy in the local repository to build from.
-RUN git clone https://github.com/lightningnetwork/lnd.git --branch v0.11.1-beta
+RUN git clone https://github.com/lightningnetwork/lnd.git --branch v0.12.1-beta
 
 # Force Go to use the cgo based DNS resolver. This is required to ensure DNS
 # queries required to connect to linked containers succeed.
