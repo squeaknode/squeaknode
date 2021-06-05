@@ -274,7 +274,7 @@ class SqueakAdminServerHandler(object):
             )
         )
         logger.info("Returning squeak display entry with like value: {}".format(
-            squeak_entry_with_profile.squeak_entry.liked,
+            squeak_entry_with_profile.squeak_entry.liked_time,
         ))
         display_message = squeak_entry_to_message(
             squeak_entry_with_profile)

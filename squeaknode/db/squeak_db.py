@@ -90,11 +90,11 @@ class SqueakDb:
 
     @property
     def squeak_is_liked(self):
-        return self.squeaks.c.liked
+        return self.squeaks.c.liked_time != None  # noqa: E711
 
     @property
     def squeak_is_not_liked(self):
-        return self.squeaks.c.liked == False  # noqa: E711
+        return self.squeaks.c.liked_time == None  # noqa: E711
 
     @property
     def squeak_has_no_secret_key(self):
@@ -218,10 +218,7 @@ class SqueakDb:
                 return None
             return self._parse_squeak_entry_with_profile(row)
 
-    def get_timeline_squeak_entries_with_profile(
-            self,
-            only_liked: bool = False,
-    ) -> List[SqueakEntryWithProfile]:
+    def get_timeline_squeak_entries_with_profile(self) -> List[SqueakEntryWithProfile]:
         """ Get all followed squeaks. """
         s = (
             select([self.squeaks, self.profiles])
@@ -231,15 +228,31 @@ class SqueakDb:
                     self.profiles.c.address == self.squeaks.c.author_address,
                 )
             )
-            .where(
-                or_(
-                    self.squeak_is_liked,
-                    not only_liked,
-                )
-            )
             .order_by(
                 self.squeaks.c.n_block_height.desc(),
                 self.squeaks.c.n_time.desc(),
+            )
+        )
+        with self.get_connection() as connection:
+            result = connection.execute(s)
+            rows = result.fetchall()
+            return [self._parse_squeak_entry_with_profile(row) for row in rows]
+
+    def get_liked_squeak_entries_with_profile(self) -> List[SqueakEntryWithProfile]:
+        """ Get liked squeaks. """
+        s = (
+            select([self.squeaks, self.profiles])
+            .select_from(
+                self.squeaks.outerjoin(
+                    self.profiles,
+                    self.profiles.c.address == self.squeaks.c.author_address,
+                )
+            )
+            .where(
+                self.squeak_is_liked,
+            )
+            .order_by(
+                self.squeaks.c.liked_time.desc(),
             )
         )
         with self.get_connection() as connection:
@@ -622,12 +635,22 @@ class SqueakDb:
         with self.get_connection() as connection:
             connection.execute(stmt)
 
-    def set_squeak_liked(self, squeak_hash: bytes, liked: bool) -> None:
-        """ Set the liked value of a squeak. """
+    def set_squeak_liked(self, squeak_hash: bytes) -> None:
+        """ Set the squeak to be liked. """
         stmt = (
             self.squeaks.update()
             .where(self.squeaks.c.hash == squeak_hash.hex())
-            .values(liked=liked)
+            .values(liked_time=self.datetime_now)
+        )
+        with self.get_connection() as connection:
+            connection.execute(stmt)
+
+    def set_squeak_unliked(self, squeak_hash: bytes) -> None:
+        """ Set the squeak to be unliked. """
+        stmt = (
+            self.squeaks.update()
+            .where(self.squeaks.c.hash == squeak_hash.hex())
+            .values(liked_time=None)
         )
         with self.get_connection() as connection:
             connection.execute(stmt)
@@ -1121,11 +1144,12 @@ class SqueakDb:
             parse_block_header(block_header_bytes) if
             block_header_bytes else None
         )
-        liked = row["liked"]
+        liked_time = row["liked_time"]
+        liked_time_s = int(liked_time.timestamp()) if liked_time else None
         return SqueakEntry(
             squeak=squeak,
             block_header=block_header,
-            liked=liked,
+            liked_time=liked_time_s,
         )
 
     def _parse_squeak_profile(self, row) -> SqueakProfile:

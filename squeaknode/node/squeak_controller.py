@@ -450,9 +450,7 @@ class SqueakController:
         return self.squeak_db.get_timeline_squeak_entries_with_profile()
 
     def get_liked_squeak_entries_with_profile(self):
-        return self.squeak_db.get_timeline_squeak_entries_with_profile(
-            only_liked=True,
-        )
+        return self.squeak_db.get_liked_squeak_entries_with_profile()
 
     def get_squeak_entries_with_profile_for_address(
         self, address: str, min_block: int, max_block: int
@@ -503,9 +501,13 @@ class SqueakController:
         self.payment_processor.start_processing()
 
     def delete_old_squeaks(self):
+        logger.info("Deleting old squeaks...")
         squeaks_to_delete = self.squeak_db.get_old_squeaks_to_delete(
             self.config.core.squeak_retention_s,
         )
+        logger.info("Got old squeakd to delete: {}".format(
+            squeaks_to_delete,
+        ))
         for squeak_entry_with_profile in squeaks_to_delete:
             squeak = squeak_entry_with_profile.squeak_entry.squeak
             squeak_hash = get_hash(squeak)
@@ -522,14 +524,12 @@ class SqueakController:
         ))
         self.squeak_db.set_squeak_liked(
             squeak_hash,
-            True,
         )
 
     def unlike_squeak(self, squeak_hash: bytes):
         logger.info("Unliking squeak: {}".format(
             squeak_hash.hex(),
         ))
-        self.squeak_db.set_squeak_liked(
+        self.squeak_db.set_squeak_unliked(
             squeak_hash,
-            False,
         )

@@ -1363,6 +1363,18 @@ def test_get_squeak_details(server_stub, admin_stub, saved_squeak_hash):
 
 
 def test_like_squeak(server_stub, admin_stub, saved_squeak_hash):
+    # Get the squeak display item
+    get_squeak_display_response = admin_stub.GetSqueakDisplay(
+        squeak_admin_pb2.GetSqueakDisplayRequest(
+            squeak_hash=saved_squeak_hash,
+        )
+    )
+    print("get_squeak_display_response.squeak_display_entry:")
+    print(get_squeak_display_response.squeak_display_entry)
+    assert (
+        get_squeak_display_response.squeak_display_entry.liked_time_s == 0
+    )
+
     # Like the squeak
     admin_stub.LikeSqueak(
         squeak_admin_pb2.LikeSqueakRequest(
@@ -1377,7 +1389,7 @@ def test_like_squeak(server_stub, admin_stub, saved_squeak_hash):
         )
     )
     assert (
-        get_squeak_display_response.squeak_display_entry.liked
+        get_squeak_display_response.squeak_display_entry.liked_time_s > 0
     )
 
     # Unlike the squeak
@@ -1394,5 +1406,5 @@ def test_like_squeak(server_stub, admin_stub, saved_squeak_hash):
         )
     )
     assert (
-        not get_squeak_display_response.squeak_display_entry.liked
+        get_squeak_display_response.squeak_display_entry.liked_time_s == 0
     )

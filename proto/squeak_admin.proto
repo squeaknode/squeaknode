@@ -488,8 +488,8 @@ message SqueakDisplayEntry {
     /// The author name
     SqueakProfile author = 11;
 
-    /// Is liked
-    bool liked = 12;
+    /// Liked time
+    int64 liked_time_s = 12;
 }
 
 message GetTimelineSqueakDisplaysRequest {
