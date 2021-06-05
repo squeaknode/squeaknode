@@ -90,11 +90,11 @@ class SqueakDb:
 
     @property
     def squeak_is_liked(self):
-        return self.squeaks.c.liked
+        return self.squeaks.c.liked_time != None  # noqa: E711
 
     @property
     def squeak_is_not_liked(self):
-        return self.squeaks.c.liked == False  # noqa: E711
+        return self.squeaks.c.liked_time == None  # noqa: E711
 
     @property
     def squeak_has_no_secret_key(self):
@@ -622,12 +622,22 @@ class SqueakDb:
         with self.get_connection() as connection:
             connection.execute(stmt)
 
-    def set_squeak_liked(self, squeak_hash: bytes, liked: bool) -> None:
-        """ Set the liked value of a squeak. """
+    def set_squeak_liked(self, squeak_hash: bytes) -> None:
+        """ Set the squeak to be liked. """
         stmt = (
             self.squeaks.update()
             .where(self.squeaks.c.hash == squeak_hash.hex())
-            .values(liked=liked)
+            .values(liked_time=self.datetime_now)
+        )
+        with self.get_connection() as connection:
+            connection.execute(stmt)
+
+    def set_squeak_unliked(self, squeak_hash: bytes) -> None:
+        """ Set the squeak to be unliked. """
+        stmt = (
+            self.squeaks.update()
+            .where(self.squeaks.c.hash == squeak_hash.hex())
+            .values(liked_time=None)
         )
         with self.get_connection() as connection:
             connection.execute(stmt)
@@ -1121,11 +1131,12 @@ class SqueakDb:
             parse_block_header(block_header_bytes) if
             block_header_bytes else None
         )
-        liked = row["liked"]
+        liked_time = row["liked_time"]
+        liked_time_s = int(liked_time.timestamp()) if liked_time else None
         return SqueakEntry(
             squeak=squeak,
             block_header=block_header,
-            liked=liked,
+            liked_time=liked_time_s,
         )
 
     def _parse_squeak_profile(self, row) -> SqueakProfile:

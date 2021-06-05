@@ -70,7 +70,8 @@ class Models:
             Column("author_address", String(35), index=True, nullable=False),
             Column("secret_key", String(64), nullable=True),
             Column("block_header", Binary, nullable=False),
-            Column("liked", Boolean, nullable=False, default=False),
+            Column("liked_time", TZDateTime,
+                   default=None, nullable=True),
         )
 
         self.profiles = Table(

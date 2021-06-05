@@ -25,7 +25,7 @@ def squeak_entry_to_message(squeak_entry_with_profile: SqueakEntryWithProfile) -
     squeak_entry = squeak_entry_with_profile.squeak_entry
     squeak = squeak_entry.squeak
     block_header = squeak_entry.block_header
-    liked = squeak_entry.liked
+    liked_time_s = squeak_entry.liked_time or 0
     is_unlocked = squeak.HasDecryptionKey()
     content_str = squeak.GetDecryptedContentStr() if is_unlocked else None
     is_reply = squeak.is_reply
@@ -49,7 +49,7 @@ def squeak_entry_to_message(squeak_entry_with_profile: SqueakEntryWithProfile) -
         author_address=author_address,
         is_author_known=is_author_known,
         author=profile_msg,
-        liked=liked,
+        liked_time_s=liked_time_s,
     )
 
 
