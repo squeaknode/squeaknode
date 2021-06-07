@@ -2,6 +2,7 @@ import logging
 import sys
 
 from proto import squeak_admin_pb2
+from squeaknode.admin.messages import connected_peer_to_message
 from squeaknode.admin.messages import offer_entry_to_message
 from squeaknode.admin.messages import payment_summary_to_message
 from squeaknode.admin.messages import received_payments_to_message
@@ -643,6 +644,19 @@ class SqueakAdminServerHandler(object):
 
     def handle_connect_peer(self, request):
         peer_id = request.peer_id
-        logger.info("Handle connect squeak peer with id: {}".format(peer_id))
+        logger.info("Handle connect peer with id: {}".format(peer_id))
         self.squeak_controller.connect_peer(peer_id)
         return squeak_admin_pb2.ConnectPeerReply()
+
+    def handle_get_connected_peers(self, request):
+        logger.info("Handle get connected peers.")
+        connected_peers = self.squeak_controller.get_connected_peers()
+        logger.info("Connected peers: {}".format(
+            connected_peers,
+        ))
+        connected_peers_display_msgs = [
+            connected_peer_to_message(peer) for peer in connected_peers
+        ]
+        return squeak_admin_pb2.GetConnectedPeersReply(
+            connected_peers=connected_peers_display_msgs
+        )

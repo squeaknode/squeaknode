@@ -59,6 +59,16 @@ class Peer(object):
         return '{}:{}'.format(ip, port)
 
     @property
+    def ip(self):
+        ip, _ = self._address
+        return ip
+
+    @property
+    def port(self):
+        _, port = self._address
+        return port
+
+    @property
     def caddress(self):
         ip, port = self._address
         caddress = CAddress()

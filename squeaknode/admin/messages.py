@@ -13,6 +13,7 @@ from squeaknode.core.squeak_entry_with_profile import SqueakEntryWithProfile
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.util import get_hash
+from squeaknode.network.peer import Peer
 
 
 logger = logging.getLogger(__name__)
@@ -179,4 +180,14 @@ def payment_summary_to_message(
         num_sent_payments=sent_payment_summary.num_sent_payments,
         amount_earned_msat=received_payment_summary.total_amount_received_msat,
         amount_spent_msat=sent_payment_summary.total_amount_sent_msat,
+    )
+
+
+def connected_peer_to_message(connected_peer: Peer) -> squeak_admin_pb2.ConnectedPeer:
+    return squeak_admin_pb2.ConnectedPeer(
+        peer_id=None,
+        peer_name=None,
+        host=connected_peer.ip,
+        port=connected_peer.port,
+        connect_time_s=connected_peer.connect_time,
     )

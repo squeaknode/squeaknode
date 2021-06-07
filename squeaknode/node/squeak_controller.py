@@ -22,6 +22,7 @@ from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.util import get_hash
 from squeaknode.core.util import is_address_valid
+from squeaknode.network.connection_manager import ConnectionManager
 from squeaknode.network.peer_server import PeerServer
 from squeaknode.node.received_payments_subscription_client import ReceivedPaymentsSubscriptionClient
 
@@ -38,6 +39,7 @@ class SqueakController:
         squeak_rate_limiter,
         payment_processor,
         peer_server: PeerServer,
+        connection_manager: ConnectionManager,
         config,
     ):
         self.squeak_db = squeak_db
@@ -45,6 +47,7 @@ class SqueakController:
         self.squeak_rate_limiter = squeak_rate_limiter
         self.payment_processor = payment_processor
         self.peer_server = peer_server
+        self.connection_manager = connection_manager
         self.config = config
 
     def save_uploaded_squeak(self, squeak: CSqueak) -> bytes:
@@ -548,3 +551,6 @@ class SqueakController:
     def get_address(self):
         # TODO: Add return type.
         return (self.peer_server.ip, self.peer_server.port)
+
+    def get_connected_peers(self):
+        return self.connection_manager.peers

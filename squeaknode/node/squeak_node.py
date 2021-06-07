@@ -77,6 +77,7 @@ class SqueakNode:
             squeak_rate_limiter,
             payment_processor,
             self.peer_server,
+            self.connection_manager,
             self.config,
         )
 

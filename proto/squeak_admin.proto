@@ -252,6 +252,10 @@ service SqueakAdmin {
   */
   rpc ConnectPeer (ConnectPeerRequest) returns (ConnectPeerReply) {}
 
+  /** sqkadmin: `getconnectedpeers`
+  */
+  rpc GetConnectedPeers (GetConnectedPeersRequest) returns (GetConnectedPeersReply) {}
+
 }
 
 message CreateSigningProfileRequest {
@@ -907,4 +911,28 @@ message ConnectPeerRequest {
 }
 
 message ConnectPeerReply {
+}
+
+message ConnectedPeer {
+    /// The peer id
+    int32 peer_id = 1;
+
+    /// The peer name
+    string peer_name = 2;
+
+    /// Host
+    string host = 3;
+
+    /// Port
+    int32 port = 4;
+
+    /// Connection time
+    int64 connect_time_s = 5;
+}
+
+message GetConnectedPeersRequest {
+}
+
+message GetConnectedPeersReply {
+    repeated ConnectedPeer connected_peers = 1;
 }

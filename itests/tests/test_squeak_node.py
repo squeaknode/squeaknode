@@ -1410,6 +1410,12 @@ def test_like_squeak(server_stub, admin_stub, saved_squeak_hash):
     )
 
 
-def test_connect_peer(server_stub, admin_stub, connected_tcp_peer_id):
-    # Do something with the connected peer.
-    pass
+def test_connect_peer(server_stub, other_admin_stub, connected_tcp_peer_id):
+    # Get all peers
+    get_connected_peers_response = other_admin_stub.GetConnectedPeers(
+        squeak_admin_pb2.GetConnectedPeersRequest()
+    )
+    print(get_connected_peers_response)
+    assert (
+        len(get_connected_peers_response.connected_peers) > 0
+    )
