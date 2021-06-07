@@ -640,3 +640,9 @@ class SqueakAdminServerHandler(object):
         return squeak_admin_pb2.GetTimelineSqueakDisplaysReply(
             squeak_display_entries=squeak_display_msgs
         )
+
+    def handle_connect_peer(self, request):
+        peer_id = request.peer_id
+        logger.info("Handle connect squeak peer with id: {}".format(peer_id))
+        self.squeak_controller.connect_peer(peer_id)
+        return squeak_admin_pb2.ConnectPeerReply()

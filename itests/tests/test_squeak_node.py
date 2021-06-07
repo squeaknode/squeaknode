@@ -1408,3 +1408,8 @@ def test_like_squeak(server_stub, admin_stub, saved_squeak_hash):
     assert (
         get_squeak_display_response.squeak_display_entry.liked_time_s == 0
     )
+
+
+def test_connect_peer(server_stub, admin_stub, connected_tcp_peer_id):
+    # Do something with the connected peer.
+    pass

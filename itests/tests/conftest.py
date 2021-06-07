@@ -211,3 +211,38 @@ def connected_peer_id(server_stub, other_admin_stub):
             peer_id=peer_id,
         )
     )
+
+
+@pytest.fixture
+def connected_tcp_peer_id(server_stub, other_admin_stub):
+    # Add the main node as a peer
+    create_peer_response = other_admin_stub.CreatePeer(
+        squeak_admin_pb2.CreatePeerRequest(
+            peer_name="test_peer",
+            host="squeaknode",
+            port=18777,
+        )
+    )
+    peer_id = create_peer_response.peer_id
+    # Set the peer to be downloading
+    other_admin_stub.SetPeerDownloading(
+        squeak_admin_pb2.SetPeerDownloadingRequest(
+            peer_id=peer_id,
+            downloading=True,
+        )
+    )
+
+    # Connect the peer
+    other_admin_stub.ConnectPeer(
+        squeak_admin_pb2.ConnectPeerRequest(
+            peer_id=peer_id,
+        )
+    )
+
+    yield peer_id
+    # Delete the peer
+    other_admin_stub.DeletePeer(
+        squeak_admin_pb2.DeletePeerRequest(
+            peer_id=peer_id,
+        )
+    )

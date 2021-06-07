@@ -14,6 +14,9 @@ from squeaknode.db.db_engine import get_engine
 from squeaknode.db.db_engine import get_sqlite_connection_string
 from squeaknode.db.squeak_db import SqueakDb
 from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
+from squeaknode.network.connection_manager import ConnectionManager
+from squeaknode.network.peer_handler import PeerHandler
+from squeaknode.network.peer_server import PeerServer
 from squeaknode.node.payment_processor import PaymentProcessor
 from squeaknode.node.process_received_payments_worker import ProcessReceivedPaymentsWorker
 from squeaknode.node.squeak_controller import SqueakController
@@ -24,6 +27,7 @@ from squeaknode.node.squeak_rate_limiter import SqueakRateLimiter
 from squeaknode.server.squeak_server_handler import SqueakServerHandler
 from squeaknode.server.squeak_server_servicer import SqueakServerServicer
 from squeaknode.sync.squeak_sync_controller import SqueakSyncController
+
 
 logger = logging.getLogger(__name__)
 
@@ -64,11 +68,15 @@ class SqueakNode:
             self.config.core.subscribe_invoices_retry_s,
         )
 
+        self.connection_manager = ConnectionManager()
+        self.peer_server = PeerServer(self.connection_manager)
+
         squeak_controller = SqueakController(
             squeak_db,
             squeak_core,
             squeak_rate_limiter,
             payment_processor,
+            self.peer_server,
             self.config,
         )
 
@@ -80,6 +88,11 @@ class SqueakNode:
 
         admin_handler = load_admin_handler(
             lightning_client, squeak_controller, sync_controller)
+
+        self.peer_handler = PeerHandler(
+            squeak_controller,
+            self.connection_manager,
+        )
 
         self.admin_rpc_server = load_admin_rpc_server(
             self.config, admin_handler, self.stopped)
@@ -126,6 +139,9 @@ class SqueakNode:
         # start peer rpc server
         if self.config.server.rpc_enabled:
             start_peer_web_server(self.server)
+
+        # Start peer socket server
+        self.peer_server.start(self.peer_handler)
 
     def stop_running(self):
         self.stopped.set()
