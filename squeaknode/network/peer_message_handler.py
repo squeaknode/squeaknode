@@ -10,6 +10,7 @@ from squeak.messages import msg_pong
 from squeak.messages import msg_squeak
 from squeak.net import CInv
 
+from squeaknode.core.offer import Offer
 from squeaknode.core.util import generate_ping_nonce
 from squeaknode.core.util import get_hash
 from squeaknode.network.peer import Peer
@@ -83,6 +84,8 @@ class PeerMessageHandler:
             self.handle_getdata(msg)
         if msg.command == b'notfound':
             self.handle_notfound(msg)
+        if msg.command == b'offer':
+            self.handle_offer(msg)
 
     def handle_ping(self, msg):
         nonce = msg.nonce
@@ -132,7 +135,11 @@ class PeerMessageHandler:
                     not_found.append(inv)
                 else:
                     offer_msg = msg_offer(
-                        strPaymentInfo=offer.payment_request,
+                        hashSqk=inv.hash,
+                        nonce=offer.nonce,
+                        strPaymentInfo=offer.payment_request.encode('utf-8'),
+                        host=offer.host.encode('utf-8'),
+                        port=offer.port,
                     )
                     self.peer.send_msg(offer_msg)
         if not_found:
@@ -171,21 +178,19 @@ class PeerMessageHandler:
             self.peer.send_msg(getdata_msg)
 
     def handle_offer(self, msg):
-        # Respond with getinvoice.
-        pass
-
-    def handle_getinvoice(self, msg):
-        # Respond with invoice.
-        pass
-
-    def handle_invoice(self, msg):
-        # Pay the invoice, and then respond with getfulfill.
-        pass
-
-    def handle_getfulfill(self, msg):
-        # Check if invoice is paid, and then respond with fulfill.
-        pass
-
-    def handle_fulfill(self, msg):
-        # Decrypt the squeak content, and save it in squeak store.
-        pass
+        # Save the offer if interested.
+        offer = Offer(
+            squeak_hash=msg.hashSqk,
+            nonce=msg.nonce,
+            payment_request=msg.strPaymentInfo.decode('utf-8'),
+            host=msg.host.decode('utf-8'),
+            port=msg.port,
+        )
+        squeak = self.squeak_controller.get_squeak(offer.squeak_hash)
+        if squeak is not None and not squeak.HasDecryptionKey():
+            decoded_offer = self.squeak_controller.get_offer(
+                squeak=squeak,
+                offer=offer,
+                peer_address=self.peer.peer_address,
+            )
+            self.squeak_controller.save_offer(decoded_offer)

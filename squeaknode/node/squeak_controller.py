@@ -444,6 +444,7 @@ class SqueakController:
     def get_network(self) -> str:
         return self.config.core.network
 
+    # TODO: Rename this method. All it does is unpack.
     def get_offer(self, squeak: CSqueak, offer: Offer, peer_address: PeerAddress) -> ReceivedOffer:
         return self.squeak_core.unpack_offer(squeak, offer, peer_address)
 

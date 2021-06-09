@@ -13,5 +13,5 @@ protobuf
 psycopg2
 requests
 SQLAlchemy
-squeakpy==0.6.1
+squeakpy==0.6.3
 typed-config
