@@ -1421,3 +1421,105 @@ def test_connect_peer(server_stub, other_admin_stub, connected_tcp_peer_id):
     assert (
         len(get_connected_peers_response.connected_peers) > 0
     )
+
+
+def test_share_single_squeak(
+    server_stub,
+    admin_stub,
+    other_server_stub,
+    other_admin_stub,
+    connected_tcp_peer_id,
+    lightning_client,
+    signing_profile_id,
+    saved_squeak_hash,
+):
+    # Get the squeak profile
+    get_squeak_profile_response = admin_stub.GetSqueakProfile(
+        squeak_admin_pb2.GetSqueakProfileRequest(
+            profile_id=signing_profile_id,
+        )
+    )
+    squeak_profile_address = get_squeak_profile_response.squeak_profile.address
+    squeak_profile_name = get_squeak_profile_response.squeak_profile.profile_name
+    print(
+        "Got squeak profile: {} with address: {}".format(
+            squeak_profile_name, squeak_profile_address
+        )
+    )
+
+    # Set the signing profile to be sharing on the main server
+    admin_stub.SetSqueakProfileSharing(
+        squeak_admin_pb2.SetSqueakProfileSharingRequest(
+            profile_id=signing_profile_id,
+            sharing=True,
+        )
+    )
+
+    # Add the contact profile to the other server and set the profile to be following
+    create_contact_profile_response = other_admin_stub.CreateContactProfile(
+        squeak_admin_pb2.CreateContactProfileRequest(
+            profile_name=squeak_profile_name,
+            address=squeak_profile_address,
+        )
+    )
+    contact_profile_id = create_contact_profile_response.profile_id
+    other_admin_stub.SetSqueakProfileFollowing(
+        squeak_admin_pb2.SetSqueakProfileFollowingRequest(
+            profile_id=contact_profile_id,
+            following=True,
+        )
+    )
+
+    # Get the squeak display item (should be empty)
+    with pytest.raises(Exception) as excinfo:
+        get_squeak_display_response = other_admin_stub.GetSqueakDisplay(
+            squeak_admin_pb2.GetSqueakDisplayRequest(
+                squeak_hash=saved_squeak_hash,
+            )
+        )
+    assert (
+        "Squeak not found with hash: {}.".format(saved_squeak_hash)
+        in str(excinfo.value)
+    )
+
+    # Get buy offers for the squeak hash (should be empty)
+    get_buy_offers_response = other_admin_stub.GetBuyOffers(
+        squeak_admin_pb2.GetBuyOffersRequest(
+            squeak_hash=saved_squeak_hash,
+        )
+    )
+    print(get_buy_offers_response)
+    assert len(get_buy_offers_response.offers) == 0
+
+    # # Download squeak
+    # sync_squeak_response = other_admin_stub.SyncSqueak(
+    #     squeak_admin_pb2.SyncSqueakRequest(
+    #         squeak_hash=saved_squeak_hash,
+    #     ),
+    # )
+    # time.sleep(10)
+    # print(sync_squeak_response)
+    # # assert peer_id in sync_squeak_response.sync_result.completed_peer_ids
+
+    # Upload squeak
+    sync_squeak_response = admin_stub.SyncSqueaks(
+        squeak_admin_pb2.SyncSqueaksRequest(),
+    )
+    time.sleep(10)
+    print(sync_squeak_response)
+
+    # Get the squeak display item
+    get_squeak_display_response = other_admin_stub.GetSqueakDisplay(
+        squeak_admin_pb2.GetSqueakDisplayRequest(
+            squeak_hash=saved_squeak_hash,
+        )
+    )
+    assert get_squeak_display_response.squeak_display_entry is not None
+    # Get the buy offer
+    get_buy_offers_response = other_admin_stub.GetBuyOffers(
+        squeak_admin_pb2.GetBuyOffersRequest(
+            squeak_hash=saved_squeak_hash,
+        )
+    )
+    print(get_buy_offers_response)
+    assert len(get_buy_offers_response.offers) > 0

@@ -9,6 +9,7 @@ from squeak.core.signing import CSigningKey
 from squeak.core.signing import CSqueakAddress
 from squeak.messages import msg_getdata
 from squeak.messages import msg_getsqueaks
+from squeak.messages import msg_sharesqueaks
 from squeak.net import CInterested
 from squeak.net import CInv
 from squeak.net import CSqueakLocator
@@ -633,3 +634,46 @@ class SqueakController:
         )
         for peer in self.connection_manager.peers:
             peer.send_msg(getdata_msg)
+
+    def share_squeaks(self):
+        block_range = self.get_block_range()
+        logger.info("Sharing timeline with block range: {}".format(block_range))
+        sharing_addresses = self.get_sharing_addresses()
+        logger.info("Sharing squeaks with sharing addresses: {}".format(
+            sharing_addresses))
+        interests = [
+            CInterested(
+                address=CSqueakAddress(address),
+                nMinBlockHeight=0,
+                nMaxBlockHeight=block_range.max_block,
+            )
+            for address in sharing_addresses
+        ]
+        locator = CSqueakLocator(
+            vInterested=interests,
+        )
+        sharesqueaks_msg = msg_sharesqueaks(
+            locator=locator,
+        )
+        for peer in self.connection_manager.peers:
+            peer.send_msg(sharesqueaks_msg)
+
+    def filter_shared_squeak_locator(self, interests: List[CInterested]):
+        ret = []
+        block_range = self.get_block_range()
+        followed_addresses = self.get_followed_addresses()
+        for interest in interests:
+            if str(interest.address) in followed_addresses:
+                min_block = max(interest.nMinBlockHeight,
+                                block_range.min_block)
+                max_block = min(interest.nMaxBlockHeight,
+                                block_range.max_block)
+                if min_block <= max_block:
+                    ret.append(
+                        CInterested(
+                            address=interest.address,
+                            nMinBlockHeight=min_block,
+                            nMaxBlockHeight=max_block,
+                        )
+                    )
+        return ret
