@@ -1063,7 +1063,7 @@ def test_connect_other_node(
     admin_stub,
     other_server_stub,
     other_admin_stub,
-    connected_peer_id,
+    connected_tcp_peer_id,
     lightning_client,
     signing_profile_id,
     saved_squeak_hash,
@@ -1115,7 +1115,9 @@ def test_connect_other_node(
     other_admin_stub.SyncSqueaks(
         squeak_admin_pb2.SyncSqueaksRequest(),
     )
+    print("Sleeping...")
     time.sleep(5)
+    print("Done sleeping.")
     # print(sync_squeaks_response)
     # assert peer_id in sync_squeaks_response.sync_result.completed_peer_ids
 

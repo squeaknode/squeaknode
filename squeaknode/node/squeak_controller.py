@@ -7,6 +7,10 @@ from squeak.core import CheckSqueak
 from squeak.core import CSqueak
 from squeak.core.signing import CSigningKey
 from squeak.core.signing import CSqueakAddress
+from squeak.messages import msg_getsqueaks
+from squeak.net import CInterested
+from squeak.net import CInv
+from squeak.net import CSqueakLocator
 
 from squeaknode.core.block_range import BlockRange
 from squeaknode.core.offer import Offer
@@ -71,7 +75,7 @@ class SqueakController:
     def save_squeak(
             self,
             squeak: CSqueak,
-            require_decryption_key: bool,
+            require_decryption_key: bool = False,
     ) -> bytes:
         # Check if squeak is valid.
         squeak_entry = self.squeak_core.validate_squeak(squeak)
@@ -548,9 +552,69 @@ class SqueakController:
         ))
         self.peer_server.connect_address(peer.address)
 
+    def connect_peers(self) -> None:
+        peers = self.squeak_db.get_peers()
+        for peer in peers:
+            logger.info("Connect to peer: {}".format(
+                peer,
+            ))
+            self.peer_server.connect_address(peer.address)
+
     def get_address(self):
         # TODO: Add return type.
         return (self.peer_server.ip, self.peer_server.port)
 
     def get_connected_peers(self):
         return self.connection_manager.peers
+
+    def lookup_squeaks_for_interest(
+            self,
+            address: str,
+            min_block: int,
+            max_block: int,
+    ):
+        return self.squeak_db.lookup_squeaks(
+            [address],
+            min_block,
+            max_block,
+        )
+
+    def filter_known_invs(self, invs):
+        ret = []
+        for inv in invs:
+            if inv.type == 1:
+                squeak = self.squeak_db.get_squeak_entry(
+                    inv.hash,
+                )
+                if squeak is None:
+                    ret.append(
+                        CInv(type=1, hash=inv.hash)
+                    )
+                elif not squeak.HasDecryptionKey():
+                    ret.append(
+                        CInv(type=2, hash=inv.hash)
+                    )
+        return ret
+
+    def sync_timeline(self):
+        block_range = self.get_block_range()
+        logger.info("Syncing timeline with block range: {}".format(block_range))
+        followed_addresses = self.get_followed_addresses()
+        logger.info("Syncing timeline with followed addresses: {}".format(
+            followed_addresses))
+        interests = [
+            CInterested(
+                address=CSqueakAddress(address),
+                nMinBlockHeight=block_range.min_block,
+                nMaxBlockHeight=block_range.max_block,
+            )
+            for address in followed_addresses
+        ]
+        locator = CSqueakLocator(
+            vInterested=interests,
+        )
+        getsqueaks_msg = msg_getsqueaks(
+            locator=locator,
+        )
+        for peer in self.connection_manager.peers:
+            peer.send_msg(getsqueaks_msg)

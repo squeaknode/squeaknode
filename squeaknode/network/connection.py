@@ -6,6 +6,7 @@ from squeak.messages import msg_version
 from squeaknode.core.util import generate_version_nonce
 from squeaknode.network.connection_manager import ConnectionManager
 from squeaknode.network.peer import Peer
+from squeaknode.network.peer_message_handler import PeerMessageHandler
 from squeaknode.node.squeak_controller import SqueakController
 
 
@@ -72,6 +73,12 @@ class Connection():
         msg.addrFrom.port = local_port
         msg.nNonce = generate_version_nonce()
         return msg
+
+    def handle_messages(self):
+        peer_message_handler = PeerMessageHandler(
+            self.peer, self.squeak_controller)
+        while True:
+            peer_message_handler.handle_msgs()
 
     def __enter__(self):
         logger.debug(

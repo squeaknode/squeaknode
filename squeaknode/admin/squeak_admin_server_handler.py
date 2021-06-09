@@ -491,8 +491,9 @@ class SqueakAdminServerHandler(object):
     def handle_sync_squeaks(self, request):
         logger.info("Handle sync squeaks")
         # sync_result = self.squeak_controller.sync_squeaks()
-        self.sync_controller.download_timeline()
-        self.sync_controller.upload_timeline()
+        # self.sync_controller.download_timeline()
+        # self.sync_controller.upload_timeline()
+        self.squeak_controller.sync_timeline()
         return squeak_admin_pb2.SyncSqueaksReply()
 
     def handle_sync_squeak(self, request):

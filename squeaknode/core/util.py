@@ -22,6 +22,10 @@ def generate_version_nonce() -> int:
     return random.SystemRandom().getrandbits(64)
 
 
+def generate_ping_nonce() -> int:
+    return random.SystemRandom().getrandbits(64)
+
+
 def generate_offer_nonce():
     return os.urandom(DATA_KEY_LENGTH)
 

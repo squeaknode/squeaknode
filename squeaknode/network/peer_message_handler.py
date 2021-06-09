@@ -4,11 +4,16 @@ from squeak.messages import msg_addr
 from squeak.messages import msg_getdata
 from squeak.messages import msg_inv
 from squeak.messages import msg_notfound
+from squeak.messages import msg_offer
 from squeak.messages import msg_ping
 from squeak.messages import msg_pong
 from squeak.messages import msg_squeak
 from squeak.net import CInv
-from squeakclient.squeaknode.util import generate_nonce
+
+from squeaknode.core.util import generate_ping_nonce
+from squeaknode.core.util import get_hash
+from squeaknode.network.peer import Peer
+from squeaknode.node.squeak_controller import SqueakController
 
 
 logger = logging.getLogger(__name__)
@@ -18,13 +23,17 @@ class PeerMessageHandler:
     """Handles incoming messages from peers.
     """
 
-    def __init__(self, peer, node):
+    def __init__(
+            self,
+            peer: Peer,
+            squeak_controller: SqueakController,
+    ):
         self.peer = peer
-        self.node = node
+        self.squeak_controller = squeak_controller
 
     def initiate_ping(self):
         """Send a ping message and expect a pong response."""
-        nonce = generate_nonce()
+        nonce = generate_ping_nonce()
         ping = msg_ping()
         ping.nonce = nonce
         self.peer.send_msg(ping)
@@ -35,6 +44,7 @@ class PeerMessageHandler:
 
         This method blocks when the peer has not sent any messages.
         """
+        logger.info('Started handling connected messages...')
         while True:
             msg = self.peer.recv_msg()
             self.handle_peer_message(msg)
@@ -42,18 +52,19 @@ class PeerMessageHandler:
     def handle_peer_message(self, msg):
         """Handle messages from a peer with completed handshake."""
 
-        # Only allow version and verack messages before handshake is complete.
-        if not self.peer.is_handshake_complete and msg.command not in [
-                b'version',
-                b'verack',
-        ]:
-            raise Exception(
-                'Received non-handshake message from un-handshaked peer.')
+        # # Only allow version and verack messages before handshake is complete.
+        # if not self.peer.is_handshake_complete and msg.command not in [
+        #         b'version',
+        #         b'verack',
+        # ]:
+        #     raise Exception(
+        #         'Received non-handshake message from un-handshaked peer.')
 
-        if msg.command == b'version':
-            self.handle_version(msg)
-        if msg.command == b'verack':
-            self.handle_verack(msg)
+        # if msg.command == b'version':
+        #     self.handle_version(msg)
+        # if msg.command == b'verack':
+        #     self.handle_verack(msg)
+
         if msg.command == b'ping':
             self.handle_ping(msg)
         if msg.command == b'pong':
@@ -96,15 +107,8 @@ class PeerMessageHandler:
 
     def handle_inv(self, msg):
         invs = msg.inv
-        saved_hashes = set(self.squeaks_access.get_squeak_hashes())
-        received_hashes = set([inv.hash
-                               for inv in invs
-                               if inv.type == 1])
-        new_hashes = received_hashes - saved_hashes
-
-        new_invs = [CInv(type=1, hash=hash)
-                    for hash in new_hashes]
-        getdata_msg = msg_getdata(inv=new_invs)
+        unknown_invs = self.squeak_controller.filter_known_invs(invs)
+        getdata_msg = msg_getdata(inv=unknown_invs)
         self.peer.send_msg(getdata_msg)
 
     def handle_getdata(self, msg):
@@ -112,34 +116,59 @@ class PeerMessageHandler:
         not_found = []
         for inv in invs:
             if inv.type == 1:
-                squeak = self.squeaks_access.get_squeak(inv.hash)
-                if squeak:
+                squeak = self.squeak_controller.get_squeak(inv.hash)
+                if squeak is None:
+                    not_found.append(inv)
+                else:
+                    squeak.ClearDecryptionKey()
                     squeak_msg = msg_squeak(squeak=squeak)
                     self.peer.send_msg(squeak_msg)
-                else:
+            if inv.type == 2:
+                offer = self.squeak_controller.get_buy_offer(
+                    squeak_hash=inv.hash,
+                    client_address=self.peer.peer_address,
+                )
+                if offer is None:
                     not_found.append(inv)
-        notfound_msg = msg_notfound(inv=not_found)
-        self.peer.send_msg(notfound_msg)
+                else:
+                    offer_msg = msg_offer(
+                        strPaymentInfo=offer.payment_request,
+                    )
+                    self.peer.send_msg(offer_msg)
+        if not_found:
+            notfound_msg = msg_notfound(inv=not_found)
+            self.peer.send_msg(notfound_msg)
 
     def handle_notfound(self, msg):
         pass
 
     def handle_getsqueaks(self, msg):
-        locator = msg.locator
-        squeaks = self.squeaks_access.get_squeaks_by_locator(locator)
-        invs = [CInv(type=1, hash=squeak.GetHash())
-                for squeak in squeaks]
-        inv_msg = msg_inv(inv=invs)
-        self.peer.send_msg(inv_msg)
+        for interest in msg.locator.vInterested:
+            squeak_hashes = self.squeak_controller.lookup_squeaks_for_interest(
+                address=str(interest.address),
+                min_block=interest.nMinBlockHeight,
+                max_block=interest.nMaxBlockHeight,
+            )
+            invs = [
+                CInv(type=1, hash=squeak_hash)
+                for squeak_hash in squeak_hashes]
+            inv_msg = msg_inv(inv=invs)
+            self.peer.send_msg(inv_msg)
 
     def handle_squeak(self, msg):
-        # TODO: If squeak is interesting, respond with getoffer msg.
         squeak = msg.squeak
-        self.squeaks_access.add_squeak(squeak)
-
-    def handle_getoffer(self, msg):
-        # Respond with offer msg.
-        pass
+        # TODO: check if interested before saving.
+        self.squeak_controller.save_squeak(squeak)
+        # TODO: If squeak is still locked, send getdata msg to get offer.
+        if not squeak.HasDecryptionKey():
+            invs = [
+                CInv(
+                    type=2,
+                    hash=get_hash(squeak),
+                )
+            ]
+            getdata_msg = msg_getdata(inv=invs)
+            self.peer.send_msg(getdata_msg)
 
     def handle_offer(self, msg):
         # Respond with getinvoice.

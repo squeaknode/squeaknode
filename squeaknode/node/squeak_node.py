@@ -18,6 +18,7 @@ from squeaknode.network.connection_manager import ConnectionManager
 from squeaknode.network.peer_handler import PeerHandler
 from squeaknode.network.peer_server import PeerServer
 from squeaknode.node.payment_processor import PaymentProcessor
+from squeaknode.node.peer_connection_worker import PeerConnectionWorker
 from squeaknode.node.process_received_payments_worker import ProcessReceivedPaymentsWorker
 from squeaknode.node.squeak_controller import SqueakController
 from squeaknode.node.squeak_deletion_worker import SqueakDeletionWorker
@@ -101,7 +102,10 @@ class SqueakNode:
         self.admin_web_server = load_admin_web_server(
             self.config, admin_handler, self.stopped)
 
-        self.sync_worker = load_sync_worker(
+        self.sync_worker = load_peer_connection_worker(
+            self.config, squeak_controller)
+
+        self.peer_connection_worker = load_sync_worker(
             self.config, sync_controller)
 
         self.squeak_offer_expiry_worker = SqueakOfferExpiryWorker(
@@ -129,9 +133,12 @@ class SqueakNode:
         if self.config.webadmin.enabled:
             start_admin_web_server(self.admin_web_server)
 
-        # start sync worker
-        if self.config.sync.enabled:
-            start_sync_worker(self.sync_worker)
+        # # start sync worker
+        # if self.config.sync.enabled:
+        #     start_sync_worker(self.sync_worker)
+
+        # start peer connection worker
+        start_peer_connection_worker(self.peer_connection_worker)
 
         self.squeak_offer_expiry_worker.start_running()
         self.sent_offers_worker.start_running()
@@ -193,6 +200,13 @@ def load_sync_worker(config, sync_controller) -> SqueakPeerSyncWorker:
     return SqueakPeerSyncWorker(
         sync_controller,
         config.sync.interval_s,
+    )
+
+
+def load_peer_connection_worker(config, squeak_controller) -> PeerConnectionWorker:
+    return PeerConnectionWorker(
+        squeak_controller,
+        10,
     )
 
 
@@ -274,6 +288,15 @@ def start_sync_worker(sync_worker):
     logger.info("Starting sync worker...")
     thread = threading.Thread(
         target=sync_worker.start_running,
+        args=(),
+    )
+    thread.start()
+
+
+def start_peer_connection_worker(peer_connection_worker):
+    logger.info("Starting peer connection worker...")
+    thread = threading.Thread(
+        target=peer_connection_worker.start_running,
         args=(),
     )
     thread.start()

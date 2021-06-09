@@ -8,6 +8,8 @@ from bitcoin.core.serialize import SerializationTruncationError
 from bitcoin.net import CAddress
 from squeak.messages import MsgSerializable
 
+from squeaknode.core.peer_address import PeerAddress
+
 
 MAX_MESSAGE_LEN = 1048576
 SOCKET_READ_LEN = 1024
@@ -52,6 +54,14 @@ class Peer(object):
     @property
     def address(self):
         return self._address
+
+    @property
+    def peer_address(self):
+        ip, port = self._address
+        return PeerAddress(
+            host=ip,
+            port=port,
+        )
 
     @property
     def address_string(self):
@@ -133,6 +143,7 @@ class Peer(object):
         """
         msg = self._recv_msg_queue.get()
         logger.debug('Received msg {} from {}'.format(msg, self))
+        logger.info('Received msg {} from {}'.format(msg, self))
         return msg
 
     def stop(self):
@@ -146,6 +157,7 @@ class Peer(object):
 
     def send_msg(self, msg):
         logger.debug('Sending msg {} to {}'.format(msg, self))
+        logger.info('Sending msg {} to {}'.format(msg, self))
         data = msg.to_bytes()
         with self._peer_socket_lock:
             self._peer_socket.send(data)
