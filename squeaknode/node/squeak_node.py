@@ -23,11 +23,9 @@ from squeaknode.node.process_received_payments_worker import ProcessReceivedPaym
 from squeaknode.node.squeak_controller import SqueakController
 from squeaknode.node.squeak_deletion_worker import SqueakDeletionWorker
 from squeaknode.node.squeak_offer_expiry_worker import SqueakOfferExpiryWorker
-from squeaknode.node.squeak_peer_sync_worker import SqueakPeerSyncWorker
 from squeaknode.node.squeak_rate_limiter import SqueakRateLimiter
 from squeaknode.server.squeak_server_handler import SqueakServerHandler
 from squeaknode.server.squeak_server_servicer import SqueakServerServicer
-from squeaknode.sync.squeak_sync_controller import SqueakSyncController
 
 
 logger = logging.getLogger(__name__)
@@ -82,14 +80,14 @@ class SqueakNode:
             self.config,
         )
 
-        sync_controller = SqueakSyncController(
-            squeak_controller,
-            self.config.sync.block_interval,
-            self.config.sync.timeout_s,
-        )
+        # sync_controller = SqueakSyncController(
+        #     squeak_controller,
+        #     self.config.sync.block_interval,
+        #     self.config.sync.timeout_s,
+        # )
 
         admin_handler = load_admin_handler(
-            lightning_client, squeak_controller, sync_controller)
+            lightning_client, squeak_controller)
 
         self.peer_handler = PeerHandler(
             squeak_controller,
@@ -105,8 +103,8 @@ class SqueakNode:
         self.sync_worker = load_peer_connection_worker(
             self.config, squeak_controller)
 
-        self.peer_connection_worker = load_sync_worker(
-            self.config, sync_controller)
+        # self.peer_connection_worker = load_sync_worker(
+        #     self.config, sync_controller)
 
         self.squeak_offer_expiry_worker = SqueakOfferExpiryWorker(
             squeak_controller,
@@ -137,8 +135,8 @@ class SqueakNode:
         # if self.config.sync.enabled:
         #     start_sync_worker(self.sync_worker)
 
-        # start peer connection worker
-        start_peer_connection_worker(self.peer_connection_worker)
+        # # start peer connection worker
+        # start_peer_connection_worker(self.peer_connection_worker)
 
         self.squeak_offer_expiry_worker.start_running()
         self.sent_offers_worker.start_running()
@@ -196,11 +194,11 @@ def load_admin_web_server(config, handler, stopped_event) -> SqueakAdminWebServe
     )
 
 
-def load_sync_worker(config, sync_controller) -> SqueakPeerSyncWorker:
-    return SqueakPeerSyncWorker(
-        sync_controller,
-        config.sync.interval_s,
-    )
+# def load_sync_worker(config, sync_controller) -> SqueakPeerSyncWorker:
+#     return SqueakPeerSyncWorker(
+#         sync_controller,
+#         config.sync.interval_s,
+#     )
 
 
 def load_peer_connection_worker(config, squeak_controller) -> PeerConnectionWorker:
@@ -214,11 +212,10 @@ def load_handler(squeak_controller):
     return SqueakServerHandler(squeak_controller)
 
 
-def load_admin_handler(lightning_client, squeak_controller, sync_controller):
+def load_admin_handler(lightning_client, squeak_controller):
     return SqueakAdminServerHandler(
         lightning_client,
         squeak_controller,
-        sync_controller,
     )
 
 

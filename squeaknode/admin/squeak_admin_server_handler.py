@@ -15,7 +15,6 @@ from squeaknode.admin.messages import squeak_profile_to_message
 from squeaknode.admin.profile_image_util import base64_string_to_bytes
 from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
 from squeaknode.node.squeak_controller import SqueakController
-from squeaknode.sync.squeak_sync_controller import SqueakSyncController
 
 logger = logging.getLogger(__name__)
 
@@ -27,11 +26,9 @@ class SqueakAdminServerHandler(object):
         self,
         lightning_client: LNDLightningClient,
         squeak_controller: SqueakController,
-        sync_controller: SqueakSyncController,
     ):
         self.lightning_client = lightning_client
         self.squeak_controller = squeak_controller
-        self.sync_controller = sync_controller
 
     def handle_lnd_get_info(self, request):
         logger.info("Handle lnd get info")
