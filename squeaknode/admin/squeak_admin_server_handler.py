@@ -502,8 +502,9 @@ class SqueakAdminServerHandler(object):
         logger.info(
             "Handle download squeak with hash: {}".format(squeak_hash_str))
         # TODO: Add a separate method for download squeak and upload squeak.
-        self.sync_controller.download_single_squeak(squeak_hash)
-        self.sync_controller.upload_single_squeak(squeak_hash)
+        # self.sync_controller.download_single_squeak(squeak_hash)
+        # self.sync_controller.upload_single_squeak(squeak_hash)
+        self.squeak_controller.download_single_squeak(squeak_hash)
         return squeak_admin_pb2.SyncSqueakReply()
 
     def handle_pay_offer(self, request):

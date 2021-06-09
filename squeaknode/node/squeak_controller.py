@@ -7,6 +7,7 @@ from squeak.core import CheckSqueak
 from squeak.core import CSqueak
 from squeak.core.signing import CSigningKey
 from squeak.core.signing import CSqueakAddress
+from squeak.messages import msg_getdata
 from squeak.messages import msg_getsqueaks
 from squeak.net import CInterested
 from squeak.net import CInv
@@ -619,3 +620,16 @@ class SqueakController:
         )
         for peer in self.connection_manager.peers:
             peer.send_msg(getsqueaks_msg)
+
+    def download_single_squeak(self, squeak_hash: bytes):
+        logger.info("Downloading single squeak: {}".format(
+            squeak_hash.hex(),
+        ))
+        invs = [
+            CInv(type=1, hash=squeak_hash)
+        ]
+        getdata_msg = msg_getdata(
+            inv=invs,
+        )
+        for peer in self.connection_manager.peers:
+            peer.send_msg(getdata_msg)

@@ -1255,7 +1255,7 @@ def test_download_single_squeak(
     admin_stub,
     other_server_stub,
     other_admin_stub,
-    connected_peer_id,
+    connected_tcp_peer_id,
     lightning_client,
     signing_profile_id,
     saved_squeak_hash,
