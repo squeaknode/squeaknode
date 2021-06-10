@@ -717,7 +717,7 @@ def test_get_following_squeaks(
         pass
 
 
-def test_delete_squeak(server_stub, admin_stub, saved_squeak_hash):
+def test_delete_squeak(admin_stub, saved_squeak_hash):
     # Delete the squeak
     admin_stub.DeleteSqueak(
         squeak_admin_pb2.DeleteSqueakRequest(squeak_hash=saved_squeak_hash)

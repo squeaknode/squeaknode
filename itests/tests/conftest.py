@@ -7,7 +7,6 @@ from squeak.params import SelectParams
 
 from proto import squeak_admin_pb2
 from proto import squeak_admin_pb2_grpc
-from proto import squeak_server_pb2_grpc
 from tests.util import bytes_to_base64_string
 from tests.util import generate_signing_key
 from tests.util import get_address
@@ -18,18 +17,6 @@ from tests.util import load_lightning_client
 def select_mainnet_params():
     # Set the network to simnet
     SelectParams("simnet")
-
-
-@pytest.fixture
-def server_stub():
-    with grpc.insecure_channel("squeaknode:8774") as server_channel:
-        yield squeak_server_pb2_grpc.SqueakServerStub(server_channel)
-
-
-@pytest.fixture
-def other_server_stub():
-    with grpc.insecure_channel("squeaknode_other:8774") as server_channel:
-        yield squeak_server_pb2_grpc.SqueakServerStub(server_channel)
 
 
 @pytest.fixture
