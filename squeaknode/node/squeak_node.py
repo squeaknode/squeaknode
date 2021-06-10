@@ -122,8 +122,7 @@ class SqueakNode:
 
         # start peer connection worker
         if self.config.sync.enabled:
-            # start_peer_connection_worker(self.peer_connection_worker)
-            pass
+            start_peer_connection_worker(self.peer_connection_worker)
 
         # start peer sync worker
         if self.config.sync.enabled:
