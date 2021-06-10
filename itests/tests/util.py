@@ -5,7 +5,6 @@ import time
 from contextlib import contextmanager
 
 from lnd_lightning_client import LNDLightningClient
-from squeak.core import CSqueak
 from squeak.core import HASH_LENGTH
 from squeak.core import MakeSqueakFromStr
 from squeak.core.elliptic import scalar_difference
@@ -15,14 +14,6 @@ from squeak.core.signing import CSigningKey
 from squeak.core.signing import CSqueakAddress
 
 from proto import squeak_admin_pb2
-
-
-def squeak_from_msg(squeak_msg):
-    if not squeak_msg:
-        return None
-    if not squeak_msg.serialized_squeak:
-        return None
-    return CSqueak.deserialize(squeak_msg.serialized_squeak)
 
 
 def generate_signing_key():
