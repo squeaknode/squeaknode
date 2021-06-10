@@ -256,6 +256,10 @@ service SqueakAdmin {
   */
   rpc GetConnectedPeers (GetConnectedPeersRequest) returns (GetConnectedPeersReply) {}
 
+  /** sqkadmin: `disconnectpeer`
+  */
+  rpc DisconnectPeer (DisconnectPeerRequest) returns (DisconnectPeerReply) {}
+
 }
 
 message CreateSigningProfileRequest {
@@ -935,4 +939,12 @@ message GetConnectedPeersRequest {
 
 message GetConnectedPeersReply {
     repeated ConnectedPeer connected_peers = 1;
+}
+
+message DisconnectPeerRequest {
+    /// The peer id
+    int32 peer_id = 1;
+}
+
+message DisconnectPeerReply {
 }

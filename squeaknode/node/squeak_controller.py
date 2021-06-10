@@ -695,3 +695,15 @@ class SqueakController:
                 logger.exception("Failed to send msg to peer: {}".format(
                     peer,
                 ))
+
+    def disconnect_peer(self, peer_id: int) -> None:
+        peer = self.squeak_db.get_peer(peer_id)
+        if peer is None:
+            raise Exception("Peer with id {} not found.".format(
+                peer_id,
+            ))
+        # TODO
+        logger.info("Disconnect peer: {}".format(
+            peer,
+        ))
+        self.peer_server.disconnect_address(peer.address)

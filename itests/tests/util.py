@@ -14,14 +14,7 @@ from squeak.core.elliptic import scalar_to_bytes
 from squeak.core.signing import CSigningKey
 from squeak.core.signing import CSqueakAddress
 
-from proto import squeak_server_pb2
-
-
-def build_squeak_msg(squeak):
-    return squeak_server_pb2.Squeak(
-        hash=bytes.fromhex(get_hash(squeak)),
-        serialized_squeak=squeak.serialize(),
-    )
+from proto import squeak_admin_pb2
 
 
 def squeak_from_msg(squeak_msg):
@@ -141,3 +134,49 @@ def open_channel(lightning_client, remote_pubkey, amount):
             if update.HasField("chan_close"):
                 print("Channel closed.")
                 break
+
+
+@contextmanager
+def open_peer_connection(node_stub, peer_name, peer_host, peer_port):
+    # Add the main node as a peer
+    create_peer_response = node_stub.CreatePeer(
+        squeak_admin_pb2.CreatePeerRequest(
+            peer_name=peer_name,
+            host=peer_host,
+            port=peer_port,
+        )
+    )
+    peer_id = create_peer_response.peer_id
+    # Set the peer to be downloading
+    node_stub.SetPeerDownloading(
+        squeak_admin_pb2.SetPeerDownloadingRequest(
+            peer_id=peer_id,
+            downloading=True,
+        )
+    )
+    # Connect the peer
+    node_stub.ConnectPeer(
+        squeak_admin_pb2.ConnectPeerRequest(
+            peer_id=peer_id,
+        )
+    )
+    yield peer_id
+    # # Disconnect the peer
+    # node_stub.DisconnectPeer(
+    #     squeak_admin_pb2.DisconnectPeerRequest(
+    #         peer_id=peer_id,
+    #     )
+    # )
+    # Delete the peer
+    node_stub.DeletePeer(
+        squeak_admin_pb2.DeletePeerRequest(
+            peer_id=peer_id,
+        )
+    )
+
+
+def get_connected_peers(node_stub):
+    get_connected_peers_response = node_stub.GetConnectedPeers(
+        squeak_admin_pb2.GetConnectedPeersRequest()
+    )
+    return get_connected_peers_response.connected_peers

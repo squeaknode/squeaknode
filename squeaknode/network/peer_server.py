@@ -75,3 +75,14 @@ class PeerServer(object):
             target=self.make_connection,
             args=(ip, port),
         ).start()
+
+    def disconnect_address(self, address):
+        """Connect to new address."""
+        logger.info('Disconnecting peer with address {}'.format(address))
+        hostname, port = address
+        ip = socket.gethostbyname(hostname)
+        new_address = (ip, port)
+        peer = self.connection_manager.get_peer(new_address)
+        if peer is None:
+            return
+        peer.stop()
