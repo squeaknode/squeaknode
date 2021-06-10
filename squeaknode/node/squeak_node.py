@@ -23,6 +23,7 @@ from squeaknode.node.process_received_payments_worker import ProcessReceivedPaym
 from squeaknode.node.squeak_controller import SqueakController
 from squeaknode.node.squeak_deletion_worker import SqueakDeletionWorker
 from squeaknode.node.squeak_offer_expiry_worker import SqueakOfferExpiryWorker
+from squeaknode.node.squeak_peer_sync_worker import SqueakPeerSyncWorker
 from squeaknode.node.squeak_rate_limiter import SqueakRateLimiter
 
 
@@ -92,7 +93,10 @@ class SqueakNode:
         self.admin_web_server = load_admin_web_server(
             self.config, admin_handler, self.stopped)
 
-        self.sync_worker = load_peer_connection_worker(
+        self.peer_connection_worker = load_peer_connection_worker(
+            self.config, squeak_controller)
+
+        self.peer_sync_worker = load_peer_sync_worker(
             self.config, squeak_controller)
 
         self.squeak_offer_expiry_worker = SqueakOfferExpiryWorker(
@@ -116,13 +120,15 @@ class SqueakNode:
         if self.config.webadmin.enabled:
             start_admin_web_server(self.admin_web_server)
 
-        # # start sync worker
-        # if self.config.sync.enabled:
-        #     TODO: sync by sending peer message.
-        #     start_sync_worker(self.sync_worker)
+        # start peer connection worker
+        if self.config.sync.enabled:
+            # start_peer_connection_worker(self.peer_connection_worker)
+            pass
 
-        # # start peer connection worker
-        # start_peer_connection_worker(self.peer_connection_worker)
+        # start peer sync worker
+        if self.config.sync.enabled:
+            start_peer_sync_worker(self.peer_sync_worker)
+            # pass
 
         self.squeak_offer_expiry_worker.start_running()
         self.sent_offers_worker.start_running()
@@ -169,6 +175,13 @@ def load_admin_web_server(config, handler, stopped_event) -> SqueakAdminWebServe
 
 def load_peer_connection_worker(config, squeak_controller) -> PeerConnectionWorker:
     return PeerConnectionWorker(
+        squeak_controller,
+        10,
+    )
+
+
+def load_peer_sync_worker(config, squeak_controller) -> SqueakPeerSyncWorker:
+    return SqueakPeerSyncWorker(
         squeak_controller,
         10,
     )
@@ -234,19 +247,19 @@ def start_admin_web_server(admin_web_server):
     thread.start()
 
 
-def start_sync_worker(sync_worker):
-    logger.info("Starting sync worker...")
+def start_peer_connection_worker(peer_connection_worker):
+    logger.info("Starting peer connection worker...")
     thread = threading.Thread(
-        target=sync_worker.start_running,
+        target=peer_connection_worker.start_running,
         args=(),
     )
     thread.start()
 
 
-def start_peer_connection_worker(peer_connection_worker):
-    logger.info("Starting peer connection worker...")
+def start_peer_sync_worker(peer_sync_worker):
+    logger.info("Starting peer sync worker...")
     thread = threading.Thread(
-        target=peer_connection_worker.start_running,
+        target=peer_sync_worker.start_running,
         args=(),
     )
     thread.start()

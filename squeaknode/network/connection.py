@@ -1,4 +1,5 @@
 import logging
+from contextlib import contextmanager
 
 from squeak.messages import msg_verack
 from squeak.messages import msg_version
@@ -80,17 +81,28 @@ class Connection():
         while True:
             peer_message_handler.handle_msgs()
 
-    def __enter__(self):
+    @contextmanager
+    def open_connection(self):
         logger.debug(
             'Starting handshake connection with peer ... {}'.format(self.peer))
         self.connection_manager.add_peer(self.peer)
         self.handshake()
         logger.debug('Peer connection added... {}'.format(self.peer))
-        return self
-
-    def __exit__(self, *exc):
+        yield self
         self.connection_manager.remove_peer(self.peer)
         logger.debug('Peer connection removed... {}'.format(self.peer))
+
+    # def __enter__(self):
+    #     logger.debug(
+    #         'Starting handshake connection with peer ... {}'.format(self.peer))
+    #     self.connection_manager.add_peer(self.peer)
+    #     self.handshake()
+    #     logger.debug('Peer connection added... {}'.format(self.peer))
+    #     return self
+
+    # def __exit__(self, *exc):
+    #     self.connection_manager.remove_peer(self.peer)
+    #     logger.debug('Peer connection removed... {}'.format(self.peer))
 
     def _is_duplicate_nonce(self, nonce):
         for peer in self.connection_manager.peers:

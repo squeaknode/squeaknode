@@ -10,6 +10,7 @@ from squeak.core.signing import CSqueakAddress
 from squeak.messages import msg_getdata
 from squeak.messages import msg_getsqueaks
 from squeak.messages import msg_sharesqueaks
+from squeak.messages import MsgSerializable
 from squeak.net import CInterested
 from squeak.net import CInv
 from squeak.net import CSqueakLocator
@@ -561,7 +562,12 @@ class SqueakController:
             logger.info("Connect to peer: {}".format(
                 peer,
             ))
-            self.peer_server.connect_address(peer.address)
+            try:
+                self.peer_server.connect_address(peer.address)
+            except Exception:
+                logger.exception("Failed to connect to peer {}".format(
+                    peer,
+                ))
 
     def get_address(self):
         # TODO: Add return type.
@@ -586,14 +592,14 @@ class SqueakController:
         ret = []
         for inv in invs:
             if inv.type == 1:
-                squeak = self.squeak_db.get_squeak_entry(
+                squeak_entry = self.squeak_db.get_squeak_entry(
                     inv.hash,
                 )
-                if squeak is None:
+                if squeak_entry is None:
                     ret.append(
                         CInv(type=1, hash=inv.hash)
                     )
-                elif not squeak.HasDecryptionKey():
+                elif not squeak_entry.squeak.HasDecryptionKey():
                     ret.append(
                         CInv(type=2, hash=inv.hash)
                     )
@@ -619,8 +625,9 @@ class SqueakController:
         getsqueaks_msg = msg_getsqueaks(
             locator=locator,
         )
-        for peer in self.connection_manager.peers:
-            peer.send_msg(getsqueaks_msg)
+        # for peer in self.connection_manager.peers:
+        #     peer.send_msg(getsqueaks_msg)
+        self.broadcast_msg(getsqueaks_msg)
 
     def download_single_squeak(self, squeak_hash: bytes):
         logger.info("Downloading single squeak: {}".format(
@@ -632,8 +639,9 @@ class SqueakController:
         getdata_msg = msg_getdata(
             inv=invs,
         )
-        for peer in self.connection_manager.peers:
-            peer.send_msg(getdata_msg)
+        # for peer in self.connection_manager.peers:
+        #     peer.send_msg(getdata_msg)
+        self.broadcast_msg(getdata_msg)
 
     def share_squeaks(self):
         block_range = self.get_block_range()
@@ -655,8 +663,9 @@ class SqueakController:
         sharesqueaks_msg = msg_sharesqueaks(
             locator=locator,
         )
-        for peer in self.connection_manager.peers:
-            peer.send_msg(sharesqueaks_msg)
+        # for peer in self.connection_manager.peers:
+        #     peer.send_msg(sharesqueaks_msg)
+        self.broadcast_msg(sharesqueaks_msg)
 
     def filter_shared_squeak_locator(self, interests: List[CInterested]):
         ret = []
@@ -677,3 +686,12 @@ class SqueakController:
                         )
                     )
         return ret
+
+    def broadcast_msg(self, msg: MsgSerializable) -> None:
+        for peer in self.connection_manager.peers:
+            try:
+                peer.send_msg(msg)
+            except Exception:
+                logger.exception("Failed to send msg to peer: {}".format(
+                    peer,
+                ))

@@ -65,10 +65,11 @@ class PeerServer(object):
         """Connect to new address."""
         logger.debug('Connecting to peer with address {}'.format(address))
         logger.info('Connecting to peer with address {}'.format(address))
-        if self.connection_manager.has_connection(address):
-            return
         hostname, port = address
         ip = socket.gethostbyname(hostname)
+        new_address = (ip, port)
+        if self.connection_manager.has_connection(new_address):
+            return
         logger.info('Connecting to peer with ip address {}'.format(ip))
         threading.Thread(
             target=self.make_connection,

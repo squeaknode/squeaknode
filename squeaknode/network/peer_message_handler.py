@@ -50,7 +50,10 @@ class PeerMessageHandler:
         logger.info('Started handling connected messages...')
         while True:
             msg = self.peer.recv_msg()
-            self.handle_peer_message(msg)
+            try:
+                self.handle_peer_message(msg)
+            except Exception:
+                logger.exception("Failure while handling messages.")
 
     def handle_peer_message(self, msg):
         """Handle messages from a peer with completed handshake."""

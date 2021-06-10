@@ -159,8 +159,12 @@ class Peer(object):
         logger.debug('Sending msg {} to {}'.format(msg, self))
         logger.info('Sending msg {} to {}'.format(msg, self))
         data = msg.to_bytes()
-        with self._peer_socket_lock:
-            self._peer_socket.send(data)
+        try:
+            with self._peer_socket_lock:
+                self._peer_socket.send(data)
+        except Exception:
+            logger.info('Failed to send msg to {}'.format(self))
+            self.stop()
 
     def __enter__(self):
         logger.debug('Setting up peer {} ...'.format(self))
@@ -235,4 +239,5 @@ class MessageReceiver:
         try:
             self._recv_msgs()
         except Exception:
+            logger.info('Failed to receive msg from {}'.format(self))
             self.stopped_event.set()

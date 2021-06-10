@@ -28,7 +28,12 @@ class ConnectionManager(object):
         return address in self._peers
 
     def on_peers_changed(self):
-        logger.info('Current number of peers {}'.format(len(self.peers)))
+        peers = self.peers
+        logger.info('Current number of peers {}'.format(len(peers)))
+        logger.info('Current peers:--------')
+        for peer in peers:
+            logger.info(peer)
+        logger.info('--------------')
         if self.peers_changed_callback:
             peers = self.get_peers()
             self.peers_changed_callback(peers)
