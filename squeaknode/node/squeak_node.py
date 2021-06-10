@@ -24,8 +24,6 @@ from squeaknode.node.squeak_controller import SqueakController
 from squeaknode.node.squeak_deletion_worker import SqueakDeletionWorker
 from squeaknode.node.squeak_offer_expiry_worker import SqueakOfferExpiryWorker
 from squeaknode.node.squeak_rate_limiter import SqueakRateLimiter
-from squeaknode.server.squeak_server_handler import SqueakServerHandler
-from squeaknode.server.squeak_server_servicer import SqueakServerServicer
 
 
 logger = logging.getLogger(__name__)
@@ -118,9 +116,9 @@ class SqueakNode:
             self.config.core.squeak_deletion_interval_s,
         )
 
-        handler = load_handler(squeak_controller)
-        self.server = load_rpc_server(
-            self.config, handler, self.stopped)
+        # handler = load_handler(squeak_controller)
+        # self.server = load_rpc_server(
+        #     self.config, handler, self.stopped)
 
     def start_running(self):
         # start admin rpc server
@@ -142,9 +140,9 @@ class SqueakNode:
         self.sent_offers_worker.start_running()
         self.squeak_deletion_worker.start_running()
 
-        # start peer rpc server
-        if self.config.server.rpc_enabled:
-            start_peer_web_server(self.server)
+        # # start peer rpc server
+        # if self.config.server.rpc_enabled:
+        #     start_peer_web_server(self.server)
 
         # Start peer socket server
         self.peer_server.start(self.peer_handler)
@@ -162,13 +160,13 @@ def load_lightning_client(config) -> LNDLightningClient:
     )
 
 
-def load_rpc_server(config, handler, stopped_event) -> SqueakServerServicer:
-    return SqueakServerServicer(
-        config.server.rpc_host,
-        config.server.rpc_port,
-        handler,
-        stopped_event,
-    )
+# def load_rpc_server(config, handler, stopped_event) -> SqueakServerServicer:
+#     return SqueakServerServicer(
+#         config.server.rpc_host,
+#         config.server.rpc_port,
+#         handler,
+#         stopped_event,
+#     )
 
 
 def load_admin_rpc_server(config, handler, stopped_event) -> SqueakAdminServerServicer:
@@ -208,8 +206,8 @@ def load_peer_connection_worker(config, squeak_controller) -> PeerConnectionWork
     )
 
 
-def load_handler(squeak_controller):
-    return SqueakServerHandler(squeak_controller)
+# def load_handler(squeak_controller):
+#     return SqueakServerHandler(squeak_controller)
 
 
 def load_admin_handler(lightning_client, squeak_controller):
@@ -272,13 +270,13 @@ def start_admin_web_server(admin_web_server):
     thread.start()
 
 
-def start_peer_web_server(peer_web_server):
-    logger.info("Starting peer web server...")
-    thread = threading.Thread(
-        target=peer_web_server.serve,
-        args=(),
-    )
-    thread.start()
+# def start_peer_web_server(peer_web_server):
+#     logger.info("Starting peer web server...")
+#     thread = threading.Thread(
+#         target=peer_web_server.serve,
+#         args=(),
+#     )
+#     thread.start()
 
 
 def start_sync_worker(sync_worker):

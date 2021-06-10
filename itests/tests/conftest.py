@@ -50,7 +50,7 @@ def lightning_client():
 
 
 @pytest.fixture
-def following_signing_key(server_stub, admin_stub):
+def following_signing_key(admin_stub):
     # Create a signing key
     signing_key = generate_signing_key()
     # Create a new contact profile
@@ -81,7 +81,7 @@ def following_signing_key(server_stub, admin_stub):
 
 
 @pytest.fixture
-def nonfollowing_signing_key(server_stub, admin_stub):
+def nonfollowing_signing_key(admin_stub):
     # Create a signing key
     signing_key = generate_signing_key()
 
@@ -90,7 +90,7 @@ def nonfollowing_signing_key(server_stub, admin_stub):
 
 
 @pytest.fixture
-def signing_profile_id(server_stub, admin_stub):
+def signing_profile_id(admin_stub):
     # Create a new signing profile
     profile_name = "fake_signing_profile_{}".format(uuid.uuid1())
     create_signing_profile_response = admin_stub.CreateSigningProfile(
@@ -109,7 +109,7 @@ def signing_profile_id(server_stub, admin_stub):
 
 
 @pytest.fixture
-def contact_profile_id(server_stub, admin_stub):
+def contact_profile_id(admin_stub):
     # Create a new contact profile
     contact_name = "fake_contact_profile_{}".format(uuid.uuid1())
     contact_signing_key = generate_signing_key()
@@ -131,7 +131,7 @@ def contact_profile_id(server_stub, admin_stub):
 
 
 @pytest.fixture
-def saved_squeak_hash(server_stub, admin_stub, signing_profile_id):
+def saved_squeak_hash(admin_stub, signing_profile_id):
     # Create a new squeak using the new profile
     make_squeak_content = "Hello from the profile on the server!"
     make_squeak_response = admin_stub.MakeSqueak(
@@ -151,7 +151,7 @@ def saved_squeak_hash(server_stub, admin_stub, signing_profile_id):
 
 
 @pytest.fixture
-def peer_id(server_stub, admin_stub):
+def peer_id(admin_stub):
     # Create a new peer
     random_peer_name = "random_peer_name_{}".format(uuid.uuid1())
     create_peer_response = admin_stub.CreatePeer(
@@ -187,7 +187,7 @@ def random_image_base64_string(random_image):
 
 
 @pytest.fixture
-def connected_peer_id(server_stub, other_admin_stub):
+def connected_peer_id(other_admin_stub):
     # Add the main node as a peer
     create_peer_response = other_admin_stub.CreatePeer(
         squeak_admin_pb2.CreatePeerRequest(
@@ -214,7 +214,7 @@ def connected_peer_id(server_stub, other_admin_stub):
 
 
 @pytest.fixture
-def connected_tcp_peer_id(server_stub, other_admin_stub):
+def connected_tcp_peer_id(other_admin_stub):
     # Add the main node as a peer
     create_peer_response = other_admin_stub.CreatePeer(
         squeak_admin_pb2.CreatePeerRequest(
