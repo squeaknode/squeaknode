@@ -3,6 +3,7 @@ import threading
 from typing import List
 from typing import Optional
 
+import sqlalchemy
 from squeak.core import CheckSqueak
 from squeak.core import CSqueak
 from squeak.core.signing import CSigningKey
@@ -495,9 +496,8 @@ class SqueakController:
     def save_offer(self, received_offer: ReceivedOffer) -> None:
         logger.info("Saving received offer: {}".format(received_offer))
         try:
-            # TODO: catch specific duplicat key expcetion
             self.squeak_db.insert_received_offer(received_offer)
-        except Exception:
+        except sqlalchemy.exc.IntegrityError:
             logger.error("Failed to save offer.")
 
     def get_followed_addresses(self) -> List[str]:
