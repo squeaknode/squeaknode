@@ -494,7 +494,11 @@ class SqueakController:
 
     def save_offer(self, received_offer: ReceivedOffer) -> None:
         logger.info("Saving received offer: {}".format(received_offer))
-        self.squeak_db.insert_received_offer(received_offer)
+        try:
+            # TODO: catch specific duplicat key expcetion
+            self.squeak_db.insert_received_offer(received_offer)
+        except Exception:
+            logger.error("Failed to save offer.")
 
     def get_followed_addresses(self) -> List[str]:
         followed_profiles = self.squeak_db.get_following_profiles()
