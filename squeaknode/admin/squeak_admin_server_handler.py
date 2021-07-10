@@ -2,6 +2,7 @@ import logging
 import sys
 
 from proto import squeak_admin_pb2
+from squeaknode.admin.messages import connected_peer_to_message
 from squeaknode.admin.messages import offer_entry_to_message
 from squeaknode.admin.messages import payment_summary_to_message
 from squeaknode.admin.messages import received_payments_to_message
@@ -14,7 +15,6 @@ from squeaknode.admin.messages import squeak_profile_to_message
 from squeaknode.admin.profile_image_util import base64_string_to_bytes
 from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
 from squeaknode.node.squeak_controller import SqueakController
-from squeaknode.sync.squeak_sync_controller import SqueakSyncController
 
 logger = logging.getLogger(__name__)
 
@@ -26,11 +26,9 @@ class SqueakAdminServerHandler(object):
         self,
         lightning_client: LNDLightningClient,
         squeak_controller: SqueakController,
-        sync_controller: SqueakSyncController,
     ):
         self.lightning_client = lightning_client
         self.squeak_controller = squeak_controller
-        self.sync_controller = sync_controller
 
     def handle_lnd_get_info(self, request):
         logger.info("Handle lnd get info")
@@ -490,8 +488,10 @@ class SqueakAdminServerHandler(object):
     def handle_sync_squeaks(self, request):
         logger.info("Handle sync squeaks")
         # sync_result = self.squeak_controller.sync_squeaks()
-        self.sync_controller.download_timeline()
-        self.sync_controller.upload_timeline()
+        # self.sync_controller.download_timeline()
+        # self.sync_controller.upload_timeline()
+        self.squeak_controller.sync_timeline()
+        self.squeak_controller.share_squeaks()
         return squeak_admin_pb2.SyncSqueaksReply()
 
     def handle_sync_squeak(self, request):
@@ -500,8 +500,9 @@ class SqueakAdminServerHandler(object):
         logger.info(
             "Handle download squeak with hash: {}".format(squeak_hash_str))
         # TODO: Add a separate method for download squeak and upload squeak.
-        self.sync_controller.download_single_squeak(squeak_hash)
-        self.sync_controller.upload_single_squeak(squeak_hash)
+        # self.sync_controller.download_single_squeak(squeak_hash)
+        # self.sync_controller.upload_single_squeak(squeak_hash)
+        self.squeak_controller.download_single_squeak(squeak_hash)
         return squeak_admin_pb2.SyncSqueakReply()
 
     def handle_pay_offer(self, request):
@@ -640,3 +641,28 @@ class SqueakAdminServerHandler(object):
         return squeak_admin_pb2.GetTimelineSqueakDisplaysReply(
             squeak_display_entries=squeak_display_msgs
         )
+
+    def handle_connect_peer(self, request):
+        peer_id = request.peer_id
+        logger.info("Handle connect peer with id: {}".format(peer_id))
+        self.squeak_controller.connect_peer(peer_id)
+        return squeak_admin_pb2.ConnectPeerReply()
+
+    def handle_get_connected_peers(self, request):
+        logger.info("Handle get connected peers.")
+        connected_peers = self.squeak_controller.get_connected_peers()
+        logger.info("Connected peers: {}".format(
+            connected_peers,
+        ))
+        connected_peers_display_msgs = [
+            connected_peer_to_message(peer) for peer in connected_peers
+        ]
+        return squeak_admin_pb2.GetConnectedPeersReply(
+            connected_peers=connected_peers_display_msgs
+        )
+
+    def handle_disconnect_peer(self, request):
+        peer_id = request.peer_id
+        logger.info("Handle disconnect peer with id: {}".format(peer_id))
+        self.squeak_controller.disconnect_peer(peer_id)
+        return squeak_admin_pb2.DisconnectPeerReply()

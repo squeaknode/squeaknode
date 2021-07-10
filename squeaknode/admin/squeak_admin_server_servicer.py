@@ -225,3 +225,12 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
 
     def GetLikedSqueakDisplays(self, request, context):
         return self.handler.handle_get_(request)
+
+    def ConnectPeer(self, request, context):
+        return self.handler.handle_connect_peer(request)
+
+    def GetConnectedPeers(self, request, context):
+        return self.handler.handle_get_connected_peers(request)
+
+    def DisconnectPeer(self, request, context):
+        return self.handler.handle_disconnect_peer(request)

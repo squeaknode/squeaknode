@@ -1,4 +1,5 @@
 import os
+import random
 
 from bitcoin.base58 import Base58ChecksumError
 from bitcoin.wallet import CBitcoinAddressError
@@ -10,10 +11,19 @@ from squeak.core.elliptic import scalar_to_bytes
 from squeak.core.signing import CSqueakAddress
 
 DATA_KEY_LENGTH = 32
+VERSION_NONCE_LENGTH = 8
 
 
 def get_hash(squeak):
     return squeak.GetHash()[::-1]
+
+
+def generate_version_nonce() -> int:
+    return random.SystemRandom().getrandbits(64)
+
+
+def generate_ping_nonce() -> int:
+    return random.SystemRandom().getrandbits(64)
 
 
 def generate_offer_nonce():

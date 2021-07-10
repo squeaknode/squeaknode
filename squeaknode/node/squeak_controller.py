@@ -3,10 +3,18 @@ import threading
 from typing import List
 from typing import Optional
 
+import sqlalchemy
 from squeak.core import CheckSqueak
 from squeak.core import CSqueak
 from squeak.core.signing import CSigningKey
 from squeak.core.signing import CSqueakAddress
+from squeak.messages import msg_getdata
+from squeak.messages import msg_getsqueaks
+from squeak.messages import msg_sharesqueaks
+from squeak.messages import MsgSerializable
+from squeak.net import CInterested
+from squeak.net import CInv
+from squeak.net import CSqueakLocator
 
 from squeaknode.core.block_range import BlockRange
 from squeaknode.core.offer import Offer
@@ -22,6 +30,8 @@ from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.util import get_hash
 from squeaknode.core.util import is_address_valid
+from squeaknode.network.connection_manager import ConnectionManager
+from squeaknode.network.peer_server import PeerServer
 from squeaknode.node.received_payments_subscription_client import ReceivedPaymentsSubscriptionClient
 
 
@@ -36,12 +46,16 @@ class SqueakController:
         squeak_core,
         squeak_rate_limiter,
         payment_processor,
+        peer_server: PeerServer,
+        connection_manager: ConnectionManager,
         config,
     ):
         self.squeak_db = squeak_db
         self.squeak_core = squeak_core
         self.squeak_rate_limiter = squeak_rate_limiter
         self.payment_processor = payment_processor
+        self.peer_server = peer_server
+        self.connection_manager = connection_manager
         self.config = config
 
     def save_uploaded_squeak(self, squeak: CSqueak) -> bytes:
@@ -65,7 +79,7 @@ class SqueakController:
     def save_squeak(
             self,
             squeak: CSqueak,
-            require_decryption_key: bool,
+            require_decryption_key: bool = False,
     ) -> bytes:
         # Check if squeak is valid.
         squeak_entry = self.squeak_core.validate_squeak(squeak)
@@ -434,6 +448,7 @@ class SqueakController:
     def get_network(self) -> str:
         return self.config.core.network
 
+    # TODO: Rename this method. All it does is unpack.
     def get_offer(self, squeak: CSqueak, offer: Offer, peer_address: PeerAddress) -> ReceivedOffer:
         return self.squeak_core.unpack_offer(squeak, offer, peer_address)
 
@@ -480,7 +495,10 @@ class SqueakController:
 
     def save_offer(self, received_offer: ReceivedOffer) -> None:
         logger.info("Saving received offer: {}".format(received_offer))
-        self.squeak_db.insert_received_offer(received_offer)
+        try:
+            self.squeak_db.insert_received_offer(received_offer)
+        except sqlalchemy.exc.IntegrityError:
+            logger.error("Failed to save offer.")
 
     def get_followed_addresses(self) -> List[str]:
         followed_profiles = self.squeak_db.get_following_profiles()
@@ -529,3 +547,167 @@ class SqueakController:
         self.squeak_db.set_squeak_unliked(
             squeak_hash,
         )
+
+    def connect_peer(self, peer_id: int) -> None:
+        peer = self.squeak_db.get_peer(peer_id)
+        if peer is None:
+            raise Exception("Peer with id {} not found.".format(
+                peer_id,
+            ))
+        # TODO
+        logger.info("Connect to peer: {}".format(
+            peer,
+        ))
+        self.peer_server.connect_address(peer.address)
+
+    def connect_peers(self) -> None:
+        peers = self.squeak_db.get_peers()
+        for peer in peers:
+            logger.info("Connect to peer: {}".format(
+                peer,
+            ))
+            try:
+                self.peer_server.connect_address(peer.address)
+            except Exception:
+                logger.exception("Failed to connect to peer {}".format(
+                    peer,
+                ))
+
+    def get_address(self):
+        # TODO: Add return type.
+        return (self.peer_server.ip, self.peer_server.port)
+
+    def get_connected_peers(self):
+        return self.connection_manager.peers
+
+    def lookup_squeaks_for_interest(
+            self,
+            address: str,
+            min_block: int,
+            max_block: int,
+    ):
+        return self.squeak_db.lookup_squeaks(
+            [address],
+            min_block,
+            max_block,
+        )
+
+    def filter_known_invs(self, invs):
+        ret = []
+        for inv in invs:
+            if inv.type == 1:
+                squeak_entry = self.squeak_db.get_squeak_entry(
+                    inv.hash,
+                )
+                if squeak_entry is None:
+                    ret.append(
+                        CInv(type=1, hash=inv.hash)
+                    )
+                elif not squeak_entry.squeak.HasDecryptionKey():
+                    ret.append(
+                        CInv(type=2, hash=inv.hash)
+                    )
+        return ret
+
+    def sync_timeline(self):
+        block_range = self.get_block_range()
+        logger.info("Syncing timeline with block range: {}".format(block_range))
+        followed_addresses = self.get_followed_addresses()
+        logger.info("Syncing timeline with followed addresses: {}".format(
+            followed_addresses))
+        interests = [
+            CInterested(
+                address=CSqueakAddress(address),
+                nMinBlockHeight=block_range.min_block,
+                nMaxBlockHeight=block_range.max_block,
+            )
+            for address in followed_addresses
+        ]
+        locator = CSqueakLocator(
+            vInterested=interests,
+        )
+        getsqueaks_msg = msg_getsqueaks(
+            locator=locator,
+        )
+        # for peer in self.connection_manager.peers:
+        #     peer.send_msg(getsqueaks_msg)
+        self.broadcast_msg(getsqueaks_msg)
+
+    def download_single_squeak(self, squeak_hash: bytes):
+        logger.info("Downloading single squeak: {}".format(
+            squeak_hash.hex(),
+        ))
+        invs = [
+            CInv(type=1, hash=squeak_hash)
+        ]
+        getdata_msg = msg_getdata(
+            inv=invs,
+        )
+        # for peer in self.connection_manager.peers:
+        #     peer.send_msg(getdata_msg)
+        self.broadcast_msg(getdata_msg)
+
+    def share_squeaks(self):
+        block_range = self.get_block_range()
+        logger.info("Sharing timeline with block range: {}".format(block_range))
+        sharing_addresses = self.get_sharing_addresses()
+        logger.info("Sharing squeaks with sharing addresses: {}".format(
+            sharing_addresses))
+        interests = [
+            CInterested(
+                address=CSqueakAddress(address),
+                nMinBlockHeight=0,
+                nMaxBlockHeight=block_range.max_block,
+            )
+            for address in sharing_addresses
+        ]
+        locator = CSqueakLocator(
+            vInterested=interests,
+        )
+        sharesqueaks_msg = msg_sharesqueaks(
+            locator=locator,
+        )
+        # for peer in self.connection_manager.peers:
+        #     peer.send_msg(sharesqueaks_msg)
+        self.broadcast_msg(sharesqueaks_msg)
+
+    def filter_shared_squeak_locator(self, interests: List[CInterested]):
+        ret = []
+        block_range = self.get_block_range()
+        followed_addresses = self.get_followed_addresses()
+        for interest in interests:
+            if str(interest.address) in followed_addresses:
+                min_block = max(interest.nMinBlockHeight,
+                                block_range.min_block)
+                max_block = min(interest.nMaxBlockHeight,
+                                block_range.max_block)
+                if min_block <= max_block:
+                    ret.append(
+                        CInterested(
+                            address=interest.address,
+                            nMinBlockHeight=min_block,
+                            nMaxBlockHeight=max_block,
+                        )
+                    )
+        return ret
+
+    def broadcast_msg(self, msg: MsgSerializable) -> None:
+        for peer in self.connection_manager.peers:
+            try:
+                peer.send_msg(msg)
+            except Exception:
+                logger.exception("Failed to send msg to peer: {}".format(
+                    peer,
+                ))
+
+    def disconnect_peer(self, peer_id: int) -> None:
+        peer = self.squeak_db.get_peer(peer_id)
+        if peer is None:
+            raise Exception("Peer with id {} not found.".format(
+                peer_id,
+            ))
+        # TODO
+        logger.info("Disconnect peer: {}".format(
+            peer,
+        ))
+        self.peer_server.disconnect_address(peer.address)

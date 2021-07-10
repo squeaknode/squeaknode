@@ -6,26 +6,25 @@ from squeaknode.node.squeak_controller import SqueakController
 logger = logging.getLogger(__name__)
 
 
-class SqueakPeerSyncWorker:
+class PeerConnectionWorker:
     def __init__(
         self,
         squeak_controller: SqueakController,
-        sync_interval_s,
+        connect_interval_s: int,
     ):
         self.squeak_controller = squeak_controller
-        self.sync_interval_s = sync_interval_s
+        self.connect_interval_s = connect_interval_s
 
-    def sync_timeline(self):
-        logger.info("Syncing timeline with peers...")
-        self.squeak_controller.sync_timeline()
-        self.squeak_controller.share_squeaks()
+    def connect_peers(self):
+        logger.info("Connecting peers...")
+        self.squeak_controller.connect_peers()
 
     def start_running(self):
-        if self.sync_interval_s:
+        if self.connect_interval_s:
             timer = threading.Timer(
-                self.sync_interval_s,
+                self.connect_interval_s,
                 self.start_running,
             )
             timer.daemon = True
             timer.start()
-            self.sync_timeline()
+            self.connect_peers()
