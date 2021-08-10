@@ -15,6 +15,7 @@ from squeaknode.db.db_engine import get_sqlite_connection_string
 from squeaknode.db.squeak_db import SqueakDb
 from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
 from squeaknode.network.connection_manager import ConnectionManager
+from squeaknode.network.peer_client import PeerClient
 from squeaknode.network.peer_handler import PeerHandler
 from squeaknode.network.peer_server import PeerServer
 from squeaknode.node.payment_processor import PaymentProcessor
@@ -68,6 +69,7 @@ class SqueakNode:
 
         self.connection_manager = ConnectionManager()
         self.peer_server = PeerServer(self.connection_manager)
+        self.peer_client = PeerClient(self.connection_manager)
 
         squeak_controller = SqueakController(
             squeak_db,
@@ -75,6 +77,7 @@ class SqueakNode:
             squeak_rate_limiter,
             payment_processor,
             self.peer_server,
+            self.peer_client,
             self.connection_manager,
             self.config,
         )
@@ -135,6 +138,7 @@ class SqueakNode:
 
         # Start peer socket server
         self.peer_server.start(self.peer_handler)
+        self.peer_client.start(self.peer_handler)
 
     def stop_running(self):
         self.stopped.set()

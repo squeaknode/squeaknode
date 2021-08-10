@@ -1,4 +1,5 @@
 import logging
+import threading
 
 from squeaknode.network.connection import Connection
 from squeaknode.network.connection_manager import ConnectionManager
@@ -37,6 +38,12 @@ class PeerHandler():
                 c.handle_messages()
         logger.debug('Stopped controller for peer address {}.'.format(address))
         logger.info('Stopped controller for peer address {}.'.format(address))
+
+    def handle_connection(self, peer_socket, address, outgoing):
+        threading.Thread(
+            target=self.start,
+            args=(peer_socket, address, outgoing,),
+        ).start()
 
 
 # class PeerListener(PeerMessageHandler):
