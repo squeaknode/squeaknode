@@ -1,5 +1,6 @@
 import logging
 import queue
+import socket
 import threading
 import time
 from io import BytesIO
@@ -116,6 +117,10 @@ class Peer(object):
         return self.handshake_complete.is_set()
 
     @property
+    def is_open(self):
+        return not self.stopped.is_set()
+
+    @property
     def last_msg_revc_time(self):
         return self._last_msg_revc_time
 
@@ -146,14 +151,17 @@ class Peer(object):
         logger.info('Received msg {} from {}'.format(msg, self))
         return msg
 
-    def stop(self):
-        logger.info("Stopping peer: {}".format(self))
-        self.stopped.set()
+    # def stop(self):
+    #     logger.info("Stopping peer: {}".format(self))
+    #     self.stopped.set()
 
     def close(self):
         logger.info("closing peer socket: {}".format(self._peer_socket))
-        if self._peer_socket:
+        try:
+            self._peer_socket.shutdown(socket.SHUT_RDWR)
             self._peer_socket.close()
+        except Exception:
+            pass
 
     def send_msg(self, msg):
         logger.debug('Sending msg {} to {}'.format(msg, self))
@@ -177,8 +185,8 @@ class Peer(object):
         return self
 
     def __exit__(self, *exc):
-        self.stop()
-        logger.debug('Stopped peer {} ...'.format(self))
+        self.close()
+        logger.debug('Closed connection to peer {} ...'.format(self))
 
     def __repr__(self):
         return "Peer(%s)" % (self.address_string)
@@ -226,8 +234,16 @@ class MessageReceiver:
 
     def _recv_msgs(self):
         while True:
-            recv_data = self.socket.recv(SOCKET_READ_LEN)
+            logger.info("Recving msg...")
+            try:
+                recv_data = self.socket.recv(SOCKET_READ_LEN)
+            except Exception:
+                logger.error("Error in recv")
+                self.queue.put(None)
+                raise Exception('Peer disconnected')
             if not recv_data:
+                logger.error("revc_data is None")
+                self.queue.put(None)
                 raise Exception('Peer disconnected')
 
             for msg in self.decoder.process_recv_data(recv_data):

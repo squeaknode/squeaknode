@@ -940,7 +940,7 @@ def test_get_squeak_details(admin_stub, saved_squeak_hash):
     serialized_squeak_hex = (
         get_squeak_details_response.squeak_detail_entry.serialized_squeak_hex
     )
-    print("serialized_squeak_hex: {}".format(serialized_squeak_hex))
+    # print("serialized_squeak_hex: {}".format(serialized_squeak_hex))
     assert len(serialized_squeak_hex) > 200
 
     serialized_squeak = bytes.fromhex(serialized_squeak_hex)
@@ -956,8 +956,8 @@ def test_like_squeak(admin_stub, saved_squeak_hash):
             squeak_hash=saved_squeak_hash,
         )
     )
-    print("get_squeak_display_response.squeak_display_entry:")
-    print(get_squeak_display_response.squeak_display_entry)
+    # print("get_squeak_display_response.squeak_display_entry:")
+    # print(get_squeak_display_response.squeak_display_entry)
     assert (
         get_squeak_display_response.squeak_display_entry.liked_time_s == 0
     )
@@ -1011,13 +1011,18 @@ def test_connect_peer(admin_stub, other_admin_stub):
         time.sleep(2)
         connected_peers = get_connected_peers(admin_stub)
         assert len(connected_peers) == 1
+        print("Admin node connected to peers: ")
+        print(connected_peers)
         other_connected_peers = get_connected_peers(other_admin_stub)
         assert len(other_connected_peers) == 1
-    # time.sleep(2)
-    # connected_peers = get_connected_peers(admin_stub)
-    # assert len(connected_peers) == 0
-    # other_connected_peers = get_connected_peers(other_admin_stub)
-    # assert len(other_connected_peers) == 0
+        print("Other Admin node connected to peers: ")
+        print(other_connected_peers)
+
+    time.sleep(2)
+    connected_peers = get_connected_peers(admin_stub)
+    assert len(connected_peers) == 0
+    other_connected_peers = get_connected_peers(other_admin_stub)
+    assert len(other_connected_peers) == 0
 
 
 def test_share_single_squeak(

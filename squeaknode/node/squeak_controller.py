@@ -31,6 +31,7 @@ from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.util import get_hash
 from squeaknode.core.util import is_address_valid
 from squeaknode.network.connection_manager import ConnectionManager
+from squeaknode.network.peer_client import PeerClient
 from squeaknode.network.peer_server import PeerServer
 from squeaknode.node.received_payments_subscription_client import ReceivedPaymentsSubscriptionClient
 
@@ -47,6 +48,7 @@ class SqueakController:
         squeak_rate_limiter,
         payment_processor,
         peer_server: PeerServer,
+        peer_client: PeerClient,
         connection_manager: ConnectionManager,
         config,
     ):
@@ -55,6 +57,7 @@ class SqueakController:
         self.squeak_rate_limiter = squeak_rate_limiter
         self.payment_processor = payment_processor
         self.peer_server = peer_server
+        self.peer_client = peer_client
         self.connection_manager = connection_manager
         self.config = config
 
@@ -558,7 +561,7 @@ class SqueakController:
         logger.info("Connect to peer: {}".format(
             peer,
         ))
-        self.peer_server.connect_address(peer.address)
+        self.peer_client.connect_address(peer.address)
 
     def connect_peers(self) -> None:
         peers = self.squeak_db.get_peers()
@@ -567,7 +570,7 @@ class SqueakController:
                 peer,
             ))
             try:
-                self.peer_server.connect_address(peer.address)
+                self.peer_client.connect_address(peer.address)
             except Exception:
                 logger.exception("Failed to connect to peer {}".format(
                     peer,
@@ -710,4 +713,4 @@ class SqueakController:
         logger.info("Disconnect peer: {}".format(
             peer,
         ))
-        self.peer_server.disconnect_address(peer.address)
+        self.peer_client.disconnect_address(peer.address)
