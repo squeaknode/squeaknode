@@ -1017,11 +1017,12 @@ def test_connect_peer(admin_stub, other_admin_stub):
         assert len(other_connected_peers) == 1
         print("Other Admin node connected to peers: ")
         print(other_connected_peers)
-    # time.sleep(2)
-    # connected_peers = get_connected_peers(admin_stub)
-    # assert len(connected_peers) == 0
-    # other_connected_peers = get_connected_peers(other_admin_stub)
-    # assert len(other_connected_peers) == 0
+
+    time.sleep(2)
+    connected_peers = get_connected_peers(admin_stub)
+    assert len(connected_peers) == 0
+    other_connected_peers = get_connected_peers(other_admin_stub)
+    assert len(other_connected_peers) == 0
 
 
 def test_share_single_squeak(

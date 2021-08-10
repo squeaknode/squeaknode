@@ -63,4 +63,4 @@ class PeerClient(object):
         peer = self.connection_manager.get_peer(new_address)
         if peer is None:
             return
-        peer.stop()
+        peer.close()

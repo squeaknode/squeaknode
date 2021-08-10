@@ -78,8 +78,8 @@ class Connection():
     def handle_messages(self):
         peer_message_handler = PeerMessageHandler(
             self.peer, self.squeak_controller)
-        while True:
-            peer_message_handler.handle_msgs()
+        peer_message_handler.handle_msgs()
+        logger.info('Finished handling messages...')
 
     @contextmanager
     def open_connection(self):

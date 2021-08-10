@@ -152,12 +152,12 @@ def open_peer_connection(node_stub, peer_name, peer_host, peer_port):
         )
     )
     yield peer_id
-    # # Disconnect the peer
-    # node_stub.DisconnectPeer(
-    #     squeak_admin_pb2.DisconnectPeerRequest(
-    #         peer_id=peer_id,
-    #     )
-    # )
+    # Disconnect the peer
+    node_stub.DisconnectPeer(
+        squeak_admin_pb2.DisconnectPeerRequest(
+            peer_id=peer_id,
+        )
+    )
     # Delete the peer
     node_stub.DeletePeer(
         squeak_admin_pb2.DeletePeerRequest(
