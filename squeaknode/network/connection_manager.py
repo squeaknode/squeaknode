@@ -69,6 +69,13 @@ class ConnectionManager(object):
         """
         return self._peers.get(address)
 
+    def stop_all_connections(self):
+        """Stop all peer connections.
+        """
+        with self.peers_lock:
+            for peer in self.peers:
+                peer.close()
+
 
 class DuplicatePeerError(Exception):
     pass

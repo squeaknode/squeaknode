@@ -151,6 +151,7 @@ class SqueakNode:
 
         # TODO: Use explicit stop to stop all components
         self.peer_server.stop()
+        self.connection_manager.stop_all_connections()
 
 
 def load_lightning_client(config) -> LNDLightningClient:
