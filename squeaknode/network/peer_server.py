@@ -25,6 +25,9 @@ class PeerServer(object):
 
     def start(self, peer_handler):
         self.peer_handler = peer_handler
+        logger.info("Starting peer server with port: {}".format(
+            self.port,
+        ))
 
         # Start Listen thread
         threading.Thread(

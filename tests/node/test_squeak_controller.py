@@ -1,5 +1,6 @@
 import mock
 import pytest
+import squeak.params
 
 from squeaknode.config.config import SqueaknodeConfig
 from squeaknode.core.lightning_address import LightningAddressHostPort
@@ -182,7 +183,7 @@ def test_create_peer_default_port(config, squeak_db, squeak_controller):
             peer_name="fake_peer_name",
             address=PeerAddress(
                 host="fake_host",
-                port=config.core.default_peer_rpc_port,
+                port=squeak.params.params.DEFAULT_PORT,
             ),
             uploading=False,
             downloading=False,
