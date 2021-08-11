@@ -4,6 +4,7 @@ from typing import List
 from typing import Optional
 
 import sqlalchemy
+import squeak.params
 from squeak.core import CheckSqueak
 from squeak.core import CSqueak
 from squeak.core.signing import CSigningKey
@@ -292,7 +293,7 @@ class SqueakController:
             raise Exception(
                 "Peer name cannot be empty.",
             )
-        port = port or self.config.core.default_peer_rpc_port
+        port = port or squeak.params.params.DEFAULT_PORT
         peer_address = PeerAddress(
             host=host,
             port=port,
