@@ -9,6 +9,7 @@ from typedconfig.source import DictConfigSource
 from typedconfig.source import EnvironmentConfigSource
 from typedconfig.source import IniFileConfigSource
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -17,7 +18,7 @@ DEFAULT_PRICE_MSAT = 10000
 DEFAULT_LOG_LEVEL = "INFO"
 DEFAULT_MAX_SQUEAKS_PER_ADDRESS_PER_BLOCK = 100
 DEFAULT_SERVER_RPC_HOST = "0.0.0.0"
-DEFAULT_SERVER_RPC_PORT = 8774
+DEFAULT_SERVER_RPC_PORT = None
 DEFAULT_ADMIN_RPC_HOST = "0.0.0.0"
 DEFAULT_ADMIN_RPC_PORT = 8994
 DEFAULT_WEBADMIN_HOST = "0.0.0.0"

@@ -138,32 +138,37 @@ def open_peer_connection(node_stub, peer_name, peer_host, peer_port):
         )
     )
     peer_id = create_peer_response.peer_id
-    # Set the peer to be downloading
-    node_stub.SetPeerDownloading(
-        squeak_admin_pb2.SetPeerDownloadingRequest(
-            peer_id=peer_id,
-            downloading=True,
+    try:
+        # Set the peer to be downloading
+        node_stub.SetPeerDownloading(
+            squeak_admin_pb2.SetPeerDownloadingRequest(
+                peer_id=peer_id,
+                downloading=True,
+            )
         )
-    )
-    # Connect the peer
-    node_stub.ConnectPeer(
-        squeak_admin_pb2.ConnectPeerRequest(
-            peer_id=peer_id,
+        # Connect the peer
+        node_stub.ConnectPeer(
+            squeak_admin_pb2.ConnectPeerRequest(
+                peer_id=peer_id,
+            )
         )
-    )
-    yield peer_id
-    # Disconnect the peer
-    node_stub.DisconnectPeer(
-        squeak_admin_pb2.DisconnectPeerRequest(
-            peer_id=peer_id,
+        yield peer_id
+    except Exception as e:
+        print("Failed to connect to peer: {}:{}.".format(peer_host, peer_port))
+        print(e)
+    finally:
+        # Disconnect the peer
+        node_stub.DisconnectPeer(
+            squeak_admin_pb2.DisconnectPeerRequest(
+                peer_id=peer_id,
+            )
         )
-    )
-    # Delete the peer
-    node_stub.DeletePeer(
-        squeak_admin_pb2.DeletePeerRequest(
-            peer_id=peer_id,
+        # Delete the peer
+        node_stub.DeletePeer(
+            squeak_admin_pb2.DeletePeerRequest(
+                peer_id=peer_id,
+            )
         )
-    )
 
 
 def get_connected_peers(node_stub):
