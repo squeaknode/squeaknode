@@ -34,8 +34,10 @@ COPY --from=compile-image /opt/venv /opt/venv
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
 	apt-get install -y libpq-dev
 
-EXPOSE 8774
-EXPOSE 8994
+EXPOSE 8555
+EXPOSE 18555
+EXPOSE 18666
+EXPOSE 18777
 # Web server
 EXPOSE 12994
 
