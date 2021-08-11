@@ -44,24 +44,18 @@ class PeerClient(object):
         logger.debug('Connecting to peer with address {}'.format(address))
         logger.info('Connecting to peer with address {}'.format(address))
         hostname, port = address
-        ip = socket.gethostbyname(hostname)
-        new_address = (ip, port)
-        if self.connection_manager.has_connection(new_address):
+        if self.connection_manager.has_connection(address):
             return
-        logger.info('Connecting to peer with ip address {}'.format(ip))
         threading.Thread(
             target=self.make_connection,
-            args=(ip, port),
+            args=(hostname, port),
             name="peer_client_connection_thread",
         ).start()
 
     def disconnect_address(self, address):
         """Connect to new address."""
         logger.info('Disconnecting peer with address {}'.format(address))
-        hostname, port = address
-        ip = socket.gethostbyname(hostname)
-        new_address = (ip, port)
-        peer = self.connection_manager.get_peer(new_address)
+        peer = self.connection_manager.get_peer(address)
         if peer is None:
             return
         peer.close()

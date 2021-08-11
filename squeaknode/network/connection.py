@@ -66,7 +66,8 @@ class Connection():
         """Get the version message for this peer."""
         msg = msg_version()
         local_ip, local_port = self.squeak_controller.get_address()
-        server_ip, server_port = self.peer.address
+        server_ip, server_port = self.squeak_controller.get_remote_address(
+            self.peer.address)
         msg.nVersion = HANDSHAKE_VERSION
         msg.addrTo.ip = server_ip
         msg.addrTo.port = server_port
