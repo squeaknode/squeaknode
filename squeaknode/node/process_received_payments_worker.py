@@ -13,6 +13,7 @@ class ProcessReceivedPaymentsWorker:
         threading.Thread(
             target=self.process_subscribed_invoices,
             # daemon=True,
+            name="process_received_payments_thread",
         ).start()
 
     def process_subscribed_invoices(self):

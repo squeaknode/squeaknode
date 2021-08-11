@@ -531,6 +531,14 @@ def create_app(handler, username, password):
             handler.handle_get_liked_squeak_display_entries,
         )
 
+    @app.route("/getconnectedpeers", methods=["POST"])
+    @login_required
+    def getconnectedpeers():
+        return handle_request(
+            squeak_admin_pb2.GetConnectedPeersRequest(),
+            handler.handle_get_connected_peers,
+        )
+
     return app
 
 
