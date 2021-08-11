@@ -172,7 +172,7 @@ class Peer(object):
                 self._peer_socket.send(data)
         except Exception:
             logger.info('Failed to send msg to {}'.format(self))
-            self.stop()
+            self.close()
 
     def __enter__(self):
         logger.debug('Setting up peer {} ...'.format(self))

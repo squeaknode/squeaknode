@@ -381,8 +381,8 @@ def test_rename_profile(admin_stub, contact_profile_id, random_name):
 
 
 def test_set_profile_image(admin_stub, contact_profile_id, random_image, random_image_base64_string):
-    print("random_image: {}".format(random_image))
-    print("random_image_base64_string: {}".format(random_image_base64_string))
+    # print("random_image: {}".format(random_image))
+    # print("random_image_base64_string: {}".format(random_image_base64_string))
     # Set the profile image to something new
     admin_stub.SetSqueakProfileImage(
         squeak_admin_pb2.SetSqueakProfileImageRequest(
@@ -397,9 +397,9 @@ def test_set_profile_image(admin_stub, contact_profile_id, random_image, random_
             profile_id=contact_profile_id,
         )
     )
-    print("get_squeak_profile_response.squeak_profile.profile_image: {}".format(
-        get_squeak_profile_response.squeak_profile.profile_image,
-    ))
+    # print("get_squeak_profile_response.squeak_profile.profile_image: {}".format(
+    #     get_squeak_profile_response.squeak_profile.profile_image,
+    # ))
     assert get_squeak_profile_response.squeak_profile.profile_image == random_image_base64_string
     assert get_squeak_profile_response.squeak_profile.has_custom_profile_image
 
@@ -416,9 +416,9 @@ def test_set_profile_image(admin_stub, contact_profile_id, random_image, random_
             profile_id=contact_profile_id,
         )
     )
-    print("get_squeak_profile_response.squeak_profile.profile_image: {}".format(
-        get_squeak_profile_response.squeak_profile.profile_image,
-    ))
+    # print("get_squeak_profile_response.squeak_profile.profile_image: {}".format(
+    #     get_squeak_profile_response.squeak_profile.profile_image,
+    # ))
     assert get_squeak_profile_response.squeak_profile.profile_image != random_image_base64_string
     assert not get_squeak_profile_response.squeak_profile.has_custom_profile_image
 
@@ -452,7 +452,7 @@ def test_get_profile_private_key(admin_stub, signing_profile_id):
         )
     )
 
-    print(private_key_response.private_key)
+    # print(private_key_response.private_key)
     assert len(private_key_response.private_key) > 0
 
 
@@ -493,7 +493,7 @@ def test_delete_squeak(admin_stub, saved_squeak_hash):
                 squeak_hash=saved_squeak_hash,
             )
         )
-    print(str(excinfo.value))
+    # print(str(excinfo.value))
     assert "Squeak not found with hash:" in str(excinfo.value)
 
 
@@ -669,11 +669,11 @@ def test_connect_other_node(
     )
     squeak_profile_address = get_squeak_profile_response.squeak_profile.address
     squeak_profile_name = get_squeak_profile_response.squeak_profile.profile_name
-    print(
-        "Got squeak profile: {} with address: {}".format(
-            squeak_profile_name, squeak_profile_address
-        )
-    )
+    # print(
+    #     "Got squeak profile: {} with address: {}".format(
+    #         squeak_profile_name, squeak_profile_address
+    #     )
+    # )
 
     # Set the signing profile to be sharing on the main server
     admin_stub.SetSqueakProfileSharing(
@@ -724,7 +724,7 @@ def test_connect_other_node(
             squeak_hash=saved_squeak_hash,
         )
     )
-    print(get_buy_offers_response)
+    # print(get_buy_offers_response)
     assert len(get_buy_offers_response.offers) > 0
 
     offer = get_buy_offers_response.offers[0]
@@ -733,8 +733,8 @@ def test_connect_other_node(
         lightning_client, offer.node_host, offer.node_pubkey
     ), open_channel(lightning_client, offer.node_pubkey, 1000000):
 
-        list_channels_response = lightning_client.list_channels()
-        print(list_channels_response)
+        lightning_client.list_channels()
+        # print(list_channels_response)
 
         # Pay the offer
         pay_offer_response = other_admin_stub.PayOffer(
@@ -742,7 +742,7 @@ def test_connect_other_node(
                 offer_id=offer.offer_id,
             )
         )
-        print(pay_offer_response)
+        # print(pay_offer_response)
         assert pay_offer_response.sent_payment_id > 0
 
         # Get the squeak display item
@@ -782,10 +782,10 @@ def test_connect_other_node(
         get_received_payments_response = admin_stub.GetReceivedPayments(
             squeak_admin_pb2.GetReceivedPaymentsRequest(),
         )
-        print(
-            "get_received_payments_response: {}".format(
-                get_received_payments_response)
-        )
+        # print(
+        #     "get_received_payments_response: {}".format(
+        #         get_received_payments_response)
+        # )
         payment_hashes = [
             received_payment.payment_hash
             for received_payment in get_received_payments_response.received_payments
@@ -793,8 +793,8 @@ def test_connect_other_node(
         assert sent_payment.payment_hash in payment_hashes
         for received_payment in get_received_payments_response.received_payments:
             received_payment_time_s = received_payment.time_s
-            print("received_payment_time_s: {}".format(
-                received_payment_time_s))
+            # print("received_payment_time_s: {}".format(
+            #     received_payment_time_s))
             received_payment_time = datetime.datetime.fromtimestamp(
                 received_payment_time_s
             )
@@ -810,7 +810,7 @@ def test_connect_other_node(
             ),
         )
         for payment in subscribe_received_payments_response:
-            print("Got payment from subscription: {}".format(payment))
+            # print("Got payment from subscription: {}".format(payment))
             assert payment.received_payment_id == 1
             break
 
@@ -818,10 +818,10 @@ def test_connect_other_node(
         get_payment_summary_response = admin_stub.GetPaymentSummary(
             squeak_admin_pb2.GetPaymentSummaryRequest(),
         )
-        print(
-            "get_payment_summary_response from seller: {}".format(
-                get_payment_summary_response)
-        )
+        # print(
+        #     "get_payment_summary_response from seller: {}".format(
+        #         get_payment_summary_response)
+        # )
         assert get_payment_summary_response.payment_summary.num_received_payments > 0
         assert get_payment_summary_response.payment_summary.amount_earned_msat > 0
 
@@ -829,10 +829,10 @@ def test_connect_other_node(
         get_payment_summary_response = other_admin_stub.GetPaymentSummary(
             squeak_admin_pb2.GetPaymentSummaryRequest(),
         )
-        print(
-            "get_payment_summary_response from buyer: {}".format(
-                get_payment_summary_response)
-        )
+        # print(
+        #     "get_payment_summary_response from buyer: {}".format(
+        #         get_payment_summary_response)
+        # )
         assert get_payment_summary_response.payment_summary.num_sent_payments > 0
         assert get_payment_summary_response.payment_summary.amount_spent_msat > 0
 
@@ -853,11 +853,11 @@ def test_download_single_squeak(
     )
     squeak_profile_address = get_squeak_profile_response.squeak_profile.address
     squeak_profile_name = get_squeak_profile_response.squeak_profile.profile_name
-    print(
-        "Got squeak profile: {} with address: {}".format(
-            squeak_profile_name, squeak_profile_address
-        )
-    )
+    # print(
+    #     "Got squeak profile: {} with address: {}".format(
+    #         squeak_profile_name, squeak_profile_address
+    #     )
+    # )
 
     # Set the signing profile to be sharing on the main server
     admin_stub.SetSqueakProfileSharing(
@@ -900,17 +900,17 @@ def test_download_single_squeak(
             squeak_hash=saved_squeak_hash,
         )
     )
-    print(get_buy_offers_response)
+    # print(get_buy_offers_response)
     assert len(get_buy_offers_response.offers) == 0
 
     # Download squeak
-    sync_squeak_response = other_admin_stub.SyncSqueak(
+    other_admin_stub.SyncSqueak(
         squeak_admin_pb2.SyncSqueakRequest(
             squeak_hash=saved_squeak_hash,
         ),
     )
     time.sleep(10)
-    print(sync_squeak_response)
+    # print(sync_squeak_response)
     # assert peer_id in sync_squeak_response.sync_result.completed_peer_ids
 
     # Get the squeak display item
@@ -926,7 +926,7 @@ def test_download_single_squeak(
             squeak_hash=saved_squeak_hash,
         )
     )
-    print(get_buy_offers_response)
+    # print(get_buy_offers_response)
     assert len(get_buy_offers_response.offers) > 0
 
 
@@ -1011,12 +1011,12 @@ def test_connect_peer(admin_stub, other_admin_stub):
         time.sleep(2)
         connected_peers = get_connected_peers(admin_stub)
         assert len(connected_peers) == 1
-        print("Admin node connected to peers: ")
-        print(connected_peers)
+        # print("Admin node connected to peers: ")
+        # print(connected_peers)
         other_connected_peers = get_connected_peers(other_admin_stub)
         assert len(other_connected_peers) == 1
-        print("Other Admin node connected to peers: ")
-        print(other_connected_peers)
+        # print("Other Admin node connected to peers: ")
+        # print(other_connected_peers)
 
     time.sleep(2)
     connected_peers = get_connected_peers(admin_stub)
@@ -1041,11 +1041,11 @@ def test_share_single_squeak(
     )
     squeak_profile_address = get_squeak_profile_response.squeak_profile.address
     squeak_profile_name = get_squeak_profile_response.squeak_profile.profile_name
-    print(
-        "Got squeak profile: {} with address: {}".format(
-            squeak_profile_name, squeak_profile_address
-        )
-    )
+    # print(
+    #     "Got squeak profile: {} with address: {}".format(
+    #         squeak_profile_name, squeak_profile_address
+    #     )
+    # )
 
     # Set the signing profile to be sharing on the main server
     admin_stub.SetSqueakProfileSharing(
@@ -1088,15 +1088,15 @@ def test_share_single_squeak(
             squeak_hash=saved_squeak_hash,
         )
     )
-    print(get_buy_offers_response)
+    # print(get_buy_offers_response)
     assert len(get_buy_offers_response.offers) == 0
 
     # Upload squeak
-    sync_squeak_response = admin_stub.SyncSqueaks(
+    admin_stub.SyncSqueaks(
         squeak_admin_pb2.SyncSqueaksRequest(),
     )
     time.sleep(10)
-    print(sync_squeak_response)
+    # print(sync_squeak_response)
 
     # Get the squeak display item
     get_squeak_display_response = other_admin_stub.GetSqueakDisplay(
@@ -1111,5 +1111,5 @@ def test_share_single_squeak(
             squeak_hash=saved_squeak_hash,
         )
     )
-    print(get_buy_offers_response)
+    # print(get_buy_offers_response)
     assert len(get_buy_offers_response.offers) > 0

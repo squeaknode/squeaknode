@@ -39,6 +39,10 @@ class SqueakNode:
         self._initialize()
 
     def _initialize(self):
+        # Print some configs
+        logger.info("Config server rpc port: {}".format(
+            self.config.server.rpc_port))
+
         # load the network
         network = self.config.core.network
         SelectParams(network)
@@ -68,8 +72,10 @@ class SqueakNode:
         )
 
         self.connection_manager = ConnectionManager()
-        self.peer_server = PeerServer(self.connection_manager)
-        self.peer_client = PeerClient(self.connection_manager)
+        self.peer_server = PeerServer(
+            self.connection_manager, self.config.server.rpc_port)
+        self.peer_client = PeerClient(
+            self.connection_manager, self.config.server.rpc_port)
 
         squeak_controller = SqueakController(
             squeak_db,
