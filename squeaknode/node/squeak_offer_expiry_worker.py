@@ -22,6 +22,7 @@ class SqueakOfferExpiryWorker:
             self.start_running,
         )
         timer.daemon = True
+        timer.name = "squeak_offer_expiry_thread"
         timer.start()
         self.remove_expired_offers()
 

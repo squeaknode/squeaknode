@@ -52,6 +52,7 @@ class PeerClient(object):
         threading.Thread(
             target=self.make_connection,
             args=(ip, port),
+            name="peer_client_connection_thread",
         ).start()
 
     def disconnect_address(self, address):

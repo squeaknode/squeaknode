@@ -21,24 +21,33 @@ class PeerServer(object):
         self.ip = socket.gethostbyname('localhost')
         self.port = port or squeak.params.params.DEFAULT_PORT
         self.connection_manager = connection_manager
+        self.listen_socket = socket.socket()
 
     def start(self, peer_handler):
         self.peer_handler = peer_handler
 
         # Start Listen thread
-        threading.Thread(target=self.accept_connections).start()
+        threading.Thread(
+            target=self.accept_connections,
+            name="peer_server_listen_thread",
+        ).start()
 
     def stop(self):
         # TODO: stop accepting connections thread.
         # TODO: stop every peer in connection manager.
-        pass
+        # pass
+        logger.info("Stopping peer server listener thread...")
+        self.listen_socket.shutdown(socket.SHUT_RDWR)
+        self.listen_socket.close()
 
     def accept_connections(self):
-        listen_socket = socket.socket()
-        listen_socket.bind(('', self.port))
-        listen_socket.listen()
-        while True:
-            peer_socket, address = listen_socket.accept()
-            peer_socket.setblocking(True)
-            self.peer_handler.handle_connection(
-                peer_socket, address, outgoing=False)
+        try:
+            self.listen_socket.bind(('', self.port))
+            self.listen_socket.listen()
+            while True:
+                peer_socket, address = self.listen_socket.accept()
+                peer_socket.setblocking(True)
+                self.peer_handler.handle_connection(
+                    peer_socket, address, outgoing=False)
+        except Exception:
+            logger.info("Stopped accepting incoming connections.")
