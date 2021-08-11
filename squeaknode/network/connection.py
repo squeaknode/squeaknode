@@ -86,12 +86,14 @@ class Connection():
     def open_connection(self):
         logger.debug(
             'Starting handshake connection with peer ... {}'.format(self.peer))
-        self.connection_manager.add_peer(self.peer)
-        self.handshake()
-        logger.debug('Peer connection added... {}'.format(self.peer))
-        yield self
-        self.connection_manager.remove_peer(self.peer)
-        logger.debug('Peer connection removed... {}'.format(self.peer))
+        try:
+            self.connection_manager.add_peer(self.peer)
+            self.handshake()
+            logger.debug('Peer connection added... {}'.format(self.peer))
+            yield self
+        finally:
+            self.connection_manager.remove_peer(self.peer)
+            logger.debug('Peer connection removed... {}'.format(self.peer))
 
     # def __enter__(self):
     #     logger.debug(
