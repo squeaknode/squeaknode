@@ -165,8 +165,9 @@ class PeerMessageHandler:
             invs = [
                 CInv(type=1, hash=squeak_hash)
                 for squeak_hash in squeak_hashes]
-            inv_msg = msg_inv(inv=invs)
-            self.peer.send_msg(inv_msg)
+            if invs:
+                inv_msg = msg_inv(inv=invs)
+                self.peer.send_msg(inv_msg)
 
     def handle_squeak(self, msg):
         squeak = msg.squeak
