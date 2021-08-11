@@ -1,4 +1,5 @@
 import logging
+import socket
 import threading
 from typing import List
 from typing import Optional
@@ -580,6 +581,12 @@ class SqueakController:
     def get_address(self):
         # TODO: Add return type.
         return (self.peer_server.ip, self.peer_server.port)
+
+    def get_remote_address(self, address):
+        # TODO: Add return type.
+        hostname, port = address
+        ip = socket.gethostbyname(hostname)
+        return (ip, port)
 
     def get_connected_peers(self):
         return self.connection_manager.peers
