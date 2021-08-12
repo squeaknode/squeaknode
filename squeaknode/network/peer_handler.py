@@ -1,7 +1,6 @@
 import logging
 import threading
 
-from squeaknode.network.connection import Connection
 from squeaknode.network.connection_manager import ConnectionManager
 from squeaknode.network.peer import Peer
 from squeaknode.node.squeak_controller import SqueakController
@@ -33,9 +32,9 @@ class PeerHandler():
         logger.info(
             'Setting up controller for peer address {} ...'.format(address))
         with Peer(peer_socket, address, outgoing).start_peer() as p:
-            with Connection(p, self.squeak_controller, self.connection_manager).open_connection() as c:
+            with p.open_connection(self.connection_manager, self.squeak_controller) as p2:
                 # p.stopped.wait()
-                c.handle_messages()
+                p2.handle_messages(self.squeak_controller)
         logger.debug('Stopped controller for peer address {}.'.format(address))
         logger.info('Stopped controller for peer address {}.'.format(address))
 

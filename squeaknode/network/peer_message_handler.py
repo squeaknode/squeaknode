@@ -15,7 +15,6 @@ from squeak.net import CSqueakLocator
 from squeaknode.core.offer import Offer
 from squeaknode.core.util import generate_ping_nonce
 from squeaknode.core.util import get_hash
-from squeaknode.network.peer import Peer
 from squeaknode.node.squeak_controller import SqueakController
 
 
@@ -28,7 +27,7 @@ class PeerMessageHandler:
 
     def __init__(
             self,
-            peer: Peer,
+            peer,
             squeak_controller: SqueakController,
     ):
         self.peer = peer
