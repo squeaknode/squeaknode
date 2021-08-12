@@ -503,7 +503,7 @@ class SqueakController:
         try:
             self.squeak_db.insert_received_offer(received_offer)
         except sqlalchemy.exc.IntegrityError:
-            logger.error("Failed to save offer.")
+            logger.debug("Failed to save duplicate offer.")
 
     def get_followed_addresses(self) -> List[str]:
         followed_profiles = self.squeak_db.get_following_profiles()
