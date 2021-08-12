@@ -426,7 +426,7 @@ export default function SqueakDetailItem({
       }
 
       function LikeIconContent() {
-        if (squeak && !squeak.getLiked()) {
+        if (squeak && !squeak.getLikedTimeS()) {
           return (
             <IconButton aria-label="like"
               onClick={onLikeClick}
