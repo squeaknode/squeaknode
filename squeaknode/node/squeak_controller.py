@@ -567,16 +567,18 @@ class SqueakController:
 
     def connect_peers(self) -> None:
         peers = self.squeak_db.get_peers()
+        connected_peers = self.connection_manager.peers
+        connected_peer_addrs = [
+            peer.address
+            for peer in connected_peers
+        ]
         for peer in peers:
-            logger.info("Connect to peer: {}".format(
-                peer,
-            ))
-            try:
-                self.peer_client.connect_address(peer.address)
-            except Exception:
-                logger.exception("Failed to connect to peer {}".format(
+            peer_addr = (peer.address.host, peer.address.port)
+            if peer_addr not in connected_peer_addrs:
+                logger.info("Connect to peer: {}".format(
                     peer,
                 ))
+                self.peer_client.connect_address(peer.address)
 
     def get_address(self):
         # TODO: Add return type.
