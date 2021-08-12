@@ -32,16 +32,11 @@ class PeerHandler():
 
         logger.debug(
             'Setting up controller for peer address {} ...'.format(address))
-        logger.info(
-            'Setting up controller for peer address {} ...'.format(address))
-        with Peer(peer_socket, address, outgoing).start_peer() as p:
-            with p.open_connection(self.squeak_controller) as p2:
-                # p.stopped.wait()
-                self.connection_manager.add_peer(p2)
-                p2.handle_messages(self.squeak_controller)
-        self.connection_manager.remove_peer(p2)
+        with Peer(peer_socket, address, outgoing).open_connection(self.squeak_controller) as peer:
+            self.connection_manager.add_peer(peer)
+            peer.handle_messages(self.squeak_controller)
+        self.connection_manager.remove_peer(peer)
         logger.debug('Stopped controller for peer address {}.'.format(address))
-        logger.info('Stopped controller for peer address {}.'.format(address))
 
     def handle_connection(self, peer_socket, address, outgoing):
         threading.Thread(

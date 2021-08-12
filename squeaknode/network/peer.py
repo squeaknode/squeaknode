@@ -160,10 +160,6 @@ class Peer(object):
         logger.info('Received msg {} from {}'.format(msg, self))
         return msg
 
-    # def stop(self):
-    #     logger.info("Stopping peer: {}".format(self))
-    #     self.stopped.set()
-
     def close(self):
         logger.info("closing peer socket: {}".format(self._peer_socket))
         try:
@@ -182,20 +178,6 @@ class Peer(object):
         except Exception:
             logger.info('Failed to send msg to {}'.format(self))
             self.close()
-
-    # def __enter__(self):
-    #     logger.debug('Setting up peer {} ...'.format(self))
-    #     msg_receiver = MessageReceiver(
-    #         self._peer_socket, self._recv_msg_queue, self.stopped)
-    #     threading.Thread(
-    #         target=msg_receiver.recv_msgs,
-    #         args=(),
-    #     ).start()
-    #     return self
-
-    # def __exit__(self, *exc):
-    #     self.close()
-    #     logger.debug('Closed connection to peer {} ...'.format(self))
 
     def handshake(self, squeak_controller):
         if self.outgoing:
@@ -244,7 +226,7 @@ class Peer(object):
         logger.info('Finished handling messages...')
 
     @contextmanager
-    def start_peer(self):
+    def open_connection(self, squeak_controller):
         logger.debug('Setting up peer {} ...'.format(self))
         try:
             msg_receiver = MessageReceiver(
@@ -253,19 +235,11 @@ class Peer(object):
                 target=msg_receiver.recv_msgs,
                 args=(),
             ).start()
+            self.handshake(squeak_controller)
             yield self
         finally:
             self.close()
             logger.debug('Closed connection to peer {} ...'.format(self))
-
-    @contextmanager
-    def open_connection(self, squeak_controller):
-        logger.info(
-            'Starting handshake connection with peer ... {}'.format(self))
-        self.handshake(squeak_controller)
-        yield self
-        logger.info(
-            'Finished handshake connection with peer ... {}'.format(self))
 
     def __repr__(self):
         return "Peer(%s)" % (self.address_string)
