@@ -22,6 +22,8 @@ import Table from "../dashboard/components/Table/Table";
 import CreateSigningProfileDialog from "../../components/CreateSigningProfileDialog";
 import ImportSigningProfileDialog from "../../components/ImportSigningProfileDialog";
 import CreateContactProfileDialog from "../../components/CreateContactProfileDialog";
+import ProfileListItem from "../../components/ProfileListItem";
+
 
 // data
 import mock from "../dashboard/mock";
@@ -147,11 +149,30 @@ export default function Profiles() {
           <Widget disableWidgetMenu>
             {CreateSigningProfileButton()}
             {ImportSigningProfileButton()}
-            {ShowProfiles("Signing profiles", signingProfiles)}
+            {ProfilesGridItem(signingProfiles)}
           </Widget>
         </Grid>
       </Grid>
       </>
+    )
+  }
+
+  function ProfilesGridItem(profiles) {
+    return (
+      <Grid item xs={12}>
+        {profiles.map(profile =>
+           <Box
+              p={1}
+              key={profile.getProfileName()}
+           >
+             <ProfileListItem
+                key={profile.getProfileName()}
+                handlePeerClick={() => console.log("clicked profile")}
+                profile={profile}>
+             </ProfileListItem>
+           </Box>
+        )}
+      </Grid>
     )
   }
 
@@ -162,7 +183,7 @@ export default function Profiles() {
         <Grid item xs={12}>
           <Widget disableWidgetMenu>
             {CreateContactProfileButton()}
-            {ShowProfiles("Contact profiles", contactProfiles)}
+            {ProfilesGridItem(contactProfiles)}
           </Widget>
         </Grid>
       </Grid>
@@ -217,48 +238,6 @@ export default function Profiles() {
           </Button>
         </div>
       </Grid>
-      </>
-    )
-  }
-
-  function ShowProfiles(title, profiles) {
-    return (
-      <>
-      <Grid container spacing={4}>
-       <Grid item xs={12}>
-         <MUIDataTable
-           title={title}
-           data={profiles.map(p =>
-              [
-                p.getProfileId(),
-                p.getProfileName(),
-                p.getAddress(),
-                p.getFollowing().toString(),
-                p.getSharing().toString(),
-              ]
-            )}
-           columns={[
-             {
-               name: "Id",
-               options: {
-                 display: false,
-               }
-             },
-             "Name", "Address", "Following", "Sharing"
-           ]}
-           options={{
-             filter: false,
-             print: false,
-             viewColumns: false,
-             selectableRows: "none",
-             onRowClick: rowData => {
-               var id = rowData[0];
-               var address = rowData[2];
-               goToProfilePage(history, id);
-             }
-           }}/>
-       </Grid>
-     </Grid>
       </>
     )
   }
