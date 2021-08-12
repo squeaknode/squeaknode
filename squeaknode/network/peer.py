@@ -244,7 +244,7 @@ class Peer(object):
         logger.info('Finished handling messages...')
 
     @contextmanager
-    def start_peer(self):
+    def open_connection(self, squeak_controller):
         logger.debug('Setting up peer {} ...'.format(self))
         try:
             msg_receiver = MessageReceiver(
@@ -253,19 +253,19 @@ class Peer(object):
                 target=msg_receiver.recv_msgs,
                 args=(),
             ).start()
+            self.handshake(squeak_controller)
             yield self
         finally:
             self.close()
             logger.debug('Closed connection to peer {} ...'.format(self))
 
-    @contextmanager
-    def open_connection(self, squeak_controller):
-        logger.info(
-            'Starting handshake connection with peer ... {}'.format(self))
-        self.handshake(squeak_controller)
-        yield self
-        logger.info(
-            'Finished handshake connection with peer ... {}'.format(self))
+    # @contextmanager
+    # def open_connection(self, squeak_controller):
+    #     logger.info(
+    #         'Starting handshake connection with peer ... {}'.format(self))
+    #     yield self
+    #     logger.info(
+    #         'Finished handshake connection with peer ... {}'.format(self))
 
     def __repr__(self):
         return "Peer(%s)" % (self.address_string)
