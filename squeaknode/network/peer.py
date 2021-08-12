@@ -209,8 +209,6 @@ class Peer(object):
         remote_version = self.recv_msg()
         if not isinstance(remote_version, msg_version):
             raise Exception('Wrong message type for version message.')
-        if self._is_duplicate_nonce(remote_version.nNonce, connection_manager):
-            raise Exception('Remote nonce is duplicate of local nonce.')
         self.remote_version = remote_version
         verack = msg_verack()
         self.send_msg(verack)
@@ -239,13 +237,6 @@ class Peer(object):
         msg.nNonce = generate_version_nonce()
         return msg
 
-    def _is_duplicate_nonce(self, nonce, connection_manager):
-        for peer in connection_manager.peers:
-            if peer.local_version:
-                if nonce == peer.local_version.nNonce:
-                    return True
-        return False
-
     def handle_messages(self, squeak_controller):
         peer_message_handler = PeerMessageHandler(
             self, squeak_controller)
@@ -269,16 +260,12 @@ class Peer(object):
 
     @contextmanager
     def open_connection(self, connection_manager, squeak_controller):
-        logger.debug(
+        logger.info(
             'Starting handshake connection with peer ... {}'.format(self))
-        try:
-            self.handshake(squeak_controller, connection_manager)
-            connection_manager.add_peer(self)
-            logger.debug('Peer connection added... {}'.format(self))
-            yield self
-        finally:
-            connection_manager.remove_peer(self)
-            logger.debug('Peer connection removed... {}'.format(self))
+        self.handshake(squeak_controller, connection_manager)
+        yield self
+        logger.info(
+            'Finished handshake connection with peer ... {}'.format(self))
 
     def __repr__(self):
         return "Peer(%s)" % (self.address_string)

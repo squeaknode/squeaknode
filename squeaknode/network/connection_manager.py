@@ -41,10 +41,20 @@ class ConnectionManager(object):
     def listen_peers_changed(self, callback):
         self.peers_changed_callback = callback
 
+    def _is_duplicate_nonce(self, peer):
+        for other_peer in self.peers:
+            if other_peer.local_version:
+                if peer.remote_version == other_peer.local_version.nNonce:
+                    return True
+        return False
+
     def add_peer(self, peer):
         """Add a peer.
         """
         with self.peers_lock:
+            if self._is_duplicate_nonce(peer):
+                logger.debug('Failed to add peer {}'.format(peer))
+                raise DuplicateNonceError()
             if self.has_connection(peer.address):
                 logger.debug('Failed to add peer {}'.format(peer))
                 raise DuplicatePeerError()
@@ -78,6 +88,10 @@ class ConnectionManager(object):
 
 
 class DuplicatePeerError(Exception):
+    pass
+
+
+class DuplicateNonceError(Exception):
     pass
 
 
