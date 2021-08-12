@@ -16,7 +16,7 @@ class PeerConnectionWorker:
         self.connect_interval_s = connect_interval_s
 
     def connect_peers(self):
-        logger.info("Connecting peers...")
+        logger.debug("Connecting peers...")
         self.squeak_controller.connect_peers()
 
     def start_running(self):

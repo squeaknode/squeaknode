@@ -626,7 +626,7 @@ class SqueakController:
         block_range = self.get_block_range()
         logger.info("Syncing timeline with block range: {}".format(block_range))
         followed_addresses = self.get_followed_addresses()
-        logger.info("Syncing timeline with followed addresses: {}".format(
+        logger.debug("Syncing timeline with followed addresses: {}".format(
             followed_addresses))
         interests = [
             CInterested(
@@ -664,7 +664,7 @@ class SqueakController:
         block_range = self.get_block_range()
         logger.info("Sharing timeline with block range: {}".format(block_range))
         sharing_addresses = self.get_sharing_addresses()
-        logger.info("Sharing squeaks with sharing addresses: {}".format(
+        logger.debug("Sharing squeaks with sharing addresses: {}".format(
             sharing_addresses))
         interests = [
             CInterested(
