@@ -1,7 +1,6 @@
 import logging
 import threading
 
-from squeaknode.network.connection import Connection
 from squeaknode.network.connection_manager import ConnectionManager
 from squeaknode.network.peer import Peer
 from squeaknode.node.squeak_controller import SqueakController
@@ -28,14 +27,19 @@ class PeerHandler():
 
         This method blocks until the peer connection has stopped.
         """
+        if self.connection_manager.has_connection(address):
+            return
+
         logger.debug(
             'Setting up controller for peer address {} ...'.format(address))
         logger.info(
             'Setting up controller for peer address {} ...'.format(address))
-        with Peer(peer_socket, address, outgoing) as p:
-            with Connection(p, self.squeak_controller, self.connection_manager).open_connection() as c:
+        with Peer(peer_socket, address, outgoing).start_peer() as p:
+            with p.open_connection(self.squeak_controller) as p2:
                 # p.stopped.wait()
-                c.handle_messages()
+                self.connection_manager.add_peer(p2)
+                p2.handle_messages(self.squeak_controller)
+        self.connection_manager.remove_peer(p2)
         logger.debug('Stopped controller for peer address {}.'.format(address))
         logger.info('Stopped controller for peer address {}.'.format(address))
 

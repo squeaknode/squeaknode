@@ -72,10 +72,8 @@ class SqueakNode:
         )
 
         self.connection_manager = ConnectionManager()
-        self.peer_server = PeerServer(
-            self.connection_manager, self.config.server.rpc_port)
-        self.peer_client = PeerClient(
-            self.connection_manager, self.config.server.rpc_port)
+        self.peer_server = PeerServer(self.config.server.rpc_port)
+        self.peer_client = PeerClient(self.config.server.rpc_port)
 
         squeak_controller = SqueakController(
             squeak_db,

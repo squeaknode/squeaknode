@@ -717,8 +717,7 @@ class SqueakController:
             raise Exception("Peer with id {} not found.".format(
                 peer_id,
             ))
-        # TODO
         logger.info("Disconnect peer: {}".format(
             peer,
         ))
-        self.peer_client.disconnect_address(peer.address)
+        self.connection_manager.stop_connection(peer.address)

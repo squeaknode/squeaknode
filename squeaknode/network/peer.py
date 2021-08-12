@@ -3,13 +3,18 @@ import queue
 import socket
 import threading
 import time
+from contextlib import contextmanager
 from io import BytesIO
 
 from bitcoin.core.serialize import SerializationTruncationError
 from bitcoin.net import CAddress
+from squeak.messages import msg_verack
+from squeak.messages import msg_version
 from squeak.messages import MsgSerializable
 
 from squeaknode.core.peer_address import PeerAddress
+from squeaknode.core.util import generate_version_nonce
+from squeaknode.network.peer_message_handler import PeerMessageHandler
 
 
 MAX_MESSAGE_LEN = 1048576
@@ -17,6 +22,10 @@ SOCKET_READ_LEN = 1024
 LAST_MESSAGE_TIMEOUT = 600
 PING_TIMEOUT = 10
 PING_INTERVAL = 60
+
+HANDSHAKE_TIMEOUT = 30
+UPDATE_TIME_INTERVAL = 10
+HANDSHAKE_VERSION = 70002
 
 
 logger = logging.getLogger(__name__)
@@ -174,19 +183,89 @@ class Peer(object):
             logger.info('Failed to send msg to {}'.format(self))
             self.close()
 
-    def __enter__(self):
-        logger.debug('Setting up peer {} ...'.format(self))
-        msg_receiver = MessageReceiver(
-            self._peer_socket, self._recv_msg_queue, self.stopped)
-        threading.Thread(
-            target=msg_receiver.recv_msgs,
-            args=(),
-        ).start()
-        return self
+    # def __enter__(self):
+    #     logger.debug('Setting up peer {} ...'.format(self))
+    #     msg_receiver = MessageReceiver(
+    #         self._peer_socket, self._recv_msg_queue, self.stopped)
+    #     threading.Thread(
+    #         target=msg_receiver.recv_msgs,
+    #         args=(),
+    #     ).start()
+    #     return self
 
-    def __exit__(self, *exc):
-        self.close()
-        logger.debug('Closed connection to peer {} ...'.format(self))
+    # def __exit__(self, *exc):
+    #     self.close()
+    #     logger.debug('Closed connection to peer {} ...'.format(self))
+
+    def handshake(self, squeak_controller):
+        if self.outgoing:
+            local_version = self.version_pkt(squeak_controller)
+            self.local_version = local_version
+            self.send_msg(local_version)
+            verack = self.recv_msg()
+            if not isinstance(verack, msg_verack):
+                raise Exception('Wrong message type for verack response.')
+
+        remote_version = self.recv_msg()
+        if not isinstance(remote_version, msg_version):
+            raise Exception('Wrong message type for version message.')
+        self.remote_version = remote_version
+        verack = msg_verack()
+        self.send_msg(verack)
+
+        if not self.outgoing:
+            local_version = self.version_pkt(squeak_controller)
+            self.local_version = local_version
+            self.send_msg(local_version)
+            verack = self.recv_msg()
+            if not isinstance(verack, msg_verack):
+                raise Exception('Wrong message type for verack response.')
+
+        return
+
+    def version_pkt(self, squeak_controller):
+        """Get the version message for this peer."""
+        msg = msg_version()
+        local_ip, local_port = squeak_controller.get_address()
+        server_ip, server_port = squeak_controller.get_remote_address(
+            self.address)
+        msg.nVersion = HANDSHAKE_VERSION
+        msg.addrTo.ip = server_ip
+        msg.addrTo.port = server_port
+        msg.addrFrom.ip = local_ip
+        msg.addrFrom.port = local_port
+        msg.nNonce = generate_version_nonce()
+        return msg
+
+    def handle_messages(self, squeak_controller):
+        peer_message_handler = PeerMessageHandler(
+            self, squeak_controller)
+        peer_message_handler.handle_msgs()
+        logger.info('Finished handling messages...')
+
+    @contextmanager
+    def start_peer(self):
+        logger.debug('Setting up peer {} ...'.format(self))
+        try:
+            msg_receiver = MessageReceiver(
+                self._peer_socket, self._recv_msg_queue, self.stopped)
+            threading.Thread(
+                target=msg_receiver.recv_msgs,
+                args=(),
+            ).start()
+            yield self
+        finally:
+            self.close()
+            logger.debug('Closed connection to peer {} ...'.format(self))
+
+    @contextmanager
+    def open_connection(self, squeak_controller):
+        logger.info(
+            'Starting handshake connection with peer ... {}'.format(self))
+        self.handshake(squeak_controller)
+        yield self
+        logger.info(
+            'Finished handshake connection with peer ... {}'.format(self))
 
     def __repr__(self):
         return "Peer(%s)" % (self.address_string)

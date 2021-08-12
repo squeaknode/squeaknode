@@ -17,10 +17,9 @@ class PeerClient(object):
     """Creates outgoing connections to other peers in the network.
     """
 
-    def __init__(self, connection_manager, port=None):
+    def __init__(self, port=None):
         self.ip = socket.gethostbyname('localhost')
         self.port = port or squeak.params.params.DEFAULT_PORT
-        self.connection_manager = connection_manager
 
     def start(self, peer_handler):
         self.peer_handler = peer_handler
@@ -44,18 +43,8 @@ class PeerClient(object):
         logger.debug('Connecting to peer with address {}'.format(address))
         logger.info('Connecting to peer with address {}'.format(address))
         hostname, port = address
-        if self.connection_manager.has_connection(address):
-            return
         threading.Thread(
             target=self.make_connection,
             args=(hostname, port),
             name="peer_client_connection_thread",
         ).start()
-
-    def disconnect_address(self, address):
-        """Connect to new address."""
-        logger.info('Disconnecting peer with address {}'.format(address))
-        peer = self.connection_manager.get_peer(address)
-        if peer is None:
-            return
-        peer.close()
