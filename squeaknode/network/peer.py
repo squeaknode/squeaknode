@@ -287,7 +287,6 @@ class MessageReceiver:
 
     def _recv_msgs(self):
         while True:
-            logger.info("Recving msg...")
             try:
                 recv_data = self.socket.recv(SOCKET_READ_LEN)
             except Exception:
