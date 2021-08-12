@@ -2,8 +2,6 @@ import logging
 import socket
 import threading
 
-import squeak.params
-
 
 MIN_PEERS = 5
 MAX_PEERS = 10
@@ -17,15 +15,10 @@ class PeerClient(object):
     """Creates outgoing connections to other peers in the network.
     """
 
-    def __init__(self, port=None):
-        self.ip = socket.gethostbyname('localhost')
-        self.port = port or squeak.params.params.DEFAULT_PORT
-
     def start(self, peer_handler):
         self.peer_handler = peer_handler
 
-    def make_connection(self, ip, port):
-        address = (ip, port)
+    def make_connection(self, address):
         logger.debug('Making connection to {}'.format(address))
         logger.info('Making connection to {}'.format(address))
         try:
@@ -42,9 +35,8 @@ class PeerClient(object):
         """Connect to new address."""
         logger.debug('Connecting to peer with address {}'.format(address))
         logger.info('Connecting to peer with address {}'.format(address))
-        hostname, port = address
         threading.Thread(
             target=self.make_connection,
-            args=(hostname, port),
+            args=(address,),
             name="peer_client_connection_thread",
         ).start()
