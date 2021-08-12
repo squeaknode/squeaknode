@@ -116,8 +116,9 @@ class PeerMessageHandler:
     def handle_inv(self, msg):
         invs = msg.inv
         unknown_invs = self.squeak_controller.filter_known_invs(invs)
-        getdata_msg = msg_getdata(inv=unknown_invs)
-        self.peer.send_msg(getdata_msg)
+        if unknown_invs:
+            getdata_msg = msg_getdata(inv=unknown_invs)
+            self.peer.send_msg(getdata_msg)
 
     def handle_getdata(self, msg):
         invs = msg.inv
