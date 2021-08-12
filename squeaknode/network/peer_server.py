@@ -17,10 +17,9 @@ class PeerServer(object):
     """Maintains connections to other peers in the network.
     """
 
-    def __init__(self, connection_manager, port=None):
+    def __init__(self, port=None):
         self.ip = socket.gethostbyname('localhost')
         self.port = port or squeak.params.params.DEFAULT_PORT
-        self.connection_manager = connection_manager
         self.listen_socket = socket.socket()
 
     def start(self, peer_handler):
@@ -36,9 +35,6 @@ class PeerServer(object):
         ).start()
 
     def stop(self):
-        # TODO: stop accepting connections thread.
-        # TODO: stop every peer in connection manager.
-        # pass
         logger.info("Stopping peer server listener thread...")
         self.listen_socket.shutdown(socket.SHUT_RDWR)
         self.listen_socket.close()

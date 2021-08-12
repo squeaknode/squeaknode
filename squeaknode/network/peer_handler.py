@@ -27,6 +27,9 @@ class PeerHandler():
 
         This method blocks until the peer connection has stopped.
         """
+        if self.connection_manager.has_connection(address):
+            return
+
         logger.debug(
             'Setting up controller for peer address {} ...'.format(address))
         logger.info(
