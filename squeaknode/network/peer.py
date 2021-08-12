@@ -197,7 +197,7 @@ class Peer(object):
     #     self.close()
     #     logger.debug('Closed connection to peer {} ...'.format(self))
 
-    def handshake(self, squeak_controller, connection_manager):
+    def handshake(self, squeak_controller):
         if self.outgoing:
             local_version = self.version_pkt(squeak_controller)
             self.local_version = local_version
@@ -259,10 +259,10 @@ class Peer(object):
             logger.debug('Closed connection to peer {} ...'.format(self))
 
     @contextmanager
-    def open_connection(self, connection_manager, squeak_controller):
+    def open_connection(self, squeak_controller):
         logger.info(
             'Starting handshake connection with peer ... {}'.format(self))
-        self.handshake(squeak_controller, connection_manager)
+        self.handshake(squeak_controller)
         yield self
         logger.info(
             'Finished handshake connection with peer ... {}'.format(self))

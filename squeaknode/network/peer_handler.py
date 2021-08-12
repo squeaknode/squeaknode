@@ -32,7 +32,7 @@ class PeerHandler():
         logger.info(
             'Setting up controller for peer address {} ...'.format(address))
         with Peer(peer_socket, address, outgoing).start_peer() as p:
-            with p.open_connection(self.connection_manager, self.squeak_controller) as p2:
+            with p.open_connection(self.squeak_controller) as p2:
                 # p.stopped.wait()
                 self.connection_manager.add_peer(p2)
                 p2.handle_messages(self.squeak_controller)
