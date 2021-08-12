@@ -127,6 +127,10 @@ class SqueakNode:
         if self.config.webadmin.enabled:
             start_admin_web_server(self.admin_web_server)
 
+        # Start peer socket server and peer client
+        self.peer_server.start(self.peer_handler)
+        self.peer_client.start(self.peer_handler)
+
         # start peer connection worker
         if self.config.sync.enabled:
             start_peer_connection_worker(self.peer_connection_worker)
@@ -139,10 +143,6 @@ class SqueakNode:
         self.squeak_offer_expiry_worker.start_running()
         self.sent_offers_worker.start_running()
         self.squeak_deletion_worker.start_running()
-
-        # Start peer socket server
-        self.peer_server.start(self.peer_handler)
-        self.peer_client.start(self.peer_handler)
 
     def stop_running(self):
         self.stopped.set()
