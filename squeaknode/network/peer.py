@@ -3,6 +3,7 @@ import queue
 import socket
 import threading
 import time
+from contextlib import contextmanager
 from io import BytesIO
 
 from bitcoin.core.serialize import SerializationTruncationError
@@ -174,19 +175,34 @@ class Peer(object):
             logger.info('Failed to send msg to {}'.format(self))
             self.close()
 
-    def __enter__(self):
-        logger.debug('Setting up peer {} ...'.format(self))
-        msg_receiver = MessageReceiver(
-            self._peer_socket, self._recv_msg_queue, self.stopped)
-        threading.Thread(
-            target=msg_receiver.recv_msgs,
-            args=(),
-        ).start()
-        return self
+    # def __enter__(self):
+    #     logger.debug('Setting up peer {} ...'.format(self))
+    #     msg_receiver = MessageReceiver(
+    #         self._peer_socket, self._recv_msg_queue, self.stopped)
+    #     threading.Thread(
+    #         target=msg_receiver.recv_msgs,
+    #         args=(),
+    #     ).start()
+    #     return self
 
-    def __exit__(self, *exc):
-        self.close()
-        logger.debug('Closed connection to peer {} ...'.format(self))
+    # def __exit__(self, *exc):
+    #     self.close()
+    #     logger.debug('Closed connection to peer {} ...'.format(self))
+
+    @contextmanager
+    def start_peer(self):
+        logger.debug('Setting up peer {} ...'.format(self))
+        try:
+            msg_receiver = MessageReceiver(
+                self._peer_socket, self._recv_msg_queue, self.stopped)
+            threading.Thread(
+                target=msg_receiver.recv_msgs,
+                args=(),
+            ).start()
+            yield self
+        finally:
+            self.close()
+            logger.debug('Closed connection to peer {} ...'.format(self))
 
     def __repr__(self):
         return "Peer(%s)" % (self.address_string)
