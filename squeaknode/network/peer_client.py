@@ -51,11 +51,3 @@ class PeerClient(object):
             args=(hostname, port),
             name="peer_client_connection_thread",
         ).start()
-
-    def disconnect_address(self, address):
-        """Connect to new address."""
-        logger.info('Disconnecting peer with address {}'.format(address))
-        peer = self.connection_manager.get_peer(address)
-        if peer is None:
-            return
-        peer.close()

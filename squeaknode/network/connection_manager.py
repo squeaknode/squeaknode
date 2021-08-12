@@ -79,6 +79,14 @@ class ConnectionManager(object):
         """
         return self._peers.get(address)
 
+    def stop_connection(self, address):
+        """Stop peer connections for address.
+        """
+        with self.peers_lock:
+            peer = self.get_peer(address)
+            if peer is not None:
+                peer.close()
+
     def stop_all_connections(self):
         """Stop all peer connections.
         """
