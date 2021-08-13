@@ -44,6 +44,7 @@ export default function Peers() {
   const classes = useStyles();
   const [peers, setPeers] = useState([]);
   const [createPeerDialogOpen, setCreatePeerDialogOpen] = useState(false);
+  const [value, setValue] = useState(0);
   const history = useHistory();
 
   function a11yProps(index) {
@@ -52,6 +53,10 @@ export default function Peers() {
       'aria-controls': `simple-tabpanel-${index}`,
     };
   }
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
 
   const getSqueakPeers = () => {
     getPeersRequest(setPeers);
@@ -68,6 +73,23 @@ export default function Peers() {
   useEffect(() => {
     getSqueakPeers()
   }, []);
+
+  function TabPanel(props) {
+    const { children, value, index, ...other } = props;
+    return (
+      <div
+        role="tabpanel"
+        hidden={value !== index}
+        id={`simple-tabpanel-${index}`}
+        aria-labelledby={`simple-tab-${index}`}
+        {...other}
+      >
+        {value === index && (
+          <div>{children}</div>
+        )}
+      </div>
+    );
+  }
 
   function CreatePeerButton() {
     return (
@@ -134,6 +156,35 @@ export default function Peers() {
     )
   }
 
+  function PeersTabs() {
+    return (
+      <>
+      <AppBar position="static" color="default">
+        <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
+          <Tab label="Saved Peers" {...a11yProps(0)} />
+        </Tabs>
+      </AppBar>
+      <TabPanel value={value} index={0}>
+        {SavedPeersContent()}
+      </TabPanel>
+      </>
+    )
+  }
+
+  function SavedPeersContent() {
+    return (
+      <>
+      <Grid container spacing={4}>
+        <Grid item xs={12}>
+          <Widget disableWidgetMenu>
+            {PeersInfo()}
+          </Widget>
+        </Grid>
+      </Grid>
+      </>
+    )
+  }
+
   function CreatePeerDialogContent() {
     return (
       <>
@@ -148,7 +199,7 @@ export default function Peers() {
   return (
     <>
      < PageTitle title = "Peers" />
-    {PeersInfo()}
+    {PeersTabs()}
     {CreatePeerDialogContent()}
    < />);
 }
