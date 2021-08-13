@@ -673,6 +673,10 @@ class SqueakAdminServerHandler(object):
         logger.info("Connected peer: {}".format(
             connected_peer,
         ))
+        if connected_peer is None:
+            return squeak_admin_pb2.GetConnectedPeerReply(
+                connected_peer=None
+            )
         connected_peers_display_msg = connected_peer_to_message(connected_peer)
         return squeak_admin_pb2.GetConnectedPeerReply(
             connected_peer=connected_peers_display_msg

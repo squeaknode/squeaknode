@@ -30,7 +30,7 @@ import {
   getSqueakProfileByAddressRequest,
   getAddressSqueakDisplaysRequest,
   disconnectSqueakPeerRequest,
-  getConnectedPeersRequest,
+  getConnectedPeerRequest,
 } from "../../squeakclient/requests"
 import {
   goToSqueakAddressPage,
@@ -42,7 +42,7 @@ export default function PeerAddressPage() {
   var classes = useStyles();
   const history = useHistory();
   const { host, port } = useParams();
-  const [connectedPeers, setConnectedPeers] = useState([]);
+  const [connectedPeer, setConnectedPeer] = useState([]);
   // const [squeakProfile, setSqueakProfile] = useState(null);
   // const [createContactProfileDialogOpen, setCreateContactProfileDialogOpen] = useState(false);
   // const [disconnectPeerDialogOpen, setDisconnectPeerDialogOpen] = useState(false);
@@ -59,8 +59,8 @@ export default function PeerAddressPage() {
   //   setCreateContactProfileDialogOpen(false);
   // };
 
-  const getConnectedPeers = () => {
-    getConnectedPeersRequest(setConnectedPeers);
+  const getConnectedPeer = () => {
+    getConnectedPeerRequest(host, port, setConnectedPeer);
   };
 
     // const handleClickOpenDisconnectPeerDialog = () => {
@@ -109,7 +109,7 @@ export default function PeerAddressPage() {
   // }
 
   useEffect(() => {
-    getConnectedPeers()
+    getConnectedPeer()
   }, []);
 
   function DisconnectPeerButton() {
@@ -131,6 +131,45 @@ export default function PeerAddressPage() {
     )
   }
 
+  function ConnectPeerButton() {
+    console.log(connectedPeer);
+    return (
+      <>
+      <Grid item xs={12}>
+        TODO: Connect button here.
+      </Grid>
+      </>
+    )
+  }
+
+  function ConnectionStatusContent() {
+    console.log(connectedPeer);
+    return (
+      <>
+      <Grid item xs={12}>
+        Status: {(connectedPeer)
+          ? "Connected"
+          : "Disconnected"
+        }
+      </Grid>
+      </>
+    )
+  }
+
+  function ConnectionActionContent() {
+    console.log(connectedPeer);
+    return (
+      <>
+      <Grid item xs={12}>
+        {(connectedPeer)
+          ? DisconnectPeerButton()
+          : ConnectPeerButton()
+        }
+      </Grid>
+      </>
+    )
+  }
+
   // function CreatePeerProfileDialogContent() {
   //   return (
   //     <>
@@ -146,7 +185,8 @@ export default function PeerAddressPage() {
   return (
     <>
       <PageTitle title={'Peer Address: ' + host + ":" + port} />
-      {DisconnectPeerButton()}
+      {ConnectionStatusContent()}
+      {ConnectionActionContent()}
     </>
   );
 }
