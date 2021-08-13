@@ -149,7 +149,8 @@ def open_peer_connection(node_stub, peer_name, peer_host, peer_port):
         # Connect the peer
         node_stub.ConnectPeer(
             squeak_admin_pb2.ConnectPeerRequest(
-                peer_id=peer_id,
+                host=peer_host,
+                port=peer_port,
             )
         )
         yield peer_id

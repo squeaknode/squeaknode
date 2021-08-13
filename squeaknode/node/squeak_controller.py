@@ -553,17 +553,19 @@ class SqueakController:
             squeak_hash,
         )
 
-    def connect_peer(self, peer_id: int) -> None:
-        peer = self.squeak_db.get_peer(peer_id)
-        if peer is None:
-            raise Exception("Peer with id {} not found.".format(
-                peer_id,
-            ))
-        # TODO
-        logger.info("Connect to peer: {}".format(
-            peer,
+    def connect_peer(self, host: str, port: int) -> None:
+        # peer = self.squeak_db.get_peer(peer_id)
+        # if peer is None:
+        #     raise Exception("Peer with id {} not found.".format(
+        #         peer_id,
+        #     ))
+        # # TODO
+        logger.info("Connect to peer: {}:{}".format(
+            host,
+            port,
         ))
-        self.peer_client.connect_address(peer.address)
+        peer_address = PeerAddress(host=host, port=port)
+        self.peer_client.connect_address(peer_address)
 
     def connect_peers(self) -> None:
         peers = self.squeak_db.get_peers()
