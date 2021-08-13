@@ -110,6 +110,10 @@ import {
   GetLikedSqueakDisplaysReply,
   GetConnectedPeersRequest,
   GetConnectedPeersReply,
+  ConnectPeerRequest as ConnectSqueakPeerRequest,
+  ConnectPeerReply as ConnectSqueakPeerReply,
+  DisconnectPeerRequest as DisconnectSqueakPeerRequest,
+  DisconnectPeerReply as DisconnectSqueakPeerReply,
 } from "../proto/squeak_admin_pb"
 
 console.log('The value of REACT_APP_SERVER_PORT is:', process.env.REACT_APP_SERVER_PORT);
@@ -816,5 +820,29 @@ export function getConnectedPeersRequest(handleResponse) {
     (response) => {
       handleResponse(response.getConnectedPeersList());
     }
+  );
+}
+
+export function connectSqueakPeerRequest(host, port, handleResponse) {
+  var request = new ConnectSqueakPeerRequest();
+  request.setHost(host);
+  request.setPort(port);
+  makeRequest(
+    'connectpeer',
+    request,
+    ConnectSqueakPeerReply.deserializeBinary,
+    handleResponse,
+  );
+}
+
+export function disconnectSqueakPeerRequest(host, port, handleResponse) {
+  var request = new DisconnectSqueakPeerRequest();
+  request.setHost(host);
+  request.setPort(port);
+  makeRequest(
+    'disconnectpeer',
+    request,
+    DisconnectSqueakPeerReply.deserializeBinary,
+    handleResponse,
   );
 }
