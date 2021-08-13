@@ -834,3 +834,15 @@ export function connectSqueakPeerRequest(host, port, handleResponse) {
     handleResponse,
   );
 }
+
+export function disconnectSqueakPeerRequest(host, port, handleResponse) {
+  var request = new DisconnectSqueakPeerRequest();
+  request.setHost(host);
+  request.setPort(port);
+  makeRequest(
+    'disconnectpeer',
+    request,
+    DisconnectSqueakPeerReply.deserializeBinary,
+    handleResponse,
+  );
+}
