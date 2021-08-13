@@ -29,6 +29,7 @@ import FaceIcon from '@material-ui/icons/Face';
 import {
   getSqueakProfileByAddressRequest,
   getAddressSqueakDisplaysRequest,
+  connectSqueakPeerRequest,
   disconnectSqueakPeerRequest,
   getConnectedPeerRequest,
 } from "../../squeakclient/requests"
@@ -121,7 +122,7 @@ export default function PeerAddressPage() {
             variant="contained"
             onClick={() => {
                disconnectSqueakPeerRequest(host, port, () => {
-                 alert("Disconnected peer!");
+                 // TODO: nothing maybe
                });
             }}>Disconnect Peer
           </Button>
@@ -132,11 +133,19 @@ export default function PeerAddressPage() {
   }
 
   function ConnectPeerButton() {
-    console.log(connectedPeer);
     return (
       <>
       <Grid item xs={12}>
-        TODO: Connect button here.
+        <div className={classes.root}>
+          <Button
+            variant="contained"
+            onClick={() => {
+               connectSqueakPeerRequest(host, port, () => {
+                 // TODO: nothing maybe
+               });
+            }}>Connect Peer
+          </Button>
+        </div>
       </Grid>
       </>
     )
@@ -169,18 +178,6 @@ export default function PeerAddressPage() {
       </>
     )
   }
-
-  // function CreatePeerProfileDialogContent() {
-  //   return (
-  //     <>
-  //       <CreateContactProfileDialog
-  //         open={createContactProfileDialogOpen}
-  //         handleClose={handleCloseCreateContactProfileDialog}
-  //         initialAddress={address}
-  //         ></CreateContactProfileDialog>
-  //     </>
-  //   )
-  // }
 
   return (
     <>
