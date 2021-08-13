@@ -34,6 +34,7 @@ import Icons from "../../pages/icons";
 import Charts from "../../pages/charts";
 import Peers from "../../pages/peers";
 import Peer from "../../pages/peer";
+import PeerAddress from "../../pages/peeraddress";
 
 // context
 import { useLayoutState } from "../../context/LayoutContext";
@@ -73,6 +74,7 @@ function Layout(props) {
               <Route path="/app/channel/:txId/:outputIndex" component={Channel} />
               <Route path="/app/peers" component={Peers} />
               <Route path="/app/peer/:id" component={Peer} />
+              <Route path="/app/peeraddress/:host/:port" component={PeerAddress} />
               <Route path="/app/notifications" component={Notifications} />
               <Route
                 exact
