@@ -210,7 +210,6 @@ export default function LightningNodePage() {
 
   return (
     <>
-      <PageTitle title={'Channel'} />
       {ChannelTabs()}
       {CloseChannelDialogContent()}
     </>

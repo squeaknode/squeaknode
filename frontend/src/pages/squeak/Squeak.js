@@ -16,6 +16,7 @@ import TimelineConnector from '@material-ui/lab/TimelineConnector';
 import TimelineContent from '@material-ui/lab/TimelineContent';
 import TimelineOppositeContent from '@material-ui/lab/TimelineOppositeContent';
 import TimelineDot from '@material-ui/lab/TimelineDot';
+import Paper from '@material-ui/core/Paper';
 
 import FaceIcon from '@material-ui/icons/Face';
 
@@ -257,10 +258,25 @@ export default function SqueakPage() {
     )
   }
 
+  function GridContent() {
+    return (
+      <Grid container spacing={0}>
+      <Grid item xs={12} sm={9}>
+        <Paper className={classes.paper}>
+        {SqueakContent()}
+        </Paper>
+      </Grid>
+      <Grid item xs={12} sm={3}>
+        <Paper className={classes.paper}>
+        </Paper>
+      </Grid>
+      </Grid>
+    )
+  }
+
   return (
     <>
-      <PageTitle title="Squeak" />
-      {SqueakContent()}
+      {GridContent()}
     </>
   );
 }

@@ -159,9 +159,20 @@ export default function Payments() {
     )
   }
 
+  function GridContent() {
+    return (
+      <Grid container spacing={0}>
+      <Grid item xs={12} sm={9}>
+        {paymentSummary && PaymentSummaryContent()}
+      </Grid>
+      <Grid item xs={12} sm={3}>
+      </Grid>
+      </Grid>
+    )
+  }
+
   return (
     <>
-     < PageTitle title = "Payments" />
-     {paymentSummary && PaymentSummaryContent()}
-   < />);
+    {GridContent()}
+    </>);
 }

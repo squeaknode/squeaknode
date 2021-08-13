@@ -448,7 +448,6 @@ export default function LightningNodePage() {
 
   return (
     <>
-      <PageTitle title={'Lightning Node: ' + pubkey} />
       {pubkey
         ? LightningNodeTabs()
         : NoPubkeyContent()

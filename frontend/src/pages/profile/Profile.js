@@ -115,11 +115,8 @@ export default function ProfilePage() {
 
   return (
     <>
-      <PageTitle title={'Squeak Profile: ' + (squeakProfile ? squeakProfile.getProfileName() : null)} />
-      <div>
       {squeakProfile &&
         ProfileContent()}
-      </div>
     </>
   );
 }
