@@ -6,7 +6,7 @@ import Button from '@material-ui/core/Button';
 import CardHeader from "@material-ui/core/CardHeader";
 
 // icons
-import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';
+import ComputerIcon from '@material-ui/icons/Computer';
 
 import useStyles from "../../pages/wallet/styles";
 
@@ -61,7 +61,7 @@ export default function LightningPeerListItem({
         onClick={onPeerClick}
      >
        <CardHeader
-          avatar={<RecordVoiceOverIcon/>}
+          avatar={<ComputerIcon/>}
           title={`Pubkey: ${peer.getPubKey()}`}
           subheader={`Address: ${peer.getAddress()}`}
           // action={<Button size="small">View Peer</Button>}
