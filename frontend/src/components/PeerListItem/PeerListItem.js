@@ -6,7 +6,7 @@ import Button from '@material-ui/core/Button';
 import CardHeader from "@material-ui/core/CardHeader";
 
 // icons
-import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';
+import ComputerIcon from '@material-ui/icons/Computer';
 
 import useStyles from "../../pages/wallet/styles";
 
@@ -61,7 +61,7 @@ export default function PeerListItem({
         onClick={onPeerClick}
      >
        <CardHeader
-          avatar={<RecordVoiceOverIcon/>}
+          avatar={<ComputerIcon/>}
           title={`Name: ${peer.getPeerName()}`}
           subheader={`Address: ${peer.getHost()}:${peer.getPort()}`}
           // action={<Button size="small">View Peer</Button>}
