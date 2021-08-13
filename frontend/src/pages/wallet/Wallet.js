@@ -454,7 +454,6 @@ export default function WalletPage() {
 
   return (
     <>
-      <PageTitle title="Wallet" />
       {lndAvailable()
         ? LightningTabs()
         : NoBalanceContent()

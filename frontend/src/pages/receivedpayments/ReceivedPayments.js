@@ -154,7 +154,6 @@ export default function ReceivedPayments() {
 
   return (
     <>
-     < PageTitle title = "Payments" />
      {PaymentsTabs()}
    < />);
 }

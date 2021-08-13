@@ -260,7 +260,6 @@ export default function Peers() {
 
   return (
     <>
-     < PageTitle title = "Peers" />
     {PeersTabs()}
     {CreatePeerDialogContent()}
     {ConnectPeerDialogContent()}

@@ -179,9 +179,18 @@ export default function PeerAddressPage() {
     )
   }
 
+  function AddressContent() {
+    console.log(connectedPeer);
+    return (
+      <>
+      <PageTitle title={'Peer Address: ' + host + ":" + port} />
+      </>
+    )
+  }
+
   return (
     <>
-      <PageTitle title={'Peer Address: ' + host + ":" + port} />
+      {AddressContent()}
       {ConnectionStatusContent()}
       {ConnectionActionContent()}
     </>

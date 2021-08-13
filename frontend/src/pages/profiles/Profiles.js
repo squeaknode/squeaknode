@@ -277,7 +277,6 @@ export default function Profiles() {
 
   return (
     <>
-     < PageTitle title = "Profiles" />
     {ProfilesTabs()}
     {CreateSigningProfileDialogContent()}
     {ImportSigningProfileDialogContent()}

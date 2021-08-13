@@ -161,7 +161,6 @@ export default function Payments() {
 
   return (
     <>
-     < PageTitle title = "Payments" />
      {paymentSummary && PaymentSummaryContent()}
    < />);
 }
