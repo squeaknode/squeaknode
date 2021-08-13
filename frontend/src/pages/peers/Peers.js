@@ -20,6 +20,7 @@ import PageTitle from "../../components/PageTitle";
 import Widget from "../../components/Widget";
 import Table from "../dashboard/components/Table/Table";
 import CreatePeerDialog from "../../components/CreatePeerDialog";
+import ConnectPeerDialog from "../../components/ConnectPeerDialog";
 import PeerListItem from "../../components/PeerListItem";
 import SavedPeerListItem from "../../components/SavedPeerListItem";
 
@@ -30,6 +31,7 @@ import mock from "../dashboard/mock";
 import {
   getPeersRequest,
   getConnectedPeersRequest,
+  connectSqueakPeerRequest,
 } from "../../squeakclient/requests"
 import {
   goToPeerPage,
@@ -49,6 +51,7 @@ export default function Peers() {
   const [connectedPeers, setConnectedPeers] = useState([]);
   const [peers, setPeers] = useState([]);
   const [createPeerDialogOpen, setCreatePeerDialogOpen] = useState(false);
+  const [connectPeerDialogOpen, setConnectPeerDialogOpen] = useState(false);
   const [value, setValue] = useState(0);
   const history = useHistory();
 
@@ -77,6 +80,14 @@ export default function Peers() {
 
   const handleCloseCreatePeerDialog = () => {
     setCreatePeerDialogOpen(false);
+  };
+
+  const handleClickOpenConnectPeerDialog = () => {
+    setConnectPeerDialogOpen(true);
+  };
+
+  const handleCloseConnectPeerDialog = () => {
+    setConnectPeerDialogOpen(false);
   };
 
   useEffect(() => {
@@ -128,7 +139,7 @@ export default function Peers() {
           <Button
             variant="contained"
             onClick={() => {
-              // TODO: handleClickOpenCreatePeerDialog();
+               handleClickOpenConnectPeerDialog();
             }}>Connect Peer
           </Button>
         </div>
@@ -235,10 +246,22 @@ export default function Peers() {
     )
   }
 
+  function ConnectPeerDialogContent() {
+    return (
+      <>
+        <ConnectPeerDialog
+          open={connectPeerDialogOpen}
+          handleClose={handleCloseConnectPeerDialog}
+          ></ConnectPeerDialog>
+      </>
+    )
+  }
+
   return (
     <>
      < PageTitle title = "Peers" />
     {PeersTabs()}
     {CreatePeerDialogContent()}
+    {ConnectPeerDialogContent()}
    < />);
 }

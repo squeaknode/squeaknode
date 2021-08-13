@@ -564,6 +564,7 @@ class SqueakController:
             host,
             port,
         ))
+        port = port or squeak.params.params.DEFAULT_PORT
         peer_address = PeerAddress(host=host, port=port)
         self.peer_client.connect_address(peer_address)
 

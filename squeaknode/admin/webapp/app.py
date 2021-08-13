@@ -539,6 +539,22 @@ def create_app(handler, username, password):
             handler.handle_get_connected_peers,
         )
 
+    @app.route("/connectpeer", methods=["POST"])
+    @login_required
+    def connectpeer():
+        return handle_request(
+            squeak_admin_pb2.ConnectPeerRequest(),
+            handler.handle_connect_peer,
+        )
+
+    @app.route("/disconnectpeer", methods=["POST"])
+    @login_required
+    def disconnectpeer():
+        return handle_request(
+            squeak_admin_pb2.DisconnectPeerRequest(),
+            handler.handle_disconnect_peer,
+        )
+
     return app
 
 
