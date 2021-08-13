@@ -29,6 +29,7 @@ import FaceIcon from '@material-ui/icons/Face';
 import {
   getSqueakProfileByAddressRequest,
   getAddressSqueakDisplaysRequest,
+  disconnectSqueakPeerRequest,
 } from "../../squeakclient/requests"
 import {
   goToSqueakAddressPage,
@@ -42,6 +43,7 @@ export default function PeerAddressPage() {
   const { host, port } = useParams();
   // const [squeakProfile, setSqueakProfile] = useState(null);
   // const [createContactProfileDialogOpen, setCreateContactProfileDialogOpen] = useState(false);
+  // const [disconnectPeerDialogOpen, setDisconnectPeerDialogOpen] = useState(false);
 
   // const getSqueakProfile = (address) => {
   //       getSqueakProfileByAddressRequest(address, setSqueakProfile);
@@ -54,6 +56,14 @@ export default function PeerAddressPage() {
   // const handleCloseCreateContactProfileDialog = () => {
   //   setCreateContactProfileDialogOpen(false);
   // };
+
+    // const handleClickOpenDisconnectPeerDialog = () => {
+    //   setDisconnectPeerDialogOpen(true);
+    // };
+    //
+    // const handleCloseDisconnectPeerDialog = () => {
+    //   setDisconnectPeerDialogOpen(false);
+    // };
 
   // useEffect(()=>{
   //   getSqueakProfile(address)
@@ -81,6 +91,36 @@ export default function PeerAddressPage() {
   //   )
   // }
 
+  // function DisconnectPeerDialogContent() {
+  //   return (
+  //     <>
+  //       <ConnectPeerDialog
+  //         open={connectPeerDialogOpen}
+  //         handleClose={handleCloseConnectPeerDialog}
+  //         ></ConnectPeerDialog>
+  //     </>
+  //   )
+  // }
+
+  function DisconnectPeerButton() {
+    return (
+      <>
+      <Grid item xs={12}>
+        <div className={classes.root}>
+          <Button
+            variant="contained"
+            onClick={() => {
+               disconnectSqueakPeerRequest(host, port, () => {
+                 alert("Disconnected peer!");
+               });
+            }}>Disconnect Peer
+          </Button>
+        </div>
+      </Grid>
+      </>
+    )
+  }
+
   // function CreatePeerProfileDialogContent() {
   //   return (
   //     <>
@@ -96,6 +136,7 @@ export default function PeerAddressPage() {
   return (
     <>
       <PageTitle title={'Peer Address: ' + host + ":" + port} />
+      {DisconnectPeerButton()}
     </>
   );
 }
