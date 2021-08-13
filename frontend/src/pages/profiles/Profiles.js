@@ -275,9 +275,21 @@ export default function Profiles() {
     )
   }
 
+  function GridContent() {
+    return (
+      <Grid container spacing={0}>
+      <Grid item xs={12} sm={9}>
+        {ProfilesTabs()}
+      </Grid>
+      <Grid item xs={12} sm={3}>
+      </Grid>
+      </Grid>
+    )
+  }
+
   return (
     <>
-    {ProfilesTabs()}
+    {GridContent()}
     {CreateSigningProfileDialogContent()}
     {ImportSigningProfileDialogContent()}
     {CreateContactProfileDialogContent()}
