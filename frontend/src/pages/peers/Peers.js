@@ -20,6 +20,8 @@ import PageTitle from "../../components/PageTitle";
 import Widget from "../../components/Widget";
 import Table from "../dashboard/components/Table/Table";
 import CreatePeerDialog from "../../components/CreatePeerDialog";
+import PeerListItem from "../../components/PeerListItem";
+
 
 // data
 import mock from "../dashboard/mock";
@@ -108,51 +110,22 @@ export default function Peers() {
     )
   }
 
-  function PeersInfo() {
+  function PeersGridItem(peers) {
     return (
-      <>
-      <Grid container spacing={4}>
-        {CreatePeerButton()}
-       <Grid item xs={12}>
-         <MUIDataTable
-           title="Peers"
-           data={peers.map(s =>
-              [
-                s.getPeerId(),
-                s.getPeerName(),
-                s.getHost(),
-                s.getPort(),
-                s.getDownloading().toString(),
-                s.getUploading().toString(),
-              ]
-            )}
-           columns={[
-             {
-               name: "Id",
-               options: {
-                 display: false,
-               }
-             },
-             "Name",
-             "Host",
-             "Port",
-             "Downloading",
-             "Uploading",
-           ]}
-           options={{
-             filter: false,
-             print: false,
-             viewColumns: false,
-             selectableRows: "none",
-             onRowClick: rowData => {
-               var id = rowData[0];
-               console.log("clicked on id" + id);
-               goToPeerPage(history, id);
-             },
-           }}/>
-       </Grid>
-     </Grid>
-      </>
+      <Grid item xs={12}>
+        {peers.map(peer =>
+           <Box
+              p={1}
+              key={peer.getPeerName()}
+           >
+             <PeerListItem
+                key={peer.getPeerName()}
+                handlePeerClick={() => console.log("clicked peer")}
+                peer={peer}>
+             </PeerListItem>
+           </Box>
+        )}
+      </Grid>
     )
   }
 
@@ -177,7 +150,8 @@ export default function Peers() {
       <Grid container spacing={4}>
         <Grid item xs={12}>
           <Widget disableWidgetMenu>
-            {PeersInfo()}
+            {CreatePeerButton()}
+            {PeersGridItem(peers)}
           </Widget>
         </Grid>
       </Grid>
