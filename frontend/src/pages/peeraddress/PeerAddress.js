@@ -11,7 +11,6 @@ import {
 import useStyles from "./styles";
 
 // components
-import PageTitle from "../../components/PageTitle";
 import Widget from "../../components/Widget";
 import SqueakThreadItem from "../../components/SqueakThreadItem";
 import CreateContactProfileDialog from "../../components/CreateContactProfileDialog";
@@ -23,6 +22,7 @@ import TimelineSeparator from '@material-ui/lab/TimelineSeparator';
 import TimelineConnector from '@material-ui/lab/TimelineConnector';
 import TimelineContent from '@material-ui/lab/TimelineContent';
 import TimelineOppositeContent from '@material-ui/lab/TimelineOppositeContent';
+import Typography from '@material-ui/core/Typography';
 
 import FaceIcon from '@material-ui/icons/Face';
 
@@ -183,7 +183,9 @@ export default function PeerAddressPage() {
     console.log(connectedPeer);
     return (
       <>
-      <PageTitle title={'Peer Address: ' + host + ":" + port} />
+      <Typography variant="h2" component="h2">
+        {'Peer Address: ' + host + ":" + port}
+      </Typography>
       </>
     )
   }
