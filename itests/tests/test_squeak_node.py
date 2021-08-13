@@ -12,6 +12,7 @@ from proto import squeak_admin_pb2
 from tests.util import connect_peer
 from tests.util import generate_signing_key
 from tests.util import get_address
+from tests.util import get_connected_peer
 from tests.util import get_connected_peers
 from tests.util import get_hash
 from tests.util import open_channel
@@ -1010,6 +1011,7 @@ def test_connect_peer(admin_stub, other_admin_stub):
     ):
         time.sleep(2)
         connected_peers = get_connected_peers(admin_stub)
+        print(connected_peers)
         assert len(connected_peers) == 1
         # print("Admin node connected to peers: ")
         # print(connected_peers)
@@ -1017,6 +1019,9 @@ def test_connect_peer(admin_stub, other_admin_stub):
         assert len(other_connected_peers) == 1
         # print("Other Admin node connected to peers: ")
         # print(other_connected_peers)
+        connected_peer = get_connected_peer(
+            other_admin_stub, "squeaknode", 18777)
+        assert connected_peer is not None
 
     time.sleep(2)
     connected_peers = get_connected_peers(admin_stub)

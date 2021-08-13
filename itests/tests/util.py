@@ -157,6 +157,7 @@ def open_peer_connection(node_stub, peer_name, peer_host, peer_port):
     except Exception as e:
         print("Failed to connect to peer: {}:{}.".format(peer_host, peer_port))
         print(e)
+        raise
     finally:
         # Disconnect the peer
         node_stub.DisconnectPeer(
@@ -178,3 +179,13 @@ def get_connected_peers(node_stub):
         squeak_admin_pb2.GetConnectedPeersRequest()
     )
     return get_connected_peers_response.connected_peers
+
+
+def get_connected_peer(node_stub, host, port):
+    get_connected_peer_response = node_stub.GetConnectedPeer(
+        squeak_admin_pb2.GetConnectedPeerRequest(
+            host=host,
+            port=port,
+        )
+    )
+    return get_connected_peer_response.connected_peer

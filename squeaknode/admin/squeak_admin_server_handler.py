@@ -663,6 +663,21 @@ class SqueakAdminServerHandler(object):
             connected_peers=connected_peers_display_msgs
         )
 
+    def handle_get_connected_peer(self, request):
+        host = request.host
+        port = request.port
+        logger.info("Handle get connected peer host: {}, port: {}".format(
+            host, port
+        ))
+        connected_peer = self.squeak_controller.get_connected_peer(host, port)
+        logger.info("Connected peer: {}".format(
+            connected_peer,
+        ))
+        connected_peers_display_msg = connected_peer_to_message(connected_peer)
+        return squeak_admin_pb2.GetConnectedPeerReply(
+            connected_peer=connected_peers_display_msg
+        )
+
     def handle_disconnect_peer(self, request):
         host = request.host
         port = request.port

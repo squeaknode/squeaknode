@@ -30,6 +30,7 @@ import {
   getSqueakProfileByAddressRequest,
   getAddressSqueakDisplaysRequest,
   disconnectSqueakPeerRequest,
+  getConnectedPeersRequest,
 } from "../../squeakclient/requests"
 import {
   goToSqueakAddressPage,
@@ -41,6 +42,7 @@ export default function PeerAddressPage() {
   var classes = useStyles();
   const history = useHistory();
   const { host, port } = useParams();
+  const [connectedPeers, setConnectedPeers] = useState([]);
   // const [squeakProfile, setSqueakProfile] = useState(null);
   // const [createContactProfileDialogOpen, setCreateContactProfileDialogOpen] = useState(false);
   // const [disconnectPeerDialogOpen, setDisconnectPeerDialogOpen] = useState(false);
@@ -56,6 +58,10 @@ export default function PeerAddressPage() {
   // const handleCloseCreateContactProfileDialog = () => {
   //   setCreateContactProfileDialogOpen(false);
   // };
+
+  const getConnectedPeers = () => {
+    getConnectedPeersRequest(setConnectedPeers);
+  };
 
     // const handleClickOpenDisconnectPeerDialog = () => {
     //   setDisconnectPeerDialogOpen(true);
@@ -101,6 +107,10 @@ export default function PeerAddressPage() {
   //     </>
   //   )
   // }
+
+  useEffect(() => {
+    getConnectedPeers()
+  }, []);
 
   function DisconnectPeerButton() {
     return (
