@@ -28,6 +28,7 @@ import mock from "../dashboard/mock";
 
 import {
   getPeersRequest,
+  getConnectedPeersRequest,
 } from "../../squeakclient/requests"
 import {
   goToPeerPage,
@@ -44,6 +45,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Peers() {
   const classes = useStyles();
+  const [connectedPeers, setConnectedPeers] = useState([]);
   const [peers, setPeers] = useState([]);
   const [createPeerDialogOpen, setCreatePeerDialogOpen] = useState(false);
   const [value, setValue] = useState(0);
@@ -60,6 +62,10 @@ export default function Peers() {
     setValue(newValue);
   };
 
+  const getConnectedPeers = () => {
+    getConnectedPeersRequest(setConnectedPeers);
+  };
+
   const getSqueakPeers = () => {
     getPeersRequest(setPeers);
   };
@@ -72,6 +78,9 @@ export default function Peers() {
     setCreatePeerDialogOpen(false);
   };
 
+  useEffect(() => {
+    getConnectedPeers()
+  }, []);
   useEffect(() => {
     getSqueakPeers()
   }, []);
@@ -110,6 +119,23 @@ export default function Peers() {
     )
   }
 
+  function ConnectPeerButton() {
+    return (
+      <>
+      <Grid item xs={12}>
+        <div className={classes.root}>
+          <Button
+            variant="contained"
+            onClick={() => {
+              // TODO: handleClickOpenCreatePeerDialog();
+            }}>Connect Peer
+          </Button>
+        </div>
+      </Grid>
+      </>
+    )
+  }
+
   function PeersGridItem(peers) {
     return (
       <Grid item xs={12}>
@@ -134,12 +160,31 @@ export default function Peers() {
       <>
       <AppBar position="static" color="default">
         <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
-          <Tab label="Saved Peers" {...a11yProps(0)} />
+          <Tab label="Connected Peers" {...a11yProps(0)} />
+          <Tab label="Saved Peers" {...a11yProps(1)} />
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
+        {ConnectedPeersContent()}
+      </TabPanel>
+      <TabPanel value={value} index={1}>
         {SavedPeersContent()}
       </TabPanel>
+      </>
+    )
+  }
+
+  function ConnectedPeersContent() {
+    return (
+      <>
+      <Grid container spacing={4}>
+        <Grid item xs={12}>
+          <Widget disableWidgetMenu>
+            {ConnectPeerButton()}
+            {PeersGridItem(connectedPeers)}
+          </Widget>
+        </Grid>
+      </Grid>
       </>
     )
   }
