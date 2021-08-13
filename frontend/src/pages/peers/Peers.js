@@ -21,6 +21,7 @@ import Widget from "../../components/Widget";
 import Table from "../dashboard/components/Table/Table";
 import CreatePeerDialog from "../../components/CreatePeerDialog";
 import PeerListItem from "../../components/PeerListItem";
+import SavedPeerListItem from "../../components/SavedPeerListItem";
 
 
 // data
@@ -136,10 +137,10 @@ export default function Peers() {
     )
   }
 
-  function PeersGridItem(peers) {
+  function PeersGridItem() {
     return (
       <Grid item xs={12}>
-        {peers.map(peer =>
+        {connectedPeers.map(peer =>
            <Box
               p={1}
               key={peer.getPeerName()}
@@ -149,6 +150,25 @@ export default function Peers() {
                 handlePeerClick={() => console.log("clicked peer")}
                 peer={peer}>
              </PeerListItem>
+           </Box>
+        )}
+      </Grid>
+    )
+  }
+
+  function SavedPeersGridItem() {
+    return (
+      <Grid item xs={12}>
+        {peers.map(peer =>
+           <Box
+              p={1}
+              key={peer.getPeerName()}
+           >
+             <SavedPeerListItem
+                key={peer.getPeerName()}
+                handlePeerClick={() => console.log("clicked peer")}
+                peer={peer}>
+             </SavedPeerListItem>
            </Box>
         )}
       </Grid>
@@ -181,7 +201,7 @@ export default function Peers() {
         <Grid item xs={12}>
           <Widget disableWidgetMenu>
             {ConnectPeerButton()}
-            {PeersGridItem(connectedPeers)}
+            {PeersGridItem()}
           </Widget>
         </Grid>
       </Grid>
@@ -196,7 +216,7 @@ export default function Peers() {
         <Grid item xs={12}>
           <Widget disableWidgetMenu>
             {CreatePeerButton()}
-            {PeersGridItem(peers)}
+            {SavedPeersGridItem()}
           </Widget>
         </Grid>
       </Grid>

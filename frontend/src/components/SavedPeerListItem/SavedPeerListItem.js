@@ -15,7 +15,7 @@ import {
 } from "../../navigation/navigation"
 
 
-export default function PeerListItem({
+export default function SavedPeerListItem({
   peer,
   ...props
 }) {
@@ -62,7 +62,8 @@ export default function PeerListItem({
      >
        <CardHeader
           avatar={<ComputerIcon/>}
-          title={`Address: ${peer.getHost()}:${peer.getPort()}`}
+          title={`Name: ${peer.getPeerName()}`}
+          subheader={`Address: ${peer.getHost()}:${peer.getPort()}`}
           // action={<Button size="small">View Peer</Button>}
        />
      </Card>
