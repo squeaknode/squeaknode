@@ -11,7 +11,7 @@ import ComputerIcon from '@material-ui/icons/Computer';
 import useStyles from "../../pages/wallet/styles";
 
 import {
-  goToPeerPage,
+  goToPeerAddressPage,
 } from "../../navigation/navigation"
 
 
@@ -27,11 +27,12 @@ export default function PeerListItem({
 
   const onPeerClick = (event) => {
     event.preventDefault();
-    console.log("Handling peer click...");
-    const peerId = peer.getPeerId();
+    console.log("Handling peer address click...");
+    const host = peer.getHost();
+    const port = peer.getPort();
     //const host = getPeerHost();
     //const port = getPeerPort();
-    goToPeerPage(history, peerId);
+    goToPeerAddressPage(history, host, port);
   }
 
   // const getPeerHost = () => {

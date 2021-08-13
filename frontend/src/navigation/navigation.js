@@ -6,6 +6,10 @@ export const goToPeerPage = (history, peerId) => {
   history.push("/app/peer/" + peerId);
 };
 
+export const goToPeerAddressPage = (history, host, port) => {
+  history.push("/app/peeraddress/" + host + "/" + port);
+};
+
 export const goToLightningNodePage = (history, pubkey, host, port) => {
     console.log("Go to lightning node for pubkey: " + pubkey);
     if (pubkey && host && port) {

@@ -596,6 +596,10 @@ class SqueakController:
     def get_connected_peers(self):
         return self.connection_manager.peers
 
+    def get_connected_peer(self, host, port):
+        address = (host, port)
+        return self.connection_manager.get_peer(address)
+
     def lookup_squeaks_for_interest(
             self,
             address: str,

@@ -256,6 +256,10 @@ service SqueakAdmin {
   */
   rpc GetConnectedPeers (GetConnectedPeersRequest) returns (GetConnectedPeersReply) {}
 
+  /** sqkadmin: `getconnectedpeer`
+  */
+  rpc GetConnectedPeer (GetConnectedPeerRequest) returns (GetConnectedPeerReply) {}
+
   /** sqkadmin: `disconnectpeer`
   */
   rpc DisconnectPeer (DisconnectPeerRequest) returns (DisconnectPeerReply) {}
@@ -942,6 +946,18 @@ message GetConnectedPeersRequest {
 
 message GetConnectedPeersReply {
     repeated ConnectedPeer connected_peers = 1;
+}
+
+message GetConnectedPeerRequest {
+    /// Host
+    string host = 1;
+
+    /// Port
+    int32 port = 2;
+}
+
+message GetConnectedPeerReply {
+    ConnectedPeer connected_peer = 1;
 }
 
 message DisconnectPeerRequest {

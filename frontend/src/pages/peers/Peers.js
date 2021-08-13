@@ -35,6 +35,7 @@ import {
 } from "../../squeakclient/requests"
 import {
   goToPeerPage,
+  goToPeerAddressPage,
 } from "../../navigation/navigation"
 
 

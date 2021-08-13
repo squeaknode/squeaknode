@@ -110,6 +110,8 @@ import {
   GetLikedSqueakDisplaysReply,
   GetConnectedPeersRequest,
   GetConnectedPeersReply,
+  GetConnectedPeerRequest,
+  GetConnectedPeerReply,
   ConnectPeerRequest as ConnectSqueakPeerRequest,
   ConnectPeerReply as ConnectSqueakPeerReply,
   DisconnectPeerRequest as DisconnectSqueakPeerRequest,
@@ -819,6 +821,20 @@ export function getConnectedPeersRequest(handleResponse) {
     GetConnectedPeersReply.deserializeBinary,
     (response) => {
       handleResponse(response.getConnectedPeersList());
+    }
+  );
+}
+
+export function getConnectedPeerRequest(host, port, handleResponse) {
+  var request = new GetConnectedPeerRequest();
+  request.setHost(host);
+  request.setPort(port);
+  makeRequest(
+    'getconnectedpeer',
+    request,
+    GetConnectedPeerReply.deserializeBinary,
+    (response) => {
+      handleResponse(response.getConnectedPeer());
     }
   );
 }
