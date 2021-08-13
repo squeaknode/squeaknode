@@ -945,8 +945,11 @@ message GetConnectedPeersReply {
 }
 
 message DisconnectPeerRequest {
-    /// The peer id
-    int32 peer_id = 1;
+    /// Host
+    string host = 1;
+
+    /// Port
+    int32 port = 2;
 }
 
 message DisconnectPeerReply {

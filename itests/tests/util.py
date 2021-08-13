@@ -161,7 +161,8 @@ def open_peer_connection(node_stub, peer_name, peer_host, peer_port):
         # Disconnect the peer
         node_stub.DisconnectPeer(
             squeak_admin_pb2.DisconnectPeerRequest(
-                peer_id=peer_id,
+                host=peer_host,
+                port=peer_port,
             )
         )
         # Delete the peer

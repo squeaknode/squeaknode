@@ -715,13 +715,18 @@ class SqueakController:
                     peer,
                 ))
 
-    def disconnect_peer(self, peer_id: int) -> None:
-        peer = self.squeak_db.get_peer(peer_id)
-        if peer is None:
-            raise Exception("Peer with id {} not found.".format(
-                peer_id,
-            ))
-        logger.info("Disconnect peer: {}".format(
-            peer,
+    def disconnect_peer(self, host: str, port: int) -> None:
+        # peer = self.squeak_db.get_peer(peer_id)
+        # if peer is None:
+        #     raise Exception("Peer with id {} not found.".format(
+        #         peer_id,
+        #     ))
+        # logger.info("Disconnect peer: {}".format(
+        #     peer,
+        # ))
+        logger.info("Disconnect to peer: {}:{}".format(
+            host,
+            port,
         ))
-        self.connection_manager.stop_connection(peer.address)
+        peer_address = PeerAddress(host=host, port=port)
+        self.connection_manager.stop_connection(peer_address)
