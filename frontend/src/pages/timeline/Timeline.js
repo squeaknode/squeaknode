@@ -44,6 +44,7 @@ import SqueakThreadItem from "../../components/SqueakThreadItem";
 import { Typography } from "../../components/Wrappers";
 import MakeSqueakDialog from "../../components/MakeSqueakDialog";
 import SqueakUserAvatar from "../../components/SqueakUserAvatar";
+import SqueakList from "../../components/SqueakList";
 
 import {
   getTimelineSqueakDisplaysRequest,
@@ -63,27 +64,6 @@ export default function TimelinePage() {
   const [network, setNetwork] = useState("");
 
   const history = useHistory();
-
-  function reloadSqueakItem(itemHash) {
-    // Get the new squeak.
-    getSqueakDisplayRequest(itemHash, (newSqueak) => {
-      const newSqueaks = squeaks.map((item) => {
-        // TODO: .hash or .getHash() ?
-        if (item.getSqueakHash() === itemHash) {
-          return newSqueak;
-        }
-        return item;
-      });
-      setSqueaks(newSqueaks);
-    })
-  }
-
-  const handleReloadSqueakItem = (itemHash) => {
-    const innerFunc = () => {
-      reloadSqueakItem(itemHash);
-    }
-    return innerFunc;
-  }
 
   const getSqueaks = () => {
     getTimelineSqueakDisplaysRequest(setSqueaks);
@@ -126,55 +106,14 @@ export default function TimelinePage() {
     )
   }
 
-  function TimelineUserAvatar(squeak) {
-    const handleAvatarClick = () => {
-      console.log("Avatar clicked...");
-      goToSqueakAddressPage(history, squeak.getAuthorAddress());
-    };
-    return (
-      <TimelineDot
-      onClick={handleAvatarClick}
-      style={{cursor: 'pointer'}}
-      >
-        <FaceIcon />
-      </TimelineDot>
-    )
-  }
-
   function SqueaksContent() {
     return (
       <>
-        <div>
-        {squeaks.map(squeak =>
-          <Timeline
-            align="left"
-            key={squeak.getSqueakHash()}
-          >
-
-          <TimelineItem>
-    <TimelineOppositeContent
-  className={classes.oppositeContent}
-  color="textSecondary"
-    ></TimelineOppositeContent>
-    <TimelineSeparator>
-      <SqueakUserAvatar
-        squeakProfile={squeak.getAuthor()}
-      />
-    </TimelineSeparator>
-    <TimelineContent>
-    <SqueakThreadItem
-      key={squeak.getSqueakHash()}
-      hash={squeak.getSqueakHash()}
-      squeak={squeak}
-      network={network}
-      reloadSqueak={handleReloadSqueakItem(squeak.getSqueakHash())}>
-    </SqueakThreadItem>
-    </TimelineContent>
-    </TimelineItem>
-
-          </Timeline>
-        )}
-        </div>
+        <SqueakList
+          squeaks={squeaks}
+          network={network}
+          setSqueaksFn={setSqueaks}
+        ></SqueakList>
       </>
     )
   }
