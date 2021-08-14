@@ -16,6 +16,7 @@ import Widget from "../../components/Widget";
 import SqueakThreadItem from "../../components/SqueakThreadItem";
 import CreateContactProfileDialog from "../../components/CreateContactProfileDialog";
 import SqueakUserAvatar from "../../components/SqueakUserAvatar";
+import SqueakList from "../../components/SqueakList";
 
 import Timeline from '@material-ui/lab/Timeline';
 import TimelineItem from '@material-ui/lab/TimelineItem';
@@ -123,38 +124,11 @@ export default function SqueakAddressPage() {
 
   function SqueaksContent() {
     return (
-      <>
-        <div>
-          {squeaks.map(squeak =>
-            <Timeline
-              align="left"
-              key={squeak.getSqueakHash()}
-            >
-
-            <TimelineItem>
-      <TimelineOppositeContent
-    className={classes.oppositeContent}
-    color="textSecondary"
-      ></TimelineOppositeContent>
-      <TimelineSeparator>
-        <SqueakUserAvatar
-          squeakProfile={squeak.getAuthor()}
-        />
-      </TimelineSeparator>
-      <TimelineContent>
-      <SqueakThreadItem
-        hash={squeak.getSqueakHash()}
-        key={squeak.getSqueakHash()}
-        squeak={squeak}
-        network={network}>
-      </SqueakThreadItem>
-      </TimelineContent>
-      </TimelineItem>
-
-            </Timeline>
-          )}
-        </div>
-      </>
+      <SqueakList
+        squeaks={squeaks}
+        network={network}
+        setSqueaksFn={setSqueaks}
+      ></SqueakList>
     )
   }
 
