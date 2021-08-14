@@ -50,6 +50,15 @@ export default function SqueakDetailsDialog({
       getSqueakDetailsRequest(hash, setSqueakDetails);
   };
 
+  function cancel(event) {
+    event.stopPropagation();
+    handleClose();
+  }
+
+  function ignore(event) {
+    event.stopPropagation();
+  }
+
   useEffect(()=>{
     getSqueakDetails(hash)
   },[hash]);
@@ -116,7 +125,7 @@ export default function SqueakDetailsDialog({
   }
 
   return (
-    <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+    <Dialog open={open} onClose={cancel} onClick={ignore} aria-labelledby="form-dialog-title">
   <DialogTitle id="form-dialog-title">View Squeak Details</DialogTitle>
   <form className={classes.root} noValidate autoComplete="off">
   <DialogContent>

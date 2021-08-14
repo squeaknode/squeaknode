@@ -79,9 +79,7 @@ export default function TimelinePage() {
   }
 
   const handleReloadSqueakItem = (itemHash) => {
-    console.log("Setting up handle reload squeak function with hash: " + itemHash);
     const innerFunc = () => {
-      console.log("Calling inner reload squeak function with hash: " + itemHash);
       reloadSqueakItem(itemHash);
     }
     return innerFunc;

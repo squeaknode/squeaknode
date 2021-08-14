@@ -106,6 +106,15 @@ export default function MakeSqueakDialog({
     handleClose();
   }
 
+  function cancel(event) {
+    event.stopPropagation();
+    handleClose();
+  }
+
+  function ignore(event) {
+    event.stopPropagation();
+  }
+
   function ReplySqueakContent() {
     return (
       <>
@@ -156,7 +165,7 @@ export default function MakeSqueakDialog({
   function MakeCancelButton() {
     return (
       <Button
-        onClick={handleClose}
+        onClick={cancel}
         variant="contained"
         color="secondary"
       >
@@ -179,7 +188,7 @@ export default function MakeSqueakDialog({
   }
 
   return (
-    <Dialog open={open} onEnter={resetFields} onClose={handleClose} aria-labelledby="form-dialog-title">
+    <Dialog open={open} onEnter={resetFields} onClose={cancel} onClick={ignore} aria-labelledby="form-dialog-title">
   <DialogTitle id="form-dialog-title">Make Squeak</DialogTitle>
   <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
   <DialogContent>

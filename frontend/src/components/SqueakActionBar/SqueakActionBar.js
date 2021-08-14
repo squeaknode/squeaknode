@@ -96,7 +96,6 @@ export default function SqueakActionBar({
   const handleLikeSqueak = () => {
     console.log("liked.");
     likeSqueakRequest(hash, (response) => {
-      console.log("Calling reloadSqueak: " + reloadSqueak);
       reloadSqueak();
     });
   };
@@ -116,6 +115,16 @@ export default function SqueakActionBar({
       return;
     }
     handleClickOpenReplyDialog();
+  }
+
+  const onResqueakClick = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    console.log("Handling resqueak click...");
+    if (!squeak) {
+      return;
+    }
+    // TODO: handleClickOpenReplyDialog();
   }
 
   const onLikeClick = (event) => {
@@ -146,6 +155,7 @@ export default function SqueakActionBar({
       return;
     }
     handleClickOpenDeleteDialog();
+    event.stopPropagation();
   }
 
   const onZoomInClick = (event) => {
@@ -241,6 +251,7 @@ export default function SqueakActionBar({
       function ResqueakIconContent() {
           return (
             <IconButton aria-label="resqueak"
+              onClick={onResqueakClick}
               >
               <RepeatIcon />
             </IconButton>

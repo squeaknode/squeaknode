@@ -54,6 +54,7 @@ export default function DeleteSqueakDialog({
 
   function handleSubmit(event) {
     event.preventDefault();
+    event.stopPropagation();
     console.log( 'squeakToDelete:', squeakToDelete);
     var squeakHash = squeakToDelete.getSqueakHash();
     console.log( 'squeakHash:', squeakHash);
@@ -61,10 +62,19 @@ export default function DeleteSqueakDialog({
     handleClose();
   }
 
+  function cancel(event) {
+    event.stopPropagation();
+    handleClose();
+  }
+
+  function ignore(event) {
+    event.stopPropagation();
+  }
+
   function MakeCancelButton() {
     return (
       <Button
-        onClick={handleClose}
+        onClick={cancel}
         variant="contained"
         color="secondary"
       >
@@ -87,7 +97,7 @@ export default function DeleteSqueakDialog({
   }
 
   return (
-    <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+    <Dialog open={open} onClose={cancel} onBackdropClick={cancel} onClick={ignore} aria-labelledby="form-dialog-title">
   <DialogTitle id="form-dialog-title">Delete Squeak</DialogTitle>
   <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
   <DialogContent>
