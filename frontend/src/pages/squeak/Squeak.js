@@ -30,6 +30,7 @@ import SqueakDetailItem from "../../components/SqueakDetailItem";
 import SqueakThreadItem from "../../components/SqueakThreadItem";
 import SqueakUserAvatar from "../../components/SqueakUserAvatar";
 import SqueakThread from "../../components/SqueakThread";
+import SqueakReplies from "../../components/SqueakReplies";
 
 
 import {
@@ -185,37 +186,11 @@ export default function SqueakPage() {
 
   function RepliesContent() {
     return (
-      <>
-        {replySqueaks
-          .map(replySqueak =>
-            <TimelineItem
-            key={replySqueak.getSqueakHash()}
-            >
-  <TimelineOppositeContent
-    className={classes.oppositeContent}
-    color="textSecondary"
-  ></TimelineOppositeContent>
-  <TimelineSeparator>
-    <SqueakUserAvatar
-      squeakProfile={replySqueak.getAuthor()}
-    />
-  </TimelineSeparator>
-  <TimelineContent>
-  <Box
-    p={1}
-    key={replySqueak.getSqueakHash()}
-    >
-  <SqueakThreadItem
-    hash={replySqueak.getSqueakHash()}
-    key={replySqueak.getSqueakHash()}
-    squeak={replySqueak}
-    network={network}>
-  </SqueakThreadItem>
-  </Box>
-  </TimelineContent>
-</TimelineItem>
-        )}
-      </>
+      <SqueakReplies
+        squeaks={replySqueaks}
+        network={network}
+        setSqueaksFn={setReplySqueaks}
+      ></SqueakReplies>
     )
   }
 
