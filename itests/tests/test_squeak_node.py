@@ -433,16 +433,12 @@ def test_delete_profile(admin_stub, contact_profile_id):
     )
 
     # Try to get the profile and fail
-    with pytest.raises(Exception) as excinfo:
-        admin_stub.GetSqueakProfile(
-            squeak_admin_pb2.GetSqueakProfileRequest(
-                profile_id=contact_profile_id,
-            )
+    get_profile_response = admin_stub.GetSqueakProfile(
+        squeak_admin_pb2.GetSqueakProfileRequest(
+            profile_id=contact_profile_id,
         )
-    assert (
-        "Profile not found with id: {}.".format(contact_profile_id)
-        in str(excinfo.value)
     )
+    assert not get_profile_response.HasField("squeak_profile")
 
 
 def test_get_profile_private_key(admin_stub, signing_profile_id):

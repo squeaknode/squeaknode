@@ -227,13 +227,8 @@ class SqueakController:
     def get_contact_profiles(self) -> List[SqueakProfile]:
         return self.squeak_db.get_contact_profiles()
 
-    def get_squeak_profile(self, profile_id: int) -> SqueakProfile:
-        profile = self.squeak_db.get_profile(profile_id)
-        if profile is None:
-            raise Exception("Profile not found with id: {}.".format(
-                profile_id,
-            ))
-        return profile
+    def get_squeak_profile(self, profile_id: int) -> Optional[SqueakProfile]:
+        return self.squeak_db.get_profile(profile_id)
 
     def get_squeak_profile_by_address(self, address: str) -> SqueakProfile:
         profile = self.squeak_db.get_profile_by_address(address)
@@ -271,6 +266,10 @@ class SqueakController:
 
     def get_squeak_profile_private_key(self, profile_id: int) -> bytes:
         profile = self.get_squeak_profile(profile_id)
+        if profile is None:
+            raise Exception("Profile with id: {} does not exist.".format(
+                profile_id
+            ))
         if profile.private_key is None:
             raise Exception("Profile with id: {} does not have a private key.".format(
                 profile_id
