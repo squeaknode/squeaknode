@@ -48,6 +48,7 @@ import SqueakUserAvatar from "../../components/SqueakUserAvatar";
 import {
   getTimelineSqueakDisplaysRequest,
   getNetworkRequest,
+  getSqueakDisplayRequest,
 } from "../../squeakclient/requests"
 import {
   goToSqueakAddressPage,
@@ -62,6 +63,29 @@ export default function TimelinePage() {
   const [network, setNetwork] = useState("");
 
   const history = useHistory();
+
+  function reloadSqueakItem(itemHash) {
+    // Get the new squeak.
+    getSqueakDisplayRequest(itemHash, (newSqueak) => {
+      const newSqueaks = squeaks.map((item) => {
+        // TODO: .hash or .getHash() ?
+        if (item.getSqueakHash() === itemHash) {
+          return newSqueak;
+        }
+        return item;
+      });
+      setSqueaks(newSqueaks);
+    })
+  }
+
+  const handleReloadSqueakItem = (itemHash) => {
+    console.log("Setting up handle reload squeak function with hash: " + itemHash);
+    const innerFunc = () => {
+      console.log("Calling inner reload squeak function with hash: " + itemHash);
+      reloadSqueakItem(itemHash);
+    }
+    return innerFunc;
+  }
 
   const getSqueaks = () => {
     getTimelineSqueakDisplaysRequest(setSqueaks);
@@ -144,7 +168,8 @@ export default function TimelinePage() {
       key={squeak.getSqueakHash()}
       hash={squeak.getSqueakHash()}
       squeak={squeak}
-      network={network}>
+      network={network}
+      reloadSqueak={handleReloadSqueakItem(squeak.getSqueakHash())}>
     </SqueakThreadItem>
     </TimelineContent>
     </TimelineItem>

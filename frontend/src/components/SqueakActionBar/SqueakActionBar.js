@@ -96,6 +96,7 @@ export default function SqueakActionBar({
   const handleLikeSqueak = () => {
     console.log("liked.");
     likeSqueakRequest(hash, (response) => {
+      console.log("Calling reloadSqueak: " + reloadSqueak);
       reloadSqueak();
     });
   };
@@ -109,6 +110,7 @@ export default function SqueakActionBar({
 
   const onReplyClick = (event) => {
     event.preventDefault();
+    event.stopPropagation();
     console.log("Handling reply click...");
     if (!squeak) {
       return;
@@ -118,6 +120,7 @@ export default function SqueakActionBar({
 
   const onLikeClick = (event) => {
     event.preventDefault();
+    event.stopPropagation();
     console.log("Handling like click...");
     if (!squeak) {
       return;
@@ -127,6 +130,7 @@ export default function SqueakActionBar({
 
   const onUnlikeClick = (event) => {
     event.preventDefault();
+    event.stopPropagation();
     console.log("Handling like click...");
     if (!squeak) {
       return;
@@ -136,6 +140,7 @@ export default function SqueakActionBar({
 
   const onDeleteClick = (event) => {
     event.preventDefault();
+    event.stopPropagation();
     console.log("Handling delete click...");
     if (!squeak) {
       return;
@@ -145,6 +150,7 @@ export default function SqueakActionBar({
 
   const onZoomInClick = (event) => {
     event.preventDefault();
+    event.stopPropagation();
     console.log("Handling zoomin click...");
     if (!squeak) {
       return;

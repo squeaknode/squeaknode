@@ -20,6 +20,8 @@ import DownloadIcon from '@material-ui/icons/CloudDownload';
 import useStyles from "./styles";
 
 import Widget from "../../components/Widget";
+import SqueakActionBar from "../../components/SqueakActionBar";
+
 
 import {
   getBlockDetailUrl,
@@ -36,6 +38,7 @@ export default function SqueakThreadItem({
   hash,
   squeak,
   network,
+  reloadSqueak,
   ...props
 }) {
   var classes = useStyles();
@@ -201,6 +204,12 @@ export default function SqueakThreadItem({
               {SqueakTime()}
             </Grid>
           </Grid>
+          <SqueakActionBar
+            hash={hash}
+            squeak={squeak}
+            network={network}
+            reloadSqueak={reloadSqueak}
+          ></SqueakActionBar>
     </Paper>
   )
 }
