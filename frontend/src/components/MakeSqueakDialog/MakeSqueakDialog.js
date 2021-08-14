@@ -80,9 +80,9 @@ export default function MakeSqueakDialog({
     getSigningProfilesRequest(setSigningProfiles);
   };
 
-  useEffect(() => {
-    loadSigningProfiles()
-  }, []);
+  // useEffect(() => {
+  //   loadSigningProfiles()
+  // }, []);
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -104,6 +104,10 @@ export default function MakeSqueakDialog({
     }
     createSqueak(profileId, content, replyto);
     handleClose();
+  }
+
+  function load(event) {
+    loadSigningProfiles();
   }
 
   function cancel(event) {
@@ -188,7 +192,7 @@ export default function MakeSqueakDialog({
   }
 
   return (
-    <Dialog open={open} onEnter={resetFields} onClose={cancel} onClick={ignore} aria-labelledby="form-dialog-title">
+    <Dialog open={open} onRendered={load} onEnter={resetFields} onClose={cancel} onClick={ignore} aria-labelledby="form-dialog-title">
   <DialogTitle id="form-dialog-title">Make Squeak</DialogTitle>
   <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
   <DialogContent>
