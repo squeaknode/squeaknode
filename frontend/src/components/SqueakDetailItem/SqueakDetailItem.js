@@ -34,6 +34,7 @@ import MakeSqueakDialog from "../../components/MakeSqueakDialog";
 import DeleteSqueakDialog from "../../components/DeleteSqueakDialog";
 import BuySqueakDialog from "../../components/BuySqueakDialog";
 import SqueakDetailsDialog from "../../components/SqueakDetailsDialog";
+import SqueakActionBar from "../../components/SqueakActionBar";
 
 
 import {
@@ -509,7 +510,12 @@ export default function SqueakDetailItem({
               {SqueakTime()}
             </Grid>
           </Grid>
-          {squeak && ActionBarContent()}
+          <SqueakActionBar
+            hash={hash}
+            squeak={squeak}
+            network={network}
+            reloadSqueak={reloadSqueak}
+          ></SqueakActionBar>
     </Paper>
     {MakeSqueakDialogContent()}
     {DeleteSqueakDialogContent()}

@@ -44,10 +44,12 @@ import SqueakThreadItem from "../../components/SqueakThreadItem";
 import { Typography } from "../../components/Wrappers";
 import MakeSqueakDialog from "../../components/MakeSqueakDialog";
 import SqueakUserAvatar from "../../components/SqueakUserAvatar";
+import SqueakList from "../../components/SqueakList";
 
 import {
   getTimelineSqueakDisplaysRequest,
   getNetworkRequest,
+  getSqueakDisplayRequest,
 } from "../../squeakclient/requests"
 import {
   goToSqueakAddressPage,
@@ -104,54 +106,14 @@ export default function TimelinePage() {
     )
   }
 
-  function TimelineUserAvatar(squeak) {
-    const handleAvatarClick = () => {
-      console.log("Avatar clicked...");
-      goToSqueakAddressPage(history, squeak.getAuthorAddress());
-    };
-    return (
-      <TimelineDot
-      onClick={handleAvatarClick}
-      style={{cursor: 'pointer'}}
-      >
-        <FaceIcon />
-      </TimelineDot>
-    )
-  }
-
   function SqueaksContent() {
     return (
       <>
-        <div>
-        {squeaks.map(squeak =>
-          <Timeline
-            align="left"
-            key={squeak.getSqueakHash()}
-          >
-
-          <TimelineItem>
-    <TimelineOppositeContent
-  className={classes.oppositeContent}
-  color="textSecondary"
-    ></TimelineOppositeContent>
-    <TimelineSeparator>
-      <SqueakUserAvatar
-        squeakProfile={squeak.getAuthor()}
-      />
-    </TimelineSeparator>
-    <TimelineContent>
-    <SqueakThreadItem
-      key={squeak.getSqueakHash()}
-      hash={squeak.getSqueakHash()}
-      squeak={squeak}
-      network={network}>
-    </SqueakThreadItem>
-    </TimelineContent>
-    </TimelineItem>
-
-          </Timeline>
-        )}
-        </div>
+        <SqueakList
+          squeaks={squeaks}
+          network={network}
+          setSqueaksFn={setSqueaks}
+        ></SqueakList>
       </>
     )
   }
