@@ -50,6 +50,10 @@ export default function SqueakDetailsDialog({
       getSqueakDetailsRequest(hash, setSqueakDetails);
   };
 
+  function load(event) {
+    getSqueakDetails(hash);
+  }
+
   function cancel(event) {
     event.stopPropagation();
     handleClose();
@@ -59,9 +63,9 @@ export default function SqueakDetailsDialog({
     event.stopPropagation();
   }
 
-  useEffect(()=>{
-    getSqueakDetails(hash)
-  },[hash]);
+  // useEffect(()=>{
+  //   getSqueakDetails(hash)
+  // },[hash]);
 
   function MakeCancelButton() {
     return (
@@ -125,7 +129,7 @@ export default function SqueakDetailsDialog({
   }
 
   return (
-    <Dialog open={open} onClose={cancel} onClick={ignore} aria-labelledby="form-dialog-title">
+    <Dialog open={open} onRendered={load} onClose={cancel} onClick={ignore} aria-labelledby="form-dialog-title">
   <DialogTitle id="form-dialog-title">View Squeak Details</DialogTitle>
   <form className={classes.root} noValidate autoComplete="off">
   <DialogContent>
