@@ -29,6 +29,7 @@ import Widget from "../../components/Widget";
 import SqueakDetailItem from "../../components/SqueakDetailItem";
 import SqueakThreadItem from "../../components/SqueakThreadItem";
 import SqueakUserAvatar from "../../components/SqueakUserAvatar";
+import SqueakThread from "../../components/SqueakThread";
 
 
 import {
@@ -149,38 +150,11 @@ export default function SqueakPage() {
 
   function AncestorsContent() {
     return (
-      <>
-        {ancestorSqueaks.slice(0, -1)
-          //.reverse()
-          .map(ancestorSqueak =>
-            <TimelineItem
-            key={ancestorSqueak.getSqueakHash()}
-            >
-  <TimelineOppositeContent
-    className={classes.oppositeContent}
-    color="textSecondary"
-  ></TimelineOppositeContent>
-  <TimelineSeparator>
-    <SqueakUserAvatar
-      squeakProfile={ancestorSqueak.getAuthor()}
-    />
-    <TimelineConnector />
-  </TimelineSeparator>
-  <TimelineContent>
-  <Box
-    key={ancestorSqueak.getSqueakHash()}
-    >
-  <SqueakThreadItem
-    hash={ancestorSqueak.getSqueakHash()}
-    key={ancestorSqueak.getSqueakHash()}
-    squeak={ancestorSqueak}
-    network={network}>
-  </SqueakThreadItem>
-  </Box>
-  </TimelineContent>
-</TimelineItem>
-        )}
-      </>
+      <SqueakThread
+        squeaks={ancestorSqueaks.slice(0, -1)}
+        network={network}
+        setSqueaksFn={setAncestorSqueaks}
+      ></SqueakThread>
     )
   }
 
