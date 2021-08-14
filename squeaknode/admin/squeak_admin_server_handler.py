@@ -271,9 +271,10 @@ class SqueakAdminServerHandler(object):
                 squeak_hash
             )
         )
-        logger.info("Returning squeak display entry with like value: {}".format(
-            squeak_entry_with_profile.squeak_entry.liked_time,
-        ))
+        if squeak_entry_with_profile is None:
+            return squeak_admin_pb2.GetSqueakDisplayReply(
+                squeak_display_entry=None
+            )
         display_message = squeak_entry_to_message(
             squeak_entry_with_profile)
         return squeak_admin_pb2.GetSqueakDisplayReply(
@@ -544,6 +545,10 @@ class SqueakAdminServerHandler(object):
                 squeak_hash
             )
         )
+        if squeak_entry_with_profile is None:
+            return squeak_admin_pb2.GetSqueakDetailsReply(
+                squeak_detail_entry=None
+            )
         detail_message = squeak_entry_to_detail_message(
             squeak_entry_with_profile)
         return squeak_admin_pb2.GetSqueakDetailsReply(

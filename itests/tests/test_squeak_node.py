@@ -91,7 +91,7 @@ def test_make_squeak(admin_stub, signing_profile_id):
     )
     # assert get_squeak_display_response.squeak_display_entry.author_address == signing_profile_address
     assert get_squeak_display_response.squeak_display_entry.is_author_known
-    assert get_squeak_display_response.squeak_display_entry.author is not None
+    assert get_squeak_display_response.squeak_display_entry.HasField("author")
     assert len(
         get_squeak_display_response.squeak_display_entry.author.profile_image) > 0
 
@@ -488,14 +488,19 @@ def test_delete_squeak(admin_stub, saved_squeak_hash):
     )
 
     # Try to get the squeak display item
-    with pytest.raises(Exception) as excinfo:
-        admin_stub.GetSqueakDisplay(
-            squeak_admin_pb2.GetSqueakDisplayRequest(
-                squeak_hash=saved_squeak_hash,
-            )
+    get_squeak_display_response = admin_stub.GetSqueakDisplay(
+        squeak_admin_pb2.GetSqueakDisplayRequest(
+            squeak_hash=saved_squeak_hash,
         )
-    # print(str(excinfo.value))
-    assert "Squeak not found with hash:" in str(excinfo.value)
+    )
+    print("-----------------------------")
+    print("get_squeak_display_response:")
+    print(get_squeak_display_response)
+    print(dir(get_squeak_display_response))
+    print("-----------------------------")
+    print("get_squeak_display_response.squeak_display_entry:")
+    print((get_squeak_display_response.squeak_display_entry))
+    assert not get_squeak_display_response.HasField("squeak_display_entry")
 
 
 def test_create_peer(admin_stub):
@@ -884,16 +889,12 @@ def test_download_single_squeak(
     )
 
     # Get the squeak display item (should be empty)
-    with pytest.raises(Exception) as excinfo:
-        get_squeak_display_response = other_admin_stub.GetSqueakDisplay(
-            squeak_admin_pb2.GetSqueakDisplayRequest(
-                squeak_hash=saved_squeak_hash,
-            )
+    get_squeak_display_response = other_admin_stub.GetSqueakDisplay(
+        squeak_admin_pb2.GetSqueakDisplayRequest(
+            squeak_hash=saved_squeak_hash,
         )
-    assert (
-        "Squeak not found with hash: {}.".format(saved_squeak_hash)
-        in str(excinfo.value)
     )
+    assert not get_squeak_display_response.HasField("squeak_display_entry")
 
     # Get buy offers for the squeak hash (should be empty)
     get_buy_offers_response = other_admin_stub.GetBuyOffers(
@@ -920,7 +921,7 @@ def test_download_single_squeak(
             squeak_hash=saved_squeak_hash,
         )
     )
-    assert get_squeak_display_response.squeak_display_entry is not None
+    assert get_squeak_display_response.HasField("squeak_display_entry")
     # Get the buy offer
     get_buy_offers_response = other_admin_stub.GetBuyOffers(
         squeak_admin_pb2.GetBuyOffersRequest(
@@ -1076,16 +1077,12 @@ def test_share_single_squeak(
     )
 
     # Get the squeak display item (should be empty)
-    with pytest.raises(Exception) as excinfo:
-        get_squeak_display_response = other_admin_stub.GetSqueakDisplay(
-            squeak_admin_pb2.GetSqueakDisplayRequest(
-                squeak_hash=saved_squeak_hash,
-            )
+    get_squeak_display_response = other_admin_stub.GetSqueakDisplay(
+        squeak_admin_pb2.GetSqueakDisplayRequest(
+            squeak_hash=saved_squeak_hash,
         )
-    assert (
-        "Squeak not found with hash: {}.".format(saved_squeak_hash)
-        in str(excinfo.value)
     )
+    assert not get_squeak_display_response.HasField("squeak_display_entry")
 
     # Get buy offers for the squeak hash (should be empty)
     get_buy_offers_response = other_admin_stub.GetBuyOffers(
@@ -1109,7 +1106,7 @@ def test_share_single_squeak(
             squeak_hash=saved_squeak_hash,
         )
     )
-    assert get_squeak_display_response.squeak_display_entry is not None
+    assert get_squeak_display_response.HasField("squeak_display_entry")
     # Get the buy offer
     get_buy_offers_response = other_admin_stub.GetBuyOffers(
         squeak_admin_pb2.GetBuyOffersRequest(

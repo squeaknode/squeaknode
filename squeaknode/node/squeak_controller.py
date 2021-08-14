@@ -457,14 +457,8 @@ class SqueakController:
     def get_offer(self, squeak: CSqueak, offer: Offer, peer_address: PeerAddress) -> ReceivedOffer:
         return self.squeak_core.unpack_offer(squeak, offer, peer_address)
 
-    def get_squeak_entry_with_profile(self, squeak_hash: bytes) -> SqueakEntryWithProfile:
-        squeak_entry_with_profile = self.squeak_db.get_squeak_entry_with_profile(
-            squeak_hash)
-        if squeak_entry_with_profile is None:
-            raise Exception("Squeak not found with hash: {}.".format(
-                squeak_hash.hex(),
-            ))
-        return squeak_entry_with_profile
+    def get_squeak_entry_with_profile(self, squeak_hash: bytes) -> Optional[SqueakEntryWithProfile]:
+        return self.squeak_db.get_squeak_entry_with_profile(squeak_hash)
 
     def get_timeline_squeak_entries_with_profile(self):
         return self.squeak_db.get_timeline_squeak_entries_with_profile()
