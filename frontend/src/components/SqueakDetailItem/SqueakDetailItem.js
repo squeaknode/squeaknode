@@ -510,12 +510,12 @@ export default function SqueakDetailItem({
               {SqueakTime()}
             </Grid>
           </Grid>
-          {SqueakActionBar(
-            hash,
-            squeak,
-            network,
-            reloadSqueak,
-          )}
+          <SqueakActionBar
+            hash={hash}
+            squeak={squeak}
+            network={network}
+            reloadSqueak={reloadSqueak}
+          ></SqueakActionBar>
     </Paper>
     {MakeSqueakDialogContent()}
     {DeleteSqueakDialogContent()}
