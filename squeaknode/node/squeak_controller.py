@@ -63,39 +63,18 @@ class SqueakController:
         self.connection_manager = connection_manager
         self.config = config
 
-    def save_uploaded_squeak(self, squeak: CSqueak) -> bytes:
-        return self.save_squeak(
-            squeak,
-            require_decryption_key=True,
-        )
-
-    def save_downloaded_squeak(self, squeak: CSqueak) -> bytes:
-        return self.save_squeak(
-            squeak,
-            require_decryption_key=False,
-        )
-
-    def save_created_squeak(self, squeak: CSqueak) -> bytes:
-        return self.save_squeak(
-            squeak,
-            require_decryption_key=True,
-        )
-
     def save_squeak(
             self,
             squeak: CSqueak,
-            require_decryption_key: bool = False,
+            skip_rate_limit: bool = False,
     ) -> bytes:
         # Check if squeak is valid.
         squeak_entry = self.squeak_core.validate_squeak(squeak)
-        # Check if squeak has decryption key.
-        if require_decryption_key and not squeak.HasDecryptionKey():
-            raise Exception(
-                "Squeak must contain decryption key.")
         # Check if rate limit is violated.
-        if not self.squeak_rate_limiter.should_rate_limit_allow(squeak):
-            raise Exception(
-                "Exceeded allowed number of squeaks per address per block.")
+        if not skip_rate_limit:
+            if not self.squeak_rate_limiter.should_rate_limit_allow(squeak):
+                raise Exception(
+                    "Exceeded allowed number of squeaks per address per block.")
         # Save the squeak.
         logger.info("Saving squeak: {}".format(
             get_hash(squeak).hex(),
@@ -115,21 +94,11 @@ class SqueakController:
     def get_squeak(
             self,
             squeak_hash: bytes,
-            clear_decryption_key: bool = False,
     ) -> Optional[CSqueak]:
         squeak_entry = self.squeak_db.get_squeak_entry(squeak_hash)
         if squeak_entry is None:
             return None
-        squeak = squeak_entry.squeak
-        if clear_decryption_key:
-            squeak.ClearDecryptionKey()
-        return squeak
-
-    def get_squeak_without_decryption_key(
-            self,
-            squeak_hash: bytes,
-    ) -> Optional[CSqueak]:
-        return self.get_squeak(squeak_hash, clear_decryption_key=True)
+        return squeak_entry.squeak
 
     def lookup_allowed_addresses(self, addresses: List[str]):
         followed_addresses = self.get_followed_addresses()
@@ -270,7 +239,7 @@ class SqueakController:
         squeak_profile = self.squeak_db.get_profile(profile_id)
         squeak_entry = self.squeak_core.make_squeak(
             squeak_profile, content_str, replyto_hash)
-        return self.save_created_squeak(squeak_entry.squeak)
+        return self.save_squeak(squeak_entry.squeak, skip_rate_limit=True)
 
     def delete_squeak(self, squeak_hash: bytes) -> None:
         num_deleted_offers = self.squeak_db.delete_offers_for_squeak(
