@@ -173,7 +173,6 @@ export default function SqueakPage() {
 </TimelineSeparator>
 <TimelineContent>
 <SqueakDetailItem
-  key={hash}
   hash={hash}
   squeak={squeak}
   reloadSqueak={getCurrentSqueak}

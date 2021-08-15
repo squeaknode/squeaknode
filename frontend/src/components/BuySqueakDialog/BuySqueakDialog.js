@@ -127,9 +127,9 @@ export default function BuySqueakDialog({
     return peer.getPeerName();
   };
 
-  useEffect(() => {
-    loadOffers()
-  }, []);
+  // useEffect(() => {
+  //   loadOffers()
+  // }, []);
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -141,6 +141,20 @@ export default function BuySqueakDialog({
     pay(selectedOfferId);
     handleClose();
   }
+
+  function load(event) {
+    loadOffers();
+  }
+
+  function cancel(event) {
+    event.stopPropagation();
+    handleClose();
+  }
+
+  function ignore(event) {
+    event.stopPropagation();
+  }
+
 
   function MakeSelectSigningProfile() {
     return (
@@ -216,7 +230,7 @@ export default function BuySqueakDialog({
   }
 
   return (
-    <Dialog open={open} onEnter={resetFields} onClose={handleClose} aria-labelledby="form-dialog-title">
+    <Dialog open={open} onRendered={load} onEnter={resetFields} onClose={cancel} onClick={ignore} aria-labelledby="form-dialog-title">
   <DialogTitle id="form-dialog-title">Buy Squeak</DialogTitle>
   <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
   <DialogContent>
