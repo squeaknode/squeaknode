@@ -167,6 +167,10 @@ class SqueakAdminServerHandler(object):
         logger.info("Handle get squeak profile with name: {}".format(name))
         squeak_profile = self.squeak_controller.get_squeak_profile_by_name(
             name)
+        if squeak_profile is None:
+            return squeak_admin_pb2.GetSqueakProfileByNameReply(
+                squeak_profile=None
+            )
         squeak_profile_msg = squeak_profile_to_message(squeak_profile)
         return squeak_admin_pb2.GetSqueakProfileByNameReply(
             squeak_profile=squeak_profile_msg

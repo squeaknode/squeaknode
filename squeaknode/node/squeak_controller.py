@@ -238,13 +238,8 @@ class SqueakController:
             ))
         return profile
 
-    def get_squeak_profile_by_name(self, name: str) -> SqueakProfile:
-        profile = self.squeak_db.get_profile_by_name(name)
-        if profile is None:
-            raise Exception("Profile not found with name: {}.".format(
-                name,
-            ))
-        return profile
+    def get_squeak_profile_by_name(self, name: str) -> Optional[SqueakProfile]:
+        return self.squeak_db.get_profile_by_name(name)
 
     def set_squeak_profile_following(self, profile_id: int, following: bool) -> None:
         self.squeak_db.set_profile_following(profile_id, following)

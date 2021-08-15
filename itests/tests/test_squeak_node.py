@@ -10,8 +10,6 @@ from squeak.core import CSqueak
 from proto import lnd_pb2 as ln
 from proto import squeak_admin_pb2
 from tests.util import connect_peer
-from tests.util import generate_signing_key
-from tests.util import get_address
 from tests.util import get_connected_peer
 from tests.util import get_connected_peers
 from tests.util import get_hash
@@ -241,15 +239,13 @@ def test_make_signing_profile(admin_stub):
     assert get_imported_squeak_profile_response.squeak_profile.address == squeak_profile_address
 
 
-def test_make_contact_profile(admin_stub):
+def test_make_contact_profile(admin_stub, squeak_address):
     # Create a new contact profile
     contact_name = "test_contact_profile_name"
-    contact_signing_key = generate_signing_key()
-    contact_address = get_address(contact_signing_key)
     create_contact_profile_response = admin_stub.CreateContactProfile(
         squeak_admin_pb2.CreateContactProfileRequest(
             profile_name=contact_name,
-            address=contact_address,
+            address=squeak_address,
         )
     )
     contact_profile_id = create_contact_profile_response.profile_id
@@ -281,15 +277,13 @@ def test_make_signing_profile_empty_name(admin_stub):
     assert "Profile name cannot be empty." in str(excinfo.value)
 
 
-def test_make_contact_profile_empty_name(admin_stub):
+def test_make_contact_profile_empty_name(admin_stub, squeak_address):
     # Try to create a new contact profile with an empty name
-    contact_signing_key = generate_signing_key()
-    contact_address = get_address(contact_signing_key)
     with pytest.raises(Exception) as excinfo:
         admin_stub.CreateContactProfile(
             squeak_admin_pb2.CreateContactProfileRequest(
                 profile_name="",
-                address=contact_address,
+                address=squeak_address,
             )
         )
     assert "Profile name cannot be empty." in str(excinfo.value)
@@ -424,7 +418,7 @@ def test_set_profile_image(admin_stub, contact_profile_id, random_image, random_
     assert not get_squeak_profile_response.squeak_profile.has_custom_profile_image
 
 
-def test_delete_profile(admin_stub, contact_profile_id):
+def test_delete_profile(admin_stub, random_name, contact_profile_id):
     # Delete the profile
     admin_stub.DeleteSqueakProfile(
         squeak_admin_pb2.DeleteSqueakProfileRequest(
@@ -439,6 +433,13 @@ def test_delete_profile(admin_stub, contact_profile_id):
         )
     )
     assert not get_profile_response.HasField("squeak_profile")
+
+    get_squeak_profile_by_name_response = admin_stub.GetSqueakProfileByName(
+        squeak_admin_pb2.GetSqueakProfileByNameRequest(
+            name=random_name,
+        )
+    )
+    assert not get_squeak_profile_by_name_response.HasField("squeak_profile")
 
 
 def test_get_profile_private_key(admin_stub, signing_profile_id):
