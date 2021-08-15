@@ -227,29 +227,14 @@ class SqueakController:
     def get_contact_profiles(self) -> List[SqueakProfile]:
         return self.squeak_db.get_contact_profiles()
 
-    def get_squeak_profile(self, profile_id: int) -> SqueakProfile:
-        profile = self.squeak_db.get_profile(profile_id)
-        if profile is None:
-            raise Exception("Profile not found with id: {}.".format(
-                profile_id,
-            ))
-        return profile
+    def get_squeak_profile(self, profile_id: int) -> Optional[SqueakProfile]:
+        return self.squeak_db.get_profile(profile_id)
 
-    def get_squeak_profile_by_address(self, address: str) -> SqueakProfile:
-        profile = self.squeak_db.get_profile_by_address(address)
-        if profile is None:
-            raise Exception("Profile not found with address: {}.".format(
-                address,
-            ))
-        return profile
+    def get_squeak_profile_by_address(self, address: str) -> Optional[SqueakProfile]:
+        return self.squeak_db.get_profile_by_address(address)
 
-    def get_squeak_profile_by_name(self, name: str) -> SqueakProfile:
-        profile = self.squeak_db.get_profile_by_name(name)
-        if profile is None:
-            raise Exception("Profile not found with name: {}.".format(
-                name,
-            ))
-        return profile
+    def get_squeak_profile_by_name(self, name: str) -> Optional[SqueakProfile]:
+        return self.squeak_db.get_profile_by_name(name)
 
     def set_squeak_profile_following(self, profile_id: int, following: bool) -> None:
         self.squeak_db.set_profile_following(profile_id, following)
@@ -271,6 +256,10 @@ class SqueakController:
 
     def get_squeak_profile_private_key(self, profile_id: int) -> bytes:
         profile = self.get_squeak_profile(profile_id)
+        if profile is None:
+            raise Exception("Profile with id: {} does not exist.".format(
+                profile_id
+            ))
         if profile.private_key is None:
             raise Exception("Profile with id: {} does not have a private key.".format(
                 profile_id
@@ -308,13 +297,8 @@ class SqueakController:
         )
         return self.squeak_db.insert_peer(squeak_peer)
 
-    def get_peer(self, peer_id: int) -> SqueakPeer:
-        peer = self.squeak_db.get_peer(peer_id)
-        if peer is None:
-            raise Exception("Peer with id {} not found.".format(
-                peer_id,
-            ))
-        return peer
+    def get_peer(self, peer_id: int) -> Optional[SqueakPeer]:
+        return self.squeak_db.get_peer(peer_id)
 
     def get_peers(self):
         return self.squeak_db.get_peers()
@@ -350,14 +334,9 @@ class SqueakController:
             peer_addresss,
         )
 
-    def get_buy_offer_with_peer(self, received_offer_id: int) -> ReceivedOfferWithPeer:
-        received_offer_with_peer = self.squeak_db.get_offer_with_peer(
+    def get_buy_offer_with_peer(self, received_offer_id: int) -> Optional[ReceivedOfferWithPeer]:
+        return self.squeak_db.get_offer_with_peer(
             received_offer_id)
-        if received_offer_with_peer is None:
-            raise Exception("Received offer with id {} not found.".format(
-                received_offer_id,
-            ))
-        return received_offer_with_peer
 
     def pay_offer(self, received_offer_id: int) -> int:
         # Get the offer from the database
@@ -404,13 +383,8 @@ class SqueakController:
     def get_sent_payments(self) -> List[SentPaymentWithPeer]:
         return self.squeak_db.get_sent_payments()
 
-    def get_sent_payment(self, sent_payment_id: int) -> SentPaymentWithPeer:
-        sent_payment = self.squeak_db.get_sent_payment(sent_payment_id)
-        if sent_payment is None:
-            raise Exception("Sent payment not found with id: {}.".format(
-                sent_payment_id,
-            ))
-        return sent_payment
+    def get_sent_payment(self, sent_payment_id: int) -> Optional[SentPaymentWithPeer]:
+        return self.squeak_db.get_sent_payment(sent_payment_id)
 
     def get_sent_offers(self):
         return self.squeak_db.get_sent_offers()
@@ -457,14 +431,8 @@ class SqueakController:
     def get_offer(self, squeak: CSqueak, offer: Offer, peer_address: PeerAddress) -> ReceivedOffer:
         return self.squeak_core.unpack_offer(squeak, offer, peer_address)
 
-    def get_squeak_entry_with_profile(self, squeak_hash: bytes) -> SqueakEntryWithProfile:
-        squeak_entry_with_profile = self.squeak_db.get_squeak_entry_with_profile(
-            squeak_hash)
-        if squeak_entry_with_profile is None:
-            raise Exception("Squeak not found with hash: {}.".format(
-                squeak_hash.hex(),
-            ))
-        return squeak_entry_with_profile
+    def get_squeak_entry_with_profile(self, squeak_hash: bytes) -> Optional[SqueakEntryWithProfile]:
+        return self.squeak_db.get_squeak_entry_with_profile(squeak_hash)
 
     def get_timeline_squeak_entries_with_profile(self):
         return self.squeak_db.get_timeline_squeak_entries_with_profile()

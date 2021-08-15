@@ -142,6 +142,10 @@ class SqueakAdminServerHandler(object):
         profile_id = request.profile_id
         logger.info("Handle get squeak profile with id: {}".format(profile_id))
         squeak_profile = self.squeak_controller.get_squeak_profile(profile_id)
+        if squeak_profile is None:
+            return squeak_admin_pb2.GetSqueakProfileReply(
+                squeak_profile=None,
+            )
         squeak_profile_msg = squeak_profile_to_message(squeak_profile)
         return squeak_admin_pb2.GetSqueakProfileReply(
             squeak_profile=squeak_profile_msg,
@@ -153,6 +157,10 @@ class SqueakAdminServerHandler(object):
             "Handle get squeak profile with address: {}".format(address))
         squeak_profile = self.squeak_controller.get_squeak_profile_by_address(
             address)
+        if squeak_profile is None:
+            return squeak_admin_pb2.GetSqueakProfileByAddressReply(
+                squeak_profile=None
+            )
         squeak_profile_msg = squeak_profile_to_message(squeak_profile)
         return squeak_admin_pb2.GetSqueakProfileByAddressReply(
             squeak_profile=squeak_profile_msg
@@ -163,6 +171,10 @@ class SqueakAdminServerHandler(object):
         logger.info("Handle get squeak profile with name: {}".format(name))
         squeak_profile = self.squeak_controller.get_squeak_profile_by_name(
             name)
+        if squeak_profile is None:
+            return squeak_admin_pb2.GetSqueakProfileByNameReply(
+                squeak_profile=None
+            )
         squeak_profile_msg = squeak_profile_to_message(squeak_profile)
         return squeak_admin_pb2.GetSqueakProfileByNameReply(
             squeak_profile=squeak_profile_msg
@@ -271,9 +283,10 @@ class SqueakAdminServerHandler(object):
                 squeak_hash
             )
         )
-        logger.info("Returning squeak display entry with like value: {}".format(
-            squeak_entry_with_profile.squeak_entry.liked_time,
-        ))
+        if squeak_entry_with_profile is None:
+            return squeak_admin_pb2.GetSqueakDisplayReply(
+                squeak_display_entry=None
+            )
         display_message = squeak_entry_to_message(
             squeak_entry_with_profile)
         return squeak_admin_pb2.GetSqueakDisplayReply(
@@ -406,6 +419,10 @@ class SqueakAdminServerHandler(object):
         peer_id = request.peer_id
         logger.info("Handle get squeak peer with id: {}".format(peer_id))
         squeak_peer = self.squeak_controller.get_peer(peer_id)
+        if squeak_peer is None:
+            return squeak_admin_pb2.GetPeerReply(
+                squeak_peer=None,
+            )
         squeak_peer_msg = squeak_peer_to_message(squeak_peer)
         return squeak_admin_pb2.GetPeerReply(
             squeak_peer=squeak_peer_msg,
@@ -480,6 +497,10 @@ class SqueakAdminServerHandler(object):
         offer_id = request.offer_id
         logger.info("Handle get buy offer for hash: {}".format(offer_id))
         offer = self.squeak_controller.get_buy_offer_with_peer(offer_id)
+        if offer is None:
+            return squeak_admin_pb2.GetBuyOfferReply(
+                offer=None,
+            )
         offer_msg = offer_entry_to_message(offer)
         return squeak_admin_pb2.GetBuyOfferReply(
             offer=offer_msg,
@@ -529,6 +550,10 @@ class SqueakAdminServerHandler(object):
         logger.info(
             "Handle get sent payment with id: {}".format(sent_payment_id))
         sent_payment = self.squeak_controller.get_sent_payment(sent_payment_id)
+        if sent_payment is None:
+            return squeak_admin_pb2.GetSentPaymentReply(
+                sent_payment=None,
+            )
         sent_payment_msg = sent_payment_with_peer_to_message(sent_payment)
         return squeak_admin_pb2.GetSentPaymentReply(
             sent_payment=sent_payment_msg,
@@ -544,6 +569,10 @@ class SqueakAdminServerHandler(object):
                 squeak_hash
             )
         )
+        if squeak_entry_with_profile is None:
+            return squeak_admin_pb2.GetSqueakDetailsReply(
+                squeak_detail_entry=None
+            )
         detail_message = squeak_entry_to_detail_message(
             squeak_entry_with_profile)
         return squeak_admin_pb2.GetSqueakDetailsReply(
