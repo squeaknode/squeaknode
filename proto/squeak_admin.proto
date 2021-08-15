@@ -196,6 +196,10 @@ service SqueakAdmin {
   */
   rpc SyncSqueak (SyncSqueakRequest) returns (SyncSqueakReply) {}
 
+  /** sqkadmin: `downloadoffers`
+  */
+  rpc DownloadOffers (DownloadOffersRequest) returns (DownloadOffersReply) {}
+
   /** sqkadmin: `payoffer`
   */
   rpc PayOffer (PayOfferRequest) returns (PayOfferReply) {}
@@ -778,6 +782,14 @@ message SyncSqueakRequest {
 }
 
 message SyncSqueakReply {
+}
+
+message DownloadOffersRequest {
+    /// The squeak hash.
+    string squeak_hash = 1;
+}
+
+message DownloadOffersReply {
 }
 
 message GetSqueakDetailsRequest {

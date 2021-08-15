@@ -601,6 +601,16 @@ class SqueakController:
         #     peer.send_msg(getdata_msg)
         self.broadcast_msg(getdata_msg)
 
+    def download_offers(self, squeak_hash: bytes):
+        logger.info("Downloading offers for squeak: {}".format(
+            squeak_hash.hex(),
+        ))
+        invs = [
+            CInv(type=2, hash=squeak_hash)
+        ]
+        getdata_msg = msg_getdata(inv=invs)
+        self.broadcast_msg(getdata_msg)
+
     def share_squeaks(self):
         block_range = self.get_block_range()
         logger.info("Sharing timeline with block range: {}".format(block_range))

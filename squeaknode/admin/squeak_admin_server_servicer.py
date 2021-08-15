@@ -167,6 +167,9 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
     def SyncSqueak(self, request, context):
         return self.handler.handle_sync_squeak(request)
 
+    def DownloadOffers(self, request, context):
+        return self.handler.handle_download_offers(request)
+
     def PayOffer(self, request, context):
         return self.handler.handle_pay_offer(request)
 

@@ -714,6 +714,16 @@ def test_connect_other_node(
     # print(sync_squeaks_response)
     # assert peer_id in sync_squeaks_response.sync_result.completed_peer_ids
 
+    # Download offer
+    other_admin_stub.DownloadOffers(
+        squeak_admin_pb2.DownloadOffersRequest(
+            squeak_hash=saved_squeak_hash,
+        ),
+    )
+    print("Sleeping...")
+    time.sleep(5)
+    print("Done sleeping.")
+
     # Get the sent offers from the seller node
     get_sent_offers_response = admin_stub.GetSentOffers(
         squeak_admin_pb2.GetSentOffersRequest(),
@@ -911,7 +921,7 @@ def test_download_single_squeak(
             squeak_hash=saved_squeak_hash,
         ),
     )
-    time.sleep(10)
+    time.sleep(5)
     # print(sync_squeak_response)
     # assert peer_id in sync_squeak_response.sync_result.completed_peer_ids
 
@@ -922,6 +932,15 @@ def test_download_single_squeak(
         )
     )
     assert get_squeak_display_response.HasField("squeak_display_entry")
+
+    # Download offer
+    other_admin_stub.DownloadOffers(
+        squeak_admin_pb2.DownloadOffersRequest(
+            squeak_hash=saved_squeak_hash,
+        ),
+    )
+    time.sleep(5)
+
     # Get the buy offer
     get_buy_offers_response = other_admin_stub.GetBuyOffers(
         squeak_admin_pb2.GetBuyOffersRequest(
@@ -1107,11 +1126,21 @@ def test_share_single_squeak(
         )
     )
     assert get_squeak_display_response.HasField("squeak_display_entry")
+
+    # Download offer
+    other_admin_stub.DownloadOffers(
+        squeak_admin_pb2.DownloadOffersRequest(
+            squeak_hash=saved_squeak_hash,
+        ),
+    )
+    time.sleep(5)
+
     # Get the buy offer
     get_buy_offers_response = other_admin_stub.GetBuyOffers(
         squeak_admin_pb2.GetBuyOffersRequest(
             squeak_hash=saved_squeak_hash,
         )
     )
+
     # print(get_buy_offers_response)
     assert len(get_buy_offers_response.offers) > 0
