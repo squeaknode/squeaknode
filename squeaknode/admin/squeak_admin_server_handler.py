@@ -411,6 +411,10 @@ class SqueakAdminServerHandler(object):
         peer_id = request.peer_id
         logger.info("Handle get squeak peer with id: {}".format(peer_id))
         squeak_peer = self.squeak_controller.get_peer(peer_id)
+        if squeak_peer is None:
+            return squeak_admin_pb2.GetPeerReply(
+                squeak_peer=None,
+            )
         squeak_peer_msg = squeak_peer_to_message(squeak_peer)
         return squeak_admin_pb2.GetPeerReply(
             squeak_peer=squeak_peer_msg,

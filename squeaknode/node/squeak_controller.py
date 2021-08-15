@@ -307,13 +307,8 @@ class SqueakController:
         )
         return self.squeak_db.insert_peer(squeak_peer)
 
-    def get_peer(self, peer_id: int) -> SqueakPeer:
-        peer = self.squeak_db.get_peer(peer_id)
-        if peer is None:
-            raise Exception("Peer with id {} not found.".format(
-                peer_id,
-            ))
-        return peer
+    def get_peer(self, peer_id: int) -> Optional[SqueakPeer]:
+        return self.squeak_db.get_peer(peer_id)
 
     def get_peers(self):
         return self.squeak_db.get_peers()
