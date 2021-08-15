@@ -70,11 +70,11 @@ class SqueakController:
         # Check if squeak is valid.
         CheckSqueak(squeak, skipDecryptionCheck=True)
         squeak_entry = self.squeak_core.validate_squeak(squeak)
-        # Check if rate limit is violated.
-        if not skip_rate_limit:
-            if not self.squeak_rate_limiter.should_rate_limit_allow(squeak):
-                raise Exception(
-                    "Exceeded allowed number of squeaks per address per block.")
+        # TODO: Check if rate limit is violated.
+        # if not skip_rate_limit:
+        #     if not self.squeak_rate_limiter.should_rate_limit_allow(squeak):
+        #         raise Exception(
+        #             "Exceeded allowed number of squeaks per address per block.")
         # Save the squeak.
         logger.info("Saving squeak: {}".format(
             get_hash(squeak).hex(),
