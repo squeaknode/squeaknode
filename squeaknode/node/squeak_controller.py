@@ -69,6 +69,7 @@ class SqueakController:
             skip_rate_limit: bool = False,
     ) -> bytes:
         # Check if squeak is valid.
+        CheckSqueak(squeak, skipDecryptionCheck=True)
         squeak_entry = self.squeak_core.validate_squeak(squeak)
         # Check if rate limit is violated.
         if not skip_rate_limit:
@@ -326,17 +327,9 @@ class SqueakController:
             sent_payment.payment_hash,
             paid=True,
         )
-        secret_key = sent_payment.secret_key
-        squeak_entry = self.squeak_db.get_squeak_entry(
-            received_offer.squeak_hash)
-        squeak = squeak_entry.squeak
-        # Check the decryption key
-        squeak.SetDecryptionKey(secret_key)
-        CheckSqueak(squeak)
-        # Set the decryption key in the database
         self.unlock_squeak(
             received_offer.squeak_hash,
-            secret_key,
+            sent_payment.secret_key,
         )
         return sent_payment_id
 
@@ -344,6 +337,10 @@ class SqueakController:
         logger.info("Unlocking squeak: {}".format(
             squeak_hash.hex(),
         ))
+        squeak_entry = self.squeak_db.get_squeak_entry(squeak_hash)
+        squeak = squeak_entry.squeak
+        squeak.SetDecryptionKey(secret_key)
+        CheckSqueak(squeak)
         self.squeak_db.set_squeak_decryption_key(
             squeak_hash,
             secret_key,
