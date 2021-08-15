@@ -39,7 +39,7 @@ import {
 } from "../../squeakclient/requests"
 
 
-export default function SqueakList({
+export default function SqueakThread({
   squeaks,
   network,
   setSqueaksFn,
