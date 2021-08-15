@@ -512,7 +512,6 @@ class SqueakAdminServerHandler(object):
         # self.sync_controller.download_timeline()
         # self.sync_controller.upload_timeline()
         self.squeak_controller.sync_timeline()
-        self.squeak_controller.share_squeaks()
         return squeak_admin_pb2.SyncSqueaksReply()
 
     def handle_sync_squeak(self, request):
@@ -525,6 +524,17 @@ class SqueakAdminServerHandler(object):
         # self.sync_controller.upload_single_squeak(squeak_hash)
         self.squeak_controller.download_single_squeak(squeak_hash)
         return squeak_admin_pb2.SyncSqueakReply()
+
+    def handle_download_offers(self, request):
+        squeak_hash_str = request.squeak_hash
+        squeak_hash = bytes.fromhex(squeak_hash_str)
+        logger.info(
+            "Handle download offer for hash: {}".format(squeak_hash_str))
+        # sync_result = self.squeak_controller.sync_squeaks()
+        # self.sync_controller.download_timeline()
+        # self.sync_controller.upload_timeline()
+        self.squeak_controller.download_offers(squeak_hash)
+        return squeak_admin_pb2.DownloadOffersReply()
 
     def handle_pay_offer(self, request):
         offer_id = request.offer_id

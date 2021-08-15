@@ -116,6 +116,8 @@ import {
   ConnectPeerReply as ConnectSqueakPeerReply,
   DisconnectPeerRequest as DisconnectSqueakPeerRequest,
   DisconnectPeerReply as DisconnectSqueakPeerReply,
+  DownloadOffersRequest,
+  DownloadOffersReply,
 } from "../proto/squeak_admin_pb"
 
 console.log('The value of REACT_APP_SERVER_PORT is:', process.env.REACT_APP_SERVER_PORT);
@@ -685,6 +687,17 @@ export function syncSqueakRequest(squeakHash, handleResponse) {
     'syncsqueak',
     request,
     SyncSqueakReply.deserializeBinary,
+    handleResponse,
+  );
+}
+
+export function downloadOffersRequest(squeakHash, handleResponse) {
+  var request = new DownloadOffersRequest();
+  request.setSqueakHash(squeakHash);
+  makeRequest(
+    'downloadoffers',
+    request,
+    DownloadOffersReply.deserializeBinary,
     handleResponse,
   );
 }

@@ -35,10 +35,10 @@ import BuyOfferDetailItem from "../../components/BuyOfferDetailItem";
 import {
   makeSqueakRequest,
   getSigningProfilesRequest,
+  downloadOffersRequest,
 } from "../../squeakclient/requests"
 import {
   getBuyOffersRequest,
-  syncSqueakRequest,
 } from "../../squeakclient/requests"
 import {
   payOfferRequest,
@@ -101,8 +101,8 @@ export default function BuySqueakDialog({
   const onDownloadClick = (event) => {
     event.preventDefault();
     console.log("Handling download click...");
-    console.log("syncSqueakRequest with hash: " + hash);
-    syncSqueakRequest(hash, (response) => {
+    console.log("downloadOffersRequest with hash: " + hash);
+    downloadOffersRequest(hash, (response) => {
       console.log("response:");
       console.log(response);
       reloadRoute(history);
