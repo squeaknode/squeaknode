@@ -37,7 +37,7 @@ class PeerHandler():
             try:
                 peer.handle_messages(self.squeak_controller)
             except Exception:
-                logger.error("Handling messages failed.")
+                logger.exception("Handling messages failed.")
             finally:
                 self.connection_manager.remove_peer(peer)
         logger.debug('Stopped controller for peer address {}.'.format(address))
