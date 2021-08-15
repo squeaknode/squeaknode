@@ -334,14 +334,9 @@ class SqueakController:
             peer_addresss,
         )
 
-    def get_buy_offer_with_peer(self, received_offer_id: int) -> ReceivedOfferWithPeer:
-        received_offer_with_peer = self.squeak_db.get_offer_with_peer(
+    def get_buy_offer_with_peer(self, received_offer_id: int) -> Optional[ReceivedOfferWithPeer]:
+        return self.squeak_db.get_offer_with_peer(
             received_offer_id)
-        if received_offer_with_peer is None:
-            raise Exception("Received offer with id {} not found.".format(
-                received_offer_id,
-            ))
-        return received_offer_with_peer
 
     def pay_offer(self, received_offer_id: int) -> int:
         # Get the offer from the database
@@ -388,13 +383,8 @@ class SqueakController:
     def get_sent_payments(self) -> List[SentPaymentWithPeer]:
         return self.squeak_db.get_sent_payments()
 
-    def get_sent_payment(self, sent_payment_id: int) -> SentPaymentWithPeer:
-        sent_payment = self.squeak_db.get_sent_payment(sent_payment_id)
-        if sent_payment is None:
-            raise Exception("Sent payment not found with id: {}.".format(
-                sent_payment_id,
-            ))
-        return sent_payment
+    def get_sent_payment(self, sent_payment_id: int) -> Optional[SentPaymentWithPeer]:
+        return self.squeak_db.get_sent_payment(sent_payment_id)
 
     def get_sent_offers(self):
         return self.squeak_db.get_sent_offers()
