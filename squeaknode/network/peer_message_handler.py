@@ -46,10 +46,10 @@ class PeerMessageHandler:
         This method blocks when the peer has not sent any messages.
         """
         logger.info('Started handling connected messages...')
-        while self.peer.is_open:
+        msg = self.peer.recv_msg()
+        while msg is not None:
+            self.handle_peer_message(msg)
             msg = self.peer.recv_msg()
-            if msg is not None:
-                self.handle_peer_message(msg)
         logger.info('Finished handling connected messages...')
 
     def handle_peer_message(self, msg):
