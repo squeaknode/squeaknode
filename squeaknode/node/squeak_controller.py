@@ -230,13 +230,8 @@ class SqueakController:
     def get_squeak_profile(self, profile_id: int) -> Optional[SqueakProfile]:
         return self.squeak_db.get_profile(profile_id)
 
-    def get_squeak_profile_by_address(self, address: str) -> SqueakProfile:
-        profile = self.squeak_db.get_profile_by_address(address)
-        if profile is None:
-            raise Exception("Profile not found with address: {}.".format(
-                address,
-            ))
-        return profile
+    def get_squeak_profile_by_address(self, address: str) -> Optional[SqueakProfile]:
+        return self.squeak_db.get_profile_by_address(address)
 
     def get_squeak_profile_by_name(self, name: str) -> Optional[SqueakProfile]:
         return self.squeak_db.get_profile_by_name(name)

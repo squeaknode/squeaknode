@@ -418,7 +418,7 @@ def test_set_profile_image(admin_stub, contact_profile_id, random_image, random_
     assert not get_squeak_profile_response.squeak_profile.has_custom_profile_image
 
 
-def test_delete_profile(admin_stub, random_name, contact_profile_id):
+def test_delete_profile(admin_stub, random_name, squeak_address, contact_profile_id):
     # Delete the profile
     admin_stub.DeleteSqueakProfile(
         squeak_admin_pb2.DeleteSqueakProfileRequest(
@@ -440,6 +440,14 @@ def test_delete_profile(admin_stub, random_name, contact_profile_id):
         )
     )
     assert not get_squeak_profile_by_name_response.HasField("squeak_profile")
+
+    get_squeak_profile_by_address_response = admin_stub.GetSqueakProfileByAddress(
+        squeak_admin_pb2.GetSqueakProfileByAddressRequest(
+            address=squeak_address,
+        )
+    )
+    assert not get_squeak_profile_by_address_response.HasField(
+        "squeak_profile")
 
 
 def test_get_profile_private_key(admin_stub, signing_profile_id):

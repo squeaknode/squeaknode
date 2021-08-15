@@ -157,6 +157,10 @@ class SqueakAdminServerHandler(object):
             "Handle get squeak profile with address: {}".format(address))
         squeak_profile = self.squeak_controller.get_squeak_profile_by_address(
             address)
+        if squeak_profile is None:
+            return squeak_admin_pb2.GetSqueakProfileByAddressReply(
+                squeak_profile=None
+            )
         squeak_profile_msg = squeak_profile_to_message(squeak_profile)
         return squeak_admin_pb2.GetSqueakProfileByAddressReply(
             squeak_profile=squeak_profile_msg
