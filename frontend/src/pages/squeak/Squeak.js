@@ -57,26 +57,13 @@ export default function SqueakPage() {
       getSqueakDisplayRequest(hash, setSqueak);
   };
   const getAncestorSqueaks = (hash) => {
-      getAncestorSqueakDisplaysRequest(hash, (result) => {
-        setAncestorSqueaks(result.slice(0, -1));
-      });
+      getAncestorSqueakDisplaysRequest(hash, setAncestorSqueaks);
   };
   const getReplySqueaks = (hash) => {
       getReplySqueakDisplaysRequest(hash, setReplySqueaks);
   };
   const getNetwork = () => {
       getNetworkRequest(setNetwork);
-  };
-
-  const unknownAncestorHash = () => {
-      if (!ancestorSqueaks) {
-        return null;
-      }
-      var oldestKnownAncestor = ancestorSqueaks[0];
-      if (!oldestKnownAncestor) {
-        return null;
-      }
-      return oldestKnownAncestor.getReplyTo();
   };
 
   const getCurrentSqueak = () => {
@@ -121,35 +108,7 @@ export default function SqueakPage() {
     )
   }
 
-  function UnkownReplyToContent() {
-    var squeakHash = unknownAncestorHash();
-    if (!squeakHash) {
-      return (
-        <></>
-      )
-    }
-    return (
-      <TimelineItem>
-<TimelineOppositeContent
-  className={classes.oppositeContent}
-  color="textSecondary"
-></TimelineOppositeContent>
-<TimelineSeparator>
-  <SqueakUserAvatar
-    squeak={null}
-  />
-  <TimelineConnector />
-</TimelineSeparator>
-<TimelineContent>
-<SqueakThreadItem
-  hash={squeakHash}
-  key={squeakHash}
-  squeak={null}>
-</SqueakThreadItem>
-</TimelineContent>
-</TimelineItem>
-    )
-  }
+
 
   function AncestorsContent() {
     return (
@@ -200,7 +159,6 @@ export default function SqueakPage() {
     return (
       <Timeline align="left">
 
-        {UnkownReplyToContent()}
         {AncestorsContent()}
         {CurrentSqueakContent()}
         {RepliesContent()}
