@@ -34,8 +34,12 @@ class PeerHandler():
             'Setting up controller for peer address {} ...'.format(address))
         with Peer(peer_socket, address, outgoing).open_connection(self.squeak_controller) as peer:
             self.connection_manager.add_peer(peer)
-            peer.handle_messages(self.squeak_controller)
-        self.connection_manager.remove_peer(peer)
+            try:
+                peer.handle_messages(self.squeak_controller)
+            except Exception:
+                logger.error("Handling messages failed.")
+            finally:
+                self.connection_manager.remove_peer(peer)
         logger.debug('Stopped controller for peer address {}.'.format(address))
 
     def handle_connection(self, peer_socket, address, outgoing):
