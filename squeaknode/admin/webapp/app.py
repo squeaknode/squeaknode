@@ -443,6 +443,14 @@ def create_app(handler, username, password):
             handler.handle_sync_squeak,
         )
 
+    @app.route("/downloadoffers", methods=["POST"])
+    @login_required
+    def downloadoffers():
+        return handle_request(
+            squeak_admin_pb2.DownloadOffersRequest(),
+            handler.handle_download_offers,
+        )
+
     @app.route("/getsqueakdetails", methods=["POST"])
     @login_required
     def getsqueakdetails():

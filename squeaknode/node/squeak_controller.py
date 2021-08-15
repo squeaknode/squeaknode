@@ -12,7 +12,6 @@ from squeak.core.signing import CSigningKey
 from squeak.core.signing import CSqueakAddress
 from squeak.messages import msg_getdata
 from squeak.messages import msg_getsqueaks
-from squeak.messages import msg_sharesqueaks
 from squeak.messages import MsgSerializable
 from squeak.net import CInterested
 from squeak.net import CInv
@@ -557,10 +556,11 @@ class SqueakController:
                     ret.append(
                         CInv(type=1, hash=inv.hash)
                     )
-                elif not squeak_entry.squeak.HasDecryptionKey():
-                    ret.append(
-                        CInv(type=2, hash=inv.hash)
-                    )
+                # TODO: Decide if offers should be loaded whenever missing?
+                # elif not squeak_entry.squeak.HasDecryptionKey():
+                #     ret.append(
+                #         CInv(type=2, hash=inv.hash)
+                #     )
         return ret
 
     def sync_timeline(self):
@@ -610,30 +610,6 @@ class SqueakController:
         ]
         getdata_msg = msg_getdata(inv=invs)
         self.broadcast_msg(getdata_msg)
-
-    def share_squeaks(self):
-        block_range = self.get_block_range()
-        logger.info("Sharing timeline with block range: {}".format(block_range))
-        sharing_addresses = self.get_sharing_addresses()
-        logger.debug("Sharing squeaks with sharing addresses: {}".format(
-            sharing_addresses))
-        interests = [
-            CInterested(
-                address=CSqueakAddress(address),
-                nMinBlockHeight=0,
-                nMaxBlockHeight=block_range.max_block,
-            )
-            for address in sharing_addresses
-        ]
-        locator = CSqueakLocator(
-            vInterested=interests,
-        )
-        sharesqueaks_msg = msg_sharesqueaks(
-            locator=locator,
-        )
-        # for peer in self.connection_manager.peers:
-        #     peer.send_msg(sharesqueaks_msg)
-        self.broadcast_msg(sharesqueaks_msg)
 
     def filter_shared_squeak_locator(self, interests: List[CInterested]):
         ret = []
