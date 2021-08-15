@@ -70,9 +70,52 @@ export default function SqueakThread({
     return innerFunc;
   }
 
+  const unknownAncestorHash = () => {
+      if (!squeaks) {
+        return null;
+      }
+      var oldestKnownAncestor = squeaks[0];
+      if (!oldestKnownAncestor) {
+        return null;
+      }
+      return oldestKnownAncestor.getReplyTo();
+  };
+
+  function UnkownReplyToContent() {
+    var squeakHash = unknownAncestorHash();
+    if (!squeakHash) {
+      return (
+        <></>
+      )
+    }
+    return (
+      <TimelineItem>
+<TimelineOppositeContent
+  className={classes.oppositeContent}
+  color="textSecondary"
+></TimelineOppositeContent>
+<TimelineSeparator>
+  <SqueakUserAvatar
+    squeak={null}
+  />
+  <TimelineConnector />
+</TimelineSeparator>
+<TimelineContent>
+<SqueakThreadItem
+  hash={squeakHash}
+  key={squeakHash}
+  squeak={null}>
+</SqueakThreadItem>
+</TimelineContent>
+</TimelineItem>
+    )
+  }
+
   return (
     <>
+      {UnkownReplyToContent()}
       {squeaks
+        .slice(0, -1)
         //.reverse()
         .map(squeak =>
           <TimelineItem
