@@ -57,7 +57,9 @@ export default function SqueakPage() {
       getSqueakDisplayRequest(hash, setSqueak);
   };
   const getAncestorSqueaks = (hash) => {
-      getAncestorSqueakDisplaysRequest(hash, setAncestorSqueaks);
+      getAncestorSqueakDisplaysRequest(hash, (result) => {
+        setAncestorSqueaks(result.slice(0, -1));
+      });
   };
   const getReplySqueaks = (hash) => {
       getReplySqueakDisplaysRequest(hash, setReplySqueaks);
@@ -152,7 +154,7 @@ export default function SqueakPage() {
   function AncestorsContent() {
     return (
       <SqueakThread
-        squeaks={ancestorSqueaks.slice(0, -1)}
+        squeaks={ancestorSqueaks}
         network={network}
         setSqueaksFn={setAncestorSqueaks}
       ></SqueakThread>
