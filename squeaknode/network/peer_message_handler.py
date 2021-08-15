@@ -155,6 +155,7 @@ class PeerMessageHandler:
         pass
 
     def handle_getsqueaks(self, msg):
+        # TODO: Maybe combine all invs into a single send_msg.
         for interest in msg.locator.vInterested:
             squeak_hashes = self.squeak_controller.lookup_squeaks_for_interest(
                 address=str(interest.address),
@@ -172,19 +173,9 @@ class PeerMessageHandler:
         squeak = msg.squeak
         # TODO: check if interested before saving.
         self.squeak_controller.save_squeak(squeak)
-        # # TODO: If squeak is still locked, send getdata msg to get offer.
-        # if not squeak.HasDecryptionKey():
-        #     invs = [
-        #         CInv(
-        #             type=2,
-        #             hash=get_hash(squeak),
-        #         )
-        #     ]
-        #     getdata_msg = msg_getdata(inv=invs)
-        #     self.peer.send_msg(getdata_msg)
 
     def handle_offer(self, msg):
-        # Save the offer if interested.
+        # TODO: check if interested before saving.
         offer = Offer(
             squeak_hash=msg.hashSqk,
             nonce=msg.nonce,
