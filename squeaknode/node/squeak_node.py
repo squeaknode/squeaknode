@@ -1,6 +1,5 @@
 import logging
 import threading
-from pathlib import Path
 
 from squeak.params import SelectParams
 
@@ -10,8 +9,8 @@ from squeaknode.admin.webapp.app import SqueakAdminWebServer
 from squeaknode.bitcoin.bitcoin_core_bitcoin_client import BitcoinCoreBitcoinClient
 from squeaknode.config.config import SqueaknodeConfig
 from squeaknode.core.squeak_core import SqueakCore
+from squeaknode.db.db_engine import get_connection_string
 from squeaknode.db.db_engine import get_engine
-from squeaknode.db.db_engine import get_sqlite_connection_string
 from squeaknode.db.squeak_db import SqueakDb
 from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
 from squeaknode.network.network_manager import NetworkManager
@@ -115,8 +114,14 @@ class SqueakNode:
         SelectParams(self.network)
 
     def initialize_db(self):
-        # load the db
-        self.squeak_db = load_db(self.config, self.network)
+        connection_string = get_connection_string(
+            self.config,
+            self.network,
+        )
+        logger.info("Using connection string: {}".format(
+            connection_string))
+        engine = get_engine(connection_string)
+        self.squeak_db = SqueakDb(engine)
         self.squeak_db.init()
 
     def initialize_lightning_client(self):
@@ -203,26 +208,6 @@ class SqueakNode:
             self.payment_processor,
             self.stopped,
         )
-
-
-def load_sqk_dir_path(config):
-    sqk_dir = config.core.sqk_dir_path
-    return Path(sqk_dir)
-
-
-def load_db(config, network):
-    connection_string = config.db.connection_string
-    logger.info("connection string: {}".format(connection_string))
-    logger.info("connection string type: {}".format(type(connection_string)))
-    if not connection_string:
-        sqk_dir = load_sqk_dir_path(config)
-        logger.info(
-            "Getting connection string from sqk dir: {}".format(sqk_dir))
-        connection_string = get_sqlite_connection_string(sqk_dir, network)
-    logger.info("Getting engine from connection string: {}".format(
-        connection_string))
-    engine = get_engine(connection_string)
-    return SqueakDb(engine)
 
 
 def start_admin_rpc_server(rpc_server):
