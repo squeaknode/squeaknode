@@ -40,58 +40,19 @@ class SqueakNode:
         logger.info("Config server rpc port: {}".format(
             self.config.server.rpc_port))
 
-        # load the network
-        network = self.config.core.network
-        SelectParams(network)
-
-        # load the db
-        squeak_db = load_db(self.config, network)
-        squeak_db.init()
-
-        # load the lightning client
-        lightning_client = load_lightning_client(self.config)
-
-        # load the bitcoin client
-        bitcoin_client = load_bitcoin_client(self.config)
-
-        squeak_core = SqueakCore(
-            bitcoin_client,
-            lightning_client,
-        )
-        squeak_rate_limiter = SqueakRateLimiter(
-            squeak_db,
-            self.config.core.max_squeaks_per_address_per_block,
-        )
-        payment_processor = PaymentProcessor(
-            squeak_db,
-            squeak_core,
-            self.config.core.subscribe_invoices_retry_s,
-        )
-
-        self.network_manager = NetworkManager(self.config)
-
-        squeak_controller = SqueakController(
-            squeak_db,
-            squeak_core,
-            squeak_rate_limiter,
-            payment_processor,
-            self.network_manager,
-            self.config,
-        )
-        self.squeak_controller = squeak_controller
-
-        admin_handler = load_admin_handler(
-            lightning_client, squeak_controller)
-
-        self.admin_rpc_server = load_admin_rpc_server(
-            self.config, admin_handler, self.stopped)
-
-        self.admin_web_server = load_admin_web_server(
-            self.config, admin_handler, self.stopped)
-
-        self.sent_offers_worker = ProcessReceivedPaymentsWorker(
-            payment_processor, self.stopped,
-        )
+        self.initialize_network()
+        self.initialize_db()
+        self.initialize_lightning_client()
+        self.initialize_bitcoin_client()
+        self.initialize_squeak_core()
+        self.initialize_rate_limiter()
+        self.initialize_payment_processor()
+        self.initialize_network_manager()
+        self.initialize_squeak_controller()
+        self.initialize_admin_handler()
+        self.initialize_admin_rpc_server()
+        self.initialize_admin_web_server()
+        self.initialize_received_payment_processor_worker()
 
     def start_running(self):
         # start admin rpc server
@@ -111,7 +72,7 @@ class SqueakNode:
         self.start_squeak_deletion_worker()
         self.start_offer_expiry_worker()
 
-        self.sent_offers_worker.start_running()
+        self.received_payment_processor_worker.start_running()
 
     def stop_running(self):
         self.stopped.set()
@@ -148,44 +109,100 @@ class SqueakNode:
             self.config.core.offer_deletion_interval_s,
         ).start()
 
+    def initialize_network(self):
+        # load the network
+        self.network = self.config.core.network
+        SelectParams(self.network)
 
-def load_lightning_client(config) -> LNDLightningClient:
-    return LNDLightningClient(
-        config.lnd.host,
-        config.lnd.rpc_port,
-        config.lnd.tls_cert_path,
-        config.lnd.macaroon_path,
-    )
+    def initialize_db(self):
+        # load the db
+        self.squeak_db = load_db(self.config, self.network)
+        self.squeak_db.init()
 
+    def initialize_lightning_client(self):
+        # load the lightning client
+        self.lightning_client = LNDLightningClient(
+            self.config.lnd.host,
+            self.config.lnd.rpc_port,
+            self.config.lnd.tls_cert_path,
+            self.config.lnd.macaroon_path,
+        )
 
-def load_admin_rpc_server(config, handler, stopped_event) -> SqueakAdminServerServicer:
-    return SqueakAdminServerServicer(
-        config.admin.rpc_host,
-        config.admin.rpc_port,
-        handler,
-        stopped_event,
-    )
+    def initialize_bitcoin_client(self):
+        # load the bitcoin client
+        self.bitcoin_client = BitcoinCoreBitcoinClient(
+            self.config.bitcoin.rpc_host,
+            self.config.bitcoin.rpc_port,
+            self.config.bitcoin.rpc_user,
+            self.config.bitcoin.rpc_pass,
+            self.config.bitcoin.rpc_use_ssl,
+            self.config.bitcoin.rpc_ssl_cert,
+        )
 
+    def initialize_squeak_core(self):
+        self.squeak_core = SqueakCore(
+            self.bitcoin_client,
+            self.lightning_client,
+        )
 
-def load_admin_web_server(config, handler, stopped_event) -> SqueakAdminWebServer:
-    return SqueakAdminWebServer(
-        config.webadmin.host,
-        config.webadmin.port,
-        config.webadmin.username,
-        config.webadmin.password,
-        config.webadmin.use_ssl,
-        config.webadmin.login_disabled,
-        config.webadmin.allow_cors,
-        handler,
-        stopped_event,
-    )
+    def initialize_rate_limiter(self):
+        self.squeak_rate_limiter = SqueakRateLimiter(
+            self.squeak_db,
+            self.config.core.max_squeaks_per_address_per_block,
+        )
 
+    def initialize_payment_processor(self):
+        self.payment_processor = PaymentProcessor(
+            self.squeak_db,
+            self.squeak_core,
+            self.config.core.subscribe_invoices_retry_s,
+        )
 
-def load_admin_handler(lightning_client, squeak_controller):
-    return SqueakAdminServerHandler(
-        lightning_client,
-        squeak_controller,
-    )
+    def initialize_network_manager(self):
+        self.network_manager = NetworkManager(self.config)
+
+    def initialize_squeak_controller(self):
+        self.squeak_controller = SqueakController(
+            self.squeak_db,
+            self.squeak_core,
+            self.squeak_rate_limiter,
+            self.payment_processor,
+            self.network_manager,
+            self.config,
+        )
+
+    def initialize_admin_handler(self):
+        self.admin_handler = SqueakAdminServerHandler(
+            self.lightning_client,
+            self.squeak_controller,
+        )
+
+    def initialize_admin_rpc_server(self):
+        self.admin_rpc_server = SqueakAdminServerServicer(
+            self.config.admin.rpc_host,
+            self.config.admin.rpc_port,
+            self.admin_handler,
+            self.stopped,
+        )
+
+    def initialize_admin_web_server(self):
+        self.admin_web_server = SqueakAdminWebServer(
+            self.config.webadmin.host,
+            self.config.webadmin.port,
+            self.config.webadmin.username,
+            self.config.webadmin.password,
+            self.config.webadmin.use_ssl,
+            self.config.webadmin.login_disabled,
+            self.config.webadmin.allow_cors,
+            self.admin_handler,
+            self.stopped,
+        )
+
+    def initialize_received_payment_processor_worker(self):
+        self.received_payment_processor_worker = ProcessReceivedPaymentsWorker(
+            self.payment_processor,
+            self.stopped,
+        )
 
 
 def load_sqk_dir_path(config):
@@ -208,17 +225,6 @@ def load_db(config, network):
     return SqueakDb(engine)
 
 
-def load_bitcoin_client(config):
-    return BitcoinCoreBitcoinClient(
-        config.bitcoin.rpc_host,
-        config.bitcoin.rpc_port,
-        config.bitcoin.rpc_user,
-        config.bitcoin.rpc_pass,
-        config.bitcoin.rpc_use_ssl,
-        config.bitcoin.rpc_ssl_cert,
-    )
-
-
 def start_admin_rpc_server(rpc_server):
     logger.info("Starting admin RPC server...")
     thread = threading.Thread(
@@ -226,10 +232,6 @@ def start_admin_rpc_server(rpc_server):
         args=(),
     )
     thread.start()
-
-
-def load_admin_web_server_enabled(config):
-    return config.webadmin.enabled
 
 
 def start_admin_web_server(admin_web_server):
