@@ -1,12 +1,13 @@
 import logging
-import threading
 
+from squeaknode.node.periodic_worker import PeriodicWorker
 from squeaknode.node.squeak_controller import SqueakController
+
 
 logger = logging.getLogger(__name__)
 
 
-class PeerConnectionWorker:
+class PeerConnectionWorker(PeriodicWorker):
     def __init__(
         self,
         squeak_controller: SqueakController,
@@ -15,16 +16,12 @@ class PeerConnectionWorker:
         self.squeak_controller = squeak_controller
         self.connect_interval_s = connect_interval_s
 
-    def connect_peers(self):
-        logger.debug("Connecting peers...")
+    def work_fn(self):
+        logger.info("Connecting peers...")
         self.squeak_controller.connect_peers()
 
-    def start_running(self):
-        if self.connect_interval_s:
-            timer = threading.Timer(
-                self.connect_interval_s,
-                self.start_running,
-            )
-            timer.daemon = True
-            timer.start()
-            self.connect_peers()
+    def get_interval_s(self):
+        return self.connect_interval_s
+
+    def get_name(self):
+        return "peer_connection_worker"

@@ -89,22 +89,8 @@ class SqueakNode:
         self.admin_web_server = load_admin_web_server(
             self.config, admin_handler, self.stopped)
 
-        self.peer_connection_worker = load_peer_connection_worker(
-            self.config, squeak_controller)
-
-        self.peer_sync_worker = load_peer_sync_worker(
-            self.config, squeak_controller)
-
-        self.squeak_offer_expiry_worker = SqueakOfferExpiryWorker(
-            squeak_controller,
-            self.config.core.offer_deletion_interval_s,
-        )
         self.sent_offers_worker = ProcessReceivedPaymentsWorker(
             payment_processor, self.stopped,
-        )
-        self.squeak_deletion_worker = SqueakDeletionWorker(
-            squeak_controller,
-            self.config.core.squeak_deletion_interval_s,
         )
 
     def start_running(self):
@@ -119,24 +105,48 @@ class SqueakNode:
         # Start peer socket server and peer client
         self.network_manager.start(self.squeak_controller)
 
-        # start peer connection worker
-        if self.config.sync.enabled:
-            start_peer_connection_worker(self.peer_connection_worker)
+        # Background workers
+        self.start_peer_connection_worker()
+        self.start_peer_sync_worker()
+        self.start_squeak_deletion_worker()
+        self.start_offer_expiry_worker()
 
-        # start peer sync worker
-        if self.config.sync.enabled:
-            start_peer_sync_worker(self.peer_sync_worker)
-            # pass
-
-        self.squeak_offer_expiry_worker.start_running()
         self.sent_offers_worker.start_running()
-        self.squeak_deletion_worker.start_running()
 
     def stop_running(self):
         self.stopped.set()
 
         # TODO: Use explicit stop to stop all components
         self.network_manager.stop()
+
+    def start_peer_connection_worker(self):
+        logger.info("Starting peer connection worker...")
+        PeerConnectionWorker(
+            self.squeak_controller,
+            10,
+        ).start()
+
+    def start_peer_sync_worker(self):
+        if self.config.sync.enabled:
+            logger.info("Starting peer sync worker...")
+            SqueakPeerSyncWorker(
+                self.squeak_controller,
+                10,
+            ).start()
+
+    def start_squeak_deletion_worker(self):
+        logger.info("Starting squeak deletion worker...")
+        SqueakDeletionWorker(
+            self.squeak_controller,
+            self.config.core.squeak_deletion_interval_s,
+        ).start()
+
+    def start_offer_expiry_worker(self):
+        logger.info("Starting offer expiry worker...")
+        SqueakOfferExpiryWorker(
+            self.squeak_controller,
+            self.config.core.offer_deletion_interval_s,
+        ).start()
 
 
 def load_lightning_client(config) -> LNDLightningClient:
@@ -168,20 +178,6 @@ def load_admin_web_server(config, handler, stopped_event) -> SqueakAdminWebServe
         config.webadmin.allow_cors,
         handler,
         stopped_event,
-    )
-
-
-def load_peer_connection_worker(config, squeak_controller) -> PeerConnectionWorker:
-    return PeerConnectionWorker(
-        squeak_controller,
-        10,
-    )
-
-
-def load_peer_sync_worker(config, squeak_controller) -> SqueakPeerSyncWorker:
-    return SqueakPeerSyncWorker(
-        squeak_controller,
-        10,
     )
 
 
@@ -240,24 +236,6 @@ def start_admin_web_server(admin_web_server):
     logger.info("Starting admin web server...")
     thread = threading.Thread(
         target=admin_web_server.serve,
-        args=(),
-    )
-    thread.start()
-
-
-def start_peer_connection_worker(peer_connection_worker):
-    logger.info("Starting peer connection worker...")
-    thread = threading.Thread(
-        target=peer_connection_worker.start_running,
-        args=(),
-    )
-    thread.start()
-
-
-def start_peer_sync_worker(peer_sync_worker):
-    logger.info("Starting peer sync worker...")
-    thread = threading.Thread(
-        target=peer_sync_worker.start_running,
         args=(),
     )
     thread.start()
