@@ -25,10 +25,27 @@ class NetworkManager(object):
     """Interface for doing things involving the network.
     """
 
-    def __init__(self, peer_server: PeerServer, peer_client: PeerClient):
-        self.peer_server = peer_server
-        self.peer_client = peer_client
+    def __init__(self, config):
+        self.config = config
+        self.peer_server = None
+        self.peer_client = None
         self.connection_manager = ConnectionManager()
+
+    def start(self, squeak_controller):
+        self.peer_server = PeerServer(
+            squeak_controller,
+            self,
+            self.config.server.rpc_port,
+        )
+        self.peer_client = PeerClient(
+            squeak_controller,
+            self,
+        )
+        self.peer_server.start()
+
+    def stop(self):
+        self.peer_server.stop()
+        self.connection_manager.stop_all_connections()
 
     def connect_peer(self, host: str, port: int) -> None:
         port = port or squeak.params.params.DEFAULT_PORT

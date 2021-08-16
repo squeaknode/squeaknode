@@ -1,9 +1,6 @@
 import logging
 import threading
 
-from squeaknode.network.network_manager import NetworkManager
-from squeaknode.node.squeak_controller import SqueakController
-
 
 logger = logging.getLogger(__name__)
 
@@ -14,32 +11,12 @@ class PeerHandler():
 
     def __init__(
             self,
-            squeak_controller: SqueakController,
-            network_manager: NetworkManager,
+            squeak_controller,
+            network_manager,
     ):
         super().__init__()
         self.squeak_controller = squeak_controller
         self.network_manager = network_manager
-
-    # def start(self, peer_socket, address, outgoing):
-    #     """Handles all sending and receiving of messages for the given peer.
-
-    #     This method blocks until the peer connection has stopped.
-    #     """
-    #     if self.connection_manager.has_connection(address):
-    #         return
-
-    #     logger.debug(
-    #         'Setting up controller for peer address {} ...'.format(address))
-    #     with Peer(peer_socket, address, outgoing).open_connection(self.squeak_controller) as peer:
-    #         self.connection_manager.add_peer(peer)
-    #         try:
-    #             peer.handle_messages(self.squeak_controller)
-    #         except Exception:
-    #             logger.exception("Handling messages failed.")
-    #         finally:
-    #             self.connection_manager.remove_peer(peer)
-    #     logger.debug('Stopped controller for peer address {}.'.format(address))
 
     def handle_connection(self, peer_socket, address, outgoing):
         threading.Thread(

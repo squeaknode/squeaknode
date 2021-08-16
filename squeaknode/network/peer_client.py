@@ -2,6 +2,8 @@ import logging
 import socket
 import threading
 
+from squeaknode.network.peer_handler import PeerHandler
+
 
 MIN_PEERS = 5
 MAX_PEERS = 10
@@ -15,8 +17,11 @@ class PeerClient(object):
     """Creates outgoing connections to other peers in the network.
     """
 
-    def start(self, peer_handler):
-        self.peer_handler = peer_handler
+    def __init__(self, squeak_controller, network_manager):
+        self.peer_handler = PeerHandler(
+            squeak_controller,
+            network_manager,
+        )
 
     def make_connection(self, address):
         logger.debug('Making connection to {}'.format(address))

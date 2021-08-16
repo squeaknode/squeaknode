@@ -15,9 +15,6 @@ from squeaknode.db.db_engine import get_sqlite_connection_string
 from squeaknode.db.squeak_db import SqueakDb
 from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
 from squeaknode.network.network_manager import NetworkManager
-from squeaknode.network.peer_client import PeerClient
-from squeaknode.network.peer_handler import PeerHandler
-from squeaknode.network.peer_server import PeerServer
 from squeaknode.node.payment_processor import PaymentProcessor
 from squeaknode.node.peer_connection_worker import PeerConnectionWorker
 from squeaknode.node.process_received_payments_worker import ProcessReceivedPaymentsWorker
@@ -72,12 +69,9 @@ class SqueakNode:
         )
 
         # self.connection_manager = ConnectionManager()
-        self.peer_server = PeerServer(self.config.server.rpc_port)
-        self.peer_client = PeerClient()
-        self.network_manager = NetworkManager(
-            peer_server=self.peer_server,
-            peer_client=self.peer_client,
-        )
+        # self.peer_server = PeerServer(self.config.server.rpc_port)
+        # self.peer_client = PeerClient()
+        self.network_manager = NetworkManager(self.config)
 
         squeak_controller = SqueakController(
             squeak_db,
@@ -87,14 +81,15 @@ class SqueakNode:
             self.network_manager,
             self.config,
         )
+        self.squeak_controller = squeak_controller
 
         admin_handler = load_admin_handler(
             lightning_client, squeak_controller)
 
-        self.peer_handler = PeerHandler(
-            squeak_controller,
-            self.network_manager,
-        )
+        # self.peer_handler = PeerHandler(
+        #     squeak_controller,
+        #     self.network_manager,
+        # )
 
         self.admin_rpc_server = load_admin_rpc_server(
             self.config, admin_handler, self.stopped)
@@ -130,8 +125,9 @@ class SqueakNode:
             start_admin_web_server(self.admin_web_server)
 
         # Start peer socket server and peer client
-        self.peer_server.start(self.peer_handler)
-        self.peer_client.start(self.peer_handler)
+        # self.peer_server.start()
+        # self.peer_client.start()
+        self.network_manager.start(self.squeak_controller)
 
         # start peer connection worker
         if self.config.sync.enabled:
@@ -150,8 +146,9 @@ class SqueakNode:
         self.stopped.set()
 
         # TODO: Use explicit stop to stop all components
-        self.peer_server.stop()
-        self.connection_manager.stop_all_connections()
+        # self.peer_server.stop()
+        # self.connection_manager.stop_all_connections()
+        self.network_manager.stop()
 
 
 def load_lightning_client(config) -> LNDLightningClient:
