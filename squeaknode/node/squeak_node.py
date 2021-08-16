@@ -68,9 +68,6 @@ class SqueakNode:
             self.config.core.subscribe_invoices_retry_s,
         )
 
-        # self.connection_manager = ConnectionManager()
-        # self.peer_server = PeerServer(self.config.server.rpc_port)
-        # self.peer_client = PeerClient()
         self.network_manager = NetworkManager(self.config)
 
         squeak_controller = SqueakController(
@@ -85,11 +82,6 @@ class SqueakNode:
 
         admin_handler = load_admin_handler(
             lightning_client, squeak_controller)
-
-        # self.peer_handler = PeerHandler(
-        #     squeak_controller,
-        #     self.network_manager,
-        # )
 
         self.admin_rpc_server = load_admin_rpc_server(
             self.config, admin_handler, self.stopped)
@@ -125,8 +117,6 @@ class SqueakNode:
             start_admin_web_server(self.admin_web_server)
 
         # Start peer socket server and peer client
-        # self.peer_server.start()
-        # self.peer_client.start()
         self.network_manager.start(self.squeak_controller)
 
         # start peer connection worker
@@ -146,8 +136,6 @@ class SqueakNode:
         self.stopped.set()
 
         # TODO: Use explicit stop to stop all components
-        # self.peer_server.stop()
-        # self.connection_manager.stop_all_connections()
         self.network_manager.stop()
 
 
