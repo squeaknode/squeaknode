@@ -114,8 +114,14 @@ class SqueakNode:
         SelectParams(self.network)
 
     def initialize_db(self):
-        # load the db
-        self.squeak_db = load_db(self.config, self.network)
+        connection_string = get_connection_string(
+            self.config,
+            self.network,
+        )
+        logger.info("Using connection string: {}".format(
+            connection_string))
+        engine = get_engine(connection_string)
+        self.squeak_db = SqueakDb(engine)
         self.squeak_db.init()
 
     def initialize_lightning_client(self):
@@ -202,14 +208,6 @@ class SqueakNode:
             self.payment_processor,
             self.stopped,
         )
-
-
-def load_db(config, network):
-    connection_string = get_connection_string(config, network)
-    logger.info("Using connection string: {}".format(
-        connection_string))
-    engine = get_engine(connection_string)
-    return SqueakDb(engine)
 
 
 def start_admin_rpc_server(rpc_server):
