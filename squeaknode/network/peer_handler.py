@@ -12,15 +12,15 @@ class PeerHandler():
     def __init__(
             self,
             squeak_controller,
-            network_manager,
+            handle_connection_fn,
     ):
         super().__init__()
         self.squeak_controller = squeak_controller
-        self.network_manager = network_manager
+        self.handle_connection_fn = handle_connection_fn
 
     def handle_connection(self, peer_socket, address, outgoing):
         threading.Thread(
-            target=self.network_manager.handle_connection,
+            target=self.handle_connection_fn,
             args=(self.squeak_controller, peer_socket, address, outgoing,),
         ).start()
 

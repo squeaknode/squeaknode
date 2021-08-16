@@ -10,6 +10,7 @@ from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.network.connection_manager import ConnectionManager
 from squeaknode.network.peer import Peer
 from squeaknode.network.peer_client import PeerClient
+from squeaknode.network.peer_handler import PeerHandler
 from squeaknode.network.peer_server import PeerServer
 
 
@@ -32,14 +33,16 @@ class NetworkManager(object):
         self.connection_manager = ConnectionManager()
 
     def start(self, squeak_controller):
-        self.peer_server = PeerServer(
+        peer_handler = PeerHandler(
             squeak_controller,
-            self,
+            self.handle_connection,
+        )
+        self.peer_server = PeerServer(
+            peer_handler,
             self.config.server.rpc_port,
         )
         self.peer_client = PeerClient(
-            squeak_controller,
-            self,
+            peer_handler,
         )
         self.peer_server.start()
 

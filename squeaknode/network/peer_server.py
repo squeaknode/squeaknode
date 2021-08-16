@@ -4,8 +4,6 @@ import threading
 
 import squeak.params
 
-from squeaknode.network.peer_handler import PeerHandler
-
 
 MIN_PEERS = 5
 MAX_PEERS = 10
@@ -19,11 +17,8 @@ class PeerServer(object):
     """Maintains connections to other peers in the network.
     """
 
-    def __init__(self, squeak_controller, network_manager, port=None):
-        self.peer_handler = PeerHandler(
-            squeak_controller,
-            network_manager,
-        )
+    def __init__(self, peer_handler, port=None):
+        self.peer_handler = peer_handler
         self.ip = socket.gethostbyname('localhost')
         self.port = port or squeak.params.params.DEFAULT_PORT
         self.listen_socket = socket.socket()
