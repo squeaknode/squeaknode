@@ -1,6 +1,5 @@
 import logging
 import threading
-from pathlib import Path
 
 from squeak.params import SelectParams
 
@@ -205,17 +204,12 @@ class SqueakNode:
         )
 
 
-def load_sqk_dir_path(config):
-    sqk_dir = config.core.sqk_dir_path
-    return Path(sqk_dir)
-
-
 def load_db(config, network):
     connection_string = config.db.connection_string
     logger.info("connection string: {}".format(connection_string))
     logger.info("connection string type: {}".format(type(connection_string)))
     if not connection_string:
-        sqk_dir = load_sqk_dir_path(config)
+        sqk_dir = config.core.sqk_dir_path
         logger.info(
             "Getting connection string from sqk dir: {}".format(sqk_dir))
         connection_string = get_sqlite_connection_string(sqk_dir, network)
