@@ -1,5 +1,4 @@
 import logging
-import socket
 import threading
 from typing import List
 from typing import Optional
@@ -31,9 +30,6 @@ from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.util import get_hash
 from squeaknode.core.util import is_address_valid
-from squeaknode.network.connection_manager import ConnectionManager
-from squeaknode.network.peer_client import PeerClient
-from squeaknode.network.peer_server import PeerServer
 from squeaknode.node.received_payments_subscription_client import ReceivedPaymentsSubscriptionClient
 
 
@@ -48,18 +44,14 @@ class SqueakController:
         squeak_core,
         squeak_rate_limiter,
         payment_processor,
-        peer_server: PeerServer,
-        peer_client: PeerClient,
-        connection_manager: ConnectionManager,
+        network_manager,
         config,
     ):
         self.squeak_db = squeak_db
         self.squeak_core = squeak_core
         self.squeak_rate_limiter = squeak_rate_limiter
         self.payment_processor = payment_processor
-        self.peer_server = peer_server
-        self.peer_client = peer_client
-        self.connection_manager = connection_manager
+        self.network_manager = network_manager
         self.config = config
 
     def save_squeak(
@@ -487,51 +479,27 @@ class SqueakController:
         )
 
     def connect_peer(self, host: str, port: int) -> None:
-        # peer = self.squeak_db.get_peer(peer_id)
-        # if peer is None:
-        #     raise Exception("Peer with id {} not found.".format(
-        #         peer_id,
-        #     ))
-        # # TODO
         logger.info("Connect to peer: {}:{}".format(
             host,
             port,
         ))
-        port = port or squeak.params.params.DEFAULT_PORT
-        peer_address = PeerAddress(host=host, port=port)
-        self.peer_client.connect_address(peer_address)
+        self.network_manager.connect_peer(host, port)
 
     def connect_peers(self) -> None:
         peers = self.squeak_db.get_peers()
-        connected_peers = self.connection_manager.peers
-        connected_peer_addrs = [
-            peer.address
-            for peer in connected_peers
-        ]
-        for peer in peers:
-            peer_addr = (peer.address.host, peer.address.port)
-            if peer_addr not in connected_peer_addrs:
-                logger.info("Connect to peer: {}".format(
-                    peer,
-                ))
-                self.peer_client.connect_address(peer.address)
+        self.network_manager.connect_peers(peers)
 
     def get_address(self):
-        # TODO: Add return type.
-        return (self.peer_server.ip, self.peer_server.port)
+        return self.network_manager.get_address()
 
     def get_remote_address(self, address):
-        # TODO: Add return type.
-        hostname, port = address
-        ip = socket.gethostbyname(hostname)
-        return (ip, port)
-
-    def get_connected_peers(self):
-        return self.connection_manager.peers
+        return self.network_manager.get_remote_address(address)
 
     def get_connected_peer(self, host, port):
-        address = (host, port)
-        return self.connection_manager.get_peer(address)
+        return self.network_manager.get_connected_peer(host, port)
+
+    def get_connected_peers(self):
+        return self.network_manager.get_connected_peers()
 
     def lookup_squeaks_for_interest(
             self,
@@ -632,26 +600,11 @@ class SqueakController:
         return ret
 
     def broadcast_msg(self, msg: MsgSerializable) -> None:
-        for peer in self.connection_manager.peers:
-            try:
-                peer.send_msg(msg)
-            except Exception:
-                logger.exception("Failed to send msg to peer: {}".format(
-                    peer,
-                ))
+        self.network_manager.broadcast_msg(msg)
 
     def disconnect_peer(self, host: str, port: int) -> None:
-        # peer = self.squeak_db.get_peer(peer_id)
-        # if peer is None:
-        #     raise Exception("Peer with id {} not found.".format(
-        #         peer_id,
-        #     ))
-        # logger.info("Disconnect peer: {}".format(
-        #     peer,
-        # ))
         logger.info("Disconnect to peer: {}:{}".format(
             host,
             port,
         ))
-        peer_address = PeerAddress(host=host, port=port)
-        self.connection_manager.stop_connection(peer_address)
+        self.network_manager.disconnect_peer(host, port)

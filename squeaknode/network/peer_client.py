@@ -15,7 +15,7 @@ class PeerClient(object):
     """Creates outgoing connections to other peers in the network.
     """
 
-    def start(self, peer_handler):
+    def __init__(self, peer_handler):
         self.peer_handler = peer_handler
 
     def make_connection(self, address):

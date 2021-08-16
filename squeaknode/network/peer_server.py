@@ -17,17 +17,16 @@ class PeerServer(object):
     """Maintains connections to other peers in the network.
     """
 
-    def __init__(self, port=None):
+    def __init__(self, peer_handler, port=None):
+        self.peer_handler = peer_handler
         self.ip = socket.gethostbyname('localhost')
         self.port = port or squeak.params.params.DEFAULT_PORT
         self.listen_socket = socket.socket()
 
-    def start(self, peer_handler):
-        self.peer_handler = peer_handler
+    def start(self):
         logger.info("Starting peer server with port: {}".format(
             self.port,
         ))
-
         # Start Listen thread
         threading.Thread(
             target=self.accept_connections,
