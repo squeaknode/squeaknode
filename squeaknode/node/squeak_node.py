@@ -14,7 +14,7 @@ from squeaknode.db.db_engine import get_engine
 from squeaknode.db.db_engine import get_sqlite_connection_string
 from squeaknode.db.squeak_db import SqueakDb
 from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
-from squeaknode.network.connection_manager import ConnectionManager
+from squeaknode.network.network_manager import NetworkManager
 from squeaknode.network.peer_client import PeerClient
 from squeaknode.network.peer_handler import PeerHandler
 from squeaknode.network.peer_server import PeerServer
@@ -71,18 +71,20 @@ class SqueakNode:
             self.config.core.subscribe_invoices_retry_s,
         )
 
-        self.connection_manager = ConnectionManager()
+        # self.connection_manager = ConnectionManager()
         self.peer_server = PeerServer(self.config.server.rpc_port)
         self.peer_client = PeerClient()
+        self.network_manager = NetworkManager(
+            peer_server=self.peer_server,
+            peer_client=self.peer_client,
+        )
 
         squeak_controller = SqueakController(
             squeak_db,
             squeak_core,
             squeak_rate_limiter,
             payment_processor,
-            self.peer_server,
-            self.peer_client,
-            self.connection_manager,
+            self.network_manager,
             self.config,
         )
 
@@ -91,7 +93,7 @@ class SqueakNode:
 
         self.peer_handler = PeerHandler(
             squeak_controller,
-            self.connection_manager,
+            self.network_manager,
         )
 
         self.admin_rpc_server = load_admin_rpc_server(

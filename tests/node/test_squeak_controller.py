@@ -8,7 +8,7 @@ from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.squeak_core import SqueakCore
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.db.squeak_db import SqueakDb
-from squeaknode.network.connection_manager import ConnectionManager
+from squeaknode.network.network_manager import NetworkManager
 from squeaknode.network.peer_client import PeerClient
 from squeaknode.network.peer_server import PeerServer
 from squeaknode.node.payment_processor import PaymentProcessor
@@ -49,8 +49,8 @@ def peer_client():
 
 
 @pytest.fixture
-def connection_manager():
-    return mock.Mock(spec=ConnectionManager)
+def network_manager():
+    return mock.Mock(spec=NetworkManager)
 
 
 @pytest.fixture
@@ -84,9 +84,7 @@ def squeak_controller(
     squeak_core,
     squeak_rate_limiter,
     payment_processor,
-    peer_server,
-    peer_client,
-    connection_manager,
+    network_manager,
     config,
 ):
     return SqueakController(
@@ -94,9 +92,7 @@ def squeak_controller(
         squeak_core,
         squeak_rate_limiter,
         payment_processor,
-        peer_server,
-        peer_client,
-        connection_manager,
+        network_manager,
         config,
     )
 
@@ -107,9 +103,7 @@ def regtest_squeak_controller(
     squeak_core,
     squeak_rate_limiter,
     payment_processor,
-    peer_server,
-    peer_client,
-    connection_manager,
+    network_manager,
     regtest_config,
 ):
     return SqueakController(
@@ -117,9 +111,7 @@ def regtest_squeak_controller(
         squeak_core,
         squeak_rate_limiter,
         payment_processor,
-        peer_server,
-        peer_client,
-        connection_manager,
+        network_manager,
         regtest_config,
     )
 
