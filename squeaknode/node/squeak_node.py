@@ -60,7 +60,8 @@ class SqueakNode:
 
         # start admin web server
         if self.config.webadmin.enabled:
-            start_admin_web_server(self.admin_web_server)
+            # start_admin_web_server(self.admin_web_server)
+            self.admin_web_server.start()
 
         # Start peer socket server and peer client
         self.network_manager.start(self.squeak_controller)
@@ -75,6 +76,9 @@ class SqueakNode:
 
     def stop_running(self):
         self.stopped.set()
+
+        # Stop web server
+        self.admin_web_server.stop()
 
         # TODO: Use explicit stop to stop all components
         self.network_manager.stop()
@@ -201,7 +205,6 @@ class SqueakNode:
             self.config.webadmin.login_disabled,
             self.config.webadmin.allow_cors,
             self.admin_handler,
-            self.stopped,
         )
 
     def initialize_received_payment_processor_worker(self):
@@ -219,10 +222,10 @@ def start_admin_rpc_server(rpc_server):
     thread.start()
 
 
-def start_admin_web_server(admin_web_server):
-    logger.info("Starting admin web server...")
-    thread = threading.Thread(
-        target=admin_web_server.serve,
-        args=(),
-    )
-    thread.start()
+# def start_admin_web_server(admin_web_server):
+#     logger.info("Starting admin web server...")
+#     thread = threading.Thread(
+#         target=admin_web_server.serve,
+#         args=(),
+#     )
+#     thread.start()
