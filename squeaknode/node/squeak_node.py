@@ -30,7 +30,6 @@ class SqueakNode:
 
     def __init__(self, config: SqueaknodeConfig):
         self.config = config
-        self._initialize()
 
     def _initialize(self):
         # Print some configs
@@ -56,6 +55,8 @@ class SqueakNode:
         self.initialize_offer_expiry_worker()
 
     def start_running(self):
+        self._initialize()
+
         self.network_manager.start(self.squeak_controller)
         if self.config.admin.rpc_enabled:
             self.admin_rpc_server.start()
