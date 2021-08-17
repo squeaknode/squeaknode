@@ -74,30 +74,6 @@ class SqueakNode:
         self.network_manager.stop()
         self.received_payment_processor_worker.stop_running()
 
-    def initialize_peer_connection_worker(self):
-        self.peer_connection_worker = PeerConnectionWorker(
-            self.squeak_controller,
-            10,
-        )
-
-    def initialize_peer_sync_worker(self):
-        self.peer_sync_worker = SqueakPeerSyncWorker(
-            self.squeak_controller,
-            10,
-        )
-
-    def initialize_squeak_deletion_worker(self):
-        self.squeak_deletion_worker = SqueakDeletionWorker(
-            self.squeak_controller,
-            self.config.core.squeak_deletion_interval_s,
-        )
-
-    def initialize_offer_expiry_worker(self):
-        self.offer_expiry_worker = SqueakOfferExpiryWorker(
-            self.squeak_controller,
-            self.config.core.offer_deletion_interval_s,
-        )
-
     def initialize_network(self):
         # load the network
         self.network = self.config.core.network
@@ -194,4 +170,28 @@ class SqueakNode:
     def initialize_received_payment_processor_worker(self):
         self.received_payment_processor_worker = ProcessReceivedPaymentsWorker(
             self.payment_processor,
+        )
+
+    def initialize_peer_connection_worker(self):
+        self.peer_connection_worker = PeerConnectionWorker(
+            self.squeak_controller,
+            10,
+        )
+
+    def initialize_peer_sync_worker(self):
+        self.peer_sync_worker = SqueakPeerSyncWorker(
+            self.squeak_controller,
+            10,
+        )
+
+    def initialize_squeak_deletion_worker(self):
+        self.squeak_deletion_worker = SqueakDeletionWorker(
+            self.squeak_controller,
+            self.config.core.squeak_deletion_interval_s,
+        )
+
+    def initialize_offer_expiry_worker(self):
+        self.offer_expiry_worker = SqueakOfferExpiryWorker(
+            self.squeak_controller,
+            self.config.core.offer_deletion_interval_s,
         )
