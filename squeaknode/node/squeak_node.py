@@ -56,22 +56,14 @@ class SqueakNode:
         self.initialize_offer_expiry_worker()
 
     def start_running(self):
-        # start admin rpc server
+        self.network_manager.start(self.squeak_controller)
         if self.config.admin.rpc_enabled:
             self.admin_rpc_server.start()
-
-        # start admin web server
         if self.config.webadmin.enabled:
             self.admin_web_server.start()
-
-        # Start peer socket server and peer client
-        self.network_manager.start(self.squeak_controller)
-
         self.received_payment_processor_worker.start_running()
-
         self.peer_connection_worker.start()
         if self.config.sync.enabled:
-            logger.info("Starting peer sync worker...")
             self.peer_sync_worker.start()
         self.squeak_deletion_worker.start()
         self.offer_expiry_worker.start()
