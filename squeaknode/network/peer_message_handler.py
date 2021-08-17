@@ -2,7 +2,6 @@ import logging
 
 from squeak.messages import msg_addr
 from squeak.messages import msg_getdata
-from squeak.messages import msg_getsqueaks
 from squeak.messages import msg_inv
 from squeak.messages import msg_notfound
 from squeak.messages import msg_offer
@@ -10,7 +9,6 @@ from squeak.messages import msg_ping
 from squeak.messages import msg_pong
 from squeak.messages import msg_squeak
 from squeak.net import CInv
-from squeak.net import CSqueakLocator
 
 from squeaknode.core.offer import Offer
 from squeaknode.core.util import generate_ping_nonce
@@ -88,8 +86,6 @@ class PeerMessageHandler:
             self.handle_notfound(msg)
         if msg.command == b'offer':
             self.handle_offer(msg)
-        if msg.command == b'sharesqueaks':
-            self.handle_sharesqueaks(msg)
 
     def handle_ping(self, msg):
         nonce = msg.nonce
@@ -191,16 +187,3 @@ class PeerMessageHandler:
                 peer_address=self.peer.peer_address,
             )
             self.squeak_controller.save_offer(decoded_offer)
-
-    def handle_sharesqueaks(self, msg):
-        locator = msg.locator
-        interests = self.squeak_controller.filter_shared_squeak_locator(
-            locator.vInterested,
-        )
-        locator = CSqueakLocator(
-            vInterested=interests,
-        )
-        getsqueaks_msg = msg_getsqueaks(
-            locator=locator,
-        )
-        self.peer.send_msg(getsqueaks_msg)
