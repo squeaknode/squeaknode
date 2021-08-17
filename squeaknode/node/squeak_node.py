@@ -54,12 +54,10 @@ class SqueakNode:
     def start_running(self):
         # start admin rpc server
         if self.config.admin.rpc_enabled:
-            # start_admin_rpc_server(self.admin_rpc_server)
             self.admin_rpc_server.start()
 
         # start admin web server
         if self.config.webadmin.enabled:
-            # start_admin_web_server(self.admin_web_server)
             self.admin_web_server.start()
 
         # Start peer socket server and peer client
@@ -75,7 +73,7 @@ class SqueakNode:
 
     def stop_running(self):
         self.admin_web_server.stop()
-        # self.admin_rpc_server.stop()
+        self.admin_rpc_server.stop()
         self.network_manager.stop()
         self.received_payment_processor_worker.stop_running()
 
