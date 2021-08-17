@@ -56,7 +56,8 @@ class SqueakNode:
     def start_running(self):
         # start admin rpc server
         if self.config.admin.rpc_enabled:
-            start_admin_rpc_server(self.admin_rpc_server)
+            # start_admin_rpc_server(self.admin_rpc_server)
+            self.admin_rpc_server.start()
 
         # start admin web server
         if self.config.webadmin.enabled:
@@ -79,7 +80,8 @@ class SqueakNode:
 
         # Stop web server
         self.admin_web_server.stop()
-
+        # Stop rpc server
+        self.admin_rpc_server.stop()
         # TODO: Use explicit stop to stop all components
         self.network_manager.stop()
         self.received_payment_processor_worker.stop_running()
@@ -192,7 +194,6 @@ class SqueakNode:
             self.config.admin.rpc_host,
             self.config.admin.rpc_port,
             self.admin_handler,
-            self.stopped,
         )
 
     def initialize_admin_web_server(self):
@@ -213,13 +214,13 @@ class SqueakNode:
         )
 
 
-def start_admin_rpc_server(rpc_server):
-    logger.info("Starting admin RPC server...")
-    thread = threading.Thread(
-        target=rpc_server.serve,
-        args=(),
-    )
-    thread.start()
+# def start_admin_rpc_server(rpc_server):
+#     logger.info("Starting admin RPC server...")
+#     thread = threading.Thread(
+#         target=rpc_server.serve,
+#         args=(),
+#     )
+#     thread.start()
 
 
 # def start_admin_web_server(admin_web_server):
