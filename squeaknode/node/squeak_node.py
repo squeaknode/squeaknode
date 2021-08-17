@@ -1,5 +1,4 @@
 import logging
-import threading
 
 from squeak.params import SelectParams
 
@@ -31,7 +30,6 @@ class SqueakNode:
 
     def __init__(self, config: SqueaknodeConfig):
         self.config = config
-        self.stopped = threading.Event()
         self._initialize()
 
     def _initialize(self):
@@ -56,11 +54,11 @@ class SqueakNode:
     def start_running(self):
         # start admin rpc server
         if self.config.admin.rpc_enabled:
-            start_admin_rpc_server(self.admin_rpc_server)
+            self.admin_rpc_server.start()
 
         # start admin web server
         if self.config.webadmin.enabled:
-            start_admin_web_server(self.admin_web_server)
+            self.admin_web_server.start()
 
         # Start peer socket server and peer client
         self.network_manager.start(self.squeak_controller)
@@ -74,10 +72,10 @@ class SqueakNode:
         self.received_payment_processor_worker.start_running()
 
     def stop_running(self):
-        self.stopped.set()
-
-        # TODO: Use explicit stop to stop all components
+        self.admin_web_server.stop()
+        self.admin_rpc_server.stop()
         self.network_manager.stop()
+        self.received_payment_processor_worker.stop_running()
 
     def start_peer_connection_worker(self):
         logger.info("Starting peer connection worker...")
@@ -187,7 +185,6 @@ class SqueakNode:
             self.config.admin.rpc_host,
             self.config.admin.rpc_port,
             self.admin_handler,
-            self.stopped,
         )
 
     def initialize_admin_web_server(self):
@@ -200,29 +197,9 @@ class SqueakNode:
             self.config.webadmin.login_disabled,
             self.config.webadmin.allow_cors,
             self.admin_handler,
-            self.stopped,
         )
 
     def initialize_received_payment_processor_worker(self):
         self.received_payment_processor_worker = ProcessReceivedPaymentsWorker(
             self.payment_processor,
-            self.stopped,
         )
-
-
-def start_admin_rpc_server(rpc_server):
-    logger.info("Starting admin RPC server...")
-    thread = threading.Thread(
-        target=rpc_server.serve,
-        args=(),
-    )
-    thread.start()
-
-
-def start_admin_web_server(admin_web_server):
-    logger.info("Starting admin web server...")
-    thread = threading.Thread(
-        target=admin_web_server.serve,
-        args=(),
-    )
-    thread.start()

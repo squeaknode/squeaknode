@@ -585,7 +585,6 @@ class SqueakAdminWebServer:
         login_disabled,
         allow_cors,
         handler,
-        stopped,
     ):
         self.host = host
         self.port = port
@@ -593,7 +592,7 @@ class SqueakAdminWebServer:
         self.login_disabled = login_disabled
         self.allow_cors = allow_cors
         self.app = create_app(handler, username, password)
-        self.stopped = stopped
+        self.server = None
 
     def get_app(self):
 
@@ -614,8 +613,8 @@ class SqueakAdminWebServer:
 
         return self.app
 
-    def serve(self):
-        server = make_server(
+    def start(self):
+        self.server = make_server(
             self.host,
             self.port,
             self.get_app(),
@@ -624,9 +623,12 @@ class SqueakAdminWebServer:
 
         logger.info("Starting SqueakAdminWebServer...")
         threading.Thread(
-            target=server.serve_forever,
+            target=self.server.serve_forever,
         ).start()
-        self.stopped.wait()
+
+    def stop(self):
+        if self.server is None:
+            return
         logger.info("Stopping SqueakAdminWebServer....")
-        server.shutdown()
+        self.server.shutdown()
         logger.info("Stopped SqueakAdminWebServer.")
