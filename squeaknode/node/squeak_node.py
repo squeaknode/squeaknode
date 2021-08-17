@@ -50,6 +50,10 @@ class SqueakNode:
         self.initialize_admin_rpc_server()
         self.initialize_admin_web_server()
         self.initialize_received_payment_processor_worker()
+        self.initialize_peer_connection_worker()
+        self.initialize_peer_sync_worker()
+        self.initialize_squeak_deletion_worker()
+        self.initialize_offer_expiry_worker()
 
     def start_running(self):
         # start admin rpc server
@@ -63,13 +67,14 @@ class SqueakNode:
         # Start peer socket server and peer client
         self.network_manager.start(self.squeak_controller)
 
-        # Background workers
-        self.start_peer_connection_worker()
-        self.start_peer_sync_worker()
-        self.start_squeak_deletion_worker()
-        self.start_offer_expiry_worker()
-
         self.received_payment_processor_worker.start_running()
+
+        self.peer_connection_worker.start()
+        if self.config.sync.enabled:
+            logger.info("Starting peer sync worker...")
+            self.peer_sync_worker.start()
+        self.squeak_deletion_worker.start()
+        self.offer_expiry_worker.start()
 
     def stop_running(self):
         self.admin_web_server.stop()
@@ -77,34 +82,29 @@ class SqueakNode:
         self.network_manager.stop()
         self.received_payment_processor_worker.stop_running()
 
-    def start_peer_connection_worker(self):
-        logger.info("Starting peer connection worker...")
-        PeerConnectionWorker(
+    def initialize_peer_connection_worker(self):
+        self.peer_connection_worker = PeerConnectionWorker(
             self.squeak_controller,
             10,
-        ).start()
+        )
 
-    def start_peer_sync_worker(self):
-        if self.config.sync.enabled:
-            logger.info("Starting peer sync worker...")
-            SqueakPeerSyncWorker(
-                self.squeak_controller,
-                10,
-            ).start()
+    def initialize_peer_sync_worker(self):
+        self.peer_sync_worker = SqueakPeerSyncWorker(
+            self.squeak_controller,
+            10,
+        )
 
-    def start_squeak_deletion_worker(self):
-        logger.info("Starting squeak deletion worker...")
-        SqueakDeletionWorker(
+    def initialize_squeak_deletion_worker(self):
+        self.squeak_deletion_worker = SqueakDeletionWorker(
             self.squeak_controller,
             self.config.core.squeak_deletion_interval_s,
-        ).start()
+        )
 
-    def start_offer_expiry_worker(self):
-        logger.info("Starting offer expiry worker...")
-        SqueakOfferExpiryWorker(
+    def initialize_offer_expiry_worker(self):
+        self.offer_expiry_worker = SqueakOfferExpiryWorker(
             self.squeak_controller,
             self.config.core.offer_deletion_interval_s,
-        ).start()
+        )
 
     def initialize_network(self):
         # load the network
