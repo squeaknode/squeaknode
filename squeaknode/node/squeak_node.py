@@ -78,6 +78,7 @@ class SqueakNode:
 
         # TODO: Use explicit stop to stop all components
         self.network_manager.stop()
+        self.received_payment_processor_worker.stop_running()
 
     def start_peer_connection_worker(self):
         logger.info("Starting peer connection worker...")
@@ -206,7 +207,6 @@ class SqueakNode:
     def initialize_received_payment_processor_worker(self):
         self.received_payment_processor_worker = ProcessReceivedPaymentsWorker(
             self.payment_processor,
-            self.stopped,
         )
 
 

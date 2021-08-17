@@ -5,9 +5,9 @@ logger = logging.getLogger(__name__)
 
 
 class ProcessReceivedPaymentsWorker:
-    def __init__(self, payment_processor, stopped: threading.Event):
+    def __init__(self, payment_processor):
         self.payment_processor = payment_processor
-        self.stopped = stopped
+        self.stopped = threading.Event()
 
     def start_running(self):
         threading.Thread(
@@ -15,6 +15,9 @@ class ProcessReceivedPaymentsWorker:
             # daemon=True,
             name="process_received_payments_thread",
         ).start()
+
+    def stop_running(self):
+        self.stopped.set()
 
     def process_subscribed_invoices(self):
         logger.info("Starting ProcessReceivedPaymentsWorker...")
