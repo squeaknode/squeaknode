@@ -1,5 +1,4 @@
 import logging
-import threading
 
 from squeak.params import SelectParams
 
@@ -31,7 +30,6 @@ class SqueakNode:
 
     def __init__(self, config: SqueaknodeConfig):
         self.config = config
-        self.stopped = threading.Event()
         self._initialize()
 
     def _initialize(self):
@@ -76,13 +74,8 @@ class SqueakNode:
         self.received_payment_processor_worker.start_running()
 
     def stop_running(self):
-        self.stopped.set()
-
-        # Stop web server
         self.admin_web_server.stop()
-        # Stop rpc server
-        self.admin_rpc_server.stop()
-        # TODO: Use explicit stop to stop all components
+        # self.admin_rpc_server.stop()
         self.network_manager.stop()
         self.received_payment_processor_worker.stop_running()
 
@@ -212,21 +205,3 @@ class SqueakNode:
         self.received_payment_processor_worker = ProcessReceivedPaymentsWorker(
             self.payment_processor,
         )
-
-
-# def start_admin_rpc_server(rpc_server):
-#     logger.info("Starting admin RPC server...")
-#     thread = threading.Thread(
-#         target=rpc_server.serve,
-#         args=(),
-#     )
-#     thread.start()
-
-
-# def start_admin_web_server(admin_web_server):
-#     logger.info("Starting admin web server...")
-#     thread = threading.Thread(
-#         target=admin_web_server.serve,
-#         args=(),
-#     )
-#     thread.start()
