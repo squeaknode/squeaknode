@@ -451,6 +451,14 @@ def create_app(handler, username, password):
             handler.handle_download_offers,
         )
 
+    @app.route("/downloadreplies", methods=["POST"])
+    @login_required
+    def downloadreplies():
+        return handle_request(
+            squeak_admin_pb2.DownloadRepliesRequest(),
+            handler.handle_download_replies,
+        )
+
     @app.route("/getsqueakdetails", methods=["POST"])
     @login_required
     def getsqueakdetails():
