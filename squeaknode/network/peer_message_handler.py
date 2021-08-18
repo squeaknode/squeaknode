@@ -5,13 +5,11 @@ from squeak.messages import msg_getdata
 from squeak.messages import msg_inv
 from squeak.messages import msg_notfound
 from squeak.messages import msg_offer
-from squeak.messages import msg_ping
 from squeak.messages import msg_pong
 from squeak.messages import msg_squeak
 from squeak.net import CInv
 
 from squeaknode.core.offer import Offer
-from squeaknode.core.util import generate_ping_nonce
 from squeaknode.node.squeak_controller import SqueakController
 
 
@@ -31,14 +29,6 @@ class PeerMessageHandler:
     ):
         self.peer = peer
         self.squeak_controller = squeak_controller
-
-    def initiate_ping(self):
-        """Send a ping message and expect a pong response."""
-        nonce = generate_ping_nonce()
-        ping = msg_ping()
-        ping.nonce = nonce
-        self.peer.send_msg(ping)
-        self.peer.set_last_sent_ping(nonce)
 
     def handle_msgs(self):
         """Handles messages from the peer if there are any available.
