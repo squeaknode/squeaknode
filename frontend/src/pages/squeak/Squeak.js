@@ -157,13 +157,16 @@ export default function SqueakPage() {
 
   function SqueakContent() {
     return (
+      <>
       <Timeline align="left">
 
         {AncestorsContent()}
         {CurrentSqueakContent()}
-        {RepliesContent()}
 
       </Timeline>
+
+      {RepliesContent()}
+      </>
     )
   }
 

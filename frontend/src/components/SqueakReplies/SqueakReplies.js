@@ -71,7 +71,8 @@ export default function SqueakReplies({
   }
 
   return (
-    <>
+    <Timeline align="left">
+
       {squeaks
         .map(squeak =>
           <TimelineItem
@@ -96,12 +97,14 @@ export default function SqueakReplies({
             key={squeak.getSqueakHash()}
             squeak={squeak}
             network={network}
-            reloadSqueak={handleReloadSqueakItem(squeak.getSqueakHash())}>
+            reloadSqueak={handleReloadSqueakItem(squeak.getSqueakHash())}
+            showActionBar={true}>
           </SqueakThreadItem>
           </Box>
           </TimelineContent>
           </TimelineItem>
       )}
-    </>
+
+    </Timeline>
   )
 }

@@ -39,6 +39,7 @@ export default function SqueakThreadItem({
   squeak,
   network,
   reloadSqueak,
+  showActionBar,
   ...props
 }) {
   var classes = useStyles();
@@ -204,12 +205,14 @@ export default function SqueakThreadItem({
               {SqueakTime()}
             </Grid>
           </Grid>
-          <SqueakActionBar
-            hash={hash}
-            squeak={squeak}
-            network={network}
-            reloadSqueak={reloadSqueak}
-          ></SqueakActionBar>
+          {showActionBar &&
+            <SqueakActionBar
+              hash={hash}
+              squeak={squeak}
+              network={network}
+              reloadSqueak={reloadSqueak}
+            ></SqueakActionBar>
+          }
     </Paper>
   )
 }
