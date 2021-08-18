@@ -17,6 +17,8 @@ from squeaknode.node.squeak_controller import SqueakController
 
 logger = logging.getLogger(__name__)
 
+EMPTY_HASH = b'\x00' * 32
+
 
 class PeerMessageHandler:
     """Handles incoming messages from peers.
@@ -153,10 +155,12 @@ class PeerMessageHandler:
     def handle_getsqueaks(self, msg):
         # TODO: Maybe combine all invs into a single send_msg.
         for interest in msg.locator.vInterested:
+            reply_to_hash = interest.hashReplySqk if interest.hashReplySqk != EMPTY_HASH else None
             squeak_hashes = self.squeak_controller.lookup_squeaks_for_interest(
                 address=str(interest.address),
                 min_block=interest.nMinBlockHeight,
                 max_block=interest.nMaxBlockHeight,
+                reply_to_hash=reply_to_hash,
             )
             invs = [
                 CInv(type=1, hash=squeak_hash)

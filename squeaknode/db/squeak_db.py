@@ -11,8 +11,6 @@ import sqlalchemy
 from bitcoin.core import CBlockHeader
 from sqlalchemy import func
 from sqlalchemy import literal
-from sqlalchemy.sql import and_
-from sqlalchemy.sql import or_
 from sqlalchemy.sql import select
 from squeak.core import CSqueak
 
@@ -377,24 +375,40 @@ class SqueakDb:
         addresses: List[str],
         min_block: int,
         max_block: int,
+        reply_to_hash: bytes,
         include_locked: bool = False,
     ) -> List[bytes]:
         """ Lookup squeaks. """
         if not addresses:
             return []
 
-        s = (
-            select([self.squeaks.c.hash])
-            .where(self.squeaks.c.author_address.in_(addresses))
-            .where(self.squeaks.c.n_block_height >= min_block)
-            .where(self.squeaks.c.n_block_height <= max_block)
-            .where(
-                or_(
-                    self.squeak_has_secret_key,
-                    include_locked,
-                )
-            )
-        )
+        logger.info("""Running lookup query with
+        addresses: {},
+        min_block: {}
+        max_block: {}
+        reply_to_hash: {!r}
+        include_locked: {}""".format(
+            addresses,
+            min_block,
+            max_block,
+            reply_to_hash,
+            include_locked,
+        ))
+
+        s = select([self.squeaks.c.hash])
+        if addresses:
+            s = s.where(self.squeaks.c.author_address.in_(addresses))
+        if min_block:
+            s = s.where(self.squeaks.c.n_block_height >= min_block)
+        if max_block:
+            s = s.where(self.squeaks.c.n_block_height <= max_block)
+        if reply_to_hash:
+            s = s.where(self.squeaks.c.hash_reply_sqk == reply_to_hash.hex())
+        if not include_locked:
+            s = s.where(self.squeak_has_secret_key)
+
+        logger.info("Query s: {}".format(s))
+
         with self.get_connection() as connection:
             # logger.info("Mogrify lookup_squeaks: {}.".format(
             #     connection.connection.cursor().mogrify(s),
@@ -424,40 +438,40 @@ class SqueakDb:
             num_squeaks = row["num_squeaks"]
             return num_squeaks
 
-    def lookup_squeaks_needing_offer(
-            self,
-            addresses: List[str],
-            min_block: int,
-            max_block: int,
-            peer_address: PeerAddress,
-    ) -> List[bytes]:
-        """ Lookup squeaks that are locked and don't have an offer. """
-        if not addresses:
-            return []
+    # def lookup_squeaks_needing_offer(
+    #         self,
+    #         addresses: List[str],
+    #         min_block: int,
+    #         max_block: int,
+    #         peer_address: PeerAddress,
+    # ) -> List[bytes]:
+    #     """ Lookup squeaks that are locked and don't have an offer. """
+    #     if not addresses:
+    #         return []
 
-        s = (
-            select([self.squeaks.c.hash])
-            .select_from(
-                self.squeaks.outerjoin(
-                    self.received_offers,
-                    and_(
-                        self.received_offers.c.squeak_hash == self.squeaks.c.hash,
-                        self.received_offers.c.peer_host == peer_address.host,
-                        self.received_offers.c.peer_port == peer_address.port,
-                    ),
-                )
-            )
-            .where(self.squeaks.c.author_address.in_(addresses))
-            .where(self.squeaks.c.n_block_height >= min_block)
-            .where(self.squeaks.c.n_block_height <= max_block)
-            .where(self.squeak_has_no_secret_key)
-            .where(self.received_offer_does_not_exist)
-        )
-        with self.get_connection() as connection:
-            result = connection.execute(s)
-            rows = result.fetchall()
-            hashes = [bytes.fromhex(row["hash"]) for row in rows]
-            return hashes
+    #     s = (
+    #         select([self.squeaks.c.hash])
+    #         .select_from(
+    #             self.squeaks.outerjoin(
+    #                 self.received_offers,
+    #                 and_(
+    #                     self.received_offers.c.squeak_hash == self.squeaks.c.hash,
+    #                     self.received_offers.c.peer_host == peer_address.host,
+    #                     self.received_offers.c.peer_port == peer_address.port,
+    #                 ),
+    #             )
+    #         )
+    #         .where(self.squeaks.c.author_address.in_(addresses))
+    #         .where(self.squeaks.c.n_block_height >= min_block)
+    #         .where(self.squeaks.c.n_block_height <= max_block)
+    #         .where(self.squeak_has_no_secret_key)
+    #         .where(self.received_offer_does_not_exist)
+    #     )
+    #     with self.get_connection() as connection:
+    #         result = connection.execute(s)
+    #         rows = result.fetchall()
+    #         hashes = [bytes.fromhex(row["hash"]) for row in rows]
+    #         return hashes
 
     def get_old_squeaks_to_delete(
             self,
