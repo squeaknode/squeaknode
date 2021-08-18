@@ -200,6 +200,10 @@ service SqueakAdmin {
   */
   rpc DownloadOffers (DownloadOffersRequest) returns (DownloadOffersReply) {}
 
+  /** sqkadmin: `downloadreplies`
+  */
+  rpc DownloadReplies (DownloadRepliesRequest) returns (DownloadRepliesReply) {}
+
   /** sqkadmin: `payoffer`
   */
   rpc PayOffer (PayOfferRequest) returns (PayOfferReply) {}
@@ -790,6 +794,14 @@ message DownloadOffersRequest {
 }
 
 message DownloadOffersReply {
+}
+
+message DownloadRepliesRequest {
+    /// The squeak hash.
+    string squeak_hash = 1;
+}
+
+message DownloadRepliesReply {
 }
 
 message GetSqueakDetailsRequest {

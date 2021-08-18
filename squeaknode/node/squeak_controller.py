@@ -583,6 +583,23 @@ class SqueakController:
         getdata_msg = msg_getdata(inv=invs)
         self.broadcast_msg(getdata_msg)
 
+    def download_replies(self, squeak_hash: bytes):
+        logger.info("Downloading replies for squeak: {}".format(
+            squeak_hash.hex(),
+        ))
+        interests = [
+            CInterested(
+                hashReplySqk=squeak_hash,
+            )
+        ]
+        locator = CSqueakLocator(
+            vInterested=interests,
+        )
+        getsqueaks_msg = msg_getsqueaks(
+            locator=locator,
+        )
+        self.broadcast_msg(getsqueaks_msg)
+
     def filter_shared_squeak_locator(self, interests: List[CInterested]):
         ret = []
         block_range = self.get_block_range()

@@ -536,6 +536,14 @@ class SqueakAdminServerHandler(object):
         self.squeak_controller.download_offers(squeak_hash)
         return squeak_admin_pb2.DownloadOffersReply()
 
+    def handle_download_replies(self, request):
+        squeak_hash_str = request.squeak_hash
+        squeak_hash = bytes.fromhex(squeak_hash_str)
+        logger.info(
+            "Handle download replies for hash: {}".format(squeak_hash_str))
+        self.squeak_controller.download_replies(squeak_hash)
+        return squeak_admin_pb2.DownloadRepliesReply()
+
     def handle_pay_offer(self, request):
         offer_id = request.offer_id
         logger.info("Handle pay offer for offer id: {}".format(offer_id))
