@@ -35,6 +35,7 @@ import DeleteSqueakDialog from "../../components/DeleteSqueakDialog";
 import BuySqueakDialog from "../../components/BuySqueakDialog";
 import SqueakDetailsDialog from "../../components/SqueakDetailsDialog";
 import SqueakActionBar from "../../components/SqueakActionBar";
+import SqueakUserAvatar from "../../components/SqueakUserAvatar";
 
 
 import {
@@ -267,9 +268,23 @@ export default function SqueakDetailItem({
           >
             <Grid item>
                 <Box fontWeight="fontWeightBold">
+                {squeak &&
+                  <SqueakUserAvatar
+                    squeakProfile={squeak.getAuthor()}
+                  />
+                }
+                </Box>
+            </Grid>
+            <Grid item>
+                <Box p={2} fontWeight="fontWeightBold">
                   <Link href="#"
                     onClick={onAddressClick}>
-                    {getAddressDisplay()}
+                    <Typography
+                      variant="h3"
+                      style={{whiteSpace: 'pre-line'}}
+                      >
+                      {getAddressDisplay()}
+                    </Typography>
                   </Link>
                 </Box>
             </Grid>

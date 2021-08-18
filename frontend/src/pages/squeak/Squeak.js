@@ -122,26 +122,12 @@ export default function SqueakPage() {
 
   function CurrentSqueakContent() {
     return (
-      <TimelineItem>
-<TimelineOppositeContent
-  className={classes.oppositeContent}
-  color="textSecondary"
-></TimelineOppositeContent>
-<TimelineSeparator>
-  <SqueakUserAvatar
-    squeakProfile={squeak && squeak.getAuthor()}
-  />
-</TimelineSeparator>
-<TimelineContent>
-<SqueakDetailItem
-  hash={hash}
-  squeak={squeak}
-  reloadSqueak={getCurrentSqueak}
-  network={network}>
-</SqueakDetailItem>
-<Divider />
-</TimelineContent>
-</TimelineItem>
+      <SqueakDetailItem
+        hash={hash}
+        squeak={squeak}
+        reloadSqueak={getCurrentSqueak}
+        network={network}>
+      </SqueakDetailItem>
     )
   }
 
@@ -159,12 +145,9 @@ export default function SqueakPage() {
     return (
       <>
       <Timeline align="left">
-
         {AncestorsContent()}
-        {CurrentSqueakContent()}
-
       </Timeline>
-
+      {CurrentSqueakContent()}
       {RepliesContent()}
       </>
     )
