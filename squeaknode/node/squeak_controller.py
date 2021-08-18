@@ -631,3 +631,13 @@ class SqueakController:
             port,
         ))
         self.network_manager.disconnect_peer(host, port)
+
+    def subscribe_connected_peers(self, stopped: threading.Event):
+        # with ReceivedPaymentsSubscriptionClient(
+        #     self.squeak_db,
+        #     initial_index,
+        #     stopped,
+        # ).open_subscription() as client:
+        #     for payment in client.get_received_payments():
+        #         yield payment
+        return self.network_manager.subscribe_connected_peers(stopped)
