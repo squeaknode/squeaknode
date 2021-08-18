@@ -485,9 +485,13 @@ class SqueakController:
         ))
         self.network_manager.connect_peer(host, port)
 
-    def connect_peers(self) -> None:
+    def connect_saved_peers(self) -> None:
         peers = self.squeak_db.get_peers()
-        self.network_manager.connect_peers(peers)
+        for peer in peers:
+            self.network_manager.connect_peer(
+                peer.address.host,
+                peer.address.port,
+            )
 
     def get_address(self):
         return self.network_manager.get_address()
