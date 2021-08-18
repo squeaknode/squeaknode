@@ -1,12 +1,10 @@
 import logging
 import socket
-from typing import List
 
 import squeak.params
 from squeak.messages import MsgSerializable
 
 from squeaknode.core.peer_address import PeerAddress
-from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.network.connection_manager import ConnectionManager
 from squeaknode.network.peer import Peer
 from squeaknode.network.peer_client import PeerClient
@@ -53,21 +51,8 @@ class NetworkManager(object):
     def connect_peer(self, host: str, port: int) -> None:
         port = port or squeak.params.params.DEFAULT_PORT
         peer_address = PeerAddress(host=host, port=port)
+        # TODO: check if address is already connected.
         self.peer_client.connect_address(peer_address)
-
-    def connect_peers(self, peers: List[SqueakPeer]) -> None:
-        connected_peers = self.connection_manager.peers
-        connected_peer_addrs = [
-            peer.address
-            for peer in connected_peers
-        ]
-        for peer in peers:
-            peer_addr = (peer.address.host, peer.address.port)
-            if peer_addr not in connected_peer_addrs:
-                logger.info("Connect to peer: {}".format(
-                    peer,
-                ))
-                self.peer_client.connect_address(peer.address)
 
     def disconnect_peer(self, host: str, port: int) -> None:
         peer_address = PeerAddress(host=host, port=port)
