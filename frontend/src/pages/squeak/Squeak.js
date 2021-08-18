@@ -19,6 +19,7 @@ import TimelineDot from '@material-ui/lab/TimelineDot';
 import Paper from '@material-ui/core/Paper';
 
 import FaceIcon from '@material-ui/icons/Face';
+import GetAppIcon from '@material-ui/icons/GetApp';
 
 // styles
 import useStyles from "./styles";
@@ -38,6 +39,7 @@ import {
   getAncestorSqueakDisplaysRequest,
   getReplySqueakDisplaysRequest,
   getNetworkRequest,
+  downloadRepliesRequest,
 } from "../../squeakclient/requests"
 import {
   goToSqueakAddressPage,
@@ -69,6 +71,14 @@ export default function SqueakPage() {
   const getCurrentSqueak = () => {
       getSqueak(hash);
   };
+
+  const onDownloadRepliesClick = (event) => {
+    event.preventDefault();
+    console.log("Handling download replies click...");
+    downloadRepliesRequest(hash, (response) => {
+      // Do nothing.
+    });
+  }
 
   useEffect(()=>{
     getSqueak(hash)
@@ -148,6 +158,7 @@ export default function SqueakPage() {
         {AncestorsContent()}
       </Timeline>
       {CurrentSqueakContent()}
+      {DownloadRepliesButtonContent()}
       {RepliesContent()}
       </>
     )
@@ -166,6 +177,22 @@ export default function SqueakPage() {
         </Paper>
       </Grid>
       </Grid>
+    )
+  }
+
+  function DownloadRepliesButtonContent() {
+    return (
+      <>
+      <Box p={1}>
+      <Button
+        variant="contained"
+        onClick={onDownloadRepliesClick}
+        >
+        <GetAppIcon />
+        Download replies
+      </Button>
+      </Box>
+      </>
     )
   }
 
