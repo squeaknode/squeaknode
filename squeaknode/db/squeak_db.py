@@ -372,23 +372,20 @@ class SqueakDb:
 
     def lookup_squeaks(
         self,
-        addresses: List[str],
+        address: str,
         min_block: int,
         max_block: int,
         reply_to_hash: bytes,
         include_locked: bool = False,
     ) -> List[bytes]:
         """ Lookup squeaks. """
-        if not addresses:
-            return []
-
         logger.info("""Running lookup query with
-        addresses: {},
+        address: {},
         min_block: {}
         max_block: {}
         reply_to_hash: {!r}
         include_locked: {}""".format(
-            addresses,
+            address,
             min_block,
             max_block,
             reply_to_hash,
@@ -396,8 +393,8 @@ class SqueakDb:
         ))
 
         s = select([self.squeaks.c.hash])
-        if addresses:
-            s = s.where(self.squeaks.c.author_address.in_(addresses))
+        if address:
+            s = s.where(self.squeaks.c.author_address == address)
         if min_block:
             s = s.where(self.squeaks.c.n_block_height >= min_block)
         if max_block:
