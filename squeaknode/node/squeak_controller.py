@@ -545,11 +545,11 @@ class SqueakController:
             followed_addresses))
         interests = [
             CInterested(
-                address=CSqueakAddress(address),
+                addresses=[CSqueakAddress(address)
+                           for address in followed_addresses],
                 nMinBlockHeight=block_range.min_block,
                 nMaxBlockHeight=block_range.max_block,
             )
-            for address in followed_addresses
         ]
         locator = CSqueakLocator(
             vInterested=interests,
@@ -602,25 +602,25 @@ class SqueakController:
         )
         self.broadcast_msg(getsqueaks_msg)
 
-    def filter_shared_squeak_locator(self, interests: List[CInterested]):
-        ret = []
-        block_range = self.get_block_range()
-        followed_addresses = self.get_followed_addresses()
-        for interest in interests:
-            if str(interest.address) in followed_addresses:
-                min_block = max(interest.nMinBlockHeight,
-                                block_range.min_block)
-                max_block = min(interest.nMaxBlockHeight,
-                                block_range.max_block)
-                if min_block <= max_block:
-                    ret.append(
-                        CInterested(
-                            address=interest.address,
-                            nMinBlockHeight=min_block,
-                            nMaxBlockHeight=max_block,
-                        )
-                    )
-        return ret
+    # def filter_shared_squeak_locator(self, interests: List[CInterested]):
+    #     ret = []
+    #     block_range = self.get_block_range()
+    #     followed_addresses = self.get_followed_addresses()
+    #     for interest in interests:
+    #         if str(interest.address) in followed_addresses:
+    #             min_block = max(interest.nMinBlockHeight,
+    #                             block_range.min_block)
+    #             max_block = min(interest.nMaxBlockHeight,
+    #                             block_range.max_block)
+    #             if min_block <= max_block:
+    #                 ret.append(
+    #                     CInterested(
+    #                         address=interest.address,
+    #                         nMinBlockHeight=min_block,
+    #                         nMaxBlockHeight=max_block,
+    #                     )
+    #                 )
+    #     return ret
 
     def broadcast_msg(self, msg: MsgSerializable) -> None:
         self.network_manager.broadcast_msg(msg)

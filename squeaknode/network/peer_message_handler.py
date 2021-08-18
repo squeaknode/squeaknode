@@ -149,7 +149,7 @@ class PeerMessageHandler:
             max_block = interest.nMaxBlockHeight if interest.nMaxBlockHeight != -1 else None
             reply_to_hash = interest.hashReplySqk if interest.hashReplySqk != EMPTY_HASH else None
             squeak_hashes = self.squeak_controller.lookup_squeaks_for_interest(
-                address=str(interest.address),
+                address=[str(address) for address in interest.addresses],
                 min_block=min_block,
                 max_block=max_block,
                 reply_to_hash=reply_to_hash,
