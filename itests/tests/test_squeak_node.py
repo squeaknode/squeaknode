@@ -15,6 +15,7 @@ from tests.util import get_connected_peers
 from tests.util import get_hash
 from tests.util import open_channel
 from tests.util import open_peer_connection
+from tests.util import subscribe_connected_peers
 
 
 def test_get_network(admin_stub):
@@ -1023,28 +1024,42 @@ def test_connect_peer(admin_stub, other_admin_stub):
     # assert len(connected_peers) == 0
     # other_connected_peers = get_connected_peers(other_admin_stub)
     # assert len(other_connected_peers) == 0
-    with open_peer_connection(
-            other_admin_stub,
-            "test_peer",
-            "squeaknode",
-            18777,
-    ):
+
+    with subscribe_connected_peers(other_admin_stub) as subscription_queue:
+        with open_peer_connection(
+                other_admin_stub,
+                "test_peer",
+                "squeaknode",
+                18777,
+        ):
+            time.sleep(2)
+            connected_peers = get_connected_peers(admin_stub)
+            print(connected_peers)
+            assert len(connected_peers) == 1
+            # print("Admin node connected to peers: ")
+            # print(connected_peers)
+            other_connected_peers = get_connected_peers(other_admin_stub)
+            assert len(other_connected_peers) == 1
+            # print("Other Admin node connected to peers: ")
+            # print(other_connected_peers)
+            connected_peer = get_connected_peer(
+                other_admin_stub, "squeaknode", 18777)
+            assert connected_peer is not None
+
+            # Get item from queue
+            item = subscription_queue.get()
+            print("item:")
+            print(item)
+            assert len(item) == 1
+
         time.sleep(2)
         connected_peers = get_connected_peers(admin_stub)
-        print(connected_peers)
-        assert len(connected_peers) == 1
-        # print("Admin node connected to peers: ")
-        # print(connected_peers)
+        assert len(connected_peers) == 0
         other_connected_peers = get_connected_peers(other_admin_stub)
-        assert len(other_connected_peers) == 1
-        # print("Other Admin node connected to peers: ")
-        # print(other_connected_peers)
-        connected_peer = get_connected_peer(
-            other_admin_stub, "squeaknode", 18777)
-        assert connected_peer is not None
+        assert len(other_connected_peers) == 0
 
-    time.sleep(2)
-    connected_peers = get_connected_peers(admin_stub)
-    assert len(connected_peers) == 0
-    other_connected_peers = get_connected_peers(other_admin_stub)
-    assert len(other_connected_peers) == 0
+        # Get item from queue
+        item = subscription_queue.get()
+        print("item:")
+        print(item)
+        assert len(item) == 0

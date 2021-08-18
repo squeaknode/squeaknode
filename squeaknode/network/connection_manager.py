@@ -35,7 +35,6 @@ class ConnectionManager(object):
             logger.info(peer)
         logger.info('--------------')
         for callback in self.peers_changed_callbacks.values():
-            peers = self.get_peers()
             callback(peers)
 
     # def listen_peers_changed(self, callback):

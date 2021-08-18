@@ -1,6 +1,8 @@
 from __future__ import print_function
 
 import base64
+import queue
+import threading
 import time
 from contextlib import contextmanager
 
@@ -189,3 +191,21 @@ def get_connected_peer(node_stub, host, port):
         )
     )
     return get_connected_peer_response.connected_peer
+
+
+@contextmanager
+def subscribe_connected_peers(node_stub):
+    q = queue.Queue()
+    subscribe_connected_peers_response = node_stub.SubscribeConnectedPeers(
+        squeak_admin_pb2.SubscribeConnectedPeersRequest()
+    )
+
+    def enqueue_results():
+        for result in subscribe_connected_peers_response:
+            q.put(result.connected_peers)
+
+    threading.Thread(
+        target=enqueue_results,
+    ).start()
+    yield q
+    subscribe_connected_peers_response.cancel()

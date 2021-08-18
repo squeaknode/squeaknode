@@ -55,12 +55,12 @@ class ConnectedPeersSubscriptionClient:
 
     def get_connected_peers(self):
         while True:
-            payment = self.q.get()
-            if payment is None:
+            item = self.q.get()
+            if item is None:
                 raise Exception("Poison pill swallowed.")
-            yield payment
+            yield item
             self.q.task_done()
             logger.info(
-                "Removed payment from queue. Size: {}".format(
+                "Removed item from queue. Size: {}".format(
                     self.q.qsize())
             )

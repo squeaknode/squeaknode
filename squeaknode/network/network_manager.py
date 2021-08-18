@@ -126,4 +126,5 @@ class NetworkManager(object):
             stopped,
         )
         with subscription_client.open_subscription():
-            return subscription_client.get_connected_peers()
+            for result in subscription_client.get_connected_peers():
+                yield result
