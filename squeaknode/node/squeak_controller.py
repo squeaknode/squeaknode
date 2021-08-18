@@ -513,7 +513,7 @@ class SqueakController:
             reply_to_hash: bytes,
     ):
         return self.squeak_db.lookup_squeaks(
-            [address],
+            address,
             min_block,
             max_block,
             reply_to_hash,
