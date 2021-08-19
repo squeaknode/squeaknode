@@ -122,6 +122,10 @@ import {
   DownloadRepliesReply,
 } from "../proto/squeak_admin_pb"
 
+import { SqueakAdminClient } from "../proto/squeak_admin_grpc_web_pb"
+
+console.log("Using SqueakAdminClient");
+
 console.log('The value of REACT_APP_SERVER_PORT is:', process.env.REACT_APP_SERVER_PORT);
 const SERVER_PORT = process.env.REACT_APP_SERVER_PORT || window.location.port;
 
@@ -179,15 +183,17 @@ export function getUserRequest(handleResponse) {
 }
 
 export function getTimelineSqueakDisplaysRequest(handleResponse) {
-  var request = new GetTimelineSqueakDisplaysRequest();
-  makeRequest(
-    'gettimelinesqueakdisplays',
-    request,
-    GetTimelineSqueakDisplaysReply.deserializeBinary,
-    (response) => {
-      handleResponse(response.getSqueakDisplayEntriesList());
-    }
-  );
+  console.log(SqueakAdminClient);
+  var clientUrl = 'http://' + window.location.hostname + ':15081';
+  console.log("Using clientUrl: " + clientUrl);
+  var client = new SqueakAdminClient(clientUrl);
+  //var client = new SqueakAdminClient("envoy" + ':8080')
+  var getTimelineSqueakDisplaysRequest = new GetTimelineSqueakDisplaysRequest()
+  client.getTimelineSqueakDisplays(getTimelineSqueakDisplaysRequest, {}, (err, response) => {
+    console.log(response);
+    console.log(response.getSqueakDisplayEntriesList());
+    handleResponse(response.getSqueakDisplayEntriesList());
+  });
 }
 
 export function lndGetInfoRequest(handleResponse, handleErr) {
