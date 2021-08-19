@@ -55,3 +55,15 @@ services:
   #   sysctls:
   #     - net.ipv6.conf.all.disable_ipv6=0
   #   entrypoint: ["./start-squeaknode.sh"]
+
+  envoy:
+    image: envoy
+    container_name: envoy
+    build:
+      context: ../
+      dockerfile: docker/envoy/Dockerfile
+    ports:
+      - 8080:8080
+    environment:
+      - SERVICE_NAME=192.168.128.1
+    network_mode: "host"
