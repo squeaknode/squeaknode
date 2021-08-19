@@ -131,7 +131,9 @@ const SERVER_PORT = process.env.REACT_APP_SERVER_PORT || window.location.port;
 export let web_host_port = window.location.protocol + '//' + window.location.hostname + ':' + SERVER_PORT;
 
 console.log(SqueakAdminClient);
-var client = new SqueakAdminClient('http://' + window.location.hostname + ':15081')
+const RPC_SERVER_PORT = process.env.REACT_APP_SERVER_PORT || 15081;
+console.log("Using RPC_SERVER_PORT: " + RPC_SERVER_PORT);
+var client = new SqueakAdminClient('http://' + window.location.hostname + ':' + RPC_SERVER_PORT);
 
 
 function handleErrorResponse(response, route, handleError) {
@@ -197,6 +199,7 @@ export function getTimelineSqueakDisplaysRequest(handleResponse) {
   //     handleResponse(response.getSqueakDisplayEntriesList());
   //   }
   // );
+  console.log("Using new version of getTimelineSqueakDisplaysRequest");
   var getTimelineSqueakDisplaysRequest = new GetTimelineSqueakDisplaysRequest()
   client.getTimelineSqueakDisplays(getTimelineSqueakDisplaysRequest, {}, (err, response) => {
     handleResponse(response.getSqueakDisplayEntriesList());
