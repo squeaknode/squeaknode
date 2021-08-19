@@ -122,6 +122,9 @@ import {
   DownloadRepliesReply,
 } from "../proto/squeak_admin_pb"
 
+import { SqueakAdminClient } from "../proto/squeak_admin_grpc_web_pb"
+
+
 console.log('The value of REACT_APP_SERVER_PORT is:', process.env.REACT_APP_SERVER_PORT);
 const SERVER_PORT = process.env.REACT_APP_SERVER_PORT || window.location.port;
 
@@ -179,6 +182,8 @@ export function getUserRequest(handleResponse) {
 }
 
 export function getTimelineSqueakDisplaysRequest(handleResponse) {
+  console.log("Call getTimelineSqueakDisplaysRequestV2");
+  getTimelineSqueakDisplaysRequestV2();
   var request = new GetTimelineSqueakDisplaysRequest();
   makeRequest(
     'gettimelinesqueakdisplays',
@@ -188,6 +193,16 @@ export function getTimelineSqueakDisplaysRequest(handleResponse) {
       handleResponse(response.getSqueakDisplayEntriesList());
     }
   );
+}
+
+export function getTimelineSqueakDisplaysRequestV2(handleResponse) {
+    console.log(SqueakAdminClient);
+    var client = new SqueakAdminClient('http://' + window.location.hostname + ':8080')
+    var getTimelineSqueakDisplaysRequest = new GetTimelineSqueakDisplaysRequest()
+    client.getTimelineSqueakDisplays(getTimelineSqueakDisplaysRequest, {}, (err, response) => {
+      console.log(response);
+      console.log(response.getSqueakDisplayEntriesList())
+    });
 }
 
 export function lndGetInfoRequest(handleResponse, handleErr) {
