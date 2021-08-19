@@ -184,7 +184,9 @@ export function getUserRequest(handleResponse) {
 
 export function getTimelineSqueakDisplaysRequest(handleResponse) {
   console.log(SqueakAdminClient);
-  var client = new SqueakAdminClient('http://' + window.location.hostname + ':8080')
+  var clientUrl = 'http://' + window.location.hostname + ':15081';
+  console.log("Using clientUrl: " + clientUrl);
+  var client = new SqueakAdminClient(clientUrl);
   //var client = new SqueakAdminClient("envoy" + ':8080')
   var getTimelineSqueakDisplaysRequest = new GetTimelineSqueakDisplaysRequest()
   client.getTimelineSqueakDisplays(getTimelineSqueakDisplaysRequest, {}, (err, response) => {
