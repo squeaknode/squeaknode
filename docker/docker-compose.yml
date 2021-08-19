@@ -56,14 +56,41 @@ services:
   #     - net.ipv6.conf.all.disable_ipv6=0
   #   entrypoint: ["./start-squeaknode.sh"]
 
+  # squeaknode:
+  #   image: squeaknode
+  #   container_name: squeaknode
+  #   build:
+  #     context: ../
+  #     dockerfile: Dockerfile
+  #   depends_on:
+  #     - "bitcoin-core"
+  #     - "lnd"
+  #   volumes:
+  #     - ~/.lnd:/root/.lnd:rw
+  #     - ./config.ini:/config.ini
+  #   ports:
+  #     - 12994:12994
+  #     - 8994:8994
+  #   links:
+  #     - "bitcoin-core:bitcoin-core"
+  #     - "lnd:lnd"
+  #   sysctls:
+  #     - net.ipv6.conf.all.disable_ipv6=0
+  #   entrypoint: ["./start-squeaknode.sh"]
+
+  # envoy:
+  #   image: envoy
+  #   container_name: envoy
+  #   build:
+  #     context: ../
+  #     dockerfile: docker/envoy/Dockerfile
+  #   ports:
+  #     - 8080:8080
+
   envoy:
-    image: envoy
-    container_name: envoy
-    build:
-      context: ../
-      dockerfile: docker/envoy/Dockerfile
+    image: envoyproxy/envoy:v1.16.0
     ports:
       - 8080:8080
-    environment:
-      - SERVICE_NAME=192.168.128.1
     network_mode: "host"
+    volumes:
+      - ../frontend/envoy.yaml:/etc/envoy/envoy.yaml:ro

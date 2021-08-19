@@ -185,10 +185,11 @@ export function getUserRequest(handleResponse) {
 export function getTimelineSqueakDisplaysRequest(handleResponse) {
   console.log(SqueakAdminClient);
   var client = new SqueakAdminClient('http://' + window.location.hostname + ':8080')
+  //var client = new SqueakAdminClient("envoy" + ':8080')
   var getTimelineSqueakDisplaysRequest = new GetTimelineSqueakDisplaysRequest()
   client.getTimelineSqueakDisplays(getTimelineSqueakDisplaysRequest, {}, (err, response) => {
     console.log(response);
-    console.log(response.getSqueakDisplayEntriesList())
+    console.log(response.getSqueakDisplayEntriesList());
     handleResponse(response.getSqueakDisplayEntriesList());
   });
 }
