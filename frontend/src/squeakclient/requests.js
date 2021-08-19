@@ -131,7 +131,7 @@ const SERVER_PORT = process.env.REACT_APP_SERVER_PORT || window.location.port;
 export let web_host_port = window.location.protocol + '//' + window.location.hostname + ':' + SERVER_PORT;
 
 console.log(SqueakAdminClient);
-var client = new SqueakAdminClient('http://' + window.location.hostname + ':8080')
+var client = new SqueakAdminClient('http://' + window.location.hostname + ':15081')
 
 
 function handleErrorResponse(response, route, handleError) {
