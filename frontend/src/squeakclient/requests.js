@@ -130,6 +130,10 @@ const SERVER_PORT = process.env.REACT_APP_SERVER_PORT || window.location.port;
 
 export let web_host_port = window.location.protocol + '//' + window.location.hostname + ':' + SERVER_PORT;
 
+console.log(SqueakAdminClient);
+var client = new SqueakAdminClient('http://' + window.location.hostname + ':8080')
+
+
 function handleErrorResponse(response, route, handleError) {
   response.text()
   .then(function(data) {
@@ -182,22 +186,24 @@ export function getUserRequest(handleResponse) {
 }
 
 export function getTimelineSqueakDisplaysRequest(handleResponse) {
-  console.log("Call getTimelineSqueakDisplaysRequestV2");
-  getTimelineSqueakDisplaysRequestV2();
-  var request = new GetTimelineSqueakDisplaysRequest();
-  makeRequest(
-    'gettimelinesqueakdisplays',
-    request,
-    GetTimelineSqueakDisplaysReply.deserializeBinary,
-    (response) => {
-      handleResponse(response.getSqueakDisplayEntriesList());
-    }
-  );
+  // console.log("Call getTimelineSqueakDisplaysRequestV2");
+  // getTimelineSqueakDisplaysRequestV2();
+  // var request = new GetTimelineSqueakDisplaysRequest();
+  // makeRequest(
+  //   'gettimelinesqueakdisplays',
+  //   request,
+  //   GetTimelineSqueakDisplaysReply.deserializeBinary,
+  //   (response) => {
+  //     handleResponse(response.getSqueakDisplayEntriesList());
+  //   }
+  // );
+  var getTimelineSqueakDisplaysRequest = new GetTimelineSqueakDisplaysRequest()
+  client.getTimelineSqueakDisplays(getTimelineSqueakDisplaysRequest, {}, (err, response) => {
+    handleResponse(response.getSqueakDisplayEntriesList());
+  });
 }
 
 export function getTimelineSqueakDisplaysRequestV2(handleResponse) {
-    console.log(SqueakAdminClient);
-    var client = new SqueakAdminClient('http://' + window.location.hostname + ':8080')
     var getTimelineSqueakDisplaysRequest = new GetTimelineSqueakDisplaysRequest()
     client.getTimelineSqueakDisplays(getTimelineSqueakDisplaysRequest, {}, (err, response) => {
       console.log(response);
