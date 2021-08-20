@@ -12,7 +12,6 @@ COPY itests/tests ./tests
 
 RUN python3 -m grpc_tools.protoc --proto_path=. --python_out=. --grpc_python_out=. \
 	proto/lnd.proto \
-	proto/squeak_server.proto \
 	proto/squeak_admin.proto
 
 RUN chmod +x test.sh
