@@ -5,6 +5,7 @@ import squeak.params
 from squeak.messages import MsgSerializable
 
 from squeaknode.core.peer_address import PeerAddress
+from squeaknode.network.connected_peers_subscription_client import ConnectedPeersSubscriptionClient
 from squeaknode.network.connection_manager import ConnectionManager
 from squeaknode.network.peer import Peer
 from squeaknode.network.peer_client import PeerClient
@@ -103,3 +104,27 @@ class NetworkManager(object):
         hostname, port = address
         ip = socket.gethostbyname(hostname)
         return (ip, port)
+
+    # def register_peers_changed_callback(self, callback, stopped: threading.Event):
+    #     """Registers a callback that gets called when connected peers changes.
+    #     """
+    #     name = "peers_changed_callback_{}".format(uuid.uuid1()),
+    #     self.connection_manager.add_peers_changed_callback(
+    #         name=name,
+    #         callback=callback,
+    #     )
+    #     try:
+    #         stopped.wait()
+    #     finally:
+    #         self.connection_manager.remove_peers_changed_callback(
+    #             name=name,
+    #         )
+
+    def subscribe_connected_peers(self, stopped):
+        subscription_client = ConnectedPeersSubscriptionClient(
+            self.connection_manager,
+            stopped,
+        )
+        with subscription_client.open_subscription():
+            for result in subscription_client.get_connected_peers():
+                yield result

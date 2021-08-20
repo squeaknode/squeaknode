@@ -246,3 +246,15 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
 
     def DisconnectPeer(self, request, context):
         return self.handler.handle_disconnect_peer(request)
+
+    def SubscribeConnectedPeers(self, request, context):
+        stopped = threading.Event()
+
+        def on_rpc_done():
+            logger.info("Called on_rpc_done using add_callback.")
+            stopped.set()
+        context.add_callback(on_rpc_done)
+        return self.handler.handle_subscribe_connected_peers(
+            request,
+            stopped,
+        )

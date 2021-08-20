@@ -736,3 +736,16 @@ class SqueakAdminServerHandler(object):
             "Handle connect peer with host: {}, port: {}".format(host, port))
         self.squeak_controller.disconnect_peer(host, port)
         return squeak_admin_pb2.DisconnectPeerReply()
+
+    def handle_subscribe_connected_peers(self, request, stopped):
+        logger.info("Handle subscribe connected peers")
+        connected_peers_stream = self.squeak_controller.subscribe_connected_peers(
+            stopped,
+        )
+        for connected_peers in connected_peers_stream:
+            connected_peers_display_msgs = [
+                connected_peer_to_message(peer) for peer in connected_peers
+            ]
+            yield squeak_admin_pb2.GetConnectedPeersReply(
+                connected_peers=connected_peers_display_msgs
+            )

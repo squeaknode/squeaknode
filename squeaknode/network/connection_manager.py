@@ -17,7 +17,7 @@ class ConnectionManager(object):
     def __init__(self):
         self._peers = {}
         self.peers_lock = threading.Lock()
-        self.peers_changed_callback = None
+        self.peers_changed_callbacks = {}
 
     @property
     def peers(self):
@@ -34,12 +34,11 @@ class ConnectionManager(object):
         for peer in peers:
             logger.info(peer)
         logger.info('--------------')
-        if self.peers_changed_callback:
-            peers = self.get_peers()
-            self.peers_changed_callback(peers)
+        for callback in self.peers_changed_callbacks.values():
+            callback(peers)
 
-    def listen_peers_changed(self, callback):
-        self.peers_changed_callback = callback
+    # def listen_peers_changed(self, callback):
+    #     self.peers_changed_callback = callback
 
     def _is_duplicate_nonce(self, peer):
         for other_peer in self.peers:
@@ -69,10 +68,9 @@ class ConnectionManager(object):
             if not self.has_connection(peer.address):
                 logger.debug('Failed to remove peer {}'.format(peer))
                 raise MissingPeerError()
-            else:
-                del self._peers[peer.address]
-                logger.debug('Removed peer {}'.format(peer))
-                self.on_peers_changed()
+            del self._peers[peer.address]
+            logger.debug('Removed peer {}'.format(peer))
+            self.on_peers_changed()
 
     def get_peer(self, address):
         """Get a peer info by address.
@@ -93,6 +91,12 @@ class ConnectionManager(object):
         with self.peers_lock:
             for peer in self.peers:
                 peer.close()
+
+    def add_peers_changed_callback(self, name, callback):
+        self.peers_changed_callbacks[name] = callback
+
+    def remove_peers_changed_callback(self, name):
+        del self.peers_changed_callbacks[name]
 
 
 class DuplicatePeerError(Exception):
