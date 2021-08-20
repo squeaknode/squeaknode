@@ -3,9 +3,7 @@ import socket
 import threading
 
 
-MIN_PEERS = 5
-MAX_PEERS = 10
-UPDATE_THREAD_SLEEP_TIME = 10
+SOCKET_CONNECT_TIMEOUT = 5
 
 
 logger = logging.getLogger(__name__)
@@ -24,6 +22,7 @@ class PeerClient(object):
         try:
             peer_socket = socket.socket()
             logger.info('Got socket to {}'.format(address))
+            peer_socket.settimeout(SOCKET_CONNECT_TIMEOUT)
             peer_socket.connect(address)
             peer_socket.setblocking(True)
             self.peer_handler.handle_connection(
