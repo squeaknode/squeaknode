@@ -1071,4 +1071,9 @@ export function subscribeConnectedPeersRequest(handleResponse) {
     // handleResponse(response.getConnectedPeersList());
     handleResponse(response.getConnectedPeersList());
   });
+  stream.on('end', function(end) {
+    // stream end signal
+    console.log(end);
+    alert("Stream ended: " + end);
+  });
 }

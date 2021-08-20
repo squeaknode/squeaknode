@@ -157,6 +157,20 @@ export default function Peers() {
     )
   }
 
+  function PeersCountSummary() {
+    return (
+      <Grid item xs={12}>
+      <Box
+         p={1}
+      >
+      <Typography variant="h5" component="h5">
+        {'Number of connected peers: ' + connectedPeers.length}
+      </Typography>
+      </Box>
+      </Grid>
+    )
+  }
+
   function PeersGridItem() {
     return (
       <Grid item xs={12}>
@@ -221,6 +235,7 @@ export default function Peers() {
         <Grid item xs={12}>
           <Widget disableWidgetMenu>
             {ConnectPeerButton()}
+            {PeersCountSummary()}
             {PeersGridItem()}
           </Widget>
         </Grid>
