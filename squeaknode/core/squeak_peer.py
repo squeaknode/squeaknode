@@ -9,5 +9,4 @@ class SqueakPeer(NamedTuple):
     peer_id: Optional[int]
     peer_name: str
     address: PeerAddress
-    uploading: bool
-    downloading: bool
+    autoconnect: bool

@@ -154,11 +154,8 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
     def GetPeers(self, request, context):
         return self.handler.handle_get_squeak_peers(request)
 
-    def SetPeerDownloading(self, request, context):
-        return self.handler.handle_set_squeak_peer_downloading(request)
-
-    def SetPeerUploading(self, request, context):
-        return self.handler.handle_set_squeak_peer_uploading(request)
+    def SetPeerAutoconnect(self, request, context):
+        return self.handler.handle_set_squeak_peer_autoconnect(request)
 
     def RenamePeer(self, request, context):
         return self.handler.handle_rename_squeak_peer(request)

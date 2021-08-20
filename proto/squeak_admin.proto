@@ -160,13 +160,9 @@ service SqueakAdmin {
   */
   rpc GetPeers (GetPeersRequest) returns (GetPeersReply) {}
 
-  /** sqkadmin: `setpeerdownloading`
+  /** sqkadmin: `setpeerautoconnect`
   */
-  rpc SetPeerDownloading (SetPeerDownloadingRequest) returns (SetPeerDownloadingReply) {}
-
-  /** sqkadmin: `setpeerdownloading`
-  */
-  rpc SetPeerUploading (SetPeerUploadingRequest) returns (SetPeerUploadingReply) {}
+  rpc SetPeerAutoconnect (SetPeerAutoconnectRequest) returns (SetPeerAutoconnectReply) {}
 
   /** sqkadmin: `renamepeer`
   */
@@ -595,33 +591,19 @@ message SqueakPeer {
     /// Port
     int32 port = 4;
 
-    /// Uploading
-    bool uploading = 5;
-
-    /// Downloading
-    bool downloading = 6;
+    /// Autoconnect
+    bool autoconnect = 5;
 }
 
-message SetPeerDownloadingRequest {
+message SetPeerAutoconnectRequest {
     /// The peer id
     int32 peer_id = 1;
 
-    /// Downloading
-    bool downloading = 2;
+    /// Autoconnect
+    bool autoconnect = 2;
 }
 
-message SetPeerDownloadingReply {
-}
-
-message SetPeerUploadingRequest {
-    /// The peer id
-    int32 peer_id = 1;
-
-    /// Uploading
-    bool uploading = 2;
-}
-
-message SetPeerUploadingReply {
+message SetPeerAutoconnectReply {
 }
 
 message RenamePeerRequest {

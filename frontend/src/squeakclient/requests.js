@@ -34,8 +34,7 @@ import {
   GetBuyOffersRequest,
   GetBuyOfferRequest,
   GetPeerRequest,
-  SetPeerDownloadingRequest,
-  SetPeerUploadingRequest,
+  SetPeerAutoconnectRequest,
   GetSigningProfilesRequest,
   GetContactProfilesRequest,
   MakeSqueakRequest,
@@ -59,8 +58,7 @@ import {
   GetBuyOffersReply,
   GetBuyOfferReply,
   GetPeerReply,
-  SetPeerDownloadingReply,
-  SetPeerUploadingReply,
+  SetPeerAutoconnectReply,
   GetSigningProfilesReply,
   GetContactProfilesReply,
   MakeSqueakReply,
@@ -493,32 +491,11 @@ export function getPeerRequest(id, handleResponse) {
   });
 }
 
-export function setPeerDownloadingRequest(id, downloading, handleResponse) {
-  var request = new SetPeerDownloadingRequest();
+export function setPeerAutoconnectRequest(id, autoconnect, handleResponse) {
+  var request = new SetPeerAutoconnectRequest();
   request.setPeerId(id);
-  request.setDownloading(downloading);
-  // makeRequest(
-  //   'setpeerdownloading',
-  //   request,
-  //   SetPeerDownloadingReply.deserializeBinary,
-  //   handleResponse,
-  // );
-  client.setPeerDownloading(request, {}, (err, response) => {
-    handleResponse(response);
-  });
-}
-
-export function setPeerUploadingRequest(id, uploading, handleResponse) {
-  var request = new SetPeerUploadingRequest();
-  request.setPeerId(id);
-  request.setUploading(uploading);
-  // makeRequest(
-  //   'setpeeruploading',
-  //   request,
-  //   SetPeerUploadingReply.deserializeBinary,
-  //   handleResponse,
-  // );
-  client.setPeerUploading(request, {}, (err, response) => {
+  request.setAutoconnect(autoconnect);
+  client.setPeerAutoconnect(request, {}, (err, response) => {
     handleResponse(response);
   });
 }

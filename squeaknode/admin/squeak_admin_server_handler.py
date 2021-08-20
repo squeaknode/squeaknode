@@ -427,18 +427,6 @@ class SqueakAdminServerHandler(object):
             squeak_peers=squeak_peer_msgs,
         )
 
-    def handle_set_squeak_peer_downloading(self, request):
-        peer_id = request.peer_id
-        downloading = request.downloading
-        logger.info(
-            "Handle set peer downloading with peer id: {}, downloading: {}".format(
-                peer_id,
-                downloading,
-            )
-        )
-        self.squeak_controller.set_peer_downloading(peer_id, downloading)
-        return squeak_admin_pb2.SetPeerDownloadingReply()
-
     def handle_rename_squeak_peer(self, request):
         peer_id = request.peer_id
         peer_name = request.peer_name
@@ -451,17 +439,17 @@ class SqueakAdminServerHandler(object):
         self.squeak_controller.rename_peer(peer_id, peer_name)
         return squeak_admin_pb2.RenamePeerReply()
 
-    def handle_set_squeak_peer_uploading(self, request):
+    def handle_set_squeak_peer_autoconnect(self, request):
         peer_id = request.peer_id
-        uploading = request.uploading
+        autoconnect = request.autoconnect
         logger.info(
-            "Handle set peer uploading with peer id: {}, uploading: {}".format(
+            "Handle set peer autoconnect with peer id: {}, autoconnect: {}".format(
                 peer_id,
-                uploading,
+                autoconnect,
             )
         )
-        self.squeak_controller.set_peer_uploading(peer_id, uploading)
-        return squeak_admin_pb2.SetPeerUploadingReply()
+        self.squeak_controller.set_peer_autoconnect(peer_id, autoconnect)
+        return squeak_admin_pb2.SetPeerAutoconnectReply()
 
     def handle_delete_squeak_peer(self, request):
         peer_id = request.peer_id

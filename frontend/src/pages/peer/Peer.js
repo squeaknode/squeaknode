@@ -21,8 +21,7 @@ import DeletePeerDialog from "../../components/DeletePeerDialog";
 
 import {
   getPeerRequest,
-  setPeerDownloadingRequest,
-  setPeerUploadingRequest,
+  setPeerAutoconnectRequest,
 } from "../../squeakclient/requests"
 
 
@@ -36,13 +35,8 @@ export default function PeerPage() {
   const getSqueakPeer = (id) => {
     getPeerRequest(id, setPeer);
   };
-  const setDownloading = (id, downloading) => {
-    setPeerDownloadingRequest(id, downloading, () => {
-      getSqueakPeer(id);
-    });
-  };
-  const setUploading = (id, uploading) => {
-    setPeerUploadingRequest(id, uploading, () => {
+  const setAutoconnect = (id, autoconnect) => {
+    setPeerAutoconnectRequest(id, autoconnect, () => {
       getSqueakPeer(id);
     });
   };
@@ -60,16 +54,10 @@ export default function PeerPage() {
      setDeleteDialogOpen(false);
   };
 
-  const handleSettingsDownloadingChange = (event) => {
-    console.log("Downloading changed for peer id: " + id);
-    console.log("Downloading changed to: " + event.target.checked);
-    setDownloading(id, event.target.checked);
-  };
-
-  const handleSettingsUploadingChange = (event) => {
-    console.log("Uploading changed for peer id: " + id);
-    console.log("Uploading changed to: " + event.target.checked);
-    setUploading(id, event.target.checked);
+  const handleSettingsAutoconnectChange = (event) => {
+    console.log("Autoconnect changed for peer id: " + id);
+    console.log("Autoconnect changed to: " + event.target.checked);
+    setAutoconnect(id, event.target.checked);
   };
 
   function NoPeerContent() {
@@ -98,12 +86,8 @@ export default function PeerPage() {
         <FormLabel component="legend">Peer settings</FormLabel>
         <FormGroup>
           <FormControlLabel
-            control={<Switch checked={peer.getDownloading()} onChange={handleSettingsDownloadingChange} />}
-            label="Downloading"
-          />
-          <FormControlLabel
-            control={<Switch checked={peer.getUploading()} onChange={handleSettingsUploadingChange} />}
-            label="Uploading"
+            control={<Switch checked={peer.getAutoconnect()} onChange={handleSettingsAutoconnectChange} />}
+            label="Autoconnect"
           />
         </FormGroup>
       </FormControl>

@@ -516,20 +516,20 @@ def test_create_peer_empty_name(admin_stub):
     assert "Peer name cannot be empty." in str(excinfo.value)
 
 
-def test_set_peer_downloading(admin_stub, peer_id):
+def test_set_peer_autoconnect(admin_stub, peer_id):
     # Get the peer
     get_peer_response = admin_stub.GetPeer(
         squeak_admin_pb2.GetPeerRequest(
             peer_id=peer_id,
         )
     )
-    assert not get_peer_response.squeak_peer.downloading
+    assert not get_peer_response.squeak_peer.autoconnect
 
-    # Set the peer to be downloading
-    admin_stub.SetPeerDownloading(
-        squeak_admin_pb2.SetPeerDownloadingRequest(
+    # Set the peer to be autoconnect
+    admin_stub.SetPeerAutoconnect(
+        squeak_admin_pb2.SetPeerAutoconnectRequest(
             peer_id=peer_id,
-            downloading=True,
+            autoconnect=True,
         )
     )
 
@@ -539,33 +539,7 @@ def test_set_peer_downloading(admin_stub, peer_id):
             peer_id=peer_id,
         )
     )
-    assert get_peer_response.squeak_peer.downloading
-
-
-def test_set_peer_uploading(admin_stub, peer_id):
-    # Get the peer
-    get_peer_response = admin_stub.GetPeer(
-        squeak_admin_pb2.GetPeerRequest(
-            peer_id=peer_id,
-        )
-    )
-    assert not get_peer_response.squeak_peer.uploading
-
-    # Set the peer to be uploading
-    admin_stub.SetPeerUploading(
-        squeak_admin_pb2.SetPeerUploadingRequest(
-            peer_id=peer_id,
-            uploading=True,
-        )
-    )
-
-    # Get the peer again
-    get_peer_response = admin_stub.GetPeer(
-        squeak_admin_pb2.GetPeerRequest(
-            peer_id=peer_id,
-        )
-    )
-    assert get_peer_response.squeak_peer.uploading
+    assert get_peer_response.squeak_peer.autoconnect
 
 
 def test_rename_peer(admin_stub, peer_id, random_name):
