@@ -32,6 +32,7 @@ import {
   connectSqueakPeerRequest,
   disconnectSqueakPeerRequest,
   getConnectedPeerRequest,
+  subscribeConnectedPeersRequest,
 } from "../../squeakclient/requests"
 import {
   goToSqueakAddressPage,
@@ -62,6 +63,20 @@ export default function PeerAddressPage() {
 
   const getConnectedPeer = () => {
     getConnectedPeerRequest(host, port, setConnectedPeer);
+  };
+
+  const subscribeConnectedPeers = () => {
+    subscribeConnectedPeersRequest((connectedPeers) => {
+      console.log(connectedPeers);
+      var ret = null;
+      for (let i = 0; i < connectedPeers.length; i++) {
+        if(connectedPeers[i].getHost() == host && connectedPeers[i].getPort() == port) {
+          var ret = connectedPeers[i];
+        }
+      }
+      console.log("Using connected peer: " + ret);
+      setConnectedPeer(ret);
+    });
   };
 
     // const handleClickOpenDisconnectPeerDialog = () => {
@@ -112,6 +127,9 @@ export default function PeerAddressPage() {
   useEffect(() => {
     getConnectedPeer()
   }, []);
+  useEffect(() => {
+    subscribeConnectedPeers()
+  }, []);
 
   function DisconnectPeerButton() {
     return (
@@ -152,7 +170,6 @@ export default function PeerAddressPage() {
   }
 
   function ConnectionStatusContent() {
-    console.log(connectedPeer);
     return (
       <>
       <Grid item xs={12}>
@@ -166,7 +183,6 @@ export default function PeerAddressPage() {
   }
 
   function ConnectionActionContent() {
-    console.log(connectedPeer);
     return (
       <>
       <Grid item xs={12}>
@@ -180,7 +196,6 @@ export default function PeerAddressPage() {
   }
 
   function AddressContent() {
-    console.log(connectedPeer);
     return (
       <>
       <Typography variant="h2" component="h2">
