@@ -68,7 +68,6 @@ def signing_profile():
         profile_name=profile_name,
         private_key=signing_key_bytes,
         address=str(address),
-        sharing=False,
         following=False,
         profile_image=None,
     )

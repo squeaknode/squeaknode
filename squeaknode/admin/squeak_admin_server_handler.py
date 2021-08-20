@@ -193,18 +193,6 @@ class SqueakAdminServerHandler(object):
             profile_id, following)
         return squeak_admin_pb2.SetSqueakProfileFollowingReply()
 
-    def handle_set_squeak_profile_sharing(self, request):
-        profile_id = request.profile_id
-        sharing = request.sharing
-        logger.info(
-            "Handle set squeak profile sharing with profile id: {}, sharing: {}".format(
-                profile_id,
-                sharing,
-            )
-        )
-        self.squeak_controller.set_squeak_profile_sharing(profile_id, sharing)
-        return squeak_admin_pb2.SetSqueakProfileSharingReply()
-
     def handle_rename_squeak_profile(self, request):
         profile_id = request.profile_id
         profile_name = request.profile_name

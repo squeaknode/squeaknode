@@ -324,40 +324,6 @@ def test_set_profile_following(admin_stub, contact_profile_id):
     assert not get_squeak_profile_response.squeak_profile.following
 
 
-def test_set_profile_sharing(admin_stub, contact_profile_id):
-    # Set the profile to be sharing
-    admin_stub.SetSqueakProfileSharing(
-        squeak_admin_pb2.SetSqueakProfileSharingRequest(
-            profile_id=contact_profile_id,
-            sharing=True,
-        )
-    )
-
-    # Get the squeak profile again
-    get_squeak_profile_response = admin_stub.GetSqueakProfile(
-        squeak_admin_pb2.GetSqueakProfileRequest(
-            profile_id=contact_profile_id,
-        )
-    )
-    assert get_squeak_profile_response.squeak_profile.sharing
-
-    # Set the profile to be not sharing
-    admin_stub.SetSqueakProfileSharing(
-        squeak_admin_pb2.SetSqueakProfileSharingRequest(
-            profile_id=contact_profile_id,
-            sharing=False,
-        )
-    )
-
-    # Get the squeak profile again
-    get_squeak_profile_response = admin_stub.GetSqueakProfile(
-        squeak_admin_pb2.GetSqueakProfileRequest(
-            profile_id=contact_profile_id,
-        )
-    )
-    assert not get_squeak_profile_response.squeak_profile.sharing
-
-
 def test_rename_profile(admin_stub, contact_profile_id, random_name):
     # Rename the profile to something new
     admin_stub.RenameSqueakProfile(
@@ -682,14 +648,6 @@ def test_connect_other_node(
     #     )
     # )
 
-    # Set the signing profile to be sharing on the main server
-    admin_stub.SetSqueakProfileSharing(
-        squeak_admin_pb2.SetSqueakProfileSharingRequest(
-            profile_id=signing_profile_id,
-            sharing=True,
-        )
-    )
-
     # Add the contact profile to the other server and set the profile to be following
     create_contact_profile_response = other_admin_stub.CreateContactProfile(
         squeak_admin_pb2.CreateContactProfileRequest(
@@ -875,14 +833,6 @@ def test_download_single_squeak(
     #         squeak_profile_name, squeak_profile_address
     #     )
     # )
-
-    # Set the signing profile to be sharing on the main server
-    admin_stub.SetSqueakProfileSharing(
-        squeak_admin_pb2.SetSqueakProfileSharingRequest(
-            profile_id=signing_profile_id,
-            sharing=True,
-        )
-    )
 
     # Add the contact profile to the other server and set the profile to be following
     create_contact_profile_response = other_admin_stub.CreateContactProfile(
