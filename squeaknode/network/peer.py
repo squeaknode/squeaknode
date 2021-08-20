@@ -23,7 +23,7 @@ LAST_MESSAGE_TIMEOUT = 600
 PING_TIMEOUT = 10
 PING_INTERVAL = 60
 
-HANDSHAKE_TIMEOUT = 30
+HANDSHAKE_TIMEOUT = 5
 UPDATE_TIME_INTERVAL = 10
 HANDSHAKE_VERSION = 70002
 
@@ -180,6 +180,12 @@ class Peer(object):
             self.close()
 
     def handshake(self, squeak_controller):
+        timer = HandshakeTimer(
+            self.close,
+            str(self),
+        )
+        timer.start_timer()
+
         if self.outgoing:
             local_version = self.version_pkt(squeak_controller)
             self.local_version = local_version
@@ -203,7 +209,8 @@ class Peer(object):
             if not isinstance(verack, msg_verack):
                 raise Exception('Wrong message type for verack response.')
 
-        return
+        logger.info("HANDSHAKE COMPLETE-----------")
+        timer.stop_timer()
 
     def version_pkt(self, squeak_controller):
         """Get the version message for this peer."""
@@ -309,3 +316,32 @@ class MessageReceiver:
         except Exception:
             logger.info('Failed to receive msg from {}'.format(self))
             self.stopped_event.set()
+
+
+class HandshakeTimer:
+    """Close the peer if handshake is not complete before timeout.
+    """
+
+    def __init__(self,
+                 close_fn,
+                 peer_name,
+                 ):
+        self.close_fn = close_fn
+        self.peer_name = peer_name
+        self.timer = None
+
+    def start_timer(self):
+        self.timer = threading.Timer(
+            HANDSHAKE_TIMEOUT,
+            self.stop_peer,
+        )
+        self.timer.name = "handshake_timere_thread_{}".format(self.peer_name)
+        self.timer.start()
+
+    def stop_timer(self):
+        logger.info("Canceling handshake timer.")
+        self.timer.cancel()
+
+    def stop_peer(self):
+        logger.info("Closing peer from handshake timer.")
+        self.close_fn()

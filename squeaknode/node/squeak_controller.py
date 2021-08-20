@@ -469,7 +469,7 @@ class SqueakController:
         self.network_manager.connect_peer(host, port)
 
     def connect_saved_peers(self) -> None:
-        peers = self.squeak_db.get_peers()
+        peers = self.get_autoconnect_peers()
         for peer in peers:
             self.network_manager.connect_peer(
                 peer.address.host,
