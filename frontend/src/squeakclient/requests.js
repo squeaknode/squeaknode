@@ -357,7 +357,7 @@ export function clearSqueakProfileImageRequest(id, handleResponse) {
   });
 }
 
-export function lndConnectPeerRequest(pubkey, host, handleResponse) {
+export function lndConnectPeerRequest(pubkey, host, handleResponse, handleErr) {
   var request = new ConnectPeerRequest()
   var address = new LightningAddress();
   address.setPubkey(pubkey);
@@ -370,7 +370,12 @@ export function lndConnectPeerRequest(pubkey, host, handleResponse) {
   //   handleResponse,
   // );
   client.lndConnectPeer(request, {}, (err, response) => {
-    handleResponse(response);
+    if (err) {
+      handleErr(err);
+    }
+    if (response) {
+      handleResponse(response);
+    }
   });
 }
 
