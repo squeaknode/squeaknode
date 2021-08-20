@@ -29,7 +29,6 @@ import {
   GetSqueakProfileRequest,
   GetTimelineSqueakDisplaysRequest,
   SetSqueakProfileFollowingRequest,
-  SetSqueakProfileSharingRequest,
   GetPeersRequest,
   PayOfferRequest,
   GetBuyOffersRequest,
@@ -53,7 +52,6 @@ import {
   DeleteSqueakProfileRequest,
   DeleteSqueakRequest,
   GetTimelineSqueakDisplaysReply,
-  SetSqueakProfileSharingReply,
   GetSqueakProfileReply,
   SetSqueakProfileFollowingReply,
   GetPeersReply,
@@ -289,24 +287,6 @@ export function setSqueakProfileFollowingRequest(id, following, handleResponse) 
   request.setProfileId(id);
   request.setFollowing(following);
   client.setSqueakProfileFollowing(request, {}, (err, response) => {
-    handleResponse(response);
-  });
-}
-
-export function setSqueakProfileSharingRequest(id, sharing, handleResponse) {
-  // var request = new SetSqueakProfileSharingRequest();
-  // request.setProfileId(id);
-  // request.setSharing(sharing);
-  // makeRequest(
-  //   'setsqueakprofilesharing',
-  //   request,
-  //   SetSqueakProfileSharingReply.deserializeBinary,
-  //   handleResponse,
-  // );
-  var request = new SetSqueakProfileSharingRequest();
-  request.setProfileId(id);
-  request.setSharing(sharing);
-  client.setSqueakProfileSharing(request, {}, (err, response) => {
     handleResponse(response);
   });
 }

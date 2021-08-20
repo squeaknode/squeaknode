@@ -137,7 +137,6 @@ class SqueakController:
             profile_name=profile_name,
             private_key=signing_key_bytes,
             address=str(address),
-            sharing=True,
             following=True,
             profile_image=None,
         )
@@ -154,7 +153,6 @@ class SqueakController:
             profile_name=profile_name,
             private_key=signing_key_bytes,
             address=str(address),
-            sharing=False,
             following=False,
             profile_image=None,
         )
@@ -176,7 +174,6 @@ class SqueakController:
             profile_name=profile_name,
             private_key=None,
             address=squeak_address,
-            sharing=False,
             following=True,
             profile_image=None,
         )
@@ -199,9 +196,6 @@ class SqueakController:
 
     def set_squeak_profile_following(self, profile_id: int, following: bool) -> None:
         self.squeak_db.set_profile_following(profile_id, following)
-
-    def set_squeak_profile_sharing(self, profile_id: int, sharing: bool) -> None:
-        self.squeak_db.set_profile_sharing(profile_id, sharing)
 
     def rename_squeak_profile(self, profile_id: int, profile_name: str) -> None:
         self.squeak_db.set_profile_name(profile_id, profile_name)
@@ -433,10 +427,6 @@ class SqueakController:
     def get_followed_addresses(self) -> List[str]:
         followed_profiles = self.squeak_db.get_following_profiles()
         return [profile.address for profile in followed_profiles]
-
-    def get_sharing_addresses(self) -> List[str]:
-        sharing_profiles = self.squeak_db.get_sharing_profiles()
-        return [profile.address for profile in sharing_profiles]
 
     def get_received_payment_summary(self) -> ReceivedPaymentSummary:
         return self.squeak_db.get_received_payment_summary()

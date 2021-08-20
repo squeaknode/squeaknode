@@ -8,6 +8,5 @@ class SqueakProfile(NamedTuple):
     profile_name: str
     private_key: Optional[bytes]
     address: str
-    sharing: bool
     following: bool
     profile_image: Optional[bytes]

@@ -36,7 +36,6 @@ import SqueakThreadItem from "../../components/SqueakThreadItem";
 
 import {
   setSqueakProfileFollowingRequest,
-  setSqueakProfileSharingRequest,
 } from "../../squeakclient/requests"
 
 
@@ -55,22 +54,11 @@ export default function ConfigureProfileDialog({
       reloadProfile();
     })
   };
-  const setSharing = (id, sharing) => {
-    setSqueakProfileSharingRequest(id, sharing, () => {
-      reloadProfile();
-    })
-  };
 
   const handleSettingsFollowingChange = (event) => {
     console.log("Following changed for profile id: " + squeakProfile.getProfileId());
     console.log("Following changed to: " + event.target.checked);
     setFollowing(squeakProfile.getProfileId(), event.target.checked);
-  };
-
-  const handleSettingsSharingChange = (event) => {
-    console.log("Sharing changed for profile id: " + squeakProfile.getProfileId());
-    console.log("Sharing changed to: " + event.target.checked);
-    setSharing(squeakProfile.getProfileId(), event.target.checked);
   };
 
   function MakeCancelButton() {
@@ -93,10 +81,6 @@ export default function ConfigureProfileDialog({
           <FormControlLabel
             control={<Switch checked={squeakProfile.getFollowing()} onChange={handleSettingsFollowingChange} />}
             label="Following"
-          />
-          <FormControlLabel
-            control={<Switch checked={squeakProfile.getSharing()} onChange={handleSettingsSharingChange} />}
-            label="Sharing"
           />
         </FormGroup>
       </FormControl>

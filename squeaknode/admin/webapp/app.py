@@ -217,14 +217,6 @@ def create_app(handler, username, password):
     #         handler.handle_set_squeak_profile_following,
     #     )
 
-    # @app.route("/setsqueakprofilesharing", methods=["POST"])
-    # @login_required
-    # def setsqueakprofilesharing():
-    #     return handle_request(
-    #         squeak_admin_pb2.SetSqueakProfileSharingRequest(),
-    #         handler.handle_set_squeak_profile_sharing,
-    #     )
-
     # @app.route("/renamesqueakprofile", methods=["POST"])
     # @login_required
     # def renamesqueakprofile():

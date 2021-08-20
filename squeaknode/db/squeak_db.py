@@ -500,7 +500,6 @@ class SqueakDb:
             profile_name=squeak_profile.profile_name,
             private_key=squeak_profile.private_key,
             address=squeak_profile.address,
-            sharing=squeak_profile.sharing,
             following=squeak_profile.following,
         )
         with self.get_connection() as connection:
@@ -548,15 +547,6 @@ class SqueakDb:
             profiles = [self._parse_squeak_profile(row) for row in rows]
             return profiles
 
-    def get_sharing_profiles(self) -> List[SqueakProfile]:
-        """ Get all sharing profiles. """
-        s = select([self.profiles]).where(self.profiles.c.sharing)
-        with self.get_connection() as connection:
-            result = connection.execute(s)
-            rows = result.fetchall()
-            profiles = [self._parse_squeak_profile(row) for row in rows]
-            return profiles
-
     def get_profile(self, profile_id: int) -> Optional[SqueakProfile]:
         """ Get a profile. """
         s = select([self.profiles]).where(
@@ -594,16 +584,6 @@ class SqueakDb:
             self.profiles.update()
             .where(self.profiles.c.profile_id == profile_id)
             .values(following=following)
-        )
-        with self.get_connection() as connection:
-            connection.execute(stmt)
-
-    def set_profile_sharing(self, profile_id: int, sharing: bool) -> None:
-        """ Set a profile is sharing. """
-        stmt = (
-            self.profiles.update()
-            .where(self.profiles.c.profile_id == profile_id)
-            .values(sharing=sharing)
         )
         with self.get_connection() as connection:
             connection.execute(stmt)
@@ -1171,7 +1151,6 @@ class SqueakDb:
             profile_name=row["profile_name"],
             private_key=private_key,
             address=row["address"],
-            sharing=row["sharing"],
             following=row["following"],
             profile_image=row["profile_image"],
         )

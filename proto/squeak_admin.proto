@@ -100,10 +100,6 @@ service SqueakAdmin {
   */
   rpc SetSqueakProfileFollowing (SetSqueakProfileFollowingRequest) returns (SetSqueakProfileFollowingReply) {}
 
-  /** sqkadmin: `setsqueakprofilesharing`
-  */
-  rpc SetSqueakProfileSharing (SetSqueakProfileSharingRequest) returns (SetSqueakProfileSharingReply) {}
-
   /** sqkadmin: `renamesqueakprofile`
   */
   rpc RenameSqueakProfile (RenameSqueakProfileRequest) returns (RenameSqueakProfileReply) {}
@@ -371,17 +367,6 @@ message SetSqueakProfileFollowingRequest {
 message SetSqueakProfileFollowingReply {
 }
 
-message SetSqueakProfileSharingRequest {
-    /// The profile id
-    int32 profile_id = 1;
-
-    /// Sharing
-    bool sharing = 2;
-}
-
-message SetSqueakProfileSharingReply {
-}
-
 message RenameSqueakProfileRequest {
     /// The profile id
     int32 profile_id = 1;
@@ -443,17 +428,14 @@ message SqueakProfile {
     /// The address
     string address = 4;
 
-    /// Sharing
-    bool sharing = 5;
-
     /// Following
-    bool following = 6;
+    bool following = 5;
 
     /// The profile image
-    string profile_image = 7;
+    string profile_image = 6;
 
     /// Has custom profile image
-    bool has_custom_profile_image = 8;
+    bool has_custom_profile_image = 7;
 }
 
 message MakeSqueakRequest {

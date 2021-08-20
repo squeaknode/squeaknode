@@ -83,7 +83,6 @@ class Models:
             Column("profile_name", String, unique=True, nullable=False),
             Column("private_key", Binary, nullable=True),
             Column("address", String(35), unique=True, nullable=False),
-            Column("sharing", Boolean, nullable=False),
             Column("following", Boolean, nullable=False),
             Column("profile_image", Binary, nullable=True),
             sqlite_autoincrement=True,
