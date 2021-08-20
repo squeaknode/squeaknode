@@ -137,37 +137,6 @@ const SERVER_PORT = process.env.REACT_APP_SERVER_PORT || window.location.port;
 
 export let web_host_port = window.location.protocol + '//' + window.location.hostname + ':' + SERVER_PORT;
 
-function handleErrorResponse(response, route, handleError) {
-  response.text()
-  .then(function(data) {
-    console.error(data);
-    if (handleError) {
-      handleError(data);
-    }
-  });
-}
-
-function handleSuccessResponse(deserializeMsg, response, handleResponse) {
-  response.arrayBuffer()
-  .then(function(data) {
-    var response = deserializeMsg(data);
-    handleResponse(response);
-  });
-}
-
-function makeRequest(route, request, deserializeMsg, handleResponse, handleError) {
-  fetch(web_host_port + '/' + route, {
-    method: 'post',
-    body: request.serializeBinary()
-  }).then(function(response) {
-    if(response.ok) {
-      handleSuccessResponse(deserializeMsg, response, handleResponse);
-    } else {
-      handleErrorResponse(response, route, handleError);
-    }
-  });
-}
-
 export function logoutRequest(handleResponse) {
   fetch(web_host_port + '/' + 'logout', {
     method: 'get',
@@ -445,7 +414,12 @@ export function payOfferRequest(offerId, handleResponse, handleErr) {
   //   handleErr,
   // );
   client.payOffer(request, {}, (err, response) => {
-    handleResponse(response);
+    if (err) {
+      handleErr(err);
+    }
+    if (response) {
+      handleResponse(response);
+    }
   });
 }
 

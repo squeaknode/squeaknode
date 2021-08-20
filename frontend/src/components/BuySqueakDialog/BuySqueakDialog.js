@@ -91,7 +91,7 @@ export default function BuySqueakDialog({
   };
 
   const handlePayErr = (err) => {
-    alert('Payment failure: ' + err);
+    alert('Payment failure: ' + err.message);
   };
 
   const pay = (offerId) => {
