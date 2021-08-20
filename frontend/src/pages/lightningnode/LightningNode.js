@@ -127,9 +127,14 @@ export default function LightningNodePage() {
     lndPendingChannelsRequest(setPendingChannels);
   };
   const connectPeer = (pubkey, host) => {
-    lndConnectPeerRequest(pubkey, host, () => {
-      reloadRoute(history);
-    });
+    lndConnectPeerRequest(pubkey, host,
+      () => {
+        reloadRoute(history);
+      },
+      (err) => {
+        alert(err.message);
+      },
+    );
   };
   const disconnectPeer = (pubkey) => {
     lndDisconnectPeerRequest(pubkey, () => {
