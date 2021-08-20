@@ -120,6 +120,7 @@ import {
   DownloadOffersReply,
   DownloadRepliesRequest,
   DownloadRepliesReply,
+  SubscribeConnectedPeersRequest,
 } from "../proto/squeak_admin_pb"
 
 import { SqueakAdminClient } from "../proto/squeak_admin_grpc_web_pb"
@@ -1060,5 +1061,14 @@ export function disconnectSqueakPeerRequest(host, port, handleResponse) {
   // );
   client.disconnectPeer(request, {}, (err, response) => {
     handleResponse(response);
+  });
+}
+
+export function subscribeConnectedPeersRequest(handleResponse) {
+  var request = new SubscribeConnectedPeersRequest();
+  var stream = client.subscribeConnectedPeers(request);
+  stream.on('data', (response) => {
+    // handleResponse(response.getConnectedPeersList());
+    handleResponse(response.getConnectedPeersList());
   });
 }

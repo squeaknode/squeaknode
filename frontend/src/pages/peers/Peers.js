@@ -32,6 +32,7 @@ import {
   getPeersRequest,
   getConnectedPeersRequest,
   connectSqueakPeerRequest,
+  subscribeConnectedPeersRequest,
 } from "../../squeakclient/requests"
 import {
   goToPeerPage,
@@ -71,6 +72,10 @@ export default function Peers() {
     getConnectedPeersRequest(setConnectedPeers);
   };
 
+  const subscribeConnectedPeers = () => {
+    subscribeConnectedPeersRequest(setConnectedPeers);
+  };
+
   const getSqueakPeers = () => {
     getPeersRequest(setPeers);
   };
@@ -93,6 +98,9 @@ export default function Peers() {
 
   useEffect(() => {
     getConnectedPeers()
+  }, []);
+  useEffect(() => {
+    subscribeConnectedPeers()
   }, []);
   useEffect(() => {
     getSqueakPeers()
