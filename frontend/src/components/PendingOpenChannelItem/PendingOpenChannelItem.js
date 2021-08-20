@@ -59,7 +59,7 @@ export default function PendingOpenChannelItem({
     var channel = pendingOpenChannel.getChannel();
     var txId = getTxId(channel);
     var outputIndex = getOutputIndex(channel);
-    goToChannelPage(txId, outputIndex);
+    goToChannelPage(history, txId, outputIndex);
   }
 
   function ChannelDetailItem(label, value) {
