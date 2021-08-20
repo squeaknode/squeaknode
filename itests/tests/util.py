@@ -141,13 +141,6 @@ def open_peer_connection(node_stub, peer_name, peer_host, peer_port):
     )
     peer_id = create_peer_response.peer_id
     try:
-        # Set the peer to be downloading
-        node_stub.SetPeerDownloading(
-            squeak_admin_pb2.SetPeerDownloadingRequest(
-                peer_id=peer_id,
-                downloading=True,
-            )
-        )
         # Connect the peer
         node_stub.ConnectPeer(
             squeak_admin_pb2.ConnectPeerRequest(

@@ -144,8 +144,7 @@ def test_create_peer(squeak_db, squeak_controller):
                 host="fake_host",
                 port=5678,
             ),
-            uploading=False,
-            downloading=False,
+            autoconnect=False,
         )
     )
 
@@ -165,7 +164,6 @@ def test_create_peer_default_port(config, squeak_db, squeak_controller):
                 host="fake_host",
                 port=squeak.params.params.DEFAULT_PORT,
             ),
-            uploading=False,
-            downloading=False,
+            autoconnect=False,
         )
     )

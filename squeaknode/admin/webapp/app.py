@@ -281,22 +281,6 @@ def create_app(handler, username, password):
     #         handler.handle_get_squeak_peer,
     #     )
 
-    # @app.route("/setpeerdownloading", methods=["POST"])
-    # @login_required
-    # def setpeerdownloading():
-    #     return handle_request(
-    #         squeak_admin_pb2.SetPeerDownloadingRequest(),
-    #         handler.handle_set_squeak_peer_downloading,
-    #     )
-
-    # @app.route("/setpeeruploading", methods=["POST"])
-    # @login_required
-    # def setpeeruploading():
-    #     return handle_request(
-    #         squeak_admin_pb2.SetPeerUploadingRequest(),
-    #         handler.handle_set_squeak_peer_uploading,
-    #     )
-
     # @app.route("/renamepeer", methods=["POST"])
     # @login_required
     # def renamepeer():

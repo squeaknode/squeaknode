@@ -247,8 +247,7 @@ class SqueakController:
             peer_id=None,
             peer_name=peer_name,
             address=peer_address,
-            uploading=False,
-            downloading=False,
+            autoconnect=False,
         )
         return self.squeak_db.insert_peer(squeak_peer)
 
@@ -258,17 +257,11 @@ class SqueakController:
     def get_peers(self):
         return self.squeak_db.get_peers()
 
-    def get_downloading_peers(self) -> List[SqueakPeer]:
-        return self.squeak_db.get_downloading_peers()
+    def get_autoconnect_peers(self) -> List[SqueakPeer]:
+        return self.squeak_db.get_autoconnect_peers()
 
-    def get_uploading_peers(self) -> List[SqueakPeer]:
-        return self.squeak_db.get_uploading_peers()
-
-    def set_peer_downloading(self, peer_id: int, downloading: bool):
-        self.squeak_db.set_peer_downloading(peer_id, downloading)
-
-    def set_peer_uploading(self, peer_id: int, uploading: bool):
-        self.squeak_db.set_peer_uploading(peer_id, uploading)
+    def set_peer_autoconnect(self, peer_id: int, autoconnect: bool):
+        self.squeak_db.set_peer_autoconnect(peer_id, autoconnect)
 
     def rename_peer(self, peer_id: int, peer_name: str):
         self.squeak_db.set_peer_name(peer_id, peer_name)

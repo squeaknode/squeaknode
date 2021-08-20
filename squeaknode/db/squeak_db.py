@@ -660,8 +660,7 @@ class SqueakDb:
             peer_name=squeak_peer.peer_name,
             host=squeak_peer.address.host,
             port=squeak_peer.address.port,
-            uploading=squeak_peer.uploading,
-            downloading=squeak_peer.downloading,
+            autoconnect=squeak_peer.autoconnect,
         )
         with self.get_connection() as connection:
             res = connection.execute(ins)
@@ -687,40 +686,21 @@ class SqueakDb:
             peers = [self._parse_squeak_peer(row) for row in rows]
             return peers
 
-    def get_downloading_peers(self) -> List[SqueakPeer]:
-        """ Get peers that are set to be downloading. """
-        s = select([self.peers]).where(self.peers.c.downloading)
+    def get_autoconnect_peers(self) -> List[SqueakPeer]:
+        """ Get peers that are set to be autoconnect. """
+        s = select([self.peers]).where(self.peers.c.autoconnect)
         with self.get_connection() as connection:
             result = connection.execute(s)
             rows = result.fetchall()
             peers = [self._parse_squeak_peer(row) for row in rows]
             return peers
 
-    def get_uploading_peers(self) -> List[SqueakPeer]:
-        """ Get peers that are set to be uploading. """
-        s = select([self.peers]).where(self.peers.c.uploading)
-        with self.get_connection() as connection:
-            result = connection.execute(s)
-            rows = result.fetchall()
-            peers = [self._parse_squeak_peer(row) for row in rows]
-            return peers
-
-    def set_peer_downloading(self, peer_id: int, downloading: bool):
-        """ Set a peer is downloading. """
+    def set_peer_autoconnect(self, peer_id: int, autoconnect: bool):
+        """ Set a peer is autoconnect. """
         stmt = (
             self.peers.update()
             .where(self.peers.c.peer_id == peer_id)
-            .values(downloading=downloading)
-        )
-        with self.get_connection() as connection:
-            connection.execute(stmt)
-
-    def set_peer_uploading(self, peer_id: int, uploading: bool):
-        """ Set a peer is uploading. """
-        stmt = (
-            self.peers.update()
-            .where(self.peers.c.peer_id == peer_id)
-            .values(uploading=uploading)
+            .values(autoconnect=autoconnect)
         )
         with self.get_connection() as connection:
             connection.execute(stmt)
@@ -1174,8 +1154,7 @@ class SqueakDb:
                 host=row["host"],
                 port=row["port"],
             ),
-            uploading=row["uploading"],
-            downloading=row["downloading"],
+            autoconnect=row["autoconnect"],
         )
 
     def _parse_received_offer(self, row) -> ReceivedOffer:
