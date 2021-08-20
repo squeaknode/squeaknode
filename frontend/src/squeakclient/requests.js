@@ -440,7 +440,7 @@ export function lndOpenChannelSyncRequest(pubkey, amount, satperbyte, handleResp
   //   handleResponse,
   //   handleErr,
   // );
-  client.openChannel(request, {}, (err, response) => {
+  client.lndOpenChannelSync(request, {}, (err, response) => {
     handleResponse(response);
   });
 }
