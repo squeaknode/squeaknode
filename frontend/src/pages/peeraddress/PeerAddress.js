@@ -70,7 +70,8 @@ export default function PeerAddressPage() {
       console.log(connectedPeers);
       var ret = null;
       for (let i = 0; i < connectedPeers.length; i++) {
-        if(connectedPeers[i].getHost() == host && connectedPeers[i].getPort() == port) {
+        const peerAddress = connectedPeers[i].getPeerAddress();
+        if(peerAddress.getHost() == host && peerAddress.getPort() == port) {
           var ret = connectedPeers[i];
         }
       }
