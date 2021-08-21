@@ -491,14 +491,16 @@ def test_create_peer(admin_stub):
             peer_id=peer_id,
         )
     )
-    assert get_peer_response.squeak_peer.host == "fake_host"
-    assert get_peer_response.squeak_peer.port == 1234
+    assert get_peer_response.squeak_peer.peer_address.host == "fake_host"
+    assert get_peer_response.squeak_peer.peer_address.port == 1234
 
     # Get all peers
     get_peers_response = admin_stub.GetPeers(
         squeak_admin_pb2.GetPeersRequest())
     peer_hosts = [
-        squeak_peer.host for squeak_peer in get_peers_response.squeak_peers]
+        squeak_peer.peer_address.host
+        for squeak_peer in get_peers_response.squeak_peers
+    ]
     assert "fake_host" in peer_hosts
 
 

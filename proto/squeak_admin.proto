@@ -582,14 +582,11 @@ message SqueakPeer {
     /// The peer name
     string peer_name = 2;
 
-    /// Host
-    string host = 3;
-
-    /// Port
-    int32 port = 4;
+    /// Peer address
+    PeerAddress peer_address = 3;
 
     /// Autoconnect
-    bool autoconnect = 5;
+    bool autoconnect = 4;
 }
 
 message SetPeerAutoconnectRequest {
