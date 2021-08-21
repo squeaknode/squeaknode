@@ -752,6 +752,12 @@ message SentPayment {
 
     /// Time of payment
     int64 time_s = 9;
+
+    /// The host of the squeak peer
+    string peer_host = 10;
+
+    /// The port of the squeak peer
+    int32 peer_port = 11;
 }
 
 message SyncSqueakRequest {

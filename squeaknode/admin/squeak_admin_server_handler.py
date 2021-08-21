@@ -7,7 +7,7 @@ from squeaknode.admin.messages import offer_entry_to_message
 from squeaknode.admin.messages import payment_summary_to_message
 from squeaknode.admin.messages import received_payments_to_message
 from squeaknode.admin.messages import sent_offer_to_message
-from squeaknode.admin.messages import sent_payment_with_peer_to_message
+from squeaknode.admin.messages import sent_payment_to_message
 from squeaknode.admin.messages import squeak_entry_to_detail_message
 from squeaknode.admin.messages import squeak_entry_to_message
 from squeaknode.admin.messages import squeak_peer_to_message
@@ -532,7 +532,7 @@ class SqueakAdminServerHandler(object):
         logger.info("Handle get sent payments")
         sent_payments = self.squeak_controller.get_sent_payments()
         sent_payment_msgs = [
-            sent_payment_with_peer_to_message(sent_payment)
+            sent_payment_to_message(sent_payment)
             for sent_payment in sent_payments
         ]
         return squeak_admin_pb2.GetSentPaymentsReply(
@@ -548,7 +548,7 @@ class SqueakAdminServerHandler(object):
             return squeak_admin_pb2.GetSentPaymentReply(
                 sent_payment=None,
             )
-        sent_payment_msg = sent_payment_with_peer_to_message(sent_payment)
+        sent_payment_msg = sent_payment_to_message(sent_payment)
         return squeak_admin_pb2.GetSentPaymentReply(
             sent_payment=sent_payment_msg,
         )

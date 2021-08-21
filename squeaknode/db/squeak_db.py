@@ -23,7 +23,6 @@ from squeaknode.core.received_payment_summary import ReceivedPaymentSummary
 from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.sent_payment import SentPayment
 from squeaknode.core.sent_payment_summary import SentPaymentSummary
-from squeaknode.core.sent_payment_with_peer import SentPaymentWithPeer
 from squeaknode.core.squeak_entry import SqueakEntry
 from squeaknode.core.squeak_entry_with_profile import SqueakEntryWithProfile
 from squeaknode.core.squeak_peer import SqueakPeer
@@ -849,17 +848,10 @@ class SqueakDb:
             sent_payment_id = res.inserted_primary_key[0]
             return sent_payment_id
 
-    def get_sent_payments(self) -> List[SentPaymentWithPeer]:
+    def get_sent_payments(self) -> List[SentPayment]:
         """ Get all sent payments. """
         s = (
-            select([self.sent_payments, self.peers])
-            .select_from(
-                self.sent_payments.outerjoin(
-                    self.peers,
-                    self.peers.c.host == self.sent_payments.c.peer_host,
-                    self.peers.c.port == self.sent_payments.c.peer_port,
-                )
-            )
+            select([self.sent_payments])
             .order_by(
                 self.sent_payments.c.created.desc(),
             )
@@ -868,20 +860,13 @@ class SqueakDb:
             result = connection.execute(s)
             rows = result.fetchall()
             sent_payments = [
-                self._parse_sent_payment_with_peer(row) for row in rows]
+                self._parse_sent_payment(row) for row in rows]
             return sent_payments
 
-    def get_sent_payment(self, sent_payment_id: int) -> Optional[SentPaymentWithPeer]:
+    def get_sent_payment(self, sent_payment_id: int) -> Optional[SentPayment]:
         """ Get sent payment by id. """
         s = (
-            select([self.sent_payments, self.peers])
-            .select_from(
-                self.sent_payments.outerjoin(
-                    self.peers,
-                    self.peers.c.host == self.sent_payments.c.peer_host,
-                    self.peers.c.port == self.sent_payments.c.peer_port,
-                )
-            )
+            select([self.sent_payments])
             .where(self.sent_payments.c.sent_payment_id == sent_payment_id)
         )
         with self.get_connection() as connection:
@@ -889,7 +874,7 @@ class SqueakDb:
             row = result.fetchone()
             if row is None:
                 return None
-            return self._parse_sent_payment_with_peer(row)
+            return self._parse_sent_payment(row)
 
     def insert_sent_offer(self, sent_offer: SentOffer):
         """ Insert a new sent offer. """
@@ -1186,16 +1171,16 @@ class SqueakDb:
             valid=row["valid"],
         )
 
-    def _parse_sent_payment_with_peer(self, row) -> SentPaymentWithPeer:
-        sent_payment = self._parse_sent_payment(row)
-        if row[self.peers.c.peer_id] is None:
-            peer = None
-        else:
-            peer = self._parse_squeak_peer(row)
-        return SentPaymentWithPeer(
-            sent_payment=sent_payment,
-            peer=peer,
-        )
+    # def _parse_sent_payment_with_peer(self, row) -> SentPaymentWithPeer:
+    #     sent_payment = self._parse_sent_payment(row)
+    #     if row[self.peers.c.peer_id] is None:
+    #         peer = None
+    #     else:
+    #         peer = self._parse_squeak_peer(row)
+    #     return SentPaymentWithPeer(
+    #         sent_payment=sent_payment,
+    #         peer=peer,
+    #     )
 
     def _parse_sent_offer(self, row) -> SentOffer:
         return SentOffer(
