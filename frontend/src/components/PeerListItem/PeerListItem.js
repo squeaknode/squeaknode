@@ -28,10 +28,8 @@ export default function PeerListItem({
   const onPeerClick = (event) => {
     event.preventDefault();
     console.log("Handling peer address click...");
-    const host = peer.getHost();
-    const port = peer.getPort();
-    //const host = getPeerHost();
-    //const port = getPeerPort();
+    const host = peer.getPeerAddress().getHost();
+    const port = peer.getPeerAddress().getPort();
     goToPeerAddressPage(history, host, port);
   }
 
@@ -63,7 +61,7 @@ export default function PeerListItem({
      >
        <CardHeader
           avatar={<ComputerIcon/>}
-          title={`Address: ${peer.getHost()}:${peer.getPort()}`}
+          title={`Address: ${peer.getPeerAddress().getHost()}:${peer.getPeerAddress().getPort()}`}
           // action={<Button size="small">View Peer</Button>}
        />
      </Card>
