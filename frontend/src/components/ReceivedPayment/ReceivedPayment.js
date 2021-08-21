@@ -22,6 +22,7 @@ import moment from 'moment';
 
 import {
   goToSqueakPage,
+  goToPeerAddressPage,
 } from "../../navigation/navigation"
 
 
@@ -40,8 +41,28 @@ export default function ReceivedPayment({
     goToSqueakPage(history, hash);
   }
 
-  const getPeerAddress = receivedPayment.getPeerHost() + ":" + receivedPayment.getPeerPort();
+  const onPeerClick = (event) => {
+    event.preventDefault();
+    goToPeerAddressPage(
+      history,
+      receivedPayment.getPeerHost(),
+      receivedPayment.getPeerPort(),
+    );
+  }
 
+  function PeerDisplay() {
+    const peerAddress = receivedPayment.getPeerHost() + ":" + receivedPayment.getPeerPort();
+    return (
+      <Box>
+        <Typography
+          size="md"
+          >Peer: <Link href="#" onClick={onPeerClick}>
+            {peerAddress}
+          </Link>
+        </Typography>
+      </Box>
+    )
+  }
 
   console.log("receivedPayment:");
   console.log(receivedPayment);
@@ -95,7 +116,7 @@ export default function ReceivedPayment({
             alignItems="flex-start"
           >
             <Grid item>
-              Peer: <span> </span>{getPeerAddress}
+              {PeerDisplay()}
             </Grid>
           </Grid>
     </Box>
