@@ -672,23 +672,17 @@ message OfferDisplayEntry {
     /// The port of the seller lightning node
     int32 node_port = 6;
 
-    /// Has peer
-    bool has_peer = 7;
-
-    /// The peer
-    SqueakPeer peer = 8;
-
     /// The invoice timestamp
-    int32 invoice_timestamp = 9;
+    int32 invoice_timestamp = 7;
 
     /// The invoice expiry
-    int32 invoice_expiry = 10;
+    int32 invoice_expiry = 8;
 
     /// The host of the squeak peer
-    string peer_host = 11;
+    string peer_host = 9;
 
     /// The port of the squeak peer
-    int32 peer_port = 12;
+    int32 peer_port = 10;
 }
 
 message SyncSqueaksRequest {
@@ -729,29 +723,29 @@ message SentPayment {
     /// The sent payment id
     int32 sent_payment_id = 1;
 
-    /// Has peer
-    bool has_peer = 2;
-
-    /// The peer id
-    SqueakPeer peer = 3;
-
     /// The squeak hash
-    string squeak_hash = 4;
+    string squeak_hash = 2;
 
     /// The payment hash
-    string payment_hash = 5;
+    string payment_hash = 3;
 
     /// The price_msat
-    int64 price_msat = 6;
+    int64 price_msat = 4;
 
     /// The seller node pubkey
-    string node_pubkey = 7;
+    string node_pubkey = 5;
 
     /// Does the payment unlock a valid key
-    bool valid = 8;
+    bool valid = 6;
 
     /// Time of payment
-    int64 time_s = 9;
+    int64 time_s = 7;
+
+    /// The host of the squeak peer
+    string peer_host = 8;
+
+    /// The port of the squeak peer
+    int32 peer_port = 9;
 }
 
 message SyncSqueakRequest {

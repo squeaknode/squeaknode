@@ -25,7 +25,7 @@ import moment from 'moment';
 
 import {
   goToSqueakPage,
-  goToPeerPage,
+  goToPeerAddressPage,
   goToLightningNodePage,
 } from "../../navigation/navigation"
 
@@ -47,12 +47,11 @@ export default function SentPayment({
 
   const onPeerClick = (event) => {
     event.preventDefault();
-    const peerId = getPeerId();
-    if (peerId == null) {
-      return;
-    }
-    console.log("Handling peer click for peerId: " + peerId);
-    goToPeerPage(history, peerId);
+    goToPeerAddressPage(
+      history,
+      sentPayment.getPeerHost(),
+      sentPayment.getPeerPort(),
+    );
   }
 
   const onLightningNodeClick = (event) => {
@@ -62,49 +61,17 @@ export default function SentPayment({
     goToLightningNodePage(history, nodePubkey);
   }
 
-  const getPeerId = () => {
-    if (!sentPayment.getHasPeer()) {
-      return null;
-    }
-    const peer = sentPayment.getPeer();
-    return peer.getPeerId();
-  }
-
-  const getPeerDisplay = () => {
-    if (!sentPayment.getHasPeer()) {
-      return "Unknown peer";
-    }
-    const peer = sentPayment.getPeer();
-    const peerName = peer.getPeerName();
-    const peerId = peer.getPeerId();
-    return peerName ? peerName : peerId;
-  }
-
   function PeerDisplay() {
-    if (sentPayment.getHasPeer()) {
-      return HasPeerDisplay(sentPayment.getPeer());
-    } else {
-      return HasNoPeerDisplay();
-    }
-  }
-
-  function HasPeerDisplay(peer) {
-    const peerId = peer.getPeerId();
-    const peerName = peer.getPeerName();
-    const peerDisplayName = peerName ? peerName : peerId;
+    const peerAddress =  sentPayment.getPeerHost() + ":" + sentPayment.getPeerPort();
     return (
-      <Link href="#"
-        onClick={onPeerClick}
-        >{peerDisplayName}
-      </Link>
-    )
-  }
-
-  function HasNoPeerDisplay() {
-    return (
-      <>
-        Unknown Peer
-      </>
+      <Box>
+        <Typography
+          size="md"
+          >Peer: <Link href="#" onClick={onPeerClick}>
+            {peerAddress}
+          </Link>
+        </Typography>
+      </Box>
     )
   }
 

@@ -119,14 +119,11 @@ export default function BuySqueakDialog({
     return null;
   };
 
-  const getPeerName = (offer) => {
-    if (!offer.getHasPeer()) {
-      return "Unkown Peer"
-    }
-    const peer = offer.getPeer();
-    return peer.getPeerName();
-  };
+  const getPeerAddress = (offer) => {
+    return offer.getPeerHost() + ":" + offer.getPeerPort();
+  }
 
+  // TODO: load offers using "onRendered" callback.
   // useEffect(() => {
   //   loadOffers()
   // }, []);
@@ -168,7 +165,7 @@ export default function BuySqueakDialog({
         >
           {offers.map(offer =>
             <MenuItem key={offer.getOfferId()} value={offer.getOfferId()}>
-              {getPeerName(offer)} ({offer.getPriceMsat() / 1000} sats)
+              {getPeerAddress(offer)} ({offer.getPriceMsat() / 1000} sats)
             </MenuItem>
           )}
         </Select>
