@@ -232,14 +232,14 @@ class SqueakController:
         logger.info("Deleted number of offers : {}".format(num_deleted_offers))
         self.squeak_db.delete_squeak(squeak_hash)
 
-    def create_peer(self, peer_name: str, host: str, port: int):
+    def create_peer(self, peer_name: str, peer_address: PeerAddress):
         if len(peer_name) == 0:
             raise Exception(
                 "Peer name cannot be empty.",
             )
-        port = port or squeak.params.params.DEFAULT_PORT
+        port = peer_address.port or squeak.params.params.DEFAULT_PORT
         peer_address = PeerAddress(
-            host=host,
+            host=peer_address.host,
             port=port,
         )
         squeak_peer = SqueakPeer(
@@ -459,19 +459,17 @@ class SqueakController:
             squeak_hash,
         )
 
-    def connect_peer(self, host: str, port: int) -> None:
-        logger.info("Connect to peer: {}:{}".format(
-            host,
-            port,
+    def connect_peer(self, peer_address: PeerAddress) -> None:
+        logger.info("Connect to peer: {}".format(
+            peer_address,
         ))
-        self.network_manager.connect_peer(host, port)
+        self.network_manager.connect_peer(peer_address)
 
     def connect_saved_peers(self) -> None:
         peers = self.get_autoconnect_peers()
         for peer in peers:
             self.network_manager.connect_peer(
-                peer.address.host,
-                peer.address.port,
+                peer.address,
             )
 
     def get_address(self):
@@ -480,8 +478,8 @@ class SqueakController:
     def get_remote_address(self, address):
         return self.network_manager.get_remote_address(address)
 
-    def get_connected_peer(self, host, port):
-        return self.network_manager.get_connected_peer(host, port)
+    def get_connected_peer(self, peer_address: PeerAddress):
+        return self.network_manager.get_connected_peer(peer_address)
 
     def get_connected_peers(self):
         return self.network_manager.get_connected_peers()
@@ -606,12 +604,11 @@ class SqueakController:
     def broadcast_msg(self, msg: MsgSerializable) -> None:
         self.network_manager.broadcast_msg(msg)
 
-    def disconnect_peer(self, host: str, port: int) -> None:
-        logger.info("Disconnect to peer: {}:{}".format(
-            host,
-            port,
+    def disconnect_peer(self, peer_address: PeerAddress) -> None:
+        logger.info("Disconnect to peer: {}".format(
+            peer_address,
         ))
-        self.network_manager.disconnect_peer(host, port)
+        self.network_manager.disconnect_peer(peer_address)
 
     def subscribe_connected_peers(self, stopped: threading.Event):
         # with ReceivedPaymentsSubscriptionClient(

@@ -17,11 +17,10 @@ class PeerClient(object):
         self.peer_handler = peer_handler
 
     def make_connection(self, address):
-        logger.debug('Making connection to {}'.format(address))
         logger.info('Making connection to {}'.format(address))
         try:
             peer_socket = socket.socket()
-            logger.info('Got socket to {}'.format(address))
+            logger.info('Trying to connect socket to {}'.format(address))
             peer_socket.settimeout(SOCKET_CONNECT_TIMEOUT)
             peer_socket.connect(address)
             peer_socket.setblocking(True)
@@ -32,7 +31,6 @@ class PeerClient(object):
 
     def connect_address(self, address):
         """Connect to new address."""
-        logger.debug('Connecting to peer with address {}'.format(address))
         logger.info('Connecting to peer with address {}'.format(address))
         threading.Thread(
             target=self.make_connection,

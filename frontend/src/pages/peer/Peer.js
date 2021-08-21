@@ -75,7 +75,7 @@ export default function PeerPage() {
           Peer name: {peer.getPeerName()}
         </p>
         <p>
-          Address: {peer.getHost()}:{peer.getPort()}
+          Address: {peer.getPeerAddress().getHost()}:{peer.getPeerAddress().getPort()}
         </p>
         {PeerSettingsForm()}
         {DeletePeerButton()}

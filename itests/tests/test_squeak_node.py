@@ -10,6 +10,7 @@ from squeak.core import CSqueak
 from proto import lnd_pb2 as ln
 from proto import squeak_admin_pb2
 from tests.util import connect_peer
+from tests.util import create_saved_peer
 from tests.util import get_connected_peer
 from tests.util import get_connected_peers
 from tests.util import get_hash
@@ -477,14 +478,12 @@ def test_delete_squeak(admin_stub, saved_squeak_hash):
 
 def test_create_peer(admin_stub):
     # Add a new peer
-    create_peer_response = admin_stub.CreatePeer(
-        squeak_admin_pb2.CreatePeerRequest(
-            peer_name="fake_peer_name",
-            host="fake_host",
-            port=1234,
-        )
+    peer_id = create_saved_peer(
+        admin_stub,
+        "fake_peer_name",
+        "fake_host",
+        1234,
     )
-    peer_id = create_peer_response.peer_id
 
     # Get the new peer
     get_peer_response = admin_stub.GetPeer(
@@ -492,26 +491,27 @@ def test_create_peer(admin_stub):
             peer_id=peer_id,
         )
     )
-    assert get_peer_response.squeak_peer.host == "fake_host"
-    assert get_peer_response.squeak_peer.port == 1234
+    assert get_peer_response.squeak_peer.peer_address.host == "fake_host"
+    assert get_peer_response.squeak_peer.peer_address.port == 1234
 
     # Get all peers
     get_peers_response = admin_stub.GetPeers(
         squeak_admin_pb2.GetPeersRequest())
     peer_hosts = [
-        squeak_peer.host for squeak_peer in get_peers_response.squeak_peers]
+        squeak_peer.peer_address.host
+        for squeak_peer in get_peers_response.squeak_peers
+    ]
     assert "fake_host" in peer_hosts
 
 
 def test_create_peer_empty_name(admin_stub):
     # Try to create a new signing profile with an empty name
     with pytest.raises(Exception) as excinfo:
-        admin_stub.CreatePeer(
-            squeak_admin_pb2.CreatePeerRequest(
-                peer_name="",
-                host="another_fake_host",
-                port=1234,
-            )
+        create_saved_peer(
+            admin_stub,
+            "",
+            "another_fake_host",
+            1234,
         )
     assert "Peer name cannot be empty." in str(excinfo.value)
 

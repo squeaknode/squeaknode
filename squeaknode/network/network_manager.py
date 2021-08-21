@@ -49,19 +49,20 @@ class NetworkManager(object):
         self.peer_server.stop()
         self.connection_manager.stop_all_connections()
 
-    def connect_peer(self, host: str, port: int) -> None:
-        port = port or squeak.params.params.DEFAULT_PORT
-        peer_address = PeerAddress(host=host, port=port)
+    def connect_peer(self, peer_address: PeerAddress) -> None:
+        port = peer_address.port or squeak.params.params.DEFAULT_PORT
+        peer_address = PeerAddress(
+            host=peer_address.host,
+            port=port,
+        )
         # TODO: check if address is already connected.
         self.peer_client.connect_address(peer_address)
 
-    def disconnect_peer(self, host: str, port: int) -> None:
-        peer_address = PeerAddress(host=host, port=port)
+    def disconnect_peer(self, peer_address: PeerAddress) -> None:
         self.connection_manager.stop_connection(peer_address)
 
-    def get_connected_peer(self, host, port):
-        address = (host, port)
-        return self.connection_manager.get_peer(address)
+    def get_connected_peer(self, peer_address: PeerAddress):
+        return self.connection_manager.get_peer(peer_address)
 
     def get_connected_peers(self):
         return self.connection_manager.peers
