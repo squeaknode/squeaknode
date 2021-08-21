@@ -177,10 +177,10 @@ export default function Peers() {
         {connectedPeers.map(peer =>
            <Box
               p={1}
-              key={peer.getPeerName()}
+              key={peer.getPeerAddress()}
            >
              <PeerListItem
-                key={peer.getPeerName()}
+                key={peer.getPeerAddress()}
                 handlePeerClick={() => console.log("clicked peer")}
                 peer={peer}>
              </PeerListItem>
