@@ -833,11 +833,11 @@ message ReceivedPayment {
     /// Time of payment
     int64 time_s = 5;
 
-    /// The host of the buyer client
-    string client_host = 6;
+    /// The host of the squeak peer
+    string peer_host = 6;
 
-    /// The port of the buyer client
-    int32 client_port = 7;
+    /// The port of the squeak peer
+    int32 peer_port = 7;
 }
 
 message SubscribeReceivedPaymentsRequest {

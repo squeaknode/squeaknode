@@ -40,6 +40,9 @@ export default function ReceivedPayment({
     goToSqueakPage(history, hash);
   }
 
+  const getPeerAddress = receivedPayment.getPeerHost() + ":" + receivedPayment.getPeerPort();
+
+
   console.log("receivedPayment:");
   console.log(receivedPayment);
   return (
@@ -92,17 +95,7 @@ export default function ReceivedPayment({
             alignItems="flex-start"
           >
             <Grid item>
-              Buyer host:<span> </span>{receivedPayment.getClientHost()}
-            </Grid>
-          </Grid>
-          <Grid
-            container
-            direction="row"
-            justify="flex-start"
-            alignItems="flex-start"
-          >
-            <Grid item>
-              Buyer port:<span> </span>{receivedPayment.getClientPort()}
+              Peer: <span> </span>{getPeerAddress}
             </Grid>
           </Grid>
     </Box>
