@@ -3,7 +3,7 @@ import logging
 from proto import squeak_admin_pb2
 from squeaknode.admin.profile_image_util import bytes_to_base64_string
 from squeaknode.admin.profile_image_util import load_default_profile_image
-from squeaknode.core.received_offer_with_peer import ReceivedOfferWithPeer
+from squeaknode.core.received_offer_with_peer import ReceivedOffer
 from squeaknode.core.received_payment import ReceivedPayment
 from squeaknode.core.received_payment_summary import ReceivedPaymentSummary
 from squeaknode.core.sent_offer import SentOffer
@@ -14,7 +14,6 @@ from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.util import get_hash
 from squeaknode.network.peer import Peer
-
 
 logger = logging.getLogger(__name__)
 
@@ -84,16 +83,9 @@ def squeak_peer_to_message(squeak_peer: SqueakPeer) -> squeak_admin_pb2.SqueakPe
     )
 
 
-def offer_entry_to_message(received_offer_entry: ReceivedOfferWithPeer) -> squeak_admin_pb2.OfferDisplayEntry:
-    received_offer = received_offer_entry.received_offer
+def offer_entry_to_message(received_offer: ReceivedOffer) -> squeak_admin_pb2.OfferDisplayEntry:
     if received_offer.received_offer_id is None:
         raise Exception("Received offer id cannot be None.")
-    peer = received_offer_entry.peer
-    has_peer = False
-    peer_msg = None
-    if peer is not None:
-        has_peer = True
-        peer_msg = squeak_peer_to_message(peer)
     return squeak_admin_pb2.OfferDisplayEntry(
         offer_id=received_offer.received_offer_id,
         squeak_hash=received_offer.squeak_hash.hex(),
@@ -101,8 +93,6 @@ def offer_entry_to_message(received_offer_entry: ReceivedOfferWithPeer) -> squea
         node_pubkey=received_offer.destination,
         node_host=received_offer.lightning_address.host,
         node_port=received_offer.lightning_address.port,
-        has_peer=has_peer,
-        peer=peer_msg,
         invoice_timestamp=received_offer.invoice_timestamp,
         invoice_expiry=received_offer.invoice_expiry,
         peer_host=received_offer.peer_address.host,
