@@ -183,8 +183,10 @@ def get_connected_peers(node_stub):
 def get_connected_peer(node_stub, host, port):
     get_connected_peer_response = node_stub.GetConnectedPeer(
         squeak_admin_pb2.GetConnectedPeerRequest(
-            host=host,
-            port=port,
+            peer_address=squeak_admin_pb2.PeerAddress(
+                host=host,
+                port=port,
+            )
         )
     )
     return get_connected_peer_response.connected_peer

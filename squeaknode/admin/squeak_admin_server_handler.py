@@ -687,12 +687,12 @@ class SqueakAdminServerHandler(object):
         )
 
     def handle_get_connected_peer(self, request):
-        host = request.host
-        port = request.port
-        logger.info("Handle get connected peer host: {}, port: {}".format(
-            host, port
+        peer_address = message_to_peer_address(request.peer_address)
+        logger.info("Handle get connected peer for address: {}".format(
+            peer_address,
         ))
-        connected_peer = self.squeak_controller.get_connected_peer(host, port)
+        connected_peer = self.squeak_controller.get_connected_peer(
+            peer_address)
         logger.info("Connected peer: {}".format(
             connected_peer,
         ))

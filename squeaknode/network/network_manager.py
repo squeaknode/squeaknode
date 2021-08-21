@@ -61,9 +61,8 @@ class NetworkManager(object):
     def disconnect_peer(self, peer_address: PeerAddress) -> None:
         self.connection_manager.stop_connection(peer_address)
 
-    def get_connected_peer(self, host, port):
-        address = (host, port)
-        return self.connection_manager.get_peer(address)
+    def get_connected_peer(self, peer_address: PeerAddress):
+        return self.connection_manager.get_peer(peer_address)
 
     def get_connected_peers(self):
         return self.connection_manager.peers

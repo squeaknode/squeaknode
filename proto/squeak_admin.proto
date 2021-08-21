@@ -930,11 +930,8 @@ message GetConnectedPeersReply {
 }
 
 message GetConnectedPeerRequest {
-    /// Host
-    string host = 1;
-
-    /// Port
-    int32 port = 2;
+    /// Peer address
+    PeerAddress peer_address = 1;
 }
 
 message GetConnectedPeerReply {
