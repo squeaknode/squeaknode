@@ -67,6 +67,7 @@ class Peer(object):
 
     @property
     def peer_address(self):
+        # TODO: Just return the peer address object
         ip, port = self._address
         return PeerAddress(
             host=ip,
@@ -80,11 +81,13 @@ class Peer(object):
 
     @property
     def ip(self):
+        # TODO: Just return self._address.host
         ip, _ = self._address
         return ip
 
     @property
     def port(self):
+        # TODO: Just return self._address.port
         _, port = self._address
         return port
 

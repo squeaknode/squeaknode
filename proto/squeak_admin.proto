@@ -900,20 +900,11 @@ message ConnectPeerReply {
 }
 
 message ConnectedPeer {
-    /// The peer id
-    int32 peer_id = 1;
-
-    /// The peer name
-    string peer_name = 2;
-
-    /// Host
-    string host = 3;
-
-    /// Port
-    int32 port = 4;
+    /// Peer address
+    PeerAddress peer_address = 1;
 
     /// Connection time
-    int64 connect_time_s = 5;
+    int64 connect_time_s = 2;
 }
 
 message GetConnectedPeersRequest {
