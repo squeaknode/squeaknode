@@ -15,4 +15,4 @@ class SentOffer(NamedTuple):
     payment_request: str
     invoice_time: int
     invoice_expiry: int
-    client_addr: PeerAddress
+    peer_address: PeerAddress

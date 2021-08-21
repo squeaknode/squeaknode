@@ -13,4 +13,4 @@ class ReceivedPayment(NamedTuple):
     payment_hash: bytes
     price_msat: int
     settle_index: int
-    client_addr: PeerAddress
+    peer_address: PeerAddress

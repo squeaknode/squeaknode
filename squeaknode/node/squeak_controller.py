@@ -95,27 +95,27 @@ class SqueakController:
         followed_addresses = self.get_followed_addresses()
         return set(followed_addresses) & set(addresses)
 
-    def get_buy_offer(self, squeak_hash: bytes, client_address: PeerAddress) -> Offer:
-        # Check if there is an existing offer for the hash/client_addr combination
-        sent_offer = self.get_saved_sent_offer(squeak_hash, client_address)
+    def get_buy_offer(self, squeak_hash: bytes, peer_address: PeerAddress) -> Offer:
+        # Check if there is an existing offer for the hash/peer_address combination
+        sent_offer = self.get_saved_sent_offer(squeak_hash, peer_address)
         return self.squeak_core.package_offer(
             sent_offer,
             self.config.lnd.external_host,
             self.config.lnd.port,
         )
 
-    def get_saved_sent_offer(self, squeak_hash: bytes, client_address: PeerAddress) -> SentOffer:
-        # Check if there is an existing offer for the hash/client_addr combination
+    def get_saved_sent_offer(self, squeak_hash: bytes, peer_address: PeerAddress) -> SentOffer:
+        # Check if there is an existing offer for the hash/peer_address combination
         sent_offer = self.squeak_db.get_sent_offer_by_squeak_hash_and_client(
             squeak_hash,
-            client_address,
+            peer_address,
         )
         if sent_offer:
             return sent_offer
         squeak = self.get_squeak(squeak_hash)
         sent_offer = self.squeak_core.create_offer(
             squeak,
-            client_address,
+            peer_address,
             self.config.core.price_msat,
         )
         self.squeak_db.insert_sent_offer(sent_offer)

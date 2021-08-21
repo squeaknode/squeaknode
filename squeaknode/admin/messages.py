@@ -149,8 +149,8 @@ def received_payments_to_message(received_payment: ReceivedPayment) -> squeak_ad
         payment_hash=received_payment.payment_hash.hex(),
         price_msat=received_payment.price_msat,
         time_s=int(received_payment.created.timestamp()),
-        peer_host=received_payment.client_addr.host,
-        peer_port=received_payment.client_addr.port,
+        peer_host=received_payment.peer_address.host,
+        peer_port=received_payment.peer_address.port,
     )
 
 
