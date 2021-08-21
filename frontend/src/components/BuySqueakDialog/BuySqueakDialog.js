@@ -119,8 +119,10 @@ export default function BuySqueakDialog({
     return null;
   };
 
-  const getPeerAddress = (offer) => {
-    return offer.getPeerHost() + ":" + offer.getPeerPort();
+  const getPeerAddressText = (offer) => {
+    const peerAddress =  offer.getPeerAddress();
+    const host = peerAddress.getHost();
+    return peerAddress.getHost() + ":" + peerAddress.getPort();
   }
 
   // TODO: load offers using "onRendered" callback.
@@ -165,7 +167,7 @@ export default function BuySqueakDialog({
         >
           {offers.map(offer =>
             <MenuItem key={offer.getOfferId()} value={offer.getOfferId()}>
-              {getPeerAddress(offer)} ({offer.getPriceMsat() / 1000} sats)
+              {getPeerAddressText(offer)} ({offer.getPriceMsat() / 1000} sats)
             </MenuItem>
           )}
         </Select>

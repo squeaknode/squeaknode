@@ -49,8 +49,7 @@ export default function SentPayment({
     event.preventDefault();
     goToPeerAddressPage(
       history,
-      sentPayment.getPeerHost(),
-      sentPayment.getPeerPort(),
+      sentPayment.getPeerAddress(),
     );
   }
 
@@ -62,13 +61,15 @@ export default function SentPayment({
   }
 
   function PeerDisplay() {
-    const peerAddress =  sentPayment.getPeerHost() + ":" + sentPayment.getPeerPort();
+    const peerAddress =  sentPayment.getPeerAddress();
+    const host = peerAddress.getHost();
+    const peerAddressText =  peerAddress.getHost() + ":" + peerAddress.getPort();
     return (
       <Box>
         <Typography
           size="md"
           >Peer: <Link href="#" onClick={onPeerClick}>
-            {peerAddress}
+            {peerAddressText}
           </Link>
         </Typography>
       </Box>

@@ -43,8 +43,7 @@ export default function BuyOfferDetailItem({
     event.preventDefault();
     goToPeerAddressPage(
       history,
-      offer.getPeerHost(),
-      offer.getPeerPort(),
+      offer.getPeerAddress(),
     );
   }
 
@@ -78,13 +77,15 @@ export default function BuyOfferDetailItem({
 
   function PeerInfoContent() {
     console.log(offer);
-    const peerAddress =  offer.getPeerHost() + ":" + offer.getPeerPort();
+    const peerAddress =  offer.getPeerAddress();
+    const host = peerAddress.getHost();
+    const peerAddressText =  peerAddress.getHost() + ":" + peerAddress.getPort();
     return (
       <Box>
         <Typography
           size="md"
           >Peer: <Link href="#" onClick={onPeerClick}>
-            {peerAddress}
+            {peerAddressText}
           </Link>
         </Typography>
       </Box>
