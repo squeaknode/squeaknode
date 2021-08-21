@@ -678,11 +678,8 @@ message OfferDisplayEntry {
     /// The invoice expiry
     int32 invoice_expiry = 8;
 
-    /// The host of the squeak peer
-    string peer_host = 9;
-
-    /// The port of the squeak peer
-    int32 peer_port = 10;
+    /// The address of the squeak peer
+    PeerAddress peer_address = 9;
 }
 
 message SyncSqueaksRequest {
@@ -741,11 +738,8 @@ message SentPayment {
     /// Time of payment
     int64 time_s = 7;
 
-    /// The host of the squeak peer
-    string peer_host = 8;
-
-    /// The port of the squeak peer
-    int32 peer_port = 9;
+    /// The address of the squeak peer
+    PeerAddress peer_address = 8;
 }
 
 message SyncSqueakRequest {
@@ -833,11 +827,8 @@ message ReceivedPayment {
     /// Time of payment
     int64 time_s = 5;
 
-    /// The host of the squeak peer
-    string peer_host = 6;
-
-    /// The port of the squeak peer
-    int32 peer_port = 7;
+    /// The address of the squeak peer
+    PeerAddress peer_address = 6;
 }
 
 message SubscribeReceivedPaymentsRequest {
@@ -966,3 +957,12 @@ message DisconnectPeerReply {
 
 message SubscribeConnectedPeersRequest {
 }
+
+message PeerAddress {
+    /// The host of the peer
+    string host = 1;
+
+    /// The port of the peer
+    int32 port = 2;
+}
+
