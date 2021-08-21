@@ -672,23 +672,17 @@ message OfferDisplayEntry {
     /// The port of the seller lightning node
     int32 node_port = 6;
 
-    /// Has peer
-    bool has_peer = 7;
-
-    /// The peer
-    SqueakPeer peer = 8;
-
     /// The invoice timestamp
-    int32 invoice_timestamp = 9;
+    int32 invoice_timestamp = 7;
 
     /// The invoice expiry
-    int32 invoice_expiry = 10;
+    int32 invoice_expiry = 8;
 
     /// The host of the squeak peer
-    string peer_host = 11;
+    string peer_host = 9;
 
     /// The port of the squeak peer
-    int32 peer_port = 12;
+    int32 peer_port = 10;
 }
 
 message SyncSqueaksRequest {
