@@ -9,6 +9,8 @@ import CardHeader from "@material-ui/core/CardHeader";
 import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';
 
 import useStyles from "../../pages/wallet/styles";
+import SqueakUserAvatar from "../../components/SqueakUserAvatar";
+
 
 import {
   goToProfilePage,
@@ -61,7 +63,9 @@ export default function ProfileListItem({
         onClick={onProfileClick}
      >
        <CardHeader
-          avatar={<RecordVoiceOverIcon/>}
+          avatar={<SqueakUserAvatar
+                    squeakProfile={profile}
+                  />}
           title={`Name: ${profile.getProfileName()}`}
           subheader={`Address: ${profile.getAddress()}`}
           // action={<Button size="small">View Peer</Button>}
