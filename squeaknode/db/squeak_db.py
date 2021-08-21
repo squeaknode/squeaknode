@@ -377,7 +377,7 @@ class SqueakDb:
         include_locked: bool = False,
     ) -> List[bytes]:
         """ Lookup squeaks. """
-        logger.info("""Running lookup query with
+        logger.debug("""Running lookup query with
         addresses: {},
         min_block: {}
         max_block: {}
@@ -402,7 +402,7 @@ class SqueakDb:
         if not include_locked:
             s = s.where(self.squeak_has_secret_key)
 
-        logger.info("Query s: {}".format(s))
+        logger.debug("Query s: {}".format(s))
 
         with self.get_connection() as connection:
             # logger.info("Mogrify lookup_squeaks: {}.".format(

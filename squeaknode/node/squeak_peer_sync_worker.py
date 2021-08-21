@@ -18,7 +18,6 @@ class SqueakPeerSyncWorker(PeriodicWorker):
         self.sync_interval_s = sync_interval_s
 
     def work_fn(self):
-        logger.debug("Syncing timeline with peers...")
         self.squeak_controller.sync_timeline()
 
     def get_interval_s(self):
