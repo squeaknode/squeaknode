@@ -49,7 +49,8 @@ export default function SentPayment({
     event.preventDefault();
     goToPeerAddressPage(
       history,
-      sentPayment.getPeerAddress(),
+      sentPayment.getPeerAddress().getHost(),
+      sentPayment.getPeerAddress().getPort(),
     );
   }
 

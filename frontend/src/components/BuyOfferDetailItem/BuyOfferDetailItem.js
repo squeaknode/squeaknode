@@ -43,7 +43,8 @@ export default function BuyOfferDetailItem({
     event.preventDefault();
     goToPeerAddressPage(
       history,
-      offer.getPeerAddress(),
+      offer.getPeerAddress().getHost(),
+      offer.getPeerAddress().getPort(),
     );
   }
 

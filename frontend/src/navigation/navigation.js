@@ -6,9 +6,7 @@ export const goToPeerPage = (history, peerId) => {
   history.push("/app/peer/" + peerId);
 };
 
-export const goToPeerAddressPage = (history, peerAddress) => {
-  const host = peerAddress.getHost();
-  const port = peerAddress.getPort();
+export const goToPeerAddressPage = (history, host, port) => {
   history.push("/app/peeraddress/" + host + "/" + port);
 };
 
