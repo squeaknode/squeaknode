@@ -20,7 +20,6 @@ from squeaknode.core.block_range import BlockRange
 from squeaknode.core.offer import Offer
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.received_offer import ReceivedOffer
-from squeaknode.core.received_offer_with_peer import ReceivedOfferWithPeer
 from squeaknode.core.received_payment_summary import ReceivedPaymentSummary
 from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.sent_payment_summary import SentPaymentSummary
@@ -269,32 +268,31 @@ class SqueakController:
     def delete_peer(self, peer_id: int):
         self.squeak_db.delete_peer(peer_id)
 
-    def get_received_offers_with_peer(self, squeak_hash: bytes) -> List[ReceivedOfferWithPeer]:
-        return self.squeak_db.get_received_offers_with_peer(squeak_hash)
+    def get_received_offers(self, squeak_hash: bytes) -> List[ReceivedOffer]:
+        return self.squeak_db.get_received_offers(squeak_hash)
 
     def get_received_offer_for_squeak_and_peer(
             self,
             squeak_hash: bytes,
             peer_addresss: PeerAddress,
-    ) -> Optional[ReceivedOfferWithPeer]:
+    ) -> Optional[ReceivedOffer]:
         return self.squeak_db.get_received_offer_for_squeak_and_peer(
             squeak_hash,
             peer_addresss,
         )
 
-    def get_buy_offer_with_peer(self, received_offer_id: int) -> Optional[ReceivedOfferWithPeer]:
-        return self.squeak_db.get_offer_with_peer(
+    def get_received_offer(self, received_offer_id: int) -> Optional[ReceivedOffer]:
+        return self.squeak_db.get_received_offer(
             received_offer_id)
 
     def pay_offer(self, received_offer_id: int) -> int:
         # Get the offer from the database
-        received_offer_with_peer = self.squeak_db.get_offer_with_peer(
+        received_offer = self.squeak_db.get_received_offer(
             received_offer_id)
-        if received_offer_with_peer is None:
+        if received_offer is None:
             raise Exception("Received offer with id {} not found.".format(
                 received_offer_id,
             ))
-        received_offer = received_offer_with_peer.received_offer
         logger.info("Paying received offer: {}".format(received_offer))
         sent_payment = self.squeak_core.pay_offer(received_offer)
         sent_payment_id = self.squeak_db.insert_sent_payment(sent_payment)

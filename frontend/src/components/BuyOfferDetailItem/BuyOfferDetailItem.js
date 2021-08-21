@@ -25,6 +25,7 @@ import moment from 'moment';
 
 import {
   goToPeerPage,
+  goToPeerAddressPage,
   goToLightningNodePage,
 } from "../../navigation/navigation"
 
@@ -40,12 +41,11 @@ export default function BuyOfferDetailItem({
 
   const onPeerClick = (event) => {
     event.preventDefault();
-    const peerId = getPeerId();
-    if (peerId == null) {
-      return;
-    }
-    console.log("Handling peer click for peerId: " + peerId);
-    goToPeerPage(history, peerId);
+    goToPeerAddressPage(
+      history,
+      offer.getPeerHost(),
+      offer.getPeerPort(),
+    );
   }
 
   const onLightningNodeClick = (event) => {
@@ -57,16 +57,6 @@ export default function BuyOfferDetailItem({
       offer.getNodePort(),
     )
   }
-
-  const getPeerId = () => {
-    if (!offer.getHasPeer()) {
-      return null;
-    }
-    const peer = offer.getPeer();
-    return peer.getPeerId();
-  }
-
-
 
   const handleClickPayOffer = () => {
     console.log("Handle click pay offer.");
@@ -86,43 +76,17 @@ export default function BuyOfferDetailItem({
     )
   }
 
-
-  function PeerDisplay() {
-    if (offer.getHasPeer()) {
-      return HasPeerDisplay(offer.getPeer());
-    } else {
-      return HasNoPeerDisplay();
-    }
-  }
-
-  function HasPeerDisplay(peer) {
-    const peerId = peer.getPeerId();
-    const peerName = peer.getPeerName();
-    const peerDisplayName = peerName ? peerName : peerId;
-    return (
-      <Link href="#"
-        onClick={onPeerClick}
-        >{peerDisplayName}
-      </Link>
-    )
-  }
-
-  function HasNoPeerDisplay() {
-    return (
-      <>
-        Unknown Peer
-      </>
-    )
-  }
-
-
-  function ProfileInfoContent() {
+  function PeerInfoContent() {
+    console.log(offer);
+    const peerAddress =  offer.getPeerHost() + ":" + offer.getPeerPort();
     return (
       <Box>
         <Typography
           size="md"
-          >Peer: {PeerDisplay()}
-          </Typography>
+          >Peer: <Link href="#" onClick={onPeerClick}>
+            {peerAddress}
+          </Link>
+        </Typography>
       </Box>
     )
   }
@@ -142,7 +106,7 @@ export default function BuyOfferDetailItem({
     )
   }
 
-  function PeerNodeInfoContent(offer) {
+  function LightningPeerInfoContent(offer) {
     const lightningAddress =  offer.getNodeHost() + ":" + offer.getNodePort();
     const lightningPubkey = offer.getNodePubkey();
     return (
@@ -181,7 +145,7 @@ export default function BuyOfferDetailItem({
             alignItems="flex-start"
           >
           <Grid item>
-            {ProfileInfoContent()}
+            {PeerInfoContent()}
           </Grid>
           </Grid>
           <Grid
@@ -191,7 +155,7 @@ export default function BuyOfferDetailItem({
             alignItems="flex-start"
           >
           <Grid item>
-            {PeerNodeInfoContent(offer)}
+            {LightningPeerInfoContent(offer)}
           </Grid>
           </Grid>
           <Grid
