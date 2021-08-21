@@ -132,14 +132,12 @@ def open_channel(lightning_client, remote_pubkey, amount):
 @contextmanager
 def open_peer_connection(node_stub, peer_name, peer_host, peer_port):
     # Add the main node as a peer
-    create_peer_response = node_stub.CreatePeer(
-        squeak_admin_pb2.CreatePeerRequest(
-            peer_name=peer_name,
-            host=peer_host,
-            port=peer_port,
-        )
+    peer_id = create_saved_peer(
+        node_stub,
+        peer_name,
+        peer_host,
+        peer_port,
     )
-    peer_id = create_peer_response.peer_id
     try:
         # Connect the peer
         node_stub.ConnectPeer(
@@ -190,6 +188,19 @@ def get_connected_peer(node_stub, host, port):
         )
     )
     return get_connected_peer_response.connected_peer
+
+
+def create_saved_peer(node_stub, name, host, port):
+    create_peer_response = node_stub.CreatePeer(
+        squeak_admin_pb2.CreatePeerRequest(
+            peer_name=name,
+            peer_address=squeak_admin_pb2.PeerAddress(
+                host=host,
+                port=port,
+            )
+        )
+    )
+    return create_peer_response.peer_id
 
 
 @contextmanager

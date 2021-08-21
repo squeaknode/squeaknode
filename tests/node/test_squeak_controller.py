@@ -52,6 +52,16 @@ def lightning_host_port():
 
 
 @pytest.fixture
+def peer_address():
+    return PeerAddress(host="fake_host", port=5678)
+
+
+@pytest.fixture
+def peer_address_with_zero():
+    return PeerAddress(host="fake_host", port=0)
+
+
+@pytest.fixture
 def price_msat():
     return 777
 
@@ -129,31 +139,26 @@ def test_get_network_regtest(regtest_squeak_controller):
 #     assert squeak_controller.get_network() == "regtest"
 
 
-def test_create_peer(squeak_db, squeak_controller):
+def test_create_peer(squeak_db, squeak_controller, peer_address):
     squeak_controller.create_peer(
         "fake_peer_name",
-        "fake_host",
-        5678,
+        peer_address,
     )
 
     squeak_db.insert_peer.assert_called_with(
         SqueakPeer(
             peer_id=None,
             peer_name="fake_peer_name",
-            address=PeerAddress(
-                host="fake_host",
-                port=5678,
-            ),
+            address=peer_address,
             autoconnect=False,
         )
     )
 
 
-def test_create_peer_default_port(config, squeak_db, squeak_controller):
+def test_create_peer_default_port(config, squeak_db, squeak_controller, peer_address_with_zero):
     squeak_controller.create_peer(
         "fake_peer_name",
-        "fake_host",
-        0,
+        peer_address_with_zero,
     )
 
     squeak_db.insert_peer.assert_called_with(
@@ -161,7 +166,7 @@ def test_create_peer_default_port(config, squeak_db, squeak_controller):
             peer_id=None,
             peer_name="fake_peer_name",
             address=PeerAddress(
-                host="fake_host",
+                host=peer_address_with_zero.host,
                 port=squeak.params.params.DEFAULT_PORT,
             ),
             autoconnect=False,

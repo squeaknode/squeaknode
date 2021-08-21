@@ -386,19 +386,16 @@ class SqueakAdminServerHandler(object):
 
     def handle_create_peer(self, request):
         peer_name = request.peer_name
-        host = request.host
-        port = request.port
+        peer_address = message_to_peer_address(request.peer_address)
         logger.info(
-            "Handle create peer with name: {}, host: {}, port: {}".format(
+            "Handle create peer with name: {}, address: {}".format(
                 peer_name,
-                host,
-                port,
+                peer_address,
             )
         )
         peer_id = self.squeak_controller.create_peer(
             peer_name,
-            host,
-            port,
+            peer_address,
         )
         return squeak_admin_pb2.CreatePeerReply(
             peer_id=peer_id,

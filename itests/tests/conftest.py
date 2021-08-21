@@ -8,6 +8,7 @@ from squeak.params import SelectParams
 from proto import squeak_admin_pb2
 from proto import squeak_admin_pb2_grpc
 from tests.util import bytes_to_base64_string
+from tests.util import create_saved_peer
 from tests.util import generate_signing_key
 from tests.util import get_address
 from tests.util import load_lightning_client
@@ -113,14 +114,12 @@ def saved_squeak_hash(admin_stub, signing_profile_id):
 @pytest.fixture
 def peer_id(admin_stub, random_name):
     # Create a new peer
-    create_peer_response = admin_stub.CreatePeer(
-        squeak_admin_pb2.CreatePeerRequest(
-            peer_name=random_name,
-            host=random_name,
-            port=1234,
-        )
+    peer_id = create_saved_peer(
+        admin_stub,
+        random_name,
+        random_name,
+        1234,
     )
-    peer_id = create_peer_response.peer_id
     yield peer_id
     # Delete the peer
     admin_stub.DeletePeer(

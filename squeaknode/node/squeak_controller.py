@@ -232,14 +232,14 @@ class SqueakController:
         logger.info("Deleted number of offers : {}".format(num_deleted_offers))
         self.squeak_db.delete_squeak(squeak_hash)
 
-    def create_peer(self, peer_name: str, host: str, port: int):
+    def create_peer(self, peer_name: str, peer_address: PeerAddress):
         if len(peer_name) == 0:
             raise Exception(
                 "Peer name cannot be empty.",
             )
-        port = port or squeak.params.params.DEFAULT_PORT
+        port = peer_address.port or squeak.params.params.DEFAULT_PORT
         peer_address = PeerAddress(
-            host=host,
+            host=peer_address.host,
             port=port,
         )
         squeak_peer = SqueakPeer(
