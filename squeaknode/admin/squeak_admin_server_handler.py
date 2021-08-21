@@ -3,6 +3,7 @@ import sys
 
 from proto import squeak_admin_pb2
 from squeaknode.admin.messages import connected_peer_to_message
+from squeaknode.admin.messages import message_to_peer_address
 from squeaknode.admin.messages import offer_entry_to_message
 from squeaknode.admin.messages import payment_summary_to_message
 from squeaknode.admin.messages import received_payments_to_message
@@ -666,11 +667,10 @@ class SqueakAdminServerHandler(object):
         )
 
     def handle_connect_peer(self, request):
-        host = request.host
-        port = request.port
+        peer_address = message_to_peer_address(request.peer_address)
         logger.info(
-            "Handle connect peer with host: {}, port: {}".format(host, port))
-        self.squeak_controller.connect_peer(host, port)
+            "Handle connect peer with peer address: {}".format(peer_address))
+        self.squeak_controller.connect_peer(peer_address)
         return squeak_admin_pb2.ConnectPeerReply()
 
     def handle_get_connected_peers(self, request):
@@ -706,11 +706,10 @@ class SqueakAdminServerHandler(object):
         )
 
     def handle_disconnect_peer(self, request):
-        host = request.host
-        port = request.port
+        peer_address = message_to_peer_address(request.peer_address)
         logger.info(
-            "Handle connect peer with host: {}, port: {}".format(host, port))
-        self.squeak_controller.disconnect_peer(host, port)
+            "Handle connect peer with peer address: {}".format(peer_address))
+        self.squeak_controller.disconnect_peer(peer_address)
         return squeak_admin_pb2.DisconnectPeerReply()
 
     def handle_subscribe_connected_peers(self, request, stopped):

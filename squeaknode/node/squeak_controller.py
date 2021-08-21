@@ -459,12 +459,11 @@ class SqueakController:
             squeak_hash,
         )
 
-    def connect_peer(self, host: str, port: int) -> None:
-        logger.info("Connect to peer: {}:{}".format(
-            host,
-            port,
+    def connect_peer(self, peer_address: PeerAddress) -> None:
+        logger.info("Connect to peer: {}".format(
+            peer_address,
         ))
-        self.network_manager.connect_peer(host, port)
+        self.network_manager.connect_peer(peer_address)
 
     def connect_saved_peers(self) -> None:
         peers = self.get_autoconnect_peers()
@@ -606,12 +605,11 @@ class SqueakController:
     def broadcast_msg(self, msg: MsgSerializable) -> None:
         self.network_manager.broadcast_msg(msg)
 
-    def disconnect_peer(self, host: str, port: int) -> None:
-        logger.info("Disconnect to peer: {}:{}".format(
-            host,
-            port,
+    def disconnect_peer(self, peer_address: PeerAddress) -> None:
+        logger.info("Disconnect to peer: {}".format(
+            peer_address,
         ))
-        self.network_manager.disconnect_peer(host, port)
+        self.network_manager.disconnect_peer(peer_address)
 
     def subscribe_connected_peers(self, stopped: threading.Event):
         # with ReceivedPaymentsSubscriptionClient(

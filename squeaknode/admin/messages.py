@@ -179,3 +179,10 @@ def peer_address_to_message(peer_address: PeerAddress) -> squeak_admin_pb2.PeerA
         host=peer_address.host,
         port=peer_address.port,
     )
+
+
+def message_to_peer_address(peer_address: squeak_admin_pb2.PeerAddress) -> PeerAddress:
+    return PeerAddress(
+        host=peer_address.host,
+        port=peer_address.port,
+    )

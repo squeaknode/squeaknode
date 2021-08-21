@@ -666,6 +666,7 @@ message OfferDisplayEntry {
     /// The seller node pubkey
     string node_pubkey = 4;
 
+    // TODO: replace with LightningAddress from lnd.proto
     /// The host of the seller lightning node
     string node_host = 5;
 
@@ -897,11 +898,8 @@ message GetLikedSqueakDisplaysReply {
 }
 
 message ConnectPeerRequest {
-    /// Host
-    string host = 1;
-
-    /// Port
-    int32 port = 2;
+    /// Peer address
+    PeerAddress peer_address = 1;
 }
 
 message ConnectPeerReply {
@@ -944,11 +942,8 @@ message GetConnectedPeerReply {
 }
 
 message DisconnectPeerRequest {
-    /// Host
-    string host = 1;
-
-    /// Port
-    int32 port = 2;
+    /// Peer address
+    PeerAddress peer_address = 1;
 }
 
 message DisconnectPeerReply {

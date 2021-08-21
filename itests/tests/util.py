@@ -144,8 +144,10 @@ def open_peer_connection(node_stub, peer_name, peer_host, peer_port):
         # Connect the peer
         node_stub.ConnectPeer(
             squeak_admin_pb2.ConnectPeerRequest(
-                host=peer_host,
-                port=peer_port,
+                peer_address=squeak_admin_pb2.PeerAddress(
+                    host=peer_host,
+                    port=peer_port,
+                )
             )
         )
         yield peer_id
@@ -157,8 +159,10 @@ def open_peer_connection(node_stub, peer_name, peer_host, peer_port):
         # Disconnect the peer
         node_stub.DisconnectPeer(
             squeak_admin_pb2.DisconnectPeerRequest(
-                host=peer_host,
-                port=peer_port,
+                peer_address=squeak_admin_pb2.PeerAddress(
+                    host=peer_host,
+                    port=peer_port,
+                )
             )
         )
         # Delete the peer
