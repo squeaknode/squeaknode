@@ -63,7 +63,7 @@ export default function SavedPeerListItem({
        <CardHeader
           avatar={<ComputerIcon/>}
           title={`Name: ${peer.getPeerName()}`}
-          subheader={`Address: ${peer.getHost()}:${peer.getPort()}`}
+          subheader={`Address: ${peer.getPeerAddress().getHost()}:${peer.getPeerAddress().getPort()}`}
           // action={<Button size="small">View Peer</Button>}
        />
      </Card>

@@ -469,8 +469,7 @@ class SqueakController:
         peers = self.get_autoconnect_peers()
         for peer in peers:
             self.network_manager.connect_peer(
-                peer.address.host,
-                peer.address.port,
+                peer.address,
             )
 
     def get_address(self):

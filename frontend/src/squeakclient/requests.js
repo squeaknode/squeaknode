@@ -117,6 +117,7 @@ import {
   DownloadRepliesRequest,
   DownloadRepliesReply,
   SubscribeConnectedPeersRequest,
+  PeerAddress,
 } from "../proto/squeak_admin_pb"
 
 import { SqueakAdminClient } from "../proto/squeak_admin_grpc_web_pb"
@@ -676,15 +677,11 @@ export function importSigningProfileRequest(profileName, privateKey, handleRespo
 
 export function createPeerRequest(peerName, host, port, handleResponse) {
   var request = new CreatePeerRequest();
+  var peerAddress = new PeerAddress();
+  peerAddress.setHost(host);
+  peerAddress.setPort(port);
   request.setPeerName(peerName);
-  request.setHost(host);
-  request.setPort(port);
-  // makeRequest(
-  //   'createpeer',
-  //   request,
-  //   CreatePeerReply.deserializeBinary,
-  //   handleResponse,
-  // );
+  request.setPeerAddress(peerAddress);
   client.createPeer(request, {}, (err, response) => {
     handleResponse(response);
   });
@@ -976,16 +973,10 @@ export function getConnectedPeersRequest(handleResponse) {
 
 export function getConnectedPeerRequest(host, port, handleResponse) {
   var request = new GetConnectedPeerRequest();
-  request.setHost(host);
-  request.setPort(port);
-  // makeRequest(
-  //   'getconnectedpeer',
-  //   request,
-  //   GetConnectedPeerReply.deserializeBinary,
-  //   (response) => {
-  //     handleResponse(response.getConnectedPeer());
-  //   }
-  // );
+  var peerAddress = new PeerAddress();
+  peerAddress.setHost(host);
+  peerAddress.setPort(port);
+  request.setPeerAddress(peerAddress);
   client.getConnectedPeer(request, {}, (err, response) => {
     handleResponse(response.getConnectedPeer());
   });
@@ -993,14 +984,10 @@ export function getConnectedPeerRequest(host, port, handleResponse) {
 
 export function connectSqueakPeerRequest(host, port, handleResponse) {
   var request = new ConnectSqueakPeerRequest();
-  request.setHost(host);
-  request.setPort(port);
-  // makeRequest(
-  //   'connectpeer',
-  //   request,
-  //   ConnectSqueakPeerReply.deserializeBinary,
-  //   handleResponse,
-  // );
+  var peerAddress = new PeerAddress();
+  peerAddress.setHost(host);
+  peerAddress.setPort(port);
+  request.setPeerAddress(peerAddress);
   client.connectPeer(request, {}, (err, response) => {
     handleResponse(response);
   });
@@ -1008,14 +995,10 @@ export function connectSqueakPeerRequest(host, port, handleResponse) {
 
 export function disconnectSqueakPeerRequest(host, port, handleResponse) {
   var request = new DisconnectSqueakPeerRequest();
-  request.setHost(host);
-  request.setPort(port);
-  // makeRequest(
-  //   'disconnectpeer',
-  //   request,
-  //   DisconnectSqueakPeerReply.deserializeBinary,
-  //   handleResponse,
-  // );
+  var peerAddress = new PeerAddress();
+  peerAddress.setHost(host);
+  peerAddress.setPort(port);
+  request.setPeerAddress(peerAddress);
   client.disconnectPeer(request, {}, (err, response) => {
     handleResponse(response);
   });
