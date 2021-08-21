@@ -55,7 +55,8 @@ class NetworkManager(object):
             host=peer_address.host,
             port=port,
         )
-        # TODO: check if address is already connected.
+        if self.connection_manager.has_connection(peer_address):
+            return
         self.peer_client.connect_address(peer_address)
 
     def disconnect_peer(self, peer_address: PeerAddress) -> None:
@@ -81,9 +82,6 @@ class NetworkManager(object):
 
         This method blocks until the peer connection has stopped.
         """
-        if self.connection_manager.has_connection(address):
-            return
-
         logger.debug(
             'Setting up controller for peer address {} ...'.format(address))
         with Peer(peer_socket, address, outgoing).open_connection(squeak_controller) as peer:

@@ -17,7 +17,6 @@ class PeerConnectionWorker(PeriodicWorker):
         self.connect_interval_s = connect_interval_s
 
     def work_fn(self):
-        logger.info("Connecting peers...")
         self.squeak_controller.connect_saved_peers()
 
     def get_interval_s(self):

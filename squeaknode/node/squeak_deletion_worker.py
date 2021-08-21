@@ -16,7 +16,6 @@ class SqueakDeletionWorker(PeriodicWorker):
         self.clean_interval_s = clean_interval_s
 
     def work_fn(self):
-        logger.info("Deleting old squeaks...")
         self.squeak_controller.delete_old_squeaks()
 
     def get_interval_s(self):
