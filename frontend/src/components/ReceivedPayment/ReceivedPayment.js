@@ -45,19 +45,21 @@ export default function ReceivedPayment({
     event.preventDefault();
     goToPeerAddressPage(
       history,
-      receivedPayment.getPeerHost(),
-      receivedPayment.getPeerPort(),
+      receivedPayment.getPeerAddress().getHost(),
+      receivedPayment.getPeerAddress().getPort(),
     );
   }
 
   function PeerDisplay() {
-    const peerAddress = receivedPayment.getPeerHost() + ":" + receivedPayment.getPeerPort();
+    const peerAddress =  receivedPayment.getPeerAddress();
+    const host = peerAddress.getHost();
+    const peerAddressText =  peerAddress.getHost() + ":" + peerAddress.getPort();
     return (
       <Box>
         <Typography
           size="md"
           >Peer: <Link href="#" onClick={onPeerClick}>
-            {peerAddress}
+            {peerAddressText}
           </Link>
         </Typography>
       </Box>

@@ -22,8 +22,8 @@ from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.received_payment_summary import ReceivedPaymentSummary
 from squeaknode.core.sent_offer import SentOffer
+from squeaknode.core.sent_payment import SentPayment
 from squeaknode.core.sent_payment_summary import SentPaymentSummary
-from squeaknode.core.sent_payment_with_peer import SentPaymentWithPeer
 from squeaknode.core.squeak_entry_with_profile import SqueakEntryWithProfile
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
@@ -95,27 +95,27 @@ class SqueakController:
         followed_addresses = self.get_followed_addresses()
         return set(followed_addresses) & set(addresses)
 
-    def get_buy_offer(self, squeak_hash: bytes, client_address: PeerAddress) -> Offer:
-        # Check if there is an existing offer for the hash/client_addr combination
-        sent_offer = self.get_saved_sent_offer(squeak_hash, client_address)
+    def get_buy_offer(self, squeak_hash: bytes, peer_address: PeerAddress) -> Offer:
+        # Check if there is an existing offer for the hash/peer_address combination
+        sent_offer = self.get_saved_sent_offer(squeak_hash, peer_address)
         return self.squeak_core.package_offer(
             sent_offer,
             self.config.lnd.external_host,
             self.config.lnd.port,
         )
 
-    def get_saved_sent_offer(self, squeak_hash: bytes, client_address: PeerAddress) -> SentOffer:
-        # Check if there is an existing offer for the hash/client_addr combination
+    def get_saved_sent_offer(self, squeak_hash: bytes, peer_address: PeerAddress) -> SentOffer:
+        # Check if there is an existing offer for the hash/peer_address combination
         sent_offer = self.squeak_db.get_sent_offer_by_squeak_hash_and_client(
             squeak_hash,
-            client_address,
+            peer_address,
         )
         if sent_offer:
             return sent_offer
         squeak = self.get_squeak(squeak_hash)
         sent_offer = self.squeak_core.create_offer(
             squeak,
-            client_address,
+            peer_address,
             self.config.core.price_msat,
         )
         self.squeak_db.insert_sent_offer(sent_offer)
@@ -322,10 +322,10 @@ class SqueakController:
             secret_key,
         )
 
-    def get_sent_payments(self) -> List[SentPaymentWithPeer]:
+    def get_sent_payments(self) -> List[SentPayment]:
         return self.squeak_db.get_sent_payments()
 
-    def get_sent_payment(self, sent_payment_id: int) -> Optional[SentPaymentWithPeer]:
+    def get_sent_payment(self, sent_payment_id: int) -> Optional[SentPayment]:
         return self.squeak_db.get_sent_payment(sent_payment_id)
 
     def get_sent_offers(self):

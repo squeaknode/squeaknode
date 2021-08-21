@@ -3,12 +3,13 @@ import logging
 from proto import squeak_admin_pb2
 from squeaknode.admin.profile_image_util import bytes_to_base64_string
 from squeaknode.admin.profile_image_util import load_default_profile_image
-from squeaknode.core.received_offer_with_peer import ReceivedOffer
+from squeaknode.core.peer_address import PeerAddress
+from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.received_payment import ReceivedPayment
 from squeaknode.core.received_payment_summary import ReceivedPaymentSummary
 from squeaknode.core.sent_offer import SentOffer
+from squeaknode.core.sent_payment import SentPayment
 from squeaknode.core.sent_payment_summary import SentPaymentSummary
-from squeaknode.core.sent_payment_with_peer import SentPayment
 from squeaknode.core.squeak_entry_with_profile import SqueakEntryWithProfile
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
@@ -95,8 +96,7 @@ def offer_entry_to_message(received_offer: ReceivedOffer) -> squeak_admin_pb2.Of
         node_port=received_offer.lightning_address.port,
         invoice_timestamp=received_offer.invoice_timestamp,
         invoice_expiry=received_offer.invoice_expiry,
-        peer_host=received_offer.peer_address.host,
-        peer_port=received_offer.peer_address.port,
+        peer_address=peer_address_to_message(received_offer.peer_address)
     )
 
 
@@ -113,8 +113,7 @@ def sent_payment_to_message(sent_payment: SentPayment) -> squeak_admin_pb2.SentP
         node_pubkey=sent_payment.node_pubkey,
         valid=sent_payment.valid,
         time_s=int(sent_payment.created.timestamp()),
-        peer_host=sent_payment.peer_address.host,
-        peer_port=sent_payment.peer_address.port,
+        peer_address=peer_address_to_message(sent_payment.peer_address)
     )
 
 
@@ -149,8 +148,7 @@ def received_payments_to_message(received_payment: ReceivedPayment) -> squeak_ad
         payment_hash=received_payment.payment_hash.hex(),
         price_msat=received_payment.price_msat,
         time_s=int(received_payment.created.timestamp()),
-        peer_host=received_payment.client_addr.host,
-        peer_port=received_payment.client_addr.port,
+        peer_address=peer_address_to_message(received_payment.peer_address)
     )
 
 
@@ -173,4 +171,11 @@ def connected_peer_to_message(connected_peer: Peer) -> squeak_admin_pb2.Connecte
         host=connected_peer.ip,
         port=connected_peer.port,
         connect_time_s=connected_peer.connect_time,
+    )
+
+
+def peer_address_to_message(peer_address: PeerAddress) -> squeak_admin_pb2.PeerAddress:
+    return squeak_admin_pb2.PeerAddress(
+        host=peer_address.host,
+        port=peer_address.port,
     )
