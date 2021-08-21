@@ -105,6 +105,8 @@ def offer_entry_to_message(received_offer_entry: ReceivedOfferWithPeer) -> squea
         peer=peer_msg,
         invoice_timestamp=received_offer.invoice_timestamp,
         invoice_expiry=received_offer.invoice_expiry,
+        peer_host=received_offer.peer_address.host,
+        peer_port=received_offer.peer_address.port,
     )
 
 

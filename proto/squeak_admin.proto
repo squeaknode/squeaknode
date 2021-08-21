@@ -683,6 +683,12 @@ message OfferDisplayEntry {
 
     /// The invoice expiry
     int32 invoice_expiry = 10;
+
+    /// The host of the squeak peer
+    string peer_host = 11;
+
+    /// The port of the squeak peer
+    int32 peer_port = 12;
 }
 
 message SyncSqueaksRequest {
