@@ -22,8 +22,8 @@ from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.received_payment_summary import ReceivedPaymentSummary
 from squeaknode.core.sent_offer import SentOffer
+from squeaknode.core.sent_payment import SentPayment
 from squeaknode.core.sent_payment_summary import SentPaymentSummary
-from squeaknode.core.sent_payment_with_peer import SentPaymentWithPeer
 from squeaknode.core.squeak_entry_with_profile import SqueakEntryWithProfile
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
@@ -322,10 +322,10 @@ class SqueakController:
             secret_key,
         )
 
-    def get_sent_payments(self) -> List[SentPaymentWithPeer]:
+    def get_sent_payments(self) -> List[SentPayment]:
         return self.squeak_db.get_sent_payments()
 
-    def get_sent_payment(self, sent_payment_id: int) -> Optional[SentPaymentWithPeer]:
+    def get_sent_payment(self, sent_payment_id: int) -> Optional[SentPayment]:
         return self.squeak_db.get_sent_payment(sent_payment_id)
 
     def get_sent_offers(self):
