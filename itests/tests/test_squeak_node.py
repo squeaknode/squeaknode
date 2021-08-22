@@ -14,6 +14,7 @@ from tests.util import create_saved_peer
 from tests.util import delete_squeak
 from tests.util import download_offers
 from tests.util import download_squeak
+from tests.util import download_squeaks
 from tests.util import get_connected_peer
 from tests.util import get_connected_peers
 from tests.util import get_hash
@@ -845,19 +846,11 @@ def test_get_squeak_by_lookup(
     # Get the squeak display item
     squeak_display_entry = get_squeak_display(
         other_admin_stub, saved_squeak_hash)
-    print("squeak_display_entry:")
-    print(squeak_display_entry)
     assert squeak_display_entry is None
 
     # Sync squeaks
-    other_admin_stub.SyncSqueaks(
-        squeak_admin_pb2.SyncSqueaksRequest(),
-    )
-    print("Sleeping...")
+    download_squeaks(other_admin_stub)
     time.sleep(5)
-    print("Done sleeping.")
-    # print(sync_squeaks_response)
-    # assert peer_id in sync_squeaks_response.sync_result.completed_peer_ids
 
     # Get the squeak display item
     squeak_display_entry = get_squeak_display(

@@ -238,6 +238,12 @@ def download_squeak(node_stub, squeak_hash):
     )
 
 
+def download_squeaks(node_stub):
+    node_stub.SyncSqueaks(
+        squeak_admin_pb2.SyncSqueaksRequest(),
+    )
+
+
 def download_offers(node_stub, squeak_hash):
     node_stub.DownloadOffers(
         squeak_admin_pb2.DownloadOffersRequest(
