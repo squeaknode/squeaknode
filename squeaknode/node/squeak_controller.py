@@ -141,10 +141,12 @@ class SqueakController:
             profile_name=profile_name,
             private_key=signing_key_bytes,
             address=str(address),
-            following=False,
+            following=True,
             profile_image=None,
         )
-        return self.squeak_db.insert_profile(squeak_profile)
+        profile_id = self.squeak_db.insert_profile(squeak_profile)
+        self.update_subscriptions()
+        return profile_id
 
     def import_signing_profile(self, profile_name: str, private_key: str) -> int:
         signing_key = CSigningKey(private_key)
@@ -157,10 +159,12 @@ class SqueakController:
             profile_name=profile_name,
             private_key=signing_key_bytes,
             address=str(address),
-            following=False,
+            following=True,
             profile_image=None,
         )
-        return self.squeak_db.insert_profile(squeak_profile)
+        profile_id = self.squeak_db.insert_profile(squeak_profile)
+        self.update_subscriptions()
+        return profile_id
 
     def create_contact_profile(self, profile_name: str, squeak_address: str) -> int:
         if len(profile_name) == 0:
@@ -178,10 +182,12 @@ class SqueakController:
             profile_name=profile_name,
             private_key=None,
             address=squeak_address,
-            following=False,
+            following=True,
             profile_image=None,
         )
-        return self.squeak_db.insert_profile(squeak_profile)
+        profile_id = self.squeak_db.insert_profile(squeak_profile)
+        self.update_subscriptions()
+        return profile_id
 
     def get_signing_profiles(self) -> List[SqueakProfile]:
         return self.squeak_db.get_signing_profiles()
