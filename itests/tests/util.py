@@ -219,3 +219,14 @@ def subscribe_connected_peers(node_stub):
     ).start()
     yield q
     subscribe_connected_peers_response.cancel()
+
+
+def get_squeak_display(node_stub, squeak_hash):
+    get_squeak_display_response = node_stub.GetSqueakDisplay(
+        squeak_admin_pb2.GetSqueakDisplayRequest(
+            squeak_hash=squeak_hash,
+        )
+    )
+    if not get_squeak_display_response.HasField("squeak_display_entry"):
+        return None
+    return get_squeak_display_response.squeak_display_entry

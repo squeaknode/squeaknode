@@ -14,6 +14,7 @@ from tests.util import create_saved_peer
 from tests.util import get_connected_peer
 from tests.util import get_connected_peers
 from tests.util import get_hash
+from tests.util import get_squeak_display
 from tests.util import open_channel
 from tests.util import open_peer_connection
 from tests.util import subscribe_connected_peers
@@ -987,3 +988,63 @@ def test_connect_peer(admin_stub, other_admin_stub):
         print("item:")
         print(item)
         assert len(item) == 0
+
+
+def test_get_squeak_by_lookup(
+    admin_stub,
+    other_admin_stub,
+    connected_tcp_peer_id,
+    lightning_client,
+    signing_profile_id,
+    saved_squeak_hash,
+):
+    # Get the squeak profile
+    get_squeak_profile_response = admin_stub.GetSqueakProfile(
+        squeak_admin_pb2.GetSqueakProfileRequest(
+            profile_id=signing_profile_id,
+        )
+    )
+    squeak_profile_address = get_squeak_profile_response.squeak_profile.address
+    squeak_profile_name = get_squeak_profile_response.squeak_profile.profile_name
+    # print(
+    #     "Got squeak profile: {} with address: {}".format(
+    #         squeak_profile_name, squeak_profile_address
+    #     )
+    # )
+
+    # Add the contact profile to the other server and set the profile to be following
+    create_contact_profile_response = other_admin_stub.CreateContactProfile(
+        squeak_admin_pb2.CreateContactProfileRequest(
+            profile_name=squeak_profile_name,
+            address=squeak_profile_address,
+        )
+    )
+    contact_profile_id = create_contact_profile_response.profile_id
+    other_admin_stub.SetSqueakProfileFollowing(
+        squeak_admin_pb2.SetSqueakProfileFollowingRequest(
+            profile_id=contact_profile_id,
+            following=True,
+        )
+    )
+
+    # Get the squeak display item
+    squeak_display_entry = get_squeak_display(
+        other_admin_stub, saved_squeak_hash)
+    print("squeak_display_entry:")
+    print(squeak_display_entry)
+    assert squeak_display_entry is None
+
+    # Sync squeaks
+    other_admin_stub.SyncSqueaks(
+        squeak_admin_pb2.SyncSqueaksRequest(),
+    )
+    print("Sleeping...")
+    time.sleep(5)
+    print("Done sleeping.")
+    # print(sync_squeaks_response)
+    # assert peer_id in sync_squeaks_response.sync_result.completed_peer_ids
+
+    # Get the squeak display item
+    squeak_display_entry = get_squeak_display(
+        other_admin_stub, saved_squeak_hash)
+    assert squeak_display_entry.squeak_hash == saved_squeak_hash
