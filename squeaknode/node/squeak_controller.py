@@ -11,6 +11,7 @@ from squeak.core.signing import CSigningKey
 from squeak.core.signing import CSqueakAddress
 from squeak.messages import msg_getdata
 from squeak.messages import msg_getsqueaks
+from squeak.messages import msg_subscribe
 from squeak.messages import MsgSerializable
 from squeak.net import CInterested
 from squeak.net import CInv
@@ -29,6 +30,8 @@ from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.util import get_hash
 from squeaknode.core.util import is_address_valid
+from squeaknode.node.new_squeak_listener import NewSqueakListener
+from squeaknode.node.new_squeak_listener import NewSqueakSubscriptionClient
 from squeaknode.node.received_payments_subscription_client import ReceivedPaymentsSubscriptionClient
 
 
@@ -51,6 +54,7 @@ class SqueakController:
         self.squeak_rate_limiter = squeak_rate_limiter
         self.payment_processor = payment_processor
         self.network_manager = network_manager
+        self.new_squeak_listener = NewSqueakListener()
         self.config = config
 
     def save_squeak(
@@ -79,6 +83,7 @@ class SqueakController:
                 inserted_squeak_hash,
                 decryption_key,
             )
+        self.new_squeak_listener.handle_new_squeak(squeak)
         # Return the squeak hash.
         return inserted_squeak_hash
 
@@ -136,7 +141,7 @@ class SqueakController:
             profile_name=profile_name,
             private_key=signing_key_bytes,
             address=str(address),
-            following=True,
+            following=False,
             profile_image=None,
         )
         return self.squeak_db.insert_profile(squeak_profile)
@@ -173,7 +178,7 @@ class SqueakController:
             profile_name=profile_name,
             private_key=None,
             address=squeak_address,
-            following=True,
+            following=False,
             profile_image=None,
         )
         return self.squeak_db.insert_profile(squeak_profile)
@@ -195,12 +200,14 @@ class SqueakController:
 
     def set_squeak_profile_following(self, profile_id: int, following: bool) -> None:
         self.squeak_db.set_profile_following(profile_id, following)
+        self.update_subscriptions()
 
     def rename_squeak_profile(self, profile_id: int, profile_name: str) -> None:
         self.squeak_db.set_profile_name(profile_id, profile_name)
 
     def delete_squeak_profile(self, profile_id: int) -> None:
         self.squeak_db.delete_profile(profile_id)
+        self.update_subscriptions()
 
     def set_squeak_profile_image(self, profile_id: int, profile_image: bytes) -> None:
         self.squeak_db.set_profile_image(profile_id, profile_image)
@@ -516,12 +523,9 @@ class SqueakController:
                 #     )
         return ret
 
-    def sync_timeline(self):
+    def get_interested_locator(self):
         block_range = self.get_block_range()
-        logger.info("Syncing timeline with block range: {}".format(block_range))
         followed_addresses = self.get_followed_addresses()
-        logger.debug("Syncing timeline with followed addresses: {}".format(
-            followed_addresses))
         interests = [
             CInterested(
                 addresses=[CSqueakAddress(address)
@@ -530,14 +534,15 @@ class SqueakController:
                 nMaxBlockHeight=block_range.max_block,
             )
         ]
-        locator = CSqueakLocator(
+        return CSqueakLocator(
             vInterested=interests,
         )
+
+    def sync_timeline(self):
+        locator = self.get_interested_locator()
         getsqueaks_msg = msg_getsqueaks(
             locator=locator,
         )
-        # for peer in self.connection_manager.peers:
-        #     peer.send_msg(getsqueaks_msg)
         self.broadcast_msg(getsqueaks_msg)
 
     def download_single_squeak(self, squeak_hash: bytes):
@@ -619,3 +624,20 @@ class SqueakController:
         #     for payment in client.get_received_payments():
         #         yield payment
         return self.network_manager.subscribe_connected_peers(stopped)
+
+    def subscribe_new_squeaks(self, stopped: threading.Event):
+        subscription_client = NewSqueakSubscriptionClient(
+            self.new_squeak_listener,
+            stopped,
+        )
+        with subscription_client.open_subscription():
+            for result in subscription_client.get_squeak():
+                yield result
+
+    def update_subscriptions(self):
+        locator = self.get_interested_locator()
+        for peer in self.network_manager.get_connected_peers():
+            subscribe_msg = msg_subscribe(
+                locator=locator,
+            )
+            peer.send_msg(subscribe_msg)

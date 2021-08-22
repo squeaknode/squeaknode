@@ -13,6 +13,7 @@ from squeaknode.db.db_engine import get_engine
 from squeaknode.db.squeak_db import SqueakDb
 from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
 from squeaknode.network.network_manager import NetworkManager
+from squeaknode.node.new_squeak_worker import NewSqueakWorker
 from squeaknode.node.payment_processor import PaymentProcessor
 from squeaknode.node.peer_connection_worker import PeerConnectionWorker
 from squeaknode.node.process_received_payments_worker import ProcessReceivedPaymentsWorker
@@ -53,6 +54,7 @@ class SqueakNode:
         self.initialize_peer_sync_worker()
         self.initialize_squeak_deletion_worker()
         self.initialize_offer_expiry_worker()
+        self.initialize_new_squeak_worker()
 
     def start_running(self):
         self._initialize()
@@ -64,16 +66,19 @@ class SqueakNode:
             self.admin_web_server.start()
         self.received_payment_processor_worker.start_running()
         self.peer_connection_worker.start()
-        if self.config.sync.enabled:
-            self.peer_sync_worker.start()
+        # TODO: Delete peer_sync_worker, subscribe replaces it
+        # if self.config.sync.enabled:
+        #     self.peer_sync_worker.start()
         self.squeak_deletion_worker.start()
         self.offer_expiry_worker.start()
+        self.new_squeak_worker.start_running()
 
     def stop_running(self):
         self.admin_web_server.stop()
         self.admin_rpc_server.stop()
         self.network_manager.stop()
         self.received_payment_processor_worker.stop_running()
+        self.new_squeak_worker.stop_running()
 
     def initialize_network(self):
         # load the network
@@ -195,4 +200,10 @@ class SqueakNode:
         self.offer_expiry_worker = SqueakOfferExpiryWorker(
             self.squeak_controller,
             self.config.core.offer_deletion_interval_s,
+        )
+
+    def initialize_new_squeak_worker(self):
+        self.new_squeak_worker = NewSqueakWorker(
+            self.squeak_controller,
+            self.network_manager,
         )
