@@ -24,6 +24,7 @@ from tests.util import get_hash
 from tests.util import get_network
 from tests.util import get_squeak_display
 from tests.util import get_squeak_profile
+from tests.util import import_signing_profile
 from tests.util import make_squeak
 from tests.util import open_channel
 from tests.util import open_peer_connection
@@ -196,13 +197,11 @@ def test_make_signing_profile(admin_stub):
     private_key = get_private_key_response.private_key
 
     delete_profile(admin_stub, profile_id)
-    import_response = admin_stub.ImportSigningProfile(
-        squeak_admin_pb2.ImportSigningProfileRequest(
-            profile_name="imported_profile_name",
-            private_key=private_key,
-        )
+    new_profile_id = import_signing_profile(
+        admin_stub,
+        "imported_profile_name",
+        private_key,
     )
-    new_profile_id = import_response.profile_id
 
     # Get the new imported profile
     squeak_profile = get_squeak_profile(admin_stub, new_profile_id)

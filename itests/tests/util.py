@@ -306,6 +306,16 @@ def create_signing_profile(node_stub, profile_name):
     return create_signing_profile_response.profile_id
 
 
+def import_signing_profile(node_stub, profile_name, private_key):
+    import_response = node_stub.ImportSigningProfile(
+        squeak_admin_pb2.ImportSigningProfileRequest(
+            profile_name=profile_name,
+            private_key=private_key,
+        )
+    )
+    return import_response.profile_id
+
+
 def delete_profile(node_stub, profile_id):
     node_stub.DeleteSqueakProfile(
         squeak_admin_pb2.DeleteSqueakProfileRequest(
