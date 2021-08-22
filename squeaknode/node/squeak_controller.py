@@ -526,6 +526,10 @@ class SqueakController:
     def get_interested_locator(self):
         block_range = self.get_block_range()
         followed_addresses = self.get_followed_addresses()
+        if len(followed_addresses) == 0:
+            return CSqueakLocator(
+                vInterested=[],
+            )
         interests = [
             CInterested(
                 addresses=[CSqueakAddress(address)
