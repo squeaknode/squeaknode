@@ -285,3 +285,21 @@ def delete_squeak(node_stub, squeak_hash):
     node_stub.DeleteSqueak(
         squeak_admin_pb2.DeleteSqueakRequest(squeak_hash=squeak_hash)
     )
+
+
+def create_contact_profile(node_stub, profile_name, squeak_address):
+    create_contact_profile_response = node_stub.CreateContactProfile(
+        squeak_admin_pb2.CreateContactProfileRequest(
+            profile_name=profile_name,
+            address=squeak_address,
+        )
+    )
+    return create_contact_profile_response.profile_id
+
+
+def delete_profile(node_stub, profile_id):
+    node_stub.DeleteSqueakProfile(
+        squeak_admin_pb2.DeleteSqueakProfileRequest(
+            profile_id=profile_id,
+        )
+    )

@@ -10,6 +10,7 @@ from squeak.core import CSqueak
 from proto import lnd_pb2 as ln
 from proto import squeak_admin_pb2
 from tests.util import connect_peer
+from tests.util import create_contact_profile
 from tests.util import create_saved_peer
 from tests.util import delete_squeak
 from tests.util import download_offers
@@ -218,13 +219,8 @@ def test_make_signing_profile(admin_stub):
 def test_make_contact_profile(admin_stub, squeak_address):
     # Create a new contact profile
     contact_name = "test_contact_profile_name"
-    create_contact_profile_response = admin_stub.CreateContactProfile(
-        squeak_admin_pb2.CreateContactProfileRequest(
-            profile_name=contact_name,
-            address=squeak_address,
-        )
-    )
-    contact_profile_id = create_contact_profile_response.profile_id
+    contact_profile_id = create_contact_profile(
+        admin_stub, contact_name, squeak_address)
 
     # Get all contact profiles
     get_contact_profiles_response = admin_stub.GetContactProfiles(
@@ -256,12 +252,7 @@ def test_make_signing_profile_empty_name(admin_stub):
 def test_make_contact_profile_empty_name(admin_stub, squeak_address):
     # Try to create a new contact profile with an empty name
     with pytest.raises(Exception) as excinfo:
-        admin_stub.CreateContactProfile(
-            squeak_admin_pb2.CreateContactProfileRequest(
-                profile_name="",
-                address=squeak_address,
-            )
-        )
+        create_contact_profile(admin_stub, "", squeak_address)
     assert "Profile name cannot be empty." in str(excinfo.value)
 
 
@@ -829,13 +820,8 @@ def test_get_squeak_by_lookup(
     squeak_profile_name = squeak_profile.profile_name
 
     # Add the contact profile to the other server and set the profile to be following
-    create_contact_profile_response = other_admin_stub.CreateContactProfile(
-        squeak_admin_pb2.CreateContactProfileRequest(
-            profile_name=squeak_profile_name,
-            address=squeak_profile_address,
-        )
-    )
-    contact_profile_id = create_contact_profile_response.profile_id
+    contact_profile_id = create_contact_profile(
+        other_admin_stub, squeak_profile_name, squeak_profile_address)
     other_admin_stub.SetSqueakProfileFollowing(
         squeak_admin_pb2.SetSqueakProfileFollowingRequest(
             profile_id=contact_profile_id,
