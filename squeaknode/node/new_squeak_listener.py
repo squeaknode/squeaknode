@@ -16,9 +16,6 @@ class NewSqueakListener:
         self.callbacks = {}
 
     def handle_new_squeak(self, squeak):
-        # logger.info("Handling new squeak: {!r}".format(
-        #     get_hash(squeak).hex(),
-        # ))
         for callback in self.callbacks.values():
             callback(squeak)
 
@@ -53,15 +50,15 @@ class NewSqueakSubscriptionClient:
                 name=callback_name,
                 callback=self.enqueue_squeak,
             )
-            logger.info("Before yielding new squeaks client...")
+            logger.debug("Before yielding new squeaks client...")
             yield self
-            logger.info("After yielding new squeaks client...")
+            logger.debug("After yielding new squeaks client...")
         finally:
-            logger.info("Stopping new squeaks client...")
+            logger.debug("Stopping new squeaks client...")
             self.new_squeak_listener.remove_callback(
                 name=callback_name,
             )
-            logger.info("Stopped new squeaks client...")
+            logger.debug("Stopped new squeaks client...")
 
     def enqueue_squeak(self, squeak):
         self.q.put(squeak)
@@ -78,7 +75,7 @@ class NewSqueakSubscriptionClient:
                 return
             yield item
             self.q.task_done()
-            logger.info(
+            logger.debug(
                 "Removed item from queue. Size: {}".format(
                     self.q.qsize())
             )

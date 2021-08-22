@@ -36,15 +36,15 @@ class ConnectedPeersSubscriptionClient:
                 name=callback_name,
                 callback=self.enqueue_connected_peers,
             )
-            logger.info("Before yielding connected peers client...")
+            logger.debug("Before yielding connected peers client...")
             yield self
-            logger.info("After yielding connected peers client...")
+            logger.debug("After yielding connected peers client...")
         finally:
-            logger.info("Stopping connected peers client...")
+            logger.debug("Stopping connected peers client...")
             self.connection_manager.remove_peers_changed_callback(
                 name=callback_name,
             )
-            logger.info("Stopped connected peers client...")
+            logger.debug("Stopped connected peers client...")
 
     def enqueue_connected_peers(self, connected_peers):
         self.q.put(connected_peers)
@@ -57,10 +57,11 @@ class ConnectedPeersSubscriptionClient:
         while True:
             item = self.q.get()
             if item is None:
-                raise Exception("Poison pill swallowed.")
+                logger.debug("Poison pill swallowed.")
+                return
             yield item
             self.q.task_done()
-            logger.info(
+            logger.debug(
                 "Removed item from queue. Size: {}".format(
                     self.q.qsize())
             )
