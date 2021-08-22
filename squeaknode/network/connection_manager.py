@@ -1,5 +1,9 @@
 import logging
 import threading
+from typing import Dict
+
+from squeaknode.core.peer_address import PeerAddress
+from squeaknode.network.peer import Peer
 
 
 MIN_PEERS = 5
@@ -15,7 +19,7 @@ class ConnectionManager(object):
     """
 
     def __init__(self):
-        self._peers = {}
+        self._peers: Dict[PeerAddress, Peer] = {}
         self.peers_lock = threading.Lock()
         self.peers_changed_callbacks = {}
 

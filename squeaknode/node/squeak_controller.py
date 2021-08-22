@@ -11,6 +11,7 @@ from squeak.core.signing import CSigningKey
 from squeak.core.signing import CSqueakAddress
 from squeak.messages import msg_getdata
 from squeak.messages import msg_getsqueaks
+from squeak.messages import msg_subscribe
 from squeak.messages import MsgSerializable
 from squeak.net import CInterested
 from squeak.net import CInv
@@ -199,6 +200,7 @@ class SqueakController:
 
     def set_squeak_profile_following(self, profile_id: int, following: bool) -> None:
         self.squeak_db.set_profile_following(profile_id, following)
+        self.update_subscriptions()
 
     def rename_squeak_profile(self, profile_id: int, profile_name: str) -> None:
         self.squeak_db.set_profile_name(profile_id, profile_name)
@@ -630,3 +632,11 @@ class SqueakController:
         with subscription_client.open_subscription():
             for result in subscription_client.get_squeak():
                 yield result
+
+    def update_subscriptions(self):
+        locator = self.get_interested_locator()
+        for peer in self.network_manager.get_connected_peers():
+            subscribe_msg = msg_subscribe(
+                locator=locator,
+            )
+            self.send_msg(subscribe_msg)
