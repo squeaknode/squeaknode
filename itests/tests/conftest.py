@@ -8,7 +8,10 @@ from squeak.params import SelectParams
 from proto import squeak_admin_pb2
 from proto import squeak_admin_pb2_grpc
 from tests.util import bytes_to_base64_string
+from tests.util import create_contact_profile
 from tests.util import create_saved_peer
+from tests.util import create_signing_profile
+from tests.util import delete_profile
 from tests.util import generate_signing_key
 from tests.util import get_address
 from tests.util import load_lightning_client
@@ -57,31 +60,17 @@ def squeak_address(signing_key):
 @pytest.fixture
 def signing_profile_id(admin_stub, random_name):
     # Create a new signing profile
-    create_signing_profile_response = admin_stub.CreateSigningProfile(
-        squeak_admin_pb2.CreateSigningProfileRequest(
-            profile_name=random_name,
-        )
-    )
-    profile_id = create_signing_profile_response.profile_id
+    profile_id = create_signing_profile(admin_stub, random_name)
     yield profile_id
     # Delete the profile
-    admin_stub.DeleteSqueakProfile(
-        squeak_admin_pb2.DeleteSqueakProfileRequest(
-            profile_id=profile_id,
-        )
-    )
+    delete_profile(admin_stub, profile_id)
 
 
 @pytest.fixture
 def contact_profile_id(admin_stub, random_name, squeak_address):
     # Create a new contact profile
-    create_contact_profile_response = admin_stub.CreateContactProfile(
-        squeak_admin_pb2.CreateContactProfileRequest(
-            profile_name=random_name,
-            address=squeak_address,
-        )
-    )
-    contact_profile_id = create_contact_profile_response.profile_id
+    contact_profile_id = create_contact_profile(
+        admin_stub, random_name, squeak_address)
     yield contact_profile_id
     # Delete the profile
     admin_stub.DeleteSqueakProfile(
