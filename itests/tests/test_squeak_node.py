@@ -827,3 +827,57 @@ def test_get_squeak_by_lookup(
     squeak_display_entry = get_squeak_display(
         other_admin_stub, saved_squeak_hash)
     assert squeak_display_entry.squeak_hash == saved_squeak_hash
+
+
+def test_subscribe_squeaks(
+    admin_stub,
+    other_admin_stub,
+    signing_profile_id,
+    saved_squeak_hash,
+):
+
+    # Get the squeak profile
+    squeak_profile = get_squeak_profile(admin_stub, signing_profile_id)
+    squeak_profile_address = squeak_profile.address
+    squeak_profile_name = squeak_profile.profile_name
+
+    # Add the contact profile to the other server and set the profile to be following
+    contact_profile_id = create_contact_profile(
+        other_admin_stub, squeak_profile_name, squeak_profile_address)
+    other_admin_stub.SetSqueakProfileFollowing(
+        squeak_admin_pb2.SetSqueakProfileFollowingRequest(
+            profile_id=contact_profile_id,
+            following=True,
+        )
+    )
+
+    # Get the squeak display item
+    squeak_display_entry = get_squeak_display(
+        other_admin_stub, saved_squeak_hash)
+    assert squeak_display_entry is None
+
+    with open_peer_connection(
+            other_admin_stub,
+            "test_peer",
+            "squeaknode",
+            18777,
+    ):
+        time.sleep(2)
+
+        # Get the squeak display item
+        squeak_display_entry = get_squeak_display(
+            other_admin_stub, saved_squeak_hash)
+        assert squeak_display_entry is not None
+
+        # Make a new squeak
+        new_squeak_hash = make_squeak(
+            admin_stub,
+            signing_profile_id,
+            "Hello again!",
+        )
+        time.sleep(2)
+
+        # Get the squeak display item for the new squeak
+        squeak_display_entry = get_squeak_display(
+            other_admin_stub, new_squeak_hash)
+        assert squeak_display_entry is not None
