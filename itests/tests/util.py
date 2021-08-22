@@ -230,3 +230,19 @@ def get_squeak_display(node_stub, squeak_hash):
     if not get_squeak_display_response.HasField("squeak_display_entry"):
         return None
     return get_squeak_display_response.squeak_display_entry
+
+
+def download_squeak(node_stub, squeak_hash):
+    node_stub.SyncSqueak(
+        squeak_admin_pb2.SyncSqueakRequest(
+            squeak_hash=squeak_hash,
+        ),
+    )
+
+
+def download_offers(node_stub, squeak_hash):
+    node_stub.DownloadOffers(
+        squeak_admin_pb2.DownloadOffersRequest(
+            squeak_hash=squeak_hash,
+        ),
+    )
