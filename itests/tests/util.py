@@ -246,3 +246,14 @@ def download_offers(node_stub, squeak_hash):
             squeak_hash=squeak_hash,
         ),
     )
+
+
+def get_squeak_profile(node_stub, profile_id):
+    get_squeak_profile_response = node_stub.GetSqueakProfile(
+        squeak_admin_pb2.GetSqueakProfileRequest(
+            profile_id=profile_id,
+        )
+    )
+    if not get_squeak_profile_response.HasField("squeak_profile"):
+        return None
+    return get_squeak_profile_response.squeak_profile
