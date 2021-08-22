@@ -13,6 +13,7 @@ from tests.util import connect_peer
 from tests.util import create_contact_profile
 from tests.util import create_saved_peer
 from tests.util import create_signing_profile
+from tests.util import delete_profile
 from tests.util import delete_squeak
 from tests.util import download_offers
 from tests.util import download_squeak
@@ -193,11 +194,8 @@ def test_make_signing_profile(admin_stub):
         )
     )
     private_key = get_private_key_response.private_key
-    admin_stub.DeleteSqueakProfile(
-        squeak_admin_pb2.DeleteSqueakProfileRequest(
-            profile_id=profile_id,
-        )
-    )
+
+    delete_profile(admin_stub, profile_id)
     import_response = admin_stub.ImportSigningProfile(
         squeak_admin_pb2.ImportSigningProfileRequest(
             profile_name="imported_profile_name",
@@ -319,11 +317,7 @@ def test_set_profile_image(admin_stub, contact_profile_id, random_image, random_
 
 def test_delete_profile(admin_stub, random_name, squeak_address, contact_profile_id):
     # Delete the profile
-    admin_stub.DeleteSqueakProfile(
-        squeak_admin_pb2.DeleteSqueakProfileRequest(
-            profile_id=contact_profile_id,
-        )
-    )
+    delete_profile(admin_stub, contact_profile_id)
 
     # Try to get the profile and fail
     squeak_profile = get_squeak_profile(admin_stub, contact_profile_id)
