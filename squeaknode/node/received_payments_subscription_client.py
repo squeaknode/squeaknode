@@ -69,7 +69,8 @@ class ReceivedPaymentsSubscriptionClient:
         while True:
             payment = self.q.get()
             if payment is None:
-                raise Exception("Poison pill swallowed.")
+                logger.debug("Poison pill swallowed.")
+                return
             yield payment
             self.q.task_done()
             logger.info(

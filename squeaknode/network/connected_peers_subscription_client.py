@@ -57,7 +57,8 @@ class ConnectedPeersSubscriptionClient:
         while True:
             item = self.q.get()
             if item is None:
-                raise Exception("Poison pill swallowed.")
+                logger.debug("Poison pill swallowed.")
+                return
             yield item
             self.q.task_done()
             logger.debug(
