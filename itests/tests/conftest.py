@@ -10,6 +10,7 @@ from proto import squeak_admin_pb2_grpc
 from tests.util import bytes_to_base64_string
 from tests.util import create_contact_profile
 from tests.util import create_saved_peer
+from tests.util import create_signing_profile
 from tests.util import delete_profile
 from tests.util import generate_signing_key
 from tests.util import get_address
@@ -59,12 +60,7 @@ def squeak_address(signing_key):
 @pytest.fixture
 def signing_profile_id(admin_stub, random_name):
     # Create a new signing profile
-    create_signing_profile_response = admin_stub.CreateSigningProfile(
-        squeak_admin_pb2.CreateSigningProfileRequest(
-            profile_name=random_name,
-        )
-    )
-    profile_id = create_signing_profile_response.profile_id
+    profile_id = create_signing_profile(admin_stub, random_name)
     yield profile_id
     # Delete the profile
     delete_profile(admin_stub, profile_id)

@@ -12,6 +12,7 @@ from proto import squeak_admin_pb2
 from tests.util import connect_peer
 from tests.util import create_contact_profile
 from tests.util import create_saved_peer
+from tests.util import create_signing_profile
 from tests.util import delete_squeak
 from tests.util import download_offers
 from tests.util import download_squeak
@@ -160,12 +161,7 @@ def test_make_reply_squeak(
 def test_make_signing_profile(admin_stub):
     # Create a new signing profile
     profile_name = "test_signing_profile_name"
-    create_signing_profile_response = admin_stub.CreateSigningProfile(
-        squeak_admin_pb2.CreateSigningProfileRequest(
-            profile_name=profile_name,
-        )
-    )
-    profile_id = create_signing_profile_response.profile_id
+    profile_id = create_signing_profile(admin_stub, profile_name)
 
     # Get the new squeak profile
     squeak_profile = get_squeak_profile(admin_stub, profile_id)
@@ -241,11 +237,7 @@ def test_make_contact_profile(admin_stub, squeak_address):
 def test_make_signing_profile_empty_name(admin_stub):
     # Try to create a new signing profile with an empty name
     with pytest.raises(Exception) as excinfo:
-        admin_stub.CreateSigningProfile(
-            squeak_admin_pb2.CreateSigningProfileRequest(
-                profile_name="",
-            )
-        )
+        create_signing_profile(admin_stub, "")
     assert "Profile name cannot be empty." in str(excinfo.value)
 
 

@@ -297,6 +297,15 @@ def create_contact_profile(node_stub, profile_name, squeak_address):
     return create_contact_profile_response.profile_id
 
 
+def create_signing_profile(node_stub, profile_name):
+    create_signing_profile_response = node_stub.CreateSigningProfile(
+        squeak_admin_pb2.CreateSigningProfileRequest(
+            profile_name=profile_name,
+        )
+    )
+    return create_signing_profile_response.profile_id
+
+
 def delete_profile(node_stub, profile_id):
     node_stub.DeleteSqueakProfile(
         squeak_admin_pb2.DeleteSqueakProfileRequest(
