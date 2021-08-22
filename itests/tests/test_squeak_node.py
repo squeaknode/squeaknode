@@ -11,13 +11,16 @@ from proto import lnd_pb2 as ln
 from proto import squeak_admin_pb2
 from tests.util import connect_peer
 from tests.util import create_saved_peer
+from tests.util import delete_squeak
 from tests.util import download_offers
 from tests.util import download_squeak
 from tests.util import get_connected_peer
 from tests.util import get_connected_peers
 from tests.util import get_hash
+from tests.util import get_network
 from tests.util import get_squeak_display
 from tests.util import get_squeak_profile
+from tests.util import make_squeak
 from tests.util import open_channel
 from tests.util import open_peer_connection
 from tests.util import subscribe_connected_peers
@@ -25,10 +28,7 @@ from tests.util import subscribe_connected_peers
 
 def test_get_network(admin_stub):
     # Get the network
-    get_network_response = admin_stub.GetNetwork(
-        squeak_admin_pb2.GetNetworkRequest()
-    )
-    network = get_network_response.network
+    network = get_network(admin_stub)
 
     assert network == "simnet"
 
@@ -70,13 +70,8 @@ def test_get_profile(admin_stub, signing_profile_id):
 def test_make_squeak(admin_stub, signing_profile_id):
     # Create a new squeak using the new profile
     make_squeak_content = "Hello from the profile on the server!"
-    make_squeak_response = admin_stub.MakeSqueak(
-        squeak_admin_pb2.MakeSqueakRequest(
-            profile_id=signing_profile_id,
-            content=make_squeak_content,
-        )
-    )
-    make_squeak_hash = make_squeak_response.squeak_hash
+    make_squeak_hash = make_squeak(
+        admin_stub, signing_profile_id, make_squeak_content)
     assert len(make_squeak_hash) == 32 * 2
 
     # Get the squeak display item
@@ -117,36 +112,29 @@ def test_make_reply_squeak(
     admin_stub, saved_squeak_hash, signing_profile_id
 ):
     # Make another squeak as a reply
-    reply_1_squeak_response = admin_stub.MakeSqueak(
-        squeak_admin_pb2.MakeSqueakRequest(
-            profile_id=signing_profile_id,
-            content="Reply #1",
-            replyto=saved_squeak_hash,
-        )
+    reply_1_squeak_hash = make_squeak(
+        admin_stub,
+        signing_profile_id,
+        "Reply #1",
+        saved_squeak_hash,
     )
-    reply_1_squeak_hash = reply_1_squeak_response.squeak_hash
 
     # Make a second squeak as a reply
-    reply_2_squeak_response = admin_stub.MakeSqueak(
-        squeak_admin_pb2.MakeSqueakRequest(
-            profile_id=signing_profile_id,
-            content="Reply #2",
-            replyto=reply_1_squeak_hash,
-        )
+    reply_2_squeak_hash = make_squeak(
+        admin_stub,
+        signing_profile_id,
+        "Reply #2",
+        reply_1_squeak_hash,
     )
-    reply_2_squeak_hash = reply_2_squeak_response.squeak_hash
 
     # Get the squeak and check that the reply field is correct
-    get_reply_squeak_display_response = admin_stub.GetSqueakDisplay(
-        squeak_admin_pb2.GetSqueakDisplayRequest(
-            squeak_hash=reply_2_squeak_hash,
-        )
+    get_reply_squeak_display_entry = get_squeak_display(
+        admin_stub, reply_2_squeak_hash)
+    assert (
+        get_reply_squeak_display_entry.squeak_hash == reply_2_squeak_hash
     )
     assert (
-        get_reply_squeak_display_response.squeak_display_entry.squeak_hash == reply_2_squeak_hash
-    )
-    assert (
-        get_reply_squeak_display_response.squeak_display_entry.reply_to == reply_1_squeak_hash
+        get_reply_squeak_display_entry.reply_to == reply_1_squeak_hash
     )
 
     # Get the ancestors of the latest reply squeak
@@ -414,24 +402,12 @@ def test_get_following_squeaks(
 
 def test_delete_squeak(admin_stub, saved_squeak_hash):
     # Delete the squeak
-    admin_stub.DeleteSqueak(
-        squeak_admin_pb2.DeleteSqueakRequest(squeak_hash=saved_squeak_hash)
-    )
-
+    delete_squeak(admin_stub, saved_squeak_hash)
     # Try to get the squeak display item
-    get_squeak_display_response = admin_stub.GetSqueakDisplay(
-        squeak_admin_pb2.GetSqueakDisplayRequest(
-            squeak_hash=saved_squeak_hash,
-        )
-    )
-    print("-----------------------------")
-    print("get_squeak_display_response:")
-    print(get_squeak_display_response)
-    print(dir(get_squeak_display_response))
-    print("-----------------------------")
-    print("get_squeak_display_response.squeak_display_entry:")
-    print((get_squeak_display_response.squeak_display_entry))
-    assert not get_squeak_display_response.HasField("squeak_display_entry")
+    squeak_display_entry = get_squeak_display(
+        admin_stub, saved_squeak_hash)
+
+    assert squeak_display_entry is None
 
 
 def test_create_peer(admin_stub):

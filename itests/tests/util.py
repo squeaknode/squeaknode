@@ -7,8 +7,6 @@ import time
 from contextlib import contextmanager
 
 from lnd_lightning_client import LNDLightningClient
-from squeak.core import HASH_LENGTH
-from squeak.core import MakeSqueakFromStr
 from squeak.core.elliptic import scalar_difference
 from squeak.core.elliptic import scalar_from_bytes
 from squeak.core.elliptic import scalar_to_bytes
@@ -35,21 +33,21 @@ def get_latest_block_info(lightning_client):
     return block_hash, block_height
 
 
-def make_squeak(
-    signing_key: CSigningKey,
-    content: str,
-    block_height,
-    block_hash,
-    reply_to: bytes = b"\x00" * HASH_LENGTH,
-):
-    timestamp = int(time.time())
-    return MakeSqueakFromStr(
-        signing_key,
-        content,
-        block_height,
-        block_hash,
-        timestamp,
-    )
+# def make_squeak(
+#     signing_key: CSigningKey,
+#     content: str,
+#     block_height,
+#     block_hash,
+#     reply_to: bytes = b"\x00" * HASH_LENGTH,
+# ):
+#     timestamp = int(time.time())
+#     return MakeSqueakFromStr(
+#         signing_key,
+#         content,
+#         block_height,
+#         block_hash,
+#         timestamp,
+#     )
 
 
 def get_hash(squeak):
@@ -257,3 +255,27 @@ def get_squeak_profile(node_stub, profile_id):
     if not get_squeak_profile_response.HasField("squeak_profile"):
         return None
     return get_squeak_profile_response.squeak_profile
+
+
+def get_network(node_stub):
+    get_network_response = node_stub.GetNetwork(
+        squeak_admin_pb2.GetNetworkRequest()
+    )
+    return get_network_response.network
+
+
+def make_squeak(node_stub, profile_id, squeak_content, reply_to_hash=None):
+    make_squeak_response = node_stub.MakeSqueak(
+        squeak_admin_pb2.MakeSqueakRequest(
+            profile_id=profile_id,
+            content=squeak_content,
+            replyto=reply_to_hash,
+        )
+    )
+    return make_squeak_response.squeak_hash
+
+
+def delete_squeak(node_stub, squeak_hash):
+    node_stub.DeleteSqueak(
+        squeak_admin_pb2.DeleteSqueakRequest(squeak_hash=squeak_hash)
+    )
