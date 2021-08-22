@@ -75,20 +75,17 @@ def test_make_squeak(admin_stub, signing_profile_id):
     assert len(make_squeak_hash) == 32 * 2
 
     # Get the squeak display item
-    get_squeak_display_response = admin_stub.GetSqueakDisplay(
-        squeak_admin_pb2.GetSqueakDisplayRequest(
-            squeak_hash=make_squeak_hash,
-        )
-    )
-    assert get_squeak_display_response.squeak_display_entry.squeak_hash == make_squeak_hash
+    get_squeak_display_entry = get_squeak_display(
+        admin_stub, make_squeak_hash)
+    assert get_squeak_display_entry.squeak_hash == make_squeak_hash
     assert (
-        get_squeak_display_response.squeak_display_entry.content_str == "Hello from the profile on the server!"
+        get_squeak_display_entry.content_str == "Hello from the profile on the server!"
     )
     # assert get_squeak_display_response.squeak_display_entry.author_address == signing_profile_address
-    assert get_squeak_display_response.squeak_display_entry.is_author_known
-    assert get_squeak_display_response.squeak_display_entry.HasField("author")
+    assert get_squeak_display_entry.is_author_known
+    assert get_squeak_display_entry.HasField("author")
     assert len(
-        get_squeak_display_response.squeak_display_entry.author.profile_image) > 0
+        get_squeak_display_entry.author.profile_image) > 0
 
     # Get the squeak profile
     squeak_profile = get_squeak_profile(admin_stub, signing_profile_id)
@@ -582,13 +579,10 @@ def test_buy_squeak(
         assert pay_offer_response.sent_payment_id > 0
 
         # Get the squeak display item
-        get_squeak_display_response = other_admin_stub.GetSqueakDisplay(
-            squeak_admin_pb2.GetSqueakDisplayRequest(
-                squeak_hash=saved_squeak_hash,
-            )
-        )
+        get_squeak_display_entry = get_squeak_display(
+            other_admin_stub, saved_squeak_hash)
         assert (
-            get_squeak_display_response.squeak_display_entry.content_str == "Hello from the profile on the server!"
+            get_squeak_display_entry.content_str == "Hello from the profile on the server!"
         )
 
         # Get all sent payments
@@ -739,15 +733,10 @@ def test_get_squeak_details(admin_stub, saved_squeak_hash):
 
 def test_like_squeak(admin_stub, saved_squeak_hash):
     # Get the squeak display item
-    get_squeak_display_response = admin_stub.GetSqueakDisplay(
-        squeak_admin_pb2.GetSqueakDisplayRequest(
-            squeak_hash=saved_squeak_hash,
-        )
-    )
-    # print("get_squeak_display_response.squeak_display_entry:")
-    # print(get_squeak_display_response.squeak_display_entry)
+    get_squeak_display_entry = get_squeak_display(
+        admin_stub, saved_squeak_hash)
     assert (
-        get_squeak_display_response.squeak_display_entry.liked_time_s == 0
+        get_squeak_display_entry.liked_time_s == 0
     )
 
     # Like the squeak
@@ -758,13 +747,10 @@ def test_like_squeak(admin_stub, saved_squeak_hash):
     )
 
     # Get the squeak display item
-    get_squeak_display_response = admin_stub.GetSqueakDisplay(
-        squeak_admin_pb2.GetSqueakDisplayRequest(
-            squeak_hash=saved_squeak_hash,
-        )
-    )
+    get_squeak_display_entry = get_squeak_display(
+        admin_stub, saved_squeak_hash)
     assert (
-        get_squeak_display_response.squeak_display_entry.liked_time_s > 0
+        get_squeak_display_entry.liked_time_s > 0
     )
 
     # Unlike the squeak
@@ -775,13 +761,10 @@ def test_like_squeak(admin_stub, saved_squeak_hash):
     )
 
     # Get the squeak display item
-    get_squeak_display_response = admin_stub.GetSqueakDisplay(
-        squeak_admin_pb2.GetSqueakDisplayRequest(
-            squeak_hash=saved_squeak_hash,
-        )
-    )
+    get_squeak_display_entry = get_squeak_display(
+        admin_stub, saved_squeak_hash)
     assert (
-        get_squeak_display_response.squeak_display_entry.liked_time_s == 0
+        get_squeak_display_entry.liked_time_s == 0
     )
 
 
