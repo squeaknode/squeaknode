@@ -66,8 +66,9 @@ class SqueakNode:
             self.admin_web_server.start()
         self.received_payment_processor_worker.start_running()
         self.peer_connection_worker.start()
-        if self.config.sync.enabled:
-            self.peer_sync_worker.start()
+        # TODO: Delete peer_sync_worker, subscribe replaces it
+        # if self.config.sync.enabled:
+        #     self.peer_sync_worker.start()
         self.squeak_deletion_worker.start()
         self.offer_expiry_worker.start()
         self.new_squeak_worker.start_running()
