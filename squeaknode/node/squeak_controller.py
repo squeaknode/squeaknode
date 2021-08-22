@@ -516,12 +516,9 @@ class SqueakController:
                 #     )
         return ret
 
-    def sync_timeline(self):
+    def get_interested_locator(self):
         block_range = self.get_block_range()
-        logger.info("Syncing timeline with block range: {}".format(block_range))
         followed_addresses = self.get_followed_addresses()
-        logger.debug("Syncing timeline with followed addresses: {}".format(
-            followed_addresses))
         interests = [
             CInterested(
                 addresses=[CSqueakAddress(address)
@@ -530,14 +527,15 @@ class SqueakController:
                 nMaxBlockHeight=block_range.max_block,
             )
         ]
-        locator = CSqueakLocator(
+        return CSqueakLocator(
             vInterested=interests,
         )
+
+    def sync_timeline(self):
+        locator = self.get_interested_locator()
         getsqueaks_msg = msg_getsqueaks(
             locator=locator,
         )
-        # for peer in self.connection_manager.peers:
-        #     peer.send_msg(getsqueaks_msg)
         self.broadcast_msg(getsqueaks_msg)
 
     def download_single_squeak(self, squeak_hash: bytes):

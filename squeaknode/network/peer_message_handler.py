@@ -78,6 +78,8 @@ class PeerMessageHandler:
             self.handle_notfound(msg)
         if msg.command == b'offer':
             self.handle_offer(msg)
+        if msg.command == b'subscribe':
+            self.handle_subscribe(msg)
 
     def handle_ping(self, msg):
         nonce = msg.nonce
@@ -143,23 +145,7 @@ class PeerMessageHandler:
         pass
 
     def handle_getsqueaks(self, msg):
-        # TODO: Maybe combine all invs into a single send_msg.
-        for interest in msg.locator.vInterested:
-            min_block = interest.nMinBlockHeight if interest.nMinBlockHeight != -1 else None
-            max_block = interest.nMaxBlockHeight if interest.nMaxBlockHeight != -1 else None
-            reply_to_hash = interest.hashReplySqk if interest.hashReplySqk != EMPTY_HASH else None
-            squeak_hashes = self.squeak_controller.lookup_squeaks_for_interest(
-                address=[str(address) for address in interest.addresses],
-                min_block=min_block,
-                max_block=max_block,
-                reply_to_hash=reply_to_hash,
-            )
-            invs = [
-                CInv(type=1, hash=squeak_hash)
-                for squeak_hash in squeak_hashes]
-            if invs:
-                inv_msg = msg_inv(inv=invs)
-                self.peer.send_msg(inv_msg)
+        self._send_reply_invs(msg.locator)
 
     def handle_squeak(self, msg):
         squeak = msg.squeak
@@ -183,3 +169,27 @@ class PeerMessageHandler:
                 peer_address=self.peer.peer_address,
             )
             self.squeak_controller.save_offer(decoded_offer)
+
+    def handle_subscribe(self, msg):
+        logger.info("Received subscribe msg: {}".format(msg))
+        self._send_reply_invs(msg.locator)
+        self.peer.set_subscription(msg)
+
+    def _send_reply_invs(self, locator):
+        # TODO: Maybe combine all invs into a single send_msg.
+        for interest in locator.vInterested:
+            min_block = interest.nMinBlockHeight if interest.nMinBlockHeight != -1 else None
+            max_block = interest.nMaxBlockHeight if interest.nMaxBlockHeight != -1 else None
+            reply_to_hash = interest.hashReplySqk if interest.hashReplySqk != EMPTY_HASH else None
+            squeak_hashes = self.squeak_controller.lookup_squeaks_for_interest(
+                address=[str(address) for address in interest.addresses],
+                min_block=min_block,
+                max_block=max_block,
+                reply_to_hash=reply_to_hash,
+            )
+            invs = [
+                CInv(type=1, hash=squeak_hash)
+                for squeak_hash in squeak_hashes]
+            if invs:
+                inv_msg = msg_inv(inv=invs)
+                self.peer.send_msg(inv_msg)

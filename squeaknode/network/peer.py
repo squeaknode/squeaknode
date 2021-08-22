@@ -8,6 +8,7 @@ from io import BytesIO
 
 from bitcoin.core.serialize import SerializationTruncationError
 from bitcoin.net import CAddress
+from squeak.messages import msg_subscribe
 from squeak.messages import msg_verack
 from squeak.messages import msg_version
 from squeak.messages import MsgSerializable
@@ -50,6 +51,8 @@ class Peer(object):
         self._last_recv_ping_time = None
         self._recv_msg_queue = queue.Queue()
 
+        self._subscription = None
+
         self.handshake_complete = threading.Event()
         self.ping_started = threading.Event()
         self.ping_complete = threading.Event()
@@ -64,6 +67,10 @@ class Peer(object):
     @property
     def address(self):
         return self._address
+
+    @property
+    def subscription(self):
+        return self._subscription
 
     @property
     def peer_address(self):
@@ -229,6 +236,16 @@ class Peer(object):
         msg.nNonce = generate_version_nonce()
         return msg
 
+    def update_subscription(self, squeak_controller):
+        locator = squeak_controller.get_interested_locator()
+        subscribe_msg = msg_subscribe(
+            locator=locator,
+        )
+        self.send_msg(subscribe_msg)
+
+    def set_subscription(self, subscription):
+        self._subscription = subscription
+
     def handle_messages(self, squeak_controller):
         peer_message_handler = PeerMessageHandler(
             self, squeak_controller)
@@ -246,6 +263,7 @@ class Peer(object):
                 args=(),
             ).start()
             self.handshake(squeak_controller)
+            self.update_subscription(squeak_controller)
             yield self
         finally:
             self.close()
