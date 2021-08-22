@@ -166,7 +166,6 @@ class Peer(object):
         This method blocks when the socket has no data to read.
         """
         msg = self._recv_msg_queue.get()
-        logger.debug('Received msg {} from {}'.format(msg, self))
         logger.info('Received msg {} from {}'.format(msg, self))
         return msg
 
@@ -179,7 +178,6 @@ class Peer(object):
             pass
 
     def send_msg(self, msg):
-        logger.debug('Sending msg {} to {}'.format(msg, self))
         logger.info('Sending msg {} to {}'.format(msg, self))
         data = msg.to_bytes()
         try:
@@ -250,7 +248,6 @@ class Peer(object):
         peer_message_handler = PeerMessageHandler(
             self, squeak_controller)
         peer_message_handler.handle_msgs()
-        logger.info('Finished handling messages...')
 
     @contextmanager
     def open_connection(self, squeak_controller):
@@ -360,7 +357,7 @@ class HandshakeTimer:
         self.timer.start()
 
     def stop_timer(self):
-        logger.info("Canceling handshake timer.")
+        logger.debug("Canceling handshake timer.")
         self.timer.cancel()
 
     def stop_peer(self):

@@ -35,12 +35,10 @@ class PeerMessageHandler:
 
         This method blocks when the peer has not sent any messages.
         """
-        logger.info('Started handling connected messages...')
         msg = self.peer.recv_msg()
         while msg is not None:
             self.handle_peer_message(msg)
             msg = self.peer.recv_msg()
-        logger.info('Finished handling connected messages...')
 
     def handle_peer_message(self, msg):
         """Handle messages from a peer with completed handshake."""
@@ -171,7 +169,6 @@ class PeerMessageHandler:
             self.squeak_controller.save_offer(decoded_offer)
 
     def handle_subscribe(self, msg):
-        logger.info("Received subscribe msg: {}".format(msg))
         self._send_reply_invs(msg.locator)
         self.peer.set_subscription(msg)
 
