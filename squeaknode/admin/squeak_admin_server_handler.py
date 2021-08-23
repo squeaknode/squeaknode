@@ -480,13 +480,10 @@ class SqueakAdminServerHandler(object):
             offer=offer_msg,
         )
 
-    def handle_sync_squeaks(self, request):
-        logger.info("Handle sync squeaks")
-        # sync_result = self.squeak_controller.sync_squeaks()
-        # self.sync_controller.download_timeline()
-        # self.sync_controller.upload_timeline()
-        self.squeak_controller.sync_timeline()
-        return squeak_admin_pb2.SyncSqueaksReply()
+    def handle_download_squeaks(self, request):
+        logger.info("Handle download squeaks")
+        self.squeak_controller.download_squeaks()
+        return squeak_admin_pb2.DownloadSqueaksReply()
 
     def handle_sync_squeak(self, request):
         squeak_hash_str = request.squeak_hash

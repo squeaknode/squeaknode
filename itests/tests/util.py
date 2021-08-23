@@ -239,8 +239,8 @@ def download_squeak(node_stub, squeak_hash):
 
 
 def download_squeaks(node_stub):
-    node_stub.SyncSqueaks(
-        squeak_admin_pb2.SyncSqueaksRequest(),
+    node_stub.DownloadSqueaks(
+        squeak_admin_pb2.DownloadSqueaksRequest(),
     )
 
 

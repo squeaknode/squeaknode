@@ -182,7 +182,7 @@ service SqueakAdmin {
 
   /** sqkadmin: `syncsqueaks`
   */
-  rpc SyncSqueaks (SyncSqueaksRequest) returns (SyncSqueaksReply) {}
+  rpc DownloadSqueaks (DownloadSqueaksRequest) returns (DownloadSqueaksReply) {}
 
   /** sqkadmin: `syncsqueak`
   */
@@ -677,10 +677,10 @@ message OfferDisplayEntry {
     PeerAddress peer_address = 9;
 }
 
-message SyncSqueaksRequest {
+message DownloadSqueaksRequest {
 }
 
-message SyncSqueaksReply {
+message DownloadSqueaksReply {
 }
 
 message PayOfferRequest {

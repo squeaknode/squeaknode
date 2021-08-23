@@ -547,7 +547,7 @@ class SqueakController:
             vInterested=interests,
         )
 
-    def sync_timeline(self):
+    def download_squeaks(self):
         locator = self.get_interested_locator()
         getsqueaks_msg = msg_getsqueaks(
             locator=locator,
