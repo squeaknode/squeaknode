@@ -97,12 +97,6 @@ def create_app(handler, username, password):
         logger.info("Getting hello route.")
         return "Hello, World!"
 
-    @app.route("/rpc_proxy_host")
-    @login_required
-    def rpc_proxy_host():
-        logger.info("Getting rpc proxy host.")
-        return app.config["RPC_PROXY_HOST"]
-
     # @app.route("/lndgetinfo", methods=["POST"])
     # @login_required
     # def lndgetinfo():
@@ -572,7 +566,6 @@ class SqueakAdminWebServer:
         use_ssl,
         login_disabled,
         allow_cors,
-        rpc_proxy_host,
         handler,
     ):
         self.host = host
@@ -580,7 +573,6 @@ class SqueakAdminWebServer:
         self.use_ssl = use_ssl
         self.login_disabled = login_disabled
         self.allow_cors = allow_cors
-        self.rpc_proxy_host = rpc_proxy_host
         self.app = create_app(handler, username, password)
         self.server = None
 
@@ -593,9 +585,6 @@ class SqueakAdminWebServer:
         # Allow CORS
         if self.allow_cors:
             CORS(self.app)
-
-        # Set the RPX_PROXY_HOST config
-        self.app.config["RPC_PROXY_HOST"] = self.rpc_proxy_host
 
         # self.app.run(
         #     self.host,
