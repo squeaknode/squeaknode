@@ -60,7 +60,12 @@ class SqueakController:
     def save_squeak(self, squeak: CSqueak) -> bytes:
         # Check if squeak is valid.
         CheckSqueak(squeak, skipDecryptionCheck=True)
+        # Check if block hash is valid.
         squeak_entry = self.squeak_core.validate_squeak(squeak)
+        # Check if limit exceeded.
+        if self.get_number_of_squeaks() >= self.config.core.max_squeaks:
+            raise Exception("Exceeded max number of squeaks.")
+        # Insert the squeak in db.
         inserted_squeak_hash = self.squeak_db.insert_squeak(
             squeak, squeak_entry.block_header)
         # Unlock the squeak if decryption key exists.
@@ -406,6 +411,9 @@ class SqueakController:
             min_block,
             max_block,
         )
+
+    def get_number_of_squeaks(self) -> int:
+        return self.squeak_db.get_number_of_squeaks()
 
     def save_offer(self, received_offer: ReceivedOffer) -> None:
         logger.info("Saving received offer: {}".format(received_offer))
