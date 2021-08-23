@@ -480,33 +480,24 @@ class SqueakAdminServerHandler(object):
             offer=offer_msg,
         )
 
-    def handle_sync_squeaks(self, request):
-        logger.info("Handle sync squeaks")
-        # sync_result = self.squeak_controller.sync_squeaks()
-        # self.sync_controller.download_timeline()
-        # self.sync_controller.upload_timeline()
-        self.squeak_controller.sync_timeline()
-        return squeak_admin_pb2.SyncSqueaksReply()
+    def handle_download_squeaks(self, request):
+        logger.info("Handle download squeaks")
+        self.squeak_controller.download_squeaks()
+        return squeak_admin_pb2.DownloadSqueaksReply()
 
-    def handle_sync_squeak(self, request):
+    def handle_download_squeak(self, request):
         squeak_hash_str = request.squeak_hash
         squeak_hash = bytes.fromhex(squeak_hash_str)
         logger.info(
             "Handle download squeak with hash: {}".format(squeak_hash_str))
-        # TODO: Add a separate method for download squeak and upload squeak.
-        # self.sync_controller.download_single_squeak(squeak_hash)
-        # self.sync_controller.upload_single_squeak(squeak_hash)
         self.squeak_controller.download_single_squeak(squeak_hash)
-        return squeak_admin_pb2.SyncSqueakReply()
+        return squeak_admin_pb2.DownloadSqueakReply()
 
     def handle_download_offers(self, request):
         squeak_hash_str = request.squeak_hash
         squeak_hash = bytes.fromhex(squeak_hash_str)
         logger.info(
             "Handle download offer for hash: {}".format(squeak_hash_str))
-        # sync_result = self.squeak_controller.sync_squeaks()
-        # self.sync_controller.download_timeline()
-        # self.sync_controller.upload_timeline()
         self.squeak_controller.download_offers(squeak_hash)
         return squeak_admin_pb2.DownloadOffersReply()
 

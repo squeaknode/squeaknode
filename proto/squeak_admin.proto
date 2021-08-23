@@ -180,13 +180,13 @@ service SqueakAdmin {
   */
   rpc GetBuyOffer (GetBuyOfferRequest) returns (GetBuyOfferReply) {}
 
-  /** sqkadmin: `syncsqueaks`
+  /** sqkadmin: `downloadsqueaks`
   */
-  rpc SyncSqueaks (SyncSqueaksRequest) returns (SyncSqueaksReply) {}
+  rpc DownloadSqueaks (DownloadSqueaksRequest) returns (DownloadSqueaksReply) {}
 
-  /** sqkadmin: `syncsqueak`
+  /** sqkadmin: `downloadsqueak`
   */
-  rpc SyncSqueak (SyncSqueakRequest) returns (SyncSqueakReply) {}
+  rpc DownloadSqueak (DownloadSqueakRequest) returns (DownloadSqueakReply) {}
 
   /** sqkadmin: `downloadoffers`
   */
@@ -677,10 +677,10 @@ message OfferDisplayEntry {
     PeerAddress peer_address = 9;
 }
 
-message SyncSqueaksRequest {
+message DownloadSqueaksRequest {
 }
 
-message SyncSqueaksReply {
+message DownloadSqueaksReply {
 }
 
 message PayOfferRequest {
@@ -737,12 +737,12 @@ message SentPayment {
     PeerAddress peer_address = 8;
 }
 
-message SyncSqueakRequest {
+message DownloadSqueakRequest {
     /// The squeak hash.
     string squeak_hash = 1;
 }
 
-message SyncSqueakReply {
+message DownloadSqueakReply {
 }
 
 message DownloadOffersRequest {

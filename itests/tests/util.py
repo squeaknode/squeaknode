@@ -33,23 +33,6 @@ def get_latest_block_info(lightning_client):
     return block_hash, block_height
 
 
-# def make_squeak(
-#     signing_key: CSigningKey,
-#     content: str,
-#     block_height,
-#     block_hash,
-#     reply_to: bytes = b"\x00" * HASH_LENGTH,
-# ):
-#     timestamp = int(time.time())
-#     return MakeSqueakFromStr(
-#         signing_key,
-#         content,
-#         block_height,
-#         block_hash,
-#         timestamp,
-#     )
-
-
 def get_hash(squeak):
     """ Needs to be reversed because hash is stored as little-endian """
     hash_bytes = squeak.GetHash()[::-1]
@@ -231,16 +214,16 @@ def get_squeak_display(node_stub, squeak_hash):
 
 
 def download_squeak(node_stub, squeak_hash):
-    node_stub.SyncSqueak(
-        squeak_admin_pb2.SyncSqueakRequest(
+    node_stub.DownloadSqueak(
+        squeak_admin_pb2.DownloadSqueakRequest(
             squeak_hash=squeak_hash,
         ),
     )
 
 
 def download_squeaks(node_stub):
-    node_stub.SyncSqueaks(
-        squeak_admin_pb2.SyncSqueaksRequest(),
+    node_stub.DownloadSqueaks(
+        squeak_admin_pb2.DownloadSqueaksRequest(),
     )
 
 

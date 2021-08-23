@@ -547,7 +547,7 @@ class SqueakController:
             vInterested=interests,
         )
 
-    def sync_timeline(self):
+    def download_squeaks(self):
         locator = self.get_interested_locator()
         getsqueaks_msg = msg_getsqueaks(
             locator=locator,
@@ -564,8 +564,6 @@ class SqueakController:
         getdata_msg = msg_getdata(
             inv=invs,
         )
-        # for peer in self.connection_manager.peers:
-        #     peer.send_msg(getdata_msg)
         self.broadcast_msg(getdata_msg)
 
     def download_offers(self, squeak_hash: bytes):
