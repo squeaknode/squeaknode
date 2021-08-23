@@ -105,7 +105,7 @@ class SqueakController:
 
     def get_saved_sent_offer(self, squeak_hash: bytes, peer_address: PeerAddress) -> SentOffer:
         # Check if there is an existing offer for the hash/peer_address combination
-        sent_offer = self.squeak_db.get_sent_offer_by_squeak_hash_and_client(
+        sent_offer = self.squeak_db.get_sent_offer_by_squeak_hash_and_peer(
             squeak_hash,
             peer_address,
         )
