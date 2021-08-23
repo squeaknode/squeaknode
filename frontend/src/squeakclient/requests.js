@@ -119,18 +119,13 @@ import {
   SubscribeConnectedPeersRequest,
   PeerAddress,
 } from "../proto/squeak_admin_pb"
-
 import { SqueakAdminClient } from "../proto/squeak_admin_grpc_web_pb"
-
-console.log("Using SqueakAdminClient");
-
-const RPC_PROXY_PORT = 15081;
 
 console.log('The value of REACT_APP_SERVER_PORT is:', process.env.REACT_APP_SERVER_PORT);
 const SERVER_PORT = process.env.REACT_APP_SERVER_PORT || window.location.port;
+const RPC_PROXY_PORT = 15081;
 
 export let web_host_port = window.location.protocol + '//' + window.location.hostname + ':' + SERVER_PORT;
-
 
 export function logoutRequest(handleResponse) {
   fetch(web_host_port + '/' + 'logout', {
@@ -168,7 +163,7 @@ export function getClient(handleResponse) {
     if (host) {
       proxyHost = host;
     }
-    var clientUrl = 'http://' + proxyHost + ':15081';
+    var clientUrl = 'http://' + proxyHost + ':' + RPC_PROXY_PORT;
     console.log("Using clientUrl: " + clientUrl);
     handleResponse(new SqueakAdminClient(clientUrl));
   });
