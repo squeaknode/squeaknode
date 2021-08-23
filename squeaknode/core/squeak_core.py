@@ -6,6 +6,7 @@ from typing import NamedTuple
 from typing import Optional
 
 import grpc
+from squeak.core import CheckSqueak
 from squeak.core import CSqueak
 from squeak.core import MakeSqueakFromStr
 from squeak.core.elliptic import payment_point_bytes_from_scalar_bytes
@@ -97,6 +98,7 @@ class SqueakCore:
         Raises:
             Exception: If the block hash is not valid.
         """
+        CheckSqueak(squeak, skipDecryptionCheck=True)
         block_info = self.bitcoin_client.get_block_info_by_height(
             squeak.nBlockHeight)
         if squeak.hashBlock != block_info.block_hash:
@@ -106,6 +108,22 @@ class SqueakCore:
             squeak=squeak,
             block_header=block_header,
         )
+
+    def validate_decryption_key(self, squeak: CSqueak, secret_key: bytes) -> None:
+        """Checks if the secret key is valid for the given squeak.
+
+        Args:
+            squeak: The squeak to be validated.
+            secret_key: The secret key.
+
+        Returns:
+            None:
+
+        Raises:
+            Exception: If the secret key is not valid.
+        """
+        squeak.SetDecryptionKey(secret_key)
+        CheckSqueak(squeak)
 
     def get_best_block_height(self) -> int:
         """Get the current height of the latest block in the blockchain.

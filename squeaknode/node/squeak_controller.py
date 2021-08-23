@@ -5,7 +5,6 @@ from typing import Optional
 
 import sqlalchemy
 import squeak.params
-from squeak.core import CheckSqueak
 from squeak.core import CSqueak
 from squeak.core.signing import CSigningKey
 from squeak.core.signing import CSqueakAddress
@@ -59,8 +58,6 @@ class SqueakController:
 
     def save_squeak(self, squeak: CSqueak) -> bytes:
         # Check if squeak is valid.
-        CheckSqueak(squeak, skipDecryptionCheck=True)
-        # Check if block hash is valid.
         squeak_entry = self.squeak_core.validate_squeak(squeak)
         # Check if limit exceeded.
         if self.get_number_of_squeaks() >= self.config.core.max_squeaks:
@@ -68,6 +65,9 @@ class SqueakController:
         # Insert the squeak in db.
         inserted_squeak_hash = self.squeak_db.insert_squeak(
             squeak, squeak_entry.block_header)
+        logger.info("Saved squeak: {}".format(
+            inserted_squeak_hash,
+        ))
         # Unlock the squeak if decryption key exists.
         if squeak.HasDecryptionKey():
             decryption_key = squeak.GetDecryptionKey()
@@ -75,9 +75,6 @@ class SqueakController:
                 inserted_squeak_hash,
                 decryption_key,
             )
-        logger.info("Saved squeak: {}".format(
-            inserted_squeak_hash,
-        ))
         self.new_squeak_listener.handle_new_squeak(squeak)
         return inserted_squeak_hash
 
@@ -86,10 +83,6 @@ class SqueakController:
         if squeak_entry is None:
             return None
         return squeak_entry.squeak
-
-    def lookup_allowed_addresses(self, addresses: List[str]):
-        followed_addresses = self.get_followed_addresses()
-        return set(followed_addresses) & set(addresses)
 
     def get_buy_offer(self, squeak_hash: bytes, peer_address: PeerAddress) -> Offer:
         # Check if there is an existing offer for the hash/peer_address combination
@@ -314,17 +307,19 @@ class SqueakController:
         return sent_payment_id
 
     def unlock_squeak(self, squeak_hash: bytes, secret_key: bytes):
-        logger.info("Unlocking squeak: {}".format(
-            squeak_hash.hex(),
-        ))
         squeak_entry = self.squeak_db.get_squeak_entry(squeak_hash)
         squeak = squeak_entry.squeak
-        squeak.SetDecryptionKey(secret_key)
-        CheckSqueak(squeak)
+        self.squeak_core.validate_decryption_key(
+            squeak,
+            secret_key,
+        )
         self.squeak_db.set_squeak_decryption_key(
             squeak_hash,
             secret_key,
         )
+        logger.info("Unlocked squeak: {}".format(
+            squeak_hash.hex(),
+        ))
 
     def get_sent_payments(self) -> List[SentPayment]:
         return self.squeak_db.get_sent_payments()
