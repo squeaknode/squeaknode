@@ -20,7 +20,6 @@ from squeaknode.node.process_received_payments_worker import ProcessReceivedPaym
 from squeaknode.node.squeak_controller import SqueakController
 from squeaknode.node.squeak_deletion_worker import SqueakDeletionWorker
 from squeaknode.node.squeak_offer_expiry_worker import SqueakOfferExpiryWorker
-from squeaknode.node.squeak_peer_sync_worker import SqueakPeerSyncWorker
 from squeaknode.node.squeak_rate_limiter import SqueakRateLimiter
 
 
@@ -51,7 +50,6 @@ class SqueakNode:
         self.initialize_admin_web_server()
         self.initialize_received_payment_processor_worker()
         self.initialize_peer_connection_worker()
-        self.initialize_peer_sync_worker()
         self.initialize_squeak_deletion_worker()
         self.initialize_offer_expiry_worker()
         self.initialize_new_squeak_worker()
@@ -66,9 +64,6 @@ class SqueakNode:
             self.admin_web_server.start()
         self.received_payment_processor_worker.start_running()
         self.peer_connection_worker.start()
-        # TODO: Delete peer_sync_worker, subscribe replaces it
-        # if self.config.sync.enabled:
-        #     self.peer_sync_worker.start()
         self.squeak_deletion_worker.start()
         self.offer_expiry_worker.start()
         self.new_squeak_worker.start_running()
@@ -180,12 +175,6 @@ class SqueakNode:
 
     def initialize_peer_connection_worker(self):
         self.peer_connection_worker = PeerConnectionWorker(
-            self.squeak_controller,
-            10,
-        )
-
-    def initialize_peer_sync_worker(self):
-        self.peer_sync_worker = SqueakPeerSyncWorker(
             self.squeak_controller,
             10,
         )
