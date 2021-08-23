@@ -180,7 +180,7 @@ service SqueakAdmin {
   */
   rpc GetBuyOffer (GetBuyOfferRequest) returns (GetBuyOfferReply) {}
 
-  /** sqkadmin: `syncsqueaks`
+  /** sqkadmin: `downloadsqueaks`
   */
   rpc DownloadSqueaks (DownloadSqueaksRequest) returns (DownloadSqueaksReply) {}
 
