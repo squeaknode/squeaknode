@@ -184,7 +184,7 @@ service SqueakAdmin {
   */
   rpc DownloadSqueaks (DownloadSqueaksRequest) returns (DownloadSqueaksReply) {}
 
-  /** sqkadmin: `syncsqueak`
+  /** sqkadmin: `downloadsqueak`
   */
   rpc DownloadSqueak (DownloadSqueakRequest) returns (DownloadSqueakReply) {}
 
