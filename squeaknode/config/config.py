@@ -16,6 +16,7 @@ logger = logging.getLogger(__name__)
 DEFAULT_NETWORK = "testnet"
 DEFAULT_PRICE_MSAT = 10000
 DEFAULT_LOG_LEVEL = "INFO"
+DEFAULT_MAX_SQUEAKS = 10000
 DEFAULT_MAX_SQUEAKS_PER_ADDRESS_PER_BLOCK = 100
 DEFAULT_SERVER_RPC_HOST = "0.0.0.0"
 DEFAULT_SERVER_RPC_PORT = None
@@ -91,14 +92,20 @@ class WebadminConfig(Config):
 
 @section('core')
 class CoreConfig(Config):
-    network = key(cast=str, required=False, default=DEFAULT_NETWORK)
+    network = key(
+        cast=str, required=False, default=DEFAULT_NETWORK)
     default_peer_rpc_port = key(
         cast=int, required=False, default=DEFAULT_SERVER_RPC_PORT)
-    price_msat = key(cast=int, required=False, default=DEFAULT_PRICE_MSAT)
+    price_msat = key(
+        cast=int, required=False, default=DEFAULT_PRICE_MSAT)
+    max_squeaks = key(
+        cast=int, required=False, default=DEFAULT_MAX_SQUEAKS)
     max_squeaks_per_address_per_block = key(
         cast=int, required=False, default=DEFAULT_MAX_SQUEAKS_PER_ADDRESS_PER_BLOCK)
-    sqk_dir_path = key(cast=str, required=False, default=DEFAULT_SQK_DIR_PATH)
-    log_level = key(cast=str, required=False, default=DEFAULT_LOG_LEVEL)
+    sqk_dir_path = key(
+        cast=str, required=False, default=DEFAULT_SQK_DIR_PATH)
+    log_level = key(
+        cast=str, required=False, default=DEFAULT_LOG_LEVEL)
     sent_offer_retention_s = key(
         cast=int, required=False, default=DEFAULT_SENT_OFFER_RETENTION_S)
     subscribe_invoices_retry_s = key(
@@ -109,8 +116,8 @@ class CoreConfig(Config):
         cast=int, required=False, default=DEFAULT_SQUEAK_DELETION_INTERVAL_S)
     offer_deletion_interval_s = key(
         cast=int, required=False, default=DEFAULT_OFFER_DELETION_INTERVAL_S)
-    interest_block_interval = key(cast=int, required=False,
-                                  default=DEFAULT_INTEREST_BLOCK_INTERVAL)
+    interest_block_interval = key(
+        cast=int, required=False, default=DEFAULT_INTEREST_BLOCK_INTERVAL)
 
 
 @section('db')
