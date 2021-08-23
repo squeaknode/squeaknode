@@ -170,6 +170,7 @@ class SqueakNode:
             self.config.webadmin.use_ssl,
             self.config.webadmin.login_disabled,
             self.config.webadmin.allow_cors,
+            self.config.webadmin.rpc_proxy_host,
             self.admin_handler,
         )
 
