@@ -186,7 +186,7 @@ service SqueakAdmin {
 
   /** sqkadmin: `syncsqueak`
   */
-  rpc SyncSqueak (SyncSqueakRequest) returns (SyncSqueakReply) {}
+  rpc DownloadSqueak (DownloadSqueakRequest) returns (DownloadSqueakReply) {}
 
   /** sqkadmin: `downloadoffers`
   */
@@ -737,12 +737,12 @@ message SentPayment {
     PeerAddress peer_address = 8;
 }
 
-message SyncSqueakRequest {
+message DownloadSqueakRequest {
     /// The squeak hash.
     string squeak_hash = 1;
 }
 
-message SyncSqueakReply {
+message DownloadSqueakReply {
 }
 
 message DownloadOffersRequest {
