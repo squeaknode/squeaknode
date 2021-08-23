@@ -57,23 +57,10 @@ class SqueakController:
         self.new_squeak_listener = NewSqueakListener()
         self.config = config
 
-    def save_squeak(
-            self,
-            squeak: CSqueak,
-            skip_rate_limit: bool = False,
-    ) -> bytes:
+    def save_squeak(self, squeak: CSqueak) -> bytes:
         # Check if squeak is valid.
         CheckSqueak(squeak, skipDecryptionCheck=True)
         squeak_entry = self.squeak_core.validate_squeak(squeak)
-        # TODO: Check if rate limit is violated.
-        # if not skip_rate_limit:
-        #     if not self.squeak_rate_limiter.should_rate_limit_allow(squeak):
-        #         raise Exception(
-        #             "Exceeded allowed number of squeaks per address per block.")
-        # Save the squeak.
-        logger.info("Saving squeak: {}".format(
-            get_hash(squeak).hex(),
-        ))
         inserted_squeak_hash = self.squeak_db.insert_squeak(
             squeak, squeak_entry.block_header)
         # Unlock the squeak if decryption key exists.
@@ -83,14 +70,13 @@ class SqueakController:
                 inserted_squeak_hash,
                 decryption_key,
             )
+        logger.info("Saved squeak: {}".format(
+            inserted_squeak_hash,
+        ))
         self.new_squeak_listener.handle_new_squeak(squeak)
-        # Return the squeak hash.
         return inserted_squeak_hash
 
-    def get_squeak(
-            self,
-            squeak_hash: bytes,
-    ) -> Optional[CSqueak]:
+    def get_squeak(self, squeak_hash: bytes) -> Optional[CSqueak]:
         squeak_entry = self.squeak_db.get_squeak_entry(squeak_hash)
         if squeak_entry is None:
             return None
@@ -237,7 +223,7 @@ class SqueakController:
         squeak_profile = self.squeak_db.get_profile(profile_id)
         squeak_entry = self.squeak_core.make_squeak(
             squeak_profile, content_str, replyto_hash)
-        return self.save_squeak(squeak_entry.squeak, skip_rate_limit=True)
+        return self.save_squeak(squeak_entry.squeak)
 
     def delete_squeak(self, squeak_hash: bytes) -> None:
         num_deleted_offers = self.squeak_db.delete_offers_for_squeak(
