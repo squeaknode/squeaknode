@@ -89,7 +89,6 @@ class WebadminConfig(Config):
     use_ssl = key(cast=bool, required=False, default=False)
     login_disabled = key(cast=bool, required=False, default=False)
     allow_cors = key(cast=bool, required=False, default=False)
-    rpc_proxy_host = key(cast=str, required=False, default="")
 
 
 @section('core')
