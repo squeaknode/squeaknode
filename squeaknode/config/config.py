@@ -35,9 +35,7 @@ DEFAULT_LND_RPC_PORT = 10009
 DEFAULT_SQK_DIR = ".sqk"
 DEFAULT_SQK_DIR_PATH = str(Path.home() / DEFAULT_SQK_DIR)
 DEFAULT_LND_HOST = "localhost"
-DEFAULT_SYNC_INTERVAL_S = 10
-DEFAULT_SYNC_TIMEOUT_S = 10
-DEFAULT_SYNC_BLOCK_INTERVAL = 2016
+DEFAULT_INTEREST_BLOCK_INTERVAL = 2016
 DEFAULT_SENT_OFFER_RETENTION_S = 86400
 DEFAULT_OFFER_DELETION_INTERVAL_S = 10
 DEFAULT_SUBSCRIBE_INVOICES_RETRY_S = 10
@@ -111,15 +109,8 @@ class CoreConfig(Config):
         cast=int, required=False, default=DEFAULT_SQUEAK_DELETION_INTERVAL_S)
     offer_deletion_interval_s = key(
         cast=int, required=False, default=DEFAULT_OFFER_DELETION_INTERVAL_S)
-
-
-@section('sync')
-class SyncConfig(Config):
-    enabled = key(cast=bool, required=False, default=True)
-    interval_s = key(cast=int, required=False, default=DEFAULT_SYNC_INTERVAL_S)
-    timeout_s = key(cast=float, required=False, default=DEFAULT_SYNC_TIMEOUT_S)
-    block_interval = key(cast=int, required=False,
-                         default=DEFAULT_SYNC_BLOCK_INTERVAL)
+    interest_block_interval = key(cast=int, required=False,
+                                  default=DEFAULT_INTEREST_BLOCK_INTERVAL)
 
 
 @section('db')
@@ -134,7 +125,6 @@ class SqueaknodeConfig(Config):
     admin = group_key(AdminConfig)
     webadmin = group_key(WebadminConfig)
     core = group_key(CoreConfig)
-    sync = group_key(SyncConfig)
     db = group_key(DbConfig)
     # description = key(cast=str, section_name="general")
 
