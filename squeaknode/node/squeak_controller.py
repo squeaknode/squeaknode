@@ -57,6 +57,17 @@ class SqueakController:
         self.config = config
 
     def save_squeak(self, squeak: CSqueak) -> bytes:
+        """Saves a squeak.
+
+        Args:
+            squeak: The squeak to be validated.
+
+        Returns:
+            bytes: the squeak hash.
+
+        Raises:
+            Exception: If squeak fails to save.
+        """
         # Check if squeak is valid.
         squeak_entry = self.squeak_core.validate_squeak(squeak)
         # Check if limit exceeded.
@@ -66,14 +77,13 @@ class SqueakController:
         inserted_squeak_hash = self.squeak_db.insert_squeak(
             squeak, squeak_entry.block_header)
         logger.info("Saved squeak: {}".format(
-            inserted_squeak_hash,
+            inserted_squeak_hash.hex(),
         ))
         # Unlock the squeak if decryption key exists.
         if squeak.HasDecryptionKey():
-            decryption_key = squeak.GetDecryptionKey()
             self.unlock_squeak(
                 inserted_squeak_hash,
-                decryption_key,
+                squeak.GetDecryptionKey(),
             )
         self.new_squeak_listener.handle_new_squeak(squeak)
         return inserted_squeak_hash
