@@ -39,7 +39,7 @@ import SqueakUserAvatar from "../../components/SqueakUserAvatar";
 
 
 import {
-  syncSqueakRequest,
+  downloadSqueakRequest,
   likeSqueakRequest,
   unlikeSqueakRequest,
 } from "../../squeakclient/requests"
@@ -107,7 +107,7 @@ export default function SqueakDetailItem({
   const onDownloadClick = (event) => {
     event.preventDefault();
     console.log("Handling download click...");
-    syncSqueakRequest(hash, (response) => {
+    downloadSqueakRequest(hash, (response) => {
       reloadSqueak();
     });
   }

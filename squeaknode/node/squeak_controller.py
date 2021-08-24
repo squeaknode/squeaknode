@@ -58,24 +58,12 @@ class SqueakController:
         self.config = config
 
     def save_squeak(self, squeak: CSqueak) -> bytes:
-        """Saves a squeak.
-
-        Args:
-            squeak: The squeak to be validated.
-
-        Returns:
-            bytes: the squeak hash.
-
-        Raises:
-            Exception: If squeak fails to save.
-        """
         # Get the block header for the squeak.
         block_header = self.squeak_core.get_block_header(squeak)
         squeak_entry = SqueakEntry(
             squeak=squeak,
             block_header=block_header,
         )
-
         # Check if limit exceeded.
         if self.get_number_of_squeaks() >= self.config.core.max_squeaks:
             raise Exception("Exceeded max number of squeaks.")
