@@ -85,12 +85,6 @@ class SqueakController:
         logger.info("Saved squeak: {}".format(
             inserted_squeak_hash.hex(),
         ))
-        # Unlock the squeak if decryption key exists.
-        if squeak.HasDecryptionKey():
-            self.unlock_squeak(
-                inserted_squeak_hash,
-                squeak.GetDecryptionKey(),
-            )
         self.new_squeak_listener.handle_new_squeak(squeak)
         return inserted_squeak_hash
 
@@ -115,7 +109,13 @@ class SqueakController:
         squeak_profile = self.squeak_db.get_profile(profile_id)
         squeak = self.squeak_core.make_squeak(
             squeak_profile, content_str, replyto_hash)
-        return self.save_squeak(squeak)
+        decryption_key = squeak.GetDecryptionKey()
+        inserted_squeak_hash = self.save_squeak(squeak)
+        self.unlock_squeak(
+            inserted_squeak_hash,
+            decryption_key,
+        )
+        return inserted_squeak_hash
 
     def get_squeak(self, squeak_hash: bytes) -> Optional[CSqueak]:
         squeak_entry = self.squeak_db.get_squeak_entry(squeak_hash)
