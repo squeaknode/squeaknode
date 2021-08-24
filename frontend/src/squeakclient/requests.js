@@ -74,8 +74,8 @@ import {
   DeletePeerReply,
   DeleteSqueakProfileReply,
   DeleteSqueakReply,
-  SyncSqueakRequest,
-  SyncSqueakReply,
+  DownloadSqueakRequest,
+  DownloadSqueakReply,
   GetSqueakDetailsRequest,
   GetSqueakDetailsReply,
   GetSentPaymentsRequest,
@@ -759,16 +759,16 @@ export function lndSendCoins(address, amount, satperbyte, sendall, handleRespons
   });
 }
 
-export function syncSqueakRequest(squeakHash, handleResponse) {
-  var request = new SyncSqueakRequest();
+export function downloadSqueakRequest(squeakHash, handleResponse) {
+  var request = new DownloadSqueakRequest();
   request.setSqueakHash(squeakHash);
   // makeRequest(
-  //   'syncsqueak',
+  //   'DownloadSqueak',
   //   request,
-  //   SyncSqueakReply.deserializeBinary,
+  //   DownloadSqueakReply.deserializeBinary,
   //   handleResponse,
   // );
-  client.syncSqueak(request, {}, (err, response) => {
+  client.downloadSqueak(request, {}, (err, response) => {
     handleResponse(response);
   });
 }
