@@ -42,7 +42,7 @@ def squeak_entry_to_message(squeak_entry_with_profile: SqueakEntryWithProfile) -
         content_str=squeak_entry.content,  # type: ignore
         block_height=squeak_entry.block_height,
         block_hash=squeak_entry.block_hash.hex(),
-        block_time=0,  # TODO: load block time from db column
+        block_time=squeak_entry.block_time,
         is_reply=is_reply,
         reply_to=reply_to,  # type: ignore
         author_address=squeak_entry.address,
