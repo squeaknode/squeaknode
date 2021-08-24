@@ -104,10 +104,7 @@ class SqueakController:
         return inserted_squeak_hash
 
     def get_squeak(self, squeak_hash: bytes) -> Optional[CSqueak]:
-        squeak_entry = self.squeak_db.get_squeak_entry(squeak_hash)
-        if squeak_entry is None:
-            return None
-        return squeak_entry.squeak
+        return self.squeak_db.get_squeak(squeak_hash)
 
     def delete_squeak(self, squeak_hash: bytes) -> None:
         num_deleted_offers = self.squeak_db.delete_offers_for_squeak(
