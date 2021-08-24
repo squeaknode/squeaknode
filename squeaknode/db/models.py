@@ -72,6 +72,7 @@ class Models:
             Column("block_header", Binary, nullable=False),
             Column("liked_time", TZDateTime,
                    default=None, nullable=True),
+            Column("content", Binary, nullable=True),
         )
 
         self.profiles = Table(

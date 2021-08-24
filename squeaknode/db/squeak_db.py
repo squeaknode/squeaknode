@@ -628,12 +628,15 @@ class SqueakDb:
         with self.get_connection() as connection:
             connection.execute(stmt)
 
-    def set_squeak_decryption_key(self, squeak_hash: bytes, secret_key: bytes) -> None:
-        """ Set the decryption key of a squeak. """
+    def set_squeak_decryption_key(self, squeak_hash: bytes, secret_key: bytes, content: bytes) -> None:
+        """ Set the decryption key and decrypted content of a squeak. """
         stmt = (
             self.squeaks.update()
             .where(self.squeaks.c.hash == squeak_hash.hex())
-            .values(secret_key=secret_key.hex())
+            .values(
+                secret_key=secret_key.hex(),
+                content=content,
+            )
         )
         with self.get_connection() as connection:
             connection.execute(stmt)
