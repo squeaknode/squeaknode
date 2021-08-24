@@ -85,10 +85,10 @@ class SqueakController:
         self.squeak_db.set_squeak_decryption_key(
             squeak_hash,
             secret_key,
-        )
-        logger.info("Unlocked squeak: {} with content: {}".format(
-            squeak_hash.hex(),
             decrypted_content,
+        )
+        logger.info("Unlocked squeak: {}".format(
+            squeak_hash.hex(),
         ))
 
     def make_squeak(self, profile_id: int, content_str: str, replyto_hash: bytes) -> bytes:

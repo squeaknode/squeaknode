@@ -100,7 +100,7 @@ class SqueakCore:
             raise Exception("Block hash incorrect.")
         return parse_block_header(block_info.block_header)
 
-    def get_decrypted_content(self, squeak: CSqueak, secret_key: bytes) -> bytes:
+    def get_decrypted_content(self, squeak: CSqueak, secret_key: bytes) -> str:
         """Checks if the secret key is valid for the given squeak and returns
         the decrypted content.
 
@@ -116,7 +116,7 @@ class SqueakCore:
         """
         squeak.SetDecryptionKey(secret_key)
         CheckSqueak(squeak)
-        return squeak.GetDecryptedContent()
+        return squeak.GetDecryptedContentStr()
 
     def get_best_block_height(self) -> int:
         """Get the current height of the latest block in the blockchain.

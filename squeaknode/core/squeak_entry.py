@@ -9,3 +9,4 @@ class SqueakEntry(NamedTuple):
     squeak: CSqueak
     block_header: CBlockHeader
     liked_time: Optional[int] = None
+    content: Optional[str] = None

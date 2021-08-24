@@ -628,12 +628,15 @@ class SqueakDb:
         with self.get_connection() as connection:
             connection.execute(stmt)
 
-    def set_squeak_decryption_key(self, squeak_hash: bytes, secret_key: bytes) -> None:
-        """ Set the decryption key of a squeak. """
+    def set_squeak_decryption_key(self, squeak_hash: bytes, secret_key: bytes, content: str) -> None:
+        """ Set the decryption key and decrypted content of a squeak. """
         stmt = (
             self.squeaks.update()
             .where(self.squeaks.c.hash == squeak_hash.hex())
-            .values(secret_key=secret_key.hex())
+            .values(
+                secret_key=secret_key.hex(),
+                content=content,
+            )
         )
         with self.get_connection() as connection:
             connection.execute(stmt)
@@ -1096,10 +1099,12 @@ class SqueakDb:
         )
         liked_time = row["liked_time"]
         liked_time_s = int(liked_time.timestamp()) if liked_time else None
+        content = row["content"]
         return SqueakEntry(
             squeak=squeak,
             block_header=block_header,
             liked_time=liked_time_s,
+            content=content,
         )
 
     def _parse_squeak_profile(self, row) -> SqueakProfile:
