@@ -24,7 +24,6 @@ from squeaknode.core.received_payment_summary import ReceivedPaymentSummary
 from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.sent_payment import SentPayment
 from squeaknode.core.sent_payment_summary import SentPaymentSummary
-from squeaknode.core.squeak_entry import SqueakEntry
 from squeaknode.core.squeak_entry_with_profile import SqueakEntryWithProfile
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
@@ -60,19 +59,18 @@ class SqueakController:
     def save_squeak(self, squeak: CSqueak) -> bytes:
         # Get the block header for the squeak.
         block_header = self.squeak_core.get_block_header(squeak)
-        squeak_entry = SqueakEntry(
-            squeak=squeak,
-            block_header=block_header,
-        )
         # Check if limit exceeded.
         if self.get_number_of_squeaks() >= self.config.core.max_squeaks:
             raise Exception("Exceeded max number of squeaks.")
         # Insert the squeak in db.
         inserted_squeak_hash = self.squeak_db.insert_squeak(
-            squeak, squeak_entry.block_header)
+            squeak,
+            block_header,
+        )
         logger.info("Saved squeak: {}".format(
             inserted_squeak_hash.hex(),
         ))
+        # Notify the listener
         self.new_squeak_listener.handle_new_squeak(squeak)
         return inserted_squeak_hash
 
