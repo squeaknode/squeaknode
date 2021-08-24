@@ -72,7 +72,7 @@ def main():
     ))
 
     # Set the log level again
-    level = config.core.log_level
+    level = config.node.log_level
     logging.getLogger().setLevel(level)
 
     args.func(config)

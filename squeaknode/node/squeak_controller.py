@@ -60,7 +60,7 @@ class SqueakController:
         # Get the block header for the squeak.
         block_header = self.squeak_core.get_block_header(squeak)
         # Check if limit exceeded.
-        if self.get_number_of_squeaks() >= self.config.core.max_squeaks:
+        if self.get_number_of_squeaks() >= self.config.node.max_squeaks:
             raise Exception("Exceeded max number of squeaks.")
         # Insert the squeak in db.
         inserted_squeak_hash = self.squeak_db.insert_squeak(
@@ -136,7 +136,7 @@ class SqueakController:
         sent_offer = self.squeak_core.create_offer(
             squeak,
             peer_address,
-            self.config.core.price_msat,
+            self.config.node.price_msat,
         )
         self.squeak_db.insert_sent_offer(sent_offer)
         return sent_offer
@@ -344,7 +344,7 @@ class SqueakController:
                 num_expired_received_offers))
 
     def delete_all_expired_sent_offers(self):
-        sent_offer_retention_s = self.config.core.sent_offer_retention_s
+        sent_offer_retention_s = self.config.node.sent_offer_retention_s
         num_expired_sent_offers = self.squeak_db.delete_expired_sent_offers(
             sent_offer_retention_s,
         )
@@ -365,12 +365,12 @@ class SqueakController:
 
     def get_block_range(self) -> BlockRange:
         max_block = self.squeak_core.get_best_block_height()
-        block_interval = self.config.core.interest_block_interval
+        block_interval = self.config.node.interest_block_interval
         min_block = max(0, max_block - block_interval)
         return BlockRange(min_block, max_block)
 
     def get_network(self) -> str:
-        return self.config.core.network
+        return self.config.node.network
 
     # TODO: Rename this method. All it does is unpack.
     def get_offer(self, squeak: CSqueak, offer: Offer, peer_address: PeerAddress) -> ReceivedOffer:
@@ -437,7 +437,7 @@ class SqueakController:
 
     def delete_old_squeaks(self):
         squeaks_to_delete = self.squeak_db.get_old_squeaks_to_delete(
-            self.config.core.squeak_retention_s,
+            self.config.node.squeak_retention_s,
         )
         for squeak_entry_with_profile in squeaks_to_delete:
             squeak = squeak_entry_with_profile.squeak_entry.squeak
