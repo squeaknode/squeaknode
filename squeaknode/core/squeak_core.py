@@ -6,6 +6,7 @@ from typing import NamedTuple
 from typing import Optional
 
 import grpc
+from bitcoin.core import CBlockHeader
 from squeak.core import CheckSqueak
 from squeak.core import CSqueak
 from squeak.core import MakeSqueakFromStr
@@ -22,7 +23,6 @@ from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.received_payment import ReceivedPayment
 from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.sent_payment import SentPayment
-from squeaknode.core.squeak_entry import SqueakEntry
 from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.util import add_tweak
 from squeaknode.core.util import generate_tweak
@@ -49,7 +49,7 @@ class SqueakCore:
         self.bitcoin_client = bitcoin_client
         self.lightning_client = lightning_client
 
-    def make_squeak(self, signing_profile: SqueakProfile, content_str: str, replyto_hash: Optional[bytes] = None) -> SqueakEntry:
+    def make_squeak(self, signing_profile: SqueakProfile, content_str: str, replyto_hash: Optional[bytes] = None) -> CSqueak:
         """Create a new squeak.
 
         Args:
@@ -58,7 +58,7 @@ class SqueakCore:
             replyto_hash: The hash of the squeak to which this one is replying.
 
         Returns:
-            SqueakEntry: containing the squeak together with its block header.
+            CSqueak: the squeak that was created.
 
         Raises:
             Exception: If the profile does not have a signing key.
@@ -71,7 +71,7 @@ class SqueakCore:
         block_height = block_info.block_height
         block_hash = block_info.block_hash
         timestamp = int(time.time())
-        squeak = MakeSqueakFromStr(
+        return MakeSqueakFromStr(
             signing_key,
             content_str,
             block_height,
@@ -79,21 +79,16 @@ class SqueakCore:
             timestamp,
             replyto_hash,
         )
-        block_header = parse_block_header(block_info.block_header)
-        return SqueakEntry(
-            squeak=squeak,
-            block_header=block_header,
-        )
 
-    def validate_squeak(self, squeak: CSqueak) -> SqueakEntry:
+    def get_block_header(self, squeak: CSqueak) -> CBlockHeader:
         """Checks if the embedded block hash in the squeak is valid for its
-        block height.
+        block height and return the associtated block header.
 
         Args:
             squeak: The squeak to be validated.
 
         Returns:
-            SqueakEntry: containing the squeak together with its block header.
+            CBlockHeader: the block header associated with the given squeak.
 
         Raises:
             Exception: If the block hash is not valid.
@@ -103,27 +98,25 @@ class SqueakCore:
             squeak.nBlockHeight)
         if squeak.hashBlock != block_info.block_hash:
             raise Exception("Block hash incorrect.")
-        block_header = parse_block_header(block_info.block_header)
-        return SqueakEntry(
-            squeak=squeak,
-            block_header=block_header,
-        )
+        return parse_block_header(block_info.block_header)
 
-    def validate_decryption_key(self, squeak: CSqueak, secret_key: bytes) -> None:
-        """Checks if the secret key is valid for the given squeak.
+    def get_decrypted_content(self, squeak: CSqueak, secret_key: bytes) -> bytes:
+        """Checks if the secret key is valid for the given squeak and returns
+        the decrypted content.
 
         Args:
             squeak: The squeak to be validated.
             secret_key: The secret key.
 
         Returns:
-            None:
+            bytes: the decrypted content
 
         Raises:
             Exception: If the secret key is not valid.
         """
         squeak.SetDecryptionKey(secret_key)
         CheckSqueak(squeak)
+        return squeak.GetDecryptedContent()
 
     def get_best_block_height(self) -> int:
         """Get the current height of the latest block in the blockchain.

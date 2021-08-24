@@ -80,13 +80,9 @@ def bitcoin_client():
 
 def test_make_squeak(bitcoin_client, lightning_client, signing_profile):
     squeak_core = SqueakCore(bitcoin_client, lightning_client)
-    squeak_entry = squeak_core.make_squeak(signing_profile, "hello")
+    squeak = squeak_core.make_squeak(signing_profile, "hello")
 
-    assert squeak_entry.squeak.GetDecryptedContentStr() == "hello"
-
-    validated_squeak_entry = squeak_core.validate_squeak(squeak_entry.squeak)
-
-    assert validated_squeak_entry == squeak_entry
+    assert squeak.GetDecryptedContentStr() == "hello"
 
 
 # def test_pay_offer(bitcoin_client, lightning_client, signing_profile):
