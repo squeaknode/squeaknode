@@ -173,7 +173,7 @@ class SqueakDb:
             n_time=squeak.nTime,
             author_address=str(squeak.GetAddress()),
             secret_key=None,
-            block_header=block_header.serialize(),
+            block_time=block_header.nTime,
         )
         with self.get_connection() as connection:
             try:
@@ -1110,6 +1110,7 @@ class SqueakDb:
             address=row["author_address"],
             block_height=row["n_block_height"],
             block_hash=bytes.fromhex(row["hash_block"]),
+            block_time=row["block_time"],
             reply_to=bytes.fromhex(row["hash_reply_sqk"]),
             is_unlocked=is_locked,
             liked_time=liked_time_s,

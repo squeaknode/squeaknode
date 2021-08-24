@@ -7,6 +7,7 @@ class SqueakEntry(NamedTuple):
     address: str
     block_height: int
     block_hash: bytes
+    block_time: int
     reply_to: Optional[bytes]
     is_unlocked: bool
     liked_time: Optional[int] = None
