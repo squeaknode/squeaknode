@@ -9,10 +9,10 @@ from squeaknode.admin.messages import payment_summary_to_message
 from squeaknode.admin.messages import received_payments_to_message
 from squeaknode.admin.messages import sent_offer_to_message
 from squeaknode.admin.messages import sent_payment_to_message
-from squeaknode.admin.messages import squeak_entry_to_detail_message
 from squeaknode.admin.messages import squeak_entry_to_message
 from squeaknode.admin.messages import squeak_peer_to_message
 from squeaknode.admin.messages import squeak_profile_to_message
+from squeaknode.admin.messages import squeak_to_detail_message
 from squeaknode.admin.profile_image_util import base64_string_to_bytes
 from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
 from squeaknode.node.squeak_controller import SqueakController
@@ -547,17 +547,16 @@ class SqueakAdminServerHandler(object):
         squeak_hash = bytes.fromhex(squeak_hash_str)
         logger.info(
             "Handle get squeak details for hash: {}".format(squeak_hash_str))
-        squeak_entry_with_profile = (
-            self.squeak_controller.get_squeak_entry_with_profile(
+        squeak = (
+            self.squeak_controller.get_squeak(
                 squeak_hash
             )
         )
-        if squeak_entry_with_profile is None:
+        if squeak is None:
             return squeak_admin_pb2.GetSqueakDetailsReply(
                 squeak_detail_entry=None
             )
-        detail_message = squeak_entry_to_detail_message(
-            squeak_entry_with_profile)
+        detail_message = squeak_to_detail_message(squeak)
         return squeak_admin_pb2.GetSqueakDetailsReply(
             squeak_detail_entry=detail_message
         )

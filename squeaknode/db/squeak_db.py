@@ -14,7 +14,6 @@ from sqlalchemy import literal
 from sqlalchemy.sql import select
 from squeak.core import CSqueak
 
-from squeaknode.bitcoin.util import parse_block_header
 from squeaknode.core.lightning_address import LightningAddressHostPort
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.received_offer import ReceivedOffer
@@ -1103,30 +1102,18 @@ class SqueakDb:
 
     def _parse_squeak_entry(self, row) -> SqueakEntry:
         secret_key_column = row["secret_key"]
-        secret_key = (
-            bytes.fromhex(secret_key_column) if
-            secret_key_column else b""
-        )
-        squeak = CSqueak.deserialize(row["squeak"])
-        if secret_key:
-            squeak.SetDecryptionKey(secret_key)
-        block_header_column = row["block_header"]
-        block_header_bytes = (
-            bytes(block_header_column) if
-            block_header_column else None
-        )
-        block_header = (
-            parse_block_header(block_header_bytes) if
-            block_header_bytes else None
-        )
+        is_locked = bool(secret_key_column)
         liked_time = row["liked_time"]
         liked_time_s = int(liked_time.timestamp()) if liked_time else None
-        content = row["content"]
         return SqueakEntry(
-            squeak=squeak,
-            block_header=block_header,
+            squeak_hash=bytes.fromhex(row["hash"]),
+            address=row["author_address"],
+            block_height=row["n_block_height"],
+            block_hash=bytes.fromhex(row["hash_block"]),
+            reply_to=bytes.fromhex(row["hash_reply_sqk"]),
+            is_unlocked=is_locked,
             liked_time=liked_time_s,
-            content=content,
+            content=row["content"],
         )
 
     def _parse_squeak_profile(self, row) -> SqueakProfile:

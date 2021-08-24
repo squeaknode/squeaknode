@@ -1,12 +1,13 @@
 from typing import NamedTuple
 from typing import Optional
 
-from bitcoin.core import CBlockHeader
-from squeak.core import CSqueak
-
 
 class SqueakEntry(NamedTuple):
-    squeak: CSqueak
-    block_header: CBlockHeader
+    squeak_hash: bytes
+    address: str
+    block_height: int
+    block_hash: bytes
+    reply_to: Optional[bytes]
+    is_unlocked: bool
     liked_time: Optional[int] = None
     content: Optional[str] = None
