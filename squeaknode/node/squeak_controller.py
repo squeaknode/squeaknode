@@ -75,8 +75,7 @@ class SqueakController:
         return inserted_squeak_hash
 
     def unlock_squeak(self, squeak_hash: bytes, secret_key: bytes):
-        squeak_entry = self.squeak_db.get_squeak_entry(squeak_hash)
-        squeak = squeak_entry.squeak
+        squeak = self.squeak_db.get_squeak(squeak_hash)
         decrypted_content = self.squeak_core.get_decrypted_content(
             squeak,
             secret_key,

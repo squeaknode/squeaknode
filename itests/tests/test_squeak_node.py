@@ -91,6 +91,14 @@ def test_make_squeak(admin_stub, signing_profile_id):
     assert len(
         get_squeak_display_entry.author.profile_image) > 0
 
+    # Block time should be within the past hour
+    block_time = datetime.datetime.fromtimestamp(
+        get_squeak_display_entry.block_time,
+    )
+    one_hour = datetime.timedelta(hours=1)
+    assert block_time > datetime.datetime.now() - one_hour
+    assert block_time < datetime.datetime.now() + one_hour
+
     # Get the squeak profile
     squeak_profile = get_squeak_profile(admin_stub, signing_profile_id)
     squeak_profile_address = squeak_profile.address

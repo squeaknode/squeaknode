@@ -1,5 +1,7 @@
 import logging
 
+from squeak.core import CSqueak
+
 from proto import squeak_admin_pb2
 from squeaknode.admin.profile_image_util import bytes_to_base64_string
 from squeaknode.admin.profile_image_util import load_default_profile_image
@@ -13,7 +15,6 @@ from squeaknode.core.sent_payment_summary import SentPaymentSummary
 from squeaknode.core.squeak_entry_with_profile import SqueakEntryWithProfile
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
-from squeaknode.core.util import get_hash
 from squeaknode.network.peer import Peer
 
 logger = logging.getLogger(__name__)
@@ -21,36 +22,33 @@ logger = logging.getLogger(__name__)
 
 DEFAULT_PROFILE_IMAGE = load_default_profile_image()
 
+#  TODO: Remove this after reply is nullable column
+EMPTY_HASH = b'\x00' * 32
+
 
 def squeak_entry_to_message(squeak_entry_with_profile: SqueakEntryWithProfile) -> squeak_admin_pb2.SqueakDisplayEntry:
     squeak_entry = squeak_entry_with_profile.squeak_entry
-    squeak = squeak_entry.squeak
-    block_header = squeak_entry.block_header
-    liked_time_s = squeak_entry.liked_time or 0
-    is_unlocked = squeak.HasDecryptionKey()
-    content_str = squeak_entry.content if is_unlocked else None
-    is_reply = squeak.is_reply
-    reply_to = squeak.hashReplySqk.hex() if is_reply else None
-    author_address = str(squeak.GetAddress())
     squeak_profile = squeak_entry_with_profile.squeak_profile
+    is_reply = squeak_entry.reply_to != EMPTY_HASH
+    reply_to = squeak_entry.reply_to.hex() if squeak_entry.reply_to else None
     is_author_known = False
     profile_msg = None
     if squeak_profile is not None:
         is_author_known = True
         profile_msg = squeak_profile_to_message(squeak_profile)
     return squeak_admin_pb2.SqueakDisplayEntry(
-        squeak_hash=get_hash(squeak).hex(),
-        is_unlocked=squeak.HasDecryptionKey(),
-        content_str=content_str,  # type: ignore
-        block_height=squeak.nBlockHeight,
-        block_hash=squeak.hashBlock.hex(),
-        block_time=block_header.nTime,
+        squeak_hash=squeak_entry.squeak_hash.hex(),
+        is_unlocked=squeak_entry.is_unlocked,
+        content_str=squeak_entry.content,  # type: ignore
+        block_height=squeak_entry.block_height,
+        block_hash=squeak_entry.block_hash.hex(),
+        block_time=squeak_entry.block_time,
         is_reply=is_reply,
-        reply_to=reply_to,
-        author_address=author_address,
+        reply_to=reply_to,  # type: ignore
+        author_address=squeak_entry.address,
         is_author_known=is_author_known,
         author=profile_msg,
-        liked_time_s=liked_time_s,
+        liked_time_s=squeak_entry.liked_time,  # type: ignore
     )
 
 
@@ -116,9 +114,7 @@ def sent_payment_to_message(sent_payment: SentPayment) -> squeak_admin_pb2.SentP
     )
 
 
-def squeak_entry_to_detail_message(squeak_entry_with_profile: SqueakEntryWithProfile) -> squeak_admin_pb2.SqueakDetailEntry:
-    squeak_entry = squeak_entry_with_profile.squeak_entry
-    squeak = squeak_entry.squeak
+def squeak_to_detail_message(squeak: CSqueak) -> squeak_admin_pb2.SqueakDetailEntry:
     serialized_squeak = squeak.serialize()
     return squeak_admin_pb2.SqueakDetailEntry(
         serialized_squeak_hex=serialized_squeak.hex(),
