@@ -80,7 +80,6 @@ class SqueakController:
             squeak,
             secret_key,
         )
-        # TODO: set decryption key should also take decrypted content.
         self.squeak_db.set_squeak_decryption_key(
             squeak_hash,
             secret_key,
