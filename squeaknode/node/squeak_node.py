@@ -77,7 +77,7 @@ class SqueakNode:
 
     def initialize_network(self):
         # load the network
-        self.network = self.config.core.network
+        self.network = self.config.node.network
         SelectParams(self.network)
 
     def initialize_db(self):
@@ -120,14 +120,14 @@ class SqueakNode:
     def initialize_rate_limiter(self):
         self.squeak_rate_limiter = SqueakRateLimiter(
             self.squeak_db,
-            self.config.core.max_squeaks_per_address_per_block,
+            self.config.node.max_squeaks_per_address_per_block,
         )
 
     def initialize_payment_processor(self):
         self.payment_processor = PaymentProcessor(
             self.squeak_db,
             self.squeak_core,
-            self.config.core.subscribe_invoices_retry_s,
+            self.config.node.subscribe_invoices_retry_s,
         )
 
     def initialize_network_manager(self):
@@ -182,13 +182,13 @@ class SqueakNode:
     def initialize_squeak_deletion_worker(self):
         self.squeak_deletion_worker = SqueakDeletionWorker(
             self.squeak_controller,
-            self.config.core.squeak_deletion_interval_s,
+            self.config.node.squeak_deletion_interval_s,
         )
 
     def initialize_offer_expiry_worker(self):
         self.offer_expiry_worker = SqueakOfferExpiryWorker(
             self.squeak_controller,
-            self.config.core.offer_deletion_interval_s,
+            self.config.node.offer_deletion_interval_s,
         )
 
     def initialize_new_squeak_worker(self):

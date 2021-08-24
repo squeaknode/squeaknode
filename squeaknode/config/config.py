@@ -90,8 +90,8 @@ class WebadminConfig(Config):
     allow_cors = key(cast=bool, required=False, default=False)
 
 
-@section('core')
-class CoreConfig(Config):
+@section('node')
+class NodeConfig(Config):
     network = key(
         cast=str, required=False, default=DEFAULT_NETWORK)
     default_peer_rpc_port = key(
@@ -131,7 +131,7 @@ class SqueaknodeConfig(Config):
     server = group_key(ServerConfig)
     admin = group_key(AdminConfig)
     webadmin = group_key(WebadminConfig)
-    core = group_key(CoreConfig)
+    node = group_key(NodeConfig)
     db = group_key(DbConfig)
     # description = key(cast=str, section_name="general")
 

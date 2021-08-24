@@ -24,7 +24,7 @@ def config():
 @pytest.fixture
 def regtest_config():
     squeaknode_config = SqueaknodeConfig(
-        dict_config={'core': {'network': 'regtest'}}
+        dict_config={'node': {'network': 'regtest'}}
     )
     squeaknode_config.read()
     return squeaknode_config
