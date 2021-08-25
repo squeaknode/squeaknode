@@ -12,7 +12,7 @@ from squeaknode.core.received_payment_summary import ReceivedPaymentSummary
 from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.sent_payment import SentPayment
 from squeaknode.core.sent_payment_summary import SentPaymentSummary
-from squeaknode.core.squeak_entry_with_profile import SqueakEntryWithProfile
+from squeaknode.core.squeak_entry import SqueakEntry
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.network.peer import Peer
@@ -22,13 +22,9 @@ logger = logging.getLogger(__name__)
 
 DEFAULT_PROFILE_IMAGE = load_default_profile_image()
 
-#  TODO: Remove this after reply is nullable column
-# EMPTY_HASH = b'\x00' * 32
 
-
-def squeak_entry_to_message(squeak_entry_with_profile: SqueakEntryWithProfile) -> squeak_admin_pb2.SqueakDisplayEntry:
-    squeak_entry = squeak_entry_with_profile.squeak_entry
-    squeak_profile = squeak_entry_with_profile.squeak_profile
+def squeak_entry_to_message(squeak_entry: SqueakEntry) -> squeak_admin_pb2.SqueakDisplayEntry:
+    squeak_profile = squeak_entry.squeak_profile
     is_reply = bool(squeak_entry.reply_to)
     reply_to = squeak_entry.reply_to.hex() if squeak_entry.reply_to else None
     is_author_known = False

@@ -23,7 +23,6 @@ from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.sent_payment import SentPayment
 from squeaknode.core.sent_payment_summary import SentPaymentSummary
 from squeaknode.core.squeak_entry import SqueakEntry
-from squeaknode.core.squeak_entry_with_profile import SqueakEntryWithProfile
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.util import get_hash
@@ -195,17 +194,6 @@ class SqueakDb:
             return self._parse_squeak(row)
 
     def get_squeak_entry(self, squeak_hash: bytes) -> Optional[SqueakEntry]:
-        """ Get a squeak. """
-        s = select([self.squeaks]).where(
-            self.squeaks.c.hash == squeak_hash)
-        with self.get_connection() as connection:
-            result = connection.execute(s)
-            row = result.fetchone()
-            if row is None:
-                return None
-            return self._parse_squeak_entry(row)
-
-    def get_squeak_entry_with_profile(self, squeak_hash: bytes) -> Optional[SqueakEntryWithProfile]:
         """ Get a squeak with the author profile. """
         s = (
             select([self.squeaks, self.profiles])
@@ -222,9 +210,9 @@ class SqueakDb:
             row = result.fetchone()
             if row is None:
                 return None
-            return self._parse_squeak_entry_with_profile(row)
+            return self._parse_squeak_entry(row)
 
-    def get_timeline_squeak_entries_with_profile(self) -> List[SqueakEntryWithProfile]:
+    def get_timeline_squeak_entries(self) -> List[SqueakEntry]:
         """ Get all followed squeaks. """
         s = (
             select([self.squeaks, self.profiles])
@@ -242,9 +230,9 @@ class SqueakDb:
         with self.get_connection() as connection:
             result = connection.execute(s)
             rows = result.fetchall()
-            return [self._parse_squeak_entry_with_profile(row) for row in rows]
+            return [self._parse_squeak_entry(row) for row in rows]
 
-    def get_liked_squeak_entries_with_profile(self) -> List[SqueakEntryWithProfile]:
+    def get_liked_squeak_entries(self) -> List[SqueakEntry]:
         """ Get liked squeaks. """
         s = (
             select([self.squeaks, self.profiles])
@@ -264,11 +252,11 @@ class SqueakDb:
         with self.get_connection() as connection:
             result = connection.execute(s)
             rows = result.fetchall()
-            return [self._parse_squeak_entry_with_profile(row) for row in rows]
+            return [self._parse_squeak_entry(row) for row in rows]
 
-    def get_squeak_entries_with_profile_for_address(
+    def get_squeak_entries_for_address(
         self, address: str, min_block: int, max_block: int
-    ) -> List[SqueakEntryWithProfile]:
+    ) -> List[SqueakEntry]:
         """ Get a squeak. """
         s = (
             select([self.squeaks, self.profiles])
@@ -289,9 +277,9 @@ class SqueakDb:
         with self.get_connection() as connection:
             result = connection.execute(s)
             rows = result.fetchall()
-            return [self._parse_squeak_entry_with_profile(row) for row in rows]
+            return [self._parse_squeak_entry(row) for row in rows]
 
-    def get_thread_ancestor_squeak_entries_with_profile(self, squeak_hash: bytes) -> List[SqueakEntryWithProfile]:
+    def get_thread_ancestor_squeak_entries(self, squeak_hash: bytes) -> List[SqueakEntry]:
         """ Get all reply ancestors of squeak hash. """
         ancestors = (
             select(
@@ -335,7 +323,7 @@ class SqueakDb:
         with self.get_connection() as connection:
             result = connection.execute(s)
             rows = result.fetchall()
-            return [self._parse_squeak_entry_with_profile(row) for row in rows]
+            return [self._parse_squeak_entry(row) for row in rows]
 
         # sql = """
         # WITH RECURSIVE is_thread_ancestor(hash, depth) AS (
@@ -357,7 +345,7 @@ class SqueakDb:
         #     rows = curs.fetchall()
         #     return [self._parse_squeak_entry_with_profile(row) for row in rows]
 
-    def get_thread_reply_squeak_entries_with_profile(self, squeak_hash: bytes) -> List[SqueakEntryWithProfile]:
+    def get_thread_reply_squeak_entries(self, squeak_hash: bytes) -> List[SqueakEntry]:
         """ Get all replies for a squeak hash. """
         s = (
             select([self.squeaks, self.profiles])
@@ -376,7 +364,7 @@ class SqueakDb:
         with self.get_connection() as connection:
             result = connection.execute(s)
             rows = result.fetchall()
-            return [self._parse_squeak_entry_with_profile(row) for row in rows]
+            return [self._parse_squeak_entry(row) for row in rows]
 
     def lookup_squeaks(
         self,
@@ -495,7 +483,7 @@ class SqueakDb:
     def get_old_squeaks_to_delete(
             self,
             interval_s: int,
-    ) -> List[SqueakEntryWithProfile]:
+    ) -> List[bytes]:
         """ Get squeaks older than retention that meet the
         criteria for deletion.
         """
@@ -514,7 +502,8 @@ class SqueakDb:
         with self.get_connection() as connection:
             result = connection.execute(s)
             rows = result.fetchall()
-            return [self._parse_squeak_entry_with_profile(row) for row in rows]
+            hashes = [(row["hash"]) for row in rows]
+            return hashes
 
     def insert_profile(self, squeak_profile: SqueakProfile) -> int:
         """ Insert a new squeak profile. """
@@ -1107,6 +1096,7 @@ class SqueakDb:
             row["hash_reply_sqk"]) if row["hash_reply_sqk"] else None
         liked_time = row["liked_time"]
         liked_time_s = int(liked_time.timestamp()) if liked_time else None
+        profile = self._try_parse_squeak_profile(row)
         return SqueakEntry(
             squeak_hash=(row["hash"]),
             address=row["author_address"],
@@ -1117,6 +1107,7 @@ class SqueakDb:
             is_unlocked=is_locked,
             liked_time=liked_time_s,
             content=row["content"],
+            squeak_profile=profile,
         )
 
     def _parse_squeak_profile(self, row) -> SqueakProfile:
@@ -1131,16 +1122,10 @@ class SqueakDb:
             profile_image=row["profile_image"],
         )
 
-    def _parse_squeak_entry_with_profile(self, row) -> SqueakEntryWithProfile:
-        squeak_entry = self._parse_squeak_entry(row)
+    def _try_parse_squeak_profile(self, row) -> Optional[SqueakProfile]:
         if row["profile_id"] is None:
-            squeak_profile = None
-        else:
-            squeak_profile = self._parse_squeak_profile(row)
-        return SqueakEntryWithProfile(
-            squeak_entry=squeak_entry,
-            squeak_profile=squeak_profile,
-        )
+            return None
+        return self._parse_squeak_profile(row)
 
     def _parse_squeak_peer(self, row) -> SqueakPeer:
         return SqueakPeer(

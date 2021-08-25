@@ -24,10 +24,9 @@ from squeaknode.core.received_payment_summary import ReceivedPaymentSummary
 from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.sent_payment import SentPayment
 from squeaknode.core.sent_payment_summary import SentPaymentSummary
-from squeaknode.core.squeak_entry_with_profile import SqueakEntryWithProfile
+from squeaknode.core.squeak_entry import SqueakEntry
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
-from squeaknode.core.util import get_hash
 from squeaknode.core.util import is_address_valid
 from squeaknode.node.new_squeak_listener import NewSqueakListener
 from squeaknode.node.new_squeak_listener import NewSqueakSubscriptionClient
@@ -371,35 +370,35 @@ class SqueakController:
     def get_offer(self, squeak: CSqueak, offer: Offer, peer_address: PeerAddress) -> ReceivedOffer:
         return self.squeak_core.unpack_offer(squeak, offer, peer_address)
 
-    def get_squeak_entry_with_profile(self, squeak_hash: bytes) -> Optional[SqueakEntryWithProfile]:
-        return self.squeak_db.get_squeak_entry_with_profile(squeak_hash)
+    def get_squeak_entry(self, squeak_hash: bytes) -> Optional[SqueakEntry]:
+        return self.squeak_db.get_squeak_entry(squeak_hash)
 
-    def get_timeline_squeak_entries_with_profile(self):
-        return self.squeak_db.get_timeline_squeak_entries_with_profile()
+    def get_timeline_squeak_entries(self) -> List[SqueakEntry]:
+        return self.squeak_db.get_timeline_squeak_entries()
 
-    def get_liked_squeak_entries_with_profile(self):
-        return self.squeak_db.get_liked_squeak_entries_with_profile()
+    def get_liked_squeak_entries(self) -> List[SqueakEntry]:
+        return self.squeak_db.get_liked_squeak_entries()
 
-    def get_squeak_entries_with_profile_for_address(
+    def get_squeak_entries_for_address(
         self, address: str, min_block: int, max_block: int
-    ):
-        return self.squeak_db.get_squeak_entries_with_profile_for_address(
+    ) -> List[SqueakEntry]:
+        return self.squeak_db.get_squeak_entries_for_address(
             address,
             min_block,
             max_block,
         )
 
-    def get_ancestor_squeak_entries_with_profile(self, squeak_hash: bytes):
-        return self.squeak_db.get_thread_ancestor_squeak_entries_with_profile(
+    def get_ancestor_squeak_entries(self, squeak_hash: bytes) -> List[SqueakEntry]:
+        return self.squeak_db.get_thread_ancestor_squeak_entries(
             squeak_hash,
         )
 
-    def get_reply_squeak_entries_with_profile(self, squeak_hash: bytes):
-        return self.squeak_db.get_thread_reply_squeak_entries_with_profile(
+    def get_reply_squeak_entries(self, squeak_hash: bytes) -> List[SqueakEntry]:
+        return self.squeak_db.get_thread_reply_squeak_entries(
             squeak_hash,
         )
 
-    def lookup_squeaks(self, addresses: List[str], min_block: int, max_block: int):
+    def lookup_squeaks(self, addresses: List[str], min_block: int, max_block: int) -> List[bytes]:
         return self.squeak_db.lookup_squeaks(
             addresses,
             min_block,
@@ -434,9 +433,7 @@ class SqueakController:
         squeaks_to_delete = self.squeak_db.get_old_squeaks_to_delete(
             self.config.node.squeak_retention_s,
         )
-        for squeak_entry_with_profile in squeaks_to_delete:
-            squeak = squeak_entry_with_profile.squeak_entry.squeak
-            squeak_hash = get_hash(squeak)
+        for squeak_hash in squeaks_to_delete:
             self.squeak_db.delete_squeak(
                 squeak_hash,
             )
