@@ -44,26 +44,30 @@ class PeerMessageHandler:
         """Handle messages from a peer with completed handshake."""
         if msg.command == b'ping':
             self.handle_ping(msg)
-        if msg.command == b'pong':
+        elif msg.command == b'pong':
             self.handle_pong(msg)
-        if msg.command == b'addr':
+        elif msg.command == b'addr':
             self.handle_addr(msg)
-        if msg.command == b'getaddr':
+        elif msg.command == b'getaddr':
             self.handle_getaddr(msg)
-        if msg.command == b'inv':
+        elif msg.command == b'inv':
             self.handle_inv(msg)
-        if msg.command == b'getsqueaks':
+        elif msg.command == b'getsqueaks':
             self.handle_getsqueaks(msg)
-        if msg.command == b'squeak':
+        elif msg.command == b'squeak':
             self.handle_squeak(msg)
-        if msg.command == b'getdata':
+        elif msg.command == b'getdata':
             self.handle_getdata(msg)
-        if msg.command == b'notfound':
+        elif msg.command == b'notfound':
             self.handle_notfound(msg)
-        if msg.command == b'offer':
+        elif msg.command == b'offer':
             self.handle_offer(msg)
-        if msg.command == b'subscribe':
+        elif msg.command == b'subscribe':
             self.handle_subscribe(msg)
+        else:
+            raise Exception("Unrecognized message: {}".format(
+                msg.command
+            ))
 
     def handle_ping(self, msg):
         nonce = msg.nonce
