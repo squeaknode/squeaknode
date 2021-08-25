@@ -1,5 +1,8 @@
 import logging
+import socket
 import threading
+
+from squeaknode.core.peer_address import PeerAddress
 
 
 logger = logging.getLogger(__name__)
@@ -18,7 +21,7 @@ class PeerHandler():
         self.squeak_controller = squeak_controller
         self.handle_connection_fn = handle_connection_fn
 
-    def handle_connection(self, peer_socket, address, outgoing):
+    def handle_connection(self, peer_socket: socket.socket, address: PeerAddress, outgoing: bool):
         threading.Thread(
             target=self.handle_connection_fn,
             args=(self.squeak_controller, peer_socket, address, outgoing,),

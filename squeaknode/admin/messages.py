@@ -161,7 +161,7 @@ def payment_summary_to_message(
 
 def connected_peer_to_message(connected_peer: Peer) -> squeak_admin_pb2.ConnectedPeer:
     return squeak_admin_pb2.ConnectedPeer(
-        peer_address=peer_address_to_message(connected_peer.peer_address),
+        peer_address=peer_address_to_message(connected_peer.address),
         connect_time_s=connected_peer.connect_time,
     )
 

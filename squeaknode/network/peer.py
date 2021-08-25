@@ -36,7 +36,7 @@ class Peer(object):
     """Maintains the internal state of a peer connection.
     """
 
-    def __init__(self, peer_socket, address, outgoing=False):
+    def __init__(self, peer_socket: socket.socket, address: PeerAddress, outgoing: bool):
         time_now = int(time.time())
         self._peer_socket = peer_socket
         self._peer_socket_lock = threading.Lock()
@@ -49,7 +49,7 @@ class Peer(object):
         self._last_sent_ping_nonce = None
         self._last_sent_ping_time = None
         self._last_recv_ping_time = None
-        self._recv_msg_queue = queue.Queue()
+        self._recv_msg_queue: queue.Queue = queue.Queue()
 
         self._subscription = None
 
@@ -72,31 +72,30 @@ class Peer(object):
     def subscription(self):
         return self._subscription
 
-    @property
-    def peer_address(self):
-        # TODO: Just return the peer address object
-        ip, port = self._address
-        return PeerAddress(
-            host=ip,
-            port=port,
-        )
+    # @property
+    # def peer_address(self) -> PeerAddress:
+    #     # TODO: Just return the peer address object
+    #     ip, port = self._address
+    #     return PeerAddress(
+    #         host=ip,
+    #         port=port,
+    #     )
 
-    @property
-    def address_string(self):
-        ip, port = self._address
-        return '{}:{}'.format(ip, port)
+    # @property
+    # def address_string(self):
+    #     return '{}:{}'.format(self.address.host, self.address.port)
 
-    @property
-    def ip(self):
-        # TODO: Just return self._address.host
-        ip, _ = self._address
-        return ip
+    # @property
+    # def ip(self):
+    #     # TODO: Just return self._address.host
+    #     ip, _ = self._address
+    #     return ip
 
-    @property
-    def port(self):
-        # TODO: Just return self._address.port
-        _, port = self._address
-        return port
+    # @property
+    # def port(self):
+    #     # TODO: Just return self._address.port
+    #     _, port = self._address
+    #     return port
 
     @property
     def caddress(self):
@@ -267,7 +266,7 @@ class Peer(object):
             logger.debug('Closed connection to peer {} ...'.format(self))
 
     def __repr__(self):
-        return "Peer(%s)" % (self.address_string)
+        return "Peer(%s)" % (str(self.address))
 
 
 class MessageDecoder:
