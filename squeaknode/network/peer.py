@@ -83,31 +83,6 @@ class Peer(object):
     def subscription(self):
         return self._subscription
 
-    # @property
-    # def peer_address(self) -> PeerAddress:
-    #     # TODO: Just return the peer address object
-    #     ip, port = self._address
-    #     return PeerAddress(
-    #         host=ip,
-    #         port=port,
-    #     )
-
-    # @property
-    # def address_string(self):
-    #     return '{}:{}'.format(self.address.host, self.address.port)
-
-    # @property
-    # def ip(self):
-    #     # TODO: Just return self._address.host
-    #     ip, _ = self._address
-    #     return ip
-
-    # @property
-    # def port(self):
-    #     # TODO: Just return self._address.port
-    #     _, port = self._address
-    #     return port
-
     @property
     def local_caddress(self):
         caddress = CAddress()
@@ -240,21 +215,11 @@ class Peer(object):
     def version_pkt(self, squeak_controller):
         """Get the version message for this peer."""
         msg = msg_version()
-        # local_ip, local_port = squeak_controller.get_address()
-        # server_ip, server_port = squeak_controller.get_remote_address(
-        #     self.address)
         msg.nVersion = HANDSHAKE_VERSION
         msg.addrTo = self.remote_caddress
         msg.addrFrom = self.local_caddress
         msg.nNonce = generate_version_nonce()
         return msg
-
-    # def get_local_caddress(self, squeak_controller) -> CAddress:
-    #     local_address = squeak_controller.get_local_address()
-    #     caddr = CAddress()
-    #     caddr.ip = socket.gethostbyname(local_address.host)
-    #     caddr.port = local_address.port
-    #     return caddr
 
     def update_subscription(self, squeak_controller):
         locator = squeak_controller.get_interested_locator()
