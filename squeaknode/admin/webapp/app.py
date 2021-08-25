@@ -144,6 +144,7 @@ class SqueakAdminWebServer:
             self.host,
             self.port,
             self.get_app(),
+            threaded=True,
             ssl_context="adhoc" if self.use_ssl else None,
         )
 
