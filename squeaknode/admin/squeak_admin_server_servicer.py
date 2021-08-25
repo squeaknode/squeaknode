@@ -203,7 +203,7 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         stopped = threading.Event()
 
         def on_rpc_done():
-            logger.info("Called on_rpc_done using add_callback.")
+            logger.info("Stopping SubscribeReceivedPayments.")
             stopped.set()
         context.add_callback(on_rpc_done)
         return self.handler.handle_subscribe_received_payments(
@@ -245,7 +245,7 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         stopped = threading.Event()
 
         def on_rpc_done():
-            logger.info("Called on_rpc_done using add_callback.")
+            logger.info("Stopping SubscribeConnectedPeers.")
             stopped.set()
         context.add_callback(on_rpc_done)
         return self.handler.handle_subscribe_connected_peers(
