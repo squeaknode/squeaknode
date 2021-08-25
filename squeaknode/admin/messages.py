@@ -23,13 +23,13 @@ logger = logging.getLogger(__name__)
 DEFAULT_PROFILE_IMAGE = load_default_profile_image()
 
 #  TODO: Remove this after reply is nullable column
-EMPTY_HASH = b'\x00' * 32
+# EMPTY_HASH = b'\x00' * 32
 
 
 def squeak_entry_to_message(squeak_entry_with_profile: SqueakEntryWithProfile) -> squeak_admin_pb2.SqueakDisplayEntry:
     squeak_entry = squeak_entry_with_profile.squeak_entry
     squeak_profile = squeak_entry_with_profile.squeak_profile
-    is_reply = squeak_entry.reply_to != EMPTY_HASH
+    is_reply = bool(squeak_entry.reply_to)
     reply_to = squeak_entry.reply_to.hex() if squeak_entry.reply_to else None
     is_author_known = False
     profile_msg = None
