@@ -90,6 +90,8 @@ def test_make_squeak(admin_stub, signing_profile_id):
     assert get_squeak_display_entry.HasField("author")
     assert len(
         get_squeak_display_entry.author.profile_image) > 0
+    assert not get_squeak_display_entry.is_reply
+    assert not bool(get_squeak_display_entry.reply_to)
 
     # Block time should be within the past hour
     block_time = datetime.datetime.fromtimestamp(
