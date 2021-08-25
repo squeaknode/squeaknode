@@ -115,21 +115,6 @@ class NetworkManager(object):
             self.local_port,
         )
 
-    # def register_peers_changed_callback(self, callback, stopped: threading.Event):
-    #     """Registers a callback that gets called when connected peers changes.
-    #     """
-    #     name = "peers_changed_callback_{}".format(uuid.uuid1()),
-    #     self.connection_manager.add_peers_changed_callback(
-    #         name=name,
-    #         callback=callback,
-    #     )
-    #     try:
-    #         stopped.wait()
-    #     finally:
-    #         self.connection_manager.remove_peers_changed_callback(
-    #             name=name,
-    #         )
-
     def subscribe_connected_peers(self, stopped):
         subscription_client = ConnectedPeersSubscriptionClient(
             self.connection_manager,
