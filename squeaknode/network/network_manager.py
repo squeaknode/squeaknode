@@ -78,7 +78,13 @@ class NetworkManager(object):
                     peer,
                 ))
 
-    def handle_connection(self, squeak_controller, peer_socket, address, outgoing):
+    def handle_connection(
+            self,
+            squeak_controller,
+            peer_socket: socket.socket,
+            address: PeerAddress,
+            outgoing: bool,
+    ):
         """Handles all sending and receiving of messages for the given peer.
 
         This method blocks until the peer connection has stopped.
@@ -95,15 +101,11 @@ class NetworkManager(object):
                 self.connection_manager.remove_peer(peer)
         logger.debug('Stopped controller for peer address {}.'.format(address))
 
-    def get_address(self):
-        # TODO: Add return type.
-        return (self.peer_server.ip, self.peer_server.port)
-
-    def get_remote_address(self, address):
-        # TODO: Add return type.
-        hostname, port = address
-        ip = socket.gethostbyname(hostname)
-        return (ip, port)
+    def get_address(self) -> PeerAddress:
+        return PeerAddress(
+            self.peer_server.ip,
+            self.peer_server.port,
+        )
 
     # def register_peers_changed_callback(self, callback, stopped: threading.Event):
     #     """Registers a callback that gets called when connected peers changes.

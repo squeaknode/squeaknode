@@ -42,20 +42,6 @@ class PeerMessageHandler:
 
     def handle_peer_message(self, msg):
         """Handle messages from a peer with completed handshake."""
-
-        # # Only allow version and verack messages before handshake is complete.
-        # if not self.peer.is_handshake_complete and msg.command not in [
-        #         b'version',
-        #         b'verack',
-        # ]:
-        #     raise Exception(
-        #         'Received non-handshake message from un-handshaked peer.')
-
-        # if msg.command == b'version':
-        #     self.handle_version(msg)
-        # if msg.command == b'verack':
-        #     self.handle_verack(msg)
-
         if msg.command == b'ping':
             self.handle_ping(msg)
         if msg.command == b'pong':

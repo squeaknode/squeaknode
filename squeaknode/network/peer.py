@@ -16,6 +16,7 @@ from squeak.messages import MsgSerializable
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.util import generate_version_nonce
 from squeaknode.network.peer_message_handler import PeerMessageHandler
+from squeaknode.network.util import time_now
 
 
 MAX_MESSAGE_LEN = 1048576
@@ -37,12 +38,11 @@ class Peer(object):
     """
 
     def __init__(self, peer_socket: socket.socket, address: PeerAddress, outgoing: bool):
-        time_now = int(time.time())
         self._peer_socket = peer_socket
         self._peer_socket_lock = threading.Lock()
         self._address = address
         self._outgoing = outgoing
-        self._connect_time = time_now
+        self._connect_time = None
         self._local_version = None
         self._remote_version = None
         self._last_msg_revc_time = None
@@ -99,11 +99,10 @@ class Peer(object):
 
     @property
     def caddress(self):
-        ip, port = self._address
         caddress = CAddress()
         caddress.nTime = self.connect_time
-        caddress.ip = ip
-        caddress.port = port
+        caddress.ip = socket.gethostbyname(self.address.host)
+        caddress.port = self.address.port
         return caddress
 
     @property
@@ -222,16 +221,27 @@ class Peer(object):
     def version_pkt(self, squeak_controller):
         """Get the version message for this peer."""
         msg = msg_version()
-        local_ip, local_port = squeak_controller.get_address()
-        server_ip, server_port = squeak_controller.get_remote_address(
-            self.address)
+        # local_ip, local_port = squeak_controller.get_address()
+        # server_ip, server_port = squeak_controller.get_remote_address(
+        #     self.address)
         msg.nVersion = HANDSHAKE_VERSION
-        msg.addrTo.ip = server_ip
-        msg.addrTo.port = server_port
-        msg.addrFrom.ip = local_ip
-        msg.addrFrom.port = local_port
+        msg.addrTo = self.get_remote_caddress()
+        msg.addrFrom = self.get_local_caddress(squeak_controller)
         msg.nNonce = generate_version_nonce()
         return msg
+
+    def get_remote_caddress(self) -> CAddress:
+        caddr = CAddress()
+        caddr.ip = socket.gethostbyname(self.address.host)
+        caddr.port = self.address.port
+        return caddr
+
+    def get_local_caddress(self, squeak_controller) -> CAddress:
+        local_address = squeak_controller.get_address()
+        caddr = CAddress()
+        caddr.ip = socket.gethostbyname(local_address.host)
+        caddr.port = local_address.port
+        return caddr
 
     def update_subscription(self, squeak_controller):
         locator = squeak_controller.get_interested_locator()
@@ -239,6 +249,9 @@ class Peer(object):
             locator=locator,
         )
         self.send_msg(subscribe_msg)
+
+    def set_connected(self):
+        self._connect_time = time_now()
 
     def set_subscription(self, subscription):
         self._subscription = subscription
@@ -260,6 +273,7 @@ class Peer(object):
             ).start()
             self.handshake(squeak_controller)
             self.update_subscription(squeak_controller)
+            self.set_connected()
             yield self
         finally:
             self.close()
