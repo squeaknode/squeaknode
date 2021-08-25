@@ -267,33 +267,33 @@ class SqueakAdminServerHandler(object):
         squeak_hash = bytes.fromhex(squeak_hash_str)
         logger.info(
             "Handle get squeak display entry for hash: {}".format(squeak_hash_str))
-        squeak_entry_with_profile = (
-            self.squeak_controller.get_squeak_entry_with_profile(
+        squeak_entry = (
+            self.squeak_controller.get_squeak_entry(
                 squeak_hash
             )
         )
-        if squeak_entry_with_profile is None:
+        if squeak_entry is None:
             return squeak_admin_pb2.GetSqueakDisplayReply(
                 squeak_display_entry=None
             )
         display_message = squeak_entry_to_message(
-            squeak_entry_with_profile)
+            squeak_entry)
         return squeak_admin_pb2.GetSqueakDisplayReply(
             squeak_display_entry=display_message
         )
 
     def handle_get_timeline_squeak_display_entries(self, request):
         logger.info("Handle get timeline squeak display entries.")
-        squeak_entries_with_profile = (
-            self.squeak_controller.get_timeline_squeak_entries_with_profile()
+        squeak_entries = (
+            self.squeak_controller.get_timeline_squeak_entries()
         )
         logger.info(
             "Got number of timeline squeak entries: {}".format(
-                len(squeak_entries_with_profile)
+                len(squeak_entries)
             )
         )
         squeak_display_msgs = [
-            squeak_entry_to_message(entry) for entry in squeak_entries_with_profile
+            squeak_entry_to_message(entry) for entry in squeak_entries
         ]
         return squeak_admin_pb2.GetTimelineSqueakDisplaysReply(
             squeak_display_entries=squeak_display_msgs
@@ -305,8 +305,8 @@ class SqueakAdminServerHandler(object):
         max_block = sys.maxsize
         logger.info(
             "Handle get squeak display entries for address: {}".format(address))
-        squeak_entries_with_profile = (
-            self.squeak_controller.get_squeak_entries_with_profile_for_address(
+        squeak_entries = (
+            self.squeak_controller.get_squeak_entries_for_address(
                 address,
                 min_block,
                 max_block,
@@ -314,11 +314,11 @@ class SqueakAdminServerHandler(object):
         )
         logger.info(
             "Got number of squeak entries for address: {}".format(
-                len(squeak_entries_with_profile)
+                len(squeak_entries)
             )
         )
         squeak_display_msgs = [
-            squeak_entry_to_message(entry) for entry in squeak_entries_with_profile
+            squeak_entry_to_message(entry) for entry in squeak_entries
         ]
         return squeak_admin_pb2.GetAddressSqueakDisplaysReply(
             squeak_display_entries=squeak_display_msgs
@@ -332,18 +332,18 @@ class SqueakAdminServerHandler(object):
                 squeak_hash_str
             )
         )
-        squeak_entries_with_profile = (
-            self.squeak_controller.get_ancestor_squeak_entries_with_profile(
+        squeak_entries = (
+            self.squeak_controller.get_ancestor_squeak_entries(
                 squeak_hash,
             )
         )
         logger.info(
             "Got number of ancestor squeak entries: {}".format(
-                len(squeak_entries_with_profile)
+                len(squeak_entries)
             )
         )
         squeak_display_msgs = [
-            squeak_entry_to_message(entry) for entry in squeak_entries_with_profile
+            squeak_entry_to_message(entry) for entry in squeak_entries
         ]
         return squeak_admin_pb2.GetAncestorSqueakDisplaysReply(
             squeak_display_entries=squeak_display_msgs
@@ -357,18 +357,18 @@ class SqueakAdminServerHandler(object):
                 squeak_hash_str
             )
         )
-        squeak_entries_with_profile = (
-            self.squeak_controller.get_reply_squeak_entries_with_profile(
+        squeak_entries = (
+            self.squeak_controller.get_reply_squeak_entries(
                 squeak_hash,
             )
         )
         logger.info(
             "Got number of reply squeak entries: {}".format(
-                len(squeak_entries_with_profile)
+                len(squeak_entries)
             )
         )
         squeak_display_msgs = [
-            squeak_entry_to_message(entry) for entry in squeak_entries_with_profile
+            squeak_entry_to_message(entry) for entry in squeak_entries
         ]
         return squeak_admin_pb2.GetReplySqueakDisplaysReply(
             squeak_display_entries=squeak_display_msgs
@@ -643,11 +643,11 @@ class SqueakAdminServerHandler(object):
 
     def handle_get_liked_squeak_display_entries(self, request):
         logger.info("Handle get liked squeak display entries.")
-        squeak_entries_with_profile = (
-            self.squeak_controller.get_liked_squeak_entries_with_profile()
+        squeak_entries = (
+            self.squeak_controller.get_liked_squeak_entries()
         )
         squeak_display_msgs = [
-            squeak_entry_to_message(entry) for entry in squeak_entries_with_profile
+            squeak_entry_to_message(entry) for entry in squeak_entries
         ]
         return squeak_admin_pb2.GetTimelineSqueakDisplaysReply(
             squeak_display_entries=squeak_display_msgs
