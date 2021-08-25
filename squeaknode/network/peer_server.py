@@ -2,8 +2,6 @@ import logging
 import socket
 import threading
 
-import squeak.params
-
 from squeaknode.core.peer_address import PeerAddress
 
 
@@ -19,10 +17,9 @@ class PeerServer(object):
     """Maintains connections to other peers in the network.
     """
 
-    def __init__(self, peer_handler, port=None):
+    def __init__(self, peer_handler, port):
         self.peer_handler = peer_handler
-        self.ip = socket.gethostbyname('localhost')
-        self.port = port or squeak.params.params.DEFAULT_PORT
+        self.port = port
         self.listen_socket = socket.socket()
 
     def start(self):

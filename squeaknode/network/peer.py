@@ -37,10 +37,17 @@ class Peer(object):
     """Maintains the internal state of a peer connection.
     """
 
-    def __init__(self, peer_socket: socket.socket, address: PeerAddress, outgoing: bool):
+    def __init__(
+            self,
+            peer_socket: socket.socket,
+            local_address: PeerAddress,
+            remote_address: PeerAddress,
+            outgoing: bool,
+    ):
         self._peer_socket = peer_socket
         self._peer_socket_lock = threading.Lock()
-        self._address = address
+        self._local_address = local_address
+        self._remote_address = remote_address
         self._outgoing = outgoing
         self._connect_time = 0
         self._local_version = None
@@ -65,8 +72,12 @@ class Peer(object):
             return remote_version.nVersion
 
     @property
-    def address(self):
-        return self._address
+    def local_address(self):
+        return self._local_address
+
+    @property
+    def remote_address(self):
+        return self._remote_address
 
     @property
     def subscription(self):
@@ -98,11 +109,19 @@ class Peer(object):
     #     return port
 
     @property
-    def caddress(self):
+    def local_caddress(self):
         caddress = CAddress()
         caddress.nTime = self.connect_time
-        caddress.ip = socket.gethostbyname(self.address.host)
-        caddress.port = self.address.port
+        caddress.ip = self.local_address.host
+        caddress.port = self.local_address.port
+        return caddress
+
+    @property
+    def remote_caddress(self):
+        caddress = CAddress()
+        caddress.nTime = self.connect_time
+        caddress.ip = socket.gethostbyname(self.remote_address.host)
+        caddress.port = self.remote_address.port
         return caddress
 
     @property
@@ -225,17 +244,17 @@ class Peer(object):
         # server_ip, server_port = squeak_controller.get_remote_address(
         #     self.address)
         msg.nVersion = HANDSHAKE_VERSION
-        msg.addrTo = self.caddress
-        msg.addrFrom = self.get_local_caddress(squeak_controller)
+        msg.addrTo = self.remote_caddress
+        msg.addrFrom = self.local_caddress
         msg.nNonce = generate_version_nonce()
         return msg
 
-    def get_local_caddress(self, squeak_controller) -> CAddress:
-        local_address = squeak_controller.get_local_address()
-        caddr = CAddress()
-        caddr.ip = socket.gethostbyname(local_address.host)
-        caddr.port = local_address.port
-        return caddr
+    # def get_local_caddress(self, squeak_controller) -> CAddress:
+    #     local_address = squeak_controller.get_local_address()
+    #     caddr = CAddress()
+    #     caddr.ip = socket.gethostbyname(local_address.host)
+    #     caddr.port = local_address.port
+    #     return caddr
 
     def update_subscription(self, squeak_controller):
         locator = squeak_controller.get_interested_locator()
@@ -274,7 +293,7 @@ class Peer(object):
             logger.debug('Closed connection to peer {} ...'.format(self))
 
     def __repr__(self):
-        return "Peer(%s)" % (str(self.address))
+        return "Peer(%s)" % (str(self.remote_address))
 
 
 class MessageDecoder:

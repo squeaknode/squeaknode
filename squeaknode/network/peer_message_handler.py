@@ -108,7 +108,7 @@ class PeerMessageHandler:
             if inv.type == 2:
                 offer = self.squeak_controller.get_buy_offer(
                     squeak_hash=inv.hash,
-                    peer_address=self.peer.address,
+                    peer_address=self.peer.remote_address,
                 )
                 if offer is None:
                     not_found.append(inv)
@@ -150,7 +150,7 @@ class PeerMessageHandler:
             decoded_offer = self.squeak_controller.get_offer(
                 squeak=squeak,
                 offer=offer,
-                peer_address=self.peer.address,
+                peer_address=self.peer.remote_address,
             )
             self.squeak_controller.save_offer(decoded_offer)
 
