@@ -473,11 +473,8 @@ class SqueakController:
                 peer.address,
             )
 
-    def get_address(self):
-        return self.network_manager.get_address()
-
-    def get_remote_address(self, address):
-        return self.network_manager.get_remote_address(address)
+    def get_local_address(self):
+        return self.network_manager.get_local_address()
 
     def get_connected_peer(self, peer_address: PeerAddress):
         return self.network_manager.get_connected_peer(peer_address)

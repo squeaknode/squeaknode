@@ -42,7 +42,7 @@ class Peer(object):
         self._peer_socket_lock = threading.Lock()
         self._address = address
         self._outgoing = outgoing
-        self._connect_time = None
+        self._connect_time = 0
         self._local_version = None
         self._remote_version = None
         self._last_msg_revc_time = None
@@ -225,19 +225,13 @@ class Peer(object):
         # server_ip, server_port = squeak_controller.get_remote_address(
         #     self.address)
         msg.nVersion = HANDSHAKE_VERSION
-        msg.addrTo = self.get_remote_caddress()
+        msg.addrTo = self.caddress
         msg.addrFrom = self.get_local_caddress(squeak_controller)
         msg.nNonce = generate_version_nonce()
         return msg
 
-    def get_remote_caddress(self) -> CAddress:
-        caddr = CAddress()
-        caddr.ip = socket.gethostbyname(self.address.host)
-        caddr.port = self.address.port
-        return caddr
-
     def get_local_caddress(self, squeak_controller) -> CAddress:
-        local_address = squeak_controller.get_address()
+        local_address = squeak_controller.get_local_address()
         caddr = CAddress()
         caddr.ip = socket.gethostbyname(local_address.host)
         caddr.port = local_address.port

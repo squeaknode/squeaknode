@@ -101,7 +101,7 @@ class NetworkManager(object):
                 self.connection_manager.remove_peer(peer)
         logger.debug('Stopped controller for peer address {}.'.format(address))
 
-    def get_address(self) -> PeerAddress:
+    def get_local_address(self) -> PeerAddress:
         return PeerAddress(
             self.peer_server.ip,
             self.peer_server.port,
