@@ -239,6 +239,10 @@ class Peer(object):
             self, squeak_controller)
         peer_message_handler.handle_msgs()
 
+    def sync(self, squeak_controller):
+        # TODO: getaddrs from peer.
+        self.update_subscription(squeak_controller)
+
     @contextmanager
     def open_connection(self, squeak_controller):
         logger.debug('Setting up peer {} ...'.format(self))
@@ -250,7 +254,6 @@ class Peer(object):
                 args=(),
             ).start()
             self.handshake(squeak_controller)
-            self.update_subscription(squeak_controller)
             self.set_connected()
             yield self
         finally:
