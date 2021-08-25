@@ -2,7 +2,7 @@ import logging
 import socket
 import threading
 
-import squeak.params
+from squeaknode.core.peer_address import PeerAddress
 
 
 MIN_PEERS = 5
@@ -17,10 +17,9 @@ class PeerServer(object):
     """Maintains connections to other peers in the network.
     """
 
-    def __init__(self, peer_handler, port=None):
+    def __init__(self, peer_handler, port):
         self.peer_handler = peer_handler
-        self.ip = socket.gethostbyname('localhost')
-        self.port = port or squeak.params.params.DEFAULT_PORT
+        self.port = port
         self.listen_socket = socket.socket()
 
     def start(self):
@@ -44,8 +43,13 @@ class PeerServer(object):
             self.listen_socket.listen()
             while True:
                 peer_socket, address = self.listen_socket.accept()
+                host, port = address
+                peer_address = PeerAddress(
+                    host=host,
+                    port=port,
+                )
                 peer_socket.setblocking(True)
                 self.peer_handler.handle_connection(
-                    peer_socket, address, outgoing=False)
+                    peer_socket, peer_address, outgoing=False)
         except Exception:
             logger.info("Stopped accepting incoming connections.")

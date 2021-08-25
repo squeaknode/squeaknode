@@ -2,6 +2,8 @@ import logging
 import socket
 import threading
 
+from squeaknode.core.peer_address import PeerAddress
+
 
 SOCKET_CONNECT_TIMEOUT = 5
 
@@ -16,7 +18,7 @@ class PeerClient(object):
     def __init__(self, peer_handler):
         self.peer_handler = peer_handler
 
-    def make_connection(self, address):
+    def make_connection(self, address: PeerAddress):
         logger.info('Making connection to {}'.format(address))
         try:
             peer_socket = socket.socket()
@@ -29,7 +31,7 @@ class PeerClient(object):
         except Exception:
             logger.exception('Failed to make connection to {}'.format(address))
 
-    def connect_address(self, address):
+    def connect_address(self, address: PeerAddress):
         """Connect to new address."""
         logger.info('Connecting to peer with address {}'.format(address))
         threading.Thread(

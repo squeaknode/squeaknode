@@ -51,28 +51,28 @@ class ConnectionManager(object):
                     return True
         return False
 
-    def add_peer(self, peer):
+    def add_peer(self, peer: Peer):
         """Add a peer.
         """
         with self.peers_lock:
             if self._is_duplicate_nonce(peer):
                 logger.debug('Failed to add peer {}'.format(peer))
                 raise DuplicateNonceError()
-            if self.has_connection(peer.address):
+            if self.has_connection(peer.remote_address):
                 logger.debug('Failed to add peer {}'.format(peer))
                 raise DuplicatePeerError()
-            self._peers[peer.address] = peer
+            self._peers[peer.remote_address] = peer
             logger.debug('Added peer {}'.format(peer))
             self.on_peers_changed()
 
-    def remove_peer(self, peer):
+    def remove_peer(self, peer: Peer):
         """Add a peer.
         """
         with self.peers_lock:
-            if not self.has_connection(peer.address):
+            if not self.has_connection(peer.remote_address):
                 logger.debug('Failed to remove peer {}'.format(peer))
                 raise MissingPeerError()
-            del self._peers[peer.address]
+            del self._peers[peer.remote_address]
             logger.debug('Removed peer {}'.format(peer))
             self.on_peers_changed()
 

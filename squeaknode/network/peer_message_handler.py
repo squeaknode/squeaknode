@@ -42,20 +42,6 @@ class PeerMessageHandler:
 
     def handle_peer_message(self, msg):
         """Handle messages from a peer with completed handshake."""
-
-        # # Only allow version and verack messages before handshake is complete.
-        # if not self.peer.is_handshake_complete and msg.command not in [
-        #         b'version',
-        #         b'verack',
-        # ]:
-        #     raise Exception(
-        #         'Received non-handshake message from un-handshaked peer.')
-
-        # if msg.command == b'version':
-        #     self.handle_version(msg)
-        # if msg.command == b'verack':
-        #     self.handle_verack(msg)
-
         if msg.command == b'ping':
             self.handle_ping(msg)
         if msg.command == b'pong':
@@ -122,7 +108,7 @@ class PeerMessageHandler:
             if inv.type == 2:
                 offer = self.squeak_controller.get_buy_offer(
                     squeak_hash=inv.hash,
-                    peer_address=self.peer.peer_address,
+                    peer_address=self.peer.remote_address,
                 )
                 if offer is None:
                     not_found.append(inv)
@@ -164,7 +150,7 @@ class PeerMessageHandler:
             decoded_offer = self.squeak_controller.get_offer(
                 squeak=squeak,
                 offer=offer,
-                peer_address=self.peer.peer_address,
+                peer_address=self.peer.remote_address,
             )
             self.squeak_controller.save_offer(decoded_offer)
 

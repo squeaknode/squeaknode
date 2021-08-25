@@ -28,6 +28,8 @@ class NetworkManager(object):
 
     def __init__(self, config):
         self.config = config
+        self.local_ip = socket.gethostbyname('localhost')
+        self.local_port = self.config.server.rpc_port or squeak.params.params.DEFAULT_PORT
         self.peer_server = None
         self.peer_client = None
         self.connection_manager = ConnectionManager()
@@ -39,7 +41,7 @@ class NetworkManager(object):
         )
         self.peer_server = PeerServer(
             peer_handler,
-            self.config.server.rpc_port,
+            self.local_port,
         )
         self.peer_client = PeerClient(
             peer_handler,
@@ -78,14 +80,25 @@ class NetworkManager(object):
                     peer,
                 ))
 
-    def handle_connection(self, squeak_controller, peer_socket, address, outgoing):
+    def handle_connection(
+            self,
+            squeak_controller,
+            peer_socket: socket.socket,
+            address: PeerAddress,
+            outgoing: bool,
+    ):
         """Handles all sending and receiving of messages for the given peer.
 
         This method blocks until the peer connection has stopped.
         """
         logger.debug(
             'Setting up controller for peer address {} ...'.format(address))
-        with Peer(peer_socket, address, outgoing).open_connection(squeak_controller) as peer:
+        with Peer(
+                peer_socket,
+                self.local_address,
+                address,
+                outgoing,
+        ).open_connection(squeak_controller) as peer:
             self.connection_manager.add_peer(peer)
             try:
                 peer.handle_messages(squeak_controller)
@@ -95,15 +108,12 @@ class NetworkManager(object):
                 self.connection_manager.remove_peer(peer)
         logger.debug('Stopped controller for peer address {}.'.format(address))
 
-    def get_address(self):
-        # TODO: Add return type.
-        return (self.peer_server.ip, self.peer_server.port)
-
-    def get_remote_address(self, address):
-        # TODO: Add return type.
-        hostname, port = address
-        ip = socket.gethostbyname(hostname)
-        return (ip, port)
+    @property
+    def local_address(self) -> PeerAddress:
+        return PeerAddress(
+            self.local_ip,
+            self.local_port,
+        )
 
     # def register_peers_changed_callback(self, callback, stopped: threading.Event):
     #     """Registers a callback that gets called when connected peers changes.
