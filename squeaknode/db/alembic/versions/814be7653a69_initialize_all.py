@@ -1,8 +1,8 @@
 """Initialize all
 
-Revision ID: 0676aadc35c6
+Revision ID: 814be7653a69
 Revises:
-Create Date: 2021-02-21 17:28:39.366082
+Create Date: 2021-08-24 18:30:29.854723
 
 """
 import sqlalchemy as sa
@@ -12,7 +12,7 @@ import squeaknode.db.models
 
 
 # revision identifiers, used by Alembic.
-revision = '0676aadc35c6'
+revision = '814be7653a69'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -27,8 +27,7 @@ def upgrade():
                     sa.Column('peer_name', sa.String(), nullable=False),
                     sa.Column('host', sa.String(), nullable=False),
                     sa.Column('port', sa.Integer(), nullable=False),
-                    sa.Column('uploading', sa.Boolean(), nullable=False),
-                    sa.Column('downloading', sa.Boolean(), nullable=False),
+                    sa.Column('autoconnect', sa.Boolean(), nullable=False),
                     sa.PrimaryKeyConstraint('peer_id'),
                     sa.UniqueConstraint(
                         'host', 'port', name='uq_peer_host_port'),
@@ -41,7 +40,6 @@ def upgrade():
                     sa.Column('profile_name', sa.String(), nullable=False),
                     sa.Column('private_key', sa.Binary(), nullable=True),
                     sa.Column('address', sa.String(length=35), nullable=False),
-                    sa.Column('sharing', sa.Boolean(), nullable=False),
                     sa.Column('following', sa.Boolean(), nullable=False),
                     sa.Column('profile_image', sa.Binary(), nullable=True),
                     sa.PrimaryKeyConstraint('profile_id'),
@@ -54,13 +52,10 @@ def upgrade():
                         'received_offer_id', squeaknode.db.models.SLBigInteger(), nullable=False),
                     sa.Column('created', squeaknode.db.models.TZDateTime(
                     ), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
-                    sa.Column('squeak_hash', sa.String(
-                        length=64), nullable=False),
-                    sa.Column('payment_hash', sa.String(
-                        length=64), nullable=False),
-                    sa.Column('nonce', sa.String(length=64), nullable=False),
-                    sa.Column('payment_point', sa.String(
-                        length=66), nullable=False),
+                    sa.Column('squeak_hash', sa.Binary(), nullable=False),
+                    sa.Column('payment_hash', sa.Binary(), nullable=False),
+                    sa.Column('nonce', sa.Binary(), nullable=False),
+                    sa.Column('payment_point', sa.Binary(), nullable=False),
                     sa.Column('invoice_timestamp',
                               sa.Integer(), nullable=False),
                     sa.Column('invoice_expiry', sa.Integer(), nullable=False),
@@ -82,15 +77,13 @@ def upgrade():
                               squeaknode.db.models.SLBigInteger(), nullable=False),
                     sa.Column('created', squeaknode.db.models.TZDateTime(
                     ), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
-                    sa.Column('squeak_hash', sa.String(
-                        length=64), nullable=False),
-                    sa.Column('payment_hash', sa.String(
-                        length=64), nullable=False),
+                    sa.Column('squeak_hash', sa.Binary(), nullable=False),
+                    sa.Column('payment_hash', sa.Binary(), nullable=False),
                     sa.Column('price_msat', sa.Integer(), nullable=False),
                     sa.Column('settle_index',
                               squeaknode.db.models.SLBigInteger(), nullable=False),
-                    sa.Column('client_host', sa.String(), nullable=False),
-                    sa.Column('client_port', sa.Integer(), nullable=False),
+                    sa.Column('peer_host', sa.String(), nullable=False),
+                    sa.Column('peer_port', sa.Integer(), nullable=False),
                     sa.PrimaryKeyConstraint('received_payment_id'),
                     sa.UniqueConstraint('payment_hash'),
                     sqlite_autoincrement=True
@@ -100,20 +93,17 @@ def upgrade():
                         'sent_offer_id', squeaknode.db.models.SLBigInteger(), nullable=False),
                     sa.Column('created', squeaknode.db.models.TZDateTime(
                     ), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
-                    sa.Column('squeak_hash', sa.String(
-                        length=64), nullable=False),
-                    sa.Column('payment_hash', sa.String(
-                        length=64), nullable=False),
-                    sa.Column('secret_key', sa.String(
-                        length=64), nullable=False),
-                    sa.Column('nonce', sa.String(length=64), nullable=False),
+                    sa.Column('squeak_hash', sa.Binary(), nullable=False),
+                    sa.Column('payment_hash', sa.Binary(), nullable=False),
+                    sa.Column('secret_key', sa.Binary(), nullable=False),
+                    sa.Column('nonce', sa.Binary(), nullable=False),
                     sa.Column('price_msat', sa.Integer(), nullable=False),
                     sa.Column('payment_request', sa.String(), nullable=False),
                     sa.Column('invoice_timestamp',
                               sa.Integer(), nullable=False),
                     sa.Column('invoice_expiry', sa.Integer(), nullable=False),
-                    sa.Column('client_host', sa.String(), nullable=False),
-                    sa.Column('client_port', sa.Integer(), nullable=False),
+                    sa.Column('peer_host', sa.String(), nullable=False),
+                    sa.Column('peer_port', sa.Integer(), nullable=False),
                     sa.Column('paid', sa.Boolean(), nullable=False),
                     sa.PrimaryKeyConstraint('sent_offer_id'),
                     sa.UniqueConstraint('payment_hash'),
@@ -126,12 +116,9 @@ def upgrade():
                     ), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
                     sa.Column('peer_host', sa.String(), nullable=False),
                     sa.Column('peer_port', sa.Integer(), nullable=False),
-                    sa.Column('squeak_hash', sa.String(
-                        length=64), nullable=False),
-                    sa.Column('payment_hash', sa.String(
-                        length=64), nullable=False),
-                    sa.Column('secret_key', sa.String(
-                        length=64), nullable=False),
+                    sa.Column('squeak_hash', sa.Binary(), nullable=False),
+                    sa.Column('payment_hash', sa.Binary(), nullable=False),
+                    sa.Column('secret_key', sa.Binary(), nullable=False),
                     sa.Column('price_msat', sa.Integer(), nullable=False),
                     sa.Column('node_pubkey', sa.String(
                         length=66), nullable=False),
@@ -141,21 +128,21 @@ def upgrade():
                     sqlite_autoincrement=True
                     )
     op.create_table('squeak',
-                    sa.Column('hash', sa.String(length=64), nullable=False),
+                    sa.Column('hash', sa.Binary(), nullable=False),
                     sa.Column('created', squeaknode.db.models.TZDateTime(
                     ), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
                     sa.Column('squeak', sa.Binary(), nullable=False),
-                    sa.Column('hash_reply_sqk', sa.String(
-                        length=64), nullable=False),
-                    sa.Column('hash_block', sa.String(
-                        length=64), nullable=False),
+                    sa.Column('hash_reply_sqk', sa.Binary(), nullable=True),
+                    sa.Column('hash_block', sa.Binary(), nullable=False),
                     sa.Column('n_block_height', sa.Integer(), nullable=False),
                     sa.Column('n_time', sa.Integer(), nullable=False),
                     sa.Column('author_address', sa.String(
                         length=35), nullable=False),
-                    sa.Column('secret_key', sa.String(
-                        length=64), nullable=True),
-                    sa.Column('block_header', sa.Binary(), nullable=False),
+                    sa.Column('secret_key', sa.Binary(), nullable=True),
+                    sa.Column('block_time', sa.Integer(), nullable=False),
+                    sa.Column(
+                        'liked_time', squeaknode.db.models.TZDateTime(), nullable=True),
+                    sa.Column('content', sa.String(length=280), nullable=True),
                     sa.PrimaryKeyConstraint('hash')
                     )
     with op.batch_alter_table('squeak', schema=None) as batch_op:

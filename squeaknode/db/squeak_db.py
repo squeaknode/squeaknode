@@ -165,10 +165,10 @@ class SqueakDb:
         Return the hash (bytes) of the inserted squeak.
         """
         ins = self.squeaks.insert().values(
-            hash=get_hash(squeak).hex(),
+            hash=get_hash(squeak),
             squeak=squeak.serialize(),
-            hash_reply_sqk=squeak.hashReplySqk.hex() if squeak.is_reply else None,
-            hash_block=squeak.hashBlock.hex(),
+            hash_reply_sqk=squeak.hashReplySqk if squeak.is_reply else None,
+            hash_block=squeak.hashBlock,
             n_block_height=squeak.nBlockHeight,
             n_time=squeak.nTime,
             author_address=str(squeak.GetAddress()),
@@ -186,7 +186,7 @@ class SqueakDb:
     def get_squeak(self, squeak_hash: bytes) -> Optional[CSqueak]:
         """ Get a squeak. """
         s = select([self.squeaks]).where(
-            self.squeaks.c.hash == squeak_hash.hex())
+            self.squeaks.c.hash == squeak_hash)
         with self.get_connection() as connection:
             result = connection.execute(s)
             row = result.fetchone()
@@ -197,7 +197,7 @@ class SqueakDb:
     def get_squeak_entry(self, squeak_hash: bytes) -> Optional[SqueakEntry]:
         """ Get a squeak. """
         s = select([self.squeaks]).where(
-            self.squeaks.c.hash == squeak_hash.hex())
+            self.squeaks.c.hash == squeak_hash)
         with self.get_connection() as connection:
             result = connection.execute(s)
             row = result.fetchone()
@@ -215,7 +215,7 @@ class SqueakDb:
                     self.profiles.c.address == self.squeaks.c.author_address,
                 )
             )
-            .where(self.squeaks.c.hash == squeak_hash.hex())
+            .where(self.squeaks.c.hash == squeak_hash)
         )
         with self.get_connection() as connection:
             result = connection.execute(s)
@@ -300,7 +300,7 @@ class SqueakDb:
                     literal(0).label("depth"),
                 ]
             )
-            .where(self.squeaks.c.hash == squeak_hash.hex())
+            .where(self.squeaks.c.hash == squeak_hash)
             .cte(recursive=True)
         )
 
@@ -367,7 +367,7 @@ class SqueakDb:
                     self.profiles.c.address == self.squeaks.c.author_address,
                 )
             )
-            .where(self.squeaks.c.hash_reply_sqk == squeak_hash.hex())
+            .where(self.squeaks.c.hash_reply_sqk == squeak_hash)
             .order_by(
                 self.squeaks.c.n_block_height.desc(),
                 self.squeaks.c.n_time.desc(),
@@ -408,7 +408,7 @@ class SqueakDb:
         if max_block:
             s = s.where(self.squeaks.c.n_block_height <= max_block)
         if reply_to_hash:
-            s = s.where(self.squeaks.c.hash_reply_sqk == reply_to_hash.hex())
+            s = s.where(self.squeaks.c.hash_reply_sqk == reply_to_hash)
         if not include_locked:
             s = s.where(self.squeak_has_secret_key)
 
@@ -420,7 +420,7 @@ class SqueakDb:
             # ))
             result = connection.execute(s)
             rows = result.fetchall()
-            hashes = [bytes.fromhex(row["hash"]) for row in rows]
+            hashes = [(row["hash"]) for row in rows]
             return hashes
 
     def get_number_of_squeaks(self) -> int:
@@ -489,7 +489,7 @@ class SqueakDb:
     #     with self.get_connection() as connection:
     #         result = connection.execute(s)
     #         rows = result.fetchall()
-    #         hashes = [bytes.fromhex(row["hash"]) for row in rows]
+    #         hashes = [(row["hash"]) for row in rows]
     #         return hashes
 
     def get_old_squeaks_to_delete(
@@ -642,9 +642,9 @@ class SqueakDb:
         """ Set the decryption key and decrypted content of a squeak. """
         stmt = (
             self.squeaks.update()
-            .where(self.squeaks.c.hash == squeak_hash.hex())
+            .where(self.squeaks.c.hash == squeak_hash)
             .values(
-                secret_key=secret_key.hex(),
+                secret_key=secret_key,
                 content=content,
             )
         )
@@ -655,7 +655,7 @@ class SqueakDb:
         """ Set the squeak to be liked. """
         stmt = (
             self.squeaks.update()
-            .where(self.squeaks.c.hash == squeak_hash.hex())
+            .where(self.squeaks.c.hash == squeak_hash)
             .values(liked_time=self.datetime_now)
         )
         with self.get_connection() as connection:
@@ -665,7 +665,7 @@ class SqueakDb:
         """ Set the squeak to be unliked. """
         stmt = (
             self.squeaks.update()
-            .where(self.squeaks.c.hash == squeak_hash.hex())
+            .where(self.squeaks.c.hash == squeak_hash)
             .values(liked_time=None)
         )
         with self.get_connection() as connection:
@@ -674,7 +674,7 @@ class SqueakDb:
     def delete_squeak(self, squeak_hash: bytes) -> None:
         """ Delete a squeak. """
         delete_squeak_stmt = self.squeaks.delete().where(
-            self.squeaks.c.hash == squeak_hash.hex()
+            self.squeaks.c.hash == squeak_hash
         )
         with self.get_connection() as connection:
             connection.execute(delete_squeak_stmt)
@@ -749,10 +749,10 @@ class SqueakDb:
     def insert_received_offer(self, received_offer: ReceivedOffer):
         """ Insert a new received offer. """
         ins = self.received_offers.insert().values(
-            squeak_hash=received_offer.squeak_hash.hex(),
-            payment_hash=received_offer.payment_hash.hex(),
-            nonce=received_offer.nonce.hex(),
-            payment_point=received_offer.payment_point.hex(),
+            squeak_hash=received_offer.squeak_hash,
+            payment_hash=received_offer.payment_hash,
+            nonce=received_offer.nonce,
+            payment_point=received_offer.payment_point,
             invoice_timestamp=received_offer.invoice_timestamp,
             invoice_expiry=received_offer.invoice_expiry,
             price_msat=received_offer.price_msat,
@@ -772,7 +772,7 @@ class SqueakDb:
         """ Get offers with peer for a squeak hash. """
         s = (
             select([self.received_offers])
-            .where(self.received_offers.c.squeak_hash == squeak_hash.hex())
+            .where(self.received_offers.c.squeak_hash == squeak_hash)
             .where(self.received_offer_is_not_paid)
             .where(self.received_offer_is_not_expired)
         )
@@ -807,7 +807,7 @@ class SqueakDb:
         """ Get offer with peer for a given peer address and squeak hash . """
         s = (
             select([self.received_offers])
-            .where(self.received_offers.c.squeak_hash == squeak_hash.hex())
+            .where(self.received_offers.c.squeak_hash == squeak_hash)
             .where(self.received_offers.c.peer_host == peer_address.host)
             .where(self.received_offers.c.peer_port == peer_address.port)
             .where(self.received_offer_is_not_paid)
@@ -834,7 +834,7 @@ class SqueakDb:
     def delete_offers_for_squeak(self, squeak_hash: bytes):
         """ Delete all offers for a squeak hash. """
         s = self.received_offers.delete().where(
-            self.received_offers.c.squeak_hash == squeak_hash.hex())
+            self.received_offers.c.squeak_hash == squeak_hash)
         with self.get_connection() as connection:
             res = connection.execute(s)
             deleted_offers = res.rowcount
@@ -843,7 +843,7 @@ class SqueakDb:
     def delete_offer(self, payment_hash: bytes):
         """ Delete a received offer by payment hash. """
         s = self.received_offers.delete().where(
-            self.received_offers.c.payment_hash == payment_hash.hex()
+            self.received_offers.c.payment_hash == payment_hash
         )
         with self.get_connection() as connection:
             connection.execute(s)
@@ -852,7 +852,7 @@ class SqueakDb:
         """ Set a received offer is paid. """
         stmt = (
             self.received_offers.update()
-            .where(self.received_offers.c.payment_hash == payment_hash.hex())
+            .where(self.received_offers.c.payment_hash == payment_hash)
             .values(paid=paid)
         )
         with self.get_connection() as connection:
@@ -863,9 +863,9 @@ class SqueakDb:
         ins = self.sent_payments.insert().values(
             peer_host=sent_payment.peer_address.host,
             peer_port=sent_payment.peer_address.port,
-            squeak_hash=sent_payment.squeak_hash.hex(),
-            payment_hash=sent_payment.payment_hash.hex(),
-            secret_key=sent_payment.secret_key.hex(),
+            squeak_hash=sent_payment.squeak_hash,
+            payment_hash=sent_payment.payment_hash,
+            secret_key=sent_payment.secret_key,
             price_msat=sent_payment.price_msat,
             node_pubkey=sent_payment.node_pubkey,
             valid=sent_payment.valid,
@@ -906,10 +906,10 @@ class SqueakDb:
     def insert_sent_offer(self, sent_offer: SentOffer):
         """ Insert a new sent offer. """
         ins = self.sent_offers.insert().values(
-            squeak_hash=sent_offer.squeak_hash.hex(),
-            payment_hash=sent_offer.payment_hash.hex(),
-            secret_key=sent_offer.secret_key.hex(),
-            nonce=sent_offer.nonce.hex(),
+            squeak_hash=sent_offer.squeak_hash,
+            payment_hash=sent_offer.payment_hash,
+            secret_key=sent_offer.secret_key,
+            nonce=sent_offer.nonce,
             price_msat=sent_offer.price_msat,
             payment_request=sent_offer.payment_request,
             invoice_timestamp=sent_offer.invoice_time,
@@ -936,7 +936,7 @@ class SqueakDb:
     def get_sent_offer_by_payment_hash(self, payment_hash: bytes) -> Optional[SentOffer]:
         """ Get a sent offer by preimage hash. """
         s = select([self.sent_offers]).where(
-            self.sent_offers.c.payment_hash == payment_hash.hex()
+            self.sent_offers.c.payment_hash == payment_hash
         )
         with self.get_connection() as connection:
             result = connection.execute(s)
@@ -953,7 +953,7 @@ class SqueakDb:
         """
         s = (
             select([self.sent_offers])
-            .where(self.sent_offers.c.squeak_hash == squeak_hash.hex())
+            .where(self.sent_offers.c.squeak_hash == squeak_hash)
             .where(self.sent_offers.c.peer_host == peer_address.host)
             .where(self.sent_offer_is_not_paid)
             .where(self.sent_offer_is_not_expired)
@@ -969,7 +969,7 @@ class SqueakDb:
     def delete_sent_offer(self, payment_hash: bytes):
         """ Delete a sent offer by payment hash. """
         s = self.sent_offers.delete().where(
-            self.sent_offers.c.payment_hash == payment_hash.hex()
+            self.sent_offers.c.payment_hash == payment_hash
         )
         with self.get_connection() as connection:
             connection.execute(s)
@@ -991,7 +991,7 @@ class SqueakDb:
         """ Set a sent offer is paid. """
         stmt = (
             self.sent_offers.update()
-            .where(self.sent_offers.c.payment_hash == payment_hash.hex())
+            .where(self.sent_offers.c.payment_hash == payment_hash)
             .values(paid=paid)
         )
         with self.get_connection() as connection:
@@ -1011,8 +1011,8 @@ class SqueakDb:
     def insert_received_payment(self, received_payment: ReceivedPayment):
         """ Insert a new received payment. """
         ins = self.received_payments.insert().values(
-            squeak_hash=received_payment.squeak_hash.hex(),
-            payment_hash=received_payment.payment_hash.hex(),
+            squeak_hash=received_payment.squeak_hash,
+            payment_hash=received_payment.payment_hash,
             price_msat=received_payment.price_msat,
             settle_index=received_payment.settle_index,
             peer_host=received_payment.peer_address.host,
@@ -1092,7 +1092,7 @@ class SqueakDb:
     def _parse_squeak(self, row) -> CSqueak:
         secret_key_column = row["secret_key"]
         secret_key = (
-            bytes.fromhex(secret_key_column) if
+            (secret_key_column) if
             secret_key_column else b""
         )
         squeak = CSqueak.deserialize(row["squeak"])
@@ -1103,15 +1103,15 @@ class SqueakDb:
     def _parse_squeak_entry(self, row) -> SqueakEntry:
         secret_key_column = row["secret_key"]
         is_locked = bool(secret_key_column)
-        reply_to = bytes.fromhex(
+        reply_to = (
             row["hash_reply_sqk"]) if row["hash_reply_sqk"] else None
         liked_time = row["liked_time"]
         liked_time_s = int(liked_time.timestamp()) if liked_time else None
         return SqueakEntry(
-            squeak_hash=bytes.fromhex(row["hash"]),
+            squeak_hash=(row["hash"]),
             address=row["author_address"],
             block_height=row["n_block_height"],
-            block_hash=bytes.fromhex(row["hash_block"]),
+            block_hash=(row["hash_block"]),
             block_time=row["block_time"],
             reply_to=reply_to,
             is_unlocked=is_locked,
@@ -1156,10 +1156,10 @@ class SqueakDb:
     def _parse_received_offer(self, row) -> ReceivedOffer:
         return ReceivedOffer(
             received_offer_id=row["received_offer_id"],
-            squeak_hash=bytes.fromhex(row["squeak_hash"]),
-            payment_hash=bytes.fromhex(row["payment_hash"]),
-            nonce=bytes.fromhex(row["nonce"]),
-            payment_point=bytes.fromhex(row["payment_point"]),
+            squeak_hash=(row["squeak_hash"]),
+            payment_hash=(row["payment_hash"]),
+            nonce=(row["nonce"]),
+            payment_point=(row["payment_point"]),
             invoice_timestamp=row["invoice_timestamp"],
             invoice_expiry=row["invoice_expiry"],
             price_msat=row["price_msat"],
@@ -1194,9 +1194,9 @@ class SqueakDb:
                 host=row["peer_host"],
                 port=row["peer_port"],
             ),
-            squeak_hash=bytes.fromhex(row["squeak_hash"]),
-            payment_hash=bytes.fromhex(row["payment_hash"]),
-            secret_key=bytes.fromhex(row["secret_key"]),
+            squeak_hash=(row["squeak_hash"]),
+            payment_hash=(row["payment_hash"]),
+            secret_key=(row["secret_key"]),
             price_msat=row["price_msat"],
             node_pubkey=row["node_pubkey"],
             valid=row["valid"],
@@ -1216,10 +1216,10 @@ class SqueakDb:
     def _parse_sent_offer(self, row) -> SentOffer:
         return SentOffer(
             sent_offer_id=row["sent_offer_id"],
-            squeak_hash=bytes.fromhex(row["squeak_hash"]),
-            payment_hash=bytes.fromhex(row["payment_hash"]),
-            secret_key=bytes.fromhex(row["secret_key"]),
-            nonce=bytes.fromhex(row["nonce"]),
+            squeak_hash=(row["squeak_hash"]),
+            payment_hash=(row["payment_hash"]),
+            secret_key=(row["secret_key"]),
+            nonce=(row["nonce"]),
             price_msat=row["price_msat"],
             payment_request=row["payment_request"],
             invoice_time=row["invoice_timestamp"],
@@ -1234,8 +1234,8 @@ class SqueakDb:
         return ReceivedPayment(
             received_payment_id=row["received_payment_id"],
             created=row["created"],
-            squeak_hash=bytes.fromhex(row["squeak_hash"]),
-            payment_hash=bytes.fromhex(row["payment_hash"]),
+            squeak_hash=(row["squeak_hash"]),
+            payment_hash=(row["payment_hash"]),
             price_msat=row["price_msat"],
             settle_index=row["settle_index"],
             peer_address=PeerAddress(
