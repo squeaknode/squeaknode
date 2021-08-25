@@ -63,7 +63,7 @@ class Models:
             Column("created", TZDateTime,
                    server_default=func.now(), nullable=False),
             Column("squeak", Binary, nullable=False),
-            Column("hash_reply_sqk", String(64), nullable=False),
+            Column("hash_reply_sqk", String(64), nullable=True),
             Column("hash_block", String(64), nullable=False),
             Column("n_block_height", Integer, nullable=False),
             Column("n_time", Integer, nullable=False),

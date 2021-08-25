@@ -167,7 +167,7 @@ class SqueakDb:
         ins = self.squeaks.insert().values(
             hash=get_hash(squeak).hex(),
             squeak=squeak.serialize(),
-            hash_reply_sqk=squeak.hashReplySqk.hex(),
+            hash_reply_sqk=squeak.hashReplySqk.hex() if squeak.is_reply else None,
             hash_block=squeak.hashBlock.hex(),
             n_block_height=squeak.nBlockHeight,
             n_time=squeak.nTime,
@@ -1103,6 +1103,8 @@ class SqueakDb:
     def _parse_squeak_entry(self, row) -> SqueakEntry:
         secret_key_column = row["secret_key"]
         is_locked = bool(secret_key_column)
+        reply_to = bytes.fromhex(
+            row["hash_reply_sqk"]) if row["hash_reply_sqk"] else None
         liked_time = row["liked_time"]
         liked_time_s = int(liked_time.timestamp()) if liked_time else None
         return SqueakEntry(
@@ -1111,7 +1113,7 @@ class SqueakDb:
             block_height=row["n_block_height"],
             block_hash=bytes.fromhex(row["hash_block"]),
             block_time=row["block_time"],
-            reply_to=bytes.fromhex(row["hash_reply_sqk"]),
+            reply_to=reply_to,
             is_unlocked=is_locked,
             liked_time=liked_time_s,
             content=row["content"],
