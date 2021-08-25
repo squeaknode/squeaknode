@@ -87,14 +87,14 @@ class ConnectionManager(object):
         with self.peers_lock:
             peer = self.get_peer(address)
             if peer is not None:
-                peer.close()
+                peer.stop()
 
     def stop_all_connections(self):
         """Stop all peer connections.
         """
         with self.peers_lock:
             for peer in self.peers:
-                peer.close()
+                peer.stop()
 
     def add_peers_changed_callback(self, name, callback):
         self.peers_changed_callbacks[name] = callback

@@ -101,9 +101,10 @@ class NetworkManager(object):
         ).open_connection(squeak_controller) as peer:
             self.connection_manager.add_peer(peer)
             try:
+                peer.sync(squeak_controller)
                 peer.handle_messages(squeak_controller)
             except Exception:
-                logger.exception("Handling messages failed.")
+                logger.exception("Peer connection failed.")
             finally:
                 self.connection_manager.remove_peer(peer)
         logger.debug('Stopped controller for peer address {}.'.format(address))

@@ -161,11 +161,19 @@ class Peer(object):
         logger.info('Received msg {} from {}'.format(msg, self))
         return msg
 
-    def close(self):
-        logger.info("closing peer socket: {}".format(self._peer_socket))
+    def start(self):
+        msg_receiver = MessageReceiver(
+            self._peer_socket, self._recv_msg_queue, self.stopped)
+        threading.Thread(
+            target=msg_receiver.recv_msgs,
+            args=(),
+        ).start()
+
+    def stop(self):
+        logger.info("Stopping peer socket: {}".format(self._peer_socket))
         try:
             self._peer_socket.shutdown(socket.SHUT_RDWR)
-            self._peer_socket.close()
+            self._peer_socket.stop()
         except Exception:
             pass
 
@@ -177,11 +185,11 @@ class Peer(object):
                 self._peer_socket.send(data)
         except Exception:
             logger.info('Failed to send msg to {}'.format(self))
-            self.close()
+            self.stop()
 
     def handshake(self, squeak_controller):
         timer = HandshakeTimer(
-            self.close,
+            self.stop,
             str(self),
         )
         timer.start_timer()
@@ -239,23 +247,21 @@ class Peer(object):
             self, squeak_controller)
         peer_message_handler.handle_msgs()
 
+    def sync(self, squeak_controller):
+        # TODO: getaddrs from peer.
+        self.update_subscription(squeak_controller)
+
     @contextmanager
     def open_connection(self, squeak_controller):
         logger.debug('Setting up peer {} ...'.format(self))
         try:
-            msg_receiver = MessageReceiver(
-                self._peer_socket, self._recv_msg_queue, self.stopped)
-            threading.Thread(
-                target=msg_receiver.recv_msgs,
-                args=(),
-            ).start()
+            self.start()
             self.handshake(squeak_controller)
-            self.update_subscription(squeak_controller)
             self.set_connected()
             yield self
         finally:
-            self.close()
-            logger.debug('Closed connection to peer {} ...'.format(self))
+            self.stop()
+            logger.debug('Stopped connection to peer {} ...'.format(self))
 
     def __repr__(self):
         return "Peer(%s)" % (str(self.remote_address))
@@ -328,14 +334,14 @@ class MessageReceiver:
 
 
 class HandshakeTimer:
-    """Close the peer if handshake is not complete before timeout.
+    """Stop the peer if handshake is not complete before timeout.
     """
 
     def __init__(self,
-                 close_fn,
+                 stop_fn,
                  peer_name,
                  ):
-        self.close_fn = close_fn
+        self.stop_fn = stop_fn
         self.peer_name = peer_name
         self.timer = None
 
@@ -353,4 +359,4 @@ class HandshakeTimer:
 
     def stop_peer(self):
         logger.info("Closing peer from handshake timer.")
-        self.close_fn()
+        self.stop_fn()
