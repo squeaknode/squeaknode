@@ -22,9 +22,6 @@ logger = logging.getLogger(__name__)
 
 DEFAULT_PROFILE_IMAGE = load_default_profile_image()
 
-#  TODO: Remove this after reply is nullable column
-# EMPTY_HASH = b'\x00' * 32
-
 
 def squeak_entry_to_message(squeak_entry: SqueakEntry) -> squeak_admin_pb2.SqueakDisplayEntry:
     squeak_profile = squeak_entry.squeak_profile

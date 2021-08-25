@@ -193,17 +193,6 @@ class SqueakDb:
                 return None
             return self._parse_squeak(row)
 
-    # def get_squeak_entry(self, squeak_hash: bytes) -> Optional[SqueakEntry]:
-    #     """ Get a squeak. """
-    #     s = select([self.squeaks]).where(
-    #         self.squeaks.c.hash == squeak_hash)
-    #     with self.get_connection() as connection:
-    #         result = connection.execute(s)
-    #         row = result.fetchone()
-    #         if row is None:
-    #             return None
-    #         return self._parse_squeak_entry(row)
-
     def get_squeak_entry(self, squeak_hash: bytes) -> Optional[SqueakEntry]:
         """ Get a squeak with the author profile. """
         s = (
@@ -1137,17 +1126,6 @@ class SqueakDb:
         if row["profile_id"] is None:
             return None
         return self._parse_squeak_profile(row)
-
-    # def _parse_squeak_entry_with_profile(self, row) -> SqueakEntryWithProfile:
-    #     squeak_entry = self._parse_squeak_entry(row)
-    #     if row["profile_id"] is None:
-    #         squeak_profile = None
-    #     else:
-    #         squeak_profile = self._parse_squeak_profile(row)
-    #     return SqueakEntryWithProfile(
-    #         squeak_entry=squeak_entry,
-    #         squeak_profile=squeak_profile,
-    #     )
 
     def _parse_squeak_peer(self, row) -> SqueakPeer:
         return SqueakPeer(
