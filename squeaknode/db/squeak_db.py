@@ -31,6 +31,10 @@ from squeaknode.db.migrations import run_migrations
 from squeaknode.db.models import Models
 
 
+MAX_INT = 999999999
+MAX_HASH = b'ff' * 32
+
+
 logger = logging.getLogger(__name__)
 
 
@@ -212,7 +216,12 @@ class SqueakDb:
                 return None
             return self._parse_squeak_entry(row)
 
-    def get_timeline_squeak_entries(self) -> List[SqueakEntry]:
+    def get_timeline_squeak_entries(
+            self,
+            block_height: int = MAX_INT,
+            squeak_time: int = MAX_INT,
+            squeak_hash: bytes = MAX_HASH,
+    ) -> List[SqueakEntry]:
         """ Get all followed squeaks. """
         s = (
             select([self.squeaks, self.profiles])
@@ -222,9 +231,19 @@ class SqueakDb:
                     self.profiles.c.address == self.squeaks.c.author_address,
                 )
             )
+            .where((
+                self.squeaks.c.n_block_height,
+                self.squeaks.c.n_time,
+                self.squeaks.c.hash,
+            ) < (
+                block_height,
+                squeak_time,
+                squeak_hash,
+            ))
             .order_by(
                 self.squeaks.c.n_block_height.desc(),
                 self.squeaks.c.n_time.desc(),
+                self.squeaks.c.hash.desc(),
             )
         )
         with self.get_connection() as connection:
