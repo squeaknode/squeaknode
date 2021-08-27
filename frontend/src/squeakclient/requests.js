@@ -155,8 +155,9 @@ export function getUserRequest(handleResponse) {
   });
 }
 
-export function getTimelineSqueakDisplaysRequest(handleResponse) {
+export function getTimelineSqueakDisplaysRequest(limit, handleResponse) {
   var request = new GetTimelineSqueakDisplaysRequest()
+  request.setLimit(limit);
   client.getTimelineSqueakDisplays(request, {}, (err, response) => {
     handleResponse(response.getSqueakDisplayEntriesList());
   });
