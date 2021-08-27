@@ -11,9 +11,8 @@ import sqlalchemy
 from bitcoin.core import CBlockHeader
 from sqlalchemy import func
 from sqlalchemy import literal
-from sqlalchemy.sql import and_
-from sqlalchemy.sql import or_
 from sqlalchemy.sql import select
+from sqlalchemy.sql import tuple_
 from squeak.core import CSqueak
 
 from squeaknode.core.lightning_address import LightningAddressHostPort
@@ -248,18 +247,17 @@ class SqueakDb:
                     self.profiles.c.address == self.squeaks.c.author_address,
                 )
             )
-            .where(or_(
-                self.squeaks.c.n_block_height < block_height,
-                and_(
-                    self.squeaks.c.n_block_height == block_height,
-                    self.squeaks.c.n_time < squeak_time,
-                ),
-                and_(
-                    self.squeaks.c.n_block_height == block_height,
-                    self.squeaks.c.n_time == squeak_time,
-                    self.squeaks.c.hash < squeak_hash,
-                ),
-            ))
+            .where(
+                tuple_(
+                    self.squeaks.c.n_block_height,
+                    self.squeaks.c.n_time,
+                    self.squeaks.c.hash,
+                ) < tuple_(
+                    block_height,
+                    squeak_time,
+                    squeak_hash,
+                )
+            )
             .order_by(
                 self.squeaks.c.n_block_height.desc(),
                 self.squeaks.c.n_time.desc(),
