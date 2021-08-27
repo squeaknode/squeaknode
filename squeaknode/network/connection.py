@@ -2,6 +2,8 @@ import logging
 import threading
 from contextlib import contextmanager
 
+from squeak.messages import msg_subscribe
+
 from squeaknode.network.peer import Peer
 
 HANDSHAKE_TIMEOUT = 5
@@ -35,9 +37,20 @@ class Connection(object):
             connection_manager.remove_peer(self.peer)
 
     def handle_connection(self):
-        self.peer.sync(self.squeak_controller)
+        self.initial_sync()
         self.peer.handle_messages(self.squeak_controller)
         logger.info("Finished handle_connection")
+
+    def initial_sync(self):
+        # TODO: getaddrs from peer.
+        self.update_subscription()
+
+    def update_subscription(self):
+        locator = self.squeak_controller.get_interested_locator()
+        subscribe_msg = msg_subscribe(
+            locator=locator,
+        )
+        self.peer.send_msg(subscribe_msg)
 
     def start_receiving_msgs(self):
         threading.Thread(
