@@ -1,6 +1,7 @@
 import logging
 import socket
 from typing import List
+from typing import Optional
 
 import squeak.params
 from squeak.messages import MsgSerializable
@@ -66,10 +67,10 @@ class NetworkManager(object):
     def disconnect_peer(self, peer_address: PeerAddress) -> None:
         self.connection_manager.stop_connection(peer_address)
 
-    def get_connected_peer(self, peer_address: PeerAddress) -> List[Peer]:
+    def get_connected_peer(self, peer_address: PeerAddress) -> Optional[Peer]:
         return self.connection_manager.get_peer(peer_address)
 
-    def get_connected_peers(self):
+    def get_connected_peers(self) -> List[Peer]:
         return self.connection_manager.peers
 
     def broadcast_msg(self, msg: MsgSerializable) -> None:
