@@ -39,6 +39,7 @@ class PeerMessageHandler:
         while msg is not None:
             self.handle_peer_message(msg)
             msg = self.peer.recv_msg()
+        logger.info("Finished handle_msgs")
 
     def handle_peer_message(self, msg):
         """Handle messages from a peer with completed handshake."""
