@@ -372,7 +372,9 @@ def test_get_following_squeaks(
 
     # Get all squeak displays for the known address
     get_timeline_squeak_display_response = admin_stub.GetTimelineSqueakDisplays(
-        squeak_admin_pb2.GetTimelineSqueakDisplaysRequest()
+        squeak_admin_pb2.GetTimelineSqueakDisplaysRequest(
+            limit=100,
+        )
     )
     assert len(get_timeline_squeak_display_response.squeak_display_entries) >= 1
     for (

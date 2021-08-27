@@ -499,6 +499,8 @@ message SqueakDisplayEntry {
 }
 
 message GetTimelineSqueakDisplaysRequest {
+    /// Limit number of results
+    int32 limit = 1;
 }
 
 message GetTimelineSqueakDisplaysReply {

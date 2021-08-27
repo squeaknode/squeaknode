@@ -218,6 +218,7 @@ class SqueakDb:
 
     def get_timeline_squeak_entries(
             self,
+            limit: int,
             block_height: int = MAX_INT,
             squeak_time: int = MAX_INT,
             squeak_hash: bytes = MAX_HASH,
@@ -245,6 +246,7 @@ class SqueakDb:
                 self.squeaks.c.n_time.desc(),
                 self.squeaks.c.hash.desc(),
             )
+            .limit(limit)
         )
         with self.get_connection() as connection:
             result = connection.execute(s)

@@ -283,9 +283,15 @@ class SqueakAdminServerHandler(object):
         )
 
     def handle_get_timeline_squeak_display_entries(self, request):
-        logger.info("Handle get timeline squeak display entries.")
+        limit = request.limit
+        logger.info("""Handle get timeline squeak display entries with
+        limit: {}""".format(
+            limit,
+        ))
         squeak_entries = (
-            self.squeak_controller.get_timeline_squeak_entries()
+            self.squeak_controller.get_timeline_squeak_entries(
+                limit,
+            )
         )
         logger.info(
             "Got number of timeline squeak entries: {}".format(
@@ -649,7 +655,7 @@ class SqueakAdminServerHandler(object):
         squeak_display_msgs = [
             squeak_entry_to_message(entry) for entry in squeak_entries
         ]
-        return squeak_admin_pb2.GetTimelineSqueakDisplaysReply(
+        return squeak_admin_pb2.GetLikedSqueakDisplaysReply(
             squeak_display_entries=squeak_display_msgs
         )
 
