@@ -57,12 +57,9 @@ class Peer(object):
 
         self._subscription = None
 
-        self.stopped = threading.Event()
-
         self.msg_receiver = MessageReceiver(
             self._peer_socket,
             self._recv_msg_queue,
-            self.stopped,
         )
 
     @property
@@ -249,10 +246,9 @@ class MessageReceiver:
     """Reads bytes from the socket and puts messages in the receive queue.
     """
 
-    def __init__(self, socket, queue, stopped_event):
+    def __init__(self, socket, queue):
         self.socket = socket
         self.queue = queue
-        self.stopped_event = stopped_event
         self.decoder = MessageDecoder()
 
     def _recv_msgs(self):
@@ -270,12 +266,9 @@ class MessageReceiver:
 
             for msg in self.decoder.process_recv_data(recv_data):
                 self.queue.put(msg)
-                if self.stopped_event.is_set():
-                    return
 
     def recv_msgs(self):
         try:
             self._recv_msgs()
         except Exception:
             logger.info('Failed to receive msg from {}'.format(self))
-            self.stopped_event.set()

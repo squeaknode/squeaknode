@@ -19,7 +19,6 @@ class Connection(object):
     def __init__(self, peer: Peer, squeak_controller):
         self.peer = peer
         self.squeak_controller = squeak_controller
-        self.stopped = threading.Event()
 
     @contextmanager
     def connect(self, connection_manager):
