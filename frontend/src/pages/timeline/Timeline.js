@@ -67,7 +67,7 @@ export default function TimelinePage() {
   const history = useHistory();
 
   const getSqueaks = () => {
-    getTimelineSqueakDisplaysRequest(SQUEAKS_PER_PAGE, null, setSqueaks);
+    getTimelineSqueakDisplaysRequest(SQUEAKS_PER_PAGE, null, null, null, setSqueaks);
   };
   const getNetwork = () => {
       getNetworkRequest(setNetwork);
@@ -130,10 +130,12 @@ export default function TimelinePage() {
             onClick={() => {
               const latestSqueak = squeaks.slice(-1).pop();
               const latestSqueakHeight = (latestSqueak ? latestSqueak.getBlockHeight() : null);
-              // TODO: const latestSqueakTime = (latestSqueak ? latestSqueak.getCreatedTime() : null);
+              const latestSqueakTime = (latestSqueak ? latestSqueak.getSqueakTime() : null);
               const latestSqueakHash = (latestSqueak ? latestSqueak.getSqueakHash() : null);
               console.log(latestSqueakHeight);
-               getTimelineSqueakDisplaysRequest(SQUEAKS_PER_PAGE, latestSqueakHeight, (resp) => {
+              console.log(latestSqueakTime);
+              console.log(latestSqueakHash);
+               getTimelineSqueakDisplaysRequest(SQUEAKS_PER_PAGE, latestSqueakHeight, latestSqueakTime, latestSqueakHash, (resp) => {
                  // TODO: nothing maybe
                  console.log(resp);
                  setSqueaks(squeaks.concat(resp));

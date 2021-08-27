@@ -507,6 +507,12 @@ message GetTimelineSqueakDisplaysRequest {
 
     /// Block height
     int32 block_height = 2;
+
+    /// Squeak time
+    int64 squeak_time = 3;
+
+    /// Hash of the squeak.
+    string squeak_hash = 4;
 }
 
 message GetTimelineSqueakDisplaysReply {
