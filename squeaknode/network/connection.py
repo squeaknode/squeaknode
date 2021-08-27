@@ -23,17 +23,16 @@ class Connection(object):
     def connect(self, connection_manager):
         self.start_receiving_msgs()
         self.handshake()
-        with self.peer.open_connection(self.squeak_controller) as peer:
-            logger.info("Adding peer.")
-            connection_manager.add_peer(peer)
-            try:
-                logger.info("Yielding peer.")
-                yield self
-            except Exception:
-                logger.exception("Peer connection failed.")
-            finally:
-                logger.info("Removing peer.")
-                connection_manager.remove_peer(peer)
+        logger.info("Adding peer.")
+        connection_manager.add_peer(self.peer)
+        try:
+            logger.info("Yielding peer.")
+            yield self
+        except Exception:
+            logger.exception("Peer connection failed.")
+        finally:
+            logger.info("Removing peer.")
+            connection_manager.remove_peer(self.peer)
 
     def handle_connection(self):
         self.peer.sync(self.squeak_controller)
@@ -59,6 +58,7 @@ class Connection(object):
         if not self.peer.outgoing:
             self.peer.send_version()
 
+        self.peer.set_connected()
         logger.info("HANDSHAKE COMPLETE-----------")
         timer.stop_timer()
 

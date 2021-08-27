@@ -3,7 +3,6 @@ import queue
 import socket
 import threading
 import time
-from contextlib import contextmanager
 from io import BytesIO
 
 from bitcoin.core.serialize import SerializationTruncationError
@@ -276,17 +275,17 @@ class Peer(object):
         # TODO: getaddrs from peer.
         self.update_subscription(squeak_controller)
 
-    @contextmanager
-    def open_connection(self, squeak_controller):
-        logger.debug('Setting up peer {} ...'.format(self))
-        try:
-            # self.start()
-            # self.handshake(squeak_controller)
-            self.set_connected()
-            yield self
-        finally:
-            self.stop()
-            logger.debug('Stopped connection to peer {} ...'.format(self))
+    # @contextmanager
+    # def open_connection(self, squeak_controller):
+    #     logger.debug('Setting up peer {} ...'.format(self))
+    #     try:
+    #         # self.start()
+    #         # self.handshake(squeak_controller)
+    #         # self.set_connected()
+    #         yield self
+    #     finally:
+    #         self.stop()
+    #         logger.debug('Stopped connection to peer {} ...'.format(self))
 
     def __repr__(self):
         return "Peer(%s)" % (str(self.remote_address))
