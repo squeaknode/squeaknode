@@ -5,6 +5,7 @@ from contextlib import contextmanager
 from squeak.messages import msg_subscribe
 
 from squeaknode.network.peer import Peer
+from squeaknode.network.peer_message_handler import PeerMessageHandler
 
 HANDSHAKE_TIMEOUT = 5
 
@@ -37,8 +38,7 @@ class Connection(object):
 
     def handle_connection(self):
         self.initial_sync()
-        self.peer.handle_messages(self.squeak_controller)
-        logger.info("Finished handle_connection")
+        self.handle_messages()
 
     def initial_sync(self):
         # TODO: getaddrs from peer.
@@ -73,6 +73,13 @@ class Connection(object):
         self.peer.set_connected()
         logger.info("HANDSHAKE COMPLETE-----------")
         timer.stop_timer()
+
+    def handle_messages(self):
+        peer_message_handler = PeerMessageHandler(
+            self.peer,
+            self.squeak_controller,
+        )
+        peer_message_handler.handle_msgs()
 
 
 class HandshakeTimer:
