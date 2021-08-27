@@ -7,6 +7,7 @@ from squeak.messages import MsgSerializable
 
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.network.connected_peers_subscription_client import ConnectedPeersSubscriptionClient
+from squeaknode.network.connection import Connection
 from squeaknode.network.connection_manager import ConnectionManager
 from squeaknode.network.peer import Peer
 from squeaknode.network.peer_client import PeerClient
@@ -91,23 +92,20 @@ class NetworkManager(object):
 
         This method blocks until the peer connection has stopped.
         """
+        peer = Peer(
+            peer_socket,
+            self.local_address,
+            address,
+            outgoing,
+        )
+
         logger.debug(
-            'Setting up controller for peer address {} ...'.format(address))
-        with Peer(
-                peer_socket,
-                self.local_address,
-                address,
-                outgoing,
-        ).open_connection(squeak_controller) as peer:
-            self.connection_manager.add_peer(peer)
-            try:
-                peer.sync(squeak_controller)
-                peer.handle_messages(squeak_controller)
-            except Exception:
-                logger.exception("Peer connection failed.")
-            finally:
-                self.connection_manager.remove_peer(peer)
-        logger.debug('Stopped controller for peer address {}.'.format(address))
+            'Setting up connection for peer address {} ...'.format(address))
+        with Connection(peer, squeak_controller).connect(
+                self.connection_manager
+        ) as connection:
+            connection.handle_connection()
+        logger.debug('Stopped connection for peer address {}.'.format(address))
 
     @property
     def local_address(self) -> PeerAddress:
