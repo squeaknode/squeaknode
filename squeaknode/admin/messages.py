@@ -39,6 +39,7 @@ def squeak_entry_to_message(squeak_entry: SqueakEntry) -> squeak_admin_pb2.Squea
         block_height=squeak_entry.block_height,
         block_hash=squeak_entry.block_hash.hex(),
         block_time=squeak_entry.block_time,
+        squeak_time=squeak_entry.squeak_time,
         is_reply=is_reply,
         reply_to=reply_to,  # type: ignore
         author_address=squeak_entry.address,

@@ -155,8 +155,12 @@ export function getUserRequest(handleResponse) {
   });
 }
 
-export function getTimelineSqueakDisplaysRequest(handleResponse) {
+export function getTimelineSqueakDisplaysRequest(limit, blockHeight, squeakTime, squeakHash, handleResponse) {
   var request = new GetTimelineSqueakDisplaysRequest()
+  request.setLimit(limit);
+  request.setBlockHeight(blockHeight);
+  request.setSqueakTime(squeakTime);
+  request.setSqueakHash(squeakHash);
   client.getTimelineSqueakDisplays(request, {}, (err, response) => {
     handleResponse(response.getSqueakDisplayEntriesList());
   });

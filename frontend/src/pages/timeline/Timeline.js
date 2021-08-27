@@ -55,6 +55,7 @@ import {
   goToSqueakAddressPage,
 } from "../../navigation/navigation"
 
+const SQUEAKS_PER_PAGE = 10;
 
 export default function TimelinePage() {
   var classes = useStyles();
@@ -66,7 +67,7 @@ export default function TimelinePage() {
   const history = useHistory();
 
   const getSqueaks = () => {
-    getTimelineSqueakDisplaysRequest(setSqueaks);
+    getTimelineSqueakDisplaysRequest(SQUEAKS_PER_PAGE, null, null, null, setSqueaks);
   };
   const getNetwork = () => {
       getNetworkRequest(setNetwork);
@@ -114,6 +115,35 @@ export default function TimelinePage() {
           network={network}
           setSqueaksFn={setSqueaks}
         ></SqueakList>
+        {(squeaks.length > 0) && ViewMoreSqueaksButton()}
+      </>
+    )
+  }
+
+  function ViewMoreSqueaksButton() {
+    return (
+      <>
+      <Grid item xs={12}>
+        <div className={classes.root}>
+          <Button
+            variant="contained"
+            onClick={() => {
+              const latestSqueak = squeaks.slice(-1).pop();
+              const latestSqueakHeight = (latestSqueak ? latestSqueak.getBlockHeight() : null);
+              const latestSqueakTime = (latestSqueak ? latestSqueak.getSqueakTime() : null);
+              const latestSqueakHash = (latestSqueak ? latestSqueak.getSqueakHash() : null);
+              console.log(latestSqueakHeight);
+              console.log(latestSqueakTime);
+              console.log(latestSqueakHash);
+               getTimelineSqueakDisplaysRequest(SQUEAKS_PER_PAGE, latestSqueakHeight, latestSqueakTime, latestSqueakHash, (resp) => {
+                 // TODO: nothing maybe
+                 console.log(resp);
+                 setSqueaks(squeaks.concat(resp));
+               });
+            }}>View more squeaks
+          </Button>
+        </div>
+      </Grid>
       </>
     )
   }

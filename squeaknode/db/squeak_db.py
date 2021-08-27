@@ -11,6 +11,8 @@ import sqlalchemy
 from bitcoin.core import CBlockHeader
 from sqlalchemy import func
 from sqlalchemy import literal
+from sqlalchemy.sql import and_
+from sqlalchemy.sql import or_
 from sqlalchemy.sql import select
 from squeak.core import CSqueak
 
@@ -29,6 +31,10 @@ from squeaknode.core.util import get_hash
 from squeaknode.db.exception import DuplicateReceivedPaymentError
 from squeaknode.db.migrations import run_migrations
 from squeaknode.db.models import Models
+
+
+MAX_INT = 999999999
+MAX_HASH = b'\xff' * 32
 
 
 logger = logging.getLogger(__name__)
@@ -212,8 +218,28 @@ class SqueakDb:
                 return None
             return self._parse_squeak_entry(row)
 
-    def get_timeline_squeak_entries(self) -> List[SqueakEntry]:
+    def get_timeline_squeak_entries(
+            self,
+            limit: int,
+            block_height: int = MAX_INT,
+            squeak_time: int = MAX_INT,
+            squeak_hash: bytes = MAX_HASH,
+    ) -> List[SqueakEntry]:
         """ Get all followed squeaks. """
+        block_height = block_height or MAX_INT
+        squeak_time = squeak_time or MAX_INT
+        squeak_hash = squeak_hash or MAX_HASH
+        logger.info("""Timeline db query with
+        limit: {}
+        block_height: {}
+        squeak_time: {}
+        squeak_hash: {}
+        """.format(
+            limit,
+            block_height,
+            squeak_time,
+            squeak_hash.hex(),
+        ))
         s = (
             select([self.squeaks, self.profiles])
             .select_from(
@@ -222,10 +248,24 @@ class SqueakDb:
                     self.profiles.c.address == self.squeaks.c.author_address,
                 )
             )
+            .where(or_(
+                self.squeaks.c.n_block_height < block_height,
+                and_(
+                    self.squeaks.c.n_block_height == block_height,
+                    self.squeaks.c.n_time < squeak_time,
+                ),
+                and_(
+                    self.squeaks.c.n_block_height == block_height,
+                    self.squeaks.c.n_time == squeak_time,
+                    self.squeaks.c.hash < squeak_hash,
+                ),
+            ))
             .order_by(
                 self.squeaks.c.n_block_height.desc(),
                 self.squeaks.c.n_time.desc(),
+                self.squeaks.c.hash.desc(),
             )
+            .limit(limit)
         )
         with self.get_connection() as connection:
             result = connection.execute(s)
@@ -1103,6 +1143,7 @@ class SqueakDb:
             block_height=row["n_block_height"],
             block_hash=(row["hash_block"]),
             block_time=row["block_time"],
+            squeak_time=row["n_time"],
             reply_to=reply_to,
             is_unlocked=is_locked,
             liked_time=liked_time_s,

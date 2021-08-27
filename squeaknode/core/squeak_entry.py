@@ -10,6 +10,7 @@ class SqueakEntry(NamedTuple):
     block_height: int
     block_hash: bytes
     block_time: int
+    squeak_time: int
     reply_to: Optional[bytes]
     is_unlocked: bool
     squeak_profile: Optional[SqueakProfile]
