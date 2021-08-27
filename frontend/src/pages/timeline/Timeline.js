@@ -115,7 +115,7 @@ export default function TimelinePage() {
           network={network}
           setSqueaksFn={setSqueaks}
         ></SqueakList>
-        {ViewMoreSqueaksButton()}
+        {(squeaks.length > 0) && ViewMoreSqueaksButton()}
       </>
     )
   }

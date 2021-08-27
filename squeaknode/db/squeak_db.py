@@ -11,6 +11,8 @@ import sqlalchemy
 from bitcoin.core import CBlockHeader
 from sqlalchemy import func
 from sqlalchemy import literal
+from sqlalchemy.sql import and_
+from sqlalchemy.sql import or_
 from sqlalchemy.sql import select
 from squeak.core import CSqueak
 
@@ -32,7 +34,7 @@ from squeaknode.db.models import Models
 
 
 MAX_INT = 999999999
-MAX_HASH = b'ff' * 32
+MAX_HASH = b'\xff' * 32
 
 
 logger = logging.getLogger(__name__)
@@ -246,14 +248,17 @@ class SqueakDb:
                     self.profiles.c.address == self.squeaks.c.author_address,
                 )
             )
-            .where((
-                self.squeaks.c.n_block_height,
-                self.squeaks.c.n_time,
-                self.squeaks.c.hash,
-            ) < (
-                block_height,
-                squeak_time,
-                squeak_hash,
+            .where(or_(
+                self.squeaks.c.n_block_height < block_height,
+                and_(
+                    self.squeaks.c.n_block_height == block_height,
+                    self.squeaks.c.n_time < squeak_time,
+                ),
+                and_(
+                    self.squeaks.c.n_block_height == block_height,
+                    self.squeaks.c.n_time == squeak_time,
+                    self.squeaks.c.hash < squeak_hash,
+                ),
             ))
             .order_by(
                 self.squeaks.c.n_block_height.desc(),
