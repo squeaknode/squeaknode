@@ -1,6 +1,8 @@
 import logging
 import threading
 from typing import Dict
+from typing import List
+from typing import Optional
 
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.network.peer import Peer
@@ -24,7 +26,7 @@ class ConnectionManager(object):
         self.peers_changed_callbacks = {}
 
     @property
-    def peers(self):
+    def peers(self) -> List[Peer]:
         return list(self._peers.values())
 
     def has_connection(self, address):
@@ -76,7 +78,7 @@ class ConnectionManager(object):
             logger.debug('Removed peer {}'.format(peer))
             self.on_peers_changed()
 
-    def get_peer(self, address):
+    def get_peer(self, address) -> Optional[Peer]:
         """Get a peer info by address.
         """
         return self._peers.get(address)
