@@ -236,7 +236,7 @@ class SqueakDb:
             limit,
             block_height,
             squeak_time,
-            squeak_hash.hex,
+            squeak_hash.hex(),
         ))
         s = (
             select([self.squeaks, self.profiles])
@@ -1138,6 +1138,7 @@ class SqueakDb:
             block_height=row["n_block_height"],
             block_hash=(row["hash_block"]),
             block_time=row["block_time"],
+            squeak_time=row["n_time"],
             reply_to=reply_to,
             is_unlocked=is_locked,
             liked_time=liked_time_s,

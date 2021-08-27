@@ -485,17 +485,20 @@ message SqueakDisplayEntry {
     /// Block time
     int64 block_time = 8;
 
+    /// Squeak time
+    int64 squeak_time = 9;
+
     /// The author name
-    string author_address = 9;
+    string author_address = 10;
 
     /// Is author address known
-    bool is_author_known = 10;
+    bool is_author_known = 11;
 
     /// The author name
-    SqueakProfile author = 11;
+    SqueakProfile author = 12;
 
     /// Liked time
-    int64 liked_time_s = 12;
+    int64 liked_time_s = 13;
 }
 
 message GetTimelineSqueakDisplaysRequest {
