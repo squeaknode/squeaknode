@@ -201,12 +201,6 @@ class Peer(object):
     def set_subscription(self, subscription):
         self._subscription = subscription
 
-    # def handle_messages(self, squeak_controller):
-    #     peer_message_handler = PeerMessageHandler(
-    #         self, squeak_controller)
-    #     peer_message_handler.handle_msgs()
-    #     logger.info("Finished handle_messages")
-
     def __repr__(self):
         return "Peer(%s)" % (str(self.remote_address))
 
