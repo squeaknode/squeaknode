@@ -229,7 +229,7 @@ class SqueakDb:
         block_height = block_height or MAX_INT
         squeak_time = squeak_time or MAX_INT
         squeak_hash = squeak_hash or MAX_HASH
-        logger.info("""Timeline db query with
+        logger.debug("""Timeline db query with
         limit: {}
         block_height: {}
         squeak_time: {}
@@ -443,7 +443,7 @@ class SqueakDb:
         logger.debug("Query s: {}".format(s))
 
         with self.get_connection() as connection:
-            # logger.info("Mogrify lookup_squeaks: {}.".format(
+            # logger.debug("Mogrify lookup_squeaks: {}.".format(
             #     connection.connection.cursor().mogrify(s),
             # ))
             result = connection.execute(s)
