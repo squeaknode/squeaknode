@@ -224,6 +224,20 @@ class SqueakDb:
             squeak_hash: bytes = MAX_HASH,
     ) -> List[SqueakEntry]:
         """ Get all followed squeaks. """
+        block_height = block_height or MAX_INT
+        squeak_time = squeak_time or MAX_INT
+        squeak_hash = squeak_hash or MAX_HASH
+        logger.info("""Timeline db query with
+        limit: {}
+        block_height: {}
+        squeak_time: {}
+        squeak_hash: {}
+        """.format(
+            limit,
+            block_height,
+            squeak_time,
+            squeak_hash.hex,
+        ))
         s = (
             select([self.squeaks, self.profiles])
             .select_from(

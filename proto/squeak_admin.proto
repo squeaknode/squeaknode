@@ -501,6 +501,9 @@ message SqueakDisplayEntry {
 message GetTimelineSqueakDisplaysRequest {
     /// Limit number of results
     int32 limit = 1;
+
+    /// Block height
+    int32 block_height = 2;
 }
 
 message GetTimelineSqueakDisplaysReply {

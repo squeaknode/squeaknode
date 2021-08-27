@@ -284,13 +284,26 @@ class SqueakAdminServerHandler(object):
 
     def handle_get_timeline_squeak_display_entries(self, request):
         limit = request.limit
+        block_height = request.block_height
+        squeak_time = 0
+        squeak_hash = b''
         logger.info("""Handle get timeline squeak display entries with
-        limit: {}""".format(
+        limit: {}
+        block_height: {}
+        squeak_time: {}
+        squeak_hash: {}
+        """.format(
             limit,
+            block_height,
+            squeak_time,
+            squeak_hash,
         ))
         squeak_entries = (
             self.squeak_controller.get_timeline_squeak_entries(
                 limit,
+                block_height,
+                squeak_time,
+                squeak_hash,
             )
         )
         logger.info(
