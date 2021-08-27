@@ -199,13 +199,6 @@ class Peer(object):
         msg.nNonce = generate_version_nonce()
         return msg
 
-    # def update_subscription(self, squeak_controller):
-    #     locator = squeak_controller.get_interested_locator()
-    #     subscribe_msg = msg_subscribe(
-    #         locator=locator,
-    #     )
-    #     self.send_msg(subscribe_msg)
-
     def set_connected(self):
         self._connect_time = time_now()
 
@@ -217,10 +210,6 @@ class Peer(object):
             self, squeak_controller)
         peer_message_handler.handle_msgs()
         logger.info("Finished handle_messages")
-
-    # def sync(self, squeak_controller):
-    #     # TODO: getaddrs from peer.
-    #     self.update_subscription(squeak_controller)
 
     def __repr__(self):
         return "Peer(%s)" % (str(self.remote_address))
