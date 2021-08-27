@@ -22,6 +22,7 @@ import {
   XAxis,
 } from "recharts";
 import EditIcon from '@material-ui/icons/Edit';
+import ReplayIcon from '@material-ui/icons/Replay';
 
 import Timeline from '@material-ui/lab/Timeline';
 import TimelineItem from '@material-ui/lab/TimelineItem';
@@ -140,7 +141,9 @@ export default function TimelinePage() {
                  console.log(resp);
                  setSqueaks(squeaks.concat(resp));
                });
-            }}>View more squeaks
+            }}>
+            <ReplayIcon />
+            View more squeaks
           </Button>
         </div>
       </Grid>
