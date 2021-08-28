@@ -46,40 +46,10 @@ export default function PeerAddressPage() {
   const history = useHistory();
   const { host, port } = useParams();
   const [connectedPeer, setConnectedPeer] = useState([]);
-  // const [squeakProfile, setSqueakProfile] = useState(null);
-  // const [createContactProfileDialogOpen, setCreateContactProfileDialogOpen] = useState(false);
-  // const [disconnectPeerDialogOpen, setDisconnectPeerDialogOpen] = useState(false);
-
-  // const getSqueakProfile = (address) => {
-  //       getSqueakProfileByAddressRequest(address, setSqueakProfile);
-  // };
-
-  // const handleClickOpenCreateContactProfileDialog = () => {
-  //   setCreateContactProfileDialogOpen(true);
-  // };
-  //
-  // const handleCloseCreateContactProfileDialog = () => {
-  //   setCreateContactProfileDialogOpen(false);
-  // };
 
   const getConnectedPeer = () => {
     getConnectedPeerRequest(host, port, setConnectedPeer);
   };
-
-  // const subscribeConnectedPeers = () => {
-  //   subscribeConnectedPeersRequest((connectedPeers) => {
-  //     console.log(connectedPeers);
-  //     var ret = null;
-  //     for (let i = 0; i < connectedPeers.length; i++) {
-  //       const peerAddress = connectedPeers[i].getPeerAddress();
-  //       if(peerAddress.getHost() == host && peerAddress.getPort() == port) {
-  //         var ret = connectedPeers[i];
-  //       }
-  //     }
-  //     console.log("Using connected peer: " + ret);
-  //     setConnectedPeer(ret);
-  //   });
-  // };
 
   const subscribeConnectedPeer = () => {
     subscribeConnectedPeerRequest(host, port, (connectedPeer) => {
@@ -87,51 +57,6 @@ export default function PeerAddressPage() {
       setConnectedPeer(connectedPeer);
     });
   };
-
-    // const handleClickOpenDisconnectPeerDialog = () => {
-    //   setDisconnectPeerDialogOpen(true);
-    // };
-    //
-    // const handleCloseDisconnectPeerDialog = () => {
-    //   setDisconnectPeerDialogOpen(false);
-    // };
-
-  // useEffect(()=>{
-  //   getSqueakProfile(address)
-  // },[address]);
-
-  // function NoProfileContent() {
-  //   return (
-  //     <div>
-  //       No profile for address.
-  //       <Button variant="contained" onClick={() => {
-  //           handleClickOpenCreateContactProfileDialog();
-  //         }}>Create Profile</Button>
-  //     </div>
-  //   )
-  // }
-  //
-  // function ProfileContent() {
-  //   return (
-  //     <div className={classes.root}>
-  //       Profile:
-  //       <Button variant="contained" onClick={() => {
-  //           goToProfilePage(history, squeakProfile.getProfileId());
-  //         }}>{squeakProfile.getProfileName()}</Button>
-  //     </div>
-  //   )
-  // }
-
-  // function DisconnectPeerDialogContent() {
-  //   return (
-  //     <>
-  //       <ConnectPeerDialog
-  //         open={connectPeerDialogOpen}
-  //         handleClose={handleCloseConnectPeerDialog}
-  //         ></ConnectPeerDialog>
-  //     </>
-  //   )
-  // }
 
   useEffect(() => {
     getConnectedPeer();
