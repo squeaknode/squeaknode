@@ -761,3 +761,23 @@ class SqueakAdminServerHandler(object):
             yield squeak_admin_pb2.GetConnectedPeersReply(
                 connected_peers=connected_peers_display_msgs
             )
+
+    def handle_subscribe_connected_peer(self, request, stopped):
+        peer_address = message_to_peer_address(request.peer_address)
+        logger.info(
+            "Handle subscribe connected peer with peer address: {}".format(peer_address))
+        connected_peer_stream = self.squeak_controller.subscribe_connected_peer(
+            peer_address,
+            stopped,
+        )
+        for connected_peer in connected_peer_stream:
+            if connected_peer is None:
+                yield squeak_admin_pb2.GetConnectedPeerReply(
+                    connected_peer=None
+                )
+            else:
+                connected_peers_display_msg = connected_peer_to_message(
+                    connected_peer)
+                yield squeak_admin_pb2.GetConnectedPeerReply(
+                    connected_peer=connected_peers_display_msg,
+                )

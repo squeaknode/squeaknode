@@ -35,6 +35,7 @@ from squeak.messages import MsgSerializable
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.util import generate_version_nonce
 from squeaknode.network.util import time_now
+from squeaknode.node.listener_subscription_client import EventListener
 
 
 MAX_MESSAGE_LEN = 1048576
@@ -60,6 +61,7 @@ class Peer(object):
             local_address: PeerAddress,
             remote_address: PeerAddress,
             outgoing: bool,
+            peer_changed_listener: EventListener,
     ):
         self._peer_socket = peer_socket
         self._peer_socket_lock = threading.Lock()
@@ -73,6 +75,10 @@ class Peer(object):
         self._last_sent_ping_nonce = None
         self._last_sent_ping_time = None
         self._last_recv_ping_time = None
+        self._num_msgs_received = 0
+        self._num_bytes_received = 0
+        self._num_msgs_sent = 0
+        self._num_bytes_sent = 0
         self._recv_msg_queue: queue.Queue = queue.Queue()
 
         self._subscription = None
@@ -81,6 +87,7 @@ class Peer(object):
             self._peer_socket,
             self._recv_msg_queue,
         )
+        self.peer_changed_listener = peer_changed_listener
 
     @property
     def nVersion(self):
@@ -125,6 +132,22 @@ class Peer(object):
         return self._connect_time
 
     @property
+    def num_msgs_received(self):
+        return self._num_msgs_received
+
+    @property
+    def num_bytes_received(self):
+        return self._num_bytes_received
+
+    @property
+    def num_msgs_sent(self):
+        return self._num_msgs_sent
+
+    @property
+    def num_bytes_sent(self):
+        return self._num_bytes_sent
+
+    @property
     def local_version(self):
         return self._local_version
 
@@ -161,12 +184,26 @@ class Peer(object):
         timestamp = timestamp or time.time()
         self._last_recv_ping_time = timestamp
 
+    # @property
+    # def peer_state(self):
+    #     return ConnectedPeer(
+    #         peer_address=self.remote_address,
+    #         connect_time_s=self.connect_time,
+    #         outgoing=self.outgoing,
+    #         sent_bytes=0,
+    #         sent_messages=0,
+    #         received_bytes=0,
+    #         received_messages=0,
+    #     )
+
     def recv_msg(self):
         """Read data from the peer socket, and yield messages as they are decoded.
 
         This method blocks when the socket has no data to read.
         """
         msg = self._recv_msg_queue.get()
+        self.record_msg_received(msg)
+        self.on_peer_updated()
         logger.info('Received msg {} from {}'.format(msg, self))
         return msg
 
@@ -180,6 +217,9 @@ class Peer(object):
             self._peer_socket.stop()
         except Exception:
             pass
+        finally:
+            self.set_disconnected()
+            self.on_peer_updated()
 
     def send_msg(self, msg):
         logger.info('Sending msg {} to {}'.format(msg, self))
@@ -187,6 +227,8 @@ class Peer(object):
         try:
             with self._peer_socket_lock:
                 self._peer_socket.send(data)
+                self.record_msg_sent(msg)
+                self.on_peer_updated()
         except Exception:
             logger.info('Failed to send msg to {}'.format(self))
             self.stop()
@@ -219,8 +261,30 @@ class Peer(object):
     def set_connected(self):
         self._connect_time = time_now()
 
+    def set_disconnected(self):
+        self._connect_time = None
+
     def set_subscription(self, subscription):
         self._subscription = subscription
+
+    def on_peer_updated(self):
+        logger.info('on_peer_updated: {}'.format(self))
+        self.peer_changed_listener.handle_new_item(self)
+
+    def record_msg_received(self, msg):
+        if msg:
+            self._num_msgs_received += 1
+            self._num_bytes_received += len(msg.to_bytes())
+            self._last_msg_revc_time = time_now()
+
+    def record_msg_sent(self, msg):
+        if msg:
+            self._num_msgs_sent += 1
+            self._num_bytes_sent += len(msg.to_bytes())
+
+    # def subscribe_peer_state(self, stopped):
+    #     for result in self.peer_changed_listener.yield_items(stopped):
+    #         yield result
 
     def __repr__(self):
         return "Peer(%s)" % (str(self.remote_address))

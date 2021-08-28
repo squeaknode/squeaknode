@@ -118,6 +118,7 @@ import {
   DownloadRepliesRequest,
   DownloadRepliesReply,
   SubscribeConnectedPeersRequest,
+  SubscribeConnectedPeerRequest,
   PeerAddress,
 } from "../proto/squeak_admin_pb"
 
@@ -646,6 +647,23 @@ export function subscribeConnectedPeersRequest(handleResponse) {
   stream.on('data', (response) => {
     // handleResponse(response.getConnectedPeersList());
     handleResponse(response.getConnectedPeersList());
+  });
+  stream.on('end', function(end) {
+    // stream end signal
+    console.log(end);
+    alert("Stream ended: " + end);
+  });
+}
+
+export function subscribeConnectedPeerRequest(host, port, handleResponse) {
+  var request = new SubscribeConnectedPeerRequest();
+  var peerAddress = new PeerAddress();
+  peerAddress.setHost(host);
+  peerAddress.setPort(port);
+  request.setPeerAddress(peerAddress);
+  var stream = client.subscribeConnectedPeer(request);
+  stream.on('data', (response) => {
+    handleResponse(response.getConnectedPeer());
   });
   stream.on('end', function(end) {
     // stream end signal

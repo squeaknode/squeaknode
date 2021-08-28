@@ -118,6 +118,7 @@ class NetworkManager(object):
             self.local_address,
             address,
             outgoing,
+            self.connection_manager.single_peer_changed_listener,
         )
 
         logger.debug(
@@ -141,4 +142,11 @@ class NetworkManager(object):
         #     stopped,
         # )
         for result in self.connection_manager.yield_peers_changed(stopped):
+            yield result
+
+    def subscribe_connected_peer(self, peer_address: PeerAddress, stopped):
+        for result in self.connection_manager.yield_single_peer_changed(
+                peer_address,
+                stopped,
+        ):
             yield result

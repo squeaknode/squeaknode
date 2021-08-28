@@ -6,6 +6,9 @@ import {
    Button,
    Box,
 } from "@material-ui/core";
+import Card from '@material-ui/core/Card';
+import CardHeader from "@material-ui/core/CardHeader";
+
 
 // styles
 import useStyles from "./styles";
@@ -25,6 +28,9 @@ import TimelineOppositeContent from '@material-ui/lab/TimelineOppositeContent';
 import Typography from '@material-ui/core/Typography';
 
 import FaceIcon from '@material-ui/icons/Face';
+import ComputerIcon from '@material-ui/icons/Computer';
+
+import moment from 'moment';
 
 import {
   getSqueakProfileByAddressRequest,
@@ -33,6 +39,7 @@ import {
   disconnectSqueakPeerRequest,
   getConnectedPeerRequest,
   subscribeConnectedPeersRequest,
+  subscribeConnectedPeerRequest,
 } from "../../squeakclient/requests"
 import {
   goToSqueakAddressPage,
@@ -44,92 +51,24 @@ export default function PeerAddressPage() {
   var classes = useStyles();
   const history = useHistory();
   const { host, port } = useParams();
-  const [connectedPeer, setConnectedPeer] = useState([]);
-  // const [squeakProfile, setSqueakProfile] = useState(null);
-  // const [createContactProfileDialogOpen, setCreateContactProfileDialogOpen] = useState(false);
-  // const [disconnectPeerDialogOpen, setDisconnectPeerDialogOpen] = useState(false);
-
-  // const getSqueakProfile = (address) => {
-  //       getSqueakProfileByAddressRequest(address, setSqueakProfile);
-  // };
-
-  // const handleClickOpenCreateContactProfileDialog = () => {
-  //   setCreateContactProfileDialogOpen(true);
-  // };
-  //
-  // const handleCloseCreateContactProfileDialog = () => {
-  //   setCreateContactProfileDialogOpen(false);
-  // };
+  const [connectedPeer, setConnectedPeer] = useState(null);
 
   const getConnectedPeer = () => {
     getConnectedPeerRequest(host, port, setConnectedPeer);
   };
 
-  const subscribeConnectedPeers = () => {
-    subscribeConnectedPeersRequest((connectedPeers) => {
-      console.log(connectedPeers);
-      var ret = null;
-      for (let i = 0; i < connectedPeers.length; i++) {
-        const peerAddress = connectedPeers[i].getPeerAddress();
-        if(peerAddress.getHost() == host && peerAddress.getPort() == port) {
-          var ret = connectedPeers[i];
-        }
-      }
-      console.log("Using connected peer: " + ret);
-      setConnectedPeer(ret);
+  const subscribeConnectedPeer = () => {
+    subscribeConnectedPeerRequest(host, port, (connectedPeer) => {
+      console.log(connectedPeer);
+      setConnectedPeer(connectedPeer);
     });
   };
 
-    // const handleClickOpenDisconnectPeerDialog = () => {
-    //   setDisconnectPeerDialogOpen(true);
-    // };
-    //
-    // const handleCloseDisconnectPeerDialog = () => {
-    //   setDisconnectPeerDialogOpen(false);
-    // };
-
-  // useEffect(()=>{
-  //   getSqueakProfile(address)
-  // },[address]);
-
-  // function NoProfileContent() {
-  //   return (
-  //     <div>
-  //       No profile for address.
-  //       <Button variant="contained" onClick={() => {
-  //           handleClickOpenCreateContactProfileDialog();
-  //         }}>Create Profile</Button>
-  //     </div>
-  //   )
-  // }
-  //
-  // function ProfileContent() {
-  //   return (
-  //     <div className={classes.root}>
-  //       Profile:
-  //       <Button variant="contained" onClick={() => {
-  //           goToProfilePage(history, squeakProfile.getProfileId());
-  //         }}>{squeakProfile.getProfileName()}</Button>
-  //     </div>
-  //   )
-  // }
-
-  // function DisconnectPeerDialogContent() {
-  //   return (
-  //     <>
-  //       <ConnectPeerDialog
-  //         open={connectPeerDialogOpen}
-  //         handleClose={handleCloseConnectPeerDialog}
-  //         ></ConnectPeerDialog>
-  //     </>
-  //   )
-  // }
-
   useEffect(() => {
-    getConnectedPeer()
+    getConnectedPeer();
   }, []);
   useEffect(() => {
-    subscribeConnectedPeers()
+    subscribeConnectedPeer();
   }, []);
 
   function DisconnectPeerButton() {
@@ -206,11 +145,60 @@ export default function PeerAddressPage() {
     )
   }
 
+  function PeerConnectionDetails() {
+    const connectTimeS = connectedPeer.getConnectTimeS();
+    const momentTimeString = moment(connectTimeS*1000).fromNow();
+    const lastMsgReceivedTimeS = connectedPeer.getLastMessageReceivedTimeS();
+    const lastMsgReceivedString = moment(lastMsgReceivedTimeS*1000).fromNow();
+    const numMsgsReceived = connectedPeer.getNumberMessagesReceived();
+    const numBytesReceived = connectedPeer.getNumberBytesReceived();
+    const numMsgsSent = connectedPeer.getNumberMessagesSent();
+    const numBytesSent = connectedPeer.getNumberBytesSent();
+    return (
+      <>
+        <Box>
+          {`Connect time: ${momentTimeString}`}
+        </Box>
+        <Box>
+          {`Last message received: ${lastMsgReceivedString}`}
+        </Box>
+        <Box>
+          {`Number of messages received: ${numMsgsReceived}`}
+        </Box>
+        <Box>
+          {`Number of bytes received: ${numBytesReceived}`}
+        </Box>
+        <Box>
+          {`Number of messages sent: ${numMsgsSent}`}
+        </Box>
+        <Box>
+          {`Number of bytes sent: ${numBytesSent}`}
+        </Box>
+      </>
+    )
+  }
+
+  function PeerConnectionContent() {
+    console.log(connectedPeer);
+    return (
+      <Card
+         className={classes.root}
+      >
+        <CardHeader
+           avatar={<ComputerIcon/>}
+           title={`Peer Address: ${host + ":" + port}`}
+           subheader={PeerConnectionDetails()}
+        />
+      </Card>
+    )
+  }
+
   return (
     <>
       {AddressContent()}
       {ConnectionStatusContent()}
       {ConnectionActionContent()}
+      {(connectedPeer) && PeerConnectionContent()}
     </>
   );
 }
