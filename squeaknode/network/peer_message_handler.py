@@ -31,6 +31,7 @@ from squeak.messages import msg_squeak
 from squeak.net import CInv
 
 from squeaknode.core.offer import Offer
+from squeaknode.core.peer_address import PeerAddress
 from squeaknode.node.squeak_controller import SqueakController
 
 
@@ -102,13 +103,21 @@ class PeerMessageHandler:
         self.peer.set_pong_response(msg.nonce)
 
     def handle_addr(self, msg):
+        # TODO: Save new address in table rather than connecting.
         for addr in msg.addrs:
-            self.peer_server.connect_address((addr.ip, addr.port))
+            peer_address = PeerAddress(
+                host=addr.ip,
+                port=addr.port,
+            )
+            self.squeak_controller.connect_peer(peer_address)
 
     def handle_getaddr(self, msg):
-        peers = self.node.get_peers()
-        addresses = [peer.caddress for peer in peers
-                     if peer.outgoing]
+        # TODO: Get known peers from table in database.
+        peers = self.squeak_controller.get_connected_peers()
+        addresses = [
+            peer.remote_caddress for peer in peers
+            if peer.remote_caddress != self.peer.remote_caddress
+        ]
         addr_msg = msg_addr(addrs=addresses)
         self.peer.send_msg(addr_msg)
 
