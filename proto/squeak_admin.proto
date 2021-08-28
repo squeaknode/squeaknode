@@ -278,7 +278,7 @@ service SqueakAdmin {
 
   /** sqkadmin: `subscribeconnectedpeer`
   */
-  rpc SubscribeBuyOffers (SubscribeBuyOffersRequest) returns (stream GetBuyOffersReply) {}
+  rpc SubscribeBuyOffers (SubscribeBuyOffersRequest) returns (stream GetBuyOfferReply) {}
 
 }
 
