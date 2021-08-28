@@ -39,6 +39,7 @@ import {
 } from "../../squeakclient/requests"
 import {
   getBuyOffersRequest,
+  subscribeBuyOffersRequest,
 } from "../../squeakclient/requests"
 import {
   payOfferRequest,
@@ -85,6 +86,18 @@ export default function BuySqueakDialog({
   const loadOffers = () => {
     getBuyOffersRequest(hash, setOffers);
   };
+  const subscribeOffers = () => {
+    subscribeBuyOffersRequest(hash, (offer) => {
+      const newOffers = offers.concat([offer]);
+      setOffers(newOffers);
+    });
+  };
+  const downloadOffers = () => {
+    console.log("downloadOffersRequest with hash: " + hash);
+    downloadOffersRequest(hash, (response) => {
+      // Do nothing.
+    });
+  };
 
   const handlePayResponse = (response) => {
     handlePaymentComplete();
@@ -102,11 +115,7 @@ export default function BuySqueakDialog({
     event.preventDefault();
     console.log("Handling download click...");
     console.log("downloadOffersRequest with hash: " + hash);
-    downloadOffersRequest(hash, (response) => {
-      console.log("response:");
-      console.log(response);
-      reloadRoute(history);
-    });
+    downloadOffers();
   }
 
   const getSelectedOffer = () => {
@@ -143,6 +152,8 @@ export default function BuySqueakDialog({
 
   function load(event) {
     loadOffers();
+    subscribeOffers();
+    downloadOffers();
   }
 
   function cancel(event) {
@@ -180,7 +191,7 @@ export default function BuySqueakDialog({
       <Button
         variant="contained"
         onClick={onDownloadClick}
-        >Load offers
+        >Re-download offers
       </Button>
     )
   }

@@ -447,7 +447,9 @@ class SqueakController:
     def save_offer(self, received_offer: ReceivedOffer) -> None:
         logger.info("Saving received offer: {}".format(received_offer))
         try:
-            self.squeak_db.insert_received_offer(received_offer)
+            offer_id = self.squeak_db.insert_received_offer(received_offer)
+            received_offer = received_offer._replace(
+                received_offer_id=offer_id)
             self.new_received_offer_listener.handle_new_item(received_offer)
         except sqlalchemy.exc.IntegrityError:
             logger.debug("Failed to save duplicate offer.")

@@ -120,6 +120,7 @@ import {
   SubscribeConnectedPeersRequest,
   SubscribeConnectedPeerRequest,
   PeerAddress,
+  SubscribeBuyOffersRequest,
 } from "../proto/squeak_admin_pb"
 
 import { SqueakAdminClient } from "../proto/squeak_admin_grpc_web_pb"
@@ -664,6 +665,20 @@ export function subscribeConnectedPeerRequest(host, port, handleResponse) {
   var stream = client.subscribeConnectedPeer(request);
   stream.on('data', (response) => {
     handleResponse(response.getConnectedPeer());
+  });
+  stream.on('end', function(end) {
+    // stream end signal
+    console.log(end);
+    alert("Stream ended: " + end);
+  });
+}
+
+export function subscribeBuyOffersRequest(hash, handleResponse) {
+  var request = new SubscribeBuyOffersRequest();
+  request.setSqueakHash(hash);
+  var stream = client.subscribeBuyOffers(request);
+  stream.on('data', (response) => {
+    handleResponse(response.getOffer());
   });
   stream.on('end', function(end) {
     // stream end signal

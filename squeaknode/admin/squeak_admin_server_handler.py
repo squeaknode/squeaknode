@@ -792,6 +792,7 @@ class SqueakAdminServerHandler(object):
             stopped,
         )
         for offer in received_offer_stream:
+            logger.info("Yielding received offer: {}".format(offer))
             offer_msg = offer_entry_to_message(offer)
             yield squeak_admin_pb2.GetBuyOfferReply(
                 offer=offer_msg,
