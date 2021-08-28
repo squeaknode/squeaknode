@@ -47,15 +47,15 @@ class Connection(object):
     def connect(self, connection_manager):
         self.start_receiving_msgs()
         self.handshake()
-        logger.info("Adding peer.")
+        logger.debug("Adding peer.")
         connection_manager.add_peer(self.peer)
         try:
-            logger.info("Yielding peer.")
+            logger.debug("Yielding peer.")
             yield self
         except Exception:
             logger.exception("Peer connection failed.")
         finally:
-            logger.info("Removing peer.")
+            logger.debug("Removing peer.")
             connection_manager.remove_peer(self.peer)
             self.peer.stop()
             # TODO: Set a stop event here.
@@ -99,7 +99,7 @@ class Connection(object):
             self.peer.send_version()
 
         self.peer.set_connected()
-        logger.info("HANDSHAKE COMPLETE-----------")
+        logger.debug("HANDSHAKE COMPLETE-----------")
         timer.stop_timer()
 
     def handle_messages(self):
