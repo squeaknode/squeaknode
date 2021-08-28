@@ -288,3 +288,15 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
             request,
             stopped,
         )
+
+    def SubscribeBuyOffers(self, request, context):
+        stopped = threading.Event()
+
+        def on_rpc_done():
+            logger.info("Stopping SubscribeBuyOffers.")
+            stopped.set()
+        context.add_callback(on_rpc_done)
+        return self.handler.handle_subscribe_buy_offers(
+            request,
+            stopped,
+        )

@@ -74,6 +74,7 @@ class SqueakController:
         self.payment_processor = payment_processor
         self.network_manager = network_manager
         self.new_squeak_listener = EventListener()
+        self.new_received_offer_listener = EventListener()
         self.config = config
 
     def save_squeak(self, squeak: CSqueak) -> bytes:
@@ -447,6 +448,7 @@ class SqueakController:
         logger.info("Saving received offer: {}".format(received_offer))
         try:
             self.squeak_db.insert_received_offer(received_offer)
+            self.new_received_offer_listener.handle_new_item(received_offer)
         except sqlalchemy.exc.IntegrityError:
             logger.debug("Failed to save duplicate offer.")
 
@@ -661,3 +663,8 @@ class SqueakController:
                 locator=locator,
             )
             peer.send_msg(subscribe_msg)
+
+    def subscribe_received_offers_for_squeak(self, squeak_hash: bytes, stopped: threading.Event):
+        for received_offer in self.new_received_offer_listener.yield_items(stopped):
+            if received_offer.squeak_hash == squeak_hash:
+                yield received_offer
