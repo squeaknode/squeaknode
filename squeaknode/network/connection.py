@@ -58,6 +58,7 @@ class Connection(object):
             logger.info("Removing peer.")
             connection_manager.remove_peer(self.peer)
             self.peer.stop()
+            # TODO: Set a stop event here.
 
     def handle_connection(self):
         self.initial_sync()
