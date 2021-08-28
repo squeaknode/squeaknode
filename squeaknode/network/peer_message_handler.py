@@ -103,6 +103,7 @@ class PeerMessageHandler:
         self.peer.set_pong_response(msg.nonce)
 
     def handle_addr(self, msg):
+        # TODO: Save new address in table rather than connecting.
         for addr in msg.addrs:
             peer_address = PeerAddress(
                 host=addr.ip,
@@ -111,6 +112,7 @@ class PeerMessageHandler:
             self.squeak_controller.connect_peer(peer_address)
 
     def handle_getaddr(self, msg):
+        # TODO: Get known peers from table in database.
         peers = self.squeak_controller.get_connected_peers()
         addresses = [
             peer.remote_caddress for peer in peers
