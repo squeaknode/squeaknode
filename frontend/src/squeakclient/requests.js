@@ -36,6 +36,7 @@ import {
   GetPeerRequest,
   SetPeerAutoconnectRequest,
   GetSigningProfilesRequest,
+  GetProfilesRequest,
   GetContactProfilesRequest,
   MakeSqueakRequest,
   GetSqueakDisplayRequest,
@@ -346,6 +347,13 @@ export function setPeerAutoconnectRequest(id, autoconnect, handleResponse) {
   request.setAutoconnect(autoconnect);
   client.setPeerAutoconnect(request, {}, (err, response) => {
     handleResponse(response);
+  });
+}
+
+export function getProfilesRequest(handleResponse) {
+  var request = new GetProfilesRequest();
+  client.getProfiles(request, {}, (err, response) => {
+    handleResponse(response.getSqueakProfilesList());
   });
 }
 

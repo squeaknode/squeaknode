@@ -2,11 +2,13 @@ import React from "react";
 import {useHistory} from "react-router-dom";
 
 import Card from '@material-ui/core/Card';
+import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import CardHeader from "@material-ui/core/CardHeader";
 
 // icons
 import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';
+import VpnKeyIcon from '@material-ui/icons/VpnKey';
 
 import useStyles from "../../pages/wallet/styles";
 import SqueakUserAvatar from "../../components/SqueakUserAvatar";
@@ -57,6 +59,22 @@ export default function ProfileListItem({
   //   return pieces[1];
   // }
 
+  const name = profile.getProfileName();
+  const address = profile.getAddress();
+
+  function ProfileCardContent() {
+    return (
+      <>
+        <Box>
+          {profile.getHasPrivateKey() && <VpnKeyIcon />}
+        </Box>
+        <Box>
+          {`Address: ${address}`}
+        </Box>
+      </>
+    )
+  }
+
   return (
      <Card
         className={classes.root}
@@ -66,8 +84,8 @@ export default function ProfileListItem({
           avatar={<SqueakUserAvatar
                     squeakProfile={profile}
                   />}
-          title={`Name: ${profile.getProfileName()}`}
-          subheader={`Address: ${profile.getAddress()}`}
+          title={`Name: ${name}`}
+          subheader={ProfileCardContent()}
           // action={<Button size="small">View Peer</Button>}
        />
      </Card>

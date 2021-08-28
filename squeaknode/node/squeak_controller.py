@@ -198,6 +198,9 @@ class SqueakController:
         self.update_subscriptions()
         return profile_id
 
+    def get_profiles(self) -> List[SqueakProfile]:
+        return self.squeak_db.get_profiles()
+
     def get_signing_profiles(self) -> List[SqueakProfile]:
         return self.squeak_db.get_signing_profiles()
 

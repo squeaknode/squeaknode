@@ -29,8 +29,7 @@ import ProfileListItem from "../../components/ProfileListItem";
 import mock from "../dashboard/mock";
 
 import {
-  getSigningProfilesRequest,
-  getContactProfilesRequest,
+  getProfilesRequest,
 } from "../../squeakclient/requests"
 import {
   goToProfilePage,
@@ -47,8 +46,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Profiles() {
   const classes = useStyles();
-  const [signingProfiles, setSigningProfiles] = useState([]);
-  const [contactProfiles, setContactProfiles] = useState([]);
+  const [profiles, setProfiles] = useState([]);
   const [createSigningProfileDialogOpen, setCreateSigningProfileDialogOpen] = useState(false);
   const [importSigningProfileDialogOpen, setImportSigningProfileDialogOpen] = useState(false);
   const [createContactProfileDialogOpen, setCreateContactProfileDialogOpen] = useState(false);
@@ -66,11 +64,8 @@ export default function Profiles() {
     setValue(newValue);
   };
 
-  const loadSigningProfiles = () => {
-    getSigningProfilesRequest(setSigningProfiles);
-  };
-  const loadContactProfiles = () => {
-    getContactProfilesRequest(setContactProfiles);
+  const loadProfiles = () => {
+    getProfilesRequest(setProfiles);
   };
 
   const handleClickOpenCreateSigningProfileDialog = () => {
@@ -98,10 +93,7 @@ export default function Profiles() {
   };
 
   useEffect(() => {
-    loadSigningProfiles()
-  }, []);
-  useEffect(() => {
-    loadContactProfiles()
+    loadProfiles();
   }, []);
 
   function TabPanel(props) {
@@ -127,21 +119,17 @@ export default function Profiles() {
       <>
       <AppBar position="static" color="default">
         <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
-          <Tab label="Signing Profiles" {...a11yProps(0)} />
-          <Tab label="Contact Profiles" {...a11yProps(1)} />
+          <Tab label="Profiles" {...a11yProps(0)} />
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
-        {SigningProfilesContent()}
-      </TabPanel>
-      <TabPanel value={value} index={1}>
-        {ContactProfilesContent()}
+        {ProfilesContent()}
       </TabPanel>
       </>
     )
   }
 
-  function SigningProfilesContent() {
+  function ProfilesContent() {
     return (
       <>
       <Grid container spacing={4}>
@@ -149,7 +137,8 @@ export default function Profiles() {
           <Widget disableWidgetMenu>
             {CreateSigningProfileButton()}
             {ImportSigningProfileButton()}
-            {ProfilesGridItem(signingProfiles)}
+            {CreateContactProfileButton()}
+            {ProfilesGridItem(profiles)}
           </Widget>
         </Grid>
       </Grid>
@@ -173,21 +162,6 @@ export default function Profiles() {
            </Box>
         )}
       </Grid>
-    )
-  }
-
-  function ContactProfilesContent() {
-    return (
-      <>
-      <Grid container spacing={4}>
-        <Grid item xs={12}>
-          <Widget disableWidgetMenu>
-            {CreateContactProfileButton()}
-            {ProfilesGridItem(contactProfiles)}
-          </Widget>
-        </Grid>
-      </Grid>
-      </>
     )
   }
 

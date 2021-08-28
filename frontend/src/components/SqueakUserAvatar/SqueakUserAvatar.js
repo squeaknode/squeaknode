@@ -22,11 +22,14 @@ export default function SqueakUserAvatar({
 }) {
   const history = useHistory();
 
-  const handleAvatarClick = () => {
+  const onAvatarClick = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    console.log("Handling avatar click...");
     if (squeakProfile) {
       goToSqueakAddressPage(history, squeakProfile.getAddress());
     }
-  };
+  }
 
   function AvatarImage() {
     return (
@@ -36,7 +39,7 @@ export default function SqueakUserAvatar({
 
   return (
     <TimelineDot
-    onClick={handleAvatarClick}
+    onClick={onAvatarClick}
     style={{cursor: 'pointer'}}
     >
       {squeakProfile ?

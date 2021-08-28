@@ -123,6 +123,14 @@ class SqueakAdminServerHandler(object):
             profile_id=profile_id,
         )
 
+    def handle_get_profiles(self, request):
+        logger.info("Handle get profiles.")
+        profiles = self.squeak_controller.get_profiles()
+        logger.info("Got number of profiles: {}".format(len(profiles)))
+        profile_msgs = [squeak_profile_to_message(
+            profile) for profile in profiles]
+        return squeak_admin_pb2.GetProfilesReply(squeak_profiles=profile_msgs)
+
     def handle_get_signing_profiles(self, request):
         logger.info("Handle get signing profiles.")
         profiles = self.squeak_controller.get_signing_profiles()
