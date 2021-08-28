@@ -33,6 +33,7 @@ import {
   disconnectSqueakPeerRequest,
   getConnectedPeerRequest,
   subscribeConnectedPeersRequest,
+  subscribeConnectedPeerRequest,
 } from "../../squeakclient/requests"
 import {
   goToSqueakAddressPage,
@@ -65,18 +66,25 @@ export default function PeerAddressPage() {
     getConnectedPeerRequest(host, port, setConnectedPeer);
   };
 
-  const subscribeConnectedPeers = () => {
-    subscribeConnectedPeersRequest((connectedPeers) => {
-      console.log(connectedPeers);
-      var ret = null;
-      for (let i = 0; i < connectedPeers.length; i++) {
-        const peerAddress = connectedPeers[i].getPeerAddress();
-        if(peerAddress.getHost() == host && peerAddress.getPort() == port) {
-          var ret = connectedPeers[i];
-        }
-      }
-      console.log("Using connected peer: " + ret);
-      setConnectedPeer(ret);
+  // const subscribeConnectedPeers = () => {
+  //   subscribeConnectedPeersRequest((connectedPeers) => {
+  //     console.log(connectedPeers);
+  //     var ret = null;
+  //     for (let i = 0; i < connectedPeers.length; i++) {
+  //       const peerAddress = connectedPeers[i].getPeerAddress();
+  //       if(peerAddress.getHost() == host && peerAddress.getPort() == port) {
+  //         var ret = connectedPeers[i];
+  //       }
+  //     }
+  //     console.log("Using connected peer: " + ret);
+  //     setConnectedPeer(ret);
+  //   });
+  // };
+
+  const subscribeConnectedPeer = () => {
+    subscribeConnectedPeerRequest(host, port, (connectedPeer) => {
+      console.log(connectedPeer);
+      setConnectedPeer(connectedPeer);
     });
   };
 
@@ -126,10 +134,10 @@ export default function PeerAddressPage() {
   // }
 
   useEffect(() => {
-    getConnectedPeer()
+    getConnectedPeer();
   }, []);
   useEffect(() => {
-    subscribeConnectedPeers()
+    subscribeConnectedPeer();
   }, []);
 
   function DisconnectPeerButton() {

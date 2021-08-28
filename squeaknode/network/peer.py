@@ -240,7 +240,7 @@ class Peer(object):
         self._subscription = subscription
 
     def update_peer_state(self):
-        self.peer_changed_listener.handle_new_item(self.peer_state)
+        self.peer_changed_listener.handle_new_item(self)
 
     def subscribe_peer_state(self, stopped):
         for result in self.peer_changed_listener.yield_items(stopped):
