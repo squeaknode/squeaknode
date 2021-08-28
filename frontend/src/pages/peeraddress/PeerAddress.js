@@ -6,6 +6,9 @@ import {
    Button,
    Box,
 } from "@material-ui/core";
+import Card from '@material-ui/core/Card';
+import CardHeader from "@material-ui/core/CardHeader";
+
 
 // styles
 import useStyles from "./styles";
@@ -25,6 +28,9 @@ import TimelineOppositeContent from '@material-ui/lab/TimelineOppositeContent';
 import Typography from '@material-ui/core/Typography';
 
 import FaceIcon from '@material-ui/icons/Face';
+import ComputerIcon from '@material-ui/icons/Computer';
+
+import moment from 'moment';
 
 import {
   getSqueakProfileByAddressRequest,
@@ -45,7 +51,7 @@ export default function PeerAddressPage() {
   var classes = useStyles();
   const history = useHistory();
   const { host, port } = useParams();
-  const [connectedPeer, setConnectedPeer] = useState([]);
+  const [connectedPeer, setConnectedPeer] = useState(null);
 
   const getConnectedPeer = () => {
     getConnectedPeerRequest(host, port, setConnectedPeer);
@@ -139,11 +145,60 @@ export default function PeerAddressPage() {
     )
   }
 
+  function PeerConnectionDetails() {
+    const connectTimeS = connectedPeer.getConnectTimeS();
+    const momentTimeString = moment(connectTimeS*1000).fromNow();
+    const lastMsgReceivedTimeS = connectedPeer.getLastMessageReceivedTimeS();
+    const lastMsgReceivedString = moment(lastMsgReceivedTimeS*1000).fromNow();
+    const numMsgsReceived = connectedPeer.getNumberMessagesReceived();
+    const numBytesReceived = connectedPeer.getNumberBytesReceived();
+    const numMsgsSent = connectedPeer.getNumberMessagesSent();
+    const numBytesSent = connectedPeer.getNumberBytesSent();
+    return (
+      <>
+        <Box>
+          {`Connect time: ${momentTimeString}`}
+        </Box>
+        <Box>
+          {`Last message received: ${lastMsgReceivedString}`}
+        </Box>
+        <Box>
+          {`Number of messages received: ${numMsgsReceived}`}
+        </Box>
+        <Box>
+          {`Number of bytes received: ${numBytesReceived}`}
+        </Box>
+        <Box>
+          {`Number of messages sent: ${numMsgsSent}`}
+        </Box>
+        <Box>
+          {`Number of bytes sent: ${numBytesSent}`}
+        </Box>
+      </>
+    )
+  }
+
+  function PeerConnectionContent() {
+    console.log(connectedPeer);
+    return (
+      <Card
+         className={classes.root}
+      >
+        <CardHeader
+           avatar={<ComputerIcon/>}
+           title={`Peer Address: ${host + ":" + port}`}
+           subheader={PeerConnectionDetails()}
+        />
+      </Card>
+    )
+  }
+
   return (
     <>
       {AddressContent()}
       {ConnectionStatusContent()}
       {ConnectionActionContent()}
+      {(connectedPeer) && PeerConnectionContent()}
     </>
   );
 }
