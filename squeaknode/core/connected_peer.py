@@ -28,3 +28,8 @@ class ConnectedPeer(NamedTuple):
     """Represents another node in the network."""
     peer_address: PeerAddress
     connect_time_s: int
+    outgoing: bool
+    sent_bytes: int
+    sent_messages: int
+    received_bytes: int
+    received_messages: int

@@ -32,9 +32,11 @@ from squeak.messages import msg_verack
 from squeak.messages import msg_version
 from squeak.messages import MsgSerializable
 
+from squeaknode.core.connected_peer import ConnectedPeer
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.util import generate_version_nonce
 from squeaknode.network.util import time_now
+from squeaknode.node.listener_subscription_client import EventListener
 
 
 MAX_MESSAGE_LEN = 1048576
@@ -81,6 +83,7 @@ class Peer(object):
             self._peer_socket,
             self._recv_msg_queue,
         )
+        self.peer_changed_listener = EventListener()
 
     @property
     def nVersion(self):
@@ -161,12 +164,25 @@ class Peer(object):
         timestamp = timestamp or time.time()
         self._last_recv_ping_time = timestamp
 
+    @property
+    def peer_state(self):
+        return ConnectedPeer(
+            peer_address=self.remote_address,
+            connect_time_s=self.connect_time,
+            outgoing=self.outgoing,
+            sent_bytes=0,
+            sent_messages=0,
+            received_bytes=0,
+            received_messages=0,
+        )
+
     def recv_msg(self):
         """Read data from the peer socket, and yield messages as they are decoded.
 
         This method blocks when the socket has no data to read.
         """
         msg = self._recv_msg_queue.get()
+        self.update_peer_state()
         logger.info('Received msg {} from {}'.format(msg, self))
         return msg
 
@@ -187,6 +203,7 @@ class Peer(object):
         try:
             with self._peer_socket_lock:
                 self._peer_socket.send(data)
+                self.update_peer_state()
         except Exception:
             logger.info('Failed to send msg to {}'.format(self))
             self.stop()
@@ -221,6 +238,9 @@ class Peer(object):
 
     def set_subscription(self, subscription):
         self._subscription = subscription
+
+    def update_peer_state(self):
+        self.peer_changed_listener.handle_new_item(self.peer_state)
 
     def __repr__(self):
         return "Peer(%s)" % (str(self.remote_address))
