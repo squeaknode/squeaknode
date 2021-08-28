@@ -55,15 +55,15 @@ class EventListener:
         # Register the callback to populate the queue
         callback_name = "new_item_callback_{}".format(uuid.uuid1()),
 
-        logger.info("Adding callback.")
+        logger.debug("Adding callback.")
         self.add_callback(callback_name, client.enqueue_item)
         try:
-            logger.info("Yielding client.")
+            logger.debug("Yielding client.")
             yield client
         except Exception:
             logger.exception("Subscription client failed.")
         finally:
-            logger.info("Removing callback.")
+            logger.debug("Removing callback.")
             self.remove_callback(callback_name)
 
     def yield_items(self, stopped: threading.Event):
