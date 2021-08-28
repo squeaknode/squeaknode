@@ -46,6 +46,7 @@ class ConnectionManager(object):
         self._peers: Dict[PeerAddress, Peer] = {}
         self.peers_lock = threading.Lock()
         self.peer_changed_listener = EventListener()
+        self.single_peer_changed_listener = EventListener()
 
     @property
     def peers(self) -> List[Peer]:
@@ -119,6 +120,12 @@ class ConnectionManager(object):
     def yield_peers_changed(self, stopped: threading.Event):
         for item in self.peer_changed_listener.yield_items(stopped):
             yield item
+
+    def yield_single_peer_changed(self, peer_address: PeerAddress, stopped: threading.Event):
+        for item in self.single_peer_changed_listener.yield_items(stopped):
+            logger.info('yield_single_peer_changed: {}'.format(item))
+            if item == peer_address:
+                yield item
 
 
 class DuplicatePeerError(Exception):
