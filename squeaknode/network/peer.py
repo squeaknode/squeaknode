@@ -242,6 +242,10 @@ class Peer(object):
     def update_peer_state(self):
         self.peer_changed_listener.handle_new_item(self.peer_state)
 
+    def subscribe_peer_state(self, stopped):
+        for result in self.peer_changed_listener.yield_items(stopped):
+            yield result
+
     def __repr__(self):
         return "Peer(%s)" % (str(self.remote_address))
 

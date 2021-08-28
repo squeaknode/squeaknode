@@ -646,6 +646,12 @@ class SqueakController:
         #         yield payment
         return self.network_manager.subscribe_connected_peers(stopped)
 
+    def subscribe_connected_peer(self, peer_address: PeerAddress, stopped: threading.Event):
+        peer = self.get_connected_peer(peer_address)
+        if peer is not None:
+            for item in peer.subscribe_peer_state(stopped):
+                yield item
+
     def subscribe_new_squeaks(self, stopped: threading.Event):
         for item in self.new_squeak_listener.yield_items(stopped):
             yield item

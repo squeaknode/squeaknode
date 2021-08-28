@@ -272,6 +272,10 @@ service SqueakAdmin {
   */
   rpc SubscribeConnectedPeers (SubscribeConnectedPeersRequest) returns (stream GetConnectedPeersReply) {}
 
+  /** sqkadmin: `subscribeconnectedpeer`
+  */
+  rpc SubscribeConnectedPeer (SubscribeConnectedPeerRequest) returns (stream GetConnectedPeerReply) {}
+
 }
 
 message CreateSigningProfileRequest {
@@ -959,6 +963,12 @@ message DisconnectPeerReply {
 
 
 message SubscribeConnectedPeersRequest {
+}
+
+
+message SubscribeConnectedPeerRequest {
+    /// Peer address
+    PeerAddress peer_address = 1;
 }
 
 message PeerAddress {
