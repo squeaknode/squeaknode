@@ -137,10 +137,6 @@ class NetworkManager(object):
         )
 
     def subscribe_connected_peers(self, stopped):
-        # subscription_client = ConnectedPeersSubscriptionClient(
-        #     self.connection_manager,
-        #     stopped,
-        # )
         for result in self.connection_manager.yield_peers_changed(stopped):
             yield result
 
