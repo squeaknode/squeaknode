@@ -781,3 +781,19 @@ class SqueakAdminServerHandler(object):
                 yield squeak_admin_pb2.GetConnectedPeerReply(
                     connected_peer=connected_peers_display_msg,
                 )
+
+    def handle_subscribe_buy_offers(self, request, stopped):
+        squeak_hash_str = request.squeak_hash
+        squeak_hash = bytes.fromhex(squeak_hash_str)
+        logger.info(
+            "Handle subscribe received offers for hash: {}".format(squeak_hash_str))
+        received_offer_stream = self.squeak_controller.subscribe_received_offers_for_squeak(
+            squeak_hash,
+            stopped,
+        )
+        for offer in received_offer_stream:
+            logger.info("Yielding received offer: {}".format(offer))
+            offer_msg = offer_entry_to_message(offer)
+            yield squeak_admin_pb2.GetBuyOfferReply(
+                offer=offer_msg,
+            )

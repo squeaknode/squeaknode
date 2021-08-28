@@ -276,6 +276,10 @@ service SqueakAdmin {
   */
   rpc SubscribeConnectedPeer (SubscribeConnectedPeerRequest) returns (stream GetConnectedPeerReply) {}
 
+  /** sqkadmin: `subscribeconnectedpeer`
+  */
+  rpc SubscribeBuyOffers (SubscribeBuyOffersRequest) returns (stream GetBuyOfferReply) {}
+
 }
 
 message CreateSigningProfileRequest {
@@ -994,3 +998,7 @@ message PeerAddress {
     int32 port = 2;
 }
 
+message SubscribeBuyOffersRequest {
+    /// Hash of the squeak.
+    string squeak_hash = 1;
+}
