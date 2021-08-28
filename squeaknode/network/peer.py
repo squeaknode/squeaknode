@@ -268,7 +268,7 @@ class Peer(object):
         self._subscription = subscription
 
     def on_peer_updated(self):
-        logger.info('on_peer_updated: {}'.format(self))
+        logger.debug('on_peer_updated: {}'.format(self))
         self.peer_changed_listener.handle_new_item(self)
 
     def record_msg_received(self, msg):
