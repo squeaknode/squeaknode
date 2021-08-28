@@ -49,8 +49,7 @@ from squeaknode.core.squeak_entry import SqueakEntry
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.util import is_address_valid
-from squeaknode.node.new_squeak_listener import NewSqueakListener
-from squeaknode.node.new_squeak_listener import NewSqueakSubscriptionClient
+from squeaknode.node.listener_subscription_client import EventListener
 from squeaknode.node.received_payments_subscription_client import ReceivedPaymentsSubscriptionClient
 
 
@@ -73,7 +72,7 @@ class SqueakController:
         self.squeak_rate_limiter = squeak_rate_limiter
         self.payment_processor = payment_processor
         self.network_manager = network_manager
-        self.new_squeak_listener = NewSqueakListener()
+        self.new_squeak_listener = EventListener()
         self.config = config
 
     def save_squeak(self, squeak: CSqueak) -> bytes:
@@ -91,7 +90,7 @@ class SqueakController:
             inserted_squeak_hash.hex(),
         ))
         # Notify the listener
-        self.new_squeak_listener.handle_new_squeak(squeak)
+        self.new_squeak_listener.handle_new_item(squeak)
         return inserted_squeak_hash
 
     def unlock_squeak(self, squeak_hash: bytes, secret_key: bytes):
@@ -648,13 +647,8 @@ class SqueakController:
         return self.network_manager.subscribe_connected_peers(stopped)
 
     def subscribe_new_squeaks(self, stopped: threading.Event):
-        subscription_client = NewSqueakSubscriptionClient(
-            self.new_squeak_listener,
-            stopped,
-        )
-        with subscription_client.open_subscription():
-            for result in subscription_client.get_squeak():
-                yield result
+        for item in self.new_squeak_listener.yield_items(stopped):
+            yield item
 
     def update_subscriptions(self):
         locator = self.get_interested_locator()

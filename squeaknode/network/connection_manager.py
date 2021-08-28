@@ -27,6 +27,7 @@ from typing import Optional
 
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.network.peer import Peer
+from squeaknode.node.listener_subscription_client import EventListener
 
 
 MIN_PEERS = 5
@@ -44,7 +45,7 @@ class ConnectionManager(object):
     def __init__(self):
         self._peers: Dict[PeerAddress, Peer] = {}
         self.peers_lock = threading.Lock()
-        self.peers_changed_callbacks = {}
+        self.peer_changed_listener = EventListener()
 
     @property
     def peers(self) -> List[Peer]:
@@ -61,11 +62,7 @@ class ConnectionManager(object):
         for peer in peers:
             logger.info(peer)
         logger.info('--------------')
-        for callback in self.peers_changed_callbacks.values():
-            callback(peers)
-
-    # def listen_peers_changed(self, callback):
-    #     self.peers_changed_callback = callback
+        self.peer_changed_listener.handle_new_item(peers)
 
     def _is_duplicate_nonce(self, peer):
         for other_peer in self.peers:
@@ -119,11 +116,9 @@ class ConnectionManager(object):
             for peer in self.peers:
                 peer.stop()
 
-    def add_peers_changed_callback(self, name, callback):
-        self.peers_changed_callbacks[name] = callback
-
-    def remove_peers_changed_callback(self, name):
-        del self.peers_changed_callbacks[name]
+    def yield_peers_changed(self, stopped: threading.Event):
+        for item in self.peer_changed_listener.yield_items(stopped):
+            yield item
 
 
 class DuplicatePeerError(Exception):
