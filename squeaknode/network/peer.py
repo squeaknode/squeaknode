@@ -182,6 +182,7 @@ class Peer(object):
         This method blocks when the socket has no data to read.
         """
         msg = self._recv_msg_queue.get()
+        self._last_msg_revc_time = time_now()
         self.on_peer_updated()
         logger.info('Received msg {} from {}'.format(msg, self))
         return msg

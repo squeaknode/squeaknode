@@ -935,6 +935,9 @@ message ConnectedPeer {
 
     /// Connection time
     int64 connect_time_s = 2;
+
+    /// Last message received time
+    int64 last_message_received_time_s = 3;
 }
 
 message GetConnectedPeersRequest {
