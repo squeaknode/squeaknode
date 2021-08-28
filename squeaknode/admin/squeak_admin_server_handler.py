@@ -771,8 +771,13 @@ class SqueakAdminServerHandler(object):
             stopped,
         )
         for connected_peer in connected_peer_stream:
-            connected_peers_display_msg = connected_peer_to_message(
-                connected_peer)
-            yield squeak_admin_pb2.GetConnectedPeerReply(
-                connected_peer=connected_peers_display_msg,
-            )
+            if connected_peer is None:
+                yield squeak_admin_pb2.GetConnectedPeerReply(
+                    connected_peer=None
+                )
+            else:
+                connected_peers_display_msg = connected_peer_to_message(
+                    connected_peer)
+                yield squeak_admin_pb2.GetConnectedPeerReply(
+                    connected_peer=connected_peers_display_msg,
+                )
