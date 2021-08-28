@@ -182,6 +182,10 @@ def connected_peer_to_message(connected_peer: Peer) -> squeak_admin_pb2.Connecte
         peer_address=peer_address_to_message(connected_peer.remote_address),
         connect_time_s=connected_peer.connect_time,
         last_message_received_time_s=connected_peer.last_msg_revc_time,
+        number_messages_received=connected_peer.num_msgs_received,
+        number_bytes_received=connected_peer.num_bytes_received,
+        number_messages_sent=connected_peer.num_msgs_sent,
+        number_bytes_sent=connected_peer.num_bytes_sent,
     )
 
 

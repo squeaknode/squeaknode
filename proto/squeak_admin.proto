@@ -938,6 +938,18 @@ message ConnectedPeer {
 
     /// Last message received time
     int64 last_message_received_time_s = 3;
+
+    /// Number of messages received
+    int64 number_messages_received = 4;
+
+    /// Number of bytes received
+    int64 number_bytes_received = 5;
+
+    /// Number of messages sent
+    int64 number_messages_sent = 6;
+
+    /// Number of bytes sent
+    int64 number_bytes_sent = 7;
 }
 
 message GetConnectedPeersRequest {

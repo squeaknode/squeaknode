@@ -75,6 +75,10 @@ class Peer(object):
         self._last_sent_ping_nonce = None
         self._last_sent_ping_time = None
         self._last_recv_ping_time = None
+        self._num_msgs_received = 0
+        self._num_bytes_received = 0
+        self._num_msgs_sent = 0
+        self._num_bytes_sent = 0
         self._recv_msg_queue: queue.Queue = queue.Queue()
 
         self._subscription = None
@@ -126,6 +130,22 @@ class Peer(object):
     @property
     def connect_time(self):
         return self._connect_time
+
+    @property
+    def num_msgs_received(self):
+        return self._num_msgs_received
+
+    @property
+    def num_bytes_received(self):
+        return self._num_bytes_received
+
+    @property
+    def num_msgs_sent(self):
+        return self._num_msgs_sent
+
+    @property
+    def num_bytes_sent(self):
+        return self._num_bytes_sent
 
     @property
     def local_version(self):
@@ -182,7 +202,7 @@ class Peer(object):
         This method blocks when the socket has no data to read.
         """
         msg = self._recv_msg_queue.get()
-        self._last_msg_revc_time = time_now()
+        self.record_msg_received(msg)
         self.on_peer_updated()
         logger.info('Received msg {} from {}'.format(msg, self))
         return msg
@@ -207,6 +227,7 @@ class Peer(object):
         try:
             with self._peer_socket_lock:
                 self._peer_socket.send(data)
+                self.record_msg_sent(msg)
                 self.on_peer_updated()
         except Exception:
             logger.info('Failed to send msg to {}'.format(self))
@@ -249,6 +270,17 @@ class Peer(object):
     def on_peer_updated(self):
         logger.info('on_peer_updated: {}'.format(self))
         self.peer_changed_listener.handle_new_item(self)
+
+    def record_msg_received(self, msg):
+        if msg:
+            self._num_msgs_received += 1
+            self._num_bytes_received += len(msg.to_bytes())
+            self._last_msg_revc_time = time_now()
+
+    def record_msg_sent(self, msg):
+        if msg:
+            self._num_msgs_sent += 1
+            self._num_bytes_sent += len(msg.to_bytes())
 
     # def subscribe_peer_state(self, stopped):
     #     for result in self.peer_changed_listener.yield_items(stopped):
