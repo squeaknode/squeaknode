@@ -39,6 +39,7 @@ import ExportPrivateKeyDialog from "../../components/ExportPrivateKeyDialog";
 import ConfigureProfileDialog from "../../components/ConfigureProfileDialog";
 import UpdateProfileImageDialog from "../../components/UpdateProfileImageDialog";
 import ClearProfileImageDialog from "../../components/ClearProfileImageDialog";
+import SqueakProfileFollowingIndicator from "../../components/SqueakProfileFollowingIndicator";
 
 
 import {
@@ -326,7 +327,9 @@ export default function SqueakProfileDetailItem({
               <Typography variant="body2" color="textSecondary" component="p">
                 {squeakProfile.getAddress()}
               </Typography>
-              {IsFollowingContent()}
+              <SqueakProfileFollowingIndicator
+               squeakProfile={squeakProfile}
+               ></SqueakProfileFollowingIndicator>
             </CardContent>
           <CardActions>
             <Button
