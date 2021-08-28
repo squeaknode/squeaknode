@@ -556,6 +556,15 @@ class SqueakDb:
             profile_id = res.inserted_primary_key[0]
             return profile_id
 
+    def get_profiles(self) -> List[SqueakProfile]:
+        """ Get all profiles. """
+        s = select([self.profiles])
+        with self.get_connection() as connection:
+            result = connection.execute(s)
+            rows = result.fetchall()
+            profiles = [self._parse_squeak_profile(row) for row in rows]
+            return profiles
+
     def get_signing_profiles(self) -> List[SqueakProfile]:
         """ Get all signing profiles. """
         s = select([self.profiles]).where(self.profile_has_private_key)
