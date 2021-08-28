@@ -28,7 +28,6 @@ import squeak.params
 from squeak.messages import MsgSerializable
 
 from squeaknode.core.peer_address import PeerAddress
-from squeaknode.network.connected_peers_subscription_client import ConnectedPeersSubscriptionClient
 from squeaknode.network.connection import Connection
 from squeaknode.network.connection_manager import ConnectionManager
 from squeaknode.network.peer import Peer
@@ -137,10 +136,9 @@ class NetworkManager(object):
         )
 
     def subscribe_connected_peers(self, stopped):
-        subscription_client = ConnectedPeersSubscriptionClient(
-            self.connection_manager,
-            stopped,
-        )
-        with subscription_client.open_subscription():
-            for result in subscription_client.get_connected_peers():
-                yield result
+        # subscription_client = ConnectedPeersSubscriptionClient(
+        #     self.connection_manager,
+        #     stopped,
+        # )
+        for result in self.connection_manager.yield_peers_changed(stopped):
+            yield result
