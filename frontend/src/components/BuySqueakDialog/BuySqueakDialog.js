@@ -244,7 +244,14 @@ export default function BuySqueakDialog({
   <DialogTitle id="form-dialog-title">Buy Squeak</DialogTitle>
   <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
   <DialogContent>
-    {MakeSelectSigningProfile()} {LoadOffersButton()}
+    <Box>
+    <Typography variant="body1" color="textSecondary" component="p">
+      {offers.length} offers
+    </Typography>
+    </Box>
+    <Box>
+      {MakeSelectSigningProfile()}
+    </Box>
     {MakeSqueakContentInput()}
   </DialogContent>
   <DialogActions>
