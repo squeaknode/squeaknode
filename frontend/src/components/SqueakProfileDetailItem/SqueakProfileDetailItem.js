@@ -26,6 +26,8 @@ import Avatar from '@material-ui/core/Avatar';
 
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
+import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
+import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
 
 // styles
 import useStyles from "./styles";
@@ -37,6 +39,7 @@ import ExportPrivateKeyDialog from "../../components/ExportPrivateKeyDialog";
 import ConfigureProfileDialog from "../../components/ConfigureProfileDialog";
 import UpdateProfileImageDialog from "../../components/UpdateProfileImageDialog";
 import ClearProfileImageDialog from "../../components/ClearProfileImageDialog";
+import SqueakProfileFollowingIndicator from "../../components/SqueakProfileFollowingIndicator";
 
 
 import {
@@ -248,6 +251,37 @@ export default function SqueakProfileDetailItem({
         )
       }
 
+      function FollowingIndicator() {
+        return (
+          <>
+            <Typography variant="body2" color="textSecondary" component="p">
+              <NotificationsActiveIcon /> Following
+            </Typography>
+          </>
+        )
+      }
+
+      function NotFollowingIndicator() {
+        return (
+          <>
+            <Typography variant="body2" color="textSecondary" component="p">
+              <NotificationsNoneIcon /> Not Following
+            </Typography>
+          </>
+        )
+      }
+
+      function IsFollowingContent() {
+        return (
+          <>
+          {(squeakProfile.getFollowing())
+            ? FollowingIndicator()
+            : NotFollowingIndicator()
+          }
+          </>
+        )
+      }
+
 
     return (
       <>
@@ -293,6 +327,9 @@ export default function SqueakProfileDetailItem({
               <Typography variant="body2" color="textSecondary" component="p">
                 {squeakProfile.getAddress()}
               </Typography>
+              <SqueakProfileFollowingIndicator
+               squeakProfile={squeakProfile}
+               ></SqueakProfileFollowingIndicator>
             </CardContent>
           <CardActions>
             <Button

@@ -12,6 +12,7 @@ import VpnKeyIcon from '@material-ui/icons/VpnKey';
 
 import useStyles from "../../pages/wallet/styles";
 import SqueakUserAvatar from "../../components/SqueakUserAvatar";
+import SqueakProfileFollowingIndicator from "../../components/SqueakProfileFollowingIndicator";
 
 
 import {
@@ -71,6 +72,9 @@ export default function ProfileListItem({
         <Box>
           {`Address: ${address}`}
         </Box>
+        <SqueakProfileFollowingIndicator
+         squeakProfile={profile}
+         ></SqueakProfileFollowingIndicator>
       </>
     )
   }
