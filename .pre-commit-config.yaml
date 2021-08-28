@@ -38,6 +38,7 @@ repos:
     rev: v1.1.10
     hooks:
     -   id: insert-license
+        files: \.py$
         args:
         - --license-filepath
         - LICENSE
