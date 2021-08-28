@@ -23,6 +23,7 @@ import logging
 import threading
 from contextlib import contextmanager
 
+from squeak.messages import msg_getaddr
 from squeak.messages import msg_subscribe
 
 from squeaknode.network.peer import Peer
@@ -63,7 +64,7 @@ class Connection(object):
         self.handle_messages()
 
     def initial_sync(self):
-        # TODO: getaddrs from peer.
+        self.update_addrs()
         self.update_subscription()
 
     def update_subscription(self):
@@ -72,6 +73,10 @@ class Connection(object):
             locator=locator,
         )
         self.peer.send_msg(subscribe_msg)
+
+    def update_addrs(self):
+        getaddr_msg = msg_getaddr()
+        self.peer.send_msg(getaddr_msg)
 
     def start_receiving_msgs(self):
         threading.Thread(

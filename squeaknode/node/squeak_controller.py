@@ -49,6 +49,7 @@ from squeaknode.core.squeak_entry import SqueakEntry
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.util import is_address_valid
+from squeaknode.network.peer import Peer
 from squeaknode.node.listener_subscription_client import EventListener
 from squeaknode.node.received_payments_subscription_client import ReceivedPaymentsSubscriptionClient
 
@@ -507,7 +508,7 @@ class SqueakController:
     def get_connected_peer(self, peer_address: PeerAddress):
         return self.network_manager.get_connected_peer(peer_address)
 
-    def get_connected_peers(self):
+    def get_connected_peers(self) -> List[Peer]:
         return self.network_manager.get_connected_peers()
 
     def lookup_squeaks_for_interest(
