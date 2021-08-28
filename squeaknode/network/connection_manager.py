@@ -122,10 +122,13 @@ class ConnectionManager(object):
             yield item
 
     def yield_single_peer_changed(self, peer_address: PeerAddress, stopped: threading.Event):
-        for item in self.single_peer_changed_listener.yield_items(stopped):
-            logger.info('yield_single_peer_changed: {}'.format(item))
-            if item == peer_address:
-                yield item
+        for peer in self.single_peer_changed_listener.yield_items(stopped):
+            logger.info('yield_single_peer_changed: {}'.format(peer))
+            if peer.remote_address == peer_address:
+                if peer.connect_time is None:
+                    yield None
+                else:
+                    yield peer
 
 
 class DuplicatePeerError(Exception):

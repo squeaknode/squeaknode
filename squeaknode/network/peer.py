@@ -197,6 +197,7 @@ class Peer(object):
         except Exception:
             pass
         finally:
+            self.set_disconnected()
             self.on_peer_updated()
 
     def send_msg(self, msg):
@@ -238,12 +239,15 @@ class Peer(object):
     def set_connected(self):
         self._connect_time = time_now()
 
+    def set_disconnected(self):
+        self._connect_time = None
+
     def set_subscription(self, subscription):
         self._subscription = subscription
 
     def on_peer_updated(self):
         logger.info('on_peer_updated: {}'.format(self))
-        self.peer_changed_listener.handle_new_item(self.remote_address)
+        self.peer_changed_listener.handle_new_item(self)
 
     # def subscribe_peer_state(self, stopped):
     #     for result in self.peer_changed_listener.yield_items(stopped):

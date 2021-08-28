@@ -149,4 +149,4 @@ class NetworkManager(object):
                 peer_address,
                 stopped,
         ):
-            yield self.get_connected_peer(peer_address)
+            yield result
