@@ -13,6 +13,10 @@ build:  gen-protos
 	rm -rf ../squeaknode/admin/webapp/static/build
 	cp -r build/ ../squeaknode/admin/webapp/static
 
+lint:	gen-protos
+	npm install
+	eslint src/ --fix
+
 gen-protos:
 	./build-protos.sh
 
