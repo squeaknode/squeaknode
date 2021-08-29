@@ -1,43 +1,24 @@
-import React, { useState } from "react";
+import React from 'react';
 import {
-  Paper,
-  IconButton,
-  Menu,
-  MenuItem,
-  Typography,
-  Grid,
   Box,
-  Link,
-} from "@material-ui/core";
-import { MoreVert as MoreIcon } from "@material-ui/icons";
-import {useHistory} from "react-router-dom";
-import classnames from "classnames";
+} from '@material-ui/core';
+import { useHistory } from 'react-router-dom';
 
-import LockIcon from '@material-ui/icons/Lock';
-import DownloadIcon from '@material-ui/icons/CloudDownload';
 import Timeline from '@material-ui/lab/Timeline';
 import TimelineItem from '@material-ui/lab/TimelineItem';
 import TimelineSeparator from '@material-ui/lab/TimelineSeparator';
-import TimelineConnector from '@material-ui/lab/TimelineConnector';
 import TimelineContent from '@material-ui/lab/TimelineContent';
 import TimelineOppositeContent from '@material-ui/lab/TimelineOppositeContent';
-import TimelineDot from '@material-ui/lab/TimelineDot';
 
 // styles
-import useStyles from "./styles";
+import useStyles from './styles';
 
-import SqueakThreadItem from "../../components/SqueakThreadItem";
-import SqueakUserAvatar from "../../components/SqueakUserAvatar";
-import Widget from "../../components/Widget";
-
-import moment from 'moment';
+import SqueakThreadItem from '../SqueakThreadItem';
+import SqueakUserAvatar from '../SqueakUserAvatar';
 
 import {
-  getTimelineSqueakDisplaysRequest,
-  getNetworkRequest,
   getSqueakDisplayRequest,
-} from "../../squeakclient/requests"
-
+} from '../../squeakclient/requests';
 
 export default function SqueakReplies({
   squeaks,
@@ -45,7 +26,7 @@ export default function SqueakReplies({
   setSqueaksFn,
   ...props
 }) {
-  var classes = useStyles();
+  const classes = useStyles();
 
   const history = useHistory();
 
@@ -60,51 +41,51 @@ export default function SqueakReplies({
         return item;
       });
       setSqueaksFn(newSqueaks);
-    })
+    });
   }
 
   const handleReloadSqueakItem = (itemHash) => {
     const innerFunc = () => {
       reloadSqueakItem(itemHash);
-    }
+    };
     return innerFunc;
-  }
+  };
 
   return (
     <Timeline align="left">
 
       {squeaks
-        .map(squeak =>
+        .map((squeak) => (
           <TimelineItem
-          key={squeak.getSqueakHash()}
+            key={squeak.getSqueakHash()}
           >
-          <TimelineOppositeContent
-            className={classes.oppositeContent}
-            color="textSecondary"
-          ></TimelineOppositeContent>
-          <TimelineSeparator>
-            <SqueakUserAvatar
-              squeakProfile={squeak.getAuthor()}
+            <TimelineOppositeContent
+              className={classes.oppositeContent}
+              color="textSecondary"
             />
-          </TimelineSeparator>
-          <TimelineContent>
-          <Box
-            p={1}
-            key={squeak.getSqueakHash()}
-            >
-          <SqueakThreadItem
-            hash={squeak.getSqueakHash()}
-            key={squeak.getSqueakHash()}
-            squeak={squeak}
-            network={network}
-            reloadSqueak={handleReloadSqueakItem(squeak.getSqueakHash())}
-            showActionBar={true}>
-          </SqueakThreadItem>
-          </Box>
-          </TimelineContent>
+            <TimelineSeparator>
+              <SqueakUserAvatar
+                squeakProfile={squeak.getAuthor()}
+              />
+            </TimelineSeparator>
+            <TimelineContent>
+              <Box
+                p={1}
+                key={squeak.getSqueakHash()}
+              >
+                <SqueakThreadItem
+                  hash={squeak.getSqueakHash()}
+                  key={squeak.getSqueakHash()}
+                  squeak={squeak}
+                  network={network}
+                  reloadSqueak={handleReloadSqueakItem(squeak.getSqueakHash())}
+                  showActionBar
+                />
+              </Box>
+            </TimelineContent>
           </TimelineItem>
-      )}
+        ))}
 
     </Timeline>
-  )
+  );
 }

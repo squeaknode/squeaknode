@@ -1,16 +1,16 @@
-import React from "react";
+import React from 'react';
 import {
   Box,
   LinearProgress,
-  Typography
-} from "@material-ui/core";
-import useStyles from "../../pages/wallet/styles";
+  Typography,
+} from '@material-ui/core';
+import useStyles from '../../pages/wallet/styles';
 
 export default function ChannelBalanceBar({
   channel,
   ...props
 }) {
-  const classes = useStyles()
+  const classes = useStyles();
 
   return (
     <Box className={classes.channelBalanceBarContainer}>
@@ -23,7 +23,7 @@ export default function ChannelBalanceBar({
       <Box className={classes.channelBalanceBarRow}>
         <Box className={classes.balanceContainerLocal}>
           <Typography className={classes.balanceLabel}>Local</Typography>
-          <Typography className={classes.balanceValue} style={{color: 'darkblue'}}>{channel.getLocalBalance()}</Typography>
+          <Typography className={classes.balanceValue} style={{ color: 'darkblue' }}>{channel.getLocalBalance()}</Typography>
         </Box>
         <LinearProgress
           variant="buffer"
@@ -40,9 +40,9 @@ export default function ChannelBalanceBar({
         />
         <Box className={classes.balanceContainerRemote}>
           <Typography className={classes.balanceLabel}>Remote</Typography>
-          <Typography className={classes.balanceValue} style={{color: 'darkred'}}>{channel.getRemoteBalance()}</Typography>
+          <Typography className={classes.balanceValue} style={{ color: 'darkred' }}>{channel.getRemoteBalance()}</Typography>
         </Box>
       </Box>
     </Box>
-  )
+  );
 }

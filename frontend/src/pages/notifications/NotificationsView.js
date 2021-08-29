@@ -20,8 +20,8 @@ const CloseButton = ({ closeToast, className }) => (
   />
 );
 
-const NotificationsPage = ({ classes, ...props}) => (
-  <React.Fragment>
+const NotificationsPage = ({ classes, ...props }) => (
+  <>
     <PageTitle title="Notifications" />
     <Grid container spacing={32}>
       <ToastContainer className={classes.toastsContainer} closeButton={<CloseButton className={classes.notificationCloseButton} />} closeOnClick={false} progressClassName={classes.notificationProgress} />
@@ -30,15 +30,15 @@ const NotificationsPage = ({ classes, ...props}) => (
           <Typography>There are few position options available for notifications. You can click any of them to change notifications position:</Typography>
           <div className={classes.layoutContainer}>
             <div className={classes.layoutButtonsRow}>
-              <button onClick={() => props.changeNotificationPosition(0)} className={classnames(classes.layoutButton, { [classes.layoutButtonActive]: props.notificationsPosition === 0})} />
-              <button onClick={() => props.changeNotificationPosition(1)} className={classnames(classes.layoutButton, { [classes.layoutButtonActive]: props.notificationsPosition === 1})} />
-              <button onClick={() => props.changeNotificationPosition(2)} className={classnames(classes.layoutButton, { [classes.layoutButtonActive]: props.notificationsPosition === 2})} />
+              <button onClick={() => props.changeNotificationPosition(0)} className={classnames(classes.layoutButton, { [classes.layoutButtonActive]: props.notificationsPosition === 0 })} />
+              <button onClick={() => props.changeNotificationPosition(1)} className={classnames(classes.layoutButton, { [classes.layoutButtonActive]: props.notificationsPosition === 1 })} />
+              <button onClick={() => props.changeNotificationPosition(2)} className={classnames(classes.layoutButton, { [classes.layoutButtonActive]: props.notificationsPosition === 2 })} />
             </div>
             <Typography className={classes.layoutText} size="md">Click any position</Typography>
             <div className={classes.layoutButtonsRow}>
-              <button onClick={() => props.changeNotificationPosition(3)} className={classnames(classes.layoutButton, { [classes.layoutButtonActive]: props.notificationsPosition === 3})} />
-              <button onClick={() => props.changeNotificationPosition(4)} className={classnames(classes.layoutButton, { [classes.layoutButtonActive]: props.notificationsPosition === 4})} />
-              <button onClick={() => props.changeNotificationPosition(5)} className={classnames(classes.layoutButton, { [classes.layoutButtonActive]: props.notificationsPosition === 5})} />
+              <button onClick={() => props.changeNotificationPosition(3)} className={classnames(classes.layoutButton, { [classes.layoutButtonActive]: props.notificationsPosition === 3 })} />
+              <button onClick={() => props.changeNotificationPosition(4)} className={classnames(classes.layoutButton, { [classes.layoutButtonActive]: props.notificationsPosition === 4 })} />
+              <button onClick={() => props.changeNotificationPosition(5)} className={classnames(classes.layoutButton, { [classes.layoutButtonActive]: props.notificationsPosition === 5 })} />
             </div>
           </div>
         </Widget>
@@ -55,9 +55,13 @@ const NotificationsPage = ({ classes, ...props}) => (
       </Grid>
       <Grid item xs={12} md={6} lg={4}>
         <Widget title="Usage" disableWidgetMenu>
-          <Typography>Notifications are created with the help of <a href="https://github.com/fkhadra/react-toastify">react-toastify</a></Typography>
+          <Typography>
+            Notifications are created with the help of
+            <a href="https://github.com/fkhadra/react-toastify">react-toastify</a>
+          </Typography>
           <div className={classes.codeContainer}>
-            <SyntaxHighlighter className={classes.codeComponent} language='javascript' style={docco}>{`
+            <SyntaxHighlighter className={classes.codeComponent} language="javascript" style={docco}>
+              {`
   // import needed components, functions and styles
   import { ToastContainer, toast } from 'react-toastify';
   import 'react-toastify/dist/ReactToastify.css';
@@ -70,15 +74,16 @@ const NotificationsPage = ({ classes, ...props}) => (
       </button>
     </div>
   };
-            `}</SyntaxHighlighter>
+            `}
+            </SyntaxHighlighter>
             <Typography variant="caption">For more API information refer to the library documentation</Typography>
           </div>
         </Widget>
       </Grid>
       <Grid item xs={12} md={6} lg={4}>
         <Widget title="Notification Types Examples" disableWidgetMenu>
-          <NotificationCustomComponent className={classes.notificationItem} shadowless type="message" message="Thanks for Checking out Messenger" variant="contained" color="secondary"/>
-          <NotificationCustomComponent className={classes.notificationItem} shadowless type="feedback" message="New user feedback received" variant="contained" color="primary"/>
+          <NotificationCustomComponent className={classes.notificationItem} shadowless type="message" message="Thanks for Checking out Messenger" variant="contained" color="secondary" />
+          <NotificationCustomComponent className={classes.notificationItem} shadowless type="feedback" message="New user feedback received" variant="contained" color="primary" />
           <NotificationCustomComponent className={classes.notificationItem} shadowless type="customer" message="New customer is registered" variant="contained" color="success" />
           <NotificationCustomComponent className={classes.notificationItem} shadowless type="shipped" message="The order was shipped" variant="contained" color="warning" />
           <NotificationCustomComponent className={classes.notificationItem} shadowless type="delivered" message="The order was delivered" variant="contained" color="primary" />
@@ -106,7 +111,7 @@ const NotificationsPage = ({ classes, ...props}) => (
         </Widget>
       </Grid>
     </Grid>
-  </React.Fragment>
+  </>
 );
 
 const styles = (theme) => ({
@@ -169,7 +174,7 @@ const styles = (theme) => ({
     width: 400,
     marginTop: theme.spacing.unit * 6,
     right: 0,
-  }
+  },
 });
 
-export default withStyles(styles, { withTheme: true})(NotificationsPage);
+export default withStyles(styles, { withTheme: true })(NotificationsPage);

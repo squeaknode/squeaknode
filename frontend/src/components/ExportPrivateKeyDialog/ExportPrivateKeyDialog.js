@@ -1,39 +1,20 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState } from 'react';
 import {
-  Paper,
-  IconButton,
-  Menu,
-  MenuItem,
-  Typography,
-  Grid,
-  Box,
-  Link,
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogContentText,
   TextField,
   DialogActions,
   Button,
-  FormControl,
-  InputLabel,
-  Select,
-} from "@material-ui/core";
-import { MoreVert as MoreIcon } from "@material-ui/icons";
-import {useHistory} from "react-router-dom";
-import classnames from "classnames";
+} from '@material-ui/core';
+import { useHistory } from 'react-router-dom';
 
 // styles
-import useStyles from "./styles";
-
-import Widget from "../../components/Widget";
-import SqueakThreadItem from "../../components/SqueakThreadItem";
+import useStyles from './styles';
 
 import {
   getSqueakProfilePrivateKey,
-} from "../../squeakclient/requests"
-
-
+} from '../../squeakclient/requests';
 
 export default function ExportPrivateKeyDialog({
   open,
@@ -41,10 +22,10 @@ export default function ExportPrivateKeyDialog({
   profile,
   ...props
 }) {
-  var classes = useStyles();
+  const classes = useStyles();
   const history = useHistory();
 
-  var [privateKey, setPrivateKey] = useState('');
+  const [privateKey, setPrivateKey] = useState('');
 
   const resetFields = () => {
     setPrivateKey('');
@@ -55,7 +36,7 @@ export default function ExportPrivateKeyDialog({
   };
 
   const getPrivateKey = () => {
-    var profileId = profile.getProfileId();
+    const profileId = profile.getProfileId();
     getSqueakProfilePrivateKey(profileId, (response) => {
       setPrivateKey(response.getPrivateKey());
     });
@@ -76,10 +57,10 @@ export default function ExportPrivateKeyDialog({
         value={privateKey}
         fullWidth
         inputProps={{
-           readOnly: true,
+          readOnly: true,
         }}
       />
-    )
+    );
   }
 
   function CancelButton() {
@@ -91,34 +72,34 @@ export default function ExportPrivateKeyDialog({
       >
         Cancel
       </Button>
-    )
+    );
   }
 
   function ShowPrivateKeyButton() {
     return (
       <Button
-       type="submit"
-       variant="contained"
-       color="primary"
-       className={classes.button}
-       >
-       Show private key
-       </Button>
-    )
+        type="submit"
+        variant="contained"
+        color="primary"
+        className={classes.button}
+      >
+        Show private key
+      </Button>
+    );
   }
 
   return (
     <Dialog open={open} onEnter={resetFields} onClose={handleClose} aria-labelledby="form-dialog-title">
-  <DialogTitle id="form-dialog-title">Export Private Key</DialogTitle>
-  <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
-  <DialogContent>
-    {DisplayPrivateKey()}
-  </DialogContent>
-  <DialogActions>
-    {CancelButton()}
-    {ShowPrivateKeyButton()}
-  </DialogActions>
-  </form>
+      <DialogTitle id="form-dialog-title">Export Private Key</DialogTitle>
+      <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
+        <DialogContent>
+          {DisplayPrivateKey()}
+        </DialogContent>
+        <DialogActions>
+          {CancelButton()}
+          {ShowPrivateKeyButton()}
+        </DialogActions>
+      </form>
     </Dialog>
-  )
+  );
 }

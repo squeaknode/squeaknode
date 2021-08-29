@@ -1,52 +1,34 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState } from 'react';
 import {
-  Paper,
-  IconButton,
-  Menu,
-  MenuItem,
-  Typography,
-  Grid,
-  Box,
-  Link,
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogContentText,
   TextField,
   DialogActions,
   Button,
-  FormControl,
-  InputLabel,
-  Select,
-} from "@material-ui/core";
-import { MoreVert as MoreIcon } from "@material-ui/icons";
-import {useHistory} from "react-router-dom";
-import classnames from "classnames";
+} from '@material-ui/core';
+import { useHistory } from 'react-router-dom';
 
 // styles
-import useStyles from "./styles";
-
-import Widget from "../../components/Widget";
-import SqueakThreadItem from "../../components/SqueakThreadItem";
+import useStyles from './styles';
 
 import {
   importSigningProfileRequest,
-} from "../../squeakclient/requests"
+} from '../../squeakclient/requests';
 import {
   goToProfilePage,
-} from "../../navigation/navigation"
-
+} from '../../navigation/navigation';
 
 export default function ImportSigningProfileDialog({
   open,
   handleClose,
   ...props
 }) {
-  var classes = useStyles();
+  const classes = useStyles();
   const history = useHistory();
 
-  var [profileName, setProfileName] = useState('');
-  var [privateKey, setPrivateKey] = useState('');
+  const [profileName, setProfileName] = useState('');
+  const [privateKey, setPrivateKey] = useState('');
 
   const resetFields = () => {
     setProfileName('');
@@ -65,13 +47,13 @@ export default function ImportSigningProfileDialog({
   };
 
   const handleErr = (err) => {
-    alert('Error creating contact profile: ' + err);
+    alert(`Error creating contact profile: ${err}`);
   };
 
   function handleSubmit(event) {
     event.preventDefault();
-    console.log( 'profileName:', profileName);
-    console.log( 'privateKey:', privateKey);
+    console.log('profileName:', profileName);
+    console.log('privateKey:', privateKey);
     if (!profileName) {
       alert('Profile Name cannot be empty.');
       return;
@@ -96,7 +78,7 @@ export default function ImportSigningProfileDialog({
         fullWidth
         inputProps={{ maxLength: 64 }}
       />
-    )
+    );
   }
 
   function ImportSigningProfilePrivateKeyInput() {
@@ -111,7 +93,7 @@ export default function ImportSigningProfileDialog({
         fullWidth
         inputProps={{ maxLength: 64 }}
       />
-    )
+    );
   }
 
   function CancelButton() {
@@ -123,37 +105,37 @@ export default function ImportSigningProfileDialog({
       >
         Cancel
       </Button>
-    )
+    );
   }
 
   function ImportSigningProfilButton() {
     return (
       <Button
-       type="submit"
-       variant="contained"
-       color="primary"
-       className={classes.button}
-       >
-       Import Signing Profile
-       </Button>
-    )
+        type="submit"
+        variant="contained"
+        color="primary"
+        className={classes.button}
+      >
+        Import Signing Profile
+      </Button>
+    );
   }
 
   return (
     <Dialog open={open} onEnter={resetFields} onClose={handleClose} aria-labelledby="form-dialog-title">
-  <DialogTitle id="form-dialog-title">Import Signing Profile</DialogTitle>
-  <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
-  <DialogContent>
-    {ImportSigningProfileNameInput()}
-  </DialogContent>
-  <DialogContent>
-    {ImportSigningProfilePrivateKeyInput()}
-  </DialogContent>
-  <DialogActions>
-    {CancelButton()}
-    {ImportSigningProfilButton()}
-  </DialogActions>
-  </form>
+      <DialogTitle id="form-dialog-title">Import Signing Profile</DialogTitle>
+      <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
+        <DialogContent>
+          {ImportSigningProfileNameInput()}
+        </DialogContent>
+        <DialogContent>
+          {ImportSigningProfilePrivateKeyInput()}
+        </DialogContent>
+        <DialogActions>
+          {CancelButton()}
+          {ImportSigningProfilButton()}
+        </DialogActions>
+      </form>
     </Dialog>
-  )
+  );
 }

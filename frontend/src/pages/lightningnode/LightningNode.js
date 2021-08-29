@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import {useHistory} from "react-router-dom";
+import { useParams, useHistory } from 'react-router-dom';
 import {
   Grid,
   Button,
@@ -8,51 +7,33 @@ import {
   Tabs,
   Tab,
   Box,
-} from "@material-ui/core";
-import { useTheme } from "@material-ui/styles";
-import {
-  ResponsiveContainer,
-  ComposedChart,
-  AreaChart,
-  LineChart,
-  Line,
-  Area,
-  PieChart,
-  Pie,
-  Cell,
-  YAxis,
-  XAxis,
-} from "recharts";
+} from '@material-ui/core';
+import { useTheme } from '@material-ui/styles';
 
 // styles
-import useStyles from "./styles";
+import useStyles from './styles';
 
 // components
-import PageTitle from "../../components/PageTitle";
-import Widget from "../../components/Widget";
-import { Typography } from "../../components/Wrappers";
-import OpenChannelDialog from "../../components/OpenChannelDialog";
-import ChannelItem from "../../components/ChannelItem";
-import PendingOpenChannelItem from "../../components/PendingOpenChannelItem";
+import Widget from '../../components/Widget';
+import { Typography } from '../../components/Wrappers';
+import OpenChannelDialog from '../../components/OpenChannelDialog';
+import ChannelItem from '../../components/ChannelItem';
+import PendingOpenChannelItem from '../../components/PendingOpenChannelItem';
 
 import {
-  lndGetInfo,
-  lndWalletBalance,
-  lndGetTransactions,
   lndListPeersRequest,
   lndListChannelsRequest,
   lndPendingChannelsRequest,
   lndConnectPeerRequest,
   lndDisconnectPeerRequest,
-} from "../../squeakclient/requests"
+} from '../../squeakclient/requests';
 import {
   reloadRoute,
-} from "../../navigation/navigation"
-
+} from '../../navigation/navigation';
 
 export default function LightningNodePage() {
-  var classes = useStyles();
-  var theme = useTheme();
+  const classes = useStyles();
+  const theme = useTheme();
 
   const history = useHistory();
   const { pubkey, host, port } = useParams();
@@ -74,12 +55,12 @@ export default function LightningNodePage() {
   };
 
   const handleClickConnectPeer = () => {
-    var lightningHost = host + ":" + port;
+    const lightningHost = `${host}:${port}`;
     connectPeer(pubkey, lightningHost);
   };
 
   const handleClickOpenChannel = () => {
-    console.log("Handle click open channel.");
+    console.log('Handle click open channel.');
     setOpenChannelDialogOpen(true);
   };
 
@@ -95,7 +76,7 @@ export default function LightningNodePage() {
     if (peers == null) {
       return false;
     }
-    var i;
+    let i;
     for (i = 0; i < peers.length; i++) {
       if (pubkey == peers[i].getPubKey()) {
         return true;
@@ -108,7 +89,7 @@ export default function LightningNodePage() {
     if (channels == null) {
       return false;
     }
-    var i;
+    let i;
     for (i = 0; i < channels.length; i++) {
       if (pubkey == channels[i].getRemotePubkey()) {
         return true;
@@ -133,8 +114,7 @@ export default function LightningNodePage() {
       },
       (err) => {
         alert(err.message);
-      },
-    );
+      });
   };
   const disconnectPeer = (pubkey) => {
     lndDisconnectPeerRequest(pubkey, () => {
@@ -142,209 +122,213 @@ export default function LightningNodePage() {
     });
   };
 
-  useEffect(()=>{
-    listPeers()
-  },[]);
-  useEffect(()=>{
-    listChannels()
-  },[]);
-  useEffect(()=>{
-    getPendingChannels()
-  },[]);
+  useEffect(() => {
+    listPeers();
+  }, []);
+  useEffect(() => {
+    listChannels();
+  }, []);
+  useEffect(() => {
+    getPendingChannels();
+  }, []);
 
   function ConnectPeerButton() {
     return (
       <>
-      <Grid item xs={12}>
-        <div className={classes.root}>
-          <Button
-            variant="contained"
-            onClick={() => {
-              handleClickConnectPeer();
-            }}>Connect Peer
-          </Button>
-        </div>
-      </Grid>
+        <Grid item xs={12}>
+          <div className={classes.root}>
+            <Button
+              variant="contained"
+              onClick={() => {
+                handleClickConnectPeer();
+              }}
+            >
+              Connect Peer
+            </Button>
+          </div>
+        </Grid>
       </>
-    )
+    );
   }
 
   function DisconnectPeerButton() {
     return (
       <>
-      <Grid item xs={12}>
-        <div className={classes.root}>
-          <Button
-            variant="contained"
-            onClick={() => {
-              handleClickDisconnectPeer();
-            }}>Disconnect Peer
-          </Button>
-        </div>
-      </Grid>
+        <Grid item xs={12}>
+          <div className={classes.root}>
+            <Button
+              variant="contained"
+              onClick={() => {
+                handleClickDisconnectPeer();
+              }}
+            >
+              Disconnect Peer
+            </Button>
+          </div>
+        </Grid>
       </>
-    )
+    );
   }
 
   function OpenChannelButton() {
     return (
       <>
-      <Grid item xs={12}>
-        <div className={classes.root}>
-          <Button
-            variant="contained"
-            onClick={() => {
-              handleClickOpenChannel();
-            }}>Open Channel
-          </Button>
-        </div>
-      </Grid>
+        <Grid item xs={12}>
+          <div className={classes.root}>
+            <Button
+              variant="contained"
+              onClick={() => {
+                handleClickOpenChannel();
+              }}
+            >
+              Open Channel
+            </Button>
+          </div>
+        </Grid>
       </>
-    )
+    );
   }
 
   function NodeInfoGridItem() {
     return (
       <Grid item xs={12}>
-      <Widget disableWidgetMenu>
-      <Grid
-        container
-        direction="row"
-        justify="flex-start"
-        alignItems="center"
-      >
-        <Grid item>
-          <Typography color="text" colorBrightness="secondary">
-            pubkey
-          </Typography>
-          <Typography size="md">{pubkey}</Typography>
-        </Grid>
-      </Grid>
+        <Widget disableWidgetMenu>
+          <Grid
+            container
+            direction="row"
+            justify="flex-start"
+            alignItems="center"
+          >
+            <Grid item>
+              <Typography color="text" colorBrightness="secondary">
+                pubkey
+              </Typography>
+              <Typography size="md">{pubkey}</Typography>
+            </Grid>
+          </Grid>
 
-      <Grid
-        container
-        direction="row"
-        justify="flex-start"
-        alignItems="center"
-      >
-        <Grid item>
-          <Typography color="text" colorBrightness="secondary">
-            host
-          </Typography>
-          <Typography size="md">{host}</Typography>
-        </Grid>
-      </Grid>
+          <Grid
+            container
+            direction="row"
+            justify="flex-start"
+            alignItems="center"
+          >
+            <Grid item>
+              <Typography color="text" colorBrightness="secondary">
+                host
+              </Typography>
+              <Typography size="md">{host}</Typography>
+            </Grid>
+          </Grid>
 
-      <Grid
-        container
-        direction="row"
-        justify="flex-start"
-        alignItems="center"
-      >
-        <Grid item>
-          <Typography color="text" colorBrightness="secondary">
-            port
-          </Typography>
-          <Typography size="md">{port}</Typography>
-        </Grid>
-      </Grid>
+          <Grid
+            container
+            direction="row"
+            justify="flex-start"
+            alignItems="center"
+          >
+            <Grid item>
+              <Typography color="text" colorBrightness="secondary">
+                port
+              </Typography>
+              <Typography size="md">{port}</Typography>
+            </Grid>
+          </Grid>
 
-      <Grid
-        container
-        direction="row"
-        justify="flex-start"
-        alignItems="center"
-      >
-        <Grid item>
-          <Typography color="text" colorBrightness="secondary">
-            connected
-          </Typography>
-          <Typography size="md">
-          {IsConnected()}
-          </Typography>
-          {isConnected()
-            ? DisconnectPeerButton()
-            : ConnectPeerButton()
-          }
-        </Grid>
-      </Grid>
+          <Grid
+            container
+            direction="row"
+            justify="flex-start"
+            alignItems="center"
+          >
+            <Grid item>
+              <Typography color="text" colorBrightness="secondary">
+                connected
+              </Typography>
+              <Typography size="md">
+                {IsConnected()}
+              </Typography>
+              {isConnected()
+                ? DisconnectPeerButton()
+                : ConnectPeerButton()}
+            </Grid>
+          </Grid>
 
-      <Grid
-        container
-        direction="row"
-        justify="flex-start"
-        alignItems="center"
-      >
-        <Grid item>
-          <Typography color="text" colorBrightness="secondary">
-            channel to peer
-          </Typography>
-          <Typography size="md">
-          {HasChannelToPeer()}
-          </Typography>
-          {!hasChannelToPeer() &&
-            OpenChannelButton()
-          }
-        </Grid>
-      </Grid>
+          <Grid
+            container
+            direction="row"
+            justify="flex-start"
+            alignItems="center"
+          >
+            <Grid item>
+              <Typography color="text" colorBrightness="secondary">
+                channel to peer
+              </Typography>
+              <Typography size="md">
+                {HasChannelToPeer()}
+              </Typography>
+              {!hasChannelToPeer()
+            && OpenChannelButton()}
+            </Grid>
+          </Grid>
 
-       </Widget>
+        </Widget>
       </Grid>
-    )
+    );
   }
 
   function ChannelsGridItem() {
-    var nodeChannels = channels.filter(channel => channel.getRemotePubkey() == pubkey);
-    var nodePendingOpenChannels = pendingChannels.getPendingOpenChannelsList().filter(pendingOpenChannel => pendingOpenChannel.getChannel().getRemoteNodePub() == pubkey);
+    const nodeChannels = channels.filter((channel) => channel.getRemotePubkey() == pubkey);
+    const nodePendingOpenChannels = pendingChannels.getPendingOpenChannelsList().filter((pendingOpenChannel) => pendingOpenChannel.getChannel().getRemoteNodePub() == pubkey);
     return (
       <Grid item xs={12}>
-      <Widget disableWidgetMenu>
-      <Grid
-        container
-        direction="row"
-        justify="flex-start"
-        alignItems="center"
-      >
-        <Grid item xs={12}>
-        {nodePendingOpenChannels.map(pendingOpenChannel =>
-          <Box
-            p={1}
-            key={pendingOpenChannel.getChannel().getChannelPoint()}
-            >
-          <PendingOpenChannelItem
-            key={pendingOpenChannel.getChannel().getChannelPoint()}
-            pendingOpenChannel={pendingOpenChannel}>
-          </PendingOpenChannelItem>
-          </Box>
-        )}
-        {nodeChannels.map(channel =>
-          <Box
-            p={1}
-            key={channel.getChannelPoint()}
-            >
-          <ChannelItem
-            key={channel.getChannelPoint()}
-            channel={channel}>
-          </ChannelItem>
-          </Box>
-        )}
-        </Grid>
+        <Widget disableWidgetMenu>
+          <Grid
+            container
+            direction="row"
+            justify="flex-start"
+            alignItems="center"
+          >
+            <Grid item xs={12}>
+              {nodePendingOpenChannels.map((pendingOpenChannel) => (
+                <Box
+                  p={1}
+                  key={pendingOpenChannel.getChannel().getChannelPoint()}
+                >
+                  <PendingOpenChannelItem
+                    key={pendingOpenChannel.getChannel().getChannelPoint()}
+                    pendingOpenChannel={pendingOpenChannel}
+                  />
+                </Box>
+              ))}
+              {nodeChannels.map((channel) => (
+                <Box
+                  p={1}
+                  key={channel.getChannelPoint()}
+                >
+                  <ChannelItem
+                    key={channel.getChannelPoint()}
+                    channel={channel}
+                  />
+                </Box>
+              ))}
+            </Grid>
+          </Grid>
+        </Widget>
       </Grid>
-      </Widget>
-      </Grid>
-    )
+    );
   }
 
   function IsConnected() {
     return (
       isConnected().toString()
-    )
+    );
   }
 
   function HasChannelToPeer() {
     return (
       hasChannelToPeer().toString()
-    )
+    );
   }
 
   function NoPubkeyContent() {
@@ -352,7 +336,7 @@ export default function LightningNodePage() {
       <div>
         No pubkey.
       </div>
-    )
+    );
   }
 
   function PubkeyContent() {
@@ -362,7 +346,7 @@ export default function LightningNodePage() {
           {NodeInfoGridItem()}
         </Grid>
       </>
-    )
+    );
   }
 
   function ChannelsContent() {
@@ -370,23 +354,23 @@ export default function LightningNodePage() {
       return (
         <>
           <Grid container spacing={4}>
-          <Grid item xs={12}>
-          <Widget disableWidgetMenu>
-          <Grid
-            container
-            direction="row"
-            justify="flex-start"
-            alignItems="center"
-          >
             <Grid item xs={12}>
-              Unable to load channels
+              <Widget disableWidgetMenu>
+                <Grid
+                  container
+                  direction="row"
+                  justify="flex-start"
+                  alignItems="center"
+                >
+                  <Grid item xs={12}>
+                    Unable to load channels
+                  </Grid>
+                </Grid>
+              </Widget>
             </Grid>
           </Grid>
-          </Widget>
-          </Grid>
-          </Grid>
         </>
-      )
+      );
     }
 
     return (
@@ -395,11 +379,13 @@ export default function LightningNodePage() {
           {ChannelsGridItem()}
         </Grid>
       </>
-    )
+    );
   }
 
   function TabPanel(props) {
-    const { children, value, index, ...other } = props;
+    const {
+      children, value, index, ...other
+    } = props;
 
     return (
       <div
@@ -419,24 +405,24 @@ export default function LightningNodePage() {
   function LightningNodeTabs() {
     return (
       <>
-      <AppBar position="static" color="default">
-        <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
-          <Tab label="Node Info" {...a11yProps(0)} />
-          <Tab label="Channels" {...a11yProps(1)} />
-          <Tab label="Routes" {...a11yProps(2)} />
-        </Tabs>
-      </AppBar>
-      <TabPanel value={value} index={0}>
-        {PubkeyContent()}
-      </TabPanel>
-      <TabPanel value={value} index={1}>
-        {ChannelsContent()}
-      </TabPanel>
-      <TabPanel value={value} index={2}>
-        Show routes here
-      </TabPanel>
+        <AppBar position="static" color="default">
+          <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
+            <Tab label="Node Info" {...a11yProps(0)} />
+            <Tab label="Channels" {...a11yProps(1)} />
+            <Tab label="Routes" {...a11yProps(2)} />
+          </Tabs>
+        </AppBar>
+        <TabPanel value={value} index={0}>
+          {PubkeyContent()}
+        </TabPanel>
+        <TabPanel value={value} index={1}>
+          {ChannelsContent()}
+        </TabPanel>
+        <TabPanel value={value} index={2}>
+          Show routes here
+        </TabPanel>
       </>
-    )
+    );
   }
 
   function OpenChannelDialogContent() {
@@ -446,17 +432,16 @@ export default function LightningNodePage() {
           open={openChannelDialogOpen}
           pubkey={pubkey}
           handleClose={handleCloseOpenChannelDialog}
-          ></OpenChannelDialog>
+        />
       </>
-    )
+    );
   }
 
   return (
     <>
       {pubkey
         ? LightningNodeTabs()
-        : NoPubkeyContent()
-      }
+        : NoPubkeyContent()}
       {OpenChannelDialogContent()}
     </>
   );

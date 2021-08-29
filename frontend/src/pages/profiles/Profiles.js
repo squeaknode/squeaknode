@@ -1,47 +1,36 @@
-import React, {useState, useEffect} from 'react';
-import {useHistory} from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import {
-    Grid,
-    Button,
-    Paper,
-    Tabs,
-    Tab,
-    AppBar,
-    Box,
-    Typography,
-  } from "@material-ui/core";
-import MUIDataTable from "mui-datatables";
+  Grid,
+  Button,
+  Tabs,
+  Tab,
+  AppBar,
+  Box,
+} from '@material-ui/core';
 
 // styles
-import {makeStyles} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 
 // components
-import PageTitle from "../../components/PageTitle";
-import Widget from "../../components/Widget";
-import Table from "../dashboard/components/Table/Table";
-import CreateSigningProfileDialog from "../../components/CreateSigningProfileDialog";
-import ImportSigningProfileDialog from "../../components/ImportSigningProfileDialog";
-import CreateContactProfileDialog from "../../components/CreateContactProfileDialog";
-import ProfileListItem from "../../components/ProfileListItem";
-
+import Widget from '../../components/Widget';
+import CreateSigningProfileDialog from '../../components/CreateSigningProfileDialog';
+import ImportSigningProfileDialog from '../../components/ImportSigningProfileDialog';
+import CreateContactProfileDialog from '../../components/CreateContactProfileDialog';
+import ProfileListItem from '../../components/ProfileListItem';
 
 // data
-import mock from "../dashboard/mock";
 
 import {
   getProfilesRequest,
-} from "../../squeakclient/requests"
-import {
-  goToProfilePage,
-} from "../../navigation/navigation"
-
+} from '../../squeakclient/requests';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     '& > *': {
-      margin: theme.spacing(1)
-    }
-  }
+      margin: theme.spacing(1),
+    },
+  },
 }));
 
 export default function Profiles() {
@@ -73,7 +62,7 @@ export default function Profiles() {
   };
 
   const handleCloseCreateSigningProfileDialog = () => {
-     setCreateSigningProfileDialogOpen(false);
+    setCreateSigningProfileDialogOpen(false);
   };
 
   const handleClickOpenCreateContactProfileDialog = () => {
@@ -81,7 +70,7 @@ export default function Profiles() {
   };
 
   const handleCloseCreateContactProfileDialog = () => {
-     setCreateContactProfileDialogOpen(false);
+    setCreateContactProfileDialogOpen(false);
   };
 
   const handleClickOpenImportSigningProfileDialog = () => {
@@ -89,7 +78,7 @@ export default function Profiles() {
   };
 
   const handleCloseImportSigningProfileDialog = () => {
-     setImportSigningProfileDialogOpen(false);
+    setImportSigningProfileDialogOpen(false);
   };
 
   useEffect(() => {
@@ -97,7 +86,9 @@ export default function Profiles() {
   }, []);
 
   function TabPanel(props) {
-    const { children, value, index, ...other } = props;
+    const {
+      children, value, index, ...other
+    } = props;
 
     return (
       <div
@@ -117,103 +108,109 @@ export default function Profiles() {
   function ProfilesTabs() {
     return (
       <>
-      <AppBar position="static" color="default">
-        <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
-          <Tab label="Profiles" {...a11yProps(0)} />
-        </Tabs>
-      </AppBar>
-      <TabPanel value={value} index={0}>
-        {ProfilesContent()}
-      </TabPanel>
+        <AppBar position="static" color="default">
+          <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
+            <Tab label="Profiles" {...a11yProps(0)} />
+          </Tabs>
+        </AppBar>
+        <TabPanel value={value} index={0}>
+          {ProfilesContent()}
+        </TabPanel>
       </>
-    )
+    );
   }
 
   function ProfilesContent() {
     return (
       <>
-      <Grid container spacing={4}>
-        <Grid item xs={12}>
-          <Widget disableWidgetMenu>
-            {CreateSigningProfileButton()}
-            {ImportSigningProfileButton()}
-            {CreateContactProfileButton()}
-            {ProfilesGridItem(profiles)}
-          </Widget>
+        <Grid container spacing={4}>
+          <Grid item xs={12}>
+            <Widget disableWidgetMenu>
+              {CreateSigningProfileButton()}
+              {ImportSigningProfileButton()}
+              {CreateContactProfileButton()}
+              {ProfilesGridItem(profiles)}
+            </Widget>
+          </Grid>
         </Grid>
-      </Grid>
       </>
-    )
+    );
   }
 
   function ProfilesGridItem(profiles) {
     return (
       <Grid item xs={12}>
-        {profiles.map(profile =>
-           <Box
-              p={1}
+        {profiles.map((profile) => (
+          <Box
+            p={1}
+            key={profile.getProfileName()}
+          >
+            <ProfileListItem
               key={profile.getProfileName()}
-           >
-             <ProfileListItem
-                key={profile.getProfileName()}
-                handlePeerClick={() => console.log("clicked profile")}
-                profile={profile}>
-             </ProfileListItem>
-           </Box>
-        )}
+              handlePeerClick={() => console.log('clicked profile')}
+              profile={profile}
+            />
+          </Box>
+        ))}
       </Grid>
-    )
+    );
   }
 
   function CreateSigningProfileButton() {
     return (
       <>
-      <Grid item xs={12}>
-        <div className={classes.root}>
-          <Button
-            variant="contained"
-            onClick={() => {
-              handleClickOpenCreateSigningProfileDialog();
-            }}>Create Signing Profile
-          </Button>
-        </div>
-      </Grid>
+        <Grid item xs={12}>
+          <div className={classes.root}>
+            <Button
+              variant="contained"
+              onClick={() => {
+                handleClickOpenCreateSigningProfileDialog();
+              }}
+            >
+              Create Signing Profile
+            </Button>
+          </div>
+        </Grid>
       </>
-    )
+    );
   }
 
   function ImportSigningProfileButton() {
     return (
       <>
-      <Grid item xs={12}>
-        <div className={classes.root}>
-          <Button
-            variant="contained"
-            onClick={() => {
-              handleClickOpenImportSigningProfileDialog();
-            }}>Import Signing Profile
-          </Button>
-        </div>
-      </Grid>
+        <Grid item xs={12}>
+          <div className={classes.root}>
+            <Button
+              variant="contained"
+              onClick={() => {
+                handleClickOpenImportSigningProfileDialog();
+              }}
+            >
+              Import Signing Profile
+            </Button>
+          </div>
+        </Grid>
       </>
-    )
+    );
   }
 
   function CreateContactProfileButton() {
     return (
       <>
-      <Grid item xs={12}>
-        <div className={classes.root}>
-          <Button
-            variant="contained"
-            onClick={() => {
-              handleClickOpenCreateContactProfileDialog();
-            }}>Add contact
-          </Button>
-        </div>
-      </Grid>
+        <Grid item xs={12}>
+          <div className={classes.root}>
+            <Button
+              variant="contained"
+              onClick={() => {
+                handleClickOpenCreateContactProfileDialog();
+              }}
+            >
+              Add contact
+            </Button>
+          </div>
+        </Grid>
       </>
-    )
+    );
   }
 
   function CreateSigningProfileDialogContent() {
@@ -222,9 +219,9 @@ export default function Profiles() {
         <CreateSigningProfileDialog
           open={createSigningProfileDialogOpen}
           handleClose={handleCloseCreateSigningProfileDialog}
-          ></CreateSigningProfileDialog>
+        />
       </>
-    )
+    );
   }
 
   function ImportSigningProfileDialogContent() {
@@ -233,9 +230,9 @@ export default function Profiles() {
         <ImportSigningProfileDialog
           open={importSigningProfileDialogOpen}
           handleClose={handleCloseImportSigningProfileDialog}
-          ></ImportSigningProfileDialog>
+        />
       </>
-    )
+    );
   }
 
   function CreateContactProfileDialogContent() {
@@ -244,28 +241,28 @@ export default function Profiles() {
         <CreateContactProfileDialog
           open={createContactProfileDialogOpen}
           handleClose={handleCloseCreateContactProfileDialog}
-          ></CreateContactProfileDialog>
+        />
       </>
-    )
+    );
   }
 
   function GridContent() {
     return (
       <Grid container spacing={0}>
-      <Grid item xs={12} sm={9}>
-        {ProfilesTabs()}
+        <Grid item xs={12} sm={9}>
+          {ProfilesTabs()}
+        </Grid>
+        <Grid item xs={12} sm={3} />
       </Grid>
-      <Grid item xs={12} sm={3}>
-      </Grid>
-      </Grid>
-    )
+    );
   }
 
   return (
     <>
-    {GridContent()}
-    {CreateSigningProfileDialogContent()}
-    {ImportSigningProfileDialogContent()}
-    {CreateContactProfileDialogContent()}
-   < />);
+      {GridContent()}
+      {CreateSigningProfileDialogContent()}
+      {ImportSigningProfileDialogContent()}
+      {CreateContactProfileDialogContent()}
+    < />
+  );
 }

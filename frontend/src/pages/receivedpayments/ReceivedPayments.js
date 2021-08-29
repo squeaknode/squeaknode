@@ -1,42 +1,34 @@
-import React, {useState, useEffect} from 'react';
-import {useHistory} from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import {
-    Grid,
-    Button,
-    Paper,
-    Tabs,
-    Tab,
-    AppBar,
-    Box,
-    Typography,
-  } from "@material-ui/core";
-import MUIDataTable from "mui-datatables";
-import FormLabel from "@material-ui/core/FormLabel";
+  Grid,
+  Button,
+  Tabs,
+  Tab,
+  AppBar,
+  Box,
+} from '@material-ui/core';
 
 // styles
-import {makeStyles} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 
 // components
-import PageTitle from "../../components/PageTitle";
-import Widget from "../../components/Widget";
-import Table from "../dashboard/components/Table/Table";
-import ReceivedPayment from "../../components/ReceivedPayment";
-
+import Widget from '../../components/Widget';
+import ReceivedPayment from '../../components/ReceivedPayment';
 
 // data
-import mock from "../dashboard/mock";
 
 import {
   getReceivedPaymentsRequest,
   reprocessReceivedPaymentsRequest,
-} from "../../squeakclient/requests"
+} from '../../squeakclient/requests';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     '& > *': {
-      margin: theme.spacing(1)
-    }
-  }
+      margin: theme.spacing(1),
+    },
+  },
 }));
 
 export default function ReceivedPayments() {
@@ -64,7 +56,7 @@ export default function ReceivedPayments() {
 
   const reprocessReceivedPayments = () => {
     reprocessReceivedPaymentsRequest((response) => {
-        console.log("Successfully called reprocess received payments.");
+      console.log('Successfully called reprocess received payments.');
     });
   };
 
@@ -73,7 +65,9 @@ export default function ReceivedPayments() {
   }, []);
 
   function TabPanel(props) {
-    const { children, value, index, ...other } = props;
+    const {
+      children, value, index, ...other
+    } = props;
 
     return (
       <div
@@ -93,79 +87,81 @@ export default function ReceivedPayments() {
   function PaymentsTabs() {
     return (
       <>
-      <AppBar position="static" color="default">
-        <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
-          <Tab label="Received Payments" {...a11yProps(0)} />
-        </Tabs>
-      </AppBar>
-      <TabPanel value={value} index={0}>
-        {ReceivedPaymentsContent()}
-      </TabPanel>
+        <AppBar position="static" color="default">
+          <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
+            <Tab label="Received Payments" {...a11yProps(0)} />
+          </Tabs>
+        </AppBar>
+        <TabPanel value={value} index={0}>
+          {ReceivedPaymentsContent()}
+        </TabPanel>
       </>
-    )
+    );
   }
 
   function ReprocessReceivedPaymentsButton() {
     return (
       <>
-      <Grid item xs={12}>
-        <div className={classes.root}>
-          <Button
-            variant="contained"
-            onClick={() => {
-              reprocessReceivedPayments();
-            }}>Reprocess Received Payments
-          </Button>
-          This only needs to be used if the LND node is replaced.
-        </div>
-      </Grid>
+        <Grid item xs={12}>
+          <div className={classes.root}>
+            <Button
+              variant="contained"
+              onClick={() => {
+                reprocessReceivedPayments();
+              }}
+            >
+              Reprocess Received Payments
+            </Button>
+            This only needs to be used if the LND node is replaced.
+          </div>
+        </Grid>
       </>
-    )
+    );
   }
 
   function ReceivedPaymentsContent() {
-    console.log("receivedPayments: " + receivedPayments);
+    console.log(`receivedPayments: ${receivedPayments}`);
     return (
       <>
-      <Grid container spacing={4}>
-        <Grid item xs={12}>
-          <Widget disableWidgetMenu>
+        <Grid container spacing={4}>
+          <Grid item xs={12}>
+            <Widget disableWidgetMenu>
 
-          {ReprocessReceivedPaymentsButton()}
+              {ReprocessReceivedPaymentsButton()}
 
-          <div>
-          {receivedPayments.map(receivedPayment =>
-            <Box
-              p={1}
-              key={receivedPayment.getReceivedPaymentId()}
-              >
-            <ReceivedPayment
-              receivedPayment={receivedPayment}>
-            </ReceivedPayment>
-            </Box>
-          )}
-          </div>
-          </Widget>
+              <div>
+                {receivedPayments.map((receivedPayment) => (
+                  <Box
+                    p={1}
+                    key={receivedPayment.getReceivedPaymentId()}
+                  >
+                    <ReceivedPayment
+                      receivedPayment={receivedPayment}
+                    />
+                  </Box>
+                ))}
+              </div>
+            </Widget>
+          </Grid>
         </Grid>
-      </Grid>
       </>
-    )
+    );
   }
 
   function GridContent() {
     return (
       <Grid container spacing={0}>
-      <Grid item xs={12} sm={9}>
-        {PaymentsTabs()}
+        <Grid item xs={12} sm={9}>
+          {PaymentsTabs()}
+        </Grid>
+        <Grid item xs={12} sm={3} />
       </Grid>
-      <Grid item xs={12} sm={3}>
-      </Grid>
-      </Grid>
-    )
+    );
   }
 
   return (
     <>
-     {GridContent()}
-   < />);
+      {GridContent()}
+    < />
+  );
 }

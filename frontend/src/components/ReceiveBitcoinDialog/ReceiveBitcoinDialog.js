@@ -1,49 +1,30 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState } from 'react';
 import {
-  Paper,
-  IconButton,
-  Menu,
-  MenuItem,
-  Typography,
-  Grid,
-  Box,
-  Link,
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogContentText,
   TextField,
   DialogActions,
   Button,
-  FormControl,
-  InputLabel,
-  Select,
-} from "@material-ui/core";
-import { MoreVert as MoreIcon } from "@material-ui/icons";
-import {useHistory} from "react-router-dom";
-import classnames from "classnames";
+} from '@material-ui/core';
+import { useHistory } from 'react-router-dom';
 
 // styles
-import useStyles from "./styles";
-
-import Widget from "../../components/Widget";
-import SqueakThreadItem from "../../components/SqueakThreadItem";
+import useStyles from './styles';
 
 import {
   lndNewAddressRequest,
-} from "../../squeakclient/requests"
-
-
+} from '../../squeakclient/requests';
 
 export default function ReceiveBitcoinDialog({
   open,
   handleClose,
   ...props
 }) {
-  var classes = useStyles();
+  const classes = useStyles();
   const history = useHistory();
 
-  var [address, setAddress] = useState('');
+  const [address, setAddress] = useState('');
 
   const resetFields = () => {
     setAddress('');
@@ -76,10 +57,10 @@ export default function ReceiveBitcoinDialog({
         onChange={handleChangeAddress}
         fullWidth
         inputProps={{
-           readOnly: true,
+          readOnly: true,
         }}
       />
-    )
+    );
   }
 
   function CancelButton() {
@@ -91,34 +72,34 @@ export default function ReceiveBitcoinDialog({
       >
         Cancel
       </Button>
-    )
+    );
   }
 
   function RenewAddressButton() {
     return (
       <Button
-       type="submit"
-       variant="contained"
-       color="primary"
-       className={classes.button}
-       >
-       Get New Address
-       </Button>
-    )
+        type="submit"
+        variant="contained"
+        color="primary"
+        className={classes.button}
+      >
+        Get New Address
+      </Button>
+    );
   }
 
   return (
     <Dialog open={open} onEnter={resetFields} onClose={handleClose} aria-labelledby="form-dialog-title">
-  <DialogTitle id="form-dialog-title">Receive Bitcoin</DialogTitle>
-  <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
-  <DialogContent>
-    {ReceiveBitcoinAddess()}
-  </DialogContent>
-  <DialogActions>
-    {CancelButton()}
-    {RenewAddressButton()}
-  </DialogActions>
-  </form>
+      <DialogTitle id="form-dialog-title">Receive Bitcoin</DialogTitle>
+      <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
+        <DialogContent>
+          {ReceiveBitcoinAddess()}
+        </DialogContent>
+        <DialogActions>
+          {CancelButton()}
+          {RenewAddressButton()}
+        </DialogActions>
+      </form>
     </Dialog>
-  )
+  );
 }

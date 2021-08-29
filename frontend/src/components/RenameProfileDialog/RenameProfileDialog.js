@@ -1,41 +1,20 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState } from 'react';
 import {
-  Paper,
-  IconButton,
-  Menu,
-  MenuItem,
-  Typography,
-  Grid,
-  Box,
-  Link,
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogContentText,
   TextField,
   DialogActions,
   Button,
-  FormControl,
-  InputLabel,
-  Select,
-} from "@material-ui/core";
-import { MoreVert as MoreIcon } from "@material-ui/icons";
-import {useHistory} from "react-router-dom";
-import classnames from "classnames";
+} from '@material-ui/core';
+import { useHistory } from 'react-router-dom';
 
 // styles
-import useStyles from "./styles";
-
-import Widget from "../../components/Widget";
-import SqueakThreadItem from "../../components/SqueakThreadItem";
+import useStyles from './styles';
 
 import {
   renameSqueakProfileRequest,
-} from "../../squeakclient/requests"
-import {
-  reloadRoute,
-} from "../../navigation/navigation"
-
+} from '../../squeakclient/requests';
 
 export default function RenameProfileDialog({
   open,
@@ -44,10 +23,10 @@ export default function RenameProfileDialog({
   reloadProfile,
   ...props
 }) {
-  var classes = useStyles();
+  const classes = useStyles();
   const history = useHistory();
 
-  var [profileName, setProfileName] = useState('');
+  const [profileName, setProfileName] = useState('');
 
   const resetFields = () => {
     setProfileName('');
@@ -62,7 +41,7 @@ export default function RenameProfileDialog({
   };
 
   const handleErr = (err) => {
-    alert('Error renaming signing profile: ' + err);
+    alert(`Error renaming signing profile: ${err}`);
   };
 
   const renameSqueakProfile = (profileId, profileName) => {
@@ -71,9 +50,9 @@ export default function RenameProfileDialog({
 
   function handleSubmit(event) {
     event.preventDefault();
-    var profileId = profile.getProfileId();
-    console.log( 'profileId:', profileId);
-    console.log( 'profileName:', profileName);
+    const profileId = profile.getProfileId();
+    console.log('profileId:', profileId);
+    console.log('profileName:', profileName);
     if (!profileName) {
       alert('Profile Name cannot be empty.');
       return;
@@ -94,7 +73,7 @@ export default function RenameProfileDialog({
         fullWidth
         inputProps={{ maxLength: 64 }}
       />
-    )
+    );
   }
 
   function CancelButton() {
@@ -106,34 +85,34 @@ export default function RenameProfileDialog({
       >
         Cancel
       </Button>
-    )
+    );
   }
 
   function RenameProfilButton() {
     return (
       <Button
-       type="submit"
-       variant="contained"
-       color="primary"
-       className={classes.button}
-       >
-       Rename Profile
-       </Button>
-    )
+        type="submit"
+        variant="contained"
+        color="primary"
+        className={classes.button}
+      >
+        Rename Profile
+      </Button>
+    );
   }
 
   return (
     <Dialog open={open} onEnter={resetFields} onClose={handleClose} aria-labelledby="form-dialog-title">
-  <DialogTitle id="form-dialog-title">Rename Profile</DialogTitle>
-  <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
-  <DialogContent>
-    {RenameProfileNameInput()}
-  </DialogContent>
-  <DialogActions>
-    {CancelButton()}
-    {RenameProfilButton()}
-  </DialogActions>
-  </form>
+      <DialogTitle id="form-dialog-title">Rename Profile</DialogTitle>
+      <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
+        <DialogContent>
+          {RenameProfileNameInput()}
+        </DialogContent>
+        <DialogActions>
+          {CancelButton()}
+          {RenameProfilButton()}
+        </DialogActions>
+      </form>
     </Dialog>
-  )
+  );
 }

@@ -1,14 +1,14 @@
-import React from "react";
-import classnames from "classnames";
+import React from 'react';
+import classnames from 'classnames';
 import {
   Paper,
   IconButton,
   Menu,
   MenuItem,
-  withStyles
-} from "@material-ui/core";
-import { MoreVert as MoreIcon } from "@material-ui/icons";
-import Typography from "@material-ui/core/es/Typography/Typography";
+  withStyles,
+} from '@material-ui/core';
+import { MoreVert as MoreIcon } from '@material-ui/icons';
+import Typography from '@material-ui/core/es/Typography/Typography';
 
 const Widget = ({
   classes,
@@ -26,7 +26,7 @@ const Widget = ({
         {props.header ? (
           props.header
         ) : (
-          <React.Fragment>
+          <>
             <Typography variant="h5" color="textSecondary">
               {title}
             </Typography>
@@ -42,13 +42,13 @@ const Widget = ({
                 <MoreIcon />
               </IconButton>
             )}
-          </React.Fragment>
+          </>
         )}
       </div>
       <div
         className={classnames(classes.widgetBody, {
           [classes.noPadding]: noBodyPadding,
-          [bodyClass]: bodyClass
+          [bodyClass]: bodyClass,
         })}
       >
         {children}
@@ -77,34 +77,34 @@ const Widget = ({
   </div>
 );
 
-const styles = theme => ({
+const styles = (theme) => ({
   widgetWrapper: {
-    display: "flex",
-    minHeight: "100%"
+    display: 'flex',
+    minHeight: '100%',
   },
   widgetHeader: {
     padding: theme.spacing.unit * 3,
     paddingBottom: theme.spacing.unit,
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center"
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   widgetRoot: {
-    boxShadow: theme.customShadows.widget
+    boxShadow: theme.customShadows.widget,
   },
   widgetBody: {
     paddingBottom: theme.spacing.unit * 3,
     paddingRight: theme.spacing.unit * 3,
-    paddingLeft: theme.spacing.unit * 3
+    paddingLeft: theme.spacing.unit * 3,
   },
   noPadding: {
-    padding: 0
+    padding: 0,
   },
   paper: {
-    display: "flex",
-    flexDirection: "column",
+    display: 'flex',
+    flexDirection: 'column',
     flexGrow: 1,
-    overflow: "hidden"
+    overflow: 'hidden',
   },
   moreButton: {
     margin: -theme.spacing.unit,
@@ -112,11 +112,11 @@ const styles = theme => ({
     width: 40,
     height: 40,
     color: theme.palette.text.hint,
-    "&:hover": {
+    '&:hover': {
       backgroundColor: theme.palette.primary.main,
-      color: "rgba(255, 255, 255, 0.35)"
-    }
-  }
+      color: 'rgba(255, 255, 255, 0.35)',
+    },
+  },
 });
 
 export default withStyles(styles, { withTheme: true })(Widget);

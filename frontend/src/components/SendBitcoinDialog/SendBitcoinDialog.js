@@ -1,56 +1,38 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState } from 'react';
 import {
-  Paper,
-  IconButton,
-  Menu,
-  MenuItem,
-  Typography,
-  Grid,
-  Box,
-  Link,
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogContentText,
   TextField,
   DialogActions,
   Button,
-  FormControl,
   FormControlLabel,
-  InputLabel,
-  Select,
   Switch,
-} from "@material-ui/core";
-import { MoreVert as MoreIcon } from "@material-ui/icons";
-import {useHistory} from "react-router-dom";
-import classnames from "classnames";
+} from '@material-ui/core';
+import { useHistory } from 'react-router-dom';
 
 // styles
-import useStyles from "./styles";
-
-import Widget from "../../components/Widget";
-import SqueakThreadItem from "../../components/SqueakThreadItem";
+import useStyles from './styles';
 
 import {
   lndSendCoins,
-} from "../../squeakclient/requests"
+} from '../../squeakclient/requests';
 import {
   reloadRoute,
-} from "../../navigation/navigation"
-
+} from '../../navigation/navigation';
 
 export default function SendBitcoinDialog({
   open,
   handleClose,
   ...props
 }) {
-  var classes = useStyles();
+  const classes = useStyles();
   const history = useHistory();
 
-  var [address, setAddress] = useState('');
-  var [amount, setAmount] = useState('');
-  var [satperbyte, setSatperbyte] = useState('');
-  var [sendall, setSendall] = useState(false);
+  const [address, setAddress] = useState('');
+  const [amount, setAmount] = useState('');
+  const [satperbyte, setSatperbyte] = useState('');
+  const [sendall, setSendall] = useState(false);
 
   const resetFields = () => {
     setAddress('');
@@ -85,11 +67,11 @@ export default function SendBitcoinDialog({
 
   function handleSubmit(event) {
     event.preventDefault();
-    console.log( 'address:', address);
-    console.log( 'amount:', amount);
-    console.log( 'satperbyte:', satperbyte);
-    console.log( 'satperbyte number:', parseInt(satperbyte));
-    console.log( 'sendall:', sendall);
+    console.log('address:', address);
+    console.log('amount:', amount);
+    console.log('satperbyte:', satperbyte);
+    console.log('satperbyte number:', parseInt(satperbyte));
+    console.log('sendall:', sendall);
     sendBitcoin(address, amount, parseInt(satperbyte), sendall);
     handleClose();
   }
@@ -105,7 +87,7 @@ export default function SendBitcoinDialog({
         onChange={handleChangeAddress}
         fullWidth
       />
-    )
+    );
   }
 
   function SendBitcoinAmount() {
@@ -120,7 +102,7 @@ export default function SendBitcoinDialog({
         disabled={sendall}
         fullWidth
       />
-    )
+    );
   }
 
   function SendBitcoinSatperbyte() {
@@ -134,24 +116,24 @@ export default function SendBitcoinDialog({
         onChange={handleChangeSatperbyte}
         fullWidth
       />
-    )
+    );
   }
 
   function SendBitcoinSendall() {
     return (
       <FormControlLabel
         className={classes.formControlLabel}
-        control={
+        control={(
           <Switch
             checked={sendall}
             onChange={handleChangeSendall}
             name="send-all"
             size="small"
           />
-        }
+        )}
         label="Send all"
       />
-    )
+    );
   }
 
   function CancelButton() {
@@ -163,43 +145,43 @@ export default function SendBitcoinDialog({
       >
         Cancel
       </Button>
-    )
+    );
   }
 
   function SendBitcoinButton() {
     return (
       <Button
-       type="submit"
-       variant="contained"
-       color="primary"
-       className={classes.button}
-       >
-       Send Bitcoin
-       </Button>
-    )
+        type="submit"
+        variant="contained"
+        color="primary"
+        className={classes.button}
+      >
+        Send Bitcoin
+      </Button>
+    );
   }
 
   return (
     <Dialog open={open} onEnter={resetFields} onClose={handleClose} aria-labelledby="form-dialog-title">
-  <DialogTitle id="form-dialog-title">Send Bitcoin</DialogTitle>
-  <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
-  <DialogContent>
-    {SendBitcoinAddess()}
-  </DialogContent>
-  <DialogContent>
-    {SendBitcoinAmount()}
-  </DialogContent>
-  <DialogContent>
-    {SendBitcoinSatperbyte()}
-  </DialogContent>
-  <DialogContent>
-    {SendBitcoinSendall()}
-  </DialogContent>
-  <DialogActions>
-    {CancelButton()}
-    {SendBitcoinButton()}
-  </DialogActions>
-  </form>
+      <DialogTitle id="form-dialog-title">Send Bitcoin</DialogTitle>
+      <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
+        <DialogContent>
+          {SendBitcoinAddess()}
+        </DialogContent>
+        <DialogContent>
+          {SendBitcoinAmount()}
+        </DialogContent>
+        <DialogContent>
+          {SendBitcoinSatperbyte()}
+        </DialogContent>
+        <DialogContent>
+          {SendBitcoinSendall()}
+        </DialogContent>
+        <DialogActions>
+          {CancelButton()}
+          {SendBitcoinButton()}
+        </DialogActions>
+      </form>
     </Dialog>
-  )
+  );
 }

@@ -1,15 +1,15 @@
-import React from "react";
+import React from 'react';
 import {
   withStyles,
   Badge as BadgeBase,
   Typography as TypographyBase,
   Button as ButtonBase,
-} from "@material-ui/core";
-import { useTheme, makeStyles } from "@material-ui/styles";
-import classnames from "classnames";
+} from '@material-ui/core';
+import { useTheme, makeStyles } from '@material-ui/styles';
+import classnames from 'classnames';
 
 // styles
-var useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   badge: {
     fontWeight: 600,
     height: 16,
@@ -17,10 +17,12 @@ var useStyles = makeStyles(theme => ({
   },
 }));
 
-function Badge({ children, colorBrightness, color, ...props }) {
-  var classes = useStyles();
-  var theme = useTheme();
-  var Styled = createStyled({
+function Badge({
+  children, colorBrightness, color, ...props
+}) {
+  const classes = useStyles();
+  const theme = useTheme();
+  const Styled = createStyled({
     badge: {
       backgroundColor: getColor(color, theme, colorBrightness),
     },
@@ -28,7 +30,7 @@ function Badge({ children, colorBrightness, color, ...props }) {
 
   return (
     <Styled>
-      {styledProps => (
+      {(styledProps) => (
         <BadgeBase
           classes={{
             badge: classnames(classes.badge, styledProps.classes.badge),
@@ -50,7 +52,7 @@ function Typography({
   color,
   ...props
 }) {
-  var theme = useTheme();
+  const theme = useTheme();
 
   return (
     <TypographyBase
@@ -66,22 +68,24 @@ function Typography({
   );
 }
 
-function Button({ children, color, className, ...props }) {
-  var theme = useTheme();
+function Button({
+  children, color, className, ...props
+}) {
+  const theme = useTheme();
 
-  var Styled = createStyled({
+  const Styled = createStyled({
     root: {
       color: getColor(color, theme),
     },
     contained: {
       backgroundColor: getColor(color, theme),
       boxShadow: theme.customShadows.widget,
-      color: `${color ? "white" : theme.palette.text.primary} !important`,
-      "&:hover": {
-        backgroundColor: getColor(color, theme, "light"),
+      color: `${color ? 'white' : theme.palette.text.primary} !important`,
+      '&:hover': {
+        backgroundColor: getColor(color, theme, 'light'),
         boxShadow: theme.customShadows.widgetWide,
       },
-      "&:active": {
+      '&:active': {
         boxShadow: theme.customShadows.widgetWide,
       },
     },
@@ -91,7 +95,7 @@ function Button({ children, color, className, ...props }) {
     },
     select: {
       backgroundColor: theme.palette.primary.main,
-      color: "#fff",
+      color: '#fff',
     },
   });
 
@@ -123,7 +127,7 @@ export { Badge, Typography, Button };
 
 // ########################################################################
 
-function getColor(color, theme, brigtness = "main") {
+function getColor(color, theme, brigtness = 'main') {
   if (color && theme.palette[color] && theme.palette[color][brigtness]) {
     return theme.palette[color][brigtness];
   }
@@ -131,31 +135,31 @@ function getColor(color, theme, brigtness = "main") {
 
 function getFontWeight(style) {
   switch (style) {
-    case "light":
+    case 'light':
       return 300;
-    case "medium":
+    case 'medium':
       return 500;
-    case "bold":
+    case 'bold':
       return 600;
     default:
       return 400;
   }
 }
 
-function getFontSize(size, variant = "", theme) {
-  var multiplier;
+function getFontSize(size, variant = '', theme) {
+  let multiplier;
 
   switch (size) {
-    case "sm":
+    case 'sm':
       multiplier = 0.8;
       break;
-    case "md":
+    case 'md':
       multiplier = 1.5;
       break;
-    case "xl":
+    case 'xl':
       multiplier = 2;
       break;
-    case "xxl":
+    case 'xxl':
       multiplier = 3;
       break;
     default:
@@ -163,16 +167,15 @@ function getFontSize(size, variant = "", theme) {
       break;
   }
 
-  var defaultSize =
-    variant && theme.typography[variant]
-      ? theme.typography[variant].fontSize
-      : theme.typography.fontSize + "px";
+  const defaultSize = variant && theme.typography[variant]
+    ? theme.typography[variant].fontSize
+    : `${theme.typography.fontSize}px`;
 
   return `calc(${defaultSize} * ${multiplier})`;
 }
 
 function createStyled(styles, options) {
-  var Styled = function(props) {
+  const Styled = function (props) {
     const { children, ...other } = props;
     return children(other);
   };

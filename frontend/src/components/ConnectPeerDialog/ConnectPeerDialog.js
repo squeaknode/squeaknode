@@ -8,37 +8,33 @@ import {
   FormControlLabel,
   Switch,
   TextField,
-} from "@material-ui/core";
-import { useHistory } from "react-router-dom";
+} from '@material-ui/core';
+import { useHistory } from 'react-router-dom';
 
 // styles
-import {makeStyles} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 
 import {
   connectSqueakPeerRequest,
-} from "../../squeakclient/requests"
-import {
-  goToPeerPage,
-} from "../../navigation/navigation"
-
+} from '../../squeakclient/requests';
 
 const useStyles = makeStyles((theme) => ({
   form: {
     margin: 'auto',
     width: 'fit-content',
     '& .MuiDialogContent-root': {
-      overflow: `hidden`
+      overflow: 'hidden',
     },
     '& .MuiTextField-root': {
       margin: theme.spacing(1),
     },
     '& .MuiDialogActions-root': {
-      padding: `1rem`,
+      padding: '1rem',
     },
   },
   formControlLabel: {
-    position: `absolute`,
-    left: `2rem`,
+    position: 'absolute',
+    left: '2rem',
   },
 }));
 
@@ -55,7 +51,7 @@ export default function ConnectPeerDialog({
   const [peerName, setPeerName] = useState('');
   const [host, setHost] = useState('');
   const [port, setPort] = useState('');
-  const [customPortChecked, setCustomPortChecked] = React.useState(false)
+  const [customPortChecked, setCustomPortChecked] = React.useState(false);
 
   const resetFields = () => {
     setPeerName('');
@@ -74,10 +70,10 @@ export default function ConnectPeerDialog({
 
   const handleChangeCustomPortChecked = (event) => {
     setPort(
-      event.target.checked ? '' : portDefaultValue
+      event.target.checked ? '' : portDefaultValue,
     );
     setCustomPortChecked(event.target.checked);
-  }
+  };
 
   const handleChangePort = (event) => {
     setPort(event.target.value);
@@ -91,8 +87,8 @@ export default function ConnectPeerDialog({
 
   function handleSubmit(event) {
     event.preventDefault();
-    console.log( 'host:', host);
-    console.log( 'port:', port);
+    console.log('host:', host);
+    console.log('port:', port);
     if (!host) {
       alert('Host cannot be empty.');
       return;
@@ -116,7 +112,7 @@ export default function ConnectPeerDialog({
         inputProps={{ maxLength: 128 }}
         margin="normal"
       />
-    )
+    );
   }
 
   function ConnectPortInput() {
@@ -131,27 +127,25 @@ export default function ConnectPeerDialog({
         disabled={!customPortChecked}
         margin="normal"
       />
-    )
+    );
   }
-
 
   function CustomPortSwitch() {
     return (
       <FormControlLabel
         className={classes.formControlLabel}
-        control={
+        control={(
           <Switch
             checked={customPortChecked}
             onChange={handleChangeCustomPortChecked}
             name="use-custom-port"
             size="small"
           />
-        }
+        )}
         label="Use custom port"
       />
-    )
+    );
   }
-
 
   function CancelButton() {
     return (
@@ -162,7 +156,7 @@ export default function ConnectPeerDialog({
       >
         Cancel
       </Button>
-    )
+    );
   }
 
   function ConnectPeerButton() {
@@ -175,7 +169,7 @@ export default function ConnectPeerDialog({
       >
         Connect Peer
       </Button>
-    )
+    );
   }
 
   return (
@@ -206,5 +200,5 @@ export default function ConnectPeerDialog({
         </DialogActions>
       </form>
     </Dialog>
-  )
+  );
 }

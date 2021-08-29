@@ -1,42 +1,32 @@
-import React, {useState, useEffect} from 'react';
-import {useHistory} from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import {
-    Grid,
-    Button,
-    Paper,
-    Tabs,
-    Tab,
-    AppBar,
-    Box,
-    Typography,
-  } from "@material-ui/core";
-import MUIDataTable from "mui-datatables";
-import FormLabel from "@material-ui/core/FormLabel";
+  Grid,
+  Tabs,
+  Tab,
+  AppBar,
+  Box,
+} from '@material-ui/core';
 
 // styles
-import {makeStyles} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 
 // components
-import PageTitle from "../../components/PageTitle";
-import Widget from "../../components/Widget";
-import Table from "../dashboard/components/Table/Table";
-import SentPayment from "../../components/SentPayment";
-import ReceivedPayment from "../../components/ReceivedPayment";
-
+import Widget from '../../components/Widget';
+import SentPayment from '../../components/SentPayment';
 
 // data
-import mock from "../dashboard/mock";
 
 import {
   getSentPaymentsRequest,
-} from "../../squeakclient/requests"
+} from '../../squeakclient/requests';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     '& > *': {
-      margin: theme.spacing(1)
-    }
-  }
+      margin: theme.spacing(1),
+    },
+  },
 }));
 
 export default function SentPayments() {
@@ -67,7 +57,9 @@ export default function SentPayments() {
   }, []);
 
   function TabPanel(props) {
-    const { children, value, index, ...other } = props;
+    const {
+      children, value, index, ...other
+    } = props;
 
     return (
       <div
@@ -87,57 +79,57 @@ export default function SentPayments() {
   function PaymentsTabs() {
     return (
       <>
-      <AppBar position="static" color="default">
-        <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
-          <Tab label="Sent Payments" {...a11yProps(0)} />
-        </Tabs>
-      </AppBar>
-      <TabPanel value={value} index={0}>
-        {SentPaymentsContent()}
-      </TabPanel>
+        <AppBar position="static" color="default">
+          <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
+            <Tab label="Sent Payments" {...a11yProps(0)} />
+          </Tabs>
+        </AppBar>
+        <TabPanel value={value} index={0}>
+          {SentPaymentsContent()}
+        </TabPanel>
       </>
-    )
+    );
   }
 
   function SentPaymentsContent() {
     return (
       <>
-      <Grid container spacing={4}>
-        <Grid item xs={12}>
-          <Widget disableWidgetMenu>
-          <div>
-          {sentPayments.map(sentPayment =>
-            <Box
-              p={1}
-              key={sentPayment.getSentPaymentId()}
-              >
-            <SentPayment
-              sentPayment={sentPayment}>
-            </SentPayment>
-            </Box>
-          )}
-          </div>
-          </Widget>
+        <Grid container spacing={4}>
+          <Grid item xs={12}>
+            <Widget disableWidgetMenu>
+              <div>
+                {sentPayments.map((sentPayment) => (
+                  <Box
+                    p={1}
+                    key={sentPayment.getSentPaymentId()}
+                  >
+                    <SentPayment
+                      sentPayment={sentPayment}
+                    />
+                  </Box>
+                ))}
+              </div>
+            </Widget>
+          </Grid>
         </Grid>
-      </Grid>
       </>
-    )
+    );
   }
 
   function GridContent() {
     return (
       <Grid container spacing={0}>
-      <Grid item xs={12} sm={9}>
-        {PaymentsTabs()}
+        <Grid item xs={12} sm={9}>
+          {PaymentsTabs()}
+        </Grid>
+        <Grid item xs={12} sm={3} />
       </Grid>
-      <Grid item xs={12} sm={3}>
-      </Grid>
-      </Grid>
-    )
+    );
   }
 
   return (
     <>
-     {GridContent()}
-   < />);
+      {GridContent()}
+    < />
+  );
 }

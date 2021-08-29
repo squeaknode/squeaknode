@@ -1,12 +1,12 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   Grid,
   LinearProgress,
   Select,
   OutlinedInput,
   MenuItem,
-} from "@material-ui/core";
-import { useTheme } from "@material-ui/styles";
+} from '@material-ui/core';
+import { useTheme } from '@material-ui/styles';
 import {
   ResponsiveContainer,
   ComposedChart,
@@ -19,34 +19,34 @@ import {
   Cell,
   YAxis,
   XAxis,
-} from "recharts";
+} from 'recharts';
 
 // styles
-import useStyles from "./styles";
+import useStyles from './styles';
 
 // components
-import mock from "./mock";
-import Widget from "../../components/Widget";
-import PageTitle from "../../components/PageTitle";
-import { Typography } from "../../components/Wrappers";
-import Dot from "../../components/Sidebar/components/Dot";
-import Table from "./components/Table/Table";
-import BigStat from "./components/BigStat/BigStat";
+import mock from './mock';
+import Widget from '../../components/Widget';
+import PageTitle from '../../components/PageTitle';
+import { Typography } from '../../components/Wrappers';
+import Dot from '../../components/Sidebar/components/Dot';
+import Table from './components/Table/Table';
+import BigStat from './components/BigStat/BigStat';
 
 const mainChartData = getMainChartData();
 const PieChartData = [
-  { name: "Group A", value: 400, color: "primary" },
-  { name: "Group B", value: 300, color: "secondary" },
-  { name: "Group C", value: 300, color: "warning" },
-  { name: "Group D", value: 200, color: "success" },
+  { name: 'Group A', value: 400, color: 'primary' },
+  { name: 'Group B', value: 300, color: 'secondary' },
+  { name: 'Group C', value: 300, color: 'warning' },
+  { name: 'Group D', value: 200, color: 'success' },
 ];
 
 export default function Dashboard(props) {
-  var classes = useStyles();
-  var theme = useTheme();
+  const classes = useStyles();
+  const theme = useTheme();
 
   // local
-  var [mainChartState, setMainChartState] = useState("monthly");
+  const [mainChartState, setMainChartState] = useState('monthly');
 
   return (
     <>
@@ -279,11 +279,14 @@ export default function Dashboard(props) {
                   {PieChartData.map(({ name, value, color }, index) => (
                     <div key={color} className={classes.legendItemContainer}>
                       <Dot color={color} />
-                      <Typography style={{ whiteSpace: "nowrap" }}>
-                        &nbsp;{name}&nbsp;
+                      <Typography style={{ whiteSpace: 'nowrap' }}>
+                        &nbsp;
+                        {name}
+&nbsp;
                       </Typography>
                       <Typography color="text" colorBrightness="secondary">
-                        &nbsp;{value}
+                        &nbsp;
+                        {value}
                       </Typography>
                     </div>
                   ))}
@@ -295,7 +298,7 @@ export default function Dashboard(props) {
         <Grid item xs={12}>
           <Widget
             bodyClass={classes.mainChartBody}
-            header={
+            header={(
               <div className={classes.mainChartHeader}>
                 <Typography
                   variant="h5"
@@ -326,8 +329,8 @@ export default function Dashboard(props) {
                 </div>
                 <Select
                   value={mainChartState}
-                  onChange={e => setMainChartState(e.target.value)}
-                  input={
+                  onChange={(e) => setMainChartState(e.target.value)}
+                  input={(
                     <OutlinedInput
                       labelWidth={0}
                       classes={{
@@ -335,7 +338,7 @@ export default function Dashboard(props) {
                         input: classes.mainChartSelect,
                       }}
                     />
-                  }
+                  )}
                   autoWidth
                 >
                   <MenuItem value="daily">Daily</MenuItem>
@@ -343,23 +346,25 @@ export default function Dashboard(props) {
                   <MenuItem value="monthly">Monthly</MenuItem>
                 </Select>
               </div>
-            }
+            )}
           >
             <ResponsiveContainer width="100%" minWidth={500} height={350}>
               <ComposedChart
-                margin={{ top: 0, right: -15, left: -15, bottom: 0 }}
+                margin={{
+                  top: 0, right: -15, left: -15, bottom: 0,
+                }}
                 data={mainChartData}
               >
                 <YAxis
                   ticks={[0, 2500, 5000, 7500]}
-                  tick={{ fill: theme.palette.text.hint + "80", fontSize: 14 }}
-                  stroke={theme.palette.text.hint + "80"}
+                  tick={{ fill: `${theme.palette.text.hint}80`, fontSize: 14 }}
+                  stroke={`${theme.palette.text.hint}80`}
                   tickLine={false}
                 />
                 <XAxis
-                  tickFormatter={i => i + 1}
-                  tick={{ fill: theme.palette.text.hint + "80", fontSize: 14 }}
-                  stroke={theme.palette.text.hint + "80"}
+                  tickFormatter={(i) => i + 1}
+                  tick={{ fill: `${theme.palette.text.hint}80`, fontSize: 14 }}
+                  stroke={`${theme.palette.text.hint}80`}
                   tickLine={false}
                 />
                 <Area
@@ -392,7 +397,7 @@ export default function Dashboard(props) {
             </ResponsiveContainer>
           </Widget>
         </Grid>
-        {mock.bigStat.map(stat => (
+        {mock.bigStat.map((stat) => (
           <Grid item md={4} sm={6} xs={12} key={stat.product}>
             <BigStat {...stat} />
           </Grid>
@@ -414,16 +419,16 @@ export default function Dashboard(props) {
 
 // #######################################################################
 function getRandomData(length, min, max, multiplier = 10, maxDiff = 10) {
-  var array = new Array(length).fill();
+  const array = new Array(length).fill();
   let lastValue;
 
   return array.map((item, index) => {
     let randomValue = Math.floor(Math.random() * multiplier + 1);
 
     while (
-      randomValue <= min ||
-      randomValue >= max ||
-      (lastValue && randomValue - lastValue > maxDiff)
+      randomValue <= min
+      || randomValue >= max
+      || (lastValue && randomValue - lastValue > maxDiff)
     ) {
       randomValue = Math.floor(Math.random() * multiplier + 1);
     }
@@ -435,10 +440,10 @@ function getRandomData(length, min, max, multiplier = 10, maxDiff = 10) {
 }
 
 function getMainChartData() {
-  var resultArray = [];
-  var tablet = getRandomData(31, 3500, 6500, 7500, 1000);
-  var desktop = getRandomData(31, 1500, 7500, 7500, 1500);
-  var mobile = getRandomData(31, 1500, 7500, 7500, 1500);
+  const resultArray = [];
+  const tablet = getRandomData(31, 3500, 6500, 7500, 1000);
+  const desktop = getRandomData(31, 1500, 7500, 7500, 1500);
+  const mobile = getRandomData(31, 1500, 7500, 7500, 1500);
 
   for (let i = 0; i < tablet.length; i++) {
     resultArray.push({

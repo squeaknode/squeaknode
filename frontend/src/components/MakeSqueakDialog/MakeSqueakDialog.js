@@ -1,43 +1,31 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState } from 'react';
 import {
-  Paper,
-  IconButton,
-  Menu,
   MenuItem,
-  Typography,
-  Grid,
-  Box,
-  Link,
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogContentText,
   TextField,
   DialogActions,
   Button,
   FormControl,
   InputLabel,
   Select,
-} from "@material-ui/core";
+} from '@material-ui/core';
 
-import { MoreVert as MoreIcon } from "@material-ui/icons";
-import {useHistory} from "react-router-dom";
-import classnames from "classnames";
+import { useHistory } from 'react-router-dom';
 
 // styles
-import useStyles from "./styles";
+import useStyles from './styles';
 
-import Widget from "../../components/Widget";
-import SqueakThreadItem from "../../components/SqueakThreadItem";
+import SqueakThreadItem from '../SqueakThreadItem';
 
 import {
   makeSqueakRequest,
   getSigningProfilesRequest,
-} from "../../squeakclient/requests"
+} from '../../squeakclient/requests';
 import {
   goToSqueakPage,
-} from "../../navigation/navigation"
-
+} from '../../navigation/navigation';
 
 export default function MakeSqueakDialog({
   open,
@@ -45,12 +33,12 @@ export default function MakeSqueakDialog({
   replytoSqueak,
   ...props
 }) {
-  var classes = useStyles();
+  const classes = useStyles();
   const history = useHistory();
 
-  var [profileId, setProfileId] = useState(-1);
-  var [content, setContent] = useState('');
-  var [signingProfiles, setSigningProfiles] = useState([]);
+  const [profileId, setProfileId] = useState(-1);
+  const [content, setContent] = useState('');
+  const [signingProfiles, setSigningProfiles] = useState([]);
 
   const resetFields = () => {
     setProfileId(-1);
@@ -70,7 +58,7 @@ export default function MakeSqueakDialog({
   };
 
   const handleErr = (err) => {
-    alert('Error making squeak: ' + err);
+    alert(`Error making squeak: ${err}`);
   };
 
   const createSqueak = (profileId, content, replyto) => {
@@ -86,14 +74,14 @@ export default function MakeSqueakDialog({
 
   function handleSubmit(event) {
     event.preventDefault();
-    console.log( 'profileId:', profileId);
-    console.log( 'content:', content);
+    console.log('profileId:', profileId);
+    console.log('content:', content);
     if (replytoSqueak) {
       var replyto = replytoSqueak.getSqueakHash();
     } else {
       var replyto = null;
     }
-    console.log( 'replyto:', replyto);
+    console.log('replyto:', replyto);
     if (profileId == -1) {
       alert('Signing profile must be selected.');
       return;
@@ -124,15 +112,15 @@ export default function MakeSqueakDialog({
       <>
         <SqueakThreadItem
           hash={replytoSqueak.getSqueakHash()}
-          squeak={replytoSqueak}>
-        </SqueakThreadItem>
+          squeak={replytoSqueak}
+        />
       </>
-    )
+    );
   }
 
   function MakeSelectSigningProfile() {
     return (
-      <FormControl className={classes.formControl} required style={{minWidth: 120}}>
+      <FormControl className={classes.formControl} required style={{ minWidth: 120 }}>
         <InputLabel id="demo-simple-select-label">Signing Profile</InputLabel>
         <Select
           labelId="demo-simple-select-label"
@@ -140,12 +128,10 @@ export default function MakeSqueakDialog({
           value={profileId}
           onChange={handleChange}
         >
-          {signingProfiles.map(p =>
-            <MenuItem key={p.getProfileId()} value={p.getProfileId()}>{p.getProfileName()}</MenuItem>
-          )}
+          {signingProfiles.map((p) => <MenuItem key={p.getProfileId()} value={p.getProfileId()}>{p.getProfileName()}</MenuItem>)}
         </Select>
       </FormControl>
-    )
+    );
   }
 
   function MakeSqueakContentInput() {
@@ -163,7 +149,7 @@ export default function MakeSqueakDialog({
         fullWidth
         inputProps={{ maxLength: 280 }}
       />
-    )
+    );
   }
 
   function MakeCancelButton() {
@@ -175,37 +161,37 @@ export default function MakeSqueakDialog({
       >
         Cancel
       </Button>
-    )
+    );
   }
 
   function MakeSqueakButton() {
     return (
       <Button
-       type="submit"
-       variant="contained"
-       color="primary"
-       className={classes.button}
-       >
-       Make Squeak
-       </Button>
-    )
+        type="submit"
+        variant="contained"
+        color="primary"
+        className={classes.button}
+      >
+        Make Squeak
+      </Button>
+    );
   }
 
   return (
     <Dialog open={open} onRendered={load} onEnter={resetFields} onClose={cancel} onClick={ignore} aria-labelledby="form-dialog-title">
-  <DialogTitle id="form-dialog-title">Make Squeak</DialogTitle>
-  <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
-  <DialogContent>
-    {replytoSqueak ?
-      ReplySqueakContent() : <></>}
-    {MakeSelectSigningProfile()}
-    {MakeSqueakContentInput()}
-  </DialogContent>
-  <DialogActions>
-    {MakeCancelButton()}
-    {MakeSqueakButton()}
-  </DialogActions>
-  </form>
+      <DialogTitle id="form-dialog-title">Make Squeak</DialogTitle>
+      <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
+        <DialogContent>
+          {replytoSqueak
+            ? ReplySqueakContent() : <></>}
+          {MakeSelectSigningProfile()}
+          {MakeSqueakContentInput()}
+        </DialogContent>
+        <DialogActions>
+          {MakeCancelButton()}
+          {MakeSqueakButton()}
+        </DialogActions>
+      </form>
     </Dialog>
-  )
+  );
 }
