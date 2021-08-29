@@ -15,8 +15,10 @@ module.exports = {
     sourceType: 'module',
   },
   plugins: [
-    'react',
+      'react',
+      'unused-imports',
   ],
   rules: {
+      "unused-imports/no-unused-imports": "error",
   },
 };
