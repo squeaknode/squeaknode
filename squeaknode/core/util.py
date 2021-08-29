@@ -24,15 +24,20 @@ import random
 
 from bitcoin.base58 import Base58ChecksumError
 from bitcoin.wallet import CBitcoinAddressError
+from squeak.core import CSqueak
 from squeak.core.elliptic import generate_random_scalar
 from squeak.core.elliptic import scalar_difference
 from squeak.core.elliptic import scalar_from_bytes
 from squeak.core.elliptic import scalar_sum
 from squeak.core.elliptic import scalar_to_bytes
 from squeak.core.signing import CSqueakAddress
+from squeak.net import CInterested
 
 DATA_KEY_LENGTH = 32
 VERSION_NONCE_LENGTH = 8
+
+HASH_LENGTH = 32
+EMPTY_HASH = b'\x00' * HASH_LENGTH
 
 
 def get_hash(squeak):
@@ -87,5 +92,21 @@ def is_address_valid(address: str) -> bool:
     try:
         CSqueakAddress(address)
     except (Base58ChecksumError, CBitcoinAddressError):
+        return False
+    return True
+
+
+def squeak_matches_interest(squeak: CSqueak, interest: CInterested) -> bool:
+    if len(interest.addresses) > 0 \
+       and squeak.GetAddress() not in interest.addresses:
+        return False
+    # if interest.nMinBlockHeight != -1 \
+    #    and squeak.nBlockHeight < interest.nMinBlockHeight:
+    #     return False
+    # if interest.nMaxBlockHeight != -1 \
+    #    and squeak.nBlockHeight > interest.nMaxBlockHeight:
+    #     return False
+    if interest.hashReplySqk != EMPTY_HASH \
+       and squeak.hashReplySqk != interest.hashReplySqk:
         return False
     return True

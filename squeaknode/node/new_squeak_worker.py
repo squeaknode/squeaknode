@@ -24,10 +24,10 @@ import threading
 
 from squeak.core import CSqueak
 from squeak.messages import msg_inv
-from squeak.net import CInterested
 from squeak.net import CInv
 
 from squeaknode.core.util import get_hash
+from squeaknode.core.util import squeak_matches_interest
 from squeaknode.network.network_manager import NetworkManager
 from squeaknode.network.peer import Peer
 from squeaknode.node.squeak_controller import SqueakController
@@ -102,22 +102,22 @@ class NewSqueakWorker:
             return False
         locator = peer.subscription.locator
         for interest in locator.vInterested:
-            if self.squeak_matches_interest(squeak, interest):
+            if squeak_matches_interest(squeak, interest):
                 logger.debug("Found a match!")
                 return True
         return False
 
-    def squeak_matches_interest(self, squeak: CSqueak, interest: CInterested) -> bool:
-        if len(interest.addresses) > 0 \
-           and squeak.GetAddress() not in interest.addresses:
-            return False
-        # if interest.nMinBlockHeight != -1 \
-        #    and squeak.nBlockHeight < interest.nMinBlockHeight:
-        #     return False
-        # if interest.nMaxBlockHeight != -1 \
-        #    and squeak.nBlockHeight > interest.nMaxBlockHeight:
-        #     return False
-        if interest.hashReplySqk != EMPTY_HASH \
-           and squeak.hashReplySqk != interest.hashReplySqk:
-            return False
-        return True
+    # def squeak_matches_interest(self, squeak: CSqueak, interest: CInterested) -> bool:
+    #     if len(interest.addresses) > 0 \
+    #        and squeak.GetAddress() not in interest.addresses:
+    #         return False
+    #     # if interest.nMinBlockHeight != -1 \
+    #     #    and squeak.nBlockHeight < interest.nMinBlockHeight:
+    #     #     return False
+    #     # if interest.nMaxBlockHeight != -1 \
+    #     #    and squeak.nBlockHeight > interest.nMaxBlockHeight:
+    #     #     return False
+    #     if interest.hashReplySqk != EMPTY_HASH \
+    #        and squeak.hashReplySqk != interest.hashReplySqk:
+    #         return False
+    #     return True

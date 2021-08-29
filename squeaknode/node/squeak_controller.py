@@ -49,6 +49,7 @@ from squeaknode.core.squeak_entry import SqueakEntry
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.util import is_address_valid
+from squeaknode.core.util import squeak_matches_interest
 from squeaknode.network.peer import Peer
 from squeaknode.node.listener_subscription_client import EventListener
 from squeaknode.node.received_payments_subscription_client import ReceivedPaymentsSubscriptionClient
@@ -130,16 +131,23 @@ class SqueakController:
         self.squeak_db.delete_squeak(squeak_hash)
 
     def save_received_squeak(self, squeak: CSqueak) -> None:
-        block_range = self.get_block_range()
-        address = str(squeak.GetAddress())
-        if self.squeak_db.number_of_squeaks_with_address_in_block_range(
-                address,
-                block_range.min_block,
-                block_range.max_block,
-        ) >= self.config.node.max_squeaks_per_address_in_block_range:
-            raise Exception(
-                "Exceeded max number of squeaks for address in block range.")
-        self.save_squeak(squeak)
+        if self.squeak_matches_interest(squeak):
+            self.save_squeak(squeak)
+
+    def squeak_matches_interest(self, squeak: CSqueak) -> bool:
+        locator = self.get_interested_locator()
+        for interest in locator.vInterested:
+            if squeak_matches_interest(squeak, interest) \
+               and self.squeak_in_limit_of_interest(squeak, interest):
+                return True
+        return False
+
+    def squeak_in_limit_of_interest(self, squeak: CSqueak, interest: CInterested) -> bool:
+        return self.squeak_db.number_of_squeaks_with_address_in_block_range(
+            str(squeak.GetAddress),
+            interest.nMinBlockHeight,
+            interest.nMaxBlockHeight,
+        ) < self.config.node.max_squeaks_per_address_in_block_range
 
     def get_buy_offer(self, squeak_hash: bytes, peer_address: PeerAddress) -> Offer:
         # Check if there is an existing offer for the hash/peer_address combination
