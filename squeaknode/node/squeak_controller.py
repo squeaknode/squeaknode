@@ -662,11 +662,10 @@ class SqueakController:
 
     def update_subscriptions(self):
         locator = self.get_interested_locator()
-        for peer in self.network_manager.get_connected_peers():
-            subscribe_msg = msg_subscribe(
-                locator=locator,
-            )
-            peer.send_msg(subscribe_msg)
+        subscribe_msg = msg_subscribe(
+            locator=locator,
+        )
+        self.broadcast_msg(subscribe_msg)
 
     def subscribe_received_offers_for_squeak(self, squeak_hash: bytes, stopped: threading.Event):
         for received_offer in self.new_received_offer_listener.yield_items(stopped):
