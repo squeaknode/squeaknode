@@ -605,7 +605,7 @@ class SqueakController:
             squeak_hash.hex(),
         ))
         # Add the temporary interest in this hash.
-        self.temporary_interest_manager.add_hash_interest(squeak_hash)
+        self.temporary_interest_manager.add_hash_interest(1, squeak_hash)
         invs = [
             CInv(type=1, hash=squeak_hash)
         ]

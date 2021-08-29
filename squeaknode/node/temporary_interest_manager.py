@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import logging
+import threading
 import uuid
 from abc import ABC
 from abc import abstractmethod
@@ -38,47 +39,42 @@ logger = logging.getLogger(__name__)
 
 class TemporaryInterest(ABC):
 
+    def __init__(self, limit: int):
+        self.limit = limit
+        self.count = 0
+        self._lock = threading.Lock()
+
     @abstractmethod
     def is_interested(self, squeak: CSqueak) -> bool:
         pass
 
-    @abstractmethod
-    def increment(self) -> bool:
-        pass
+    def increment(self) -> None:
+        with self._lock:
+            self.count += 1
 
-    @abstractmethod
     def is_under_limit(self) -> bool:
-        pass
+        with self._lock:
+            return self.count < self.limit
 
 
 class TemporaryRangeInterest(TemporaryInterest):
 
-    def __init__(self, interest: CInterested):
+    def __init__(self, limit: int, interest: CInterested):
         self.interest = interest
+        super().__init__(limit)
 
     def is_interested(self, squeak: CSqueak) -> bool:
         return squeak_matches_interest(squeak, self.interest)
 
-    def increment(self) -> bool:
-        pass
-
-    def is_under_limit(self) -> bool:
-        pass
-
 
 class TemporaryHashInterest(TemporaryInterest):
 
-    def __init__(self, squeak_hash: bytes):
+    def __init__(self, limit: int, squeak_hash: bytes):
         self.squeak_hash = squeak_hash
+        super().__init__(limit)
 
     def is_interested(self, squeak: CSqueak) -> bool:
         return self.squeak_hash == get_hash(squeak)
-
-    def increment(self) -> bool:
-        pass
-
-    def is_under_limit(self) -> bool:
-        pass
 
 
 class TemporaryInterestManager:
@@ -89,7 +85,8 @@ class TemporaryInterestManager:
 
     def lookup_counter(self, squeak: CSqueak) -> Optional[TemporaryInterest]:
         for name, interest in self.interests.items():
-            if interest.is_interested(squeak):
+            if interest.is_interested(squeak) \
+               and interest.is_under_limit():
                 return interest
         return None
 
@@ -97,8 +94,8 @@ class TemporaryInterestManager:
         name_key = "interest_key_{}".format(uuid.uuid1())
         self.interests[name_key] = interest
 
-    def add_range_interest(self, interest: CInterested) -> None:
-        self.add_interest(TemporaryRangeInterest(interest))
+    def add_range_interest(self, limit: int, interest: CInterested) -> None:
+        self.add_interest(TemporaryRangeInterest(limit, interest))
 
-    def add_hash_interest(self, squeak_hash: bytes) -> None:
-        self.add_interest(TemporaryHashInterest(squeak_hash))
+    def add_hash_interest(self, limit: int, squeak_hash: bytes) -> None:
+        self.add_interest(TemporaryHashInterest(limit, squeak_hash))
