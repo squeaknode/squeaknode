@@ -504,6 +504,28 @@ class SqueakDb:
             num_squeaks = row["num_squeaks"]
             return num_squeaks
 
+    def number_of_squeaks_with_address_in_block_range(
+        self,
+        address: str,
+        min_block: int,
+        max_block: int,
+    ) -> int:
+        """ Get number of squeaks with address in block range. """
+        s = (
+            select([
+                func.count().label("num_squeaks"),
+            ])
+            .select_from(self.squeaks)
+            .where(self.squeaks.c.author_address == address)
+            .where(self.squeaks.c.n_block_height >= min_block)
+            .where(self.squeaks.c.n_block_height <= max_block)
+        )
+        with self.get_connection() as connection:
+            result = connection.execute(s)
+            row = result.fetchone()
+            num_squeaks = row["num_squeaks"]
+            return num_squeaks
+
     # def lookup_squeaks_needing_offer(
     #         self,
     #         addresses: List[str],

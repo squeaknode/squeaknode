@@ -131,6 +131,18 @@ class SqueakController:
         logger.info("Deleted number of offers : {}".format(num_deleted_offers))
         self.squeak_db.delete_squeak(squeak_hash)
 
+    def save_received_squeak(self, squeak: CSqueak) -> None:
+        block_range = self.get_block_range()
+        address = str(squeak.GetAddress())
+        if self.squeak_db.number_of_squeaks_with_address_in_block_range(
+                address,
+                block_range.min_block,
+                block_range.max_block,
+        ) >= self.config.node.max_squeaks_per_address_in_block_range:
+            raise Exception(
+                "Exceeded max number of squeaks for address in block range.")
+        self.save_squeak(squeak)
+
     def get_buy_offer(self, squeak_hash: bytes, peer_address: PeerAddress) -> Offer:
         # Check if there is an existing offer for the hash/peer_address combination
         sent_offer = self.get_saved_sent_offer(squeak_hash, peer_address)
