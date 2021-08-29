@@ -53,6 +53,8 @@ from squeaknode.core.util import squeak_matches_interest
 from squeaknode.network.peer import Peer
 from squeaknode.node.listener_subscription_client import EventListener
 from squeaknode.node.received_payments_subscription_client import ReceivedPaymentsSubscriptionClient
+from squeaknode.node.temporary_interest_manager import TemporaryInterestCounter
+from squeaknode.node.temporary_interest_manager import TemporaryInterestManager
 
 
 logger = logging.getLogger(__name__)
@@ -74,6 +76,7 @@ class SqueakController:
         self.network_manager = network_manager
         self.new_squeak_listener = EventListener()
         self.new_received_offer_listener = EventListener()
+        self.temporary_interest_manager = TemporaryInterestManager()
         self.config = config
 
     def save_squeak(self, squeak: CSqueak) -> bytes:
@@ -133,6 +136,9 @@ class SqueakController:
     def save_received_squeak(self, squeak: CSqueak) -> None:
         if self.squeak_matches_interest(squeak):
             self.save_squeak(squeak)
+        if self.get_temporary_interest_counter(squeak):
+            logger.info("Saving squeak based on temporary interest.")
+            self.save_squeak(squeak)
 
     def squeak_matches_interest(self, squeak: CSqueak) -> bool:
         locator = self.get_interested_locator()
@@ -148,6 +154,9 @@ class SqueakController:
             interest.nMinBlockHeight,
             interest.nMaxBlockHeight,
         ) < self.config.node.max_squeaks_per_address_in_block_range
+
+    def get_temporary_interest_counter(self, squeak: CSqueak) -> TemporaryInterestCounter:
+        return self.temporary_interest_manager.lookup_counter(squeak)
 
     def get_buy_offer(self, squeak_hash: bytes, peer_address: PeerAddress) -> Offer:
         # Check if there is an existing offer for the hash/peer_address combination
@@ -595,6 +604,8 @@ class SqueakController:
         logger.info("Downloading single squeak: {}".format(
             squeak_hash.hex(),
         ))
+        # Add the temporary interest in this hash.
+        self.temporary_interest_manager.add_hash(squeak_hash)
         invs = [
             CInv(type=1, hash=squeak_hash)
         ]
