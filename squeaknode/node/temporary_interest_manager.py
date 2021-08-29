@@ -26,6 +26,7 @@ from abc import abstractmethod
 from typing import Dict
 from typing import Optional
 
+from expiringdict import ExpiringDict
 from squeak.core import CSqueak
 from squeak.net import CInterested
 
@@ -83,7 +84,8 @@ class TemporaryHashInterest(TemporaryInterest):
 class TemporaryInterestManager:
 
     def __init__(self):
-        self.interests: Dict[str, TemporaryInterest] = {}
+        self.interests: Dict[str, TemporaryInterest] = ExpiringDict(
+            max_len=100, max_age_seconds=10)
 
     def lookup_counter(self, squeak: CSqueak) -> Optional[TemporaryInterest]:
         for name, interest in self.interests.items():
