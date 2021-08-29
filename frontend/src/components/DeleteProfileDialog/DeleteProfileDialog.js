@@ -1,40 +1,19 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {
-  Paper,
-  IconButton,
-  Menu,
-  MenuItem,
-  Typography,
-  Grid,
-  Box,
-  Link,
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogContentText,
-  TextField,
   DialogActions,
   Button,
-  FormControl,
-  InputLabel,
-  Select,
-} from "@material-ui/core";
-import { MoreVert as MoreIcon } from "@material-ui/icons";
-import {useHistory} from "react-router-dom";
-import classnames from "classnames";
+} from '@material-ui/core';
+import { useHistory } from 'react-router-dom';
 
 // styles
-import useStyles from "./styles";
-
-import Widget from "../../components/Widget";
+import useStyles from './styles';
 
 import {
   deleteProfileRequest,
-} from "../../squeakclient/requests"
-import {
-  reloadRoute,
-} from "../../navigation/navigation"
-
+} from '../../squeakclient/requests';
 
 export default function DeleteProfileDialog({
   open,
@@ -43,7 +22,7 @@ export default function DeleteProfileDialog({
   reloadProfile,
   ...props
 }) {
-  var classes = useStyles();
+  const classes = useStyles();
   const history = useHistory();
 
   const deleteProfile = (profileId) => {
@@ -54,9 +33,9 @@ export default function DeleteProfileDialog({
 
   function handleSubmit(event) {
     event.preventDefault();
-    console.log( 'profile:', profile);
-    var profileId = profile.getProfileId();
-    console.log( 'profileId:', profileId);
+    console.log('profile:', profile);
+    const profileId = profile.getProfileId();
+    console.log('profileId:', profileId);
     deleteProfile(profileId);
     handleClose();
   }
@@ -70,34 +49,34 @@ export default function DeleteProfileDialog({
       >
         Cancel
       </Button>
-    )
+    );
   }
 
   function DeleteProfileButton() {
     return (
       <Button
-       type="submit"
-       variant="contained"
-       color="primary"
-       className={classes.button}
-       >
+        type="submit"
+        variant="contained"
+        color="primary"
+        className={classes.button}
+      >
         Delete Profile
-       </Button>
-    )
+      </Button>
+    );
   }
 
   return (
     <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-  <DialogTitle id="form-dialog-title">Delete Profile</DialogTitle>
-  <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
-  <DialogContent>
-    Are you sure you want to delete this profile?
-  </DialogContent>
-  <DialogActions>
-    {MakeCancelButton()}
-    {DeleteProfileButton()}
-  </DialogActions>
-  </form>
+      <DialogTitle id="form-dialog-title">Delete Profile</DialogTitle>
+      <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
+        <DialogContent>
+          Are you sure you want to delete this profile?
+        </DialogContent>
+        <DialogActions>
+          {MakeCancelButton()}
+          {DeleteProfileButton()}
+        </DialogActions>
+      </form>
     </Dialog>
-  )
+  );
 }

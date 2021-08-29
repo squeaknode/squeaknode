@@ -1,40 +1,22 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {
-  Paper,
-  IconButton,
-  Menu,
-  MenuItem,
-  Typography,
-  Grid,
-  Box,
-  Link,
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogContentText,
-  TextField,
   DialogActions,
   Button,
-  FormControl,
-  InputLabel,
-  Select,
-} from "@material-ui/core";
-import { MoreVert as MoreIcon } from "@material-ui/icons";
-import {useHistory} from "react-router-dom";
-import classnames from "classnames";
+} from '@material-ui/core';
+import { useHistory } from 'react-router-dom';
 
 // styles
-import useStyles from "./styles";
-
-import Widget from "../../components/Widget";
+import useStyles from './styles';
 
 import {
   deletePeerRequest,
-} from "../../squeakclient/requests"
+} from '../../squeakclient/requests';
 import {
   reloadRoute,
-} from "../../navigation/navigation"
-
+} from '../../navigation/navigation';
 
 export default function DeletePeerDialog({
   open,
@@ -42,7 +24,7 @@ export default function DeletePeerDialog({
   peer,
   ...props
 }) {
-  var classes = useStyles();
+  const classes = useStyles();
   const history = useHistory();
 
   const deletePeer = (peerId) => {
@@ -53,9 +35,9 @@ export default function DeletePeerDialog({
 
   function handleSubmit(event) {
     event.preventDefault();
-    console.log( 'peer:', peer);
-    var peerId = peer.getPeerId();
-    console.log( 'peerId:', peerId);
+    console.log('peer:', peer);
+    const peerId = peer.getPeerId();
+    console.log('peerId:', peerId);
     deletePeer(peerId);
     handleClose();
   }
@@ -69,34 +51,34 @@ export default function DeletePeerDialog({
       >
         Cancel
       </Button>
-    )
+    );
   }
 
   function DeletePeerButton() {
     return (
       <Button
-       type="submit"
-       variant="contained"
-       color="primary"
-       className={classes.button}
-       >
+        type="submit"
+        variant="contained"
+        color="primary"
+        className={classes.button}
+      >
         Delete peer
-       </Button>
-    )
+      </Button>
+    );
   }
 
   return (
     <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-  <DialogTitle id="form-dialog-title">Delete peer</DialogTitle>
-  <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
-  <DialogContent>
-    Are you sure you want to delete this peer?
-  </DialogContent>
-  <DialogActions>
-    {MakeCancelButton()}
-    {DeletePeerButton()}
-  </DialogActions>
-  </form>
+      <DialogTitle id="form-dialog-title">Delete peer</DialogTitle>
+      <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
+        <DialogContent>
+          Are you sure you want to delete this peer?
+        </DialogContent>
+        <DialogActions>
+          {MakeCancelButton()}
+          {DeletePeerButton()}
+        </DialogActions>
+      </form>
     </Dialog>
-  )
+  );
 }

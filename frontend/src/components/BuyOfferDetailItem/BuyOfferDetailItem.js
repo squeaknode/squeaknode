@@ -1,39 +1,26 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
-  Paper,
-  Button,
-  IconButton,
-  Menu,
-  MenuItem,
   Typography,
   Grid,
   Box,
   Link,
-} from "@material-ui/core";
-import { MoreVert as MoreIcon } from "@material-ui/icons";
-import {useHistory} from "react-router-dom";
-import classnames from "classnames";
-
-import LockIcon from '@material-ui/icons/Lock';
+} from '@material-ui/core';
+import { useHistory } from 'react-router-dom';
 
 // styles
-import useStyles from "./styles";
-
-import Widget from "../../components/Widget";
-
 import moment from 'moment';
+import useStyles from './styles';
 
 import {
-  goToPeerPage,
   goToPeerAddressPage,
   goToLightningNodePage,
-} from "../../navigation/navigation"
+} from '../../navigation/navigation';
 
 export default function BuyOfferDetailItem({
   offer,
   ...props
 }) {
-  var classes = useStyles();
+  const classes = useStyles();
   const history = useHistory();
   const [payOfferDialogOpen, setPayOfferDialogOpen] = useState(false);
 
@@ -46,7 +33,7 @@ export default function BuyOfferDetailItem({
       offer.getPeerAddress().getHost(),
       offer.getPeerAddress().getPort(),
     );
-  }
+  };
 
   const onLightningNodeClick = (event) => {
     event.preventDefault();
@@ -55,11 +42,11 @@ export default function BuyOfferDetailItem({
       offer.getNodePubkey(),
       offer.getNodeHost(),
       offer.getNodePort(),
-    )
-  }
+    );
+  };
 
   const handleClickPayOffer = () => {
-    console.log("Handle click pay offer.");
+    console.log('Handle click pay offer.');
     setPayOfferDialogOpen(true);
   };
 
@@ -71,106 +58,119 @@ export default function BuyOfferDetailItem({
     return (
       <Typography
         size="md"
-        >Price: {offer.getPriceMsat() / 1000} sats
+      >
+        Price:
+        {' '}
+        {offer.getPriceMsat() / 1000}
+        {' '}
+        sats
       </Typography>
-    )
+    );
   }
 
   function PeerInfoContent() {
     console.log(offer);
-    const peerAddress =  offer.getPeerAddress();
+    const peerAddress = offer.getPeerAddress();
     const host = peerAddress.getHost();
-    const peerAddressText =  peerAddress.getHost() + ":" + peerAddress.getPort();
+    const peerAddressText = `${peerAddress.getHost()}:${peerAddress.getPort()}`;
     return (
       <Box>
         <Typography
           size="md"
-          >Peer: <Link href="#" onClick={onPeerClick}>
+        >
+          Peer:
+          {' '}
+          <Link href="#" onClick={onPeerClick}>
             {peerAddressText}
           </Link>
         </Typography>
       </Box>
-    )
+    );
   }
 
   function ExpiresInfoContent(offer) {
-    var invoiceTime = offer.getInvoiceTimestamp();
-    var invoiceExpiry = offer.getInvoiceExpiry();
-    var expireTime = invoiceTime + invoiceExpiry;
+    const invoiceTime = offer.getInvoiceTimestamp();
+    const invoiceExpiry = offer.getInvoiceExpiry();
+    const expireTime = invoiceTime + invoiceExpiry;
     return (
       <Box>
         <Typography
           size="md"
-          >
-            Expires: {moment(expireTime*1000).fromNow()}
-          </Typography>
+        >
+          Expires:
+          {' '}
+          {moment(expireTime * 1000).fromNow()}
+        </Typography>
       </Box>
-    )
+    );
   }
 
   function LightningPeerInfoContent(offer) {
-    const lightningAddress =  offer.getNodeHost() + ":" + offer.getNodePort();
+    const lightningAddress = `${offer.getNodeHost()}:${offer.getNodePort()}`;
     const lightningPubkey = offer.getNodePubkey();
     return (
       <Box>
         <Typography
           size="md"
-          >Lightning Node: <Link href="#" onClick={onLightningNodeClick}>
-            {lightningPubkey + "@" + lightningAddress}
+        >
+          Lightning Node:
+          {' '}
+          <Link href="#" onClick={onLightningNodeClick}>
+            {`${lightningPubkey}@${lightningAddress}`}
           </Link>
         </Typography>
       </Box>
-    )
+    );
   }
 
   return (
     <>
-    <Box
-      p={1}
-      m={0}
-      style={{backgroundColor: 'white'}}
+      <Box
+        p={1}
+        m={0}
+        style={{ backgroundColor: 'white' }}
       >
-          <Grid
-            container
-            direction="row"
-            justify="flex-start"
-            alignItems="flex-start"
-          >
+        <Grid
+          container
+          direction="row"
+          justify="flex-start"
+          alignItems="flex-start"
+        >
           <Grid item>
             {OfferContent()}
           </Grid>
-          </Grid>
-          <Grid
-            container
-            direction="row"
-            justify="flex-start"
-            alignItems="flex-start"
-          >
+        </Grid>
+        <Grid
+          container
+          direction="row"
+          justify="flex-start"
+          alignItems="flex-start"
+        >
           <Grid item>
             {PeerInfoContent()}
           </Grid>
-          </Grid>
-          <Grid
-            container
-            direction="row"
-            justify="flex-start"
-            alignItems="flex-start"
-          >
+        </Grid>
+        <Grid
+          container
+          direction="row"
+          justify="flex-start"
+          alignItems="flex-start"
+        >
           <Grid item>
             {LightningPeerInfoContent(offer)}
           </Grid>
-          </Grid>
-          <Grid
-            container
-            direction="row"
-            justify="flex-start"
-            alignItems="flex-start"
-          >
+        </Grid>
+        <Grid
+          container
+          direction="row"
+          justify="flex-start"
+          alignItems="flex-start"
+        >
           <Grid item>
             {ExpiresInfoContent(offer)}
           </Grid>
-          </Grid>
-    </Box>
+        </Grid>
+      </Box>
     </>
-  )
+  );
 }

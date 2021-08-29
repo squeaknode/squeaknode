@@ -1,38 +1,20 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState } from 'react';
 import {
-  Paper,
-  IconButton,
-  Menu,
-  MenuItem,
-  Typography,
-  Grid,
-  Box,
-  Link,
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogContentText,
   TextField,
   DialogActions,
   Button,
-  FormControl,
-  InputLabel,
-  Select,
-} from "@material-ui/core";
-import { MoreVert as MoreIcon } from "@material-ui/icons";
-import {useHistory} from "react-router-dom";
-import classnames from "classnames";
+} from '@material-ui/core';
+import { useHistory } from 'react-router-dom';
 
 // styles
-import useStyles from "./styles";
-
-import Widget from "../../components/Widget";
-import SqueakThreadItem from "../../components/SqueakThreadItem";
+import useStyles from './styles';
 
 import {
   lndCloseChannelRequest,
-} from "../../squeakclient/requests"
-
+} from '../../squeakclient/requests';
 
 export default function CloseChannelDialog({
   open,
@@ -41,10 +23,10 @@ export default function CloseChannelDialog({
   handleClose,
   ...props
 }) {
-  var classes = useStyles();
+  const classes = useStyles();
   const history = useHistory();
 
-  var [amount, setAmount] = useState(0);
+  const [amount, setAmount] = useState(0);
 
   const resetFields = () => {
     setAmount(0);
@@ -60,7 +42,7 @@ export default function CloseChannelDialog({
   };
 
   const handleErr = (err) => {
-    alert('Error closing channel: ' + err);
+    alert(`Error closing channel: ${err}`);
   };
 
   const closeChannel = (txId, outputIndex) => {
@@ -69,8 +51,8 @@ export default function CloseChannelDialog({
 
   function handleSubmit(event) {
     event.preventDefault();
-    console.log( 'txId:', txId);
-    console.log( 'outputIndex:', outputIndex);
+    console.log('txId:', txId);
+    console.log('outputIndex:', outputIndex);
     closeChannel(txId, outputIndex);
     handleClose();
   }
@@ -85,10 +67,10 @@ export default function CloseChannelDialog({
         value={txId}
         fullWidth
         inputProps={{
-           readOnly: true,
+          readOnly: true,
         }}
       />
-    )
+    );
   }
 
   function OutputIndexInput() {
@@ -101,10 +83,10 @@ export default function CloseChannelDialog({
         value={outputIndex}
         fullWidth
         inputProps={{
-           readOnly: true,
+          readOnly: true,
         }}
       />
-    )
+    );
   }
 
   function LocalFundingAmountInput() {
@@ -119,7 +101,7 @@ export default function CloseChannelDialog({
         fullWidth
         inputProps={{ maxLength: 64 }}
       />
-    )
+    );
   }
 
   function CancelButton() {
@@ -131,37 +113,37 @@ export default function CloseChannelDialog({
       >
         Cancel
       </Button>
-    )
+    );
   }
 
   function CloseChannelButton() {
     return (
       <Button
-       type="submit"
-       variant="contained"
-       color="primary"
-       className={classes.button}
-       >
-       Close Channel
-       </Button>
-    )
+        type="submit"
+        variant="contained"
+        color="primary"
+        className={classes.button}
+      >
+        Close Channel
+      </Button>
+    );
   }
 
   return (
     <Dialog open={open} onEnter={resetFields} onClose={handleClose} aria-labelledby="form-dialog-title">
-  <DialogTitle id="form-dialog-title">Close Channel</DialogTitle>
-  <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
-  <DialogContent>
-    {TxIdInput()}
-  </DialogContent>
-  <DialogContent>
-    {OutputIndexInput()}
-  </DialogContent>
-  <DialogActions>
-    {CancelButton()}
-    {CloseChannelButton()}
-  </DialogActions>
-  </form>
+      <DialogTitle id="form-dialog-title">Close Channel</DialogTitle>
+      <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
+        <DialogContent>
+          {TxIdInput()}
+        </DialogContent>
+        <DialogContent>
+          {OutputIndexInput()}
+        </DialogContent>
+        <DialogActions>
+          {CancelButton()}
+          {CloseChannelButton()}
+        </DialogActions>
+      </form>
     </Dialog>
-  )
+  );
 }

@@ -1,38 +1,20 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState } from 'react';
 import {
-  Paper,
-  IconButton,
-  Menu,
-  MenuItem,
-  Typography,
-  Grid,
-  Box,
-  Link,
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogContentText,
   TextField,
   DialogActions,
   Button,
-  FormControl,
-  InputLabel,
-  Select,
-} from "@material-ui/core";
-import { MoreVert as MoreIcon } from "@material-ui/icons";
-import {useHistory} from "react-router-dom";
-import classnames from "classnames";
+} from '@material-ui/core';
+import { useHistory } from 'react-router-dom';
 
 // styles
-import useStyles from "./styles";
-
-import Widget from "../../components/Widget";
-import SqueakThreadItem from "../../components/SqueakThreadItem";
+import useStyles from './styles';
 
 import {
   lndOpenChannelSyncRequest,
-} from "../../squeakclient/requests"
-
+} from '../../squeakclient/requests';
 
 export default function OpenChannelDialog({
   open,
@@ -40,15 +22,15 @@ export default function OpenChannelDialog({
   handleClose,
   ...props
 }) {
-  var classes = useStyles();
+  const classes = useStyles();
   const history = useHistory();
 
-  var [amount, setAmount] = useState("");
-  var [satperbyte, setSatperbyte] = useState("");
+  const [amount, setAmount] = useState('');
+  const [satperbyte, setSatperbyte] = useState('');
 
   const resetFields = () => {
-    setAmount("");
-    setSatperbyte("");
+    setAmount('');
+    setSatperbyte('');
   };
 
   const handleChangeAmount = (event) => {
@@ -65,7 +47,7 @@ export default function OpenChannelDialog({
   };
 
   const handleErr = (err) => {
-    alert('Error opening channel: ' + err);
+    alert(`Error opening channel: ${err}`);
   };
 
   const openChannel = (pubkey, amount) => {
@@ -74,9 +56,9 @@ export default function OpenChannelDialog({
 
   function handleSubmit(event) {
     event.preventDefault();
-    console.log( 'pubkey:', pubkey);
-    console.log( 'amount:', amount);
-    console.log( 'satperbyte:', satperbyte);
+    console.log('pubkey:', pubkey);
+    console.log('amount:', amount);
+    console.log('satperbyte:', satperbyte);
     if (!amount) {
       alert('Amount cannot be empty.');
       return;
@@ -95,10 +77,10 @@ export default function OpenChannelDialog({
         value={pubkey}
         fullWidth
         inputProps={{
-           readOnly: true,
+          readOnly: true,
         }}
       />
-    )
+    );
   }
 
   function LocalFundingAmountInput() {
@@ -113,7 +95,7 @@ export default function OpenChannelDialog({
         fullWidth
         inputProps={{ maxLength: 64 }}
       />
-    )
+    );
   }
 
   function SatPerByteInput() {
@@ -128,7 +110,7 @@ export default function OpenChannelDialog({
         fullWidth
         inputProps={{ maxLength: 64 }}
       />
-    )
+    );
   }
 
   function CancelButton() {
@@ -140,40 +122,40 @@ export default function OpenChannelDialog({
       >
         Cancel
       </Button>
-    )
+    );
   }
 
   function OpenChannelButton() {
     return (
       <Button
-       type="submit"
-       variant="contained"
-       color="primary"
-       className={classes.button}
-       >
-       Open Channel
-       </Button>
-    )
+        type="submit"
+        variant="contained"
+        color="primary"
+        className={classes.button}
+      >
+        Open Channel
+      </Button>
+    );
   }
 
   return (
     <Dialog open={open} onEnter={resetFields} onClose={handleClose} aria-labelledby="form-dialog-title">
-  <DialogTitle id="form-dialog-title">Open Channel</DialogTitle>
-  <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
-  <DialogContent>
-    {PubKeyInput()}
-  </DialogContent>
-  <DialogContent>
-    {LocalFundingAmountInput()}
-  </DialogContent>
-  <DialogContent>
-    {SatPerByteInput()}
-  </DialogContent>
-  <DialogActions>
-    {CancelButton()}
-    {OpenChannelButton()}
-  </DialogActions>
-  </form>
+      <DialogTitle id="form-dialog-title">Open Channel</DialogTitle>
+      <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
+        <DialogContent>
+          {PubKeyInput()}
+        </DialogContent>
+        <DialogContent>
+          {LocalFundingAmountInput()}
+        </DialogContent>
+        <DialogContent>
+          {SatPerByteInput()}
+        </DialogContent>
+        <DialogActions>
+          {CancelButton()}
+          {OpenChannelButton()}
+        </DialogActions>
+      </form>
     </Dialog>
-  )
+  );
 }

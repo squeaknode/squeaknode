@@ -1,16 +1,16 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   Paper,
   IconButton,
   Menu,
   MenuItem,
   Typography,
-} from "@material-ui/core";
-import { MoreVert as MoreIcon } from "@material-ui/icons";
-import classnames from "classnames";
+} from '@material-ui/core';
+import { MoreVert as MoreIcon } from '@material-ui/icons';
+import classnames from 'classnames';
 
 // styles
-import useStyles from "./styles";
+import useStyles from './styles';
 
 export default function Widget({
   children,
@@ -21,20 +21,18 @@ export default function Widget({
   header,
   ...props
 }) {
-  var classes = useStyles();
+  const classes = useStyles();
 
   // local
-  var [moreButtonRef, setMoreButtonRef] = useState(null);
-  var [isMoreMenuOpen, setMoreMenuOpen] = useState(false);
+  const [moreButtonRef, setMoreButtonRef] = useState(null);
+  const [isMoreMenuOpen, setMoreMenuOpen] = useState(false);
 
   return (
     <div className={classes.widgetWrapper}>
-      <Paper className={classes.paper} classes={{ root: classes.widgetRoot }}  elevation={3} square>
+      <Paper className={classes.paper} classes={{ root: classes.widgetRoot }} elevation={3} square>
         <div className={classes.widgetHeader}>
-          {header ? (
-            header
-          ) : (
-            <React.Fragment>
+          {header || (
+            <>
               <Typography variant="h5" color="textSecondary">
                 {title}
               </Typography>
@@ -50,7 +48,7 @@ export default function Widget({
                   <MoreIcon />
                 </IconButton>
               )}
-            </React.Fragment>
+            </>
           )}
         </div>
         <div

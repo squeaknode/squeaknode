@@ -1,24 +1,20 @@
-import React from "react";
-import {useHistory} from "react-router-dom";
+import React from 'react';
+import { useHistory } from 'react-router-dom';
 
 import Card from '@material-ui/core/Card';
 import Box from '@material-ui/core/Box';
-import Button from '@material-ui/core/Button';
-import CardHeader from "@material-ui/core/CardHeader";
+import CardHeader from '@material-ui/core/CardHeader';
 
 // icons
-import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
 
-import useStyles from "../../pages/wallet/styles";
-import SqueakUserAvatar from "../../components/SqueakUserAvatar";
-import SqueakProfileFollowingIndicator from "../../components/SqueakProfileFollowingIndicator";
-
+import useStyles from '../../pages/wallet/styles';
+import SqueakUserAvatar from '../SqueakUserAvatar';
+import SqueakProfileFollowingIndicator from '../SqueakProfileFollowingIndicator';
 
 import {
   goToProfilePage,
-} from "../../navigation/navigation"
-
+} from '../../navigation/navigation';
 
 export default function ProfileListItem({
   profile,
@@ -32,12 +28,12 @@ export default function ProfileListItem({
 
   const onProfileClick = (event) => {
     event.preventDefault();
-    console.log("Handling profile click...");
+    console.log('Handling profile click...');
     const profileId = profile.getProfileId();
-    //const host = getPeerHost();
-    //const port = getPeerPort();
+    // const host = getPeerHost();
+    // const port = getPeerPort();
     goToProfilePage(history, profileId);
-  }
+  };
 
   // const getPeerHost = () => {
   //   const address = peer.getAddress();
@@ -73,25 +69,26 @@ export default function ProfileListItem({
           {`Address: ${address}`}
         </Box>
         <SqueakProfileFollowingIndicator
-         squeakProfile={profile}
-         ></SqueakProfileFollowingIndicator>
+          squeakProfile={profile}
+        />
       </>
-    )
+    );
   }
 
   return (
-     <Card
-        className={classes.root}
-        onClick={onProfileClick}
-     >
-       <CardHeader
-          avatar={<SqueakUserAvatar
-                    squeakProfile={profile}
-                  />}
-          title={`Name: ${name}`}
-          subheader={ProfileCardContent()}
-          // action={<Button size="small">View Peer</Button>}
-       />
-     </Card>
-  )
+    <Card
+      className={classes.root}
+      onClick={onProfileClick}
+    >
+      <CardHeader
+        avatar={(
+          <SqueakUserAvatar
+            squeakProfile={profile}
+          />
+)}
+        title={`Name: ${name}`}
+        subheader={ProfileCardContent()}
+      />
+    </Card>
+  );
 }

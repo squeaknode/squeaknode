@@ -1,38 +1,25 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState } from 'react';
 import {
-  Paper,
-  IconButton,
-  Menu,
-  MenuItem,
   Typography,
   Grid,
-  Box,
-  Link,
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogContentText,
   TextField,
   DialogActions,
   Button,
-  FormControl,
-  InputLabel,
-  Select,
-} from "@material-ui/core";
+} from '@material-ui/core';
 
-import { MoreVert as MoreIcon } from "@material-ui/icons";
-import {useHistory} from "react-router-dom";
-import classnames from "classnames";
+import { useHistory } from 'react-router-dom';
 
 // styles
-import useStyles from "./styles";
+import useStyles from './styles';
 
-import Widget from "../../components/Widget";
+import Widget from '../Widget';
 
 import {
   getSqueakDetailsRequest,
-} from "../../squeakclient/requests"
-
+} from '../../squeakclient/requests';
 
 export default function SqueakDetailsDialog({
   open,
@@ -41,13 +28,13 @@ export default function SqueakDetailsDialog({
   squeak,
   ...props
 }) {
-  var classes = useStyles();
+  const classes = useStyles();
   const history = useHistory();
 
   const [squeakDetails, setSqueakDetails] = useState(null);
 
   const getSqueakDetails = (hash) => {
-      getSqueakDetailsRequest(hash, setSqueakDetails);
+    getSqueakDetailsRequest(hash, setSqueakDetails);
   };
 
   function load(event) {
@@ -76,7 +63,7 @@ export default function SqueakDetailsDialog({
       >
         Cancel
       </Button>
-    )
+    );
   }
 
   function SqueakDetailsContent() {
@@ -92,7 +79,7 @@ export default function SqueakDetailsDialog({
                     Hash
                   </Typography>
                   <Typography color="text">
-                      &nbsp;{squeak.getSqueakHash()}
+                    {squeak.getSqueakHash()}
                   </Typography>
                 </div>
 
@@ -102,7 +89,7 @@ export default function SqueakDetailsDialog({
                     Address
                   </Typography>
                   <Typography color="text">
-                      &nbsp;{squeak.getAuthorAddress()}
+                    {squeak.getAuthorAddress()}
                   </Typography>
                 </div>
 
@@ -125,22 +112,21 @@ export default function SqueakDetailsDialog({
           </Grid>
         </Widget>
       </>
-    )
+    );
   }
 
   return (
     <Dialog open={open} onRendered={load} onClose={cancel} onClick={ignore} aria-labelledby="form-dialog-title">
-  <DialogTitle id="form-dialog-title">View Squeak Details</DialogTitle>
-  <form className={classes.root} noValidate autoComplete="off">
-  <DialogContent>
-    {(squeak && squeakDetails) &&
-      SqueakDetailsContent()
-    }
-  </DialogContent>
-  <DialogActions>
-    {MakeCancelButton()}
-  </DialogActions>
-  </form>
+      <DialogTitle id="form-dialog-title">View Squeak Details</DialogTitle>
+      <form className={classes.root} noValidate autoComplete="off">
+        <DialogContent>
+          {(squeak && squeakDetails)
+      && SqueakDetailsContent()}
+        </DialogContent>
+        <DialogActions>
+          {MakeCancelButton()}
+        </DialogActions>
+      </form>
     </Dialog>
-  )
+  );
 }

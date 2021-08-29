@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -6,31 +6,30 @@ import {
   TextField,
   DialogActions,
   Button,
-} from "@material-ui/core";
-import {useHistory} from "react-router-dom";
+} from '@material-ui/core';
+import { useHistory } from 'react-router-dom';
 
 // styles
-import useStyles from "./styles";
+import useStyles from './styles';
 
 import {
   createContactProfileRequest,
-} from "../../squeakclient/requests"
+} from '../../squeakclient/requests';
 import {
   goToProfilePage,
-} from "../../navigation/navigation"
-
+} from '../../navigation/navigation';
 
 export default function CreateContactProfileDialog({
-                                                     open,
-                                                     handleClose,
-                                                     initialAddress='',
-                                                     ...props
-                                                   }) {
-  var classes = useStyles();
+  open,
+  handleClose,
+  initialAddress = '',
+  ...props
+}) {
+  const classes = useStyles();
   const history = useHistory();
 
-  var [profileName, setProfileName] = useState('');
-  var [address, setAddress] = useState(initialAddress);
+  const [profileName, setProfileName] = useState('');
+  const [address, setAddress] = useState(initialAddress);
 
   const resetFields = () => {
     setProfileName('');
@@ -50,7 +49,7 @@ export default function CreateContactProfileDialog({
   };
 
   const handleErr = (err) => {
-    alert('Error creating contact profile: ' + err);
+    alert(`Error creating contact profile: ${err}`);
   };
 
   const createContactProfile = (profileName, squeakAddress) => {
@@ -59,8 +58,8 @@ export default function CreateContactProfileDialog({
 
   function handleSubmit(event) {
     event.preventDefault();
-    console.log( 'profileName:', profileName);
-    console.log( 'address:', address);
+    console.log('profileName:', profileName);
+    console.log('address:', address);
     if (!profileName) {
       alert('Profile Name cannot be empty.');
       return;
@@ -85,20 +84,21 @@ export default function CreateContactProfileDialog({
         fullWidth
         inputProps={{ maxLength: 64 }}
       />
-    )
+    );
   }
 
   function CreateContactAddressInput() {
     return (
-      <TextField required
-                 id="standard-textarea"
-                 label="Address"
-                 required
-                 value={address}
-                 onChange={handleChangeAddress}
-                 inputProps={{ maxLength: 35 }}
+      <TextField
+        required
+        id="standard-textarea"
+        label="Address"
+        required
+        value={address}
+        onChange={handleChangeAddress}
+        inputProps={{ maxLength: 35 }}
       />
-    )
+    );
   }
 
   function CancelButton() {
@@ -110,7 +110,7 @@ export default function CreateContactProfileDialog({
       >
         Cancel
       </Button>
-    )
+    );
   }
 
   function CreateContactProfilButton() {
@@ -123,7 +123,7 @@ export default function CreateContactProfileDialog({
       >
         Create Contact Profile
       </Button>
-    )
+    );
   }
 
   return (
@@ -140,5 +140,5 @@ export default function CreateContactProfileDialog({
         </DialogActions>
       </form>
     </Dialog>
-  )
+  );
 }

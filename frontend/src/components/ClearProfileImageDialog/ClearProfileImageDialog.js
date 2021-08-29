@@ -1,41 +1,19 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {
-  Paper,
-  IconButton,
-  Menu,
-  MenuItem,
-  Typography,
-  Grid,
-  Box,
-  Link,
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogContentText,
-  TextField,
   DialogActions,
   Button,
-  FormControl,
-  InputLabel,
-  Select,
-} from "@material-ui/core";
-import { MoreVert as MoreIcon } from "@material-ui/icons";
-import {useHistory} from "react-router-dom";
-import classnames from "classnames";
+} from '@material-ui/core';
+import { useHistory } from 'react-router-dom';
 
 // styles
-import useStyles from "./styles";
-
-import Widget from "../../components/Widget";
-import SqueakThreadItem from "../../components/SqueakThreadItem";
+import useStyles from './styles';
 
 import {
   clearSqueakProfileImageRequest,
-} from "../../squeakclient/requests"
-import {
-  reloadRoute,
-} from "../../navigation/navigation"
-
+} from '../../squeakclient/requests';
 
 export default function ClearProfileImageDialog({
   open,
@@ -44,7 +22,7 @@ export default function ClearProfileImageDialog({
   reloadProfile,
   ...props
 }) {
-  var classes = useStyles();
+  const classes = useStyles();
   const history = useHistory();
 
   const handleResponse = (response) => {
@@ -52,7 +30,7 @@ export default function ClearProfileImageDialog({
   };
 
   const handleErr = (err) => {
-    alert('Error clearing profile image: ' + err);
+    alert(`Error clearing profile image: ${err}`);
   };
 
   const clearProfileImage = () => {
@@ -78,34 +56,34 @@ export default function ClearProfileImageDialog({
       >
         Cancel
       </Button>
-    )
+    );
   }
 
   function ClearProfileImageButton() {
     return (
       <Button
-       type="submit"
-       variant="contained"
-       color="primary"
-       className={classes.button}
-       >
-       Clear Profile Image
-       </Button>
-    )
+        type="submit"
+        variant="contained"
+        color="primary"
+        className={classes.button}
+      >
+        Clear Profile Image
+      </Button>
+    );
   }
 
   return (
     <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-  <DialogTitle id="form-dialog-title">Clear Profile Image</DialogTitle>
-  <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
-  <DialogContent>
-    Are you sure you want to clear the image for this profile?
-  </DialogContent>
-  <DialogActions>
-    {CancelButton()}
-    {ClearProfileImageButton()}
-  </DialogActions>
-  </form>
+      <DialogTitle id="form-dialog-title">Clear Profile Image</DialogTitle>
+      <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
+        <DialogContent>
+          Are you sure you want to clear the image for this profile?
+        </DialogContent>
+        <DialogActions>
+          {CancelButton()}
+          {ClearProfileImageButton()}
+        </DialogActions>
+      </form>
     </Dialog>
-  )
+  );
 }

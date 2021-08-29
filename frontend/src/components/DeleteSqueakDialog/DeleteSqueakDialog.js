@@ -1,41 +1,22 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {
-  Paper,
-  IconButton,
-  Menu,
-  MenuItem,
-  Typography,
-  Grid,
-  Box,
-  Link,
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogContentText,
-  TextField,
   DialogActions,
   Button,
-  FormControl,
-  InputLabel,
-  Select,
-} from "@material-ui/core";
-import { MoreVert as MoreIcon } from "@material-ui/icons";
-import {useHistory} from "react-router-dom";
-import classnames from "classnames";
+} from '@material-ui/core';
+import { useHistory } from 'react-router-dom';
 
 // styles
-import useStyles from "./styles";
-
-import Widget from "../../components/Widget";
-import SqueakThreadItem from "../../components/SqueakThreadItem";
+import useStyles from './styles';
 
 import {
   deleteSqueakRequest,
-} from "../../squeakclient/requests"
+} from '../../squeakclient/requests';
 import {
   reloadRoute,
-} from "../../navigation/navigation"
-
+} from '../../navigation/navigation';
 
 export default function DeleteSqueakDialog({
   open,
@@ -43,7 +24,7 @@ export default function DeleteSqueakDialog({
   squeakToDelete,
   ...props
 }) {
-  var classes = useStyles();
+  const classes = useStyles();
   const history = useHistory();
 
   const deleteSqueak = (squeakHash) => {
@@ -55,9 +36,9 @@ export default function DeleteSqueakDialog({
   function handleSubmit(event) {
     event.preventDefault();
     event.stopPropagation();
-    console.log( 'squeakToDelete:', squeakToDelete);
-    var squeakHash = squeakToDelete.getSqueakHash();
-    console.log( 'squeakHash:', squeakHash);
+    console.log('squeakToDelete:', squeakToDelete);
+    const squeakHash = squeakToDelete.getSqueakHash();
+    console.log('squeakHash:', squeakHash);
     deleteSqueak(squeakHash);
     handleClose();
   }
@@ -80,34 +61,34 @@ export default function DeleteSqueakDialog({
       >
         Cancel
       </Button>
-    )
+    );
   }
 
   function DeleteSqueakButton() {
     return (
       <Button
-       type="submit"
-       variant="contained"
-       color="primary"
-       className={classes.button}
-       >
+        type="submit"
+        variant="contained"
+        color="primary"
+        className={classes.button}
+      >
         Delete Squeak
-       </Button>
-    )
+      </Button>
+    );
   }
 
   return (
     <Dialog open={open} onClose={cancel} onBackdropClick={cancel} onClick={ignore} aria-labelledby="form-dialog-title">
-  <DialogTitle id="form-dialog-title">Delete Squeak</DialogTitle>
-  <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
-  <DialogContent>
-    Are you sure you want to delete this squeak?
-  </DialogContent>
-  <DialogActions>
-    {MakeCancelButton()}
-    {DeleteSqueakButton()}
-  </DialogActions>
-  </form>
+      <DialogTitle id="form-dialog-title">Delete Squeak</DialogTitle>
+      <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
+        <DialogContent>
+          Are you sure you want to delete this squeak?
+        </DialogContent>
+        <DialogActions>
+          {MakeCancelButton()}
+          {DeleteSqueakButton()}
+        </DialogActions>
+      </form>
     </Dialog>
-  )
+  );
 }

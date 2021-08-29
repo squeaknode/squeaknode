@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {useHistory} from "react-router-dom";
+import { useHistory } from 'react-router-dom';
 import {
   AppBar,
   Toolbar,
@@ -7,70 +7,65 @@ import {
   InputBase,
   Menu,
   MenuItem,
-  Fab,
-  Link
-} from "@material-ui/core";
+} from '@material-ui/core';
 import {
   Menu as MenuIcon,
-  MailOutline as MailIcon,
   NotificationsNone as NotificationsIcon,
   Person as AccountIcon,
   Search as SearchIcon,
-  Send as SendIcon,
   ArrowBack as ArrowBackIcon,
-} from "@material-ui/icons";
-import classNames from "classnames";
+} from '@material-ui/icons';
+import classNames from 'classnames';
 
 // styles
-import useStyles from "./styles";
+import useStyles from './styles';
 
 // components
-import { Badge, Typography, Button } from "../Wrappers/Wrappers";
-import Notification from "../Notification/Notification";
-import UserAvatar from "../UserAvatar/UserAvatar";
+import { Badge, Typography } from '../Wrappers/Wrappers';
+import Notification from '../Notification/Notification';
 
 // context
 import {
   useLayoutState,
   useLayoutDispatch,
   toggleSidebar,
-} from "../../context/LayoutContext";
-import { useUserDispatch, signOut } from "../../context/UserContext";
+} from '../../context/LayoutContext';
+import { useUserDispatch } from '../../context/UserContext';
 
 import {
   logoutRequest,
   getUserRequest,
-} from "../../squeakclient/requests"
+} from '../../squeakclient/requests';
 import {
   reloadRoute,
-} from "../../navigation/navigation"
+} from '../../navigation/navigation';
 
 const notifications = [];
 
 export default function Header(props) {
-  var classes = useStyles();
+  const classes = useStyles();
 
   const history = useHistory();
 
   // global
-  var layoutState = useLayoutState();
-  var layoutDispatch = useLayoutDispatch();
-  var userDispatch = useUserDispatch();
+  const layoutState = useLayoutState();
+  const layoutDispatch = useLayoutDispatch();
+  const userDispatch = useUserDispatch();
 
   // local
-  var [notificationsMenu, setNotificationsMenu] = useState(null);
-  var [isNotificationsUnread, setIsNotificationsUnread] = useState(true);
-  var [profileMenu, setProfileMenu] = useState(null);
-  var [isSearchOpen, setSearchOpen] = useState(false);
-  var [username, setUsername] = useState("bob smith");
+  const [notificationsMenu, setNotificationsMenu] = useState(null);
+  const [isNotificationsUnread, setIsNotificationsUnread] = useState(true);
+  const [profileMenu, setProfileMenu] = useState(null);
+  const [isSearchOpen, setSearchOpen] = useState(false);
+  const [username, setUsername] = useState('bob smith');
 
   const getUser = () => {
     getUserRequest(setUsername);
   };
 
-  useEffect(()=>{
-    getUser()
-  },[]);
+  useEffect(() => {
+    getUser();
+  }, []);
 
   return (
     <AppBar position="fixed" className={classes.appBar}>
@@ -132,7 +127,7 @@ export default function Header(props) {
           color="inherit"
           aria-haspopup="true"
           aria-controls="mail-menu"
-          onClick={e => {
+          onClick={(e) => {
             setNotificationsMenu(e.currentTarget);
             setIsNotificationsUnread(false);
           }}
@@ -146,14 +141,14 @@ export default function Header(props) {
           </Badge>
         </IconButton>
         <IconButton
-  aria-haspopup="true"
-  color="inherit"
-  className={classes.headerMenuButton}
-  aria-controls="profile-menu"
-  onClick={e => setProfileMenu(e.currentTarget)}
->
-  <AccountIcon classes={{ root: classes.headerIcon }} />
-</IconButton>
+          aria-haspopup="true"
+          color="inherit"
+          className={classes.headerMenuButton}
+          aria-controls="profile-menu"
+          onClick={(e) => setProfileMenu(e.currentTarget)}
+        >
+          <AccountIcon classes={{ root: classes.headerIcon }} />
+        </IconButton>
         <Menu
           id="notifications-menu"
           open={Boolean(notificationsMenu)}
@@ -162,7 +157,7 @@ export default function Header(props) {
           className={classes.headerMenu}
           disableAutoFocusItem
         >
-          {notifications.map(notification => (
+          {notifications.map((notification) => (
             <MenuItem
               key={notification.id}
               onClick={() => setNotificationsMenu(null)}
@@ -174,33 +169,33 @@ export default function Header(props) {
         </Menu>
 
         <Menu
-           id="profile-menu"
-           open={Boolean(profileMenu)}
-           anchorEl={profileMenu}
-           onClose={() => setProfileMenu(null)}
-           className={classes.headerMenu}
-           classes={{ paper: classes.profileMenu }}
-           disableAutoFocusItem
-         >
-           <div className={classes.profileMenuUser}>
-             <Typography variant="h4" weight="medium">
-               {username}
-             </Typography>
-           </div>
-           <div className={classes.profileMenuUser}>
-             <Typography
-               className={classes.profileMenuLink}
-               color="primary"
-               onClick={() => logoutRequest(
-                 () => {
-                   reloadRoute(history);
-                 }
-               )}
-             >
-               Sign Out
-             </Typography>
-           </div>
-         </Menu>
+          id="profile-menu"
+          open={Boolean(profileMenu)}
+          anchorEl={profileMenu}
+          onClose={() => setProfileMenu(null)}
+          className={classes.headerMenu}
+          classes={{ paper: classes.profileMenu }}
+          disableAutoFocusItem
+        >
+          <div className={classes.profileMenuUser}>
+            <Typography variant="h4" weight="medium">
+              {username}
+            </Typography>
+          </div>
+          <div className={classes.profileMenuUser}>
+            <Typography
+              className={classes.profileMenuLink}
+              color="primary"
+              onClick={() => logoutRequest(
+                () => {
+                  reloadRoute(history);
+                },
+              )}
+            >
+              Sign Out
+            </Typography>
+          </div>
+        </Menu>
 
       </Toolbar>
     </AppBar>

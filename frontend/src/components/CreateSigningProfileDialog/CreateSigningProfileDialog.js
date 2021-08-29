@@ -1,51 +1,33 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState } from 'react';
 import {
-  Paper,
-  IconButton,
-  Menu,
-  MenuItem,
-  Typography,
-  Grid,
-  Box,
-  Link,
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogContentText,
   TextField,
   DialogActions,
   Button,
-  FormControl,
-  InputLabel,
-  Select,
-} from "@material-ui/core";
-import { MoreVert as MoreIcon } from "@material-ui/icons";
-import {useHistory} from "react-router-dom";
-import classnames from "classnames";
+} from '@material-ui/core';
+import { useHistory } from 'react-router-dom';
 
 // styles
-import useStyles from "./styles";
-
-import Widget from "../../components/Widget";
-import SqueakThreadItem from "../../components/SqueakThreadItem";
+import useStyles from './styles';
 
 import {
   createSigningProfileRequest,
-} from "../../squeakclient/requests"
+} from '../../squeakclient/requests';
 import {
   goToProfilePage,
-} from "../../navigation/navigation"
-
+} from '../../navigation/navigation';
 
 export default function CreateSigningProfileDialog({
   open,
   handleClose,
   ...props
 }) {
-  var classes = useStyles();
+  const classes = useStyles();
   const history = useHistory();
 
-  var [profileName, setProfileName] = useState('');
+  const [profileName, setProfileName] = useState('');
 
   const resetFields = () => {
     setProfileName('');
@@ -60,7 +42,7 @@ export default function CreateSigningProfileDialog({
   };
 
   const handleErr = (err) => {
-    alert('Error creating signing profile: ' + err);
+    alert(`Error creating signing profile: ${err}`);
   };
 
   const createSigningProfile = (profileName) => {
@@ -69,7 +51,7 @@ export default function CreateSigningProfileDialog({
 
   function handleSubmit(event) {
     event.preventDefault();
-    console.log( 'profileName:', profileName);
+    console.log('profileName:', profileName);
     if (!profileName) {
       alert('Profile Name cannot be empty.');
       return;
@@ -90,7 +72,7 @@ export default function CreateSigningProfileDialog({
         fullWidth
         inputProps={{ maxLength: 64 }}
       />
-    )
+    );
   }
 
   function CancelButton() {
@@ -102,34 +84,34 @@ export default function CreateSigningProfileDialog({
       >
         Cancel
       </Button>
-    )
+    );
   }
 
   function CreateSigningProfilButton() {
     return (
       <Button
-       type="submit"
-       variant="contained"
-       color="primary"
-       className={classes.button}
-       >
-       Create Signing Profile
-       </Button>
-    )
+        type="submit"
+        variant="contained"
+        color="primary"
+        className={classes.button}
+      >
+        Create Signing Profile
+      </Button>
+    );
   }
 
   return (
     <Dialog open={open} onEnter={resetFields} onClose={handleClose} aria-labelledby="form-dialog-title">
-  <DialogTitle id="form-dialog-title">Create Signing Profile</DialogTitle>
-  <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
-  <DialogContent>
-    {CreateSigningProfileNameInput()}
-  </DialogContent>
-  <DialogActions>
-    {CancelButton()}
-    {CreateSigningProfilButton()}
-  </DialogActions>
-  </form>
+      <DialogTitle id="form-dialog-title">Create Signing Profile</DialogTitle>
+      <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
+        <DialogContent>
+          {CreateSigningProfileNameInput()}
+        </DialogContent>
+        <DialogActions>
+          {CancelButton()}
+          {CreateSigningProfilButton()}
+        </DialogActions>
+      </form>
     </Dialog>
-  )
+  );
 }
