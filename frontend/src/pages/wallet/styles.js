@@ -1,15 +1,15 @@
-import { makeStyles } from "@material-ui/styles";
+import { makeStyles } from '@material-ui/styles';
 
-export default makeStyles(theme => ({
+export default makeStyles((theme) => ({
   root: {
     minWidth: 275,
     border: '1px solid #e8e8e8',
     '&:hover': {
-      boxShadow: ({clickable}) => clickable ?
-         '0px 4px 3px -1px rgba(0,0,0,0.2), 0 3px 3px -2px #B2B2B21A, 0 1px 8px 0 #9A9A9A1A' :
-         null,
-      cursor: ({clickable}) => clickable ? 'pointer' : 'default',
-    }
+      boxShadow: ({ clickable }) => (clickable
+        ? '0px 4px 3px -1px rgba(0,0,0,0.2), 0 3px 3px -2px #B2B2B21A, 0 1px 8px 0 #9A9A9A1A'
+        : null),
+      cursor: ({ clickable }) => (clickable ? 'pointer' : 'default'),
+    },
   },
   cardContentContainer: {
     padding: '1rem',
@@ -52,15 +52,15 @@ export default makeStyles(theme => ({
   },
   cardContent: {
     whiteSpace: 'pre-line',
-    overflow: "hidden",
-    textOverflow: "ellipsis",
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
     paddingTop: '0.5rem',
     backgroundColor: '#f5f5f5',
   },
   cardContentColumns: {
     whiteSpace: 'pre-line',
-    overflow: "hidden",
-    textOverflow: "ellipsis",
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
     paddingTop: '0.5rem',
     backgroundColor: '#f5f5f5',
     display: 'block',
@@ -95,13 +95,13 @@ export default makeStyles(theme => ({
   },
 
   // Balance grid
-  balanceGridItemLabel: {  // BalanceGridItem
+  balanceGridItemLabel: { // BalanceGridItem
     fontWeight: 'bolder',
     color: '#6e6e6e',
   },
 
   // buttons
-  button: {   // ReceiveBitcoinButton
+  button: { // ReceiveBitcoinButton
     marginTop: '1rem',
   },
   expandBtn: {
@@ -125,16 +125,16 @@ export default makeStyles(theme => ({
   channelIcon: {
     marginRight: '0.5rem',
     fontSize: '1rem',
-    color: ({channelStatus}) => {
+    color: ({ channelStatus }) => {
       if (channelStatus === 'open') {
-        return '#00cd8a'
-      } else if (channelStatus === 'pending-open') {
+        return '#00cd8a';
+      } if (channelStatus === 'pending-open') {
         // return '#febc50'
-        return '#eae300'
-      } else if (channelStatus === 'pending-closed') {
-        return '#ef5a6b'
+        return '#eae300';
+      } if (channelStatus === 'pending-closed') {
+        return '#ef5a6b';
       }
-    }
+    },
   },
   channelStatusChip: {
     // minWidth: '83px',
@@ -144,28 +144,28 @@ export default makeStyles(theme => ({
     color: 'white',
     borderRadius: '4px',
     fontSize: 'smaller',
-    backgroundColor: ({channelStatus}) => {
+    backgroundColor: ({ channelStatus }) => {
       if (channelStatus === 'open') {
-        return '#00cd8a'
-      } else if (channelStatus === 'pending-open') {
+        return '#00cd8a';
+      } if (channelStatus === 'pending-open') {
         // return '#febc50'
-        return '#eae300'
-      } else if (channelStatus === 'pending-closed') {
-        return '#ef5a6b'
+        return '#eae300';
+      } if (channelStatus === 'pending-closed') {
+        return '#ef5a6b';
       }
-    }
+    },
   },
   channelStatusText: {
-    color: ({channelStatus}) => {
+    color: ({ channelStatus }) => {
       if (channelStatus === 'open') {
-        return '#00cd8a'
-      } else if (channelStatus === 'pending-open') {
+        return '#00cd8a';
+      } if (channelStatus === 'pending-open') {
         // return '#febc50'
-        return '#eae300'
-      } else if (channelStatus === 'pending-closed') {
-        return '#ef5a6b'
+        return '#eae300';
+      } if (channelStatus === 'pending-closed') {
+        return '#ef5a6b';
       }
-    }
+    },
   },
 
   // ChannelBalanceBar
@@ -214,16 +214,16 @@ export default makeStyles(theme => ({
     borderRadius: 5,
   },
   channelBalanceBuffer: {
-    color: "orange",
+    color: 'orange',
   },
   channelBalanceBar: {
   },
   channelBalanceBar1Buffer: {
     // backgroundImage: 'linear-gradient(90deg, #020024 0%, #2b2bbd 35%, #7894ff 100%)'
-    backgroundImage: 'linear-gradient(90deg, #2f2fad 0%, #4949bf 35%, #6f6fda 100%)'
+    backgroundImage: 'linear-gradient(90deg, #2f2fad 0%, #4949bf 35%, #6f6fda 100%)',
   },
   channelBalanceBar2Buffer: {
-    backgroundImage: 'linear-gradient(90deg, #ff3434 0%, #c74040 80%, #ff5a5a 100%)'
+    backgroundImage: 'linear-gradient(90deg, #ff3434 0%, #c74040 80%, #ff5a5a 100%)',
   },
   channelBalanceDashed: {
     backgroundSize: 'auto',
@@ -231,19 +231,18 @@ export default makeStyles(theme => ({
     backgroundImage: 'linear-gradient(90deg, #cccccc 0%, #cccccc 90%, #dddddd 100%)',
   },
 
-
   // TransactionItem.js
   transactionIcon: {
     marginRight: '0.35rem',
     fontSize: '1rem',
-    color: ({amount}) => amount > 0
-       ? 'green'
-       : 'red'
+    color: ({ amount }) => (amount > 0
+      ? 'green'
+      : 'red'),
   },
   transactionAmt: {
-    color: ({amount}) => amount > 0
+    color: ({ amount }) => (amount > 0
       ? 'green'
-       : 'red'
+      : 'red'),
   },
   inlineTimestamp: {
     marginLeft: '0.5rem',
@@ -252,9 +251,8 @@ export default makeStyles(theme => ({
 
   // Widget.js
   widgetRoot: {
-    backgroundColor: "#fafafa",
+    backgroundColor: '#fafafa',
   },
-
 
   // LightningPeerListItem.js
   bullet: {

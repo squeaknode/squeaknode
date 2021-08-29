@@ -6,28 +6,24 @@ import {
   FormControl,
   FormGroup,
   FormControlLabel,
-  FormHelperText,
   Switch,
   Button,
-} from "@material-ui/core";
+} from '@material-ui/core';
 
 // styles
-import useStyles from "./styles";
+import useStyles from './styles';
 
 // components
-import PageTitle from "../../components/PageTitle";
-import Widget from "../../components/Widget";
-import DeletePeerDialog from "../../components/DeletePeerDialog";
+import PageTitle from '../../components/PageTitle';
+import DeletePeerDialog from '../../components/DeletePeerDialog';
 
 import {
   getPeerRequest,
   setPeerAutoconnectRequest,
-} from "../../squeakclient/requests"
-
-
+} from '../../squeakclient/requests';
 
 export default function PeerPage() {
-  var classes = useStyles();
+  const classes = useStyles();
   const { id } = useParams();
   const [peer, setPeer] = useState(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -41,22 +37,22 @@ export default function PeerPage() {
     });
   };
 
-  useEffect(()=>{
-    getSqueakPeer(id)
-  },[id]);
+  useEffect(() => {
+    getSqueakPeer(id);
+  }, [id]);
 
   const handleClickOpenDeleteDialog = () => {
     setDeleteDialogOpen(true);
-    console.log("deleteDialogOpen: " + deleteDialogOpen);
+    console.log(`deleteDialogOpen: ${deleteDialogOpen}`);
   };
 
   const handleCloseDeleteDialog = () => {
-     setDeleteDialogOpen(false);
+    setDeleteDialogOpen(false);
   };
 
   const handleSettingsAutoconnectChange = (event) => {
-    console.log("Autoconnect changed for peer id: " + id);
-    console.log("Autoconnect changed to: " + event.target.checked);
+    console.log(`Autoconnect changed for peer id: ${id}`);
+    console.log(`Autoconnect changed to: ${event.target.checked}`);
     setAutoconnect(id, event.target.checked);
   };
 
@@ -65,22 +61,28 @@ export default function PeerPage() {
       <p>
         No peer loaded
       </p>
-    )
+    );
   }
 
   function PeerContent() {
     return (
       <>
         <p>
-          Peer name: {peer.getPeerName()}
+          Peer name:
+          {' '}
+          {peer.getPeerName()}
         </p>
         <p>
-          Address: {peer.getPeerAddress().getHost()}:{peer.getPeerAddress().getPort()}
+          Address:
+          {' '}
+          {peer.getPeerAddress().getHost()}
+          :
+          {peer.getPeerAddress().getPort()}
         </p>
         {PeerSettingsForm()}
         {DeletePeerButton()}
       </>
-    )
+    );
   }
 
   function PeerSettingsForm() {
@@ -94,24 +96,26 @@ export default function PeerPage() {
           />
         </FormGroup>
       </FormControl>
-    )
+    );
   }
 
   function DeletePeerButton() {
     return (
       <>
-      <Grid item xs={12}>
-        <div className={classes.root}>
-          <Button
-            variant="contained"
-            onClick={() => {
-              handleClickOpenDeleteDialog();
-            }}>Delete Peer
-          </Button>
-        </div>
-      </Grid>
+        <Grid item xs={12}>
+          <div className={classes.root}>
+            <Button
+              variant="contained"
+              onClick={() => {
+                handleClickOpenDeleteDialog();
+              }}
+            >
+              Delete Peer
+            </Button>
+          </div>
+        </Grid>
       </>
-    )
+    );
   }
 
   function DeletePeerDialogContent() {
@@ -121,19 +125,18 @@ export default function PeerPage() {
           open={deleteDialogOpen}
           handleClose={handleCloseDeleteDialog}
           peer={peer}
-          ></DeletePeerDialog>
+        />
       </>
-    )
+    );
   }
 
   return (
     <>
-      <PageTitle title={'Peer: ' + (peer ? peer.getPeerName() : null)} />
+      <PageTitle title={`Peer: ${peer ? peer.getPeerName() : null}`} />
       <div>
-      {peer
-        ? PeerContent()
-        : NoPeerContent()
-      }
+        {peer
+          ? PeerContent()
+          : NoPeerContent()}
       </div>
       {DeletePeerDialogContent()}
     </>

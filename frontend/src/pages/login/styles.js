@@ -1,29 +1,29 @@
-import { makeStyles } from "@material-ui/styles";
+import { makeStyles } from '@material-ui/styles';
 
-export default makeStyles(theme => ({
+export default makeStyles((theme) => ({
   container: {
-    height: "100vh",
-    width: "100vw",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    position: "absolute",
+    height: '100vh',
+    width: '100vw',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
     top: 0,
     left: 0,
   },
   logotypeContainer: {
     backgroundColor: theme.palette.primary.main,
-    width: "60%",
-    height: "100%",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    [theme.breakpoints.down("md")]: {
-      width: "50%",
+    width: '60%',
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    [theme.breakpoints.down('md')]: {
+      width: '50%',
     },
-    [theme.breakpoints.down("md")]: {
-      display: "none",
+    [theme.breakpoints.down('md')]: {
+      display: 'none',
     },
   },
   logotypeImage: {
@@ -31,22 +31,22 @@ export default makeStyles(theme => ({
     marginBottom: theme.spacing(4),
   },
   logotypeText: {
-    color: "white",
+    color: 'white',
     fontWeight: 500,
     fontSize: 84,
-    [theme.breakpoints.down("md")]: {
+    [theme.breakpoints.down('md')]: {
       fontSize: 48,
     },
   },
   formContainer: {
-    width: "40%",
-    height: "100%",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    [theme.breakpoints.down("md")]: {
-      width: "50%",
+    width: '40%',
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    [theme.breakpoints.down('md')]: {
+      width: '50%',
     },
   },
   form: {
@@ -58,20 +58,20 @@ export default makeStyles(theme => ({
   },
   greeting: {
     fontWeight: 500,
-    textAlign: "center",
+    textAlign: 'center',
     marginTop: theme.spacing(4),
   },
   subGreeting: {
     fontWeight: 500,
-    textAlign: "center",
+    textAlign: 'center',
     marginTop: theme.spacing(2),
   },
   googleButton: {
     marginTop: theme.spacing(6),
     boxShadow: theme.customShadows.widget,
-    backgroundColor: "white",
-    width: "100%",
-    textTransform: "none",
+    backgroundColor: 'white',
+    width: '100%',
+    textTransform: 'none',
   },
   googleButtonCreating: {
     marginTop: 0,
@@ -83,19 +83,19 @@ export default makeStyles(theme => ({
   creatingButtonContainer: {
     marginTop: theme.spacing(2.5),
     height: 46,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   createAccountButton: {
     height: 46,
-    textTransform: "none",
+    textTransform: 'none',
   },
   formDividerContainer: {
     marginTop: theme.spacing(4),
     marginBottom: theme.spacing(4),
-    display: "flex",
-    alignItems: "center",
+    display: 'flex',
+    alignItems: 'center',
   },
   formDividerWord: {
     paddingLeft: theme.spacing(2),
@@ -104,19 +104,19 @@ export default makeStyles(theme => ({
   formDivider: {
     flexGrow: 1,
     height: 1,
-    backgroundColor: theme.palette.text.hint + "40",
+    backgroundColor: `${theme.palette.text.hint}40`,
   },
   errorMessage: {
-    textAlign: "center",
+    textAlign: 'center',
   },
   textFieldUnderline: {
-    "&:before": {
+    '&:before': {
       borderBottomColor: theme.palette.primary.light,
     },
-    "&:after": {
+    '&:after': {
       borderBottomColor: theme.palette.primary.main,
     },
-    "&:hover:before": {
+    '&:hover:before': {
       borderBottomColor: `${theme.palette.primary.light} !important`,
     },
   },
@@ -124,14 +124,14 @@ export default makeStyles(theme => ({
     borderBottomColor: theme.palette.background.light,
   },
   formButtons: {
-    width: "100%",
+    width: '100%',
     marginTop: theme.spacing(4),
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   forgetButton: {
-    textTransform: "none",
+    textTransform: 'none',
     fontWeight: 400,
   },
   loginLoader: {
@@ -139,9 +139,9 @@ export default makeStyles(theme => ({
   },
   copyright: {
     marginTop: theme.spacing(4),
-    whiteSpace: "nowrap",
-    [theme.breakpoints.up("md")]: {
-      position: "absolute",
+    whiteSpace: 'nowrap',
+    [theme.breakpoints.up('md')]: {
+      position: 'absolute',
       bottom: theme.spacing(2),
     },
   },

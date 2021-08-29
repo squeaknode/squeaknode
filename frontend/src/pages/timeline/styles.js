@@ -1,8 +1,8 @@
-import { makeStyles } from "@material-ui/styles";
+import { makeStyles } from '@material-ui/styles';
 
-export default makeStyles(theme => ({
+export default makeStyles((theme) => ({
   dashedBorder: {
-    border: "1px dashed",
+    border: '1px dashed',
     borderColor: theme.palette.primary.main,
     padding: theme.spacing(2),
     paddingTop: theme.spacing(4),

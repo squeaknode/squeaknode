@@ -1,51 +1,39 @@
-import React, {useState, useEffect} from 'react';
-import {useHistory} from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import {
-    Grid,
-    Button,
-    Paper,
-    Tabs,
-    Tab,
-    AppBar,
-    Box,
-    Typography,
-  } from "@material-ui/core";
-import MUIDataTable from "mui-datatables";
+  Grid,
+  Button,
+  Tabs,
+  Tab,
+  AppBar,
+  Box,
+  Typography,
+} from '@material-ui/core';
 
 // styles
-import {makeStyles} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 
 // components
-import PageTitle from "../../components/PageTitle";
-import Widget from "../../components/Widget";
-import Table from "../dashboard/components/Table/Table";
-import CreatePeerDialog from "../../components/CreatePeerDialog";
-import ConnectPeerDialog from "../../components/ConnectPeerDialog";
-import PeerListItem from "../../components/PeerListItem";
-import SavedPeerListItem from "../../components/SavedPeerListItem";
-
+import Widget from '../../components/Widget';
+import CreatePeerDialog from '../../components/CreatePeerDialog';
+import ConnectPeerDialog from '../../components/ConnectPeerDialog';
+import PeerListItem from '../../components/PeerListItem';
+import SavedPeerListItem from '../../components/SavedPeerListItem';
 
 // data
-import mock from "../dashboard/mock";
 
 import {
   getPeersRequest,
   getConnectedPeersRequest,
-  connectSqueakPeerRequest,
   subscribeConnectedPeersRequest,
-} from "../../squeakclient/requests"
-import {
-  goToPeerPage,
-  goToPeerAddressPage,
-} from "../../navigation/navigation"
-
+} from '../../squeakclient/requests';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     '& > *': {
-      margin: theme.spacing(1)
-    }
-  }
+      margin: theme.spacing(1),
+    },
+  },
 }));
 
 export default function Peers() {
@@ -97,17 +85,19 @@ export default function Peers() {
   };
 
   useEffect(() => {
-    getConnectedPeers()
+    getConnectedPeers();
   }, []);
   useEffect(() => {
-    subscribeConnectedPeers()
+    subscribeConnectedPeers();
   }, []);
   useEffect(() => {
-    getSqueakPeers()
+    getSqueakPeers();
   }, []);
 
   function TabPanel(props) {
-    const { children, value, index, ...other } = props;
+    const {
+      children, value, index, ...other
+    } = props;
     return (
       <div
         role="tabpanel"
@@ -126,137 +116,141 @@ export default function Peers() {
   function CreatePeerButton() {
     return (
       <>
-      <Grid item xs={12}>
-        <div className={classes.root}>
-          <Button
-            variant="contained"
-            onClick={() => {
-              handleClickOpenCreatePeerDialog();
-            }}>Create Peer
-          </Button>
-        </div>
-      </Grid>
+        <Grid item xs={12}>
+          <div className={classes.root}>
+            <Button
+              variant="contained"
+              onClick={() => {
+                handleClickOpenCreatePeerDialog();
+              }}
+            >
+              Create Peer
+            </Button>
+          </div>
+        </Grid>
       </>
-    )
+    );
   }
 
   function ConnectPeerButton() {
     return (
       <>
-      <Grid item xs={12}>
-        <div className={classes.root}>
-          <Button
-            variant="contained"
-            onClick={() => {
-               handleClickOpenConnectPeerDialog();
-            }}>Connect Peer
-          </Button>
-        </div>
-      </Grid>
+        <Grid item xs={12}>
+          <div className={classes.root}>
+            <Button
+              variant="contained"
+              onClick={() => {
+                handleClickOpenConnectPeerDialog();
+              }}
+            >
+              Connect Peer
+            </Button>
+          </div>
+        </Grid>
       </>
-    )
+    );
   }
 
   function PeersCountSummary() {
     return (
       <Grid item xs={12}>
-      <Box
-         p={1}
-      >
-      <Typography variant="h5" component="h5">
-        {'Number of connected peers: ' + connectedPeers.length}
-      </Typography>
-      </Box>
+        <Box
+          p={1}
+        >
+          <Typography variant="h5" component="h5">
+            {`Number of connected peers: ${connectedPeers.length}`}
+          </Typography>
+        </Box>
       </Grid>
-    )
+    );
   }
 
   function PeersGridItem() {
     return (
       <Grid item xs={12}>
-        {connectedPeers.map(peer =>
-           <Box
-              p={1}
+        {connectedPeers.map((peer) => (
+          <Box
+            p={1}
+            key={peer.getPeerAddress()}
+          >
+            <PeerListItem
               key={peer.getPeerAddress()}
-           >
-             <PeerListItem
-                key={peer.getPeerAddress()}
-                handlePeerClick={() => console.log("clicked peer")}
-                peer={peer}>
-             </PeerListItem>
-           </Box>
-        )}
+              handlePeerClick={() => console.log('clicked peer')}
+              peer={peer}
+            />
+          </Box>
+        ))}
       </Grid>
-    )
+    );
   }
 
   function SavedPeersGridItem() {
     return (
       <Grid item xs={12}>
-        {peers.map(peer =>
-           <Box
-              p={1}
+        {peers.map((peer) => (
+          <Box
+            p={1}
+            key={peer.getPeerName()}
+          >
+            <SavedPeerListItem
               key={peer.getPeerName()}
-           >
-             <SavedPeerListItem
-                key={peer.getPeerName()}
-                handlePeerClick={() => console.log("clicked peer")}
-                peer={peer}>
-             </SavedPeerListItem>
-           </Box>
-        )}
+              handlePeerClick={() => console.log('clicked peer')}
+              peer={peer}
+            />
+          </Box>
+        ))}
       </Grid>
-    )
+    );
   }
 
   function PeersTabs() {
     return (
       <>
-      <AppBar position="static" color="default">
-        <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
-          <Tab label="Connected Peers" {...a11yProps(0)} />
-          <Tab label="Saved Peers" {...a11yProps(1)} />
-        </Tabs>
-      </AppBar>
-      <TabPanel value={value} index={0}>
-        {ConnectedPeersContent()}
-      </TabPanel>
-      <TabPanel value={value} index={1}>
-        {SavedPeersContent()}
-      </TabPanel>
+        <AppBar position="static" color="default">
+          <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
+            <Tab label="Connected Peers" {...a11yProps(0)} />
+            <Tab label="Saved Peers" {...a11yProps(1)} />
+          </Tabs>
+        </AppBar>
+        <TabPanel value={value} index={0}>
+          {ConnectedPeersContent()}
+        </TabPanel>
+        <TabPanel value={value} index={1}>
+          {SavedPeersContent()}
+        </TabPanel>
       </>
-    )
+    );
   }
 
   function ConnectedPeersContent() {
     return (
       <>
-      <Grid container spacing={4}>
-        <Grid item xs={12}>
-          <Widget disableWidgetMenu>
-            {ConnectPeerButton()}
-            {PeersCountSummary()}
-            {PeersGridItem()}
-          </Widget>
+        <Grid container spacing={4}>
+          <Grid item xs={12}>
+            <Widget disableWidgetMenu>
+              {ConnectPeerButton()}
+              {PeersCountSummary()}
+              {PeersGridItem()}
+            </Widget>
+          </Grid>
         </Grid>
-      </Grid>
       </>
-    )
+    );
   }
 
   function SavedPeersContent() {
     return (
       <>
-      <Grid container spacing={4}>
-        <Grid item xs={12}>
-          <Widget disableWidgetMenu>
-            {CreatePeerButton()}
-            {SavedPeersGridItem()}
-          </Widget>
+        <Grid container spacing={4}>
+          <Grid item xs={12}>
+            <Widget disableWidgetMenu>
+              {CreatePeerButton()}
+              {SavedPeersGridItem()}
+            </Widget>
+          </Grid>
         </Grid>
-      </Grid>
       </>
-    )
+    );
   }
 
   function CreatePeerDialogContent() {
@@ -265,9 +259,9 @@ export default function Peers() {
         <CreatePeerDialog
           open={createPeerDialogOpen}
           handleClose={handleCloseCreatePeerDialog}
-          ></CreatePeerDialog>
+        />
       </>
-    )
+    );
   }
 
   function ConnectPeerDialogContent() {
@@ -276,27 +270,27 @@ export default function Peers() {
         <ConnectPeerDialog
           open={connectPeerDialogOpen}
           handleClose={handleCloseConnectPeerDialog}
-          ></ConnectPeerDialog>
+        />
       </>
-    )
+    );
   }
 
   function GridContent() {
     return (
       <Grid container spacing={0}>
-      <Grid item xs={12} sm={9}>
-        {PeersTabs()}
+        <Grid item xs={12} sm={9}>
+          {PeersTabs()}
+        </Grid>
+        <Grid item xs={12} sm={3} />
       </Grid>
-      <Grid item xs={12} sm={3}>
-      </Grid>
-      </Grid>
-    )
+    );
   }
 
   return (
     <>
-    {GridContent()}
-    {CreatePeerDialogContent()}
-    {ConnectPeerDialogContent()}
-   < />);
+      {GridContent()}
+      {CreatePeerDialogContent()}
+      {ConnectPeerDialogContent()}
+    < />
+  );
 }

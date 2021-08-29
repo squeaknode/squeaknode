@@ -1,44 +1,43 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   Typography,
   Grid,
   Tabs,
   Tab,
   Paper,
-} from "@material-ui/core";
-import * as Icons from "@material-ui/icons";
+} from '@material-ui/core';
+import * as Icons from '@material-ui/icons';
 
 // styles
-import useStyles from "./styles";
+import useStyles from './styles';
 
 // components
-import PageTitle from "../../components/PageTitle/PageTitle";
-
+import PageTitle from '../../components/PageTitle/PageTitle';
 
 // icons sets
-import "font-awesome/css/font-awesome.min.css";
+import 'font-awesome/css/font-awesome.min.css';
 
-export default function IconsPage () {
-  var classes = useStyles();
+export default function IconsPage() {
+  const classes = useStyles();
 
   // local
-  var [activeTabId, setActiveTabId] = useState(0);
+  const [activeTabId, setActiveTabId] = useState(0);
 
   return (
-  <>
-    <PageTitle title="Icons" button="Action" />
-    <Paper className={classes.iconsContainer}>
-      <Tabs
-        indicatorColor="primary"
-        textColor="primary"
-        value={activeTabId}
-        onChange={(e, id) => setActiveTabId(id)}
-        className={classes.iconsBar}
-      >
-        <Tab label="Material Icons" classes={{ root: classes.tab }} />
-        <Tab label="Font Awesome" classes={{ root: classes.tab }} />
-      </Tabs>
-      {activeTabId === 0 && (
+    <>
+      <PageTitle title="Icons" button="Action" />
+      <Paper className={classes.iconsContainer}>
+        <Tabs
+          indicatorColor="primary"
+          textColor="primary"
+          value={activeTabId}
+          onChange={(e, id) => setActiveTabId(id)}
+          className={classes.iconsBar}
+        >
+          <Tab label="Material Icons" classes={{ root: classes.tab }} />
+          <Tab label="Font Awesome" classes={{ root: classes.tab }} />
+        </Tabs>
+        {activeTabId === 0 && (
         <div>
           <Grid container spacing={2} className="icon-list">
             <Grid
@@ -12415,9 +12414,9 @@ export default function IconsPage () {
             </Grid>
           </Grid>
         </div>
-      )}
+        )}
 
-      {activeTabId === 1 && (
+        {activeTabId === 1 && (
         <div>
           <Grid container spacing={2} className="icon-list">
             <Grid
@@ -13558,7 +13557,8 @@ export default function IconsPage () {
             </Grid>
           </Grid>
         </div>
-      )}
-    </Paper>
-  </>
-);}
+        )}
+      </Paper>
+    </>
+  );
+}

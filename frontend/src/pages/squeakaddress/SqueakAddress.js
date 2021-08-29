@@ -1,62 +1,49 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import {useHistory} from "react-router-dom";
+import { useParams, useHistory } from 'react-router-dom';
 import {
-   Grid,
-   Button,
-   Box,
-} from "@material-ui/core";
+  Grid,
+  Button,
+} from '@material-ui/core';
 
 // styles
-import useStyles from "./styles";
 
 // components
-import PageTitle from "../../components/PageTitle";
-import Widget from "../../components/Widget";
-import SqueakThreadItem from "../../components/SqueakThreadItem";
-import CreateContactProfileDialog from "../../components/CreateContactProfileDialog";
-import SqueakUserAvatar from "../../components/SqueakUserAvatar";
-import SqueakList from "../../components/SqueakList";
 
-import Timeline from '@material-ui/lab/Timeline';
-import TimelineItem from '@material-ui/lab/TimelineItem';
-import TimelineSeparator from '@material-ui/lab/TimelineSeparator';
-import TimelineConnector from '@material-ui/lab/TimelineConnector';
-import TimelineContent from '@material-ui/lab/TimelineContent';
-import TimelineOppositeContent from '@material-ui/lab/TimelineOppositeContent';
 import TimelineDot from '@material-ui/lab/TimelineDot';
 import Paper from '@material-ui/core/Paper';
 
 import FaceIcon from '@material-ui/icons/Face';
+import CreateContactProfileDialog from '../../components/CreateContactProfileDialog';
+import SqueakList from '../../components/SqueakList';
+import useStyles from './styles';
 
 import {
   getSqueakProfileByAddressRequest,
   getAddressSqueakDisplaysRequest,
   getNetworkRequest,
-} from "../../squeakclient/requests"
+} from '../../squeakclient/requests';
 import {
   goToSqueakAddressPage,
   goToProfilePage,
-} from "../../navigation/navigation"
-
+} from '../../navigation/navigation';
 
 export default function SqueakAddressPage() {
-  var classes = useStyles();
+  const classes = useStyles();
   const history = useHistory();
   const { address } = useParams();
   const [squeakProfile, setSqueakProfile] = useState(null);
   const [squeaks, setSqueaks] = useState([]);
   const [createContactProfileDialogOpen, setCreateContactProfileDialogOpen] = useState(false);
-  const [network, setNetwork] = useState("");
+  const [network, setNetwork] = useState('');
 
   const getSqueakProfile = (address) => {
-        getSqueakProfileByAddressRequest(address, setSqueakProfile);
+    getSqueakProfileByAddressRequest(address, setSqueakProfile);
   };
   const getSqueaks = (address) => {
-      getAddressSqueakDisplaysRequest(address, setSqueaks);
+    getAddressSqueakDisplaysRequest(address, setSqueaks);
   };
   const getNetwork = () => {
-      getNetworkRequest(setNetwork);
+    getNetworkRequest(setNetwork);
   };
 
   const handleClickOpenCreateContactProfileDialog = () => {
@@ -67,36 +54,46 @@ export default function SqueakAddressPage() {
     setCreateContactProfileDialogOpen(false);
   };
 
-  useEffect(()=>{
-    getSqueakProfile(address)
-  },[address]);
-  useEffect(()=>{
-    getSqueaks(address)
-  },[address]);
-  useEffect(()=>{
-    getNetwork()
-  },[]);
+  useEffect(() => {
+    getSqueakProfile(address);
+  }, [address]);
+  useEffect(() => {
+    getSqueaks(address);
+  }, [address]);
+  useEffect(() => {
+    getNetwork();
+  }, []);
 
   function NoProfileContent() {
     return (
       <div>
         No profile for address.
-        <Button variant="contained" onClick={() => {
+        <Button
+          variant="contained"
+          onClick={() => {
             handleClickOpenCreateContactProfileDialog();
-          }}>Create Profile</Button>
+          }}
+        >
+          Create Profile
+        </Button>
       </div>
-    )
+    );
   }
 
   function ProfileContent() {
     return (
       <div className={classes.root}>
         Profile:
-        <Button variant="contained" onClick={() => {
+        <Button
+          variant="contained"
+          onClick={() => {
             goToProfilePage(history, squeakProfile.getProfileId());
-          }}>{squeakProfile.getProfileName()}</Button>
+          }}
+        >
+          {squeakProfile.getProfileName()}
+        </Button>
       </div>
-    )
+    );
   }
 
   function NoSqueaksContent() {
@@ -104,22 +101,22 @@ export default function SqueakAddressPage() {
       <div>
         Unable to load squeaks.
       </div>
-    )
+    );
   }
 
   function TimelineUserAvatar(squeak) {
     const handleAvatarClick = () => {
-      console.log("Avatar clicked...");
+      console.log('Avatar clicked...');
       goToSqueakAddressPage(history, squeak.getAuthorAddress());
     };
     return (
       <TimelineDot
-      onClick={handleAvatarClick}
-      style={{cursor: 'pointer'}}
+        onClick={handleAvatarClick}
+        style={{ cursor: 'pointer' }}
       >
         <FaceIcon />
       </TimelineDot>
-    )
+    );
   }
 
   function SqueaksContent() {
@@ -128,8 +125,8 @@ export default function SqueakAddressPage() {
         squeaks={squeaks}
         network={network}
         setSqueaksFn={setSqueaks}
-      ></SqueakList>
-    )
+      />
+    );
   }
 
   function CreateContactProfileDialogContent() {
@@ -139,36 +136,33 @@ export default function SqueakAddressPage() {
           open={createContactProfileDialogOpen}
           handleClose={handleCloseCreateContactProfileDialog}
           initialAddress={address}
-          ></CreateContactProfileDialog>
+        />
       </>
-    )
+    );
   }
 
   function GridContent() {
     return (
       <Grid container spacing={0}>
-      <Grid item xs={12} sm={9}>
-        <Paper className={classes.paper}>
-        {(squeaks)
-          ? SqueaksContent()
-          : NoSqueaksContent()
-        }
-        </Paper>
+        <Grid item xs={12} sm={9}>
+          <Paper className={classes.paper}>
+            {(squeaks)
+              ? SqueaksContent()
+              : NoSqueaksContent()}
+          </Paper>
+        </Grid>
+        <Grid item xs={12} sm={3}>
+          <Paper className={classes.paper} />
+        </Grid>
       </Grid>
-      <Grid item xs={12} sm={3}>
-        <Paper className={classes.paper}>
-        </Paper>
-      </Grid>
-      </Grid>
-    )
+    );
   }
 
   return (
     <>
       {squeakProfile
         ? ProfileContent()
-        : NoProfileContent()
-      }
+        : NoProfileContent()}
       {GridContent()}
       {CreateContactProfileDialogContent()}
     </>

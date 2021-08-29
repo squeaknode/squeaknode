@@ -8,22 +8,22 @@ import {
   Tabs,
   Tab,
   Box,
-} from "@material-ui/core";
+} from '@material-ui/core';
 // import { useTheme } from "@material-ui/styles";
 
 // styles
-import useStyles from "./styles";
+import FormLabel from '@material-ui/core/FormLabel';
+import useStyles from './styles';
 
 // components
-import PageTitle from "../../components/PageTitle";
-import Widget from "../../components/Widget";
-import { Typography } from "../../components/Wrappers";
-import ReceiveBitcoinDialog from "../../components/ReceiveBitcoinDialog";
-import SendBitcoinDialog from "../../components/SendBitcoinDialog";
-import TransactionItem from "../../components/TransactionItem";
-import LightningPeerListItem from "../../components/LightningPeerListItem";
-import ChannelItem from "../../components/ChannelItem";
-import PendingOpenChannelItem from "../../components/PendingOpenChannelItem";
+import Widget from '../../components/Widget';
+import { Typography } from '../../components/Wrappers';
+import ReceiveBitcoinDialog from '../../components/ReceiveBitcoinDialog';
+import SendBitcoinDialog from '../../components/SendBitcoinDialog';
+import TransactionItem from '../../components/TransactionItem';
+import LightningPeerListItem from '../../components/LightningPeerListItem';
+import ChannelItem from '../../components/ChannelItem';
+import PendingOpenChannelItem from '../../components/PendingOpenChannelItem';
 
 import {
   lndGetInfoRequest,
@@ -32,8 +32,7 @@ import {
   lndListPeersRequest,
   lndListChannelsRequest,
   lndPendingChannelsRequest,
-} from "../../squeakclient/requests"
-import FormLabel from "@material-ui/core/FormLabel";
+} from '../../squeakclient/requests';
 
 export default function WalletPage() {
   const classes = useStyles();
@@ -64,7 +63,7 @@ export default function WalletPage() {
   };
 
   const handleCloseReceiveBitcoinDialog = () => {
-     setReceiveBitcoinDialogOpen(false);
+    setReceiveBitcoinDialogOpen(false);
   };
 
   const handleClickOpenSendBitcoinDialog = () => {
@@ -72,7 +71,7 @@ export default function WalletPage() {
   };
 
   const handleCloseSendBitcoinDialog = () => {
-     setSendBitcoinDialogOpen(false);
+    setSendBitcoinDialogOpen(false);
   };
 
   const getLndInfo = () => {
@@ -82,7 +81,7 @@ export default function WalletPage() {
     lndWalletBalanceRequest(setWalletBalance);
   };
   const getTransactions = () => {
-    lndGetTransactionsRequest(setTransactions)
+    lndGetTransactionsRequest(setTransactions);
   };
   const listPeers = () => {
     lndListPeersRequest(setPeers);
@@ -94,57 +93,58 @@ export default function WalletPage() {
     lndPendingChannelsRequest(setPendingChannels);
   };
 
-  const lndAvailable = () => {
-    return lndInfo &&
-      walletBalance &&
-      transactions &&
-      peers &&
-      channels &&
-      pendingChannels;
-  };
+  const lndAvailable = () => lndInfo
+      && walletBalance
+      && transactions
+      && peers
+      && channels
+      && pendingChannels;
 
-
-  useEffect(()=>{
-    getLndInfo()
-  },[]);
-  useEffect(()=>{
-    getWalletBalance()
-  },[]);
-  useEffect(()=>{
-    getTransactions()
-  },[]);
-  useEffect(()=>{
-    listPeers()
-  },[]);
-  useEffect(()=>{
-    listChannels()
-  },[]);
-  useEffect(()=>{
-    getPendingChannels()
-  },[]);
+  useEffect(() => {
+    getLndInfo();
+  }, []);
+  useEffect(() => {
+    getWalletBalance();
+  }, []);
+  useEffect(() => {
+    getTransactions();
+  }, []);
+  useEffect(() => {
+    listPeers();
+  }, []);
+  useEffect(() => {
+    listChannels();
+  }, []);
+  useEffect(() => {
+    getPendingChannels();
+  }, []);
 
   function ReceiveBitcoinButton() {
     return (
-       <Button
-          variant="contained"
-          className={classes.button}
-          onClick={() => {
-            handleClickOpenReceiveBitcoinDialog();
-          }}>Receive Bitcoin
-       </Button>
-    )
+      <Button
+        variant="contained"
+        className={classes.button}
+        onClick={() => {
+          handleClickOpenReceiveBitcoinDialog();
+        }}
+      >
+        Receive Bitcoin
+      </Button>
+    );
   }
 
   function SendBitcoinButton() {
     return (
-       <Button
-          variant="contained"
-          className={classes.button}
-          onClick={() => {
-            handleClickOpenSendBitcoinDialog();
-          }}>Send Bitcoin
-       </Button>
-    )
+      <Button
+        variant="contained"
+        className={classes.button}
+        onClick={() => {
+          handleClickOpenSendBitcoinDialog();
+        }}
+      >
+        Send Bitcoin
+      </Button>
+    );
   }
 
   function NoBalanceContent() {
@@ -152,24 +152,54 @@ export default function WalletPage() {
       <div>
         Unable to connect to lightning node. Make sure that lnd is running and reload the page.
       </div>
-    )
+    );
   }
 
   function InfoContentOld() {
     return (
       <div>
-        <p>identity_pubkey: {lndInfo.getIdentityPubkey()}</p>
-        <p>alias: {lndInfo.getAlias()}</p>
-        <p>num_pending_channels: {lndInfo.getNumPendingChannels()}</p>
-        <p>num_active_channels: {lndInfo.getNumActiveChannels()}</p>
-        <p>num_inactive_channels: {lndInfo.getNumInactiveChannels()}</p>
-        <p>num_peers: {lndInfo.getNumPeers()}</p>
-        <p>block_height: {lndInfo.getBlockHeight()}</p>
-        <p>block_hash: {lndInfo.getBlockHash()}</p>
-        <p>synced_to_chain: {lndInfo.getSyncedToChain().toString()}</p>
-        <p>synced_to_graph: {lndInfo.getSyncedToGraph().toString()}</p>
+        <p>
+          identity_pubkey:
+          {lndInfo.getIdentityPubkey()}
+        </p>
+        <p>
+          alias:
+          {lndInfo.getAlias()}
+        </p>
+        <p>
+          num_pending_channels:
+          {lndInfo.getNumPendingChannels()}
+        </p>
+        <p>
+          num_active_channels:
+          {lndInfo.getNumActiveChannels()}
+        </p>
+        <p>
+          num_inactive_channels:
+          {lndInfo.getNumInactiveChannels()}
+        </p>
+        <p>
+          num_peers:
+          {lndInfo.getNumPeers()}
+        </p>
+        <p>
+          block_height:
+          {lndInfo.getBlockHeight()}
+        </p>
+        <p>
+          block_hash:
+          {lndInfo.getBlockHash()}
+        </p>
+        <p>
+          synced_to_chain:
+          {lndInfo.getSyncedToChain().toString()}
+        </p>
+        <p>
+          synced_to_graph:
+          {lndInfo.getSyncedToGraph().toString()}
+        </p>
       </div>
-    )
+    );
   }
 
   function BalanceContent() {
@@ -179,7 +209,7 @@ export default function WalletPage() {
           {BalanceGridItem()}
         </Grid>
       </>
-    )
+    );
   }
 
   function NodeInfoContent() {
@@ -189,7 +219,7 @@ export default function WalletPage() {
           {StatusGridItem()}
         </Grid>
       </>
-    )
+    );
   }
 
   function TransactionsContent() {
@@ -199,7 +229,7 @@ export default function WalletPage() {
           {TransactionsGridItem()}
         </Grid>
       </>
-    )
+    );
   }
 
   function PeersContent() {
@@ -209,7 +239,7 @@ export default function WalletPage() {
           {PeersGridItem()}
         </Grid>
       </>
-    )
+    );
   }
 
   function BalanceGridItem() {
@@ -217,14 +247,16 @@ export default function WalletPage() {
       <Grid item xs={12}>
         <Widget disableWidgetMenu>
           <Grid
-             container
-             direction="column"
-             justify="flex-start"
-             spacing={2}
+            container
+            direction="column"
+            justify="flex-start"
+            spacing={2}
           >
             <Grid item>
               <Typography variant="h1">
-                {walletBalance.getTotalBalance()} sats
+                {walletBalance.getTotalBalance()}
+                {' '}
+                sats
               </Typography>
             </Grid>
             <Grid item>
@@ -248,141 +280,143 @@ export default function WalletPage() {
           {SendBitcoinButton()}
         </Widget>
       </Grid>
-    )
+    );
   }
 
   function StatusGridItem() {
     return (
-       <Grid item xs={12}>
-         <Widget disableWidgetMenu>
-           <Grid
-              container
-              direction="column"
-              justify="flex-start"
-              spacing={2}
-           >
-             <Grid item>
-               <FormLabel>
-                 Node Pubkey
-               </FormLabel>
-               <Typography size="md">{lndInfo.getIdentityPubkey()}</Typography>
-             </Grid>
-             <Grid item>
-               <FormLabel>
-                 Synced to Chain
-               </FormLabel>
-               <Typography size="md">{lndInfo.getSyncedToChain().toString()}</Typography>
-             </Grid>
-             <Grid item>
-               <FormLabel>
-                 Synced to Graph
-               </FormLabel>
-               <Typography size="md">{lndInfo.getSyncedToGraph().toString()}</Typography>
-             </Grid>
-             <Grid item>
-               <FormLabel>
-                 Block Height
-               </FormLabel>
-               <Typography size="md">{lndInfo.getBlockHeight()}</Typography>
-             </Grid>
-           </Grid>
-         </Widget>
-       </Grid>
-    )
+      <Grid item xs={12}>
+        <Widget disableWidgetMenu>
+          <Grid
+            container
+            direction="column"
+            justify="flex-start"
+            spacing={2}
+          >
+            <Grid item>
+              <FormLabel>
+                Node Pubkey
+              </FormLabel>
+              <Typography size="md">{lndInfo.getIdentityPubkey()}</Typography>
+            </Grid>
+            <Grid item>
+              <FormLabel>
+                Synced to Chain
+              </FormLabel>
+              <Typography size="md">{lndInfo.getSyncedToChain().toString()}</Typography>
+            </Grid>
+            <Grid item>
+              <FormLabel>
+                Synced to Graph
+              </FormLabel>
+              <Typography size="md">{lndInfo.getSyncedToGraph().toString()}</Typography>
+            </Grid>
+            <Grid item>
+              <FormLabel>
+                Block Height
+              </FormLabel>
+              <Typography size="md">{lndInfo.getBlockHeight()}</Typography>
+            </Grid>
+          </Grid>
+        </Widget>
+      </Grid>
+    );
   }
 
   function TransactionsGridItem() {
     return (
-       <Grid item xs={12}>
-         <Widget disableWidgetMenu>
-           <Grid
-              container
-              direction="row"
-              justify="flex-start"
-              alignItems="center"
-           >
-             <Grid item xs={12}>
-               {transactions.map(transaction =>
-                  <Box
-                     p={1}
-                     key={transaction.getTxHash()}
-                  >
-                    <TransactionItem
-                       key={transaction.getTxHash()}
+      <Grid item xs={12}>
+        <Widget disableWidgetMenu>
+          <Grid
+            container
+            direction="row"
+            justify="flex-start"
+            alignItems="center"
+          >
+            <Grid item xs={12}>
+              {transactions.map((transaction) => (
+                <Box
+                  p={1}
+                  key={transaction.getTxHash()}
+                >
+                  <TransactionItem
+                    key={transaction.getTxHash()}
                        // handleTransactionClick={() => goToSqueakPage(transaction.getSqueakHash())}
-                       handleTransactionClick={() => console.log("clicked transaction")}
-                       transaction={transaction}>
-                    </TransactionItem>
-                  </Box>
-               )}
-             </Grid>
-           </Grid>
-         </Widget>
-       </Grid>
-    )
+                    handleTransactionClick={() => console.log('clicked transaction')}
+                    transaction={transaction}
+                  />
+                </Box>
+              ))}
+            </Grid>
+          </Grid>
+        </Widget>
+      </Grid>
+    );
   }
 
   function PeersGridItem() {
     return (
-       <Grid item xs={12}>
-         <Widget disableWidgetMenu>
-           <Grid
-              container
-              direction="row"
-              justify="flex-start"
-              alignItems="center"
-           >
-             <Grid item xs={12}>
-               {peers.map(peer =>
-                  <Box
-                     p={1}
-                     key={peer.getPubKey()}
-                  >
-                    <LightningPeerListItem
-                       key={peer.getPubKey()}
+      <Grid item xs={12}>
+        <Widget disableWidgetMenu>
+          <Grid
+            container
+            direction="row"
+            justify="flex-start"
+            alignItems="center"
+          >
+            <Grid item xs={12}>
+              {peers.map((peer) => (
+                <Box
+                  p={1}
+                  key={peer.getPubKey()}
+                >
+                  <LightningPeerListItem
+                    key={peer.getPubKey()}
                        // handleTransactionClick={() => goToSqueakPage(transaction.getSqueakHash())}
-                       handlePeerClick={() => console.log("clicked peer")}
-                       peer={peer}>
-                    </LightningPeerListItem>
-                  </Box>
-               )}
-             </Grid>
-           </Grid>
-         </Widget>
-       </Grid>
-    )
+                    handlePeerClick={() => console.log('clicked peer')}
+                    peer={peer}
+                  />
+                </Box>
+              ))}
+            </Grid>
+          </Grid>
+        </Widget>
+      </Grid>
+    );
   }
 
   function ChannelsGridItem() {
     return (
-       <Grid item xs={12}>
-         <Widget disableWidgetMenu>
-           <Grid
-              container
-              direction="row"
-              justify="flex-start"
-              alignItems="center"
-           >
-             <Grid item xs={12}>
-               {pendingChannels.getPendingOpenChannelsList().map(pendingOpenChannel =>
-                  <Box p={1} key={pendingOpenChannel.getChannel().getChannelPoint()}>
-                    <PendingOpenChannelItem pendingOpenChannel={pendingOpenChannel} />
-                  </Box>
-               )}
-               {channels.map(channel =>
-                  <Box p={1} key={channel.getChannelPoint()}>
-                    <ChannelItem channel={channel} />
-                  </Box>
-               )}
-             </Grid>
-           </Grid>
-         </Widget>
-       </Grid>
-    )
+      <Grid item xs={12}>
+        <Widget disableWidgetMenu>
+          <Grid
+            container
+            direction="row"
+            justify="flex-start"
+            alignItems="center"
+          >
+            <Grid item xs={12}>
+              {pendingChannels.getPendingOpenChannelsList().map((pendingOpenChannel) => (
+                <Box p={1} key={pendingOpenChannel.getChannel().getChannelPoint()}>
+                  <PendingOpenChannelItem pendingOpenChannel={pendingOpenChannel} />
+                </Box>
+              ))}
+              {channels.map((channel) => (
+                <Box p={1} key={channel.getChannelPoint()}>
+                  <ChannelItem channel={channel} />
+                </Box>
+              ))}
+            </Grid>
+          </Grid>
+        </Widget>
+      </Grid>
+    );
   }
 
   function TabPanel(props) {
-    const { children, value, index, ...other } = props;
+    const {
+      children, value, index, ...other
+    } = props;
 
     return (
       <div
@@ -402,32 +436,32 @@ export default function WalletPage() {
   function LightningTabs() {
     return (
       <>
-      <AppBar position="static" color="default">
-        <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
-          <Tab label="Balance" {...a11yProps(0)} />
-          <Tab label="Node Info" {...a11yProps(1)} />
-          <Tab label="Transactions" {...a11yProps(2)} />
-          <Tab label="Peers" {...a11yProps(3)} />
-          <Tab label="Channels" {...a11yProps(4)} />
-        </Tabs>
-      </AppBar>
-      <TabPanel value={value} index={0}>
-        {BalanceContent()}
-      </TabPanel>
-      <TabPanel value={value} index={1}>
-        {NodeInfoContent()}
-      </TabPanel>
-      <TabPanel value={value} index={2}>
-        {TransactionsContent()}
-      </TabPanel>
-      <TabPanel value={value} index={3}>
-        {PeersContent()}
-      </TabPanel>
-      <TabPanel value={value} index={4}>
-        {ChannelsGridItem()}
-      </TabPanel>
+        <AppBar position="static" color="default">
+          <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
+            <Tab label="Balance" {...a11yProps(0)} />
+            <Tab label="Node Info" {...a11yProps(1)} />
+            <Tab label="Transactions" {...a11yProps(2)} />
+            <Tab label="Peers" {...a11yProps(3)} />
+            <Tab label="Channels" {...a11yProps(4)} />
+          </Tabs>
+        </AppBar>
+        <TabPanel value={value} index={0}>
+          {BalanceContent()}
+        </TabPanel>
+        <TabPanel value={value} index={1}>
+          {NodeInfoContent()}
+        </TabPanel>
+        <TabPanel value={value} index={2}>
+          {TransactionsContent()}
+        </TabPanel>
+        <TabPanel value={value} index={3}>
+          {PeersContent()}
+        </TabPanel>
+        <TabPanel value={value} index={4}>
+          {ChannelsGridItem()}
+        </TabPanel>
       </>
-    )
+    );
   }
 
   function ReceiveBitcoinDialogContent() {
@@ -436,9 +470,9 @@ export default function WalletPage() {
         <ReceiveBitcoinDialog
           open={receiveBitcoinDialogOpen}
           handleClose={handleCloseReceiveBitcoinDialog}
-          ></ReceiveBitcoinDialog>
+        />
       </>
-    )
+    );
   }
 
   function SendBitcoinDialogContent() {
@@ -447,17 +481,16 @@ export default function WalletPage() {
         <SendBitcoinDialog
           open={sendBitcoinDialogOpen}
           handleClose={handleCloseSendBitcoinDialog}
-          ></SendBitcoinDialog>
+        />
       </>
-    )
+    );
   }
 
   return (
     <>
       {lndAvailable()
         ? LightningTabs()
-        : NoBalanceContent()
-      }
+        : NoBalanceContent()}
       {ReceiveBitcoinDialogContent()}
       {SendBitcoinDialogContent()}
     </>

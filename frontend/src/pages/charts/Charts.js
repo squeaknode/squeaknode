@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { Grid } from "@material-ui/core";
-import { useTheme } from "@material-ui/styles";
+import React, { useState } from 'react';
+import { Grid } from '@material-ui/core';
+import { useTheme } from '@material-ui/styles';
 import {
   CartesianGrid,
   Legend,
@@ -13,53 +13,53 @@ import {
   Tooltip,
   XAxis,
   YAxis,
-} from "recharts";
+} from 'recharts';
 
 // components
-import Widget from "../../components/Widget/Widget";
-import ApexLineChart from "./components/ApexLineChart";
-import ApexHeatmap from "./components/ApexHeatmap";
-import PageTitle from "../../components/PageTitle/PageTitle";
+import Widget from '../../components/Widget/Widget';
+import ApexLineChart from './components/ApexLineChart';
+import ApexHeatmap from './components/ApexHeatmap';
+import PageTitle from '../../components/PageTitle/PageTitle';
 
 const lineChartData = [
   {
-    name: "Page A",
+    name: 'Page A',
     uv: 4000,
     pv: 2400,
     amt: 2400,
   },
   {
-    name: "Page B",
+    name: 'Page B',
     uv: 3000,
     pv: 1398,
     amt: 2210,
   },
   {
-    name: "Page C",
+    name: 'Page C',
     uv: 2000,
     pv: 9800,
     amt: 2290,
   },
   {
-    name: "Page D",
+    name: 'Page D',
     uv: 2780,
     pv: 3908,
     amt: 2000,
   },
   {
-    name: "Page E",
+    name: 'Page E',
     uv: 1890,
     pv: 4800,
     amt: 2181,
   },
   {
-    name: "Page F",
+    name: 'Page F',
     uv: 2390,
     pv: 3800,
     amt: 2500,
   },
   {
-    name: "Page G",
+    name: 'Page G',
     uv: 3490,
     pv: 4300,
     amt: 2100,
@@ -67,17 +67,17 @@ const lineChartData = [
 ];
 
 const pieChartData = [
-  { name: "Group A", value: 400 },
-  { name: "Group B", value: 300 },
-  { name: "Group C", value: 300 },
-  { name: "Group D", value: 200 },
+  { name: 'Group A', value: 400 },
+  { name: 'Group B', value: 300 },
+  { name: 'Group C', value: 300 },
+  { name: 'Group D', value: 200 },
 ];
 
 export default function Charts(props) {
-  var theme = useTheme();
+  const theme = useTheme();
 
   // local
-  var [activeIndex, setActiveIndexId] = useState(0);
+  const [activeIndex, setActiveIndexId] = useState(0);
 
   return (
     <>
@@ -155,8 +155,8 @@ export default function Charts(props) {
 // ################################################################
 
 function renderActiveShape(props) {
-  var RADIAN = Math.PI / 180;
-  var {
+  const RADIAN = Math.PI / 180;
+  const {
     cx,
     cy,
     midAngle,
@@ -169,15 +169,15 @@ function renderActiveShape(props) {
     percent,
     value,
   } = props;
-  var sin = Math.sin(-RADIAN * midAngle);
-  var cos = Math.cos(-RADIAN * midAngle);
-  var sx = cx + (outerRadius + 10) * cos;
-  var sy = cy + (outerRadius + 10) * sin;
-  var mx = cx + (outerRadius + 30) * cos;
-  var my = cy + (outerRadius + 30) * sin;
-  var ex = mx + (cos >= 0 ? 1 : -1) * 22;
-  var ey = my;
-  var textAnchor = cos >= 0 ? "start" : "end";
+  const sin = Math.sin(-RADIAN * midAngle);
+  const cos = Math.cos(-RADIAN * midAngle);
+  const sx = cx + (outerRadius + 10) * cos;
+  const sy = cy + (outerRadius + 10) * sin;
+  const mx = cx + (outerRadius + 30) * cos;
+  const my = cy + (outerRadius + 30) * sin;
+  const ex = mx + (cos >= 0 ? 1 : -1) * 22;
+  const ey = my;
+  const textAnchor = cos >= 0 ? 'start' : 'end';
 
   return (
     <g>
@@ -213,7 +213,9 @@ function renderActiveShape(props) {
         y={ey}
         textAnchor={textAnchor}
         fill="#333"
-      >{`PV ${value}`}</text>
+      >
+        {`PV ${value}`}
+      </text>
       <text
         x={ex + (cos >= 0 ? 1 : -1) * 12}
         y={ey}

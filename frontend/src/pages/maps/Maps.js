@@ -1,13 +1,13 @@
-import React from "react";
+import React from 'react';
 import {
   withGoogleMap,
   withScriptjs,
   GoogleMap,
   Marker,
-} from "react-google-maps";
+} from 'react-google-maps';
 
 // styles
-import useStyles from "./styles";
+import useStyles from './styles';
 
 const BasicMap = withScriptjs(
   withGoogleMap(() => (
@@ -24,15 +24,15 @@ const BasicMap = withScriptjs(
 );
 
 export default function Maps() {
-  var classes = useStyles();
+  const classes = useStyles();
 
   return (
     <div className={classes.mapContainer}>
       <BasicMap
         googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places&key=AIzaSyB7OXmzfQYua_1LEhRdqsoYzyJOPh9hGLg"
-        loadingElement={<div style={{ height: "inherit", width: "inherit" }} />}
-        containerElement={<div style={{ height: "100%" }} />}
-        mapElement={<div style={{ height: "100%" }} />}
+        loadingElement={<div style={{ height: 'inherit', width: 'inherit' }} />}
+        containerElement={<div style={{ height: '100%' }} />}
+        mapElement={<div style={{ height: '100%' }} />}
       />
     </div>
   );
