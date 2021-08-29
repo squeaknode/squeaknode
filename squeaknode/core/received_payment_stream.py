@@ -26,7 +26,7 @@ from typing import NamedTuple
 from squeaknode.core.received_payment import ReceivedPayment
 
 
-class ReceivedPaymentsResult(NamedTuple):
+class ReceivedPaymentsStream(NamedTuple):
     """Represents the result of a received payment subscription."""
     cancel_fn: Callable[[], None]
     result_stream: Iterator[ReceivedPayment]

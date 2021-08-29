@@ -40,7 +40,7 @@ from squeaknode.core.offer import Offer
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.received_payment import ReceivedPayment
-from squeaknode.core.received_payment_result import ReceivedPaymentsResult
+from squeaknode.core.received_payment_stream import ReceivedPaymentsStream
 from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.sent_payment import SentPayment
 from squeaknode.core.squeak_profile import SqueakProfile
@@ -304,7 +304,7 @@ class SqueakCore:
             self,
             latest_settle_index: int,
             get_sent_offer_fn: Callable[[bytes], SentOffer],
-    ) -> ReceivedPaymentsResult:
+    ) -> ReceivedPaymentsStream:
         """Get an iterator of received payments.
 
         Args:
@@ -313,7 +313,7 @@ class SqueakCore:
                 the corresponding SentOffer.
 
         Returns:
-            ReceivedPaymentsResult: An object containing an iterator of received
+            ReceivedPaymentsStream: An object containing an iterator of received
             payments and a callback function to cancel the iteration.
         """
         # Get the stream of settled invoices.
@@ -345,7 +345,7 @@ class SqueakCore:
                 if e.code() != grpc.StatusCode.CANCELLED:
                     raise InvoiceSubscriptionError()
 
-        return ReceivedPaymentsResult(
+        return ReceivedPaymentsStream(
             cancel_fn=cancel_subscription,
             result_stream=get_payment_stream(),
         )
