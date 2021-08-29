@@ -63,14 +63,12 @@ class SqueakController:
         self,
         squeak_db,
         squeak_core,
-        squeak_rate_limiter,
         payment_processor,
         network_manager,
         config,
     ):
         self.squeak_db = squeak_db
         self.squeak_core = squeak_core
-        self.squeak_rate_limiter = squeak_rate_limiter
         self.payment_processor = payment_processor
         self.network_manager = network_manager
         self.new_squeak_listener = EventListener()

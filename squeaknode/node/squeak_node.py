@@ -61,7 +61,6 @@ class SqueakNode:
         self.initialize_lightning_client()
         self.initialize_bitcoin_client()
         self.initialize_squeak_core()
-        # self.initialize_rate_limiter()
         self.initialize_payment_processor()
         self.initialize_network_manager()
         self.initialize_squeak_controller()
@@ -137,12 +136,6 @@ class SqueakNode:
             self.lightning_client,
         )
 
-    # def initialize_rate_limiter(self):
-    #     self.squeak_rate_limiter = SqueakRateLimiter(
-    #         self.squeak_db,
-    #         self.config.node.max_squeaks_per_address_per_block,
-    #     )
-
     def initialize_payment_processor(self):
         self.payment_processor = PaymentProcessor(
             self.squeak_db,
@@ -157,7 +150,6 @@ class SqueakNode:
         self.squeak_controller = SqueakController(
             self.squeak_db,
             self.squeak_core,
-            None,
             self.payment_processor,
             self.network_manager,
             self.config,
