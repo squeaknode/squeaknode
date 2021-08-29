@@ -53,7 +53,7 @@ from squeaknode.core.util import squeak_matches_interest
 from squeaknode.network.peer import Peer
 from squeaknode.node.listener_subscription_client import EventListener
 from squeaknode.node.received_payments_subscription_client import ReceivedPaymentsSubscriptionClient
-from squeaknode.node.temporary_interest_manager import TemporaryInterestCounter
+from squeaknode.node.temporary_interest_manager import TemporaryInterest
 from squeaknode.node.temporary_interest_manager import TemporaryInterestManager
 
 
@@ -155,7 +155,7 @@ class SqueakController:
             interest.nMaxBlockHeight,
         ) < self.config.node.max_squeaks_per_address_in_block_range
 
-    def get_temporary_interest_counter(self, squeak: CSqueak) -> TemporaryInterestCounter:
+    def get_temporary_interest_counter(self, squeak: CSqueak) -> Optional[TemporaryInterest]:
         return self.temporary_interest_manager.lookup_counter(squeak)
 
     def get_buy_offer(self, squeak_hash: bytes, peer_address: PeerAddress) -> Offer:
@@ -605,7 +605,7 @@ class SqueakController:
             squeak_hash.hex(),
         ))
         # Add the temporary interest in this hash.
-        self.temporary_interest_manager.add_hash(squeak_hash)
+        self.temporary_interest_manager.add_hash_interest(squeak_hash)
         invs = [
             CInv(type=1, hash=squeak_hash)
         ]
