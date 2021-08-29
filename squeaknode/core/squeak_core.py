@@ -22,8 +22,6 @@
 import logging
 import time
 from typing import Callable
-from typing import Iterator
-from typing import NamedTuple
 from typing import Optional
 
 import grpc
@@ -42,6 +40,7 @@ from squeaknode.core.offer import Offer
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.received_payment import ReceivedPayment
+from squeaknode.core.received_payment_result import ReceivedPaymentsResult
 from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.sent_payment import SentPayment
 from squeaknode.core.squeak_profile import SqueakProfile
@@ -53,12 +52,6 @@ from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
 
 
 logger = logging.getLogger(__name__)
-
-
-class ReceivedPaymentsResult(NamedTuple):
-    """Represents the result of a received payment subscription."""
-    cancel_fn: Callable[[], None]
-    result_stream: Iterator[ReceivedPayment]
 
 
 class SqueakCore:
