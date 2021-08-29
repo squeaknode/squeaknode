@@ -32,7 +32,6 @@ from squeaknode.db.squeak_db import SqueakDb
 from squeaknode.network.network_manager import NetworkManager
 from squeaknode.node.payment_processor import PaymentProcessor
 from squeaknode.node.squeak_controller import SqueakController
-from squeaknode.node.squeak_rate_limiter import SqueakRateLimiter
 
 
 @pytest.fixture
@@ -88,11 +87,6 @@ def price_msat():
 
 
 @pytest.fixture
-def squeak_rate_limiter():
-    return mock.Mock(spec=SqueakRateLimiter)
-
-
-@pytest.fixture
 def payment_processor():
     return mock.Mock(spec=PaymentProcessor)
 
@@ -101,7 +95,6 @@ def payment_processor():
 def squeak_controller(
     squeak_db,
     squeak_core,
-    squeak_rate_limiter,
     payment_processor,
     network_manager,
     config,
@@ -109,7 +102,6 @@ def squeak_controller(
     return SqueakController(
         squeak_db,
         squeak_core,
-        squeak_rate_limiter,
         payment_processor,
         network_manager,
         config,
@@ -120,7 +112,6 @@ def squeak_controller(
 def regtest_squeak_controller(
     squeak_db,
     squeak_core,
-    squeak_rate_limiter,
     payment_processor,
     network_manager,
     regtest_config,
@@ -128,7 +119,6 @@ def regtest_squeak_controller(
     return SqueakController(
         squeak_db,
         squeak_core,
-        squeak_rate_limiter,
         payment_processor,
         network_manager,
         regtest_config,

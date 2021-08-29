@@ -169,7 +169,7 @@ class PeerMessageHandler:
     def handle_squeak(self, msg):
         squeak = msg.squeak
         # TODO: check if interested before saving.
-        self.squeak_controller.save_squeak(squeak)
+        self.squeak_controller.save_received_squeak(squeak)
 
     def handle_offer(self, msg):
         # TODO: check if interested before saving.

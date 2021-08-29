@@ -49,9 +49,12 @@ from squeaknode.core.squeak_entry import SqueakEntry
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.util import is_address_valid
+from squeaknode.core.util import squeak_matches_interest
 from squeaknode.network.peer import Peer
 from squeaknode.node.listener_subscription_client import EventListener
 from squeaknode.node.received_payments_subscription_client import ReceivedPaymentsSubscriptionClient
+from squeaknode.node.temporary_interest_manager import TemporaryInterest
+from squeaknode.node.temporary_interest_manager import TemporaryInterestManager
 
 
 logger = logging.getLogger(__name__)
@@ -63,18 +66,17 @@ class SqueakController:
         self,
         squeak_db,
         squeak_core,
-        squeak_rate_limiter,
         payment_processor,
         network_manager,
         config,
     ):
         self.squeak_db = squeak_db
         self.squeak_core = squeak_core
-        self.squeak_rate_limiter = squeak_rate_limiter
         self.payment_processor = payment_processor
         self.network_manager = network_manager
         self.new_squeak_listener = EventListener()
         self.new_received_offer_listener = EventListener()
+        self.temporary_interest_manager = TemporaryInterestManager()
         self.config = config
 
     def save_squeak(self, squeak: CSqueak) -> bytes:
@@ -130,6 +132,31 @@ class SqueakController:
             squeak_hash)
         logger.info("Deleted number of offers : {}".format(num_deleted_offers))
         self.squeak_db.delete_squeak(squeak_hash)
+
+    def save_received_squeak(self, squeak: CSqueak) -> None:
+        if self.get_temporary_interest_counter(squeak):
+            logger.debug("Saving squeak based on temporary interest.")
+            self.save_squeak(squeak)
+        elif self.squeak_matches_interest(squeak):
+            self.save_squeak(squeak)
+
+    def squeak_matches_interest(self, squeak: CSqueak) -> bool:
+        locator = self.get_interested_locator()
+        for interest in locator.vInterested:
+            if squeak_matches_interest(squeak, interest) \
+               and self.squeak_in_limit_of_interest(squeak, interest):
+                return True
+        return False
+
+    def squeak_in_limit_of_interest(self, squeak: CSqueak, interest: CInterested) -> bool:
+        return self.squeak_db.number_of_squeaks_with_address_in_block_range(
+            str(squeak.GetAddress),
+            interest.nMinBlockHeight,
+            interest.nMaxBlockHeight,
+        ) < self.config.node.max_squeaks_per_address_in_block_range
+
+    def get_temporary_interest_counter(self, squeak: CSqueak) -> Optional[TemporaryInterest]:
+        return self.temporary_interest_manager.lookup_counter(squeak)
 
     def get_buy_offer(self, squeak_hash: bytes, peer_address: PeerAddress) -> Offer:
         # Check if there is an existing offer for the hash/peer_address combination
@@ -577,6 +604,8 @@ class SqueakController:
         logger.info("Downloading single squeak: {}".format(
             squeak_hash.hex(),
         ))
+        # Add the temporary interest in this hash.
+        self.temporary_interest_manager.add_hash_interest(1, squeak_hash)
         invs = [
             CInv(type=1, hash=squeak_hash)
         ]

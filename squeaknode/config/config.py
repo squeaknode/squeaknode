@@ -38,7 +38,7 @@ DEFAULT_NETWORK = "testnet"
 DEFAULT_PRICE_MSAT = 10000
 DEFAULT_LOG_LEVEL = "INFO"
 DEFAULT_MAX_SQUEAKS = 10000
-DEFAULT_MAX_SQUEAKS_PER_ADDRESS_PER_BLOCK = 100
+DEFAULT_MAX_SQUEAKS_PER_ADDRESS_IN_BLOCK_RANGE = 100
 DEFAULT_SERVER_RPC_HOST = "0.0.0.0"
 DEFAULT_SERVER_RPC_PORT = None
 DEFAULT_ADMIN_RPC_HOST = "0.0.0.0"
@@ -121,8 +121,8 @@ class NodeConfig(Config):
         cast=int, required=False, default=DEFAULT_PRICE_MSAT)
     max_squeaks = key(
         cast=int, required=False, default=DEFAULT_MAX_SQUEAKS)
-    max_squeaks_per_address_per_block = key(
-        cast=int, required=False, default=DEFAULT_MAX_SQUEAKS_PER_ADDRESS_PER_BLOCK)
+    max_squeaks_per_address_in_block_range = key(
+        cast=int, required=False, default=DEFAULT_MAX_SQUEAKS_PER_ADDRESS_IN_BLOCK_RANGE)
     sqk_dir_path = key(
         cast=str, required=False, default=DEFAULT_SQK_DIR_PATH)
     log_level = key(
