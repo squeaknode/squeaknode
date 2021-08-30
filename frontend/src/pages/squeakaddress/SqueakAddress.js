@@ -3,6 +3,7 @@ import { useParams, useHistory } from 'react-router-dom';
 import {
   Grid,
   Button,
+  Box,
 } from '@material-ui/core';
 
 // styles
@@ -13,6 +14,8 @@ import TimelineDot from '@material-ui/lab/TimelineDot';
 import Paper from '@material-ui/core/Paper';
 
 import FaceIcon from '@material-ui/icons/Face';
+import GetAppIcon from '@material-ui/icons/GetApp';
+
 import CreateContactProfileDialog from '../../components/CreateContactProfileDialog';
 import SqueakList from '../../components/SqueakList';
 import useStyles from './styles';
@@ -22,6 +25,7 @@ import {
   getAddressSqueakDisplaysRequest,
   getNetworkRequest,
   subscribeAddressSqueakDisplaysRequest,
+  downloadAddressSqueaksRequest,
 } from '../../squeakclient/requests';
 import {
   goToSqueakAddressPage,
@@ -45,7 +49,9 @@ export default function SqueakAddressPage() {
   };
   const subscribeSqueaks = (hash) => {
     return subscribeAddressSqueakDisplaysRequest(address, (resp) => {
-      setSqueaks([resp].concat(squeaks));
+      setSqueaks((prevSqueaks) => {
+        return [resp].concat(prevSqueaks);
+      });
     });
   };
   const getNetwork = () => {
@@ -62,8 +68,8 @@ export default function SqueakAddressPage() {
 
   const onDownloadSqueaksClick = (event) => {
     event.preventDefault();
-    console.log('Handling download squeaks click...');
-    downloadRepliesRequest(hash, (response) => {
+    console.log('Handling download address squeaks click...');
+    downloadAddressSqueaksRequest(address, (response) => {
       // Do nothing.
     });
   };
@@ -77,7 +83,7 @@ export default function SqueakAddressPage() {
   useEffect(() => {
     const stream = subscribeSqueaks(address);
     return () => stream.cancel();
-  }, [squeaks, address]);
+  }, [address]);
   useEffect(() => {
     getNetwork();
   }, []);
@@ -197,6 +203,7 @@ export default function SqueakAddressPage() {
       {squeakProfile
         ? ProfileContent()
         : NoProfileContent()}
+      {DownloadSqueaksButtonContent()}
       {GridContent()}
       {CreateContactProfileDialogContent()}
     </>

@@ -61,6 +61,7 @@ import {
   DisconnectPeerRequest as DisconnectSqueakPeerRequest,
   DownloadOffersRequest,
   DownloadRepliesRequest,
+  DownloadAddressSqueaksRequest,
   SubscribeConnectedPeersRequest,
   SubscribeConnectedPeerRequest,
   PeerAddress,
@@ -469,6 +470,14 @@ export function downloadRepliesRequest(squeakHash, handleResponse) {
   });
 }
 
+export function downloadAddressSqueaksRequest(address, handleResponse) {
+  const request = new DownloadAddressSqueaksRequest();
+  request.setAddress(address);
+  client.downloadAddressSqueaks(request, {}, (err, response) => {
+    handleResponse(response);
+  });
+}
+
 export function getSqueakDetailsRequest(hash, handleResponse) {
   const request = new GetSqueakDetailsRequest();
   request.setSqueakHash(hash);
@@ -670,6 +679,7 @@ export function subscribeAddressSqueakDisplaysRequest(address, handleResponse) {
   request.setAddress(address);
   const stream = client.subscribeAddressSqueakDisplays(request);
   stream.on('data', (response) => {
+    console.log("response :" + response);
     handleResponse(response.getSqueakDisplayEntry());
   });
   stream.on('end', (end) => {
