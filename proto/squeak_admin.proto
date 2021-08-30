@@ -284,6 +284,10 @@ service SqueakAdmin {
   */
   rpc SubscribeSqueakDisplay (SubscribeSqueakDisplayRequest) returns (stream GetSqueakDisplayReply) {}
 
+  /** sqkadmin: `subscribereplysqueakdisplays`
+  */
+  rpc SubscribeReplySqueakDisplays (SubscribeReplySqueakDisplaysRequest) returns (stream GetSqueakDisplayReply) {}
+
 }
 
 message CreateSigningProfileRequest {
@@ -1008,6 +1012,11 @@ message SubscribeBuyOffersRequest {
 }
 
 message SubscribeSqueakDisplayRequest {
+    /// Hash of the squeak.
+    string squeak_hash = 1;
+}
+
+message SubscribeReplySqueakDisplaysRequest {
     /// Hash of the squeak.
     string squeak_hash = 1;
 }
