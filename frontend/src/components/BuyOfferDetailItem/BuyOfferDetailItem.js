@@ -59,6 +59,9 @@ export default function BuyOfferDetailItem({
       <Typography
         size="md"
       >
+        Squeak hash:
+        {' '}
+        {offer.getSqueakHash()}
         Price:
         {' '}
         {offer.getPriceMsat() / 1000}

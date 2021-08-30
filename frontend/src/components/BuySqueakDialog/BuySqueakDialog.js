@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   MenuItem,
   Typography,
@@ -65,9 +65,10 @@ export default function BuySqueakDialog({
     getBuyOffersRequest(hash, setOffers);
   };
   const subscribeOffers = () => {
-    subscribeBuyOffersRequest(hash, (offer) => {
-      const newOffers = offers.concat([offer]);
-      setOffers(newOffers);
+    return subscribeBuyOffersRequest(hash, (offer) => {
+      setOffers((prevOffers) => {
+        return prevOffers.concat([offer]);
+      });
     });
   };
   const downloadOffers = () => {
@@ -112,10 +113,13 @@ export default function BuySqueakDialog({
     return `${peerAddress.getHost()}:${peerAddress.getPort()}`;
   };
 
-  // TODO: load offers using "onRendered" callback.
-  // useEffect(() => {
-  //   loadOffers()
-  // }, []);
+  useEffect(() => {
+    loadOffers();
+  }, []);
+  useEffect(() => {
+    const stream = subscribeOffers();
+    return () => stream.cancel();
+  }, [hash]);
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -129,8 +133,8 @@ export default function BuySqueakDialog({
   }
 
   function load(event) {
-    loadOffers();
-    subscribeOffers();
+    //loadOffers();
+    //subscribeOffers();
     downloadOffers();
   }
 
@@ -187,10 +191,8 @@ export default function BuySqueakDialog({
     return (
       <Box
         p={1}
-        key={selectedOffer.getOfferId()}
       >
         <BuyOfferDetailItem
-          key={selectedOffer.getOfferId()}
           offer={selectedOffer}
         />
       </Box>
@@ -224,7 +226,7 @@ export default function BuySqueakDialog({
 
   return (
     <Dialog open={open} onRendered={load} onEnter={resetFields} onClose={cancel} onClick={ignore} aria-labelledby="form-dialog-title">
-      <DialogTitle id="form-dialog-title">Buy Squeak</DialogTitle>
+      <DialogTitle id="form-dialog-title">Buy Squeak for hash {hash}</DialogTitle>
       <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
         <DialogContent>
           <Box>

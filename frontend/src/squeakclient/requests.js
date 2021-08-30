@@ -638,6 +638,7 @@ export function subscribeBuyOffersRequest(hash, handleResponse) {
     console.log(end);
     alert(`Stream ended: ${end}`);
   });
+  return stream;
 }
 
 export function subscribeSqueakDisplayRequest(hash, handleResponse) {

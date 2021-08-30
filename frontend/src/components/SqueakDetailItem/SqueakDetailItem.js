@@ -220,6 +220,7 @@ export default function SqueakDetailItem({
     return (
       <>
         <BuySqueakDialog
+          key={hash}
           open={buyDialogOpen}
           handleClose={handleCloseBuyDialog}
           handlePaymentComplete={handlePaymentComplete}
