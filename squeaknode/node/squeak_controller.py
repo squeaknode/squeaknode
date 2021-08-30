@@ -686,6 +686,6 @@ class SqueakController:
 
     def subscribe_squeak_address_entries(self, squeak_address: str, stopped: threading.Event):
         for item in self.new_squeak_listener.yield_items(stopped):
-            if squeak_address == str(item.GetAddress):
+            if squeak_address == str(item.GetAddress()):
                 squeak_hash = get_hash(item)
                 yield self.get_squeak_entry(squeak_hash)

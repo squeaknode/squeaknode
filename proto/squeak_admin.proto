@@ -1026,6 +1026,6 @@ message SubscribeReplySqueakDisplaysRequest {
 }
 
 message SubscribeAddressSqueakDisplaysRequest {
-    /// Hash of the squeak.
-    string squeak_hash = 1;
+    /// The address
+    string address = 1;
 }

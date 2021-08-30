@@ -325,7 +325,7 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
             stopped,
         )
 
-    def SubscribeAddressSqueakDisplaysRequest(self, request, context):
+    def SubscribeAddressSqueakDisplays(self, request, context):
         stopped = threading.Event()
 
         def on_rpc_done():
