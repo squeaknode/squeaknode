@@ -86,7 +86,9 @@ export default function SqueakDetailItem({
     event.preventDefault();
     console.log('Handling download click...');
     downloadSqueakRequest(hash, (response) => {
-      reloadSqueak();
+      // TODO: Nothing for now. This will eventually show something
+      // when downloadSqueakRequest becomes a streaming method.
+      // reloadSqueak();
     });
   };
 

@@ -797,3 +797,24 @@ class SqueakAdminServerHandler(object):
             yield squeak_admin_pb2.GetBuyOfferReply(
                 offer=offer_msg,
             )
+
+    def handle_subscribe_squeak_display(self, request, stopped):
+        squeak_hash_str = request.squeak_hash
+        squeak_hash = bytes.fromhex(squeak_hash_str)
+        logger.info(
+            "Handle subscribe squeak display for hash: {}".format(squeak_hash_str))
+        squeak_display_stream = self.squeak_controller.subscribe_squeak_entry(
+            squeak_hash,
+            stopped,
+        )
+        for squeak_display in squeak_display_stream:
+            if squeak_display is None:
+                yield squeak_admin_pb2.GetSqueakDisplayReply(
+                    squeak_display_entry=None
+                )
+            else:
+                display_message = squeak_entry_to_message(
+                    squeak_display)
+                yield squeak_admin_pb2.GetSqueakDisplayReply(
+                    squeak_display_entry=display_message
+                )

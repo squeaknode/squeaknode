@@ -29,6 +29,7 @@ import {
   GetContactProfilesRequest,
   MakeSqueakRequest,
   GetSqueakDisplayRequest,
+  SubscribeSqueakDisplayRequest,
   GetAncestorSqueakDisplaysRequest,
   GetReplySqueakDisplaysRequest,
   GetSqueakProfileByAddressRequest,
@@ -624,4 +625,21 @@ export function subscribeBuyOffersRequest(hash, handleResponse) {
     console.log(end);
     alert(`Stream ended: ${end}`);
   });
+}
+
+export function subscribeSqueakDisplayRequest(hash, handleResponse) {
+  const request = new SubscribeSqueakDisplayRequest();
+  request.setSqueakHash(hash);
+  const stream = client.subscribeSqueakDisplay(request);
+  stream.on('data', (response) => {
+    handleResponse(response.getSqueakDisplayEntry());
+  });
+  stream.on('end', (end) => {
+    // stream end signal
+    console.log(end);
+    alert(`Stream ended: ${end}`);
+  });
+  console.log("Stream object:");
+  console.log(stream);
+  return stream;
 }
