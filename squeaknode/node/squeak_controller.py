@@ -630,13 +630,12 @@ class SqueakController:
         logger.info("Downloading replies for squeak: {}".format(
             squeak_hash.hex(),
         ))
-        interests = [
-            CInterested(
-                hashReplySqk=squeak_hash,
-            )
-        ]
+        interest = CInterested(
+            hashReplySqk=squeak_hash,
+        )
+        self.temporary_interest_manager.add_range_interest(10, interest)
         locator = CSqueakLocator(
-            vInterested=interests,
+            vInterested=[interest],
         )
         getsqueaks_msg = msg_getsqueaks(
             locator=locator,
@@ -678,3 +677,9 @@ class SqueakController:
         for item in self.new_squeak_listener.yield_items(stopped):
             if squeak_hash == get_hash(item):
                 yield self.get_squeak_entry(squeak_hash)
+
+    def subscribe_squeak_reply_entries(self, squeak_hash: bytes, stopped: threading.Event):
+        for item in self.new_squeak_listener.yield_items(stopped):
+            if squeak_hash == item.hashReplySqk:
+                reply_hash = get_hash(item)
+                yield self.get_squeak_entry(reply_hash)
