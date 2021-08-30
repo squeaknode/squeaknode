@@ -313,11 +313,11 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
             stopped,
         )
 
-    def SubscribeReplySqueakDisplaysRequest(self, request, context):
+    def SubscribeReplySqueakDisplays(self, request, context):
         stopped = threading.Event()
 
         def on_rpc_done():
-            logger.info("Stopping SubscribeReplySqueakDisplaysRequest.")
+            logger.info("Stopping SubscribeReplySqueakDisplays.")
             stopped.set()
         context.add_callback(on_rpc_done)
         return self.handler.handle_subscribe_reply_squeak_displays(

@@ -680,5 +680,6 @@ class SqueakController:
 
     def subscribe_squeak_reply_entries(self, squeak_hash: bytes, stopped: threading.Event):
         for item in self.new_squeak_listener.yield_items(stopped):
-            if squeak_hash == squeak.hashReplySqk:
-                yield self.get_squeak_entry(squeak_hash)
+            if squeak_hash == item.hashReplySqk:
+                reply_hash = get_hash(item)
+                yield self.get_squeak_entry(reply_hash)

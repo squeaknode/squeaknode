@@ -28,6 +28,7 @@ import {
   getReplySqueakDisplaysRequest,
   getNetworkRequest,
   downloadRepliesRequest,
+  subscribeReplySqueakDisplaysRequest,
 } from '../../squeakclient/requests';
 import {
   goToSqueakAddressPage,
@@ -53,6 +54,12 @@ export default function SqueakPage() {
   };
   const getReplySqueaks = (hash) => {
     getReplySqueakDisplaysRequest(hash, setReplySqueaks);
+  };
+  const subscribeReplySqueaks = (hash) => {
+    return subscribeReplySqueakDisplaysRequest(hash, (resp) => {
+      console.log(resp);
+      setReplySqueaks(replySqueaks.concat(resp));
+    });
   };
   const getNetwork = () => {
     getNetworkRequest(setNetwork);
@@ -82,6 +89,10 @@ export default function SqueakPage() {
   }, [hash]);
   useEffect(() => {
     getReplySqueaks(hash);
+  }, [hash]);
+  useEffect(() => {
+    const stream = subscribeReplySqueaks(hash);
+    return () => stream.cancel();
   }, [hash]);
   useEffect(() => {
     getNetwork();
