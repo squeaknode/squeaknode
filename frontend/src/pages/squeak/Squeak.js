@@ -47,7 +47,10 @@ export default function SqueakPage() {
     getSqueakDisplayRequest(hash, setSqueak);
   };
   const subscribeSqueak = (hash) => {
-    return subscribeSqueakDisplayRequest(hash, setSqueak);
+    return subscribeSqueakDisplayRequest(hash, (squeak) => {
+      setSqueak(squeak);
+      setAncestorSqueaks([squeak]);
+    });
   };
   const getAncestorSqueaks = (hash) => {
     getAncestorSqueakDisplaysRequest(hash, setAncestorSqueaks);
