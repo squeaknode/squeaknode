@@ -594,6 +594,7 @@ export function subscribeConnectedPeersRequest(handleResponse) {
     console.log(end);
     alert(`Stream ended: ${end}`);
   });
+  return stream;
 }
 
 export function subscribeConnectedPeerRequest(host, port, handleResponse) {
@@ -611,6 +612,7 @@ export function subscribeConnectedPeerRequest(host, port, handleResponse) {
     console.log(end);
     alert(`Stream ended: ${end}`);
   });
+  return stream;
 }
 
 export function subscribeBuyOffersRequest(hash, handleResponse) {
