@@ -49,6 +49,7 @@ from tests.util import make_squeak
 from tests.util import open_channel
 from tests.util import open_peer_connection
 from tests.util import subscribe_connected_peers
+from tests.util import subscribe_squeak_entry
 
 
 def test_get_network(admin_stub):
@@ -684,41 +685,49 @@ def test_download_single_squeak(
     signing_profile_id,
     saved_squeak_hash,
 ):
-    # Get the squeak display item (should be empty)
-    squeak_display_entry = get_squeak_display(
-        other_admin_stub, saved_squeak_hash)
-    assert squeak_display_entry is None
 
-    # Get buy offers for the squeak hash (should be empty)
-    get_buy_offers_response = other_admin_stub.GetBuyOffers(
-        squeak_admin_pb2.GetBuyOffersRequest(
-            squeak_hash=saved_squeak_hash,
+    with subscribe_squeak_entry(other_admin_stub, saved_squeak_hash) as subscription_queue:
+
+        # Get the squeak display item (should be empty)
+        squeak_display_entry = get_squeak_display(
+            other_admin_stub, saved_squeak_hash)
+        assert squeak_display_entry is None
+
+        # Get buy offers for the squeak hash (should be empty)
+        get_buy_offers_response = other_admin_stub.GetBuyOffers(
+            squeak_admin_pb2.GetBuyOffersRequest(
+                squeak_hash=saved_squeak_hash,
+            )
         )
-    )
-    # print(get_buy_offers_response)
-    assert len(get_buy_offers_response.offers) == 0
+        # print(get_buy_offers_response)
+        assert len(get_buy_offers_response.offers) == 0
 
-    # Download squeak
-    download_squeak(other_admin_stub, saved_squeak_hash)
-    time.sleep(5)
+        # Download squeak
+        download_squeak(other_admin_stub, saved_squeak_hash)
+        time.sleep(5)
 
-    # Get the squeak display item
-    squeak_display_entry = get_squeak_display(
-        other_admin_stub, saved_squeak_hash)
-    assert squeak_display_entry is not None
+        # Get the squeak display item
+        squeak_display_entry = get_squeak_display(
+            other_admin_stub, saved_squeak_hash)
+        assert squeak_display_entry is not None
 
-    # Download offer
-    download_offers(other_admin_stub, saved_squeak_hash)
-    time.sleep(5)
+        # Download offer
+        download_offers(other_admin_stub, saved_squeak_hash)
+        time.sleep(5)
 
-    # Get the buy offer
-    get_buy_offers_response = other_admin_stub.GetBuyOffers(
-        squeak_admin_pb2.GetBuyOffersRequest(
-            squeak_hash=saved_squeak_hash,
+        # Get the buy offer
+        get_buy_offers_response = other_admin_stub.GetBuyOffers(
+            squeak_admin_pb2.GetBuyOffersRequest(
+                squeak_hash=saved_squeak_hash,
+            )
         )
-    )
-    # print(get_buy_offers_response)
-    assert len(get_buy_offers_response.offers) > 0
+        # print(get_buy_offers_response)
+        assert len(get_buy_offers_response.offers) > 0
+
+        item = subscription_queue.get()
+        print("item:")
+        print(item)
+        assert item.squeak_hash == saved_squeak_hash
 
 
 def test_get_squeak_details(admin_stub, saved_squeak_hash):

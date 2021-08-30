@@ -326,3 +326,23 @@ def delete_profile(node_stub, profile_id):
             profile_id=profile_id,
         )
     )
+
+
+@contextmanager
+def subscribe_squeak_entry(node_stub, squeak_hash):
+    q = queue.Queue()
+    subscribe_squeak_entry_response = node_stub.SubscribeSqueakDisplay(
+        squeak_admin_pb2.SubscribeSqueakDisplayRequest(
+            squeak_hash=squeak_hash,
+        )
+    )
+
+    def enqueue_results():
+        for result in subscribe_squeak_entry_response:
+            q.put(result.squeak_display_entry)
+
+    threading.Thread(
+        target=enqueue_results,
+    ).start()
+    yield q
+    subscribe_squeak_entry_response.cancel()

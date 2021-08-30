@@ -48,6 +48,7 @@ from squeaknode.core.sent_payment_summary import SentPaymentSummary
 from squeaknode.core.squeak_entry import SqueakEntry
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
+from squeaknode.core.util import get_hash
 from squeaknode.core.util import is_address_valid
 from squeaknode.core.util import squeak_matches_interest
 from squeaknode.network.peer import Peer
@@ -594,6 +595,7 @@ class SqueakController:
         )
 
     def download_squeaks(self):
+        # TODO: Don't use get interested locator, instead use params from request.
         locator = self.get_interested_locator()
         getsqueaks_msg = msg_getsqueaks(
             locator=locator,
@@ -671,3 +673,8 @@ class SqueakController:
         for received_offer in self.new_received_offer_listener.yield_items(stopped):
             if received_offer.squeak_hash == squeak_hash:
                 yield received_offer
+
+    def subscribe_squeak_entry(self, squeak_hash: bytes, stopped: threading.Event):
+        for item in self.new_squeak_listener.yield_items(stopped):
+            if squeak_hash == get_hash(item):
+                yield self.get_squeak_entry(squeak_hash)
