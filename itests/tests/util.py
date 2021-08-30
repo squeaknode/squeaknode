@@ -248,6 +248,14 @@ def download_squeaks(node_stub):
     )
 
 
+def download_squeaks_for_address(node_stub, squeak_address):
+    node_stub.DownloadAddressSqueaks(
+        squeak_admin_pb2.DownloadAddressSqueaksRequest(
+            address=squeak_address,
+        ),
+    )
+
+
 def download_offers(node_stub, squeak_hash):
     node_stub.DownloadOffers(
         squeak_admin_pb2.DownloadOffersRequest(
@@ -346,3 +354,23 @@ def subscribe_squeak_entry(node_stub, squeak_hash):
     ).start()
     yield q
     subscribe_squeak_entry_response.cancel()
+
+
+@contextmanager
+def subscribe_squeaks_for_address(node_stub, squeak_address):
+    q = queue.Queue()
+    subscribe_address_squeaks_response = node_stub.SubscribeAddressSqueakDisplays(
+        squeak_admin_pb2.SubscribeAddressSqueakDisplaysRequest(
+            address=squeak_address,
+        )
+    )
+
+    def enqueue_results():
+        for result in subscribe_address_squeaks_response:
+            q.put(result.squeak_display_entry)
+
+    threading.Thread(
+        target=enqueue_results,
+    ).start()
+    yield q
+    subscribe_address_squeaks_response.cancel()

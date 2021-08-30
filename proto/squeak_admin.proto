@@ -200,6 +200,10 @@ service SqueakAdmin {
   */
   rpc DownloadReplies (DownloadRepliesRequest) returns (DownloadRepliesReply) {}
 
+  /** sqkadmin: `downloadaddresssqueaks`
+  */
+  rpc DownloadAddressSqueaks (DownloadAddressSqueaksRequest) returns (DownloadAddressSqueaksReply) {}
+
   /** sqkadmin: `payoffer`
   */
   rpc PayOffer (PayOfferRequest) returns (PayOfferReply) {}
@@ -287,6 +291,10 @@ service SqueakAdmin {
   /** sqkadmin: `subscribereplysqueakdisplays`
   */
   rpc SubscribeReplySqueakDisplays (SubscribeReplySqueakDisplaysRequest) returns (stream GetSqueakDisplayReply) {}
+
+  /** sqkadmin: `subscribeaddresssqueakdisplays`
+  */
+  rpc SubscribeAddressSqueakDisplays (SubscribeAddressSqueakDisplaysRequest) returns (stream GetSqueakDisplayReply) {}
 
 }
 
@@ -803,6 +811,14 @@ message DownloadRepliesRequest {
 message DownloadRepliesReply {
 }
 
+message DownloadAddressSqueaksRequest {
+    /// The address
+    string address = 1;
+}
+
+message DownloadAddressSqueaksReply {
+}
+
 message GetSqueakDetailsRequest {
     /// Hash of the squeak.
     string squeak_hash = 1;
@@ -1019,4 +1035,9 @@ message SubscribeSqueakDisplayRequest {
 message SubscribeReplySqueakDisplaysRequest {
     /// Hash of the squeak.
     string squeak_hash = 1;
+}
+
+message SubscribeAddressSqueakDisplaysRequest {
+    /// The address
+    string address = 1;
 }

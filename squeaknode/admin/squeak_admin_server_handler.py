@@ -559,6 +559,13 @@ class SqueakAdminServerHandler(object):
         self.squeak_controller.download_replies(squeak_hash)
         return squeak_admin_pb2.DownloadRepliesReply()
 
+    def handle_download_address_squeaks(self, request):
+        squeak_address = request.address
+        logger.info(
+            "Handle download address squeaks for address: {}".format(squeak_address))
+        self.squeak_controller.download_address_squeaks(squeak_address)
+        return squeak_admin_pb2.DownloadAddressSqueaksReply()
+
     def handle_pay_offer(self, request):
         offer_id = request.offer_id
         logger.info("Handle pay offer for offer id: {}".format(offer_id))
@@ -826,6 +833,26 @@ class SqueakAdminServerHandler(object):
             "Handle subscribe reply squeak displays for hash: {}".format(squeak_hash_str))
         squeak_display_stream = self.squeak_controller.subscribe_squeak_reply_entries(
             squeak_hash,
+            stopped,
+        )
+        for squeak_display in squeak_display_stream:
+            if squeak_display is None:
+                yield squeak_admin_pb2.GetSqueakDisplayReply(
+                    squeak_display_entry=None
+                )
+            else:
+                display_message = squeak_entry_to_message(
+                    squeak_display)
+                yield squeak_admin_pb2.GetSqueakDisplayReply(
+                    squeak_display_entry=display_message
+                )
+
+    def handle_subscribe_address_squeak_displays(self, request, stopped):
+        squeak_address = request.address
+        logger.info(
+            "Handle subscribe address squeak displays for address: {}".format(squeak_address))
+        squeak_display_stream = self.squeak_controller.subscribe_squeak_address_entries(
+            squeak_address,
             stopped,
         )
         for squeak_display in squeak_display_stream:

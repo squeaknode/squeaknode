@@ -38,6 +38,7 @@ from tests.util import delete_profile
 from tests.util import delete_squeak
 from tests.util import download_offers
 from tests.util import download_squeak
+from tests.util import download_squeaks_for_address
 from tests.util import get_connected_peer
 from tests.util import get_connected_peers
 from tests.util import get_hash
@@ -50,6 +51,7 @@ from tests.util import open_channel
 from tests.util import open_peer_connection
 from tests.util import subscribe_connected_peers
 from tests.util import subscribe_squeak_entry
+from tests.util import subscribe_squeaks_for_address
 
 
 def test_get_network(admin_stub):
@@ -723,6 +725,47 @@ def test_download_single_squeak(
         )
         # print(get_buy_offers_response)
         assert len(get_buy_offers_response.offers) > 0
+
+        item = subscription_queue.get()
+        print("item:")
+        print(item)
+        assert item.squeak_hash == saved_squeak_hash
+
+
+def test_download_squeaks_for_address(
+    admin_stub,
+    other_admin_stub,
+    connected_tcp_peer_id,
+    signing_profile_id,
+    saved_squeak_hash,
+):
+    squeak_profile = get_squeak_profile(admin_stub, signing_profile_id)
+    squeak_profile_address = squeak_profile.address
+
+    with subscribe_squeaks_for_address(other_admin_stub, squeak_profile_address) as subscription_queue:
+
+        # Get the squeak display item (should be empty)
+        squeak_display_entry = get_squeak_display(
+            other_admin_stub, saved_squeak_hash)
+        assert squeak_display_entry is None
+
+        # Get buy offers for the squeak hash (should be empty)
+        get_buy_offers_response = other_admin_stub.GetBuyOffers(
+            squeak_admin_pb2.GetBuyOffersRequest(
+                squeak_hash=saved_squeak_hash,
+            )
+        )
+        # print(get_buy_offers_response)
+        assert len(get_buy_offers_response.offers) == 0
+
+        # Download squeaks for address
+        download_squeaks_for_address(other_admin_stub, squeak_profile_address)
+        time.sleep(5)
+
+        # Get the squeak display item
+        squeak_display_entry = get_squeak_display(
+            other_admin_stub, saved_squeak_hash)
+        assert squeak_display_entry is not None
 
         item = subscription_queue.get()
         print("item:")

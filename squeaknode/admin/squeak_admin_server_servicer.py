@@ -205,6 +205,9 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
     def DownloadReplies(self, request, context):
         return self.handler.handle_download_replies(request)
 
+    def DownloadAddressSqueaks(self, request, context):
+        return self.handler.handle_download_address_squeaks(request)
+
     def PayOffer(self, request, context):
         return self.handler.handle_pay_offer(request)
 
@@ -321,6 +324,18 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
             stopped.set()
         context.add_callback(on_rpc_done)
         return self.handler.handle_subscribe_reply_squeak_displays(
+            request,
+            stopped,
+        )
+
+    def SubscribeAddressSqueakDisplays(self, request, context):
+        stopped = threading.Event()
+
+        def on_rpc_done():
+            logger.info("Stopping SubscribeAddressSqueakDisplaysRequest.")
+            stopped.set()
+        context.add_callback(on_rpc_done)
+        return self.handler.handle_subscribe_address_squeak_displays(
             request,
             stopped,
         )

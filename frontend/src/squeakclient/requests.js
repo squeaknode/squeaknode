@@ -61,11 +61,13 @@ import {
   DisconnectPeerRequest as DisconnectSqueakPeerRequest,
   DownloadOffersRequest,
   DownloadRepliesRequest,
+  DownloadAddressSqueaksRequest,
   SubscribeConnectedPeersRequest,
   SubscribeConnectedPeerRequest,
   PeerAddress,
   SubscribeBuyOffersRequest,
   SubscribeReplySqueakDisplaysRequest,
+  SubscribeAddressSqueakDisplaysRequest,
 } from '../proto/squeak_admin_pb';
 
 import { SqueakAdminClient } from '../proto/squeak_admin_grpc_web_pb';
@@ -468,6 +470,14 @@ export function downloadRepliesRequest(squeakHash, handleResponse) {
   });
 }
 
+export function downloadAddressSqueaksRequest(address, handleResponse) {
+  const request = new DownloadAddressSqueaksRequest();
+  request.setAddress(address);
+  client.downloadAddressSqueaks(request, {}, (err, response) => {
+    handleResponse(response);
+  });
+}
+
 export function getSqueakDetailsRequest(hash, handleResponse) {
   const request = new GetSqueakDetailsRequest();
   request.setSqueakHash(hash);
@@ -652,6 +662,24 @@ export function subscribeReplySqueakDisplaysRequest(hash, handleResponse) {
   request.setSqueakHash(hash);
   const stream = client.subscribeReplySqueakDisplays(request);
   stream.on('data', (response) => {
+    handleResponse(response.getSqueakDisplayEntry());
+  });
+  stream.on('end', (end) => {
+    // stream end signal
+    console.log(end);
+    alert(`Stream ended: ${end}`);
+  });
+  console.log("Stream object:");
+  console.log(stream);
+  return stream;
+}
+
+export function subscribeAddressSqueakDisplaysRequest(address, handleResponse) {
+  const request = new SubscribeAddressSqueakDisplaysRequest();
+  request.setAddress(address);
+  const stream = client.subscribeAddressSqueakDisplays(request);
+  stream.on('data', (response) => {
+    console.log("response :" + response);
     handleResponse(response.getSqueakDisplayEntry());
   });
   stream.on('end', (end) => {

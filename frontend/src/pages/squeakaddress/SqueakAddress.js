@@ -3,6 +3,7 @@ import { useParams, useHistory } from 'react-router-dom';
 import {
   Grid,
   Button,
+  Box,
 } from '@material-ui/core';
 
 // styles
@@ -13,6 +14,8 @@ import TimelineDot from '@material-ui/lab/TimelineDot';
 import Paper from '@material-ui/core/Paper';
 
 import FaceIcon from '@material-ui/icons/Face';
+import GetAppIcon from '@material-ui/icons/GetApp';
+
 import CreateContactProfileDialog from '../../components/CreateContactProfileDialog';
 import SqueakList from '../../components/SqueakList';
 import useStyles from './styles';
@@ -21,6 +24,8 @@ import {
   getSqueakProfileByAddressRequest,
   getAddressSqueakDisplaysRequest,
   getNetworkRequest,
+  subscribeAddressSqueakDisplaysRequest,
+  downloadAddressSqueaksRequest,
 } from '../../squeakclient/requests';
 import {
   goToSqueakAddressPage,
@@ -42,6 +47,13 @@ export default function SqueakAddressPage() {
   const getSqueaks = (address) => {
     getAddressSqueakDisplaysRequest(address, setSqueaks);
   };
+  const subscribeSqueaks = (hash) => {
+    return subscribeAddressSqueakDisplaysRequest(address, (resp) => {
+      setSqueaks((prevSqueaks) => {
+        return [resp].concat(prevSqueaks);
+      });
+    });
+  };
   const getNetwork = () => {
     getNetworkRequest(setNetwork);
   };
@@ -54,11 +66,23 @@ export default function SqueakAddressPage() {
     setCreateContactProfileDialogOpen(false);
   };
 
+  const onDownloadSqueaksClick = (event) => {
+    event.preventDefault();
+    console.log('Handling download address squeaks click...');
+    downloadAddressSqueaksRequest(address, (response) => {
+      // Do nothing.
+    });
+  };
+
   useEffect(() => {
     getSqueakProfile(address);
   }, [address]);
   useEffect(() => {
     getSqueaks(address);
+  }, [address]);
+  useEffect(() => {
+    const stream = subscribeSqueaks(address);
+    return () => stream.cancel();
   }, [address]);
   useEffect(() => {
     getNetwork();
@@ -158,11 +182,28 @@ export default function SqueakAddressPage() {
     );
   }
 
+  function DownloadSqueaksButtonContent() {
+    return (
+      <>
+        <Box p={1}>
+          <Button
+            variant="contained"
+            onClick={onDownloadSqueaksClick}
+          >
+            <GetAppIcon />
+            Download squeaks
+          </Button>
+        </Box>
+      </>
+    );
+  }
+
   return (
     <>
       {squeakProfile
         ? ProfileContent()
         : NoProfileContent()}
+      {DownloadSqueaksButtonContent()}
       {GridContent()}
       {CreateContactProfileDialogContent()}
     </>

@@ -57,8 +57,9 @@ export default function SqueakPage() {
   };
   const subscribeReplySqueaks = (hash) => {
     return subscribeReplySqueakDisplaysRequest(hash, (resp) => {
-      console.log(resp);
-      setReplySqueaks(replySqueaks.concat(resp));
+      setReplySqueaks((prevReplySqueaks) => {
+        return prevReplySqueaks.concat(resp);
+      });
     });
   };
   const getNetwork = () => {
