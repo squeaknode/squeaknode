@@ -639,4 +639,7 @@ export function subscribeSqueakDisplayRequest(hash, handleResponse) {
     console.log(end);
     alert(`Stream ended: ${end}`);
   });
+  console.log("Stream object:");
+  console.log(stream);
+  return stream;
 }

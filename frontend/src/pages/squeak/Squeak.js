@@ -46,7 +46,7 @@ export default function SqueakPage() {
     getSqueakDisplayRequest(hash, setSqueak);
   };
   const subscribeSqueak = (hash) => {
-    subscribeSqueakDisplayRequest(hash, setSqueak);
+    return subscribeSqueakDisplayRequest(hash, setSqueak);
   };
   const getAncestorSqueaks = (hash) => {
     getAncestorSqueakDisplaysRequest(hash, setAncestorSqueaks);
@@ -74,7 +74,8 @@ export default function SqueakPage() {
     getSqueak(hash);
   }, [hash]);
   useEffect(() => {
-    subscribeSqueak(hash);
+    const stream = subscribeSqueak(hash);
+    return () => stream.cancel();
   }, [hash]);
   useEffect(() => {
     getAncestorSqueaks(hash);
