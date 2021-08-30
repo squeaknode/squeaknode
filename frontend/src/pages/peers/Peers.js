@@ -61,7 +61,7 @@ export default function Peers() {
   };
 
   const subscribeConnectedPeers = () => {
-    subscribeConnectedPeersRequest(setConnectedPeers);
+    return subscribeConnectedPeersRequest(setConnectedPeers);
   };
 
   const getSqueakPeers = () => {
@@ -88,7 +88,8 @@ export default function Peers() {
     getConnectedPeers();
   }, []);
   useEffect(() => {
-    subscribeConnectedPeers();
+    const stream = subscribeConnectedPeers();
+    return () => stream.cancel();
   }, []);
   useEffect(() => {
     getSqueakPeers();

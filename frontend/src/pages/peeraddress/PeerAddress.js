@@ -37,7 +37,7 @@ export default function PeerAddressPage() {
   };
 
   const subscribeConnectedPeer = () => {
-    subscribeConnectedPeerRequest(host, port, (connectedPeer) => {
+    return subscribeConnectedPeerRequest(host, port, (connectedPeer) => {
       console.log(connectedPeer);
       setConnectedPeer(connectedPeer);
     });
@@ -47,7 +47,8 @@ export default function PeerAddressPage() {
     getConnectedPeer();
   }, []);
   useEffect(() => {
-    subscribeConnectedPeer();
+    const stream = subscribeConnectedPeer();
+    return () => stream.cancel();
   }, []);
 
   function DisconnectPeerButton() {
