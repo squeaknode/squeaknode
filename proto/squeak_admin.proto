@@ -200,6 +200,10 @@ service SqueakAdmin {
   */
   rpc DownloadReplies (DownloadRepliesRequest) returns (DownloadRepliesReply) {}
 
+  /** sqkadmin: `downloadaddresssqueaks`
+  */
+  rpc DownloadAddressSqueaks (DownloadAddressSqueaksRequest) returns (DownloadAddressSqueaksReply) {}
+
   /** sqkadmin: `payoffer`
   */
   rpc PayOffer (PayOfferRequest) returns (PayOfferReply) {}
@@ -805,6 +809,14 @@ message DownloadRepliesRequest {
 }
 
 message DownloadRepliesReply {
+}
+
+message DownloadAddressSqueaksRequest {
+    /// The address
+    string address = 1;
+}
+
+message DownloadAddressSqueaksReply {
 }
 
 message GetSqueakDetailsRequest {

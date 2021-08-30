@@ -642,6 +642,22 @@ class SqueakController:
         )
         self.broadcast_msg(getsqueaks_msg)
 
+    def download_address_squeaks(self, squeak_address: str):
+        logger.info("Downloading address squeaks for address: {}".format(
+            squeak_address,
+        ))
+        interest = CInterested(
+            addresses=[CSqueakAddress(squeak_address)],
+        )
+        self.temporary_interest_manager.add_range_interest(10, interest)
+        locator = CSqueakLocator(
+            vInterested=[interest],
+        )
+        getsqueaks_msg = msg_getsqueaks(
+            locator=locator,
+        )
+        self.broadcast_msg(getsqueaks_msg)
+
     def broadcast_msg(self, msg: MsgSerializable) -> None:
         self.network_manager.broadcast_msg(msg)
 

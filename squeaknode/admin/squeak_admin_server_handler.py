@@ -559,6 +559,13 @@ class SqueakAdminServerHandler(object):
         self.squeak_controller.download_replies(squeak_hash)
         return squeak_admin_pb2.DownloadRepliesReply()
 
+    def handle_download_address_squeaks(self, request):
+        squeak_address = request.address
+        logger.info(
+            "Handle download address squeaks for address: {}".format(squeak_address))
+        self.squeak_controller.download_address_squeaks(squeak_address)
+        return squeak_admin_pb2.DownloadAddressSqueaksReply()
+
     def handle_pay_offer(self, request):
         offer_id = request.offer_id
         logger.info("Handle pay offer for offer id: {}".format(offer_id))

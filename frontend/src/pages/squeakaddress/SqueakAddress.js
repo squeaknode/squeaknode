@@ -60,6 +60,14 @@ export default function SqueakAddressPage() {
     setCreateContactProfileDialogOpen(false);
   };
 
+  const onDownloadSqueaksClick = (event) => {
+    event.preventDefault();
+    console.log('Handling download squeaks click...');
+    downloadRepliesRequest(hash, (response) => {
+      // Do nothing.
+    });
+  };
+
   useEffect(() => {
     getSqueakProfile(address);
   }, [address]);
@@ -165,6 +173,22 @@ export default function SqueakAddressPage() {
           <Paper className={classes.paper} />
         </Grid>
       </Grid>
+    );
+  }
+
+  function DownloadSqueaksButtonContent() {
+    return (
+      <>
+        <Box p={1}>
+          <Button
+            variant="contained"
+            onClick={onDownloadSqueaksClick}
+          >
+            <GetAppIcon />
+            Download squeaks
+          </Button>
+        </Box>
+      </>
     );
   }
 
