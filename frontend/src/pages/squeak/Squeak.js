@@ -23,6 +23,7 @@ import SqueakReplies from '../../components/SqueakReplies';
 
 import {
   getSqueakDisplayRequest,
+  subscribeSqueakDisplayRequest,
   getAncestorSqueakDisplaysRequest,
   getReplySqueakDisplaysRequest,
   getNetworkRequest,
@@ -43,6 +44,9 @@ export default function SqueakPage() {
 
   const getSqueak = (hash) => {
     getSqueakDisplayRequest(hash, setSqueak);
+  };
+  const subscribeSqueak = (hash) => {
+    subscribeSqueakDisplayRequest(hash, setSqueak);
   };
   const getAncestorSqueaks = (hash) => {
     getAncestorSqueakDisplaysRequest(hash, setAncestorSqueaks);
@@ -68,6 +72,9 @@ export default function SqueakPage() {
 
   useEffect(() => {
     getSqueak(hash);
+  }, [hash]);
+  useEffect(() => {
+    subscribeSqueak(hash);
   }, [hash]);
   useEffect(() => {
     getAncestorSqueaks(hash);
