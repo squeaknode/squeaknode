@@ -86,7 +86,7 @@ export default function TimelinePage() {
 
   function LoadingContent() {
     return (
-      <Backdrop className={classes.backdrop} open={waitingForTimeline} >
+      <Backdrop className={classes.backdrop} open={waitingForTimeline}>
         <CircularProgress color="inherit" />
       </Backdrop>
     );
