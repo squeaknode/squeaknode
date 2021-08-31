@@ -111,7 +111,6 @@ export default function TimelinePage() {
           network={network}
           setSqueaksFn={setSqueaks}
         />
-        {(squeaks.length > 0) && ViewMoreSqueaksButton()}
       </>
     );
   }
@@ -149,6 +148,7 @@ export default function TimelinePage() {
               ? SqueaksContent()
               : NoSqueaksContent()}
           </Paper>
+          {(squeaks.length > 0) && ViewMoreSqueaksButton()}
         </Grid>
         <Grid item xs={12} sm={3}>
           <Paper className={classes.paper} />
