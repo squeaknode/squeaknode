@@ -708,9 +708,5 @@ class SqueakController:
 
     def subscribe_squeak_ancestor_entries(self, squeak_hash: bytes, stopped: threading.Event):
         for item in self.new_squeak_listener.yield_items(stopped):
-            logger.info("Checking item: {}".format(
-                get_hash(item).hex(),
-            ))
             if squeak_hash == get_hash(item):
-                logger.info("Found matching item to yield ancestors.")
                 yield self.get_ancestor_squeak_entries(squeak_hash)
