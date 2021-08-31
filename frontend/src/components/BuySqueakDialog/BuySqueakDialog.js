@@ -222,9 +222,6 @@ export default function BuySqueakDialog({
     );
   }
 
-  const buttonClassname = clsx({
-    [classes.buttonSuccess]: success,
-  });
 
   function MakeSqueakButton() {
     return (
@@ -233,7 +230,6 @@ export default function BuySqueakDialog({
           type="submit"
           variant="contained"
           color="primary"
-          className={buttonClassname}
           disabled={loading}
         >
           Buy Squeak
