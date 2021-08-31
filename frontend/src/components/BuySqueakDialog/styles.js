@@ -1,4 +1,5 @@
 import { makeStyles } from '@material-ui/styles';
+import { green } from '@material-ui/core/colors';
 
 export default makeStyles((theme) => ({
   widgetWrapper: {
@@ -39,5 +40,19 @@ export default makeStyles((theme) => ({
       backgroundColor: theme.palette.primary.main,
       color: 'rgba(255, 255, 255, 0.35)',
     },
+  },
+  buttonSuccess: {
+    backgroundColor: green[500],
+    '&:hover': {
+      backgroundColor: green[700],
+    },
+  },
+  buttonProgress: {
+    color: green[500],
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    marginTop: -12,
+    marginLeft: -12,
   },
 }));
