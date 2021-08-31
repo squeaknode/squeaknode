@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import {
   Grid,
@@ -38,20 +38,20 @@ export default function SqueakPage() {
   const classes = useStyles();
   const history = useHistory();
   const { hash } = useParams();
-  const [squeak, setSqueak] = useState(null);
+  // const [squeak, setSqueak] = useState(null);
   const [ancestorSqueaks, setAncestorSqueaks] = useState([]);
   const [replySqueaks, setReplySqueaks] = useState([]);
   const [network, setNetwork] = useState('');
 
-  const getSqueak = (hash) => {
-    getSqueakDisplayRequest(hash, setSqueak);
-  };
-  const subscribeSqueak = (hash) => {
-    return subscribeSqueakDisplayRequest(hash, (squeak) => {
-      setSqueak(squeak);
-      setAncestorSqueaks([squeak]);
-    });
-  };
+  // const getSqueak = (hash) => {
+  //   getSqueakDisplayRequest(hash, setSqueak);
+  // };
+  // const subscribeSqueak = (hash) => {
+  //   return subscribeSqueakDisplayRequest(hash, (squeak) => {
+  //     setSqueak(squeak);
+  //     setAncestorSqueaks([squeak]);
+  //   });
+  // };
   const getAncestorSqueaks = (hash) => {
     getAncestorSqueakDisplaysRequest(hash, setAncestorSqueaks);
   };
@@ -70,7 +70,8 @@ export default function SqueakPage() {
   };
 
   const getCurrentSqueak = () => {
-    getSqueak(hash);
+    // getSqueak(hash);
+    getAncestorSqueaks(hash);
   };
 
   const onDownloadRepliesClick = (event) => {
@@ -81,13 +82,23 @@ export default function SqueakPage() {
     });
   };
 
-  useEffect(() => {
-    getSqueak(hash);
-  }, [hash]);
-  useEffect(() => {
-    const stream = subscribeSqueak(hash);
-    return () => stream.cancel();
-  }, [hash]);
+  const calculateCurrentSqueak = (ancestorSqueaks) => {
+    if (ancestorSqueaks == null) {
+      return null;
+    } else if (ancestorSqueaks.length == 0) {
+      return null;
+    } else {
+      return ancestorSqueaks.slice(-1)[0];
+    }
+  }
+
+  // useEffect(() => {
+  //   getSqueak(hash);
+  // }, [hash]);
+  // useEffect(() => {
+  //   const stream = subscribeSqueak(hash);
+  //   return () => stream.cancel();
+  // }, [hash]);
   useEffect(() => {
     getAncestorSqueaks(hash);
   }, [hash]);
@@ -101,6 +112,8 @@ export default function SqueakPage() {
   useEffect(() => {
     getNetwork();
   }, []);
+
+  const currentSqueak = useMemo(() => calculateCurrentSqueak(ancestorSqueaks), [ancestorSqueaks]);
 
   function NoSqueakContent() {
     return (
@@ -141,7 +154,7 @@ export default function SqueakPage() {
     return (
       <SqueakDetailItem
         hash={hash}
-        squeak={squeak}
+        squeak={currentSqueak}
         reloadSqueak={getCurrentSqueak}
         network={network}
       />
