@@ -84,14 +84,6 @@ export default function TimelinePage() {
     );
   }
 
-  function LoadingContent() {
-    return (
-      <Backdrop className={classes.backdrop} open={waitingForTimeline}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
-    );
-  }
-
   function MakeSqueakDialogContent() {
     return (
       <>
@@ -111,7 +103,6 @@ export default function TimelinePage() {
           network={network}
           setSqueaksFn={setSqueaks}
         />
-        {(squeaks.length > 0) && ViewMoreSqueaksButton()}
       </>
     );
   }
@@ -120,9 +111,11 @@ export default function TimelinePage() {
     return (
       <>
         <Grid item xs={12}>
-          <div className={classes.root}>
+          <div className={classes.wrapper}>
             <Button
-              variant="contained"
+            variant="contained"
+            color="primary"
+            disabled={waitingForTimeline}
               onClick={() => {
                 const latestSqueak = squeaks.slice(-1).pop();
                 const latestSqueakHeight = (latestSqueak ? latestSqueak.getBlockHeight() : null);
@@ -134,6 +127,7 @@ export default function TimelinePage() {
               <ReplayIcon />
               View more squeaks
             </Button>
+            {waitingForTimeline && <CircularProgress size={24} className={classes.buttonProgress} />}
           </div>
         </Grid>
       </>
@@ -149,6 +143,7 @@ export default function TimelinePage() {
               ? SqueaksContent()
               : NoSqueaksContent()}
           </Paper>
+          {ViewMoreSqueaksButton()}
         </Grid>
         <Grid item xs={12} sm={3}>
           <Paper className={classes.paper} />
@@ -165,7 +160,6 @@ export default function TimelinePage() {
       </Fab>
 
       {MakeSqueakDialogContent()}
-      {LoadingContent()}
     </>
   );
 }
