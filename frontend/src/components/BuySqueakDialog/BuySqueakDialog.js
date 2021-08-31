@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import clsx from 'clsx';
 import {
   MenuItem,
   Typography,
@@ -11,6 +12,7 @@ import {
   FormControl,
   InputLabel,
   Select,
+  CircularProgress,
 } from '@material-ui/core';
 
 import { useHistory } from 'react-router-dom';
@@ -39,6 +41,8 @@ export default function BuySqueakDialog({
 
   const [selectedOfferId, setSelectedOfferId] = useState('');
   const [offers, setOffers] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   const resetFields = () => {
     setSelectedOfferId('');
@@ -80,13 +84,18 @@ export default function BuySqueakDialog({
 
   const handlePayResponse = (response) => {
     handlePaymentComplete();
+    setLoading(false);
+    handleClose();
   };
 
   const handlePayErr = (err) => {
     alert(`Payment failure: ${err.message}`);
+    setLoading(false);
+    handleClose();
   };
 
   const pay = (offerId) => {
+    setLoading(true);
     payOfferRequest(offerId, handlePayResponse, handlePayErr);
   };
 
@@ -129,7 +138,7 @@ export default function BuySqueakDialog({
       return;
     }
     pay(selectedOfferId);
-    handleClose();
+    // handleClose();
   }
 
   function load(event) {
@@ -211,16 +220,29 @@ export default function BuySqueakDialog({
     );
   }
 
+  function WaitingForBuyContent() {
+    return (
+        <CircularProgress />
+    );
+  }
+
+  const buttonClassname = clsx({
+    [classes.buttonSuccess]: success,
+  });
+
   function MakeSqueakButton() {
     return (
-      <Button
-        type="submit"
-        variant="contained"
-        color="primary"
-        className={classes.button}
-      >
-        Buy Squeak
-      </Button>
+      <div className={classes.wrapper}>
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          className={buttonClassname}
+          disabled={loading}
+        >Buy Squeak
+        </Button>
+        {loading && <CircularProgress size={24} className={classes.buttonProgress} />}
+      </div>
     );
   }
 
