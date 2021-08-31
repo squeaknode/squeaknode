@@ -39,20 +39,10 @@ export default function SqueakPage() {
   const classes = useStyles();
   const history = useHistory();
   const { hash } = useParams();
-  // const [squeak, setSqueak] = useState(null);
   const [ancestorSqueaks, setAncestorSqueaks] = useState([]);
   const [replySqueaks, setReplySqueaks] = useState([]);
   const [network, setNetwork] = useState('');
 
-  // const getSqueak = (hash) => {
-  //   getSqueakDisplayRequest(hash, setSqueak);
-  // };
-  // const subscribeSqueak = (hash) => {
-  //   return subscribeSqueakDisplayRequest(hash, (squeak) => {
-  //     setSqueak(squeak);
-  //     setAncestorSqueaks([squeak]);
-  //   });
-  // };
   const getAncestorSqueaks = (hash) => {
     getAncestorSqueakDisplaysRequest(hash, setAncestorSqueaks);
   };
@@ -74,7 +64,6 @@ export default function SqueakPage() {
   };
 
   const getCurrentSqueak = () => {
-    // getSqueak(hash);
     getAncestorSqueaks(hash);
   };
 
@@ -96,13 +85,6 @@ export default function SqueakPage() {
     }
   }
 
-  // useEffect(() => {
-  //   getSqueak(hash);
-  // }, [hash]);
-  // useEffect(() => {
-  //   const stream = subscribeSqueak(hash);
-  //   return () => stream.cancel();
-  // }, [hash]);
   useEffect(() => {
     getAncestorSqueaks(hash);
   }, [hash]);
