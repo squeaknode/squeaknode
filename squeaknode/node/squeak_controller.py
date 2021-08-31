@@ -135,9 +135,10 @@ class SqueakController:
         self.squeak_db.delete_squeak(squeak_hash)
 
     def save_received_squeak(self, squeak: CSqueak) -> None:
-        if self.get_temporary_interest_counter(squeak):
-            logger.debug("Saving squeak based on temporary interest.")
+        counter = self.get_temporary_interest_counter(squeak)
+        if counter:
             self.save_squeak(squeak)
+            counter.increment()
         elif self.squeak_matches_interest(squeak):
             self.save_squeak(squeak)
 
