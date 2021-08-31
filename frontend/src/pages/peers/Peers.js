@@ -60,9 +60,7 @@ export default function Peers() {
     getConnectedPeersRequest(setConnectedPeers);
   };
 
-  const subscribeConnectedPeers = () => {
-    return subscribeConnectedPeersRequest(setConnectedPeers);
-  };
+  const subscribeConnectedPeers = () => subscribeConnectedPeersRequest(setConnectedPeers);
 
   const getSqueakPeers = () => {
     getPeersRequest(setPeers);

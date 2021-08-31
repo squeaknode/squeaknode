@@ -36,12 +36,10 @@ export default function PeerAddressPage() {
     getConnectedPeerRequest(host, port, setConnectedPeer);
   };
 
-  const subscribeConnectedPeer = () => {
-    return subscribeConnectedPeerRequest(host, port, (connectedPeer) => {
-      console.log(connectedPeer);
-      setConnectedPeer(connectedPeer);
-    });
-  };
+  const subscribeConnectedPeer = () => subscribeConnectedPeerRequest(host, port, (connectedPeer) => {
+    console.log(connectedPeer);
+    setConnectedPeer(connectedPeer);
+  });
 
   useEffect(() => {
     getConnectedPeer();

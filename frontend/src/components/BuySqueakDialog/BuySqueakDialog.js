@@ -68,13 +68,9 @@ export default function BuySqueakDialog({
   const loadOffers = () => {
     getBuyOffersRequest(hash, setOffers);
   };
-  const subscribeOffers = () => {
-    return subscribeBuyOffersRequest(hash, (offer) => {
-      setOffers((prevOffers) => {
-        return prevOffers.concat([offer]);
-      });
-    });
-  };
+  const subscribeOffers = () => subscribeBuyOffersRequest(hash, (offer) => {
+    setOffers((prevOffers) => prevOffers.concat([offer]));
+  });
   const downloadOffers = () => {
     console.log(`downloadOffersRequest with hash: ${hash}`);
     downloadOffersRequest(hash, (response) => {
@@ -142,8 +138,8 @@ export default function BuySqueakDialog({
   }
 
   function load(event) {
-    //loadOffers();
-    //subscribeOffers();
+    // loadOffers();
+    // subscribeOffers();
     downloadOffers();
   }
 
@@ -222,7 +218,7 @@ export default function BuySqueakDialog({
 
   function WaitingForBuyContent() {
     return (
-        <CircularProgress />
+      <CircularProgress />
     );
   }
 
@@ -239,7 +235,8 @@ export default function BuySqueakDialog({
           color="primary"
           className={buttonClassname}
           disabled={loading}
-        >Buy Squeak
+        >
+          Buy Squeak
         </Button>
         {loading && <CircularProgress size={24} className={classes.buttonProgress} />}
       </div>
@@ -248,7 +245,10 @@ export default function BuySqueakDialog({
 
   return (
     <Dialog open={open} onRendered={load} onEnter={resetFields} onClose={cancel} onClick={ignore} aria-labelledby="form-dialog-title">
-      <DialogTitle id="form-dialog-title">Buy Squeak for hash {hash}</DialogTitle>
+      <DialogTitle id="form-dialog-title">
+        Buy Squeak for hash
+        {hash}
+      </DialogTitle>
       <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
         <DialogContent>
           <Box>

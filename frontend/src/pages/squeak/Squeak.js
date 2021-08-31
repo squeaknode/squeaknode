@@ -22,8 +22,6 @@ import SqueakThread from '../../components/SqueakThread';
 import SqueakReplies from '../../components/SqueakReplies';
 
 import {
-  getSqueakDisplayRequest,
-  subscribeSqueakDisplayRequest,
   getAncestorSqueakDisplaysRequest,
   getReplySqueakDisplaysRequest,
   getNetworkRequest,
@@ -46,19 +44,13 @@ export default function SqueakPage() {
   const getAncestorSqueaks = (hash) => {
     getAncestorSqueakDisplaysRequest(hash, setAncestorSqueaks);
   };
-  const subscribeAncestorSqueaks = (hash) => {
-    return subscribeAncestorSqueakDisplaysRequest(hash, setAncestorSqueaks);
-  };
+  const subscribeAncestorSqueaks = (hash) => subscribeAncestorSqueakDisplaysRequest(hash, setAncestorSqueaks);
   const getReplySqueaks = (hash) => {
     getReplySqueakDisplaysRequest(hash, setReplySqueaks);
   };
-  const subscribeReplySqueaks = (hash) => {
-    return subscribeReplySqueakDisplaysRequest(hash, (resp) => {
-      setReplySqueaks((prevReplySqueaks) => {
-        return prevReplySqueaks.concat(resp);
-      });
-    });
-  };
+  const subscribeReplySqueaks = (hash) => subscribeReplySqueakDisplaysRequest(hash, (resp) => {
+    setReplySqueaks((prevReplySqueaks) => prevReplySqueaks.concat(resp));
+  });
   const getNetwork = () => {
     getNetworkRequest(setNetwork);
   };
@@ -78,12 +70,11 @@ export default function SqueakPage() {
   const calculateCurrentSqueak = (ancestorSqueaks) => {
     if (ancestorSqueaks == null) {
       return null;
-    } else if (ancestorSqueaks.length == 0) {
+    } if (ancestorSqueaks.length == 0) {
       return null;
-    } else {
-      return ancestorSqueaks.slice(-1)[0];
     }
-  }
+    return ancestorSqueaks.slice(-1)[0];
+  };
 
   useEffect(() => {
     getAncestorSqueaks(hash);

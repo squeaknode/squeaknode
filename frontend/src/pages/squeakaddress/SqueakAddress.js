@@ -47,13 +47,9 @@ export default function SqueakAddressPage() {
   const getSqueaks = (address) => {
     getAddressSqueakDisplaysRequest(address, setSqueaks);
   };
-  const subscribeSqueaks = (hash) => {
-    return subscribeAddressSqueakDisplaysRequest(address, (resp) => {
-      setSqueaks((prevSqueaks) => {
-        return [resp].concat(prevSqueaks);
-      });
-    });
-  };
+  const subscribeSqueaks = (hash) => subscribeAddressSqueakDisplaysRequest(address, (resp) => {
+    setSqueaks((prevSqueaks) => [resp].concat(prevSqueaks));
+  });
   const getNetwork = () => {
     getNetworkRequest(setNetwork);
   };

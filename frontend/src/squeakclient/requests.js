@@ -658,7 +658,7 @@ export function subscribeSqueakDisplayRequest(hash, handleResponse) {
     console.log(end);
     alert(`Stream ended: ${end}`);
   });
-  console.log("Stream object:");
+  console.log('Stream object:');
   console.log(stream);
   return stream;
 }
@@ -675,7 +675,7 @@ export function subscribeReplySqueakDisplaysRequest(hash, handleResponse) {
     console.log(end);
     alert(`Stream ended: ${end}`);
   });
-  console.log("Stream object:");
+  console.log('Stream object:');
   console.log(stream);
   return stream;
 }
@@ -685,7 +685,7 @@ export function subscribeAddressSqueakDisplaysRequest(address, handleResponse) {
   request.setAddress(address);
   const stream = client.subscribeAddressSqueakDisplays(request);
   stream.on('data', (response) => {
-    console.log("response :" + response);
+    console.log(`response :${response}`);
     handleResponse(response.getSqueakDisplayEntry());
   });
   stream.on('end', (end) => {
@@ -693,11 +693,10 @@ export function subscribeAddressSqueakDisplaysRequest(address, handleResponse) {
     console.log(end);
     alert(`Stream ended: ${end}`);
   });
-  console.log("Stream object:");
+  console.log('Stream object:');
   console.log(stream);
   return stream;
 }
-
 
 export function subscribeAncestorSqueakDisplaysRequest(hash, handleResponse) {
   const request = new SubscribeAncestorSqueakDisplaysRequest();
@@ -711,7 +710,7 @@ export function subscribeAncestorSqueakDisplaysRequest(hash, handleResponse) {
     console.log(end);
     alert(`Stream ended: ${end}`);
   });
-  console.log("Stream object:");
+  console.log('Stream object:');
   console.log(stream);
   return stream;
 }
