@@ -137,12 +137,10 @@ class NetworkManager(object):
         )
 
     def subscribe_connected_peers(self, stopped):
-        for result in self.connection_manager.yield_peers_changed(stopped):
-            yield result
+        yield from self.connection_manager.yield_peers_changed(stopped)
 
     def subscribe_connected_peer(self, peer_address: PeerAddress, stopped):
-        for result in self.connection_manager.yield_single_peer_changed(
-                peer_address,
-                stopped,
-        ):
-            yield result
+        yield from self.connection_manager.yield_single_peer_changed(
+            peer_address,
+            stopped,
+        )

@@ -407,8 +407,7 @@ class SqueakController:
             initial_index,
             stopped,
         ).open_subscription() as client:
-            for payment in client.get_received_payments():
-                yield payment
+            yield from client.get_received_payments()
 
     def get_block_range(self) -> BlockRange:
         max_block = self.squeak_core.get_best_block_height()
@@ -674,8 +673,7 @@ class SqueakController:
         return self.network_manager.subscribe_connected_peer(peer_address, stopped)
 
     def subscribe_new_squeaks(self, stopped: threading.Event):
-        for item in self.new_squeak_listener.yield_items(stopped):
-            yield item
+        yield from self.new_squeak_listener.yield_items(stopped)
 
     def update_subscriptions(self):
         locator = self.get_interested_locator()

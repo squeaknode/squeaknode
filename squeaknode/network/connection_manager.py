@@ -118,8 +118,7 @@ class ConnectionManager(object):
                 peer.stop()
 
     def yield_peers_changed(self, stopped: threading.Event):
-        for item in self.peer_changed_listener.yield_items(stopped):
-            yield item
+        yield from self.peer_changed_listener.yield_items(stopped)
 
     def yield_single_peer_changed(self, peer_address: PeerAddress, stopped: threading.Event):
         for peer in self.single_peer_changed_listener.yield_items(stopped):
