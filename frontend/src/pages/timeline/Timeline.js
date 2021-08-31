@@ -6,6 +6,8 @@ import {
   Fab,
   CircularProgress,
   Backdrop,
+  CardHeader,
+  Card,
 } from '@material-ui/core';
 import { useTheme } from '@material-ui/styles';
 
@@ -72,9 +74,13 @@ export default function TimelinePage() {
 
   function NoSqueaksContent() {
     return (
-      <div>
-        Unable to load squeaks.
-      </div>
+      <Card
+        className={classes.root}
+      >
+        <CardHeader
+          subheader="No squeaks found in timeline. Try following your friends or add your own squeaks."
+        />
+      </Card>
     );
   }
 
@@ -139,7 +145,7 @@ export default function TimelinePage() {
       <Grid container spacing={0}>
         <Grid item xs={12} sm={9}>
           <Paper className={classes.paper}>
-            {(squeaks)
+            {(squeaks.length > 0)
               ? SqueaksContent()
               : NoSqueaksContent()}
           </Paper>
