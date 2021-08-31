@@ -68,6 +68,7 @@ import {
   SubscribeBuyOffersRequest,
   SubscribeReplySqueakDisplaysRequest,
   SubscribeAddressSqueakDisplaysRequest,
+  SubscribeAncestorSqueakDisplaysRequest,
 } from '../proto/squeak_admin_pb';
 
 import { SqueakAdminClient } from '../proto/squeak_admin_grpc_web_pb';
@@ -682,6 +683,24 @@ export function subscribeAddressSqueakDisplaysRequest(address, handleResponse) {
   stream.on('data', (response) => {
     console.log("response :" + response);
     handleResponse(response.getSqueakDisplayEntry());
+  });
+  stream.on('end', (end) => {
+    // stream end signal
+    console.log(end);
+    alert(`Stream ended: ${end}`);
+  });
+  console.log("Stream object:");
+  console.log(stream);
+  return stream;
+}
+
+
+export function subscribeAncestorSqueakDisplaysRequest(hash, handleResponse) {
+  const request = new SubscribeAncestorSqueakDisplaysRequest();
+  request.setSqueakHash(hash);
+  const stream = client.subscribeAncestorSqueakDisplays(request);
+  stream.on('data', (response) => {
+    handleResponse(response.getSqueakDisplayEntriesList());
   });
   stream.on('end', (end) => {
     // stream end signal

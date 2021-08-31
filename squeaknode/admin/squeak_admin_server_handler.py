@@ -866,3 +866,25 @@ class SqueakAdminServerHandler(object):
                 yield squeak_admin_pb2.GetSqueakDisplayReply(
                     squeak_display_entry=display_message
                 )
+
+    def handle_subscribe_ancestor_squeak_displays(self, request, stopped):
+        squeak_hash_str = request.squeak_hash
+        squeak_hash = bytes.fromhex(squeak_hash_str)
+        logger.info(
+            "Handle subscribe ancestor squeak displays for hash: {}".format(squeak_hash_str))
+        squeak_entries_stream = self.squeak_controller.subscribe_squeak_ancestor_entries(
+            squeak_hash,
+            stopped,
+        )
+        for squeak_entries in squeak_entries_stream:
+            logger.info(
+                "Got number of ancestor squeak entries: {}".format(
+                    len(squeak_entries)
+                )
+            )
+            squeak_display_msgs = [
+                squeak_entry_to_message(entry) for entry in squeak_entries
+            ]
+            yield squeak_admin_pb2.GetAncestorSqueakDisplaysReply(
+                squeak_display_entries=squeak_display_msgs
+            )

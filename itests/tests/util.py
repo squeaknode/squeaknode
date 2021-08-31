@@ -374,3 +374,23 @@ def subscribe_squeaks_for_address(node_stub, squeak_address):
     ).start()
     yield q
     subscribe_address_squeaks_response.cancel()
+
+
+@contextmanager
+def subscribe_squeak_ancestor_entries(node_stub, squeak_hash):
+    q = queue.Queue()
+    subscribe_squeak_ancestor_entries_response = node_stub.SubscribeAncestorSqueakDisplays(
+        squeak_admin_pb2.SubscribeAncestorSqueakDisplaysRequest(
+            squeak_hash=squeak_hash,
+        )
+    )
+
+    def enqueue_results():
+        for result in subscribe_squeak_ancestor_entries_response:
+            q.put(result.squeak_display_entries)
+
+    threading.Thread(
+        target=enqueue_results,
+    ).start()
+    yield q
+    subscribe_squeak_ancestor_entries_response.cancel()
