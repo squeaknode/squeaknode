@@ -1,5 +1,7 @@
 import { makeStyles } from '@material-ui/styles';
 
+import { green } from '@material-ui/core/colors';
+
 export default makeStyles((theme) => ({
   dashedBorder: {
     border: '1px dashed',
@@ -16,5 +18,8 @@ export default makeStyles((theme) => ({
     position: 'fixed',
     bottom: theme.spacing(4),
     right: theme.spacing(4),
+  },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
   },
 }));

@@ -102,14 +102,18 @@ export function getUserRequest(handleResponse) {
   });
 }
 
-export function getTimelineSqueakDisplaysRequest(limit, blockHeight, squeakTime, squeakHash, handleResponse) {
+export function getTimelineSqueakDisplaysRequest(limit, blockHeight, squeakTime, squeakHash, handleResponse, handleErr) {
   const request = new GetTimelineSqueakDisplaysRequest();
   request.setLimit(limit);
   request.setBlockHeight(blockHeight);
   request.setSqueakTime(squeakTime);
   request.setSqueakHash(squeakHash);
   client.getTimelineSqueakDisplays(request, {}, (err, response) => {
-    handleResponse(response.getSqueakDisplayEntriesList());
+    if (err) {
+      handleErr(err);
+    } else {
+      handleResponse(response.getSqueakDisplayEntriesList());
+    }
   });
 }
 
