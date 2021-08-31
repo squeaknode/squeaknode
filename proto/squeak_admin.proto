@@ -296,6 +296,10 @@ service SqueakAdmin {
   */
   rpc SubscribeAddressSqueakDisplays (SubscribeAddressSqueakDisplaysRequest) returns (stream GetSqueakDisplayReply) {}
 
+  /** sqkadmin: `subscribeancestorsqueakdisplays`
+  */
+  rpc SubscribeAncestorSqueakDisplays (SubscribeAncestorSqueakDisplaysRequest) returns (stream GetAncestorSqueakDisplaysReply) {}
+
 }
 
 message CreateSigningProfileRequest {
@@ -1040,4 +1044,9 @@ message SubscribeReplySqueakDisplaysRequest {
 message SubscribeAddressSqueakDisplaysRequest {
     /// The address
     string address = 1;
+}
+
+message SubscribeAncestorSqueakDisplaysRequest {
+    /// Hash of the squeak.
+    string squeak_hash = 1;
 }

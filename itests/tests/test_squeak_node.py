@@ -50,6 +50,7 @@ from tests.util import make_squeak
 from tests.util import open_channel
 from tests.util import open_peer_connection
 from tests.util import subscribe_connected_peers
+from tests.util import subscribe_squeak_ancestor_entries
 from tests.util import subscribe_squeak_entry
 from tests.util import subscribe_squeaks_for_address
 
@@ -688,7 +689,8 @@ def test_download_single_squeak(
     saved_squeak_hash,
 ):
 
-    with subscribe_squeak_entry(other_admin_stub, saved_squeak_hash) as subscription_queue:
+    with subscribe_squeak_entry(other_admin_stub, saved_squeak_hash) as subscription_queue, \
+            subscribe_squeak_ancestor_entries(other_admin_stub, saved_squeak_hash) as ancestor_subscription_queue:
 
         # Get the squeak display item (should be empty)
         squeak_display_entry = get_squeak_display(
@@ -727,9 +729,14 @@ def test_download_single_squeak(
         assert len(get_buy_offers_response.offers) > 0
 
         item = subscription_queue.get()
-        print("item:")
+        print("subscription_queue item:")
         print(item)
         assert item.squeak_hash == saved_squeak_hash
+
+        item = ancestor_subscription_queue.get()
+        print("ancestor_subscription_queue item:")
+        print(item)
+        assert item[0].squeak_hash == saved_squeak_hash
 
 
 def test_download_squeaks_for_address(
