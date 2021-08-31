@@ -4,6 +4,8 @@ import {
   Grid,
   Button,
   Fab,
+  CircularProgress,
+  Backdrop,
 } from '@material-ui/core';
 import { useTheme } from '@material-ui/styles';
 
@@ -32,11 +34,13 @@ export default function TimelinePage() {
   const [squeaks, setSqueaks] = useState([]);
   const [open, setOpen] = React.useState(false);
   const [network, setNetwork] = useState('');
+  const [waitingForTimeline, setWaitingForTimeline] = React.useState(false);
 
   const history = useHistory();
 
-  const getSqueaks = () => {
-    getTimelineSqueakDisplaysRequest(SQUEAKS_PER_PAGE, null, null, null, setSqueaks);
+  const getSqueaks = (limit, blockHeight, squeakTime, squeakHash) => {
+    setWaitingForTimeline(true);
+    getTimelineSqueakDisplaysRequest(limit, blockHeight, squeakTime, squeakHash, handleLoadedTimeline, alertFailedRequest);
   };
   const getNetwork = () => {
     getNetworkRequest(setNetwork);
@@ -50,8 +54,17 @@ export default function TimelinePage() {
     setOpen(false);
   };
 
+  const alertFailedRequest = () => {
+    alert('Failed to load timeline.');
+  };
+
+  const handleLoadedTimeline = (loadedSqueaks) => {
+    setWaitingForTimeline(false);
+    setSqueaks(squeaks.concat(loadedSqueaks));
+  };
+
   useEffect(() => {
-    getSqueaks(setSqueaks);
+    getSqueaks(SQUEAKS_PER_PAGE, null, null, null);
   }, []);
   useEffect(() => {
     getNetwork();
@@ -62,6 +75,14 @@ export default function TimelinePage() {
       <div>
         Unable to load squeaks.
       </div>
+    );
+  }
+
+  function LoadingContent() {
+    return (
+      <Backdrop className={classes.backdrop} open={waitingForTimeline} >
+        <CircularProgress color="inherit" />
+      </Backdrop>
     );
   }
 
@@ -101,14 +122,7 @@ export default function TimelinePage() {
                 const latestSqueakHeight = (latestSqueak ? latestSqueak.getBlockHeight() : null);
                 const latestSqueakTime = (latestSqueak ? latestSqueak.getSqueakTime() : null);
                 const latestSqueakHash = (latestSqueak ? latestSqueak.getSqueakHash() : null);
-                console.log(latestSqueakHeight);
-                console.log(latestSqueakTime);
-                console.log(latestSqueakHash);
-                getTimelineSqueakDisplaysRequest(SQUEAKS_PER_PAGE, latestSqueakHeight, latestSqueakTime, latestSqueakHash, (resp) => {
-                // TODO: nothing maybe
-                  console.log(resp);
-                  setSqueaks(squeaks.concat(resp));
-                });
+                getSqueaks(SQUEAKS_PER_PAGE, latestSqueakHeight, latestSqueakTime, latestSqueakHash);
               }}
             >
               <ReplayIcon />
@@ -145,6 +159,7 @@ export default function TimelinePage() {
       </Fab>
 
       {MakeSqueakDialogContent()}
+      {LoadingContent()}
     </>
   );
 }
