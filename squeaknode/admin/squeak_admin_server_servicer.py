@@ -41,7 +41,7 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         self.server = None
 
     def start(self):
-        self.server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+        self.server = grpc.server(futures.ThreadPoolExecutor(max_workers=100))
         squeak_admin_pb2_grpc.add_SqueakAdminServicer_to_server(
             self, self.server)
         self.server.add_insecure_port("{}:{}".format(self.host, self.port))
