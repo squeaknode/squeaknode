@@ -20,7 +20,7 @@ export default makeStyles((theme) => ({
   },
   refreshFab: {
     position: 'fixed',
-    top: theme.spacing(12),
+    top: theme.spacing(14),
     margin: 'auto',
     justifyContent: 'center',
   },
