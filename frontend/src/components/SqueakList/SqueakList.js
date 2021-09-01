@@ -64,6 +64,7 @@ export default function SqueakList({
             />
             <TimelineSeparator>
               <SqueakUserAvatar
+                squeakAddress={squeak.getAuthorAddress()}
                 squeakProfile={squeak.getAuthor()}
               />
             </TimelineSeparator>

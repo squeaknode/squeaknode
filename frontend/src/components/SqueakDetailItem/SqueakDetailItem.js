@@ -260,6 +260,7 @@ export default function SqueakDetailItem({
               {squeak
                   && (
                   <SqueakUserAvatar
+                    squeakAddress={squeak.getAuthorAddress()}
                     squeakProfile={squeak.getAuthor()}
                   />
                   )}

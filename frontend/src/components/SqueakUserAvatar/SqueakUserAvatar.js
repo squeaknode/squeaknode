@@ -17,6 +17,7 @@ import {
 } from '../../navigation/navigation';
 
 export default function SqueakUserAvatar({
+  squeakAddress,
   squeakProfile,
   ...props
 }) {
@@ -27,8 +28,8 @@ export default function SqueakUserAvatar({
     event.preventDefault();
     event.stopPropagation();
     console.log('Handling avatar click...');
-    if (squeakProfile) {
-      goToSqueakAddressPage(history, squeakProfile.getAddress());
+    if (squeakAddress) {
+      goToSqueakAddressPage(history, squeakAddress);
     }
   };
 
