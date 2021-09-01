@@ -12,6 +12,7 @@ importlib_resources==1.4.0
 mypy-protobuf
 protobuf
 psycopg2
+pyzmq
 requests
 SQLAlchemy
 squeakpy==0.6.6
