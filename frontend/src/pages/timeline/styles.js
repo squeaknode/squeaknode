@@ -18,6 +18,12 @@ export default makeStyles((theme) => ({
     bottom: theme.spacing(4),
     right: theme.spacing(4),
   },
+  refreshFab: {
+    position: 'fixed',
+    top: theme.spacing(14),
+    margin: 'auto',
+    justifyContent: 'center',
+  },
   root: {
     display: 'flex',
     alignItems: 'center',

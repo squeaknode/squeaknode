@@ -8,11 +8,13 @@ import {
   Backdrop,
   CardHeader,
   Card,
+  Box,
 } from '@material-ui/core';
 import { useTheme } from '@material-ui/styles';
 
 import EditIcon from '@material-ui/icons/Edit';
 import ReplayIcon from '@material-ui/icons/Replay';
+import RefreshIcon from '@material-ui/icons/Refresh';
 
 import Paper from '@material-ui/core/Paper';
 
@@ -26,6 +28,7 @@ import SqueakList from '../../components/SqueakList';
 import {
   getTimelineSqueakDisplaysRequest,
   getNetworkRequest,
+  subscribeSqueakDisplaysRequest,
 } from '../../squeakclient/requests';
 
 const SQUEAKS_PER_PAGE = 10;
@@ -34,6 +37,7 @@ export default function TimelinePage() {
   const classes = useStyles();
   const theme = useTheme();
   const [squeaks, setSqueaks] = useState(null);
+  const [newSqueaks, setNewSqueaks] = useState(null);
   const [open, setOpen] = React.useState(false);
   const [network, setNetwork] = useState('');
   const [waitingForTimeline, setWaitingForTimeline] = React.useState(false);
@@ -43,6 +47,9 @@ export default function TimelinePage() {
   const getSqueaks = (limit, blockHeight, squeakTime, squeakHash) => {
     setWaitingForTimeline(true);
     getTimelineSqueakDisplaysRequest(limit, blockHeight, squeakTime, squeakHash, handleLoadedTimeline, alertFailedRequest);
+  };
+  const subscribeNewSqueaks = () => {
+    return subscribeSqueakDisplaysRequest(handleLoadedNewSqueak);
   };
   const getNetwork = () => {
     getNetworkRequest(setNetwork);
@@ -60,6 +67,12 @@ export default function TimelinePage() {
     alert('Failed to load timeline.');
   };
 
+  const handleClickRefresh = () => {
+    setSqueaks(null);
+    setNewSqueaks(null);
+    getSqueaks(SQUEAKS_PER_PAGE, null, null, null);
+  };
+
   const handleLoadedTimeline = (loadedSqueaks) => {
     setWaitingForTimeline(false);
     setSqueaks((prevSqueaks) => {
@@ -71,8 +84,22 @@ export default function TimelinePage() {
     });
   };
 
+  const handleLoadedNewSqueak = (newSqueak) => {
+    setNewSqueaks((prevNewSqueaks) => {
+      if (!prevNewSqueaks) {
+        return [newSqueak];
+      } else {
+        return prevNewSqueaks.concat(newSqueak);
+      }
+    });
+  };
+
   useEffect(() => {
     getSqueaks(SQUEAKS_PER_PAGE, null, null, null);
+  }, []);
+  useEffect(() => {
+    const stream = subscribeNewSqueaks();
+    return () => stream.cancel();
   }, []);
   useEffect(() => {
     getNetwork();
@@ -162,14 +189,41 @@ export default function TimelinePage() {
     );
   }
 
+  function MakeSqueakContent() {
+    return (
+      <>
+        <Fab color="secondary" aria-label="edit" className={classes.fab} onClick={handleClickOpen}>
+          <EditIcon />
+        </Fab>
+        {MakeSqueakDialogContent()}
+      </>
+    );
+  }
+
+  function LoadNewSqueaksContent() {
+    return (
+      <>
+      <Box
+  display="flex"
+  width={600} height={0}
+  alignItems="center"
+  justifyContent="center"
+>
+<Fab variant="extended" color="secondary" aria-label="edit" className={classes.refreshFab} onClick={handleClickRefresh}>
+  <RefreshIcon />
+  Refresh ({newSqueaks.length} new squeaks)
+</Fab>
+</Box>
+
+      </>
+    );
+  }
+
   return (
     <>
       {GridContent()}
-      <Fab color="secondary" aria-label="edit" className={classes.fab} onClick={handleClickOpen}>
-        <EditIcon />
-      </Fab>
-
-      {MakeSqueakDialogContent()}
+      {MakeSqueakContent()}
+      {(newSqueaks) && LoadNewSqueaksContent()}
     </>
   );
 }
