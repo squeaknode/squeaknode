@@ -48,9 +48,9 @@ export default function SqueakAddressPage() {
   };
   const getSqueaks = (address) => {
     setWaitingForSqueaks(true);
-    getAddressSqueakDisplaysRequest(address, setSqueaks);
+    getAddressSqueakDisplaysRequest(address, handleLoadedAddressSqueaks);
   };
-  const subscribeSqueaks = (hash) => subscribeAddressSqueakDisplaysRequest(address, (resp) => {
+  const subscribeSqueaks = (address) => subscribeAddressSqueakDisplaysRequest(address, (resp) => {
     setSqueaks((prevSqueaks) => [resp].concat(prevSqueaks));
   });
   const getNetwork = () => {
