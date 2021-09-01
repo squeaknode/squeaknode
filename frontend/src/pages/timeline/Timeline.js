@@ -33,7 +33,7 @@ const SQUEAKS_PER_PAGE = 10;
 export default function TimelinePage() {
   const classes = useStyles();
   const theme = useTheme();
-  const [squeaks, setSqueaks] = useState([]);
+  const [squeaks, setSqueaks] = useState(null);
   const [open, setOpen] = React.useState(false);
   const [network, setNetwork] = useState('');
   const [waitingForTimeline, setWaitingForTimeline] = React.useState(false);
@@ -62,7 +62,13 @@ export default function TimelinePage() {
 
   const handleLoadedTimeline = (loadedSqueaks) => {
     setWaitingForTimeline(false);
-    setSqueaks(squeaks.concat(loadedSqueaks));
+    setSqueaks((prevSqueaks) => {
+      if (!prevSqueaks) {
+        return loadedSqueaks;
+      } else {
+        return prevSqueaks.concat(loadedSqueaks);
+      }
+    });
   };
 
   useEffect(() => {
@@ -138,11 +144,13 @@ export default function TimelinePage() {
     return (
       <Grid container spacing={0}>
         <Grid item xs={12} sm={9}>
-          <Paper className={classes.paper}>
-            {(squeaks.length > 0)
-              ? SqueaksContent()
-              : NoSqueaksContent()}
-          </Paper>
+          {squeaks &&
+            <Paper className={classes.paper}>
+              {(squeaks.length > 0)
+                ? SqueaksContent()
+                : NoSqueaksContent()}
+            </Paper>
+          }
           {ViewMoreSqueaksButton()}
         </Grid>
         <Grid item xs={12} sm={3}>
