@@ -36,13 +36,13 @@ export default function SqueakUserAvatar({
   }
 
   return (
-    <TimelineDot
+    <div
       onClick={onAvatarClick}
       style={{ cursor: 'pointer' }}
     >
       {squeakProfile
         ? AvatarImage()
         : <HelpIcon fontSize="large" />}
-    </TimelineDot>
+    </div>
   );
 }
