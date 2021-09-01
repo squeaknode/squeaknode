@@ -221,5 +221,6 @@ class SqueakNode:
 
     def initialize_new_bitcoin_block_worker(self):
         self.new_bitcoin_block_worker = SubscribeBlocksWorker(
+            self.squeak_controller,
             self.bitcoin_block_subscription_client,
         )
