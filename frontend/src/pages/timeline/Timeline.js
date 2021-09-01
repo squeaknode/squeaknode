@@ -49,7 +49,7 @@ export default function TimelinePage() {
     getTimelineSqueakDisplaysRequest(limit, blockHeight, squeakTime, squeakHash, handleLoadedTimeline, alertFailedRequest);
   };
   const subscribeNewSqueaks = () => {
-    subscribeSqueakDisplaysRequest(handleLoadedNewSqueak);
+    return subscribeSqueakDisplaysRequest(handleLoadedNewSqueak);
   };
   const getNetwork = () => {
     getNetworkRequest(setNetwork);
@@ -65,6 +65,12 @@ export default function TimelinePage() {
 
   const alertFailedRequest = () => {
     alert('Failed to load timeline.');
+  };
+
+  const handleClickRefresh = () => {
+    setSqueaks(null);
+    setNewSqueaks(null);
+    getSqueaks(SQUEAKS_PER_PAGE, null, null, null);
   };
 
   const handleLoadedTimeline = (loadedSqueaks) => {
@@ -203,7 +209,7 @@ export default function TimelinePage() {
   alignItems="center"
   justifyContent="center"
 >
-<Fab variant="extended" color="secondary" aria-label="edit" className={classes.refreshFab} onClick={handleClickOpen}>
+<Fab variant="extended" color="secondary" aria-label="edit" className={classes.refreshFab} onClick={handleClickRefresh}>
   <RefreshIcon />
   Refresh ({newSqueaks.length} new squeaks)
 </Fab>
