@@ -7,10 +7,14 @@ import {
   Tab,
   AppBar,
   Box,
+  CircularProgress,
 } from '@material-ui/core';
 
 // styles
 import { makeStyles } from '@material-ui/core/styles';
+
+// styles
+import useStyles from './styles';
 
 // components
 import Widget from '../../components/Widget';
@@ -25,13 +29,6 @@ import {
   getProfilesRequest,
 } from '../../squeakclient/requests';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    '& > *': {
-      margin: theme.spacing(1),
-    },
-  },
-}));
 
 export default function Profiles() {
   const classes = useStyles();
@@ -40,6 +37,7 @@ export default function Profiles() {
   const [importSigningProfileDialogOpen, setImportSigningProfileDialogOpen] = useState(false);
   const [createContactProfileDialogOpen, setCreateContactProfileDialogOpen] = useState(false);
   const [value, setValue] = useState(0);
+  const [waitingForProfiles, setWaitingForProfiles] = useState(false);
   const history = useHistory();
 
   function a11yProps(index) {
@@ -54,7 +52,8 @@ export default function Profiles() {
   };
 
   const loadProfiles = () => {
-    getProfilesRequest(setProfiles);
+    setWaitingForProfiles(true);
+    getProfilesRequest(handleLoadedProfiles);
   };
 
   const handleClickOpenCreateSigningProfileDialog = () => {
@@ -79,6 +78,11 @@ export default function Profiles() {
 
   const handleCloseImportSigningProfileDialog = () => {
     setImportSigningProfileDialogOpen(false);
+  };
+
+  const handleLoadedProfiles = (loadedProfiles) => {
+    setWaitingForProfiles(false);
+    setProfiles(loadedProfiles);
   };
 
   useEffect(() => {
@@ -260,6 +264,7 @@ export default function Profiles() {
   return (
     <>
       {GridContent()}
+      {waitingForProfiles && <CircularProgress size={48} className={classes.buttonProgress} />}
       {CreateSigningProfileDialogContent()}
       {ImportSigningProfileDialogContent()}
       {CreateContactProfileDialogContent()}
