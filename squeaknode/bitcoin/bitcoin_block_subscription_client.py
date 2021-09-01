@@ -41,9 +41,6 @@ class BitcoinBlockSubscriptionClient:
         self.zmqSubSocket = self.zmqContext.socket(zmq.SUB)
         self.zmqSubSocket.setsockopt(zmq.RCVHWM, 0)
         self.zmqSubSocket.setsockopt_string(zmq.SUBSCRIBE, "hashblock")
-        self.zmqSubSocket.setsockopt_string(zmq.SUBSCRIBE, "hashtx")
-        self.zmqSubSocket.setsockopt_string(zmq.SUBSCRIBE, "rawblock")
-        self.zmqSubSocket.setsockopt_string(zmq.SUBSCRIBE, "rawtx")
         self.zmqSubSocket.connect("tcp://{}:{}".format(host, port))
 
     def get_blocks(self) -> Iterable[bytes]:
