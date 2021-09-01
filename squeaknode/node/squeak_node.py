@@ -26,6 +26,7 @@ from squeak.params import SelectParams
 from squeaknode.admin.squeak_admin_server_handler import SqueakAdminServerHandler
 from squeaknode.admin.squeak_admin_server_servicer import SqueakAdminServerServicer
 from squeaknode.admin.webapp.app import SqueakAdminWebServer
+from squeaknode.bitcoin.bitcoin_block_subscription_client import BitcoinBlockSubscriptionClient
 from squeaknode.bitcoin.bitcoin_core_bitcoin_client import BitcoinCoreBitcoinClient
 from squeaknode.config.config import SqueaknodeConfig
 from squeaknode.core.squeak_core import SqueakCore
@@ -37,11 +38,11 @@ from squeaknode.network.network_manager import NetworkManager
 from squeaknode.node.new_squeak_worker import NewSqueakWorker
 from squeaknode.node.payment_processor import PaymentProcessor
 from squeaknode.node.peer_connection_worker import PeerConnectionWorker
+from squeaknode.node.peer_subscription_update_worker import PeerSubscriptionUpdateWorker
 from squeaknode.node.process_received_payments_worker import ProcessReceivedPaymentsWorker
 from squeaknode.node.squeak_controller import SqueakController
 from squeaknode.node.squeak_deletion_worker import SqueakDeletionWorker
 from squeaknode.node.squeak_offer_expiry_worker import SqueakOfferExpiryWorker
-
 
 logger = logging.getLogger(__name__)
 
@@ -60,6 +61,7 @@ class SqueakNode:
         self.initialize_db()
         self.initialize_lightning_client()
         self.initialize_bitcoin_client()
+        self.initialize_bitcoin_block_subscription_client()
         self.initialize_squeak_core()
         self.initialize_payment_processor()
         self.initialize_network_manager()
@@ -72,6 +74,7 @@ class SqueakNode:
         self.initialize_squeak_deletion_worker()
         self.initialize_offer_expiry_worker()
         self.initialize_new_squeak_worker()
+        self.initialize_peer_subscription_update_worker()
 
     def start_running(self):
         self._initialize()
@@ -86,6 +89,7 @@ class SqueakNode:
         self.squeak_deletion_worker.start()
         self.offer_expiry_worker.start()
         self.new_squeak_worker.start_running()
+        self.new_bitcoin_block_worker.start_running()
 
     def stop_running(self):
         self.admin_web_server.stop()
@@ -128,6 +132,12 @@ class SqueakNode:
             self.config.bitcoin.rpc_pass,
             self.config.bitcoin.rpc_use_ssl,
             self.config.bitcoin.rpc_ssl_cert,
+        )
+
+    def initialize_bitcoin_block_subscription_client(self):
+        self.bitcoin_block_subscription_client = BitcoinBlockSubscriptionClient(
+            self.config.bitcoin.rpc_host,
+            self.config.bitcoin.zeromq_port,
         )
 
     def initialize_squeak_core(self):
@@ -207,4 +217,10 @@ class SqueakNode:
         self.new_squeak_worker = NewSqueakWorker(
             self.squeak_controller,
             self.network_manager,
+        )
+
+    def initialize_peer_subscription_update_worker(self):
+        self.new_bitcoin_block_worker = PeerSubscriptionUpdateWorker(
+            self.squeak_controller,
+            self.bitcoin_block_subscription_client,
         )
