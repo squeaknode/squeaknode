@@ -28,6 +28,7 @@ import SqueakList from '../../components/SqueakList';
 import {
   getTimelineSqueakDisplaysRequest,
   getNetworkRequest,
+  subscribeSqueakDisplaysRequest,
 } from '../../squeakclient/requests';
 
 const SQUEAKS_PER_PAGE = 10;
@@ -36,6 +37,7 @@ export default function TimelinePage() {
   const classes = useStyles();
   const theme = useTheme();
   const [squeaks, setSqueaks] = useState(null);
+  const [newSqueaks, setNewSqueaks] = useState(null);
   const [open, setOpen] = React.useState(false);
   const [network, setNetwork] = useState('');
   const [waitingForTimeline, setWaitingForTimeline] = React.useState(false);
@@ -45,6 +47,9 @@ export default function TimelinePage() {
   const getSqueaks = (limit, blockHeight, squeakTime, squeakHash) => {
     setWaitingForTimeline(true);
     getTimelineSqueakDisplaysRequest(limit, blockHeight, squeakTime, squeakHash, handleLoadedTimeline, alertFailedRequest);
+  };
+  const subscribeNewSqueaks = () => {
+    subscribeSqueakDisplaysRequest(handleLoadedNewSqueak);
   };
   const getNetwork = () => {
     getNetworkRequest(setNetwork);
@@ -69,6 +74,16 @@ export default function TimelinePage() {
         return loadedSqueaks;
       } else {
         return prevSqueaks.concat(loadedSqueaks);
+      }
+    });
+  };
+
+  const handleLoadedNewSqueak = (newSqueak) => {
+    setNewSqueaks((prevNewSqueaks) => {
+      if (!prevNewSqueaks) {
+        return [newSqueak];
+      } else {
+        return prevNewSqueaks.concat(newSqueak);
       }
     });
   };
@@ -186,7 +201,7 @@ export default function TimelinePage() {
 >
 <Fab variant="extended" color="secondary" aria-label="edit" className={classes.refreshFab} onClick={handleClickOpen}>
   <RefreshIcon />
-  Refresh
+  Refresh ({newSqueaks.length} new squeaks)
 </Fab>
 </Box>
 
@@ -198,7 +213,7 @@ export default function TimelinePage() {
     <>
       {GridContent()}
       {MakeSqueakContent()}
-      {LoadNewSqueaksContent()}
+      {(newSqueaks) && LoadNewSqueaksContent()}
     </>
   );
 }
