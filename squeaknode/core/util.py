@@ -33,6 +33,7 @@ from squeak.core.elliptic import scalar_to_bytes
 from squeak.core.signing import CSqueakAddress
 from squeak.net import CInterested
 
+
 DATA_KEY_LENGTH = 32
 VERSION_NONCE_LENGTH = 8
 
@@ -100,12 +101,12 @@ def squeak_matches_interest(squeak: CSqueak, interest: CInterested) -> bool:
     if len(interest.addresses) > 0 \
        and squeak.GetAddress() not in interest.addresses:
         return False
-    # if interest.nMinBlockHeight != -1 \
-    #    and squeak.nBlockHeight < interest.nMinBlockHeight:
-    #     return False
-    # if interest.nMaxBlockHeight != -1 \
-    #    and squeak.nBlockHeight > interest.nMaxBlockHeight:
-    #     return False
+    if interest.nMinBlockHeight != -1 \
+       and squeak.nBlockHeight <= interest.nMinBlockHeight:
+        return False
+    if interest.nMaxBlockHeight != -1 \
+       and squeak.nBlockHeight >= interest.nMaxBlockHeight:
+        return False
     if interest.hashReplySqk != EMPTY_HASH \
        and squeak.hashReplySqk != interest.hashReplySqk:
         return False

@@ -106,18 +106,3 @@ class NewSqueakWorker:
                 logger.debug("Found a match!")
                 return True
         return False
-
-    # def squeak_matches_interest(self, squeak: CSqueak, interest: CInterested) -> bool:
-    #     if len(interest.addresses) > 0 \
-    #        and squeak.GetAddress() not in interest.addresses:
-    #         return False
-    #     # if interest.nMinBlockHeight != -1 \
-    #     #    and squeak.nBlockHeight < interest.nMinBlockHeight:
-    #     #     return False
-    #     # if interest.nMaxBlockHeight != -1 \
-    #     #    and squeak.nBlockHeight > interest.nMaxBlockHeight:
-    #     #     return False
-    #     if interest.hashReplySqk != EMPTY_HASH \
-    #        and squeak.hashReplySqk != interest.hashReplySqk:
-    #         return False
-    #     return True
