@@ -92,6 +92,10 @@ export default function TimelinePage() {
     getSqueaks(SQUEAKS_PER_PAGE, null, null, null);
   }, []);
   useEffect(() => {
+    const stream = subscribeNewSqueaks();
+    return () => stream.cancel();
+  }, []);
+  useEffect(() => {
     getNetwork();
   }, []);
 
