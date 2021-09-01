@@ -6,6 +6,8 @@ import HelpIcon from '@material-ui/icons/Help';
 import Avatar from '@material-ui/core/Avatar';
 
 import { useHistory } from 'react-router-dom';
+import useStyles from './styles';
+
 
 import {
   getProfileImageSrcString,
@@ -19,6 +21,7 @@ export default function SqueakUserAvatar({
   ...props
 }) {
   const history = useHistory();
+  const classes = useStyles();
 
   const onAvatarClick = (event) => {
     event.preventDefault();
@@ -31,7 +34,7 @@ export default function SqueakUserAvatar({
 
   function AvatarImage() {
     return (
-      <Avatar src={`${getProfileImageSrcString(squeakProfile)}`} />
+      <Avatar className={classes.large} src={`${getProfileImageSrcString(squeakProfile)}`} />
     );
   }
 
@@ -42,7 +45,7 @@ export default function SqueakUserAvatar({
     >
       {squeakProfile
         ? AvatarImage()
-        : <HelpIcon fontSize="large" />}
+        : <HelpIcon className={classes.large} fontSize="large" />}
     </div>
   );
 }
