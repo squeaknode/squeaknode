@@ -8,11 +8,13 @@ import {
   Backdrop,
   CardHeader,
   Card,
+  Box,
 } from '@material-ui/core';
 import { useTheme } from '@material-ui/styles';
 
 import EditIcon from '@material-ui/icons/Edit';
 import ReplayIcon from '@material-ui/icons/Replay';
+import RefreshIcon from '@material-ui/icons/Refresh';
 
 import Paper from '@material-ui/core/Paper';
 
@@ -162,14 +164,41 @@ export default function TimelinePage() {
     );
   }
 
+  function MakeSqueakContent() {
+    return (
+      <>
+        <Fab color="secondary" aria-label="edit" className={classes.fab} onClick={handleClickOpen}>
+          <EditIcon />
+        </Fab>
+        {MakeSqueakDialogContent()}
+      </>
+    );
+  }
+
+  function LoadNewSqueaksContent() {
+    return (
+      <>
+      <Box
+  display="flex"
+  width={600} height={0}
+  alignItems="center"
+  justifyContent="center"
+>
+<Fab variant="extended" color="secondary" aria-label="edit" className={classes.refreshFab} onClick={handleClickOpen}>
+  <RefreshIcon />
+  Refresh
+</Fab>
+</Box>
+
+      </>
+    );
+  }
+
   return (
     <>
       {GridContent()}
-      <Fab color="secondary" aria-label="edit" className={classes.fab} onClick={handleClickOpen}>
-        <EditIcon />
-      </Fab>
-
-      {MakeSqueakDialogContent()}
+      {MakeSqueakContent()}
+      {LoadNewSqueaksContent()}
     </>
   );
 }
