@@ -4,6 +4,7 @@ import {
   Grid,
   Button,
   Box,
+  CircularProgress,
 } from '@material-ui/core';
 
 // styles
@@ -40,11 +41,13 @@ export default function SqueakAddressPage() {
   const [squeaks, setSqueaks] = useState([]);
   const [createContactProfileDialogOpen, setCreateContactProfileDialogOpen] = useState(false);
   const [network, setNetwork] = useState('');
+  const [waitingForSqueaks, setWaitingForSqueaks] = useState(false);
 
   const getSqueakProfile = (address) => {
     getSqueakProfileByAddressRequest(address, setSqueakProfile);
   };
   const getSqueaks = (address) => {
+    setWaitingForSqueaks(true);
     getAddressSqueakDisplaysRequest(address, setSqueaks);
   };
   const subscribeSqueaks = (hash) => subscribeAddressSqueakDisplaysRequest(address, (resp) => {
@@ -52,6 +55,11 @@ export default function SqueakAddressPage() {
   });
   const getNetwork = () => {
     getNetworkRequest(setNetwork);
+  };
+
+  const handleLoadedAddressSqueaks = (loadedAddressSqueaks) => {
+    setWaitingForSqueaks(false);
+    setSqueaks(loadedAddressSqueaks);
   };
 
   const handleClickOpenCreateContactProfileDialog = () => {
@@ -194,14 +202,33 @@ export default function SqueakAddressPage() {
     );
   }
 
+  function SqueakProfileContent() {
+    return (
+      <>
+        {squeakProfile
+          ? ProfileContent()
+          : NoProfileContent()}
+        {CreateContactProfileDialogContent()}
+      </>
+
+    );
+  }
+
+  function AddressSqueaksContent() {
+    return (
+      <>
+        {DownloadSqueaksButtonContent()}
+        {GridContent()}
+        {waitingForSqueaks && <CircularProgress size={24} className={classes.buttonProgress} />}
+      </>
+
+    );
+  }
+
   return (
     <>
-      {squeakProfile
-        ? ProfileContent()
-        : NoProfileContent()}
-      {DownloadSqueaksButtonContent()}
-      {GridContent()}
-      {CreateContactProfileDialogContent()}
+      {SqueakProfileContent()}
+      {AddressSqueaksContent()}
     </>
   );
 }

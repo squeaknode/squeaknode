@@ -118,6 +118,7 @@ export default function TimelinePage() {
       <>
         <Grid item xs={12}>
           <div className={classes.wrapper}>
+          {!waitingForTimeline &&
             <Button
             variant="contained"
             color="primary"
@@ -133,7 +134,8 @@ export default function TimelinePage() {
               <ReplayIcon />
               View more squeaks
             </Button>
-            {waitingForTimeline && <CircularProgress size={24} className={classes.buttonProgress} />}
+            }
+            {waitingForTimeline && <CircularProgress size={48} className={classes.buttonProgress} />}
           </div>
         </Grid>
       </>

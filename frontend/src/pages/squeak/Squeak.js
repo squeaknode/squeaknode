@@ -180,7 +180,7 @@ export default function SqueakPage() {
           <Paper className={classes.paper}>
           {currentSqueak && SqueakContent()}
           </Paper>
-          {waitingForSqueak && <CircularProgress size={24} className={classes.buttonProgress} />}
+          {waitingForSqueak && <CircularProgress size={48} className={classes.buttonProgress} />}
         </Grid>
         <Grid item xs={12} sm={3}>
           <Paper className={classes.paper} />
