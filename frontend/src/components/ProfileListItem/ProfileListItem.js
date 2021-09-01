@@ -83,6 +83,7 @@ export default function ProfileListItem({
       <CardHeader
         avatar={(
           <SqueakUserAvatar
+            squeakAddress={profile.getAddress()}
             squeakProfile={profile}
           />
 )}
