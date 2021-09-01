@@ -28,7 +28,7 @@ from squeaknode.node.squeak_controller import SqueakController
 logger = logging.getLogger(__name__)
 
 
-class SubscribeBlocksWorker:
+class PeerSubscriptionUpdateWorker:
     def __init__(
             self,
             squeak_controller: SqueakController,

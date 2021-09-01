@@ -38,11 +38,11 @@ from squeaknode.network.network_manager import NetworkManager
 from squeaknode.node.new_squeak_worker import NewSqueakWorker
 from squeaknode.node.payment_processor import PaymentProcessor
 from squeaknode.node.peer_connection_worker import PeerConnectionWorker
+from squeaknode.node.peer_subscription_update_worker import PeerSubscriptionUpdateWorker
 from squeaknode.node.process_received_payments_worker import ProcessReceivedPaymentsWorker
 from squeaknode.node.squeak_controller import SqueakController
 from squeaknode.node.squeak_deletion_worker import SqueakDeletionWorker
 from squeaknode.node.squeak_offer_expiry_worker import SqueakOfferExpiryWorker
-from squeaknode.node.subscribe_blocks_worker import SubscribeBlocksWorker
 
 logger = logging.getLogger(__name__)
 
@@ -74,7 +74,7 @@ class SqueakNode:
         self.initialize_squeak_deletion_worker()
         self.initialize_offer_expiry_worker()
         self.initialize_new_squeak_worker()
-        self.initialize_new_bitcoin_block_worker()
+        self.initialize_peer_subscription_update_worker()
 
     def start_running(self):
         self._initialize()
@@ -219,8 +219,8 @@ class SqueakNode:
             self.network_manager,
         )
 
-    def initialize_new_bitcoin_block_worker(self):
-        self.new_bitcoin_block_worker = SubscribeBlocksWorker(
+    def initialize_peer_subscription_update_worker(self):
+        self.new_bitcoin_block_worker = PeerSubscriptionUpdateWorker(
             self.squeak_controller,
             self.bitcoin_block_subscription_client,
         )

@@ -102,10 +102,10 @@ def squeak_matches_interest(squeak: CSqueak, interest: CInterested) -> bool:
        and squeak.GetAddress() not in interest.addresses:
         return False
     if interest.nMinBlockHeight != -1 \
-       and squeak.nBlockHeight <= interest.nMinBlockHeight:
+       and squeak.nBlockHeight < interest.nMinBlockHeight:
         return False
     if interest.nMaxBlockHeight != -1 \
-       and squeak.nBlockHeight >= interest.nMaxBlockHeight:
+       and squeak.nBlockHeight > interest.nMaxBlockHeight:
         return False
     if interest.hashReplySqk != EMPTY_HASH \
        and squeak.hashReplySqk != interest.hashReplySqk:
