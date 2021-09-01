@@ -4,6 +4,7 @@ import {
   Grid,
   Button,
   Box,
+  CircularProgress,
 } from '@material-ui/core';
 
 import Timeline from '@material-ui/lab/Timeline';
@@ -37,12 +38,14 @@ export default function SqueakPage() {
   const classes = useStyles();
   const history = useHistory();
   const { hash } = useParams();
-  const [ancestorSqueaks, setAncestorSqueaks] = useState([]);
+  const [ancestorSqueaks, setAncestorSqueaks] = useState(null);
   const [replySqueaks, setReplySqueaks] = useState([]);
   const [network, setNetwork] = useState('');
+  const [waitingForSqueak, setWaitingForSqueak] = React.useState(false);
 
   const getAncestorSqueaks = (hash) => {
-    getAncestorSqueakDisplaysRequest(hash, setAncestorSqueaks);
+    setWaitingForSqueak(true);
+    getAncestorSqueakDisplaysRequest(hash, handleLoadedAncestorSqueaks);
   };
   const subscribeAncestorSqueaks = (hash) => subscribeAncestorSqueakDisplaysRequest(hash, setAncestorSqueaks);
   const getReplySqueaks = (hash) => {
@@ -57,6 +60,11 @@ export default function SqueakPage() {
 
   const getCurrentSqueak = () => {
     getAncestorSqueaks(hash);
+  };
+
+  const handleLoadedAncestorSqueaks = (loadedAncestorSqueaks) => {
+    setWaitingForSqueak(false);
+    setAncestorSqueaks(loadedAncestorSqueaks);
   };
 
   const onDownloadRepliesClick = (event) => {
@@ -170,8 +178,9 @@ export default function SqueakPage() {
       <Grid container spacing={0}>
         <Grid item xs={12} sm={9}>
           <Paper className={classes.paper}>
-            {SqueakContent()}
+          {currentSqueak && SqueakContent()}
           </Paper>
+          {waitingForSqueak && <CircularProgress size={24} className={classes.buttonProgress} />}
         </Grid>
         <Grid item xs={12} sm={3}>
           <Paper className={classes.paper} />
