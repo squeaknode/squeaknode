@@ -752,7 +752,7 @@ class SqueakAdminServerHandler(object):
     def handle_disconnect_peer(self, request):
         peer_address = message_to_peer_address(request.peer_address)
         logger.info(
-            "Handle connect peer with peer address: {}".format(peer_address))
+            "Handle disconnect peer with peer address: {}".format(peer_address))
         self.squeak_controller.disconnect_peer(peer_address)
         return squeak_admin_pb2.DisconnectPeerReply()
 
