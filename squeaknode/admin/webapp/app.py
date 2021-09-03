@@ -45,7 +45,7 @@ logger = logging.getLogger(__name__)
 
 def create_app(handler, username, password):
     # create and configure the app
-    logger.info("Starting flask app from directory: {}".format(os.getcwd()))
+    logger.debug("Starting flask app from directory: {}".format(os.getcwd()))
     app = Flask(
         __name__,
         static_url_path="/",
@@ -59,8 +59,8 @@ def create_app(handler, username, password):
         username,
         password,
     )
-    logger.info("Starting flask with app.root_path: {}".format(app.root_path))
-    logger.info("Files in root path: {}".format(os.listdir(app.root_path)))
+    logger.debug("Starting flask with app.root_path: {}".format(app.root_path))
+    logger.debug("Files in root path: {}".format(os.listdir(app.root_path)))
 
     @login.user_loader
     def load_user(id):
