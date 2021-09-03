@@ -5,7 +5,6 @@ import {
   Button,
   Fab,
   CircularProgress,
-  Backdrop,
   CardHeader,
   Card,
   Box,
@@ -48,9 +47,7 @@ export default function TimelinePage() {
     setWaitingForTimeline(true);
     getTimelineSqueakDisplaysRequest(limit, blockHeight, squeakTime, squeakHash, handleLoadedTimeline, alertFailedRequest);
   };
-  const subscribeNewSqueaks = () => {
-    return subscribeSqueakDisplaysRequest(handleLoadedNewSqueak);
-  };
+  const subscribeNewSqueaks = () => subscribeSqueakDisplaysRequest(handleLoadedNewSqueak);
   const getNetwork = () => {
     getNetworkRequest(setNetwork);
   };
@@ -78,9 +75,8 @@ export default function TimelinePage() {
     setSqueaks((prevSqueaks) => {
       if (!prevSqueaks) {
         return loadedSqueaks;
-      } else {
-        return prevSqueaks.concat(loadedSqueaks);
       }
+      return prevSqueaks.concat(loadedSqueaks);
     });
   };
 
@@ -88,9 +84,8 @@ export default function TimelinePage() {
     setNewSqueaks((prevNewSqueaks) => {
       if (!prevNewSqueaks) {
         return [newSqueak];
-      } else {
-        return prevNewSqueaks.concat(newSqueak);
       }
+      return prevNewSqueaks.concat(newSqueak);
     });
   };
 
@@ -145,11 +140,12 @@ export default function TimelinePage() {
       <>
         <Grid item xs={12}>
           <div className={classes.wrapper}>
-          {!waitingForTimeline &&
+            {!waitingForTimeline
+            && (
             <Button
-            variant="contained"
-            color="primary"
-            disabled={waitingForTimeline}
+              variant="contained"
+              color="primary"
+              disabled={waitingForTimeline}
               onClick={() => {
                 const latestSqueak = squeaks.slice(-1).pop();
                 const latestSqueakHeight = (latestSqueak ? latestSqueak.getBlockHeight() : null);
@@ -161,7 +157,7 @@ export default function TimelinePage() {
               <ReplayIcon />
               View more squeaks
             </Button>
-            }
+            )}
             {waitingForTimeline && <CircularProgress size={48} className={classes.buttonProgress} />}
           </div>
         </Grid>
@@ -173,13 +169,14 @@ export default function TimelinePage() {
     return (
       <Grid container spacing={0}>
         <Grid item xs={12} sm={9}>
-          {squeaks &&
+          {squeaks
+            && (
             <Paper className={classes.paper}>
               {(squeaks.length > 0)
                 ? SqueaksContent()
                 : NoSqueaksContent()}
             </Paper>
-          }
+            )}
           {ViewMoreSqueaksButton()}
         </Grid>
         <Grid item xs={12} sm={3}>
@@ -203,17 +200,21 @@ export default function TimelinePage() {
   function LoadNewSqueaksContent() {
     return (
       <>
-      <Box
-  display="flex"
-  width={600} height={0}
-  alignItems="center"
-  justifyContent="center"
->
-<Fab variant="extended" color="secondary" aria-label="edit" className={classes.refreshFab} onClick={handleClickRefresh}>
-  <RefreshIcon />
-  Refresh ({newSqueaks.length} new squeaks)
-</Fab>
-</Box>
+        <Box
+          display="flex"
+          width={600}
+          height={0}
+          alignItems="center"
+          justifyContent="center"
+        >
+          <Fab variant="extended" color="secondary" aria-label="edit" className={classes.refreshFab} onClick={handleClickRefresh}>
+            <RefreshIcon />
+            Refresh (
+            {newSqueaks.length}
+            {' '}
+            new squeaks)
+          </Fab>
+        </Box>
 
       </>
     );

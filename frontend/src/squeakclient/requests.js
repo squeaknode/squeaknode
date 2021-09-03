@@ -100,7 +100,7 @@ export function logoutRequest(handleResponse) {
 
 export function getUserRequest(handleResponse) {
   if (DEV_MODE_ENABLED) {
-    handleResponse("DEV_MODE");
+    handleResponse('DEV_MODE');
     return;
   }
   fetch(`${web_host_port}/` + 'user', {

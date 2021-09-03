@@ -1,13 +1,10 @@
 import React from 'react';
 
-import TimelineDot from '@material-ui/lab/TimelineDot';
-
 import HelpIcon from '@material-ui/icons/Help';
 import Avatar from '@material-ui/core/Avatar';
 
 import { useHistory } from 'react-router-dom';
 import useStyles from './styles';
-
 
 import {
   getProfileImageSrcString,

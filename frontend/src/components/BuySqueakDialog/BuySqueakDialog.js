@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import clsx from 'clsx';
 import {
   MenuItem,
   Typography,
@@ -221,7 +220,6 @@ export default function BuySqueakDialog({
       <CircularProgress />
     );
   }
-
 
   function MakeSqueakButton() {
     return (
