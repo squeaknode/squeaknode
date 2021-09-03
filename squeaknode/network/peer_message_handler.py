@@ -155,7 +155,6 @@ class PeerMessageHandler:
         self.squeak_controller.save_received_squeak(squeak)
 
     def handle_offer(self, msg):
-        # TODO: check if interested before saving.
         offer = Offer(
             squeak_hash=msg.hashSqk,
             nonce=msg.nonce,
