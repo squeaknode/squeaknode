@@ -419,10 +419,6 @@ class SqueakController:
     def get_network(self) -> str:
         return self.config.node.network
 
-    # # TODO: Rename this method. All it does is unpack.
-    # def get_offer(self, squeak: CSqueak, offer: Offer, peer_address: PeerAddress) -> ReceivedOffer:
-    #     return self.squeak_core.unpack_offer(squeak, offer, peer_address)
-
     def get_squeak_entry(self, squeak_hash: bytes) -> Optional[SqueakEntry]:
         return self.squeak_db.get_squeak_entry(squeak_hash)
 
