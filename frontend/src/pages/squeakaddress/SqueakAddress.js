@@ -68,7 +68,6 @@ export default function SqueakAddressPage() {
       }
       return prevSqueaks.concat(loadedAddressSqueaks);
     });
-
   };
 
   const handleClickOpenCreateContactProfileDialog = () => {
