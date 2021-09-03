@@ -419,9 +419,9 @@ class SqueakController:
     def get_network(self) -> str:
         return self.config.node.network
 
-    # TODO: Rename this method. All it does is unpack.
-    def get_offer(self, squeak: CSqueak, offer: Offer, peer_address: PeerAddress) -> ReceivedOffer:
-        return self.squeak_core.unpack_offer(squeak, offer, peer_address)
+    # # TODO: Rename this method. All it does is unpack.
+    # def get_offer(self, squeak: CSqueak, offer: Offer, peer_address: PeerAddress) -> ReceivedOffer:
+    #     return self.squeak_core.unpack_offer(squeak, offer, peer_address)
 
     def get_squeak_entry(self, squeak_hash: bytes) -> Optional[SqueakEntry]:
         return self.squeak_db.get_squeak_entry(squeak_hash)
@@ -472,8 +472,16 @@ class SqueakController:
     def get_number_of_squeaks(self) -> int:
         return self.squeak_db.get_number_of_squeaks()
 
-    def save_offer(self, received_offer: ReceivedOffer) -> None:
-        logger.info("Saving received offer: {}".format(received_offer))
+    def save_received_offer(self, offer: Offer, peer_address: PeerAddress) -> None:
+        logger.info("Saving received offer: {}".format(offer))
+        squeak = self.get_squeak(offer.squeak_hash)
+        if squeak is None or squeak.HasDecryptionKey():
+            return
+        received_offer = self.squeak_core.unpack_offer(
+            squeak,
+            offer,
+            peer_address,
+        )
         try:
             offer_id = self.squeak_db.insert_received_offer(received_offer)
             received_offer = received_offer._replace(

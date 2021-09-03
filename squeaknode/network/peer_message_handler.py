@@ -163,14 +163,10 @@ class PeerMessageHandler:
             host=msg.host.decode('utf-8'),
             port=msg.port,
         )
-        squeak = self.squeak_controller.get_squeak(offer.squeak_hash)
-        if squeak is not None and not squeak.HasDecryptionKey():
-            decoded_offer = self.squeak_controller.get_offer(
-                squeak=squeak,
-                offer=offer,
-                peer_address=self.peer.remote_address,
-            )
-            self.squeak_controller.save_offer(decoded_offer)
+        self.squeak_controller.save_received_offer(
+            offer,
+            self.peer.remote_address,
+        )
 
     def handle_subscribe(self, msg):
         self._send_reply_invs(msg.locator)
