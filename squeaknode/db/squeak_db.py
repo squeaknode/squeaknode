@@ -459,6 +459,11 @@ class SqueakDb:
             s = s.where(self.squeaks.c.hash_reply_sqk == reply_to_hash)
         if not include_locked:
             s = s.where(self.squeak_has_secret_key)
+        s = s.order_by(
+            self.squeaks.c.n_block_height.desc(),
+            self.squeaks.c.n_time.desc(),
+            self.squeaks.c.hash.desc(),
+        )
 
         logger.debug("Query s: {}".format(s))
 
