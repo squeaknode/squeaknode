@@ -20,7 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import logging
-import sys
 
 from proto import squeak_admin_pb2
 from squeaknode.admin.messages import connected_peer_to_message
@@ -351,15 +350,31 @@ class SqueakAdminServerHandler(object):
 
     def handle_get_squeak_display_entries_for_address(self, request):
         address = request.address
-        min_block = 0
-        max_block = sys.maxsize
-        logger.info(
-            "Handle get squeak display entries for address: {}".format(address))
+        limit = request.limit
+        block_height = request.block_height
+        squeak_time = request.squeak_time
+        squeak_hash_str = request.squeak_hash
+        squeak_hash = bytes.fromhex(
+            squeak_hash_str) if squeak_hash_str else None
+        logger.info("""Handle get squeak display entries for address: {} with
+        limit: {}
+        block_height: {}
+        squeak_time: {}
+        squeak_hash: {}
+        """.format(
+            address,
+            limit,
+            block_height,
+            squeak_time,
+            squeak_hash,
+        ))
         squeak_entries = (
             self.squeak_controller.get_squeak_entries_for_address(
                 address,
-                min_block,
-                max_block,
+                limit,
+                block_height,
+                squeak_time,
+                squeak_hash,
             )
         )
         logger.info(

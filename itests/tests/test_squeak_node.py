@@ -135,7 +135,9 @@ def test_make_squeak(admin_stub, signing_profile_id):
     # Get all squeak displays for the known address
     get_address_squeak_display_response = admin_stub.GetAddressSqueakDisplays(
         squeak_admin_pb2.GetAddressSqueakDisplaysRequest(
-            address=squeak_profile_address)
+            address=squeak_profile_address,
+            limit=100,
+        ),
     )
     assert len(get_address_squeak_display_response.squeak_display_entries) == 1
     for (

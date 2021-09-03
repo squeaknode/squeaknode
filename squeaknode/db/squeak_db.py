@@ -315,9 +315,17 @@ class SqueakDb:
             return [self._parse_squeak_entry(row) for row in rows]
 
     def get_squeak_entries_for_address(
-        self, address: str, min_block: int, max_block: int
+            self,
+            address: str,
+            limit: int,
+            block_height: int,
+            squeak_time: int,
+            squeak_hash: bytes,
     ) -> List[SqueakEntry]:
         """ Get a squeak. """
+        block_height = block_height or MAX_INT
+        squeak_time = squeak_time or MAX_INT
+        squeak_hash = squeak_hash or MAX_HASH
         s = (
             select([self.squeaks, self.profiles])
             .select_from(
@@ -327,12 +335,23 @@ class SqueakDb:
                 )
             )
             .where(self.squeaks.c.author_address == address)
-            .where(self.squeaks.c.n_block_height >= min_block)
-            .where(self.squeaks.c.n_block_height <= max_block)
+            .where(
+                tuple_(
+                    self.squeaks.c.n_block_height,
+                    self.squeaks.c.n_time,
+                    self.squeaks.c.hash,
+                ) < tuple_(
+                    block_height,
+                    squeak_time,
+                    squeak_hash,
+                )
+            )
             .order_by(
                 self.squeaks.c.n_block_height.desc(),
                 self.squeaks.c.n_time.desc(),
+                self.squeaks.c.hash.desc(),
             )
+            .limit(limit)
         )
         with self.get_connection() as connection:
             result = connection.execute(s)
