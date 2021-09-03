@@ -1216,17 +1216,6 @@ class SqueakDb:
             ),
         )
 
-    # def _parse_received_offer_with_peer(self, row) -> ReceivedOfferWithPeer:
-    #     offer = self._parse_received_offer(row)
-    #     if row[self.peers.c.peer_id] is None:
-    #         peer = None
-    #     else:
-    #         peer = self._parse_squeak_peer(row)
-    #     return ReceivedOfferWithPeer(
-    #         received_offer=offer,
-    #         peer=peer,
-    #     )
-
     def _parse_sent_payment(self, row) -> SentPayment:
         return SentPayment(
             sent_payment_id=row["sent_payment_id"],
@@ -1242,17 +1231,6 @@ class SqueakDb:
             node_pubkey=row["node_pubkey"],
             valid=row["valid"],
         )
-
-    # def _parse_sent_payment_with_peer(self, row) -> SentPaymentWithPeer:
-    #     sent_payment = self._parse_sent_payment(row)
-    #     if row[self.peers.c.peer_id] is None:
-    #         peer = None
-    #     else:
-    #         peer = self._parse_squeak_peer(row)
-    #     return SentPaymentWithPeer(
-    #         sent_payment=sent_payment,
-    #         peer=peer,
-    #     )
 
     def _parse_sent_offer(self, row) -> SentOffer:
         return SentOffer(
