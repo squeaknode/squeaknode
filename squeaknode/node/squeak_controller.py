@@ -720,3 +720,10 @@ class SqueakController:
         for item in self.new_squeak_listener.yield_items(stopped):
             squeak_hash = get_hash(item)
             yield self.get_squeak_entry(squeak_hash)
+
+    def subscribe_timeline_squeak_entries(self, stopped: threading.Event):
+        for item in self.new_squeak_listener.yield_items(stopped):
+            followed_addresses = self.get_followed_addresses()
+            if str(item.GetAddress()) in set(followed_addresses):
+                squeak_hash = get_hash(item)
+                yield self.get_squeak_entry(squeak_hash)

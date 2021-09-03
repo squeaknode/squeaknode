@@ -924,3 +924,20 @@ class SqueakAdminServerHandler(object):
                 yield squeak_admin_pb2.GetSqueakDisplayReply(
                     squeak_display_entry=display_message
                 )
+
+    def handle_subscribe_timeline_squeak_displays(self, request, stopped):
+        logger.info("Handle subscribe timeline squeak displays")
+        squeak_display_stream = self.squeak_controller.subscribe_timeline_squeak_entries(
+            stopped,
+        )
+        for squeak_display in squeak_display_stream:
+            if squeak_display is None:
+                yield squeak_admin_pb2.GetSqueakDisplayReply(
+                    squeak_display_entry=None
+                )
+            else:
+                display_message = squeak_entry_to_message(
+                    squeak_display)
+                yield squeak_admin_pb2.GetSqueakDisplayReply(
+                    squeak_display_entry=display_message
+                )
