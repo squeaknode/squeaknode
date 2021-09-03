@@ -304,6 +304,10 @@ service SqueakAdmin {
   */
   rpc SubscribeSqueakDisplays (SubscribeSqueakDisplaysRequest) returns (stream GetSqueakDisplayReply) {}
 
+  /** sqkadmin: `subscribetimelinesqueakdisplays`
+  */
+  rpc SubscribeTimelineSqueakDisplays (SubscribeTimelineSqueakDisplaysRequest) returns (stream GetSqueakDisplayReply) {}
+
 }
 
 message CreateSigningProfileRequest {
@@ -1068,3 +1072,7 @@ message SubscribeAncestorSqueakDisplaysRequest {
 
 message SubscribeSqueakDisplaysRequest {
 }
+
+message SubscribeTimelineSqueakDisplaysRequest {
+}
+
