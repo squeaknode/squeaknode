@@ -568,11 +568,6 @@ class SqueakController:
                     ret.append(
                         CInv(type=1, hash=inv.hash)
                     )
-                # TODO: Decide if offers should be loaded whenever missing?
-                # elif not squeak_entry.squeak.HasDecryptionKey():
-                #     ret.append(
-                #         CInv(type=2, hash=inv.hash)
-                #     )
         return ret
 
     def get_interested_locator(self):
