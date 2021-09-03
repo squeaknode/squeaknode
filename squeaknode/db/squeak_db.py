@@ -133,6 +133,10 @@ class SqueakDb:
         return self.profiles.c.private_key == None  # noqa: E711
 
     @property
+    def profile_is_following(self):
+        return self.profiles.c.following == True  # noqa: E711
+
+    @property
     def received_offer_does_not_exist(self):
         return self.received_offers.c.squeak_hash == None  # noqa: E711
 
@@ -264,6 +268,7 @@ class SqueakDb:
                     self.profiles.c.address == self.squeaks.c.author_address,
                 )
             )
+            .where(self.profile_is_following)
             .where(
                 tuple_(
                     self.squeaks.c.n_block_height,
