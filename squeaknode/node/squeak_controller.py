@@ -592,6 +592,12 @@ class SqueakController:
                        for address in addresses],
             nMinBlockHeight=min_block,
             nMaxBlockHeight=max_block,
+            replyto_squeak_hash=replyto_hash,
+        ) if replyto_hash else CInterested(
+            addresses=[CSqueakAddress(address)
+                       for address in addresses],
+            nMinBlockHeight=min_block,
+            nMaxBlockHeight=max_block,
         )
         self.temporary_interest_manager.add_range_interest(10, interest)
         locator = CSqueakLocator(
