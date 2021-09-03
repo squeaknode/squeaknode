@@ -132,30 +132,11 @@ class PeerMessageHandler:
         invs = msg.inv
         not_found = []
         for inv in invs:
-            if inv.type == 1:
-                squeak = self.squeak_controller.get_squeak(inv.hash)
-                if squeak is None:
-                    not_found.append(inv)
-                else:
-                    squeak.ClearDecryptionKey()
-                    squeak_msg = msg_squeak(squeak=squeak)
-                    self.peer.send_msg(squeak_msg)
-            if inv.type == 2:
-                offer = self.squeak_controller.get_buy_offer(
-                    squeak_hash=inv.hash,
-                    peer_address=self.peer.remote_address,
-                )
-                if offer is None:
-                    not_found.append(inv)
-                else:
-                    offer_msg = msg_offer(
-                        hashSqk=inv.hash,
-                        nonce=offer.nonce,
-                        strPaymentInfo=offer.payment_request.encode('utf-8'),
-                        host=offer.host.encode('utf-8'),
-                        port=offer.port,
-                    )
-                    self.peer.send_msg(offer_msg)
+            reply_msg = self._get_inv_reply(inv)
+            if reply_msg is not None:
+                self.peer.send_msg(reply_msg)
+            else:
+                not_found.append(inv)
         if not_found:
             notfound_msg = msg_notfound(inv=not_found)
             self.peer.send_msg(notfound_msg)
@@ -211,3 +192,23 @@ class PeerMessageHandler:
             if invs:
                 inv_msg = msg_inv(inv=invs)
                 self.peer.send_msg(inv_msg)
+
+    def _get_inv_reply(self, inv):
+        if inv.type == 1:
+            squeak = self.squeak_controller.get_squeak(inv.hash)
+            if squeak is not None:
+                squeak.ClearDecryptionKey()
+                return msg_squeak(squeak=squeak)
+        if inv.type == 2:
+            offer = self.squeak_controller.get_buy_offer(
+                squeak_hash=inv.hash,
+                peer_address=self.peer.remote_address,
+            )
+            if offer is not None:
+                return msg_offer(
+                    hashSqk=inv.hash,
+                    nonce=offer.nonce,
+                    strPaymentInfo=offer.payment_request.encode('utf-8'),
+                    host=offer.host.encode('utf-8'),
+                    port=offer.port,
+                )
