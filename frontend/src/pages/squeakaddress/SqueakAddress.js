@@ -16,6 +16,7 @@ import Paper from '@material-ui/core/Paper';
 
 import FaceIcon from '@material-ui/icons/Face';
 import GetAppIcon from '@material-ui/icons/GetApp';
+import ReplayIcon from '@material-ui/icons/Replay';
 
 import CreateContactProfileDialog from '../../components/CreateContactProfileDialog';
 import SqueakList from '../../components/SqueakList';
@@ -61,7 +62,13 @@ export default function SqueakAddressPage() {
 
   const handleLoadedAddressSqueaks = (loadedAddressSqueaks) => {
     setWaitingForSqueaks(false);
-    setSqueaks(loadedAddressSqueaks);
+    setSqueaks((prevSqueaks) => {
+      if (!prevSqueaks) {
+        return loadedAddressSqueaks;
+      }
+      return prevSqueaks.concat(loadedAddressSqueaks);
+    });
+
   };
 
   const handleClickOpenCreateContactProfileDialog = () => {
@@ -180,6 +187,7 @@ export default function SqueakAddressPage() {
               ? SqueaksContent()
               : NoSqueaksContent()}
           </Paper>
+          {ViewMoreSqueaksButton()}
         </Grid>
         <Grid item xs={12} sm={3}>
           <Paper className={classes.paper} />
@@ -224,6 +232,36 @@ export default function SqueakAddressPage() {
         {waitingForSqueaks && <CircularProgress size={24} className={classes.buttonProgress} />}
       </>
 
+    );
+  }
+
+  function ViewMoreSqueaksButton() {
+    return (
+      <>
+        <Grid item xs={12}>
+          <div className={classes.wrapper}>
+            {!waitingForSqueaks
+            && (
+            <Button
+              variant="contained"
+              color="primary"
+              disabled={waitingForSqueaks}
+              onClick={() => {
+                const latestSqueak = squeaks.slice(-1).pop();
+                const latestSqueakHeight = (latestSqueak ? latestSqueak.getBlockHeight() : null);
+                const latestSqueakTime = (latestSqueak ? latestSqueak.getSqueakTime() : null);
+                const latestSqueakHash = (latestSqueak ? latestSqueak.getSqueakHash() : null);
+                getSqueaks(address, SQUEAKS_PER_PAGE, latestSqueakHeight, latestSqueakTime, latestSqueakHash);
+              }}
+            >
+              <ReplayIcon />
+              View more squeaks
+            </Button>
+            )}
+            {waitingForSqueaks && <CircularProgress size={48} className={classes.buttonProgress} />}
+          </div>
+        </Grid>
+      </>
     );
   }
 
