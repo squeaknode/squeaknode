@@ -151,13 +151,6 @@ class SqueakAdminWebServer:
         if self.allow_cors:
             CORS(self.app)
 
-        # self.app.run(
-        #     self.host,
-        #     self.port,
-        #     debug=False,
-        #     ssl_context="adhoc" if self.use_ssl else None,
-        # )
-
         return self.app
 
     def start(self):
