@@ -557,24 +557,6 @@ class SqueakController:
             reply_to_hash,
         )
 
-    def filter_known_invs(self, invs):
-        ret = []
-        for inv in invs:
-            if inv.type == 1:
-                squeak_entry = self.squeak_db.get_squeak_entry(
-                    inv.hash,
-                )
-                if squeak_entry is None:
-                    ret.append(
-                        CInv(type=1, hash=inv.hash)
-                    )
-                # TODO: Decide if offers should be loaded whenever missing?
-                # elif not squeak_entry.squeak.HasDecryptionKey():
-                #     ret.append(
-                #         CInv(type=2, hash=inv.hash)
-                #     )
-        return ret
-
     def get_interested_locator(self):
         block_range = self.get_block_range()
         followed_addresses = self.get_followed_addresses()

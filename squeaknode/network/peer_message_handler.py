@@ -123,7 +123,10 @@ class PeerMessageHandler:
 
     def handle_inv(self, msg):
         invs = msg.inv
-        unknown_invs = self.squeak_controller.filter_known_invs(invs)
+        unknown_invs = [
+            inv for inv in invs
+            if inv.type == 1 and self.squeak_controller.get_squeak(inv.hash) is None
+        ]
         if unknown_invs:
             getdata_msg = msg_getdata(inv=unknown_invs)
             self.peer.send_msg(getdata_msg)
@@ -149,7 +152,6 @@ class PeerMessageHandler:
 
     def handle_squeak(self, msg):
         squeak = msg.squeak
-        # TODO: check if interested before saving.
         self.squeak_controller.save_received_squeak(squeak)
 
     def handle_offer(self, msg):
