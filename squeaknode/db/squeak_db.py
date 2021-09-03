@@ -140,10 +140,6 @@ class SqueakDb:
     def datetime_now(self):
         return datetime.now(timezone.utc)
 
-    # def squeak_newer_than_interval_s(self, interval_s):
-    #     return self.squeaks.c.created > \
-    #         self.datetime_now - timedelta(seconds=interval_s)
-
     def received_offer_should_be_deleted(self):
         expire_time = (
             self.received_offers.c.invoice_timestamp
