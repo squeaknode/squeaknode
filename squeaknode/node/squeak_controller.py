@@ -557,18 +557,24 @@ class SqueakController:
             reply_to_hash,
         )
 
-    def filter_known_invs(self, invs):
-        ret = []
-        for inv in invs:
-            if inv.type == 1:
-                squeak_entry = self.squeak_db.get_squeak_entry(
-                    inv.hash,
-                )
-                if squeak_entry is None:
-                    ret.append(
-                        CInv(type=1, hash=inv.hash)
-                    )
-        return ret
+    # def filter_known_invs(self, invs):
+    #     unknown_invs = [
+    #         inv for inv in invs
+    #         if inv.type == 1 and self.squeak_db.get_squeak_entry(inv.hash) is None
+    #     ]
+    #     return unknown_invs
+
+    #     # ret = []
+    #     # for inv in invs:
+    #     #     if inv.type == 1:
+    #     #         squeak_entry = self.squeak_db.get_squeak_entry(
+    #     #             inv.hash,
+    #     #         )
+    #     #         if squeak_entry is None:
+    #     #             ret.append(
+    #     #                 CInv(type=1, hash=inv.hash)
+    #     #             )
+    #     # return ret
 
     def get_interested_locator(self):
         block_range = self.get_block_range()
