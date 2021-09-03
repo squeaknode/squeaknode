@@ -27,7 +27,7 @@ import SqueakList from '../../components/SqueakList';
 import {
   getTimelineSqueakDisplaysRequest,
   getNetworkRequest,
-  subscribeSqueakDisplaysRequest,
+  subscribeTimelineSqueakDisplaysRequest,
 } from '../../squeakclient/requests';
 
 const SQUEAKS_PER_PAGE = 10;
@@ -47,7 +47,7 @@ export default function TimelinePage() {
     setWaitingForTimeline(true);
     getTimelineSqueakDisplaysRequest(limit, blockHeight, squeakTime, squeakHash, handleLoadedTimeline, alertFailedRequest);
   };
-  const subscribeNewSqueaks = () => subscribeSqueakDisplaysRequest(handleLoadedNewSqueak);
+  const subscribeNewSqueaks = () => subscribeTimelineSqueakDisplaysRequest(handleLoadedNewSqueak);
   const getNetwork = () => {
     getNetworkRequest(setNetwork);
   };
