@@ -242,9 +242,14 @@ def download_squeak(node_stub, squeak_hash):
     )
 
 
-def download_squeaks(node_stub):
+def download_squeaks(node_stub, addresses, min_block, max_block, reply_to):
     node_stub.DownloadSqueaks(
-        squeak_admin_pb2.DownloadSqueaksRequest(),
+        squeak_admin_pb2.DownloadSqueaksRequest(
+            addreses=addresses,
+            min_block_height=min_block,
+            max_block_height=max_block,
+            replyto_squeak_hash=reply_to,
+        ),
     )
 
 

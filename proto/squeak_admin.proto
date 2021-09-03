@@ -736,6 +736,17 @@ message OfferDisplayEntry {
 }
 
 message DownloadSqueaksRequest {
+    /// The interested addresses
+    repeated string addreses = 1;
+
+    /// Minimum block height
+    int32 min_block_height = 2;
+
+    /// Maximum block height
+    int32 max_block_height = 3;
+
+    /// The hash replied to
+    string replyto_squeak_hash = 4;
 }
 
 message DownloadSqueaksReply {

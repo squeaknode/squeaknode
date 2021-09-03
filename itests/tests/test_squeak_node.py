@@ -38,6 +38,7 @@ from tests.util import delete_profile
 from tests.util import delete_squeak
 from tests.util import download_offers
 from tests.util import download_squeak
+from tests.util import download_squeaks
 from tests.util import download_squeaks_for_address
 from tests.util import get_connected_peer
 from tests.util import get_connected_peers
@@ -881,43 +882,39 @@ def test_connect_peer(admin_stub, other_admin_stub):
         print(item)
         assert len(item) == 0
 
-# TODO: Re-enable after DownloadSqueaks RPC method supports params.
-# def test_get_squeak_by_lookup(
-#     admin_stub,
-#     other_admin_stub,
-#     connected_tcp_peer_id,
-#     lightning_client,
-#     signing_profile_id,
-#     saved_squeak_hash,
-# ):
-#     # Get the squeak profile
-#     squeak_profile = get_squeak_profile(admin_stub, signing_profile_id)
-#     squeak_profile_address = squeak_profile.address
-#     squeak_profile_name = squeak_profile.profile_name
 
-#     # Add the contact profile to the other server and set the profile to be following
-#     contact_profile_id = create_contact_profile(
-#         other_admin_stub, squeak_profile_name, squeak_profile_address)
-#     other_admin_stub.SetSqueakProfileFollowing(
-#         squeak_admin_pb2.SetSqueakProfileFollowingRequest(
-#             profile_id=contact_profile_id,
-#             following=True,
-#         )
-#     )
+def test_get_squeak_by_lookup(
+    admin_stub,
+    other_admin_stub,
+    connected_tcp_peer_id,
+    lightning_client,
+    signing_profile_id,
+    saved_squeak_hash,
+):
+    # Get the squeak profile
+    squeak_profile = get_squeak_profile(admin_stub, signing_profile_id)
+    squeak_profile_address = squeak_profile.address
+    squeak_profile.profile_name
 
-#     # Get the squeak display item
-#     squeak_display_entry = get_squeak_display(
-#         other_admin_stub, saved_squeak_hash)
-#     assert squeak_display_entry is None
+    # Get the squeak display item
+    squeak_display_entry = get_squeak_display(
+        other_admin_stub, saved_squeak_hash)
+    assert squeak_display_entry is None
 
-#     # Sync squeaks
-#     download_squeaks(other_admin_stub)
-#     time.sleep(5)
+    # Sync squeaks
+    download_squeaks(
+        other_admin_stub,
+        [squeak_profile_address],
+        -1,
+        -1,
+        None,
+    )
+    time.sleep(5)
 
-#     # Get the squeak display item
-#     squeak_display_entry = get_squeak_display(
-#         other_admin_stub, saved_squeak_hash)
-#     assert squeak_display_entry.squeak_hash == saved_squeak_hash
+    # Get the squeak display item
+    squeak_display_entry = get_squeak_display(
+        other_admin_stub, saved_squeak_hash)
+    assert squeak_display_entry.squeak_hash == saved_squeak_hash
 
 
 def test_subscribe_squeaks(

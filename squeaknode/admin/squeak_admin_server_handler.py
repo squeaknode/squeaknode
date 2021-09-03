@@ -531,8 +531,27 @@ class SqueakAdminServerHandler(object):
         )
 
     def handle_download_squeaks(self, request):
-        logger.info("Handle download squeaks")
-        self.squeak_controller.download_squeaks()
+        addresses = request.addreses
+        min_block = request.min_block_height
+        max_block = request.max_block_height
+        replyto_hash = request.replyto_squeak_hash
+        logger.info("""Handle download squeaks for
+        addreses: {}
+        min_block: {}
+        max_block: {}
+        replyto_hash: {}
+        """.format(
+            addresses,
+            min_block,
+            max_block,
+            replyto_hash,
+        ))
+        self.squeak_controller.download_squeaks(
+            addresses,
+            min_block,
+            max_block,
+            replyto_hash,
+        )
         return squeak_admin_pb2.DownloadSqueaksReply()
 
     def handle_download_squeak(self, request):
