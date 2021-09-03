@@ -33,6 +33,8 @@ import {
   goToProfilePage,
 } from '../../navigation/navigation';
 
+const SQUEAKS_PER_PAGE = 10;
+
 export default function SqueakAddressPage() {
   const classes = useStyles();
   const history = useHistory();
@@ -46,9 +48,9 @@ export default function SqueakAddressPage() {
   const getSqueakProfile = (address) => {
     getSqueakProfileByAddressRequest(address, setSqueakProfile);
   };
-  const getSqueaks = (address) => {
+  const getSqueaks = (address, limit, blockHeight, squeakTime, squeakHash) => {
     setWaitingForSqueaks(true);
-    getAddressSqueakDisplaysRequest(address, handleLoadedAddressSqueaks);
+    getAddressSqueakDisplaysRequest(address, limit, blockHeight, squeakTime, squeakHash, handleLoadedAddressSqueaks);
   };
   const subscribeSqueaks = (address) => subscribeAddressSqueakDisplaysRequest(address, (resp) => {
     setSqueaks((prevSqueaks) => [resp].concat(prevSqueaks));
@@ -82,7 +84,7 @@ export default function SqueakAddressPage() {
     getSqueakProfile(address);
   }, [address]);
   useEffect(() => {
-    getSqueaks(address);
+    getSqueaks(address, SQUEAKS_PER_PAGE, null, null, null);
   }, [address]);
   useEffect(() => {
     const stream = subscribeSqueaks(address);
