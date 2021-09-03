@@ -5,7 +5,7 @@ clean:
 
 rundev:	gen-protos
 	npm install
-	REACT_APP_SERVER_PORT=12994 npm start
+	REACT_APP_DEV_MODE_ENABLED=true REACT_APP_SERVER_PORT=12994 npm start
 
 build:  gen-protos
 	npm install

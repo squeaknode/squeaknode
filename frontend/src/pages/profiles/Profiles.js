@@ -11,7 +11,6 @@ import {
 } from '@material-ui/core';
 
 // styles
-import { makeStyles } from '@material-ui/core/styles';
 
 // styles
 import useStyles from './styles';
@@ -28,7 +27,6 @@ import ProfileListItem from '../../components/ProfileListItem';
 import {
   getProfilesRequest,
 } from '../../squeakclient/requests';
-
 
 export default function Profiles() {
   const classes = useStyles();
