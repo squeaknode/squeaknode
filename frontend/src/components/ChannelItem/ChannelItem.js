@@ -67,19 +67,6 @@ export default function ChannelItem({
     );
   }
 
-  function ChannelDetailItemVertical(label, value) {
-    return (
-      <Box className={classes.detailItemVertical}>
-        <Typography className={classes.detailItemLabel}>
-          {label}
-        </Typography>
-        <Typography className={classes.detailItemValue}>
-          {value}
-        </Typography>
-      </Box>
-    );
-  }
-
   return (
     <Card
       className={classes.root}

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
 import {
   Grid,
   Tabs,
@@ -7,9 +6,6 @@ import {
   AppBar,
   Box,
 } from '@material-ui/core';
-
-// styles
-import { makeStyles } from '@material-ui/core/styles';
 
 // components
 import Widget from '../../components/Widget';
@@ -21,19 +17,9 @@ import {
   getSentPaymentsRequest,
 } from '../../squeakclient/requests';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    '& > *': {
-      margin: theme.spacing(1),
-    },
-  },
-}));
-
 export default function SentPayments() {
-  const classes = useStyles();
   const [value, setValue] = useState(0);
   const [sentPayments, setSentPayments] = useState([]);
-  const history = useHistory();
 
   function a11yProps(index) {
     return {

@@ -60,7 +60,6 @@ export default function BuyOfferDetailItem({
   function PeerInfoContent() {
     console.log(offer);
     const peerAddress = offer.getPeerAddress();
-    const host = peerAddress.getHost();
     const peerAddressText = `${peerAddress.getHost()}:${peerAddress.getPort()}`;
     return (
       <Box>

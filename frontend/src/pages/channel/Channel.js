@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import {
   Grid,
   Button,
@@ -7,7 +7,6 @@ import {
   Tabs,
   Tab,
 } from '@material-ui/core';
-import { useTheme } from '@material-ui/styles';
 
 // styles
 import useStyles from './styles';
@@ -18,18 +17,14 @@ import { Typography } from '../../components/Wrappers';
 import CloseChannelDialog from '../../components/CloseChannelDialog';
 
 import {
-  lndListPeersRequest,
   lndListChannelsRequest,
 } from '../../squeakclient/requests';
 
 export default function LightningNodePage() {
   const classes = useStyles();
-  const theme = useTheme();
 
-  const history = useHistory();
   const { txId, outputIndex } = useParams();
   const [value, setValue] = useState(0);
-  const [peers, setPeers] = useState(null);
   const [channels, setChannels] = useState(null);
   const [closeChannelDialogOpen, setCloseChannelDialogOpen] = useState(false);
 
@@ -56,15 +51,11 @@ export default function LightningNodePage() {
     }
     let i;
     for (i = 0; i < channels.length; i++) {
-      if (getChannelPoint() == channels[i].getChannelPoint()) {
+      if (getChannelPoint() === channels[i].getChannelPoint()) {
         return true;
       }
     }
     return false;
-  };
-
-  const listPeers = () => {
-    lndListPeersRequest(setPeers);
   };
 
   const listChannels = () => {
@@ -76,9 +67,6 @@ export default function LightningNodePage() {
     setCloseChannelDialogOpen(true);
   };
 
-  useEffect(() => {
-    listPeers();
-  }, []);
   useEffect(() => {
     listChannels();
   }, []);
@@ -130,7 +118,11 @@ export default function LightningNodePage() {
               <Typography color="text" colorBrightness="secondary">
                 channel status
               </Typography>
-              <Typography size="md">channel status here</Typography>
+              <Typography size="md">
+              {isChannelOpen()
+                ? 'open'
+                : 'closed'}
+              </Typography>
               {isChannelOpen()
                 ? CloseChannelButton()
                 : 'no'}

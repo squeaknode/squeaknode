@@ -9,7 +9,6 @@ import {
   FormControlLabel,
   Switch,
 } from '@material-ui/core';
-import { useHistory } from 'react-router-dom';
 
 // styles
 import useStyles from './styles';
@@ -27,7 +26,6 @@ export default function SendBitcoinDialog({
   ...props
 }) {
   const classes = useStyles();
-  const history = useHistory();
 
   const [address, setAddress] = useState('');
   const [amount, setAmount] = useState('');

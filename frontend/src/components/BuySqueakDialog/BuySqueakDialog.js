@@ -14,8 +14,6 @@ import {
   CircularProgress,
 } from '@material-ui/core';
 
-import { useHistory } from 'react-router-dom';
-
 // styles
 import useStyles from './styles';
 
@@ -36,12 +34,10 @@ export default function BuySqueakDialog({
   ...props
 }) {
   const classes = useStyles();
-  const history = useHistory();
 
   const [selectedOfferId, setSelectedOfferId] = useState('');
   const [offers, setOffers] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
 
   const resetFields = () => {
     setSelectedOfferId('');
@@ -49,14 +45,6 @@ export default function BuySqueakDialog({
 
   const handleChange = (event) => {
     setSelectedOfferId(event.target.value);
-  };
-
-  const handleResponse = (response) => {
-    // Open pay confirmation dialog
-  };
-
-  const handleErr = (err) => {
-    alert(`Error paying offer: ${err}`);
   };
 
   // const payOffer = (offerID) => {

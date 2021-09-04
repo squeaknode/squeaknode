@@ -8,7 +8,6 @@ import {
   Tab,
   Box,
 } from '@material-ui/core';
-import { useTheme } from '@material-ui/styles';
 
 // styles
 import useStyles from './styles';
@@ -33,7 +32,6 @@ import {
 
 export default function LightningNodePage() {
   const classes = useStyles();
-  const theme = useTheme();
 
   const history = useHistory();
   const { pubkey, host, port } = useParams();
@@ -78,7 +76,7 @@ export default function LightningNodePage() {
     }
     let i;
     for (i = 0; i < peers.length; i++) {
-      if (pubkey == peers[i].getPubKey()) {
+      if (pubkey === peers[i].getPubKey()) {
         return true;
       }
     }

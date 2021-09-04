@@ -29,10 +29,6 @@ export default function ExportPrivateKeyDialog({
     setPrivateKey('');
   };
 
-  const handleChangePrivateKey = (event) => {
-    setPrivateKey(event.target.value);
-  };
-
   const getPrivateKey = () => {
     const profileId = profile.getProfileId();
     getSqueakProfilePrivateKey(profileId, (response) => {

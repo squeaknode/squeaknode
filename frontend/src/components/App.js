@@ -27,7 +27,6 @@ export default function App() {
           render={() => <Redirect to="/app/timeline" />}
         />
         <PublicRoute path="/app" component={Layout} />
-        //
         {' '}
         <PublicRoute path="/login" component={Login} />
         <Route component={Error} />

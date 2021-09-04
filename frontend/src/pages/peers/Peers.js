@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
 import {
   Grid,
   Button,
@@ -43,7 +42,6 @@ export default function Peers() {
   const [createPeerDialogOpen, setCreatePeerDialogOpen] = useState(false);
   const [connectPeerDialogOpen, setConnectPeerDialogOpen] = useState(false);
   const [value, setValue] = useState(0);
-  const history = useHistory();
 
   function a11yProps(index) {
     return {

@@ -40,7 +40,6 @@ export default function ReceivedPayment({
 
   function PeerDisplay() {
     const peerAddress = receivedPayment.getPeerAddress();
-    const host = peerAddress.getHost();
     const peerAddressText = `${peerAddress.getHost()}:${peerAddress.getPort()}`;
     return (
       <Box>

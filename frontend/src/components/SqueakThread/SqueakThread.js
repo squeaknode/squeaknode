@@ -2,7 +2,6 @@ import React from 'react';
 import {
   Box,
 } from '@material-ui/core';
-import { useHistory } from 'react-router-dom';
 
 import TimelineItem from '@material-ui/lab/TimelineItem';
 import TimelineSeparator from '@material-ui/lab/TimelineSeparator';
@@ -27,8 +26,6 @@ export default function SqueakThread({
   ...props
 }) {
   const classes = useStyles();
-
-  const history = useHistory();
 
   function reloadSqueakItem(itemHash) {
     // Get the new squeak.

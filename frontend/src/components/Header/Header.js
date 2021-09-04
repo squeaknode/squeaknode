@@ -30,7 +30,7 @@ import {
   useLayoutDispatch,
   toggleSidebar,
 } from '../../context/LayoutContext';
-import { useUserDispatch } from '../../context/UserContext';
+// import { useUserDispatch } from '../../context/UserContext';
 
 import {
   logoutRequest,
@@ -50,7 +50,7 @@ export default function Header(props) {
   // global
   const layoutState = useLayoutState();
   const layoutDispatch = useLayoutDispatch();
-  const userDispatch = useUserDispatch();
+  // const userDispatch = useUserDispatch();
 
   // local
   const [notificationsMenu, setNotificationsMenu] = useState(null);

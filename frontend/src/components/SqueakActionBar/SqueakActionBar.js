@@ -31,10 +31,6 @@ export default function SqueakActionBar({
   reloadSqueak,
   ...props
 }) {
-  const classes = useStyles();
-
-  const history = useHistory();
-
   const [replyDialogOpen, setReplyDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [viewDetailsDialogOpen, setViewDetailsDialogOpen] = useState(false);

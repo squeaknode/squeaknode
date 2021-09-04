@@ -26,7 +26,6 @@ const SQUEAKS_PER_PAGE = 10;
 
 export default function LikedPage() {
   const classes = useStyles();
-  const theme = useTheme();
   const [squeaks, setSqueaks] = useState([]);
   const [network, setNetwork] = useState('');
   const [waitingForLikedSqueaks, setWaitingForLikedSqueaks] = useState(false);

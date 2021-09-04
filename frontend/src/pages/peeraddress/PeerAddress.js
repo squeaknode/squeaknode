@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import {
   Grid,
   Button,
@@ -28,7 +28,6 @@ import {
 
 export default function PeerAddressPage() {
   const classes = useStyles();
-  const history = useHistory();
   const { host, port } = useParams();
   const [connectedPeer, setConnectedPeer] = useState(null);
 

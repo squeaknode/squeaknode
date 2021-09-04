@@ -9,7 +9,6 @@ import {
   Switch,
   TextField,
 } from '@material-ui/core';
-import { useHistory } from 'react-router-dom';
 
 // styles
 import { makeStyles } from '@material-ui/core/styles';
@@ -46,7 +45,6 @@ export default function ConnectPeerDialog({
   ...props
 }) {
   const classes = useStyles();
-  const history = useHistory();
 
   const [peerName, setPeerName] = useState('');
   const [host, setHost] = useState('');
@@ -58,10 +56,6 @@ export default function ConnectPeerDialog({
     setHost('');
     setPort(portDefaultValue);
     setCustomPortChecked(false);
-  };
-
-  const handleChangePeerName = (event) => {
-    setPeerName(event.target.value);
   };
 
   const handleChangeHost = (event) => {

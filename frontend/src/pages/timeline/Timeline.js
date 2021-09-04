@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
 import {
   Grid,
   Button,
@@ -9,7 +8,6 @@ import {
   Card,
   Box,
 } from '@material-ui/core';
-import { useTheme } from '@material-ui/styles';
 
 import EditIcon from '@material-ui/icons/Edit';
 import ReplayIcon from '@material-ui/icons/Replay';
@@ -34,14 +32,11 @@ const SQUEAKS_PER_PAGE = 10;
 
 export default function TimelinePage() {
   const classes = useStyles();
-  const theme = useTheme();
   const [squeaks, setSqueaks] = useState(null);
   const [newSqueaks, setNewSqueaks] = useState(null);
   const [open, setOpen] = React.useState(false);
   const [network, setNetwork] = useState('');
   const [waitingForTimeline, setWaitingForTimeline] = React.useState(false);
-
-  const history = useHistory();
 
   const getSqueaks = (limit, lastEntry) => {
     setWaitingForTimeline(true);
