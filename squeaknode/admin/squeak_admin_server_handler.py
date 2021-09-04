@@ -740,6 +740,11 @@ class SqueakAdminServerHandler(object):
                 last_entry,
             )
         )
+        logger.info(
+            "Got number of liked squeak entries: {}".format(
+                len(squeak_entries)
+            )
+        )
         squeak_display_msgs = [
             squeak_entry_to_message(entry) for entry in squeak_entries
         ]

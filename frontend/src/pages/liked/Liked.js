@@ -2,10 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import {
   Grid,
+  Button,
+  CircularProgress,
 } from '@material-ui/core';
 import { useTheme } from '@material-ui/styles';
 
 import Paper from '@material-ui/core/Paper';
+
+import ReplayIcon from '@material-ui/icons/Replay';
 
 // styles
 import useStyles from './styles';
@@ -18,23 +22,37 @@ import {
   getNetworkRequest,
 } from '../../squeakclient/requests';
 
+const SQUEAKS_PER_PAGE = 10;
+
 export default function LikedPage() {
   const classes = useStyles();
   const theme = useTheme();
   const [squeaks, setSqueaks] = useState([]);
   const [network, setNetwork] = useState('');
+  const [waitingForLikedSqueaks, setWaitingForLikedSqueaks] = useState(false);
 
   const history = useHistory();
 
-  const getSqueaks = () => {
-    getLikedSqueakDisplaysRequest(setSqueaks);
+  const getSqueaks = (limit, lastEntry) => {
+    setWaitingForLikedSqueaks(true);
+    getLikedSqueakDisplaysRequest(limit, lastEntry, handleLoadedTimeline);
   };
   const getNetwork = () => {
     getNetworkRequest(setNetwork);
   };
 
+  const handleLoadedTimeline = (loadedSqueaks) => {
+    setWaitingForLikedSqueaks(false);
+    setSqueaks((prevSqueaks) => {
+      if (!prevSqueaks) {
+        return loadedSqueaks;
+      }
+      return prevSqueaks.concat(loadedSqueaks);
+    });
+  };
+
   useEffect(() => {
-    getSqueaks(setSqueaks);
+    getSqueaks(SQUEAKS_PER_PAGE, null);
   }, []);
   useEffect(() => {
     getNetwork();
@@ -69,11 +87,39 @@ export default function LikedPage() {
               ? SqueaksContent()
               : NoSqueaksContent()}
           </Paper>
+          {ViewMoreSqueaksButton()}
         </Grid>
         <Grid item xs={12} sm={3}>
           <Paper className={classes.paper} />
         </Grid>
       </Grid>
+    );
+  }
+
+  function ViewMoreSqueaksButton() {
+    return (
+      <>
+        <Grid item xs={12}>
+          <div className={classes.wrapper}>
+            {!waitingForLikedSqueaks
+            && (
+            <Button
+              variant="contained"
+              color="primary"
+              disabled={waitingForLikedSqueaks}
+              onClick={() => {
+                const latestSqueak = squeaks.slice(-1).pop();
+                getSqueaks(SQUEAKS_PER_PAGE, latestSqueak);
+              }}
+            >
+              <ReplayIcon />
+              View more squeaks
+            </Button>
+            )}
+            {waitingForLikedSqueaks && <CircularProgress size={48} className={classes.buttonProgress} />}
+          </div>
+        </Grid>
+      </>
     );
   }
 

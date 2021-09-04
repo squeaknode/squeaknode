@@ -53,7 +53,7 @@ from squeaknode.db.migrations import run_migrations
 from squeaknode.db.models import Models
 
 
-MAX_INT = 999999999
+MAX_INT = 999999999999
 MAX_HASH = b'\xff' * 32
 
 
@@ -143,6 +143,9 @@ class SqueakDb:
     @property
     def datetime_now(self):
         return datetime.now(timezone.utc)
+
+    def datetime_from_timestamp(self, timestamp):
+        return datetime.fromtimestamp(timestamp, timezone.utc)
 
     def received_offer_should_be_deleted(self):
         expire_time = (
@@ -296,9 +299,10 @@ class SqueakDb:
             last_entry: Optional[SqueakEntry],
     ) -> List[SqueakEntry]:
         """ Get liked squeaks. """
-        last_liked_time = last_entry.liked_time if last_entry else MAX_INT
+        last_liked_time = self.datetime_from_timestamp(
+            last_entry.liked_time) if last_entry else self.datetime_now
         last_squeak_hash = last_entry.squeak_hash if last_entry else MAX_HASH
-        logger.info("""Timeline db query with
+        logger.info("""Liked squeaks db query with
         limit: {}
         last_liked_time: {}
         last_squeak_hash: {}
