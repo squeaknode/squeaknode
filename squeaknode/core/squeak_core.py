@@ -23,6 +23,7 @@ import logging
 import time
 from typing import Callable
 from typing import Optional
+from typing import Tuple
 
 import grpc
 from bitcoin.core import CBlockHeader
@@ -63,7 +64,7 @@ class SqueakCore:
         self.bitcoin_client = bitcoin_client
         self.lightning_client = lightning_client
 
-    def make_squeak(self, signing_profile: SqueakProfile, content_str: str, replyto_hash: Optional[bytes] = None) -> CSqueak:
+    def make_squeak(self, signing_profile: SqueakProfile, content_str: str, replyto_hash: Optional[bytes] = None) -> Tuple[CSqueak, bytes]:
         """Create a new squeak.
 
         Args:
@@ -72,7 +73,8 @@ class SqueakCore:
             replyto_hash: The hash of the squeak to which this one is replying.
 
         Returns:
-            CSqueak: the squeak that was created.
+            Tuple[CSqueak, bytes]: the squeak that was created together
+        with its decryption key.
 
         Raises:
             Exception: If the profile does not have a signing key.
@@ -107,7 +109,7 @@ class SqueakCore:
         Raises:
             Exception: If the block hash is not valid.
         """
-        CheckSqueak(squeak, skipDecryptionCheck=True)
+        CheckSqueak(squeak)
         block_info = self.bitcoin_client.get_block_info_by_height(
             squeak.nBlockHeight)
         if squeak.hashBlock != block_info.block_hash:
@@ -128,9 +130,7 @@ class SqueakCore:
         Raises:
             Exception: If the secret key is not valid.
         """
-        squeak.SetDecryptionKey(secret_key)
-        CheckSqueak(squeak)
-        return squeak.GetDecryptedContentStr()
+        return squeak.GetDecryptedContentStr(secret_key)
 
     def get_best_block_height(self) -> int:
         """Get the current height of the latest block in the blockchain.
@@ -141,11 +141,12 @@ class SqueakCore:
         block_info = self.bitcoin_client.get_best_block_info()
         return block_info.block_height
 
-    def create_offer(self, squeak: CSqueak, peer_address: PeerAddress, price_msat: int) -> SentOffer:
+    def create_offer(self, squeak: CSqueak, secret_key: bytes, peer_address: PeerAddress, price_msat: int) -> SentOffer:
         """Creates an offer to sell a squeak key to another node.
 
         Args:
             squeak: The squeak to be sold.
+            secret_key: The secret key to the squeak.
             peer_address: The address of the buyer.
             price_msat: The price in msats.
 
@@ -156,8 +157,6 @@ class SqueakCore:
         squeak_hash = get_hash(squeak)
         # Generate a new random nonce
         nonce = generate_tweak()
-        # Get the squeak secret key
-        secret_key = squeak.GetDecryptionKey()
         # Calculate the preimage
         # preimage = bxor(nonce, secret_key)
         preimage = add_tweak(secret_key, nonce)

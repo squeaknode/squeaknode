@@ -115,9 +115,8 @@ class SqueakController:
 
     def make_squeak(self, profile_id: int, content_str: str, replyto_hash: bytes) -> bytes:
         squeak_profile = self.squeak_db.get_profile(profile_id)
-        squeak = self.squeak_core.make_squeak(
+        squeak, decryption_key = self.squeak_core.make_squeak(
             squeak_profile, content_str, replyto_hash)
-        decryption_key = squeak.GetDecryptionKey()
         inserted_squeak_hash = self.save_squeak(squeak)
         self.unlock_squeak(
             inserted_squeak_hash,
@@ -127,6 +126,9 @@ class SqueakController:
 
     def get_squeak(self, squeak_hash: bytes) -> Optional[CSqueak]:
         return self.squeak_db.get_squeak(squeak_hash)
+
+    def get_squeak_secret_key(self, squeak_hash: bytes) -> Optional[bytes]:
+        return self.squeak_db.get_squeak_secret_key(squeak_hash)
 
     def delete_squeak(self, squeak_hash: bytes) -> None:
         num_deleted_offers = self.squeak_db.delete_offers_for_squeak(
@@ -178,8 +180,10 @@ class SqueakController:
         if sent_offer:
             return sent_offer
         squeak = self.get_squeak(squeak_hash)
+        secret_key = self.get_squeak_secret_key(squeak_hash)
         sent_offer = self.squeak_core.create_offer(
             squeak,
+            secret_key,
             peer_address,
             self.config.node.price_msat,
         )
@@ -484,7 +488,8 @@ class SqueakController:
     def save_received_offer(self, offer: Offer, peer_address: PeerAddress) -> None:
         logger.info("Saving received offer: {}".format(offer))
         squeak = self.get_squeak(offer.squeak_hash)
-        if squeak is None or squeak.HasDecryptionKey():
+        secret_key = self.get_squeak_secret_key(offer.squeak_hash)
+        if squeak is None or secret_key is not None:
             return
         received_offer = self.squeak_core.unpack_offer(
             squeak,
