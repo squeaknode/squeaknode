@@ -56,11 +56,9 @@ export default function BuySqueakDialog({
     getBuyOffersRequest(hash, setOffers);
   },
   [hash, setOffers]);
-  const subscribeOffers = useCallback(() => {
-    return subscribeBuyOffersRequest(hash, (offer) => {
-      setOffers((prevOffers) => prevOffers.concat([offer]));
-    })
-  },
+  const subscribeOffers = useCallback(() => subscribeBuyOffersRequest(hash, (offer) => {
+    setOffers((prevOffers) => prevOffers.concat([offer]));
+  }),
   [hash, setOffers]);
   const downloadOffers = () => {
     console.log(`downloadOffersRequest with hash: ${hash}`);
