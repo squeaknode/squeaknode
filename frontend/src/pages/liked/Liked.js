@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Grid,
   Button,
@@ -28,10 +28,12 @@ export default function LikedPage() {
   const [network, setNetwork] = useState('');
   const [waitingForLikedSqueaks, setWaitingForLikedSqueaks] = useState(false);
 
-  const getSqueaks = (limit, lastEntry) => {
-    setWaitingForLikedSqueaks(true);
-    getLikedSqueakDisplaysRequest(limit, lastEntry, handleLoadedTimeline);
-  };
+  const getSqueaks = useCallback((limit, lastEntry) => {
+      setWaitingForLikedSqueaks(true);
+      getLikedSqueakDisplaysRequest(limit, lastEntry, handleLoadedTimeline);
+    },
+    [],
+  );
   const getNetwork = () => {
     getNetworkRequest(setNetwork);
   };
@@ -48,7 +50,7 @@ export default function LikedPage() {
 
   useEffect(() => {
     getSqueaks(SQUEAKS_PER_PAGE, null);
-  }, []);
+  }, [getSqueaks]);
   useEffect(() => {
     getNetwork();
   }, []);

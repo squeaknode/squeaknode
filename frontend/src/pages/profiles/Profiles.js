@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Grid,
   Button,
@@ -47,10 +47,12 @@ export default function Profiles() {
     setValue(newValue);
   };
 
-  const loadProfiles = () => {
-    setWaitingForProfiles(true);
-    getProfilesRequest(handleLoadedProfiles);
-  };
+  const loadProfiles = useCallback(() => {
+      setWaitingForProfiles(true);
+      getProfilesRequest(handleLoadedProfiles);
+    },
+    [],
+  );
 
   const handleClickOpenCreateSigningProfileDialog = () => {
     setCreateSigningProfileDialogOpen(true);
@@ -83,7 +85,7 @@ export default function Profiles() {
 
   useEffect(() => {
     loadProfiles();
-  }, []);
+  }, [loadProfiles]);
 
   function TabPanel(props) {
     const {
