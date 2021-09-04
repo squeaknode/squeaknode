@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Box, Chip, Typography } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 
@@ -22,13 +22,6 @@ export default function PendingOpenChannelItem({
   });
 
   const history = useHistory();
-
-  const [expanded, setExpanded] = useState(false);
-
-  const handleExpandClick = (evt) => {
-    evt.stopPropagation();
-    setExpanded(!expanded);
-  };
 
   const getTxId = (channel) => {
     const channelPoint = channel.getChannelPoint();

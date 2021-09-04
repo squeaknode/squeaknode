@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
 import {
   Grid,
   Button,
   CircularProgress,
 } from '@material-ui/core';
-import { useTheme } from '@material-ui/styles';
 
 import Paper from '@material-ui/core/Paper';
 
@@ -26,12 +24,9 @@ const SQUEAKS_PER_PAGE = 10;
 
 export default function LikedPage() {
   const classes = useStyles();
-  const theme = useTheme();
   const [squeaks, setSqueaks] = useState([]);
   const [network, setNetwork] = useState('');
   const [waitingForLikedSqueaks, setWaitingForLikedSqueaks] = useState(false);
-
-  const history = useHistory();
 
   const getSqueaks = (limit, lastEntry) => {
     setWaitingForLikedSqueaks(true);

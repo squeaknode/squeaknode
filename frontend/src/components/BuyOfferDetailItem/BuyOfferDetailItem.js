@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Typography,
   Grid,
@@ -9,7 +9,6 @@ import { useHistory } from 'react-router-dom';
 
 // styles
 import moment from 'moment';
-import useStyles from './styles';
 
 import {
   goToPeerAddressPage,
@@ -20,11 +19,7 @@ export default function BuyOfferDetailItem({
   offer,
   ...props
 }) {
-  const classes = useStyles();
   const history = useHistory();
-  const [payOfferDialogOpen, setPayOfferDialogOpen] = useState(false);
-
-  const preventDefault = (event) => event.preventDefault();
 
   const onPeerClick = (event) => {
     event.preventDefault();
@@ -43,15 +38,6 @@ export default function BuyOfferDetailItem({
       offer.getNodeHost(),
       offer.getNodePort(),
     );
-  };
-
-  const handleClickPayOffer = () => {
-    console.log('Handle click pay offer.');
-    setPayOfferDialogOpen(true);
-  };
-
-  const handleClosePayOfferDialog = () => {
-    setPayOfferDialogOpen(false);
   };
 
   function OfferContent() {
@@ -74,7 +60,6 @@ export default function BuyOfferDetailItem({
   function PeerInfoContent() {
     console.log(offer);
     const peerAddress = offer.getPeerAddress();
-    const host = peerAddress.getHost();
     const peerAddressText = `${peerAddress.getHost()}:${peerAddress.getPort()}`;
     return (
       <Box>

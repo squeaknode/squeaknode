@@ -11,11 +11,11 @@ import Error from '../pages/error';
 import Login from '../pages/login';
 
 // context
-import { useUserState } from '../context/UserContext';
+// import { useUserState } from '../context/UserContext';
 
 export default function App() {
   // global
-  const { isAuthenticated } = useUserState();
+  // const { isAuthenticated } = useUserState();
 
   return (
     <HashRouter>
@@ -27,7 +27,6 @@ export default function App() {
           render={() => <Redirect to="/app/timeline" />}
         />
         <PublicRoute path="/app" component={Layout} />
-        //
         {' '}
         <PublicRoute path="/login" component={Login} />
         <Route component={Error} />

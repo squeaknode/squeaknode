@@ -7,7 +7,6 @@ import {
   DialogActions,
   Button,
 } from '@material-ui/core';
-import { useHistory } from 'react-router-dom';
 
 // styles
 import useStyles from './styles';
@@ -24,12 +23,12 @@ export default function UpdateProfileImageDialog({
   ...props
 }) {
   const classes = useStyles();
-  const history = useHistory();
 
   const [selectedFile, setSelectedFile] = useState(null);
   const [imageBase64, setImageBase64] = useState(null);
 
   const resetFields = () => {
+    setSelectedFile(null);
     setImageBase64(null);
   };
 
@@ -125,7 +124,7 @@ export default function UpdateProfileImageDialog({
   function DisplaySelectedImageFile() {
     const imageStr = imageBase64 || '';
     return (
-      <img src={imageStr} height="200" alt="Image preview..." />
+      <img src={imageStr} height="200" alt="" />
     );
   }
 

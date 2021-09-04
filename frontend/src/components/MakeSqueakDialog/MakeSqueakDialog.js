@@ -76,13 +76,9 @@ export default function MakeSqueakDialog({
     event.preventDefault();
     console.log('profileId:', profileId);
     console.log('content:', content);
-    if (replytoSqueak) {
-      var replyto = replytoSqueak.getSqueakHash();
-    } else {
-      var replyto = null;
-    }
+    const replyto = (replytoSqueak ? replytoSqueak.getSqueakHash() : null);
     console.log('replyto:', replyto);
-    if (profileId == -1) {
+    if (profileId === -1) {
       alert('Signing profile must be selected.');
       return;
     }

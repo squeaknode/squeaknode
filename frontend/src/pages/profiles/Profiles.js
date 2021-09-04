@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
 import {
   Grid,
   Button,
@@ -36,7 +35,6 @@ export default function Profiles() {
   const [createContactProfileDialogOpen, setCreateContactProfileDialogOpen] = useState(false);
   const [value, setValue] = useState(0);
   const [waitingForProfiles, setWaitingForProfiles] = useState(false);
-  const history = useHistory();
 
   function a11yProps(index) {
     return {

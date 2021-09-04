@@ -6,14 +6,10 @@ import {
 import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
 import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
 
-// styles
-import useStyles from './styles';
-
 export default function SqueakProfileFollowingIndicator({
   squeakProfile,
   ...props
 }) {
-  const classes = useStyles();
 
   function FollowingIndicator() {
     return (

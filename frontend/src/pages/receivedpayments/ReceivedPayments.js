@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
 import {
   Grid,
   Button,
@@ -35,7 +34,6 @@ export default function ReceivedPayments() {
   const classes = useStyles();
   const [value, setValue] = useState(0);
   const [receivedPayments, setReceivedPayments] = useState([]);
-  const history = useHistory();
 
   function a11yProps(index) {
     return {

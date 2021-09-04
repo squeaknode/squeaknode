@@ -9,7 +9,6 @@ import { useHistory } from 'react-router-dom';
 
 // styles
 import moment from 'moment';
-import useStyles from './styles';
 
 import {
   goToSqueakPage,
@@ -21,8 +20,6 @@ export default function SentPayment({
   sentPayment,
   ...props
 }) {
-  const classes = useStyles();
-
   const history = useHistory();
 
   const onSqueakClick = (event) => {
@@ -50,7 +47,6 @@ export default function SentPayment({
 
   function PeerDisplay() {
     const peerAddress = sentPayment.getPeerAddress();
-    const host = peerAddress.getHost();
     const peerAddressText = `${peerAddress.getHost()}:${peerAddress.getPort()}`;
     return (
       <Box>
