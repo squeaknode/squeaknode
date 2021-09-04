@@ -424,8 +424,18 @@ class SqueakDb:
         #     rows = curs.fetchall()
         #     return [self._parse_squeak_entry_with_profile(row) for row in rows]
 
-    def get_thread_reply_squeak_entries(self, squeak_hash: bytes) -> List[SqueakEntry]:
+    def get_thread_reply_squeak_entries(
+            self,
+            squeak_hash: bytes,
+            limit: int,
+            latest_block_height: int,
+            latest_squeak_time: int,
+            latest_squeak_hash: bytes,
+    ) -> List[SqueakEntry]:
         """ Get all replies for a squeak hash. """
+        latest_block_height = latest_block_height or MAX_INT
+        latest_squeak_time = latest_squeak_time or MAX_INT
+        latest_squeak_hash = latest_squeak_hash or MAX_HASH
         s = (
             select([self.squeaks, self.profiles])
             .select_from(
@@ -438,7 +448,9 @@ class SqueakDb:
             .order_by(
                 self.squeaks.c.n_block_height.desc(),
                 self.squeaks.c.n_time.desc(),
+                self.squeaks.c.hash.desc(),
             )
+            .limit(limit)
         )
         with self.get_connection() as connection:
             result = connection.execute(s)

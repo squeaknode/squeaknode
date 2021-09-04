@@ -603,6 +603,18 @@ message GetAncestorSqueakDisplaysReply {
 message GetReplySqueakDisplaysRequest {
     /// Hash of the squeak.
     string squeak_hash = 1;
+
+    /// Limit number of results
+    int32 limit = 2;
+
+    /// Block height
+    int32 latest_block_height = 3;
+
+    /// Squeak time
+    int64 latest_squeak_time = 4;
+
+    /// Hash of the squeak.
+    string latest_squeak_hash = 5;
 }
 
 message GetReplySqueakDisplaysReply {
