@@ -356,9 +356,13 @@ export function getAncestorSqueakDisplaysRequest(hash, handleResponse) {
   });
 }
 
-export function getReplySqueakDisplaysRequest(hash, handleResponse) {
+export function getReplySqueakDisplaysRequest(hash, limit, latestBlockHeight, latestSqueakTime, latestSqueakHash, handleResponse) {
   const request = new GetReplySqueakDisplaysRequest();
   request.setSqueakHash(hash);
+  request.setLimit(limit);
+  request.setLatestBlockHeight(latestBlockHeight);
+  request.setLatestSqueakTime(latestSqueakTime);
+  request.setLatestSqueakHash(latestSqueakHash);
   client.getReplySqueakDisplays(request, {}, (err, response) => {
     handleResponse(response.getSqueakDisplayEntriesList());
   });

@@ -436,6 +436,19 @@ class SqueakDb:
         latest_block_height = latest_block_height or MAX_INT
         latest_squeak_time = latest_squeak_time or MAX_INT
         latest_squeak_hash = latest_squeak_hash or MAX_HASH
+        logger.debug("""Replies db query with
+        squeak_hash: {}
+        limit: {}
+        latest_block_height: {}
+        latest_squeak_time: {}
+        latest_squeak_hash: {}
+        """.format(
+            squeak_hash.hex(),
+            limit,
+            latest_block_height,
+            latest_squeak_time,
+            latest_squeak_hash.hex(),
+        ))
         s = (
             select([self.squeaks, self.profiles])
             .select_from(
@@ -445,6 +458,17 @@ class SqueakDb:
                 )
             )
             .where(self.squeaks.c.hash_reply_sqk == squeak_hash)
+            .where(
+                tuple_(
+                    self.squeaks.c.n_block_height,
+                    self.squeaks.c.n_time,
+                    self.squeaks.c.hash,
+                ) < tuple_(
+                    latest_block_height,
+                    latest_squeak_time,
+                    latest_squeak_hash,
+                )
+            )
             .order_by(
                 self.squeaks.c.n_block_height.desc(),
                 self.squeaks.c.n_time.desc(),
