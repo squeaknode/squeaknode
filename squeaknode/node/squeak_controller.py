@@ -432,8 +432,15 @@ class SqueakController:
             last_entry,
         )
 
-    def get_liked_squeak_entries(self) -> List[SqueakEntry]:
-        return self.squeak_db.get_liked_squeak_entries()
+    def get_liked_squeak_entries(
+            self,
+            limit: int,
+            last_entry: Optional[SqueakEntry],
+    ) -> List[SqueakEntry]:
+        return self.squeak_db.get_liked_squeak_entries(
+            limit,
+            last_entry,
+        )
 
     def get_squeak_entries_for_address(
             self,

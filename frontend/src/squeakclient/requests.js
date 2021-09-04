@@ -561,8 +561,10 @@ export function unlikeSqueakRequest(hash, handleResponse) {
   });
 }
 
-export function getLikedSqueakDisplaysRequest(handleResponse) {
+export function getLikedSqueakDisplaysRequest(limit, lastEntry, handleResponse, handleErr) {
   const request = new GetLikedSqueakDisplaysRequest();
+  request.setLimit(limit);
+  request.setLastEntry(lastEntry);
   client.getLikedSqueakDisplays(request, {}, (err, response) => {
     handleResponse(response.getSqueakDisplayEntriesList());
   });
