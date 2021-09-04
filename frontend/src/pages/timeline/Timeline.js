@@ -43,7 +43,11 @@ export default function TimelinePage() {
     getTimelineSqueakDisplaysRequest(limit, lastEntry, handleLoadedTimeline, alertFailedRequest);
   },
   []);
-  const subscribeNewSqueaks = () => subscribeTimelineSqueakDisplaysRequest(handleLoadedNewSqueak);
+  const subscribeNewSqueaks = useCallback(() => {
+    return subscribeTimelineSqueakDisplaysRequest(handleLoadedNewSqueak)
+  },
+  []);
+
   const getNetwork = () => {
     getNetworkRequest(setNetwork);
   };
@@ -91,7 +95,7 @@ export default function TimelinePage() {
   useEffect(() => {
     const stream = subscribeNewSqueaks();
     return () => stream.cancel();
-  }, []);
+  }, [subscribeNewSqueaks]);
   useEffect(() => {
     getNetwork();
   }, []);
