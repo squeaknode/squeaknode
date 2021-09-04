@@ -13,6 +13,7 @@ import Paper from '@material-ui/core/Paper';
 
 import FaceIcon from '@material-ui/icons/Face';
 import GetAppIcon from '@material-ui/icons/GetApp';
+import ReplayIcon from '@material-ui/icons/Replay';
 
 // styles
 import useStyles from './styles';
@@ -34,6 +35,8 @@ import {
   goToSqueakAddressPage,
 } from '../../navigation/navigation';
 
+const SQUEAKS_PER_PAGE = 10;
+
 export default function SqueakPage() {
   const classes = useStyles();
   const history = useHistory();
@@ -41,15 +44,17 @@ export default function SqueakPage() {
   const [ancestorSqueaks, setAncestorSqueaks] = useState(null);
   const [replySqueaks, setReplySqueaks] = useState([]);
   const [network, setNetwork] = useState('');
-  const [waitingForSqueak, setWaitingForSqueak] = React.useState(false);
+  const [waitingForSqueak, setWaitingForSqueak] = useState(false);
+  const [waitingForReplySqueaks, setWaitingForReplySqueaks] = useState(false);
 
   const getAncestorSqueaks = (hash) => {
     setWaitingForSqueak(true);
     getAncestorSqueakDisplaysRequest(hash, handleLoadedAncestorSqueaks);
   };
   const subscribeAncestorSqueaks = (hash) => subscribeAncestorSqueakDisplaysRequest(hash, setAncestorSqueaks);
-  const getReplySqueaks = (hash) => {
-    getReplySqueakDisplaysRequest(hash, setReplySqueaks);
+  const getReplySqueaks = (hash, limit, blockHeight, squeakTime, squeakHash) => {
+    setWaitingForReplySqueaks(true);
+    getReplySqueakDisplaysRequest(hash, limit, blockHeight, squeakTime, squeakHash, handleLoadedReplySqueaks);
   };
   const subscribeReplySqueaks = (hash) => subscribeReplySqueakDisplaysRequest(hash, (resp) => {
     setReplySqueaks((prevReplySqueaks) => prevReplySqueaks.concat(resp));
@@ -65,6 +70,16 @@ export default function SqueakPage() {
   const handleLoadedAncestorSqueaks = (loadedAncestorSqueaks) => {
     setWaitingForSqueak(false);
     setAncestorSqueaks(loadedAncestorSqueaks);
+  };
+
+  const handleLoadedReplySqueaks = (loadedReplySqueaks) => {
+    setWaitingForReplySqueaks(false);
+    setReplySqueaks((prevSqueaks) => {
+      if (!prevSqueaks) {
+        return loadedReplySqueaks;
+      }
+      return prevSqueaks.concat(loadedReplySqueaks);
+    });
   };
 
   const onDownloadRepliesClick = (event) => {
@@ -92,7 +107,7 @@ export default function SqueakPage() {
     return () => stream.cancel();
   }, [hash]);
   useEffect(() => {
-    getReplySqueaks(hash);
+    getReplySqueaks(hash, SQUEAKS_PER_PAGE, null, null, null);
   }, [hash]);
   useEffect(() => {
     const stream = subscribeReplySqueaks(hash);
@@ -169,6 +184,7 @@ export default function SqueakPage() {
         {CurrentSqueakContent()}
         {DownloadRepliesButtonContent()}
         {RepliesContent()}
+        {ViewMoreSqueaksButton()}
       </>
     );
   }
@@ -201,6 +217,36 @@ export default function SqueakPage() {
             Download replies
           </Button>
         </Box>
+      </>
+    );
+  }
+
+  function ViewMoreSqueaksButton() {
+    return (
+      <>
+        <Grid item xs={12}>
+          <div className={classes.wrapper}>
+            {!waitingForReplySqueaks
+            && (
+            <Button
+              variant="contained"
+              color="primary"
+              disabled={waitingForReplySqueaks}
+              onClick={() => {
+                const latestSqueak = replySqueaks.slice(-1).pop();
+                const latestSqueakHeight = (latestSqueak ? latestSqueak.getBlockHeight() : null);
+                const latestSqueakTime = (latestSqueak ? latestSqueak.getSqueakTime() : null);
+                const latestSqueakHash = (latestSqueak ? latestSqueak.getSqueakHash() : null);
+                getReplySqueaks(hash, SQUEAKS_PER_PAGE, latestSqueakHeight, latestSqueakTime, latestSqueakHash);
+              }}
+            >
+              <ReplayIcon />
+              View more replies
+            </Button>
+            )}
+            {waitingForReplySqueaks && <CircularProgress size={48} className={classes.buttonProgress} />}
+          </div>
+        </Grid>
       </>
     );
   }

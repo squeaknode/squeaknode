@@ -188,6 +188,7 @@ def test_make_reply_squeak(
     get_replies_response = admin_stub.GetReplySqueakDisplays(
         squeak_admin_pb2.GetReplySqueakDisplaysRequest(
             squeak_hash=saved_squeak_hash,
+            limit=100,
         )
     )
     assert len(get_replies_response.squeak_display_entries) == 1

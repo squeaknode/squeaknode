@@ -417,14 +417,31 @@ class SqueakAdminServerHandler(object):
     def handle_get_reply_squeak_display_entries(self, request):
         squeak_hash_str = request.squeak_hash
         squeak_hash = bytes.fromhex(squeak_hash_str)
-        logger.info(
-            "Handle get reply squeak display entries for squeak hash: {}".format(
-                squeak_hash_str
-            )
-        )
+        limit = request.limit
+        latest_block_height = request.latest_block_height
+        latest_squeak_time = request.latest_squeak_time
+        latest_squeak_hash_str = request.latest_squeak_hash
+        latest_squeak_hash = bytes.fromhex(
+            latest_squeak_hash_str) if latest_squeak_hash_str else None
+        logger.info("""Handle get reply squeak display entries for squeak hash: {} with
+        limit: {}
+        block_height: {}
+        squeak_time: {}
+        squeak_hash: {}
+        """.format(
+            squeak_hash_str,
+            limit,
+            latest_block_height,
+            latest_squeak_time,
+            latest_squeak_hash_str,
+        ))
         squeak_entries = (
             self.squeak_controller.get_reply_squeak_entries(
                 squeak_hash,
+                limit,
+                latest_block_height,
+                latest_squeak_time,
+                latest_squeak_hash,
             )
         )
         logger.info(
