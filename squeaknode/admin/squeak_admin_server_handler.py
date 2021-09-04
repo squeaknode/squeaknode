@@ -352,9 +352,10 @@ class SqueakAdminServerHandler(object):
     def handle_get_squeak_display_entries_for_address(self, request):
         address = request.address
         limit = request.limit
-        block_height = request.block_height
-        squeak_time = request.squeak_time
-        squeak_hash_str = request.squeak_hash
+        last_entry = request.last_entry
+        block_height = last_entry.block_height
+        squeak_time = last_entry.squeak_time
+        squeak_hash_str = last_entry.squeak_hash
         squeak_hash = bytes.fromhex(
             squeak_hash_str) if squeak_hash_str else None
         logger.info("""Handle get squeak display entries for address: {} with
