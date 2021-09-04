@@ -571,6 +571,18 @@ message GetTimelineSqueakDisplaysReply {
 message GetAddressSqueakDisplaysRequest {
     /// The address
     string address = 1;
+
+    /// Limit number of results
+    int32 limit = 2;
+
+    /// Block height
+    int32 block_height = 3;
+
+    /// Squeak time
+    int64 squeak_time = 4;
+
+    /// Hash of the squeak.
+    string squeak_hash = 5;
 }
 
 message GetAddressSqueakDisplaysReply {

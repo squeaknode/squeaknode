@@ -372,9 +372,13 @@ export function getSqueakProfileByAddressRequest(address, handleResponse) {
   });
 }
 
-export function getAddressSqueakDisplaysRequest(address, handleResponse) {
+export function getAddressSqueakDisplaysRequest(address, limit, blockHeight, squeakTime, squeakHash, handleResponse) {
   const request = new GetAddressSqueakDisplaysRequest();
   request.setAddress(address);
+  request.setLimit(limit);
+  request.setBlockHeight(blockHeight);
+  request.setSqueakTime(squeakTime);
+  request.setSqueakHash(squeakHash);
   client.getAddressSqueakDisplays(request, {}, (err, response) => {
     handleResponse(response.getSqueakDisplayEntriesList());
   });
