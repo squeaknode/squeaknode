@@ -187,8 +187,6 @@ class SqueakDb:
 
     def insert_squeak(self, squeak: CSqueak, block_header: CBlockHeader) -> bytes:
         """ Insert a new squeak.
-        TODO: Clear the decryption key from the serialized bytes
-        without modifying the passed squeak object.
 
         Return the hash (bytes) of the inserted squeak.
         """
