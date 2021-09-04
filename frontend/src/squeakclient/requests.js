@@ -111,12 +111,10 @@ export function getUserRequest(handleResponse) {
   });
 }
 
-export function getTimelineSqueakDisplaysRequest(limit, blockHeight, squeakTime, squeakHash, handleResponse, handleErr) {
+export function getTimelineSqueakDisplaysRequest(limit, lastEntry, handleResponse, handleErr) {
   const request = new GetTimelineSqueakDisplaysRequest();
   request.setLimit(limit);
-  request.setBlockHeight(blockHeight);
-  request.setSqueakTime(squeakTime);
-  request.setSqueakHash(squeakHash);
+  request.setLastEntry(lastEntry);
   client.getTimelineSqueakDisplays(request, {}, (err, response) => {
     if (err) {
       handleErr(err);

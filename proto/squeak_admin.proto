@@ -553,14 +553,8 @@ message GetTimelineSqueakDisplaysRequest {
     /// Limit number of results
     int32 limit = 1;
 
-    /// Block height
-    int32 block_height = 2;
-
-    /// Squeak time
-    int64 squeak_time = 3;
-
-    /// Hash of the squeak.
-    string squeak_hash = 4;
+    /// Last entry
+    SqueakDisplayEntry last_entry = 2;
 }
 
 message GetTimelineSqueakDisplaysReply {
