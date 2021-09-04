@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import {
   Grid,
   Button,
@@ -8,10 +8,8 @@ import {
 } from '@material-ui/core';
 
 import Timeline from '@material-ui/lab/Timeline';
-import TimelineDot from '@material-ui/lab/TimelineDot';
 import Paper from '@material-ui/core/Paper';
 
-import FaceIcon from '@material-ui/icons/Face';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import ReplayIcon from '@material-ui/icons/Replay';
 
@@ -31,15 +29,11 @@ import {
   subscribeReplySqueakDisplaysRequest,
   subscribeAncestorSqueakDisplaysRequest,
 } from '../../squeakclient/requests';
-import {
-  goToSqueakAddressPage,
-} from '../../navigation/navigation';
 
 const SQUEAKS_PER_PAGE = 10;
 
 export default function SqueakPage() {
   const classes = useStyles();
-  const history = useHistory();
   const { hash } = useParams();
   const [ancestorSqueaks, setAncestorSqueaks] = useState(null);
   const [replySqueaks, setReplySqueaks] = useState([]);
@@ -120,31 +114,6 @@ export default function SqueakPage() {
   }, []);
 
   const currentSqueak = useMemo(() => calculateCurrentSqueak(ancestorSqueaks), [ancestorSqueaks]);
-
-  function NoSqueakContent() {
-    return (
-      <div>
-        Unable to load squeak.
-      </div>
-    );
-  }
-
-  function TimelineUserAvatar(squeak) {
-    const handleAvatarClick = () => {
-      console.log('Avatar clicked...');
-      if (squeak) {
-        goToSqueakAddressPage(history, squeak.getAuthorAddress());
-      }
-    };
-    return (
-      <TimelineDot
-        onClick={handleAvatarClick}
-        style={{ cursor: 'pointer' }}
-      >
-        <FaceIcon />
-      </TimelineDot>
-    );
-  }
 
   function AncestorsContent() {
     return (
