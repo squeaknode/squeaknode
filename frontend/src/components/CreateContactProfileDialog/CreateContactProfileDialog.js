@@ -93,7 +93,6 @@ export default function CreateContactProfileDialog({
         required
         id="standard-textarea"
         label="Address"
-        required
         value={address}
         onChange={handleChangeAddress}
         inputProps={{ maxLength: 35 }}
