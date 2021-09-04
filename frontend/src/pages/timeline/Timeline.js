@@ -43,9 +43,9 @@ export default function TimelinePage() {
 
   const history = useHistory();
 
-  const getSqueaks = (limit, blockHeight, squeakTime, squeakHash) => {
+  const getSqueaks = (limit, lastEntry) => {
     setWaitingForTimeline(true);
-    getTimelineSqueakDisplaysRequest(limit, blockHeight, squeakTime, squeakHash, handleLoadedTimeline, alertFailedRequest);
+    getTimelineSqueakDisplaysRequest(limit, lastEntry, handleLoadedTimeline, alertFailedRequest);
   };
   const subscribeNewSqueaks = () => subscribeTimelineSqueakDisplaysRequest(handleLoadedNewSqueak);
   const getNetwork = () => {
@@ -67,7 +67,7 @@ export default function TimelinePage() {
   const handleClickRefresh = () => {
     setSqueaks(null);
     setNewSqueaks(null);
-    getSqueaks(SQUEAKS_PER_PAGE, null, null, null);
+    getSqueaks(SQUEAKS_PER_PAGE, null);
   };
 
   const handleLoadedTimeline = (loadedSqueaks) => {
@@ -90,7 +90,7 @@ export default function TimelinePage() {
   };
 
   useEffect(() => {
-    getSqueaks(SQUEAKS_PER_PAGE, null, null, null);
+    getSqueaks(SQUEAKS_PER_PAGE, null);
   }, []);
   useEffect(() => {
     const stream = subscribeNewSqueaks();
@@ -148,10 +148,7 @@ export default function TimelinePage() {
               disabled={waitingForTimeline}
               onClick={() => {
                 const latestSqueak = squeaks.slice(-1).pop();
-                const latestSqueakHeight = (latestSqueak ? latestSqueak.getBlockHeight() : null);
-                const latestSqueakTime = (latestSqueak ? latestSqueak.getSqueakTime() : null);
-                const latestSqueakHash = (latestSqueak ? latestSqueak.getSqueakHash() : null);
-                getSqueaks(SQUEAKS_PER_PAGE, latestSqueakHeight, latestSqueakTime, latestSqueakHash);
+                getSqueaks(SQUEAKS_PER_PAGE, latestSqueak);
               }}
             >
               <ReplayIcon />

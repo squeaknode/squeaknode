@@ -241,24 +241,22 @@ class SqueakDb:
     def get_timeline_squeak_entries(
             self,
             limit: int,
-            block_height: int = MAX_INT,
-            squeak_time: int = MAX_INT,
-            squeak_hash: bytes = MAX_HASH,
+            last_entry: Optional[SqueakEntry],
     ) -> List[SqueakEntry]:
         """ Get all followed squeaks. """
-        block_height = block_height or MAX_INT
-        squeak_time = squeak_time or MAX_INT
-        squeak_hash = squeak_hash or MAX_HASH
-        logger.debug("""Timeline db query with
+        last_block_height = last_entry.block_height if last_entry else MAX_INT
+        last_squeak_time = last_entry.squeak_time if last_entry else MAX_INT
+        last_squeak_hash = last_entry.squeak_hash if last_entry else MAX_HASH
+        logger.info("""Timeline db query with
         limit: {}
         block_height: {}
         squeak_time: {}
         squeak_hash: {}
         """.format(
             limit,
-            block_height,
-            squeak_time,
-            squeak_hash.hex(),
+            last_block_height,
+            last_squeak_time,
+            last_squeak_hash.hex(),
         ))
         s = (
             select([self.squeaks, self.profiles])
@@ -275,9 +273,9 @@ class SqueakDb:
                     self.squeaks.c.n_time,
                     self.squeaks.c.hash,
                 ) < tuple_(
-                    block_height,
-                    squeak_time,
-                    squeak_hash,
+                    last_block_height,
+                    last_squeak_time,
+                    last_squeak_hash,
                 )
             )
             .order_by(
@@ -318,14 +316,23 @@ class SqueakDb:
             self,
             address: str,
             limit: int,
-            block_height: int,
-            squeak_time: int,
-            squeak_hash: bytes,
+            last_entry: Optional[SqueakEntry],
     ) -> List[SqueakEntry]:
         """ Get a squeak. """
-        block_height = block_height or MAX_INT
-        squeak_time = squeak_time or MAX_INT
-        squeak_hash = squeak_hash or MAX_HASH
+        last_block_height = last_entry.block_height if last_entry else MAX_INT
+        last_squeak_time = last_entry.squeak_time if last_entry else MAX_INT
+        last_squeak_hash = last_entry.squeak_hash if last_entry else MAX_HASH
+        logger.info("""Timeline db query with
+        limit: {}
+        block_height: {}
+        squeak_time: {}
+        squeak_hash: {}
+        """.format(
+            limit,
+            last_block_height,
+            last_squeak_time,
+            last_squeak_hash.hex(),
+        ))
         s = (
             select([self.squeaks, self.profiles])
             .select_from(
@@ -341,9 +348,9 @@ class SqueakDb:
                     self.squeaks.c.n_time,
                     self.squeaks.c.hash,
                 ) < tuple_(
-                    block_height,
-                    squeak_time,
-                    squeak_hash,
+                    last_block_height,
+                    last_squeak_time,
+                    last_squeak_hash,
                 )
             )
             .order_by(
@@ -428,26 +435,22 @@ class SqueakDb:
             self,
             squeak_hash: bytes,
             limit: int,
-            latest_block_height: int,
-            latest_squeak_time: int,
-            latest_squeak_hash: bytes,
+            last_entry: Optional[SqueakEntry],
     ) -> List[SqueakEntry]:
         """ Get all replies for a squeak hash. """
-        latest_block_height = latest_block_height or MAX_INT
-        latest_squeak_time = latest_squeak_time or MAX_INT
-        latest_squeak_hash = latest_squeak_hash or MAX_HASH
-        logger.debug("""Replies db query with
-        squeak_hash: {}
+        last_block_height = last_entry.block_height if last_entry else MAX_INT
+        last_squeak_time = last_entry.squeak_time if last_entry else MAX_INT
+        last_squeak_hash = last_entry.squeak_hash if last_entry else MAX_HASH
+        logger.info("""Timeline db query with
         limit: {}
-        latest_block_height: {}
-        latest_squeak_time: {}
-        latest_squeak_hash: {}
+        block_height: {}
+        squeak_time: {}
+        squeak_hash: {}
         """.format(
-            squeak_hash.hex(),
             limit,
-            latest_block_height,
-            latest_squeak_time,
-            latest_squeak_hash.hex(),
+            last_block_height,
+            last_squeak_time,
+            last_squeak_hash.hex(),
         ))
         s = (
             select([self.squeaks, self.profiles])
@@ -464,9 +467,9 @@ class SqueakDb:
                     self.squeaks.c.n_time,
                     self.squeaks.c.hash,
                 ) < tuple_(
-                    latest_block_height,
-                    latest_squeak_time,
-                    latest_squeak_hash,
+                    last_block_height,
+                    last_squeak_time,
+                    last_squeak_hash,
                 )
             )
             .order_by(

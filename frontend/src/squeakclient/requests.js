@@ -111,12 +111,10 @@ export function getUserRequest(handleResponse) {
   });
 }
 
-export function getTimelineSqueakDisplaysRequest(limit, blockHeight, squeakTime, squeakHash, handleResponse, handleErr) {
+export function getTimelineSqueakDisplaysRequest(limit, lastEntry, handleResponse, handleErr) {
   const request = new GetTimelineSqueakDisplaysRequest();
   request.setLimit(limit);
-  request.setBlockHeight(blockHeight);
-  request.setSqueakTime(squeakTime);
-  request.setSqueakHash(squeakHash);
+  request.setLastEntry(lastEntry);
   client.getTimelineSqueakDisplays(request, {}, (err, response) => {
     if (err) {
       handleErr(err);
@@ -356,13 +354,11 @@ export function getAncestorSqueakDisplaysRequest(hash, handleResponse) {
   });
 }
 
-export function getReplySqueakDisplaysRequest(hash, limit, latestBlockHeight, latestSqueakTime, latestSqueakHash, handleResponse) {
+export function getReplySqueakDisplaysRequest(hash, limit, lastEntry, handleResponse) {
   const request = new GetReplySqueakDisplaysRequest();
   request.setSqueakHash(hash);
   request.setLimit(limit);
-  request.setLatestBlockHeight(latestBlockHeight);
-  request.setLatestSqueakTime(latestSqueakTime);
-  request.setLatestSqueakHash(latestSqueakHash);
+  request.setLastEntry(lastEntry);
   client.getReplySqueakDisplays(request, {}, (err, response) => {
     handleResponse(response.getSqueakDisplayEntriesList());
   });
@@ -376,13 +372,11 @@ export function getSqueakProfileByAddressRequest(address, handleResponse) {
   });
 }
 
-export function getAddressSqueakDisplaysRequest(address, limit, blockHeight, squeakTime, squeakHash, handleResponse) {
+export function getAddressSqueakDisplaysRequest(address, limit, lastEntry, handleResponse) {
   const request = new GetAddressSqueakDisplaysRequest();
   request.setAddress(address);
   request.setLimit(limit);
-  request.setBlockHeight(blockHeight);
-  request.setSqueakTime(squeakTime);
-  request.setSqueakHash(squeakHash);
+  request.setLastEntry(lastEntry);
   client.getAddressSqueakDisplays(request, {}, (err, response) => {
     handleResponse(response.getSqueakDisplayEntriesList());
   });

@@ -49,9 +49,9 @@ export default function SqueakAddressPage() {
   const getSqueakProfile = (address) => {
     getSqueakProfileByAddressRequest(address, setSqueakProfile);
   };
-  const getSqueaks = (address, limit, blockHeight, squeakTime, squeakHash) => {
+  const getSqueaks = (address, limit, lastEntry) => {
     setWaitingForSqueaks(true);
-    getAddressSqueakDisplaysRequest(address, limit, blockHeight, squeakTime, squeakHash, handleLoadedAddressSqueaks);
+    getAddressSqueakDisplaysRequest(address, limit, lastEntry, handleLoadedAddressSqueaks);
   };
   const subscribeSqueaks = (address) => subscribeAddressSqueakDisplaysRequest(address, (resp) => {
     setSqueaks((prevSqueaks) => [resp].concat(prevSqueaks));
@@ -90,7 +90,7 @@ export default function SqueakAddressPage() {
     getSqueakProfile(address);
   }, [address]);
   useEffect(() => {
-    getSqueaks(address, SQUEAKS_PER_PAGE, null, null, null);
+    getSqueaks(address, SQUEAKS_PER_PAGE, null);
   }, [address]);
   useEffect(() => {
     const stream = subscribeSqueaks(address);
@@ -247,10 +247,7 @@ export default function SqueakAddressPage() {
               disabled={waitingForSqueaks}
               onClick={() => {
                 const latestSqueak = squeaks.slice(-1).pop();
-                const latestSqueakHeight = (latestSqueak ? latestSqueak.getBlockHeight() : null);
-                const latestSqueakTime = (latestSqueak ? latestSqueak.getSqueakTime() : null);
-                const latestSqueakHash = (latestSqueak ? latestSqueak.getSqueakHash() : null);
-                getSqueaks(address, SQUEAKS_PER_PAGE, latestSqueakHeight, latestSqueakTime, latestSqueakHash);
+                getSqueaks(address, SQUEAKS_PER_PAGE, latestSqueak);
               }}
             >
               <ReplayIcon />
