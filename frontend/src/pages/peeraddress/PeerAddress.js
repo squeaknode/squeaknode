@@ -36,11 +36,9 @@ export default function PeerAddressPage() {
   },
   [host, port]);
 
-  const subscribeConnectedPeer = useCallback(() => {
-    return subscribeConnectedPeerRequest(host, port, (connectedPeer) => {
-      setConnectedPeer(connectedPeer);
-    });
-  },
+  const subscribeConnectedPeer = useCallback(() => subscribeConnectedPeerRequest(host, port, (connectedPeer) => {
+    setConnectedPeer(connectedPeer);
+  }),
   [host, port]);
 
   useEffect(() => {
