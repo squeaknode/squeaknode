@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   MenuItem,
   Typography,
@@ -52,12 +52,16 @@ export default function BuySqueakDialog({
   //   pay(offer.getOfferId());
   // };
 
-  const loadOffers = () => {
+  const loadOffers = useCallback(() => {
     getBuyOffersRequest(hash, setOffers);
-  };
-  const subscribeOffers = () => subscribeBuyOffersRequest(hash, (offer) => {
-    setOffers((prevOffers) => prevOffers.concat([offer]));
-  });
+  },
+  [hash, setOffers]);
+  const subscribeOffers = useCallback(() => {
+    return subscribeBuyOffersRequest(hash, (offer) => {
+      setOffers((prevOffers) => prevOffers.concat([offer]));
+    })
+  },
+  [hash, setOffers]);
   const downloadOffers = () => {
     console.log(`downloadOffersRequest with hash: ${hash}`);
     downloadOffersRequest(hash, (response) => {
@@ -92,7 +96,7 @@ export default function BuySqueakDialog({
   const getSelectedOffer = () => {
     let offer;
     for (offer of offers) {
-      if (offer.getOfferId() == selectedOfferId) {
+      if (offer.getOfferId() === selectedOfferId) {
         return offer;
       }
     }
@@ -101,22 +105,21 @@ export default function BuySqueakDialog({
 
   const getPeerAddressText = (offer) => {
     const peerAddress = offer.getPeerAddress();
-    const host = peerAddress.getHost();
     return `${peerAddress.getHost()}:${peerAddress.getPort()}`;
   };
 
   useEffect(() => {
     loadOffers();
-  }, []);
+  }, [loadOffers]);
   useEffect(() => {
     const stream = subscribeOffers();
     return () => stream.cancel();
-  }, [hash]);
+  }, [subscribeOffers, hash]);
 
   function handleSubmit(event) {
     event.preventDefault();
     console.log('selectedOfferId:', selectedOfferId);
-    if (selectedOfferId == '') {
+    if (selectedOfferId === '') {
       alert('Offer must be selected.');
       return;
     }
@@ -203,12 +206,6 @@ export default function BuySqueakDialog({
     );
   }
 
-  function WaitingForBuyContent() {
-    return (
-      <CircularProgress />
-    );
-  }
-
   function MakeSqueakButton() {
     return (
       <div className={classes.wrapper}>
@@ -233,6 +230,9 @@ export default function BuySqueakDialog({
       </DialogTitle>
       <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
         <DialogContent>
+          <Box>
+            {LoadOffersButton()}
+          </Box>
           <Box>
             <Typography variant="body1" color="textSecondary" component="p">
               {offers.length}
