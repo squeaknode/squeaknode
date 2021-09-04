@@ -971,6 +971,11 @@ message UnlikeSqueakReply {
 }
 
 message GetLikedSqueakDisplaysRequest {
+    /// Limit number of results
+    int32 limit = 1;
+
+    /// Last entry
+    SqueakDisplayEntry last_entry = 2;
 }
 
 message GetLikedSqueakDisplaysReply {
