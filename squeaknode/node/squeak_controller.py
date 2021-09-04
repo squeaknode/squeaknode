@@ -439,16 +439,12 @@ class SqueakController:
             self,
             address: str,
             limit: int,
-            block_height: int,
-            squeak_time: int,
-            squeak_hash: bytes,
+            last_entry: Optional[SqueakEntry],
     ) -> List[SqueakEntry]:
         return self.squeak_db.get_squeak_entries_for_address(
             address,
             limit,
-            block_height,
-            squeak_time,
-            squeak_hash,
+            last_entry,
         )
 
     def get_ancestor_squeak_entries(self, squeak_hash: bytes) -> List[SqueakEntry]:

@@ -316,14 +316,23 @@ class SqueakDb:
             self,
             address: str,
             limit: int,
-            block_height: int,
-            squeak_time: int,
-            squeak_hash: bytes,
+            last_entry: Optional[SqueakEntry],
     ) -> List[SqueakEntry]:
         """ Get a squeak. """
-        block_height = block_height or MAX_INT
-        squeak_time = squeak_time or MAX_INT
-        squeak_hash = squeak_hash or MAX_HASH
+        last_block_height = last_entry.block_height if last_entry else MAX_INT
+        last_squeak_time = last_entry.squeak_time if last_entry else MAX_INT
+        last_squeak_hash = last_entry.squeak_hash if last_entry else MAX_HASH
+        logger.info("""Timeline db query with
+        limit: {}
+        block_height: {}
+        squeak_time: {}
+        squeak_hash: {}
+        """.format(
+            limit,
+            last_block_height,
+            last_squeak_time,
+            last_squeak_hash.hex(),
+        ))
         s = (
             select([self.squeaks, self.profiles])
             .select_from(
@@ -339,9 +348,9 @@ class SqueakDb:
                     self.squeaks.c.n_time,
                     self.squeaks.c.hash,
                 ) < tuple_(
-                    block_height,
-                    squeak_time,
-                    squeak_hash,
+                    last_block_height,
+                    last_squeak_time,
+                    last_squeak_hash,
                 )
             )
             .order_by(

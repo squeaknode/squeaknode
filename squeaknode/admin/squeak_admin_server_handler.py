@@ -348,31 +348,20 @@ class SqueakAdminServerHandler(object):
     def handle_get_squeak_display_entries_for_address(self, request):
         address = request.address
         limit = request.limit
-        last_entry = request.last_entry
-        block_height = last_entry.block_height
-        squeak_time = last_entry.squeak_time
-        squeak_hash_str = last_entry.squeak_hash
-        squeak_hash = bytes.fromhex(
-            squeak_hash_str) if squeak_hash_str else None
-        logger.info("""Handle get squeak display entries for address: {} with
+        last_entry = message_to_squeak_entry(request.last_entry) if request.HasField(
+            "last_entry") else None
+        logger.info("""Handle get timeline squeak display entries with
         limit: {}
-        block_height: {}
-        squeak_time: {}
-        squeak_hash: {}
+        last_entry: {}
         """.format(
-            address,
             limit,
-            block_height,
-            squeak_time,
-            squeak_hash,
+            last_entry,
         ))
         squeak_entries = (
             self.squeak_controller.get_squeak_entries_for_address(
                 address,
                 limit,
-                block_height,
-                squeak_time,
-                squeak_hash,
+                last_entry,
             )
         )
         logger.info(
