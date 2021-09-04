@@ -38,7 +38,7 @@ export default function SqueakPage() {
   const classes = useStyles();
   const { hash } = useParams();
   const [ancestorSqueaks, setAncestorSqueaks] = useState(null);
-  const [replySqueaks, setReplySqueaks] = useState([]);
+  const [replySqueaks, setReplySqueaks] = useState(null);
   const [network, setNetwork] = useState('');
   const [waitingForSqueak, setWaitingForSqueak] = useState(false);
   const [waitingForReplySqueaks, setWaitingForReplySqueaks] = useState(false);
@@ -98,6 +98,7 @@ export default function SqueakPage() {
   };
 
   useEffect(() => {
+    setAncestorSqueaks(null); // Temporary fix until component unmounts correcyly
     getAncestorSqueaks(hash);
   }, [getAncestorSqueaks, hash]);
   useEffect(() => {
@@ -105,6 +106,7 @@ export default function SqueakPage() {
     return () => stream.cancel();
   }, [hash]);
   useEffect(() => {
+    setReplySqueaks(null); // Temporary fix until component unmounts correcyly
     getReplySqueaks(hash, SQUEAKS_PER_PAGE, null);
   }, [getReplySqueaks, hash]);
   useEffect(() => {
@@ -154,9 +156,9 @@ export default function SqueakPage() {
         <Timeline align="left">
           {AncestorsContent()}
         </Timeline>
-        {CurrentSqueakContent()}
+        {currentSqueak && CurrentSqueakContent()}
         {DownloadRepliesButtonContent()}
-        {RepliesContent()}
+        {replySqueaks && RepliesContent()}
         {ViewMoreSqueaksButton()}
       </>
     );
