@@ -290,8 +290,23 @@ class SqueakDb:
             rows = result.fetchall()
             return [self._parse_squeak_entry(row) for row in rows]
 
-    def get_liked_squeak_entries(self) -> List[SqueakEntry]:
+    def get_liked_squeak_entries(
+            self,
+            limit: int,
+            last_entry: Optional[SqueakEntry],
+    ) -> List[SqueakEntry]:
         """ Get liked squeaks. """
+        last_liked_time = last_entry.liked_time if last_entry else MAX_INT
+        last_squeak_hash = last_entry.squeak_hash if last_entry else MAX_HASH
+        logger.info("""Timeline db query with
+        limit: {}
+        last_liked_time: {}
+        last_squeak_hash: {}
+        """.format(
+            limit,
+            last_liked_time,
+            last_squeak_hash.hex(),
+        ))
         s = (
             select([self.squeaks, self.profiles])
             .select_from(
@@ -303,9 +318,20 @@ class SqueakDb:
             .where(
                 self.squeak_is_liked,
             )
+            .where(
+                tuple_(
+                    self.squeaks.c.liked_time,
+                    self.squeaks.c.hash,
+                ) < tuple_(
+                    last_liked_time,
+                    last_squeak_hash,
+                )
+            )
             .order_by(
                 self.squeaks.c.liked_time.desc(),
+                self.squeaks.c.hash.desc(),
             )
+            .limit(limit)
         )
         with self.get_connection() as connection:
             result = connection.execute(s)

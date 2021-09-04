@@ -315,11 +315,6 @@ class SqueakAdminServerHandler(object):
         limit = request.limit
         last_entry = message_to_squeak_entry(request.last_entry) if request.HasField(
             "last_entry") else None
-        # block_height = last_entry.block_height
-        # squeak_time = last_entry.squeak_time
-        # squeak_hash_str = last_entry.squeak_hash
-        # squeak_hash = bytes.fromhex(
-        #     squeak_hash_str) if squeak_hash_str else None
         logger.info("""Handle get timeline squeak display entries with
         limit: {}
         last_entry: {}
@@ -729,9 +724,21 @@ class SqueakAdminServerHandler(object):
         return squeak_admin_pb2.UnlikeSqueakReply()
 
     def handle_get_liked_squeak_display_entries(self, request):
-        logger.info("Handle get liked squeak display entries.")
+        limit = request.limit
+        last_entry = message_to_squeak_entry(request.last_entry) if request.HasField(
+            "last_entry") else None
+        logger.info("""Handle get liked squeak display entries with
+        limit: {}
+        last_entry: {}
+        """.format(
+            limit,
+            last_entry,
+        ))
         squeak_entries = (
-            self.squeak_controller.get_liked_squeak_entries()
+            self.squeak_controller.get_liked_squeak_entries(
+                limit,
+                last_entry,
+            )
         )
         squeak_display_msgs = [
             squeak_entry_to_message(entry) for entry in squeak_entries
