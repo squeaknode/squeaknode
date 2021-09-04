@@ -570,7 +570,6 @@ export function unlikeSqueakRequest(hash, handleResponse) {
 export function getLikedSqueakDisplaysRequest(handleResponse) {
   const request = new GetLikedSqueakDisplaysRequest();
   client.getLikedSqueakDisplays(request, {}, (err, response) => {
-    console.log(response);
     handleResponse(response.getSqueakDisplayEntriesList());
   });
 }
@@ -624,7 +623,6 @@ export function subscribeConnectedPeersRequest(handleResponse) {
   });
   stream.on('end', (end) => {
     // stream end signal
-    console.log(end);
     alert(`Stream ended: ${end}`);
   });
   return stream;
@@ -642,7 +640,6 @@ export function subscribeConnectedPeerRequest(host, port, handleResponse) {
   });
   stream.on('end', (end) => {
     // stream end signal
-    console.log(end);
     alert(`Stream ended: ${end}`);
   });
   return stream;
@@ -657,7 +654,6 @@ export function subscribeBuyOffersRequest(hash, handleResponse) {
   });
   stream.on('end', (end) => {
     // stream end signal
-    console.log(end);
     alert(`Stream ended: ${end}`);
   });
   return stream;
@@ -672,11 +668,8 @@ export function subscribeSqueakDisplayRequest(hash, handleResponse) {
   });
   stream.on('end', (end) => {
     // stream end signal
-    console.log(end);
     alert(`Stream ended: ${end}`);
   });
-  console.log('Stream object:');
-  console.log(stream);
   return stream;
 }
 
@@ -689,11 +682,8 @@ export function subscribeReplySqueakDisplaysRequest(hash, handleResponse) {
   });
   stream.on('end', (end) => {
     // stream end signal
-    console.log(end);
     alert(`Stream ended: ${end}`);
   });
-  console.log('Stream object:');
-  console.log(stream);
   return stream;
 }
 
@@ -702,16 +692,12 @@ export function subscribeAddressSqueakDisplaysRequest(address, handleResponse) {
   request.setAddress(address);
   const stream = client.subscribeAddressSqueakDisplays(request);
   stream.on('data', (response) => {
-    console.log(`response :${response}`);
     handleResponse(response.getSqueakDisplayEntry());
   });
   stream.on('end', (end) => {
     // stream end signal
-    console.log(end);
     alert(`Stream ended: ${end}`);
   });
-  console.log('Stream object:');
-  console.log(stream);
   return stream;
 }
 
@@ -724,11 +710,8 @@ export function subscribeAncestorSqueakDisplaysRequest(hash, handleResponse) {
   });
   stream.on('end', (end) => {
     // stream end signal
-    console.log(end);
     alert(`Stream ended: ${end}`);
   });
-  console.log('Stream object:');
-  console.log(stream);
   return stream;
 }
 
@@ -740,11 +723,8 @@ export function subscribeSqueakDisplaysRequest(handleResponse) {
   });
   stream.on('end', (end) => {
     // stream end signal
-    console.log(end);
     alert(`Stream ended: ${end}`);
   });
-  console.log('Stream object:');
-  console.log(stream);
   return stream;
 }
 
@@ -756,10 +736,7 @@ export function subscribeTimelineSqueakDisplaysRequest(handleResponse) {
   });
   stream.on('end', (end) => {
     // stream end signal
-    console.log(end);
     alert(`Stream ended: ${end}`);
   });
-  console.log('Stream object:');
-  console.log(stream);
   return stream;
 }
