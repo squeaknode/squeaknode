@@ -350,10 +350,11 @@ class SqueakAdminServerHandler(object):
         limit = request.limit
         last_entry = message_to_squeak_entry(request.last_entry) if request.HasField(
             "last_entry") else None
-        logger.info("""Handle get timeline squeak display entries with
+        logger.info("""Handle get squeak display entries for address: {} with
         limit: {}
         last_entry: {}
         """.format(
+            address,
             limit,
             last_entry,
         ))
@@ -405,31 +406,21 @@ class SqueakAdminServerHandler(object):
         squeak_hash_str = request.squeak_hash
         squeak_hash = bytes.fromhex(squeak_hash_str)
         limit = request.limit
-        last_entry = request.last_entry
-        latest_block_height = last_entry.block_height
-        latest_squeak_time = last_entry.squeak_time
-        latest_squeak_hash_str = last_entry.squeak_hash
-        latest_squeak_hash = bytes.fromhex(
-            latest_squeak_hash_str) if latest_squeak_hash_str else None
+        last_entry = message_to_squeak_entry(request.last_entry) if request.HasField(
+            "last_entry") else None
         logger.info("""Handle get reply squeak display entries for squeak hash: {} with
         limit: {}
-        block_height: {}
-        squeak_time: {}
-        squeak_hash: {}
+        last_entry: {}
         """.format(
             squeak_hash_str,
             limit,
-            latest_block_height,
-            latest_squeak_time,
-            latest_squeak_hash_str,
+            last_entry,
         ))
         squeak_entries = (
             self.squeak_controller.get_reply_squeak_entries(
                 squeak_hash,
                 limit,
-                latest_block_height,
-                latest_squeak_time,
-                latest_squeak_hash,
+                last_entry,
             )
         )
         logger.info(

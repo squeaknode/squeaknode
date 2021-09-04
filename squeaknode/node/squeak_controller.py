@@ -456,16 +456,12 @@ class SqueakController:
             self,
             squeak_hash: bytes,
             limit: int,
-            latest_block_height: int,
-            latest_squeak_time: int,
-            latest_squeak_hash: bytes,
+            last_entry: Optional[SqueakEntry],
     ) -> List[SqueakEntry]:
         return self.squeak_db.get_thread_reply_squeak_entries(
             squeak_hash,
             limit,
-            latest_block_height,
-            latest_squeak_time,
-            latest_squeak_hash,
+            last_entry,
         )
 
     def lookup_squeaks(self, addresses: List[str], min_block: int, max_block: int) -> List[bytes]:
