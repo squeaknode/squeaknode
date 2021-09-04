@@ -4,16 +4,12 @@ import {
   Grid,
   Divider,
 } from '@material-ui/core';
-import { useHistory } from 'react-router-dom';
 
 import ReplyIcon from '@material-ui/icons/Reply';
 import RepeatIcon from '@material-ui/icons/Repeat';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import DeleteIcon from '@material-ui/icons/Delete';
 import ZoomInIcon from '@material-ui/icons/ZoomIn';
-
-// styles
-import useStyles from './styles';
 
 import MakeSqueakDialog from '../MakeSqueakDialog';
 import DeleteSqueakDialog from '../DeleteSqueakDialog';
