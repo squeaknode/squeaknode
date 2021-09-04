@@ -39,11 +39,10 @@ export default function TimelinePage() {
   const [waitingForTimeline, setWaitingForTimeline] = React.useState(false);
 
   const getSqueaks = useCallback((limit, lastEntry) => {
-      setWaitingForTimeline(true);
-      getTimelineSqueakDisplaysRequest(limit, lastEntry, handleLoadedTimeline, alertFailedRequest);
-    },
-    [],
-  );
+    setWaitingForTimeline(true);
+    getTimelineSqueakDisplaysRequest(limit, lastEntry, handleLoadedTimeline, alertFailedRequest);
+  },
+  []);
   const subscribeNewSqueaks = () => subscribeTimelineSqueakDisplaysRequest(handleLoadedNewSqueak);
   const getNetwork = () => {
     getNetworkRequest(setNetwork);

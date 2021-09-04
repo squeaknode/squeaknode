@@ -47,11 +47,10 @@ export default function SqueakAddressPage() {
     getSqueakProfileByAddressRequest(address, setSqueakProfile);
   };
   const getSqueaks = useCallback((address, limit, lastEntry) => {
-      setWaitingForSqueaks(true);
-      getAddressSqueakDisplaysRequest(address, limit, lastEntry, handleLoadedAddressSqueaks);
-    },
-    [],
-  );
+    setWaitingForSqueaks(true);
+    getAddressSqueakDisplaysRequest(address, limit, lastEntry, handleLoadedAddressSqueaks);
+  },
+  []);
   const subscribeSqueaks = (address) => subscribeAddressSqueakDisplaysRequest(address, (resp) => {
     setSqueaks((prevSqueaks) => [resp].concat(prevSqueaks));
   });

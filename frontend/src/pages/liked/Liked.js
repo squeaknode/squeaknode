@@ -29,11 +29,10 @@ export default function LikedPage() {
   const [waitingForLikedSqueaks, setWaitingForLikedSqueaks] = useState(false);
 
   const getSqueaks = useCallback((limit, lastEntry) => {
-      setWaitingForLikedSqueaks(true);
-      getLikedSqueakDisplaysRequest(limit, lastEntry, handleLoadedTimeline);
-    },
-    [],
-  );
+    setWaitingForLikedSqueaks(true);
+    getLikedSqueakDisplaysRequest(limit, lastEntry, handleLoadedTimeline);
+  },
+  []);
   const getNetwork = () => {
     getNetworkRequest(setNetwork);
   };

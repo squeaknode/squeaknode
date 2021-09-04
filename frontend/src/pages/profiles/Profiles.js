@@ -48,11 +48,10 @@ export default function Profiles() {
   };
 
   const loadProfiles = useCallback(() => {
-      setWaitingForProfiles(true);
-      getProfilesRequest(handleLoadedProfiles);
-    },
-    [],
-  );
+    setWaitingForProfiles(true);
+    getProfilesRequest(handleLoadedProfiles);
+  },
+  []);
 
   const handleClickOpenCreateSigningProfileDialog = () => {
     setCreateSigningProfileDialogOpen(true);

@@ -17,10 +17,9 @@ export default function ProfilePage() {
   };
 
   const getSqueakProfile = useCallback(() => {
-      getSqueakProfileRequest(id, setSqueakProfile, handleGetSqueakProfileErr);
-    },
-    [id],
-  );
+    getSqueakProfileRequest(id, setSqueakProfile, handleGetSqueakProfileErr);
+  },
+  [id]);
 
   useEffect(() => {
     getSqueakProfile(id);

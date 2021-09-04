@@ -10,7 +10,6 @@ export default function SqueakProfileFollowingIndicator({
   squeakProfile,
   ...props
 }) {
-
   function FollowingIndicator() {
     return (
       <>

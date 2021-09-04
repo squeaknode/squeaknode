@@ -119,9 +119,9 @@ export default function LightningNodePage() {
                 channel status
               </Typography>
               <Typography size="md">
-              {isChannelOpen()
-                ? 'open'
-                : 'closed'}
+                {isChannelOpen()
+                  ? 'open'
+                  : 'closed'}
               </Typography>
               {isChannelOpen()
                 ? CloseChannelButton()
