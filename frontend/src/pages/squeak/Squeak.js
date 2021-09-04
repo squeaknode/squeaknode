@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import {
   Grid,
@@ -47,15 +47,17 @@ export default function SqueakPage() {
   const [waitingForSqueak, setWaitingForSqueak] = useState(false);
   const [waitingForReplySqueaks, setWaitingForReplySqueaks] = useState(false);
 
-  const getAncestorSqueaks = (hash) => {
+  const getAncestorSqueaks = useCallback((hash) => {
     setWaitingForSqueak(true);
     getAncestorSqueakDisplaysRequest(hash, handleLoadedAncestorSqueaks);
-  };
+  },
+  []);
   const subscribeAncestorSqueaks = (hash) => subscribeAncestorSqueakDisplaysRequest(hash, setAncestorSqueaks);
-  const getReplySqueaks = (hash, limit, lastEntry) => {
+  const getReplySqueaks = useCallback((hash, limit, lastEntry) => {
     setWaitingForReplySqueaks(true);
     getReplySqueakDisplaysRequest(hash, limit, lastEntry, handleLoadedReplySqueaks);
-  };
+  },
+  []);
   const subscribeReplySqueaks = (hash) => subscribeReplySqueakDisplaysRequest(hash, (resp) => {
     setReplySqueaks((prevReplySqueaks) => prevReplySqueaks.concat(resp));
   });
@@ -93,7 +95,7 @@ export default function SqueakPage() {
   const calculateCurrentSqueak = (ancestorSqueaks) => {
     if (ancestorSqueaks == null) {
       return null;
-    } if (ancestorSqueaks.length == 0) {
+    } if (ancestorSqueaks.length === 0) {
       return null;
     }
     return ancestorSqueaks.slice(-1)[0];
@@ -101,14 +103,14 @@ export default function SqueakPage() {
 
   useEffect(() => {
     getAncestorSqueaks(hash);
-  }, [hash]);
+  }, [getAncestorSqueaks, hash]);
   useEffect(() => {
     const stream = subscribeAncestorSqueaks(hash);
     return () => stream.cancel();
   }, [hash]);
   useEffect(() => {
     getReplySqueaks(hash, SQUEAKS_PER_PAGE, null);
-  }, [hash]);
+  }, [getReplySqueaks, hash]);
   useEffect(() => {
     const stream = subscribeReplySqueaks(hash);
     return () => stream.cancel();
