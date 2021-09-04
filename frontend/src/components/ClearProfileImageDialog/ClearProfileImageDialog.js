@@ -6,7 +6,6 @@ import {
   DialogActions,
   Button,
 } from '@material-ui/core';
-import { useHistory } from 'react-router-dom';
 
 // styles
 import useStyles from './styles';
@@ -23,7 +22,6 @@ export default function ClearProfileImageDialog({
   ...props
 }) {
   const classes = useStyles();
-  const history = useHistory();
 
   const handleResponse = (response) => {
     reloadProfile();

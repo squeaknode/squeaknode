@@ -7,7 +7,6 @@ import {
   DialogActions,
   Button,
 } from '@material-ui/core';
-import { useHistory } from 'react-router-dom';
 
 // styles
 import useStyles from './styles';
@@ -24,7 +23,6 @@ export default function CloseChannelDialog({
   ...props
 }) {
   const classes = useStyles();
-  const history = useHistory();
 
   const [amount, setAmount] = useState(0);
 

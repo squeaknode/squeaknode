@@ -16,7 +16,6 @@ import {
 } from '../../navigation/navigation';
 
 export default function ProfilePage() {
-  const classes = useStyles();
   const { id } = useParams();
   const [squeakProfile, setSqueakProfile] = useState(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);

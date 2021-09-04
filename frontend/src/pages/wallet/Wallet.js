@@ -155,53 +155,6 @@ export default function WalletPage() {
     );
   }
 
-  function InfoContentOld() {
-    return (
-      <div>
-        <p>
-          identity_pubkey:
-          {lndInfo.getIdentityPubkey()}
-        </p>
-        <p>
-          alias:
-          {lndInfo.getAlias()}
-        </p>
-        <p>
-          num_pending_channels:
-          {lndInfo.getNumPendingChannels()}
-        </p>
-        <p>
-          num_active_channels:
-          {lndInfo.getNumActiveChannels()}
-        </p>
-        <p>
-          num_inactive_channels:
-          {lndInfo.getNumInactiveChannels()}
-        </p>
-        <p>
-          num_peers:
-          {lndInfo.getNumPeers()}
-        </p>
-        <p>
-          block_height:
-          {lndInfo.getBlockHeight()}
-        </p>
-        <p>
-          block_hash:
-          {lndInfo.getBlockHash()}
-        </p>
-        <p>
-          synced_to_chain:
-          {lndInfo.getSyncedToChain().toString()}
-        </p>
-        <p>
-          synced_to_graph:
-          {lndInfo.getSyncedToGraph().toString()}
-        </p>
-      </div>
-    );
-  }
-
   function BalanceContent() {
     return (
       <>

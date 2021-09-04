@@ -11,11 +11,11 @@ import Error from '../pages/error';
 import Login from '../pages/login';
 
 // context
-import { useUserState } from '../context/UserContext';
+// import { useUserState } from '../context/UserContext';
 
 export default function App() {
   // global
-  const { isAuthenticated } = useUserState();
+  // const { isAuthenticated } = useUserState();
 
   return (
     <HashRouter>

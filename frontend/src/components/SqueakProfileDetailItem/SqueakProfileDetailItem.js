@@ -17,8 +17,6 @@ import CardHeader from '@material-ui/core/CardHeader';
 
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
-import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
-import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
 
 // styles
 import useStyles from './styles';
@@ -150,8 +148,6 @@ export default function SqueakProfileDetailItem({
     setClearImageDialogOpen(false);
   };
 
-  const profileImageBase64String = squeakProfile.getProfileImage();
-
   function DeleteProfileDialogContent() {
     return (
       <>
@@ -225,40 +221,6 @@ export default function SqueakProfileDetailItem({
           squeakProfile={squeakProfile}
           reloadProfile={handleReloadProfile}
         />
-      </>
-    );
-  }
-
-  function FollowingIndicator() {
-    return (
-      <>
-        <Typography variant="body2" color="textSecondary" component="p">
-          <NotificationsActiveIcon />
-          {' '}
-          Following
-        </Typography>
-      </>
-    );
-  }
-
-  function NotFollowingIndicator() {
-    return (
-      <>
-        <Typography variant="body2" color="textSecondary" component="p">
-          <NotificationsNoneIcon />
-          {' '}
-          Not Following
-        </Typography>
-      </>
-    );
-  }
-
-  function IsFollowingContent() {
-    return (
-      <>
-        {(squeakProfile.getFollowing())
-          ? FollowingIndicator()
-          : NotFollowingIndicator()}
       </>
     );
   }

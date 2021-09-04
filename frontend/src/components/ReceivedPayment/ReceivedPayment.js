@@ -9,7 +9,6 @@ import { useHistory } from 'react-router-dom';
 
 // styles
 import moment from 'moment';
-import useStyles from './styles';
 
 import {
   goToSqueakPage,
@@ -20,7 +19,6 @@ export default function ReceivedPayment({
   receivedPayment,
   ...props
 }) {
-  const classes = useStyles();
 
   const history = useHistory();
 
