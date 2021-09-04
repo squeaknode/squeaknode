@@ -92,7 +92,7 @@ const SERVER_PORT = process.env.REACT_APP_SERVER_PORT || window.location.port;
 export const web_host_port = `${window.location.protocol}//${window.location.hostname}:${SERVER_PORT}`;
 
 export function logoutRequest(handleResponse) {
-  fetch(`${web_host_port}/` + 'logout', {
+  fetch(`${web_host_port}/logout`, {
     method: 'get',
   }).then((response) => response.arrayBuffer()).then((data) => {
     handleResponse(data);
@@ -104,7 +104,7 @@ export function getUserRequest(handleResponse) {
     handleResponse('DEV_MODE');
     return;
   }
-  fetch(`${web_host_port}/` + 'user', {
+  fetch(`${web_host_port}/user`, {
     method: 'get',
   }).then((response) => response.text()).then((data) => {
     handleResponse(data);
