@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import {
   Grid,
@@ -11,10 +11,8 @@ import {
 
 // components
 
-import TimelineDot from '@material-ui/lab/TimelineDot';
 import Paper from '@material-ui/core/Paper';
 
-import FaceIcon from '@material-ui/icons/Face';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import ReplayIcon from '@material-ui/icons/Replay';
 
@@ -30,7 +28,6 @@ import {
   downloadAddressSqueaksRequest,
 } from '../../squeakclient/requests';
 import {
-  goToSqueakAddressPage,
   goToProfilePage,
 } from '../../navigation/navigation';
 
@@ -49,10 +46,12 @@ export default function SqueakAddressPage() {
   const getSqueakProfile = (address) => {
     getSqueakProfileByAddressRequest(address, setSqueakProfile);
   };
-  const getSqueaks = (address, limit, lastEntry) => {
-    setWaitingForSqueaks(true);
-    getAddressSqueakDisplaysRequest(address, limit, lastEntry, handleLoadedAddressSqueaks);
-  };
+  const getSqueaks = useCallback((address, limit, lastEntry) => {
+      setWaitingForSqueaks(true);
+      getAddressSqueakDisplaysRequest(address, limit, lastEntry, handleLoadedAddressSqueaks);
+    },
+    [],
+  );
   const subscribeSqueaks = (address) => subscribeAddressSqueakDisplaysRequest(address, (resp) => {
     setSqueaks((prevSqueaks) => [resp].concat(prevSqueaks));
   });
@@ -91,7 +90,7 @@ export default function SqueakAddressPage() {
   }, [address]);
   useEffect(() => {
     getSqueaks(address, SQUEAKS_PER_PAGE, null);
-  }, [address]);
+  }, [getSqueaks, address]);
   useEffect(() => {
     const stream = subscribeSqueaks(address);
     return () => stream.cancel();
@@ -137,21 +136,6 @@ export default function SqueakAddressPage() {
       <div>
         Unable to load squeaks.
       </div>
-    );
-  }
-
-  function TimelineUserAvatar(squeak) {
-    const handleAvatarClick = () => {
-      console.log('Avatar clicked...');
-      goToSqueakAddressPage(history, squeak.getAuthorAddress());
-    };
-    return (
-      <TimelineDot
-        onClick={handleAvatarClick}
-        style={{ cursor: 'pointer' }}
-      >
-        <FaceIcon />
-      </TimelineDot>
     );
   }
 
