@@ -124,7 +124,7 @@ export default function UpdateProfileImageDialog({
   function DisplaySelectedImageFile() {
     const imageStr = imageBase64 || '';
     return (
-      <img src={imageStr} height="200" />
+      <img src={imageStr} height="200" alt="" />
     );
   }
 
