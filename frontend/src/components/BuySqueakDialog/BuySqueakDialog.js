@@ -142,7 +142,7 @@ export default function BuySqueakDialog({
     event.stopPropagation();
   }
 
-  function MakeSelectSigningProfile() {
+  function SelectOfferContent() {
     return (
       <FormControl className={classes.formControl} required style={{ minWidth: 120 }}>
         <InputLabel id="offer-select-label">Offer</InputLabel>
@@ -178,7 +178,7 @@ export default function BuySqueakDialog({
     );
   }
 
-  function MakeSqueakContentInput() {
+  function SelectedOfferContentInput() {
     const selectedOffer = getSelectedOffer();
     if (selectedOffer == null) {
       return <></>;
@@ -194,7 +194,7 @@ export default function BuySqueakDialog({
     );
   }
 
-  function MakeCancelButton() {
+  function CancelBuyButton() {
     return (
       <Button
         onClick={handleClose}
@@ -206,7 +206,7 @@ export default function BuySqueakDialog({
     );
   }
 
-  function MakeSqueakButton() {
+  function BuySqueakButton() {
     return (
       <div className={classes.wrapper}>
         <Button
@@ -241,13 +241,13 @@ export default function BuySqueakDialog({
             </Typography>
           </Box>
           <Box>
-            {MakeSelectSigningProfile()}
+            {SelectOfferContent()}
           </Box>
-          {MakeSqueakContentInput()}
+          {SelectedOfferContentInput()}
         </DialogContent>
         <DialogActions>
-          {MakeCancelButton()}
-          {MakeSqueakButton()}
+          {CancelBuyButton()}
+          {BuySqueakButton()}
         </DialogActions>
       </form>
     </Dialog>
