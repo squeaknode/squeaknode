@@ -19,7 +19,6 @@ export default function ReceivedPayment({
   receivedPayment,
   ...props
 }) {
-
   const history = useHistory();
 
   const onSqueakClick = (event) => {

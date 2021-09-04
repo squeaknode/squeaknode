@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Grid,
   Button,
@@ -38,11 +38,14 @@ export default function TimelinePage() {
   const [network, setNetwork] = useState('');
   const [waitingForTimeline, setWaitingForTimeline] = React.useState(false);
 
-  const getSqueaks = (limit, lastEntry) => {
+  const getSqueaks = useCallback((limit, lastEntry) => {
     setWaitingForTimeline(true);
     getTimelineSqueakDisplaysRequest(limit, lastEntry, handleLoadedTimeline, alertFailedRequest);
-  };
-  const subscribeNewSqueaks = () => subscribeTimelineSqueakDisplaysRequest(handleLoadedNewSqueak);
+  },
+  []);
+  const subscribeNewSqueaks = useCallback(() => subscribeTimelineSqueakDisplaysRequest(handleLoadedNewSqueak),
+    []);
+
   const getNetwork = () => {
     getNetworkRequest(setNetwork);
   };
@@ -86,11 +89,11 @@ export default function TimelinePage() {
 
   useEffect(() => {
     getSqueaks(SQUEAKS_PER_PAGE, null);
-  }, []);
+  }, [getSqueaks]);
   useEffect(() => {
     const stream = subscribeNewSqueaks();
     return () => stream.cancel();
-  }, []);
+  }, [subscribeNewSqueaks]);
   useEffect(() => {
     getNetwork();
   }, []);

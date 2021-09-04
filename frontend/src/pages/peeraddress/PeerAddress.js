@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import {
   Grid,
@@ -31,22 +31,26 @@ export default function PeerAddressPage() {
   const { host, port } = useParams();
   const [connectedPeer, setConnectedPeer] = useState(null);
 
-  const getConnectedPeer = () => {
+  const getConnectedPeer = useCallback(() => {
     getConnectedPeerRequest(host, port, setConnectedPeer);
-  };
+  },
+  [host, port]);
 
-  const subscribeConnectedPeer = () => subscribeConnectedPeerRequest(host, port, (connectedPeer) => {
-    console.log(connectedPeer);
-    setConnectedPeer(connectedPeer);
-  });
+  const subscribeConnectedPeer = useCallback(() => {
+    subscribeConnectedPeerRequest(host, port, (connectedPeer) => {
+      console.log(connectedPeer);
+      setConnectedPeer(connectedPeer);
+    });
+  },
+  [host, port]);
 
   useEffect(() => {
     getConnectedPeer();
-  }, []);
+  }, [getConnectedPeer]);
   useEffect(() => {
     const stream = subscribeConnectedPeer();
     return () => stream.cancel();
-  }, []);
+  }, [subscribeConnectedPeer]);
 
   function DisconnectPeerButton() {
     return (

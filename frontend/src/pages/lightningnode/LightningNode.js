@@ -89,7 +89,7 @@ export default function LightningNodePage() {
     }
     let i;
     for (i = 0; i < channels.length; i++) {
-      if (pubkey == channels[i].getRemotePubkey()) {
+      if (pubkey === channels[i].getRemotePubkey()) {
         return true;
       }
     }
@@ -276,8 +276,8 @@ export default function LightningNodePage() {
   }
 
   function ChannelsGridItem() {
-    const nodeChannels = channels.filter((channel) => channel.getRemotePubkey() == pubkey);
-    const nodePendingOpenChannels = pendingChannels.getPendingOpenChannelsList().filter((pendingOpenChannel) => pendingOpenChannel.getChannel().getRemoteNodePub() == pubkey);
+    const nodeChannels = channels.filter((channel) => channel.getRemotePubkey() === pubkey);
+    const nodePendingOpenChannels = pendingChannels.getPendingOpenChannelsList().filter((pendingOpenChannel) => pendingOpenChannel.getChannel().getRemoteNodePub() === pubkey);
     return (
       <Grid item xs={12}>
         <Widget disableWidgetMenu>

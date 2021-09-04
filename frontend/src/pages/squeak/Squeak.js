@@ -1,5 +1,7 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
+import React, {
+  useState, useEffect, useMemo, useCallback,
+} from 'react';
+import { useParams } from 'react-router-dom';
 import {
   Grid,
   Button,
@@ -8,10 +10,8 @@ import {
 } from '@material-ui/core';
 
 import Timeline from '@material-ui/lab/Timeline';
-import TimelineDot from '@material-ui/lab/TimelineDot';
 import Paper from '@material-ui/core/Paper';
 
-import FaceIcon from '@material-ui/icons/Face';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import ReplayIcon from '@material-ui/icons/Replay';
 
@@ -31,15 +31,11 @@ import {
   subscribeReplySqueakDisplaysRequest,
   subscribeAncestorSqueakDisplaysRequest,
 } from '../../squeakclient/requests';
-import {
-  goToSqueakAddressPage,
-} from '../../navigation/navigation';
 
 const SQUEAKS_PER_PAGE = 10;
 
 export default function SqueakPage() {
   const classes = useStyles();
-  const history = useHistory();
   const { hash } = useParams();
   const [ancestorSqueaks, setAncestorSqueaks] = useState(null);
   const [replySqueaks, setReplySqueaks] = useState([]);
@@ -47,15 +43,17 @@ export default function SqueakPage() {
   const [waitingForSqueak, setWaitingForSqueak] = useState(false);
   const [waitingForReplySqueaks, setWaitingForReplySqueaks] = useState(false);
 
-  const getAncestorSqueaks = (hash) => {
+  const getAncestorSqueaks = useCallback((hash) => {
     setWaitingForSqueak(true);
     getAncestorSqueakDisplaysRequest(hash, handleLoadedAncestorSqueaks);
-  };
+  },
+  []);
   const subscribeAncestorSqueaks = (hash) => subscribeAncestorSqueakDisplaysRequest(hash, setAncestorSqueaks);
-  const getReplySqueaks = (hash, limit, lastEntry) => {
+  const getReplySqueaks = useCallback((hash, limit, lastEntry) => {
     setWaitingForReplySqueaks(true);
     getReplySqueakDisplaysRequest(hash, limit, lastEntry, handleLoadedReplySqueaks);
-  };
+  },
+  []);
   const subscribeReplySqueaks = (hash) => subscribeReplySqueakDisplaysRequest(hash, (resp) => {
     setReplySqueaks((prevReplySqueaks) => prevReplySqueaks.concat(resp));
   });
@@ -93,7 +91,7 @@ export default function SqueakPage() {
   const calculateCurrentSqueak = (ancestorSqueaks) => {
     if (ancestorSqueaks == null) {
       return null;
-    } if (ancestorSqueaks.length == 0) {
+    } if (ancestorSqueaks.length === 0) {
       return null;
     }
     return ancestorSqueaks.slice(-1)[0];
@@ -101,14 +99,14 @@ export default function SqueakPage() {
 
   useEffect(() => {
     getAncestorSqueaks(hash);
-  }, [hash]);
+  }, [getAncestorSqueaks, hash]);
   useEffect(() => {
     const stream = subscribeAncestorSqueaks(hash);
     return () => stream.cancel();
   }, [hash]);
   useEffect(() => {
     getReplySqueaks(hash, SQUEAKS_PER_PAGE, null);
-  }, [hash]);
+  }, [getReplySqueaks, hash]);
   useEffect(() => {
     const stream = subscribeReplySqueaks(hash);
     return () => stream.cancel();
@@ -118,31 +116,6 @@ export default function SqueakPage() {
   }, []);
 
   const currentSqueak = useMemo(() => calculateCurrentSqueak(ancestorSqueaks), [ancestorSqueaks]);
-
-  function NoSqueakContent() {
-    return (
-      <div>
-        Unable to load squeak.
-      </div>
-    );
-  }
-
-  function TimelineUserAvatar(squeak) {
-    const handleAvatarClick = () => {
-      console.log('Avatar clicked...');
-      if (squeak) {
-        goToSqueakAddressPage(history, squeak.getAuthorAddress());
-      }
-    };
-    return (
-      <TimelineDot
-        onClick={handleAvatarClick}
-        style={{ cursor: 'pointer' }}
-      >
-        <FaceIcon />
-      </TimelineDot>
-    );
-  }
 
   function AncestorsContent() {
     return (

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -24,14 +24,8 @@ export default function CloseChannelDialog({
 }) {
   const classes = useStyles();
 
-  const [amount, setAmount] = useState(0);
-
   const resetFields = () => {
-    setAmount(0);
-  };
-
-  const handleChangeAmount = (event) => {
-    setAmount(event.target.value);
+    // TODO
   };
 
   const handleResponse = (response) => {
@@ -83,21 +77,6 @@ export default function CloseChannelDialog({
         inputProps={{
           readOnly: true,
         }}
-      />
-    );
-  }
-
-  function LocalFundingAmountInput() {
-    return (
-      <TextField
-        id="amount-textarea"
-        label="Local Funding Amount"
-        required
-        autoFocus
-        value={amount}
-        onChange={handleChangeAmount}
-        fullWidth
-        inputProps={{ maxLength: 64 }}
       />
     );
   }

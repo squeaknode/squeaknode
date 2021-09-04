@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 
 // components
@@ -16,13 +16,14 @@ export default function ProfilePage() {
     setSqueakProfile(null);
   };
 
-  const getSqueakProfile = (id) => {
+  const getSqueakProfile = useCallback(() => {
     getSqueakProfileRequest(id, setSqueakProfile, handleGetSqueakProfileErr);
-  };
+  },
+  [id]);
 
   useEffect(() => {
     getSqueakProfile(id);
-  }, [id]);
+  }, [getSqueakProfile, id]);
 
   const handleReloadProfile = () => {
     getSqueakProfile(id);
