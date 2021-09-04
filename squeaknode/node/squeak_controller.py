@@ -425,15 +425,11 @@ class SqueakController:
     def get_timeline_squeak_entries(
             self,
             limit: int,
-            block_height: int,
-            squeak_time: int,
-            squeak_hash: bytes,
+            last_entry: Optional[SqueakEntry],
     ) -> List[SqueakEntry]:
         return self.squeak_db.get_timeline_squeak_entries(
             limit,
-            block_height,
-            squeak_time,
-            squeak_hash,
+            last_entry,
         )
 
     def get_liked_squeak_entries(self) -> List[SqueakEntry]:

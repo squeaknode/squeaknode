@@ -24,6 +24,7 @@ import logging
 from proto import squeak_admin_pb2
 from squeaknode.admin.messages import connected_peer_to_message
 from squeaknode.admin.messages import message_to_peer_address
+from squeaknode.admin.messages import message_to_squeak_entry
 from squeaknode.admin.messages import offer_entry_to_message
 from squeaknode.admin.messages import payment_summary_to_message
 from squeaknode.admin.messages import received_payments_to_message
@@ -312,29 +313,24 @@ class SqueakAdminServerHandler(object):
 
     def handle_get_timeline_squeak_display_entries(self, request):
         limit = request.limit
-        last_entry = request.last_entry
-        block_height = last_entry.block_height
-        squeak_time = last_entry.squeak_time
-        squeak_hash_str = last_entry.squeak_hash
-        squeak_hash = bytes.fromhex(
-            squeak_hash_str) if squeak_hash_str else None
+        last_entry = message_to_squeak_entry(request.last_entry) if request.HasField(
+            "last_entry") else None
+        # block_height = last_entry.block_height
+        # squeak_time = last_entry.squeak_time
+        # squeak_hash_str = last_entry.squeak_hash
+        # squeak_hash = bytes.fromhex(
+        #     squeak_hash_str) if squeak_hash_str else None
         logger.info("""Handle get timeline squeak display entries with
         limit: {}
-        block_height: {}
-        squeak_time: {}
-        squeak_hash: {}
+        last_entry: {}
         """.format(
             limit,
-            block_height,
-            squeak_time,
-            squeak_hash,
+            last_entry,
         ))
         squeak_entries = (
             self.squeak_controller.get_timeline_squeak_entries(
                 limit,
-                block_height,
-                squeak_time,
-                squeak_hash,
+                last_entry,
             )
         )
         logger.info(

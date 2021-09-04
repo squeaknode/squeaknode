@@ -201,3 +201,20 @@ def message_to_peer_address(peer_address: squeak_admin_pb2.PeerAddress) -> PeerA
         host=peer_address.host,
         port=peer_address.port,
     )
+
+
+def message_to_squeak_entry(squeak_entry: squeak_admin_pb2.SqueakDisplayEntry) -> SqueakEntry:
+    return SqueakEntry(
+        squeak_hash=bytes.fromhex(squeak_entry.squeak_hash),
+        address=squeak_entry.author_address,
+        block_height=squeak_entry.block_height,
+        block_hash=bytes.fromhex(squeak_entry.block_hash),
+        block_time=squeak_entry.block_time,
+        squeak_time=squeak_entry.squeak_time,
+        reply_to=bytes.fromhex(
+            squeak_entry.reply_to) if squeak_entry.reply_to else None,
+        is_unlocked=squeak_entry.is_unlocked,
+        squeak_profile=None,  # TODO: message to squeak profile
+        liked_time=squeak_entry.liked_time_s,
+        content=squeak_entry.content_str,
+    )
