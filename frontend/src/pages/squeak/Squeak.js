@@ -52,9 +52,9 @@ export default function SqueakPage() {
     getAncestorSqueakDisplaysRequest(hash, handleLoadedAncestorSqueaks);
   };
   const subscribeAncestorSqueaks = (hash) => subscribeAncestorSqueakDisplaysRequest(hash, setAncestorSqueaks);
-  const getReplySqueaks = (hash, limit, blockHeight, squeakTime, squeakHash) => {
+  const getReplySqueaks = (hash, limit, lastEntry) => {
     setWaitingForReplySqueaks(true);
-    getReplySqueakDisplaysRequest(hash, limit, blockHeight, squeakTime, squeakHash, handleLoadedReplySqueaks);
+    getReplySqueakDisplaysRequest(hash, limit, lastEntry, handleLoadedReplySqueaks);
   };
   const subscribeReplySqueaks = (hash) => subscribeReplySqueakDisplaysRequest(hash, (resp) => {
     setReplySqueaks((prevReplySqueaks) => prevReplySqueaks.concat(resp));
@@ -107,7 +107,7 @@ export default function SqueakPage() {
     return () => stream.cancel();
   }, [hash]);
   useEffect(() => {
-    getReplySqueaks(hash, SQUEAKS_PER_PAGE, null, null, null);
+    getReplySqueaks(hash, SQUEAKS_PER_PAGE, null);
   }, [hash]);
   useEffect(() => {
     const stream = subscribeReplySqueaks(hash);
@@ -234,10 +234,7 @@ export default function SqueakPage() {
               disabled={waitingForReplySqueaks}
               onClick={() => {
                 const latestSqueak = replySqueaks.slice(-1).pop();
-                const latestSqueakHeight = (latestSqueak ? latestSqueak.getBlockHeight() : null);
-                const latestSqueakTime = (latestSqueak ? latestSqueak.getSqueakTime() : null);
-                const latestSqueakHash = (latestSqueak ? latestSqueak.getSqueakHash() : null);
-                getReplySqueaks(hash, SQUEAKS_PER_PAGE, latestSqueakHeight, latestSqueakTime, latestSqueakHash);
+                getReplySqueaks(hash, SQUEAKS_PER_PAGE, latestSqueak);
               }}
             >
               <ReplayIcon />

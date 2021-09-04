@@ -420,9 +420,10 @@ class SqueakAdminServerHandler(object):
         squeak_hash_str = request.squeak_hash
         squeak_hash = bytes.fromhex(squeak_hash_str)
         limit = request.limit
-        latest_block_height = request.latest_block_height
-        latest_squeak_time = request.latest_squeak_time
-        latest_squeak_hash_str = request.latest_squeak_hash
+        last_entry = request.last_entry
+        latest_block_height = last_entry.block_height
+        latest_squeak_time = last_entry.squeak_time
+        latest_squeak_hash_str = last_entry.squeak_hash
         latest_squeak_hash = bytes.fromhex(
             latest_squeak_hash_str) if latest_squeak_hash_str else None
         logger.info("""Handle get reply squeak display entries for squeak hash: {} with
