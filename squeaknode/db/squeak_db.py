@@ -222,6 +222,17 @@ class SqueakDb:
                 return None
             return self._parse_squeak(row)
 
+    def get_squeak_secret_key(self, squeak_hash: bytes) -> Optional[bytes]:
+        """ Get a squeak secret key. """
+        s = select([self.squeaks]).where(
+            self.squeaks.c.hash == squeak_hash)
+        with self.get_connection() as connection:
+            result = connection.execute(s)
+            row = result.fetchone()
+            if row is None:
+                return None
+            return row["secret_key"]
+
     def get_squeak_entry(self, squeak_hash: bytes) -> Optional[SqueakEntry]:
         """ Get a squeak with the author profile. """
         s = (
@@ -1228,15 +1239,7 @@ class SqueakDb:
             return sent_payment_summary
 
     def _parse_squeak(self, row) -> CSqueak:
-        secret_key_column = row["secret_key"]
-        secret_key = (
-            (secret_key_column) if
-            secret_key_column else b""
-        )
-        squeak = CSqueak.deserialize(row["squeak"])
-        if secret_key:
-            squeak.SetDecryptionKey(secret_key)
-        return squeak
+        return CSqueak.deserialize(row["squeak"])
 
     def _parse_squeak_entry(self, row) -> SqueakEntry:
         secret_key_column = row["secret_key"]

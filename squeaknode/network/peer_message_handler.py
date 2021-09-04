@@ -194,7 +194,6 @@ class PeerMessageHandler:
         if inv.type == 1:
             squeak = self.squeak_controller.get_squeak(inv.hash)
             if squeak is not None:
-                squeak.ClearDecryptionKey()
                 return msg_squeak(squeak=squeak)
         if inv.type == 2:
             offer = self.squeak_controller.get_buy_offer(
