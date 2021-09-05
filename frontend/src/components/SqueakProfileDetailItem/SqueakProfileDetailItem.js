@@ -228,13 +228,14 @@ export default function SqueakProfileDetailItem({
 
   function CustomPriceContent() {
     return (
-      (squeakProfile &&
         <Typography variant="body2" color="textSecondary" component="p">
           <LocalOfferIcon />
           {' '}
-          Using custom price:
+          {(squeakProfile.getUseCustomPrice()) ?
+            <>Using custom price: {squeakProfile.getCustomPriceMsat()} msats</> :
+            <>Using default price</>
+          }
         </Typography>
-      )
     );
   }
 
