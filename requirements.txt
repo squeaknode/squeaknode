@@ -15,5 +15,5 @@ psycopg2
 pyzmq
 requests
 SQLAlchemy
-squeakpy==0.7.2
+squeakpy==0.7.3
 typed-config

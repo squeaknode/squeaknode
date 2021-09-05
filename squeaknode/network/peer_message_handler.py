@@ -27,7 +27,9 @@ from squeak.messages import msg_inv
 from squeak.messages import msg_notfound
 from squeak.messages import msg_offer
 from squeak.messages import msg_pong
+from squeak.messages import MSG_SECRET_KEY
 from squeak.messages import msg_secretkey
+from squeak.messages import MSG_SQUEAK
 from squeak.messages import msg_squeak
 from squeak.net import CInv
 
@@ -200,9 +202,9 @@ class PeerMessageHandler:
                 self.peer.send_msg(inv_msg)
 
     def _get_inv_reply(self, inv):
-        if inv.type == 1:
+        if inv.type == MSG_SQUEAK:
             return self._get_inv_reply_for_squeak(inv)
-        if inv.type == 2:
+        if inv.type == MSG_SECRET_KEY:
             return self._get_inv_reply_for_secret_key(inv)
 
     def _get_inv_reply_for_squeak(self, inv):
