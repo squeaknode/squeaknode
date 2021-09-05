@@ -18,6 +18,7 @@ import {
   GetSqueakProfileRequest,
   GetTimelineSqueakDisplaysRequest,
   SetSqueakProfileFollowingRequest,
+  SetSqueakProfileUseCustomPriceRequest,
   GetPeersRequest,
   PayOfferRequest,
   GetBuyOffersRequest,
@@ -179,6 +180,15 @@ export function setSqueakProfileFollowingRequest(id, following, handleResponse) 
   request.setProfileId(id);
   request.setFollowing(following);
   client.setSqueakProfileFollowing(request, {}, (err, response) => {
+    handleResponse(response);
+  });
+}
+
+export function setSqueakProfileUseCustomPriceRequest(id, useCustomPrice, handleResponse) {
+  const request = new SetSqueakProfileUseCustomPriceRequest();
+  request.setProfileId(id);
+  request.setUseCustomPrice(useCustomPrice);
+  client.setSqueakProfileUseCustomPrice(request, {}, (err, response) => {
     handleResponse(response);
   });
 }

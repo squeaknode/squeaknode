@@ -17,6 +17,7 @@ import useStyles from './styles';
 
 import {
   setSqueakProfileFollowingRequest,
+  setSqueakProfileUseCustomPriceRequest,
 } from '../../squeakclient/requests';
 
 export default function ConfigureProfileDialog({
@@ -34,10 +35,22 @@ export default function ConfigureProfileDialog({
     });
   };
 
+  const setUseCustomPrice = (id, useCustomPrice) => {
+    setSqueakProfileUseCustomPriceRequest(id, useCustomPrice, () => {
+      reloadProfile();
+    });
+  };
+
   const handleSettingsFollowingChange = (event) => {
     console.log(`Following changed for profile id: ${squeakProfile.getProfileId()}`);
     console.log(`Following changed to: ${event.target.checked}`);
     setFollowing(squeakProfile.getProfileId(), event.target.checked);
+  };
+
+  const handleSettingsUseCustomPriceChange = (event) => {
+    console.log(`UseCustomPrice changed for profile id: ${squeakProfile.getProfileId()}`);
+    console.log(`UseCustomPrice changed to: ${event.target.checked}`);
+    setUseCustomPrice(squeakProfile.getProfileId(), event.target.checked);
   };
 
   function MakeCancelButton() {
@@ -60,6 +73,10 @@ export default function ConfigureProfileDialog({
           <FormControlLabel
             control={<Switch checked={squeakProfile.getFollowing()} onChange={handleSettingsFollowingChange} />}
             label="Following"
+          />
+          <FormControlLabel
+            control={<Switch checked={squeakProfile.getUseCustomPrice()} onChange={handleSettingsUseCustomPriceChange} />}
+            label="UseCustomPrice"
           />
         </FormGroup>
       </FormControl>
