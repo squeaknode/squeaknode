@@ -23,6 +23,7 @@ import logging
 import threading
 from typing import List
 from typing import Optional
+from typing import Union
 
 import sqlalchemy
 import squeak.params
@@ -162,8 +163,20 @@ class SqueakController:
     def get_temporary_interest_counter(self, squeak: CSqueak) -> Optional[TemporaryInterest]:
         return self.temporary_interest_manager.lookup_counter(squeak)
 
+    def get_buy_offer_or_secret_key(self, squeak_hash: bytes, peer_address: PeerAddress) -> Optional[Union[bytes, Offer]]:
+        squeak = self.get_squeak(squeak_hash)
+        if squeak is None:
+            return None
+        price = self.get_price_for_squeak(squeak)
+        if price == 0:
+            return self.get_squeak_secret_key(squeak_hash)
+        else:
+            return self.get_buy_offer(
+                squeak_hash=squeak_hash,
+                peer_address=peer_address,
+            )
+
     def get_buy_offer(self, squeak_hash: bytes, peer_address: PeerAddress) -> Optional[Offer]:
-        # Check if there is an existing offer for the hash/peer_address combination
         sent_offer = self.get_saved_sent_offer(squeak_hash, peer_address)
         if sent_offer is None:
             return None
@@ -194,13 +207,7 @@ class SqueakController:
         self.squeak_db.insert_sent_offer(sent_offer)
         return sent_offer
 
-    def get_price_for_squeak(self, squeak_hash: bytes) -> int:
-        logger.info("Checking price for squeak hash: {}".format(
-            squeak_hash.hex(),
-        ))
-        squeak = self.get_squeak(squeak_hash)
-        if squeak is None:
-            return 0
+    def get_price_for_squeak(self, squeak: CSqueak) -> int:
         squeak_address = str(squeak.GetAddress())
         logger.info(
             "Looking for profile with address: {}".format(squeak_address))

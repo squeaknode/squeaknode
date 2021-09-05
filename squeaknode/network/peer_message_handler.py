@@ -205,25 +205,46 @@ class PeerMessageHandler:
             if squeak is not None:
                 return msg_squeak(squeak=squeak)
         if inv.type == 2:
-            price = self.squeak_controller.get_price_for_squeak(inv.hash)
-            if price == 0:
-                secret_key = self.squeak_controller.get_squeak_secret_key(
-                    inv.hash)
-                if secret_key is not None:
-                    return msg_secretkey(
-                        hashSqk=inv.hash,
-                        secretKey=secret_key,
-                    )
-            else:
-                offer = self.squeak_controller.get_buy_offer(
-                    squeak_hash=inv.hash,
-                    peer_address=self.peer.remote_address,
+            offer_or_secret_key = self.squeak_controller.get_buy_offer_or_secret_key(
+                inv.hash,
+                self.peer.remote_address,
+            )
+            if offer_or_secret_key is None:
+                return None
+            elif type(offer_or_secret_key) is bytes:
+                return msg_secretkey(
+                    hashSqk=inv.hash,
+                    secretKey=offer_or_secret_key,
                 )
-                if offer is not None:
-                    return msg_offer(
-                        hashSqk=inv.hash,
-                        nonce=offer.nonce,
-                        strPaymentInfo=offer.payment_request.encode('utf-8'),
-                        host=offer.host.encode('utf-8'),
-                        port=offer.port,
-                    )
+            elif type(offer_or_secret_key) is Offer:
+                return msg_offer(
+                    hashSqk=inv.hash,
+                    nonce=offer_or_secret_key.nonce,
+                    strPaymentInfo=offer_or_secret_key.payment_request.encode(
+                        'utf-8'),
+                    host=offer_or_secret_key.host.encode('utf-8'),
+                    port=offer_or_secret_key.port,
+                )
+
+            # price = self.squeak_controller.get_price_for_squeak(inv.hash)
+            # if price == 0:
+            #     secret_key = self.squeak_controller.get_squeak_secret_key(
+            #         inv.hash)
+            #     if secret_key is not None:
+            #         return msg_secretkey(
+            #             hashSqk=inv.hash,
+            #             secretKey=secret_key,
+            #         )
+            # else:
+            #     offer = self.squeak_controller.get_buy_offer(
+            #         squeak_hash=inv.hash,
+            #         peer_address=self.peer.remote_address,
+            #     )
+            #     if offer is not None:
+            #         return msg_offer(
+            #             hashSqk=inv.hash,
+            #             nonce=offer.nonce,
+            #             strPaymentInfo=offer.payment_request.encode('utf-8'),
+            #             host=offer.host.encode('utf-8'),
+            #             port=offer.port,
+            #         )
