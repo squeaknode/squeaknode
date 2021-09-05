@@ -710,6 +710,30 @@ def test_buy_squeak(
         assert get_payment_summary_response.payment_summary.amount_spent_msat > 0
 
 
+def test_download_free_squeak(
+    admin_stub,
+    other_admin_stub,
+    connected_tcp_peer_id,
+    lightning_client,
+    signing_profile_id_with_free_price,
+    saved_squeak_hash,
+):
+    # Download squeak
+    download_squeak(other_admin_stub, saved_squeak_hash)
+    time.sleep(5)
+
+    # Download offer
+    download_offers(other_admin_stub, saved_squeak_hash)
+    time.sleep(5)
+
+    # Get the squeak display item
+    get_squeak_display_entry = get_squeak_display(
+        other_admin_stub, saved_squeak_hash)
+    assert (
+        get_squeak_display_entry.content_str == "Hello from the profile on the server!"
+    )
+
+
 def test_download_single_squeak(
     admin_stub,
     other_admin_stub,
