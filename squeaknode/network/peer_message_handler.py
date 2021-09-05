@@ -85,6 +85,8 @@ class PeerMessageHandler:
             self.handle_notfound(msg)
         elif msg.command == b'offer':
             self.handle_offer(msg)
+        elif msg.command == b'secretkey':
+            self.handle_secret_key(msg)
         elif msg.command == b'subscribe':
             self.handle_subscribe(msg)
         else:
@@ -165,6 +167,12 @@ class PeerMessageHandler:
         self.squeak_controller.save_received_offer(
             offer,
             self.peer.remote_address,
+        )
+
+    def handle_secret_key(self, msg):
+        self.squeak_controller.unlock_squeak(
+            msg.hashSqk,
+            msg.secretKey,
         )
 
     def handle_subscribe(self, msg):
