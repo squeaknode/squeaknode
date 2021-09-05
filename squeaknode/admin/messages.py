@@ -83,6 +83,8 @@ def squeak_profile_to_message(squeak_profile: SqueakProfile) -> squeak_admin_pb2
         has_private_key=has_private_key,
         address=squeak_profile.address,
         following=squeak_profile.following,
+        use_custom_price=squeak_profile.use_custom_price,
+        custom_price_msat=squeak_profile.custom_price_msat,
         profile_image=image_base64_str,
         has_custom_profile_image=has_custom_profile_image,
     )

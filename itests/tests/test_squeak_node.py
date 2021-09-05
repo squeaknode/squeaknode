@@ -309,6 +309,32 @@ def test_set_profile_following(admin_stub, contact_profile_id):
     assert not squeak_profile.following
 
 
+def test_set_profile_use_custom_price(admin_stub, contact_profile_id):
+    # Set the profile to use_custom_price
+    admin_stub.SetSqueakProfileUseCustomPrice(
+        squeak_admin_pb2.SetSqueakProfileUseCustomPriceRequest(
+            profile_id=contact_profile_id,
+            use_custom_price=True,
+        )
+    )
+
+    # Get the squeak profile again
+    squeak_profile = get_squeak_profile(admin_stub, contact_profile_id)
+    assert squeak_profile.use_custom_price
+
+    # Set the profile to not use custom price
+    admin_stub.SetSqueakProfileUseCustomPrice(
+        squeak_admin_pb2.SetSqueakProfileUseCustomPriceRequest(
+            profile_id=contact_profile_id,
+            use_custom_price=False,
+        )
+    )
+
+    # Get the squeak profile again
+    squeak_profile = get_squeak_profile(admin_stub, contact_profile_id)
+    assert not squeak_profile.use_custom_price
+
+
 def test_rename_profile(admin_stub, contact_profile_id, random_name):
     # Rename the profile to something new
     admin_stub.RenameSqueakProfile(
