@@ -205,12 +205,9 @@ class SqueakController:
         signing_key_str = str(signing_key)
         signing_key_bytes = signing_key_str.encode()
         squeak_profile = SqueakProfile(
-            profile_id=None,
             profile_name=profile_name,
             private_key=signing_key_bytes,
             address=str(address),
-            following=True,
-            profile_image=None,
         )
         profile_id = self.squeak_db.insert_profile(squeak_profile)
         self.update_subscriptions()
@@ -223,12 +220,9 @@ class SqueakController:
         signing_key_str = str(signing_key)
         signing_key_bytes = signing_key_str.encode()
         squeak_profile = SqueakProfile(
-            profile_id=None,
             profile_name=profile_name,
             private_key=signing_key_bytes,
             address=str(address),
-            following=True,
-            profile_image=None,
         )
         profile_id = self.squeak_db.insert_profile(squeak_profile)
         self.update_subscriptions()
@@ -246,12 +240,8 @@ class SqueakController:
                 ),
             )
         squeak_profile = SqueakProfile(
-            profile_id=None,
             profile_name=profile_name,
-            private_key=None,
             address=squeak_address,
-            following=True,
-            profile_image=None,
         )
         profile_id = self.squeak_db.insert_profile(squeak_profile)
         self.update_subscriptions()
@@ -278,6 +268,10 @@ class SqueakController:
     def set_squeak_profile_following(self, profile_id: int, following: bool) -> None:
         self.squeak_db.set_profile_following(profile_id, following)
         self.update_subscriptions()
+
+    def set_squeak_profile_use_custom_price(self, profile_id: int, use_custom_price: bool) -> None:
+        self.squeak_db.set_profile_use_custom_price(
+            profile_id, use_custom_price)
 
     def rename_squeak_profile(self, profile_id: int, profile_name: str) -> None:
         self.squeak_db.set_profile_name(profile_id, profile_name)

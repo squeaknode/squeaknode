@@ -17,6 +17,7 @@ import CardHeader from '@material-ui/core/CardHeader';
 
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
+import LocalOfferIcon from '@material-ui/icons/LocalOffer';
 
 // styles
 import useStyles from './styles';
@@ -225,6 +226,19 @@ export default function SqueakProfileDetailItem({
     );
   }
 
+  function CustomPriceContent() {
+    return (
+        <Typography variant="body2" color="textSecondary" component="p">
+          <LocalOfferIcon />
+          {' '}
+          {(squeakProfile.getUseCustomPrice()) ?
+            <>Selling with custom price: {squeakProfile.getCustomPriceMsat()} msats</> :
+            <>Selling with default price</>
+          }
+        </Typography>
+    );
+  }
+
   return (
     <>
       <Card className={classes.root}>
@@ -270,6 +284,9 @@ export default function SqueakProfileDetailItem({
           </Typography>
           <SqueakProfileFollowingIndicator
             squeakProfile={squeakProfile}
+          />
+          <CustomPriceContent
+
           />
         </CardContent>
         <CardActions>

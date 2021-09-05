@@ -223,6 +223,19 @@ class SqueakAdminServerHandler(object):
             profile_id, following)
         return squeak_admin_pb2.SetSqueakProfileFollowingReply()
 
+    def handle_set_squeak_profile_use_custom_price(self, request):
+        profile_id = request.profile_id
+        use_custom_price = request.use_custom_price
+        logger.info(
+            "Handle set squeak profile use_custom_price with profile id: {}, use_custom_price: {}".format(
+                profile_id,
+                use_custom_price,
+            )
+        )
+        self.squeak_controller.set_squeak_profile_use_custom_price(
+            profile_id, use_custom_price)
+        return squeak_admin_pb2.SetSqueakProfileUseCustomPriceReply()
+
     def handle_rename_squeak_profile(self, request):
         profile_id = request.profile_id
         profile_name = request.profile_name
