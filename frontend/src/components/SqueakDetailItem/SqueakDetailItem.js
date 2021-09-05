@@ -258,17 +258,17 @@ export default function SqueakDetailItem({
           <Grid item>
             <Box fontWeight="fontWeightBold">
               {squeak
-                  ? (
+                ? (
                   <SqueakUserAvatar
                     squeakAddress={squeak.getAuthorAddress()}
                     squeakProfile={squeak.getAuthor()}
                   />
-                ): (
-                <SqueakUserAvatar
-                  squeakAddress={null}
-                  squeakProfile={null}
-                />
-              )}
+                ) : (
+                  <SqueakUserAvatar
+                    squeakAddress={null}
+                    squeakProfile={null}
+                  />
+                )}
             </Box>
           </Grid>
           <Grid item>
@@ -307,13 +307,15 @@ export default function SqueakDetailItem({
             {SqueakTime()}
           </Grid>
         </Grid>
-        {squeak &&
+        {squeak
+          && (
           <SqueakActionBar
             hash={hash}
             squeak={squeak}
             network={network}
             reloadSqueak={reloadSqueak}
-          />}
+          />
+          )}
       </Paper>
       {BuyDialogContent()}
       {SqueakUnlockedActionContent()}
