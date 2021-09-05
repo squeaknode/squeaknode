@@ -30,4 +30,6 @@ class SqueakProfile(NamedTuple):
     private_key: Optional[bytes]
     address: str
     following: bool
+    use_custom_price: bool
+    custom_price_msat: int
     profile_image: Optional[bytes]

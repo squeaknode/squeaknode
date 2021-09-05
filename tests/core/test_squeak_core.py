@@ -90,6 +90,8 @@ def signing_profile():
         private_key=signing_key_bytes,
         address=str(address),
         following=False,
+        use_custom_price=False,
+        custom_price_msat=0,
         profile_image=None,
     )
 

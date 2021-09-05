@@ -1270,6 +1270,8 @@ class SqueakDb:
             private_key=private_key,
             address=row["address"],
             following=row["following"],
+            use_custom_price=row["use_custom_price"],
+            custom_price_msat=row["custom_price_msat"],
             profile_image=row["profile_image"],
         )
 

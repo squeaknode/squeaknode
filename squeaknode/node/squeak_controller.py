@@ -210,6 +210,8 @@ class SqueakController:
             private_key=signing_key_bytes,
             address=str(address),
             following=True,
+            use_custom_price=False,
+            custom_price_msat=0,
             profile_image=None,
         )
         profile_id = self.squeak_db.insert_profile(squeak_profile)
@@ -228,6 +230,8 @@ class SqueakController:
             private_key=signing_key_bytes,
             address=str(address),
             following=True,
+            use_custom_price=False,
+            custom_price_msat=0,
             profile_image=None,
         )
         profile_id = self.squeak_db.insert_profile(squeak_profile)
@@ -251,6 +255,8 @@ class SqueakController:
             private_key=None,
             address=squeak_address,
             following=True,
+            use_custom_price=False,
+            custom_price_msat=0,
             profile_image=None,
         )
         profile_id = self.squeak_db.insert_profile(squeak_profile)
