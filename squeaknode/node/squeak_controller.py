@@ -162,16 +162,18 @@ class SqueakController:
     def get_temporary_interest_counter(self, squeak: CSqueak) -> Optional[TemporaryInterest]:
         return self.temporary_interest_manager.lookup_counter(squeak)
 
-    def get_buy_offer(self, squeak_hash: bytes, peer_address: PeerAddress) -> Offer:
+    def get_buy_offer(self, squeak_hash: bytes, peer_address: PeerAddress) -> Optional[Offer]:
         # Check if there is an existing offer for the hash/peer_address combination
         sent_offer = self.get_saved_sent_offer(squeak_hash, peer_address)
+        if sent_offer is None:
+            return None
         return self.squeak_core.package_offer(
             sent_offer,
             self.config.lnd.external_host,
             self.config.lnd.port,
         )
 
-    def get_saved_sent_offer(self, squeak_hash: bytes, peer_address: PeerAddress) -> SentOffer:
+    def get_saved_sent_offer(self, squeak_hash: bytes, peer_address: PeerAddress) -> Optional[SentOffer]:
         # Check if there is an existing offer for the hash/peer_address combination
         sent_offer = self.squeak_db.get_sent_offer_by_squeak_hash_and_peer(
             squeak_hash,
@@ -181,6 +183,8 @@ class SqueakController:
             return sent_offer
         squeak = self.get_squeak(squeak_hash)
         secret_key = self.get_squeak_secret_key(squeak_hash)
+        if squeak is None or secret_key is None:
+            return None
         sent_offer = self.squeak_core.create_offer(
             squeak,
             secret_key,
