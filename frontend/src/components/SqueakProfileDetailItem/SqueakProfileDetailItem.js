@@ -232,8 +232,8 @@ export default function SqueakProfileDetailItem({
           <LocalOfferIcon />
           {' '}
           {(squeakProfile.getUseCustomPrice()) ?
-            <>Using custom price: {squeakProfile.getCustomPriceMsat()} msats</> :
-            <>Using default price</>
+            <>Selling with custom price: {squeakProfile.getCustomPriceMsat()} msats</> :
+            <>Selling with default price</>
           }
         </Typography>
     );
