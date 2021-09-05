@@ -589,13 +589,13 @@ class SqueakController:
 
     def lookup_squeaks_for_interest(
             self,
-            address: str,
+            addresses: List[str],
             min_block: int,
             max_block: int,
             reply_to_hash: bytes,
     ):
         return self.squeak_db.lookup_squeaks(
-            address,
+            addresses,
             min_block,
             max_block,
             reply_to_hash,
