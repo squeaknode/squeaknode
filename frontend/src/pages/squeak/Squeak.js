@@ -156,7 +156,7 @@ export default function SqueakPage() {
         <Timeline align="left">
           {AncestorsContent()}
         </Timeline>
-        {currentSqueak && CurrentSqueakContent()}
+        {CurrentSqueakContent()}
         {DownloadRepliesButtonContent()}
         {replySqueaks && RepliesContent()}
         {ViewMoreSqueaksButton()}
