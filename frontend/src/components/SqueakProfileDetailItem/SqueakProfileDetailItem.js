@@ -228,14 +228,20 @@ export default function SqueakProfileDetailItem({
 
   function CustomPriceContent() {
     return (
-        <Typography variant="body2" color="textSecondary" component="p">
-          <LocalOfferIcon />
-          {' '}
-          {(squeakProfile.getUseCustomPrice()) ?
-            <>Selling with custom price: {squeakProfile.getCustomPriceMsat()} msats</> :
-            <>Selling with default price</>
-          }
-        </Typography>
+      <Typography variant="body2" color="textSecondary" component="p">
+        <LocalOfferIcon />
+        {' '}
+        {(squeakProfile.getUseCustomPrice())
+          ? (
+            <>
+              Selling with custom price:
+              {squeakProfile.getCustomPriceMsat()}
+              {' '}
+              msats
+            </>
+          )
+          : <>Selling with default price</>}
+      </Typography>
     );
   }
 
@@ -285,9 +291,7 @@ export default function SqueakProfileDetailItem({
           <SqueakProfileFollowingIndicator
             squeakProfile={squeakProfile}
           />
-          <CustomPriceContent
-
-          />
+          <CustomPriceContent />
         </CardContent>
         <CardActions>
           <Button
