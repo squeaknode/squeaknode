@@ -23,6 +23,7 @@ import logging
 import threading
 from typing import List
 from typing import Optional
+from typing import Union
 
 import sqlalchemy
 import squeak.params
@@ -162,9 +163,21 @@ class SqueakController:
     def get_temporary_interest_counter(self, squeak: CSqueak) -> Optional[TemporaryInterest]:
         return self.temporary_interest_manager.lookup_counter(squeak)
 
-    def get_buy_offer(self, squeak_hash: bytes, peer_address: PeerAddress) -> Optional[Offer]:
-        # Check if there is an existing offer for the hash/peer_address combination
-        sent_offer = self.get_saved_sent_offer(squeak_hash, peer_address)
+    def get_offer_or_secret_key(self, squeak_hash: bytes, peer_address: PeerAddress) -> Optional[Union[bytes, Offer]]:
+        squeak = self.get_squeak(squeak_hash)
+        if squeak is None:
+            return None
+        price = self.get_price_for_squeak(squeak)
+        if price == 0:
+            return self.get_squeak_secret_key(squeak_hash)
+        else:
+            return self.get_offer(
+                squeak_hash=squeak_hash,
+                peer_address=peer_address,
+            )
+
+    def get_offer(self, squeak_hash: bytes, peer_address: PeerAddress) -> Optional[Offer]:
+        sent_offer = self.get_sent_offer_for_peer(squeak_hash, peer_address)
         if sent_offer is None:
             return None
         return self.squeak_core.package_offer(
@@ -173,7 +186,7 @@ class SqueakController:
             self.config.lnd.port,
         )
 
-    def get_saved_sent_offer(self, squeak_hash: bytes, peer_address: PeerAddress) -> Optional[SentOffer]:
+    def get_sent_offer_for_peer(self, squeak_hash: bytes, peer_address: PeerAddress) -> Optional[SentOffer]:
         # Check if there is an existing offer for the hash/peer_address combination
         sent_offer = self.squeak_db.get_sent_offer_by_squeak_hash_and_peer(
             squeak_hash,
@@ -193,6 +206,17 @@ class SqueakController:
         )
         self.squeak_db.insert_sent_offer(sent_offer)
         return sent_offer
+
+    def get_price_for_squeak(self, squeak: CSqueak) -> int:
+        squeak_address = str(squeak.GetAddress())
+        logger.info(
+            "Looking for profile with address: {}".format(squeak_address))
+        squeak_profile = self.get_squeak_profile_by_address(squeak_address)
+        logger.info(
+            "Checking price for squeak with profile: {}".format(squeak_profile))
+        if squeak_profile is not None and squeak_profile.use_custom_price:
+            return squeak_profile.custom_price_msat
+        return self.config.node.price_msat
 
     def create_signing_profile(self, profile_name: str) -> int:
         if len(profile_name) == 0:
