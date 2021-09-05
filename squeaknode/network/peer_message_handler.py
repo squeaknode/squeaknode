@@ -205,7 +205,7 @@ class PeerMessageHandler:
             if squeak is not None:
                 return msg_squeak(squeak=squeak)
         if inv.type == 2:
-            offer_or_secret_key = self.squeak_controller.get_buy_offer_or_secret_key(
+            offer_or_secret_key = self.squeak_controller.get_offer_or_secret_key(
                 inv.hash,
                 self.peer.remote_address,
             )
