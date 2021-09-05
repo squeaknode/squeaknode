@@ -205,14 +205,9 @@ class SqueakController:
         signing_key_str = str(signing_key)
         signing_key_bytes = signing_key_str.encode()
         squeak_profile = SqueakProfile(
-            profile_id=None,
             profile_name=profile_name,
             private_key=signing_key_bytes,
             address=str(address),
-            following=True,
-            use_custom_price=False,
-            custom_price_msat=0,
-            profile_image=None,
         )
         profile_id = self.squeak_db.insert_profile(squeak_profile)
         self.update_subscriptions()
@@ -225,14 +220,9 @@ class SqueakController:
         signing_key_str = str(signing_key)
         signing_key_bytes = signing_key_str.encode()
         squeak_profile = SqueakProfile(
-            profile_id=None,
             profile_name=profile_name,
             private_key=signing_key_bytes,
             address=str(address),
-            following=True,
-            use_custom_price=False,
-            custom_price_msat=0,
-            profile_image=None,
         )
         profile_id = self.squeak_db.insert_profile(squeak_profile)
         self.update_subscriptions()
@@ -250,14 +240,8 @@ class SqueakController:
                 ),
             )
         squeak_profile = SqueakProfile(
-            profile_id=None,
             profile_name=profile_name,
-            private_key=None,
             address=squeak_address,
-            following=True,
-            use_custom_price=False,
-            custom_price_msat=0,
-            profile_image=None,
         )
         profile_id = self.squeak_db.insert_profile(squeak_profile)
         self.update_subscriptions()
