@@ -27,6 +27,7 @@ from squeak.messages import msg_inv
 from squeak.messages import msg_notfound
 from squeak.messages import msg_offer
 from squeak.messages import msg_pong
+from squeak.messages import msg_secretkey
 from squeak.messages import msg_squeak
 from squeak.net import CInv
 
@@ -204,15 +205,25 @@ class PeerMessageHandler:
             if squeak is not None:
                 return msg_squeak(squeak=squeak)
         if inv.type == 2:
-            offer = self.squeak_controller.get_buy_offer(
-                squeak_hash=inv.hash,
-                peer_address=self.peer.remote_address,
-            )
-            if offer is not None:
-                return msg_offer(
-                    hashSqk=inv.hash,
-                    nonce=offer.nonce,
-                    strPaymentInfo=offer.payment_request.encode('utf-8'),
-                    host=offer.host.encode('utf-8'),
-                    port=offer.port,
+            price = self.squeak_controller.get_price_for_squeak(inv.hash)
+            if price == 0:
+                secret_key = self.squeak_controller.get_squeak_secret_key(
+                    inv.hash)
+                if secret_key is not None:
+                    return msg_secretkey(
+                        hashSqk=inv.hash,
+                        secretKey=secret_key,
+                    )
+            else:
+                offer = self.squeak_controller.get_buy_offer(
+                    squeak_hash=inv.hash,
+                    peer_address=self.peer.remote_address,
                 )
+                if offer is not None:
+                    return msg_offer(
+                        hashSqk=inv.hash,
+                        nonce=offer.nonce,
+                        strPaymentInfo=offer.payment_request.encode('utf-8'),
+                        host=offer.host.encode('utf-8'),
+                        port=offer.port,
+                    )

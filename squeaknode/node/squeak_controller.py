@@ -194,6 +194,23 @@ class SqueakController:
         self.squeak_db.insert_sent_offer(sent_offer)
         return sent_offer
 
+    def get_price_for_squeak(self, squeak_hash: bytes) -> int:
+        logger.info("Checking price for squeak hash: {}".format(
+            squeak_hash.hex(),
+        ))
+        squeak = self.get_squeak(squeak_hash)
+        if squeak is None:
+            return 0
+        squeak_address = str(squeak.GetAddress())
+        logger.info(
+            "Looking for profile with address: {}".format(squeak_address))
+        squeak_profile = self.get_squeak_profile_by_address(squeak_address)
+        logger.info(
+            "Checking price for squeak with profile: {}".format(squeak_profile))
+        if squeak_profile is not None and squeak_profile.use_custom_price:
+            return squeak_profile.custom_price_msat
+        return self.config.node.price_msat
+
     def create_signing_profile(self, profile_name: str) -> int:
         if len(profile_name) == 0:
             raise Exception(
