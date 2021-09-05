@@ -201,50 +201,33 @@ class PeerMessageHandler:
 
     def _get_inv_reply(self, inv):
         if inv.type == 1:
-            squeak = self.squeak_controller.get_squeak(inv.hash)
-            if squeak is not None:
-                return msg_squeak(squeak=squeak)
+            return self._get_inv_reply_for_squeak(inv)
         if inv.type == 2:
-            offer_or_secret_key = self.squeak_controller.get_offer_or_secret_key(
-                inv.hash,
-                self.peer.remote_address,
-            )
-            if offer_or_secret_key is None:
-                return None
-            elif type(offer_or_secret_key) is bytes:
-                return msg_secretkey(
-                    hashSqk=inv.hash,
-                    secretKey=offer_or_secret_key,
-                )
-            elif type(offer_or_secret_key) is Offer:
-                return msg_offer(
-                    hashSqk=inv.hash,
-                    nonce=offer_or_secret_key.nonce,
-                    strPaymentInfo=offer_or_secret_key.payment_request.encode(
-                        'utf-8'),
-                    host=offer_or_secret_key.host.encode('utf-8'),
-                    port=offer_or_secret_key.port,
-                )
+            return self._get_inv_reply_for_secret_key(inv)
 
-            # price = self.squeak_controller.get_price_for_squeak(inv.hash)
-            # if price == 0:
-            #     secret_key = self.squeak_controller.get_squeak_secret_key(
-            #         inv.hash)
-            #     if secret_key is not None:
-            #         return msg_secretkey(
-            #             hashSqk=inv.hash,
-            #             secretKey=secret_key,
-            #         )
-            # else:
-            #     offer = self.squeak_controller.get_buy_offer(
-            #         squeak_hash=inv.hash,
-            #         peer_address=self.peer.remote_address,
-            #     )
-            #     if offer is not None:
-            #         return msg_offer(
-            #             hashSqk=inv.hash,
-            #             nonce=offer.nonce,
-            #             strPaymentInfo=offer.payment_request.encode('utf-8'),
-            #             host=offer.host.encode('utf-8'),
-            #             port=offer.port,
-            #         )
+    def _get_inv_reply_for_squeak(self, inv):
+        squeak = self.squeak_controller.get_squeak(inv.hash)
+        if squeak is not None:
+            return msg_squeak(squeak=squeak)
+
+    def _get_inv_reply_for_secret_key(self, inv):
+        resp = self.squeak_controller.get_offer_or_secret_key(
+            inv.hash,
+            self.peer.remote_address,
+        )
+        if resp is None:
+            return None
+        elif type(resp) is bytes:
+            return msg_secretkey(
+                hashSqk=inv.hash,
+                secretKey=resp,
+            )
+        elif type(resp) is Offer:
+            return msg_offer(
+                hashSqk=inv.hash,
+                nonce=resp.nonce,
+                strPaymentInfo=resp.payment_request.encode(
+                    'utf-8'),
+                host=resp.host.encode('utf-8'),
+                port=resp.port,
+            )
