@@ -75,7 +75,7 @@ export default function SqueakThread({
         <TimelineSeparator>
           <SqueakUserAvatar
             squeakAddress={null}
-            squeak={null}
+            squeakProfile={null}
           />
           <TimelineConnector />
         </TimelineSeparator>
