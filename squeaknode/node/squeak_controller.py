@@ -78,6 +78,7 @@ class SqueakController:
         self.network_manager = network_manager
         self.new_squeak_listener = EventListener()
         self.new_received_offer_listener = EventListener()
+        self.new_secret_key_listener = EventListener()
         self.temporary_interest_manager = TemporaryInterestManager()
         self.config = config
 
@@ -113,6 +114,8 @@ class SqueakController:
         logger.info("Unlocked squeak: {}".format(
             squeak_hash.hex(),
         ))
+        # Notify the listener
+        self.new_secret_key_listener.handle_new_item(squeak_hash)
 
     def make_squeak(self, profile_id: int, content_str: str, replyto_hash: bytes) -> bytes:
         squeak_profile = self.squeak_db.get_profile(profile_id)
@@ -736,6 +739,9 @@ class SqueakController:
 
     def subscribe_new_squeaks(self, stopped: threading.Event):
         yield from self.new_squeak_listener.yield_items(stopped)
+
+    def subscribe_new_secret_keys(self, stopped: threading.Event):
+        yield from self.new_secret_key_listener.yield_items(stopped)
 
     def update_subscriptions(self):
         locator = self.get_interested_locator()

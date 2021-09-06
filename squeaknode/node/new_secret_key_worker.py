@@ -42,7 +42,7 @@ HASH_LENGTH = 32
 EMPTY_HASH = b'\x00' * HASH_LENGTH
 
 
-class NewSqueakWorker:
+class NewSecretKeyWorker:
 
     def __init__(self,
                  squeak_controller: SqueakController,
@@ -54,24 +54,26 @@ class NewSqueakWorker:
 
     def start_running(self):
         threading.Thread(
-            target=self.handle_new_squeaks,
-            name="new_squeaks_worker_thread",
+            target=self.handle_new_secret_keys,
+            name="new_secret_keys_worker_thread",
         ).start()
 
     def stop_running(self):
         self.stopped.set()
 
-    def handle_new_squeaks(self):
-        logger.info("Starting NewSqueakWorker...")
-        for squeak in self.squeak_controller.subscribe_new_squeaks(
+    def handle_new_secret_keys(self):
+        logger.info("Starting NewSecretKeyWorker...")
+        for squeak_hash in self.squeak_controller.subscribe_new_secret_keys(
                 self.stopped,
         ):
-            logger.info("Handling new squeak: {!r}".format(
-                get_hash(squeak).hex(),
+            logger.info("Handling new secret key for squeak hash: {!r}".format(
+                squeak_hash.hex(),
             ))
-            self.forward_squeak(squeak)
+            squeak = self.squeak_controller.get_squeak(squeak_hash)
+            if squeak is not None:
+                self.forward_secret_key(squeak)
 
-    def forward_squeak(self, squeak):
+    def forward_secret_key(self, squeak):
         logger.info("Forward new squeak: {!r}".format(
             get_hash(squeak).hex(),
         ))
@@ -81,7 +83,7 @@ class NewSqueakWorker:
                     peer,
                 ))
                 squeak_hash = get_hash(squeak)
-                inv = CInv(type=1, hash=squeak_hash)
+                inv = CInv(type=2, hash=squeak_hash)
                 inv_msg = msg_inv(inv=[inv])
                 peer.send_msg(inv_msg)
         logger.info("Finished checking peers to forward.")
