@@ -998,8 +998,6 @@ def test_subscribe_squeaks(
             "squeaknode",
             18777,
     ):
-        time.sleep(2)
-
         # Create a new squeak using the new profile
         make_squeak_content = "Hello this message should be subscribed!"
         make_squeak_hash = make_squeak(
@@ -1008,7 +1006,7 @@ def test_subscribe_squeaks(
             make_squeak_content,
         )
 
-        time.sleep(5)
+        time.sleep(2)
 
         # Get the squeak display item
         squeak_display_entry = get_squeak_display(
@@ -1025,17 +1023,3 @@ def test_subscribe_squeaks(
         assert (
             get_squeak_display_entry.content_str == make_squeak_content
         )
-
-        # TODO: This section will only work if bitcoin zeromq port is working.
-        # # Make a new squeak
-        # new_squeak_hash = make_squeak(
-        #     admin_stub,
-        #     signing_profile_id,
-        #     "Hello again!",
-        # )
-        # time.sleep(2)
-
-        # # Get the squeak display item for the new squeak
-        # squeak_display_entry = get_squeak_display(
-        #     other_admin_stub, new_squeak_hash)
-        # assert squeak_display_entry is not None
