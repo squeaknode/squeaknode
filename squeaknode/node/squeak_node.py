@@ -35,8 +35,6 @@ from squeaknode.db.db_engine import get_engine
 from squeaknode.db.squeak_db import SqueakDb
 from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
 from squeaknode.network.network_manager import NetworkManager
-from squeaknode.node.new_secret_key_worker import NewSecretKeyWorker
-from squeaknode.node.new_squeak_worker import NewSqueakWorker
 from squeaknode.node.payment_processor import PaymentProcessor
 from squeaknode.node.peer_connection_worker import PeerConnectionWorker
 from squeaknode.node.peer_subscription_update_worker import PeerSubscriptionUpdateWorker
@@ -44,6 +42,8 @@ from squeaknode.node.process_received_payments_worker import ProcessReceivedPaym
 from squeaknode.node.squeak_controller import SqueakController
 from squeaknode.node.squeak_deletion_worker import SqueakDeletionWorker
 from squeaknode.node.squeak_offer_expiry_worker import SqueakOfferExpiryWorker
+from squeaknode.node.update_subscribed_secret_key_worker import UpdateSubscribedSecretKeysWorker
+from squeaknode.node.update_subscribed_squeak_worker import UpdateSubscribedSqueaksWorker
 
 logger = logging.getLogger(__name__)
 
@@ -217,13 +217,13 @@ class SqueakNode:
         )
 
     def initialize_new_squeak_worker(self):
-        self.new_squeak_worker = NewSqueakWorker(
+        self.new_squeak_worker = UpdateSubscribedSqueaksWorker(
             self.squeak_controller,
             self.network_manager,
         )
 
     def initialize_new_secret_key_worker(self):
-        self.new_secret_key_worker = NewSecretKeyWorker(
+        self.new_secret_key_worker = UpdateSubscribedSecretKeysWorker(
             self.squeak_controller,
             self.network_manager,
         )
