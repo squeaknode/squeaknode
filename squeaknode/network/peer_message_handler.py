@@ -129,10 +129,18 @@ class PeerMessageHandler:
 
     def handle_inv(self, msg):
         invs = msg.inv
-        unknown_invs = [
+        unknown_squeak_invs = [
             inv for inv in invs
-            if inv.type == 1 and self.squeak_controller.get_squeak(inv.hash) is None
+            if inv.type == MSG_SQUEAK
+            and self.squeak_controller.get_squeak(inv.hash) is None
         ]
+        unknown_secret_key_invs = [
+            inv for inv in invs
+            if inv.type == MSG_SECRET_KEY
+            and self.squeak_controller.get_squeak(inv.hash) is not None
+            and self.squeak_controller.get_squeak_secret_key(inv.hash) is None
+        ]
+        unknown_invs = unknown_squeak_invs + unknown_secret_key_invs
         if unknown_invs:
             getdata_msg = msg_getdata(inv=unknown_invs)
             self.peer.send_msg(getdata_msg)
