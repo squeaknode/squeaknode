@@ -140,7 +140,7 @@ class SqueakNode:
     def initialize_bitcoin_block_subscription_client(self):
         self.bitcoin_block_subscription_client = BitcoinBlockSubscriptionClient(
             self.config.bitcoin.rpc_host,
-            self.config.bitcoin.zeromq_port,
+            self.config.bitcoin.zeromq_hashblock_port,
         )
 
     def initialize_squeak_core(self):
