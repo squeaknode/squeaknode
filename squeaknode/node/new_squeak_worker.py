@@ -62,32 +62,32 @@ class NewSqueakWorker:
         self.stopped.set()
 
     def handle_new_squeaks(self):
-        logger.info("Starting NewSqueakWorker...")
+        logger.debug("Starting NewSqueakWorker...")
         for squeak in self.squeak_controller.subscribe_new_squeaks(
                 self.stopped,
         ):
-            logger.info("Handling new squeak: {!r}".format(
+            logger.debug("Handling new squeak: {!r}".format(
                 get_hash(squeak).hex(),
             ))
             self.forward_squeak(squeak)
 
     def forward_squeak(self, squeak):
-        logger.info("Forward new squeak: {!r}".format(
+        logger.debug("Forward new squeak: {!r}".format(
             get_hash(squeak).hex(),
         ))
         for peer in self.network_manager.get_connected_peers():
             if self.should_forward(squeak, peer):
-                logger.info("Forwarding to peer: {}".format(
+                logger.debug("Forwarding to peer: {}".format(
                     peer,
                 ))
                 squeak_hash = get_hash(squeak)
                 inv = CInv(type=1, hash=squeak_hash)
                 inv_msg = msg_inv(inv=[inv])
                 peer.send_msg(inv_msg)
-        logger.info("Finished checking peers to forward.")
+        logger.debug("Finished checking peers to forward.")
 
     def should_forward(self, squeak: CSqueak, peer: Peer) -> bool:
-        logger.info("""
+        logger.debug("""
         Checking if should forward for peer: {}
         with subscription: {}
         and squeak: {}
@@ -103,6 +103,6 @@ class NewSqueakWorker:
         locator = peer.subscription.locator
         for interest in locator.vInterested:
             if squeak_matches_interest(squeak, interest):
-                logger.info("Found a match!")
+                logger.debug("Found a match!")
                 return True
         return False

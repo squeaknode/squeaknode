@@ -62,11 +62,11 @@ class NewSecretKeyWorker:
         self.stopped.set()
 
     def handle_new_secret_keys(self):
-        logger.info("Starting NewSecretKeyWorker...")
+        logger.debug("Starting NewSecretKeyWorker...")
         for squeak_hash in self.squeak_controller.subscribe_new_secret_keys(
                 self.stopped,
         ):
-            logger.info("Handling new secret key for squeak hash: {!r}".format(
+            logger.debug("Handling new secret key for squeak hash: {!r}".format(
                 squeak_hash.hex(),
             ))
             squeak = self.squeak_controller.get_squeak(squeak_hash)
@@ -74,22 +74,22 @@ class NewSecretKeyWorker:
                 self.forward_secret_key(squeak)
 
     def forward_secret_key(self, squeak):
-        logger.info("Forward new squeak: {!r}".format(
+        logger.debug("Forward new squeak: {!r}".format(
             get_hash(squeak).hex(),
         ))
         for peer in self.network_manager.get_connected_peers():
             if self.should_forward(squeak, peer):
-                logger.info("Forwarding to peer: {}".format(
+                logger.debug("Forwarding to peer: {}".format(
                     peer,
                 ))
                 squeak_hash = get_hash(squeak)
                 inv = CInv(type=2, hash=squeak_hash)
                 inv_msg = msg_inv(inv=[inv])
                 peer.send_msg(inv_msg)
-        logger.info("Finished checking peers to forward.")
+        logger.debug("Finished checking peers to forward.")
 
     def should_forward(self, squeak: CSqueak, peer: Peer) -> bool:
-        logger.info("""
+        logger.debug("""
         Checking if should forward for peer: {}
         with subscription: {}
         and squeak: {}
@@ -105,6 +105,6 @@ class NewSecretKeyWorker:
         locator = peer.subscription.locator
         for interest in locator.vInterested:
             if squeak_matches_interest(squeak, interest):
-                logger.info("Found a match!")
+                logger.debug("Found a match!")
                 return True
         return False
