@@ -61,15 +61,13 @@ class NewSecretKeyWorker:
 
     def handle_new_secret_keys(self):
         logger.debug("Starting NewSecretKeyWorker...")
-        for squeak_hash in self.squeak_controller.subscribe_new_secret_keys(
+        for squeak in self.squeak_controller.subscribe_new_secret_keys(
                 self.stopped,
         ):
             logger.debug("Handling new secret key for squeak hash: {!r}".format(
-                squeak_hash.hex(),
+                get_hash(squeak).hex(),
             ))
-            squeak = self.squeak_controller.get_squeak(squeak_hash)
-            if squeak is not None:
-                self.forward_secret_key(squeak)
+            self.forward_secret_key(squeak)
 
     def forward_secret_key(self, squeak):
         logger.debug("Forward new squeak: {!r}".format(

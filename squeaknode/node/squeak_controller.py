@@ -115,7 +115,7 @@ class SqueakController:
             squeak_hash.hex(),
         ))
         # Notify the listener
-        self.new_secret_key_listener.handle_new_item(squeak_hash)
+        self.new_secret_key_listener.handle_new_item(squeak)
 
     def make_squeak(self, profile_id: int, content_str: str, replyto_hash: bytes) -> bytes:
         squeak_profile = self.squeak_db.get_profile(profile_id)
@@ -141,12 +141,16 @@ class SqueakController:
         self.squeak_db.delete_squeak(squeak_hash)
 
     def save_received_squeak(self, squeak: CSqueak) -> None:
+        saved_squeak_hash = None
         counter = self.get_temporary_interest_counter(squeak)
         if counter:
-            self.save_squeak(squeak)
+            saved_squeak_hash = self.save_squeak(squeak)
             counter.increment()
         elif self.squeak_matches_interest(squeak):
-            self.save_squeak(squeak)
+            saved_squeak_hash = self.save_squeak(squeak)
+        # Download offers for the new squeak
+        if saved_squeak_hash:
+            self.download_offers(saved_squeak_hash)
 
     def squeak_matches_interest(self, squeak: CSqueak) -> bool:
         locator = self.get_interested_locator()
