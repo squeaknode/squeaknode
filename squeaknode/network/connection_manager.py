@@ -47,6 +47,7 @@ class ConnectionManager(object):
         self.peers_lock = threading.Lock()
         self.peer_changed_listener = EventListener()
         self.single_peer_changed_listener = EventListener()
+        self.accept_connections = True
 
     @property
     def peers(self) -> List[Peer]:
@@ -76,6 +77,8 @@ class ConnectionManager(object):
         """Add a peer.
         """
         with self.peers_lock:
+            if not self.accept_connections:
+                raise NotAcceptingConnectionsError()
             if self._is_duplicate_nonce(peer):
                 logger.debug('Failed to add peer {}'.format(peer))
                 raise DuplicateNonceError()
@@ -113,6 +116,7 @@ class ConnectionManager(object):
     def stop_all_connections(self):
         """Stop all peer connections.
         """
+        self.accept_connections = False
         with self.peers_lock:
             for peer in self.peers:
                 peer.stop()
@@ -139,4 +143,8 @@ class DuplicateNonceError(Exception):
 
 
 class MissingPeerError(Exception):
+    pass
+
+
+class NotAcceptingConnectionsError(Exception):
     pass
