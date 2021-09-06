@@ -54,6 +54,7 @@ class UpdateSubscribedSecretKeysWorker:
         threading.Thread(
             target=self.handle_new_secret_keys,
             name="new_secret_keys_worker_thread",
+            daemon=True,
         ).start()
 
     def stop_running(self):
