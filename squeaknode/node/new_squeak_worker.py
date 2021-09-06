@@ -24,6 +24,7 @@ import threading
 
 from squeak.core import CSqueak
 from squeak.messages import msg_inv
+from squeak.messages import MSG_SQUEAK
 from squeak.net import CInv
 
 from squeaknode.core.util import get_hash
@@ -81,7 +82,7 @@ class NewSqueakWorker:
                     peer,
                 ))
                 squeak_hash = get_hash(squeak)
-                inv = CInv(type=1, hash=squeak_hash)
+                inv = CInv(type=MSG_SQUEAK, hash=squeak_hash)
                 inv_msg = msg_inv(inv=[inv])
                 peer.send_msg(inv_msg)
         logger.debug("Finished checking peers to forward.")
