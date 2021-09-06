@@ -500,13 +500,6 @@ class SqueakController:
             last_entry,
         )
 
-    # def lookup_squeaks(self, addresses: List[str], min_block: int, max_block: int) -> List[bytes]:
-    #     return self.squeak_db.lookup_squeaks(
-    #         addresses,
-    #         min_block,
-    #         max_block,
-    #     )
-
     def get_number_of_squeaks(self) -> int:
         return self.squeak_db.get_number_of_squeaks()
 
