@@ -35,6 +35,7 @@ from squeaknode.db.db_engine import get_engine
 from squeaknode.db.squeak_db import SqueakDb
 from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
 from squeaknode.network.network_manager import NetworkManager
+from squeaknode.node.new_secret_key_worker import NewSecretKeyWorker
 from squeaknode.node.new_squeak_worker import NewSqueakWorker
 from squeaknode.node.payment_processor import PaymentProcessor
 from squeaknode.node.peer_connection_worker import PeerConnectionWorker
@@ -74,6 +75,7 @@ class SqueakNode:
         self.initialize_squeak_deletion_worker()
         self.initialize_offer_expiry_worker()
         self.initialize_new_squeak_worker()
+        self.initialize_new_secret_key_worker()
         self.initialize_peer_subscription_update_worker()
 
     def start_running(self):
@@ -89,6 +91,7 @@ class SqueakNode:
         self.squeak_deletion_worker.start()
         self.offer_expiry_worker.start()
         self.new_squeak_worker.start_running()
+        self.new_secret_key_worker.start_running()
         self.new_bitcoin_block_worker.start_running()
 
     def stop_running(self):
@@ -215,6 +218,12 @@ class SqueakNode:
 
     def initialize_new_squeak_worker(self):
         self.new_squeak_worker = NewSqueakWorker(
+            self.squeak_controller,
+            self.network_manager,
+        )
+
+    def initialize_new_secret_key_worker(self):
+        self.new_secret_key_worker = NewSecretKeyWorker(
             self.squeak_controller,
             self.network_manager,
         )
