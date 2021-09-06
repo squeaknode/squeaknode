@@ -22,15 +22,12 @@
 import logging
 import threading
 
-from squeak.core import CSqueak
 from squeak.messages import msg_inv
 from squeak.messages import MSG_SQUEAK
 from squeak.net import CInv
 
 from squeaknode.core.util import get_hash
-from squeaknode.core.util import squeak_matches_interest
 from squeaknode.network.network_manager import NetworkManager
-from squeaknode.network.peer import Peer
 from squeaknode.node.squeak_controller import SqueakController
 
 
@@ -77,7 +74,7 @@ class NewSqueakWorker:
             get_hash(squeak).hex(),
         ))
         for peer in self.network_manager.get_connected_peers():
-            if self.should_forward(squeak, peer):
+            if peer.is_subscribed(squeak):
                 logger.debug("Forwarding to peer: {}".format(
                     peer,
                 ))
@@ -86,24 +83,3 @@ class NewSqueakWorker:
                 inv_msg = msg_inv(inv=[inv])
                 peer.send_msg(inv_msg)
         logger.debug("Finished checking peers to forward.")
-
-    def should_forward(self, squeak: CSqueak, peer: Peer) -> bool:
-        logger.debug("""
-        Checking if should forward for peer: {}
-        with subscription: {}
-        and squeak: {}
-        with squeak address: {}
-        """.format(
-            peer,
-            peer.subscription,
-            squeak,
-            str(squeak.GetAddress()),
-        ))
-        if peer.subscription is None:
-            return False
-        locator = peer.subscription.locator
-        for interest in locator.vInterested:
-            if squeak_matches_interest(squeak, interest):
-                logger.debug("Found a match!")
-                return True
-        return False

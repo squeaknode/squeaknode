@@ -28,12 +28,14 @@ from io import BytesIO
 
 from bitcoin.core.serialize import SerializationTruncationError
 from bitcoin.net import CAddress
+from squeak.core import CSqueak
 from squeak.messages import msg_verack
 from squeak.messages import msg_version
 from squeak.messages import MsgSerializable
 
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.util import generate_version_nonce
+from squeaknode.core.util import squeak_matches_interest
 from squeaknode.network.util import time_now
 from squeaknode.node.listener_subscription_client import EventListener
 
@@ -266,6 +268,15 @@ class Peer(object):
 
     def set_subscription(self, subscription):
         self._subscription = subscription
+
+    def is_subscribed(self, squeak: CSqueak):
+        if self.subscription is None:
+            return False
+        locator = self.subscription.locator
+        for interest in locator.vInterested:
+            if squeak_matches_interest(squeak, interest):
+                return True
+        return False
 
     def on_peer_updated(self):
         logger.debug('on_peer_updated: {}'.format(self))
