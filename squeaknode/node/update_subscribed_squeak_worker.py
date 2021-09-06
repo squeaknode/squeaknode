@@ -54,6 +54,7 @@ class UpdateSubscribedSqueaksWorker:
         threading.Thread(
             target=self.handle_new_squeaks,
             name="new_squeaks_worker_thread",
+            daemon=True,
         ).start()
 
     def stop_running(self):
