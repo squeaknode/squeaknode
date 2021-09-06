@@ -497,12 +497,12 @@ class SqueakController:
             last_entry,
         )
 
-    def lookup_squeaks(self, addresses: List[str], min_block: int, max_block: int) -> List[bytes]:
-        return self.squeak_db.lookup_squeaks(
-            addresses,
-            min_block,
-            max_block,
-        )
+    # def lookup_squeaks(self, addresses: List[str], min_block: int, max_block: int) -> List[bytes]:
+    #     return self.squeak_db.lookup_squeaks(
+    #         addresses,
+    #         min_block,
+    #         max_block,
+    #     )
 
     def get_number_of_squeaks(self) -> int:
         return self.squeak_db.get_number_of_squeaks()
@@ -587,13 +587,28 @@ class SqueakController:
     def get_connected_peers(self) -> List[Peer]:
         return self.network_manager.get_connected_peers()
 
-    def lookup_squeaks_for_interest(
+    def lookup_squeaks(
             self,
             addresses: List[str],
             min_block: int,
             max_block: int,
             reply_to_hash: bytes,
-    ):
+    ) -> List[bytes]:
+        return self.squeak_db.lookup_squeaks(
+            addresses,
+            min_block,
+            max_block,
+            reply_to_hash,
+            include_locked=True,
+        )
+
+    def lookup_secret_keys(
+            self,
+            addresses: List[str],
+            min_block: int,
+            max_block: int,
+            reply_to_hash: bytes,
+    ) -> List[bytes]:
         return self.squeak_db.lookup_squeaks(
             addresses,
             min_block,
