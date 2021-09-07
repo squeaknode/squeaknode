@@ -19,6 +19,7 @@ import {
   GetTimelineSqueakDisplaysRequest,
   SetSqueakProfileFollowingRequest,
   SetSqueakProfileUseCustomPriceRequest,
+  SetSqueakProfileCustomPriceRequest,
   GetPeersRequest,
   PayOfferRequest,
   GetBuyOffersRequest,
@@ -189,6 +190,15 @@ export function setSqueakProfileUseCustomPriceRequest(id, useCustomPrice, handle
   request.setProfileId(id);
   request.setUseCustomPrice(useCustomPrice);
   client.setSqueakProfileUseCustomPrice(request, {}, (err, response) => {
+    handleResponse(response);
+  });
+}
+
+export function setSqueakProfileCustomPriceRequest(id, customPriceMsat, handleResponse) {
+  const request = new SetSqueakProfileCustomPriceRequest();
+  request.setProfileId(id);
+  request.setCustomPriceMsat(customPriceMsat);
+  client.setSqueakProfileCustomPrice(request, {}, (err, response) => {
     handleResponse(response);
   });
 }
