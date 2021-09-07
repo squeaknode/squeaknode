@@ -10,7 +10,6 @@ import {
   FormGroup,
   FormControlLabel,
   Switch,
-  Input,
   TextField,
 } from '@material-ui/core';
 
@@ -98,19 +97,24 @@ export default function ConfigureProfileDialog({
             label="Use Custom Price"
           />
         </FormGroup>
-        {squeakProfile.getUseCustomPrice() ?
-          <TextField
-            required id="standard-required"
-            label="Price (msats)"
-            type="number"
-            defaultValue={squeakProfile.getCustomPriceMsat()}
-            onChange={handleSettingsCustomPriceMsatChange} /> :
-          <TextField
-            disabled
-            id="standard-disabled"
-            label="Disabled"
-            defaultValue={squeakProfile.getCustomPriceMsat()} />
-        }
+        {squeakProfile.getUseCustomPrice()
+          ? (
+            <TextField
+              required
+              id="standard-required"
+              label="Price (msats)"
+              type="number"
+              defaultValue={squeakProfile.getCustomPriceMsat()}
+              onChange={handleSettingsCustomPriceMsatChange}
+            />
+          ) : (
+            <TextField
+              disabled
+              id="standard-disabled"
+              label="Disabled"
+              defaultValue={squeakProfile.getCustomPriceMsat()}
+            />
+          )}
       </FormControl>
     );
   }
