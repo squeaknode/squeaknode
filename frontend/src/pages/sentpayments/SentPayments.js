@@ -69,7 +69,7 @@ export default function SentPayments() {
 
   useEffect(() => {
     loadSentPayments(SENT_PAYMENTS_PER_PAGE, null);
-  }, []);
+  }, [loadSentPayments]);
 
   function TabPanel(props) {
     const {
