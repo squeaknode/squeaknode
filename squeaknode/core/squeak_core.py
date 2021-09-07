@@ -289,7 +289,7 @@ class SqueakCore:
         )
         return SentPayment(
             sent_payment_id=None,
-            created=None,
+            created_time_ms=None,
             peer_address=peer_address,
             squeak_hash=received_offer.squeak_hash,
             payment_hash=received_offer.payment_hash,

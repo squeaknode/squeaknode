@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import logging
+import time
 from contextlib import contextmanager
 from datetime import datetime
 from datetime import timedelta
@@ -143,6 +144,9 @@ class SqueakDb:
     @property
     def datetime_now(self):
         return datetime.now(timezone.utc)
+
+    def timestamp_now(self):
+        return int(time.time() * 1000)
 
     def datetime_from_timestamp(self, timestamp):
         return datetime.fromtimestamp(timestamp, timezone.utc)
@@ -1028,6 +1032,7 @@ class SqueakDb:
     def insert_sent_payment(self, sent_payment: SentPayment):
         """ Insert a new sent payment. """
         ins = self.sent_payments.insert().values(
+            created_time_ms=self.timestamp_now(),
             peer_host=sent_payment.peer_address.host,
             peer_port=sent_payment.peer_address.port,
             squeak_hash=sent_payment.squeak_hash,
@@ -1048,7 +1053,7 @@ class SqueakDb:
             last_sent_payment: Optional[SentPayment],
     ) -> List[SentPayment]:
         """ Get all sent payments. """
-        last_created_time = last_sent_payment.created if last_sent_payment else self.datetime_now
+        last_created_time = last_sent_payment.created_time_ms if last_sent_payment else self.timestamp_now()
         last_payment_hash = last_sent_payment.payment_hash if last_sent_payment else MAX_HASH
         logger.info("""Get sent payments db query with
         limit: {}
@@ -1063,7 +1068,7 @@ class SqueakDb:
             select([self.sent_payments])
             .where(
                 tuple_(
-                    self.sent_payments.c.created,
+                    self.sent_payments.c.created_time_ms,
                     self.sent_payments.c.payment_hash,
                 ) < tuple_(
                     last_created_time,
@@ -1071,7 +1076,7 @@ class SqueakDb:
                 )
             )
             .order_by(
-                self.sent_payments.c.created.desc(),
+                self.sent_payments.c.created_time_ms.desc(),
                 self.sent_payments.c.payment_hash.desc(),
             )
             .limit(limit)
@@ -1362,7 +1367,7 @@ class SqueakDb:
     def _parse_sent_payment(self, row) -> SentPayment:
         return SentPayment(
             sent_payment_id=row["sent_payment_id"],
-            created=row[self.sent_payments.c.created],
+            created_time_ms=row[self.sent_payments.c.created_time_ms],
             peer_address=PeerAddress(
                 host=row["peer_host"],
                 port=row["peer_port"],
