@@ -641,6 +641,11 @@ class SqueakAdminServerHandler(object):
             limit,
             last_sent_payment,
         )
+        logger.info(
+            "Got number of sent payments: {}".format(
+                len(sent_payments)
+            )
+        )
         sent_payment_msgs = [
             sent_payment_to_message(sent_payment)
             for sent_payment in sent_payments
