@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import logging
+from datetime import datetime
+from datetime import timezone
 
 from squeak.core import CSqueak
 
@@ -220,3 +222,21 @@ def message_to_squeak_entry(squeak_entry: squeak_admin_pb2.SqueakDisplayEntry) -
         liked_time=squeak_entry.liked_time_s,
         content=squeak_entry.content_str,
     )
+
+
+def message_to_sent_payment(sent_payment: squeak_admin_pb2.SentPayment) -> SentPayment:
+    return SentPayment(
+        sent_payment_id=sent_payment.sent_payment_id,
+        created=timestamp_to_datetime(sent_payment.time_s),
+        peer_address=message_to_peer_address(sent_payment.peer_address),
+        squeak_hash=bytes.fromhex(sent_payment.squeak_hash),
+        payment_hash=bytes.fromhex(sent_payment.payment_hash),
+        secret_key=b'',  # TODO: why does this field exist?
+        price_msat=sent_payment.price_msat,
+        node_pubkey=sent_payment.node_pubkey,
+        valid=sent_payment.valid,
+    )
+
+
+def timestamp_to_datetime(timestamp: int) -> datetime:
+    return datetime.fromtimestamp(timestamp, timezone.utc)

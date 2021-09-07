@@ -639,7 +639,9 @@ def test_buy_squeak(
 
         # Get all sent payments
         get_sent_payments_response = other_admin_stub.GetSentPayments(
-            squeak_admin_pb2.GetSentPaymentsRequest(),
+            squeak_admin_pb2.GetSentPaymentsRequest(
+                limit=10,
+            ),
         )
         squeak_hashes = [
             sent_payment.squeak_hash

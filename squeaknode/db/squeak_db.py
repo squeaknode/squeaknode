@@ -1042,13 +1042,39 @@ class SqueakDb:
             sent_payment_id = res.inserted_primary_key[0]
             return sent_payment_id
 
-    def get_sent_payments(self) -> List[SentPayment]:
+    def get_sent_payments(
+            self,
+            limit: int,
+            last_sent_payment: Optional[SentPayment],
+    ) -> List[SentPayment]:
         """ Get all sent payments. """
+        last_created_time = last_sent_payment.created if last_sent_payment else self.datetime_now
+        last_payment_hash = last_sent_payment.payment_hash if last_sent_payment else MAX_HASH
+        logger.info("""Get sent payments db query with
+        limit: {}
+        last_created_time: {}
+        last_payment_hash: {}
+        """.format(
+            limit,
+            last_created_time,
+            last_payment_hash.hex(),
+        ))
         s = (
             select([self.sent_payments])
+            .where(
+                tuple_(
+                    self.sent_payments.c.created,
+                    self.sent_payments.c.payment_hash,
+                ) < tuple_(
+                    last_created_time,
+                    last_payment_hash,
+                )
+            )
             .order_by(
                 self.sent_payments.c.created.desc(),
+                self.sent_payments.c.payment_hash.desc(),
             )
+            .limit(limit)
         )
         with self.get_connection() as connection:
             result = connection.execute(s)

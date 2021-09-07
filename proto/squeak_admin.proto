@@ -809,6 +809,11 @@ message PayOfferReply {
 }
 
 message GetSentPaymentsRequest {
+    /// Limit number of results
+    int32 limit = 1;
+
+    /// Last entry
+    SentPayment last_sent_payment = 2;
 }
 
 message GetSentPaymentsReply {

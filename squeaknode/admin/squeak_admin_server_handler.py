@@ -24,6 +24,7 @@ import logging
 from proto import squeak_admin_pb2
 from squeaknode.admin.messages import connected_peer_to_message
 from squeaknode.admin.messages import message_to_peer_address
+from squeaknode.admin.messages import message_to_sent_payment
 from squeaknode.admin.messages import message_to_squeak_entry
 from squeaknode.admin.messages import offer_entry_to_message
 from squeaknode.admin.messages import payment_summary_to_message
@@ -626,8 +627,20 @@ class SqueakAdminServerHandler(object):
         )
 
     def handle_get_sent_payments(self, request):
-        logger.info("Handle get sent payments")
-        sent_payments = self.squeak_controller.get_sent_payments()
+        limit = request.limit
+        last_sent_payment = message_to_sent_payment(request.last_sent_payment) if request.HasField(
+            "last_sent_payment") else None
+        logger.info("""Handle get sent payments with
+        limit: {}
+        last_sent_payment: {}
+        """.format(
+            limit,
+            last_sent_payment,
+        ))
+        sent_payments = self.squeak_controller.get_sent_payments(
+            limit,
+            last_sent_payment,
+        )
         sent_payment_msgs = [
             sent_payment_to_message(sent_payment)
             for sent_payment in sent_payments
