@@ -181,10 +181,15 @@ class SqueakController:
             return self.get_offer(
                 squeak_hash=squeak_hash,
                 peer_address=peer_address,
+                price_msat=price,
             )
 
-    def get_offer(self, squeak_hash: bytes, peer_address: PeerAddress) -> Optional[Offer]:
-        sent_offer = self.get_sent_offer_for_peer(squeak_hash, peer_address)
+    def get_offer(self, squeak_hash: bytes, peer_address: PeerAddress, price_msat: int) -> Optional[Offer]:
+        sent_offer = self.get_sent_offer_for_peer(
+            squeak_hash,
+            peer_address,
+            price_msat,
+        )
         if sent_offer is None:
             return None
         return self.squeak_core.package_offer(
@@ -193,7 +198,7 @@ class SqueakController:
             self.config.lnd.port,
         )
 
-    def get_sent_offer_for_peer(self, squeak_hash: bytes, peer_address: PeerAddress) -> Optional[SentOffer]:
+    def get_sent_offer_for_peer(self, squeak_hash: bytes, peer_address: PeerAddress, price_msat: int) -> Optional[SentOffer]:
         # Check if there is an existing offer for the hash/peer_address combination
         sent_offer = self.squeak_db.get_sent_offer_by_squeak_hash_and_peer(
             squeak_hash,
@@ -209,7 +214,7 @@ class SqueakController:
             squeak,
             secret_key,
             peer_address,
-            self.config.node.price_msat,
+            price_msat,
         )
         self.squeak_db.insert_sent_offer(sent_offer)
         return sent_offer
@@ -303,6 +308,10 @@ class SqueakController:
     def set_squeak_profile_use_custom_price(self, profile_id: int, use_custom_price: bool) -> None:
         self.squeak_db.set_profile_use_custom_price(
             profile_id, use_custom_price)
+
+    def set_squeak_profile_custom_price(self, profile_id: int, custom_price_msat: int) -> None:
+        self.squeak_db.set_profile_custom_price_msat(
+            profile_id, custom_price_msat)
 
     def rename_squeak_profile(self, profile_id: int, profile_name: str) -> None:
         self.squeak_db.set_profile_name(profile_id, profile_name)

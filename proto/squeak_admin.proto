@@ -108,6 +108,10 @@ service SqueakAdmin {
   */
   rpc SetSqueakProfileUseCustomPrice (SetSqueakProfileUseCustomPriceRequest) returns (SetSqueakProfileUseCustomPriceReply) {}
 
+  /** sqkadmin: `setsqueakprofilecustomprice`
+  */
+  rpc SetSqueakProfileCustomPrice (SetSqueakProfileCustomPriceRequest) returns (SetSqueakProfileCustomPriceReply) {}
+
   /** sqkadmin: `renamesqueakprofile`
   */
   rpc RenameSqueakProfile (RenameSqueakProfileRequest) returns (RenameSqueakProfileReply) {}
@@ -424,6 +428,17 @@ message SetSqueakProfileUseCustomPriceRequest {
 }
 
 message SetSqueakProfileUseCustomPriceReply {
+}
+
+message SetSqueakProfileCustomPriceRequest {
+    /// The profile id
+    int32 profile_id = 1;
+
+    /// The price in msats
+    int64 custom_price_msat = 2;
+}
+
+message SetSqueakProfileCustomPriceReply {
 }
 
 message RenameSqueakProfileRequest {

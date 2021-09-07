@@ -235,6 +235,7 @@ export default function SqueakProfileDetailItem({
           ? (
             <>
               Selling with custom price:
+              {' '}
               {squeakProfile.getCustomPriceMsat()}
               {' '}
               msats
