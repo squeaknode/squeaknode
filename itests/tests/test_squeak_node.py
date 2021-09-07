@@ -318,9 +318,18 @@ def test_set_profile_use_custom_price(admin_stub, contact_profile_id):
         )
     )
 
+    # Set the profile custom price in msats
+    admin_stub.SetSqueakProfileCustomPrice(
+        squeak_admin_pb2.SetSqueakProfileCustomPriceRequest(
+            profile_id=contact_profile_id,
+            custom_price_msat=5678,
+        )
+    )
+
     # Get the squeak profile again
     squeak_profile = get_squeak_profile(admin_stub, contact_profile_id)
     assert squeak_profile.use_custom_price
+    assert squeak_profile.custom_price_msat == 5678
 
     # Set the profile to not use custom price
     admin_stub.SetSqueakProfileUseCustomPrice(

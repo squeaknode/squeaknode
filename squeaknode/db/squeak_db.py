@@ -767,6 +767,16 @@ class SqueakDb:
         with self.get_connection() as connection:
             connection.execute(stmt)
 
+    def set_profile_custom_price_msat(self, profile_id: int, custom_price_msat: int) -> None:
+        """ Set a profile custom price in msats. """
+        stmt = (
+            self.profiles.update()
+            .where(self.profiles.c.profile_id == profile_id)
+            .values(custom_price_msat=custom_price_msat)
+        )
+        with self.get_connection() as connection:
+            connection.execute(stmt)
+
     def set_profile_name(self, profile_id: int, profile_name: str) -> None:
         """ Set a profile name. """
         stmt = (
