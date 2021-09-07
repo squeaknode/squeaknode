@@ -522,8 +522,10 @@ export function getSqueakDetailsRequest(hash, handleResponse) {
   });
 }
 
-export function getSentPaymentsRequest(handleResponse) {
+export function getSentPaymentsRequest(limit, lastSentPayment, handleResponse) {
   const request = new GetSentPaymentsRequest();
+  request.setLimit(limit);
+  request.setLastSentPayment(lastSentPayment);
   client.getSentPayments(request, {}, (err, response) => {
     handleResponse(response);
   });

@@ -1,15 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Grid,
   Tabs,
   Tab,
   AppBar,
   Box,
+  Button,
+  CircularProgress,
 } from '@material-ui/core';
+
+import ReplayIcon from '@material-ui/icons/Replay';
 
 // components
 import Widget from '../../components/Widget';
 import SentPayment from '../../components/SentPayment';
+
+// styles
+import useStyles from './styles';
 
 // data
 
@@ -17,9 +24,15 @@ import {
   getSentPaymentsRequest,
 } from '../../squeakclient/requests';
 
+const SENT_PAYMENTS_PER_PAGE = 10;
+
+
 export default function SentPayments() {
+  const classes = useStyles();
   const [value, setValue] = useState(0);
   const [sentPayments, setSentPayments] = useState([]);
+  const [waitingForSentPayments, setWaitingForSentPayments] = React.useState(false);
+
 
   function a11yProps(index) {
     return {
@@ -32,15 +45,31 @@ export default function SentPayments() {
     setValue(newValue);
   };
 
-  const loadSentPayments = () => {
-    getSentPaymentsRequest((sentPaymentsReply) => {
-      setSentPayments(sentPaymentsReply.getSentPaymentsList());
+  // const loadSentPayments = () => {
+  //   getSentPaymentsRequest((sentPaymentsReply) => {
+  //     setSentPayments(sentPaymentsReply.getSentPaymentsList());
+  //   });
+  // };
+  const loadSentPayments = useCallback((limit, lastSentPayment) => {
+    setWaitingForSentPayments(true);
+    getSentPaymentsRequest(limit, lastSentPayment, handleLoadedSentPayments);
+  },
+  []);
+
+  const handleLoadedSentPayments = (reply) => {
+    const loadedSentPayments = reply.getSentPaymentsList();
+    setWaitingForSentPayments(false);
+    setSentPayments((prevSentPayments) => {
+      if (!prevSentPayments) {
+        return loadedSentPayments;
+      }
+      return prevSentPayments.concat(loadedSentPayments);
     });
   };
 
   useEffect(() => {
-    loadSentPayments();
-  }, []);
+    loadSentPayments(SENT_PAYMENTS_PER_PAGE, null);
+  }, [loadSentPayments]);
 
   function TabPanel(props) {
     const {
@@ -109,7 +138,35 @@ export default function SentPayments() {
           {PaymentsTabs()}
         </Grid>
         <Grid item xs={12} sm={3} />
+        {ViewMoreSentPaymentsButton()}
       </Grid>
+    );
+  }
+
+  function ViewMoreSentPaymentsButton() {
+    return (
+      <>
+        <Grid item xs={12}>
+          <div className={classes.wrapper}>
+            {!waitingForSentPayments
+            && (
+            <Button
+              variant="contained"
+              color="primary"
+              disabled={waitingForSentPayments}
+              onClick={() => {
+                const latestSentPayment = sentPayments.slice(-1).pop();
+                loadSentPayments(SENT_PAYMENTS_PER_PAGE, latestSentPayment);
+              }}
+            >
+              <ReplayIcon />
+              View more squeaks
+            </Button>
+            )}
+            {waitingForSentPayments && <CircularProgress size={48} className={classes.buttonProgress} />}
+          </div>
+        </Grid>
+      </>
     );
   }
 
