@@ -47,7 +47,6 @@ import {
   GetContactProfilesRequest,
   MakeSqueakRequest,
   GetSqueakDisplayRequest,
-  SubscribeSqueakDisplayRequest,
   GetAncestorSqueakDisplaysRequest,
   GetReplySqueakDisplaysRequest,
   GetSqueakProfileByAddressRequest,
@@ -81,15 +80,7 @@ import {
   DownloadOffersRequest,
   DownloadRepliesRequest,
   DownloadAddressSqueaksRequest,
-  SubscribeConnectedPeersRequest,
-  SubscribeConnectedPeerRequest,
   PeerAddress,
-  SubscribeBuyOffersRequest,
-  SubscribeReplySqueakDisplaysRequest,
-  SubscribeAddressSqueakDisplaysRequest,
-  SubscribeAncestorSqueakDisplaysRequest,
-  SubscribeSqueakDisplaysRequest,
-  SubscribeTimelineSqueakDisplaysRequest,
   SetSqueakProfileImageReply,
   ClearSqueakProfileImageReply,
   GetPeersReply,
@@ -167,29 +158,29 @@ export function getUserRequest(handleResponse) {
  * https://gist.github.com/odewahn/5a5eeb23279eed6a80d7798fdb47fe91
  */
 function makeRequest(route, request, deserializeMsg, handleResponse, handleError) {
-  fetch(web_host_port + '/' + route, {
+  fetch(`${web_host_port}/${route}`, {
     method: 'post',
-    body: request.serializeBinary()
+    body: request.serializeBinary(),
   })
-  .then( response => {
-    if (!response.ok) { throw response }
-    return response.arrayBuffer()  //we only get here if there is no error
-  })
-  .then( buffer => {
-    handleResponse(deserializeMsg(buffer))
-  })
-  .catch( err => {
-    if (!handleError) {
-      return;
-    }
-    if (err.text) {
-      err.text().then( errorMessage => {
-        handleError(errorMessage)
-      })
-    } else {
-      handleError('Error.') // Hardcoded error here
-    }
-  })
+    .then((response) => {
+      if (!response.ok) { throw response; }
+      return response.arrayBuffer(); // we only get here if there is no error
+    })
+    .then((buffer) => {
+      handleResponse(deserializeMsg(buffer));
+    })
+    .catch((err) => {
+      if (!handleError) {
+        return;
+      }
+      if (err.text) {
+        err.text().then((errorMessage) => {
+          handleError(errorMessage);
+        });
+      } else {
+        handleError('Error.'); // Hardcoded error here
+      }
+    });
 }
 
 export function getTimelineSqueakDisplaysRequest(limit, lastEntry, handleResponse, handleErr) {
@@ -203,13 +194,13 @@ export function getTimelineSqueakDisplaysRequest(limit, lastEntry, handleRespons
   //     handleResponse(response.getSqueakDisplayEntriesList());
   //   }
   // });
-makeRequest(
-  'gettimelinesqueakdisplays',
-  request,
-  GetTimelineSqueakDisplaysReply.deserializeBinary,
-  handleResponse,
-  handleErr
-);
+  makeRequest(
+    'gettimelinesqueakdisplays',
+    request,
+    GetTimelineSqueakDisplaysReply.deserializeBinary,
+    handleResponse,
+    handleErr,
+  );
 }
 
 export function lndGetInfoRequest(handleResponse, handleErr) {
@@ -219,7 +210,7 @@ export function lndGetInfoRequest(handleResponse, handleErr) {
     request,
     GetInfoResponse.deserializeBinary,
     handleResponse,
-    handleErr
+    handleErr,
   );
 }
 
@@ -241,7 +232,7 @@ export function lndGetTransactionsRequest(handleResponse) {
     TransactionDetails.deserializeBinary,
     (response) => {
       handleResponse(response.getTransactionsList());
-    }
+    },
   );
 }
 
@@ -253,7 +244,7 @@ export function lndListPeersRequest(handleResponse) {
     ListPeersResponse.deserializeBinary,
     (response) => {
       handleResponse(response.getPeersList());
-    }
+    },
   );
 }
 
@@ -265,7 +256,7 @@ export function lndListChannelsRequest(handleResponse) {
     ListChannelsResponse.deserializeBinary,
     (response) => {
       handleResponse(response.getChannelsList());
-    }
+    },
   );
 }
 
@@ -380,7 +371,7 @@ export function getSqueakProfileRequest(id, handleResponse, handleErr) {
     GetSqueakProfileReply.deserializeBinary,
     (response) => {
       handleResponse(response.getSqueakProfile());
-    }
+    },
   );
   // client.getSqueakProfile(request, {}, (err, response) => {
   //   handleResponse(response.getSqueakProfile());
@@ -458,7 +449,6 @@ export function clearSqueakProfileImageRequest(id, handleResponse) {
   );
 }
 
-
 export function getPeersRequest(handleResponse) {
   const request = new GetPeersRequest();
   makeRequest(
@@ -467,7 +457,7 @@ export function getPeersRequest(handleResponse) {
     GetPeersReply.deserializeBinary,
     (response) => {
       handleResponse(response.getSqueakPeersList());
-    }
+    },
   );
 }
 
@@ -491,8 +481,6 @@ export function payOfferRequest(offerId, handleResponse, handleErr) {
   // });
 }
 
-
-
 export function getBuyOffersRequest(hash, handleResponse) {
   const request = new GetBuyOffersRequest();
   request.setSqueakHash(hash);
@@ -502,8 +490,8 @@ export function getBuyOffersRequest(hash, handleResponse) {
     GetBuyOffersReply.deserializeBinary,
     (response) => {
       handleResponse(response.getOffersList());
-    }
- );
+    },
+  );
 }
 
 export function getBuyOfferRequest(offerId, handleResponse) {
@@ -515,7 +503,7 @@ export function getBuyOfferRequest(offerId, handleResponse) {
     GetBuyOfferReply.deserializeBinary,
     (response) => {
       handleResponse(response.getOffer());
-    }
+    },
   );
 }
 
@@ -528,7 +516,7 @@ export function getPeerRequest(id, handleResponse) {
     GetPeerReply.deserializeBinary,
     (response) => {
       handleResponse(response.getSqueakPeer());
-    }
+    },
   );
   // client.getPeer(request, {}, (err, response) => {
   //   handleResponse(response.getSqueakPeer());
@@ -545,7 +533,7 @@ export function setPeerAutoconnectRequest(id, autoconnect, handleResponse) {
     SetPeerAutoconnectReply.deserializeBinary,
     (response) => {
       handleResponse(response);
-    }
+    },
   );
 }
 
@@ -557,7 +545,7 @@ export function getProfilesRequest(handleResponse) {
     GetProfilesReply.deserializeBinary,
     (response) => {
       handleResponse(response.getSqueakProfilesList());
-    }
+    },
   );
   // client.getProfiles(request, {}, (err, response) => {
   //   handleResponse(response.getSqueakProfilesList());
@@ -572,7 +560,7 @@ export function getSigningProfilesRequest(handleResponse) {
     GetSigningProfilesReply.deserializeBinary,
     (response) => {
       handleResponse(response.getSqueakProfilesList());
-    }
+    },
   );
   // client.getSigningProfiles(request, {}, (err, response) => {
   //   handleResponse(response.getSqueakProfilesList());
@@ -587,7 +575,7 @@ export function getContactProfilesRequest(handleResponse) {
     GetContactProfilesReply.deserializeBinary,
     (response) => {
       handleResponse(response.getSqueakProfilesList());
-    }
+    },
   );
   // client.getContactProfiles(request, {}, (err, response) => {
   //   handleResponse(response.getSqueakProfilesList());
@@ -605,7 +593,7 @@ export function makeSqueakRequest(profileId, content, replyto, handleResponse, h
     MakeSqueakReply.deserializeBinary,
     (response) => {
       handleResponse(response);
-    }
+    },
   );
   // client.makeSqueak(request, {}, (err, response) => {
   //   handleResponse(response);
@@ -621,7 +609,7 @@ export function getSqueakDisplayRequest(hash, handleResponse) {
     GetSqueakDisplayReply.deserializeBinary,
     (response) => {
       handleResponse(response.getSqueakDisplayEntry());
-    }
+    },
   );
   // client.getSqueakDisplay(request, {}, (err, response) => {
   //   handleResponse(response.getSqueakDisplayEntry());
@@ -637,7 +625,7 @@ export function getAncestorSqueakDisplaysRequest(hash, handleResponse) {
     GetAncestorSqueakDisplaysReply.deserializeBinary,
     (response) => {
       handleResponse(response.getSqueakDisplayEntriesList());
-    }
+    },
   );
   // client.getAncestorSqueakDisplays(request, {}, (err, response) => {
   //   handleResponse(response.getSqueakDisplayEntriesList());
@@ -655,7 +643,7 @@ export function getReplySqueakDisplaysRequest(hash, limit, lastEntry, handleResp
     GetReplySqueakDisplaysReply.deserializeBinary,
     (response) => {
       handleResponse(response.getSqueakDisplayEntriesList());
-    }
+    },
   );
   // client.getReplySqueakDisplays(request, {}, (err, response) => {
   //   handleResponse(response.getSqueakDisplayEntriesList());
@@ -671,7 +659,7 @@ export function getSqueakProfileByAddressRequest(address, handleResponse) {
     GetSqueakProfileByAddressReply.deserializeBinary,
     (response) => {
       handleResponse(response.getSqueakProfile());
-    }
+    },
   );
   // client.getSqueakProfileByAddress(request, {}, (err, response) => {
   //   handleResponse(response.getSqueakProfile());
@@ -689,7 +677,7 @@ export function getAddressSqueakDisplaysRequest(address, limit, lastEntry, handl
     GetAddressSqueakDisplaysReply.deserializeBinary,
     (response) => {
       handleResponse(response.getSqueakDisplayEntriesList());
-    }
+    },
   );
   // client.getAddressSqueakDisplays(request, {}, (err, response) => {
   //   handleResponse(response.getSqueakDisplayEntriesList());
@@ -706,7 +694,7 @@ export function createContactProfileRequest(profileName, squeakAddress, handleRe
     CreateContactProfileReply.deserializeBinary,
     (response) => {
       handleResponse(response);
-    }
+    },
   );
   // client.createContactProfile(request, {}, (err, response) => {
   //   handleResponse(response);
@@ -722,7 +710,7 @@ export function createSigningProfileRequest(profileName, handleResponse, handleE
     CreateSigningProfileReply.deserializeBinary,
     (response) => {
       handleResponse(response);
-    }
+    },
   );
   // client.createSigningProfile(request, {}, (err, response) => {
   //   handleResponse(response);
@@ -739,7 +727,7 @@ export function importSigningProfileRequest(profileName, privateKey, handleRespo
     ImportSigningProfileReply.deserializeBinary,
     (response) => {
       handleResponse(response);
-    }
+    },
   );
   // client.importSigningProfile(request, {}, (err, response) => {
   //   handleResponse(response);
@@ -759,7 +747,7 @@ export function createPeerRequest(peerName, host, port, handleResponse) {
     CreatePeerReply.deserializeBinary,
     (response) => {
       handleResponse(response);
-    }
+    },
   );
   // client.createPeer(request, {}, (err, response) => {
   //   handleResponse(response);
@@ -775,7 +763,7 @@ export function deletePeerRequest(peerId, handleResponse) {
     DeletePeerReply.deserializeBinary,
     (response) => {
       handleResponse(response);
-    }
+    },
   );
   // client.deletePeer(request, {}, (err, response) => {
   //   handleResponse(response);
@@ -791,7 +779,7 @@ export function deleteProfileRequest(profileId, handleResponse) {
     DeleteSqueakProfileReply.deserializeBinary,
     (response) => {
       handleResponse(response);
-    }
+    },
   );
   // client.deleteSqueakProfile(request, {}, (err, response) => {
   //   handleResponse(response);
@@ -807,14 +795,12 @@ export function deleteSqueakRequest(squeakHash, handleResponse) {
     DeleteSqueakReply.deserializeBinary,
     (response) => {
       handleResponse(response);
-    }
+    },
   );
   // client.deleteSqueak(request, {}, (err, response) => {
   //   handleResponse(response);
   // });
 }
-
-
 
 export function downloadSqueakRequest(squeakHash, handleResponse) {
   const request = new DownloadSqueakRequest();
@@ -825,7 +811,7 @@ export function downloadSqueakRequest(squeakHash, handleResponse) {
     DownloadSqueakReply.deserializeBinary,
     (response) => {
       handleResponse(response);
-    }
+    },
   );
   // client.downloadSqueak(request, {}, (err, response) => {
   //   handleResponse(response);
@@ -841,7 +827,7 @@ export function downloadOffersRequest(squeakHash, handleResponse) {
     DownloadOffersReply.deserializeBinary,
     (response) => {
       handleResponse(response);
-    }
+    },
   );
   // client.downloadOffers(request, {}, (err, response) => {
   //   handleResponse(response);
@@ -857,7 +843,7 @@ export function downloadRepliesRequest(squeakHash, handleResponse) {
     DownloadRepliesReply.deserializeBinary,
     (response) => {
       handleResponse(response);
-    }
+    },
   );
   // client.downloadReplies(request, {}, (err, response) => {
   //   handleResponse(response);
@@ -873,7 +859,7 @@ export function downloadAddressSqueaksRequest(address, handleResponse) {
     DownloadAddressSqueaksReply.deserializeBinary,
     (response) => {
       handleResponse(response);
-    }
+    },
   );
   // client.downloadAddressSqueaks(request, {}, (err, response) => {
   //   handleResponse(response);
@@ -889,7 +875,7 @@ export function getSqueakDetailsRequest(hash, handleResponse) {
     GetSqueakDetailsReply.deserializeBinary,
     (response) => {
       handleResponse(response.getSqueakDetailEntry());
-    }
+    },
   );
   // client.getSqueakDetails(request, {}, (err, response) => {
   //   handleResponse(response.getSqueakDetailEntry());
@@ -906,7 +892,7 @@ export function getSentPaymentsRequest(limit, lastSentPayment, handleResponse) {
     GetSentPaymentsReply.deserializeBinary,
     (response) => {
       handleResponse(response);
-    }
+    },
   );
   // client.getSentPayments(request, {}, (err, response) => {
   //   handleResponse(response);
@@ -921,7 +907,7 @@ export function getReceivedPaymentsRequest(handleResponse) {
     GetReceivedPaymentsReply.deserializeBinary,
     (response) => {
       handleResponse(response);
-    }
+    },
   );
   // client.getReceivedPayments(request, {}, (err, response) => {
   //   handleResponse(response);
@@ -936,7 +922,7 @@ export function getNetworkRequest(handleResponse) {
     GetNetworkReply.deserializeBinary,
     (response) => {
       handleResponse(response.getNetwork());
-    }
+    },
   );
   // client.getNetwork(request, {}, (err, response) => {
   //   handleResponse(response.getNetwork());
@@ -952,7 +938,7 @@ export function getSqueakProfilePrivateKey(id, handleResponse) {
     GetSqueakProfilePrivateKeyReply.deserializeBinary,
     (response) => {
       handleResponse(response);
-    }
+    },
   );
   // client.getSqueakProfilePrivateKey(request, {}, (err, response) => {
   //   handleResponse(response);
@@ -967,7 +953,7 @@ export function getPaymentSummaryRequest(handleResponse) {
     GetPaymentSummaryReply.deserializeBinary,
     (response) => {
       handleResponse(response);
-    }
+    },
   );
   // client.getPaymentSummary(request, {}, (err, response) => {
   //   handleResponse(response);
@@ -982,7 +968,7 @@ export function reprocessReceivedPaymentsRequest(handleResponse) {
     ReprocessReceivedPaymentsReply.deserializeBinary,
     (response) => {
       handleResponse(response);
-    }
+    },
   );
   // client.reprocessReceivedPayments(request, {}, (err, response) => {
   //   handleResponse(response);
@@ -998,7 +984,7 @@ export function likeSqueakRequest(hash, handleResponse) {
     LikeSqueakReply.deserializeBinary,
     (response) => {
       handleResponse(response);
-    }
+    },
   );
   // client.likeSqueak(request, {}, (err, response) => {
   //   handleResponse(response);
@@ -1014,7 +1000,7 @@ export function unlikeSqueakRequest(hash, handleResponse) {
     UnlikeSqueakReply.deserializeBinary,
     (response) => {
       handleResponse(response);
-    }
+    },
   );
   // client.unlikeSqueak(request, {}, (err, response) => {
   //   handleResponse(response);
@@ -1031,7 +1017,7 @@ export function getLikedSqueakDisplaysRequest(limit, lastEntry, handleResponse, 
     GetLikedSqueakDisplaysReply.deserializeBinary,
     (response) => {
       handleResponse(response.getSqueakDisplayEntriesList());
-    }
+    },
   );
   // client.getLikedSqueakDisplays(request, {}, (err, response) => {
   //   handleResponse(response.getSqueakDisplayEntriesList());
@@ -1046,7 +1032,7 @@ export function getConnectedPeersRequest(handleResponse) {
     GetConnectedPeersReply.deserializeBinary,
     (response) => {
       handleResponse(response.getConnectedPeersList());
-    }
+    },
   );
   // client.getConnectedPeers(request, {}, (err, response) => {
   //   handleResponse(response.getConnectedPeersList());
@@ -1065,7 +1051,7 @@ export function getConnectedPeerRequest(host, port, handleResponse) {
     GetConnectedPeerReply.deserializeBinary,
     (response) => {
       handleResponse(response);
-    }
+    },
   );
   // client.getConnectedPeer(request, {}, (err, response) => {
   //   handleResponse(response.getConnectedPeer());
@@ -1084,7 +1070,7 @@ export function connectSqueakPeerRequest(host, port, handleResponse) {
     ConnectSqueakPeerReply.deserializeBinary,
     (response) => {
       handleResponse(response);
-    }
+    },
   );
   // client.connectPeer(request, {}, (err, response) => {
   //   handleResponse(response);
@@ -1103,7 +1089,7 @@ export function disconnectSqueakPeerRequest(host, port, handleResponse) {
     DisconnectSqueakPeerReply.deserializeBinary,
     (response) => {
       handleResponse(response);
-    }
+    },
   );
   // client.disconnectPeer(request, {}, (err, response) => {
   //   handleResponse(response);

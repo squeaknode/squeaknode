@@ -26,13 +26,11 @@ import {
 
 const SENT_PAYMENTS_PER_PAGE = 10;
 
-
 export default function SentPayments() {
   const classes = useStyles();
   const [value, setValue] = useState(0);
   const [sentPayments, setSentPayments] = useState([]);
   const [waitingForSentPayments, setWaitingForSentPayments] = React.useState(false);
-
 
   function a11yProps(index) {
     return {
