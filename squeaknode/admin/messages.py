@@ -129,7 +129,7 @@ def sent_payment_to_message(sent_payment: SentPayment) -> squeak_admin_pb2.SentP
         price_msat=sent_payment.price_msat,
         node_pubkey=sent_payment.node_pubkey,
         valid=sent_payment.valid,
-        time_s=int(sent_payment.created_time_ms / 1000),
+        time_ms=sent_payment.created_time_ms,
         peer_address=peer_address_to_message(sent_payment.peer_address)
     )
 
@@ -225,7 +225,7 @@ def message_to_squeak_entry(squeak_entry: squeak_admin_pb2.SqueakDisplayEntry) -
 def message_to_sent_payment(sent_payment: squeak_admin_pb2.SentPayment) -> SentPayment:
     return SentPayment(
         sent_payment_id=sent_payment.sent_payment_id,
-        created_time_ms=sent_payment.time_s * 1000,
+        created_time_ms=sent_payment.time_ms,
         peer_address=message_to_peer_address(sent_payment.peer_address),
         squeak_hash=bytes.fromhex(sent_payment.squeak_hash),
         payment_hash=bytes.fromhex(sent_payment.payment_hash),

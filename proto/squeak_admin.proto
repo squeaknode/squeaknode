@@ -851,7 +851,7 @@ message SentPayment {
     bool valid = 6;
 
     /// Time of payment
-    int64 time_s = 7;
+    int64 time_ms = 7;
 
     /// The address of the squeak peer
     PeerAddress peer_address = 8;
