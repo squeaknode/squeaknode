@@ -1105,6 +1105,7 @@ class SqueakDb:
     def insert_sent_offer(self, sent_offer: SentOffer):
         """ Insert a new sent offer. """
         ins = self.sent_offers.insert().values(
+            created_time_ms=self.timestamp_now(),
             squeak_hash=sent_offer.squeak_hash,
             payment_hash=sent_offer.payment_hash,
             secret_key=sent_offer.secret_key,
@@ -1124,7 +1125,7 @@ class SqueakDb:
     def get_sent_offers(self) -> List[SentOffer]:
         """ Get all received payments. """
         s = select([self.sent_offers]).order_by(
-            self.sent_offers.c.created.desc(),
+            self.sent_offers.c.created_time_ms.desc(),
         )
         with self.get_connection() as connection:
             result = connection.execute(s)
