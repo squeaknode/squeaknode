@@ -24,7 +24,7 @@ import SavedPeerListItem from '../../components/SavedPeerListItem';
 import {
   getPeersRequest,
   getConnectedPeersRequest,
-  subscribeConnectedPeersRequest,
+  // subscribeConnectedPeersRequest,
 } from '../../squeakclient/requests';
 
 const useStyles = makeStyles((theme) => ({
@@ -58,7 +58,7 @@ export default function Peers() {
     getConnectedPeersRequest(setConnectedPeers);
   };
 
-  const subscribeConnectedPeers = () => subscribeConnectedPeersRequest(setConnectedPeers);
+  // const subscribeConnectedPeers = () => subscribeConnectedPeersRequest(setConnectedPeers);
 
   const getSqueakPeers = () => {
     getPeersRequest(setPeers);
@@ -83,10 +83,10 @@ export default function Peers() {
   useEffect(() => {
     getConnectedPeers();
   }, []);
-  useEffect(() => {
-    const stream = subscribeConnectedPeers();
-    return () => stream.cancel();
-  }, []);
+  // useEffect(() => {
+  //   const stream = subscribeConnectedPeers();
+  //   return () => stream.cancel();
+  // }, []);
   useEffect(() => {
     getSqueakPeers();
   }, []);

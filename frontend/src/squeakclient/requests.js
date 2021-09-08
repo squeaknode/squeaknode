@@ -1055,7 +1055,7 @@ export function getConnectedPeersRequest(handleResponse) {
     request,
     GetConnectedPeersReply.deserializeBinary,
     (response) => {
-      handleResponse(response);
+      handleResponse(response.getConnectedPeersList());
     }
   );
   // client.getConnectedPeers(request, {}, (err, response) => {

@@ -22,7 +22,7 @@ import BuyOfferDetailItem from '../BuyOfferDetailItem';
 import {
   downloadOffersRequest,
   getBuyOffersRequest,
-  subscribeBuyOffersRequest,
+  // subscribeBuyOffersRequest,
   payOfferRequest,
 } from '../../squeakclient/requests';
 
@@ -56,10 +56,10 @@ export default function BuySqueakDialog({
     getBuyOffersRequest(hash, setOffers);
   },
   [hash, setOffers]);
-  const subscribeOffers = useCallback(() => subscribeBuyOffersRequest(hash, (offer) => {
-    setOffers((prevOffers) => prevOffers.concat([offer]));
-  }),
-  [hash, setOffers]);
+  // const subscribeOffers = useCallback(() => subscribeBuyOffersRequest(hash, (offer) => {
+  //   setOffers((prevOffers) => prevOffers.concat([offer]));
+  // }),
+  // [hash, setOffers]);
   const downloadOffers = () => {
     console.log(`downloadOffersRequest with hash: ${hash}`);
     downloadOffersRequest(hash, (response) => {
@@ -109,10 +109,10 @@ export default function BuySqueakDialog({
   useEffect(() => {
     loadOffers();
   }, [loadOffers]);
-  useEffect(() => {
-    const stream = subscribeOffers();
-    return () => stream.cancel();
-  }, [subscribeOffers, hash]);
+  // useEffect(() => {
+  //   const stream = subscribeOffers();
+  //   return () => stream.cancel();
+  // }, [subscribeOffers, hash]);
 
   function handleSubmit(event) {
     event.preventDefault();

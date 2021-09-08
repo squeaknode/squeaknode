@@ -23,7 +23,7 @@ import {
   connectSqueakPeerRequest,
   disconnectSqueakPeerRequest,
   getConnectedPeerRequest,
-  subscribeConnectedPeerRequest,
+  // subscribeConnectedPeerRequest,
 } from '../../squeakclient/requests';
 
 export default function PeerAddressPage() {
@@ -36,18 +36,18 @@ export default function PeerAddressPage() {
   },
   [host, port]);
 
-  const subscribeConnectedPeer = useCallback(() => subscribeConnectedPeerRequest(host, port, (connectedPeer) => {
-    setConnectedPeer(connectedPeer);
-  }),
-  [host, port]);
+  // const subscribeConnectedPeer = useCallback(() => subscribeConnectedPeerRequest(host, port, (connectedPeer) => {
+  //   setConnectedPeer(connectedPeer);
+  // }),
+  // [host, port]);
 
   useEffect(() => {
     getConnectedPeer();
   }, [getConnectedPeer]);
-  useEffect(() => {
-    const stream = subscribeConnectedPeer();
-    return () => stream.cancel();
-  }, [subscribeConnectedPeer]);
+  // useEffect(() => {
+  //   const stream = subscribeConnectedPeer();
+  //   return () => stream.cancel();
+  // }, [subscribeConnectedPeer]);
 
   function DisconnectPeerButton() {
     return (

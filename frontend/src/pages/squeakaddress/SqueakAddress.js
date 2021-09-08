@@ -24,7 +24,7 @@ import {
   getSqueakProfileByAddressRequest,
   getAddressSqueakDisplaysRequest,
   getNetworkRequest,
-  subscribeAddressSqueakDisplaysRequest,
+  // subscribeAddressSqueakDisplaysRequest,
   downloadAddressSqueaksRequest,
 } from '../../squeakclient/requests';
 import {
@@ -51,9 +51,9 @@ export default function SqueakAddressPage() {
     getAddressSqueakDisplaysRequest(address, limit, lastEntry, handleLoadedAddressSqueaks);
   },
   []);
-  const subscribeSqueaks = (address) => subscribeAddressSqueakDisplaysRequest(address, (resp) => {
-    setSqueaks((prevSqueaks) => [resp].concat(prevSqueaks));
-  });
+  // const subscribeSqueaks = (address) => subscribeAddressSqueakDisplaysRequest(address, (resp) => {
+  //   setSqueaks((prevSqueaks) => [resp].concat(prevSqueaks));
+  // });
   const getNetwork = () => {
     getNetworkRequest(setNetwork);
   };
@@ -90,10 +90,10 @@ export default function SqueakAddressPage() {
   useEffect(() => {
     getSqueaks(address, SQUEAKS_PER_PAGE, null);
   }, [getSqueaks, address]);
-  useEffect(() => {
-    const stream = subscribeSqueaks(address);
-    return () => stream.cancel();
-  }, [address]);
+  // useEffect(() => {
+  //   const stream = subscribeSqueaks(address);
+  //   return () => stream.cancel();
+  // }, [address]);
   useEffect(() => {
     getNetwork();
   }, []);

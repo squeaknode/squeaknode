@@ -28,8 +28,8 @@ import {
   getReplySqueakDisplaysRequest,
   getNetworkRequest,
   downloadRepliesRequest,
-  subscribeReplySqueakDisplaysRequest,
-  subscribeAncestorSqueakDisplaysRequest,
+  // subscribeReplySqueakDisplaysRequest,
+  // subscribeAncestorSqueakDisplaysRequest,
 } from '../../squeakclient/requests';
 
 const SQUEAKS_PER_PAGE = 10;
@@ -48,15 +48,15 @@ export default function SqueakPage() {
     getAncestorSqueakDisplaysRequest(hash, handleLoadedAncestorSqueaks);
   },
   []);
-  const subscribeAncestorSqueaks = (hash) => subscribeAncestorSqueakDisplaysRequest(hash, setAncestorSqueaks);
+  // const subscribeAncestorSqueaks = (hash) => subscribeAncestorSqueakDisplaysRequest(hash, setAncestorSqueaks);
   const getReplySqueaks = useCallback((hash, limit, lastEntry) => {
     setWaitingForReplySqueaks(true);
     getReplySqueakDisplaysRequest(hash, limit, lastEntry, handleLoadedReplySqueaks);
   },
   []);
-  const subscribeReplySqueaks = (hash) => subscribeReplySqueakDisplaysRequest(hash, (resp) => {
-    setReplySqueaks((prevReplySqueaks) => prevReplySqueaks.concat(resp));
-  });
+  // const subscribeReplySqueaks = (hash) => subscribeReplySqueakDisplaysRequest(hash, (resp) => {
+  //   setReplySqueaks((prevReplySqueaks) => prevReplySqueaks.concat(resp));
+  // });
   const getNetwork = () => {
     getNetworkRequest(setNetwork);
   };
@@ -101,18 +101,18 @@ export default function SqueakPage() {
     setAncestorSqueaks(null); // Temporary fix until component unmounts correcyly
     getAncestorSqueaks(hash);
   }, [getAncestorSqueaks, hash]);
-  useEffect(() => {
-    const stream = subscribeAncestorSqueaks(hash);
-    return () => stream.cancel();
-  }, [hash]);
+  // useEffect(() => {
+  //   const stream = subscribeAncestorSqueaks(hash);
+  //   return () => stream.cancel();
+  // }, [hash]);
   useEffect(() => {
     setReplySqueaks(null); // Temporary fix until component unmounts correcyly
     getReplySqueaks(hash, SQUEAKS_PER_PAGE, null);
   }, [getReplySqueaks, hash]);
-  useEffect(() => {
-    const stream = subscribeReplySqueaks(hash);
-    return () => stream.cancel();
-  }, [hash]);
+  // useEffect(() => {
+  //   const stream = subscribeReplySqueaks(hash);
+  //   return () => stream.cancel();
+  // }, [hash]);
   useEffect(() => {
     getNetwork();
   }, []);
