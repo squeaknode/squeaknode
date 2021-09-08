@@ -111,6 +111,13 @@ import {
   CreateSigningProfileReply,
   ImportSigningProfileReply,
   CreatePeerReply,
+  DeletePeerReply,
+  DeleteSqueakProfileReply,
+  DeleteSqueakReply,
+  DownloadSqueakReply,
+  DownloadOffersReply,
+  DownloadRepliesReply,
+  DownloadAddressSqueaksReply,
 } from '../proto/squeak_admin_pb';
 
 import { SqueakAdminClient } from '../proto/squeak_admin_grpc_web_pb';
@@ -758,25 +765,49 @@ export function createPeerRequest(peerName, host, port, handleResponse) {
 export function deletePeerRequest(peerId, handleResponse) {
   const request = new DeletePeerRequest();
   request.setPeerId(peerId);
-  client.deletePeer(request, {}, (err, response) => {
-    handleResponse(response);
-  });
+  makeRequest(
+    'deletepeer',
+    request,
+    DeletePeerReply.deserializeBinary,
+    (response) => {
+      handleResponse(response);
+    }
+  );
+  // client.deletePeer(request, {}, (err, response) => {
+  //   handleResponse(response);
+  // });
 }
 
 export function deleteProfileRequest(profileId, handleResponse) {
   const request = new DeleteSqueakProfileRequest();
   request.setProfileId(profileId);
-  client.deleteSqueakProfile(request, {}, (err, response) => {
-    handleResponse(response);
-  });
+  makeRequest(
+    'deleteprofile',
+    request,
+    DeleteSqueakProfileReply.deserializeBinary,
+    (response) => {
+      handleResponse(response);
+    }
+  );
+  // client.deleteSqueakProfile(request, {}, (err, response) => {
+  //   handleResponse(response);
+  // });
 }
 
 export function deleteSqueakRequest(squeakHash, handleResponse) {
   const request = new DeleteSqueakRequest();
   request.setSqueakHash(squeakHash);
-  client.deleteSqueak(request, {}, (err, response) => {
-    handleResponse(response);
-  });
+  makeRequest(
+    'deletesqueak',
+    request,
+    DeleteSqueakReply.deserializeBinary,
+    (response) => {
+      handleResponse(response);
+    }
+  );
+  // client.deleteSqueak(request, {}, (err, response) => {
+  //   handleResponse(response);
+  // });
 }
 
 
@@ -784,33 +815,65 @@ export function deleteSqueakRequest(squeakHash, handleResponse) {
 export function downloadSqueakRequest(squeakHash, handleResponse) {
   const request = new DownloadSqueakRequest();
   request.setSqueakHash(squeakHash);
-  client.downloadSqueak(request, {}, (err, response) => {
-    handleResponse(response);
-  });
+  makeRequest(
+    'downloadsqueak',
+    request,
+    DownloadSqueakReply.deserializeBinary,
+    (response) => {
+      handleResponse(response);
+    }
+  );
+  // client.downloadSqueak(request, {}, (err, response) => {
+  //   handleResponse(response);
+  // });
 }
 
 export function downloadOffersRequest(squeakHash, handleResponse) {
   const request = new DownloadOffersRequest();
   request.setSqueakHash(squeakHash);
-  client.downloadOffers(request, {}, (err, response) => {
-    handleResponse(response);
-  });
+  makeRequest(
+    'downloadoffers',
+    request,
+    DownloadOffersReply.deserializeBinary,
+    (response) => {
+      handleResponse(response);
+    }
+  );
+  // client.downloadOffers(request, {}, (err, response) => {
+  //   handleResponse(response);
+  // });
 }
 
 export function downloadRepliesRequest(squeakHash, handleResponse) {
   const request = new DownloadRepliesRequest();
   request.setSqueakHash(squeakHash);
-  client.downloadReplies(request, {}, (err, response) => {
-    handleResponse(response);
-  });
+  makeRequest(
+    'downloadreplies',
+    request,
+    DownloadRepliesReply.deserializeBinary,
+    (response) => {
+      handleResponse(response);
+    }
+  );
+  // client.downloadReplies(request, {}, (err, response) => {
+  //   handleResponse(response);
+  // });
 }
 
 export function downloadAddressSqueaksRequest(address, handleResponse) {
   const request = new DownloadAddressSqueaksRequest();
   request.setAddress(address);
-  client.downloadAddressSqueaks(request, {}, (err, response) => {
-    handleResponse(response);
-  });
+  makeRequest(
+    'downloadaddresssqueaks',
+    request,
+    DownloadAddressSqueaksReply.deserializeBinary,
+    (response) => {
+      handleResponse(response);
+    }
+  );
+  // client.downloadAddressSqueaks(request, {}, (err, response) => {
+  //   handleResponse(response);
+  // });
 }
 
 export function getSqueakDetailsRequest(hash, handleResponse) {

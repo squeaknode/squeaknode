@@ -496,6 +496,14 @@ def create_app(handler, username, password):
             handler.handle_sync_squeak,
         )
 
+    @app.route("/downloadsqueak", methods=["POST"])
+    @login_required
+    def downloadsqueak():
+        return handle_request(
+            squeak_admin_pb2.DownloadSqueakRequest(),
+            handler.handle_download_squeak,
+        )
+
     @app.route("/downloadoffers", methods=["POST"])
     @login_required
     def downloadoffers():
@@ -510,6 +518,14 @@ def create_app(handler, username, password):
         return handle_request(
             squeak_admin_pb2.DownloadRepliesRequest(),
             handler.handle_download_replies,
+        )
+
+    @app.route("/downloadaddresssqueaks", methods=["POST"])
+    @login_required
+    def downloadaddresssqueaks():
+        return handle_request(
+            squeak_admin_pb2.DownloadAddressSqueaksRequest(),
+            handler.handle_download_address_squeaks,
         )
 
     @app.route("/getsqueakdetails", methods=["POST"])
