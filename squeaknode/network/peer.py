@@ -121,7 +121,8 @@ class Peer(object):
     def remote_caddress(self):
         caddress = CAddress()
         caddress.nTime = self.connect_time
-        caddress.ip = socket.gethostbyname(self.remote_address.host)
+        # TODO: Set the remote address ip
+        # caddress.ip =
         caddress.port = self.remote_address.port
         return caddress
 
