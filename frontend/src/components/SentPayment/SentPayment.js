@@ -91,7 +91,7 @@ export default function SentPayment({
         alignItems="flex-start"
       >
         <Grid item>
-          {moment(sentPayment.getTimeS() * 1000).format('DD MMM YYYY hh:mm a')}
+          {moment(sentPayment.getTimeMs()).format('DD MMM YYYY hh:mm a')}
         </Grid>
       </Grid>
       <Grid
