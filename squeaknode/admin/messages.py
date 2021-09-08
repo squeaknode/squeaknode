@@ -155,14 +155,14 @@ def sent_offer_to_message(sent_offer: SentOffer) -> squeak_admin_pb2.SentOffer:
 def received_payments_to_message(received_payment: ReceivedPayment) -> squeak_admin_pb2.ReceivedPayment:
     if received_payment.received_payment_id is None:
         raise Exception("Received payment id cannot be None.")
-    if received_payment.created is None:
-        raise Exception("Received payment created time not found.")
+    if received_payment.created_time_ms is None:
+        raise Exception("Received payment created time ms not found.")
     return squeak_admin_pb2.ReceivedPayment(
         received_payment_id=received_payment.received_payment_id,
         squeak_hash=received_payment.squeak_hash.hex(),
         payment_hash=received_payment.payment_hash.hex(),
         price_msat=received_payment.price_msat,
-        time_s=int(received_payment.created.timestamp()),
+        time_ms=received_payment.created_time_ms,
         peer_address=peer_address_to_message(received_payment.peer_address)
     )
 

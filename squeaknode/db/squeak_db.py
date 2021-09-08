@@ -1211,6 +1211,7 @@ class SqueakDb:
     def insert_received_payment(self, received_payment: ReceivedPayment):
         """ Insert a new received payment. """
         ins = self.received_payments.insert().values(
+            created_time_ms=self.timestamp_now(),
             squeak_hash=received_payment.squeak_hash,
             payment_hash=received_payment.payment_hash,
             price_msat=received_payment.price_msat,
@@ -1229,7 +1230,7 @@ class SqueakDb:
     def get_received_payments(self) -> List[ReceivedPayment]:
         """ Get all received payments. """
         s = select([self.received_payments]).order_by(
-            self.received_payments.c.created.desc(),
+            self.received_payments.c.created_time_ms.desc(),
         )
         with self.get_connection() as connection:
             result = connection.execute(s)
@@ -1402,7 +1403,7 @@ class SqueakDb:
     def _parse_received_payment(self, row) -> ReceivedPayment:
         return ReceivedPayment(
             received_payment_id=row["received_payment_id"],
-            created=row["created"],
+            created_time_ms=row["created_time_ms"],
             squeak_hash=(row["squeak_hash"]),
             payment_hash=(row["payment_hash"]),
             price_msat=row["price_msat"],
