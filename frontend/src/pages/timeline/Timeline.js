@@ -25,7 +25,7 @@ import SqueakList from '../../components/SqueakList';
 import {
   getTimelineSqueakDisplaysRequest,
   getNetworkRequest,
-  subscribeTimelineSqueakDisplaysRequest,
+  // subscribeTimelineSqueakDisplaysRequest,
 } from '../../squeakclient/requests';
 
 const SQUEAKS_PER_PAGE = 10;
@@ -43,8 +43,8 @@ export default function TimelinePage() {
     getTimelineSqueakDisplaysRequest(limit, lastEntry, handleLoadedTimeline, alertFailedRequest);
   },
   []);
-  const subscribeNewSqueaks = useCallback(() => subscribeTimelineSqueakDisplaysRequest(handleLoadedNewSqueak),
-    []);
+  // const subscribeNewSqueaks = useCallback(() => subscribeTimelineSqueakDisplaysRequest(handleLoadedNewSqueak),
+  //   []);
 
   const getNetwork = () => {
     getNetworkRequest(setNetwork);
@@ -59,6 +59,7 @@ export default function TimelinePage() {
   };
 
   const alertFailedRequest = () => {
+    setWaitingForTimeline(false);
     alert('Failed to load timeline.');
   };
 
@@ -68,7 +69,8 @@ export default function TimelinePage() {
     getSqueaks(SQUEAKS_PER_PAGE, null);
   };
 
-  const handleLoadedTimeline = (loadedSqueaks) => {
+  const handleLoadedTimeline = (resp) => {
+    const loadedSqueaks = resp.getSqueakDisplayEntriesList();
     setWaitingForTimeline(false);
     setSqueaks((prevSqueaks) => {
       if (!prevSqueaks) {
@@ -90,10 +92,10 @@ export default function TimelinePage() {
   useEffect(() => {
     getSqueaks(SQUEAKS_PER_PAGE, null);
   }, [getSqueaks]);
-  useEffect(() => {
-    const stream = subscribeNewSqueaks();
-    return () => stream.cancel();
-  }, [subscribeNewSqueaks]);
+  // useEffect(() => {
+  //   const stream = subscribeNewSqueaks();
+  //   return () => stream.cancel();
+  // }, [subscribeNewSqueaks]);
   useEffect(() => {
     getNetwork();
   }, []);

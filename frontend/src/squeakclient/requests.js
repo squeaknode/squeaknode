@@ -1,25 +1,41 @@
 import {
   GetInfoRequest,
+  GetInfoResponse,
   WalletBalanceRequest,
+  WalletBalanceResponse,
   GetTransactionsRequest,
+  TransactionDetails,
   ListPeersRequest,
+  ListPeersResponse,
   ListChannelsRequest,
+  ListChannelsResponse,
   PendingChannelsRequest,
+  PendingChannelsResponse,
   ConnectPeerRequest,
+  ConnectPeerResponse,
   LightningAddress,
   DisconnectPeerRequest,
+  DisconnectPeerResponse,
   OpenChannelRequest,
   CloseChannelRequest,
+  CloseStatusUpdate,
   ChannelPoint,
   NewAddressRequest,
+  NewAddressResponse,
   SendCoinsRequest,
+  SendCoinsResponse,
 } from '../proto/lnd_pb';
 import {
   GetSqueakProfileRequest,
+  GetSqueakProfileReply,
   GetTimelineSqueakDisplaysRequest,
+  GetTimelineSqueakDisplaysReply,
   SetSqueakProfileFollowingRequest,
+  SetSqueakProfileFollowingReply,
   SetSqueakProfileUseCustomPriceRequest,
+  SetSqueakProfileUseCustomPriceReply,
   SetSqueakProfileCustomPriceRequest,
+  SetSqueakProfileCustomPriceReply,
   GetPeersRequest,
   PayOfferRequest,
   GetBuyOffersRequest,
@@ -31,7 +47,6 @@ import {
   GetContactProfilesRequest,
   MakeSqueakRequest,
   GetSqueakDisplayRequest,
-  SubscribeSqueakDisplayRequest,
   GetAncestorSqueakDisplaysRequest,
   GetReplySqueakDisplaysRequest,
   GetSqueakProfileByAddressRequest,
@@ -51,6 +66,7 @@ import {
   GetSqueakProfilePrivateKeyRequest,
   GetPaymentSummaryRequest,
   RenameSqueakProfileRequest,
+  RenameSqueakProfileReply,
   SetSqueakProfileImageRequest,
   ClearSqueakProfileImageRequest,
   ReprocessReceivedPaymentsRequest,
@@ -64,29 +80,53 @@ import {
   DownloadOffersRequest,
   DownloadRepliesRequest,
   DownloadAddressSqueaksRequest,
-  SubscribeConnectedPeersRequest,
-  SubscribeConnectedPeerRequest,
   PeerAddress,
-  SubscribeBuyOffersRequest,
-  SubscribeReplySqueakDisplaysRequest,
-  SubscribeAddressSqueakDisplaysRequest,
-  SubscribeAncestorSqueakDisplaysRequest,
-  SubscribeSqueakDisplaysRequest,
-  SubscribeTimelineSqueakDisplaysRequest,
+  SetSqueakProfileImageReply,
+  ClearSqueakProfileImageReply,
+  GetPeersReply,
+  PayOfferReply,
+  GetBuyOffersReply,
+  GetBuyOfferReply,
+  GetPeerReply,
+  SetPeerAutoconnectReply,
+  GetProfilesReply,
+  GetSigningProfilesReply,
+  GetContactProfilesReply,
+  MakeSqueakReply,
+  GetSqueakDisplayReply,
+  GetAncestorSqueakDisplaysReply,
+  GetReplySqueakDisplaysReply,
+  GetAddressSqueakDisplaysReply,
+  GetSqueakProfileByAddressReply,
+  CreateContactProfileReply,
+  CreateSigningProfileReply,
+  ImportSigningProfileReply,
+  CreatePeerReply,
+  DeletePeerReply,
+  DeleteSqueakProfileReply,
+  DeleteSqueakReply,
+  DownloadSqueakReply,
+  DownloadOffersReply,
+  DownloadRepliesReply,
+  DownloadAddressSqueaksReply,
+  GetSqueakDetailsReply,
+  GetSentPaymentsReply,
+  GetReceivedPaymentsReply,
+  GetNetworkReply,
+  GetSqueakProfilePrivateKeyReply,
+  GetPaymentSummaryReply,
+  ReprocessReceivedPaymentsReply,
+  LikeSqueakReply,
+  UnlikeSqueakReply,
+  GetLikedSqueakDisplaysReply,
+  GetConnectedPeersReply,
+  GetConnectedPeerReply,
+  ConnectPeerReply as ConnectSqueakPeerReply,
+  DisconnectPeerReply as DisconnectSqueakPeerReply,
 } from '../proto/squeak_admin_pb';
-
-import { SqueakAdminClient } from '../proto/squeak_admin_grpc_web_pb';
-
-console.log('Using SqueakAdminClient');
 
 console.log('The value of REACT_APP_DEV_MODE_ENABLED is:', Boolean(process.env.REACT_APP_DEV_MODE_ENABLED));
 const DEV_MODE_ENABLED = process.env.REACT_APP_DEV_MODE_ENABLED;
-
-const RPC_PROXY_PORT = 15081;
-
-const clientUrl = `http://${window.location.hostname}:${RPC_PROXY_PORT}`;
-console.log(`Using clientUrl: ${clientUrl}`);
-const client = new SqueakAdminClient(clientUrl);
 
 console.log('The value of REACT_APP_SERVER_PORT is:', process.env.REACT_APP_SERVER_PORT);
 const SERVER_PORT = process.env.REACT_APP_SERVER_PORT || window.location.port;
@@ -113,120 +153,121 @@ export function getUserRequest(handleResponse) {
   });
 }
 
+/**
+ * Copied from here:
+ * https://gist.github.com/odewahn/5a5eeb23279eed6a80d7798fdb47fe91
+ */
+function makeRequest(route, request, deserializeMsg, handleResponse, handleError) {
+  fetch(`${web_host_port}/${route}`, {
+    method: 'post',
+    body: request.serializeBinary(),
+  })
+    .then((response) => {
+      if (!response.ok) { throw response; }
+      return response.arrayBuffer(); // we only get here if there is no error
+    })
+    .then((buffer) => {
+      handleResponse(deserializeMsg(buffer));
+    })
+    .catch((err) => {
+      if (!handleError) {
+        return;
+      }
+      if (err.text) {
+        err.text().then((errorMessage) => {
+          handleError(errorMessage);
+        });
+      } else {
+        handleError('Error.'); // Hardcoded error here
+      }
+    });
+}
+
 export function getTimelineSqueakDisplaysRequest(limit, lastEntry, handleResponse, handleErr) {
   const request = new GetTimelineSqueakDisplaysRequest();
   request.setLimit(limit);
   request.setLastEntry(lastEntry);
-  client.getTimelineSqueakDisplays(request, {}, (err, response) => {
-    if (err) {
-      handleErr(err);
-    } else {
-      handleResponse(response.getSqueakDisplayEntriesList());
-    }
-  });
+  // client.getTimelineSqueakDisplays(request, {}, (err, response) => {
+  //   if (err) {
+  //     handleErr(err);
+  //   } else {
+  //     handleResponse(response.getSqueakDisplayEntriesList());
+  //   }
+  // });
+  makeRequest(
+    'gettimelinesqueakdisplays',
+    request,
+    GetTimelineSqueakDisplaysReply.deserializeBinary,
+    handleResponse,
+    handleErr,
+  );
 }
 
 export function lndGetInfoRequest(handleResponse, handleErr) {
   const request = new GetInfoRequest();
-  client.lndGetInfo(request, {}, (err, response) => {
-    handleResponse(response);
-  });
+  makeRequest(
+    'lndgetinfo',
+    request,
+    GetInfoResponse.deserializeBinary,
+    handleResponse,
+    handleErr,
+  );
 }
 
 export function lndWalletBalanceRequest(handleResponse) {
   const request = new WalletBalanceRequest();
-  client.lndWalletBalance(request, {}, (err, response) => {
-    handleResponse(response);
-  });
+  makeRequest(
+    'lndwalletbalance',
+    request,
+    WalletBalanceResponse.deserializeBinary,
+    handleResponse,
+  );
 }
 
 export function lndGetTransactionsRequest(handleResponse) {
   const request = new GetTransactionsRequest();
-  client.lndGetTransactions(request, {}, (err, response) => {
-    handleResponse(response.getTransactionsList());
-  });
+  makeRequest(
+    'lndgettransactions',
+    request,
+    TransactionDetails.deserializeBinary,
+    (response) => {
+      handleResponse(response.getTransactionsList());
+    },
+  );
 }
 
 export function lndListPeersRequest(handleResponse) {
   const request = new ListPeersRequest();
-  client.lndListPeers(request, {}, (err, response) => {
-    handleResponse(response.getPeersList());
-  });
+  makeRequest(
+    'lndlistpeers',
+    request,
+    ListPeersResponse.deserializeBinary,
+    (response) => {
+      handleResponse(response.getPeersList());
+    },
+  );
 }
 
 export function lndListChannelsRequest(handleResponse) {
   const request = new ListChannelsRequest();
-  client.lndListChannels(request, {}, (err, response) => {
-    handleResponse(response.getChannelsList());
-  });
+  makeRequest(
+    'lndlistchannels',
+    request,
+    ListChannelsResponse.deserializeBinary,
+    (response) => {
+      handleResponse(response.getChannelsList());
+    },
+  );
 }
 
 export function lndPendingChannelsRequest(handleResponse) {
   const request = new PendingChannelsRequest();
-  client.lndPendingChannels(request, {}, (err, response) => {
-    handleResponse(response);
-  });
-}
-
-export function getSqueakProfileRequest(id, handleResponse, handleErr) {
-  const request = new GetSqueakProfileRequest();
-  request.setProfileId(id);
-  client.getSqueakProfile(request, {}, (err, response) => {
-    handleResponse(response.getSqueakProfile());
-  });
-}
-
-export function setSqueakProfileFollowingRequest(id, following, handleResponse) {
-  const request = new SetSqueakProfileFollowingRequest();
-  request.setProfileId(id);
-  request.setFollowing(following);
-  client.setSqueakProfileFollowing(request, {}, (err, response) => {
-    handleResponse(response);
-  });
-}
-
-export function setSqueakProfileUseCustomPriceRequest(id, useCustomPrice, handleResponse) {
-  const request = new SetSqueakProfileUseCustomPriceRequest();
-  request.setProfileId(id);
-  request.setUseCustomPrice(useCustomPrice);
-  client.setSqueakProfileUseCustomPrice(request, {}, (err, response) => {
-    handleResponse(response);
-  });
-}
-
-export function setSqueakProfileCustomPriceRequest(id, customPriceMsat, handleResponse) {
-  const request = new SetSqueakProfileCustomPriceRequest();
-  request.setProfileId(id);
-  request.setCustomPriceMsat(customPriceMsat);
-  client.setSqueakProfileCustomPrice(request, {}, (err, response) => {
-    handleResponse(response);
-  });
-}
-
-export function renameSqueakProfileRequest(id, profileName, handleResponse) {
-  const request = new RenameSqueakProfileRequest();
-  request.setProfileId(id);
-  request.setProfileName(profileName);
-  client.renameSqueakProfile(request, {}, (err, response) => {
-    handleResponse(response);
-  });
-}
-
-export function setSqueakProfileImageRequest(id, profileImage, handleResponse) {
-  const request = new SetSqueakProfileImageRequest();
-  request.setProfileId(id);
-  request.setProfileImage(profileImage);
-  client.setSqueakProfileImage(request, {}, (err, response) => {
-    handleResponse(response);
-  });
-}
-
-export function clearSqueakProfileImageRequest(id, handleResponse) {
-  const request = new ClearSqueakProfileImageRequest();
-  request.setProfileId(id);
-  client.clearSqueakProfileImage(request, {}, (err, response) => {
-    handleResponse(response);
-  });
+  makeRequest(
+    'lndpendingchannels',
+    request,
+    PendingChannelsResponse.deserializeBinary,
+    handleResponse,
+  );
 }
 
 export function lndConnectPeerRequest(pubkey, host, handleResponse, handleErr) {
@@ -235,42 +276,36 @@ export function lndConnectPeerRequest(pubkey, host, handleResponse, handleErr) {
   address.setPubkey(pubkey);
   address.setHost(host);
   request.setAddr(address);
-  client.lndConnectPeer(request, {}, (err, response) => {
-    if (err) {
-      handleErr(err);
-    }
-    if (response) {
-      handleResponse(response);
-    }
-  });
+  makeRequest(
+    'lndconnectpeer',
+    request,
+    ConnectPeerResponse.deserializeBinary,
+    handleResponse,
+    handleErr,
+  );
+
+  // client.lndConnectPeer(request, {}, (err, response) => {
+  //   if (err) {
+  //     handleErr(err);
+  //   }
+  //   if (response) {
+  //     handleResponse(response);
+  //   }
+  // });
 }
 
 export function lndDisconnectPeerRequest(pubkey, handleResponse) {
   const request = new DisconnectPeerRequest();
   request.setPubKey(pubkey);
-  client.lndDisconnectPeer(request, {}, (err, response) => {
-    handleResponse(response);
-  });
-}
-
-export function getPeersRequest(handleResponse) {
-  const request = new GetPeersRequest();
-  client.getPeers(request, {}, (err, response) => {
-    handleResponse(response.getSqueakPeersList());
-  });
-}
-
-export function payOfferRequest(offerId, handleResponse, handleErr) {
-  const request = new PayOfferRequest();
-  request.setOfferId(offerId);
-  client.payOffer(request, {}, (err, response) => {
-    if (err) {
-      handleErr(err);
-    }
-    if (response) {
-      handleResponse(response);
-    }
-  });
+  makeRequest(
+    'lnddisconnectpeer',
+    request,
+    DisconnectPeerResponse.deserializeBinary,
+    handleResponse,
+  );
+  // client.lndDisconnectPeer(request, {}, (err, response) => {
+  //   handleResponse(response);
+  // });
 }
 
 export function lndOpenChannelSyncRequest(pubkey, amount, satperbyte, handleResponse, handleErr) {
@@ -278,9 +313,13 @@ export function lndOpenChannelSyncRequest(pubkey, amount, satperbyte, handleResp
   request.setNodePubkeyString(pubkey);
   request.setLocalFundingAmount(amount);
   request.setSatPerByte(satperbyte);
-  client.lndOpenChannelSync(request, {}, (err, response) => {
-    handleResponse(response);
-  });
+  makeRequest(
+    'lndopenchannelsync',
+    request,
+    ChannelPoint.deserializeBinary,
+    handleResponse,
+    handleErr,
+  );
 }
 
 export function lndCloseChannelRequest(txId, outputIndex, handleResponse, handleErr) {
@@ -289,63 +328,258 @@ export function lndCloseChannelRequest(txId, outputIndex, handleResponse, handle
   channelPoint.setFundingTxidStr(txId);
   channelPoint.setOutputIndex(outputIndex);
   request.setChannelPoint(channelPoint);
-  client.lndCloseChannel(request, {}, (err, response) => {
-    handleResponse(response);
-  });
+  makeRequest(
+    'lndclosechannel',
+    request,
+    CloseStatusUpdate.deserializeBinary,
+    // TODO: handle streaming response
+    handleResponse,
+    handleErr,
+  );
+}
+
+export function lndNewAddressRequest(handleResponse) {
+  const request = new NewAddressRequest();
+  makeRequest(
+    'lndnewaddress',
+    request,
+    NewAddressResponse.deserializeBinary,
+    handleResponse,
+  );
+}
+
+export function lndSendCoins(address, amount, satperbyte, sendall, handleResponse) {
+  const request = new SendCoinsRequest();
+  request.setAddr(address);
+  request.setAmount(amount);
+  request.setSatPerByte(satperbyte);
+  request.setSendAll(sendall);
+  makeRequest(
+    'lndsendcoins',
+    request,
+    SendCoinsResponse.deserializeBinary,
+    handleResponse,
+  );
+}
+
+export function getSqueakProfileRequest(id, handleResponse, handleErr) {
+  const request = new GetSqueakProfileRequest();
+  request.setProfileId(id);
+  makeRequest(
+    'getsqueakprofile',
+    request,
+    GetSqueakProfileReply.deserializeBinary,
+    (response) => {
+      handleResponse(response.getSqueakProfile());
+    },
+  );
+  // client.getSqueakProfile(request, {}, (err, response) => {
+  //   handleResponse(response.getSqueakProfile());
+  // });
+}
+
+export function setSqueakProfileFollowingRequest(id, following, handleResponse) {
+  const request = new SetSqueakProfileFollowingRequest();
+  request.setProfileId(id);
+  request.setFollowing(following);
+  makeRequest(
+    'setsqueakprofilefollowing',
+    request,
+    SetSqueakProfileFollowingReply.deserializeBinary,
+    handleResponse,
+  );
+}
+
+export function setSqueakProfileUseCustomPriceRequest(id, useCustomPrice, handleResponse) {
+  const request = new SetSqueakProfileUseCustomPriceRequest();
+  request.setProfileId(id);
+  request.setUseCustomPrice(useCustomPrice);
+  makeRequest(
+    'setsqueakprofileusecustomprice',
+    request,
+    SetSqueakProfileUseCustomPriceReply.deserializeBinary,
+    handleResponse,
+  );
+}
+
+export function setSqueakProfileCustomPriceRequest(id, customPriceMsat, handleResponse) {
+  const request = new SetSqueakProfileCustomPriceRequest();
+  request.setProfileId(id);
+  request.setCustomPriceMsat(customPriceMsat);
+  makeRequest(
+    'setsqueakprofilecustomprice',
+    request,
+    SetSqueakProfileCustomPriceReply.deserializeBinary,
+    handleResponse,
+  );
+}
+
+export function renameSqueakProfileRequest(id, profileName, handleResponse) {
+  const request = new RenameSqueakProfileRequest();
+  request.setProfileId(id);
+  request.setProfileName(profileName);
+  makeRequest(
+    'renamesqueakprofile',
+    request,
+    RenameSqueakProfileReply.deserializeBinary,
+    handleResponse,
+  );
+}
+
+export function setSqueakProfileImageRequest(id, profileImage, handleResponse) {
+  const request = new SetSqueakProfileImageRequest();
+  request.setProfileId(id);
+  request.setProfileImage(profileImage);
+  makeRequest(
+    'setsqueakprofileimage',
+    request,
+    SetSqueakProfileImageReply.deserializeBinary,
+    handleResponse,
+  );
+}
+
+export function clearSqueakProfileImageRequest(id, handleResponse) {
+  const request = new ClearSqueakProfileImageRequest();
+  request.setProfileId(id);
+  makeRequest(
+    'clearsqueakprofileimage',
+    request,
+    ClearSqueakProfileImageReply.deserializeBinary,
+    handleResponse,
+  );
+}
+
+export function getPeersRequest(handleResponse) {
+  const request = new GetPeersRequest();
+  makeRequest(
+    'getpeers',
+    request,
+    GetPeersReply.deserializeBinary,
+    (response) => {
+      handleResponse(response.getSqueakPeersList());
+    },
+  );
+}
+
+export function payOfferRequest(offerId, handleResponse, handleErr) {
+  const request = new PayOfferRequest();
+  request.setOfferId(offerId);
+  makeRequest(
+    'payoffer',
+    request,
+    PayOfferReply.deserializeBinary,
+    handleResponse,
+    handleErr,
+  );
+  // client.payOffer(request, {}, (err, response) => {
+  //   if (err) {
+  //     handleErr(err);
+  //   }
+  //   if (response) {
+  //     handleResponse(response);
+  //   }
+  // });
 }
 
 export function getBuyOffersRequest(hash, handleResponse) {
   const request = new GetBuyOffersRequest();
   request.setSqueakHash(hash);
-  client.getBuyOffers(request, {}, (err, response) => {
-    handleResponse(response.getOffersList());
-  });
+  makeRequest(
+    'getbuyoffers',
+    request,
+    GetBuyOffersReply.deserializeBinary,
+    (response) => {
+      handleResponse(response.getOffersList());
+    },
+  );
 }
 
 export function getBuyOfferRequest(offerId, handleResponse) {
   const request = new GetBuyOfferRequest();
   request.setOfferId(offerId);
-  client.getBuyOffer(request, {}, (err, response) => {
-    handleResponse(response.getOffer());
-  });
+  makeRequest(
+    'getbuyoffer',
+    request,
+    GetBuyOfferReply.deserializeBinary,
+    (response) => {
+      handleResponse(response.getOffer());
+    },
+  );
 }
 
 export function getPeerRequest(id, handleResponse) {
   const request = new GetPeerRequest();
   request.setPeerId(id);
-  client.getPeer(request, {}, (err, response) => {
-    handleResponse(response.getSqueakPeer());
-  });
+  makeRequest(
+    'getpeer',
+    request,
+    GetPeerReply.deserializeBinary,
+    (response) => {
+      handleResponse(response.getSqueakPeer());
+    },
+  );
+  // client.getPeer(request, {}, (err, response) => {
+  //   handleResponse(response.getSqueakPeer());
+  // });
 }
 
 export function setPeerAutoconnectRequest(id, autoconnect, handleResponse) {
   const request = new SetPeerAutoconnectRequest();
   request.setPeerId(id);
   request.setAutoconnect(autoconnect);
-  client.setPeerAutoconnect(request, {}, (err, response) => {
-    handleResponse(response);
-  });
+  makeRequest(
+    'setpeerautoconnect',
+    request,
+    SetPeerAutoconnectReply.deserializeBinary,
+    (response) => {
+      handleResponse(response);
+    },
+  );
 }
 
 export function getProfilesRequest(handleResponse) {
   const request = new GetProfilesRequest();
-  client.getProfiles(request, {}, (err, response) => {
-    handleResponse(response.getSqueakProfilesList());
-  });
+  makeRequest(
+    'getprofiles',
+    request,
+    GetProfilesReply.deserializeBinary,
+    (response) => {
+      handleResponse(response.getSqueakProfilesList());
+    },
+  );
+  // client.getProfiles(request, {}, (err, response) => {
+  //   handleResponse(response.getSqueakProfilesList());
+  // });
 }
 
 export function getSigningProfilesRequest(handleResponse) {
   const request = new GetSigningProfilesRequest();
-  client.getSigningProfiles(request, {}, (err, response) => {
-    handleResponse(response.getSqueakProfilesList());
-  });
+  makeRequest(
+    'getsigningprofiles',
+    request,
+    GetSigningProfilesReply.deserializeBinary,
+    (response) => {
+      handleResponse(response.getSqueakProfilesList());
+    },
+  );
+  // client.getSigningProfiles(request, {}, (err, response) => {
+  //   handleResponse(response.getSqueakProfilesList());
+  // });
 }
 
 export function getContactProfilesRequest(handleResponse) {
   const request = new GetContactProfilesRequest();
-  client.getContactProfiles(request, {}, (err, response) => {
-    handleResponse(response.getSqueakProfilesList());
-  });
+  makeRequest(
+    'getcontactprofiles',
+    request,
+    GetContactProfilesReply.deserializeBinary,
+    (response) => {
+      handleResponse(response.getSqueakProfilesList());
+    },
+  );
+  // client.getContactProfiles(request, {}, (err, response) => {
+  //   handleResponse(response.getSqueakProfilesList());
+  // });
 }
 
 export function makeSqueakRequest(profileId, content, replyto, handleResponse, handleErr) {
@@ -353,25 +587,49 @@ export function makeSqueakRequest(profileId, content, replyto, handleResponse, h
   request.setProfileId(profileId);
   request.setContent(content);
   request.setReplyto(replyto);
-  client.makeSqueak(request, {}, (err, response) => {
-    handleResponse(response);
-  });
+  makeRequest(
+    'makesqueakrequest',
+    request,
+    MakeSqueakReply.deserializeBinary,
+    (response) => {
+      handleResponse(response);
+    },
+  );
+  // client.makeSqueak(request, {}, (err, response) => {
+  //   handleResponse(response);
+  // });
 }
 
 export function getSqueakDisplayRequest(hash, handleResponse) {
   const request = new GetSqueakDisplayRequest();
   request.setSqueakHash(hash);
-  client.getSqueakDisplay(request, {}, (err, response) => {
-    handleResponse(response.getSqueakDisplayEntry());
-  });
+  makeRequest(
+    'getsqueakdisplay',
+    request,
+    GetSqueakDisplayReply.deserializeBinary,
+    (response) => {
+      handleResponse(response.getSqueakDisplayEntry());
+    },
+  );
+  // client.getSqueakDisplay(request, {}, (err, response) => {
+  //   handleResponse(response.getSqueakDisplayEntry());
+  // });
 }
 
 export function getAncestorSqueakDisplaysRequest(hash, handleResponse) {
   const request = new GetAncestorSqueakDisplaysRequest();
   request.setSqueakHash(hash);
-  client.getAncestorSqueakDisplays(request, {}, (err, response) => {
-    handleResponse(response.getSqueakDisplayEntriesList());
-  });
+  makeRequest(
+    'getancestorsqueakdisplays',
+    request,
+    GetAncestorSqueakDisplaysReply.deserializeBinary,
+    (response) => {
+      handleResponse(response.getSqueakDisplayEntriesList());
+    },
+  );
+  // client.getAncestorSqueakDisplays(request, {}, (err, response) => {
+  //   handleResponse(response.getSqueakDisplayEntriesList());
+  // });
 }
 
 export function getReplySqueakDisplaysRequest(hash, limit, lastEntry, handleResponse) {
@@ -379,17 +637,33 @@ export function getReplySqueakDisplaysRequest(hash, limit, lastEntry, handleResp
   request.setSqueakHash(hash);
   request.setLimit(limit);
   request.setLastEntry(lastEntry);
-  client.getReplySqueakDisplays(request, {}, (err, response) => {
-    handleResponse(response.getSqueakDisplayEntriesList());
-  });
+  makeRequest(
+    'getreplysqueakdisplays',
+    request,
+    GetReplySqueakDisplaysReply.deserializeBinary,
+    (response) => {
+      handleResponse(response.getSqueakDisplayEntriesList());
+    },
+  );
+  // client.getReplySqueakDisplays(request, {}, (err, response) => {
+  //   handleResponse(response.getSqueakDisplayEntriesList());
+  // });
 }
 
 export function getSqueakProfileByAddressRequest(address, handleResponse) {
   const request = new GetSqueakProfileByAddressRequest();
   request.setAddress(address);
-  client.getSqueakProfileByAddress(request, {}, (err, response) => {
-    handleResponse(response.getSqueakProfile());
-  });
+  makeRequest(
+    'getsqueakprofilebyaddress',
+    request,
+    GetSqueakProfileByAddressReply.deserializeBinary,
+    (response) => {
+      handleResponse(response.getSqueakProfile());
+    },
+  );
+  // client.getSqueakProfileByAddress(request, {}, (err, response) => {
+  //   handleResponse(response.getSqueakProfile());
+  // });
 }
 
 export function getAddressSqueakDisplaysRequest(address, limit, lastEntry, handleResponse) {
@@ -397,35 +671,67 @@ export function getAddressSqueakDisplaysRequest(address, limit, lastEntry, handl
   request.setAddress(address);
   request.setLimit(limit);
   request.setLastEntry(lastEntry);
-  client.getAddressSqueakDisplays(request, {}, (err, response) => {
-    handleResponse(response.getSqueakDisplayEntriesList());
-  });
+  makeRequest(
+    'getaddresssqueakdisplays',
+    request,
+    GetAddressSqueakDisplaysReply.deserializeBinary,
+    (response) => {
+      handleResponse(response.getSqueakDisplayEntriesList());
+    },
+  );
+  // client.getAddressSqueakDisplays(request, {}, (err, response) => {
+  //   handleResponse(response.getSqueakDisplayEntriesList());
+  // });
 }
 
 export function createContactProfileRequest(profileName, squeakAddress, handleResponse, handleErr) {
   const request = new CreateContactProfileRequest();
   request.setProfileName(profileName);
   request.setAddress(squeakAddress);
-  client.createContactProfile(request, {}, (err, response) => {
-    handleResponse(response);
-  });
+  makeRequest(
+    'createcontactprofile',
+    request,
+    CreateContactProfileReply.deserializeBinary,
+    (response) => {
+      handleResponse(response);
+    },
+  );
+  // client.createContactProfile(request, {}, (err, response) => {
+  //   handleResponse(response);
+  // });
 }
 
 export function createSigningProfileRequest(profileName, handleResponse, handleErr) {
   const request = new CreateSigningProfileRequest();
   request.setProfileName(profileName);
-  client.createSigningProfile(request, {}, (err, response) => {
-    handleResponse(response);
-  });
+  makeRequest(
+    'createsigningprofile',
+    request,
+    CreateSigningProfileReply.deserializeBinary,
+    (response) => {
+      handleResponse(response);
+    },
+  );
+  // client.createSigningProfile(request, {}, (err, response) => {
+  //   handleResponse(response);
+  // });
 }
 
 export function importSigningProfileRequest(profileName, privateKey, handleResponse, handleErr) {
   const request = new ImportSigningProfileRequest();
   request.setProfileName(profileName);
   request.setPrivateKey(privateKey);
-  client.importSigningProfile(request, {}, (err, response) => {
-    handleResponse(response);
-  });
+  makeRequest(
+    'importsigningprofile',
+    request,
+    ImportSigningProfileReply.deserializeBinary,
+    (response) => {
+      handleResponse(response);
+    },
+  );
+  // client.importSigningProfile(request, {}, (err, response) => {
+  //   handleResponse(response);
+  // });
 }
 
 export function createPeerRequest(peerName, host, port, handleResponse) {
@@ -435,168 +741,302 @@ export function createPeerRequest(peerName, host, port, handleResponse) {
   peerAddress.setPort(port);
   request.setPeerName(peerName);
   request.setPeerAddress(peerAddress);
-  client.createPeer(request, {}, (err, response) => {
-    handleResponse(response);
-  });
+  makeRequest(
+    'createpeer',
+    request,
+    CreatePeerReply.deserializeBinary,
+    (response) => {
+      handleResponse(response);
+    },
+  );
+  // client.createPeer(request, {}, (err, response) => {
+  //   handleResponse(response);
+  // });
 }
 
 export function deletePeerRequest(peerId, handleResponse) {
   const request = new DeletePeerRequest();
   request.setPeerId(peerId);
-  client.deletePeer(request, {}, (err, response) => {
-    handleResponse(response);
-  });
+  makeRequest(
+    'deletepeer',
+    request,
+    DeletePeerReply.deserializeBinary,
+    (response) => {
+      handleResponse(response);
+    },
+  );
+  // client.deletePeer(request, {}, (err, response) => {
+  //   handleResponse(response);
+  // });
 }
 
 export function deleteProfileRequest(profileId, handleResponse) {
   const request = new DeleteSqueakProfileRequest();
   request.setProfileId(profileId);
-  client.deleteSqueakProfile(request, {}, (err, response) => {
-    handleResponse(response);
-  });
+  makeRequest(
+    'deleteprofile',
+    request,
+    DeleteSqueakProfileReply.deserializeBinary,
+    (response) => {
+      handleResponse(response);
+    },
+  );
+  // client.deleteSqueakProfile(request, {}, (err, response) => {
+  //   handleResponse(response);
+  // });
 }
 
 export function deleteSqueakRequest(squeakHash, handleResponse) {
   const request = new DeleteSqueakRequest();
   request.setSqueakHash(squeakHash);
-  client.deleteSqueak(request, {}, (err, response) => {
-    handleResponse(response);
-  });
-}
-
-export function lndNewAddressRequest(handleResponse) {
-  const request = new NewAddressRequest();
-  client.lndNewAddress(request, {}, (err, response) => {
-    handleResponse(response);
-  });
-}
-
-export function lndSendCoins(address, amount, satperbyte, sendall, handleResponse) {
-  const request = new SendCoinsRequest();
-  request.setAddr(address);
-  request.setAmount(amount);
-  request.setSatPerByte(satperbyte);
-  request.setSendAll(sendall);
-  client.lndSendCoins(request, {}, (err, response) => {
-    handleResponse(response);
-  });
+  makeRequest(
+    'deletesqueak',
+    request,
+    DeleteSqueakReply.deserializeBinary,
+    (response) => {
+      handleResponse(response);
+    },
+  );
+  // client.deleteSqueak(request, {}, (err, response) => {
+  //   handleResponse(response);
+  // });
 }
 
 export function downloadSqueakRequest(squeakHash, handleResponse) {
   const request = new DownloadSqueakRequest();
   request.setSqueakHash(squeakHash);
-  client.downloadSqueak(request, {}, (err, response) => {
-    handleResponse(response);
-  });
+  makeRequest(
+    'downloadsqueak',
+    request,
+    DownloadSqueakReply.deserializeBinary,
+    (response) => {
+      handleResponse(response);
+    },
+  );
+  // client.downloadSqueak(request, {}, (err, response) => {
+  //   handleResponse(response);
+  // });
 }
 
 export function downloadOffersRequest(squeakHash, handleResponse) {
   const request = new DownloadOffersRequest();
   request.setSqueakHash(squeakHash);
-  client.downloadOffers(request, {}, (err, response) => {
-    handleResponse(response);
-  });
+  makeRequest(
+    'downloadoffers',
+    request,
+    DownloadOffersReply.deserializeBinary,
+    (response) => {
+      handleResponse(response);
+    },
+  );
+  // client.downloadOffers(request, {}, (err, response) => {
+  //   handleResponse(response);
+  // });
 }
 
 export function downloadRepliesRequest(squeakHash, handleResponse) {
   const request = new DownloadRepliesRequest();
   request.setSqueakHash(squeakHash);
-  client.downloadReplies(request, {}, (err, response) => {
-    handleResponse(response);
-  });
+  makeRequest(
+    'downloadreplies',
+    request,
+    DownloadRepliesReply.deserializeBinary,
+    (response) => {
+      handleResponse(response);
+    },
+  );
+  // client.downloadReplies(request, {}, (err, response) => {
+  //   handleResponse(response);
+  // });
 }
 
 export function downloadAddressSqueaksRequest(address, handleResponse) {
   const request = new DownloadAddressSqueaksRequest();
   request.setAddress(address);
-  client.downloadAddressSqueaks(request, {}, (err, response) => {
-    handleResponse(response);
-  });
+  makeRequest(
+    'downloadaddresssqueaks',
+    request,
+    DownloadAddressSqueaksReply.deserializeBinary,
+    (response) => {
+      handleResponse(response);
+    },
+  );
+  // client.downloadAddressSqueaks(request, {}, (err, response) => {
+  //   handleResponse(response);
+  // });
 }
 
 export function getSqueakDetailsRequest(hash, handleResponse) {
   const request = new GetSqueakDetailsRequest();
   request.setSqueakHash(hash);
-  client.getSqueakDetails(request, {}, (err, response) => {
-    handleResponse(response.getSqueakDetailEntry());
-  });
+  makeRequest(
+    'getsqueakdetails',
+    request,
+    GetSqueakDetailsReply.deserializeBinary,
+    (response) => {
+      handleResponse(response.getSqueakDetailEntry());
+    },
+  );
+  // client.getSqueakDetails(request, {}, (err, response) => {
+  //   handleResponse(response.getSqueakDetailEntry());
+  // });
 }
 
 export function getSentPaymentsRequest(limit, lastSentPayment, handleResponse) {
   const request = new GetSentPaymentsRequest();
   request.setLimit(limit);
   request.setLastSentPayment(lastSentPayment);
-  client.getSentPayments(request, {}, (err, response) => {
-    handleResponse(response);
-  });
+  makeRequest(
+    'getsentpayments',
+    request,
+    GetSentPaymentsReply.deserializeBinary,
+    (response) => {
+      handleResponse(response);
+    },
+  );
+  // client.getSentPayments(request, {}, (err, response) => {
+  //   handleResponse(response);
+  // });
 }
 
 export function getReceivedPaymentsRequest(handleResponse) {
   const request = new GetReceivedPaymentsRequest();
-  client.getReceivedPayments(request, {}, (err, response) => {
-    handleResponse(response);
-  });
+  makeRequest(
+    'getreceivedpayments',
+    request,
+    GetReceivedPaymentsReply.deserializeBinary,
+    (response) => {
+      handleResponse(response);
+    },
+  );
+  // client.getReceivedPayments(request, {}, (err, response) => {
+  //   handleResponse(response);
+  // });
 }
 
 export function getNetworkRequest(handleResponse) {
   const request = new GetNetworkRequest();
-  client.getNetwork(request, {}, (err, response) => {
-    handleResponse(response.getNetwork());
-  });
+  makeRequest(
+    'getnetwork',
+    request,
+    GetNetworkReply.deserializeBinary,
+    (response) => {
+      handleResponse(response.getNetwork());
+    },
+  );
+  // client.getNetwork(request, {}, (err, response) => {
+  //   handleResponse(response.getNetwork());
+  // });
 }
 
 export function getSqueakProfilePrivateKey(id, handleResponse) {
   const request = new GetSqueakProfilePrivateKeyRequest();
   request.setProfileId(id);
-  client.getSqueakProfilePrivateKey(request, {}, (err, response) => {
-    handleResponse(response);
-  });
+  makeRequest(
+    'getsqueakprofileprivatekey',
+    request,
+    GetSqueakProfilePrivateKeyReply.deserializeBinary,
+    (response) => {
+      handleResponse(response);
+    },
+  );
+  // client.getSqueakProfilePrivateKey(request, {}, (err, response) => {
+  //   handleResponse(response);
+  // });
 }
 
 export function getPaymentSummaryRequest(handleResponse) {
   const request = new GetPaymentSummaryRequest();
-  client.getPaymentSummary(request, {}, (err, response) => {
-    handleResponse(response);
-  });
+  makeRequest(
+    'getpaymentsummary',
+    request,
+    GetPaymentSummaryReply.deserializeBinary,
+    (response) => {
+      handleResponse(response);
+    },
+  );
+  // client.getPaymentSummary(request, {}, (err, response) => {
+  //   handleResponse(response);
+  // });
 }
 
 export function reprocessReceivedPaymentsRequest(handleResponse) {
   const request = new ReprocessReceivedPaymentsRequest();
-  client.reprocessReceivedPayments(request, {}, (err, response) => {
-    handleResponse(response);
-  });
+  makeRequest(
+    'reprocessreceivedpayments',
+    request,
+    ReprocessReceivedPaymentsReply.deserializeBinary,
+    (response) => {
+      handleResponse(response);
+    },
+  );
+  // client.reprocessReceivedPayments(request, {}, (err, response) => {
+  //   handleResponse(response);
+  // });
 }
 
 export function likeSqueakRequest(hash, handleResponse) {
   const request = new LikeSqueakRequest();
   request.setSqueakHash(hash);
-  client.likeSqueak(request, {}, (err, response) => {
-    handleResponse(response);
-  });
+  makeRequest(
+    'likesqueak',
+    request,
+    LikeSqueakReply.deserializeBinary,
+    (response) => {
+      handleResponse(response);
+    },
+  );
+  // client.likeSqueak(request, {}, (err, response) => {
+  //   handleResponse(response);
+  // });
 }
 
 export function unlikeSqueakRequest(hash, handleResponse) {
   const request = new UnlikeSqueakRequest();
   request.setSqueakHash(hash);
-  client.unlikeSqueak(request, {}, (err, response) => {
-    handleResponse(response);
-  });
+  makeRequest(
+    'unlikesqueak',
+    request,
+    UnlikeSqueakReply.deserializeBinary,
+    (response) => {
+      handleResponse(response);
+    },
+  );
+  // client.unlikeSqueak(request, {}, (err, response) => {
+  //   handleResponse(response);
+  // });
 }
 
 export function getLikedSqueakDisplaysRequest(limit, lastEntry, handleResponse, handleErr) {
   const request = new GetLikedSqueakDisplaysRequest();
   request.setLimit(limit);
   request.setLastEntry(lastEntry);
-  client.getLikedSqueakDisplays(request, {}, (err, response) => {
-    handleResponse(response.getSqueakDisplayEntriesList());
-  });
+  makeRequest(
+    'getlikedsqueakdisplays',
+    request,
+    GetLikedSqueakDisplaysReply.deserializeBinary,
+    (response) => {
+      handleResponse(response.getSqueakDisplayEntriesList());
+    },
+  );
+  // client.getLikedSqueakDisplays(request, {}, (err, response) => {
+  //   handleResponse(response.getSqueakDisplayEntriesList());
+  // });
 }
 
 export function getConnectedPeersRequest(handleResponse) {
   const request = new GetConnectedPeersRequest();
-  client.getConnectedPeers(request, {}, (err, response) => {
-    handleResponse(response.getConnectedPeersList());
-  });
+  makeRequest(
+    'getconnectedpeers',
+    request,
+    GetConnectedPeersReply.deserializeBinary,
+    (response) => {
+      handleResponse(response.getConnectedPeersList());
+    },
+  );
+  // client.getConnectedPeers(request, {}, (err, response) => {
+  //   handleResponse(response.getConnectedPeersList());
+  // });
 }
 
 export function getConnectedPeerRequest(host, port, handleResponse) {
@@ -605,9 +1045,17 @@ export function getConnectedPeerRequest(host, port, handleResponse) {
   peerAddress.setHost(host);
   peerAddress.setPort(port);
   request.setPeerAddress(peerAddress);
-  client.getConnectedPeer(request, {}, (err, response) => {
-    handleResponse(response.getConnectedPeer());
-  });
+  makeRequest(
+    'getconnectedpeer',
+    request,
+    GetConnectedPeerReply.deserializeBinary,
+    (response) => {
+      handleResponse(response);
+    },
+  );
+  // client.getConnectedPeer(request, {}, (err, response) => {
+  //   handleResponse(response.getConnectedPeer());
+  // });
 }
 
 export function connectSqueakPeerRequest(host, port, handleResponse) {
@@ -616,9 +1064,17 @@ export function connectSqueakPeerRequest(host, port, handleResponse) {
   peerAddress.setHost(host);
   peerAddress.setPort(port);
   request.setPeerAddress(peerAddress);
-  client.connectPeer(request, {}, (err, response) => {
-    handleResponse(response);
-  });
+  makeRequest(
+    'connectpeer',
+    request,
+    ConnectSqueakPeerReply.deserializeBinary,
+    (response) => {
+      handleResponse(response);
+    },
+  );
+  // client.connectPeer(request, {}, (err, response) => {
+  //   handleResponse(response);
+  // });
 }
 
 export function disconnectSqueakPeerRequest(host, port, handleResponse) {
@@ -627,134 +1083,142 @@ export function disconnectSqueakPeerRequest(host, port, handleResponse) {
   peerAddress.setHost(host);
   peerAddress.setPort(port);
   request.setPeerAddress(peerAddress);
-  client.disconnectPeer(request, {}, (err, response) => {
-    handleResponse(response);
-  });
+  makeRequest(
+    'disconnectpeer',
+    request,
+    DisconnectSqueakPeerReply.deserializeBinary,
+    (response) => {
+      handleResponse(response);
+    },
+  );
+  // client.disconnectPeer(request, {}, (err, response) => {
+  //   handleResponse(response);
+  // });
 }
 
-export function subscribeConnectedPeersRequest(handleResponse) {
-  const request = new SubscribeConnectedPeersRequest();
-  const stream = client.subscribeConnectedPeers(request);
-  stream.on('data', (response) => {
-    // handleResponse(response.getConnectedPeersList());
-    handleResponse(response.getConnectedPeersList());
-  });
-  stream.on('end', (end) => {
-    // stream end signal
-    alert(`Stream ended: ${end}`);
-  });
-  return stream;
-}
-
-export function subscribeConnectedPeerRequest(host, port, handleResponse) {
-  const request = new SubscribeConnectedPeerRequest();
-  const peerAddress = new PeerAddress();
-  peerAddress.setHost(host);
-  peerAddress.setPort(port);
-  request.setPeerAddress(peerAddress);
-  const stream = client.subscribeConnectedPeer(request);
-  stream.on('data', (response) => {
-    handleResponse(response.getConnectedPeer());
-  });
-  stream.on('end', (end) => {
-    // stream end signal
-    alert(`Stream ended: ${end}`);
-  });
-  return stream;
-}
-
-export function subscribeBuyOffersRequest(hash, handleResponse) {
-  const request = new SubscribeBuyOffersRequest();
-  request.setSqueakHash(hash);
-  const stream = client.subscribeBuyOffers(request);
-  stream.on('data', (response) => {
-    handleResponse(response.getOffer());
-  });
-  stream.on('end', (end) => {
-    // stream end signal
-    alert(`Stream ended: ${end}`);
-  });
-  return stream;
-}
-
-export function subscribeSqueakDisplayRequest(hash, handleResponse) {
-  const request = new SubscribeSqueakDisplayRequest();
-  request.setSqueakHash(hash);
-  const stream = client.subscribeSqueakDisplay(request);
-  stream.on('data', (response) => {
-    handleResponse(response.getSqueakDisplayEntry());
-  });
-  stream.on('end', (end) => {
-    // stream end signal
-    alert(`Stream ended: ${end}`);
-  });
-  return stream;
-}
-
-export function subscribeReplySqueakDisplaysRequest(hash, handleResponse) {
-  const request = new SubscribeReplySqueakDisplaysRequest();
-  request.setSqueakHash(hash);
-  const stream = client.subscribeReplySqueakDisplays(request);
-  stream.on('data', (response) => {
-    handleResponse(response.getSqueakDisplayEntry());
-  });
-  stream.on('end', (end) => {
-    // stream end signal
-    alert(`Stream ended: ${end}`);
-  });
-  return stream;
-}
-
-export function subscribeAddressSqueakDisplaysRequest(address, handleResponse) {
-  const request = new SubscribeAddressSqueakDisplaysRequest();
-  request.setAddress(address);
-  const stream = client.subscribeAddressSqueakDisplays(request);
-  stream.on('data', (response) => {
-    handleResponse(response.getSqueakDisplayEntry());
-  });
-  stream.on('end', (end) => {
-    // stream end signal
-    alert(`Stream ended: ${end}`);
-  });
-  return stream;
-}
-
-export function subscribeAncestorSqueakDisplaysRequest(hash, handleResponse) {
-  const request = new SubscribeAncestorSqueakDisplaysRequest();
-  request.setSqueakHash(hash);
-  const stream = client.subscribeAncestorSqueakDisplays(request);
-  stream.on('data', (response) => {
-    handleResponse(response.getSqueakDisplayEntriesList());
-  });
-  stream.on('end', (end) => {
-    // stream end signal
-    alert(`Stream ended: ${end}`);
-  });
-  return stream;
-}
-
-export function subscribeSqueakDisplaysRequest(handleResponse) {
-  const request = new SubscribeSqueakDisplaysRequest();
-  const stream = client.subscribeSqueakDisplays(request);
-  stream.on('data', (response) => {
-    handleResponse(response.getSqueakDisplayEntry());
-  });
-  stream.on('end', (end) => {
-    // stream end signal
-    alert(`Stream ended: ${end}`);
-  });
-  return stream;
-}
-
-export function subscribeTimelineSqueakDisplaysRequest(handleResponse) {
-  const request = new SubscribeTimelineSqueakDisplaysRequest();
-  const stream = client.subscribeSqueakDisplays(request);
-  stream.on('data', (response) => {
-    handleResponse(response.getSqueakDisplayEntry());
-  });
-  stream.on('end', (end) => {
-    // stream end signal
-    alert(`Stream ended: ${end}`);
-  });
-  return stream;
-}
+// export function subscribeConnectedPeersRequest(handleResponse) {
+//   const request = new SubscribeConnectedPeersRequest();
+//   const stream = client.subscribeConnectedPeers(request);
+//   stream.on('data', (response) => {
+//     // handleResponse(response.getConnectedPeersList());
+//     handleResponse(response.getConnectedPeersList());
+//   });
+//   stream.on('end', (end) => {
+//     // stream end signal
+//     alert(`Stream ended: ${end}`);
+//   });
+//   return stream;
+// }
+//
+// export function subscribeConnectedPeerRequest(host, port, handleResponse) {
+//   const request = new SubscribeConnectedPeerRequest();
+//   const peerAddress = new PeerAddress();
+//   peerAddress.setHost(host);
+//   peerAddress.setPort(port);
+//   request.setPeerAddress(peerAddress);
+//   const stream = client.subscribeConnectedPeer(request);
+//   stream.on('data', (response) => {
+//     handleResponse(response.getConnectedPeer());
+//   });
+//   stream.on('end', (end) => {
+//     // stream end signal
+//     alert(`Stream ended: ${end}`);
+//   });
+//   return stream;
+// }
+//
+// export function subscribeBuyOffersRequest(hash, handleResponse) {
+//   const request = new SubscribeBuyOffersRequest();
+//   request.setSqueakHash(hash);
+//   const stream = client.subscribeBuyOffers(request);
+//   stream.on('data', (response) => {
+//     handleResponse(response.getOffer());
+//   });
+//   stream.on('end', (end) => {
+//     // stream end signal
+//     alert(`Stream ended: ${end}`);
+//   });
+//   return stream;
+// }
+//
+// export function subscribeSqueakDisplayRequest(hash, handleResponse) {
+//   const request = new SubscribeSqueakDisplayRequest();
+//   request.setSqueakHash(hash);
+//   const stream = client.subscribeSqueakDisplay(request);
+//   stream.on('data', (response) => {
+//     handleResponse(response.getSqueakDisplayEntry());
+//   });
+//   stream.on('end', (end) => {
+//     // stream end signal
+//     alert(`Stream ended: ${end}`);
+//   });
+//   return stream;
+// }
+//
+// export function subscribeReplySqueakDisplaysRequest(hash, handleResponse) {
+//   const request = new SubscribeReplySqueakDisplaysRequest();
+//   request.setSqueakHash(hash);
+//   const stream = client.subscribeReplySqueakDisplays(request);
+//   stream.on('data', (response) => {
+//     handleResponse(response.getSqueakDisplayEntry());
+//   });
+//   stream.on('end', (end) => {
+//     // stream end signal
+//     alert(`Stream ended: ${end}`);
+//   });
+//   return stream;
+// }
+//
+// export function subscribeAddressSqueakDisplaysRequest(address, handleResponse) {
+//   const request = new SubscribeAddressSqueakDisplaysRequest();
+//   request.setAddress(address);
+//   const stream = client.subscribeAddressSqueakDisplays(request);
+//   stream.on('data', (response) => {
+//     handleResponse(response.getSqueakDisplayEntry());
+//   });
+//   stream.on('end', (end) => {
+//     // stream end signal
+//     alert(`Stream ended: ${end}`);
+//   });
+//   return stream;
+// }
+//
+// export function subscribeAncestorSqueakDisplaysRequest(hash, handleResponse) {
+//   const request = new SubscribeAncestorSqueakDisplaysRequest();
+//   request.setSqueakHash(hash);
+//   const stream = client.subscribeAncestorSqueakDisplays(request);
+//   stream.on('data', (response) => {
+//     handleResponse(response.getSqueakDisplayEntriesList());
+//   });
+//   stream.on('end', (end) => {
+//     // stream end signal
+//     alert(`Stream ended: ${end}`);
+//   });
+//   return stream;
+// }
+//
+// export function subscribeSqueakDisplaysRequest(handleResponse) {
+//   const request = new SubscribeSqueakDisplaysRequest();
+//   const stream = client.subscribeSqueakDisplays(request);
+//   stream.on('data', (response) => {
+//     handleResponse(response.getSqueakDisplayEntry());
+//   });
+//   stream.on('end', (end) => {
+//     // stream end signal
+//     alert(`Stream ended: ${end}`);
+//   });
+//   return stream;
+// }
+//
+// export function subscribeTimelineSqueakDisplaysRequest(handleResponse) {
+//   const request = new SubscribeTimelineSqueakDisplaysRequest();
+//   const stream = client.subscribeSqueakDisplays(request);
+//   stream.on('data', (response) => {
+//     handleResponse(response.getSqueakDisplayEntry());
+//   });
+//   stream.on('end', (end) => {
+//     // stream end signal
+//     alert(`Stream ended: ${end}`);
+//   });
+//   return stream;
+// }
