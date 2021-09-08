@@ -22,8 +22,6 @@
 import logging
 import time
 from contextlib import contextmanager
-from datetime import datetime
-from datetime import timezone
 from typing import Iterator
 from typing import List
 from typing import Optional
@@ -121,8 +119,8 @@ class SqueakDb:
         return self.squeaks.c.secret_key == None  # noqa: E711
 
     def squeak_is_older_than_retention(self, interval_s):
-        return self.timestamp_now() > \
-            self.squeaks.c.created_time_ms + interval_s * 1000
+        return self.timestamp_now_ms / 1000 > \
+            self.squeaks.c.created_time_ms / 1000 + interval_s
 
     @property
     def profile_has_private_key(self):
@@ -141,21 +139,15 @@ class SqueakDb:
         return self.received_offers.c.squeak_hash == None  # noqa: E711
 
     @property
-    def datetime_now(self):
-        return datetime.now(timezone.utc)
-
-    def timestamp_now(self):
+    def timestamp_now_ms(self):
         return int(time.time() * 1000)
-
-    def datetime_from_timestamp(self, timestamp):
-        return datetime.fromtimestamp(timestamp, timezone.utc)
 
     def received_offer_should_be_deleted(self):
         expire_time = (
             self.received_offers.c.invoice_timestamp
             + self.received_offers.c.invoice_expiry
         )
-        return self.datetime_now.timestamp() >= expire_time
+        return self.timestamp_now_ms / 1000 >= expire_time
 
     @property
     def received_offer_is_not_paid(self):
@@ -167,14 +159,15 @@ class SqueakDb:
             self.received_offers.c.invoice_timestamp
             + self.received_offers.c.invoice_expiry
         )
-        return self.datetime_now.timestamp() < expire_time
+        return self.timestamp_now_ms / 1000 < expire_time
 
     def sent_offer_should_be_deleted(self, interval_s):
         expire_time = (
             self.sent_offers.c.invoice_timestamp
             + self.sent_offers.c.invoice_expiry
+            + interval_s
         )
-        return self.datetime_now.timestamp() >= expire_time + interval_s
+        return self.timestamp_now_ms / 1000 >= expire_time
 
     @property
     def sent_offer_is_not_paid(self):
@@ -186,7 +179,7 @@ class SqueakDb:
             self.sent_offers.c.invoice_timestamp
             + self.sent_offers.c.invoice_expiry
         )
-        return self.datetime_now.timestamp() < expire_time
+        return self.timestamp_now_ms / 1000 < expire_time
 
     def insert_squeak(self, squeak: CSqueak, block_header: CBlockHeader) -> bytes:
         """ Insert a new squeak.
@@ -194,7 +187,7 @@ class SqueakDb:
         Return the hash (bytes) of the inserted squeak.
         """
         ins = self.squeaks.insert().values(
-            created_time_ms=self.timestamp_now(),
+            created_time_ms=self.timestamp_now_ms,
             hash=get_hash(squeak),
             squeak=squeak.serialize(),
             hash_reply_sqk=squeak.hashReplySqk if squeak.is_reply else None,
@@ -312,7 +305,7 @@ class SqueakDb:
             last_entry: Optional[SqueakEntry],
     ) -> List[SqueakEntry]:
         """ Get liked squeaks. """
-        last_liked_time_ms = last_entry.liked_time_ms if last_entry else self.timestamp_now()
+        last_liked_time_ms = last_entry.liked_time_ms if last_entry else self.timestamp_now_ms
         last_squeak_hash = last_entry.squeak_hash if last_entry else MAX_HASH
         logger.info("""Liked squeaks db query with
         limit: {}
@@ -660,7 +653,7 @@ class SqueakDb:
     def insert_profile(self, squeak_profile: SqueakProfile) -> int:
         """ Insert a new squeak profile. """
         ins = self.profiles.insert().values(
-            created_time_ms=self.timestamp_now(),
+            created_time_ms=self.timestamp_now_ms,
             profile_name=squeak_profile.profile_name,
             private_key=squeak_profile.private_key,
             address=squeak_profile.address,
@@ -827,7 +820,7 @@ class SqueakDb:
         stmt = (
             self.squeaks.update()
             .where(self.squeaks.c.hash == squeak_hash)
-            .values(liked_time_ms=self.timestamp_now())
+            .values(liked_time_ms=self.timestamp_now_ms)
         )
         with self.get_connection() as connection:
             connection.execute(stmt)
@@ -853,7 +846,7 @@ class SqueakDb:
     def insert_peer(self, squeak_peer: SqueakPeer) -> int:
         """ Insert a new squeak peer. """
         ins = self.peers.insert().values(
-            created_time_ms=self.timestamp_now(),
+            created_time_ms=self.timestamp_now_ms,
             peer_name=squeak_peer.peer_name,
             host=squeak_peer.address.host,
             port=squeak_peer.address.port,
@@ -921,7 +914,7 @@ class SqueakDb:
     def insert_received_offer(self, received_offer: ReceivedOffer):
         """ Insert a new received offer. """
         ins = self.received_offers.insert().values(
-            created_time_ms=self.timestamp_now(),
+            created_time_ms=self.timestamp_now_ms,
             squeak_hash=received_offer.squeak_hash,
             payment_hash=received_offer.payment_hash,
             nonce=received_offer.nonce,
@@ -1034,7 +1027,7 @@ class SqueakDb:
     def insert_sent_payment(self, sent_payment: SentPayment):
         """ Insert a new sent payment. """
         ins = self.sent_payments.insert().values(
-            created_time_ms=self.timestamp_now(),
+            created_time_ms=self.timestamp_now_ms,
             peer_host=sent_payment.peer_address.host,
             peer_port=sent_payment.peer_address.port,
             squeak_hash=sent_payment.squeak_hash,
@@ -1055,7 +1048,7 @@ class SqueakDb:
             last_sent_payment: Optional[SentPayment],
     ) -> List[SentPayment]:
         """ Get all sent payments. """
-        last_created_time = last_sent_payment.created_time_ms if last_sent_payment else self.timestamp_now()
+        last_created_time = last_sent_payment.created_time_ms if last_sent_payment else self.timestamp_now_ms
         last_payment_hash = last_sent_payment.payment_hash if last_sent_payment else MAX_HASH
         logger.info("""Get sent payments db query with
         limit: {}
@@ -1106,7 +1099,7 @@ class SqueakDb:
     def insert_sent_offer(self, sent_offer: SentOffer):
         """ Insert a new sent offer. """
         ins = self.sent_offers.insert().values(
-            created_time_ms=self.timestamp_now(),
+            created_time_ms=self.timestamp_now_ms,
             squeak_hash=sent_offer.squeak_hash,
             payment_hash=sent_offer.payment_hash,
             secret_key=sent_offer.secret_key,
@@ -1212,7 +1205,7 @@ class SqueakDb:
     def insert_received_payment(self, received_payment: ReceivedPayment):
         """ Insert a new received payment. """
         ins = self.received_payments.insert().values(
-            created_time_ms=self.timestamp_now(),
+            created_time_ms=self.timestamp_now_ms,
             squeak_hash=received_payment.squeak_hash,
             payment_hash=received_payment.payment_hash,
             price_msat=received_payment.price_msat,
