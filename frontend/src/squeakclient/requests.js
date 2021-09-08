@@ -99,6 +99,18 @@ import {
   GetPeerReply,
   SetPeerAutoconnectReply,
   GetProfilesReply,
+  GetSigningProfilesReply,
+  GetContactProfilesReply,
+  MakeSqueakReply,
+  GetSqueakDisplayReply,
+  GetAncestorSqueakDisplaysReply,
+  GetReplySqueakDisplaysReply,
+  GetAddressSqueakDisplaysReply,
+  GetSqueakProfileByAddressReply,
+  CreateContactProfileReply,
+  CreateSigningProfileReply,
+  ImportSigningProfileReply,
+  CreatePeerReply,
 } from '../proto/squeak_admin_pb';
 
 import { SqueakAdminClient } from '../proto/squeak_admin_grpc_web_pb';
@@ -543,16 +555,32 @@ export function getProfilesRequest(handleResponse) {
 
 export function getSigningProfilesRequest(handleResponse) {
   const request = new GetSigningProfilesRequest();
-  client.getSigningProfiles(request, {}, (err, response) => {
-    handleResponse(response.getSqueakProfilesList());
-  });
+  makeRequest(
+    'getsigningprofiles',
+    request,
+    GetSigningProfilesReply.deserializeBinary,
+    (response) => {
+      handleResponse(response.getSqueakProfilesList());
+    }
+  );
+  // client.getSigningProfiles(request, {}, (err, response) => {
+  //   handleResponse(response.getSqueakProfilesList());
+  // });
 }
 
 export function getContactProfilesRequest(handleResponse) {
   const request = new GetContactProfilesRequest();
-  client.getContactProfiles(request, {}, (err, response) => {
-    handleResponse(response.getSqueakProfilesList());
-  });
+  makeRequest(
+    'getcontactprofiles',
+    request,
+    GetContactProfilesReply.deserializeBinary,
+    (response) => {
+      handleResponse(response.getSqueakProfilesList());
+    }
+  );
+  // client.getContactProfiles(request, {}, (err, response) => {
+  //   handleResponse(response.getSqueakProfilesList());
+  // });
 }
 
 export function makeSqueakRequest(profileId, content, replyto, handleResponse, handleErr) {
@@ -560,25 +588,49 @@ export function makeSqueakRequest(profileId, content, replyto, handleResponse, h
   request.setProfileId(profileId);
   request.setContent(content);
   request.setReplyto(replyto);
-  client.makeSqueak(request, {}, (err, response) => {
-    handleResponse(response);
-  });
+  makeRequest(
+    'makesqueakrequest',
+    request,
+    MakeSqueakReply.deserializeBinary,
+    (response) => {
+      handleResponse(response);
+    }
+  );
+  // client.makeSqueak(request, {}, (err, response) => {
+  //   handleResponse(response);
+  // });
 }
 
 export function getSqueakDisplayRequest(hash, handleResponse) {
   const request = new GetSqueakDisplayRequest();
   request.setSqueakHash(hash);
-  client.getSqueakDisplay(request, {}, (err, response) => {
-    handleResponse(response.getSqueakDisplayEntry());
-  });
+  makeRequest(
+    'getsqueakdisplay',
+    request,
+    GetSqueakDisplayReply.deserializeBinary,
+    (response) => {
+      handleResponse(response.getSqueakDisplayEntry());
+    }
+  );
+  // client.getSqueakDisplay(request, {}, (err, response) => {
+  //   handleResponse(response.getSqueakDisplayEntry());
+  // });
 }
 
 export function getAncestorSqueakDisplaysRequest(hash, handleResponse) {
   const request = new GetAncestorSqueakDisplaysRequest();
   request.setSqueakHash(hash);
-  client.getAncestorSqueakDisplays(request, {}, (err, response) => {
-    handleResponse(response.getSqueakDisplayEntriesList());
-  });
+  makeRequest(
+    'getancestorsqueakdisplays',
+    request,
+    GetAncestorSqueakDisplaysReply.deserializeBinary,
+    (response) => {
+      handleResponse(response.getSqueakDisplayEntriesList());
+    }
+  );
+  // client.getAncestorSqueakDisplays(request, {}, (err, response) => {
+  //   handleResponse(response.getSqueakDisplayEntriesList());
+  // });
 }
 
 export function getReplySqueakDisplaysRequest(hash, limit, lastEntry, handleResponse) {
@@ -586,17 +638,33 @@ export function getReplySqueakDisplaysRequest(hash, limit, lastEntry, handleResp
   request.setSqueakHash(hash);
   request.setLimit(limit);
   request.setLastEntry(lastEntry);
-  client.getReplySqueakDisplays(request, {}, (err, response) => {
-    handleResponse(response.getSqueakDisplayEntriesList());
-  });
+  makeRequest(
+    'getreplysqueakdisplays',
+    request,
+    GetReplySqueakDisplaysReply.deserializeBinary,
+    (response) => {
+      handleResponse(response.getSqueakDisplayEntriesList());
+    }
+  );
+  // client.getReplySqueakDisplays(request, {}, (err, response) => {
+  //   handleResponse(response.getSqueakDisplayEntriesList());
+  // });
 }
 
 export function getSqueakProfileByAddressRequest(address, handleResponse) {
   const request = new GetSqueakProfileByAddressRequest();
   request.setAddress(address);
-  client.getSqueakProfileByAddress(request, {}, (err, response) => {
-    handleResponse(response.getSqueakProfile());
-  });
+  makeRequest(
+    'getsqueakprofilebyaddress',
+    request,
+    GetSqueakProfileByAddressReply.deserializeBinary,
+    (response) => {
+      handleResponse(response.getSqueakProfile());
+    }
+  );
+  // client.getSqueakProfileByAddress(request, {}, (err, response) => {
+  //   handleResponse(response.getSqueakProfile());
+  // });
 }
 
 export function getAddressSqueakDisplaysRequest(address, limit, lastEntry, handleResponse) {
@@ -604,35 +672,67 @@ export function getAddressSqueakDisplaysRequest(address, limit, lastEntry, handl
   request.setAddress(address);
   request.setLimit(limit);
   request.setLastEntry(lastEntry);
-  client.getAddressSqueakDisplays(request, {}, (err, response) => {
-    handleResponse(response.getSqueakDisplayEntriesList());
-  });
+  makeRequest(
+    'getaddresssqueakdisplays',
+    request,
+    GetAddressSqueakDisplaysReply.deserializeBinary,
+    (response) => {
+      handleResponse(response.getSqueakDisplayEntriesList());
+    }
+  );
+  // client.getAddressSqueakDisplays(request, {}, (err, response) => {
+  //   handleResponse(response.getSqueakDisplayEntriesList());
+  // });
 }
 
 export function createContactProfileRequest(profileName, squeakAddress, handleResponse, handleErr) {
   const request = new CreateContactProfileRequest();
   request.setProfileName(profileName);
   request.setAddress(squeakAddress);
-  client.createContactProfile(request, {}, (err, response) => {
-    handleResponse(response);
-  });
+  makeRequest(
+    'createcontactprofile',
+    request,
+    CreateContactProfileReply.deserializeBinary,
+    (response) => {
+      handleResponse(response);
+    }
+  );
+  // client.createContactProfile(request, {}, (err, response) => {
+  //   handleResponse(response);
+  // });
 }
 
 export function createSigningProfileRequest(profileName, handleResponse, handleErr) {
   const request = new CreateSigningProfileRequest();
   request.setProfileName(profileName);
-  client.createSigningProfile(request, {}, (err, response) => {
-    handleResponse(response);
-  });
+  makeRequest(
+    'createsigningprofile',
+    request,
+    CreateSigningProfileReply.deserializeBinary,
+    (response) => {
+      handleResponse(response);
+    }
+  );
+  // client.createSigningProfile(request, {}, (err, response) => {
+  //   handleResponse(response);
+  // });
 }
 
 export function importSigningProfileRequest(profileName, privateKey, handleResponse, handleErr) {
   const request = new ImportSigningProfileRequest();
   request.setProfileName(profileName);
   request.setPrivateKey(privateKey);
-  client.importSigningProfile(request, {}, (err, response) => {
-    handleResponse(response);
-  });
+  makeRequest(
+    'importsigningprofile',
+    request,
+    ImportSigningProfileReply.deserializeBinary,
+    (response) => {
+      handleResponse(response);
+    }
+  );
+  // client.importSigningProfile(request, {}, (err, response) => {
+  //   handleResponse(response);
+  // });
 }
 
 export function createPeerRequest(peerName, host, port, handleResponse) {
@@ -642,9 +742,17 @@ export function createPeerRequest(peerName, host, port, handleResponse) {
   peerAddress.setPort(port);
   request.setPeerName(peerName);
   request.setPeerAddress(peerAddress);
-  client.createPeer(request, {}, (err, response) => {
-    handleResponse(response);
-  });
+  makeRequest(
+    'createpeer',
+    request,
+    CreatePeerReply.deserializeBinary,
+    (response) => {
+      handleResponse(response);
+    }
+  );
+  // client.createPeer(request, {}, (err, response) => {
+  //   handleResponse(response);
+  // });
 }
 
 export function deletePeerRequest(peerId, handleResponse) {
