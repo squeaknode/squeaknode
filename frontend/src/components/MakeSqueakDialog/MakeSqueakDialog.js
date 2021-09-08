@@ -22,6 +22,7 @@ import SqueakThreadItem from '../SqueakThreadItem';
 import {
   makeSqueakRequest,
   getSigningProfilesRequest,
+  storeDefaultSigningProfileIdRequest,
 } from '../../squeakclient/requests';
 import {
   goToSqueakPage,
@@ -47,6 +48,7 @@ export default function MakeSqueakDialog({
 
   const handleChange = (event) => {
     setProfileId(event.target.value);
+    storeDefaultSigningProfile(event.target.value);
   };
 
   const handleChangeContent = (event) => {
@@ -66,6 +68,11 @@ export default function MakeSqueakDialog({
   };
   const loadSigningProfiles = () => {
     getSigningProfilesRequest(setSigningProfiles);
+  };
+
+  const storeDefaultSigningProfile = (profileId) => {
+    console.log(`MakeSqueakDialog > storeDefaultSigningProfile > profileId=${profileId}`);
+    return storeDefaultSigningProfileIdRequest(profileId);
   };
 
   // useEffect(() => {

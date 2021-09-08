@@ -25,6 +25,7 @@ import threading
 
 from flask import flash
 from flask import Flask
+from flask import make_response
 from flask import redirect
 from flask import render_template
 from flask import request
@@ -117,6 +118,14 @@ def create_app(handler, username, password):
     def hello_world():
         logger.info("Getting hello route.")
         return "Hello, World!"
+
+    @app.route("/store_default_signing_profile_id/<profile_id>/profile_id", methods=["POST"])
+    @login_required
+    def store_default_signing_profile_id(profile_id):
+        logger.info(f"Storing default signing profile: {profile_id}")
+        resp = make_response(render_template(...))
+        resp.set_cookie('default_signing_profile_id', profile_id)
+        return resp
 
     return app
 

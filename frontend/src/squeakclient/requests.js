@@ -341,6 +341,16 @@ export function getSigningProfilesRequest(handleResponse) {
   });
 }
 
+
+export function storeDefaultSigningProfileIdRequest(profileId) {
+  console.log(`requests.js > storeDefaultSigningProfileIdRequest > profileId=${profileId}`)
+  return fetch(`${web_host_port}/store_default_signing_profile_id/profile_id/${profileId}`, {
+    method: 'post',
+  }).then((response) => response.text()).then((data) => {
+    return data;
+  });
+}
+
 export function getContactProfilesRequest(handleResponse) {
   const request = new GetContactProfilesRequest();
   client.getContactProfiles(request, {}, (err, response) => {
