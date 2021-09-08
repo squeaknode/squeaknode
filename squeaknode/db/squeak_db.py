@@ -119,8 +119,8 @@ class SqueakDb:
         return self.squeaks.c.secret_key == None  # noqa: E711
 
     def squeak_is_older_than_retention(self, interval_s):
-        return self.timestamp_now_ms / 1000 > \
-            self.squeaks.c.created_time_ms / 1000 + interval_s
+        return self.timestamp_now_ms > \
+            self.squeaks.c.created_time_ms + interval_s * 1000
 
     @property
     def profile_has_private_key(self):
