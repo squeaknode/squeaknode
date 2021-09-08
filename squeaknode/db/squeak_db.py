@@ -920,6 +920,7 @@ class SqueakDb:
     def insert_received_offer(self, received_offer: ReceivedOffer):
         """ Insert a new received offer. """
         ins = self.received_offers.insert().values(
+            created_time_ms=self.timestamp_now(),
             squeak_hash=received_offer.squeak_hash,
             payment_hash=received_offer.payment_hash,
             nonce=received_offer.nonce,
