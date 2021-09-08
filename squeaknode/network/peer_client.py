@@ -66,8 +66,6 @@ class PeerClient(object):
         ).start()
 
     def get_socket(self):
-        logger.info("self.tor_proxy_ip: {}".format(self.tor_proxy_ip))
-        logger.info("self.tor_proxy_port: {}".format(self.tor_proxy_port))
         if self.tor_proxy_ip:
             s = socks.socksocket()  # Same API as socket.socket in the standard lib
             s.set_proxy(socks.SOCKS5, self.tor_proxy_ip, self.tor_proxy_port)
