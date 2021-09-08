@@ -1050,7 +1050,7 @@ export function getConnectedPeerRequest(host, port, handleResponse) {
     request,
     GetConnectedPeerReply.deserializeBinary,
     (response) => {
-      handleResponse(response);
+      handleResponse(response.getConnectedPeer());
     },
   );
   // client.getConnectedPeer(request, {}, (err, response) => {

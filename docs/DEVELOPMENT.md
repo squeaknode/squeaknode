@@ -29,6 +29,12 @@
 	$ SQUEAKNODE_WEBADMIN_ENABLED=TRUE SQUEAKNODE_WEBADMIN_LOGIN_DISABLED=TRUE SQUEAKNODE_WEBADMIN_ALLOW_CORS=TRUE SQUEAKNODE_NETWORK=testnet squeaknode --config config.ini
 	```
 
+To use a tor proxy, include the following environment variables:
+	```
+	$ SQUEAKNODE_NODE_TOR_PROXY_IP=127.0.0.1 SQUEAKNODE_NODE_TOR_PROXY_PORT=9150
+	```
+
+
 #### Squeaknode frontend
 
 - Run the frontend react app in dev mode:
