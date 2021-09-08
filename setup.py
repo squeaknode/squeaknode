@@ -119,6 +119,7 @@ setup(
         'Flask-WTF',
         'flask-cors',
         'alembic',
+        'PySocks',
     ],
     extras_require={"test": ["pytest", "coverage"]},
     entry_points={

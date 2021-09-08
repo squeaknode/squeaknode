@@ -54,6 +54,8 @@ class NetworkManager(object):
         self.local_port = self.config.server.rpc_port or squeak.params.params.DEFAULT_PORT
         self.peer_server = None
         self.peer_client = None
+        self.tor_proxy_ip = self.config.node.tor_proxy_ip
+        self.tor_proxy_port = self.config.node.tor_proxy_port
         self.connection_manager = ConnectionManager()
 
     def start(self, squeak_controller):
@@ -67,6 +69,8 @@ class NetworkManager(object):
         )
         self.peer_client = PeerClient(
             peer_handler,
+            self.tor_proxy_ip,
+            self.tor_proxy_port,
         )
         self.peer_server.start()
 

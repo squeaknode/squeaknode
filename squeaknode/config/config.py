@@ -142,6 +142,10 @@ class NodeConfig(Config):
         cast=int, required=False, default=DEFAULT_OFFER_DELETION_INTERVAL_S)
     interest_block_interval = key(
         cast=int, required=False, default=DEFAULT_INTEREST_BLOCK_INTERVAL)
+    tor_proxy_ip = key(
+        cast=str, required=False, default="")
+    tor_proxy_port = key(
+        cast=int, required=False, default=0)
 
 
 @section('db')

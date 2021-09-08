@@ -12,6 +12,7 @@ importlib_resources==1.4.0
 mypy-protobuf
 protobuf
 psycopg2
+PySocks
 pyzmq
 requests
 SQLAlchemy

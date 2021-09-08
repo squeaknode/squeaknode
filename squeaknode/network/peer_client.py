@@ -23,6 +23,8 @@ import logging
 import socket
 import threading
 
+import socks
+
 from squeaknode.core.peer_address import PeerAddress
 
 
@@ -36,13 +38,15 @@ class PeerClient(object):
     """Creates outgoing connections to other peers in the network.
     """
 
-    def __init__(self, peer_handler):
+    def __init__(self, peer_handler, tor_proxy_ip, tor_proxy_port):
         self.peer_handler = peer_handler
+        self.tor_proxy_ip = tor_proxy_ip
+        self.tor_proxy_port = tor_proxy_port
 
     def make_connection(self, address: PeerAddress):
         logger.info('Making connection to {}'.format(address))
         try:
-            peer_socket = socket.socket()
+            peer_socket = self.get_socket()
             logger.info('Trying to connect socket to {}'.format(address))
             peer_socket.settimeout(SOCKET_CONNECT_TIMEOUT)
             peer_socket.connect(address)
@@ -60,3 +64,12 @@ class PeerClient(object):
             args=(address,),
             name="peer_client_connection_thread",
         ).start()
+
+    def get_socket(self):
+        logger.info("self.tor_proxy_ip: {}".format(self.tor_proxy_ip))
+        logger.info("self.tor_proxy_port: {}".format(self.tor_proxy_port))
+        if self.tor_proxy_ip:
+            s = socks.socksocket()  # Same API as socket.socket in the standard lib
+            s.set_proxy(socks.SOCKS5, self.tor_proxy_ip, self.tor_proxy_port)
+            return s
+        return socket.socket()
