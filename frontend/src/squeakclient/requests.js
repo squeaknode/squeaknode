@@ -1,18 +1,29 @@
 import {
   GetInfoRequest,
+  GetInfoResponse,
   WalletBalanceRequest,
+  WalletBalanceResponse,
   GetTransactionsRequest,
+  TransactionDetails,
   ListPeersRequest,
+  ListPeersResponse,
   ListChannelsRequest,
+  ListChannelsResponse,
   PendingChannelsRequest,
+  PendingChannelsResponse,
   ConnectPeerRequest,
+  ConnectPeerResponse,
   LightningAddress,
   DisconnectPeerRequest,
+  DisconnectPeerResponse,
   OpenChannelRequest,
   CloseChannelRequest,
+  CloseStatusUpdate,
   ChannelPoint,
   NewAddressRequest,
+  NewAddressResponse,
   SendCoinsRequest,
+  SendCoinsResponse,
 } from '../proto/lnd_pb';
 import {
   GetSqueakProfileRequest,
@@ -163,44 +174,161 @@ makeRequest(
 
 export function lndGetInfoRequest(handleResponse, handleErr) {
   const request = new GetInfoRequest();
-  client.lndGetInfo(request, {}, (err, response) => {
-    handleResponse(response);
-  });
+  makeRequest(
+    'lndgetinfo',
+    request,
+    GetInfoResponse.deserializeBinary,
+    handleResponse,
+    handleErr
+  );
 }
 
 export function lndWalletBalanceRequest(handleResponse) {
   const request = new WalletBalanceRequest();
-  client.lndWalletBalance(request, {}, (err, response) => {
-    handleResponse(response);
-  });
+  makeRequest(
+    'lndwalletbalance',
+    request,
+    WalletBalanceResponse.deserializeBinary,
+    handleResponse,
+  );
 }
 
 export function lndGetTransactionsRequest(handleResponse) {
   const request = new GetTransactionsRequest();
-  client.lndGetTransactions(request, {}, (err, response) => {
-    handleResponse(response.getTransactionsList());
-  });
+  makeRequest(
+    'lndgettransactions',
+    request,
+    TransactionDetails.deserializeBinary,
+    (response) => {
+      handleResponse(response.getTransactionsList());
+    }
+  );
 }
 
 export function lndListPeersRequest(handleResponse) {
   const request = new ListPeersRequest();
-  client.lndListPeers(request, {}, (err, response) => {
-    handleResponse(response.getPeersList());
-  });
+  makeRequest(
+    'lndlistpeers',
+    request,
+    ListPeersResponse.deserializeBinary,
+    (response) => {
+      handleResponse(response.getPeersList());
+    }
+  );
 }
 
 export function lndListChannelsRequest(handleResponse) {
   const request = new ListChannelsRequest();
-  client.lndListChannels(request, {}, (err, response) => {
-    handleResponse(response.getChannelsList());
-  });
+  makeRequest(
+    'lndlistchannels',
+    request,
+    ListChannelsResponse.deserializeBinary,
+    (response) => {
+      handleResponse(response.getChannelsList());
+    }
+  );
 }
 
 export function lndPendingChannelsRequest(handleResponse) {
   const request = new PendingChannelsRequest();
-  client.lndPendingChannels(request, {}, (err, response) => {
-    handleResponse(response);
-  });
+  makeRequest(
+    'lndpendingchannels',
+    request,
+    PendingChannelsResponse.deserializeBinary,
+    handleResponse,
+  );
+}
+
+export function lndConnectPeerRequest(pubkey, host, handleResponse, handleErr) {
+  const request = new ConnectPeerRequest();
+  const address = new LightningAddress();
+  address.setPubkey(pubkey);
+  address.setHost(host);
+  request.setAddr(address);
+  makeRequest(
+    'lndconnectpeer',
+    request,
+    ConnectPeerResponse.deserializeBinary,
+    handleResponse,
+    handleErr,
+  );
+
+  // client.lndConnectPeer(request, {}, (err, response) => {
+  //   if (err) {
+  //     handleErr(err);
+  //   }
+  //   if (response) {
+  //     handleResponse(response);
+  //   }
+  // });
+}
+
+export function lndDisconnectPeerRequest(pubkey, handleResponse) {
+  const request = new DisconnectPeerRequest();
+  request.setPubKey(pubkey);
+  makeRequest(
+    'lnddisconnectpeer',
+    request,
+    DisconnectPeerResponse.deserializeBinary,
+    handleResponse,
+  );
+  // client.lndDisconnectPeer(request, {}, (err, response) => {
+  //   handleResponse(response);
+  // });
+}
+
+export function lndOpenChannelSyncRequest(pubkey, amount, satperbyte, handleResponse, handleErr) {
+  const request = new OpenChannelRequest();
+  request.setNodePubkeyString(pubkey);
+  request.setLocalFundingAmount(amount);
+  request.setSatPerByte(satperbyte);
+  makeRequest(
+    'lndopenchannelsync',
+    request,
+    ChannelPoint.deserializeBinary,
+    handleResponse,
+    handleErr,
+  );
+}
+
+export function lndCloseChannelRequest(txId, outputIndex, handleResponse, handleErr) {
+  const request = new CloseChannelRequest();
+  const channelPoint = new ChannelPoint();
+  channelPoint.setFundingTxidStr(txId);
+  channelPoint.setOutputIndex(outputIndex);
+  request.setChannelPoint(channelPoint);
+  makeRequest(
+    'lndclosechannel',
+    request,
+    CloseStatusUpdate.deserializeBinary,
+    // TODO: handle streaming response
+    handleResponse,
+    handleErr,
+  );
+}
+
+export function lndNewAddressRequest(handleResponse) {
+  const request = new NewAddressRequest();
+  makeRequest(
+    'lndnewaddress',
+    request,
+    NewAddressResponse.deserializeBinary,
+    handleResponse,
+  );
+}
+
+export function lndSendCoins(address, amount, satperbyte, sendall, handleResponse) {
+  const request = new SendCoinsRequest();
+  request.setAddr(address);
+  request.setAmount(amount);
+  request.setSatPerByte(satperbyte);
+  request.setSendAll(sendall);
+  makeRequest(
+    'lndsendcoins',
+    request,
+    SendCoinsResponse.deserializeBinary,
+    handleResponse,
+  );
 }
 
 export function getSqueakProfileRequest(id, handleResponse, handleErr) {
@@ -264,29 +392,6 @@ export function clearSqueakProfileImageRequest(id, handleResponse) {
   });
 }
 
-export function lndConnectPeerRequest(pubkey, host, handleResponse, handleErr) {
-  const request = new ConnectPeerRequest();
-  const address = new LightningAddress();
-  address.setPubkey(pubkey);
-  address.setHost(host);
-  request.setAddr(address);
-  client.lndConnectPeer(request, {}, (err, response) => {
-    if (err) {
-      handleErr(err);
-    }
-    if (response) {
-      handleResponse(response);
-    }
-  });
-}
-
-export function lndDisconnectPeerRequest(pubkey, handleResponse) {
-  const request = new DisconnectPeerRequest();
-  request.setPubKey(pubkey);
-  client.lndDisconnectPeer(request, {}, (err, response) => {
-    handleResponse(response);
-  });
-}
 
 export function getPeersRequest(handleResponse) {
   const request = new GetPeersRequest();
@@ -308,26 +413,7 @@ export function payOfferRequest(offerId, handleResponse, handleErr) {
   });
 }
 
-export function lndOpenChannelSyncRequest(pubkey, amount, satperbyte, handleResponse, handleErr) {
-  const request = new OpenChannelRequest();
-  request.setNodePubkeyString(pubkey);
-  request.setLocalFundingAmount(amount);
-  request.setSatPerByte(satperbyte);
-  client.lndOpenChannelSync(request, {}, (err, response) => {
-    handleResponse(response);
-  });
-}
 
-export function lndCloseChannelRequest(txId, outputIndex, handleResponse, handleErr) {
-  const request = new CloseChannelRequest();
-  const channelPoint = new ChannelPoint();
-  channelPoint.setFundingTxidStr(txId);
-  channelPoint.setOutputIndex(outputIndex);
-  request.setChannelPoint(channelPoint);
-  client.lndCloseChannel(request, {}, (err, response) => {
-    handleResponse(response);
-  });
-}
 
 export function getBuyOffersRequest(hash, handleResponse) {
   const request = new GetBuyOffersRequest();
@@ -499,23 +585,7 @@ export function deleteSqueakRequest(squeakHash, handleResponse) {
   });
 }
 
-export function lndNewAddressRequest(handleResponse) {
-  const request = new NewAddressRequest();
-  client.lndNewAddress(request, {}, (err, response) => {
-    handleResponse(response);
-  });
-}
 
-export function lndSendCoins(address, amount, satperbyte, sendall, handleResponse) {
-  const request = new SendCoinsRequest();
-  request.setAddr(address);
-  request.setAmount(amount);
-  request.setSatPerByte(satperbyte);
-  request.setSendAll(sendall);
-  client.lndSendCoins(request, {}, (err, response) => {
-    handleResponse(response);
-  });
-}
 
 export function downloadSqueakRequest(squeakHash, handleResponse) {
   const request = new DownloadSqueakRequest();
