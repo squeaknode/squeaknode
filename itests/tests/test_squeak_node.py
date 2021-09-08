@@ -676,11 +676,11 @@ def test_buy_squeak(
         ]
         assert sent_payment.payment_hash in payment_hashes
         for received_payment in get_received_payments_response.received_payments:
-            received_payment_time_s = received_payment.time_s
+            received_payment_time_ms = received_payment.time_ms
             # print("received_payment_time_s: {}".format(
             #     received_payment_time_s))
             received_payment_time = datetime.datetime.fromtimestamp(
-                received_payment_time_s
+                received_payment_time_ms / 1000,
             )
             five_minutes = datetime.timedelta(minutes=5)
             assert received_payment_time > datetime.datetime.now() - five_minutes
@@ -869,7 +869,7 @@ def test_like_squeak(admin_stub, saved_squeak_hash):
     get_squeak_display_entry = get_squeak_display(
         admin_stub, saved_squeak_hash)
     assert (
-        get_squeak_display_entry.liked_time_s == 0
+        get_squeak_display_entry.liked_time_ms == 0
     )
 
     # Like the squeak
@@ -883,7 +883,7 @@ def test_like_squeak(admin_stub, saved_squeak_hash):
     get_squeak_display_entry = get_squeak_display(
         admin_stub, saved_squeak_hash)
     assert (
-        get_squeak_display_entry.liked_time_s > 0
+        get_squeak_display_entry.liked_time_ms > 0
     )
 
     # Unlike the squeak
@@ -897,7 +897,7 @@ def test_like_squeak(admin_stub, saved_squeak_hash):
     get_squeak_display_entry = get_squeak_display(
         admin_stub, saved_squeak_hash)
     assert (
-        get_squeak_display_entry.liked_time_s == 0
+        get_squeak_display_entry.liked_time_ms == 0
     )
 
 

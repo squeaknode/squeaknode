@@ -27,7 +27,6 @@ from sqlalchemy import Binary
 from sqlalchemy import Boolean
 from sqlalchemy import Column
 from sqlalchemy import DateTime
-from sqlalchemy import func
 from sqlalchemy import Integer
 from sqlalchemy import MetaData
 from sqlalchemy import String
@@ -58,6 +57,9 @@ class TZDateTime(TypeDecorator):
         return value
 
 
+logger = logging.getLogger(__name__)
+
+
 class SLBigInteger(BigInteger):
     pass
 
@@ -81,8 +83,7 @@ class Models:
             "squeak",
             self.metadata,
             Column("hash", Binary(32), primary_key=True),
-            Column("created", TZDateTime,
-                   server_default=func.now(), nullable=False),
+            Column("created_time_ms", SLBigInteger, nullable=False),
             Column("squeak", Binary, nullable=False),
             Column("hash_reply_sqk", Binary(32), nullable=True),
             Column("hash_block", Binary(32), nullable=False),
@@ -91,8 +92,7 @@ class Models:
             Column("author_address", String(35), index=True, nullable=False),
             Column("secret_key", Binary(32), nullable=True),
             Column("block_time", Integer, nullable=False),
-            Column("liked_time", TZDateTime,
-                   default=None, nullable=True),
+            Column("liked_time_ms", SLBigInteger, default=None, nullable=True),
             Column("content", String(280), nullable=True),
         )
 
@@ -100,8 +100,7 @@ class Models:
             "profile",
             self.metadata,
             Column("profile_id", Integer, primary_key=True),
-            Column("created", TZDateTime,
-                   server_default=func.now(), nullable=False),
+            Column("created_time_ms", SLBigInteger, nullable=False),
             Column("profile_name", String, unique=True, nullable=False),
             Column("private_key", Binary, nullable=True),
             Column("address", String(35), unique=True, nullable=False),
@@ -116,8 +115,7 @@ class Models:
             "peer",
             self.metadata,
             Column("peer_id", Integer, primary_key=True),
-            Column("created", TZDateTime,
-                   server_default=func.now(), nullable=False),
+            Column("created_time_ms", SLBigInteger, nullable=False),
             Column("peer_name", String, nullable=False),
             Column("host", String, nullable=False),
             Column("port", Integer, nullable=False),
@@ -131,8 +129,7 @@ class Models:
             "received_offer",
             self.metadata,
             Column("received_offer_id", SLBigInteger, primary_key=True),
-            Column("created", TZDateTime,
-                   server_default=func.now(), nullable=False),
+            Column("created_time_ms", SLBigInteger, nullable=False),
             Column("squeak_hash", Binary(32), nullable=False),
             Column("payment_hash", Binary(32), unique=True, nullable=False),
             Column("nonce", Binary(32), nullable=False),
@@ -154,8 +151,7 @@ class Models:
             "sent_payment",
             self.metadata,
             Column("sent_payment_id", SLBigInteger, primary_key=True),
-            Column("created", TZDateTime,
-                   server_default=func.now(), nullable=False),
+            Column("created_time_ms", SLBigInteger, nullable=False),
             Column("peer_host", String, nullable=False),
             Column("peer_port", Integer, nullable=False),
             Column("squeak_hash", Binary(32), nullable=False),
@@ -171,8 +167,7 @@ class Models:
             "sent_offer",
             self.metadata,
             Column("sent_offer_id", SLBigInteger, primary_key=True),
-            Column("created", TZDateTime,
-                   server_default=func.now(), nullable=False),
+            Column("created_time_ms", SLBigInteger, nullable=False),
             Column("squeak_hash", Binary(32), nullable=False),
             Column("payment_hash", Binary(32), unique=True, nullable=False),
             Column("secret_key", Binary(32), nullable=False),
@@ -191,8 +186,7 @@ class Models:
             "received_payment",
             self.metadata,
             Column("received_payment_id", SLBigInteger, primary_key=True),
-            Column("created", TZDateTime,
-                   server_default=func.now(), nullable=False),
+            Column("created_time_ms", SLBigInteger, nullable=False),
             Column("squeak_hash", Binary(32), nullable=False),
             Column("payment_hash", Binary(32), unique=True, nullable=False),
             Column("price_msat", Integer, nullable=False),

@@ -20,10 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import logging
+import time
 from contextlib import contextmanager
-from datetime import datetime
-from datetime import timedelta
-from datetime import timezone
 from typing import Iterator
 from typing import List
 from typing import Optional
@@ -110,19 +108,19 @@ class SqueakDb:
 
     @property
     def squeak_is_liked(self):
-        return self.squeaks.c.liked_time != None  # noqa: E711
+        return self.squeaks.c.liked_time_ms != None  # noqa: E711
 
     @property
     def squeak_is_not_liked(self):
-        return self.squeaks.c.liked_time == None  # noqa: E711
+        return self.squeaks.c.liked_time_ms == None  # noqa: E711
 
     @property
     def squeak_has_no_secret_key(self):
         return self.squeaks.c.secret_key == None  # noqa: E711
 
     def squeak_is_older_than_retention(self, interval_s):
-        return self.datetime_now - timedelta(seconds=interval_s) > \
-            self.squeaks.c.created
+        return self.timestamp_now_ms > \
+            self.squeaks.c.created_time_ms + interval_s * 1000
 
     @property
     def profile_has_private_key(self):
@@ -141,18 +139,15 @@ class SqueakDb:
         return self.received_offers.c.squeak_hash == None  # noqa: E711
 
     @property
-    def datetime_now(self):
-        return datetime.now(timezone.utc)
-
-    def datetime_from_timestamp(self, timestamp):
-        return datetime.fromtimestamp(timestamp, timezone.utc)
+    def timestamp_now_ms(self):
+        return int(time.time() * 1000)
 
     def received_offer_should_be_deleted(self):
         expire_time = (
             self.received_offers.c.invoice_timestamp
             + self.received_offers.c.invoice_expiry
         )
-        return self.datetime_now.timestamp() >= expire_time
+        return self.timestamp_now_ms / 1000 >= expire_time
 
     @property
     def received_offer_is_not_paid(self):
@@ -164,14 +159,15 @@ class SqueakDb:
             self.received_offers.c.invoice_timestamp
             + self.received_offers.c.invoice_expiry
         )
-        return self.datetime_now.timestamp() < expire_time
+        return self.timestamp_now_ms / 1000 < expire_time
 
     def sent_offer_should_be_deleted(self, interval_s):
         expire_time = (
             self.sent_offers.c.invoice_timestamp
             + self.sent_offers.c.invoice_expiry
+            + interval_s
         )
-        return self.datetime_now.timestamp() >= expire_time + interval_s
+        return self.timestamp_now_ms / 1000 >= expire_time
 
     @property
     def sent_offer_is_not_paid(self):
@@ -183,7 +179,7 @@ class SqueakDb:
             self.sent_offers.c.invoice_timestamp
             + self.sent_offers.c.invoice_expiry
         )
-        return self.datetime_now.timestamp() < expire_time
+        return self.timestamp_now_ms / 1000 < expire_time
 
     def insert_squeak(self, squeak: CSqueak, block_header: CBlockHeader) -> bytes:
         """ Insert a new squeak.
@@ -191,6 +187,7 @@ class SqueakDb:
         Return the hash (bytes) of the inserted squeak.
         """
         ins = self.squeaks.insert().values(
+            created_time_ms=self.timestamp_now_ms,
             hash=get_hash(squeak),
             squeak=squeak.serialize(),
             hash_reply_sqk=squeak.hashReplySqk if squeak.is_reply else None,
@@ -308,16 +305,15 @@ class SqueakDb:
             last_entry: Optional[SqueakEntry],
     ) -> List[SqueakEntry]:
         """ Get liked squeaks. """
-        last_liked_time = self.datetime_from_timestamp(
-            last_entry.liked_time) if last_entry else self.datetime_now
+        last_liked_time_ms = last_entry.liked_time_ms if last_entry else self.timestamp_now_ms
         last_squeak_hash = last_entry.squeak_hash if last_entry else MAX_HASH
         logger.info("""Liked squeaks db query with
         limit: {}
-        last_liked_time: {}
+        last_liked_time_ms: {}
         last_squeak_hash: {}
         """.format(
             limit,
-            last_liked_time,
+            last_liked_time_ms,
             last_squeak_hash.hex(),
         ))
         s = (
@@ -333,15 +329,15 @@ class SqueakDb:
             )
             .where(
                 tuple_(
-                    self.squeaks.c.liked_time,
+                    self.squeaks.c.liked_time_ms,
                     self.squeaks.c.hash,
                 ) < tuple_(
-                    last_liked_time,
+                    last_liked_time_ms,
                     last_squeak_hash,
                 )
             )
             .order_by(
-                self.squeaks.c.liked_time.desc(),
+                self.squeaks.c.liked_time_ms.desc(),
                 self.squeaks.c.hash.desc(),
             )
             .limit(limit)
@@ -657,6 +653,7 @@ class SqueakDb:
     def insert_profile(self, squeak_profile: SqueakProfile) -> int:
         """ Insert a new squeak profile. """
         ins = self.profiles.insert().values(
+            created_time_ms=self.timestamp_now_ms,
             profile_name=squeak_profile.profile_name,
             private_key=squeak_profile.private_key,
             address=squeak_profile.address,
@@ -823,7 +820,7 @@ class SqueakDb:
         stmt = (
             self.squeaks.update()
             .where(self.squeaks.c.hash == squeak_hash)
-            .values(liked_time=self.datetime_now)
+            .values(liked_time_ms=self.timestamp_now_ms)
         )
         with self.get_connection() as connection:
             connection.execute(stmt)
@@ -833,7 +830,7 @@ class SqueakDb:
         stmt = (
             self.squeaks.update()
             .where(self.squeaks.c.hash == squeak_hash)
-            .values(liked_time=None)
+            .values(liked_time_ms=None)
         )
         with self.get_connection() as connection:
             connection.execute(stmt)
@@ -849,6 +846,7 @@ class SqueakDb:
     def insert_peer(self, squeak_peer: SqueakPeer) -> int:
         """ Insert a new squeak peer. """
         ins = self.peers.insert().values(
+            created_time_ms=self.timestamp_now_ms,
             peer_name=squeak_peer.peer_name,
             host=squeak_peer.address.host,
             port=squeak_peer.address.port,
@@ -916,6 +914,7 @@ class SqueakDb:
     def insert_received_offer(self, received_offer: ReceivedOffer):
         """ Insert a new received offer. """
         ins = self.received_offers.insert().values(
+            created_time_ms=self.timestamp_now_ms,
             squeak_hash=received_offer.squeak_hash,
             payment_hash=received_offer.payment_hash,
             nonce=received_offer.nonce,
@@ -1028,6 +1027,7 @@ class SqueakDb:
     def insert_sent_payment(self, sent_payment: SentPayment):
         """ Insert a new sent payment. """
         ins = self.sent_payments.insert().values(
+            created_time_ms=self.timestamp_now_ms,
             peer_host=sent_payment.peer_address.host,
             peer_port=sent_payment.peer_address.port,
             squeak_hash=sent_payment.squeak_hash,
@@ -1048,7 +1048,7 @@ class SqueakDb:
             last_sent_payment: Optional[SentPayment],
     ) -> List[SentPayment]:
         """ Get all sent payments. """
-        last_created_time = last_sent_payment.created if last_sent_payment else self.datetime_now
+        last_created_time = last_sent_payment.created_time_ms if last_sent_payment else self.timestamp_now_ms
         last_payment_hash = last_sent_payment.payment_hash if last_sent_payment else MAX_HASH
         logger.info("""Get sent payments db query with
         limit: {}
@@ -1063,7 +1063,7 @@ class SqueakDb:
             select([self.sent_payments])
             .where(
                 tuple_(
-                    self.sent_payments.c.created,
+                    self.sent_payments.c.created_time_ms,
                     self.sent_payments.c.payment_hash,
                 ) < tuple_(
                     last_created_time,
@@ -1071,7 +1071,7 @@ class SqueakDb:
                 )
             )
             .order_by(
-                self.sent_payments.c.created.desc(),
+                self.sent_payments.c.created_time_ms.desc(),
                 self.sent_payments.c.payment_hash.desc(),
             )
             .limit(limit)
@@ -1099,6 +1099,7 @@ class SqueakDb:
     def insert_sent_offer(self, sent_offer: SentOffer):
         """ Insert a new sent offer. """
         ins = self.sent_offers.insert().values(
+            created_time_ms=self.timestamp_now_ms,
             squeak_hash=sent_offer.squeak_hash,
             payment_hash=sent_offer.payment_hash,
             secret_key=sent_offer.secret_key,
@@ -1118,7 +1119,7 @@ class SqueakDb:
     def get_sent_offers(self) -> List[SentOffer]:
         """ Get all received payments. """
         s = select([self.sent_offers]).order_by(
-            self.sent_offers.c.created.desc(),
+            self.sent_offers.c.created_time_ms.desc(),
         )
         with self.get_connection() as connection:
             result = connection.execute(s)
@@ -1204,6 +1205,7 @@ class SqueakDb:
     def insert_received_payment(self, received_payment: ReceivedPayment):
         """ Insert a new received payment. """
         ins = self.received_payments.insert().values(
+            created_time_ms=self.timestamp_now_ms,
             squeak_hash=received_payment.squeak_hash,
             payment_hash=received_payment.payment_hash,
             price_msat=received_payment.price_msat,
@@ -1222,7 +1224,7 @@ class SqueakDb:
     def get_received_payments(self) -> List[ReceivedPayment]:
         """ Get all received payments. """
         s = select([self.received_payments]).order_by(
-            self.received_payments.c.created.desc(),
+            self.received_payments.c.created_time_ms.desc(),
         )
         with self.get_connection() as connection:
             result = connection.execute(s)
@@ -1290,8 +1292,7 @@ class SqueakDb:
         is_locked = bool(secret_key_column)
         reply_to = (
             row["hash_reply_sqk"]) if row["hash_reply_sqk"] else None
-        liked_time = row["liked_time"]
-        liked_time_s = int(liked_time.timestamp()) if liked_time else None
+        liked_time_ms = row["liked_time_ms"]
         profile = self._try_parse_squeak_profile(row)
         return SqueakEntry(
             squeak_hash=(row["hash"]),
@@ -1302,7 +1303,7 @@ class SqueakDb:
             squeak_time=row["n_time"],
             reply_to=reply_to,
             is_unlocked=is_locked,
-            liked_time=liked_time_s,
+            liked_time_ms=liked_time_ms,
             content=row["content"],
             squeak_profile=profile,
         )
@@ -1362,7 +1363,7 @@ class SqueakDb:
     def _parse_sent_payment(self, row) -> SentPayment:
         return SentPayment(
             sent_payment_id=row["sent_payment_id"],
-            created=row[self.sent_payments.c.created],
+            created_time_ms=row[self.sent_payments.c.created_time_ms],
             peer_address=PeerAddress(
                 host=row["peer_host"],
                 port=row["peer_port"],
@@ -1395,7 +1396,7 @@ class SqueakDb:
     def _parse_received_payment(self, row) -> ReceivedPayment:
         return ReceivedPayment(
             received_payment_id=row["received_payment_id"],
-            created=row["created"],
+            created_time_ms=row["created_time_ms"],
             squeak_hash=(row["squeak_hash"]),
             payment_hash=(row["payment_hash"]),
             price_msat=row["price_msat"],

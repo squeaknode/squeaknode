@@ -20,8 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import logging
-from datetime import datetime
-from datetime import timezone
 
 from squeak.core import CSqueak
 
@@ -68,7 +66,7 @@ def squeak_entry_to_message(squeak_entry: SqueakEntry) -> squeak_admin_pb2.Squea
         author_address=squeak_entry.address,
         is_author_known=is_author_known,
         author=profile_msg,
-        liked_time_s=squeak_entry.liked_time,  # type: ignore
+        liked_time_ms=squeak_entry.liked_time_ms,  # type: ignore
     )
 
 
@@ -122,8 +120,8 @@ def offer_entry_to_message(received_offer: ReceivedOffer) -> squeak_admin_pb2.Of
 def sent_payment_to_message(sent_payment: SentPayment) -> squeak_admin_pb2.SentPayment:
     if sent_payment.sent_payment_id is None:
         raise Exception("Sent payment id cannot be None.")
-    if sent_payment.created is None:
-        raise Exception("Sent payment created time not found.")
+    if sent_payment.created_time_ms is None:
+        raise Exception("Sent payment created time ms not found.")
     return squeak_admin_pb2.SentPayment(
         sent_payment_id=sent_payment.sent_payment_id,
         squeak_hash=sent_payment.squeak_hash.hex(),
@@ -131,7 +129,7 @@ def sent_payment_to_message(sent_payment: SentPayment) -> squeak_admin_pb2.SentP
         price_msat=sent_payment.price_msat,
         node_pubkey=sent_payment.node_pubkey,
         valid=sent_payment.valid,
-        time_s=int(sent_payment.created.timestamp()),
+        time_ms=sent_payment.created_time_ms,
         peer_address=peer_address_to_message(sent_payment.peer_address)
     )
 
@@ -157,14 +155,14 @@ def sent_offer_to_message(sent_offer: SentOffer) -> squeak_admin_pb2.SentOffer:
 def received_payments_to_message(received_payment: ReceivedPayment) -> squeak_admin_pb2.ReceivedPayment:
     if received_payment.received_payment_id is None:
         raise Exception("Received payment id cannot be None.")
-    if received_payment.created is None:
-        raise Exception("Received payment created time not found.")
+    if received_payment.created_time_ms is None:
+        raise Exception("Received payment created time ms not found.")
     return squeak_admin_pb2.ReceivedPayment(
         received_payment_id=received_payment.received_payment_id,
         squeak_hash=received_payment.squeak_hash.hex(),
         payment_hash=received_payment.payment_hash.hex(),
         price_msat=received_payment.price_msat,
-        time_s=int(received_payment.created.timestamp()),
+        time_ms=received_payment.created_time_ms,
         peer_address=peer_address_to_message(received_payment.peer_address)
     )
 
@@ -219,7 +217,7 @@ def message_to_squeak_entry(squeak_entry: squeak_admin_pb2.SqueakDisplayEntry) -
             squeak_entry.reply_to) if squeak_entry.reply_to else None,
         is_unlocked=squeak_entry.is_unlocked,
         squeak_profile=None,  # TODO: message to squeak profile
-        liked_time=squeak_entry.liked_time_s,
+        liked_time_ms=squeak_entry.liked_time_ms,
         content=squeak_entry.content_str,
     )
 
@@ -227,7 +225,7 @@ def message_to_squeak_entry(squeak_entry: squeak_admin_pb2.SqueakDisplayEntry) -
 def message_to_sent_payment(sent_payment: squeak_admin_pb2.SentPayment) -> SentPayment:
     return SentPayment(
         sent_payment_id=sent_payment.sent_payment_id,
-        created=timestamp_to_datetime(sent_payment.time_s),
+        created_time_ms=sent_payment.time_ms,
         peer_address=message_to_peer_address(sent_payment.peer_address),
         squeak_hash=bytes.fromhex(sent_payment.squeak_hash),
         payment_hash=bytes.fromhex(sent_payment.payment_hash),
@@ -236,7 +234,3 @@ def message_to_sent_payment(sent_payment: squeak_admin_pb2.SentPayment) -> SentP
         node_pubkey=sent_payment.node_pubkey,
         valid=sent_payment.valid,
     )
-
-
-def timestamp_to_datetime(timestamp: int) -> datetime:
-    return datetime.fromtimestamp(timestamp, timezone.utc)

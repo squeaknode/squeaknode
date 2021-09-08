@@ -582,7 +582,7 @@ message SqueakDisplayEntry {
     SqueakProfile author = 12;
 
     /// Liked time
-    int64 liked_time_s = 13;
+    int64 liked_time_ms = 13;
 }
 
 message GetTimelineSqueakDisplaysRequest {
@@ -851,7 +851,7 @@ message SentPayment {
     bool valid = 6;
 
     /// Time of payment
-    int64 time_s = 7;
+    int64 time_ms = 7;
 
     /// The address of the squeak peer
     PeerAddress peer_address = 8;
@@ -948,7 +948,7 @@ message ReceivedPayment {
     int64 price_msat = 4;
 
     /// Time of payment
-    int64 time_s = 5;
+    int64 time_ms = 5;
 
     /// The address of the squeak peer
     PeerAddress peer_address = 6;

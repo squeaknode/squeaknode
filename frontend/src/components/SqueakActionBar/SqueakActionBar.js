@@ -224,7 +224,7 @@ export default function SqueakActionBar({
   }
 
   function LikeIconContent() {
-    if (squeak && !squeak.getLikedTimeS()) {
+    if (squeak && !squeak.getLikedTimeMs()) {
       return (
         <IconButton
           aria-label="like"
