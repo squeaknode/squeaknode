@@ -68,7 +68,8 @@ export default function TimelinePage() {
     getSqueaks(SQUEAKS_PER_PAGE, null);
   };
 
-  const handleLoadedTimeline = (loadedSqueaks) => {
+  const handleLoadedTimeline = (resp) => {
+    const loadedSqueaks = resp.getSqueakDisplayEntriesList();
     setWaitingForTimeline(false);
     setSqueaks((prevSqueaks) => {
       if (!prevSqueaks) {

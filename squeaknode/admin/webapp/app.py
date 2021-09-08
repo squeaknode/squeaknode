@@ -37,6 +37,7 @@ from flask_login import LoginManager
 from flask_login import logout_user
 from werkzeug.serving import make_server
 
+from proto import squeak_admin_pb2
 from squeaknode.admin.webapp.forms import LoginForm
 from squeaknode.admin.webapp.squeak_admin_web_user import User
 
@@ -117,6 +118,14 @@ def create_app(handler, username, password):
     def hello_world():
         logger.info("Getting hello route.")
         return "Hello, World!"
+
+    @app.route("/gettimelinesqueakdisplays", methods=["POST"])
+    @login_required
+    def gettimelinesqueakdisplays():
+        return handle_request(
+            squeak_admin_pb2.GetTimelineSqueakDisplaysRequest(),
+            handler.handle_get_timeline_squeak_display_entries,
+        )
 
     return app
 

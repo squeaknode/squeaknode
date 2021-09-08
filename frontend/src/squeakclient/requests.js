@@ -17,6 +17,7 @@ import {
 import {
   GetSqueakProfileRequest,
   GetTimelineSqueakDisplaysRequest,
+  GetTimelineSqueakDisplaysReply,
   SetSqueakProfileFollowingRequest,
   SetSqueakProfileUseCustomPriceRequest,
   SetSqueakProfileCustomPriceRequest,
@@ -113,17 +114,55 @@ export function getUserRequest(handleResponse) {
   });
 }
 
+function handleErrorResponse(response, route, handleError) {
+  response.text()
+  .then(function(data) {
+    console.error(data);
+    if (handleError) {
+      handleError(data);
+    }
+  });
+}
+
+function handleSuccessResponse(deserializeMsg, response, handleResponse) {
+  response.arrayBuffer()
+  .then(function(data) {
+    var response = deserializeMsg(data);
+    handleResponse(response);
+  });
+}
+
+function makeRequest(route, request, deserializeMsg, handleResponse, handleError) {
+  fetch(web_host_port + '/' + route, {
+    method: 'post',
+    body: request.serializeBinary()
+  }).then(function(response) {
+    if(response.ok) {
+      handleSuccessResponse(deserializeMsg, response, handleResponse);
+    } else {
+      handleErrorResponse(response, route, handleError);
+    }
+  });
+}
+
 export function getTimelineSqueakDisplaysRequest(limit, lastEntry, handleResponse, handleErr) {
   const request = new GetTimelineSqueakDisplaysRequest();
   request.setLimit(limit);
   request.setLastEntry(lastEntry);
-  client.getTimelineSqueakDisplays(request, {}, (err, response) => {
-    if (err) {
-      handleErr(err);
-    } else {
-      handleResponse(response.getSqueakDisplayEntriesList());
-    }
-  });
+  // client.getTimelineSqueakDisplays(request, {}, (err, response) => {
+  //   if (err) {
+  //     handleErr(err);
+  //   } else {
+  //     handleResponse(response.getSqueakDisplayEntriesList());
+  //   }
+  // });
+makeRequest(
+  'gettimelinesqueakdisplays',
+  request,
+  GetTimelineSqueakDisplaysReply.deserializeBinary,
+  handleResponse,
+  handleErr
+);
 }
 
 export function lndGetInfoRequest(handleResponse, handleErr) {
