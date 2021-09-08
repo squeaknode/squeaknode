@@ -114,35 +114,31 @@ export function getUserRequest(handleResponse) {
   });
 }
 
-function handleErrorResponse(response, route, handleError) {
-  response.text()
-  .then(function(data) {
-    console.error(data);
-    if (handleError) {
-      handleError(data);
-    }
-  });
-}
-
-function handleSuccessResponse(deserializeMsg, response, handleResponse) {
-  response.arrayBuffer()
-  .then(function(data) {
-    var response = deserializeMsg(data);
-    handleResponse(response);
-  });
-}
-
+/**
+ * Copied from here:
+ * https://gist.github.com/odewahn/5a5eeb23279eed6a80d7798fdb47fe91
+ */
 function makeRequest(route, request, deserializeMsg, handleResponse, handleError) {
   fetch(web_host_port + '/' + route, {
     method: 'post',
     body: request.serializeBinary()
-  }).then(function(response) {
-    if(response.ok) {
-      handleSuccessResponse(deserializeMsg, response, handleResponse);
+  })
+  .then( response => {
+    if (!response.ok) { throw response }
+    return response.arrayBuffer()  //we only get here if there is no error
+  })
+  .then( buffer => {
+    handleResponse(deserializeMsg(buffer))
+  })
+  .catch( err => {
+    if (err.text) {
+      err.text().then( errorMessage => {
+        handleError(errorMessage)
+      })
     } else {
-      handleErrorResponse(response, route, handleError);
+      handleError('Error.') // Hardcoded error here
     }
-  });
+  })
 }
 
 export function getTimelineSqueakDisplaysRequest(limit, lastEntry, handleResponse, handleErr) {

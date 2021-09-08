@@ -59,6 +59,7 @@ export default function TimelinePage() {
   };
 
   const alertFailedRequest = () => {
+    setWaitingForTimeline(false);
     alert('Failed to load timeline.');
   };
 
