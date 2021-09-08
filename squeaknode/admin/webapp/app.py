@@ -344,12 +344,28 @@ def create_app(handler, username, password):
             handler.handle_set_squeak_peer_uploading,
         )
 
+    @app.route("/setpeerautoconnect", methods=["POST"])
+    @login_required
+    def setpeerautoconnect():
+        return handle_request(
+            squeak_admin_pb2.SetPeerAutoconnectRequest(),
+            handler.handle_set_squeak_peer_autoconnect,
+        )
+
     @app.route("/renamepeer", methods=["POST"])
     @login_required
     def renamepeer():
         return handle_request(
             squeak_admin_pb2.RenamePeerRequest(),
             handler.handle_rename_squeak_peer,
+        )
+
+    @app.route("/getprofiles", methods=["POST"])
+    @login_required
+    def getprofiles():
+        return handle_request(
+            squeak_admin_pb2.GetProfilesRequest(),
+            handler.handle_get_signing_profiles,
         )
 
     @app.route("/getsigningprofiles", methods=["POST"])

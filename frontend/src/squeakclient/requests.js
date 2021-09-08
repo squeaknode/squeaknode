@@ -67,6 +67,7 @@ import {
   GetSqueakProfilePrivateKeyRequest,
   GetPaymentSummaryRequest,
   RenameSqueakProfileRequest,
+  RenameSqueakProfileReply,
   SetSqueakProfileImageRequest,
   ClearSqueakProfileImageRequest,
   ReprocessReceivedPaymentsRequest,
@@ -89,6 +90,15 @@ import {
   SubscribeAncestorSqueakDisplaysRequest,
   SubscribeSqueakDisplaysRequest,
   SubscribeTimelineSqueakDisplaysRequest,
+  SetSqueakProfileImageReply,
+  ClearSqueakProfileImageReply,
+  GetPeersReply,
+  PayOfferReply,
+  GetBuyOffersReply,
+  GetBuyOfferReply,
+  GetPeerReply,
+  SetPeerAutoconnectReply,
+  GetProfilesReply,
 } from '../proto/squeak_admin_pb';
 
 import { SqueakAdminClient } from '../proto/squeak_admin_grpc_web_pb';
@@ -146,6 +156,9 @@ function makeRequest(route, request, deserializeMsg, handleResponse, handleError
     handleResponse(deserializeMsg(buffer))
   })
   .catch( err => {
+    if (!handleError) {
+      return;
+    }
     if (err.text) {
       err.text().then( errorMessage => {
         handleError(errorMessage)
@@ -391,47 +404,68 @@ export function renameSqueakProfileRequest(id, profileName, handleResponse) {
   const request = new RenameSqueakProfileRequest();
   request.setProfileId(id);
   request.setProfileName(profileName);
-  client.renameSqueakProfile(request, {}, (err, response) => {
-    handleResponse(response);
-  });
+  makeRequest(
+    'renamesqueakprofile',
+    request,
+    RenameSqueakProfileReply.deserializeBinary,
+    handleResponse,
+  );
 }
 
 export function setSqueakProfileImageRequest(id, profileImage, handleResponse) {
   const request = new SetSqueakProfileImageRequest();
   request.setProfileId(id);
   request.setProfileImage(profileImage);
-  client.setSqueakProfileImage(request, {}, (err, response) => {
-    handleResponse(response);
-  });
+  makeRequest(
+    'setsqueakprofileimage',
+    request,
+    SetSqueakProfileImageReply.deserializeBinary,
+    handleResponse,
+  );
 }
 
 export function clearSqueakProfileImageRequest(id, handleResponse) {
   const request = new ClearSqueakProfileImageRequest();
   request.setProfileId(id);
-  client.clearSqueakProfileImage(request, {}, (err, response) => {
-    handleResponse(response);
-  });
+  makeRequest(
+    'clearsqueakprofileimage',
+    request,
+    ClearSqueakProfileImageReply.deserializeBinary,
+    handleResponse,
+  );
 }
 
 
 export function getPeersRequest(handleResponse) {
   const request = new GetPeersRequest();
-  client.getPeers(request, {}, (err, response) => {
-    handleResponse(response.getSqueakPeersList());
-  });
+  makeRequest(
+    'getpeers',
+    request,
+    GetPeersReply.deserializeBinary,
+    (response) => {
+      handleResponse(response.getSqueakPeersList());
+    }
+  );
 }
 
 export function payOfferRequest(offerId, handleResponse, handleErr) {
   const request = new PayOfferRequest();
   request.setOfferId(offerId);
-  client.payOffer(request, {}, (err, response) => {
-    if (err) {
-      handleErr(err);
-    }
-    if (response) {
-      handleResponse(response);
-    }
-  });
+  makeRequest(
+    'payoffer',
+    request,
+    PayOfferReply.deserializeBinary,
+    handleResponse,
+    handleErr,
+  );
+  // client.payOffer(request, {}, (err, response) => {
+  //   if (err) {
+  //     handleErr(err);
+  //   }
+  //   if (response) {
+  //     handleResponse(response);
+  //   }
+  // });
 }
 
 
@@ -439,41 +473,72 @@ export function payOfferRequest(offerId, handleResponse, handleErr) {
 export function getBuyOffersRequest(hash, handleResponse) {
   const request = new GetBuyOffersRequest();
   request.setSqueakHash(hash);
-  client.getBuyOffers(request, {}, (err, response) => {
-    handleResponse(response.getOffersList());
-  });
+  makeRequest(
+    'getbuyoffers',
+    request,
+    GetBuyOffersReply.deserializeBinary,
+    (response) => {
+      handleResponse(response.getOffersList());
+    }
+ );
 }
 
 export function getBuyOfferRequest(offerId, handleResponse) {
   const request = new GetBuyOfferRequest();
   request.setOfferId(offerId);
-  client.getBuyOffer(request, {}, (err, response) => {
-    handleResponse(response.getOffer());
-  });
+  makeRequest(
+    'getbuyoffer',
+    request,
+    GetBuyOfferReply.deserializeBinary,
+    (response) => {
+      handleResponse(response.getOffer());
+    }
+  );
 }
 
 export function getPeerRequest(id, handleResponse) {
   const request = new GetPeerRequest();
   request.setPeerId(id);
-  client.getPeer(request, {}, (err, response) => {
-    handleResponse(response.getSqueakPeer());
-  });
+  makeRequest(
+    'getpeer',
+    request,
+    GetPeerReply.deserializeBinary,
+    (response) => {
+      handleResponse(response.getSqueakPeer());
+    }
+  );
+  // client.getPeer(request, {}, (err, response) => {
+  //   handleResponse(response.getSqueakPeer());
+  // });
 }
 
 export function setPeerAutoconnectRequest(id, autoconnect, handleResponse) {
   const request = new SetPeerAutoconnectRequest();
   request.setPeerId(id);
   request.setAutoconnect(autoconnect);
-  client.setPeerAutoconnect(request, {}, (err, response) => {
-    handleResponse(response);
-  });
+  makeRequest(
+    'setpeerautoconnect',
+    request,
+    SetPeerAutoconnectReply.deserializeBinary,
+    (response) => {
+      handleResponse(response);
+    }
+  );
 }
 
 export function getProfilesRequest(handleResponse) {
   const request = new GetProfilesRequest();
-  client.getProfiles(request, {}, (err, response) => {
-    handleResponse(response.getSqueakProfilesList());
-  });
+  makeRequest(
+    'getprofiles',
+    request,
+    GetProfilesReply.deserializeBinary,
+    (response) => {
+      handleResponse(response.getSqueakProfilesList());
+    }
+  );
+  // client.getProfiles(request, {}, (err, response) => {
+  //   handleResponse(response.getSqueakProfilesList());
+  // });
 }
 
 export function getSigningProfilesRequest(handleResponse) {
