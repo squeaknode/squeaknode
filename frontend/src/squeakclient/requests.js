@@ -134,18 +134,8 @@ import {
   DisconnectPeerReply as DisconnectSqueakPeerReply,
 } from '../proto/squeak_admin_pb';
 
-import { SqueakAdminClient } from '../proto/squeak_admin_grpc_web_pb';
-
-console.log('Using SqueakAdminClient');
-
 console.log('The value of REACT_APP_DEV_MODE_ENABLED is:', Boolean(process.env.REACT_APP_DEV_MODE_ENABLED));
 const DEV_MODE_ENABLED = process.env.REACT_APP_DEV_MODE_ENABLED;
-
-const RPC_PROXY_PORT = 15081;
-
-const clientUrl = `http://${window.location.hostname}:${RPC_PROXY_PORT}`;
-console.log(`Using clientUrl: ${clientUrl}`);
-const client = new SqueakAdminClient(clientUrl);
 
 console.log('The value of REACT_APP_SERVER_PORT is:', process.env.REACT_APP_SERVER_PORT);
 const SERVER_PORT = process.env.REACT_APP_SERVER_PORT || window.location.port;
