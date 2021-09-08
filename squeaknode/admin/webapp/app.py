@@ -240,6 +240,22 @@ def create_app(handler, username, password):
             handler.handle_set_squeak_profile_following,
         )
 
+    @app.route("/setsqueakprofileusecustomprice", methods=["POST"])
+    @login_required
+    def setsqueakprofileusecustomprice():
+        return handle_request(
+            squeak_admin_pb2.SetSqueakProfileUseCustomPriceRequest(),
+            handler.handle_set_squeak_profile_use_custom_price,
+        )
+
+    @app.route("/setsqueakprofilecustomprice", methods=["POST"])
+    @login_required
+    def setsqueakprofilecustomprice():
+        return handle_request(
+            squeak_admin_pb2.SetSqueakProfileCustomPriceRequest(),
+            handler.handle_set_squeak_profile_custom_price,
+        )
+
     @app.route("/setsqueakprofilesharing", methods=["POST"])
     @login_required
     def setsqueakprofilesharing():

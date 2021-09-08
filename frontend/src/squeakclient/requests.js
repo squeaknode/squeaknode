@@ -27,11 +27,15 @@ import {
 } from '../proto/lnd_pb';
 import {
   GetSqueakProfileRequest,
+  GetSqueakProfileReply,
   GetTimelineSqueakDisplaysRequest,
   GetTimelineSqueakDisplaysReply,
   SetSqueakProfileFollowingRequest,
+  SetSqueakProfileFollowingReply,
   SetSqueakProfileUseCustomPriceRequest,
+  SetSqueakProfileUseCustomPriceReply,
   SetSqueakProfileCustomPriceRequest,
+  SetSqueakProfileCustomPriceReply,
   GetPeersRequest,
   PayOfferRequest,
   GetBuyOffersRequest,
@@ -334,36 +338,53 @@ export function lndSendCoins(address, amount, satperbyte, sendall, handleRespons
 export function getSqueakProfileRequest(id, handleResponse, handleErr) {
   const request = new GetSqueakProfileRequest();
   request.setProfileId(id);
-  client.getSqueakProfile(request, {}, (err, response) => {
-    handleResponse(response.getSqueakProfile());
-  });
+  makeRequest(
+    'getsqueakprofile',
+    request,
+    GetSqueakProfileReply.deserializeBinary,
+    (response) => {
+      handleResponse(response.getSqueakProfile());
+    }
+  );
+  // client.getSqueakProfile(request, {}, (err, response) => {
+  //   handleResponse(response.getSqueakProfile());
+  // });
 }
 
 export function setSqueakProfileFollowingRequest(id, following, handleResponse) {
   const request = new SetSqueakProfileFollowingRequest();
   request.setProfileId(id);
   request.setFollowing(following);
-  client.setSqueakProfileFollowing(request, {}, (err, response) => {
-    handleResponse(response);
-  });
+  makeRequest(
+    'setsqueakprofilefollowing',
+    request,
+    SetSqueakProfileFollowingReply.deserializeBinary,
+    handleResponse,
+  );
 }
 
 export function setSqueakProfileUseCustomPriceRequest(id, useCustomPrice, handleResponse) {
   const request = new SetSqueakProfileUseCustomPriceRequest();
   request.setProfileId(id);
   request.setUseCustomPrice(useCustomPrice);
-  client.setSqueakProfileUseCustomPrice(request, {}, (err, response) => {
-    handleResponse(response);
-  });
+  makeRequest(
+    'setsqueakprofileusecustomprice',
+    request,
+    SetSqueakProfileUseCustomPriceReply.deserializeBinary,
+    handleResponse,
+  );
 }
 
 export function setSqueakProfileCustomPriceRequest(id, customPriceMsat, handleResponse) {
   const request = new SetSqueakProfileCustomPriceRequest();
   request.setProfileId(id);
   request.setCustomPriceMsat(customPriceMsat);
-  client.setSqueakProfileCustomPrice(request, {}, (err, response) => {
-    handleResponse(response);
-  });
+  makeRequest(
+    'setsqueakprofilecustomprice',
+    request,
+    SetSqueakProfileCustomPriceReply.deserializeBinary,
+    handleResponse,
+  );
 }
 
 export function renameSqueakProfileRequest(id, profileName, handleResponse) {
