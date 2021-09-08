@@ -582,7 +582,7 @@ message SqueakDisplayEntry {
     SqueakProfile author = 12;
 
     /// Liked time
-    int64 liked_time_s = 13;
+    int64 liked_time_ms = 13;
 }
 
 message GetTimelineSqueakDisplaysRequest {

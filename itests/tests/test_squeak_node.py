@@ -869,7 +869,7 @@ def test_like_squeak(admin_stub, saved_squeak_hash):
     get_squeak_display_entry = get_squeak_display(
         admin_stub, saved_squeak_hash)
     assert (
-        get_squeak_display_entry.liked_time_s == 0
+        get_squeak_display_entry.liked_time_ms == 0
     )
 
     # Like the squeak
@@ -883,7 +883,7 @@ def test_like_squeak(admin_stub, saved_squeak_hash):
     get_squeak_display_entry = get_squeak_display(
         admin_stub, saved_squeak_hash)
     assert (
-        get_squeak_display_entry.liked_time_s > 0
+        get_squeak_display_entry.liked_time_ms > 0
     )
 
     # Unlike the squeak
@@ -897,7 +897,7 @@ def test_like_squeak(admin_stub, saved_squeak_hash):
     get_squeak_display_entry = get_squeak_display(
         admin_stub, saved_squeak_hash)
     assert (
-        get_squeak_display_entry.liked_time_s == 0
+        get_squeak_display_entry.liked_time_ms == 0
     )
 
 

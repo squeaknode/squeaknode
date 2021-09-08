@@ -23,7 +23,6 @@ import logging
 import time
 from contextlib import contextmanager
 from datetime import datetime
-from datetime import timedelta
 from datetime import timezone
 from typing import Iterator
 from typing import List
@@ -111,19 +110,19 @@ class SqueakDb:
 
     @property
     def squeak_is_liked(self):
-        return self.squeaks.c.liked_time != None  # noqa: E711
+        return self.squeaks.c.liked_time_ms != None  # noqa: E711
 
     @property
     def squeak_is_not_liked(self):
-        return self.squeaks.c.liked_time == None  # noqa: E711
+        return self.squeaks.c.liked_time_ms == None  # noqa: E711
 
     @property
     def squeak_has_no_secret_key(self):
         return self.squeaks.c.secret_key == None  # noqa: E711
 
     def squeak_is_older_than_retention(self, interval_s):
-        return self.datetime_now - timedelta(seconds=interval_s) > \
-            self.squeaks.c.created
+        return self.timestamp_now() > \
+            self.squeaks.c.created_time_ms + interval_s * 1000
 
     @property
     def profile_has_private_key(self):
@@ -195,6 +194,7 @@ class SqueakDb:
         Return the hash (bytes) of the inserted squeak.
         """
         ins = self.squeaks.insert().values(
+            created_time_ms=self.timestamp_now(),
             hash=get_hash(squeak),
             squeak=squeak.serialize(),
             hash_reply_sqk=squeak.hashReplySqk if squeak.is_reply else None,
@@ -312,16 +312,15 @@ class SqueakDb:
             last_entry: Optional[SqueakEntry],
     ) -> List[SqueakEntry]:
         """ Get liked squeaks. """
-        last_liked_time = self.datetime_from_timestamp(
-            last_entry.liked_time) if last_entry else self.datetime_now
+        last_liked_time_ms = last_entry.liked_time_ms if last_entry else self.timestamp_now()
         last_squeak_hash = last_entry.squeak_hash if last_entry else MAX_HASH
         logger.info("""Liked squeaks db query with
         limit: {}
-        last_liked_time: {}
+        last_liked_time_ms: {}
         last_squeak_hash: {}
         """.format(
             limit,
-            last_liked_time,
+            last_liked_time_ms,
             last_squeak_hash.hex(),
         ))
         s = (
@@ -337,15 +336,15 @@ class SqueakDb:
             )
             .where(
                 tuple_(
-                    self.squeaks.c.liked_time,
+                    self.squeaks.c.liked_time_ms,
                     self.squeaks.c.hash,
                 ) < tuple_(
-                    last_liked_time,
+                    last_liked_time_ms,
                     last_squeak_hash,
                 )
             )
             .order_by(
-                self.squeaks.c.liked_time.desc(),
+                self.squeaks.c.liked_time_ms.desc(),
                 self.squeaks.c.hash.desc(),
             )
             .limit(limit)
@@ -661,6 +660,7 @@ class SqueakDb:
     def insert_profile(self, squeak_profile: SqueakProfile) -> int:
         """ Insert a new squeak profile. """
         ins = self.profiles.insert().values(
+            created_time_ms=self.timestamp_now(),
             profile_name=squeak_profile.profile_name,
             private_key=squeak_profile.private_key,
             address=squeak_profile.address,
@@ -827,7 +827,7 @@ class SqueakDb:
         stmt = (
             self.squeaks.update()
             .where(self.squeaks.c.hash == squeak_hash)
-            .values(liked_time=self.datetime_now)
+            .values(liked_time_ms=self.timestamp_now())
         )
         with self.get_connection() as connection:
             connection.execute(stmt)
@@ -837,7 +837,7 @@ class SqueakDb:
         stmt = (
             self.squeaks.update()
             .where(self.squeaks.c.hash == squeak_hash)
-            .values(liked_time=None)
+            .values(liked_time_ms=None)
         )
         with self.get_connection() as connection:
             connection.execute(stmt)
@@ -853,6 +853,7 @@ class SqueakDb:
     def insert_peer(self, squeak_peer: SqueakPeer) -> int:
         """ Insert a new squeak peer. """
         ins = self.peers.insert().values(
+            created_time_ms=self.timestamp_now(),
             peer_name=squeak_peer.peer_name,
             host=squeak_peer.address.host,
             port=squeak_peer.address.port,
@@ -1298,8 +1299,7 @@ class SqueakDb:
         is_locked = bool(secret_key_column)
         reply_to = (
             row["hash_reply_sqk"]) if row["hash_reply_sqk"] else None
-        liked_time = row["liked_time"]
-        liked_time_s = int(liked_time.timestamp()) if liked_time else None
+        liked_time_ms = row["liked_time_ms"]
         profile = self._try_parse_squeak_profile(row)
         return SqueakEntry(
             squeak_hash=(row["hash"]),
@@ -1310,7 +1310,7 @@ class SqueakDb:
             squeak_time=row["n_time"],
             reply_to=reply_to,
             is_unlocked=is_locked,
-            liked_time=liked_time_s,
+            liked_time_ms=liked_time_ms,
             content=row["content"],
             squeak_profile=profile,
         )

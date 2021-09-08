@@ -66,7 +66,7 @@ def squeak_entry_to_message(squeak_entry: SqueakEntry) -> squeak_admin_pb2.Squea
         author_address=squeak_entry.address,
         is_author_known=is_author_known,
         author=profile_msg,
-        liked_time_s=squeak_entry.liked_time,  # type: ignore
+        liked_time_ms=squeak_entry.liked_time_ms,  # type: ignore
     )
 
 
@@ -217,7 +217,7 @@ def message_to_squeak_entry(squeak_entry: squeak_admin_pb2.SqueakDisplayEntry) -
             squeak_entry.reply_to) if squeak_entry.reply_to else None,
         is_unlocked=squeak_entry.is_unlocked,
         squeak_profile=None,  # TODO: message to squeak profile
-        liked_time=squeak_entry.liked_time_s,
+        liked_time_ms=squeak_entry.liked_time_ms,
         content=squeak_entry.content_str,
     )
 

@@ -27,7 +27,6 @@ from sqlalchemy import Binary
 from sqlalchemy import Boolean
 from sqlalchemy import Column
 from sqlalchemy import DateTime
-from sqlalchemy import func
 from sqlalchemy import Integer
 from sqlalchemy import MetaData
 from sqlalchemy import String
@@ -58,6 +57,9 @@ class TZDateTime(TypeDecorator):
         return value
 
 
+logger = logging.getLogger(__name__)
+
+
 class SLBigInteger(BigInteger):
     pass
 
@@ -81,8 +83,7 @@ class Models:
             "squeak",
             self.metadata,
             Column("hash", Binary(32), primary_key=True),
-            Column("created", TZDateTime,
-                   server_default=func.now(), nullable=False),
+            Column("created_time_ms", SLBigInteger, nullable=False),
             Column("squeak", Binary, nullable=False),
             Column("hash_reply_sqk", Binary(32), nullable=True),
             Column("hash_block", Binary(32), nullable=False),
@@ -91,8 +92,7 @@ class Models:
             Column("author_address", String(35), index=True, nullable=False),
             Column("secret_key", Binary(32), nullable=True),
             Column("block_time", Integer, nullable=False),
-            Column("liked_time", TZDateTime,
-                   default=None, nullable=True),
+            Column("liked_time_ms", SLBigInteger, default=None, nullable=True),
             Column("content", String(280), nullable=True),
         )
 

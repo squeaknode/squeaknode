@@ -35,5 +35,5 @@ class SqueakEntry(NamedTuple):
     reply_to: Optional[bytes]
     is_unlocked: bool
     squeak_profile: Optional[SqueakProfile]
-    liked_time: Optional[int] = None
+    liked_time_ms: Optional[int] = None
     content: Optional[str] = None
