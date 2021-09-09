@@ -158,7 +158,7 @@ export default function SentPayments() {
               }}
             >
               <ReplayIcon />
-              View more squeaks
+              View more
             </Button>
             )}
             {waitingForSentPayments && <CircularProgress size={48} className={classes.buttonProgress} />}

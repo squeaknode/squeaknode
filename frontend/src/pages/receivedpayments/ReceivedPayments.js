@@ -190,7 +190,7 @@ export default function ReceivedPayments() {
               }}
             >
               <ReplayIcon />
-              View more squeaks
+              View more
             </Button>
             )}
             {waitingForReceivedPayments && <CircularProgress size={48} className={classes.buttonProgress} />}
