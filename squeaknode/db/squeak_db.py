@@ -1221,10 +1221,41 @@ class SqueakDb:
             except sqlalchemy.exc.IntegrityError:
                 raise DuplicateReceivedPaymentError()
 
-    def get_received_payments(self) -> List[ReceivedPayment]:
+    def get_received_payments(
+            self,
+            limit: int,
+            last_received_payment: Optional[ReceivedPayment],
+    ) -> List[ReceivedPayment]:
         """ Get all received payments. """
-        s = select([self.received_payments]).order_by(
-            self.received_payments.c.created_time_ms.desc(),
+        last_created_time = last_received_payment.created_time_ms if last_received_payment else self.timestamp_now_ms
+        last_payment_hash = last_received_payment.payment_hash if last_received_payment else MAX_HASH
+        logger.info("""Get received payments db query with
+        limit: {}
+        last_created_time: {}
+        last_payment_hash: {}
+        """.format(
+            limit,
+            last_created_time,
+            last_payment_hash.hex(),
+        ))
+        s = (
+            select([self.received_payments])
+            .order_by(
+            )
+            .where(
+                tuple_(
+                    self.received_payments.c.created_time_ms,
+                    self.received_payments.c.payment_hash,
+                ) < tuple_(
+                    last_created_time,
+                    last_payment_hash,
+                )
+            )
+            .order_by(
+                self.received_payments.c.created_time_ms.desc(),
+                self.received_payments.c.payment_hash.desc(),
+            )
+            .limit(limit)
         )
         with self.get_connection() as connection:
             result = connection.execute(s)

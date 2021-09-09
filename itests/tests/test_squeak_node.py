@@ -664,7 +664,9 @@ def test_buy_squeak(
 
         # Get the received payment from the seller node
         get_received_payments_response = admin_stub.GetReceivedPayments(
-            squeak_admin_pb2.GetReceivedPaymentsRequest(),
+            squeak_admin_pb2.GetReceivedPaymentsRequest(
+                limit=100,
+            ),
         )
         # print(
         #     "get_received_payments_response: {}".format(

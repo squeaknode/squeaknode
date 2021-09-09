@@ -24,6 +24,7 @@ import logging
 from proto import squeak_admin_pb2
 from squeaknode.admin.messages import connected_peer_to_message
 from squeaknode.admin.messages import message_to_peer_address
+from squeaknode.admin.messages import message_to_received_payment
 from squeaknode.admin.messages import message_to_sent_payment
 from squeaknode.admin.messages import message_to_squeak_entry
 from squeaknode.admin.messages import offer_entry_to_message
@@ -698,8 +699,25 @@ class SqueakAdminServerHandler(object):
         )
 
     def handle_get_received_payments(self, request):
-        logger.info("Handle get received payments")
-        received_payments = self.squeak_controller.get_received_payments()
+        limit = request.limit
+        last_received_payment = message_to_received_payment(request.last_received_payment) if request.HasField(
+            "last_received_payment") else None
+        logger.info("""Handle get received payments with
+        limit: {}
+        last_received_payment: {}
+        """.format(
+            limit,
+            last_received_payment,
+        ))
+        received_payments = self.squeak_controller.get_received_payments(
+            limit,
+            last_received_payment,
+        )
+        logger.info(
+            "Got number of received payments: {}".format(
+                len(received_payments)
+            )
+        )
         received_payment_msgs = [
             received_payments_to_message(received_payment)
             for received_payment in received_payments

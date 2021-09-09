@@ -42,6 +42,7 @@ from squeaknode.core.block_range import BlockRange
 from squeaknode.core.offer import Offer
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.received_offer import ReceivedOffer
+from squeaknode.core.received_payment import ReceivedPayment
 from squeaknode.core.received_payment_summary import ReceivedPaymentSummary
 from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.sent_payment import SentPayment
@@ -431,8 +432,15 @@ class SqueakController:
     def get_sent_offers(self):
         return self.squeak_db.get_sent_offers()
 
-    def get_received_payments(self):
-        return self.squeak_db.get_received_payments()
+    def get_received_payments(
+            self,
+            limit: int,
+            last_received_payment: Optional[ReceivedPayment],
+    ) -> List[ReceivedPayment]:
+        return self.squeak_db.get_received_payments(
+            limit,
+            last_received_payment,
+        )
 
     def delete_all_expired_received_offers(self):
         num_expired_received_offers = self.squeak_db.delete_expired_received_offers()

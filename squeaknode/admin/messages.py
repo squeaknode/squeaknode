@@ -234,3 +234,15 @@ def message_to_sent_payment(sent_payment: squeak_admin_pb2.SentPayment) -> SentP
         node_pubkey=sent_payment.node_pubkey,
         valid=sent_payment.valid,
     )
+
+
+def message_to_received_payment(received_payment: squeak_admin_pb2.ReceivedPayment) -> ReceivedPayment:
+    return ReceivedPayment(
+        received_payment_id=received_payment.received_payment_id,
+        created_time_ms=received_payment.time_ms,
+        squeak_hash=bytes.fromhex(received_payment.squeak_hash),
+        payment_hash=bytes.fromhex(received_payment.payment_hash),
+        price_msat=received_payment.price_msat,
+        settle_index=0,  # TODO: This is not correct, fix later.
+        peer_address=message_to_peer_address(received_payment.peer_address),
+    )

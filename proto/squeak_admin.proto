@@ -927,6 +927,11 @@ message SentOffer {
 }
 
 message GetReceivedPaymentsRequest {
+    /// Limit number of results
+    int32 limit = 1;
+
+    /// Last entry
+    ReceivedPayment last_received_payment = 2;
 }
 
 message GetReceivedPaymentsReply {
