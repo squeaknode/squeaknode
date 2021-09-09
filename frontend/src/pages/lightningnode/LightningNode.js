@@ -407,7 +407,6 @@ export default function LightningNodePage() {
           <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
             <Tab label="Node Info" {...a11yProps(0)} />
             <Tab label="Channels" {...a11yProps(1)} />
-            <Tab label="Routes" {...a11yProps(2)} />
           </Tabs>
         </AppBar>
         <TabPanel value={value} index={0}>
@@ -415,9 +414,6 @@ export default function LightningNodePage() {
         </TabPanel>
         <TabPanel value={value} index={1}>
           {ChannelsContent()}
-        </TabPanel>
-        <TabPanel value={value} index={2}>
-          Show routes here
         </TabPanel>
       </>
     );
