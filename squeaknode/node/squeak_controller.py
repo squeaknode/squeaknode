@@ -39,6 +39,7 @@ from squeak.net import CInv
 from squeak.net import CSqueakLocator
 
 from squeaknode.core.block_range import BlockRange
+from squeaknode.core.lightning_address import LightningAddressHostPort
 from squeaknode.core.offer import Offer
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.received_offer import ReceivedOffer
@@ -193,10 +194,15 @@ class SqueakController:
         )
         if sent_offer is None:
             return None
+        lnd_external_address: Optional[LightningAddressHostPort] = None
+        if self.config.lnd.external_host:
+            lnd_external_address = LightningAddressHostPort(
+                host=self.config.lnd.external_host,
+                port=self.config.lnd.port,
+            )
         return self.squeak_core.package_offer(
             sent_offer,
-            self.config.lnd.external_host,
-            self.config.lnd.port,
+            lnd_external_address,
         )
 
     def get_sent_offer_for_peer(self, squeak_hash: bytes, peer_address: PeerAddress, price_msat: int) -> Optional[SentOffer]:
