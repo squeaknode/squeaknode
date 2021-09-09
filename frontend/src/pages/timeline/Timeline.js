@@ -80,14 +80,14 @@ export default function TimelinePage() {
     });
   };
 
-  const handleLoadedNewSqueak = (newSqueak) => {
-    setNewSqueaks((prevNewSqueaks) => {
-      if (!prevNewSqueaks) {
-        return [newSqueak];
-      }
-      return prevNewSqueaks.concat(newSqueak);
-    });
-  };
+  // const handleLoadedNewSqueak = (newSqueak) => {
+  //   setNewSqueaks((prevNewSqueaks) => {
+  //     if (!prevNewSqueaks) {
+  //       return [newSqueak];
+  //     }
+  //     return prevNewSqueaks.concat(newSqueak);
+  //   });
+  // };
 
   useEffect(() => {
     getSqueaks(SQUEAKS_PER_PAGE, null);

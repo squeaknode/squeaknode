@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Grid,
   Button,
@@ -6,12 +6,14 @@ import {
   Tab,
   AppBar,
   Box,
+  CircularProgress,
 } from '@material-ui/core';
 
 // styles
 import { makeStyles } from '@material-ui/core/styles';
 
 // components
+import ReplayIcon from '@material-ui/icons/Replay';
 import Widget from '../../components/Widget';
 import ReceivedPayment from '../../components/ReceivedPayment';
 
@@ -30,10 +32,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const RECEIVED_PAYMENTS_PER_PAGE = 10;
+
 export default function ReceivedPayments() {
   const classes = useStyles();
   const [value, setValue] = useState(0);
   const [receivedPayments, setReceivedPayments] = useState([]);
+  const [waitingForReceivedPayments, setWaitingForReceivedPayments] = React.useState(false);
 
   function a11yProps(index) {
     return {
@@ -46,9 +51,20 @@ export default function ReceivedPayments() {
     setValue(newValue);
   };
 
-  const loadReceivedPayments = () => {
-    getReceivedPaymentsRequest((receivedPaymentsReply) => {
-      setReceivedPayments(receivedPaymentsReply.getReceivedPaymentsList());
+  const loadReceivedPayments = useCallback((limit, lastReceivedPayment) => {
+    setWaitingForReceivedPayments(true);
+    getReceivedPaymentsRequest(limit, lastReceivedPayment, handleLoadedReceivedPayments);
+  },
+  []);
+
+  const handleLoadedReceivedPayments = (reply) => {
+    const loadedReceivedPayments = reply.getReceivedPaymentsList();
+    setWaitingForReceivedPayments(false);
+    setReceivedPayments((prevReceivedPayments) => {
+      if (!prevReceivedPayments) {
+        return loadedReceivedPayments;
+      }
+      return prevReceivedPayments.concat(loadedReceivedPayments);
     });
   };
 
@@ -59,8 +75,8 @@ export default function ReceivedPayments() {
   };
 
   useEffect(() => {
-    loadReceivedPayments();
-  }, []);
+    loadReceivedPayments(RECEIVED_PAYMENTS_PER_PAGE, null);
+  }, [loadReceivedPayments]);
 
   function TabPanel(props) {
     const {
@@ -118,7 +134,6 @@ export default function ReceivedPayments() {
   }
 
   function ReceivedPaymentsContent() {
-    console.log(`receivedPayments: ${receivedPayments}`);
     return (
       <>
         <Grid container spacing={4}>
@@ -153,7 +168,35 @@ export default function ReceivedPayments() {
           {PaymentsTabs()}
         </Grid>
         <Grid item xs={12} sm={3} />
+        {ViewMoreReceivedPaymentsButton()}
       </Grid>
+    );
+  }
+
+  function ViewMoreReceivedPaymentsButton() {
+    return (
+      <>
+        <Grid item xs={12}>
+          <div className={classes.wrapper}>
+            {!waitingForReceivedPayments
+            && (
+            <Button
+              variant="contained"
+              color="primary"
+              disabled={waitingForReceivedPayments}
+              onClick={() => {
+                const latestReceivedPayment = receivedPayments.slice(-1).pop();
+                loadReceivedPayments(RECEIVED_PAYMENTS_PER_PAGE, latestReceivedPayment);
+              }}
+            >
+              <ReplayIcon />
+              View more squeaks
+            </Button>
+            )}
+            {waitingForReceivedPayments && <CircularProgress size={48} className={classes.buttonProgress} />}
+          </div>
+        </Grid>
+      </>
     );
   }
 

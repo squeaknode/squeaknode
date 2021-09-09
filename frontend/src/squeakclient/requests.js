@@ -899,8 +899,10 @@ export function getSentPaymentsRequest(limit, lastSentPayment, handleResponse) {
   // });
 }
 
-export function getReceivedPaymentsRequest(handleResponse) {
+export function getReceivedPaymentsRequest(limit, lastReceivedPayment, handleResponse) {
   const request = new GetReceivedPaymentsRequest();
+  request.setLimit(limit);
+  request.setLastReceivedPayment(lastReceivedPayment);
   makeRequest(
     'getreceivedpayments',
     request,
