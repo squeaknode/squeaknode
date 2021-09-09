@@ -29,7 +29,7 @@ from squeak.messages import msg_subscribe
 from squeaknode.network.peer import Peer
 from squeaknode.network.peer_message_handler import PeerMessageHandler
 
-HANDSHAKE_TIMEOUT = 5
+HANDSHAKE_TIMEOUT = 30
 
 
 logger = logging.getLogger(__name__)
