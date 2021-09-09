@@ -50,7 +50,7 @@ class NetworkManager(object):
 
     def __init__(self, config):
         self.config = config
-        self.local_ip = self.config.node.p2p_hidden_service_address or socket.gethostbyname(
+        self.local_ip = self.config.node.external_address or socket.gethostbyname(
             'localhost')
         self.local_port = self.config.server.rpc_port or squeak.params.params.DEFAULT_PORT
         self.peer_server = None
