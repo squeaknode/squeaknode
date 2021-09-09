@@ -42,6 +42,7 @@ from tests.util import download_squeaks
 from tests.util import download_squeaks_for_address
 from tests.util import get_connected_peer
 from tests.util import get_connected_peers
+from tests.util import get_external_address
 from tests.util import get_hash
 from tests.util import get_network
 from tests.util import get_squeak_display
@@ -61,6 +62,15 @@ def test_get_network(admin_stub):
     network = get_network(admin_stub)
 
     assert network == "simnet"
+
+
+def test_get_external_address(admin_stub):
+    # Get the external address
+    external_address = get_external_address(admin_stub)
+
+    print(external_address)
+    assert external_address.host is not None and len(external_address.host) > 0
+    assert external_address.port > 0
 
 
 def test_reprocess_received_payments(admin_stub):

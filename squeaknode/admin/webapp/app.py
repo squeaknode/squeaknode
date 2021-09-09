@@ -648,6 +648,14 @@ def create_app(handler, username, password):
             handler.handle_disconnect_peer,
         )
 
+    @app.route("/getexternaladdress", methods=["POST"])
+    @login_required
+    def getexternaladdress():
+        return handle_request(
+            squeak_admin_pb2.GetExternalAddressRequest(),
+            handler.handle_get_external_address,
+        )
+
     return app
 
 

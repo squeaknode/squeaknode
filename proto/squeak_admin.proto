@@ -316,6 +316,10 @@ service SqueakAdmin {
   */
   rpc SubscribeTimelineSqueakDisplays (SubscribeTimelineSqueakDisplaysRequest) returns (stream GetSqueakDisplayReply) {}
 
+  /** sqkadmin: `getexternaladdress`
+  */
+  rpc GetExternalAddress (GetExternalAddressRequest) returns (GetExternalAddressReply) {}
+
 }
 
 message CreateSigningProfileRequest {
@@ -1131,5 +1135,13 @@ message SubscribeSqueakDisplaysRequest {
 }
 
 message SubscribeTimelineSqueakDisplaysRequest {
+}
+
+message GetExternalAddressRequest {
+}
+
+message GetExternalAddressReply {
+    /// Peer address
+    PeerAddress peer_address = 1;
 }
 

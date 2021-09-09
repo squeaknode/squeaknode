@@ -287,6 +287,13 @@ def get_network(node_stub):
     return get_network_response.network
 
 
+def get_external_address(node_stub):
+    get_external_address_response = node_stub.GetExternalAddress(
+        squeak_admin_pb2.GetExternalAddressRequest()
+    )
+    return get_external_address_response.peer_address
+
+
 def make_squeak(node_stub, profile_id, squeak_content, reply_to_hash=None):
     make_squeak_response = node_stub.MakeSqueak(
         squeak_admin_pb2.MakeSqueakRequest(

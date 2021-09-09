@@ -809,3 +809,6 @@ class SqueakController:
             if str(item.GetAddress()) in set(followed_addresses):
                 squeak_hash = get_hash(item)
                 yield self.get_squeak_entry(squeak_hash)
+
+    def get_external_address(self) -> PeerAddress:
+        return self.network_manager.external_address

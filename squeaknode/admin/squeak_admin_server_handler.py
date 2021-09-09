@@ -29,6 +29,7 @@ from squeaknode.admin.messages import message_to_sent_payment
 from squeaknode.admin.messages import message_to_squeak_entry
 from squeaknode.admin.messages import offer_entry_to_message
 from squeaknode.admin.messages import payment_summary_to_message
+from squeaknode.admin.messages import peer_address_to_message
 from squeaknode.admin.messages import received_payments_to_message
 from squeaknode.admin.messages import sent_offer_to_message
 from squeaknode.admin.messages import sent_payment_to_message
@@ -1026,3 +1027,11 @@ class SqueakAdminServerHandler(object):
                 yield squeak_admin_pb2.GetSqueakDisplayReply(
                     squeak_display_entry=display_message
                 )
+
+    def handle_get_external_address(self, request):
+        logger.info("Handle get external address")
+        external_address = self.squeak_controller.get_external_address()
+        external_address_msg = peer_address_to_message(external_address)
+        return squeak_admin_pb2.GetExternalAddressReply(
+            peer_address=external_address_msg,
+        )
