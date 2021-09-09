@@ -365,7 +365,7 @@ def create_app(handler, username, password):
     def getprofiles():
         return handle_request(
             squeak_admin_pb2.GetProfilesRequest(),
-            handler.handle_get_signing_profiles,
+            handler.handle_get_profiles,
         )
 
     @app.route("/getsigningprofiles", methods=["POST"])
