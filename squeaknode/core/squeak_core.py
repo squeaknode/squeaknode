@@ -198,7 +198,8 @@ class SqueakCore:
         logger.info("Packaging offer with uris: {}".format(uris))
         for uri in uris:
             pubkey, address = uri.split("@")
-            host, port = address.split(":")
+            host, port_str = address.split(":")
+            port = int(port_str)
             return LightningAddressHostPort(
                 host=host,
                 port=port,
