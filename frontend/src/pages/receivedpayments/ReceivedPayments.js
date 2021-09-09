@@ -13,10 +13,9 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 
 // components
+import ReplayIcon from '@material-ui/icons/Replay';
 import Widget from '../../components/Widget';
 import ReceivedPayment from '../../components/ReceivedPayment';
-
-import ReplayIcon from '@material-ui/icons/Replay';
 
 // data
 
