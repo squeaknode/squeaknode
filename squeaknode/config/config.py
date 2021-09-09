@@ -118,8 +118,6 @@ class WebadminConfig(Config):
 class NodeConfig(Config):
     network = key(
         cast=str, required=False, default=DEFAULT_NETWORK)
-    default_peer_rpc_port = key(
-        cast=int, required=False, default=DEFAULT_SERVER_RPC_PORT)
     price_msat = key(
         cast=int, required=False, default=DEFAULT_PRICE_MSAT)
     max_squeaks = key(
@@ -146,6 +144,8 @@ class NodeConfig(Config):
         cast=str, required=False, default="")
     tor_proxy_port = key(
         cast=int, required=False, default=0)
+    p2p_hidden_service_address = key(
+        cast=str, required=False, default="")
 
 
 @section('db')
