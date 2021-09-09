@@ -23,9 +23,11 @@ import base64
 
 from pkg_resources import resource_stream
 
+IMAGE_PATH = "icon.png"
+
 
 def load_default_profile_image():
-    return resource_stream(__name__, 'default_profile_image.jpg').read()
+    return resource_stream(__name__, IMAGE_PATH).read()
 
 
 def bytes_to_base64_string(data: bytes) -> str:
