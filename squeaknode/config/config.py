@@ -144,7 +144,7 @@ class NodeConfig(Config):
         cast=str, required=False, default="")
     tor_proxy_port = key(
         cast=int, required=False, default=0)
-    p2p_hidden_service_address = key(
+    external_address = key(
         cast=str, required=False, default="")
 
 
