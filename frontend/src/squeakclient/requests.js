@@ -123,6 +123,8 @@ import {
   GetConnectedPeerReply,
   ConnectPeerReply as ConnectSqueakPeerReply,
   DisconnectPeerReply as DisconnectSqueakPeerReply,
+  GetExternalAddressRequest,
+  GetExternalAddressReply,
 } from '../proto/squeak_admin_pb';
 
 console.log('The value of REACT_APP_DEV_MODE_ENABLED is:', Boolean(process.env.REACT_APP_DEV_MODE_ENABLED));
@@ -1095,6 +1097,21 @@ export function disconnectSqueakPeerRequest(host, port, handleResponse) {
   );
   // client.disconnectPeer(request, {}, (err, response) => {
   //   handleResponse(response);
+  // });
+}
+
+export function getExternalAddressRequest(handleResponse) {
+  const request = new GetExternalAddressRequest();
+  makeRequest(
+    'getexternaladdress',
+    request,
+    GetExternalAddressReply.deserializeBinary,
+    (response) => {
+      handleResponse(response.getPeerAddress());
+    },
+  );
+  // client.getNetwork(request, {}, (err, response) => {
+  //   handleResponse(response.getNetwork());
   // });
 }
 

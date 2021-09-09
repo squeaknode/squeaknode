@@ -25,6 +25,7 @@ import {
   getPeersRequest,
   getConnectedPeersRequest,
   // subscribeConnectedPeersRequest,
+  getExternalAddressRequest,
 } from '../../squeakclient/requests';
 
 const useStyles = makeStyles((theme) => ({
@@ -42,6 +43,7 @@ export default function Peers() {
   const [createPeerDialogOpen, setCreatePeerDialogOpen] = useState(false);
   const [connectPeerDialogOpen, setConnectPeerDialogOpen] = useState(false);
   const [value, setValue] = useState(0);
+  const [externalAddress, setExternalAddress] = useState(null);
 
   function a11yProps(index) {
     return {
@@ -56,6 +58,10 @@ export default function Peers() {
 
   const getConnectedPeers = () => {
     getConnectedPeersRequest(setConnectedPeers);
+  };
+
+  const getExternalAddress = () => {
+    getExternalAddressRequest(setExternalAddress);
   };
 
   // const subscribeConnectedPeers = () => subscribeConnectedPeersRequest(setConnectedPeers);
@@ -89,6 +95,9 @@ export default function Peers() {
   // }, []);
   useEffect(() => {
     getSqueakPeers();
+  }, []);
+  useEffect(() => {
+    getExternalAddress();
   }, []);
 
   function TabPanel(props) {
@@ -154,6 +163,9 @@ export default function Peers() {
         <Box
           p={1}
         >
+          <Typography variant="h5" component="h5">
+            {`External Address: ${externalAddress && externalAddress.getHost()}:${externalAddress && externalAddress.getPort()}`}
+          </Typography>
           <Typography variant="h5" component="h5">
             {`Number of connected peers: ${connectedPeers.length}`}
           </Typography>
