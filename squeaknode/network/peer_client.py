@@ -28,7 +28,7 @@ import socks
 from squeaknode.core.peer_address import PeerAddress
 
 
-SOCKET_CONNECT_TIMEOUT = 5
+SOCKET_CONNECT_TIMEOUT = 30
 
 
 logger = logging.getLogger(__name__)
