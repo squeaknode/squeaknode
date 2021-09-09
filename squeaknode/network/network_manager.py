@@ -144,7 +144,7 @@ class NetworkManager(object):
     @property
     def external_address(self) -> PeerAddress:
         return PeerAddress(
-            self.external_host,
+            self.external_host or self.local_ip,
             self.local_port,
         )
 
