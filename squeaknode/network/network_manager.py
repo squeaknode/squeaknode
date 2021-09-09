@@ -50,8 +50,8 @@ class NetworkManager(object):
 
     def __init__(self, config):
         self.config = config
-        self.local_ip = self.config.node.external_address or socket.gethostbyname(
-            'localhost')
+        self.external_host = self.config.node.external_address
+        self.local_ip = socket.gethostbyname('localhost')
         self.local_port = self.config.server.rpc_port or squeak.params.params.DEFAULT_PORT
         self.peer_server = None
         self.peer_client = None
@@ -144,7 +144,7 @@ class NetworkManager(object):
     @property
     def external_address(self) -> PeerAddress:
         return PeerAddress(
-            self.local_ip,
+            self.external_host,
             self.local_port,
         )
 
