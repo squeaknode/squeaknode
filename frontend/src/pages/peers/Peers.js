@@ -18,6 +18,7 @@ import CreatePeerDialog from '../../components/CreatePeerDialog';
 import ConnectPeerDialog from '../../components/ConnectPeerDialog';
 import PeerListItem from '../../components/PeerListItem';
 import SavedPeerListItem from '../../components/SavedPeerListItem';
+import ShowExternalAddressDialog from '../../components/ShowExternalAddressDialog';
 
 // data
 
@@ -43,7 +44,7 @@ export default function Peers() {
   const [createPeerDialogOpen, setCreatePeerDialogOpen] = useState(false);
   const [connectPeerDialogOpen, setConnectPeerDialogOpen] = useState(false);
   const [value, setValue] = useState(0);
-  const [externalAddress, setExternalAddress] = useState(null);
+  const [showExternalAddressDialogOpen, setShowExternalAddressDialogOpen] = useState(false);
 
   function a11yProps(index) {
     return {
@@ -58,10 +59,6 @@ export default function Peers() {
 
   const getConnectedPeers = () => {
     getConnectedPeersRequest(setConnectedPeers);
-  };
-
-  const getExternalAddress = () => {
-    getExternalAddressRequest(setExternalAddress);
   };
 
   // const subscribeConnectedPeers = () => subscribeConnectedPeersRequest(setConnectedPeers);
@@ -86,6 +83,14 @@ export default function Peers() {
     setConnectPeerDialogOpen(false);
   };
 
+  const handleClickOpenShowExternalAddressDialog = () => {
+    setShowExternalAddressDialogOpen(true);
+  };
+
+  const handleCloseShowExternalAddressDialog = () => {
+    setShowExternalAddressDialogOpen(false);
+  };
+
   useEffect(() => {
     getConnectedPeers();
   }, []);
@@ -96,9 +101,7 @@ export default function Peers() {
   useEffect(() => {
     getSqueakPeers();
   }, []);
-  useEffect(() => {
-    getExternalAddress();
-  }, []);
+
 
   function TabPanel(props) {
     const {
@@ -157,15 +160,31 @@ export default function Peers() {
     );
   }
 
+  function ShowExternalAddressButton() {
+    return (
+      <>
+        <Grid item xs={12}>
+          <div className={classes.root}>
+            <Button
+              variant="contained"
+              onClick={() => {
+                handleClickOpenShowExternalAddressDialog();
+              }}
+            >
+              Show External Address
+            </Button>
+          </div>
+        </Grid>
+      </>
+    );
+  }
+
   function PeersCountSummary() {
     return (
       <Grid item xs={12}>
         <Box
           p={1}
         >
-          <Typography variant="h5" component="h5">
-            {`External Address: ${externalAddress && externalAddress.getHost()}:${externalAddress && externalAddress.getPort()}`}
-          </Typography>
           <Typography variant="h5" component="h5">
             {`Number of connected peers: ${connectedPeers.length}`}
           </Typography>
@@ -238,6 +257,7 @@ export default function Peers() {
           <Grid item xs={12}>
             <Widget disableWidgetMenu>
               {ConnectPeerButton()}
+              {ShowExternalAddressButton()}
               {PeersCountSummary()}
               {PeersGridItem()}
             </Widget>
@@ -284,6 +304,17 @@ export default function Peers() {
     );
   }
 
+  function ShowExternalAddressDialogContent() {
+    return (
+      <>
+        <ShowExternalAddressDialog
+          open={showExternalAddressDialogOpen}
+          handleClose={handleCloseShowExternalAddressDialog}
+        />
+      </>
+    );
+  }
+
   function GridContent() {
     return (
       <Grid container spacing={0}>
@@ -300,6 +331,7 @@ export default function Peers() {
       {GridContent()}
       {CreatePeerDialogContent()}
       {ConnectPeerDialogContent()}
+      {ShowExternalAddressDialogContent()}
     < />
   );
 }
