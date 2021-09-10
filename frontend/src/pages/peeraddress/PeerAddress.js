@@ -202,9 +202,9 @@ export default function PeerAddressPage() {
   return (
     <>
       {AddressContent()}
-      {waitingForConnectedPeer ?
-         WaitingIndicator():
-         ConnectionContent()}
+      {waitingForConnectedPeer
+        ? WaitingIndicator()
+        : ConnectionContent()}
     </>
   );
 }
