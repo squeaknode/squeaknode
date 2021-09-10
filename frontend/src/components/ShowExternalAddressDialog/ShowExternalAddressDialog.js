@@ -4,8 +4,6 @@ import {
   DialogTitle,
   DialogContent,
   TextField,
-  DialogActions,
-  Button,
 } from '@material-ui/core';
 
 // styles
@@ -23,7 +21,6 @@ export default function ShowExternalAddressDialog({
   const classes = useStyles();
 
   const [externalAddress, setExternalAddress] = useState(null);
-
 
   const resetFields = () => {
     setExternalAddress(null);

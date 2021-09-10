@@ -25,8 +25,6 @@ import ShowExternalAddressDialog from '../../components/ShowExternalAddressDialo
 import {
   getPeersRequest,
   getConnectedPeersRequest,
-  // subscribeConnectedPeersRequest,
-  getExternalAddressRequest,
 } from '../../squeakclient/requests';
 
 const useStyles = makeStyles((theme) => ({
@@ -101,7 +99,6 @@ export default function Peers() {
   useEffect(() => {
     getSqueakPeers();
   }, []);
-
 
   function TabPanel(props) {
     const {
