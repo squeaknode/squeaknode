@@ -4,6 +4,7 @@ import {
   Grid,
   Button,
   Box,
+  CircularProgress,
 } from '@material-ui/core';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -30,9 +31,11 @@ export default function PeerAddressPage() {
   const classes = useStyles();
   const { host, port } = useParams();
   const [connectedPeer, setConnectedPeer] = useState(null);
+  const [waitingForConnectedPeer, setWaitingForConnectedPeer] = useState(false);
 
   const getConnectedPeer = useCallback(() => {
-    getConnectedPeerRequest(host, port, setConnectedPeer);
+    setWaitingForConnectedPeer(true);
+    getConnectedPeerRequest(host, port, handleLoadedConnectedPeer);
   },
   [host, port]);
 
@@ -48,6 +51,11 @@ export default function PeerAddressPage() {
   //   const stream = subscribeConnectedPeer();
   //   return () => stream.cancel();
   // }, [subscribeConnectedPeer]);
+
+  const handleLoadedConnectedPeer = (resp) => {
+    setWaitingForConnectedPeer(false);
+    setConnectedPeer(resp);
+  };
 
   function DisconnectPeerButton() {
     return (
@@ -160,7 +168,7 @@ export default function PeerAddressPage() {
     );
   }
 
-  function PeerConnectionContent() {
+  function PeerConnectionInfoContent() {
     console.log(connectedPeer);
     return (
       <Card
@@ -175,12 +183,28 @@ export default function PeerAddressPage() {
     );
   }
 
+  function ConnectionContent() {
+    return (
+      <>
+        {ConnectionStatusContent()}
+        {ConnectionActionContent()}
+        {(connectedPeer) && PeerConnectionInfoContent()}
+      </>
+    );
+  }
+
+  function WaitingIndicator() {
+    return (
+      <CircularProgress size={48} className={classes.buttonProgress} />
+    );
+  }
+
   return (
     <>
       {AddressContent()}
-      {ConnectionStatusContent()}
-      {ConnectionActionContent()}
-      {(connectedPeer) && PeerConnectionContent()}
+      {waitingForConnectedPeer ?
+         WaitingIndicator():
+         ConnectionContent()}
     </>
   );
 }
