@@ -119,12 +119,7 @@ class PeerMessageHandler:
 
     def handle_getaddr(self, msg):
         # TODO: Get known peers from table in database.
-        peers = self.squeak_controller.get_connected_peers()
-        addresses = [
-            peer.remote_caddress for peer in peers
-            if peer.remote_caddress != self.peer.remote_caddress
-        ]
-        addr_msg = msg_addr(addrs=addresses)
+        addr_msg = msg_addr(addrs=[])
         self.peer.send_msg(addr_msg)
 
     def handle_inv(self, msg):
