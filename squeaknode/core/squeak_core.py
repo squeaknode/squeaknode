@@ -193,8 +193,7 @@ class SqueakCore:
             Optional[LightningAddressHostPort]: The host and port of the lnd node if possible.
         """
         info = self.lightning_client.get_info()
-        uris = info.uris
-        for uri in uris:
+        for uri in info.uris:
             pubkey, address = uri.split("@")
             host, port_str = address.split(":")
             port = int(port_str)
