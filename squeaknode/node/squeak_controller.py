@@ -228,11 +228,7 @@ class SqueakController:
 
     def get_price_for_squeak(self, squeak: CSqueak) -> int:
         squeak_address = str(squeak.GetAddress())
-        logger.info(
-            "Looking for profile with address: {}".format(squeak_address))
         squeak_profile = self.get_squeak_profile_by_address(squeak_address)
-        logger.info(
-            "Checking price for squeak with profile: {}".format(squeak_profile))
         if squeak_profile is not None and squeak_profile.use_custom_price:
             return squeak_profile.custom_price_msat
         return self.config.node.price_msat
