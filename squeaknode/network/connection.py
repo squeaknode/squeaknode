@@ -45,11 +45,11 @@ class Connection(object):
 
     @contextmanager
     def connect(self, connection_manager):
-        self.start_receiving_msgs()
-        self.handshake()
-        logger.debug("Adding peer.")
-        connection_manager.add_peer(self.peer)
         try:
+            self.start_receiving_msgs()
+            self.handshake()
+            logger.debug("Adding peer.")
+            connection_manager.add_peer(self.peer)
             logger.debug("Yielding peer.")
             yield self
         except Exception:
