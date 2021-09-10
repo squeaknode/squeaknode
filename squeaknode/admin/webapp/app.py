@@ -87,7 +87,8 @@ def create_app(handler, username, password):
         logger.info("Trying to login")
         if current_user.is_authenticated:
             return redirect(url_for("index"))
-        form = LoginForm()
+        default_username = request.args.get('user')
+        form = LoginForm(username=default_username)
         if form.validate_on_submit():
             user = valid_user.get_user_by_username(form.username.data)
             if user is None or not user.check_password(form.password.data):
