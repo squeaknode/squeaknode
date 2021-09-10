@@ -55,9 +55,6 @@ class SqueakNode:
 
     def _initialize(self):
         # Print some configs
-        logger.info("Config server rpc port: {}".format(
-            self.config.server.rpc_port))
-
         self.initialize_network()
         self.initialize_db()
         self.initialize_lightning_client()

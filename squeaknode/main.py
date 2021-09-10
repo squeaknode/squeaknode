@@ -83,14 +83,6 @@ def main():
     config = SqueaknodeConfig(args.config)
     config.read()
     logger.info("config: {}".format(config))
-    logger.info("bitcoin rpc host: {}, rpc port: {}, rpc user: {}, rpc pass: {}, rpc use_ssl: {}, rpc ssl cert: {}".format(
-        config.bitcoin.rpc_host,
-        config.bitcoin.rpc_port,
-        config.bitcoin.rpc_user,
-        config.bitcoin.rpc_pass,
-        config.bitcoin.rpc_use_ssl,
-        config.bitcoin.rpc_ssl_cert,
-    ))
 
     # Set the log level again
     level = config.node.log_level
