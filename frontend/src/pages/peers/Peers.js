@@ -47,7 +47,6 @@ export default function Peers() {
   const [waitingForConnectedPeers, setWaitingForConnectedPeers] = useState(false);
   const [waitingForPeers, setWaitingForPeers] = useState(false);
 
-
   function a11yProps(index) {
     return {
       id: `simple-tab-${index}`,
@@ -261,9 +260,9 @@ export default function Peers() {
             : ConnectedPeersContent()}
         </TabPanel>
         <TabPanel value={value} index={1}>
-        {waitingForPeers
-          ? WaitingIndicator()
-          : SavedPeersContent()}
+          {waitingForPeers
+            ? WaitingIndicator()
+            : SavedPeersContent()}
         </TabPanel>
       </>
     );
