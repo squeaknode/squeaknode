@@ -22,10 +22,6 @@ export default function ShowExternalAddressDialog({
 
   const [externalAddress, setExternalAddress] = useState(null);
 
-  const resetFields = () => {
-    setExternalAddress(null);
-  };
-
   const getExternalAddress = () => {
     getExternalAddressRequest(setExternalAddress);
   };
