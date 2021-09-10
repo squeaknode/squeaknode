@@ -128,11 +128,15 @@ class NetworkManager(object):
 
         logger.debug(
             'Setting up connection for peer address {} ...'.format(address))
-        with Connection(peer, squeak_controller).connect(
-                self.connection_manager
-        ) as connection:
-            connection.handle_connection()
-        logger.debug('Stopped connection for peer address {}.'.format(address))
+        try:
+            with Connection(peer, squeak_controller).connect(
+                    self.connection_manager
+            ) as connection:
+                connection.handle_connection()
+        finally:
+            peer.stop()
+            logger.debug(
+                'Stopped connection for peer address {}.'.format(address))
 
     @property
     def local_address(self) -> PeerAddress:
