@@ -697,6 +697,7 @@ export function createContactProfileRequest(profileName, squeakAddress, handleRe
     (response) => {
       handleResponse(response);
     },
+    handleErr,
   );
   // client.createContactProfile(request, {}, (err, response) => {
   //   handleResponse(response);
