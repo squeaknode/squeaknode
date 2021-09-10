@@ -17,4 +17,4 @@ pyzmq
 requests
 SQLAlchemy
 squeakpy==0.7.3
-typed-config
+typed-config==0.2.5

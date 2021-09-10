@@ -79,18 +79,8 @@ def main():
     level = args.log_level.upper()
     logging.getLogger().setLevel(level)
 
-    logger.info("Starting squeaknode...")
     config = SqueaknodeConfig(args.config)
     config.read()
-    logger.info("config: {}".format(config))
-    logger.info("bitcoin rpc host: {}, rpc port: {}, rpc user: {}, rpc pass: {}, rpc use_ssl: {}, rpc ssl cert: {}".format(
-        config.bitcoin.rpc_host,
-        config.bitcoin.rpc_port,
-        config.bitcoin.rpc_user,
-        config.bitcoin.rpc_pass,
-        config.bitcoin.rpc_use_ssl,
-        config.bitcoin.rpc_ssl_cert,
-    ))
 
     # Set the log level again
     level = config.node.log_level
@@ -100,14 +90,15 @@ def main():
 
 
 def run_node(config):
+    logger.info("Config: {}".format(config))
     signal(SIGTERM, handler)
     signal(SIGINT, handler)
     signal(SIGHUP, handler)
     squeak_node = SqueakNode(config)
-    print('Starting Squeaknode...')
+    logger.info("Starting squeaknode...")
     squeak_node.start_running()
     stop_event.wait()
-    print('Shutting down Squeaknode...')
+    logger.info('Shutting down Squeaknode...')
     squeak_node.stop_running()
 
 
