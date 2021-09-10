@@ -94,7 +94,8 @@ class ConnectionManager(object):
         """
         with self.peers_lock:
             if not self.has_connection(peer.remote_address):
-                return
+                logger.debug('Failed to remove peer {}'.format(peer))
+                raise MissingPeerError()
             del self._peers[peer.remote_address]
             logger.debug('Removed peer {}'.format(peer))
             self.on_peers_changed()
