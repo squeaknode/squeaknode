@@ -7,6 +7,7 @@ import {
   AppBar,
   Box,
   Typography,
+  CircularProgress,
 } from '@material-ui/core';
 
 // styles
@@ -43,6 +44,9 @@ export default function Peers() {
   const [connectPeerDialogOpen, setConnectPeerDialogOpen] = useState(false);
   const [value, setValue] = useState(0);
   const [showExternalAddressDialogOpen, setShowExternalAddressDialogOpen] = useState(false);
+  const [waitingForConnectedPeers, setWaitingForConnectedPeers] = useState(false);
+  const [waitingForPeers, setWaitingForPeers] = useState(false);
+
 
   function a11yProps(index) {
     return {
@@ -56,13 +60,21 @@ export default function Peers() {
   };
 
   const getConnectedPeers = () => {
-    getConnectedPeersRequest(setConnectedPeers);
+    setWaitingForConnectedPeers(true);
+    getConnectedPeersRequest((resp) => {
+      setWaitingForConnectedPeers(false);
+      setConnectedPeers(resp);
+    });
   };
 
   // const subscribeConnectedPeers = () => subscribeConnectedPeersRequest(setConnectedPeers);
 
   const getSqueakPeers = () => {
-    getPeersRequest(setPeers);
+    setWaitingForPeers(true);
+    getPeersRequest((resp) => {
+      setWaitingForPeers(false);
+      setPeers(resp);
+    });
   };
 
   const handleClickOpenCreatePeerDialog = () => {
@@ -228,6 +240,12 @@ export default function Peers() {
     );
   }
 
+  function WaitingIndicator() {
+    return (
+      <CircularProgress size={48} className={classes.buttonProgress} />
+    );
+  }
+
   function PeersTabs() {
     return (
       <>
@@ -238,10 +256,14 @@ export default function Peers() {
           </Tabs>
         </AppBar>
         <TabPanel value={value} index={0}>
-          {ConnectedPeersContent()}
+          {waitingForConnectedPeers
+            ? WaitingIndicator()
+            : ConnectedPeersContent()}
         </TabPanel>
         <TabPanel value={value} index={1}>
-          {SavedPeersContent()}
+        {waitingForPeers
+          ? WaitingIndicator()
+          : SavedPeersContent()}
         </TabPanel>
       </>
     );
