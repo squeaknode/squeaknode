@@ -74,7 +74,7 @@ export default function BuySqueakDialog({
   };
 
   const handlePayErr = (err) => {
-    alert(`Payment failure: ${err.message}`);
+    alert(`Payment failure: ${err}`);
     setLoading(false);
     handleClose();
   };
