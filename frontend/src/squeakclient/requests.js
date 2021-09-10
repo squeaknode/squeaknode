@@ -374,6 +374,7 @@ export function getSqueakProfileRequest(id, handleResponse, handleErr) {
     (response) => {
       handleResponse(response.getSqueakProfile());
     },
+    handleErr,
   );
   // client.getSqueakProfile(request, {}, (err, response) => {
   //   handleResponse(response.getSqueakProfile());
@@ -596,6 +597,7 @@ export function makeSqueakRequest(profileId, content, replyto, handleResponse, h
     (response) => {
       handleResponse(response);
     },
+    handleErr,
   );
   // client.makeSqueak(request, {}, (err, response) => {
   //   handleResponse(response);
@@ -697,6 +699,7 @@ export function createContactProfileRequest(profileName, squeakAddress, handleRe
     (response) => {
       handleResponse(response);
     },
+    handleErr,
   );
   // client.createContactProfile(request, {}, (err, response) => {
   //   handleResponse(response);
@@ -713,6 +716,7 @@ export function createSigningProfileRequest(profileName, handleResponse, handleE
     (response) => {
       handleResponse(response);
     },
+    handleErr,
   );
   // client.createSigningProfile(request, {}, (err, response) => {
   //   handleResponse(response);
@@ -730,6 +734,7 @@ export function importSigningProfileRequest(profileName, privateKey, handleRespo
     (response) => {
       handleResponse(response);
     },
+    handleErr,
   );
   // client.importSigningProfile(request, {}, (err, response) => {
   //   handleResponse(response);
@@ -1022,6 +1027,7 @@ export function getLikedSqueakDisplaysRequest(limit, lastEntry, handleResponse, 
     (response) => {
       handleResponse(response.getSqueakDisplayEntriesList());
     },
+    handleErr,
   );
   // client.getLikedSqueakDisplays(request, {}, (err, response) => {
   //   handleResponse(response.getSqueakDisplayEntriesList());
