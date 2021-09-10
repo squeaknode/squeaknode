@@ -120,6 +120,7 @@ setup(
         'flask-cors',
         'alembic',
         'PySocks',
+        'typed-config>=0.2.2,<2.3.0',
     ],
     extras_require={"test": ["pytest", "coverage"]},
     entry_points={
