@@ -20,7 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import logging
-import queue
 import socket
 import threading
 import time
@@ -81,14 +80,14 @@ class Peer(object):
         self._num_bytes_received = 0
         self._num_msgs_sent = 0
         self._num_bytes_sent = 0
-        self._recv_msg_queue: queue.Queue = queue.Queue()
 
         self._subscription = None
 
         self.msg_receiver = MessageReceiver(
             self._peer_socket,
-            self._recv_msg_queue,
         )
+        self.received_msgs_iter = self.msg_receiver.recv_msgs()
+
         self.peer_changed_listener = peer_changed_listener
 
     @property
@@ -204,14 +203,15 @@ class Peer(object):
 
         This method blocks when the socket has no data to read.
         """
-        msg = self._recv_msg_queue.get()
+        # msg = self._recv_msg_queue.get()
+        msg = next(self.received_msgs_iter)
         self.record_msg_received(msg)
         self.on_peer_updated()
         logger.info('Received msg {} from {}'.format(msg, self))
         return msg
 
-    def recv_msgs(self):
-        self.msg_receiver.recv_msgs()
+    # def recv_msgs(self):
+    #     self.msg_receiver.recv_msgs()
 
     def stop(self):
         logger.info("Stopping peer socket: {}".format(self._peer_socket))
@@ -333,32 +333,34 @@ class MessageDecoder:
 
 
 class MessageReceiver:
-    """Reads bytes from the socket and puts messages in the receive queue.
+    """Reads bytes from the socket and return decoded messages in an iterator.
     """
 
-    def __init__(self, socket, queue):
+    def __init__(self, socket):
         self.socket = socket
-        self.queue = queue
         self.decoder = MessageDecoder()
 
-    def _recv_msgs(self):
+    def recv_msgs(self):
         while True:
             try:
                 recv_data = self.socket.recv(SOCKET_READ_LEN)
             except Exception:
                 logger.error("Error in recv")
-                self.queue.put(None)
+                # self.queue.put(None)
+                yield None
                 raise Exception('Peer disconnected')
             if not recv_data:
                 logger.error("revc_data is None")
-                self.queue.put(None)
+                # self.queue.put(None)
+                yield None
                 raise Exception('Peer disconnected')
 
             for msg in self.decoder.process_recv_data(recv_data):
-                self.queue.put(msg)
+                # self.queue.put(msg)
+                yield msg
 
-    def recv_msgs(self):
-        try:
-            self._recv_msgs()
-        except Exception:
-            logger.info('Failed to receive msg from {}'.format(self))
+    # def recv_msgs(self):
+    #     try:
+    #         self._recv_msgs()
+    #     except Exception:
+    #         logger.info('Failed to receive msg from {}'.format(self))
