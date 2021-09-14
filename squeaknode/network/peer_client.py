@@ -51,17 +51,34 @@ class PeerClient(object):
             peer_socket.settimeout(SOCKET_CONNECT_TIMEOUT)
             peer_socket.connect(address)
             peer_socket.setblocking(True)
-            self.peer_handler.handle_connection(
-                peer_socket, address, outgoing=True)
+            self.handle_connection(
+                peer_socket,
+                address,
+                outgoing=True,
+            )
         except Exception:
             logger.exception('Failed to make connection to {}'.format(address))
 
     def connect_address(self, address: PeerAddress):
         """Connect to new address."""
-        logger.info('Connecting to peer with address {}'.format(address))
+        # logger.info('Connecting to peer with address {}'.format(address))
+        # threading.Thread(
+        #     target=self.make_connection,
+        #     args=(address,),
+        #     name="peer_client_connection_thread",
+        # ).start()
+        self.make_connection(address)
+
+    def handle_connection(
+            self,
+            peer_socket: socket.socket,
+            peer_address: PeerAddress,
+            outgoing: bool,
+    ):
+        """Handle a newly connected peer socket."""
         threading.Thread(
-            target=self.make_connection,
-            args=(address,),
+            target=self.peer_handler.handle_connection,
+            args=(peer_socket, peer_address, outgoing),
             name="peer_client_connection_thread",
         ).start()
 
