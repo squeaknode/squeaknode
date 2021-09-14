@@ -73,10 +73,15 @@ export default function ConnectPeerDialog({
     setPort(event.target.value);
   };
 
+  const handleConnectPeerError = (err) => {
+    alert(`Connect peer failure: ${err}`);
+  };
+
   const connectPeer = (peerName, host, port) => {
     connectSqueakPeerRequest(host, port, (response) => {
       // goToPeerPage(history, response.getPeerId());
-    });
+    },
+    handleConnectPeerError);
   };
 
   function handleSubmit(event) {

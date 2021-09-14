@@ -57,6 +57,10 @@ export default function PeerAddressPage() {
     setConnectedPeer(resp);
   };
 
+  const handleConnectPeerError = (err) => {
+    alert(`Connect peer failure: ${err}`);
+  };
+
   function DisconnectPeerButton() {
     return (
       <>
@@ -66,8 +70,9 @@ export default function PeerAddressPage() {
               variant="contained"
               onClick={() => {
                 disconnectSqueakPeerRequest(host, port, () => {
-                // TODO: nothing maybe
-                });
+                  // TODO: nothing maybe
+                },
+                handleConnectPeerError);
               }}
             >
               Disconnect Peer
