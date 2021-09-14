@@ -78,12 +78,6 @@ class Connection(object):
         getaddr_msg = msg_getaddr()
         self.peer.send_msg(getaddr_msg)
 
-    # def start_receiving_msgs(self):
-    #     threading.Thread(
-    #         target=self.peer.recv_msgs,
-    #         args=(),
-    #     ).start()
-
     def handshake(self):
         timer = HandshakeTimer(
             self.peer.stop,
