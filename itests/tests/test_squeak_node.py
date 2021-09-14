@@ -959,6 +959,20 @@ def test_connect_peer(admin_stub, other_admin_stub):
         assert len(item) == 0
 
 
+def test_connect_invalid_peer_address(admin_stub):
+    with pytest.raises(Exception) as excinfo:
+        # Try to connect the peer and fail
+        admin_stub.ConnectPeer(
+            squeak_admin_pb2.ConnectPeerRequest(
+                peer_address=squeak_admin_pb2.PeerAddress(
+                    host="fake_peer_host_56789",
+                    port=12345,
+                )
+            )
+        )
+    assert "Name or service not known" in str(excinfo.value)
+
+
 def test_get_squeak_by_lookup(
     admin_stub,
     other_admin_stub,

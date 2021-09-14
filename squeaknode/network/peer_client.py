@@ -58,6 +58,7 @@ class PeerClient(object):
             )
         except Exception:
             logger.exception('Failed to make connection to {}'.format(address))
+            raise
 
     def connect_address(self, address: PeerAddress):
         """Connect to new address."""
