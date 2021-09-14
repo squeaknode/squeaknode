@@ -45,7 +45,6 @@ class Connection(object):
 
     @contextmanager
     def connect(self, connection_manager):
-        self.start_receiving_msgs()
         self.handshake()
         logger.debug("Adding peer.")
         connection_manager.add_peer(self.peer)
@@ -78,12 +77,6 @@ class Connection(object):
     def update_addrs(self):
         getaddr_msg = msg_getaddr()
         self.peer.send_msg(getaddr_msg)
-
-    def start_receiving_msgs(self):
-        threading.Thread(
-            target=self.peer.recv_msgs,
-            args=(),
-        ).start()
 
     def handshake(self):
         timer = HandshakeTimer(
