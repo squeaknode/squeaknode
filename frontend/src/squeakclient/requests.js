@@ -1068,7 +1068,7 @@ export function getConnectedPeerRequest(host, port, handleResponse) {
   // });
 }
 
-export function connectSqueakPeerRequest(host, port, handleResponse) {
+export function connectSqueakPeerRequest(host, port, handleResponse, handleErr) {
   const request = new ConnectSqueakPeerRequest();
   const peerAddress = new PeerAddress();
   peerAddress.setHost(host);
@@ -1081,6 +1081,7 @@ export function connectSqueakPeerRequest(host, port, handleResponse) {
     (response) => {
       handleResponse(response);
     },
+    handleErr,
   );
   // client.connectPeer(request, {}, (err, response) => {
   //   handleResponse(response);
