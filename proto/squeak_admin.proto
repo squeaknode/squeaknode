@@ -148,6 +148,10 @@ service SqueakAdmin {
   */
   rpc GetAddressSqueakDisplays (GetAddressSqueakDisplaysRequest) returns (GetAddressSqueakDisplaysReply) {}
 
+  /** sqkadmin: `getsearchsqueakdisplays`
+  */
+  rpc GetSearchSqueakDisplays (GetSearchSqueakDisplaysRequest) returns (GetSearchSqueakDisplaysReply) {}
+
   /** sqkadmin: `getancestorsqueakdisplays`
   */
   rpc GetAncestorSqueakDisplays (GetAncestorSqueakDisplaysRequest) returns (GetAncestorSqueakDisplaysReply) {}
@@ -614,6 +618,22 @@ message GetAddressSqueakDisplaysRequest {
 }
 
 message GetAddressSqueakDisplaysReply {
+    /// Multiple squeak display entries
+    repeated SqueakDisplayEntry squeak_display_entries = 1;
+}
+
+message GetSearchSqueakDisplaysRequest {
+    /// The search text
+    string search_text = 1;
+
+    /// Limit number of results
+    int32 limit = 2;
+
+    /// Last entry
+    SqueakDisplayEntry last_entry = 3;
+}
+
+message GetSearchSqueakDisplaysReply {
     /// Multiple squeak display entries
     repeated SqueakDisplayEntry squeak_display_entries = 1;
 }

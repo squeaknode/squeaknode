@@ -433,6 +433,14 @@ def create_app(handler, username, password):
             handler.handle_get_squeak_display_entries_for_address,
         )
 
+    @app.route("/getsearchsqueakdisplays", methods=["POST"])
+    @login_required
+    def getsearchsqueakdisplays():
+        return handle_request(
+            squeak_admin_pb2.GetSearchSqueakDisplaysRequest(),
+            handler.handle_get_squeak_display_entries_for_text_search,
+        )
+
     @app.route("/createcontactprofile", methods=["POST"])
     @login_required
     def createcontactprofile():

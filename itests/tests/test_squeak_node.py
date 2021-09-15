@@ -1060,3 +1060,29 @@ def test_subscribe_squeaks(
         assert (
             get_squeak_display_entry.content_str == make_squeak_content
         )
+
+
+def test_search(admin_stub, signing_profile_id):
+    make_squeak_content = "Just some random weird text."
+    make_squeak_hash = make_squeak(
+        admin_stub, signing_profile_id, make_squeak_content)
+    assert len(make_squeak_hash) == 32 * 2
+
+    # Get all squeak displays for the given search text.
+    get_search_squeak_display_response = admin_stub.GetSearchSqueakDisplays(
+        squeak_admin_pb2.GetSearchSqueakDisplaysRequest(
+            search_text="Weird",
+            limit=100,
+        ),
+    )
+    assert len(get_search_squeak_display_response.squeak_display_entries) == 1
+
+    # Get all squeak displays for other search text that shouldn't be there.
+    get_missing_search_squeak_display_response = admin_stub.GetSearchSqueakDisplays(
+        squeak_admin_pb2.GetSearchSqueakDisplaysRequest(
+            search_text="strange",
+            limit=100,
+        ),
+    )
+    assert len(
+        get_missing_search_squeak_display_response.squeak_display_entries) == 0

@@ -513,6 +513,18 @@ class SqueakController:
             last_entry,
         )
 
+    def get_squeak_entries_for_text_search(
+            self,
+            search_text: str,
+            limit: int,
+            last_entry: Optional[SqueakEntry],
+    ) -> List[SqueakEntry]:
+        return self.squeak_db.get_squeak_entries_for_text_search(
+            search_text,
+            limit,
+            last_entry,
+        )
+
     def get_ancestor_squeak_entries(self, squeak_hash: bytes) -> List[SqueakEntry]:
         return self.squeak_db.get_thread_ancestor_squeak_entries(
             squeak_hash,
