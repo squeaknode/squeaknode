@@ -1,6 +1,6 @@
 # squeaknode
 
-Node for Squeak protocol
+Node for [Squeak protocol](https://github.com/yzernik/squeak/blob/master/docs/PROTOCOL.md)
 
 ### Run a node:
 
