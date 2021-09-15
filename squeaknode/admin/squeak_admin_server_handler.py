@@ -401,6 +401,38 @@ class SqueakAdminServerHandler(object):
             squeak_display_entries=squeak_display_msgs
         )
 
+    def handle_get_squeak_display_entries_for_text_search(self, request):
+        search_text = request.search_text
+        limit = request.limit
+        last_entry = message_to_squeak_entry(request.last_entry) if request.HasField(
+            "last_entry") else None
+        logger.info("""Handle get squeak display entries for search_text: {} with
+        limit: {}
+        last_entry: {}
+        """.format(
+            search_text,
+            limit,
+            last_entry,
+        ))
+        squeak_entries = (
+            self.squeak_controller.get_squeak_entries_for_text_search(
+                search_text,
+                limit,
+                last_entry,
+            )
+        )
+        logger.info(
+            "Got number of squeak entries for text search: {}".format(
+                len(squeak_entries)
+            )
+        )
+        squeak_display_msgs = [
+            squeak_entry_to_message(entry) for entry in squeak_entries
+        ]
+        return squeak_admin_pb2.GetAddressSqueakDisplaysReply(
+            squeak_display_entries=squeak_display_msgs
+        )
+
     def handle_get_ancestor_squeak_display_entries(self, request):
         squeak_hash_str = request.squeak_hash
         squeak_hash = bytes.fromhex(squeak_hash_str)

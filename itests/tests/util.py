@@ -205,6 +205,16 @@ def create_saved_peer(node_stub, name, host, port):
     return create_peer_response.peer_id
 
 
+def get_search_squeaks(node_stub, search_text):
+    get_search_squeak_display_response = node_stub.GetSearchSqueakDisplays(
+        squeak_admin_pb2.GetSearchSqueakDisplaysRequest(
+            search_text=search_text,
+            limit=100,
+        ),
+    )
+    return get_search_squeak_display_response.squeak_display_entries
+
+
 @contextmanager
 def subscribe_connected_peers(node_stub):
     q = queue.Queue()

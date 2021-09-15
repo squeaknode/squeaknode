@@ -45,6 +45,7 @@ from tests.util import get_connected_peers
 from tests.util import get_external_address
 from tests.util import get_hash
 from tests.util import get_network
+from tests.util import get_search_squeaks
 from tests.util import get_squeak_display
 from tests.util import get_squeak_profile
 from tests.util import import_signing_profile
@@ -1060,3 +1061,24 @@ def test_subscribe_squeaks(
         assert (
             get_squeak_display_entry.content_str == make_squeak_content
         )
+
+
+def test_search(admin_stub, signing_profile_id):
+    make_squeak_content = "Just some random weird text."
+    make_squeak_hash = make_squeak(
+        admin_stub, signing_profile_id, make_squeak_content)
+    assert len(make_squeak_hash) == 32 * 2
+
+    # Get all squeak displays for the given search text.
+    search_results = get_search_squeaks(
+        admin_stub,
+        "Weird",
+    )
+    assert len(search_results) == 1
+
+    # Get all squeak displays for other search text that shouldn't be there.
+    missing_search_results = get_search_squeaks(
+        admin_stub,
+        "strange",
+    )
+    assert len(missing_search_results) == 0

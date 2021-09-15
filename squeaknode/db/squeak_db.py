@@ -357,12 +357,14 @@ class SqueakDb:
         last_block_height = last_entry.block_height if last_entry else MAX_INT
         last_squeak_time = last_entry.squeak_time if last_entry else MAX_INT
         last_squeak_hash = last_entry.squeak_hash if last_entry else MAX_HASH
-        logger.info("""Timeline db query with
+        logger.info("""Address db query with
+        address: {}
         limit: {}
         block_height: {}
         squeak_time: {}
         squeak_hash: {}
         """.format(
+            address,
             limit,
             last_block_height,
             last_squeak_time,
@@ -377,6 +379,61 @@ class SqueakDb:
                 )
             )
             .where(self.squeaks.c.author_address == address)
+            .where(
+                tuple_(
+                    self.squeaks.c.n_block_height,
+                    self.squeaks.c.n_time,
+                    self.squeaks.c.hash,
+                ) < tuple_(
+                    last_block_height,
+                    last_squeak_time,
+                    last_squeak_hash,
+                )
+            )
+            .order_by(
+                self.squeaks.c.n_block_height.desc(),
+                self.squeaks.c.n_time.desc(),
+                self.squeaks.c.hash.desc(),
+            )
+            .limit(limit)
+        )
+        with self.get_connection() as connection:
+            result = connection.execute(s)
+            rows = result.fetchall()
+            return [self._parse_squeak_entry(row) for row in rows]
+
+    def get_squeak_entries_for_text_search(
+            self,
+            search_text: str,
+            limit: int,
+            last_entry: Optional[SqueakEntry],
+    ) -> List[SqueakEntry]:
+        """ Get a squeak. """
+        last_block_height = last_entry.block_height if last_entry else MAX_INT
+        last_squeak_time = last_entry.squeak_time if last_entry else MAX_INT
+        last_squeak_hash = last_entry.squeak_hash if last_entry else MAX_HASH
+        logger.info("""Search db query with
+        search_text: {}
+        limit: {}
+        block_height: {}
+        squeak_time: {}
+        squeak_hash: {}
+        """.format(
+            search_text,
+            limit,
+            last_block_height,
+            last_squeak_time,
+            last_squeak_hash.hex(),
+        ))
+        s = (
+            select([self.squeaks, self.profiles])
+            .select_from(
+                self.squeaks.outerjoin(
+                    self.profiles,
+                    self.profiles.c.address == self.squeaks.c.author_address,
+                )
+            )
+            .where(self.squeaks.c.content.ilike(f'%{search_text}%'))
             .where(
                 tuple_(
                     self.squeaks.c.n_block_height,
