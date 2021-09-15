@@ -10,19 +10,15 @@ Node for Squeak protocol
 * Python 3.6 or later
 
 #### Steps
-- Update the **config.ini** file and fill in the relevant sections to connect to your bitcoin and lnd nodes:
+- Update the **config.ini** file and fill in the relevant sections to connect to your bitcoin node and lnd node:
 	```
-	[core]
-	network=testnet
-
 	[lnd]
-	host=localhost
-	external_host=lnd_server
+	host=lnd
 	tls_cert_path=~/.lnd/tls.cert
 	macaroon_path=~/.lnd/data/chain/bitcoin/testnet/admin.macaroon
 
 	[bitcoin]
-	rpc_host=localhost
+	rpc_host=bitcoin-core
 	rpc_port=18332
 	rpc_user=devuser
 	rpc_pass=devpass
