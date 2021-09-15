@@ -16,12 +16,12 @@ Node for [Squeak protocol](https://github.com/yzernik/squeak/blob/master/docs/PR
 	network=mainnet
 
 	[lnd]
-	host=lnd
+	host=localhost
 	tls_cert_path=~/.lnd/tls.cert
 	macaroon_path=~/.lnd/data/chain/bitcoin/mainnet/admin.macaroon
 
 	[bitcoin]
-	rpc_host=bitcoin-core
+	rpc_host=localhost
 	rpc_port=8332
 	rpc_user=devuser
 	rpc_pass=devpass
