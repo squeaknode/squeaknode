@@ -12,14 +12,17 @@ Node for Squeak protocol
 #### Steps
 - Update the **config.ini** file and fill in the relevant sections to connect to your bitcoin node and lnd node:
 	```
+	[node]
+	network=mainnet
+
 	[lnd]
 	host=lnd
 	tls_cert_path=~/.lnd/tls.cert
-	macaroon_path=~/.lnd/data/chain/bitcoin/testnet/admin.macaroon
+	macaroon_path=~/.lnd/data/chain/bitcoin/mainnet/admin.macaroon
 
 	[bitcoin]
 	rpc_host=bitcoin-core
-	rpc_port=18332
+	rpc_port=8332
 	rpc_user=devuser
 	rpc_pass=devpass
 
