@@ -2,7 +2,7 @@ version: '3'
 services:
 
   bitcoin-core:
-    image: ruimarinho/bitcoin-core
+    image: ruimarinho/bitcoin-core:0.21.1
     container_name: bitcoin-core
     volumes:
       - ~/.bitcoin:/home/bitcoin/.bitcoin
