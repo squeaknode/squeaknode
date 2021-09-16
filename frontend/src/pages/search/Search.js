@@ -5,9 +5,11 @@ import {
   Button,
   Box,
   CircularProgress,
+  TextField,
 } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 
-// styles
+
 
 // components
 
@@ -27,7 +29,18 @@ import {
 } from '../../squeakclient/requests';
 import {
   goToProfilePage,
+  goToSearchPage,
 } from '../../navigation/navigation';
+
+// // styles
+// const useStyles = makeStyles((theme) => ({
+//   root: {
+//     '& .MuiTextField-root': {
+//       margin: theme.spacing(1),
+//       width: '25ch',
+//     },
+//   },
+// }));
 
 const SQUEAKS_PER_PAGE = 10;
 
@@ -39,6 +52,7 @@ export default function SearchPage() {
   const [createContactProfileDialogOpen, setCreateContactProfileDialogOpen] = useState(false);
   const [network, setNetwork] = useState('');
   const [waitingForSqueaks, setWaitingForSqueaks] = useState(false);
+  const [inputText, setInputText] = useState(searchText);
 
   const getSqueaks = useCallback((searchText, limit, lastEntry) => {
     setWaitingForSqueaks(true);
@@ -62,12 +76,12 @@ export default function SearchPage() {
     });
   };
 
-  const handleClickOpenCreateContactProfileDialog = () => {
-    setCreateContactProfileDialogOpen(true);
+  const handleChangeSearchInput = (event) => {
+    setInputText(event.target.value);
   };
 
-  const handleCloseCreateContactProfileDialog = () => {
-    setCreateContactProfileDialogOpen(false);
+  const handleClickSearch = () => {
+    goToSearchPage(history, inputText);
   };
 
   useEffect(() => {
@@ -80,22 +94,6 @@ export default function SearchPage() {
   useEffect(() => {
     getNetwork();
   }, []);
-
-  function NoProfileContent() {
-    return (
-      <div>
-        No profile for address.
-        <Button
-          variant="contained"
-          onClick={() => {
-            handleClickOpenCreateContactProfileDialog();
-          }}
-        >
-          Create Profile
-        </Button>
-      </div>
-    );
-  }
 
   function NoSqueaksContent() {
     return (
@@ -136,7 +134,6 @@ export default function SearchPage() {
   function AddressSqueaksContent() {
     return (
       <>
-        <p>Search bar here...</p>
         {GridContent()}
         {waitingForSqueaks && <CircularProgress size={24} className={classes.buttonProgress} />}
       </>
@@ -171,9 +168,42 @@ export default function SearchPage() {
     );
   }
 
+
+    function SearchBar() {
+      return (
+        <form className={classes.root} noValidate autoComplete="off">
+              <div>
+                <TextField id="outlined-search" label="Search field" type="search" variant="outlined"
+                  onChange={handleChangeSearchInput}
+                  value={inputText}
+                  onKeyPress={(ev) => {
+                    console.log(`Pressed keyCode ${ev.key}`);
+                    if (ev.key === 'Enter') {
+                      ev.preventDefault();
+                      const encodedText = encodeURIComponent(inputText)
+                      goToSearchPage(history, encodedText);
+                    }
+                  }}
+                  />
+              </div>
+              <div>
+              <Button
+                variant="contained"
+                onClick={() => {
+                  handleClickSearch();
+                }}
+              >
+                Search
+              </Button>
+              </div>
+            </form>
+
+      );
+    }
+
   return (
     <>
-      <p>Search bar here...</p>
+      {SearchBar()}
       {AddressSqueaksContent()}
     </>
   );

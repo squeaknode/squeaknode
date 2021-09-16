@@ -27,6 +27,10 @@ export default makeStyles((theme) => ({
   root: {
     display: 'flex',
     alignItems: 'center',
+    '& .MuiTextField-root': {
+      margin: theme.spacing(1),
+      width: '25ch',
+    },
   },
   wrapper: {
     margin: theme.spacing(1),
