@@ -126,7 +126,7 @@ export default function Header(props) {
               console.log(`Pressed keyCode ${ev.key}`);
               if (ev.key === 'Enter') {
                 ev.preventDefault();
-                const encodedText = encodeURIComponent(ev.target.value)
+                const encodedText = encodeURIComponent(ev.target.value);
                 goToSearchPage(history, encodedText);
               }
             }}

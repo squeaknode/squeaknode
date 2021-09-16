@@ -3,22 +3,16 @@ import { useParams, useHistory } from 'react-router-dom';
 import {
   Grid,
   Button,
-  Box,
   CircularProgress,
   TextField,
 } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-
-
 
 // components
 
 import Paper from '@material-ui/core/Paper';
 
-import GetAppIcon from '@material-ui/icons/GetApp';
 import ReplayIcon from '@material-ui/icons/Replay';
 
-import CreateContactProfileDialog from '../../components/CreateContactProfileDialog';
 import SqueakList from '../../components/SqueakList';
 import useStyles from './styles';
 
@@ -28,7 +22,6 @@ import {
   // subscribeAddressSqueakDisplaysRequest,
 } from '../../squeakclient/requests';
 import {
-  goToProfilePage,
   goToSearchPage,
 } from '../../navigation/navigation';
 
@@ -168,38 +161,41 @@ export default function SearchPage() {
     );
   }
 
+  function SearchBar() {
+    return (
+      <form className={classes.root} noValidate autoComplete="off">
+        <div>
+          <TextField
+            id="outlined-search"
+            label="Search field"
+            type="search"
+            variant="outlined"
+            onChange={handleChangeSearchInput}
+            value={inputText}
+            onKeyPress={(ev) => {
+              console.log(`Pressed keyCode ${ev.key}`);
+              if (ev.key === 'Enter') {
+                ev.preventDefault();
+                const encodedText = encodeURIComponent(inputText);
+                goToSearchPage(history, encodedText);
+              }
+            }}
+          />
+        </div>
+        <div>
+          <Button
+            variant="contained"
+            onClick={() => {
+              handleClickSearch();
+            }}
+          >
+            Search
+          </Button>
+        </div>
+      </form>
 
-    function SearchBar() {
-      return (
-        <form className={classes.root} noValidate autoComplete="off">
-              <div>
-                <TextField id="outlined-search" label="Search field" type="search" variant="outlined"
-                  onChange={handleChangeSearchInput}
-                  value={inputText}
-                  onKeyPress={(ev) => {
-                    console.log(`Pressed keyCode ${ev.key}`);
-                    if (ev.key === 'Enter') {
-                      ev.preventDefault();
-                      const encodedText = encodeURIComponent(inputText)
-                      goToSearchPage(history, encodedText);
-                    }
-                  }}
-                  />
-              </div>
-              <div>
-              <Button
-                variant="contained"
-                onClick={() => {
-                  handleClickSearch();
-                }}
-              >
-                Search
-              </Button>
-              </div>
-            </form>
-
-      );
-    }
+    );
+  }
 
   return (
     <>
