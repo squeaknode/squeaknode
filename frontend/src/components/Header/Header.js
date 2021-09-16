@@ -57,7 +57,7 @@ export default function Header(props) {
   const [notificationsMenu, setNotificationsMenu] = useState(null);
   const [isNotificationsUnread, setIsNotificationsUnread] = useState(true);
   const [profileMenu, setProfileMenu] = useState(null);
-  const [isSearchOpen, setSearchOpen] = useState(false);
+  const [isSearchOpen, setSearchOpen] = useState(true);
   const [username, setUsername] = useState('bob smith');
 
   const getUser = () => {
@@ -112,7 +112,6 @@ export default function Header(props) {
             className={classNames(classes.searchIcon, {
               [classes.searchIconOpened]: isSearchOpen,
             })}
-            onClick={() => setSearchOpen(!isSearchOpen)}
           >
             <SearchIcon classes={{ root: classes.headerIcon }} />
           </div>
