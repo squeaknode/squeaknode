@@ -82,7 +82,6 @@ export default function SearchPage() {
     setSqueaks([]);
   };
 
-
   useEffect(() => {
     getSqueaks(searchText, SQUEAKS_PER_PAGE, null);
   }, [getSqueaks, searchText]);
