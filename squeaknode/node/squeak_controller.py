@@ -85,6 +85,8 @@ class SqueakController:
         self.config = config
 
     def save_squeak(self, squeak: CSqueak) -> bytes:
+        # Check if the squeak is valid
+        self.squeak_core.check_squeak(squeak)
         # Get the block header for the squeak.
         block_header = self.squeak_core.get_block_header(squeak)
         # Check if limit exceeded.

@@ -96,6 +96,20 @@ class SqueakCore:
             replyto_hash,
         )
 
+    def check_squeak(self, squeak: CSqueak) -> None:
+        """Checks if the squeak is valid and has a valid signature.
+
+        Args:
+            squeak: The squeak to be validated.
+
+        Returns:
+            None
+
+        Raises:
+            Exception: If the squeak is not valid.
+        """
+        CheckSqueak(squeak)
+
     def get_block_header(self, squeak: CSqueak) -> CBlockHeader:
         """Checks if the embedded block hash in the squeak is valid for its
         block height and return the associtated block header.
@@ -109,7 +123,6 @@ class SqueakCore:
         Raises:
             Exception: If the block hash is not valid.
         """
-        CheckSqueak(squeak)
         block_info = self.bitcoin_client.get_block_info_by_height(
             squeak.nBlockHeight)
         if squeak.hashBlock != block_info.block_hash:
