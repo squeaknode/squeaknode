@@ -23,6 +23,7 @@ import {
 } from '../../squeakclient/requests';
 import {
   goToSearchPage,
+  reloadRoute,
 } from '../../navigation/navigation';
 
 // // styles
@@ -75,7 +76,11 @@ export default function SearchPage() {
   const handleClickSearch = () => {
     resetResults();
     const encodedText = encodeURIComponent(inputText);
-    goToSearchPage(history, encodedText);
+    if (encodedText === searchText) {
+      reloadRoute(history);
+    } else {
+      goToSearchPage(history, encodedText);
+    }
   };
 
   const resetResults = () => {
