@@ -1248,7 +1248,7 @@ class SqueakDb:
         with self.get_connection() as connection:
             connection.execute(stmt)
 
-    def get_latest_settle_index(self):
+    def get_latest_settle_index(self) -> Optional[int]:
         """ Get the lnd settled index of the most recent received payment. """
         s = select(
             [func.max(self.received_payments.c.settle_index)],
