@@ -42,7 +42,6 @@ export default function SearchPage() {
   const history = useHistory();
   const { searchText } = useParams();
   const [squeaks, setSqueaks] = useState([]);
-  const [createContactProfileDialogOpen, setCreateContactProfileDialogOpen] = useState(false);
   const [network, setNetwork] = useState('');
   const [waitingForSqueaks, setWaitingForSqueaks] = useState(false);
   const [inputText, setInputText] = useState(searchText);
