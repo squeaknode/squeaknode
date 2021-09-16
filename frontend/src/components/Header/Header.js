@@ -57,8 +57,9 @@ export default function Header(props) {
   const [notificationsMenu, setNotificationsMenu] = useState(null);
   const [isNotificationsUnread, setIsNotificationsUnread] = useState(true);
   const [profileMenu, setProfileMenu] = useState(null);
-  const [isSearchOpen, setSearchOpen] = useState(true);
   const [username, setUsername] = useState('bob smith');
+
+  const isSearchOpen = true;
 
   const getUser = () => {
     getUserRequest(setUsername);
