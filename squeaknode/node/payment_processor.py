@@ -111,7 +111,7 @@ class PaymentProcessorTask:
                 )
                 self.stopped.wait(self.retry_s)
 
-    def get_latest_settle_index(self):
+    def get_latest_settle_index(self) -> int:
         return self.squeak_db.get_latest_settle_index() or 0
 
     def get_sent_offer_for_payment_hash(self, payment_hash: bytes) -> SentOffer:
