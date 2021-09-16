@@ -38,6 +38,7 @@ import {
 } from '../../squeakclient/requests';
 import {
   reloadRoute,
+  goToSearchPage,
 } from '../../navigation/navigation';
 
 const notifications = [];
@@ -120,6 +121,14 @@ export default function Header(props) {
             classes={{
               root: classes.inputRoot,
               input: classes.inputInput,
+            }}
+            onKeyPress={(ev) => {
+              console.log(`Pressed keyCode ${ev.key}`);
+              if (ev.key === 'Enter') {
+                ev.preventDefault();
+                const encodedText = encodeURIComponent(ev.target.value);
+                goToSearchPage(history, encodedText);
+              }
             }}
           />
         </div>

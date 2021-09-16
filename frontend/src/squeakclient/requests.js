@@ -125,6 +125,8 @@ import {
   DisconnectPeerReply as DisconnectSqueakPeerReply,
   GetExternalAddressRequest,
   GetExternalAddressReply,
+  GetSearchSqueakDisplaysRequest,
+  GetSearchSqueakDisplaysReply,
 } from '../proto/squeak_admin_pb';
 
 console.log('The value of REACT_APP_DEV_MODE_ENABLED is:', Boolean(process.env.REACT_APP_DEV_MODE_ENABLED));
@@ -679,6 +681,24 @@ export function getAddressSqueakDisplaysRequest(address, limit, lastEntry, handl
     'getaddresssqueakdisplays',
     request,
     GetAddressSqueakDisplaysReply.deserializeBinary,
+    (response) => {
+      handleResponse(response.getSqueakDisplayEntriesList());
+    },
+  );
+  // client.getAddressSqueakDisplays(request, {}, (err, response) => {
+  //   handleResponse(response.getSqueakDisplayEntriesList());
+  // });
+}
+
+export function getSearchSqueakDisplaysRequest(searchText, limit, lastEntry, handleResponse) {
+  const request = new GetSearchSqueakDisplaysRequest();
+  request.setSearchText(searchText);
+  request.setLimit(limit);
+  request.setLastEntry(lastEntry);
+  makeRequest(
+    'getsearchsqueakdisplays',
+    request,
+    GetSearchSqueakDisplaysReply.deserializeBinary,
     (response) => {
       handleResponse(response.getSqueakDisplayEntriesList());
     },
