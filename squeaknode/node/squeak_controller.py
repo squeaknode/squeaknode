@@ -183,14 +183,14 @@ class SqueakController:
             return self.get_squeak_secret_key(squeak_hash)
         else:
             return self.get_offer(
-                squeak_hash=squeak_hash,
+                squeak=squeak,
                 peer_address=peer_address,
                 price_msat=price,
             )
 
-    def get_offer(self, squeak_hash: bytes, peer_address: PeerAddress, price_msat: int) -> Optional[Offer]:
+    def get_offer(self, squeak: CSqueak, peer_address: PeerAddress, price_msat: int) -> Optional[Offer]:
         sent_offer = self.get_sent_offer_for_peer(
-            squeak_hash,
+            squeak,
             peer_address,
             price_msat,
         )
@@ -207,7 +207,8 @@ class SqueakController:
             lnd_external_address,
         )
 
-    def get_sent_offer_for_peer(self, squeak_hash: bytes, peer_address: PeerAddress, price_msat: int) -> Optional[SentOffer]:
+    def get_sent_offer_for_peer(self, squeak: CSqueak, peer_address: PeerAddress, price_msat: int) -> Optional[SentOffer]:
+        squeak_hash = get_hash(squeak)
         # Check if there is an existing offer for the hash/peer_address combination
         sent_offer = self.squeak_db.get_sent_offer_by_squeak_hash_and_peer(
             squeak_hash,
@@ -215,7 +216,6 @@ class SqueakController:
         )
         if sent_offer:
             return sent_offer
-        squeak = self.get_squeak(squeak_hash)
         secret_key = self.get_squeak_secret_key(squeak_hash)
         if squeak is None or secret_key is None:
             return None
