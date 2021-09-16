@@ -73,8 +73,15 @@ export default function SearchPage() {
   };
 
   const handleClickSearch = () => {
-    goToSearchPage(history, inputText);
+    resetResults();
+    const encodedText = encodeURIComponent(inputText);
+    goToSearchPage(history, encodedText);
   };
+
+  const resetResults = () => {
+    setSqueaks([]);
+  };
+
 
   useEffect(() => {
     getSqueaks(searchText, SQUEAKS_PER_PAGE, null);
@@ -175,8 +182,7 @@ export default function SearchPage() {
               console.log(`Pressed keyCode ${ev.key}`);
               if (ev.key === 'Enter') {
                 ev.preventDefault();
-                const encodedText = encodeURIComponent(inputText);
-                goToSearchPage(history, encodedText);
+                handleClickSearch();
               }
             }}
           />
