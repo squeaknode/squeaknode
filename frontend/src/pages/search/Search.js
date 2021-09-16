@@ -44,7 +44,7 @@ export default function SearchPage() {
   const [squeaks, setSqueaks] = useState([]);
   const [network, setNetwork] = useState('');
   const [waitingForSqueaks, setWaitingForSqueaks] = useState(false);
-  const [inputText, setInputText] = useState("");
+  const [inputText, setInputText] = useState('');
 
   const getSqueaks = useCallback((searchText, limit, lastEntry) => {
     setWaitingForSqueaks(true);
