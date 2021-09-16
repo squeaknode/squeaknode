@@ -217,12 +217,16 @@ class SqueakController:
         secret_key = self.get_squeak_secret_key(squeak_hash)
         if squeak is None or secret_key is None:
             return None
-        sent_offer = self.squeak_core.create_offer(
-            squeak,
-            secret_key,
-            peer_address,
-            price_msat,
-        )
+        try:
+            sent_offer = self.squeak_core.create_offer(
+                squeak,
+                secret_key,
+                peer_address,
+                price_msat,
+            )
+        except Exception:
+            logger.exception("Failed to create offer.")
+            return None
         self.squeak_db.insert_sent_offer(sent_offer)
         return sent_offer
 
