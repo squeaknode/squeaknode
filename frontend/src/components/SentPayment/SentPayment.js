@@ -118,8 +118,6 @@ export default function SentPayment({
         alignItems="flex-start"
       >
         <Grid item>
-          Peer:
-          {' '}
           {PeerDisplay()}
         </Grid>
       </Grid>
