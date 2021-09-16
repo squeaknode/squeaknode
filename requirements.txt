@@ -6,11 +6,11 @@ flask-cors
 flask-login
 Flask-WTF
 googleapis-common-protos
-grpcio
-grpcio-tools
+grpcio==1.39.0
+grpcio-tools==1.39.0
 importlib_resources==1.4.0
-mypy-protobuf
-protobuf
+mypy-protobuf==2.9
+protobuf==3.17.3
 psycopg2
 PySocks
 pyzmq
