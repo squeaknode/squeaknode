@@ -38,7 +38,7 @@ Node for [Squeak protocol](https://github.com/yzernik/squeak/blob/master/docs/PR
 	$ python setup.py install
 	```
 
-- Start the squeaknode:
+- Start squeaknode:
  	```
 	$ squeaknode --config config.ini
 	```
