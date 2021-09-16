@@ -25,6 +25,7 @@ Node for [Squeak protocol](https://github.com/yzernik/squeak/blob/master/docs/PR
 	rpc_port=8332
 	rpc_user=devuser
 	rpc_pass=devpass
+	zeromq_hashblock_port=28334
 
 	[webadmin]
 	enabled=true
