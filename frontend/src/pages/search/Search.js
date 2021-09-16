@@ -44,7 +44,7 @@ export default function SearchPage() {
   const [squeaks, setSqueaks] = useState([]);
   const [network, setNetwork] = useState('');
   const [waitingForSqueaks, setWaitingForSqueaks] = useState(false);
-  const [inputText, setInputText] = useState(searchText);
+  const [inputText, setInputText] = useState("");
 
   const getSqueaks = useCallback((searchText, limit, lastEntry) => {
     setWaitingForSqueaks(true);
@@ -83,8 +83,12 @@ export default function SearchPage() {
   };
 
   useEffect(() => {
+    resetResults();
     getSqueaks(searchText, SQUEAKS_PER_PAGE, null);
   }, [getSqueaks, searchText]);
+  useEffect(() => {
+    setInputText(searchText);
+  }, [searchText]);
   // useEffect(() => {
   //   const stream = subscribeSqueaks(address);
   //   return () => stream.cancel();
