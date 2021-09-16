@@ -12,8 +12,9 @@ mypy-protobuf==2.9
 protobuf==3.17.3
 psycopg2==2.9.1
 PySocks==1.7.1
+python-bitcoinlib==0.11.0
 pyzmq==22.3.0
 requests==2.26.0
 SQLAlchemy==1.4.23
-squeakpy==0.7.3
+squeakpy==0.7.4
 typed-config==0.2.5
