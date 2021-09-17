@@ -77,7 +77,7 @@ elif [[ "$BACKEND" == "bitcoind" ]]; then
     echo $cmd
     sh ./wait-for-block-index.sh "$cmd"
     echo "Finished waiting for loading block index."
-    exec $cmd
+    # exec $cmd
 else
     exec lnd \
 	 --noseedbackup \
