@@ -105,7 +105,7 @@ class PaymentProcessorTask:
                     self.handle_received_payment(received_payment)
             except InvoiceSubscriptionError:
                 logger.error(
-                    "Unable to subscribe invoices. Retrying in {} seconds.".format(
+                    "Unable to subscribe invoices. Retrying in {} seconds...".format(
                         self.retry_s,
                     ),
                 )
