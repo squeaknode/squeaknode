@@ -101,7 +101,7 @@ export default function Header(props) {
           )}
         </IconButton>
         <Typography variant="h6" weight="medium" className={classes.logotype}>
-          Squeak Node
+          Squeaknode
         </Typography>
         <div className={classes.grow} />
         <div
