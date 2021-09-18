@@ -44,7 +44,7 @@ export default function PeerAddressPage() {
     disconnectSqueakPeerRequest(host, port, () => {
       getConnectedPeer();
     });
-    },
+  },
   [host, port, getConnectedPeer]);
 
   const connectPeer = useCallback(() => {
@@ -53,7 +53,7 @@ export default function PeerAddressPage() {
       getConnectedPeer();
     },
     handleConnectPeerError);
-    },
+  },
   [host, port, getConnectedPeer]);
 
   // const subscribeConnectedPeer = useCallback(() => subscribeConnectedPeerRequest(host, port, (connectedPeer) => {
