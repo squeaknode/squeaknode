@@ -317,6 +317,7 @@ export default function Peers() {
         <ConnectPeerDialog
           open={connectPeerDialogOpen}
           handleClose={handleCloseConnectPeerDialog}
+          handlePeerConnected={getConnectedPeers}
         />
       </>
     );

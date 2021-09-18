@@ -42,6 +42,7 @@ const portDefaultValue = '0';
 export default function ConnectPeerDialog({
   open,
   handleClose,
+  handlePeerConnected,
   ...props
 }) {
   const classes = useStyles();
@@ -80,6 +81,7 @@ export default function ConnectPeerDialog({
   const connectPeer = (peerName, host, port) => {
     connectSqueakPeerRequest(host, port, (response) => {
       // goToPeerPage(history, response.getPeerId());
+      handlePeerConnected();
     },
     handleConnectPeerError);
   };

@@ -122,7 +122,12 @@ class NetworkManager(object):
         )
 
     def subscribe_connected_peers(self, stopped):
-        yield from self.connection_manager.yield_peers_changed(stopped)
+        # yield from self.connection_manager.yield_peers_changed(stopped)
+        for item in self.connection_manager.yield_peers_changed(stopped):
+            logger.info("subscribe_connected_peers yielding item: {}".format(
+                item,
+            ))
+            yield item
 
     def subscribe_connected_peer(self, peer_address: PeerAddress, stopped):
         yield from self.connection_manager.yield_single_peer_changed(
