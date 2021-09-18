@@ -89,7 +89,6 @@ class PeerHandler():
 
         if peer.outgoing:
             peer.send_version()
-        # raise Exception("Fooooooo!")
         peer.receive_version()
         if not peer.outgoing:
             peer.send_version()

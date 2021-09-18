@@ -8,34 +8,15 @@ import {
   FormControlLabel,
   Switch,
   TextField,
+  CircularProgress,
 } from '@material-ui/core';
-
-// styles
-import { makeStyles } from '@material-ui/core/styles';
 
 import {
   connectSqueakPeerRequest,
 } from '../../squeakclient/requests';
 
-const useStyles = makeStyles((theme) => ({
-  form: {
-    margin: 'auto',
-    width: 'fit-content',
-    '& .MuiDialogContent-root': {
-      overflow: 'hidden',
-    },
-    '& .MuiTextField-root': {
-      margin: theme.spacing(1),
-    },
-    '& .MuiDialogActions-root': {
-      padding: '1rem',
-    },
-  },
-  formControlLabel: {
-    position: 'absolute',
-    left: '2rem',
-  },
-}));
+// styles
+import useStyles from './styles';
 
 const portDefaultValue = '0';
 
@@ -50,7 +31,8 @@ export default function ConnectPeerDialog({
   const [peerName, setPeerName] = useState('');
   const [host, setHost] = useState('');
   const [port, setPort] = useState('');
-  const [customPortChecked, setCustomPortChecked] = React.useState(false);
+  const [customPortChecked, setCustomPortChecked] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const resetFields = () => {
     setPeerName('');
@@ -74,16 +56,26 @@ export default function ConnectPeerDialog({
     setPort(event.target.value);
   };
 
-  const handleConnectPeerError = (err) => {
-    alert(`Connect peer failure: ${err}`);
-  };
-
   const connectPeer = (peerName, host, port) => {
+    setLoading(true);
     connectSqueakPeerRequest(host, port, (response) => {
       // goToPeerPage(history, response.getPeerId());
-      handlePeerConnected();
+      // handlePeerConnected();
+      handlePeerConnectedResponse();
     },
-    handleConnectPeerError);
+    handlePeerConnectedErr);
+  };
+
+  const handlePeerConnectedResponse = (response) => {
+    handlePeerConnected();
+    setLoading(false);
+    handleClose();
+  };
+
+  const handlePeerConnectedErr = (err) => {
+    alert(`Connect Peer failure: ${err}`);
+    setLoading(false);
+    handleClose();
   };
 
   function handleSubmit(event) {
@@ -99,7 +91,7 @@ export default function ConnectPeerDialog({
       return;
     }
     connectPeer(peerName, host, port);
-    handleClose();
+    // handleClose();
   }
 
   function ConnectHostInput() {
@@ -162,14 +154,17 @@ export default function ConnectPeerDialog({
 
   function ConnectPeerButton() {
     return (
-      <Button
-        type="submit"
-        variant="contained"
-        color="primary"
-        className={classes.button}
-      >
-        Connect Peer
-      </Button>
+      <div className={classes.wrapper}>
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          disabled={loading}
+        >
+          Connect Peer
+        </Button>
+        {loading && <CircularProgress size={24} className={classes.buttonProgress} />}
+      </div>
     );
   }
 
