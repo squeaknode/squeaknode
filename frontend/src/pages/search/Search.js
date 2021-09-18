@@ -47,9 +47,11 @@ export default function SearchPage() {
   const [waitingForSqueaks, setWaitingForSqueaks] = useState(false);
   const [inputText, setInputText] = useState('');
 
-  const getSqueaks = useCallback((searchText, limit, lastEntry) => {
+  const urlDecodedSearchText = decodeURIComponent(searchText);
+
+  const getSqueaks = useCallback((urlDecodedSearchText, limit, lastEntry) => {
     setWaitingForSqueaks(true);
-    getSearchSqueakDisplaysRequest(searchText, limit, lastEntry, handleLoadedAddressSqueaks);
+    getSearchSqueakDisplaysRequest(urlDecodedSearchText, limit, lastEntry, handleLoadedAddressSqueaks);
   },
   []);
   // const subscribeSqueaks = (address) => subscribeAddressSqueakDisplaysRequest(address, (resp) => {
@@ -89,11 +91,11 @@ export default function SearchPage() {
 
   useEffect(() => {
     resetResults();
-    getSqueaks(searchText, SQUEAKS_PER_PAGE, null);
-  }, [getSqueaks, searchText]);
+    getSqueaks(urlDecodedSearchText, SQUEAKS_PER_PAGE, null);
+  }, [getSqueaks, urlDecodedSearchText]);
   useEffect(() => {
-    setInputText(searchText);
-  }, [searchText]);
+    setInputText(urlDecodedSearchText);
+  }, [urlDecodedSearchText]);
   // useEffect(() => {
   //   const stream = subscribeSqueaks(address);
   //   return () => stream.cancel();
@@ -161,7 +163,7 @@ export default function SearchPage() {
               disabled={waitingForSqueaks}
               onClick={() => {
                 const latestSqueak = squeaks.slice(-1).pop();
-                getSqueaks(searchText, SQUEAKS_PER_PAGE, latestSqueak);
+                getSqueaks(urlDecodedSearchText, SQUEAKS_PER_PAGE, latestSqueak);
               }}
             >
               <ReplayIcon />
