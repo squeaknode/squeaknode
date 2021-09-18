@@ -1,4 +1,5 @@
 import { makeStyles } from '@material-ui/styles';
+import { green } from '@material-ui/core/colors';
 
 export default makeStyles((theme) => ({
   dashedBorder: {
@@ -16,5 +17,13 @@ export default makeStyles((theme) => ({
     // TODO: adjust this value accordingly
     flex: 0.0,
     padding: 0,
+  },
+  buttonProgress: {
+    color: green[500],
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    marginTop: -12,
+    marginLeft: -12,
   },
 }));
