@@ -10,6 +10,7 @@ import {
   FormControl,
   InputLabel,
   Select,
+  CircularProgress,
 } from '@material-ui/core';
 
 import { useHistory } from 'react-router-dom';
@@ -39,6 +40,7 @@ export default function MakeSqueakDialog({
   const [profileId, setProfileId] = useState(-1);
   const [content, setContent] = useState('');
   const [signingProfiles, setSigningProfiles] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const resetFields = () => {
     setProfileId(-1);
@@ -54,14 +56,19 @@ export default function MakeSqueakDialog({
   };
 
   const handleResponse = (response) => {
+    setLoading(false);
+    handleClose();
     goToSqueakPage(history, response.getSqueakHash());
   };
 
   const handleErr = (err) => {
+    setLoading(false);
+    handleClose();
     alert(`Error making squeak: ${err}`);
   };
 
   const createSqueak = (profileId, content, replyto) => {
+    setLoading(true);
     makeSqueakRequest(profileId, content, replyto, handleResponse, handleErr);
   };
   const loadSigningProfiles = () => {
@@ -87,7 +94,6 @@ export default function MakeSqueakDialog({
       return;
     }
     createSqueak(profileId, content, replyto);
-    handleClose();
   }
 
   function load(event) {
@@ -162,14 +168,17 @@ export default function MakeSqueakDialog({
 
   function MakeSqueakButton() {
     return (
-      <Button
-        type="submit"
-        variant="contained"
-        color="primary"
-        className={classes.button}
-      >
-        Make Squeak
-      </Button>
+      <div className={classes.wrapper}>
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          disabled={loading}
+        >
+          Make Squeak
+        </Button>
+        {loading && <CircularProgress size={24} className={classes.buttonProgress} />}
+      </div>
     );
   }
 
