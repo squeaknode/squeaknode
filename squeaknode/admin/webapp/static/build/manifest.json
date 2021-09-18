@@ -1,6 +1,6 @@
 {
-  "short_name": "Squeak Node",
-  "name": "Squeak Node is a frontend for accessing a squeak node",
+  "short_name": "Squeaknode",
+  "name": "Squeaknode is a frontend for accessing a squeak node",
   "icons": [
     {
       "src": "favicon.ico",
