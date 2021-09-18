@@ -53,7 +53,6 @@ class PeerClient(object):
             self.handle_connection(
                 peer_socket,
                 address,
-                outgoing=True,
             )
         except Exception:
             logger.exception('Failed to make connection to {}'.format(address))
@@ -63,13 +62,12 @@ class PeerClient(object):
             self,
             peer_socket: socket.socket,
             peer_address: PeerAddress,
-            outgoing: bool,
     ):
         """Handle a newly connected peer socket."""
         self.peer_handler.handle_connection(
             peer_socket,
             peer_address,
-            outgoing,
+            outgoing=True,
         )
 
     def get_socket(self):
