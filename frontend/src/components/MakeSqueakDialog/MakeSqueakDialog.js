@@ -168,17 +168,17 @@ export default function MakeSqueakDialog({
 
   function MakeSqueakButton() {
     return (
-        <div className={classes.wrapper}>
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            disabled={loading}
-          >
-            Make Squeak
-          </Button>
-          {loading && <CircularProgress size={24} className={classes.buttonProgress} />}
-        </div>
+      <div className={classes.wrapper}>
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          disabled={loading}
+        >
+          Make Squeak
+        </Button>
+        {loading && <CircularProgress size={24} className={classes.buttonProgress} />}
+      </div>
     );
   }
 
