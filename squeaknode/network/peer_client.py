@@ -21,7 +21,6 @@
 # SOFTWARE.
 import logging
 import socket
-import threading
 
 import socks
 
@@ -77,11 +76,11 @@ class PeerClient(object):
             outgoing: bool,
     ):
         """Handle a newly connected peer socket."""
-        threading.Thread(
-            target=self.peer_handler.handle_connection,
-            args=(peer_socket, peer_address, outgoing),
-            name="peer_client_connection_thread",
-        ).start()
+        self.peer_handler.handle_connection(
+            peer_socket,
+            peer_address,
+            outgoing,
+        )
 
     def get_socket(self):
         if self.tor_proxy_ip:
