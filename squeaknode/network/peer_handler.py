@@ -44,12 +44,6 @@ class PeerHandler():
         self.connection_manager = connection_manager
         self.squeak_controller = squeak_controller
 
-    # def handle_connection(self, peer_socket: socket.socket, address: PeerAddress, outgoing: bool):
-    #     threading.Thread(
-    #         target=self.handle_connection_fn,
-    #         args=(self.squeak_controller, peer_socket, address, outgoing,),
-    #     ).start()
-
     def handle_connection(
             self,
             peer_socket: socket.socket,

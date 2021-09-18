@@ -107,37 +107,6 @@ class NetworkManager(object):
                     peer,
                 ))
 
-    # def handle_connection(
-    #         self,
-    #         squeak_controller,
-    #         peer_socket: socket.socket,
-    #         address: PeerAddress,
-    #         outgoing: bool,
-    # ):
-    #     """Handles all sending and receiving of messages for the given peer.
-
-    #     This method blocks until the peer connection has stopped.
-    #     """
-    #     peer = Peer(
-    #         peer_socket,
-    #         self.local_address,
-    #         address,
-    #         outgoing,
-    #         self.connection_manager.single_peer_changed_listener,
-    #     )
-
-    #     logger.debug(
-    #         'Setting up connection for peer address {} ...'.format(address))
-    #     try:
-    #         with Connection(peer, squeak_controller).connect(
-    #                 self.connection_manager
-    #         ) as connection:
-    #             connection.handle_connection()
-    #     finally:
-    #         peer.stop()
-    #         logger.debug(
-    #             'Stopped connection for peer address {}.'.format(address))
-
     @property
     def local_address(self) -> PeerAddress:
         return PeerAddress(
