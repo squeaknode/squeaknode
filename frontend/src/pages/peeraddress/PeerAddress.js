@@ -39,6 +39,23 @@ export default function PeerAddressPage() {
   },
   [host, port]);
 
+  const disconnectPeer = useCallback(() => {
+    setWaitingForConnectedPeer(true);
+    disconnectSqueakPeerRequest(host, port, () => {
+      getConnectedPeer();
+    });
+    },
+  [host, port, getConnectedPeer]);
+
+  const connectPeer = useCallback(() => {
+    setWaitingForConnectedPeer(true);
+    connectSqueakPeerRequest(host, port, () => {
+      getConnectedPeer();
+    },
+    handleConnectPeerError);
+    },
+  [host, port, getConnectedPeer]);
+
   // const subscribeConnectedPeer = useCallback(() => subscribeConnectedPeerRequest(host, port, (connectedPeer) => {
   //   setConnectedPeer(connectedPeer);
   // }),
@@ -69,10 +86,7 @@ export default function PeerAddressPage() {
             <Button
               variant="contained"
               onClick={() => {
-                disconnectSqueakPeerRequest(host, port, () => {
-                  // TODO: nothing maybe
-                },
-                handleConnectPeerError);
+                disconnectPeer();
               }}
             >
               Disconnect Peer
@@ -91,9 +105,7 @@ export default function PeerAddressPage() {
             <Button
               variant="contained"
               onClick={() => {
-                connectSqueakPeerRequest(host, port, () => {
-                // TODO: nothing maybe
-                });
+                connectPeer();
               }}
             >
               Connect Peer
