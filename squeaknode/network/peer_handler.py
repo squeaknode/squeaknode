@@ -21,6 +21,7 @@
 # SOFTWARE.
 import logging
 import socket
+import threading
 
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.network.connection import Connection
@@ -28,6 +29,9 @@ from squeaknode.network.peer import Peer
 
 
 logger = logging.getLogger(__name__)
+
+
+HANDSHAKE_TIMEOUT = 30
 
 
 class PeerHandler():
@@ -62,6 +66,8 @@ class PeerHandler():
             self.connection_manager.single_peer_changed_listener,
         )
 
+        self.do_handshake(peer)
+
         logger.debug(
             'Setting up connection for peer address {} ...'.format(address))
         try:
@@ -73,3 +79,51 @@ class PeerHandler():
             peer.stop()
             logger.debug(
                 'Stopped connection for peer address {}.'.format(address))
+
+    def do_handshake(self, peer: Peer):
+        """Do a handshake with a peer.
+        """
+        timer = HandshakeTimer(
+            peer.stop,
+            str(self),
+        )
+        timer.start_timer()
+
+        if peer.outgoing:
+            peer.send_version()
+        peer.receive_version()
+        if not peer.outgoing:
+            peer.send_version()
+
+        peer.set_connected()
+        logger.debug("HANDSHAKE COMPLETE-----------")
+        timer.stop_timer()
+
+
+class HandshakeTimer:
+    """Stop the peer if handshake is not complete before timeout.
+    """
+
+    def __init__(self,
+                 stop_fn,
+                 peer_name,
+                 ):
+        self.stop_fn = stop_fn
+        self.peer_name = peer_name
+        self.timer = None
+
+    def start_timer(self):
+        self.timer = threading.Timer(
+            HANDSHAKE_TIMEOUT,
+            self.stop_peer,
+        )
+        self.timer.name = "handshake_timere_thread_{}".format(self.peer_name)
+        self.timer.start()
+
+    def stop_timer(self):
+        logger.debug("Canceling handshake timer.")
+        self.timer.cancel()
+
+    def stop_peer(self):
+        logger.info("Closing peer from handshake timer.")
+        self.stop_fn()

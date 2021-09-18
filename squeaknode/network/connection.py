@@ -20,7 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import logging
-import threading
 from contextlib import contextmanager
 
 from squeak.messages import msg_getaddr
@@ -28,8 +27,6 @@ from squeak.messages import msg_subscribe
 
 from squeaknode.network.peer import Peer
 from squeaknode.network.peer_message_handler import PeerMessageHandler
-
-HANDSHAKE_TIMEOUT = 30
 
 
 logger = logging.getLogger(__name__)
@@ -45,7 +42,6 @@ class Connection(object):
 
     @contextmanager
     def connect(self, connection_manager):
-        self.handshake()
         logger.debug("Adding peer.")
         connection_manager.add_peer(self.peer)
         try:
@@ -78,55 +74,9 @@ class Connection(object):
         getaddr_msg = msg_getaddr()
         self.peer.send_msg(getaddr_msg)
 
-    def handshake(self):
-        timer = HandshakeTimer(
-            self.peer.stop,
-            str(self),
-        )
-        timer.start_timer()
-
-        if self.peer.outgoing:
-            self.peer.send_version()
-        self.peer.receive_version()
-        if not self.peer.outgoing:
-            self.peer.send_version()
-
-        self.peer.set_connected()
-        logger.debug("HANDSHAKE COMPLETE-----------")
-        timer.stop_timer()
-
     def handle_messages(self):
         peer_message_handler = PeerMessageHandler(
             self.peer,
             self.squeak_controller,
         )
         peer_message_handler.handle_msgs()
-
-
-class HandshakeTimer:
-    """Stop the peer if handshake is not complete before timeout.
-    """
-
-    def __init__(self,
-                 stop_fn,
-                 peer_name,
-                 ):
-        self.stop_fn = stop_fn
-        self.peer_name = peer_name
-        self.timer = None
-
-    def start_timer(self):
-        self.timer = threading.Timer(
-            HANDSHAKE_TIMEOUT,
-            self.stop_peer,
-        )
-        self.timer.name = "handshake_timere_thread_{}".format(self.peer_name)
-        self.timer.start()
-
-    def stop_timer(self):
-        logger.debug("Canceling handshake timer.")
-        self.timer.cancel()
-
-    def stop_peer(self):
-        logger.info("Closing peer from handshake timer.")
-        self.stop_fn()
