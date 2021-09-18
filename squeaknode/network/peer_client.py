@@ -42,7 +42,7 @@ class PeerClient(object):
         self.tor_proxy_ip = tor_proxy_ip
         self.tor_proxy_port = tor_proxy_port
 
-    def make_connection(self, address: PeerAddress):
+    def connect_address(self, address: PeerAddress):
         logger.info('Making connection to {}'.format(address))
         try:
             peer_socket = self.get_socket()
@@ -58,16 +58,6 @@ class PeerClient(object):
         except Exception:
             logger.exception('Failed to make connection to {}'.format(address))
             raise
-
-    def connect_address(self, address: PeerAddress):
-        """Connect to new address."""
-        # logger.info('Connecting to peer with address {}'.format(address))
-        # threading.Thread(
-        #     target=self.make_connection,
-        #     args=(address,),
-        #     name="peer_client_connection_thread",
-        # ).start()
-        self.make_connection(address)
 
     def handle_connection(
             self,
