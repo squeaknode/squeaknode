@@ -34,7 +34,6 @@ export default function ConnectPeerDialog({
   const [customPortChecked, setCustomPortChecked] = useState(false);
   const [loading, setLoading] = useState(false);
 
-
   const resetFields = () => {
     setPeerName('');
     setHost('');
