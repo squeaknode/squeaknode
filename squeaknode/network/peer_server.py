@@ -70,7 +70,20 @@ class PeerServer(object):
                     port=port,
                 )
                 peer_socket.setblocking(True)
-                self.peer_handler.handle_connection(
-                    peer_socket, peer_address, outgoing=False)
+                self.handle_connection(
+                    peer_socket,
+                    peer_address,
+                )
         except Exception:
             logger.info("Stopped accepting incoming connections.")
+
+    def handle_connection(
+            self,
+            peer_socket: socket.socket,
+            peer_address: PeerAddress,
+    ):
+        """Handle a newly connected peer socket."""
+        threading.Thread(
+            target=self.peer_handler.handle_connection,
+            args=(peer_socket, peer_address, False),
+        ).start()
