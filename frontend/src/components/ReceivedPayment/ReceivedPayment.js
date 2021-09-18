@@ -71,9 +71,9 @@ export default function ReceivedPayment({
       >
         <Grid item>
           <Box fontWeight="fontWeightBold">
-            {receivedPayment.getPriceMsat()}
+            {receivedPayment.getPriceMsat() / 1000}
             {' '}
-            msats
+            sats
           </Box>
         </Grid>
       </Grid>

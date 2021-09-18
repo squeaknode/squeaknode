@@ -78,9 +78,9 @@ export default function SentPayment({
       >
         <Grid item>
           <Box fontWeight="fontWeightBold">
-            {sentPayment.getPriceMsat()}
+            {sentPayment.getPriceMsat() / 1000}
             {' '}
-            msats
+            sats
           </Box>
         </Grid>
       </Grid>
