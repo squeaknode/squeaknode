@@ -21,9 +21,10 @@
 # SOFTWARE.
 import logging
 import socket
-import threading
 
 from squeaknode.core.peer_address import PeerAddress
+from squeaknode.network.connection import Connection
+from squeaknode.network.peer import Peer
 
 
 logger = logging.getLogger(__name__)
@@ -35,15 +36,46 @@ class PeerHandler():
 
     def __init__(
             self,
+            local_address,
+            connection_manager,
             squeak_controller,
-            handle_connection_fn,
     ):
-        super().__init__()
+        self.local_address = local_address
+        self.connection_manager = connection_manager
         self.squeak_controller = squeak_controller
-        self.handle_connection_fn = handle_connection_fn
 
-    def handle_connection(self, peer_socket: socket.socket, address: PeerAddress, outgoing: bool):
-        threading.Thread(
-            target=self.handle_connection_fn,
-            args=(self.squeak_controller, peer_socket, address, outgoing,),
-        ).start()
+    # def handle_connection(self, peer_socket: socket.socket, address: PeerAddress, outgoing: bool):
+    #     threading.Thread(
+    #         target=self.handle_connection_fn,
+    #         args=(self.squeak_controller, peer_socket, address, outgoing,),
+    #     ).start()
+
+    def handle_connection(
+            self,
+            peer_socket: socket.socket,
+            address: PeerAddress,
+            outgoing: bool,
+    ):
+        """Handle a new socket connection.
+
+        This method blocks until the socket connection has stopped.
+        """
+        peer = Peer(
+            peer_socket,
+            self.local_address,
+            address,
+            outgoing,
+            self.connection_manager.single_peer_changed_listener,
+        )
+
+        logger.debug(
+            'Setting up connection for peer address {} ...'.format(address))
+        try:
+            with Connection(peer, self.squeak_controller).connect(
+                    self.connection_manager
+            ) as connection:
+                connection.handle_connection()
+        finally:
+            peer.stop()
+            logger.debug(
+                'Stopped connection for peer address {}.'.format(address))

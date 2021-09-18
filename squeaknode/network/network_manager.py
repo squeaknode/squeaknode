@@ -28,7 +28,6 @@ import squeak.params
 from squeak.messages import MsgSerializable
 
 from squeaknode.core.peer_address import PeerAddress
-from squeaknode.network.connection import Connection
 from squeaknode.network.connection_manager import ConnectionManager
 from squeaknode.network.peer import Peer
 from squeaknode.network.peer_client import PeerClient
@@ -61,8 +60,9 @@ class NetworkManager(object):
 
     def start(self, squeak_controller):
         peer_handler = PeerHandler(
+            self.local_address,
+            self.connection_manager,
             squeak_controller,
-            self.handle_connection,
         )
         self.peer_server = PeerServer(
             peer_handler,
@@ -107,36 +107,36 @@ class NetworkManager(object):
                     peer,
                 ))
 
-    def handle_connection(
-            self,
-            squeak_controller,
-            peer_socket: socket.socket,
-            address: PeerAddress,
-            outgoing: bool,
-    ):
-        """Handles all sending and receiving of messages for the given peer.
+    # def handle_connection(
+    #         self,
+    #         squeak_controller,
+    #         peer_socket: socket.socket,
+    #         address: PeerAddress,
+    #         outgoing: bool,
+    # ):
+    #     """Handles all sending and receiving of messages for the given peer.
 
-        This method blocks until the peer connection has stopped.
-        """
-        peer = Peer(
-            peer_socket,
-            self.local_address,
-            address,
-            outgoing,
-            self.connection_manager.single_peer_changed_listener,
-        )
+    #     This method blocks until the peer connection has stopped.
+    #     """
+    #     peer = Peer(
+    #         peer_socket,
+    #         self.local_address,
+    #         address,
+    #         outgoing,
+    #         self.connection_manager.single_peer_changed_listener,
+    #     )
 
-        logger.debug(
-            'Setting up connection for peer address {} ...'.format(address))
-        try:
-            with Connection(peer, squeak_controller).connect(
-                    self.connection_manager
-            ) as connection:
-                connection.handle_connection()
-        finally:
-            peer.stop()
-            logger.debug(
-                'Stopped connection for peer address {}.'.format(address))
+    #     logger.debug(
+    #         'Setting up connection for peer address {} ...'.format(address))
+    #     try:
+    #         with Connection(peer, squeak_controller).connect(
+    #                 self.connection_manager
+    #         ) as connection:
+    #             connection.handle_connection()
+    #     finally:
+    #         peer.stop()
+    #         logger.debug(
+    #             'Stopped connection for peer address {}.'.format(address))
 
     @property
     def local_address(self) -> PeerAddress:
