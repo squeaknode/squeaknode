@@ -66,19 +66,17 @@ class PeerHandler():
             self.connection_manager.single_peer_changed_listener,
         )
 
-        self.do_handshake(peer)
-
-        logger.debug(
-            'Setting up connection for peer address {} ...'.format(address))
         try:
-            with Connection(peer, self.squeak_controller).connect(
-                    self.connection_manager
-            ) as connection:
-                connection.handle_connection()
-        finally:
+            self.do_handshake(peer)
+        except Exception:
             peer.stop()
-            logger.debug(
-                'Stopped connection for peer address {}.'.format(address))
+            raise
+
+        threading.Thread(
+            target=self.start_connection,
+            args=(peer,),
+            name="handle_peer_connection_thread",
+        ).start()
 
     def do_handshake(self, peer: Peer):
         """Do a handshake with a peer.
@@ -99,6 +97,22 @@ class PeerHandler():
         peer.set_connected()
         logger.debug("HANDSHAKE COMPLETE-----------")
         timer.stop_timer()
+
+    def start_connection(self, peer: Peer):
+        """Start a connection
+        """
+        logger.debug(
+            'Setting up connection for peer {}'.format(peer))
+        try:
+            with Connection(peer, self.squeak_controller).connect(
+                    self.connection_manager
+            ) as connection:
+                connection.handle_connection()
+        finally:
+            peer.stop()
+            logger.debug(
+                'Stopped connection for peer {}.'.format(peer),
+            )
 
 
 class HandshakeTimer:
