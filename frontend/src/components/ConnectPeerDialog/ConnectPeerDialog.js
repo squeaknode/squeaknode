@@ -18,25 +18,8 @@ import {
   connectSqueakPeerRequest,
 } from '../../squeakclient/requests';
 
-const useStyles = makeStyles((theme) => ({
-  form: {
-    margin: 'auto',
-    width: 'fit-content',
-    '& .MuiDialogContent-root': {
-      overflow: 'hidden',
-    },
-    '& .MuiTextField-root': {
-      margin: theme.spacing(1),
-    },
-    '& .MuiDialogActions-root': {
-      padding: '1rem',
-    },
-  },
-  formControlLabel: {
-    position: 'absolute',
-    left: '2rem',
-  },
-}));
+// styles
+import useStyles from './styles';
 
 const portDefaultValue = '0';
 
