@@ -24,7 +24,6 @@ import socket
 import threading
 
 from squeaknode.core.peer_address import PeerAddress
-from squeaknode.network.connection import Connection
 from squeaknode.network.peer import Peer
 
 
@@ -100,9 +99,7 @@ class PeerHandler():
     def start_connection(self, peer: Peer):
         """Start a connection
         """
-        with Connection(peer, self.squeak_controller).connect(
-                self.connection_manager
-        ) as connection:
+        with self.connection_manager.connect(peer, self.squeak_controller) as connection:
             connection.handle_connection()
 
 
