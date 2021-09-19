@@ -419,9 +419,9 @@ export default function LightningNodePage() {
           </Tabs>
         </AppBar>
         <TabPanel value={value} index={0}>
-        {waitingForLightningNode
-          ? WaitingIndicator()
-          : PubkeyContent()}
+          {waitingForLightningNode
+            ? WaitingIndicator()
+            : PubkeyContent()}
         </TabPanel>
         <TabPanel value={value} index={1}>
           {ChannelsContent()}
