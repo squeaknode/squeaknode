@@ -100,18 +100,10 @@ class PeerHandler():
     def start_connection(self, peer: Peer):
         """Start a connection
         """
-        logger.debug(
-            'Setting up connection for peer {}'.format(peer))
-        try:
-            with Connection(peer, self.squeak_controller).connect(
-                    self.connection_manager
-            ) as connection:
-                connection.handle_connection()
-        finally:
-            peer.stop()
-            logger.debug(
-                'Stopped connection for peer {}.'.format(peer),
-            )
+        with Connection(peer, self.squeak_controller).connect(
+                self.connection_manager
+        ) as connection:
+            connection.handle_connection()
 
 
 class HandshakeTimer:
