@@ -47,9 +47,12 @@ export default function SearchPage() {
   const [waitingForSqueaks, setWaitingForSqueaks] = useState(false);
   const [inputText, setInputText] = useState('');
 
-  const urlDecodedSearchText = decodeURIComponent(searchText);
+  const urlDecodedSearchText = searchText ? decodeURIComponent(searchText) : "";
 
   const getSqueaks = useCallback((urlDecodedSearchText, limit, lastEntry) => {
+    if (!searchText) {
+      return;
+    }
     setWaitingForSqueaks(true);
     getSearchSqueakDisplaysRequest(urlDecodedSearchText, limit, lastEntry, handleLoadedAddressSqueaks);
   },
@@ -215,7 +218,7 @@ export default function SearchPage() {
   return (
     <>
       {SearchBar()}
-      {AddressSqueaksContent()}
+      {searchText && AddressSqueaksContent()}
     </>
   );
 }

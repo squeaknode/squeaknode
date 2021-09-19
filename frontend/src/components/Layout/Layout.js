@@ -62,6 +62,7 @@ function Layout(props) {
             <Route path="/app/dashboard" component={Dashboard} />
             <Route path="/app/squeakaddress/:address" component={SqueakAddress} />
             <Route path="/app/search/:searchText" component={Search} />
+            <Route path="/app/search" component={Search} />
             <Route path="/app/squeak/:hash" component={Squeak} />
             <Route path="/app/profile/:id" component={Profile} />
             <Route path="/app/profiles" component={Profiles} />
