@@ -40,6 +40,7 @@ from squeak.net import CInterested
 from squeak.net import CInv
 
 from squeaknode.core.offer import Offer
+from squeaknode.core.util import generate_ping_nonce
 from squeaknode.network.peer import Peer
 
 
@@ -97,7 +98,7 @@ class Connection(object):
 
     def send_ping(self):
         ping_msg = msg_ping()
-        # ping_msg.nonce = TODO
+        ping_msg.nonce = generate_ping_nonce()
         self.pong_timer.start_timer(ping_msg.nonce)
         self.peer.send_msg(ping_msg)
 
