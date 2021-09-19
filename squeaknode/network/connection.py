@@ -21,7 +21,6 @@
 # SOFTWARE.
 import logging
 import threading
-from contextlib import contextmanager
 
 from squeak.messages import msg_addr
 from squeak.messages import msg_getaddr
@@ -68,19 +67,6 @@ class Connection(object):
             self.start_ping_timer,
             str(self.peer),
         )
-
-    @contextmanager
-    def connect(self, connection_manager):
-        logger.debug("Adding peer.")
-        connection_manager.add_peer(self.peer)
-        try:
-            logger.debug("Yielding peer.")
-            yield self
-        except Exception:
-            logger.exception("Peer connection failed.")
-        finally:
-            logger.debug("Removing peer.")
-            connection_manager.remove_peer(self.peer)
 
     def shutdown(self):
         logger.debug("Peet shutting down...")

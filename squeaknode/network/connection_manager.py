@@ -21,11 +21,13 @@
 # SOFTWARE.
 import logging
 import threading
+from contextlib import contextmanager
 from typing import Dict
 from typing import List
 from typing import Optional
 
 from squeaknode.core.peer_address import PeerAddress
+from squeaknode.network.connection import Connection
 from squeaknode.network.peer import Peer
 from squeaknode.node.listener_subscription_client import EventListener
 
@@ -48,6 +50,19 @@ class ConnectionManager(object):
         self.peer_changed_listener = EventListener()
         self.single_peer_changed_listener = EventListener()
         self.accept_connections = True
+
+    @contextmanager
+    def connect(self, peer, squeak_controller):
+        logger.debug("Adding peer.")
+        self.add_peer(peer)
+        try:
+            logger.debug("Yielding connection.")
+            yield Connection(peer, squeak_controller)
+        except Exception:
+            logger.exception("Peer connection failed.")
+        finally:
+            logger.debug("Removing peer.")
+            self.remove_peer(peer)
 
     @property
     def peers(self) -> List[Peer]:
