@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import logging
+import threading
 from contextlib import contextmanager
 
 from squeak.messages import msg_addr
@@ -28,6 +29,7 @@ from squeak.messages import msg_getdata
 from squeak.messages import msg_inv
 from squeak.messages import msg_notfound
 from squeak.messages import msg_offer
+from squeak.messages import msg_ping
 from squeak.messages import msg_pong
 from squeak.messages import MSG_SECRET_KEY
 from squeak.messages import msg_secretkey
@@ -38,6 +40,7 @@ from squeak.net import CInterested
 from squeak.net import CInv
 
 from squeaknode.core.offer import Offer
+from squeaknode.core.util import generate_ping_nonce
 from squeaknode.network.peer import Peer
 
 
@@ -45,6 +48,8 @@ logger = logging.getLogger(__name__)
 
 
 EMPTY_HASH = b'\x00' * 32
+PING_TIMEOUT = 60
+PONG_TIMEOUT = 30
 
 
 class Connection(object):
@@ -54,6 +59,15 @@ class Connection(object):
     def __init__(self, peer: Peer, squeak_controller):
         self.peer = peer
         self.squeak_controller = squeak_controller
+        self.ping_timer = PingTimer(
+            self.send_ping,
+            str(self.peer),
+        )
+        self.pong_timer = PongTimer(
+            self.shutdown,
+            self.start_ping_timer,
+            str(self.peer),
+        )
 
     @contextmanager
     def connect(self, connection_manager):
@@ -70,13 +84,26 @@ class Connection(object):
             self.peer.stop()
             # TODO: Set a stop event here.
 
+    def shutdown(self):
+        self.peer.stop()
+
     def handle_connection(self):
         self.initial_sync()
         self.handle_msgs()
 
     def initial_sync(self):
+        self.send_ping()
         self.update_addrs()
         self.update_subscription()
+
+    def send_ping(self):
+        ping_msg = msg_ping()
+        ping_msg.nonce = generate_ping_nonce()
+        self.pong_timer.start_timer(ping_msg.nonce)
+        self.peer.send_msg(ping_msg)
+
+    def start_ping_timer(self):
+        self.ping_timer.start_timer()
 
     def update_subscription(self):
         locator = self.squeak_controller.get_interested_locator()
@@ -139,7 +166,8 @@ class Connection(object):
         self.peer.send_msg(pong)
 
     def handle_pong(self, msg):
-        self.peer.set_pong_response(msg.nonce)
+        nonce = msg.nonce
+        self.pong_timer.stop_timer(nonce)
 
     def handle_addr(self, msg):
         # TODO: Save new address in table.
@@ -284,3 +312,96 @@ class Connection(object):
                 host=resp.host.encode('utf-8'),
                 port=resp.port,
             )
+
+
+class PingTimer:
+    """Send a ping message when the timer expires.
+    """
+
+    def __init__(
+            self,
+            send_fn,
+            peer_name,
+    ):
+        self.send_fn = send_fn
+        self.peer_name = peer_name
+        self.timer = None
+        self._lock = threading.Lock()
+
+    def start_timer(self):
+        logger.debug("Starting ping timer.")
+        with self._lock:
+            # Cancel the existing timer.
+            if self.timer:
+                self.timer.cancel()
+
+            # Start a new timer.
+            self.timer = threading.Timer(
+                PING_TIMEOUT,
+                self.send_ping,
+            )
+            self.timer.name = "ping_timer_thread_{}".format(
+                self.peer_name)
+            self.timer.start()
+
+    def send_ping(self):
+        logger.debug("Sending ping triggered by timer.")
+        self.send_fn()
+
+
+class PongTimer:
+    """Shut down the connection when the timer expires.
+    """
+
+    def __init__(
+            self,
+            shutdown_fn,
+            start_ping_timer_fn,
+            peer_name,
+    ):
+        self.shutdown_fn = shutdown_fn
+        self.start_ping_timer_fn = start_ping_timer_fn
+        self.peer_name = peer_name
+        self.timer = None
+        self.expected_nonce = None
+        self._lock = threading.Lock()
+
+    def start_timer(self, nonce):
+        logger.debug("Starting pong timer.")
+        with self._lock:
+            # Cancel the existing timer.
+            if self.timer:
+                return
+
+            # Start a new timer.
+            self.expected_nonce = nonce
+            self.timer = threading.Timer(
+                PONG_TIMEOUT,
+                self.shutdown,
+            )
+            self.timer.name = "pong_timer_thread_{}".format(
+                self.peer_name)
+            self.timer.start()
+
+    def stop_timer(self, nonce):
+        logger.debug("Stopping pong timer.")
+        with self._lock:
+            if nonce != self.expected_nonce:
+                self.shutdown()
+
+            # Cancel the existing timer.
+            if self.timer:
+                self.timer.cancel()
+                self.timer = None
+                self.expected_nonce = None
+
+            # Start a new ping timer.
+            self.start_ping_timer()
+
+    def shutdown(self):
+        logger.debug("Shutdown connection triggered by pong timer.")
+        self.shutdown_fn()
+
+    def start_ping_timer(self):
+        logger.debug("Starting ping timer triggered by pong response.")
+        self.start_ping_timer_fn()
