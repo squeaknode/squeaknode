@@ -68,7 +68,6 @@ class Connection(object):
             self.start_ping_timer,
             str(self.peer),
         )
-        self._stopped = threading.Event()
 
     @contextmanager
     def connect(self, connection_manager):
@@ -85,6 +84,8 @@ class Connection(object):
 
     def shutdown(self):
         self.peer.stop()
+        self.ping_timer.cancel()
+        self.pong_timer.cancel()
 
     def handle_connection(self):
         try:
@@ -92,7 +93,7 @@ class Connection(object):
             self.handle_msgs()
         except Exception:
             self.shutdown()
-            self._stopped.set()
+            # self._stopped.set()
 
     def initial_sync(self):
         self.send_ping()
@@ -347,6 +348,9 @@ class PingTimer:
                 self.peer_name)
             self.timer.start()
 
+    def cancel(self):
+        self.timer.cancel()
+
     def send_ping(self):
         logger.debug("Sending ping triggered by timer.")
         self.send_fn()
@@ -400,6 +404,9 @@ class PongTimer:
 
             # Start a new ping timer.
             self.start_ping_timer()
+
+    def cancel(self):
+        self.timer.cancel()
 
     def shutdown(self):
         logger.debug("Shutdown connection triggered by pong timer.")
