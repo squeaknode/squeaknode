@@ -72,6 +72,11 @@ export default function LightningNodePage() {
     disconnectPeer(pubkey);
   };
 
+  const handleListPeersResp = (resp) => {
+    setWaitingForLightningNode(false);
+    setPeers(resp);
+  };
+
   const isConnected = () => {
     if (peers == null) {
       return false;
@@ -99,7 +104,7 @@ export default function LightningNodePage() {
   };
 
   const listPeers = () => {
-    lndListPeersRequest(setPeers);
+    lndListPeersRequest(handleListPeersResp);
   };
   const listChannels = () => {
     lndListChannelsRequest(setChannels);
@@ -111,8 +116,8 @@ export default function LightningNodePage() {
     setWaitingForLightningNode(true);
     lndConnectPeerRequest(pubkey, host,
       () => {
-        setWaitingForLightningNode(false);
-        reloadRoute(history);
+        // reloadRoute(history);
+        listPeers();
       },
       (err) => {
         setWaitingForLightningNode(false);
@@ -122,8 +127,8 @@ export default function LightningNodePage() {
   const disconnectPeer = (pubkey) => {
     setWaitingForLightningNode(true);
     lndDisconnectPeerRequest(pubkey, () => {
-      setWaitingForLightningNode(false);
-      reloadRoute(history);
+      // reloadRoute(history);
+      listPeers();
     });
   };
 
