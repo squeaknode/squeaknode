@@ -47,7 +47,7 @@ export default function SearchPage() {
   const [waitingForSqueaks, setWaitingForSqueaks] = useState(false);
   const [inputText, setInputText] = useState('');
 
-  const urlDecodedSearchText = searchText ? decodeURIComponent(searchText) : "";
+  const urlDecodedSearchText = searchText ? decodeURIComponent(searchText) : '';
 
   const getSqueaks = useCallback((urlDecodedSearchText, limit, lastEntry) => {
     if (!searchText) {
