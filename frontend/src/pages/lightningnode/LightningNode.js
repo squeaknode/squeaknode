@@ -7,6 +7,7 @@ import {
   Tabs,
   Tab,
   Box,
+  CircularProgress,
 } from '@material-ui/core';
 
 // styles
@@ -40,6 +41,7 @@ export default function LightningNodePage() {
   const [channels, setChannels] = useState(null);
   const [pendingChannels, setPendingChannels] = useState(null);
   const [openChannelDialogOpen, setOpenChannelDialogOpen] = useState(false);
+  const [waitingForLightningNode, setWaitingForLightningNode] = useState(false);
 
   function a11yProps(index) {
     return {
@@ -106,16 +108,21 @@ export default function LightningNodePage() {
     lndPendingChannelsRequest(setPendingChannels);
   };
   const connectPeer = (pubkey, host) => {
+    setWaitingForLightningNode(true);
     lndConnectPeerRequest(pubkey, host,
       () => {
+        setWaitingForLightningNode(false);
         reloadRoute(history);
       },
       (err) => {
+        setWaitingForLightningNode(false);
         alert(err.message);
       });
   };
   const disconnectPeer = (pubkey) => {
+    setWaitingForLightningNode(true);
     lndDisconnectPeerRequest(pubkey, () => {
+      setWaitingForLightningNode(false);
       reloadRoute(history);
     });
   };
@@ -410,7 +417,9 @@ export default function LightningNodePage() {
           </Tabs>
         </AppBar>
         <TabPanel value={value} index={0}>
-          {PubkeyContent()}
+        {waitingForLightningNode
+          ? WaitingIndicator()
+          : PubkeyContent()}
         </TabPanel>
         <TabPanel value={value} index={1}>
           {ChannelsContent()}
@@ -428,6 +437,12 @@ export default function LightningNodePage() {
           handleClose={handleCloseOpenChannelDialog}
         />
       </>
+    );
+  }
+
+  function WaitingIndicator() {
+    return (
+      <CircularProgress size={48} className={classes.buttonProgress} />
     );
   }
 
