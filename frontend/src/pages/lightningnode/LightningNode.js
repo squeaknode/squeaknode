@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useParams } from 'react-router-dom';
 import {
   Grid,
   Button,
@@ -7,6 +7,7 @@ import {
   Tabs,
   Tab,
   Box,
+  CircularProgress,
 } from '@material-ui/core';
 
 // styles
@@ -26,20 +27,17 @@ import {
   lndConnectPeerRequest,
   lndDisconnectPeerRequest,
 } from '../../squeakclient/requests';
-import {
-  reloadRoute,
-} from '../../navigation/navigation';
 
 export default function LightningNodePage() {
   const classes = useStyles();
 
-  const history = useHistory();
   const { pubkey, host, port } = useParams();
   const [value, setValue] = useState(0);
   const [peers, setPeers] = useState(null);
   const [channels, setChannels] = useState(null);
   const [pendingChannels, setPendingChannels] = useState(null);
   const [openChannelDialogOpen, setOpenChannelDialogOpen] = useState(false);
+  const [waitingForLightningNode, setWaitingForLightningNode] = useState(false);
 
   function a11yProps(index) {
     return {
@@ -70,6 +68,11 @@ export default function LightningNodePage() {
     disconnectPeer(pubkey);
   };
 
+  const handleListPeersResp = (resp) => {
+    setWaitingForLightningNode(false);
+    setPeers(resp);
+  };
+
   const isConnected = () => {
     if (peers == null) {
       return false;
@@ -96,9 +99,10 @@ export default function LightningNodePage() {
     return false;
   };
 
-  const listPeers = () => {
-    lndListPeersRequest(setPeers);
-  };
+  const listPeers = useCallback(() => {
+    lndListPeersRequest(handleListPeersResp);
+  },
+  []);
   const listChannels = () => {
     lndListChannelsRequest(setChannels);
   };
@@ -106,23 +110,28 @@ export default function LightningNodePage() {
     lndPendingChannelsRequest(setPendingChannels);
   };
   const connectPeer = (pubkey, host) => {
+    setWaitingForLightningNode(true);
     lndConnectPeerRequest(pubkey, host,
       () => {
-        reloadRoute(history);
+        // reloadRoute(history);
+        listPeers();
       },
       (err) => {
+        setWaitingForLightningNode(false);
         alert(err.message);
       });
   };
   const disconnectPeer = (pubkey) => {
+    setWaitingForLightningNode(true);
     lndDisconnectPeerRequest(pubkey, () => {
-      reloadRoute(history);
+      // reloadRoute(history);
+      listPeers();
     });
   };
 
   useEffect(() => {
     listPeers();
-  }, []);
+  }, [listPeers]);
   useEffect(() => {
     listChannels();
   }, []);
@@ -410,7 +419,9 @@ export default function LightningNodePage() {
           </Tabs>
         </AppBar>
         <TabPanel value={value} index={0}>
-          {PubkeyContent()}
+          {waitingForLightningNode
+            ? WaitingIndicator()
+            : PubkeyContent()}
         </TabPanel>
         <TabPanel value={value} index={1}>
           {ChannelsContent()}
@@ -428,6 +439,12 @@ export default function LightningNodePage() {
           handleClose={handleCloseOpenChannelDialog}
         />
       </>
+    );
+  }
+
+  function WaitingIndicator() {
+    return (
+      <CircularProgress size={48} className={classes.buttonProgress} />
     );
   }
 

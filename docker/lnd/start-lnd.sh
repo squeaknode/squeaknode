@@ -73,6 +73,8 @@ elif [[ "$BACKEND" == "bitcoind" ]]; then
 	 --rpclisten=0.0.0.0:10009 \
 	 --debuglevel=$DEBUG \
 	 --tlsextradomain=lnd \
+	 --tor.active \
+	 --tor.socks=tor-socks-proxy:9150 \
 	 $@"
     echo $cmd
     sh ./wait-for-block-index.sh "$cmd"
