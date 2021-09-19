@@ -44,11 +44,13 @@ export default function OpenChannelDialog({
   const handleResponse = (response) => {
     // TODO: go to channel page instead of showing alert.
     setLoading(false);
+    handleClose();
     alert('Open channel pending.');
   };
 
   const handleErr = (err) => {
     setLoading(false);
+    handleClose();
     alert(`Error opening channel: ${err}`);
   };
 
@@ -67,7 +69,6 @@ export default function OpenChannelDialog({
       return;
     }
     openChannel(pubkey, amount, satperbyte);
-    handleClose();
   }
 
   function PubKeyInput() {
