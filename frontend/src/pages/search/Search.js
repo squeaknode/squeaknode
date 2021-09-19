@@ -56,7 +56,7 @@ export default function SearchPage() {
     setWaitingForSqueaks(true);
     getSearchSqueakDisplaysRequest(urlDecodedSearchText, limit, lastEntry, handleLoadedAddressSqueaks);
   },
-  []);
+  [searchText]);
   // const subscribeSqueaks = (address) => subscribeAddressSqueakDisplaysRequest(address, (resp) => {
   //   setSqueaks((prevSqueaks) => [resp].concat(prevSqueaks));
   // });
