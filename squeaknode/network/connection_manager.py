@@ -52,17 +52,16 @@ class ConnectionManager(object):
         self.accept_connections = True
 
     @contextmanager
-    def connect(self, peer, squeak_controller):
-        logger.debug("Adding peer.")
-        self.add_peer(peer)
+    def connect(self, peer: Peer, squeak_controller):
         try:
+            logger.debug("Adding peer.")
+            self.add_peer(peer)
             logger.debug("Yielding connection.")
             yield Connection(peer, squeak_controller)
-        except Exception:
-            logger.exception("Peer connection failed.")
         finally:
             logger.debug("Removing peer.")
             self.remove_peer(peer)
+            peer.stop()
 
     @property
     def peers(self) -> List[Peer]:
@@ -109,8 +108,9 @@ class ConnectionManager(object):
         """
         with self.peers_lock:
             if not self.has_connection(peer.remote_address):
-                logger.debug('Failed to remove peer {}'.format(peer))
-                raise MissingPeerError()
+                # logger.debug('Failed to remove peer {}'.format(peer))
+                # raise MissingPeerError()
+                return
             del self._peers[peer.remote_address]
             logger.debug('Removed peer {}'.format(peer))
             self.on_peers_changed()
@@ -157,8 +157,8 @@ class DuplicateNonceError(Exception):
     pass
 
 
-class MissingPeerError(Exception):
-    pass
+# class MissingPeerError(Exception):
+#     pass
 
 
 class NotAcceptingConnectionsError(Exception):
