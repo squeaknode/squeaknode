@@ -83,6 +83,7 @@ class Connection(object):
             connection_manager.remove_peer(self.peer)
 
     def shutdown(self):
+        logger.debug("Peet shutting down...")
         self.peer.stop()
         self.ping_timer.cancel()
         self.pong_timer.cancel()
@@ -91,7 +92,7 @@ class Connection(object):
         try:
             self.initial_sync()
             self.handle_msgs()
-        except Exception:
+        finally:
             self.shutdown()
             # self._stopped.set()
 
@@ -349,7 +350,10 @@ class PingTimer:
             self.timer.start()
 
     def cancel(self):
-        self.timer.cancel()
+        logger.debug("Cancelling ping timer.")
+        with self._lock:
+            if self.timer:
+                self.timer.cancel()
 
     def send_ping(self):
         logger.debug("Sending ping triggered by timer.")
@@ -406,7 +410,10 @@ class PongTimer:
             self.start_ping_timer()
 
     def cancel(self):
-        self.timer.cancel()
+        logger.debug("Cancelling pong timer.")
+        with self._lock:
+            if self.timer:
+                self.timer.cancel()
 
     def shutdown(self):
         logger.debug("Shutdown connection triggered by pong timer.")
