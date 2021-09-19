@@ -48,7 +48,7 @@ logger = logging.getLogger(__name__)
 
 
 EMPTY_HASH = b'\x00' * 32
-PING_TIMEOUT = 10
+PING_TIMEOUT = 60
 PONG_TIMEOUT = 30
 
 
