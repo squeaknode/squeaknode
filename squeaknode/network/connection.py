@@ -68,6 +68,7 @@ class Connection(object):
             self.start_ping_timer,
             str(self.peer),
         )
+        self._stopped = threading.Event()
 
     @contextmanager
     def connect(self, connection_manager):
@@ -81,15 +82,17 @@ class Connection(object):
         finally:
             logger.debug("Removing peer.")
             connection_manager.remove_peer(self.peer)
-            self.peer.stop()
-            # TODO: Set a stop event here.
 
     def shutdown(self):
         self.peer.stop()
 
     def handle_connection(self):
-        self.initial_sync()
-        self.handle_msgs()
+        try:
+            self.initial_sync()
+            self.handle_msgs()
+        except Exception:
+            self.shutdown()
+            self._stopped.set()
 
     def initial_sync(self):
         self.send_ping()
