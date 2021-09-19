@@ -6,6 +6,7 @@ import {
   TextField,
   DialogActions,
   Button,
+  CircularProgress,
 } from '@material-ui/core';
 
 // styles
@@ -25,6 +26,7 @@ export default function OpenChannelDialog({
 
   const [amount, setAmount] = useState('');
   const [satperbyte, setSatperbyte] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const resetFields = () => {
     setAmount('');
@@ -41,14 +43,19 @@ export default function OpenChannelDialog({
 
   const handleResponse = (response) => {
     // TODO: go to channel page instead of showing alert.
+    setLoading(false);
+    handleClose();
     alert('Open channel pending.');
   };
 
   const handleErr = (err) => {
+    setLoading(false);
+    handleClose();
     alert(`Error opening channel: ${err}`);
   };
 
   const openChannel = (pubkey, amount) => {
+    setLoading(true);
     lndOpenChannelSyncRequest(pubkey, amount, satperbyte, handleResponse, handleErr);
   };
 
@@ -62,7 +69,6 @@ export default function OpenChannelDialog({
       return;
     }
     openChannel(pubkey, amount, satperbyte);
-    handleClose();
   }
 
   function PubKeyInput() {
@@ -125,14 +131,17 @@ export default function OpenChannelDialog({
 
   function OpenChannelButton() {
     return (
-      <Button
-        type="submit"
-        variant="contained"
-        color="primary"
-        className={classes.button}
-      >
-        Open Channel
-      </Button>
+      <div className={classes.wrapper}>
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          disabled={loading}
+        >
+          Open Channel
+        </Button>
+        {loading && <CircularProgress size={24} className={classes.buttonProgress} />}
+      </div>
     );
   }
 
