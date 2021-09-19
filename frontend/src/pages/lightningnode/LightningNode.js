@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useParams } from 'react-router-dom';
 import {
   Grid,
   Button,
@@ -27,14 +27,10 @@ import {
   lndConnectPeerRequest,
   lndDisconnectPeerRequest,
 } from '../../squeakclient/requests';
-import {
-  reloadRoute,
-} from '../../navigation/navigation';
 
 export default function LightningNodePage() {
   const classes = useStyles();
 
-  const history = useHistory();
   const { pubkey, host, port } = useParams();
   const [value, setValue] = useState(0);
   const [peers, setPeers] = useState(null);
@@ -103,9 +99,10 @@ export default function LightningNodePage() {
     return false;
   };
 
-  const listPeers = () => {
+  const listPeers = useCallback(() => {
     lndListPeersRequest(handleListPeersResp);
-  };
+  },
+  []);
   const listChannels = () => {
     lndListChannelsRequest(setChannels);
   };
@@ -134,7 +131,7 @@ export default function LightningNodePage() {
 
   useEffect(() => {
     listPeers();
-  }, []);
+  }, [listPeers]);
   useEffect(() => {
     listChannels();
   }, []);
