@@ -329,6 +329,14 @@ def create_app(handler, username, password):
             handler.handle_get_squeak_peer,
         )
 
+    @app.route("/getpeerbyaddress", methods=["POST"])
+    @login_required
+    def getpeerbyaddress():
+        return handle_request(
+            squeak_admin_pb2.GetPeerByAddressRequest(),
+            handler.handle_get_squeak_peer_by_address,
+        )
+
     @app.route("/setpeerdownloading", methods=["POST"])
     @login_required
     def setpeerdownloading():
