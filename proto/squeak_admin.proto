@@ -1082,6 +1082,12 @@ message ConnectedPeer {
 
     /// Number of bytes sent
     int64 number_bytes_sent = 7;
+
+    /// Is peer saved
+    bool is_peer_saved = 8;
+
+    /// The saved peer
+    SqueakPeer saved_peer = 9;
 }
 
 message GetConnectedPeersRequest {

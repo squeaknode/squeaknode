@@ -630,7 +630,9 @@ class SqueakController:
         peer = self.network_manager.get_connected_peer(peer_address)
         return ConnectedPeer(
             peer=peer,
-            saved_peer=None,
+            saved_peer=self.squeak_db.get_peer_by_address(
+                peer_address,
+            ),
         )
 
     def get_connected_peers(self) -> List[ConnectedPeer]:
@@ -638,7 +640,9 @@ class SqueakController:
         return [
             ConnectedPeer(
                 peer=peer,
-                saved_peer=None,
+                saved_peer=self.squeak_db.get_peer_by_address(
+                    peer.remote_address,
+                ),
             ) for peer in peers
         ]
 
@@ -788,7 +792,9 @@ class SqueakController:
             yield [
                 ConnectedPeer(
                     peer=peer,
-                    saved_peer=None,
+                    saved_peer=self.squeak_db.get_peer_by_address(
+                        peer.remote_address,
+                    ),
                 ) for peer in peers
             ]
 
@@ -796,7 +802,9 @@ class SqueakController:
         for peer in self.network_manager.subscribe_connected_peer(peer_address, stopped):
             yield ConnectedPeer(
                 peer=peer,
-                saved_peer=None,
+                saved_peer=self.squeak_db.get_peer_by_address(
+                    peer.remote_address,
+                ),
             )
 
     def subscribe_new_squeaks(self, stopped: threading.Event):
