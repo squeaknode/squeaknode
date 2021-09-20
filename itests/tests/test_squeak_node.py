@@ -497,6 +497,17 @@ def test_create_peer(admin_stub):
     ]
     assert "fake_host" in peer_hosts
 
+    # Get the new peer by address
+    get_peer_by_address_response = admin_stub.GetPeerByAddress(
+        squeak_admin_pb2.GetPeerByAddressRequest(
+            peer_address=squeak_admin_pb2.PeerAddress(
+                host="fake_host",
+                port=1234,
+            )
+        )
+    )
+    assert get_peer_by_address_response.squeak_peer.peer_name == "fake_peer_name"
+
 
 def test_create_peer_empty_name(admin_stub):
     # Try to create a new signing profile with an empty name
