@@ -21,6 +21,7 @@
 # SOFTWARE.
 import logging
 import threading
+from typing import Iterable
 from typing import List
 from typing import Optional
 from typing import Union
@@ -39,6 +40,7 @@ from squeak.net import CInv
 from squeak.net import CSqueakLocator
 
 from squeaknode.core.block_range import BlockRange
+from squeaknode.core.connected_peer import ConnectedPeer
 from squeaknode.core.lightning_address import LightningAddressHostPort
 from squeaknode.core.offer import Offer
 from squeaknode.core.peer_address import PeerAddress
@@ -54,7 +56,6 @@ from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.util import get_hash
 from squeaknode.core.util import is_address_valid
 from squeaknode.core.util import squeak_matches_interest
-from squeaknode.network.peer import Peer
 from squeaknode.node.listener_subscription_client import EventListener
 from squeaknode.node.received_payments_subscription_client import ReceivedPaymentsSubscriptionClient
 from squeaknode.node.temporary_interest_manager import TemporaryInterest
@@ -625,11 +626,21 @@ class SqueakController:
                 peer.address,
             )
 
-    def get_connected_peer(self, peer_address: PeerAddress):
-        return self.network_manager.get_connected_peer(peer_address)
+    def get_connected_peer(self, peer_address: PeerAddress) -> ConnectedPeer:
+        peer = self.network_manager.get_connected_peer(peer_address)
+        return ConnectedPeer(
+            peer=peer,
+            saved_peer=None,
+        )
 
-    def get_connected_peers(self) -> List[Peer]:
-        return self.network_manager.get_connected_peers()
+    def get_connected_peers(self) -> List[ConnectedPeer]:
+        peers = self.network_manager.get_connected_peers()
+        return [
+            ConnectedPeer(
+                peer=peer,
+                saved_peer=None,
+            ) for peer in peers
+        ]
 
     def lookup_squeaks(
             self,
@@ -772,11 +783,21 @@ class SqueakController:
         ))
         self.network_manager.disconnect_peer(peer_address)
 
-    def subscribe_connected_peers(self, stopped: threading.Event):
-        return self.network_manager.subscribe_connected_peers(stopped)
+    def subscribe_connected_peers(self, stopped: threading.Event) -> Iterable[List[ConnectedPeer]]:
+        for peers in self.network_manager.subscribe_connected_peers(stopped):
+            yield [
+                ConnectedPeer(
+                    peer=peer,
+                    saved_peer=None,
+                ) for peer in peers
+            ]
 
-    def subscribe_connected_peer(self, peer_address: PeerAddress, stopped: threading.Event):
-        return self.network_manager.subscribe_connected_peer(peer_address, stopped)
+    def subscribe_connected_peer(self, peer_address: PeerAddress, stopped: threading.Event) -> Iterable[ConnectedPeer]:
+        for peer in self.network_manager.subscribe_connected_peer(peer_address, stopped):
+            yield ConnectedPeer(
+                peer=peer,
+                saved_peer=None,
+            )
 
     def subscribe_new_squeaks(self, stopped: threading.Event):
         yield from self.new_squeak_listener.yield_items(stopped)
