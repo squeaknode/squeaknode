@@ -16,10 +16,9 @@ import CardHeader from '@material-ui/core/CardHeader';
 import Typography from '@material-ui/core/Typography';
 import ComputerIcon from '@material-ui/icons/Computer';
 
+import moment from 'moment';
 import CreatePeerDialog from '../../components/CreatePeerDialog';
 
-
-import moment from 'moment';
 import useStyles from './styles';
 
 import {
