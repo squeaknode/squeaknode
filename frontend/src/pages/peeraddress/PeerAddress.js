@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import {
   Grid,
   Button,
@@ -14,8 +14,10 @@ import CardHeader from '@material-ui/core/CardHeader';
 // components
 
 import Typography from '@material-ui/core/Typography';
-
 import ComputerIcon from '@material-ui/icons/Computer';
+
+import CreatePeerDialog from '../../components/CreatePeerDialog';
+
 
 import moment from 'moment';
 import useStyles from './styles';
@@ -24,15 +26,26 @@ import {
   connectSqueakPeerRequest,
   disconnectSqueakPeerRequest,
   getConnectedPeerRequest,
+  getPeerByAddressRequest,
   // subscribeConnectedPeerRequest,
 } from '../../squeakclient/requests';
+import {
+  goToPeerPage,
+} from '../../navigation/navigation';
 
 export default function PeerAddressPage() {
   const classes = useStyles();
+  const history = useHistory();
   const { host, port } = useParams();
+  const [savedPeer, setSavedPeer] = useState(null);
   const [connectedPeer, setConnectedPeer] = useState(null);
   const [waitingForConnectedPeer, setWaitingForConnectedPeer] = useState(false);
+  const [createSavedPeerDialogOpen, setCreateSavedPeerDialogOpen] = useState(false);
 
+  const getPeer = useCallback(() => {
+    getPeerByAddressRequest(host, port, setSavedPeer);
+  },
+  [host, port]);
   const getConnectedPeer = useCallback(() => {
     setWaitingForConnectedPeer(true);
     getConnectedPeerRequest(host, port, handleLoadedConnectedPeer);
@@ -61,6 +74,17 @@ export default function PeerAddressPage() {
   // }),
   // [host, port]);
 
+  const handleClickOpenCreateSavedPeerDialog = () => {
+    setCreateSavedPeerDialogOpen(true);
+  };
+
+  const handleCloseCreateSavedPeerDialog = () => {
+    setCreateSavedPeerDialogOpen(false);
+  };
+
+  useEffect(() => {
+    getPeer();
+  }, [getPeer]);
   useEffect(() => {
     getConnectedPeer();
   }, [getConnectedPeer]);
@@ -216,9 +240,67 @@ export default function PeerAddressPage() {
     );
   }
 
+  function SavedPeerContent() {
+    return (
+      <>
+        {savedPeer
+          ? PeerContent()
+          : NoPeerContent()}
+        {CreateSavedPeerDialogContent()}
+      </>
+
+    );
+  }
+
+  function NoPeerContent() {
+    return (
+      <div>
+        No saved peer for this address.
+        <Button
+          variant="contained"
+          onClick={() => {
+            handleClickOpenCreateSavedPeerDialog();
+          }}
+        >
+          Save Peer
+        </Button>
+      </div>
+    );
+  }
+
+  function PeerContent() {
+    return (
+      <div className={classes.root}>
+        Saved Peer:
+        <Button
+          variant="contained"
+          onClick={() => {
+            goToPeerPage(history, savedPeer.getPeerId());
+          }}
+        >
+          {savedPeer.getPeerName()}
+        </Button>
+      </div>
+    );
+  }
+
+  function CreateSavedPeerDialogContent() {
+    return (
+      <>
+        <CreatePeerDialog
+          open={createSavedPeerDialogOpen}
+          handleClose={handleCloseCreateSavedPeerDialog}
+          initialHost={host}
+          initialPort={port}
+        />
+      </>
+    );
+  }
+
   return (
     <>
       {AddressContent()}
+      {SavedPeerContent()}
       {waitingForConnectedPeer
         ? WaitingIndicator()
         : ConnectionContent()}

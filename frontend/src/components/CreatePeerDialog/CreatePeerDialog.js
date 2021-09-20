@@ -46,6 +46,8 @@ const portDefaultValue = '0';
 export default function CreatePeerDialog({
   open,
   handleClose,
+  initialHost = '',
+  initialPort = '',
   ...props
 }) {
   const classes = useStyles();
@@ -59,8 +61,15 @@ export default function CreatePeerDialog({
   const resetFields = () => {
     setPeerName('');
     setHost('');
+    if (initialHost) {
+      setHost(initialHost);
+    }
     setPort(portDefaultValue);
     setCustomPortChecked(false);
+    if (initialPort) {
+      setPort(initialPort);
+      setCustomPortChecked(true);
+    }
   };
 
   const handleChangePeerName = (event) => {
