@@ -54,10 +54,9 @@ export default function PeerListItem({
 
   const getConnectedPeerDisplayName = (peer) => {
     if (peer.getSavedPeer()) {
-      return `Name: ${peer.getSavedPeer().getPeerName()}`
-    } else {
-      return ''
+      return `Name: ${peer.getSavedPeer().getPeerName()}`;
     }
+    return '';
   };
 
   return (
