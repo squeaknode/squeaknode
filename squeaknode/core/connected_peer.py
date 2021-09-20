@@ -20,16 +20,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 from typing import NamedTuple
+from typing import Optional
 
-from squeaknode.core.peer_address import PeerAddress
+from squeaknode.core.squeak_peer import SqueakPeer
+from squeaknode.network.peer import Peer
 
 
 class ConnectedPeer(NamedTuple):
     """Represents another node in the network."""
-    peer_address: PeerAddress
-    connect_time_s: int
-    outgoing: bool
-    sent_bytes: int
-    sent_messages: int
-    received_bytes: int
-    received_messages: int
+    peer: Peer
+    saved_peer: Optional[SqueakPeer]

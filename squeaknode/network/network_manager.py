@@ -21,6 +21,7 @@
 # SOFTWARE.
 import logging
 import socket
+from typing import Iterable
 from typing import List
 from typing import Optional
 
@@ -121,7 +122,7 @@ class NetworkManager(object):
             self.local_port,
         )
 
-    def subscribe_connected_peers(self, stopped):
+    def subscribe_connected_peers(self, stopped) -> Iterable[List[Peer]]:
         # yield from self.connection_manager.yield_peers_changed(stopped)
         for item in self.connection_manager.yield_peers_changed(stopped):
             logger.info("subscribe_connected_peers yielding item: {}".format(
@@ -129,7 +130,7 @@ class NetworkManager(object):
             ))
             yield item
 
-    def subscribe_connected_peer(self, peer_address: PeerAddress, stopped):
+    def subscribe_connected_peer(self, peer_address: PeerAddress, stopped) -> Iterable[Peer]:
         yield from self.connection_manager.yield_single_peer_changed(
             peer_address,
             stopped,

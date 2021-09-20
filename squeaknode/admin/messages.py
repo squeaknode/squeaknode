@@ -26,6 +26,7 @@ from squeak.core import CSqueak
 from proto import squeak_admin_pb2
 from squeaknode.admin.profile_image_util import bytes_to_base64_string
 from squeaknode.admin.profile_image_util import load_default_profile_image
+from squeaknode.core.connected_peer import ConnectedPeer
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.received_payment import ReceivedPayment
@@ -36,7 +37,6 @@ from squeaknode.core.sent_payment_summary import SentPaymentSummary
 from squeaknode.core.squeak_entry import SqueakEntry
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
-from squeaknode.network.peer import Peer
 
 logger = logging.getLogger(__name__)
 
@@ -179,15 +179,23 @@ def payment_summary_to_message(
     )
 
 
-def connected_peer_to_message(connected_peer: Peer) -> squeak_admin_pb2.ConnectedPeer:
+def connected_peer_to_message(connected_peer: ConnectedPeer) -> squeak_admin_pb2.ConnectedPeer:
+    peer = connected_peer.peer
+    saved_peer = connected_peer.saved_peer
+    is_peer_saved = saved_peer is not None
+    saved_peer_msg = None
+    if saved_peer is not None:
+        saved_peer_msg = squeak_peer_to_message(saved_peer)
     return squeak_admin_pb2.ConnectedPeer(
-        peer_address=peer_address_to_message(connected_peer.remote_address),
-        connect_time_s=connected_peer.connect_time,
-        last_message_received_time_s=connected_peer.last_msg_revc_time,
-        number_messages_received=connected_peer.num_msgs_received,
-        number_bytes_received=connected_peer.num_bytes_received,
-        number_messages_sent=connected_peer.num_msgs_sent,
-        number_bytes_sent=connected_peer.num_bytes_sent,
+        peer_address=peer_address_to_message(peer.remote_address),
+        connect_time_s=peer.connect_time,
+        last_message_received_time_s=peer.last_msg_revc_time,
+        number_messages_received=peer.num_msgs_received,
+        number_bytes_received=peer.num_bytes_received,
+        number_messages_sent=peer.num_msgs_sent,
+        number_bytes_sent=peer.num_bytes_sent,
+        is_peer_saved=is_peer_saved,
+        saved_peer=saved_peer_msg,
     )
 
 

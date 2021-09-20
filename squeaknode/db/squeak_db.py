@@ -924,6 +924,20 @@ class SqueakDb:
                 return None
             return self._parse_squeak_peer(row)
 
+    def get_peer_by_address(self, peer_address: PeerAddress) -> Optional[SqueakPeer]:
+        """ Get a peer by address. """
+        s = (
+            select([self.peers])
+            .where(self.peers.c.host == peer_address.host)
+            .where(self.peers.c.port == peer_address.port)
+        )
+        with self.get_connection() as connection:
+            result = connection.execute(s)
+            row = result.fetchone()
+            if row is None:
+                return None
+            return self._parse_squeak_peer(row)
+
     def get_peers(self) -> List[SqueakPeer]:
         """ Get all peers. """
         s = select([self.peers])

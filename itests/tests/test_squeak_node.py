@@ -931,12 +931,13 @@ def test_connect_peer(admin_stub, other_admin_stub):
             connected_peers = get_connected_peers(admin_stub)
             print(connected_peers)
             assert len(connected_peers) == 1
-            # print("Admin node connected to peers: ")
-            # print(connected_peers)
+            print("connected_peers: {}".format(connected_peers))
             other_connected_peers = get_connected_peers(other_admin_stub)
             assert len(other_connected_peers) == 1
-            # print("Other Admin node connected to peers: ")
-            # print(other_connected_peers)
+            print("other_connected_peers: {}".format(other_connected_peers))
+            assert other_connected_peers[0].peer_address.host == "squeaknode"
+            assert other_connected_peers[0].peer_address.port == 18777
+            assert other_connected_peers[0].saved_peer.peer_name == "test_peer"
             connected_peer = get_connected_peer(
                 other_admin_stub, "squeaknode", 18777)
             assert connected_peer is not None
