@@ -14,6 +14,8 @@ Node for [Squeak protocol](https://github.com/yzernik/squeak/blob/master/docs/PR
 	```
 	[node]
 	network=mainnet
+	tor_proxy_ip=localhost
+	tor_proxy_port=9150
 
 	[lnd]
 	host=localhost
@@ -34,10 +36,12 @@ Node for [Squeak protocol](https://github.com/yzernik/squeak/blob/master/docs/PR
 	```
 - Install squeaknode:
 	```
+	$ virtualenv venv
+	$ source venv/bin/activate
 	$ pip install -r requirements.txt
 	$ python setup.py install
 	```
-
+- Install and start Tor browser
 - Start squeaknode:
  	```
 	$ squeaknode --config config.ini
