@@ -531,6 +531,20 @@ class SqueakAdminServerHandler(object):
             squeak_peer=squeak_peer_msg,
         )
 
+    def handle_get_squeak_peer_by_address(self, request):
+        peer_address = message_to_peer_address(request.peer_address)
+        logger.info(
+            "Handle get squeak peer with address: {}".format(peer_address))
+        squeak_peer = self.squeak_controller.get_peer_by_address(peer_address)
+        if squeak_peer is None:
+            return squeak_admin_pb2.GetPeerReply(
+                squeak_peer=None,
+            )
+        squeak_peer_msg = squeak_peer_to_message(squeak_peer)
+        return squeak_admin_pb2.GetPeerByAddressReply(
+            squeak_peer=squeak_peer_msg,
+        )
+
     def handle_get_squeak_peers(self, request):
         logger.info("Handle get squeak peers")
         squeak_peers = self.squeak_controller.get_peers()

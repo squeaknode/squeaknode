@@ -172,6 +172,10 @@ service SqueakAdmin {
   */
   rpc GetPeer (GetPeerRequest) returns (GetPeerReply) {}
 
+  /** sqkadmin: `getpeerbyaddress`
+  */
+  rpc GetPeerByAddress (GetPeerByAddressRequest) returns (GetPeerByAddressReply) {}
+
   /** sqkadmin: `getpeers`
   */
   rpc GetPeers (GetPeersRequest) returns (GetPeersReply) {}
@@ -691,6 +695,16 @@ message GetPeerRequest {
 }
 
 message GetPeerReply {
+    /// The peer
+    SqueakPeer squeak_peer = 1;
+}
+
+message GetPeerByAddressRequest {
+    /// Peer address
+    PeerAddress peer_address = 1;
+}
+
+message GetPeerByAddressReply {
     /// The peer
     SqueakPeer squeak_peer = 1;
 }

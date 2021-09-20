@@ -184,6 +184,9 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
             return squeak_admin_pb2.GetPeerReply()
         return reply
 
+    def GetPeerByAddress(self, request, context):
+        return self.handler.handle_get_squeak_peer_by_address(request)
+
     def GetPeers(self, request, context):
         return self.handler.handle_get_squeak_peers(request)
 

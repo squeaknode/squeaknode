@@ -369,6 +369,9 @@ class SqueakController:
     def get_peer(self, peer_id: int) -> Optional[SqueakPeer]:
         return self.squeak_db.get_peer(peer_id)
 
+    def get_peer_by_address(self, peer_address: PeerAddress) -> Optional[SqueakPeer]:
+        return self.squeak_db.get_peer_by_address(peer_address)
+
     def get_peers(self):
         return self.squeak_db.get_peers()
 
