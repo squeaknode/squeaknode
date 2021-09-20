@@ -52,6 +52,14 @@ export default function PeerListItem({
   //   return pieces[1];
   // }
 
+  const getConnectedPeerDisplayName = (peer) => {
+    if (peer.getSavedPeer()) {
+      return `Name: ${peer.getSavedPeer().getPeerName()}`
+    } else {
+      return ''
+    }
+  };
+
   return (
     <Card
       className={classes.root}
@@ -59,7 +67,8 @@ export default function PeerListItem({
     >
       <CardHeader
         avatar={<ComputerIcon />}
-        title={`Address: ${peer.getPeerAddress().getHost()}:${peer.getPeerAddress().getPort()}`}
+        title={getConnectedPeerDisplayName(peer)}
+        subheader={`Address: ${peer.getPeerAddress().getHost()}:${peer.getPeerAddress().getPort()}`}
       />
     </Card>
   );
