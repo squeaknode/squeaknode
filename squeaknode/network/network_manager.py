@@ -57,11 +57,10 @@ class NetworkManager(object):
         self.peer_client = None
         self.tor_proxy_ip = self.config.node.tor_proxy_ip
         self.tor_proxy_port = self.config.node.tor_proxy_port
-        self.connection_manager = ConnectionManager()
+        self.connection_manager = ConnectionManager(self.local_address)
 
     def start(self, squeak_controller):
         peer_handler = PeerHandler(
-            self.local_address,
             self.connection_manager,
             squeak_controller,
         )
@@ -88,7 +87,7 @@ class NetworkManager(object):
         )
         if self.connection_manager.has_connection(peer_address):
             return
-        self.peer_client.connect_address(peer_address)
+        self.peer_client.make_connection(peer_address)
 
     def disconnect_peer(self, peer_address: PeerAddress) -> None:
         self.connection_manager.stop_connection(peer_address)

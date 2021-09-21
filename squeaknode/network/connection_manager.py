@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import logging
+import queue
+import socket
 import threading
 from contextlib import contextmanager
 from typing import Dict
@@ -29,7 +31,9 @@ from typing import Optional
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.network.connection import Connection
 from squeaknode.network.peer import Peer
+from squeaknode.network.peer_client import ConnectPeerResult
 from squeaknode.node.listener_subscription_client import EventListener
+from squeaknode.node.squeak_controller import SqueakController
 
 
 MIN_PEERS = 5
@@ -44,20 +48,43 @@ class ConnectionManager(object):
     """Maintains connections to other peers in the network.
     """
 
-    def __init__(self):
+    def __init__(self, local_address):
         self._peers: Dict[PeerAddress, Peer] = {}
         self.peers_lock = threading.Lock()
         self.peer_changed_listener = EventListener()
         self.single_peer_changed_listener = EventListener()
         self.accept_connections = True
+        self.local_address = local_address
 
     @contextmanager
-    def connect(self, peer: Peer, squeak_controller):
+    def connect(
+            self,
+            peer_socket: socket.socket,
+            address: PeerAddress,
+            outgoing: bool,
+            squeak_controller: SqueakController,
+            result_queue: queue.Queue,
+    ):
         try:
+            peer = Peer(
+                peer_socket,
+                self.local_address,
+                address,
+                outgoing,
+                self.single_peer_changed_listener,
+            )
+            connection = Connection(peer, squeak_controller)
+            logger.debug("Doing handshake.")
+            connection.handshake()
             logger.debug("Adding peer.")
             self.add_peer(peer)
+            result_queue.put(
+                ConnectPeerResult.from_success(peer.remote_address))
             logger.debug("Yielding connection.")
-            yield Connection(peer, squeak_controller)
+            yield connection
+        except Exception as e:
+            result_queue.put(ConnectPeerResult.from_failure(e))
+            raise
         finally:
             logger.debug("Removing peer.")
             self.remove_peer(peer)

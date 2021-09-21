@@ -20,7 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import logging
+import queue
 import socket
+import threading
 
 import socks
 
@@ -42,8 +44,22 @@ class PeerClient(object):
         self.tor_proxy_ip = tor_proxy_ip
         self.tor_proxy_port = tor_proxy_port
 
-    def connect_address(self, address: PeerAddress):
+    def make_connection(self, address: PeerAddress):
         logger.info('Making connection to {}'.format(address))
+        result_queue: queue.Queue = queue.Queue()
+        threading.Thread(
+            target=self.connect_address,
+            args=(address, result_queue,),
+        ).start()
+
+        # Wait for connect result from the queue.
+        connect_result = result_queue.get()
+        logger.info("connect_result: {}".format(connect_result))
+        if connect_result.failure is not None:
+            raise connect_result.failure
+
+    def connect_address(self, address: PeerAddress, result_queue: queue.Queue):
+        logger.info('Conecting to address: {}'.format(address))
         try:
             peer_socket = self.get_socket()
             logger.info('Trying to connect socket to {}'.format(address))
@@ -53,21 +69,24 @@ class PeerClient(object):
             self.handle_connection(
                 peer_socket,
                 address,
+                result_queue,
             )
-        except Exception:
+        except Exception as e:
             logger.exception('Failed to make connection to {}'.format(address))
-            raise
+            result_queue.put(ConnectPeerResult.from_failure(e))
 
     def handle_connection(
             self,
             peer_socket: socket.socket,
             peer_address: PeerAddress,
+            result_queue: queue.Queue,
     ):
         """Handle a newly connected peer socket."""
         self.peer_handler.handle_connection(
             peer_socket,
             peer_address,
             outgoing=True,
+            result_queue=result_queue,
         )
 
     def get_socket(self):
@@ -76,3 +95,32 @@ class PeerClient(object):
             s.set_proxy(socks.SOCKS5, self.tor_proxy_ip, self.tor_proxy_port)
             return s
         return socket.socket()
+
+
+class ConnectPeerResult(object):
+    """Result of a connect peer attempt.
+    """
+
+    def __init__(
+            self,
+            success: PeerAddress = None,
+            failure: Exception = None,
+    ):
+        self.success = success
+        self.failure = failure
+
+    @classmethod
+    def from_success(cls, success):
+        return cls(success=success)
+
+    @classmethod
+    def from_failure(cls, failure):
+        return cls(failure=failure)
+
+    def __repr__(self):
+        return "ConnectPeerResult: \
+        success: {} \
+        failure: {}".format(
+            self.success,
+            self.failure,
+        )

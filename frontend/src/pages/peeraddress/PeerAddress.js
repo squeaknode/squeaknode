@@ -98,6 +98,7 @@ export default function PeerAddressPage() {
   };
 
   const handleConnectPeerError = (err) => {
+    setWaitingForConnectedPeer(false);
     alert(`Connect peer failure: ${err}`);
   };
 

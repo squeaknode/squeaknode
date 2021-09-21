@@ -100,6 +100,7 @@ export default function ConnectPeerDialog({
         required
         variant="outlined"
         label="Host"
+        autoFocus
         value={host}
         onChange={handleChangeHost}
         inputProps={{ maxLength: 128 }}

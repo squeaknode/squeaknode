@@ -47,6 +47,7 @@ logger = logging.getLogger(__name__)
 
 
 EMPTY_HASH = b'\x00' * 32
+HANDSHAKE_TIMEOUT = 30
 PING_TIMEOUT = 60
 PONG_TIMEOUT = 30
 
@@ -58,6 +59,10 @@ class Connection(object):
     def __init__(self, peer: Peer, squeak_controller):
         self.peer = peer
         self.squeak_controller = squeak_controller
+        self.handshake_timer = HandshakeTimer(
+            self.shutdown,
+            str(self),
+        )
         self.ping_timer = PingTimer(
             self.send_ping,
             str(self.peer),
@@ -67,6 +72,21 @@ class Connection(object):
             self.start_ping_timer,
             str(self.peer),
         )
+
+    def handshake(self):
+        """Do a handshake with a peer.
+        """
+        self.handshake_timer.start_timer()
+
+        if self.peer.outgoing:
+            self.peer.send_version()
+        self.peer.receive_version()
+        if not self.peer.outgoing:
+            self.peer.send_version()
+
+        self.peer.set_connected()
+        self.handshake_timer.cancel()
+        logger.debug("HANDSHAKE COMPLETE-----------")
 
     def shutdown(self):
         logger.debug("Peet shutting down...")
@@ -303,6 +323,41 @@ class Connection(object):
                 host=resp.host.encode('utf-8'),
                 port=resp.port,
             )
+
+
+class HandshakeTimer:
+    """Stop the peer if handshake is not complete before timeout.
+    """
+
+    def __init__(
+            self,
+            shutdown_fn,
+            peer_name,
+    ):
+        self.shutdown_fn = shutdown_fn
+        self.peer_name = peer_name
+        self.timer = None
+        self._lock = threading.Lock()
+
+    def start_timer(self):
+        with self._lock:
+            self.timer = threading.Timer(
+                HANDSHAKE_TIMEOUT,
+                self.shutdown,
+            )
+            self.timer.name = "handshake_timer_thread_{}".format(
+                self.peer_name)
+            self.timer.start()
+
+    def cancel(self):
+        logger.debug("Cancelling handshake timer.")
+        with self._lock:
+            if self.timer:
+                self.timer.cancel()
+
+    def shutdown(self):
+        logger.debug("Shutdown connection triggered by handshake timer.")
+        self.shutdown_fn()
 
 
 class PingTimer:
