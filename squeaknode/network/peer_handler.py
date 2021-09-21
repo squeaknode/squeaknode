@@ -26,7 +26,6 @@ import threading
 from typing import Optional
 
 from squeaknode.core.peer_address import PeerAddress
-from squeaknode.network.peer import Peer
 
 
 logger = logging.getLogger(__name__)
@@ -55,15 +54,15 @@ class PeerHandler():
     ):
         """Handle a new socket connection.
 
-        This method blocks until the socket connection has stopped.
+        This method blocks until the peer connection is established.
         """
-        peer = Peer(
-            peer_socket,
-            self.local_address,
-            address,
-            outgoing,
-            self.connection_manager.single_peer_changed_listener,
-        )
+        # peer = Peer(
+        #     peer_socket,
+        #     self.local_address,
+        #     address,
+        #     outgoing,
+        #     self.connection_manager.single_peer_changed_listener,
+        # )
 
         # try:
         #     self.do_handshake(peer)
@@ -77,14 +76,27 @@ class PeerHandler():
 
         threading.Thread(
             target=self.start_connection,
-            args=(peer, result_queue,),
+            args=(
+                peer_socket,
+                address,
+                outgoing,
+                result_queue,
+            ),
         ).start()
 
-    def start_connection(self, peer: Peer, result_queue: queue.Queue):
+    def start_connection(
+            self,
+            peer_socket: socket.socket,
+            address: PeerAddress,
+            outgoing: bool,
+            result_queue: queue.Queue,
+    ):
         """Start a connection
         """
         with self.connection_manager.connect(
-                peer,
+                peer_socket,
+                address,
+                outgoing,
                 self.squeak_controller,
                 result_queue,
         ) as connection:
