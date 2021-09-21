@@ -98,7 +98,7 @@ class ConnectionManager(object):
         """Return True if the address is already connected."""
         return address in self._peers
 
-    def on_peers_changed(self):
+    def _on_peers_changed(self):
         peers = self.peers
         logger.info('Current number of peers {}'.format(len(peers)))
         logger.info('Current peers:--------')
@@ -128,7 +128,7 @@ class ConnectionManager(object):
                 raise DuplicatePeerError()
             self._peers[peer.remote_address] = peer
             logger.debug('Added peer {}'.format(peer))
-            self.on_peers_changed()
+            self._on_peers_changed()
 
     def _remove_peer(self, peer: Peer):
         """Remove a peer.
@@ -140,7 +140,7 @@ class ConnectionManager(object):
                 return
             del self._peers[peer.remote_address]
             logger.debug('Removed peer {}'.format(peer))
-            self.on_peers_changed()
+            self._on_peers_changed()
 
     def get_peer(self, address) -> Optional[Peer]:
         """Get a peer info by address.
