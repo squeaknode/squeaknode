@@ -87,7 +87,6 @@ export default function ImportSigningProfileDialog({
         id="standard-textarea"
         label="Private Key"
         required
-        autoFocus
         value={privateKey}
         onChange={handleChangePrivateKey}
         fullWidth
