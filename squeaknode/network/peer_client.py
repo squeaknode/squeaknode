@@ -54,7 +54,7 @@ class PeerClient(object):
 
         # Wait for connect result from the queue.
         connect_result = result_queue.get()
-        logger.info("connect_result: {}".format(connect_result))
+        logger.debug("connect_result: {}".format(connect_result))
         if connect_result.failure is not None:
             raise connect_result.failure
 
@@ -62,7 +62,6 @@ class PeerClient(object):
         logger.info('Conecting to address: {}'.format(address))
         try:
             peer_socket = self.get_socket()
-            logger.info('Trying to connect socket to {}'.format(address))
             peer_socket.settimeout(SOCKET_CONNECT_TIMEOUT)
             peer_socket.connect(address)
             peer_socket.setblocking(True)
@@ -72,7 +71,7 @@ class PeerClient(object):
                 result_queue,
             )
         except Exception as e:
-            logger.exception('Failed to make connection to {}'.format(address))
+            logger.exception('Failed to connect to {}'.format(address))
             result_queue.put(ConnectPeerResult.from_failure(e))
 
     def handle_connection(

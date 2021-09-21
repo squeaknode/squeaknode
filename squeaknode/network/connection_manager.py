@@ -77,7 +77,7 @@ class ConnectionManager(object):
             logger.debug("Doing handshake.")
             connection.handshake()
             logger.debug("Adding peer.")
-            self.add_peer(peer)
+            self._add_peer(peer)
             result_queue.put(
                 ConnectPeerResult.from_success(peer.remote_address))
             logger.debug("Yielding connection.")
@@ -87,7 +87,7 @@ class ConnectionManager(object):
             raise
         finally:
             logger.debug("Removing peer.")
-            self.remove_peer(peer)
+            self._remove_peer(peer)
             peer.stop()
 
     @property
@@ -114,7 +114,7 @@ class ConnectionManager(object):
                     return True
         return False
 
-    def add_peer(self, peer: Peer):
+    def _add_peer(self, peer: Peer):
         """Add a peer.
         """
         with self.peers_lock:
@@ -130,8 +130,8 @@ class ConnectionManager(object):
             logger.debug('Added peer {}'.format(peer))
             self.on_peers_changed()
 
-    def remove_peer(self, peer: Peer):
-        """Add a peer.
+    def _remove_peer(self, peer: Peer):
+        """Remove a peer.
         """
         with self.peers_lock:
             if not self.has_connection(peer.remote_address):
