@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import logging
+import queue
 import threading
 from contextlib import contextmanager
 from typing import Dict
@@ -29,7 +30,9 @@ from typing import Optional
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.network.connection import Connection
 from squeaknode.network.peer import Peer
+from squeaknode.network.peer_client import ConnectPeerResult
 from squeaknode.node.listener_subscription_client import EventListener
+from squeaknode.node.squeak_controller import SqueakController
 
 
 MIN_PEERS = 5
@@ -52,12 +55,20 @@ class ConnectionManager(object):
         self.accept_connections = True
 
     @contextmanager
-    def connect(self, peer: Peer, squeak_controller):
+    def connect(self, peer: Peer, squeak_controller: SqueakController, result_queue: queue.Queue):
         try:
+            connection = Connection(peer, squeak_controller)
+            logger.debug("Doing handshake.")
+            connection.handshake()
             logger.debug("Adding peer.")
             self.add_peer(peer)
+            result_queue.put(
+                ConnectPeerResult.from_success(peer.remote_address))
             logger.debug("Yielding connection.")
-            yield Connection(peer, squeak_controller)
+            yield connection
+        except Exception as e:
+            result_queue.put(ConnectPeerResult.from_failure(e))
+            raise
         finally:
             logger.debug("Removing peer.")
             self.remove_peer(peer)

@@ -88,7 +88,7 @@ class NetworkManager(object):
         )
         if self.connection_manager.has_connection(peer_address):
             return
-        self.peer_client.connect_address(peer_address)
+        self.peer_client.make_connection(peer_address)
 
     def disconnect_peer(self, peer_address: PeerAddress) -> None:
         self.connection_manager.stop_connection(peer_address)

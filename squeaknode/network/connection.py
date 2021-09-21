@@ -47,6 +47,7 @@ logger = logging.getLogger(__name__)
 
 
 EMPTY_HASH = b'\x00' * 32
+HANDSHAKE_TIMEOUT = 30
 PING_TIMEOUT = 60
 PONG_TIMEOUT = 30
 
@@ -67,6 +68,25 @@ class Connection(object):
             self.start_ping_timer,
             str(self.peer),
         )
+
+    def handshake(self):
+        """Do a handshake with a peer.
+        """
+        timer = HandshakeTimer(
+            self.peer.stop,
+            str(self),
+        )
+        timer.start_timer()
+
+        if self.peer.outgoing:
+            self.peer.send_version()
+        self.peer.receive_version()
+        if not self.peer.outgoing:
+            self.peer.send_version()
+
+        self.peer.set_connected()
+        logger.debug("HANDSHAKE COMPLETE-----------")
+        timer.stop_timer()
 
     def shutdown(self):
         logger.debug("Peet shutting down...")
@@ -303,6 +323,35 @@ class Connection(object):
                 host=resp.host.encode('utf-8'),
                 port=resp.port,
             )
+
+
+class HandshakeTimer:
+    """Stop the peer if handshake is not complete before timeout.
+    """
+
+    def __init__(self,
+                 stop_fn,
+                 peer_name,
+                 ):
+        self.stop_fn = stop_fn
+        self.peer_name = peer_name
+        self.timer = None
+
+    def start_timer(self):
+        self.timer = threading.Timer(
+            HANDSHAKE_TIMEOUT,
+            self.stop_peer,
+        )
+        self.timer.name = "handshake_timere_thread_{}".format(self.peer_name)
+        self.timer.start()
+
+    def stop_timer(self):
+        logger.debug("Canceling handshake timer.")
+        self.timer.cancel()
+
+    def stop_peer(self):
+        logger.info("Closing peer from handshake timer.")
+        self.stop_fn()
 
 
 class PingTimer:
