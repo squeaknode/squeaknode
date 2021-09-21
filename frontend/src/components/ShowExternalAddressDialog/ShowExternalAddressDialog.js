@@ -3,11 +3,10 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  TextField,
+  Button,
 } from '@material-ui/core';
-
-// styles
-import useStyles from './styles';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import {CopyToClipboard} from 'react-copy-to-clipboard';
 
 import {
   getExternalAddressRequest,
@@ -18,7 +17,6 @@ export default function ShowExternalAddressDialog({
   handleClose,
   ...props
 }) {
-  const classes = useStyles();
 
   const [externalAddress, setExternalAddress] = useState(null);
 
@@ -40,29 +38,25 @@ export default function ShowExternalAddressDialog({
   }
 
   function DisplayExternalAddress() {
+    const address = externalAddress && `${externalAddress.getHost()}:${externalAddress.getPort()}`;
     return (
-      <TextField
-        id="standard-textarea"
-        label="external-address"
-        required
-        autoFocus
-        value={externalAddress && `${externalAddress.getHost()}:${externalAddress.getPort()}`}
-        fullWidth
-        inputProps={{
-          readOnly: true,
-        }}
-      />
+      <CopyToClipboard
+        text={address}
+        >
+        <Button variant="outlined">
+          {address}
+          <ContentCopyIcon/>
+        </Button>
+      </CopyToClipboard>
     );
   }
 
   return (
-    <Dialog open={open} onRendered={load} onClose={cancel} onClick={ignore} aria-labelledby="form-dialog-title">
+    <Dialog open={open} onRendered={load} onClose={cancel} onClick={ignore} aria-labelledby="form-dialog-title" maxWidth="lg">
       <DialogTitle id="form-dialog-title">Show External Address</DialogTitle>
-      <form className={classes.root} noValidate autoComplete="off">
-        <DialogContent>
-          {DisplayExternalAddress()}
-        </DialogContent>
-      </form>
+      <DialogContent>
+        {DisplayExternalAddress()}
+      </DialogContent>
     </Dialog>
   );
 }
