@@ -109,7 +109,6 @@ setup(
         'googleapis-common-protos',
         'grpcio>=1.34.0',
         'grpcio-tools',
-        'mypy-protobuf',
         'psycopg2',
         'requests',
         'SQLAlchemy>=1.3.0,<1.4.0',
