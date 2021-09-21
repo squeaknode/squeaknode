@@ -56,20 +56,6 @@ class PeerHandler():
 
         This method blocks until the peer connection is established.
         """
-        # peer = Peer(
-        #     peer_socket,
-        #     self.local_address,
-        #     address,
-        #     outgoing,
-        #     self.connection_manager.single_peer_changed_listener,
-        # )
-
-        # try:
-        #     self.do_handshake(peer)
-        # except Exception:
-        #     peer.stop()
-        #     raise
-
         # Create a dummy queue if not needed.
         if result_queue is None:
             result_queue = queue.Queue()
