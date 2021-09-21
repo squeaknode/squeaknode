@@ -938,7 +938,6 @@ def test_connect_peer(admin_stub, other_admin_stub):
                 "squeaknode",
                 18777,
         ):
-            # time.sleep(2)
             connected_peers = get_connected_peers(admin_stub)
             print(connected_peers)
             assert len(connected_peers) == 1
