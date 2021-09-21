@@ -59,6 +59,10 @@ class Connection(object):
     def __init__(self, peer: Peer, squeak_controller):
         self.peer = peer
         self.squeak_controller = squeak_controller
+        self.handshake_timer = HandshakeTimer(
+            self.shutdown,
+            str(self),
+        )
         self.ping_timer = PingTimer(
             self.send_ping,
             str(self.peer),
@@ -72,11 +76,7 @@ class Connection(object):
     def handshake(self):
         """Do a handshake with a peer.
         """
-        timer = HandshakeTimer(
-            self.peer.stop,
-            str(self),
-        )
-        timer.start_timer()
+        self.handshake_timer.start_timer()
 
         if self.peer.outgoing:
             self.peer.send_version()
@@ -85,8 +85,8 @@ class Connection(object):
             self.peer.send_version()
 
         self.peer.set_connected()
+        self.handshake_timer.cancel()
         logger.debug("HANDSHAKE COMPLETE-----------")
-        timer.stop_timer()
 
     def shutdown(self):
         logger.debug("Peet shutting down...")
@@ -329,29 +329,35 @@ class HandshakeTimer:
     """Stop the peer if handshake is not complete before timeout.
     """
 
-    def __init__(self,
-                 stop_fn,
-                 peer_name,
-                 ):
-        self.stop_fn = stop_fn
+    def __init__(
+            self,
+            shutdown_fn,
+            peer_name,
+    ):
+        self.shutdown_fn = shutdown_fn
         self.peer_name = peer_name
         self.timer = None
+        self._lock = threading.Lock()
 
     def start_timer(self):
-        self.timer = threading.Timer(
-            HANDSHAKE_TIMEOUT,
-            self.stop_peer,
-        )
-        self.timer.name = "handshake_timere_thread_{}".format(self.peer_name)
-        self.timer.start()
+        with self._lock:
+            self.timer = threading.Timer(
+                HANDSHAKE_TIMEOUT,
+                self.shutdown,
+            )
+            self.timer.name = "handshake_timer_thread_{}".format(
+                self.peer_name)
+            self.timer.start()
 
-    def stop_timer(self):
-        logger.debug("Canceling handshake timer.")
-        self.timer.cancel()
+    def cancel(self):
+        logger.debug("Cancelling handshake timer.")
+        with self._lock:
+            if self.timer:
+                self.timer.cancel()
 
-    def stop_peer(self):
-        logger.info("Closing peer from handshake timer.")
-        self.stop_fn()
+    def shutdown(self):
+        logger.debug("Shutdown connection triggered by handshake timer.")
+        self.shutdown_fn()
 
 
 class PingTimer:
