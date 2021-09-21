@@ -61,7 +61,6 @@ class NetworkManager(object):
 
     def start(self, squeak_controller):
         peer_handler = PeerHandler(
-            self.local_address,
             self.connection_manager,
             squeak_controller,
         )

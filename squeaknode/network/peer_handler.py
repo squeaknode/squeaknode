@@ -37,11 +37,9 @@ class PeerHandler():
 
     def __init__(
             self,
-            local_address,
             connection_manager,
             squeak_controller,
     ):
-        self.local_address = local_address
         self.connection_manager = connection_manager
         self.squeak_controller = squeak_controller
 
