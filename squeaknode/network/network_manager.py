@@ -79,7 +79,7 @@ class NetworkManager(object):
         self.peer_server.stop()
         self.connection_manager.stop_all_connections()
 
-    def connect_peer(self, peer_address: PeerAddress) -> None:
+    def connect_peer(self, peer_address: PeerAddress, do_async: bool = False) -> None:
         port = peer_address.port or squeak.params.params.DEFAULT_PORT
         peer_address = PeerAddress(
             host=peer_address.host,
@@ -87,7 +87,10 @@ class NetworkManager(object):
         )
         if self.connection_manager.has_connection(peer_address):
             return
-        self.peer_client.make_connection(peer_address)
+        if do_async:
+            self.peer_client.connect_address_async(peer_address)
+        else:
+            self.peer_client.connect_address(peer_address)
 
     def disconnect_peer(self, peer_address: PeerAddress) -> None:
         self.connection_manager.stop_connection(peer_address)
