@@ -203,10 +203,13 @@ class SqueakController:
                 host=self.config.lnd.external_host,
                 port=self.config.lnd.port,
             )
-        return self.squeak_core.package_offer(
-            sent_offer,
-            lnd_external_address,
-        )
+        try:
+            return self.squeak_core.package_offer(
+                sent_offer,
+                lnd_external_address,
+            )
+        except Exception:
+            return None
 
     def get_sent_offer_for_peer(self, squeak: CSqueak, peer_address: PeerAddress, price_msat: int) -> Optional[SentOffer]:
         squeak_hash = get_hash(squeak)
