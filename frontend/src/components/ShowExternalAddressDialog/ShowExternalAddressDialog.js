@@ -4,6 +4,7 @@ import {
   DialogTitle,
   DialogContent,
   Button,
+  Tooltip,
 } from '@material-ui/core';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import {CopyToClipboard} from 'react-copy-to-clipboard';
@@ -40,21 +41,22 @@ export default function ShowExternalAddressDialog({
   function DisplayExternalAddress() {
     const address = externalAddress && `${externalAddress.getHost()}:${externalAddress.getPort()}`;
     return (
-      <CopyToClipboard
-        text={address}
-        >
-        <Button variant="outlined">
-          {address}
-          <ContentCopyIcon/>
-        </Button>
+      <CopyToClipboard text={address}>
+        <Tooltip title="Copy" placement="right">
+          <Button variant="outlined" style={{width: "100%"}}>
+            <div style={{float: "left"}}>{address}</div>
+            <ContentCopyIcon/>
+          </Button>
+        </Tooltip>
       </CopyToClipboard>
     );
   }
 
   return (
     <Dialog open={open} onRendered={load} onClose={cancel} onClick={ignore} aria-labelledby="form-dialog-title" maxWidth="lg">
-      <DialogTitle id="form-dialog-title">Show External Address</DialogTitle>
+      <DialogTitle id="form-dialog-title">Your squeaknode external address</DialogTitle>
       <DialogContent>
+        <p>Other squeaknodes can connect to your node using this address to download squeaks and offers.</p>
         {DisplayExternalAddress()}
       </DialogContent>
     </Dialog>
