@@ -44,11 +44,11 @@ class PeerClient(object):
         self.tor_proxy_ip = tor_proxy_ip
         self.tor_proxy_port = tor_proxy_port
 
-    def make_connection(self, address: PeerAddress):
+    def connect_address(self, address: PeerAddress):
         logger.info('Making connection to {}'.format(address))
         result_queue: queue.Queue = queue.Queue()
         threading.Thread(
-            target=self.connect_address,
+            target=self.make_connection,
             args=(address, result_queue,),
         ).start()
 
@@ -58,7 +58,15 @@ class PeerClient(object):
         if connect_result.failure is not None:
             raise connect_result.failure
 
-    def connect_address(self, address: PeerAddress, result_queue: queue.Queue):
+    def connect_address_async(self, address: PeerAddress):
+        logger.info('Making connection async to {}'.format(address))
+        result_queue: queue.Queue = queue.Queue()
+        threading.Thread(
+            target=self.make_connection,
+            args=(address, result_queue,),
+        ).start()
+
+    def make_connection(self, address: PeerAddress, result_queue: queue.Queue):
         logger.info('Conecting to address: {}'.format(address))
         try:
             peer_socket = self.get_socket()

@@ -627,6 +627,7 @@ class SqueakController:
         for peer in peers:
             self.network_manager.connect_peer(
                 peer.address,
+                do_async=True,
             )
 
     def get_connected_peer(self, peer_address: PeerAddress) -> Optional[ConnectedPeer]:
