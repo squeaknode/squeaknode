@@ -37,6 +37,7 @@ To use a tor proxy, include the following environment variables:
 
 #### Squeaknode frontend
 
+- Install `protoc-gen-grpc-web` (https://github.com/grpc/grpc-web#code-generator-plugin)
 - Run the frontend react app in dev mode:
 	```
 	$ cd frontend
