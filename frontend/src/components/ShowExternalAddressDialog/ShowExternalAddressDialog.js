@@ -56,7 +56,7 @@ export default function ShowExternalAddressDialog({
     <Dialog open={open} onRendered={load} onClose={cancel} onClick={ignore} aria-labelledby="form-dialog-title" maxWidth="lg">
       <DialogTitle id="form-dialog-title">Your squeaknode external address</DialogTitle>
       <DialogContent>
-        <p>Other squeaknodes can connect to your node using this address to download squeaks and offers.</p>
+        <p>Other squeaknodes can connect to your node using this address to exchange squeaks and offers.</p>
         {DisplayExternalAddress()}
       </DialogContent>
     </Dialog>
