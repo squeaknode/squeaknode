@@ -5,6 +5,8 @@ import {
   Grid,
   Box,
   Link,
+  Tooltip,
+  Button,
 } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 
@@ -112,10 +114,12 @@ export default function SqueakThreadItem({
         </Box>
       );
     }
-
+    const squeakBlockTime = moment(squeak.getBlockTime()*1000)
     return (
       <Box color="secondary.main" fontWeight="fontWeightBold">
-        {moment(squeak.getBlockTime() * 1000).fromNow()}
+        <Tooltip title={squeakBlockTime.toString()}>
+          <Button color="secondary" style={{fontWeight: "bold", textTransform: "lowercase"}}>{squeakBlockTime.fromNow()}</Button>
+        </Tooltip>
         <span> </span>
         (Block
         <Link
