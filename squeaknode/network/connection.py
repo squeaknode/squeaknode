@@ -98,6 +98,8 @@ class Connection(object):
         try:
             self.initial_sync()
             self.handle_msgs()
+        except Exception:
+            logger.exception("Error in handle_connection")
         finally:
             self.shutdown()
             # self._stopped.set()
