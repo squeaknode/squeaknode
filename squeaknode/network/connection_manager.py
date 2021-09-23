@@ -82,12 +82,12 @@ class ConnectionManager(object):
                 ConnectPeerResult.from_success(peer.remote_address))
             logger.debug("Yielding connection.")
             yield connection
+            logger.debug("Removing peer.")
+            self._remove_peer(peer)
         except Exception as e:
             result_queue.put(ConnectPeerResult.from_failure(e))
             raise
         finally:
-            logger.debug("Removing peer.")
-            self._remove_peer(peer)
             peer.stop()
 
     @property
