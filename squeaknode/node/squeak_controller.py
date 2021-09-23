@@ -564,11 +564,15 @@ class SqueakController:
         secret_key = self.get_squeak_secret_key(offer.squeak_hash)
         if squeak is None or secret_key is not None:
             return
-        received_offer = self.squeak_core.unpack_offer(
-            squeak,
-            offer,
-            peer_address,
-        )
+        try:
+            received_offer = self.squeak_core.unpack_offer(
+                squeak,
+                offer,
+                peer_address,
+            )
+        except Exception:
+            logger.exception("Failed to save received offer.")
+            return
         try:
             offer_id = self.squeak_db.insert_received_offer(received_offer)
             received_offer = received_offer._replace(
