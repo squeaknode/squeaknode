@@ -15,6 +15,7 @@ import CardHeader from '@material-ui/core/CardHeader';
 
 import Typography from '@material-ui/core/Typography';
 import ComputerIcon from '@material-ui/icons/Computer';
+import CloudOff from '@material-ui/icons/CloudOff';
 
 import moment from 'moment';
 import CreatePeerDialog from '../../components/CreatePeerDialog';
@@ -140,20 +141,6 @@ export default function PeerAddressPage() {
     );
   }
 
-  function ConnectionStatusContent() {
-    return (
-      <>
-        <Grid item xs={12}>
-          Status:
-          {' '}
-          {(connectedPeer)
-            ? 'Connected'
-            : 'Disconnected'}
-        </Grid>
-      </>
-    );
-  }
-
   function ConnectionActionContent() {
     return (
       <>
@@ -176,7 +163,7 @@ export default function PeerAddressPage() {
     );
   }
 
-  function PeerConnectionDetails() {
+  function ConnectedPeerDetails() {
     const connectTimeS = connectedPeer.getConnectTimeS();
     const momentTimeString = moment(connectTimeS * 1000).fromNow();
     const lastMsgReceivedTimeS = connectedPeer.getLastMessageReceivedTimeS();
@@ -209,16 +196,31 @@ export default function PeerAddressPage() {
     );
   }
 
-  function PeerConnectionInfoContent() {
+  function ConnectedPeerContent() {
     console.log(connectedPeer);
     return (
       <Card
         className={classes.root}
       >
         <CardHeader
-          avatar={<ComputerIcon />}
+          avatar={<ComputerIcon fontSize="large" style={{ fill: 'green' }} />}
           title={`Peer Address: ${`${host}:${port}`}`}
-          subheader={PeerConnectionDetails()}
+          subheader={ConnectedPeerDetails()}
+        />
+      </Card>
+    );
+  }
+
+  function DisconnectedPeerContent() {
+    console.log(connectedPeer);
+    return (
+      <Card
+        className={classes.root}
+      >
+        <CardHeader
+          avatar={<CloudOff fontSize="large" style={{ fill: 'red' }} />}
+          title={`Peer Address: ${`${host}:${port}`}`}
+          subheader="Disconnected"
         />
       </Card>
     );
@@ -227,9 +229,10 @@ export default function PeerAddressPage() {
   function ConnectionContent() {
     return (
       <>
-        {ConnectionStatusContent()}
         {ConnectionActionContent()}
-        {(connectedPeer) && PeerConnectionInfoContent()}
+        {(connectedPeer)
+          ? ConnectedPeerContent()
+          : DisconnectedPeerContent()}
       </>
     );
   }

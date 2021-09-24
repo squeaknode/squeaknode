@@ -100,6 +100,14 @@ export default function Peers() {
     setShowExternalAddressDialogOpen(false);
   };
 
+  const isPeerConnected = (peerAddress) => {
+    const peerAddressStr = peerAddressToStr(peerAddress);
+    const connectedPeerAddresses = connectedPeers.map((p) => peerAddressToStr(p.getPeerAddress()));
+    return connectedPeerAddresses.includes(peerAddressStr);
+  };
+
+  const peerAddressToStr = (peerAddress) => `${peerAddress.getHost()}:${peerAddress.getPort()}`;
+
   useEffect(() => {
     getConnectedPeers();
   }, []);
@@ -230,6 +238,7 @@ export default function Peers() {
           >
             <SavedPeerListItem
               key={peer.getPeerName()}
+              isConnected={isPeerConnected(peer.getPeerAddress())}
               handlePeerClick={() => console.log('clicked peer')}
               peer={peer}
             />

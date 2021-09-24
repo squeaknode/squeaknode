@@ -7,7 +7,7 @@ import {
   Tooltip,
 } from '@material-ui/core';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import {CopyToClipboard} from 'react-copy-to-clipboard';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 import {
   getExternalAddressRequest,
@@ -18,7 +18,6 @@ export default function ShowExternalAddressDialog({
   handleClose,
   ...props
 }) {
-
   const [externalAddress, setExternalAddress] = useState(null);
 
   const getExternalAddress = () => {
@@ -43,9 +42,9 @@ export default function ShowExternalAddressDialog({
     return (
       <CopyToClipboard text={address}>
         <Tooltip title="Copy" placement="right">
-          <Button variant="outlined" style={{width: "100%"}}>
-            <div style={{float: "left"}}>{address}</div>
-            <ContentCopyIcon/>
+          <Button variant="outlined" style={{ width: '100%' }}>
+            <div style={{ float: 'left' }}>{address}</div>
+            <ContentCopyIcon />
           </Button>
         </Tooltip>
       </CopyToClipboard>
