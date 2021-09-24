@@ -135,8 +135,6 @@ class ConnectionManager(object):
         """
         with self.peers_lock:
             if not self.has_connection(peer.remote_address):
-                # logger.debug('Failed to remove peer {}'.format(peer))
-                # raise MissingPeerError()
                 return
             del self._peers[peer.remote_address]
             logger.debug('Removed peer {}'.format(peer))
@@ -182,10 +180,6 @@ class DuplicatePeerError(Exception):
 
 class DuplicateNonceError(Exception):
     pass
-
-
-# class MissingPeerError(Exception):
-#     pass
 
 
 class NotAcceptingConnectionsError(Exception):
