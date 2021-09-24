@@ -400,7 +400,7 @@ class PingTimer:
                 self.timer.cancel()
 
     def send_ping(self):
-        logger.debug("Sending ping triggered by timer.")
+        logger.info("Sending ping triggered by timer.")
         self.send_fn()
 
 
@@ -460,7 +460,7 @@ class PongTimer:
                 self.timer.cancel()
 
     def shutdown(self):
-        logger.debug("Shutdown connection triggered by pong timer.")
+        logger.info("Shutdown connection triggered by pong timer.")
         self.shutdown_fn()
 
     def start_ping_timer(self):
