@@ -91,6 +91,7 @@ class Connection(object):
     def shutdown(self):
         logger.debug("Peet shutting down...")
         self.peer.stop()
+        self.handshake_timer.cancel()
         self.ping_timer.cancel()
         self.pong_timer.cancel()
 
