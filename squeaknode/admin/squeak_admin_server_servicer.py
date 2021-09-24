@@ -25,7 +25,6 @@ from concurrent import futures
 
 import grpc
 
-from proto import squeak_admin_pb2
 from proto import squeak_admin_pb2_grpc
 
 logger = logging.getLogger(__name__)
@@ -112,12 +111,7 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         return self.handler.handle_get_contact_profiles(request)
 
     def GetSqueakProfile(self, request, context):
-        reply = self.handler.handle_get_squeak_profile(request)
-        if reply is None:
-            context.set_code(grpc.StatusCode.NOT_FOUND)
-            context.set_details("Profile not found.")
-            return squeak_admin_pb2.GetSqueakProfileReply()
-        return reply
+        return self.handler.handle_get_squeak_profile(request)
 
     def GetSqueakProfileByAddress(self, request, context):
         return self.handler.handle_get_squeak_profile_by_address(request)
@@ -177,12 +171,7 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         return self.handler.handle_create_peer(request)
 
     def GetPeer(self, request, context):
-        reply = self.handler.handle_get_squeak_peer(request)
-        if reply is None:
-            context.set_code(grpc.StatusCode.NOT_FOUND)
-            context.set_details("Peer not found.")
-            return squeak_admin_pb2.GetPeerReply()
-        return reply
+        return self.handler.handle_get_squeak_peer(request)
 
     def GetPeerByAddress(self, request, context):
         return self.handler.handle_get_squeak_peer_by_address(request)
