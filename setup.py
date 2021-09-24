@@ -34,10 +34,6 @@ from setuptools import setup
 
 from squeaknode import __version__
 
-PACKAGE_DIRECTORIES = {
-    '': '.',
-}
-
 
 class BuildPyCommand(setuptools.command.build_py.build_py):
     """Custom build command."""
@@ -99,7 +95,6 @@ setup(
     url="https://github.com/yzernik/squeaknode",
     description="Server for squeak protocol.",
     packages=find_packages(),
-    # package_dir=PACKAGE_DIRECTORIES,
     include_package_data=True,
     zip_safe=False,
     extras_require={"test": ["pytest", "coverage"]},
