@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import {
   Grid,
   FormLabel,
@@ -21,9 +21,13 @@ import {
   getPeerRequest,
   setPeerAutoconnectRequest,
 } from '../../squeakclient/requests';
+import {
+  goToPeerAddressPage,
+} from '../../navigation/navigation';
 
 export default function PeerPage() {
   const classes = useStyles();
+  const history = useHistory();
   const { id } = useParams();
   const [peer, setPeer] = useState(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -56,6 +60,8 @@ export default function PeerPage() {
     setAutoconnect(id, event.target.checked);
   };
 
+  const peerAddressToStr = (peerAddress) => `${peerAddress.getHost()}:${peerAddress.getPort()}`;
+
   function NoPeerContent() {
     return (
       <p>
@@ -73,11 +79,7 @@ export default function PeerPage() {
           {peer.getPeerName()}
         </p>
         <p>
-          Address:
-          {' '}
-          {peer.getPeerAddress().getHost()}
-          :
-          {peer.getPeerAddress().getPort()}
+          {PeerAddressContent()}
         </p>
         {PeerSettingsForm()}
         {DeletePeerButton()}
@@ -127,6 +129,27 @@ export default function PeerPage() {
           peer={peer}
         />
       </>
+    );
+  }
+
+  function PeerAddressContent() {
+    const peerAddressStr = peerAddressToStr(peer.getPeerAddress());
+    return (
+      <div className={classes.root}>
+        Peer Address:
+        <Button
+          variant="contained"
+          onClick={() => {
+            goToPeerAddressPage(
+              history,
+              peer.getPeerAddress().getHost(),
+              peer.getPeerAddress().getPort(),
+            );
+          }}
+        >
+          {peerAddressStr}
+        </Button>
+      </div>
     );
   }
 
