@@ -65,7 +65,7 @@ export default function PeerListItem({
       onClick={onPeerClick}
     >
       <CardHeader
-        avatar={<ComputerIcon />}
+        avatar={<ComputerIcon fontSize="large" style={{fill: "green"}} />}
         title={getConnectedPeerDisplayName(peer)}
         subheader={`Address: ${peer.getPeerAddress().getHost()}:${peer.getPeerAddress().getPort()}`}
       />

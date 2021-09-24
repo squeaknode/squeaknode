@@ -6,6 +6,7 @@ import CardHeader from '@material-ui/core/CardHeader';
 
 // icons
 import ComputerIcon from '@material-ui/icons/Computer';
+import CloudOff from '@material-ui/icons/CloudOff';
 
 import useStyles from '../../pages/wallet/styles';
 
@@ -15,6 +16,7 @@ import {
 
 export default function SavedPeerListItem({
   peer,
+  isConnected,
   ...props
 }) {
   const classes = useStyles({
@@ -53,13 +55,25 @@ export default function SavedPeerListItem({
   //   return pieces[1];
   // }
 
+  function SavedPeerIcon() {
+    if (isConnected) {
+      return (
+        <ComputerIcon fontSize="large" style={{fill: "green"}} />
+      );
+    } else {
+      return (
+        <CloudOff fontSize="large" style={{fill: "red"}} />
+      );
+    }
+  }
+
   return (
     <Card
       className={classes.root}
       onClick={onPeerClick}
     >
       <CardHeader
-        avatar={<ComputerIcon />}
+        avatar={<SavedPeerIcon />}
         title={`Name: ${peer.getPeerName()}`}
         subheader={`Address: ${peer.getPeerAddress().getHost()}:${peer.getPeerAddress().getPort()}`}
       />
