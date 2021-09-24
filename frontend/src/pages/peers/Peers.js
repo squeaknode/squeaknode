@@ -102,15 +102,11 @@ export default function Peers() {
 
   const isPeerConnected = (peerAddress) => {
     const peerAddressStr = peerAddressToStr(peerAddress);
-    const connectedPeerAddresses = connectedPeers.map(p =>
-      peerAddressToStr(p.getPeerAddress())
-    );
+    const connectedPeerAddresses = connectedPeers.map((p) => peerAddressToStr(p.getPeerAddress()));
     return connectedPeerAddresses.includes(peerAddressStr);
   };
 
-  const peerAddressToStr = (peerAddress) => {
-    return `${peerAddress.getHost()}:${peerAddress.getPort()}`
-  };
+  const peerAddressToStr = (peerAddress) => `${peerAddress.getHost()}:${peerAddress.getPort()}`;
 
   useEffect(() => {
     getConnectedPeers();

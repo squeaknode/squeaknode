@@ -58,13 +58,12 @@ export default function SavedPeerListItem({
   function SavedPeerIcon() {
     if (isConnected) {
       return (
-        <ComputerIcon fontSize="large" style={{fill: "green"}} />
-      );
-    } else {
-      return (
-        <CloudOff fontSize="large" style={{fill: "red"}} />
+        <ComputerIcon fontSize="large" style={{ fill: 'green' }} />
       );
     }
+    return (
+      <CloudOff fontSize="large" style={{ fill: 'red' }} />
+    );
   }
 
   return (

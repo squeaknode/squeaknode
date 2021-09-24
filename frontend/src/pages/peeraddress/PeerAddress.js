@@ -203,7 +203,7 @@ export default function PeerAddressPage() {
         className={classes.root}
       >
         <CardHeader
-          avatar={<ComputerIcon fontSize="large" style={{fill: "green"}} />}
+          avatar={<ComputerIcon fontSize="large" style={{ fill: 'green' }} />}
           title={`Peer Address: ${`${host}:${port}`}`}
           subheader={ConnectedPeerDetails()}
         />
@@ -218,9 +218,9 @@ export default function PeerAddressPage() {
         className={classes.root}
       >
         <CardHeader
-          avatar={<CloudOff fontSize="large" style={{fill: "red"}} />}
+          avatar={<CloudOff fontSize="large" style={{ fill: 'red' }} />}
           title={`Peer Address: ${`${host}:${port}`}`}
-          subheader={"Disconnected"}
+          subheader="Disconnected"
         />
       </Card>
     );
@@ -231,8 +231,8 @@ export default function PeerAddressPage() {
       <>
         {ConnectionActionContent()}
         {(connectedPeer)
-           ? ConnectedPeerContent()
-           : DisconnectedPeerContent()}
+          ? ConnectedPeerContent()
+          : DisconnectedPeerContent()}
       </>
     );
   }
