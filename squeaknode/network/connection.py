@@ -59,19 +59,9 @@ class Connection(object):
     def __init__(self, peer: Peer, squeak_controller):
         self.peer = peer
         self.squeak_controller = squeak_controller
-        self.handshake_timer = HandshakeTimer(
-            self.shutdown,
-            str(self),
-        )
-        self.ping_timer = PingTimer(
-            self.send_ping,
-            str(self.peer),
-        )
-        self.pong_timer = PongTimer(
-            self.shutdown,
-            self.start_ping_timer,
-            str(self.peer),
-        )
+        self.handshake_timer = HandshakeTimer(self)
+        self.ping_timer = PingTimer(self)
+        self.pong_timer = PongTimer(self)
 
     def handshake(self):
         """Do a handshake with a peer.
@@ -332,13 +322,8 @@ class HandshakeTimer:
     """Stop the peer if handshake is not complete before timeout.
     """
 
-    def __init__(
-            self,
-            shutdown_fn,
-            peer_name,
-    ):
-        self.shutdown_fn = shutdown_fn
-        self.peer_name = peer_name
+    def __init__(self, connection: Connection):
+        self.connection = connection
         self.timer = None
         self._lock = threading.Lock()
 
@@ -349,7 +334,7 @@ class HandshakeTimer:
                 self.shutdown,
             )
             self.timer.name = "handshake_timer_thread_{}".format(
-                self.peer_name)
+                self.connection.peer)
             self.timer.start()
 
     def cancel(self):
@@ -359,21 +344,16 @@ class HandshakeTimer:
                 self.timer.cancel()
 
     def shutdown(self):
-        logger.debug("Shutdown connection triggered by handshake timer.")
-        self.shutdown_fn()
+        logger.info("Shutdown connection triggered by handshake timer.")
+        self.connection.shutdown()
 
 
 class PingTimer:
     """Send a ping message when the timer expires.
     """
 
-    def __init__(
-            self,
-            send_fn,
-            peer_name,
-    ):
-        self.send_fn = send_fn
-        self.peer_name = peer_name
+    def __init__(self, connection: Connection):
+        self.connection = connection
         self.timer = None
         self._lock = threading.Lock()
 
@@ -390,7 +370,7 @@ class PingTimer:
                 self.send_ping,
             )
             self.timer.name = "ping_timer_thread_{}".format(
-                self.peer_name)
+                self.connection.peer)
             self.timer.start()
 
     def cancel(self):
@@ -400,23 +380,16 @@ class PingTimer:
                 self.timer.cancel()
 
     def send_ping(self):
-        logger.info("Sending ping triggered by timer.")
-        self.send_fn()
+        logger.debug("Sending ping triggered by timer.")
+        self.connection.send_ping()
 
 
 class PongTimer:
     """Shut down the connection when the timer expires.
     """
 
-    def __init__(
-            self,
-            shutdown_fn,
-            start_ping_timer_fn,
-            peer_name,
-    ):
-        self.shutdown_fn = shutdown_fn
-        self.start_ping_timer_fn = start_ping_timer_fn
-        self.peer_name = peer_name
+    def __init__(self, connection: Connection):
+        self.connection = connection
         self.timer = None
         self.expected_nonce = None
         self._lock = threading.Lock()
@@ -435,7 +408,7 @@ class PongTimer:
                 self.shutdown,
             )
             self.timer.name = "pong_timer_thread_{}".format(
-                self.peer_name)
+                self.connection.peer)
             self.timer.start()
 
     def stop_timer(self, nonce):
@@ -461,8 +434,8 @@ class PongTimer:
 
     def shutdown(self):
         logger.info("Shutdown connection triggered by pong timer.")
-        self.shutdown_fn()
+        self.connection.shutdown()
 
     def start_ping_timer(self):
         logger.debug("Starting ping timer triggered by pong response.")
-        self.start_ping_timer_fn()
+        self.connection.start_ping_timer()
