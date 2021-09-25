@@ -1,3 +1,24 @@
+0.1.154 - 2021-09-24
+===================
+
+### Features
+- Include saved peer name in list of connected peers.
+    - #1361 and #1362
+- Add button in UI to convert connected peer to saved peer.
+    - #1365
+- Improve dialog for showing external address, and include copy to
+  clipboard.
+    - #1380 PR by @abhiShandy
+- Show connection status next to each item in saved peers list.
+    - #1399
+
+### Fixes
+- Fix bug in p2p connection where the connection does not shut down
+  properly in some cases.
+    - #1397
+- Fail gracefully in peer connection when LND is not available.
+    - #1389 and #1395
+
 0.1.153 - 2021-09-19
 ===================
 
