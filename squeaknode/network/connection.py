@@ -245,7 +245,7 @@ class Connection(object):
 
     def handle_subscribe(self, msg):
         self._send_reply_invs(msg.locator)
-        self.peer.set_subscription(msg)
+        self.peer.set_remote_subscription(msg)
 
     def _send_reply_invs(self, locator):
         for interest in locator.vInterested:

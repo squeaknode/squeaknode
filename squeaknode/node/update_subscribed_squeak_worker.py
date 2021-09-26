@@ -75,7 +75,7 @@ class UpdateSubscribedSqueaksWorker:
             get_hash(squeak).hex(),
         ))
         for peer in self.network_manager.get_connected_peers():
-            if peer.is_subscribed(squeak):
+            if peer.is_remote_subscribed(squeak):
                 logger.debug("Forwarding to peer: {}".format(
                     peer,
                 ))

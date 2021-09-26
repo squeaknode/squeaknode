@@ -81,7 +81,7 @@ class Peer(object):
         self._num_msgs_sent = 0
         self._num_bytes_sent = 0
 
-        self._subscription = None
+        self._remote_subscription = None
 
         self.msg_receiver = MessageReceiver(
             self._peer_socket,
@@ -105,8 +105,8 @@ class Peer(object):
         return self._remote_address
 
     @property
-    def subscription(self):
-        return self._subscription
+    def remote_subscription(self):
+        return self._remote_subscription
 
     @property
     def local_caddress(self):
@@ -266,13 +266,13 @@ class Peer(object):
     def set_disconnected(self):
         self._connect_time = None
 
-    def set_subscription(self, subscription):
-        self._subscription = subscription
+    def set_remote_subscription(self, subscription):
+        self._remote_subscription = subscription
 
-    def is_subscribed(self, squeak: CSqueak):
-        if self.subscription is None:
+    def is_remote_subscribed(self, squeak: CSqueak):
+        if self.remote_subscription is None:
             return False
-        locator = self.subscription.locator
+        locator = self.remote_subscription.locator
         for interest in locator.vInterested:
             if squeak_matches_interest(squeak, interest):
                 return True
