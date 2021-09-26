@@ -34,7 +34,6 @@ from squeak.messages import MSG_SECRET_KEY
 from squeak.messages import msg_secretkey
 from squeak.messages import MSG_SQUEAK
 from squeak.messages import msg_squeak
-from squeak.messages import msg_subscribe
 from squeak.net import CInterested
 from squeak.net import CInv
 
@@ -111,10 +110,11 @@ class Connection(object):
 
     def update_subscription(self):
         locator = self.squeak_controller.get_interested_locator()
-        subscribe_msg = msg_subscribe(
-            locator=locator,
-        )
-        self.peer.send_msg(subscribe_msg)
+        # subscribe_msg = msg_subscribe(
+        #     locator=locator,
+        # )
+        # self.peer.send_msg(subscribe_msg)
+        self.peer.update_local_subscription(locator)
 
     def update_addrs(self):
         getaddr_msg = msg_getaddr()
@@ -244,7 +244,8 @@ class Connection(object):
         )
 
     def handle_subscribe(self, msg):
-        self._send_reply_invs(msg.locator)
+        if msg.protover < 60003:
+            self._send_reply_invs(msg.locator)
         self.peer.set_remote_subscription(msg)
 
     def _send_reply_invs(self, locator):
