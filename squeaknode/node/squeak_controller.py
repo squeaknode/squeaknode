@@ -33,7 +33,6 @@ from squeak.core.signing import CSigningKey
 from squeak.core.signing import CSqueakAddress
 from squeak.messages import msg_getdata
 from squeak.messages import msg_getsqueaks
-from squeak.messages import msg_subscribe
 from squeak.messages import MsgSerializable
 from squeak.net import CInterested
 from squeak.net import CInv
@@ -687,7 +686,7 @@ class SqueakController:
             reply_to_hash,
         )
 
-    def get_interested_locator(self):
+    def get_interested_locator(self) -> CSqueakLocator:
         block_range = self.get_block_range()
         followed_addresses = self.get_followed_addresses()
         if len(followed_addresses) == 0:
@@ -830,10 +829,7 @@ class SqueakController:
 
     def update_subscriptions(self):
         locator = self.get_interested_locator()
-        subscribe_msg = msg_subscribe(
-            locator=locator,
-        )
-        self.broadcast_msg(subscribe_msg)
+        self.network_manager.update_local_subscriptions(locator)
 
     def subscribe_received_offers_for_squeak(self, squeak_hash: bytes, stopped: threading.Event):
         for received_offer in self.new_received_offer_listener.yield_items(stopped):

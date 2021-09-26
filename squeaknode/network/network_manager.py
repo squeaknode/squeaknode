@@ -27,6 +27,7 @@ from typing import Optional
 
 import squeak.params
 from squeak.messages import MsgSerializable
+from squeak.net import CSqueakLocator
 
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.network.connection_manager import ConnectionManager
@@ -114,6 +115,15 @@ class NetworkManager(object):
                 peer.send_msg(msg)
             except Exception:
                 logger.exception("Failed to send msg to peer: {}".format(
+                    peer,
+                ))
+
+    def update_local_subscriptions(self, locator: CSqueakLocator) -> None:
+        for peer in self.connection_manager.peers:
+            try:
+                peer.update_local_subscription(locator)
+            except Exception:
+                logger.exception("Failed to update local subcription with peer: {}".format(
                     peer,
                 ))
 
