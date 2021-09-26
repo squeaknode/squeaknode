@@ -110,10 +110,6 @@ class Connection(object):
 
     def update_subscription(self):
         locator = self.squeak_controller.get_interested_locator()
-        # subscribe_msg = msg_subscribe(
-        #     locator=locator,
-        # )
-        # self.peer.send_msg(subscribe_msg)
         self.peer.update_local_subscription(locator)
 
     def update_addrs(self):
