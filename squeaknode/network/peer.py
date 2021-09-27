@@ -292,10 +292,6 @@ class Peer(object):
 
     def update_local_subscription(self, locator: CSqueakLocator):
         assert len(locator.vInterested) <= 1
-        logger.info("locator:")
-        logger.info(locator)
-        logger.info("locator.vInterested:")
-        logger.info(locator.vInterested)
         if len(locator.vInterested) == 0:
             locator = None
 
