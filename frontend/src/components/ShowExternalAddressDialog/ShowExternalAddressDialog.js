@@ -42,7 +42,7 @@ export default function ShowExternalAddressDialog({
   function DisplayExternalAddress() {
     const address = externalAddress && `${externalAddress.getHost()}:${externalAddress.getPort()}`;
     return (
-      <ButtonGroup>
+      <ButtonGroup fullWidth>
         <TextField
           id="standard-textarea"
           value={address}
@@ -53,7 +53,7 @@ export default function ShowExternalAddressDialog({
         />
         <CopyToClipboard text={address}>
           <Tooltip title="Copy" placement="right">
-            <Button variant="outlined">
+            <Button variant="outlined" fullWidth={false}>
               <ContentCopyIcon />
             </Button>
           </Tooltip>
