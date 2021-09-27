@@ -43,21 +43,21 @@ export default function ShowExternalAddressDialog({
     const address = externalAddress && `${externalAddress.getHost()}:${externalAddress.getPort()}`;
     return (
       <ButtonGroup>
-      <TextField
-        id="standard-textarea"
-        value={address}
-        fullWidth
-        inputProps={{
-          readOnly: true,
-        }}
-      />
-      <CopyToClipboard text={address}>
-        <Tooltip title="Copy" placement="right">
-          <Button variant="outlined" >
-            <ContentCopyIcon />
-          </Button>
-        </Tooltip>
-      </CopyToClipboard>
+        <TextField
+          id="standard-textarea"
+          value={address}
+          fullWidth
+          inputProps={{
+            readOnly: true,
+          }}
+        />
+        <CopyToClipboard text={address}>
+          <Tooltip title="Copy" placement="right">
+            <Button variant="outlined">
+              <ContentCopyIcon />
+            </Button>
+          </Tooltip>
+        </CopyToClipboard>
       </ButtonGroup>
     );
   }
