@@ -1,4 +1,11 @@
-0.1.155 - 2021-09-247
+0.1.156 - 2021-09-27
+===================
+
+### Fixes
+- Fix display external address text with full width.
+    - #1429 PR by @abhiShandy
+
+0.1.155 - 2021-09-27
 ===================
 
 ### Features
