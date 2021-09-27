@@ -1,3 +1,11 @@
+0.1.155 - 2021-09-247
+===================
+
+### Features
+- Make p2p protocol more efficient by only requesting
+  incremental changes when interests are updated.
+    - #1424 and #1423
+
 0.1.154 - 2021-09-24
 ===================
 
