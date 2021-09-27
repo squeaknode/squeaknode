@@ -5,6 +5,8 @@ import {
   DialogContent,
   Button,
   Tooltip,
+  ButtonGroup,
+  TextField,
 } from '@material-ui/core';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
@@ -40,14 +42,23 @@ export default function ShowExternalAddressDialog({
   function DisplayExternalAddress() {
     const address = externalAddress && `${externalAddress.getHost()}:${externalAddress.getPort()}`;
     return (
-      <CopyToClipboard text={address}>
-        <Tooltip title="Copy" placement="right">
-          <Button variant="outlined" style={{ width: '100%' }}>
-            <div style={{ float: 'left' }}>{address}</div>
-            <ContentCopyIcon />
-          </Button>
-        </Tooltip>
-      </CopyToClipboard>
+      <ButtonGroup>
+        <TextField
+          id="standard-textarea"
+          value={address}
+          fullWidth
+          inputProps={{
+            readOnly: true,
+          }}
+        />
+        <CopyToClipboard text={address}>
+          <Tooltip title="Copy" placement="right">
+            <Button variant="outlined">
+              <ContentCopyIcon />
+            </Button>
+          </Tooltip>
+        </CopyToClipboard>
+      </ButtonGroup>
     );
   }
 
