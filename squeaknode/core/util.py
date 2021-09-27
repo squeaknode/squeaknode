@@ -21,6 +21,7 @@
 # SOFTWARE.
 import os
 import random
+from typing import Iterable
 
 from bitcoin.base58 import Base58ChecksumError
 from bitcoin.wallet import CBitcoinAddressError
@@ -111,3 +112,34 @@ def squeak_matches_interest(squeak: CSqueak, interest: CInterested) -> bool:
        and squeak.hashReplySqk != interest.hashReplySqk:
         return False
     return True
+
+
+def get_differential_squeaks(
+        interest: CInterested,
+        old_interest: CInterested,
+) -> Iterable[CInterested]:
+    # Get new squeaks below the current min_block
+    if interest.nMinBlockHeight < old_interest.nMinBlockHeight:
+        yield CInterested(
+            addresses=old_interest.addresses,
+            nMinBlockHeight=interest.nMinBlockHeight,
+            nMaxBlockHeight=old_interest.nMinBlockHeight - 1,
+        )
+    # Get new squeaks above the current max_block
+    if (interest.nMaxBlockHeight == -1 and old_interest.nMaxBlockHeight != -1) or \
+       interest.nMaxBlockHeight > old_interest.nMaxBlockHeight:
+        yield CInterested(
+            addresses=old_interest.addresses,
+            nMinBlockHeight=old_interest.nMaxBlockHeight + 1,
+            nMaxBlockHeight=interest.nMaxBlockHeight,
+        )
+    # Get new squeaks for new addresses
+    follow_addresses = set(interest.addresses)
+    old_follow_addresses = set(old_interest.addresses)
+    new_addresses = tuple(follow_addresses - old_follow_addresses)
+    if len(new_addresses) > 0:
+        yield CInterested(
+            addresses=new_addresses,
+            nMinBlockHeight=interest.nMinBlockHeight,
+            nMaxBlockHeight=interest.nMaxBlockHeight,
+        )

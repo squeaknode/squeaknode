@@ -242,7 +242,7 @@ class Connection(object):
     def handle_subscribe(self, msg):
         if msg.protover < 60003:
             self._send_reply_invs(msg.locator)
-        self.peer.set_remote_subscription(msg)
+        self.peer.set_remote_subscription(msg.locator)
 
     def _send_reply_invs(self, locator):
         for interest in locator.vInterested:

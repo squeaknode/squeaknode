@@ -24,6 +24,7 @@ import socket
 import threading
 import time
 from io import BytesIO
+from typing import Optional
 
 from bitcoin.core.serialize import SerializationTruncationError
 from bitcoin.net import CAddress
@@ -37,6 +38,7 @@ from squeak.net import CSqueakLocator
 
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.util import generate_version_nonce
+from squeaknode.core.util import get_differential_squeaks
 from squeaknode.core.util import squeak_matches_interest
 from squeaknode.network.util import time_now
 from squeaknode.node.listener_subscription_client import EventListener
@@ -85,6 +87,7 @@ class Peer(object):
         self._num_bytes_sent = 0
 
         self._remote_subscription = None
+        self._local_subscription = None
 
         self.msg_receiver = MessageReceiver(
             self._peer_socket,
@@ -110,6 +113,10 @@ class Peer(object):
     @property
     def remote_subscription(self):
         return self._remote_subscription
+
+    @property
+    def local_subscription(self):
+        return self._local_subscription
 
     @property
     def local_caddress(self):
@@ -269,27 +276,57 @@ class Peer(object):
     def set_disconnected(self):
         self._connect_time = None
 
-    def set_remote_subscription(self, subscription):
-        self._remote_subscription = subscription
+    def set_remote_subscription(self, locator: Optional[CSqueakLocator]):
+        self._remote_subscription = locator
+
+    def set_local_subscription(self, locator: Optional[CSqueakLocator]):
+        self._local_subscription = locator
 
     def is_remote_subscribed(self, squeak: CSqueak):
         if self.remote_subscription is None:
             return False
-        locator = self.remote_subscription.locator
-        for interest in locator.vInterested:
+        for interest in self.remote_subscription.vInterested:
             if squeak_matches_interest(squeak, interest):
                 return True
         return False
 
     def update_local_subscription(self, locator: CSqueakLocator):
-        getsqueaks_msg = msg_getsqueaks(
-            locator=locator,
-        )
+        assert len(locator.vInterested) <= 1
+        logger.info("locator:")
+        logger.info(locator)
+        logger.info("locator.vInterested:")
+        logger.info(locator.vInterested)
+        if len(locator.vInterested) == 0:
+            locator = None
+
+        # Send the subscribe message
         subscribe_msg = msg_subscribe(
             locator=locator,
         )
-        self.send_msg(getsqueaks_msg)
         self.send_msg(subscribe_msg)
+
+        # Send the getsqueaks messages for differential interests
+        if locator is not None:
+            for interest in self.get_differential_interests(locator):
+                diff_locator = CSqueakLocator(
+                    vInterested=[interest]
+                )
+                getsqueaks_msg = msg_getsqueaks(
+                    locator=diff_locator,
+                )
+                self.send_msg(getsqueaks_msg)
+
+        # Set the local subscription with the new value
+        self.set_local_subscription(locator)
+
+    def get_differential_interests(self, locator: CSqueakLocator):
+        if self._local_subscription is None:
+            yield locator.vInterested[0]
+        else:
+            new_interest = locator.vInterested[0]
+            old_interest = self._local_subscription.vInterested[0]
+            for interest in get_differential_squeaks(new_interest, old_interest):
+                yield interest
 
     def on_peer_updated(self):
         logger.debug('on_peer_updated: {}'.format(self))
