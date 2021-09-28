@@ -22,10 +22,10 @@
 import logging
 
 from sqlalchemy import BigInteger
-from sqlalchemy import Binary
 from sqlalchemy import Boolean
 from sqlalchemy import Column
 from sqlalchemy import Integer
+from sqlalchemy import LargeBinary
 from sqlalchemy import MetaData
 from sqlalchemy import String
 from sqlalchemy import Table
@@ -58,15 +58,15 @@ class Models:
         self.squeaks = Table(
             "squeak",
             self.metadata,
-            Column("hash", Binary(32), primary_key=True),
+            Column("hash", LargeBinary(32), primary_key=True),
             Column("created_time_ms", SLBigInteger, nullable=False),
-            Column("squeak", Binary, nullable=False),
-            Column("hash_reply_sqk", Binary(32), nullable=True),
-            Column("hash_block", Binary(32), nullable=False),
+            Column("squeak", LargeBinary, nullable=False),
+            Column("hash_reply_sqk", LargeBinary(32), nullable=True),
+            Column("hash_block", LargeBinary(32), nullable=False),
             Column("n_block_height", Integer, nullable=False),
             Column("n_time", Integer, nullable=False),
             Column("author_address", String(35), index=True, nullable=False),
-            Column("secret_key", Binary(32), nullable=True),
+            Column("secret_key", LargeBinary(32), nullable=True),
             Column("block_time", Integer, nullable=False),
             Column("liked_time_ms", SLBigInteger, default=None, nullable=True),
             Column("content", String(280), nullable=True),
@@ -78,12 +78,12 @@ class Models:
             Column("profile_id", Integer, primary_key=True),
             Column("created_time_ms", SLBigInteger, nullable=False),
             Column("profile_name", String, unique=True, nullable=False),
-            Column("private_key", Binary, nullable=True),
+            Column("private_key", LargeBinary, nullable=True),
             Column("address", String(35), unique=True, nullable=False),
             Column("following", Boolean, nullable=False),
             Column("use_custom_price", Boolean, nullable=False, default=False),
             Column("custom_price_msat", Integer, nullable=False, default=0),
-            Column("profile_image", Binary, nullable=True),
+            Column("profile_image", LargeBinary, nullable=True),
             sqlite_autoincrement=True,
         )
 
@@ -106,10 +106,11 @@ class Models:
             self.metadata,
             Column("received_offer_id", SLBigInteger, primary_key=True),
             Column("created_time_ms", SLBigInteger, nullable=False),
-            Column("squeak_hash", Binary(32), nullable=False),
-            Column("payment_hash", Binary(32), unique=True, nullable=False),
-            Column("nonce", Binary(32), nullable=False),
-            Column("payment_point", Binary(33), nullable=False),
+            Column("squeak_hash", LargeBinary(32), nullable=False),
+            Column("payment_hash", LargeBinary(
+                32), unique=True, nullable=False),
+            Column("nonce", LargeBinary(32), nullable=False),
+            Column("payment_point", LargeBinary(33), nullable=False),
             Column("invoice_timestamp", Integer, nullable=False),
             Column("invoice_expiry", Integer, nullable=False),
             Column("price_msat", Integer, nullable=False),
@@ -130,9 +131,10 @@ class Models:
             Column("created_time_ms", SLBigInteger, nullable=False),
             Column("peer_host", String, nullable=False),
             Column("peer_port", Integer, nullable=False),
-            Column("squeak_hash", Binary(32), nullable=False),
-            Column("payment_hash", Binary(32), unique=True, nullable=False),
-            Column("secret_key", Binary(32), nullable=False),
+            Column("squeak_hash", LargeBinary(32), nullable=False),
+            Column("payment_hash", LargeBinary(
+                32), unique=True, nullable=False),
+            Column("secret_key", LargeBinary(32), nullable=False),
             Column("price_msat", Integer, nullable=False, default=0),
             Column("node_pubkey", String(66), nullable=False),
             Column("valid", Boolean, nullable=False),
@@ -144,10 +146,11 @@ class Models:
             self.metadata,
             Column("sent_offer_id", SLBigInteger, primary_key=True),
             Column("created_time_ms", SLBigInteger, nullable=False),
-            Column("squeak_hash", Binary(32), nullable=False),
-            Column("payment_hash", Binary(32), unique=True, nullable=False),
-            Column("secret_key", Binary(32), nullable=False),
-            Column("nonce", Binary(32), nullable=False),
+            Column("squeak_hash", LargeBinary(32), nullable=False),
+            Column("payment_hash", LargeBinary(
+                32), unique=True, nullable=False),
+            Column("secret_key", LargeBinary(32), nullable=False),
+            Column("nonce", LargeBinary(32), nullable=False),
             Column("price_msat", Integer, nullable=False, default=0),
             Column("payment_request", String, nullable=False),
             Column("invoice_timestamp", Integer, nullable=False),
@@ -163,8 +166,9 @@ class Models:
             self.metadata,
             Column("received_payment_id", SLBigInteger, primary_key=True),
             Column("created_time_ms", SLBigInteger, nullable=False),
-            Column("squeak_hash", Binary(32), nullable=False),
-            Column("payment_hash", Binary(32), unique=True, nullable=False),
+            Column("squeak_hash", LargeBinary(32), nullable=False),
+            Column("payment_hash", LargeBinary(
+                32), unique=True, nullable=False),
             Column("price_msat", Integer, nullable=False),
             Column("settle_index", SLBigInteger, nullable=False),
             Column("peer_host", String, nullable=False),
