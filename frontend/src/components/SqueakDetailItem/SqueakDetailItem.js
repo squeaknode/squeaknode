@@ -7,7 +7,6 @@ import {
   Box,
   Link,
   Button,
-  Tooltip,
 } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 
@@ -17,20 +16,16 @@ import DownloadIcon from '@material-ui/icons/CloudDownload';
 import MuiAlert from '@material-ui/lab/Alert';
 
 // styles
-import moment from 'moment';
 import useStyles from './styles';
 
 import BuySqueakDialog from '../BuySqueakDialog';
 import SqueakActionBar from '../SqueakActionBar';
+import SqueakTime from '../SqueakTime';
 import SqueakUserAvatar from '../SqueakUserAvatar';
 
 import {
   downloadSqueakRequest,
 } from '../../squeakclient/requests';
-
-import {
-  getBlockDetailUrl,
-} from '../../bitcoin/blockexplorer';
 
 import {
   goToSqueakAddressPage,
@@ -53,8 +48,6 @@ export default function SqueakDetailItem({
 
   const [buyDialogOpen, setBuyDialogOpen] = useState(false);
   const [unlockedSnackbarOpen, setUnlockedSnackbarOpen] = useState(false);
-
-  const blockDetailUrl = () => getBlockDetailUrl(squeak.getBlockHash(), network);
 
   const handleClickOpenBuyDialog = () => {
     setBuyDialogOpen(true);
@@ -188,36 +181,6 @@ export default function SqueakDetailItem({
       : squeak.getAuthorAddress();
   }
 
-  function SqueakTime() {
-    if (!squeak) {
-      return (
-        <Box color="secondary.main" fontWeight="fontWeightBold">
-          Unknown time
-        </Box>
-      );
-    }
-    const squeakBlockTime = moment(squeak.getBlockTime()*1000)
-    return (
-      <Box color="secondary.main" fontWeight="fontWeightBold">
-        <Tooltip title={squeakBlockTime.toString()}>
-          <Button color="secondary" style={{fontWeight: "bold", textTransform: "lowercase"}}>{squeakBlockTime.fromNow()}</Button>
-        </Tooltip>
-        (Block
-        <Link
-          href={blockDetailUrl()}
-          target="_blank"
-          rel="noopener"
-          onClick={(event) => event.stopPropagation()}
-        >
-          <span> </span>
-          #
-          {squeak.getBlockHeight()}
-        </Link>
-        )
-      </Box>
-    );
-  }
-
   function BuyDialogContent() {
     return (
       <>
@@ -306,7 +269,11 @@ export default function SqueakDetailItem({
           alignItems="flex-start"
         >
           <Grid item>
-            {SqueakTime()}
+            <SqueakTime
+              hash={hash}
+              squeak={squeak}
+              network={network}
+            />
           </Grid>
         </Grid>
         {squeak
