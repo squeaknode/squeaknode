@@ -8,8 +8,10 @@ Node for [Squeak protocol](https://github.com/yzernik/squeak/blob/master/docs/PR
 * a bitcoin node
 * an LND node
 * Python 3.6 or later
-* a Tor SOCKS5 proxy (you can open Tor Browser and run it in the background)
 * libpq-dev (`sudo apt install libpq-dev` on ubuntu)
+
+#### Optional
+* a Tor SOCKS5 proxy (you can open Tor Browser and run it in the background)
 
 #### Steps
 - Update the **config.ini** file and fill in the relevant sections to connect to your bitcoin node and lnd node:
