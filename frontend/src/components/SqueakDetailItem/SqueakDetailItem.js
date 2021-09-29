@@ -219,6 +219,7 @@ export default function SqueakDetailItem({
           direction="row"
           justify="flex-start"
           alignItems="flex-start"
+          spacing={2}
         >
           <Grid item>
             <Box fontWeight="fontWeightBold">
@@ -257,6 +258,7 @@ export default function SqueakDetailItem({
           direction="row"
           justify="flex-start"
           alignItems="flex-start"
+          spacing={2}
         >
           <Grid item>
             {SqueakContent()}
@@ -267,6 +269,7 @@ export default function SqueakDetailItem({
           direction="row"
           justify="flex-start"
           alignItems="flex-start"
+          spacing={2}
         >
           <Grid item>
             <SqueakTime
