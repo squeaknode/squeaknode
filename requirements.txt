@@ -10,7 +10,6 @@ grpcio-tools==1.39.0
 importlib_resources==1.4.0
 mypy-protobuf==2.9
 protobuf==3.17.3
-psycopg2==2.9.1
 PySocks==1.7.1
 python-bitcoinlib==0.11.0
 pyzmq==22.3.0

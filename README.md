@@ -8,7 +8,6 @@ Node for [Squeak protocol](https://github.com/yzernik/squeak/blob/master/docs/PR
 * a bitcoin node
 * an LND node
 * Python 3.6 or later
-* libpq-dev (`sudo apt install libpq-dev` on ubuntu)
 
 #### Optional
 * a Tor SOCKS5 proxy (you can open Tor Browser and run it in the background)
@@ -43,7 +42,7 @@ Node for [Squeak protocol](https://github.com/yzernik/squeak/blob/master/docs/PR
 	$ virtualenv venv
 	$ source venv/bin/activate
 	$ pip install -r requirements.txt
-	$ python setup.py install
+	$ pip install .
 	```
 - Start squeaknode:
  	```

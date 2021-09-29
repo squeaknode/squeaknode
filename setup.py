@@ -97,7 +97,10 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     zip_safe=False,
-    extras_require={"test": ["pytest", "coverage"]},
+    extras_require={
+        "test": ["pytest", "coverage"],
+        "postgres": ["psycopg2"],
+    },
     entry_points={
         'console_scripts': [
             'squeaknode = squeaknode.main:main',
