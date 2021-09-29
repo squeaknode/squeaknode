@@ -25,7 +25,7 @@ COPY squeaknode ./squeaknode
 COPY proto ./proto
 COPY LICENSE MANIFEST.in README.md requirements.txt setup.cfg setup.py  ./
 
-RUN python3 setup.py install
+RUN pip install .[postgres]
 
 FROM python:3.8-slim-buster
 
