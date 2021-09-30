@@ -54,8 +54,3 @@ services:
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=0
     entrypoint: ["./start-squeaknode.sh"]
-
-volumes:
-  # lnd is needed for sharing tht tls certificate
-  test_lnd_client_dir:
-    driver: local
