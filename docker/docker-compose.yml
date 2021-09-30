@@ -35,3 +35,27 @@ services:
     container_name: tor-socks-proxy
     image: peterdavehello/tor-socks-proxy:latest
     restart: unless-stopped
+
+  squeaknode:
+    image: squeaknode
+    build:
+      context: ../
+      dockerfile: Dockerfile
+    volumes:
+      - ~/.lnd:/root/.lnd
+      - ./config.ini:/config.ini
+    ports:
+      - 12995:12994
+      - 8557:8555
+      - 18557:18555
+    links:
+      - "bitcoin-core:bitcoin-core"
+      - "lnd:lnd"
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=0
+    entrypoint: ["./start-squeaknode.sh"]
+
+volumes:
+  # lnd is needed for sharing tht tls certificate
+  test_lnd_client_dir:
+    driver: local
