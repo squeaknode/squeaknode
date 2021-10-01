@@ -1,3 +1,10 @@
+0.1.158 - 2021-10-01
+===================
+
+### Features
+- Show full date and time of squeak in tooltip.
+    - #1393 PR by @abhiShandy
+
 0.1.157 - 2021-09-28
 ===================
 
