@@ -16,20 +16,16 @@ import DownloadIcon from '@material-ui/icons/CloudDownload';
 import MuiAlert from '@material-ui/lab/Alert';
 
 // styles
-import moment from 'moment';
 import useStyles from './styles';
 
 import BuySqueakDialog from '../BuySqueakDialog';
 import SqueakActionBar from '../SqueakActionBar';
+import SqueakTime from '../SqueakTime';
 import SqueakUserAvatar from '../SqueakUserAvatar';
 
 import {
   downloadSqueakRequest,
 } from '../../squeakclient/requests';
-
-import {
-  getBlockDetailUrl,
-} from '../../bitcoin/blockexplorer';
 
 import {
   goToSqueakAddressPage,
@@ -52,8 +48,6 @@ export default function SqueakDetailItem({
 
   const [buyDialogOpen, setBuyDialogOpen] = useState(false);
   const [unlockedSnackbarOpen, setUnlockedSnackbarOpen] = useState(false);
-
-  const blockDetailUrl = () => getBlockDetailUrl(squeak.getBlockHash(), network);
 
   const handleClickOpenBuyDialog = () => {
     setBuyDialogOpen(true);
@@ -187,35 +181,6 @@ export default function SqueakDetailItem({
       : squeak.getAuthorAddress();
   }
 
-  function SqueakTime() {
-    if (!squeak) {
-      return (
-        <Box color="secondary.main" fontWeight="fontWeightBold">
-          Unknown time
-        </Box>
-      );
-    }
-
-    return (
-      <Box color="secondary.main" fontWeight="fontWeightBold">
-        {moment(squeak.getBlockTime() * 1000).fromNow()}
-        <span> </span>
-        (Block
-        <Link
-          href={blockDetailUrl()}
-          target="_blank"
-          rel="noopener"
-          onClick={(event) => event.stopPropagation()}
-        >
-          <span> </span>
-          #
-          {squeak.getBlockHeight()}
-        </Link>
-        )
-      </Box>
-    );
-  }
-
   function BuyDialogContent() {
     return (
       <>
@@ -254,6 +219,7 @@ export default function SqueakDetailItem({
           direction="row"
           justify="flex-start"
           alignItems="flex-start"
+          spacing={2}
         >
           <Grid item>
             <Box fontWeight="fontWeightBold">
@@ -292,6 +258,7 @@ export default function SqueakDetailItem({
           direction="row"
           justify="flex-start"
           alignItems="flex-start"
+          spacing={2}
         >
           <Grid item>
             {SqueakContent()}
@@ -302,9 +269,14 @@ export default function SqueakDetailItem({
           direction="row"
           justify="flex-start"
           alignItems="flex-start"
+          spacing={2}
         >
           <Grid item>
-            {SqueakTime()}
+            <SqueakTime
+              hash={hash}
+              squeak={squeak}
+              network={network}
+            />
           </Grid>
         </Grid>
         {squeak

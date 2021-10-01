@@ -12,14 +12,10 @@ import LockIcon from '@material-ui/icons/Lock';
 import DownloadIcon from '@material-ui/icons/CloudDownload';
 
 // styles
-import moment from 'moment';
 import useStyles from './styles';
 
 import SqueakActionBar from '../SqueakActionBar';
-
-import {
-  getBlockDetailUrl,
-} from '../../bitcoin/blockexplorer';
+import SqueakTime from '../SqueakTime';
 
 import {
   goToSqueakPage,
@@ -38,9 +34,6 @@ export default function SqueakThreadItem({
 
   const history = useHistory();
 
-  const blockDetailUrl = () =>
-    // return "https://blockstream.info/testnet/block/" + squeak.getBlockHash();
-    getBlockDetailUrl(squeak.getBlockHash(), network);
   const onAddressClick = (event) => {
     event.preventDefault();
     event.stopPropagation();
@@ -101,35 +94,6 @@ export default function SqueakThreadItem({
           ? SqueakUnlockedContent()
           : SqueakLockedContent()}
       </>
-    );
-  }
-
-  function SqueakTime() {
-    if (!squeak) {
-      return (
-        <Box color="secondary.main" fontWeight="fontWeightBold">
-          Unknown time
-        </Box>
-      );
-    }
-
-    return (
-      <Box color="secondary.main" fontWeight="fontWeightBold">
-        {moment(squeak.getBlockTime() * 1000).fromNow()}
-        <span> </span>
-        (Block
-        <Link
-          href={blockDetailUrl()}
-          target="_blank"
-          rel="noopener"
-          onClick={(event) => event.stopPropagation()}
-        >
-          <span> </span>
-          #
-          {squeak.getBlockHeight()}
-        </Link>
-        )
-      </Box>
     );
   }
 
@@ -202,7 +166,11 @@ export default function SqueakThreadItem({
         alignItems="flex-start"
       >
         <Grid item>
-          {SqueakTime()}
+          <SqueakTime
+            hash={hash}
+            squeak={squeak}
+            network={network}
+          />
         </Grid>
       </Grid>
       {showActionBar
