@@ -19,9 +19,7 @@ export default function SqueakTime({
   network,
   ...props
 }) {
-
-  const blockDetailUrl = () =>
-    getBlockDetailUrl(squeak.getBlockHash(), network);
+  const blockDetailUrl = () => getBlockDetailUrl(squeak.getBlockHash(), network);
 
   if (!squeak) {
     return (
@@ -30,12 +28,12 @@ export default function SqueakTime({
       </Box>
     );
   }
-  const squeakBlockTime = moment(squeak.getBlockTime()*1000)
+  const squeakBlockTime = moment(squeak.getBlockTime() * 1000);
   return (
     <Box color="secondary.main" fontWeight="fontWeightBold">
       <ButtonGroup>
         <Tooltip title={squeakBlockTime.toString()}>
-          <Typography disabled style={{fontWeight: "bold"}}>
+          <Typography disabled style={{ fontWeight: 'bold' }}>
             {squeakBlockTime.fromNow()}
           </Typography>
         </Tooltip>
