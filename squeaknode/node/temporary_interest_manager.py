@@ -31,8 +31,8 @@ from expiringdict import ExpiringDict
 from squeak.core import CSqueak
 from squeak.net import CInterested
 
+from squeaknode.core.interests import squeak_matches_interest
 from squeaknode.core.util import get_hash
-from squeaknode.core.util import squeak_matches_interest
 
 logger = logging.getLogger(__name__)
 

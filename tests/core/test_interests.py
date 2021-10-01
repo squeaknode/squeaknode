@@ -23,7 +23,7 @@ from squeak.core.signing import CSigningKey
 from squeak.core.signing import CSqueakAddress
 from squeak.net import CInterested
 
-from squeaknode.core.util import get_differential_squeaks
+from squeaknode.core.interests import get_differential_squeaks
 
 
 def gen_address():
