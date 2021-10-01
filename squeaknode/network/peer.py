@@ -36,10 +36,10 @@ from squeak.messages import msg_version
 from squeak.messages import MsgSerializable
 from squeak.net import CSqueakLocator
 
+from squeaknode.core.interests import get_differential_squeaks
+from squeaknode.core.interests import squeak_matches_interest
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.util import generate_version_nonce
-from squeaknode.core.util import get_differential_squeaks
-from squeaknode.core.util import squeak_matches_interest
 from squeaknode.network.util import time_now
 from squeaknode.node.listener_subscription_client import EventListener
 

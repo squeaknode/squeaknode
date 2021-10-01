@@ -19,12 +19,11 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-import pytest
 from squeak.core.signing import CSigningKey
 from squeak.core.signing import CSqueakAddress
 from squeak.net import CInterested
 
-from squeaknode.core.util import get_differential_squeaks
+from squeaknode.core.interests import get_differential_squeaks
 
 
 def gen_address():
@@ -49,12 +48,16 @@ def test_get_differential_squeaks():
         nMinBlockHeight=11,
         nMaxBlockHeight=21,
     )
+    differential_results = list(
+        get_differential_squeaks(interest, old_interest))
 
-    differential_results = get_differential_squeaks(interest, old_interest)
-    first_result = next(differential_results)
-    assert first_result.addresses == squeak_addresses
-    assert first_result.nMinBlockHeight == 21
-    assert first_result.nMaxBlockHeight == 21
+    assert differential_results == [
+        CInterested(
+            addresses=squeak_addresses,
+            nMinBlockHeight=21,
+            nMaxBlockHeight=21,
+        )
+    ]
 
 
 def test_get_differential_squeaks_no_difference():
@@ -69,10 +72,10 @@ def test_get_differential_squeaks_no_difference():
         nMinBlockHeight=10,
         nMaxBlockHeight=20,
     )
+    differential_results = list(
+        get_differential_squeaks(interest, old_interest))
 
-    differential_results = get_differential_squeaks(interest, old_interest)
-    with pytest.raises(StopIteration):
-        next(differential_results)
+    assert differential_results == []
 
 
 def test_get_differential_squeaks_new_addresses():
@@ -88,11 +91,11 @@ def test_get_differential_squeaks_new_addresses():
         nMinBlockHeight=10,
         nMaxBlockHeight=20,
     )
+    differential_results = list(
+        get_differential_squeaks(interest, old_interest))
 
-    differential_results = get_differential_squeaks(interest, old_interest)
-    first_result = next(differential_results)
-    print(first_result.addresses)
-    print(additional_addresses)
+    assert len(differential_results) == 1
+    first_result = differential_results[0]
     assert set(first_result.addresses) == set(additional_addresses)
     assert first_result.nMinBlockHeight == 10
     assert first_result.nMaxBlockHeight == 20
@@ -110,12 +113,16 @@ def test_get_differential_squeaks_default_min():
         nMinBlockHeight=-1,
         nMaxBlockHeight=20,
     )
+    differential_results = list(
+        get_differential_squeaks(interest, old_interest))
 
-    differential_results = get_differential_squeaks(interest, old_interest)
-    first_result = next(differential_results)
-    assert first_result.addresses == squeak_addresses
-    assert first_result.nMinBlockHeight == -1
-    assert first_result.nMaxBlockHeight == 9
+    assert differential_results == [
+        CInterested(
+            addresses=squeak_addresses,
+            nMinBlockHeight=-1,
+            nMaxBlockHeight=9,
+        )
+    ]
 
 
 def test_get_differential_squeaks_default_max():
@@ -130,12 +137,16 @@ def test_get_differential_squeaks_default_max():
         nMinBlockHeight=10,
         nMaxBlockHeight=-1,
     )
+    differential_results = list(
+        get_differential_squeaks(interest, old_interest))
 
-    differential_results = get_differential_squeaks(interest, old_interest)
-    first_result = next(differential_results)
-    assert first_result.addresses == squeak_addresses
-    assert first_result.nMinBlockHeight == 21
-    assert first_result.nMaxBlockHeight == -1
+    assert differential_results == [
+        CInterested(
+            addresses=squeak_addresses,
+            nMinBlockHeight=21,
+            nMaxBlockHeight=-1,
+        )
+    ]
 
 
 def test_get_differential_squeaks_new_addresses_and_min_max():
@@ -152,18 +163,21 @@ def test_get_differential_squeaks_new_addresses_and_min_max():
         nMaxBlockHeight=-1,
     )
 
-    differential_results = get_differential_squeaks(interest, old_interest)
-    first_result = next(differential_results)
+    differential_results = list(
+        get_differential_squeaks(interest, old_interest))
+    assert len(differential_results) == 3
+
+    first_result = differential_results[0]
     assert set(first_result.addresses) == set(squeak_addresses)
     assert first_result.nMinBlockHeight == -1
     assert first_result.nMaxBlockHeight == 9
 
-    second_result = next(differential_results)
+    second_result = differential_results[1]
     assert set(second_result.addresses) == set(squeak_addresses)
     assert second_result.nMinBlockHeight == 21
     assert second_result.nMaxBlockHeight == -1
 
-    third_result = next(differential_results)
+    third_result = differential_results[2]
     assert set(third_result.addresses) == set(new_addresses)
     assert third_result.nMinBlockHeight == -1
     assert third_result.nMaxBlockHeight == -1
