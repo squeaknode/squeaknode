@@ -1,6 +1,7 @@
 # squeaknode
 
 [![GitHub CI workflow](https://github.com/yzernik/squeaknode/actions/workflows/main.yml/badge.svg)](https://github.com/yzernik/squeaknode/actions/workflows/main.yml)
+[![codecov](https://codecov.io/gh/yzernik/squeaknode/branch/master/graph/badge.svg?token=VV8WW3VR3Y)](https://codecov.io/gh/yzernik/squeaknode)
 
 Node for [Squeak protocol](https://github.com/yzernik/squeak/blob/master/docs/PROTOCOL.md)
 
