@@ -21,10 +21,10 @@
 # SOFTWARE.
 import pytest
 from bitcoin.core import CoreMainParams
-from squeak.core import CheckSqueak
 from squeak.core.signing import CSigningKey
 
 from squeaknode.bitcoin.block_info import BlockInfo
+from squeaknode.core.squeaks import check_squeak
 from squeaknode.core.squeaks import make_squeak_with_block
 
 
@@ -50,5 +50,5 @@ def test_make_squeak_with_block(signing_key, genesis_block_info):
         genesis_block_info.block_hash,
     )
 
-    CheckSqueak(squeak)
+    check_squeak(squeak)
     assert squeak.nBlockHeight == 0

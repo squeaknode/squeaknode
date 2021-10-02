@@ -26,7 +26,6 @@ from typing import Tuple
 
 import grpc
 from bitcoin.core import CBlockHeader
-from squeak.core import CheckSqueak
 from squeak.core import CSqueak
 from squeak.core.elliptic import payment_point_bytes_from_scalar_bytes
 from squeak.core.signing import CSigningKey
@@ -43,6 +42,7 @@ from squeaknode.core.received_payment_stream import ReceivedPaymentsStream
 from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.sent_payment import SentPayment
 from squeaknode.core.squeak_profile import SqueakProfile
+from squeaknode.core.squeaks import check_squeak
 from squeaknode.core.squeaks import get_hash
 from squeaknode.core.squeaks import make_squeak_with_block
 from squeaknode.core.util import add_tweak
@@ -113,7 +113,7 @@ class SqueakCore:
         Raises:
             Exception: If the squeak is not valid.
         """
-        CheckSqueak(squeak)
+        check_squeak(squeak)
 
     def get_block_header(self, squeak: CSqueak) -> CBlockHeader:
         """Checks if the embedded block hash in the squeak is valid for its

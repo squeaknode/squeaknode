@@ -23,6 +23,7 @@ import time
 from typing import Optional
 from typing import Tuple
 
+from squeak.core import CheckSqueak
 from squeak.core import CSqueak
 from squeak.core import MakeSqueakFromStr
 from squeak.core.signing import CSigningKey
@@ -68,3 +69,18 @@ def make_squeak_with_block(
         timestamp,
         replyto_hash,
     )
+
+
+def check_squeak(squeak: CSqueak) -> None:
+    """Checks if the squeak is valid and has a valid signature.
+
+    Args:
+        squeak: The squeak to be validated.
+
+    Returns:
+        None
+
+    Raises:
+        Exception: If the squeak is not valid.
+    """
+    CheckSqueak(squeak)
