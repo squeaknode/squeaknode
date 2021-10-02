@@ -86,14 +86,6 @@ class SqueakCore:
         block_info = self.bitcoin_client.get_best_block_info()
         block_height = block_info.block_height
         block_hash = block_info.block_hash
-        # return MakeSqueakFromStr(
-        #     signing_key,
-        #     content_str,
-        #     block_height,
-        #     block_hash,
-        #     timestamp,
-        #     replyto_hash,
-        # )
         return make_squeak_with_block(
             signing_key,
             content_str,
