@@ -31,7 +31,8 @@ jobs:
           pip install tox
       - name: Run tests and collect coverage
         run: |
-          make test
+          coverage run -m pytest tests
+          coverage report --show-missing
       -
         name: Coverage
         uses: codecov/codecov-action@v2
