@@ -26,6 +26,7 @@ from typing import Tuple
 from squeak.core import CheckSqueak
 from squeak.core import CSqueak
 from squeak.core import MakeSqueakFromStr
+from squeak.core.elliptic import payment_point_bytes_from_scalar_bytes
 from squeak.core.signing import CSigningKey
 
 
@@ -102,3 +103,15 @@ def get_decrypted_content(squeak: CSqueak, secret_key: bytes) -> str:
         Exception: If the secret key is not valid.
     """
     return squeak.GetDecryptedContentStr(secret_key)
+
+
+def get_payment_point_of_secret_key(secret_key: bytes) -> bytes:
+    """Get the payment point of the given secret key scalar.
+
+    Args:
+        secret_key: The secret key.
+
+    Returns:
+        bytes: the payment point in compressed format.
+    """
+    return payment_point_bytes_from_scalar_bytes(secret_key)

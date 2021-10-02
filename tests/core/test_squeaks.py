@@ -26,6 +26,7 @@ from squeak.core.signing import CSigningKey
 from squeaknode.bitcoin.block_info import BlockInfo
 from squeaknode.core.squeaks import check_squeak
 from squeaknode.core.squeaks import get_decrypted_content
+from squeaknode.core.squeaks import get_payment_point_of_secret_key
 from squeaknode.core.squeaks import make_squeak_with_block
 
 
@@ -43,14 +44,45 @@ def genesis_block_info():
     )
 
 
-def test_make_squeak_with_block(signing_key, genesis_block_info):
-    squeak, secret_key = make_squeak_with_block(
+@pytest.fixture
+def squeak_content():
+    yield "hello!"
+
+
+@pytest.fixture
+def squeak_and_secret_key(signing_key, squeak_content, genesis_block_info):
+    yield make_squeak_with_block(
         signing_key,
-        "hello!",
+        squeak_content,
         genesis_block_info.block_height,
         genesis_block_info.block_hash,
     )
 
-    check_squeak(squeak)
+
+@pytest.fixture
+def squeak(squeak_and_secret_key):
+    squeak, _ = squeak_and_secret_key
+    yield squeak
+
+
+@pytest.fixture
+def secret_key(squeak_and_secret_key):
+    _, secret_key = squeak_and_secret_key
+    yield secret_key
+
+
+def test_make_squeak(squeak):
     assert squeak.nBlockHeight == 0
-    assert get_decrypted_content(squeak, secret_key) == "hello!"
+
+
+def test_check_squeak(squeak):
+    check_squeak(squeak)
+
+
+def test_get_decrypted_content(squeak, secret_key, squeak_content):
+    assert get_decrypted_content(squeak, secret_key) == squeak_content
+
+
+def test_get_payment_point_of_secret_key(squeak, secret_key):
+    assert get_payment_point_of_secret_key(
+        secret_key) == squeak.paymentPoint
