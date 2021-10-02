@@ -19,23 +19,50 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-from squeaknode.core.squeaks import check_squeak
-from squeaknode.core.squeaks import get_decrypted_content
-from squeaknode.core.squeaks import get_payment_point_of_secret_key
+import pytest
+from bitcoin.core import CoreMainParams
+from squeak.core.signing import CSigningKey
+
+from squeaknode.bitcoin.block_info import BlockInfo
+from squeaknode.core.squeaks import make_squeak_with_block
 
 
-def test_make_squeak(squeak):
-    assert squeak.nBlockHeight == 0
+@pytest.fixture
+def signing_key():
+    yield CSigningKey.generate()
 
 
-def test_check_squeak(squeak):
-    check_squeak(squeak)
+@pytest.fixture
+def genesis_block_info():
+    yield BlockInfo(
+        block_height=0,
+        block_hash=CoreMainParams.GENESIS_BLOCK.GetHash(),
+        block_header=CoreMainParams.GENESIS_BLOCK.get_header().serialize(),
+    )
 
 
-def test_get_decrypted_content(squeak, secret_key, squeak_content):
-    assert get_decrypted_content(squeak, secret_key) == squeak_content
+@pytest.fixture
+def squeak_content():
+    yield "hello!"
 
 
-def test_get_payment_point_of_secret_key(squeak, secret_key):
-    assert get_payment_point_of_secret_key(
-        secret_key) == squeak.paymentPoint
+@pytest.fixture
+def squeak_and_secret_key(signing_key, squeak_content, genesis_block_info):
+    yield make_squeak_with_block(
+        signing_key,
+        squeak_content,
+        genesis_block_info.block_height,
+        genesis_block_info.block_hash,
+    )
+
+
+@pytest.fixture
+def squeak(squeak_and_secret_key):
+    squeak, _ = squeak_and_secret_key
+    yield squeak
+
+
+@pytest.fixture
+def secret_key(squeak_and_secret_key):
+    _, secret_key = squeak_and_secret_key
+    yield secret_key
