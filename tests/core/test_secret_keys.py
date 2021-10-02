@@ -19,33 +19,26 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-import random
+import pytest
+from squeak.core.elliptic import generate_secret_key
 
-from bitcoin.base58 import Base58ChecksumError
-from bitcoin.wallet import CBitcoinAddressError
-from squeak.core.signing import CSqueakAddress
-
-
-DATA_KEY_LENGTH = 32
-VERSION_NONCE_LENGTH = 8
-
-HASH_LENGTH = 32
-EMPTY_HASH = b'\x00' * HASH_LENGTH
+from squeaknode.core.secret_keys import add_tweak
+from squeaknode.core.secret_keys import generate_tweak
+from squeaknode.core.secret_keys import subtract_tweak
 
 
-def generate_version_nonce() -> int:
-    return random.SystemRandom().getrandbits(64)
+@pytest.fixture
+def secret_key():
+    yield generate_secret_key()
 
 
-def generate_ping_nonce() -> int:
-    return random.SystemRandom().getrandbits(64)
+@pytest.fixture
+def tweak():
+    yield generate_tweak()
 
 
-def is_address_valid(address: str) -> bool:
-    if not address:
-        return False
-    try:
-        CSqueakAddress(address)
-    except (Base58ChecksumError, CBitcoinAddressError):
-        return False
-    return True
+def test_add_subtract_tweak(secret_key, tweak):
+    tweaked_secret_key = add_tweak(secret_key, tweak)
+    untweaked_secret_key = subtract_tweak(tweaked_secret_key, tweak)
+
+    assert untweaked_secret_key == secret_key
