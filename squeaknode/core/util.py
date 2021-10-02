@@ -21,10 +21,6 @@
 # SOFTWARE.
 import random
 
-from bitcoin.base58 import Base58ChecksumError
-from bitcoin.wallet import CBitcoinAddressError
-from squeak.core.signing import CSqueakAddress
-
 
 DATA_KEY_LENGTH = 32
 VERSION_NONCE_LENGTH = 8
@@ -39,13 +35,3 @@ def generate_version_nonce() -> int:
 
 def generate_ping_nonce() -> int:
     return random.SystemRandom().getrandbits(64)
-
-
-def is_address_valid(address: str) -> bool:
-    if not address:
-        return False
-    try:
-        CSqueakAddress(address)
-    except (Base58ChecksumError, CBitcoinAddressError):
-        return False
-    return True

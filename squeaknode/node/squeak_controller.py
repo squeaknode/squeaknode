@@ -29,7 +29,6 @@ from typing import Union
 import sqlalchemy
 import squeak.params
 from squeak.core import CSqueak
-from squeak.core.signing import CSigningKey
 from squeak.core.signing import CSqueakAddress
 from squeak.messages import msg_getdata
 from squeak.messages import msg_getsqueaks
@@ -44,6 +43,9 @@ from squeaknode.core.interests import squeak_matches_interest
 from squeaknode.core.lightning_address import LightningAddressHostPort
 from squeaknode.core.offer import Offer
 from squeaknode.core.peer_address import PeerAddress
+from squeaknode.core.profiles import create_contact_profile
+from squeaknode.core.profiles import create_signing_profile
+from squeaknode.core.profiles import import_signing_profile
 from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.received_payment import ReceivedPayment
 from squeaknode.core.received_payment_summary import ReceivedPaymentSummary
@@ -54,7 +56,6 @@ from squeaknode.core.squeak_entry import SqueakEntry
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.squeaks import get_hash
-from squeaknode.core.util import is_address_valid
 from squeaknode.node.listener_subscription_client import EventListener
 from squeaknode.node.received_payments_subscription_client import ReceivedPaymentsSubscriptionClient
 from squeaknode.node.temporary_interest_manager import TemporaryInterest
@@ -243,53 +244,26 @@ class SqueakController:
         return self.config.node.price_msat
 
     def create_signing_profile(self, profile_name: str) -> int:
-        if len(profile_name) == 0:
-            raise Exception(
-                "Profile name cannot be empty.",
-            )
-        signing_key = CSigningKey.generate()
-        verifying_key = signing_key.get_verifying_key()
-        address = CSqueakAddress.from_verifying_key(verifying_key)
-        signing_key_str = str(signing_key)
-        signing_key_bytes = signing_key_str.encode()
-        squeak_profile = SqueakProfile(
-            profile_name=profile_name,
-            private_key=signing_key_bytes,
-            address=str(address),
+        squeak_profile = create_signing_profile(
+            profile_name,
         )
         profile_id = self.squeak_db.insert_profile(squeak_profile)
         self.update_subscriptions()
         return profile_id
 
     def import_signing_profile(self, profile_name: str, private_key: str) -> int:
-        signing_key = CSigningKey(private_key)
-        verifying_key = signing_key.get_verifying_key()
-        address = CSqueakAddress.from_verifying_key(verifying_key)
-        signing_key_str = str(signing_key)
-        signing_key_bytes = signing_key_str.encode()
-        squeak_profile = SqueakProfile(
-            profile_name=profile_name,
-            private_key=signing_key_bytes,
-            address=str(address),
+        squeak_profile = import_signing_profile(
+            profile_name,
+            private_key,
         )
         profile_id = self.squeak_db.insert_profile(squeak_profile)
         self.update_subscriptions()
         return profile_id
 
     def create_contact_profile(self, profile_name: str, squeak_address: str) -> int:
-        if len(profile_name) == 0:
-            raise Exception(
-                "Profile name cannot be empty.",
-            )
-        if not is_address_valid(squeak_address):
-            raise Exception(
-                "Invalid squeak address: {}".format(
-                    squeak_address
-                ),
-            )
-        squeak_profile = SqueakProfile(
-            profile_name=profile_name,
-            address=squeak_address,
+        squeak_profile = create_contact_profile(
+            profile_name,
+            squeak_address,
         )
         profile_id = self.squeak_db.insert_profile(squeak_profile)
         self.update_subscriptions()
