@@ -43,10 +43,10 @@ from squeaknode.core.received_payment_stream import ReceivedPaymentsStream
 from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.sent_payment import SentPayment
 from squeaknode.core.squeak_profile import SqueakProfile
+from squeaknode.core.squeaks import get_hash
 from squeaknode.core.squeaks import make_squeak_with_block
 from squeaknode.core.util import add_tweak
 from squeaknode.core.util import generate_tweak
-from squeaknode.core.util import get_hash
 from squeaknode.core.util import subtract_tweak
 from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
 

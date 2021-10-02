@@ -39,10 +39,6 @@ HASH_LENGTH = 32
 EMPTY_HASH = b'\x00' * HASH_LENGTH
 
 
-def get_hash(squeak):
-    return squeak.GetHash()[::-1]
-
-
 def generate_version_nonce() -> int:
     return random.SystemRandom().getrandbits(64)
 

@@ -26,7 +26,7 @@ from squeak.messages import msg_inv
 from squeak.messages import MSG_SQUEAK
 from squeak.net import CInv
 
-from squeaknode.core.util import get_hash
+from squeaknode.core.squeaks import get_hash
 from squeaknode.network.network_manager import NetworkManager
 from squeaknode.node.squeak_controller import SqueakController
 
