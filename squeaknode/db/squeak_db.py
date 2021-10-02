@@ -45,7 +45,7 @@ from squeaknode.core.sent_payment_summary import SentPaymentSummary
 from squeaknode.core.squeak_entry import SqueakEntry
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
-from squeaknode.core.util import get_hash
+from squeaknode.core.squeaks import get_hash
 from squeaknode.db.exception import DuplicateReceivedPaymentError
 from squeaknode.db.migrations import run_migrations
 from squeaknode.db.models import Models

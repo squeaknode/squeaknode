@@ -32,7 +32,7 @@ from squeak.core import CSqueak
 from squeak.net import CInterested
 
 from squeaknode.core.interests import squeak_matches_interest
-from squeaknode.core.util import get_hash
+from squeaknode.core.squeaks import get_hash
 
 logger = logging.getLogger(__name__)
 

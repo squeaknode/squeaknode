@@ -20,17 +20,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import logging
-import time
 from typing import Callable
 from typing import Optional
 from typing import Tuple
 
 import grpc
 from bitcoin.core import CBlockHeader
-from squeak.core import CheckSqueak
 from squeak.core import CSqueak
-from squeak.core import MakeSqueakFromStr
-from squeak.core.elliptic import payment_point_bytes_from_scalar_bytes
 from squeak.core.signing import CSigningKey
 
 from squeaknode.bitcoin.bitcoin_client import BitcoinClient
@@ -45,9 +41,13 @@ from squeaknode.core.received_payment_stream import ReceivedPaymentsStream
 from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.sent_payment import SentPayment
 from squeaknode.core.squeak_profile import SqueakProfile
+from squeaknode.core.squeaks import check_squeak
+from squeaknode.core.squeaks import get_decrypted_content
+from squeaknode.core.squeaks import get_hash
+from squeaknode.core.squeaks import get_payment_point_of_secret_key
+from squeaknode.core.squeaks import make_squeak_with_block
 from squeaknode.core.util import add_tweak
 from squeaknode.core.util import generate_tweak
-from squeaknode.core.util import get_hash
 from squeaknode.core.util import subtract_tweak
 from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
 
@@ -86,13 +86,11 @@ class SqueakCore:
         block_info = self.bitcoin_client.get_best_block_info()
         block_height = block_info.block_height
         block_hash = block_info.block_hash
-        timestamp = int(time.time())
-        return MakeSqueakFromStr(
+        return make_squeak_with_block(
             signing_key,
             content_str,
             block_height,
             block_hash,
-            timestamp,
             replyto_hash,
         )
 
@@ -108,7 +106,7 @@ class SqueakCore:
         Raises:
             Exception: If the squeak is not valid.
         """
-        CheckSqueak(squeak)
+        check_squeak(squeak)
 
     def get_block_header(self, squeak: CSqueak) -> CBlockHeader:
         """Checks if the embedded block hash in the squeak is valid for its
@@ -143,7 +141,7 @@ class SqueakCore:
         Raises:
             Exception: If the secret key is not valid.
         """
-        return squeak.GetDecryptedContentStr(secret_key)
+        return get_decrypted_content(squeak, secret_key)
 
     def get_best_block_height(self) -> int:
         """Get the current height of the latest block in the blockchain.
@@ -311,7 +309,7 @@ class SqueakCore:
         # secret_key = bxor(nonce, preimage)
         secret_key = subtract_tweak(preimage, nonce)
         # Check if the secret key is valid for the preimage
-        point = payment_point_bytes_from_scalar_bytes(secret_key)
+        point = get_payment_point_of_secret_key(secret_key)
         valid = point == received_offer.payment_point
         # Save the preimage of the sent payment
         peer_address = PeerAddress(
