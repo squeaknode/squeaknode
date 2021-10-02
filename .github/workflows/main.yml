@@ -34,7 +34,7 @@ jobs:
         run: |
           make gen-protos
           coverage run -m pytest tests
-          coverage report --show-missing
+          coverage xml
       -
         name: Coverage
         uses: codecov/codecov-action@v2
