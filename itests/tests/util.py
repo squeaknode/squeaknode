@@ -71,13 +71,6 @@ def load_lightning_client() -> LNDLightningClient:
     )
 
 
-def bxor(b1, b2):  # use xor for bytes
-    result = bytearray()
-    for b1, b2 in zip(b1, b2):
-        result.append(b1 ^ b2)
-    return bytes(result)
-
-
 def string_to_hex(s):
     return bytes.fromhex(s)
 

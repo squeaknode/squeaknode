@@ -169,7 +169,6 @@ class SqueakCore:
         # Generate a new random nonce
         nonce = generate_tweak()
         # Calculate the preimage
-        # preimage = bxor(nonce, secret_key)
         preimage = add_tweak(secret_key, nonce)
         # Create the lightning invoice
         add_invoice_response = self.lightning_client.add_invoice(
@@ -306,7 +305,6 @@ class SqueakCore:
             )
         # Calculate the secret key
         nonce = received_offer.nonce
-        # secret_key = bxor(nonce, preimage)
         secret_key = subtract_tweak(preimage, nonce)
         # Check if the secret key is valid for the preimage
         point = get_payment_point_of_secret_key(secret_key)
