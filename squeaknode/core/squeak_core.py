@@ -20,7 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import logging
-import time
 from typing import Callable
 from typing import Optional
 from typing import Tuple
@@ -29,7 +28,6 @@ import grpc
 from bitcoin.core import CBlockHeader
 from squeak.core import CheckSqueak
 from squeak.core import CSqueak
-from squeak.core import MakeSqueakFromStr
 from squeak.core.elliptic import payment_point_bytes_from_scalar_bytes
 from squeak.core.signing import CSigningKey
 
@@ -45,6 +43,7 @@ from squeaknode.core.received_payment_stream import ReceivedPaymentsStream
 from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.sent_payment import SentPayment
 from squeaknode.core.squeak_profile import SqueakProfile
+from squeaknode.core.squeaks import make_squeak_with_block
 from squeaknode.core.util import add_tweak
 from squeaknode.core.util import generate_tweak
 from squeaknode.core.util import get_hash
@@ -86,13 +85,19 @@ class SqueakCore:
         block_info = self.bitcoin_client.get_best_block_info()
         block_height = block_info.block_height
         block_hash = block_info.block_hash
-        timestamp = int(time.time())
-        return MakeSqueakFromStr(
+        # return MakeSqueakFromStr(
+        #     signing_key,
+        #     content_str,
+        #     block_height,
+        #     block_hash,
+        #     timestamp,
+        #     replyto_hash,
+        # )
+        return make_squeak_with_block(
             signing_key,
             content_str,
             block_height,
             block_hash,
-            timestamp,
             replyto_hash,
         )
 
