@@ -19,7 +19,6 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-import os
 import random
 
 from bitcoin.base58 import Base58ChecksumError
@@ -45,14 +44,6 @@ def generate_version_nonce() -> int:
 
 def generate_ping_nonce() -> int:
     return random.SystemRandom().getrandbits(64)
-
-
-def generate_offer_nonce():
-    return os.urandom(DATA_KEY_LENGTH)
-
-
-def generate_offer_preimage():
-    return os.urandom(DATA_KEY_LENGTH)
 
 
 def generate_tweak():
