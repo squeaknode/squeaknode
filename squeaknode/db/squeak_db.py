@@ -46,6 +46,7 @@ from squeaknode.core.squeak_entry import SqueakEntry
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.squeaks import get_hash
+from squeaknode.db.exception import DuplicateReceivedOfferError
 from squeaknode.db.exception import DuplicateReceivedPaymentError
 from squeaknode.db.migrations import run_migrations
 from squeaknode.db.models import Models
@@ -1001,9 +1002,12 @@ class SqueakDb:
             peer_port=received_offer.peer_address.port,
         )
         with self.get_connection() as connection:
-            res = connection.execute(ins)
-            received_offer_id = res.inserted_primary_key[0]
-            return received_offer_id
+            try:
+                res = connection.execute(ins)
+                received_offer_id = res.inserted_primary_key[0]
+                return received_offer_id
+            except sqlalchemy.exc.IntegrityError:
+                raise DuplicateReceivedOfferError()
 
     def get_received_offers(self, squeak_hash: bytes) -> List[ReceivedOffer]:
         """ Get offers with peer for a squeak hash. """
