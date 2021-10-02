@@ -43,6 +43,7 @@ from squeaknode.core.interests import squeak_matches_interest
 from squeaknode.core.lightning_address import LightningAddressHostPort
 from squeaknode.core.offer import Offer
 from squeaknode.core.peer_address import PeerAddress
+from squeaknode.core.peers import create_saved_peer
 from squeaknode.core.profiles import create_contact_profile
 from squeaknode.core.profiles import create_signing_profile
 from squeaknode.core.profiles import import_signing_profile
@@ -325,20 +326,10 @@ class SqueakController:
         return profile.private_key
 
     def create_peer(self, peer_name: str, peer_address: PeerAddress):
-        if len(peer_name) == 0:
-            raise Exception(
-                "Peer name cannot be empty.",
-            )
-        port = peer_address.port or squeak.params.params.DEFAULT_PORT
-        peer_address = PeerAddress(
-            host=peer_address.host,
-            port=port,
-        )
-        squeak_peer = SqueakPeer(
-            peer_id=None,
-            peer_name=peer_name,
-            address=peer_address,
-            autoconnect=False,
+        squeak_peer = create_saved_peer(
+            peer_name,
+            peer_address,
+            squeak.params.params.DEFAULT_PORT,
         )
         return self.squeak_db.insert_peer(squeak_peer)
 
