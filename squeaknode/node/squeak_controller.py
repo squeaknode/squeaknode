@@ -26,7 +26,6 @@ from typing import List
 from typing import Optional
 from typing import Union
 
-import sqlalchemy
 import squeak.params
 from squeak.core import CSqueak
 from squeak.core.signing import CSqueakAddress
@@ -57,6 +56,7 @@ from squeaknode.core.squeak_entry import SqueakEntry
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.squeaks import get_hash
+from squeaknode.db.exception import DuplicateReceivedOfferError
 from squeaknode.node.listener_subscription_client import EventListener
 from squeaknode.node.received_payments_subscription_client import ReceivedPaymentsSubscriptionClient
 from squeaknode.node.temporary_interest_manager import TemporaryInterest
@@ -542,7 +542,7 @@ class SqueakController:
             received_offer = received_offer._replace(
                 received_offer_id=offer_id)
             self.new_received_offer_listener.handle_new_item(received_offer)
-        except sqlalchemy.exc.IntegrityError:
+        except DuplicateReceivedOfferError:
             logger.debug("Failed to save duplicate offer.")
 
     def get_followed_addresses(self) -> List[str]:

@@ -27,3 +27,7 @@ class SqueakDatabaseError(Exception):
 
 class DuplicateReceivedPaymentError(SqueakDatabaseError):
     """Raised when the inserted received payment is a duplicate"""
+
+
+class DuplicateReceivedOfferError(SqueakDatabaseError):
+    """Raised when the inserted received offer is a duplicate"""
