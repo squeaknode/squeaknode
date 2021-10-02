@@ -19,33 +19,30 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-import random
-
-from bitcoin.base58 import Base58ChecksumError
-from bitcoin.wallet import CBitcoinAddressError
-from squeak.core.signing import CSqueakAddress
+from squeak.core.elliptic import generate_random_scalar
+from squeak.core.elliptic import scalar_difference
+from squeak.core.elliptic import scalar_from_bytes
+from squeak.core.elliptic import scalar_sum
+from squeak.core.elliptic import scalar_to_bytes
 
 
 DATA_KEY_LENGTH = 32
-VERSION_NONCE_LENGTH = 8
-
-HASH_LENGTH = 32
-EMPTY_HASH = b'\x00' * HASH_LENGTH
 
 
-def generate_version_nonce() -> int:
-    return random.SystemRandom().getrandbits(64)
+def generate_tweak():
+    tweak = generate_random_scalar()
+    return scalar_to_bytes(tweak)
 
 
-def generate_ping_nonce() -> int:
-    return random.SystemRandom().getrandbits(64)
+def add_tweak(n, tweak):
+    n_int = scalar_from_bytes(n)
+    tweak_int = scalar_from_bytes(tweak)
+    sum_int = scalar_sum(n_int, tweak_int)
+    return scalar_to_bytes(sum_int)
 
 
-def is_address_valid(address: str) -> bool:
-    if not address:
-        return False
-    try:
-        CSqueakAddress(address)
-    except (Base58ChecksumError, CBitcoinAddressError):
-        return False
-    return True
+def subtract_tweak(n, tweak):
+    n_int = scalar_from_bytes(n)
+    tweak_int = scalar_from_bytes(tweak)
+    sum_int = scalar_difference(n_int, tweak_int)
+    return scalar_to_bytes(sum_int)
