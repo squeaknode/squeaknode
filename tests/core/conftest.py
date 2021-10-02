@@ -22,6 +22,7 @@
 import pytest
 from bitcoin.core import CoreMainParams
 from squeak.core.signing import CSigningKey
+from squeak.core.signing import CSqueakAddress
 
 from squeaknode.bitcoin.block_info import BlockInfo
 from squeaknode.core.squeaks import make_squeak_with_block
@@ -30,6 +31,12 @@ from squeaknode.core.squeaks import make_squeak_with_block
 @pytest.fixture
 def signing_key():
     yield CSigningKey.generate()
+
+
+@pytest.fixture
+def address(signing_key):
+    verifying_key = signing_key.get_verifying_key()
+    yield str(CSqueakAddress.from_verifying_key(verifying_key))
 
 
 @pytest.fixture
