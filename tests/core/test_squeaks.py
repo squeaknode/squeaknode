@@ -25,6 +25,7 @@ from squeak.core.signing import CSigningKey
 
 from squeaknode.bitcoin.block_info import BlockInfo
 from squeaknode.core.squeaks import check_squeak
+from squeaknode.core.squeaks import get_decrypted_content
 from squeaknode.core.squeaks import make_squeak_with_block
 
 
@@ -52,3 +53,4 @@ def test_make_squeak_with_block(signing_key, genesis_block_info):
 
     check_squeak(squeak)
     assert squeak.nBlockHeight == 0
+    assert get_decrypted_content(squeak, secret_key) == "hello!"

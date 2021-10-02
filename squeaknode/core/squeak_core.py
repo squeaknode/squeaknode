@@ -43,6 +43,7 @@ from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.sent_payment import SentPayment
 from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.squeaks import check_squeak
+from squeaknode.core.squeaks import get_decrypted_content
 from squeaknode.core.squeaks import get_hash
 from squeaknode.core.squeaks import make_squeak_with_block
 from squeaknode.core.util import add_tweak
@@ -148,7 +149,7 @@ class SqueakCore:
         Raises:
             Exception: If the secret key is not valid.
         """
-        return squeak.GetDecryptedContentStr(secret_key)
+        return get_decrypted_content(squeak, secret_key)
 
     def get_best_block_height(self) -> int:
         """Get the current height of the latest block in the blockchain.

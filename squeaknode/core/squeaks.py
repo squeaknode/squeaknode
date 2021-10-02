@@ -84,3 +84,21 @@ def check_squeak(squeak: CSqueak) -> None:
         Exception: If the squeak is not valid.
     """
     CheckSqueak(squeak)
+
+
+# TODO: return bytes (encoded utf-8 content)
+def get_decrypted_content(squeak: CSqueak, secret_key: bytes) -> str:
+    """Checks if the secret key is valid for the given squeak and returns
+    the decrypted content.
+
+    Args:
+        squeak: The squeak to be validated.
+        secret_key: The secret key.
+
+    Returns:
+        bytes: the decrypted content
+
+    Raises:
+        Exception: If the secret key is not valid.
+    """
+    return squeak.GetDecryptedContentStr(secret_key)
