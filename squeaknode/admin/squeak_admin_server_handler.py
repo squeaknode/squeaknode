@@ -316,6 +316,10 @@ class SqueakAdminServerHandler(object):
         inserted_squeak_hash = self.squeak_controller.make_squeak(
             profile_id, content_str, replyto_hash
         )
+        if inserted_squeak_hash is None:
+            return squeak_admin_pb2.MakeSqueakReply(
+                squeak_hash=None,
+            )
         return squeak_admin_pb2.MakeSqueakReply(
             squeak_hash=inserted_squeak_hash.hex(),
         )

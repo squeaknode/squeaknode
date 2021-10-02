@@ -48,6 +48,7 @@ from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.squeaks import get_hash
 from squeaknode.db.exception import DuplicateReceivedOfferError
 from squeaknode.db.exception import DuplicateReceivedPaymentError
+from squeaknode.db.exception import DuplicateSqueakError
 from squeaknode.db.migrations import run_migrations
 from squeaknode.db.models import Models
 
@@ -201,11 +202,11 @@ class SqueakDb:
         )
         with self.get_connection() as connection:
             try:
-                connection.execute(ins)
-                # inserted_squeak_hash = res.inserted_primary_key[0]
+                res = connection.execute(ins)
+                squeak_hash = res.inserted_primary_key[0]
+                return squeak_hash
             except sqlalchemy.exc.IntegrityError:
-                pass
-            return get_hash(squeak)
+                raise DuplicateSqueakError()
 
     def get_squeak(self, squeak_hash: bytes) -> Optional[CSqueak]:
         """ Get a squeak. """

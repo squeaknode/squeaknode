@@ -25,6 +25,10 @@ class SqueakDatabaseError(Exception):
     """Base class for other squeak database exceptions"""
 
 
+class DuplicateSqueakError(SqueakDatabaseError):
+    """Raised when the inserted squeak is a duplicate"""
+
+
 class DuplicateReceivedPaymentError(SqueakDatabaseError):
     """Raised when the inserted received payment is a duplicate"""
 
