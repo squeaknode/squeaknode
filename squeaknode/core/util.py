@@ -60,13 +60,6 @@ def generate_tweak():
     return scalar_to_bytes(tweak)
 
 
-def bxor(b1, b2):  # use xor for bytes
-    result = bytearray()
-    for b1, b2 in zip(b1, b2):
-        result.append(b1 ^ b2)
-    return bytes(result)
-
-
 def add_tweak(n, tweak):
     n_int = scalar_from_bytes(n)
     tweak_int = scalar_from_bytes(tweak)
