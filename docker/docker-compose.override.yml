@@ -19,6 +19,10 @@ services:
     environment:
       - NETWORK=testnet
 
+  lnd_other:
+    environment:
+      - NETWORK=testnet
+
   # squeaknode:
   #   environment:
   #     - NETWORK=testnet

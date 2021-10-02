@@ -31,6 +31,22 @@ services:
       - net.ipv6.conf.all.disable_ipv6=0
     entrypoint: ["./start-lnd.sh"]
 
+  lnd_other:
+    image: lnd
+    build:
+      context: ../
+      dockerfile: docker/lnd/Dockerfile
+    environment:
+      - RPCHOST=bitcoin-core
+      - BACKEND=bitcoind
+    volumes:
+      - lnd_other_dir:/root/.lnd
+    links:
+      - "bitcoin-core:bitcoin-core"
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=0
+    entrypoint: ["./start-lnd.sh"]
+
   tor-socks-proxy:
     container_name: tor-socks-proxy
     image: peterdavehello/tor-socks-proxy:latest
@@ -42,7 +58,7 @@ services:
       context: ../
       dockerfile: Dockerfile
     volumes:
-      - ~/.lnd:/root/.lnd
+      - lnd_other_dir:/root/.lnd
       - ./config.ini:/config.ini
     ports:
       - 12995:12994
@@ -50,7 +66,16 @@ services:
       - 18557:18555
     links:
       - "bitcoin-core:bitcoin-core"
-      - "lnd:lnd"
+      - "lnd_other:lnd"
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=0
     entrypoint: ["./start-squeaknode.sh"]
+
+volumes:
+  # lnd_dir volume is needed for sharing the tls certificate
+  lnd_other_dir:
+    driver: local
+
+  # # postgres db data
+  # squeaknode_pgdata:
+  #   driver: local
