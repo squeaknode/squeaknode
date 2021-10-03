@@ -42,8 +42,6 @@ def config():
 
 @mock.patch('squeaknode.node.squeak_node.LNDLightningClient', autospec=True)
 def test_start_stop(mock_lightning_client, config):
-    print('config:')
-    print(config)
     squeak_node = SqueakNode(config)
 
     squeak_node.start_running()
