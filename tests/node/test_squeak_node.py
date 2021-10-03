@@ -33,7 +33,13 @@ def config():
         dict_config={
             'node': {
                 'network': 'mainnet'
-            }
+            },
+            'admin': {
+                'rpc_enabled': 'true'
+            },
+            'webadmin': {
+                'enabled': 'true'
+            },
         },
     )
     squeaknode_config.read()
