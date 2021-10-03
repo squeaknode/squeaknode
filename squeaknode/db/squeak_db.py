@@ -186,6 +186,7 @@ class SqueakDb:
         """ Insert a new squeak.
 
         Return the hash (bytes) of the inserted squeak.
+        Return None if squeak already exists.
         """
         ins = self.squeaks.insert().values(
             created_time_ms=self.timestamp_now_ms,
