@@ -34,8 +34,18 @@ def config():
             'node': {
                 'network': 'mainnet'
             },
-            'admin': {
-                'rpc_enabled': 'true'
+        },
+    )
+    squeaknode_config.read()
+    return squeaknode_config
+
+
+@pytest.fixture
+def config_webadmin_enabled():
+    squeaknode_config = SqueaknodeConfig(
+        dict_config={
+            'node': {
+                'network': 'mainnet'
             },
             'webadmin': {
                 'enabled': 'true'
@@ -49,6 +59,14 @@ def config():
 @mock.patch('squeaknode.node.squeak_node.LNDLightningClient', autospec=True)
 def test_start_stop(mock_lightning_client, config):
     squeak_node = SqueakNode(config)
+
+    squeak_node.start_running()
+    squeak_node.stop_running()
+
+
+@mock.patch('squeaknode.node.squeak_node.LNDLightningClient', autospec=True)
+def test_start_stop_webadmin_enabled(mock_lightning_client, config_webadmin_enabled):
+    squeak_node = SqueakNode(config_webadmin_enabled)
 
     squeak_node.start_running()
     squeak_node.stop_running()
