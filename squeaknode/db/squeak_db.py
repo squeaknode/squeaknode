@@ -48,7 +48,6 @@ from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.squeaks import get_hash
 from squeaknode.db.exception import DuplicateReceivedOfferError
 from squeaknode.db.exception import DuplicateReceivedPaymentError
-from squeaknode.db.exception import DuplicateSqueakError
 from squeaknode.db.migrations import run_migrations
 from squeaknode.db.models import Models
 
@@ -183,7 +182,7 @@ class SqueakDb:
         )
         return self.timestamp_now_ms / 1000 < expire_time
 
-    def insert_squeak(self, squeak: CSqueak, block_header: CBlockHeader) -> bytes:
+    def insert_squeak(self, squeak: CSqueak, block_header: CBlockHeader) -> Optional[bytes]:
         """ Insert a new squeak.
 
         Return the hash (bytes) of the inserted squeak.
@@ -206,7 +205,8 @@ class SqueakDb:
                 squeak_hash = res.inserted_primary_key[0]
                 return squeak_hash
             except sqlalchemy.exc.IntegrityError:
-                raise DuplicateSqueakError()
+                logger.debug("Failed to insert squeak.", exc_info=True)
+                return None
 
     def get_squeak(self, squeak_hash: bytes) -> Optional[CSqueak]:
         """ Get a squeak. """

@@ -13,8 +13,6 @@ services:
     environment:
       - NETWORK=simnet
       - MINING_ADDRESS
-    ports:
-      - 18556:18556
     entrypoint: ["./start-btcd.sh"]
 
   btcctl:
