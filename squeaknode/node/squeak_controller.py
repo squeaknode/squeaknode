@@ -56,7 +56,6 @@ from squeaknode.core.squeak_entry import SqueakEntry
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.squeaks import get_hash
-from squeaknode.db.exception import DuplicateReceivedOfferError
 from squeaknode.node.listener_subscription_client import EventListener
 from squeaknode.node.received_payments_subscription_client import ReceivedPaymentsSubscriptionClient
 from squeaknode.node.temporary_interest_manager import TemporaryInterest
@@ -86,7 +85,7 @@ class SqueakController:
         self.temporary_interest_manager = TemporaryInterestManager()
         self.config = config
 
-    def save_squeak(self, squeak: CSqueak) -> bytes:
+    def save_squeak(self, squeak: CSqueak) -> Optional[bytes]:
         # Check if the squeak is valid
         self.squeak_core.check_squeak(squeak)
         # Get the block header for the squeak.
@@ -99,6 +98,8 @@ class SqueakController:
             squeak,
             block_header,
         )
+        if inserted_squeak_hash is None:
+            return None
         logger.info("Saved squeak: {}".format(
             inserted_squeak_hash.hex(),
         ))
@@ -123,11 +124,13 @@ class SqueakController:
         # Notify the listener
         self.new_secret_key_listener.handle_new_item(squeak)
 
-    def make_squeak(self, profile_id: int, content_str: str, replyto_hash: bytes) -> bytes:
+    def make_squeak(self, profile_id: int, content_str: str, replyto_hash: bytes) -> Optional[bytes]:
         squeak_profile = self.squeak_db.get_profile(profile_id)
         squeak, decryption_key = self.squeak_core.make_squeak(
             squeak_profile, content_str, replyto_hash)
         inserted_squeak_hash = self.save_squeak(squeak)
+        if inserted_squeak_hash is None:
+            return None
         self.unlock_squeak(
             inserted_squeak_hash,
             decryption_key,
@@ -151,7 +154,8 @@ class SqueakController:
         counter = self.get_temporary_interest_counter(squeak)
         if counter:
             saved_squeak_hash = self.save_squeak(squeak)
-            counter.increment()
+            if saved_squeak_hash:
+                counter.increment()
         elif self.squeak_matches_interest(squeak):
             saved_squeak_hash = self.save_squeak(squeak)
         # Download offers for the new squeak
@@ -523,7 +527,6 @@ class SqueakController:
         return self.squeak_db.get_number_of_squeaks()
 
     def save_received_offer(self, offer: Offer, peer_address: PeerAddress) -> None:
-        logger.info("Saving received offer: {}".format(offer))
         squeak = self.get_squeak(offer.squeak_hash)
         secret_key = self.get_squeak_secret_key(offer.squeak_hash)
         if squeak is None or secret_key is not None:
@@ -537,13 +540,14 @@ class SqueakController:
         except Exception:
             logger.exception("Failed to save received offer.")
             return
-        try:
-            offer_id = self.squeak_db.insert_received_offer(received_offer)
-            received_offer = received_offer._replace(
-                received_offer_id=offer_id)
-            self.new_received_offer_listener.handle_new_item(received_offer)
-        except DuplicateReceivedOfferError:
-            logger.debug("Failed to save duplicate offer.")
+        received_offer_id = self.squeak_db.insert_received_offer(
+            received_offer)
+        if received_offer_id is None:
+            return
+        logger.info("Saved received offer: {}".format(received_offer))
+        received_offer = received_offer._replace(
+            received_offer_id=received_offer_id)
+        self.new_received_offer_listener.handle_new_item(received_offer)
 
     def get_followed_addresses(self) -> List[str]:
         followed_profiles = self.squeak_db.get_following_profiles()

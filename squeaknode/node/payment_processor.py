@@ -25,7 +25,6 @@ import threading
 from squeaknode.core.exception import InvoiceSubscriptionError
 from squeaknode.core.received_payment import ReceivedPayment
 from squeaknode.core.sent_offer import SentOffer
-from squeaknode.db.exception import DuplicateReceivedPaymentError
 
 
 logger = logging.getLogger(__name__)
@@ -122,12 +121,12 @@ class PaymentProcessorTask:
     def handle_received_payment(self, received_payment: ReceivedPayment):
         logger.info(
             "Got received payment: {}".format(received_payment))
-        try:
-            self.squeak_db.insert_received_payment(
-                received_payment,
-            )
-        except DuplicateReceivedPaymentError:
-            pass
+        received_payment_id = self.squeak_db.insert_received_payment(
+            received_payment,
+        )
+        if received_payment_id is not None:
+            logger.debug(
+                "Saved received payment: {}".format(received_payment))
         # # TODO: Should not be deleting sent offer.
         # self.squeak_db.delete_sent_offer(
         #     received_payment.payment_hash,
