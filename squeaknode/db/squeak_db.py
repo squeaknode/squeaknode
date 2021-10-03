@@ -46,7 +46,6 @@ from squeaknode.core.squeak_entry import SqueakEntry
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.squeaks import get_hash
-from squeaknode.db.exception import DuplicateReceivedPaymentError
 from squeaknode.db.migrations import run_migrations
 from squeaknode.db.models import Models
 
@@ -987,8 +986,8 @@ class SqueakDb:
     def insert_received_offer(self, received_offer: ReceivedOffer) -> Optional[int]:
         """ Insert a new received offer.
 
-        Returns the received offer id of the inserted received offer.
-        Returns None if received offer already exists.
+        Return the received offer id of the inserted received offer.
+        Return None if received offer already exists.
         """
         ins = self.received_offers.insert().values(
             created_time_ms=self.timestamp_now_ms,
@@ -1283,8 +1282,12 @@ class SqueakDb:
             latest_index = row[0]
             return latest_index
 
-    def insert_received_payment(self, received_payment: ReceivedPayment):
-        """ Insert a new received payment. """
+    def insert_received_payment(self, received_payment: ReceivedPayment) -> Optional[int]:
+        """ Insert a new received payment.
+
+        Return the received payment id of the inserted received payment.
+        Return None if received payment already exists.
+        """
         ins = self.received_payments.insert().values(
             created_time_ms=self.timestamp_now_ms,
             squeak_hash=received_payment.squeak_hash,
@@ -1300,7 +1303,9 @@ class SqueakDb:
                 received_payment_id = res.inserted_primary_key[0]
                 return received_payment_id
             except sqlalchemy.exc.IntegrityError:
-                raise DuplicateReceivedPaymentError()
+                logger.debug(
+                    "Failed to insert received payment.", exc_info=True)
+                return None
 
     def get_received_payments(
             self,
