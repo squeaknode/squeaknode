@@ -17,23 +17,6 @@ services:
       - 18556:18556
     entrypoint: ["./start-btcd.sh"]
 
-  btcctl:
-    image: btcd
-    container_name: btcctl
-    build:
-      context: ../
-      dockerfile: docker/btcd/Dockerfile
-    volumes:
-      - shared_data:/rpc
-      - ~/.btcd:/data
-    environment:
-      - NETWORK=testnet
-      - RPCHOST=btcd
-      - MINING_ADDRESS
-    links:
-      - "btcd:btcd"
-    entrypoint: ["./start-btcctl.sh"]
-
   lnd_client:
     image: lnd
     container_name: lnd_client
