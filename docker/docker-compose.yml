@@ -11,9 +11,9 @@ services:
       - 18332:18332
       - 28334:28334
 
-  lnd:
+  lnd_for_host:
     image: lnd
-    container_name: lnd
+    container_name: lnd_for_host
     build:
       context: ../
       dockerfile: docker/lnd/Dockerfile
@@ -31,8 +31,9 @@ services:
       - net.ipv6.conf.all.disable_ipv6=0
     entrypoint: ["./start-lnd.sh"]
 
-  lnd_other:
+  lnd_for_container:
     image: lnd
+    container_name: lnd_for_container
     build:
       context: ../
       dockerfile: docker/lnd/Dockerfile
@@ -40,7 +41,9 @@ services:
       - RPCHOST=bitcoin-core
       - BACKEND=bitcoind
     volumes:
-      - lnd_other_dir:/root/.lnd
+      - lnd_for_container_dir:/root/.lnd
+    ports:
+      - 9736:9735
     links:
       - "bitcoin-core:bitcoin-core"
     sysctls:
@@ -58,7 +61,7 @@ services:
       context: ../
       dockerfile: Dockerfile
     volumes:
-      - lnd_other_dir:/root/.lnd
+      - lnd_for_container_dir:/root/.lnd
       - ./config.ini:/config.ini
     ports:
       - 12995:12994
@@ -66,14 +69,14 @@ services:
       - 18557:18555
     links:
       - "bitcoin-core:bitcoin-core"
-      - "lnd_other:lnd"
+      - "lnd_for_container:lnd"
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=0
     entrypoint: ["./start-squeaknode.sh"]
 
 volumes:
   # lnd_dir volume is needed for sharing the tls certificate
-  lnd_other_dir:
+  lnd_for_container_dir:
     driver: local
 
   # # postgres db data

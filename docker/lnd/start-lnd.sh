@@ -47,18 +47,7 @@ NETWORK=$(set_default "$NETWORK" "testnet")
 CHAIN=$(set_default "$CHAIN" "bitcoin")
 BACKEND=$(set_default "$BACKEND" "btcd")
 
-if [[ "$BACKEND" == "neutrino" ]]; then
-    exec lnd \
-	 --noseedbackup \
-	 --logdir="/data" \
-	 "--$CHAIN.active" \
-	 "--$CHAIN.$NETWORK" \
-	 "--$CHAIN.node"="$BACKEND" \
-	 --rpclisten=0.0.0.0:10009 \
-	 --debuglevel="$DEBUG" \
-	 --tlsextradomain=lnd \
-	 "$@"
-elif [[ "$BACKEND" == "bitcoind" ]]; then
+if [[ "$BACKEND" == "bitcoind" ]]; then
     cmd="lnd \
     	 --noseedbackup \
 	 --logdir=/data \
@@ -81,16 +70,16 @@ elif [[ "$BACKEND" == "bitcoind" ]]; then
 else
     exec lnd \
 	 --noseedbackup \
-	 --logdir="/data" \
-	 "--$CHAIN.active" \
-	 "--$CHAIN.$NETWORK" \
-	 "--$CHAIN.node"="$BACKEND" \
-	 "--$BACKEND.rpccert"="/rpc/rpc.cert" \
-	 "--$BACKEND.rpchost"="$RPCHOST" \
-	 "--$BACKEND.rpcuser"="$RPCUSER" \
-	 "--$BACKEND.rpcpass"="$RPCPASS" \
+	 --logdir=/data \
+	 --$CHAIN.active \
+	 --$CHAIN.$NETWORK \
+	 --$CHAIN.node=$BACKEND \
+	 --$BACKEND.rpccert=/rpc/rpc.cert \
+	 --$BACKEND.rpchost=$RPCHOST \
+	 --$BACKEND.rpcuser=$RPCUSER \
+	 --$BACKEND.rpcpass=$RPCPASS \
 	 --rpclisten=0.0.0.0:10009 \
-	 --debuglevel="$DEBUG" \
+	 --debuglevel=$DEBUG \
 	 --tlsextradomain=lnd \
-	 "$@"
+	 $@
 fi
