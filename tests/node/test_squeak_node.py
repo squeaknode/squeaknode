@@ -58,8 +58,6 @@ webadmin_enabled_config = {
 
 @pytest.fixture(scope="module", params=[mainnet_config, webadmin_enabled_config])
 def squeak_node(request):
-    print('--------request.param---------')
-    print(request.param)
     with mock.patch('squeaknode.node.squeak_node.LNDLightningClient', autospec=True), \
             mock.patch('squeaknode.node.squeak_node.get_connection_string', autospec=True), \
             mock.patch('squeaknode.node.squeak_node.get_engine', autospec=True), \
@@ -69,7 +67,5 @@ def squeak_node(request):
 
 
 def test_start_stop(squeak_node):
-    print('--------squeak_node.config---------')
-    print(squeak_node.config)
     squeak_node.start_running()
     squeak_node.stop_running()
