@@ -26,47 +26,50 @@ from squeaknode.config.config import SqueaknodeConfig
 from squeaknode.node.squeak_node import SqueakNode
 
 
-# TODO: move to conftest.
-@pytest.fixture
-def config():
-    squeaknode_config = SqueaknodeConfig(
-        dict_config={
-            'node': {
-                'network': 'mainnet'
-            },
-        },
+@pytest.fixture()
+def mock_lightning_client():
+    yield mock.patch('squeaknode.node.squeak_node.LNDLightningClient', autospec=True)
+
+
+def get_config(config_dict):
+    config = SqueaknodeConfig(
+        dict_config=config_dict,
     )
-    squeaknode_config.read()
-    return squeaknode_config
+    config.read()
+    return config
 
 
-@pytest.fixture
-def config_webadmin_enabled():
-    squeaknode_config = SqueaknodeConfig(
-        dict_config={
-            'node': {
-                'network': 'mainnet'
-            },
-            'webadmin': {
-                'enabled': 'true'
-            },
-        },
-    )
-    squeaknode_config.read()
-    return squeaknode_config
+mainnet_config = {
+    'node': {
+        'network': 'mainnet'
+    },
+}
 
 
-@mock.patch('squeaknode.node.squeak_node.LNDLightningClient', autospec=True)
-def test_start_stop(mock_lightning_client, config):
-    squeak_node = SqueakNode(config)
+webadmin_enabled_config = {
+    'node': {
+        'network': 'mainnet'
+    },
+    'webadmin': {
+        'enabled': 'true'
+    },
+}
 
-    squeak_node.start_running()
-    squeak_node.stop_running()
+
+@pytest.fixture(scope="module", params=[mainnet_config, webadmin_enabled_config])
+def squeak_node(request):
+    print('--------request.param---------')
+    print(request.param)
+    with mock.patch('squeaknode.node.squeak_node.LNDLightningClient', autospec=True), \
+            mock.patch('squeaknode.node.squeak_node.get_connection_string', autospec=True), \
+            mock.patch('squeaknode.node.squeak_node.get_engine', autospec=True), \
+            mock.patch('squeaknode.node.squeak_node.SqueakDb', autospec=True):
+        config = get_config(request.param)
+        yield SqueakNode(config)
 
 
-@mock.patch('squeaknode.node.squeak_node.LNDLightningClient', autospec=True)
-def test_start_stop_webadmin_enabled(mock_lightning_client, config_webadmin_enabled):
-    squeak_node = SqueakNode(config_webadmin_enabled)
-
+def test_start_stop(squeak_node):
+    print('--------squeak_node.config---------')
+    print(squeak_node.config)
     squeak_node.start_running()
     squeak_node.stop_running()
