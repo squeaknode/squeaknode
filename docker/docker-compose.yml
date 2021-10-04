@@ -70,24 +70,6 @@ services:
       - net.ipv6.conf.all.disable_ipv6=0
     entrypoint: ["./start-squeaknode.sh"]
 
-  # squeaknode_other:
-  #   image: squeaknode
-  #   container_name: squeaknode_other
-  #   build:
-  #     context: ../
-  #     dockerfile: Dockerfile
-  #   volumes:
-  #     - lnd_client_dir:/root/.lnd
-  #     - ./config.ini:/config.ini
-  #   ports:
-  #     - 12996:12994
-  #   links:
-  #     - "bitcoin-core:bitcoin-core"
-  #     - "lnd_client:lnd"
-  #   sysctls:
-  #     - net.ipv6.conf.all.disable_ipv6=0
-  #   entrypoint: ["./start-squeaknode.sh"]
-
 volumes:
   # lnd_dir volume is needed for sharing tht tls certificate
   # lnd_client_dir:
