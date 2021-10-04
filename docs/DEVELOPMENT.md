@@ -10,6 +10,16 @@
 	$ docker-compose build
 	$ docker-compose up
 	```
+
+	This will start the following services in containers:
+	* bitcoin-core
+	* lnd (for the containerized squeaknode)
+	* lnd (for the host squeaknode) with ~/.lnd directory mounted.
+	* a tor socks proxy
+	* a squeaknode
+
+	You can go to http://localhost:12995/ to see the containerized squeaknode.
+
 - You may need to change the permissions of the `~/.lnd` directory after docker containers start:
 	```
 	$ sudo chmod -R 755 ~/.lnd/
@@ -43,3 +53,9 @@ To use a tor proxy, include the following environment variables:
 	$ cd frontend
 	$ make rundev
 	```
+
+
+#### Connect to the containerized squeaknode
+
+- To open a p2p connection from your host squeaknode to the containerized
+squeaknode, use `localhost` as host and `18557` as port.
