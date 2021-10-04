@@ -59,6 +59,7 @@ services:
       - "lnd_server"
     volumes:
       - lnd_server_dir:/root/.lnd
+      - squeaknode_dir:/root/.sqk
       - ./config.ini:/config.ini
     ports:
       - 18557:18555
@@ -71,8 +72,7 @@ services:
     entrypoint: ["./start-squeaknode.sh"]
 
 volumes:
-  # lnd_dir volume is needed for sharing tht tls certificate
-  # lnd_client_dir:
-  #   driver: local
   lnd_server_dir:
+    driver: local
+  squeaknode_dir:
     driver: local
