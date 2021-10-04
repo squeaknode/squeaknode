@@ -56,7 +56,7 @@ def test_insert_duplicate_squeak(squeak_db, squeak, genesis_block_info):
     assert second_squeak_hash is None
 
 
-def test_get_missing_squeak(squeak_db, squeak, genesis_block_info):
+def test_get_missing_squeak(squeak_db, squeak):
     squeak_hash = get_hash(squeak)
     retrieved_squeak = squeak_db.get_squeak(squeak_hash)
 
@@ -70,3 +70,10 @@ def test_get_squeak_entry(squeak_db, squeak, genesis_block_info, address):
 
     assert retrieved_squeak_entry.squeak_hash == squeak_hash
     assert retrieved_squeak_entry.address == address
+
+
+def test_get_missing_squeak_entry(squeak_db, squeak, address):
+    squeak_hash = get_hash(squeak)
+    retrieved_squeak_entry = squeak_db.get_squeak_entry(squeak_hash)
+
+    assert retrieved_squeak_entry is None
