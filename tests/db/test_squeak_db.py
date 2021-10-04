@@ -61,3 +61,12 @@ def test_get_missing_squeak(squeak_db, squeak, genesis_block_info):
     retrieved_squeak = squeak_db.get_squeak(squeak_hash)
 
     assert retrieved_squeak is None
+
+
+def test_get_squeak_entry(squeak_db, squeak, genesis_block_info, address):
+    block_header = parse_block_header(genesis_block_info.block_header)
+    squeak_hash = squeak_db.insert_squeak(squeak, block_header)
+    retrieved_squeak_entry = squeak_db.get_squeak_entry(squeak_hash)
+
+    assert retrieved_squeak_entry.squeak_hash == squeak_hash
+    assert retrieved_squeak_entry.address == address
