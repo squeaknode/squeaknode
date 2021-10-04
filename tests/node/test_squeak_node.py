@@ -60,7 +60,10 @@ webadmin_enabled_config = {
 def squeak_node(request):
     print('--------request.param---------')
     print(request.param)
-    with mock.patch('squeaknode.node.squeak_node.LNDLightningClient', autospec=True):
+    with mock.patch('squeaknode.node.squeak_node.LNDLightningClient', autospec=True), \
+            mock.patch('squeaknode.node.squeak_node.get_connection_string', autospec=True), \
+            mock.patch('squeaknode.node.squeak_node.get_engine', autospec=True), \
+            mock.patch('squeaknode.node.squeak_node.SqueakDb', autospec=True):
         config = get_config(request.param)
         yield SqueakNode(config)
 
