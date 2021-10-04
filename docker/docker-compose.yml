@@ -11,20 +11,38 @@ services:
       - 18332:18332
       - 28334:28334
 
-  lnd:
+  lnd_client:
     image: lnd
-    container_name: lnd
+    container_name: lnd_client
     build:
       context: ../
       dockerfile: docker/lnd/Dockerfile
     environment:
+      - NETWORK=testnet
       - RPCHOST=bitcoin-core
       - BACKEND=bitcoind
     volumes:
-      - ~/.lnd:/root/.lnd:rw
+      - ~/.lnd:/root/.lnd
     ports:
-      - 9735:9735
       - 10009:10009
+    links:
+      - "bitcoin-core:bitcoin-core"
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=0
+    entrypoint: ["./start-lnd.sh"]
+
+  lnd_server:
+    image: lnd
+    container_name: lnd_server
+    build:
+      context: ../
+      dockerfile: docker/lnd/Dockerfile
+    environment:
+      - NETWORK=testnet
+      - RPCHOST=bitcoin-core
+      - BACKEND=bitcoind
+    volumes:
+      - lnd_server_dir:/root/.lnd
     links:
       - "bitcoin-core:bitcoin-core"
     sysctls:
@@ -34,23 +52,34 @@ services:
   tor-socks-proxy:
     container_name: tor-socks-proxy
     image: peterdavehello/tor-socks-proxy:latest
+    ports:
+      - 9150:9150
     restart: unless-stopped
 
   squeaknode:
     image: squeaknode
+    container_name: squeaknode
     build:
       context: ../
       dockerfile: Dockerfile
+    depends_on:
+      - "lnd_server"
     volumes:
-      - ~/.lnd:/root/.lnd
+      - lnd_server_dir:/root/.lnd
+      - squeaknode_dir:/root/.sqk
       - ./config.ini:/config.ini
     ports:
-      - 12995:12994
-      - 8557:8555
       - 18557:18555
+      - 12995:12994
     links:
       - "bitcoin-core:bitcoin-core"
-      - "lnd:lnd"
+      - "lnd_server:lnd"
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=0
     entrypoint: ["./start-squeaknode.sh"]
+
+volumes:
+  lnd_server_dir:
+    driver: local
+  squeaknode_dir:
+    driver: local

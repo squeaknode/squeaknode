@@ -254,6 +254,12 @@ export default function WalletPage() {
             </Grid>
             <Grid item>
               <FormLabel>
+                Node urls
+              </FormLabel>
+              <Typography size="md">{lndInfo.getUrisList()}</Typography>
+            </Grid>
+            <Grid item>
+              <FormLabel>
                 Synced to Chain
               </FormLabel>
               <Typography size="md">{lndInfo.getSyncedToChain().toString()}</Typography>
