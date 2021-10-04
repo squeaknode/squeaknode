@@ -23,8 +23,8 @@ import pytest
 from sqlalchemy import create_engine
 
 from squeaknode.bitcoin.util import parse_block_header
-from squeaknode.core.squeaks import get_hash
 from squeaknode.db.squeak_db import SqueakDb
+# from squeaknode.core.squeaks import get_hash
 
 
 @pytest.fixture
@@ -39,10 +39,18 @@ def squeak_db(db_engine):
     yield db
 
 
-def test_insert_retrieve_squeak(squeak_db, squeak, genesis_block_info):
+def test_insert_get_squeak(squeak_db, squeak, genesis_block_info):
     block_header = parse_block_header(genesis_block_info.block_header)
-    squeak_db.insert_squeak(squeak, block_header)
-    squeak_hash = get_hash(squeak)
+    squeak_hash = squeak_db.insert_squeak(squeak, block_header)
     retrieved_squeak = squeak_db.get_squeak(squeak_hash)
 
     assert retrieved_squeak == squeak
+
+
+def test_insert_duplicate_squeak(squeak_db, squeak, genesis_block_info):
+    block_header = parse_block_header(genesis_block_info.block_header)
+    first_squeak_hash = squeak_db.insert_squeak(squeak, block_header)
+    second_squeak_hash = squeak_db.insert_squeak(squeak, block_header)
+
+    assert first_squeak_hash is not None
+    assert second_squeak_hash is None
