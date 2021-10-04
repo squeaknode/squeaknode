@@ -251,12 +251,16 @@ class Peer(object):
         self.send_msg(local_version)
         verack = self.recv_msg()
         if not isinstance(verack, msg_verack):
-            raise Exception('Wrong message type for verack response.')
+            raise Exception('Expected verack response: {}'.format(
+                verack,
+            ))
 
     def receive_version(self):
         remote_version = self.recv_msg()
         if not isinstance(remote_version, msg_version):
-            raise Exception('Wrong message type for version message.')
+            raise Exception('Expected version message. Received: {}'.format(
+                remote_version,
+            ))
         self.remote_version = remote_version
         verack = msg_verack()
         self.send_msg(verack)

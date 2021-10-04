@@ -85,9 +85,11 @@ class ConnectionManager(object):
             logger.debug("Removing peer.")
             self._remove_peer(peer)
         except Exception as e:
+            logger.exception("Error in connection.")
             result_queue.put(ConnectPeerResult.from_failure(e))
             raise
         finally:
+            logger.info("Disconnected peer.")
             peer.stop()
 
     @property
