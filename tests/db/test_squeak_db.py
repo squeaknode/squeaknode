@@ -98,3 +98,15 @@ def test_get_squeak_secret_key_and_content(
     assert retrieved_squeak_entry.squeak_hash == squeak_hash
     assert retrieved_squeak_entry.content == squeak_content
     assert retrieved_secret_key == secret_key
+
+
+def test_get_missing_squeak_secret_key(
+        squeak_db,
+        squeak,
+        genesis_block_info,
+):
+    block_header = parse_block_header(genesis_block_info.block_header)
+    squeak_hash = squeak_db.insert_squeak(squeak, block_header)
+    retrieved_secret_key = squeak_db.get_squeak_secret_key(squeak_hash)
+
+    assert retrieved_secret_key is None
