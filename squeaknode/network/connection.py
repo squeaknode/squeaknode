@@ -78,7 +78,7 @@ class Connection(object):
         logger.debug("HANDSHAKE COMPLETE-----------")
 
     def shutdown(self):
-        logger.debug("Peet shutting down...")
+        logger.info("Peer shutting down...")
         self.peer.stop()
         self.handshake_timer.cancel()
         self.ping_timer.cancel()
