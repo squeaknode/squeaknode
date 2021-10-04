@@ -8,13 +8,13 @@ services:
       context: ../
       dockerfile: docker/btcd/Dockerfile
     volumes:
-      - ~/.btcd-shared-data:/rpc
+      - shared_data:/rpc
       - ~/.btcd:/data
     environment:
       - NETWORK=testnet
       - MINING_ADDRESS
     ports:
-      - 18334:18334
+      - 18556:18556
     entrypoint: ["./start-btcd.sh"]
 
   lnd_client:
@@ -26,13 +26,9 @@ services:
     environment:
       - NETWORK=testnet
       - RPCHOST=btcd
-    depends_on:
-      - "btcd"
     volumes:
-      - ~/.btcd-shared-data:/rpc
-      - ~/.lnd:/root/.lnd:rw
-    ports:
-      - 10009:10009
+      - shared_data:/rpc
+      - lnd_client_dir:/root/.lnd
     links:
       - "btcd:btcd"
     sysctls:
@@ -48,10 +44,8 @@ services:
     environment:
       - NETWORK=testnet
       - RPCHOST=btcd
-    depends_on:
-      - "btcd"
     volumes:
-      - ~/.btcd-shared-data:/rpc
+      - shared_data:/rpc
       - lnd_server_dir:/root/.lnd
     links:
       - "btcd:blockchain"
@@ -68,12 +62,11 @@ services:
     depends_on:
       - "lnd_server"
     volumes:
-      - ~/.btcd-shared-data:/rpc
+      - shared_data:/rpc
       - lnd_server_dir:/root/.lnd
       - ./config.ini:/config.ini
     ports:
       - 12995:12994
-      - 18557:18555
     links:
       - "btcd:btcd"
       - "lnd_server:lnd"
@@ -81,29 +74,29 @@ services:
       - net.ipv6.conf.all.disable_ipv6=0
     entrypoint: ["./start-squeaknode.sh"]
 
-  # squeaknode_other:
-  #   image: squeaknode
-  #   container_name: squeaknode_other
-  #   build:
-  #     context: ../
-  #     dockerfile: Dockerfile
-  #   volumes:
-  #     - ~/.btcd-shared-data:/rpc
-  #     - lnd_client_dir:/root/.lnd
-  #     - ./config.ini:/config.ini
-  #   ports:
-  #     - 12996:12994
-  #   links:
-  #     - "btcd:btcd"
-  #     - "lnd_client:lnd"
-  #   sysctls:
-  #     - net.ipv6.conf.all.disable_ipv6=0
-  #   entrypoint: ["./start-squeaknode.sh"]
+  squeaknode_other:
+    image: squeaknode
+    container_name: squeaknode_other
+    build:
+      context: ../
+      dockerfile: Dockerfile
+    volumes:
+      - shared_data:/rpc
+      - lnd_client_dir:/root/.lnd
+      - ./config.ini:/config.ini
+    ports:
+      - 12996:12994
+    links:
+      - "btcd:btcd"
+      - "lnd_client:lnd"
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=0
+    entrypoint: ["./start-squeaknode.sh"]
 
 volumes:
-  # # btcctl and lnd containers.
-  # shared_data:
-  #   driver: local
+  # btcctl and lnd containers.
+  shared_data:
+    driver: local
 
   # # bitcoin_data volume is needed for maintaining blockchain persistence
   # # during btcd container recreation.
@@ -111,7 +104,7 @@ volumes:
   #   driver: local
 
   # lnd_dir volume is needed for sharing tht tls certificate
-  # lnd_client_dir:
-  #   driver: local
+  lnd_client_dir:
+    driver: local
   lnd_server_dir:
     driver: local
