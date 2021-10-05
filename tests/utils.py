@@ -22,6 +22,7 @@
 import os
 import uuid
 
+from bitcoin.core import CBlockHeader
 from squeak.core.signing import CSigningKey
 from squeak.core.signing import CSqueakAddress
 
@@ -62,3 +63,23 @@ def gen_squeak(signing_key, block_height, replyto_hash=None):
         replyto_hash=replyto_hash,
     )
     return squeak
+
+
+def gen_block_header(block_height):
+    return CBlockHeader(
+        nTime=block_height * 10,  # So that block times are increasing.
+    )
+
+
+def gen_squeak_with_block_header(signing_key, block_height, replyto_hash=None):
+    """ Return a tuple with a CSqueak and a CBlockHeader.
+    """
+    squeak = gen_squeak(
+        signing_key=signing_key,
+        block_height=block_height,
+        replyto_hash=replyto_hash,
+    )
+    block_info = gen_block_header(
+        block_height=block_height,
+    )
+    return squeak, block_info
