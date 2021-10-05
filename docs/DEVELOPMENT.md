@@ -21,11 +21,6 @@
 
 	You can go to http://localhost:12995/ to see the containerized squeaknode.
 
-- You may need to change the permissions of the `~/.lnd` directory after docker containers start:
-	```
-	$ sudo chmod -R 755 ~/.lnd/
-	```
-
 #### Squeaknode backend
 
 - Install squeaknode:
@@ -35,14 +30,26 @@
 	$ pip install -r requirements.txt
 	$ python setup.py install
 	```
+
+- Make sure that `~/.lnd` directory (created by docker container) has read permissions. You may need to change the permissions:
+	```
+	$ sudo chmod -R 755 ~/.lnd/
+	```
+
 - Run squeaknode with authentication disabled:
 	```
-	$ SQUEAKNODE_WEBADMIN_ENABLED=TRUE SQUEAKNODE_WEBADMIN_LOGIN_DISABLED=TRUE SQUEAKNODE_WEBADMIN_ALLOW_CORS=TRUE SQUEAKNODE_NETWORK=testnet squeaknode --config config.ini
+	$ SQUEAKNODE_WEBADMIN_ENABLED=TRUE \
+	SQUEAKNODE_WEBADMIN_LOGIN_DISABLED=TRUE \
+	SQUEAKNODE_WEBADMIN_ALLOW_CORS=TRUE \
+	SQUEAKNODE_NETWORK=testnet \
+	squeaknode --config config.ini
 	```
 
 To use a tor proxy, include the following environment variables:
 	```
-	$ SQUEAKNODE_NODE_TOR_PROXY_IP=127.0.0.1 SQUEAKNODE_NODE_TOR_PROXY_PORT=9150
+	$ SQUEAKNODE_NODE_TOR_PROXY_IP=127.0.0.1 \
+	SQUEAKNODE_NODE_TOR_PROXY_PORT=9150 \
+	...
 	```
 
 
