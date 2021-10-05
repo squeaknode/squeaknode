@@ -15,6 +15,7 @@
 	* bitcoin-core
 	* lnd (for the containerized squeaknode)
 	* lnd (for the host squeaknode) with ~/.lnd directory mounted.
+	* a tor service
 	* a tor socks proxy
 	* a squeaknode
 
