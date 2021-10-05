@@ -30,7 +30,7 @@ You can also run your own squeaknode on your host machine.
 	$ virtualenv venv
 	$ source venv/bin/activate
 	$ pip install -r requirements.txt
-	$ python setup.py install
+	$ pip install .
 	```
 
 - Make sure that `~/.lnd` directory (created by docker container) has read permissions. You may need to change the permissions:
