@@ -77,7 +77,6 @@ export default function OpenChannelDialog({
         id="pubkey-textarea"
         label="Node Pub Key"
         required
-        autoFocus
         value={pubkey}
         fullWidth
         inputProps={{
@@ -108,7 +107,6 @@ export default function OpenChannelDialog({
         id="satperbyte-textarea"
         label="Sats Per Byte"
         required
-        autoFocus
         value={satperbyte}
         onChange={handleChangeSatPerBytes}
         fullWidth
