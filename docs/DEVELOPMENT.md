@@ -17,11 +17,13 @@
 	* lnd (for the host squeaknode) with ~/.lnd directory mounted.
 	* a tor service
 	* a tor socks proxy
-	* a squeaknode
+	* a squeaknode (useful for testing p2p connections from your host machine)
 
 	You can go to http://localhost:12995/ to see the containerized squeaknode.
 
 #### Squeaknode backend
+
+You can also run your own squeaknode on your host machine.
 
 - Install squeaknode:
 	```
