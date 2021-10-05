@@ -23,6 +23,7 @@ import queue
 import socket
 import threading
 from concurrent.futures import ThreadPoolExecutor
+from contextlib import closing
 
 import mock
 import pytest
@@ -36,8 +37,7 @@ TEST_SOCKET_PORT = 19999
 SOCKET_CONNECT_TIMEOUT = 10
 
 
-def accept_connections(started_event):
-    listen_socket = socket.socket()
+def accept_connections(listen_socket, started_event):
     try:
         print('Trying to bind and listen on port: {}'.format(
             TEST_SOCKET_PORT), flush=True)
@@ -45,34 +45,26 @@ def accept_connections(started_event):
         listen_socket.listen()
         started_event.set()
         print('Started event set.', flush=True)
-        while True:
-            peer_socket, address = listen_socket.accept()
-            host, port = address
-            peer_address = PeerAddress(
-                host=host,
-                port=port,
-            )
-            peer_socket.setblocking(True)
-            # self.handle_connection(
-            #     peer_socket,
-            #     peer_address,
-            # )
-            result = (peer_socket, peer_address)
-            # result_queue.put(result)
-            # return peer_socket, peer_address
-            return result
+        peer_socket, address = listen_socket.accept()
+        host, port = address
+        peer_address = PeerAddress(
+            host=host,
+            port=port,
+        )
+        peer_socket.setblocking(True)
+        result = (peer_socket, peer_address)
+        return result
     except Exception as e:
         print(e)
         started_event.set()
         return e
 
 
-def make_connection(started):
+def make_connection(peer_socket, started):
     address = ('localhost', TEST_SOCKET_PORT)
     started.wait()
     print('Conecting to address: {}'.format(address))
     try:
-        peer_socket = socket.socket()
         peer_socket.settimeout(SOCKET_CONNECT_TIMEOUT)
         peer_socket.connect(address)
         peer_socket.setblocking(True)
@@ -125,9 +117,13 @@ def inbound_socket_and_outbound_socket():
     started = threading.Event()
 
     # Use futures
-    with ThreadPoolExecutor(max_workers=2) as executor:
-        inbound_future = executor.submit(accept_connections, started)
-        outbound_future = executor.submit(make_connection, started)
+    with closing(socket.socket()) as listen_socket, \
+            closing(socket.socket()) as peer_socket, \
+            ThreadPoolExecutor(max_workers=2) as executor:
+        inbound_future = executor.submit(
+            accept_connections, listen_socket, started)
+        outbound_future = executor.submit(
+            make_connection, peer_socket, started)
 
         inbound_result = inbound_future.result()
         print(inbound_result)
@@ -137,7 +133,7 @@ def inbound_socket_and_outbound_socket():
         outbound_socket = outbound_future.result()
         print(outbound_socket)
 
-    yield inbound_socket, outbound_socket
+        yield inbound_socket, outbound_socket
 
 
 @pytest.fixture
