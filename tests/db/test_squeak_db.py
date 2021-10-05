@@ -22,9 +22,9 @@
 import pytest
 from sqlalchemy import create_engine
 
-from squeaknode.bitcoin.util import parse_block_header
 from squeaknode.core.squeaks import get_hash
 from squeaknode.db.squeak_db import SqueakDb
+from tests.utils import gen_squeak_with_block_header
 
 
 @pytest.fixture
@@ -39,16 +39,34 @@ def squeak_db(db_engine):
     yield db
 
 
-def test_insert_get_squeak(squeak_db, squeak, genesis_block_info):
-    block_header = parse_block_header(genesis_block_info.block_header)
+@pytest.fixture
+def squeak_with_block_header(signing_key):
+    yield gen_squeak_with_block_header(
+        signing_key=signing_key,
+        block_height=7777,
+    )
+
+
+@pytest.fixture
+def squeak(squeak_with_block_header):
+    squeak, _ = squeak_with_block_header
+    yield squeak
+
+
+@pytest.fixture
+def block_header(squeak_with_block_header):
+    _, block_header = squeak_with_block_header
+    yield block_header
+
+
+def test_insert_get_squeak(squeak_db, squeak, block_header):
     squeak_hash = squeak_db.insert_squeak(squeak, block_header)
     retrieved_squeak = squeak_db.get_squeak(squeak_hash)
 
     assert retrieved_squeak == squeak
 
 
-def test_insert_duplicate_squeak(squeak_db, squeak, genesis_block_info):
-    block_header = parse_block_header(genesis_block_info.block_header)
+def test_insert_duplicate_squeak(squeak_db, squeak, block_header):
     first_squeak_hash = squeak_db.insert_squeak(squeak, block_header)
     second_squeak_hash = squeak_db.insert_squeak(squeak, block_header)
 
@@ -63,14 +81,14 @@ def test_get_missing_squeak(squeak_db, squeak):
     assert retrieved_squeak is None
 
 
-def test_get_squeak_entry(squeak_db, squeak, genesis_block_info, address):
-    block_header = parse_block_header(genesis_block_info.block_header)
+def test_get_squeak_entry(squeak_db, squeak, block_header, address):
     squeak_hash = squeak_db.insert_squeak(squeak, block_header)
     retrieved_squeak_entry = squeak_db.get_squeak_entry(squeak_hash)
 
     assert retrieved_squeak_entry.squeak_hash == squeak_hash
     assert retrieved_squeak_entry.address == address
     assert retrieved_squeak_entry.content is None
+    assert retrieved_squeak_entry.block_time == block_header.nTime
 
 
 def test_get_missing_squeak_entry(squeak_db, squeak, address):
@@ -83,12 +101,11 @@ def test_get_missing_squeak_entry(squeak_db, squeak, address):
 def test_get_squeak_secret_key_and_content(
         squeak_db,
         squeak,
+        block_header,
         secret_key,
-        genesis_block_info,
         address,
         squeak_content,
 ):
-    block_header = parse_block_header(genesis_block_info.block_header)
     squeak_hash = squeak_db.insert_squeak(squeak, block_header)
     squeak_db.set_squeak_decryption_key(
         squeak_hash, secret_key, squeak_content)
@@ -103,9 +120,8 @@ def test_get_squeak_secret_key_and_content(
 def test_get_missing_squeak_secret_key(
         squeak_db,
         squeak,
-        genesis_block_info,
+        block_header,
 ):
-    block_header = parse_block_header(genesis_block_info.block_header)
     squeak_hash = squeak_db.insert_squeak(squeak, block_header)
     retrieved_secret_key = squeak_db.get_squeak_secret_key(squeak_hash)
 

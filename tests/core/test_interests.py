@@ -19,52 +19,15 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-import os
-import uuid
-
-from squeak.core.signing import CSigningKey
-from squeak.core.signing import CSqueakAddress
 from squeak.net import CInterested
 
 from squeaknode.core.interests import get_differential_squeaks
 from squeaknode.core.interests import squeak_matches_interest
-from squeaknode.core.squeaks import HASH_LENGTH
-from squeaknode.core.squeaks import make_squeak_with_block
-
-
-def gen_signing_key():
-    return CSigningKey.generate()
-
-
-def gen_random_hash():
-    return os.urandom(HASH_LENGTH)
-
-
-def address_from_signing_key(signing_key):
-    verifying_key = signing_key.get_verifying_key()
-    return CSqueakAddress.from_verifying_key(verifying_key)
-
-
-def gen_address():
-    signing_key = gen_signing_key()
-    return address_from_signing_key(signing_key)
-
-
-def gen_squeak_addresses(n):
-    return [gen_address() for i in range(n)]
-
-
-def gen_squeak(signing_key, block_height, replyto_hash=None):
-    random_content = "random_content_{}".format(uuid.uuid1())
-    random_hash = gen_random_hash()
-    squeak, secret_key = make_squeak_with_block(
-        signing_key,
-        random_content,
-        block_height,
-        random_hash,
-        replyto_hash=replyto_hash,
-    )
-    return squeak
+from tests.utils import address_from_signing_key
+from tests.utils import gen_random_hash
+from tests.utils import gen_signing_key
+from tests.utils import gen_squeak
+from tests.utils import gen_squeak_addresses
 
 
 def test_squeak_matches_interest():
