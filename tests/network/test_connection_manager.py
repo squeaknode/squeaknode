@@ -22,6 +22,7 @@
 import queue
 import socket
 import threading
+from concurrent.futures import ThreadPoolExecutor
 
 import mock
 import pytest
@@ -35,7 +36,7 @@ TEST_SOCKET_PORT = 19999
 SOCKET_CONNECT_TIMEOUT = 10
 
 
-def accept_connections(started_event, result_queue):
+def accept_connections(started_event):
     listen_socket = socket.socket()
     try:
         print('Trying to bind and listen on port: {}'.format(
@@ -57,26 +58,24 @@ def accept_connections(started_event, result_queue):
             #     peer_address,
             # )
             result = (peer_socket, peer_address)
-            result_queue.put(result)
+            # result_queue.put(result)
             # return peer_socket, peer_address
-            return
-    except Exception:
-        print("Stopped accepting incoming connections.")
+            return result
+    except Exception as e:
+        print(e)
+        started_event.set()
+        return e
 
 
-def make_connection():
+def make_connection(started):
     address = ('localhost', TEST_SOCKET_PORT)
+    started.wait()
     print('Conecting to address: {}'.format(address))
     try:
         peer_socket = socket.socket()
         peer_socket.settimeout(SOCKET_CONNECT_TIMEOUT)
         peer_socket.connect(address)
         peer_socket.setblocking(True)
-        # self.handle_connection(
-        #     peer_socket,
-        #     address,
-        #     result_queue,
-        # )
         return peer_socket
     except Exception:
         print('Failed to connect to {}'.format(address))
@@ -121,19 +120,22 @@ def local_address():
 
 @pytest.fixture
 def inbound_socket_and_outbound_socket():
+
     # TODO: set up inbound and outbound sockets
     started = threading.Event()
-    q = queue.Queue()
-    listen_thread = threading.Thread(
-        target=accept_connections, args=(started, q,))
-    listen_thread.start()
-    started.wait()
 
-    # do some other stuff
-    outbound_socket = make_connection()
+    # Use futures
+    with ThreadPoolExecutor(max_workers=2) as executor:
+        inbound_future = executor.submit(accept_connections, started)
+        outbound_future = executor.submit(make_connection, started)
 
-    listen_thread.join()
-    inbound_socket, _ = q.get()
+        inbound_result = inbound_future.result()
+        print(inbound_result)
+        if isinstance(inbound_result, Exception):
+            raise inbound_result
+        inbound_socket, _ = inbound_result
+        outbound_socket = outbound_future.result()
+        print(outbound_socket)
 
     yield inbound_socket, outbound_socket
 
