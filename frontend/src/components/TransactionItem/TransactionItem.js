@@ -34,6 +34,11 @@ export default function TransactionItem({
     handleExpandClick();
   };
 
+  const onMoreDetailsClick = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+  };
+
   function TransactionDetailItem(label, value) {
     return (
       <Box display="flex">
@@ -49,7 +54,10 @@ export default function TransactionItem({
 
   function TransactionMoreDetails() {
     return (
-      <CardContent className={classes.cardContent}>
+      <CardContent
+      className={classes.cardContent}
+      onClick={onMoreDetailsClick}
+>
         {TransactionDetailItem('Tx Hash', transaction.getTxHash())}
         {TransactionDetailItem('Timestamp', moment.unix(transaction.getTimeStamp()).format('lll'))}
         {TransactionDetailItem('Block Height', transaction.getBlockHeight())}
