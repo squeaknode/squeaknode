@@ -1,3 +1,12 @@
+0.1.159 - 2021-10-04
+===================
+
+### Features
+- Improve handling of duplicate entries in database.
+    - #1478
+- Refactor core functions to separate modules
+    - #1460, #1464, #1468, #1473
+
 0.1.158 - 2021-10-01
 ===================
 
