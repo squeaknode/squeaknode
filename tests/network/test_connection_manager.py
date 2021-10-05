@@ -46,14 +46,13 @@ def accept_connections(listen_socket, started_event):
         started_event.set()
         print('Started event set.', flush=True)
         peer_socket, address = listen_socket.accept()
-        host, port = address
-        peer_address = PeerAddress(
-            host=host,
-            port=port,
-        )
+        # host, port = address
+        # peer_address = PeerAddress(
+        #     host=host,
+        #     port=port,
+        # )
         peer_socket.setblocking(True)
-        result = (peer_socket, peer_address)
-        return result
+        return peer_socket
     except Exception as e:
         print(e)
         started_event.set()
@@ -125,11 +124,10 @@ def inbound_socket_and_outbound_socket():
         outbound_future = executor.submit(
             make_connection, peer_socket, started)
 
-        inbound_result = inbound_future.result()
-        print(inbound_result)
-        if isinstance(inbound_result, Exception):
-            raise inbound_result
-        inbound_socket, _ = inbound_result
+        inbound_socket = inbound_future.result()
+        print(inbound_socket)
+        if isinstance(inbound_socket, Exception):
+            raise inbound_socket
         outbound_socket = outbound_future.result()
         print(outbound_socket)
 
