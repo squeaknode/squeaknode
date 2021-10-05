@@ -39,6 +39,20 @@ def squeak_db(db_engine):
     yield db
 
 
+# def make_squeak(
+#         signing_key: CSigningKey,
+#         content: str,
+#         block_height: int = 0,
+# ) -> bytes:
+#     random_hash =
+#     return make_squeak_with_block(
+#         signing_key,
+#         squeak_content,
+#         block_height,
+#         ,
+#     )
+
+
 def test_insert_get_squeak(squeak_db, squeak, genesis_block_info):
     block_header = parse_block_header(genesis_block_info.block_header)
     squeak_hash = squeak_db.insert_squeak(squeak, block_header)
