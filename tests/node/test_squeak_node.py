@@ -61,7 +61,11 @@ def squeak_node(request):
     with mock.patch('squeaknode.node.squeak_node.LNDLightningClient', autospec=True), \
             mock.patch('squeaknode.node.squeak_node.get_connection_string', autospec=True), \
             mock.patch('squeaknode.node.squeak_node.get_engine', autospec=True), \
-            mock.patch('squeaknode.node.squeak_node.SqueakDb', autospec=True):
+            mock.patch('squeaknode.node.squeak_node.SqueakDb', autospec=True), \
+            mock.patch('squeaknode.node.squeak_node.SqueakOfferExpiryWorker', autospec=True), \
+            mock.patch('squeaknode.node.squeak_node.ProcessReceivedPaymentsWorker', autospec=True), \
+            mock.patch('squeaknode.node.squeak_node.PeerConnectionWorker', autospec=True), \
+            mock.patch('squeaknode.node.squeak_node.SqueakAdminWebServer', autospec=True):
         config = get_config(request.param)
         yield SqueakNode(config)
 
