@@ -46,6 +46,7 @@
 	```
 
 To use a tor proxy, include the following environment variables:
+
 	```
 	$ SQUEAKNODE_NODE_TOR_PROXY_IP=127.0.0.1 \
 	SQUEAKNODE_NODE_TOR_PROXY_PORT=9150 \
