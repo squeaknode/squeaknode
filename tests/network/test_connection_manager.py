@@ -22,87 +22,20 @@
 import queue
 import socket
 import threading
-from concurrent.futures import ThreadPoolExecutor
-from contextlib import closing
 
 import mock
 import pytest
+from util import yield_inbound_socket_and_outbound_socket
 
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.network.connection_manager import ConnectionManager
 from squeaknode.node.squeak_controller import SqueakController
 
 
-TEST_SOCKET_PORT = 19999
-SOCKET_CONNECT_TIMEOUT = 10
-
-
-def accept_connections(listen_socket, started_event):
-    try:
-        print('Trying to bind and listen on port: {}'.format(
-            TEST_SOCKET_PORT), flush=True)
-        listen_socket.bind(('', TEST_SOCKET_PORT))
-        listen_socket.listen()
-        started_event.set()
-        print('Started event set.', flush=True)
-        peer_socket, address = listen_socket.accept()
-        # host, port = address
-        # peer_address = PeerAddress(
-        #     host=host,
-        #     port=port,
-        # )
-        peer_socket.setblocking(True)
-        return peer_socket
-    except Exception as e:
-        print(e)
-        started_event.set()
-        return e
-
-
-def make_connection(peer_socket, started):
-    address = ('localhost', TEST_SOCKET_PORT)
-    started.wait()
-    print('Conecting to address: {}'.format(address))
-    try:
-        peer_socket.settimeout(SOCKET_CONNECT_TIMEOUT)
-        peer_socket.connect(address)
-        peer_socket.setblocking(True)
-        return peer_socket
-    except Exception:
-        print('Failed to connect to {}'.format(address))
-
-
-def start_connection(
-        connection_manager,
-        connected_event,
-        disconnect_event,
-        disconnected_event,
-        socket,
-        remote_address,
-        is_outbound,
-        squeak_controller,
-        result_q,
-):
-    if is_outbound:
-        print('------Starting outbound connection------')
-    else:
-        print('------Starting inbound connection------')
-    with connection_manager.connect(
-            socket,
-            remote_address,
-            is_outbound,
-            squeak_controller,
-            result_q,
-    ):
-        connected_event.set()
-        disconnect_event.wait()
-    disconnected_event.set()
-
-
 @pytest.fixture
 def local_address():
     local_ip = socket.gethostbyname('localhost')
-    local_port = TEST_SOCKET_PORT
+    local_port = 56789
     yield PeerAddress(
         local_ip,
         local_port,
@@ -111,27 +44,7 @@ def local_address():
 
 @pytest.fixture
 def inbound_socket_and_outbound_socket():
-
-    # TODO: set up inbound and outbound sockets
-    started = threading.Event()
-
-    # Use futures
-    with closing(socket.socket()) as listen_socket, \
-            closing(socket.socket()) as peer_socket, \
-            ThreadPoolExecutor(max_workers=2) as executor:
-        inbound_future = executor.submit(
-            accept_connections, listen_socket, started)
-        outbound_future = executor.submit(
-            make_connection, peer_socket, started)
-
-        inbound_socket = inbound_future.result()
-        print(inbound_socket)
-        if isinstance(inbound_socket, Exception):
-            raise inbound_socket
-        outbound_socket = outbound_future.result()
-        print(outbound_socket)
-
-        yield inbound_socket, outbound_socket
+    yield from yield_inbound_socket_and_outbound_socket()
 
 
 @pytest.fixture
@@ -169,6 +82,33 @@ def outbound_connection_manager(local_address):
 @pytest.fixture
 def squeak_controller():
     return mock.Mock(spec=SqueakController)
+
+
+def start_connection(
+        connection_manager,
+        connected_event,
+        disconnect_event,
+        disconnected_event,
+        socket,
+        remote_address,
+        is_outbound,
+        squeak_controller,
+        result_q,
+):
+    if is_outbound:
+        print('------Starting outbound connection------')
+    else:
+        print('------Starting inbound connection------')
+    with connection_manager.connect(
+            socket,
+            remote_address,
+            is_outbound,
+            squeak_controller,
+            result_q,
+    ):
+        connected_event.set()
+        disconnect_event.wait()
+    disconnected_event.set()
 
 
 def test_connect_peers(
