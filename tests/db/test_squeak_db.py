@@ -88,6 +88,7 @@ def test_get_squeak_entry(squeak_db, squeak, block_header, address):
     assert retrieved_squeak_entry.squeak_hash == squeak_hash
     assert retrieved_squeak_entry.address == address
     assert retrieved_squeak_entry.content is None
+    assert retrieved_squeak_entry.block_time == block_header.nTime
 
 
 def test_get_missing_squeak_entry(squeak_db, squeak, address):
