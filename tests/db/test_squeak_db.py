@@ -126,3 +126,31 @@ def test_get_missing_squeak_secret_key(
     retrieved_secret_key = squeak_db.get_squeak_secret_key(squeak_hash)
 
     assert retrieved_secret_key is None
+
+
+def test_get_timeline_squeak_entries(squeak_db, signing_key):
+    squeak_1, header_1 = gen_squeak_with_block_header(signing_key, 5001)
+    squeak_2, header_2 = gen_squeak_with_block_header(signing_key, 5002)
+    squeak_3, header_3 = gen_squeak_with_block_header(signing_key, 5003)
+    squeak_4, header_4 = gen_squeak_with_block_header(signing_key, 5004)
+    squeak_5, header_5 = gen_squeak_with_block_header(signing_key, 5005)
+
+    squeak_hash_1 = squeak_db.insert_squeak(squeak_1, header_1)
+    squeak_hash_2 = squeak_db.insert_squeak(squeak_2, header_2)
+    squeak_hash_3 = squeak_db.insert_squeak(squeak_3, header_3)
+    squeak_hash_4 = squeak_db.insert_squeak(squeak_4, header_4)
+    squeak_hash_5 = squeak_db.insert_squeak(squeak_5, header_5)
+
+    assert squeak_hash_1 is not None
+    assert squeak_hash_2 is not None
+    assert squeak_hash_3 is not None
+    assert squeak_hash_4 is not None
+    assert squeak_hash_5 is not None
+
+    # TODO: get_timeline_squeak_entries only returns followed squeaks.
+    timeline_squeak_entries = squeak_db.get_timeline_squeak_entries(
+        limit=2,
+        last_entry=None,
+    )
+
+    assert len(timeline_squeak_entries) == 2
