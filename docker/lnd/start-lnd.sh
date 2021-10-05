@@ -39,6 +39,7 @@ set_default() {
 }
 
 # Set default variables if needed.
+TARGETHOST=$(set_default "$TARGETHOST" "localhost")
 RPCHOST=$(set_default "$RPCHOST" "localhost")
 RPCUSER=$(set_default "$RPCUSER" "devuser")
 RPCPASS=$(set_default "$RPCPASS" "devpass")
@@ -66,7 +67,7 @@ if [[ "$BACKEND" == "bitcoind" ]]; then
 	 --tor.control=tor-privoxy:9051 \
 	 --tor.socks=tor-socks-proxy:9150 \
 	 --tor.v3 \
-	 --tor.targetipaddress=lnd_server \
+	 --tor.targetipaddress=$TARGETHOST \
 	 --listen=0.0.0.0:9735 \
 	 $@"
     echo $cmd
@@ -89,7 +90,7 @@ else
 	 --tor.control=tor-privoxy:9051 \
 	 --tor.socks=tor-socks-proxy:9150 \
 	 --tor.v3 \
-	 --tor.targetipaddress=lnd_server \
+	 --tor.targetipaddress=$TARGETHOST \
 	 --listen=0.0.0.0:9735 \
 	 $@
 fi

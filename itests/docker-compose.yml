@@ -50,6 +50,7 @@ services:
     environment:
       - NETWORK=simnet
       - RPCHOST=btcd
+      - TARGETHOST=lnd_client
     volumes:
       - test_shared:/rpc
       - test_lnd_client_dir:/root/.lnd
@@ -68,6 +69,7 @@ services:
     environment:
       - NETWORK=simnet
       - RPCHOST=btcd
+      - TARGETHOST=lnd_server
     volumes:
       - test_shared:/rpc
       - test_lnd_server_dir:/root/.lnd
