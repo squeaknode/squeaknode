@@ -636,12 +636,20 @@ def test_buy_squeak(
 
     offer = get_buy_offers_response.offers[0]
 
+    print("Tring to connect LND peer with offer: {}".format(offer))
     with connect_peer(
         lightning_client, offer.node_host, offer.node_pubkey
     ), open_channel(lightning_client, offer.node_pubkey, 1000000):
 
-        lightning_client.list_channels()
-        # print(list_channels_response)
+        print("Channel context manager opened.")
+
+        # Pay the offer
+        list_channels_response = other_admin_stub.LndListChannels(
+            ln.ListChannelsRequest(
+                active_only=True,
+            )
+        )
+        print("list_channels_response: {}".format(list_channels_response))
 
         # Pay the offer
         pay_offer_response = other_admin_stub.PayOffer(
@@ -743,6 +751,8 @@ def test_buy_squeak(
         # )
         assert get_payment_summary_response.payment_summary.num_sent_payments > 0
         assert get_payment_summary_response.payment_summary.amount_spent_msat > 0
+
+    print("Channel context manager closed.")
 
 
 def test_download_free_squeak(
