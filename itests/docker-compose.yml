@@ -32,6 +32,15 @@ services:
       - "btcd:btcd"
     entrypoint: ["./start-btcctl.sh"]
 
+  tor-privoxy:
+    restart: always
+    image: dockage/tor-privoxy:latest
+
+  tor-socks-proxy:
+    container_name: test_tor-socks-proxy
+    image: peterdavehello/tor-socks-proxy:latest
+    restart: unless-stopped
+
   lnd_client:
     image: lnd
     container_name: test_lnd_client
@@ -41,6 +50,7 @@ services:
     environment:
       - NETWORK=simnet
       - RPCHOST=btcd
+      - TARGETHOST=lnd_client
     volumes:
       - test_shared:/rpc
       - test_lnd_client_dir:/root/.lnd
@@ -59,6 +69,7 @@ services:
     environment:
       - NETWORK=simnet
       - RPCHOST=btcd
+      - TARGETHOST=lnd_server
     volumes:
       - test_shared:/rpc
       - test_lnd_server_dir:/root/.lnd

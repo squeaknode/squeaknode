@@ -112,6 +112,10 @@ def open_channel(lightning_client, remote_pubkey, amount):
             channel_point = update.chan_open.channel_point
             print("Channel now open: " + str(channel_point))
             break
+    print("list peers: {}".format(lightning_client.list_peers()))
+    print("list channels: {}".format(lightning_client.list_channels()))
+    print("pending channels: {}".format(lightning_client.pending_channels()))
+    time.sleep(10)
     try:
         yield
     finally:
