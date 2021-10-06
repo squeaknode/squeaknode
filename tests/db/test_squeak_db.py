@@ -24,6 +24,8 @@ from sqlalchemy import create_engine
 
 from squeaknode.core.squeaks import get_hash
 from squeaknode.db.squeak_db import SqueakDb
+from tests.utils import gen_contact_profile
+from tests.utils import gen_signing_profile
 from tests.utils import gen_squeak_with_block_header
 
 
@@ -57,6 +59,32 @@ def squeak(squeak_with_block_header):
 def block_header(squeak_with_block_header):
     _, block_header = squeak_with_block_header
     yield block_header
+
+
+@pytest.fixture
+def signing_profile_name():
+    yield "fake_signing_profile_name"
+
+
+@pytest.fixture
+def contact_profile_name():
+    yield "fake_contact_profile_name"
+
+
+@pytest.fixture
+def signing_profile(signing_profile_name, signing_key):
+    yield gen_signing_profile(
+        signing_profile_name,
+        str(signing_key),
+    )
+
+
+@pytest.fixture
+def contact_profile(contact_profile_name, address):
+    yield gen_contact_profile(
+        contact_profile_name,
+        str(address),
+    )
 
 
 def test_insert_get_squeak(squeak_db, squeak, block_header):
@@ -128,7 +156,12 @@ def test_get_missing_squeak_secret_key(
     assert retrieved_secret_key is None
 
 
-def test_get_timeline_squeak_entries(squeak_db, signing_key):
+def test_get_timeline_squeak_entries(
+        squeak_db,
+        signing_key,
+        signing_profile,
+        contact_profile,
+):
     squeak_1, header_1 = gen_squeak_with_block_header(signing_key, 5001)
     squeak_2, header_2 = gen_squeak_with_block_header(signing_key, 5002)
     squeak_3, header_3 = gen_squeak_with_block_header(signing_key, 5003)
@@ -147,6 +180,10 @@ def test_get_timeline_squeak_entries(squeak_db, signing_key):
     assert squeak_hash_4 is not None
     assert squeak_hash_5 is not None
 
+    # Insert the contact profile and ensure that it is followed.
+    profile_id = squeak_db.insert_profile(contact_profile)
+    squeak_db.set_profile_following(profile_id, True)
+
     # TODO: get_timeline_squeak_entries only returns followed squeaks.
     timeline_squeak_entries = squeak_db.get_timeline_squeak_entries(
         limit=2,
@@ -154,3 +191,19 @@ def test_get_timeline_squeak_entries(squeak_db, signing_key):
     )
 
     assert len(timeline_squeak_entries) == 2
+
+
+def test_get_signing_profile(squeak_db, signing_key, signing_profile):
+    profile_id = squeak_db.insert_profile(signing_profile)
+    retrieved_profile = squeak_db.get_profile(profile_id)
+
+    assert retrieved_profile.profile_name == signing_profile.profile_name
+    assert retrieved_profile.private_key == signing_profile.private_key
+
+
+def test_get_contact_profile(squeak_db, address, contact_profile):
+    profile_id = squeak_db.insert_profile(contact_profile)
+    retrieved_profile = squeak_db.get_profile(profile_id)
+
+    assert retrieved_profile.profile_name == contact_profile.profile_name
+    assert retrieved_profile.address == contact_profile.address

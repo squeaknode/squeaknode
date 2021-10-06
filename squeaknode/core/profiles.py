@@ -19,6 +19,8 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+from typing import Optional
+
 from bitcoin.base58 import Base58ChecksumError
 from bitcoin.wallet import CBitcoinAddressError
 from squeak.core.signing import CSigningKey
@@ -27,9 +29,27 @@ from squeak.core.signing import CSqueakAddress
 from squeaknode.core.squeak_profile import SqueakProfile
 
 
-def create_signing_profile(profile_name: str) -> SqueakProfile:
+# def create_signing_profile(profile_name: str) -> SqueakProfile:
+#     validate_profile_name(profile_name)
+#     signing_key = CSigningKey.generate()
+#     verifying_key = signing_key.get_verifying_key()
+#     address = CSqueakAddress.from_verifying_key(verifying_key)
+#     signing_key_str = str(signing_key)
+#     signing_key_bytes = signing_key_str.encode()
+#     return SqueakProfile(
+#         profile_name=profile_name,
+#         private_key=signing_key_bytes,
+#         address=str(address),
+#         following=True,
+#     )
+
+
+def create_signing_profile(profile_name: str, private_key: Optional[str] = None) -> SqueakProfile:
     validate_profile_name(profile_name)
-    signing_key = CSigningKey.generate()
+    if private_key is None:
+        signing_key = CSigningKey.generate()
+    else:
+        signing_key = CSigningKey(private_key)
     verifying_key = signing_key.get_verifying_key()
     address = CSqueakAddress.from_verifying_key(verifying_key)
     signing_key_str = str(signing_key)
@@ -39,20 +59,6 @@ def create_signing_profile(profile_name: str) -> SqueakProfile:
         private_key=signing_key_bytes,
         address=str(address),
         following=True,
-    )
-
-
-def import_signing_profile(profile_name: str, private_key: str) -> SqueakProfile:
-    validate_profile_name(profile_name)
-    signing_key = CSigningKey(private_key)
-    verifying_key = signing_key.get_verifying_key()
-    address = CSqueakAddress.from_verifying_key(verifying_key)
-    signing_key_str = str(signing_key)
-    signing_key_bytes = signing_key_str.encode()
-    return SqueakProfile(
-        profile_name=profile_name,
-        private_key=signing_key_bytes,
-        address=str(address),
     )
 
 
