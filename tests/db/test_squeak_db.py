@@ -207,3 +207,16 @@ def test_get_contact_profile(squeak_db, address, contact_profile):
 
     assert retrieved_profile.profile_name == contact_profile.profile_name
     assert retrieved_profile.address == contact_profile.address
+
+
+def test_set_profile_following(squeak_db, address, contact_profile):
+    profile_id = squeak_db.insert_profile(contact_profile)
+    squeak_db.set_profile_following(profile_id, True)
+    retrieved_profile = squeak_db.get_profile(profile_id)
+
+    assert retrieved_profile.following
+
+    squeak_db.set_profile_following(profile_id, False)
+    retrieved_profile = squeak_db.get_profile(profile_id)
+
+    assert not retrieved_profile.following
