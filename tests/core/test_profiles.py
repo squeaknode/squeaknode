@@ -23,7 +23,6 @@ import pytest
 
 from squeaknode.core.profiles import create_contact_profile
 from squeaknode.core.profiles import create_signing_profile
-from squeaknode.core.profiles import import_signing_profile
 
 
 @pytest.fixture
@@ -54,7 +53,7 @@ def test_create_signing_profile_empty_name():
 
 
 def test_import_signing_profile(profile_name, private_key, address):
-    profile = import_signing_profile(profile_name, private_key)
+    profile = create_signing_profile(profile_name, private_key)
 
     assert profile.profile_name == profile_name
     assert profile.private_key == private_key.encode()

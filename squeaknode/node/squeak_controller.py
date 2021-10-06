@@ -45,7 +45,6 @@ from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.peers import create_saved_peer
 from squeaknode.core.profiles import create_contact_profile
 from squeaknode.core.profiles import create_signing_profile
-from squeaknode.core.profiles import import_signing_profile
 from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.received_payment import ReceivedPayment
 from squeaknode.core.received_payment_summary import ReceivedPaymentSummary
@@ -257,7 +256,7 @@ class SqueakController:
         return profile_id
 
     def import_signing_profile(self, profile_name: str, private_key: str) -> int:
-        squeak_profile = import_signing_profile(
+        squeak_profile = create_signing_profile(
             profile_name,
             private_key,
         )

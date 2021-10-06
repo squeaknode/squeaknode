@@ -26,6 +26,8 @@ from bitcoin.core import CBlockHeader
 from squeak.core.signing import CSigningKey
 from squeak.core.signing import CSqueakAddress
 
+from squeaknode.core.profiles import create_contact_profile
+from squeaknode.core.profiles import create_signing_profile
 from squeaknode.core.squeaks import HASH_LENGTH
 from squeaknode.core.squeaks import make_squeak_with_block
 
@@ -83,3 +85,17 @@ def gen_squeak_with_block_header(signing_key, block_height, replyto_hash=None):
         block_height=block_height,
     )
     return squeak, block_info
+
+
+def gen_signing_profile(profile_name, signing_key):
+    return create_signing_profile(
+        profile_name,
+        signing_key,
+    )
+
+
+def gen_contact_profile(profile_name, address):
+    return create_contact_profile(
+        profile_name,
+        address,
+    )
