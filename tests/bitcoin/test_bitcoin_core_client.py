@@ -21,10 +21,11 @@
 # SOFTWARE.
 import mock
 import pytest
+from requests import HTTPError
 
 from squeaknode.bitcoin.bitcoin_core_bitcoin_client import BitcoinCoreBitcoinClient
+from squeaknode.bitcoin.exception import BitcoinConnectionError
 from squeaknode.bitcoin.exception import BitcoinInvalidResultError
-from squeaknode.bitcoin.exception import BitcoinInvalidStatusError
 
 
 @pytest.fixture
@@ -39,31 +40,34 @@ def bitcoin_core_client():
     )
 
 
-class MockGetCountResponse:
+class MockResponse:
+
+    def json(self):
+        return {}
+
+    @property
+    def status_code(self):
+        return 200
+
+    def raise_for_status(self):
+        pass
+
+
+class MockGetCountResponse(MockResponse):
+
     def json(self):
         return {'result': '555'}
 
-    @property
-    def status_code(self):
-        return 200
 
-
-class MockEmptyResponse:
+class MockEmptyResponse(MockResponse):
     def json(self):
         return {}
 
-    @property
-    def status_code(self):
-        return 200
 
+class MockInvalidStatusResponse(MockResponse):
 
-class MockInvalidStatusResponse:
-    def json(self):
-        return {}
-
-    @property
-    def status_code(self):
-        return 500
+    def raise_for_status(self):
+        raise HTTPError("Some http error", response=self)
 
 
 @pytest.fixture
@@ -101,5 +105,5 @@ def test_get_block_count_invalid_status(bitcoin_core_client, mock_invalid_status
     with mock.patch('squeaknode.bitcoin.bitcoin_core_bitcoin_client.requests.post', autospec=True) as mock_post:
         mock_post.return_value = mock_invalid_status_response
 
-        with pytest.raises(BitcoinInvalidStatusError):
+        with pytest.raises(BitcoinConnectionError):
             bitcoin_core_client.get_block_count()

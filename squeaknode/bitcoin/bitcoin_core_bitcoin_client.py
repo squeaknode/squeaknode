@@ -27,8 +27,8 @@ import requests
 
 from squeaknode.bitcoin.bitcoin_client import BitcoinClient
 from squeaknode.bitcoin.block_info import BlockInfo
+from squeaknode.bitcoin.exception import BitcoinConnectionError
 from squeaknode.bitcoin.exception import BitcoinInvalidResultError
-from squeaknode.bitcoin.exception import BitcoinInvalidStatusError
 
 logger = logging.getLogger(__name__)
 
@@ -71,13 +71,26 @@ class BitcoinCoreBitcoinClient(BitcoinClient):
             "jsonrpc": "2.0",
             "id": 0,
         }
-        response = requests.post(
-            self.url,
-            data=json.dumps(payload),
-            headers=self.headers,
-        )
-        if response.status_code != 200:
-            raise BitcoinInvalidStatusError()
+        try:
+            response = requests.post(
+                self.url,
+                data=json.dumps(payload),
+                headers=self.headers,
+            )
+            response.raise_for_status()
+        except requests.exceptions.HTTPError as errh:
+            print("Http Error:", errh)
+            raise BitcoinConnectionError(errh)
+        except requests.exceptions.ConnectionError as errc:
+            print("Error Connecting:", errc)
+            raise BitcoinConnectionError(errc)
+        except requests.exceptions.Timeout as errt:
+            print("Timeout Error:", errt)
+            raise BitcoinConnectionError(errt)
+        except requests.exceptions.RequestException as err:
+            print("OOps: Something Else", err)
+            raise BitcoinConnectionError(err)
+
         json_response = response.json()
         logger.debug(
             "Got json_response for get_block_count: {}".format(json_response))

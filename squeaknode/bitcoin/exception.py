@@ -29,5 +29,13 @@ class BitcoinInvalidResultError(BitcoinError):
     """Error that is raised when bitcoin returns an invalid result."""
 
 
-class BitcoinInvalidStatusError(BitcoinError):
-    """Error that is raised when bitcoin returns a bad status code."""
+class BitcoinConnectionError(BitcoinError):
+    """Error that is raised when the bitcoin connection fails."""
+
+    def __init__(self, err):
+        self.err = err
+
+    def __repr__(self):
+        return 'BitcoinConnectionError(%r)' % (
+            self.err,
+        )
