@@ -25,9 +25,9 @@ class BitcoinError(Exception):
     """Base class for other bitcoin exceptions."""
 
 
-class InvalidResultError(BitcoinError):
+class BitcoinInvalidResultError(BitcoinError):
     """Error that is raised when bitcoin returns an invalid result."""
 
 
-class InvalidStatusError(BitcoinError):
+class BitcoinInvalidStatusError(BitcoinError):
     """Error that is raised when bitcoin returns a bad status code."""

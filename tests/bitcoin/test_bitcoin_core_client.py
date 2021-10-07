@@ -23,8 +23,8 @@ import mock
 import pytest
 
 from squeaknode.bitcoin.bitcoin_core_bitcoin_client import BitcoinCoreBitcoinClient
-from squeaknode.bitcoin.exception import InvalidResultError
-from squeaknode.bitcoin.exception import InvalidStatusError
+from squeaknode.bitcoin.exception import BitcoinInvalidResultError
+from squeaknode.bitcoin.exception import BitcoinInvalidStatusError
 
 
 @pytest.fixture
@@ -93,7 +93,7 @@ def test_get_block_count_no_result(bitcoin_core_client, mock_empty_response):
     with mock.patch('squeaknode.bitcoin.bitcoin_core_bitcoin_client.requests.post', autospec=True) as mock_post:
         mock_post.return_value = mock_empty_response
 
-        with pytest.raises(InvalidResultError):
+        with pytest.raises(BitcoinInvalidResultError):
             bitcoin_core_client.get_block_count()
 
 
@@ -101,5 +101,5 @@ def test_get_block_count_invalid_status(bitcoin_core_client, mock_invalid_status
     with mock.patch('squeaknode.bitcoin.bitcoin_core_bitcoin_client.requests.post', autospec=True) as mock_post:
         mock_post.return_value = mock_invalid_status_response
 
-        with pytest.raises(InvalidStatusError):
+        with pytest.raises(BitcoinInvalidStatusError):
             bitcoin_core_client.get_block_count()
