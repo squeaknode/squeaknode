@@ -134,52 +134,42 @@ def unfollowed_contact_profile(squeak_db, followed_contact_profile):
 
 
 @pytest.fixture
-def followed_squeak_hashes(
-        squeak_db,
-        signing_key,
-        followed_contact_profile,
-):
+def inserted_squeak_hashes(squeak_db, signing_key):
     ret = []
     for i in range(100):
         squeak, header = gen_squeak_with_block_header(signing_key, i)
         squeak_hash = squeak_db.insert_squeak(squeak, header)
         ret.append(squeak_hash)
     yield ret
+
+
+@pytest.fixture
+def followed_squeak_hashes(
+        squeak_db,
+        inserted_squeak_hashes,
+        followed_contact_profile,
+):
+    yield inserted_squeak_hashes
 
 
 @pytest.fixture
 def unfollowed_squeak_hashes(
         squeak_db,
-        signing_key,
+        inserted_squeak_hashes,
         unfollowed_contact_profile,
 ):
-    ret = []
-    for i in range(100):
-        squeak, header = gen_squeak_with_block_header(signing_key, i)
-        squeak_hash = squeak_db.insert_squeak(squeak, header)
-        ret.append(squeak_hash)
-    yield ret
+    yield inserted_squeak_hashes
 
 
 @pytest.fixture
-def liked_squeak_hashes(
-        squeak_db,
-        signing_key,
-):
-    ret = []
-    for i in range(100):
-        squeak, header = gen_squeak_with_block_header(signing_key, i)
-        squeak_hash = squeak_db.insert_squeak(squeak, header)
+def liked_squeak_hashes(squeak_db, inserted_squeak_hashes):
+    for squeak_hash in inserted_squeak_hashes:
         squeak_db.set_squeak_liked(squeak_hash)
-        ret.append(squeak_hash)
-    yield ret
+    yield inserted_squeak_hashes
 
 
 @pytest.fixture
-def unliked_squeak_hashes(
-        squeak_db,
-        liked_squeak_hashes,
-):
+def unliked_squeak_hashes(squeak_db, liked_squeak_hashes):
     for squeak_hash in liked_squeak_hashes:
         squeak_db.set_squeak_unliked(squeak_hash)
     yield liked_squeak_hashes
