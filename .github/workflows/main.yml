@@ -13,6 +13,15 @@ on:
   pull_request:
 
 jobs:
+  Timestamp-Tags:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+      - name: Run OpenTimestamps github action
+        uses: yzernik/open-timestamps-github-action@v1
+        with:
+          customTagMessage: "Running my own action as dogfood!"
   main:
     runs-on: ubuntu-latest
     steps:
