@@ -99,6 +99,104 @@ def unlocked_squeak_hash(squeak_db, squeak, inserted_squeak_hash, secret_key, sq
     yield inserted_squeak_hash
 
 
+@pytest.fixture
+def inserted_signing_profile(squeak_db, signing_profile):
+    profile_id = squeak_db.insert_profile(signing_profile)
+    yield squeak_db.get_profile(profile_id)
+
+
+@pytest.fixture
+def inserted_contact_profile(squeak_db, contact_profile):
+    profile_id = squeak_db.insert_profile(contact_profile)
+    yield squeak_db.get_profile(profile_id)
+
+
+@pytest.fixture
+def followed_contact_profile(squeak_db, inserted_contact_profile):
+    squeak_db.set_profile_following(
+        inserted_contact_profile.profile_id,
+        True,
+    )
+    yield squeak_db.get_profile(
+        inserted_contact_profile.profile_id,
+    )
+
+
+@pytest.fixture
+def unfollowed_contact_profile(squeak_db, followed_contact_profile):
+    squeak_db.set_profile_following(
+        followed_contact_profile.profile_id,
+        False,
+    )
+    yield squeak_db.get_profile(
+        followed_contact_profile.profile_id,
+    )
+
+
+@pytest.fixture
+def followed_squeak_hashes(
+        squeak_db,
+        signing_key,
+        followed_contact_profile,
+):
+    ret = []
+    for i in range(100):
+        squeak, header = gen_squeak_with_block_header(signing_key, i)
+        squeak_hash = squeak_db.insert_squeak(squeak, header)
+        ret.append(squeak_hash)
+    yield ret
+
+
+@pytest.fixture
+def unfollowed_squeak_hashes(
+        squeak_db,
+        signing_key,
+        unfollowed_contact_profile,
+):
+    ret = []
+    for i in range(100):
+        squeak, header = gen_squeak_with_block_header(signing_key, i)
+        squeak_hash = squeak_db.insert_squeak(squeak, header)
+        ret.append(squeak_hash)
+    yield ret
+
+
+@pytest.fixture
+def liked_squeak_hashes(
+        squeak_db,
+        signing_key,
+):
+    ret = []
+    for i in range(100):
+        squeak, header = gen_squeak_with_block_header(signing_key, i)
+        squeak_hash = squeak_db.insert_squeak(squeak, header)
+        squeak_db.set_squeak_liked(squeak_hash)
+        ret.append(squeak_hash)
+    yield ret
+
+
+@pytest.fixture
+def unliked_squeak_hashes(
+        squeak_db,
+        liked_squeak_hashes,
+):
+    for squeak_hash in liked_squeak_hashes:
+        squeak_db.set_squeak_unliked(squeak_hash)
+    yield liked_squeak_hashes
+
+
+@pytest.fixture
+def liked_squeak_hash(squeak_db, inserted_squeak_hash):
+    squeak_db.set_squeak_liked(inserted_squeak_hash)
+    yield inserted_squeak_hash
+
+
+@pytest.fixture
+def unliked_squeak_hash(squeak_db, liked_squeak_hash):
+    squeak_db.set_squeak_unliked(liked_squeak_hash)
+    yield liked_squeak_hash
+
+
 def test_get_squeak(squeak_db, squeak, inserted_squeak_hash):
     retrieved_squeak = squeak_db.get_squeak(inserted_squeak_hash)
 
@@ -177,29 +275,7 @@ def test_get_secret_key_missing_squeak(squeak_db, squeak):
     assert retrieved_secret_key is None
 
 
-def test_get_timeline_squeak_entries(
-        squeak_db,
-        signing_key,
-        signing_profile,
-        contact_profile,
-):
-    squeak_1, header_1 = gen_squeak_with_block_header(signing_key, 5001)
-    squeak_2, header_2 = gen_squeak_with_block_header(signing_key, 5002)
-    squeak_3, header_3 = gen_squeak_with_block_header(signing_key, 5003)
-    squeak_4, header_4 = gen_squeak_with_block_header(signing_key, 5004)
-    squeak_5, header_5 = gen_squeak_with_block_header(signing_key, 5005)
-
-    squeak_hash_1 = squeak_db.insert_squeak(squeak_1, header_1)  # noqa: F841
-    squeak_hash_2 = squeak_db.insert_squeak(squeak_2, header_2)  # noqa: F841
-    squeak_hash_3 = squeak_db.insert_squeak(squeak_3, header_3)  # noqa: F841
-    squeak_hash_4 = squeak_db.insert_squeak(squeak_4, header_4)  # noqa: F841
-    squeak_hash_5 = squeak_db.insert_squeak(squeak_5, header_5)  # noqa: F841
-
-    # Insert the contact profile and ensure that it is followed.
-    profile_id = squeak_db.insert_profile(contact_profile)
-    squeak_db.set_profile_following(profile_id, True)
-
-    # Get the timeline squeak entries.
+def test_get_timeline_squeak_entries(squeak_db, followed_squeak_hashes):
     timeline_squeak_entries = squeak_db.get_timeline_squeak_entries(
         limit=2,
         last_entry=None,
@@ -208,76 +284,74 @@ def test_get_timeline_squeak_entries(
     assert len(timeline_squeak_entries) == 2
 
 
-def test_get_signing_profile(squeak_db, signing_key, signing_profile):
-    profile_id = squeak_db.insert_profile(signing_profile)
-    retrieved_profile = squeak_db.get_profile(profile_id)
+def test_get_timeline_squeak_entries_all_unfollowed(squeak_db, unfollowed_squeak_hashes):
+    timeline_squeak_entries = squeak_db.get_timeline_squeak_entries(
+        limit=2,
+        last_entry=None,
+    )
 
-    assert retrieved_profile.profile_name == signing_profile.profile_name
-    assert retrieved_profile.private_key == signing_profile.private_key
-
-
-def test_get_contact_profile(squeak_db, address, contact_profile):
-    profile_id = squeak_db.insert_profile(contact_profile)
-    retrieved_profile = squeak_db.get_profile(profile_id)
-
-    assert retrieved_profile.profile_name == contact_profile.profile_name
-    assert retrieved_profile.address == contact_profile.address
+    assert len(timeline_squeak_entries) == 0
 
 
-def test_set_profile_following(squeak_db, address, contact_profile):
-    profile_id = squeak_db.insert_profile(contact_profile)
-    squeak_db.set_profile_following(profile_id, True)
-    retrieved_profile = squeak_db.get_profile(profile_id)
+def test_get_signing_profile(squeak_db, signing_profile, inserted_signing_profile):
 
-    assert retrieved_profile.following
+    assert inserted_signing_profile.profile_id is not None
+    assert inserted_signing_profile.profile_name == signing_profile.profile_name
+    assert inserted_signing_profile.private_key == signing_profile.private_key
+    assert inserted_signing_profile.address == signing_profile.address
 
-    squeak_db.set_profile_following(profile_id, False)
-    retrieved_profile = squeak_db.get_profile(profile_id)
 
-    assert not retrieved_profile.following
+def test_get_contact_profile(squeak_db, contact_profile, inserted_contact_profile):
+
+    assert inserted_contact_profile.profile_id is not None
+    assert inserted_contact_profile.private_key is None
+    assert inserted_contact_profile.profile_name == contact_profile.profile_name
+    assert inserted_contact_profile.address == contact_profile.address
+
+
+def test_set_profile_following(squeak_db, followed_contact_profile):
+
+    assert followed_contact_profile.following
+
+
+def test_set_profile_unfollowing(squeak_db, unfollowed_contact_profile):
+
+    assert not unfollowed_contact_profile.following
 
 
 def test_get_liked_squeak_entries(
         squeak_db,
-        signing_key,
-        signing_profile,
-        contact_profile,
+        liked_squeak_hashes,
 ):
-    squeak_1, header_1 = gen_squeak_with_block_header(signing_key, 5001)
-    squeak_2, header_2 = gen_squeak_with_block_header(signing_key, 5002)
-    squeak_3, header_3 = gen_squeak_with_block_header(signing_key, 5003)
-    squeak_4, header_4 = gen_squeak_with_block_header(signing_key, 5004)
-    squeak_5, header_5 = gen_squeak_with_block_header(signing_key, 5005)
-
-    squeak_hash_1 = squeak_db.insert_squeak(squeak_1, header_1)  # noqa: F841
-    squeak_hash_2 = squeak_db.insert_squeak(squeak_2, header_2)  # noqa: F841
-    squeak_hash_3 = squeak_db.insert_squeak(squeak_3, header_3)  # noqa: F841
-    squeak_hash_4 = squeak_db.insert_squeak(squeak_4, header_4)  # noqa: F841
-    squeak_hash_5 = squeak_db.insert_squeak(squeak_5, header_5)  # noqa: F841
-
-    # Like some of the squeaks
-    squeak_db.set_squeak_liked(squeak_hash_3)
-    squeak_db.set_squeak_liked(squeak_hash_4)
-    squeak_db.set_squeak_liked(squeak_hash_5)
-
     # Get the liked squeak entries.
     liked_squeak_entries = squeak_db.get_liked_squeak_entries(
-        limit=10,
+        limit=200,
         last_entry=None,
     )
 
-    assert len(liked_squeak_entries) == 3
+    assert len(liked_squeak_entries) == 100
 
 
-def test_set_squeak_liked(squeak_db, signing_key):
-    squeak, header = gen_squeak_with_block_header(signing_key, 5001)
-    squeak_hash = squeak_db.insert_squeak(squeak, header)
-    squeak_db.set_squeak_liked(squeak_hash)
-    retrieved_squeak_entry = squeak_db.get_squeak_entry(squeak_hash)
+def test_get_unliked_squeak_entries(
+        squeak_db,
+        unliked_squeak_hashes,
+):
+    # Get the liked squeak entries.
+    liked_squeak_entries = squeak_db.get_liked_squeak_entries(
+        limit=200,
+        last_entry=None,
+    )
+
+    assert len(liked_squeak_entries) == 0
+
+
+def test_set_squeak_liked(squeak_db, liked_squeak_hash):
+    retrieved_squeak_entry = squeak_db.get_squeak_entry(liked_squeak_hash)
 
     assert retrieved_squeak_entry.liked_time_ms is not None
 
-    squeak_db.set_squeak_unliked(squeak_hash)
-    retrieved_squeak_entry = squeak_db.get_squeak_entry(squeak_hash)
+
+def test_set_squeak_unliked(squeak_db, unliked_squeak_hash):
+    retrieved_squeak_entry = squeak_db.get_squeak_entry(unliked_squeak_hash)
 
     assert retrieved_squeak_entry.liked_time_ms is None
