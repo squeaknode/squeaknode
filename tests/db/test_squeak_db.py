@@ -87,19 +87,28 @@ def contact_profile(contact_profile_name, address):
     )
 
 
-def test_insert_get_squeak(squeak_db, squeak, block_header):
-    squeak_hash = squeak_db.insert_squeak(squeak, block_header)
-    retrieved_squeak = squeak_db.get_squeak(squeak_hash)
+@pytest.fixture
+def inserted_squeak_hash(squeak_db, squeak, block_header):
+    yield squeak_db.insert_squeak(squeak, block_header)
+
+
+@pytest.fixture
+def unlocked_squeak_hash(squeak_db, squeak, inserted_squeak_hash, secret_key, squeak_content):
+    squeak_db.set_squeak_decryption_key(
+        inserted_squeak_hash, secret_key, squeak_content)
+    yield inserted_squeak_hash
+
+
+def test_get_squeak(squeak_db, squeak, inserted_squeak_hash):
+    retrieved_squeak = squeak_db.get_squeak(inserted_squeak_hash)
 
     assert retrieved_squeak == squeak
 
 
-def test_insert_duplicate_squeak(squeak_db, squeak, block_header):
-    first_squeak_hash = squeak_db.insert_squeak(squeak, block_header)
-    second_squeak_hash = squeak_db.insert_squeak(squeak, block_header)
+def test_insert_duplicate_squeak(squeak_db, squeak, block_header, inserted_squeak_hash):
+    insert_result = squeak_db.insert_squeak(squeak, block_header)
 
-    assert first_squeak_hash is not None
-    assert second_squeak_hash is None
+    assert insert_result is None
 
 
 def test_get_missing_squeak(squeak_db, squeak):
@@ -109,11 +118,10 @@ def test_get_missing_squeak(squeak_db, squeak):
     assert retrieved_squeak is None
 
 
-def test_get_squeak_entry(squeak_db, squeak, block_header, address):
-    squeak_hash = squeak_db.insert_squeak(squeak, block_header)
-    retrieved_squeak_entry = squeak_db.get_squeak_entry(squeak_hash)
+def test_get_squeak_entry(squeak_db, squeak, block_header, address, inserted_squeak_hash):
+    retrieved_squeak_entry = squeak_db.get_squeak_entry(inserted_squeak_hash)
 
-    assert retrieved_squeak_entry.squeak_hash == squeak_hash
+    assert retrieved_squeak_entry.squeak_hash == inserted_squeak_hash
     assert retrieved_squeak_entry.address == address
     assert retrieved_squeak_entry.content is None
     assert retrieved_squeak_entry.block_time == block_header.nTime
@@ -129,29 +137,42 @@ def test_get_missing_squeak_entry(squeak_db, squeak, address):
 def test_get_squeak_secret_key_and_content(
         squeak_db,
         squeak,
-        block_header,
         secret_key,
-        address,
         squeak_content,
+        unlocked_squeak_hash,
 ):
-    squeak_hash = squeak_db.insert_squeak(squeak, block_header)
-    squeak_db.set_squeak_decryption_key(
-        squeak_hash, secret_key, squeak_content)
-    retrieved_squeak_entry = squeak_db.get_squeak_entry(squeak_hash)
-    retrieved_secret_key = squeak_db.get_squeak_secret_key(squeak_hash)
+    retrieved_squeak_entry = squeak_db.get_squeak_entry(unlocked_squeak_hash)
+    retrieved_secret_key = squeak_db.get_squeak_secret_key(
+        unlocked_squeak_hash,
+    )
 
-    assert retrieved_squeak_entry.squeak_hash == squeak_hash
+    assert retrieved_squeak_entry.squeak_hash == unlocked_squeak_hash
     assert retrieved_squeak_entry.content == squeak_content
     assert retrieved_secret_key == secret_key
 
 
-def test_get_missing_squeak_secret_key(
+def test_get_squeak_secret_key_and_content_locked(
         squeak_db,
         squeak,
-        block_header,
+        secret_key,
+        squeak_content,
+        inserted_squeak_hash,
 ):
-    squeak_hash = squeak_db.insert_squeak(squeak, block_header)
-    retrieved_secret_key = squeak_db.get_squeak_secret_key(squeak_hash)
+    retrieved_squeak_entry = squeak_db.get_squeak_entry(inserted_squeak_hash)
+    retrieved_secret_key = squeak_db.get_squeak_secret_key(
+        inserted_squeak_hash,
+    )
+
+    assert retrieved_squeak_entry.squeak_hash == inserted_squeak_hash
+    assert retrieved_squeak_entry.content is None
+    assert retrieved_secret_key is None
+
+
+def test_get_secret_key_missing_squeak(squeak_db, squeak):
+    squeak_hash = get_hash(squeak)
+    retrieved_secret_key = squeak_db.get_squeak_secret_key(
+        squeak_hash,
+    )
 
     assert retrieved_secret_key is None
 
