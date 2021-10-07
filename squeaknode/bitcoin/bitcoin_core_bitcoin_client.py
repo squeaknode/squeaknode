@@ -27,6 +27,8 @@ import requests
 
 from squeaknode.bitcoin.bitcoin_client import BitcoinClient
 from squeaknode.bitcoin.block_info import BlockInfo
+from squeaknode.bitcoin.exception import InvalidResultError
+from squeaknode.bitcoin.exception import InvalidStatusError
 
 logger = logging.getLogger(__name__)
 
@@ -73,12 +75,15 @@ class BitcoinCoreBitcoinClient(BitcoinClient):
             self.url,
             data=json.dumps(payload),
             headers=self.headers,
-        ).json()
-
-        logger.debug("Got response for get_block_count: {}".format(response))
-        result = response["result"]
+        )
+        if response.status_code != 200:
+            raise InvalidStatusError()
+        json_response = response.json()
+        logger.debug(
+            "Got json_response for get_block_count: {}".format(json_response))
+        result = json_response.get("result")
         if result is None:
-            raise Exception("Unable to get block count from bitcoin node.")
+            raise InvalidResultError()
         block_count = int(result)
         logger.debug("Got block_count: {}".format(block_count))
         return block_count
