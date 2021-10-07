@@ -161,6 +161,30 @@ def unfollowed_squeak_hashes(
     yield ret
 
 
+@pytest.fixture
+def liked_squeak_hashes(
+        squeak_db,
+        signing_key,
+):
+    ret = []
+    for i in range(100):
+        squeak, header = gen_squeak_with_block_header(signing_key, i)
+        squeak_hash = squeak_db.insert_squeak(squeak, header)
+        squeak_db.set_squeak_liked(squeak_hash)
+        ret.append(squeak_hash)
+    yield ret
+
+
+@pytest.fixture
+def unliked_squeak_hashes(
+        squeak_db,
+        liked_squeak_hashes,
+):
+    for squeak_hash in liked_squeak_hashes:
+        squeak_db.set_squeak_unliked(squeak_hash)
+    yield liked_squeak_hashes
+
+
 def test_get_squeak(squeak_db, squeak, inserted_squeak_hash):
     retrieved_squeak = squeak_db.get_squeak(inserted_squeak_hash)
 
@@ -285,34 +309,28 @@ def test_set_profile_unfollowing(squeak_db, unfollowed_contact_profile):
 
 def test_get_liked_squeak_entries(
         squeak_db,
-        signing_key,
-        signing_profile,
-        contact_profile,
+        liked_squeak_hashes,
 ):
-    squeak_1, header_1 = gen_squeak_with_block_header(signing_key, 5001)
-    squeak_2, header_2 = gen_squeak_with_block_header(signing_key, 5002)
-    squeak_3, header_3 = gen_squeak_with_block_header(signing_key, 5003)
-    squeak_4, header_4 = gen_squeak_with_block_header(signing_key, 5004)
-    squeak_5, header_5 = gen_squeak_with_block_header(signing_key, 5005)
-
-    squeak_hash_1 = squeak_db.insert_squeak(squeak_1, header_1)  # noqa: F841
-    squeak_hash_2 = squeak_db.insert_squeak(squeak_2, header_2)  # noqa: F841
-    squeak_hash_3 = squeak_db.insert_squeak(squeak_3, header_3)  # noqa: F841
-    squeak_hash_4 = squeak_db.insert_squeak(squeak_4, header_4)  # noqa: F841
-    squeak_hash_5 = squeak_db.insert_squeak(squeak_5, header_5)  # noqa: F841
-
-    # Like some of the squeaks
-    squeak_db.set_squeak_liked(squeak_hash_3)
-    squeak_db.set_squeak_liked(squeak_hash_4)
-    squeak_db.set_squeak_liked(squeak_hash_5)
-
     # Get the liked squeak entries.
     liked_squeak_entries = squeak_db.get_liked_squeak_entries(
-        limit=10,
+        limit=200,
         last_entry=None,
     )
 
-    assert len(liked_squeak_entries) == 3
+    assert len(liked_squeak_entries) == 100
+
+
+def test_get_unliked_squeak_entries(
+        squeak_db,
+        unliked_squeak_hashes,
+):
+    # Get the liked squeak entries.
+    liked_squeak_entries = squeak_db.get_liked_squeak_entries(
+        limit=200,
+        last_entry=None,
+    )
+
+    assert len(liked_squeak_entries) == 0
 
 
 def test_set_squeak_liked(squeak_db, signing_key):
