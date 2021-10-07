@@ -168,13 +168,11 @@ def test_get_squeak_secret_key_and_content_locked(
     assert retrieved_secret_key is None
 
 
-def test_get_missing_squeak_secret_key(
-        squeak_db,
-        squeak,
-        block_header,
-):
-    squeak_hash = squeak_db.insert_squeak(squeak, block_header)
-    retrieved_secret_key = squeak_db.get_squeak_secret_key(squeak_hash)
+def test_get_secret_key_missing_squeak(squeak_db, squeak):
+    squeak_hash = get_hash(squeak)
+    retrieved_secret_key = squeak_db.get_squeak_secret_key(
+        squeak_hash,
+    )
 
     assert retrieved_secret_key is None
 
