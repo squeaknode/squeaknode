@@ -143,11 +143,29 @@ def test_get_squeak_secret_key_and_content(
 ):
     retrieved_squeak_entry = squeak_db.get_squeak_entry(unlocked_squeak_hash)
     retrieved_secret_key = squeak_db.get_squeak_secret_key(
-        unlocked_squeak_hash)
+        unlocked_squeak_hash,
+    )
 
     assert retrieved_squeak_entry.squeak_hash == unlocked_squeak_hash
     assert retrieved_squeak_entry.content == squeak_content
     assert retrieved_secret_key == secret_key
+
+
+def test_get_squeak_secret_key_and_content_locked(
+        squeak_db,
+        squeak,
+        secret_key,
+        squeak_content,
+        inserted_squeak_hash,
+):
+    retrieved_squeak_entry = squeak_db.get_squeak_entry(inserted_squeak_hash)
+    retrieved_secret_key = squeak_db.get_squeak_secret_key(
+        inserted_squeak_hash,
+    )
+
+    assert retrieved_squeak_entry.squeak_hash == inserted_squeak_hash
+    assert retrieved_squeak_entry.content is None
+    assert retrieved_secret_key is None
 
 
 def test_get_missing_squeak_secret_key(
