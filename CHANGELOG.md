@@ -1,3 +1,12 @@
+0.1.160 - 2021-10-07
+===================
+
+### Features
+- Add unit test for timeline query.
+    - #1518
+- Add OpenTimestamps github action.
+    - #1524
+
 0.1.159 - 2021-10-04
 ===================
 
