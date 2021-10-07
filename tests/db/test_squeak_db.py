@@ -100,6 +100,12 @@ def unlocked_squeak_hash(squeak_db, squeak, inserted_squeak_hash, secret_key, sq
 
 
 @pytest.fixture
+def inserted_signing_profile(squeak_db, signing_profile):
+    profile_id = squeak_db.insert_profile(signing_profile)
+    yield squeak_db.get_profile(profile_id)
+
+
+@pytest.fixture
 def followed_contact_profile(squeak_db, contact_profile):
     profile_id = squeak_db.insert_profile(contact_profile)
     squeak_db.set_profile_following(profile_id, True)
@@ -229,12 +235,11 @@ def test_get_timeline_squeak_entries_all_unfollowed(squeak_db, unfollowed_squeak
     assert len(timeline_squeak_entries) == 0
 
 
-def test_get_signing_profile(squeak_db, signing_key, signing_profile):
-    profile_id = squeak_db.insert_profile(signing_profile)
-    retrieved_profile = squeak_db.get_profile(profile_id)
+def test_get_signing_profile(squeak_db, signing_profile, inserted_signing_profile):
 
-    assert retrieved_profile.profile_name == signing_profile.profile_name
-    assert retrieved_profile.private_key == signing_profile.private_key
+    assert inserted_signing_profile.profile_id is not None
+    assert inserted_signing_profile.profile_name == signing_profile.profile_name
+    assert inserted_signing_profile.private_key == signing_profile.private_key
 
 
 def test_get_contact_profile(squeak_db, address, contact_profile):
