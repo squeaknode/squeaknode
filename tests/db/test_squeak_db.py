@@ -185,6 +185,18 @@ def unliked_squeak_hashes(
     yield liked_squeak_hashes
 
 
+@pytest.fixture
+def liked_squeak_hash(squeak_db, inserted_squeak_hash):
+    squeak_db.set_squeak_liked(inserted_squeak_hash)
+    yield inserted_squeak_hash
+
+
+@pytest.fixture
+def unliked_squeak_hash(squeak_db, liked_squeak_hash):
+    squeak_db.set_squeak_unliked(liked_squeak_hash)
+    yield liked_squeak_hash
+
+
 def test_get_squeak(squeak_db, squeak, inserted_squeak_hash):
     retrieved_squeak = squeak_db.get_squeak(inserted_squeak_hash)
 
@@ -333,15 +345,13 @@ def test_get_unliked_squeak_entries(
     assert len(liked_squeak_entries) == 0
 
 
-def test_set_squeak_liked(squeak_db, signing_key):
-    squeak, header = gen_squeak_with_block_header(signing_key, 5001)
-    squeak_hash = squeak_db.insert_squeak(squeak, header)
-    squeak_db.set_squeak_liked(squeak_hash)
-    retrieved_squeak_entry = squeak_db.get_squeak_entry(squeak_hash)
+def test_set_squeak_liked(squeak_db, liked_squeak_hash):
+    retrieved_squeak_entry = squeak_db.get_squeak_entry(liked_squeak_hash)
 
     assert retrieved_squeak_entry.liked_time_ms is not None
 
-    squeak_db.set_squeak_unliked(squeak_hash)
-    retrieved_squeak_entry = squeak_db.get_squeak_entry(squeak_hash)
+
+def test_set_squeak_unliked(squeak_db, unliked_squeak_hash):
+    retrieved_squeak_entry = squeak_db.get_squeak_entry(unliked_squeak_hash)
 
     assert retrieved_squeak_entry.liked_time_ms is None
