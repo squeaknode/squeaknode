@@ -100,36 +100,54 @@ def unlocked_squeak_hash(squeak_db, squeak, inserted_squeak_hash, secret_key, sq
 
 
 @pytest.fixture
-def inserted_signing_profile(squeak_db, signing_profile):
-    profile_id = squeak_db.insert_profile(signing_profile)
-    yield squeak_db.get_profile(profile_id)
+def inserted_signing_profile_id(squeak_db, signing_profile):
+    yield squeak_db.insert_profile(signing_profile)
 
 
 @pytest.fixture
-def inserted_contact_profile(squeak_db, contact_profile):
-    profile_id = squeak_db.insert_profile(contact_profile)
-    yield squeak_db.get_profile(profile_id)
+def inserted_signing_profile(squeak_db, inserted_signing_profile_id):
+    yield squeak_db.get_profile(inserted_signing_profile_id)
 
 
 @pytest.fixture
-def followed_contact_profile(squeak_db, inserted_contact_profile):
+def inserted_contact_profile_id(squeak_db, contact_profile):
+    yield squeak_db.insert_profile(contact_profile)
+
+
+@pytest.fixture
+def inserted_contact_profile(squeak_db, inserted_contact_profile_id):
+    yield squeak_db.get_profile(inserted_contact_profile_id)
+
+
+@pytest.fixture
+def followed_contact_profile_id(squeak_db, inserted_contact_profile_id):
     squeak_db.set_profile_following(
-        inserted_contact_profile.profile_id,
+        inserted_contact_profile_id,
         True,
     )
+    yield inserted_contact_profile_id
+
+
+@pytest.fixture
+def followed_contact_profile(squeak_db, followed_contact_profile_id):
     yield squeak_db.get_profile(
-        inserted_contact_profile.profile_id,
+        followed_contact_profile_id,
     )
 
 
 @pytest.fixture
-def unfollowed_contact_profile(squeak_db, followed_contact_profile):
+def unfollowed_contact_profile_id(squeak_db, followed_contact_profile_id):
     squeak_db.set_profile_following(
-        followed_contact_profile.profile_id,
+        followed_contact_profile_id,
         False,
     )
+    yield followed_contact_profile_id
+
+
+@pytest.fixture
+def unfollowed_contact_profile(squeak_db, unfollowed_contact_profile_id):
     yield squeak_db.get_profile(
-        followed_contact_profile.profile_id,
+        unfollowed_contact_profile_id,
     )
 
 
