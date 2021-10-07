@@ -106,10 +106,31 @@ def inserted_signing_profile(squeak_db, signing_profile):
 
 
 @pytest.fixture
-def followed_contact_profile(squeak_db, contact_profile):
+def inserted_contact_profile(squeak_db, contact_profile):
     profile_id = squeak_db.insert_profile(contact_profile)
-    squeak_db.set_profile_following(profile_id, True)
     yield squeak_db.get_profile(profile_id)
+
+
+@pytest.fixture
+def followed_contact_profile(squeak_db, inserted_contact_profile):
+    squeak_db.set_profile_following(
+        inserted_contact_profile.profile_id,
+        True,
+    )
+    yield squeak_db.get_profile(
+        inserted_contact_profile.profile_id,
+    )
+
+
+@pytest.fixture
+def unfollowed_contact_profile(squeak_db, followed_contact_profile):
+    squeak_db.set_profile_following(
+        followed_contact_profile.profile_id,
+        False,
+    )
+    yield squeak_db.get_profile(
+        followed_contact_profile.profile_id,
+    )
 
 
 @pytest.fixture
@@ -120,7 +141,7 @@ def followed_squeak_hashes(
 ):
     ret = []
     for i in range(100):
-        squeak, header = gen_squeak_with_block_header(signing_key, 5001)
+        squeak, header = gen_squeak_with_block_header(signing_key, i)
         squeak_hash = squeak_db.insert_squeak(squeak, header)
         ret.append(squeak_hash)
     yield ret
@@ -130,10 +151,11 @@ def followed_squeak_hashes(
 def unfollowed_squeak_hashes(
         squeak_db,
         signing_key,
+        unfollowed_contact_profile,
 ):
     ret = []
     for i in range(100):
-        squeak, header = gen_squeak_with_block_header(signing_key, 5001)
+        squeak, header = gen_squeak_with_block_header(signing_key, i)
         squeak_hash = squeak_db.insert_squeak(squeak, header)
         ret.append(squeak_hash)
     yield ret
@@ -240,27 +262,25 @@ def test_get_signing_profile(squeak_db, signing_profile, inserted_signing_profil
     assert inserted_signing_profile.profile_id is not None
     assert inserted_signing_profile.profile_name == signing_profile.profile_name
     assert inserted_signing_profile.private_key == signing_profile.private_key
+    assert inserted_signing_profile.address == signing_profile.address
 
 
-def test_get_contact_profile(squeak_db, address, contact_profile):
-    profile_id = squeak_db.insert_profile(contact_profile)
-    retrieved_profile = squeak_db.get_profile(profile_id)
+def test_get_contact_profile(squeak_db, contact_profile, inserted_contact_profile):
 
-    assert retrieved_profile.profile_name == contact_profile.profile_name
-    assert retrieved_profile.address == contact_profile.address
+    assert inserted_contact_profile.profile_id is not None
+    assert inserted_contact_profile.private_key is None
+    assert inserted_contact_profile.profile_name == contact_profile.profile_name
+    assert inserted_contact_profile.address == contact_profile.address
 
 
-def test_set_profile_following(squeak_db, address, contact_profile):
-    profile_id = squeak_db.insert_profile(contact_profile)
-    squeak_db.set_profile_following(profile_id, True)
-    retrieved_profile = squeak_db.get_profile(profile_id)
+def test_set_profile_following(squeak_db, followed_contact_profile):
 
-    assert retrieved_profile.following
+    assert followed_contact_profile.following
 
-    squeak_db.set_profile_following(profile_id, False)
-    retrieved_profile = squeak_db.get_profile(profile_id)
 
-    assert not retrieved_profile.following
+def test_set_profile_unfollowing(squeak_db, unfollowed_contact_profile):
+
+    assert not unfollowed_contact_profile.following
 
 
 def test_get_liked_squeak_entries(
