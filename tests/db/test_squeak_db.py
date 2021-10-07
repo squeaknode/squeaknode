@@ -99,6 +99,40 @@ def unlocked_squeak_hash(squeak_db, squeak, inserted_squeak_hash, secret_key, sq
     yield inserted_squeak_hash
 
 
+@pytest.fixture
+def followed_contact_profile(squeak_db, contact_profile):
+    profile_id = squeak_db.insert_profile(contact_profile)
+    squeak_db.set_profile_following(profile_id, True)
+    yield squeak_db.get_profile(profile_id)
+
+
+@pytest.fixture
+def followed_squeak_hashes(
+        squeak_db,
+        signing_key,
+        followed_contact_profile,
+):
+    ret = []
+    for i in range(100):
+        squeak, header = gen_squeak_with_block_header(signing_key, 5001)
+        squeak_hash = squeak_db.insert_squeak(squeak, header)
+        ret.append(squeak_hash)
+    yield ret
+
+
+@pytest.fixture
+def unfollowed_squeak_hashes(
+        squeak_db,
+        signing_key,
+):
+    ret = []
+    for i in range(100):
+        squeak, header = gen_squeak_with_block_header(signing_key, 5001)
+        squeak_hash = squeak_db.insert_squeak(squeak, header)
+        ret.append(squeak_hash)
+    yield ret
+
+
 def test_get_squeak(squeak_db, squeak, inserted_squeak_hash):
     retrieved_squeak = squeak_db.get_squeak(inserted_squeak_hash)
 
@@ -177,35 +211,22 @@ def test_get_secret_key_missing_squeak(squeak_db, squeak):
     assert retrieved_secret_key is None
 
 
-def test_get_timeline_squeak_entries(
-        squeak_db,
-        signing_key,
-        signing_profile,
-        contact_profile,
-):
-    squeak_1, header_1 = gen_squeak_with_block_header(signing_key, 5001)
-    squeak_2, header_2 = gen_squeak_with_block_header(signing_key, 5002)
-    squeak_3, header_3 = gen_squeak_with_block_header(signing_key, 5003)
-    squeak_4, header_4 = gen_squeak_with_block_header(signing_key, 5004)
-    squeak_5, header_5 = gen_squeak_with_block_header(signing_key, 5005)
-
-    squeak_hash_1 = squeak_db.insert_squeak(squeak_1, header_1)  # noqa: F841
-    squeak_hash_2 = squeak_db.insert_squeak(squeak_2, header_2)  # noqa: F841
-    squeak_hash_3 = squeak_db.insert_squeak(squeak_3, header_3)  # noqa: F841
-    squeak_hash_4 = squeak_db.insert_squeak(squeak_4, header_4)  # noqa: F841
-    squeak_hash_5 = squeak_db.insert_squeak(squeak_5, header_5)  # noqa: F841
-
-    # Insert the contact profile and ensure that it is followed.
-    profile_id = squeak_db.insert_profile(contact_profile)
-    squeak_db.set_profile_following(profile_id, True)
-
-    # Get the timeline squeak entries.
+def test_get_timeline_squeak_entries(squeak_db, followed_squeak_hashes):
     timeline_squeak_entries = squeak_db.get_timeline_squeak_entries(
         limit=2,
         last_entry=None,
     )
 
     assert len(timeline_squeak_entries) == 2
+
+
+def test_get_timeline_squeak_entries_all_unfollowed(squeak_db, unfollowed_squeak_hashes):
+    timeline_squeak_entries = squeak_db.get_timeline_squeak_entries(
+        limit=2,
+        last_entry=None,
+    )
+
+    assert len(timeline_squeak_entries) == 0
 
 
 def test_get_signing_profile(squeak_db, signing_key, signing_profile):
