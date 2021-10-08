@@ -27,6 +27,7 @@ from requests.exceptions import RequestException
 from requests.exceptions import Timeout
 
 from squeaknode.bitcoin.bitcoin_core_bitcoin_client import BitcoinCoreBitcoinClient
+from squeaknode.bitcoin.block_info import BlockInfo
 from squeaknode.bitcoin.exception import BitcoinRequestError
 
 
@@ -65,6 +66,15 @@ def block_header_str():
 @pytest.fixture
 def block_header(block_header_str):
     yield bytes.fromhex(block_header_str)
+
+
+@pytest.fixture
+def block_info(block_count, block_hash, block_header):
+    yield BlockInfo(
+        block_height=block_count,
+        block_hash=block_hash,
+        block_header=block_header,
+    )
 
 
 class MockResponse:
@@ -198,3 +208,28 @@ def test_get_block_header(bitcoin_core_client, mock_get_block_header_response, b
             block_hash)
 
         assert retrieved_block_header == block_header
+
+
+def test_get_block_info_by_height(bitcoin_core_client, block_count, block_hash, block_header):
+    with mock.patch.object(bitcoin_core_client, 'get_block_hash', autospec=True) as mock_get_block_hash, \
+            mock.patch.object(bitcoin_core_client, 'get_block_header', autospec=True) as mock_get_block_header:
+        mock_get_block_hash.return_value = block_hash
+        mock_get_block_header.return_value = block_header
+        retrieved_block_info = bitcoin_core_client.get_block_info_by_height(
+            block_count)
+
+        assert retrieved_block_info == BlockInfo(
+            block_height=block_count,
+            block_hash=block_hash,
+            block_header=block_header,
+        )
+
+
+def test_get_best_block_info(bitcoin_core_client, block_count, block_info):
+    with mock.patch.object(bitcoin_core_client, 'get_block_count', autospec=True) as mock_get_block_count, \
+            mock.patch.object(bitcoin_core_client, 'get_block_info_by_height', autospec=True) as mock_get_block_info_by_height:
+        mock_get_block_count.return_value = block_count
+        mock_get_block_info_by_height.return_value = block_info
+        retrieved_block_info = bitcoin_core_client.get_best_block_info()
+
+        assert retrieved_block_info == block_info
