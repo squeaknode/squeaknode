@@ -71,29 +71,7 @@ class BitcoinCoreBitcoinClient(BitcoinClient):
             "jsonrpc": "2.0",
             "id": 0,
         }
-        try:
-            response = requests.post(
-                self.url,
-                data=json.dumps(payload),
-                headers=self.headers,
-            )
-            response.raise_for_status()
-        except requests.exceptions.HTTPError as errh:
-            print("Http Error:", errh)
-            raise BitcoinConnectionError(errh)
-        except requests.exceptions.ConnectionError as errc:
-            print("Error Connecting:", errc)
-            raise BitcoinConnectionError(errc)
-        except requests.exceptions.Timeout as errt:
-            print("Timeout Error:", errt)
-            raise BitcoinConnectionError(errt)
-        except requests.exceptions.RequestException as err:
-            print("OOps: Something Else", err)
-            raise BitcoinConnectionError(err)
-
-        json_response = response.json()
-        logger.debug(
-            "Got json_response for get_block_count: {}".format(json_response))
+        json_response = self.make_request(payload)
         result = json_response.get("result")
         if result is None:
             raise BitcoinInvalidResultError()
@@ -108,14 +86,8 @@ class BitcoinCoreBitcoinClient(BitcoinClient):
             "jsonrpc": "2.0",
             "id": 0,
         }
-        response = requests.post(
-            self.url,
-            data=json.dumps(payload),
-            headers=self.headers,
-        ).json()
-
-        logger.debug("Got response for get_block_hash: {}".format(response))
-        result = response["result"]
+        json_response = self.make_request(payload)
+        result = json_response["result"]
         block_hash = result
         logger.debug("Got block_hash: {}".format(block_hash))
         return bytes.fromhex(block_hash)
@@ -137,3 +109,26 @@ class BitcoinCoreBitcoinClient(BitcoinClient):
         result = response["result"]
         logger.debug("Got block_header: {}".format(result))
         return bytes.fromhex(result)
+
+    def make_request(self, payload: dict) -> dict:
+        try:
+            response = requests.post(
+                self.url,
+                data=json.dumps(payload),
+                headers=self.headers,
+            )
+            response.raise_for_status()
+        except requests.exceptions.HTTPError as errh:
+            print("Http Error:", errh)
+            raise BitcoinConnectionError(errh)
+        except requests.exceptions.ConnectionError as errc:
+            print("Error Connecting:", errc)
+            raise BitcoinConnectionError(errc)
+        except requests.exceptions.Timeout as errt:
+            print("Timeout Error:", errt)
+            raise BitcoinConnectionError(errt)
+        except requests.exceptions.RequestException as err:
+            print("OOps: Something Else", err)
+            raise BitcoinConnectionError(err)
+
+        return response.json()

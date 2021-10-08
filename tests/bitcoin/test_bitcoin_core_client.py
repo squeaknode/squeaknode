@@ -40,6 +40,21 @@ def bitcoin_core_client():
     )
 
 
+@pytest.fixture
+def block_count():
+    yield 555
+
+
+@pytest.fixture
+def block_hash_str():
+    yield '00000000edade40797e3c4bf27edeb65733d1884beaa8c502a89d50a54111e1c'
+
+
+@pytest.fixture
+def block_hash(block_hash_str):
+    yield bytes.fromhex(block_hash_str)
+
+
 class MockResponse:
 
     def json(self):
@@ -55,8 +70,20 @@ class MockResponse:
 
 class MockGetCountResponse(MockResponse):
 
+    def __init__(self, block_count):
+        self.block_count = block_count
+
     def json(self):
-        return {'result': '555'}
+        return {'result': '{}'.format(self.block_count)}
+
+
+class MockGetBlockHashResponse(MockResponse):
+
+    def __init__(self, block_hash_str):
+        self.block_hash_str = block_hash_str
+
+    def json(self):
+        return {'result': '{}'.format(self.block_hash_str)}
 
 
 class MockEmptyResponse(MockResponse):
@@ -71,8 +98,13 @@ class MockInvalidStatusResponse(MockResponse):
 
 
 @pytest.fixture
-def mock_get_count_response():
-    yield MockGetCountResponse()
+def mock_get_count_response(block_count):
+    yield MockGetCountResponse(block_count)
+
+
+@pytest.fixture
+def mock_get_block_hash_response(block_hash_str):
+    yield MockGetBlockHashResponse(block_hash_str)
 
 
 @pytest.fixture
@@ -85,12 +117,12 @@ def mock_invalid_status_response():
     yield MockInvalidStatusResponse()
 
 
-def test_get_block_count(bitcoin_core_client, mock_get_count_response):
+def test_get_block_count(bitcoin_core_client, mock_get_count_response, block_count):
     with mock.patch('squeaknode.bitcoin.bitcoin_core_bitcoin_client.requests.post', autospec=True) as mock_post:
         mock_post.return_value = mock_get_count_response
-        block_count = bitcoin_core_client.get_block_count()
+        retrieved_block_count = bitcoin_core_client.get_block_count()
 
-        assert block_count == 555
+        assert retrieved_block_count == block_count
 
 
 def test_get_block_count_no_result(bitcoin_core_client, mock_empty_response):
@@ -107,3 +139,11 @@ def test_get_block_count_invalid_status(bitcoin_core_client, mock_invalid_status
 
         with pytest.raises(BitcoinConnectionError):
             bitcoin_core_client.get_block_count()
+
+
+def test_get_block_hash(bitcoin_core_client, mock_get_block_hash_response, block_hash):
+    with mock.patch('squeaknode.bitcoin.bitcoin_core_bitcoin_client.requests.post', autospec=True) as mock_post:
+        mock_post.return_value = mock_get_block_hash_response
+        retrieved_block_hash = bitcoin_core_client.get_block_hash(7777)
+
+        assert retrieved_block_hash == block_hash
