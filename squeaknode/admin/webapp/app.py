@@ -73,16 +73,6 @@ def create_app(handler, username, password):
     def unauthorized_callback():
         return redirect("/login")
 
-    # def handle_request(request_message, handle_rpc_request):
-    #     data = request.get_data()
-    #     request_message.ParseFromString(data)
-    #     try:
-    #         reply = handle_rpc_request(request_message)
-    #         return reply.SerializeToString()
-    #     except Exception as e:
-    #         logger.error("Error in handle admin web request.", exc_info=True)
-    #         return str(e), 500
-
     def protobuf_serialized(request_message):
         def decorator(func):
             @wraps(func)
