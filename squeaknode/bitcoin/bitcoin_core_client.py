@@ -32,7 +32,7 @@ from squeaknode.bitcoin.exception import BitcoinRequestError
 logger = logging.getLogger(__name__)
 
 
-class BitcoinCoreBitcoinClient(BitcoinClient):
+class BitcoinCoreClient(BitcoinClient):
     """Access a bitcoin daemon using RPC."""
 
     def __init__(
