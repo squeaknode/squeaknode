@@ -45,12 +45,22 @@ def bitcoin_port():
 
 
 @pytest.fixture
-def bitcoin_core_client(bitcoin_host, bitcoin_port):
+def bitcoin_user():
+    yield "fake_user"
+
+
+@pytest.fixture
+def bitcoin_pass():
+    yield "fake_pass"
+
+
+@pytest.fixture
+def bitcoin_core_client(bitcoin_host, bitcoin_port, bitcoin_user, bitcoin_pass):
     yield BitcoinCoreClient(
         host=bitcoin_host,
         port=bitcoin_port,
-        rpc_user="fake_user",
-        rpc_password="fake_pass",
+        rpc_user=bitcoin_user,
+        rpc_password=bitcoin_pass,
         use_ssl=False,
         ssl_cert="fake_ssl_cert",
     )
@@ -171,6 +181,21 @@ def mock_empty_response():
 @pytest.fixture
 def mock_invalid_status_response():
     yield MockInvalidStatusResponse()
+
+
+def test_make_request(bitcoin_host, bitcoin_port, bitcoin_user, bitcoin_pass, bitcoin_core_client, mock_empty_response):
+    with mock.patch('squeaknode.bitcoin.bitcoin_core_client.requests.post', autospec=True) as mock_post:
+        mock_post.return_value = mock_empty_response
+        retrieved_json_response = bitcoin_core_client.make_request({})
+        (bitcoin_address,) = mock_post.call_args.args
+        request_json = mock_post.call_args.kwargs['data']
+
+        assert bitcoin_host in bitcoin_address
+        assert str(bitcoin_port) in bitcoin_address
+        assert bitcoin_user in bitcoin_address
+        assert bitcoin_pass in bitcoin_address
+        assert json.loads(request_json) == {}
+        assert retrieved_json_response == {}
 
 
 def test_get_block_count(bitcoin_host, bitcoin_port, bitcoin_core_client, mock_get_count_response, block_count):
