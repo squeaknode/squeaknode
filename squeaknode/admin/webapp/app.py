@@ -73,15 +73,15 @@ def create_app(handler, username, password):
     def unauthorized_callback():
         return redirect("/login")
 
-    def handle_request(request_message, handle_rpc_request):
-        data = request.get_data()
-        request_message.ParseFromString(data)
-        try:
-            reply = handle_rpc_request(request_message)
-            return reply.SerializeToString()
-        except Exception as e:
-            logger.error("Error in handle admin web request.", exc_info=True)
-            return str(e), 500
+    # def handle_request(request_message, handle_rpc_request):
+    #     data = request.get_data()
+    #     request_message.ParseFromString(data)
+    #     try:
+    #         reply = handle_rpc_request(request_message)
+    #         return reply.SerializeToString()
+    #     except Exception as e:
+    #         logger.error("Error in handle admin web request.", exc_info=True)
+    #         return str(e), 500
 
     def protobuf_serialized(request_message):
         def decorator(func):
@@ -140,99 +140,123 @@ def create_app(handler, username, password):
 
     @app.route("/lndgetinfo", methods=["POST"])
     @login_required
-    def lndgetinfo():
-        return handle_request(
-            lnd_pb2.GetInfoRequest(),
-            handler.handle_lnd_get_info,
-        )
+    @protobuf_serialized(lnd_pb2.GetInfoRequest())
+    def lndgetinfo(msg):
+        # return handle_request(
+        #     lnd_pb2.GetInfoRequest(),
+        #     handler.handle_lnd_get_info,
+        # )
+        return handler.handle_lnd_get_info(msg)
 
     @app.route("/lndwalletbalance", methods=["POST"])
     @login_required
-    def lndwalletbalance():
-        return handle_request(
-            lnd_pb2.WalletBalanceRequest(),
-            handler.handle_lnd_wallet_balance,
-        )
+    @protobuf_serialized(lnd_pb2.WalletBalanceRequest())
+    def lndwalletbalance(msg):
+        # return handle_request(
+        #     lnd_pb2.WalletBalanceRequest(),
+        #     handler.handle_lnd_wallet_balance,
+        # )
+        return handler.handle_lnd_wallet_balance(msg)
 
     @app.route("/lndgettransactions", methods=["POST"])
     @login_required
-    def lndgettransactions():
-        return handle_request(
-            lnd_pb2.GetTransactionsRequest(),
-            handler.handle_lnd_get_transactions,
-        )
+    @protobuf_serialized(lnd_pb2.GetTransactionsRequest())
+    def lndgettransactions(msg):
+        # return handle_request(
+        #     lnd_pb2.GetTransactionsRequest(),
+        #     handler.handle_lnd_get_transactions,
+        # )
+        return handler.handle_lnd_get_transactions(msg)
 
     @app.route("/lndlistpeers", methods=["POST"])
     @login_required
-    def lndlistpeers():
-        return handle_request(
-            lnd_pb2.ListPeersRequest(),
-            handler.handle_lnd_list_peers,
-        )
+    @protobuf_serialized(lnd_pb2.ListPeersRequest())
+    def lndlistpeers(msg):
+        # return handle_request(
+        #     lnd_pb2.ListPeersRequest(),
+        #     handler.handle_lnd_list_peers,
+        # )
+        return handler.handle_lnd_list_peers(msg)
 
     @app.route("/lndlistchannels", methods=["POST"])
     @login_required
-    def lndlistchannels():
-        return handle_request(
-            lnd_pb2.ListChannelsRequest(),
-            handler.handle_lnd_list_channels,
-        )
+    @protobuf_serialized(lnd_pb2.ListChannelsRequest())
+    def lndlistchannels(msg):
+        # return handle_request(
+        #     lnd_pb2.ListChannelsRequest(),
+        #     handler.handle_lnd_list_channels,
+        # )
+        return handler.handle_lnd_list_channels(msg)
 
     @app.route("/lndpendingchannels", methods=["POST"])
     @login_required
-    def lndpendingchannels():
-        return handle_request(
-            lnd_pb2.PendingChannelsRequest(),
-            handler.handle_lnd_pending_channels,
-        )
+    @protobuf_serialized(lnd_pb2.PendingChannelsRequest())
+    def lndpendingchannels(msg):
+        # return handle_request(
+        #     lnd_pb2.PendingChannelsRequest(),
+        #     handler.handle_lnd_pending_channels,
+        # )
+        return handler.handle_lnd_pending_channels(msg)
 
     @app.route("/lndconnectpeer", methods=["POST"])
     @login_required
-    def lndconnectpeer():
-        return handle_request(
-            lnd_pb2.ConnectPeerRequest(),
-            handler.handle_lnd_connect_peer,
-        )
+    @protobuf_serialized(lnd_pb2.ConnectPeerRequest())
+    def lndconnectpeer(msg):
+        # return handle_request(
+        #     lnd_pb2.ConnectPeerRequest(),
+        #     handler.handle_lnd_connect_peer,
+        # )
+        return handler.handle_lnd_connect_peer(msg)
 
     @app.route("/lnddisconnectpeer", methods=["POST"])
     @login_required
-    def lnddisconnectpeer():
-        return handle_request(
-            lnd_pb2.DisconnectPeerRequest(),
-            handler.handle_lnd_disconnect_peer,
-        )
+    @protobuf_serialized(lnd_pb2.DisconnectPeerRequest())
+    def lnddisconnectpeer(msg):
+        # return handle_request(
+        #     lnd_pb2.DisconnectPeerRequest(),
+        #     handler.handle_lnd_disconnect_peer,
+        # )
+        return handler.handle_lnd_disconnect_peer(msg)
 
     @app.route("/lndopenchannelsync", methods=["POST"])
     @login_required
-    def lndopenchannelsync():
-        return handle_request(
-            lnd_pb2.OpenChannelRequest(),
-            handler.handle_lnd_open_channel_sync,
-        )
+    @protobuf_serialized(lnd_pb2.OpenChannelRequest())
+    def lndopenchannelsync(msg):
+        # return handle_request(
+        #     lnd_pb2.OpenChannelRequest(),
+        #     handler.handle_lnd_open_channel_sync,
+        # )
+        return handler.handle_lnd_open_channel_sync(msg)
 
     @app.route("/lndclosechannel", methods=["POST"])
     @login_required
-    def lndclosechannel():
-        return handle_request(
-            lnd_pb2.CloseChannelRequest(),
-            handler.handle_lnd_close_channel,
-        )
+    @protobuf_serialized(lnd_pb2.CloseChannelRequest())
+    def lndclosechannel(msg):
+        # return handle_request(
+        #     lnd_pb2.CloseChannelRequest(),
+        #     handler.handle_lnd_close_channel,
+        # )
+        return handler.handle_lnd_close_channel(msg)
 
     @app.route("/lndnewaddress", methods=["POST"])
     @login_required
-    def lndnewaddress():
-        return handle_request(
-            lnd_pb2.NewAddressRequest(),
-            handler.handle_lnd_new_address,
-        )
+    @protobuf_serialized(lnd_pb2.NewAddressRequest())
+    def lndnewaddress(msg):
+        # return handle_request(
+        #     lnd_pb2.NewAddressRequest(),
+        #     handler.handle_lnd_new_address,
+        # )
+        return handler.handle_lnd_new_address(msg)
 
     @app.route("/lndsendcoins", methods=["POST"])
     @login_required
-    def lndsendcoins():
-        return handle_request(
-            lnd_pb2.SendCoinsRequest(),
-            handler.handle_lnd_send_coins,
-        )
+    @protobuf_serialized(lnd_pb2.SendCoinsRequest())
+    def lndsendcoins(msg):
+        # return handle_request(
+        #     lnd_pb2.SendCoinsRequest(),
+        #     handler.handle_lnd_send_coins,
+        # )
+        return handler.handle_lnd_send_coins(msg)
 
     @app.route("/gettimelinesqueakdisplays", methods=["POST"])
     @login_required
