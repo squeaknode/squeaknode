@@ -284,16 +284,6 @@ def create_app(handler, username, password):
         # )
         return handler.handle_set_squeak_profile_custom_price(msg)
 
-    # @app.route("/setsqueakprofilesharing", methods=["POST"])
-    # @login_required
-    # @protobuf_serialized(squeak_admin_pb2.SetSqueakProfileSharingRequest())
-    # def setsqueakprofilesharing(msg):
-    #     # return handle_request(
-    #     #     squeak_admin_pb2.SetSqueakProfileSharingRequest(),
-    #     #     handler.handle_set_squeak_profile_sharing,
-    #     # )
-    #     handler.handle_set_squeak_profile_sharing(msg)
-
     @app.route("/renamesqueakprofile", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.RenameSqueakProfileRequest())
