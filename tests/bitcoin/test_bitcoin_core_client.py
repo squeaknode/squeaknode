@@ -230,6 +230,10 @@ def test_get_block_info_by_height(bitcoin_core_client, block_count, block_hash, 
         retrieved_block_info = bitcoin_core_client.get_block_info_by_height(
             block_count)
 
+        assert mock_get_block_hash.call_args == mock.call(
+            block_count)
+        assert mock_get_block_header.call_args == mock.call(
+            block_hash)
         assert retrieved_block_info == BlockInfo(
             block_height=block_count,
             block_hash=block_hash,
@@ -245,4 +249,7 @@ def test_get_best_block_info(bitcoin_core_client, block_count, block_info):
         mock_get_block_info_by_height.return_value = block_info
         retrieved_block_info = bitcoin_core_client.get_best_block_info()
 
+        assert mock_get_block_count.call_args == ()
+        assert mock_get_block_info_by_height.call_args == mock.call(
+            block_count)
         assert retrieved_block_info == block_info
