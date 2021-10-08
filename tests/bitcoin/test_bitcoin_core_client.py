@@ -234,8 +234,6 @@ def test_get_block_count(bitcoin_host, bitcoin_port, bitcoin_core_client, mock_g
     with mock.patch.object(bitcoin_core_client, 'make_request', autospec=True) as mock_make_request:
         mock_make_request.return_value = mock_get_count_response.json()
         retrieved_block_count = bitcoin_core_client.get_block_count()
-        print(mock_make_request.call_args.args)
-        print(mock_make_request.call_args.kwargs)
         (payload,) = mock_make_request.call_args.args
 
         assert payload['method'] == 'getblockcount'
@@ -243,26 +241,29 @@ def test_get_block_count(bitcoin_host, bitcoin_port, bitcoin_core_client, mock_g
 
 
 def test_get_block_hash(bitcoin_core_client, mock_get_block_hash_response, block_count, block_hash):
-    # TODO: assert mocks called with correct args.
-    with mock.patch('squeaknode.bitcoin.bitcoin_core_client.requests.post', autospec=True) as mock_post:
-        mock_post.return_value = mock_get_block_hash_response
+    with mock.patch.object(bitcoin_core_client, 'make_request', autospec=True) as mock_make_request:
+        mock_make_request.return_value = mock_get_block_hash_response.json()
         retrieved_block_hash = bitcoin_core_client.get_block_hash(block_count)
+        (payload,) = mock_make_request.call_args.args
 
+        assert payload['method'] == 'getblockhash'
+        assert payload['params'] == [block_count]
         assert retrieved_block_hash == block_hash
 
 
 def test_get_block_header(bitcoin_core_client, mock_get_block_header_response, block_hash, block_header):
-    # TODO: assert mocks called with correct args.
-    with mock.patch('squeaknode.bitcoin.bitcoin_core_client.requests.post', autospec=True) as mock_post:
-        mock_post.return_value = mock_get_block_header_response
+    with mock.patch.object(bitcoin_core_client, 'make_request', autospec=True) as mock_make_request:
+        mock_make_request.return_value = mock_get_block_header_response.json()
         retrieved_block_header = bitcoin_core_client.get_block_header(
             block_hash)
+        (payload,) = mock_make_request.call_args.args
 
+        assert payload['method'] == 'getblockheader'
+        assert payload['params'] == [block_hash.hex(), False]
         assert retrieved_block_header == block_header
 
 
 def test_get_block_info_by_height(bitcoin_core_client, block_count, block_hash, block_header):
-    # TODO: assert mocks called with correct args.
     with mock.patch.object(bitcoin_core_client, 'get_block_hash', autospec=True) as mock_get_block_hash, \
             mock.patch.object(bitcoin_core_client, 'get_block_header', autospec=True) as mock_get_block_header:
         mock_get_block_hash.return_value = block_hash
@@ -282,7 +283,6 @@ def test_get_block_info_by_height(bitcoin_core_client, block_count, block_hash, 
 
 
 def test_get_best_block_info(bitcoin_core_client, block_count, block_info):
-    # TODO: assert mocks called with correct args.
     with mock.patch.object(bitcoin_core_client, 'get_block_count', autospec=True) as mock_get_block_count, \
             mock.patch.object(bitcoin_core_client, 'get_block_info_by_height', autospec=True) as mock_get_block_info_by_height:
         mock_get_block_count.return_value = block_count
