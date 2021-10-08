@@ -21,6 +21,7 @@
 # SOFTWARE.
 import mock
 import pytest
+from bitcoin.core import CBlockHeader
 from requests import HTTPError
 from requests.exceptions import ConnectionError
 from requests.exceptions import RequestException
@@ -66,8 +67,13 @@ def block_header_str():
 
 
 @pytest.fixture
-def block_header(block_header_str):
+def block_header_bytes(block_header_str):
     yield bytes.fromhex(block_header_str)
+
+
+@pytest.fixture
+def block_header(block_header_bytes):
+    yield CBlockHeader.deserialize(block_header_bytes)
 
 
 @pytest.fixture
