@@ -55,6 +55,16 @@ def block_hash(block_hash_str):
     yield bytes.fromhex(block_hash_str)
 
 
+@pytest.fixture
+def block_header_str():
+    yield '0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4a29AB5F49FFFF001D1DAC2B7C'
+
+
+@pytest.fixture
+def block_header(block_header_str):
+    yield bytes.fromhex(block_header_str)
+
+
 class MockResponse:
 
     def json(self):
@@ -86,6 +96,15 @@ class MockGetBlockHashResponse(MockResponse):
         return {'result': '{}'.format(self.block_hash_str)}
 
 
+class MockGetBlockHeaderResponse(MockResponse):
+
+    def __init__(self, block_header_str):
+        self.block_header_str = block_header_str
+
+    def json(self):
+        return {'result': '{}'.format(self.block_header_str)}
+
+
 class MockEmptyResponse(MockResponse):
     def json(self):
         return {}
@@ -105,6 +124,11 @@ def mock_get_count_response(block_count):
 @pytest.fixture
 def mock_get_block_hash_response(block_hash_str):
     yield MockGetBlockHashResponse(block_hash_str)
+
+
+@pytest.fixture
+def mock_get_block_header_response(block_header_str):
+    yield MockGetBlockHeaderResponse(block_header_str)
 
 
 @pytest.fixture
@@ -141,9 +165,18 @@ def test_get_block_count_invalid_status(bitcoin_core_client, mock_invalid_status
             bitcoin_core_client.get_block_count()
 
 
-def test_get_block_hash(bitcoin_core_client, mock_get_block_hash_response, block_hash):
+def test_get_block_hash(bitcoin_core_client, mock_get_block_hash_response, block_count, block_hash):
     with mock.patch('squeaknode.bitcoin.bitcoin_core_bitcoin_client.requests.post', autospec=True) as mock_post:
         mock_post.return_value = mock_get_block_hash_response
-        retrieved_block_hash = bitcoin_core_client.get_block_hash(7777)
+        retrieved_block_hash = bitcoin_core_client.get_block_hash(block_count)
 
         assert retrieved_block_hash == block_hash
+
+
+def test_get_block_header(bitcoin_core_client, mock_get_block_header_response, block_hash, block_header):
+    with mock.patch('squeaknode.bitcoin.bitcoin_core_bitcoin_client.requests.post', autospec=True) as mock_post:
+        mock_post.return_value = mock_get_block_header_response
+        retrieved_block_header = bitcoin_core_client.get_block_header(
+            block_hash)
+
+        assert retrieved_block_header == block_header

@@ -61,7 +61,7 @@ class BitcoinCoreBitcoinClient(BitcoinClient):
 
     def get_block_info_by_height(self, block_height: int) -> BlockInfo:
         block_hash = self.get_block_hash(block_height)
-        block_header = self.get_block_header(block_hash, False)
+        block_header = self.get_block_header(block_hash)
         return BlockInfo(block_height, block_hash, block_header)
 
     def get_block_count(self) -> int:
@@ -92,21 +92,17 @@ class BitcoinCoreBitcoinClient(BitcoinClient):
         logger.debug("Got block_hash: {}".format(block_hash))
         return bytes.fromhex(block_hash)
 
-    def get_block_header(self, block_hash: bytes, verbose: bool) -> bytes:
+    def get_block_header(self, block_hash: bytes, verbose: bool = False) -> bytes:
         payload = {
             "method": "getblockheader",
             "params": [block_hash.hex(), verbose],
             "jsonrpc": "2.0",
             "id": 0,
         }
-        response = requests.post(
-            self.url,
-            data=json.dumps(payload),
-            headers=self.headers,
-        ).json()
-
-        logger.debug("Got response for get_block_header: {}".format(response))
-        result = response["result"]
+        json_response = self.make_request(payload)
+        result = json_response.get("result")
+        if result is None:
+            raise BitcoinInvalidResultError()
         logger.debug("Got block_header: {}".format(result))
         return bytes.fromhex(result)
 
