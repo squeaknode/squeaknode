@@ -87,7 +87,9 @@ class BitcoinCoreBitcoinClient(BitcoinClient):
             "id": 0,
         }
         json_response = self.make_request(payload)
-        result = json_response["result"]
+        result = json_response.get("result")
+        if result is None:
+            raise BitcoinInvalidResultError()
         block_hash = result
         logger.debug("Got block_hash: {}".format(block_hash))
         return bytes.fromhex(block_hash)
