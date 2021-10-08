@@ -132,650 +132,390 @@ def create_app(handler, username, password):
     @login_required
     @protobuf_serialized(lnd_pb2.GetInfoRequest())
     def lndgetinfo(msg):
-        # return handle_request(
-        #     lnd_pb2.GetInfoRequest(),
-        #     handler.handle_lnd_get_info,
-        # )
         return handler.handle_lnd_get_info(msg)
 
     @app.route("/lndwalletbalance", methods=["POST"])
     @login_required
     @protobuf_serialized(lnd_pb2.WalletBalanceRequest())
     def lndwalletbalance(msg):
-        # return handle_request(
-        #     lnd_pb2.WalletBalanceRequest(),
-        #     handler.handle_lnd_wallet_balance,
-        # )
         return handler.handle_lnd_wallet_balance(msg)
 
     @app.route("/lndgettransactions", methods=["POST"])
     @login_required
     @protobuf_serialized(lnd_pb2.GetTransactionsRequest())
     def lndgettransactions(msg):
-        # return handle_request(
-        #     lnd_pb2.GetTransactionsRequest(),
-        #     handler.handle_lnd_get_transactions,
-        # )
         return handler.handle_lnd_get_transactions(msg)
 
     @app.route("/lndlistpeers", methods=["POST"])
     @login_required
     @protobuf_serialized(lnd_pb2.ListPeersRequest())
     def lndlistpeers(msg):
-        # return handle_request(
-        #     lnd_pb2.ListPeersRequest(),
-        #     handler.handle_lnd_list_peers,
-        # )
         return handler.handle_lnd_list_peers(msg)
 
     @app.route("/lndlistchannels", methods=["POST"])
     @login_required
     @protobuf_serialized(lnd_pb2.ListChannelsRequest())
     def lndlistchannels(msg):
-        # return handle_request(
-        #     lnd_pb2.ListChannelsRequest(),
-        #     handler.handle_lnd_list_channels,
-        # )
         return handler.handle_lnd_list_channels(msg)
 
     @app.route("/lndpendingchannels", methods=["POST"])
     @login_required
     @protobuf_serialized(lnd_pb2.PendingChannelsRequest())
     def lndpendingchannels(msg):
-        # return handle_request(
-        #     lnd_pb2.PendingChannelsRequest(),
-        #     handler.handle_lnd_pending_channels,
-        # )
         return handler.handle_lnd_pending_channels(msg)
 
     @app.route("/lndconnectpeer", methods=["POST"])
     @login_required
     @protobuf_serialized(lnd_pb2.ConnectPeerRequest())
     def lndconnectpeer(msg):
-        # return handle_request(
-        #     lnd_pb2.ConnectPeerRequest(),
-        #     handler.handle_lnd_connect_peer,
-        # )
         return handler.handle_lnd_connect_peer(msg)
 
     @app.route("/lnddisconnectpeer", methods=["POST"])
     @login_required
     @protobuf_serialized(lnd_pb2.DisconnectPeerRequest())
     def lnddisconnectpeer(msg):
-        # return handle_request(
-        #     lnd_pb2.DisconnectPeerRequest(),
-        #     handler.handle_lnd_disconnect_peer,
-        # )
         return handler.handle_lnd_disconnect_peer(msg)
 
     @app.route("/lndopenchannelsync", methods=["POST"])
     @login_required
     @protobuf_serialized(lnd_pb2.OpenChannelRequest())
     def lndopenchannelsync(msg):
-        # return handle_request(
-        #     lnd_pb2.OpenChannelRequest(),
-        #     handler.handle_lnd_open_channel_sync,
-        # )
         return handler.handle_lnd_open_channel_sync(msg)
 
     @app.route("/lndclosechannel", methods=["POST"])
     @login_required
     @protobuf_serialized(lnd_pb2.CloseChannelRequest())
     def lndclosechannel(msg):
-        # return handle_request(
-        #     lnd_pb2.CloseChannelRequest(),
-        #     handler.handle_lnd_close_channel,
-        # )
         return handler.handle_lnd_close_channel(msg)
 
     @app.route("/lndnewaddress", methods=["POST"])
     @login_required
     @protobuf_serialized(lnd_pb2.NewAddressRequest())
     def lndnewaddress(msg):
-        # return handle_request(
-        #     lnd_pb2.NewAddressRequest(),
-        #     handler.handle_lnd_new_address,
-        # )
         return handler.handle_lnd_new_address(msg)
 
     @app.route("/lndsendcoins", methods=["POST"])
     @login_required
     @protobuf_serialized(lnd_pb2.SendCoinsRequest())
     def lndsendcoins(msg):
-        # return handle_request(
-        #     lnd_pb2.SendCoinsRequest(),
-        #     handler.handle_lnd_send_coins,
-        # )
         return handler.handle_lnd_send_coins(msg)
 
     @app.route("/gettimelinesqueakdisplays", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.GetTimelineSqueakDisplaysRequest())
     def gettimelinesqueakdisplays(msg):
-        # return handle_request(
-        #     squeak_admin_pb2.GetTimelineSqueakDisplaysRequest(),
-        #     handler.handle_get_timeline_squeak_display_entries,
-        # )
         return handler.handle_get_timeline_squeak_display_entries(msg)
 
     @app.route("/getsqueakprofile", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.GetSqueakProfileRequest())
     def getsqueakprofile(msg):
-        # return handle_request(
-        #     squeak_admin_pb2.GetSqueakProfileRequest(),
-        #     handler.handle_get_squeak_profile,
-        # )
         return handler.handle_get_squeak_profile(msg)
 
     @app.route("/setsqueakprofilefollowing", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.SetSqueakProfileFollowingRequest())
     def setsqueakprofilefollowing(msg):
-        # return handle_request(
-        #     squeak_admin_pb2.SetSqueakProfileFollowingRequest(),
-        #     handler.handle_set_squeak_profile_following,
-        # )
         return handler.handle_set_squeak_profile_following(msg)
 
     @app.route("/setsqueakprofileusecustomprice", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.SetSqueakProfileUseCustomPriceRequest())
     def setsqueakprofileusecustomprice(msg):
-        # return handle_request(
-        #     squeak_admin_pb2.SetSqueakProfileUseCustomPriceRequest(),
-        #     handler.handle_set_squeak_profile_use_custom_price,
-        # )
         return handler.handle_set_squeak_profile_use_custom_price(msg)
 
     @app.route("/setsqueakprofilecustomprice", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.SetSqueakProfileUseCustomPriceRequest())
     def setsqueakprofilecustomprice(msg):
-        # return handle_request(
-        #     squeak_admin_pb2.SetSqueakProfileCustomPriceRequest(),
-        #     handler.handle_set_squeak_profile_custom_price,
-        # )
         return handler.handle_set_squeak_profile_custom_price(msg)
 
     @app.route("/renamesqueakprofile", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.RenameSqueakProfileRequest())
     def renamesqueakprofile(msg):
-        # return handle_request(
-        #     squeak_admin_pb2.RenameSqueakProfileRequest(),
-        #     handler.handle_rename_squeak_profile,
-        # )
         return handler.handle_rename_squeak_profile(msg)
 
     @app.route("/setsqueakprofileimage", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.SetSqueakProfileImageRequest())
     def setsqueakprofileimage(msg):
-        # return handle_request(
-        #     squeak_admin_pb2.SetSqueakProfileImageRequest(),
-        #     handler.handle_set_squeak_profile_image,
-        # )
         return handler.handle_set_squeak_profile_image(msg)
 
     @app.route("/clearsqueakprofileimage", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.ClearSqueakProfileImageRequest())
     def clearsqueakprofileimage(msg):
-        # return handle_request(
-        #     squeak_admin_pb2.ClearSqueakProfileImageRequest(),
-        #     handler.handle_clear_squeak_profile_image,
-        # )
         return handler.handle_clear_squeak_profile_image(msg)
 
     @app.route("/getpeers", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.GetPeersRequest())
     def getpeers(msg):
-        # return handle_request(
-        #     squeak_admin_pb2.GetPeersRequest(),
-        #     handler.handle_get_squeak_peers,
-        # )
         return handler.handle_get_squeak_peers(msg)
 
     @app.route("/payoffer", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.PayOfferRequest())
     def payoffer(msg):
-        # return handle_request(
-        #     squeak_admin_pb2.PayOfferRequest(),
-        #     handler.handle_pay_offer,
-        # )
         return handler.handle_pay_offer(msg)
 
     @app.route("/getbuyoffers", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.GetBuyOffersRequest())
     def getbuyoffers(msg):
-        # return handle_request(
-        #     squeak_admin_pb2.GetBuyOffersRequest(),
-        #     handler.handle_get_buy_offers,
-        # )
         return handler.handle_get_buy_offers(msg)
 
     @app.route("/getbuyoffer", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.GetBuyOfferRequest())
     def getbuyoffer(msg):
-        # return handle_request(
-        #     squeak_admin_pb2.GetBuyOfferRequest(),
-        #     handler.handle_get_buy_offer,
-        # )
         return handler.handle_get_buy_offer(msg)
 
     @app.route("/getpeer", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.GetPeerRequest())
     def getpeer(msg):
-        # return handle_request(
-        #     squeak_admin_pb2.GetPeerRequest(),
-        #     handler.handle_get_squeak_peer,
-        # )
         return handler.handle_get_squeak_peer(msg)
 
     @app.route("/getpeerbyaddress", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.GetPeerByAddressRequest())
     def getpeerbyaddress(msg):
-        # return handle_request(
-        #     squeak_admin_pb2.GetPeerByAddressRequest(),
-        #     handler.handle_get_squeak_peer_by_address,
-        # )
         return handler.handle_get_squeak_peer_by_address(msg)
 
     @app.route("/setpeerautoconnect", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.SetPeerAutoconnectRequest())
     def setpeerautoconnect(msg):
-        # return handle_request(
-        #     squeak_admin_pb2.SetPeerAutoconnectRequest(),
-        #     handler.handle_set_squeak_peer_autoconnect,
-        # )
         return handler.handle_set_squeak_peer_autoconnect(msg)
 
     @app.route("/renamepeer", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.RenamePeerRequest())
     def renamepeer(msg):
-        # return handle_request(
-        #     squeak_admin_pb2.RenamePeerRequest(),
-        #     handler.handle_rename_squeak_peer,
-        # )
         return handler.handle_rename_squeak_peer(msg)
 
     @app.route("/getprofiles", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.GetProfilesRequest())
     def getprofiles(msg):
-        # return handle_request(
-        #     squeak_admin_pb2.GetProfilesRequest(),
-        #     handler.handle_get_profiles,
-        # )
         return handler.handle_get_profiles(msg)
 
     @app.route("/getsigningprofiles", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.GetSigningProfilesRequest())
     def getsigningprofiles(msg):
-        # return handle_request(
-        #     squeak_admin_pb2.GetSigningProfilesRequest(),
-        #     handler.handle_get_signing_profiles,
-        # )
         return handler.handle_get_signing_profiles(msg)
 
     @app.route("/getcontactprofiles", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.GetContactProfilesRequest())
     def getcontactprofiles(msg):
-        # return handle_request(
-        #     squeak_admin_pb2.GetContactProfilesRequest(),
-        #     handler.handle_get_contact_profiles,
-        # )
         return handler.handle_get_contact_profiles(msg)
 
     @app.route("/makesqueakrequest", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.MakeSqueakRequest())
     def makesqueakrequest(msg):
-        # return handle_request(
-        #     squeak_admin_pb2.MakeSqueakRequest(),
-        #     handler.handle_make_squeak,
-        # )
         return handler.handle_make_squeak(msg)
 
     @app.route("/getsqueakdisplay", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.GetSqueakDisplayRequest())
     def getsqueakdisplay(msg):
-        # return handle_request(
-        #     squeak_admin_pb2.GetSqueakDisplayRequest(),
-        #     handler.handle_get_squeak_display_entry,
-        # )
         return handler.handle_get_squeak_display_entry(msg)
 
     @app.route("/getancestorsqueakdisplays", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.GetAncestorSqueakDisplaysRequest())
     def getancestorsqueakdisplays(msg):
-        # return handle_request(
-        #     squeak_admin_pb2.GetAncestorSqueakDisplaysRequest(),
-        #     handler.handle_get_ancestor_squeak_display_entries,
-        # )
         return handler.handle_get_ancestor_squeak_display_entries(msg)
 
     @app.route("/getreplysqueakdisplays", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.GetReplySqueakDisplaysRequest())
     def getreplysqueakdisplays(msg):
-        # return handle_request(
-        #     squeak_admin_pb2.GetReplySqueakDisplaysRequest(),
-        #     handler.handle_get_reply_squeak_display_entries,
-        # )
         return handler.handle_get_reply_squeak_display_entries(msg)
 
     @app.route("/getsqueakprofilebyaddress", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.GetSqueakProfileByAddressRequest())
     def getsqueakprofilebyaddress(msg):
-        # return handle_request(
-        #     squeak_admin_pb2.GetSqueakProfileByAddressRequest(),
-        #     handler.handle_get_squeak_profile_by_address,
-        # )
         return handler.handle_get_squeak_profile_by_address(msg)
 
     @app.route("/getaddresssqueakdisplays", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.GetAddressSqueakDisplaysRequest())
     def getaddresssqueakdisplays(msg):
-        # return handle_request(
-        #     squeak_admin_pb2.GetAddressSqueakDisplaysRequest(),
-        #     handler.handle_get_squeak_display_entries_for_address,
-        # )
         return handler.handle_get_squeak_display_entries_for_address(msg)
 
     @app.route("/getsearchsqueakdisplays", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.GetSearchSqueakDisplaysRequest())
     def getsearchsqueakdisplays(msg):
-        # return handle_request(
-        #     squeak_admin_pb2.GetSearchSqueakDisplaysRequest(),
-        #     handler.handle_get_squeak_display_entries_for_text_search,
-        # )
         return handler.handle_get_squeak_display_entries_for_text_search(msg)
 
     @app.route("/createcontactprofile", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.CreateContactProfileRequest())
     def createcontactprofile(msg):
-        # return handle_request(
-        #     squeak_admin_pb2.CreateContactProfileRequest(),
-        #     handler.handle_create_contact_profile,
-        # )
         return handler.handle_create_contact_profile(msg)
 
     @app.route("/createsigningprofile", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.CreateSigningProfileRequest())
     def createsigningprofile(msg):
-        # return handle_request(
-        #     squeak_admin_pb2.CreateSigningProfileRequest(),
-        #     handler.handle_create_signing_profile,
-        # )
         return handler.handle_create_signing_profile(msg)
 
     @app.route("/importsigningprofile", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.ImportSigningProfileRequest())
     def importsigningprofile(msg):
-        # return handle_request(
-        #     squeak_admin_pb2.ImportSigningProfileRequest(),
-        #     handler.handle_import_signing_profile,
-        # )
         return handler.handle_import_signing_profile(msg)
 
     @app.route("/createpeer", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.CreatePeerRequest())
     def createpeer(msg):
-        # return handle_request(
-        #     squeak_admin_pb2.CreatePeerRequest(),
-        #     handler.handle_create_peer,
-        # )
         return handler.handle_create_peer(msg)
 
     @app.route("/deletepeer", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.DeletePeerRequest())
     def deletepeer(msg):
-        # return handle_request(
-        #     squeak_admin_pb2.DeletePeerRequest(),
-        #     handler.handle_delete_squeak_peer,
-        # )
         return handler.handle_delete_squeak_peer(msg)
 
     @app.route("/deleteprofile", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.DeleteSqueakProfileRequest())
     def deleteprofile(msg):
-        # return handle_request(
-        #     squeak_admin_pb2.DeleteSqueakProfileRequest(),
-        #     handler.handle_delete_squeak_profile,
-        # )
         return handler.handle_delete_squeak_profile(msg)
 
     @app.route("/deletesqueak", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.DeleteSqueakRequest())
     def deletesqueak(msg):
-        # return handle_request(
-        #     squeak_admin_pb2.DeleteSqueakRequest(),
-        #     handler.handle_delete_squeak,
-        # )
         return handler.handle_delete_squeak(msg)
 
     @app.route("/downloadsqueak", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.DownloadSqueakRequest())
     def downloadsqueak(msg):
-        # return handle_request(
-        #     squeak_admin_pb2.DownloadSqueakRequest(),
-        #     handler.handle_download_squeak,
-        # )
         return handler.handle_download_squeak(msg)
 
     @app.route("/downloadoffers", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.DownloadOffersRequest())
     def downloadoffers(msg):
-        # return handle_request(
-        #     squeak_admin_pb2.DownloadOffersRequest(),
-        #     handler.handle_download_offers,
-        # )
         return handler.handle_download_offers(msg)
 
     @app.route("/downloadreplies", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.DownloadRepliesRequest())
     def downloadreplies(msg):
-        # return handle_request(
-        #     squeak_admin_pb2.DownloadRepliesRequest(),
-        #     handler.handle_download_replies,
-        # )
         return handler.handle_download_replies(msg)
 
     @app.route("/downloadaddresssqueaks", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.DownloadAddressSqueaksRequest())
     def downloadaddresssqueaks(msg):
-        # return handle_request(
-        #     squeak_admin_pb2.DownloadAddressSqueaksRequest(),
-        #     handler.handle_download_address_squeaks,
-        # )
         return handler.handle_download_address_squeaks(msg)
 
     @app.route("/getsqueakdetails", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.GetSqueakDetailsRequest())
     def getsqueakdetails(msg):
-        # return handle_request(
-        #     squeak_admin_pb2.GetSqueakDetailsRequest(),
-        #     handler.handle_get_squeak_details,
-        # )
         return handler.handle_get_squeak_details(msg)
 
     @app.route("/getsentpayments", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.GetSentPaymentsRequest())
     def getsentpayments(msg):
-        # return handle_request(
-        #     squeak_admin_pb2.GetSentPaymentsRequest(),
-        #     handler.handle_get_sent_payments,
-        # )
         return handler.handle_get_sent_payments(msg)
 
     @app.route("/getsentoffers", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.GetSentOffersRequest())
     def getsentoffers(msg):
-        # return handle_request(
-        #     squeak_admin_pb2.GetSentOffersRequest(),
-        #     handler.handle_get_sent_offers,
-        # )
         return handler.handle_get_sent_offers(msg)
 
     @app.route("/getreceivedpayments", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.GetReceivedPaymentsRequest())
     def getreceivedpayments(msg):
-        # return handle_request(
-        #     squeak_admin_pb2.GetReceivedPaymentsRequest(),
-        #     handler.handle_get_received_payments,
-        # )
         return handler.handle_get_received_payments(msg)
 
     @app.route("/getnetwork", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.GetNetworkRequest())
     def getnetwork(msg):
-        # return handle_request(
-        #     squeak_admin_pb2.GetNetworkRequest(),
-        #     handler.handle_get_network,
-        # )
         return handler.handle_get_network(msg)
 
     @app.route("/getsqueakprofileprivatekey", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.GetSqueakProfilePrivateKeyRequest())
     def getsqueakprofileprivatekey(msg):
-        # return handle_request(
-        #     squeak_admin_pb2.GetSqueakProfilePrivateKeyRequest(),
-        #     handler.handle_get_squeak_profile_private_key,
-        # )
         return handler.handle_get_squeak_profile_private_key(msg)
 
     @app.route("/getpaymentsummary", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.GetPaymentSummaryRequest())
     def getpaymentsummary(msg):
-        # return handle_request(
-        #     squeak_admin_pb2.GetPaymentSummaryRequest(),
-        #     handler.handle_get_payment_summary,
-        # )
         return handler.handle_get_payment_summary(msg)
 
     @app.route("/reprocessreceivedpayments", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.ReprocessReceivedPaymentsRequest())
     def reprocessreceivedpayments(msg):
-        # return handle_request(
-        #     squeak_admin_pb2.ReprocessReceivedPaymentsRequest(),
-        #     handler.handle_reprocess_received_payments,
-        # )
         return handler.handle_reprocess_received_payments(msg)
 
     @app.route("/likesqueak", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.LikeSqueakRequest())
     def likesqueak(msg):
-        # return handle_request(
-        #     squeak_admin_pb2.LikeSqueakRequest(),
-        #     handler.handle_like_squeak,
-        # )
         return handler.handle_like_squeak(msg)
 
     @app.route("/unlikesqueak", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.UnlikeSqueakRequest())
     def unlikesqueak(msg):
-        # return handle_request(
-        #     squeak_admin_pb2.UnlikeSqueakRequest(),
-        #     handler.handle_unlike_squeak,
-        # )
         return handler.handle_unlike_squeak(msg)
 
     @app.route("/getlikedsqueakdisplays", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.GetLikedSqueakDisplaysRequest())
     def getlikedsqueakdisplays(msg):
-        # return handle_request(
-        #     squeak_admin_pb2.GetLikedSqueakDisplaysRequest(),
-        #     handler.handle_get_liked_squeak_display_entries,
-        # )
         return handler.handle_get_liked_squeak_display_entries(msg)
 
     @app.route("/getconnectedpeers", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.GetConnectedPeersRequest())
     def getconnectedpeers(msg):
-        # return handle_request(
-        #     squeak_admin_pb2.GetConnectedPeersRequest(),
-        #     handler.handle_get_connected_peers,
-        # )
         return handler.handle_get_connected_peers(msg)
 
     @app.route("/getconnectedpeer", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.GetConnectedPeerRequest())
     def getconnectedpeer(msg):
-        # return handle_request(
-        #     squeak_admin_pb2.GetConnectedPeerRequest(),
-        #     handler.handle_get_connected_peer,
-        # )
         return handler.handle_get_connected_peer(msg)
 
     @app.route("/connectpeer", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.ConnectPeerRequest())
     def connectpeer(msg):
-        # return handle_request(
-        #     squeak_admin_pb2.ConnectPeerRequest(),
-        #     handler.handle_connect_peer,
-        # )
         return handler.handle_connect_peer(msg)
 
     @app.route("/disconnectpeer", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.DisconnectPeerRequest())
     def disconnectpeer(msg):
-        # return handle_request(
-        #     squeak_admin_pb2.DisconnectPeerRequest(),
-        #     handler.handle_disconnect_peer,
-        # )
         return handler.handle_disconnect_peer(msg)
 
     @app.route("/getexternaladdress", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.GetExternalAddressRequest())
     def getexternaladdress(msg):
-        # return handle_request(
-        #     squeak_admin_pb2.GetExternalAddressRequest(),
-        #     handler.handle_get_external_address,
-        # )
         return handler.handle_get_external_address(msg)
 
     return app
