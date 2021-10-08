@@ -27,6 +27,7 @@ import grpc
 
 from proto import lnd_pb2
 from proto import lnd_pb2_grpc
+from squeaknode.lightning.invoice import Invoice
 
 logger = logging.getLogger(__name__)
 
@@ -48,16 +49,26 @@ class LNDLightningClient:
         tls_cert_path: str,
         macaroon_path: str,
     ) -> None:
-        url = "{}:{}".format(host, port)
+        self.host = host
+        self.port = port
+        self.tls_cert_path = tls_cert_path
+        self.macaroon_path = macaroon_path
+        self.stub = None
+
+    def init(self):
+        self.stub = self._get_stub()
+
+    def _get_stub(self):
+        url = "{}:{}".format(self.host, self.port)
 
         # Lnd cert is at ~/.lnd/tls.cert on Linux and
         # ~/Library/Application Support/Lnd/tls.cert on Mac
-        cert = open(os.path.expanduser(tls_cert_path), "rb").read()
+        cert = open(os.path.expanduser(self.tls_cert_path), "rb").read()
         cert_creds = grpc.ssl_channel_credentials(cert)
 
         # Lnd admin macaroon is at ~/.lnd/data/chain/bitcoin/simnet/admin.macaroon on Linux and
         # ~/Library/Application Support/Lnd/data/chain/bitcoin/simnet/admin.macaroon on Mac
-        with open(os.path.expanduser(macaroon_path), "rb") as f:
+        with open(os.path.expanduser(self.macaroon_path), "rb") as f:
             macaroon_bytes = f.read()
             macaroon = codecs.encode(macaroon_bytes, "hex")
             self.macaroon = codecs.encode(macaroon_bytes, "hex")
@@ -76,7 +87,7 @@ class LNDLightningClient:
 
         # finally pass in the combined credentials when creating a channel
         channel = grpc.secure_channel(url, combined_creds)
-        self.stub = lnd_pb2_grpc.LightningStub(channel)
+        return lnd_pb2_grpc.LightningStub(channel)
 
     def get_wallet_balance(self):
         # Retrieve and display the wallet balance
@@ -269,3 +280,19 @@ class LNDLightningClient:
             r_hash_str=r_hash_str,
         )
         return self.stub.LookupInvoice(payment_hash)
+
+    def create_invoice(self, preimage, amount_msat) -> Invoice:
+        add_invoice_response = self.add_invoice(preimage, amount_msat)
+        payment_hash = add_invoice_response.r_hash
+        lookup_invoice_response = self.lookup_invoice(
+            payment_hash.hex()
+        )
+        return Invoice(
+            r_hash=lookup_invoice_response.r_hash,
+            payment_request=lookup_invoice_response.payment_request,
+            value_msat=amount_msat,
+            settled=lookup_invoice_response.settled,
+            settle_index=lookup_invoice_response.settle_index,
+            creation_date=lookup_invoice_response.creation_date,
+            expiry=lookup_invoice_response.expiry,
+        )
