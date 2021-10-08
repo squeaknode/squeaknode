@@ -198,55 +198,81 @@ def test_make_request(bitcoin_host, bitcoin_port, bitcoin_user, bitcoin_pass, bi
         assert retrieved_json_response == {}
 
 
-def test_get_block_count(bitcoin_host, bitcoin_port, bitcoin_core_client, mock_get_count_response, block_count):
-    with mock.patch('squeaknode.bitcoin.bitcoin_core_client.requests.post', autospec=True) as mock_post:
-        mock_post.return_value = mock_get_count_response
-        retrieved_block_count = bitcoin_core_client.get_block_count()
-        print(mock_post.call_args.args)
-        print(mock_post.call_args.kwargs)
-        (bitcoin_address,) = mock_post.call_args.args
-        request_json = mock_post.call_args.kwargs['data']
-
-        print(bitcoin_address)
-        print(request_json)
-        assert bitcoin_host in bitcoin_address
-        assert str(bitcoin_port) in bitcoin_address
-        assert type(request_json) is str
-        assert json.loads(request_json)['method'] == 'getblockcount'
-        assert retrieved_block_count == block_count
-
-
-def test_get_block_count_invalid_status(bitcoin_core_client, mock_invalid_status_response):
+def test_make_request_invalid_status(bitcoin_core_client, mock_invalid_status_response):
     with mock.patch('squeaknode.bitcoin.bitcoin_core_client.requests.post', autospec=True) as mock_post:
         mock_post.return_value = mock_invalid_status_response
 
         with pytest.raises(BitcoinRequestError):
-            bitcoin_core_client.get_block_count()
+            bitcoin_core_client.make_request({})
 
 
-def test_get_block_count_connection_error(bitcoin_core_client, mock_invalid_status_response):
+def test_make_request_connection_error(bitcoin_core_client, mock_invalid_status_response):
     with mock.patch('squeaknode.bitcoin.bitcoin_core_client.requests.post', autospec=True) as mock_post:
         mock_post.side_effect = ConnectionError()
 
         with pytest.raises(BitcoinRequestError):
-            bitcoin_core_client.get_block_count()
+            bitcoin_core_client.make_request({})
 
 
-def test_get_block_count_timeout_error(bitcoin_core_client, mock_invalid_status_response):
+def test_make_request_timeout_error(bitcoin_core_client, mock_invalid_status_response):
     with mock.patch('squeaknode.bitcoin.bitcoin_core_client.requests.post', autospec=True) as mock_post:
         mock_post.side_effect = Timeout()
 
         with pytest.raises(BitcoinRequestError):
-            bitcoin_core_client.get_block_count()
+            bitcoin_core_client.make_request({})
 
 
-def test_get_block_count_request_exception(bitcoin_core_client, mock_invalid_status_response):
-    # TODO: assert mocks called with correct args.
+def test_make_request_request_exception(bitcoin_core_client, mock_invalid_status_response):
     with mock.patch('squeaknode.bitcoin.bitcoin_core_client.requests.post', autospec=True) as mock_post:
         mock_post.side_effect = RequestException()
 
         with pytest.raises(BitcoinRequestError):
-            bitcoin_core_client.get_block_count()
+            bitcoin_core_client.make_request({})
+
+
+def test_get_block_count(bitcoin_host, bitcoin_port, bitcoin_core_client, mock_get_count_response, block_count):
+    with mock.patch.object(bitcoin_core_client, 'make_request', autospec=True) as mock_make_request:
+        mock_make_request.return_value = mock_get_count_response.json()
+        retrieved_block_count = bitcoin_core_client.get_block_count()
+        print(mock_make_request.call_args.args)
+        print(mock_make_request.call_args.kwargs)
+        (payload,) = mock_make_request.call_args.args
+
+        assert payload['method'] == 'getblockcount'
+        assert retrieved_block_count == block_count
+
+
+# def test_get_block_count_invalid_status(bitcoin_core_client, mock_invalid_status_response):
+#     with mock.patch('squeaknode.bitcoin.bitcoin_core_client.requests.post', autospec=True) as mock_post:
+#         mock_post.return_value = mock_invalid_status_response
+
+#         with pytest.raises(BitcoinRequestError):
+#             bitcoin_core_client.get_block_count()
+
+
+# def test_get_block_count_connection_error(bitcoin_core_client, mock_invalid_status_response):
+#     with mock.patch('squeaknode.bitcoin.bitcoin_core_client.requests.post', autospec=True) as mock_post:
+#         mock_post.side_effect = ConnectionError()
+
+#         with pytest.raises(BitcoinRequestError):
+#             bitcoin_core_client.get_block_count()
+
+
+# def test_get_block_count_timeout_error(bitcoin_core_client, mock_invalid_status_response):
+#     with mock.patch('squeaknode.bitcoin.bitcoin_core_client.requests.post', autospec=True) as mock_post:
+#         mock_post.side_effect = Timeout()
+
+#         with pytest.raises(BitcoinRequestError):
+#             bitcoin_core_client.get_block_count()
+
+
+# def test_get_block_count_request_exception(bitcoin_core_client, mock_invalid_status_response):
+#     # TODO: assert mocks called with correct args.
+#     with mock.patch('squeaknode.bitcoin.bitcoin_core_client.requests.post', autospec=True) as mock_post:
+#         mock_post.side_effect = RequestException()
+
+#         with pytest.raises(BitcoinRequestError):
+#             bitcoin_core_client.get_block_count()
 
 
 def test_get_block_hash(bitcoin_core_client, mock_get_block_hash_response, block_count, block_hash):
