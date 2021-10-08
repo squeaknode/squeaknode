@@ -32,16 +32,22 @@ class BitcoinClient(ABC):
 
     @abstractmethod
     def get_best_block_info(self) -> BlockInfo:
-        pass
+        """Get block info for the latest Bitcoin block.
+
+        Returns:
+            BlockInfo: an object containing height, hash, and header.
+
+        Raises:
+            BitcoinRequestError: If the request fails.
+        """
 
     @abstractmethod
     def get_block_info_by_height(self, block_height: int) -> BlockInfo:
-        pass
+        """Get block info for the Bitcoin block at the given height.
 
-    @abstractmethod
-    def get_block_hash(self, block_height: int) -> bytes:
-        pass
+        Returns:
+            BlockInfo: an object containing height, hash, and header.
 
-    @abstractmethod
-    def get_block_header(self, block_hash: bytes, verbose: bool) -> bytes:
-        pass
+        Raises:
+            BitcoinRequestError: If the request fails.
+        """
