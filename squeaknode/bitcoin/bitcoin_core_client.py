@@ -24,6 +24,7 @@ import logging
 import os
 
 import requests
+from bitcoin.core import CBlockHeader
 
 from squeaknode.bitcoin.bitcoin_client import BitcoinClient
 from squeaknode.bitcoin.block_info import BlockInfo
@@ -89,7 +90,7 @@ class BitcoinCoreClient(BitcoinClient):
         logger.debug("Got block_hash: {}".format(block_hash))
         return bytes.fromhex(block_hash)
 
-    def get_block_header(self, block_hash: bytes, verbose: bool = False) -> bytes:
+    def get_block_header(self, block_hash: bytes, verbose: bool = False) -> CBlockHeader:
         payload = {
             "method": "getblockheader",
             "params": [block_hash.hex(), verbose],
@@ -99,7 +100,8 @@ class BitcoinCoreClient(BitcoinClient):
         json_response = self.make_request(payload)
         result = json_response["result"]
         logger.debug("Got block_header: {}".format(result))
-        return bytes.fromhex(result)
+        header_bytes = bytes.fromhex(result)
+        return CBlockHeader.deserialize(header_bytes)
 
     def make_request(self, payload: dict) -> dict:
         try:

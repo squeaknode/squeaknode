@@ -30,7 +30,6 @@ from squeak.core import CSqueak
 from squeak.core.signing import CSigningKey
 
 from squeaknode.bitcoin.bitcoin_client import BitcoinClient
-from squeaknode.bitcoin.util import parse_block_header
 from squeaknode.core.exception import InvoiceSubscriptionError
 from squeaknode.core.lightning_address import LightningAddressHostPort
 from squeaknode.core.offer import Offer
@@ -125,7 +124,7 @@ class SqueakCore:
             squeak.nBlockHeight)
         if squeak.hashBlock != block_info.block_hash:
             raise Exception("Block hash incorrect.")
-        return parse_block_header(block_info.block_header)
+        return block_info.block_header
 
     def get_decrypted_content(self, squeak: CSqueak, secret_key: bytes) -> str:
         """Checks if the secret key is valid for the given squeak and returns
