@@ -28,7 +28,7 @@ from squeaknode.admin.squeak_admin_server_handler import SqueakAdminServerHandle
 from squeaknode.admin.squeak_admin_server_servicer import SqueakAdminServerServicer
 from squeaknode.admin.webapp.app import SqueakAdminWebServer
 from squeaknode.bitcoin.bitcoin_block_subscription_client import BitcoinBlockSubscriptionClient
-from squeaknode.bitcoin.bitcoin_core_bitcoin_client import BitcoinCoreBitcoinClient
+from squeaknode.bitcoin.bitcoin_core_client import BitcoinCoreClient
 from squeaknode.config.config import SqueaknodeConfig
 from squeaknode.core.squeak_core import SqueakCore
 from squeaknode.db.db_engine import get_connection_string
@@ -131,7 +131,7 @@ class SqueakNode:
 
     def initialize_bitcoin_client(self):
         # load the bitcoin client
-        self.bitcoin_client = BitcoinCoreBitcoinClient(
+        self.bitcoin_client = BitcoinCoreClient(
             self.config.bitcoin.rpc_host,
             self.config.bitcoin.rpc_port,
             self.config.bitcoin.rpc_user,

@@ -27,11 +27,12 @@ import requests
 
 from squeaknode.bitcoin.bitcoin_client import BitcoinClient
 from squeaknode.bitcoin.block_info import BlockInfo
+from squeaknode.bitcoin.exception import BitcoinRequestError
 
 logger = logging.getLogger(__name__)
 
 
-class BitcoinCoreBitcoinClient(BitcoinClient):
+class BitcoinCoreClient(BitcoinClient):
     """Access a bitcoin daemon using RPC."""
 
     def __init__(
@@ -59,7 +60,7 @@ class BitcoinCoreBitcoinClient(BitcoinClient):
 
     def get_block_info_by_height(self, block_height: int) -> BlockInfo:
         block_hash = self.get_block_hash(block_height)
-        block_header = self.get_block_header(block_hash, False)
+        block_header = self.get_block_header(block_hash)
         return BlockInfo(block_height, block_hash, block_header)
 
     def get_block_count(self) -> int:
@@ -69,16 +70,8 @@ class BitcoinCoreBitcoinClient(BitcoinClient):
             "jsonrpc": "2.0",
             "id": 0,
         }
-        response = requests.post(
-            self.url,
-            data=json.dumps(payload),
-            headers=self.headers,
-        ).json()
-
-        logger.debug("Got response for get_block_count: {}".format(response))
-        result = response["result"]
-        if result is None:
-            raise Exception("Unable to get block count from bitcoin node.")
+        json_response = self.make_request(payload)
+        result = json_response["result"]
         block_count = int(result)
         logger.debug("Got block_count: {}".format(block_count))
         return block_count
@@ -90,32 +83,39 @@ class BitcoinCoreBitcoinClient(BitcoinClient):
             "jsonrpc": "2.0",
             "id": 0,
         }
-        response = requests.post(
-            self.url,
-            data=json.dumps(payload),
-            headers=self.headers,
-        ).json()
-
-        logger.debug("Got response for get_block_hash: {}".format(response))
-        result = response["result"]
+        json_response = self.make_request(payload)
+        result = json_response["result"]
         block_hash = result
         logger.debug("Got block_hash: {}".format(block_hash))
         return bytes.fromhex(block_hash)
 
-    def get_block_header(self, block_hash: bytes, verbose: bool) -> bytes:
+    def get_block_header(self, block_hash: bytes, verbose: bool = False) -> bytes:
         payload = {
             "method": "getblockheader",
             "params": [block_hash.hex(), verbose],
             "jsonrpc": "2.0",
             "id": 0,
         }
-        response = requests.post(
-            self.url,
-            data=json.dumps(payload),
-            headers=self.headers,
-        ).json()
-
-        logger.debug("Got response for get_block_header: {}".format(response))
-        result = response["result"]
+        json_response = self.make_request(payload)
+        result = json_response["result"]
         logger.debug("Got block_header: {}".format(result))
         return bytes.fromhex(result)
+
+    def make_request(self, payload: dict) -> dict:
+        try:
+            response = requests.post(
+                self.url,
+                data=json.dumps(payload),
+                headers=self.headers,
+            )
+            response.raise_for_status()
+        except requests.exceptions.HTTPError as errh:
+            raise BitcoinRequestError(errh)
+        except requests.exceptions.ConnectionError as errc:
+            raise BitcoinRequestError(errc)
+        except requests.exceptions.Timeout as errt:
+            raise BitcoinRequestError(errt)
+        except requests.exceptions.RequestException as err:
+            raise BitcoinRequestError(err)
+
+        return response.json()
