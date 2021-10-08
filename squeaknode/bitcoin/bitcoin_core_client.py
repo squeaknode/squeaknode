@@ -73,9 +73,7 @@ class BitcoinCoreClient(BitcoinClient):
         }
         json_response = self.make_request(payload)
         result = json_response["result"]
-        block_count = int(result)
-        logger.debug("Got block_count: {}".format(block_count))
-        return block_count
+        return int(result)
 
     def get_block_hash(self, block_height: int) -> bytes:
         payload = {
@@ -86,9 +84,7 @@ class BitcoinCoreClient(BitcoinClient):
         }
         json_response = self.make_request(payload)
         result = json_response["result"]
-        block_hash = result
-        logger.debug("Got block_hash: {}".format(block_hash))
-        return bytes.fromhex(block_hash)
+        return bytes.fromhex(result)
 
     def get_block_header(self, block_hash: bytes, verbose: bool = False) -> CBlockHeader:
         payload = {
@@ -99,7 +95,6 @@ class BitcoinCoreClient(BitcoinClient):
         }
         json_response = self.make_request(payload)
         result = json_response["result"]
-        logger.debug("Got block_header: {}".format(result))
         header_bytes = bytes.fromhex(result)
         return CBlockHeader.deserialize(header_bytes)
 
