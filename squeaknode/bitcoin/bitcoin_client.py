@@ -45,6 +45,9 @@ class BitcoinClient(ABC):
     def get_block_info_by_height(self, block_height: int) -> BlockInfo:
         """Get block info for the Bitcoin block at the given height.
 
+        Args:
+            block_height: The height of the block.
+
         Returns:
             BlockInfo: an object containing height, hash, and header.
 
