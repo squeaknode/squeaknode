@@ -19,6 +19,8 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+import json
+
 import mock
 import pytest
 from bitcoin.core import CBlockHeader
@@ -33,10 +35,20 @@ from squeaknode.bitcoin.exception import BitcoinRequestError
 
 
 @pytest.fixture
-def bitcoin_core_client():
+def bitcoin_host():
+    yield "fake_bitcoin_host"
+
+
+@pytest.fixture
+def bitcoin_port():
+    yield 5678
+
+
+@pytest.fixture
+def bitcoin_core_client(bitcoin_host, bitcoin_port):
     yield BitcoinCoreClient(
-        host="fake_bitcoin_host",
-        port=5678,
+        host=bitcoin_host,
+        port=bitcoin_port,
         rpc_user="fake_user",
         rpc_password="fake_pass",
         use_ssl=False,
@@ -161,11 +173,21 @@ def mock_invalid_status_response():
     yield MockInvalidStatusResponse()
 
 
-def test_get_block_count(bitcoin_core_client, mock_get_count_response, block_count):
+def test_get_block_count(bitcoin_host, bitcoin_port, bitcoin_core_client, mock_get_count_response, block_count):
     with mock.patch('squeaknode.bitcoin.bitcoin_core_client.requests.post', autospec=True) as mock_post:
         mock_post.return_value = mock_get_count_response
         retrieved_block_count = bitcoin_core_client.get_block_count()
+        print(mock_post.call_args.args)
+        print(mock_post.call_args.kwargs)
+        (bitcoin_address,) = mock_post.call_args.args
+        request_json = mock_post.call_args.kwargs['data']
 
+        print(bitcoin_address)
+        print(request_json)
+        assert bitcoin_host in bitcoin_address
+        assert str(bitcoin_port) in bitcoin_address
+        assert type(request_json) is str
+        assert json.loads(request_json)['method'] == 'getblockcount'
         assert retrieved_block_count == block_count
 
 
