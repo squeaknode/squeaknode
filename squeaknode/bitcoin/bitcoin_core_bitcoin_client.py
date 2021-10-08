@@ -28,7 +28,6 @@ import requests
 from squeaknode.bitcoin.bitcoin_client import BitcoinClient
 from squeaknode.bitcoin.block_info import BlockInfo
 from squeaknode.bitcoin.exception import BitcoinConnectionError
-from squeaknode.bitcoin.exception import BitcoinInvalidResultError
 
 logger = logging.getLogger(__name__)
 
@@ -72,9 +71,7 @@ class BitcoinCoreBitcoinClient(BitcoinClient):
             "id": 0,
         }
         json_response = self.make_request(payload)
-        result = json_response.get("result")
-        if result is None:
-            raise BitcoinInvalidResultError()
+        result = json_response["result"]
         block_count = int(result)
         logger.debug("Got block_count: {}".format(block_count))
         return block_count
@@ -87,9 +84,7 @@ class BitcoinCoreBitcoinClient(BitcoinClient):
             "id": 0,
         }
         json_response = self.make_request(payload)
-        result = json_response.get("result")
-        if result is None:
-            raise BitcoinInvalidResultError()
+        result = json_response["result"]
         block_hash = result
         logger.debug("Got block_hash: {}".format(block_hash))
         return bytes.fromhex(block_hash)
@@ -102,9 +97,7 @@ class BitcoinCoreBitcoinClient(BitcoinClient):
             "id": 0,
         }
         json_response = self.make_request(payload)
-        result = json_response.get("result")
-        if result is None:
-            raise BitcoinInvalidResultError()
+        result = json_response["result"]
         logger.debug("Got block_header: {}".format(result))
         return bytes.fromhex(result)
 

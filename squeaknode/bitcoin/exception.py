@@ -25,10 +25,6 @@ class BitcoinError(Exception):
     """Base class for other bitcoin exceptions."""
 
 
-class BitcoinInvalidResultError(BitcoinError):
-    """Error that is raised when bitcoin returns an invalid result."""
-
-
 class BitcoinConnectionError(BitcoinError):
     """Error that is raised when the bitcoin connection fails."""
 
