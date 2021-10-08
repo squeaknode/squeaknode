@@ -27,7 +27,7 @@ from requests.exceptions import RequestException
 from requests.exceptions import Timeout
 
 from squeaknode.bitcoin.bitcoin_core_bitcoin_client import BitcoinCoreBitcoinClient
-from squeaknode.bitcoin.exception import BitcoinConnectionError
+from squeaknode.bitcoin.exception import BitcoinRequestError
 
 
 @pytest.fixture
@@ -155,7 +155,7 @@ def test_get_block_count_invalid_status(bitcoin_core_client, mock_invalid_status
     with mock.patch('squeaknode.bitcoin.bitcoin_core_bitcoin_client.requests.post', autospec=True) as mock_post:
         mock_post.return_value = mock_invalid_status_response
 
-        with pytest.raises(BitcoinConnectionError):
+        with pytest.raises(BitcoinRequestError):
             bitcoin_core_client.get_block_count()
 
 
@@ -163,7 +163,7 @@ def test_get_block_count_connection_error(bitcoin_core_client, mock_invalid_stat
     with mock.patch('squeaknode.bitcoin.bitcoin_core_bitcoin_client.requests.post', autospec=True) as mock_post:
         mock_post.side_effect = ConnectionError()
 
-        with pytest.raises(BitcoinConnectionError):
+        with pytest.raises(BitcoinRequestError):
             bitcoin_core_client.get_block_count()
 
 
@@ -171,7 +171,7 @@ def test_get_block_count_timeout_error(bitcoin_core_client, mock_invalid_status_
     with mock.patch('squeaknode.bitcoin.bitcoin_core_bitcoin_client.requests.post', autospec=True) as mock_post:
         mock_post.side_effect = Timeout()
 
-        with pytest.raises(BitcoinConnectionError):
+        with pytest.raises(BitcoinRequestError):
             bitcoin_core_client.get_block_count()
 
 
@@ -179,7 +179,7 @@ def test_get_block_count_request_exception(bitcoin_core_client, mock_invalid_sta
     with mock.patch('squeaknode.bitcoin.bitcoin_core_bitcoin_client.requests.post', autospec=True) as mock_post:
         mock_post.side_effect = RequestException()
 
-        with pytest.raises(BitcoinConnectionError):
+        with pytest.raises(BitcoinRequestError):
             bitcoin_core_client.get_block_count()
 
 

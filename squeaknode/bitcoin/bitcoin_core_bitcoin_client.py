@@ -27,7 +27,7 @@ import requests
 
 from squeaknode.bitcoin.bitcoin_client import BitcoinClient
 from squeaknode.bitcoin.block_info import BlockInfo
-from squeaknode.bitcoin.exception import BitcoinConnectionError
+from squeaknode.bitcoin.exception import BitcoinRequestError
 
 logger = logging.getLogger(__name__)
 
@@ -111,15 +111,15 @@ class BitcoinCoreBitcoinClient(BitcoinClient):
             response.raise_for_status()
         except requests.exceptions.HTTPError as errh:
             print("Http Error:", errh)
-            raise BitcoinConnectionError(errh)
+            raise BitcoinRequestError(errh)
         except requests.exceptions.ConnectionError as errc:
             print("Error Connecting:", errc)
-            raise BitcoinConnectionError(errc)
+            raise BitcoinRequestError(errc)
         except requests.exceptions.Timeout as errt:
             print("Timeout Error:", errt)
-            raise BitcoinConnectionError(errt)
+            raise BitcoinRequestError(errt)
         except requests.exceptions.RequestException as err:
             print("OOps: Something Else", err)
-            raise BitcoinConnectionError(err)
+            raise BitcoinRequestError(err)
 
         return response.json()

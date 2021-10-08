@@ -25,13 +25,13 @@ class BitcoinError(Exception):
     """Base class for other bitcoin exceptions."""
 
 
-class BitcoinConnectionError(BitcoinError):
+class BitcoinRequestError(BitcoinError):
     """Error that is raised when the bitcoin connection fails."""
 
     def __init__(self, err):
         self.err = err
 
     def __repr__(self):
-        return 'BitcoinConnectionError(%r)' % (
+        return 'BitcoinRequestError(%r)' % (
             self.err,
         )
