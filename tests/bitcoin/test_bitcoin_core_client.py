@@ -186,6 +186,7 @@ def test_get_block_count_timeout_error(bitcoin_core_client, mock_invalid_status_
 
 
 def test_get_block_count_request_exception(bitcoin_core_client, mock_invalid_status_response):
+    # TODO: assert mocks called with correct args.
     with mock.patch('squeaknode.bitcoin.bitcoin_core_bitcoin_client.requests.post', autospec=True) as mock_post:
         mock_post.side_effect = RequestException()
 
@@ -194,6 +195,7 @@ def test_get_block_count_request_exception(bitcoin_core_client, mock_invalid_sta
 
 
 def test_get_block_hash(bitcoin_core_client, mock_get_block_hash_response, block_count, block_hash):
+    # TODO: assert mocks called with correct args.
     with mock.patch('squeaknode.bitcoin.bitcoin_core_bitcoin_client.requests.post', autospec=True) as mock_post:
         mock_post.return_value = mock_get_block_hash_response
         retrieved_block_hash = bitcoin_core_client.get_block_hash(block_count)
@@ -202,6 +204,7 @@ def test_get_block_hash(bitcoin_core_client, mock_get_block_hash_response, block
 
 
 def test_get_block_header(bitcoin_core_client, mock_get_block_header_response, block_hash, block_header):
+    # TODO: assert mocks called with correct args.
     with mock.patch('squeaknode.bitcoin.bitcoin_core_bitcoin_client.requests.post', autospec=True) as mock_post:
         mock_post.return_value = mock_get_block_header_response
         retrieved_block_header = bitcoin_core_client.get_block_header(
@@ -211,6 +214,7 @@ def test_get_block_header(bitcoin_core_client, mock_get_block_header_response, b
 
 
 def test_get_block_info_by_height(bitcoin_core_client, block_count, block_hash, block_header):
+    # TODO: assert mocks called with correct args.
     with mock.patch.object(bitcoin_core_client, 'get_block_hash', autospec=True) as mock_get_block_hash, \
             mock.patch.object(bitcoin_core_client, 'get_block_header', autospec=True) as mock_get_block_header:
         mock_get_block_hash.return_value = block_hash
@@ -226,6 +230,7 @@ def test_get_block_info_by_height(bitcoin_core_client, block_count, block_hash, 
 
 
 def test_get_best_block_info(bitcoin_core_client, block_count, block_info):
+    # TODO: assert mocks called with correct args.
     with mock.patch.object(bitcoin_core_client, 'get_block_count', autospec=True) as mock_get_block_count, \
             mock.patch.object(bitcoin_core_client, 'get_block_info_by_height', autospec=True) as mock_get_block_info_by_height:
         mock_get_block_count.return_value = block_count
