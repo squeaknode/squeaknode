@@ -110,16 +110,12 @@ class BitcoinCoreBitcoinClient(BitcoinClient):
             )
             response.raise_for_status()
         except requests.exceptions.HTTPError as errh:
-            print("Http Error:", errh)
             raise BitcoinRequestError(errh)
         except requests.exceptions.ConnectionError as errc:
-            print("Error Connecting:", errc)
             raise BitcoinRequestError(errc)
         except requests.exceptions.Timeout as errt:
-            print("Timeout Error:", errt)
             raise BitcoinRequestError(errt)
         except requests.exceptions.RequestException as err:
-            print("OOps: Something Else", err)
             raise BitcoinRequestError(err)
 
         return response.json()
