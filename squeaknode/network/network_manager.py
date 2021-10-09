@@ -82,10 +82,8 @@ class NetworkManager(object):
 
     def connect_peer_sync(self, peer_address: PeerAddress) -> None:
         port = peer_address.port or squeak.params.params.DEFAULT_PORT
-        peer_address = PeerAddress(
-            host=peer_address.host,
-            port=port,
-        )
+        peer_address = peer_address._replace(
+            port=port)
         if self.connection_manager.has_connection(peer_address):
             raise Exception("Already connected to: {}".format(peer_address))
         self.peer_client.connect_address(peer_address)

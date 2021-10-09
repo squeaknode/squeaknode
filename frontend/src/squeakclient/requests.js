@@ -1106,11 +1106,12 @@ export function getConnectedPeerRequest(host, port, handleResponse) {
   // });
 }
 
-export function connectSqueakPeerRequest(host, port, handleResponse, handleErr) {
+export function connectSqueakPeerRequest(host, port, useTor, handleResponse, handleErr) {
   const request = new ConnectSqueakPeerRequest();
   const peerAddress = new PeerAddress();
   peerAddress.setHost(host);
   peerAddress.setPort(port);
+  peerAddress.setUseTor(useTor);
   request.setPeerAddress(peerAddress);
   makeRequest(
     'connectpeer',
