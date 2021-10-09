@@ -30,7 +30,7 @@ from squeak.core import CSqueak
 
 from proto import lnd_pb2 as ln
 from proto import squeak_admin_pb2
-from tests.util import connect_peer
+from tests.util import channel
 from tests.util import create_contact_profile
 from tests.util import create_saved_peer
 from tests.util import create_signing_profile
@@ -50,8 +50,9 @@ from tests.util import get_squeak_display
 from tests.util import get_squeak_profile
 from tests.util import import_signing_profile
 from tests.util import make_squeak
-from tests.util import open_channel
 from tests.util import open_peer_connection
+from tests.util import peer_connection
+from tests.util import send_coins
 from tests.util import subscribe_connected_peers
 from tests.util import subscribe_squeak_ancestor_entries
 from tests.util import subscribe_squeak_entry
@@ -581,10 +582,10 @@ def test_delete_peer(admin_stub, peer_id):
     assert not get_peer_response.HasField("squeak_peer")
 
 
-def test_send_coins(admin_stub, lightning_client):
+def test_send_coins(admin_stub, other_admin_stub):
     new_address_response = admin_stub.LndNewAddress(ln.NewAddressRequest())
-    send_coins_response = lightning_client.send_coins(
-        new_address_response.address, 55555555
+    send_coins_response = send_coins(
+        other_admin_stub, new_address_response.address, 55555555
     )
     time.sleep(10)
     get_transactions_response = admin_stub.LndGetTransactions(
@@ -603,7 +604,6 @@ def test_buy_squeak(
     admin_stub,
     other_admin_stub,
     connected_tcp_peer_id,
-    lightning_client,
     signing_profile_id,
     saved_squeak_hash,
 ):
@@ -637,9 +637,9 @@ def test_buy_squeak(
     offer = get_buy_offers_response.offers[0]
 
     print("Tring to connect LND peer with offer: {}".format(offer))
-    with connect_peer(
-        lightning_client, offer.node_host, offer.node_pubkey
-    ), open_channel(lightning_client, offer.node_pubkey, 1000000):
+    with peer_connection(
+        other_admin_stub, offer.node_host, offer.node_pubkey
+    ), channel(other_admin_stub, offer.node_pubkey, 1000000):
 
         print("Channel context manager opened.")
 
@@ -759,7 +759,6 @@ def test_download_free_squeak(
     admin_stub,
     other_admin_stub,
     connected_tcp_peer_id,
-    lightning_client,
     signing_profile_id_with_free_price,
     saved_squeak_hash,
 ):
@@ -783,7 +782,6 @@ def test_download_single_squeak(
     admin_stub,
     other_admin_stub,
     connected_tcp_peer_id,
-    lightning_client,
     signing_profile_id,
     saved_squeak_hash,
 ):
@@ -999,7 +997,6 @@ def test_get_squeak_by_lookup(
     admin_stub,
     other_admin_stub,
     connected_tcp_peer_id,
-    lightning_client,
     signing_profile_id,
     saved_squeak_hash,
 ):
