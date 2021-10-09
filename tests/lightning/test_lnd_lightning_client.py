@@ -98,9 +98,16 @@ def timestamp():
 
 
 @pytest.fixture
-def rpc_invoice(preimage):
+def rpc_invoice(preimage, payment_hash, payment_request, price_msat, creation_date, expiry):
     yield lnd_pb2.Invoice(
         r_preimage=preimage,
+        r_hash=payment_hash,
+        payment_request=payment_request,
+        value_msat=price_msat,
+        settled=False,
+        settle_index=0,
+        creation_date=creation_date,
+        expiry=expiry,
     )
 
 
@@ -111,7 +118,7 @@ def invoice(payment_hash, payment_request, price_msat, creation_date, expiry):
         payment_request=payment_request,
         value_msat=price_msat,
         settled=False,
-        settle_index=None,
+        settle_index=0,
         creation_date=creation_date,
         expiry=expiry,
     )
@@ -214,6 +221,13 @@ def pay_req(
 
 
 @pytest.fixture
+def lookup_invoice_request(payment_hash_str):
+    yield lnd_pb2.PaymentHash(
+        r_hash_str=payment_hash_str,
+    )
+
+
+@pytest.fixture
 def make_lightning_client(lnd_host, lnd_port, tls_cert_path, macaroon_path):
     client = LNDLightningClient(
         host=lnd_host,
@@ -277,3 +291,36 @@ def test_decode_pay_req(make_lightning_client, payment_request, decode_pay_req_r
     assert type(call_decode_pay_req_request) is lnd_pb2.PayReqString
     assert call_decode_pay_req_request.pay_req == payment_request
     assert response == pay_req
+
+
+def test_lookup_invoice(make_lightning_client, payment_hash_str, lookup_invoice_request, rpc_invoice):
+    mock_stub = mock.MagicMock()
+    mock_stub.LookupInvoice.return_value = rpc_invoice
+    client = make_lightning_client(mock_stub)
+    response = client.lookup_invoice(payment_hash_str)
+    (call_lookup_invoice_request,) = mock_stub.LookupInvoice.call_args.args
+
+    assert type(call_lookup_invoice_request) is lnd_pb2.PaymentHash
+    assert call_lookup_invoice_request.r_hash_str == payment_hash_str
+    assert response == rpc_invoice
+
+
+def test_create_invoice(make_lightning_client, preimage, price_msat, payment_hash_str, add_invoice_response, rpc_invoice, invoice):
+    mock_stub = mock.MagicMock()
+    client = make_lightning_client(mock_stub)
+    with mock.patch.object(client, 'add_invoice', autospec=True) as mock_add_invoice, \
+            mock.patch.object(client, 'lookup_invoice', autospec=True) as mock_lookup_invoice:
+        mock_add_invoice.return_value = add_invoice_response
+        mock_lookup_invoice.return_value = rpc_invoice
+        response = client.create_invoice(preimage, price_msat)
+        (call_preimage, call_price_msat,) = mock_add_invoice.call_args.args
+        (call_payment_hash_str,) = mock_lookup_invoice.call_args.args
+
+        assert call_preimage == preimage
+        assert call_price_msat == price_msat
+        assert call_payment_hash_str == payment_hash_str
+        print('response:')
+        print(response)
+        print('invoice:')
+        print(invoice)
+        assert response == invoice
