@@ -19,16 +19,10 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+from typing import List
 from typing import NamedTuple
-from typing import Optional
 
 
-class Invoice(NamedTuple):
-    """Represents a lightning invoice."""
-    r_hash: bytes
-    payment_request: str
-    value_msat: int
-    settled: bool
-    settle_index: Optional[int]
-    creation_date: int
-    expiry: int
+class Info(NamedTuple):
+    """Represents info about the lightning node."""
+    uris: List[str]

@@ -23,7 +23,10 @@ import logging
 from abc import ABC
 from abc import abstractmethod
 
+from squeaknode.lightning.info import Info
 from squeaknode.lightning.invoice import Invoice
+from squeaknode.lightning.pay_req import PayReq
+from squeaknode.lightning.payment import Payment
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +34,18 @@ logger = logging.getLogger(__name__)
 class LightningClient(ABC):
 
     @abstractmethod
-    def create_invoice(self, preimage, amount_msat) -> Invoice:
+    def get_info(self) -> Info:
+        """Get info about the lightning node.
+
+        Returns:
+            Info: an object containing information about the node.
+
+        Raises:
+            LightningRequestError: If the request fails.
+        """
+
+    @abstractmethod
+    def create_invoice(self, preimage: bytes, amount_msat: int) -> Invoice:
         """Add a new invoice.
 
         Args:
@@ -40,6 +54,46 @@ class LightningClient(ABC):
 
         Returns:
             Invoice: an object representing a lightning invoice.
+
+        Raises:
+            LightningRequestError: If the request fails.
+        """
+
+    @abstractmethod
+    def decode_pay_req(self, payment_request: str) -> PayReq:
+        """Get the decoded payment request.
+
+        Args:
+            payment_request: The payment request as a string.
+
+        Returns:
+            PayReq: an object representing the payment request.
+
+        Raises:
+            LightningRequestError: If the request fails.
+        """
+
+    @abstractmethod
+    def pay_invoice(self, payment_request: str) -> Payment:
+        """Pay an invoice with a given payment_request.
+
+        Args:
+            payment_request: The payment request as a string.
+
+        args:
+        payment_request -- the payment_request as a string
+        """
+
+    @abstractmethod
+    def subscribe_invoices(self, settle_index: int):
+        """Get a stream of settled invoices for received payments.
+        # TODO: use map function to convert type of items in stream.
+
+        Args:
+            settle_index: The settle index from which to start streaming.
+
+        Returns:
+            TODO:
 
         Raises:
             LightningRequestError: If the request fails.

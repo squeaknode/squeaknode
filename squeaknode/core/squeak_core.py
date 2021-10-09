@@ -48,7 +48,7 @@ from squeaknode.core.squeaks import get_decrypted_content
 from squeaknode.core.squeaks import get_hash
 from squeaknode.core.squeaks import get_payment_point_of_secret_key
 from squeaknode.core.squeaks import make_squeak_with_block
-from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
+from squeaknode.lightning.lightning_client import LightningClient
 
 
 logger = logging.getLogger(__name__)
@@ -58,7 +58,7 @@ class SqueakCore:
     def __init__(
         self,
         bitcoin_client: BitcoinClient,
-        lightning_client: LNDLightningClient,
+        lightning_client: LightningClient,
     ):
         self.bitcoin_client = bitcoin_client
         self.lightning_client = lightning_client
@@ -247,7 +247,7 @@ class SqueakCore:
         pay_req = self.lightning_client.decode_pay_req(
             offer.payment_request)
         squeak_payment_point = squeak.paymentPoint
-        payment_hash = bytes.fromhex(pay_req.payment_hash)
+        payment_hash = pay_req.payment_hash
         price_msat = pay_req.num_msat
         destination = pay_req.destination
         invoice_timestamp = pay_req.timestamp
@@ -286,7 +286,7 @@ class SqueakCore:
             SentPayment: A record of the sent payment.
         """
         # Pay the invoice
-        payment = self.lightning_client.pay_invoice_sync(
+        payment = self.lightning_client.pay_invoice(
             received_offer.payment_request)
         preimage = payment.payment_preimage
         if not preimage:
