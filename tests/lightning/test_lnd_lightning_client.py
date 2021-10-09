@@ -319,8 +319,4 @@ def test_create_invoice(make_lightning_client, preimage, price_msat, payment_has
         assert call_preimage == preimage
         assert call_price_msat == price_msat
         assert call_payment_hash_str == payment_hash_str
-        print('response:')
-        print(response)
-        print('invoice:')
-        print(invoice)
         assert response == invoice
