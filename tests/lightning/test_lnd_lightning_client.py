@@ -154,30 +154,6 @@ def payment(preimage):
     )
 
 
-# @pytest.fixture
-# def lnd_lightning_client_and_get_stub(lnd_host, lnd_port, tls_cert_path, macaroon_path):
-#     client = LNDLightningClient(
-#         host=lnd_host,
-#         port=lnd_port,
-#         tls_cert_path=tls_cert_path,
-#         macaroon_path=macaroon_path,
-#     )
-#     with mock.patch.object(client, '_get_stub', autospec=True) as mock_get_stub:
-#         yield client, mock_get_stub
-
-
-# @pytest.fixture
-# def lnd_lightning_client(lnd_lightning_client_and_get_stub):
-#     client, _ = lnd_lightning_client_and_get_stub
-#     yield client
-
-
-# @pytest.fixture
-# def mock_get_stub(lnd_lightning_client_and_get_stub):
-#     _, get_stub = lnd_lightning_client_and_get_stub
-#     yield get_stub
-
-
 @pytest.fixture
 def make_lightning_client(lnd_host, lnd_port, tls_cert_path, macaroon_path):
     client = LNDLightningClient(
@@ -209,23 +185,6 @@ def test_add_invoice(make_lightning_client, preimage, price_msat, rpc_invoice, i
     assert response == add_invoice_response
 
 
-# def test_pay_invoice(make_lightning_client, payment_request, send_request, send_response, payment):
-#     mock_stub = mock.MagicMock()
-#     mock_stub.SendPaymentSync.return_value = send_response
-#     print('mock_stub:')
-#     print(mock_stub)
-#     client = make_lightning_client(mock_stub)
-#     response = client.pay_invoice(payment_request)
-#     print('mock_stub:')
-#     print(mock_stub)
-#     (call_msg,) = mock_stub.SendPayment.call_args.args
-
-#     assert type(call_msg) is lnd_pb2.SendRequest
-#     assert call_invoice.payment_request == payment_request
-#     assert type(response) is Payment
-#     assert response == payment
-
-
 def test_get_info(make_lightning_client, get_info_response, info):
     mock_stub = mock.MagicMock()
     mock_stub.GetInfo.return_value = get_info_response
@@ -237,17 +196,6 @@ def test_get_info(make_lightning_client, get_info_response, info):
     assert response == info
 
 
-# def test_pay_invoice(make_lightning_client, payment_request, info):
-#     mock_stub = mock.MagicMock()
-#     mock_stub.GetInfo.return_value = info
-#     client = make_lightning_client(mock_stub)
-#     get_info_response = client.get_info()
-#     (call_get_info,) = mock_stub.GetInfo.call_args.args
-
-#     assert type(call_get_info) is lnd_pb2.GetInfoRequest
-#     assert get_info_response.uris == uris
-
-
 def test_pay_invoice(make_lightning_client, payment_request, send_request, send_response, payment):
     mock_stub = mock.MagicMock()
     mock_stub.SendPaymentSync.return_value = send_response
@@ -256,8 +204,4 @@ def test_pay_invoice(make_lightning_client, payment_request, send_request, send_
     (call_send_request,) = mock_stub.SendPaymentSync.call_args.args
 
     assert type(call_send_request) is lnd_pb2.SendRequest
-    print('response:')
-    print(response)
-    print('payment:')
-    print(payment)
     assert response == payment
