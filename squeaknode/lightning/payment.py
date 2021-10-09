@@ -20,10 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 from typing import NamedTuple
-from typing import Optional
 
 
 class Payment(NamedTuple):
     """Represents the result of a paid invoice."""
-    payment_preimage: Optional[bytes]
-    payment_error: Optional[str]
+    payment_preimage: bytes
+    payment_error: str

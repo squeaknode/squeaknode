@@ -150,7 +150,7 @@ def send_response(preimage, payment_hash):
 def payment(preimage):
     yield Payment(
         payment_preimage=preimage,
-        payment_error=None,
+        payment_error='',
     )
 
 
@@ -246,3 +246,18 @@ def test_get_info(make_lightning_client, get_info_response, info):
 
 #     assert type(call_get_info) is lnd_pb2.GetInfoRequest
 #     assert get_info_response.uris == uris
+
+
+def test_pay_invoice(make_lightning_client, payment_request, send_request, send_response, payment):
+    mock_stub = mock.MagicMock()
+    mock_stub.SendPaymentSync.return_value = send_response
+    client = make_lightning_client(mock_stub)
+    response = client.pay_invoice(payment_request)
+    (call_send_request,) = mock_stub.SendPaymentSync.call_args.args
+
+    assert type(call_send_request) is lnd_pb2.SendRequest
+    print('response:')
+    print(response)
+    print('payment:')
+    print(payment)
+    assert response == payment
