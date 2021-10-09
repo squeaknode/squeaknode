@@ -128,6 +128,7 @@ class SqueakNode:
             self.config.lnd.tls_cert_path,
             self.config.lnd.macaroon_path,
         )
+        self.lightning_client.init()
 
     def initialize_bitcoin_client(self):
         # load the bitcoin client

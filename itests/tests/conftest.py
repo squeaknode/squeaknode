@@ -35,7 +35,6 @@ from tests.util import create_signing_profile
 from tests.util import delete_profile
 from tests.util import generate_signing_key
 from tests.util import get_address
-from tests.util import load_lightning_client
 from tests.util import open_peer_connection
 
 
@@ -55,11 +54,6 @@ def admin_stub():
 def other_admin_stub():
     with grpc.insecure_channel("squeaknode_other:8994") as admin_channel:
         yield squeak_admin_pb2_grpc.SqueakAdminStub(admin_channel)
-
-
-@pytest.fixture
-def lightning_client():
-    return load_lightning_client()
 
 
 @pytest.fixture

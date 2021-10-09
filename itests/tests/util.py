@@ -27,13 +27,13 @@ import threading
 import time
 from contextlib import contextmanager
 
-from lnd_lightning_client import LNDLightningClient
 from squeak.core.elliptic import scalar_difference
 from squeak.core.elliptic import scalar_from_bytes
 from squeak.core.elliptic import scalar_to_bytes
 from squeak.core.signing import CSigningKey
 from squeak.core.signing import CSqueakAddress
 
+from proto import lnd_pb2
 from proto import squeak_admin_pb2
 
 
@@ -47,28 +47,10 @@ def get_address(signing_key):
     return str(address)
 
 
-def get_latest_block_info(lightning_client):
-    get_info_response = lightning_client.get_info()
-    block_hash = bytes.fromhex(get_info_response.block_hash)
-    block_height = get_info_response.block_height
-    return block_hash, block_height
-
-
 def get_hash(squeak):
     """ Needs to be reversed because hash is stored as little-endian """
     hash_bytes = squeak.GetHash()[::-1]
     return hash_bytes.hex()
-
-
-def load_lightning_client() -> LNDLightningClient:
-    tls_cert_path = "~/.lnd/tls.cert"
-    macaroon_path = "~/.lnd/data/chain/bitcoin/simnet/admin.macaroon"
-    return LNDLightningClient(
-        "lnd",
-        10009,
-        tls_cert_path,
-        macaroon_path,
-    )
 
 
 def string_to_hex(s):
@@ -88,33 +70,57 @@ def bytes_to_base64_string(data: bytes) -> str:
 
 
 @contextmanager
-def connect_peer(lightning_client, lightning_host, remote_pubkey):
+def peer_connection(node_stub, lightning_host, remote_pubkey):
     # Connect the peer
-    lightning_client.connect_peer(remote_pubkey, lightning_host)
+    connect_peer(node_stub, remote_pubkey, lightning_host)
     try:
+        print("Yielding lnd peer is connected.")
         yield
     finally:
         # Disconnect the peer
-        lightning_client.disconnect_peer(
-            remote_pubkey,
-        )
+        disconnect_peer(node_stub, remote_pubkey)
         time.sleep(2)
 
 
 @contextmanager
-def open_channel(lightning_client, remote_pubkey, amount):
+def channel(node_stub, remote_pubkey, amount):
     # Open channel to the server lightning node
-    pubkey_bytes = string_to_hex(remote_pubkey)
-    open_channel_response = lightning_client.open_channel(pubkey_bytes, amount)
+    # pubkey_bytes = string_to_hex(remote_pubkey)
+    # open_channel_response = lightning_client.open_channel(pubkey_bytes, amount)
+    print("Trying to open channel...")
+    channel_point = open_channel(node_stub, remote_pubkey, amount)
     print("Opening channel...")
-    for update in open_channel_response:
-        if update.HasField("chan_open"):
-            channel_point = update.chan_open.channel_point
-            print("Channel now open: " + str(channel_point))
+
+    # Wait for channel to be open.
+    MAX_RETRIES = 30
+    i = 0
+    while True:
+        print("Try number: {}".format(i))
+        # peers_list = lightning_client.list_peers()
+        peers_list = list_peers(node_stub)
+        # channels_list = lightning_client.list_channels()
+        channels_list = list_channels(node_stub)
+        # pending_channels_list = lightning_client.pending_channels()
+        pending_channels_list = pending_channels(node_stub)
+        print("list peers: {}".format(peers_list))
+        print("list channels: {}".format(channels_list))
+        print("pending channels: {}".format(pending_channels_list))
+        if len(channels_list.channels) > 0:
+            print("Channel now open.")
             break
-    print("list peers: {}".format(lightning_client.list_peers()))
-    print("list channels: {}".format(lightning_client.list_channels()))
-    print("pending channels: {}".format(lightning_client.pending_channels()))
+        time.sleep(1)
+        i += 1
+        if i > MAX_RETRIES:
+            raise Exception("Open channel timed out.")
+
+    # for update in open_channel_response:
+    #     if update.HasField("chan_open"):
+    #         channel_point = update.chan_open.channel_point
+    #         print("Channel now open: " + str(channel_point))
+    #         break
+    # print("list peers: {}".format(lightning_client.list_peers()))
+    # print("list channels: {}".format(lightning_client.list_channels()))
+    # print("pending channels: {}".format(lightning_client.pending_channels()))
     time.sleep(10)
     try:
         yield
@@ -122,10 +128,8 @@ def open_channel(lightning_client, remote_pubkey, amount):
         # Code to release resource, e.g.:
         # Close the channel
         time.sleep(2)
-        for update in lightning_client.close_channel(channel_point):
-            if update.HasField("chan_close"):
-                print("Channel closed.")
-                break
+        # for update in lightning_client.close_channel(channel_point):
+        close_channel(node_stub, channel_point)
 
 
 @contextmanager
@@ -352,6 +356,71 @@ def delete_profile(node_stub, profile_id):
         squeak_admin_pb2.DeleteSqueakProfileRequest(
             profile_id=profile_id,
         )
+    )
+
+
+def open_channel(node_stub, remote_pubkey, amount):
+    return node_stub.LndOpenChannelSync(
+        lnd_pb2.OpenChannelRequest(
+            node_pubkey_string=remote_pubkey,
+            local_funding_amount=amount,
+        )
+    )
+
+
+def close_channel(node_stub, channel_point):
+    return node_stub.LndCloseChannel(
+        lnd_pb2.CloseChannelRequest(
+            channel_point=channel_point,
+        )
+    )
+
+
+def list_peers(node_stub):
+    return node_stub.LndListPeers(
+        lnd_pb2.ListPeersRequest()
+    )
+
+
+def list_channels(node_stub):
+    return node_stub.LndListChannels(
+        lnd_pb2.ListChannelsRequest()
+    )
+
+
+def pending_channels(node_stub):
+    return node_stub.LndPendingChannels(
+        lnd_pb2.PendingChannelsRequest()
+    )
+
+
+def connect_peer(node_stub, pubkey, host):
+    lightning_address = lnd_pb2.LightningAddress(
+        pubkey=pubkey,
+        host=host,
+    )
+    connect_peer_request = lnd_pb2.ConnectPeerRequest(
+        addr=lightning_address,
+    )
+    return node_stub.LndConnectPeer(connect_peer_request)
+
+
+def disconnect_peer(node_stub, pubkey):
+    disconnect_peer_request = lnd_pb2.DisconnectPeerRequest(
+        pub_key=pubkey,
+    )
+    return node_stub.LndDisconnectPeer(
+        disconnect_peer_request,
+    )
+
+
+def send_coins(node_stub, addr, amount):
+    send_coins_request = lnd_pb2.SendCoinsRequest(
+        addr=addr,
+        amount=amount,
+    )
+    return node_stub.LndSendCoins(
+        send_coins_request,
     )
 
 

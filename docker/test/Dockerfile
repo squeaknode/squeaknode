@@ -7,7 +7,6 @@ RUN pip3 install -r requirements-itest.txt
 WORKDIR /app
 
 COPY proto ./proto
-COPY itests/test.sh squeaknode/lightning/lnd_lightning_client.py ./
 COPY itests/tests ./tests
 
 RUN python3 -m grpc_tools.protoc --proto_path=. --python_out=. --grpc_python_out=. \
