@@ -1144,6 +1144,9 @@ message PeerAddress {
 
     /// The port of the peer
     int32 port = 2;
+
+    /// Use tor to connect to this address.
+    bool use_tor = 3;
 }
 
 message SubscribeBuyOffersRequest {

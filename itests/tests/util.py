@@ -148,6 +148,7 @@ def open_peer_connection(node_stub, peer_name, peer_host, peer_port):
                 peer_address=squeak_admin_pb2.PeerAddress(
                     host=peer_host,
                     port=peer_port,
+                    use_tor=True,
                 )
             )
         )

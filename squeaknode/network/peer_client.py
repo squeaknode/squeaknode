@@ -69,9 +69,10 @@ class PeerClient(object):
     def make_connection(self, address: PeerAddress, result_queue: queue.Queue):
         logger.info('Conecting to address: {}'.format(address))
         try:
-            peer_socket = self.get_socket()
+            peer_socket = self.get_socket(address)
             peer_socket.settimeout(SOCKET_CONNECT_TIMEOUT)
-            peer_socket.connect(address)
+            connect_address = (address.host, address.port)
+            peer_socket.connect(connect_address)
             peer_socket.setblocking(True)
             self.handle_connection(
                 peer_socket,
@@ -96,8 +97,14 @@ class PeerClient(object):
             result_queue=result_queue,
         )
 
-    def get_socket(self):
-        if self.tor_proxy_ip:
+    def get_socket(self, address: PeerAddress):
+        if address.use_tor and self.tor_proxy_ip is None:
+            raise Exception(
+                "Unable to connect to tor address without tor proxy ip configured.")
+        if address.use_tor and self.tor_proxy_port is None:
+            raise Exception(
+                "Unable to connect to tor address without tor proxy port configured.")
+        if address.use_tor:
             s = socks.socksocket()  # Same API as socket.socket in the standard lib
             s.set_proxy(socks.SOCKS5, self.tor_proxy_ip, self.tor_proxy_port)
             return s
