@@ -23,12 +23,7 @@ from typing import NamedTuple
 from typing import Optional
 
 
-class Invoice(NamedTuple):
-    """Represents a lightning invoice."""
-    r_hash: bytes
-    payment_request: str
-    value_msat: int
-    settled: bool
-    settle_index: Optional[int]
-    creation_date: int
-    expiry: int
+class Payment(NamedTuple):
+    """Represents the result of a paid invoice."""
+    payment_preimage: Optional[bytes]
+    payment_error: Optional[str]

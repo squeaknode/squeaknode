@@ -27,7 +27,10 @@ import grpc
 
 from proto import lnd_pb2
 from proto import lnd_pb2_grpc
+from squeaknode.lightning.info import Info
 from squeaknode.lightning.invoice import Invoice
+from squeaknode.lightning.pay_req import PayReq
+from squeaknode.lightning.payment import Payment
 
 logger = logging.getLogger(__name__)
 
@@ -53,7 +56,7 @@ class LNDLightningClient:
         self.port = port
         self.tls_cert_path = tls_cert_path
         self.macaroon_path = macaroon_path
-        self.stub = None
+        # self.stub = None
 
     def init(self):
         self.stub = self._get_stub()
@@ -89,180 +92,48 @@ class LNDLightningClient:
         channel = grpc.secure_channel(url, combined_creds)
         return lnd_pb2_grpc.LightningStub(channel)
 
-    def get_wallet_balance(self):
-        # Retrieve and display the wallet balance
-        request = lnd_pb2.WalletBalanceRequest()
-        return self.stub.WalletBalance(request)
-
-    def add_invoice(self, preimage, amount_msat):
-        """Create a new invoice with the given hash pre-image.
-
-        args:
-        preimage -- the preimage bytes used to create the invoice
-        amount -- the value of the invoice
-        """
+    def add_invoice(self, preimage: bytes, amount_msat: int) -> lnd_pb2.AddInvoiceResponse:
         invoice = lnd_pb2.Invoice(
             r_preimage=preimage,
             value_msat=amount_msat,
         )
         return self.stub.AddInvoice(invoice)
 
-    def pay_invoice_sync(self, payment_request):
-        """Pay an invoice with a given payment_request
-
-        args:
-        payment_request -- the payment_request as a string
-        """
+    def pay_invoice(self, payment_request: str) -> Payment:
         send_payment_request = lnd_pb2.SendRequest(
             payment_request=payment_request,
         )
-        return self.stub.SendPaymentSync(send_payment_request)
-
-    def connect_peer(self, pubkey, host):
-        """Connect to a lightning node peer.
-
-        args:
-        pubkey -- The identity pubkey of the Lightning node
-        host -- The network location of the lightning node
-        """
-        lightning_address = lnd_pb2.LightningAddress(
-            pubkey=pubkey,
-            host=host,
-        )
-        connect_peer_request = lnd_pb2.ConnectPeerRequest(
-            addr=lightning_address,
-        )
-        return self.stub.ConnectPeer(connect_peer_request)
-
-    def disconnect_peer(self, pubkey):
-        """Disconnect a lightning node peer.
-
-        args:
-        pubkey -- The identity pubkey of the Lightning node
-        """
-        disconnect_peer_request = lnd_pb2.DisconnectPeerRequest(
-            pub_key=pubkey,
-        )
-        return self.stub.DisconnectPeer(
-            disconnect_peer_request,
+        send_payment_response = self.stub.SendPaymentSync(send_payment_request)
+        return Payment(
+            payment_preimage=send_payment_response.payment_preimage,
+            payment_error=send_payment_response.payment_error,
         )
 
-    def get_info(self):
-        """Get info about the lightning network node."""
+    def get_info(self) -> Info:
         get_info_request = lnd_pb2.GetInfoRequest()
-        return self.stub.GetInfo(
+        get_info_response = self.stub.GetInfo(
             get_info_request,
         )
-
-    def open_channel_sync(self, pubkey_str, local_amount):
-        """Open a channel with a remote lightning node.
-
-        args:
-        pubkey (str) -- The identity pubkey of the Lightning node
-        local_amount -- The number of satoshis the wallet should commit to the channel
-        """
-        open_channel_request = lnd_pb2.OpenChannelRequest(
-            node_pubkey_string=pubkey_str,
-            local_funding_amount=local_amount,
-        )
-        return self.stub.OpenChannelSync(
-            open_channel_request,
+        return Info(
+            uris=get_info_response.uris,
         )
 
-    def list_channels(self):
-        """List the channels"""
-        list_channels_request = lnd_pb2.ListChannelsRequest()
-        return self.stub.ListChannels(
-            list_channels_request,
-        )
-
-    def pending_channels(self):
-        """List the pending channels"""
-        pending_channels_request = lnd_pb2.PendingChannelsRequest()
-        return self.stub.PendingChannels(
-            pending_channels_request,
-        )
-
-    def list_peers(self):
-        """List the peers"""
-        list_peers_request = lnd_pb2.ListPeersRequest()
-        return self.stub.ListPeers(
-            list_peers_request,
-        )
-
-    def open_channel(self, pubkey, local_amount):
-        """Open a channel
-
-        args:
-        pubkey (bytes) -- The identity pubkey of the Lightning node
-        local_amount -- The number of satoshis the wallet should commit to the channel
-        """
-        open_channel_request = lnd_pb2.OpenChannelRequest(
-            node_pubkey=pubkey,
-            local_funding_amount=local_amount,
-        )
-        return self.stub.OpenChannel(
-            open_channel_request,
-        )
-
-    def close_channel(self, channel_point):
-        """Close a channel
-
-        args:
-        channel_point (str) -- The outpoint (txid:index) of the funding transaction.
-        """
-        close_channel_request = lnd_pb2.CloseChannelRequest(
-            channel_point=channel_point,
-        )
-        return self.stub.CloseChannel(
-            close_channel_request,
-        )
-
-    def decode_pay_req(self, payment_request):
-        """Decode a payment request
-
-        args:
-        pay_req (str) -- The payment request string
-        """
+    def decode_pay_req(self, payment_request: str) -> PayReq:
         decode_pay_req_request = lnd_pb2.PayReqString(
             pay_req=payment_request,
         )
-        return self.stub.DecodePayReq(
+        decode_pay_req_response = self.stub.DecodePayReq(
             decode_pay_req_request,
         )
-
-    def new_address(self, address_type):
-        # NewAddress creates a new address under control of the local wallet.
-        new_address_request = lnd_pb2.NewAddressRequest(
-            type=address_type,
-        )
-        return self.stub.NewAddress(
-            new_address_request,
+        return PayReq(
+            payment_hash=bytes.fromhex(decode_pay_req_response.payment_hash),
+            num_msat=decode_pay_req_response.num_msat,
+            destination=decode_pay_req_response.destination,
+            timestamp=decode_pay_req_response.timestamp,
+            expiry=decode_pay_req_response.expiry,
         )
 
-    def subscribe_channel_events(self):
-        subscribe_channel_events_request = lnd_pb2.ChannelEventSubscription()
-        return self.stub.SubscribeChannelEvents(
-            subscribe_channel_events_request,
-        )
-
-    def get_transactions(self):
-        # Get transactions
-        get_transactions_request = lnd_pb2.GetTransactionsRequest()
-        return self.stub.GetTransactions(
-            get_transactions_request,
-        )
-
-    def send_coins(self, addr, amount):
-        send_coins_request = lnd_pb2.SendCoinsRequest(
-            addr=addr,
-            amount=amount,
-        )
-        return self.stub.SendCoins(
-            send_coins_request,
-        )
-
-    def subscribe_invoices(self, settle_index):
+    def subscribe_invoices(self, settle_index: int):
         subscribe_invoices_request = lnd_pb2.InvoiceSubscription(
             settle_index=settle_index,
         )
@@ -270,18 +141,13 @@ class LNDLightningClient:
             subscribe_invoices_request,
         )
 
-    def lookup_invoice(self, r_hash_str):
-        """Look up an invoice.
-
-        args:
-        r_hash_str -- The hex-encoded payment hash of the invoice to be looked up.
-        """
+    def lookup_invoice(self, r_hash_str: str) -> lnd_pb2.Invoice:
         payment_hash = lnd_pb2.PaymentHash(
             r_hash_str=r_hash_str,
         )
         return self.stub.LookupInvoice(payment_hash)
 
-    def create_invoice(self, preimage, amount_msat) -> Invoice:
+    def create_invoice(self, preimage: bytes, amount_msat: int) -> Invoice:
         add_invoice_response = self.add_invoice(preimage, amount_msat)
         payment_hash = add_invoice_response.r_hash
         lookup_invoice_response = self.lookup_invoice(
