@@ -26,6 +26,7 @@ from proto import lnd_pb2
 from squeaknode.lightning.info import Info
 from squeaknode.lightning.invoice import Invoice
 from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
+from squeaknode.lightning.pay_req import PayReq
 from squeaknode.lightning.payment import Payment
 from tests.utils import gen_random_hash
 
@@ -62,6 +63,11 @@ def payment_hash(preimage):
 
 
 @pytest.fixture
+def payment_hash_str(payment_hash):
+    yield payment_hash.hex()
+
+
+@pytest.fixture
 def price_msat():
     yield 33333
 
@@ -79,6 +85,16 @@ def expiry():
 @pytest.fixture
 def payment_request():
     yield "fake_payment_request"
+
+
+@pytest.fixture
+def destination():
+    yield "fake_payment_request"
+
+
+@pytest.fixture
+def timestamp():
+    yield 8888888
 
 
 @pytest.fixture
@@ -155,6 +171,49 @@ def payment(preimage):
 
 
 @pytest.fixture
+def decode_pay_req_request(payment_request):
+    yield lnd_pb2.PayReqString(
+        pay_req=payment_request,
+    )
+
+
+@pytest.fixture
+def decode_pay_req_response(
+        payment_hash_str,
+        price_msat,
+        payment_request,
+        destination,
+        timestamp,
+        expiry,
+):
+    yield lnd_pb2.PayReq(
+        payment_hash=payment_hash_str,
+        num_msat=price_msat,
+        destination=destination,
+        timestamp=timestamp,
+        expiry=expiry,
+    )
+
+
+@pytest.fixture
+def pay_req(
+        payment_hash,
+        price_msat,
+        payment_request,
+        destination,
+        timestamp,
+        expiry,
+):
+    yield PayReq(
+        payment_hash=payment_hash,
+        num_msat=price_msat,
+        destination=destination,
+        timestamp=timestamp,
+        expiry=expiry,
+    )
+
+
+@pytest.fixture
 def make_lightning_client(lnd_host, lnd_port, tls_cert_path, macaroon_path):
     client = LNDLightningClient(
         host=lnd_host,
@@ -204,4 +263,17 @@ def test_pay_invoice(make_lightning_client, payment_request, send_request, send_
     (call_send_request,) = mock_stub.SendPaymentSync.call_args.args
 
     assert type(call_send_request) is lnd_pb2.SendRequest
+    assert call_send_request.payment_request == payment_request
     assert response == payment
+
+
+def test_decode_pay_req(make_lightning_client, payment_request, decode_pay_req_request, decode_pay_req_response, pay_req):
+    mock_stub = mock.MagicMock()
+    mock_stub.DecodePayReq.return_value = decode_pay_req_response
+    client = make_lightning_client(mock_stub)
+    response = client.decode_pay_req(payment_request)
+    (call_decode_pay_req_request,) = mock_stub.DecodePayReq.call_args.args
+
+    assert type(call_decode_pay_req_request) is lnd_pb2.PayReqString
+    assert call_decode_pay_req_request.pay_req == payment_request
+    assert response == pay_req
