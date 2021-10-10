@@ -36,7 +36,7 @@ import {
 export default function PeerAddressPage() {
   const classes = useStyles();
   const history = useHistory();
-  const { host, port } = useParams();
+  const { host, port, useTor } = useParams();
   const [savedPeer, setSavedPeer] = useState(null);
   const [connectedPeer, setConnectedPeer] = useState(null);
   const [waitingForConnectedPeer, setWaitingForConnectedPeer] = useState(false);
@@ -48,9 +48,11 @@ export default function PeerAddressPage() {
   [host, port]);
   const getConnectedPeer = useCallback(() => {
     setWaitingForConnectedPeer(true);
-    getConnectedPeerRequest(host, port, handleLoadedConnectedPeer);
+    console.log("useTor: " + useTor);
+    const useTorBool = useTor === 'true';
+    getConnectedPeerRequest(host, port, useTorBool, handleLoadedConnectedPeer);
   },
-  [host, port]);
+  [host, port, useTor]);
 
   const disconnectPeer = useCallback(() => {
     setWaitingForConnectedPeer(true);

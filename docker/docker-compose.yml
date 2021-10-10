@@ -51,6 +51,15 @@ services:
       - net.ipv6.conf.all.disable_ipv6=0
     entrypoint: ["./start-lnd.sh"]
 
+  tor-privoxy:
+    restart: always
+    image: dockage/tor-privoxy:latest
+
+  tor-socks-proxy:
+    container_name: tor-socks-proxy
+    image: peterdavehello/tor-socks-proxy:latest
+    restart: unless-stopped
+
   squeaknode:
     image: squeaknode
     container_name: squeaknode

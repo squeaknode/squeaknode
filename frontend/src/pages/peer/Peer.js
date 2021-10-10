@@ -144,6 +144,7 @@ export default function PeerPage() {
               history,
               peer.getPeerAddress().getHost(),
               peer.getPeerAddress().getPort(),
+              peer.getPeerAddress().getUseTor(),
             );
           }}
         >

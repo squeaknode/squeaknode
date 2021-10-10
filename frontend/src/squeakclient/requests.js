@@ -1087,11 +1087,12 @@ export function getConnectedPeersRequest(handleResponse) {
   // });
 }
 
-export function getConnectedPeerRequest(host, port, handleResponse) {
+export function getConnectedPeerRequest(host, port, useTor, handleResponse) {
   const request = new GetConnectedPeerRequest();
   const peerAddress = new PeerAddress();
   peerAddress.setHost(host);
   peerAddress.setPort(port);
+  peerAddress.setUseTor(useTor);
   request.setPeerAddress(peerAddress);
   makeRequest(
     'getconnectedpeer',

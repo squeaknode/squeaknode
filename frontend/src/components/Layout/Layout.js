@@ -77,7 +77,7 @@ function Layout(props) {
             <Route path="/app/channel/:txId/:outputIndex" component={Channel} />
             <Route path="/app/peers" component={Peers} />
             <Route path="/app/peer/:id" component={Peer} />
-            <Route path="/app/peeraddress/:host/:port" component={PeerAddress} />
+            <Route path="/app/peeraddress/:host/:port/:useTor" component={PeerAddress} />
             <Route path="/app/notifications" component={Notifications} />
             <Route
               exact

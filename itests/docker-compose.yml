@@ -32,6 +32,15 @@ services:
       - "btcd:btcd"
     entrypoint: ["./start-btcctl.sh"]
 
+  tor-privoxy:
+    restart: always
+    image: dockage/tor-privoxy:latest
+
+  tor-socks-proxy:
+    container_name: test_tor-socks-proxy
+    image: peterdavehello/tor-socks-proxy:latest
+    restart: unless-stopped
+
   lnd_client:
     image: lnd
     container_name: test_lnd_client
