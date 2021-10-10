@@ -21,7 +21,6 @@
 # SOFTWARE.
 import mock
 import pytest
-import squeak.params
 
 from squeaknode.config.config import SqueaknodeConfig
 from squeaknode.core.lightning_address import LightningAddressHostPort
@@ -161,26 +160,6 @@ def test_create_peer(squeak_db, squeak_controller, peer_address):
             peer_id=None,
             peer_name="fake_peer_name",
             address=peer_address,
-            autoconnect=False,
-        )
-    )
-
-
-def test_create_peer_default_port(config, squeak_db, squeak_controller, peer_address_with_zero):
-    squeak_controller.create_peer(
-        "fake_peer_name",
-        peer_address_with_zero,
-    )
-
-    squeak_db.insert_peer.assert_called_with(
-        SqueakPeer(
-            peer_id=None,
-            peer_name="fake_peer_name",
-            address=PeerAddress(
-                host=peer_address_with_zero.host,
-                port=squeak.params.params.DEFAULT_PORT,
-                use_tor=peer_address_with_zero.use_tor,
-            ),
             autoconnect=False,
         )
     )

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   Button,
   Dialog,
@@ -12,13 +12,13 @@ import {
 } from '@material-ui/core';
 
 import {
+  getDefaultPeerPortRequest,
   connectSqueakPeerRequest,
 } from '../../squeakclient/requests';
 
 // styles
 import useStyles from './styles';
 
-const portDefaultValue = '0';
 
 export default function ConnectPeerDialog({
   open,
@@ -28,28 +28,40 @@ export default function ConnectPeerDialog({
 }) {
   const classes = useStyles();
 
+  const [defaultPeerPort, setDefaultPeerPort] = useState(null);
   const [peerName, setPeerName] = useState('');
   const [host, setHost] = useState('');
   const [port, setPort] = useState('');
   const [customPortChecked, setCustomPortChecked] = useState(false);
   const [useTorChecked, setUseTorChecked] = useState(false);
   const [loading, setLoading] = useState(false);
+  const portToUse = useMemo(() => customPortChecked ? port : defaultPeerPort,  [customPortChecked, port, defaultPeerPort]);
+
+  const getDefaultPeerPort = () => {
+    getDefaultPeerPortRequest(setDefaultPeerPort);
+  };
 
   const resetFields = () => {
     setPeerName('');
     setHost('');
-    setPort(portDefaultValue);
+    setPort('');
     setCustomPortChecked(false);
   };
+
+  function load(event) {
+    getDefaultPeerPort();
+    resetFields();
+  }
 
   const handleChangeHost = (event) => {
     setHost(event.target.value);
   };
 
   const handleChangeCustomPortChecked = (event) => {
-    setPort(
-      event.target.checked ? '' : portDefaultValue,
-    );
+    // setPort(
+    //   event.target.checked ? '' : defaultPeerPort,
+    // );
+    setPort('');
     setCustomPortChecked(event.target.checked);
   };
 
@@ -62,6 +74,9 @@ export default function ConnectPeerDialog({
   };
 
   const connectPeer = (peerName, host, port) => {
+    // const portToUse = customPortChecked ? port : defaultPeerPort;
+    // console.log('Calling connectSqueakPeerRequest with: ', host, portToUse, useTorChecked);
+    // console.log('portToUse: ', portToUse);
     setLoading(true);
     connectSqueakPeerRequest(host, port, useTorChecked, (response) => {
       // goToPeerPage(history, response.getPeerId());
@@ -86,16 +101,16 @@ export default function ConnectPeerDialog({
   function handleSubmit(event) {
     event.preventDefault();
     console.log('host:', host);
-    console.log('port:', port);
+    console.log('portToUse:', portToUse);
     if (!host) {
       alert('Host cannot be empty.');
       return;
     }
-    if (!port) {
-      alert('Port cannot be empty.');
+    if (!portToUse) {
+      alert('portToUse cannot be empty.');
       return;
     }
-    connectPeer(peerName, host, port);
+    connectPeer(peerName, host, portToUse);
     // handleClose();
   }
 
@@ -120,7 +135,7 @@ export default function ConnectPeerDialog({
         required={customPortChecked}
         variant="outlined"
         label="Port"
-        value={customPortChecked ? port : ''}
+        value={portToUse}
         onChange={handleChangePort}
         inputProps={{ maxLength: 8 }}
         disabled={!customPortChecked}
@@ -194,7 +209,7 @@ export default function ConnectPeerDialog({
   return (
     <Dialog
       open={open}
-      onEnter={resetFields}
+      onEnter={load}
       onClose={handleClose}
       aria-labelledby="form-dialog-title"
       maxWidth="sm"

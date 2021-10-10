@@ -42,6 +42,7 @@ from tests.util import download_squeaks
 from tests.util import download_squeaks_for_address
 from tests.util import get_connected_peer
 from tests.util import get_connected_peers
+from tests.util import get_default_peer_port
 from tests.util import get_external_address
 from tests.util import get_hash
 from tests.util import get_network
@@ -73,6 +74,14 @@ def test_get_external_address(admin_stub):
     print(external_address)
     assert external_address.host is not None and len(external_address.host) > 0
     assert external_address.port > 0
+
+
+def test_get_default_peer_port(admin_stub):
+    # Get the default peer port
+    default_peer_port = get_default_peer_port(admin_stub)
+
+    print(default_peer_port)
+    assert default_peer_port == 18777
 
 
 def test_reprocess_received_payments(admin_stub):

@@ -379,3 +379,6 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
 
     def GetExternalAddress(self, request, context):
         return self.handler.handle_get_external_address(request)
+
+    def GetDefaultPeerPort(self, request, context):
+        return self.handler.handle_get_default_peer_port(request)

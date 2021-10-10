@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   Button,
   Dialog,
@@ -15,6 +15,7 @@ import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 
 import {
+  getDefaultPeerPortRequest,
   createPeerRequest,
 } from '../../squeakclient/requests';
 import {
@@ -41,7 +42,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const portDefaultValue = '0';
 
 export default function CreatePeerDialog({
   open,
@@ -53,11 +53,17 @@ export default function CreatePeerDialog({
   const classes = useStyles();
   const history = useHistory();
 
+  const [defaultPeerPort, setDefaultPeerPort] = useState(null);
   const [peerName, setPeerName] = useState('');
   const [host, setHost] = useState('');
   const [port, setPort] = useState('');
   const [customPortChecked, setCustomPortChecked] = useState(false);
   const [useTorChecked, setUseTorChecked] = useState(false);
+  const portToUse = useMemo(() => customPortChecked ? port : defaultPeerPort,  [customPortChecked, port, defaultPeerPort]);
+
+  const getDefaultPeerPort = () => {
+    getDefaultPeerPortRequest(setDefaultPeerPort);
+  };
 
   const resetFields = () => {
     setPeerName('');
@@ -65,13 +71,18 @@ export default function CreatePeerDialog({
     if (initialHost) {
       setHost(initialHost);
     }
-    setPort(portDefaultValue);
+    setPort('');
     setCustomPortChecked(false);
     if (initialPort) {
       setPort(initialPort);
       setCustomPortChecked(true);
     }
   };
+
+  function load(event) {
+    getDefaultPeerPort();
+    resetFields();
+  }
 
   const handleChangePeerName = (event) => {
     setPeerName(event.target.value);
@@ -82,9 +93,10 @@ export default function CreatePeerDialog({
   };
 
   const handleChangeCustomPortChecked = (event) => {
-    setPort(
-      event.target.checked ? '' : portDefaultValue,
-    );
+    // setPort(
+    //   event.target.checked ? '' : portDefaultValue,
+    // );
+    setPort('');
     setCustomPortChecked(event.target.checked);
   };
 
@@ -111,11 +123,11 @@ export default function CreatePeerDialog({
       alert('Host cannot be empty.');
       return;
     }
-    if (!port) {
-      alert('Port cannot be empty.');
+    if (!portToUse) {
+      alert('portToUse cannot be empty.');
       return;
     }
-    createPeer(peerName, host, port);
+    createPeer(peerName, host, portToUse);
     handleClose();
   }
 
@@ -155,7 +167,7 @@ export default function CreatePeerDialog({
         required={customPortChecked}
         variant="outlined"
         label="Port"
-        value={customPortChecked ? port : ''}
+        value={portToUse}
         onChange={handleChangePort}
         inputProps={{ maxLength: 8 }}
         disabled={!customPortChecked}
@@ -226,7 +238,7 @@ export default function CreatePeerDialog({
   return (
     <Dialog
       open={open}
-      onEnter={resetFields}
+      onEnter={load}
       onClose={handleClose}
       aria-labelledby="form-dialog-title"
       maxWidth="sm"
