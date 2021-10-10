@@ -19,19 +19,20 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-"""Add use_tor column to peer table.
+"""Add use_tor column to all tables with peer address.
 
-Revision ID: c3a301843b53
+Revision ID: 231b8b35ed2e
 Revises: d7538b753a8a
-Create Date: 2021-10-09 17:47:29.932038
+Create Date: 2021-10-09 20:24:46.594377
 
 """
 import sqlalchemy as sa
 from alembic import op
 from sqlalchemy.sql import expression
 
+
 # revision identifiers, used by Alembic.
-revision = 'c3a301843b53'
+revision = '231b8b35ed2e'
 down_revision = 'd7538b753a8a'
 branch_labels = None
 depends_on = None
@@ -42,7 +43,35 @@ def upgrade():
         batch_op.add_column(sa.Column('use_tor', sa.Boolean(
         ), nullable=False, server_default=expression.true()))
 
+    with op.batch_alter_table('received_offer', schema=None) as batch_op:
+        batch_op.add_column(sa.Column('peer_use_tor', sa.Boolean(
+        ), nullable=False, server_default=expression.true()))
+
+    with op.batch_alter_table('received_payment', schema=None) as batch_op:
+        batch_op.add_column(sa.Column('peer_use_tor', sa.Boolean(
+        ), nullable=False, server_default=expression.true()))
+
+    with op.batch_alter_table('sent_offer', schema=None) as batch_op:
+        batch_op.add_column(sa.Column('peer_use_tor', sa.Boolean(
+        ), nullable=False, server_default=expression.true()))
+
+    with op.batch_alter_table('sent_payment', schema=None) as batch_op:
+        batch_op.add_column(sa.Column('peer_use_tor', sa.Boolean(
+        ), nullable=False, server_default=expression.true()))
+
 
 def downgrade():
+    with op.batch_alter_table('sent_payment', schema=None) as batch_op:
+        batch_op.drop_column('peer_use_tor')
+
+    with op.batch_alter_table('sent_offer', schema=None) as batch_op:
+        batch_op.drop_column('peer_use_tor')
+
+    with op.batch_alter_table('received_payment', schema=None) as batch_op:
+        batch_op.drop_column('peer_use_tor')
+
+    with op.batch_alter_table('received_offer', schema=None) as batch_op:
+        batch_op.drop_column('peer_use_tor')
+
     with op.batch_alter_table('peer', schema=None) as batch_op:
         batch_op.drop_column('use_tor')

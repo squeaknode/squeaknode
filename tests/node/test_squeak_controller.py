@@ -73,12 +73,12 @@ def lightning_host_port():
 
 @pytest.fixture
 def peer_address():
-    return PeerAddress(host="fake_host", port=5678)
+    return PeerAddress(host="fake_host", port=5678, use_tor=False)
 
 
 @pytest.fixture
 def peer_address_with_zero():
-    return PeerAddress(host="fake_host", port=0)
+    return PeerAddress(host="fake_host", port=0, use_tor=False)
 
 
 @pytest.fixture
@@ -179,6 +179,7 @@ def test_create_peer_default_port(config, squeak_db, squeak_controller, peer_add
             address=PeerAddress(
                 host=peer_address_with_zero.host,
                 port=squeak.params.params.DEFAULT_PORT,
+                use_tor=peer_address_with_zero.use_tor,
             ),
             autoconnect=False,
         )

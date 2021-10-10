@@ -128,6 +128,7 @@ class NetworkManager(object):
         return PeerAddress(
             self.local_ip,
             self.local_port,
+            use_tor=False,
         )
 
     @property
@@ -135,6 +136,7 @@ class NetworkManager(object):
         return PeerAddress(
             self.external_host or self.local_ip,
             self.local_port,
+            use_tor=False,
         )
 
     def subscribe_connected_peers(self, stopped) -> Iterable[List[Peer]]:

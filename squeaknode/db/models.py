@@ -121,6 +121,7 @@ class Models:
             Column("lightning_port", Integer, nullable=False),
             Column("peer_host", String, nullable=False),
             Column("peer_port", Integer, nullable=False),
+            Column("peer_use_tor", Boolean, nullable=False),
             Column("paid", Boolean, nullable=False, default=False),
             sqlite_autoincrement=True,
         )
@@ -132,6 +133,7 @@ class Models:
             Column("created_time_ms", SLBigInteger, nullable=False),
             Column("peer_host", String, nullable=False),
             Column("peer_port", Integer, nullable=False),
+            Column("peer_use_tor", Boolean, nullable=False),
             Column("squeak_hash", LargeBinary(32), nullable=False),
             Column("payment_hash", LargeBinary(
                 32), unique=True, nullable=False),
@@ -158,6 +160,7 @@ class Models:
             Column("invoice_expiry", Integer, nullable=False),
             Column("peer_host", String, nullable=False),
             Column("peer_port", Integer, nullable=False),
+            Column("peer_use_tor", Boolean, nullable=False),
             Column("paid", Boolean, nullable=False, default=False),
             sqlite_autoincrement=True,
         )
@@ -174,5 +177,6 @@ class Models:
             Column("settle_index", SLBigInteger, nullable=False),
             Column("peer_host", String, nullable=False),
             Column("peer_port", Integer, nullable=False),
+            Column("peer_use_tor", Boolean, nullable=False),
             sqlite_autoincrement=True,
         )

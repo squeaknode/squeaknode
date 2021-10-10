@@ -1005,6 +1005,7 @@ class SqueakDb:
             lightning_port=received_offer.lightning_address.port,
             peer_host=received_offer.peer_address.host,
             peer_port=received_offer.peer_address.port,
+            peer_use_tor=received_offer.peer_address.use_tor,
         )
         with self.get_connection() as connection:
             try:
@@ -1057,6 +1058,7 @@ class SqueakDb:
             .where(self.received_offers.c.squeak_hash == squeak_hash)
             .where(self.received_offers.c.peer_host == peer_address.host)
             .where(self.received_offers.c.peer_port == peer_address.port)
+            .where(self.received_offers.c.peer_use_tor == peer_address.use_tor)
             .where(self.received_offer_is_not_paid)
             .where(self.received_offer_is_not_expired)
         )
@@ -1111,6 +1113,7 @@ class SqueakDb:
             created_time_ms=self.timestamp_now_ms,
             peer_host=sent_payment.peer_address.host,
             peer_port=sent_payment.peer_address.port,
+            peer_use_tor=sent_payment.peer_address.use_tor,
             squeak_hash=sent_payment.squeak_hash,
             payment_hash=sent_payment.payment_hash,
             secret_key=sent_payment.secret_key,
@@ -1191,6 +1194,7 @@ class SqueakDb:
             invoice_expiry=sent_offer.invoice_expiry,
             peer_host=sent_offer.peer_address.host,
             peer_port=sent_offer.peer_address.port,
+            peer_use_tor=sent_offer.peer_address.use_tor,
         )
         with self.get_connection() as connection:
             res = connection.execute(ins)
@@ -1230,6 +1234,7 @@ class SqueakDb:
             select([self.sent_offers])
             .where(self.sent_offers.c.squeak_hash == squeak_hash)
             .where(self.sent_offers.c.peer_host == peer_address.host)
+            .where(self.sent_offers.c.peer_use_tor == peer_address.use_tor)
             .where(self.sent_offer_is_not_paid)
             .where(self.sent_offer_is_not_expired)
         )
@@ -1297,6 +1302,7 @@ class SqueakDb:
             settle_index=received_payment.settle_index,
             peer_host=received_payment.peer_address.host,
             peer_port=received_payment.peer_address.port,
+            peer_use_tor=received_payment.peer_address.use_tor,
         )
         with self.get_connection() as connection:
             try:
@@ -1476,6 +1482,7 @@ class SqueakDb:
             peer_address=PeerAddress(
                 host=row["peer_host"],
                 port=row["peer_port"],
+                use_tor=row["peer_use_tor"],
             ),
         )
 
@@ -1486,6 +1493,7 @@ class SqueakDb:
             peer_address=PeerAddress(
                 host=row["peer_host"],
                 port=row["peer_port"],
+                use_tor=row["peer_use_tor"],
             ),
             squeak_hash=(row["squeak_hash"]),
             payment_hash=(row["payment_hash"]),
@@ -1509,6 +1517,7 @@ class SqueakDb:
             peer_address=PeerAddress(
                 host=row["peer_host"],
                 port=row["peer_port"],
+                use_tor=row["peer_use_tor"],
             ),
         )
 
@@ -1523,6 +1532,7 @@ class SqueakDb:
             peer_address=PeerAddress(
                 host=row["peer_host"],
                 port=row["peer_port"],
+                use_tor=row["peer_use_tor"],
             ),
         )
 

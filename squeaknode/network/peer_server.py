@@ -68,6 +68,7 @@ class PeerServer(object):
                 peer_address = PeerAddress(
                     host=host,
                     port=port,
+                    use_tor=False,
                 )
                 peer_socket.setblocking(True)
                 self.handle_connection(

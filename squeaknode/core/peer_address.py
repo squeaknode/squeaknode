@@ -26,4 +26,4 @@ class PeerAddress(NamedTuple):
     """Class for representing a remote peer address."""
     host: str
     port: int
-    use_tor: bool = False
+    use_tor: bool
