@@ -61,6 +61,7 @@ export default function ConnectPeerDialog({
     // setPort(
     //   event.target.checked ? '' : defaultPeerPort,
     // );
+    setPort('');
     setCustomPortChecked(event.target.checked);
   };
 
