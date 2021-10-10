@@ -518,6 +518,12 @@ def create_app(handler, username, password):
     def getexternaladdress(msg):
         return handler.handle_get_external_address(msg)
 
+    @app.route("/getdefaultpeerport", methods=["POST"])
+    @login_required
+    @protobuf_serialized(squeak_admin_pb2.GetDefaultPeerPortRequest())
+    def getdefaultpeerport(msg):
+        return handler.handle_get_default_peer_port(msg)
+
     return app
 
 

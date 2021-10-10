@@ -129,6 +129,8 @@ import {
   GetSearchSqueakDisplaysReply,
   GetPeerByAddressRequest,
   GetPeerByAddressReply,
+  GetDefaultPeerPortRequest,
+  GetDefaultPeerPortReply,
 } from '../proto/squeak_admin_pb';
 
 console.log('The value of REACT_APP_DEV_MODE_ENABLED is:', Boolean(process.env.REACT_APP_DEV_MODE_ENABLED));
@@ -1163,6 +1165,18 @@ export function getExternalAddressRequest(handleResponse) {
   // client.getNetwork(request, {}, (err, response) => {
   //   handleResponse(response.getNetwork());
   // });
+}
+
+export function getDefaultPeerPortRequest(handleResponse) {
+  const request = new GetDefaultPeerPortRequest();
+  makeRequest(
+    'getdefaultpeerport',
+    request,
+    GetDefaultPeerPortReply.deserializeBinary,
+    (response) => {
+      handleResponse(response.getPort());
+    },
+  );
 }
 
 // export function subscribeConnectedPeersRequest(handleResponse) {
