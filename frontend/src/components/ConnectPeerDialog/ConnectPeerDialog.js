@@ -19,7 +19,6 @@ import {
 // styles
 import useStyles from './styles';
 
-// const portDefaultValue = '0';
 
 export default function ConnectPeerDialog({
   open,

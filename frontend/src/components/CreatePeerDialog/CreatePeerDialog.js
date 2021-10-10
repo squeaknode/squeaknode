@@ -42,7 +42,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const portDefaultValue = '0';
 
 export default function CreatePeerDialog({
   open,
@@ -94,9 +93,9 @@ export default function CreatePeerDialog({
   };
 
   const handleChangeCustomPortChecked = (event) => {
-    setPort(
-      event.target.checked ? '' : portDefaultValue,
-    );
+    // setPort(
+    //   event.target.checked ? '' : portDefaultValue,
+    // );
     setCustomPortChecked(event.target.checked);
   };
 
@@ -238,7 +237,7 @@ export default function CreatePeerDialog({
   return (
     <Dialog
       open={open}
-      onEnter={resetFields}
+      onEnter={load}
       onClose={handleClose}
       aria-labelledby="form-dialog-title"
       maxWidth="sm"
