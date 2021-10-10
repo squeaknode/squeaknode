@@ -41,7 +41,7 @@ export default function PeerAddressPage() {
   const [connectedPeer, setConnectedPeer] = useState(null);
   const [waitingForConnectedPeer, setWaitingForConnectedPeer] = useState(false);
   const [createSavedPeerDialogOpen, setCreateSavedPeerDialogOpen] = useState(false);
-  const useTor = useMemo(() => useTorStr === 'true');
+  const useTor = useMemo(() => useTorStr === 'true',  [useTorStr]);
 
   const getPeer = useCallback(() => {
     getPeerByAddressRequest(host, port, useTor, setSavedPeer);
