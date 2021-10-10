@@ -30,10 +30,8 @@ def create_saved_peer(
 ) -> SqueakPeer:
     validate_saved_peer_name(peer_name)
     port = peer_address.port or default_port
-    peer_address = PeerAddress(
-        host=peer_address.host,
-        port=port,
-    )
+    peer_address = peer_address._replace(
+        port=port)
     return SqueakPeer(
         peer_id=None,
         peer_name=peer_name,

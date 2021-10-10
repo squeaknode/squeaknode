@@ -530,11 +530,12 @@ export function getPeerRequest(id, handleResponse) {
   // });
 }
 
-export function getPeerByAddressRequest(host, port, handleResponse) {
+export function getPeerByAddressRequest(host, port, useTor, handleResponse) {
   const request = new GetPeerByAddressRequest();
   const peerAddress = new PeerAddress();
   peerAddress.setHost(host);
   peerAddress.setPort(port);
+  peerAddress.setUseTor(useTor);
   request.setPeerAddress(peerAddress);
   makeRequest(
     'getpeerbyaddress',
@@ -779,11 +780,12 @@ export function importSigningProfileRequest(profileName, privateKey, handleRespo
   // });
 }
 
-export function createPeerRequest(peerName, host, port, handleResponse) {
+export function createPeerRequest(peerName, host, port, useTor, handleResponse) {
   const request = new CreatePeerRequest();
   const peerAddress = new PeerAddress();
   peerAddress.setHost(host);
   peerAddress.setPort(port);
+  peerAddress.setUseTor(useTor);
   request.setPeerName(peerName);
   request.setPeerAddress(peerAddress);
   makeRequest(
@@ -1087,11 +1089,12 @@ export function getConnectedPeersRequest(handleResponse) {
   // });
 }
 
-export function getConnectedPeerRequest(host, port, handleResponse) {
+export function getConnectedPeerRequest(host, port, useTor, handleResponse) {
   const request = new GetConnectedPeerRequest();
   const peerAddress = new PeerAddress();
   peerAddress.setHost(host);
   peerAddress.setPort(port);
+  peerAddress.setUseTor(useTor);
   request.setPeerAddress(peerAddress);
   makeRequest(
     'getconnectedpeer',
@@ -1106,11 +1109,12 @@ export function getConnectedPeerRequest(host, port, handleResponse) {
   // });
 }
 
-export function connectSqueakPeerRequest(host, port, handleResponse, handleErr) {
+export function connectSqueakPeerRequest(host, port, useTor, handleResponse, handleErr) {
   const request = new ConnectSqueakPeerRequest();
   const peerAddress = new PeerAddress();
   peerAddress.setHost(host);
   peerAddress.setPort(port);
+  peerAddress.setUseTor(useTor);
   request.setPeerAddress(peerAddress);
   makeRequest(
     'connectpeer',
@@ -1126,11 +1130,12 @@ export function connectSqueakPeerRequest(host, port, handleResponse, handleErr) 
   // });
 }
 
-export function disconnectSqueakPeerRequest(host, port, handleResponse) {
+export function disconnectSqueakPeerRequest(host, port, useTor, handleResponse) {
   const request = new DisconnectSqueakPeerRequest();
   const peerAddress = new PeerAddress();
   peerAddress.setHost(host);
   peerAddress.setPort(port);
+  peerAddress.setUseTor(useTor);
   request.setPeerAddress(peerAddress);
   makeRequest(
     'disconnectpeer',

@@ -56,7 +56,8 @@ export default function CreatePeerDialog({
   const [peerName, setPeerName] = useState('');
   const [host, setHost] = useState('');
   const [port, setPort] = useState('');
-  const [customPortChecked, setCustomPortChecked] = React.useState(false);
+  const [customPortChecked, setCustomPortChecked] = useState(false);
+  const [useTorChecked, setUseTorChecked] = useState(false);
 
   const resetFields = () => {
     setPeerName('');
@@ -91,8 +92,12 @@ export default function CreatePeerDialog({
     setPort(event.target.value);
   };
 
+  const handleChangeUseTorChecked = (event) => {
+    setUseTorChecked(event.target.checked);
+  };
+
   const createPeer = (peerName, host, port) => {
-    createPeerRequest(peerName, host, port, (response) => {
+    createPeerRequest(peerName, host, port, useTorChecked, (response) => {
       goToPeerPage(history, response.getPeerId());
     });
   };
@@ -176,6 +181,23 @@ export default function CreatePeerDialog({
     );
   }
 
+  function UseTorSwitch() {
+    return (
+      <FormControlLabel
+        className={classes.formControlLabel}
+        control={(
+          <Switch
+            checked={useTorChecked}
+            onChange={handleChangeUseTorChecked}
+            name="use-tor"
+            size="small"
+          />
+        )}
+        label="Use Tor"
+      />
+    );
+  }
+
   function CancelButton() {
     return (
       <Button
@@ -225,6 +247,11 @@ export default function CreatePeerDialog({
         </DialogContent>
         <DialogActions>
           {CustomPortSwitch()}
+        </DialogActions>
+        <DialogActions>
+          {UseTorSwitch()}
+        </DialogActions>
+        <DialogActions>
           {CancelButton()}
           {CreatePeerButton()}
         </DialogActions>

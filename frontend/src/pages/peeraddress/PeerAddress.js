@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import {
   Grid,
@@ -36,38 +36,40 @@ import {
 export default function PeerAddressPage() {
   const classes = useStyles();
   const history = useHistory();
-  const { host, port } = useParams();
+  const { host, port, useTorStr } = useParams();
   const [savedPeer, setSavedPeer] = useState(null);
   const [connectedPeer, setConnectedPeer] = useState(null);
   const [waitingForConnectedPeer, setWaitingForConnectedPeer] = useState(false);
   const [createSavedPeerDialogOpen, setCreateSavedPeerDialogOpen] = useState(false);
+  const useTor = useMemo(() => useTorStr === 'true',  [useTorStr]);
 
   const getPeer = useCallback(() => {
-    getPeerByAddressRequest(host, port, setSavedPeer);
+    getPeerByAddressRequest(host, port, useTor, setSavedPeer);
   },
-  [host, port]);
+  [host, port, useTor]);
   const getConnectedPeer = useCallback(() => {
     setWaitingForConnectedPeer(true);
-    getConnectedPeerRequest(host, port, handleLoadedConnectedPeer);
+    getConnectedPeerRequest(host, port, useTor, handleLoadedConnectedPeer);
   },
-  [host, port]);
+  [host, port, useTor]);
 
   const disconnectPeer = useCallback(() => {
     setWaitingForConnectedPeer(true);
-    disconnectSqueakPeerRequest(host, port, () => {
+    disconnectSqueakPeerRequest(host, port, useTor, () => {
       getConnectedPeer();
     });
   },
-  [host, port, getConnectedPeer]);
+  [host, port, useTor, getConnectedPeer]);
 
   const connectPeer = useCallback(() => {
     setWaitingForConnectedPeer(true);
-    connectSqueakPeerRequest(host, port, () => {
+    console.log("Calling connectSqueakPeerRequest with " + host, port, useTor);
+    connectSqueakPeerRequest(host, port, useTor, () => {
       getConnectedPeer();
     },
     handleConnectPeerError);
   },
-  [host, port, getConnectedPeer]);
+  [host, port, useTor, getConnectedPeer]);
 
   // const subscribeConnectedPeer = useCallback(() => subscribeConnectedPeerRequest(host, port, (connectedPeer) => {
   //   setConnectedPeer(connectedPeer);

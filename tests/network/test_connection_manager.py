@@ -39,6 +39,7 @@ def local_address():
     yield PeerAddress(
         local_ip,
         local_port,
+        use_tor=False,
     )
 
 
@@ -61,12 +62,12 @@ def outbound_socket(inbound_socket_and_outbound_socket):
 
 @pytest.fixture
 def inbound_local_address():
-    yield PeerAddress('inbound.com', 56789)
+    yield PeerAddress('inbound.com', 56789, use_tor=False)
 
 
 @pytest.fixture
 def outbound_local_address():
-    yield PeerAddress('outbound.com', 4321)
+    yield PeerAddress('outbound.com', 4321, use_tor=False)
 
 
 @pytest.fixture

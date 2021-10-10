@@ -303,6 +303,7 @@ class SqueakCore:
         peer_address = PeerAddress(
             host=received_offer.peer_address.host,
             port=received_offer.peer_address.port,
+            use_tor=received_offer.peer_address.use_tor,
         )
         return SentPayment(
             sent_payment_id=None,

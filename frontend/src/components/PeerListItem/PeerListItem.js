@@ -28,7 +28,8 @@ export default function PeerListItem({
     console.log('Handling peer address click...');
     const host = peer.getPeerAddress().getHost();
     const port = peer.getPeerAddress().getPort();
-    goToPeerAddressPage(history, host, port);
+    const useTor = peer.getPeerAddress().getUseTor();
+    goToPeerAddressPage(history, host, port, useTor);
   };
 
   // const getPeerHost = () => {
