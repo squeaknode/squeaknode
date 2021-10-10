@@ -26,6 +26,7 @@ import threading
 
 import socks
 
+from squeaknode.core.peer_address import Network
 from squeaknode.core.peer_address import PeerAddress
 
 
@@ -98,13 +99,19 @@ class PeerClient(object):
         )
 
     def get_socket(self, address: PeerAddress):
-        if address.use_tor and self.tor_proxy_ip is None:
+        if address.network not in [
+                Network.IPV4,
+                Network.IPV6,
+                Network.TORV3,
+        ]:
+            raise Exception("Unsupported network: {}".format(address.network))
+        if address.network == Network.TORV3 and self.tor_proxy_ip is None:
             raise Exception(
                 "Unable to connect to tor address without tor proxy ip configured.")
-        if address.use_tor and self.tor_proxy_port is None:
+        if address.network == Network.TORV3 and self.tor_proxy_port is None:
             raise Exception(
                 "Unable to connect to tor address without tor proxy port configured.")
-        if address.use_tor:
+        if address.network == Network.TORV3:
             s = socks.socksocket()  # Same API as socket.socket in the standard lib
             s.set_proxy(socks.SOCKS5, self.tor_proxy_ip, self.tor_proxy_port)
             return s

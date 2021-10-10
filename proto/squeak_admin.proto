@@ -1010,7 +1010,7 @@ message GetNetworkRequest {
 }
 
 message GetNetworkReply {
-    /// The network
+    /// The network (e.g. mainnet or testnet)
     string network = 1;
 }
 
@@ -1143,14 +1143,14 @@ message SubscribeConnectedPeerRequest {
 }
 
 message PeerAddress {
+    /// The network to use for the connection (e.g. ipv4 or torv3)
+    string network = 1;
+
     /// The host of the peer
-    string host = 1;
+    string host = 2;
 
     /// The port of the peer
-    int32 port = 2;
-
-    /// Use tor to connect to this address.
-    bool use_tor = 3;
+    int32 port = 3;
 }
 
 message SubscribeBuyOffersRequest {
