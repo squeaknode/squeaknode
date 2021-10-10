@@ -58,15 +58,6 @@ def parse_args():
         default="info",
         help="Logging level",
     )
-    # subparsers = parser.add_subparsers(help="sub-command help")
-
-    # # create the parser for the "run-server" command
-    # parser_run_server = subparsers.add_parser(
-    #     "run-server", help="run-server help")
-    # parser_run_server.set_defaults(func=run_server)
-
-    # return parser.parse_args()
-
     parser.set_defaults(func=run_node)
     return parser.parse_args()
 
