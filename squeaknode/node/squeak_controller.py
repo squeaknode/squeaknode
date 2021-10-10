@@ -840,3 +840,6 @@ class SqueakController:
 
     def get_external_address(self) -> PeerAddress:
         return self.network_manager.external_address
+
+    def get_default_peer_port(self) -> int:
+        return squeak.params.params.DEFAULT_PORT

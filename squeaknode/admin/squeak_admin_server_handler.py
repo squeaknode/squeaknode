@@ -1086,3 +1086,10 @@ class SqueakAdminServerHandler(object):
         return squeak_admin_pb2.GetExternalAddressReply(
             peer_address=external_address_msg,
         )
+
+    def handle_get_default_peer_port(self, request):
+        logger.info("Handle get default peer port")
+        default_peer_port = self.squeak_controller.get_default_peer_port()
+        return squeak_admin_pb2.GetDefaultPeerPortReply(
+            port=default_peer_port,
+        )

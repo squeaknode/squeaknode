@@ -328,6 +328,10 @@ service SqueakAdmin {
   */
   rpc GetExternalAddress (GetExternalAddressRequest) returns (GetExternalAddressReply) {}
 
+  /** sqkadmin: `getdefaultpeerport`
+  */
+  rpc GetDefaultPeerPort (GetDefaultPeerPortRequest) returns (GetDefaultPeerPortReply) {}
+
 }
 
 message CreateSigningProfileRequest {
@@ -1186,5 +1190,13 @@ message GetExternalAddressRequest {
 message GetExternalAddressReply {
     /// Peer address
     PeerAddress peer_address = 1;
+}
+
+message GetDefaultPeerPortRequest {
+}
+
+message GetDefaultPeerPortReply {
+    /// The port.
+    int32 port = 1;
 }
 
