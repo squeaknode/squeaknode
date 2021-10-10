@@ -908,6 +908,7 @@ class SqueakDb:
             peer_name=squeak_peer.peer_name,
             host=squeak_peer.address.host,
             port=squeak_peer.address.port,
+            use_tor=squeak_peer.address.use_tor,
             autoconnect=squeak_peer.autoconnect,
         )
         with self.get_connection() as connection:
@@ -1451,6 +1452,7 @@ class SqueakDb:
             address=PeerAddress(
                 host=row["host"],
                 port=row["port"],
+                use_tor=row["use_tor"],
             ),
             autoconnect=row["autoconnect"],
         )

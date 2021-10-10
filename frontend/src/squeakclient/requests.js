@@ -1128,11 +1128,12 @@ export function connectSqueakPeerRequest(host, port, useTor, handleResponse, han
   // });
 }
 
-export function disconnectSqueakPeerRequest(host, port, handleResponse) {
+export function disconnectSqueakPeerRequest(host, port, useTor, handleResponse) {
   const request = new DisconnectSqueakPeerRequest();
   const peerAddress = new PeerAddress();
   peerAddress.setHost(host);
   peerAddress.setPort(port);
+  peerAddress.setUseTor(useTor);
   request.setPeerAddress(peerAddress);
   makeRequest(
     'disconnectpeer',

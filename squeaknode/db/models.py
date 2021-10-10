@@ -95,6 +95,7 @@ class Models:
             Column("peer_name", String, nullable=False),
             Column("host", String, nullable=False),
             Column("port", Integer, nullable=False),
+            Column("use_tor", Boolean, nullable=False),
             Column("autoconnect", Boolean, nullable=False),
             UniqueConstraint('host', 'port',
                              name='uq_peer_host_port'),

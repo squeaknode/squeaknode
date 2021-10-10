@@ -526,6 +526,7 @@ class SqueakAdminServerHandler(object):
         peer_id = request.peer_id
         logger.info("Handle get squeak peer with id: {}".format(peer_id))
         squeak_peer = self.squeak_controller.get_peer(peer_id)
+        logger.info("Got squeak peer: {}".format(squeak_peer))
         if squeak_peer is None:
             return squeak_admin_pb2.GetPeerReply(
                 squeak_peer=None,

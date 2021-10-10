@@ -214,7 +214,11 @@ export default function ConnectPeerDialog({
         </DialogContent>
         <DialogActions>
           {CustomPortSwitch()}
+        </DialogActions>
+        <DialogActions>
           {UseTorSwitch()}
+        </DialogActions>
+        <DialogActions>
           {CancelButton()}
           {ConnectPeerButton()}
         </DialogActions>
