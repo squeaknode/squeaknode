@@ -57,58 +57,27 @@ def peer_address_with_no_port():
     )
 
 
-@pytest.fixture
-def default_peer_port():
-    yield 55555
-
-
-def test_create_saved_peer(peer_name, peer_address, default_peer_port):
+def test_create_saved_peer(peer_name, peer_address):
     peer = create_saved_peer(
         peer_name,
         peer_address,
-        default_peer_port,
     )
 
     assert peer.peer_name == peer_name
-    # assert peer.address == PeerAddress(
-    #     host=peer_address.host,
-    #     port=peer_address.port,
-    # )
     assert peer.address == peer_address
 
 
-def test_create_saved_peer_empty_name(peer_address, default_peer_port):
+def test_create_saved_peer_empty_name(peer_address):
     with pytest.raises(Exception) as excinfo:
-        create_saved_peer("", peer_address, default_peer_port)
+        create_saved_peer("", peer_address)
     assert "Peer name cannot be empty." in str(excinfo.value)
-
-
-def test_create_saved_peer_default_port(peer_name, peer_address_with_no_port, default_peer_port):
-    peer = create_saved_peer(
-        peer_name,
-        peer_address_with_no_port,
-        default_peer_port,
-    )
-
-    assert peer.peer_name == peer_name
-    assert peer.address == PeerAddress(
-        host=peer_address_with_no_port.host,
-        port=default_peer_port,
-        use_tor=False,
-    )
 
 
 def test_create_saved_peer_use_tor(peer_name, peer_address_with_tor):
     peer = create_saved_peer(
         peer_name,
         peer_address_with_tor,
-        default_peer_port,
     )
 
     assert peer.peer_name == peer_name
-    # assert peer.address == PeerAddress(
-    #     host=peer_address_with_tor.host,
-    #     port=peer_address_with_tor.port,
-    #     use_tor=peer_address_with_tor.use_tor,
-    # )
     assert peer.address == peer_address_with_tor
