@@ -19,9 +19,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-import mock
 import pytest
-from bitcoin.core import CoreMainParams
 from squeak.core.signing import CSigningKey
 from squeak.core.signing import CSqueakAddress
 
@@ -30,11 +28,7 @@ from squeaknode.bitcoin.block_info import BlockInfo
 from squeaknode.core.lightning_address import LightningAddressHostPort
 from squeaknode.core.squeak_core import SqueakCore
 from squeaknode.core.squeak_profile import SqueakProfile
-
-
-@pytest.fixture
-def lightning_client():
-    return mock.Mock()
+from squeaknode.lightning.lightning_client import LightningClient
 
 
 @pytest.fixture
@@ -48,32 +42,48 @@ def price_msat():
 
 
 class MockBitcoinClient(BitcoinClient):
-    genesis_block_info = BlockInfo(
-        block_height=0,
-        block_hash=CoreMainParams.GENESIS_BLOCK.GetHash(),
-        block_header=CoreMainParams.GENESIS_BLOCK.get_header().serialize(),
-    )
+
+    def __init__(self, best_block_info):
+        self.best_block_info = best_block_info
 
     def get_best_block_info(self) -> BlockInfo:
-        return self.genesis_block_info
+        return self.best_block_info
 
     def get_block_info_by_height(self, block_height: int) -> BlockInfo:
         if block_height == 0:
-            return self.genesis_block_info
+            return self.best_block_info
         else:
             raise Exception("Invalid block height")
 
     def get_block_hash(self, block_height: int) -> bytes:
         if block_height == 0:
-            return self.genesis_block_info.block_hash
+            return self.best_block_info.block_hash
         else:
             raise Exception("Invalid block height")
 
     def get_block_header(self, block_hash: bytes, verbose: bool) -> bytes:
-        if block_hash == self.genesis_block_info.block_hash:
-            return self.genesis_block_info.block_header
+        if block_hash == self.best_block_info.block_hash:
+            return self.best_block_info.block_header
         else:
             raise Exception("Invalid block hash")
+
+
+class MockLightningClient(LightningClient):
+
+    def get_info(self):
+        pass
+
+    def create_invoice(self, preimage: bytes, amount_msat: int):
+        pass
+
+    def decode_pay_req(self, payment_request: str):
+        pass
+
+    def pay_invoice(self, payment_request: str):
+        pass
+
+    def subscribe_invoices(self, settle_index: int):
+        pass
 
 
 @pytest.fixture
@@ -97,8 +107,13 @@ def signing_profile():
 
 
 @pytest.fixture
-def bitcoin_client():
-    return MockBitcoinClient()
+def bitcoin_client(genesis_block_info):
+    return MockBitcoinClient(genesis_block_info)
+
+
+@pytest.fixture
+def lightning_client():
+    return MockLightningClient()
 
 
 def test_make_squeak(bitcoin_client, lightning_client, signing_profile):
