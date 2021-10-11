@@ -24,6 +24,7 @@ import pytest
 
 from squeaknode.config.config import SqueaknodeConfig
 from squeaknode.core.lightning_address import LightningAddressHostPort
+from squeaknode.core.peer_address import Network
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.squeak_core import SqueakCore
 from squeaknode.core.squeak_peer import SqueakPeer
@@ -72,12 +73,20 @@ def lightning_host_port():
 
 @pytest.fixture
 def peer_address():
-    return PeerAddress(host="fake_host", port=5678, use_tor=False)
+    return PeerAddress(
+        network=Network.IPV4,
+        host="fake_host",
+        port=5678,
+    )
 
 
 @pytest.fixture
 def peer_address_with_zero():
-    return PeerAddress(host="fake_host", port=0, use_tor=False)
+    return PeerAddress(
+        network=Network.IPV4,
+        host="fake_host",
+        port=0,
+    )
 
 
 @pytest.fixture

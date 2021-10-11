@@ -27,6 +27,7 @@ from proto import squeak_admin_pb2
 from squeaknode.admin.profile_image_util import bytes_to_base64_string
 from squeaknode.admin.profile_image_util import load_default_profile_image
 from squeaknode.core.connected_peer import ConnectedPeer
+from squeaknode.core.peer_address import Network
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.received_payment import ReceivedPayment
@@ -201,17 +202,17 @@ def connected_peer_to_message(connected_peer: ConnectedPeer) -> squeak_admin_pb2
 
 def peer_address_to_message(peer_address: PeerAddress) -> squeak_admin_pb2.PeerAddress:
     return squeak_admin_pb2.PeerAddress(
+        network=peer_address.network.name,
         host=peer_address.host,
         port=peer_address.port,
-        use_tor=peer_address.use_tor,
     )
 
 
 def message_to_peer_address(peer_address: squeak_admin_pb2.PeerAddress) -> PeerAddress:
     return PeerAddress(
+        network=Network[peer_address.network],
         host=peer_address.host,
         port=peer_address.port,
-        use_tor=peer_address.use_tor,
     )
 
 

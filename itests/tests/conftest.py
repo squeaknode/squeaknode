@@ -182,8 +182,8 @@ def connected_tcp_peer_id(other_admin_stub):
             "test_peer",
             "squeaknode",
             18777,
-    ) as peer_id:
-        yield peer_id
+    ):
+        yield
 
 
 @pytest.fixture

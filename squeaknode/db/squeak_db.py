@@ -35,6 +35,7 @@ from sqlalchemy.sql import tuple_
 from squeak.core import CSqueak
 
 from squeaknode.core.lightning_address import LightningAddressHostPort
+from squeaknode.core.peer_address import Network
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.received_payment import ReceivedPayment
@@ -906,9 +907,9 @@ class SqueakDb:
         ins = self.peers.insert().values(
             created_time_ms=self.timestamp_now_ms,
             peer_name=squeak_peer.peer_name,
+            network=squeak_peer.address.network.name,
             host=squeak_peer.address.host,
             port=squeak_peer.address.port,
-            use_tor=squeak_peer.address.use_tor,
             autoconnect=squeak_peer.autoconnect,
         )
         with self.get_connection() as connection:
@@ -1003,9 +1004,9 @@ class SqueakDb:
             destination=received_offer.destination,
             lightning_host=received_offer.lightning_address.host,
             lightning_port=received_offer.lightning_address.port,
+            peer_network=received_offer.peer_address.network.name,
             peer_host=received_offer.peer_address.host,
             peer_port=received_offer.peer_address.port,
-            peer_use_tor=received_offer.peer_address.use_tor,
         )
         with self.get_connection() as connection:
             try:
@@ -1056,9 +1057,9 @@ class SqueakDb:
         s = (
             select([self.received_offers])
             .where(self.received_offers.c.squeak_hash == squeak_hash)
+            .where(self.received_offers.c.peer_network == peer_address.network.name)
             .where(self.received_offers.c.peer_host == peer_address.host)
             .where(self.received_offers.c.peer_port == peer_address.port)
-            .where(self.received_offers.c.peer_use_tor == peer_address.use_tor)
             .where(self.received_offer_is_not_paid)
             .where(self.received_offer_is_not_expired)
         )
@@ -1111,9 +1112,9 @@ class SqueakDb:
         """ Insert a new sent payment. """
         ins = self.sent_payments.insert().values(
             created_time_ms=self.timestamp_now_ms,
+            peer_network=sent_payment.peer_address.network.name,
             peer_host=sent_payment.peer_address.host,
             peer_port=sent_payment.peer_address.port,
-            peer_use_tor=sent_payment.peer_address.use_tor,
             squeak_hash=sent_payment.squeak_hash,
             payment_hash=sent_payment.payment_hash,
             secret_key=sent_payment.secret_key,
@@ -1192,9 +1193,9 @@ class SqueakDb:
             payment_request=sent_offer.payment_request,
             invoice_timestamp=sent_offer.invoice_time,
             invoice_expiry=sent_offer.invoice_expiry,
+            peer_network=sent_offer.peer_address.network.name,
             peer_host=sent_offer.peer_address.host,
             peer_port=sent_offer.peer_address.port,
-            peer_use_tor=sent_offer.peer_address.use_tor,
         )
         with self.get_connection() as connection:
             res = connection.execute(ins)
@@ -1233,8 +1234,8 @@ class SqueakDb:
         s = (
             select([self.sent_offers])
             .where(self.sent_offers.c.squeak_hash == squeak_hash)
+            .where(self.sent_offers.c.peer_network == peer_address.network.name)
             .where(self.sent_offers.c.peer_host == peer_address.host)
-            .where(self.sent_offers.c.peer_use_tor == peer_address.use_tor)
             .where(self.sent_offer_is_not_paid)
             .where(self.sent_offer_is_not_expired)
         )
@@ -1300,9 +1301,9 @@ class SqueakDb:
             payment_hash=received_payment.payment_hash,
             price_msat=received_payment.price_msat,
             settle_index=received_payment.settle_index,
+            peer_network=received_payment.peer_address.network.name,
             peer_host=received_payment.peer_address.host,
             peer_port=received_payment.peer_address.port,
-            peer_use_tor=received_payment.peer_address.use_tor,
         )
         with self.get_connection() as connection:
             try:
@@ -1456,9 +1457,9 @@ class SqueakDb:
             peer_id=row[self.peers.c.peer_id],
             peer_name=row["peer_name"],
             address=PeerAddress(
+                network=Network[row["network"]],
                 host=row["host"],
                 port=row["port"],
-                use_tor=row["use_tor"],
             ),
             autoconnect=row["autoconnect"],
         )
@@ -1480,9 +1481,9 @@ class SqueakDb:
                 port=row["lightning_port"],
             ),
             peer_address=PeerAddress(
+                network=Network[row["peer_network"]],
                 host=row["peer_host"],
                 port=row["peer_port"],
-                use_tor=row["peer_use_tor"],
             ),
         )
 
@@ -1491,9 +1492,9 @@ class SqueakDb:
             sent_payment_id=row["sent_payment_id"],
             created_time_ms=row[self.sent_payments.c.created_time_ms],
             peer_address=PeerAddress(
+                network=Network[row["peer_network"]],
                 host=row["peer_host"],
                 port=row["peer_port"],
-                use_tor=row["peer_use_tor"],
             ),
             squeak_hash=(row["squeak_hash"]),
             payment_hash=(row["payment_hash"]),
@@ -1515,9 +1516,9 @@ class SqueakDb:
             invoice_time=row["invoice_timestamp"],
             invoice_expiry=row["invoice_expiry"],
             peer_address=PeerAddress(
+                network=Network[row["peer_network"]],
                 host=row["peer_host"],
                 port=row["peer_port"],
-                use_tor=row["peer_use_tor"],
             ),
         )
 
@@ -1530,9 +1531,9 @@ class SqueakDb:
             price_msat=row["price_msat"],
             settle_index=row["settle_index"],
             peer_address=PeerAddress(
+                network=Network[row["peer_network"]],
                 host=row["peer_host"],
                 port=row["peer_port"],
-                use_tor=row["peer_use_tor"],
             ),
         )
 

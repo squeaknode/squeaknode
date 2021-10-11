@@ -300,15 +300,15 @@ class SqueakCore:
         point = get_payment_point_of_secret_key(secret_key)
         valid = point == received_offer.payment_point
         # Save the preimage of the sent payment
-        peer_address = PeerAddress(
-            host=received_offer.peer_address.host,
-            port=received_offer.peer_address.port,
-            use_tor=received_offer.peer_address.use_tor,
-        )
+        # peer_address = PeerAddress(
+        #     network=received_offer.peer_address.network,
+        #     host=received_offer.peer_address.host,
+        #     port=received_offer.peer_address.port,
+        # )
         return SentPayment(
             sent_payment_id=None,
             created_time_ms=None,
-            peer_address=peer_address,
+            peer_address=received_offer.peer_address,
             squeak_hash=received_offer.squeak_hash,
             payment_hash=received_offer.payment_hash,
             secret_key=secret_key,

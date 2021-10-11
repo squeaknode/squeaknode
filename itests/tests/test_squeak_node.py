@@ -31,6 +31,7 @@ from squeak.core import CSqueak
 from proto import lnd_pb2 as ln
 from proto import squeak_admin_pb2
 from tests.util import channel
+from tests.util import connect_squeak_peer
 from tests.util import create_contact_profile
 from tests.util import create_saved_peer
 from tests.util import create_signing_profile
@@ -46,6 +47,7 @@ from tests.util import get_default_peer_port
 from tests.util import get_external_address
 from tests.util import get_hash
 from tests.util import get_network
+from tests.util import get_peer_by_address
 from tests.util import get_search_squeaks
 from tests.util import get_squeak_display
 from tests.util import get_squeak_profile
@@ -508,15 +510,12 @@ def test_create_peer(admin_stub):
     assert "fake_host" in peer_hosts
 
     # Get the new peer by address
-    get_peer_by_address_response = admin_stub.GetPeerByAddress(
-        squeak_admin_pb2.GetPeerByAddressRequest(
-            peer_address=squeak_admin_pb2.PeerAddress(
-                host="fake_host",
-                port=1234,
-            )
-        )
+    get_peer_by_address_response = get_peer_by_address(
+        admin_stub,
+        host="fake_host",
+        port=1234,
     )
-    assert get_peer_by_address_response.squeak_peer.peer_name == "fake_peer_name"
+    assert get_peer_by_address_response.peer_name == "fake_peer_name"
 
 
 def test_create_peer_empty_name(admin_stub):
@@ -964,7 +963,6 @@ def test_connect_peer(admin_stub, other_admin_stub):
             print("other_connected_peers: {}".format(other_connected_peers))
             assert other_connected_peers[0].peer_address.host == "squeaknode"
             assert other_connected_peers[0].peer_address.port == 18777
-            assert other_connected_peers[0].saved_peer.peer_name == "test_peer"
             connected_peer = get_connected_peer(
                 other_admin_stub, "squeaknode", 18777)
             assert connected_peer is not None
@@ -991,13 +989,10 @@ def test_connect_peer(admin_stub, other_admin_stub):
 def test_connect_invalid_peer_address(admin_stub):
     with pytest.raises(Exception) as excinfo:
         # Try to connect the peer and fail
-        admin_stub.ConnectPeer(
-            squeak_admin_pb2.ConnectPeerRequest(
-                peer_address=squeak_admin_pb2.PeerAddress(
-                    host="fake_peer_host_56789",
-                    port=12345,
-                )
-            )
+        connect_squeak_peer(
+            admin_stub,
+            host="fake_peer_host_56789",
+            port=12345,
         )
     assert "Name or service not known" in str(excinfo.value)
 

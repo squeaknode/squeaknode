@@ -19,21 +19,45 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-from enum import Enum
-from typing import NamedTuple
+import pytest
+
+from proto import squeak_admin_pb2
+from squeaknode.admin.messages import message_to_peer_address
+from squeaknode.admin.messages import peer_address_to_message
+from squeaknode.core.peer_address import Network
+from squeaknode.core.peer_address import PeerAddress
 
 
-class Network(Enum):
-    IPV4 = b'\x01'
-    IPV6 = b'\x02'
-    TORV2 = b'\x03'
-    TORV3 = b'\x04'
-    I2P = b'\x05'
-    CJDNS = b'\x06'
+@pytest.fixture
+def torv3():
+    yield Network.TORV3
 
 
-class PeerAddress(NamedTuple):
-    """Class for representing a remote peer address."""
-    network: Network
-    host: str
-    port: int
+@pytest.fixture
+def peer_address():
+    yield PeerAddress(
+        network=Network.TORV3,
+        host="fake_host",
+        port=56789,
+    )
+
+
+@pytest.fixture
+def peer_address_message():
+    yield squeak_admin_pb2.PeerAddress(
+        network="TORV3",
+        host="fake_host",
+        port=56789,
+    )
+
+
+def test_peer_address_to_message(peer_address, peer_address_message):
+    msg = peer_address_to_message(peer_address)
+
+    assert msg == peer_address_message
+
+
+def test_msg_to_peer_address(peer_address, peer_address_message):
+    address = message_to_peer_address(peer_address_message)
+
+    assert address == peer_address

@@ -29,6 +29,7 @@ import squeak.params
 from squeak.messages import MsgSerializable
 from squeak.net import CSqueakLocator
 
+from squeaknode.core.peer_address import Network
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.network.connection_manager import ConnectionManager
 from squeaknode.network.peer import Peer
@@ -120,17 +121,17 @@ class NetworkManager(object):
     @property
     def local_address(self) -> PeerAddress:
         return PeerAddress(
-            self.local_ip,
-            self.local_port,
-            use_tor=False,
+            network=Network.IPV4,
+            host=self.local_ip,
+            port=self.local_port,
         )
 
     @property
     def external_address(self) -> PeerAddress:
         return PeerAddress(
-            self.external_host or self.local_ip,
-            self.local_port,
-            use_tor=False,
+            network=Network.IPV4,
+            host=self.external_host or self.local_ip,
+            port=self.local_port,
         )
 
     def subscribe_connected_peers(self, stopped) -> Iterable[List[Peer]]:

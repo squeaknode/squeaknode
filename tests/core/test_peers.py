@@ -21,6 +21,7 @@
 # SOFTWARE.
 import pytest
 
+from squeaknode.core.peer_address import Network
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.peers import create_saved_peer
 
@@ -33,27 +34,27 @@ def peer_name():
 @pytest.fixture
 def peer_address():
     yield PeerAddress(
+        network=Network.IPV4,
         host="fake_host",
         port=8765,
-        use_tor=False,
     )
 
 
 @pytest.fixture
 def peer_address_with_tor():
     yield PeerAddress(
+        network=Network.TORV3,
         host="fake_host",
         port=1234,
-        use_tor=True,
     )
 
 
 @pytest.fixture
 def peer_address_with_no_port():
     yield PeerAddress(
+        network=Network.IPV4,
         host="fake_host",
         port=0,
-        use_tor=False,
     )
 
 

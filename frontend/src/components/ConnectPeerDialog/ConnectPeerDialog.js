@@ -73,12 +73,22 @@ export default function ConnectPeerDialog({
     setUseTorChecked(event.target.checked);
   };
 
+  const getNetwork = (useTor) => {
+    if (useTor) {
+      return "TORV3";
+    } else {
+      return "IPV4";
+    }
+  };
+
   const connectPeer = (peerName, host, port) => {
     // const portToUse = customPortChecked ? port : defaultPeerPort;
     // console.log('Calling connectSqueakPeerRequest with: ', host, portToUse, useTorChecked);
     // console.log('portToUse: ', portToUse);
+    const network = getNetwork(useTorChecked);
     setLoading(true);
-    connectSqueakPeerRequest(host, port, useTorChecked, (response) => {
+    console.log("Calling connectSqueakPeerRequest with:", network, host, port);
+    connectSqueakPeerRequest(network, host, port, (response) => {
       // goToPeerPage(history, response.getPeerId());
       // handlePeerConnected();
       handlePeerConnectedResponse();

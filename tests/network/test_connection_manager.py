@@ -27,6 +27,7 @@ import mock
 import pytest
 from util import yield_inbound_socket_and_outbound_socket
 
+from squeaknode.core.peer_address import Network
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.network.connection_manager import ConnectionManager
 from squeaknode.node.squeak_controller import SqueakController
@@ -37,9 +38,9 @@ def local_address():
     local_ip = socket.gethostbyname('localhost')
     local_port = 56789
     yield PeerAddress(
-        local_ip,
-        local_port,
-        use_tor=False,
+        network=Network.IPV4,
+        host=local_ip,
+        port=local_port,
     )
 
 
@@ -62,12 +63,20 @@ def outbound_socket(inbound_socket_and_outbound_socket):
 
 @pytest.fixture
 def inbound_local_address():
-    yield PeerAddress('inbound.com', 56789, use_tor=False)
+    yield PeerAddress(
+        network=Network.IPV4,
+        host='inbound.com',
+        port=56789,
+    )
 
 
 @pytest.fixture
 def outbound_local_address():
-    yield PeerAddress('outbound.com', 4321, use_tor=False)
+    yield PeerAddress(
+        network=Network.IPV4,
+        host='outbound.com',
+        port=4321,
+    )
 
 
 @pytest.fixture

@@ -22,6 +22,7 @@
 import pytest
 from sqlalchemy import create_engine
 
+from squeaknode.core.peers import create_saved_peer
 from squeaknode.core.squeaks import get_hash
 from squeaknode.db.squeak_db import SqueakDb
 from tests.utils import gen_contact_profile
@@ -205,6 +206,19 @@ def unliked_squeak_hash(squeak_db, liked_squeak_hash):
     yield liked_squeak_hash
 
 
+@pytest.fixture
+def peer(peer_address):
+    yield create_saved_peer(
+        "fake_peer_name",
+        peer_address,
+    )
+
+
+@pytest.fixture
+def inserted_peer_id(squeak_db, peer):
+    yield squeak_db.insert_peer(peer)
+
+
 def test_get_squeak(squeak_db, squeak, inserted_squeak_hash):
     retrieved_squeak = squeak_db.get_squeak(inserted_squeak_hash)
 
@@ -363,3 +377,10 @@ def test_set_squeak_unliked(squeak_db, unliked_squeak_hash):
     retrieved_squeak_entry = squeak_db.get_squeak_entry(unliked_squeak_hash)
 
     assert retrieved_squeak_entry.liked_time_ms is None
+
+
+def test_get_peer(squeak_db, peer, inserted_peer_id):
+    retrieved_peer = squeak_db.get_peer(inserted_peer_id)
+
+    assert retrieved_peer.peer_name == peer.peer_name
+    assert retrieved_peer.address == peer.address

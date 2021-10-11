@@ -19,20 +19,21 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-"""Add use_tor column to all tables with peer address.
+"""Add network column to all tables with peer address.
 
-Revision ID: 231b8b35ed2e
+Revision ID: 09a1001d329d
 Revises: d7538b753a8a
-Create Date: 2021-10-09 20:24:46.594377
+Create Date: 2021-10-10 18:53:40.570906
 
 """
 import sqlalchemy as sa
 from alembic import op
-from sqlalchemy.sql import expression
+
+from squeaknode.core.peer_address import Network
 
 
 # revision identifiers, used by Alembic.
-revision = '231b8b35ed2e'
+revision = '09a1001d329d'
 down_revision = 'd7538b753a8a'
 branch_labels = None
 depends_on = None
@@ -40,38 +41,38 @@ depends_on = None
 
 def upgrade():
     with op.batch_alter_table('peer', schema=None) as batch_op:
-        batch_op.add_column(sa.Column('use_tor', sa.Boolean(
-        ), nullable=False, server_default=expression.true()))
+        batch_op.add_column(sa.Column('network', sa.String(
+            length=10), nullable=False, server_default=sa.text("'{}'".format(Network.TORV3.name))))
 
     with op.batch_alter_table('received_offer', schema=None) as batch_op:
-        batch_op.add_column(sa.Column('peer_use_tor', sa.Boolean(
-        ), nullable=False, server_default=expression.true()))
+        batch_op.add_column(sa.Column('peer_network', sa.String(
+            length=10), nullable=False, server_default=sa.text("'{}'".format(Network.TORV3.name))))
 
     with op.batch_alter_table('received_payment', schema=None) as batch_op:
-        batch_op.add_column(sa.Column('peer_use_tor', sa.Boolean(
-        ), nullable=False, server_default=expression.true()))
+        batch_op.add_column(sa.Column('peer_network', sa.String(
+            length=10), nullable=False, server_default=sa.text("'{}'".format(Network.TORV3.name))))
 
     with op.batch_alter_table('sent_offer', schema=None) as batch_op:
-        batch_op.add_column(sa.Column('peer_use_tor', sa.Boolean(
-        ), nullable=False, server_default=expression.true()))
+        batch_op.add_column(sa.Column('peer_network', sa.String(
+            length=10), nullable=False, server_default=sa.text("'{}'".format(Network.TORV3.name))))
 
     with op.batch_alter_table('sent_payment', schema=None) as batch_op:
-        batch_op.add_column(sa.Column('peer_use_tor', sa.Boolean(
-        ), nullable=False, server_default=expression.true()))
+        batch_op.add_column(sa.Column('peer_network', sa.String(
+            length=10), nullable=False, server_default=sa.text("'{}'".format(Network.TORV3.name))))
 
 
 def downgrade():
     with op.batch_alter_table('sent_payment', schema=None) as batch_op:
-        batch_op.drop_column('peer_use_tor')
+        batch_op.drop_column('peer_network')
 
     with op.batch_alter_table('sent_offer', schema=None) as batch_op:
-        batch_op.drop_column('peer_use_tor')
+        batch_op.drop_column('peer_network')
 
     with op.batch_alter_table('received_payment', schema=None) as batch_op:
-        batch_op.drop_column('peer_use_tor')
+        batch_op.drop_column('peer_network')
 
     with op.batch_alter_table('received_offer', schema=None) as batch_op:
-        batch_op.drop_column('peer_use_tor')
+        batch_op.drop_column('peer_network')
 
     with op.batch_alter_table('peer', schema=None) as batch_op:
-        batch_op.drop_column('use_tor')
+        batch_op.drop_column('network')
