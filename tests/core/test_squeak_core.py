@@ -28,8 +28,11 @@ from squeaknode.core.peer_address import Network
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.squeak_core import SqueakCore
 from squeaknode.core.squeaks import get_hash
+from squeaknode.lightning.info import Info
 from squeaknode.lightning.invoice import Invoice
 from squeaknode.lightning.lightning_client import LightningClient
+from squeaknode.lightning.pay_req import PayReq
+from squeaknode.lightning.payment import Payment
 from tests.utils import gen_random_hash
 
 
@@ -66,8 +69,33 @@ def creation_date():
 
 
 @pytest.fixture
+def timestamp():
+    yield 8888888
+
+
+@pytest.fixture
 def expiry():
     yield 5555
+
+
+@pytest.fixture
+def seller_pubkey():
+    yield "fake_seller_pubkey"
+
+
+@pytest.fixture
+def uris():
+    yield [
+        'fake_pubkey@foobar.com:12345',
+        'fake_pubkey@fakehost.com:56789',
+    ]
+
+
+@pytest.fixture
+def info(uris):
+    yield Info(
+        uris=uris,
+    )
 
 
 @pytest.fixture
@@ -80,6 +108,40 @@ def invoice(payment_hash, payment_request, price_msat, creation_date, expiry):
         settle_index=0,
         creation_date=creation_date,
         expiry=expiry,
+    )
+
+
+@pytest.fixture
+def pay_req(
+        payment_hash,
+        price_msat,
+        payment_request,
+        seller_pubkey,
+        timestamp,
+        expiry,
+):
+    yield PayReq(
+        payment_hash=payment_hash,
+        num_msat=price_msat,
+        destination=seller_pubkey,
+        timestamp=timestamp,
+        expiry=expiry,
+    )
+
+
+@pytest.fixture
+def successful_payment(preimage):
+    yield Payment(
+        payment_preimage=preimage,
+        payment_error='',
+    )
+
+
+@pytest.fixture
+def failed_payment(payment_request):
+    yield Payment(
+        payment_preimage=b'',
+        payment_error='Payment failed.',
     )
 
 
@@ -112,20 +174,23 @@ class MockBitcoinClient(BitcoinClient):
 
 class MockLightningClient(LightningClient):
 
-    def __init__(self, invoice):
+    def __init__(self, info, invoice, pay_req, payment):
+        self.info = info
         self.invoice = invoice
+        self.pay_req = pay_req
+        self.payment = payment
 
     def get_info(self):
-        pass
+        return self.info
 
     def create_invoice(self, preimage: bytes, amount_msat: int):
         return self.invoice
 
     def decode_pay_req(self, payment_request: str):
-        pass
+        return self.pay_req
 
     def pay_invoice(self, payment_request: str):
-        pass
+        return self.payment
 
     def subscribe_invoices(self, settle_index: int):
         pass
@@ -137,8 +202,8 @@ def bitcoin_client(genesis_block_info):
 
 
 @pytest.fixture
-def lightning_client(invoice):
-    return MockLightningClient(invoice)
+def lightning_client(info, invoice, pay_req, successful_payment):
+    return MockLightningClient(info, invoice, pay_req, successful_payment)
 
 
 @pytest.fixture
@@ -175,6 +240,40 @@ def peer_address():
     )
 
 
+@pytest.fixture
+def seller_peer_address():
+    yield PeerAddress(
+        network=Network.IPV4,
+        host="fake_seller_host",
+        port=4321,
+    )
+
+
+@pytest.fixture
+def created_offer(squeak_core, squeak, decryption_key, peer_address, price_msat):
+    yield squeak_core.create_offer(
+        squeak,
+        decryption_key,
+        peer_address,
+        price_msat,
+    )
+
+
+@pytest.fixture
+def packaged_offer(squeak_core, created_offer):
+    yield squeak_core.package_offer(created_offer, None)
+
+
+@pytest.fixture
+def unpacked_offer(squeak_core, squeak, packaged_offer, seller_peer_address):
+    yield squeak_core.unpack_offer(squeak, packaged_offer, seller_peer_address)
+
+
+@pytest.fixture
+def sent_payment(squeak_core, unpacked_offer):
+    yield squeak_core.pay_offer(unpacked_offer)
+
+
 def test_get_block_header(
         squeak_core,
         squeak,
@@ -200,19 +299,28 @@ def test_get_best_block_height(squeak_core, genesis_block_info):
     assert best_block_height == genesis_block_info.block_height
 
 
-def test_create_offer(squeak_core, squeak, decryption_key, peer_address, price_msat, invoice):
-    created_sent_offer = squeak_core.create_offer(
-        squeak,
-        decryption_key,
-        peer_address,
-        price_msat,
-    )
+def test_create_offer(squeak_core, squeak, peer_address, price_msat, created_offer, invoice):
 
-    assert created_sent_offer.squeak_hash == get_hash(squeak)
-    assert created_sent_offer.payment_hash == invoice.r_hash
-    # assert created_sent_offer.secret_key == decryption_key
-    assert created_sent_offer.price_msat == price_msat
-    assert created_sent_offer.payment_request == invoice.payment_request
-    assert created_sent_offer.invoice_time == invoice.creation_date
-    assert created_sent_offer.invoice_expiry == invoice.expiry
-    assert created_sent_offer.peer_address == peer_address
+    assert created_offer.squeak_hash == get_hash(squeak)
+    assert created_offer.payment_hash == invoice.r_hash
+    # assert created_offer.secret_key == decryption_key
+    assert created_offer.price_msat == price_msat
+    assert created_offer.payment_request == invoice.payment_request
+    assert created_offer.invoice_time == invoice.creation_date
+    assert created_offer.invoice_expiry == invoice.expiry
+    assert created_offer.peer_address == peer_address
+
+
+def test_packaged_offer(squeak_core, squeak, packaged_offer):
+
+    assert packaged_offer is not None
+
+
+def test_unpacked_offer(squeak_core, unpacked_offer):
+
+    assert unpacked_offer is not None
+
+
+def test_sent_payment(squeak_core, sent_payment):
+
+    assert sent_payment is not None
