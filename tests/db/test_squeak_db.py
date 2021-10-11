@@ -25,8 +25,6 @@ from sqlalchemy import create_engine
 from squeaknode.core.peers import create_saved_peer
 from squeaknode.core.squeaks import get_hash
 from squeaknode.db.squeak_db import SqueakDb
-from tests.utils import gen_contact_profile
-from tests.utils import gen_signing_profile
 from tests.utils import gen_squeak_with_block_header
 
 
@@ -60,32 +58,6 @@ def squeak(squeak_with_block_header):
 def block_header(squeak_with_block_header):
     _, block_header = squeak_with_block_header
     yield block_header
-
-
-@pytest.fixture
-def signing_profile_name():
-    yield "fake_signing_profile_name"
-
-
-@pytest.fixture
-def contact_profile_name():
-    yield "fake_contact_profile_name"
-
-
-@pytest.fixture
-def signing_profile(signing_profile_name, signing_key):
-    yield gen_signing_profile(
-        signing_profile_name,
-        str(signing_key),
-    )
-
-
-@pytest.fixture
-def contact_profile(contact_profile_name, address):
-    yield gen_contact_profile(
-        contact_profile_name,
-        str(address),
-    )
 
 
 @pytest.fixture

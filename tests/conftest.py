@@ -28,6 +28,8 @@ from squeaknode.bitcoin.block_info import BlockInfo
 from squeaknode.core.peer_address import Network
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.squeaks import make_squeak_with_block
+from tests.utils import gen_contact_profile
+from tests.utils import gen_signing_profile
 
 
 @pytest.fixture
@@ -83,4 +85,30 @@ def peer_address():
         network=Network.IPV4,
         host="fake_host",
         port=8765,
+    )
+
+
+@pytest.fixture
+def signing_profile_name():
+    yield "fake_signing_profile_name"
+
+
+@pytest.fixture
+def contact_profile_name():
+    yield "fake_contact_profile_name"
+
+
+@pytest.fixture
+def signing_profile(signing_profile_name, signing_key):
+    yield gen_signing_profile(
+        signing_profile_name,
+        str(signing_key),
+    )
+
+
+@pytest.fixture
+def contact_profile(contact_profile_name, address):
+    yield gen_contact_profile(
+        contact_profile_name,
+        str(address),
     )
