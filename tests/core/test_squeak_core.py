@@ -24,8 +24,13 @@ import pytest
 from squeaknode.bitcoin.bitcoin_client import BitcoinClient
 from squeaknode.bitcoin.block_info import BlockInfo
 from squeaknode.core.lightning_address import LightningAddressHostPort
+from squeaknode.core.peer_address import Network
+from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.squeak_core import SqueakCore
+from squeaknode.core.squeaks import get_hash
+from squeaknode.lightning.invoice import Invoice
 from squeaknode.lightning.lightning_client import LightningClient
+from tests.utils import gen_random_hash
 
 
 @pytest.fixture
@@ -36,6 +41,45 @@ def lightning_host_port():
 @pytest.fixture
 def price_msat():
     return 777
+
+
+@pytest.fixture
+def preimage():
+    yield gen_random_hash()
+
+
+@pytest.fixture
+def payment_hash(preimage):
+    # TODO: This should be the hash of the preimage
+    yield gen_random_hash()
+
+
+@pytest.fixture
+def payment_request():
+    yield "fake_payment_request"
+
+
+@pytest.fixture
+def creation_date():
+    yield 777777
+
+
+@pytest.fixture
+def expiry():
+    yield 5555
+
+
+@pytest.fixture
+def invoice(payment_hash, payment_request, price_msat, creation_date, expiry):
+    yield Invoice(
+        r_hash=payment_hash,
+        payment_request=payment_request,
+        value_msat=price_msat,
+        settled=False,
+        settle_index=0,
+        creation_date=creation_date,
+        expiry=expiry,
+    )
 
 
 class MockBitcoinClient(BitcoinClient):
@@ -67,11 +111,14 @@ class MockBitcoinClient(BitcoinClient):
 
 class MockLightningClient(LightningClient):
 
+    def __init__(self, invoice):
+        self.invoice = invoice
+
     def get_info(self):
         pass
 
     def create_invoice(self, preimage: bytes, amount_msat: int):
-        pass
+        return self.invoice
 
     def decode_pay_req(self, payment_request: str):
         pass
@@ -89,8 +136,8 @@ def bitcoin_client(genesis_block_info):
 
 
 @pytest.fixture
-def lightning_client():
-    return MockLightningClient()
+def lightning_client(invoice):
+    return MockLightningClient(invoice)
 
 
 @pytest.fixture
@@ -98,29 +145,73 @@ def squeak_core(bitcoin_client, lightning_client):
     yield SqueakCore(bitcoin_client, lightning_client)
 
 
-def test_make_squeak(
-        squeak_core,
-        signing_profile,
-        squeak_content,
-):
-    squeak, decryption_key = squeak_core.make_squeak(
+@pytest.fixture
+def squeak_and_decryption_key(squeak_core, signing_profile, squeak_content):
+    yield squeak_core.make_squeak(
         signing_profile,
         squeak_content,
     )
 
-    assert squeak.GetDecryptedContentStr(decryption_key) == squeak_content
+
+@pytest.fixture
+def squeak(squeak_and_decryption_key):
+    squeak, _ = squeak_and_decryption_key
+    yield squeak
 
 
-# def test_get_block_header(
-#         squeak_core,
-#         signing_profile,
-#         squeak_content,
-# ):
-#     squeak_core = SqueakCore(bitcoin_client, lightning_client)
-#     squeak, decryption_key = squeak_core.make_squeak(
-#         signing_profile,
-#         content_str,
-#     )
+@pytest.fixture
+def decryption_key(squeak_and_decryption_key):
+    _, decryption_key = squeak_and_decryption_key
+    yield decryption_key
 
-#     assert squeak.GetDecryptedContentStr(decryption_key) == content_str
-#     assert not squeak.is_reply
+
+@pytest.fixture
+def peer_address():
+    yield PeerAddress(
+        network=Network.IPV4,
+        host="fake_host",
+        port=8765,
+    )
+
+
+def test_get_block_header(
+        squeak_core,
+        squeak,
+        genesis_block_info,
+):
+    block_header = squeak_core.get_block_header(squeak)
+
+    assert block_header == genesis_block_info.block_header
+
+
+def test_get_decrypted_content(squeak_core, squeak, decryption_key, squeak_content):
+    decrypted_content = squeak_core.get_decrypted_content(
+        squeak,
+        decryption_key,
+    )
+
+    assert decrypted_content == squeak_content
+
+
+def test_get_best_block_height(squeak_core, genesis_block_info):
+    best_block_height = squeak_core.get_best_block_height()
+
+    assert best_block_height == genesis_block_info.block_height
+
+
+def test_create_offer(squeak_core, squeak, decryption_key, peer_address, price_msat, invoice):
+    created_sent_offer = squeak_core.create_offer(
+        squeak,
+        decryption_key,
+        peer_address,
+        price_msat,
+    )
+
+    assert created_sent_offer.squeak_hash == get_hash(squeak)
+    assert created_sent_offer.payment_hash == invoice.r_hash
+    # assert created_sent_offer.secret_key == decryption_key
+    assert created_sent_offer.price_msat == price_msat
+    assert created_sent_offer.payment_request == invoice.payment_request
+    assert created_sent_offer.invoice_time == invoice.creation_date
+    assert created_sent_offer.invoice_expiry == invoice.expiry
+    assert created_sent_offer.peer_address == peer_address
