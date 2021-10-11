@@ -6,9 +6,8 @@ export const goToPeerPage = (history, peerId) => {
   history.push(`/app/peer/${peerId}`);
 };
 
-export const goToPeerAddressPage = (history, host, port, useTor) => {
-  const useTorStr = useTor.toString();
-  history.push(`/app/peeraddress/${host}/${port}/${useTorStr}`);
+export const goToPeerAddressPage = (history, network, host, port) => {
+  history.push(`/app/peeraddress/${network}/${host}/${port}/`);
 };
 
 export const goToLightningNodePage = (history, pubkey, host, port) => {

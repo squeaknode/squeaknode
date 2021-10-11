@@ -46,6 +46,7 @@ const useStyles = makeStyles((theme) => ({
 export default function CreatePeerDialog({
   open,
   handleClose,
+  initialNetwork = '',
   initialHost = '',
   initialPort = '',
   ...props
@@ -68,6 +69,9 @@ export default function CreatePeerDialog({
   const resetFields = () => {
     setPeerName('');
     setHost('');
+    if (initialNetwork == 'TORV3') {
+      setUseTorChecked(true);
+    }
     if (initialHost) {
       setHost(initialHost);
     }
@@ -108,8 +112,17 @@ export default function CreatePeerDialog({
     setUseTorChecked(event.target.checked);
   };
 
+  const getNetwork = (useTor) => {
+    if (useTor) {
+      return "TORV3";
+    } else {
+      return "IPV4";
+    }
+  };
+
   const createPeer = (peerName, host, port) => {
-    createPeerRequest(peerName, host, port, useTorChecked, (response) => {
+    const network = getNetwork(useTorChecked);
+    createPeerRequest(peerName, network, host, port, (response) => {
       goToPeerPage(history, response.getPeerId());
     });
   };

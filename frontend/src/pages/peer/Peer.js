@@ -61,7 +61,6 @@ export default function PeerPage() {
   };
 
   const peerAddressToStr = (peerAddress) => `${peerAddress.getHost()}:${peerAddress.getPort()}`;
-  const peerUseTorToStr = (peerAddress) => `${peerAddress.getUseTor()}`;
 
   function NoPeerContent() {
     return (
@@ -135,9 +134,9 @@ export default function PeerPage() {
 
   function PeerAddressContent() {
     console.log(peer.getPeerAddress());
-    console.log(peer.getPeerAddress().getUseTor());
+    console.log(peer.getPeerAddress().getNetwork());
     const peerAddressStr = peerAddressToStr(peer.getPeerAddress());
-    const useTor = peerUseTorToStr(peer.getPeerAddress());
+    const network = peer.getPeerAddress().getNetwork();
     return (
       <>
       <div className={classes.root}>
@@ -147,9 +146,9 @@ export default function PeerPage() {
           onClick={() => {
             goToPeerAddressPage(
               history,
+              peer.getPeerAddress().getNetwork(),
               peer.getPeerAddress().getHost(),
               peer.getPeerAddress().getPort(),
-              peer.getPeerAddress().getUseTor(),
             );
           }}
         >
@@ -157,7 +156,7 @@ export default function PeerPage() {
         </Button>
       </div>
       <div className={classes.root}>
-        Use Tor: {useTor}
+        Network: {network}
       </div>
       </>
     );

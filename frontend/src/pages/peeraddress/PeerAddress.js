@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import {
   Grid,
@@ -36,40 +36,39 @@ import {
 export default function PeerAddressPage() {
   const classes = useStyles();
   const history = useHistory();
-  const { host, port, useTorStr } = useParams();
+  const { network, host, port } = useParams();
   const [savedPeer, setSavedPeer] = useState(null);
   const [connectedPeer, setConnectedPeer] = useState(null);
   const [waitingForConnectedPeer, setWaitingForConnectedPeer] = useState(false);
   const [createSavedPeerDialogOpen, setCreateSavedPeerDialogOpen] = useState(false);
-  const useTor = useMemo(() => useTorStr === 'true',  [useTorStr]);
 
   const getPeer = useCallback(() => {
-    getPeerByAddressRequest(host, port, useTor, setSavedPeer);
+    getPeerByAddressRequest(network, host, port, setSavedPeer);
   },
-  [host, port, useTor]);
+  [network, host, port]);
   const getConnectedPeer = useCallback(() => {
     setWaitingForConnectedPeer(true);
-    getConnectedPeerRequest(host, port, useTor, handleLoadedConnectedPeer);
+    getConnectedPeerRequest(network, host, port, handleLoadedConnectedPeer);
   },
-  [host, port, useTor]);
+  [network, host, port]);
 
   const disconnectPeer = useCallback(() => {
     setWaitingForConnectedPeer(true);
-    disconnectSqueakPeerRequest(host, port, useTor, () => {
+    disconnectSqueakPeerRequest(network, host, port, () => {
       getConnectedPeer();
     });
   },
-  [host, port, useTor, getConnectedPeer]);
+  [network, host, port, getConnectedPeer]);
 
   const connectPeer = useCallback(() => {
     setWaitingForConnectedPeer(true);
-    console.log("Calling connectSqueakPeerRequest with " + host, port, useTor);
-    connectSqueakPeerRequest(host, port, useTor, () => {
+    console.log("Calling connectSqueakPeerRequest with " + network, host, port);
+    connectSqueakPeerRequest(network, host, port, () => {
       getConnectedPeer();
     },
     handleConnectPeerError);
   },
-  [host, port, useTor, getConnectedPeer]);
+  [network, host, port, getConnectedPeer]);
 
   // const subscribeConnectedPeer = useCallback(() => subscribeConnectedPeerRequest(host, port, (connectedPeer) => {
   //   setConnectedPeer(connectedPeer);
@@ -295,6 +294,7 @@ export default function PeerAddressPage() {
         <CreatePeerDialog
           open={createSavedPeerDialogOpen}
           handleClose={handleCloseCreateSavedPeerDialog}
+          initialNetwork={network}
           initialHost={host}
           initialPort={port}
         />

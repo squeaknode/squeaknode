@@ -106,7 +106,7 @@ export default function Peers() {
     return connectedPeerAddresses.includes(peerAddressStr);
   };
 
-  const peerAddressToStr = (peerAddress) => `${peerAddress.getUseTor()}/${peerAddress.getHost()}:${peerAddress.getPort()}`;
+  const peerAddressToStr = (peerAddress) => `${peerAddress.getNetwork()}/${peerAddress.getHost()}:${peerAddress.getPort()}`;
 
   useEffect(() => {
     getConnectedPeers();
