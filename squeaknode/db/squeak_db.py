@@ -907,7 +907,7 @@ class SqueakDb:
         ins = self.peers.insert().values(
             created_time_ms=self.timestamp_now_ms,
             peer_name=squeak_peer.peer_name,
-            network=squeak_peer.address.network.value,
+            network=squeak_peer.address.network.name,
             host=squeak_peer.address.host,
             port=squeak_peer.address.port,
             autoconnect=squeak_peer.autoconnect,
@@ -1004,7 +1004,7 @@ class SqueakDb:
             destination=received_offer.destination,
             lightning_host=received_offer.lightning_address.host,
             lightning_port=received_offer.lightning_address.port,
-            peer_network=received_offer.peer_address.network.value,
+            peer_network=received_offer.peer_address.network.name,
             peer_host=received_offer.peer_address.host,
             peer_port=received_offer.peer_address.port,
         )
@@ -1057,7 +1057,7 @@ class SqueakDb:
         s = (
             select([self.received_offers])
             .where(self.received_offers.c.squeak_hash == squeak_hash)
-            .where(self.received_offers.c.peer_network == peer_address.network.value)
+            .where(self.received_offers.c.peer_network == peer_address.network.name)
             .where(self.received_offers.c.peer_host == peer_address.host)
             .where(self.received_offers.c.peer_port == peer_address.port)
             .where(self.received_offer_is_not_paid)
@@ -1112,7 +1112,7 @@ class SqueakDb:
         """ Insert a new sent payment. """
         ins = self.sent_payments.insert().values(
             created_time_ms=self.timestamp_now_ms,
-            peer_network=sent_payment.peer_address.network.value,
+            peer_network=sent_payment.peer_address.network.name,
             peer_host=sent_payment.peer_address.host,
             peer_port=sent_payment.peer_address.port,
             squeak_hash=sent_payment.squeak_hash,
@@ -1193,7 +1193,7 @@ class SqueakDb:
             payment_request=sent_offer.payment_request,
             invoice_timestamp=sent_offer.invoice_time,
             invoice_expiry=sent_offer.invoice_expiry,
-            peer_network=sent_offer.peer_address.network.value,
+            peer_network=sent_offer.peer_address.network.name,
             peer_host=sent_offer.peer_address.host,
             peer_port=sent_offer.peer_address.port,
         )
@@ -1234,7 +1234,7 @@ class SqueakDb:
         s = (
             select([self.sent_offers])
             .where(self.sent_offers.c.squeak_hash == squeak_hash)
-            .where(self.sent_offers.c.peer_network == peer_address.network.value)
+            .where(self.sent_offers.c.peer_network == peer_address.network.name)
             .where(self.sent_offers.c.peer_host == peer_address.host)
             .where(self.sent_offer_is_not_paid)
             .where(self.sent_offer_is_not_expired)
@@ -1301,7 +1301,7 @@ class SqueakDb:
             payment_hash=received_payment.payment_hash,
             price_msat=received_payment.price_msat,
             settle_index=received_payment.settle_index,
-            peer_network=received_payment.peer_address.network.value,
+            peer_network=received_payment.peer_address.network.name,
             peer_host=received_payment.peer_address.host,
             peer_port=received_payment.peer_address.port,
         )
@@ -1457,7 +1457,7 @@ class SqueakDb:
             peer_id=row[self.peers.c.peer_id],
             peer_name=row["peer_name"],
             address=PeerAddress(
-                network=Network(row["network"]),
+                network=Network[row["network"]],
                 host=row["host"],
                 port=row["port"],
             ),
@@ -1481,7 +1481,7 @@ class SqueakDb:
                 port=row["lightning_port"],
             ),
             peer_address=PeerAddress(
-                network=Network(row["peer_network"]),
+                network=Network[row["peer_network"]],
                 host=row["peer_host"],
                 port=row["peer_port"],
             ),
@@ -1492,7 +1492,7 @@ class SqueakDb:
             sent_payment_id=row["sent_payment_id"],
             created_time_ms=row[self.sent_payments.c.created_time_ms],
             peer_address=PeerAddress(
-                network=Network(row["peer_network"]),
+                network=Network[row["peer_network"]],
                 host=row["peer_host"],
                 port=row["peer_port"],
             ),
@@ -1516,7 +1516,7 @@ class SqueakDb:
             invoice_time=row["invoice_timestamp"],
             invoice_expiry=row["invoice_expiry"],
             peer_address=PeerAddress(
-                network=Network(row["peer_network"]),
+                network=Network[row["peer_network"]],
                 host=row["peer_host"],
                 port=row["peer_port"],
             ),
@@ -1531,7 +1531,7 @@ class SqueakDb:
             price_msat=row["price_msat"],
             settle_index=row["settle_index"],
             peer_address=PeerAddress(
-                network=Network(row["peer_network"]),
+                network=Network[row["peer_network"]],
                 host=row["peer_host"],
                 port=row["peer_port"],
             ),

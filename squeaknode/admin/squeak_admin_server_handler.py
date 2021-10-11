@@ -867,6 +867,7 @@ class SqueakAdminServerHandler(object):
         )
 
     def handle_connect_peer(self, request):
+        logger.info("peer address msg: {}".format(request.peer_address))
         peer_address = message_to_peer_address(request.peer_address)
         logger.info(
             "Handle connect peer with peer address: {}".format(peer_address))

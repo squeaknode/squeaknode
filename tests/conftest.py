@@ -25,6 +25,8 @@ from squeak.core.signing import CSigningKey
 from squeak.core.signing import CSqueakAddress
 
 from squeaknode.bitcoin.block_info import BlockInfo
+from squeaknode.core.peer_address import Network
+from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.squeaks import make_squeak_with_block
 
 
@@ -73,3 +75,12 @@ def squeak(squeak_and_secret_key):
 def secret_key(squeak_and_secret_key):
     _, secret_key = squeak_and_secret_key
     yield secret_key
+
+
+@pytest.fixture
+def peer_address():
+    yield PeerAddress(
+        network=Network.IPV4,
+        host="fake_host",
+        port=8765,
+    )

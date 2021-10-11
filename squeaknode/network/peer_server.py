@@ -23,6 +23,7 @@ import logging
 import socket
 import threading
 
+from squeaknode.core.peer_address import Network
 from squeaknode.core.peer_address import PeerAddress
 
 
@@ -66,9 +67,9 @@ class PeerServer(object):
                 peer_socket, address = self.listen_socket.accept()
                 host, port = address
                 peer_address = PeerAddress(
+                    network=Network.IPV4,
                     host=host,
                     port=port,
-                    use_tor=False,
                 )
                 peer_socket.setblocking(True)
                 self.handle_connection(
@@ -76,7 +77,8 @@ class PeerServer(object):
                     peer_address,
                 )
         except Exception:
-            logger.info("Stopped accepting incoming connections.")
+            logger.exception("Accept peer connections failed.")
+            raise
 
     def handle_connection(
             self,

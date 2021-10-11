@@ -134,45 +134,35 @@ def channel(node_stub, remote_pubkey, amount):
 
 @contextmanager
 def open_peer_connection(node_stub, peer_name, peer_host, peer_port):
-    # Add the main node as a peer
-    peer_id = create_saved_peer(
-        node_stub,
-        peer_name,
-        peer_host,
-        peer_port,
-    )
     try:
         # Connect the peer
-        node_stub.ConnectPeer(
-            squeak_admin_pb2.ConnectPeerRequest(
-                peer_address=squeak_admin_pb2.PeerAddress(
-                    host=peer_host,
-                    port=peer_port,
-                    use_tor=False,
-                )
-            )
-        )
-        yield peer_id
+        connect_squeak_peer(node_stub, peer_host, peer_port)
+        # node_stub.ConnectPeer(
+        #     squeak_admin_pb2.ConnectPeerRequest(
+        #         peer_address=squeak_admin_pb2.PeerAddress(
+        #             network="IPV4",
+        #             host=peer_host,
+        #             port=peer_port,
+        #         )
+        #     )
+        # )
+        yield
     except Exception as e:
         print("Failed to connect to peer: {}:{}.".format(peer_host, peer_port))
         print(e)
         raise
     finally:
         # Disconnect the peer
-        node_stub.DisconnectPeer(
-            squeak_admin_pb2.DisconnectPeerRequest(
-                peer_address=squeak_admin_pb2.PeerAddress(
-                    host=peer_host,
-                    port=peer_port,
-                )
-            )
-        )
-        # Delete the peer
-        node_stub.DeletePeer(
-            squeak_admin_pb2.DeletePeerRequest(
-                peer_id=peer_id,
-            )
-        )
+        disconnect_squeak_peer(node_stub, peer_host, peer_port)
+        # node_stub.DisconnectPeer(
+        #     squeak_admin_pb2.DisconnectPeerRequest(
+        #         peer_address=squeak_admin_pb2.PeerAddress(
+        #             network="IPV4",
+        #             host=peer_host,
+        #             port=peer_port,
+        #         )
+        #     )
+        # )
 
 
 def get_connected_peers(node_stub):
@@ -186,6 +176,7 @@ def get_connected_peer(node_stub, host, port):
     get_connected_peer_response = node_stub.GetConnectedPeer(
         squeak_admin_pb2.GetConnectedPeerRequest(
             peer_address=squeak_admin_pb2.PeerAddress(
+                network="IPV4",
                 host=host,
                 port=port,
             )
@@ -199,12 +190,26 @@ def create_saved_peer(node_stub, name, host, port):
         squeak_admin_pb2.CreatePeerRequest(
             peer_name=name,
             peer_address=squeak_admin_pb2.PeerAddress(
+                network="IPV4",
                 host=host,
                 port=port,
             )
         )
     )
     return create_peer_response.peer_id
+
+
+def get_peer_by_address(node_stub, host, port):
+    get_peer_by_address_response = node_stub.GetPeerByAddress(
+        squeak_admin_pb2.GetPeerByAddressRequest(
+            peer_address=squeak_admin_pb2.PeerAddress(
+                network="IPV4",
+                host="fake_host",
+                port=1234,
+            )
+        )
+    )
+    return get_peer_by_address_response.squeak_peer
 
 
 def get_search_squeaks(node_stub, search_text):
@@ -400,6 +405,32 @@ def pending_channels(node_stub):
     return node_stub.LndPendingChannels(
         lnd_pb2.PendingChannelsRequest()
     )
+
+
+def connect_squeak_peer(node_stub, host, port):
+    connect_peer_response = node_stub.ConnectPeer(
+        squeak_admin_pb2.ConnectPeerRequest(
+            peer_address=squeak_admin_pb2.PeerAddress(
+                network="IPV4",
+                host=host,
+                port=port,
+            )
+        )
+    )
+    return connect_peer_response
+
+
+def disconnect_squeak_peer(node_stub, host, port):
+    disconnect_peer_response = node_stub.DisconnectPeer(
+        squeak_admin_pb2.DisconnectPeerRequest(
+            peer_address=squeak_admin_pb2.PeerAddress(
+                network="IPV4",
+                host=host,
+                port=port,
+            )
+        )
+    )
+    return disconnect_peer_response
 
 
 def connect_peer(node_stub, pubkey, host):
