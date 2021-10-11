@@ -45,6 +45,7 @@ def price_msat():
 
 @pytest.fixture
 def preimage():
+    # TODO: This should be generated from the tweak of the decryption key.
     yield gen_random_hash()
 
 
