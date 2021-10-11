@@ -93,27 +93,28 @@ def lightning_client():
     return MockLightningClient()
 
 
+@pytest.fixture
+def squeak_core(bitcoin_client, lightning_client):
+    yield SqueakCore(bitcoin_client, lightning_client)
+
+
 def test_make_squeak(
-        bitcoin_client,
-        lightning_client,
+        squeak_core,
         signing_profile,
         squeak_content,
 ):
-    squeak_core = SqueakCore(bitcoin_client, lightning_client)
-    created_squeak, created_decryption_key = squeak_core.make_squeak(
+    squeak, decryption_key = squeak_core.make_squeak(
         signing_profile,
         squeak_content,
     )
 
-    assert created_squeak.GetDecryptedContentStr(
-        created_decryption_key) == squeak_content
+    assert squeak.GetDecryptedContentStr(decryption_key) == squeak_content
 
 
 # def test_get_block_header(
-#         bitcoin_client,
-#         lightning_client,
+#         squeak_core,
 #         signing_profile,
-#         content_str,
+#         squeak_content,
 # ):
 #     squeak_core = SqueakCore(bitcoin_client, lightning_client)
 #     squeak, decryption_key = squeak_core.make_squeak(
