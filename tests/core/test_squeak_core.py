@@ -20,14 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import pytest
-from squeak.core.signing import CSigningKey
-from squeak.core.signing import CSqueakAddress
 
 from squeaknode.bitcoin.bitcoin_client import BitcoinClient
 from squeaknode.bitcoin.block_info import BlockInfo
 from squeaknode.core.lightning_address import LightningAddressHostPort
 from squeaknode.core.squeak_core import SqueakCore
-from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.lightning.lightning_client import LightningClient
 
 
@@ -87,26 +84,6 @@ class MockLightningClient(LightningClient):
 
 
 @pytest.fixture
-def signing_profile():
-    profile_name = "fake_name"
-    signing_key = CSigningKey.generate()
-    verifying_key = signing_key.get_verifying_key()
-    address = CSqueakAddress.from_verifying_key(verifying_key)
-    signing_key_str = str(signing_key)
-    signing_key_bytes = signing_key_str.encode()
-    return SqueakProfile(
-        profile_id=None,
-        profile_name=profile_name,
-        private_key=signing_key_bytes,
-        address=str(address),
-        following=False,
-        use_custom_price=False,
-        custom_price_msat=0,
-        profile_image=None,
-    )
-
-
-@pytest.fixture
 def bitcoin_client(genesis_block_info):
     return MockBitcoinClient(genesis_block_info)
 
@@ -116,19 +93,33 @@ def lightning_client():
     return MockLightningClient()
 
 
-def test_make_squeak(bitcoin_client, lightning_client, signing_profile):
+def test_make_squeak(
+        bitcoin_client,
+        lightning_client,
+        signing_profile,
+        squeak_content,
+):
     squeak_core = SqueakCore(bitcoin_client, lightning_client)
-    squeak, decryption_key = squeak_core.make_squeak(signing_profile, "hello")
+    created_squeak, created_decryption_key = squeak_core.make_squeak(
+        signing_profile,
+        squeak_content,
+    )
 
-    assert squeak.GetDecryptedContentStr(decryption_key) == "hello"
+    assert created_squeak.GetDecryptedContentStr(
+        created_decryption_key) == squeak_content
 
 
-# def test_pay_offer(bitcoin_client, lightning_client, signing_profile):
+# def test_get_block_header(
+#         bitcoin_client,
+#         lightning_client,
+#         signing_profile,
+#         content_str,
+# ):
 #     squeak_core = SqueakCore(bitcoin_client, lightning_client)
-#     squeak_entry = squeak_core.make_squeak(signing_profile, "hello")
+#     squeak, decryption_key = squeak_core.make_squeak(
+#         signing_profile,
+#         content_str,
+#     )
 
-#     assert squeak_entry.squeak.GetDecryptedContentStr() == "hello"
-
-#     validated_squeak_entry = squeak_core.validate_squeak(squeak_entry.squeak)
-
-#     assert validated_squeak_entry == squeak_entry
+#     assert squeak.GetDecryptedContentStr(decryption_key) == content_str
+#     assert not squeak.is_reply
