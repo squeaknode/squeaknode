@@ -69,7 +69,7 @@ export default function CreatePeerDialog({
   const resetFields = () => {
     setPeerName('');
     setHost('');
-    if (initialNetwork == 'TORV3') {
+    if (initialNetwork === 'TORV3') {
       setUseTorChecked(true);
     }
     if (initialHost) {

@@ -32,6 +32,7 @@ export default function ReceivedPayment({
     event.preventDefault();
     goToPeerAddressPage(
       history,
+      receivedPayment.getPeerAddress().getNetwork(),
       receivedPayment.getPeerAddress().getHost(),
       receivedPayment.getPeerAddress().getPort(),
     );

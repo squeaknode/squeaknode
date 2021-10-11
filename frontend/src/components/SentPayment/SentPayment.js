@@ -33,6 +33,7 @@ export default function SentPayment({
     event.preventDefault();
     goToPeerAddressPage(
       history,
+      sentPayment.getPeerAddress().getNetwork(),
       sentPayment.getPeerAddress().getHost(),
       sentPayment.getPeerAddress().getPort(),
     );

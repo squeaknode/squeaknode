@@ -25,6 +25,7 @@ export default function BuyOfferDetailItem({
     event.preventDefault();
     goToPeerAddressPage(
       history,
+      offer.getPeerAddress().getNetwork(),
       offer.getPeerAddress().getHost(),
       offer.getPeerAddress().getPort(),
     );
