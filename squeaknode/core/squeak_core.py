@@ -151,7 +151,14 @@ class SqueakCore:
         block_info = self.bitcoin_client.get_best_block_info()
         return block_info.block_height
 
-    def create_offer(self, squeak: CSqueak, secret_key: bytes, peer_address: PeerAddress, price_msat: int) -> SentOffer:
+    def create_offer(
+            self,
+            squeak: CSqueak,
+            secret_key: bytes,
+            peer_address: PeerAddress,
+            price_msat: int,
+            nonce: bytes = None,
+    ) -> SentOffer:
         """Creates an offer to sell a squeak key to another node.
 
         Args:
@@ -166,7 +173,8 @@ class SqueakCore:
         # Get the squeak hash
         squeak_hash = get_hash(squeak)
         # Generate a new random nonce
-        nonce = generate_tweak()
+        if nonce is None:
+            nonce = generate_tweak()
         # Calculate the preimage
         preimage = add_tweak(secret_key, nonce)
         # Create the lightning invoice
