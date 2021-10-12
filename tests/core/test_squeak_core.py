@@ -386,6 +386,15 @@ def test_unpacked_offer(unpacked_offer):
     assert unpacked_offer is not None
 
 
+def test_unpack_offer_invalid_squeak_hash(squeak_core, other_squeak, packaged_offer, seller_peer_address):
+    with pytest.raises(Exception):
+        squeak_core.unpack_offer(
+            other_squeak,
+            packaged_offer,
+            seller_peer_address,
+        )
+
+
 def test_unpacked_offer_bad_payment_point(squeak_core, squeak, packaged_offer, seller_peer_address):
     with pytest.raises(Exception):
         squeak_core.unpack_offer(
