@@ -28,8 +28,9 @@ Create Date: 2021-10-11 19:32:48.666785
 """
 import sqlalchemy as sa
 from alembic import op
-
-from squeaknode.db.models import Models
+from sqlalchemy import LargeBinary
+from sqlalchemy.sql import column
+from sqlalchemy.sql import table
 
 
 # revision identifiers, used by Alembic.
@@ -40,9 +41,6 @@ depends_on = None
 
 
 FAKE_SECRET_KEY = b'\x00' * 32
-
-
-sent_offers = Models().sent_offers
 
 
 def upgrade():
@@ -56,6 +54,10 @@ def downgrade():
         batch_op.add_column(sa.Column('secret_key', sa.BLOB(), nullable=True))
 
     # Set the default value for all rows.
+    sent_offers = table(
+        "sent_offer",
+        column("secret_key", LargeBinary(32)),
+    )
     op.execute(
         sent_offers.update()
         .values(secret_key=FAKE_SECRET_KEY)
