@@ -152,7 +152,6 @@ class Models:
             Column("squeak_hash", LargeBinary(32), nullable=False),
             Column("payment_hash", LargeBinary(
                 32), unique=True, nullable=False),
-            Column("secret_key", LargeBinary(32), nullable=False),
             Column("nonce", LargeBinary(32), nullable=False),
             Column("price_msat", Integer, nullable=False, default=0),
             Column("payment_request", String, nullable=False),
