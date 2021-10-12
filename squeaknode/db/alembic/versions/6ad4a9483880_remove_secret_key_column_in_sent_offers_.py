@@ -51,10 +51,15 @@ def upgrade():
 
 
 def downgrade():
+    # Add the column with nullable=True.
     with op.batch_alter_table('sent_offer', schema=None) as batch_op:
         batch_op.add_column(sa.Column('secret_key', sa.BLOB(), nullable=True))
-        batch_op.execute(
-            sent_offers.update().
-            values(secret_key=FAKE_SECRET_KEY)
-        )
-        op.alter_column('sent_offer', 'secret_key', nullable=False)
+
+    # Set the default value for all rows.
+    op.execute(
+        sent_offers.update().values(secret_key=FAKE_SECRET_KEY)
+    )
+
+    # Alter the column with nullable=False.
+    with op.batch_alter_table('sent_offer', schema=None) as batch_op:
+        batch_op.alter_column('sent_offer', 'secret_key', nullable=False)
