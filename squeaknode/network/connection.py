@@ -37,8 +37,8 @@ from squeak.messages import msg_squeak
 from squeak.net import CInterested
 from squeak.net import CInv
 
+from squeaknode.core.crypto import generate_ping_nonce
 from squeaknode.core.offer import Offer
-from squeaknode.core.util import generate_ping_nonce
 from squeaknode.network.peer import Peer
 
 
