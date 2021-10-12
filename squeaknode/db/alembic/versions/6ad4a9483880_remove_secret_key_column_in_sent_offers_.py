@@ -29,12 +29,20 @@ Create Date: 2021-10-11 19:32:48.666785
 import sqlalchemy as sa
 from alembic import op
 
+from squeaknode.db.models import Models
+
 
 # revision identifiers, used by Alembic.
 revision = '6ad4a9483880'
 down_revision = '09a1001d329d'
 branch_labels = None
 depends_on = None
+
+
+FAKE_SECRET_KEY = b'\x00' * 32
+
+
+sent_offers = Models().sent_offers
 
 
 def upgrade():
@@ -45,3 +53,9 @@ def upgrade():
 def downgrade():
     with op.batch_alter_table('sent_offer', schema=None) as batch_op:
         batch_op.add_column(sa.Column('secret_key', sa.BLOB(), nullable=True))
+        # batch_op.execute("UPDATE users SET is_admin = false")
+        batch_op.execute(
+            sent_offers.update().
+            values(secret_key=FAKE_SECRET_KEY)
+        )
+        op.alter_column('sent_offer', 'secret_key', nullable=False)
