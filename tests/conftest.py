@@ -40,7 +40,12 @@ def signing_key():
 @pytest.fixture
 def address(signing_key):
     verifying_key = signing_key.get_verifying_key()
-    yield str(CSqueakAddress.from_verifying_key(verifying_key))
+    yield CSqueakAddress.from_verifying_key(verifying_key)
+
+
+@pytest.fixture
+def address_str(address):
+    yield str(address)
 
 
 @pytest.fixture

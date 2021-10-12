@@ -210,16 +210,16 @@ def test_get_missing_squeak(squeak_db, squeak):
     assert retrieved_squeak is None
 
 
-def test_get_squeak_entry(squeak_db, squeak, block_header, address, inserted_squeak_hash):
+def test_get_squeak_entry(squeak_db, squeak, block_header, address_str, inserted_squeak_hash):
     retrieved_squeak_entry = squeak_db.get_squeak_entry(inserted_squeak_hash)
 
     assert retrieved_squeak_entry.squeak_hash == inserted_squeak_hash
-    assert retrieved_squeak_entry.address == address
+    assert retrieved_squeak_entry.address == address_str
     assert retrieved_squeak_entry.content is None
     assert retrieved_squeak_entry.block_time == block_header.nTime
 
 
-def test_get_missing_squeak_entry(squeak_db, squeak, address):
+def test_get_missing_squeak_entry(squeak_db, squeak):
     squeak_hash = get_hash(squeak)
     retrieved_squeak_entry = squeak_db.get_squeak_entry(squeak_hash)
 
