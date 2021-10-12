@@ -30,11 +30,13 @@ from squeaknode.core.secret_keys import add_tweak
 from squeaknode.core.secret_keys import generate_tweak
 from squeaknode.core.squeak_core import SqueakCore
 from squeaknode.core.squeaks import get_hash
+from squeaknode.core.squeaks import make_squeak_with_block
 from squeaknode.lightning.info import Info
 from squeaknode.lightning.invoice import Invoice
 from squeaknode.lightning.lightning_client import LightningClient
 from squeaknode.lightning.pay_req import PayReq
 from squeaknode.lightning.payment import Payment
+from tests.utils import gen_random_hash
 from tests.utils import sha256
 
 
@@ -150,6 +152,26 @@ def failed_payment(payment_request):
         payment_preimage=b'',
         payment_error='Payment failed.',
     )
+
+
+@pytest.fixture
+def other_block_info():
+    yield BlockInfo(
+        block_height=5678,
+        block_hash=gen_random_hash(),
+        block_header=b'',
+    )
+
+
+@pytest.fixture
+def other_squeak(signing_key, squeak_content, other_block_info):
+    squeak, _ = make_squeak_with_block(
+        signing_key,
+        squeak_content,
+        other_block_info.block_height,
+        other_block_info.block_hash,
+    )
+    yield squeak
 
 
 class MockBitcoinClient(BitcoinClient):
@@ -323,6 +345,14 @@ def test_get_block_header(
     block_header = squeak_core.get_block_header(squeak)
 
     assert block_header == genesis_block_info.block_header
+
+
+def test_get_block_header_invalid_block_hash(
+        squeak_core,
+        other_squeak,
+):
+    with pytest.raises(Exception):
+        squeak_core.get_block_header(other_squeak)
 
 
 def test_check_squeak(squeak_core, squeak):
