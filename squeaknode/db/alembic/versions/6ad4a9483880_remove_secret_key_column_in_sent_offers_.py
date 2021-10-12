@@ -53,7 +53,6 @@ def upgrade():
 def downgrade():
     with op.batch_alter_table('sent_offer', schema=None) as batch_op:
         batch_op.add_column(sa.Column('secret_key', sa.BLOB(), nullable=True))
-        # batch_op.execute("UPDATE users SET is_admin = false")
         batch_op.execute(
             sent_offers.update().
             values(secret_key=FAKE_SECRET_KEY)
