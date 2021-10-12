@@ -65,6 +65,10 @@ def squeak_node(request):
             mock.patch('squeaknode.node.squeak_node.SqueakOfferExpiryWorker', autospec=True), \
             mock.patch('squeaknode.node.squeak_node.ProcessReceivedPaymentsWorker', autospec=True), \
             mock.patch('squeaknode.node.squeak_node.PeerConnectionWorker', autospec=True), \
+            mock.patch('squeaknode.node.squeak_node.SqueakDeletionWorker', autospec=True), \
+            mock.patch('squeaknode.node.squeak_node.UpdateSubscribedSqueaksWorker', autospec=True), \
+            mock.patch('squeaknode.node.squeak_node.UpdateSubscribedSecretKeysWorker', autospec=True), \
+            mock.patch('squeaknode.node.squeak_node.PeerSubscriptionUpdateWorker', autospec=True), \
             mock.patch('squeaknode.node.squeak_node.SqueakAdminWebServer', autospec=True):
         config = get_config(request.param)
         yield SqueakNode(config)
