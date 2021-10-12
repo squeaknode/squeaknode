@@ -65,4 +65,4 @@ def downgrade():
 
     # Alter the column with nullable=False.
     with op.batch_alter_table('sent_offer', schema=None) as batch_op:
-        batch_op.alter_column('sent_offer', 'secret_key', nullable=False)
+        batch_op.alter_column('secret_key', nullable=False)
