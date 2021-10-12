@@ -57,7 +57,8 @@ def downgrade():
 
     # Set the default value for all rows.
     op.execute(
-        sent_offers.update().values(secret_key=FAKE_SECRET_KEY)
+        sent_offers.update()
+        .values(secret_key=FAKE_SECRET_KEY)
     )
 
     # Alter the column with nullable=False.
