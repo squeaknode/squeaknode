@@ -36,7 +36,7 @@ def private_key(signing_key):
 
 
 @pytest.fixture
-def invalid_address():
+def invalid_address_str():
     yield "abcdefg"
 
 
@@ -52,22 +52,22 @@ def test_create_signing_profile_empty_name():
     assert "Profile name cannot be empty." in str(excinfo.value)
 
 
-def test_import_signing_profile(profile_name, private_key, address):
+def test_import_signing_profile(profile_name, private_key, address_str):
     profile = create_signing_profile(profile_name, private_key)
 
     assert profile.profile_name == profile_name
     assert profile.private_key == private_key.encode()
-    assert profile.address == address
+    assert profile.address == address_str
 
 
-def test_create_contact_profile(profile_name, address):
-    profile = create_contact_profile(profile_name, address)
+def test_create_contact_profile(profile_name, address_str):
+    profile = create_contact_profile(profile_name, address_str)
 
     assert profile.profile_name == profile_name
-    assert profile.address == address
+    assert profile.address == address_str
 
 
-def test_create_contact_profile_invalid_address(profile_name, invalid_address):
+def test_create_contact_profile_invalid_address(profile_name, invalid_address_str):
     with pytest.raises(Exception) as excinfo:
-        create_contact_profile(profile_name, invalid_address)
+        create_contact_profile(profile_name, invalid_address_str)
     assert "Invalid squeak address" in str(excinfo.value)

@@ -23,16 +23,12 @@ from squeak.net import CInterested
 
 from squeaknode.core.interests import get_differential_squeaks
 from squeaknode.core.interests import squeak_matches_interest
-from tests.utils import address_from_signing_key
 from tests.utils import gen_random_hash
-from tests.utils import gen_signing_key
 from tests.utils import gen_squeak
 from tests.utils import gen_squeak_addresses
 
 
-def test_squeak_matches_interest():
-    signing_key = gen_signing_key()
-    address = address_from_signing_key(signing_key)
+def test_squeak_matches_interest(signing_key, address):
     squeak = gen_squeak(signing_key, 5678)
     interest = CInterested(
         addresses=(address,),
@@ -43,9 +39,7 @@ def test_squeak_matches_interest():
     assert squeak_matches_interest(squeak, interest)
 
 
-def test_squeak_matches_interest_empty_addresses():
-    signing_key = gen_signing_key()
-    address_from_signing_key(signing_key)
+def test_squeak_matches_interest_empty_addresses(signing_key, address):
     squeak = gen_squeak(signing_key, 5678)
     interest = CInterested(
         nMinBlockHeight=5000,
@@ -55,9 +49,7 @@ def test_squeak_matches_interest_empty_addresses():
     assert squeak_matches_interest(squeak, interest)
 
 
-def test_squeak_matches_interest_above_block_range():
-    signing_key = gen_signing_key()
-    address = address_from_signing_key(signing_key)
+def test_squeak_matches_interest_above_block_range(signing_key, address):
     squeak = gen_squeak(signing_key, 5678)
     interest = CInterested(
         addresses=(address,),
@@ -68,9 +60,7 @@ def test_squeak_matches_interest_above_block_range():
     assert not squeak_matches_interest(squeak, interest)
 
 
-def test_squeak_matches_interest_below_block_range():
-    signing_key = gen_signing_key()
-    address = address_from_signing_key(signing_key)
+def test_squeak_matches_interest_below_block_range(signing_key, address):
     squeak = gen_squeak(signing_key, 5678)
     interest = CInterested(
         addresses=(address,),
@@ -81,9 +71,7 @@ def test_squeak_matches_interest_below_block_range():
     assert not squeak_matches_interest(squeak, interest)
 
 
-def test_squeak_matches_interest_address_no_match():
-    signing_key = gen_signing_key()
-    address_from_signing_key(signing_key)
+def test_squeak_matches_interest_address_no_match(signing_key, address):
     squeak = gen_squeak(signing_key, 5678)
     other_addresses = tuple(gen_squeak_addresses(3))
     interest = CInterested(
@@ -95,9 +83,7 @@ def test_squeak_matches_interest_address_no_match():
     assert not squeak_matches_interest(squeak, interest)
 
 
-def test_squeak_matches_interest_is_reply():
-    signing_key = gen_signing_key()
-    address_from_signing_key(signing_key)
+def test_squeak_matches_interest_is_reply(signing_key):
     replyto_hash = gen_random_hash()
     squeak = gen_squeak(signing_key, 5678, replyto_hash=replyto_hash)
     interest = CInterested(
@@ -107,9 +93,7 @@ def test_squeak_matches_interest_is_reply():
     assert squeak_matches_interest(squeak, interest)
 
 
-def test_squeak_matches_interest_is_not_reply():
-    signing_key = gen_signing_key()
-    address_from_signing_key(signing_key)
+def test_squeak_matches_interest_is_not_reply(signing_key):
     replyto_hash = gen_random_hash()
     squeak = gen_squeak(signing_key, 5678, replyto_hash=replyto_hash)
     other_replyto_hash = gen_random_hash()
