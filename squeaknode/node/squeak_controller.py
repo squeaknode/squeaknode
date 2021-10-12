@@ -530,6 +530,7 @@ class SqueakController:
         if squeak is None or secret_key is not None:
             return
         try:
+            # TODO: Call unpack_offer with check_payment_point=True.
             received_offer = self.squeak_core.unpack_offer(
                 squeak,
                 offer,

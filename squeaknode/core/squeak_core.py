@@ -269,7 +269,6 @@ class SqueakCore:
             host=offer.host or peer_address.host,
             port=offer.port,
         )
-        # TODO: Check the payment point
         payment_point = pay_req.payment_point
         expected_payment_point = squeak.paymentPoint
         if check_payment_point:
