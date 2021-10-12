@@ -128,6 +128,7 @@ def pay_req(
 ):
     yield PayReq(
         payment_hash=payment_hash,
+        payment_point=b'',
         num_msat=price_msat,
         destination=seller_pubkey,
         timestamp=timestamp,
@@ -273,7 +274,11 @@ def packaged_offer(squeak_core, created_offer):
 
 @pytest.fixture
 def unpacked_offer(squeak_core, squeak, packaged_offer, seller_peer_address):
-    yield squeak_core.unpack_offer(squeak, packaged_offer, seller_peer_address)
+    yield squeak_core.unpack_offer(
+        squeak,
+        packaged_offer,
+        seller_peer_address,
+    )
 
 
 @pytest.fixture
@@ -335,6 +340,16 @@ def test_packaged_offer(squeak, packaged_offer):
 def test_unpacked_offer(unpacked_offer):
 
     assert unpacked_offer is not None
+
+
+def test_unpacked_offer_bad_payment_point(squeak_core, squeak, packaged_offer, seller_peer_address):
+    with pytest.raises(Exception):
+        squeak_core.unpack_offer(
+            squeak,
+            packaged_offer,
+            seller_peer_address,
+            check_payment_point=True,
+        )
 
 
 def test_sent_payment(sent_payment):

@@ -25,6 +25,7 @@ from typing import NamedTuple
 class PayReq(NamedTuple):
     """Represents info about the lightning node."""
     payment_hash: bytes
+    payment_point: bytes
     num_msat: int
     destination: str
     timestamp: int
