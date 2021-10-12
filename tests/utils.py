@@ -19,6 +19,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+import hashlib
 import os
 import uuid
 
@@ -38,6 +39,10 @@ def gen_signing_key():
 
 def gen_random_hash():
     return os.urandom(HASH_LENGTH)
+
+
+def sha256(data):
+    return hashlib.sha256(data).digest()
 
 
 def address_from_signing_key(signing_key):
