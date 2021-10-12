@@ -44,5 +44,4 @@ def upgrade():
 
 def downgrade():
     with op.batch_alter_table('sent_offer', schema=None) as batch_op:
-        batch_op.add_column(sa.Column('secret_key', sa.BLOB(
-        ), nullable=False, server_default=sa.text("''")))
+        batch_op.add_column(sa.Column('secret_key', sa.BLOB(), nullable=True))
