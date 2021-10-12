@@ -185,7 +185,6 @@ class SqueakCore:
             sent_offer_id=None,
             squeak_hash=squeak_hash,
             payment_hash=invoice.r_hash,
-            secret_key=preimage,  # TODO: remove this field.
             nonce=nonce,
             price_msat=price_msat,
             payment_request=invoice.payment_request,
