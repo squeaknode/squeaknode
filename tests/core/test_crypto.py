@@ -19,12 +19,17 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-import random
+from squeaknode.core.crypto import generate_ping_nonce
+from squeaknode.core.crypto import generate_version_nonce
 
 
-def generate_version_nonce() -> int:
-    return random.SystemRandom().getrandbits(64)
+def test_gen_version_nonce():
+    generated_nonce = generate_version_nonce()
+
+    assert type(generated_nonce) is int
 
 
-def generate_ping_nonce() -> int:
-    return random.SystemRandom().getrandbits(64)
+def test_gen_ping_nonce():
+    generated_nonce = generate_ping_nonce()
+
+    assert type(generated_nonce) is int
