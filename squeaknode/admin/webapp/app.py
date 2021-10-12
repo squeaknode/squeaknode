@@ -83,8 +83,7 @@ def create_app(handler, username, password):
                     reply = func(request_message)
                     return reply.SerializeToString()
                 except Exception as e:
-                    logger.error(
-                        "Error in handle admin web request.", exc_info=True)
+                    logger.exception("Error in handle admin web request.")
                     return str(e), 500
             return wrapper
         return decorator
