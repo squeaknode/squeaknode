@@ -231,26 +231,6 @@ def squeak_core(bitcoin_client, lightning_client):
     yield SqueakCore(bitcoin_client, lightning_client)
 
 
-# @pytest.fixture
-# def squeak_and_decryption_key(squeak_core, signing_profile, squeak_content):
-#     yield squeak_core.make_squeak(
-#         signing_profile,
-#         squeak_content,
-#     )
-
-
-# @pytest.fixture
-# def squeak(squeak_and_decryption_key):
-#     squeak, _ = squeak_and_decryption_key
-#     yield squeak
-
-
-# @pytest.fixture
-# def decryption_key(squeak_and_decryption_key):
-#     _, decryption_key = squeak_and_decryption_key
-#     yield decryption_key
-
-
 @pytest.fixture
 def peer_address():
     yield PeerAddress(
