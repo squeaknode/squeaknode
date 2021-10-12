@@ -26,6 +26,8 @@ from squeaknode.bitcoin.block_info import BlockInfo
 from squeaknode.core.lightning_address import LightningAddressHostPort
 from squeaknode.core.peer_address import Network
 from squeaknode.core.peer_address import PeerAddress
+from squeaknode.core.secret_keys import add_tweak
+from squeaknode.core.secret_keys import generate_tweak
 from squeaknode.core.squeak_core import SqueakCore
 from squeaknode.core.squeaks import get_hash
 from squeaknode.lightning.info import Info
@@ -47,9 +49,24 @@ def price_msat():
 
 
 @pytest.fixture
-def preimage():
+def nonce():
+    return generate_tweak()
+
+
+# @pytest.fixture
+# def preimage():
+#     # TODO: This should be generated from the tweak of the decryption key.
+#     yield gen_random_hash()
+
+
+@pytest.fixture
+def preimage(secret_key, nonce):
     # TODO: This should be generated from the tweak of the decryption key.
-    yield gen_random_hash()
+    # yield gen_random_hash()
+    # yield sha256(secret_key)
+    yield add_tweak(secret_key, nonce)
+    # yield add_tweak(secret_key, b'fooooo')
+    # yield gen_random_hash()
 
 
 @pytest.fixture
@@ -202,8 +219,13 @@ def bitcoin_client(genesis_block_info):
 
 
 @pytest.fixture
-def lightning_client(info, invoice, pay_req, successful_payment):
-    return MockLightningClient(info, invoice, pay_req, successful_payment)
+def lightning_client(info, invoice):
+    return MockLightningClient(info, invoice, None, None)
+
+
+@pytest.fixture
+def buyer_lightning_client(pay_req, successful_payment):
+    return MockLightningClient(None, None, pay_req, successful_payment)
 
 
 @pytest.fixture
@@ -212,23 +234,28 @@ def squeak_core(bitcoin_client, lightning_client):
 
 
 @pytest.fixture
-def squeak_and_decryption_key(squeak_core, signing_profile, squeak_content):
-    yield squeak_core.make_squeak(
-        signing_profile,
-        squeak_content,
-    )
+def buyer_squeak_core(bitcoin_client, buyer_lightning_client):
+    yield SqueakCore(bitcoin_client, buyer_lightning_client)
 
 
-@pytest.fixture
-def squeak(squeak_and_decryption_key):
-    squeak, _ = squeak_and_decryption_key
-    yield squeak
+# @pytest.fixture
+# def squeak_and_decryption_key(squeak_core, signing_profile, squeak_content):
+#     yield squeak_core.make_squeak(
+#         signing_profile,
+#         squeak_content,
+#     )
 
 
-@pytest.fixture
-def decryption_key(squeak_and_decryption_key):
-    _, decryption_key = squeak_and_decryption_key
-    yield decryption_key
+# @pytest.fixture
+# def squeak(squeak_and_decryption_key):
+#     squeak, _ = squeak_and_decryption_key
+#     yield squeak
+
+
+# @pytest.fixture
+# def decryption_key(squeak_and_decryption_key):
+#     _, decryption_key = squeak_and_decryption_key
+#     yield decryption_key
 
 
 @pytest.fixture
@@ -250,10 +277,10 @@ def seller_peer_address():
 
 
 @pytest.fixture
-def created_offer(squeak_core, squeak, decryption_key, peer_address, price_msat):
+def created_offer(squeak_core, squeak, secret_key, peer_address, price_msat):
     yield squeak_core.create_offer(
         squeak,
-        decryption_key,
+        secret_key,
         peer_address,
         price_msat,
     )
@@ -265,13 +292,13 @@ def packaged_offer(squeak_core, created_offer):
 
 
 @pytest.fixture
-def unpacked_offer(squeak_core, squeak, packaged_offer, seller_peer_address):
-    yield squeak_core.unpack_offer(squeak, packaged_offer, seller_peer_address)
+def unpacked_offer(buyer_squeak_core, squeak, packaged_offer, seller_peer_address):
+    yield buyer_squeak_core.unpack_offer(squeak, packaged_offer, seller_peer_address)
 
 
 @pytest.fixture
-def sent_payment(squeak_core, unpacked_offer):
-    yield squeak_core.pay_offer(unpacked_offer)
+def sent_payment(buyer_squeak_core, unpacked_offer):
+    yield buyer_squeak_core.pay_offer(unpacked_offer)
 
 
 def test_get_block_header(
@@ -284,26 +311,27 @@ def test_get_block_header(
     assert block_header == genesis_block_info.block_header
 
 
-def test_get_decrypted_content(squeak_core, squeak, decryption_key, squeak_content):
-    decrypted_content = squeak_core.get_decrypted_content(
-        squeak,
-        decryption_key,
-    )
+# TODO: this is redundant with the other test.
+# def test_get_decrypted_content(squeak_core, squeak, secret_key, squeak_content):
+#     decrypted_content = squeak_core.get_decrypted_content(
+#         squeak,
+#         secret_key,
+#     )
 
-    assert decrypted_content == squeak_content
+#     assert decrypted_content == squeak_content
 
 
-def test_get_best_block_height(squeak_core, genesis_block_info):
-    best_block_height = squeak_core.get_best_block_height()
+def test_get_best_block_height(buyer_squeak_core, genesis_block_info):
+    best_block_height = buyer_squeak_core.get_best_block_height()
 
     assert best_block_height == genesis_block_info.block_height
 
 
-def test_create_offer(squeak_core, squeak, peer_address, price_msat, created_offer, invoice):
+def test_create_offer(squeak, peer_address, price_msat, created_offer, invoice):
 
     assert created_offer.squeak_hash == get_hash(squeak)
     assert created_offer.payment_hash == invoice.r_hash
-    # assert created_offer.secret_key == decryption_key
+    # assert created_offer.secret_key == secret_key
     assert created_offer.price_msat == price_msat
     assert created_offer.payment_request == invoice.payment_request
     assert created_offer.invoice_time == invoice.creation_date
@@ -311,16 +339,25 @@ def test_create_offer(squeak_core, squeak, peer_address, price_msat, created_off
     assert created_offer.peer_address == peer_address
 
 
-def test_packaged_offer(squeak_core, squeak, packaged_offer):
+def test_packaged_offer(squeak, packaged_offer):
 
     assert packaged_offer is not None
 
 
-def test_unpacked_offer(squeak_core, unpacked_offer):
+def test_unpacked_offer(unpacked_offer):
 
     assert unpacked_offer is not None
 
 
-def test_sent_payment(squeak_core, sent_payment):
+def test_sent_payment(sent_payment):
 
     assert sent_payment is not None
+
+
+# def test_unlock_squeak(squeak_core, squeak, squeak_content, sent_payment):
+#     decrypted_content = squeak_core.get_decrypted_content(
+#         squeak,
+#         sent_payment.secret_key,
+#     )
+
+#     assert decrypted_content == squeak_content
