@@ -292,13 +292,27 @@ def test_make_squeak(
         squeak_content,
 ):
     created_squeak, created_secret_key = squeak_core.make_squeak(
-        signing_profile, squeak_content)
+        signing_profile,
+        squeak_content,
+    )
     decrypted_created_content = squeak_core.get_decrypted_content(
         created_squeak,
         created_secret_key,
     )
 
     assert decrypted_created_content == squeak_content
+
+
+def test_make_squeak_with_contact_profile(
+        squeak_core,
+        contact_profile,
+        squeak_content,
+):
+    with pytest.raises(Exception):
+        created_squeak, created_secret_key = squeak_core.make_squeak(
+            contact_profile,
+            squeak_content,
+        )
 
 
 def test_get_block_header(
