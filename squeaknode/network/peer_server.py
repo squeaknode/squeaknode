@@ -78,7 +78,6 @@ class PeerServer(object):
                 )
         except Exception:
             logger.exception("Accept peer connections failed.")
-            raise
 
     def handle_connection(
             self,
