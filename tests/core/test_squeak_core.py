@@ -183,22 +183,13 @@ class MockBitcoinClient(BitcoinClient):
         return self.best_block_info
 
     def get_block_info_by_height(self, block_height: int) -> BlockInfo:
-        if block_height == 0:
-            return self.best_block_info
-        else:
-            raise Exception("Invalid block height")
+        return self.best_block_info
 
     def get_block_hash(self, block_height: int) -> bytes:
-        if block_height == 0:
-            return self.best_block_info.block_hash
-        else:
-            raise Exception("Invalid block height")
+        return self.best_block_info.block_hash
 
     def get_block_header(self, block_hash: bytes, verbose: bool) -> bytes:
-        if block_hash == self.best_block_info.block_hash:
-            return self.best_block_info.block_header
-        else:
-            raise Exception("Invalid block hash")
+        return self.best_block_info.block_header
 
 
 class MockLightningClient(LightningClient):
@@ -330,11 +321,12 @@ def test_make_squeak_with_contact_profile(
         contact_profile,
         squeak_content,
 ):
-    with pytest.raises(Exception):
+    with pytest.raises(Exception) as excinfo:
         created_squeak, created_secret_key = squeak_core.make_squeak(
             contact_profile,
             squeak_content,
         )
+    assert "Can't make squeak with a contact profile." in str(excinfo.value)
 
 
 def test_get_block_header(
@@ -351,8 +343,9 @@ def test_get_block_header_invalid_block_hash(
         squeak_core,
         other_squeak,
 ):
-    with pytest.raises(Exception):
+    with pytest.raises(Exception) as excinfo:
         squeak_core.get_block_header(other_squeak)
+    assert "Block hash incorrect." in str(excinfo.value)
 
 
 def test_check_squeak(squeak_core, squeak):
@@ -387,22 +380,24 @@ def test_unpacked_offer(unpacked_offer):
 
 
 def test_unpack_offer_invalid_squeak_hash(squeak_core, other_squeak, packaged_offer, seller_peer_address):
-    with pytest.raises(Exception):
+    with pytest.raises(Exception) as excinfo:
         squeak_core.unpack_offer(
             other_squeak,
             packaged_offer,
             seller_peer_address,
         )
+    assert "does not match squeak hash" in str(excinfo.value)
 
 
 def test_unpacked_offer_bad_payment_point(squeak_core, squeak, packaged_offer, seller_peer_address):
-    with pytest.raises(Exception):
+    with pytest.raises(Exception) as excinfo:
         squeak_core.unpack_offer(
             squeak,
             packaged_offer,
             seller_peer_address,
             check_payment_point=True,
         )
+    assert "Invalid payment point." in str(excinfo.value)
 
 
 def test_sent_payment(sent_payment):
