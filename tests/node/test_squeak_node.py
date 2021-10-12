@@ -74,6 +74,6 @@ def squeak_node(request):
         yield SqueakNode(config)
 
 
-def test_start_stop(squeak_node):
-    squeak_node.start_running()
-    squeak_node.stop_running()
+# def test_start_stop(squeak_node):
+#     squeak_node.start_running()
+#     squeak_node.stop_running()
