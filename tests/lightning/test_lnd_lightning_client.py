@@ -68,6 +68,11 @@ def payment_hash_str(payment_hash):
 
 
 @pytest.fixture
+def payment_point(preimage):
+    yield b''
+
+
+@pytest.fixture
 def price_msat():
     yield 33333
 
@@ -205,6 +210,7 @@ def decode_pay_req_response(
 @pytest.fixture
 def pay_req(
         payment_hash,
+        payment_point,
         price_msat,
         payment_request,
         destination,
@@ -213,6 +219,7 @@ def pay_req(
 ):
     yield PayReq(
         payment_hash=payment_hash,
+        payment_point=payment_point,
         num_msat=price_msat,
         destination=destination,
         timestamp=timestamp,

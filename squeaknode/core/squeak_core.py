@@ -231,7 +231,13 @@ class SqueakCore:
             port=lnd_external_address.port if lnd_external_address else 0,
         )
 
-    def unpack_offer(self, squeak: CSqueak, offer: Offer, peer_address: PeerAddress) -> ReceivedOffer:
+    def unpack_offer(
+            self,
+            squeak: CSqueak,
+            offer: Offer,
+            peer_address: PeerAddress,
+            check_payment_point: bool = False,
+    ) -> ReceivedOffer:
         """Get the offer details from the message that the buyer
         receives from the seller.
 
@@ -264,10 +270,11 @@ class SqueakCore:
             port=offer.port,
         )
         # TODO: Check the payment point
-        # payment_point = offer.payment_point
-        # expected_payment_point = squeak.paymentPoint
-        # if payment_point != expected_payment_point:
-        #     raise Exception("Invalid payment point.")
+        payment_point = pay_req.payment_point
+        expected_payment_point = squeak.paymentPoint
+        if check_payment_point:
+            if payment_point != expected_payment_point:
+                raise Exception("Invalid payment point.")
         return ReceivedOffer(
             received_offer_id=None,
             squeak_hash=squeak_hash,

@@ -127,6 +127,7 @@ class LNDLightningClient:
         )
         return PayReq(
             payment_hash=bytes.fromhex(decode_pay_req_response.payment_hash),
+            payment_point=b'',  # TODO: Use real payment point.
             num_msat=decode_pay_req_response.num_msat,
             destination=decode_pay_req_response.destination,
             timestamp=decode_pay_req_response.timestamp,
