@@ -401,9 +401,12 @@ def test_unpacked_offer_bad_payment_point(squeak_core, squeak, packaged_offer, s
     assert "Invalid payment point." in str(excinfo.value)
 
 
-def test_sent_payment(sent_payment):
+def test_sent_payment(sent_payment, squeak, price_msat, secret_key, seller_pubkey):
 
-    assert sent_payment is not None
+    assert sent_payment.squeak_hash == get_hash(squeak)
+    assert sent_payment.price_msat == price_msat
+    assert sent_payment.secret_key == secret_key
+    assert sent_payment.node_pubkey == seller_pubkey
 
 
 def test_send_payment_with_failure(squeak_core_with_failed_payment, unpacked_offer):
