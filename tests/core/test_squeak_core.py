@@ -227,8 +227,18 @@ def lightning_client(info, invoice, pay_req, successful_payment):
 
 
 @pytest.fixture
+def lightning_client_with_failed_payment(info, invoice, pay_req, failed_payment):
+    return MockLightningClient(info, invoice, pay_req, failed_payment)
+
+
+@pytest.fixture
 def squeak_core(bitcoin_client, lightning_client):
     yield SqueakCore(bitcoin_client, lightning_client)
+
+
+@pytest.fixture
+def squeak_core_with_failed_payment(bitcoin_client, lightning_client_with_failed_payment):
+    yield SqueakCore(bitcoin_client, lightning_client_with_failed_payment)
 
 
 @pytest.fixture
@@ -394,6 +404,13 @@ def test_unpacked_offer_bad_payment_point(squeak_core, squeak, packaged_offer, s
 def test_sent_payment(sent_payment):
 
     assert sent_payment is not None
+
+
+def test_send_payment_with_failure(squeak_core_with_failed_payment, unpacked_offer):
+
+    with pytest.raises(Exception) as excinfo:
+        squeak_core_with_failed_payment.pay_offer(unpacked_offer)
+    assert "Payment failed with error" in str(excinfo.value)
 
 
 def test_unlock_squeak(squeak_core, squeak, squeak_content, sent_payment):
