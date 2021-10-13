@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import pytest
+from squeak.core.elliptic import payment_point_bytes_from_scalar_bytes
 
 from squeaknode.bitcoin.bitcoin_client import BitcoinClient
 from squeaknode.bitcoin.block_info import BlockInfo
@@ -58,6 +59,11 @@ def nonce():
 @pytest.fixture
 def preimage(secret_key, nonce):
     yield add_tweak(secret_key, nonce)
+
+
+@pytest.fixture
+def payment_point(secret_key):
+    yield payment_point_bytes_from_scalar_bytes(secret_key)
 
 
 @pytest.fixture
@@ -128,6 +134,26 @@ def invoice(payment_request, price_msat, creation_date, expiry):
 
 @pytest.fixture
 def pay_req(
+        payment_hash,
+        payment_point,
+        price_msat,
+        payment_request,
+        seller_pubkey,
+        timestamp,
+        expiry,
+):
+    yield PayReq(
+        payment_hash=payment_hash,
+        payment_point=payment_point,
+        num_msat=price_msat,
+        destination=seller_pubkey,
+        timestamp=timestamp,
+        expiry=expiry,
+    )
+
+
+@pytest.fixture
+def pay_req_with_no_payment_point(
         payment_hash,
         price_msat,
         payment_request,
@@ -244,6 +270,11 @@ def lightning_client_with_no_uris(info_with_no_uris, invoice, pay_req, failed_pa
 
 
 @pytest.fixture
+def lightning_client_with_no_payment_point(info, invoice, pay_req_with_no_payment_point, successful_payment):
+    return MockLightningClient(info, invoice, pay_req_with_no_payment_point, successful_payment)
+
+
+@pytest.fixture
 def squeak_core(bitcoin_client, lightning_client):
     yield SqueakCore(bitcoin_client, lightning_client)
 
@@ -256,6 +287,11 @@ def squeak_core_with_failed_payment(bitcoin_client, lightning_client_with_failed
 @pytest.fixture
 def squeak_core_with_no_uris(bitcoin_client, lightning_client_with_no_uris):
     yield SqueakCore(bitcoin_client, lightning_client_with_no_uris)
+
+
+@pytest.fixture
+def squeak_core_with_no_payment_point(bitcoin_client, lightning_client_with_no_payment_point):
+    yield SqueakCore(bitcoin_client, lightning_client_with_no_payment_point)
 
 
 @pytest.fixture
@@ -298,6 +334,7 @@ def unpacked_offer(squeak_core, squeak, packaged_offer, seller_peer_address):
         squeak,
         packaged_offer,
         seller_peer_address,
+        check_payment_point=True,
     )
 
 
@@ -436,15 +473,25 @@ def test_unpack_offer_invalid_squeak_hash(squeak_core, other_squeak, packaged_of
     assert "does not match squeak hash" in str(excinfo.value)
 
 
-def test_unpacked_offer_bad_payment_point(squeak_core, squeak, packaged_offer, seller_peer_address):
+def test_unpacked_offer_bad_payment_point(squeak_core_with_no_payment_point, squeak, packaged_offer, seller_peer_address):
     with pytest.raises(Exception) as excinfo:
-        squeak_core.unpack_offer(
+        squeak_core_with_no_payment_point.unpack_offer(
             squeak,
             packaged_offer,
             seller_peer_address,
             check_payment_point=True,
         )
     assert "Invalid payment point." in str(excinfo.value)
+
+
+def test_unpacked_offer_bad_payment_point_skip_check(squeak_core_with_no_payment_point, squeak, packaged_offer, seller_peer_address):
+    unpacked_offer = squeak_core_with_no_payment_point.unpack_offer(
+        squeak,
+        packaged_offer,
+        seller_peer_address,
+    )
+
+    assert unpacked_offer is not None
 
 
 def test_sent_payment(sent_payment, squeak, price_msat, secret_key, seller_pubkey):
