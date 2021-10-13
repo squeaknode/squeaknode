@@ -348,18 +348,20 @@ def test_get_best_block_height(squeak_core, block_info):
     assert best_block_height == block_info.block_height
 
 
-def test_create_offer(squeak_core, squeak, secret_key, peer_address, price_msat):
+def test_create_offer(
+        squeak_core,
+        squeak,
+        secret_key,
+        peer_address,
+        price_msat,
+        invoice,
+):
     created_offer = squeak_core.create_offer(
         squeak,
         secret_key,
         peer_address,
         price_msat,
     )
-
-    assert created_offer is not None
-
-
-def test_created_offer(squeak, peer_address, price_msat, created_offer, invoice):
 
     assert created_offer.squeak_hash == get_hash(squeak)
     assert created_offer.payment_hash == invoice.r_hash
