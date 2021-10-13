@@ -41,7 +41,7 @@ from tests.utils import sha256
 
 
 @pytest.fixture
-def lightning_host_port():
+def external_lightning_address():
     return LightningAddressHostPort(host="my_lightning_host", port=8765)
 
 
@@ -103,6 +103,13 @@ def uris():
 def info(uris):
     yield Info(
         uris=uris,
+    )
+
+
+@pytest.fixture
+def info_with_no_uris():
+    yield Info(
+        uris=[],
     )
 
 
@@ -232,6 +239,11 @@ def lightning_client_with_failed_payment(info, invoice, pay_req, failed_payment)
 
 
 @pytest.fixture
+def lightning_client_with_no_uris(info_with_no_uris, invoice, pay_req, failed_payment):
+    return MockLightningClient(info_with_no_uris, invoice, pay_req, failed_payment)
+
+
+@pytest.fixture
 def squeak_core(bitcoin_client, lightning_client):
     yield SqueakCore(bitcoin_client, lightning_client)
 
@@ -239,6 +251,11 @@ def squeak_core(bitcoin_client, lightning_client):
 @pytest.fixture
 def squeak_core_with_failed_payment(bitcoin_client, lightning_client_with_failed_payment):
     yield SqueakCore(bitcoin_client, lightning_client_with_failed_payment)
+
+
+@pytest.fixture
+def squeak_core_with_no_uris(bitcoin_client, lightning_client_with_no_uris):
+    yield SqueakCore(bitcoin_client, lightning_client_with_no_uris)
 
 
 @pytest.fixture
@@ -375,6 +392,33 @@ def test_create_offer(
 def test_packaged_offer(squeak, packaged_offer):
 
     assert packaged_offer is not None
+
+
+def test_package_offer_with_no_lnd_uris(
+        squeak_core_with_no_uris,
+        created_offer,
+):
+    packaged_offer = squeak_core_with_no_uris.package_offer(
+        created_offer,
+        None,
+    )
+
+    assert packaged_offer.host == ''
+    assert packaged_offer.port == 0
+
+
+def test_package_offer_with_no_lnd_uris_with_external_address(
+        squeak_core_with_no_uris,
+        created_offer,
+        external_lightning_address,
+):
+    packaged_offer = squeak_core_with_no_uris.package_offer(
+        created_offer,
+        external_lightning_address,
+    )
+
+    assert packaged_offer.host == external_lightning_address.host
+    assert packaged_offer.port == external_lightning_address.port
 
 
 def test_unpacked_offer(unpacked_offer):
