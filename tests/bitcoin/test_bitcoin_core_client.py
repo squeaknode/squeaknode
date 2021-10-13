@@ -23,7 +23,6 @@ import json
 
 import mock
 import pytest
-from bitcoin.core import CBlockHeader
 from requests import HTTPError
 from requests.exceptions import ConnectionError
 from requests.exceptions import RequestException
@@ -63,47 +62,6 @@ def bitcoin_core_client(bitcoin_host, bitcoin_port, bitcoin_user, bitcoin_pass):
         rpc_password=bitcoin_pass,
         use_ssl=False,
         ssl_cert="fake_ssl_cert",
-    )
-
-
-@pytest.fixture
-def block_count():
-    yield 555
-
-
-@pytest.fixture
-def block_hash_str():
-    # Block hash of block at height 555
-    yield '00000000edade40797e3c4bf27edeb65733d1884beaa8c502a89d50a54111e1c'
-
-
-@pytest.fixture
-def block_hash(block_hash_str):
-    yield bytes.fromhex(block_hash_str)
-
-
-@pytest.fixture
-def block_header_str():
-    # Block header of block at height 555
-    yield '0100000079c30d2c23727a1e9f5feda4e7feb8ea0bda2ab98e23e7f6a9cf594f00000000b0de897e42fa7a3b5c3a6bfb8e797acf4ffbc16169394b03ad93296524ed633dcfef6e49ffff001d36d19a6c'
-
-
-@pytest.fixture
-def block_header_bytes(block_header_str):
-    yield bytes.fromhex(block_header_str)
-
-
-@pytest.fixture
-def block_header(block_header_bytes):
-    yield CBlockHeader.deserialize(block_header_bytes)
-
-
-@pytest.fixture
-def block_info(block_count, block_hash, block_header):
-    yield BlockInfo(
-        block_height=block_count,
-        block_hash=block_hash,
-        block_header=block_header,
     )
 
 

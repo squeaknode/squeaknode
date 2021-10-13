@@ -24,8 +24,8 @@ from squeaknode.core.squeaks import get_decrypted_content
 from squeaknode.core.squeaks import get_payment_point_of_secret_key
 
 
-def test_make_squeak(squeak):
-    assert squeak.nBlockHeight == 0
+def test_make_squeak(squeak, block_count):
+    assert squeak.nBlockHeight == block_count
 
 
 def test_check_squeak(squeak):
