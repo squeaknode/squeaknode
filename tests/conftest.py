@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import pytest
-from bitcoin.core import CoreMainParams
+from bitcoin.core import CBlockHeader
 from squeak.core.signing import CSigningKey
 from squeak.core.signing import CSqueakAddress
 
@@ -49,11 +49,43 @@ def address_str(address):
 
 
 @pytest.fixture
-def genesis_block_info():
+def block_count():
+    yield 555
+
+
+@pytest.fixture
+def block_hash_str():
+    # Block hash of block at height 555
+    yield '00000000edade40797e3c4bf27edeb65733d1884beaa8c502a89d50a54111e1c'
+
+
+@pytest.fixture
+def block_hash(block_hash_str):
+    yield bytes.fromhex(block_hash_str)
+
+
+@pytest.fixture
+def block_header_str():
+    # Block header of block at height 555
+    yield '0100000079c30d2c23727a1e9f5feda4e7feb8ea0bda2ab98e23e7f6a9cf594f00000000b0de897e42fa7a3b5c3a6bfb8e797acf4ffbc16169394b03ad93296524ed633dcfef6e49ffff001d36d19a6c'
+
+
+@pytest.fixture
+def block_header_bytes(block_header_str):
+    yield bytes.fromhex(block_header_str)
+
+
+@pytest.fixture
+def block_header(block_header_bytes):
+    yield CBlockHeader.deserialize(block_header_bytes)
+
+
+@pytest.fixture
+def block_info(block_count, block_hash, block_header):
     yield BlockInfo(
-        block_height=0,
-        block_hash=CoreMainParams.GENESIS_BLOCK.GetHash(),
-        block_header=CoreMainParams.GENESIS_BLOCK.get_header().serialize(),
+        block_height=block_count,
+        block_hash=block_hash,
+        block_header=block_header,
     )
 
 
@@ -63,12 +95,12 @@ def squeak_content():
 
 
 @pytest.fixture
-def squeak_and_secret_key(signing_key, squeak_content, genesis_block_info):
+def squeak_and_secret_key(signing_key, squeak_content, block_info):
     yield make_squeak_with_block(
         signing_key,
         squeak_content,
-        genesis_block_info.block_height,
-        genesis_block_info.block_hash,
+        block_info.block_height,
+        block_info.block_hash,
     )
 
 

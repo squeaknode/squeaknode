@@ -217,8 +217,8 @@ class MockLightningClient(LightningClient):
 
 
 @pytest.fixture
-def bitcoin_client(genesis_block_info):
-    return MockBitcoinClient(genesis_block_info)
+def bitcoin_client(block_info):
+    return MockBitcoinClient(block_info)
 
 
 @pytest.fixture
@@ -312,11 +312,11 @@ def test_make_squeak_with_contact_profile(
 def test_get_block_header(
         squeak_core,
         squeak,
-        genesis_block_info,
+        block_info,
 ):
     block_header = squeak_core.get_block_header(squeak)
 
-    assert block_header == genesis_block_info.block_header
+    assert block_header == block_info.block_header
 
 
 def test_get_block_header_invalid_block_hash(
@@ -332,10 +332,10 @@ def test_check_squeak(squeak_core, squeak):
     squeak_core.check_squeak(squeak)
 
 
-def test_get_best_block_height(squeak_core, genesis_block_info):
+def test_get_best_block_height(squeak_core, block_info):
     best_block_height = squeak_core.get_best_block_height()
 
-    assert best_block_height == genesis_block_info.block_height
+    assert best_block_height == block_info.block_height
 
 
 def test_create_offer(squeak_core, squeak, secret_key, peer_address, price_msat):
