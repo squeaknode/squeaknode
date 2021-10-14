@@ -24,9 +24,6 @@ from bitcoin.core import CBlockHeader
 from squeak.core.signing import CSigningKey
 from squeak.core.signing import CSqueakAddress
 
-from proto import squeak_admin_pb2
-from squeaknode.admin.messages import DEFAULT_PROFILE_IMAGE
-from squeaknode.admin.profile_image_util import bytes_to_base64_string
 from squeaknode.bitcoin.block_info import BlockInfo
 from squeaknode.core.peer_address import Network
 from squeaknode.core.peer_address import PeerAddress
@@ -151,15 +148,6 @@ def peer_address():
 
 
 @pytest.fixture
-def peer_address_message():
-    yield squeak_admin_pb2.PeerAddress(
-        network="IPV4",
-        host="fake_host",
-        port=8765,
-    )
-
-
-@pytest.fixture
 def signing_profile_name():
     yield "fake_signing_profile_name"
 
@@ -167,11 +155,6 @@ def signing_profile_name():
 @pytest.fixture
 def contact_profile_name():
     yield "fake_contact_profile_name"
-
-
-@pytest.fixture
-def default_profile_image():
-    yield DEFAULT_PROFILE_IMAGE
 
 
 @pytest.fixture
@@ -187,25 +170,6 @@ def contact_profile(contact_profile_name, address):
     yield gen_contact_profile(
         contact_profile_name,
         str(address),
-    )
-
-
-@pytest.fixture
-def signing_profile_msg(
-        address_str,
-        default_profile_image,
-):
-    img_base64_str = bytes_to_base64_string(default_profile_image)
-    yield squeak_admin_pb2.SqueakProfile(
-        profile_id=None,
-        profile_name="fake_signing_profile_name",
-        has_private_key=True,
-        address=address_str,
-        following=True,
-        use_custom_price=False,
-        custom_price_msat=0,
-        profile_image=img_base64_str,
-        has_custom_profile_image=False,
     )
 
 
@@ -233,33 +197,4 @@ def squeak_entry_locked(
         squeak_profile=signing_profile,
         liked_time_ms=None,
         content=None,
-    )
-
-
-@pytest.fixture
-def squeak_entry_msg_locked(
-        squeak,
-        squeak_hash,
-        address_str,
-        block_count,
-        block_hash,
-        block_time,
-        squeak_time,
-        squeak_reply_to_hash,
-        signing_profile_msg,
-):
-    yield squeak_admin_pb2.SqueakDisplayEntry(
-        squeak_hash=squeak_hash.hex(),
-        is_unlocked=False,
-        content_str=None,  # type: ignore
-        block_height=block_count,
-        block_hash=block_hash.hex(),
-        block_time=block_time,
-        squeak_time=squeak_time,
-        is_reply=False,
-        reply_to=squeak_reply_to_hash,  # type: ignore
-        author_address=address_str,
-        is_author_known=True,
-        author=signing_profile_msg,
-        liked_time_ms=None,  # type: ignore
     )
