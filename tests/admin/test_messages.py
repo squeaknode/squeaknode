@@ -19,36 +19,10 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-import pytest
-
-from proto import squeak_admin_pb2
 from squeaknode.admin.messages import message_to_peer_address
 from squeaknode.admin.messages import peer_address_to_message
-from squeaknode.core.peer_address import Network
-from squeaknode.core.peer_address import PeerAddress
-
-
-@pytest.fixture
-def torv3():
-    yield Network.TORV3
-
-
-@pytest.fixture
-def peer_address():
-    yield PeerAddress(
-        network=Network.TORV3,
-        host="fake_host",
-        port=56789,
-    )
-
-
-@pytest.fixture
-def peer_address_message():
-    yield squeak_admin_pb2.PeerAddress(
-        network="TORV3",
-        host="fake_host",
-        port=56789,
-    )
+from squeaknode.admin.messages import squeak_entry_to_message
+from squeaknode.admin.messages import squeak_profile_to_message
 
 
 def test_peer_address_to_message(peer_address, peer_address_message):
@@ -61,3 +35,15 @@ def test_msg_to_peer_address(peer_address, peer_address_message):
     address = message_to_peer_address(peer_address_message)
 
     assert address == peer_address
+
+
+def test_squeak_entry_to_message(squeak_entry_locked, squeak_entry_msg_locked):
+    msg = squeak_entry_to_message(squeak_entry_locked)
+
+    assert msg == squeak_entry_msg_locked
+
+
+def test_profile_to_message(signing_profile, signing_profile_msg):
+    msg = squeak_profile_to_message(signing_profile)
+
+    assert msg == signing_profile_msg
