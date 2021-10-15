@@ -135,18 +135,6 @@ class LNDLightningClient:
             expiry=decode_pay_req_response.expiry,
         )
 
-    def subscribe_invoices(self, settle_index: int):
-        subscribe_invoices_request = lnd_pb2.InvoiceSubscription(
-            settle_index=settle_index,
-        )
-        subscribe_result = self.stub.SubscribeInvoices(
-            subscribe_invoices_request,
-        )
-        return InvoiceStream(
-            cancel=subscribe_result.cancel,
-            result_stream=iter(subscribe_result),
-        )
-
     def lookup_invoice(self, r_hash_str: str) -> lnd_pb2.Invoice:
         payment_hash = lnd_pb2.PaymentHash(
             r_hash_str=r_hash_str,
@@ -167,4 +155,16 @@ class LNDLightningClient:
             settle_index=lookup_invoice_response.settle_index,
             creation_date=lookup_invoice_response.creation_date,
             expiry=lookup_invoice_response.expiry,
+        )
+
+    def subscribe_invoices(self, settle_index: int) -> InvoiceStream:
+        subscribe_invoices_request = lnd_pb2.InvoiceSubscription(
+            settle_index=settle_index,
+        )
+        subscribe_result = self.stub.SubscribeInvoices(
+            subscribe_invoices_request,
+        )
+        return InvoiceStream(
+            cancel=subscribe_result.cancel,
+            result_stream=iter(subscribe_result),
         )
