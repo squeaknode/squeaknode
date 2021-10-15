@@ -20,13 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import pytest
-from squeak.core.elliptic import payment_point_bytes_from_scalar_bytes
 
 from squeaknode.bitcoin.bitcoin_client import BitcoinClient
 from squeaknode.bitcoin.block_info import BlockInfo
-from squeaknode.core.lightning_address import LightningAddressHostPort
-from squeaknode.core.secret_keys import add_tweak
-from squeaknode.core.secret_keys import generate_tweak
 from squeaknode.core.squeak_core import SqueakCore
 from squeaknode.core.squeaks import get_hash
 from squeaknode.core.squeaks import make_squeak_with_block
@@ -36,71 +32,6 @@ from squeaknode.lightning.lightning_client import LightningClient
 from squeaknode.lightning.pay_req import PayReq
 from squeaknode.lightning.payment import Payment
 from tests.utils import gen_random_hash
-from tests.utils import sha256
-
-
-@pytest.fixture
-def external_lightning_address():
-    return LightningAddressHostPort(host="my_lightning_host", port=8765)
-
-
-@pytest.fixture
-def price_msat():
-    return 777
-
-
-@pytest.fixture
-def nonce():
-    yield generate_tweak()
-
-
-@pytest.fixture
-def preimage(secret_key, nonce):
-    yield add_tweak(secret_key, nonce)
-
-
-@pytest.fixture
-def payment_point(secret_key):
-    yield payment_point_bytes_from_scalar_bytes(secret_key)
-
-
-@pytest.fixture
-def payment_hash(preimage):
-    # TODO: When PTLC is used, this should be the payment point of preimage.
-    yield sha256(preimage)
-
-
-@pytest.fixture
-def payment_request():
-    yield "fake_payment_request"
-
-
-@pytest.fixture
-def creation_date():
-    yield 777777
-
-
-@pytest.fixture
-def timestamp():
-    yield 8888888
-
-
-@pytest.fixture
-def expiry():
-    yield 5555
-
-
-@pytest.fixture
-def seller_pubkey():
-    yield "fake_seller_pubkey"
-
-
-@pytest.fixture
-def uris():
-    yield [
-        'fake_pubkey@foobar.com:12345',
-        'fake_pubkey@fakehost.com:56789',
-    ]
 
 
 @pytest.fixture
@@ -118,7 +49,7 @@ def info_with_no_uris():
 
 
 @pytest.fixture
-def invoice(payment_request, price_msat, creation_date, expiry):
+def invoice(payment_hash, payment_request, price_msat, creation_date, expiry):
     yield Invoice(
         r_hash=payment_hash,
         payment_request=payment_request,

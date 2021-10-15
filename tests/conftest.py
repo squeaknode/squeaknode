@@ -21,18 +21,23 @@
 # SOFTWARE.
 import pytest
 from bitcoin.core import CBlockHeader
+from squeak.core.elliptic import payment_point_bytes_from_scalar_bytes
 from squeak.core.signing import CSigningKey
 from squeak.core.signing import CSqueakAddress
 
 from squeaknode.bitcoin.block_info import BlockInfo
+from squeaknode.core.lightning_address import LightningAddressHostPort
 from squeaknode.core.peer_address import Network
 from squeaknode.core.peer_address import PeerAddress
+from squeaknode.core.secret_keys import add_tweak
+from squeaknode.core.secret_keys import generate_tweak
 from squeaknode.core.squeak_entry import SqueakEntry
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeaks import get_hash
 from squeaknode.core.squeaks import make_squeak_with_block
 from tests.utils import gen_contact_profile
 from tests.utils import gen_signing_profile
+from tests.utils import sha256
 
 
 @pytest.fixture
@@ -214,3 +219,67 @@ def peer(peer_name, peer_address):
         address=peer_address,
         autoconnect=False,
     )
+
+
+@pytest.fixture
+def external_lightning_address():
+    return LightningAddressHostPort(host="my_lightning_host", port=8765)
+
+
+@pytest.fixture
+def price_msat():
+    return 777
+
+
+@pytest.fixture
+def nonce():
+    yield generate_tweak()
+
+
+@pytest.fixture
+def preimage(secret_key, nonce):
+    yield add_tweak(secret_key, nonce)
+
+
+@pytest.fixture
+def payment_point(secret_key):
+    yield payment_point_bytes_from_scalar_bytes(secret_key)
+
+
+@pytest.fixture
+def payment_hash(preimage):
+    # TODO: When PTLC is used, this should be the payment point of preimage.
+    yield sha256(preimage)
+
+
+@pytest.fixture
+def payment_request():
+    yield "fake_payment_request"
+
+
+@pytest.fixture
+def creation_date():
+    yield 777777
+
+
+@pytest.fixture
+def timestamp():
+    yield 8888888
+
+
+@pytest.fixture
+def expiry():
+    yield 5555
+
+
+@pytest.fixture
+def seller_pubkey():
+    yield "fake_seller_pubkey"
+
+
+@pytest.fixture
+def uris():
+    yield [
+        'fake_pubkey@foobar.com:12345',
+        'fake_pubkey@fakehost.com:56789',
+    ]
