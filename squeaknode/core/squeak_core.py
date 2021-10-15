@@ -357,7 +357,7 @@ class SqueakCore:
         def get_payment_stream():
             # Yield the received payments.
             try:
-                for invoice in invoice_stream:
+                for invoice in invoice_stream.result_stream:
                     if invoice.settled:
                         payment_hash = invoice.r_hash
                         settle_index = invoice.settle_index

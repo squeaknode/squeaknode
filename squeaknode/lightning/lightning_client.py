@@ -25,6 +25,7 @@ from abc import abstractmethod
 
 from squeaknode.lightning.info import Info
 from squeaknode.lightning.invoice import Invoice
+from squeaknode.lightning.invoice_stream import InvoiceStream
 from squeaknode.lightning.pay_req import PayReq
 from squeaknode.lightning.payment import Payment
 
@@ -80,12 +81,15 @@ class LightningClient(ABC):
         Args:
             payment_request: The payment request as a string.
 
+        Returns:
+            Payment: The payment result.
+
         args:
         payment_request -- the payment_request as a string
         """
 
     @abstractmethod
-    def subscribe_invoices(self, settle_index: int):
+    def subscribe_invoices(self, settle_index: int) -> InvoiceStream:
         """Get a stream of settled invoices for received payments.
         # TODO: use map function to convert type of items in stream.
 
@@ -93,7 +97,7 @@ class LightningClient(ABC):
             settle_index: The settle index from which to start streaming.
 
         Returns:
-            TODO:
+            InvoiceStream: an object containing the stream of invoices.
 
         Raises:
             LightningRequestError: If the request fails.
