@@ -24,7 +24,6 @@ import pytest
 from squeaknode.bitcoin.bitcoin_client import BitcoinClient
 from squeaknode.bitcoin.block_info import BlockInfo
 from squeaknode.core.squeak_core import SqueakCore
-from squeaknode.core.squeaks import get_hash
 from squeaknode.core.squeaks import make_squeak_with_block
 from squeaknode.lightning.info import Info
 from squeaknode.lightning.invoice import Invoice
@@ -277,7 +276,7 @@ def unpacked_offer(squeak_core, squeak, packaged_offer, peer_address):
 
 
 @pytest.fixture
-def sent_payment(squeak_core, unpacked_offer):
+def completed_payment(squeak_core, unpacked_offer):
     yield squeak_core.pay_offer(unpacked_offer)
 
 
@@ -440,12 +439,16 @@ def test_unpacked_offer_bad_payment_point_skip_check(
     assert unpacked_offer == received_offer
 
 
-def test_sent_payment(sent_payment, squeak, price_msat, secret_key, seller_pubkey):
+def test_completed_payment(
+        completed_payment,
+        squeak,
+        price_msat,
+        secret_key,
+        seller_pubkey,
+        sent_payment,
+):
 
-    assert sent_payment.squeak_hash == get_hash(squeak)
-    assert sent_payment.price_msat == price_msat
-    assert sent_payment.secret_key == secret_key
-    assert sent_payment.node_pubkey == seller_pubkey
+    assert completed_payment == sent_payment
 
 
 def test_send_payment_with_failure(squeak_core_with_failed_payment, unpacked_offer):
@@ -455,10 +458,10 @@ def test_send_payment_with_failure(squeak_core_with_failed_payment, unpacked_off
     assert "Payment failed with error" in str(excinfo.value)
 
 
-def test_unlock_squeak(squeak_core, squeak, squeak_content, sent_payment):
+def test_unlock_squeak(squeak_core, squeak, squeak_content, completed_payment):
     decrypted_content = squeak_core.get_decrypted_content(
         squeak,
-        sent_payment.secret_key,
+        completed_payment.secret_key,
     )
 
     assert decrypted_content == squeak_content
