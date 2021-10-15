@@ -72,14 +72,13 @@ def squeak_entry_to_message(squeak_entry: SqueakEntry) -> squeak_admin_pb2.Squea
 
 
 def squeak_profile_to_message(squeak_profile: SqueakProfile) -> squeak_admin_pb2.SqueakProfile:
-    if squeak_profile.profile_id is None:
-        raise Exception("Profile id cannot be None.")
+    profile_id = squeak_profile.profile_id or 0
     has_private_key = squeak_profile.private_key is not None
     profile_image = squeak_profile.profile_image or DEFAULT_PROFILE_IMAGE
     has_custom_profile_image = squeak_profile.profile_image is not None
     image_base64_str = bytes_to_base64_string(profile_image)
     return squeak_admin_pb2.SqueakProfile(
-        profile_id=squeak_profile.profile_id,
+        profile_id=profile_id,
         profile_name=squeak_profile.profile_name,
         has_private_key=has_private_key,
         address=squeak_profile.address,
@@ -92,21 +91,19 @@ def squeak_profile_to_message(squeak_profile: SqueakProfile) -> squeak_admin_pb2
 
 
 def squeak_peer_to_message(squeak_peer: SqueakPeer) -> squeak_admin_pb2.SqueakPeer:
-    if squeak_peer.peer_id is None:
-        raise Exception("Peer id cannot be None.")
+    peer_id = squeak_peer.peer_id or 0
     return squeak_admin_pb2.SqueakPeer(
-        peer_id=squeak_peer.peer_id,
+        peer_id=peer_id,
         peer_name=squeak_peer.peer_name,
         peer_address=peer_address_to_message(squeak_peer.address),
         autoconnect=squeak_peer.autoconnect,
     )
 
 
-def offer_entry_to_message(received_offer: ReceivedOffer) -> squeak_admin_pb2.OfferDisplayEntry:
-    if received_offer.received_offer_id is None:
-        raise Exception("Received offer id cannot be None.")
+def received_offer_to_message(received_offer: ReceivedOffer) -> squeak_admin_pb2.OfferDisplayEntry:
+    received_offer_id = received_offer.received_offer_id or 0
     return squeak_admin_pb2.OfferDisplayEntry(
-        offer_id=received_offer.received_offer_id,
+        offer_id=received_offer_id,
         squeak_hash=received_offer.squeak_hash.hex(),
         price_msat=received_offer.price_msat,
         node_pubkey=received_offer.destination,

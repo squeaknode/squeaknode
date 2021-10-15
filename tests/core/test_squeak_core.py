@@ -20,15 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import pytest
-from squeak.core.elliptic import payment_point_bytes_from_scalar_bytes
 
 from squeaknode.bitcoin.bitcoin_client import BitcoinClient
 from squeaknode.bitcoin.block_info import BlockInfo
-from squeaknode.core.lightning_address import LightningAddressHostPort
-from squeaknode.core.peer_address import Network
-from squeaknode.core.peer_address import PeerAddress
-from squeaknode.core.secret_keys import add_tweak
-from squeaknode.core.secret_keys import generate_tweak
 from squeaknode.core.squeak_core import SqueakCore
 from squeaknode.core.squeaks import get_hash
 from squeaknode.core.squeaks import make_squeak_with_block
@@ -38,71 +32,6 @@ from squeaknode.lightning.lightning_client import LightningClient
 from squeaknode.lightning.pay_req import PayReq
 from squeaknode.lightning.payment import Payment
 from tests.utils import gen_random_hash
-from tests.utils import sha256
-
-
-@pytest.fixture
-def external_lightning_address():
-    return LightningAddressHostPort(host="my_lightning_host", port=8765)
-
-
-@pytest.fixture
-def price_msat():
-    return 777
-
-
-@pytest.fixture
-def nonce():
-    yield generate_tweak()
-
-
-@pytest.fixture
-def preimage(secret_key, nonce):
-    yield add_tweak(secret_key, nonce)
-
-
-@pytest.fixture
-def payment_point(secret_key):
-    yield payment_point_bytes_from_scalar_bytes(secret_key)
-
-
-@pytest.fixture
-def payment_hash(preimage):
-    # TODO: When PTLC is used, this should be the payment point of preimage.
-    yield sha256(preimage)
-
-
-@pytest.fixture
-def payment_request():
-    yield "fake_payment_request"
-
-
-@pytest.fixture
-def creation_date():
-    yield 777777
-
-
-@pytest.fixture
-def timestamp():
-    yield 8888888
-
-
-@pytest.fixture
-def expiry():
-    yield 5555
-
-
-@pytest.fixture
-def seller_pubkey():
-    yield "fake_seller_pubkey"
-
-
-@pytest.fixture
-def uris():
-    yield [
-        'fake_pubkey@foobar.com:12345',
-        'fake_pubkey@fakehost.com:56789',
-    ]
 
 
 @pytest.fixture
@@ -120,7 +49,7 @@ def info_with_no_uris():
 
 
 @pytest.fixture
-def invoice(payment_request, price_msat, creation_date, expiry):
+def invoice(payment_hash, payment_request, price_msat, creation_date, expiry):
     yield Invoice(
         r_hash=payment_hash,
         payment_request=payment_request,
@@ -139,7 +68,7 @@ def pay_req(
         price_msat,
         payment_request,
         seller_pubkey,
-        timestamp,
+        creation_date,
         expiry,
 ):
     yield PayReq(
@@ -147,7 +76,7 @@ def pay_req(
         payment_point=payment_point,
         num_msat=price_msat,
         destination=seller_pubkey,
-        timestamp=timestamp,
+        timestamp=creation_date,
         expiry=expiry,
     )
 
@@ -158,7 +87,7 @@ def pay_req_with_no_payment_point(
         price_msat,
         payment_request,
         seller_pubkey,
-        timestamp,
+        creation_date,
         expiry,
 ):
     yield PayReq(
@@ -166,7 +95,7 @@ def pay_req_with_no_payment_point(
         payment_point=b'',
         num_msat=price_msat,
         destination=seller_pubkey,
-        timestamp=timestamp,
+        timestamp=creation_date,
         expiry=expiry,
     )
 
@@ -295,24 +224,6 @@ def squeak_core_with_no_payment_point(bitcoin_client, lightning_client_with_no_p
 
 
 @pytest.fixture
-def peer_address():
-    yield PeerAddress(
-        network=Network.IPV4,
-        host="fake_host",
-        port=8765,
-    )
-
-
-@pytest.fixture
-def seller_peer_address():
-    yield PeerAddress(
-        network=Network.IPV4,
-        host="fake_seller_host",
-        port=4321,
-    )
-
-
-@pytest.fixture
 def created_offer(squeak_core, squeak, secret_key, peer_address, price_msat, nonce):
     yield squeak_core.create_offer(
         squeak,
@@ -329,11 +240,11 @@ def packaged_offer(squeak_core, created_offer):
 
 
 @pytest.fixture
-def unpacked_offer(squeak_core, squeak, packaged_offer, seller_peer_address):
+def unpacked_offer(squeak_core, squeak, packaged_offer, peer_address):
     yield squeak_core.unpack_offer(
         squeak,
         packaged_offer,
-        seller_peer_address,
+        peer_address,
         check_payment_point=True,
     )
 
@@ -408,13 +319,16 @@ def test_create_offer(
         secret_key,
         peer_address,
         price_msat,
+        nonce,
         invoice,
+        sent_offer,
 ):
     created_offer = squeak_core.create_offer(
         squeak,
         secret_key,
         peer_address,
         price_msat,
+        nonce,
     )
 
     assert created_offer.squeak_hash == get_hash(squeak)
@@ -424,6 +338,7 @@ def test_create_offer(
     assert created_offer.invoice_time == invoice.creation_date
     assert created_offer.invoice_expiry == invoice.expiry
     assert created_offer.peer_address == peer_address
+    assert created_offer == sent_offer
 
 
 def test_packaged_offer(squeak, packaged_offer):
@@ -458,37 +373,37 @@ def test_package_offer_with_no_lnd_uris_with_external_address(
     assert packaged_offer.port == external_lightning_address.port
 
 
-def test_unpacked_offer(unpacked_offer):
+def test_unpacked_offer(unpacked_offer, received_offer):
 
-    assert unpacked_offer is not None
+    assert unpacked_offer == received_offer
 
 
-def test_unpack_offer_invalid_squeak_hash(squeak_core, other_squeak, packaged_offer, seller_peer_address):
+def test_unpack_offer_invalid_squeak_hash(squeak_core, other_squeak, packaged_offer, peer_address):
     with pytest.raises(Exception) as excinfo:
         squeak_core.unpack_offer(
             other_squeak,
             packaged_offer,
-            seller_peer_address,
+            peer_address,
         )
     assert "does not match squeak hash" in str(excinfo.value)
 
 
-def test_unpacked_offer_bad_payment_point(squeak_core_with_no_payment_point, squeak, packaged_offer, seller_peer_address):
+def test_unpacked_offer_bad_payment_point(squeak_core_with_no_payment_point, squeak, packaged_offer, peer_address):
     with pytest.raises(Exception) as excinfo:
         squeak_core_with_no_payment_point.unpack_offer(
             squeak,
             packaged_offer,
-            seller_peer_address,
+            peer_address,
             check_payment_point=True,
         )
     assert "Invalid payment point." in str(excinfo.value)
 
 
-def test_unpacked_offer_bad_payment_point_skip_check(squeak_core_with_no_payment_point, squeak, packaged_offer, seller_peer_address):
+def test_unpacked_offer_bad_payment_point_skip_check(squeak_core_with_no_payment_point, squeak, packaged_offer, peer_address):
     unpacked_offer = squeak_core_with_no_payment_point.unpack_offer(
         squeak,
         packaged_offer,
-        seller_peer_address,
+        peer_address,
     )
 
     assert unpacked_offer is not None

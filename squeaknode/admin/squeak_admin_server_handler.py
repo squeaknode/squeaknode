@@ -27,9 +27,9 @@ from squeaknode.admin.messages import message_to_peer_address
 from squeaknode.admin.messages import message_to_received_payment
 from squeaknode.admin.messages import message_to_sent_payment
 from squeaknode.admin.messages import message_to_squeak_entry
-from squeaknode.admin.messages import offer_entry_to_message
 from squeaknode.admin.messages import payment_summary_to_message
 from squeaknode.admin.messages import peer_address_to_message
+from squeaknode.admin.messages import received_offer_to_message
 from squeaknode.admin.messages import received_payments_to_message
 from squeaknode.admin.messages import sent_offer_to_message
 from squeaknode.admin.messages import sent_payment_to_message
@@ -598,7 +598,7 @@ class SqueakAdminServerHandler(object):
             "Handle get received offers for hash: {}".format(squeak_hash_str))
         offers = self.squeak_controller.get_received_offers(
             squeak_hash)
-        offer_msgs = [offer_entry_to_message(offer) for offer in offers]
+        offer_msgs = [received_offer_to_message(offer) for offer in offers]
         return squeak_admin_pb2.GetBuyOffersReply(
             offers=offer_msgs,
         )
@@ -611,7 +611,7 @@ class SqueakAdminServerHandler(object):
             return squeak_admin_pb2.GetBuyOfferReply(
                 offer=None,
             )
-        offer_msg = offer_entry_to_message(offer)
+        offer_msg = received_offer_to_message(offer)
         return squeak_admin_pb2.GetBuyOfferReply(
             offer=offer_msg,
         )
@@ -957,7 +957,7 @@ class SqueakAdminServerHandler(object):
         )
         for offer in received_offer_stream:
             logger.info("Yielding received offer: {}".format(offer))
-            offer_msg = offer_entry_to_message(offer)
+            offer_msg = received_offer_to_message(offer)
             yield squeak_admin_pb2.GetBuyOfferReply(
                 offer=offer_msg,
             )

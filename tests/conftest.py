@@ -21,15 +21,25 @@
 # SOFTWARE.
 import pytest
 from bitcoin.core import CBlockHeader
+from squeak.core.elliptic import payment_point_bytes_from_scalar_bytes
 from squeak.core.signing import CSigningKey
 from squeak.core.signing import CSqueakAddress
 
 from squeaknode.bitcoin.block_info import BlockInfo
+from squeaknode.core.lightning_address import LightningAddressHostPort
 from squeaknode.core.peer_address import Network
 from squeaknode.core.peer_address import PeerAddress
+from squeaknode.core.received_offer import ReceivedOffer
+from squeaknode.core.secret_keys import add_tweak
+from squeaknode.core.secret_keys import generate_tweak
+from squeaknode.core.sent_offer import SentOffer
+from squeaknode.core.squeak_entry import SqueakEntry
+from squeaknode.core.squeak_peer import SqueakPeer
+from squeaknode.core.squeaks import get_hash
 from squeaknode.core.squeaks import make_squeak_with_block
 from tests.utils import gen_contact_profile
 from tests.utils import gen_signing_profile
+from tests.utils import sha256
 
 
 @pytest.fixture
@@ -81,6 +91,11 @@ def block_header(block_header_bytes):
 
 
 @pytest.fixture
+def block_time(block_header):
+    yield block_header.nTime
+
+
+@pytest.fixture
 def block_info(block_count, block_hash, block_header):
     yield BlockInfo(
         block_height=block_count,
@@ -117,6 +132,21 @@ def secret_key(squeak_and_secret_key):
 
 
 @pytest.fixture
+def squeak_hash(squeak):
+    yield get_hash(squeak)
+
+
+@pytest.fixture
+def squeak_time(squeak):
+    yield squeak.nTime
+
+
+@pytest.fixture
+def squeak_reply_to_hash(squeak):
+    yield None
+
+
+@pytest.fixture
 def peer_address():
     yield PeerAddress(
         network=Network.IPV4,
@@ -148,4 +178,169 @@ def contact_profile(contact_profile_name, address):
     yield gen_contact_profile(
         contact_profile_name,
         str(address),
+    )
+
+
+@pytest.fixture
+def squeak_entry_locked(
+        squeak,
+        squeak_hash,
+        address_str,
+        block_count,
+        block_hash,
+        block_time,
+        squeak_time,
+        squeak_reply_to_hash,
+        signing_profile,
+):
+    yield SqueakEntry(
+        squeak_hash=squeak_hash,
+        address=address_str,
+        block_height=block_count,
+        block_hash=block_hash,
+        block_time=block_time,
+        squeak_time=squeak_time,
+        reply_to=squeak_reply_to_hash,
+        is_unlocked=False,
+        squeak_profile=signing_profile,
+        liked_time_ms=None,
+        content=None,
+    )
+
+
+@pytest.fixture
+def peer_name():
+    yield "fake_peer_name"
+
+
+@pytest.fixture
+def peer(peer_name, peer_address):
+    yield SqueakPeer(
+        peer_id=None,
+        peer_name=peer_name,
+        address=peer_address,
+        autoconnect=False,
+    )
+
+
+@pytest.fixture
+def lightning_address():
+    return LightningAddressHostPort(host="my_lightning_host", port=8765)
+
+
+@pytest.fixture
+def external_lightning_address():
+    return LightningAddressHostPort(host="my_external_lightning_host", port=13579)
+
+
+@pytest.fixture
+def price_msat():
+    return 777
+
+
+@pytest.fixture
+def nonce():
+    yield generate_tweak()
+
+
+@pytest.fixture
+def preimage(secret_key, nonce):
+    yield add_tweak(secret_key, nonce)
+
+
+@pytest.fixture
+def payment_point(secret_key):
+    yield payment_point_bytes_from_scalar_bytes(secret_key)
+
+
+@pytest.fixture
+def payment_hash(preimage):
+    # TODO: When PTLC is used, this should be the payment point of preimage.
+    yield sha256(preimage)
+
+
+@pytest.fixture
+def payment_request():
+    yield "fake_payment_request"
+
+
+@pytest.fixture
+def creation_date():
+    yield 777777
+
+
+@pytest.fixture
+def expiry():
+    yield 5555
+
+
+@pytest.fixture
+def seller_pubkey():
+    yield "fake_seller_pubkey"
+
+
+@pytest.fixture
+def uris(seller_pubkey, lightning_address):
+    yield [
+        '{}@{}:{}'.format(
+            seller_pubkey,
+            lightning_address.host,
+            lightning_address.port,
+        ),
+        'fake_pubkey@foobar.com:12345',
+        'fake_pubkey@fakehost.com:56789',
+    ]
+
+
+@pytest.fixture
+def sent_offer(
+        squeak_hash,
+        price_msat,
+        payment_hash,
+        nonce,
+        creation_date,
+        expiry,
+        payment_request,
+        peer_address,
+):
+    yield SentOffer(
+        sent_offer_id=None,
+        squeak_hash=squeak_hash,
+        payment_hash=payment_hash,
+        nonce=nonce,
+        price_msat=price_msat,
+        payment_request=payment_request,
+        invoice_time=creation_date,
+        invoice_expiry=expiry,
+        peer_address=peer_address,
+    )
+
+
+@pytest.fixture
+def received_offer(
+        squeak_hash,
+        price_msat,
+        payment_hash,
+        nonce,
+        payment_point,
+        creation_date,
+        expiry,
+        payment_request,
+        seller_pubkey,
+        lightning_address,
+        peer_address,
+):
+    yield ReceivedOffer(
+        received_offer_id=None,
+        squeak_hash=squeak_hash,
+        price_msat=price_msat,
+        payment_hash=payment_hash,
+        nonce=nonce,
+        payment_point=payment_point,
+        invoice_timestamp=creation_date,
+        invoice_expiry=expiry,
+        payment_request=payment_request,
+        destination=seller_pubkey,
+        lightning_address=lightning_address,
+        peer_address=peer_address,
     )
