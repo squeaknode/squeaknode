@@ -68,7 +68,7 @@ def pay_req(
         price_msat,
         payment_request,
         seller_pubkey,
-        timestamp,
+        creation_date,
         expiry,
 ):
     yield PayReq(
@@ -76,7 +76,7 @@ def pay_req(
         payment_point=payment_point,
         num_msat=price_msat,
         destination=seller_pubkey,
-        timestamp=timestamp,
+        timestamp=creation_date,
         expiry=expiry,
     )
 
@@ -87,7 +87,7 @@ def pay_req_with_no_payment_point(
         price_msat,
         payment_request,
         seller_pubkey,
-        timestamp,
+        creation_date,
         expiry,
 ):
     yield PayReq(
@@ -95,7 +95,7 @@ def pay_req_with_no_payment_point(
         payment_point=b'',
         num_msat=price_msat,
         destination=seller_pubkey,
-        timestamp=timestamp,
+        timestamp=creation_date,
         expiry=expiry,
     )
 
@@ -319,13 +319,16 @@ def test_create_offer(
         secret_key,
         peer_address,
         price_msat,
+        nonce,
         invoice,
+        sent_offer,
 ):
     created_offer = squeak_core.create_offer(
         squeak,
         secret_key,
         peer_address,
         price_msat,
+        nonce,
     )
 
     assert created_offer.squeak_hash == get_hash(squeak)
@@ -335,6 +338,7 @@ def test_create_offer(
     assert created_offer.invoice_time == invoice.creation_date
     assert created_offer.invoice_expiry == invoice.expiry
     assert created_offer.peer_address == peer_address
+    assert created_offer == sent_offer
 
 
 def test_packaged_offer(squeak, packaged_offer):

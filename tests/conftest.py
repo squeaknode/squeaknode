@@ -32,6 +32,7 @@ from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.secret_keys import add_tweak
 from squeaknode.core.secret_keys import generate_tweak
+from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.squeak_entry import SqueakEntry
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeaks import get_hash
@@ -269,11 +270,6 @@ def creation_date():
 
 
 @pytest.fixture
-def timestamp():
-    yield 8888888
-
-
-@pytest.fixture
 def expiry():
     yield 5555
 
@@ -297,13 +293,37 @@ def uris(seller_pubkey, lightning_address):
 
 
 @pytest.fixture
+def sent_offer(
+        squeak_hash,
+        price_msat,
+        payment_hash,
+        nonce,
+        creation_date,
+        expiry,
+        payment_request,
+        peer_address,
+):
+    yield SentOffer(
+        sent_offer_id=None,
+        squeak_hash=squeak_hash,
+        payment_hash=payment_hash,
+        nonce=nonce,
+        price_msat=price_msat,
+        payment_request=payment_request,
+        invoice_time=creation_date,
+        invoice_expiry=expiry,
+        peer_address=peer_address,
+    )
+
+
+@pytest.fixture
 def received_offer(
         squeak_hash,
         price_msat,
         payment_hash,
         nonce,
         payment_point,
-        timestamp,
+        creation_date,
         expiry,
         payment_request,
         seller_pubkey,
@@ -317,7 +337,7 @@ def received_offer(
         payment_hash=payment_hash,
         nonce=nonce,
         payment_point=payment_point,
-        invoice_timestamp=timestamp,
+        invoice_timestamp=creation_date,
         invoice_expiry=expiry,
         payment_request=payment_request,
         destination=seller_pubkey,

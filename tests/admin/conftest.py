@@ -105,7 +105,7 @@ def peer_msg(
 def received_offer_msg(
         squeak_hash,
         price_msat,
-        timestamp,
+        creation_date,
         expiry,
         payment_request,
         seller_pubkey,
@@ -119,7 +119,7 @@ def received_offer_msg(
         node_pubkey=seller_pubkey,
         node_host=lightning_address.host,
         node_port=lightning_address.port,
-        invoice_timestamp=timestamp,
+        invoice_timestamp=creation_date,
         invoice_expiry=expiry,
         peer_address=peer_address_message,
     )
