@@ -140,10 +140,9 @@ def squeak_to_detail_message(squeak: CSqueak) -> squeak_admin_pb2.SqueakDetailEn
 
 
 def sent_offer_to_message(sent_offer: SentOffer) -> squeak_admin_pb2.SentOffer:
-    if sent_offer.sent_offer_id is None:
-        raise Exception("Sent offer id cannot be None.")
+    sent_offer_id = sent_offer.sent_offer_id or 0
     return squeak_admin_pb2.SentOffer(
-        sent_offer_id=sent_offer.sent_offer_id,
+        sent_offer_id=sent_offer_id,
         squeak_hash=sent_offer.squeak_hash.hex(),
         payment_hash=sent_offer.payment_hash.hex(),
         price_msat=sent_offer.price_msat,

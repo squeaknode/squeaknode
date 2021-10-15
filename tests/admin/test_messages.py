@@ -22,6 +22,7 @@
 from squeaknode.admin.messages import message_to_peer_address
 from squeaknode.admin.messages import peer_address_to_message
 from squeaknode.admin.messages import received_offer_to_message
+from squeaknode.admin.messages import sent_offer_to_message
 from squeaknode.admin.messages import squeak_entry_to_message
 from squeaknode.admin.messages import squeak_peer_to_message
 from squeaknode.admin.messages import squeak_profile_to_message
@@ -55,6 +56,12 @@ def test_peer_to_message(peer, peer_msg):
     msg = squeak_peer_to_message(peer)
 
     assert msg == peer_msg
+
+
+def test_sent_offer_to_message(sent_offer, sent_offer_msg):
+    msg = sent_offer_to_message(sent_offer)
+
+    assert msg == sent_offer_msg
 
 
 def test_received_offer_to_message(received_offer, received_offer_msg):
