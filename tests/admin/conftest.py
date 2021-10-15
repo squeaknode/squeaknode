@@ -102,6 +102,20 @@ def peer_msg(
 
 
 @pytest.fixture
+def sent_offer_msg(
+        squeak_hash,
+        payment_hash,
+        price_msat,
+):
+    return squeak_admin_pb2.SentOffer(
+        sent_offer_id=None,
+        squeak_hash=squeak_hash.hex(),
+        payment_hash=payment_hash.hex(),
+        price_msat=price_msat,
+    )
+
+
+@pytest.fixture
 def received_offer_msg(
         squeak_hash,
         price_msat,
@@ -112,7 +126,7 @@ def received_offer_msg(
         lightning_address,
         peer_address_message,
 ):
-    return squeak_admin_pb2.OfferDisplayEntry(
+    yield squeak_admin_pb2.OfferDisplayEntry(
         offer_id=None,
         squeak_hash=squeak_hash.hex(),
         price_msat=price_msat,
