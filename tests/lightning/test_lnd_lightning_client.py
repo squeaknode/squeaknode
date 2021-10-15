@@ -235,11 +235,6 @@ def lookup_invoice_request(payment_hash_str):
 
 
 @pytest.fixture
-def settle_index():
-    yield 345
-
-
-@pytest.fixture
 def make_lightning_client(lnd_host, lnd_port, tls_cert_path, macaroon_path):
     client = LNDLightningClient(
         host=lnd_host,
