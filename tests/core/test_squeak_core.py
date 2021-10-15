@@ -28,6 +28,7 @@ from squeaknode.core.squeaks import get_hash
 from squeaknode.core.squeaks import make_squeak_with_block
 from squeaknode.lightning.info import Info
 from squeaknode.lightning.invoice import Invoice
+from squeaknode.lightning.invoice_stream import InvoiceStream
 from squeaknode.lightning.lightning_client import LightningClient
 from squeaknode.lightning.pay_req import PayReq
 from squeaknode.lightning.payment import Payment
@@ -59,6 +60,19 @@ def invoice(payment_hash, payment_request, price_msat, creation_date, expiry):
         creation_date=creation_date,
         expiry=expiry,
     )
+
+
+@pytest.fixture
+def settled_invoice(invoice, settle_index):
+    yield invoice._replace(
+        settled=True,
+        settle_index=settle_index,
+    )
+
+
+@pytest.fixture
+def unsettled_invoice(invoice, settle_index):
+    yield invoice
 
 
 @pytest.fixture
@@ -117,6 +131,18 @@ def failed_payment(payment_request):
 
 
 @pytest.fixture
+def invoice_stream(settled_invoice, unsettled_invoice):
+    invoices = [
+        settled_invoice,
+        unsettled_invoice,
+    ]
+    yield InvoiceStream(
+        cancel=lambda: None,
+        result_stream=iter(invoices),
+    )
+
+
+@pytest.fixture
 def other_block_info():
     yield BlockInfo(
         block_height=5678,
@@ -156,11 +182,12 @@ class MockBitcoinClient(BitcoinClient):
 
 class MockLightningClient(LightningClient):
 
-    def __init__(self, info, invoice, pay_req, payment):
+    def __init__(self, info, invoice, pay_req, payment, invoice_stream):
         self.info = info
         self.invoice = invoice
         self.pay_req = pay_req
         self.payment = payment
+        self.invoice_stream = invoice_stream
 
     def get_info(self):
         return self.info
@@ -175,7 +202,7 @@ class MockLightningClient(LightningClient):
         return self.payment
 
     def subscribe_invoices(self, settle_index: int):
-        pass
+        return self.invoice_stream
 
 
 @pytest.fixture
@@ -184,23 +211,23 @@ def bitcoin_client(block_info):
 
 
 @pytest.fixture
-def lightning_client(info, invoice, pay_req, successful_payment):
-    return MockLightningClient(info, invoice, pay_req, successful_payment)
+def lightning_client(info, invoice, pay_req, successful_payment, invoice_stream):
+    return MockLightningClient(info, invoice, pay_req, successful_payment, invoice_stream)
 
 
 @pytest.fixture
-def lightning_client_with_failed_payment(info, invoice, pay_req, failed_payment):
-    return MockLightningClient(info, invoice, pay_req, failed_payment)
+def lightning_client_with_failed_payment(info, invoice, pay_req, failed_payment, invoice_stream):
+    return MockLightningClient(info, invoice, pay_req, failed_payment, invoice_stream)
 
 
 @pytest.fixture
-def lightning_client_with_no_uris(info_with_no_uris, invoice, pay_req, failed_payment):
-    return MockLightningClient(info_with_no_uris, invoice, pay_req, failed_payment)
+def lightning_client_with_no_uris(info_with_no_uris, invoice, pay_req, failed_payment, invoice_stream):
+    return MockLightningClient(info_with_no_uris, invoice, pay_req, failed_payment, invoice_stream)
 
 
 @pytest.fixture
-def lightning_client_with_no_payment_point(info, invoice, pay_req_with_no_payment_point, successful_payment):
-    return MockLightningClient(info, invoice, pay_req_with_no_payment_point, successful_payment)
+def lightning_client_with_no_payment_point(info, invoice, pay_req_with_no_payment_point, successful_payment, invoice_stream):
+    return MockLightningClient(info, invoice, pay_req_with_no_payment_point, successful_payment, invoice_stream)
 
 
 @pytest.fixture
@@ -251,6 +278,11 @@ def unpacked_offer(squeak_core, squeak, packaged_offer, peer_address):
 
 @pytest.fixture
 def sent_payment(squeak_core, unpacked_offer):
+    yield squeak_core.pay_offer(unpacked_offer)
+
+
+@pytest.fixture
+def received_payments_stream(squeak_core, unpacked_offer):
     yield squeak_core.pay_offer(unpacked_offer)
 
 
@@ -431,3 +463,17 @@ def test_unlock_squeak(squeak_core, squeak, squeak_content, sent_payment):
     )
 
     assert decrypted_content == squeak_content
+
+
+def test_get_received_payments(squeak_core, settle_index, sent_offer, received_payment):
+    def get_sent_offer_fn(payment_hash):
+        return sent_offer
+
+    received_payments_stream = squeak_core.get_received_payments(
+        settle_index,
+        get_sent_offer_fn,
+    )
+    received_payments = list(received_payments_stream.result_stream)
+
+    assert len(received_payments) == 1
+    assert received_payments[0] == received_payment

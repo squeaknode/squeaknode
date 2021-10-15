@@ -30,6 +30,7 @@ from squeaknode.core.lightning_address import LightningAddressHostPort
 from squeaknode.core.peer_address import Network
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.received_offer import ReceivedOffer
+from squeaknode.core.received_payment import ReceivedPayment
 from squeaknode.core.secret_keys import add_tweak
 from squeaknode.core.secret_keys import generate_tweak
 from squeaknode.core.sent_offer import SentOffer
@@ -293,6 +294,11 @@ def uris(seller_pubkey, lightning_address):
 
 
 @pytest.fixture
+def settle_index():
+    yield 345
+
+
+@pytest.fixture
 def sent_offer(
         squeak_hash,
         price_msat,
@@ -342,5 +348,24 @@ def received_offer(
         payment_request=payment_request,
         destination=seller_pubkey,
         lightning_address=lightning_address,
+        peer_address=peer_address,
+    )
+
+
+@pytest.fixture
+def received_payment(
+        squeak_hash,
+        payment_hash,
+        price_msat,
+        settle_index,
+        peer_address,
+):
+    yield ReceivedPayment(
+        received_payment_id=None,
+        created_time_ms=None,
+        squeak_hash=squeak_hash,
+        payment_hash=payment_hash,
+        price_msat=price_msat,
+        settle_index=settle_index,
         peer_address=peer_address,
     )
