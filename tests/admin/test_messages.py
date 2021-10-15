@@ -20,8 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 from squeaknode.admin.messages import message_to_peer_address
-from squeaknode.admin.messages import offer_entry_to_message
 from squeaknode.admin.messages import peer_address_to_message
+from squeaknode.admin.messages import received_offer_to_message
 from squeaknode.admin.messages import squeak_entry_to_message
 from squeaknode.admin.messages import squeak_peer_to_message
 from squeaknode.admin.messages import squeak_profile_to_message
@@ -58,6 +58,6 @@ def test_peer_to_message(peer, peer_msg):
 
 
 def test_received_offer_to_message(received_offer, received_offer_msg):
-    msg = offer_entry_to_message(received_offer)
+    msg = received_offer_to_message(received_offer)
 
     assert msg == received_offer_msg

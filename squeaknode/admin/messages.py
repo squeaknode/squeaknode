@@ -100,7 +100,7 @@ def squeak_peer_to_message(squeak_peer: SqueakPeer) -> squeak_admin_pb2.SqueakPe
     )
 
 
-def offer_entry_to_message(received_offer: ReceivedOffer) -> squeak_admin_pb2.OfferDisplayEntry:
+def received_offer_to_message(received_offer: ReceivedOffer) -> squeak_admin_pb2.OfferDisplayEntry:
     received_offer_id = received_offer.received_offer_id or 0
     return squeak_admin_pb2.OfferDisplayEntry(
         offer_id=received_offer_id,
