@@ -29,6 +29,7 @@ from proto import lnd_pb2
 from proto import lnd_pb2_grpc
 from squeaknode.lightning.info import Info
 from squeaknode.lightning.invoice import Invoice
+from squeaknode.lightning.invoice_stream import InvoiceStream
 from squeaknode.lightning.pay_req import PayReq
 from squeaknode.lightning.payment import Payment
 
@@ -138,8 +139,12 @@ class LNDLightningClient:
         subscribe_invoices_request = lnd_pb2.InvoiceSubscription(
             settle_index=settle_index,
         )
-        return self.stub.SubscribeInvoices(
+        subscribe_result = self.stub.SubscribeInvoices(
             subscribe_invoices_request,
+        )
+        return InvoiceStream(
+            cancel=subscribe_result.cancel,
+            result_stream=iter(subscribe_result),
         )
 
     def lookup_invoice(self, r_hash_str: str) -> lnd_pb2.Invoice:
