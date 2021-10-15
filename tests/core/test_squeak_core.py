@@ -424,14 +424,20 @@ def test_unpacked_offer_bad_payment_point(squeak_core_with_no_payment_point, squ
     assert "Invalid payment point." in str(excinfo.value)
 
 
-def test_unpacked_offer_bad_payment_point_skip_check(squeak_core_with_no_payment_point, squeak, packaged_offer, peer_address):
+def test_unpacked_offer_bad_payment_point_skip_check(
+        squeak_core_with_no_payment_point,
+        squeak,
+        packaged_offer,
+        peer_address,
+        received_offer,
+):
     unpacked_offer = squeak_core_with_no_payment_point.unpack_offer(
         squeak,
         packaged_offer,
         peer_address,
     )
 
-    assert unpacked_offer is not None
+    assert unpacked_offer == received_offer
 
 
 def test_sent_payment(sent_payment, squeak, price_msat, secret_key, seller_pubkey):
