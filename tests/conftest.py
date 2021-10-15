@@ -34,6 +34,7 @@ from squeaknode.core.received_payment import ReceivedPayment
 from squeaknode.core.secret_keys import add_tweak
 from squeaknode.core.secret_keys import generate_tweak
 from squeaknode.core.sent_offer import SentOffer
+from squeaknode.core.sent_payment import SentPayment
 from squeaknode.core.squeak_entry import SqueakEntry
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeaks import get_hash
@@ -368,4 +369,26 @@ def received_payment(
         price_msat=price_msat,
         settle_index=settle_index,
         peer_address=peer_address,
+    )
+
+
+@pytest.fixture
+def sent_payment(
+        squeak_hash,
+        payment_hash,
+        secret_key,
+        price_msat,
+        seller_pubkey,
+        peer_address,
+):
+    yield SentPayment(
+        sent_payment_id=None,
+        created_time_ms=None,
+        peer_address=peer_address,
+        squeak_hash=squeak_hash,
+        payment_hash=payment_hash,
+        secret_key=secret_key,
+        price_msat=price_msat,
+        node_pubkey=seller_pubkey,
+        valid=True,
     )
