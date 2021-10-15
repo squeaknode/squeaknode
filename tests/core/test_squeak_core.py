@@ -25,8 +25,6 @@ from squeak.core.elliptic import payment_point_bytes_from_scalar_bytes
 from squeaknode.bitcoin.bitcoin_client import BitcoinClient
 from squeaknode.bitcoin.block_info import BlockInfo
 from squeaknode.core.lightning_address import LightningAddressHostPort
-from squeaknode.core.peer_address import Network
-from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.secret_keys import add_tweak
 from squeaknode.core.secret_keys import generate_tweak
 from squeaknode.core.squeak_core import SqueakCore
@@ -295,24 +293,6 @@ def squeak_core_with_no_payment_point(bitcoin_client, lightning_client_with_no_p
 
 
 @pytest.fixture
-def peer_address():
-    yield PeerAddress(
-        network=Network.IPV4,
-        host="fake_host",
-        port=8765,
-    )
-
-
-@pytest.fixture
-def seller_peer_address():
-    yield PeerAddress(
-        network=Network.IPV4,
-        host="fake_seller_host",
-        port=4321,
-    )
-
-
-@pytest.fixture
 def created_offer(squeak_core, squeak, secret_key, peer_address, price_msat, nonce):
     yield squeak_core.create_offer(
         squeak,
@@ -329,11 +309,11 @@ def packaged_offer(squeak_core, created_offer):
 
 
 @pytest.fixture
-def unpacked_offer(squeak_core, squeak, packaged_offer, seller_peer_address):
+def unpacked_offer(squeak_core, squeak, packaged_offer, peer_address):
     yield squeak_core.unpack_offer(
         squeak,
         packaged_offer,
-        seller_peer_address,
+        peer_address,
         check_payment_point=True,
     )
 
@@ -463,32 +443,32 @@ def test_unpacked_offer(unpacked_offer):
     assert unpacked_offer is not None
 
 
-def test_unpack_offer_invalid_squeak_hash(squeak_core, other_squeak, packaged_offer, seller_peer_address):
+def test_unpack_offer_invalid_squeak_hash(squeak_core, other_squeak, packaged_offer, peer_address):
     with pytest.raises(Exception) as excinfo:
         squeak_core.unpack_offer(
             other_squeak,
             packaged_offer,
-            seller_peer_address,
+            peer_address,
         )
     assert "does not match squeak hash" in str(excinfo.value)
 
 
-def test_unpacked_offer_bad_payment_point(squeak_core_with_no_payment_point, squeak, packaged_offer, seller_peer_address):
+def test_unpacked_offer_bad_payment_point(squeak_core_with_no_payment_point, squeak, packaged_offer, peer_address):
     with pytest.raises(Exception) as excinfo:
         squeak_core_with_no_payment_point.unpack_offer(
             squeak,
             packaged_offer,
-            seller_peer_address,
+            peer_address,
             check_payment_point=True,
         )
     assert "Invalid payment point." in str(excinfo.value)
 
 
-def test_unpacked_offer_bad_payment_point_skip_check(squeak_core_with_no_payment_point, squeak, packaged_offer, seller_peer_address):
+def test_unpacked_offer_bad_payment_point_skip_check(squeak_core_with_no_payment_point, squeak, packaged_offer, peer_address):
     unpacked_offer = squeak_core_with_no_payment_point.unpack_offer(
         squeak,
         packaged_offer,
-        seller_peer_address,
+        peer_address,
     )
 
     assert unpacked_offer is not None
