@@ -28,6 +28,7 @@ from squeaknode.bitcoin.block_info import BlockInfo
 from squeaknode.core.peer_address import Network
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.squeak_entry import SqueakEntry
+from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeaks import get_hash
 from squeaknode.core.squeaks import make_squeak_with_block
 from tests.utils import gen_contact_profile
@@ -197,4 +198,19 @@ def squeak_entry_locked(
         squeak_profile=signing_profile,
         liked_time_ms=None,
         content=None,
+    )
+
+
+@pytest.fixture
+def peer_name():
+    yield "fake_peer_name"
+
+
+@pytest.fixture
+def peer(peer_name, peer_address):
+    yield SqueakPeer(
+        peer_id=None,
+        peer_name=peer_name,
+        address=peer_address,
+        autoconnect=False,
     )

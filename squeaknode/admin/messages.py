@@ -91,10 +91,9 @@ def squeak_profile_to_message(squeak_profile: SqueakProfile) -> squeak_admin_pb2
 
 
 def squeak_peer_to_message(squeak_peer: SqueakPeer) -> squeak_admin_pb2.SqueakPeer:
-    if squeak_peer.peer_id is None:
-        raise Exception("Peer id cannot be None.")
+    peer_id = squeak_peer.peer_id or 0
     return squeak_admin_pb2.SqueakPeer(
-        peer_id=squeak_peer.peer_id,
+        peer_id=peer_id,
         peer_name=squeak_peer.peer_name,
         peer_address=peer_address_to_message(squeak_peer.address),
         autoconnect=squeak_peer.autoconnect,

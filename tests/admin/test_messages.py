@@ -22,6 +22,7 @@
 from squeaknode.admin.messages import message_to_peer_address
 from squeaknode.admin.messages import peer_address_to_message
 from squeaknode.admin.messages import squeak_entry_to_message
+from squeaknode.admin.messages import squeak_peer_to_message
 from squeaknode.admin.messages import squeak_profile_to_message
 
 
@@ -47,3 +48,9 @@ def test_profile_to_message(signing_profile, signing_profile_msg):
     msg = squeak_profile_to_message(signing_profile)
 
     assert msg == signing_profile_msg
+
+
+def test_peer_to_message(peer, peer_msg):
+    msg = squeak_peer_to_message(peer)
+
+    assert msg == peer_msg

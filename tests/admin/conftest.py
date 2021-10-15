@@ -86,3 +86,16 @@ def squeak_entry_msg_locked(
         author=signing_profile_msg,
         liked_time_ms=None,  # type: ignore
     )
+
+
+@pytest.fixture
+def peer_msg(
+        peer_name,
+        peer_address_message,
+):
+    yield squeak_admin_pb2.SqueakPeer(
+        peer_id=None,
+        peer_name=peer_name,
+        peer_address=peer_address_message,
+        autoconnect=False,
+    )
