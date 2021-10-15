@@ -235,6 +235,11 @@ def lookup_invoice_request(payment_hash_str):
 
 
 @pytest.fixture
+def settle_index():
+    yield 345
+
+
+@pytest.fixture
 def make_lightning_client(lnd_host, lnd_port, tls_cert_path, macaroon_path):
     client = LNDLightningClient(
         host=lnd_host,
@@ -327,3 +332,22 @@ def test_create_invoice(make_lightning_client, preimage, price_msat, payment_has
         assert call_price_msat == price_msat
         assert call_payment_hash_str == payment_hash_str
         assert response == invoice
+
+
+def test_subscribe_invoices(make_lightning_client, settle_index, invoice):
+    mock_subscribe_invoices_result = mock.MagicMock()
+    invoices = [invoice, invoice, invoice]
+    mock_subscribe_invoices_result.__iter__.return_value = invoices
+    mock_stub = mock.MagicMock()
+    mock_stub.SubscribeInvoices.return_value = mock_subscribe_invoices_result
+    client = make_lightning_client(mock_stub)
+    response = client.subscribe_invoices(settle_index)
+    (call_subscribe_invoice_subscription,
+     ) = mock_stub.SubscribeInvoices.call_args.args
+
+    assert call_subscribe_invoice_subscription.settle_index == settle_index
+    assert list(response.result_stream) == invoices
+
+    response.cancel()
+
+    assert mock_subscribe_invoices_result.cancel.called_once_with()
