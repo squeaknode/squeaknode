@@ -23,7 +23,6 @@ import pytest
 
 from squeaknode.bitcoin.bitcoin_client import BitcoinClient
 from squeaknode.bitcoin.block_info import BlockInfo
-from squeaknode.core.received_payment_stream import ReceivedPaymentsStream
 from squeaknode.core.squeak_core import SqueakCore
 from squeaknode.core.squeaks import get_hash
 from squeaknode.core.squeaks import make_squeak_with_block
@@ -474,13 +473,7 @@ def test_get_received_payments(squeak_core, settle_index, sent_offer, received_p
         settle_index,
         get_sent_offer_fn,
     )
-
-    assert type(received_payments_stream) is ReceivedPaymentsStream
-
-    print('received_payments_stream:')
-    print(received_payments_stream)
     received_payments = list(received_payments_stream.result_stream)
 
-    print('received_payments:')
-    print(received_payments)
+    assert len(received_payments) == 1
     assert received_payments[0] == received_payment
