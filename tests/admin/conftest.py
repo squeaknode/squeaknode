@@ -99,3 +99,27 @@ def peer_msg(
         peer_address=peer_address_message,
         autoconnect=False,
     )
+
+
+@pytest.fixture
+def received_offer_msg(
+        squeak_hash,
+        price_msat,
+        timestamp,
+        expiry,
+        payment_request,
+        seller_pubkey,
+        lightning_address,
+        peer_address_message,
+):
+    return squeak_admin_pb2.OfferDisplayEntry(
+        offer_id=None,
+        squeak_hash=squeak_hash.hex(),
+        price_msat=price_msat,
+        node_pubkey=seller_pubkey,
+        node_host=lightning_address.host,
+        node_port=lightning_address.port,
+        invoice_timestamp=timestamp,
+        invoice_expiry=expiry,
+        peer_address=peer_address_message,
+    )

@@ -101,10 +101,9 @@ def squeak_peer_to_message(squeak_peer: SqueakPeer) -> squeak_admin_pb2.SqueakPe
 
 
 def offer_entry_to_message(received_offer: ReceivedOffer) -> squeak_admin_pb2.OfferDisplayEntry:
-    if received_offer.received_offer_id is None:
-        raise Exception("Received offer id cannot be None.")
+    received_offer_id = received_offer.received_offer_id or 0
     return squeak_admin_pb2.OfferDisplayEntry(
-        offer_id=received_offer.received_offer_id,
+        offer_id=received_offer_id,
         squeak_hash=received_offer.squeak_hash.hex(),
         price_msat=received_offer.price_msat,
         node_pubkey=received_offer.destination,
