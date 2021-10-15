@@ -29,6 +29,7 @@ from squeaknode.bitcoin.block_info import BlockInfo
 from squeaknode.core.lightning_address import LightningAddressHostPort
 from squeaknode.core.peer_address import Network
 from squeaknode.core.peer_address import PeerAddress
+from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.secret_keys import add_tweak
 from squeaknode.core.secret_keys import generate_tweak
 from squeaknode.core.squeak_entry import SqueakEntry
@@ -222,8 +223,13 @@ def peer(peer_name, peer_address):
 
 
 @pytest.fixture
-def external_lightning_address():
+def lightning_address():
     return LightningAddressHostPort(host="my_lightning_host", port=8765)
+
+
+@pytest.fixture
+def external_lightning_address():
+    return LightningAddressHostPort(host="my_external_lightning_host", port=13579)
 
 
 @pytest.fixture
@@ -278,8 +284,43 @@ def seller_pubkey():
 
 
 @pytest.fixture
-def uris():
+def uris(seller_pubkey, lightning_address):
     yield [
+        '{}@{}:{}'.format(
+            seller_pubkey,
+            lightning_address.host,
+            lightning_address.port,
+        ),
         'fake_pubkey@foobar.com:12345',
         'fake_pubkey@fakehost.com:56789',
     ]
+
+
+@pytest.fixture
+def received_offer(
+        squeak_hash,
+        price_msat,
+        payment_hash,
+        nonce,
+        payment_point,
+        timestamp,
+        expiry,
+        payment_request,
+        seller_pubkey,
+        lightning_address,
+        peer_address,
+):
+    yield ReceivedOffer(
+        received_offer_id=None,
+        squeak_hash=squeak_hash,
+        price_msat=price_msat,
+        payment_hash=payment_hash,
+        nonce=nonce,
+        payment_point=payment_point,
+        invoice_timestamp=timestamp,
+        invoice_expiry=expiry,
+        payment_request=payment_request,
+        destination=seller_pubkey,
+        lightning_address=lightning_address,
+        peer_address=peer_address,
+    )

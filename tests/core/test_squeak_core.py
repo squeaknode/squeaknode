@@ -369,9 +369,9 @@ def test_package_offer_with_no_lnd_uris_with_external_address(
     assert packaged_offer.port == external_lightning_address.port
 
 
-def test_unpacked_offer(unpacked_offer):
+def test_unpacked_offer(unpacked_offer, received_offer):
 
-    assert unpacked_offer is not None
+    assert unpacked_offer == received_offer
 
 
 def test_unpack_offer_invalid_squeak_hash(squeak_core, other_squeak, packaged_offer, peer_address):
