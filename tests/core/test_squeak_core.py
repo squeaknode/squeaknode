@@ -363,13 +363,6 @@ def test_create_offer(
         nonce,
     )
 
-    assert created_offer.squeak_hash == get_hash(squeak)
-    assert created_offer.payment_hash == invoice.r_hash
-    assert created_offer.price_msat == price_msat
-    assert created_offer.payment_request == invoice.payment_request
-    assert created_offer.invoice_time == invoice.creation_date
-    assert created_offer.invoice_expiry == invoice.expiry
-    assert created_offer.peer_address == peer_address
     assert created_offer == sent_offer
 
 
