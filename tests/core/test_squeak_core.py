@@ -365,9 +365,9 @@ def test_create_offer(
     assert created_offer == sent_offer
 
 
-def test_packaged_offer(squeak, packaged_offer):
+def test_packaged_offer(squeak, packaged_offer, offer):
 
-    assert packaged_offer is not None
+    assert packaged_offer == offer
 
 
 def test_package_offer_with_no_lnd_uris(
