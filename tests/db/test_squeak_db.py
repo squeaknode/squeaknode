@@ -19,6 +19,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+import mock
 import pytest
 from sqlalchemy import create_engine
 
@@ -159,6 +160,40 @@ def unliked_squeak_hash(squeak_db, liked_squeak_hash):
 @pytest.fixture
 def inserted_peer_id(squeak_db, peer):
     yield squeak_db.insert_peer(peer)
+
+
+def test_init_with_retries(squeak_db):
+    with mock.patch.object(squeak_db, 'init', autospec=True) as mock_init, \
+            mock.patch('squeaknode.db.squeak_db.time.sleep', autospec=True) as mock_sleep:
+        ret = squeak_db.init_with_retries(num_retries=5, retry_interval_s=100)
+
+        assert ret is None
+        mock_init.assert_called_once_with()
+        assert mock_sleep.call_count == 0
+
+
+def test_init_with_retries_fail_once(squeak_db):
+    with mock.patch.object(squeak_db, 'init', autospec=True) as mock_init, \
+            mock.patch('squeaknode.db.squeak_db.time.sleep', autospec=True) as mock_sleep:
+        mock_init.side_effect = [Exception('some db error'), None]
+        ret = squeak_db.init_with_retries(num_retries=5, retry_interval_s=100)
+
+        assert ret is None
+        mock_init.call_count == 2
+        assert mock_sleep.call_count == 1
+
+
+def test_init_with_retries_fail_many_times(squeak_db):
+    with mock.patch.object(squeak_db, 'init', autospec=True) as mock_init, \
+            mock.patch('squeaknode.db.squeak_db.time.sleep', autospec=True) as mock_sleep:
+        mock_init.side_effect = [Exception('some db error')] * 5
+
+        with pytest.raises(Exception) as excinfo:
+            squeak_db.init_with_retries(num_retries=5, retry_interval_s=100)
+        assert "Failed to initialize database." in str(excinfo.value)
+
+        mock_init.call_count == 5
+        assert mock_sleep.call_count == 4
 
 
 def test_get_squeak(squeak_db, squeak, inserted_squeak_hash):

@@ -20,7 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import logging
-import time
 
 from squeak.params import SelectParams
 
@@ -112,13 +111,7 @@ class SqueakNode:
             connection_string))
         engine = get_engine(connection_string)
         self.squeak_db = SqueakDb(engine)
-        for _ in range(10):
-            try:
-                self.squeak_db.init()
-                break
-            except Exception:
-                logger.exception("Failed to initialize database.")
-                time.sleep(10)
+        self.squeak_db.init_with_retries()
 
     def initialize_lightning_client(self):
         # load the lightning client
