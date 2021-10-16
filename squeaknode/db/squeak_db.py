@@ -90,11 +90,11 @@ class SqueakDb:
             try:
                 self.init()
                 return
-            except Exception as e:
+            except Exception:
+                logger.exception("Failed to initialize database.")
                 n += 1
                 if n >= num_retries:
-                    raise e
-                logger.exception("Failed to initialize database.")
+                    raise Exception("Failed to initialize database.")
                 time.sleep(retry_interval_s)
 
     @property

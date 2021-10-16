@@ -188,8 +188,9 @@ def test_init_with_retries_fail_many_times(squeak_db):
             mock.patch('squeaknode.db.squeak_db.time.sleep', autospec=True) as mock_sleep:
         mock_init.side_effect = [Exception('some db error')] * 5
 
-        with pytest.raises(Exception):
+        with pytest.raises(Exception) as excinfo:
             squeak_db.init_with_retries(num_retries=5, retry_interval_s=100)
+        assert "Failed to initialize database." in str(excinfo.value)
 
         mock_init.call_count == 5
         assert mock_sleep.call_count == 4
