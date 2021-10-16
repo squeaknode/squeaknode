@@ -27,6 +27,7 @@ from squeak.core.signing import CSqueakAddress
 
 from squeaknode.bitcoin.block_info import BlockInfo
 from squeaknode.core.lightning_address import LightningAddressHostPort
+from squeaknode.core.offer import Offer
 from squeaknode.core.peer_address import Network
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.received_offer import ReceivedOffer
@@ -391,4 +392,20 @@ def sent_payment(
         price_msat=price_msat,
         node_pubkey=seller_pubkey,
         valid=True,
+    )
+
+
+@pytest.fixture
+def offer(
+        squeak_hash,
+        nonce,
+        payment_request,
+        lightning_address,
+):
+    yield Offer(
+        squeak_hash=squeak_hash,
+        nonce=nonce,
+        payment_request=payment_request,
+        host=lightning_address.host,
+        port=lightning_address.port,
     )
