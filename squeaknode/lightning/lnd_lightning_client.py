@@ -62,7 +62,7 @@ class LNDLightningClient:
     def init(self):
         self.stub = self._get_stub()
 
-    def _get_stub(self):
+    def _get_stub(self):  # pragma: no cover
         url = "{}:{}".format(self.host, self.port)
 
         # Lnd cert is at ~/.lnd/tls.cert on Linux and
