@@ -140,6 +140,11 @@ def squeak_hash(squeak):
 
 
 @pytest.fixture
+def squeak_bytes(squeak):
+    yield squeak.serialize()
+
+
+@pytest.fixture
 def squeak_time(squeak):
     yield squeak.nTime
 

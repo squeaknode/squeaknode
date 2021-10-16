@@ -175,3 +175,12 @@ def sent_payment_msg(
         time_ms=None,
         peer_address=peer_address_message,
     )
+
+
+@pytest.fixture
+def squeak_detail_msg(
+        squeak_bytes,
+):
+    yield squeak_admin_pb2.SqueakDetailEntry(
+        serialized_squeak_hex=squeak_bytes.hex(),
+    )
