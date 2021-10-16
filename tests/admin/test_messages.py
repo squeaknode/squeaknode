@@ -19,6 +19,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+from squeaknode.admin.messages import connected_peer_to_message
 from squeaknode.admin.messages import message_to_peer_address
 from squeaknode.admin.messages import message_to_received_payment
 from squeaknode.admin.messages import message_to_sent_payment
@@ -132,3 +133,9 @@ def test_payment_summary_to_message(
     )
 
     assert msg == payment_summary_msg
+
+
+def test_connected_peer_to_message(connected_peer, connected_peer_msg):
+    msg = connected_peer_to_message(connected_peer)
+
+    assert msg == connected_peer_msg
