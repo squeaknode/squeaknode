@@ -28,6 +28,7 @@ from squeaknode.admin.messages import sent_payment_to_message
 from squeaknode.admin.messages import squeak_entry_to_message
 from squeaknode.admin.messages import squeak_peer_to_message
 from squeaknode.admin.messages import squeak_profile_to_message
+from squeaknode.admin.messages import squeak_to_detail_message
 
 
 def test_peer_address_to_message(peer_address, peer_address_message):
@@ -82,3 +83,9 @@ def test_sent_payment_to_message(sent_payment, sent_payment_msg):
     msg = sent_payment_to_message(sent_payment)
 
     assert msg == sent_payment_msg
+
+
+def test_squeak_detail_to_message(squeak, squeak_detail_msg):
+    msg = squeak_to_detail_message(squeak)
+
+    assert msg == squeak_detail_msg
