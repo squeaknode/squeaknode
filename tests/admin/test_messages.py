@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 from squeaknode.admin.messages import message_to_peer_address
+from squeaknode.admin.messages import message_to_received_payment
 from squeaknode.admin.messages import message_to_sent_payment
 from squeaknode.admin.messages import message_to_squeak_entry
 from squeaknode.admin.messages import peer_address_to_message
@@ -87,6 +88,16 @@ def test_received_payment_to_message(received_payment, received_payment_msg):
     msg = received_payment_to_message(received_payment)
 
     assert msg == received_payment_msg
+
+
+def test_message_to_received_payment(received_payment, received_payment_msg):
+    decoded_received_payment = message_to_received_payment(
+        received_payment_msg)
+
+    # TODO: remove this line after including settle index in received payment msg.
+    received_payment_with_empty_settle_index = received_payment._replace(
+        settle_index=0)
+    assert decoded_received_payment == received_payment_with_empty_settle_index
 
 
 def test_sent_payment_to_message(sent_payment, sent_payment_msg):

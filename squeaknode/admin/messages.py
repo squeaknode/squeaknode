@@ -200,58 +200,58 @@ def peer_address_to_message(peer_address: PeerAddress) -> squeak_admin_pb2.PeerA
     )
 
 
-def message_to_peer_address(peer_address: squeak_admin_pb2.PeerAddress) -> PeerAddress:
+def message_to_peer_address(msg: squeak_admin_pb2.PeerAddress) -> PeerAddress:
     return PeerAddress(
-        network=Network[peer_address.network],
-        host=peer_address.host,
-        port=peer_address.port,
+        network=Network[msg.network],
+        host=msg.host,
+        port=msg.port,
     )
 
 
-def message_to_squeak_entry(squeak_entry_msg: squeak_admin_pb2.SqueakDisplayEntry) -> SqueakEntry:
-    like_time_ms = squeak_entry_msg.liked_time_ms if squeak_entry_msg.liked_time_ms > 0 else None
-    reply_to_hash = bytes.fromhex(
-        squeak_entry_msg.reply_to) if squeak_entry_msg.reply_to else None
-    content_str = squeak_entry_msg.content_str if len(
-        squeak_entry_msg.content_str) > 0 else None
+def message_to_squeak_entry(msg: squeak_admin_pb2.SqueakDisplayEntry) -> SqueakEntry:
+    like_time_ms = msg.liked_time_ms if msg.liked_time_ms > 0 else None
+    reply_to_hash = bytes.fromhex(msg.reply_to) if msg.reply_to else None
+    content_str = msg.content_str if len(msg.content_str) > 0 else None
     return SqueakEntry(
-        squeak_hash=bytes.fromhex(squeak_entry_msg.squeak_hash),
-        address=squeak_entry_msg.author_address,
-        block_height=squeak_entry_msg.block_height,
-        block_hash=bytes.fromhex(squeak_entry_msg.block_hash),
-        block_time=squeak_entry_msg.block_time,
-        squeak_time=squeak_entry_msg.squeak_time,
+        squeak_hash=bytes.fromhex(msg.squeak_hash),
+        address=msg.author_address,
+        block_height=msg.block_height,
+        block_hash=bytes.fromhex(msg.block_hash),
+        block_time=msg.block_time,
+        squeak_time=msg.squeak_time,
         reply_to=reply_to_hash,
-        is_unlocked=squeak_entry_msg.is_unlocked,
+        is_unlocked=msg.is_unlocked,
         squeak_profile=None,  # TODO: message to squeak profile
         liked_time_ms=like_time_ms,
         content=content_str,
     )
 
 
-def message_to_sent_payment(sent_payment: squeak_admin_pb2.SentPayment) -> SentPayment:
-    sent_payment_id = sent_payment.sent_payment_id if sent_payment.sent_payment_id > 0 else None
-    created_time_ms = sent_payment.time_ms if sent_payment.time_ms > 0 else None
+def message_to_sent_payment(msg: squeak_admin_pb2.SentPayment) -> SentPayment:
+    sent_payment_id = msg.sent_payment_id if msg.sent_payment_id > 0 else None
+    created_time_ms = msg.time_ms if msg.time_ms > 0 else None
     return SentPayment(
         sent_payment_id=sent_payment_id,
         created_time_ms=created_time_ms,
-        peer_address=message_to_peer_address(sent_payment.peer_address),
-        squeak_hash=bytes.fromhex(sent_payment.squeak_hash),
-        payment_hash=bytes.fromhex(sent_payment.payment_hash),
+        peer_address=message_to_peer_address(msg.peer_address),
+        squeak_hash=bytes.fromhex(msg.squeak_hash),
+        payment_hash=bytes.fromhex(msg.payment_hash),
         secret_key=b'',  # TODO: why does this field exist?
-        price_msat=sent_payment.price_msat,
-        node_pubkey=sent_payment.node_pubkey,
-        valid=sent_payment.valid,
+        price_msat=msg.price_msat,
+        node_pubkey=msg.node_pubkey,
+        valid=msg.valid,
     )
 
 
-def message_to_received_payment(received_payment: squeak_admin_pb2.ReceivedPayment) -> ReceivedPayment:
+def message_to_received_payment(msg: squeak_admin_pb2.ReceivedPayment) -> ReceivedPayment:
+    received_payment_id = msg.received_payment_id if msg.received_payment_id > 0 else None
+    created_time_ms = msg.time_ms if msg.time_ms > 0 else None
     return ReceivedPayment(
-        received_payment_id=received_payment.received_payment_id,
-        created_time_ms=received_payment.time_ms,
-        squeak_hash=bytes.fromhex(received_payment.squeak_hash),
-        payment_hash=bytes.fromhex(received_payment.payment_hash),
-        price_msat=received_payment.price_msat,
+        received_payment_id=received_payment_id,
+        created_time_ms=created_time_ms,
+        squeak_hash=bytes.fromhex(msg.squeak_hash),
+        payment_hash=bytes.fromhex(msg.payment_hash),
+        price_msat=msg.price_msat,
         settle_index=0,  # TODO: This is not correct, fix later.
-        peer_address=message_to_peer_address(received_payment.peer_address),
+        peer_address=message_to_peer_address(msg.peer_address),
     )
