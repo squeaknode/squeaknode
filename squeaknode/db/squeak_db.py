@@ -53,6 +53,8 @@ from squeaknode.db.models import Models
 
 MAX_INT = 999999999999
 MAX_HASH = b'\xff' * 32
+INIT_NUM_RETRIES = 10
+INIT_RETRY_INTERVAL_S = 1
 
 
 logger = logging.getLogger(__name__)
@@ -73,6 +75,27 @@ class SqueakDb:
         """ Create the tables and indices in the database. """
         logger.debug("SqlAlchemy version: {}".format(sqlalchemy.__version__))
         run_migrations(self.engine)
+
+    def init_with_retries(
+            self,
+            num_retries=INIT_NUM_RETRIES,
+            retry_interval_s=INIT_RETRY_INTERVAL_S,
+    ):
+        """ Try repeatedly to init the database.
+
+        Raises exception if db init fails more than `num_retries` times.
+        """
+        n = 0
+        while True:
+            try:
+                self.init()
+                return
+            except Exception as e:
+                if n > num_retries:
+                    raise e
+                n += 1
+                logger.exception("Failed to initialize database.")
+                time.sleep(retry_interval_s)
 
     @property
     def squeaks(self):
