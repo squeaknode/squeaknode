@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 from squeaknode.admin.messages import message_to_peer_address
+from squeaknode.admin.messages import message_to_squeak_entry
 from squeaknode.admin.messages import peer_address_to_message
 from squeaknode.admin.messages import received_offer_to_message
 from squeaknode.admin.messages import received_payment_to_message
@@ -47,6 +48,14 @@ def test_squeak_entry_to_message(squeak_entry_locked, squeak_entry_msg_locked):
     msg = squeak_entry_to_message(squeak_entry_locked)
 
     assert msg == squeak_entry_msg_locked
+
+
+def test_message_to_squeak_entry(squeak_entry_locked, squeak_entry_msg_locked):
+    entry = message_to_squeak_entry(squeak_entry_msg_locked)
+
+    # TODO: remove this line after implementing "message_to_squeak_profile"
+    entry_with_null_profile = squeak_entry_locked._replace(squeak_profile=None)
+    assert entry == entry_with_null_profile
 
 
 def test_profile_to_message(signing_profile, signing_profile_msg):
