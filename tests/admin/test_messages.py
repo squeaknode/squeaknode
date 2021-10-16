@@ -23,6 +23,7 @@ from squeaknode.admin.messages import message_to_peer_address
 from squeaknode.admin.messages import message_to_received_payment
 from squeaknode.admin.messages import message_to_sent_payment
 from squeaknode.admin.messages import message_to_squeak_entry
+from squeaknode.admin.messages import payment_summary_to_message
 from squeaknode.admin.messages import peer_address_to_message
 from squeaknode.admin.messages import received_offer_to_message
 from squeaknode.admin.messages import received_payment_to_message
@@ -118,3 +119,16 @@ def test_squeak_detail_to_message(squeak, squeak_detail_msg):
     msg = squeak_to_detail_message(squeak)
 
     assert msg == squeak_detail_msg
+
+
+def test_payment_summary_to_message(
+        received_payment_summary,
+        sent_payment_summary,
+        payment_summary_msg,
+):
+    msg = payment_summary_to_message(
+        received_payment_summary,
+        sent_payment_summary,
+    )
+
+    assert msg == payment_summary_msg
