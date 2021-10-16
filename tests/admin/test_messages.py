@@ -100,7 +100,6 @@ def test_message_to_sent_payment(sent_payment, sent_payment_msg):
 
     # TODO: remove this line after including secret key in sent payment msg.
     sent_payment_with_empty_secret_key = sent_payment._replace(secret_key=b'')
-    assert decoded_sent_payment.secret_key == sent_payment_with_empty_secret_key.secret_key
     assert decoded_sent_payment == sent_payment_with_empty_secret_key
 
 
