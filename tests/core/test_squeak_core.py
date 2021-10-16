@@ -367,7 +367,6 @@ def test_create_offer(
 
 def test_packaged_offer(squeak, packaged_offer, offer):
 
-    assert packaged_offer is not None
     assert packaged_offer == offer
 
 
