@@ -149,7 +149,7 @@ def sent_offer_to_message(sent_offer: SentOffer) -> squeak_admin_pb2.SentOffer:
     )
 
 
-def received_payments_to_message(received_payment: ReceivedPayment) -> squeak_admin_pb2.ReceivedPayment:
+def received_payment_to_message(received_payment: ReceivedPayment) -> squeak_admin_pb2.ReceivedPayment:
     received_payment_id = received_payment.received_payment_id or 0
     created_time_ms = received_payment.created_time_ms or 0
     return squeak_admin_pb2.ReceivedPayment(

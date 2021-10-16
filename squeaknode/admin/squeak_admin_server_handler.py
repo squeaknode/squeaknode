@@ -30,7 +30,7 @@ from squeaknode.admin.messages import message_to_squeak_entry
 from squeaknode.admin.messages import payment_summary_to_message
 from squeaknode.admin.messages import peer_address_to_message
 from squeaknode.admin.messages import received_offer_to_message
-from squeaknode.admin.messages import received_payments_to_message
+from squeaknode.admin.messages import received_payment_to_message
 from squeaknode.admin.messages import sent_offer_to_message
 from squeaknode.admin.messages import sent_payment_to_message
 from squeaknode.admin.messages import squeak_entry_to_message
@@ -771,7 +771,7 @@ class SqueakAdminServerHandler(object):
             )
         )
         received_payment_msgs = [
-            received_payments_to_message(received_payment)
+            received_payment_to_message(received_payment)
             for received_payment in received_payments
         ]
         return squeak_admin_pb2.GetReceivedPaymentsReply(
@@ -789,7 +789,7 @@ class SqueakAdminServerHandler(object):
             stopped,
         )
         for received_payment in received_payments_stream:
-            received_payment_msg = received_payments_to_message(
+            received_payment_msg = received_payment_to_message(
                 received_payment)
             yield received_payment_msg
 

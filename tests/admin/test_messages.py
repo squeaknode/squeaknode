@@ -22,7 +22,7 @@
 from squeaknode.admin.messages import message_to_peer_address
 from squeaknode.admin.messages import peer_address_to_message
 from squeaknode.admin.messages import received_offer_to_message
-from squeaknode.admin.messages import received_payments_to_message
+from squeaknode.admin.messages import received_payment_to_message
 from squeaknode.admin.messages import sent_offer_to_message
 from squeaknode.admin.messages import squeak_entry_to_message
 from squeaknode.admin.messages import squeak_peer_to_message
@@ -72,6 +72,6 @@ def test_received_offer_to_message(received_offer, received_offer_msg):
 
 
 def test_received_payment_to_message(received_payment, received_payment_msg):
-    msg = received_payments_to_message(received_payment)
+    msg = received_payment_to_message(received_payment)
 
     assert msg == received_payment_msg
