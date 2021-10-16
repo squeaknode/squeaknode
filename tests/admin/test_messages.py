@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 from squeaknode.admin.messages import message_to_peer_address
+from squeaknode.admin.messages import message_to_sent_payment
 from squeaknode.admin.messages import message_to_squeak_entry
 from squeaknode.admin.messages import peer_address_to_message
 from squeaknode.admin.messages import received_offer_to_message
@@ -92,6 +93,15 @@ def test_sent_payment_to_message(sent_payment, sent_payment_msg):
     msg = sent_payment_to_message(sent_payment)
 
     assert msg == sent_payment_msg
+
+
+def test_message_to_sent_payment(sent_payment, sent_payment_msg):
+    decoded_sent_payment = message_to_sent_payment(sent_payment_msg)
+
+    # TODO: remove this line after including secret key in sent payment msg.
+    sent_payment_with_empty_secret_key = sent_payment._replace(secret_key=b'')
+    assert decoded_sent_payment.secret_key == sent_payment_with_empty_secret_key.secret_key
+    assert decoded_sent_payment == sent_payment_with_empty_secret_key
 
 
 def test_squeak_detail_to_message(squeak, squeak_detail_msg):
