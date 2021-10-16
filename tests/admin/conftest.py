@@ -146,11 +146,32 @@ def received_payment_msg(
         price_msat,
         peer_address_message,
 ):
-    return squeak_admin_pb2.ReceivedPayment(
+    yield squeak_admin_pb2.ReceivedPayment(
         received_payment_id=None,
         squeak_hash=squeak_hash.hex(),
         payment_hash=payment_hash.hex(),
         price_msat=price_msat,
+        time_ms=None,
+        peer_address=peer_address_message,
+    )
+
+
+@pytest.fixture
+def sent_payment_msg(
+        squeak_hash,
+        payment_hash,
+        secret_key,
+        price_msat,
+        seller_pubkey,
+        peer_address_message,
+):
+    yield squeak_admin_pb2.SentPayment(
+        sent_payment_id=None,
+        squeak_hash=squeak_hash.hex(),
+        payment_hash=payment_hash.hex(),
+        price_msat=price_msat,
+        node_pubkey=seller_pubkey,
+        valid=True,
         time_ms=None,
         peer_address=peer_address_message,
     )
