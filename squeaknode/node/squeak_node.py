@@ -111,8 +111,7 @@ class SqueakNode:
             connection_string))
         engine = get_engine(connection_string)
         self.squeak_db = SqueakDb(engine)
-        # self.squeak_db.init_with_retries()
-        self.squeak_db.init()
+        self.squeak_db.init_with_retries()
 
     def initialize_lightning_client(self):
         # load the lightning client
