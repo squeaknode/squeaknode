@@ -245,13 +245,15 @@ def message_to_sent_payment(sent_payment: squeak_admin_pb2.SentPayment) -> SentP
     )
 
 
-def message_to_received_payment(received_payment: squeak_admin_pb2.ReceivedPayment) -> ReceivedPayment:
+def message_to_received_payment(msg: squeak_admin_pb2.ReceivedPayment) -> ReceivedPayment:
+    received_payment_id = msg.received_payment_id if msg.received_payment_id > 0 else None
+    created_time_ms = msg.time_ms if msg.time_ms > 0 else None
     return ReceivedPayment(
-        received_payment_id=received_payment.received_payment_id,
-        created_time_ms=received_payment.time_ms,
-        squeak_hash=bytes.fromhex(received_payment.squeak_hash),
-        payment_hash=bytes.fromhex(received_payment.payment_hash),
-        price_msat=received_payment.price_msat,
+        received_payment_id=received_payment_id,
+        created_time_ms=created_time_ms,
+        squeak_hash=bytes.fromhex(msg.squeak_hash),
+        payment_hash=bytes.fromhex(msg.payment_hash),
+        price_msat=msg.price_msat,
         settle_index=0,  # TODO: This is not correct, fix later.
-        peer_address=message_to_peer_address(received_payment.peer_address),
+        peer_address=message_to_peer_address(msg.peer_address),
     )
