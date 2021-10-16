@@ -23,7 +23,6 @@ import pytest
 from sqlalchemy import create_engine
 
 from squeaknode.core.peers import create_saved_peer
-from squeaknode.core.squeaks import get_hash
 from squeaknode.db.squeak_db import SqueakDb
 from tests.utils import gen_squeak_with_block_header
 
@@ -38,26 +37,6 @@ def squeak_db(db_engine):
     db = SqueakDb(db_engine)
     db.init()
     yield db
-
-
-@pytest.fixture
-def squeak_with_block_header(signing_key):
-    yield gen_squeak_with_block_header(
-        signing_key=signing_key,
-        block_height=7777,
-    )
-
-
-@pytest.fixture
-def squeak(squeak_with_block_header):
-    squeak, _ = squeak_with_block_header
-    yield squeak
-
-
-@pytest.fixture
-def block_header(squeak_with_block_header):
-    _, block_header = squeak_with_block_header
-    yield block_header
 
 
 @pytest.fixture
@@ -203,8 +182,7 @@ def test_insert_duplicate_squeak(squeak_db, squeak, block_header, inserted_squea
     assert insert_result is None
 
 
-def test_get_missing_squeak(squeak_db, squeak):
-    squeak_hash = get_hash(squeak)
+def test_get_missing_squeak(squeak_db, squeak, squeak_hash):
     retrieved_squeak = squeak_db.get_squeak(squeak_hash)
 
     assert retrieved_squeak is None
@@ -219,8 +197,7 @@ def test_get_squeak_entry(squeak_db, squeak, block_header, address_str, inserted
     assert retrieved_squeak_entry.block_time == block_header.nTime
 
 
-def test_get_missing_squeak_entry(squeak_db, squeak):
-    squeak_hash = get_hash(squeak)
+def test_get_missing_squeak_entry(squeak_db, squeak, squeak_hash):
     retrieved_squeak_entry = squeak_db.get_squeak_entry(squeak_hash)
 
     assert retrieved_squeak_entry is None
@@ -260,8 +237,7 @@ def test_get_squeak_secret_key_and_content_locked(
     assert retrieved_secret_key is None
 
 
-def test_get_secret_key_missing_squeak(squeak_db, squeak):
-    squeak_hash = get_hash(squeak)
+def test_get_secret_key_missing_squeak(squeak_db, squeak, squeak_hash):
     retrieved_secret_key = squeak_db.get_squeak_secret_key(
         squeak_hash,
     )
