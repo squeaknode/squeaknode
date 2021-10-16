@@ -32,10 +32,12 @@ from squeaknode.core.peer_address import Network
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.received_payment import ReceivedPayment
+from squeaknode.core.received_payment_summary import ReceivedPaymentSummary
 from squeaknode.core.secret_keys import add_tweak
 from squeaknode.core.secret_keys import generate_tweak
 from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.sent_payment import SentPayment
+from squeaknode.core.sent_payment_summary import SentPaymentSummary
 from squeaknode.core.squeak_entry import SqueakEntry
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeaks import get_hash
@@ -413,4 +415,46 @@ def offer(
         payment_request=payment_request,
         host=lightning_address.host,
         port=lightning_address.port,
+    )
+
+
+@pytest.fixture
+def num_received_payments():
+    yield 574
+
+
+@pytest.fixture
+def num_sent_payments():
+    yield 189
+
+
+@pytest.fixture
+def total_amount_received_msat():
+    yield 3259084
+
+
+@pytest.fixture
+def total_amount_sent_msat():
+    yield 198374
+
+
+@pytest.fixture
+def received_payment_summary(
+        num_received_payments,
+        total_amount_received_msat,
+):
+    yield ReceivedPaymentSummary(
+        num_received_payments=num_received_payments,
+        total_amount_received_msat=total_amount_received_msat,
+    )
+
+
+@pytest.fixture
+def sent_payment_summary(
+        num_sent_payments,
+        total_amount_sent_msat,
+):
+    yield SentPaymentSummary(
+        num_sent_payments=num_sent_payments,
+        total_amount_sent_msat=total_amount_sent_msat,
     )

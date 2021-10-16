@@ -184,3 +184,18 @@ def squeak_detail_msg(
     yield squeak_admin_pb2.SqueakDetailEntry(
         serialized_squeak_hex=squeak_bytes.hex(),
     )
+
+
+@pytest.fixture
+def payment_summary_msg(
+        num_received_payments,
+        num_sent_payments,
+        total_amount_received_msat,
+        total_amount_sent_msat,
+):
+    yield squeak_admin_pb2.PaymentSummary(
+        num_received_payments=num_received_payments,
+        num_sent_payments=num_sent_payments,
+        amount_earned_msat=total_amount_received_msat,
+        amount_spent_msat=total_amount_sent_msat,
+    )
