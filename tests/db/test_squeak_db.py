@@ -22,7 +22,6 @@
 import pytest
 from sqlalchemy import create_engine
 
-from squeaknode.core.peers import create_saved_peer
 from squeaknode.db.squeak_db import SqueakDb
 from tests.utils import gen_squeak_with_block_header
 
@@ -155,14 +154,6 @@ def liked_squeak_hash(squeak_db, inserted_squeak_hash):
 def unliked_squeak_hash(squeak_db, liked_squeak_hash):
     squeak_db.set_squeak_unliked(liked_squeak_hash)
     yield liked_squeak_hash
-
-
-@pytest.fixture
-def peer(peer_address):
-    yield create_saved_peer(
-        "fake_peer_name",
-        peer_address,
-    )
 
 
 @pytest.fixture
