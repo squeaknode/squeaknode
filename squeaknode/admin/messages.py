@@ -200,29 +200,27 @@ def peer_address_to_message(peer_address: PeerAddress) -> squeak_admin_pb2.PeerA
     )
 
 
-def message_to_peer_address(peer_address: squeak_admin_pb2.PeerAddress) -> PeerAddress:
+def message_to_peer_address(msg: squeak_admin_pb2.PeerAddress) -> PeerAddress:
     return PeerAddress(
-        network=Network[peer_address.network],
-        host=peer_address.host,
-        port=peer_address.port,
+        network=Network[msg.network],
+        host=msg.host,
+        port=msg.port,
     )
 
 
-def message_to_squeak_entry(squeak_entry_msg: squeak_admin_pb2.SqueakDisplayEntry) -> SqueakEntry:
-    like_time_ms = squeak_entry_msg.liked_time_ms if squeak_entry_msg.liked_time_ms > 0 else None
-    reply_to_hash = bytes.fromhex(
-        squeak_entry_msg.reply_to) if squeak_entry_msg.reply_to else None
-    content_str = squeak_entry_msg.content_str if len(
-        squeak_entry_msg.content_str) > 0 else None
+def message_to_squeak_entry(msg: squeak_admin_pb2.SqueakDisplayEntry) -> SqueakEntry:
+    like_time_ms = msg.liked_time_ms if msg.liked_time_ms > 0 else None
+    reply_to_hash = bytes.fromhex(msg.reply_to) if msg.reply_to else None
+    content_str = msg.content_str if len(msg.content_str) > 0 else None
     return SqueakEntry(
-        squeak_hash=bytes.fromhex(squeak_entry_msg.squeak_hash),
-        address=squeak_entry_msg.author_address,
-        block_height=squeak_entry_msg.block_height,
-        block_hash=bytes.fromhex(squeak_entry_msg.block_hash),
-        block_time=squeak_entry_msg.block_time,
-        squeak_time=squeak_entry_msg.squeak_time,
+        squeak_hash=bytes.fromhex(msg.squeak_hash),
+        address=msg.author_address,
+        block_height=msg.block_height,
+        block_hash=bytes.fromhex(msg.block_hash),
+        block_time=msg.block_time,
+        squeak_time=msg.squeak_time,
         reply_to=reply_to_hash,
-        is_unlocked=squeak_entry_msg.is_unlocked,
+        is_unlocked=msg.is_unlocked,
         squeak_profile=None,  # TODO: message to squeak profile
         liked_time_ms=like_time_ms,
         content=content_str,
