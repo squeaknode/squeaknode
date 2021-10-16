@@ -137,3 +137,20 @@ def received_offer_msg(
         invoice_expiry=expiry,
         peer_address=peer_address_message,
     )
+
+
+@pytest.fixture
+def received_payment_msg(
+        squeak_hash,
+        payment_hash,
+        price_msat,
+        peer_address_message,
+):
+    return squeak_admin_pb2.ReceivedPayment(
+        received_payment_id=None,
+        squeak_hash=squeak_hash.hex(),
+        payment_hash=payment_hash.hex(),
+        price_msat=price_msat,
+        time_ms=None,
+        peer_address=peer_address_message,
+    )
