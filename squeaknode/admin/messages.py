@@ -227,19 +227,19 @@ def message_to_squeak_entry(msg: squeak_admin_pb2.SqueakDisplayEntry) -> SqueakE
     )
 
 
-def message_to_sent_payment(sent_payment: squeak_admin_pb2.SentPayment) -> SentPayment:
-    sent_payment_id = sent_payment.sent_payment_id if sent_payment.sent_payment_id > 0 else None
-    created_time_ms = sent_payment.time_ms if sent_payment.time_ms > 0 else None
+def message_to_sent_payment(msg: squeak_admin_pb2.SentPayment) -> SentPayment:
+    sent_payment_id = msg.sent_payment_id if msg.sent_payment_id > 0 else None
+    created_time_ms = msg.time_ms if msg.time_ms > 0 else None
     return SentPayment(
         sent_payment_id=sent_payment_id,
         created_time_ms=created_time_ms,
-        peer_address=message_to_peer_address(sent_payment.peer_address),
-        squeak_hash=bytes.fromhex(sent_payment.squeak_hash),
-        payment_hash=bytes.fromhex(sent_payment.payment_hash),
+        peer_address=message_to_peer_address(msg.peer_address),
+        squeak_hash=bytes.fromhex(msg.squeak_hash),
+        payment_hash=bytes.fromhex(msg.payment_hash),
         secret_key=b'',  # TODO: why does this field exist?
-        price_msat=sent_payment.price_msat,
-        node_pubkey=sent_payment.node_pubkey,
-        valid=sent_payment.valid,
+        price_msat=msg.price_msat,
+        node_pubkey=msg.node_pubkey,
+        valid=msg.valid,
     )
 
 
