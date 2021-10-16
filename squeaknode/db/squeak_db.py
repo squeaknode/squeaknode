@@ -91,9 +91,9 @@ class SqueakDb:
                 self.init()
                 return
             except Exception as e:
-                if n > num_retries:
-                    raise e
                 n += 1
+                if n >= num_retries:
+                    raise e
                 logger.exception("Failed to initialize database.")
                 time.sleep(retry_interval_s)
 
