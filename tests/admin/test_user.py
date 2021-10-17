@@ -48,3 +48,4 @@ def test_user(user, username, password):
     assert user.check_password(password)
     assert not user.check_password("wrong_password")
     assert user.get_user_by_username(username) is user
+    assert user.get_user_by_username("wrong_username") is None
