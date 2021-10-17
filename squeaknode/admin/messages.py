@@ -274,3 +274,9 @@ def optional_squeak_entry_to_message(squeak_entry: Optional[SqueakEntry]) -> Opt
     if squeak_entry is None:
         return None
     return squeak_entry_to_message(squeak_entry)
+
+
+def optional_squeak_peer_to_message(squeak_peer: Optional[SqueakPeer]) -> Optional[squeak_admin_pb2.SqueakPeer]:
+    if squeak_peer is None:
+        return None
+    return squeak_peer_to_message(squeak_peer)

@@ -29,6 +29,7 @@ from squeaknode.admin.messages import message_to_sent_payment
 from squeaknode.admin.messages import message_to_squeak_entry
 from squeaknode.admin.messages import optional_squeak_entry_to_message
 from squeaknode.admin.messages import optional_squeak_hash_to_hex
+from squeaknode.admin.messages import optional_squeak_peer_to_message
 from squeaknode.admin.messages import optional_squeak_profile_to_message
 from squeaknode.admin.messages import payment_summary_to_message
 from squeaknode.admin.messages import peer_address_to_message
@@ -512,11 +513,7 @@ class SqueakAdminServerHandler(object):
         logger.info("Handle get squeak peer with id: {}".format(peer_id))
         squeak_peer = self.squeak_controller.get_peer(peer_id)
         logger.info("Got squeak peer: {}".format(squeak_peer))
-        if squeak_peer is None:
-            return squeak_admin_pb2.GetPeerReply(
-                squeak_peer=None,
-            )
-        squeak_peer_msg = squeak_peer_to_message(squeak_peer)
+        squeak_peer_msg = optional_squeak_peer_to_message(squeak_peer)
         return squeak_admin_pb2.GetPeerReply(
             squeak_peer=squeak_peer_msg,
         )
@@ -526,11 +523,7 @@ class SqueakAdminServerHandler(object):
         logger.info(
             "Handle get squeak peer with address: {}".format(peer_address))
         squeak_peer = self.squeak_controller.get_peer_by_address(peer_address)
-        if squeak_peer is None:
-            return squeak_admin_pb2.GetPeerReply(
-                squeak_peer=None,
-            )
-        squeak_peer_msg = squeak_peer_to_message(squeak_peer)
+        squeak_peer_msg = optional_squeak_peer_to_message(squeak_peer)
         return squeak_admin_pb2.GetPeerByAddressReply(
             squeak_peer=squeak_peer_msg,
         )
