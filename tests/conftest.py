@@ -144,6 +144,11 @@ def squeak_hash(squeak):
 
 
 @pytest.fixture
+def squeak_hash_str(squeak_hash):
+    yield squeak_hash.hex()
+
+
+@pytest.fixture
 def squeak_bytes(squeak):
     yield squeak.serialize()
 

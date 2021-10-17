@@ -27,6 +27,14 @@ from squeaknode.admin.messages import message_to_peer_address
 from squeaknode.admin.messages import message_to_received_payment
 from squeaknode.admin.messages import message_to_sent_payment
 from squeaknode.admin.messages import message_to_squeak_entry
+from squeaknode.admin.messages import optional_connected_peer_to_message
+from squeaknode.admin.messages import optional_received_offer_to_message
+from squeaknode.admin.messages import optional_sent_payment_to_message
+from squeaknode.admin.messages import optional_squeak_entry_to_message
+from squeaknode.admin.messages import optional_squeak_hash_to_hex
+from squeaknode.admin.messages import optional_squeak_peer_to_message
+from squeaknode.admin.messages import optional_squeak_profile_to_message
+from squeaknode.admin.messages import optional_squeak_to_detail_message
 from squeaknode.admin.messages import payment_summary_to_message
 from squeaknode.admin.messages import peer_address_to_message
 from squeaknode.admin.messages import received_offer_to_message
@@ -36,7 +44,6 @@ from squeaknode.admin.messages import sent_payment_to_message
 from squeaknode.admin.messages import squeak_entry_to_message
 from squeaknode.admin.messages import squeak_peer_to_message
 from squeaknode.admin.messages import squeak_profile_to_message
-from squeaknode.admin.messages import squeak_to_detail_message
 from squeaknode.admin.profile_image_util import base64_string_to_bytes
 from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
 from squeaknode.node.squeak_controller import SqueakController
@@ -175,11 +182,7 @@ class SqueakAdminServerHandler(object):
         profile_id = request.profile_id
         logger.info("Handle get squeak profile with id: {}".format(profile_id))
         squeak_profile = self.squeak_controller.get_squeak_profile(profile_id)
-        if squeak_profile is None:
-            return squeak_admin_pb2.GetSqueakProfileReply(
-                squeak_profile=None,
-            )
-        squeak_profile_msg = squeak_profile_to_message(squeak_profile)
+        squeak_profile_msg = optional_squeak_profile_to_message(squeak_profile)
         return squeak_admin_pb2.GetSqueakProfileReply(
             squeak_profile=squeak_profile_msg,
         )
@@ -190,11 +193,7 @@ class SqueakAdminServerHandler(object):
             "Handle get squeak profile with address: {}".format(address))
         squeak_profile = self.squeak_controller.get_squeak_profile_by_address(
             address)
-        if squeak_profile is None:
-            return squeak_admin_pb2.GetSqueakProfileByAddressReply(
-                squeak_profile=None
-            )
-        squeak_profile_msg = squeak_profile_to_message(squeak_profile)
+        squeak_profile_msg = optional_squeak_profile_to_message(squeak_profile)
         return squeak_admin_pb2.GetSqueakProfileByAddressReply(
             squeak_profile=squeak_profile_msg
         )
@@ -204,11 +203,7 @@ class SqueakAdminServerHandler(object):
         logger.info("Handle get squeak profile with name: {}".format(name))
         squeak_profile = self.squeak_controller.get_squeak_profile_by_name(
             name)
-        if squeak_profile is None:
-            return squeak_admin_pb2.GetSqueakProfileByNameReply(
-                squeak_profile=None
-            )
-        squeak_profile_msg = squeak_profile_to_message(squeak_profile)
+        squeak_profile_msg = optional_squeak_profile_to_message(squeak_profile)
         return squeak_admin_pb2.GetSqueakProfileByNameReply(
             squeak_profile=squeak_profile_msg
         )
@@ -316,12 +311,10 @@ class SqueakAdminServerHandler(object):
         inserted_squeak_hash = self.squeak_controller.make_squeak(
             profile_id, content_str, replyto_hash
         )
-        if inserted_squeak_hash is None:
-            return squeak_admin_pb2.MakeSqueakReply(
-                squeak_hash=None,
-            )
+        inserted_squeak_hash_str = optional_squeak_hash_to_hex(
+            inserted_squeak_hash)
         return squeak_admin_pb2.MakeSqueakReply(
-            squeak_hash=inserted_squeak_hash.hex(),
+            squeak_hash=inserted_squeak_hash_str,
         )
 
     def handle_get_squeak_display_entry(self, request):
@@ -334,11 +327,7 @@ class SqueakAdminServerHandler(object):
                 squeak_hash
             )
         )
-        if squeak_entry is None:
-            return squeak_admin_pb2.GetSqueakDisplayReply(
-                squeak_display_entry=None
-            )
-        display_message = squeak_entry_to_message(
+        display_message = optional_squeak_entry_to_message(
             squeak_entry)
         return squeak_admin_pb2.GetSqueakDisplayReply(
             squeak_display_entry=display_message
@@ -527,11 +516,7 @@ class SqueakAdminServerHandler(object):
         logger.info("Handle get squeak peer with id: {}".format(peer_id))
         squeak_peer = self.squeak_controller.get_peer(peer_id)
         logger.info("Got squeak peer: {}".format(squeak_peer))
-        if squeak_peer is None:
-            return squeak_admin_pb2.GetPeerReply(
-                squeak_peer=None,
-            )
-        squeak_peer_msg = squeak_peer_to_message(squeak_peer)
+        squeak_peer_msg = optional_squeak_peer_to_message(squeak_peer)
         return squeak_admin_pb2.GetPeerReply(
             squeak_peer=squeak_peer_msg,
         )
@@ -541,11 +526,7 @@ class SqueakAdminServerHandler(object):
         logger.info(
             "Handle get squeak peer with address: {}".format(peer_address))
         squeak_peer = self.squeak_controller.get_peer_by_address(peer_address)
-        if squeak_peer is None:
-            return squeak_admin_pb2.GetPeerReply(
-                squeak_peer=None,
-            )
-        squeak_peer_msg = squeak_peer_to_message(squeak_peer)
+        squeak_peer_msg = optional_squeak_peer_to_message(squeak_peer)
         return squeak_admin_pb2.GetPeerByAddressReply(
             squeak_peer=squeak_peer_msg,
         )
@@ -606,14 +587,10 @@ class SqueakAdminServerHandler(object):
     def handle_get_buy_offer(self, request):
         offer_id = request.offer_id
         logger.info("Handle get buy offer for hash: {}".format(offer_id))
-        offer = self.squeak_controller.get_received_offer(offer_id)
-        if offer is None:
-            return squeak_admin_pb2.GetBuyOfferReply(
-                offer=None,
-            )
-        offer_msg = received_offer_to_message(offer)
+        received_offer = self.squeak_controller.get_received_offer(offer_id)
+        received_offer_msg = optional_received_offer_to_message(received_offer)
         return squeak_admin_pb2.GetBuyOfferReply(
-            offer=offer_msg,
+            offer=received_offer_msg,
         )
 
     def handle_download_squeaks(self, request):
@@ -712,11 +689,7 @@ class SqueakAdminServerHandler(object):
         logger.info(
             "Handle get sent payment with id: {}".format(sent_payment_id))
         sent_payment = self.squeak_controller.get_sent_payment(sent_payment_id)
-        if sent_payment is None:
-            return squeak_admin_pb2.GetSentPaymentReply(
-                sent_payment=None,
-            )
-        sent_payment_msg = sent_payment_to_message(sent_payment)
+        sent_payment_msg = optional_sent_payment_to_message(sent_payment)
         return squeak_admin_pb2.GetSentPaymentReply(
             sent_payment=sent_payment_msg,
         )
@@ -731,11 +704,7 @@ class SqueakAdminServerHandler(object):
                 squeak_hash
             )
         )
-        if squeak is None:
-            return squeak_admin_pb2.GetSqueakDetailsReply(
-                squeak_detail_entry=None
-            )
-        detail_message = squeak_to_detail_message(squeak)
+        detail_message = optional_squeak_to_detail_message(squeak)
         return squeak_admin_pb2.GetSqueakDetailsReply(
             squeak_detail_entry=detail_message
         )
@@ -897,11 +866,8 @@ class SqueakAdminServerHandler(object):
         logger.info("Connected peer: {}".format(
             connected_peer,
         ))
-        if connected_peer is None:
-            return squeak_admin_pb2.GetConnectedPeerReply(
-                connected_peer=None
-            )
-        connected_peers_display_msg = connected_peer_to_message(connected_peer)
+        connected_peers_display_msg = optional_connected_peer_to_message(
+            connected_peer)
         return squeak_admin_pb2.GetConnectedPeerReply(
             connected_peer=connected_peers_display_msg
         )
@@ -935,16 +901,11 @@ class SqueakAdminServerHandler(object):
             stopped,
         )
         for connected_peer in connected_peer_stream:
-            if connected_peer is None:
-                yield squeak_admin_pb2.GetConnectedPeerReply(
-                    connected_peer=None
-                )
-            else:
-                connected_peers_display_msg = connected_peer_to_message(
-                    connected_peer)
-                yield squeak_admin_pb2.GetConnectedPeerReply(
-                    connected_peer=connected_peers_display_msg,
-                )
+            connected_peer_display_msg = optional_connected_peer_to_message(
+                connected_peer)
+            yield squeak_admin_pb2.GetConnectedPeerReply(
+                connected_peer=connected_peer_display_msg,
+            )
 
     def handle_subscribe_buy_offers(self, request, stopped):
         squeak_hash_str = request.squeak_hash
@@ -972,16 +933,11 @@ class SqueakAdminServerHandler(object):
             stopped,
         )
         for squeak_display in squeak_display_stream:
-            if squeak_display is None:
-                yield squeak_admin_pb2.GetSqueakDisplayReply(
-                    squeak_display_entry=None
-                )
-            else:
-                display_message = squeak_entry_to_message(
-                    squeak_display)
-                yield squeak_admin_pb2.GetSqueakDisplayReply(
-                    squeak_display_entry=display_message
-                )
+            display_message = optional_squeak_entry_to_message(
+                squeak_display)
+            yield squeak_admin_pb2.GetSqueakDisplayReply(
+                squeak_display_entry=display_message
+            )
 
     def handle_subscribe_reply_squeak_displays(self, request, stopped):
         squeak_hash_str = request.squeak_hash
@@ -993,16 +949,11 @@ class SqueakAdminServerHandler(object):
             stopped,
         )
         for squeak_display in squeak_display_stream:
-            if squeak_display is None:
-                yield squeak_admin_pb2.GetSqueakDisplayReply(
-                    squeak_display_entry=None
-                )
-            else:
-                display_message = squeak_entry_to_message(
-                    squeak_display)
-                yield squeak_admin_pb2.GetSqueakDisplayReply(
-                    squeak_display_entry=display_message
-                )
+            display_message = optional_squeak_entry_to_message(
+                squeak_display)
+            yield squeak_admin_pb2.GetSqueakDisplayReply(
+                squeak_display_entry=display_message
+            )
 
     def handle_subscribe_address_squeak_displays(self, request, stopped):
         squeak_address = request.address
@@ -1013,16 +964,11 @@ class SqueakAdminServerHandler(object):
             stopped,
         )
         for squeak_display in squeak_display_stream:
-            if squeak_display is None:
-                yield squeak_admin_pb2.GetSqueakDisplayReply(
-                    squeak_display_entry=None
-                )
-            else:
-                display_message = squeak_entry_to_message(
-                    squeak_display)
-                yield squeak_admin_pb2.GetSqueakDisplayReply(
-                    squeak_display_entry=display_message
-                )
+            display_message = optional_squeak_entry_to_message(
+                squeak_display)
+            yield squeak_admin_pb2.GetSqueakDisplayReply(
+                squeak_display_entry=display_message
+            )
 
     def handle_subscribe_ancestor_squeak_displays(self, request, stopped):
         squeak_hash_str = request.squeak_hash
@@ -1052,16 +998,11 @@ class SqueakAdminServerHandler(object):
             stopped,
         )
         for squeak_display in squeak_display_stream:
-            if squeak_display is None:
-                yield squeak_admin_pb2.GetSqueakDisplayReply(
-                    squeak_display_entry=None
-                )
-            else:
-                display_message = squeak_entry_to_message(
-                    squeak_display)
-                yield squeak_admin_pb2.GetSqueakDisplayReply(
-                    squeak_display_entry=display_message
-                )
+            display_message = optional_squeak_entry_to_message(
+                squeak_display)
+            yield squeak_admin_pb2.GetSqueakDisplayReply(
+                squeak_display_entry=display_message
+            )
 
     def handle_subscribe_timeline_squeak_displays(self, request, stopped):
         logger.info("Handle subscribe timeline squeak displays")
@@ -1069,16 +1010,11 @@ class SqueakAdminServerHandler(object):
             stopped,
         )
         for squeak_display in squeak_display_stream:
-            if squeak_display is None:
-                yield squeak_admin_pb2.GetSqueakDisplayReply(
-                    squeak_display_entry=None
-                )
-            else:
-                display_message = squeak_entry_to_message(
-                    squeak_display)
-                yield squeak_admin_pb2.GetSqueakDisplayReply(
-                    squeak_display_entry=display_message
-                )
+            display_message = optional_squeak_entry_to_message(
+                squeak_display)
+            yield squeak_admin_pb2.GetSqueakDisplayReply(
+                squeak_display_entry=display_message
+            )
 
     def handle_get_external_address(self, request):
         logger.info("Handle get external address")

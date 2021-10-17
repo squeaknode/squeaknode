@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import logging
+from typing import Optional
 
 from squeak.core import CSqueak
 
@@ -255,3 +256,51 @@ def message_to_received_payment(msg: squeak_admin_pb2.ReceivedPayment) -> Receiv
         settle_index=0,  # TODO: This is not correct, fix later.
         peer_address=message_to_peer_address(msg.peer_address),
     )
+
+
+def optional_squeak_profile_to_message(squeak_profile: Optional[SqueakProfile]) -> Optional[squeak_admin_pb2.SqueakProfile]:
+    if squeak_profile is None:
+        return None
+    return squeak_profile_to_message(squeak_profile)
+
+
+def optional_squeak_hash_to_hex(squeak_hash: Optional[bytes]) -> Optional[str]:
+    if squeak_hash is None:
+        return None
+    return squeak_hash.hex()
+
+
+def optional_squeak_entry_to_message(squeak_entry: Optional[SqueakEntry]) -> Optional[squeak_admin_pb2.SqueakDisplayEntry]:
+    if squeak_entry is None:
+        return None
+    return squeak_entry_to_message(squeak_entry)
+
+
+def optional_squeak_peer_to_message(squeak_peer: Optional[SqueakPeer]) -> Optional[squeak_admin_pb2.SqueakPeer]:
+    if squeak_peer is None:
+        return None
+    return squeak_peer_to_message(squeak_peer)
+
+
+def optional_received_offer_to_message(received_offer: Optional[ReceivedOffer]) -> Optional[squeak_admin_pb2.OfferDisplayEntry]:
+    if received_offer is None:
+        return None
+    return received_offer_to_message(received_offer)
+
+
+def optional_sent_payment_to_message(sent_payment: Optional[SentPayment]) -> Optional[squeak_admin_pb2.SentPayment]:
+    if sent_payment is None:
+        return None
+    return sent_payment_to_message(sent_payment)
+
+
+def optional_squeak_to_detail_message(squeak: Optional[CSqueak]) -> Optional[squeak_admin_pb2.SqueakDetailEntry]:
+    if squeak is None:
+        return None
+    return squeak_to_detail_message(squeak)
+
+
+def optional_connected_peer_to_message(connected_peer: Optional[ConnectedPeer]) -> Optional[squeak_admin_pb2.ConnectedPeer]:
+    if connected_peer is None:
+        return None
+    return connected_peer_to_message(connected_peer)
