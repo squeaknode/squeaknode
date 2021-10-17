@@ -24,6 +24,7 @@ from squeaknode.admin.messages import message_to_peer_address
 from squeaknode.admin.messages import message_to_received_payment
 from squeaknode.admin.messages import message_to_sent_payment
 from squeaknode.admin.messages import message_to_squeak_entry
+from squeaknode.admin.messages import optional_squeak_entry_to_message
 from squeaknode.admin.messages import optional_squeak_hash_to_hex
 from squeaknode.admin.messages import optional_squeak_profile_to_message
 from squeaknode.admin.messages import payment_summary_to_message
@@ -165,3 +166,15 @@ def test_optional_squeak_hash_to_str(squeak_hash, squeak_hash_str):
     msg = optional_squeak_hash_to_hex(squeak_hash)
 
     assert msg == squeak_hash_str
+
+
+def test_optional_squeak_entry_to_message_none():
+    msg = optional_squeak_entry_to_message(None)
+
+    assert msg is None
+
+
+def test_optional_squeak_entry_to_message(squeak_entry_locked, squeak_entry_msg_locked):
+    msg = optional_squeak_entry_to_message(squeak_entry_locked)
+
+    assert msg == squeak_entry_msg_locked

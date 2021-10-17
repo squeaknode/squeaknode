@@ -27,6 +27,7 @@ from squeaknode.admin.messages import message_to_peer_address
 from squeaknode.admin.messages import message_to_received_payment
 from squeaknode.admin.messages import message_to_sent_payment
 from squeaknode.admin.messages import message_to_squeak_entry
+from squeaknode.admin.messages import optional_squeak_entry_to_message
 from squeaknode.admin.messages import optional_squeak_hash_to_hex
 from squeaknode.admin.messages import optional_squeak_profile_to_message
 from squeaknode.admin.messages import payment_summary_to_message
@@ -322,11 +323,7 @@ class SqueakAdminServerHandler(object):
                 squeak_hash
             )
         )
-        if squeak_entry is None:
-            return squeak_admin_pb2.GetSqueakDisplayReply(
-                squeak_display_entry=None
-            )
-        display_message = squeak_entry_to_message(
+        display_message = optional_squeak_entry_to_message(
             squeak_entry)
         return squeak_admin_pb2.GetSqueakDisplayReply(
             squeak_display_entry=display_message
@@ -960,16 +957,11 @@ class SqueakAdminServerHandler(object):
             stopped,
         )
         for squeak_display in squeak_display_stream:
-            if squeak_display is None:
-                yield squeak_admin_pb2.GetSqueakDisplayReply(
-                    squeak_display_entry=None
-                )
-            else:
-                display_message = squeak_entry_to_message(
-                    squeak_display)
-                yield squeak_admin_pb2.GetSqueakDisplayReply(
-                    squeak_display_entry=display_message
-                )
+            display_message = optional_squeak_entry_to_message(
+                squeak_display)
+            yield squeak_admin_pb2.GetSqueakDisplayReply(
+                squeak_display_entry=display_message
+            )
 
     def handle_subscribe_reply_squeak_displays(self, request, stopped):
         squeak_hash_str = request.squeak_hash
@@ -981,16 +973,11 @@ class SqueakAdminServerHandler(object):
             stopped,
         )
         for squeak_display in squeak_display_stream:
-            if squeak_display is None:
-                yield squeak_admin_pb2.GetSqueakDisplayReply(
-                    squeak_display_entry=None
-                )
-            else:
-                display_message = squeak_entry_to_message(
-                    squeak_display)
-                yield squeak_admin_pb2.GetSqueakDisplayReply(
-                    squeak_display_entry=display_message
-                )
+            display_message = optional_squeak_entry_to_message(
+                squeak_display)
+            yield squeak_admin_pb2.GetSqueakDisplayReply(
+                squeak_display_entry=display_message
+            )
 
     def handle_subscribe_address_squeak_displays(self, request, stopped):
         squeak_address = request.address
@@ -1001,16 +988,11 @@ class SqueakAdminServerHandler(object):
             stopped,
         )
         for squeak_display in squeak_display_stream:
-            if squeak_display is None:
-                yield squeak_admin_pb2.GetSqueakDisplayReply(
-                    squeak_display_entry=None
-                )
-            else:
-                display_message = squeak_entry_to_message(
-                    squeak_display)
-                yield squeak_admin_pb2.GetSqueakDisplayReply(
-                    squeak_display_entry=display_message
-                )
+            display_message = optional_squeak_entry_to_message(
+                squeak_display)
+            yield squeak_admin_pb2.GetSqueakDisplayReply(
+                squeak_display_entry=display_message
+            )
 
     def handle_subscribe_ancestor_squeak_displays(self, request, stopped):
         squeak_hash_str = request.squeak_hash
@@ -1040,16 +1022,11 @@ class SqueakAdminServerHandler(object):
             stopped,
         )
         for squeak_display in squeak_display_stream:
-            if squeak_display is None:
-                yield squeak_admin_pb2.GetSqueakDisplayReply(
-                    squeak_display_entry=None
-                )
-            else:
-                display_message = squeak_entry_to_message(
-                    squeak_display)
-                yield squeak_admin_pb2.GetSqueakDisplayReply(
-                    squeak_display_entry=display_message
-                )
+            display_message = optional_squeak_entry_to_message(
+                squeak_display)
+            yield squeak_admin_pb2.GetSqueakDisplayReply(
+                squeak_display_entry=display_message
+            )
 
     def handle_subscribe_timeline_squeak_displays(self, request, stopped):
         logger.info("Handle subscribe timeline squeak displays")
@@ -1057,16 +1034,11 @@ class SqueakAdminServerHandler(object):
             stopped,
         )
         for squeak_display in squeak_display_stream:
-            if squeak_display is None:
-                yield squeak_admin_pb2.GetSqueakDisplayReply(
-                    squeak_display_entry=None
-                )
-            else:
-                display_message = squeak_entry_to_message(
-                    squeak_display)
-                yield squeak_admin_pb2.GetSqueakDisplayReply(
-                    squeak_display_entry=display_message
-                )
+            display_message = optional_squeak_entry_to_message(
+                squeak_display)
+            yield squeak_admin_pb2.GetSqueakDisplayReply(
+                squeak_display_entry=display_message
+            )
 
     def handle_get_external_address(self, request):
         logger.info("Handle get external address")

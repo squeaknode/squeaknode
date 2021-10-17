@@ -268,3 +268,9 @@ def optional_squeak_hash_to_hex(squeak_hash: Optional[bytes]) -> Optional[str]:
     if squeak_hash is None:
         return None
     return squeak_hash.hex()
+
+
+def optional_squeak_entry_to_message(squeak_entry: Optional[SqueakEntry]) -> Optional[squeak_admin_pb2.SqueakDisplayEntry]:
+    if squeak_entry is None:
+        return None
+    return squeak_entry_to_message(squeak_entry)
