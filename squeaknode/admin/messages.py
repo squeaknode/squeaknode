@@ -292,3 +292,9 @@ def optional_sent_payment_to_message(sent_payment: Optional[SentPayment]) -> Opt
     if sent_payment is None:
         return None
     return sent_payment_to_message(sent_payment)
+
+
+def optional_squeak_to_detail_message(squeak: Optional[CSqueak]) -> Optional[squeak_admin_pb2.SqueakDetailEntry]:
+    if squeak is None:
+        return None
+    return squeak_to_detail_message(squeak)

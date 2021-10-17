@@ -30,6 +30,7 @@ from squeaknode.admin.messages import optional_squeak_entry_to_message
 from squeaknode.admin.messages import optional_squeak_hash_to_hex
 from squeaknode.admin.messages import optional_squeak_peer_to_message
 from squeaknode.admin.messages import optional_squeak_profile_to_message
+from squeaknode.admin.messages import optional_squeak_to_detail_message
 from squeaknode.admin.messages import payment_summary_to_message
 from squeaknode.admin.messages import peer_address_to_message
 from squeaknode.admin.messages import received_offer_to_message
@@ -217,3 +218,15 @@ def test_optional_sent_payment_to_message(sent_payment, sent_payment_msg):
     msg = optional_sent_payment_to_message(sent_payment)
 
     assert msg == sent_payment_msg
+
+
+def test_optional_squeak_detail_to_message_none():
+    msg = optional_squeak_to_detail_message(None)
+
+    assert msg is None
+
+
+def test_optional_squeak_detail_to_message(squeak, squeak_detail_msg):
+    msg = optional_squeak_to_detail_message(squeak)
+
+    assert msg == squeak_detail_msg

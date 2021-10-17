@@ -33,6 +33,7 @@ from squeaknode.admin.messages import optional_squeak_entry_to_message
 from squeaknode.admin.messages import optional_squeak_hash_to_hex
 from squeaknode.admin.messages import optional_squeak_peer_to_message
 from squeaknode.admin.messages import optional_squeak_profile_to_message
+from squeaknode.admin.messages import optional_squeak_to_detail_message
 from squeaknode.admin.messages import payment_summary_to_message
 from squeaknode.admin.messages import peer_address_to_message
 from squeaknode.admin.messages import received_offer_to_message
@@ -42,7 +43,6 @@ from squeaknode.admin.messages import sent_payment_to_message
 from squeaknode.admin.messages import squeak_entry_to_message
 from squeaknode.admin.messages import squeak_peer_to_message
 from squeaknode.admin.messages import squeak_profile_to_message
-from squeaknode.admin.messages import squeak_to_detail_message
 from squeaknode.admin.profile_image_util import base64_string_to_bytes
 from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
 from squeaknode.node.squeak_controller import SqueakController
@@ -703,11 +703,7 @@ class SqueakAdminServerHandler(object):
                 squeak_hash
             )
         )
-        if squeak is None:
-            return squeak_admin_pb2.GetSqueakDetailsReply(
-                squeak_detail_entry=None
-            )
-        detail_message = squeak_to_detail_message(squeak)
+        detail_message = optional_squeak_to_detail_message(squeak)
         return squeak_admin_pb2.GetSqueakDetailsReply(
             squeak_detail_entry=detail_message
         )
