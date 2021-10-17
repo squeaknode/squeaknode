@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import logging
+from typing import Optional
 
 from squeak.core import CSqueak
 
@@ -255,3 +256,15 @@ def message_to_received_payment(msg: squeak_admin_pb2.ReceivedPayment) -> Receiv
         settle_index=0,  # TODO: This is not correct, fix later.
         peer_address=message_to_peer_address(msg.peer_address),
     )
+
+
+def optional_squeak_profile_to_message(squeak_profile: Optional[SqueakProfile]) -> Optional[squeak_admin_pb2.SqueakProfile]:
+    if squeak_profile is None:
+        return None
+    return squeak_profile_to_message(squeak_profile)
+
+
+def optional_squeak_hash_to_hex(squeak_hash: Optional[bytes]) -> Optional[str]:
+    if squeak_hash is None:
+        return None
+    return squeak_hash.hex()

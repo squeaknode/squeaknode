@@ -27,6 +27,8 @@ from squeaknode.admin.messages import message_to_peer_address
 from squeaknode.admin.messages import message_to_received_payment
 from squeaknode.admin.messages import message_to_sent_payment
 from squeaknode.admin.messages import message_to_squeak_entry
+from squeaknode.admin.messages import optional_squeak_hash_to_hex
+from squeaknode.admin.messages import optional_squeak_profile_to_message
 from squeaknode.admin.messages import payment_summary_to_message
 from squeaknode.admin.messages import peer_address_to_message
 from squeaknode.admin.messages import received_offer_to_message
@@ -175,11 +177,7 @@ class SqueakAdminServerHandler(object):
         profile_id = request.profile_id
         logger.info("Handle get squeak profile with id: {}".format(profile_id))
         squeak_profile = self.squeak_controller.get_squeak_profile(profile_id)
-        if squeak_profile is None:
-            return squeak_admin_pb2.GetSqueakProfileReply(
-                squeak_profile=None,
-            )
-        squeak_profile_msg = squeak_profile_to_message(squeak_profile)
+        squeak_profile_msg = optional_squeak_profile_to_message(squeak_profile)
         return squeak_admin_pb2.GetSqueakProfileReply(
             squeak_profile=squeak_profile_msg,
         )
@@ -190,11 +188,7 @@ class SqueakAdminServerHandler(object):
             "Handle get squeak profile with address: {}".format(address))
         squeak_profile = self.squeak_controller.get_squeak_profile_by_address(
             address)
-        if squeak_profile is None:
-            return squeak_admin_pb2.GetSqueakProfileByAddressReply(
-                squeak_profile=None
-            )
-        squeak_profile_msg = squeak_profile_to_message(squeak_profile)
+        squeak_profile_msg = optional_squeak_profile_to_message(squeak_profile)
         return squeak_admin_pb2.GetSqueakProfileByAddressReply(
             squeak_profile=squeak_profile_msg
         )
@@ -204,11 +198,7 @@ class SqueakAdminServerHandler(object):
         logger.info("Handle get squeak profile with name: {}".format(name))
         squeak_profile = self.squeak_controller.get_squeak_profile_by_name(
             name)
-        if squeak_profile is None:
-            return squeak_admin_pb2.GetSqueakProfileByNameReply(
-                squeak_profile=None
-            )
-        squeak_profile_msg = squeak_profile_to_message(squeak_profile)
+        squeak_profile_msg = optional_squeak_profile_to_message(squeak_profile)
         return squeak_admin_pb2.GetSqueakProfileByNameReply(
             squeak_profile=squeak_profile_msg
         )
@@ -316,12 +306,10 @@ class SqueakAdminServerHandler(object):
         inserted_squeak_hash = self.squeak_controller.make_squeak(
             profile_id, content_str, replyto_hash
         )
-        if inserted_squeak_hash is None:
-            return squeak_admin_pb2.MakeSqueakReply(
-                squeak_hash=None,
-            )
+        inserted_squeak_hash_str = optional_squeak_hash_to_hex(
+            inserted_squeak_hash)
         return squeak_admin_pb2.MakeSqueakReply(
-            squeak_hash=inserted_squeak_hash.hex(),
+            squeak_hash=inserted_squeak_hash_str,
         )
 
     def handle_get_squeak_display_entry(self, request):
