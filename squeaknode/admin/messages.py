@@ -280,3 +280,9 @@ def optional_squeak_peer_to_message(squeak_peer: Optional[SqueakPeer]) -> Option
     if squeak_peer is None:
         return None
     return squeak_peer_to_message(squeak_peer)
+
+
+def optional_received_offer_to_message(received_offer: Optional[ReceivedOffer]) -> Optional[squeak_admin_pb2.OfferDisplayEntry]:
+    if received_offer is None:
+        return None
+    return received_offer_to_message(received_offer)

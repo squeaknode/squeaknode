@@ -24,6 +24,7 @@ from squeaknode.admin.messages import message_to_peer_address
 from squeaknode.admin.messages import message_to_received_payment
 from squeaknode.admin.messages import message_to_sent_payment
 from squeaknode.admin.messages import message_to_squeak_entry
+from squeaknode.admin.messages import optional_received_offer_to_message
 from squeaknode.admin.messages import optional_squeak_entry_to_message
 from squeaknode.admin.messages import optional_squeak_hash_to_hex
 from squeaknode.admin.messages import optional_squeak_peer_to_message
@@ -191,3 +192,15 @@ def test_optional_peer_to_message(peer, peer_msg):
     msg = optional_squeak_peer_to_message(peer)
 
     assert msg == peer_msg
+
+
+def test_optional_received_offer_to_message_none():
+    msg = optional_received_offer_to_message(None)
+
+    assert msg is None
+
+
+def test_optional_received_offer_to_message(received_offer, received_offer_msg):
+    msg = optional_received_offer_to_message(received_offer)
+
+    assert msg == received_offer_msg

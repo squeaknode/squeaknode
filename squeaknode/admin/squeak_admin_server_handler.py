@@ -27,6 +27,7 @@ from squeaknode.admin.messages import message_to_peer_address
 from squeaknode.admin.messages import message_to_received_payment
 from squeaknode.admin.messages import message_to_sent_payment
 from squeaknode.admin.messages import message_to_squeak_entry
+from squeaknode.admin.messages import optional_received_offer_to_message
 from squeaknode.admin.messages import optional_squeak_entry_to_message
 from squeaknode.admin.messages import optional_squeak_hash_to_hex
 from squeaknode.admin.messages import optional_squeak_peer_to_message
@@ -584,14 +585,10 @@ class SqueakAdminServerHandler(object):
     def handle_get_buy_offer(self, request):
         offer_id = request.offer_id
         logger.info("Handle get buy offer for hash: {}".format(offer_id))
-        offer = self.squeak_controller.get_received_offer(offer_id)
-        if offer is None:
-            return squeak_admin_pb2.GetBuyOfferReply(
-                offer=None,
-            )
-        offer_msg = received_offer_to_message(offer)
+        received_offer = self.squeak_controller.get_received_offer(offer_id)
+        received_offer_msg = optional_received_offer_to_message(received_offer)
         return squeak_admin_pb2.GetBuyOfferReply(
-            offer=offer_msg,
+            offer=received_offer_msg,
         )
 
     def handle_download_squeaks(self, request):
