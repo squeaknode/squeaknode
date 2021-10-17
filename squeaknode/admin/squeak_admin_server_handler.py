@@ -901,16 +901,11 @@ class SqueakAdminServerHandler(object):
             stopped,
         )
         for connected_peer in connected_peer_stream:
-            if connected_peer is None:
-                yield squeak_admin_pb2.GetConnectedPeerReply(
-                    connected_peer=None
-                )
-            else:
-                connected_peers_display_msg = connected_peer_to_message(
-                    connected_peer)
-                yield squeak_admin_pb2.GetConnectedPeerReply(
-                    connected_peer=connected_peers_display_msg,
-                )
+            connected_peer_display_msg = optional_connected_peer_to_message(
+                connected_peer)
+            yield squeak_admin_pb2.GetConnectedPeerReply(
+                connected_peer=connected_peer_display_msg,
+            )
 
     def handle_subscribe_buy_offers(self, request, stopped):
         squeak_hash_str = request.squeak_hash
