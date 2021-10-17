@@ -28,6 +28,7 @@ from squeaknode.admin.messages import message_to_received_payment
 from squeaknode.admin.messages import message_to_sent_payment
 from squeaknode.admin.messages import message_to_squeak_entry
 from squeaknode.admin.messages import optional_received_offer_to_message
+from squeaknode.admin.messages import optional_sent_payment_to_message
 from squeaknode.admin.messages import optional_squeak_entry_to_message
 from squeaknode.admin.messages import optional_squeak_hash_to_hex
 from squeaknode.admin.messages import optional_squeak_peer_to_message
@@ -687,11 +688,7 @@ class SqueakAdminServerHandler(object):
         logger.info(
             "Handle get sent payment with id: {}".format(sent_payment_id))
         sent_payment = self.squeak_controller.get_sent_payment(sent_payment_id)
-        if sent_payment is None:
-            return squeak_admin_pb2.GetSentPaymentReply(
-                sent_payment=None,
-            )
-        sent_payment_msg = sent_payment_to_message(sent_payment)
+        sent_payment_msg = optional_sent_payment_to_message(sent_payment)
         return squeak_admin_pb2.GetSentPaymentReply(
             sent_payment=sent_payment_msg,
         )

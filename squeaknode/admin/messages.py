@@ -286,3 +286,9 @@ def optional_received_offer_to_message(received_offer: Optional[ReceivedOffer]) 
     if received_offer is None:
         return None
     return received_offer_to_message(received_offer)
+
+
+def optional_sent_payment_to_message(sent_payment: Optional[SentPayment]) -> Optional[squeak_admin_pb2.SentPayment]:
+    if sent_payment is None:
+        return None
+    return sent_payment_to_message(sent_payment)
