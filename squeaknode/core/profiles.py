@@ -68,3 +68,11 @@ def validate_profile_name(profile_name: str) -> None:
         raise Exception(
             "Profile name cannot be empty.",
         )
+
+
+def get_profile_private_key(profile: SqueakProfile) -> bytes:
+    if profile.private_key is None:
+        raise Exception("Profile: {} does not have a private key.".format(
+            profile,
+        ))
+    return profile.private_key

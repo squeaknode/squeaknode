@@ -45,6 +45,7 @@ from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.peers import create_saved_peer
 from squeaknode.core.profiles import create_contact_profile
 from squeaknode.core.profiles import create_signing_profile
+from squeaknode.core.profiles import get_profile_private_key
 from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.received_payment import ReceivedPayment
 from squeaknode.core.received_payment_summary import ReceivedPaymentSummary
@@ -320,13 +321,9 @@ class SqueakController:
         profile = self.get_squeak_profile(profile_id)
         if profile is None:
             raise Exception("Profile with id: {} does not exist.".format(
-                profile_id
+                profile_id,
             ))
-        if profile.private_key is None:
-            raise Exception("Profile with id: {} does not have a private key.".format(
-                profile_id
-            ))
-        return profile.private_key
+        return get_profile_private_key(profile)
 
     def create_peer(self, peer_name: str, peer_address: PeerAddress):
         squeak_peer = create_saved_peer(

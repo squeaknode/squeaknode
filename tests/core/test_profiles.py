@@ -23,6 +23,7 @@ import pytest
 
 from squeaknode.core.profiles import create_contact_profile
 from squeaknode.core.profiles import create_signing_profile
+from squeaknode.core.profiles import get_profile_private_key
 
 
 @pytest.fixture
@@ -71,3 +72,15 @@ def test_create_contact_profile_invalid_address(profile_name, invalid_address_st
     with pytest.raises(Exception) as excinfo:
         create_contact_profile(profile_name, invalid_address_str)
     assert "Invalid squeak address" in str(excinfo.value)
+
+
+def test_get_profile_private_key(signing_profile, signing_key_bytes):
+    private_key = get_profile_private_key(signing_profile)
+
+    assert private_key == signing_key_bytes
+
+
+def test_get_profile_private_key_missing(contact_profile):
+    with pytest.raises(Exception) as excinfo:
+        get_profile_private_key(contact_profile)
+    assert "does not have a private key" in str(excinfo.value)
