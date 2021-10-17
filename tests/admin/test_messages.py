@@ -24,6 +24,7 @@ from squeaknode.admin.messages import message_to_peer_address
 from squeaknode.admin.messages import message_to_received_payment
 from squeaknode.admin.messages import message_to_sent_payment
 from squeaknode.admin.messages import message_to_squeak_entry
+from squeaknode.admin.messages import optional_connected_peer_to_message
 from squeaknode.admin.messages import optional_received_offer_to_message
 from squeaknode.admin.messages import optional_sent_payment_to_message
 from squeaknode.admin.messages import optional_squeak_entry_to_message
@@ -230,3 +231,15 @@ def test_optional_squeak_detail_to_message(squeak, squeak_detail_msg):
     msg = optional_squeak_to_detail_message(squeak)
 
     assert msg == squeak_detail_msg
+
+
+def test_optional_connected_peer_to_message_none():
+    msg = optional_connected_peer_to_message(None)
+
+    assert msg is None
+
+
+def test_optional_connected_peer_to_message(connected_peer, connected_peer_msg):
+    msg = optional_connected_peer_to_message(connected_peer)
+
+    assert msg == connected_peer_msg

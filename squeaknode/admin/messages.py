@@ -298,3 +298,9 @@ def optional_squeak_to_detail_message(squeak: Optional[CSqueak]) -> Optional[squ
     if squeak is None:
         return None
     return squeak_to_detail_message(squeak)
+
+
+def optional_connected_peer_to_message(connected_peer: Optional[ConnectedPeer]) -> Optional[squeak_admin_pb2.ConnectedPeer]:
+    if connected_peer is None:
+        return None
+    return connected_peer_to_message(connected_peer)

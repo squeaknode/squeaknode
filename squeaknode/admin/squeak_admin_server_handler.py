@@ -27,6 +27,7 @@ from squeaknode.admin.messages import message_to_peer_address
 from squeaknode.admin.messages import message_to_received_payment
 from squeaknode.admin.messages import message_to_sent_payment
 from squeaknode.admin.messages import message_to_squeak_entry
+from squeaknode.admin.messages import optional_connected_peer_to_message
 from squeaknode.admin.messages import optional_received_offer_to_message
 from squeaknode.admin.messages import optional_sent_payment_to_message
 from squeaknode.admin.messages import optional_squeak_entry_to_message
@@ -865,11 +866,8 @@ class SqueakAdminServerHandler(object):
         logger.info("Connected peer: {}".format(
             connected_peer,
         ))
-        if connected_peer is None:
-            return squeak_admin_pb2.GetConnectedPeerReply(
-                connected_peer=None
-            )
-        connected_peers_display_msg = connected_peer_to_message(connected_peer)
+        connected_peers_display_msg = optional_connected_peer_to_message(
+            connected_peer)
         return squeak_admin_pb2.GetConnectedPeerReply(
             connected_peer=connected_peers_display_msg
         )
