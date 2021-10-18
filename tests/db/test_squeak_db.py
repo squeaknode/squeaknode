@@ -630,3 +630,12 @@ def test_lookup_squeaks_unlocked_all_none(
     )
 
     assert len(squeak_hashes) == 0
+
+
+def test_get_number_of_squeaks(
+        squeak_db,
+        inserted_squeak_hashes,
+):
+    num_squeaks = squeak_db.get_number_of_squeaks()
+
+    assert num_squeaks == len(inserted_squeak_hashes)
