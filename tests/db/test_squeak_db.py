@@ -389,3 +389,31 @@ def test_get_address_squeak_entries_other_address(
     )
 
     assert len(address_squeak_entries) == 0
+
+
+def test_get_search_squeak_entries(
+        squeak_db,
+        unlocked_squeak_hash,
+):
+    # Get the search squeak entries.
+    squeak_entries = squeak_db.get_squeak_entries_for_text_search(
+        search_text="hello",
+        limit=200,
+        last_entry=None,
+    )
+
+    assert len(squeak_entries) == 1
+
+
+def test_get_search_squeak_entries_other_text(
+        squeak_db,
+        unlocked_squeak_hash,
+):
+    # Get the search squeak entries.
+    squeak_entries = squeak_db.get_squeak_entries_for_text_search(
+        search_text="goodbye",
+        limit=200,
+        last_entry=None,
+    )
+
+    assert len(squeak_entries) == 0
