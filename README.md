@@ -20,8 +20,6 @@ Node for [Squeak protocol](https://github.com/yzernik/squeak/blob/master/docs/PR
 	```
 	[node]
 	network=mainnet
-	tor_proxy_ip=localhost
-	tor_proxy_port=9150
 
 	[lnd]
 	host=localhost
@@ -34,6 +32,10 @@ Node for [Squeak protocol](https://github.com/yzernik/squeak/blob/master/docs/PR
 	rpc_user=devuser
 	rpc_pass=devpass
 	zeromq_hashblock_port=28334
+
+	[tor]
+	proxy_ip=localhost
+	proxy_port=9150
 
 	[webadmin]
 	enabled=true

@@ -88,6 +88,12 @@ class LndConfig(Config):
     macaroon_path = key(cast=str, required=False, default="")
 
 
+@section('tor')
+class TorConfig(Config):
+    proxy_ip = key(cast=str, required=False, default="")
+    proxy_port = key(cast=int, required=False, default=0)
+
+
 @section('server')
 class ServerConfig(Config):
     rpc_enabled = key(cast=bool, required=False, default=True)
@@ -140,10 +146,6 @@ class NodeConfig(Config):
         cast=int, required=False, default=DEFAULT_OFFER_DELETION_INTERVAL_S)
     interest_block_interval = key(
         cast=int, required=False, default=DEFAULT_INTEREST_BLOCK_INTERVAL)
-    tor_proxy_ip = key(
-        cast=str, required=False, default="")
-    tor_proxy_port = key(
-        cast=int, required=False, default=0)
     external_address = key(
         cast=str, required=False, default="")
 
@@ -156,6 +158,7 @@ class DbConfig(Config):
 class SqueaknodeConfig(Config):
     bitcoin = group_key(BitcoinConfig)
     lnd = group_key(LndConfig)
+    tor = group_key(TorConfig)
     server = group_key(ServerConfig)
     admin = group_key(AdminConfig)
     webadmin = group_key(WebadminConfig)
