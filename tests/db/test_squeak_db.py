@@ -639,3 +639,19 @@ def test_get_number_of_squeaks(
     num_squeaks = squeak_db.get_number_of_squeaks()
 
     assert num_squeaks == len(inserted_squeak_hashes)
+
+
+def test_number_of_squeaks_with_address_in_block_range(
+        squeak_db,
+        address_str,
+        inserted_squeak_hashes,
+):
+    min_block = 43
+    max_block = 91
+    num_squeaks = squeak_db.number_of_squeaks_with_address_in_block_range(
+        address=address_str,
+        min_block=min_block,
+        max_block=max_block,
+    )
+
+    assert num_squeaks == max_block - min_block + 1
