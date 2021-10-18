@@ -216,13 +216,11 @@ class SqueakNode:
     def initialize_new_squeak_worker(self):
         self.new_squeak_worker = UpdateSubscribedSqueaksWorker(
             self.squeak_controller,
-            self.network_manager,
         )
 
     def initialize_new_secret_key_worker(self):
         self.new_secret_key_worker = UpdateSubscribedSecretKeysWorker(
             self.squeak_controller,
-            self.network_manager,
         )
 
     def initialize_peer_subscription_update_worker(self):
