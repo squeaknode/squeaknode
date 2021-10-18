@@ -41,7 +41,7 @@ from werkzeug.serving import make_server
 from proto import lnd_pb2
 from proto import squeak_admin_pb2
 from squeaknode.admin.webapp.forms import LoginForm
-from squeaknode.admin.webapp.squeak_admin_web_user import User
+from squeaknode.admin.webapp.user import User
 
 logger = logging.getLogger(__name__)
 

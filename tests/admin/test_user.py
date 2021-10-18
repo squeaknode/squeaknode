@@ -21,7 +21,7 @@
 # SOFTWARE.
 import pytest
 
-from squeaknode.admin.webapp.squeak_admin_web_user import User
+from squeaknode.admin.webapp.user import User
 
 
 @pytest.fixture
