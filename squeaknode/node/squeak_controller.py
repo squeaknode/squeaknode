@@ -632,9 +632,9 @@ class SqueakController:
     def lookup_squeaks(
             self,
             addresses: List[str],
-            min_block: int,
-            max_block: int,
-            reply_to_hash: bytes,
+            min_block: Optional[int],
+            max_block: Optional[int],
+            reply_to_hash: Optional[bytes],
     ) -> List[bytes]:
         return self.squeak_db.lookup_squeaks(
             addresses,
@@ -647,9 +647,9 @@ class SqueakController:
     def lookup_secret_keys(
             self,
             addresses: List[str],
-            min_block: int,
-            max_block: int,
-            reply_to_hash: bytes,
+            min_block: Optional[int],
+            max_block: Optional[int],
+            reply_to_hash: Optional[bytes],
     ) -> List[bytes]:
         return self.squeak_db.lookup_squeaks(
             addresses,
