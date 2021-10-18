@@ -122,12 +122,28 @@ def squeak_content():
 
 
 @pytest.fixture
+def reply_squeak_content():
+    yield "this is a reply!"
+
+
+@pytest.fixture
 def squeak_and_secret_key(signing_key, squeak_content, block_info):
     yield make_squeak_with_block(
         signing_key,
         squeak_content,
         block_info.block_height,
         block_info.block_hash,
+    )
+
+
+@pytest.fixture
+def reply_squeak_and_secret_key(signing_key, reply_squeak_content, block_info, squeak_hash):
+    yield make_squeak_with_block(
+        signing_key,
+        reply_squeak_content,
+        block_info.block_height,
+        block_info.block_hash,
+        replyto_hash=squeak_hash,
     )
 
 
@@ -166,6 +182,17 @@ def squeak_time(squeak):
 @pytest.fixture
 def squeak_reply_to_hash(squeak):
     yield None
+
+
+@pytest.fixture
+def reply_squeak(reply_squeak_and_secret_key):
+    squeak, _ = reply_squeak_and_secret_key
+    yield squeak
+
+
+@pytest.fixture
+def reply_squeak_hash(reply_squeak):
+    yield get_hash(reply_squeak)
 
 
 @pytest.fixture
