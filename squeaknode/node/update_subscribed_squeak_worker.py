@@ -23,7 +23,6 @@ import logging
 import threading
 
 from squeaknode.core.squeaks import get_hash
-from squeaknode.network.network_manager import NetworkManager
 from squeaknode.node.squeak_controller import SqueakController
 
 
@@ -38,12 +37,8 @@ EMPTY_HASH = b'\x00' * HASH_LENGTH
 
 class UpdateSubscribedSqueaksWorker:
 
-    def __init__(self,
-                 squeak_controller: SqueakController,
-                 network_manager: NetworkManager,
-                 ):
+    def __init__(self, squeak_controller: SqueakController):
         self.squeak_controller = squeak_controller
-        self.network_manager = network_manager
         self.stopped = threading.Event()
 
     def start_running(self):
