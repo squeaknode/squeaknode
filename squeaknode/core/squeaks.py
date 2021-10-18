@@ -37,7 +37,18 @@ HASH_LENGTH = 32
 EMPTY_HASH = b'\x00' * HASH_LENGTH
 
 
-def get_hash(squeak):
+def get_hash(squeak: CSqueak):
+    """Get the hash of the given squeak.
+
+    Returns the bytes in the reverse order that `GetHash` of squeaklib
+    returns, because the convention is to use the opposite endian-ness.
+
+    Args:
+        squeak: The given squeak object
+
+    Returns:
+        bytes: the squeak that was created together
+    """
     return squeak.GetHash()[::-1]
 
 

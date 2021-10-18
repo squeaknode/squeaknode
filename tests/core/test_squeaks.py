@@ -21,7 +21,14 @@
 # SOFTWARE.
 from squeaknode.core.squeaks import check_squeak
 from squeaknode.core.squeaks import get_decrypted_content
+from squeaknode.core.squeaks import get_hash
 from squeaknode.core.squeaks import get_payment_point_of_secret_key
+
+
+def test_get_hash(squeak, squeak_hash):
+    expected_hash = squeak.GetHash()[::-1]
+
+    assert get_hash(squeak) == expected_hash
 
 
 def test_make_squeak(squeak, block_count):
