@@ -494,7 +494,6 @@ def test_lookup_squeaks_all(
         squeak_db,
         inserted_squeak_hashes,
 ):
-    # Get the squeak hashes for a given range.
     squeak_hashes = squeak_db.lookup_squeaks(
         addresses=None,
         min_block=None,
@@ -511,7 +510,6 @@ def test_lookup_squeaks_use_address(
         inserted_squeak_hashes,
         address_str,
 ):
-    # Get the squeak hashes for a given range.
     other_address_str = str(gen_address())
     squeak_hashes = squeak_db.lookup_squeaks(
         addresses=[address_str, other_address_str],
@@ -529,7 +527,6 @@ def test_lookup_squeaks_use_address_no_matches(
         inserted_squeak_hashes,
         address_str,
 ):
-    # Get the squeak hashes for a given range.
     other_address_str = str(gen_address())
     squeak_hashes = squeak_db.lookup_squeaks(
         addresses=[other_address_str],
@@ -546,7 +543,6 @@ def test_lookup_squeaks_min_block(
         squeak_db,
         inserted_squeak_hashes,
 ):
-    # Get the squeak hashes for a given range.
     min_block = 35
     squeak_hashes = squeak_db.lookup_squeaks(
         addresses=None,
@@ -563,7 +559,6 @@ def test_lookup_squeaks_max_block(
         squeak_db,
         inserted_squeak_hashes,
 ):
-    # Get the squeak hashes for a given range.
     max_block = 27
     squeak_hashes = squeak_db.lookup_squeaks(
         addresses=None,
@@ -581,7 +576,6 @@ def test_lookup_squeaks_reply_to(
         inserted_squeak_hash,
         inserted_reply_squeak_hash,
 ):
-    # Get the squeak hashes for a given range.
     squeak_hashes = squeak_db.lookup_squeaks(
         addresses=None,
         min_block=None,
@@ -597,13 +591,42 @@ def test_lookup_squeaks_reply_to_none(
         squeak_db,
         inserted_squeak_hash,
 ):
-    # Get the squeak hashes for a given range.
     squeak_hashes = squeak_db.lookup_squeaks(
         addresses=None,
         min_block=None,
         max_block=None,
         reply_to_hash=inserted_squeak_hash,
         include_locked=True,
+    )
+
+    assert len(squeak_hashes) == 0
+
+
+def test_lookup_squeaks_unlocked_all(
+        squeak_db,
+        unlocked_squeak_hash,
+):
+    squeak_hashes = squeak_db.lookup_squeaks(
+        addresses=None,
+        min_block=None,
+        max_block=None,
+        reply_to_hash=None,
+        include_locked=False,
+    )
+
+    assert len(squeak_hashes) == 1
+
+
+def test_lookup_squeaks_unlocked_all_none(
+        squeak_db,
+        inserted_squeak_hash,
+):
+    squeak_hashes = squeak_db.lookup_squeaks(
+        addresses=None,
+        min_block=None,
+        max_block=None,
+        reply_to_hash=None,
+        include_locked=False,
     )
 
     assert len(squeak_hashes) == 0
