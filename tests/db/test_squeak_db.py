@@ -24,6 +24,7 @@ import pytest
 from sqlalchemy import create_engine
 
 from squeaknode.db.squeak_db import SqueakDb
+from tests.utils import gen_address
 from tests.utils import gen_squeak_with_block_header
 
 
@@ -358,3 +359,33 @@ def test_get_peer(squeak_db, peer, inserted_peer_id):
 
     assert retrieved_peer.peer_name == peer.peer_name
     assert retrieved_peer.address == peer.address
+
+
+def test_get_address_squeak_entries(
+        squeak_db,
+        address_str,
+        inserted_squeak_hashes,
+):
+    # Get the address squeak entries.
+    address_squeak_entries = squeak_db.get_squeak_entries_for_address(
+        address=address_str,
+        limit=200,
+        last_entry=None,
+    )
+
+    assert len(address_squeak_entries) == len(inserted_squeak_hashes)
+
+
+def test_get_address_squeak_entries_other_address(
+        squeak_db,
+        inserted_squeak_hashes,
+):
+    # Get the address squeak entries for a different address.
+    other_address_str = str(gen_address())
+    address_squeak_entries = squeak_db.get_squeak_entries_for_address(
+        address=other_address_str,
+        limit=200,
+        last_entry=None,
+    )
+
+    assert len(address_squeak_entries) == 0
