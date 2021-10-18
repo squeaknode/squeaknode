@@ -25,6 +25,7 @@ from sqlalchemy import create_engine
 
 from squeaknode.db.squeak_db import SqueakDb
 from tests.utils import gen_address
+from tests.utils import gen_random_hash
 from tests.utils import gen_squeak_with_block_header
 
 
@@ -43,6 +44,11 @@ def squeak_db(db_engine):
 @pytest.fixture
 def inserted_squeak_hash(squeak_db, squeak, block_header):
     yield squeak_db.insert_squeak(squeak, block_header)
+
+
+@pytest.fixture
+def inserted_reply_squeak_hash(squeak_db, reply_squeak, block_header):
+    yield squeak_db.insert_squeak(reply_squeak, block_header)
 
 
 @pytest.fixture
@@ -414,6 +420,42 @@ def test_get_search_squeak_entries_other_text(
         search_text="goodbye",
         limit=200,
         last_entry=None,
+    )
+
+    assert len(squeak_entries) == 0
+
+
+def test_get_ancestor_squeak_entries(
+        squeak_db,
+        inserted_squeak_hash,
+        inserted_reply_squeak_hash,
+):
+    # Get the ancestor squeak entries.
+    squeak_entries = squeak_db.get_thread_ancestor_squeak_entries(
+        squeak_hash=inserted_reply_squeak_hash,
+    )
+
+    assert len(squeak_entries) == 2
+
+
+def test_get_ancestor_squeak_entries_no_ancestors(
+        squeak_db,
+        inserted_squeak_hash,
+):
+    # Get the ancestor squeak entries.
+    squeak_entries = squeak_db.get_thread_ancestor_squeak_entries(
+        squeak_hash=inserted_squeak_hash,
+    )
+
+    assert len(squeak_entries) == 1
+
+
+def test_get_ancestor_squeak_entries_no_ancestors_or_root(
+        squeak_db,
+):
+    # Get the ancestor squeak entries.
+    squeak_entries = squeak_db.get_thread_ancestor_squeak_entries(
+        squeak_hash=gen_random_hash(),
     )
 
     assert len(squeak_entries) == 0
