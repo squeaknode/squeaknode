@@ -459,3 +459,32 @@ def test_get_ancestor_squeak_entries_no_ancestors_or_root(
     )
 
     assert len(squeak_entries) == 0
+
+
+def test_get_reply_squeak_entries(
+        squeak_db,
+        inserted_squeak_hash,
+        inserted_reply_squeak_hash,
+):
+    # Get the reply squeak entries.
+    squeak_entries = squeak_db.get_thread_reply_squeak_entries(
+        squeak_hash=inserted_squeak_hash,
+        limit=200,
+        last_entry=None,
+    )
+
+    assert len(squeak_entries) == 1
+
+
+def test_get_reply_squeak_entries_no_replies(
+        squeak_db,
+        inserted_squeak_hash,
+):
+    # Get the reply squeak entries.
+    squeak_entries = squeak_db.get_thread_reply_squeak_entries(
+        squeak_hash=inserted_squeak_hash,
+        limit=200,
+        last_entry=None,
+    )
+
+    assert len(squeak_entries) == 0
