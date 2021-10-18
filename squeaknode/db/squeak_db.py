@@ -604,9 +604,9 @@ class SqueakDb:
     def lookup_squeaks(
         self,
         addresses: List[str],
-        min_block: int,
-        max_block: int,
-        reply_to_hash: bytes,
+        min_block: Optional[int],
+        max_block: Optional[int],
+        reply_to_hash: Optional[bytes],
         include_locked: bool = False,
     ) -> List[bytes]:
         """ Lookup squeaks. """
