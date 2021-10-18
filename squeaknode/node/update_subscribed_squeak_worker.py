@@ -61,18 +61,3 @@ class UpdateSubscribedSqueaksWorker:
             ))
             # self.forward_squeak(squeak)
             self.squeak_controller.forward_squeak(squeak)
-
-    # def forward_squeak(self, squeak):
-    #     logger.debug("Forward new squeak: {!r}".format(
-    #         get_hash(squeak).hex(),
-    #     ))
-    #     for peer in self.network_manager.get_connected_peers():
-    #         if peer.is_remote_subscribed(squeak):
-    #             logger.debug("Forwarding to peer: {}".format(
-    #                 peer,
-    #             ))
-    #             squeak_hash = get_hash(squeak)
-    #             inv = CInv(type=MSG_SQUEAK, hash=squeak_hash)
-    #             inv_msg = msg_inv(inv=[inv])
-    #             peer.send_msg(inv_msg)
-    #     logger.debug("Finished checking peers to forward.")
