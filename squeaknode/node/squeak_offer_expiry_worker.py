@@ -38,8 +38,7 @@ class SqueakOfferExpiryWorker(PeriodicWorker):
         self.clean_interval_s = clean_interval_s
 
     def work_fn(self):
-        self.squeak_controller.delete_all_expired_received_offers()
-        self.squeak_controller.delete_all_expired_sent_offers()
+        self.squeak_controller.delete_all_expired_offers()
 
     def get_interval_s(self):
         return self.clean_interval_s
