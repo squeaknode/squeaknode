@@ -174,6 +174,14 @@ def profile_with_new_name(squeak_db, profile_with_new_name_id):
 
 
 @pytest.fixture
+def deleted_profile_id(squeak_db, inserted_contact_profile_id):
+    squeak_db.delete_profile(
+        inserted_contact_profile_id,
+    )
+    yield inserted_contact_profile_id
+
+
+@pytest.fixture
 def inserted_squeak_hashes(squeak_db, signing_key):
     ret = []
     for i in range(100):
@@ -441,6 +449,12 @@ def test_set_profile_custom_price(squeak_db, profile_with_custom_price, custom_p
 def test_set_profile_name(squeak_db, profile_with_new_name, new_profile_name):
 
     assert profile_with_new_name.profile_name == new_profile_name
+
+
+def test_deleted_profile(squeak_db, deleted_profile_id):
+    profile = squeak_db.get_profile(deleted_profile_id)
+
+    assert profile is None
 
 
 def test_get_liked_squeak_entries(
