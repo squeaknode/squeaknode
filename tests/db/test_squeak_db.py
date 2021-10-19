@@ -857,3 +857,15 @@ def test_get_profile(
 
     assert profile == signing_profile._replace(
         profile_id=inserted_signing_profile_id)
+
+
+def test_get_profile_by_address(
+        squeak_db,
+        inserted_signing_profile_id,
+        signing_profile,
+        address_str,
+):
+    profile = squeak_db.get_profile_by_address(address_str)
+
+    assert profile == signing_profile._replace(
+        profile_id=inserted_signing_profile_id)
