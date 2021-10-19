@@ -116,6 +116,22 @@ def unfollowed_contact_profile(squeak_db, unfollowed_contact_profile_id):
 
 
 @pytest.fixture
+def profile_with_use_custom_price_id(squeak_db, inserted_contact_profile_id):
+    squeak_db.set_profile_use_custom_price(
+        inserted_contact_profile_id,
+        True,
+    )
+    yield inserted_contact_profile_id
+
+
+@pytest.fixture
+def profile_with_use_custom_price(squeak_db, profile_with_use_custom_price_id):
+    yield squeak_db.get_profile(
+        profile_with_use_custom_price_id,
+    )
+
+
+@pytest.fixture
 def inserted_squeak_hashes(squeak_db, signing_key):
     ret = []
     for i in range(100):
@@ -368,6 +384,16 @@ def test_set_profile_following(squeak_db, followed_contact_profile):
 def test_set_profile_unfollowing(squeak_db, unfollowed_contact_profile):
 
     assert not unfollowed_contact_profile.following
+
+
+def test_set_profile_use_custom_price(squeak_db, profile_with_use_custom_price):
+
+    assert profile_with_use_custom_price.use_custom_price
+
+
+# def test_set_profile_custom_price(squeak_db, profile_with_custom_price):
+
+#     assert profile_with_custom_price.use_custom_price
 
 
 def test_get_liked_squeak_entries(
