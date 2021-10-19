@@ -68,11 +68,6 @@ def inserted_signing_profile_id(squeak_db, signing_profile):
     yield squeak_db.insert_profile(signing_profile)
 
 
-# @pytest.fixture
-# def inserted_signing_profile(squeak_db, inserted_signing_profile_id):
-#     yield squeak_db.get_profile(inserted_signing_profile_id)
-
-
 @pytest.fixture
 def inserted_contact_profile_id(squeak_db, contact_profile):
     yield squeak_db.insert_profile(contact_profile)
@@ -92,13 +87,6 @@ def followed_contact_profile_id(squeak_db, inserted_contact_profile_id):
     yield inserted_contact_profile_id
 
 
-# @pytest.fixture
-# def followed_contact_profile(squeak_db, followed_contact_profile_id):
-#     yield squeak_db.get_profile(
-#         followed_contact_profile_id,
-#     )
-
-
 @pytest.fixture
 def unfollowed_contact_profile_id(squeak_db, followed_contact_profile_id):
     squeak_db.set_profile_following(
@@ -108,13 +96,6 @@ def unfollowed_contact_profile_id(squeak_db, followed_contact_profile_id):
     yield followed_contact_profile_id
 
 
-# @pytest.fixture
-# def unfollowed_contact_profile(squeak_db, unfollowed_contact_profile_id):
-#     yield squeak_db.get_profile(
-#         unfollowed_contact_profile_id,
-#     )
-
-
 @pytest.fixture
 def profile_with_use_custom_price_id(squeak_db, inserted_contact_profile_id):
     squeak_db.set_profile_use_custom_price(
@@ -122,13 +103,6 @@ def profile_with_use_custom_price_id(squeak_db, inserted_contact_profile_id):
         True,
     )
     yield inserted_contact_profile_id
-
-
-# @pytest.fixture
-# def profile_with_use_custom_price(squeak_db, profile_with_use_custom_price_id):
-#     yield squeak_db.get_profile(
-#         profile_with_use_custom_price_id,
-#     )
 
 
 @pytest.fixture
@@ -150,13 +124,6 @@ def profile_with_custom_price_id(squeak_db, inserted_contact_profile_id, custom_
     yield inserted_contact_profile_id
 
 
-# @pytest.fixture
-# def profile_with_custom_price(squeak_db, profile_with_custom_price_id):
-#     yield squeak_db.get_profile(
-#         profile_with_custom_price_id,
-#     )
-
-
 @pytest.fixture
 def profile_with_new_name_id(squeak_db, inserted_contact_profile_id, new_profile_name):
     squeak_db.set_profile_name(
@@ -164,13 +131,6 @@ def profile_with_new_name_id(squeak_db, inserted_contact_profile_id, new_profile
         new_profile_name,
     )
     yield inserted_contact_profile_id
-
-
-# @pytest.fixture
-# def profile_with_new_name(squeak_db, profile_with_new_name_id):
-#     yield squeak_db.get_profile(
-#         profile_with_new_name_id,
-#     )
 
 
 @pytest.fixture
@@ -408,22 +368,6 @@ def test_get_timeline_squeak_entries_all_unfollowed(squeak_db, unfollowed_squeak
     )
 
     assert len(timeline_squeak_entries) == 0
-
-
-# def test_get_signing_profile(squeak_db, signing_profile, inserted_signing_profile):
-
-#     assert inserted_signing_profile.profile_id is not None
-#     assert inserted_signing_profile.profile_name == signing_profile.profile_name
-#     assert inserted_signing_profile.private_key == signing_profile.private_key
-#     assert inserted_signing_profile.address == signing_profile.address
-
-
-# def test_get_contact_profile(squeak_db, contact_profile, inserted_contact_profile):
-
-#     assert inserted_contact_profile.profile_id is not None
-#     assert inserted_contact_profile.private_key is None
-#     assert inserted_contact_profile.profile_name == contact_profile.profile_name
-#     assert inserted_contact_profile.address == contact_profile.address
 
 
 def test_set_profile_following(squeak_db, followed_contact_profile_id):
