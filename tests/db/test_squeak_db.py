@@ -116,6 +116,11 @@ def new_profile_name():
 
 
 @pytest.fixture
+def profile_image_bytes():
+    yield bytes.fromhex("deadbeef")
+
+
+@pytest.fixture
 def profile_with_custom_price_id(squeak_db, inserted_contact_profile_id, custom_price_msat):
     squeak_db.set_profile_custom_price_msat(
         inserted_contact_profile_id,
@@ -129,6 +134,15 @@ def profile_with_new_name_id(squeak_db, inserted_contact_profile_id, new_profile
     squeak_db.set_profile_name(
         inserted_contact_profile_id,
         new_profile_name,
+    )
+    yield inserted_contact_profile_id
+
+
+@pytest.fixture
+def profile_with_image_id(squeak_db, inserted_contact_profile_id, profile_image_bytes):
+    squeak_db.set_profile_image(
+        inserted_contact_profile_id,
+        profile_image_bytes,
     )
     yield inserted_contact_profile_id
 
@@ -398,6 +412,12 @@ def test_set_profile_name(squeak_db, profile_with_new_name_id, new_profile_name)
     profile = squeak_db.get_profile(profile_with_new_name_id)
 
     assert profile.profile_name == new_profile_name
+
+
+def test_set_profile_image(squeak_db, profile_with_image_id, profile_image_bytes):
+    profile = squeak_db.get_profile(profile_with_image_id)
+
+    assert profile.profile_image == profile_image_bytes
 
 
 def test_deleted_profile(squeak_db, deleted_profile_id):
