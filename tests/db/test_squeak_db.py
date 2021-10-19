@@ -19,6 +19,8 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+import time
+
 import mock
 import pytest
 from sqlalchemy import create_engine
@@ -661,20 +663,36 @@ def test_get_old_squeaks_to_delete(
         squeak_db,
         followed_squeak_hashes,
 ):
-    # TODO: set up test so it returns positive number of squeaks to delete.
-    hashes_to_delete = squeak_db.get_old_squeaks_to_delete(
-        interval_s=0,
-    )
+    current_time_ms = int(time.time() * 1000)
+    time_elapsed_s = 56789
+    fake_current_time_ms = current_time_ms + 1000 * time_elapsed_s
 
-    assert len(hashes_to_delete) == 100
+    # TODO: set up test so it returns positive number of squeaks to delete.
+    with mock.patch.object(SqueakDb, 'timestamp_now_ms', new_callable=mock.PropertyMock) as mock_timestamp_ms:
+        mock_timestamp_ms.return_value = fake_current_time_ms
+
+        interval_s = time_elapsed_s - 10
+        hashes_to_delete = squeak_db.get_old_squeaks_to_delete(
+            interval_s=interval_s,
+        )
+
+        assert len(hashes_to_delete) == 100
 
 
 def test_get_old_squeaks_to_delete_none(
         squeak_db,
-        inserted_squeak_hashes,
+        followed_squeak_hashes,
 ):
-    hashes_to_delete = squeak_db.get_old_squeaks_to_delete(
-        interval_s=1000,
-    )
+    current_time_ms = int(time.time() * 1000)
+    time_elapsed_s = 56789
+    fake_current_time_ms = current_time_ms + 1000 * time_elapsed_s
 
-    assert len(hashes_to_delete) == 0
+    with mock.patch.object(SqueakDb, 'timestamp_now_ms', new_callable=mock.PropertyMock) as mock_timestamp_ms:
+        mock_timestamp_ms.return_value = fake_current_time_ms
+
+        interval_s = time_elapsed_s + 10
+        hashes_to_delete = squeak_db.get_old_squeaks_to_delete(
+            interval_s=interval_s,
+        )
+
+        assert len(hashes_to_delete) == 0
