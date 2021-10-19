@@ -42,6 +42,9 @@ Node for [Squeak protocol](https://github.com/yzernik/squeak/blob/master/docs/PR
 	username=devuser
 	password=devpass
 	```
+
+	More information about [configs](docs/CONFIGURATION.md).
+
 - Install squeaknode:
 	```
 	$ virtualenv venv
