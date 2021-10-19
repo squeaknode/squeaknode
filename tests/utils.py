@@ -21,12 +21,16 @@
 # SOFTWARE.
 import hashlib
 import os
+import random
 import uuid
 
 from bitcoin.core import CBlockHeader
 from squeak.core.signing import CSigningKey
 from squeak.core.signing import CSqueakAddress
 
+from squeaknode.core.peer_address import Network
+from squeaknode.core.peer_address import PeerAddress
+from squeaknode.core.peers import create_saved_peer
 from squeaknode.core.profiles import create_contact_profile
 from squeaknode.core.profiles import create_signing_profile
 from squeaknode.core.squeaks import HASH_LENGTH
@@ -103,4 +107,18 @@ def gen_contact_profile(profile_name, address):
     return create_contact_profile(
         profile_name,
         address,
+    )
+
+
+def gen_squeak_peer(peer_name):
+    host = "random_host_{}".format(uuid.uuid1())
+    port = random.randint(1, 10000)
+    peer_address = PeerAddress(
+        network=Network.IPV4,
+        host=host,
+        port=port,
+    )
+    return create_saved_peer(
+        peer_name,
+        peer_address,
     )
