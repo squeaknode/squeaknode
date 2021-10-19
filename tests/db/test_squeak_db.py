@@ -92,11 +92,11 @@ def followed_contact_profile_id(squeak_db, inserted_contact_profile_id):
     yield inserted_contact_profile_id
 
 
-@pytest.fixture
-def followed_contact_profile(squeak_db, followed_contact_profile_id):
-    yield squeak_db.get_profile(
-        followed_contact_profile_id,
-    )
+# @pytest.fixture
+# def followed_contact_profile(squeak_db, followed_contact_profile_id):
+#     yield squeak_db.get_profile(
+#         followed_contact_profile_id,
+#     )
 
 
 @pytest.fixture
@@ -108,11 +108,11 @@ def unfollowed_contact_profile_id(squeak_db, followed_contact_profile_id):
     yield followed_contact_profile_id
 
 
-@pytest.fixture
-def unfollowed_contact_profile(squeak_db, unfollowed_contact_profile_id):
-    yield squeak_db.get_profile(
-        unfollowed_contact_profile_id,
-    )
+# @pytest.fixture
+# def unfollowed_contact_profile(squeak_db, unfollowed_contact_profile_id):
+#     yield squeak_db.get_profile(
+#         unfollowed_contact_profile_id,
+#     )
 
 
 @pytest.fixture
@@ -124,11 +124,11 @@ def profile_with_use_custom_price_id(squeak_db, inserted_contact_profile_id):
     yield inserted_contact_profile_id
 
 
-@pytest.fixture
-def profile_with_use_custom_price(squeak_db, profile_with_use_custom_price_id):
-    yield squeak_db.get_profile(
-        profile_with_use_custom_price_id,
-    )
+# @pytest.fixture
+# def profile_with_use_custom_price(squeak_db, profile_with_use_custom_price_id):
+#     yield squeak_db.get_profile(
+#         profile_with_use_custom_price_id,
+#     )
 
 
 @pytest.fixture
@@ -150,11 +150,11 @@ def profile_with_custom_price_id(squeak_db, inserted_contact_profile_id, custom_
     yield inserted_contact_profile_id
 
 
-@pytest.fixture
-def profile_with_custom_price(squeak_db, profile_with_custom_price_id):
-    yield squeak_db.get_profile(
-        profile_with_custom_price_id,
-    )
+# @pytest.fixture
+# def profile_with_custom_price(squeak_db, profile_with_custom_price_id):
+#     yield squeak_db.get_profile(
+#         profile_with_custom_price_id,
+#     )
 
 
 @pytest.fixture
@@ -166,11 +166,11 @@ def profile_with_new_name_id(squeak_db, inserted_contact_profile_id, new_profile
     yield inserted_contact_profile_id
 
 
-@pytest.fixture
-def profile_with_new_name(squeak_db, profile_with_new_name_id):
-    yield squeak_db.get_profile(
-        profile_with_new_name_id,
-    )
+# @pytest.fixture
+# def profile_with_new_name(squeak_db, profile_with_new_name_id):
+#     yield squeak_db.get_profile(
+#         profile_with_new_name_id,
+#     )
 
 
 @pytest.fixture
@@ -195,7 +195,7 @@ def inserted_squeak_hashes(squeak_db, signing_key):
 def followed_squeak_hashes(
         squeak_db,
         inserted_squeak_hashes,
-        followed_contact_profile,
+        followed_contact_profile_id,
 ):
     yield inserted_squeak_hashes
 
@@ -213,7 +213,7 @@ def authored_squeak_hashes(
 def unfollowed_squeak_hashes(
         squeak_db,
         inserted_squeak_hashes,
-        unfollowed_contact_profile,
+        unfollowed_contact_profile_id,
 ):
     yield inserted_squeak_hashes
 
@@ -426,29 +426,34 @@ def test_get_timeline_squeak_entries_all_unfollowed(squeak_db, unfollowed_squeak
 #     assert inserted_contact_profile.address == contact_profile.address
 
 
-def test_set_profile_following(squeak_db, followed_contact_profile):
+def test_set_profile_following(squeak_db, followed_contact_profile_id):
+    profile = squeak_db.get_profile(followed_contact_profile_id)
 
-    assert followed_contact_profile.following
-
-
-def test_set_profile_unfollowing(squeak_db, unfollowed_contact_profile):
-
-    assert not unfollowed_contact_profile.following
+    assert profile.following
 
 
-def test_set_profile_use_custom_price(squeak_db, profile_with_use_custom_price):
+def test_set_profile_unfollowing(squeak_db, unfollowed_contact_profile_id):
+    profile = squeak_db.get_profile(unfollowed_contact_profile_id)
 
-    assert profile_with_use_custom_price.use_custom_price
-
-
-def test_set_profile_custom_price(squeak_db, profile_with_custom_price, custom_price_msat):
-
-    assert profile_with_custom_price.custom_price_msat == custom_price_msat
+    assert not profile.following
 
 
-def test_set_profile_name(squeak_db, profile_with_new_name, new_profile_name):
+def test_set_profile_use_custom_price(squeak_db, profile_with_use_custom_price_id):
+    profile = squeak_db.get_profile(profile_with_use_custom_price_id)
 
-    assert profile_with_new_name.profile_name == new_profile_name
+    assert profile.use_custom_price
+
+
+def test_set_profile_custom_price(squeak_db, profile_with_custom_price_id, custom_price_msat):
+    profile = squeak_db.get_profile(profile_with_custom_price_id)
+
+    assert profile.custom_price_msat == custom_price_msat
+
+
+def test_set_profile_name(squeak_db, profile_with_new_name_id, new_profile_name):
+    profile = squeak_db.get_profile(profile_with_new_name_id)
+
+    assert profile.profile_name == new_profile_name
 
 
 def test_deleted_profile(squeak_db, deleted_profile_id):
