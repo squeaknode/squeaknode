@@ -782,18 +782,18 @@ class SqueakDb:
             profiles = [self._parse_squeak_profile(row) for row in rows]
             return profiles
 
-    def get_following_profiles_from_addreses(self, addresses: List[str]) -> List[SqueakProfile]:
-        """ Get all following profiles. """
-        s = (
-            select([self.profiles])
-            .where(self.profiles.c.following)
-            .where(self.profiles.c.address.in_(addresses))
-        )
-        with self.get_connection() as connection:
-            result = connection.execute(s)
-            rows = result.fetchall()
-            profiles = [self._parse_squeak_profile(row) for row in rows]
-            return profiles
+    # def get_following_profiles_from_addreses(self, addresses: List[str]) -> List[SqueakProfile]:
+    #     """ Get all following profiles. """
+    #     s = (
+    #         select([self.profiles])
+    #         .where(self.profiles.c.following)
+    #         .where(self.profiles.c.address.in_(addresses))
+    #     )
+    #     with self.get_connection() as connection:
+    #         result = connection.execute(s)
+    #         rows = result.fetchall()
+    #         profiles = [self._parse_squeak_profile(row) for row in rows]
+    #         return profiles
 
     def get_profile(self, profile_id: int) -> Optional[SqueakProfile]:
         """ Get a profile. """
