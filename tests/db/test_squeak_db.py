@@ -31,6 +31,7 @@ from tests.utils import gen_contact_profile
 from tests.utils import gen_random_hash
 from tests.utils import gen_signing_key
 from tests.utils import gen_signing_profile
+from tests.utils import gen_squeak_peer
 from tests.utils import gen_squeak_with_block_header
 
 
@@ -263,6 +264,17 @@ def followed_contact_profile_ids(squeak_db, inserted_contact_profile_ids):
             True,
         )
     yield inserted_contact_profile_ids
+
+
+@pytest.fixture
+def inserted_squeak_peer_ids(squeak_db):
+    ret = []
+    for i in range(100):
+        peer_name = "peer_{}".format(i)
+        peer = gen_squeak_peer(peer_name)
+        peer_id = squeak_db.insert_peer(peer)
+        ret.append(peer_id)
+    yield ret
 
 
 def test_init_with_retries(squeak_db):
@@ -991,3 +1003,12 @@ def test_get_profile_by_name_none(
     profile = squeak_db.get_profile_by_name(other_name)
 
     assert profile is None
+
+
+def test_get_squeak_peers(
+        squeak_db,
+        inserted_squeak_peer_ids,
+):
+    peers = squeak_db.get_peers()
+
+    assert len(inserted_squeak_peer_ids) == len(peers)
