@@ -132,6 +132,15 @@ def followed_squeak_hashes(
 
 
 @pytest.fixture
+def authored_squeak_hashes(
+        squeak_db,
+        inserted_squeak_hashes,
+        inserted_signing_profile,
+):
+    yield inserted_squeak_hashes
+
+
+@pytest.fixture
 def unfollowed_squeak_hashes(
         squeak_db,
         inserted_squeak_hashes,
@@ -691,6 +700,54 @@ def test_get_old_squeaks_to_delete_none(
         mock_timestamp_ms.return_value = fake_current_time_ms
 
         interval_s = time_elapsed_s + 10
+        hashes_to_delete = squeak_db.get_old_squeaks_to_delete(
+            interval_s=interval_s,
+        )
+
+        assert len(hashes_to_delete) == 0
+
+
+def test_get_old_squeaks_to_delete_none_signing_profile(
+        squeak_db,
+        authored_squeak_hashes,
+):
+    """
+    `get_old_squeaks_to_delete` Method should return 0 results because
+    all squeaks are authored by the signing profile.
+
+    """
+    current_time_ms = int(time.time() * 1000)
+    time_elapsed_s = 56789
+    fake_current_time_ms = current_time_ms + 1000 * time_elapsed_s
+
+    with mock.patch.object(SqueakDb, 'timestamp_now_ms', new_callable=mock.PropertyMock) as mock_timestamp_ms:
+        mock_timestamp_ms.return_value = fake_current_time_ms
+
+        interval_s = time_elapsed_s - 10
+        hashes_to_delete = squeak_db.get_old_squeaks_to_delete(
+            interval_s=interval_s,
+        )
+
+        assert len(hashes_to_delete) == 0
+
+
+def test_get_old_squeaks_to_delete_none_liked(
+        squeak_db,
+        liked_squeak_hashes,
+):
+    """
+    `get_old_squeaks_to_delete` Method should return 0 results because
+    all squeaks are liked.
+
+    """
+    current_time_ms = int(time.time() * 1000)
+    time_elapsed_s = 56789
+    fake_current_time_ms = current_time_ms + 1000 * time_elapsed_s
+
+    with mock.patch.object(SqueakDb, 'timestamp_now_ms', new_callable=mock.PropertyMock) as mock_timestamp_ms:
+        mock_timestamp_ms.return_value = fake_current_time_ms
+
+        interval_s = time_elapsed_s - 10
         hashes_to_delete = squeak_db.get_old_squeaks_to_delete(
             interval_s=interval_s,
         )
