@@ -27,7 +27,10 @@ from sqlalchemy import create_engine
 
 from squeaknode.db.squeak_db import SqueakDb
 from tests.utils import gen_address
+from tests.utils import gen_contact_profile
 from tests.utils import gen_random_hash
+from tests.utils import gen_signing_key
+from tests.utils import gen_signing_profile
 from tests.utils import gen_squeak_with_block_header
 
 
@@ -178,6 +181,30 @@ def unliked_squeak_hash(squeak_db, liked_squeak_hash):
 @pytest.fixture
 def inserted_peer_id(squeak_db, peer):
     yield squeak_db.insert_peer(peer)
+
+
+@pytest.fixture
+def inserted_contact_profile_ids(squeak_db):
+    ret = []
+    for i in range(100):
+        profile_name = "contact_profile_{}".format(i)
+        address = str(gen_address())
+        profile = gen_contact_profile(profile_name, address)
+        profile_id = squeak_db.insert_profile(profile)
+        ret.append(profile_id)
+    yield ret
+
+
+@pytest.fixture
+def inserted_signing_profile_ids(squeak_db):
+    ret = []
+    for i in range(100):
+        profile_name = "signing_profile_{}".format(i)
+        signing_key = str(gen_signing_key())
+        profile = gen_signing_profile(profile_name, signing_key)
+        profile_id = squeak_db.insert_profile(profile)
+        ret.append(profile_id)
+    yield ret
 
 
 def test_init_with_retries(squeak_db):
@@ -753,3 +780,32 @@ def test_get_old_squeaks_to_delete_none_liked(
         )
 
         assert len(hashes_to_delete) == 0
+
+
+def test_get_profiles(
+        squeak_db,
+        inserted_contact_profile_ids,
+        inserted_signing_profile_ids,
+):
+    profiles = squeak_db.get_profiles()
+
+    assert len(profiles) == len(inserted_contact_profile_ids) + \
+        len(inserted_signing_profile_ids)
+
+
+def test_get_signing_profiles(
+        squeak_db,
+        inserted_signing_profile_ids,
+):
+    profiles = squeak_db.get_signing_profiles()
+
+    assert len(profiles) == len(inserted_signing_profile_ids)
+
+
+def test_get_signing_profiles_none(
+        squeak_db,
+        inserted_contact_profile_ids,
+):
+    profiles = squeak_db.get_signing_profiles()
+
+    assert len(profiles) == 0
