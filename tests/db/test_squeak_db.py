@@ -132,6 +132,27 @@ def profile_with_use_custom_price(squeak_db, profile_with_use_custom_price_id):
 
 
 @pytest.fixture
+def custom_price_msat():
+    yield 502379
+
+
+@pytest.fixture
+def profile_with_custom_price_id(squeak_db, inserted_contact_profile_id, custom_price_msat):
+    squeak_db.set_profile_custom_price_msat(
+        inserted_contact_profile_id,
+        custom_price_msat,
+    )
+    yield inserted_contact_profile_id
+
+
+@pytest.fixture
+def profile_with_custom_price(squeak_db, profile_with_custom_price_id):
+    yield squeak_db.get_profile(
+        profile_with_custom_price_id,
+    )
+
+
+@pytest.fixture
 def inserted_squeak_hashes(squeak_db, signing_key):
     ret = []
     for i in range(100):
@@ -391,9 +412,9 @@ def test_set_profile_use_custom_price(squeak_db, profile_with_use_custom_price):
     assert profile_with_use_custom_price.use_custom_price
 
 
-# def test_set_profile_custom_price(squeak_db, profile_with_custom_price):
+def test_set_profile_custom_price(squeak_db, profile_with_custom_price, custom_price_msat):
 
-#     assert profile_with_custom_price.use_custom_price
+    assert profile_with_custom_price.custom_price_msat == custom_price_msat
 
 
 def test_get_liked_squeak_entries(
