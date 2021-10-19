@@ -39,3 +39,11 @@ db.connection_string | string | | yes | "" | SQUEAKNODE_DB_CONNECTION_STRING | T
 admin.rpc_enabled | boolean | [true, false] | yes | true | SQUEAKNODE_ADMIN_RPC_ENABLED | Accept RPC commands or not.
 admin.rpc_host | string | | yes | "0.0.0.0" | SQUEAKNODE_ADMIN_RPC_HOST | Host to listen for admin rpc connections.
 admin.rpc_port | int | | yes | 8994 | SQUEAKNODE_ADMIN_RPC_PORT | Port to listen for admin rpc connections.
+webadmin.enabled | boolean | [true, false] | yes | false | SQUEAKNODE_WEBADMIN_ENABLED | Run a web admin server or not.
+webadmin.host | string | | yes | "0.0.0.0" | SQUEAKNODE_WEBADMIN_HOST | Host to user for serving admin web server.
+webadmin.port | int | | yes | 12994 | SQUEAKNODE_WEBADMIN_PORT | Port to user for serving admin web server.
+webadmin.username | string | | yes | "" | SQUEAKNODE_WEBADMIN_USERNAME | Username to sign in to admin web server.
+webadmin.password | string | | yes | "" | SQUEAKNODE_WEBADMIN_PASSWORD | Password to sign in to admin web server.
+webadmin.use_ssl | boolean | | yes | false | SQUEAKNODE_WEBADMIN_USE_SSL | Use SSL for admin web server or not.
+webadmin.login_disabled | boolean | | yes | false | SQUEAKNODE_WEBADMIN_LOGIN_DISABLED | Disable requiring login for web server or not.
+webadmin.allow_cors | boolean | | yes | false | SQUEAKNODE_WEBADMIN_ALLOW_CORS | Allow CORS requests to admin web server or not.
