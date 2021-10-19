@@ -655,3 +655,26 @@ def test_number_of_squeaks_with_address_in_block_range(
     )
 
     assert num_squeaks == max_block - min_block + 1
+
+
+def test_get_old_squeaks_to_delete(
+        squeak_db,
+        followed_squeak_hashes,
+):
+    # TODO: set up test so it returns positive number of squeaks to delete.
+    hashes_to_delete = squeak_db.get_old_squeaks_to_delete(
+        interval_s=0,
+    )
+
+    assert len(hashes_to_delete) == 100
+
+
+def test_get_old_squeaks_to_delete_none(
+        squeak_db,
+        inserted_squeak_hashes,
+):
+    hashes_to_delete = squeak_db.get_old_squeaks_to_delete(
+        interval_s=1000,
+    )
+
+    assert len(hashes_to_delete) == 0
