@@ -207,6 +207,16 @@ def inserted_signing_profile_ids(squeak_db):
     yield ret
 
 
+@pytest.fixture
+def followed_contact_profile_ids(squeak_db, inserted_contact_profile_ids):
+    for profile_id in inserted_contact_profile_ids:
+        squeak_db.set_profile_following(
+            profile_id,
+            True,
+        )
+    yield inserted_contact_profile_ids
+
+
 def test_init_with_retries(squeak_db):
     with mock.patch.object(squeak_db, 'init', autospec=True) as mock_init, \
             mock.patch('squeaknode.db.squeak_db.time.sleep', autospec=True) as mock_sleep:
@@ -827,3 +837,12 @@ def test_get_contact_profiles_none(
     profiles = squeak_db.get_contact_profiles()
 
     assert len(profiles) == 0
+
+
+def test_get_following_profiles(
+        squeak_db,
+        followed_contact_profile_ids,
+):
+    profiles = squeak_db.get_following_profiles()
+
+    assert len(profiles) == len(followed_contact_profile_ids)
