@@ -64,6 +64,14 @@ def unlocked_squeak_hash(squeak_db, squeak, inserted_squeak_hash, secret_key, sq
 
 
 @pytest.fixture
+def deleted_squeak_hash(squeak_db, squeak_hash):
+    squeak_db.delete_squeak(
+        squeak_hash,
+    )
+    yield squeak_hash
+
+
+@pytest.fixture
 def inserted_signing_profile_id(squeak_db, signing_profile):
     yield squeak_db.insert_profile(signing_profile)
 
@@ -295,6 +303,12 @@ def test_get_squeak(squeak_db, squeak, inserted_squeak_hash):
     retrieved_squeak = squeak_db.get_squeak(inserted_squeak_hash)
 
     assert retrieved_squeak == squeak
+
+
+def test_get_deleted_squeak(squeak_db, deleted_squeak_hash):
+    retrieved_squeak = squeak_db.get_squeak(deleted_squeak_hash)
+
+    assert retrieved_squeak is None
 
 
 def test_insert_duplicate_squeak(squeak_db, squeak, block_header, inserted_squeak_hash):
