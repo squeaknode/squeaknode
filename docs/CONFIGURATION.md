@@ -36,3 +36,6 @@ lnd.macaroon_path | string | | yes | "" | SQUEAKNODE_LND_MACAROON_PATH | The pat
 tor.proxy_ip | string | | yes | "" | SQUEAKNODE_TOR_PROXY_IP | The ip address or host of the SOCKS5 Tor proxy, if one is used.
 tor.proxy_port | int | | yes | 0 | SQUEAKNODE_TOR_PROXY_PORT | The port of the SOCKS5 Tor proxy, is one is used.
 db.connection_string | string | | yes | "" | SQUEAKNODE_DB_CONNECTION_STRING | The connection string to use to connect to a SQL database. If none is specified, a sqlite database will be used on the local file system.
+admin.rpc_enabled | boolean | [true, false] | yes | true | SQUEAKNODE_ADMIN_RPC_ENABLED | Accept RPC commands or not.
+admin.rpc_host | string | | yes | "0.0.0.0" | SQUEAKNODE_ADMIN_RPC_HOST | Host to listen for admin rpc connections.
+admin.rpc_port | int | | yes | 8994 | SQUEAKNODE_ADMIN_RPC_PORT | Port to listen for admin rpc connections.
