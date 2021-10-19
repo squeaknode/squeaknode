@@ -35,3 +35,4 @@ lnd.tls_cert_path | string | | yes | "" | SQUEAKNODE_LND_TLS_CERT_PATH | The pat
 lnd.macaroon_path | string | | yes | "" | SQUEAKNODE_LND_MACAROON_PATH | The path to the macaroon to use for LND connection.
 tor.proxy_ip | string | | yes | "" | SQUEAKNODE_TOR_PROXY_IP | The ip address or host of the SOCKS5 Tor proxy, if one is used.
 tor.proxy_port | int | | yes | 0 | SQUEAKNODE_TOR_PROXY_PORT | The port of the SOCKS5 Tor proxy, is one is used.
+db.connection_string | string | | yes | "" | SQUEAKNODE_DB_CONNECTION_STRING | The connection string to use to connect to a SQL database. If none is specified, a sqlite database will be used on the local file system.
