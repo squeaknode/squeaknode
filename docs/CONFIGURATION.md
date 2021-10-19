@@ -12,7 +12,7 @@ node.max_squeaks | int | [0,...] | yes | 10000 | SQUEAKNODE_NODE_MAX_SQUEAKS | T
 node.max_squeaks_per_address_in_block_range | int | [0,...] | yes | 1000 | SQUEAKNODE_NODE_MAX_SQUEAKS_PER_ADDRESS_IN_BLOCK_RANGE | The maximum number of squeaks for an individual address in the recent block range.
 node.sqk_dir_path | string | | yes | "<USER_HOME>/.sqk" | SQUEAKNODE_NODE_SQK_DIR_PATH | The directory to store application data (only if using sqlite as database backend).
 node.log_level | string | | yes | "INFO" | SQUEAKNODE_NODE_LOG_LEVEL | The log level to use.
-node.sent_offer_retention_s | int | [0,...] | yes | 86400 | SQUEAKNODE_NODE_SENT_OFFER_RETENTION_S | The amount of time in seconds to keep a sent offer after creation before deleting it.
+node.sent_offer_retention_s | int | [0,...] | yes | 86400 | SQUEAKNODE_NODE_SENT_OFFER_RETENTION_S | The amount of time in seconds to keep a sent offer after expiry before deleting it.
 node.received_offer_retention_s | int | [0,...] | yes | 86400 | SQUEAKNODE_NODE_RECEIVED_OFFER_RETENTION_S | The amount of time in seconds to keep a received offer after download before deleting it.
 node.subscribe_invoices_retry_s | int | [0,...] | yes | 10 | SQUEAKNODE_NODE_SUBSCRIBE_INVOICES_RETRY_S | The amount of time in seconds to wait after a subscription failure to retry subscribing settled invoices.
 node.squeak_retention_s | int | [0,...] | yes | 604800 | SQUEAKNODE_NODE_SQUEAK_RETENTION_S | The amount of time in seconds to keep a squeak after download before deleting it.
