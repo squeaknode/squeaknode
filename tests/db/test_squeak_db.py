@@ -481,8 +481,26 @@ def test_set_squeak_unliked(squeak_db, unliked_squeak_hash):
 def test_get_peer(squeak_db, peer, inserted_peer_id):
     retrieved_peer = squeak_db.get_peer(inserted_peer_id)
 
-    assert retrieved_peer.peer_name == peer.peer_name
-    assert retrieved_peer.address == peer.address
+    assert retrieved_peer._replace(peer_id=None) == peer
+
+
+def test_get_peer_missing(squeak_db):
+    retrieved_peer = squeak_db.get_peer(9876)
+
+    assert retrieved_peer is None
+
+
+def test_get_peer_by_address(squeak_db, peer, inserted_peer_id, peer_address):
+    retrieved_peer = squeak_db.get_peer_by_address(peer_address)
+
+    assert retrieved_peer._replace(peer_id=None) == peer
+
+
+def test_get_peer_by_address_missing(squeak_db, peer, inserted_peer_id, peer_address):
+    other_address = peer_address._replace(host="other_fake_host")
+    retrieved_peer = squeak_db.get_peer_by_address(other_address)
+
+    assert retrieved_peer is None
 
 
 def test_get_address_squeak_entries(
