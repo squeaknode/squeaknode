@@ -809,3 +809,21 @@ def test_get_signing_profiles_none(
     profiles = squeak_db.get_signing_profiles()
 
     assert len(profiles) == 0
+
+
+def test_get_contact_profiles(
+        squeak_db,
+        inserted_contact_profile_ids,
+):
+    profiles = squeak_db.get_contact_profiles()
+
+    assert len(profiles) == len(inserted_contact_profile_ids)
+
+
+def test_get_contact_profiles_none(
+        squeak_db,
+        inserted_signing_profile_ids,
+):
+    profiles = squeak_db.get_contact_profiles()
+
+    assert len(profiles) == 0
