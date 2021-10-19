@@ -869,3 +869,37 @@ def test_get_profile_by_address(
 
     assert profile == signing_profile._replace(
         profile_id=inserted_signing_profile_id)
+
+
+def test_get_profile_by_address_none(
+        squeak_db,
+        inserted_signing_profile_id,
+        signing_profile,
+):
+    random_address = str(gen_address())
+    profile = squeak_db.get_profile_by_address(random_address)
+
+    assert profile is None
+
+
+def test_get_profile_by_name(
+        squeak_db,
+        inserted_signing_profile_id,
+        signing_profile,
+        signing_profile_name,
+):
+    profile = squeak_db.get_profile_by_name(signing_profile_name)
+
+    assert profile == signing_profile._replace(
+        profile_id=inserted_signing_profile_id)
+
+
+def test_get_profile_by_name_none(
+        squeak_db,
+        inserted_signing_profile_id,
+        signing_profile,
+):
+    other_name = "fake_name_9876"
+    profile = squeak_db.get_profile_by_name(other_name)
+
+    assert profile is None
