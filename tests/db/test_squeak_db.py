@@ -137,6 +137,11 @@ def custom_price_msat():
 
 
 @pytest.fixture
+def new_profile_name():
+    yield "new_fake_profile_name"
+
+
+@pytest.fixture
 def profile_with_custom_price_id(squeak_db, inserted_contact_profile_id, custom_price_msat):
     squeak_db.set_profile_custom_price_msat(
         inserted_contact_profile_id,
@@ -149,6 +154,22 @@ def profile_with_custom_price_id(squeak_db, inserted_contact_profile_id, custom_
 def profile_with_custom_price(squeak_db, profile_with_custom_price_id):
     yield squeak_db.get_profile(
         profile_with_custom_price_id,
+    )
+
+
+@pytest.fixture
+def profile_with_new_name_id(squeak_db, inserted_contact_profile_id, new_profile_name):
+    squeak_db.set_profile_name(
+        inserted_contact_profile_id,
+        new_profile_name,
+    )
+    yield inserted_contact_profile_id
+
+
+@pytest.fixture
+def profile_with_new_name(squeak_db, profile_with_new_name_id):
+    yield squeak_db.get_profile(
+        profile_with_new_name_id,
     )
 
 
@@ -415,6 +436,11 @@ def test_set_profile_use_custom_price(squeak_db, profile_with_use_custom_price):
 def test_set_profile_custom_price(squeak_db, profile_with_custom_price, custom_price_msat):
 
     assert profile_with_custom_price.custom_price_msat == custom_price_msat
+
+
+def test_set_profile_name(squeak_db, profile_with_new_name, new_profile_name):
+
+    assert profile_with_new_name.profile_name == new_profile_name
 
 
 def test_get_liked_squeak_entries(
