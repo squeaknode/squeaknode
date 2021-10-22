@@ -306,6 +306,11 @@ def deleted_peer_id(squeak_db, inserted_peer_id):
     yield inserted_peer_id
 
 
+@pytest.fixture
+def inserted_received_offer_id(squeak_db, received_offer):
+    yield squeak_db.insert_received_offer(received_offer)
+
+
 def test_init_with_retries(squeak_db):
     with mock.patch.object(squeak_db, 'init', autospec=True) as mock_init, \
             mock.patch('squeaknode.db.squeak_db.time.sleep', autospec=True) as mock_sleep:
@@ -1071,3 +1076,12 @@ def test_get_deleted_peer(squeak_db, deleted_peer_id):
     retrieved_peer = squeak_db.get_peer(deleted_peer_id)
 
     assert retrieved_peer is None
+
+
+def test_get_received_offer(squeak_db, inserted_received_offer_id, received_offer):
+    retrieved_received_offer = squeak_db.get_received_offer(
+        inserted_received_offer_id)
+
+    assert retrieved_received_offer._replace(
+        received_offer_id=None,
+    ) == received_offer
