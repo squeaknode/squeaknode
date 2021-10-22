@@ -308,8 +308,6 @@ def deleted_peer_id(squeak_db, inserted_peer_id):
 
 @pytest.fixture
 def inserted_received_offer_id(squeak_db, received_offer):
-    print('received_offer:')
-    print(received_offer)
     yield squeak_db.insert_received_offer(received_offer)
 
 
@@ -1090,9 +1088,6 @@ def test_get_received_offer(squeak_db, inserted_received_offer_id, received_offe
 
 
 def test_get_received_offers(squeak_db, inserted_received_offer_id, squeak_hash, creation_date, expiry):
-    print('squeak_hash:')
-    print(squeak_hash)
-
     expire_time_s = creation_date + expiry
     current_time_s = expire_time_s - 10
     fake_current_time_ms = current_time_s * 1000
@@ -1108,9 +1103,6 @@ def test_get_received_offers(squeak_db, inserted_received_offer_id, squeak_hash,
 
 
 def test_get_received_offers_expired_none(squeak_db, inserted_received_offer_id, squeak_hash, creation_date, expiry):
-    print('squeak_hash:')
-    print(squeak_hash)
-
     expire_time_s = creation_date + expiry
     current_time_s = expire_time_s + 10
     fake_current_time_ms = current_time_s * 1000
