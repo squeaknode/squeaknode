@@ -284,6 +284,20 @@ def autoconnect_squeak_peer_ids(squeak_db, inserted_squeak_peer_ids):
     yield inserted_squeak_peer_ids
 
 
+@pytest.fixture
+def new_peer_name():
+    yield "new_fake_peer_name"
+
+
+@pytest.fixture
+def peer_with_new_name_id(squeak_db, inserted_peer_id, new_peer_name):
+    squeak_db.set_peer_name(
+        inserted_peer_id,
+        new_peer_name,
+    )
+    yield inserted_peer_id
+
+
 def test_init_with_retries(squeak_db):
     with mock.patch.object(squeak_db, 'init', autospec=True) as mock_init, \
             mock.patch('squeaknode.db.squeak_db.time.sleep', autospec=True) as mock_sleep:
@@ -1037,3 +1051,9 @@ def test_get_autoconnect_squeak_peers_none(
     peers = squeak_db.get_autoconnect_peers()
 
     assert len(peers) == 0
+
+
+def test_set_peer_name(squeak_db, peer_with_new_name_id, new_peer_name):
+    peer = squeak_db.get_peer(peer_with_new_name_id)
+
+    assert peer.peer_name == new_peer_name
