@@ -147,9 +147,6 @@ class SqueakController:
         return self.squeak_db.get_squeak_secret_key(squeak_hash)
 
     def delete_squeak(self, squeak_hash: bytes) -> None:
-        num_deleted_offers = self.squeak_db.delete_offers_for_squeak(
-            squeak_hash)
-        logger.info("Deleted number of offers : {}".format(num_deleted_offers))
         self.squeak_db.delete_squeak(squeak_hash)
 
     def save_received_squeak(self, squeak: CSqueak) -> None:
