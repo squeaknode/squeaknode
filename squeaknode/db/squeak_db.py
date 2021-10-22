@@ -30,6 +30,7 @@ import sqlalchemy
 from bitcoin.core import CBlockHeader
 from sqlalchemy import func
 from sqlalchemy import literal
+from sqlalchemy import not_
 from sqlalchemy.sql import select
 from sqlalchemy.sql import tuple_
 from squeak.core import CSqueak
@@ -165,6 +166,7 @@ class SqueakDb:
     def timestamp_now_ms(self):
         return int(time.time() * 1000)
 
+    @property
     def received_offer_should_be_deleted(self):
         expire_time = (
             self.received_offers.c.invoice_timestamp
@@ -176,13 +178,13 @@ class SqueakDb:
     def received_offer_is_not_paid(self):
         return self.received_offers.c.paid == False  # noqa: E711
 
-    @property
-    def received_offer_is_not_expired(self):
-        expire_time = (
-            self.received_offers.c.invoice_timestamp
-            + self.received_offers.c.invoice_expiry
-        )
-        return self.timestamp_now_ms / 1000 < expire_time
+    # @property
+    # def received_offer_is_not_expired(self):
+    #     expire_time = (
+    #         self.received_offers.c.invoice_timestamp
+    #         + self.received_offers.c.invoice_expiry
+    #     )
+    #     return self.timestamp_now_ms / 1000 < expire_time
 
     def sent_offer_should_be_deleted(self, interval_s):
         expire_time = (
@@ -1013,7 +1015,7 @@ class SqueakDb:
             select([self.received_offers])
             .where(self.received_offers.c.squeak_hash == squeak_hash)
             .where(self.received_offer_is_not_paid)
-            .where(self.received_offer_is_not_expired)
+            .where(not_(self.received_offer_should_be_deleted))
         )
         with self.get_connection() as connection:
             result = connection.execute(s)
@@ -1064,7 +1066,7 @@ class SqueakDb:
     def delete_expired_received_offers(self):
         """ Delete all expired offers. """
         s = self.received_offers.delete().where(
-            self.received_offer_should_be_deleted()
+            self.received_offer_should_be_deleted
         )
         with self.get_connection() as connection:
             res = connection.execute(s)
