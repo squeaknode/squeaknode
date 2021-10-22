@@ -1085,3 +1085,41 @@ def test_get_received_offer(squeak_db, inserted_received_offer_id, received_offe
     assert retrieved_received_offer._replace(
         received_offer_id=None,
     ) == received_offer
+
+
+def test_get_received_offers(squeak_db, inserted_received_offer_id, squeak_hash, creation_date, expiry):
+    expire_time_s = creation_date + expiry
+    current_time_s = expire_time_s - 10
+    fake_current_time_ms = current_time_s * 1000
+
+    with mock.patch.object(SqueakDb, 'timestamp_now_ms', new_callable=mock.PropertyMock) as mock_timestamp_ms:
+        mock_timestamp_ms.return_value = fake_current_time_ms
+
+        received_offers = squeak_db.get_received_offers(
+            squeak_hash=squeak_hash,
+        )
+
+        assert len(received_offers) == 1
+
+
+def test_get_received_offers_expired_none(squeak_db, inserted_received_offer_id, squeak_hash, creation_date, expiry):
+    expire_time_s = creation_date + expiry
+    current_time_s = expire_time_s + 10
+    fake_current_time_ms = current_time_s * 1000
+
+    with mock.patch.object(SqueakDb, 'timestamp_now_ms', new_callable=mock.PropertyMock) as mock_timestamp_ms:
+        mock_timestamp_ms.return_value = fake_current_time_ms
+
+        received_offers = squeak_db.get_received_offers(
+            squeak_hash=squeak_hash,
+        )
+
+        assert len(received_offers) == 0
+
+
+def test_get_received_offers_other_squeak_hash(squeak_db, inserted_received_offer_id):
+    received_offers = squeak_db.get_received_offers(
+        squeak_hash=gen_random_hash(),
+    )
+
+    assert len(received_offers) == 0
