@@ -1087,6 +1087,14 @@ def test_get_received_offer(squeak_db, inserted_received_offer_id, received_offe
     ) == received_offer
 
 
+def test_get_received_offer_none(squeak_db, inserted_received_offer_id, received_offer):
+    retrieved_received_offer = squeak_db.get_received_offer(
+        -1,
+    )
+
+    assert retrieved_received_offer is None
+
+
 def test_get_received_offers(squeak_db, inserted_received_offer_id, squeak_hash, creation_date, expiry):
     expire_time_s = creation_date + expiry
     current_time_s = expire_time_s - 10
