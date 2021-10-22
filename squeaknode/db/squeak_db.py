@@ -138,10 +138,6 @@ class SqueakDb:
     def squeak_is_not_liked(self):
         return self.squeaks.c.liked_time_ms == None  # noqa: E711
 
-    @property
-    def squeak_has_no_secret_key(self):
-        return self.squeaks.c.secret_key == None  # noqa: E711
-
     def squeak_is_older_than_retention(self, interval_s):
         return self.timestamp_now_ms > \
             self.squeaks.c.created_time_ms + interval_s * 1000
