@@ -298,6 +298,14 @@ def peer_with_new_name_id(squeak_db, inserted_peer_id, new_peer_name):
     yield inserted_peer_id
 
 
+@pytest.fixture
+def deleted_peer_id(squeak_db, inserted_peer_id):
+    squeak_db.delete_peer(
+        inserted_peer_id,
+    )
+    yield inserted_peer_id
+
+
 def test_init_with_retries(squeak_db):
     with mock.patch.object(squeak_db, 'init', autospec=True) as mock_init, \
             mock.patch('squeaknode.db.squeak_db.time.sleep', autospec=True) as mock_sleep:
@@ -1057,3 +1065,9 @@ def test_set_peer_name(squeak_db, peer_with_new_name_id, new_peer_name):
     peer = squeak_db.get_peer(peer_with_new_name_id)
 
     assert peer.peer_name == new_peer_name
+
+
+def test_get_deleted_peer(squeak_db, deleted_peer_id):
+    retrieved_peer = squeak_db.get_peer(deleted_peer_id)
+
+    assert retrieved_peer is None
