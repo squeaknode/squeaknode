@@ -311,6 +311,11 @@ def inserted_received_offer_id(squeak_db, received_offer):
     yield squeak_db.insert_received_offer(received_offer)
 
 
+@pytest.fixture
+def duplicate_inserted_received_offer_id(squeak_db, inserted_received_offer_id, received_offer):
+    yield squeak_db.insert_received_offer(received_offer)
+
+
 def test_init_with_retries(squeak_db):
     with mock.patch.object(squeak_db, 'init', autospec=True) as mock_init, \
             mock.patch('squeaknode.db.squeak_db.time.sleep', autospec=True) as mock_sleep:
@@ -1085,6 +1090,10 @@ def test_get_received_offer(squeak_db, inserted_received_offer_id, received_offe
     assert retrieved_received_offer._replace(
         received_offer_id=None,
     ) == received_offer
+
+
+def test_duplicate_inserted_received_offer(squeak_db, duplicate_inserted_received_offer_id):
+    assert duplicate_inserted_received_offer_id is None
 
 
 def test_get_received_offer_none(squeak_db, inserted_received_offer_id, received_offer):
