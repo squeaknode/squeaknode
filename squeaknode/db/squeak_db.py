@@ -1038,28 +1038,28 @@ class SqueakDb:
             offer = self._parse_received_offer(row)
             return offer
 
-    def get_received_offer_for_squeak_and_peer(
-            self,
-            squeak_hash: bytes,
-            peer_address: PeerAddress,
-    ) -> Optional[ReceivedOffer]:
-        """ Get offer with peer for a given peer address and squeak hash . """
-        s = (
-            select([self.received_offers])
-            .where(self.received_offers.c.squeak_hash == squeak_hash)
-            .where(self.received_offers.c.peer_network == peer_address.network.name)
-            .where(self.received_offers.c.peer_host == peer_address.host)
-            .where(self.received_offers.c.peer_port == peer_address.port)
-            .where(self.received_offer_is_not_paid)
-            .where(self.received_offer_is_not_expired)
-        )
-        with self.get_connection() as connection:
-            result = connection.execute(s)
-            row = result.fetchone()
-            if row is None:
-                return None
-            offer = self._parse_received_offer(row)
-            return offer
+    # def get_received_offer_for_squeak_and_peer(
+    #         self,
+    #         squeak_hash: bytes,
+    #         peer_address: PeerAddress,
+    # ) -> Optional[ReceivedOffer]:
+    #     """ Get offer with peer for a given peer address and squeak hash . """
+    #     s = (
+    #         select([self.received_offers])
+    #         .where(self.received_offers.c.squeak_hash == squeak_hash)
+    #         .where(self.received_offers.c.peer_network == peer_address.network.name)
+    #         .where(self.received_offers.c.peer_host == peer_address.host)
+    #         .where(self.received_offers.c.peer_port == peer_address.port)
+    #         .where(self.received_offer_is_not_paid)
+    #         .where(self.received_offer_is_not_expired)
+    #     )
+    #     with self.get_connection() as connection:
+    #         result = connection.execute(s)
+    #         row = result.fetchone()
+    #         if row is None:
+    #             return None
+    #         offer = self._parse_received_offer(row)
+    #         return offer
 
     def delete_expired_received_offers(self):
         """ Delete all expired offers. """

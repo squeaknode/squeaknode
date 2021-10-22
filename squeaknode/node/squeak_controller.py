@@ -359,15 +359,15 @@ class SqueakController:
     def get_received_offers(self, squeak_hash: bytes) -> List[ReceivedOffer]:
         return self.squeak_db.get_received_offers(squeak_hash)
 
-    def get_received_offer_for_squeak_and_peer(
-            self,
-            squeak_hash: bytes,
-            peer_addresss: PeerAddress,
-    ) -> Optional[ReceivedOffer]:
-        return self.squeak_db.get_received_offer_for_squeak_and_peer(
-            squeak_hash,
-            peer_addresss,
-        )
+    # def get_received_offer_for_squeak_and_peer(
+    #         self,
+    #         squeak_hash: bytes,
+    #         peer_addresss: PeerAddress,
+    # ) -> Optional[ReceivedOffer]:
+    #     return self.squeak_db.get_received_offer_for_squeak_and_peer(
+    #         squeak_hash,
+    #         peer_addresss,
+    #     )
 
     def get_received_offer(self, received_offer_id: int) -> Optional[ReceivedOffer]:
         return self.squeak_db.get_received_offer(
