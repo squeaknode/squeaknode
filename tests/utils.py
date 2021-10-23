@@ -33,6 +33,7 @@ from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.peers import create_saved_peer
 from squeaknode.core.profiles import create_contact_profile
 from squeaknode.core.profiles import create_signing_profile
+from squeaknode.core.sent_payment import SentPayment
 from squeaknode.core.squeaks import HASH_LENGTH
 from squeaknode.core.squeaks import make_squeak_with_block
 
@@ -121,4 +122,19 @@ def gen_squeak_peer(peer_name):
     return create_saved_peer(
         peer_name,
         peer_address,
+    )
+
+
+def gen_sent_payment(peer_address, squeak_hash, secret_key, price_msat, seller_pubkey):
+    payment_hash = gen_random_hash()
+    return SentPayment(
+        sent_payment_id=None,
+        created_time_ms=None,
+        peer_address=peer_address,
+        squeak_hash=squeak_hash,
+        payment_hash=payment_hash,
+        secret_key=secret_key,
+        price_msat=price_msat,
+        node_pubkey=seller_pubkey,
+        valid=True,
     )
