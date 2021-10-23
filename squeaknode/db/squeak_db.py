@@ -151,10 +151,6 @@ class SqueakDb:
         return self.profiles.c.following == True  # noqa: E711
 
     @property
-    def received_offer_does_not_exist(self):
-        return self.received_offers.c.squeak_hash == None  # noqa: E711
-
-    @property
     def timestamp_now_ms(self):
         return int(time.time() * 1000)
 
