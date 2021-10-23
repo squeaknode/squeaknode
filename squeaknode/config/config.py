@@ -100,6 +100,7 @@ class ServerConfig(Config):
     rpc_enabled = key(cast=bool, required=False, default=True)
     rpc_host = key(cast=str, required=False, default=DEFAULT_SERVER_RPC_HOST)
     rpc_port = key(cast=int, required=False, default=DEFAULT_SERVER_RPC_PORT)
+    external_address = key(cast=str, required=False, default="")
 
 
 @section('admin')
@@ -149,8 +150,6 @@ class NodeConfig(Config):
         cast=int, required=False, default=DEFAULT_OFFER_DELETION_INTERVAL_S)
     interest_block_interval = key(
         cast=int, required=False, default=DEFAULT_INTEREST_BLOCK_INTERVAL)
-    external_address = key(
-        cast=str, required=False, default="")
 
 
 @section('db')

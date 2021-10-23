@@ -19,7 +19,6 @@ node.squeak_retention_s | int | [0,...] | yes | 604800 | SQUEAKNODE_NODE_SQUEAK_
 node.squeak_deletion_interval_s | int | [0,...] | yes | 10 | SQUEAKNODE_NODE_SQUEAK_DELETION_INTERVAL_S | The amount of time in seconds to wait in between deleting old squeaks.
 node.offer_deletion_interval_s | int | [0,...] | yes | 10 | SQUEAKNODE_NODE_OFFER_DELETION_INTERVAL_S | The amount of time in seconds to wait in between deleting old offers.
 node.interest_block_interval | int | [0,...] | yes | 2016 | SQUEAKNODE_NODE_INTEREST_BLOCK_INTERVAL | The number of blocks (starting from the most recent and descending) that this node will attempt to find squeaks with matching block height.
-node.external_address | string | | yes | "" | SQUEAKNODE_NODE_EXTERNAL_ADDRESS | The address that other nodes should use to open a connection to this node.
 bitcoin.rpc_host | string | | yes | "localhost" | SQUEAKNODE_BITCOIN_RPC_HOST | The host of the bitcoin node to connect.
 bitcoin.rpc_port | int | | yes | 18334 | SQUEAKNODE_BITCOIN_RPC_HOST | The port of the bitcoin node to connect.
 bitcoin.rpc_user | string | | yes | "" | SQUEAKNODE_BITCOIN_RPC_USER | The username to use for authentication on the bitcoin node.
@@ -47,3 +46,4 @@ webadmin.password | string | | yes | "" | SQUEAKNODE_WEBADMIN_PASSWORD | Passwor
 webadmin.use_ssl | boolean | | yes | false | SQUEAKNODE_WEBADMIN_USE_SSL | Use SSL for admin web server or not.
 webadmin.login_disabled | boolean | | yes | false | SQUEAKNODE_WEBADMIN_LOGIN_DISABLED | Disable requiring login for web server or not.
 webadmin.allow_cors | boolean | | yes | false | SQUEAKNODE_WEBADMIN_ALLOW_CORS | Allow CORS requests to admin web server or not.
+server.external_address | string | | yes | "" | SQUEAKNODE_NODE_EXTERNAL_ADDRESS | The address that other nodes should use to open a connection to this node.
