@@ -1205,6 +1205,8 @@ class SqueakDb:
         """
         Get a sent offer by squeak hash and peer address host. Only
         return sent offer if it's not expired and not paid.
+
+        TODO: add where clause for peer address network.
         """
         s = (
             select([self.sent_offers])
