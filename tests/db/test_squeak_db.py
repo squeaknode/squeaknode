@@ -1230,6 +1230,14 @@ def test_get_sent_payment(squeak_db, inserted_sent_payment_id, sent_payment):
     ) == sent_payment
 
 
+def test_get_sent_payment_none(squeak_db, inserted_sent_payment_id):
+    retrieved_sent_payment = squeak_db.get_sent_payment(
+        -1,
+    )
+
+    assert retrieved_sent_payment is None
+
+
 def test_get_sent_payments(squeak_db, inserted_sent_payment_ids):
     retrieved_sent_payments = squeak_db.get_sent_payments(
         limit=1000,
