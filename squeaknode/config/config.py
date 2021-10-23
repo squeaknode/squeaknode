@@ -60,6 +60,7 @@ DEFAULT_SQK_DIR_PATH = str(Path.home() / DEFAULT_SQK_DIR)
 DEFAULT_LND_HOST = "localhost"
 DEFAULT_INTEREST_BLOCK_INTERVAL = 2016
 DEFAULT_SENT_OFFER_RETENTION_S = 86400
+DEFAULT_RECEIVED_OFFER_RETENTION_S = 86400
 DEFAULT_OFFER_DELETION_INTERVAL_S = 10
 DEFAULT_SUBSCRIBE_INVOICES_RETRY_S = 10
 DEFAULT_SQUEAK_RETENTION_S = 604800
@@ -136,6 +137,8 @@ class NodeConfig(Config):
         cast=str, required=False, default=DEFAULT_LOG_LEVEL)
     sent_offer_retention_s = key(
         cast=int, required=False, default=DEFAULT_SENT_OFFER_RETENTION_S)
+    received_offer_retention_s = key(
+        cast=int, required=False, default=DEFAULT_RECEIVED_OFFER_RETENTION_S)
     subscribe_invoices_retry_s = key(
         cast=int, required=False, default=DEFAULT_SUBSCRIBE_INVOICES_RETRY_S)
     squeak_retention_s = key(
