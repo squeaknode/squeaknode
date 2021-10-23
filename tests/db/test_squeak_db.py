@@ -369,6 +369,11 @@ def inserted_received_payment_id(squeak_db, received_payment):
 
 
 @pytest.fixture
+def duplicate_inserted_received_payment_id(squeak_db, inserted_received_payment_id, received_payment):
+    yield squeak_db.insert_received_payment(received_payment)
+
+
+@pytest.fixture
 def inserted_received_payment_ids(
         squeak_db,
         peer_address,
@@ -1442,6 +1447,10 @@ def test_get_single_received_payment(squeak_db, inserted_received_payment_id, re
         received_payment_id=None,
         created_time_ms=None,
     ) == received_payment
+
+
+def test_duplicate_inserted_received_payment(squeak_db, duplicate_inserted_received_payment_id):
+    assert duplicate_inserted_received_payment_id is None
 
 
 def test_get_received_payments(squeak_db, inserted_received_payment_ids):
