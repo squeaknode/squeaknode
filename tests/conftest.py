@@ -367,6 +367,7 @@ def sent_offer(
         invoice_time=creation_date,
         invoice_expiry=expiry,
         peer_address=peer_address,
+        paid=False,
     )
 
 

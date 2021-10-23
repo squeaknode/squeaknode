@@ -191,6 +191,7 @@ class SqueakCore:
             invoice_time=invoice.creation_date,
             invoice_expiry=invoice.expiry,
             peer_address=peer_address,
+            paid=False,
         )
 
     def get_lnd_external_address(self) -> Optional[LightningAddressHostPort]:
