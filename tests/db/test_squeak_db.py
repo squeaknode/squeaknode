@@ -1342,3 +1342,15 @@ def test_get_sent_offer_by_squeak_and_peer_wrong_peer_address(
         )
 
         assert retrieved_sent_offer is None
+
+
+def test_get_sent_offers(squeak_db, inserted_sent_offer_id):
+    sent_offers = squeak_db.get_sent_offers()
+
+    assert len(sent_offers) == 1
+
+
+def test_get_sent_offers_none(squeak_db):
+    sent_offers = squeak_db.get_sent_offers()
+
+    assert len(sent_offers) == 0
