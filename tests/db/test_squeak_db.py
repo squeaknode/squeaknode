@@ -1260,3 +1260,12 @@ def test_get_sent_offer(squeak_db, inserted_sent_offer_id, sent_offer, payment_h
     assert retrieved_sent_offer._replace(
         sent_offer_id=None,
     ) == sent_offer
+
+
+def test_get_sent_offer_missing(squeak_db, inserted_sent_offer_id):
+    random_hash = gen_random_hash()
+    retrieved_sent_offer = squeak_db.get_sent_offer_by_payment_hash(
+        random_hash,
+    )
+
+    assert retrieved_sent_offer is None
