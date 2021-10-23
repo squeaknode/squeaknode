@@ -147,10 +147,6 @@ class SqueakDb:
         return self.profiles.c.private_key != None  # noqa: E711
 
     @property
-    def profile_has_no_private_key(self):
-        return self.profiles.c.private_key == None  # noqa: E711
-
-    @property
     def profile_is_following(self):
         return self.profiles.c.following == True  # noqa: E711
 
@@ -701,7 +697,7 @@ class SqueakDb:
                 )
             )
             .where(self.squeak_is_older_than_retention(interval_s))
-            .where(self.profile_has_no_private_key)
+            .where(not_(self.profile_has_private_key))
             .where(self.squeak_is_not_liked)
         )
         with self.get_connection() as connection:
@@ -744,7 +740,7 @@ class SqueakDb:
 
     def get_contact_profiles(self) -> List[SqueakProfile]:
         """ Get all contact profiles. """
-        s = select([self.profiles]).where(self.profile_has_no_private_key)
+        s = select([self.profiles]).where(not_(self.profile_has_private_key))
         with self.get_connection() as connection:
             result = connection.execute(s)
             rows = result.fetchall()
