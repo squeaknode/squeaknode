@@ -1224,13 +1224,13 @@ class SqueakDb:
             sent_offer = self._parse_sent_offer(row)
             return sent_offer
 
-    def delete_sent_offer(self, payment_hash: bytes):
-        """ Delete a sent offer by payment hash. """
-        s = self.sent_offers.delete().where(
-            self.sent_offers.c.payment_hash == payment_hash
-        )
-        with self.get_connection() as connection:
-            connection.execute(s)
+    # def delete_sent_offer(self, payment_hash: bytes):
+    #     """ Delete a sent offer by payment hash. """
+    #     s = self.sent_offers.delete().where(
+    #         self.sent_offers.c.payment_hash == payment_hash
+    #     )
+    #     with self.get_connection() as connection:
+    #         connection.execute(s)
 
     def delete_expired_sent_offers(self, interval_s):
         """
