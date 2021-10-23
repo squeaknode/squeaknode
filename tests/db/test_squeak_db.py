@@ -1460,3 +1460,21 @@ def test_get_received_payments(squeak_db, inserted_received_payment_ids):
     )
 
     assert len(received_payments) == len(inserted_received_payment_ids)
+
+
+def test_yield_received_payments_from_settle_index(squeak_db, inserted_received_payment_ids):
+    payments_iter = squeak_db.yield_received_payments_from_index(
+        start_index=0,
+    )
+
+    assert len(list(payments_iter)) == len(inserted_received_payment_ids)
+
+
+def test_yield_received_payments_from_other_settle_index(squeak_db, inserted_received_payment_ids):
+    index = 43
+    payments_iter = squeak_db.yield_received_payments_from_index(
+        start_index=index,
+    )
+
+    assert len(list(payments_iter)) == len(
+        inserted_received_payment_ids) - index
