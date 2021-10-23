@@ -134,10 +134,6 @@ class SqueakDb:
     def squeak_is_liked(self):
         return self.squeaks.c.liked_time_ms != None  # noqa: E711
 
-    @property
-    def squeak_is_not_liked(self):
-        return self.squeaks.c.liked_time_ms == None  # noqa: E711
-
     def squeak_is_older_than_retention(self, interval_s):
         return self.timestamp_now_ms > \
             self.squeaks.c.created_time_ms + interval_s * 1000
@@ -694,7 +690,7 @@ class SqueakDb:
             )
             .where(self.squeak_is_older_than_retention(interval_s))
             .where(not_(self.profile_has_private_key))
-            .where(self.squeak_is_not_liked)
+            .where(not_(self.squeak_is_liked))
         )
         with self.get_connection() as connection:
             result = connection.execute(s)
