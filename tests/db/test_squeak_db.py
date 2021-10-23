@@ -1354,3 +1354,29 @@ def test_get_sent_offers_none(squeak_db):
     sent_offers = squeak_db.get_sent_offers()
 
     assert len(sent_offers) == 0
+
+
+def test_delete_expired_sent_offers(squeak_db, inserted_sent_offer_id, creation_date, expiry):
+    expire_time_s = creation_date + expiry
+    current_time_s = expire_time_s + 10
+    fake_current_time_ms = current_time_s * 1000
+
+    with mock.patch.object(SqueakDb, 'timestamp_now_ms', new_callable=mock.PropertyMock) as mock_timestamp_ms:
+        mock_timestamp_ms.return_value = fake_current_time_ms
+
+        num_deleted = squeak_db.delete_expired_sent_offers(5)
+
+        assert num_deleted == 1
+
+
+def test_delete_expired_sent_offers_not_expired(squeak_db, inserted_sent_offer_id, creation_date, expiry):
+    expire_time_s = creation_date + expiry
+    current_time_s = expire_time_s + 10
+    fake_current_time_ms = current_time_s * 1000
+
+    with mock.patch.object(SqueakDb, 'timestamp_now_ms', new_callable=mock.PropertyMock) as mock_timestamp_ms:
+        mock_timestamp_ms.return_value = fake_current_time_ms
+
+        num_deleted = squeak_db.delete_expired_sent_offers(15)
+
+        assert num_deleted == 0
