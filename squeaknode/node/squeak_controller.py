@@ -425,7 +425,7 @@ class SqueakController:
         self.delete_all_expired_sent_offers()
 
     def delete_all_expired_received_offers(self):
-        received_offer_retention_s = 86400  # TODO: Get this value from config.
+        received_offer_retention_s = self.config.node.received_offer_retention_s
         num_expired_received_offers = self.squeak_db.delete_expired_received_offers(
             received_offer_retention_s)
         if num_expired_received_offers > 0:
