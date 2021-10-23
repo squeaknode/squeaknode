@@ -40,3 +40,4 @@ class ReceivedOffer(NamedTuple):
     destination: str
     lightning_address: LightningAddressHostPort
     peer_address: PeerAddress
+    paid: bool
