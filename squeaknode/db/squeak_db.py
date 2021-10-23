@@ -1497,6 +1497,7 @@ class SqueakDb:
                 host=row["peer_host"],
                 port=row["peer_port"],
             ),
+            paid=row["paid"],
         )
 
     def _parse_received_payment(self, row) -> ReceivedPayment:

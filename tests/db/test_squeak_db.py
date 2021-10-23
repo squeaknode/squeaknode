@@ -356,6 +356,12 @@ def inserted_sent_offer_id(squeak_db, sent_offer):
     yield squeak_db.insert_sent_offer(sent_offer)
 
 
+@pytest.fixture
+def paid_sent_offer_id(squeak_db, inserted_sent_offer_id, payment_hash):
+    squeak_db.set_sent_offer_paid(payment_hash, True)
+    yield inserted_sent_offer_id
+
+
 def test_init_with_retries(squeak_db):
     with mock.patch.object(squeak_db, 'init', autospec=True) as mock_init, \
             mock.patch('squeaknode.db.squeak_db.time.sleep', autospec=True) as mock_sleep:
@@ -1380,3 +1386,19 @@ def test_delete_expired_sent_offers_not_expired(squeak_db, inserted_sent_offer_i
         num_deleted = squeak_db.delete_expired_sent_offers(15)
 
         assert num_deleted == 0
+
+
+def test_get_sent_offer_paid(squeak_db, paid_sent_offer_id, payment_hash):
+    retrieved_sent_offer = squeak_db.get_sent_offer_by_payment_hash(
+        payment_hash,
+    )
+
+    assert retrieved_sent_offer.paid
+
+
+def test_get_sent_offer_not_paid(squeak_db, inserted_sent_offer_id, payment_hash):
+    retrieved_sent_offer = squeak_db.get_sent_offer_by_payment_hash(
+        payment_hash,
+    )
+
+    assert not retrieved_sent_offer.paid

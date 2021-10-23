@@ -36,3 +36,4 @@ class SentOffer(NamedTuple):
     invoice_time: int
     invoice_expiry: int
     peer_address: PeerAddress
+    paid: bool
