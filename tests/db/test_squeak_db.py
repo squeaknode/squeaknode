@@ -322,6 +322,11 @@ def paid_received_offer_id(squeak_db, inserted_received_offer_id):
     yield inserted_received_offer_id
 
 
+@pytest.fixture
+def inserted_sent_payment_id(squeak_db, sent_payment):
+    yield squeak_db.insert_sent_payment(sent_payment)
+
+
 def test_init_with_retries(squeak_db):
     with mock.patch.object(squeak_db, 'init', autospec=True) as mock_init, \
             mock.patch('squeaknode.db.squeak_db.time.sleep', autospec=True) as mock_sleep:
@@ -1188,3 +1193,14 @@ def test_get_received_offer_not_paid(squeak_db, inserted_received_offer_id):
     )
 
     assert not retrieved_received_offer.paid
+
+
+def test_get_sent_payment(squeak_db, inserted_sent_payment_id, sent_payment):
+    retrieved_sent_payment = squeak_db.get_sent_payment(
+        inserted_sent_payment_id,
+    )
+
+    assert retrieved_sent_payment._replace(
+        sent_payment_id=None,
+        created_time_ms=None,
+    ) == sent_payment
