@@ -339,7 +339,7 @@ def inserted_sent_payment_ids(
         seller_pubkey,
 ):
     ret = []
-    for i in range(100):
+    for i in range(28):
         sent_payment = gen_sent_payment(
             peer_address,
             squeak_hash,
@@ -382,7 +382,7 @@ def inserted_received_payment_ids(
         price_msat,
 ):
     ret = []
-    for i in range(100):
+    for i in range(54):
         received_payment = gen_received_payment(
             peer_address,
             squeak_hash,
@@ -1491,3 +1491,21 @@ def test_clear_settle_index(squeak_db, inserted_received_payment_ids):
     latest_settle_index = squeak_db.get_latest_settle_index()
 
     assert latest_settle_index == 0
+
+
+def test_get_received_payment_summary(squeak_db, inserted_received_payment_ids, price_msat):
+    received_payment_summary = squeak_db.get_received_payment_summary()
+
+    assert received_payment_summary.num_received_payments == len(
+        inserted_received_payment_ids)
+    assert received_payment_summary.total_amount_received_msat == price_msat * \
+        len(inserted_received_payment_ids)
+
+
+def test_get_sent_payment_summary(squeak_db, inserted_sent_payment_ids, price_msat):
+    sent_payment_summary = squeak_db.get_sent_payment_summary()
+
+    assert sent_payment_summary.num_sent_payments == len(
+        inserted_sent_payment_ids)
+    assert sent_payment_summary.total_amount_sent_msat == price_msat * \
+        len(inserted_sent_payment_ids)
