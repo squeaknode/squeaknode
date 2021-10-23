@@ -170,7 +170,7 @@ class SqueakDb:
     #     )
     #     return self.timestamp_now_ms / 1000 < expire_time
 
-    def sent_offer_should_be_deleted(self, interval_s):
+    def sent_offer_out_of_retention(self, interval_s):
         expire_time = (
             self.sent_offers.c.invoice_timestamp
             + self.sent_offers.c.invoice_expiry
@@ -1238,7 +1238,7 @@ class SqueakDb:
         offers that have been expired for more than interval_s seconds.
         """
         s = self.sent_offers.delete().where(
-            self.sent_offer_should_be_deleted(interval_s)
+            self.sent_offer_out_of_retention(interval_s)
         )
         with self.get_connection() as connection:
             res = connection.execute(s)
