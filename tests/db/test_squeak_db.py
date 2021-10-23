@@ -1394,3 +1394,11 @@ def test_get_sent_offer_paid(squeak_db, paid_sent_offer_id, payment_hash):
     )
 
     assert retrieved_sent_offer.paid
+
+
+def test_get_sent_offer_not_paid(squeak_db, inserted_sent_offer_id, payment_hash):
+    retrieved_sent_offer = squeak_db.get_sent_offer_by_payment_hash(
+        payment_hash,
+    )
+
+    assert not retrieved_sent_offer.paid
