@@ -287,6 +287,7 @@ class SqueakCore:
             destination=destination,
             lightning_address=lightning_address,
             peer_address=peer_address,
+            paid=False,
         )
 
     def pay_offer(self, received_offer: ReceivedOffer) -> SentPayment:

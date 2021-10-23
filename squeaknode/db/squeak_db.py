@@ -1086,11 +1086,11 @@ class SqueakDb:
     #     with self.get_connection() as connection:
     #         connection.execute(s)
 
-    def set_received_offer_paid(self, payment_hash: bytes, paid: bool) -> None:
+    def set_received_offer_paid(self, received_offer_id: int, paid: bool) -> None:
         """ Set a received offer is paid. """
         stmt = (
             self.received_offers.update()
-            .where(self.received_offers.c.payment_hash == payment_hash)
+            .where(self.received_offers.c.received_offer_id == received_offer_id)
             .values(paid=paid)
         )
         with self.get_connection() as connection:
@@ -1472,6 +1472,7 @@ class SqueakDb:
                 host=row["peer_host"],
                 port=row["peer_port"],
             ),
+            paid=row["paid"],
         )
 
     def _parse_sent_payment(self, row) -> SentPayment:

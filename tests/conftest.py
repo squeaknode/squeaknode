@@ -397,6 +397,7 @@ def received_offer(
         destination=seller_pubkey,
         lightning_address=lightning_address,
         peer_address=peer_address,
+        paid=False,
     )
 
 
