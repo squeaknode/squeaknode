@@ -29,6 +29,7 @@ from squeaknode.db.squeak_db import SqueakDb
 from tests.utils import gen_address
 from tests.utils import gen_contact_profile
 from tests.utils import gen_random_hash
+from tests.utils import gen_sent_payment
 from tests.utils import gen_signing_key
 from tests.utils import gen_signing_profile
 from tests.utils import gen_squeak_peer
@@ -325,6 +326,29 @@ def paid_received_offer_id(squeak_db, inserted_received_offer_id):
 @pytest.fixture
 def inserted_sent_payment_id(squeak_db, sent_payment):
     yield squeak_db.insert_sent_payment(sent_payment)
+
+
+@pytest.fixture
+def inserted_sent_payment_ids(
+        squeak_db,
+        peer_address,
+        squeak_hash,
+        secret_key,
+        price_msat,
+        seller_pubkey,
+):
+    ret = []
+    for i in range(100):
+        sent_payment = gen_sent_payment(
+            peer_address,
+            squeak_hash,
+            secret_key,
+            price_msat,
+            seller_pubkey,
+        )
+        sent_payment_id = squeak_db.insert_sent_payment(sent_payment)
+        ret.append(sent_payment_id)
+    yield ret
 
 
 def test_init_with_retries(squeak_db):
@@ -1204,3 +1228,12 @@ def test_get_sent_payment(squeak_db, inserted_sent_payment_id, sent_payment):
         sent_payment_id=None,
         created_time_ms=None,
     ) == sent_payment
+
+
+def test_get_sent_payments(squeak_db, inserted_sent_payment_ids):
+    retrieved_sent_payments = squeak_db.get_sent_payments(
+        limit=1000,
+        last_sent_payment=None,
+    )
+
+    assert len(retrieved_sent_payments) == len(inserted_sent_payment_ids)
