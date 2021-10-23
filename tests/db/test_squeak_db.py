@@ -29,6 +29,7 @@ from squeaknode.db.squeak_db import SqueakDb
 from tests.utils import gen_address
 from tests.utils import gen_contact_profile
 from tests.utils import gen_random_hash
+from tests.utils import gen_received_payment
 from tests.utils import gen_sent_payment
 from tests.utils import gen_signing_key
 from tests.utils import gen_signing_profile
@@ -360,6 +361,33 @@ def inserted_sent_offer_id(squeak_db, sent_offer):
 def paid_sent_offer_id(squeak_db, inserted_sent_offer_id, payment_hash):
     squeak_db.set_sent_offer_paid(payment_hash, True)
     yield inserted_sent_offer_id
+
+
+@pytest.fixture
+def inserted_received_payment_id(squeak_db, received_payment):
+    yield squeak_db.insert_received_payment(received_payment)
+
+
+@pytest.fixture
+def inserted_received_payment_ids(
+        squeak_db,
+        peer_address,
+        squeak_hash,
+        secret_key,
+        price_msat,
+):
+    ret = []
+    for i in range(100):
+        received_payment = gen_received_payment(
+            peer_address,
+            squeak_hash,
+            price_msat,
+            settle_index=i,
+        )
+        received_payment_id = squeak_db.insert_received_payment(
+            received_payment)
+        ret.append(received_payment_id)
+    yield ret
 
 
 def test_init_with_retries(squeak_db):
@@ -1402,3 +1430,24 @@ def test_get_sent_offer_not_paid(squeak_db, inserted_sent_offer_id, payment_hash
     )
 
     assert not retrieved_sent_offer.paid
+
+
+def test_get_single_received_payment(squeak_db, inserted_received_payment_id, received_payment):
+    received_payments = squeak_db.get_received_payments(
+        limit=10,
+        last_received_payment=None,
+    )
+
+    assert received_payments[0]._replace(
+        received_payment_id=None,
+        created_time_ms=None,
+    ) == received_payment
+
+
+def test_get_received_payments(squeak_db, inserted_received_payment_ids):
+    received_payments = squeak_db.get_received_payments(
+        limit=1000,
+        last_received_payment=None,
+    )
+
+    assert len(received_payments) == len(inserted_received_payment_ids)
