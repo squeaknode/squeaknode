@@ -309,8 +309,10 @@ def deleted_peer_id(squeak_db, inserted_peer_id):
 
 
 @pytest.fixture
-def inserted_received_offer_id(squeak_db, received_offer):
-    yield squeak_db.insert_received_offer(received_offer)
+def inserted_received_offer_id(squeak_db, received_offer, creation_date):
+    with mock.patch.object(SqueakDb, 'timestamp_now_ms', new_callable=mock.PropertyMock) as mock_timestamp_ms:
+        mock_timestamp_ms.return_value = creation_date / 1000
+        yield squeak_db.insert_received_offer(received_offer)
 
 
 @pytest.fixture
@@ -1229,7 +1231,7 @@ def test_delete_expired_received_offers(squeak_db, inserted_received_offer_id, c
     with mock.patch.object(SqueakDb, 'timestamp_now_ms', new_callable=mock.PropertyMock) as mock_timestamp_ms:
         mock_timestamp_ms.return_value = fake_current_time_ms
 
-        num_deleted = squeak_db.delete_expired_received_offers()
+        num_deleted = squeak_db.delete_expired_received_offers(999999)
 
         assert num_deleted == 1
 
@@ -1242,9 +1244,24 @@ def test_delete_expired_received_offers_none(squeak_db, inserted_received_offer_
     with mock.patch.object(SqueakDb, 'timestamp_now_ms', new_callable=mock.PropertyMock) as mock_timestamp_ms:
         mock_timestamp_ms.return_value = fake_current_time_ms
 
-        num_deleted = squeak_db.delete_expired_received_offers()
+        num_deleted = squeak_db.delete_expired_received_offers(999999)
 
         assert num_deleted == 0
+
+
+def test_delete_expired_received_offers_from_retention(squeak_db, inserted_received_offer_id, creation_date, expiry):
+    expire_time_s = creation_date + expiry
+    current_time_s = expire_time_s - 10
+    fake_current_time_ms = current_time_s * 1000
+    retention_interval_s = 10
+
+    with mock.patch.object(SqueakDb, 'timestamp_now_ms', new_callable=mock.PropertyMock) as mock_timestamp_ms:
+        mock_timestamp_ms.return_value = fake_current_time_ms
+
+        num_deleted = squeak_db.delete_expired_received_offers(
+            retention_interval_s)
+
+        assert num_deleted == 1
 
 
 def test_get_received_offer_paid(squeak_db, paid_received_offer_id):

@@ -31,6 +31,7 @@ from bitcoin.core import CBlockHeader
 from sqlalchemy import func
 from sqlalchemy import literal
 from sqlalchemy import not_
+from sqlalchemy import or_
 from sqlalchemy.sql import select
 from sqlalchemy.sql import tuple_
 from squeak.core import CSqueak
@@ -157,6 +158,13 @@ class SqueakDb:
             + self.received_offers.c.invoice_expiry
         )
         return self.timestamp_now_ms / 1000 >= expire_time
+
+    def received_offer_is_out_of_retention(self, interval_s):
+        expire_time_s = (
+            self.received_offers.c.created_time_ms / 1000
+            + interval_s
+        )
+        return self.timestamp_now_ms / 1000 >= expire_time_s
 
     @property
     def received_offer_is_not_paid(self):
@@ -1047,10 +1055,13 @@ class SqueakDb:
     #         offer = self._parse_received_offer(row)
     #         return offer
 
-    def delete_expired_received_offers(self):
+    def delete_expired_received_offers(self, interval_s):
         """ Delete all expired offers. """
         s = self.received_offers.delete().where(
-            self.received_offer_is_expired
+            or_(
+                self.received_offer_is_expired,
+                self.received_offer_is_out_of_retention(interval_s),
+            )
         )
         with self.get_connection() as connection:
             res = connection.execute(s)
