@@ -1478,3 +1478,16 @@ def test_yield_received_payments_from_other_settle_index(squeak_db, inserted_rec
 
     assert len(list(payments_iter)) == len(
         inserted_received_payment_ids) - index
+
+
+def test_get_latest_settle_index(squeak_db, inserted_received_payment_ids):
+    latest_settle_index = squeak_db.get_latest_settle_index()
+
+    assert latest_settle_index == len(inserted_received_payment_ids) - 1
+
+
+def test_clear_settle_index(squeak_db, inserted_received_payment_ids):
+    squeak_db.clear_received_payment_settle_indices()
+    latest_settle_index = squeak_db.get_latest_settle_index()
+
+    assert latest_settle_index == 0

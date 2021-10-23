@@ -1255,17 +1255,6 @@ class SqueakDb:
         with self.get_connection() as connection:
             connection.execute(stmt)
 
-    def get_latest_settle_index(self) -> Optional[int]:
-        """ Get the lnd settled index of the most recent received payment. """
-        s = select(
-            [func.max(self.received_payments.c.settle_index)],
-        ).select_from(self.received_payments)
-        with self.get_connection() as connection:
-            result = connection.execute(s)
-            row = result.fetchone()
-            latest_index = row[0]
-            return latest_index
-
     def insert_received_payment(self, received_payment: ReceivedPayment) -> Optional[int]:
         """ Insert a new received payment.
 
@@ -1334,6 +1323,17 @@ class SqueakDb:
             received_payments = [
                 self._parse_received_payment(row) for row in rows]
             return received_payments
+
+    def get_latest_settle_index(self) -> Optional[int]:
+        """ Get the lnd settled index of the most recent received payment. """
+        s = select(
+            [func.max(self.received_payments.c.settle_index)],
+        ).select_from(self.received_payments)
+        with self.get_connection() as connection:
+            result = connection.execute(s)
+            row = result.fetchone()
+            latest_index = row[0]
+            return latest_index
 
     def clear_received_payment_settle_indices(self) -> None:
         """ Set settle_index to zero for all received payments. """
