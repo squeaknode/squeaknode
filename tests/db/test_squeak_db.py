@@ -1269,3 +1269,76 @@ def test_get_sent_offer_missing(squeak_db, inserted_sent_offer_id):
     )
 
     assert retrieved_sent_offer is None
+
+
+def test_get_sent_offer_by_squeak_and_peer(
+        squeak_db,
+        inserted_sent_offer_id,
+        sent_offer,
+        squeak_hash,
+        peer_address,
+        creation_date,
+        expiry,
+):
+    expire_time_s = creation_date + expiry
+    current_time_s = expire_time_s - 10
+    fake_current_time_ms = current_time_s * 1000
+
+    with mock.patch.object(SqueakDb, 'timestamp_now_ms', new_callable=mock.PropertyMock) as mock_timestamp_ms:
+        mock_timestamp_ms.return_value = fake_current_time_ms
+
+        retrieved_sent_offer = squeak_db.get_sent_offer_by_squeak_hash_and_peer(
+            squeak_hash,
+            peer_address,
+        )
+
+        assert retrieved_sent_offer._replace(
+            sent_offer_id=None,
+        ) == sent_offer
+
+
+def test_get_sent_offer_by_squeak_and_peer_wrong_squeak_hash(
+        squeak_db,
+        inserted_sent_offer_id,
+        sent_offer,
+        peer_address,
+        creation_date,
+        expiry,
+):
+    expire_time_s = creation_date + expiry
+    current_time_s = expire_time_s - 10
+    fake_current_time_ms = current_time_s * 1000
+
+    with mock.patch.object(SqueakDb, 'timestamp_now_ms', new_callable=mock.PropertyMock) as mock_timestamp_ms:
+        mock_timestamp_ms.return_value = fake_current_time_ms
+
+        retrieved_sent_offer = squeak_db.get_sent_offer_by_squeak_hash_and_peer(
+            gen_random_hash(),
+            peer_address,
+        )
+
+        assert retrieved_sent_offer is None
+
+
+def test_get_sent_offer_by_squeak_and_peer_wrong_peer_address(
+        squeak_db,
+        inserted_sent_offer_id,
+        sent_offer,
+        squeak_hash,
+        peer_address,
+        creation_date,
+        expiry,
+):
+    expire_time_s = creation_date + expiry
+    current_time_s = expire_time_s - 10
+    fake_current_time_ms = current_time_s * 1000
+
+    with mock.patch.object(SqueakDb, 'timestamp_now_ms', new_callable=mock.PropertyMock) as mock_timestamp_ms:
+        mock_timestamp_ms.return_value = fake_current_time_ms
+
+        retrieved_sent_offer = squeak_db.get_sent_offer_by_squeak_hash_and_peer(
+            squeak_hash,
+            peer_address._replace(host="wrong_host"),
+        )
+
+        assert retrieved_sent_offer is None
