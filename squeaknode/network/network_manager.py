@@ -54,7 +54,7 @@ class NetworkManager(object):
         self.config = config
         self.external_host = self.config.server.external_address
         self.local_ip = socket.gethostbyname('localhost')
-        self.local_port = self.config.server.rpc_port or squeak.params.params.DEFAULT_PORT
+        self.local_port = self.config.server.port or squeak.params.params.DEFAULT_PORT
         self.peer_server = None
         self.peer_client = None
         self.tor_proxy_ip = self.config.tor.proxy_ip
