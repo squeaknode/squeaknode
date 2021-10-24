@@ -25,6 +25,7 @@ import mock
 import pytest
 from sqlalchemy import create_engine
 
+from squeaknode.db.exception import SqueakDatabaseError
 from squeaknode.db.squeak_db import SqueakDb
 from tests.utils import gen_address
 from tests.utils import gen_contact_profile
@@ -423,7 +424,7 @@ def test_init_with_retries_fail_many_times(squeak_db):
             mock.patch('squeaknode.db.squeak_db.time.sleep', autospec=True) as mock_sleep:
         mock_init.side_effect = [Exception('some db error')] * 5
 
-        with pytest.raises(Exception) as excinfo:
+        with pytest.raises(SqueakDatabaseError) as excinfo:
             squeak_db.init_with_retries(num_retries=5, retry_interval_s=100)
         assert "Failed to initialize database." in str(excinfo.value)
 
