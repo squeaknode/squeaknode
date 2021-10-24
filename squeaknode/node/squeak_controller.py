@@ -385,7 +385,7 @@ class SqueakController:
         # self.squeak_db.delete_offer(sent_payment.payment_hash)
         # Mark the received offer as paid
         self.squeak_db.set_received_offer_paid(
-            received_offer_id,
+            sent_payment.payment_hash,
             paid=True,
         )
         self.unlock_squeak(
