@@ -167,8 +167,8 @@ class SqueakDb:
         return self.timestamp_now_ms / 1000 >= expire_time_s
 
     @property
-    def received_offer_is_not_paid(self):
-        return self.received_offers.c.paid == False  # noqa: E711
+    def received_offer_is_paid(self):
+        return self.received_offers.c.paid == True  # noqa: E711
 
     # @property
     # def received_offer_is_not_expired(self):
@@ -187,16 +187,16 @@ class SqueakDb:
         return self.timestamp_now_ms / 1000 >= expire_time
 
     @property
-    def sent_offer_is_not_paid(self):
-        return self.sent_offers.c.paid == False  # noqa: E711
+    def sent_offer_is_paid(self):
+        return self.sent_offers.c.paid == True  # noqa: E711
 
     @property
-    def sent_offer_is_not_expired(self):
+    def sent_offer_is_expired(self):
         expire_time = (
             self.sent_offers.c.invoice_timestamp
             + self.sent_offers.c.invoice_expiry
         )
-        return self.timestamp_now_ms / 1000 < expire_time
+        return self.timestamp_now_ms / 1000 >= expire_time
 
     def insert_squeak(self, squeak: CSqueak, block_header: CBlockHeader) -> Optional[bytes]:
         """ Insert a new squeak.
@@ -1006,7 +1006,7 @@ class SqueakDb:
         s = (
             select([self.received_offers])
             .where(self.received_offers.c.squeak_hash == squeak_hash)
-            .where(self.received_offer_is_not_paid)
+            .where(not_(self.received_offer_is_paid))
             .where(not_(self.received_offer_invoice_is_expired))
         )
         with self.get_connection() as connection:
@@ -1224,8 +1224,8 @@ class SqueakDb:
             .where(self.sent_offers.c.squeak_hash == squeak_hash)
             .where(self.sent_offers.c.peer_network == peer_address.network.name)
             .where(self.sent_offers.c.peer_host == peer_address.host)
-            .where(self.sent_offer_is_not_paid)
-            .where(self.sent_offer_is_not_expired)
+            .where(not_(self.sent_offer_is_paid))
+            .where(not_(self.sent_offer_is_expired))
         )
         with self.get_connection() as connection:
             result = connection.execute(s)
