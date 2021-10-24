@@ -321,8 +321,8 @@ def duplicate_inserted_received_offer_id(squeak_db, inserted_received_offer_id, 
 
 
 @pytest.fixture
-def paid_received_offer_id(squeak_db, inserted_received_offer_id):
-    squeak_db.set_received_offer_paid(inserted_received_offer_id, True)
+def paid_received_offer_id(squeak_db, inserted_received_offer_id, payment_hash):
+    squeak_db.set_received_offer_paid(payment_hash, True)
     yield inserted_received_offer_id
 
 
