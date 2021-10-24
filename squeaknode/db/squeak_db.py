@@ -152,7 +152,7 @@ class SqueakDb:
         return int(time.time() * 1000)
 
     @property
-    def received_offer_is_expired(self):
+    def received_offer_invoice_is_expired(self):
         expire_time = (
             self.received_offers.c.invoice_timestamp
             + self.received_offers.c.invoice_expiry
@@ -1007,7 +1007,7 @@ class SqueakDb:
             select([self.received_offers])
             .where(self.received_offers.c.squeak_hash == squeak_hash)
             .where(self.received_offer_is_not_paid)
-            .where(not_(self.received_offer_is_expired))
+            .where(not_(self.received_offer_invoice_is_expired))
         )
         with self.get_connection() as connection:
             result = connection.execute(s)
@@ -1059,7 +1059,7 @@ class SqueakDb:
         """ Delete all expired offers. """
         s = self.received_offers.delete().where(
             or_(
-                self.received_offer_is_expired,
+                self.received_offer_invoice_is_expired,
                 self.received_offer_is_out_of_retention(interval_s),
             )
         )
