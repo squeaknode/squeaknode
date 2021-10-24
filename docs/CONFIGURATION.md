@@ -35,9 +35,9 @@ lnd.macaroon_path | string | | yes | "" | SQUEAKNODE_LND_MACAROON_PATH | The pat
 tor.proxy_ip | string | | yes | "" | SQUEAKNODE_TOR_PROXY_IP | The ip address or host of the SOCKS5 Tor proxy, if one is used.
 tor.proxy_port | int | | yes | 0 | SQUEAKNODE_TOR_PROXY_PORT | The port of the SOCKS5 Tor proxy, is one is used.
 db.connection_string | string | | yes | "" | SQUEAKNODE_DB_CONNECTION_STRING | The connection string to use to connect to a SQL database. If none is specified, a sqlite database will be used on the local file system.
-admin.rpc_enabled | boolean | [true, false] | yes | true | SQUEAKNODE_ADMIN_RPC_ENABLED | Accept RPC commands or not.
-admin.rpc_host | string | | yes | "0.0.0.0" | SQUEAKNODE_ADMIN_RPC_HOST | Host to listen for admin rpc connections.
-admin.rpc_port | int | | yes | 8994 | SQUEAKNODE_ADMIN_RPC_PORT | Port to listen for admin rpc connections.
+rpc.enabled | boolean | [true, false] | yes | false | SQUEAKNODE_RPC_ENABLED | Accept RPC commands or not.
+rpc.host | string | | yes | "0.0.0.0" | SQUEAKNODE_RPC_HOST | Host to listen for rpc connections.
+rpc.port | int | | yes | 8994 | SQUEAKNODE_RPC_PORT | Port to listen for rpc connections.
 webadmin.enabled | boolean | [true, false] | yes | false | SQUEAKNODE_WEBADMIN_ENABLED | Run a web admin server or not.
 webadmin.host | string | | yes | "0.0.0.0" | SQUEAKNODE_WEBADMIN_HOST | Host to user for serving admin web server.
 webadmin.port | int | | yes | 12994 | SQUEAKNODE_WEBADMIN_PORT | Port to user for serving admin web server.
@@ -46,7 +46,7 @@ webadmin.password | string | | yes | "" | SQUEAKNODE_WEBADMIN_PASSWORD | Passwor
 webadmin.use_ssl | boolean | | yes | false | SQUEAKNODE_WEBADMIN_USE_SSL | Use SSL for admin web server or not.
 webadmin.login_disabled | boolean | | yes | false | SQUEAKNODE_WEBADMIN_LOGIN_DISABLED | Disable requiring login for web server or not.
 webadmin.allow_cors | boolean | | yes | false | SQUEAKNODE_WEBADMIN_ALLOW_CORS | Allow CORS requests to admin web server or not.
-server.enabled | boolean | | yes | false | SQUEAKNODE_SERVER_ENABLED | If true, then accept inbound connections from other peers.
+server.enabled | boolean | | yes | true | SQUEAKNODE_SERVER_ENABLED | If true, then accept inbound connections from other peers.
 server.host | string | | yes | "0.0.0.0" | SQUEAKNODE_SERVER_HOST | Host to user for accepting inbound peer connections.
 server.port | int | | yes | 8555/18555 | SQUEAKNODE_SERVER_PORT | Port to user for accepting inbound peer connections.
 server.external_address | string | | yes | "" | SQUEAKNODE_SERVER_EXTERNAL_ADDRESS | The address that other nodes should use to open a connection to this node.

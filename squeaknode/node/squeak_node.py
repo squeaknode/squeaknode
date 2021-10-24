@@ -78,7 +78,7 @@ class SqueakNode:
         self._initialize()
 
         self.network_manager.start(self.squeak_controller)
-        if self.config.admin.rpc_enabled:
+        if self.config.rpc.enabled:
             self.admin_rpc_server.start()
         if self.config.webadmin.enabled:
             self.admin_web_server.start()
@@ -173,8 +173,8 @@ class SqueakNode:
 
     def initialize_admin_rpc_server(self):
         self.admin_rpc_server = SqueakAdminServerServicer(
-            self.config.admin.rpc_host,
-            self.config.admin.rpc_port,
+            self.config.rpc.host,
+            self.config.rpc.port,
             self.admin_handler,
         )
 
