@@ -46,4 +46,7 @@ webadmin.password | string | | yes | "" | SQUEAKNODE_WEBADMIN_PASSWORD | Passwor
 webadmin.use_ssl | boolean | | yes | false | SQUEAKNODE_WEBADMIN_USE_SSL | Use SSL for admin web server or not.
 webadmin.login_disabled | boolean | | yes | false | SQUEAKNODE_WEBADMIN_LOGIN_DISABLED | Disable requiring login for web server or not.
 webadmin.allow_cors | boolean | | yes | false | SQUEAKNODE_WEBADMIN_ALLOW_CORS | Allow CORS requests to admin web server or not.
-server.external_address | string | | yes | "" | SQUEAKNODE_NODE_EXTERNAL_ADDRESS | The address that other nodes should use to open a connection to this node.
+server.enabled | boolean | | yes | false | SQUEAKNODE_SERVER_ENABLED | If true, then accept inbound connections from other peers.
+server.host | string | | yes | "0.0.0.0" | SQUEAKNODE_SERVER_HOST | Host to user for accepting inbound peer connections.
+server.port | int | | yes | 8555/18555 | SQUEAKNODE_SERVER_PORT | Port to user for accepting inbound peer connections.
+server.external_address | string | | yes | "" | SQUEAKNODE_SERVER_EXTERNAL_ADDRESS | The address that other nodes should use to open a connection to this node.
