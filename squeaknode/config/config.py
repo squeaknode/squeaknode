@@ -103,11 +103,11 @@ class ServerConfig(Config):
     external_address = key(cast=str, required=False, default="")
 
 
-@section('admin')
-class AdminConfig(Config):
-    rpc_enabled = key(cast=bool, required=False, default=True)
-    rpc_host = key(cast=str, required=False, default=DEFAULT_ADMIN_RPC_HOST)
-    rpc_port = key(cast=int, required=False, default=DEFAULT_ADMIN_RPC_PORT)
+@section('rpc')
+class RpcConfig(Config):
+    enabled = key(cast=bool, required=False, default=False)
+    host = key(cast=str, required=False, default=DEFAULT_ADMIN_RPC_HOST)
+    port = key(cast=int, required=False, default=DEFAULT_ADMIN_RPC_PORT)
 
 
 @section('webadmin')
@@ -162,7 +162,7 @@ class SqueaknodeConfig(Config):
     lnd = group_key(LndConfig)
     tor = group_key(TorConfig)
     server = group_key(ServerConfig)
-    admin = group_key(AdminConfig)
+    rpc = group_key(RpcConfig)
     webadmin = group_key(WebadminConfig)
     node = group_key(NodeConfig)
     db = group_key(DbConfig)
