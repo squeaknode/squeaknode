@@ -49,6 +49,7 @@ from squeaknode.core.squeak_entry import SqueakEntry
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.squeaks import get_hash
+from squeaknode.db.exception import SqueakDatabaseError
 from squeaknode.db.migrations import run_migrations
 from squeaknode.db.models import Models
 
@@ -96,7 +97,7 @@ class SqueakDb:
                 logger.exception("Failed to initialize database.")
                 n += 1
                 if n >= num_retries:
-                    raise Exception("Failed to initialize database.")
+                    raise SqueakDatabaseError("Failed to initialize database.")
                 time.sleep(retry_interval_s)
 
     @property
