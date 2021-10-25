@@ -30,7 +30,6 @@ import squeak.params
 from squeak.core import CSqueak
 from squeak.core.signing import CSqueakAddress
 from squeak.messages import msg_getdata
-from squeak.messages import msg_getsqueaks
 from squeak.messages import msg_inv
 from squeak.messages import MSG_SECRET_KEY
 from squeak.messages import MSG_SQUEAK
@@ -60,10 +59,12 @@ from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.squeaks import get_hash
 from squeaknode.core.update_subscriptions_event import UpdateSubscriptionsEvent
+from squeaknode.node.active_download_manager import ActiveDownload
+from squeaknode.node.active_download_manager import ActiveDownloadManager
 from squeaknode.node.listener_subscription_client import EventListener
 from squeaknode.node.received_payments_subscription_client import ReceivedPaymentsSubscriptionClient
-from squeaknode.node.temporary_interest_manager import TemporaryInterest
-from squeaknode.node.temporary_interest_manager import TemporaryInterestManager
+# from squeaknode.node.temporary_interest_manager import TemporaryInterest
+# from squeaknode.node.temporary_interest_manager import TemporaryInterestManager
 
 
 logger = logging.getLogger(__name__)
@@ -87,7 +88,9 @@ class SqueakController:
         self.new_received_offer_listener = EventListener()
         self.new_secret_key_listener = EventListener()
         self.new_follow_listener = EventListener()
-        self.temporary_interest_manager = TemporaryInterestManager()
+        # self.temporary_interest_manager = TemporaryInterestManager()
+        self.active_download_manager = ActiveDownloadManager(
+            self.broadcast_msg)
         self.config = config
 
     def save_squeak(self, squeak: CSqueak) -> Optional[bytes]:
@@ -179,8 +182,9 @@ class SqueakController:
             interest.nMaxBlockHeight,
         ) < self.config.node.max_squeaks_per_address_in_block_range
 
-    def get_temporary_interest_counter(self, squeak: CSqueak) -> Optional[TemporaryInterest]:
-        return self.temporary_interest_manager.lookup_counter(squeak)
+    def get_temporary_interest_counter(self, squeak: CSqueak) -> Optional[ActiveDownload]:
+        # return self.temporary_interest_manager.lookup_counter(squeak)
+        return self.active_download_manager.lookup_counter(squeak)
 
     def get_offer_or_secret_key(self, squeak_hash: bytes, peer_address: PeerAddress) -> Optional[Union[bytes, Offer]]:
         squeak = self.get_squeak(squeak_hash)
@@ -697,28 +701,16 @@ class SqueakController:
             nMinBlockHeight=min_block,
             nMaxBlockHeight=max_block,
         )
-        self.temporary_interest_manager.add_range_interest(10, interest)
-        locator = CSqueakLocator(
-            vInterested=[interest],
-        )
-        getsqueaks_msg = msg_getsqueaks(
-            locator=locator,
-        )
-        self.broadcast_msg(getsqueaks_msg)
+        self.active_download_manager.download_interest(10, interest)
 
     def download_single_squeak(self, squeak_hash: bytes):
         logger.info("Downloading single squeak: {}".format(
             squeak_hash.hex(),
         ))
-        # Add the temporary interest in this hash.
-        self.temporary_interest_manager.add_hash_interest(1, squeak_hash)
-        invs = [
-            CInv(type=1, hash=squeak_hash)
-        ]
-        getdata_msg = msg_getdata(
-            inv=invs,
-        )
-        self.broadcast_msg(getdata_msg)
+        self.active_download_manager.download_hash(squeak_hash)
+        logger.info("Downloaded single squeak: {}".format(
+            squeak_hash.hex(),
+        ))
 
     def download_offers(self, squeak_hash: bytes):
         logger.info("Downloading offers for squeak: {}".format(
@@ -737,14 +729,7 @@ class SqueakController:
         interest = CInterested(
             hashReplySqk=squeak_hash,
         )
-        self.temporary_interest_manager.add_range_interest(10, interest)
-        locator = CSqueakLocator(
-            vInterested=[interest],
-        )
-        getsqueaks_msg = msg_getsqueaks(
-            locator=locator,
-        )
-        self.broadcast_msg(getsqueaks_msg)
+        self.active_download_manager.download_interest(10, interest)
 
     def download_address_squeaks(self, squeak_address: str):
         logger.info("Downloading address squeaks for address: {}".format(
@@ -753,14 +738,7 @@ class SqueakController:
         interest = CInterested(
             addresses=[CSqueakAddress(squeak_address)],
         )
-        self.temporary_interest_manager.add_range_interest(10, interest)
-        locator = CSqueakLocator(
-            vInterested=[interest],
-        )
-        getsqueaks_msg = msg_getsqueaks(
-            locator=locator,
-        )
-        self.broadcast_msg(getsqueaks_msg)
+        self.active_download_manager.download_interest(10, interest)
 
     def broadcast_msg(self, msg: MsgSerializable) -> None:
         self.network_manager.broadcast_msg(msg)
