@@ -35,6 +35,7 @@ from squeaknode.db.db_engine import get_engine
 from squeaknode.db.squeak_db import SqueakDb
 from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
 from squeaknode.network.network_manager import NetworkManager
+from squeaknode.node.active_download_manager import ActiveDownloadManager
 from squeaknode.node.payment_processor import PaymentProcessor
 from squeaknode.node.peer_connection_worker import PeerConnectionWorker
 from squeaknode.node.peer_subscription_update_worker import PeerSubscriptionUpdateWorker
@@ -63,6 +64,7 @@ class SqueakNode:
         self.initialize_squeak_core()
         self.initialize_payment_processor()
         self.initialize_network_manager()
+        self.initialize_download_manager()
         self.initialize_squeak_controller()
         self.initialize_admin_handler()
         self.initialize_admin_rpc_server()
@@ -92,8 +94,12 @@ class SqueakNode:
         self.new_secret_key_worker.start_running()
         self.new_follow_worker.start_running()
         self.new_bitcoin_block_worker.start_running()
+        self.download_manager.start(
+            self.squeak_controller.broadcast_msg,
+        )
 
     def stop_running(self):
+        self.download_manager.stop()
         self.admin_web_server.stop()
         self.admin_rpc_server.stop()
         self.network_manager.stop()
@@ -165,6 +171,7 @@ class SqueakNode:
             self.squeak_core,
             self.payment_processor,
             self.network_manager,
+            self.download_manager,
             self.config,
         )
 
@@ -236,3 +243,6 @@ class SqueakNode:
             self.squeak_controller,
             self.bitcoin_block_subscription_client,
         )
+
+    def initialize_download_manager(self):
+        self.download_manager = ActiveDownloadManager()

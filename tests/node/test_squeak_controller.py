@@ -30,6 +30,7 @@ from squeaknode.core.squeak_core import SqueakCore
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.db.squeak_db import SqueakDb
 from squeaknode.network.network_manager import NetworkManager
+from squeaknode.node.active_download_manager import ActiveDownloadManager
 from squeaknode.node.payment_processor import PaymentProcessor
 from squeaknode.node.squeak_controller import SqueakController
 
@@ -100,11 +101,17 @@ def payment_processor():
 
 
 @pytest.fixture
+def download_manager():
+    return mock.Mock(spec=ActiveDownloadManager)
+
+
+@pytest.fixture
 def squeak_controller(
     squeak_db,
     squeak_core,
     payment_processor,
     network_manager,
+    download_manager,
     config,
 ):
     return SqueakController(
@@ -112,6 +119,7 @@ def squeak_controller(
         squeak_core,
         payment_processor,
         network_manager,
+        download_manager,
         config,
     )
 
@@ -122,6 +130,7 @@ def regtest_squeak_controller(
     squeak_core,
     payment_processor,
     network_manager,
+    download_manager,
     regtest_config,
 ):
     return SqueakController(
@@ -129,6 +138,7 @@ def regtest_squeak_controller(
         squeak_core,
         payment_processor,
         network_manager,
+        download_manager,
         regtest_config,
     )
 

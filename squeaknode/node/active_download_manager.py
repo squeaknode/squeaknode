@@ -71,8 +71,11 @@ class ActiveDownload(ABC):
     def mark_complete(self):
         self.stopped.set()
 
-    def wait_for_complete(self) -> None:
-        self.stopped.wait()
+    def cancel(self):
+        self.stopped.set()
+
+    def wait_for_complete(self, timeout_s: int) -> None:
+        self.stopped.wait(timeout=timeout_s)
 
     def get_result(self) -> DownloadResult:
         return DownloadResult(
@@ -122,12 +125,22 @@ class HashDownload(ActiveDownload):
 
 class ActiveDownloadManager:
 
-    def __init__(self, broadcast_fn):
+    def __init__(self):
         self.downloads: Dict[str, ActiveDownload] = dict()
-        # self.interests: Dict[str, ActiveDownload] = ExpiringDict(
-        #     max_len=100, max_age_seconds=10)
-        self.executor = ThreadPoolExecutor(max_workers=10)
+        self.executor = None
+        self.broadcast_fn = None
+
+    def start(self, broadcast_fn):
+        logger.info("Starting Download Manager...")
         self.broadcast_fn = broadcast_fn
+        self.executor = ThreadPoolExecutor(max_workers=10)
+
+    def stop(self):
+        for download in self.downloads.values():
+            download.cancel()
+        logger.info("Stopping Download Manager...")
+        self.executor.shutdown(wait=True)
+        logger.info("Stopped Download Manager.")
 
     def lookup_counter(self, squeak: CSqueak) -> Optional[ActiveDownload]:
         for name, interest in self.downloads.items():
@@ -140,7 +153,7 @@ class ActiveDownloadManager:
         self.downloads[name_key] = download
         future = self.executor.submit(self.download_task, download)
         try:
-            return future.result(DOWNLOAD_TIMEOUT_S)
+            return future.result()
         except TimeoutError:
             return download.get_result()
         finally:
@@ -148,7 +161,7 @@ class ActiveDownloadManager:
 
     def download_task(self, download: ActiveDownload) -> DownloadResult:
         download.initiate_download(self.broadcast_fn)
-        download.wait_for_complete()
+        download.wait_for_complete(DOWNLOAD_TIMEOUT_S)
         return download.get_result()
 
     def download_interest(self, limit: int, interest: CInterested) -> DownloadResult:
