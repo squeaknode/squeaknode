@@ -122,12 +122,17 @@ class HashDownload(ActiveDownload):
 
 class ActiveDownloadManager:
 
-    def __init__(self, broadcast_fn):
+    def __init__(self):
         self.downloads: Dict[str, ActiveDownload] = dict()
-        # self.interests: Dict[str, ActiveDownload] = ExpiringDict(
-        #     max_len=100, max_age_seconds=10)
-        self.executor = ThreadPoolExecutor(max_workers=10)
+        self.executor = None
+        self.broadcast_fn = None
+
+    def start(self, broadcast_fn):
         self.broadcast_fn = broadcast_fn
+        self.executor = ThreadPoolExecutor(max_workers=10)
+
+    def stop(self):
+        self.executor.shutdown(wait=False)
 
     def lookup_counter(self, squeak: CSqueak) -> Optional[ActiveDownload]:
         for name, interest in self.downloads.items():

@@ -60,7 +60,6 @@ from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.squeaks import get_hash
 from squeaknode.core.update_subscriptions_event import UpdateSubscriptionsEvent
 from squeaknode.node.active_download_manager import ActiveDownload
-from squeaknode.node.active_download_manager import ActiveDownloadManager
 from squeaknode.node.listener_subscription_client import EventListener
 from squeaknode.node.received_payments_subscription_client import ReceivedPaymentsSubscriptionClient
 # from squeaknode.node.temporary_interest_manager import TemporaryInterest
@@ -78,6 +77,7 @@ class SqueakController:
         squeak_core,
         payment_processor,
         network_manager,
+        download_manager,
         config,
     ):
         self.squeak_db = squeak_db
@@ -89,8 +89,7 @@ class SqueakController:
         self.new_secret_key_listener = EventListener()
         self.new_follow_listener = EventListener()
         # self.temporary_interest_manager = TemporaryInterestManager()
-        self.active_download_manager = ActiveDownloadManager(
-            self.broadcast_msg)
+        self.active_download_manager = download_manager
         self.config = config
 
     def save_squeak(self, squeak: CSqueak) -> Optional[bytes]:
