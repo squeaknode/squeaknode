@@ -23,6 +23,7 @@ import mock
 import pytest
 
 from squeaknode.node.active_download_manager import HashDownload
+from tests.utils import gen_squeak
 
 
 @pytest.fixture()
@@ -33,6 +34,12 @@ def download_hash(squeak_hash):
 def test_download_hash_is_interested(download_hash, squeak):
 
     assert download_hash.is_interested(squeak)
+
+
+def test_download_hash_is_not_interested(download_hash, signing_key, block_count):
+    other_squeak = gen_squeak(signing_key, block_count)
+
+    assert not download_hash.is_interested(other_squeak)
 
 
 def test_download_hash_mark_complete(download_hash, squeak):
