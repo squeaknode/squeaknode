@@ -50,7 +50,6 @@ class ActiveDownload(ABC):
 
     def __init__(self, limit: int):
         self.limit = limit
-        # self.timeout_s = timeout_s
         self.count = 0
         self._lock = threading.Lock()
         self.stopped = threading.Event()
