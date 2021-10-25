@@ -1069,23 +1069,6 @@ class SqueakDb:
             deleted_offers = res.rowcount
             return deleted_offers
 
-    # def delete_offers_for_squeak(self, squeak_hash: bytes):
-    #     """ Delete all offers for a squeak hash. """
-    #     s = self.received_offers.delete().where(
-    #         self.received_offers.c.squeak_hash == squeak_hash)
-    #     with self.get_connection() as connection:
-    #         res = connection.execute(s)
-    #         deleted_offers = res.rowcount
-    #         return deleted_offers
-
-    # def delete_offer(self, payment_hash: bytes):
-    #     """ Delete a received offer by payment hash. """
-    #     s = self.received_offers.delete().where(
-    #         self.received_offers.c.payment_hash == payment_hash
-    #     )
-    #     with self.get_connection() as connection:
-    #         connection.execute(s)
-
     def set_received_offer_paid(self, payment_hash: bytes, paid: bool) -> None:
         """ Set a received offer is paid. """
         stmt = (
