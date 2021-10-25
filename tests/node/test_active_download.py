@@ -22,6 +22,7 @@
 import mock
 import pytest
 
+from squeaknode.core.download_result import DownloadResult
 from squeaknode.node.active_download_manager import HashDownload
 from tests.utils import gen_squeak
 
@@ -61,3 +62,14 @@ def test_download_hash_wait_for_stop(download_hash):
     download_hash.mark_complete()
 
     download_hash.wait_for_stop()
+
+
+def test_download_hash_get_result(download_hash, squeak):
+    download_hash.increment()
+    download_result = download_hash.get_result()
+
+    assert download_result == DownloadResult(
+        number_downloaded=1,
+        number_requested=1,
+        request_time_s=-1,
+    )
