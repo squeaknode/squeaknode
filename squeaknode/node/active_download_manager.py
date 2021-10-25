@@ -67,7 +67,10 @@ class ActiveDownload(ABC):
         with self._lock:
             self.count += 1
             if self.count >= self.limit:
-                self.stopped.set()
+                self.mark_complete()
+
+    def mark_complete(self):
+        self.stopped.set()
 
     # # TODO: remove this method.
     # def is_under_limit(self) -> bool:
@@ -106,6 +109,7 @@ class RangeDownload(ActiveDownload):
 
 class HashDownload(ActiveDownload):
 
+    # TODO: Remove limit param, make always 1.
     def __init__(self, limit: int, squeak_hash: bytes):
         self.squeak_hash = squeak_hash
         super().__init__(limit)
