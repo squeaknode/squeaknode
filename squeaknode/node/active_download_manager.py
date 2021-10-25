@@ -71,7 +71,7 @@ class ActiveDownload(ABC):
     def mark_complete(self):
         self.stopped.set()
 
-    def wait_for_stop(self) -> None:
+    def wait_for_complete(self) -> None:
         self.stopped.wait()
 
     def get_result(self) -> DownloadResult:
@@ -148,7 +148,7 @@ class ActiveDownloadManager:
 
     def download_task(self, download: ActiveDownload) -> DownloadResult:
         download.initiate_download(self.broadcast_fn)
-        download.wait_for_stop()
+        download.wait_for_complete()
         return download.get_result()
 
     def download_interest(self, limit: int, interest: CInterested) -> DownloadResult:

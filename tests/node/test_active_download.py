@@ -102,10 +102,10 @@ def test_download_hash_mark_complete_not_called(download_hash, squeak):
         mock_mark_complete.assert_not_called()
 
 
-def test_download_hash_wait_for_stop(download_hash):
+def test_download_hash_wait_for_complete(download_hash):
     download_hash.mark_complete()
 
-    download_hash.wait_for_stop()
+    download_hash.wait_for_complete()
 
 
 def test_download_hash_get_result(download_hash, squeak):
