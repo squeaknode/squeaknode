@@ -31,6 +31,9 @@ class Network(Enum):
     I2P = b'\x05'
     CJDNS = b'\x06'
 
+    def __repr__(self):
+        return str(self)
+
 
 class PeerAddress(NamedTuple):
     """Class for representing a remote peer address."""
