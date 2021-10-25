@@ -29,7 +29,7 @@ from squeak.net import CSqueakLocator
 
 from squeaknode.core.download_result import DownloadResult
 from squeaknode.node.active_download_manager import HashDownload
-from squeaknode.node.active_download_manager import RangeDownload
+from squeaknode.node.active_download_manager import InterestDownload
 from tests.utils import gen_squeak
 
 
@@ -49,7 +49,7 @@ def interest(address):
 
 @pytest.fixture()
 def download_interest(interest):
-    yield RangeDownload(limit=10, interest=interest)
+    yield InterestDownload(limit=10, interest=interest)
 
 
 def test_download_hash_is_interested(download_hash, squeak):

@@ -88,8 +88,7 @@ class ActiveDownload(ABC):
         )
 
 
-# TODO: Rename to Interest download.
-class RangeDownload(ActiveDownload):
+class InterestDownload(ActiveDownload):
 
     def __init__(self, limit: int, interest: CInterested):
         self.interest = interest
@@ -160,7 +159,7 @@ class ActiveDownloadManager:
         return download.get_result()
 
     def download_interest(self, limit: int, interest: CInterested) -> DownloadResult:
-        download = RangeDownload(limit, interest)
+        download = InterestDownload(limit, interest)
         return self.run_download(download)
 
     def download_hash(self, limit: int, squeak_hash: bytes) -> DownloadResult:
