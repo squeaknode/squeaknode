@@ -21,6 +21,8 @@
 # SOFTWARE.
 import mock
 import pytest
+from squeak.messages import msg_getdata
+from squeak.net import CInv
 
 from squeaknode.core.download_result import DownloadResult
 from squeaknode.node.active_download_manager import HashDownload
@@ -41,6 +43,17 @@ def test_download_hash_is_not_interested(download_hash, signing_key, block_count
     other_squeak = gen_squeak(signing_key, block_count)
 
     assert not download_hash.is_interested(other_squeak)
+
+
+def test_download_hash_initiate(download_hash, squeak_hash):
+    broadcast_fn = mock.Mock()
+    download_hash.initiate_download(broadcast_fn)
+
+    expected_msg = msg_getdata(
+        inv=[CInv(type=1, hash=squeak_hash)]
+    )
+
+    broadcast_fn.assert_called_once_with(expected_msg)
 
 
 def test_download_hash_mark_complete(download_hash, squeak):
