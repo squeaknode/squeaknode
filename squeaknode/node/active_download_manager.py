@@ -72,11 +72,6 @@ class ActiveDownload(ABC):
     def mark_complete(self):
         self.stopped.set()
 
-    # # TODO: remove this method.
-    # def is_under_limit(self) -> bool:
-    #     with self._lock:
-    #         return self.count < self.limit
-
     def wait_for_stop(self) -> None:
         self.stopped.wait()
 
