@@ -35,7 +35,7 @@ from tests.utils import gen_squeak
 
 @pytest.fixture()
 def download_hash(squeak_hash):
-    yield HashDownload(limit=1, squeak_hash=squeak_hash)
+    yield HashDownload(squeak_hash=squeak_hash)
 
 
 @pytest.fixture()

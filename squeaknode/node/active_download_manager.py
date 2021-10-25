@@ -103,10 +103,9 @@ class InterestDownload(ActiveDownload):
 
 class HashDownload(ActiveDownload):
 
-    # TODO: Remove limit param, make always 1.
-    def __init__(self, limit: int, squeak_hash: bytes):
+    def __init__(self, squeak_hash: bytes):
         self.squeak_hash = squeak_hash
-        super().__init__(limit)
+        super().__init__(1)
 
     def is_interested(self, squeak: CSqueak) -> bool:
         return self.squeak_hash == get_hash(squeak)
@@ -156,6 +155,6 @@ class ActiveDownloadManager:
         download = InterestDownload(limit, interest)
         return self.run_download(download)
 
-    def download_hash(self, limit: int, squeak_hash: bytes) -> DownloadResult:
-        download = HashDownload(limit, squeak_hash)
+    def download_hash(self, squeak_hash: bytes) -> DownloadResult:
+        download = HashDownload(squeak_hash)
         return self.run_download(download)

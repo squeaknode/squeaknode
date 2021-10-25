@@ -707,7 +707,7 @@ class SqueakController:
         logger.info("Downloading single squeak: {}".format(
             squeak_hash.hex(),
         ))
-        self.active_download_manager.download_hash(1, squeak_hash)
+        self.active_download_manager.download_hash(squeak_hash)
         logger.info("Downloaded single squeak: {}".format(
             squeak_hash.hex(),
         ))
