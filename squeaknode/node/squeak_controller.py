@@ -708,6 +708,9 @@ class SqueakController:
             squeak_hash.hex(),
         ))
         self.active_download_manager.download_hash(1, squeak_hash)
+        logger.info("Downloaded single squeak: {}".format(
+            squeak_hash.hex(),
+        ))
 
     def download_offers(self, squeak_hash: bytes):
         logger.info("Downloading offers for squeak: {}".format(
