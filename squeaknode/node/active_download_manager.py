@@ -71,6 +71,9 @@ class ActiveDownload(ABC):
     def mark_complete(self):
         self.stopped.set()
 
+    def cancel(self):
+        self.stopped.set()
+
     def wait_for_complete(self, timeout_s: int) -> None:
         self.stopped.wait(timeout=timeout_s)
 
@@ -133,6 +136,8 @@ class ActiveDownloadManager:
         self.executor = ThreadPoolExecutor(max_workers=10)
 
     def stop(self):
+        for download in self.downloads.values():
+            download.cancel()
         logger.info("Stopping Download Manager...")
         self.executor.shutdown(wait=True)
         logger.info("Stopped Download Manager.")
