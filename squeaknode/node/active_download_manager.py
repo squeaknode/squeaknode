@@ -88,6 +88,7 @@ class ActiveDownload(ABC):
         )
 
 
+# TODO: Rename to Interest download.
 class RangeDownload(ActiveDownload):
 
     def __init__(self, limit: int, interest: CInterested):

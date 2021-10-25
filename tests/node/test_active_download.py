@@ -22,16 +22,34 @@
 import mock
 import pytest
 from squeak.messages import msg_getdata
+from squeak.messages import msg_getsqueaks
+from squeak.net import CInterested
 from squeak.net import CInv
+from squeak.net import CSqueakLocator
 
 from squeaknode.core.download_result import DownloadResult
 from squeaknode.node.active_download_manager import HashDownload
+from squeaknode.node.active_download_manager import RangeDownload
 from tests.utils import gen_squeak
 
 
 @pytest.fixture()
 def download_hash(squeak_hash):
     yield HashDownload(limit=1, squeak_hash=squeak_hash)
+
+
+@pytest.fixture()
+def interest(address):
+    yield CInterested(
+        addresses=(address,),
+        nMinBlockHeight=5500,
+        nMaxBlockHeight=5600,
+    )
+
+
+@pytest.fixture()
+def download_interest(interest):
+    yield RangeDownload(limit=10, interest=interest)
 
 
 def test_download_hash_is_interested(download_hash, squeak):
@@ -51,6 +69,19 @@ def test_download_hash_initiate(download_hash, squeak_hash):
 
     expected_msg = msg_getdata(
         inv=[CInv(type=1, hash=squeak_hash)]
+    )
+
+    broadcast_fn.assert_called_once_with(expected_msg)
+
+
+def test_download_interest_initiate(download_interest, interest):
+    broadcast_fn = mock.Mock()
+    download_interest.initiate_download(broadcast_fn)
+
+    expected_msg = msg_getsqueaks(
+        locator=CSqueakLocator(
+            vInterested=[interest],
+        )
     )
 
     broadcast_fn.assert_called_once_with(expected_msg)
