@@ -42,6 +42,7 @@ from squeaknode.node.process_received_payments_worker import ProcessReceivedPaym
 from squeaknode.node.squeak_controller import SqueakController
 from squeaknode.node.squeak_deletion_worker import SqueakDeletionWorker
 from squeaknode.node.squeak_offer_expiry_worker import SqueakOfferExpiryWorker
+from squeaknode.node.update_follows_worker import UpdateFollowsWorker
 from squeaknode.node.update_subscribed_secret_key_worker import UpdateSubscribedSecretKeysWorker
 from squeaknode.node.update_subscribed_squeak_worker import UpdateSubscribedSqueaksWorker
 
@@ -72,6 +73,7 @@ class SqueakNode:
         self.initialize_offer_expiry_worker()
         self.initialize_new_squeak_worker()
         self.initialize_new_secret_key_worker()
+        self.initialize_new_follow_worker()
         self.initialize_peer_subscription_update_worker()
 
     def start_running(self):
@@ -88,6 +90,7 @@ class SqueakNode:
         self.offer_expiry_worker.start()
         self.new_squeak_worker.start_running()
         self.new_secret_key_worker.start_running()
+        self.new_follow_worker.start_running()
         self.new_bitcoin_block_worker.start_running()
 
     def stop_running(self):
@@ -220,6 +223,11 @@ class SqueakNode:
 
     def initialize_new_secret_key_worker(self):
         self.new_secret_key_worker = UpdateSubscribedSecretKeysWorker(
+            self.squeak_controller,
+        )
+
+    def initialize_new_follow_worker(self):
+        self.new_follow_worker = UpdateFollowsWorker(
             self.squeak_controller,
         )
 
