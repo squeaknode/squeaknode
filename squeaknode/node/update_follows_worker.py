@@ -45,9 +45,9 @@ class UpdateFollowsWorker:
         self.stopped.set()
 
     def handle_new_follow(self):
-        logger.info("Starting UpdateFollowsWorker...")
+        logger.debug("Starting UpdateFollowsWorker...")
         for _ in self.squeak_controller.subscribe_follows(
                 self.stopped,
         ):
-            logger.info("Handling update subscriptions event")
+            logger.debug("Handling update subscriptions event")
             self.squeak_controller.update_subscriptions()
