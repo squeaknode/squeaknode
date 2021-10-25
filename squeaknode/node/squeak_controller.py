@@ -254,8 +254,6 @@ class SqueakController:
             profile_name,
         )
         profile_id = self.squeak_db.insert_profile(squeak_profile)
-        # self.update_subscriptions()
-        # self.new_follow_listener.handle_new_item(None)
         self.create_update_subscriptions_event()
         return profile_id
 
@@ -265,8 +263,6 @@ class SqueakController:
             private_key,
         )
         profile_id = self.squeak_db.insert_profile(squeak_profile)
-        # self.update_subscriptions()
-        # self.new_follow_listener.handle_new_item(None)
         self.create_update_subscriptions_event()
         return profile_id
 
@@ -276,8 +272,6 @@ class SqueakController:
             squeak_address,
         )
         profile_id = self.squeak_db.insert_profile(squeak_profile)
-        # self.update_subscriptions()
-        # self.new_follow_listener.handle_new_item(None)
         self.create_update_subscriptions_event()
         return profile_id
 
@@ -301,8 +295,6 @@ class SqueakController:
 
     def set_squeak_profile_following(self, profile_id: int, following: bool) -> None:
         self.squeak_db.set_profile_following(profile_id, following)
-        # self.update_subscriptions()
-        # self.new_follow_listener.handle_new_item(None)
         self.create_update_subscriptions_event()
 
     def set_squeak_profile_use_custom_price(self, profile_id: int, use_custom_price: bool) -> None:
@@ -318,8 +310,6 @@ class SqueakController:
 
     def delete_squeak_profile(self, profile_id: int) -> None:
         self.squeak_db.delete_profile(profile_id)
-        # self.update_subscriptions()
-        # self.new_follow_listener.handle_new_item(None)
         self.create_update_subscriptions_event()
 
     def set_squeak_profile_image(self, profile_id: int, profile_image: bytes) -> None:
