@@ -59,6 +59,7 @@ from squeaknode.core.squeak_entry import SqueakEntry
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.squeaks import get_hash
+from squeaknode.core.update_subscriptions_event import UpdateSubscriptionsEvent
 from squeaknode.node.listener_subscription_client import EventListener
 from squeaknode.node.received_payments_subscription_client import ReceivedPaymentsSubscriptionClient
 from squeaknode.node.temporary_interest_manager import TemporaryInterest
@@ -807,7 +808,7 @@ class SqueakController:
         self.network_manager.update_local_subscriptions(locator)
 
     def create_update_subscriptions_event(self):
-        self.new_follow_listener.handle_new_item('update_subscriptions')
+        self.new_follow_listener.handle_new_item(UpdateSubscriptionsEvent())
 
     def subscribe_received_offers_for_squeak(self, squeak_hash: bytes, stopped: threading.Event):
         for received_offer in self.new_received_offer_listener.yield_items(stopped):
