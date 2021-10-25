@@ -39,11 +39,11 @@ def download_hash(squeak_hash):
 
 
 @pytest.fixture()
-def interest(address):
+def interest(address, block_count):
     yield CInterested(
         addresses=(address,),
-        nMinBlockHeight=5500,
-        nMaxBlockHeight=5600,
+        nMinBlockHeight=block_count - 100,
+        nMaxBlockHeight=block_count + 100,
     )
 
 
@@ -61,6 +61,17 @@ def test_download_hash_is_not_interested(download_hash, signing_key, block_count
     other_squeak = gen_squeak(signing_key, block_count)
 
     assert not download_hash.is_interested(other_squeak)
+
+
+def test_download_interest_is_interested(download_interest, squeak):
+
+    assert download_interest.is_interested(squeak)
+
+
+def test_download_interest_is_not_interested(download_interest, signing_key, block_count):
+    other_squeak = gen_squeak(signing_key, block_count + 200)
+
+    assert not download_interest.is_interested(other_squeak)
 
 
 def test_download_hash_initiate(download_hash, squeak_hash):
