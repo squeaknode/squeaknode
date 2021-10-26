@@ -29,6 +29,7 @@ import {
   getAncestorSqueakDisplaysRequest,
   getReplySqueakDisplaysRequest,
   getNetworkRequest,
+  downloadSqueakRequest,
   downloadRepliesRequest,
   // subscribeReplySqueakDisplaysRequest,
   // subscribeAncestorSqueakDisplaysRequest,
@@ -44,6 +45,7 @@ export default function SqueakPage() {
   const [network, setNetwork] = useState('');
   const [waitingForSqueak, setWaitingForSqueak] = useState(false);
   const [waitingForReplySqueaks, setWaitingForReplySqueaks] = useState(false);
+  const [waitingForDownloadAncestors, setWaitingForDownloadAncestors] = useState(false);
   const [waitingForDownloadReplies, setWaitingForDownloadReplies] = useState(false);
 
   const getAncestorSqueaks = useCallback((hash) => {
@@ -83,8 +85,27 @@ export default function SqueakPage() {
     });
   };
 
+  const handleCloseAncestorsDownloadInProgressDialog = () => {
+    setWaitingForDownloadAncestors(false);
+  };
+
   const handleCloseRepliesDownloadInProgressDialog = () => {
     setWaitingForDownloadReplies(false);
+  };
+
+  const handleDownloadAncestors = () => {
+    console.log('Handling download ancestors click...');
+    setWaitingForDownloadAncestors(true);
+    downloadSqueakRequest(hash, (response) => {
+      setWaitingForDownloadAncestors(false);
+      setAncestorSqueaks(null); // Temporary fix until component unmounts correcyly
+      getAncestorSqueaks(hash);
+    });
+  };
+
+  const onDownloadAncestorsClick = (event) => {
+    event.preventDefault();
+    handleDownloadAncestors();
   };
 
   const onDownloadRepliesClick = (event) => {
@@ -147,6 +168,7 @@ export default function SqueakPage() {
         squeak={currentSqueak}
         reloadSqueak={getCurrentSqueak}
         network={network}
+        handleDownloadAncestorsClick={handleDownloadAncestors}
       />
     );
   }
@@ -207,6 +229,17 @@ export default function SqueakPage() {
     );
   }
 
+  function AncestorsDownloadInProgressDialogContent() {
+    return (
+      <>
+        <DownloadInProgressDialog
+          open={waitingForDownloadAncestors}
+          handleClose={handleCloseAncestorsDownloadInProgressDialog}
+        />
+      </>
+    );
+  }
+
   function RepliesDownloadInProgressDialogContent() {
     return (
       <>
@@ -248,6 +281,7 @@ export default function SqueakPage() {
   return (
     <>
       {GridContent()}
+      {AncestorsDownloadInProgressDialogContent()}
       {RepliesDownloadInProgressDialogContent()}
     </>
   );
