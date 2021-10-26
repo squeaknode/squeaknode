@@ -837,7 +837,17 @@ message DownloadSqueaksRequest {
     string replyto_squeak_hash = 4;
 }
 
+message DownloadResult {
+    /// Number of squeaks downloaded
+    int32 number_downloaded = 1;
+
+    /// Number of squeaks requested
+    int32 number_requested = 2;
+}
+
 message DownloadSqueaksReply {
+    // The download result
+    DownloadResult download_result = 1;
 }
 
 message PayOfferRequest {
@@ -905,6 +915,8 @@ message DownloadSqueakRequest {
 }
 
 message DownloadSqueakReply {
+    // The download result
+    DownloadResult download_result = 1;
 }
 
 message DownloadOffersRequest {
@@ -921,6 +933,8 @@ message DownloadRepliesRequest {
 }
 
 message DownloadRepliesReply {
+    // The download result
+    DownloadResult download_result = 1;
 }
 
 message DownloadAddressSqueaksRequest {
@@ -929,6 +943,8 @@ message DownloadAddressSqueaksRequest {
 }
 
 message DownloadAddressSqueaksReply {
+    // The download result
+    DownloadResult download_result = 1;
 }
 
 message GetSqueakDetailsRequest {

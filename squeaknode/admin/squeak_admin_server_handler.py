@@ -23,6 +23,7 @@ import logging
 
 from proto import squeak_admin_pb2
 from squeaknode.admin.messages import connected_peer_to_message
+from squeaknode.admin.messages import download_result_to_message
 from squeaknode.admin.messages import message_to_peer_address
 from squeaknode.admin.messages import message_to_received_payment
 from squeaknode.admin.messages import message_to_sent_payment
@@ -609,21 +610,30 @@ class SqueakAdminServerHandler(object):
             max_block,
             replyto_hash,
         ))
-        self.squeak_controller.download_squeaks(
+        download_result = self.squeak_controller.download_squeaks(
             addresses,
             min_block,
             max_block,
             replyto_hash,
         )
-        return squeak_admin_pb2.DownloadSqueaksReply()
+        logger.info("Download result: {}".format(download_result))
+        download_result_msg = download_result_to_message(download_result)
+        return squeak_admin_pb2.DownloadSqueaksReply(
+            download_result=download_result_msg,
+        )
 
     def handle_download_squeak(self, request):
         squeak_hash_str = request.squeak_hash
         squeak_hash = bytes.fromhex(squeak_hash_str)
         logger.info(
             "Handle download squeak with hash: {}".format(squeak_hash_str))
-        self.squeak_controller.download_single_squeak(squeak_hash)
-        return squeak_admin_pb2.DownloadSqueakReply()
+        download_result = self.squeak_controller.download_single_squeak(
+            squeak_hash)
+        logger.info("Download result: {}".format(download_result))
+        download_result_msg = download_result_to_message(download_result)
+        return squeak_admin_pb2.DownloadSqueakReply(
+            download_result=download_result_msg,
+        )
 
     def handle_download_offers(self, request):
         squeak_hash_str = request.squeak_hash
@@ -645,8 +655,13 @@ class SqueakAdminServerHandler(object):
         squeak_address = request.address
         logger.info(
             "Handle download address squeaks for address: {}".format(squeak_address))
-        self.squeak_controller.download_address_squeaks(squeak_address)
-        return squeak_admin_pb2.DownloadAddressSqueaksReply()
+        download_result = self.squeak_controller.download_address_squeaks(
+            squeak_address)
+        logger.info("Download result: {}".format(download_result))
+        download_result_msg = download_result_to_message(download_result)
+        return squeak_admin_pb2.DownloadAddressSqueaksReply(
+            download_result=download_result_msg,
+        )
 
     def handle_pay_offer(self, request):
         offer_id = request.offer_id

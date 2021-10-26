@@ -252,15 +252,16 @@ def get_squeak_display(node_stub, squeak_hash):
 
 
 def download_squeak(node_stub, squeak_hash):
-    node_stub.DownloadSqueak(
+    download_squeak_response = node_stub.DownloadSqueak(
         squeak_admin_pb2.DownloadSqueakRequest(
             squeak_hash=squeak_hash,
         ),
     )
+    return download_squeak_response.download_result
 
 
 def download_squeaks(node_stub, addresses, min_block, max_block, reply_to):
-    node_stub.DownloadSqueaks(
+    download_squeaks_response = node_stub.DownloadSqueaks(
         squeak_admin_pb2.DownloadSqueaksRequest(
             addreses=addresses,
             min_block_height=min_block,
@@ -268,14 +269,16 @@ def download_squeaks(node_stub, addresses, min_block, max_block, reply_to):
             replyto_squeak_hash=reply_to,
         ),
     )
+    return download_squeaks_response.download_result
 
 
 def download_squeaks_for_address(node_stub, squeak_address):
-    node_stub.DownloadAddressSqueaks(
+    download_squeaks_response = node_stub.DownloadAddressSqueaks(
         squeak_admin_pb2.DownloadAddressSqueaksRequest(
             address=squeak_address,
         ),
     )
+    return download_squeaks_response.download_result
 
 
 def download_offers(node_stub, squeak_hash):

@@ -617,7 +617,7 @@ def test_buy_squeak(
 ):
     # Download squeak
     download_squeak(other_admin_stub, saved_squeak_hash)
-    time.sleep(5)
+    # time.sleep(5)
 
     # Download offer
     download_offers(other_admin_stub, saved_squeak_hash)
@@ -771,8 +771,12 @@ def test_download_free_squeak(
     saved_squeak_hash,
 ):
     # Download squeak
-    download_squeak(other_admin_stub, saved_squeak_hash)
-    time.sleep(5)
+    download_result = download_squeak(other_admin_stub, saved_squeak_hash)
+    # time.sleep(5)
+    print('download_result:')
+    print(download_result)
+    assert download_result.number_downloaded == 1
+    assert download_result.number_requested == 1
 
     # Download offer
     download_offers(other_admin_stub, saved_squeak_hash)
@@ -812,8 +816,10 @@ def test_download_single_squeak(
         assert len(get_buy_offers_response.offers) == 0
 
         # Download squeak
-        download_squeak(other_admin_stub, saved_squeak_hash)
-        time.sleep(5)
+        download_result = download_squeak(other_admin_stub, saved_squeak_hash)
+        assert download_result.number_downloaded == 1
+        assert download_result.number_requested == 1
+        # time.sleep(5)
 
         # Get the squeak display item
         squeak_display_entry = get_squeak_display(
@@ -871,8 +877,11 @@ def test_download_squeaks_for_address(
         assert len(get_buy_offers_response.offers) == 0
 
         # Download squeaks for address
-        download_squeaks_for_address(other_admin_stub, squeak_profile_address)
-        time.sleep(5)
+        download_result = download_squeaks_for_address(
+            other_admin_stub, squeak_profile_address)
+        assert download_result.number_downloaded == 1
+        assert download_result.number_requested == 10
+        # time.sleep(5)
 
         # Get the squeak display item
         squeak_display_entry = get_squeak_display(
@@ -1015,14 +1024,16 @@ def test_get_squeak_by_lookup(
     assert squeak_display_entry is None
 
     # Sync squeaks
-    download_squeaks(
+    download_result = download_squeaks(
         other_admin_stub,
         [squeak_profile_address],
         -1,
         -1,
         None,
     )
-    time.sleep(5)
+    print(download_result)
+    assert download_result.number_downloaded == 1
+    assert download_result.number_requested == 10
 
     # Get the squeak display item
     squeak_display_entry = get_squeak_display(
