@@ -1,20 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Dialog,
   DialogTitle,
   DialogContent,
-  TextField,
-  DialogActions,
-  Button,
   CircularProgress,
 } from '@material-ui/core';
 
 // styles
 import useStyles from './styles';
-
-import {
-  lndNewAddressRequest,
-} from '../../squeakclient/requests';
 
 export default function DownloadInProgressDialog({
   open,

@@ -55,9 +55,9 @@ export default function TransactionItem({
   function TransactionMoreDetails() {
     return (
       <CardContent
-      className={classes.cardContent}
-      onClick={onMoreDetailsClick}
->
+        className={classes.cardContent}
+        onClick={onMoreDetailsClick}
+      >
         {TransactionDetailItem('Tx Hash', transaction.getTxHash())}
         {TransactionDetailItem('Timestamp', moment.unix(transaction.getTimeStamp()).format('lll'))}
         {TransactionDetailItem('Block Height', transaction.getBlockHeight())}

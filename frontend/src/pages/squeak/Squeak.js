@@ -24,7 +24,6 @@ import SqueakThread from '../../components/SqueakThread';
 import SqueakReplies from '../../components/SqueakReplies';
 import DownloadInProgressDialog from '../../components/DownloadInProgressDialog';
 
-
 import {
   getAncestorSqueakDisplaysRequest,
   getReplySqueakDisplaysRequest,

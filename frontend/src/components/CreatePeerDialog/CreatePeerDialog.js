@@ -42,7 +42,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
 export default function CreatePeerDialog({
   open,
   handleClose,
@@ -60,7 +59,7 @@ export default function CreatePeerDialog({
   const [port, setPort] = useState('');
   const [customPortChecked, setCustomPortChecked] = useState(false);
   const [useTorChecked, setUseTorChecked] = useState(false);
-  const portToUse = useMemo(() => customPortChecked ? port : defaultPeerPort,  [customPortChecked, port, defaultPeerPort]);
+  const portToUse = useMemo(() => (customPortChecked ? port : defaultPeerPort), [customPortChecked, port, defaultPeerPort]);
 
   const getDefaultPeerPort = () => {
     getDefaultPeerPortRequest(setDefaultPeerPort);
@@ -114,10 +113,9 @@ export default function CreatePeerDialog({
 
   const getNetwork = (useTor) => {
     if (useTor) {
-      return "TORV3";
-    } else {
-      return "IPV4";
+      return 'TORV3';
     }
+    return 'IPV4';
   };
 
   const createPeer = (peerName, host, port) => {

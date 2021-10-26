@@ -23,7 +23,6 @@ import SqueakActionBar from '../SqueakActionBar';
 import SqueakTime from '../SqueakTime';
 import SqueakUserAvatar from '../SqueakUserAvatar';
 
-
 import {
   goToSqueakAddressPage,
 } from '../../navigation/navigation';
