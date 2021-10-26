@@ -103,13 +103,7 @@ export default function SqueakPage() {
     });
   };
 
-  const onDownloadAncestorsClick = (event) => {
-    event.preventDefault();
-    handleDownloadAncestors();
-  };
-
-  const onDownloadRepliesClick = (event) => {
-    event.preventDefault();
+  const handleDownloadReplies = () => {
     console.log('Handling download replies click...');
     setWaitingForDownloadReplies(true);
     downloadRepliesRequest(hash, (response) => {
@@ -118,6 +112,11 @@ export default function SqueakPage() {
       setReplySqueaks(null); // Temporary fix until component unmounts correcyly
       getReplySqueaks(hash, SQUEAKS_PER_PAGE, null);
     });
+  };
+
+  const onDownloadRepliesClick = (event) => {
+    event.preventDefault();
+    handleDownloadReplies();
   };
 
   const calculateCurrentSqueak = (ancestorSqueaks) => {
