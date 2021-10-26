@@ -22,6 +22,8 @@ import useStyles from './styles';
 import SqueakDetailItem from '../../components/SqueakDetailItem';
 import SqueakThread from '../../components/SqueakThread';
 import SqueakReplies from '../../components/SqueakReplies';
+import DownloadInProgressDialog from '../../components/DownloadInProgressDialog';
+
 
 import {
   getAncestorSqueakDisplaysRequest,
@@ -42,6 +44,7 @@ export default function SqueakPage() {
   const [network, setNetwork] = useState('');
   const [waitingForSqueak, setWaitingForSqueak] = useState(false);
   const [waitingForReplySqueaks, setWaitingForReplySqueaks] = useState(false);
+  const [waitingForDownloadReplies, setWaitingForDownloadReplies] = useState(false);
 
   const getAncestorSqueaks = useCallback((hash) => {
     setWaitingForSqueak(true);
@@ -80,11 +83,19 @@ export default function SqueakPage() {
     });
   };
 
+  const handleCloseRepliesDownloadInProgressDialog = () => {
+    setWaitingForDownloadReplies(false);
+  };
+
   const onDownloadRepliesClick = (event) => {
     event.preventDefault();
     console.log('Handling download replies click...');
+    setWaitingForDownloadReplies(true);
     downloadRepliesRequest(hash, (response) => {
-      // Do nothing.
+      // TODO.
+      setWaitingForDownloadReplies(false);
+      setReplySqueaks(null); // Temporary fix until component unmounts correcyly
+      getReplySqueaks(hash, SQUEAKS_PER_PAGE, null);
     });
   };
 
@@ -196,6 +207,17 @@ export default function SqueakPage() {
     );
   }
 
+  function RepliesDownloadInProgressDialogContent() {
+    return (
+      <>
+        <DownloadInProgressDialog
+          open={waitingForDownloadReplies}
+          handleClose={handleCloseRepliesDownloadInProgressDialog}
+        />
+      </>
+    );
+  }
+
   function ViewMoreSqueaksButton() {
     return (
       <>
@@ -226,6 +248,7 @@ export default function SqueakPage() {
   return (
     <>
       {GridContent()}
+      {RepliesDownloadInProgressDialogContent()}
     </>
   );
 }
