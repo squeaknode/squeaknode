@@ -617,7 +617,6 @@ def test_buy_squeak(
 ):
     # Download squeak
     download_squeak(other_admin_stub, saved_squeak_hash)
-    # time.sleep(5)
 
     # Download offer
     download_offers(other_admin_stub, saved_squeak_hash)
@@ -772,7 +771,6 @@ def test_download_free_squeak(
 ):
     # Download squeak
     download_result = download_squeak(other_admin_stub, saved_squeak_hash)
-    # time.sleep(5)
     print('download_result:')
     print(download_result)
     assert download_result.number_downloaded == 1
@@ -819,7 +817,6 @@ def test_download_single_squeak(
         download_result = download_squeak(other_admin_stub, saved_squeak_hash)
         assert download_result.number_downloaded == 1
         assert download_result.number_requested == 1
-        # time.sleep(5)
 
         # Get the squeak display item
         squeak_display_entry = get_squeak_display(
@@ -881,7 +878,6 @@ def test_download_squeaks_for_address(
             other_admin_stub, squeak_profile_address)
         assert download_result.number_downloaded == 1
         assert download_result.number_requested == 10
-        # time.sleep(5)
 
         # Get the squeak display item
         squeak_display_entry = get_squeak_display(
