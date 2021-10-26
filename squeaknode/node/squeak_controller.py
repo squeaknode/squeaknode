@@ -737,8 +737,8 @@ class SqueakController:
         )
         return self.active_download_manager.download_interest(10, interest)
 
-    def broadcast_msg(self, msg: MsgSerializable) -> None:
-        self.network_manager.broadcast_msg(msg)
+    def broadcast_msg(self, msg: MsgSerializable) -> int:
+        return self.network_manager.broadcast_msg(msg)
 
     def disconnect_peer(self, peer_address: PeerAddress) -> None:
         logger.info("Disconnect to peer: {}".format(

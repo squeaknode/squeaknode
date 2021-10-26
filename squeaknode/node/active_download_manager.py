@@ -21,6 +21,7 @@
 # SOFTWARE.
 import logging
 import threading
+import time
 import uuid
 from abc import ABC
 from abc import abstractmethod
@@ -32,6 +33,7 @@ from typing import Optional
 from squeak.core import CSqueak
 from squeak.messages import msg_getdata
 from squeak.messages import msg_getsqueaks
+from squeak.messages import MsgSerializable
 from squeak.net import CInterested
 from squeak.net import CInv
 from squeak.net import CSqueakLocator
@@ -53,14 +55,23 @@ class ActiveDownload(ABC):
         self.count = 0
         self._lock = threading.Lock()
         self.stopped = threading.Event()
+        self.num_peers = 0
+        self.start_time_ms: Optional[int] = None
 
     @abstractmethod
     def is_interested(self, squeak: CSqueak) -> bool:
         """Return True if the given squeak matches the download interest."""
 
     @abstractmethod
+    def get_download_msg(self) -> MsgSerializable:
+        """Get the message to send to peers to get download response."""
+
     def initiate_download(self, broadcast_fn) -> None:
-        """Broadcast a message to peers to get data."""
+        self.start_time_ms = int(time.time() * 1000)
+        msg = self.get_download_msg()
+        self.num_peers = broadcast_fn(msg)
+        if self.num_peers == 0:
+            self.mark_complete()
 
     def increment(self) -> None:
         with self._lock:
@@ -74,6 +85,12 @@ class ActiveDownload(ABC):
     def cancel(self):
         self.stopped.set()
 
+    def get_elapsed_time_ms(self):
+        if self.start_time_ms is None:
+            return 0
+        end_time_ms = int(time.time() * 1000)
+        return end_time_ms - self.start_time_ms
+
     def wait_for_complete(self, timeout_s: int) -> None:
         self.stopped.wait(timeout=timeout_s)
 
@@ -81,7 +98,8 @@ class ActiveDownload(ABC):
         return DownloadResult(
             number_downloaded=self.count,
             number_requested=self.limit,
-            request_time_s=-1,
+            elapsed_time_ms=self.get_elapsed_time_ms(),
+            number_peers=self.num_peers,
         )
 
 
@@ -94,14 +112,13 @@ class InterestDownload(ActiveDownload):
     def is_interested(self, squeak: CSqueak) -> bool:
         return squeak_matches_interest(squeak, self.interest)
 
-    def initiate_download(self, broadcast_fn) -> None:
+    def get_download_msg(self) -> MsgSerializable:
         locator = CSqueakLocator(
             vInterested=[self.interest],
         )
-        getsqueaks_msg = msg_getsqueaks(
+        return msg_getsqueaks(
             locator=locator,
         )
-        broadcast_fn(getsqueaks_msg)
 
 
 class HashDownload(ActiveDownload):
@@ -113,14 +130,13 @@ class HashDownload(ActiveDownload):
     def is_interested(self, squeak: CSqueak) -> bool:
         return self.squeak_hash == get_hash(squeak)
 
-    def initiate_download(self, broadcast_fn) -> None:
+    def get_download_msg(self) -> MsgSerializable:
         invs = [
             CInv(type=1, hash=self.squeak_hash)
         ]
-        getdata_msg = msg_getdata(
+        return msg_getdata(
             inv=invs,
         )
-        broadcast_fn(getdata_msg)
 
 
 class ActiveDownloadManager:

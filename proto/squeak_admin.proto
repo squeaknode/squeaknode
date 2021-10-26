@@ -843,6 +843,12 @@ message DownloadResult {
 
     /// Number of squeaks requested
     int32 number_requested = 2;
+
+    /// Number of peers downloaded from
+    int32 number_peers = 3;
+
+    /// Download time in milliseconds.
+    int32 elapsed_time_ms = 4;
 }
 
 message DownloadSqueaksReply {

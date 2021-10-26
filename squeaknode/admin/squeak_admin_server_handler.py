@@ -648,8 +648,12 @@ class SqueakAdminServerHandler(object):
         squeak_hash = bytes.fromhex(squeak_hash_str)
         logger.info(
             "Handle download replies for hash: {}".format(squeak_hash_str))
-        self.squeak_controller.download_replies(squeak_hash)
-        return squeak_admin_pb2.DownloadRepliesReply()
+        download_result = self.squeak_controller.download_replies(squeak_hash)
+        logger.info("Download result: {}".format(download_result))
+        download_result_msg = download_result_to_message(download_result)
+        return squeak_admin_pb2.DownloadRepliesReply(
+            download_result=download_result_msg,
+        )
 
     def handle_download_address_squeaks(self, request):
         squeak_address = request.address
