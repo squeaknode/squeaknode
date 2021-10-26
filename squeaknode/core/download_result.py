@@ -26,4 +26,5 @@ class DownloadResult(NamedTuple):
     """Represents a payment made by a buyer."""
     number_downloaded: int
     number_requested: int
-    request_time_s: int
+    elapsed_time_ms: int
+    number_peers: int

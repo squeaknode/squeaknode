@@ -263,6 +263,8 @@ def download_result_to_message(download_result: DownloadResult) -> squeak_admin_
     return squeak_admin_pb2.DownloadResult(
         number_downloaded=download_result.number_downloaded,
         number_requested=download_result.number_requested,
+        number_peers=download_result.number_peers,
+        elapsed_time_ms=download_result.elapsed_time_ms,
     )
 
 

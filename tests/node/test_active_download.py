@@ -126,5 +126,6 @@ def test_download_hash_get_result(download_hash, squeak):
     assert download_result == DownloadResult(
         number_downloaded=1,
         number_requested=1,
-        request_time_s=-1,
+        elapsed_time_ms=0,
+        number_peers=0,
     )

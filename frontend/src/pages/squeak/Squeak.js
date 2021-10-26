@@ -97,6 +97,10 @@ export default function SqueakPage() {
     setWaitingForDownloadAncestors(true);
     downloadSqueakRequest(hash, (response) => {
       setWaitingForDownloadAncestors(false);
+      if (response.getDownloadResult().getNumberPeers() === 0) {
+        alert("Unable to download because zero connected peers.");
+        return;
+      }
       setAncestorSqueaks(null); // Temporary fix until component unmounts correcyly
       getAncestorSqueaks(hash);
     });
@@ -107,6 +111,10 @@ export default function SqueakPage() {
     setWaitingForDownloadReplies(true);
     downloadRepliesRequest(hash, (response) => {
       setWaitingForDownloadReplies(false);
+      if (response.getDownloadResult().getNumberPeers() === 0) {
+        alert("Unable to download because zero connected peers.");
+        return;
+      }
       setReplySqueaks(null); // Temporary fix until component unmounts correcyly
       getReplySqueaks(hash, SQUEAKS_PER_PAGE, null);
     });

@@ -100,14 +100,22 @@ class NetworkManager(object):
     def get_connected_peers(self) -> List[Peer]:
         return self.connection_manager.peers
 
-    def broadcast_msg(self, msg: MsgSerializable) -> None:
+    def broadcast_msg(self, msg: MsgSerializable) -> int:
+        """Send a message to all connected peers.
+
+        Returns:
+            int: the number of peers message was sent to.
+        """
+        count = 0
         for peer in self.connection_manager.peers:
             try:
                 peer.send_msg(msg)
+                count += 1
             except Exception:
                 logger.exception("Failed to send msg to peer: {}".format(
                     peer,
                 ))
+        return count
 
     def update_local_subscriptions(self, locator: CSqueakLocator) -> None:
         for peer in self.connection_manager.peers:
