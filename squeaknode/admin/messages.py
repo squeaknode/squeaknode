@@ -28,6 +28,7 @@ from proto import squeak_admin_pb2
 from squeaknode.admin.profile_image_util import bytes_to_base64_string
 from squeaknode.admin.profile_image_util import load_default_profile_image
 from squeaknode.core.connected_peer import ConnectedPeer
+from squeaknode.core.download_result import DownloadResult
 from squeaknode.core.peer_address import Network
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.received_offer import ReceivedOffer
@@ -255,6 +256,13 @@ def message_to_received_payment(msg: squeak_admin_pb2.ReceivedPayment) -> Receiv
         price_msat=msg.price_msat,
         settle_index=0,  # TODO: This is not correct, fix later.
         peer_address=message_to_peer_address(msg.peer_address),
+    )
+
+
+def download_result_to_message(download_result: DownloadResult) -> squeak_admin_pb2.DownloadResult:
+    return squeak_admin_pb2.DownloadResult(
+        number_downloaded=download_result.number_downloaded,
+        number_requested=download_result.number_requested,
     )
 
 

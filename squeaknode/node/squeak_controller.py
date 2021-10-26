@@ -40,6 +40,7 @@ from squeak.net import CSqueakLocator
 
 from squeaknode.core.block_range import BlockRange
 from squeaknode.core.connected_peer import ConnectedPeer
+from squeaknode.core.download_result import DownloadResult
 from squeaknode.core.interests import squeak_matches_interest
 from squeaknode.core.lightning_address import LightningAddressHostPort
 from squeaknode.core.offer import Offer
@@ -687,7 +688,7 @@ class SqueakController:
             min_block: int,
             max_block: int,
             replyto_hash: Optional[bytes],
-    ):
+    ) -> DownloadResult:
         interest = CInterested(
             addresses=[CSqueakAddress(address)
                        for address in addresses],
@@ -700,16 +701,13 @@ class SqueakController:
             nMinBlockHeight=min_block,
             nMaxBlockHeight=max_block,
         )
-        self.active_download_manager.download_interest(10, interest)
+        return self.active_download_manager.download_interest(10, interest)
 
-    def download_single_squeak(self, squeak_hash: bytes):
+    def download_single_squeak(self, squeak_hash: bytes) -> DownloadResult:
         logger.info("Downloading single squeak: {}".format(
             squeak_hash.hex(),
         ))
-        self.active_download_manager.download_hash(squeak_hash)
-        logger.info("Downloaded single squeak: {}".format(
-            squeak_hash.hex(),
-        ))
+        return self.active_download_manager.download_hash(squeak_hash)
 
     def download_offers(self, squeak_hash: bytes):
         logger.info("Downloading offers for squeak: {}".format(
@@ -721,23 +719,23 @@ class SqueakController:
         getdata_msg = msg_getdata(inv=invs)
         self.broadcast_msg(getdata_msg)
 
-    def download_replies(self, squeak_hash: bytes):
+    def download_replies(self, squeak_hash: bytes) -> DownloadResult:
         logger.info("Downloading replies for squeak: {}".format(
             squeak_hash.hex(),
         ))
         interest = CInterested(
             hashReplySqk=squeak_hash,
         )
-        self.active_download_manager.download_interest(10, interest)
+        return self.active_download_manager.download_interest(10, interest)
 
-    def download_address_squeaks(self, squeak_address: str):
+    def download_address_squeaks(self, squeak_address: str) -> DownloadResult:
         logger.info("Downloading address squeaks for address: {}".format(
             squeak_address,
         ))
         interest = CInterested(
             addresses=[CSqueakAddress(squeak_address)],
         )
-        self.active_download_manager.download_interest(10, interest)
+        return self.active_download_manager.download_interest(10, interest)
 
     def broadcast_msg(self, msg: MsgSerializable) -> None:
         self.network_manager.broadcast_msg(msg)
