@@ -106,7 +106,6 @@ export default function SqueakPage() {
     console.log('Handling download replies click...');
     setWaitingForDownloadReplies(true);
     downloadRepliesRequest(hash, (response) => {
-      // TODO.
       setWaitingForDownloadReplies(false);
       setReplySqueaks(null); // Temporary fix until component unmounts correcyly
       getReplySqueaks(hash, SQUEAKS_PER_PAGE, null);
