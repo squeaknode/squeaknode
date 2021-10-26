@@ -19,7 +19,6 @@ import {
 // styles
 import useStyles from './styles';
 
-
 export default function ConnectPeerDialog({
   open,
   handleClose,
@@ -35,7 +34,7 @@ export default function ConnectPeerDialog({
   const [customPortChecked, setCustomPortChecked] = useState(false);
   const [useTorChecked, setUseTorChecked] = useState(false);
   const [loading, setLoading] = useState(false);
-  const portToUse = useMemo(() => customPortChecked ? port : defaultPeerPort,  [customPortChecked, port, defaultPeerPort]);
+  const portToUse = useMemo(() => (customPortChecked ? port : defaultPeerPort), [customPortChecked, port, defaultPeerPort]);
 
   const getDefaultPeerPort = () => {
     getDefaultPeerPortRequest(setDefaultPeerPort);
@@ -75,10 +74,9 @@ export default function ConnectPeerDialog({
 
   const getNetwork = (useTor) => {
     if (useTor) {
-      return "TORV3";
-    } else {
-      return "IPV4";
+      return 'TORV3';
     }
+    return 'IPV4';
   };
 
   const connectPeer = (peerName, host, port) => {
@@ -87,7 +85,7 @@ export default function ConnectPeerDialog({
     // console.log('portToUse: ', portToUse);
     const network = getNetwork(useTorChecked);
     setLoading(true);
-    console.log("Calling connectSqueakPeerRequest with:", network, host, port);
+    console.log('Calling connectSqueakPeerRequest with:', network, host, port);
     connectSqueakPeerRequest(network, host, port, (response) => {
       // goToPeerPage(history, response.getPeerId());
       // handlePeerConnected();

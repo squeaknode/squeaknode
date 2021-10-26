@@ -22,11 +22,13 @@ import useStyles from './styles';
 import SqueakDetailItem from '../../components/SqueakDetailItem';
 import SqueakThread from '../../components/SqueakThread';
 import SqueakReplies from '../../components/SqueakReplies';
+import DownloadInProgressDialog from '../../components/DownloadInProgressDialog';
 
 import {
   getAncestorSqueakDisplaysRequest,
   getReplySqueakDisplaysRequest,
   getNetworkRequest,
+  downloadSqueakRequest,
   downloadRepliesRequest,
   // subscribeReplySqueakDisplaysRequest,
   // subscribeAncestorSqueakDisplaysRequest,
@@ -42,6 +44,8 @@ export default function SqueakPage() {
   const [network, setNetwork] = useState('');
   const [waitingForSqueak, setWaitingForSqueak] = useState(false);
   const [waitingForReplySqueaks, setWaitingForReplySqueaks] = useState(false);
+  const [waitingForDownloadAncestors, setWaitingForDownloadAncestors] = useState(false);
+  const [waitingForDownloadReplies, setWaitingForDownloadReplies] = useState(false);
 
   const getAncestorSqueaks = useCallback((hash) => {
     setWaitingForSqueak(true);
@@ -80,12 +84,37 @@ export default function SqueakPage() {
     });
   };
 
+  const handleCloseAncestorsDownloadInProgressDialog = () => {
+    setWaitingForDownloadAncestors(false);
+  };
+
+  const handleCloseRepliesDownloadInProgressDialog = () => {
+    setWaitingForDownloadReplies(false);
+  };
+
+  const handleDownloadAncestors = () => {
+    console.log('Handling download ancestors click...');
+    setWaitingForDownloadAncestors(true);
+    downloadSqueakRequest(hash, (response) => {
+      setWaitingForDownloadAncestors(false);
+      setAncestorSqueaks(null); // Temporary fix until component unmounts correcyly
+      getAncestorSqueaks(hash);
+    });
+  };
+
+  const handleDownloadReplies = () => {
+    console.log('Handling download replies click...');
+    setWaitingForDownloadReplies(true);
+    downloadRepliesRequest(hash, (response) => {
+      setWaitingForDownloadReplies(false);
+      setReplySqueaks(null); // Temporary fix until component unmounts correcyly
+      getReplySqueaks(hash, SQUEAKS_PER_PAGE, null);
+    });
+  };
+
   const onDownloadRepliesClick = (event) => {
     event.preventDefault();
-    console.log('Handling download replies click...');
-    downloadRepliesRequest(hash, (response) => {
-      // Do nothing.
-    });
+    handleDownloadReplies();
   };
 
   const calculateCurrentSqueak = (ancestorSqueaks) => {
@@ -136,6 +165,7 @@ export default function SqueakPage() {
         squeak={currentSqueak}
         reloadSqueak={getCurrentSqueak}
         network={network}
+        handleDownloadAncestorsClick={handleDownloadAncestors}
       />
     );
   }
@@ -196,6 +226,28 @@ export default function SqueakPage() {
     );
   }
 
+  function AncestorsDownloadInProgressDialogContent() {
+    return (
+      <>
+        <DownloadInProgressDialog
+          open={waitingForDownloadAncestors}
+          handleClose={handleCloseAncestorsDownloadInProgressDialog}
+        />
+      </>
+    );
+  }
+
+  function RepliesDownloadInProgressDialogContent() {
+    return (
+      <>
+        <DownloadInProgressDialog
+          open={waitingForDownloadReplies}
+          handleClose={handleCloseRepliesDownloadInProgressDialog}
+        />
+      </>
+    );
+  }
+
   function ViewMoreSqueaksButton() {
     return (
       <>
@@ -226,6 +278,8 @@ export default function SqueakPage() {
   return (
     <>
       {GridContent()}
+      {AncestorsDownloadInProgressDialogContent()}
+      {RepliesDownloadInProgressDialogContent()}
     </>
   );
 }

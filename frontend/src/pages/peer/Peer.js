@@ -139,25 +139,27 @@ export default function PeerPage() {
     const network = peer.getPeerAddress().getNetwork();
     return (
       <>
-      <div className={classes.root}>
-        Peer Address:
-        <Button
-          variant="contained"
-          onClick={() => {
-            goToPeerAddressPage(
-              history,
-              peer.getPeerAddress().getNetwork(),
-              peer.getPeerAddress().getHost(),
-              peer.getPeerAddress().getPort(),
-            );
-          }}
-        >
-          {peerAddressStr}
-        </Button>
-      </div>
-      <div className={classes.root}>
-        Network: {network}
-      </div>
+        <div className={classes.root}>
+          Peer Address:
+          <Button
+            variant="contained"
+            onClick={() => {
+              goToPeerAddressPage(
+                history,
+                peer.getPeerAddress().getNetwork(),
+                peer.getPeerAddress().getHost(),
+                peer.getPeerAddress().getPort(),
+              );
+            }}
+          >
+            {peerAddressStr}
+          </Button>
+        </div>
+        <div className={classes.root}>
+          Network:
+          {' '}
+          {network}
+        </div>
       </>
     );
   }

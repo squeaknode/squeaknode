@@ -62,7 +62,7 @@ export default function PeerAddressPage() {
 
   const connectPeer = useCallback(() => {
     setWaitingForConnectedPeer(true);
-    console.log("Calling connectSqueakPeerRequest with " + network, host, port);
+    console.log(`Calling connectSqueakPeerRequest with ${network}`, host, port);
     connectSqueakPeerRequest(network, host, port, () => {
       getConnectedPeer();
     },

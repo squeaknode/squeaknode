@@ -24,10 +24,6 @@ import SqueakTime from '../SqueakTime';
 import SqueakUserAvatar from '../SqueakUserAvatar';
 
 import {
-  downloadSqueakRequest,
-} from '../../squeakclient/requests';
-
-import {
   goToSqueakAddressPage,
 } from '../../navigation/navigation';
 
@@ -40,6 +36,7 @@ export default function SqueakDetailItem({
   squeak,
   network,
   reloadSqueak,
+  handleDownloadAncestorsClick,
   ...props
 }) {
   const classes = useStyles();
@@ -79,11 +76,7 @@ export default function SqueakDetailItem({
   const onDownloadClick = (event) => {
     event.preventDefault();
     console.log('Handling download click...');
-    downloadSqueakRequest(hash, (response) => {
-      // TODO: Nothing for now. This will eventually show something
-      // when downloadSqueakRequest becomes a streaming method.
-      // reloadSqueak();
-    });
+    handleDownloadAncestorsClick();
   };
 
   const handleCloseUnlockedSnackbar = (event, reason) => {
