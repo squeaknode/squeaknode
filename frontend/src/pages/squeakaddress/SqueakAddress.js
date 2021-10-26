@@ -17,6 +17,7 @@ import GetAppIcon from '@material-ui/icons/GetApp';
 import ReplayIcon from '@material-ui/icons/Replay';
 
 import CreateContactProfileDialog from '../../components/CreateContactProfileDialog';
+import DownloadInProgressDialog from '../../components/DownloadInProgressDialog';
 import SqueakList from '../../components/SqueakList';
 import useStyles from './styles';
 
@@ -42,6 +43,7 @@ export default function SqueakAddressPage() {
   const [createContactProfileDialogOpen, setCreateContactProfileDialogOpen] = useState(false);
   const [network, setNetwork] = useState('');
   const [waitingForSqueaks, setWaitingForSqueaks] = useState(false);
+  const [waitingForDownload, setWaitingForDownload] = useState(false);
 
   const getSqueakProfile = (address) => {
     getSqueakProfileByAddressRequest(address, setSqueakProfile);
@@ -76,11 +78,18 @@ export default function SqueakAddressPage() {
     setCreateContactProfileDialogOpen(false);
   };
 
+  const handleCloseDownloadInProgressDialog = () => {
+    setWaitingForDownload(false);
+  };
+
   const onDownloadSqueaksClick = (event) => {
     event.preventDefault();
     console.log('Handling download address squeaks click...');
+    setWaitingForDownload(true);
     downloadAddressSqueaksRequest(address, (response) => {
-      // Do nothing.
+      setWaitingForDownload(false);
+      setSqueaks([]);
+      getSqueaks(address, SQUEAKS_PER_PAGE, null);
     });
   };
 
@@ -155,6 +164,17 @@ export default function SqueakAddressPage() {
           open={createContactProfileDialogOpen}
           handleClose={handleCloseCreateContactProfileDialog}
           initialAddress={address}
+        />
+      </>
+    );
+  }
+
+  function DownloadInProgressDialogContent() {
+    return (
+      <>
+        <DownloadInProgressDialog
+          open={waitingForDownload}
+          handleClose={handleCloseDownloadInProgressDialog}
         />
       </>
     );
@@ -248,6 +268,7 @@ export default function SqueakAddressPage() {
     <>
       {SqueakProfileContent()}
       {AddressSqueaksContent()}
+      {DownloadInProgressDialogContent()}
     </>
   );
 }
