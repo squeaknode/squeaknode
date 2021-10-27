@@ -97,8 +97,15 @@ export default function SqueakPage() {
     setWaitingForDownloadAncestors(true);
     downloadSqueakRequest(hash, (response) => {
       setWaitingForDownloadAncestors(false);
-      if (response.getDownloadResult().getNumberPeers() === 0) {
+      const downloadResult = response.getDownloadResult();
+      const numPeers = downloadResult.getNumberPeers();
+      const numDownloaded = downloadResult.getNumberDownloaded();
+      if (numPeers === 0) {
         alert("Unable to download because zero connected peers.");
+      } else {
+        alert(`Downloaded ${numDownloaded} squeaks from ${numPeers} connected peers.`);
+      }
+      if (downloadResult.getNumberDownloaded() === 0) {
         return;
       }
       setAncestorSqueaks(null); // Temporary fix until component unmounts correcyly
@@ -111,8 +118,15 @@ export default function SqueakPage() {
     setWaitingForDownloadReplies(true);
     downloadRepliesRequest(hash, (response) => {
       setWaitingForDownloadReplies(false);
-      if (response.getDownloadResult().getNumberPeers() === 0) {
+      const downloadResult = response.getDownloadResult();
+      const numPeers = downloadResult.getNumberPeers();
+      const numDownloaded = downloadResult.getNumberDownloaded();
+      if (numPeers === 0) {
         alert("Unable to download because zero connected peers.");
+      } else {
+        alert(`Downloaded ${numDownloaded} squeaks from ${numPeers} connected peers.`);
+      }
+      if (downloadResult.getNumberDownloaded() === 0) {
         return;
       }
       setReplySqueaks(null); // Temporary fix until component unmounts correcyly
