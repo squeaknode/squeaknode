@@ -15,7 +15,7 @@ node.log_level | string | | yes | "INFO" | SQUEAKNODE_NODE_LOG_LEVEL | The log l
 node.sent_offer_retention_s | int | [0,...] | yes | 86400 | SQUEAKNODE_NODE_SENT_OFFER_RETENTION_S | The amount of time in seconds to keep a sent offer after expiry before deleting it.
 node.received_offer_retention_s | int | [0,...] | yes | 86400 | SQUEAKNODE_NODE_RECEIVED_OFFER_RETENTION_S | The amount of time in seconds to keep a received offer after download before deleting it.
 node.subscribe_invoices_retry_s | int | [0,...] | yes | 10 | SQUEAKNODE_NODE_SUBSCRIBE_INVOICES_RETRY_S | The amount of time in seconds to wait after a subscription failure to retry subscribing settled invoices.
-node.squeak_retention_s | int | [0,...] | yes | 604800 | SQUEAKNODE_NODE_SQUEAK_RETENTION_S | The amount of time in seconds to keep a squeak after download before deleting it.
+node.squeak_retention_s | int | [0,...] | yes | 604800 | SQUEAKNODE_NODE_SQUEAK_RETENTION_S | The amount of time in seconds to keep a squeak after download before deleting it. This only applies to squeaks that are not liked or created by a signing profile.
 node.squeak_deletion_interval_s | int | [0,...] | yes | 10 | SQUEAKNODE_NODE_SQUEAK_DELETION_INTERVAL_S | The amount of time in seconds to wait in between deleting old squeaks.
 node.offer_deletion_interval_s | int | [0,...] | yes | 10 | SQUEAKNODE_NODE_OFFER_DELETION_INTERVAL_S | The amount of time in seconds to wait in between deleting old offers.
 node.interest_block_interval | int | [0,...] | yes | 2016 | SQUEAKNODE_NODE_INTEREST_BLOCK_INTERVAL | The number of blocks (starting from the most recent and descending) that this node will attempt to find squeaks with matching block height.
