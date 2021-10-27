@@ -27,6 +27,7 @@ from squeak.core.signing import CSqueakAddress
 
 from squeaknode.bitcoin.block_info import BlockInfo
 from squeaknode.core.connected_peer import ConnectedPeer
+from squeaknode.core.download_result import DownloadResult
 from squeaknode.core.lightning_address import LightningAddressHostPort
 from squeaknode.core.offer import Offer
 from squeaknode.core.peer_address import Network
@@ -517,4 +518,14 @@ def connected_peer(peer, peer_object):
     yield ConnectedPeer(
         peer=peer_object,
         saved_peer=peer,
+    )
+
+
+@pytest.fixture
+def download_result():
+    yield DownloadResult(
+        number_downloaded=1,
+        number_requested=20,
+        elapsed_time_ms=56789,
+        number_peers=4,
     )
