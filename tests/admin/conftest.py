@@ -214,3 +214,15 @@ def connected_peer_msg(peer_address_message, peer_msg):
         is_peer_saved=True,
         saved_peer=peer_msg,
     )
+
+
+@pytest.fixture
+def download_result_msg(
+        download_result,
+):
+    yield squeak_admin_pb2.DownloadResult(
+        number_downloaded=download_result.number_downloaded,
+        number_requested=download_result.number_requested,
+        elapsed_time_ms=download_result.elapsed_time_ms,
+        number_peers=download_result.number_peers,
+    )
