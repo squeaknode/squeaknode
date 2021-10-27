@@ -36,7 +36,7 @@ logger = logging.getLogger(__name__)
 
 
 class PeerServer(object):
-    """Maintains connections to other peers in the network.
+    """Accepts incoming connections from other peers in the network.
     """
 
     def __init__(self, peer_handler, port):
