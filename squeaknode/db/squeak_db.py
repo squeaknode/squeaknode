@@ -171,14 +171,6 @@ class SqueakDb:
     def received_offer_is_paid(self):
         return self.received_offers.c.paid == True  # noqa: E711
 
-    # @property
-    # def received_offer_is_not_expired(self):
-    #     expire_time = (
-    #         self.received_offers.c.invoice_timestamp
-    #         + self.received_offers.c.invoice_expiry
-    #     )
-    #     return self.timestamp_now_ms / 1000 < expire_time
-
     def sent_offer_out_of_retention(self, interval_s):
         expire_time = (
             self.sent_offers.c.invoice_timestamp
@@ -1033,29 +1025,6 @@ class SqueakDb:
             offer = self._parse_received_offer(row)
             return offer
 
-    # def get_received_offer_for_squeak_and_peer(
-    #         self,
-    #         squeak_hash: bytes,
-    #         peer_address: PeerAddress,
-    # ) -> Optional[ReceivedOffer]:
-    #     """ Get offer with peer for a given peer address and squeak hash . """
-    #     s = (
-    #         select([self.received_offers])
-    #         .where(self.received_offers.c.squeak_hash == squeak_hash)
-    #         .where(self.received_offers.c.peer_network == peer_address.network.name)
-    #         .where(self.received_offers.c.peer_host == peer_address.host)
-    #         .where(self.received_offers.c.peer_port == peer_address.port)
-    #         .where(self.received_offer_is_not_paid)
-    #         .where(self.received_offer_is_not_expired)
-    #     )
-    #     with self.get_connection() as connection:
-    #         result = connection.execute(s)
-    #         row = result.fetchone()
-    #         if row is None:
-    #             return None
-    #         offer = self._parse_received_offer(row)
-    #         return offer
-
     def delete_expired_received_offers(self, interval_s):
         """ Delete all expired offers. """
         s = self.received_offers.delete().where(
@@ -1218,14 +1187,6 @@ class SqueakDb:
                 return None
             sent_offer = self._parse_sent_offer(row)
             return sent_offer
-
-    # def delete_sent_offer(self, payment_hash: bytes):
-    #     """ Delete a sent offer by payment hash. """
-    #     s = self.sent_offers.delete().where(
-    #         self.sent_offers.c.payment_hash == payment_hash
-    #     )
-    #     with self.get_connection() as connection:
-    #         connection.execute(s)
 
     def delete_expired_sent_offers(self, interval_s):
         """
