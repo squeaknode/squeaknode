@@ -31,6 +31,13 @@ DEFAULT_UPDATE_INTERVAL_S = 1
 
 
 class ReceivedPaymentsSubscriptionClient:
+    """Class that can be used to get a subscription to a stream
+    of received payments.
+
+    `initial_index` parameter refers to the `received_payment_id` that will be
+    the first in the result stream.
+    """
+
     def __init__(
         self,
         squeak_db,
