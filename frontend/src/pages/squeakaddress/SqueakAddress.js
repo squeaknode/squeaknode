@@ -88,8 +88,15 @@ export default function SqueakAddressPage() {
     setWaitingForDownload(true);
     downloadAddressSqueaksRequest(address, (response) => {
       setWaitingForDownload(false);
-      if (response.getDownloadResult().getNumberPeers() === 0) {
+      const downloadResult = response.getDownloadResult();
+      const numPeers = downloadResult.getNumberPeers();
+      const numDownloaded = downloadResult.getNumberDownloaded();
+      if (numPeers === 0) {
         alert("Unable to download because zero connected peers.");
+      } else {
+        alert(`Downloaded ${numDownloaded} squeaks from ${numPeers} connected peers.`);
+      }
+      if (downloadResult.getNumberDownloaded() === 0) {
         return;
       }
       setSqueaks([]);
