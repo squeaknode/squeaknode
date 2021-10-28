@@ -63,8 +63,6 @@ from squeaknode.core.update_subscriptions_event import UpdateSubscriptionsEvent
 from squeaknode.node.active_download_manager import ActiveDownload
 from squeaknode.node.listener_subscription_client import EventListener
 from squeaknode.node.received_payments_subscription_client import ReceivedPaymentsSubscriptionClient
-# from squeaknode.node.temporary_interest_manager import TemporaryInterest
-# from squeaknode.node.temporary_interest_manager import TemporaryInterestManager
 
 
 logger = logging.getLogger(__name__)
@@ -187,19 +185,6 @@ class SqueakController:
         if not self.squeak_matches_interest(squeak):
             return None
         return self.save_squeak(squeak)
-
-    # def save_received_squeak(self, squeak: CSqueak) -> None:
-    #     saved_squeak_hash = None
-    #     counter = self.get_temporary_interest_counter(squeak)
-    #     if counter:
-    #         saved_squeak_hash = self.save_squeak(squeak)
-    #         if saved_squeak_hash:
-    #             counter.increment()
-    #     elif self.squeak_matches_interest(squeak):
-    #         saved_squeak_hash = self.save_squeak(squeak)
-    #     # Download offers for the new squeak
-    #     if saved_squeak_hash:
-    #         self.download_offers(saved_squeak_hash)
 
     def squeak_matches_interest(self, squeak: CSqueak) -> bool:
         locator = self.get_interested_locator()
