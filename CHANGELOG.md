@@ -1,3 +1,57 @@
+0.1.163 - 2021-10-28
+===================
+
+### Features
+* Make download async by @yzernik in https://github.com/yzernik/squeaknode/pull/1725
+* Add download in progress dialog @yzernik in https://github.com/yzernik/squeaknode/pull/1732
+* Remove hash from title of buy squeak dialog by @yzernik in https://github.com/yzernik/squeaknode/pull/1741
+
+0.1.162 - 2021-10-24
+===================
+
+### Features
+* Add tests for db queries
+* Make received offer retention a config by @yzernik in https://github.com/yzernik/squeaknode/pull/1710
+* Move external address config to server section by @yzernik in https://github.com/yzernik/squeaknode/pull/1712
+* Rename configs in server section by @yzernik in https://github.com/yzernik/squeaknode/pull/1713
+* Update configuration doc for server configs by @yzernik in https://github.com/yzernik/squeaknode/pull/1714
+* Rename rpc config section by @yzernik in https://github.com/yzernik/squeaknode/pull/1716
+* Make update subscriptions async by @yzernik in https://github.com/yzernik/squeaknode/pull/1723
+
+0.1.161 - 2021-10-14
+===================
+
+### Features
+* Add more tests
+  - by @yzernik in https://github.com/yzernik/squeaknode/pull/1525
+  - by @yzernik in https://github.com/yzernik/squeaknode/pull/1526
+  - by @yzernik in https://github.com/yzernik/squeaknode/pull/1527
+  - by @yzernik in https://github.com/yzernik/squeaknode/pull/1530
+  - by @yzernik in https://github.com/yzernik/squeaknode/pull/1533
+  - by @yzernik in https://github.com/yzernik/squeaknode/pull/1541
+  - by @yzernik in https://github.com/yzernik/squeaknode/pull/1543
+  - by @yzernik in https://github.com/yzernik/squeaknode/pull/1548
+  - by @yzernik in https://github.com/yzernik/squeaknode/pull/1560
+  - by @yzernik in https://github.com/yzernik/squeaknode/pull/1562
+  - by @yzernik in https://github.com/yzernik/squeaknode/pull/1564
+  - by @yzernik in https://github.com/yzernik/squeaknode/pull/1578
+  - by @yzernik in https://github.com/yzernik/squeaknode/pull/1579
+  - by @yzernik in https://github.com/yzernik/squeaknode/pull/1580
+  - by @yzernik in https://github.com/yzernik/squeaknode/pull/1583
+  -  by @yzernik in https://github.com/yzernik/squeaknode/pull/1586
+  - by @yzernik in https://github.com/yzernik/squeaknode/pull/1587
+  - by @yzernik in https://github.com/yzernik/squeaknode/pull/1588
+  - by @yzernik in https://github.com/yzernik/squeaknode/pull/1590
+  - by @yzernik in https://github.com/yzernik/squeaknode/pull/1591
+* Use deserialized block header in info object by @yzernik in https://github.com/yzernik/squeaknode/pull/1536
+* Use decorator for protobuf flask routes by @yzernik in https://github.com/yzernik/squeaknode/pull/1538
+* Create lightning client base class by @yzernik in https://github.com/yzernik/squeaknode/pull/1542
+* Add toggle for connect with tor by @yzernik in https://github.com/yzernik/squeaknode/pull/1550
+* Add rpc to get default peer port by @yzernik in https://github.com/yzernik/squeaknode/pull/1556
+* Rename core crypto module by @yzernik in https://github.com/yzernik/squeaknode/pull/1563
+* Remove secret key field of sent offer by @yzernik in https://github.com/yzernik/squeaknode/pull/1568
+* Add check for payment point in unpack offer by @yzernik in https://github.com/yzernik/squeaknode/pull/1577
+
 0.1.160 - 2021-10-07
 ===================
 
