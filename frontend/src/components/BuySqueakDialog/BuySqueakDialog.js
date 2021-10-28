@@ -247,8 +247,7 @@ export default function BuySqueakDialog({
     <>
     <Dialog open={open} onEnter={resetFields} onClose={cancel} onClick={ignore} aria-labelledby="form-dialog-title">
       <DialogTitle id="form-dialog-title">
-        Buy Squeak for hash
-        {hash}
+        Buy Squeak
       </DialogTitle>
       <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
         <DialogContent>
