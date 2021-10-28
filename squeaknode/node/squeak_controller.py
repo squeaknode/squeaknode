@@ -155,17 +155,51 @@ class SqueakController:
         self.squeak_db.delete_squeak(squeak_hash)
 
     def save_received_squeak(self, squeak: CSqueak) -> None:
-        saved_squeak_hash = None
-        counter = self.get_temporary_interest_counter(squeak)
-        if counter:
-            saved_squeak_hash = self.save_squeak(squeak)
-            if saved_squeak_hash:
-                counter.increment()
-        elif self.squeak_matches_interest(squeak):
-            saved_squeak_hash = self.save_squeak(squeak)
-        # Download offers for the new squeak
-        if saved_squeak_hash:
+        # Try saving squeak as active download
+        saved_squeak_hash = self.save_active_download_squeak(squeak)
+        if saved_squeak_hash is None:
+            saved_squeak_hash = self.save_followed_squeak(squeak)
+        if saved_squeak_hash is not None:
             self.download_offers(saved_squeak_hash)
+
+    def save_active_download_squeak(self, squeak: CSqueak) -> Optional[bytes]:
+        """Save the given squeak as a result of an active download.
+
+        Returns:
+          bytes: the hash of the saved squeak.
+        """
+        counter = self.get_temporary_interest_counter(squeak)
+        if counter is None:
+            return None
+        saved_squeak_hash = self.save_squeak(squeak)
+        if saved_squeak_hash is None:
+            return None
+        counter.increment()
+        return saved_squeak_hash
+
+    def save_followed_squeak(self, squeak: CSqueak) -> Optional[bytes]:
+        """Save the given squeak because it matches the followed
+        interest criteria.
+
+        Returns:
+          bytes: the hash of the saved squeak.
+        """
+        if not self.squeak_matches_interest(squeak):
+            return None
+        return self.save_squeak(squeak)
+
+    # def save_received_squeak(self, squeak: CSqueak) -> None:
+    #     saved_squeak_hash = None
+    #     counter = self.get_temporary_interest_counter(squeak)
+    #     if counter:
+    #         saved_squeak_hash = self.save_squeak(squeak)
+    #         if saved_squeak_hash:
+    #             counter.increment()
+    #     elif self.squeak_matches_interest(squeak):
+    #         saved_squeak_hash = self.save_squeak(squeak)
+    #     # Download offers for the new squeak
+    #     if saved_squeak_hash:
+    #         self.download_offers(saved_squeak_hash)
 
     def squeak_matches_interest(self, squeak: CSqueak) -> bool:
         locator = self.get_interested_locator()
