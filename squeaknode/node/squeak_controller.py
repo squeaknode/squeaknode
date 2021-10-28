@@ -573,7 +573,8 @@ class SqueakController:
             return
         logger.info("Saved received offer: {}".format(received_offer))
         counter = self.active_download_manager.lookup_counter(offer)
-        counter.increment()
+        if counter is not None:
+            counter.increment()
         received_offer = received_offer._replace(
             received_offer_id=received_offer_id)
         self.new_received_offer_listener.handle_new_item(received_offer)

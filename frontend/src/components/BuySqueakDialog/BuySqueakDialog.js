@@ -50,11 +50,6 @@ export default function BuySqueakDialog({
     setSelectedOfferId(event.target.value);
   };
 
-  // const payOffer = (offerID) => {
-  //   alert('Pay offer ID here: ' + offerID);
-  //   pay(offer.getOfferId());
-  // };
-
   const loadOffers = useCallback(() => {
     getBuyOffersRequest(hash, setOffers);
   },
@@ -63,13 +58,6 @@ export default function BuySqueakDialog({
   //   setOffers((prevOffers) => prevOffers.concat([offer]));
   // }),
   // [hash, setOffers]);
-
-  // const downloadOffers = () => {
-  //   console.log(`downloadOffersRequest with hash: ${hash}`);
-  //   downloadOffersRequest(hash, (response) => {
-  //     // Do nothing.
-  //   });
-  // };
 
   const handleDownloadOffers = () => {
     console.log(`downloadOffersRequest with hash: ${hash}`);
@@ -154,12 +142,6 @@ export default function BuySqueakDialog({
     pay(selectedOfferId);
     // handleClose();
   }
-
-  // function load(event) {
-  //   // loadOffers();
-  //   // subscribeOffers();
-  //   downloadOffers();
-  // }
 
   function cancel(event) {
     event.stopPropagation();
