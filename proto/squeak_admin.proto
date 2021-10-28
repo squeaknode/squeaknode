@@ -931,6 +931,8 @@ message DownloadOffersRequest {
 }
 
 message DownloadOffersReply {
+    // The download result
+    DownloadResult download_result = 1;
 }
 
 message DownloadRepliesRequest {

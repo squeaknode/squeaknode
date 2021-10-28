@@ -160,7 +160,7 @@ class SqueakController:
         if saved_squeak_hash is None:
             saved_squeak_hash = self.save_followed_squeak(squeak)
         if saved_squeak_hash is not None:
-            self.download_offers(saved_squeak_hash)
+            self.request_offers(saved_squeak_hash)
 
     def save_active_download_squeak(self, squeak: CSqueak) -> Optional[bytes]:
         """Save the given squeak as a result of an active download.
@@ -587,6 +587,8 @@ class SqueakController:
         if received_offer_id is None:
             return
         logger.info("Saved received offer: {}".format(received_offer))
+        counter = self.active_download_manager.lookup_counter(offer)
+        counter.increment()
         received_offer = received_offer._replace(
             received_offer_id=received_offer_id)
         self.new_received_offer_listener.handle_new_item(received_offer)
@@ -743,8 +745,14 @@ class SqueakController:
         ))
         return self.active_download_manager.download_hash(squeak_hash)
 
-    def download_offers(self, squeak_hash: bytes):
+    def download_offers(self, squeak_hash: bytes) -> DownloadResult:
         logger.info("Downloading offers for squeak: {}".format(
+            squeak_hash.hex(),
+        ))
+        return self.active_download_manager.download_offers(10, squeak_hash)
+
+    def request_offers(self, squeak_hash: bytes):
+        logger.info("Requesting offers for squeak: {}".format(
             squeak_hash.hex(),
         ))
         invs = [

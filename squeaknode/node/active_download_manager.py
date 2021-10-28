@@ -29,6 +29,7 @@ from concurrent.futures import ThreadPoolExecutor
 from concurrent.futures import TimeoutError
 from typing import Dict
 from typing import Optional
+from typing import Union
 
 from squeak.core import CSqueak
 from squeak.messages import msg_getdata
@@ -40,6 +41,7 @@ from squeak.net import CSqueakLocator
 
 from squeaknode.core.download_result import DownloadResult
 from squeaknode.core.interests import squeak_matches_interest
+from squeaknode.core.offer import Offer
 from squeaknode.core.squeaks import get_hash
 
 logger = logging.getLogger(__name__)
@@ -59,7 +61,7 @@ class ActiveDownload(ABC):
         self.start_time_ms: Optional[int] = None
 
     @abstractmethod
-    def is_interested(self, squeak: CSqueak) -> bool:
+    def is_interested(self, downloaded_object: Union[CSqueak, Offer]) -> bool:
         """Return True if the given squeak matches the download interest."""
 
     @abstractmethod
@@ -109,8 +111,10 @@ class InterestDownload(ActiveDownload):
         self.interest = interest
         super().__init__(limit)
 
-    def is_interested(self, squeak: CSqueak) -> bool:
-        return squeak_matches_interest(squeak, self.interest)
+    def is_interested(self, downloaded_object: Union[CSqueak, Offer]) -> bool:
+        if type(downloaded_object) is not CSqueak:
+            return False
+        return squeak_matches_interest(downloaded_object, self.interest)
 
     def get_download_msg(self) -> MsgSerializable:
         locator = CSqueakLocator(
@@ -127,8 +131,10 @@ class HashDownload(ActiveDownload):
         self.squeak_hash = squeak_hash
         super().__init__(1)
 
-    def is_interested(self, squeak: CSqueak) -> bool:
-        return self.squeak_hash == get_hash(squeak)
+    def is_interested(self, downloaded_object: Union[CSqueak, Offer]) -> bool:
+        if type(downloaded_object) is not CSqueak:
+            return False
+        return self.squeak_hash == get_hash(downloaded_object)
 
     def get_download_msg(self) -> MsgSerializable:
         invs = [
@@ -137,6 +143,24 @@ class HashDownload(ActiveDownload):
         return msg_getdata(
             inv=invs,
         )
+
+
+class OffersDownload(ActiveDownload):
+
+    def __init__(self, limit: int, squeak_hash: bytes):
+        self.squeak_hash = squeak_hash
+        super().__init__(limit)
+
+    def is_interested(self, downloaded_object: Union[CSqueak, Offer]) -> bool:
+        if type(downloaded_object) is not Offer:
+            return False
+        return downloaded_object.squeak_hash == self.squeak_hash
+
+    def get_download_msg(self) -> MsgSerializable:
+        invs = [
+            CInv(type=2, hash=self.squeak_hash)
+        ]
+        return msg_getdata(inv=invs)
 
 
 class ActiveDownloadManager:
@@ -158,9 +182,9 @@ class ActiveDownloadManager:
         self.executor.shutdown(wait=True)
         logger.info("Stopped Download Manager.")
 
-    def lookup_counter(self, squeak: CSqueak) -> Optional[ActiveDownload]:
+    def lookup_counter(self, downloaded_object: Union[CSqueak, Offer]) -> Optional[ActiveDownload]:
         for name, interest in self.downloads.items():
-            if interest.is_interested(squeak):
+            if interest.is_interested(downloaded_object):
                 return interest
         return None
 
@@ -186,4 +210,8 @@ class ActiveDownloadManager:
 
     def download_hash(self, squeak_hash: bytes) -> DownloadResult:
         download = HashDownload(squeak_hash)
+        return self.run_download(download)
+
+    def download_offers(self, limit: int, squeak_hash: bytes) -> DownloadResult:
+        download = OffersDownload(limit, squeak_hash)
         return self.run_download(download)
