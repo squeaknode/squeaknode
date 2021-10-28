@@ -18,6 +18,8 @@ import {
 import useStyles from './styles';
 
 import BuyOfferDetailItem from '../BuyOfferDetailItem';
+import DownloadInProgressDialog from '../../components/DownloadInProgressDialog';
+
 
 import {
   downloadOffersRequest,
@@ -38,6 +40,7 @@ export default function BuySqueakDialog({
   const [selectedOfferId, setSelectedOfferId] = useState('');
   const [offers, setOffers] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [waitingForDownloadOffers, setWaitingForDownloadOffers] = useState(false);
 
   const resetFields = () => {
     setSelectedOfferId('');
@@ -47,11 +50,6 @@ export default function BuySqueakDialog({
     setSelectedOfferId(event.target.value);
   };
 
-  // const payOffer = (offerID) => {
-  //   alert('Pay offer ID here: ' + offerID);
-  //   pay(offer.getOfferId());
-  // };
-
   const loadOffers = useCallback(() => {
     getBuyOffersRequest(hash, setOffers);
   },
@@ -60,11 +58,30 @@ export default function BuySqueakDialog({
   //   setOffers((prevOffers) => prevOffers.concat([offer]));
   // }),
   // [hash, setOffers]);
-  const downloadOffers = () => {
+
+  const handleDownloadOffers = () => {
+    console.log(`downloadOffersRequest with hash: ${hash}`);
+    setWaitingForDownloadOffers(true);
     console.log(`downloadOffersRequest with hash: ${hash}`);
     downloadOffersRequest(hash, (response) => {
-      // Do nothing.
+      setWaitingForDownloadOffers(false);
+      const downloadResult = response.getDownloadResult();
+      const numPeers = downloadResult.getNumberPeers();
+      const numDownloaded = downloadResult.getNumberDownloaded();
+      if (numPeers === 0) {
+        alert("Unable to download because zero connected peers.");
+      } else {
+        alert(`Downloaded ${numDownloaded} offers from ${numPeers} connected peers.`);
+      }
+      if (downloadResult.getNumberDownloaded() === 0) {
+        return;
+      }
+      getBuyOffersRequest(hash, setOffers);
     });
+  };
+
+  const handleCloseOffersDownloadInProgressDialog = () => {
+    setWaitingForDownloadOffers(false);
   };
 
   const handlePayResponse = (response) => {
@@ -88,7 +105,8 @@ export default function BuySqueakDialog({
     event.preventDefault();
     console.log('Handling download click...');
     console.log(`downloadOffersRequest with hash: ${hash}`);
-    downloadOffers();
+    // downloadOffers();
+    handleDownloadOffers();
   };
 
   const getSelectedOffer = () => {
@@ -123,12 +141,6 @@ export default function BuySqueakDialog({
     }
     pay(selectedOfferId);
     // handleClose();
-  }
-
-  function load(event) {
-    // loadOffers();
-    // subscribeOffers();
-    downloadOffers();
   }
 
   function cancel(event) {
@@ -220,8 +232,20 @@ export default function BuySqueakDialog({
     );
   }
 
+  function OffersDownloadInProgressDialogContent() {
+    return (
+      <>
+        <DownloadInProgressDialog
+          open={waitingForDownloadOffers}
+          handleClose={handleCloseOffersDownloadInProgressDialog}
+        />
+      </>
+    );
+  }
+
   return (
-    <Dialog open={open} onRendered={load} onEnter={resetFields} onClose={cancel} onClick={ignore} aria-labelledby="form-dialog-title">
+    <>
+    <Dialog open={open} onEnter={resetFields} onClose={cancel} onClick={ignore} aria-labelledby="form-dialog-title">
       <DialogTitle id="form-dialog-title">
         Buy Squeak for hash
         {hash}
@@ -249,5 +273,7 @@ export default function BuySqueakDialog({
         </DialogActions>
       </form>
     </Dialog>
+    {OffersDownloadInProgressDialogContent()}
+    </>
   );
 }
