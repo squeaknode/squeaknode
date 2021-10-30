@@ -35,6 +35,7 @@ import {
 import {
   logoutRequest,
   getUserRequest,
+  getNetworkRequest,
 } from '../../squeakclient/requests';
 import {
   reloadRoute,
@@ -58,6 +59,8 @@ export default function Header(props) {
   const [isNotificationsUnread, setIsNotificationsUnread] = useState(true);
   const [profileMenu, setProfileMenu] = useState(null);
   const [username, setUsername] = useState('bob smith');
+  const [network, setNetwork] = useState('');
+
 
   const isSearchOpen = true;
 
@@ -65,8 +68,15 @@ export default function Header(props) {
     getUserRequest(setUsername);
   };
 
+  const getNetwork = () => {
+    getNetworkRequest(setNetwork);
+  };
+
   useEffect(() => {
     getUser();
+  }, []);
+  useEffect(() => {
+    getNetwork();
   }, []);
 
   return (
@@ -187,8 +197,13 @@ export default function Header(props) {
           disableAutoFocusItem
         >
           <div className={classes.profileMenuUser}>
-            <Typography variant="h4" weight="medium">
+            <Typography variant="h5" weight="medium">
               {username}
+            </Typography>
+          </div>
+          <div className={classes.profileMenuUser}>
+            <Typography variant="h6" weight="medium">
+              {network}
             </Typography>
           </div>
           <div className={classes.profileMenuUser}>
