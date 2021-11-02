@@ -78,3 +78,7 @@ $ make test
 ```
 $ make itest
 ```
+
+## License
+
+Distributed under the MIT License. See [LICENSE file](LICENSE).
