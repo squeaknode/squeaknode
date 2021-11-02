@@ -73,9 +73,6 @@ export default function BuySqueakDialog({
       } else {
         alert(`Downloaded ${numDownloaded} offers from ${numPeers} connected peers.`);
       }
-      if (downloadResult.getNumberDownloaded() === 0) {
-        return;
-      }
       getBuyOffersRequest(hash, setOffers);
     });
   };
