@@ -1,7 +1,7 @@
 # squeaknode
 
 [![GitHub CI workflow](https://github.com/yzernik/squeaknode/actions/workflows/main.yml/badge.svg)](https://github.com/yzernik/squeaknode/actions/workflows/main.yml)
-[![codecov](https://codecov.io/gh/yzernik/squeaknode/branch/master/graph/badge.svg?token=VV8WW3VR3Y)](https://codecov.io/gh/yzernik/squeaknode)
+[![codecov](https://codecov.io/gh/yzernik/squeaknode/branch/master/graph/badge.svg?token=VV8WW3VR3Y)](https://codecov.io/gh/yzernik/squeaknode) [![Join the chat at https://gitter.im/squeaknode/community](https://badges.gitter.im/squeaknode/community.svg)](https://gitter.im/squeaknode/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Node for [Squeak protocol](https://github.com/yzernik/squeak/blob/master/docs/PROTOCOL.md)
 
