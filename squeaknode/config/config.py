@@ -105,7 +105,7 @@ class ServerConfig(Config):
 
 @section('rpc')
 class RpcConfig(Config):
-    enabled = key(cast=bool, required=False, default=False)
+    enabled = key(cast=bool, required=False, default=True)
     host = key(cast=str, required=False, default=DEFAULT_ADMIN_RPC_HOST)
     port = key(cast=int, required=False, default=DEFAULT_ADMIN_RPC_PORT)
 
