@@ -1,3 +1,12 @@
+0.1.164 - 2021-11-02
+===================
+
+### Features
+* Include network name in profile dropdown in header by @yzernik in https://github.com/yzernik/squeaknode/pull/1743
+* Add license section to readme by @yzernik in https://github.com/yzernik/squeaknode/pull/1747
+* Make rpc enabled by default by @yzernik in https://github.com/yzernik/squeaknode/pull/1749
+* Update received offers in display even when none downloaded by @yzernik in https://github.com/yzernik/squeaknode/pull/1750
+
 0.1.163 - 2021-10-28
 ===================
 
