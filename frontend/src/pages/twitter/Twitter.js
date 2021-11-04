@@ -130,6 +130,7 @@ export default function Twitter() {
               key={account.getTwitterAccountId()}
               handlePeerClick={() => console.log('clicked account')}
               accountEntry={account}
+              reloadAccountsFn={getAccounts}
             />
           </Box>
         ))}

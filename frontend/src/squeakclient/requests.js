@@ -139,6 +139,8 @@ import {
   GetTwitterAccountsReply,
   AddTwitterAccountRequest,
   AddTwitterAccountReply,
+  DeleteTwitterAccountRequest,
+  DeleteTwitterAccountReply,
 } from '../proto/squeak_admin_pb';
 
 console.log('The value of REACT_APP_DEV_MODE_ENABLED is:', Boolean(process.env.REACT_APP_DEV_MODE_ENABLED));
@@ -1230,6 +1232,17 @@ export function addTwitterAccountRequest(twitterHandle, profileId, handleRespons
     'addtwitteraccount',
     request,
     AddTwitterAccountReply.deserializeBinary,
+    handleResponse,
+  );
+}
+
+export function deleteTwitterAccountRequest(twitterAccountId, handleResponse) {
+  const request = new DeleteTwitterAccountRequest();
+  request.setTwitterAccountId(twitterAccountId);
+  makeRequest(
+    'deletetwitteraccount',
+    request,
+    DeleteTwitterAccountReply.deserializeBinary,
     handleResponse,
   );
 }
