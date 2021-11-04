@@ -18,6 +18,8 @@ import useStyles from './styles';
 // components
 import Widget from '../../components/Widget';
 import SetBearerTokenDialog from '../../components/SetBearerTokenDialog';
+import AddTwitterAccountDialog from '../../components/AddTwitterAccountDialog';
+import TwitterAccountListItem from '../../components/TwitterAccountListItem';
 
 
 import {
@@ -32,6 +34,7 @@ export default function Twitter() {
   const [waitingForBearerToken, setWaitingForBearerToken] = useState(false);
   const [waitingForAccounts, setWaitingForAccounts] = useState(false);
   const [setBearerTokenDialogOpen, setSetBearerTokenDialogOpen] = useState(false);
+  const [addAccountDialogOpen, setAddAccountDialogOpen] = useState(false);
 
 
   function a11yProps(index) {
@@ -63,6 +66,14 @@ export default function Twitter() {
 
   const handleCloseSetBearerTokenDialog = () => {
     setSetBearerTokenDialogOpen(false);
+  };
+
+  const handleClickOpenAddAccountDialog = () => {
+    setAddAccountDialogOpen(true);
+  };
+
+  const handleCloseAddAccountDialog = () => {
+    setAddAccountDialogOpen(false);
   };
 
   useEffect(() => {
@@ -107,6 +118,25 @@ export default function Twitter() {
     );
   }
 
+  function AccountsGridItem(accounts) {
+    return (
+      <Grid item xs={12}>
+        {accounts.map((account) => (
+          <Box
+            p={1}
+            key={account.getTwitterAccountId()}
+          >
+            <TwitterAccountListItem
+              key={account.getTwitterAccountId()}
+              handlePeerClick={() => console.log('clicked account')}
+              accountEntry={account}
+            />
+          </Box>
+        ))}
+      </Grid>
+    );
+  }
+
   function AccountsContent() {
     return (
       <Grid item xs={12}>
@@ -116,6 +146,7 @@ export default function Twitter() {
           <Typography variant="h5" component="h5">
             {`Number of accounts: ${accounts.length}`}
           </Typography>
+          {AccountsGridItem(accounts)}
         </Box>
       </Grid>
     );
@@ -140,6 +171,25 @@ export default function Twitter() {
     );
   }
 
+  function AddAccountButton() {
+    return (
+      <>
+        <Grid item xs={12}>
+          <div className={classes.root}>
+            <Button
+              variant="contained"
+              onClick={() => {
+                handleClickOpenAddAccountDialog();
+              }}
+            >
+              Add Twitter Account
+            </Button>
+          </div>
+        </Grid>
+      </>
+    );
+  }
+
   function WaitingIndicator() {
     return (
       <CircularProgress size={48} className={classes.buttonProgress} />
@@ -153,6 +203,7 @@ export default function Twitter() {
           <Grid item xs={12}>
             <Widget disableWidgetMenu>
             {SetBearerTokenButton()}
+            {AddAccountButton()}
             {BearerTokenSummary()}
             {AccountsContent()}
             </Widget>
@@ -191,6 +242,18 @@ export default function Twitter() {
     );
   }
 
+  function AddAccountDialogContent() {
+    return (
+      <>
+        <AddTwitterAccountDialog
+          open={addAccountDialogOpen}
+          handleClose={handleCloseAddAccountDialog}
+          reloadAccountsFn={getAccounts}
+        />
+      </>
+    );
+  }
+
   function GridContent() {
     return (
       <Grid container spacing={0}>
@@ -206,6 +269,7 @@ export default function Twitter() {
     <>
       {GridContent()}
       {SetBearerTokenDialogContent()}
+      {AddAccountDialogContent()}
     < />
   );
 }

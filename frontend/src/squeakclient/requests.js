@@ -137,6 +137,8 @@ import {
   SetTwitterBearerTokenReply,
   GetTwitterAccountsRequest,
   GetTwitterAccountsReply,
+  AddTwitterAccountRequest,
+  AddTwitterAccountReply,
 } from '../proto/squeak_admin_pb';
 
 console.log('The value of REACT_APP_DEV_MODE_ENABLED is:', Boolean(process.env.REACT_APP_DEV_MODE_ENABLED));
@@ -1217,6 +1219,18 @@ export function getTwitterAccountsRequest(handleResponse) {
     (response) => {
       handleResponse(response.getTwitterAccountsList());
     },
+  );
+}
+
+export function addTwitterAccountRequest(twitterHandle, profileId, handleResponse) {
+  const request = new AddTwitterAccountRequest();
+  request.setHandle(twitterHandle);
+  request.setProfileId(profileId);
+  makeRequest(
+    'addtwitteraccount',
+    request,
+    AddTwitterAccountReply.deserializeBinary,
+    handleResponse,
   );
 }
 
