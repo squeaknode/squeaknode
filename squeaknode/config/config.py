@@ -157,6 +157,11 @@ class DbConfig(Config):
     connection_string = key(cast=str, required=False, default="")
 
 
+@section('twitter')
+class TwitterConfig(Config):
+    bearer_token = key(cast=str, required=False, default="")
+
+
 class SqueaknodeConfig(Config):
     bitcoin = group_key(BitcoinConfig)
     lnd = group_key(LndConfig)
@@ -166,6 +171,7 @@ class SqueaknodeConfig(Config):
     webadmin = group_key(WebadminConfig)
     node = group_key(NodeConfig)
     db = group_key(DbConfig)
+    twitter = group_key(TwitterConfig)
     # description = key(cast=str, section_name="general")
 
     def __init__(self, config_path=None, dict_config=None):

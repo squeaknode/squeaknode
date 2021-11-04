@@ -887,3 +887,6 @@ class SqueakController:
                 inv_msg = msg_inv(inv=[inv])
                 peer.send_msg(inv_msg)
         logger.debug("Finished checking peers to forward.")
+
+    def get_twitter_bearer_token(self) -> str:
+        return self.config.twitter.bearer_token
