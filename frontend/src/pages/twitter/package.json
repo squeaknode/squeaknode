@@ -1,0 +1,6 @@
+{
+  "name": "Twitter",
+  "version": "0.0.0",
+  "main": "Twitter.js",
+  "private": true
+}

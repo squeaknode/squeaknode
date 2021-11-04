@@ -523,6 +523,18 @@ def create_app(handler, username, password):
     def getdefaultpeerport(msg):
         return handler.handle_get_default_peer_port(msg)
 
+    @app.route("/settwitterbearertoken", methods=["POST"])
+    @login_required
+    @protobuf_serialized(squeak_admin_pb2.SetTwitterBearerTokenRequest())
+    def settwitterbearertoken(msg):
+        return handler.handle_set_twitter_bearer_token(msg)
+
+    @app.route("/gettwitterbearertoken", methods=["POST"])
+    @login_required
+    @protobuf_serialized(squeak_admin_pb2.GetTwitterBearerTokenRequest())
+    def gettwitterbearertoken(msg):
+        return handler.handle_get_twitter_bearer_token(msg)
+
     return app
 
 

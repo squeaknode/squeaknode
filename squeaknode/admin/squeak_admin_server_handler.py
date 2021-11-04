@@ -1065,6 +1065,8 @@ class SqueakAdminServerHandler(object):
     def handle_get_twitter_bearer_token(self, request):
         logger.info("Handle get twitter bearer token")
         twitter_bearer_token = self.squeak_controller.get_twitter_bearer_token()
+        import time
+        time.sleep(5)
         return squeak_admin_pb2.GetTwitterBearerTokenReply(
             bearer_token=twitter_bearer_token,
         )

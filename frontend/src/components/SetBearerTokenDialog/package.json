@@ -1,0 +1,6 @@
+{
+  "name": "SetBearerTokenDialog",
+  "version": "0.0.0",
+  "private": true,
+  "main": "SetBearerTokenDialog.js"
+}
