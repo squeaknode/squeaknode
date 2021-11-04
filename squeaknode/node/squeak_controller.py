@@ -60,6 +60,7 @@ from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.squeaks import get_hash
 from squeaknode.core.update_subscriptions_event import UpdateSubscriptionsEvent
+from squeaknode.core.user_config import UserConfig
 from squeaknode.node.active_download_manager import ActiveDownload
 from squeaknode.node.listener_subscription_client import EventListener
 from squeaknode.node.received_payments_subscription_client import ReceivedPaymentsSubscriptionClient
@@ -888,5 +889,22 @@ class SqueakController:
                 peer.send_msg(inv_msg)
         logger.debug("Finished checking peers to forward.")
 
-    def get_twitter_bearer_token(self) -> str:
-        return self.config.twitter.bearer_token
+    def insert_user_config(self) -> Optional[str]:
+        user_config = UserConfig(username=self.config.webadmin.username)
+        return self.squeak_db.insert_config(user_config)
+
+    def set_twitter_bearer_token(self, twitter_bearer_token: str) -> None:
+        self.insert_user_config()
+        return self.squeak_db.set_config_twitter_bearer_token(
+            username=self.config.webadmin.username,
+            twitter_bearer_token=twitter_bearer_token,
+        )
+
+    def get_twitter_bearer_token(self) -> Optional[str]:
+        # return self.config.twitter.bearer_token
+        user_config = self.squeak_db.get_config(
+            username=self.config.webadmin.username,
+        )
+        if user_config is None:
+            return None
+        return user_config.twitter_bearer_token

@@ -332,6 +332,14 @@ service SqueakAdmin {
   */
   rpc GetDefaultPeerPort (GetDefaultPeerPortRequest) returns (GetDefaultPeerPortReply) {}
 
+  /** sqkadmin: `settwitterbearertoken`
+  */
+  rpc SetTwitterBearerToken (SetTwitterBearerTokenRequest) returns (SetTwitterBearerTokenReply) {}
+
+  /** sqkadmin: `gettwitterbearertoken`
+  */
+  rpc GetTwitterBearerToken (GetTwitterBearerTokenRequest) returns (GetTwitterBearerTokenReply) {}
+
 }
 
 message CreateSigningProfileRequest {
@@ -1224,3 +1232,18 @@ message GetDefaultPeerPortReply {
     int32 port = 1;
 }
 
+message SetTwitterBearerTokenRequest {
+    /// The bearer token string.
+    string bearer_token = 1;
+}
+
+message SetTwitterBearerTokenReply {
+}
+
+message GetTwitterBearerTokenRequest {
+}
+
+message GetTwitterBearerTokenReply {
+    /// The bearer token string.
+    string bearer_token = 1;
+}

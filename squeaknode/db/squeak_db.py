@@ -49,6 +49,7 @@ from squeaknode.core.squeak_entry import SqueakEntry
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.squeaks import get_hash
+from squeaknode.core.user_config import UserConfig
 from squeaknode.db.exception import SqueakDatabaseError
 from squeaknode.db.migrations import run_migrations
 from squeaknode.db.models import Models
@@ -127,6 +128,10 @@ class SqueakDb:
     @property
     def sent_offers(self):
         return self.models.sent_offers
+
+    @property
+    def configs(self):
+        return self.models.configs
 
     @property
     def squeak_has_secret_key(self):
@@ -1342,6 +1347,45 @@ class SqueakDb:
             sent_payment_summary = self._parse_sent_payment_summary(row)
             return sent_payment_summary
 
+    def insert_config(self, user_config: UserConfig) -> Optional[str]:
+        """ Insert a new config.
+
+        Return the name (str) of the inserted config user.
+        Return None if config already exists.
+        """
+        ins = self.configs.insert().values(
+            username=user_config.username,
+            twitter_bearer_token=user_config.twitter_bearer_token,
+        )
+        with self.get_connection() as connection:
+            try:
+                res = connection.execute(ins)
+                username = res.inserted_primary_key[0]
+                return username
+            except sqlalchemy.exc.IntegrityError:
+                logger.debug("Failed to insert config.", exc_info=True)
+                return None
+
+    def get_config(self, username: str) -> Optional[UserConfig]:
+        """ Get a config. """
+        s = select([self.configs]).where(self.configs.c.username == username)
+        with self.get_connection() as connection:
+            result = connection.execute(s)
+            row = result.fetchone()
+            if row is None:
+                return None
+            return self._parse_user_config(row)
+
+    def set_config_twitter_bearer_token(self, username: str, twitter_bearer_token: str) -> None:
+        """ Set a config twitter bearer token. """
+        stmt = (
+            self.configs.update()
+            .where(self.configs.c.username == username)
+            .values(twitter_bearer_token=twitter_bearer_token)
+        )
+        with self.get_connection() as connection:
+            connection.execute(stmt)
+
     def _parse_squeak(self, row) -> CSqueak:
         return CSqueak.deserialize(row["squeak"])
 
@@ -1481,4 +1525,10 @@ class SqueakDb:
         return SentPaymentSummary(
             num_sent_payments=row["num_payments_sent"],
             total_amount_sent_msat=row["total_amount_sent_msat"],
+        )
+
+    def _parse_user_config(self, row) -> UserConfig:
+        return UserConfig(
+            username=row["username"],
+            twitter_bearer_token=row["twitter_bearer_token"],
         )

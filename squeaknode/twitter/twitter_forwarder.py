@@ -107,7 +107,7 @@ class TwitterForwarderTask:
     def get_bearer_token(self) -> str:
         # TODO.
         # return 'abcdefg'
-        return self.squeak_controller.get_twitter_bearer_token()
+        return self.squeak_controller.get_twitter_bearer_token() or ''
 
     def get_twitter_handles(self) -> List[str]:
         # TODO.

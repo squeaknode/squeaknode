@@ -1053,3 +1053,18 @@ class SqueakAdminServerHandler(object):
         return squeak_admin_pb2.GetDefaultPeerPortReply(
             port=default_peer_port,
         )
+
+    def handle_set_twitter_bearer_token(self, request):
+        twitter_bearer_token = request.bearer_token
+        logger.info("Handle set twitter bearer token with value: {}".format(
+            twitter_bearer_token,
+        ))
+        self.squeak_controller.set_twitter_bearer_token(twitter_bearer_token)
+        return squeak_admin_pb2.SetTwitterBearerTokenReply()
+
+    def handle_get_twitter_bearer_token(self, request):
+        logger.info("Handle get twitter bearer token")
+        twitter_bearer_token = self.squeak_controller.get_twitter_bearer_token()
+        return squeak_admin_pb2.GetTwitterBearerTokenReply(
+            bearer_token=twitter_bearer_token,
+        )

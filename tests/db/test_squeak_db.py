@@ -398,6 +398,30 @@ def inserted_received_payment_ids(
     yield ret
 
 
+@pytest.fixture
+def inserted_user_config_username(squeak_db, user_config):
+    yield squeak_db.insert_config(user_config)
+
+
+@pytest.fixture
+def duplicate_inserted_user_config_username(squeak_db, user_config, inserted_user_config_username):
+    yield squeak_db.insert_config(user_config)
+
+
+@pytest.fixture
+def user_config_with_twitter_bearer_token_username(
+        squeak_db,
+        user_config,
+        inserted_user_config_username,
+        twitter_bearer_token,
+):
+    squeak_db.set_config_twitter_bearer_token(
+        inserted_user_config_username,
+        twitter_bearer_token,
+    )
+    yield inserted_user_config_username
+
+
 def test_init_with_retries(squeak_db):
     with mock.patch.object(squeak_db, 'init', autospec=True) as mock_init, \
             mock.patch('squeaknode.db.squeak_db.time.sleep', autospec=True) as mock_sleep:
@@ -1527,3 +1551,30 @@ def test_get_sent_payment_summary(squeak_db, inserted_sent_payment_ids, price_ms
         inserted_sent_payment_ids)
     assert sent_payment_summary.total_amount_sent_msat == price_msat * \
         len(inserted_sent_payment_ids)
+
+
+def test_get_config(squeak_db, user_config, inserted_user_config_username):
+    retrieved_config = squeak_db.get_config(inserted_user_config_username)
+
+    assert retrieved_config == user_config
+
+
+def test_duplicate_inserted_config(squeak_db, duplicate_inserted_user_config_username):
+    assert duplicate_inserted_user_config_username is None
+
+
+def test_get_config_missing(squeak_db):
+    retrieved_config = squeak_db.get_config("fake_username")
+
+    assert retrieved_config is None
+
+
+def test_set_twitter_bearer_token(
+        squeak_db,
+        user_config_with_twitter_bearer_token_username,
+        twitter_bearer_token,
+):
+    retrieved_config = squeak_db.get_config(
+        user_config_with_twitter_bearer_token_username)
+
+    assert retrieved_config.twitter_bearer_token == twitter_bearer_token

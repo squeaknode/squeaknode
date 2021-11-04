@@ -179,3 +179,10 @@ class Models:
             Column("peer_port", Integer, nullable=False),
             sqlite_autoincrement=True,
         )
+
+        self.configs = Table(
+            "config",
+            self.metadata,
+            Column("username", String, primary_key=True),
+            Column("twitter_bearer_token", String, nullable=True),
+        )
