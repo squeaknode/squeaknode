@@ -85,6 +85,10 @@ class TwitterForwarderTask:
             try:
                 bearer_token = self.get_bearer_token()
                 handles = self.get_twitter_handles()
+                if not bearer_token:
+                    return
+                if not handles:
+                    return
                 logger.info("Starting forward tweets with bearer token: {} and twitter handles: {}".format(
                     bearer_token,
                     handles,
