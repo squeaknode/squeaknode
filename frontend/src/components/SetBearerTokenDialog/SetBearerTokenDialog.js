@@ -7,7 +7,6 @@ import {
   DialogActions,
   Button,
 } from '@material-ui/core';
-import { useHistory } from 'react-router-dom';
 
 // styles
 import useStyles from './styles';
@@ -15,17 +14,15 @@ import useStyles from './styles';
 import {
   setTwitterBearerTokenRequest,
 } from '../../squeakclient/requests';
-import {
-  goToProfilePage,
-} from '../../navigation/navigation';
+
 
 export default function SetBearerTokenDialog({
   open,
   handleClose,
+  reloadBearerTokenFn,
   ...props
 }) {
   const classes = useStyles();
-  const history = useHistory();
 
   const [bearerToken, setBearerToken] = useState('');
 
@@ -40,6 +37,7 @@ export default function SetBearerTokenDialog({
   const handleResponse = (response) => {
     // goToProfilePage(history, response.getProfileId());
     // TODO
+    reloadBearerTokenFn();
   };
 
   const handleErr = (err) => {

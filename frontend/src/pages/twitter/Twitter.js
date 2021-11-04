@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Grid,
   Button,
@@ -18,9 +18,6 @@ import useStyles from './styles';
 // components
 import Widget from '../../components/Widget';
 import SetBearerTokenDialog from '../../components/SetBearerTokenDialog';
-import ImportSigningProfileDialog from '../../components/ImportSigningProfileDialog';
-import CreateContactProfileDialog from '../../components/CreateContactProfileDialog';
-import ProfileListItem from '../../components/ProfileListItem';
 
 
 import {
@@ -159,6 +156,7 @@ export default function Twitter() {
         <SetBearerTokenDialog
           open={setBearerTokenDialogOpen}
           handleClose={handleCloseSetBearerTokenDialog}
+          reloadBearerTokenFn={getBearerToken}
         />
       </>
     );
