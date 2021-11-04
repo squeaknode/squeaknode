@@ -60,6 +60,7 @@ from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.squeaks import get_hash
 from squeaknode.core.twitter_account import TwitterAccount
+from squeaknode.core.twitter_account_entry import TwitterAccountEntry
 from squeaknode.core.update_subscriptions_event import UpdateSubscriptionsEvent
 from squeaknode.core.user_config import UserConfig
 from squeaknode.node.active_download_manager import ActiveDownload
@@ -132,7 +133,7 @@ class SqueakController:
         # Notify the listener
         self.new_secret_key_listener.handle_new_item(squeak)
 
-    def make_squeak(self, profile_id: int, content_str: str, replyto_hash: bytes) -> Optional[bytes]:
+    def make_squeak(self, profile_id: int, content_str: str, replyto_hash: Optional[bytes]) -> Optional[bytes]:
         squeak_profile = self.squeak_db.get_profile(profile_id)
         squeak, decryption_key = self.squeak_core.make_squeak(
             squeak_profile, content_str, replyto_hash)
@@ -918,7 +919,7 @@ class SqueakController:
         )
         return self.squeak_db.insert_twitter_account(twitter_account)
 
-    def get_twitter_accounts(self) -> List[TwitterAccount]:
+    def get_twitter_accounts(self) -> List[TwitterAccountEntry]:
         return self.squeak_db.get_twitter_accounts()
 
     def delete_twitter_account(self, twitter_account_id: int) -> None:

@@ -92,10 +92,9 @@ class TwitterStream:
         print(json.dumps(response.json()))
 
     def set_rules(self, delete):
-        from_strs = [f"from:{handle}" for handle in self.handles]
-        rule_value = ' OR '.join(from_strs)
         sample_rules = [
-            {"value": rule_value},
+            {"value": f"from:{handle}", "tag": handle}
+            for handle in self.handles
         ]
         payload = {"add": sample_rules}
         response = requests.post(

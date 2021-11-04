@@ -24,6 +24,7 @@ import threading
 from typing import List
 from typing import Optional
 
+from squeaknode.core.twitter_account_entry import TwitterAccountEntry
 from squeaknode.node.squeak_controller import SqueakController
 from squeaknode.twitter.twitter_stream import TwitterStream
 
@@ -116,12 +117,23 @@ class TwitterForwarderTask:
         handles = [account.handle for account in twitter_accounts]
         return handles
 
+    def is_tweet_a_match(self, tweet: dict, account: TwitterAccountEntry) -> bool:
+        for rule in tweet['matching_rules']:
+            if rule['tag'] == account.handle:
+                return True
+        return False
+
+    def forward_tweet(self, tweet: dict, account: TwitterAccountEntry) -> None:
+        self.squeak_controller.make_squeak(
+            profile_id=account.profile_id,
+            content_str=tweet['data']['text'],
+            replyto_hash=None,
+        )
+
     def handle_tweet(self, tweet: dict):
         logger.info(
             "Got tweet: {}".format(tweet))
-        # received_payment_id = self.squeak_db.insert_received_payment(
-        #     received_payment,
-        # )
-        # if received_payment_id is not None:
-        #     logger.debug(
-        #         "Saved received payment: {}".format(received_payment))
+        twitter_accounts = self.squeak_controller.get_twitter_accounts()
+        for account in twitter_accounts:
+            if self.is_tweet_a_match(tweet, account):
+                self.forward_tweet(tweet, account)
