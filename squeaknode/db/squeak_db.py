@@ -49,6 +49,8 @@ from squeaknode.core.squeak_entry import SqueakEntry
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.squeaks import get_hash
+from squeaknode.core.twitter_account import TwitterAccount
+from squeaknode.core.twitter_account_entry import TwitterAccountEntry
 from squeaknode.core.user_config import UserConfig
 from squeaknode.db.exception import SqueakDatabaseError
 from squeaknode.db.migrations import run_migrations
@@ -132,6 +134,10 @@ class SqueakDb:
     @property
     def configs(self):
         return self.models.configs
+
+    @property
+    def twitter_accounts(self):
+        return self.models.twitter_accounts
 
     @property
     def squeak_has_secret_key(self):
@@ -1386,6 +1392,52 @@ class SqueakDb:
         with self.get_connection() as connection:
             connection.execute(stmt)
 
+    def insert_twitter_account(self, twitter_account: TwitterAccount) -> Optional[int]:
+        """ Insert a new twitter account mapping to a squeak profile.
+
+        Return the id (int) of the inserted twitter account.
+        Return None if twitter account already exists.
+        """
+        ins = self.twitter_accounts.insert().values(
+            handle=twitter_account.handle,
+            profile_id=twitter_account.profile_id,
+        )
+        with self.get_connection() as connection:
+            try:
+                res = connection.execute(ins)
+                twitter_account_id = res.inserted_primary_key[0]
+                return twitter_account_id
+            except sqlalchemy.exc.IntegrityError:
+                logger.debug(
+                    "Failed to insert twitter account.", exc_info=True)
+                return None
+
+    def get_twitter_accounts(self) -> List[TwitterAccountEntry]:
+        """ Get all twitter accounts. """
+        s = (
+            select([self.twitter_accounts, self.profiles])
+            .select_from(
+                self.twitter_accounts.outerjoin(
+                    self.profiles,
+                    self.profiles.c.profile_id == self.twitter_accounts.c.profile_id,
+                )
+            )
+        )
+        with self.get_connection() as connection:
+            result = connection.execute(s)
+            rows = result.fetchall()
+            twitter_accounts = [
+                self._parse_twitter_account_entry(row) for row in rows]
+            return twitter_accounts
+
+    def delete_twitter_account(self, twitter_account_id: int) -> None:
+        """ Delete a twitter_account. """
+        delete_twitter_account_stmt = self.twitter_accounts.delete().where(
+            self.twitter_accounts.c.twitter_account_id == twitter_account_id
+        )
+        with self.get_connection() as connection:
+            connection.execute(delete_twitter_account_stmt)
+
     def _parse_squeak(self, row) -> CSqueak:
         return CSqueak.deserialize(row["squeak"])
 
@@ -1531,4 +1583,13 @@ class SqueakDb:
         return UserConfig(
             username=row["username"],
             twitter_bearer_token=row["twitter_bearer_token"],
+        )
+
+    def _parse_twitter_account_entry(self, row) -> TwitterAccountEntry:
+        profile = self._try_parse_squeak_profile(row)
+        return TwitterAccountEntry(
+            twitter_account_id=row["twitter_account_id"],
+            handle=row["handle"],
+            profile_id=row["profile_id"],
+            profile=profile,
         )

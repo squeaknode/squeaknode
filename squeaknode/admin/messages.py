@@ -40,6 +40,7 @@ from squeaknode.core.sent_payment_summary import SentPaymentSummary
 from squeaknode.core.squeak_entry import SqueakEntry
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
+from squeaknode.core.twitter_account_entry import TwitterAccountEntry
 
 logger = logging.getLogger(__name__)
 
@@ -265,6 +266,20 @@ def download_result_to_message(download_result: DownloadResult) -> squeak_admin_
         number_requested=download_result.number_requested,
         number_peers=download_result.number_peers,
         elapsed_time_ms=download_result.elapsed_time_ms,
+    )
+
+
+def twitter_account_to_message(twitter_account_entry: TwitterAccountEntry) -> squeak_admin_pb2.TwitterAccount:
+    twitter_account_id = twitter_account_entry.twitter_account_id or 0
+    squeak_profile = twitter_account_entry.profile
+    profile_msg = None
+    if squeak_profile is not None:
+        profile_msg = squeak_profile_to_message(squeak_profile)
+    return squeak_admin_pb2.TwitterAccount(
+        twitter_account_id=twitter_account_id,
+        handle=twitter_account_entry.handle,
+        profile_id=twitter_account_entry.profile_id,
+        profile=profile_msg,
     )
 
 

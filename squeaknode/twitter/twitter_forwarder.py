@@ -109,13 +109,12 @@ class TwitterForwarderTask:
                 self.stopped.wait(self.retry_s)
 
     def get_bearer_token(self) -> str:
-        # TODO.
-        # return 'abcdefg'
         return self.squeak_controller.get_twitter_bearer_token() or ''
 
     def get_twitter_handles(self) -> List[str]:
-        # TODO.
-        return ['alice', 'bob', 'rterqwerqeqwe']
+        twitter_accounts = self.squeak_controller.get_twitter_accounts()
+        handles = [account.handle for account in twitter_accounts]
+        return handles
 
     def handle_tweet(self, tweet: dict):
         logger.info(

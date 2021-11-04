@@ -59,6 +59,7 @@ from squeaknode.core.squeak_entry import SqueakEntry
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.squeaks import get_hash
+from squeaknode.core.twitter_account import TwitterAccount
 from squeaknode.core.update_subscriptions_event import UpdateSubscriptionsEvent
 from squeaknode.core.user_config import UserConfig
 from squeaknode.node.active_download_manager import ActiveDownload
@@ -908,3 +909,17 @@ class SqueakController:
         if user_config is None:
             return None
         return user_config.twitter_bearer_token
+
+    def add_twitter_account(self, handle: str, profile_id: int) -> Optional[int]:
+        twitter_account = TwitterAccount(
+            twitter_account_id=None,
+            handle=handle,
+            profile_id=profile_id,
+        )
+        return self.squeak_db.insert_twitter_account(twitter_account)
+
+    def get_twitter_accounts(self) -> List[TwitterAccount]:
+        return self.squeak_db.get_twitter_accounts()
+
+    def delete_twitter_account(self, twitter_account_id: int) -> None:
+        return self.squeak_db.delete_twitter_account(twitter_account_id)

@@ -388,3 +388,12 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
 
     def GetTwitterBearerToken(self, request, context):
         return self.handler.handle_get_twitter_bearer_token(request)
+
+    def AddTwitterAccount(self, request, context):
+        return self.handler.handle_add_twitter_account(request)
+
+    def GetTwitterAccounts(self, request, context):
+        return self.handler.handle_get_twitter_accounts(request)
+
+    def DeleteTwitterAccount(self, request, context):
+        return self.handler.handle_delete_twitter_account(request)
