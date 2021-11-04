@@ -22,12 +22,15 @@ import SetBearerTokenDialog from '../../components/SetBearerTokenDialog';
 
 import {
   getTwitterBearerTokenRequest,
+  getTwitterAccountsRequest,
 } from '../../squeakclient/requests';
 
 export default function Twitter() {
   const classes = useStyles();
   const [bearerToken, setBearerToken] = useState('');
+  const [accounts, setAccounts] = useState([]);
   const [waitingForBearerToken, setWaitingForBearerToken] = useState(false);
+  const [waitingForAccounts, setWaitingForAccounts] = useState(false);
   const [setBearerTokenDialogOpen, setSetBearerTokenDialogOpen] = useState(false);
 
 
@@ -46,6 +49,14 @@ export default function Twitter() {
     });
   };
 
+  const getAccounts = () => {
+    setWaitingForAccounts(true);
+    getTwitterAccountsRequest((resp) => {
+      setWaitingForAccounts(false);
+      setAccounts(resp);
+    });
+  };
+
   const handleClickOpenSetBearerTokenDialog = () => {
     setSetBearerTokenDialogOpen(true);
   };
@@ -56,6 +67,9 @@ export default function Twitter() {
 
   useEffect(() => {
     getBearerToken();
+  }, []);
+  useEffect(() => {
+    getAccounts();
   }, []);
 
   function TabPanel(props) {
@@ -87,6 +101,20 @@ export default function Twitter() {
         >
           <Typography variant="h5" component="h5">
             {`Bearer Token: ${bearerTokenText}`}
+          </Typography>
+        </Box>
+      </Grid>
+    );
+  }
+
+  function AccountsContent() {
+    return (
+      <Grid item xs={12}>
+        <Box
+          p={1}
+        >
+          <Typography variant="h5" component="h5">
+            {`Number of accounts: ${accounts.length}`}
           </Typography>
         </Box>
       </Grid>
@@ -125,9 +153,8 @@ export default function Twitter() {
           <Grid item xs={12}>
             <Widget disableWidgetMenu>
             {SetBearerTokenButton()}
-            {waitingForBearerToken
-              ? WaitingIndicator()
-              : BearerTokenSummary()}
+            {BearerTokenSummary()}
+            {AccountsContent()}
             </Widget>
           </Grid>
         </Grid>
@@ -144,7 +171,9 @@ export default function Twitter() {
           </Tabs>
         </AppBar>
         <TabPanel value={0} index={0}>
-          {TwitterAccountsContent()}
+        {(waitingForBearerToken || waitingForAccounts)
+          ? WaitingIndicator()
+          : TwitterAccountsContent()}
         </TabPanel>
       </>
     );

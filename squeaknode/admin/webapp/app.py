@@ -535,6 +535,24 @@ def create_app(handler, username, password):
     def gettwitterbearertoken(msg):
         return handler.handle_get_twitter_bearer_token(msg)
 
+    @app.route("/addtwitteraccount", methods=["POST"])
+    @login_required
+    @protobuf_serialized(squeak_admin_pb2.AddTwitterAccountRequest())
+    def addtwitteraccount(msg):
+        return handler.handle_add_twitter_account(msg)
+
+    @app.route("/gettwitteraccounts", methods=["POST"])
+    @login_required
+    @protobuf_serialized(squeak_admin_pb2.GetTwitterAccountsRequest())
+    def gettwitteraccounts(msg):
+        return handler.handle_get_twitter_accounts(msg)
+
+    @app.route("/deletetwitteraccount", methods=["POST"])
+    @login_required
+    @protobuf_serialized(squeak_admin_pb2.DeleteTwitterAccountRequest())
+    def deletetwitteraccount(msg):
+        return handler.handle_delete_twitter_account(msg)
+
     return app
 
 
