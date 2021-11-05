@@ -174,8 +174,7 @@ class SqueakNode:
 
     def initialize_twitter_forwarder(self):
         self.twitter_forwarder = TwitterForwarder(
-            # TODO: replace with real config.
-            self.config.node.subscribe_invoices_retry_s,
+            self.config.twitter.forward_tweets_retry_s,
         )
 
     def initialize_network_manager(self):

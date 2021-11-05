@@ -65,6 +65,7 @@ DEFAULT_OFFER_DELETION_INTERVAL_S = 10
 DEFAULT_SUBSCRIBE_INVOICES_RETRY_S = 10
 DEFAULT_SQUEAK_RETENTION_S = 604800
 DEFAULT_SQUEAK_DELETION_INTERVAL_S = 10
+DEFAULT_FORWARD_TWEETS_RETRY_S = 10
 
 
 @section('bitcoin')
@@ -159,7 +160,8 @@ class DbConfig(Config):
 
 @section('twitter')
 class TwitterConfig(Config):
-    bearer_token = key(cast=str, required=False, default="")
+    forward_tweets_retry_s = key(
+        cast=int, required=False, default=DEFAULT_FORWARD_TWEETS_RETRY_S)
 
 
 class SqueaknodeConfig(Config):

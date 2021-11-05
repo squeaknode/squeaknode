@@ -916,7 +916,6 @@ class SqueakController:
         self.create_update_twitter_stream_event()
 
     def get_twitter_bearer_token(self) -> Optional[str]:
-        # return self.config.twitter.bearer_token
         user_config = self.squeak_db.get_config(
             username=self.config.webadmin.username,
         )
