@@ -44,7 +44,7 @@ Node for [Squeak protocol](https://github.com/yzernik/squeak/blob/master/docs/PR
 	password=devpass
 	```
 
-	More information about [configs](docs/CONFIGURATION.md).
+	Add any other [configs](docs/CONFIGURATION.md).
 
 ### Step 2. Install squeaknode:
 
