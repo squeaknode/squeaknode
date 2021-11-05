@@ -20,17 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import json
-import os
 from typing import List
 
 import requests
 
 from squeaknode.core.tweet_stream import TweetStream
-
-
-# To set your enviornment variables in your terminal run the following line:
-# export 'BEARER_TOKEN'='<your_bearer_token>'
-bearer_token = os.environ.get("BEARER_TOKEN")
 
 
 class TwitterStream:
@@ -123,36 +117,12 @@ class TwitterStream:
                     response.status_code, response.text
                 )
             )
-        # for response_line in response.iter_lines():
-        #     if response_line:
-        #         json_response = json.loads(response_line)
-        #         yield json_response
-
         result_stream = (
             json.loads(response_line)
             for response_line in response.iter_lines()
             if response_line
         )
-
         return TweetStream(
             cancel_fn=response.close,
             result_stream=result_stream,
         )
-
-
-def print_tweets(tweet_stream):
-    for tweet in tweet_stream:
-        print(json.dumps(tweet, indent=4, sort_keys=True))
-
-
-def main():
-    twitter_sub = TwitterStream(
-        bearer_token=bearer_token,
-        handles=['rterqwerqeqwe', 'fooooooo']
-    )
-    tweet_stream = twitter_sub.get_tweets()
-    print_tweets(tweet_stream)
-
-
-if __name__ == "__main__":
-    main()
