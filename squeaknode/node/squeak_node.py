@@ -229,7 +229,7 @@ class SqueakNode:
     def initialize_peer_connection_worker(self):
         self.peer_connection_worker = PeerConnectionWorker(
             self.squeak_controller,
-            10,
+            self.config.node.peer_autoconnect_interval_s,
         )
 
     def initialize_squeak_deletion_worker(self):
