@@ -36,7 +36,7 @@ class ProcessForwardTweetsWorker:
         threading.Thread(
             target=self.forward_tweets,
             args=(squeak_controller,),
-            # daemon=True,
+            daemon=True,
             name="process_forward_tweets_thread",
         ).start()
 
