@@ -16,52 +16,52 @@ Node for [Squeak protocol](https://github.com/yzernik/squeak/blob/master/docs/PR
 * a Tor SOCKS5 proxy (you can open Tor Browser and run it in the background)
 
 ### Step 1. Create the configuration
-- Update the **config.ini** file and fill in the relevant sections to connect to your Bitcoin node and LND node:
+> Update the **config.ini** file and fill in the relevant sections to connect to your Bitcoin node and LND node:
 
-	```
-	[node]
-	network=mainnet
+```
+[node]
+network=mainnet
 
-	[lnd]
-	host=localhost
-	tls_cert_path=~/.lnd/tls.cert
-	macaroon_path=~/.lnd/data/chain/bitcoin/mainnet/admin.macaroon
+[lnd]
+host=localhost
+tls_cert_path=~/.lnd/tls.cert
+macaroon_path=~/.lnd/data/chain/bitcoin/mainnet/admin.macaroon
 
-	[bitcoin]
-	rpc_host=localhost
-	rpc_port=8332
-	rpc_user=devuser
-	rpc_pass=devpass
-	zeromq_hashblock_port=28334
+[bitcoin]
+rpc_host=localhost
+rpc_port=8332
+rpc_user=devuser
+rpc_pass=devpass
+zeromq_hashblock_port=28334
 
-	[tor]
-	proxy_ip=localhost
-	proxy_port=9150
+[tor]
+proxy_ip=localhost
+proxy_port=9150
 
-	[webadmin]
-	enabled=true
-	username=devuser
-	password=devpass
-	```
+[webadmin]
+enabled=true
+username=devuser
+password=devpass
+```
 
-	Add any other [configs](docs/CONFIGURATION.md).
+Add any other [configs](docs/CONFIGURATION.md) that you need.
 
 ### Step 2. Install squeaknode:
 
-	```
-	$ virtualenv venv
-	$ source venv/bin/activate
-	$ pip install -r requirements.txt
-	$ pip install .
-	```
+```
+$ virtualenv venv
+$ source venv/bin/activate
+$ pip install -r requirements.txt
+$ pip install .
+```
 
 ### Step 3. Start squeaknode:
 
-	```
-	$ squeaknode --config config.ini
-	```
+```
+$ squeaknode --config config.ini
+```
 
-- Go to http://localhost:12994/ and use the username/password in **config.ini** to log in.
+Go to http://localhost:12994/ and use the username/password in **config.ini** to log in.
 
 ## Test
 
