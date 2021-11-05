@@ -1,3 +1,12 @@
+0.1.165 - 2021-11-04
+===================
+
+### Features
+* Add twitter forwarder by @yzernik in https://github.com/yzernik/squeaknode/pull/1755
+* Fix button text for submit button in add twitter account dialog by @yzernik in https://github.com/yzernik/squeaknode/pull/1757
+* Make rpc enabled config set to false by default by @yzernik in https://github.com/yzernik/squeaknode/pull/1758
+* Add custom config for autoconnect peer interval by @yzernik in https://github.com/yzernik/squeaknode/pull/1759
+
 0.1.164 - 2021-11-02
 ===================
 
