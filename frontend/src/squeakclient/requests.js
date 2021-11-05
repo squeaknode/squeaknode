@@ -131,6 +131,16 @@ import {
   GetPeerByAddressReply,
   GetDefaultPeerPortRequest,
   GetDefaultPeerPortReply,
+  GetTwitterBearerTokenRequest,
+  GetTwitterBearerTokenReply,
+  SetTwitterBearerTokenRequest,
+  SetTwitterBearerTokenReply,
+  GetTwitterAccountsRequest,
+  GetTwitterAccountsReply,
+  AddTwitterAccountRequest,
+  AddTwitterAccountReply,
+  DeleteTwitterAccountRequest,
+  DeleteTwitterAccountReply,
 } from '../proto/squeak_admin_pb';
 
 console.log('The value of REACT_APP_DEV_MODE_ENABLED is:', Boolean(process.env.REACT_APP_DEV_MODE_ENABLED));
@@ -1176,6 +1186,64 @@ export function getDefaultPeerPortRequest(handleResponse) {
     (response) => {
       handleResponse(response.getPort());
     },
+  );
+}
+
+export function setTwitterBearerTokenRequest(bearerToken, handleResponse) {
+  const request = new SetTwitterBearerTokenRequest();
+  request.setBearerToken(bearerToken);
+  makeRequest(
+    'settwitterbearertoken',
+    request,
+    SetTwitterBearerTokenReply.deserializeBinary,
+    handleResponse,
+  );
+}
+
+export function getTwitterBearerTokenRequest(handleResponse) {
+  const request = new GetTwitterBearerTokenRequest();
+  makeRequest(
+    'gettwitterbearertoken',
+    request,
+    GetTwitterBearerTokenReply.deserializeBinary,
+    (response) => {
+      handleResponse(response.getBearerToken());
+    },
+  );
+}
+
+export function getTwitterAccountsRequest(handleResponse) {
+  const request = new GetTwitterAccountsRequest();
+  makeRequest(
+    'gettwitteraccounts',
+    request,
+    GetTwitterAccountsReply.deserializeBinary,
+    (response) => {
+      handleResponse(response.getTwitterAccountsList());
+    },
+  );
+}
+
+export function addTwitterAccountRequest(twitterHandle, profileId, handleResponse) {
+  const request = new AddTwitterAccountRequest();
+  request.setHandle(twitterHandle);
+  request.setProfileId(profileId);
+  makeRequest(
+    'addtwitteraccount',
+    request,
+    AddTwitterAccountReply.deserializeBinary,
+    handleResponse,
+  );
+}
+
+export function deleteTwitterAccountRequest(twitterAccountId, handleResponse) {
+  const request = new DeleteTwitterAccountRequest();
+  request.setTwitterAccountId(twitterAccountId);
+  makeRequest(
+    'deletetwitteraccount',
+    request,
+    DeleteTwitterAccountReply.deserializeBinary,
+    handleResponse,
   );
 }
 

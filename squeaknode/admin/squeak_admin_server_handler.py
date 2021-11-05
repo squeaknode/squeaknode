@@ -45,6 +45,7 @@ from squeaknode.admin.messages import sent_payment_to_message
 from squeaknode.admin.messages import squeak_entry_to_message
 from squeaknode.admin.messages import squeak_peer_to_message
 from squeaknode.admin.messages import squeak_profile_to_message
+from squeaknode.admin.messages import twitter_account_to_message
 from squeaknode.admin.profile_image_util import base64_string_to_bytes
 from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
 from squeaknode.node.squeak_controller import SqueakController
@@ -1053,3 +1054,56 @@ class SqueakAdminServerHandler(object):
         return squeak_admin_pb2.GetDefaultPeerPortReply(
             port=default_peer_port,
         )
+
+    def handle_set_twitter_bearer_token(self, request):
+        twitter_bearer_token = request.bearer_token
+        logger.info("Handle set twitter bearer token with value: {}".format(
+            twitter_bearer_token,
+        ))
+        self.squeak_controller.set_twitter_bearer_token(twitter_bearer_token)
+        return squeak_admin_pb2.SetTwitterBearerTokenReply()
+
+    def handle_get_twitter_bearer_token(self, request):
+        logger.info("Handle get twitter bearer token")
+        twitter_bearer_token = self.squeak_controller.get_twitter_bearer_token()
+        return squeak_admin_pb2.GetTwitterBearerTokenReply(
+            bearer_token=twitter_bearer_token,
+        )
+
+    def handle_add_twitter_account(self, request):
+        handle = request.handle
+        profile_id = request.profile_id
+        logger.info("Handle add twitter account with handle: {} and profile_id: {}".format(
+            handle,
+            profile_id,
+        ))
+        twitter_account_id = self.squeak_controller.add_twitter_account(
+            handle,
+            profile_id,
+        )
+        return squeak_admin_pb2.AddTwitterAccountReply(
+            twitter_account_id=twitter_account_id,
+        )
+
+    def handle_get_twitter_accounts(self, request):
+        logger.info("Handle get twitter accounts")
+        twitter_accounts = self.squeak_controller.get_twitter_accounts()
+        logger.info("Got number of twitter accounts: {}".format(
+            len(twitter_accounts)))
+        twitter_account_msgs = [
+            twitter_account_to_message(twitter_account)
+            for twitter_account in twitter_accounts
+        ]
+        return squeak_admin_pb2.GetTwitterAccountsReply(
+            twitter_accounts=twitter_account_msgs,
+        )
+
+    def handle_delete_twitter_account(self, request):
+        twitter_account_id = request.twitter_account_id
+        logger.info("Handle delete twitter account with id: {}".format(
+            twitter_account_id,
+        ))
+        self.squeak_controller.delete_twitter_account(
+            twitter_account_id,
+        )
+        return squeak_admin_pb2.DeleteTwitterAccountReply()

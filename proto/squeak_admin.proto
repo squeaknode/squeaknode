@@ -332,6 +332,26 @@ service SqueakAdmin {
   */
   rpc GetDefaultPeerPort (GetDefaultPeerPortRequest) returns (GetDefaultPeerPortReply) {}
 
+  /** sqkadmin: `settwitterbearertoken`
+  */
+  rpc SetTwitterBearerToken (SetTwitterBearerTokenRequest) returns (SetTwitterBearerTokenReply) {}
+
+  /** sqkadmin: `gettwitterbearertoken`
+  */
+  rpc GetTwitterBearerToken (GetTwitterBearerTokenRequest) returns (GetTwitterBearerTokenReply) {}
+
+  /** sqkadmin: `addtwitteraccount`
+  */
+  rpc AddTwitterAccount (AddTwitterAccountRequest) returns (AddTwitterAccountReply) {}
+
+  /** sqkadmin: `gettwitteraccounts`
+  */
+  rpc GetTwitterAccounts (GetTwitterAccountsRequest) returns (GetTwitterAccountsReply) {}
+
+  /** sqkadmin: `deletetwitteraccount`
+  */
+  rpc DeleteTwitterAccount (DeleteTwitterAccountRequest) returns (DeleteTwitterAccountReply) {}
+
 }
 
 message CreateSigningProfileRequest {
@@ -1224,3 +1244,64 @@ message GetDefaultPeerPortReply {
     int32 port = 1;
 }
 
+message SetTwitterBearerTokenRequest {
+    /// The bearer token string.
+    string bearer_token = 1;
+}
+
+message SetTwitterBearerTokenReply {
+}
+
+message GetTwitterBearerTokenRequest {
+}
+
+message GetTwitterBearerTokenReply {
+    /// The bearer token string.
+    string bearer_token = 1;
+}
+
+message TwitterAccount {
+    /// The twitter account id
+    int32 twitter_account_id = 1;
+
+    /// The twitter account handle.
+    string handle = 2;
+
+    /// The profile id
+    int32 profile_id = 3;
+
+    /// Is profile_id known
+    bool is_profile_known = 4;
+
+    /// The profile
+    SqueakProfile profile = 5;
+}
+
+message AddTwitterAccountRequest {
+    /// The twitter account handle.
+    string handle = 1;
+
+    /// The profile id
+    int32 profile_id = 2;
+}
+
+message AddTwitterAccountReply {
+    /// The twitter account id
+    int32 twitter_account_id = 1;
+}
+
+message GetTwitterAccountsRequest {
+}
+
+message GetTwitterAccountsReply {
+    /// The twitter accounts
+    repeated TwitterAccount twitter_accounts = 1;
+}
+
+message DeleteTwitterAccountRequest {
+    /// The twitter account id
+    int32 twitter_account_id = 1;
+}
+
+message DeleteTwitterAccountReply {
+}

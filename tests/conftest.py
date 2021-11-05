@@ -44,6 +44,7 @@ from squeaknode.core.squeak_entry import SqueakEntry
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeaks import get_hash
 from squeaknode.core.squeaks import make_squeak_with_block
+from squeaknode.core.user_config import UserConfig
 from squeaknode.network.peer import Peer
 from tests.utils import gen_contact_profile
 from tests.utils import gen_signing_profile
@@ -529,3 +530,15 @@ def download_result():
         elapsed_time_ms=56789,
         number_peers=4,
     )
+
+
+@pytest.fixture
+def user_config():
+    yield UserConfig(
+        username="default_user",
+    )
+
+
+@pytest.fixture
+def twitter_bearer_token():
+    yield 'abcdefg987654321'

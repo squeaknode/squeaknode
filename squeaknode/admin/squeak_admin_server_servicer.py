@@ -382,3 +382,18 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
 
     def GetDefaultPeerPort(self, request, context):
         return self.handler.handle_get_default_peer_port(request)
+
+    def SetTwitterBearerToken(self, request, context):
+        return self.handler.handle_set_twitter_bearer_token(request)
+
+    def GetTwitterBearerToken(self, request, context):
+        return self.handler.handle_get_twitter_bearer_token(request)
+
+    def AddTwitterAccount(self, request, context):
+        return self.handler.handle_add_twitter_account(request)
+
+    def GetTwitterAccounts(self, request, context):
+        return self.handler.handle_get_twitter_accounts(request)
+
+    def DeleteTwitterAccount(self, request, context):
+        return self.handler.handle_delete_twitter_account(request)

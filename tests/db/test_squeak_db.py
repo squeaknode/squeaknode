@@ -25,6 +25,7 @@ import mock
 import pytest
 from sqlalchemy import create_engine
 
+from squeaknode.core.twitter_account import TwitterAccount
 from squeaknode.db.exception import SqueakDatabaseError
 from squeaknode.db.squeak_db import SqueakDb
 from tests.utils import gen_address
@@ -396,6 +397,57 @@ def inserted_received_payment_ids(
             received_payment)
         ret.append(received_payment_id)
     yield ret
+
+
+@pytest.fixture
+def inserted_user_config_username(squeak_db, user_config):
+    yield squeak_db.insert_config(user_config)
+
+
+@pytest.fixture
+def duplicate_inserted_user_config_username(squeak_db, user_config, inserted_user_config_username):
+    yield squeak_db.insert_config(user_config)
+
+
+@pytest.fixture
+def user_config_with_twitter_bearer_token_username(
+        squeak_db,
+        user_config,
+        inserted_user_config_username,
+        twitter_bearer_token,
+):
+    squeak_db.set_config_twitter_bearer_token(
+        inserted_user_config_username,
+        twitter_bearer_token,
+    )
+    yield inserted_user_config_username
+
+
+@pytest.fixture
+def twitter_account(inserted_signing_profile_id):
+    yield TwitterAccount(
+        twitter_account_id=None,
+        handle="fake_twitter_handle",
+        profile_id=inserted_signing_profile_id,
+    )
+
+
+@pytest.fixture
+def inserted_twitter_account_id(squeak_db, twitter_account):
+    yield squeak_db.insert_twitter_account(twitter_account)
+
+
+@pytest.fixture
+def duplicate_inserted_twitter_account_id(squeak_db, twitter_account, inserted_twitter_account_id):
+    yield squeak_db.insert_twitter_account(twitter_account)
+
+
+@pytest.fixture
+def deleted_twitter_account_id(squeak_db, inserted_twitter_account_id):
+    squeak_db.delete_twitter_account(
+        inserted_twitter_account_id,
+    )
+    yield inserted_twitter_account_id
 
 
 def test_init_with_retries(squeak_db):
@@ -1527,3 +1579,54 @@ def test_get_sent_payment_summary(squeak_db, inserted_sent_payment_ids, price_ms
         inserted_sent_payment_ids)
     assert sent_payment_summary.total_amount_sent_msat == price_msat * \
         len(inserted_sent_payment_ids)
+
+
+def test_get_config(squeak_db, user_config, inserted_user_config_username):
+    retrieved_config = squeak_db.get_config(inserted_user_config_username)
+
+    assert retrieved_config == user_config
+
+
+def test_duplicate_inserted_config(squeak_db, duplicate_inserted_user_config_username):
+    assert duplicate_inserted_user_config_username is None
+
+
+def test_get_config_missing(squeak_db):
+    retrieved_config = squeak_db.get_config("fake_username")
+
+    assert retrieved_config is None
+
+
+def test_set_twitter_bearer_token(
+        squeak_db,
+        user_config_with_twitter_bearer_token_username,
+        twitter_bearer_token,
+):
+    retrieved_config = squeak_db.get_config(
+        user_config_with_twitter_bearer_token_username)
+
+    assert retrieved_config.twitter_bearer_token == twitter_bearer_token
+
+
+def test_get_twitter_account(
+        squeak_db,
+        twitter_account,
+        inserted_twitter_account_id,
+        signing_profile,
+):
+    retrieved_twitter_accounts = squeak_db.get_twitter_accounts()
+
+    assert retrieved_twitter_accounts[0].handle == twitter_account.handle
+    assert retrieved_twitter_accounts[0].profile_id == twitter_account.profile_id
+    assert retrieved_twitter_accounts[0].profile._replace(profile_id=None) == \
+        signing_profile
+
+
+def test_duplicate_twitter_account(squeak_db, duplicate_inserted_twitter_account_id):
+    assert duplicate_inserted_twitter_account_id is None
+
+
+def test_get_twitter_account_all_deleted(squeak_db, twitter_account, deleted_twitter_account_id):
+    retrieved_twitter_accounts = squeak_db.get_twitter_accounts()
+
+    assert len(retrieved_twitter_accounts) == 0

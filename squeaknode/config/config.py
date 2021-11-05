@@ -65,6 +65,7 @@ DEFAULT_OFFER_DELETION_INTERVAL_S = 10
 DEFAULT_SUBSCRIBE_INVOICES_RETRY_S = 10
 DEFAULT_SQUEAK_RETENTION_S = 604800
 DEFAULT_SQUEAK_DELETION_INTERVAL_S = 10
+DEFAULT_FORWARD_TWEETS_RETRY_S = 10
 
 
 @section('bitcoin')
@@ -157,6 +158,12 @@ class DbConfig(Config):
     connection_string = key(cast=str, required=False, default="")
 
 
+@section('twitter')
+class TwitterConfig(Config):
+    forward_tweets_retry_s = key(
+        cast=int, required=False, default=DEFAULT_FORWARD_TWEETS_RETRY_S)
+
+
 class SqueaknodeConfig(Config):
     bitcoin = group_key(BitcoinConfig)
     lnd = group_key(LndConfig)
@@ -166,6 +173,7 @@ class SqueaknodeConfig(Config):
     webadmin = group_key(WebadminConfig)
     node = group_key(NodeConfig)
     db = group_key(DbConfig)
+    twitter = group_key(TwitterConfig)
     # description = key(cast=str, section_name="general")
 
     def __init__(self, config_path=None, dict_config=None):

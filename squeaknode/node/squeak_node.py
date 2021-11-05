@@ -39,6 +39,7 @@ from squeaknode.node.active_download_manager import ActiveDownloadManager
 from squeaknode.node.payment_processor import PaymentProcessor
 from squeaknode.node.peer_connection_worker import PeerConnectionWorker
 from squeaknode.node.peer_subscription_update_worker import PeerSubscriptionUpdateWorker
+from squeaknode.node.process_forward_tweets_worker import ProcessForwardTweetsWorker
 from squeaknode.node.process_received_payments_worker import ProcessReceivedPaymentsWorker
 from squeaknode.node.squeak_controller import SqueakController
 from squeaknode.node.squeak_deletion_worker import SqueakDeletionWorker
@@ -46,6 +47,8 @@ from squeaknode.node.squeak_offer_expiry_worker import SqueakOfferExpiryWorker
 from squeaknode.node.update_follows_worker import UpdateFollowsWorker
 from squeaknode.node.update_subscribed_secret_key_worker import UpdateSubscribedSecretKeysWorker
 from squeaknode.node.update_subscribed_squeak_worker import UpdateSubscribedSqueaksWorker
+from squeaknode.node.update_twitter_stream_worker import UpdateTwitterStreamWorker
+from squeaknode.twitter.twitter_forwarder import TwitterForwarder
 
 logger = logging.getLogger(__name__)
 
@@ -63,6 +66,7 @@ class SqueakNode:
         self.initialize_bitcoin_block_subscription_client()
         self.initialize_squeak_core()
         self.initialize_payment_processor()
+        self.initialize_twitter_forwarder()
         self.initialize_network_manager()
         self.initialize_download_manager()
         self.initialize_squeak_controller()
@@ -70,12 +74,14 @@ class SqueakNode:
         self.initialize_admin_rpc_server()
         self.initialize_admin_web_server()
         self.initialize_received_payment_processor_worker()
+        self.initialize_forward_tweets_processor_worker()
         self.initialize_peer_connection_worker()
         self.initialize_squeak_deletion_worker()
         self.initialize_offer_expiry_worker()
         self.initialize_new_squeak_worker()
         self.initialize_new_secret_key_worker()
         self.initialize_new_follow_worker()
+        self.initialize_twitter_stream_change_worker()
         self.initialize_peer_subscription_update_worker()
 
     def start_running(self):
@@ -87,12 +93,15 @@ class SqueakNode:
         if self.config.webadmin.enabled:
             self.admin_web_server.start()
         self.received_payment_processor_worker.start_running()
+        self.forward_tweets_processor_worker.start_running(
+            self.squeak_controller)
         self.peer_connection_worker.start()
         self.squeak_deletion_worker.start()
         self.offer_expiry_worker.start()
         self.new_squeak_worker.start_running()
         self.new_secret_key_worker.start_running()
         self.new_follow_worker.start_running()
+        self.twitter_stream_change_worker.start_running()
         self.new_bitcoin_block_worker.start_running()
         self.download_manager.start(
             self.squeak_controller.broadcast_msg,
@@ -104,6 +113,7 @@ class SqueakNode:
         self.admin_rpc_server.stop()
         self.network_manager.stop()
         self.received_payment_processor_worker.stop_running()
+        self.forward_tweets_processor_worker.stop_running()
         self.new_squeak_worker.stop_running()
 
     def initialize_network(self):
@@ -162,6 +172,11 @@ class SqueakNode:
             self.config.node.subscribe_invoices_retry_s,
         )
 
+    def initialize_twitter_forwarder(self):
+        self.twitter_forwarder = TwitterForwarder(
+            self.config.twitter.forward_tweets_retry_s,
+        )
+
     def initialize_network_manager(self):
         self.network_manager = NetworkManager(self.config)
 
@@ -172,6 +187,7 @@ class SqueakNode:
             self.payment_processor,
             self.network_manager,
             self.download_manager,
+            self.twitter_forwarder,
             self.config,
         )
 
@@ -205,6 +221,11 @@ class SqueakNode:
             self.payment_processor,
         )
 
+    def initialize_forward_tweets_processor_worker(self):
+        self.forward_tweets_processor_worker = ProcessForwardTweetsWorker(
+            self.twitter_forwarder,
+        )
+
     def initialize_peer_connection_worker(self):
         self.peer_connection_worker = PeerConnectionWorker(
             self.squeak_controller,
@@ -235,6 +256,11 @@ class SqueakNode:
 
     def initialize_new_follow_worker(self):
         self.new_follow_worker = UpdateFollowsWorker(
+            self.squeak_controller,
+        )
+
+    def initialize_twitter_stream_change_worker(self):
+        self.twitter_stream_change_worker = UpdateTwitterStreamWorker(
             self.squeak_controller,
         )
 

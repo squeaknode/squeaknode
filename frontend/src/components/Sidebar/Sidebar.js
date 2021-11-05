@@ -8,6 +8,7 @@ import {
   CloudDownload as PeerIcon,
   History as HistoryIcon,
   Favorite as LikedIcon,
+  Twitter as TwitterIcon,
 } from '@material-ui/icons';
 import { useTheme } from '@material-ui/styles';
 import { withRouter } from 'react-router-dom';
@@ -44,6 +45,9 @@ const structure = [
   },
   {
     id: 5, label: 'Payments', link: '/app/payments', icon: <HistoryIcon />,
+  },
+  {
+    id: 6, label: 'Twitter', link: '/app/twitter', icon: <TwitterIcon />,
   },
 ];
 
