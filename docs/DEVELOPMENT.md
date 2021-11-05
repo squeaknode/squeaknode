@@ -6,9 +6,9 @@
 
 - Start the required background services in docker:
 	```
-	$ cd docker
-	$ docker-compose build
-	$ docker-compose up
+	cd docker
+	docker-compose build
+	docker-compose up
 	```
 
 	This will start the following services in containers:
@@ -27,20 +27,20 @@ You can also run your own squeaknode on your host machine.
 
 - Install squeaknode:
 	```
-	$ virtualenv venv
-	$ source venv/bin/activate
-	$ pip install -r requirements.txt
-	$ pip install .
+	virtualenv venv
+	source venv/bin/activate
+	pip install -r requirements.txt
+	pip install .
 	```
 
 - Make sure that `~/.lnd` directory (created by docker container) has read permissions. You may need to change the permissions:
 	```
-	$ sudo chmod -R 755 ~/.lnd/
+	sudo chmod -R 755 ~/.lnd/
 	```
 
 - Run squeaknode with authentication disabled:
 	```
-	$ SQUEAKNODE_WEBADMIN_ENABLED=TRUE \
+	SQUEAKNODE_WEBADMIN_ENABLED=TRUE \
 	SQUEAKNODE_WEBADMIN_LOGIN_DISABLED=TRUE \
 	SQUEAKNODE_WEBADMIN_ALLOW_CORS=TRUE \
 	SQUEAKNODE_NETWORK=testnet \
@@ -52,8 +52,8 @@ You can also run your own squeaknode on your host machine.
 - Install `protoc-gen-grpc-web` (https://github.com/grpc/grpc-web#code-generator-plugin)
 - Run the frontend react app in dev mode:
 	```
-	$ cd frontend
-	$ make rundev
+	cd frontend
+	make rundev
 	```
 
 
