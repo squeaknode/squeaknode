@@ -21,10 +21,11 @@
 # SOFTWARE.
 import json
 import os
-from typing import Iterable
 from typing import List
 
 import requests
+
+from squeaknode.core.tweet_stream import TweetStream
 
 
 # To set your enviornment variables in your terminal run the following line:
@@ -41,11 +42,11 @@ class TwitterStream:
         self.bearer_token = bearer_token
         self.handles = handles
 
-    def get_tweets(self) -> Iterable[dict]:
+    def get_tweets(self) -> TweetStream:
         rules = self.get_rules()
         delete = self.delete_all_rules(rules)
         set = self.set_rules(delete)
-        yield from self.get_stream(set)
+        return self.get_stream(set)
 
     @property
     def bearer_oauth_fn(self):
@@ -109,7 +110,7 @@ class TwitterStream:
             )
         print(json.dumps(response.json()))
 
-    def get_stream(self, set) -> Iterable[dict]:
+    def get_stream(self, set) -> TweetStream:
         response = requests.get(
             self.TWITTER_STREAM_URL,
             auth=self.bearer_oauth_fn,
@@ -122,10 +123,21 @@ class TwitterStream:
                     response.status_code, response.text
                 )
             )
-        for response_line in response.iter_lines():
-            if response_line:
-                json_response = json.loads(response_line)
-                yield json_response
+        # for response_line in response.iter_lines():
+        #     if response_line:
+        #         json_response = json.loads(response_line)
+        #         yield json_response
+
+        result_stream = (
+            json.loads(response_line)
+            for response_line in response.iter_lines()
+            if response_line
+        )
+
+        return TweetStream(
+            cancel_fn=response.close,
+            result_stream=result_stream,
+        )
 
 
 def print_tweets(tweet_stream):

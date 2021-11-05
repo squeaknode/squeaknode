@@ -80,6 +80,8 @@ class TwitterForwarderTask:
     def stop_processing(self):
         logger.info("Stopping twitter forwarder task.")
         self.stopped.set()
+        if self.tweet_stream is not None:
+            self.tweet_stream.cancel_fn()
 
     def process_forward_tweets(self):
         while not self.stopped.is_set():
@@ -98,7 +100,7 @@ class TwitterForwarderTask:
                 self.tweet_stream = twitter_stream.get_tweets()
                 if self.stopped.is_set():
                     return
-                for tweet in self.tweet_stream:
+                for tweet in self.tweet_stream.result_stream:
                     self.handle_tweet(tweet)
             # TODO: use more specific error.
             except Exception:
