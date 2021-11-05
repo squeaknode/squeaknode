@@ -5,9 +5,9 @@
 
 Node for [Squeak protocol](https://github.com/yzernik/squeak/blob/master/docs/PROTOCOL.md)
 
-### Run a node:
+## Installation
 
-#### Requirements
+### Requirements
 * a Bitcoin node
 * an LND node
 * Python 3.6 or later
@@ -15,7 +15,7 @@ Node for [Squeak protocol](https://github.com/yzernik/squeak/blob/master/docs/PR
 #### Optional
 * a Tor SOCKS5 proxy (you can open Tor Browser and run it in the background)
 
-#### Steps
+### Step 1. Create the configuration
 - Update the **config.ini** file and fill in the relevant sections to connect to your Bitcoin node and LND node:
 	```
 	[node]
@@ -45,14 +45,14 @@ Node for [Squeak protocol](https://github.com/yzernik/squeak/blob/master/docs/PR
 
 	More information about [configs](docs/CONFIGURATION.md).
 
-- Install squeaknode:
+### Step 2. Install squeaknode:
 	```
 	$ virtualenv venv
 	$ source venv/bin/activate
 	$ pip install -r requirements.txt
 	$ pip install .
 	```
-- Start squeaknode:
+### Step 3. Start squeaknode:
  	```
 	$ squeaknode --config config.ini
 	```
