@@ -5,9 +5,9 @@
 
 Node for [Squeak protocol](https://github.com/yzernik/squeak/blob/master/docs/PROTOCOL.md)
 
-### Run a node:
+## Installation
 
-#### Requirements
+### Requirements
 * a Bitcoin node
 * an LND node
 * Python 3.6 or later
@@ -15,48 +15,53 @@ Node for [Squeak protocol](https://github.com/yzernik/squeak/blob/master/docs/PR
 #### Optional
 * a Tor SOCKS5 proxy (you can open Tor Browser and run it in the background)
 
-#### Steps
-- Update the **config.ini** file and fill in the relevant sections to connect to your Bitcoin node and LND node:
-	```
-	[node]
-	network=mainnet
+### Step 1. Create the configuration
+> Update the **config.ini** file and fill in the relevant sections to connect to your Bitcoin node and LND node:
 
-	[lnd]
-	host=localhost
-	tls_cert_path=~/.lnd/tls.cert
-	macaroon_path=~/.lnd/data/chain/bitcoin/mainnet/admin.macaroon
+```
+[node]
+network=mainnet
 
-	[bitcoin]
-	rpc_host=localhost
-	rpc_port=8332
-	rpc_user=devuser
-	rpc_pass=devpass
-	zeromq_hashblock_port=28334
+[lnd]
+host=localhost
+tls_cert_path=~/.lnd/tls.cert
+macaroon_path=~/.lnd/data/chain/bitcoin/mainnet/admin.macaroon
 
-	[tor]
-	proxy_ip=localhost
-	proxy_port=9150
+[bitcoin]
+rpc_host=localhost
+rpc_port=8332
+rpc_user=devuser
+rpc_pass=devpass
+zeromq_hashblock_port=28334
 
-	[webadmin]
-	enabled=true
-	username=devuser
-	password=devpass
-	```
+[tor]
+proxy_ip=localhost
+proxy_port=9150
 
-	More information about [configs](docs/CONFIGURATION.md).
+[webadmin]
+enabled=true
+username=devuser
+password=devpass
+```
 
-- Install squeaknode:
-	```
-	$ virtualenv venv
-	$ source venv/bin/activate
-	$ pip install -r requirements.txt
-	$ pip install .
-	```
-- Start squeaknode:
- 	```
-	$ squeaknode --config config.ini
-	```
-- Go to http://localhost:12994/ and use the username/password in **config.ini** to log in.
+Add any other [configs](docs/CONFIGURATION.md) that you need.
+
+### Step 2. Install squeaknode:
+
+```
+$ virtualenv venv
+$ source venv/bin/activate
+$ pip install -r requirements.txt
+$ pip install .
+```
+
+### Step 3. Start squeaknode:
+
+```
+$ squeaknode --config config.ini
+```
+
+Go to http://localhost:12994/ and use the username/password in **config.ini** to log in.
 
 ## Test
 
