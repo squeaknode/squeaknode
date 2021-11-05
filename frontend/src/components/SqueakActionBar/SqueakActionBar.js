@@ -85,9 +85,10 @@ export default function SqueakActionBar({
     event.stopPropagation();
     console.log('Handling resqueak click...');
     if (!squeak) {
-
+      return;
     }
     // TODO: handleClickOpenReplyDialog();
+    alert("Re-squeak not yet implemented!");
   };
 
   const onLikeClick = (event) => {
