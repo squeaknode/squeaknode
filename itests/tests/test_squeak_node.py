@@ -74,15 +74,11 @@ def test_get_network(admin_stub):
 def test_get_twitter_bearer_token(admin_stub):
     # Get the twitter bearer token
     bearer_token = get_twitter_bearer_token(admin_stub)
-    print('bearer_token')
-    print(bearer_token)
 
     assert bearer_token == ''
 
     set_twitter_bearer_token(admin_stub, "new_bearer_token")
     bearer_token = get_twitter_bearer_token(admin_stub)
-    print('bearer_token')
-    print(bearer_token)
 
     assert bearer_token == "new_bearer_token"
 
