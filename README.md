@@ -17,6 +17,7 @@ Node for [Squeak protocol](https://github.com/yzernik/squeak/blob/master/docs/PR
 
 ### Step 1. Create the configuration
 - Update the **config.ini** file and fill in the relevant sections to connect to your Bitcoin node and LND node:
+
 	```
 	[node]
 	network=mainnet
@@ -46,16 +47,20 @@ Node for [Squeak protocol](https://github.com/yzernik/squeak/blob/master/docs/PR
 	More information about [configs](docs/CONFIGURATION.md).
 
 ### Step 2. Install squeaknode:
+
 	```
 	$ virtualenv venv
 	$ source venv/bin/activate
 	$ pip install -r requirements.txt
 	$ pip install .
 	```
+
 ### Step 3. Start squeaknode:
- 	```
+
+	```
 	$ squeaknode --config config.ini
 	```
+
 - Go to http://localhost:12994/ and use the username/password in **config.ini** to log in.
 
 ## Test
