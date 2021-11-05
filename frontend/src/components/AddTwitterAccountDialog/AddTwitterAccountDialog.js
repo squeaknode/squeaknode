@@ -139,7 +139,7 @@ export default function AddTwitterAccountDialog({
     );
   }
 
-  function CreateContactProfilButton() {
+  function AddTwitterAccountButton() {
     return (
       <Button
         type="submit"
@@ -147,7 +147,7 @@ export default function AddTwitterAccountDialog({
         color="primary"
         className={classes.button}
       >
-        Create Contact Profile
+        Add Twitter Account
       </Button>
     );
   }
@@ -162,7 +162,7 @@ export default function AddTwitterAccountDialog({
         </DialogContent>
         <DialogActions>
           {CancelButton()}
-          {CreateContactProfilButton()}
+          {AddTwitterAccountButton()}
         </DialogActions>
       </form>
     </Dialog>
