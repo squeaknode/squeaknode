@@ -49,16 +49,16 @@ Add any other [configs](docs/CONFIGURATION.md) that you need.
 ### Step 2. Install squeaknode:
 
 ```
-$ virtualenv venv
-$ source venv/bin/activate
-$ pip install -r requirements.txt
-$ pip install .
+virtualenv venv
+source venv/bin/activate
+pip install -r requirements.txt
+pip install .
 ```
 
 ### Step 3. Start squeaknode:
 
 ```
-$ squeaknode --config config.ini
+squeaknode --config config.ini
 ```
 
 Go to http://localhost:12994/ and use the username/password in **config.ini** to log in.
@@ -71,7 +71,7 @@ Go to http://localhost:12994/ and use the username/password in **config.ini** to
 * tox
 
 ```
-$ make test
+make test
 ```
 
 ### Integration tests:
@@ -81,7 +81,7 @@ $ make test
 * jq
 
 ```
-$ make itest
+make itest
 ```
 
 ## License
