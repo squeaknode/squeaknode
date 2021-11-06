@@ -46,6 +46,12 @@ jobs:
         name: Coverage
         uses: codecov/codecov-action@v2
       -
+        name: Publish distribution 📦 to PyPI
+        if: startsWith(github.ref, 'refs/tags')
+        uses: pypa/gh-action-pypi-publish@master
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
+      -
         name: Docker meta
         id: docker_meta
         uses: crazy-max/ghaction-docker-meta@v1
