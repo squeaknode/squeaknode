@@ -41,7 +41,6 @@ from squeak.net import CSqueakLocator
 from squeaknode.core.block_range import BlockRange
 from squeaknode.core.connected_peer import ConnectedPeer
 from squeaknode.core.download_result import DownloadResult
-from squeaknode.core.interests import squeak_matches_interest
 from squeaknode.core.lightning_address import LightningAddressHostPort
 from squeaknode.core.offer import Offer
 from squeaknode.core.peer_address import PeerAddress
@@ -93,7 +92,6 @@ class SqueakController:
         self.new_secret_key_listener = EventListener()
         self.new_follow_listener = EventListener()
         self.twitter_stream_change_listener = EventListener()
-        # self.temporary_interest_manager = TemporaryInterestManager()
         self.active_download_manager = download_manager
         self.tweet_forwarder = tweet_forwarder
         self.config = config
@@ -159,48 +157,6 @@ class SqueakController:
     def delete_squeak(self, squeak_hash: bytes) -> None:
         self.squeak_db.delete_squeak(squeak_hash)
 
-    def save_received_squeak(self, squeak: CSqueak) -> None:
-        # Try saving squeak as active download
-        saved_squeak_hash = self.save_active_download_squeak(squeak)
-        if saved_squeak_hash is None:
-            saved_squeak_hash = self.save_followed_squeak(squeak)
-        if saved_squeak_hash is not None:
-            self.request_offers(saved_squeak_hash)
-
-    def save_active_download_squeak(self, squeak: CSqueak) -> Optional[bytes]:
-        """Save the given squeak as a result of an active download.
-
-        Returns:
-          bytes: the hash of the saved squeak.
-        """
-        counter = self.get_temporary_interest_counter(squeak)
-        if counter is None:
-            return None
-        saved_squeak_hash = self.save_squeak(squeak)
-        if saved_squeak_hash is None:
-            return None
-        counter.increment()
-        return saved_squeak_hash
-
-    def save_followed_squeak(self, squeak: CSqueak) -> Optional[bytes]:
-        """Save the given squeak because it matches the followed
-        interest criteria.
-
-        Returns:
-          bytes: the hash of the saved squeak.
-        """
-        if not self.squeak_matches_interest(squeak):
-            return None
-        return self.save_squeak(squeak)
-
-    def squeak_matches_interest(self, squeak: CSqueak) -> bool:
-        locator = self.get_interested_locator()
-        for interest in locator.vInterested:
-            if squeak_matches_interest(squeak, interest) \
-               and self.squeak_in_limit_of_interest(squeak, interest):
-                return True
-        return False
-
     def squeak_in_limit_of_interest(self, squeak: CSqueak, interest: CInterested) -> bool:
         return self.squeak_db.number_of_squeaks_with_address_in_block_range(
             str(squeak.GetAddress),
@@ -208,9 +164,11 @@ class SqueakController:
             interest.nMaxBlockHeight,
         ) < self.config.node.max_squeaks_per_address_in_block_range
 
-    def get_temporary_interest_counter(self, squeak: CSqueak) -> Optional[ActiveDownload]:
-        # return self.temporary_interest_manager.lookup_counter(squeak)
+    def get_download_squeak_counter(self, squeak: CSqueak) -> Optional[ActiveDownload]:
         return self.active_download_manager.lookup_counter(squeak)
+
+    def get_download_offer_counter(self, offer: Offer) -> Optional[ActiveDownload]:
+        return self.active_download_manager.lookup_counter(offer)
 
     def get_offer_or_secret_key(self, squeak_hash: bytes, peer_address: PeerAddress) -> Optional[Union[bytes, Offer]]:
         squeak = self.get_squeak(squeak_hash)
@@ -388,16 +346,6 @@ class SqueakController:
     def get_received_offers(self, squeak_hash: bytes) -> List[ReceivedOffer]:
         return self.squeak_db.get_received_offers(squeak_hash)
 
-    # def get_received_offer_for_squeak_and_peer(
-    #         self,
-    #         squeak_hash: bytes,
-    #         peer_addresss: PeerAddress,
-    # ) -> Optional[ReceivedOffer]:
-    #     return self.squeak_db.get_received_offer_for_squeak_and_peer(
-    #         squeak_hash,
-    #         peer_addresss,
-    #     )
-
     def get_received_offer(self, received_offer_id: int) -> Optional[ReceivedOffer]:
         return self.squeak_db.get_received_offer(
             received_offer_id)
@@ -559,11 +507,11 @@ class SqueakController:
     def get_number_of_squeaks(self) -> int:
         return self.squeak_db.get_number_of_squeaks()
 
-    def save_received_offer(self, offer: Offer, peer_address: PeerAddress) -> None:
+    def save_received_offer(self, offer: Offer, peer_address: PeerAddress) -> Optional[int]:
         squeak = self.get_squeak(offer.squeak_hash)
         secret_key = self.get_squeak_secret_key(offer.squeak_hash)
         if squeak is None or secret_key is not None:
-            return
+            return None
         try:
             # TODO: Call unpack_offer with check_payment_point=True.
             received_offer = self.squeak_core.unpack_offer(
@@ -573,18 +521,16 @@ class SqueakController:
             )
         except Exception:
             logger.exception("Failed to save received offer.")
-            return
+            return None
         received_offer_id = self.squeak_db.insert_received_offer(
             received_offer)
         if received_offer_id is None:
-            return
+            return None
         logger.info("Saved received offer: {}".format(received_offer))
-        counter = self.active_download_manager.lookup_counter(offer)
-        if counter is not None:
-            counter.increment()
         received_offer = received_offer._replace(
             received_offer_id=received_offer_id)
         self.new_received_offer_listener.handle_new_item(received_offer)
+        return received_offer_id
 
     def get_followed_addresses(self) -> List[str]:
         followed_profiles = self.squeak_db.get_following_profiles()

@@ -39,7 +39,9 @@ from squeak.net import CInv
 
 from squeaknode.core.crypto import generate_ping_nonce
 from squeaknode.core.offer import Offer
+from squeaknode.network.download_handler import DownloadHandler
 from squeaknode.network.peer import Peer
+from squeaknode.node.squeak_controller import SqueakController
 
 
 logger = logging.getLogger(__name__)
@@ -55,12 +57,13 @@ class Connection(object):
     """Handles lifecycle of a connection to a peer.
     """
 
-    def __init__(self, peer: Peer, squeak_controller):
+    def __init__(self, peer: Peer, squeak_controller: SqueakController):
         self.peer = peer
         self.squeak_controller = squeak_controller
         self.handshake_timer = HandshakeTimer(self)
         self.ping_timer = PingTimer(self)
         self.pong_timer = PongTimer(self)
+        self.download_handler = DownloadHandler(self.squeak_controller)
 
     def handshake(self):
         """Do a handshake with a peer.
@@ -218,7 +221,7 @@ class Connection(object):
 
     def handle_squeak(self, msg):
         squeak = msg.squeak
-        self.squeak_controller.save_received_squeak(squeak)
+        self.download_handler.handle_squeak(squeak)
 
     def handle_offer(self, msg):
         offer = Offer(
@@ -228,7 +231,7 @@ class Connection(object):
             host=msg.host.decode('utf-8'),
             port=msg.port,
         )
-        self.squeak_controller.save_received_offer(
+        self.download_handler.handle_offer(
             offer,
             self.peer.remote_address,
         )
