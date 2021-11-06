@@ -8,6 +8,7 @@ import {
   Box,
   CircularProgress,
   Typography,
+  TextField,
 } from '@material-ui/core';
 
 // styles
@@ -111,8 +112,16 @@ export default function Twitter() {
           p={1}
         >
           <Typography variant="h5" component="h5">
-            {`Bearer Token: ${bearerTokenText}`}
+            {`Bearer Token:`}
           </Typography>
+          <TextField
+            id="standard-textarea"
+            value={bearerTokenText}
+            fullWidth
+            inputProps={{
+              readOnly: true,
+            }}
+          />
         </Box>
       </Grid>
     );
