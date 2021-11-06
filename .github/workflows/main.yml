@@ -53,10 +53,16 @@ jobs:
           build
           --user
       -
+        name: Install grpcio-tools
+        run: >-
+          python -m
+          pip install
+          grpcio-tools==1.39.0
+          --user
+      -
         name: Build a binary wheel and a source tarball
         run: >-
           python -m
-          pip install -r requirements.txt
           build
           --sdist
           --wheel
