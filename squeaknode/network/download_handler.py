@@ -25,6 +25,8 @@ from typing import Optional
 from squeak.core import CSqueak
 
 from squeaknode.core.interests import squeak_matches_interest
+from squeaknode.core.offer import Offer
+from squeaknode.core.peer_address import PeerAddress
 from squeaknode.node.squeak_controller import SqueakController
 
 
@@ -39,7 +41,7 @@ class DownloadHandler:
         self.squeak_controller = squeak_controller
 
     def handle_squeak(self, squeak: CSqueak):
-        """Handle a new socket connection.
+        """Handle a new received squeak.
 
         """
         # Try saving squeak as active download
@@ -49,13 +51,25 @@ class DownloadHandler:
         if saved_squeak_hash is not None:
             self.squeak_controller.request_offers(saved_squeak_hash)
 
+    def handle_offer(self, offer: Offer, peer_address: PeerAddress):
+        """Handle a new received offer.
+
+        """
+        received_offer_id = self.squeak_controller.save_received_offer(
+            offer, peer_address)
+        if received_offer_id is None:
+            return
+        counter = self.squeak_controller.get_download_offer_counter(offer)
+        if counter is not None:
+            counter.increment()
+
     def save_active_download_squeak(self, squeak: CSqueak) -> Optional[bytes]:
         """Save the given squeak as a result of an active download.
 
         Returns:
           bytes: the hash of the saved squeak.
         """
-        counter = self.squeak_controller.get_temporary_interest_counter(squeak)
+        counter = self.squeak_controller.get_download_squeak_counter(squeak)
         if counter is None:
             return None
         saved_squeak_hash = self.squeak_controller.save_squeak(squeak)

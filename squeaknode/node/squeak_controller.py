@@ -164,9 +164,11 @@ class SqueakController:
             interest.nMaxBlockHeight,
         ) < self.config.node.max_squeaks_per_address_in_block_range
 
-    def get_temporary_interest_counter(self, squeak: CSqueak) -> Optional[ActiveDownload]:
-        # return self.temporary_interest_manager.lookup_counter(squeak)
+    def get_download_squeak_counter(self, squeak: CSqueak) -> Optional[ActiveDownload]:
         return self.active_download_manager.lookup_counter(squeak)
+
+    def get_download_offer_counter(self, offer: Offer) -> Optional[ActiveDownload]:
+        return self.active_download_manager.lookup_counter(offer)
 
     def get_offer_or_secret_key(self, squeak_hash: bytes, peer_address: PeerAddress) -> Optional[Union[bytes, Offer]]:
         squeak = self.get_squeak(squeak_hash)
@@ -505,11 +507,11 @@ class SqueakController:
     def get_number_of_squeaks(self) -> int:
         return self.squeak_db.get_number_of_squeaks()
 
-    def save_received_offer(self, offer: Offer, peer_address: PeerAddress) -> None:
+    def save_received_offer(self, offer: Offer, peer_address: PeerAddress) -> Optional[int]:
         squeak = self.get_squeak(offer.squeak_hash)
         secret_key = self.get_squeak_secret_key(offer.squeak_hash)
         if squeak is None or secret_key is not None:
-            return
+            return None
         try:
             # TODO: Call unpack_offer with check_payment_point=True.
             received_offer = self.squeak_core.unpack_offer(
@@ -519,18 +521,19 @@ class SqueakController:
             )
         except Exception:
             logger.exception("Failed to save received offer.")
-            return
+            return None
         received_offer_id = self.squeak_db.insert_received_offer(
             received_offer)
         if received_offer_id is None:
-            return
+            return None
         logger.info("Saved received offer: {}".format(received_offer))
-        counter = self.active_download_manager.lookup_counter(offer)
-        if counter is not None:
-            counter.increment()
+        # counter = self.active_download_manager.lookup_counter(offer)
+        # if counter is not None:
+        #     counter.increment()
         received_offer = received_offer._replace(
             received_offer_id=received_offer_id)
         self.new_received_offer_listener.handle_new_item(received_offer)
+        return received_offer_id
 
     def get_followed_addresses(self) -> List[str]:
         followed_profiles = self.squeak_db.get_following_profiles()

@@ -231,7 +231,7 @@ class Connection(object):
             host=msg.host.decode('utf-8'),
             port=msg.port,
         )
-        self.squeak_controller.save_received_offer(
+        self.download_handler.handle_offer(
             offer,
             self.peer.remote_address,
         )
