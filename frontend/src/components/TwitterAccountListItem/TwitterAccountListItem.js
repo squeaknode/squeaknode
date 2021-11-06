@@ -1,12 +1,9 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
 
 import {
   IconButton,
   Menu,
   MenuItem,
-  Typography,
-  Button,
 } from '@material-ui/core';
 
 import Card from '@material-ui/core/Card';
@@ -14,13 +11,10 @@ import Box from '@material-ui/core/Box';
 import CardHeader from '@material-ui/core/CardHeader';
 
 // icons
-import VpnKeyIcon from '@material-ui/icons/VpnKey';
-import LocalOfferIcon from '@material-ui/icons/LocalOffer';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 
 import useStyles from '../../pages/wallet/styles';
 import SqueakUserAvatar from '../SqueakUserAvatar';
-import SqueakProfileFollowingIndicator from '../SqueakProfileFollowingIndicator';
 import DeleteTwitterAccountDialog from '../DeleteTwitterAccountDialog';
 
 

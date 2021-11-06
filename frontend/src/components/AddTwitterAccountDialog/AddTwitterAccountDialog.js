@@ -9,10 +9,8 @@ import {
   FormControl,
   InputLabel,
   Select,
-  CircularProgress,
   MenuItem,
 } from '@material-ui/core';
-import { useHistory } from 'react-router-dom';
 
 // styles
 import useStyles from './styles';
@@ -21,9 +19,6 @@ import {
   addTwitterAccountRequest,
   getSigningProfilesRequest,
 } from '../../squeakclient/requests';
-import {
-  goToProfilePage,
-} from '../../navigation/navigation';
 
 export default function AddTwitterAccountDialog({
   open,
@@ -32,7 +27,6 @@ export default function AddTwitterAccountDialog({
   ...props
 }) {
   const classes = useStyles();
-  const history = useHistory();
 
   const [twitterHandle, setTwitterHandle] = useState('');
   const [profileId, setProfileId] = useState(-1);
