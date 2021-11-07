@@ -97,6 +97,7 @@ class Models:
             Column("host", String, nullable=False),
             Column("port", Integer, nullable=False),
             Column("autoconnect", Boolean, nullable=False),
+            Column("share_for_free", Boolean, nullable=False, default=False),
             UniqueConstraint('host', 'port',
                              name='uq_peer_host_port'),
             sqlite_autoincrement=True,

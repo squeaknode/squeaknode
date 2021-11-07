@@ -271,6 +271,7 @@ def peer(peer_name, peer_address):
         peer_name=peer_name,
         address=peer_address,
         autoconnect=False,
+        share_for_free=False,
     )
 
 

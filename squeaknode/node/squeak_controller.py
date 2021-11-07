@@ -174,7 +174,7 @@ class SqueakController:
         squeak = self.get_squeak(squeak_hash)
         if squeak is None:
             return None
-        price = self.get_price_for_squeak(squeak)
+        price = self.get_price_for_squeak(squeak, peer_address)
         if price == 0:
             return self.get_squeak_secret_key(squeak_hash)
         else:
@@ -231,7 +231,12 @@ class SqueakController:
         self.squeak_db.insert_sent_offer(sent_offer)
         return sent_offer
 
-    def get_price_for_squeak(self, squeak: CSqueak) -> int:
+    def get_price_for_squeak(self, squeak: CSqueak, peer_address: PeerAddress) -> int:
+        # Return zero for price if peer is configured to be share for free.
+        peer = self.squeak_db.get_peer_by_address(peer_address)
+        if peer is not None and peer.share_for_free:
+            return 0
+        # Return custom price if address is configured with custom price.
         squeak_address = str(squeak.GetAddress())
         squeak_profile = self.get_squeak_profile_by_address(squeak_address)
         if squeak_profile is not None and squeak_profile.use_custom_price:
@@ -336,6 +341,9 @@ class SqueakController:
 
     def set_peer_autoconnect(self, peer_id: int, autoconnect: bool):
         self.squeak_db.set_peer_autoconnect(peer_id, autoconnect)
+
+    def set_peer_share_for_free(self, peer_id: int, share_for_free: bool):
+        self.squeak_db.set_peer_share_for_free(peer_id, share_for_free)
 
     def rename_peer(self, peer_id: int, peer_name: str):
         self.squeak_db.set_peer_name(peer_id, peer_name)

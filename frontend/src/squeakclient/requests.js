@@ -141,6 +141,8 @@ import {
   AddTwitterAccountReply,
   DeleteTwitterAccountRequest,
   DeleteTwitterAccountReply,
+  SetPeerShareForFreeRequest,
+  SetPeerShareForFreeReply,
 } from '../proto/squeak_admin_pb';
 
 console.log('The value of REACT_APP_DEV_MODE_ENABLED is:', Boolean(process.env.REACT_APP_DEV_MODE_ENABLED));
@@ -567,6 +569,20 @@ export function setPeerAutoconnectRequest(id, autoconnect, handleResponse) {
     'setpeerautoconnect',
     request,
     SetPeerAutoconnectReply.deserializeBinary,
+    (response) => {
+      handleResponse(response);
+    },
+  );
+}
+
+export function setPeerShareForFreeRequest(id, shareForFree, handleResponse) {
+  const request = new SetPeerShareForFreeRequest();
+  request.setPeerId(id);
+  request.setShareForFree(shareForFree);
+  makeRequest(
+    'setpeershareforfree',
+    request,
+    SetPeerShareForFreeReply.deserializeBinary,
     (response) => {
       handleResponse(response);
     },

@@ -190,5 +190,6 @@ def test_create_peer(squeak_db, squeak_controller, peer_address):
             peer_name="fake_peer_name",
             address=peer_address,
             autoconnect=False,
+            share_for_free=False,
         )
     )
