@@ -100,6 +100,7 @@ def squeak_peer_to_message(squeak_peer: SqueakPeer) -> squeak_admin_pb2.SqueakPe
         peer_name=squeak_peer.peer_name,
         peer_address=peer_address_to_message(squeak_peer.address),
         autoconnect=squeak_peer.autoconnect,
+        share_for_free=squeak_peer.share_for_free,
     )
 
 

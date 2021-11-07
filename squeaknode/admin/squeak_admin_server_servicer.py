@@ -182,6 +182,9 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
     def SetPeerAutoconnect(self, request, context):
         return self.handler.handle_set_squeak_peer_autoconnect(request)
 
+    def SetPeerShareForFree(self, request, context):
+        return self.handler.handle_set_squeak_peer_share_for_free(request)
+
     def RenamePeer(self, request, context):
         return self.handler.handle_rename_squeak_peer(request)
 

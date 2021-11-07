@@ -289,6 +289,12 @@ def create_app(handler, username, password):
     def setpeerautoconnect(msg):
         return handler.handle_set_squeak_peer_autoconnect(msg)
 
+    @app.route("/setpeershareforfree", methods=["POST"])
+    @login_required
+    @protobuf_serialized(squeak_admin_pb2.SetPeerShareForFreeRequest())
+    def setpeershareforfree(msg):
+        return handler.handle_set_squeak_peer_share_for_free(msg)
+
     @app.route("/renamepeer", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.RenamePeerRequest())

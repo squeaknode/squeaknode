@@ -337,6 +337,9 @@ class SqueakController:
     def set_peer_autoconnect(self, peer_id: int, autoconnect: bool):
         self.squeak_db.set_peer_autoconnect(peer_id, autoconnect)
 
+    def set_peer_share_for_free(self, peer_id: int, share_for_free: bool):
+        self.squeak_db.set_peer_share_for_free(peer_id, share_for_free)
+
     def rename_peer(self, peer_id: int, peer_name: str):
         self.squeak_db.set_peer_name(peer_id, peer_name)
 

@@ -568,6 +568,18 @@ class SqueakAdminServerHandler(object):
         self.squeak_controller.set_peer_autoconnect(peer_id, autoconnect)
         return squeak_admin_pb2.SetPeerAutoconnectReply()
 
+    def handle_set_squeak_peer_share_for_free(self, request):
+        peer_id = request.peer_id
+        share_for_free = request.share_for_free
+        logger.info(
+            "Handle set peer share_for_free with peer id: {}, share_for_free: {}".format(
+                peer_id,
+                share_for_free,
+            )
+        )
+        self.squeak_controller.set_peer_share_for_free(peer_id, share_for_free)
+        return squeak_admin_pb2.SetPeerShareForFreeReply()
+
     def handle_delete_squeak_peer(self, request):
         peer_id = request.peer_id
         logger.info("Handle delete squeak peer with id: {}".format(peer_id))

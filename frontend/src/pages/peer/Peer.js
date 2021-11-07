@@ -20,6 +20,7 @@ import DeletePeerDialog from '../../components/DeletePeerDialog';
 import {
   getPeerRequest,
   setPeerAutoconnectRequest,
+  setPeerShareForFreeRequest,
 } from '../../squeakclient/requests';
 import {
   goToPeerAddressPage,
@@ -37,6 +38,11 @@ export default function PeerPage() {
   };
   const setAutoconnect = (id, autoconnect) => {
     setPeerAutoconnectRequest(id, autoconnect, () => {
+      getSqueakPeer(id);
+    });
+  };
+  const setShareForFree = (id, shareForFree) => {
+    setPeerShareForFreeRequest(id, shareForFree, () => {
       getSqueakPeer(id);
     });
   };
@@ -58,6 +64,12 @@ export default function PeerPage() {
     console.log(`Autoconnect changed for peer id: ${id}`);
     console.log(`Autoconnect changed to: ${event.target.checked}`);
     setAutoconnect(id, event.target.checked);
+  };
+
+  const handleSettingsShareForFreeChange = (event) => {
+    console.log(`share_for_free changed for peer id: ${id}`);
+    console.log(`share_for_free changed to: ${event.target.checked}`);
+    setShareForFree(id, event.target.checked);
   };
 
   const peerAddressToStr = (peerAddress) => `${peerAddress.getHost()}:${peerAddress.getPort()}`;
@@ -95,6 +107,10 @@ export default function PeerPage() {
           <FormControlLabel
             control={<Switch checked={peer.getAutoconnect()} onChange={handleSettingsAutoconnectChange} />}
             label="Autoconnect"
+          />
+          <FormControlLabel
+            control={<Switch checked={peer.getShareForFree()} onChange={handleSettingsShareForFreeChange} />}
+            label="Share For Free"
           />
         </FormGroup>
       </FormControl>

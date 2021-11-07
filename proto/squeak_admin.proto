@@ -184,6 +184,10 @@ service SqueakAdmin {
   */
   rpc SetPeerAutoconnect (SetPeerAutoconnectRequest) returns (SetPeerAutoconnectReply) {}
 
+  /** sqkadmin: `setpeershareforfree`
+  */
+  rpc SetPeerShareForFree (SetPeerShareForFreeRequest) returns (SetPeerShareForFreeReply) {}
+
   /** sqkadmin: `renamepeer`
   */
   rpc RenamePeer (RenamePeerRequest) returns (RenamePeerReply) {}
@@ -753,6 +757,9 @@ message SqueakPeer {
 
     /// Autoconnect
     bool autoconnect = 4;
+
+    /// Share for free
+    bool share_for_free = 5;
 }
 
 message SetPeerAutoconnectRequest {
@@ -764,6 +771,17 @@ message SetPeerAutoconnectRequest {
 }
 
 message SetPeerAutoconnectReply {
+}
+
+message SetPeerShareForFreeRequest {
+    /// The peer id
+    int32 peer_id = 1;
+
+    /// share_for_free
+    bool share_for_free = 2;
+}
+
+message SetPeerShareForFreeReply {
 }
 
 message RenamePeerRequest {
