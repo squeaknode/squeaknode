@@ -65,6 +65,7 @@ from squeaknode.core.update_twitter_stream_event import UpdateTwitterStreamEvent
 from squeaknode.core.user_config import UserConfig
 from squeaknode.node.active_download_manager import ActiveDownload
 from squeaknode.node.listener_subscription_client import EventListener
+from squeaknode.node.price_policy import PricePolicy
 from squeaknode.node.received_payments_subscription_client import ReceivedPaymentsSubscriptionClient
 
 
@@ -232,16 +233,8 @@ class SqueakController:
         return sent_offer
 
     def get_price_for_squeak(self, squeak: CSqueak, peer_address: PeerAddress) -> int:
-        # Return zero for price if peer is configured to be share for free.
-        peer = self.squeak_db.get_peer_by_address(peer_address)
-        if peer is not None and peer.share_for_free:
-            return 0
-        # Return custom price if address is configured with custom price.
-        squeak_address = str(squeak.GetAddress())
-        squeak_profile = self.get_squeak_profile_by_address(squeak_address)
-        if squeak_profile is not None and squeak_profile.use_custom_price:
-            return squeak_profile.custom_price_msat
-        return self.config.node.price_msat
+        price_policy = PricePolicy(self.squeak_db, self.config)
+        return price_policy.get_price(squeak, peer_address)
 
     def create_signing_profile(self, profile_name: str) -> int:
         squeak_profile = create_signing_profile(
