@@ -225,7 +225,7 @@ def create_app(handler, username, password):
 
     @app.route("/setsqueakprofilecustomprice", methods=["POST"])
     @login_required
-    @protobuf_serialized(squeak_admin_pb2.SetSqueakProfileUseCustomPriceRequest())
+    @protobuf_serialized(squeak_admin_pb2.SetSqueakProfileCustomPriceRequest())
     def setsqueakprofilecustomprice(msg):
         return handler.handle_set_squeak_profile_custom_price(msg)
 
