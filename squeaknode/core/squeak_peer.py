@@ -31,3 +31,4 @@ class SqueakPeer(NamedTuple):
     peer_name: str
     address: PeerAddress
     autoconnect: bool
+    share_for_free: bool

@@ -899,6 +899,7 @@ class SqueakDb:
             host=squeak_peer.address.host,
             port=squeak_peer.address.port,
             autoconnect=squeak_peer.autoconnect,
+            share_for_free=squeak_peer.share_for_free,
         )
         with self.get_connection() as connection:
             res = connection.execute(ins)
@@ -1491,6 +1492,7 @@ class SqueakDb:
                 port=row["port"],
             ),
             autoconnect=row["autoconnect"],
+            share_for_free=row["share_for_free"],
         )
 
     def _parse_received_offer(self, row) -> ReceivedOffer:
