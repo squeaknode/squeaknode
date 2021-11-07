@@ -200,7 +200,7 @@ export default function SqueakAddressPage() {
               ? SqueaksContent()
               : NoSqueaksContent()}
           </Paper>
-          {ViewMoreSqueaksButton()}
+          {ViewMoreSqueaksContent()}
         </Grid>
         <Grid item xs={12} sm={3}>
           <Paper className={classes.paper} />
@@ -242,36 +242,45 @@ export default function SqueakAddressPage() {
       <>
         {DownloadSqueaksButtonContent()}
         {GridContent()}
-        {waitingForSqueaks && <CircularProgress size={24} className={classes.buttonProgress} />}
       </>
 
     );
   }
 
-  function ViewMoreSqueaksButton() {
+  function ViewMoreSqueaksContent() {
     return (
       <>
         <Grid item xs={12}>
           <div className={classes.wrapper}>
-            {!waitingForSqueaks
-            && (
-            <Button
-              variant="contained"
-              color="primary"
-              disabled={waitingForSqueaks}
-              onClick={() => {
-                const latestSqueak = squeaks.slice(-1).pop();
-                getSqueaks(address, SQUEAKS_PER_PAGE, latestSqueak);
-              }}
-            >
-              <ReplayIcon />
-              View more squeaks
-            </Button>
-            )}
-            {waitingForSqueaks && <CircularProgress size={48} className={classes.buttonProgress} />}
+            {waitingForSqueaks
+              ? ViewMoreSqueaksWaitingIndicator()
+              : ViewMoreSqueaksButton()}
           </div>
         </Grid>
       </>
+    );
+  }
+
+  function ViewMoreSqueaksButton() {
+    return (
+      <Button
+        variant="contained"
+        color="primary"
+        disabled={waitingForSqueaks}
+        onClick={() => {
+          const latestSqueak = squeaks.slice(-1).pop();
+          getSqueaks(address, SQUEAKS_PER_PAGE, latestSqueak);
+        }}
+      >
+        <ReplayIcon />
+        View more squeaks
+      </Button>
+    );
+  }
+
+  function ViewMoreSqueaksWaitingIndicator() {
+    return (
+      <CircularProgress size={48} className={classes.buttonProgress} />
     );
   }
 
