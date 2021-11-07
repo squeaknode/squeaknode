@@ -29,8 +29,8 @@ from squeaknode.core.tweet_stream import TweetStream
 
 class TwitterStream:
 
-    TWITTER_STREAM_URL = "https://api.twitter.com/2/tweets/search/stream"
-    TWITTER_STREAM_RULES_URL = "https://api.twitter.com/2/tweets/search/stream/rules"
+    twitter_stream_url = "https://api.twitter.com/2/tweets/search/stream"
+    twitter_stream_rules_url = "https://api.twitter.com/2/tweets/search/stream/rules"
 
     def __init__(self, bearer_token: str, handles: List[str]):
         self.bearer_token = bearer_token
@@ -56,7 +56,7 @@ class TwitterStream:
 
     def get_rules(self):
         response = requests.get(
-            self.TWITTER_STREAM_RULES_URL,
+            self.twitter_stream_rules_url,
             auth=self.bearer_oauth_fn
         )
         if response.status_code != 200:
@@ -74,7 +74,7 @@ class TwitterStream:
         ids = list(map(lambda rule: rule["id"], rules["data"]))
         payload = {"delete": {"ids": ids}}
         response = requests.post(
-            self.TWITTER_STREAM_RULES_URL,
+            self.twitter_stream_rules_url,
             auth=self.bearer_oauth_fn,
             json=payload
         )
@@ -93,7 +93,7 @@ class TwitterStream:
         ]
         payload = {"add": sample_rules}
         response = requests.post(
-            self.TWITTER_STREAM_RULES_URL,
+            self.twitter_stream_rules_url,
             auth=self.bearer_oauth_fn,
             json=payload,
         )
@@ -106,7 +106,7 @@ class TwitterStream:
 
     def get_stream(self, set) -> TweetStream:
         response = requests.get(
-            self.TWITTER_STREAM_URL,
+            self.twitter_stream_url,
             auth=self.bearer_oauth_fn,
             stream=True,
         )
