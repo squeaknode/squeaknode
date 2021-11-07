@@ -20,11 +20,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import json
+import logging
 from typing import List
 
 import requests
 
 from squeaknode.core.tweet_stream import TweetStream
+
+
+logger = logging.getLogger(__name__)
 
 
 class TwitterStream:
@@ -64,7 +68,7 @@ class TwitterStream:
                 "Cannot get rules (HTTP {}): {}".format(
                     response.status_code, response.text)
             )
-        print(json.dumps(response.json()))
+        logger.info(json.dumps(response.json()))
         return response.json()
 
     def delete_all_rules(self, rules):
@@ -84,7 +88,7 @@ class TwitterStream:
                     response.status_code, response.text
                 )
             )
-        print(json.dumps(response.json()))
+        logger.info(json.dumps(response.json()))
 
     def set_rules(self, delete):
         sample_rules = [
@@ -102,7 +106,7 @@ class TwitterStream:
                 "Cannot add rules (HTTP {}): {}".format(
                     response.status_code, response.text)
             )
-        print(json.dumps(response.json()))
+        logger.info(json.dumps(response.json()))
 
     def get_stream(self, set) -> TweetStream:
         response = requests.get(
@@ -110,7 +114,7 @@ class TwitterStream:
             auth=self.bearer_oauth_fn,
             stream=True,
         )
-        print(response.status_code)
+        logger.info(response.status_code)
         if response.status_code != 200:
             raise Exception(
                 "Cannot get stream (HTTP {}): {}".format(
