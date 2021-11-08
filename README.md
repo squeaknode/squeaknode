@@ -3,7 +3,19 @@
 [![GitHub CI workflow](https://github.com/yzernik/squeaknode/actions/workflows/main.yml/badge.svg)](https://github.com/yzernik/squeaknode/actions/workflows/main.yml)
 [![codecov](https://codecov.io/gh/yzernik/squeaknode/branch/master/graph/badge.svg?token=VV8WW3VR3Y)](https://codecov.io/gh/yzernik/squeaknode) [![Join the chat at https://gitter.im/squeaknode/squeaknode](https://badges.gitter.im/squeaknode/squeaknode.svg)](https://gitter.im/squeaknode/squeaknode?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Node for [Squeak protocol](https://github.com/yzernik/squeak/blob/master/docs/PROTOCOL.md)
+A peer-to-peer status feed with posts unlocked by Lightning.
+
+Squeaknode allows you to create, view, buy, and sell squeaks.
+
+A squeak is an immutable structure that:
+* contains 280 utf-8 characters of text
+* optionally contains the hash of another squeak as a reply
+* contains the height and block hash of the latest bitcoin block
+* contains the public key of the author, and is signed by the author
+* is encrypted until a lightning payment unlocks the text
+
+The protocol is defined [here](https://github.com/yzernik/squeak/blob/master/docs/PROTOCOL.md).
+
 
 ## Installation
 
