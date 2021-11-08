@@ -12,7 +12,7 @@ A squeak is an immutable structure that:
 * optionally contains the hash of another squeak as a reply
 * contains the height and block hash of the latest bitcoin block
 * contains the public key of the author, and is signed by the author
-* is encrypted until a lightning payment unlocks the text.
+* is encrypted until a lightning payment unlocks the text
 
 The protocol is defined [here](https://github.com/yzernik/squeak/blob/master/docs/PROTOCOL.md).
 
