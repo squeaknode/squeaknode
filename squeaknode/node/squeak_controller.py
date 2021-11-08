@@ -64,6 +64,8 @@ from squeaknode.core.update_subscriptions_event import UpdateSubscriptionsEvent
 from squeaknode.core.update_twitter_stream_event import UpdateTwitterStreamEvent
 from squeaknode.core.user_config import UserConfig
 from squeaknode.node.active_download_manager import ActiveDownload
+from squeaknode.node.downloaded_object import DownloadedOffer
+from squeaknode.node.downloaded_object import DownloadedSqueak
 from squeaknode.node.listener_subscription_client import EventListener
 from squeaknode.node.price_policy import PricePolicy
 from squeaknode.node.received_payments_subscription_client import ReceivedPaymentsSubscriptionClient
@@ -166,10 +168,12 @@ class SqueakController:
         ) < self.config.node.max_squeaks_per_address_in_block_range
 
     def get_download_squeak_counter(self, squeak: CSqueak) -> Optional[ActiveDownload]:
-        return self.active_download_manager.lookup_counter(squeak)
+        downloaded_squeak = DownloadedSqueak(squeak)
+        return self.active_download_manager.lookup_counter(downloaded_squeak)
 
     def get_download_offer_counter(self, offer: Offer) -> Optional[ActiveDownload]:
-        return self.active_download_manager.lookup_counter(offer)
+        downloaded_offer = DownloadedOffer(offer)
+        return self.active_download_manager.lookup_counter(downloaded_offer)
 
     def get_offer_or_secret_key(self, squeak_hash: bytes, peer_address: PeerAddress) -> Optional[Union[bytes, Offer]]:
         squeak = self.get_squeak(squeak_hash)
