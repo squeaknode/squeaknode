@@ -30,6 +30,7 @@ from squeak.net import CSqueakLocator
 from squeaknode.core.download_result import DownloadResult
 from squeaknode.node.active_download_manager import HashDownload
 from squeaknode.node.active_download_manager import InterestDownload
+from squeaknode.node.downloaded_object import DownloadedSqueak
 from tests.utils import gen_squeak
 
 
@@ -53,25 +54,29 @@ def download_interest(interest):
 
 
 def test_download_hash_is_interested(download_hash, squeak):
+    downloaded_squeak = DownloadedSqueak(squeak)
 
-    assert download_hash.is_interested(squeak)
+    assert download_hash.is_interested(downloaded_squeak)
 
 
 def test_download_hash_is_not_interested(download_hash, signing_key, block_count):
     other_squeak = gen_squeak(signing_key, block_count)
+    downloaded_squeak = DownloadedSqueak(other_squeak)
 
-    assert not download_hash.is_interested(other_squeak)
+    assert not download_hash.is_interested(downloaded_squeak)
 
 
 def test_download_interest_is_interested(download_interest, squeak):
+    downloaded_squeak = DownloadedSqueak(squeak)
 
-    assert download_interest.is_interested(squeak)
+    assert download_interest.is_interested(downloaded_squeak)
 
 
 def test_download_interest_is_not_interested(download_interest, signing_key, block_count):
     other_squeak = gen_squeak(signing_key, block_count + 200)
+    downloaded_squeak = DownloadedSqueak(other_squeak)
 
-    assert not download_interest.is_interested(other_squeak)
+    assert not download_interest.is_interested(downloaded_squeak)
 
 
 def test_download_hash_initiate(download_hash, squeak_hash):
