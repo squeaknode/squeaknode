@@ -52,3 +52,7 @@ export const goToSentPaymentsPage = (history) => {
 export const goToReceivedPaymentsPage = (history) => {
   history.push('/app/receivedpayments/');
 };
+
+export const goToSettingsPage = (history) => {
+  history.push('/app/settings/');
+};

@@ -37,6 +37,7 @@ import Peers from '../../pages/peers';
 import Peer from '../../pages/peer';
 import PeerAddress from '../../pages/peeraddress';
 import Twitter from '../../pages/twitter';
+import Settings from '../../pages/settings';
 
 // context
 import { useLayoutState } from '../../context/LayoutContext';
@@ -81,6 +82,7 @@ function Layout(props) {
             <Route path="/app/peeraddress/:network/:host/:port" component={PeerAddress} />
             <Route path="/app/notifications" component={Notifications} />
             <Route path="/app/twitter" component={Twitter} />
+            <Route path="/app/settings" component={Settings} />
             <Route
               exact
               path="/app/ui"

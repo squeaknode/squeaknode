@@ -129,6 +129,13 @@ export default makeStyles((theme) => ({
       cursor: 'pointer',
     },
   },
+  settingsMenuLink: {
+    fontSize: 16,
+    textDecoration: 'none',
+    '&:hover': {
+      cursor: 'pointer',
+    },
+  },
   messageNotification: {
     height: 'auto',
     display: 'flex',

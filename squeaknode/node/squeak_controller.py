@@ -873,6 +873,9 @@ class SqueakController:
             return None
         return user_config.sell_price_msat
 
+    def get_default_sell_price_msat(self) -> Optional[int]:
+        return self.config.node.price_msat
+
     def set_twitter_bearer_token(self, twitter_bearer_token: str) -> None:
         self.insert_user_config()
         self.squeak_db.set_config_twitter_bearer_token(

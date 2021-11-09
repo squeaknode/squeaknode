@@ -340,6 +340,10 @@ service SqueakAdmin {
   */
   rpc SetSellPrice (SetSellPriceRequest) returns (SetSellPriceReply) {}
 
+  /** sqkadmin: `getdefaultsellprice`
+  */
+  rpc GetDefaultSellPrice (GetDefaultSellPriceRequest) returns (GetDefaultSellPriceReply) {}
+
   /** sqkadmin: `getsellprice`
   */
   rpc GetSellPrice (GetSellPriceRequest) returns (GetSellPriceReply) {}
@@ -1282,6 +1286,14 @@ message GetSellPriceRequest {
 }
 
 message GetSellPriceReply {
+    /// The price in msats
+    int64 price_msat = 1;
+}
+
+message GetDefaultSellPriceRequest {
+}
+
+message GetDefaultSellPriceReply {
     /// The price in msats
     int64 price_msat = 1;
 }
