@@ -75,9 +75,9 @@ def test_get_network(admin_stub):
 
 def test_get_sell_price(admin_stub):
     # Get the sell price
-    bearer_token = get_sell_price(admin_stub)
+    price_msat = get_sell_price(admin_stub)
 
-    assert bearer_token == ''
+    assert price_msat == 0
 
     set_sell_price(admin_stub, 98765)
     sell_price_msat = get_sell_price(admin_stub)
