@@ -19,12 +19,30 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-from typing import NamedTuple
-from typing import Optional
+"""Add sell price column to config table.
+
+Revision ID: 5bd8f4075339
+Revises: c2d80c9fcbfa
+Create Date: 2021-11-08 21:04:08.193324
+
+"""
+import sqlalchemy as sa
+from alembic import op
 
 
-class UserConfig(NamedTuple):
-    """Represents a config for a user."""
-    username: str
-    twitter_bearer_token: Optional[str] = None
-    sell_price_msat: Optional[int] = None
+# revision identifiers, used by Alembic.
+revision = '5bd8f4075339'
+down_revision = 'c2d80c9fcbfa'
+branch_labels = None
+depends_on = None
+
+
+def upgrade():
+    with op.batch_alter_table('config', schema=None) as batch_op:
+        batch_op.add_column(sa.Column('sell_price_msat',
+                                      sa.Integer(), nullable=True))
+
+
+def downgrade():
+    with op.batch_alter_table('config', schema=None) as batch_op:
+        batch_op.drop_column('sell_price_msat')
