@@ -386,6 +386,12 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
     def GetDefaultPeerPort(self, request, context):
         return self.handler.handle_get_default_peer_port(request)
 
+    def SetSellPrice(self, request, context):
+        return self.handler.handle_set_sell_price_msat(request)
+
+    def GetSellPrice(self, request, context):
+        return self.handler.handle_get_sell_price_msat(request)
+
     def SetTwitterBearerToken(self, request, context):
         return self.handler.handle_set_twitter_bearer_token(request)
 

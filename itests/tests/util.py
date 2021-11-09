@@ -307,6 +307,21 @@ def get_network(node_stub):
     return get_network_response.network
 
 
+def set_sell_price(node_stub, price_msat):
+    node_stub.SetSellPrice(
+        squeak_admin_pb2.SetSellPriceRequest(
+            price_msat=price_msat,
+        )
+    )
+
+
+def get_sell_price(node_stub):
+    get_sell_price_response = node_stub.GetSellPrice(
+        squeak_admin_pb2.GetSellPriceRequest()
+    )
+    return get_sell_price_response.price_msat
+
+
 def set_twitter_bearer_token(node_stub, bearer_token):
     node_stub.SetTwitterBearerToken(
         squeak_admin_pb2.SetTwitterBearerTokenRequest(

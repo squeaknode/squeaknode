@@ -336,6 +336,14 @@ service SqueakAdmin {
   */
   rpc GetDefaultPeerPort (GetDefaultPeerPortRequest) returns (GetDefaultPeerPortReply) {}
 
+  /** sqkadmin: `setsellprice`
+  */
+  rpc SetSellPrice (SetSellPriceRequest) returns (SetSellPriceReply) {}
+
+  /** sqkadmin: `getsellprice`
+  */
+  rpc GetSellPrice (GetSellPriceRequest) returns (GetSellPriceReply) {}
+
   /** sqkadmin: `settwitterbearertoken`
   */
   rpc SetTwitterBearerToken (SetTwitterBearerTokenRequest) returns (SetTwitterBearerTokenReply) {}
@@ -1260,6 +1268,22 @@ message GetDefaultPeerPortRequest {
 message GetDefaultPeerPortReply {
     /// The port.
     int32 port = 1;
+}
+
+message SetSellPriceRequest {
+    /// The price in msats
+    int64 price_msat = 1;
+}
+
+message SetSellPriceReply {
+}
+
+message GetSellPriceRequest {
+}
+
+message GetSellPriceReply {
+    /// The price in msats
+    int64 price_msat = 1;
 }
 
 message SetTwitterBearerTokenRequest {

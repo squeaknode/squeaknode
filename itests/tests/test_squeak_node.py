@@ -49,6 +49,7 @@ from tests.util import get_hash
 from tests.util import get_network
 from tests.util import get_peer_by_address
 from tests.util import get_search_squeaks
+from tests.util import get_sell_price
 from tests.util import get_squeak_display
 from tests.util import get_squeak_profile
 from tests.util import get_twitter_bearer_token
@@ -57,6 +58,7 @@ from tests.util import make_squeak
 from tests.util import open_peer_connection
 from tests.util import peer_connection
 from tests.util import send_coins
+from tests.util import set_sell_price
 from tests.util import set_twitter_bearer_token
 from tests.util import subscribe_connected_peers
 from tests.util import subscribe_squeak_ancestor_entries
@@ -69,6 +71,18 @@ def test_get_network(admin_stub):
     network = get_network(admin_stub)
 
     assert network == "simnet"
+
+
+def test_get_sell_price(admin_stub):
+    # Get the sell price
+    bearer_token = get_sell_price(admin_stub)
+
+    assert bearer_token == ''
+
+    set_sell_price(admin_stub, 98765)
+    sell_price_msat = get_sell_price(admin_stub)
+
+    assert sell_price_msat == 98765
 
 
 def test_get_twitter_bearer_token(admin_stub):
