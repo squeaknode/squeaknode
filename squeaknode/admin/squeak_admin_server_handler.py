@@ -1078,15 +1078,12 @@ class SqueakAdminServerHandler(object):
     def handle_get_sell_price(self, request):
         logger.info("Handle get sell price")
         sell_price_msat = self.squeak_controller.get_sell_price_msat()
+        price_msat_is_set = sell_price_msat is not None
+        default_sell_price_msat = self.squeak_controller.get_default_sell_price_msat()
         return squeak_admin_pb2.GetSellPriceReply(
             price_msat=sell_price_msat,
-        )
-
-    def handle_get_default_sell_price(self, request):
-        logger.info("Handle get default sell price")
-        price_msat = self.squeak_controller.get_default_sell_price_msat()
-        return squeak_admin_pb2.GetDefaultSellPriceReply(
-            price_msat=price_msat,
+            price_msat_is_set=price_msat_is_set,
+            default_price_msat=default_sell_price_msat,
         )
 
     def handle_set_twitter_bearer_token(self, request):

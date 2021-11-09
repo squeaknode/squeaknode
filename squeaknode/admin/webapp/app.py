@@ -541,12 +541,6 @@ def create_app(handler, username, password):
     def getsellprice(msg):
         return handler.handle_get_sell_price(msg)
 
-    @app.route("/getdefaultsellprice", methods=["POST"])
-    @login_required
-    @protobuf_serialized(squeak_admin_pb2.GetDefaultSellPriceRequest())
-    def getdefaultsellprice(msg):
-        return handler.handle_get_default_sell_price(msg)
-
     @app.route("/settwitterbearertoken", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.SetTwitterBearerTokenRequest())

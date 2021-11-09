@@ -21,6 +21,7 @@ import ReceivedPayment from '../../components/ReceivedPayment';
 
 import {
   getDefaultSellPriceRequest,
+  getSellPriceRequest,
 } from '../../squeakclient/requests';
 
 const useStyles = makeStyles((theme) => ({
@@ -36,7 +37,9 @@ export default function Settings() {
   const classes = useStyles();
   const [value, setValue] = useState(0);
   const [defaultSellPriceMsat, setDefaultSellPriceMsat] = useState([]);
+  const [sellPriceMsat, setSellPriceMsat] = useState([]);
   const [waitingForDefaultSellPriceMsat, setWaitingForDefaultSellPriceMsat] = useState(false);
+  const [waitingForSellPriceMsat, setWaitingForSellPriceMsat] = useState(false);
 
   function a11yProps(index) {
     return {
@@ -49,7 +52,7 @@ export default function Settings() {
     setValue(newValue);
   };
 
-  const loadDefaultPriceMsat = useCallback(() => {
+  const loadDefaultSellPriceMsat = useCallback(() => {
     setWaitingForDefaultSellPriceMsat(true);
     console.log("getting priceMsat...");
     getDefaultSellPriceRequest((resp => {
@@ -60,9 +63,22 @@ export default function Settings() {
   },
   []);
 
+  const loadSellPriceMsat = useCallback(() => {
+    setWaitingForSellPriceMsat(true);
+    getSellPriceRequest((resp => {
+      setWaitingForSellPriceMsat(false);
+      console.log(resp);
+      setSellPriceMsat(resp);
+    }));
+  },
+  []);
+
   useEffect(() => {
-    loadDefaultPriceMsat();
-  }, [loadDefaultPriceMsat]);
+    loadDefaultSellPriceMsat();
+  }, [loadDefaultSellPriceMsat]);
+  useEffect(() => {
+    loadSellPriceMsat();
+  }, [loadSellPriceMsat]);
 
   function TabPanel(props) {
     const {

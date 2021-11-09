@@ -340,10 +340,6 @@ service SqueakAdmin {
   */
   rpc SetSellPrice (SetSellPriceRequest) returns (SetSellPriceReply) {}
 
-  /** sqkadmin: `getdefaultsellprice`
-  */
-  rpc GetDefaultSellPrice (GetDefaultSellPriceRequest) returns (GetDefaultSellPriceReply) {}
-
   /** sqkadmin: `getsellprice`
   */
   rpc GetSellPrice (GetSellPriceRequest) returns (GetSellPriceReply) {}
@@ -1288,14 +1284,12 @@ message GetSellPriceRequest {
 message GetSellPriceReply {
     /// The price in msats
     int64 price_msat = 1;
-}
 
-message GetDefaultSellPriceRequest {
-}
+    /// Price is set
+    bool price_msat_is_set = 2;
 
-message GetDefaultSellPriceReply {
-    /// The price in msats
-    int64 price_msat = 1;
+    /// The defauly price in msats
+    int64 default_price_msat = 3;
 }
 
 message SetTwitterBearerTokenRequest {

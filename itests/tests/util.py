@@ -319,14 +319,7 @@ def get_sell_price(node_stub):
     get_sell_price_response = node_stub.GetSellPrice(
         squeak_admin_pb2.GetSellPriceRequest()
     )
-    return get_sell_price_response.price_msat
-
-
-def get_default_sell_price(node_stub):
-    get_default_sell_price_response = node_stub.GetDefaultSellPrice(
-        squeak_admin_pb2.GetDefaultSellPriceRequest()
-    )
-    return get_default_sell_price_response.price_msat
+    return get_sell_price_response
 
 
 def set_twitter_bearer_token(node_stub, bearer_token):
