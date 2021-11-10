@@ -211,7 +211,11 @@ export default function Header(props) {
             <Typography
               className={classes.settingsMenuLink}
               color="primary"
-              onClick={() => goToSettingsPage(history)}
+              onClick={() => {
+                  goToSettingsPage(history)
+                  setProfileMenu(null);
+                }
+              }
             >
               Settings
             </Typography>

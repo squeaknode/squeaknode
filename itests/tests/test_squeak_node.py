@@ -728,7 +728,9 @@ def test_buy_squeak(
             ),
         )
         assert saved_squeak_hash == get_sent_payment_response.sent_payment.squeak_hash
-        assert get_sent_payment_response.sent_payment.price_msat == 1000000
+        # Default sell price (not used if set).
+        # assert get_sent_payment_response.sent_payment.price_msat == 1000000
+        assert get_sent_payment_response.sent_payment.price_msat == 98765
         assert get_sent_payment_response.sent_payment.valid
 
         # Get the received payment from the seller node
