@@ -1080,6 +1080,10 @@ class SqueakAdminServerHandler(object):
         sell_price_msat = self.squeak_controller.get_sell_price_msat()
         price_msat_is_set = sell_price_msat is not None
         default_sell_price_msat = self.squeak_controller.get_default_sell_price_msat()
+        logger.info("sell price: {}".format(sell_price_msat))
+        logger.info("price_msat_is_set: {}".format(price_msat_is_set))
+        logger.info("default_sell_price_msat: {}".format(
+            default_sell_price_msat))
         return squeak_admin_pb2.GetSellPriceReply(
             price_msat=sell_price_msat,
             price_msat_is_set=price_msat_is_set,

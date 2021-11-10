@@ -7,6 +7,8 @@ import {
   AppBar,
   Box,
   CircularProgress,
+  FormLabel,
+  Typography,
 } from '@material-ui/core';
 
 // styles
@@ -20,7 +22,6 @@ import ReceivedPayment from '../../components/ReceivedPayment';
 // data
 
 import {
-  getDefaultSellPriceRequest,
   getSellPriceRequest,
 } from '../../squeakclient/requests';
 
@@ -36,9 +37,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Settings() {
   const classes = useStyles();
   const [value, setValue] = useState(0);
-  const [defaultSellPriceMsat, setDefaultSellPriceMsat] = useState([]);
-  const [sellPriceMsat, setSellPriceMsat] = useState([]);
-  const [waitingForDefaultSellPriceMsat, setWaitingForDefaultSellPriceMsat] = useState(false);
+  const [sellPriceMsat, setSellPriceMsat] = useState(null);
   const [waitingForSellPriceMsat, setWaitingForSellPriceMsat] = useState(false);
 
   function a11yProps(index) {
@@ -52,17 +51,6 @@ export default function Settings() {
     setValue(newValue);
   };
 
-  const loadDefaultSellPriceMsat = useCallback(() => {
-    setWaitingForDefaultSellPriceMsat(true);
-    console.log("getting priceMsat...");
-    getDefaultSellPriceRequest((resp => {
-      setWaitingForDefaultSellPriceMsat(false);
-      console.log("setting priceMsat: " + resp);
-      setDefaultSellPriceMsat(resp);
-    }));
-  },
-  []);
-
   const loadSellPriceMsat = useCallback(() => {
     setWaitingForSellPriceMsat(true);
     getSellPriceRequest((resp => {
@@ -73,9 +61,6 @@ export default function Settings() {
   },
   []);
 
-  useEffect(() => {
-    loadDefaultSellPriceMsat();
-  }, [loadDefaultSellPriceMsat]);
   useEffect(() => {
     loadSellPriceMsat();
   }, [loadSellPriceMsat]);
@@ -100,7 +85,38 @@ export default function Settings() {
     );
   }
 
-  function PaymentsTabs() {
+  function SentPaymentContent() {
+    const usingDefault = !sellPriceMsat.getPriceMsatIsSet();
+    const priceSats = sellPriceMsat.getPriceMsat() / 1000;
+    const defaultPriceSats = sellPriceMsat.getDefaultPriceMsat() / 1000;
+    console.log('sell price' + priceSats);
+    console.log('default sell price' + defaultPriceSats);
+    console.log('use default' + usingDefault);
+    return (
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <Widget disableWidgetMenu>
+            <Grid item>
+              <FormLabel>
+                Sell price
+              </FormLabel>
+              <Typography size="md">
+                {usingDefault
+                  ? defaultPriceSats
+                  : priceSats}
+                {' '}
+                sats
+                {' '}
+                {!usingDefault && '(using default)'}
+              </Typography>
+            </Grid>
+          </Widget>
+        </Grid>
+      </Grid>
+    );
+  }
+
+  function SettingsTabs() {
     return (
       <>
         <AppBar position="static" color="default">
@@ -109,8 +125,7 @@ export default function Settings() {
           </Tabs>
         </AppBar>
         <TabPanel value={value} index={0}>
-          Settings content here
-          {defaultSellPriceMsat}
+          {sellPriceMsat && SentPaymentContent()}
         </TabPanel>
       </>
     );
@@ -121,7 +136,7 @@ export default function Settings() {
     return (
       <Grid container spacing={0}>
         <Grid item xs={12} sm={9}>
-          {PaymentsTabs()}
+          {SettingsTabs()}
         </Grid>
         <Grid item xs={12} sm={3} />
       </Grid>
@@ -130,7 +145,7 @@ export default function Settings() {
 
   return (
     <>
-      {GridContent()}
+      {!waitingForSellPriceMsat && GridContent()}
     < />
   );
 }
