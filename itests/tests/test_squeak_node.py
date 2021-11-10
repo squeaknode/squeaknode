@@ -31,6 +31,7 @@ from squeak.core import CSqueak
 from proto import lnd_pb2 as ln
 from proto import squeak_admin_pb2
 from tests.util import channel
+from tests.util import clear_sell_price
 from tests.util import connect_squeak_peer
 from tests.util import create_contact_profile
 from tests.util import create_saved_peer
@@ -86,6 +87,13 @@ def test_get_sell_price(admin_stub):
 
     assert price.price_msat == 98765
     assert price.price_msat_is_set
+    assert price.default_price_msat == 1000000
+
+    clear_sell_price(admin_stub)
+    price = get_sell_price(admin_stub)
+
+    assert price.price_msat == 0
+    assert not price.price_msat_is_set
     assert price.default_price_msat == 1000000
 
 
@@ -728,9 +736,7 @@ def test_buy_squeak(
             ),
         )
         assert saved_squeak_hash == get_sent_payment_response.sent_payment.squeak_hash
-        # Default sell price (not used if set).
-        # assert get_sent_payment_response.sent_payment.price_msat == 1000000
-        assert get_sent_payment_response.sent_payment.price_msat == 98765
+        assert get_sent_payment_response.sent_payment.price_msat == 1000000
         assert get_sent_payment_response.sent_payment.valid
 
         # Get the received payment from the seller node

@@ -340,6 +340,10 @@ service SqueakAdmin {
   */
   rpc SetSellPrice (SetSellPriceRequest) returns (SetSellPriceReply) {}
 
+  /** sqkadmin: `clearsellprice`
+  */
+  rpc ClearSellPrice (ClearSellPriceRequest) returns (ClearSellPriceReply) {}
+
   /** sqkadmin: `getsellprice`
   */
   rpc GetSellPrice (GetSellPriceRequest) returns (GetSellPriceReply) {}
@@ -1276,6 +1280,12 @@ message SetSellPriceRequest {
 }
 
 message SetSellPriceReply {
+}
+
+message ClearSellPriceRequest {
+}
+
+message ClearSellPriceReply {
 }
 
 message GetSellPriceRequest {

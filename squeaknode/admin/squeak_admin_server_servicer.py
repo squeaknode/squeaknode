@@ -389,6 +389,9 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
     def SetSellPrice(self, request, context):
         return self.handler.handle_set_sell_price(request)
 
+    def ClearSellPrice(self, request, context):
+        return self.handler.handle_clear_sell_price(request)
+
     def GetSellPrice(self, request, context):
         return self.handler.handle_get_sell_price(request)
 

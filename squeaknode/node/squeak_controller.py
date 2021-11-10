@@ -867,6 +867,12 @@ class SqueakController:
             sell_price_msat=sell_price_msat,
         )
 
+    def clear_sell_price_msat(self) -> None:
+        self.insert_user_config()
+        self.squeak_db.clear_config_sell_price_msat(
+            username=self.config.webadmin.username,
+        )
+
     def get_sell_price_msat(self) -> Optional[int]:
         user_config = self.squeak_db.get_config(
             username=self.config.webadmin.username,

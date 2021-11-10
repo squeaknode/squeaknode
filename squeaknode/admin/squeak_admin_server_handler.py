@@ -1075,6 +1075,11 @@ class SqueakAdminServerHandler(object):
         self.squeak_controller.set_sell_price_msat(sell_price_msat)
         return squeak_admin_pb2.SetSellPriceReply()
 
+    def handle_clear_sell_price(self, request):
+        logger.info("Handle clear sell price.")
+        self.squeak_controller.clear_sell_price_msat()
+        return squeak_admin_pb2.ClearSellPriceReply()
+
     def handle_get_sell_price(self, request):
         logger.info("Handle get sell price")
         sell_price_msat = self.squeak_controller.get_sell_price_msat()

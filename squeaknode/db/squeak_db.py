@@ -1413,6 +1413,16 @@ class SqueakDb:
         with self.get_connection() as connection:
             connection.execute(stmt)
 
+    def clear_config_sell_price_msat(self, username: str) -> None:
+        """ Clear a config sell price msat. """
+        stmt = (
+            self.configs.update()
+            .where(self.configs.c.username == username)
+            .values(sell_price_msat=None)
+        )
+        with self.get_connection() as connection:
+            connection.execute(stmt)
+
     def insert_twitter_account(self, twitter_account: TwitterAccount) -> Optional[int]:
         """ Insert a new twitter account mapping to a squeak profile.
 

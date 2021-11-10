@@ -315,6 +315,12 @@ def set_sell_price(node_stub, price_msat):
     )
 
 
+def clear_sell_price(node_stub):
+    node_stub.ClearSellPrice(
+        squeak_admin_pb2.ClearSellPriceRequest()
+    )
+
+
 def get_sell_price(node_stub):
     get_sell_price_response = node_stub.GetSellPrice(
         squeak_admin_pb2.GetSellPriceRequest()
