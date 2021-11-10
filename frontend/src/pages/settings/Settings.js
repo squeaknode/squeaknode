@@ -18,8 +18,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import ReplayIcon from '@material-ui/icons/Replay';
 import Widget from '../../components/Widget';
 import ReceivedPayment from '../../components/ReceivedPayment';
+import SetSellPriceDialog from '../../components/SetSellPriceDialog';
 
-// data
 
 import {
   getSellPriceRequest,
@@ -39,6 +39,8 @@ export default function Settings() {
   const [value, setValue] = useState(0);
   const [sellPriceMsat, setSellPriceMsat] = useState(null);
   const [waitingForSellPriceMsat, setWaitingForSellPriceMsat] = useState(false);
+  const [setSellPriceDialogOpen, setSetSellPriceDialogOpen] = useState(false);
+
 
   function a11yProps(index) {
     return {
@@ -51,7 +53,16 @@ export default function Settings() {
     setValue(newValue);
   };
 
-  const loadSellPriceMsat = useCallback(() => {
+  const handleCloseSetSellPriceDialog = () => {
+    setSetSellPriceDialogOpen(false);
+  };
+
+  const handleClickSetSellPriceDialog = () => {
+    setSetSellPriceDialogOpen(true);
+  };
+
+
+  const loadSellPrice = useCallback(() => {
     setWaitingForSellPriceMsat(true);
     getSellPriceRequest((resp => {
       setWaitingForSellPriceMsat(false);
@@ -62,8 +73,8 @@ export default function Settings() {
   []);
 
   useEffect(() => {
-    loadSellPriceMsat();
-  }, [loadSellPriceMsat]);
+    loadSellPrice();
+  }, [loadSellPrice]);
 
   function TabPanel(props) {
     const {
@@ -104,11 +115,10 @@ export default function Settings() {
                 {usingDefault
                   ? defaultPriceSats
                   : priceSats}
-                {' '}
-                sats
-                {' '}
-                {!usingDefault && '(using default)'}
+                {' sats'}
+                {usingDefault && ' (using default)'}
               </Typography>
+              {SetSellPriceButtonContent()}
             </Grid>
           </Widget>
         </Grid>
@@ -143,9 +153,37 @@ export default function Settings() {
     );
   }
 
+  function SetSellPriceDialogContent() {
+    return (
+      <>
+        <SetSellPriceDialog
+          open={setSellPriceDialogOpen}
+          handleClose={handleCloseSetSellPriceDialog}
+          reloadSellPriceFn={loadSellPrice}
+        />
+      </>
+    );
+  }
+
+  function SetSellPriceButtonContent() {
+    return (
+      <>
+        <Box p={1}>
+          <Button
+            variant="contained"
+            onClick={handleClickSetSellPriceDialog}
+          >
+            Set Sell Price
+          </Button>
+        </Box>
+      </>
+    );
+  }
+
   return (
     <>
       {!waitingForSellPriceMsat && GridContent()}
+      {SetSellPriceDialogContent()}
     < />
   );
 }

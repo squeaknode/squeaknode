@@ -1267,9 +1267,9 @@ export function deleteTwitterAccountRequest(twitterAccountId, handleResponse) {
   );
 }
 
-export function setSellPriceRequest(bearerToken, handleResponse) {
+export function setSellPriceRequest(priceMsat, handleResponse) {
   const request = new SetSellPriceRequest();
-  request.setBearerToken(bearerToken);
+  request.setPriceMsat(priceMsat);
   makeRequest(
     'setsellprice',
     request,

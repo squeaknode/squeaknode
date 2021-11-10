@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -17,24 +17,25 @@ import {
 import useStyles from './styles';
 
 import {
-  setSqueakProfileFollowingRequest,
-  setSqueakProfileUseCustomPriceRequest,
-  setSqueakProfileCustomPriceRequest,
+  setSellPriceRequest,
 } from '../../squeakclient/requests';
 
 export default function SetSellPriceDialog({
   open,
   handleClose,
+  reloadSellPriceFn,
   ...props
 }) {
   const classes = useStyles();
+  const [sellPriceMsat, setSellPriceMsat] = useState(0);
 
-  // const setFollowing = (id, following) => {
-  //   setSqueakProfileFollowingRequest(id, following, () => {
-  //     reloadProfile();
-  //   });
-  // };
-  //
+
+  const setSellPrice = (priceMsat) => {
+    setSellPriceRequest(priceMsat, () => {
+      reloadSellPriceFn();
+    });
+  };
+
   // const setUseCustomPrice = (id, useCustomPrice) => {
   //   setSqueakProfileUseCustomPriceRequest(id, useCustomPrice, () => {
   //     reloadProfile();
@@ -59,73 +60,78 @@ export default function SetSellPriceDialog({
   //   setUseCustomPrice(squeakProfile.getProfileId(), event.target.checked);
   // };
 
-  // const handleSettingsCustomPriceMsatChange = (event) => {
-  //   console.log(`Custom Price changed for profile id: ${squeakProfile.getProfileId()}`);
-  //   const newPriceMsat = event.target.value;
-  //   console.log(`Custom Price changed to: ${newPriceMsat}`);
-  //   if (newPriceMsat < 0) {
-  //     return;
-  //   }
-  //   setCustomPriceMsat(squeakProfile.getProfileId(), event.target.value);
-  // };
+  const handlePriceMsatChange = (event) => {
+    console.log(`Price changed:`);
+    const newPriceMsat = event.target.value;
+    if (newPriceMsat < 0) {
+      return;
+    }
+    console.log(`Price changed to: ${newPriceMsat}`);
+    setSellPriceMsat(newPriceMsat);
+  };
 
-  // function MakeCancelButton() {
-  //   return (
-  //     <Button
-  //       onClick={handleClose}
-  //       variant="contained"
-  //       color="secondary"
-  //     >
-  //       Cancel
-  //     </Button>
-  //   );
-  // }
-  //
-  // function ProfileSettingsForm() {
-  //   return (
-  //     <FormControl component="fieldset">
-  //       <FormLabel component="legend">Profile settings</FormLabel>
-  //       <FormGroup>
-  //         <FormControlLabel
-  //           control={<Switch checked={squeakProfile.getFollowing()} onChange={handleSettingsFollowingChange} />}
-  //           label="Following"
-  //         />
-  //         <FormControlLabel
-  //           control={<Switch checked={squeakProfile.getUseCustomPrice()} onChange={handleSettingsUseCustomPriceChange} />}
-  //           label="Use Custom Price"
-  //         />
-  //       </FormGroup>
-  //       {squeakProfile.getUseCustomPrice()
-  //         ? (
-  //           <TextField
-  //             required
-  //             id="standard-required"
-  //             label="Price (msats)"
-  //             type="number"
-  //             defaultValue={squeakProfile.getCustomPriceMsat()}
-  //             onChange={handleSettingsCustomPriceMsatChange}
-  //           />
-  //         ) : (
-  //           <TextField
-  //             disabled
-  //             id="standard-disabled"
-  //             label="Disabled"
-  //             defaultValue={squeakProfile.getCustomPriceMsat()}
-  //           />
-  //         )}
-  //     </FormControl>
-  //   );
-  // }
+  function handleSubmit(event) {
+    event.preventDefault();
+    console.log('sell price msat:', sellPriceMsat);
+    if (!sellPriceMsat) {
+      alert('Sell price cannot be empty.');
+      return;
+    }
+    setSellPrice(sellPriceMsat);
+    handleClose();
+  }
+
+  function CancelButton() {
+    return (
+      <Button
+        onClick={handleClose}
+        variant="contained"
+        color="secondary"
+      >
+        Cancel
+      </Button>
+    );
+  }
+
+  function SubmitButton() {
+    return (
+      <Button
+        type="submit"
+        variant="contained"
+        color="primary"
+        className={classes.button}
+      >
+        Set Sell Price
+      </Button>
+    );
+  }
+
+  function SellPriceForm() {
+    return (
+      <FormControl component="fieldset">
+        <FormLabel component="legend">Set Sell Price</FormLabel>
+        <TextField
+          required
+          id="standard-required"
+          label="Price (msats)"
+          type="number"
+          defaultValue={0}
+          onChange={handlePriceMsatChange}
+        />
+      </FormControl>
+    );
+  }
 
   return (
     <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
       <DialogTitle id="form-dialog-title">Sell Price</DialogTitle>
-      <form className={classes.root} noValidate autoComplete="off">
+      <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
         <DialogContent>
-          Sell Price Form here
+          {SellPriceForm()}
         </DialogContent>
         <DialogActions>
-          Cancel button here
+          {CancelButton()}
+          {SubmitButton()}
         </DialogActions>
       </form>
     </Dialog>
