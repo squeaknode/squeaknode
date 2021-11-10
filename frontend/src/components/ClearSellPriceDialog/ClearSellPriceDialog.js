@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -7,10 +7,6 @@ import {
   Button,
   FormControl,
   FormLabel,
-  FormGroup,
-  FormControlLabel,
-  Switch,
-  TextField,
 } from '@material-ui/core';
 
 // styles

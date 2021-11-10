@@ -6,18 +6,13 @@ import {
   Tab,
   AppBar,
   Box,
-  CircularProgress,
   FormLabel,
   Typography,
 } from '@material-ui/core';
 
-// styles
-import { makeStyles } from '@material-ui/core/styles';
 
 // components
-import ReplayIcon from '@material-ui/icons/Replay';
 import Widget from '../../components/Widget';
-import ReceivedPayment from '../../components/ReceivedPayment';
 import SetSellPriceDialog from '../../components/SetSellPriceDialog';
 import ClearSellPriceDialog from '../../components/ClearSellPriceDialog';
 
@@ -26,17 +21,8 @@ import {
   getSellPriceRequest,
 } from '../../squeakclient/requests';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    '& > *': {
-      margin: theme.spacing(1),
-    },
-  },
-}));
-
 
 export default function Settings() {
-  const classes = useStyles();
   const [value, setValue] = useState(0);
   const [sellPriceMsat, setSellPriceMsat] = useState(null);
   const [waitingForSellPriceMsat, setWaitingForSellPriceMsat] = useState(false);

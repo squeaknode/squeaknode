@@ -7,9 +7,6 @@ import {
   Button,
   FormControl,
   FormLabel,
-  FormGroup,
-  FormControlLabel,
-  Switch,
   TextField,
 } from '@material-ui/core';
 
