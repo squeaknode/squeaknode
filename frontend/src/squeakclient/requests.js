@@ -147,6 +147,8 @@ import {
   SetSellPriceReply,
   GetSellPriceRequest,
   GetSellPriceReply,
+  ClearSellPriceRequest,
+  ClearSellPriceReply,
 } from '../proto/squeak_admin_pb';
 
 console.log('The value of REACT_APP_DEV_MODE_ENABLED is:', Boolean(process.env.REACT_APP_DEV_MODE_ENABLED));
@@ -1274,6 +1276,16 @@ export function setSellPriceRequest(priceMsat, handleResponse) {
     'setsellprice',
     request,
     SetSellPriceReply.deserializeBinary,
+    handleResponse,
+  );
+}
+
+export function clearSellPriceRequest(handleResponse) {
+  const request = new ClearSellPriceRequest();
+  makeRequest(
+    'clearsellprice',
+    request,
+    ClearSellPriceReply.deserializeBinary,
     handleResponse,
   );
 }

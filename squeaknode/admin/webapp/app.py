@@ -535,6 +535,12 @@ def create_app(handler, username, password):
     def setsellprice(msg):
         return handler.handle_set_sell_price(msg)
 
+    @app.route("/clearsellprice", methods=["POST"])
+    @login_required
+    @protobuf_serialized(squeak_admin_pb2.ClearSellPriceRequest())
+    def clearsellprice(msg):
+        return handler.handle_clear_sell_price(msg)
+
     @app.route("/getsellprice", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.GetSellPriceRequest())

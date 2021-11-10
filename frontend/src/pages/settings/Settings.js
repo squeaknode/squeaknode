@@ -19,6 +19,7 @@ import ReplayIcon from '@material-ui/icons/Replay';
 import Widget from '../../components/Widget';
 import ReceivedPayment from '../../components/ReceivedPayment';
 import SetSellPriceDialog from '../../components/SetSellPriceDialog';
+import ClearSellPriceDialog from '../../components/ClearSellPriceDialog';
 
 
 import {
@@ -40,6 +41,7 @@ export default function Settings() {
   const [sellPriceMsat, setSellPriceMsat] = useState(null);
   const [waitingForSellPriceMsat, setWaitingForSellPriceMsat] = useState(false);
   const [setSellPriceDialogOpen, setSetSellPriceDialogOpen] = useState(false);
+  const [clearSellPriceDialogOpen, setClearSellPriceDialogOpen] = useState(false);
 
 
   function a11yProps(index) {
@@ -61,6 +63,13 @@ export default function Settings() {
     setSetSellPriceDialogOpen(true);
   };
 
+  const handleCloseClearSellPriceDialog = () => {
+    setClearSellPriceDialogOpen(false);
+  };
+
+  const handleClickClearSellPriceDialog = () => {
+    setClearSellPriceDialogOpen(true);
+  };
 
   const loadSellPrice = useCallback(() => {
     setWaitingForSellPriceMsat(true);
@@ -119,6 +128,7 @@ export default function Settings() {
                 {usingDefault && ' (using default)'}
               </Typography>
               {SetSellPriceButtonContent()}
+              {ClearSellPriceButtonContent()}
             </Grid>
           </Widget>
         </Grid>
@@ -165,6 +175,18 @@ export default function Settings() {
     );
   }
 
+  function ClearSellPriceDialogContent() {
+    return (
+      <>
+        <ClearSellPriceDialog
+          open={clearSellPriceDialogOpen}
+          handleClose={handleCloseClearSellPriceDialog}
+          reloadSellPriceFn={loadSellPrice}
+        />
+      </>
+    );
+  }
+
   function SetSellPriceButtonContent() {
     return (
       <>
@@ -180,10 +202,26 @@ export default function Settings() {
     );
   }
 
+  function ClearSellPriceButtonContent() {
+    return (
+      <>
+        <Box p={1}>
+          <Button
+            variant="contained"
+            onClick={handleClickClearSellPriceDialog}
+          >
+            Clear Sell Price
+          </Button>
+        </Box>
+      </>
+    );
+  }
+
   return (
     <>
       {!waitingForSellPriceMsat && GridContent()}
       {SetSellPriceDialogContent()}
+      {ClearSellPriceDialogContent()}
     < />
   );
 }
