@@ -63,9 +63,6 @@ export default function SetSellPriceDialog({
   const handlePriceMsatChange = (event) => {
     console.log(`Price changed:`);
     const newPriceMsat = event.target.value;
-    if (newPriceMsat < 0) {
-      return;
-    }
     console.log(`Price changed to: ${newPriceMsat}`);
     setSellPriceMsat(newPriceMsat);
   };

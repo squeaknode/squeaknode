@@ -860,6 +860,8 @@ class SqueakController:
 
     def set_sell_price_msat(self, sell_price_msat: int) -> None:
         self.insert_user_config()
+        if sell_price_msat < 0:
+            raise Exception("Sell price cannot be negative.")
         self.squeak_db.set_config_sell_price_msat(
             username=self.config.webadmin.username,
             sell_price_msat=sell_price_msat,
