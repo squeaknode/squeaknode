@@ -1067,6 +1067,34 @@ class SqueakAdminServerHandler(object):
             port=default_peer_port,
         )
 
+    def handle_set_sell_price(self, request):
+        sell_price_msat = request.price_msat
+        logger.info("Handle set sell price msat to: {}".format(
+            sell_price_msat,
+        ))
+        self.squeak_controller.set_sell_price_msat(sell_price_msat)
+        return squeak_admin_pb2.SetSellPriceReply()
+
+    def handle_clear_sell_price(self, request):
+        logger.info("Handle clear sell price.")
+        self.squeak_controller.clear_sell_price_msat()
+        return squeak_admin_pb2.ClearSellPriceReply()
+
+    def handle_get_sell_price(self, request):
+        logger.info("Handle get sell price")
+        sell_price_msat = self.squeak_controller.get_sell_price_msat()
+        price_msat_is_set = sell_price_msat is not None
+        default_sell_price_msat = self.squeak_controller.get_default_sell_price_msat()
+        logger.info("sell price: {}".format(sell_price_msat))
+        logger.info("price_msat_is_set: {}".format(price_msat_is_set))
+        logger.info("default_sell_price_msat: {}".format(
+            default_sell_price_msat))
+        return squeak_admin_pb2.GetSellPriceReply(
+            price_msat=sell_price_msat,
+            price_msat_is_set=price_msat_is_set,
+            default_price_msat=default_sell_price_msat,
+        )
+
     def handle_set_twitter_bearer_token(self, request):
         twitter_bearer_token = request.bearer_token
         logger.info("Handle set twitter bearer token with value: {}".format(

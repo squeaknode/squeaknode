@@ -28,6 +28,7 @@ from squeaknode.config.config import SqueaknodeConfig
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
+from squeaknode.core.user_config import UserConfig
 from squeaknode.db.squeak_db import SqueakDb
 
 
@@ -53,6 +54,10 @@ class PricePolicy:
         squeak_profile = self.get_profile(squeak_address)
         if squeak_profile is not None and squeak_profile.use_custom_price:
             return squeak_profile.custom_price_msat
+        # Return sell price from settings if configured
+        sell_price = self.get_sell_price_msat()
+        if sell_price is not None:
+            return sell_price
         return self.get_default_price()
 
     def get_peer(self, peer_address: PeerAddress) -> Optional[SqueakPeer]:
@@ -63,3 +68,14 @@ class PricePolicy:
 
     def get_default_price(self) -> int:
         return self.config.node.price_msat
+
+    def get_user_config(self) -> Optional[UserConfig]:
+        return self.squeak_db.get_config(
+            username=self.config.webadmin.username,
+        )
+
+    def get_sell_price_msat(self) -> Optional[int]:
+        user_config = self.get_user_config()
+        if user_config is None:
+            return None
+        return user_config.sell_price_msat

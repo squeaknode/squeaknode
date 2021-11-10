@@ -40,6 +40,7 @@ import {
 import {
   reloadRoute,
   goToSearchPage,
+  goToSettingsPage,
 } from '../../navigation/navigation';
 
 const notifications = [];
@@ -204,6 +205,19 @@ export default function Header(props) {
           <div className={classes.profileMenuUser}>
             <Typography variant="h6" weight="medium">
               {network}
+            </Typography>
+          </div>
+          <div className={classes.profileMenuUser}>
+            <Typography
+              className={classes.settingsMenuLink}
+              color="primary"
+              onClick={() => {
+                  goToSettingsPage(history)
+                  setProfileMenu(null);
+                }
+              }
+            >
+              Settings
             </Typography>
           </div>
           <div className={classes.profileMenuUser}>

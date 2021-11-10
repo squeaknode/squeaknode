@@ -424,6 +424,20 @@ def user_config_with_twitter_bearer_token_username(
 
 
 @pytest.fixture
+def user_config_with_sell_price_msat_username(
+        squeak_db,
+        user_config,
+        inserted_user_config_username,
+        price_msat,
+):
+    squeak_db.set_config_sell_price_msat(
+        inserted_user_config_username,
+        price_msat,
+    )
+    yield inserted_user_config_username
+
+
+@pytest.fixture
 def twitter_account(inserted_signing_profile_id):
     yield TwitterAccount(
         twitter_account_id=None,
@@ -1606,6 +1620,17 @@ def test_set_twitter_bearer_token(
         user_config_with_twitter_bearer_token_username)
 
     assert retrieved_config.twitter_bearer_token == twitter_bearer_token
+
+
+def test_set_sell_price_msat(
+        squeak_db,
+        user_config_with_sell_price_msat_username,
+        price_msat,
+):
+    retrieved_config = squeak_db.get_config(
+        user_config_with_sell_price_msat_username)
+
+    assert retrieved_config.sell_price_msat == price_msat
 
 
 def test_get_twitter_account(

@@ -529,6 +529,24 @@ def create_app(handler, username, password):
     def getdefaultpeerport(msg):
         return handler.handle_get_default_peer_port(msg)
 
+    @app.route("/setsellprice", methods=["POST"])
+    @login_required
+    @protobuf_serialized(squeak_admin_pb2.SetSellPriceRequest())
+    def setsellprice(msg):
+        return handler.handle_set_sell_price(msg)
+
+    @app.route("/clearsellprice", methods=["POST"])
+    @login_required
+    @protobuf_serialized(squeak_admin_pb2.ClearSellPriceRequest())
+    def clearsellprice(msg):
+        return handler.handle_clear_sell_price(msg)
+
+    @app.route("/getsellprice", methods=["POST"])
+    @login_required
+    @protobuf_serialized(squeak_admin_pb2.GetSellPriceRequest())
+    def getsellprice(msg):
+        return handler.handle_get_sell_price(msg)
+
     @app.route("/settwitterbearertoken", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.SetTwitterBearerTokenRequest())

@@ -143,6 +143,12 @@ import {
   DeleteTwitterAccountReply,
   SetPeerShareForFreeRequest,
   SetPeerShareForFreeReply,
+  SetSellPriceRequest,
+  SetSellPriceReply,
+  GetSellPriceRequest,
+  GetSellPriceReply,
+  ClearSellPriceRequest,
+  ClearSellPriceReply,
 } from '../proto/squeak_admin_pb';
 
 console.log('The value of REACT_APP_DEV_MODE_ENABLED is:', Boolean(process.env.REACT_APP_DEV_MODE_ENABLED));
@@ -1260,6 +1266,39 @@ export function deleteTwitterAccountRequest(twitterAccountId, handleResponse) {
     request,
     DeleteTwitterAccountReply.deserializeBinary,
     handleResponse,
+  );
+}
+
+export function setSellPriceRequest(priceMsat, handleResponse) {
+  const request = new SetSellPriceRequest();
+  request.setPriceMsat(priceMsat);
+  makeRequest(
+    'setsellprice',
+    request,
+    SetSellPriceReply.deserializeBinary,
+    handleResponse,
+  );
+}
+
+export function clearSellPriceRequest(handleResponse) {
+  const request = new ClearSellPriceRequest();
+  makeRequest(
+    'clearsellprice',
+    request,
+    ClearSellPriceReply.deserializeBinary,
+    handleResponse,
+  );
+}
+
+export function getSellPriceRequest(handleResponse) {
+  const request = new GetSellPriceRequest();
+  makeRequest(
+    'getsellprice',
+    request,
+    GetSellPriceReply.deserializeBinary,
+    (response) => {
+      handleResponse(response);
+    },
   );
 }
 

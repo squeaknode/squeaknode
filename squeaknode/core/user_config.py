@@ -27,3 +27,4 @@ class UserConfig(NamedTuple):
     """Represents a config for a user."""
     username: str
     twitter_bearer_token: Optional[str] = None
+    sell_price_msat: Optional[int] = None
