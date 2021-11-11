@@ -35,6 +35,10 @@ from setuptools import setup
 from squeaknode import __version__
 
 
+with open("requirements.txt") as f:
+    requirements = [r for r in f.read().split("\n") if len(r)]
+
+
 class BuildPyCommand(setuptools.command.build_py.build_py):
     """Custom build command."""
 
@@ -97,6 +101,7 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     zip_safe=False,
+    install_requires=requirements,
     extras_require={
         "test": ["pytest", "coverage"],
         "postgres": ["psycopg2"],

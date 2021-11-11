@@ -1,4 +1,5 @@
 include README.md
+include requirements.txt
 graft squeaknode/admin/webapp/templates
 graft squeaknode/admin/webapp/static
 include squeaknode/db/alembic.ini
