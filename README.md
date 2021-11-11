@@ -62,6 +62,12 @@ Add any other [configs](docs/CONFIGURATION.md) that you need.
 ### Step 2. Install squeaknode:
 
 ```
+pip install squeaknode
+```
+
+Or install from source
+
+```
 virtualenv venv
 source venv/bin/activate
 pip install -r requirements.txt
