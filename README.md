@@ -57,7 +57,7 @@ username=devuser
 password=devpass
 ```
 
-Add any other [configs](docs/CONFIGURATION.md) that you need.
+Add any other [configs](docs/configuration.md) that you need.
 
 ### Step 2. Install squeaknode:
 
