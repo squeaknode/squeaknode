@@ -9,7 +9,7 @@ The first thing you might want to do is create a signing profile. This profile a
 - Click the "Create Signing Profile" button
 - Enter any name that you want for your profile and submit
 
-![Screenshot from 2021-11-11 04-15-20|690x351, 75%](docs/images/1c67321847551a6e852d976f1acae3e225e161a7.png)
+![Screenshot from 2021-11-11 04-15-20|690x351, 75%](images/1c67321847551a6e852d976f1acae3e225e161a7.png)
 
 ## Make a squeak
 After you have a signing profile, you can now make a squeak.
