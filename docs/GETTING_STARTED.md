@@ -9,7 +9,7 @@ The first thing you might want to do is create a signing profile. This profile a
 - Click the "Create Signing Profile" button
 - Enter any name that you want for your profile and submit
 
-![Screenshot from 2021-11-11 04-15-20|690x351, 75%](images/1c67321847551a6e852d976f1acae3e225e161a7.png)
+![Screenshot from 2021-11-11 04-15-20|690x351, 75%](images/4dcbe92e41f407b37d5b3b850d0132ecbd2a2846.png)
 
 ## Make a squeak
 After you have a signing profile, you can now make a squeak.
@@ -19,7 +19,7 @@ After you have a signing profile, you can now make a squeak.
 - Select the signing profile from the form selection
 - Enter any text (and emojis) that you want, up to 280 characters and submit
 
-![Screenshot from 2021-11-11 04-17-41|690x354, 75%](upload://xeUTfLda6GGDJEecE7bjrG6ZeOd.png) 
+![Screenshot from 2021-11-11 04-17-41|690x354, 75%](images/e8f76e492d36a8313a7a5734c7ad25214075a0d9.png)
 
 ## Connect to other nodes
 After you have created some squeaks, you may be wondering if anyone else can read them. Other users will only be able to download your squeaks if their node is connected to your node (or if they connect to another node that already has copies of your squeaks).
@@ -42,7 +42,7 @@ If you know the external address of another squeaknode, you can connect to it di
 
 After a few seconds, if the connection is successful, you should see the newly connected peer in the list of connected peers.
 
-![Screenshot from 2021-11-11 04-24-52|690x354, 75%](upload://5uZB4HkcBVjTnX3W1qJRHwAa5E7.png) 
+![Screenshot from 2021-11-11 04-24-52|690x354, 75%](images/268bc4e9f8e10d26e1f6d2516c3d349b256eddfb.png)
 
 #### Accept inbound connections
 You can also share your external address, and allow other nodes to make connections to you.
@@ -53,7 +53,7 @@ You can also share your external address, and allow other nodes to make connecti
 
 Now anyone who knows this external address can use it to make a connection from their squeaknode to yours.
 
-![Screenshot from 2021-11-11 04-31-09|690x351](upload://fS9jIhQeo7laW7MSA4g1Yud01Uc.png) 
+![Screenshot from 2021-11-11 04-31-09|690x351](images/6f3fa0563c88917bf4f48522225893e5c1135030.png)
 
 ## Download Squeaks from other users
 Now that you have some peer connections open, you can begin to download squeaks from other users onto your timeline.
@@ -67,14 +67,14 @@ The squeaknode timeline only shows squeaks from profiles that you are following.
 - Enter the address that was provided
 - Submit the form to create the new contact profile
 
-![Screenshot from 2021-11-11 04-43-20|690x354](upload://p8rfZbFqRNlAbj367wfzWHQlqfo.png) 
+![Screenshot from 2021-11-11 04-43-20|690x354](images/b02a93fb2c516c043f645f72ed87ef44fb445a5a.png)
 
 After the contact profile is created, your squeaknode will begin to download squeaks from all of your connected peers that match were authored by that profile. If you go to the "Timeline" page, you should see the squeaks in the timeline, if any were downloaded.
 
 ## Buying squeaks
 Now you have some squeaks from other users visible in your timeline, but they are locked, so you can't read them.
 
-![Screenshot from 2021-11-11 04-49-13|690x356](upload://6zY0PQCNnxodgcyuNWlmaCGoeUh.png) 
+![Screenshot from 2021-11-11 04-49-13|690x356](images/2e1de521f24d4e60a43bb273ffd7242c02169979.png)
 
 You unlock squeaks by making Lightning payments to the peers that are selling them.
 
@@ -84,11 +84,11 @@ You unlock squeaks by making Lightning payments to the peers that are selling th
 - Check the price of the squeak, and if you agree to pay that amount, click the "Buy Squeak" button
 - Wait a few seconds for the Lightning payment to complete, and then the squeak should unlock
 
-![Screenshot from 2021-11-11 04-52-34|690x352, 75%](upload://xljKNmsuJ3sDdhCtFSCQtaMjqcX.png) 
+![Screenshot from 2021-11-11 04-52-34|690x352, 75%](images/e9b0aa6079af9788e680dcd94939feec837b1ef3.png)
 
 Now you should see the unlocked content of the squeak
 
-![Screenshot from 2021-11-11 04-54-57|690x351, 75%](upload://2VupmN0bUWkKqtUKJIPMhcw9PJY.png) 
+![Screenshot from 2021-11-11 04-54-57|690x351, 75%](images/148406198d39ba350074c2d64837e7a22c8bef66.png)
 
 #### Opening a Lightning channel directly to a seller
 Sometimes the lightning payment will fail. This usually happens because:
@@ -105,7 +105,7 @@ If you want to open a Lightning channel directly to the seller node, you can do 
 - Enter whatever amount you want to fund the channel and for the transaction fee and submit.
 - Now wait for the Bitcoin transactions to complete for the channel to finish opening.
 
-![Screenshot from 2021-11-11 05-05-10|690x347, 75%](upload://cZUSwdhn8W2Lhy8aDsZ07NwLzTI.png) 
+![Screenshot from 2021-11-11 05-05-10|690x347, 75%](images/5b19df1dcf5047cbce2e12dc44b05b9c35d6d932.png)
 
 After the channel finishes opening, you should be able to complete the payment without any problems.
 
@@ -119,5 +119,5 @@ If you are a Twitter user, you can mirror your tweets automatically to your sque
 
 After you set your bearer token and add your Twitter handle, your squeaknode will be configured to automatically make new squeaks for any new tweets that are created.
 
-![Screenshot from 2021-11-11 05-10-52|690x353, 75%](upload://5AGP28LGhZkmMn53JgeX6Hjji0R.png) 
-![Screenshot from 2021-11-11 05-12-50|690x340, 75%](upload://43gsP5ymUeWAEkfge6ki5ewKF3V.png)
+![Screenshot from 2021-11-11 05-10-52|690x353, 75%](images/2730a2c5e8874a74e70a8ab72879ae2f8989f4b5.png)
+![Screenshot from 2021-11-11 05-12-50|690x340, 75%](images/1c67321847551a6e852d976f1acae3e225e161a7.png)
