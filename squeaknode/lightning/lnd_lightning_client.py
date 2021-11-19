@@ -30,6 +30,7 @@ from proto import lnd_pb2_grpc
 from squeaknode.lightning.info import Info
 from squeaknode.lightning.invoice import Invoice
 from squeaknode.lightning.invoice_stream import InvoiceStream
+from squeaknode.lightning.lightning_client import LightningClient
 from squeaknode.lightning.pay_req import PayReq
 from squeaknode.lightning.payment import Payment
 
@@ -43,7 +44,7 @@ os.environ["GRPC_SSL_CIPHER_SUITES"] = "HIGH+ECDSA"
 # os.environ["GRPC_VERBOSITY"] = "DEBUG"
 
 
-class LNDLightningClient:
+class LNDLightningClient(LightningClient):
     """Access a lightning deamon using RPC."""
 
     def __init__(
