@@ -32,43 +32,9 @@ def price_policy():
 
 def test_get_price(price_policy, squeak, peer_address, user_config):
     with mock.patch.object(price_policy, 'get_peer', autospec=True) as mock_get_peer, \
-            mock.patch.object(price_policy, 'get_profile', autospec=True) as mock_get_profile, \
             mock.patch.object(price_policy, 'get_user_config', autospec=True) as mock_get_user_config, \
             mock.patch.object(price_policy, 'get_default_price', autospec=True) as mock_get_default_price:
         mock_get_peer.return_value = None
-        mock_get_profile.return_value = None
-        mock_get_user_config.return_value = user_config
-        mock_get_default_price.return_value = 555
-
-        assert price_policy.get_price(squeak, peer_address) == 555
-
-
-def test_get_price_profile_custom_price(price_policy, squeak, peer_address, signing_profile, user_config):
-    with mock.patch.object(price_policy, 'get_peer', autospec=True) as mock_get_peer, \
-            mock.patch.object(price_policy, 'get_profile', autospec=True) as mock_get_profile, \
-            mock.patch.object(price_policy, 'get_user_config', autospec=True) as mock_get_user_config, \
-            mock.patch.object(price_policy, 'get_default_price', autospec=True) as mock_get_default_price:
-        mock_get_peer.return_value = None
-        mock_get_profile.return_value = signing_profile._replace(
-            use_custom_price=True,
-            custom_price_msat=54321,
-        )
-        mock_get_user_config.return_value = user_config
-        mock_get_default_price.return_value = 555
-
-        assert price_policy.get_price(squeak, peer_address) == 54321
-
-
-def test_get_price_profile_no_custom_price(price_policy, squeak, peer_address, signing_profile, user_config):
-    with mock.patch.object(price_policy, 'get_peer', autospec=True) as mock_get_peer, \
-            mock.patch.object(price_policy, 'get_profile', autospec=True) as mock_get_profile, \
-            mock.patch.object(price_policy, 'get_user_config', autospec=True) as mock_get_user_config, \
-            mock.patch.object(price_policy, 'get_default_price', autospec=True) as mock_get_default_price:
-        mock_get_peer.return_value = None
-        mock_get_profile.return_value = signing_profile._replace(
-            use_custom_price=False,
-            custom_price_msat=54321,
-        )
         mock_get_user_config.return_value = user_config
         mock_get_default_price.return_value = 555
 
@@ -77,13 +43,11 @@ def test_get_price_profile_no_custom_price(price_policy, squeak, peer_address, s
 
 def test_get_price_profile_share_free_peer(price_policy, squeak, peer_address, peer, user_config):
     with mock.patch.object(price_policy, 'get_peer', autospec=True) as mock_get_peer, \
-            mock.patch.object(price_policy, 'get_profile', autospec=True) as mock_get_profile, \
             mock.patch.object(price_policy, 'get_user_config', autospec=True) as mock_get_user_config, \
             mock.patch.object(price_policy, 'get_default_price', autospec=True) as mock_get_default_price:
         mock_get_peer.return_value = peer._replace(
             share_for_free=True,
         )
-        mock_get_profile.return_value = None
         mock_get_user_config.return_value = user_config
         mock_get_default_price.return_value = 555
 
@@ -92,13 +56,11 @@ def test_get_price_profile_share_free_peer(price_policy, squeak, peer_address, p
 
 def test_get_price_profile_no_share_free_peer(price_policy, squeak, peer_address, peer, user_config):
     with mock.patch.object(price_policy, 'get_peer', autospec=True) as mock_get_peer, \
-            mock.patch.object(price_policy, 'get_profile', autospec=True) as mock_get_profile, \
             mock.patch.object(price_policy, 'get_user_config', autospec=True) as mock_get_user_config, \
             mock.patch.object(price_policy, 'get_default_price', autospec=True) as mock_get_default_price:
         mock_get_peer.return_value = peer._replace(
             share_for_free=False,
         )
-        mock_get_profile.return_value = None
         mock_get_user_config.return_value = user_config
         mock_get_default_price.return_value = 555
 
@@ -107,11 +69,9 @@ def test_get_price_profile_no_share_free_peer(price_policy, squeak, peer_address
 
 def test_get_price_sell_price_set(price_policy, squeak, peer_address, user_config):
     with mock.patch.object(price_policy, 'get_peer', autospec=True) as mock_get_peer, \
-            mock.patch.object(price_policy, 'get_profile', autospec=True) as mock_get_profile, \
             mock.patch.object(price_policy, 'get_user_config', autospec=True) as mock_get_user_config, \
             mock.patch.object(price_policy, 'get_default_price', autospec=True) as mock_get_default_price:
         mock_get_peer.return_value = None
-        mock_get_profile.return_value = None
         mock_get_user_config.return_value = user_config._replace(
             sell_price_msat=7777,
         )

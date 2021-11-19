@@ -217,18 +217,6 @@ def create_app(handler, username, password):
     def setsqueakprofilefollowing(msg):
         return handler.handle_set_squeak_profile_following(msg)
 
-    @app.route("/setsqueakprofileusecustomprice", methods=["POST"])
-    @login_required
-    @protobuf_serialized(squeak_admin_pb2.SetSqueakProfileUseCustomPriceRequest())
-    def setsqueakprofileusecustomprice(msg):
-        return handler.handle_set_squeak_profile_use_custom_price(msg)
-
-    @app.route("/setsqueakprofilecustomprice", methods=["POST"])
-    @login_required
-    @protobuf_serialized(squeak_admin_pb2.SetSqueakProfileCustomPriceRequest())
-    def setsqueakprofilecustomprice(msg):
-        return handler.handle_set_squeak_profile_custom_price(msg)
-
     @app.route("/renamesqueakprofile", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.RenameSqueakProfileRequest())

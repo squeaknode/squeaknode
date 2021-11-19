@@ -110,20 +110,6 @@ def unfollowed_contact_profile_id(squeak_db, followed_contact_profile_id):
 
 
 @pytest.fixture
-def profile_with_use_custom_price_id(squeak_db, inserted_contact_profile_id):
-    squeak_db.set_profile_use_custom_price(
-        inserted_contact_profile_id,
-        True,
-    )
-    yield inserted_contact_profile_id
-
-
-@pytest.fixture
-def custom_price_msat():
-    yield 502379
-
-
-@pytest.fixture
 def new_profile_name():
     yield "new_fake_profile_name"
 
@@ -131,15 +117,6 @@ def new_profile_name():
 @pytest.fixture
 def profile_image_bytes():
     yield bytes.fromhex("deadbeef")
-
-
-@pytest.fixture
-def profile_with_custom_price_id(squeak_db, inserted_contact_profile_id, custom_price_msat):
-    squeak_db.set_profile_custom_price_msat(
-        inserted_contact_profile_id,
-        custom_price_msat,
-    )
-    yield inserted_contact_profile_id
 
 
 @pytest.fixture
@@ -607,18 +584,6 @@ def test_set_profile_unfollowing(squeak_db, unfollowed_contact_profile_id):
     profile = squeak_db.get_profile(unfollowed_contact_profile_id)
 
     assert not profile.following
-
-
-def test_set_profile_use_custom_price(squeak_db, profile_with_use_custom_price_id):
-    profile = squeak_db.get_profile(profile_with_use_custom_price_id)
-
-    assert profile.use_custom_price
-
-
-def test_set_profile_custom_price(squeak_db, profile_with_custom_price_id, custom_price_msat):
-    profile = squeak_db.get_profile(profile_with_custom_price_id)
-
-    assert profile.custom_price_msat == custom_price_msat
 
 
 def test_set_profile_name(squeak_db, profile_with_new_name_id, new_profile_name):

@@ -184,24 +184,3 @@ def connected_tcp_peer_id(other_admin_stub):
             18777,
     ):
         yield
-
-
-@pytest.fixture
-def signing_profile_id_with_free_price(admin_stub, signing_profile_id):
-    # Set the profile to use_custom_price
-    admin_stub.SetSqueakProfileUseCustomPrice(
-        squeak_admin_pb2.SetSqueakProfileUseCustomPriceRequest(
-            profile_id=signing_profile_id,
-            use_custom_price=True,
-        )
-    )
-    try:
-        yield signing_profile_id
-    finally:
-        # Set the profile to use_custom_price
-        admin_stub.SetSqueakProfileUseCustomPrice(
-            squeak_admin_pb2.SetSqueakProfileUseCustomPriceRequest(
-                profile_id=signing_profile_id,
-                use_custom_price=False,
-            )
-        )
