@@ -52,8 +52,6 @@ def signing_profile_msg(
         has_private_key=True,
         address=address_str,
         following=True,
-        use_custom_price=False,
-        custom_price_msat=0,
         profile_image=img_base64_str,
         has_custom_profile_image=False,
     )

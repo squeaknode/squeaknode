@@ -42,6 +42,7 @@ from tests.util import download_offers
 from tests.util import download_squeak
 from tests.util import download_squeaks
 from tests.util import download_squeaks_for_address
+from tests.util import free_price
 from tests.util import get_connected_peer
 from tests.util import get_connected_peers
 from tests.util import get_default_peer_port
@@ -370,41 +371,6 @@ def test_set_profile_following(admin_stub, contact_profile_id):
     # Get the squeak profile again
     squeak_profile = get_squeak_profile(admin_stub, contact_profile_id)
     assert not squeak_profile.following
-
-
-def test_set_profile_use_custom_price(admin_stub, contact_profile_id):
-    # Set the profile to use_custom_price
-    admin_stub.SetSqueakProfileUseCustomPrice(
-        squeak_admin_pb2.SetSqueakProfileUseCustomPriceRequest(
-            profile_id=contact_profile_id,
-            use_custom_price=True,
-        )
-    )
-
-    # Set the profile custom price in msats
-    admin_stub.SetSqueakProfileCustomPrice(
-        squeak_admin_pb2.SetSqueakProfileCustomPriceRequest(
-            profile_id=contact_profile_id,
-            custom_price_msat=5678,
-        )
-    )
-
-    # Get the squeak profile again
-    squeak_profile = get_squeak_profile(admin_stub, contact_profile_id)
-    assert squeak_profile.use_custom_price
-    assert squeak_profile.custom_price_msat == 5678
-
-    # Set the profile to not use custom price
-    admin_stub.SetSqueakProfileUseCustomPrice(
-        squeak_admin_pb2.SetSqueakProfileUseCustomPriceRequest(
-            profile_id=contact_profile_id,
-            use_custom_price=False,
-        )
-    )
-
-    # Get the squeak profile again
-    squeak_profile = get_squeak_profile(admin_stub, contact_profile_id)
-    assert not squeak_profile.use_custom_price
 
 
 def test_rename_profile(admin_stub, contact_profile_id, random_name):
@@ -806,19 +772,19 @@ def test_download_free_squeak(
     admin_stub,
     other_admin_stub,
     connected_tcp_peer_id,
-    signing_profile_id_with_free_price,
     saved_squeak_hash,
 ):
-    # Download squeak
-    download_result = download_squeak(other_admin_stub, saved_squeak_hash)
-    print('download_result:')
-    print(download_result)
-    assert download_result.number_downloaded == 1
-    assert download_result.number_requested == 1
+    with free_price(admin_stub):
+        # Download squeak
+        download_result = download_squeak(other_admin_stub, saved_squeak_hash)
+        print('download_result:')
+        print(download_result)
+        assert download_result.number_downloaded == 1
+        assert download_result.number_requested == 1
 
-    # Download offer
-    download_offers(other_admin_stub, saved_squeak_hash)
-    time.sleep(5)
+        # Download offer
+        download_offers(other_admin_stub, saved_squeak_hash)
+        time.sleep(5)
 
     # Get the squeak display item
     get_squeak_display_entry = get_squeak_display(
@@ -1080,12 +1046,12 @@ def test_get_squeak_by_lookup(
 def test_subscribe_squeaks(
     admin_stub,
     other_admin_stub,
-    signing_profile_id_with_free_price,
+    signing_profile_id,
 ):
 
     # Get the squeak profile
     squeak_profile = get_squeak_profile(
-        admin_stub, signing_profile_id_with_free_price)
+        admin_stub, signing_profile_id)
     squeak_profile_address = squeak_profile.address
     squeak_profile_name = squeak_profile.profile_name
 
@@ -1099,17 +1065,18 @@ def test_subscribe_squeaks(
         )
     )
 
-    with open_peer_connection(
-            other_admin_stub,
-            "test_peer",
-            "squeaknode",
-            18777,
+    with free_price(admin_stub), \
+        open_peer_connection(
+        other_admin_stub,
+        "test_peer",
+        "squeaknode",
+        18777,
     ):
         # Create a new squeak using the new profile
         make_squeak_content = "Hello this message should be subscribed!"
         make_squeak_hash = make_squeak(
             admin_stub,
-            signing_profile_id_with_free_price,
+            signing_profile_id,
             make_squeak_content,
         )
 

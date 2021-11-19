@@ -801,26 +801,6 @@ class SqueakDb:
         with self.get_connection() as connection:
             connection.execute(stmt)
 
-    def set_profile_use_custom_price(self, profile_id: int, use_custom_price: bool) -> None:
-        """ Set a profile use custom price. """
-        stmt = (
-            self.profiles.update()
-            .where(self.profiles.c.profile_id == profile_id)
-            .values(use_custom_price=use_custom_price)
-        )
-        with self.get_connection() as connection:
-            connection.execute(stmt)
-
-    def set_profile_custom_price_msat(self, profile_id: int, custom_price_msat: int) -> None:
-        """ Set a profile custom price in msats. """
-        stmt = (
-            self.profiles.update()
-            .where(self.profiles.c.profile_id == profile_id)
-            .values(custom_price_msat=custom_price_msat)
-        )
-        with self.get_connection() as connection:
-            connection.execute(stmt)
-
     def set_profile_name(self, profile_id: int, profile_name: str) -> None:
         """ Set a profile name. """
         stmt = (
@@ -1502,8 +1482,6 @@ class SqueakDb:
             private_key=private_key,
             address=row["address"],
             following=row["following"],
-            use_custom_price=row["use_custom_price"],
-            custom_price_msat=row["custom_price_msat"],
             profile_image=row["profile_image"],
         )
 

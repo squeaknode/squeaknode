@@ -83,6 +83,18 @@ def peer_connection(node_stub, lightning_host, remote_pubkey):
 
 
 @contextmanager
+def free_price(node_stub):
+    # Set the price to zero
+    set_sell_price(node_stub, 0)
+    try:
+        print("Yielding lnd peer is connected.")
+        yield
+    finally:
+        # Clear the price
+        clear_sell_price(node_stub)
+
+
+@contextmanager
 def channel(node_stub, remote_pubkey, amount):
     # Open channel to the server lightning node
     # pubkey_bytes = string_to_hex(remote_pubkey)

@@ -104,14 +104,6 @@ service SqueakAdmin {
   */
   rpc SetSqueakProfileFollowing (SetSqueakProfileFollowingRequest) returns (SetSqueakProfileFollowingReply) {}
 
-  /** sqkadmin: `setsqueakprofileusecustomprice`
-  */
-  rpc SetSqueakProfileUseCustomPrice (SetSqueakProfileUseCustomPriceRequest) returns (SetSqueakProfileUseCustomPriceReply) {}
-
-  /** sqkadmin: `setsqueakprofilecustomprice`
-  */
-  rpc SetSqueakProfileCustomPrice (SetSqueakProfileCustomPriceRequest) returns (SetSqueakProfileCustomPriceReply) {}
-
   /** sqkadmin: `renamesqueakprofile`
   */
   rpc RenameSqueakProfile (RenameSqueakProfileRequest) returns (RenameSqueakProfileReply) {}
@@ -471,28 +463,6 @@ message SetSqueakProfileFollowingRequest {
 message SetSqueakProfileFollowingReply {
 }
 
-message SetSqueakProfileUseCustomPriceRequest {
-    /// The profile id
-    int32 profile_id = 1;
-
-    /// Use custom price
-    bool use_custom_price = 2;
-}
-
-message SetSqueakProfileUseCustomPriceReply {
-}
-
-message SetSqueakProfileCustomPriceRequest {
-    /// The profile id
-    int32 profile_id = 1;
-
-    /// The price in msats
-    int64 custom_price_msat = 2;
-}
-
-message SetSqueakProfileCustomPriceReply {
-}
-
 message RenameSqueakProfileRequest {
     /// The profile id
     int32 profile_id = 1;
@@ -557,17 +527,11 @@ message SqueakProfile {
     /// Following
     bool following = 5;
 
-    /// Following
-    bool use_custom_price = 6;
-
-    /// The price in msats
-    int64 custom_price_msat = 7;
-
     /// The profile image
-    string profile_image = 8;
+    string profile_image = 6;
 
     /// Has custom profile image
-    bool has_custom_profile_image = 9;
+    bool has_custom_profile_image = 7;
 }
 
 message MakeSqueakRequest {

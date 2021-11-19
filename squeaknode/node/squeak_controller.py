@@ -288,14 +288,6 @@ class SqueakController:
         self.squeak_db.set_profile_following(profile_id, following)
         self.create_update_subscriptions_event()
 
-    def set_squeak_profile_use_custom_price(self, profile_id: int, use_custom_price: bool) -> None:
-        self.squeak_db.set_profile_use_custom_price(
-            profile_id, use_custom_price)
-
-    def set_squeak_profile_custom_price(self, profile_id: int, custom_price_msat: int) -> None:
-        self.squeak_db.set_profile_custom_price_msat(
-            profile_id, custom_price_msat)
-
     def rename_squeak_profile(self, profile_id: int, profile_name: str) -> None:
         self.squeak_db.set_profile_name(profile_id, profile_name)
 

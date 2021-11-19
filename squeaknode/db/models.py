@@ -81,8 +81,6 @@ class Models:
             Column("private_key", LargeBinary, nullable=True),
             Column("address", String(35), unique=True, nullable=False),
             Column("following", Boolean, nullable=False),
-            Column("use_custom_price", Boolean, nullable=False, default=False),
-            Column("custom_price_msat", Integer, nullable=False, default=0),
             Column("profile_image", LargeBinary, nullable=True),
             sqlite_autoincrement=True,
         )
