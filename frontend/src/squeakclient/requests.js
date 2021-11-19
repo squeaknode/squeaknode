@@ -32,10 +32,6 @@ import {
   GetTimelineSqueakDisplaysReply,
   SetSqueakProfileFollowingRequest,
   SetSqueakProfileFollowingReply,
-  SetSqueakProfileUseCustomPriceRequest,
-  SetSqueakProfileUseCustomPriceReply,
-  SetSqueakProfileCustomPriceRequest,
-  SetSqueakProfileCustomPriceReply,
   GetPeersRequest,
   PayOfferRequest,
   GetBuyOffersRequest,
@@ -413,30 +409,6 @@ export function setSqueakProfileFollowingRequest(id, following, handleResponse) 
     'setsqueakprofilefollowing',
     request,
     SetSqueakProfileFollowingReply.deserializeBinary,
-    handleResponse,
-  );
-}
-
-export function setSqueakProfileUseCustomPriceRequest(id, useCustomPrice, handleResponse) {
-  const request = new SetSqueakProfileUseCustomPriceRequest();
-  request.setProfileId(id);
-  request.setUseCustomPrice(useCustomPrice);
-  makeRequest(
-    'setsqueakprofileusecustomprice',
-    request,
-    SetSqueakProfileUseCustomPriceReply.deserializeBinary,
-    handleResponse,
-  );
-}
-
-export function setSqueakProfileCustomPriceRequest(id, customPriceMsat, handleResponse) {
-  const request = new SetSqueakProfileCustomPriceRequest();
-  request.setProfileId(id);
-  request.setCustomPriceMsat(customPriceMsat);
-  makeRequest(
-    'setsqueakprofilecustomprice',
-    request,
-    SetSqueakProfileCustomPriceReply.deserializeBinary,
     handleResponse,
   );
 }
