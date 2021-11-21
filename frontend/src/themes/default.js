@@ -9,7 +9,7 @@ const info = '#9013FE';
 const lightenRate = 7.5;
 const darkenRate = 15;
 
-export default {
+const defaultTheme = {
   palette: {
     primary: {
       main: primary,
@@ -130,3 +130,5 @@ export default {
     },
   },
 };
+
+export default defaultTheme;
