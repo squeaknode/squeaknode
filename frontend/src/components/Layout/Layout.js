@@ -16,7 +16,6 @@ import Sidebar from '../Sidebar';
 
 // pages
 import Timeline from '../../pages/timeline';
-import Dashboard from '../../pages/dashboard';
 import SqueakAddress from '../../pages/squeakaddress';
 import Search from '../../pages/search';
 import Squeak from '../../pages/squeak';
@@ -25,7 +24,6 @@ import Wallet from '../../pages/wallet';
 import LightningNode from '../../pages/lightningnode';
 import Channel from '../../pages/channel';
 import Notifications from '../../pages/notifications';
-import Maps from '../../pages/maps';
 import Profiles from '../../pages/profiles';
 import Payments from '../../pages/payments';
 import SentPayments from '../../pages/sentpayments';
@@ -61,7 +59,6 @@ function Layout(props) {
           <div className={classes.fakeToolbar} />
           <Switch>
             <Route path="/app/timeline" component={Timeline} />
-            <Route path="/app/dashboard" component={Dashboard} />
             <Route path="/app/squeakaddress/:address" component={SqueakAddress} />
             <Route path="/app/search/:searchText" component={Search} />
             <Route path="/app/search" component={Search} />
@@ -88,7 +85,6 @@ function Layout(props) {
               path="/app/ui"
               render={() => <Redirect to="/app/ui/icons" />}
             />
-            <Route path="/app/ui/maps" component={Maps} />
             <Route path="/app/ui/icons" component={Icons} />
             <Route path="/app/ui/charts" component={Charts} />
           </Switch>
