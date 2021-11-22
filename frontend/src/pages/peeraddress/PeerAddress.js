@@ -39,11 +39,16 @@ export default function PeerAddressPage() {
   const { network, host, port } = useParams();
   const [savedPeer, setSavedPeer] = useState(null);
   const [connectedPeer, setConnectedPeer] = useState(null);
+  const [waitingForSavedPeer, setWaitingForSavedPeer] = useState(false);
   const [waitingForConnectedPeer, setWaitingForConnectedPeer] = useState(false);
   const [createSavedPeerDialogOpen, setCreateSavedPeerDialogOpen] = useState(false);
 
   const getPeer = useCallback(() => {
-    getPeerByAddressRequest(network, host, port, setSavedPeer);
+    setWaitingForSavedPeer(true);
+    getPeerByAddressRequest(network, host, port, (savedPeer => {
+      setWaitingForSavedPeer(false);
+      setSavedPeer(savedPeer);
+    }));
   },
   [network, host, port]);
   const getConnectedPeer = useCallback(() => {
@@ -230,6 +235,16 @@ export default function PeerAddressPage() {
   function ConnectionContent() {
     return (
       <>
+      {waitingForConnectedPeer
+        ? WaitingIndicator()
+        : ConnectionDisplay()}
+      </>
+    );
+  }
+
+  function ConnectionDisplay() {
+    return (
+      <>
         {ConnectionActionContent()}
         {(connectedPeer)
           ? ConnectedPeerContent()
@@ -304,11 +319,15 @@ export default function PeerAddressPage() {
 
   return (
     <>
-      {AddressContent()}
-      {SavedPeerContent()}
-      {waitingForConnectedPeer
-        ? WaitingIndicator()
-        : ConnectionContent()}
+      {!waitingForSavedPeer
+        ? (
+          <>
+            {AddressContent()}
+            {SavedPeerContent()}
+            {ConnectionContent()}
+          </>
+        )
+        : WaitingIndicator()}
     </>
   );
 }
