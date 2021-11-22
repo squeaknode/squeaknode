@@ -8,6 +8,7 @@ import {
   FormControlLabel,
   Switch,
   Button,
+  CircularProgress,
 } from '@material-ui/core';
 
 // styles
@@ -32,9 +33,14 @@ export default function PeerPage() {
   const { id } = useParams();
   const [peer, setPeer] = useState(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [waitingForPeer, setWaitingForPeer] = useState(false);
 
   const getSqueakPeer = (id) => {
-    getPeerRequest(id, setPeer);
+    setWaitingForPeer(true);
+    getPeerRequest(id, (peer => {
+      setWaitingForPeer(false);
+      setPeer(peer);
+    }));
   };
   const setAutoconnect = (id, autoconnect) => {
     setPeerAutoconnectRequest(id, autoconnect, () => {
@@ -74,7 +80,17 @@ export default function PeerPage() {
 
   const peerAddressToStr = (peerAddress) => `${peerAddress.getHost()}:${peerAddress.getPort()}`;
 
-  function NoPeerContent() {
+  function PeerContent() {
+    return (
+      <>
+      {peer
+        ? PeerDisplay()
+        : NoPeerDisplay()}
+      </>
+    );
+  }
+
+  function NoPeerDisplay() {
     return (
       <p>
         No peer loaded
@@ -82,7 +98,7 @@ export default function PeerPage() {
     );
   }
 
-  function PeerContent() {
+  function PeerDisplay() {
     return (
       <>
         <p>
@@ -180,14 +196,22 @@ export default function PeerPage() {
     );
   }
 
+  function WaitingIndicator() {
+    return (
+      <CircularProgress size={48} className={classes.buttonProgress} />
+    );
+  }
+
   return (
     <>
-      <PageTitle title={`Peer: ${peer ? peer.getPeerName() : null}`} />
-      <div>
-        {peer
-          ? PeerContent()
-          : NoPeerContent()}
-      </div>
+      {!waitingForPeer
+        ? (
+          <>
+            <PageTitle title={`Peer: ${peer ? peer.getPeerName() : null}`} />
+            {PeerContent()}
+          </>
+        )
+        : WaitingIndicator()}
       {DeletePeerDialogContent()}
     </>
   );
