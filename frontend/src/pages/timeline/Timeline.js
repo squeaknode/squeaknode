@@ -30,11 +30,12 @@ const SQUEAKS_PER_PAGE = 10;
 
 export default function TimelinePage() {
   const classes = useStyles();
-  const [squeaks, setSqueaks] = useState(null);
+  const [squeaks, setSqueaks] = useState([]);
   // const [newSqueaks, setNewSqueaks] = useState(null);
   const [open, setOpen] = React.useState(false);
   const [network, setNetwork] = useState('');
   const [waitingForTimeline, setWaitingForTimeline] = React.useState(false);
+  const [waitingForInitialLoad, setWaitingForInitialLoad] = useState(true);
 
   const getSqueaks = useCallback((limit, lastEntry) => {
     setWaitingForTimeline(true);
@@ -70,6 +71,7 @@ export default function TimelinePage() {
   const handleLoadedTimeline = (resp) => {
     const loadedSqueaks = resp.getSqueakDisplayEntriesList();
     setWaitingForTimeline(false);
+    setWaitingForInitialLoad(false);
     setSqueaks((prevSqueaks) => {
       if (!prevSqueaks) {
         return loadedSqueaks;
@@ -138,25 +140,35 @@ export default function TimelinePage() {
       <>
         <Grid item xs={12}>
           <div className={classes.wrapper}>
-            {!waitingForTimeline
-            && (
-            <Button
-              variant="contained"
-              color="primary"
-              disabled={waitingForTimeline}
-              onClick={() => {
-                const latestSqueak = squeaks.slice(-1).pop();
-                getSqueaks(SQUEAKS_PER_PAGE, latestSqueak);
-              }}
-            >
-              <ReplayIcon />
-              View more squeaks
-            </Button>
-            )}
-            {waitingForTimeline && <CircularProgress size={48} className={classes.buttonProgress} />}
+            {(!waitingForTimeline)
+            ? ReadyButton()
+            : WaitingIndicator()}
           </div>
         </Grid>
       </>
+    );
+  }
+
+  function ReadyButton() {
+    return (
+      <Button
+        variant="contained"
+        color="primary"
+        disabled={waitingForTimeline}
+        onClick={() => {
+          const latestSqueak = squeaks.slice(-1).pop();
+          getSqueaks(SQUEAKS_PER_PAGE, latestSqueak);
+        }}
+      >
+        <ReplayIcon />
+        View more squeaks
+      </Button>
+    );
+  }
+
+  function WaitingIndicator() {
+    return (
+      <CircularProgress size={48} className={classes.buttonProgress} />
     );
   }
 
@@ -164,15 +176,12 @@ export default function TimelinePage() {
     return (
       <Grid container spacing={0}>
         <Grid item xs={12} sm={9}>
-          {squeaks
-            && (
-            <Paper className={classes.paper}>
-              {(squeaks.length > 0)
-                ? SqueaksContent()
-                : NoSqueaksContent()}
-            </Paper>
-            )}
-          {ViewMoreSqueaksButton()}
+        <Paper className={classes.paper}>
+          {(squeaks.length > 0)
+            ? SqueaksContent()
+            : NoSqueaksContent()}
+        </Paper>
+        {ViewMoreSqueaksButton()}
         </Grid>
         <Grid item xs={12} sm={3}>
           <Paper className={classes.paper} />
@@ -216,7 +225,9 @@ export default function TimelinePage() {
 
   return (
     <>
-      {GridContent()}
+      {(!waitingForInitialLoad)
+        ? GridContent()
+        : WaitingIndicator()}
       {MakeSqueakContent()}
     </>
   );
