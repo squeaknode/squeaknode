@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   Grid,
   Button,
@@ -9,9 +9,6 @@ import {
   Typography,
   CircularProgress,
 } from '@material-ui/core';
-
-// styles
-import { makeStyles } from '@material-ui/core/styles';
 
 // components
 import Widget from '../../components/Widget';
@@ -28,24 +25,19 @@ import {
   getConnectedPeersRequest,
 } from '../../squeakclient/requests';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    '& > *': {
-      margin: theme.spacing(1),
-    },
-  },
-}));
+// styles
+import useStyles from './styles';
 
 export default function Peers() {
   const classes = useStyles();
-  const [connectedPeers, setConnectedPeers] = useState([]);
-  const [peers, setPeers] = useState([]);
+  const [connectedPeers, setConnectedPeers] = useState(null);
+  const [peers, setPeers] = useState(null);
   const [createPeerDialogOpen, setCreatePeerDialogOpen] = useState(false);
   const [connectPeerDialogOpen, setConnectPeerDialogOpen] = useState(false);
   const [value, setValue] = useState(0);
   const [showExternalAddressDialogOpen, setShowExternalAddressDialogOpen] = useState(false);
-  const [waitingForConnectedPeers, setWaitingForConnectedPeers] = useState(false);
-  const [waitingForPeers, setWaitingForPeers] = useState(false);
+
+  const initialLoadComplete = useMemo(() => (connectedPeers && peers), [connectedPeers, peers]);
 
   function a11yProps(index) {
     return {
@@ -59,9 +51,7 @@ export default function Peers() {
   };
 
   const getConnectedPeers = () => {
-    setWaitingForConnectedPeers(true);
     getConnectedPeersRequest((resp) => {
-      setWaitingForConnectedPeers(false);
       setConnectedPeers(resp);
     });
   };
@@ -69,9 +59,7 @@ export default function Peers() {
   // const subscribeConnectedPeers = () => subscribeConnectedPeersRequest(setConnectedPeers);
 
   const getSqueakPeers = () => {
-    setWaitingForPeers(true);
     getPeersRequest((resp) => {
-      setWaitingForPeers(false);
       setPeers(resp);
     });
   };
@@ -264,14 +252,10 @@ export default function Peers() {
           </Tabs>
         </AppBar>
         <TabPanel value={value} index={0}>
-          {waitingForConnectedPeers
-            ? WaitingIndicator()
-            : ConnectedPeersContent()}
+          {ConnectedPeersContent()}
         </TabPanel>
         <TabPanel value={value} index={1}>
-          {waitingForPeers
-            ? WaitingIndicator()
-            : SavedPeersContent()}
+          {SavedPeersContent()}
         </TabPanel>
       </>
     );
@@ -356,7 +340,9 @@ export default function Peers() {
 
   return (
     <>
-      {GridContent()}
+      {initialLoadComplete
+        ? GridContent()
+        : WaitingIndicator()}
       {CreatePeerDialogContent()}
       {ConnectPeerDialogContent()}
       {ShowExternalAddressDialogContent()}
