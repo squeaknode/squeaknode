@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   Grid,
   Button,
@@ -26,10 +26,11 @@ const SQUEAKS_PER_PAGE = 10;
 
 export default function LikedPage() {
   const classes = useStyles();
-  const [squeaks, setSqueaks] = useState([]);
+  const [squeaks, setSqueaks] = useState(null);
   const [network, setNetwork] = useState('');
   const [waitingForLikedSqueaks, setWaitingForLikedSqueaks] = useState(false);
-  const [waitingForInitialLoad, setWaitingForInitialLoad] = useState(true);
+
+  const initialLoadComplete = useMemo(() => (squeaks), [squeaks]);
 
   const getSqueaks = useCallback((limit, lastEntry) => {
     setWaitingForLikedSqueaks(true);
@@ -42,7 +43,6 @@ export default function LikedPage() {
 
   const handleLoadedTimeline = (loadedSqueaks) => {
     setWaitingForLikedSqueaks(false);
-    setWaitingForInitialLoad(false);
     setSqueaks((prevSqueaks) => {
       if (!prevSqueaks) {
         return loadedSqueaks;
@@ -139,7 +139,7 @@ export default function LikedPage() {
 
   return (
     <>
-      {(!waitingForInitialLoad)
+      {(initialLoadComplete)
         ? GridContent()
         : WaitingIndicator()}
     </>

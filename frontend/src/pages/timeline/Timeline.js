@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   Grid,
   Button,
@@ -30,12 +30,14 @@ const SQUEAKS_PER_PAGE = 10;
 
 export default function TimelinePage() {
   const classes = useStyles();
-  const [squeaks, setSqueaks] = useState([]);
+  const [squeaks, setSqueaks] = useState(null);
   // const [newSqueaks, setNewSqueaks] = useState(null);
   const [open, setOpen] = React.useState(false);
   const [network, setNetwork] = useState('');
   const [waitingForTimeline, setWaitingForTimeline] = React.useState(false);
-  const [waitingForInitialLoad, setWaitingForInitialLoad] = useState(true);
+
+  const initialLoadComplete = useMemo(() => (squeaks), [squeaks]);
+
 
   const getSqueaks = useCallback((limit, lastEntry) => {
     setWaitingForTimeline(true);
@@ -71,7 +73,6 @@ export default function TimelinePage() {
   const handleLoadedTimeline = (resp) => {
     const loadedSqueaks = resp.getSqueakDisplayEntriesList();
     setWaitingForTimeline(false);
-    setWaitingForInitialLoad(false);
     setSqueaks((prevSqueaks) => {
       if (!prevSqueaks) {
         return loadedSqueaks;
@@ -225,7 +226,7 @@ export default function TimelinePage() {
 
   return (
     <>
-      {(!waitingForInitialLoad)
+      {(initialLoadComplete)
         ? GridContent()
         : WaitingIndicator()}
       {MakeSqueakContent()}
