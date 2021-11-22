@@ -52,9 +52,6 @@ export default function SearchPage() {
   const urlDecodedSearchText = searchText ? decodeURIComponent(searchText) : '';
 
   const getSqueaks = useCallback((urlDecodedSearchText, limit, lastEntry) => {
-    if (!searchText) {
-      return;
-    }
     setWaitingForSqueaks(true);
     getSearchSqueakDisplaysRequest(urlDecodedSearchText, limit, lastEntry, handleLoadedAddressSqueaks);
   },
