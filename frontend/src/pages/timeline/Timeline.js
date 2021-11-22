@@ -6,12 +6,10 @@ import {
   CircularProgress,
   CardHeader,
   Card,
-  Box,
 } from '@material-ui/core';
 
 import EditIcon from '@material-ui/icons/Edit';
 import ReplayIcon from '@material-ui/icons/Replay';
-import RefreshIcon from '@material-ui/icons/Refresh';
 
 import Paper from '@material-ui/core/Paper';
 
@@ -33,7 +31,7 @@ const SQUEAKS_PER_PAGE = 10;
 export default function TimelinePage() {
   const classes = useStyles();
   const [squeaks, setSqueaks] = useState(null);
-  const [newSqueaks, setNewSqueaks] = useState(null);
+  // const [newSqueaks, setNewSqueaks] = useState(null);
   const [open, setOpen] = React.useState(false);
   const [network, setNetwork] = useState('');
   const [waitingForTimeline, setWaitingForTimeline] = React.useState(false);
@@ -63,11 +61,11 @@ export default function TimelinePage() {
     alert('Failed to load timeline.');
   };
 
-  const handleClickRefresh = () => {
-    setSqueaks(null);
-    setNewSqueaks(null);
-    getSqueaks(SQUEAKS_PER_PAGE, null);
-  };
+  // const handleClickRefresh = () => {
+  //   setSqueaks(null);
+  //   // setNewSqueaks(null);
+  //   getSqueaks(SQUEAKS_PER_PAGE, null);
+  // };
 
   const handleLoadedTimeline = (resp) => {
     const loadedSqueaks = resp.getSqueakDisplayEntriesList();
@@ -194,34 +192,32 @@ export default function TimelinePage() {
     );
   }
 
-  function LoadNewSqueaksContent() {
-    return (
-      <>
-        <Box
-          display="flex"
-          width={600}
-          height={0}
-          alignItems="center"
-          justifyContent="center"
-        >
-          <Fab variant="extended" color="secondary" aria-label="edit" className={classes.refreshFab} onClick={handleClickRefresh}>
-            <RefreshIcon />
-            Refresh (
-            {newSqueaks.length}
-            {' '}
-            new squeaks)
-          </Fab>
-        </Box>
-
-      </>
-    );
-  }
+  // function LoadNewSqueaksContent() {
+  //   return (
+  //     <>
+  //       <Box
+  //         display="flex"
+  //         width={600}
+  //         height={0}
+  //         alignItems="center"
+  //         justifyContent="center"
+  //       >
+  //         <Fab variant="extended" color="secondary" aria-label="edit" className={classes.refreshFab} onClick={handleClickRefresh}>
+  //           <RefreshIcon />
+  //           Refresh (
+  //           {newSqueaks.length}
+  //           {' '}
+  //           new squeaks)
+  //         </Fab>
+  //       </Box>
+  //     </>
+  //   );
+  // }
 
   return (
     <>
       {GridContent()}
       {MakeSqueakContent()}
-      {(newSqueaks) && LoadNewSqueaksContent()}
     </>
   );
 }
