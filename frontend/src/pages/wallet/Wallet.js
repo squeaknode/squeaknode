@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 // import { useParams } from 'react-router-dom';
 // import {useHistory} from "react-router-dom";
 import {
@@ -8,6 +8,7 @@ import {
   Tabs,
   Tab,
   Box,
+  CircularProgress,
 } from '@material-ui/core';
 // import { useTheme } from "@material-ui/styles";
 
@@ -46,6 +47,8 @@ export default function WalletPage() {
   const [value, setValue] = useState(0);
   const [receiveBitcoinDialogOpen, setReceiveBitcoinDialogOpen] = useState(false);
   const [sendBitcoinDialogOpen, setSendBitcoinDialogOpen] = useState(false);
+
+  const initialLoadComplete = useMemo(() => (lndInfo && walletBalance && transactions && peers && channels && pendingChannels), [lndInfo, walletBalance, transactions, peers, channels, pendingChannels]);
 
   function a11yProps(index) {
     return {
@@ -93,12 +96,12 @@ export default function WalletPage() {
     lndPendingChannelsRequest(setPendingChannels);
   };
 
-  const lndAvailable = () => lndInfo
-      && walletBalance
-      && transactions
-      && peers
-      && channels
-      && pendingChannels;
+  // const lndAvailable = () => lndInfo
+  //     && walletBalance
+  //     && transactions
+  //     && peers
+  //     && channels
+  //     && pendingChannels;
 
   useEffect(() => {
     getLndInfo();
@@ -147,11 +150,17 @@ export default function WalletPage() {
     );
   }
 
-  function NoBalanceContent() {
+  // function NoBalanceContent() {
+  //   return (
+  //     <div>
+  //       Unable to connect to lightning node. Make sure that lnd is running and reload the page.
+  //     </div>
+  //   );
+  // }
+
+  function WaitingIndicator() {
     return (
-      <div>
-        Unable to connect to lightning node. Make sure that lnd is running and reload the page.
-      </div>
+      <CircularProgress size={48} className={classes.buttonProgress} />
     );
   }
 
@@ -447,9 +456,9 @@ export default function WalletPage() {
 
   return (
     <>
-      {lndAvailable()
+      {initialLoadComplete
         ? LightningTabs()
-        : NoBalanceContent()}
+        : WaitingIndicator()}
       {ReceiveBitcoinDialogContent()}
       {SendBitcoinDialogContent()}
     </>

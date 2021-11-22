@@ -42,13 +42,13 @@ export default function SqueakPage() {
   const [ancestorSqueaks, setAncestorSqueaks] = useState(null);
   const [replySqueaks, setReplySqueaks] = useState(null);
   const [network, setNetwork] = useState('');
-  const [waitingForSqueak, setWaitingForSqueak] = useState(false);
   const [waitingForReplySqueaks, setWaitingForReplySqueaks] = useState(false);
   const [waitingForDownloadAncestors, setWaitingForDownloadAncestors] = useState(false);
   const [waitingForDownloadReplies, setWaitingForDownloadReplies] = useState(false);
 
+  const initialLoadComplete = useMemo(() => (ancestorSqueaks), [ancestorSqueaks]);
+
   const getAncestorSqueaks = useCallback((hash) => {
-    setWaitingForSqueak(true);
     getAncestorSqueakDisplaysRequest(hash, handleLoadedAncestorSqueaks);
   },
   []);
@@ -70,7 +70,6 @@ export default function SqueakPage() {
   };
 
   const handleLoadedAncestorSqueaks = (loadedAncestorSqueaks) => {
-    setWaitingForSqueak(false);
     setAncestorSqueaks(loadedAncestorSqueaks);
   };
 
@@ -221,9 +220,8 @@ export default function SqueakPage() {
       <Grid container spacing={0}>
         <Grid item xs={12} sm={9}>
           <Paper className={classes.paper}>
-            {ancestorSqueaks && SqueakContent()}
+            {SqueakContent()}
           </Paper>
-          {waitingForSqueak && <CircularProgress size={48} className={classes.buttonProgress} />}
         </Grid>
         <Grid item xs={12} sm={3}>
           <Paper className={classes.paper} />
@@ -290,16 +288,24 @@ export default function SqueakPage() {
               View more replies
             </Button>
             )}
-            {waitingForReplySqueaks && <CircularProgress size={48} className={classes.buttonProgress} />}
+            {waitingForReplySqueaks && WaitingIndicator() }
           </div>
         </Grid>
       </>
     );
   }
 
+  function WaitingIndicator() {
+    return (
+      <CircularProgress size={48} className={classes.buttonProgress} />
+    );
+  }
+
   return (
     <>
-      {GridContent()}
+      {(initialLoadComplete)
+        ? GridContent()
+        : WaitingIndicator()}
       {AncestorsDownloadInProgressDialogContent()}
       {RepliesDownloadInProgressDialogContent()}
     </>

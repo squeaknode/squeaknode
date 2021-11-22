@@ -1,8 +1,10 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   Grid,
   Button,
   CircularProgress,
+  CardHeader,
+  Card,
 } from '@material-ui/core';
 
 import Paper from '@material-ui/core/Paper';
@@ -24,9 +26,11 @@ const SQUEAKS_PER_PAGE = 10;
 
 export default function LikedPage() {
   const classes = useStyles();
-  const [squeaks, setSqueaks] = useState([]);
+  const [squeaks, setSqueaks] = useState(null);
   const [network, setNetwork] = useState('');
   const [waitingForLikedSqueaks, setWaitingForLikedSqueaks] = useState(false);
+
+  const initialLoadComplete = useMemo(() => (squeaks), [squeaks]);
 
   const getSqueaks = useCallback((limit, lastEntry) => {
     setWaitingForLikedSqueaks(true);
@@ -56,9 +60,13 @@ export default function LikedPage() {
 
   function NoSqueaksContent() {
     return (
-      <div>
-        Unable to load squeaks.
-      </div>
+      <Card
+        className={classes.root}
+      >
+        <CardHeader
+          subheader="No squeaks have been liked. Try clicking the like button on some squeaks in your timeline."
+        />
+      </Card>
     );
   }
 
@@ -78,12 +86,12 @@ export default function LikedPage() {
     return (
       <Grid container spacing={0}>
         <Grid item xs={12} sm={9}>
-          <Paper className={classes.paper}>
-            {(squeaks)
-              ? SqueaksContent()
-              : NoSqueaksContent()}
-          </Paper>
-          {ViewMoreSqueaksButton()}
+        <Paper className={classes.paper}>
+          {(squeaks.length > 0)
+            ? SqueaksContent()
+            : NoSqueaksContent()}
+        </Paper>
+        {ViewMoreSqueaksButton()}
         </Grid>
         <Grid item xs={12} sm={3}>
           <Paper className={classes.paper} />
@@ -97,31 +105,43 @@ export default function LikedPage() {
       <>
         <Grid item xs={12}>
           <div className={classes.wrapper}>
-            {!waitingForLikedSqueaks
-            && (
-            <Button
-              variant="contained"
-              color="primary"
-              disabled={waitingForLikedSqueaks}
-              onClick={() => {
-                const latestSqueak = squeaks.slice(-1).pop();
-                getSqueaks(SQUEAKS_PER_PAGE, latestSqueak);
-              }}
-            >
-              <ReplayIcon />
-              View more squeaks
-            </Button>
-            )}
-            {waitingForLikedSqueaks && <CircularProgress size={48} className={classes.buttonProgress} />}
+            {(!waitingForLikedSqueaks)
+              ? ReadyButton()
+              : WaitingIndicator()}
           </div>
         </Grid>
       </>
     );
   }
 
+  function ReadyButton() {
+    return (
+      <Button
+        variant="contained"
+        color="primary"
+        disabled={waitingForLikedSqueaks}
+        onClick={() => {
+          const latestSqueak = squeaks.slice(-1).pop();
+          getSqueaks(SQUEAKS_PER_PAGE, latestSqueak);
+        }}
+      >
+        <ReplayIcon />
+        View more squeaks
+      </Button>
+    );
+  }
+
+  function WaitingIndicator() {
+    return (
+      <CircularProgress size={48} className={classes.buttonProgress} />
+    );
+  }
+
   return (
     <>
-      {GridContent()}
+      {(initialLoadComplete)
+        ? GridContent()
+        : WaitingIndicator()}
     </>
   );
 }

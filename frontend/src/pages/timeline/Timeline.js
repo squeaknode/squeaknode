@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   Grid,
   Button,
@@ -6,12 +6,10 @@ import {
   CircularProgress,
   CardHeader,
   Card,
-  Box,
 } from '@material-ui/core';
 
 import EditIcon from '@material-ui/icons/Edit';
 import ReplayIcon from '@material-ui/icons/Replay';
-import RefreshIcon from '@material-ui/icons/Refresh';
 
 import Paper from '@material-ui/core/Paper';
 
@@ -33,10 +31,13 @@ const SQUEAKS_PER_PAGE = 10;
 export default function TimelinePage() {
   const classes = useStyles();
   const [squeaks, setSqueaks] = useState(null);
-  const [newSqueaks, setNewSqueaks] = useState(null);
+  // const [newSqueaks, setNewSqueaks] = useState(null);
   const [open, setOpen] = React.useState(false);
   const [network, setNetwork] = useState('');
   const [waitingForTimeline, setWaitingForTimeline] = React.useState(false);
+
+  const initialLoadComplete = useMemo(() => (squeaks), [squeaks]);
+
 
   const getSqueaks = useCallback((limit, lastEntry) => {
     setWaitingForTimeline(true);
@@ -63,11 +64,11 @@ export default function TimelinePage() {
     alert('Failed to load timeline.');
   };
 
-  const handleClickRefresh = () => {
-    setSqueaks(null);
-    setNewSqueaks(null);
-    getSqueaks(SQUEAKS_PER_PAGE, null);
-  };
+  // const handleClickRefresh = () => {
+  //   setSqueaks(null);
+  //   // setNewSqueaks(null);
+  //   getSqueaks(SQUEAKS_PER_PAGE, null);
+  // };
 
   const handleLoadedTimeline = (resp) => {
     const loadedSqueaks = resp.getSqueakDisplayEntriesList();
@@ -140,25 +141,35 @@ export default function TimelinePage() {
       <>
         <Grid item xs={12}>
           <div className={classes.wrapper}>
-            {!waitingForTimeline
-            && (
-            <Button
-              variant="contained"
-              color="primary"
-              disabled={waitingForTimeline}
-              onClick={() => {
-                const latestSqueak = squeaks.slice(-1).pop();
-                getSqueaks(SQUEAKS_PER_PAGE, latestSqueak);
-              }}
-            >
-              <ReplayIcon />
-              View more squeaks
-            </Button>
-            )}
-            {waitingForTimeline && <CircularProgress size={48} className={classes.buttonProgress} />}
+            {(!waitingForTimeline)
+            ? ReadyButton()
+            : WaitingIndicator()}
           </div>
         </Grid>
       </>
+    );
+  }
+
+  function ReadyButton() {
+    return (
+      <Button
+        variant="contained"
+        color="primary"
+        disabled={waitingForTimeline}
+        onClick={() => {
+          const latestSqueak = squeaks.slice(-1).pop();
+          getSqueaks(SQUEAKS_PER_PAGE, latestSqueak);
+        }}
+      >
+        <ReplayIcon />
+        View more squeaks
+      </Button>
+    );
+  }
+
+  function WaitingIndicator() {
+    return (
+      <CircularProgress size={48} className={classes.buttonProgress} />
     );
   }
 
@@ -166,15 +177,12 @@ export default function TimelinePage() {
     return (
       <Grid container spacing={0}>
         <Grid item xs={12} sm={9}>
-          {squeaks
-            && (
-            <Paper className={classes.paper}>
-              {(squeaks.length > 0)
-                ? SqueaksContent()
-                : NoSqueaksContent()}
-            </Paper>
-            )}
-          {ViewMoreSqueaksButton()}
+        <Paper className={classes.paper}>
+          {(squeaks.length > 0)
+            ? SqueaksContent()
+            : NoSqueaksContent()}
+        </Paper>
+        {ViewMoreSqueaksButton()}
         </Grid>
         <Grid item xs={12} sm={3}>
           <Paper className={classes.paper} />
@@ -194,34 +202,34 @@ export default function TimelinePage() {
     );
   }
 
-  function LoadNewSqueaksContent() {
-    return (
-      <>
-        <Box
-          display="flex"
-          width={600}
-          height={0}
-          alignItems="center"
-          justifyContent="center"
-        >
-          <Fab variant="extended" color="secondary" aria-label="edit" className={classes.refreshFab} onClick={handleClickRefresh}>
-            <RefreshIcon />
-            Refresh (
-            {newSqueaks.length}
-            {' '}
-            new squeaks)
-          </Fab>
-        </Box>
-
-      </>
-    );
-  }
+  // function LoadNewSqueaksContent() {
+  //   return (
+  //     <>
+  //       <Box
+  //         display="flex"
+  //         width={600}
+  //         height={0}
+  //         alignItems="center"
+  //         justifyContent="center"
+  //       >
+  //         <Fab variant="extended" color="secondary" aria-label="edit" className={classes.refreshFab} onClick={handleClickRefresh}>
+  //           <RefreshIcon />
+  //           Refresh (
+  //           {newSqueaks.length}
+  //           {' '}
+  //           new squeaks)
+  //         </Fab>
+  //       </Box>
+  //     </>
+  //   );
+  // }
 
   return (
     <>
-      {GridContent()}
+      {(initialLoadComplete)
+        ? GridContent()
+        : WaitingIndicator()}
       {MakeSqueakContent()}
-      {(newSqueaks) && LoadNewSqueaksContent()}
     </>
   );
 }

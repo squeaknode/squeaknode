@@ -258,10 +258,17 @@ export default function Profiles() {
     );
   }
 
+  function WaitingIndicator() {
+    return (
+      <CircularProgress size={48} className={classes.buttonProgress} />
+    );
+  }
+
   return (
     <>
-      {GridContent()}
-      {waitingForProfiles && <CircularProgress size={48} className={classes.buttonProgress} />}
+      {!waitingForProfiles
+        ? GridContent()
+        : WaitingIndicator()}
       {CreateSigningProfileDialogContent()}
       {ImportSigningProfileDialogContent()}
       {CreateContactProfileDialogContent()}

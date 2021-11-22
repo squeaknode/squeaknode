@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import {
   Grid,
@@ -42,21 +42,20 @@ export default function SearchPage() {
   const classes = useStyles();
   const history = useHistory();
   const { searchText } = useParams();
-  const [squeaks, setSqueaks] = useState([]);
+  const [squeaks, setSqueaks] = useState(null);
   const [network, setNetwork] = useState('');
   const [waitingForSqueaks, setWaitingForSqueaks] = useState(false);
   const [inputText, setInputText] = useState('');
 
+  const initialLoadComplete = useMemo(() => (squeaks), [squeaks]);
+
   const urlDecodedSearchText = searchText ? decodeURIComponent(searchText) : '';
 
   const getSqueaks = useCallback((urlDecodedSearchText, limit, lastEntry) => {
-    if (!searchText) {
-      return;
-    }
     setWaitingForSqueaks(true);
     getSearchSqueakDisplaysRequest(urlDecodedSearchText, limit, lastEntry, handleLoadedAddressSqueaks);
   },
-  [searchText]);
+  []);
   // const subscribeSqueaks = (address) => subscribeAddressSqueakDisplaysRequest(address, (resp) => {
   //   setSqueaks((prevSqueaks) => [resp].concat(prevSqueaks));
   // });
@@ -89,7 +88,7 @@ export default function SearchPage() {
   };
 
   const resetResults = () => {
-    setSqueaks([]);
+    setSqueaks(null);
   };
 
   useEffect(() => {
@@ -211,14 +210,25 @@ export default function SearchPage() {
           </Button>
         </div>
       </form>
+    );
+  }
 
+  function WaitingIndicator() {
+    return (
+      <CircularProgress size={48} className={classes.buttonProgress} />
     );
   }
 
   return (
     <>
-      {SearchBar()}
-      {searchText && AddressSqueaksContent()}
+      {(initialLoadComplete)
+        ? (
+          <>
+            {SearchBar()}
+            {searchText && AddressSqueaksContent()}
+          </>
+        )
+        : WaitingIndicator()}
     </>
   );
 }

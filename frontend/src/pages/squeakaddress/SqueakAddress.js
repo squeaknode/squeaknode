@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import {
   Grid,
@@ -43,10 +43,17 @@ export default function SqueakAddressPage() {
   const [createContactProfileDialogOpen, setCreateContactProfileDialogOpen] = useState(false);
   const [network, setNetwork] = useState('');
   const [waitingForSqueaks, setWaitingForSqueaks] = useState(false);
+  const [waitingForProfile, setWaitingForProfile] = useState(false);
   const [waitingForDownload, setWaitingForDownload] = useState(false);
 
+  const initialLoadComplete = useMemo(() => (squeaks && !waitingForProfile), [squeaks, waitingForProfile]);
+
   const getSqueakProfile = (address) => {
-    getSqueakProfileByAddressRequest(address, setSqueakProfile);
+    setWaitingForProfile(true);
+    getSqueakProfileByAddressRequest(address, (profile => {
+      setWaitingForProfile(false);
+      setSqueakProfile(profile);
+    }));
   };
   const getSqueaks = useCallback((address, limit, lastEntry) => {
     setWaitingForSqueaks(true);
@@ -284,10 +291,22 @@ export default function SqueakAddressPage() {
     );
   }
 
+  function WaitingIndicator() {
+    return (
+      <CircularProgress size={48} className={classes.buttonProgress} />
+    );
+  }
+
   return (
     <>
-      {SqueakProfileContent()}
-      {AddressSqueaksContent()}
+      {(initialLoadComplete)
+        ? (
+          <>
+            {SqueakProfileContent()}
+            {AddressSqueaksContent()}
+          </>
+        )
+        : WaitingIndicator()}
       {DownloadInProgressDialogContent()}
     </>
   );
