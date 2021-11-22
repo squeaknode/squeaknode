@@ -1,23 +1,38 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 
+import {
+  CircularProgress,
+  CardHeader,
+  Card,
+} from '@material-ui/core';
+
 // components
 import SqueakProfileDetailItem from '../../components/SqueakProfileDetailItem';
+
+import useStyles from './styles';
+
 
 import {
   getSqueakProfileRequest,
 } from '../../squeakclient/requests';
 
 export default function ProfilePage() {
+  const classes = useStyles();
   const { id } = useParams();
   const [squeakProfile, setSqueakProfile] = useState(null);
+  const [waitingForProfile, setWaitingForProfile] = useState(false);
 
   const handleGetSqueakProfileErr = (err) => {
     setSqueakProfile(null);
   };
 
   const getSqueakProfile = useCallback(() => {
-    getSqueakProfileRequest(id, setSqueakProfile, handleGetSqueakProfileErr);
+    setWaitingForProfile(true);
+    getSqueakProfileRequest(id, (profile => {
+      setWaitingForProfile(false);
+      setSqueakProfile(profile);
+    }), handleGetSqueakProfileErr);
   },
   [id]);
 
@@ -32,12 +47,14 @@ export default function ProfilePage() {
   function ProfileContent() {
     return (
       <>
-        {SqueakProfileImageDisplay()}
+      {squeakProfile
+        ? SqueakProfileDisplay()
+        : NoSqueakProfileDisplay()}
       </>
     );
   }
 
-  function SqueakProfileImageDisplay() {
+  function SqueakProfileDisplay() {
     return (
       <SqueakProfileDetailItem
         squeakProfile={squeakProfile}
@@ -46,10 +63,29 @@ export default function ProfilePage() {
     );
   }
 
+  function NoSqueakProfileDisplay() {
+    return (
+      <Card
+        className={classes.root}
+      >
+        <CardHeader
+          subheader="Profile not found."
+        />
+      </Card>
+    );
+  }
+
+  function WaitingIndicator() {
+    return (
+      <CircularProgress size={48} className={classes.buttonProgress} />
+    );
+  }
+
   return (
     <>
-      {squeakProfile
-        && ProfileContent()}
+      {!waitingForProfile
+        ? ProfileContent()
+        : WaitingIndicator()}
     </>
   );
 }
