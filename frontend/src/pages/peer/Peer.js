@@ -15,7 +15,6 @@ import {
 import useStyles from './styles';
 
 // components
-import PageTitle from '../../components/PageTitle';
 import DeletePeerDialog from '../../components/DeletePeerDialog';
 
 import {
@@ -168,11 +167,9 @@ export default function PeerPage() {
     console.log(peer.getPeerAddress());
     console.log(peer.getPeerAddress().getNetwork());
     const peerAddressStr = peerAddressToStr(peer.getPeerAddress());
-    const network = peer.getPeerAddress().getNetwork();
     return (
       <>
         <div className={classes.root}>
-          Peer Address:
           <Button
             variant="contained"
             onClick={() => {
@@ -186,11 +183,6 @@ export default function PeerPage() {
           >
             {peerAddressStr}
           </Button>
-        </div>
-        <div className={classes.root}>
-          Network:
-          {' '}
-          {network}
         </div>
       </>
     );
@@ -207,7 +199,6 @@ export default function PeerPage() {
       {!waitingForPeer
         ? (
           <>
-            <PageTitle title={`Peer: ${peer ? peer.getPeerName() : null}`} />
             {PeerContent()}
           </>
         )
