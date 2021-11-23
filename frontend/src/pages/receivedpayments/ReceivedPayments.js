@@ -10,7 +10,7 @@ import {
 } from '@material-ui/core';
 
 // styles
-import { makeStyles } from '@material-ui/core/styles';
+import useStyles from './styles';
 
 // components
 import ReplayIcon from '@material-ui/icons/Replay';
@@ -24,13 +24,6 @@ import {
   reprocessReceivedPaymentsRequest,
 } from '../../squeakclient/requests';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    '& > *': {
-      margin: theme.spacing(1),
-    },
-  },
-}));
 
 const RECEIVED_PAYMENTS_PER_PAGE = 10;
 
