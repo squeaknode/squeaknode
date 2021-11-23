@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
 import {
   Grid,
   Button,
   Typography,
+  CircularProgress,
 } from '@material-ui/core';
 import FormLabel from '@material-ui/core/FormLabel';
 
 // styles
-import { makeStyles } from '@material-ui/core/styles';
+import useStyles from './styles';
 
 // components
 import Widget from '../../components/Widget';
@@ -23,18 +24,13 @@ import {
   goToReceivedPaymentsPage,
 } from '../../navigation/navigation';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    '& > *': {
-      margin: theme.spacing(1),
-    },
-  },
-}));
 
 export default function Payments() {
   const classes = useStyles();
-  const [paymentSummary, setPaymentSummary] = useState(null);
   const history = useHistory();
+  const [paymentSummary, setPaymentSummary] = useState(null);
+
+  const initialLoadComplete = useMemo(() => (paymentSummary), [paymentSummary]);
 
   const loadPaymentSummary = () => {
     getPaymentSummaryRequest((paymentsSummaryReply) => {
@@ -153,6 +149,12 @@ export default function Payments() {
     );
   }
 
+  function WaitingIndicator() {
+    return (
+      <CircularProgress size={48} className={classes.buttonProgress} />
+    );
+  }
+
   function GridContent() {
     return (
       <Grid container spacing={0}>
@@ -166,7 +168,9 @@ export default function Payments() {
 
   return (
     <>
-      {GridContent()}
+      {(initialLoadComplete)
+        ? GridContent()
+        : WaitingIndicator()}
     </>
   );
 }
