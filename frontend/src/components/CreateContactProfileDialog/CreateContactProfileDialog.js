@@ -77,11 +77,13 @@ export default function CreateContactProfileDialog({
       <TextField
         id="standard-textarea"
         label="Profile Name"
+        variant="outlined"
         required
         autoFocus
         value={profileName}
         onChange={handleChangeProfileName}
         fullWidth
+        margin="normal"
         inputProps={{ maxLength: 64 }}
       />
     );
@@ -93,6 +95,8 @@ export default function CreateContactProfileDialog({
         required
         id="standard-textarea"
         label="Address"
+        variant="outlined"
+        margin="normal"
         value={address}
         onChange={handleChangeAddress}
         inputProps={{ maxLength: 35 }}

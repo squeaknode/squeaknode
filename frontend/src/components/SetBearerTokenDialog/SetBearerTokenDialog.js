@@ -64,6 +64,8 @@ export default function SetBearerTokenDialog({
       <TextField
         id="standard-textarea"
         label="Bearer Token"
+        variant="outlined"
+        margin="normal"
         required
         autoFocus
         value={bearerToken}

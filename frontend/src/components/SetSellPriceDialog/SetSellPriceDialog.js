@@ -108,6 +108,8 @@ export default function SetSellPriceDialog({
           required
           id="standard-required"
           label="Price (msats)"
+          variant="outlined"
+          margin="normal"
           type="number"
           defaultValue={0}
           onChange={handlePriceMsatChange}

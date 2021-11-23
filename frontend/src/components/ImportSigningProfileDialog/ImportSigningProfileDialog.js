@@ -71,6 +71,8 @@ export default function ImportSigningProfileDialog({
       <TextField
         id="standard-textarea"
         label="Profile Name"
+        variant="outlined"
+        margin="normal"
         required
         autoFocus
         value={profileName}
@@ -86,6 +88,8 @@ export default function ImportSigningProfileDialog({
       <TextField
         id="standard-textarea"
         label="Private Key"
+        variant="outlined"
+        margin="normal"
         required
         value={privateKey}
         onChange={handleChangePrivateKey}

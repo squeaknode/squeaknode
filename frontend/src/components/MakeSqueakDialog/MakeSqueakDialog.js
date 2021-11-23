@@ -127,6 +127,8 @@ export default function MakeSqueakDialog({
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
+          variant="outlined"
+          margin="normal"
           value={profileId}
           onChange={handleChange}
         >
@@ -142,6 +144,8 @@ export default function MakeSqueakDialog({
         id="standard-textarea"
         label="Squeak content"
         placeholder="Enter squeak content here..."
+        variant="outlined"
+        margin="normal"
         required
         autoFocus
         value={content}

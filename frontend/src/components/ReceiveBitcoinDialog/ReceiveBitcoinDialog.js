@@ -49,6 +49,8 @@ export default function ReceiveBitcoinDialog({
       <TextField
         id="standard-textarea"
         label="Address"
+        variant="outlined"
+        margin="normal"
         required
         autoFocus
         value={address}

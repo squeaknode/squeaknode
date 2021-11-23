@@ -95,6 +95,8 @@ export default function AddTwitterAccountDialog({
       <TextField
         id="standard-textarea"
         label="Twitter Handle"
+        variant="outlined"
+        margin="normal"
         required
         autoFocus
         value={twitterHandle}
@@ -112,6 +114,8 @@ export default function AddTwitterAccountDialog({
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
+          variant="outlined"
+          margin="normal"
           value={profileId}
           onChange={handleChangeProfileId}
         >
