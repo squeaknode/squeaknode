@@ -46,6 +46,8 @@ export default function ExportPrivateKeyDialog({
       <TextField
         id="standard-textarea"
         label="private-key"
+        variant="outlined"
+        margin="normal"
         required
         autoFocus
         value={privateKey}

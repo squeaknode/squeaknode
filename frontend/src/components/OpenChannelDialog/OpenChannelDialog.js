@@ -76,6 +76,8 @@ export default function OpenChannelDialog({
       <TextField
         id="pubkey-textarea"
         label="Node Pub Key"
+        variant="outlined"
+        margin="normal"
         required
         value={pubkey}
         fullWidth
@@ -91,6 +93,8 @@ export default function OpenChannelDialog({
       <TextField
         id="amount-textarea"
         label="Local Funding Amount"
+        variant="outlined"
+        margin="normal"
         required
         autoFocus
         value={amount}
@@ -106,6 +110,8 @@ export default function OpenChannelDialog({
       <TextField
         id="satperbyte-textarea"
         label="Sats Per Byte"
+        variant="outlined"
+        margin="normal"
         required
         value={satperbyte}
         onChange={handleChangeSatPerBytes}

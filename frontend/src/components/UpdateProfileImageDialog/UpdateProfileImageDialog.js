@@ -110,6 +110,8 @@ export default function UpdateProfileImageDialog({
       <TextField
         id="standard-textarea"
         label="selected-file"
+        variant="outlined"
+        margin="normal"
         required
         autoFocus
         value={fileName}

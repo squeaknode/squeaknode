@@ -79,6 +79,8 @@ export default function SendBitcoinDialog({
       <TextField
         id="standard-textarea"
         label="Address"
+        variant="outlined"
+        margin="normal"
         required
         autoFocus
         value={address}
@@ -93,8 +95,9 @@ export default function SendBitcoinDialog({
       <TextField
         id="standard-textarea"
         label="Amount"
+        variant="outlined"
+        margin="normal"
         required
-        autoFocus
         value={amount}
         onChange={handleChangeAmount}
         disabled={sendall}
@@ -108,8 +111,9 @@ export default function SendBitcoinDialog({
       <TextField
         id="standard-textarea"
         label="Satperbyte"
+        variant="outlined"
+        margin="normal"
         required
-        autoFocus
         value={satperbyte}
         onChange={handleChangeSatperbyte}
         fullWidth
