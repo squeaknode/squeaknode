@@ -13,7 +13,6 @@ import CardHeader from '@material-ui/core/CardHeader';
 
 // components
 
-import Typography from '@material-ui/core/Typography';
 import ComputerIcon from '@material-ui/icons/Computer';
 import CloudOff from '@material-ui/icons/CloudOff';
 
@@ -111,39 +110,31 @@ export default function PeerAddressPage() {
 
   function DisconnectPeerButton() {
     return (
-      <>
-        <Grid item xs={12}>
-          <div className={classes.root}>
-            <Button
-              variant="contained"
-              onClick={() => {
-                disconnectPeer();
-              }}
-            >
-              Disconnect Peer
-            </Button>
-          </div>
-        </Grid>
-      </>
+      <Box p={1}>
+      <Button
+        variant="contained"
+        onClick={() => {
+          disconnectPeer();
+        }}
+      >
+        Disconnect Peer
+      </Button>
+      </Box>
     );
   }
 
   function ConnectPeerButton() {
     return (
-      <>
-        <Grid item xs={12}>
-          <div className={classes.root}>
-            <Button
-              variant="contained"
-              onClick={() => {
-                connectPeer();
-              }}
-            >
-              Connect Peer
-            </Button>
-          </div>
-        </Grid>
-      </>
+      <Box p={1}>
+      <Button
+        variant="contained"
+        onClick={() => {
+          connectPeer();
+        }}
+      >
+        Connect Peer
+      </Button>
+      </Box>
     );
   }
 
@@ -155,16 +146,6 @@ export default function PeerAddressPage() {
             ? DisconnectPeerButton()
             : ConnectPeerButton()}
         </Grid>
-      </>
-    );
-  }
-
-  function AddressContent() {
-    return (
-      <>
-        <Typography variant="h2" component="h2">
-          {`Peer Address: ${host}:${port}`}
-        </Typography>
       </>
     );
   }
@@ -273,8 +254,7 @@ export default function PeerAddressPage() {
 
   function NoPeerContent() {
     return (
-      <div>
-        No saved peer for this address.
+      <Box p={1}>
         <Button
           variant="contained"
           onClick={() => {
@@ -283,14 +263,13 @@ export default function PeerAddressPage() {
         >
           Save Peer
         </Button>
-      </div>
+      </Box>
     );
   }
 
   function PeerContent() {
     return (
-      <div className={classes.root}>
-        Saved Peer:
+      <Box p={1}>
         <Button
           variant="contained"
           onClick={() => {
@@ -299,7 +278,7 @@ export default function PeerAddressPage() {
         >
           {savedPeer.getPeerName()}
         </Button>
-      </div>
+      </Box>
     );
   }
 
@@ -322,7 +301,6 @@ export default function PeerAddressPage() {
       {!waitingForSavedPeer
         ? (
           <>
-            {AddressContent()}
             {SavedPeerContent()}
             {ConnectionContent()}
           </>
