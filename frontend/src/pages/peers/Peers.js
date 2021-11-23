@@ -137,7 +137,7 @@ export default function Peers() {
                 handleClickOpenCreatePeerDialog();
               }}
             >
-              Create Peer
+              Add Saved Peer
             </Button>
           </div>
         </Grid>
