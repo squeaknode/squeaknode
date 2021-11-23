@@ -20,18 +20,15 @@ import {
 export default function ProfilePage() {
   const classes = useStyles();
   const { id } = useParams();
-  const [squeakProfile, setSqueakProfile] = useState(null);
-  const [waitingForProfile, setWaitingForProfile] = useState(false);
+  const [squeakProfileResp, setSqueakProfileResp] = useState(null);
 
   const handleGetSqueakProfileErr = (err) => {
-    setSqueakProfile(null);
+    setSqueakProfileResp(null);
   };
 
   const getSqueakProfile = useCallback(() => {
-    setWaitingForProfile(true);
     getSqueakProfileRequest(id, (profile => {
-      setWaitingForProfile(false);
-      setSqueakProfile(profile);
+      setSqueakProfileResp(profile);
     }), handleGetSqueakProfileErr);
   },
   [id]);
@@ -47,7 +44,7 @@ export default function ProfilePage() {
   function ProfileContent() {
     return (
       <>
-      {squeakProfile
+      {squeakProfileResp.getSqueakProfile()
         ? SqueakProfileDisplay()
         : NoSqueakProfileDisplay()}
       </>
@@ -57,7 +54,7 @@ export default function ProfilePage() {
   function SqueakProfileDisplay() {
     return (
       <SqueakProfileDetailItem
-        squeakProfile={squeakProfile}
+        squeakProfile={squeakProfileResp.getSqueakProfile()}
         handleReloadProfile={handleReloadProfile}
       />
     );
@@ -83,7 +80,7 @@ export default function ProfilePage() {
 
   return (
     <>
-      {!waitingForProfile
+      {squeakProfileResp
         ? ProfileContent()
         : WaitingIndicator()}
     </>

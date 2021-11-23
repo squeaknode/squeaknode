@@ -30,15 +30,12 @@ export default function PeerPage() {
   const classes = useStyles();
   const history = useHistory();
   const { id } = useParams();
-  const [peer, setPeer] = useState(null);
+  const [peerResp, setPeerResp] = useState(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [waitingForPeer, setWaitingForPeer] = useState(false);
 
   const getSqueakPeer = (id) => {
-    setWaitingForPeer(true);
-    getPeerRequest(id, (peer => {
-      setWaitingForPeer(false);
-      setPeer(peer);
+    getPeerRequest(id, (resp => {
+      setPeerResp(resp);
     }));
   };
   const setAutoconnect = (id, autoconnect) => {
@@ -82,7 +79,7 @@ export default function PeerPage() {
   function PeerContent() {
     return (
       <>
-      {peer
+      {peerResp.getSqueakPeer()
         ? PeerDisplay()
         : NoPeerDisplay()}
       </>
@@ -103,7 +100,7 @@ export default function PeerPage() {
         <p>
           Peer name:
           {' '}
-          {peer.getPeerName()}
+          {peerResp.getSqueakPeer().getPeerName()}
         </p>
         <p>
           {PeerAddressContent()}
@@ -120,11 +117,11 @@ export default function PeerPage() {
         <FormLabel component="legend">Peer settings</FormLabel>
         <FormGroup>
           <FormControlLabel
-            control={<Switch checked={peer.getAutoconnect()} onChange={handleSettingsAutoconnectChange} />}
+            control={<Switch checked={peerResp.getSqueakPeer().getAutoconnect()} onChange={handleSettingsAutoconnectChange} />}
             label="Autoconnect"
           />
           <FormControlLabel
-            control={<Switch checked={peer.getShareForFree()} onChange={handleSettingsShareForFreeChange} />}
+            control={<Switch checked={peerResp.getSqueakPeer().getShareForFree()} onChange={handleSettingsShareForFreeChange} />}
             label="Share For Free"
           />
         </FormGroup>
@@ -157,13 +154,14 @@ export default function PeerPage() {
         <DeletePeerDialog
           open={deleteDialogOpen}
           handleClose={handleCloseDeleteDialog}
-          peer={peer}
+          peer={peerResp.getSqueakPeer()}
         />
       </>
     );
   }
 
   function PeerAddressContent() {
+    const peer = peerResp.getSqueakPeer();
     console.log(peer.getPeerAddress());
     console.log(peer.getPeerAddress().getNetwork());
     const peerAddressStr = peerAddressToStr(peer.getPeerAddress());
@@ -196,14 +194,14 @@ export default function PeerPage() {
 
   return (
     <>
-      {!waitingForPeer
+      {peerResp
         ? (
           <>
             {PeerContent()}
+            {DeletePeerDialogContent()}
           </>
         )
         : WaitingIndicator()}
-      {DeletePeerDialogContent()}
     </>
   );
 }
