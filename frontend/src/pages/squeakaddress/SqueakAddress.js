@@ -127,33 +127,31 @@ export default function SqueakAddressPage() {
 
   function NoProfileContent() {
     return (
-      <div>
-        No profile for address.
-        <Button
-          variant="contained"
-          onClick={() => {
-            handleClickOpenCreateContactProfileDialog();
-          }}
-        >
-          Create Profile
-        </Button>
-      </div>
+      <Box p={1}>
+      <Button
+        variant="contained"
+        onClick={() => {
+          handleClickOpenCreateContactProfileDialog();
+        }}
+      >
+        Create Profile
+      </Button>
+      </Box>
     );
   }
 
   function ProfileContent() {
     return (
-      <div className={classes.root}>
-        Profile:
+      <Box p={1}>
         <Button
           variant="contained"
           onClick={() => {
             goToProfilePage(history, squeakProfile.getProfileId());
           }}
         >
-          {squeakProfile.getProfileName()}
+          Go to profile
         </Button>
-      </div>
+      </Box>
     );
   }
 
@@ -218,7 +216,6 @@ export default function SqueakAddressPage() {
 
   function DownloadSqueaksButtonContent() {
     return (
-      <>
         <Box p={1}>
           <Button
             variant="contained"
@@ -228,7 +225,6 @@ export default function SqueakAddressPage() {
             Download squeaks
           </Button>
         </Box>
-      </>
     );
   }
 
@@ -247,7 +243,6 @@ export default function SqueakAddressPage() {
   function AddressSqueaksContent() {
     return (
       <>
-        {DownloadSqueaksButtonContent()}
         {GridContent()}
       </>
 
@@ -303,6 +298,7 @@ export default function SqueakAddressPage() {
         ? (
           <>
             {SqueakProfileContent()}
+            {DownloadSqueaksButtonContent()}
             {AddressSqueaksContent()}
           </>
         )
