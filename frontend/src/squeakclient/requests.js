@@ -391,9 +391,7 @@ export function getSqueakProfileRequest(id, handleResponse, handleErr) {
     'getsqueakprofile',
     request,
     GetSqueakProfileReply.deserializeBinary,
-    (response) => {
-      handleResponse(response.getSqueakProfile());
-    },
+    handleResponse,
     handleErr,
   );
   // client.getSqueakProfile(request, {}, (err, response) => {
@@ -513,13 +511,8 @@ export function getPeerRequest(id, handleResponse) {
     'getpeer',
     request,
     GetPeerReply.deserializeBinary,
-    (response) => {
-      handleResponse(response.getSqueakPeer());
-    },
+    handleResponse,
   );
-  // client.getPeer(request, {}, (err, response) => {
-  //   handleResponse(response.getSqueakPeer());
-  // });
 }
 
 export function getPeerByAddressRequest(network, host, port, handleResponse) {
