@@ -39,7 +39,7 @@ export default function SqueakAddressPage() {
   const history = useHistory();
   const { address } = useParams();
   const [squeakProfile, setSqueakProfile] = useState(null);
-  const [squeaks, setSqueaks] = useState([]);
+  const [squeaks, setSqueaks] = useState(null);
   const [createContactProfileDialogOpen, setCreateContactProfileDialogOpen] = useState(false);
   const [network, setNetwork] = useState('');
   const [waitingForSqueaks, setWaitingForSqueaks] = useState(false);
@@ -255,7 +255,7 @@ export default function SqueakAddressPage() {
         <Grid item xs={12}>
           <div className={classes.wrapper}>
             {waitingForSqueaks
-              ? ViewMoreSqueaksWaitingIndicator()
+              ? WaitingIndicator()
               : ViewMoreSqueaksButton()}
           </div>
         </Grid>
@@ -277,12 +277,6 @@ export default function SqueakAddressPage() {
         <ReplayIcon />
         View more squeaks
       </Button>
-    );
-  }
-
-  function ViewMoreSqueaksWaitingIndicator() {
-    return (
-      <CircularProgress size={48} className={classes.buttonProgress} />
     );
   }
 
