@@ -97,7 +97,6 @@ setup(
     name="squeaknode",
     version=__version__,
     url="https://github.com/yzernik/squeaknode",
-    description="Node for squeak protocol.",
     packages=find_packages(),
     include_package_data=True,
     zip_safe=False,
