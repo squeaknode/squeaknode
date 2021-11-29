@@ -27,11 +27,9 @@ from squeak.messages import msg_getaddr
 from squeak.messages import msg_getdata
 from squeak.messages import msg_inv
 from squeak.messages import msg_notfound
-from squeak.messages import msg_offer
 from squeak.messages import msg_ping
 from squeak.messages import msg_pong
 from squeak.messages import MSG_SECRET_KEY
-from squeak.messages import msg_secretkey
 from squeak.messages import MSG_SQUEAK
 from squeak.messages import msg_squeak
 from squeak.net import CInterested
@@ -302,20 +300,7 @@ class Connection(object):
         )
         if resp is None:
             return None
-        elif type(resp) is bytes:
-            return msg_secretkey(
-                hashSqk=inv.hash,
-                secretKey=resp,
-            )
-        elif type(resp) is Offer:
-            return msg_offer(
-                hashSqk=inv.hash,
-                nonce=resp.nonce,
-                strPaymentInfo=resp.payment_request.encode(
-                    'utf-8'),
-                host=resp.host.encode('utf-8'),
-                port=resp.port,
-            )
+        return resp.get_msg()
 
 
 class HandshakeTimer:

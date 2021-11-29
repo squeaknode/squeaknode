@@ -14,7 +14,7 @@ function mine_blocks {
 
 cd itests
 docker-compose down --volumes --remove-orphans
-COMPOSE_DOCKER_CLI_BUILD=1 docker-compose build
+docker-compose build
 docker-compose up -d
 
 # Initialize the blockchain with miner rewards going to the test client.
