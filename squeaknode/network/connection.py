@@ -294,7 +294,7 @@ class Connection(object):
             return msg_squeak(squeak=squeak)
 
     def _get_inv_reply_for_secret_key(self, inv):
-        resp = self.squeak_controller.get_offer_or_secret_key(
+        resp = self.squeak_controller.get_secret_key_reply(
             inv.hash,
             self.peer.remote_address,
         )

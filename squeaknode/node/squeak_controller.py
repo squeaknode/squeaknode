@@ -186,7 +186,7 @@ class SqueakController:
         downloaded_offer = DownloadedOffer(offer)
         return self.active_download_manager.lookup_counter(downloaded_offer)
 
-    def get_offer_or_secret_key(self, squeak_hash: bytes, peer_address: PeerAddress) -> Optional[SecretKeyReply]:
+    def get_secret_key_reply(self, squeak_hash: bytes, peer_address: PeerAddress) -> Optional[SecretKeyReply]:
         squeak = self.get_squeak(squeak_hash)
         if squeak is None:
             return None
