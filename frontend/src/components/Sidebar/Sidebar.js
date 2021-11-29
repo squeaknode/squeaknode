@@ -3,7 +3,6 @@ import { Drawer, IconButton, List } from '@material-ui/core';
 import {
   Home as HomeIcon,
   People as ProfilesIcon,
-  AttachMoney as MoneyIcon,
   ArrowBack as ArrowBackIcon,
   CloudDownload as PeerIcon,
   History as HistoryIcon,
@@ -13,6 +12,9 @@ import {
 import { useTheme } from '@material-ui/styles';
 import { withRouter } from 'react-router-dom';
 import classNames from 'classnames';
+
+import BitcoinIcon from '../../icons/BitcoinIcon';
+
 
 // styles
 import useStyles from './styles';
@@ -27,6 +29,7 @@ import {
   toggleSidebar,
 } from '../../context/LayoutContext';
 
+
 const structure = [
   {
     id: 0, label: 'Timeline', link: '/app/timeline', icon: <HomeIcon />,
@@ -38,7 +41,7 @@ const structure = [
     id: 2, label: 'Liked', link: '/app/liked', icon: <LikedIcon />,
   },
   {
-    id: 3, label: 'Wallet', link: '/app/wallet', icon: <MoneyIcon />,
+    id: 3, label: 'Wallet', link: '/app/wallet', icon: <BitcoinIcon />,
   },
   {
     id: 4, label: 'Peers', link: '/app/peers', icon: <PeerIcon />,
