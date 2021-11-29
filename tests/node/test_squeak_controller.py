@@ -158,7 +158,7 @@ def test_nothing():
 
 
 def test_get_buy_offer(squeak_controller):
-    assert squeak_controller.get_offer is not None
+    assert squeak_controller.get_offer_reply is not None
 
 
 def test_get_network_default(squeak_controller):

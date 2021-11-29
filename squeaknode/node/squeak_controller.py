@@ -24,7 +24,6 @@ import threading
 from typing import Iterable
 from typing import List
 from typing import Optional
-from typing import Union
 
 import squeak.params
 from squeak.core import CSqueak
@@ -69,6 +68,9 @@ from squeaknode.node.downloaded_object import DownloadedSqueak
 from squeaknode.node.listener_subscription_client import EventListener
 from squeaknode.node.price_policy import PricePolicy
 from squeaknode.node.received_payments_subscription_client import ReceivedPaymentsSubscriptionClient
+from squeaknode.node.secret_key_reply import FreeSecretKeyReply
+from squeaknode.node.secret_key_reply import OfferReply
+from squeaknode.node.secret_key_reply import SecretKeyReply
 
 
 logger = logging.getLogger(__name__)
@@ -157,6 +159,15 @@ class SqueakController:
     def get_squeak_secret_key(self, squeak_hash: bytes) -> Optional[bytes]:
         return self.squeak_db.get_squeak_secret_key(squeak_hash)
 
+    def get_free_squeak_secret_key_reply(self, squeak_hash: bytes) -> Optional[FreeSecretKeyReply]:
+        secret_key = self.get_squeak_secret_key(squeak_hash)
+        if secret_key is None:
+            return None
+        return FreeSecretKeyReply(
+            squeak_hash=squeak_hash,
+            secret_key=secret_key,
+        )
+
     def delete_squeak(self, squeak_hash: bytes) -> None:
         self.squeak_db.delete_squeak(squeak_hash)
 
@@ -175,21 +186,21 @@ class SqueakController:
         downloaded_offer = DownloadedOffer(offer)
         return self.active_download_manager.lookup_counter(downloaded_offer)
 
-    def get_offer_or_secret_key(self, squeak_hash: bytes, peer_address: PeerAddress) -> Optional[Union[bytes, Offer]]:
+    def get_secret_key_reply(self, squeak_hash: bytes, peer_address: PeerAddress) -> Optional[SecretKeyReply]:
         squeak = self.get_squeak(squeak_hash)
         if squeak is None:
             return None
         price = self.get_price_for_squeak(squeak, peer_address)
         if price == 0:
-            return self.get_squeak_secret_key(squeak_hash)
+            return self.get_free_squeak_secret_key_reply(squeak_hash)
         else:
-            return self.get_offer(
+            return self.get_offer_reply(
                 squeak=squeak,
                 peer_address=peer_address,
                 price_msat=price,
             )
 
-    def get_offer(self, squeak: CSqueak, peer_address: PeerAddress, price_msat: int) -> Optional[Offer]:
+    def get_offer_reply(self, squeak: CSqueak, peer_address: PeerAddress, price_msat: int) -> Optional[OfferReply]:
         sent_offer = self.get_sent_offer_for_peer(
             squeak,
             peer_address,
@@ -204,9 +215,13 @@ class SqueakController:
                 port=self.config.lnd.port,
             )
         try:
-            return self.squeak_core.package_offer(
+            offer = self.squeak_core.package_offer(
                 sent_offer,
                 lnd_external_address,
+            )
+            return OfferReply(
+                squeak_hash=get_hash(squeak),
+                offer=offer,
             )
         except Exception:
             return None
