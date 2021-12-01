@@ -60,6 +60,7 @@ def signing_profile_msg(
 @pytest.fixture
 def squeak_entry_msg_locked(
         squeak,
+        squeak_bytes,
         squeak_hash,
         address_str,
         block_count,
@@ -71,7 +72,9 @@ def squeak_entry_msg_locked(
 ):
     yield squeak_admin_pb2.SqueakDisplayEntry(
         squeak_hash=squeak_hash.hex(),
+        serialized_squeak_hex=squeak_bytes.hex(),
         is_unlocked=False,
+        secret_key_hex="",
         content_str=None,  # type: ignore
         block_height=block_count,
         block_hash=block_hash.hex(),
@@ -172,15 +175,6 @@ def sent_payment_msg(
         valid=True,
         time_ms=None,
         peer_address=peer_address_message,
-    )
-
-
-@pytest.fixture
-def squeak_detail_msg(
-        squeak_bytes,
-):
-    yield squeak_admin_pb2.SqueakDetailEntry(
-        serialized_squeak_hex=squeak_bytes.hex(),
     )
 
 

@@ -27,6 +27,7 @@ from squeaknode.core.squeak_profile import SqueakProfile
 
 class SqueakEntry(NamedTuple):
     squeak_hash: bytes
+    serialized_squeak: bytes
     address: str
     block_height: int
     block_hash: bytes
@@ -34,6 +35,7 @@ class SqueakEntry(NamedTuple):
     squeak_time: int
     reply_to: Optional[bytes]
     is_unlocked: bool
+    secret_key: Optional[bytes]
     squeak_profile: Optional[SqueakProfile]
     liked_time_ms: Optional[int] = None
     content: Optional[str] = None

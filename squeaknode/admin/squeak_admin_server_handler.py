@@ -35,7 +35,6 @@ from squeaknode.admin.messages import optional_squeak_entry_to_message
 from squeaknode.admin.messages import optional_squeak_hash_to_hex
 from squeaknode.admin.messages import optional_squeak_peer_to_message
 from squeaknode.admin.messages import optional_squeak_profile_to_message
-from squeaknode.admin.messages import optional_squeak_to_detail_message
 from squeaknode.admin.messages import payment_summary_to_message
 from squeaknode.admin.messages import peer_address_to_message
 from squeaknode.admin.messages import received_offer_to_message
@@ -702,21 +701,6 @@ class SqueakAdminServerHandler(object):
         sent_payment_msg = optional_sent_payment_to_message(sent_payment)
         return squeak_admin_pb2.GetSentPaymentReply(
             sent_payment=sent_payment_msg,
-        )
-
-    def handle_get_squeak_details(self, request: squeak_admin_pb2.GetSqueakDetailsRequest):
-        squeak_hash_str = request.squeak_hash
-        squeak_hash = bytes.fromhex(squeak_hash_str)
-        logger.info(
-            "Handle get squeak details for hash: {}".format(squeak_hash_str))
-        squeak = (
-            self.squeak_controller.get_squeak(
-                squeak_hash
-            )
-        )
-        detail_message = optional_squeak_to_detail_message(squeak)
-        return squeak_admin_pb2.GetSqueakDetailsReply(
-            squeak_detail_entry=detail_message
         )
 
     def handle_get_sent_offers(self, request):

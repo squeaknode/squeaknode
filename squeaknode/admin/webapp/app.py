@@ -415,12 +415,6 @@ def create_app(handler, username, password):
     def downloadaddresssqueaks(msg):
         return handler.handle_download_address_squeaks(msg)
 
-    @app.route("/getsqueakdetails", methods=["POST"])
-    @login_required
-    @protobuf_serialized(squeak_admin_pb2.GetSqueakDetailsRequest())
-    def getsqueakdetails(msg):
-        return handler.handle_get_squeak_details(msg)
-
     @app.route("/getsentpayments", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.GetSentPaymentsRequest())

@@ -32,7 +32,6 @@ from squeaknode.admin.messages import optional_squeak_entry_to_message
 from squeaknode.admin.messages import optional_squeak_hash_to_hex
 from squeaknode.admin.messages import optional_squeak_peer_to_message
 from squeaknode.admin.messages import optional_squeak_profile_to_message
-from squeaknode.admin.messages import optional_squeak_to_detail_message
 from squeaknode.admin.messages import payment_summary_to_message
 from squeaknode.admin.messages import peer_address_to_message
 from squeaknode.admin.messages import received_offer_to_message
@@ -42,7 +41,6 @@ from squeaknode.admin.messages import sent_payment_to_message
 from squeaknode.admin.messages import squeak_entry_to_message
 from squeaknode.admin.messages import squeak_peer_to_message
 from squeaknode.admin.messages import squeak_profile_to_message
-from squeaknode.admin.messages import squeak_to_detail_message
 
 
 def test_peer_address_to_message(peer_address, peer_address_message):
@@ -129,12 +127,6 @@ def test_message_to_sent_payment(sent_payment, sent_payment_msg):
     # TODO: remove this line after including secret key in sent payment msg.
     sent_payment_with_empty_secret_key = sent_payment._replace(secret_key=b'')
     assert decoded_sent_payment == sent_payment_with_empty_secret_key
-
-
-def test_squeak_detail_to_message(squeak, squeak_detail_msg):
-    msg = squeak_to_detail_message(squeak)
-
-    assert msg == squeak_detail_msg
 
 
 def test_payment_summary_to_message(
@@ -226,18 +218,6 @@ def test_optional_sent_payment_to_message(sent_payment, sent_payment_msg):
     msg = optional_sent_payment_to_message(sent_payment)
 
     assert msg == sent_payment_msg
-
-
-def test_optional_squeak_detail_to_message_none():
-    msg = optional_squeak_to_detail_message(None)
-
-    assert msg is None
-
-
-def test_optional_squeak_detail_to_message(squeak, squeak_detail_msg):
-    msg = optional_squeak_to_detail_message(squeak)
-
-    assert msg == squeak_detail_msg
 
 
 def test_optional_connected_peer_to_message_none():
