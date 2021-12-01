@@ -179,15 +179,6 @@ def sent_payment_msg(
 
 
 @pytest.fixture
-def squeak_detail_msg(
-        squeak_bytes,
-):
-    yield squeak_admin_pb2.SqueakDetailEntry(
-        serialized_squeak_hex=squeak_bytes.hex(),
-    )
-
-
-@pytest.fixture
 def payment_summary_msg(
         num_received_payments,
         num_sent_payments,
