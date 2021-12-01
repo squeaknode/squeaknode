@@ -599,6 +599,12 @@ message SqueakDisplayEntry {
 
     /// Liked time
     int64 liked_time_ms = 13;
+
+    /// The serialized squeak in hex.
+    string serialized_squeak_hex = 14;
+
+    /// The secret key in hex.
+    string secret_key_hex = 15;
 }
 
 message GetTimelineSqueakDisplaysRequest {

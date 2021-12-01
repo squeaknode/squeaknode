@@ -235,6 +235,7 @@ def contact_profile(contact_profile_name, address):
 @pytest.fixture
 def squeak_entry_locked(
         squeak,
+        squeak_bytes,
         squeak_hash,
         address_str,
         block_count,
@@ -246,6 +247,7 @@ def squeak_entry_locked(
 ):
     yield SqueakEntry(
         squeak_hash=squeak_hash,
+        serialized_squeak=squeak_bytes,
         address=address_str,
         block_height=block_count,
         block_hash=block_hash,
@@ -253,6 +255,7 @@ def squeak_entry_locked(
         squeak_time=squeak_time,
         reply_to=squeak_reply_to_hash,
         is_unlocked=False,
+        secret_key=None,
         squeak_profile=signing_profile,
         liked_time_ms=None,
         content=None,

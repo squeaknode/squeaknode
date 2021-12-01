@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Typography,
   Grid,
@@ -15,9 +15,6 @@ import useStyles from './styles';
 
 import Widget from '../Widget';
 
-import {
-  getSqueakDetailsRequest,
-} from '../../squeakclient/requests';
 
 export default function SqueakDetailsDialog({
   open,
@@ -28,14 +25,8 @@ export default function SqueakDetailsDialog({
 }) {
   const classes = useStyles();
 
-  const [squeakDetails, setSqueakDetails] = useState(null);
-
-  const getSqueakDetails = (hash) => {
-    getSqueakDetailsRequest(hash, setSqueakDetails);
-  };
-
   function load(event) {
-    getSqueakDetails(hash);
+    // Nothing
   }
 
   function cancel(event) {
@@ -97,7 +88,21 @@ export default function SqueakDetailsDialog({
                   <TextField
                     id="standard-textarea"
                     placeholder="Placeholder"
-                    value={squeakDetails.getSerializedSqueakHex()}
+                    value={squeak.getSerializedSqueakHex()}
+                    fullWidth="true"
+                    variant="outlined"
+                    multiline
+                  />
+                </div>
+
+                <div key="rawdata" className={classes.legendItemContainer}>
+                  <Typography color="text" colorBrightness="secondary">
+                    Secret key
+                  </Typography>
+                  <TextField
+                    id="standard-textarea"
+                    placeholder="Placeholder"
+                    value={squeak.getSecretKeyHex()}
                     fullWidth="true"
                     variant="outlined"
                     multiline
@@ -117,7 +122,7 @@ export default function SqueakDetailsDialog({
       <DialogTitle id="form-dialog-title">View Squeak Details</DialogTitle>
       <form className={classes.root} noValidate autoComplete="off">
         <DialogContent>
-          {(squeak && squeakDetails)
+          {(squeak)
       && SqueakDetailsContent()}
         </DialogContent>
         <DialogActions>

@@ -1461,6 +1461,7 @@ class SqueakDb:
         profile = self._try_parse_squeak_profile(row)
         return SqueakEntry(
             squeak_hash=(row["hash"]),
+            serialized_squeak=(row["squeak"]),
             address=row["author_address"],
             block_height=row["n_block_height"],
             block_hash=(row["hash_block"]),
@@ -1468,6 +1469,7 @@ class SqueakDb:
             squeak_time=row["n_time"],
             reply_to=reply_to,
             is_unlocked=is_locked,
+            secret_key=(row["secret_key"]),
             liked_time_ms=liked_time_ms,
             content=row["content"],
             squeak_profile=profile,

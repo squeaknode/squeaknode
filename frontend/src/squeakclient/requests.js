@@ -55,7 +55,6 @@ import {
   DeleteSqueakProfileRequest,
   DeleteSqueakRequest,
   DownloadSqueakRequest,
-  GetSqueakDetailsRequest,
   GetSentPaymentsRequest,
   GetReceivedPaymentsRequest,
   GetNetworkRequest,
@@ -105,7 +104,6 @@ import {
   DownloadOffersReply,
   DownloadRepliesReply,
   DownloadAddressSqueaksReply,
-  GetSqueakDetailsReply,
   GetSentPaymentsReply,
   GetReceivedPaymentsReply,
   GetNetworkReply,
@@ -909,22 +907,6 @@ export function downloadAddressSqueaksRequest(address, handleResponse) {
   );
   // client.downloadAddressSqueaks(request, {}, (err, response) => {
   //   handleResponse(response);
-  // });
-}
-
-export function getSqueakDetailsRequest(hash, handleResponse) {
-  const request = new GetSqueakDetailsRequest();
-  request.setSqueakHash(hash);
-  makeRequest(
-    'getsqueakdetails',
-    request,
-    GetSqueakDetailsReply.deserializeBinary,
-    (response) => {
-      handleResponse(response.getSqueakDetailEntry());
-    },
-  );
-  // client.getSqueakDetails(request, {}, (err, response) => {
-  //   handleResponse(response.getSqueakDetailEntry());
   // });
 }
 

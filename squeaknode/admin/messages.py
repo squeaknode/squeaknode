@@ -50,6 +50,7 @@ DEFAULT_PROFILE_IMAGE = load_default_profile_image()
 
 def squeak_entry_to_message(squeak_entry: SqueakEntry) -> squeak_admin_pb2.SqueakDisplayEntry:
     squeak_profile = squeak_entry.squeak_profile
+    secret_key = squeak_entry.secret_key.hex() if squeak_entry.secret_key else None
     is_reply = bool(squeak_entry.reply_to)
     reply_to = squeak_entry.reply_to.hex() if squeak_entry.reply_to else None
     is_author_known = False
@@ -59,7 +60,9 @@ def squeak_entry_to_message(squeak_entry: SqueakEntry) -> squeak_admin_pb2.Squea
         profile_msg = squeak_profile_to_message(squeak_profile)
     return squeak_admin_pb2.SqueakDisplayEntry(
         squeak_hash=squeak_entry.squeak_hash.hex(),
+        serialized_squeak_hex=squeak_entry.serialized_squeak.hex(),
         is_unlocked=squeak_entry.is_unlocked,
+        secret_key_hex=secret_key,  # type: ignore
         content_str=squeak_entry.content,  # type: ignore
         block_height=squeak_entry.block_height,
         block_hash=squeak_entry.block_hash.hex(),
@@ -214,8 +217,11 @@ def message_to_squeak_entry(msg: squeak_admin_pb2.SqueakDisplayEntry) -> SqueakE
     like_time_ms = msg.liked_time_ms if msg.liked_time_ms > 0 else None
     reply_to_hash = bytes.fromhex(msg.reply_to) if msg.reply_to else None
     content_str = msg.content_str if len(msg.content_str) > 0 else None
+    secret_key = bytes.fromhex(
+        msg.secret_key_hex) if msg.secret_key_hex else None
     return SqueakEntry(
         squeak_hash=bytes.fromhex(msg.squeak_hash),
+        serialized_squeak=bytes.fromhex(msg.serialized_squeak_hex),
         address=msg.author_address,
         block_height=msg.block_height,
         block_hash=bytes.fromhex(msg.block_hash),
@@ -223,6 +229,7 @@ def message_to_squeak_entry(msg: squeak_admin_pb2.SqueakDisplayEntry) -> SqueakE
         squeak_time=msg.squeak_time,
         reply_to=reply_to_hash,
         is_unlocked=msg.is_unlocked,
+        secret_key=secret_key,
         squeak_profile=None,  # TODO: message to squeak profile
         liked_time_ms=like_time_ms,
         content=content_str,
