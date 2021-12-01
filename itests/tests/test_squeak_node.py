@@ -906,25 +906,6 @@ def test_download_squeaks_for_address(
         assert item.squeak_hash == saved_squeak_hash
 
 
-# def test_get_squeak_details(admin_stub, saved_squeak_hash):
-#     # Get the squeak details
-#     get_squeak_details_response = admin_stub.GetSqueakDetails(
-#         squeak_admin_pb2.GetSqueakDetailsRequest(
-#             squeak_hash=saved_squeak_hash,
-#         )
-#     )
-#     serialized_squeak_hex = (
-#         get_squeak_details_response.squeak_detail_entry.serialized_squeak_hex
-#     )
-#     # print("serialized_squeak_hex: {}".format(serialized_squeak_hex))
-#     assert len(serialized_squeak_hex) > 200
-
-#     serialized_squeak = bytes.fromhex(serialized_squeak_hex)
-#     deserialized_squeak = CSqueak.deserialize(serialized_squeak)
-#     assert get_hash(deserialized_squeak) == saved_squeak_hash
-#     CheckSqueak(deserialized_squeak)
-
-
 def test_like_squeak(admin_stub, saved_squeak_hash):
     # Get the squeak display item
     get_squeak_display_entry = get_squeak_display(
