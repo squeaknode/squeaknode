@@ -228,10 +228,6 @@ service SqueakAdmin {
   */
   rpc GetSentPayment (GetSentPaymentRequest) returns (GetSentPaymentReply) {}
 
-  /** sqkadmin: `getsqueakdetails`
-  */
-  rpc GetSqueakDetails (GetSqueakDetailsRequest) returns (GetSqueakDetailsReply) {}
-
   /** sqkadmin: `getsentoffers`
   */
   rpc GetSentOffers (GetSentOffersRequest) returns (GetSentOffersReply) {}
@@ -973,21 +969,6 @@ message DownloadAddressSqueaksRequest {
 message DownloadAddressSqueaksReply {
     // The download result
     DownloadResult download_result = 1;
-}
-
-message GetSqueakDetailsRequest {
-    /// Hash of the squeak.
-    string squeak_hash = 1;
-}
-
-message GetSqueakDetailsReply {
-    /// The squeak detail entry
-    SqueakDetailEntry squeak_detail_entry = 1;
-}
-
-message SqueakDetailEntry {
-    /// The seriallized squeak in hex encoding
-    string serialized_squeak_hex = 1;
 }
 
 message GetSentOffersRequest {

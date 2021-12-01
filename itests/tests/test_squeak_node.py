@@ -182,6 +182,7 @@ def test_make_squeak(admin_stub, signing_profile_id):
         get_squeak_display_entry.author.profile_image) > 0
     assert not get_squeak_display_entry.is_reply
     assert not bool(get_squeak_display_entry.reply_to)
+    assert len(get_squeak_display_entry.secret_key_hex) == 32 * 2
 
     # Block time should be within the past hour
     block_time = datetime.datetime.fromtimestamp(
@@ -209,6 +210,15 @@ def test_make_squeak(admin_stub, signing_profile_id):
     ) in get_address_squeak_display_response.squeak_display_entries:
         assert squeak_display_entry.author.profile_name == squeak_profile_name
         assert squeak_display_entry.author.address == squeak_profile_address
+
+    # check serialized squeak hex string
+    serialized_squeak_hex = get_squeak_display_entry.serialized_squeak_hex
+    # print("serialized_squeak_hex: {}".format(serialized_squeak_hex))
+    assert len(serialized_squeak_hex) > 200
+    serialized_squeak = bytes.fromhex(serialized_squeak_hex)
+    deserialized_squeak = CSqueak.deserialize(serialized_squeak)
+    assert get_hash(deserialized_squeak) == make_squeak_hash
+    CheckSqueak(deserialized_squeak)
 
 
 def test_make_reply_squeak(
@@ -896,23 +906,23 @@ def test_download_squeaks_for_address(
         assert item.squeak_hash == saved_squeak_hash
 
 
-def test_get_squeak_details(admin_stub, saved_squeak_hash):
-    # Get the squeak details
-    get_squeak_details_response = admin_stub.GetSqueakDetails(
-        squeak_admin_pb2.GetSqueakDetailsRequest(
-            squeak_hash=saved_squeak_hash,
-        )
-    )
-    serialized_squeak_hex = (
-        get_squeak_details_response.squeak_detail_entry.serialized_squeak_hex
-    )
-    # print("serialized_squeak_hex: {}".format(serialized_squeak_hex))
-    assert len(serialized_squeak_hex) > 200
+# def test_get_squeak_details(admin_stub, saved_squeak_hash):
+#     # Get the squeak details
+#     get_squeak_details_response = admin_stub.GetSqueakDetails(
+#         squeak_admin_pb2.GetSqueakDetailsRequest(
+#             squeak_hash=saved_squeak_hash,
+#         )
+#     )
+#     serialized_squeak_hex = (
+#         get_squeak_details_response.squeak_detail_entry.serialized_squeak_hex
+#     )
+#     # print("serialized_squeak_hex: {}".format(serialized_squeak_hex))
+#     assert len(serialized_squeak_hex) > 200
 
-    serialized_squeak = bytes.fromhex(serialized_squeak_hex)
-    deserialized_squeak = CSqueak.deserialize(serialized_squeak)
-    assert get_hash(deserialized_squeak) == saved_squeak_hash
-    CheckSqueak(deserialized_squeak)
+#     serialized_squeak = bytes.fromhex(serialized_squeak_hex)
+#     deserialized_squeak = CSqueak.deserialize(serialized_squeak)
+#     assert get_hash(deserialized_squeak) == saved_squeak_hash
+#     CheckSqueak(deserialized_squeak)
 
 
 def test_like_squeak(admin_stub, saved_squeak_hash):

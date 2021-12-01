@@ -22,8 +22,6 @@
 import logging
 from typing import Optional
 
-from squeak.core import CSqueak
-
 from proto import squeak_admin_pb2
 from squeaknode.admin.profile_image_util import bytes_to_base64_string
 from squeaknode.admin.profile_image_util import load_default_profile_image
@@ -132,13 +130,6 @@ def sent_payment_to_message(sent_payment: SentPayment) -> squeak_admin_pb2.SentP
         valid=sent_payment.valid,
         time_ms=created_time_ms,
         peer_address=peer_address_to_message(sent_payment.peer_address)
-    )
-
-
-def squeak_to_detail_message(squeak: CSqueak) -> squeak_admin_pb2.SqueakDetailEntry:
-    serialized_squeak = squeak.serialize()
-    return squeak_admin_pb2.SqueakDetailEntry(
-        serialized_squeak_hex=serialized_squeak.hex(),
     )
 
 
@@ -323,12 +314,6 @@ def optional_sent_payment_to_message(sent_payment: Optional[SentPayment]) -> Opt
     if sent_payment is None:
         return None
     return sent_payment_to_message(sent_payment)
-
-
-def optional_squeak_to_detail_message(squeak: Optional[CSqueak]) -> Optional[squeak_admin_pb2.SqueakDetailEntry]:
-    if squeak is None:
-        return None
-    return squeak_to_detail_message(squeak)
 
 
 def optional_connected_peer_to_message(connected_peer: Optional[ConnectedPeer]) -> Optional[squeak_admin_pb2.ConnectedPeer]:
