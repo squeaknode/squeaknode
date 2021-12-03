@@ -926,3 +926,6 @@ class SqueakController:
 
     def update_twitter_stream(self) -> None:
         self.tweet_forwarder.start_processing(self)
+
+    def get_seed_peers(self):
+        return self.squeak_db.get_peers()
