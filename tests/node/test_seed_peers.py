@@ -22,6 +22,7 @@
 import pytest
 
 from squeaknode.core.seed_peer import SeedPeer
+from squeaknode.core.seed_peer import SeedPeerConfig
 from squeaknode.node.seed_peers import SEED_PEERS
 from squeaknode.node.seed_peers import SeedPeers
 
@@ -32,27 +33,34 @@ def seed_peers():
     yield SeedPeers(None)
 
 
-def test_get_seed_peers(seed_peers):
+@pytest.fixture()
+def seed_peer_config():
+    yield SeedPeerConfig(
+        peer_name='squeakhub',
+        autoconnect=True,
+        share_for_free=False,
+    )
+
+
+def test_get_seed_peers(seed_peers, seed_peer_config):
     peers = seed_peers.get_seed_peers()
 
     assert peers == [
         SeedPeer(
             peer_name='squeakhub',
             address=SEED_PEERS['squeakhub'],
-            autoconnect=True,
-            share_for_free=False,
+            config=seed_peer_config,
         )
     ]
 
 
-def test_get_seed_peer(seed_peers):
+def test_get_seed_peer(seed_peers, seed_peer_config):
     peer = seed_peers.get_seed_peer('squeakhub')
 
     assert peer == SeedPeer(
         peer_name='squeakhub',
         address=SEED_PEERS['squeakhub'],
-        autoconnect=True,
-        share_for_free=False,
+        config=seed_peer_config,
     )
 
 

@@ -42,7 +42,7 @@ from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.received_payment import ReceivedPayment
 from squeaknode.core.received_payment_summary import ReceivedPaymentSummary
-from squeaknode.core.seed_peer import SeedPeer
+from squeaknode.core.seed_peer import SeedPeerConfig
 from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.sent_payment import SentPayment
 from squeaknode.core.sent_payment_summary import SentPaymentSummary
@@ -141,8 +141,8 @@ class SqueakDb:
         return self.models.twitter_accounts
 
     @property
-    def seed_peers(self):
-        return self.models.seed_peers
+    def seed_peer_configs(self):
+        return self.models.seed_peer_configs
 
     @property
     def squeak_has_secret_key(self):
@@ -1454,16 +1454,16 @@ class SqueakDb:
         with self.get_connection() as connection:
             connection.execute(delete_twitter_account_stmt)
 
-    def insert_seed_peer(self, seed_peer: SeedPeer) -> Optional[str]:
+    def insert_seed_peer_config(self, seed_peer_config: SeedPeerConfig) -> Optional[str]:
         """ Insert a new seed peer.
 
         Return the name (str) of the inserted seed peer.
         Return None if seed peer already exists.
         """
-        ins = self.seed_peers.insert().values(
-            seed_peer_name=seed_peer.peer_name,
-            autoconnect=seed_peer.autoconnect,
-            share_for_free=seed_peer.share_for_free,
+        ins = self.seed_peer_configs.insert().values(
+            seed_peer_name=seed_peer_config.peer_name,
+            autoconnect=seed_peer_config.autoconnect,
+            share_for_free=seed_peer_config.share_for_free,
         )
         with self.get_connection() as connection:
             try:
@@ -1474,32 +1474,32 @@ class SqueakDb:
                 logger.debug("Failed to insert seed peer.", exc_info=True)
                 return None
 
-    def get_seed_peer(self, seed_peer_name: str) -> Optional[SeedPeer]:
+    def get_seed_peer_config(self, seed_peer_name: str) -> Optional[SeedPeerConfig]:
         """ Get a seed peer. """
-        s = select([self.seed_peers]).where(
-            self.seed_peers.c.seed_peer_name == seed_peer_name)
+        s = select([self.seed_peer_configs]).where(
+            self.seed_peer_configs.c.seed_peer_name == seed_peer_name)
         with self.get_connection() as connection:
             result = connection.execute(s)
             row = result.fetchone()
             if row is None:
                 return None
-            return self._parse_seed_peer(row)
+            return self._parse_seed_peer_config(row)
 
-    def set_seed_peer_autoconnect(self, seed_peer_name: str, autoconnect: bool) -> None:
+    def set_seed_peer_config_autoconnect(self, seed_peer_name: str, autoconnect: bool) -> None:
         """ Set a seed peer to autoconnect. """
         stmt = (
-            self.seed_peers.update()
-            .where(self.seed_peers.c.seed_peer_name == seed_peer_name)
+            self.seed_peer_configs.update()
+            .where(self.seed_peer_configs.c.seed_peer_name == seed_peer_name)
             .values(autoconnect=autoconnect)
         )
         with self.get_connection() as connection:
             connection.execute(stmt)
 
-    def set_seed_peer_share_for_free(self, seed_peer_name: str, share_for_free: bool) -> None:
+    def set_seed_peer_config_share_for_free(self, seed_peer_name: str, share_for_free: bool) -> None:
         """ Set a seed peer to share for free. """
         stmt = (
-            self.seed_peers.update()
-            .where(self.seed_peers.c.seed_peer_name == seed_peer_name)
+            self.seed_peer_configs.update()
+            .where(self.seed_peer_configs.c.seed_peer_name == seed_peer_name)
             .values(share_for_free=share_for_free)
         )
         with self.get_connection() as connection:
@@ -1663,10 +1663,9 @@ class SqueakDb:
             profile=profile,
         )
 
-    def _parse_seed_peer(self, row) -> SeedPeer:
-        return SeedPeer(
+    def _parse_seed_peer_config(self, row) -> SeedPeerConfig:
+        return SeedPeerConfig(
             peer_name=row["seed_peer_name"],
-            address=None,
             autoconnect=row["autoconnect"],
             share_for_free=row["share_for_free"],
         )

@@ -195,8 +195,8 @@ class Models:
             Column("profile_id", Integer, nullable=False),
         )
 
-        self.seed_peers = Table(
-            "seed_peer",
+        self.seed_peer_configs = Table(
+            "seed_peer_config",
             self.metadata,
             Column("seed_peer_name", String, primary_key=True),
             Column("autoconnect", Boolean, nullable=False),

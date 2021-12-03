@@ -38,6 +38,7 @@ from squeaknode.core.received_payment_summary import ReceivedPaymentSummary
 from squeaknode.core.secret_keys import add_tweak
 from squeaknode.core.secret_keys import generate_tweak
 from squeaknode.core.seed_peer import SeedPeer
+from squeaknode.core.seed_peer import SeedPeerConfig
 from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.sent_payment import SentPayment
 from squeaknode.core.sent_payment_summary import SentPaymentSummary
@@ -555,10 +556,18 @@ def seed_peer_name():
 
 
 @pytest.fixture
-def seed_peer(seed_peer_name, peer_address):
+def seed_peer_config(seed_peer_name):
+    yield SeedPeerConfig(
+        peer_name=seed_peer_name,
+        autoconnect=True,
+        share_for_free=False,
+    )
+
+
+@pytest.fixture
+def seed_peer(seed_peer_name, peer_address, seed_peer_config):
     yield SeedPeer(
         peer_name=seed_peer_name,
         address=peer_address,
-        autoconnect=True,
-        share_for_free=False,
+        config=seed_peer_config,
     )

@@ -25,6 +25,7 @@ from typing import Optional
 from squeaknode.core.peer_address import Network
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.seed_peer import SeedPeer
+from squeaknode.core.seed_peer import SeedPeerConfig
 from squeaknode.db.squeak_db import SqueakDb
 
 
@@ -45,11 +46,11 @@ class SeedPeers:
     def get_seed_peers(self) -> List[SeedPeer]:
         ret = []
         for name, peer_address in SEED_PEERS.items():
+            config = self.get_default_config(name)
             seed_peer = SeedPeer(
                 peer_name=name,
                 address=peer_address,
-                autoconnect=True,
-                share_for_free=False,
+                config=config,
             )
             ret.append(seed_peer)
         return ret
@@ -58,9 +59,16 @@ class SeedPeers:
         peer_address = SEED_PEERS.get(name)
         if peer_address is None:
             return None
+        config = self.get_default_config(name)
         return SeedPeer(
             peer_name=name,
             address=peer_address,
+            config=config,
+        )
+
+    def get_default_config(self, name: str) -> SeedPeerConfig:
+        return SeedPeerConfig(
+            peer_name=name,
             autoconnect=True,
             share_for_free=False,
         )

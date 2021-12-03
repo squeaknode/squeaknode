@@ -25,9 +25,15 @@ from typing import Optional
 from squeaknode.core.peer_address import PeerAddress
 
 
+class SeedPeerConfig(NamedTuple):
+    """Represents the config of a seed peer."""
+    peer_name: str
+    autoconnect: bool
+    share_for_free: bool
+
+
 class SeedPeer(NamedTuple):
     """Represents a seed peer."""
     peer_name: str
     address: Optional[PeerAddress]
-    autoconnect: bool
-    share_for_free: bool
+    config: SeedPeerConfig

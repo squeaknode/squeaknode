@@ -38,7 +38,7 @@ depends_on = None
 
 
 def upgrade():
-    op.create_table('seed_peer',
+    op.create_table('seed_peer_config',
                     sa.Column('seed_peer_name', sa.String(), nullable=False),
                     sa.Column('autoconnect', sa.Boolean(), nullable=False),
                     sa.Column('share_for_free', sa.Boolean(), nullable=False),
@@ -47,4 +47,4 @@ def upgrade():
 
 
 def downgrade():
-    op.drop_table('seed_peer')
+    op.drop_table('seed_peer_config')
