@@ -194,3 +194,11 @@ class Models:
             Column("handle", String, unique=True, nullable=False),
             Column("profile_id", Integer, nullable=False),
         )
+
+        self.seed_peers = Table(
+            "seed_peer",
+            self.metadata,
+            Column("seed_peer_name", String, primary_key=True),
+            Column("autoconnect", Boolean, nullable=False),
+            Column("share_for_free", Boolean, nullable=False),
+        )

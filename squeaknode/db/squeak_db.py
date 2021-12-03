@@ -42,6 +42,7 @@ from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.received_payment import ReceivedPayment
 from squeaknode.core.received_payment_summary import ReceivedPaymentSummary
+from squeaknode.core.seed_peer import SeedPeer
 from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.sent_payment import SentPayment
 from squeaknode.core.sent_payment_summary import SentPaymentSummary
@@ -138,6 +139,10 @@ class SqueakDb:
     @property
     def twitter_accounts(self):
         return self.models.twitter_accounts
+
+    @property
+    def seed_peers(self):
+        return self.models.seed_peers
 
     @property
     def squeak_has_secret_key(self):
@@ -1449,6 +1454,57 @@ class SqueakDb:
         with self.get_connection() as connection:
             connection.execute(delete_twitter_account_stmt)
 
+    def insert_seed_peer(self, seed_peer: SeedPeer) -> Optional[str]:
+        """ Insert a new seed peer.
+
+        Return the name (str) of the inserted seed peer.
+        Return None if seed peer already exists.
+        """
+        ins = self.seed_peers.insert().values(
+            seed_peer_name=seed_peer.peer_name,
+            autoconnect=seed_peer.autoconnect,
+            share_for_free=seed_peer.share_for_free,
+        )
+        with self.get_connection() as connection:
+            try:
+                res = connection.execute(ins)
+                seed_peer_name = res.inserted_primary_key[0]
+                return seed_peer_name
+            except sqlalchemy.exc.IntegrityError:
+                logger.debug("Failed to insert seed peer.", exc_info=True)
+                return None
+
+    def get_seed_peer(self, seed_peer_name: str) -> Optional[SeedPeer]:
+        """ Get a seed peer. """
+        s = select([self.seed_peers]).where(
+            self.seed_peers.c.seed_peer_name == seed_peer_name)
+        with self.get_connection() as connection:
+            result = connection.execute(s)
+            row = result.fetchone()
+            if row is None:
+                return None
+            return self._parse_seed_peer(row)
+
+    def set_seed_peer_autoconnect(self, seed_peer_name: str, autoconnect: bool) -> None:
+        """ Set a seed peer to autoconnect. """
+        stmt = (
+            self.seed_peers.update()
+            .where(self.seed_peers.c.seed_peer_name == seed_peer_name)
+            .values(autoconnect=autoconnect)
+        )
+        with self.get_connection() as connection:
+            connection.execute(stmt)
+
+    def set_seed_peer_share_for_free(self, seed_peer_name: str, share_for_free: bool) -> None:
+        """ Set a seed peer to share for free. """
+        stmt = (
+            self.seed_peers.update()
+            .where(self.seed_peers.c.seed_peer_name == seed_peer_name)
+            .values(share_for_free=share_for_free)
+        )
+        with self.get_connection() as connection:
+            connection.execute(stmt)
+
     def _parse_squeak(self, row) -> CSqueak:
         return CSqueak.deserialize(row["squeak"])
 
@@ -1605,4 +1661,12 @@ class SqueakDb:
             handle=row["handle"],
             profile_id=row["profile_id"],
             profile=profile,
+        )
+
+    def _parse_seed_peer(self, row) -> SeedPeer:
+        return SeedPeer(
+            peer_name=row["seed_peer_name"],
+            address=None,
+            autoconnect=row["autoconnect"],
+            share_for_free=row["share_for_free"],
         )

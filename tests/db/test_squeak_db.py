@@ -441,6 +441,42 @@ def deleted_twitter_account_id(squeak_db, inserted_twitter_account_id):
     yield inserted_twitter_account_id
 
 
+@pytest.fixture
+def inserted_seed_peer_name(squeak_db, seed_peer):
+    yield squeak_db.insert_seed_peer(seed_peer)
+
+
+@pytest.fixture
+def duplicate_inserted_seed_peer_name(squeak_db, seed_peer, inserted_seed_peer_name):
+    yield squeak_db.insert_seed_peer(seed_peer)
+
+
+@pytest.fixture
+def seed_peer_with_autoconnect_false_username(
+        squeak_db,
+        seed_peer,
+        inserted_seed_peer_name,
+):
+    squeak_db.set_seed_peer_autoconnect(
+        inserted_seed_peer_name,
+        False,
+    )
+    yield inserted_seed_peer_name
+
+
+@pytest.fixture
+def seed_peer_with_share_for_free_true_username(
+        squeak_db,
+        seed_peer,
+        inserted_seed_peer_name,
+):
+    squeak_db.set_seed_peer_share_for_free(
+        inserted_seed_peer_name,
+        True,
+    )
+    yield inserted_seed_peer_name
+
+
 def test_init_with_retries(squeak_db):
     with mock.patch.object(squeak_db, 'init', autospec=True) as mock_init, \
             mock.patch('squeaknode.db.squeak_db.time.sleep', autospec=True) as mock_sleep:
@@ -1620,3 +1656,41 @@ def test_get_twitter_account_all_deleted(squeak_db, twitter_account, deleted_twi
     retrieved_twitter_accounts = squeak_db.get_twitter_accounts()
 
     assert len(retrieved_twitter_accounts) == 0
+
+
+def test_get_seed_peer(squeak_db, seed_peer, inserted_seed_peer_name):
+    retrieved_seed_peer = squeak_db.get_seed_peer(inserted_seed_peer_name)
+
+    assert retrieved_seed_peer == seed_peer._replace(address=None)
+
+
+def test_duplicate_inserted_seed_peer(squeak_db, duplicate_inserted_seed_peer_name):
+    assert duplicate_inserted_seed_peer_name is None
+
+
+def test_get_seed_peer_missing(squeak_db):
+    retrieved_seed_peer = squeak_db.get_seed_peer("fake_seer_peer_name")
+
+    assert retrieved_seed_peer is None
+
+
+def test_set_seed_peer_autoconnect(
+        squeak_db,
+        seed_peer_with_autoconnect_false_username,
+):
+    retrieved_seed_peer = squeak_db.get_seed_peer(
+        seed_peer_with_autoconnect_false_username,
+    )
+
+    assert not retrieved_seed_peer.autoconnect
+
+
+def test_set_seed_peer_share_for_free(
+        squeak_db,
+        seed_peer_with_share_for_free_true_username,
+):
+    retrieved_seed_peer = squeak_db.get_seed_peer(
+        seed_peer_with_share_for_free_true_username,
+    )
+
+    assert retrieved_seed_peer.share_for_free

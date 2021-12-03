@@ -37,6 +37,7 @@ from squeaknode.core.received_payment import ReceivedPayment
 from squeaknode.core.received_payment_summary import ReceivedPaymentSummary
 from squeaknode.core.secret_keys import add_tweak
 from squeaknode.core.secret_keys import generate_tweak
+from squeaknode.core.seed_peer import SeedPeer
 from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.sent_payment import SentPayment
 from squeaknode.core.sent_payment_summary import SentPaymentSummary
@@ -546,3 +547,18 @@ def user_config():
 @pytest.fixture
 def twitter_bearer_token():
     yield 'abcdefg987654321'
+
+
+@pytest.fixture
+def seed_peer_name():
+    yield 'my_seed_peer'
+
+
+@pytest.fixture
+def seed_peer(seed_peer_name, peer_address):
+    yield SeedPeer(
+        peer_name=seed_peer_name,
+        address=peer_address,
+        autoconnect=True,
+        share_for_free=False,
+    )
