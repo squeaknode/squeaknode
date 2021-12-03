@@ -46,7 +46,7 @@ class SeedPeers:
     def get_seed_peers(self) -> List[SeedPeer]:
         ret = []
         for name, peer_address in SEED_PEERS.items():
-            config = self.get_default_config(name)
+            config = self.get_config(name)
             seed_peer = SeedPeer(
                 peer_name=name,
                 address=peer_address,
@@ -59,12 +59,19 @@ class SeedPeers:
         peer_address = SEED_PEERS.get(name)
         if peer_address is None:
             return None
-        config = self.get_default_config(name)
+        config = self.get_config(name)
         return SeedPeer(
             peer_name=name,
             address=peer_address,
             config=config,
         )
+
+    def get_config(self, name: str) -> SeedPeerConfig:
+        return self.get_config_from_db(name) or \
+            self.get_default_config(name)
+
+    def get_config_from_db(self, name: str) -> Optional[SeedPeerConfig]:
+        return self.squeak_db.get_seed_peer_config(name)
 
     def get_default_config(self, name: str) -> SeedPeerConfig:
         return SeedPeerConfig(

@@ -19,6 +19,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+import mock
 import pytest
 
 from squeaknode.core.seed_peer import SeedPeer
@@ -43,7 +44,8 @@ def seed_peer_config():
 
 
 def test_get_seed_peers(seed_peers, seed_peer_config):
-    peers = seed_peers.get_seed_peers()
+    with mock.patch.object(seed_peers, 'get_config_from_db', autospec=True, return_value=None):
+        peers = seed_peers.get_seed_peers()
 
     assert peers == [
         SeedPeer(
@@ -55,7 +57,8 @@ def test_get_seed_peers(seed_peers, seed_peer_config):
 
 
 def test_get_seed_peer(seed_peers, seed_peer_config):
-    peer = seed_peers.get_seed_peer('squeakhub')
+    with mock.patch.object(seed_peers, 'get_config_from_db', autospec=True, return_value=None):
+        peer = seed_peers.get_seed_peer('squeakhub')
 
     assert peer == SeedPeer(
         peer_name='squeakhub',
@@ -65,6 +68,7 @@ def test_get_seed_peer(seed_peers, seed_peer_config):
 
 
 def test_get_seed_peer_none(seed_peers):
-    peer = seed_peers.get_seed_peer('fake_seed_peer_name')
+    with mock.patch.object(seed_peers, 'get_config_from_db', autospec=True, return_value=None):
+        peer = seed_peers.get_seed_peer('fake_seed_peer_name')
 
     assert peer is None
