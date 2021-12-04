@@ -356,6 +356,10 @@ service SqueakAdmin {
   */
   rpc DeleteTwitterAccount (DeleteTwitterAccountRequest) returns (DeleteTwitterAccountReply) {}
 
+  /** sqkadmin: `getseedpeers`
+  */
+  rpc GetSeedPeers (GetSeedPeersRequest) returns (GetSeedPeersReply) {}
+
 }
 
 message CreateSigningProfileRequest {
@@ -1314,3 +1318,26 @@ message DeleteTwitterAccountRequest {
 
 message DeleteTwitterAccountReply {
 }
+
+message SeedPeer {
+    /// The name of the seed peer
+    string seed_peer_name = 1;
+
+    /// Peer address
+    PeerAddress peer_address = 2;
+
+    /// Autoconnect
+    bool autoconnect = 3;
+
+    /// Share for free
+    bool share_for_free = 4;
+}
+
+message GetSeedPeersRequest {
+}
+
+message GetSeedPeersReply {
+    /// The seed peers
+    repeated SeedPeer seed_peers = 1;
+}
+

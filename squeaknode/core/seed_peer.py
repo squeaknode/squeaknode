@@ -20,7 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 from typing import NamedTuple
-from typing import Optional
 
 from squeaknode.core.peer_address import PeerAddress
 
@@ -35,5 +34,5 @@ class SeedPeerConfig(NamedTuple):
 class SeedPeer(NamedTuple):
     """Represents a seed peer."""
     peer_name: str
-    address: Optional[PeerAddress]
+    address: PeerAddress
     config: SeedPeerConfig

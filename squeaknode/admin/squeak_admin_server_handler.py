@@ -39,6 +39,7 @@ from squeaknode.admin.messages import payment_summary_to_message
 from squeaknode.admin.messages import peer_address_to_message
 from squeaknode.admin.messages import received_offer_to_message
 from squeaknode.admin.messages import received_payment_to_message
+from squeaknode.admin.messages import seed_peer_to_message
 from squeaknode.admin.messages import sent_offer_to_message
 from squeaknode.admin.messages import sent_payment_to_message
 from squeaknode.admin.messages import squeak_entry_to_message
@@ -1105,3 +1106,16 @@ class SqueakAdminServerHandler(object):
             twitter_account_id,
         )
         return squeak_admin_pb2.DeleteTwitterAccountReply()
+
+    def handle_get_seed_peers(self, request):
+        logger.info("Handle get seed peers")
+        seed_peers = self.squeak_controller.get_seed_peers()
+        logger.info("Got number of seed peers: {}".format(
+            len(seed_peers)))
+        seed_peer_msgs = [
+            seed_peer_to_message(seed_peer)
+            for seed_peer in seed_peers
+        ]
+        return squeak_admin_pb2.GetSeedPeersReply(
+            seed_peers=seed_peer_msgs,
+        )

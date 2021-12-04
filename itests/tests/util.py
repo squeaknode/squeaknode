@@ -423,6 +423,13 @@ def delete_profile(node_stub, profile_id):
     )
 
 
+def get_seed_peers(node_stub):
+    resp = node_stub.GetSeedPeers(
+        squeak_admin_pb2.GetSeedPeersRequest()
+    )
+    return resp.seed_peers
+
+
 def open_channel(node_stub, remote_pubkey, amount):
     return node_stub.LndOpenChannelSync(
         lnd_pb2.OpenChannelRequest(

@@ -32,6 +32,7 @@ from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.received_payment import ReceivedPayment
 from squeaknode.core.received_payment_summary import ReceivedPaymentSummary
+from squeaknode.core.seed_peer import SeedPeer
 from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.sent_payment import SentPayment
 from squeaknode.core.sent_payment_summary import SentPaymentSummary
@@ -277,6 +278,15 @@ def twitter_account_to_message(twitter_account_entry: TwitterAccountEntry) -> sq
         handle=twitter_account_entry.handle,
         profile_id=twitter_account_entry.profile_id,
         profile=profile_msg,
+    )
+
+
+def seed_peer_to_message(seed_peer: SeedPeer) -> squeak_admin_pb2.SeedPeer:
+    return squeak_admin_pb2.SeedPeer(
+        seed_peer_name=seed_peer.peer_name,
+        peer_address=peer_address_to_message(seed_peer.address),
+        autoconnect=seed_peer.config.autoconnect,
+        share_for_free=seed_peer.config.share_for_free,
     )
 
 

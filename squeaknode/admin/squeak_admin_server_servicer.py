@@ -400,3 +400,6 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
 
     def DeleteTwitterAccount(self, request, context):
         return self.handler.handle_delete_twitter_account(request)
+
+    def GetSeedPeers(self, request, context):
+        return self.handler.handle_get_seed_peers(request)

@@ -71,6 +71,7 @@ from squeaknode.node.received_payments_subscription_client import ReceivedPaymen
 from squeaknode.node.secret_key_reply import FreeSecretKeyReply
 from squeaknode.node.secret_key_reply import OfferReply
 from squeaknode.node.secret_key_reply import SecretKeyReply
+from squeaknode.node.seed_peers import SeedPeers
 
 
 logger = logging.getLogger(__name__)
@@ -928,4 +929,5 @@ class SqueakController:
         self.tweet_forwarder.start_processing(self)
 
     def get_seed_peers(self):
-        return self.squeak_db.get_peers()
+        seed_peers = SeedPeers(self.squeak_db)
+        return seed_peers.get_seed_peers()
