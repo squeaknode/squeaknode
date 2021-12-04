@@ -439,6 +439,15 @@ def get_seed_peer(node_stub, seed_peer_name):
     return resp.seed_peer
 
 
+def set_seed_peer_autoconnect(node_stub, seed_peer_name, autoconnect):
+    node_stub.SetSeedPeerAutoconnect(
+        squeak_admin_pb2.SetSeedPeerAutoconnectRequest(
+            seed_peer_name=seed_peer_name,
+            autoconnect=autoconnect,
+        )
+    )
+
+
 def open_channel(node_stub, remote_pubkey, amount):
     return node_stub.LndOpenChannelSync(
         lnd_pb2.OpenChannelRequest(

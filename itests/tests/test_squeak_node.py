@@ -62,6 +62,7 @@ from tests.util import make_squeak
 from tests.util import open_peer_connection
 from tests.util import peer_connection
 from tests.util import send_coins
+from tests.util import set_seed_peer_autoconnect
 from tests.util import set_sell_price
 from tests.util import set_twitter_bearer_token
 from tests.util import subscribe_connected_peers
@@ -1125,3 +1126,15 @@ def test_get_seed_peer(admin_stub):
 
     assert seed_peer is not None
     assert seed_peer.seed_peer_name == "squeakhub"
+    assert seed_peer.autoconnect is True
+    assert seed_peer.share_for_free is False
+
+
+def test_set_seed_peer_autoconnect(admin_stub):
+    seed_peer = set_seed_peer_autoconnect(admin_stub, "squeakhub", False)
+    seed_peer = get_seed_peer(admin_stub, "squeakhub")
+
+    assert seed_peer is not None
+    assert seed_peer.seed_peer_name == "squeakhub"
+    assert seed_peer.autoconnect is False
+    assert seed_peer.share_for_free is False

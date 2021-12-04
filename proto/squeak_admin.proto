@@ -364,6 +364,10 @@ service SqueakAdmin {
   */
   rpc GetSeedPeer (GetSeedPeerRequest) returns (GetSeedPeerReply) {}
 
+  /** sqkadmin: `setseedpeerautoconnect`
+  */
+  rpc SetSeedPeerAutoconnect (SetSeedPeerAutoconnectRequest) returns (SetSeedPeerAutoconnectReply) {}
+
 }
 
 message CreateSigningProfileRequest {
@@ -1354,4 +1358,16 @@ message GetSeedPeerReply {
     /// The seed peer
     SeedPeer seed_peer = 1;
 }
+
+message SetSeedPeerAutoconnectRequest {
+    /// The name of the seed peer
+    string seed_peer_name = 1;
+
+    /// Autoconnect
+    bool autoconnect = 2;
+}
+
+message SetSeedPeerAutoconnectReply {
+}
+
 

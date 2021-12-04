@@ -1128,3 +1128,16 @@ class SqueakAdminServerHandler(object):
         return squeak_admin_pb2.GetSeedPeerReply(
             seed_peer=seed_peer_msg,
         )
+
+    def handle_set_seed_peer_autoconnect(self, request):
+        seed_peer_name = request.seed_peer_name
+        autoconnect = request.autoconnect
+        logger.info("Handle set seed peer autoconnect with name: {}, autoconnect: {}".format(
+            seed_peer_name,
+            autoconnect,
+        ))
+        self.squeak_controller.set_seed_peer_autoconnect(
+            seed_peer_name,
+            autoconnect,
+        )
+        return squeak_admin_pb2.SetSeedPeerAutoconnectReply()
