@@ -403,3 +403,6 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
 
     def GetSeedPeers(self, request, context):
         return self.handler.handle_get_seed_peers(request)
+
+    def GetSeedPeer(self, request, context):
+        return self.handler.handle_get_seed_peer(request)

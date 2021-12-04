@@ -430,6 +430,15 @@ def get_seed_peers(node_stub):
     return resp.seed_peers
 
 
+def get_seed_peer(node_stub, seed_peer_name):
+    resp = node_stub.GetSeedPeer(
+        squeak_admin_pb2.GetSeedPeerRequest(
+            seed_peer_name=seed_peer_name,
+        )
+    )
+    return resp.seed_peer
+
+
 def open_channel(node_stub, remote_pubkey, amount):
     return node_stub.LndOpenChannelSync(
         lnd_pb2.OpenChannelRequest(

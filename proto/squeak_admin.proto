@@ -360,6 +360,10 @@ service SqueakAdmin {
   */
   rpc GetSeedPeers (GetSeedPeersRequest) returns (GetSeedPeersReply) {}
 
+  /** sqkadmin: `getseedpeer`
+  */
+  rpc GetSeedPeer (GetSeedPeerRequest) returns (GetSeedPeerReply) {}
+
 }
 
 message CreateSigningProfileRequest {
@@ -1339,5 +1343,15 @@ message GetSeedPeersRequest {
 message GetSeedPeersReply {
     /// The seed peers
     repeated SeedPeer seed_peers = 1;
+}
+
+message GetSeedPeerRequest {
+    /// The name of the seed peer
+    string seed_peer_name = 1;
+}
+
+message GetSeedPeerReply {
+    /// The seed peer
+    SeedPeer seed_peer = 1;
 }
 

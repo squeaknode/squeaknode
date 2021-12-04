@@ -1119,3 +1119,12 @@ class SqueakAdminServerHandler(object):
         return squeak_admin_pb2.GetSeedPeersReply(
             seed_peers=seed_peer_msgs,
         )
+
+    def handle_get_seed_peer(self, request):
+        seed_peer_name = request.seed_peer_name
+        logger.info("Handle get seed peer for name: {}".format(seed_peer_name))
+        seed_peer = self.squeak_controller.get_seed_peer(seed_peer_name)
+        seed_peer_msg = seed_peer_to_message(seed_peer)
+        return squeak_admin_pb2.GetSeedPeerReply(
+            seed_peer=seed_peer_msg,
+        )

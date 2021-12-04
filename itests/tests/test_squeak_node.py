@@ -51,6 +51,7 @@ from tests.util import get_hash
 from tests.util import get_network
 from tests.util import get_peer_by_address
 from tests.util import get_search_squeaks
+from tests.util import get_seed_peer
 from tests.util import get_seed_peers
 from tests.util import get_sell_price
 from tests.util import get_squeak_display
@@ -1117,3 +1118,10 @@ def test_get_seed_peers(admin_stub):
 
     assert len(seed_peers) == 1
     assert seed_peers[0].seed_peer_name == "squeakhub"
+
+
+def test_get_seed_peer(admin_stub):
+    seed_peer = get_seed_peer(admin_stub, "squeakhub")
+
+    assert seed_peer is not None
+    assert seed_peer.seed_peer_name == "squeakhub"

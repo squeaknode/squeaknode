@@ -50,6 +50,7 @@ from squeaknode.core.profiles import get_profile_private_key
 from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.received_payment import ReceivedPayment
 from squeaknode.core.received_payment_summary import ReceivedPaymentSummary
+from squeaknode.core.seed_peer import SeedPeer
 from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.sent_payment import SentPayment
 from squeaknode.core.sent_payment_summary import SentPaymentSummary
@@ -928,6 +929,24 @@ class SqueakController:
     def update_twitter_stream(self) -> None:
         self.tweet_forwarder.start_processing(self)
 
-    def get_seed_peers(self):
+    def get_seed_peers(self) -> List[SeedPeer]:
         seed_peers = SeedPeers(self.squeak_db)
         return seed_peers.get_seed_peers()
+
+    def get_seed_peer(self, seed_peer_name: str) -> Optional[SeedPeer]:
+        seed_peers = SeedPeers(self.squeak_db)
+        return seed_peers.get_seed_peer(seed_peer_name)
+
+    def set_seed_peer_autoconnect(self, seed_peer_name: str, autoconnect: bool) -> None:
+        seed_peers = SeedPeers(self.squeak_db)
+        return seed_peers.set_seed_peer_autoconnect(
+            seed_peer_name,
+            autoconnect,
+        )
+
+    def set_seed_peer_share_for_free(self, seed_peer_name: str, share_for_free: bool) -> None:
+        seed_peers = SeedPeers(self.squeak_db)
+        return seed_peers.set_seed_peer_share_for_free(
+            seed_peer_name,
+            share_for_free,
+        )
