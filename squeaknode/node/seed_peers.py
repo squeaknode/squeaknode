@@ -81,11 +81,7 @@ class SeedPeers:
         )
 
     def insert_default_config(self, name: str) -> Optional[str]:
-        config = SeedPeerConfig(
-            peer_name=name,
-            autoconnect=True,
-            share_for_free=False,
-        )
+        config = self.get_default_config(name)
         return self.squeak_db.insert_seed_peer_config(config)
 
     def set_seed_peer_autoconnect(self, name: str, autoconnect: bool) -> None:

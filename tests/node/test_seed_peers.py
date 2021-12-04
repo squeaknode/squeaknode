@@ -21,17 +21,31 @@
 # SOFTWARE.
 import mock
 import pytest
+from sqlalchemy import create_engine
 
 from squeaknode.core.seed_peer import SeedPeer
 from squeaknode.core.seed_peer import SeedPeerConfig
+from squeaknode.db.squeak_db import SqueakDb
 from squeaknode.node.seed_peers import SEED_PEERS
 from squeaknode.node.seed_peers import SeedPeers
 
 
+@pytest.fixture
+def db_engine():
+    yield create_engine('sqlite://')
+
+
+@pytest.fixture
+def squeak_db(db_engine):
+    db = SqueakDb(db_engine)
+    db.init()
+    yield db
+
+
 @pytest.fixture()
-def seed_peers():
+def seed_peers(squeak_db):
     # TODO: Use a mock db.
-    yield SeedPeers(None)
+    yield SeedPeers(squeak_db)
 
 
 @pytest.fixture()
@@ -72,3 +86,35 @@ def test_get_seed_peer_none(seed_peers):
         peer = seed_peers.get_seed_peer('fake_seed_peer_name')
 
     assert peer is None
+
+
+def test_set_autoconnect(seed_peers):
+    peer = seed_peers.get_seed_peer('squeakhub')
+
+    assert peer.config.autoconnect is True
+
+    peer = seed_peers.set_seed_peer_autoconnect('squeakhub', False)
+    peer = seed_peers.get_seed_peer('squeakhub')
+
+    assert peer.config.autoconnect is False
+
+    peer = seed_peers.set_seed_peer_autoconnect('squeakhub', True)
+    peer = seed_peers.get_seed_peer('squeakhub')
+
+    assert peer.config.autoconnect is True
+
+
+def test_set_share_for_free(seed_peers):
+    peer = seed_peers.get_seed_peer('squeakhub')
+
+    assert peer.config.share_for_free is False
+
+    peer = seed_peers.set_seed_peer_share_for_free('squeakhub', False)
+    peer = seed_peers.get_seed_peer('squeakhub')
+
+    assert peer.config.share_for_free is False
+
+    peer = seed_peers.set_seed_peer_share_for_free('squeakhub', True)
+    peer = seed_peers.get_seed_peer('squeakhub')
+
+    assert peer.config.share_for_free is True
