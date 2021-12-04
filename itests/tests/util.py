@@ -448,6 +448,15 @@ def set_seed_peer_autoconnect(node_stub, seed_peer_name, autoconnect):
     )
 
 
+def set_seed_peer_share_for_free(node_stub, seed_peer_name, share_for_free):
+    node_stub.SetSeedPeerShareForFree(
+        squeak_admin_pb2.SetSeedPeerShareForFreeRequest(
+            seed_peer_name=seed_peer_name,
+            share_for_free=share_for_free,
+        )
+    )
+
+
 def open_channel(node_stub, remote_pubkey, amount):
     return node_stub.LndOpenChannelSync(
         lnd_pb2.OpenChannelRequest(

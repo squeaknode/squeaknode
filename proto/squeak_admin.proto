@@ -368,6 +368,10 @@ service SqueakAdmin {
   */
   rpc SetSeedPeerAutoconnect (SetSeedPeerAutoconnectRequest) returns (SetSeedPeerAutoconnectReply) {}
 
+  /** sqkadmin: `setseedpeershareforfree`
+  */
+  rpc SetSeedPeerShareForFree (SetSeedPeerShareForFreeRequest) returns (SetSeedPeerShareForFreeReply) {}
+
 }
 
 message CreateSigningProfileRequest {
@@ -1368,6 +1372,17 @@ message SetSeedPeerAutoconnectRequest {
 }
 
 message SetSeedPeerAutoconnectReply {
+}
+
+message SetSeedPeerShareForFreeRequest {
+    /// The name of the seed peer
+    string seed_peer_name = 1;
+
+    /// Share for free
+    bool share_for_free = 2;
+}
+
+message SetSeedPeerShareForFreeReply {
 }
 
 

@@ -1141,3 +1141,16 @@ class SqueakAdminServerHandler(object):
             autoconnect,
         )
         return squeak_admin_pb2.SetSeedPeerAutoconnectReply()
+
+    def handle_set_seed_peer_share_for_free(self, request):
+        seed_peer_name = request.seed_peer_name
+        share_for_free = request.share_for_free
+        logger.info("Handle set seed peer share_for_free with name: {}, share_for_free: {}".format(
+            seed_peer_name,
+            share_for_free,
+        ))
+        self.squeak_controller.set_seed_peer_share_for_free(
+            seed_peer_name,
+            share_for_free,
+        )
+        return squeak_admin_pb2.SetSeedPeerShareForFreeReply()

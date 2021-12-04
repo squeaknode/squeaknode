@@ -409,3 +409,6 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
 
     def SetSeedPeerAutoconnect(self, request, context):
         return self.handler.handle_set_seed_peer_autoconnect(request)
+
+    def SetSeedPeerShareForFree(self, request, context):
+        return self.handler.handle_set_seed_peer_share_for_free(request)
