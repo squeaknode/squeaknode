@@ -64,7 +64,6 @@ from squeaknode.core.update_subscriptions_event import UpdateSubscriptionsEvent
 from squeaknode.core.update_twitter_stream_event import UpdateTwitterStreamEvent
 from squeaknode.core.user_config import UserConfig
 from squeaknode.node.active_download_manager import ActiveDownload
-from squeaknode.node.autoconnect import Autoconnect
 from squeaknode.node.downloaded_object import DownloadedOffer
 from squeaknode.node.downloaded_object import DownloadedSqueak
 from squeaknode.node.listener_subscription_client import EventListener
@@ -88,7 +87,7 @@ class SqueakController:
         network_manager,
         download_manager,
         tweet_forwarder,
-        seed_peers,
+        peers,
         config,
     ):
         self.squeak_db = squeak_db
@@ -102,7 +101,7 @@ class SqueakController:
         self.twitter_stream_change_listener = EventListener()
         self.active_download_manager = download_manager
         self.tweet_forwarder = tweet_forwarder
-        self.seed_peers = seed_peers
+        self.peers = peers
         self.config = config
 
     def save_squeak(self, squeak: CSqueak) -> Optional[bytes]:
@@ -597,8 +596,9 @@ class SqueakController:
         self.network_manager.connect_peer_sync(peer_address)
 
     def connect_saved_peers(self) -> None:
-        autoconnect = Autoconnect(self.squeak_db, self.seed_peers)
-        autoconnect_addresses = autoconnect.get_autoconnect_addresses()
+        # autoconnect = Autoconnect(self.squeak_db, self.seed_peers)
+        # autoconnect_addresses = autoconnect.get_autoconnect_addresses()
+        autoconnect_addresses = self.peers.get_autoconnect_addresses()
         for peer_address in autoconnect_addresses:
             self.network_manager.connect_peer_async(
                 peer_address,
@@ -934,22 +934,32 @@ class SqueakController:
 
     def get_seed_peers(self) -> List[SeedPeer]:
         # seed_peers = SeedPeers(self.squeak_db)
-        return self.seed_peers.get_seed_peers()
+        # return self.seed_peers.get_seed_peers()
+        return self.peers.get_seed_peers()
 
     def get_seed_peer(self, seed_peer_name: str) -> Optional[SeedPeer]:
         # seed_peers = SeedPeers(self.squeak_db)
-        return self.seed_peers.get_seed_peer(seed_peer_name)
+        # return self.seed_peers.get_seed_peer(seed_peer_name)
+        return self.peers.get_seed_peer(seed_peer_name)
 
     def set_seed_peer_autoconnect(self, seed_peer_name: str, autoconnect: bool) -> None:
         # seed_peers = SeedPeers(self.squeak_db)
-        return self.seed_peers.set_seed_peer_autoconnect(
+        # return self.seed_peers.set_seed_peer_autoconnect(
+        #     seed_peer_name,
+        #     autoconnect,
+        # )
+        self.peers.set_seed_peer_autoconnect(
             seed_peer_name,
             autoconnect,
         )
 
     def set_seed_peer_share_for_free(self, seed_peer_name: str, share_for_free: bool) -> None:
         # seed_peers = SeedPeers(self.squeak_db)
-        return self.seed_peers.set_seed_peer_share_for_free(
+        # return self.seed_peers.set_seed_peer_share_for_free(
+        #     seed_peer_name,
+        #     share_for_free,
+        # )
+        self.peers.set_seed_peer_share_for_free(
             seed_peer_name,
             share_for_free,
         )

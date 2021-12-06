@@ -39,10 +39,10 @@ from squeaknode.node.active_download_manager import ActiveDownloadManager
 from squeaknode.node.payment_processor import PaymentProcessor
 from squeaknode.node.peer_connection_worker import PeerConnectionWorker
 from squeaknode.node.peer_subscription_update_worker import PeerSubscriptionUpdateWorker
+from squeaknode.node.peers import Peers
 from squeaknode.node.process_forward_tweets_worker import ProcessForwardTweetsWorker
 from squeaknode.node.process_received_payments_worker import ProcessReceivedPaymentsWorker
 from squeaknode.node.seed_peers import get_seed_peer_dict
-from squeaknode.node.seed_peers import SeedPeers
 from squeaknode.node.squeak_controller import SqueakController
 from squeaknode.node.squeak_deletion_worker import SqueakDeletionWorker
 from squeaknode.node.squeak_offer_expiry_worker import SqueakOfferExpiryWorker
@@ -71,7 +71,7 @@ class SqueakNode:
         self.initialize_twitter_forwarder()
         self.initialize_network_manager()
         self.initialize_download_manager()
-        self.initialize_seed_peers()
+        self.initialize_peers()
         self.initialize_squeak_controller()
         self.initialize_admin_handler()
         self.initialize_admin_rpc_server()
@@ -191,7 +191,7 @@ class SqueakNode:
             self.network_manager,
             self.download_manager,
             self.twitter_forwarder,
-            self.seed_peers,
+            self.peers,
             self.config,
         )
 
@@ -277,6 +277,6 @@ class SqueakNode:
     def initialize_download_manager(self):
         self.download_manager = ActiveDownloadManager()
 
-    def initialize_seed_peers(self):
+    def initialize_peers(self):
         seed_peer_dict = get_seed_peer_dict(self.network)
-        self.seed_peers = SeedPeers(self.squeak_db, seed_peer_dict)
+        self.peers = Peers(self.squeak_db, seed_peer_dict)
