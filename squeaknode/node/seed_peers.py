@@ -29,7 +29,7 @@ from squeaknode.core.seed_peer import SeedPeerConfig
 from squeaknode.db.squeak_db import SqueakDb
 
 
-SEED_PEERS = {
+MAINNET_SEED_PEERS = {
     'squeakhub': PeerAddress(
         network=Network.IPV4,
         host='squeakhub.com',
@@ -37,15 +37,47 @@ SEED_PEERS = {
     )
 }
 
+TESTNET_SEED_PEERS = {
+    'docker-squeaknode': PeerAddress(
+        network=Network.IPV4,
+        host='localhost',
+        port=18557,
+    )
+}
+
+SIMNET_SEED_PEERS = {
+    'simnet_seed_peer': PeerAddress(
+        network=Network.IPV4,
+        host='simnet-seed-peer.com',
+        port=18555,
+    )
+}
+
+
+def get_seed_peer_dict(network: str):
+    if network == 'mainnet':
+        return MAINNET_SEED_PEERS
+    elif network == 'testnet':
+        return TESTNET_SEED_PEERS
+    elif network == 'simnet':
+        return SIMNET_SEED_PEERS
+    else:
+        return {}
+
 
 class SeedPeers:
 
-    def __init__(self, squeak_db: SqueakDb):
+    def __init__(self, squeak_db: SqueakDb, seed_peer_dict: dict):
         self.squeak_db = squeak_db
+        self.seed_peer_dict = seed_peer_dict
+
+    @property
+    def seed_peers(self):
+        return self.seed_peer_dict
 
     def get_seed_peers(self) -> List[SeedPeer]:
         ret = []
-        for name, peer_address in SEED_PEERS.items():
+        for name, peer_address in self.seed_peers.items():
             config = self.get_config(name)
             seed_peer = SeedPeer(
                 peer_name=name,
@@ -56,7 +88,7 @@ class SeedPeers:
         return ret
 
     def get_seed_peer(self, name: str) -> Optional[SeedPeer]:
-        peer_address = SEED_PEERS.get(name)
+        peer_address = self.seed_peers.get(name)
         if peer_address is None:
             return None
         config = self.get_config(name)
@@ -92,3 +124,11 @@ class SeedPeers:
         self.insert_default_config(name)
         self.squeak_db.set_seed_peer_config_share_for_free(
             name, share_for_free)
+
+    def get_autoconnect_seed_peer_addresses(self) -> List[PeerAddress]:
+        seed_peers = self.get_seed_peers()
+        return [
+            seed_peer.address
+            for seed_peer in seed_peers
+            if seed_peer.config.autoconnect
+        ]

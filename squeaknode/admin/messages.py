@@ -330,3 +330,9 @@ def optional_connected_peer_to_message(connected_peer: Optional[ConnectedPeer]) 
     if connected_peer is None:
         return None
     return connected_peer_to_message(connected_peer)
+
+
+def optional_seed_peer_to_message(seed_peer: Optional[SeedPeer]) -> Optional[squeak_admin_pb2.SeedPeer]:
+    if seed_peer is None:
+        return None
+    return seed_peer_to_message(seed_peer)

@@ -30,6 +30,7 @@ from squeaknode.admin.messages import message_to_sent_payment
 from squeaknode.admin.messages import message_to_squeak_entry
 from squeaknode.admin.messages import optional_connected_peer_to_message
 from squeaknode.admin.messages import optional_received_offer_to_message
+from squeaknode.admin.messages import optional_seed_peer_to_message
 from squeaknode.admin.messages import optional_sent_payment_to_message
 from squeaknode.admin.messages import optional_squeak_entry_to_message
 from squeaknode.admin.messages import optional_squeak_hash_to_hex
@@ -1124,7 +1125,7 @@ class SqueakAdminServerHandler(object):
         seed_peer_name = request.seed_peer_name
         logger.info("Handle get seed peer for name: {}".format(seed_peer_name))
         seed_peer = self.squeak_controller.get_seed_peer(seed_peer_name)
-        seed_peer_msg = seed_peer_to_message(seed_peer)
+        seed_peer_msg = optional_seed_peer_to_message(seed_peer)
         return squeak_admin_pb2.GetSeedPeerReply(
             seed_peer=seed_peer_msg,
         )

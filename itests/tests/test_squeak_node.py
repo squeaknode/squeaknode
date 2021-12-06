@@ -1119,31 +1119,33 @@ def test_get_seed_peers(admin_stub):
     seed_peers = get_seed_peers(admin_stub)
 
     assert len(seed_peers) == 1
-    assert seed_peers[0].seed_peer_name == "squeakhub"
+    assert seed_peers[0].seed_peer_name == "simnet_seed_peer"
 
 
 def test_get_seed_peer(admin_stub):
-    seed_peer = get_seed_peer(admin_stub, "squeakhub")
+    seed_peer = get_seed_peer(admin_stub, "simnet_seed_peer")
 
     assert seed_peer is not None
-    assert seed_peer.seed_peer_name == "squeakhub"
+    assert seed_peer.seed_peer_name == "simnet_seed_peer"
     assert seed_peer.autoconnect is True
     assert seed_peer.share_for_free is False
 
 
 def test_set_seed_peer_autoconnect(admin_stub):
-    seed_peer = set_seed_peer_autoconnect(admin_stub, "squeakhub", False)
-    seed_peer = get_seed_peer(admin_stub, "squeakhub")
+    seed_peer = set_seed_peer_autoconnect(
+        admin_stub, "simnet_seed_peer", False)
+    seed_peer = get_seed_peer(admin_stub, "simnet_seed_peer")
 
     assert seed_peer is not None
-    assert seed_peer.seed_peer_name == "squeakhub"
+    assert seed_peer.seed_peer_name == "simnet_seed_peer"
     assert seed_peer.autoconnect is False
 
 
 def test_set_seed_peer_share_for_free(admin_stub):
-    seed_peer = set_seed_peer_share_for_free(admin_stub, "squeakhub", True)
-    seed_peer = get_seed_peer(admin_stub, "squeakhub")
+    seed_peer = set_seed_peer_share_for_free(
+        admin_stub, "simnet_seed_peer", True)
+    seed_peer = get_seed_peer(admin_stub, "simnet_seed_peer")
 
     assert seed_peer is not None
-    assert seed_peer.seed_peer_name == "squeakhub"
+    assert seed_peer.seed_peer_name == "simnet_seed_peer"
     assert seed_peer.share_for_free is True

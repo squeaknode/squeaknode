@@ -32,6 +32,7 @@ from squeaknode.db.squeak_db import SqueakDb
 from squeaknode.network.network_manager import NetworkManager
 from squeaknode.node.active_download_manager import ActiveDownloadManager
 from squeaknode.node.payment_processor import PaymentProcessor
+from squeaknode.node.seed_peers import SeedPeers
 from squeaknode.node.squeak_controller import SqueakController
 from squeaknode.twitter.twitter_forwarder import TwitterForwarder
 
@@ -112,6 +113,11 @@ def twitter_forwarder():
 
 
 @pytest.fixture
+def seed_peers():
+    return mock.Mock(spec=SeedPeers)
+
+
+@pytest.fixture
 def squeak_controller(
     squeak_db,
     squeak_core,
@@ -119,6 +125,7 @@ def squeak_controller(
     network_manager,
     download_manager,
     twitter_forwarder,
+    seed_peers,
     config,
 ):
     return SqueakController(
@@ -128,6 +135,7 @@ def squeak_controller(
         network_manager,
         download_manager,
         twitter_forwarder,
+        seed_peers,
         config,
     )
 
@@ -140,6 +148,7 @@ def regtest_squeak_controller(
     network_manager,
     download_manager,
     twitter_forwarder,
+    seed_peers,
     regtest_config,
 ):
     return SqueakController(
@@ -149,6 +158,7 @@ def regtest_squeak_controller(
         network_manager,
         download_manager,
         twitter_forwarder,
+        seed_peers,
         regtest_config,
     )
 

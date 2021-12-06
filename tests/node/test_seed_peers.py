@@ -23,10 +23,11 @@ import mock
 import pytest
 from sqlalchemy import create_engine
 
+from squeaknode.core.peer_address import Network
+from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.seed_peer import SeedPeer
 from squeaknode.core.seed_peer import SeedPeerConfig
 from squeaknode.db.squeak_db import SqueakDb
-from squeaknode.node.seed_peers import SEED_PEERS
 from squeaknode.node.seed_peers import SeedPeers
 
 
@@ -42,41 +43,66 @@ def squeak_db(db_engine):
     yield db
 
 
-@pytest.fixture()
-def seed_peers(squeak_db):
-    # TODO: Use a mock db.
-    yield SeedPeers(squeak_db)
+# @pytest.fixture()
+# def network():
+#     yield "mainnet"
 
 
 @pytest.fixture()
-def seed_peer_config():
+def seed_peer_name():
+    yield 'test_seed_peer'
+
+
+@pytest.fixture()
+def seed_peer_address():
+    yield PeerAddress(
+        network=Network.IPV4,
+        host='test_seed_peer.com',
+        port=18555,
+    )
+
+
+@pytest.fixture()
+def seed_peer_dict(seed_peer_name, seed_peer_address):
+    yield {
+        seed_peer_name: seed_peer_address
+    }
+
+
+@pytest.fixture()
+def seed_peers(squeak_db, seed_peer_dict):
+    yield SeedPeers(squeak_db, seed_peer_dict)
+
+
+@pytest.fixture()
+def seed_peer_config(seed_peer_name):
     yield SeedPeerConfig(
-        peer_name='squeakhub',
+        peer_name=seed_peer_name,
         autoconnect=True,
         share_for_free=False,
     )
 
 
-def test_get_seed_peers(seed_peers, seed_peer_config):
+def test_get_seed_peers(seed_peers, seed_peer_name, seed_peer_address, seed_peer_config):
     with mock.patch.object(seed_peers, 'get_config_from_db', autospec=True, return_value=None):
         peers = seed_peers.get_seed_peers()
 
     assert peers == [
         SeedPeer(
-            peer_name='squeakhub',
-            address=SEED_PEERS['squeakhub'],
+            peer_name=seed_peer_name,
+            address=seed_peer_address,
             config=seed_peer_config,
         )
     ]
 
 
-def test_get_seed_peer(seed_peers, seed_peer_config):
+def test_get_seed_peer(seed_peers, seed_peer_name, seed_peer_address, seed_peer_config):
     with mock.patch.object(seed_peers, 'get_config_from_db', autospec=True, return_value=None):
-        peer = seed_peers.get_seed_peer('squeakhub')
+        peer = seed_peers.get_seed_peer(seed_peer_name)
 
     assert peer == SeedPeer(
-        peer_name='squeakhub',
-        address=SEED_PEERS['squeakhub'],
+        peer_name=seed_peer_name,
+        address=seed_peer_address,
         config=seed_peer_config,
     )
 
@@ -88,33 +114,33 @@ def test_get_seed_peer_none(seed_peers):
     assert peer is None
 
 
-def test_set_autoconnect(seed_peers):
-    peer = seed_peers.get_seed_peer('squeakhub')
+def test_set_autoconnect(seed_peers, seed_peer_name):
+    peer = seed_peers.get_seed_peer(seed_peer_name)
 
     assert peer.config.autoconnect is True
 
-    peer = seed_peers.set_seed_peer_autoconnect('squeakhub', False)
-    peer = seed_peers.get_seed_peer('squeakhub')
+    peer = seed_peers.set_seed_peer_autoconnect(seed_peer_name, False)
+    peer = seed_peers.get_seed_peer(seed_peer_name)
 
     assert peer.config.autoconnect is False
 
-    peer = seed_peers.set_seed_peer_autoconnect('squeakhub', True)
-    peer = seed_peers.get_seed_peer('squeakhub')
+    peer = seed_peers.set_seed_peer_autoconnect(seed_peer_name, True)
+    peer = seed_peers.get_seed_peer(seed_peer_name)
 
     assert peer.config.autoconnect is True
 
 
-def test_set_share_for_free(seed_peers):
-    peer = seed_peers.get_seed_peer('squeakhub')
+def test_set_share_for_free(seed_peers, seed_peer_name):
+    peer = seed_peers.get_seed_peer(seed_peer_name)
 
     assert peer.config.share_for_free is False
 
-    peer = seed_peers.set_seed_peer_share_for_free('squeakhub', False)
-    peer = seed_peers.get_seed_peer('squeakhub')
+    peer = seed_peers.set_seed_peer_share_for_free(seed_peer_name, False)
+    peer = seed_peers.get_seed_peer(seed_peer_name)
 
     assert peer.config.share_for_free is False
 
-    peer = seed_peers.set_seed_peer_share_for_free('squeakhub', True)
-    peer = seed_peers.get_seed_peer('squeakhub')
+    peer = seed_peers.set_seed_peer_share_for_free(seed_peer_name, True)
+    peer = seed_peers.get_seed_peer(seed_peer_name)
 
     assert peer.config.share_for_free is True
