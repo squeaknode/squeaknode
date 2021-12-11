@@ -9,6 +9,7 @@ import {
   Switch,
   Button,
   CircularProgress,
+  Link,
 } from '@material-ui/core';
 
 // styles
@@ -168,19 +169,19 @@ export default function PeerPage() {
     return (
       <>
         <div className={classes.root}>
-          <Button
-            variant="contained"
-            onClick={() => {
-              goToPeerAddressPage(
-                history,
-                peer.getPeerAddress().getNetwork(),
-                peer.getPeerAddress().getHost(),
-                peer.getPeerAddress().getPort(),
-              );
-            }}
-          >
-            {peerAddressStr}
-          </Button>
+        <Link
+          href="#"
+          onClick={(event) => {
+            event.preventDefault();
+            goToPeerAddressPage(
+              history,
+              peer.getPeerAddress().getNetwork(),
+              peer.getPeerAddress().getHost(),
+              peer.getPeerAddress().getPort(),
+            );
+          }}        >
+          {peerAddressStr}
+        </Link>
         </div>
       </>
     );
