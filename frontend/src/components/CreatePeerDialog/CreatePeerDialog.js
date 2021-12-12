@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import {
   Button,
   Dialog,
@@ -172,13 +172,14 @@ export default function CreatePeerDialog({
     );
   }
 
+  // Explanation for value: https://stackoverflow.com/questions/50955603/react-material-ui-label-overlaps-with-text#comment123095620_54226170
   function CreatePortInput() {
     return (
       <TextField
         required={customPortChecked}
         variant="outlined"
         label="Port"
-        value={customPortChecked ? port : defaultPeerPort}
+        value={customPortChecked ? port : defaultPeerPort || ''}
         onChange={handleChangePort}
         inputProps={{ maxLength: 8 }}
         disabled={!customPortChecked}
