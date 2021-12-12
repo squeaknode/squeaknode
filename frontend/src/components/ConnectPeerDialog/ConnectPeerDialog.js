@@ -28,7 +28,6 @@ export default function ConnectPeerDialog({
   const classes = useStyles();
 
   const [defaultPeerPort, setDefaultPeerPort] = useState(null);
-  const [peerName, setPeerName] = useState('');
   const [host, setHost] = useState('');
   const [port, setPort] = useState('');
   const [customPortChecked, setCustomPortChecked] = useState(false);
@@ -41,7 +40,6 @@ export default function ConnectPeerDialog({
   };
 
   const resetFields = () => {
-    setPeerName('');
     setHost('');
     setPort('');
     setCustomPortChecked(false);
@@ -79,7 +77,7 @@ export default function ConnectPeerDialog({
     return 'IPV4';
   };
 
-  const connectPeer = (peerName, host, port) => {
+  const connectPeer = (host, port) => {
     // const portToUse = customPortChecked ? port : defaultPeerPort;
     // console.log('Calling connectSqueakPeerRequest with: ', host, portToUse, useTorChecked);
     // console.log('portToUse: ', portToUse);
@@ -118,7 +116,7 @@ export default function ConnectPeerDialog({
       alert('portToUse cannot be empty.');
       return;
     }
-    connectPeer(peerName, host, portToUse);
+    connectPeer(host, portToUse);
     // handleClose();
   }
 
