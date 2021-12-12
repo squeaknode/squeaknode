@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import {
   Button,
   Dialog,
@@ -59,7 +59,6 @@ export default function CreatePeerDialog({
   const [port, setPort] = useState('');
   const [customPortChecked, setCustomPortChecked] = useState(false);
   const [useTorChecked, setUseTorChecked] = useState(false);
-  const portToUse = useMemo(() => (customPortChecked ? port : defaultPeerPort), [customPortChecked, port, defaultPeerPort]);
 
   const getDefaultPeerPort = () => {
     getDefaultPeerPortRequest(setDefaultPeerPort);
@@ -118,8 +117,7 @@ export default function CreatePeerDialog({
     return 'IPV4';
   };
 
-  const createPeer = (peerName, host, port) => {
-    const network = getNetwork(useTorChecked);
+  const createPeer = (network, peerName, host, port) => {
     createPeerRequest(peerName, network, host, port, (response) => {
       goToPeerPage(history, response.getPeerId());
     });
@@ -130,15 +128,17 @@ export default function CreatePeerDialog({
     console.log('peerName:', peerName);
     console.log('host:', host);
     console.log('port:', port);
+    const network = getNetwork(useTorChecked);
     if (!host) {
       alert('Host cannot be empty.');
       return;
     }
-    if (!portToUse) {
-      alert('portToUse cannot be empty.');
+    if (!port && customPortChecked) {
+      alert('port cannot be empty if using custom port.');
       return;
     }
-    createPeer(peerName, host, portToUse);
+    const portToUse = (customPortChecked ? port : defaultPeerPort);
+    createPeer(network, peerName, host, portToUse);
     handleClose();
   }
 
@@ -172,13 +172,14 @@ export default function CreatePeerDialog({
     );
   }
 
+  // Explanation for value: https://stackoverflow.com/questions/50955603/react-material-ui-label-overlaps-with-text#comment123095620_54226170
   function CreatePortInput() {
     return (
       <TextField
         required={customPortChecked}
         variant="outlined"
         label="Port"
-        value={portToUse}
+        value={customPortChecked ? port : defaultPeerPort || ''}
         onChange={handleChangePort}
         inputProps={{ maxLength: 8 }}
         disabled={!customPortChecked}

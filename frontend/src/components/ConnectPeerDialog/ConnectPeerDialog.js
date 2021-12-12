@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import {
   Button,
   Dialog,
@@ -28,20 +28,17 @@ export default function ConnectPeerDialog({
   const classes = useStyles();
 
   const [defaultPeerPort, setDefaultPeerPort] = useState(null);
-  const [peerName, setPeerName] = useState('');
   const [host, setHost] = useState('');
   const [port, setPort] = useState('');
   const [customPortChecked, setCustomPortChecked] = useState(false);
   const [useTorChecked, setUseTorChecked] = useState(false);
   const [loading, setLoading] = useState(false);
-  const portToUse = useMemo(() => (customPortChecked ? port : defaultPeerPort), [customPortChecked, port, defaultPeerPort]);
 
   const getDefaultPeerPort = () => {
     getDefaultPeerPortRequest(setDefaultPeerPort);
   };
 
   const resetFields = () => {
-    setPeerName('');
     setHost('');
     setPort('');
     setCustomPortChecked(false);
@@ -79,11 +76,7 @@ export default function ConnectPeerDialog({
     return 'IPV4';
   };
 
-  const connectPeer = (peerName, host, port) => {
-    // const portToUse = customPortChecked ? port : defaultPeerPort;
-    // console.log('Calling connectSqueakPeerRequest with: ', host, portToUse, useTorChecked);
-    // console.log('portToUse: ', portToUse);
-    const network = getNetwork(useTorChecked);
+  const connectPeer = (network, host, port) => {
     setLoading(true);
     console.log('Calling connectSqueakPeerRequest with:', network, host, port);
     connectSqueakPeerRequest(network, host, port, (response) => {
@@ -108,17 +101,21 @@ export default function ConnectPeerDialog({
 
   function handleSubmit(event) {
     event.preventDefault();
+    console.log('useTorChecked:', useTorChecked);
     console.log('host:', host);
-    console.log('portToUse:', portToUse);
+    console.log('port:', port);
+    console.log('customPortChecked:', customPortChecked);
+    const network = getNetwork(useTorChecked);
     if (!host) {
       alert('Host cannot be empty.');
       return;
     }
-    if (!portToUse) {
-      alert('portToUse cannot be empty.');
+    if (!port && customPortChecked) {
+      alert('port cannot be empty if using custom port.');
       return;
     }
-    connectPeer(peerName, host, portToUse);
+    const portToUse = (customPortChecked ? port : defaultPeerPort);
+    connectPeer(network, host, portToUse);
     // handleClose();
   }
 
@@ -137,13 +134,14 @@ export default function ConnectPeerDialog({
     );
   }
 
+  // Explanation for value: https://stackoverflow.com/questions/50955603/react-material-ui-label-overlaps-with-text#comment123095620_54226170
   function ConnectPortInput() {
     return (
       <TextField
         required={customPortChecked}
         variant="outlined"
         label="Port"
-        value={portToUse}
+        value={customPortChecked ? port : defaultPeerPort || ''}
         onChange={handleChangePort}
         inputProps={{ maxLength: 8 }}
         disabled={!customPortChecked}
