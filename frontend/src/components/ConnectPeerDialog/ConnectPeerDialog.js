@@ -33,7 +33,6 @@ export default function ConnectPeerDialog({
   const [customPortChecked, setCustomPortChecked] = useState(false);
   const [useTorChecked, setUseTorChecked] = useState(false);
   const [loading, setLoading] = useState(false);
-  const portToUse = useMemo(() => (customPortChecked ? port : defaultPeerPort), [customPortChecked, port, defaultPeerPort]);
 
   const getDefaultPeerPort = () => {
     getDefaultPeerPortRequest(setDefaultPeerPort);
@@ -77,11 +76,7 @@ export default function ConnectPeerDialog({
     return 'IPV4';
   };
 
-  const connectPeer = (host, port) => {
-    // const portToUse = customPortChecked ? port : defaultPeerPort;
-    // console.log('Calling connectSqueakPeerRequest with: ', host, portToUse, useTorChecked);
-    // console.log('portToUse: ', portToUse);
-    const network = getNetwork(useTorChecked);
+  const connectPeer = (network, host, port) => {
     setLoading(true);
     console.log('Calling connectSqueakPeerRequest with:', network, host, port);
     connectSqueakPeerRequest(network, host, port, (response) => {
@@ -106,17 +101,21 @@ export default function ConnectPeerDialog({
 
   function handleSubmit(event) {
     event.preventDefault();
+    console.log('useTorChecked:', useTorChecked);
     console.log('host:', host);
-    console.log('portToUse:', portToUse);
+    console.log('port:', port);
+    console.log('customPortChecked:', customPortChecked);
+    const network = getNetwork(useTorChecked);
     if (!host) {
       alert('Host cannot be empty.');
       return;
     }
-    if (!portToUse) {
-      alert('portToUse cannot be empty.');
+    if (!port && customPortChecked) {
+      alert('port cannot be empty if using custom port.');
       return;
     }
-    connectPeer(host, portToUse);
+    const portToUse = (customPortChecked ? port : defaultPeerPort);
+    connectPeer(network, host, portToUse);
     // handleClose();
   }
 
@@ -141,7 +140,7 @@ export default function ConnectPeerDialog({
         required={customPortChecked}
         variant="outlined"
         label="Port"
-        value={portToUse}
+        value={customPortChecked ? port : defaultPeerPort}
         onChange={handleChangePort}
         inputProps={{ maxLength: 8 }}
         disabled={!customPortChecked}
