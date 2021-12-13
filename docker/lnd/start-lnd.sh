@@ -64,8 +64,8 @@ if [[ "$BACKEND" == "bitcoind" ]]; then
 	 --debuglevel=$DEBUG \
 	 --tlsextradomain=lnd \
 	 --tor.active \
-	 --tor.control=tor-privoxy:9051 \
-	 --tor.socks=tor-socks-proxy:9150 \
+	 --tor.control=tor-node:9051 \
+	 --tor.socks=tor-node:9050 \
 	 --tor.v3 \
 	 --tor.targetipaddress=$TARGETHOST \
 	 --listen=0.0.0.0:9735 \
@@ -87,8 +87,8 @@ else
 	 --debuglevel=$DEBUG \
 	 --tlsextradomain=lnd \
 	 --tor.active \
-	 --tor.control=tor-privoxy:9051 \
-	 --tor.socks=tor-socks-proxy:9150 \
+	 --tor.control=tor-node:9051 \
+	 --tor.socks=tor-node:9050 \
 	 --tor.v3 \
 	 --tor.targetipaddress=$TARGETHOST \
 	 --listen=0.0.0.0:9735 \

@@ -22,8 +22,11 @@ services:
       - RPCHOST=bitcoin-core
       - BACKEND=bitcoind
       - TARGETHOST=lnd_client
+    depends_on:
+      - "tor-node"
     volumes:
       - ~/.lnd:/root/.lnd
+      - tor-dir:/var/lib/tor
     ports:
       - 10009:10009
     links:
@@ -43,22 +46,26 @@ services:
       - RPCHOST=bitcoin-core
       - BACKEND=bitcoind
       - TARGETHOST=lnd_server
+    depends_on:
+      - "tor-node"
     volumes:
       - lnd_server_dir:/root/.lnd
+      - tor-dir:/var/lib/tor
     links:
       - "bitcoin-core:bitcoin-core"
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=0
     entrypoint: ["./start-lnd.sh"]
 
-  tor-privoxy:
+  tor-node:
+    image: osminogin/tor-simple
+    container_name: tor-node
     restart: always
-    image: dockage/tor-privoxy:latest
-
-  tor-socks-proxy:
-    container_name: tor-socks-proxy
-    image: peterdavehello/tor-socks-proxy:latest
-    restart: unless-stopped
+    expose:
+      - "9051"
+    volumes:
+      - ../torrc:/etc/tor/torrc:ro
+      - tor-dir:/var/lib/tor
 
   squeaknode:
     image: squeaknode
@@ -86,4 +93,6 @@ volumes:
   lnd_server_dir:
     driver: local
   squeaknode_dir:
+    driver: local
+  tor-dir:
     driver: local
