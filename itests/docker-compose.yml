@@ -32,14 +32,24 @@ services:
       - "btcd:btcd"
     entrypoint: ["./start-btcctl.sh"]
 
-  tor-privoxy:
-    restart: always
-    image: dockage/tor-privoxy:latest
+  # tor-privoxy:
+  #   restart: always
+  #   image: dockage/tor-privoxy:latest
 
-  tor-socks-proxy:
-    container_name: test_tor-socks-proxy
-    image: peterdavehello/tor-socks-proxy:latest
-    restart: unless-stopped
+  # tor-socks-proxy:
+  #   container_name: test_tor-socks-proxy
+  #   image: peterdavehello/tor-socks-proxy:latest
+  #   restart: unless-stopped
+
+  tor-node:
+    image: osminogin/tor-simple
+    container_name: test_tor-node
+    restart: always
+    expose:
+      - "9051"
+    volumes:
+      - ../torrc:/etc/tor/torrc:ro
+      - test_tor-dir:/var/lib/tor
 
   lnd_client:
     image: lnd
@@ -54,6 +64,7 @@ services:
     volumes:
       - test_shared:/rpc
       - test_lnd_client_dir:/root/.lnd
+      - test_tor-dir:/var/lib/tor
     links:
       - "btcd:btcd"
     sysctls:
@@ -73,6 +84,7 @@ services:
     volumes:
       - test_shared:/rpc
       - test_lnd_server_dir:/root/.lnd
+      - test_tor-dir:/var/lib/tor
     links:
       - "btcd:blockchain"
     sysctls:
@@ -179,4 +191,8 @@ volumes:
   squeaknode_pgdata:
     driver: local
   squeaknode_other_pgdata:
+    driver: local
+
+  # tor node data
+  test_tor-dir:
     driver: local

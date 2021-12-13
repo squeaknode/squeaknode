@@ -73,7 +73,7 @@ services:
     expose:
       - "9051"
     volumes:
-      - ./torrc:/etc/tor/torrc:ro
+      - ../torrc:/etc/tor/torrc:ro
       - tor-dir:/var/lib/tor
 
   squeaknode:
