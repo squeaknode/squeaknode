@@ -14,7 +14,7 @@ ENV GODEBUG netdns=cgo
 # image to be built from a specified Git state.  The default image
 # will use the Git tip of master by default.
 # ARG checkout="master"
-ARG checkout="v0.13.1-beta"
+ARG checkout="v0.14.1-beta"
 
 # Install dependencies and build the binaries.
 RUN apk add --no-cache --update alpine-sdk \
