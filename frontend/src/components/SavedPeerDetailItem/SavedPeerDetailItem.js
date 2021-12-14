@@ -141,7 +141,13 @@ export default function SavedPeerDetailItem({
 
         <CardContent>
           <Typography variant="body2" color="textSecondary" component="p">
-            {savedPeer.getPeerAddress().getHost()}
+            Network: {savedPeer.getPeerAddress().getNetwork()}
+          </Typography>
+          <Typography variant="body2" color="textSecondary" component="p">
+            Host: {savedPeer.getPeerAddress().getHost()}
+          </Typography>
+          <Typography variant="body2" color="textSecondary" component="p">
+            Port: {savedPeer.getPeerAddress().getPort()}
           </Typography>
           <Typography variant="body2" color="textSecondary" component="p">
             Autoconnect: {savedPeer.getAutoconnect().toString()}
