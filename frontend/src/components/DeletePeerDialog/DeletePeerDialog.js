@@ -6,7 +6,6 @@ import {
   DialogActions,
   Button,
 } from '@material-ui/core';
-import { useHistory } from 'react-router-dom';
 
 // styles
 import useStyles from './styles';
@@ -14,22 +13,20 @@ import useStyles from './styles';
 import {
   deletePeerRequest,
 } from '../../squeakclient/requests';
-import {
-  reloadRoute,
-} from '../../navigation/navigation';
+
 
 export default function DeletePeerDialog({
   open,
   handleClose,
   peer,
+  reloadPeer,
   ...props
 }) {
   const classes = useStyles();
-  const history = useHistory();
 
   const deletePeer = (peerId) => {
     deletePeerRequest(peerId, (response) => {
-      reloadRoute(history);
+      reloadPeer();
     });
   };
 
