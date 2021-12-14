@@ -20,7 +20,7 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import useStyles from './styles';
 
 import DeletePeerDialog from '../DeletePeerDialog';
-import ConfigureProfileDialog from '../ConfigureProfileDialog';
+import ConfigurePeerDialog from '../ConfigurePeerDialog';
 
 import {
   goToPeerAddressPage,
@@ -100,14 +100,14 @@ export default function SavedPeerDetailItem({
     );
   }
 
-  function ConfigureProfileDialogContent() {
+  function ConfigurePeerDialogContent() {
     return (
       <>
-        <ConfigureProfileDialog
+        <ConfigurePeerDialog
           open={configureDialogOpen}
           handleClose={handleCloseConfigureDialog}
           savedPeer={savedPeer}
-          reloadProfile={handleReloadPeer}
+          reloadPeer={handleReloadPeer}
         />
       </>
     );
@@ -143,9 +143,12 @@ export default function SavedPeerDetailItem({
           <Typography variant="body2" color="textSecondary" component="p">
             {savedPeer.getPeerAddress().getHost()}
           </Typography>
-          <savedPeerFollowingIndicator
-            savedPeer={savedPeer}
-          />
+          <Typography variant="body2" color="textSecondary" component="p">
+            Autoconnect: {savedPeer.getAutoconnect().toString()}
+          </Typography>
+          <Typography variant="body2" color="textSecondary" component="p">
+            Share for free: {savedPeer.getShareForFree().toString()}
+          </Typography>
         </CardContent>
         <CardActions>
           <Button
@@ -160,7 +163,7 @@ export default function SavedPeerDetailItem({
         </CardActions>
       </Card>
       {DeletePeerDialogContent()}
-      {ConfigureProfileDialogContent()}
+      {ConfigurePeerDialogContent()}
     </>
   );
 }
