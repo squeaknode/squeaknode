@@ -1,6 +1,7 @@
-# This is a basic workflow to help you get started with Actions
-
 name: CI
+
+permissions:
+  packages: write
 
 on:
   schedule:
@@ -48,10 +49,11 @@ jobs:
       -
         name: Docker meta
         id: docker_meta
-        uses: crazy-max/ghaction-docker-meta@v1
+        uses: docker/metadata-action@v3
         with:
-          images: yzernik/squeaknode
-          tag-sha: true # add git short SHA as Docker tag
+          images: ghcr.io/${{ github.repository_owner }}/squeaknode
+          tags: |
+            type=sha
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -67,11 +69,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-buildx-
       -
-        name: Login to DockerHub
+        name: Login to GitHub Container Registry
         uses: docker/login-action@v1 
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       -
         name: Build and push
         id: docker_build
