@@ -7,8 +7,6 @@ import {
   Card,
 } from '@material-ui/core';
 
-import Paper from '@material-ui/core/Paper';
-
 import ReplayIcon from '@material-ui/icons/Replay';
 
 // styles
@@ -86,15 +84,10 @@ export default function LikedPage() {
     return (
       <Grid container spacing={0}>
         <Grid item xs={12} sm={9}>
-        <Paper className={classes.paper}>
           {(squeaks.length > 0)
             ? SqueaksContent()
             : NoSqueaksContent()}
-        </Paper>
         {ViewMoreSqueaksButton()}
-        </Grid>
-        <Grid item xs={12} sm={3}>
-          <Paper className={classes.paper} />
         </Grid>
       </Grid>
     );

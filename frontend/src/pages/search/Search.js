@@ -7,10 +7,6 @@ import {
   TextField,
 } from '@material-ui/core';
 
-// components
-
-import Paper from '@material-ui/core/Paper';
-
 import ReplayIcon from '@material-ui/icons/Replay';
 
 import SqueakList from '../../components/SqueakList';
@@ -128,15 +124,10 @@ export default function SearchPage() {
     return (
       <Grid container spacing={0}>
         <Grid item xs={12} sm={9}>
-          <Paper className={classes.paper}>
             {(squeaks)
               ? SqueaksContent()
               : NoSqueaksContent()}
-          </Paper>
           {ViewMoreSqueaksButton()}
-        </Grid>
-        <Grid item xs={12} sm={3}>
-          <Paper className={classes.paper} />
         </Grid>
       </Grid>
     );

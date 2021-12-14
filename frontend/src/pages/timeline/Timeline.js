@@ -11,8 +11,6 @@ import {
 import EditIcon from '@material-ui/icons/Edit';
 import ReplayIcon from '@material-ui/icons/Replay';
 
-import Paper from '@material-ui/core/Paper';
-
 // styles
 import useStyles from './styles';
 
@@ -177,15 +175,10 @@ export default function TimelinePage() {
     return (
       <Grid container spacing={0}>
         <Grid item xs={12} sm={9}>
-        <Paper className={classes.paper}>
           {(squeaks.length > 0)
             ? SqueaksContent()
             : NoSqueaksContent()}
-        </Paper>
         {ViewMoreSqueaksButton()}
-        </Grid>
-        <Grid item xs={12} sm={3}>
-          <Paper className={classes.paper} />
         </Grid>
       </Grid>
     );
