@@ -10,9 +10,6 @@ import {
 // styles
 
 // components
-
-import Paper from '@material-ui/core/Paper';
-
 import GetAppIcon from '@material-ui/icons/GetApp';
 import ReplayIcon from '@material-ui/icons/Replay';
 
@@ -200,15 +197,10 @@ export default function SqueakAddressPage() {
     return (
       <Grid container spacing={0}>
         <Grid item xs={12} sm={9}>
-          <Paper className={classes.paper}>
             {(squeaks)
               ? SqueaksContent()
               : NoSqueaksContent()}
-          </Paper>
           {ViewMoreSqueaksContent()}
-        </Grid>
-        <Grid item xs={12} sm={3}>
-          <Paper className={classes.paper} />
         </Grid>
       </Grid>
     );

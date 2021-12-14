@@ -10,7 +10,6 @@ import {
 } from '@material-ui/core';
 
 import Timeline from '@material-ui/lab/Timeline';
-import Paper from '@material-ui/core/Paper';
 
 import GetAppIcon from '@material-ui/icons/GetApp';
 import ReplayIcon from '@material-ui/icons/Replay';
@@ -219,12 +218,7 @@ export default function SqueakPage() {
     return (
       <Grid container spacing={0}>
         <Grid item xs={12} sm={9}>
-          <Paper className={classes.paper}>
-            {SqueakContent()}
-          </Paper>
-        </Grid>
-        <Grid item xs={12} sm={3}>
-          <Paper className={classes.paper} />
+          {SqueakContent()}
         </Grid>
       </Grid>
     );
