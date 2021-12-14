@@ -276,7 +276,7 @@ export default function PeerAddressPage() {
             goToPeerPage(history, savedPeer.getPeerId());
           }}
         >
-          {savedPeer.getPeerName()}
+          Go to peer config
         </Button>
       </Box>
     );
