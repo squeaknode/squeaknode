@@ -559,6 +559,12 @@ def create_app(handler, username, password):
     def deletetwitteraccount(msg):
         return handler.handle_delete_twitter_account(msg)
 
+    @app.route("/gettwitterstreamstatus", methods=["POST"])
+    @login_required
+    @protobuf_serialized(squeak_admin_pb2.GetTwitterStreamStatusRequest())
+    def gettwitterstreamstatus(msg):
+        return handler.handle_get_twitter_stream_status(msg)
+
     return app
 
 
