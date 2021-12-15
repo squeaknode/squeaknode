@@ -8,7 +8,6 @@ import {
   Box,
   CircularProgress,
   Typography,
-  TextField,
 } from '@material-ui/core';
 
 // styles
@@ -22,17 +21,19 @@ import SetBearerTokenDialog from '../../components/SetBearerTokenDialog';
 import AddTwitterAccountDialog from '../../components/AddTwitterAccountDialog';
 import TwitterAccountListItem from '../../components/TwitterAccountListItem';
 
+import CloudIcon from '@mui/icons-material/Cloud';
+import CloudOffIcon from '@mui/icons-material/CloudOff';
+
 
 import {
-  getTwitterBearerTokenRequest,
   getTwitterAccountsRequest,
+  getTwitterStreamStatusRequest,
 } from '../../squeakclient/requests';
 
 export default function Twitter() {
   const classes = useStyles();
-  const [bearerToken, setBearerToken] = useState('');
   const [accounts, setAccounts] = useState([]);
-  const [waitingForBearerToken, setWaitingForBearerToken] = useState(false);
+  const [streamStatus, setStreamStatus] = useState(null);
   const [waitingForAccounts, setWaitingForAccounts] = useState(false);
   const [setBearerTokenDialogOpen, setSetBearerTokenDialogOpen] = useState(false);
   const [addAccountDialogOpen, setAddAccountDialogOpen] = useState(false);
@@ -45,19 +46,17 @@ export default function Twitter() {
     };
   }
 
-  const getBearerToken = () => {
-    setWaitingForBearerToken(true);
-    getTwitterBearerTokenRequest((resp) => {
-      setWaitingForBearerToken(false);
-      setBearerToken(resp);
-    });
-  };
-
   const getAccounts = () => {
     setWaitingForAccounts(true);
     getTwitterAccountsRequest((resp) => {
       setWaitingForAccounts(false);
       setAccounts(resp);
+    });
+  };
+
+  const getStreamStatus = () => {
+    getTwitterStreamStatusRequest((resp) => {
+      setStreamStatus(resp);
     });
   };
 
@@ -78,10 +77,10 @@ export default function Twitter() {
   };
 
   useEffect(() => {
-    getBearerToken();
+    getAccounts();
   }, []);
   useEffect(() => {
-    getAccounts();
+    getStreamStatus();
   }, []);
 
   function TabPanel(props) {
@@ -104,26 +103,41 @@ export default function Twitter() {
     );
   }
 
-  function BearerTokenSummary() {
-    const bearerTokenText = (bearerToken ? bearerToken : 'not configured')
+  function StreamStatusSummary() {
+    const isStreamActive = (streamStatus ? streamStatus.getIsStreamActive() : false);
     return (
       <Grid item xs={12}>
         <Box
           p={1}
         >
-          <Typography variant="h5" component="h5">
-            {`Bearer Token:`}
-          </Typography>
-          <TextField
-            id="standard-textarea"
-            value={bearerTokenText}
-            fullWidth
-            inputProps={{
-              readOnly: true,
-            }}
-          />
+          {isStreamActive
+            ? StreamActiveDisplay()
+            : StreamNotActiveDisplay()
+          }
         </Box>
       </Grid>
+    );
+  }
+
+  function StreamActiveDisplay() {
+    return (
+      <>
+          <Typography variant="h5" component="h5">
+            Twitter account connected
+          </Typography>
+          <CloudIcon fontSize="large" style={{ fill: 'green' }} />
+      </>
+    );
+  }
+
+  function StreamNotActiveDisplay() {
+    return (
+      <>
+          <Typography variant="h5" component="h5">
+            Twitter account not connected
+          </Typography>
+           <CloudOffIcon fontSize="large" style={{ fill: 'red' }} />
+      </>
     );
   }
 
@@ -214,7 +228,7 @@ export default function Twitter() {
             <Widget disableWidgetMenu>
             {SetBearerTokenButton()}
             {AddAccountButton()}
-            {BearerTokenSummary()}
+            {StreamStatusSummary()}
             {AccountsContent()}
             </Widget>
           </Grid>
@@ -232,7 +246,7 @@ export default function Twitter() {
           </Tabs>
         </AppBar>
         <TabPanel value={0} index={0}>
-        {(waitingForBearerToken || waitingForAccounts)
+        {( waitingForAccounts)
           ? WaitingIndicator()
           : TwitterAccountsContent()}
         </TabPanel>
@@ -246,7 +260,6 @@ export default function Twitter() {
         <SetBearerTokenDialog
           open={setBearerTokenDialogOpen}
           handleClose={handleCloseSetBearerTokenDialog}
-          reloadBearerTokenFn={getBearerToken}
         />
       </>
     );

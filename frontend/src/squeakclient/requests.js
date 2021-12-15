@@ -143,6 +143,8 @@ import {
   GetSellPriceReply,
   ClearSellPriceRequest,
   ClearSellPriceReply,
+  GetTwitterStreamStatusRequest,
+  GetTwitterStreamStatusReply,
 } from '../proto/squeak_admin_pb';
 
 console.log('The value of REACT_APP_DEV_MODE_ENABLED is:', Boolean(process.env.REACT_APP_DEV_MODE_ENABLED));
@@ -1212,6 +1214,16 @@ export function deleteTwitterAccountRequest(twitterAccountId, handleResponse) {
     'deletetwitteraccount',
     request,
     DeleteTwitterAccountReply.deserializeBinary,
+    handleResponse,
+  );
+}
+
+export function getTwitterStreamStatusRequest(handleResponse) {
+  const request = new GetTwitterStreamStatusRequest();
+  makeRequest(
+    'gettwitterstreamstatus',
+    request,
+    GetTwitterStreamStatusReply.deserializeBinary,
     handleResponse,
   );
 }
