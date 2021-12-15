@@ -57,6 +57,12 @@ class TwitterForwarder:
             if self.current_task is not None:
                 self.current_task.stop_processing()
 
+    def is_processing(self) -> bool:
+        with self.lock:
+            if self.current_task is not None:
+                return self.current_task.is_processing()
+            return False
+
 
 class TwitterForwarderTask:
 

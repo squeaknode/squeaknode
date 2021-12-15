@@ -907,6 +907,9 @@ class SqueakController:
             return None
         return user_config.twitter_bearer_token
 
+    def get_twitter_stream_status(self) -> bool:
+        return self.tweet_forwarder.is_processing()
+
     def add_twitter_account(self, handle: str, profile_id: int) -> Optional[int]:
         twitter_account = TwitterAccount(
             twitter_account_id=None,

@@ -356,6 +356,10 @@ service SqueakAdmin {
   */
   rpc DeleteTwitterAccount (DeleteTwitterAccountRequest) returns (DeleteTwitterAccountReply) {}
 
+  /** sqkadmin: `gettwitterstreamstatus`
+  */
+  rpc GetTwitterStreamStatus (GetTwitterStreamStatusRequest) returns (GetTwitterStreamStatusReply) {}
+
 }
 
 message CreateSigningProfileRequest {
@@ -1313,4 +1317,12 @@ message DeleteTwitterAccountRequest {
 }
 
 message DeleteTwitterAccountReply {
+}
+
+message GetTwitterStreamStatusRequest {
+}
+
+message GetTwitterStreamStatusReply {
+    /// Is twitter stream active
+    bool is_stream_active = 1;
 }

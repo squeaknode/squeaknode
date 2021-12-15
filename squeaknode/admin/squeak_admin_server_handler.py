@@ -1105,3 +1105,10 @@ class SqueakAdminServerHandler(object):
             twitter_account_id,
         )
         return squeak_admin_pb2.DeleteTwitterAccountReply()
+
+    def handle_get_twitter_stream_status(self, request):
+        logger.info("Handle get twitter stream status")
+        twitter_stream_status = self.squeak_controller.get_twitter_stream_status()
+        return squeak_admin_pb2.GetTwitterStreamStatusReply(
+            is_stream_active=twitter_stream_status,
+        )
