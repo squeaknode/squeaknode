@@ -4,11 +4,11 @@ import {
   Home as HomeIcon,
   People as ProfilesIcon,
   ArrowBack as ArrowBackIcon,
-  CloudDownload as PeerIcon,
   History as HistoryIcon,
   Favorite as LikedIcon,
   Twitter as TwitterIcon,
 } from '@material-ui/icons';
+import ConnectWithoutContactIcon from '@mui/icons-material/ConnectWithoutContact';
 import { useTheme } from '@material-ui/styles';
 import { withRouter } from 'react-router-dom';
 import classNames from 'classnames';
@@ -44,7 +44,7 @@ const structure = [
     id: 3, label: 'Wallet', link: '/app/wallet', icon: <BitcoinIcon />,
   },
   {
-    id: 4, label: 'Peers', link: '/app/peers', icon: <PeerIcon />,
+    id: 4, label: 'Peers', link: '/app/peers', icon: <ConnectWithoutContactIcon />,
   },
   {
     id: 5, label: 'Payments', link: '/app/payments', icon: <HistoryIcon />,
