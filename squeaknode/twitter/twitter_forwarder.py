@@ -90,6 +90,8 @@ class TwitterForwarderTask:
             handles,
         ))
         with self.lock:
+            if self.stopped.is_set():
+                return
             twitter_stream = TwitterStream(bearer_token, handles)
             self.tweet_stream = twitter_stream.get_tweets()
 
@@ -104,6 +106,9 @@ class TwitterForwarderTask:
         return self.tweet_stream is not None
 
     def process_forward_tweets(self):
+        # Do exponential backoff
+        wait_s = self.retry_s
+
         while not self.stopped.is_set():
             try:
                 bearer_token = self.get_bearer_token()
@@ -120,10 +125,11 @@ class TwitterForwarderTask:
                 self.tweet_stream = None
                 logger.exception(
                     "Unable to subscribe tweet stream. Retrying in {} seconds...".format(
-                        self.retry_s,
+                        wait_s,
                     ),
                 )
-                self.stopped.wait(self.retry_s)
+                self.stopped.wait(wait_s)
+                wait_s *= 2
 
     def get_bearer_token(self) -> str:
         return self.squeak_controller.get_twitter_bearer_token() or ''
