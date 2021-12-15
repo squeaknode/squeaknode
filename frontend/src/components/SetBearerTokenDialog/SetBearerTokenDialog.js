@@ -37,7 +37,10 @@ export default function SetBearerTokenDialog({
   const handleResponse = (response) => {
     // goToProfilePage(history, response.getProfileId());
     // TODO
-    reloadBearerTokenFn();
+
+    if (reloadBearerTokenFn) {
+      reloadBearerTokenFn();
+    }
   };
 
   const handleErr = (err) => {
