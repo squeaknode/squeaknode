@@ -123,7 +123,7 @@ export default function Twitter() {
     return (
       <>
           <Typography variant="h5" component="h5">
-            Twitter account connected
+            Twitter mirroring successfully
           </Typography>
           <CloudIcon fontSize="large" style={{ fill: 'green' }} />
       </>
@@ -134,7 +134,7 @@ export default function Twitter() {
     return (
       <>
           <Typography variant="h5" component="h5">
-            Twitter account not connected
+            Twitter not connected
           </Typography>
            <CloudOffIcon fontSize="large" style={{ fill: 'red' }} />
       </>
@@ -167,9 +167,6 @@ export default function Twitter() {
         <Box
           p={1}
         >
-          <Typography variant="h5" component="h5">
-            {`Number of accounts: ${accounts.length}`}
-          </Typography>
           {AccountsGridItem(accounts)}
         </Box>
       </Grid>
