@@ -123,7 +123,7 @@ export default function Twitter() {
     return (
       <>
           <Typography variant="h5" component="h5">
-            Twitter account connected
+            Twitter connected successfully
           </Typography>
           <CloudIcon fontSize="large" style={{ fill: 'green' }} />
       </>
@@ -134,7 +134,7 @@ export default function Twitter() {
     return (
       <>
           <Typography variant="h5" component="h5">
-            Twitter account not connected
+            Twitter not connected
           </Typography>
            <CloudOffIcon fontSize="large" style={{ fill: 'red' }} />
       </>
