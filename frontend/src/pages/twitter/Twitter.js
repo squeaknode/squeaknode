@@ -21,7 +21,7 @@ import SetBearerTokenDialog from '../../components/SetBearerTokenDialog';
 import AddTwitterAccountDialog from '../../components/AddTwitterAccountDialog';
 import TwitterAccountListItem from '../../components/TwitterAccountListItem';
 
-import CloudIcon from '@mui/icons-material/Cloud';
+import CheckIcon from '@mui/icons-material/Check';
 import CloudOffIcon from '@mui/icons-material/CloudOff';
 
 
@@ -125,7 +125,7 @@ export default function Twitter() {
           <Typography variant="h5" component="h5">
             Twitter mirroring successfully
           </Typography>
-          <CloudIcon fontSize="large" style={{ fill: 'green' }} />
+          <CheckIcon fontSize="large" style={{ fill: 'green' }} />
       </>
     );
   }
