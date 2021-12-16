@@ -167,9 +167,6 @@ export default function Twitter() {
         <Box
           p={1}
         >
-          <Typography variant="h5" component="h5">
-            {`Number of accounts: ${accounts.length}`}
-          </Typography>
           {AccountsGridItem(accounts)}
         </Box>
       </Grid>
