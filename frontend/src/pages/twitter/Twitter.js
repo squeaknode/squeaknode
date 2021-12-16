@@ -123,7 +123,7 @@ export default function Twitter() {
     return (
       <>
           <Typography variant="h5" component="h5">
-            Twitter connected successfully
+            Twitter mirroring successfully
           </Typography>
           <CloudIcon fontSize="large" style={{ fill: 'green' }} />
       </>
