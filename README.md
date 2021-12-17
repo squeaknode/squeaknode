@@ -105,7 +105,7 @@ make itest
 
 ## Telegram
 
-(Join our Telegram group!)[https://t.me/squeaknode]
+[Join our Telegram group!(https://t.me/squeaknode)
 
 ## License
 
