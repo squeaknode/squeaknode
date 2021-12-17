@@ -103,6 +103,10 @@ make test
 make itest
 ```
 
+## Telegram
+
+[Join our Telegram group!](https://t.me/squeaknode)
+
 ## License
 
 Distributed under the MIT License. See [LICENSE file](LICENSE).
