@@ -521,8 +521,8 @@ message SqueakProfile {
     /// Has private key
     bool has_private_key = 3;
 
-    /// The address
-    string address = 4;
+    /// The pubkey in hex
+    string pubkey = 4;
 
     /// Following
     bool following = 5;
@@ -588,8 +588,8 @@ message SqueakDisplayEntry {
     /// Squeak time
     int64 squeak_time = 9;
 
-    /// The author name
-    string author_address = 10;
+    /// The author pubkey in hex
+    string author_pubkey = 10;
 
     /// Is author address known
     bool is_author_known = 11;

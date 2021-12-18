@@ -230,7 +230,7 @@ def squeak_entry_locked(
         squeak,
         squeak_bytes,
         squeak_hash,
-        address_str,
+        public_key,
         block_count,
         block_hash,
         block_time,
@@ -241,7 +241,7 @@ def squeak_entry_locked(
     yield SqueakEntry(
         squeak_hash=squeak_hash,
         serialized_squeak=squeak_bytes,
-        address=address_str,
+        public_key=public_key,
         block_height=block_count,
         block_hash=block_hash,
         block_time=block_time,

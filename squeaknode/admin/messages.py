@@ -22,6 +22,8 @@
 import logging
 from typing import Optional
 
+from squeak.core.signing import SqueakPublicKey
+
 from proto import squeak_admin_pb2
 from squeaknode.admin.profile_image_util import bytes_to_base64_string
 from squeaknode.admin.profile_image_util import load_default_profile_image
@@ -68,7 +70,7 @@ def squeak_entry_to_message(squeak_entry: SqueakEntry) -> squeak_admin_pb2.Squea
         squeak_time=squeak_entry.squeak_time,
         is_reply=is_reply,
         reply_to=reply_to,  # type: ignore
-        author_address=squeak_entry.address,
+        author_pubkey=squeak_entry.public_key.to_bytes().hex(),
         is_author_known=is_author_known,
         author=profile_msg,
         liked_time_ms=squeak_entry.liked_time_ms,  # type: ignore
@@ -85,7 +87,7 @@ def squeak_profile_to_message(squeak_profile: SqueakProfile) -> squeak_admin_pb2
         profile_id=profile_id,
         profile_name=squeak_profile.profile_name,
         has_private_key=has_private_key,
-        address=squeak_profile.public_key.to_bytes().hex(),
+        pubkey=squeak_profile.public_key.to_bytes().hex(),
         following=squeak_profile.following,
         profile_image=image_base64_str,
         has_custom_profile_image=has_custom_profile_image,
@@ -213,7 +215,9 @@ def message_to_squeak_entry(msg: squeak_admin_pb2.SqueakDisplayEntry) -> SqueakE
     return SqueakEntry(
         squeak_hash=bytes.fromhex(msg.squeak_hash),
         serialized_squeak=bytes.fromhex(msg.serialized_squeak_hex),
-        address=msg.author_address,
+        public_key=SqueakPublicKey.from_bytes(
+            bytes.fromhex(msg.author_pubkey),
+        ),
         block_height=msg.block_height,
         block_hash=bytes.fromhex(msg.block_hash),
         block_time=msg.block_time,

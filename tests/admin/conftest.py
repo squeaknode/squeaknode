@@ -42,7 +42,7 @@ def default_profile_image():
 
 @pytest.fixture
 def signing_profile_msg(
-        address_str,
+        public_key,
         default_profile_image,
 ):
     img_base64_str = bytes_to_base64_string(default_profile_image)
@@ -50,7 +50,7 @@ def signing_profile_msg(
         profile_id=None,
         profile_name="fake_signing_profile_name",
         has_private_key=True,
-        address=address_str,
+        pubkey=public_key.to_bytes().hex(),
         following=True,
         profile_image=img_base64_str,
         has_custom_profile_image=False,
@@ -62,7 +62,7 @@ def squeak_entry_msg_locked(
         squeak,
         squeak_bytes,
         squeak_hash,
-        address_str,
+        public_key,
         block_count,
         block_hash,
         block_time,
@@ -82,7 +82,7 @@ def squeak_entry_msg_locked(
         squeak_time=squeak_time,
         is_reply=False,
         reply_to=squeak_reply_to_hash,  # type: ignore
-        author_address=address_str,
+        author_pubkey=public_key.to_bytes().hex(),
         is_author_known=True,
         author=signing_profile_msg,
         liked_time_ms=None,  # type: ignore
