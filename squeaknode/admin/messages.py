@@ -85,7 +85,7 @@ def squeak_profile_to_message(squeak_profile: SqueakProfile) -> squeak_admin_pb2
         profile_id=profile_id,
         profile_name=squeak_profile.profile_name,
         has_private_key=has_private_key,
-        address=squeak_profile.address,
+        address=squeak_profile.public_key.to_bytes().hex(),
         following=squeak_profile.following,
         profile_image=image_base64_str,
         has_custom_profile_image=has_custom_profile_image,

@@ -27,7 +27,6 @@ from typing import Tuple
 import grpc
 from bitcoin.core import CBlockHeader
 from squeak.core import CSqueak
-from squeak.core.signing import CSigningKey
 
 from squeaknode.bitcoin.bitcoin_client import BitcoinClient
 from squeaknode.core.exception import InvoiceSubscriptionError
@@ -80,13 +79,11 @@ class SqueakCore:
         """
         if signing_profile.private_key is None:
             raise Exception("Can't make squeak with a contact profile.")
-        signing_key_str = signing_profile.private_key.decode()
-        signing_key = CSigningKey(signing_key_str)
         block_info = self.bitcoin_client.get_best_block_info()
         block_height = block_info.block_height
         block_hash = block_info.block_hash
         return make_squeak_with_block(
-            signing_key,
+            signing_profile.private_key,
             content_str,
             block_height,
             block_hash,

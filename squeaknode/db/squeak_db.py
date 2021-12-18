@@ -35,6 +35,7 @@ from sqlalchemy import or_
 from sqlalchemy.sql import select
 from sqlalchemy.sql import tuple_
 from squeak.core import CSqueak
+from squeak.signing import SqueakPublicKey
 
 from squeaknode.core.lightning_address import LightningAddressHostPort
 from squeaknode.core.peer_address import Network
@@ -716,7 +717,7 @@ class SqueakDb:
             created_time_ms=self.timestamp_now_ms,
             profile_name=squeak_profile.profile_name,
             private_key=squeak_profile.private_key,
-            address=squeak_profile.address,
+            public_key=squeak_profile.public_key.to_bytes(),
             following=squeak_profile.following,
         )
         with self.get_connection() as connection:
@@ -1482,7 +1483,7 @@ class SqueakDb:
             profile_id=row["profile_id"],
             profile_name=row["profile_name"],
             private_key=private_key,
-            address=row["address"],
+            public_key=SqueakPublicKey.from_bytes(row["public_key"]),
             following=row["following"],
             profile_image=row["profile_image"],
         )

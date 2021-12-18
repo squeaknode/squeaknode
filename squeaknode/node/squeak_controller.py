@@ -27,7 +27,6 @@ from typing import Optional
 
 import squeak.params
 from squeak.core import CSqueak
-from squeak.core.signing import CSqueakAddress
 from squeak.messages import msg_getdata
 from squeak.messages import msg_inv
 from squeak.messages import MSG_SECRET_KEY
@@ -36,6 +35,7 @@ from squeak.messages import MsgSerializable
 from squeak.net import CInterested
 from squeak.net import CInv
 from squeak.net import CSqueakLocator
+from squeak.signing import SqueakPublicKey
 
 from squeaknode.core.block_range import BlockRange
 from squeaknode.core.connected_peer import ConnectedPeer
@@ -659,7 +659,7 @@ class SqueakController:
             )
         interests = [
             CInterested(
-                addresses=[CSqueakAddress(address)
+                addresses=[SqueakPublicKey(address)
                            for address in followed_addresses],
                 nMinBlockHeight=block_range.min_block,
                 nMaxBlockHeight=block_range.max_block,
@@ -677,13 +677,13 @@ class SqueakController:
             replyto_hash: Optional[bytes],
     ) -> DownloadResult:
         interest = CInterested(
-            addresses=[CSqueakAddress(address)
+            addresses=[SqueakPublicKey(address)
                        for address in addresses],
             nMinBlockHeight=min_block,
             nMaxBlockHeight=max_block,
             replyto_squeak_hash=replyto_hash,
         ) if replyto_hash else CInterested(
-            addresses=[CSqueakAddress(address)
+            addresses=[SqueakPublicKey(address)
                        for address in addresses],
             nMinBlockHeight=min_block,
             nMaxBlockHeight=max_block,
@@ -726,7 +726,7 @@ class SqueakController:
             squeak_address,
         ))
         interest = CInterested(
-            addresses=[CSqueakAddress(squeak_address)],
+            addresses=[SqueakPublicKey(squeak_address)],
         )
         return self.active_download_manager.download_interest(10, interest)
 

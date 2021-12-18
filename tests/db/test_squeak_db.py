@@ -28,12 +28,12 @@ from sqlalchemy import create_engine
 from squeaknode.core.twitter_account import TwitterAccount
 from squeaknode.db.exception import SqueakDatabaseError
 from squeaknode.db.squeak_db import SqueakDb
-from tests.utils import gen_address
 from tests.utils import gen_contact_profile
+from tests.utils import gen_private_key
+from tests.utils import gen_pubkey
 from tests.utils import gen_random_hash
 from tests.utils import gen_received_payment
 from tests.utils import gen_sent_payment
-from tests.utils import gen_signing_key
 from tests.utils import gen_signing_profile
 from tests.utils import gen_squeak_peer
 from tests.utils import gen_squeak_with_block_header
@@ -218,8 +218,8 @@ def inserted_contact_profile_ids(squeak_db):
     ret = []
     for i in range(100):
         profile_name = "contact_profile_{}".format(i)
-        address = str(gen_address())
-        profile = gen_contact_profile(profile_name, address)
+        public_key = str(gen_pubkey())
+        profile = gen_contact_profile(profile_name, public_key)
         profile_id = squeak_db.insert_profile(profile)
         ret.append(profile_id)
     yield ret
@@ -230,8 +230,8 @@ def inserted_signing_profile_ids(squeak_db):
     ret = []
     for i in range(100):
         profile_name = "signing_profile_{}".format(i)
-        signing_key = str(gen_signing_key())
-        profile = gen_signing_profile(profile_name, signing_key)
+        private_key = str(gen_private_key())
+        profile = gen_signing_profile(profile_name, private_key)
         profile_id = squeak_db.insert_profile(profile)
         ret.append(profile_id)
     yield ret
@@ -687,9 +687,9 @@ def test_get_address_squeak_entries_other_address(
         inserted_squeak_hashes,
 ):
     # Get the address squeak entries for a different address.
-    other_address_str = str(gen_address())
+    other_public_key = gen_pubkey()
     address_squeak_entries = squeak_db.get_squeak_entries_for_address(
-        address=other_address_str,
+        address=other_public_key,
         limit=200,
         last_entry=None,
     )
@@ -810,9 +810,9 @@ def test_lookup_squeaks_use_address(
         inserted_squeak_hashes,
         address_str,
 ):
-    other_address_str = str(gen_address())
+    other_public_key = gen_pubkey()
     squeak_hashes = squeak_db.lookup_squeaks(
-        addresses=[address_str, other_address_str],
+        addresses=[address_str, other_public_key],
         min_block=None,
         max_block=None,
         reply_to_hash=None,
@@ -827,9 +827,9 @@ def test_lookup_squeaks_use_address_no_matches(
         inserted_squeak_hashes,
         address_str,
 ):
-    other_address_str = str(gen_address())
+    other_public_key = gen_pubkey()
     squeak_hashes = squeak_db.lookup_squeaks(
-        addresses=[other_address_str],
+        addresses=[other_public_key],
         min_block=None,
         max_block=None,
         reply_to_hash=None,
@@ -1128,8 +1128,8 @@ def test_get_profile_by_address_none(
         inserted_signing_profile_id,
         signing_profile,
 ):
-    random_address = str(gen_address())
-    profile = squeak_db.get_profile_by_address(random_address)
+    public_key = gen_pubkey()
+    profile = squeak_db.get_profile_by_address(public_key)
 
     assert profile is None
 

@@ -22,8 +22,7 @@
 import pytest
 from bitcoin.core import CBlockHeader
 from squeak.core.elliptic import payment_point_bytes_from_scalar_bytes
-from squeak.core.signing import CSigningKey
-from squeak.core.signing import CSqueakAddress
+from squeak.core.signing import SqueakPrivateKey
 
 from squeaknode.bitcoin.block_info import BlockInfo
 from squeaknode.core.connected_peer import ConnectedPeer
@@ -52,24 +51,18 @@ from tests.utils import sha256
 
 
 @pytest.fixture
-def signing_key():
-    yield CSigningKey.generate()
+def private_key():
+    yield SqueakPrivateKey.generate()
 
 
 @pytest.fixture
-def signing_key_bytes(signing_key):
-    yield str(signing_key).encode()
+def private_key_bytes(private_key):
+    yield private_key.to_bytes()
 
 
 @pytest.fixture
-def address(signing_key):
-    verifying_key = signing_key.get_verifying_key()
-    yield CSqueakAddress.from_verifying_key(verifying_key)
-
-
-@pytest.fixture
-def address_str(address):
-    yield str(address)
+def public_key(private_key):
+    yield private_key.get_public_key()
 
 
 @pytest.fixture
@@ -129,9 +122,9 @@ def reply_squeak_content():
 
 
 @pytest.fixture
-def squeak_and_secret_key(signing_key, squeak_content, block_info):
+def squeak_and_secret_key(private_key, squeak_content, block_info):
     yield make_squeak_with_block(
-        signing_key,
+        private_key,
         squeak_content,
         block_info.block_height,
         block_info.block_hash,
@@ -139,9 +132,9 @@ def squeak_and_secret_key(signing_key, squeak_content, block_info):
 
 
 @pytest.fixture
-def reply_squeak_and_secret_key(signing_key, reply_squeak_content, block_info, squeak_hash):
+def reply_squeak_and_secret_key(private, reply_squeak_content, block_info, squeak_hash):
     yield make_squeak_with_block(
-        signing_key,
+        private_key,
         reply_squeak_content,
         block_info.block_height,
         block_info.block_hash,
@@ -217,18 +210,18 @@ def contact_profile_name():
 
 
 @pytest.fixture
-def signing_profile(signing_profile_name, signing_key):
+def signing_profile(signing_profile_name, private_key):
     yield gen_signing_profile(
         signing_profile_name,
-        str(signing_key),
+        private_key,
     )
 
 
 @pytest.fixture
-def contact_profile(contact_profile_name, address):
+def contact_profile(contact_profile_name, public_key):
     yield gen_contact_profile(
         contact_profile_name,
-        str(address),
+        public_key,
     )
 
 

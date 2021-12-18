@@ -21,45 +21,30 @@
 # SOFTWARE.
 from typing import Optional
 
-from bitcoin.base58 import Base58ChecksumError
-from bitcoin.wallet import CBitcoinAddressError
-from squeak.core.signing import CSigningKey
-from squeak.core.signing import CSqueakAddress
+from squeak.core.signing import SqueakPrivateKey
+from squeak.core.signing import SqueakPublicKey
 
 from squeaknode.core.squeak_profile import SqueakProfile
 
 
-def create_signing_profile(profile_name: str, private_key: Optional[str] = None) -> SqueakProfile:
+def create_signing_profile(profile_name: str, private_key: Optional[SqueakPrivateKey] = None) -> SqueakProfile:
     validate_profile_name(profile_name)
     if private_key is None:
-        signing_key = CSigningKey.generate()
-    else:
-        signing_key = CSigningKey(private_key)
-    verifying_key = signing_key.get_verifying_key()
-    address = CSqueakAddress.from_verifying_key(verifying_key)
-    signing_key_str = str(signing_key)
-    signing_key_bytes = signing_key_str.encode()
+        private_key = SqueakPrivateKey.generate()
+    public_key = private_key.get_public_key()
     return SqueakProfile(
         profile_name=profile_name,
-        private_key=signing_key_bytes,
-        address=str(address),
+        private_key=private_key,
+        public_key=public_key,
         following=True,
     )
 
 
-def create_contact_profile(profile_name: str, squeak_address: str) -> SqueakProfile:
+def create_contact_profile(profile_name: str, public_key: SqueakPublicKey) -> SqueakProfile:
     validate_profile_name(profile_name)
-    try:
-        CSqueakAddress(squeak_address)
-    except (Base58ChecksumError, CBitcoinAddressError):
-        raise Exception(
-            "Invalid squeak address: {}".format(
-                squeak_address
-            ),
-        )
     return SqueakProfile(
         profile_name=profile_name,
-        address=squeak_address,
+        public_key=public_key,
     )
 
 
@@ -70,7 +55,7 @@ def validate_profile_name(profile_name: str) -> None:
         )
 
 
-def get_profile_private_key(profile: SqueakProfile) -> bytes:
+def get_profile_private_key(profile: SqueakProfile) -> SqueakPrivateKey:
     if profile.private_key is None:
         raise Exception("Profile: {} does not have a private key.".format(
             profile,
