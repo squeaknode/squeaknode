@@ -132,7 +132,7 @@ def squeak_and_secret_key(private_key, squeak_content, block_info):
 
 
 @pytest.fixture
-def reply_squeak_and_secret_key(private, reply_squeak_content, block_info, squeak_hash):
+def reply_squeak_and_secret_key(private_key, reply_squeak_content, block_info, squeak_hash):
     yield make_squeak_with_block(
         private_key,
         reply_squeak_content,

@@ -146,10 +146,10 @@ def deleted_profile_id(squeak_db, inserted_contact_profile_id):
 
 
 @pytest.fixture
-def inserted_squeak_hashes(squeak_db, signing_key):
+def inserted_squeak_hashes(squeak_db, private_key):
     ret = []
     for i in range(100):
-        squeak, header = gen_squeak_with_block_header(signing_key, i)
+        squeak, header = gen_squeak_with_block_header(private_key, i)
         squeak_hash = squeak_db.insert_squeak(squeak, header)
         ret.append(squeak_hash)
     yield ret
@@ -218,7 +218,7 @@ def inserted_contact_profile_ids(squeak_db):
     ret = []
     for i in range(100):
         profile_name = "contact_profile_{}".format(i)
-        public_key = str(gen_pubkey())
+        public_key = gen_pubkey()
         profile = gen_contact_profile(profile_name, public_key)
         profile_id = squeak_db.insert_profile(profile)
         ret.append(profile_id)
@@ -230,7 +230,7 @@ def inserted_signing_profile_ids(squeak_db):
     ret = []
     for i in range(100):
         profile_name = "signing_profile_{}".format(i)
-        private_key = str(gen_private_key())
+        private_key = gen_private_key()
         profile = gen_signing_profile(profile_name, private_key)
         profile_id = squeak_db.insert_profile(profile)
         ret.append(profile_id)
@@ -499,11 +499,11 @@ def test_get_missing_squeak(squeak_db, squeak, squeak_hash):
     assert retrieved_squeak is None
 
 
-def test_get_squeak_entry(squeak_db, squeak, block_header, address_str, inserted_squeak_hash):
+def test_get_squeak_entry(squeak_db, squeak, block_header, public_key, inserted_squeak_hash):
     retrieved_squeak_entry = squeak_db.get_squeak_entry(inserted_squeak_hash)
 
     assert retrieved_squeak_entry.squeak_hash == inserted_squeak_hash
-    assert retrieved_squeak_entry.address == address_str
+    assert retrieved_squeak_entry.public_key == public_key
     assert retrieved_squeak_entry.content is None
     assert retrieved_squeak_entry.block_time == block_header.nTime
 
@@ -667,34 +667,34 @@ def test_get_peer_by_address_missing(squeak_db, peer, inserted_peer_id, peer_add
     assert retrieved_peer is None
 
 
-def test_get_address_squeak_entries(
+def test_get_pubkey_squeak_entries(
         squeak_db,
-        address_str,
+        public_key,
         inserted_squeak_hashes,
 ):
-    # Get the address squeak entries.
-    address_squeak_entries = squeak_db.get_squeak_entries_for_address(
-        address=address_str,
+    # Get the pubkey squeak entries.
+    pubkey_squeak_entries = squeak_db.get_squeak_entries_for_public_key(
+        public_key=public_key,
         limit=200,
         last_entry=None,
     )
 
-    assert len(address_squeak_entries) == len(inserted_squeak_hashes)
+    assert len(pubkey_squeak_entries) == len(inserted_squeak_hashes)
 
 
-def test_get_address_squeak_entries_other_address(
+def test_get_pubkey_squeak_entries_other_pubkey(
         squeak_db,
         inserted_squeak_hashes,
 ):
-    # Get the address squeak entries for a different address.
+    # Get the pubkey squeak entries for a different pubkey.
     other_public_key = gen_pubkey()
-    address_squeak_entries = squeak_db.get_squeak_entries_for_address(
-        address=other_public_key,
+    pubkey_squeak_entries = squeak_db.get_squeak_entries_for_public_key(
+        public_key=other_public_key,
         limit=200,
         last_entry=None,
     )
 
-    assert len(address_squeak_entries) == 0
+    assert len(pubkey_squeak_entries) == 0
 
 
 def test_get_search_squeak_entries(
@@ -795,7 +795,7 @@ def test_lookup_squeaks_all(
         inserted_squeak_hashes,
 ):
     squeak_hashes = squeak_db.lookup_squeaks(
-        addresses=None,
+        public_keys=None,
         min_block=None,
         max_block=None,
         reply_to_hash=None,
@@ -805,14 +805,14 @@ def test_lookup_squeaks_all(
     assert len(squeak_hashes) == len(inserted_squeak_hashes)
 
 
-def test_lookup_squeaks_use_address(
+def test_lookup_squeaks_use_public_key(
         squeak_db,
         inserted_squeak_hashes,
-        address_str,
+        public_key,
 ):
     other_public_key = gen_pubkey()
     squeak_hashes = squeak_db.lookup_squeaks(
-        addresses=[address_str, other_public_key],
+        public_keys=[public_key, other_public_key],
         min_block=None,
         max_block=None,
         reply_to_hash=None,
@@ -822,14 +822,14 @@ def test_lookup_squeaks_use_address(
     assert len(squeak_hashes) == len(inserted_squeak_hashes)
 
 
-def test_lookup_squeaks_use_address_no_matches(
+def test_lookup_squeaks_use_pubkey_no_matches(
         squeak_db,
         inserted_squeak_hashes,
-        address_str,
+        public_key,
 ):
     other_public_key = gen_pubkey()
     squeak_hashes = squeak_db.lookup_squeaks(
-        addresses=[other_public_key],
+        public_keys=[other_public_key],
         min_block=None,
         max_block=None,
         reply_to_hash=None,
@@ -845,7 +845,7 @@ def test_lookup_squeaks_min_block(
 ):
     min_block = 35
     squeak_hashes = squeak_db.lookup_squeaks(
-        addresses=None,
+        public_keys=None,
         min_block=min_block,
         max_block=None,
         reply_to_hash=None,
@@ -861,7 +861,7 @@ def test_lookup_squeaks_max_block(
 ):
     max_block = 27
     squeak_hashes = squeak_db.lookup_squeaks(
-        addresses=None,
+        public_keys=None,
         min_block=None,
         max_block=max_block,
         reply_to_hash=None,
@@ -877,7 +877,7 @@ def test_lookup_squeaks_reply_to(
         inserted_reply_squeak_hash,
 ):
     squeak_hashes = squeak_db.lookup_squeaks(
-        addresses=None,
+        public_keys=None,
         min_block=None,
         max_block=None,
         reply_to_hash=inserted_squeak_hash,
@@ -892,7 +892,7 @@ def test_lookup_squeaks_reply_to_none(
         inserted_squeak_hash,
 ):
     squeak_hashes = squeak_db.lookup_squeaks(
-        addresses=None,
+        public_keys=None,
         min_block=None,
         max_block=None,
         reply_to_hash=inserted_squeak_hash,
@@ -907,7 +907,7 @@ def test_lookup_squeaks_unlocked_all(
         unlocked_squeak_hash,
 ):
     squeak_hashes = squeak_db.lookup_squeaks(
-        addresses=None,
+        public_keys=None,
         min_block=None,
         max_block=None,
         reply_to_hash=None,
@@ -922,7 +922,7 @@ def test_lookup_squeaks_unlocked_all_none(
         inserted_squeak_hash,
 ):
     squeak_hashes = squeak_db.lookup_squeaks(
-        addresses=None,
+        public_keys=None,
         min_block=None,
         max_block=None,
         reply_to_hash=None,
@@ -941,15 +941,15 @@ def test_get_number_of_squeaks(
     assert num_squeaks == len(inserted_squeak_hashes)
 
 
-def test_number_of_squeaks_with_address_in_block_range(
+def test_number_of_squeaks_with_public_key_in_block_range(
         squeak_db,
-        address_str,
+        public_key,
         inserted_squeak_hashes,
 ):
     min_block = 43
     max_block = 91
-    num_squeaks = squeak_db.number_of_squeaks_with_address_in_block_range(
-        address=address_str,
+    num_squeaks = squeak_db.number_of_squeaks_with_public_key_in_block_range(
+        public_key=public_key,
         min_block=min_block,
         max_block=max_block,
     )
@@ -1111,25 +1111,26 @@ def test_get_profile(
         profile_id=inserted_signing_profile_id)
 
 
-def test_get_profile_by_address(
+def test_get_profile_by_public_key(
         squeak_db,
         inserted_signing_profile_id,
         signing_profile,
-        address_str,
+        public_key,
 ):
-    profile = squeak_db.get_profile_by_address(address_str)
+    profile = squeak_db.get_profile_by_public_key(public_key)
 
     assert profile == signing_profile._replace(
-        profile_id=inserted_signing_profile_id)
+        profile_id=inserted_signing_profile_id,
+    )
 
 
-def test_get_profile_by_address_none(
+def test_get_profile_by_public_key_none(
         squeak_db,
         inserted_signing_profile_id,
-        signing_profile,
+        private_key,
 ):
     public_key = gen_pubkey()
-    profile = squeak_db.get_profile_by_address(public_key)
+    profile = squeak_db.get_profile_by_public_key(public_key)
 
     assert profile is None
 

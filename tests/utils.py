@@ -82,11 +82,11 @@ def gen_block_header(block_height):
     )
 
 
-def gen_squeak_with_block_header(signing_key, block_height, replyto_hash=None):
+def gen_squeak_with_block_header(private_key, block_height, replyto_hash=None):
     """ Return a tuple with a CSqueak and a CBlockHeader.
     """
     squeak = gen_squeak(
-        signing_key=signing_key,
+        private_key=private_key,
         block_height=block_height,
         replyto_hash=replyto_hash,
     )

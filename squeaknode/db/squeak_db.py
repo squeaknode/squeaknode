@@ -35,7 +35,8 @@ from sqlalchemy import or_
 from sqlalchemy.sql import select
 from sqlalchemy.sql import tuple_
 from squeak.core import CSqueak
-from squeak.signing import SqueakPublicKey
+from squeak.core.signing import SqueakPrivateKey
+from squeak.core.signing import SqueakPublicKey
 
 from squeaknode.core.lightning_address import LightningAddressHostPort
 from squeaknode.core.peer_address import Network
@@ -213,13 +214,13 @@ class SqueakDb:
             created_time_ms=self.timestamp_now_ms,
             hash=get_hash(squeak),
             squeak=squeak.serialize(),
-            hash_reply_sqk=squeak.hashReplySqk if squeak.is_reply else None,
-            hash_block=squeak.hashBlock,
-            n_block_height=squeak.nBlockHeight,
-            n_time=squeak.nTime,
-            author_address=str(squeak.GetAddress()),
+            reply_hash=squeak.hashReplySqk if squeak.is_reply else None,
+            block_hash=squeak.hashBlock,
+            block_height=squeak.nBlockHeight,
+            time_s=squeak.nTime,
+            author_public_key=squeak.GetPubKey().to_bytes(),
             secret_key=None,
-            block_time=block_header.nTime,
+            block_time_s=block_header.nTime,
         )
         with self.get_connection() as connection:
             try:
@@ -259,7 +260,7 @@ class SqueakDb:
             .select_from(
                 self.squeaks.outerjoin(
                     self.profiles,
-                    self.profiles.c.address == self.squeaks.c.author_address,
+                    self.profiles.c.public_key == self.squeaks.c.author_public_key,
                 )
             )
             .where(self.squeaks.c.hash == squeak_hash)
@@ -296,14 +297,14 @@ class SqueakDb:
             .select_from(
                 self.squeaks.outerjoin(
                     self.profiles,
-                    self.profiles.c.address == self.squeaks.c.author_address,
+                    self.profiles.c.public_key == self.squeaks.c.author_public_key,
                 )
             )
             .where(self.profile_is_following)
             .where(
                 tuple_(
-                    self.squeaks.c.n_block_height,
-                    self.squeaks.c.n_time,
+                    self.squeaks.c.block_height,
+                    self.squeaks.c.time_s,
                     self.squeaks.c.hash,
                 ) < tuple_(
                     last_block_height,
@@ -312,8 +313,8 @@ class SqueakDb:
                 )
             )
             .order_by(
-                self.squeaks.c.n_block_height.desc(),
-                self.squeaks.c.n_time.desc(),
+                self.squeaks.c.block_height.desc(),
+                self.squeaks.c.time_s.desc(),
                 self.squeaks.c.hash.desc(),
             )
             .limit(limit)
@@ -345,7 +346,7 @@ class SqueakDb:
             .select_from(
                 self.squeaks.outerjoin(
                     self.profiles,
-                    self.profiles.c.address == self.squeaks.c.author_address,
+                    self.profiles.c.public_key == self.squeaks.c.author_public_key,
                 )
             )
             .where(
@@ -371,9 +372,9 @@ class SqueakDb:
             rows = result.fetchall()
             return [self._parse_squeak_entry(row) for row in rows]
 
-    def get_squeak_entries_for_address(
+    def get_squeak_entries_for_public_key(
             self,
-            address: str,
+            public_key: SqueakPublicKey,
             limit: int,
             last_entry: Optional[SqueakEntry],
     ) -> List[SqueakEntry]:
@@ -382,13 +383,13 @@ class SqueakDb:
         last_squeak_time = last_entry.squeak_time if last_entry else MAX_INT
         last_squeak_hash = last_entry.squeak_hash if last_entry else MAX_HASH
         logger.info("""Address db query with
-        address: {}
+        public key: {}
         limit: {}
         block_height: {}
         squeak_time: {}
         squeak_hash: {}
         """.format(
-            address,
+            public_key,
             limit,
             last_block_height,
             last_squeak_time,
@@ -399,14 +400,14 @@ class SqueakDb:
             .select_from(
                 self.squeaks.outerjoin(
                     self.profiles,
-                    self.profiles.c.address == self.squeaks.c.author_address,
+                    self.profiles.c.public_key == self.squeaks.c.author_public_key,
                 )
             )
-            .where(self.squeaks.c.author_address == address)
+            .where(self.squeaks.c.author_public_key == public_key.to_bytes())
             .where(
                 tuple_(
-                    self.squeaks.c.n_block_height,
-                    self.squeaks.c.n_time,
+                    self.squeaks.c.block_height,
+                    self.squeaks.c.time_s,
                     self.squeaks.c.hash,
                 ) < tuple_(
                     last_block_height,
@@ -415,8 +416,8 @@ class SqueakDb:
                 )
             )
             .order_by(
-                self.squeaks.c.n_block_height.desc(),
-                self.squeaks.c.n_time.desc(),
+                self.squeaks.c.block_height.desc(),
+                self.squeaks.c.time_s.desc(),
                 self.squeaks.c.hash.desc(),
             )
             .limit(limit)
@@ -454,14 +455,14 @@ class SqueakDb:
             .select_from(
                 self.squeaks.outerjoin(
                     self.profiles,
-                    self.profiles.c.address == self.squeaks.c.author_address,
+                    self.profiles.c.public_key == self.squeaks.c.author_public_key,
                 )
             )
             .where(self.squeaks.c.content.ilike(f'%{search_text}%'))
             .where(
                 tuple_(
-                    self.squeaks.c.n_block_height,
-                    self.squeaks.c.n_time,
+                    self.squeaks.c.block_height,
+                    self.squeaks.c.time_s,
                     self.squeaks.c.hash,
                 ) < tuple_(
                     last_block_height,
@@ -470,8 +471,8 @@ class SqueakDb:
                 )
             )
             .order_by(
-                self.squeaks.c.n_block_height.desc(),
-                self.squeaks.c.n_time.desc(),
+                self.squeaks.c.block_height.desc(),
+                self.squeaks.c.time_s.desc(),
                 self.squeaks.c.hash.desc(),
             )
             .limit(limit)
@@ -500,7 +501,7 @@ class SqueakDb:
         ancestors = ancestors.union_all(
             select(
                 [
-                    squeaks_alias.c.hash_reply_sqk.label("hash"),
+                    squeaks_alias.c.reply_hash.label("hash"),
                     (ancestors_alias.c.depth + 1).label("depth"),
                 ]
             ).where(squeaks_alias.c.hash == ancestors_alias.c.hash)
@@ -514,7 +515,7 @@ class SqueakDb:
                     ancestors.c.hash == self.squeaks.c.hash,
                 ).outerjoin(
                     self.profiles,
-                    self.profiles.c.address == self.squeaks.c.author_address,
+                    self.profiles.c.public_key == self.squeaks.c.author_public_key,
                 )
             )
             .order_by(
@@ -531,14 +532,14 @@ class SqueakDb:
         # WITH RECURSIVE is_thread_ancestor(hash, depth) AS (
         #     VALUES(%s, 1)
         #   UNION\n
-        #     SELECT squeak.hash_reply_sqk AS hash, is_thread_ancestor.depth + 1 AS depth FROM squeak, is_thread_ancestor
+        #     SELECT squeak.reply_hash AS hash, is_thread_ancestor.depth + 1 AS depth FROM squeak, is_thread_ancestor
         #     WHERE squeak.hash=is_thread_ancestor.hash
         #   )
         #   SELECT * FROM squeak
         #   JOIN is_thread_ancestor
         #     ON squeak.hash=is_thread_ancestor.hash
         #   LEFT JOIN profile
-        #     ON squeak.author_address=profile.address
+        #     ON squeak.author_public_key=profile.address
         #   WHERE squeak.block_header IS NOT NULL
         #   ORDER BY is_thread_ancestor.depth DESC;
         # """
@@ -573,14 +574,14 @@ class SqueakDb:
             .select_from(
                 self.squeaks.outerjoin(
                     self.profiles,
-                    self.profiles.c.address == self.squeaks.c.author_address,
+                    self.profiles.c.public_key == self.squeaks.c.author_public_key,
                 )
             )
-            .where(self.squeaks.c.hash_reply_sqk == squeak_hash)
+            .where(self.squeaks.c.reply_hash == squeak_hash)
             .where(
                 tuple_(
-                    self.squeaks.c.n_block_height,
-                    self.squeaks.c.n_time,
+                    self.squeaks.c.block_height,
+                    self.squeaks.c.time_s,
                     self.squeaks.c.hash,
                 ) < tuple_(
                     last_block_height,
@@ -589,8 +590,8 @@ class SqueakDb:
                 )
             )
             .order_by(
-                self.squeaks.c.n_block_height.desc(),
-                self.squeaks.c.n_time.desc(),
+                self.squeaks.c.block_height.desc(),
+                self.squeaks.c.time_s.desc(),
                 self.squeaks.c.hash.desc(),
             )
             .limit(limit)
@@ -602,7 +603,7 @@ class SqueakDb:
 
     def lookup_squeaks(
         self,
-        addresses: List[str],
+        public_keys: List[SqueakPublicKey],
         min_block: Optional[int],
         max_block: Optional[int],
         reply_to_hash: Optional[bytes],
@@ -610,12 +611,12 @@ class SqueakDb:
     ) -> List[bytes]:
         """ Lookup squeaks. """
         logger.debug("""Running lookup query with
-        addresses: {},
+        public_keys: {},
         min_block: {}
         max_block: {}
         reply_to_hash: {!r}
         include_locked: {}""".format(
-            addresses,
+            public_keys,
             min_block,
             max_block,
             reply_to_hash,
@@ -623,19 +624,20 @@ class SqueakDb:
         ))
 
         s = select([self.squeaks.c.hash])
-        if addresses:
-            s = s.where(self.squeaks.c.author_address.in_(addresses))
+        if public_keys:
+            public_key_bytes = [pubkey.to_bytes() for pubkey in public_keys]
+            s = s.where(self.squeaks.c.author_public_key.in_(public_key_bytes))
         if min_block:
-            s = s.where(self.squeaks.c.n_block_height >= min_block)
+            s = s.where(self.squeaks.c.block_height >= min_block)
         if max_block:
-            s = s.where(self.squeaks.c.n_block_height <= max_block)
+            s = s.where(self.squeaks.c.block_height <= max_block)
         if reply_to_hash:
-            s = s.where(self.squeaks.c.hash_reply_sqk == reply_to_hash)
+            s = s.where(self.squeaks.c.reply_hash == reply_to_hash)
         if not include_locked:
             s = s.where(self.squeak_has_secret_key)
         s = s.order_by(
-            self.squeaks.c.n_block_height.desc(),
-            self.squeaks.c.n_time.desc(),
+            self.squeaks.c.block_height.desc(),
+            self.squeaks.c.time_s.desc(),
             self.squeaks.c.hash.desc(),
         )
 
@@ -664,9 +666,9 @@ class SqueakDb:
             num_squeaks = row["num_squeaks"]
             return num_squeaks
 
-    def number_of_squeaks_with_address_in_block_range(
+    def number_of_squeaks_with_public_key_in_block_range(
         self,
-        address: str,
+        public_key: SqueakPublicKey,
         min_block: int,
         max_block: int,
     ) -> int:
@@ -676,9 +678,9 @@ class SqueakDb:
                 func.count().label("num_squeaks"),
             ])
             .select_from(self.squeaks)
-            .where(self.squeaks.c.author_address == address)
-            .where(self.squeaks.c.n_block_height >= min_block)
-            .where(self.squeaks.c.n_block_height <= max_block)
+            .where(self.squeaks.c.author_public_key == public_key.to_bytes())
+            .where(self.squeaks.c.block_height >= min_block)
+            .where(self.squeaks.c.block_height <= max_block)
         )
         with self.get_connection() as connection:
             result = connection.execute(s)
@@ -698,7 +700,7 @@ class SqueakDb:
             .select_from(
                 self.squeaks.outerjoin(
                     self.profiles,
-                    self.profiles.c.address == self.squeaks.c.author_address,
+                    self.profiles.c.public_key == self.squeaks.c.author_public_key,
                 )
             )
             .where(self.squeak_is_older_than_retention(interval_s))
@@ -716,7 +718,8 @@ class SqueakDb:
         ins = self.profiles.insert().values(
             created_time_ms=self.timestamp_now_ms,
             profile_name=squeak_profile.profile_name,
-            private_key=squeak_profile.private_key,
+            private_key=squeak_profile.private_key.to_bytes(
+            ) if squeak_profile.private_key else None,
             public_key=squeak_profile.public_key.to_bytes(),
             following=squeak_profile.following,
         )
@@ -772,9 +775,10 @@ class SqueakDb:
                 return None
             return self._parse_squeak_profile(row)
 
-    def get_profile_by_address(self, address: str) -> Optional[SqueakProfile]:
-        """ Get a profile by address. """
-        s = select([self.profiles]).where(self.profiles.c.address == address)
+    def get_profile_by_public_key(self, public_key: SqueakPublicKey) -> Optional[SqueakProfile]:
+        """ Get a profile by public key. """
+        s = select([self.profiles]).where(
+            self.profiles.c.public_key == public_key.to_bytes())
         with self.get_connection() as connection:
             result = connection.execute(s)
             row = result.fetchone()
@@ -1457,17 +1461,17 @@ class SqueakDb:
         secret_key_column = row["secret_key"]
         is_locked = bool(secret_key_column)
         reply_to = (
-            row["hash_reply_sqk"]) if row["hash_reply_sqk"] else None
+            row["reply_hash"]) if row["reply_hash"] else None
         liked_time_ms = row["liked_time_ms"]
         profile = self._try_parse_squeak_profile(row)
         return SqueakEntry(
             squeak_hash=(row["hash"]),
             serialized_squeak=(row["squeak"]),
-            address=row["author_address"],
-            block_height=row["n_block_height"],
-            block_hash=(row["hash_block"]),
-            block_time=row["block_time"],
-            squeak_time=row["n_time"],
+            public_key=SqueakPublicKey.from_bytes(row["author_public_key"]),
+            block_height=row["block_height"],
+            block_hash=(row["block_hash"]),
+            block_time=row["block_time_s"],
+            squeak_time=row["time_s"],
             reply_to=reply_to,
             is_unlocked=is_locked,
             secret_key=(row["secret_key"]),
@@ -1477,8 +1481,9 @@ class SqueakDb:
         )
 
     def _parse_squeak_profile(self, row) -> SqueakProfile:
-        private_key_column = row["private_key"]
-        private_key = bytes(private_key_column) if private_key_column else None
+        private_key_bytes = row["private_key"]
+        private_key = SqueakPrivateKey.from_bytes(
+            private_key_bytes) if private_key_bytes else None
         return SqueakProfile(
             profile_id=row["profile_id"],
             profile_name=row["profile_name"],
