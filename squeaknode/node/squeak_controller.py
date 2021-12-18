@@ -27,6 +27,7 @@ from typing import Optional
 
 import squeak.params
 from squeak.core import CSqueak
+from squeak.core.signing import SqueakPublicKey
 from squeak.messages import msg_getdata
 from squeak.messages import msg_inv
 from squeak.messages import MSG_SECRET_KEY
@@ -35,7 +36,6 @@ from squeak.messages import MsgSerializable
 from squeak.net import CInterested
 from squeak.net import CInv
 from squeak.net import CSqueakLocator
-from squeak.signing import SqueakPublicKey
 
 from squeaknode.core.block_range import BlockRange
 from squeaknode.core.connected_peer import ConnectedPeer
