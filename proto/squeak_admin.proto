@@ -389,8 +389,8 @@ message CreateContactProfileRequest {
     /// The name of the new signing profile
     string profile_name = 1;
 
-    /// The address
-    string address = 2;
+    /// The pubkey in hex
+    string pubkey = 2;
 }
 
 message CreateContactProfileReply {
@@ -433,8 +433,12 @@ message GetSqueakProfileReply {
 }
 
 message GetSqueakProfileByAddressRequest {
-    /// The address
-    string address = 1;
+    /// The pubkey in hex
+    string pubkey = 1;
+
+
+// /// The address
+//     string address = 1;
 }
 
 message GetSqueakProfileByAddressReply {
@@ -621,8 +625,11 @@ message GetTimelineSqueakDisplaysReply {
 }
 
 message GetAddressSqueakDisplaysRequest {
-    /// The address
-    string address = 1;
+    /// The pubkey in hex
+    string pubkey = 1;
+
+    // /// The address
+    // string address = 1;
 
     /// Limit number of results
     int32 limit = 2;
@@ -844,8 +851,11 @@ message OfferDisplayEntry {
 }
 
 message DownloadSqueaksRequest {
-    /// The interested addresses
-    repeated string addreses = 1;
+    /// The interested pubkeys in hex
+    repeated string pubkeys = 1;
+
+// /// The interested addresses
+//     repeated string addreses = 1;
 
     /// Minimum block height
     int32 min_block_height = 2;
@@ -966,8 +976,11 @@ message DownloadRepliesReply {
 }
 
 message DownloadAddressSqueaksRequest {
-    /// The address
-    string address = 1;
+    /// The pubkey in hex
+    string pubkey = 1;
+
+    // /// The address
+    // string address = 1;
 }
 
 message DownloadAddressSqueaksReply {
@@ -1198,8 +1211,11 @@ message SubscribeReplySqueakDisplaysRequest {
 }
 
 message SubscribeAddressSqueakDisplaysRequest {
-    /// The address
-    string address = 1;
+    /// The pubkey in hex
+    string pubkey = 1;
+
+    // /// The address
+    // string address = 1;
 }
 
 message SubscribeAncestorSqueakDisplaysRequest {

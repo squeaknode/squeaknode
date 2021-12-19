@@ -30,21 +30,23 @@ from contextlib import contextmanager
 from squeak.core.elliptic import scalar_difference
 from squeak.core.elliptic import scalar_from_bytes
 from squeak.core.elliptic import scalar_to_bytes
-from squeak.core.signing import CSigningKey
-from squeak.core.signing import CSqueakAddress
+from squeak.core.signing import SqueakPrivateKey
+from squeak.core.signing import SqueakPublicKey
 
 from proto import lnd_pb2
 from proto import squeak_admin_pb2
 
 
-def generate_signing_key():
-    return CSigningKey.generate()
+def generate_private_key():
+    return SqueakPrivateKey.generate()
 
 
-def get_address(signing_key):
-    verifying_key = signing_key.get_verifying_key()
-    address = CSqueakAddress.from_verifying_key(verifying_key)
-    return str(address)
+def get_public_key(private_key):
+    return private_key.get_public_key()
+
+
+def public_key_from_hex(pubkey_hex):
+    return SqueakPublicKey.from_bytes(bytes.fromhex(pubkey_hex))
 
 
 def get_hash(squeak):
@@ -272,10 +274,10 @@ def download_squeak(node_stub, squeak_hash):
     return download_squeak_response.download_result
 
 
-def download_squeaks(node_stub, addresses, min_block, max_block, reply_to):
+def download_squeaks(node_stub, pubkeys_in_hex, min_block, max_block, reply_to):
     download_squeaks_response = node_stub.DownloadSqueaks(
         squeak_admin_pb2.DownloadSqueaksRequest(
-            addreses=addresses,
+            pubkeys=pubkeys_in_hex,
             min_block_height=min_block,
             max_block_height=max_block,
             replyto_squeak_hash=reply_to,
@@ -284,10 +286,10 @@ def download_squeaks(node_stub, addresses, min_block, max_block, reply_to):
     return download_squeaks_response.download_result
 
 
-def download_squeaks_for_address(node_stub, squeak_address):
+def download_squeaks_for_address(node_stub, pubkey_hex):
     download_squeaks_response = node_stub.DownloadAddressSqueaks(
         squeak_admin_pb2.DownloadAddressSqueaksRequest(
-            address=squeak_address,
+            pubkey=pubkey_hex,
         ),
     )
     return download_squeaks_response.download_result
@@ -386,11 +388,11 @@ def delete_squeak(node_stub, squeak_hash):
     )
 
 
-def create_contact_profile(node_stub, profile_name, squeak_address):
+def create_contact_profile(node_stub, profile_name, public_key):
     create_contact_profile_response = node_stub.CreateContactProfile(
         squeak_admin_pb2.CreateContactProfileRequest(
             profile_name=profile_name,
-            address=squeak_address,
+            pubkey=public_key.to_bytes().hex(),
         )
     )
     return create_contact_profile_response.profile_id
@@ -535,11 +537,11 @@ def subscribe_squeak_entry(node_stub, squeak_hash):
 
 
 @contextmanager
-def subscribe_squeaks_for_address(node_stub, squeak_address):
+def subscribe_squeaks_for_address(node_stub, pubkey_hex):
     q = queue.Queue()
     subscribe_address_squeaks_response = node_stub.SubscribeAddressSqueakDisplays(
         squeak_admin_pb2.SubscribeAddressSqueakDisplaysRequest(
-            address=squeak_address,
+            pubkey=pubkey_hex,
         )
     )
 

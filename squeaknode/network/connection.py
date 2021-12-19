@@ -265,7 +265,7 @@ class Connection(object):
         max_block = interest.nMaxBlockHeight if interest.nMaxBlockHeight != -1 else None
         reply_to_hash = interest.hashReplySqk if interest.hashReplySqk != EMPTY_HASH else None
         return self.squeak_controller.lookup_squeaks(
-            addresses=[str(address) for address in interest.addresses],
+            public_keys=interest.pubkeys,
             min_block=min_block,
             max_block=max_block,
             reply_to_hash=reply_to_hash,
@@ -276,7 +276,7 @@ class Connection(object):
         max_block = interest.nMaxBlockHeight if interest.nMaxBlockHeight != -1 else None
         reply_to_hash = interest.hashReplySqk if interest.hashReplySqk != EMPTY_HASH else None
         return self.squeak_controller.lookup_secret_keys(
-            addresses=[str(address) for address in interest.addresses],
+            public_keys=interest.pubkeys,
             min_block=min_block,
             max_block=max_block,
             reply_to_hash=reply_to_hash,

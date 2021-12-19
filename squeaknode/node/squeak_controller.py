@@ -27,6 +27,7 @@ from typing import Optional
 
 import squeak.params
 from squeak.core import CSqueak
+from squeak.core.signing import SqueakPrivateKey
 from squeak.core.signing import SqueakPublicKey
 from squeak.messages import msg_getdata
 from squeak.messages import msg_inv
@@ -172,8 +173,8 @@ class SqueakController:
         self.squeak_db.delete_squeak(squeak_hash)
 
     def squeak_in_limit_of_interest(self, squeak: CSqueak, interest: CInterested) -> bool:
-        return self.squeak_db.number_of_squeaks_with_address_in_block_range(
-            str(squeak.GetAddress),
+        return self.squeak_db.number_of_squeaks_with_public_key_in_block_range(
+            squeak.GetPubKey(),
             interest.nMinBlockHeight,
             interest.nMaxBlockHeight,
         ) < self.config.node.max_squeaks_per_address_in_block_range
@@ -263,7 +264,7 @@ class SqueakController:
         self.create_update_subscriptions_event()
         return profile_id
 
-    def import_signing_profile(self, profile_name: str, private_key: str) -> int:
+    def import_signing_profile(self, profile_name: str, private_key: SqueakPrivateKey) -> int:
         squeak_profile = create_signing_profile(
             profile_name,
             private_key,
@@ -272,10 +273,10 @@ class SqueakController:
         self.create_update_subscriptions_event()
         return profile_id
 
-    def create_contact_profile(self, profile_name: str, squeak_address: str) -> int:
+    def create_contact_profile(self, profile_name: str, public_key: SqueakPublicKey) -> int:
         squeak_profile = create_contact_profile(
             profile_name,
-            squeak_address,
+            public_key,
         )
         profile_id = self.squeak_db.insert_profile(squeak_profile)
         self.create_update_subscriptions_event()
@@ -293,8 +294,8 @@ class SqueakController:
     def get_squeak_profile(self, profile_id: int) -> Optional[SqueakProfile]:
         return self.squeak_db.get_profile(profile_id)
 
-    def get_squeak_profile_by_address(self, address: str) -> Optional[SqueakProfile]:
-        return self.squeak_db.get_profile_by_address(address)
+    def get_squeak_profile_by_address(self, public_key: SqueakPublicKey) -> Optional[SqueakProfile]:
+        return self.squeak_db.get_profile_by_public_key(public_key)
 
     def get_squeak_profile_by_name(self, name: str) -> Optional[SqueakProfile]:
         return self.squeak_db.get_profile_by_name(name)
@@ -477,12 +478,12 @@ class SqueakController:
 
     def get_squeak_entries_for_address(
             self,
-            address: str,
+            public_key: SqueakPublicKey,
             limit: int,
             last_entry: Optional[SqueakEntry],
     ) -> List[SqueakEntry]:
-        return self.squeak_db.get_squeak_entries_for_address(
-            address,
+        return self.squeak_db.get_squeak_entries_for_public_key(
+            public_key,
             limit,
             last_entry,
         )
@@ -544,9 +545,13 @@ class SqueakController:
         self.new_received_offer_listener.handle_new_item(received_offer)
         return received_offer_id
 
-    def get_followed_addresses(self) -> List[str]:
+    # def get_followed_addresses(self) -> List[str]:
+    #     followed_profiles = self.squeak_db.get_following_profiles()
+    #     return [profile.address for profile in followed_profiles]
+
+    def get_followed_public_keys(self) -> List[SqueakPublicKey]:
         followed_profiles = self.squeak_db.get_following_profiles()
-        return [profile.address for profile in followed_profiles]
+        return [profile.public_key for profile in followed_profiles]
 
     def get_received_payment_summary(self) -> ReceivedPaymentSummary:
         return self.squeak_db.get_received_payment_summary()
@@ -623,13 +628,13 @@ class SqueakController:
 
     def lookup_squeaks(
             self,
-            addresses: List[str],
+            public_keys: List[SqueakPublicKey],
             min_block: Optional[int],
             max_block: Optional[int],
             reply_to_hash: Optional[bytes],
     ) -> List[bytes]:
         return self.squeak_db.lookup_squeaks(
-            addresses,
+            public_keys,
             min_block,
             max_block,
             reply_to_hash,
@@ -638,13 +643,13 @@ class SqueakController:
 
     def lookup_secret_keys(
             self,
-            addresses: List[str],
+            public_keys: List[SqueakPublicKey],
             min_block: Optional[int],
             max_block: Optional[int],
             reply_to_hash: Optional[bytes],
     ) -> List[bytes]:
         return self.squeak_db.lookup_squeaks(
-            addresses,
+            public_keys,
             min_block,
             max_block,
             reply_to_hash,
@@ -652,15 +657,14 @@ class SqueakController:
 
     def get_interested_locator(self) -> CSqueakLocator:
         block_range = self.get_block_range()
-        followed_addresses = self.get_followed_addresses()
-        if len(followed_addresses) == 0:
+        followed_public_keys = self.get_followed_public_keys()
+        if len(followed_public_keys) == 0:
             return CSqueakLocator(
                 vInterested=[],
             )
         interests = [
             CInterested(
-                addresses=[SqueakPublicKey(address)
-                           for address in followed_addresses],
+                pubkeys=followed_public_keys,
                 nMinBlockHeight=block_range.min_block,
                 nMaxBlockHeight=block_range.max_block,
             )
@@ -671,20 +675,18 @@ class SqueakController:
 
     def download_squeaks(
             self,
-            addresses: List[str],
+            public_keys: List[SqueakPublicKey],
             min_block: int,
             max_block: int,
             replyto_hash: Optional[bytes],
     ) -> DownloadResult:
         interest = CInterested(
-            addresses=[SqueakPublicKey(address)
-                       for address in addresses],
+            pubkeys=public_keys,
             nMinBlockHeight=min_block,
             nMaxBlockHeight=max_block,
             replyto_squeak_hash=replyto_hash,
         ) if replyto_hash else CInterested(
-            addresses=[SqueakPublicKey(address)
-                       for address in addresses],
+            pubkeys=public_keys,
             nMinBlockHeight=min_block,
             nMaxBlockHeight=max_block,
         )
@@ -721,12 +723,12 @@ class SqueakController:
         )
         return self.active_download_manager.download_interest(10, interest)
 
-    def download_address_squeaks(self, squeak_address: str) -> DownloadResult:
-        logger.info("Downloading address squeaks for address: {}".format(
-            squeak_address,
+    def download_address_squeaks(self, public_key: SqueakPublicKey) -> DownloadResult:
+        logger.info("Downloading address squeaks for public key: {}".format(
+            public_key,
         ))
         interest = CInterested(
-            addresses=[SqueakPublicKey(squeak_address)],
+            pubkeys=[public_key],
         )
         return self.active_download_manager.download_interest(10, interest)
 
@@ -802,9 +804,9 @@ class SqueakController:
                 reply_hash = get_hash(item)
                 yield self.get_squeak_entry(reply_hash)
 
-    def subscribe_squeak_address_entries(self, squeak_address: str, stopped: threading.Event):
+    def subscribe_squeak_address_entries(self, public_key: SqueakPublicKey, stopped: threading.Event):
         for item in self.new_squeak_listener.yield_items(stopped):
-            if squeak_address == str(item.GetAddress()):
+            if public_key == item.GetPubKey():
                 squeak_hash = get_hash(item)
                 yield self.get_squeak_entry(squeak_hash)
 
@@ -820,8 +822,8 @@ class SqueakController:
 
     def subscribe_timeline_squeak_entries(self, stopped: threading.Event):
         for item in self.new_squeak_listener.yield_items(stopped):
-            followed_addresses = self.get_followed_addresses()
-            if str(item.GetAddress()) in set(followed_addresses):
+            followed_public_keys = self.get_followed_public_keys()
+            if item.GetPubKey() in set(followed_public_keys):
                 squeak_hash = get_hash(item)
                 yield self.get_squeak_entry(squeak_hash)
 
