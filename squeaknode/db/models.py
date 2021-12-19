@@ -89,7 +89,7 @@ class Models:
             Column("created_time_ms", SLBigInteger, nullable=False),
             Column("profile_name", String, unique=True, nullable=False),
             Column("private_key", LargeBinary, nullable=True),
-            Column("public_key", String(35), unique=True, nullable=False),
+            Column("public_key", LargeBinary(33), unique=True, nullable=False),
             Column("following", Boolean, nullable=False),
             Column("profile_image", LargeBinary, nullable=True),
             sqlite_autoincrement=True,

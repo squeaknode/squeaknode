@@ -21,9 +21,9 @@
 # SOFTWARE.
 """Initialize all v2.
 
-Revision ID: 36a92a042f7f
+Revision ID: b6cf462aaf7c
 Revises:
-Create Date: 2021-12-19 08:04:44.316003
+Create Date: 2021-12-19 08:29:47.515179
 
 """
 import sqlalchemy as sa
@@ -33,7 +33,7 @@ import squeaknode.db.models
 
 
 # revision identifiers, used by Alembic.
-revision = '36a92a042f7f'
+revision = 'b6cf462aaf7c'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -69,8 +69,8 @@ def upgrade():
                         'created_time_ms', squeaknode.db.models.SLBigInteger(), nullable=False),
                     sa.Column('profile_name', sa.String(), nullable=False),
                     sa.Column('private_key', sa.LargeBinary(), nullable=True),
-                    sa.Column('public_key', sa.String(
-                        length=35), nullable=False),
+                    sa.Column('public_key', sa.LargeBinary(
+                        length=33), nullable=False),
                     sa.Column('following', sa.Boolean(), nullable=False),
                     sa.Column('profile_image',
                               sa.LargeBinary(), nullable=True),
