@@ -348,7 +348,7 @@ class SqueakAdminServerHandler(object):
             squeak_display_entries=squeak_display_msgs
         )
 
-    def handle_get_squeak_display_entries_for_address(self, request):
+    def handle_get_squeak_display_entries_for_pubkey(self, request):
         public_key_hex = request.pubkey
         # address = request.address
         limit = request.limit

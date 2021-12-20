@@ -341,7 +341,7 @@ def create_app(handler, username, password):
     @login_required
     @protobuf_serialized(squeak_admin_pb2.GetPubKeySqueakDisplaysRequest())
     def getaddresssqueakdisplays(msg):
-        return handler.handle_get_squeak_display_entries_for_address(msg)
+        return handler.handle_get_squeak_display_entries_for_pubkey(msg)
 
     @app.route("/getsearchsqueakdisplays", methods=["POST"])
     @login_required

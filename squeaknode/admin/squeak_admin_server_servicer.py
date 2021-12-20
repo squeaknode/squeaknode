@@ -147,7 +147,7 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         return self.handler.handle_get_timeline_squeak_display_entries(request)
 
     def GetPubKeySqueakDisplays(self, request, context):
-        return self.handler.handle_get_squeak_display_entries_for_address(request)
+        return self.handler.handle_get_squeak_display_entries_for_pubkey(request)
 
     def GetSearchSqueakDisplays(self, request, context):
         return self.handler.handle_get_squeak_display_entries_for_text_search(request)
