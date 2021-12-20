@@ -330,7 +330,7 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
             logger.info("Stopping SubscribePubKeySqueakDisplaysRequest.")
             stopped.set()
         context.add_callback(on_rpc_done)
-        return self.handler.handle_subscribe_address_squeak_displays(
+        return self.handler.handle_subscribe_pubkey_squeak_displays(
             request,
             stopped,
         )

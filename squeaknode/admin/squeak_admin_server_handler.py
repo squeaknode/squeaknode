@@ -969,7 +969,7 @@ class SqueakAdminServerHandler(object):
                 squeak_display_entry=display_message
             )
 
-    def handle_subscribe_address_squeak_displays(self, request, stopped):
+    def handle_subscribe_pubkey_squeak_displays(self, request, stopped):
         public_key_hex = request.pubkey
         # squeak_address = request.address
         logger.info(
