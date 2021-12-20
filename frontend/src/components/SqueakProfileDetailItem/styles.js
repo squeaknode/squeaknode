@@ -2,9 +2,9 @@ import { makeStyles } from '@material-ui/styles';
 
 export default makeStyles((theme) => ({
   root: {
-    maxWidth: 560,
+    maxWidth: 540,
   },
   media: {
-    height: 380,
+    height: 360,
   },
 }));
