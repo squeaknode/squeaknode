@@ -195,7 +195,7 @@ class SqueakAdminServerHandler(object):
             squeak_profile=squeak_profile_msg,
         )
 
-    def handle_get_squeak_profile_by_address(self, request):
+    def handle_get_squeak_profile_by_pubkey(self, request):
         public_key_hex = request.pubkey
         # address = request.address
         logger.info(

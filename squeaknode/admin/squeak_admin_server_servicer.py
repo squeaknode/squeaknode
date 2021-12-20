@@ -114,7 +114,7 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         return self.handler.handle_get_squeak_profile(request)
 
     def GetSqueakProfileByPubKey(self, request, context):
-        return self.handler.handle_get_squeak_profile_by_address(request)
+        return self.handler.handle_get_squeak_profile_by_pubkey(request)
 
     def GetSqueakProfileByName(self, request, context):
         return self.handler.handle_get_squeak_profile_by_name(request)
