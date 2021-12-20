@@ -171,7 +171,7 @@ export default function SqueakDetailItem({
     }
     return squeak.getIsAuthorKnown()
       ? squeak.getAuthor().getProfileName()
-      : squeak.getAuthorAddress();
+      : squeak.getAuthorPubkey();
   }
 
   function BuyDialogContent() {

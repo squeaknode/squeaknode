@@ -98,7 +98,7 @@ export default function TwitterAccountListItem({
 
   function AccountCardContent() {
     const name = profile.getProfileName();
-    const address = profile.getAddress();
+    const address = profile.getPubkey();
     return (
       <>
         <Box>
@@ -136,7 +136,7 @@ export default function TwitterAccountListItem({
       )}
         avatar={(
           <SqueakUserAvatar
-            squeakAddress={(profile && profile.getAddress())}
+            squeakAddress={(profile && profile.getPubkey())}
             squeakProfile={profile}
           />
 )}
