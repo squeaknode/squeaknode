@@ -286,9 +286,9 @@ def download_squeaks(node_stub, pubkeys_in_hex, min_block, max_block, reply_to):
     return download_squeaks_response.download_result
 
 
-def download_squeaks_for_address(node_stub, pubkey_hex):
-    download_squeaks_response = node_stub.DownloadAddressSqueaks(
-        squeak_admin_pb2.DownloadAddressSqueaksRequest(
+def download_squeaks_for_pubkey(node_stub, pubkey_hex):
+    download_squeaks_response = node_stub.DownloadPubKeySqueaks(
+        squeak_admin_pb2.DownloadPubKeySqueaksRequest(
             pubkey=pubkey_hex,
         ),
     )
@@ -405,6 +405,27 @@ def create_signing_profile(node_stub, profile_name):
         )
     )
     return create_signing_profile_response.profile_id
+
+
+def get_profile_by_pubkey(node_stub, pubkey):
+    get_squeak_profile_by_pubkey_response = node_stub.GetSqueakProfileByPubKey(
+        squeak_admin_pb2.GetSqueakProfileByPubKeyRequest(
+            pubkey=pubkey,
+        )
+    )
+    if not get_squeak_profile_by_pubkey_response.HasField("squeak_profile"):
+        return None
+    return get_squeak_profile_by_pubkey_response.squeak_profile
+
+
+def get_pubkey_squeak_displays(node_stub, pubkey, limit):
+    get_pubkey_squeak_display_response = node_stub.GetPubKeySqueakDisplays(
+        squeak_admin_pb2.GetPubKeySqueakDisplaysRequest(
+            pubkey=pubkey,
+            limit=limit,
+        ),
+    )
+    return get_pubkey_squeak_display_response.squeak_display_entries
 
 
 def import_signing_profile(node_stub, profile_name, private_key):
@@ -539,8 +560,8 @@ def subscribe_squeak_entry(node_stub, squeak_hash):
 @contextmanager
 def subscribe_squeaks_for_address(node_stub, pubkey_hex):
     q = queue.Queue()
-    subscribe_address_squeaks_response = node_stub.SubscribeAddressSqueakDisplays(
-        squeak_admin_pb2.SubscribeAddressSqueakDisplaysRequest(
+    subscribe_address_squeaks_response = node_stub.SubscribePubKeySqueakDisplays(
+        squeak_admin_pb2.SubscribePubKeySqueakDisplaysRequest(
             pubkey=pubkey_hex,
         )
     )

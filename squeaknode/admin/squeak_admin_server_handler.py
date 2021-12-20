@@ -204,7 +204,7 @@ class SqueakAdminServerHandler(object):
             public_key,
         )
         squeak_profile_msg = optional_squeak_profile_to_message(squeak_profile)
-        return squeak_admin_pb2.GetSqueakProfileByAddressReply(
+        return squeak_admin_pb2.GetSqueakProfileByPubKeyReply(
             squeak_profile=squeak_profile_msg
         )
 
@@ -376,7 +376,7 @@ class SqueakAdminServerHandler(object):
         squeak_display_msgs = [
             squeak_entry_to_message(entry) for entry in squeak_entries
         ]
-        return squeak_admin_pb2.GetAddressSqueakDisplaysReply(
+        return squeak_admin_pb2.GetPubKeySqueakDisplaysReply(
             squeak_display_entries=squeak_display_msgs
         )
 
@@ -408,7 +408,7 @@ class SqueakAdminServerHandler(object):
         squeak_display_msgs = [
             squeak_entry_to_message(entry) for entry in squeak_entries
         ]
-        return squeak_admin_pb2.GetAddressSqueakDisplaysReply(
+        return squeak_admin_pb2.GetSearchSqueakDisplaysReply(
             squeak_display_entries=squeak_display_msgs
         )
 
@@ -670,7 +670,7 @@ class SqueakAdminServerHandler(object):
         )
         logger.info("Download result: {}".format(download_result))
         download_result_msg = download_result_to_message(download_result)
-        return squeak_admin_pb2.DownloadAddressSqueaksReply(
+        return squeak_admin_pb2.DownloadPubKeySqueaksReply(
             download_result=download_result_msg,
         )
 

@@ -41,7 +41,7 @@ from tests.util import delete_squeak
 from tests.util import download_offers
 from tests.util import download_squeak
 from tests.util import download_squeaks
-from tests.util import download_squeaks_for_address
+from tests.util import download_squeaks_for_pubkey
 from tests.util import free_price
 from tests.util import get_connected_peer
 from tests.util import get_connected_peers
@@ -50,6 +50,8 @@ from tests.util import get_external_address
 from tests.util import get_hash
 from tests.util import get_network
 from tests.util import get_peer_by_address
+from tests.util import get_profile_by_pubkey
+from tests.util import get_pubkey_squeak_displays
 from tests.util import get_search_squeaks
 from tests.util import get_sell_price
 from tests.util import get_squeak_display
@@ -145,14 +147,15 @@ def test_get_profile(admin_stub, signing_profile_id):
     name = squeak_profile.profile_name
 
     # Get the same squeak profile by address
-    get_squeak_profile_by_pubkey_response = admin_stub.GetSqueakProfileByAddress(
-        squeak_admin_pb2.GetSqueakProfileByAddressRequest(
-            pubkey=pubkey,
-        )
-    )
+    # get_squeak_profile_by_pubkey_response = admin_stub.GetSqueakProfileByAddress(
+    #     squeak_admin_pb2.GetSqueakProfileByAddressRequest(
+    #         pubkey=pubkey,
+    #     )
+    # )
+    profile = get_profile_by_pubkey(admin_stub, pubkey)
     # assert address == get_squeak_profile_by_address_response.squeak_profile.address
-    assert pubkey == get_squeak_profile_by_pubkey_response.squeak_profile.pubkey
-    assert name == get_squeak_profile_by_pubkey_response.squeak_profile.profile_name
+    assert pubkey == profile.pubkey
+    assert name == profile.profile_name
 
     # Get the same squeak profile by name
     get_squeak_profile_by_name_response = admin_stub.GetSqueakProfileByName(
@@ -201,16 +204,19 @@ def test_make_squeak(admin_stub, signing_profile_id):
     squeak_profile_name = squeak_profile.profile_name
 
     # Get all squeak displays for the known address
-    get_address_squeak_display_response = admin_stub.GetAddressSqueakDisplays(
-        squeak_admin_pb2.GetAddressSqueakDisplaysRequest(
-            pubkey=squeak_profile_pubkey,
-            limit=100,
-        ),
-    )
-    assert len(get_address_squeak_display_response.squeak_display_entries) == 1
+    # get_address_squeak_display_response = admin_stub.GetAddressSqueakDisplays(
+    #     squeak_admin_pb2.GetAddressSqueakDisplaysRequest(
+    #         pubkey=squeak_profile_pubkey,
+    #         limit=100,
+    #     ),
+    # )
+    address_squeak_displays = get_pubkey_squeak_displays(
+        admin_stub, squeak_profile_pubkey, 100)
+
+    assert len(address_squeak_displays) == 1
     for (
         squeak_display_entry
-    ) in get_address_squeak_display_response.squeak_display_entries:
+    ) in address_squeak_displays:
         assert squeak_display_entry.author.profile_name == squeak_profile_name
         assert squeak_display_entry.author.pubkey == squeak_profile_pubkey
 
@@ -296,12 +302,13 @@ def test_make_signing_profile(admin_stub):
     assert profile_name in signing_profile_names
 
     # Get squeak profile by address
-    get_profile_by_address_response = admin_stub.GetSqueakProfileByAddress(
-        squeak_admin_pb2.GetSqueakProfileByAddressRequest(
-            pubkey=squeak_profile_pubkey
-        )
-    )
-    assert get_profile_by_address_response.squeak_profile.profile_name == profile_name
+    # get_profile_by_address_response = admin_stub.GetSqueakProfileByAddress(
+    #     squeak_admin_pb2.GetSqueakProfileByAddressRequest(
+    #         pubkey=squeak_profile_pubkey
+    #     )
+    # )
+    profile = get_profile_by_pubkey(admin_stub, squeak_profile_pubkey)
+    assert profile.profile_name == profile_name
 
     # Export the private key, delete the profile, and re-import it.
     get_private_key_response = admin_stub.GetSqueakProfilePrivateKey(
@@ -444,13 +451,15 @@ def test_delete_profile(admin_stub, random_name, public_key, contact_profile_id)
     )
     assert not get_squeak_profile_by_name_response.HasField("squeak_profile")
 
-    get_squeak_profile_by_pubkey_response = admin_stub.GetSqueakProfileByAddress(
-        squeak_admin_pb2.GetSqueakProfileByAddressRequest(
-            pubkey=public_key.to_bytes().hex(),
-        )
-    )
-    assert not get_squeak_profile_by_pubkey_response.HasField(
-        "squeak_profile")
+    # get_squeak_profile_by_pubkey_response = admin_stub.GetSqueakProfileByAddress(
+    #     squeak_admin_pb2.GetSqueakProfileByAddressRequest(
+    #         pubkey=public_key.to_bytes().hex(),
+    #     )
+    # )
+    profile = get_profile_by_pubkey(admin_stub, public_key.to_bytes().hex())
+    # assert not get_squeak_profile_by_pubkey_response.HasField(
+    #     "squeak_profile")
+    assert profile is None
 
 
 def test_get_profile_private_key(admin_stub, signing_profile_id):
@@ -866,7 +875,7 @@ def test_download_single_squeak(
         assert item[0].squeak_hash == saved_squeak_hash
 
 
-def test_download_squeaks_for_address(
+def test_download_squeaks_for_pubkey(
     admin_stub,
     other_admin_stub,
     connected_tcp_peer_id,
@@ -893,7 +902,7 @@ def test_download_squeaks_for_address(
         assert len(get_buy_offers_response.offers) == 0
 
         # Download squeaks for address
-        download_result = download_squeaks_for_address(
+        download_result = download_squeaks_for_pubkey(
             other_admin_stub, squeak_profile_pubkey)
         assert download_result.number_downloaded == 1
         assert download_result.number_requested == 10
