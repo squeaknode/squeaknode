@@ -10,7 +10,7 @@ import {
   getProfileImageSrcString,
 } from '../../squeakimages/images';
 import {
-  goToSqueakAddressPage,
+  goToPubkeyPage,
 } from '../../navigation/navigation';
 
 export default function SqueakUserAvatar({
@@ -26,7 +26,7 @@ export default function SqueakUserAvatar({
     event.stopPropagation();
     console.log('Handling avatar click...');
     if (squeakAddress) {
-      goToSqueakAddressPage(history, squeakAddress);
+      goToPubkeyPage(history, squeakAddress);
     }
   };
 

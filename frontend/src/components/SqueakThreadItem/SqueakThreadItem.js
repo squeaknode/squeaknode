@@ -19,7 +19,7 @@ import SqueakTime from '../SqueakTime';
 
 import {
   goToSqueakPage,
-  goToSqueakAddressPage,
+  goToPubkeyPage,
 } from '../../navigation/navigation';
 
 export default function SqueakThreadItem({
@@ -41,7 +41,7 @@ export default function SqueakThreadItem({
     if (!squeak) {
       return;
     }
-    goToSqueakAddressPage(history, squeak.getAuthorPubkey());
+    goToPubkeyPage(history, squeak.getAuthorPubkey());
   };
 
   const onSqueakClick = (event) => {

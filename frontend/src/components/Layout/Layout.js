@@ -59,7 +59,7 @@ function Layout(props) {
           <div className={classes.fakeToolbar} />
           <Switch>
             <Route path="/app/timeline" component={Timeline} />
-            <Route path="/app/squeakaddress/:address" component={SqueakAddress} />
+            <Route path="/app/pubkey/:pubkey" component={SqueakAddress} />
             <Route path="/app/search/:searchText" component={Search} />
             <Route path="/app/search" component={Search} />
             <Route path="/app/squeak/:hash" component={Squeak} />
