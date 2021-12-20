@@ -5,6 +5,7 @@ import {
   MenuItem,
   Typography,
   Button,
+  FormLabel,
 } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 
@@ -262,11 +263,14 @@ export default function SqueakProfileDetailItem({
           title="Profile Image"
         />
         <CardContent>
-          <Typography gutterBottom variant="h5" component="h2">
-            {squeakProfile.getHasPrivateKey() && <VpnKeyIcon />}
-          </Typography>
+          <FormLabel>
+            Pubkey
+          </FormLabel>
           <Typography variant="body2" color="textSecondary" component="p">
             {squeakProfile.getPubkey()}
+          </Typography>
+          <Typography gutterBottom variant="h5" component="h2">
+            {squeakProfile.getHasPrivateKey() && <VpnKeyIcon />}
           </Typography>
           <SqueakProfileFollowingIndicator
             squeakProfile={squeakProfile}
