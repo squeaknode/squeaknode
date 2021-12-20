@@ -331,13 +331,13 @@ def create_app(handler, username, password):
     def getreplysqueakdisplays(msg):
         return handler.handle_get_reply_squeak_display_entries(msg)
 
-    @app.route("/getsqueakprofilebyaddress", methods=["POST"])
+    @app.route("/getsqueakprofilebypubkey", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.GetSqueakProfileByPubKeyRequest())
-    def getsqueakprofilebyaddress(msg):
+    def getsqueakprofilebypubkey(msg):
         return handler.handle_get_squeak_profile_by_address(msg)
 
-    @app.route("/getaddresssqueakdisplays", methods=["POST"])
+    @app.route("/getpubkeysqueakdisplays", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.GetPubKeySqueakDisplaysRequest())
     def getaddresssqueakdisplays(msg):

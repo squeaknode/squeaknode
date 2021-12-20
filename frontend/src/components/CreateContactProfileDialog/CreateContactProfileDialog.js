@@ -99,7 +99,7 @@ export default function CreateContactProfileDialog({
         margin="normal"
         value={address}
         onChange={handleChangeAddress}
-        inputProps={{ maxLength: 35 }}
+        inputProps={{ maxLength: 66 }}
       />
     );
   }

@@ -61,7 +61,7 @@ export default function SqueakDetailItem({
     if (!squeak) {
       return;
     }
-    goToSqueakAddressPage(history, squeak.getAuthorAddress());
+    goToSqueakAddressPage(history, squeak.getAuthorPubkey());
   };
 
   const onUnlockClick = (event) => {
@@ -218,7 +218,7 @@ export default function SqueakDetailItem({
               {squeak
                 ? (
                   <SqueakUserAvatar
-                    squeakAddress={squeak.getAuthorAddress()}
+                    squeakAddress={squeak.getAuthorPubkey()}
                     squeakProfile={squeak.getAuthor()}
                   />
                 ) : (

@@ -67,7 +67,7 @@ export default function SqueakProfileDetailItem({
     if (!squeakProfile) {
       return;
     }
-    goToSqueakAddressPage(history, squeakProfile.getAddress());
+    goToSqueakAddressPage(history, squeakProfile.getPubkey());
   };
 
   const onConfigureClick = () => {
@@ -266,7 +266,7 @@ export default function SqueakProfileDetailItem({
             {squeakProfile.getHasPrivateKey() && <VpnKeyIcon />}
           </Typography>
           <Typography variant="body2" color="textSecondary" component="p">
-            {squeakProfile.getAddress()}
+            {squeakProfile.getPubkey()}
           </Typography>
           <SqueakProfileFollowingIndicator
             squeakProfile={squeakProfile}

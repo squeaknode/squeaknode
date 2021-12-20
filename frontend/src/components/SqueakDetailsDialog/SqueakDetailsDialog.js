@@ -77,7 +77,7 @@ export default function SqueakDetailsDialog({
                     Address
                   </Typography>
                   <Typography color="text">
-                    {squeak.getAuthorAddress()}
+                    {squeak.getAuthorPubkey()}
                   </Typography>
                 </div>
 

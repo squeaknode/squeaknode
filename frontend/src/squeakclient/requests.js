@@ -45,8 +45,8 @@ import {
   GetSqueakDisplayRequest,
   GetAncestorSqueakDisplaysRequest,
   GetReplySqueakDisplaysRequest,
-  GetSqueakProfileByAddressRequest,
-  GetAddressSqueakDisplaysRequest,
+  GetSqueakProfileByPubKeyRequest,
+  GetPubKeySqueakDisplaysRequest,
   CreateContactProfileRequest,
   CreateSigningProfileRequest,
   ImportSigningProfileRequest,
@@ -74,7 +74,7 @@ import {
   DisconnectPeerRequest as DisconnectSqueakPeerRequest,
   DownloadOffersRequest,
   DownloadRepliesRequest,
-  DownloadAddressSqueaksRequest,
+  DownloadPubKeySqueaksRequest,
   PeerAddress,
   SetSqueakProfileImageReply,
   ClearSqueakProfileImageReply,
@@ -91,8 +91,8 @@ import {
   GetSqueakDisplayReply,
   GetAncestorSqueakDisplaysReply,
   GetReplySqueakDisplaysReply,
-  GetAddressSqueakDisplaysReply,
-  GetSqueakProfileByAddressReply,
+  GetPubKeySqueakDisplaysReply,
+  GetSqueakProfileByPubKeyReply,
   CreateContactProfileReply,
   CreateSigningProfileReply,
   ImportSigningProfileReply,
@@ -103,7 +103,7 @@ import {
   DownloadSqueakReply,
   DownloadOffersReply,
   DownloadRepliesReply,
-  DownloadAddressSqueaksReply,
+  DownloadPubKeySqueaksReply,
   GetSentPaymentsReply,
   GetReceivedPaymentsReply,
   GetNetworkReply,
@@ -674,13 +674,13 @@ export function getReplySqueakDisplaysRequest(hash, limit, lastEntry, handleResp
   // });
 }
 
-export function getSqueakProfileByAddressRequest(address, handleResponse) {
-  const request = new GetSqueakProfileByAddressRequest();
-  request.setAddress(address);
+export function getSqueakProfileByAddressRequest(pubkey, handleResponse) {
+  const request = new GetSqueakProfileByPubKeyRequest();
+  request.setPubkey(pubkey);
   makeRequest(
-    'getsqueakprofilebyaddress',
+    'getsqueakprofilebypubkey',
     request,
-    GetSqueakProfileByAddressReply.deserializeBinary,
+    GetSqueakProfileByPubKeyReply.deserializeBinary,
     (response) => {
       handleResponse(response.getSqueakProfile());
     },
@@ -690,15 +690,15 @@ export function getSqueakProfileByAddressRequest(address, handleResponse) {
   // });
 }
 
-export function getAddressSqueakDisplaysRequest(address, limit, lastEntry, handleResponse) {
-  const request = new GetAddressSqueakDisplaysRequest();
-  request.setAddress(address);
+export function getAddressSqueakDisplaysRequest(pubkey, limit, lastEntry, handleResponse) {
+  const request = new GetPubKeySqueakDisplaysRequest();
+  request.setPubkey(pubkey);
   request.setLimit(limit);
   request.setLastEntry(lastEntry);
   makeRequest(
-    'getaddresssqueakdisplays',
+    'getpubkeysqueakdisplays',
     request,
-    GetAddressSqueakDisplaysReply.deserializeBinary,
+    GetPubKeySqueakDisplaysReply.deserializeBinary,
     (response) => {
       handleResponse(response.getSqueakDisplayEntriesList());
     },
@@ -726,10 +726,10 @@ export function getSearchSqueakDisplaysRequest(searchText, limit, lastEntry, han
   // });
 }
 
-export function createContactProfileRequest(profileName, squeakAddress, handleResponse, handleErr) {
+export function createContactProfileRequest(profileName, pubkey, handleResponse, handleErr) {
   const request = new CreateContactProfileRequest();
   request.setProfileName(profileName);
-  request.setAddress(squeakAddress);
+  request.setPubkey(pubkey);
   makeRequest(
     'createcontactprofile',
     request,
@@ -896,13 +896,13 @@ export function downloadRepliesRequest(squeakHash, handleResponse) {
   // });
 }
 
-export function downloadAddressSqueaksRequest(address, handleResponse) {
-  const request = new DownloadAddressSqueaksRequest();
-  request.setAddress(address);
+export function downloadAddressSqueaksRequest(pubkey, handleResponse) {
+  const request = new DownloadPubKeySqueaksRequest();
+  request.setPubkey(pubkey);
   makeRequest(
     'downloadaddresssqueaks',
     request,
-    DownloadAddressSqueaksReply.deserializeBinary,
+    DownloadPubKeySqueaksReply.deserializeBinary,
     (response) => {
       handleResponse(response);
     },
