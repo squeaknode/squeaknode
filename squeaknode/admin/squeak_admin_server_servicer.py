@@ -204,7 +204,7 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         return self.handler.handle_download_replies(request)
 
     def DownloadPubKeySqueaks(self, request, context):
-        return self.handler.handle_download_address_squeaks(request)
+        return self.handler.handle_download_pubkey_squeaks(request)
 
     def PayOffer(self, request, context):
         return self.handler.handle_pay_offer(request)

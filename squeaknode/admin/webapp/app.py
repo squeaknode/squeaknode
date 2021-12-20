@@ -413,7 +413,7 @@ def create_app(handler, username, password):
     @login_required
     @protobuf_serialized(squeak_admin_pb2.DownloadPubKeySqueaksRequest())
     def downloadaddresssqueaks(msg):
-        return handler.handle_download_address_squeaks(msg)
+        return handler.handle_download_pubkey_squeaks(msg)
 
     @app.route("/getsentpayments", methods=["POST"])
     @login_required

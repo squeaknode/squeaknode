@@ -662,7 +662,7 @@ class SqueakAdminServerHandler(object):
             download_result=download_result_msg,
         )
 
-    def handle_download_address_squeaks(self, request):
+    def handle_download_pubkey_squeaks(self, request):
         public_key_hex = request.pubkey
         # squeak_address = request.address
         logger.info(
