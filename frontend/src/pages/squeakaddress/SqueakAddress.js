@@ -34,7 +34,7 @@ const SQUEAKS_PER_PAGE = 10;
 export default function SqueakAddressPage() {
   const classes = useStyles();
   const history = useHistory();
-  const { address } = useParams();
+  const { pubkey } = useParams();
   const [squeakProfile, setSqueakProfile] = useState(null);
   const [squeaks, setSqueaks] = useState(null);
   const [createContactProfileDialogOpen, setCreateContactProfileDialogOpen] = useState(false);
@@ -45,19 +45,19 @@ export default function SqueakAddressPage() {
 
   const initialLoadComplete = useMemo(() => (squeaks && !waitingForProfile), [squeaks, waitingForProfile]);
 
-  const getSqueakProfile = (address) => {
+  const getSqueakProfile = (pubkey) => {
     setWaitingForProfile(true);
-    getSqueakProfileByAddressRequest(address, (profile => {
+    getSqueakProfileByAddressRequest(pubkey, (profile => {
       setWaitingForProfile(false);
       setSqueakProfile(profile);
     }));
   };
-  const getSqueaks = useCallback((address, limit, lastEntry) => {
+  const getSqueaks = useCallback((pubkey, limit, lastEntry) => {
     setWaitingForSqueaks(true);
-    getAddressSqueakDisplaysRequest(address, limit, lastEntry, handleLoadedAddressSqueaks);
+    getAddressSqueakDisplaysRequest(pubkey, limit, lastEntry, handleLoadedAddressSqueaks);
   },
   []);
-  // const subscribeSqueaks = (address) => subscribeAddressSqueakDisplaysRequest(address, (resp) => {
+  // const subscribeSqueaks = (pubkey) => subscribeAddressSqueakDisplaysRequest(pubkey, (resp) => {
   //   setSqueaks((prevSqueaks) => [resp].concat(prevSqueaks));
   // });
   const getNetwork = () => {
@@ -88,9 +88,9 @@ export default function SqueakAddressPage() {
 
   const onDownloadSqueaksClick = (event) => {
     event.preventDefault();
-    console.log('Handling download address squeaks click...');
+    console.log('Handling download pubkey squeaks click...');
     setWaitingForDownload(true);
-    downloadAddressSqueaksRequest(address, (response) => {
+    downloadAddressSqueaksRequest(pubkey, (response) => {
       setWaitingForDownload(false);
       const downloadResult = response.getDownloadResult();
       const numPeers = downloadResult.getNumberPeers();
@@ -104,20 +104,20 @@ export default function SqueakAddressPage() {
         return;
       }
       setSqueaks([]);
-      getSqueaks(address, SQUEAKS_PER_PAGE, null);
+      getSqueaks(pubkey, SQUEAKS_PER_PAGE, null);
     });
   };
 
   useEffect(() => {
-    getSqueakProfile(address);
-  }, [address]);
+    getSqueakProfile(pubkey);
+  }, [pubkey]);
   useEffect(() => {
-    getSqueaks(address, SQUEAKS_PER_PAGE, null);
-  }, [getSqueaks, address]);
+    getSqueaks(pubkey, SQUEAKS_PER_PAGE, null);
+  }, [getSqueaks, pubkey]);
   // useEffect(() => {
-  //   const stream = subscribeSqueaks(address);
+  //   const stream = subscribeSqueaks(pubkey);
   //   return () => stream.cancel();
-  // }, [address]);
+  // }, [pubkey]);
   useEffect(() => {
     getNetwork();
   }, []);
@@ -176,7 +176,7 @@ export default function SqueakAddressPage() {
         <CreateContactProfileDialog
           open={createContactProfileDialogOpen}
           handleClose={handleCloseCreateContactProfileDialog}
-          initialAddress={address}
+          initialAddress={pubkey}
         />
       </>
     );
@@ -263,7 +263,7 @@ export default function SqueakAddressPage() {
         disabled={waitingForSqueaks}
         onClick={() => {
           const latestSqueak = squeaks.slice(-1).pop();
-          getSqueaks(address, SQUEAKS_PER_PAGE, latestSqueak);
+          getSqueaks(pubkey, SQUEAKS_PER_PAGE, latestSqueak);
         }}
       >
         <ReplayIcon />

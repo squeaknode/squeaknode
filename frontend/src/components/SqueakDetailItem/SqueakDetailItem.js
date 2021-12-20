@@ -24,7 +24,7 @@ import SqueakTime from '../SqueakTime';
 import SqueakUserAvatar from '../SqueakUserAvatar';
 
 import {
-  goToSqueakAddressPage,
+  goToPubkeyPage,
 } from '../../navigation/navigation';
 
 function Alert(props) {
@@ -61,7 +61,7 @@ export default function SqueakDetailItem({
     if (!squeak) {
       return;
     }
-    goToSqueakAddressPage(history, squeak.getAuthorPubkey());
+    goToPubkeyPage(history, squeak.getAuthorPubkey());
   };
 
   const onUnlockClick = (event) => {

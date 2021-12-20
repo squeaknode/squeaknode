@@ -25,8 +25,8 @@ export const goToSqueakPage = (history, squeakHash) => {
   history.push(`/app/squeak/${squeakHash}`);
 };
 
-export const goToSqueakAddressPage = (history, squeakAddress) => {
-  history.push(`/app/squeakaddress/${squeakAddress}`);
+export const goToPubkeyPage = (history, pubkey) => {
+  history.push(`/app/pubkey/${pubkey}`);
 };
 
 export const goToSearchPage = (history, searchText) => {

@@ -34,7 +34,7 @@ import {
   getProfileImageSrcString,
 } from '../../squeakimages/images';
 import {
-  goToSqueakAddressPage,
+  goToPubkeyPage,
 } from '../../navigation/navigation';
 
 export default function SqueakProfileDetailItem({
@@ -68,7 +68,7 @@ export default function SqueakProfileDetailItem({
     if (!squeakProfile) {
       return;
     }
-    goToSqueakAddressPage(history, squeakProfile.getPubkey());
+    goToPubkeyPage(history, squeakProfile.getPubkey());
   };
 
   const onConfigureClick = () => {
