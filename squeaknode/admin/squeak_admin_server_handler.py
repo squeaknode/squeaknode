@@ -145,14 +145,14 @@ class SqueakAdminServerHandler(object):
 
     def handle_create_contact_profile(self, request):
         profile_name = request.profile_name
-        public_key = SqueakPublicKey.from_bytes(bytes.fromhex(request.pubkey))
-        # squeak_address = request.address
+        public_key_hex = request.pubkey
         logger.info(
             "Handle create contact profile with name: {}, public key: {}".format(
                 profile_name,
-                public_key,
+                public_key_hex,
             )
         )
+        public_key = SqueakPublicKey.from_bytes(bytes.fromhex(public_key_hex))
         profile_id = self.squeak_controller.create_contact_profile(
             profile_name,
             public_key,
