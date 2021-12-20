@@ -98,14 +98,14 @@ export default function TwitterAccountListItem({
 
   function AccountCardContent() {
     const name = profile.getProfileName();
-    const address = profile.getPubkey();
+    const pubkey = profile.getPubkey();
     return (
       <>
         <Box>
           {`Profile Name: ${name}`}
         </Box>
         <Box>
-          {`Address: ${address}`}
+          {`Pubkey: ${pubkey}`}
         </Box>
       </>
     );
