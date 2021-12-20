@@ -25,13 +25,13 @@ from squeaknode.core.interests import get_differential_squeaks
 from squeaknode.core.interests import squeak_matches_interest
 from tests.utils import gen_random_hash
 from tests.utils import gen_squeak
-from tests.utils import gen_squeak_addresses
+from tests.utils import gen_squeak_pubkeys
 
 
-def test_squeak_matches_interest(signing_key, address):
-    squeak = gen_squeak(signing_key, 5678)
+def test_squeak_matches_interest(private_key, public_key):
+    squeak = gen_squeak(private_key, 5678)
     interest = CInterested(
-        addresses=(address,),
+        pubkeys=(public_key,),
         nMinBlockHeight=5000,
         nMaxBlockHeight=6000,
     )
@@ -39,8 +39,8 @@ def test_squeak_matches_interest(signing_key, address):
     assert squeak_matches_interest(squeak, interest)
 
 
-def test_squeak_matches_interest_empty_addresses(signing_key, address):
-    squeak = gen_squeak(signing_key, 5678)
+def test_squeak_matches_interest_empty_pubkeys(private_key, public_key):
+    squeak = gen_squeak(private_key, 5678)
     interest = CInterested(
         nMinBlockHeight=5000,
         nMaxBlockHeight=6000,
@@ -49,10 +49,10 @@ def test_squeak_matches_interest_empty_addresses(signing_key, address):
     assert squeak_matches_interest(squeak, interest)
 
 
-def test_squeak_matches_interest_above_block_range(signing_key, address):
-    squeak = gen_squeak(signing_key, 5678)
+def test_squeak_matches_interest_above_block_range(private_key, public_key):
+    squeak = gen_squeak(private_key, 5678)
     interest = CInterested(
-        addresses=(address,),
+        pubkeys=(public_key,),
         nMinBlockHeight=4000,
         nMaxBlockHeight=5000,
     )
@@ -60,10 +60,10 @@ def test_squeak_matches_interest_above_block_range(signing_key, address):
     assert not squeak_matches_interest(squeak, interest)
 
 
-def test_squeak_matches_interest_below_block_range(signing_key, address):
-    squeak = gen_squeak(signing_key, 5678)
+def test_squeak_matches_interest_below_block_range(private_key, public_key):
+    squeak = gen_squeak(private_key, 5678)
     interest = CInterested(
-        addresses=(address,),
+        pubkeys=(public_key,),
         nMinBlockHeight=6000,
         nMaxBlockHeight=7000,
     )
@@ -71,11 +71,11 @@ def test_squeak_matches_interest_below_block_range(signing_key, address):
     assert not squeak_matches_interest(squeak, interest)
 
 
-def test_squeak_matches_interest_address_no_match(signing_key, address):
-    squeak = gen_squeak(signing_key, 5678)
-    other_addresses = tuple(gen_squeak_addresses(3))
+def test_squeak_matches_interest_pubkey_no_match(private_key, public_key):
+    squeak = gen_squeak(private_key, 5678)
+    other_pubkeys = tuple(gen_squeak_pubkeys(3))
     interest = CInterested(
-        addresses=other_addresses,
+        pubkeys=other_pubkeys,
         nMinBlockHeight=5000,
         nMaxBlockHeight=6000,
     )
@@ -83,9 +83,9 @@ def test_squeak_matches_interest_address_no_match(signing_key, address):
     assert not squeak_matches_interest(squeak, interest)
 
 
-def test_squeak_matches_interest_is_reply(signing_key):
+def test_squeak_matches_interest_is_reply(private_key):
     replyto_hash = gen_random_hash()
-    squeak = gen_squeak(signing_key, 5678, replyto_hash=replyto_hash)
+    squeak = gen_squeak(private_key, 5678, replyto_hash=replyto_hash)
     interest = CInterested(
         hashReplySqk=replyto_hash,
     )
@@ -93,9 +93,9 @@ def test_squeak_matches_interest_is_reply(signing_key):
     assert squeak_matches_interest(squeak, interest)
 
 
-def test_squeak_matches_interest_is_not_reply(signing_key):
+def test_squeak_matches_interest_is_not_reply(private_key):
     replyto_hash = gen_random_hash()
-    squeak = gen_squeak(signing_key, 5678, replyto_hash=replyto_hash)
+    squeak = gen_squeak(private_key, 5678, replyto_hash=replyto_hash)
     other_replyto_hash = gen_random_hash()
     interest = CInterested(
         hashReplySqk=other_replyto_hash,
@@ -105,14 +105,14 @@ def test_squeak_matches_interest_is_not_reply(signing_key):
 
 
 def test_get_differential_squeaks():
-    squeak_addresses = tuple(gen_squeak_addresses(3))
+    squeak_pubkeys = tuple(gen_squeak_pubkeys(3))
     old_interest = CInterested(
-        addresses=squeak_addresses,
+        pubkeys=squeak_pubkeys,
         nMinBlockHeight=10,
         nMaxBlockHeight=20,
     )
     interest = CInterested(
-        addresses=squeak_addresses,
+        pubkeys=squeak_pubkeys,
         nMinBlockHeight=11,
         nMaxBlockHeight=21,
     )
@@ -121,7 +121,7 @@ def test_get_differential_squeaks():
 
     assert differential_results == [
         CInterested(
-            addresses=squeak_addresses,
+            pubkeys=squeak_pubkeys,
             nMinBlockHeight=21,
             nMaxBlockHeight=21,
         )
@@ -129,14 +129,14 @@ def test_get_differential_squeaks():
 
 
 def test_get_differential_squeaks_no_difference():
-    squeak_addresses = tuple(gen_squeak_addresses(3))
+    squeak_pubkeys = tuple(gen_squeak_pubkeys(3))
     old_interest = CInterested(
-        addresses=squeak_addresses,
+        pubkeys=squeak_pubkeys,
         nMinBlockHeight=10,
         nMaxBlockHeight=20,
     )
     interest = CInterested(
-        addresses=squeak_addresses,
+        pubkeys=squeak_pubkeys,
         nMinBlockHeight=10,
         nMaxBlockHeight=20,
     )
@@ -146,16 +146,16 @@ def test_get_differential_squeaks_no_difference():
     assert differential_results == []
 
 
-def test_get_differential_squeaks_new_addresses():
-    squeak_addresses = tuple(gen_squeak_addresses(3))
+def test_get_differential_squeaks_new_pubkeys():
+    squeak_pubkeys = tuple(gen_squeak_pubkeys(3))
     old_interest = CInterested(
-        addresses=squeak_addresses,
+        pubkeys=squeak_pubkeys,
         nMinBlockHeight=10,
         nMaxBlockHeight=20,
     )
-    additional_addresses = tuple(gen_squeak_addresses(3))
+    additional_pubkeys = tuple(gen_squeak_pubkeys(3))
     interest = CInterested(
-        addresses=tuple(list(squeak_addresses) + list(additional_addresses)),
+        pubkeys=tuple(list(squeak_pubkeys) + list(additional_pubkeys)),
         nMinBlockHeight=10,
         nMaxBlockHeight=20,
     )
@@ -164,20 +164,20 @@ def test_get_differential_squeaks_new_addresses():
 
     assert len(differential_results) == 1
     first_result = differential_results[0]
-    assert set(first_result.addresses) == set(additional_addresses)
+    assert set(first_result.pubkeys) == set(additional_pubkeys)
     assert first_result.nMinBlockHeight == 10
     assert first_result.nMaxBlockHeight == 20
 
 
 def test_get_differential_squeaks_default_min():
-    squeak_addresses = tuple(gen_squeak_addresses(3))
+    squeak_pubkeys = tuple(gen_squeak_pubkeys(3))
     old_interest = CInterested(
-        addresses=squeak_addresses,
+        pubkeys=squeak_pubkeys,
         nMinBlockHeight=10,
         nMaxBlockHeight=20,
     )
     interest = CInterested(
-        addresses=squeak_addresses,
+        pubkeys=squeak_pubkeys,
         nMinBlockHeight=-1,
         nMaxBlockHeight=20,
     )
@@ -186,7 +186,7 @@ def test_get_differential_squeaks_default_min():
 
     assert differential_results == [
         CInterested(
-            addresses=squeak_addresses,
+            pubkeys=squeak_pubkeys,
             nMinBlockHeight=-1,
             nMaxBlockHeight=9,
         )
@@ -194,14 +194,14 @@ def test_get_differential_squeaks_default_min():
 
 
 def test_get_differential_squeaks_default_max():
-    squeak_addresses = tuple(gen_squeak_addresses(3))
+    squeak_pubkeys = tuple(gen_squeak_pubkeys(3))
     old_interest = CInterested(
-        addresses=squeak_addresses,
+        pubkeys=squeak_pubkeys,
         nMinBlockHeight=10,
         nMaxBlockHeight=20,
     )
     interest = CInterested(
-        addresses=squeak_addresses,
+        pubkeys=squeak_pubkeys,
         nMinBlockHeight=10,
         nMaxBlockHeight=-1,
     )
@@ -210,23 +210,23 @@ def test_get_differential_squeaks_default_max():
 
     assert differential_results == [
         CInterested(
-            addresses=squeak_addresses,
+            pubkeys=squeak_pubkeys,
             nMinBlockHeight=21,
             nMaxBlockHeight=-1,
         )
     ]
 
 
-def test_get_differential_squeaks_new_addresses_and_min_max():
-    squeak_addresses = tuple(gen_squeak_addresses(3))
+def test_get_differential_squeaks_new_pubkeys_and_min_max():
+    squeak_pubkeys = tuple(gen_squeak_pubkeys(3))
     old_interest = CInterested(
-        addresses=squeak_addresses,
+        pubkeys=squeak_pubkeys,
         nMinBlockHeight=10,
         nMaxBlockHeight=20,
     )
-    new_addresses = tuple(gen_squeak_addresses(3))
+    new_pubkeys = tuple(gen_squeak_pubkeys(3))
     interest = CInterested(
-        addresses=new_addresses,
+        pubkeys=new_pubkeys,
         nMinBlockHeight=-1,
         nMaxBlockHeight=-1,
     )
@@ -236,16 +236,16 @@ def test_get_differential_squeaks_new_addresses_and_min_max():
     assert len(differential_results) == 3
 
     first_result = differential_results[0]
-    assert set(first_result.addresses) == set(squeak_addresses)
+    assert set(first_result.pubkeys) == set(squeak_pubkeys)
     assert first_result.nMinBlockHeight == -1
     assert first_result.nMaxBlockHeight == 9
 
     second_result = differential_results[1]
-    assert set(second_result.addresses) == set(squeak_addresses)
+    assert set(second_result.pubkeys) == set(squeak_pubkeys)
     assert second_result.nMinBlockHeight == 21
     assert second_result.nMaxBlockHeight == -1
 
     third_result = differential_results[2]
-    assert set(third_result.addresses) == set(new_addresses)
+    assert set(third_result.pubkeys) == set(new_pubkeys)
     assert third_result.nMinBlockHeight == -1
     assert third_result.nMaxBlockHeight == -1

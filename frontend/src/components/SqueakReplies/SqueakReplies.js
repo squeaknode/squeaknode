@@ -62,7 +62,7 @@ export default function SqueakReplies({
             />
             <TimelineSeparator>
               <SqueakUserAvatar
-                squeakAddress={squeak.getAuthorAddress()}
+                squeakAddress={squeak.getAuthorPubkey()}
                 squeakProfile={squeak.getAuthor()}
               />
             </TimelineSeparator>

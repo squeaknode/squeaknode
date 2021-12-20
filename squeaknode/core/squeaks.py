@@ -27,7 +27,7 @@ from squeak.core import CheckSqueak
 from squeak.core import CSqueak
 from squeak.core import MakeSqueakFromStr
 from squeak.core.elliptic import payment_point_bytes_from_scalar_bytes
-from squeak.core.signing import CSigningKey
+from squeak.core.signing import SqueakPrivateKey
 
 
 DATA_KEY_LENGTH = 32
@@ -53,7 +53,7 @@ def get_hash(squeak: CSqueak):
 
 
 def make_squeak_with_block(
-        signing_key: CSigningKey,
+        private_key: SqueakPrivateKey,
         content_str: str,
         block_height: int,
         block_hash: bytes,
@@ -62,7 +62,7 @@ def make_squeak_with_block(
     """Create a new squeak.
 
     Args:
-        signing_key: The private key to sign the squeak.
+        private_key: The private key to sign the squeak.
         content_str: The content of the squeak as a string.
         block_height: The height of the latest block in the bitcoin blockchain.
         block_hahs: The hash of the latest block in the bitcoin blockchain.
@@ -74,7 +74,7 @@ def make_squeak_with_block(
     """
     timestamp = int(time.time())
     return MakeSqueakFromStr(
-        signing_key,
+        private_key,
         content_str,
         block_height,
         block_hash,

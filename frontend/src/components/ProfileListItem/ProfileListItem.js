@@ -57,7 +57,7 @@ export default function ProfileListItem({
   // }
 
   const name = profile.getProfileName();
-  const address = profile.getAddress();
+  const pubkey = profile.getPubkey();
 
   function ProfileCardContent() {
     return (
@@ -66,7 +66,7 @@ export default function ProfileListItem({
           {profile.getHasPrivateKey() && <VpnKeyIcon />}
         </Box>
         <Box>
-          {`Address: ${address}`}
+          {`Pubkey: ${pubkey}`}
         </Box>
         <SqueakProfileFollowingIndicator
           squeakProfile={profile}
@@ -83,7 +83,7 @@ export default function ProfileListItem({
       <CardHeader
         avatar={(
           <SqueakUserAvatar
-            squeakAddress={profile.getAddress()}
+            squeakAddress={profile.getPubkey()}
             squeakProfile={profile}
           />
 )}

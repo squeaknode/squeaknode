@@ -22,13 +22,15 @@
 from typing import NamedTuple
 from typing import Optional
 
+from squeak.core.signing import SqueakPublicKey
+
 from squeaknode.core.squeak_profile import SqueakProfile
 
 
 class SqueakEntry(NamedTuple):
     squeak_hash: bytes
     serialized_squeak: bytes
-    address: str
+    public_key: SqueakPublicKey
     block_height: int
     block_hash: bytes
     block_time: int

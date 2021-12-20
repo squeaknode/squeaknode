@@ -31,7 +31,7 @@ def get_engine(connection_string):
 def get_sqlite_connection_string(sqk_dir, network):
     data_dir = Path(sqk_dir).joinpath("data").joinpath(network)
     data_dir.mkdir(parents=True, exist_ok=True)
-    return "sqlite:////{}/data.db".format(
+    return "sqlite:////{}/data-v2.db".format(
         data_dir,
     )
 

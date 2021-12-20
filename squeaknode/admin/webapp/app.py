@@ -331,15 +331,15 @@ def create_app(handler, username, password):
     def getreplysqueakdisplays(msg):
         return handler.handle_get_reply_squeak_display_entries(msg)
 
-    @app.route("/getsqueakprofilebyaddress", methods=["POST"])
+    @app.route("/getsqueakprofilebypubkey", methods=["POST"])
     @login_required
-    @protobuf_serialized(squeak_admin_pb2.GetSqueakProfileByAddressRequest())
-    def getsqueakprofilebyaddress(msg):
+    @protobuf_serialized(squeak_admin_pb2.GetSqueakProfileByPubKeyRequest())
+    def getsqueakprofilebypubkey(msg):
         return handler.handle_get_squeak_profile_by_address(msg)
 
-    @app.route("/getaddresssqueakdisplays", methods=["POST"])
+    @app.route("/getpubkeysqueakdisplays", methods=["POST"])
     @login_required
-    @protobuf_serialized(squeak_admin_pb2.GetAddressSqueakDisplaysRequest())
+    @protobuf_serialized(squeak_admin_pb2.GetPubKeySqueakDisplaysRequest())
     def getaddresssqueakdisplays(msg):
         return handler.handle_get_squeak_display_entries_for_address(msg)
 
@@ -411,7 +411,7 @@ def create_app(handler, username, password):
 
     @app.route("/downloadaddresssqueaks", methods=["POST"])
     @login_required
-    @protobuf_serialized(squeak_admin_pb2.DownloadAddressSqueaksRequest())
+    @protobuf_serialized(squeak_admin_pb2.DownloadPubKeySqueaksRequest())
     def downloadaddresssqueaks(msg):
         return handler.handle_download_address_squeaks(msg)
 

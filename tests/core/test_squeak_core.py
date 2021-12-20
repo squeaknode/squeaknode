@@ -151,9 +151,9 @@ def other_block_info():
 
 
 @pytest.fixture
-def other_squeak(signing_key, squeak_content, other_block_info):
+def other_squeak(private_key, squeak_content, other_block_info):
     squeak, _ = make_squeak_with_block(
-        signing_key,
+        private_key,
         squeak_content,
         other_block_info.block_height,
         other_block_info.block_hash,

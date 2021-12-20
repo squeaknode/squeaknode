@@ -22,26 +22,26 @@ import {
 export default function CreateContactProfileDialog({
   open,
   handleClose,
-  initialAddress = '',
+  initialPubkey = '',
   ...props
 }) {
   const classes = useStyles();
   const history = useHistory();
 
   const [profileName, setProfileName] = useState('');
-  const [address, setAddress] = useState(initialAddress);
+  const [pubkey, setPubkey] = useState(initialPubkey);
 
   const resetFields = () => {
     setProfileName('');
-    setAddress(initialAddress);
+    setPubkey(initialPubkey);
   };
 
   const handleChangeProfileName = (event) => {
     setProfileName(event.target.value);
   };
 
-  const handleChangeAddress = (event) => {
-    setAddress(event.target.value);
+  const handleChangePubkey = (event) => {
+    setPubkey(event.target.value);
   };
 
   const handleResponse = (response) => {
@@ -52,23 +52,23 @@ export default function CreateContactProfileDialog({
     alert(`Error creating contact profile: ${err}`);
   };
 
-  const createContactProfile = (profileName, squeakAddress) => {
-    createContactProfileRequest(profileName, squeakAddress, handleResponse, handleErr);
+  const createContactProfile = (profileName, squeakPubkey) => {
+    createContactProfileRequest(profileName, squeakPubkey, handleResponse, handleErr);
   };
 
   function handleSubmit(event) {
     event.preventDefault();
     console.log('profileName:', profileName);
-    console.log('address:', address);
+    console.log('pubkey:', pubkey);
     if (!profileName) {
       alert('Profile Name cannot be empty.');
       return;
     }
-    if (!address) {
-      alert('Address Name cannot be empty.');
+    if (!pubkey) {
+      alert('Pubkey Name cannot be empty.');
       return;
     }
-    createContactProfile(profileName, address);
+    createContactProfile(profileName, pubkey);
     handleClose();
   }
 
@@ -89,17 +89,17 @@ export default function CreateContactProfileDialog({
     );
   }
 
-  function CreateContactAddressInput() {
+  function CreateContactPubkeyInput() {
     return (
       <TextField
         required
         id="standard-textarea"
-        label="Address"
+        label="Pubkey"
         variant="outlined"
         margin="normal"
-        value={address}
-        onChange={handleChangeAddress}
-        inputProps={{ maxLength: 35 }}
+        value={pubkey}
+        onChange={handleChangePubkey}
+        inputProps={{ maxLength: 66 }}
       />
     );
   }
@@ -135,7 +135,7 @@ export default function CreateContactProfileDialog({
       <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
         <DialogContent>
           {CreateContactProfileNameInput()}
-          {CreateContactAddressInput()}
+          {CreateContactPubkeyInput()}
         </DialogContent>
         <DialogActions>
           {CancelButton()}

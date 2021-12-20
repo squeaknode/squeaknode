@@ -22,12 +22,15 @@
 from typing import NamedTuple
 from typing import Optional
 
+from squeak.core.signing import SqueakPrivateKey
+from squeak.core.signing import SqueakPublicKey
+
 
 class SqueakProfile(NamedTuple):
     """Represents a user who can author squeaks."""
     profile_name: str
-    address: str
+    public_key: SqueakPublicKey
     profile_id: Optional[int] = None
-    private_key: Optional[bytes] = None
+    private_key: Optional[SqueakPrivateKey] = None
     following: bool = True
     profile_image: Optional[bytes] = None

@@ -31,14 +31,9 @@ def profile_name():
     yield "fake_profile_name"
 
 
-@pytest.fixture
-def private_key(signing_key):
-    yield str(signing_key)
-
-
-@pytest.fixture
-def invalid_address_str():
-    yield "abcdefg"
+# @pytest.fixture
+# def invalid_public_key():
+#     yield "abcdefg"
 
 
 def test_create_signing_profile(profile_name):
@@ -53,31 +48,31 @@ def test_create_signing_profile_empty_name():
     assert "Profile name cannot be empty." in str(excinfo.value)
 
 
-def test_import_signing_profile(profile_name, private_key, address_str):
+def test_import_signing_profile(profile_name, private_key, public_key):
     profile = create_signing_profile(profile_name, private_key)
 
     assert profile.profile_name == profile_name
-    assert profile.private_key == private_key.encode()
-    assert profile.address == address_str
+    assert profile.private_key == private_key
+    assert profile.public_key == public_key
 
 
-def test_create_contact_profile(profile_name, address_str):
-    profile = create_contact_profile(profile_name, address_str)
+def test_create_contact_profile(profile_name, public_key):
+    profile = create_contact_profile(profile_name, public_key)
 
     assert profile.profile_name == profile_name
-    assert profile.address == address_str
+    assert profile.public_key == public_key
 
 
-def test_create_contact_profile_invalid_address(profile_name, invalid_address_str):
-    with pytest.raises(Exception) as excinfo:
-        create_contact_profile(profile_name, invalid_address_str)
-    assert "Invalid squeak address" in str(excinfo.value)
+# def test_create_contact_profile_invalid_public_key(profile_name, invalid_public_key):
+#     with pytest.raises(Exception) as excinfo:
+#         create_contact_profile(profile_name, invalid_address_str)
+#     assert "Invalid squeak address" in str(excinfo.value)
 
 
-def test_get_profile_private_key(signing_profile, signing_key_bytes):
-    private_key = get_profile_private_key(signing_profile)
+def test_get_profile_private_key(signing_profile, private_key):
+    private_key_from_profile = get_profile_private_key(signing_profile)
 
-    assert private_key == signing_key_bytes
+    assert private_key_from_profile == private_key
 
 
 def test_get_profile_private_key_missing(contact_profile):

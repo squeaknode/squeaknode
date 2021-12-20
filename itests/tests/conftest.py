@@ -33,8 +33,8 @@ from tests.util import create_contact_profile
 from tests.util import create_saved_peer
 from tests.util import create_signing_profile
 from tests.util import delete_profile
-from tests.util import generate_signing_key
-from tests.util import get_address
+from tests.util import generate_private_key
+from tests.util import get_public_key
 from tests.util import open_peer_connection
 
 
@@ -57,14 +57,14 @@ def other_admin_stub():
 
 
 @pytest.fixture
-def signing_key():
-    # Create a signing key
-    yield generate_signing_key()
+def private_key():
+    # Create a private key
+    yield generate_private_key()
 
 
 @pytest.fixture
-def squeak_address(signing_key):
-    yield get_address(signing_key)
+def public_key(private_key):
+    yield get_public_key(private_key)
 
 
 # @pytest.fixture
@@ -82,10 +82,10 @@ def signing_profile_id(admin_stub, random_name):
 
 
 @pytest.fixture
-def contact_profile_id(admin_stub, random_name, squeak_address):
+def contact_profile_id(admin_stub, random_name, public_key):
     # Create a new contact profile
     contact_profile_id = create_contact_profile(
-        admin_stub, random_name, squeak_address)
+        admin_stub, random_name, public_key)
     yield contact_profile_id
     # Delete the profile
     admin_stub.DeleteSqueakProfile(

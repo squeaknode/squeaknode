@@ -41,7 +41,7 @@ export default function SqueakThreadItem({
     if (!squeak) {
       return;
     }
-    goToSqueakAddressPage(history, squeak.getAuthorAddress());
+    goToSqueakAddressPage(history, squeak.getAuthorPubkey());
   };
 
   const onSqueakClick = (event) => {
@@ -111,7 +111,7 @@ export default function SqueakThreadItem({
     }
     return squeak.getIsAuthorKnown()
       ? squeak.getAuthor().getProfileName()
-      : squeak.getAuthorAddress();
+      : squeak.getAuthorPubkey();
   }
 
   function SqueakBackgroundColor() {

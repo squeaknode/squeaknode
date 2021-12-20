@@ -94,7 +94,7 @@ service SqueakAdmin {
 
   /** sqkadmin: `getsqueakprofilebyaddress`
   */
-  rpc GetSqueakProfileByAddress (GetSqueakProfileByAddressRequest) returns (GetSqueakProfileByAddressReply) {}
+  rpc GetSqueakProfileByPubKey (GetSqueakProfileByPubKeyRequest) returns (GetSqueakProfileByPubKeyReply) {}
 
   /** sqkadmin: `getsqueakprofilebyname`
   */
@@ -138,7 +138,7 @@ service SqueakAdmin {
 
   /** sqkadmin: `getaddresssqueakdisplays`
   */
-  rpc GetAddressSqueakDisplays (GetAddressSqueakDisplaysRequest) returns (GetAddressSqueakDisplaysReply) {}
+  rpc GetPubKeySqueakDisplays (GetPubKeySqueakDisplaysRequest) returns (GetPubKeySqueakDisplaysReply) {}
 
   /** sqkadmin: `getsearchsqueakdisplays`
   */
@@ -214,7 +214,7 @@ service SqueakAdmin {
 
   /** sqkadmin: `downloadaddresssqueaks`
   */
-  rpc DownloadAddressSqueaks (DownloadAddressSqueaksRequest) returns (DownloadAddressSqueaksReply) {}
+  rpc DownloadPubKeySqueaks (DownloadPubKeySqueaksRequest) returns (DownloadPubKeySqueaksReply) {}
 
   /** sqkadmin: `payoffer`
   */
@@ -302,7 +302,7 @@ service SqueakAdmin {
 
   /** sqkadmin: `subscribeaddresssqueakdisplays`
   */
-  rpc SubscribeAddressSqueakDisplays (SubscribeAddressSqueakDisplaysRequest) returns (stream GetSqueakDisplayReply) {}
+  rpc SubscribePubKeySqueakDisplays (SubscribePubKeySqueakDisplaysRequest) returns (stream GetSqueakDisplayReply) {}
 
   /** sqkadmin: `subscribeancestorsqueakdisplays`
   */
@@ -389,8 +389,8 @@ message CreateContactProfileRequest {
     /// The name of the new signing profile
     string profile_name = 1;
 
-    /// The address
-    string address = 2;
+    /// The pubkey in hex
+    string pubkey = 2;
 }
 
 message CreateContactProfileReply {
@@ -432,12 +432,16 @@ message GetSqueakProfileReply {
     SqueakProfile squeak_profile = 1;
 }
 
-message GetSqueakProfileByAddressRequest {
-    /// The address
-    string address = 1;
+message GetSqueakProfileByPubKeyRequest {
+    /// The pubkey in hex
+    string pubkey = 1;
+
+
+// /// The address
+//     string address = 1;
 }
 
-message GetSqueakProfileByAddressReply {
+message GetSqueakProfileByPubKeyReply {
     /// The squeak profile
     SqueakProfile squeak_profile = 1;
 }
@@ -521,8 +525,8 @@ message SqueakProfile {
     /// Has private key
     bool has_private_key = 3;
 
-    /// The address
-    string address = 4;
+    /// The pubkey in hex
+    string pubkey = 4;
 
     /// Following
     bool following = 5;
@@ -588,8 +592,8 @@ message SqueakDisplayEntry {
     /// Squeak time
     int64 squeak_time = 9;
 
-    /// The author name
-    string author_address = 10;
+    /// The author pubkey in hex
+    string author_pubkey = 10;
 
     /// Is author address known
     bool is_author_known = 11;
@@ -620,9 +624,12 @@ message GetTimelineSqueakDisplaysReply {
     repeated SqueakDisplayEntry squeak_display_entries = 1;
 }
 
-message GetAddressSqueakDisplaysRequest {
-    /// The address
-    string address = 1;
+message GetPubKeySqueakDisplaysRequest {
+    /// The pubkey in hex
+    string pubkey = 1;
+
+    // /// The address
+    // string address = 1;
 
     /// Limit number of results
     int32 limit = 2;
@@ -631,7 +638,7 @@ message GetAddressSqueakDisplaysRequest {
     SqueakDisplayEntry last_entry = 3;
 }
 
-message GetAddressSqueakDisplaysReply {
+message GetPubKeySqueakDisplaysReply {
     /// Multiple squeak display entries
     repeated SqueakDisplayEntry squeak_display_entries = 1;
 }
@@ -844,8 +851,11 @@ message OfferDisplayEntry {
 }
 
 message DownloadSqueaksRequest {
-    /// The interested addresses
-    repeated string addreses = 1;
+    /// The interested pubkeys in hex
+    repeated string pubkeys = 1;
+
+// /// The interested addresses
+//     repeated string addreses = 1;
 
     /// Minimum block height
     int32 min_block_height = 2;
@@ -965,12 +975,15 @@ message DownloadRepliesReply {
     DownloadResult download_result = 1;
 }
 
-message DownloadAddressSqueaksRequest {
-    /// The address
-    string address = 1;
+message DownloadPubKeySqueaksRequest {
+    /// The pubkey in hex
+    string pubkey = 1;
+
+    // /// The address
+    // string address = 1;
 }
 
-message DownloadAddressSqueaksReply {
+message DownloadPubKeySqueaksReply {
     // The download result
     DownloadResult download_result = 1;
 }
@@ -1197,9 +1210,12 @@ message SubscribeReplySqueakDisplaysRequest {
     string squeak_hash = 1;
 }
 
-message SubscribeAddressSqueakDisplaysRequest {
-    /// The address
-    string address = 1;
+message SubscribePubKeySqueakDisplaysRequest {
+    /// The pubkey in hex
+    string pubkey = 1;
+
+    // /// The address
+    // string address = 1;
 }
 
 message SubscribeAncestorSqueakDisplaysRequest {

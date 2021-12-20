@@ -106,7 +106,7 @@ export default function SqueakThread({
             />
             <TimelineSeparator>
               <SqueakUserAvatar
-                squeakAddress={squeak.getAuthorAddress()}
+                squeakAddress={squeak.getAuthorPubkey()}
                 squeakProfile={squeak.getAuthor()}
               />
               <TimelineConnector />

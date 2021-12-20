@@ -36,6 +36,15 @@ from sqlalchemy.ext.compiler import compiles
 logger = logging.getLogger(__name__)
 
 
+convention = {
+    "ix": "ix_%(column_0_label)s",
+    "uq": "uq_%(table_name)s_%(column_0_name)s",
+    "ck": "ck_%(table_name)s_%(constraint_name)s",
+    "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
+    "pk": "pk_%(table_name)s"
+}
+
+
 class SLBigInteger(BigInteger):
     pass
 
@@ -53,7 +62,7 @@ def bi_c(element, compiler, **kw):
 class Models:
     def __init__(self, schema=None):
         self.schema = schema
-        self.metadata = MetaData(schema=schema)
+        self.metadata = MetaData(schema=schema, naming_convention=convention)
 
         self.squeaks = Table(
             "squeak",
@@ -61,13 +70,14 @@ class Models:
             Column("hash", LargeBinary(32), primary_key=True),
             Column("created_time_ms", SLBigInteger, nullable=False),
             Column("squeak", LargeBinary, nullable=False),
-            Column("hash_reply_sqk", LargeBinary(32), nullable=True),
-            Column("hash_block", LargeBinary(32), nullable=False),
-            Column("n_block_height", Integer, nullable=False),
-            Column("n_time", Integer, nullable=False),
-            Column("author_address", String(35), index=True, nullable=False),
+            Column("reply_hash", LargeBinary(32), nullable=True),
+            Column("block_hash", LargeBinary(32), nullable=False),
+            Column("block_height", Integer, nullable=False),
+            Column("time_s", Integer, nullable=False),
+            Column("author_public_key", LargeBinary(
+                33), index=True, nullable=False),
             Column("secret_key", LargeBinary(32), nullable=True),
-            Column("block_time", Integer, nullable=False),
+            Column("block_time_s", Integer, nullable=False),
             Column("liked_time_ms", SLBigInteger, default=None, nullable=True),
             Column("content", String(280), nullable=True),
         )
@@ -79,7 +89,7 @@ class Models:
             Column("created_time_ms", SLBigInteger, nullable=False),
             Column("profile_name", String, unique=True, nullable=False),
             Column("private_key", LargeBinary, nullable=True),
-            Column("address", String(35), unique=True, nullable=False),
+            Column("public_key", LargeBinary(33), unique=True, nullable=False),
             Column("following", Boolean, nullable=False),
             Column("profile_image", LargeBinary, nullable=True),
             sqlite_autoincrement=True,
