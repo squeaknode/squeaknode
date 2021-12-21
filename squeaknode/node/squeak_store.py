@@ -84,8 +84,6 @@ class SqueakStore:
         if self.get_number_of_squeaks() >= self.max_squeaks:
             raise Exception("Exceeded max number of squeaks.")
         # Insert the squeak in db.
-        print("Squeak to insert: ", squeak)
-        print("Block header to insert: ", block_header)
         inserted_squeak_hash = self.squeak_db.insert_squeak(
             squeak,
             block_header,
