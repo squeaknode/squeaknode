@@ -164,11 +164,20 @@ def test_make_squeak(
     assert squeak_entry.content == squeak_content
 
 
-@pytest.fixture
 def test_get_free_secret_key(squeak_store, squeak_core, unlocked_squeak, secret_key, peer_address):
     unlocked_squeak_hash = get_hash(unlocked_squeak)
     secret_key_reply = squeak_store.get_secret_key_reply(
         unlocked_squeak_hash, peer_address, 0, None)
 
     assert secret_key_reply.squeak_hash == unlocked_squeak_hash
-    assert secret_key.secret_key == secret_key
+    assert secret_key_reply.secret_key == secret_key
+
+
+# @pytest.fixture
+# def test_get_offer_secret_key(squeak_store, squeak_core, unlocked_squeak, secret_key, peer_address):
+#     unlocked_squeak_hash = get_hash(unlocked_squeak)
+#     secret_key_reply = squeak_store.get_secret_key_reply(
+#         unlocked_squeak_hash, peer_address, 1000, None)
+
+#     assert secret_key_reply.squeak_hash == unlocked_squeak_hash
+#     assert secret_key.secret_key == secret_key
