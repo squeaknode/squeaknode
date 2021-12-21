@@ -25,6 +25,7 @@ from sqlalchemy import create_engine
 
 from squeaknode.core.lightning_address import LightningAddressHostPort
 from squeaknode.core.squeak_core import SqueakCore
+from squeaknode.core.squeaks import get_hash
 from squeaknode.db.squeak_db import SqueakDb
 from squeaknode.node.squeak_store import SqueakStore
 
@@ -86,25 +87,36 @@ def squeak_store(
     )
 
 
-def test_save_squeak(squeak_store, squeak_core, block_header, squeak, squeak_hash):
+@pytest.fixture
+def saved_squeak(squeak_store, squeak_core, block_header, squeak):
     with mock.patch.object(squeak_core, 'get_block_header', autospec=True) as mock_get_block_header:
         mock_get_block_header.return_value = block_header
         squeak_store.save_squeak(squeak)
+        yield squeak
 
-    assert squeak == squeak_store.get_squeak(squeak_hash)
 
-
-def test_unlock_squeak(squeak_store, squeak_core, block_header, squeak, squeak_hash, secret_key, squeak_content):
-    with mock.patch.object(squeak_core, 'get_block_header', autospec=True) as mock_get_block_header, \
-            mock.patch.object(squeak_core, 'get_decrypted_content', autospec=True) as mock_get_decrypted_content:
-        mock_get_block_header.return_value = block_header
+@pytest.fixture
+def unlocked_squeak(squeak_store, squeak_core, saved_squeak, secret_key, squeak_content):
+    with mock.patch.object(squeak_core, 'get_decrypted_content', autospec=True) as mock_get_decrypted_content:
         mock_get_decrypted_content.return_value = squeak_content
-        squeak_store.save_squeak(squeak)
+        saved_squeak_hash = get_hash(saved_squeak)
+        squeak_store.unlock_squeak(saved_squeak_hash, secret_key)
+        yield saved_squeak
 
-        squeak_store.unlock_squeak(squeak_hash, secret_key)
 
-    squeak_entry = squeak_store.get_squeak_entry(squeak_hash)
+def test_get_squeak(squeak_store, saved_squeak):
+    saved_squeak_hash = get_hash(saved_squeak)
+    squeak_entry = squeak_store.get_squeak_entry(saved_squeak_hash)
 
+    assert saved_squeak == squeak_store.get_squeak(saved_squeak_hash)
+    assert squeak_entry.content is None
+
+
+def test_unlock_squeak(squeak_store, squeak_core, unlocked_squeak, squeak_content):
+    unlocked_squeak_hash = get_hash(unlocked_squeak)
+    squeak_entry = squeak_store.get_squeak_entry(unlocked_squeak_hash)
+
+    assert unlocked_squeak == squeak_store.get_squeak(unlocked_squeak_hash)
     assert squeak_entry.content == squeak_content
 
 
