@@ -294,7 +294,7 @@ class SqueakController:
     def get_squeak_profile(self, profile_id: int) -> Optional[SqueakProfile]:
         return self.squeak_db.get_profile(profile_id)
 
-    def get_squeak_profile_by_address(self, public_key: SqueakPublicKey) -> Optional[SqueakProfile]:
+    def get_squeak_profile_by_public_key(self, public_key: SqueakPublicKey) -> Optional[SqueakProfile]:
         return self.squeak_db.get_profile_by_public_key(public_key)
 
     def get_squeak_profile_by_name(self, name: str) -> Optional[SqueakProfile]:

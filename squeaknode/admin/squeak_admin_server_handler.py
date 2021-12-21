@@ -201,7 +201,7 @@ class SqueakAdminServerHandler(object):
         logger.info(
             "Handle get squeak profile with public key: {}".format(public_key_hex))
         public_key = SqueakPublicKey.from_bytes(bytes.fromhex(public_key_hex))
-        squeak_profile = self.squeak_controller.get_squeak_profile_by_address(
+        squeak_profile = self.squeak_controller.get_squeak_profile_by_public_key(
             public_key,
         )
         squeak_profile_msg = optional_squeak_profile_to_message(squeak_profile)
