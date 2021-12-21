@@ -110,14 +110,17 @@ def test_get_squeak(squeak_store, saved_squeak):
 
     assert saved_squeak == squeak_store.get_squeak(saved_squeak_hash)
     assert squeak_entry.content is None
+    assert squeak_store.get_squeak_secret_key(saved_squeak_hash) is None
 
 
-def test_unlock_squeak(squeak_store, squeak_core, unlocked_squeak, squeak_content):
+def test_unlock_squeak(squeak_store, squeak_core, unlocked_squeak, squeak_content, secret_key):
     unlocked_squeak_hash = get_hash(unlocked_squeak)
     squeak_entry = squeak_store.get_squeak_entry(unlocked_squeak_hash)
 
     assert unlocked_squeak == squeak_store.get_squeak(unlocked_squeak_hash)
     assert squeak_entry.content == squeak_content
+    assert squeak_store.get_squeak_secret_key(
+        unlocked_squeak_hash) == secret_key
 
 
 def test_make_squeak(
