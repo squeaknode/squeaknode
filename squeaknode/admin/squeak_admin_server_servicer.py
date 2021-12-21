@@ -114,7 +114,7 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         return self.handler.handle_get_squeak_profile(request)
 
     def GetSqueakProfileByPubKey(self, request, context):
-        return self.handler.handle_get_squeak_profile_by_address(request)
+        return self.handler.handle_get_squeak_profile_by_pubkey(request)
 
     def GetSqueakProfileByName(self, request, context):
         return self.handler.handle_get_squeak_profile_by_name(request)
@@ -147,7 +147,7 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         return self.handler.handle_get_timeline_squeak_display_entries(request)
 
     def GetPubKeySqueakDisplays(self, request, context):
-        return self.handler.handle_get_squeak_display_entries_for_address(request)
+        return self.handler.handle_get_squeak_display_entries_for_pubkey(request)
 
     def GetSearchSqueakDisplays(self, request, context):
         return self.handler.handle_get_squeak_display_entries_for_text_search(request)
@@ -204,7 +204,7 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
         return self.handler.handle_download_replies(request)
 
     def DownloadPubKeySqueaks(self, request, context):
-        return self.handler.handle_download_address_squeaks(request)
+        return self.handler.handle_download_pubkey_squeaks(request)
 
     def PayOffer(self, request, context):
         return self.handler.handle_pay_offer(request)
@@ -330,7 +330,7 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
             logger.info("Stopping SubscribePubKeySqueakDisplaysRequest.")
             stopped.set()
         context.add_callback(on_rpc_done)
-        return self.handler.handle_subscribe_address_squeak_displays(
+        return self.handler.handle_subscribe_pubkey_squeak_displays(
             request,
             stopped,
         )

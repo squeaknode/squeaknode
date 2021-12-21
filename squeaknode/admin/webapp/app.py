@@ -335,13 +335,13 @@ def create_app(handler, username, password):
     @login_required
     @protobuf_serialized(squeak_admin_pb2.GetSqueakProfileByPubKeyRequest())
     def getsqueakprofilebypubkey(msg):
-        return handler.handle_get_squeak_profile_by_address(msg)
+        return handler.handle_get_squeak_profile_by_pubkey(msg)
 
     @app.route("/getpubkeysqueakdisplays", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.GetPubKeySqueakDisplaysRequest())
     def getaddresssqueakdisplays(msg):
-        return handler.handle_get_squeak_display_entries_for_address(msg)
+        return handler.handle_get_squeak_display_entries_for_pubkey(msg)
 
     @app.route("/getsearchsqueakdisplays", methods=["POST"])
     @login_required
@@ -413,7 +413,7 @@ def create_app(handler, username, password):
     @login_required
     @protobuf_serialized(squeak_admin_pb2.DownloadPubKeySqueaksRequest())
     def downloadaddresssqueaks(msg):
-        return handler.handle_download_address_squeaks(msg)
+        return handler.handle_download_pubkey_squeaks(msg)
 
     @app.route("/getsentpayments", methods=["POST"])
     @login_required

@@ -195,7 +195,7 @@ class SqueakAdminServerHandler(object):
             squeak_profile=squeak_profile_msg,
         )
 
-    def handle_get_squeak_profile_by_address(self, request):
+    def handle_get_squeak_profile_by_pubkey(self, request):
         public_key_hex = request.pubkey
         # address = request.address
         logger.info(
@@ -348,7 +348,7 @@ class SqueakAdminServerHandler(object):
             squeak_display_entries=squeak_display_msgs
         )
 
-    def handle_get_squeak_display_entries_for_address(self, request):
+    def handle_get_squeak_display_entries_for_pubkey(self, request):
         public_key_hex = request.pubkey
         # address = request.address
         limit = request.limit
@@ -662,7 +662,7 @@ class SqueakAdminServerHandler(object):
             download_result=download_result_msg,
         )
 
-    def handle_download_address_squeaks(self, request):
+    def handle_download_pubkey_squeaks(self, request):
         public_key_hex = request.pubkey
         # squeak_address = request.address
         logger.info(
@@ -969,7 +969,7 @@ class SqueakAdminServerHandler(object):
                 squeak_display_entry=display_message
             )
 
-    def handle_subscribe_address_squeak_displays(self, request, stopped):
+    def handle_subscribe_pubkey_squeak_displays(self, request, stopped):
         public_key_hex = request.pubkey
         # squeak_address = request.address
         logger.info(
