@@ -968,11 +968,10 @@ class SqueakAdminServerHandler(object):
 
     def handle_subscribe_pubkey_squeak_displays(self, request, stopped):
         public_key_hex = request.pubkey
-        # squeak_address = request.address
         logger.info(
-            "Handle subscribe address squeak displays for public key: {}".format(public_key_hex))
+            "Handle subscribe squeak displays for public key: {}".format(public_key_hex))
         public_key = SqueakPublicKey.from_bytes(bytes.fromhex(public_key_hex))
-        squeak_display_stream = self.squeak_controller.subscribe_squeak_address_entries(
+        squeak_display_stream = self.squeak_controller.subscribe_squeak_public_key_entries(
             public_key,
             stopped,
         )

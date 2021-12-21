@@ -804,7 +804,7 @@ class SqueakController:
                 reply_hash = get_hash(item)
                 yield self.get_squeak_entry(reply_hash)
 
-    def subscribe_squeak_address_entries(self, public_key: SqueakPublicKey, stopped: threading.Event):
+    def subscribe_squeak_public_key_entries(self, public_key: SqueakPublicKey, stopped: threading.Event):
         for item in self.new_squeak_listener.yield_items(stopped):
             if public_key == item.GetPubKey():
                 squeak_hash = get_hash(item)
