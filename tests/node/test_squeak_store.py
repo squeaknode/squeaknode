@@ -104,6 +104,13 @@ def unlocked_squeak(squeak_store, squeak_core, saved_squeak, secret_key, squeak_
         yield saved_squeak
 
 
+@pytest.fixture
+def deleted_squeak(squeak_store, unlocked_squeak):
+    unlocked_squeak_hash = get_hash(unlocked_squeak)
+    squeak_store.delete_squeak(unlocked_squeak_hash)
+    yield unlocked_squeak
+
+
 def test_get_squeak(squeak_store, saved_squeak):
     saved_squeak_hash = get_hash(saved_squeak)
     squeak_entry = squeak_store.get_squeak_entry(saved_squeak_hash)
@@ -113,7 +120,7 @@ def test_get_squeak(squeak_store, saved_squeak):
     assert squeak_store.get_squeak_secret_key(saved_squeak_hash) is None
 
 
-def test_unlock_squeak(squeak_store, squeak_core, unlocked_squeak, squeak_content, secret_key):
+def test_unlock_squeak(squeak_store, unlocked_squeak, squeak_content, secret_key):
     unlocked_squeak_hash = get_hash(unlocked_squeak)
     squeak_entry = squeak_store.get_squeak_entry(unlocked_squeak_hash)
 
@@ -121,6 +128,15 @@ def test_unlock_squeak(squeak_store, squeak_core, unlocked_squeak, squeak_conten
     assert squeak_entry.content == squeak_content
     assert squeak_store.get_squeak_secret_key(
         unlocked_squeak_hash) == secret_key
+
+
+def test_delete_squeak(squeak_store, deleted_squeak):
+    deleted_squeak_hash = get_hash(deleted_squeak)
+    squeak_entry = squeak_store.get_squeak_entry(deleted_squeak_hash)
+
+    assert squeak_store.get_squeak(deleted_squeak_hash) is None
+    assert squeak_entry is None
+    assert squeak_store.get_squeak_secret_key(deleted_squeak_hash) is None
 
 
 def test_make_squeak(
