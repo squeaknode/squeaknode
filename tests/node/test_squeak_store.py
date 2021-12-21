@@ -73,6 +73,13 @@ def inserted_signing_profile_id(squeak_db, signing_profile):
 
 
 @pytest.fixture
+def inserted_received_offer_id(squeak_db, received_offer, creation_date):
+    with mock.patch.object(SqueakDb, 'timestamp_now_ms', new_callable=mock.PropertyMock) as mock_timestamp_ms:
+        mock_timestamp_ms.return_value = creation_date / 1000
+        yield squeak_db.insert_received_offer(received_offer)
+
+
+@pytest.fixture
 def squeak_store(
     squeak_db,
     squeak_core,
@@ -178,10 +185,37 @@ def test_get_offer_secret_key(squeak_store, squeak_core, unlocked_squeak, secret
             mock.patch.object(squeak_core, 'package_offer', autospec=True) as mock_package_offer:
         mock_create_offer.return_value = sent_offer
         mock_package_offer.return_value = offer
-        mock
         unlocked_squeak_hash = get_hash(unlocked_squeak)
         secret_key_reply = squeak_store.get_secret_key_reply(
             unlocked_squeak_hash, peer_address, 1000, None)
 
     assert secret_key_reply.squeak_hash == unlocked_squeak_hash
     assert secret_key_reply.offer == offer
+
+
+def test_pay_offer(
+        squeak_store,
+        squeak_db,
+        squeak_core,
+        unlocked_squeak,
+        block_header,
+        squeak_content,
+        secret_key,
+        peer_address,
+        inserted_received_offer_id,
+        sent_payment,
+):
+    with mock.patch.object(squeak_core, 'pay_offer', autospec=True) as mock_pay_offer, \
+            mock.patch.object(squeak_core, 'get_block_header', autospec=True) as mock_get_block_header, \
+            mock.patch.object(squeak_core, 'get_decrypted_content', autospec=True) as mock_get_decrypted_content:
+        mock_pay_offer.return_value = sent_payment
+        mock_get_block_header.return_value = block_header
+        mock_get_decrypted_content.return_value = squeak_content
+        sent_payment_id = squeak_store.pay_offer(inserted_received_offer_id)
+
+    retrieved_sent_payment = squeak_db.get_sent_payment(
+        sent_payment_id,
+    )
+
+    assert sent_payment_id is not None
+    assert retrieved_sent_payment is not None
