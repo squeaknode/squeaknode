@@ -723,8 +723,8 @@ class SqueakController:
         )
         return self.active_download_manager.download_interest(10, interest)
 
-    def download_address_squeaks(self, public_key: SqueakPublicKey) -> DownloadResult:
-        logger.info("Downloading address squeaks for public key: {}".format(
+    def download_public_key_squeaks(self, public_key: SqueakPublicKey) -> DownloadResult:
+        logger.info("Downloading squeaks for public key: {}".format(
             public_key,
         ))
         interest = CInterested(

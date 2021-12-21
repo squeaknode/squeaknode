@@ -369,7 +369,7 @@ class SqueakAdminServerHandler(object):
             )
         )
         logger.info(
-            "Got number of squeak entries for address: {}".format(
+            "Got number of squeak entries for pubkey: {}".format(
                 len(squeak_entries)
             )
         )
@@ -662,11 +662,10 @@ class SqueakAdminServerHandler(object):
 
     def handle_download_pubkey_squeaks(self, request):
         public_key_hex = request.pubkey
-        # squeak_address = request.address
         logger.info(
-            "Handle download address squeaks for public key: {}".format(public_key_hex))
+            "Handle download squeaks for public key: {}".format(public_key_hex))
         public_key = SqueakPublicKey.from_bytes(bytes.fromhex(public_key_hex))
-        download_result = self.squeak_controller.download_address_squeaks(
+        download_result = self.squeak_controller.download_public_key_squeaks(
             public_key,
         )
         logger.info("Download result: {}".format(download_result))
