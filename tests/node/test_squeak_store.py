@@ -67,6 +67,11 @@ def max_squeaks_per_public_key_in_block_range():
 
 
 @pytest.fixture
+def inserted_signing_profile_id(squeak_db, signing_profile):
+    yield squeak_db.insert_profile(signing_profile)
+
+
+@pytest.fixture
 def squeak_store(
     squeak_db,
     squeak_core,
@@ -100,4 +105,29 @@ def test_unlock_squeak(squeak_store, squeak_core, block_header, squeak, squeak_h
 
     squeak_entry = squeak_store.get_squeak_entry(squeak_hash)
 
+    assert squeak_entry.content == squeak_content
+
+
+def test_make_squeak(
+        squeak_store,
+        squeak_core,
+        block_header,
+        squeak,
+        squeak_hash,
+        secret_key,
+        squeak_content,
+        inserted_signing_profile_id,
+):
+    with mock.patch.object(squeak_core, 'make_squeak', autospec=True) as mock_make_squeak, \
+            mock.patch.object(squeak_core, 'get_block_header', autospec=True) as mock_get_block_header, \
+            mock.patch.object(squeak_core, 'get_decrypted_content', autospec=True) as mock_get_decrypted_content:
+        mock_make_squeak.return_value = squeak, secret_key
+        mock_get_block_header.return_value = block_header
+        mock_get_decrypted_content.return_value = squeak_content
+        squeak_store.make_squeak(
+            inserted_signing_profile_id, squeak_content, None)
+
+    squeak_entry = squeak_store.get_squeak_entry(squeak_hash)
+
+    assert squeak == squeak_store.get_squeak(squeak_hash)
     assert squeak_entry.content == squeak_content
