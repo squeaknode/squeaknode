@@ -503,10 +503,6 @@ class SqueakStore:
         self.new_received_offer_listener.handle_new_item(received_offer)
         return received_offer_id
 
-    # def get_followed_addresses(self) -> List[str]:
-    #     followed_profiles = self.squeak_db.get_following_profiles()
-    #     return [profile.address for profile in followed_profiles]
-
     def get_followed_public_keys(self) -> List[SqueakPublicKey]:
         followed_profiles = self.squeak_db.get_following_profiles()
         return [profile.public_key for profile in followed_profiles]

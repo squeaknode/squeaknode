@@ -81,9 +81,23 @@ def squeak_store(
     )
 
 
-def test_save_squeak(squeak_store, squeak_core, squeak, squeak_hash, block_header):
+def test_save_squeak(squeak_store, squeak_core, block_header, squeak, squeak_hash):
     with mock.patch.object(squeak_core, 'get_block_header', autospec=True) as mock_get_block_header:
         mock_get_block_header.return_value = block_header
         squeak_store.save_squeak(squeak)
 
     assert squeak == squeak_store.get_squeak(squeak_hash)
+
+
+def test_unlock_squeak(squeak_store, squeak_core, block_header, squeak, squeak_hash, secret_key, squeak_content):
+    with mock.patch.object(squeak_core, 'get_block_header', autospec=True) as mock_get_block_header, \
+            mock.patch.object(squeak_core, 'get_decrypted_content', autospec=True) as mock_get_decrypted_content:
+        mock_get_block_header.return_value = block_header
+        mock_get_decrypted_content.return_value = squeak_content
+        squeak_store.save_squeak(squeak)
+
+        squeak_store.unlock_squeak(squeak_hash, secret_key)
+
+    squeak_entry = squeak_store.get_squeak_entry(squeak_hash)
+
+    assert squeak_entry.content == squeak_content
