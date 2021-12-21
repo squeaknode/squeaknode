@@ -294,7 +294,7 @@ class SqueakController:
     def get_squeak_profile(self, profile_id: int) -> Optional[SqueakProfile]:
         return self.squeak_db.get_profile(profile_id)
 
-    def get_squeak_profile_by_address(self, public_key: SqueakPublicKey) -> Optional[SqueakProfile]:
+    def get_squeak_profile_by_public_key(self, public_key: SqueakPublicKey) -> Optional[SqueakProfile]:
         return self.squeak_db.get_profile_by_public_key(public_key)
 
     def get_squeak_profile_by_name(self, name: str) -> Optional[SqueakProfile]:
@@ -476,7 +476,7 @@ class SqueakController:
             last_entry,
         )
 
-    def get_squeak_entries_for_address(
+    def get_squeak_entries_for_public_key(
             self,
             public_key: SqueakPublicKey,
             limit: int,
@@ -723,8 +723,8 @@ class SqueakController:
         )
         return self.active_download_manager.download_interest(10, interest)
 
-    def download_address_squeaks(self, public_key: SqueakPublicKey) -> DownloadResult:
-        logger.info("Downloading address squeaks for public key: {}".format(
+    def download_public_key_squeaks(self, public_key: SqueakPublicKey) -> DownloadResult:
+        logger.info("Downloading squeaks for public key: {}".format(
             public_key,
         ))
         interest = CInterested(
@@ -804,7 +804,7 @@ class SqueakController:
                 reply_hash = get_hash(item)
                 yield self.get_squeak_entry(reply_hash)
 
-    def subscribe_squeak_address_entries(self, public_key: SqueakPublicKey, stopped: threading.Event):
+    def subscribe_squeak_public_key_entries(self, public_key: SqueakPublicKey, stopped: threading.Event):
         for item in self.new_squeak_listener.yield_items(stopped):
             if public_key == item.GetPubKey():
                 squeak_hash = get_hash(item)

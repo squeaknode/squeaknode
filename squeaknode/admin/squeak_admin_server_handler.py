@@ -197,11 +197,10 @@ class SqueakAdminServerHandler(object):
 
     def handle_get_squeak_profile_by_pubkey(self, request):
         public_key_hex = request.pubkey
-        # address = request.address
         logger.info(
             "Handle get squeak profile with public key: {}".format(public_key_hex))
         public_key = SqueakPublicKey.from_bytes(bytes.fromhex(public_key_hex))
-        squeak_profile = self.squeak_controller.get_squeak_profile_by_address(
+        squeak_profile = self.squeak_controller.get_squeak_profile_by_public_key(
             public_key,
         )
         squeak_profile_msg = optional_squeak_profile_to_message(squeak_profile)
@@ -350,7 +349,6 @@ class SqueakAdminServerHandler(object):
 
     def handle_get_squeak_display_entries_for_pubkey(self, request):
         public_key_hex = request.pubkey
-        # address = request.address
         limit = request.limit
         last_entry = message_to_squeak_entry(request.last_entry) if request.HasField(
             "last_entry") else None
@@ -364,14 +362,14 @@ class SqueakAdminServerHandler(object):
         ))
         public_key = SqueakPublicKey.from_bytes(bytes.fromhex(public_key_hex))
         squeak_entries = (
-            self.squeak_controller.get_squeak_entries_for_address(
+            self.squeak_controller.get_squeak_entries_for_public_key(
                 public_key,
                 limit,
                 last_entry,
             )
         )
         logger.info(
-            "Got number of squeak entries for address: {}".format(
+            "Got number of squeak entries for pubkey: {}".format(
                 len(squeak_entries)
             )
         )
@@ -664,11 +662,10 @@ class SqueakAdminServerHandler(object):
 
     def handle_download_pubkey_squeaks(self, request):
         public_key_hex = request.pubkey
-        # squeak_address = request.address
         logger.info(
-            "Handle download address squeaks for public key: {}".format(public_key_hex))
+            "Handle download squeaks for public key: {}".format(public_key_hex))
         public_key = SqueakPublicKey.from_bytes(bytes.fromhex(public_key_hex))
-        download_result = self.squeak_controller.download_address_squeaks(
+        download_result = self.squeak_controller.download_public_key_squeaks(
             public_key,
         )
         logger.info("Download result: {}".format(download_result))
@@ -971,11 +968,10 @@ class SqueakAdminServerHandler(object):
 
     def handle_subscribe_pubkey_squeak_displays(self, request, stopped):
         public_key_hex = request.pubkey
-        # squeak_address = request.address
         logger.info(
-            "Handle subscribe address squeak displays for public key: {}".format(public_key_hex))
+            "Handle subscribe squeak displays for public key: {}".format(public_key_hex))
         public_key = SqueakPublicKey.from_bytes(bytes.fromhex(public_key_hex))
-        squeak_display_stream = self.squeak_controller.subscribe_squeak_address_entries(
+        squeak_display_stream = self.squeak_controller.subscribe_squeak_public_key_entries(
             public_key,
             stopped,
         )
