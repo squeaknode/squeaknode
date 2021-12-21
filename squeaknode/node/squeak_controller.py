@@ -476,7 +476,7 @@ class SqueakController:
             last_entry,
         )
 
-    def get_squeak_entries_for_address(
+    def get_squeak_entries_for_public_key(
             self,
             public_key: SqueakPublicKey,
             limit: int,

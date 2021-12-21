@@ -197,7 +197,6 @@ class SqueakAdminServerHandler(object):
 
     def handle_get_squeak_profile_by_pubkey(self, request):
         public_key_hex = request.pubkey
-        # address = request.address
         logger.info(
             "Handle get squeak profile with public key: {}".format(public_key_hex))
         public_key = SqueakPublicKey.from_bytes(bytes.fromhex(public_key_hex))
@@ -350,7 +349,6 @@ class SqueakAdminServerHandler(object):
 
     def handle_get_squeak_display_entries_for_pubkey(self, request):
         public_key_hex = request.pubkey
-        # address = request.address
         limit = request.limit
         last_entry = message_to_squeak_entry(request.last_entry) if request.HasField(
             "last_entry") else None
@@ -364,7 +362,7 @@ class SqueakAdminServerHandler(object):
         ))
         public_key = SqueakPublicKey.from_bytes(bytes.fromhex(public_key_hex))
         squeak_entries = (
-            self.squeak_controller.get_squeak_entries_for_address(
+            self.squeak_controller.get_squeak_entries_for_public_key(
                 public_key,
                 limit,
                 last_entry,
