@@ -58,6 +58,11 @@ def price_msat():
 
 
 @pytest.fixture
+def interest_block_range():
+    return 400
+
+
+@pytest.fixture
 def max_squeaks():
     return 55
 
@@ -83,12 +88,14 @@ def inserted_received_offer_id(squeak_db, received_offer, creation_date):
 def squeak_store(
     squeak_db,
     squeak_core,
+    interest_block_range,
     max_squeaks,
     max_squeaks_per_public_key_in_block_range,
 ):
     return SqueakStore(
         squeak_db,
         squeak_core,
+        interest_block_range,
         max_squeaks,
         max_squeaks_per_public_key_in_block_range,
     )

@@ -29,6 +29,7 @@ from squeak.core.signing import SqueakPrivateKey
 from squeak.core.signing import SqueakPublicKey
 from squeak.net import CInterested
 
+from squeaknode.core.block_range import BlockRange
 from squeaknode.core.lightning_address import LightningAddressHostPort
 from squeaknode.core.offer import Offer
 from squeaknode.core.peer_address import PeerAddress
@@ -46,7 +47,10 @@ from squeaknode.core.squeak_entry import SqueakEntry
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.squeaks import get_hash
+from squeaknode.core.twitter_account import TwitterAccount
+from squeaknode.core.twitter_account_entry import TwitterAccountEntry
 from squeaknode.core.update_subscriptions_event import UpdateSubscriptionsEvent
+from squeaknode.core.update_twitter_stream_event import UpdateTwitterStreamEvent
 from squeaknode.node.listener_subscription_client import EventListener
 from squeaknode.node.received_payments_subscription_client import ReceivedPaymentsSubscriptionClient
 from squeaknode.node.secret_key_reply import FreeSecretKeyReply
@@ -63,17 +67,20 @@ class SqueakStore:
         self,
         squeak_db,
         squeak_core,
+        interest_block_interval,
         max_squeaks,
         max_squeaks_per_public_key_in_block_range,
     ):
         self.squeak_db = squeak_db
         self.squeak_core = squeak_core
+        self.interest_block_interval = interest_block_interval
         self.max_squeaks = max_squeaks
         self.max_squeaks_per_public_key_in_block_range = max_squeaks_per_public_key_in_block_range
         self.new_squeak_listener = EventListener()
         self.new_received_offer_listener = EventListener()
         self.new_secret_key_listener = EventListener()
         self.new_follow_listener = EventListener()
+        self.twitter_stream_change_listener = EventListener()
 
     def save_squeak(self, squeak: CSqueak) -> Optional[bytes]:
         # Check if the squeak is valid
@@ -411,6 +418,12 @@ class SqueakStore:
         ).open_subscription() as client:
             yield from client.get_received_payments()
 
+    def get_block_range(self) -> BlockRange:
+        max_block = self.squeak_core.get_best_block_height()
+        block_interval = self.interest_block_interval
+        min_block = max(0, max_block - block_interval)
+        return BlockRange(min_block, max_block)
+
     def get_squeak_entry(self, squeak_hash: bytes) -> Optional[SqueakEntry]:
         return self.squeak_db.get_squeak_entry(squeak_hash)
 
@@ -512,6 +525,9 @@ class SqueakStore:
 
     def get_sent_payment_summary(self) -> SentPaymentSummary:
         return self.squeak_db.get_sent_payment_summary()
+
+    def clear_received_payment_settle_indices(self) -> None:
+        self.squeak_db.clear_received_payment_settle_indices()
 
     def delete_old_squeaks(self):
         squeaks_to_delete = self.squeak_db.get_old_squeaks_to_delete(
@@ -620,3 +636,25 @@ class SqueakStore:
             if item.GetPubKey() in set(followed_public_keys):
                 squeak_hash = get_hash(item)
                 yield self.get_squeak_entry(squeak_hash)
+
+    def create_update_twitter_stream_event(self):
+        self.twitter_stream_change_listener.handle_new_item(
+            UpdateTwitterStreamEvent()
+        )
+
+    def add_twitter_account(self, handle: str, profile_id: int) -> Optional[int]:
+        twitter_account = TwitterAccount(
+            twitter_account_id=None,
+            handle=handle,
+            profile_id=profile_id,
+        )
+        account_id = self.squeak_db.insert_twitter_account(twitter_account)
+        self.create_update_twitter_stream_event()
+        return account_id
+
+    def get_twitter_accounts(self) -> List[TwitterAccountEntry]:
+        return self.squeak_db.get_twitter_accounts()
+
+    def delete_twitter_account(self, twitter_account_id: int) -> None:
+        self.squeak_db.delete_twitter_account(twitter_account_id)
+        self.create_update_twitter_stream_event()

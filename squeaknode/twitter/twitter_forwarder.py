@@ -25,7 +25,8 @@ from typing import List
 from typing import Optional
 
 from squeaknode.core.twitter_account_entry import TwitterAccountEntry
-from squeaknode.node.squeak_controller import SqueakController
+from squeaknode.node.node_settings import NodeSettings
+from squeaknode.node.squeak_store import SqueakStore
 from squeaknode.twitter.twitter_stream import TwitterStream
 
 
@@ -42,12 +43,17 @@ class TwitterForwarder:
         self.lock = threading.Lock()
         self.current_task: Optional[TwitterForwarderTask] = None
 
-    def start_processing(self, squeak_controller: SqueakController):
+    def start_processing(
+            self,
+            squeak_store: SqueakStore,
+            node_settings: NodeSettings,
+    ):
         with self.lock:
             if self.current_task is not None:
                 self.current_task.stop_processing()
             self.current_task = TwitterForwarderTask(
-                squeak_controller,
+                squeak_store,
+                node_settings,
                 self.retry_s,
             )
             self.current_task.start_processing()
@@ -68,10 +74,12 @@ class TwitterForwarderTask:
 
     def __init__(
         self,
-        squeak_controller: SqueakController,
+        squeak_store: SqueakStore,
+        node_settings: NodeSettings,
         retry_s: int,
     ):
-        self.squeak_controller = squeak_controller
+        self.squeak_store = squeak_store
+        self.node_settings = node_settings
         self.retry_s = retry_s
         self.stopped = threading.Event()
         self.tweet_stream = None
@@ -132,10 +140,10 @@ class TwitterForwarderTask:
                 wait_s *= 2
 
     def get_bearer_token(self) -> str:
-        return self.squeak_controller.get_twitter_bearer_token() or ''
+        return self.node_settings.get_twitter_bearer_token() or ''
 
     def get_twitter_handles(self) -> List[str]:
-        twitter_accounts = self.squeak_controller.get_twitter_accounts()
+        twitter_accounts = self.squeak_store.get_twitter_accounts()
         handles = [account.handle for account in twitter_accounts]
         return handles
 
@@ -146,7 +154,7 @@ class TwitterForwarderTask:
         return False
 
     def forward_tweet(self, tweet: dict, account: TwitterAccountEntry) -> None:
-        self.squeak_controller.make_squeak(
+        self.squeak_store.make_squeak(
             profile_id=account.profile_id,
             content_str=tweet['data']['text'],
             replyto_hash=None,
@@ -155,7 +163,7 @@ class TwitterForwarderTask:
     def handle_tweet(self, tweet: dict):
         logger.info(
             "Got tweet: {}".format(tweet))
-        twitter_accounts = self.squeak_controller.get_twitter_accounts()
+        twitter_accounts = self.squeak_store.get_twitter_accounts()
         for account in twitter_accounts:
             if self.is_tweet_a_match(tweet, account):
                 self.forward_tweet(tweet, account)
