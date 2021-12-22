@@ -219,3 +219,15 @@ def test_pay_offer(
 
     assert sent_payment_id is not None
     assert retrieved_sent_payment is not None
+
+
+def test_save_received_offer_already_unlocked(
+        squeak_store,
+        unlocked_squeak,
+        received_offer,
+        peer_address,
+):
+    received_offer_id = squeak_store.save_received_offer(
+        received_offer, peer_address)
+
+    assert received_offer_id is None
