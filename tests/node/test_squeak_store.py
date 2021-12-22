@@ -224,10 +224,36 @@ def test_pay_offer(
 def test_save_received_offer_already_unlocked(
         squeak_store,
         unlocked_squeak,
-        received_offer,
+        offer,
         peer_address,
 ):
     received_offer_id = squeak_store.save_received_offer(
-        received_offer, peer_address)
+        offer,
+        peer_address,
+    )
 
     assert received_offer_id is None
+
+
+def test_save_received_offer(
+        squeak_store,
+        squeak_db,
+        squeak_core,
+        saved_squeak,
+        offer,
+        received_offer,
+        peer_address,
+):
+    with mock.patch.object(squeak_core, 'unpack_offer', autospec=True) as mock_unpack_offer:
+        mock_unpack_offer.return_value = received_offer
+        received_offer_id = squeak_store.save_received_offer(
+            offer,
+            peer_address,
+        )
+
+    assert received_offer_id is not None
+    retrieved_received_offer = squeak_db.get_received_offer(received_offer_id)
+
+    assert retrieved_received_offer == received_offer._replace(
+        received_offer_id=received_offer_id,
+    )
