@@ -1195,10 +1195,11 @@ export function getTwitterAccountsRequest(handleResponse) {
   );
 }
 
-export function addTwitterAccountRequest(twitterHandle, profileId, handleResponse) {
+export function addTwitterAccountRequest(twitterHandle, profileId, bearerToken, handleResponse) {
   const request = new AddTwitterAccountRequest();
   request.setHandle(twitterHandle);
   request.setProfileId(profileId);
+  request.setBearerToken(bearerToken);
   makeRequest(
     'addtwitteraccount',
     request,

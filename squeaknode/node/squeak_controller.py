@@ -893,30 +893,15 @@ class SqueakController:
     def get_default_sell_price_msat(self) -> int:
         return self.config.node.price_msat
 
-    def set_twitter_bearer_token(self, twitter_bearer_token: str) -> None:
-        self.insert_user_config()
-        self.squeak_db.set_config_twitter_bearer_token(
-            username=self.config.webadmin.username,
-            twitter_bearer_token=twitter_bearer_token,
-        )
-        self.create_update_twitter_stream_event()
-
-    def get_twitter_bearer_token(self) -> Optional[str]:
-        user_config = self.squeak_db.get_config(
-            username=self.config.webadmin.username,
-        )
-        if user_config is None:
-            return None
-        return user_config.twitter_bearer_token
-
     def get_twitter_stream_status(self) -> bool:
         return self.tweet_forwarder.is_processing()
 
-    def add_twitter_account(self, handle: str, profile_id: int) -> Optional[int]:
+    def add_twitter_account(self, handle: str, profile_id: int, bearer_token: str) -> Optional[int]:
         twitter_account = TwitterAccount(
             twitter_account_id=None,
             handle=handle,
             profile_id=profile_id,
+            bearer_token=bearer_token,
         )
         account_id = self.squeak_db.insert_twitter_account(twitter_account)
         self.create_update_twitter_stream_event()

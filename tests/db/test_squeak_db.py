@@ -387,20 +387,6 @@ def duplicate_inserted_user_config_username(squeak_db, user_config, inserted_use
 
 
 @pytest.fixture
-def user_config_with_twitter_bearer_token_username(
-        squeak_db,
-        user_config,
-        inserted_user_config_username,
-        twitter_bearer_token,
-):
-    squeak_db.set_config_twitter_bearer_token(
-        inserted_user_config_username,
-        twitter_bearer_token,
-    )
-    yield inserted_user_config_username
-
-
-@pytest.fixture
 def user_config_with_sell_price_msat_username(
         squeak_db,
         user_config,
@@ -415,11 +401,12 @@ def user_config_with_sell_price_msat_username(
 
 
 @pytest.fixture
-def twitter_account(inserted_signing_profile_id):
+def twitter_account(inserted_signing_profile_id, twitter_bearer_token):
     yield TwitterAccount(
         twitter_account_id=None,
         handle="fake_twitter_handle",
         profile_id=inserted_signing_profile_id,
+        bearer_token=twitter_bearer_token,
     )
 
 
@@ -1577,17 +1564,6 @@ def test_get_config_missing(squeak_db):
     assert retrieved_config is None
 
 
-def test_set_twitter_bearer_token(
-        squeak_db,
-        user_config_with_twitter_bearer_token_username,
-        twitter_bearer_token,
-):
-    retrieved_config = squeak_db.get_config(
-        user_config_with_twitter_bearer_token_username)
-
-    assert retrieved_config.twitter_bearer_token == twitter_bearer_token
-
-
 def test_set_sell_price_msat(
         squeak_db,
         user_config_with_sell_price_msat_username,
@@ -1609,6 +1585,7 @@ def test_get_twitter_account(
 
     assert retrieved_twitter_accounts[0].handle == twitter_account.handle
     assert retrieved_twitter_accounts[0].profile_id == twitter_account.profile_id
+    assert retrieved_twitter_accounts[0].bearer_token == twitter_account.bearer_token
     assert retrieved_twitter_accounts[0].profile._replace(profile_id=None) == \
         signing_profile
 

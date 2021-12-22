@@ -336,14 +336,6 @@ service SqueakAdmin {
   */
   rpc GetSellPrice (GetSellPriceRequest) returns (GetSellPriceReply) {}
 
-  /** sqkadmin: `settwitterbearertoken`
-  */
-  rpc SetTwitterBearerToken (SetTwitterBearerTokenRequest) returns (SetTwitterBearerTokenReply) {}
-
-  /** sqkadmin: `gettwitterbearertoken`
-  */
-  rpc GetTwitterBearerToken (GetTwitterBearerTokenRequest) returns (GetTwitterBearerTokenReply) {}
-
   /** sqkadmin: `addtwitteraccount`
   */
   rpc AddTwitterAccount (AddTwitterAccountRequest) returns (AddTwitterAccountReply) {}
@@ -1273,22 +1265,6 @@ message GetSellPriceReply {
     int64 default_price_msat = 3;
 }
 
-message SetTwitterBearerTokenRequest {
-    /// The bearer token string.
-    string bearer_token = 1;
-}
-
-message SetTwitterBearerTokenReply {
-}
-
-message GetTwitterBearerTokenRequest {
-}
-
-message GetTwitterBearerTokenReply {
-    /// The bearer token string.
-    string bearer_token = 1;
-}
-
 message TwitterAccount {
     /// The twitter account id
     int32 twitter_account_id = 1;
@@ -1312,6 +1288,9 @@ message AddTwitterAccountRequest {
 
     /// The profile id
     int32 profile_id = 2;
+
+    /// The bearer token string.
+    string bearer_token = 3;
 }
 
 message AddTwitterAccountReply {

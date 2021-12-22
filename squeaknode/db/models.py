@@ -193,7 +193,6 @@ class Models:
             "config",
             self.metadata,
             Column("username", String, primary_key=True),
-            Column("twitter_bearer_token", String, nullable=True),
             Column("sell_price_msat", Integer, nullable=True),
         )
 
@@ -203,4 +202,5 @@ class Models:
             Column("twitter_account_id", Integer, primary_key=True),
             Column("handle", String, unique=True, nullable=False),
             Column("profile_id", Integer, nullable=False),
+            Column("bearer_token", String, nullable=False),
         )
