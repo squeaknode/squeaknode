@@ -53,6 +53,7 @@ from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.squeaks import get_hash
 from squeaknode.core.twitter_account import TwitterAccount
 from squeaknode.core.twitter_account_entry import TwitterAccountEntry
+from squeaknode.core.twitter_settings import TwitterSettings
 from squeaknode.core.user_config import UserConfig
 from squeaknode.db.exception import SqueakDatabaseError
 from squeaknode.db.migrations import run_migrations
@@ -136,6 +137,10 @@ class SqueakDb:
     @property
     def configs(self):
         return self.models.configs
+
+    @property
+    def twitter_settings(self):
+        return self.models.twitter_settings
 
     @property
     def twitter_accounts(self):
@@ -1357,7 +1362,6 @@ class SqueakDb:
         """
         ins = self.configs.insert().values(
             username=user_config.username,
-            twitter_bearer_token=user_config.twitter_bearer_token,
         )
         with self.get_connection() as connection:
             try:
@@ -1378,15 +1382,15 @@ class SqueakDb:
                 return None
             return self._parse_user_config(row)
 
-    def set_config_twitter_bearer_token(self, username: str, twitter_bearer_token: str) -> None:
-        """ Set a config twitter bearer token. """
-        stmt = (
-            self.configs.update()
-            .where(self.configs.c.username == username)
-            .values(twitter_bearer_token=twitter_bearer_token)
-        )
-        with self.get_connection() as connection:
-            connection.execute(stmt)
+    # def set_config_twitter_bearer_token(self, username: str, twitter_bearer_token: str) -> None:
+    #     """ Set a config twitter bearer token. """
+    #     stmt = (
+    #         self.configs.update()
+    #         .where(self.configs.c.username == username)
+    #         .values(twitter_bearer_token=twitter_bearer_token)
+    #     )
+    #     with self.get_connection() as connection:
+    #         connection.execute(stmt)
 
     def set_config_sell_price_msat(self, username: str, sell_price_msat: int) -> None:
         """ Set a config sell price msat. """
@@ -1404,6 +1408,45 @@ class SqueakDb:
             self.configs.update()
             .where(self.configs.c.username == username)
             .values(sell_price_msat=None)
+        )
+        with self.get_connection() as connection:
+            connection.execute(stmt)
+
+    def insert_twitter_settings(self, twitter_setting: TwitterSettings) -> Optional[str]:
+        """ Insert a new twitter settings.
+
+        Return the name (str) of the inserted settings user.
+        Return None if settings already exists.
+        """
+        ins = self.twitter_settings.insert().values(
+            username=twitter_setting.username,
+        )
+        with self.get_connection() as connection:
+            try:
+                res = connection.execute(ins)
+                username = res.inserted_primary_key[0]
+                return username
+            except sqlalchemy.exc.IntegrityError:
+                logger.debug("Failed to insert settings.", exc_info=True)
+                return None
+
+    def get_twitter_settings(self, username: str) -> Optional[TwitterSettings]:
+        """ Get a twitter settings. """
+        s = select([self.twitter_settings]).where(
+            self.twitter_settings.c.username == username)
+        with self.get_connection() as connection:
+            result = connection.execute(s)
+            row = result.fetchone()
+            if row is None:
+                return None
+            return self._parse_twitter_settings(row)
+
+    def set_twitter_setting_bearer_token(self, username: str, bearer_token: str) -> None:
+        """ Set a twitter setting for bearer token. """
+        stmt = (
+            self.twitter_settings.update()
+            .where(self.twitter_settings.c.username == username)
+            .values(bearer_token=bearer_token)
         )
         with self.get_connection() as connection:
             connection.execute(stmt)
@@ -1600,8 +1643,13 @@ class SqueakDb:
     def _parse_user_config(self, row) -> UserConfig:
         return UserConfig(
             username=row["username"],
-            twitter_bearer_token=row["twitter_bearer_token"],
             sell_price_msat=row["sell_price_msat"],
+        )
+
+    def _parse_twitter_settings(self, row) -> TwitterSettings:
+        return TwitterSettings(
+            username=row["username"],
+            bearer_token=row["bearer_token"],
         )
 
     def _parse_twitter_account_entry(self, row) -> TwitterAccountEntry:

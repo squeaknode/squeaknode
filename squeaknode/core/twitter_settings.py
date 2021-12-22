@@ -23,7 +23,7 @@ from typing import NamedTuple
 from typing import Optional
 
 
-class UserConfig(NamedTuple):
-    """Represents a config for a user."""
+class TwitterSettings(NamedTuple):
+    """Represents twitter settings."""
     username: str
-    sell_price_msat: Optional[int] = None
+    bearer_token: Optional[str] = None

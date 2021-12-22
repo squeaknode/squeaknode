@@ -387,17 +387,17 @@ def duplicate_inserted_user_config_username(squeak_db, user_config, inserted_use
 
 
 @pytest.fixture
-def user_config_with_twitter_bearer_token_username(
+def twitter_settings_with_bearer_token_username(
         squeak_db,
-        user_config,
-        inserted_user_config_username,
+        twitter_settings,
+        inserted_twitter_settings_username,
         twitter_bearer_token,
 ):
-    squeak_db.set_config_twitter_bearer_token(
-        inserted_user_config_username,
+    squeak_db.set_twitter_setting_bearer_token(
+        inserted_twitter_settings_username,
         twitter_bearer_token,
     )
-    yield inserted_user_config_username
+    yield inserted_twitter_settings_username
 
 
 @pytest.fixture
@@ -412,6 +412,11 @@ def user_config_with_sell_price_msat_username(
         price_msat,
     )
     yield inserted_user_config_username
+
+
+@pytest.fixture
+def inserted_twitter_settings_username(squeak_db, twitter_settings):
+    yield squeak_db.insert_twitter_settings(twitter_settings)
 
 
 @pytest.fixture
@@ -1579,13 +1584,13 @@ def test_get_config_missing(squeak_db):
 
 def test_set_twitter_bearer_token(
         squeak_db,
-        user_config_with_twitter_bearer_token_username,
+        twitter_settings_with_bearer_token_username,
         twitter_bearer_token,
 ):
-    retrieved_config = squeak_db.get_config(
-        user_config_with_twitter_bearer_token_username)
+    retrieved_twitter_settings = squeak_db.get_twitter_settings(
+        twitter_settings_with_bearer_token_username)
 
-    assert retrieved_config.twitter_bearer_token == twitter_bearer_token
+    assert retrieved_twitter_settings.bearer_token == twitter_bearer_token
 
 
 def test_set_sell_price_msat(

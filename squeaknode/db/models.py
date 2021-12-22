@@ -193,8 +193,14 @@ class Models:
             "config",
             self.metadata,
             Column("username", String, primary_key=True),
-            Column("twitter_bearer_token", String, nullable=True),
             Column("sell_price_msat", Integer, nullable=True),
+        )
+
+        self.twitter_settings = Table(
+            "twitter_setting",
+            self.metadata,
+            Column("username", String, primary_key=True),
+            Column("bearer_token", String, nullable=True),
         )
 
         self.twitter_accounts = Table(

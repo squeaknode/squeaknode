@@ -60,6 +60,7 @@ from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.squeaks import get_hash
 from squeaknode.core.twitter_account import TwitterAccount
 from squeaknode.core.twitter_account_entry import TwitterAccountEntry
+from squeaknode.core.twitter_settings import TwitterSettings
 from squeaknode.core.update_subscriptions_event import UpdateSubscriptionsEvent
 from squeaknode.core.update_twitter_stream_event import UpdateTwitterStreamEvent
 from squeaknode.core.user_config import UserConfig
@@ -893,21 +894,26 @@ class SqueakController:
     def get_default_sell_price_msat(self) -> int:
         return self.config.node.price_msat
 
+    def insert_twitter_settings(self) -> Optional[str]:
+        twitter_settings = TwitterSettings(
+            username=self.config.webadmin.username)
+        return self.squeak_db.insert_twitter_settings(twitter_settings)
+
     def set_twitter_bearer_token(self, twitter_bearer_token: str) -> None:
-        self.insert_user_config()
-        self.squeak_db.set_config_twitter_bearer_token(
+        self.insert_twitter_settings()
+        self.squeak_db.set_twitter_setting_bearer_token(
             username=self.config.webadmin.username,
-            twitter_bearer_token=twitter_bearer_token,
+            bearer_token=twitter_bearer_token,
         )
         self.create_update_twitter_stream_event()
 
     def get_twitter_bearer_token(self) -> Optional[str]:
-        user_config = self.squeak_db.get_config(
+        twitter_settings = self.squeak_db.get_twitter_settings(
             username=self.config.webadmin.username,
         )
-        if user_config is None:
+        if twitter_settings is None:
             return None
-        return user_config.twitter_bearer_token
+        return twitter_settings.bearer_token
 
     def get_twitter_stream_status(self) -> bool:
         return self.tweet_forwarder.is_processing()
