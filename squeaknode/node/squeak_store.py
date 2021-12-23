@@ -24,6 +24,8 @@ from typing import Optional
 
 from squeak.core import CSqueak
 
+from squeaknode.core.peer_address import PeerAddress
+from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.squeak_entry import SqueakEntry
 from squeaknode.node.listener_subscription_client import EventListener
 
@@ -79,19 +81,6 @@ class SqueakStore:
         ))
         # Notify the listener
         self.new_secret_key_listener.handle_new_item(squeak)
-
-    # def make_squeak(self, profile_id: int, content_str: str, replyto_hash: Optional[bytes]) -> Optional[bytes]:
-    #     squeak_profile = self.squeak_db.get_profile(profile_id)
-    #     squeak, decryption_key = self.squeak_core.make_squeak(
-    #         squeak_profile, content_str, replyto_hash)
-    #     inserted_squeak_hash = self.save_squeak(squeak)
-    #     if inserted_squeak_hash is None:
-    #         return None
-    #     self.unlock_squeak(
-    #         inserted_squeak_hash,
-    #         decryption_key,
-    #     )
-    #     return inserted_squeak_hash
 
     def get_squeak(self, squeak_hash: bytes) -> Optional[CSqueak]:
         return self.squeak_db.get_squeak(squeak_hash)
@@ -157,30 +146,14 @@ class SqueakStore:
     #     except Exception:
     #         return None
 
-    # def get_sent_offer_for_peer(self, squeak: CSqueak, peer_address: PeerAddress, price_msat: int) -> Optional[SentOffer]:
-    #     squeak_hash = get_hash(squeak)
-    #     # Check if there is an existing offer for the hash/peer_address combination
-    #     sent_offer = self.squeak_db.get_sent_offer_by_squeak_hash_and_peer(
-    #         squeak_hash,
-    #         peer_address,
-    #     )
-    #     if sent_offer:
-    #         return sent_offer
-    #     secret_key = self.get_squeak_secret_key(squeak_hash)
-    #     if squeak is None or secret_key is None:
-    #         return None
-    #     try:
-    #         sent_offer = self.squeak_core.create_offer(
-    #             squeak,
-    #             secret_key,
-    #             peer_address,
-    #             price_msat,
-    #         )
-    #     except Exception:
-    #         logger.exception("Failed to create offer.")
-    #         return None
-    #     self.squeak_db.insert_sent_offer(sent_offer)
-    #     return sent_offer
+    def save_sent_offer(self, sent_offer: SentOffer) -> int:
+        return self.squeak_db.insert_sent_offer(sent_offer)
+
+    def get_sent_offer_for_peer(self, squeak_hash: bytes, peer_address: PeerAddress) -> Optional[SentOffer]:
+        return self.squeak_db.get_sent_offer_by_squeak_hash_and_peer(
+            squeak_hash,
+            peer_address,
+        )
 
     # def create_signing_profile(self, profile_name: str) -> int:
     #     squeak_profile = create_signing_profile(

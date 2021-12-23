@@ -36,6 +36,7 @@ def db_engine():
 
 @pytest.fixture
 def squeak_db(db_engine):
+    # TODO: use a mock object for db.
     db = SqueakDb(db_engine)
     db.init()
     yield db
@@ -66,11 +67,11 @@ def inserted_signing_profile_id(squeak_db, signing_profile):
     yield squeak_db.insert_profile(signing_profile)
 
 
-@pytest.fixture
-def inserted_received_offer_id(squeak_db, received_offer, creation_date):
-    with mock.patch.object(SqueakDb, 'timestamp_now_ms', new_callable=mock.PropertyMock) as mock_timestamp_ms:
-        mock_timestamp_ms.return_value = creation_date / 1000
-        yield squeak_db.insert_received_offer(received_offer)
+# @pytest.fixture
+# def inserted_received_offer_id(squeak_db, received_offer, creation_date):
+#     with mock.patch.object(SqueakDb, 'timestamp_now_ms', new_callable=mock.PropertyMock) as mock_timestamp_ms:
+#         mock_timestamp_ms.return_value = creation_date / 1000
+#         yield squeak_db.insert_received_offer(received_offer)
 
 
 @pytest.fixture
@@ -134,29 +135,34 @@ def test_delete_squeak(squeak_store, deleted_squeak):
     assert squeak_store.get_squeak_secret_key(deleted_squeak_hash) is None
 
 
-# def test_make_squeak(
-#         squeak_store,
-#         squeak_core,
-#         block_header,
-#         squeak,
-#         squeak_hash,
-#         secret_key,
-#         squeak_content,
-#         inserted_signing_profile_id,
-# ):
-#     with mock.patch.object(squeak_core, 'make_squeak', autospec=True) as mock_make_squeak, \
-#             mock.patch.object(squeak_core, 'get_block_header', autospec=True) as mock_get_block_header, \
-#             mock.patch.object(squeak_core, 'get_decrypted_content', autospec=True) as mock_get_decrypted_content:
-#         mock_make_squeak.return_value = squeak, secret_key
-#         mock_get_block_header.return_value = block_header
-#         mock_get_decrypted_content.return_value = squeak_content
-#         squeak_store.make_squeak(
-#             inserted_signing_profile_id, squeak_content, None)
+def test_save_sent_offer(squeak_store, squeak_db, sent_offer):
+    with mock.patch.object(
+            squeak_db,
+            'insert_sent_offer',
+            new_callable=mock.PropertyMock,
+    ) as mock_insert_sent_offer:
+        mock_insert_sent_offer.return_value = 555
 
-#     squeak_entry = squeak_store.get_squeak_entry(squeak_hash)
+        inserted_sent_offer_id = squeak_store.save_sent_offer(sent_offer)
 
-#     assert squeak == squeak_store.get_squeak(squeak_hash)
-#     assert squeak_entry.content == squeak_content
+    assert inserted_sent_offer_id == 555
+    print("mock_insert_sent_offer.call_count:")
+    print(mock_insert_sent_offer.call_count)
+    mock_insert_sent_offer.assert_called_once_with(sent_offer)
+
+
+def test_get_sent_offer(squeak_store, squeak_db, sent_offer):
+    with mock.patch.object(
+            squeak_db,
+            'get_sent_offer_by_squeak_hash_and_peer',
+            new_callable=mock.PropertyMock,
+    ) as mock_get_sent_offer_by_squeak_hash_and_peer:
+        mock_get_sent_offer_by_squeak_hash_and_peer.return_value = sent_offer
+
+        retrieved_sent_offer = squeak_store.get_sent_offer_for_peer(
+            sent_offer.squeak_hash, sent_offer.peer_address)
+
+    assert retrieved_sent_offer == sent_offer
 
 
 # def test_get_free_secret_key(squeak_store, squeak_core, unlocked_squeak, secret_key, peer_address):
