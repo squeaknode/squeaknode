@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import logging
+import threading
 from typing import Optional
 
 from squeak.core import CSqueak
@@ -28,6 +29,7 @@ from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.squeak_entry import SqueakEntry
+from squeaknode.core.update_subscriptions_event import UpdateSubscriptionsEvent
 from squeaknode.node.listener_subscription_client import EventListener
 
 
@@ -120,32 +122,6 @@ class SqueakStore:
     #             price_msat=price_msat,
     #             lnd_external_address=lnd_external_address,
     #         )
-
-    # def get_offer_reply(
-    #         self,
-    #         squeak: CSqueak,
-    #         peer_address: PeerAddress,
-    #         price_msat: int,
-    #         lnd_external_address: Optional[LightningAddressHostPort],
-    # ) -> Optional[OfferReply]:
-    #     sent_offer = self.get_sent_offer_for_peer(
-    #         squeak,
-    #         peer_address,
-    #         price_msat,
-    #     )
-    #     if sent_offer is None:
-    #         return None
-    #     try:
-    #         offer = self.squeak_core.package_offer(
-    #             sent_offer,
-    #             lnd_external_address,
-    #         )
-    #         return OfferReply(
-    #             squeak_hash=get_hash(squeak),
-    #             offer=offer,
-    #         )
-    #     except Exception:
-    #         return None
 
     def save_sent_offer(self, sent_offer: SentOffer) -> int:
         return self.squeak_db.insert_sent_offer(sent_offer)
@@ -266,30 +242,6 @@ class SqueakStore:
     def get_received_offer(self, received_offer_id: int) -> Optional[ReceivedOffer]:
         """ Get offer with peer for an offer id. """
         return self.squeak_db.get_received_offer(received_offer_id)
-
-    # def pay_offer(self, received_offer_id: int) -> int:
-    #     # Get the offer from the database
-    #     received_offer = self.squeak_db.get_received_offer(
-    #         received_offer_id)
-    #     if received_offer is None:
-    #         raise Exception("Received offer with id {} not found.".format(
-    #             received_offer_id,
-    #         ))
-    #     logger.info("Paying received offer: {}".format(received_offer))
-    #     sent_payment = self.squeak_core.pay_offer(received_offer)
-    #     sent_payment_id = self.squeak_db.insert_sent_payment(sent_payment)
-    #     # # Delete the received offer
-    #     # self.squeak_db.delete_offer(sent_payment.payment_hash)
-    #     # Mark the received offer as paid
-    #     self.squeak_db.set_received_offer_paid(
-    #         sent_payment.payment_hash,
-    #         paid=True,
-    #     )
-    #     self.unlock_squeak(
-    #         received_offer.squeak_hash,
-    #         sent_payment.secret_key,
-    #     )
-    #     return sent_payment_id
 
     # def get_sent_payments(
     #         self,
@@ -516,17 +468,17 @@ class SqueakStore:
     #         reply_to_hash,
     #     )
 
-    # def subscribe_new_squeaks(self, stopped: threading.Event):
-    #     yield from self.new_squeak_listener.yield_items(stopped)
+    def subscribe_new_squeaks(self, stopped: threading.Event):
+        yield from self.new_squeak_listener.yield_items(stopped)
 
-    # def subscribe_new_secret_keys(self, stopped: threading.Event):
-    #     yield from self.new_secret_key_listener.yield_items(stopped)
+    def subscribe_new_secret_keys(self, stopped: threading.Event):
+        yield from self.new_secret_key_listener.yield_items(stopped)
 
-    # def subscribe_follows(self, stopped: threading.Event):
-    #     yield from self.new_follow_listener.yield_items(stopped)
+    def subscribe_follows(self, stopped: threading.Event):
+        yield from self.new_follow_listener.yield_items(stopped)
 
-    # def create_update_subscriptions_event(self):
-    #     self.new_follow_listener.handle_new_item(UpdateSubscriptionsEvent())
+    def create_update_subscriptions_event(self):
+        self.new_follow_listener.handle_new_item(UpdateSubscriptionsEvent())
 
     # def subscribe_received_offers_for_squeak(self, squeak_hash: bytes, stopped: threading.Event):
     #     for received_offer in self.new_received_offer_listener.yield_items(stopped):
