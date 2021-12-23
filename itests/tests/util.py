@@ -342,21 +342,6 @@ def get_sell_price(node_stub):
     return get_sell_price_response
 
 
-def set_twitter_bearer_token(node_stub, bearer_token):
-    node_stub.SetTwitterBearerToken(
-        squeak_admin_pb2.SetTwitterBearerTokenRequest(
-            bearer_token=bearer_token,
-        )
-    )
-
-
-def get_twitter_bearer_token(node_stub):
-    get_twitter_bearer_token_response = node_stub.GetTwitterBearerToken(
-        squeak_admin_pb2.GetTwitterBearerTokenRequest()
-    )
-    return get_twitter_bearer_token_response.bearer_token
-
-
 def get_external_address(node_stub):
     get_external_address_response = node_stub.GetExternalAddress(
         squeak_admin_pb2.GetExternalAddressRequest()

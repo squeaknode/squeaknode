@@ -56,7 +56,6 @@ from tests.util import get_search_squeaks
 from tests.util import get_sell_price
 from tests.util import get_squeak_display
 from tests.util import get_squeak_profile
-from tests.util import get_twitter_bearer_token
 from tests.util import import_signing_profile
 from tests.util import make_squeak
 from tests.util import open_peer_connection
@@ -64,7 +63,6 @@ from tests.util import peer_connection
 from tests.util import public_key_from_hex
 from tests.util import send_coins
 from tests.util import set_sell_price
-from tests.util import set_twitter_bearer_token
 from tests.util import subscribe_connected_peers
 from tests.util import subscribe_squeak_ancestor_entries
 from tests.util import subscribe_squeak_entry
@@ -99,18 +97,6 @@ def test_get_sell_price(admin_stub):
     assert price.price_msat == 0
     assert not price.price_msat_is_set
     assert price.default_price_msat == 1000000
-
-
-def test_get_twitter_bearer_token(admin_stub):
-    # Get the twitter bearer token
-    bearer_token = get_twitter_bearer_token(admin_stub)
-
-    assert bearer_token == ''
-
-    set_twitter_bearer_token(admin_stub, "new_bearer_token")
-    bearer_token = get_twitter_bearer_token(admin_stub)
-
-    assert bearer_token == "new_bearer_token"
 
 
 def test_get_external_address(admin_stub):
