@@ -27,8 +27,8 @@ from squeak.core import CSqueak
 from squeaknode.config.config import SqueaknodeConfig
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.squeak_peer import SqueakPeer
-from squeaknode.core.user_config import UserConfig
 from squeaknode.db.squeak_db import SqueakDb
+from squeaknode.node.node_settings import NodeSettings
 
 
 logger = logging.getLogger(__name__)
@@ -36,9 +36,10 @@ logger = logging.getLogger(__name__)
 
 class PricePolicy:
 
-    def __init__(self, squeak_db: SqueakDb, config: SqueaknodeConfig):
+    def __init__(self, squeak_db: SqueakDb, config: SqueaknodeConfig, node_settings: NodeSettings):
         self.squeak_db = squeak_db
         self.config = config
+        self.node_settings = node_settings
 
     def get_price(self, squeak: CSqueak, peer_address: PeerAddress) -> int:
         """Get the price to sell this squeak to this peer.
@@ -49,24 +50,18 @@ class PricePolicy:
         if peer is not None and peer.share_for_free:
             return 0
         # Return sell price from settings if configured
-        sell_price = self.get_sell_price_msat()
-        if sell_price is not None:
-            return sell_price
-        return self.get_default_price()
+        # sell_price = self.get_sell_price_msat()
+        # if sell_price is not None:
+        #     return sell_price
+        # return self.get_default_price()
+        return self.get_sell_price_msat()
 
     def get_peer(self, peer_address: PeerAddress) -> Optional[SqueakPeer]:
         return self.squeak_db.get_peer_by_address(peer_address)
 
-    def get_default_price(self) -> int:
-        return self.config.node.price_msat
+    # def get_default_price(self) -> int:
+    #     return self.config.node.price_msat
 
-    def get_user_config(self) -> Optional[UserConfig]:
-        return self.squeak_db.get_config(
-            username=self.config.webadmin.username,
-        )
-
-    def get_sell_price_msat(self) -> Optional[int]:
-        user_config = self.get_user_config()
-        if user_config is None:
-            return None
-        return user_config.sell_price_msat
+    def get_sell_price_msat(self) -> int:
+        return self.node_settings.get_sell_price_msat() or \
+            self.config.node.price_msat
