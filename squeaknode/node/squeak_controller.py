@@ -72,6 +72,7 @@ from squeaknode.node.received_payments_subscription_client import ReceivedPaymen
 from squeaknode.node.secret_key_reply import FreeSecretKeyReply
 from squeaknode.node.secret_key_reply import OfferReply
 from squeaknode.node.secret_key_reply import SecretKeyReply
+from squeaknode.node.squeak_store import SqueakStore
 
 
 logger = logging.getLogger(__name__)
@@ -82,7 +83,7 @@ class SqueakController:
     def __init__(
         self,
         squeak_db,
-        squeak_store,
+        squeak_store: SqueakStore,
         squeak_core,
         payment_processor,
         network_manager,
@@ -130,21 +131,26 @@ class SqueakController:
         return self.squeak_store.save_squeak(squeak, block_header)
 
     def unlock_squeak(self, squeak_hash: bytes, secret_key: bytes):
-        squeak = self.squeak_db.get_squeak(squeak_hash)
+        # squeak = self.squeak_db.get_squeak(squeak_hash)
+        squeak = self.squeak_store.get_squeak(squeak_hash)
+        if squeak is None:
+            raise Exception("Squeak not found.")
         decrypted_content = self.squeak_core.get_decrypted_content(
             squeak,
             secret_key,
         )
-        self.squeak_db.set_squeak_decryption_key(
-            squeak_hash,
-            secret_key,
-            decrypted_content,
-        )
-        logger.info("Unlocked squeak: {}".format(
-            squeak_hash.hex(),
-        ))
+        # self.squeak_db.set_squeak_decryption_key(
+        #     squeak_hash,
+        #     secret_key,
+        #     decrypted_content,
+        # )
+        self.squeak_store.unlock_squeak(
+            squeak_hash, secret_key, decrypted_content)
+        # logger.info("Unlocked squeak: {}".format(
+        #     squeak_hash.hex(),
+        # ))
         # Notify the listener
-        self.new_secret_key_listener.handle_new_item(squeak)
+        # self.new_secret_key_listener.handle_new_item(squeak)
 
     def make_squeak(self, profile_id: int, content_str: str, replyto_hash: Optional[bytes]) -> Optional[bytes]:
         squeak_profile = self.squeak_db.get_profile(profile_id)
@@ -775,7 +781,8 @@ class SqueakController:
         yield from self.squeak_store.subscribe_new_squeaks(stopped)
 
     def subscribe_new_secret_keys(self, stopped: threading.Event):
-        yield from self.new_secret_key_listener.yield_items(stopped)
+        # yield from self.new_secret_key_listener.yield_items(stopped)
+        yield from self.squeak_store.subscribe_new_secret_keys(stopped)
 
     def subscribe_follows(self, stopped: threading.Event):
         yield from self.new_follow_listener.yield_items(stopped)
