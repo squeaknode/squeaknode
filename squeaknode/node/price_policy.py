@@ -49,11 +49,6 @@ class PricePolicy:
         peer = self.get_peer(peer_address)
         if peer is not None and peer.share_for_free:
             return 0
-        # Return sell price from settings if configured
-        # sell_price = self.get_sell_price_msat()
-        # if sell_price is not None:
-        #     return sell_price
-        # return self.get_default_price()
         sell_price_msat = self.get_sell_price_msat()
         if sell_price_msat is None:
             return self.get_default_price()
