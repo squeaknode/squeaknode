@@ -165,6 +165,20 @@ def test_get_sent_offer(squeak_store, squeak_db, sent_offer):
     assert retrieved_sent_offer == sent_offer
 
 
+def test_get_received_offer(squeak_store, squeak_db, received_offer):
+    with mock.patch.object(
+            squeak_db,
+            'get_received_offer',
+            new_callable=mock.PropertyMock,
+    ) as mock_get_received_offer:
+        mock_get_received_offer.return_value = received_offer
+
+        retrieved_received_offer = squeak_store.get_received_offer(789)
+
+    assert retrieved_received_offer == received_offer
+    mock_get_received_offer.assert_called_once_with(789)
+
+
 # def test_get_free_secret_key(squeak_store, squeak_core, unlocked_squeak, secret_key, peer_address):
 #     unlocked_squeak_hash = get_hash(unlocked_squeak)
 #     secret_key_reply = squeak_store.get_secret_key_reply(

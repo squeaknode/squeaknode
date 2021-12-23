@@ -25,6 +25,7 @@ from typing import Optional
 from squeak.core import CSqueak
 
 from squeaknode.core.peer_address import PeerAddress
+from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.squeak_entry import SqueakEntry
 from squeaknode.node.listener_subscription_client import EventListener
@@ -261,6 +262,10 @@ class SqueakStore:
     # def get_received_offer(self, received_offer_id: int) -> Optional[ReceivedOffer]:
     #     return self.squeak_db.get_received_offer(
     #         received_offer_id)
+
+    def get_received_offer(self, received_offer_id: int) -> Optional[ReceivedOffer]:
+        """ Get offer with peer for an offer id. """
+        return self.squeak_db.get_received_offer(received_offer_id)
 
     # def pay_offer(self, received_offer_id: int) -> int:
     #     # Get the offer from the database
