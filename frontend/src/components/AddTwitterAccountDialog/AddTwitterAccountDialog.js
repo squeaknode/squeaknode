@@ -35,6 +35,7 @@ export default function AddTwitterAccountDialog({
 
   const resetFields = () => {
     setTwitterHandle('');
+    setBearerToken('');
     setProfileId(-1);
   };
 

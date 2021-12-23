@@ -125,10 +125,6 @@ import {
   GetPeerByAddressReply,
   GetDefaultPeerPortRequest,
   GetDefaultPeerPortReply,
-  GetTwitterBearerTokenRequest,
-  GetTwitterBearerTokenReply,
-  SetTwitterBearerTokenRequest,
-  SetTwitterBearerTokenReply,
   GetTwitterAccountsRequest,
   GetTwitterAccountsReply,
   AddTwitterAccountRequest,
@@ -1156,29 +1152,6 @@ export function getDefaultPeerPortRequest(handleResponse) {
     GetDefaultPeerPortReply.deserializeBinary,
     (response) => {
       handleResponse(response.getPort());
-    },
-  );
-}
-
-export function setTwitterBearerTokenRequest(bearerToken, handleResponse) {
-  const request = new SetTwitterBearerTokenRequest();
-  request.setBearerToken(bearerToken);
-  makeRequest(
-    'settwitterbearertoken',
-    request,
-    SetTwitterBearerTokenReply.deserializeBinary,
-    handleResponse,
-  );
-}
-
-export function getTwitterBearerTokenRequest(handleResponse) {
-  const request = new GetTwitterBearerTokenRequest();
-  makeRequest(
-    'gettwitterbearertoken',
-    request,
-    GetTwitterBearerTokenReply.deserializeBinary,
-    (response) => {
-      handleResponse(response.getBearerToken());
     },
   );
 }
