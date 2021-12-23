@@ -36,6 +36,7 @@ from squeaknode.db.squeak_db import SqueakDb
 from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
 from squeaknode.network.network_manager import NetworkManager
 from squeaknode.node.active_download_manager import ActiveDownloadManager
+from squeaknode.node.node_settings import NodeSettings
 from squeaknode.node.payment_processor import PaymentProcessor
 from squeaknode.node.peer_connection_worker import PeerConnectionWorker
 from squeaknode.node.peer_subscription_update_worker import PeerSubscriptionUpdateWorker
@@ -61,6 +62,7 @@ class SqueakNode:
     def _initialize(self):
         self.initialize_network()
         self.initialize_db()
+        self.initialize_node_settings()
         self.initialize_lightning_client()
         self.initialize_bitcoin_client()
         self.initialize_bitcoin_block_subscription_client()
@@ -132,6 +134,9 @@ class SqueakNode:
         self.squeak_db = SqueakDb(engine)
         self.squeak_db.init_with_retries()
 
+    def initialize_node_settings(self):
+        self.node_settings = NodeSettings(self.squeak_db)
+
     def initialize_lightning_client(self):
         # load the lightning client
         self.lightning_client = LNDLightningClient(
@@ -188,6 +193,7 @@ class SqueakNode:
             self.network_manager,
             self.download_manager,
             self.twitter_forwarder,
+            self.node_settings,
             self.config,
         )
 

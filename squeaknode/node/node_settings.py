@@ -22,43 +22,43 @@
 import logging
 from typing import Optional
 
-from squeak.core import CSqueak
-
-from squeaknode.config.config import SqueaknodeConfig
-from squeaknode.core.peer_address import PeerAddress
-from squeaknode.core.squeak_peer import SqueakPeer
-from squeaknode.db.squeak_db import SqueakDb
-from squeaknode.node.node_settings import NodeSettings
+from squeaknode.core.user_config import UserConfig
 
 
 logger = logging.getLogger(__name__)
 
+NODE_SETTINGS_USERNAME = "default"
 
-class PricePolicy:
 
-    def __init__(self, squeak_db: SqueakDb, config: SqueaknodeConfig, node_settings: NodeSettings):
+class NodeSettings:
+
+    def __init__(self, squeak_db):
         self.squeak_db = squeak_db
-        self.config = config
-        self.node_settings = node_settings
+        self.username = NODE_SETTINGS_USERNAME
 
-    def get_price(self, squeak: CSqueak, peer_address: PeerAddress) -> int:
-        """Get the price to sell this squeak to this peer.
+    def insert_user_config(self) -> Optional[str]:
+        user_config = UserConfig(username=self.username)
+        return self.squeak_db.insert_config(user_config)
 
-        """
-        # Return zero for price if peer is configured to be share for free.
-        peer = self.get_peer(peer_address)
-        if peer is not None and peer.share_for_free:
-            return 0
-        sell_price_msat = self.get_sell_price_msat()
-        if sell_price_msat is None:
-            return self.get_default_price()
-        return sell_price_msat
+    def set_sell_price_msat(self, sell_price_msat: int) -> None:
+        self.insert_user_config()
+        if sell_price_msat < 0:
+            raise Exception("Sell price cannot be negative.")
+        self.squeak_db.set_config_sell_price_msat(
+            username=self.username,
+            sell_price_msat=sell_price_msat,
+        )
 
-    def get_peer(self, peer_address: PeerAddress) -> Optional[SqueakPeer]:
-        return self.squeak_db.get_peer_by_address(peer_address)
-
-    def get_default_price(self) -> int:
-        return self.config.node.price_msat
+    def clear_sell_price_msat(self) -> None:
+        self.insert_user_config()
+        self.squeak_db.clear_config_sell_price_msat(
+            username=self.username,
+        )
 
     def get_sell_price_msat(self) -> Optional[int]:
-        return self.node_settings.get_sell_price_msat()
+        user_config = self.squeak_db.get_config(
+            username=self.username,
+        )
+        if user_config is None:
+            return None
+        return user_config.sell_price_msat
