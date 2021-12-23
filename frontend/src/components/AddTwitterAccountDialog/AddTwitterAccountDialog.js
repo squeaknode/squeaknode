@@ -29,16 +29,22 @@ export default function AddTwitterAccountDialog({
   const classes = useStyles();
 
   const [twitterHandle, setTwitterHandle] = useState('');
+  const [bearerToken, setBearerToken] = useState('');
   const [profileId, setProfileId] = useState(-1);
   const [signingProfiles, setSigningProfiles] = useState([]);
 
   const resetFields = () => {
     setTwitterHandle('');
+    setBearerToken('');
     setProfileId(-1);
   };
 
   const handleChangeTwitterHandle = (event) => {
     setTwitterHandle(event.target.value);
+  };
+
+  const handleChangeBearerToken = (event) => {
+    setBearerToken(event.target.value);
   };
 
   const handleChangeProfileId = (event) => {
@@ -53,8 +59,8 @@ export default function AddTwitterAccountDialog({
     alert(`Error adding twitter account: ${err}`);
   };
 
-  const addTwitterAccount = (twitterHandle, profileId) => {
-    addTwitterAccountRequest(twitterHandle, profileId, handleResponse, handleErr);
+  const addTwitterAccount = (twitterHandle, profileId, bearerToken) => {
+    addTwitterAccountRequest(twitterHandle, profileId, bearerToken, handleResponse, handleErr);
   };
 
   const loadSigningProfiles = () => {
@@ -73,7 +79,11 @@ export default function AddTwitterAccountDialog({
       alert('twitterHandle cannot be empty.');
       return;
     }
-    addTwitterAccount(twitterHandle, profileId);
+    if (!bearerToken) {
+      alert('bearerToken cannot be empty.');
+      return;
+    }
+    addTwitterAccount(twitterHandle, profileId, bearerToken);
     handleClose();
   }
 
@@ -101,6 +111,22 @@ export default function AddTwitterAccountDialog({
         autoFocus
         value={twitterHandle}
         onChange={handleChangeTwitterHandle}
+        fullWidth
+        inputProps={{ maxLength: 128 }}
+      />
+    );
+  }
+
+  function BearerTokenInput() {
+    return (
+      <TextField
+        id="standard-textarea-bearer-token"
+        label="Bearer Token"
+        variant="outlined"
+        margin="normal"
+        required
+        value={bearerToken}
+        onChange={handleChangeBearerToken}
         fullWidth
         inputProps={{ maxLength: 128 }}
       />
@@ -156,6 +182,7 @@ export default function AddTwitterAccountDialog({
       <form className={classes.root} onSubmit={handleSubmit} noValidate autoComplete="off">
         <DialogContent>
           {AccountHandleInput()}
+          {BearerTokenInput()}
           {SelectSigningProfile()}
         </DialogContent>
         <DialogActions>

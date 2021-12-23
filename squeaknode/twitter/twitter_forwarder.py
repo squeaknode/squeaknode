@@ -21,8 +21,7 @@
 # SOFTWARE.
 import logging
 import threading
-from typing import List
-from typing import Optional
+from typing import Dict
 
 from squeaknode.core.twitter_account_entry import TwitterAccountEntry
 from squeaknode.node.squeak_controller import SqueakController
@@ -40,27 +39,37 @@ class TwitterForwarder:
     ):
         self.retry_s = retry_s
         self.lock = threading.Lock()
-        self.current_task: Optional[TwitterForwarderTask] = None
+        self.current_tasks: Dict[str, TwitterForwarderTask] = {}
 
     def start_processing(self, squeak_controller: SqueakController):
         with self.lock:
-            if self.current_task is not None:
-                self.current_task.stop_processing()
-            self.current_task = TwitterForwarderTask(
-                squeak_controller,
-                self.retry_s,
-            )
-            self.current_task.start_processing()
+            # Stop existing running tasks.
+            for handle, task in list(self.current_tasks.items()):
+                task.stop_processing()
+                del self.current_tasks[handle]
+
+            # Start new tasks.
+            for account in squeak_controller.get_twitter_accounts():
+                task = TwitterForwarderTask(
+                    squeak_controller,
+                    account,
+                    self.retry_s,
+                )
+                task.start_processing()
+                self.current_tasks[account.handle] = task
 
     def stop_processing(self):
         with self.lock:
-            if self.current_task is not None:
-                self.current_task.stop_processing()
+            for handle, task in list(self.current_tasks.items()):
+                task.stop_processing()
+                del self.current_tasks[handle]
 
     def is_processing(self) -> bool:
         with self.lock:
-            if self.current_task is not None:
-                return self.current_task.is_processing()
+            # if self.current_task is not None:
+            #     return self.current_task.is_processing()
+            # return False
+            # TODO:
             return False
 
 
@@ -69,9 +78,11 @@ class TwitterForwarderTask:
     def __init__(
         self,
         squeak_controller: SqueakController,
+        twitter_account: TwitterAccountEntry,
         retry_s: int,
     ):
         self.squeak_controller = squeak_controller
+        self.twitter_account = twitter_account
         self.retry_s = retry_s
         self.stopped = threading.Event()
         self.tweet_stream = None
@@ -84,15 +95,18 @@ class TwitterForwarderTask:
             daemon=True,
         ).start()
 
-    def setup_stream(self, bearer_token, handles):
-        logger.info("Starting Twitter stream with bearer token: {} and twitter handles: {}".format(
-            bearer_token,
-            handles,
+    def setup_stream(self):
+        logger.info("Starting Twitter stream with bearer token: {} and twitter handle: {}".format(
+            self.twitter_account.bearer_token,
+            self.twitter_account.handle,
         ))
         with self.lock:
             if self.stopped.is_set():
                 return
-            twitter_stream = TwitterStream(bearer_token, handles)
+            twitter_stream = TwitterStream(
+                self.twitter_account.bearer_token,
+                [self.twitter_account.handle],
+            )
             self.tweet_stream = twitter_stream.get_tweets()
 
     def stop_processing(self):
@@ -111,13 +125,7 @@ class TwitterForwarderTask:
 
         while not self.stopped.is_set():
             try:
-                bearer_token = self.get_bearer_token()
-                handles = self.get_twitter_handles()
-                if not bearer_token:
-                    return
-                if not handles:
-                    return
-                self.setup_stream(bearer_token, handles)
+                self.setup_stream()
                 for tweet in self.tweet_stream.result_stream:
                     self.handle_tweet(tweet)
             # TODO: use more specific error.
@@ -131,23 +139,20 @@ class TwitterForwarderTask:
                 self.stopped.wait(wait_s)
                 wait_s *= 2
 
-    def get_bearer_token(self) -> str:
-        return self.squeak_controller.get_twitter_bearer_token() or ''
+    # def get_twitter_handles(self) -> List[str]:
+    #     twitter_accounts = self.squeak_controller.get_twitter_accounts()
+    #     handles = [account.handle for account in twitter_accounts]
+    #     return handles
 
-    def get_twitter_handles(self) -> List[str]:
-        twitter_accounts = self.squeak_controller.get_twitter_accounts()
-        handles = [account.handle for account in twitter_accounts]
-        return handles
-
-    def is_tweet_a_match(self, tweet: dict, account: TwitterAccountEntry) -> bool:
+    def is_tweet_a_match(self, tweet: dict) -> bool:
         for rule in tweet['matching_rules']:
-            if rule['tag'] == account.handle:
+            if rule['tag'] == self.twitter_account.handle:
                 return True
         return False
 
-    def forward_tweet(self, tweet: dict, account: TwitterAccountEntry) -> None:
+    def forward_tweet(self, tweet: dict) -> None:
         self.squeak_controller.make_squeak(
-            profile_id=account.profile_id,
+            profile_id=self.twitter_account.profile_id,
             content_str=tweet['data']['text'],
             replyto_hash=None,
         )
@@ -155,7 +160,5 @@ class TwitterForwarderTask:
     def handle_tweet(self, tweet: dict):
         logger.info(
             "Got tweet: {}".format(tweet))
-        twitter_accounts = self.squeak_controller.get_twitter_accounts()
-        for account in twitter_accounts:
-            if self.is_tweet_a_match(tweet, account):
-                self.forward_tweet(tweet, account)
+        if self.is_tweet_a_match(tweet):
+            self.forward_tweet(tweet)

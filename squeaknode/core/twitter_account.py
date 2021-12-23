@@ -28,3 +28,4 @@ class TwitterAccount(NamedTuple):
     twitter_account_id: Optional[int]
     handle: str
     profile_id: int
+    bearer_token: str

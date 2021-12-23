@@ -125,10 +125,6 @@ import {
   GetPeerByAddressReply,
   GetDefaultPeerPortRequest,
   GetDefaultPeerPortReply,
-  GetTwitterBearerTokenRequest,
-  GetTwitterBearerTokenReply,
-  SetTwitterBearerTokenRequest,
-  SetTwitterBearerTokenReply,
   GetTwitterAccountsRequest,
   GetTwitterAccountsReply,
   AddTwitterAccountRequest,
@@ -1160,29 +1156,6 @@ export function getDefaultPeerPortRequest(handleResponse) {
   );
 }
 
-export function setTwitterBearerTokenRequest(bearerToken, handleResponse) {
-  const request = new SetTwitterBearerTokenRequest();
-  request.setBearerToken(bearerToken);
-  makeRequest(
-    'settwitterbearertoken',
-    request,
-    SetTwitterBearerTokenReply.deserializeBinary,
-    handleResponse,
-  );
-}
-
-export function getTwitterBearerTokenRequest(handleResponse) {
-  const request = new GetTwitterBearerTokenRequest();
-  makeRequest(
-    'gettwitterbearertoken',
-    request,
-    GetTwitterBearerTokenReply.deserializeBinary,
-    (response) => {
-      handleResponse(response.getBearerToken());
-    },
-  );
-}
-
 export function getTwitterAccountsRequest(handleResponse) {
   const request = new GetTwitterAccountsRequest();
   makeRequest(
@@ -1195,10 +1168,11 @@ export function getTwitterAccountsRequest(handleResponse) {
   );
 }
 
-export function addTwitterAccountRequest(twitterHandle, profileId, handleResponse) {
+export function addTwitterAccountRequest(twitterHandle, profileId, bearerToken, handleResponse) {
   const request = new AddTwitterAccountRequest();
   request.setHandle(twitterHandle);
   request.setProfileId(profileId);
+  request.setBearerToken(bearerToken);
   makeRequest(
     'addtwitteraccount',
     request,

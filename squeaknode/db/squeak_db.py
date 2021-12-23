@@ -1357,7 +1357,6 @@ class SqueakDb:
         """
         ins = self.configs.insert().values(
             username=user_config.username,
-            twitter_bearer_token=user_config.twitter_bearer_token,
         )
         with self.get_connection() as connection:
             try:
@@ -1377,16 +1376,6 @@ class SqueakDb:
             if row is None:
                 return None
             return self._parse_user_config(row)
-
-    def set_config_twitter_bearer_token(self, username: str, twitter_bearer_token: str) -> None:
-        """ Set a config twitter bearer token. """
-        stmt = (
-            self.configs.update()
-            .where(self.configs.c.username == username)
-            .values(twitter_bearer_token=twitter_bearer_token)
-        )
-        with self.get_connection() as connection:
-            connection.execute(stmt)
 
     def set_config_sell_price_msat(self, username: str, sell_price_msat: int) -> None:
         """ Set a config sell price msat. """
@@ -1417,6 +1406,7 @@ class SqueakDb:
         ins = self.twitter_accounts.insert().values(
             handle=twitter_account.handle,
             profile_id=twitter_account.profile_id,
+            bearer_token=twitter_account.bearer_token,
         )
         with self.get_connection() as connection:
             try:
@@ -1600,7 +1590,6 @@ class SqueakDb:
     def _parse_user_config(self, row) -> UserConfig:
         return UserConfig(
             username=row["username"],
-            twitter_bearer_token=row["twitter_bearer_token"],
             sell_price_msat=row["sell_price_msat"],
         )
 
@@ -1610,5 +1599,6 @@ class SqueakDb:
             twitter_account_id=row["twitter_account_id"],
             handle=row["handle"],
             profile_id=row["profile_id"],
+            bearer_token=row["bearer_token"],
             profile=profile,
         )

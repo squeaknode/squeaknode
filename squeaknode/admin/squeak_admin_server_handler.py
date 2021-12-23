@@ -1071,31 +1071,19 @@ class SqueakAdminServerHandler(object):
             default_price_msat=default_sell_price_msat,
         )
 
-    def handle_set_twitter_bearer_token(self, request):
-        twitter_bearer_token = request.bearer_token
-        logger.info("Handle set twitter bearer token with value: {}".format(
-            twitter_bearer_token,
-        ))
-        self.squeak_controller.set_twitter_bearer_token(twitter_bearer_token)
-        return squeak_admin_pb2.SetTwitterBearerTokenReply()
-
-    def handle_get_twitter_bearer_token(self, request):
-        logger.info("Handle get twitter bearer token")
-        twitter_bearer_token = self.squeak_controller.get_twitter_bearer_token()
-        return squeak_admin_pb2.GetTwitterBearerTokenReply(
-            bearer_token=twitter_bearer_token,
-        )
-
     def handle_add_twitter_account(self, request):
         handle = request.handle
         profile_id = request.profile_id
-        logger.info("Handle add twitter account with handle: {} and profile_id: {}".format(
+        bearer_token = request.bearer_token
+        logger.info("Handle add twitter account with handle: {}, profile_id: {}, bearer token: {}".format(
             handle,
             profile_id,
+            bearer_token,
         ))
         twitter_account_id = self.squeak_controller.add_twitter_account(
             handle,
             profile_id,
+            bearer_token,
         )
         return squeak_admin_pb2.AddTwitterAccountReply(
             twitter_account_id=twitter_account_id,
