@@ -54,14 +54,16 @@ class PricePolicy:
         # if sell_price is not None:
         #     return sell_price
         # return self.get_default_price()
-        return self.get_sell_price_msat()
+        sell_price_msat = self.get_sell_price_msat()
+        if sell_price_msat is None:
+            return self.get_default_price()
+        return sell_price_msat
 
     def get_peer(self, peer_address: PeerAddress) -> Optional[SqueakPeer]:
         return self.squeak_db.get_peer_by_address(peer_address)
 
-    # def get_default_price(self) -> int:
-    #     return self.config.node.price_msat
+    def get_default_price(self) -> int:
+        return self.config.node.price_msat
 
-    def get_sell_price_msat(self) -> int:
-        return self.node_settings.get_sell_price_msat() or \
-            self.config.node.price_msat
+    def get_sell_price_msat(self) -> Optional[int]:
+        return self.node_settings.get_sell_price_msat()
