@@ -45,6 +45,7 @@ from squeaknode.node.process_received_payments_worker import ProcessReceivedPaym
 from squeaknode.node.squeak_controller import SqueakController
 from squeaknode.node.squeak_deletion_worker import SqueakDeletionWorker
 from squeaknode.node.squeak_offer_expiry_worker import SqueakOfferExpiryWorker
+from squeaknode.node.squeak_store import SqueakStore
 from squeaknode.node.update_follows_worker import UpdateFollowsWorker
 from squeaknode.node.update_subscribed_secret_key_worker import UpdateSubscribedSecretKeysWorker
 from squeaknode.node.update_subscribed_squeak_worker import UpdateSubscribedSqueaksWorker
@@ -63,6 +64,7 @@ class SqueakNode:
         self.initialize_network()
         self.initialize_db()
         self.initialize_node_settings()
+        self.initialize_squeak_store()
         self.initialize_lightning_client()
         self.initialize_bitcoin_client()
         self.initialize_bitcoin_block_subscription_client()
@@ -137,6 +139,13 @@ class SqueakNode:
     def initialize_node_settings(self):
         self.node_settings = NodeSettings(self.squeak_db)
 
+    def initialize_squeak_store(self):
+        self.squeak_store = SqueakStore(
+            self.squeak_db,
+            self.config.node.max_squeaks,
+            100,  # TODO: update this.
+        )
+
     def initialize_lightning_client(self):
         # load the lightning client
         self.lightning_client = LNDLightningClient(
@@ -188,6 +197,7 @@ class SqueakNode:
     def initialize_squeak_controller(self):
         self.squeak_controller = SqueakController(
             self.squeak_db,
+            self.squeak_store,
             self.squeak_core,
             self.payment_processor,
             self.network_manager,

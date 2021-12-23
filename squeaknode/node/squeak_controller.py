@@ -82,6 +82,7 @@ class SqueakController:
     def __init__(
         self,
         squeak_db,
+        squeak_store,
         squeak_core,
         payment_processor,
         network_manager,
@@ -91,6 +92,7 @@ class SqueakController:
         config,
     ):
         self.squeak_db = squeak_db
+        self.squeak_store = squeak_store
         self.squeak_core = squeak_core
         self.payment_processor = payment_processor
         self.network_manager = network_manager

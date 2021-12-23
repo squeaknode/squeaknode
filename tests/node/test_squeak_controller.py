@@ -34,6 +34,7 @@ from squeaknode.node.active_download_manager import ActiveDownloadManager
 from squeaknode.node.node_settings import NodeSettings
 from squeaknode.node.payment_processor import PaymentProcessor
 from squeaknode.node.squeak_controller import SqueakController
+from squeaknode.node.squeak_store import SqueakStore
 from squeaknode.twitter.twitter_forwarder import TwitterForwarder
 
 
@@ -57,6 +58,11 @@ def regtest_config():
 def squeak_db():
     # return SqueakDb(None, None, None)
     return mock.Mock(spec=SqueakDb)
+
+
+@pytest.fixture
+def squeak_store():
+    return mock.Mock(spec=SqueakStore)
 
 
 @pytest.fixture
@@ -120,6 +126,7 @@ def twitter_forwarder():
 @pytest.fixture
 def squeak_controller(
     squeak_db,
+    squeak_store,
     squeak_core,
     payment_processor,
     network_manager,
@@ -130,6 +137,7 @@ def squeak_controller(
 ):
     return SqueakController(
         squeak_db,
+        squeak_store,
         squeak_core,
         payment_processor,
         network_manager,
@@ -143,6 +151,7 @@ def squeak_controller(
 @pytest.fixture
 def regtest_squeak_controller(
     squeak_db,
+    squeak_store,
     squeak_core,
     payment_processor,
     network_manager,
@@ -153,6 +162,7 @@ def regtest_squeak_controller(
 ):
     return SqueakController(
         squeak_db,
+        squeak_store,
         squeak_core,
         payment_processor,
         network_manager,
