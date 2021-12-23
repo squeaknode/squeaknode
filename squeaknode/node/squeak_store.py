@@ -67,22 +67,18 @@ class SqueakStore:
         self.new_squeak_listener.handle_new_item(squeak)
         return inserted_squeak_hash
 
-    # def unlock_squeak(self, squeak_hash: bytes, secret_key: bytes):
-    #     squeak = self.squeak_db.get_squeak(squeak_hash)
-    #     decrypted_content = self.squeak_core.get_decrypted_content(
-    #         squeak,
-    #         secret_key,
-    #     )
-    #     self.squeak_db.set_squeak_decryption_key(
-    #         squeak_hash,
-    #         secret_key,
-    #         decrypted_content,
-    #     )
-    #     logger.info("Unlocked squeak: {}".format(
-    #         squeak_hash.hex(),
-    #     ))
-    #     # Notify the listener
-    #     self.new_secret_key_listener.handle_new_item(squeak)
+    def unlock_squeak(self, squeak_hash: bytes, secret_key: bytes, decrypted_content: str):
+        squeak = self.squeak_db.get_squeak(squeak_hash)
+        self.squeak_db.set_squeak_decryption_key(
+            squeak_hash,
+            secret_key,
+            decrypted_content,
+        )
+        logger.info("Unlocked squeak: {}".format(
+            squeak_hash.hex(),
+        ))
+        # Notify the listener
+        self.new_secret_key_listener.handle_new_item(squeak)
 
     # def make_squeak(self, profile_id: int, content_str: str, replyto_hash: Optional[bytes]) -> Optional[bytes]:
     #     squeak_profile = self.squeak_db.get_profile(profile_id)
@@ -112,15 +108,8 @@ class SqueakStore:
     #         secret_key=secret_key,
     #     )
 
-    # def delete_squeak(self, squeak_hash: bytes) -> None:
-    #     self.squeak_db.delete_squeak(squeak_hash)
-
-    # def squeak_in_limit_of_interest(self, squeak: CSqueak, interest: CInterested) -> bool:
-    #     return self.squeak_db.number_of_squeaks_with_public_key_in_block_range(
-    #         squeak.GetPubKey(),
-    #         interest.nMinBlockHeight,
-    #         interest.nMaxBlockHeight,
-    #     ) < self.max_squeaks_per_public_key_in_block_range
+    def delete_squeak(self, squeak_hash: bytes) -> None:
+        self.squeak_db.delete_squeak(squeak_hash)
 
     # def get_secret_key_reply(
     #         self,
