@@ -167,10 +167,12 @@ class SqueakController:
         return inserted_squeak_hash
 
     def get_squeak(self, squeak_hash: bytes) -> Optional[CSqueak]:
-        return self.squeak_db.get_squeak(squeak_hash)
+        # return self.squeak_db.get_squeak(squeak_hash)
+        return self.squeak_store.get_squeak(squeak_hash)
 
     def get_squeak_secret_key(self, squeak_hash: bytes) -> Optional[bytes]:
-        return self.squeak_db.get_squeak_secret_key(squeak_hash)
+        # return self.squeak_db.get_squeak_secret_key(squeak_hash)
+        return self.squeak_store.get_squeak_secret_key(squeak_hash)
 
     def get_free_squeak_secret_key_reply(self, squeak_hash: bytes) -> Optional[FreeSecretKeyReply]:
         secret_key = self.get_squeak_secret_key(squeak_hash)
@@ -182,14 +184,15 @@ class SqueakController:
         )
 
     def delete_squeak(self, squeak_hash: bytes) -> None:
-        self.squeak_db.delete_squeak(squeak_hash)
+        # self.squeak_db.delete_squeak(squeak_hash)
+        self.squeak_store.delete_squeak(squeak_hash)
 
-    def squeak_in_limit_of_interest(self, squeak: CSqueak, interest: CInterested) -> bool:
-        return self.squeak_db.number_of_squeaks_with_public_key_in_block_range(
-            squeak.GetPubKey(),
-            interest.nMinBlockHeight,
-            interest.nMaxBlockHeight,
-        ) < self.config.node.max_squeaks_per_address_in_block_range
+    # def squeak_in_limit_of_interest(self, squeak: CSqueak, interest: CInterested) -> bool:
+    #     return self.squeak_db.number_of_squeaks_with_public_key_in_block_range(
+    #         squeak.GetPubKey(),
+    #         interest.nMinBlockHeight,
+    #         interest.nMaxBlockHeight,
+    #     ) < self.config.node.max_squeaks_per_address_in_block_range
 
     def get_download_squeak_counter(self, squeak: CSqueak) -> Optional[ActiveDownload]:
         downloaded_squeak = DownloadedSqueak(squeak)

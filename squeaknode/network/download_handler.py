@@ -87,12 +87,12 @@ class DownloadHandler:
         """
         if not self.squeak_matches_interest(squeak):
             return None
+        # TODO: catch exception if save_squeak fails (because of rate limit, for example).
         return self.squeak_controller.save_squeak(squeak)
 
     def squeak_matches_interest(self, squeak: CSqueak) -> bool:
         locator = self.squeak_controller.get_interested_locator()
         for interest in locator.vInterested:
-            if squeak_matches_interest(squeak, interest) \
-               and self.squeak_controller.squeak_in_limit_of_interest(squeak, interest):
+            if squeak_matches_interest(squeak, interest):
                 return True
         return False
