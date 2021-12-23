@@ -158,6 +158,7 @@ class SqueakController:
             squeak_profile, content_str, replyto_hash)
         inserted_squeak_hash = self.save_squeak(squeak)
         if inserted_squeak_hash is None:
+            # Raise exception instead of return None.
             return None
         self.unlock_squeak(
             inserted_squeak_hash,
