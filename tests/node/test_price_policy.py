@@ -59,16 +59,3 @@ def test_get_price_profile_no_share_free_peer(price_policy, squeak, peer_address
         mock_get_sell_price_msat.return_value = 555
 
         assert price_policy.get_price(squeak, peer_address) == 555
-
-
-# def test_get_price_sell_price_set(price_policy, squeak, peer_address, user_config):
-#     with mock.patch.object(price_policy, 'get_peer', autospec=True) as mock_get_peer, \
-#             mock.patch.object(price_policy, 'get_user_config', autospec=True) as mock_get_user_config, \
-#             mock.patch.object(price_policy, 'get_default_price', autospec=True) as mock_get_default_price:
-#         mock_get_peer.return_value = None
-#         mock_get_user_config.return_value = user_config._replace(
-#             sell_price_msat=7777,
-#         )
-#         mock_get_default_price.return_value = 555
-
-#         assert price_policy.get_price(squeak, peer_address) == 7777
