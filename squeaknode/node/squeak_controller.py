@@ -96,7 +96,7 @@ class SqueakController:
         self.squeak_core = squeak_core
         self.payment_processor = payment_processor
         self.network_manager = network_manager
-        self.new_squeak_listener = EventListener()
+        # self.new_squeak_listener = EventListener()
         self.new_received_offer_listener = EventListener()
         self.new_secret_key_listener = EventListener()
         self.new_follow_listener = EventListener()
@@ -111,22 +111,23 @@ class SqueakController:
         self.squeak_core.check_squeak(squeak)
         # Get the block header for the squeak.
         block_header = self.squeak_core.get_block_header(squeak)
-        # Check if limit exceeded.
-        if self.get_number_of_squeaks() >= self.config.node.max_squeaks:
-            raise Exception("Exceeded max number of squeaks.")
-        # Insert the squeak in db.
-        inserted_squeak_hash = self.squeak_db.insert_squeak(
-            squeak,
-            block_header,
-        )
-        if inserted_squeak_hash is None:
-            return None
-        logger.info("Saved squeak: {}".format(
-            inserted_squeak_hash.hex(),
-        ))
-        # Notify the listener
-        self.new_squeak_listener.handle_new_item(squeak)
-        return inserted_squeak_hash
+        # # Check if limit exceeded.
+        # if self.get_number_of_squeaks() >= self.config.node.max_squeaks:
+        #     raise Exception("Exceeded max number of squeaks.")
+        # # Insert the squeak in db.
+        # inserted_squeak_hash = self.squeak_db.insert_squeak(
+        #     squeak,
+        #     block_header,
+        # )
+        # if inserted_squeak_hash is None:
+        #     return None
+        # logger.info("Saved squeak: {}".format(
+        #     inserted_squeak_hash.hex(),
+        # ))
+        # # Notify the listener
+        # self.new_squeak_listener.handle_new_item(squeak)
+        # return inserted_squeak_hash
+        return self.squeak_store.save_squeak(squeak, block_header)
 
     def unlock_squeak(self, squeak_hash: bytes, secret_key: bytes):
         squeak = self.squeak_db.get_squeak(squeak_hash)
@@ -770,7 +771,8 @@ class SqueakController:
                 )
 
     def subscribe_new_squeaks(self, stopped: threading.Event):
-        yield from self.new_squeak_listener.yield_items(stopped)
+        # yield from self.new_squeak_listener.yield_items(stopped)
+        yield from self.squeak_store.subscribe_new_squeaks(stopped)
 
     def subscribe_new_secret_keys(self, stopped: threading.Event):
         yield from self.new_secret_key_listener.yield_items(stopped)
@@ -799,34 +801,40 @@ class SqueakController:
                 yield received_offer
 
     def subscribe_squeak_entry(self, squeak_hash: bytes, stopped: threading.Event):
-        for item in self.new_squeak_listener.yield_items(stopped):
+        # for item in self.new_squeak_listener.yield_items(stopped):
+        for item in self.squeak_store.subscribe_new_squeaks(stopped):
             if squeak_hash == get_hash(item):
                 yield self.get_squeak_entry(squeak_hash)
 
     def subscribe_squeak_reply_entries(self, squeak_hash: bytes, stopped: threading.Event):
-        for item in self.new_squeak_listener.yield_items(stopped):
+        # for item in self.new_squeak_listener.yield_items(stopped):
+        for item in self.squeak_store.subscribe_new_squeaks(stopped):
             if squeak_hash == item.hashReplySqk:
                 reply_hash = get_hash(item)
                 yield self.get_squeak_entry(reply_hash)
 
     def subscribe_squeak_public_key_entries(self, public_key: SqueakPublicKey, stopped: threading.Event):
-        for item in self.new_squeak_listener.yield_items(stopped):
+        # for item in self.new_squeak_listener.yield_items(stopped):
+        for item in self.squeak_store.subscribe_new_squeaks(stopped):
             if public_key == item.GetPubKey():
                 squeak_hash = get_hash(item)
                 yield self.get_squeak_entry(squeak_hash)
 
     def subscribe_squeak_ancestor_entries(self, squeak_hash: bytes, stopped: threading.Event):
-        for item in self.new_squeak_listener.yield_items(stopped):
+        # for item in self.new_squeak_listener.yield_items(stopped):
+        for item in self.squeak_store.subscribe_new_squeaks(stopped):
             if squeak_hash == get_hash(item):
                 yield self.get_ancestor_squeak_entries(squeak_hash)
 
     def subscribe_squeak_entries(self, stopped: threading.Event):
-        for item in self.new_squeak_listener.yield_items(stopped):
+        # for item in self.new_squeak_listener.yield_items(stopped):
+        for item in self.squeak_store.subscribe_new_squeaks(stopped):
             squeak_hash = get_hash(item)
             yield self.get_squeak_entry(squeak_hash)
 
     def subscribe_timeline_squeak_entries(self, stopped: threading.Event):
-        for item in self.new_squeak_listener.yield_items(stopped):
+        # for item in self.new_squeak_listener.yield_items(stopped):
+        for item in self.squeak_store.subscribe_new_squeaks(stopped):
             followed_public_keys = self.get_followed_public_keys()
             if item.GetPubKey() in set(followed_public_keys):
                 squeak_hash = get_hash(item)
