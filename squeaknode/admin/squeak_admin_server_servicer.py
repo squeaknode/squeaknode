@@ -386,12 +386,6 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
     def GetSellPrice(self, request, context):
         return self.handler.handle_get_sell_price(request)
 
-    def SetTwitterBearerToken(self, request, context):
-        return self.handler.handle_set_twitter_bearer_token(request)
-
-    def GetTwitterBearerToken(self, request, context):
-        return self.handler.handle_get_twitter_bearer_token(request)
-
     def AddTwitterAccount(self, request, context):
         return self.handler.handle_add_twitter_account(request)
 
