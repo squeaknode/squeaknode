@@ -223,23 +223,23 @@ class SqueakStore:
     def get_peer_by_address(self, peer_address: PeerAddress) -> Optional[SqueakPeer]:
         return self.squeak_db.get_peer_by_address(peer_address)
 
-    # def get_peers(self):
-    #     return self.squeak_db.get_peers()
+    def get_peers(self):
+        return self.squeak_db.get_peers()
 
-    # def get_autoconnect_peers(self) -> List[SqueakPeer]:
-    #     return self.squeak_db.get_autoconnect_peers()
+    def get_autoconnect_peers(self) -> List[SqueakPeer]:
+        return self.squeak_db.get_autoconnect_peers()
 
-    # def set_peer_autoconnect(self, peer_id: int, autoconnect: bool):
-    #     self.squeak_db.set_peer_autoconnect(peer_id, autoconnect)
+    def set_peer_autoconnect(self, peer_id: int, autoconnect: bool):
+        self.squeak_db.set_peer_autoconnect(peer_id, autoconnect)
 
-    # def set_peer_share_for_free(self, peer_id: int, share_for_free: bool):
-    #     self.squeak_db.set_peer_share_for_free(peer_id, share_for_free)
+    def set_peer_share_for_free(self, peer_id: int, share_for_free: bool):
+        self.squeak_db.set_peer_share_for_free(peer_id, share_for_free)
 
-    # def rename_peer(self, peer_id: int, peer_name: str):
-    #     self.squeak_db.set_peer_name(peer_id, peer_name)
+    def rename_peer(self, peer_id: int, peer_name: str):
+        self.squeak_db.set_peer_name(peer_id, peer_name)
 
-    # def delete_peer(self, peer_id: int):
-    #     self.squeak_db.delete_peer(peer_id)
+    def delete_peer(self, peer_id: int):
+        self.squeak_db.delete_peer(peer_id)
 
     # def get_received_offers(self, squeak_hash: bytes) -> List[ReceivedOffer]:
     #     return self.squeak_db.get_received_offers(squeak_hash)
