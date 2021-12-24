@@ -63,11 +63,11 @@ class SqueakNode:
         self.initialize_network()
         self.initialize_db()
         self.initialize_node_settings()
-        self.initialize_squeak_store()
         self.initialize_lightning_client()
         self.initialize_bitcoin_client()
         self.initialize_bitcoin_block_subscription_client()
         self.initialize_squeak_core()
+        self.initialize_squeak_store()
         self.initialize_payment_processor()
         self.initialize_twitter_forwarder()
         self.initialize_network_manager()
@@ -136,16 +136,6 @@ class SqueakNode:
     def initialize_node_settings(self):
         self.node_settings = NodeSettings(self.squeak_db)
 
-    def initialize_squeak_store(self):
-        self.squeak_store = SqueakStore(
-            self.squeak_db,
-            self.config.node.max_squeaks,
-            100,  # TODO: update this with: max_squeaks_per_public_key_per_block
-            self.config.node.squeak_retention_s,
-            self.config.node.received_offer_retention_s,
-            self.config.node.sent_offer_retention_s,
-        )
-
     def initialize_lightning_client(self):
         # load the lightning client
         self.lightning_client = LNDLightningClient(
@@ -177,6 +167,17 @@ class SqueakNode:
         self.squeak_core = SqueakCore(
             self.bitcoin_client,
             self.lightning_client,
+        )
+
+    def initialize_squeak_store(self):
+        self.squeak_store = SqueakStore(
+            self.squeak_db,
+            self.squeak_core,
+            self.config.node.max_squeaks,
+            100,  # TODO: update this with: max_squeaks_per_public_key_per_block
+            self.config.node.squeak_retention_s,
+            self.config.node.received_offer_retention_s,
+            self.config.node.sent_offer_retention_s,
         )
 
     def initialize_payment_processor(self):

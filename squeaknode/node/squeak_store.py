@@ -40,6 +40,7 @@ from squeaknode.core.received_payment_summary import ReceivedPaymentSummary
 from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.sent_payment import SentPayment
 from squeaknode.core.sent_payment_summary import SentPaymentSummary
+from squeaknode.core.squeak_core import SqueakCore
 from squeaknode.core.squeak_entry import SqueakEntry
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
@@ -57,6 +58,7 @@ class SqueakStore:
     def __init__(
         self,
         squeak_db,
+        squeak_core: SqueakCore,
         max_squeaks,
         max_squeaks_per_public_key_per_block,
         squeak_retention_s,
@@ -64,6 +66,7 @@ class SqueakStore:
         sent_offer_retention_s,
     ):
         self.squeak_db = squeak_db
+        self.squeak_core = squeak_core
         self.max_squeaks = max_squeaks
         self.max_squeaks_per_public_key_per_block = max_squeaks_per_public_key_per_block,
         self.squeak_retention_s = squeak_retention_s
@@ -75,7 +78,11 @@ class SqueakStore:
         self.new_follow_listener = EventListener()
         self.twitter_stream_change_listener = EventListener()
 
-    def save_squeak(self, squeak: CSqueak, block_header) -> Optional[bytes]:
+    def save_squeak(self, squeak: CSqueak) -> Optional[bytes]:
+        # Check if the squeak is valid
+        self.squeak_core.check_squeak(squeak)
+        # Get the block header for the squeak.
+        block_header = self.squeak_core.get_block_header(squeak)
         # Check if limit exceeded.
         if self.squeak_db.get_number_of_squeaks() >= self.max_squeaks:
             raise Exception("Exceeded max number of squeaks.")
@@ -94,8 +101,12 @@ class SqueakStore:
         self.new_squeak_listener.handle_new_item(squeak)
         return inserted_squeak_hash
 
-    def unlock_squeak(self, squeak_hash: bytes, secret_key: bytes, decrypted_content: str):
+    def unlock_squeak(self, squeak_hash: bytes, secret_key: bytes):
         squeak = self.squeak_db.get_squeak(squeak_hash)
+        decrypted_content = self.squeak_core.get_decrypted_content(
+            squeak,
+            secret_key,
+        )
         self.squeak_db.set_squeak_decryption_key(
             squeak_hash,
             secret_key,
@@ -106,6 +117,22 @@ class SqueakStore:
         ))
         # Notify the listener
         self.new_secret_key_listener.handle_new_item(squeak)
+
+    def make_squeak(self, profile_id: int, content_str: str, replyto_hash: Optional[bytes]) -> Optional[bytes]:
+        squeak_profile = self.squeak_db.get_profile(profile_id)
+        squeak, decryption_key = self.squeak_core.make_squeak(
+            squeak_profile,
+            content_str,
+            replyto_hash,
+        )
+        inserted_squeak_hash = self.save_squeak(squeak)
+        if inserted_squeak_hash is None:
+            return None
+        self.unlock_squeak(
+            inserted_squeak_hash,
+            decryption_key,
+        )
+        return inserted_squeak_hash
 
     def get_squeak(self, squeak_hash: bytes) -> Optional[CSqueak]:
         return self.squeak_db.get_squeak(squeak_hash)
