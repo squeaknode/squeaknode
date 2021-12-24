@@ -51,10 +51,8 @@ class TwitterForwarder:
                 del self.current_tasks[handle]
 
             # Start new tasks.
-            # for account in squeak_controller.get_twitter_accounts():
             for account in self.squeak_store.get_twitter_accounts():
                 task = TwitterForwarderTask(
-                    # squeak_controller,
                     self.squeak_store,
                     account,
                     self.retry_s,
@@ -81,12 +79,10 @@ class TwitterForwarderTask:
 
     def __init__(
         self,
-        # squeak_controller: SqueakController,
         squeak_store: SqueakStore,
         twitter_account: TwitterAccountEntry,
         retry_s: int,
     ):
-        # self.squeak_controller = squeak_controller
         self.squeak_store = squeak_store
         self.twitter_account = twitter_account
         self.retry_s = retry_s
@@ -145,11 +141,6 @@ class TwitterForwarderTask:
                 self.stopped.wait(wait_s)
                 wait_s *= 2
 
-    # def get_twitter_handles(self) -> List[str]:
-    #     twitter_accounts = self.squeak_controller.get_twitter_accounts()
-    #     handles = [account.handle for account in twitter_accounts]
-    #     return handles
-
     def is_tweet_a_match(self, tweet: dict) -> bool:
         for rule in tweet['matching_rules']:
             if rule['tag'] == self.twitter_account.handle:
@@ -157,11 +148,6 @@ class TwitterForwarderTask:
         return False
 
     def forward_tweet(self, tweet: dict) -> None:
-        # self.squeak_controller.make_squeak(
-        #     profile_id=self.twitter_account.profile_id,
-        #     content_str=tweet['data']['text'],
-        #     replyto_hash=None,
-        # )
         self.squeak_store.make_squeak(
             profile_id=self.twitter_account.profile_id,
             content_str=tweet['data']['text'],

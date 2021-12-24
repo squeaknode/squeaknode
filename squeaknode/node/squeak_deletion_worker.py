@@ -30,16 +30,13 @@ logger = logging.getLogger(__name__)
 class SqueakDeletionWorker(PeriodicWorker):
     def __init__(
         self,
-        # squeak_controller: SqueakController,
         squeak_store: SqueakStore,
         clean_interval_s: int,
     ):
-        # self.squeak_controller = squeak_controller
         self.squeak_store = squeak_store
         self.clean_interval_s = clean_interval_s
 
     def work_fn(self):
-        # self.squeak_controller.delete_old_squeaks()
         self.squeak_store.delete_old_squeaks()
 
     def get_interval_s(self):
