@@ -42,6 +42,8 @@ from squeaknode.core.sent_payment_summary import SentPaymentSummary
 from squeaknode.core.squeak_entry import SqueakEntry
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
+from squeaknode.core.twitter_account import TwitterAccount
+from squeaknode.core.twitter_account_entry import TwitterAccountEntry
 from squeaknode.core.update_subscriptions_event import UpdateSubscriptionsEvent
 from squeaknode.node.listener_subscription_client import EventListener
 
@@ -526,19 +528,17 @@ class SqueakStore:
     #         UpdateTwitterStreamEvent()
     #     )
 
-    # def add_twitter_account(self, handle: str, profile_id: int) -> Optional[int]:
-    #     twitter_account = TwitterAccount(
-    #         twitter_account_id=None,
-    #         handle=handle,
-    #         profile_id=profile_id,
-    #     )
-    #     account_id = self.squeak_db.insert_twitter_account(twitter_account)
-    #     self.create_update_twitter_stream_event()
-    #     return account_id
+    def add_twitter_account(self, handle: str, profile_id: int, bearer_token: str) -> Optional[int]:
+        twitter_account = TwitterAccount(
+            twitter_account_id=None,
+            handle=handle,
+            profile_id=profile_id,
+            bearer_token=bearer_token,
+        )
+        return self.squeak_db.insert_twitter_account(twitter_account)
 
-    # def get_twitter_accounts(self) -> List[TwitterAccountEntry]:
-    #     return self.squeak_db.get_twitter_accounts()
+    def get_twitter_accounts(self) -> List[TwitterAccountEntry]:
+        return self.squeak_db.get_twitter_accounts()
 
-    # def delete_twitter_account(self, twitter_account_id: int) -> None:
-    #     self.squeak_db.delete_twitter_account(twitter_account_id)
-    #     self.create_update_twitter_stream_event()
+    def delete_twitter_account(self, twitter_account_id: int) -> None:
+        self.squeak_db.delete_twitter_account(twitter_account_id)

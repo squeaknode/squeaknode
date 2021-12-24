@@ -54,10 +54,8 @@ from squeaknode.core.squeak_entry import SqueakEntry
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.squeaks import get_hash
-from squeaknode.core.twitter_account import TwitterAccount
 from squeaknode.core.twitter_account_entry import TwitterAccountEntry
 from squeaknode.core.update_twitter_stream_event import UpdateTwitterStreamEvent
-from squeaknode.core.user_config import UserConfig
 from squeaknode.node.active_download_manager import ActiveDownload
 from squeaknode.node.downloaded_object import DownloadedOffer
 from squeaknode.node.downloaded_object import DownloadedSqueak
@@ -834,9 +832,12 @@ class SqueakController:
             yield [
                 ConnectedPeer(
                     peer=peer,
-                    saved_peer=self.squeak_db.get_peer_by_address(
+                    # saved_peer=self.squeak_db.get_peer_by_address(
+                    #     peer.remote_address,
+                    # ),
+                    saved_peer=self.squeak_store.get_peer_by_address(
                         peer.remote_address,
-                    ),
+                    )
                 ) for peer in peers
             ]
 
@@ -847,9 +848,12 @@ class SqueakController:
             else:
                 yield ConnectedPeer(
                     peer=peer,
-                    saved_peer=self.squeak_db.get_peer_by_address(
+                    # saved_peer=self.squeak_db.get_peer_by_address(
+                    #     peer.remote_address,
+                    # ),
+                    saved_peer=self.squeak_store.get_peer_by_address(
                         peer.remote_address,
-                    ),
+                    )
                 )
 
     def subscribe_new_squeaks(self, stopped: threading.Event):
@@ -960,10 +964,6 @@ class SqueakController:
                 peer.send_msg(inv_msg)
         logger.debug("Finished checking peers to forward.")
 
-    def insert_user_config(self) -> Optional[str]:
-        user_config = UserConfig(username=self.config.webadmin.username)
-        return self.squeak_db.insert_config(user_config)
-
     def set_sell_price_msat(self, sell_price_msat: int) -> None:
         self.node_settings.set_sell_price_msat(sell_price_msat)
 
@@ -976,26 +976,32 @@ class SqueakController:
     def get_default_sell_price_msat(self) -> int:
         return self.config.node.price_msat
 
-    def get_twitter_stream_status(self) -> bool:
-        return self.tweet_forwarder.is_processing()
-
     def add_twitter_account(self, handle: str, profile_id: int, bearer_token: str) -> Optional[int]:
-        twitter_account = TwitterAccount(
-            twitter_account_id=None,
-            handle=handle,
-            profile_id=profile_id,
-            bearer_token=bearer_token,
+        # twitter_account = TwitterAccount(
+        #     twitter_account_id=None,
+        #     handle=handle,
+        #     profile_id=profile_id,
+        #     bearer_token=bearer_token,
+        # )
+        # account_id = self.squeak_db.insert_twitter_account(twitter_account)
+        # self.create_update_twitter_stream_event()
+        # return account_id
+        twitter_account_id = self.squeak_store.add_twitter_account(
+            handle,
+            profile_id,
+            bearer_token,
         )
-        account_id = self.squeak_db.insert_twitter_account(twitter_account)
-        self.create_update_twitter_stream_event()
-        return account_id
+        self.update_twitter_stream()
+        return twitter_account_id
 
     def get_twitter_accounts(self) -> List[TwitterAccountEntry]:
-        return self.squeak_db.get_twitter_accounts()
+        # return self.squeak_db.get_twitter_accounts()
+        return self.squeak_store.get_twitter_accounts()
 
     def delete_twitter_account(self, twitter_account_id: int) -> None:
-        self.squeak_db.delete_twitter_account(twitter_account_id)
-        self.create_update_twitter_stream_event()
+        # self.squeak_db.delete_twitter_account(twitter_account_id)
+        self.squeak_store.delete_twitter_account(twitter_account_id)
+        self.update_twitter_stream()
 
     def update_twitter_stream(self) -> None:
         self.tweet_forwarder.start_processing(self)
