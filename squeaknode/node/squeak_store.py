@@ -198,37 +198,8 @@ class SqueakStore:
     def get_squeak_secret_key(self, squeak_hash: bytes) -> Optional[bytes]:
         return self.squeak_db.get_squeak_secret_key(squeak_hash)
 
-    # def get_free_squeak_secret_key_reply(self, squeak_hash: bytes) -> Optional[FreeSecretKeyReply]:
-    #     secret_key = self.get_squeak_secret_key(squeak_hash)
-    #     if secret_key is None:
-    #         return None
-    #     return FreeSecretKeyReply(
-    #         squeak_hash=squeak_hash,
-    #         secret_key=secret_key,
-    #     )
-
     def delete_squeak(self, squeak_hash: bytes) -> None:
         self.squeak_db.delete_squeak(squeak_hash)
-
-    # def get_secret_key_reply(
-    #         self,
-    #         squeak_hash: bytes,
-    #         peer_address: PeerAddress,
-    #         price_msat: int,
-    #         lnd_external_address: Optional[LightningAddressHostPort],
-    # ) -> Optional[SecretKeyReply]:
-    #     squeak = self.get_squeak(squeak_hash)
-    #     if squeak is None:
-    #         return None
-    #     if price_msat == 0:
-    #         return self.get_free_squeak_secret_key_reply(squeak_hash)
-    #     else:
-    #         return self.get_offer_reply(
-    #             squeak=squeak,
-    #             peer_address=peer_address,
-    #             price_msat=price_msat,
-    #             lnd_external_address=lnd_external_address,
-    #         )
 
     # TODO: delete this method.
     def save_sent_offer(self, sent_offer: SentOffer) -> int:
