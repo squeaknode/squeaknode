@@ -193,6 +193,30 @@ class SqueakStore:
             secret_key=secret_key,
         )
 
+    def pay_offer(self, received_offer_id: int) -> int:
+        # Get the offer from the database
+        received_offer = self.squeak_db.get_received_offer(
+            received_offer_id)
+        if received_offer is None:
+            raise Exception("Received offer with id {} not found.".format(
+                received_offer_id,
+            ))
+        logger.info("Paying received offer: {}".format(received_offer))
+        sent_payment = self.squeak_core.pay_offer(received_offer)
+        sent_payment_id = self.squeak_db.insert_sent_payment(sent_payment)
+        # # Delete the received offer
+        # self.squeak_db.delete_offer(sent_payment.payment_hash)
+        # Mark the received offer as paid
+        self.squeak_db.set_received_offer_paid(
+            sent_payment.payment_hash,
+            True,
+        )
+        self.unlock_squeak(
+            received_offer.squeak_hash,
+            sent_payment.secret_key,
+        )
+        return sent_payment_id
+
     def get_squeak(self, squeak_hash: bytes) -> Optional[CSqueak]:
         return self.squeak_db.get_squeak(squeak_hash)
 
