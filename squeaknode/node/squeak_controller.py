@@ -576,12 +576,14 @@ class SqueakController:
             last_entry,
         )
 
-    def get_number_of_squeaks(self) -> int:
-        return self.squeak_db.get_number_of_squeaks()
+    # def get_number_of_squeaks(self) -> int:
+    #     return self.squeak_db.get_number_of_squeaks()
 
     def save_received_offer(self, offer: Offer, peer_address: PeerAddress) -> Optional[int]:
-        squeak = self.get_squeak(offer.squeak_hash)
-        secret_key = self.get_squeak_secret_key(offer.squeak_hash)
+        # squeak = self.get_squeak(offer.squeak_hash)
+        squeak = self.squeak_store.get_squeak(offer.squeak_hash)
+        # secret_key = self.get_squeak_secret_key(offer.squeak_hash)
+        secret_key = self.squeak_store.get_squeak_secret_key(offer.squeak_hash)
         if squeak is None or secret_key is not None:
             return None
         try:
@@ -594,15 +596,16 @@ class SqueakController:
         except Exception:
             logger.exception("Failed to save received offer.")
             return None
-        received_offer_id = self.squeak_db.insert_received_offer(
-            received_offer)
-        if received_offer_id is None:
-            return None
-        logger.info("Saved received offer: {}".format(received_offer))
-        received_offer = received_offer._replace(
-            received_offer_id=received_offer_id)
-        self.new_received_offer_listener.handle_new_item(received_offer)
-        return received_offer_id
+        # received_offer_id = self.squeak_db.insert_received_offer(
+        #     received_offer)
+        # if received_offer_id is None:
+        #     return None
+        # logger.info("Saved received offer: {}".format(received_offer))
+        # received_offer = received_offer._replace(
+        #     received_offer_id=received_offer_id)
+        # self.new_received_offer_listener.handle_new_item(received_offer)
+        # return received_offer_id
+        return self.squeak_store.save_received_offer(received_offer)
 
     # def get_followed_addresses(self) -> List[str]:
     #     followed_profiles = self.squeak_db.get_following_profiles()
