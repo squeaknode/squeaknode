@@ -95,8 +95,7 @@ class SqueakNode:
         if self.config.webadmin.enabled:
             self.admin_web_server.start()
         self.received_payment_processor_worker.start_running()
-        self.forward_tweets_processor_worker.start_running(
-            self.squeak_controller)
+        self.forward_tweets_processor_worker.start_running()
         self.peer_connection_worker.start()
         self.squeak_deletion_worker.start()
         self.offer_expiry_worker.start()
@@ -190,6 +189,7 @@ class SqueakNode:
 
     def initialize_twitter_forwarder(self):
         self.twitter_forwarder = TwitterForwarder(
+            self.squeak_store,
             self.config.twitter.forward_tweets_retry_s,
         )
 

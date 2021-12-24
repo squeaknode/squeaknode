@@ -24,7 +24,7 @@ import threading
 from typing import Dict
 
 from squeaknode.core.twitter_account_entry import TwitterAccountEntry
-from squeaknode.node.squeak_controller import SqueakController
+from squeaknode.node.squeak_store import SqueakStore
 from squeaknode.twitter.twitter_stream import TwitterStream
 
 
@@ -35,13 +35,15 @@ class TwitterForwarder:
 
     def __init__(
             self,
+            squeak_store: SqueakStore,
             retry_s: int,
     ):
+        self.squeak_store = squeak_store
         self.retry_s = retry_s
         self.lock = threading.Lock()
         self.current_tasks: Dict[str, TwitterForwarderTask] = {}
 
-    def start_processing(self, squeak_controller: SqueakController):
+    def start_processing(self):
         with self.lock:
             # Stop existing running tasks.
             for handle, task in list(self.current_tasks.items()):
@@ -49,9 +51,11 @@ class TwitterForwarder:
                 del self.current_tasks[handle]
 
             # Start new tasks.
-            for account in squeak_controller.get_twitter_accounts():
+            # for account in squeak_controller.get_twitter_accounts():
+            for account in self.squeak_store.get_twitter_accounts():
                 task = TwitterForwarderTask(
-                    squeak_controller,
+                    # squeak_controller,
+                    self.squeak_store,
                     account,
                     self.retry_s,
                 )
@@ -77,11 +81,13 @@ class TwitterForwarderTask:
 
     def __init__(
         self,
-        squeak_controller: SqueakController,
+        # squeak_controller: SqueakController,
+        squeak_store: SqueakStore,
         twitter_account: TwitterAccountEntry,
         retry_s: int,
     ):
-        self.squeak_controller = squeak_controller
+        # self.squeak_controller = squeak_controller
+        self.squeak_store = squeak_store
         self.twitter_account = twitter_account
         self.retry_s = retry_s
         self.stopped = threading.Event()
@@ -151,7 +157,12 @@ class TwitterForwarderTask:
         return False
 
     def forward_tweet(self, tweet: dict) -> None:
-        self.squeak_controller.make_squeak(
+        # self.squeak_controller.make_squeak(
+        #     profile_id=self.twitter_account.profile_id,
+        #     content_str=tweet['data']['text'],
+        #     replyto_hash=None,
+        # )
+        self.squeak_store.make_squeak(
             profile_id=self.twitter_account.profile_id,
             content_str=tweet['data']['text'],
             replyto_hash=None,

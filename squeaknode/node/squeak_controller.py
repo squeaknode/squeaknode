@@ -873,4 +873,4 @@ class SqueakController:
         self.update_twitter_stream()
 
     def update_twitter_stream(self) -> None:
-        self.tweet_forwarder.start_processing(self)
+        self.tweet_forwarder.start_processing()
