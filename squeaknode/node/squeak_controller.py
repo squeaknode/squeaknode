@@ -398,11 +398,13 @@ class SqueakController:
         return self.squeak_store.delete_peer(peer_id)
 
     def get_received_offers(self, squeak_hash: bytes) -> List[ReceivedOffer]:
-        return self.squeak_db.get_received_offers(squeak_hash)
+        # return self.squeak_db.get_received_offers(squeak_hash)
+        return self.squeak_store.get_received_offers(squeak_hash)
 
     def get_received_offer(self, received_offer_id: int) -> Optional[ReceivedOffer]:
-        return self.squeak_db.get_received_offer(
-            received_offer_id)
+        # return self.squeak_db.get_received_offer(
+        #     received_offer_id)
+        return self.squeak_store.get_received_offer(received_offer_id)
 
     def pay_offer(self, received_offer_id: int) -> int:
         # Get the offer from the database
