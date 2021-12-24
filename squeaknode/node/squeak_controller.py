@@ -494,27 +494,30 @@ class SqueakController:
         return self.config.node.network
 
     def get_squeak_entry(self, squeak_hash: bytes) -> Optional[SqueakEntry]:
-        return self.squeak_db.get_squeak_entry(squeak_hash)
+        # return self.squeak_db.get_squeak_entry(squeak_hash)
+        return self.squeak_store.get_squeak_entry(squeak_hash)
 
     def get_timeline_squeak_entries(
             self,
             limit: int,
             last_entry: Optional[SqueakEntry],
     ) -> List[SqueakEntry]:
-        return self.squeak_db.get_timeline_squeak_entries(
-            limit,
-            last_entry,
-        )
+        # return self.squeak_db.get_timeline_squeak_entries(
+        #     limit,
+        #     last_entry,
+        # )
+        return self.squeak_store.get_timeline_squeak_entries(limit, last_entry)
 
     def get_liked_squeak_entries(
             self,
             limit: int,
             last_entry: Optional[SqueakEntry],
     ) -> List[SqueakEntry]:
-        return self.squeak_db.get_liked_squeak_entries(
-            limit,
-            last_entry,
-        )
+        # return self.squeak_db.get_liked_squeak_entries(
+        #     limit,
+        #     last_entry,
+        # )
+        return self.squeak_store.get_liked_squeak_entries(limit, last_entry)
 
     def get_squeak_entries_for_public_key(
             self,
@@ -522,7 +525,12 @@ class SqueakController:
             limit: int,
             last_entry: Optional[SqueakEntry],
     ) -> List[SqueakEntry]:
-        return self.squeak_db.get_squeak_entries_for_public_key(
+        # return self.squeak_db.get_squeak_entries_for_public_key(
+        #     public_key,
+        #     limit,
+        #     last_entry,
+        # )
+        return self.squeak_store.get_squeak_entries_for_public_key(
             public_key,
             limit,
             last_entry,
@@ -534,16 +542,22 @@ class SqueakController:
             limit: int,
             last_entry: Optional[SqueakEntry],
     ) -> List[SqueakEntry]:
-        return self.squeak_db.get_squeak_entries_for_text_search(
+        # return self.squeak_db.get_squeak_entries_for_text_search(
+        #     search_text,
+        #     limit,
+        #     last_entry,
+        # )
+        return self.squeak_store.get_squeak_entries_for_text_search(
             search_text,
             limit,
             last_entry,
         )
 
     def get_ancestor_squeak_entries(self, squeak_hash: bytes) -> List[SqueakEntry]:
-        return self.squeak_db.get_thread_ancestor_squeak_entries(
-            squeak_hash,
-        )
+        # return self.squeak_db.get_thread_ancestor_squeak_entries(
+        #     squeak_hash,
+        # )
+        return self.squeak_store.get_ancestor_squeak_entries(squeak_hash)
 
     def get_reply_squeak_entries(
             self,
@@ -551,7 +565,12 @@ class SqueakController:
             limit: int,
             last_entry: Optional[SqueakEntry],
     ) -> List[SqueakEntry]:
-        return self.squeak_db.get_thread_reply_squeak_entries(
+        # return self.squeak_db.get_thread_reply_squeak_entries(
+        #     squeak_hash,
+        #     limit,
+        #     last_entry,
+        # )
+        return self.squeak_store.get_reply_squeak_entries(
             squeak_hash,
             limit,
             last_entry,
