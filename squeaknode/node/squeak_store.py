@@ -35,6 +35,7 @@ from squeaknode.core.profiles import create_signing_profile
 from squeaknode.core.profiles import get_profile_private_key
 from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.sent_offer import SentOffer
+from squeaknode.core.sent_payment import SentPayment
 from squeaknode.core.squeak_entry import SqueakEntry
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
@@ -241,16 +242,14 @@ class SqueakStore:
     def delete_peer(self, peer_id: int):
         self.squeak_db.delete_peer(peer_id)
 
-    # def get_received_offers(self, squeak_hash: bytes) -> List[ReceivedOffer]:
-    #     return self.squeak_db.get_received_offers(squeak_hash)
-
-    # def get_received_offer(self, received_offer_id: int) -> Optional[ReceivedOffer]:
-    #     return self.squeak_db.get_received_offer(
-    #         received_offer_id)
+    def get_received_offers(self, squeak_hash: bytes) -> List[ReceivedOffer]:
+        return self.squeak_db.get_received_offers(squeak_hash)
 
     def get_received_offer(self, received_offer_id: int) -> Optional[ReceivedOffer]:
-        """ Get offer with peer for an offer id. """
         return self.squeak_db.get_received_offer(received_offer_id)
+
+    def save_sent_payment(self, sent_payment: SentPayment) -> int:
+        return self.squeak_db.insert_sent_payment(sent_payment)
 
     # def get_sent_payments(
     #         self,
@@ -267,6 +266,9 @@ class SqueakStore:
 
     # def get_sent_offers(self):
     #     return self.squeak_db.get_sent_offers()
+
+    def mark_received_offer_paid(self, payment_hash: bytes) -> None:
+        self.squeak_db.set_received_offer_paid(payment_hash, True)
 
     # def get_received_payments(
     #         self,

@@ -1055,7 +1055,7 @@ class SqueakDb:
         with self.get_connection() as connection:
             connection.execute(stmt)
 
-    def insert_sent_payment(self, sent_payment: SentPayment):
+    def insert_sent_payment(self, sent_payment: SentPayment) -> int:
         """ Insert a new sent payment. """
         ins = self.sent_payments.insert().values(
             created_time_ms=self.timestamp_now_ms,
