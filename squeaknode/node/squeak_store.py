@@ -35,8 +35,10 @@ from squeaknode.core.profiles import create_signing_profile
 from squeaknode.core.profiles import get_profile_private_key
 from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.received_payment import ReceivedPayment
+from squeaknode.core.received_payment_summary import ReceivedPaymentSummary
 from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.sent_payment import SentPayment
+from squeaknode.core.sent_payment_summary import SentPaymentSummary
 from squeaknode.core.squeak_entry import SqueakEntry
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
@@ -396,15 +398,15 @@ class SqueakStore:
         self.new_received_offer_listener.handle_new_item(received_offer)
         return received_offer_id
 
-    # def get_followed_public_keys(self) -> List[SqueakPublicKey]:
-    #     followed_profiles = self.squeak_db.get_following_profiles()
-    #     return [profile.public_key for profile in followed_profiles]
+    def get_followed_public_keys(self) -> List[SqueakPublicKey]:
+        followed_profiles = self.squeak_db.get_following_profiles()
+        return [profile.public_key for profile in followed_profiles]
 
-    # def get_received_payment_summary(self) -> ReceivedPaymentSummary:
-    #     return self.squeak_db.get_received_payment_summary()
+    def get_received_payment_summary(self) -> ReceivedPaymentSummary:
+        return self.squeak_db.get_received_payment_summary()
 
-    # def get_sent_payment_summary(self) -> SentPaymentSummary:
-    #     return self.squeak_db.get_sent_payment_summary()
+    def get_sent_payment_summary(self) -> SentPaymentSummary:
+        return self.squeak_db.get_sent_payment_summary()
 
     # def clear_received_payment_settle_indices(self) -> None:
     #     self.squeak_db.clear_received_payment_settle_indices()

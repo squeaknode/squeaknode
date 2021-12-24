@@ -611,15 +611,19 @@ class SqueakController:
     #     followed_profiles = self.squeak_db.get_following_profiles()
     #     return [profile.address for profile in followed_profiles]
 
+    # TODO: remove from controller.
     def get_followed_public_keys(self) -> List[SqueakPublicKey]:
-        followed_profiles = self.squeak_db.get_following_profiles()
-        return [profile.public_key for profile in followed_profiles]
+        # TODO: change squeak_store method to "get_followed_profiles"
+        # followed_profiles = self.squeak_db.get_following_profiles()
+        return self.squeak_store.get_followed_public_keys()
 
     def get_received_payment_summary(self) -> ReceivedPaymentSummary:
-        return self.squeak_db.get_received_payment_summary()
+        # return self.squeak_db.get_received_payment_summary()
+        return self.squeak_store.get_received_payment_summary()
 
     def get_sent_payment_summary(self) -> SentPaymentSummary:
-        return self.squeak_db.get_sent_payment_summary()
+        # return self.squeak_db.get_sent_payment_summary()
+        return self.squeak_store.get_sent_payment_summary()
 
     def reprocess_received_payments(self) -> None:
         self.squeak_db.clear_received_payment_settle_indices()
