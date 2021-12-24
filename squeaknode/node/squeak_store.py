@@ -21,6 +21,7 @@
 # SOFTWARE.
 import logging
 import threading
+from typing import Iterator
 from typing import List
 from typing import Optional
 
@@ -213,6 +214,9 @@ class SqueakStore:
 
     def clear_squeak_profile_image(self, profile_id: int) -> None:
         self.squeak_db.set_profile_image(profile_id, None)
+
+    def yield_received_payments_from_index(self, start_index: int = 0) -> Iterator[ReceivedPayment]:
+        yield from self.squeak_db.yield_received_payments_from_index(start_index=start_index)
 
     def get_squeak_profile_private_key(self, profile_id: int) -> bytes:
         profile = self.get_squeak_profile(profile_id)
@@ -484,10 +488,10 @@ class SqueakStore:
     def create_update_subscriptions_event(self):
         self.new_follow_listener.handle_new_item(UpdateSubscriptionsEvent())
 
-    # def subscribe_received_offers_for_squeak(self, squeak_hash: bytes, stopped: threading.Event):
-    #     for received_offer in self.new_received_offer_listener.yield_items(stopped):
-    #         if received_offer.squeak_hash == squeak_hash:
-    #             yield received_offer
+    def subscribe_received_offers_for_squeak(self, squeak_hash: bytes, stopped: threading.Event):
+        for received_offer in self.new_received_offer_listener.yield_items(stopped):
+            if received_offer.squeak_hash == squeak_hash:
+                yield received_offer
 
     # def subscribe_squeak_entry(self, squeak_hash: bytes, stopped: threading.Event):
     #     for item in self.new_squeak_listener.yield_items(stopped):

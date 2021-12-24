@@ -49,7 +49,6 @@ from squeaknode.node.squeak_store import SqueakStore
 from squeaknode.node.update_follows_worker import UpdateFollowsWorker
 from squeaknode.node.update_subscribed_secret_key_worker import UpdateSubscribedSecretKeysWorker
 from squeaknode.node.update_subscribed_squeak_worker import UpdateSubscribedSqueaksWorker
-from squeaknode.node.update_twitter_stream_worker import UpdateTwitterStreamWorker
 from squeaknode.twitter.twitter_forwarder import TwitterForwarder
 
 logger = logging.getLogger(__name__)
@@ -85,7 +84,6 @@ class SqueakNode:
         self.initialize_new_squeak_worker()
         self.initialize_new_secret_key_worker()
         self.initialize_new_follow_worker()
-        self.initialize_twitter_stream_change_worker()
         self.initialize_peer_subscription_update_worker()
 
     def start_running(self):
@@ -105,7 +103,6 @@ class SqueakNode:
         self.new_squeak_worker.start_running()
         self.new_secret_key_worker.start_running()
         self.new_follow_worker.start_running()
-        self.twitter_stream_change_worker.start_running()
         self.new_bitcoin_block_worker.start_running()
         self.download_manager.start(
             self.squeak_controller.broadcast_msg,
@@ -199,7 +196,6 @@ class SqueakNode:
 
     def initialize_squeak_controller(self):
         self.squeak_controller = SqueakController(
-            self.squeak_db,
             self.squeak_store,
             self.squeak_core,
             self.payment_processor,
@@ -275,11 +271,6 @@ class SqueakNode:
 
     def initialize_new_follow_worker(self):
         self.new_follow_worker = UpdateFollowsWorker(
-            self.squeak_controller,
-        )
-
-    def initialize_twitter_stream_change_worker(self):
-        self.twitter_stream_change_worker = UpdateTwitterStreamWorker(
             self.squeak_controller,
         )
 

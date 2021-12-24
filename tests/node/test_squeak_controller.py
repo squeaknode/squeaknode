@@ -27,7 +27,6 @@ from squeaknode.core.lightning_address import LightningAddressHostPort
 from squeaknode.core.peer_address import Network
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.squeak_core import SqueakCore
-from squeaknode.db.squeak_db import SqueakDb
 from squeaknode.network.network_manager import NetworkManager
 from squeaknode.node.active_download_manager import ActiveDownloadManager
 from squeaknode.node.node_settings import NodeSettings
@@ -51,12 +50,6 @@ def regtest_config():
     )
     squeaknode_config.read()
     return squeaknode_config
-
-
-@pytest.fixture
-def squeak_db():
-    # return SqueakDb(None, None, None)
-    return mock.Mock(spec=SqueakDb)
 
 
 @pytest.fixture
@@ -124,7 +117,6 @@ def twitter_forwarder():
 
 @pytest.fixture
 def squeak_controller(
-    squeak_db,
     squeak_store,
     squeak_core,
     payment_processor,
@@ -135,7 +127,6 @@ def squeak_controller(
     config,
 ):
     return SqueakController(
-        squeak_db,
         squeak_store,
         squeak_core,
         payment_processor,
@@ -149,7 +140,6 @@ def squeak_controller(
 
 @pytest.fixture
 def regtest_squeak_controller(
-    squeak_db,
     squeak_store,
     squeak_core,
     payment_processor,
@@ -160,7 +150,6 @@ def regtest_squeak_controller(
     regtest_config,
 ):
     return SqueakController(
-        squeak_db,
         squeak_store,
         squeak_core,
         payment_processor,

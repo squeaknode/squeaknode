@@ -55,11 +55,9 @@ from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.squeaks import get_hash
 from squeaknode.core.twitter_account_entry import TwitterAccountEntry
-from squeaknode.core.update_twitter_stream_event import UpdateTwitterStreamEvent
 from squeaknode.node.active_download_manager import ActiveDownload
 from squeaknode.node.downloaded_object import DownloadedOffer
 from squeaknode.node.downloaded_object import DownloadedSqueak
-from squeaknode.node.listener_subscription_client import EventListener
 from squeaknode.node.price_policy import PricePolicy
 from squeaknode.node.received_payments_subscription_client import ReceivedPaymentsSubscriptionClient
 from squeaknode.node.secret_key_reply import FreeSecretKeyReply
@@ -75,7 +73,6 @@ class SqueakController:
 
     def __init__(
         self,
-        squeak_db,
         squeak_store: SqueakStore,
         squeak_core,
         payment_processor,
@@ -85,16 +82,15 @@ class SqueakController:
         node_settings,
         config,
     ):
-        self.squeak_db = squeak_db
         self.squeak_store = squeak_store
         self.squeak_core = squeak_core
         self.payment_processor = payment_processor
         self.network_manager = network_manager
         # self.new_squeak_listener = EventListener()
-        self.new_received_offer_listener = EventListener()
-        self.new_secret_key_listener = EventListener()
+        # self.new_received_offer_listener = EventListener()
+        # self.new_secret_key_listener = EventListener()
         # self.new_follow_listener = EventListener()
-        self.twitter_stream_change_listener = EventListener()
+        # self.twitter_stream_change_listener = EventListener()
         self.active_download_manager = download_manager
         self.tweet_forwarder = tweet_forwarder
         self.node_settings = node_settings
@@ -476,7 +472,8 @@ class SqueakController:
 
     def subscribe_received_payments(self, initial_index: int, stopped: threading.Event):
         with ReceivedPaymentsSubscriptionClient(
-            self.squeak_db,
+            # self.squeak_db,
+            self.squeak_store,
             initial_index,
             stopped,
         ).open_subscription() as client:
@@ -868,9 +865,6 @@ class SqueakController:
         # yield from self.new_follow_listener.yield_items(stopped)
         yield from self.squeak_store.subscribe_follows(stopped)
 
-    def subscribe_twitter_stream_changes(self, stopped: threading.Event):
-        yield from self.twitter_stream_change_listener.yield_items(stopped)
-
     def update_subscriptions(self):
         locator = self.get_interested_locator()
         self.network_manager.update_local_subscriptions(locator)
@@ -878,15 +872,14 @@ class SqueakController:
     # def create_update_subscriptions_event(self):
     #     self.new_follow_listener.handle_new_item(UpdateSubscriptionsEvent())
 
-    def create_update_twitter_stream_event(self):
-        self.twitter_stream_change_listener.handle_new_item(
-            UpdateTwitterStreamEvent()
-        )
-
     def subscribe_received_offers_for_squeak(self, squeak_hash: bytes, stopped: threading.Event):
-        for received_offer in self.new_received_offer_listener.yield_items(stopped):
-            if received_offer.squeak_hash == squeak_hash:
-                yield received_offer
+        # for received_offer in self.new_received_offer_listener.yield_items(stopped):
+        #     if received_offer.squeak_hash == squeak_hash:
+        #         yield received_offer
+        yield from self.squeak_store.subscribe_received_offers_for_squeak(
+            squeak_hash,
+            stopped,
+        )
 
     def subscribe_squeak_entry(self, squeak_hash: bytes, stopped: threading.Event):
         # for item in self.new_squeak_listener.yield_items(stopped):

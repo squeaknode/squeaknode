@@ -24,6 +24,8 @@ import queue
 import threading
 from contextlib import contextmanager
 
+from squeaknode.node.squeak_store import SqueakStore
+
 logger = logging.getLogger(__name__)
 
 DEFAULT_MAX_QUEUE_SIZE = 1000
@@ -40,13 +42,14 @@ class ReceivedPaymentsSubscriptionClient:
 
     def __init__(
         self,
-        squeak_db,
+        # squeak_db,
+        squeak_store: SqueakStore,
         initial_index: int,
         stopped: threading.Event,
         max_queue_size=DEFAULT_MAX_QUEUE_SIZE,
         update_interval_s=DEFAULT_UPDATE_INTERVAL_S,
     ):
-        self.squeak_db = squeak_db
+        self.squeak_store = squeak_store
         self.initial_index = initial_index
         self.stopped = stopped
         self.update_interval_s = update_interval_s
@@ -89,7 +92,10 @@ class ReceivedPaymentsSubscriptionClient:
         self.q.put(None)
 
     def get_latest_received_payments(self, payment_index):
-        return self.squeak_db.yield_received_payments_from_index(
+        # return self.squeak_db.yield_received_payments_from_index(
+        #     payment_index,
+        # )
+        return self.squeak_store.yield_received_payments_from_index(
             payment_index,
         )
 
