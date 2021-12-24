@@ -83,11 +83,6 @@ class SqueakController:
         self.squeak_core = squeak_core
         self.payment_processor = payment_processor
         self.network_manager = network_manager
-        # self.new_squeak_listener = EventListener()
-        # self.new_received_offer_listener = EventListener()
-        # self.new_secret_key_listener = EventListener()
-        # self.new_follow_listener = EventListener()
-        # self.twitter_stream_change_listener = EventListener()
         self.active_download_manager = download_manager
         self.tweet_forwarder = tweet_forwarder
         self.node_settings = node_settings
