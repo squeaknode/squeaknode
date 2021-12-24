@@ -309,19 +309,24 @@ class SqueakController:
         return self.squeak_store.get_profiles()
 
     def get_signing_profiles(self) -> List[SqueakProfile]:
-        return self.squeak_db.get_signing_profiles()
+        # return self.squeak_db.get_signing_profiles()
+        return self.squeak_store.get_signing_profiles()
 
     def get_contact_profiles(self) -> List[SqueakProfile]:
-        return self.squeak_db.get_contact_profiles()
+        # return self.squeak_db.get_contact_profiles()
+        return self.squeak_store.get_contact_profiles()
 
     def get_squeak_profile(self, profile_id: int) -> Optional[SqueakProfile]:
-        return self.squeak_db.get_profile(profile_id)
+        # return self.squeak_db.get_profile(profile_id)
+        return self.squeak_store.get_squeak_profile(profile_id)
 
     def get_squeak_profile_by_public_key(self, public_key: SqueakPublicKey) -> Optional[SqueakProfile]:
-        return self.squeak_db.get_profile_by_public_key(public_key)
+        # return self.squeak_db.get_profile_by_public_key(public_key)
+        return self.squeak_store.get_squeak_profile_by_public_key(public_key)
 
     def get_squeak_profile_by_name(self, name: str) -> Optional[SqueakProfile]:
-        return self.squeak_db.get_profile_by_name(name)
+        # return self.squeak_db.get_profile_by_name(name)
+        return self.squeak_store.get_squeak_profile_by_name(name)
 
     def set_squeak_profile_following(self, profile_id: int, following: bool) -> None:
         # self.squeak_db.set_profile_following(profile_id, following)
@@ -329,7 +334,8 @@ class SqueakController:
         return self.squeak_store.set_squeak_profile_following(profile_id, following)
 
     def rename_squeak_profile(self, profile_id: int, profile_name: str) -> None:
-        self.squeak_db.set_profile_name(profile_id, profile_name)
+        # self.squeak_db.set_profile_name(profile_id, profile_name)
+        return self.squeak_store.rename_squeak_profile(profile_id, profile_name)
 
     def delete_squeak_profile(self, profile_id: int) -> None:
         # self.squeak_db.delete_profile(profile_id)
@@ -337,10 +343,12 @@ class SqueakController:
         return self.squeak_store.delete_squeak_profile(profile_id)
 
     def set_squeak_profile_image(self, profile_id: int, profile_image: bytes) -> None:
-        self.squeak_db.set_profile_image(profile_id, profile_image)
+        # self.squeak_db.set_profile_image(profile_id, profile_image)
+        return self.squeak_store.set_squeak_profile_image(profile_id, profile_image)
 
     def clear_squeak_profile_image(self, profile_id: int) -> None:
-        self.squeak_db.set_profile_image(profile_id, None)
+        # self.squeak_db.set_profile_image(profile_id, None)
+        return self.squeak_store.clear_squeak_profile_image(profile_id)
 
     def get_squeak_profile_private_key(self, profile_id: int) -> bytes:
         profile = self.get_squeak_profile(profile_id)
