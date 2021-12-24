@@ -54,10 +54,14 @@ class SqueakStore:
         squeak_db,
         max_squeaks,
         max_squeaks_per_public_key_per_block,
+        received_offer_retention_s,
+        sent_offer_retention_s,
     ):
         self.squeak_db = squeak_db
         self.max_squeaks = max_squeaks
         self.max_squeaks_per_public_key_per_block = max_squeaks_per_public_key_per_block,
+        self.received_offer_retention_s = received_offer_retention_s
+        self.sent_offer_retention_s = sent_offer_retention_s
         self.new_squeak_listener = EventListener()
         self.new_received_offer_listener = EventListener()
         self.new_secret_key_listener = EventListener()
@@ -281,28 +285,27 @@ class SqueakStore:
             last_received_payment,
         )
 
-    # def delete_all_expired_offers(self):
-    #     self.delete_all_expired_received_offers()
-    #     self.delete_all_expired_sent_offers()
+    def delete_all_expired_offers(self):
+        self.delete_all_expired_received_offers()
+        self.delete_all_expired_sent_offers()
 
-    # def delete_all_expired_received_offers(self):
-    #     received_offer_retention_s = self.config.node.received_offer_retention_s
-    #     num_expired_received_offers = self.squeak_db.delete_expired_received_offers(
-    #         received_offer_retention_s)
-    #     if num_expired_received_offers > 0:
-    #         logger.info("Deleted number of expired received offers: {}".format(
-    #             num_expired_received_offers))
+    def delete_all_expired_received_offers(self):
+        num_expired_received_offers = self.squeak_db.delete_expired_received_offers(
+            self.received_offer_retention_s,
+        )
+        if num_expired_received_offers > 0:
+            logger.info("Deleted number of expired received offers: {}".format(
+                num_expired_received_offers))
 
-    # def delete_all_expired_sent_offers(self):
-    #     sent_offer_retention_s = self.config.node.sent_offer_retention_s
-    #     num_expired_sent_offers = self.squeak_db.delete_expired_sent_offers(
-    #         sent_offer_retention_s,
-    #     )
-    #     if num_expired_sent_offers > 0:
-    #         logger.info(
-    #             "Deleted number of expired sent offers: {}".format(
-    #                 num_expired_sent_offers)
-    #         )
+    def delete_all_expired_sent_offers(self):
+        num_expired_sent_offers = self.squeak_db.delete_expired_sent_offers(
+            self.sent_offer_retention_s,
+        )
+        if num_expired_sent_offers > 0:
+            logger.info(
+                "Deleted number of expired sent offers: {}".format(
+                    num_expired_sent_offers)
+            )
 
     # def subscribe_received_payments(self, initial_index: int, stopped: threading.Event):
     #     with ReceivedPaymentsSubscriptionClient(

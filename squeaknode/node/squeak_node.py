@@ -143,7 +143,9 @@ class SqueakNode:
         self.squeak_store = SqueakStore(
             self.squeak_db,
             self.config.node.max_squeaks,
-            100,  # TODO: update this.
+            100,  # TODO: update this with: max_squeaks_per_public_key_per_block
+            self.config.node.received_offer_retention_s,
+            self.config.node.sent_offer_retention_s,
         )
 
     def initialize_lightning_client(self):

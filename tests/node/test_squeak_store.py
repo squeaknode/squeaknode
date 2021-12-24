@@ -63,6 +63,16 @@ def max_squeaks_per_public_key_per_block():
 
 
 @pytest.fixture
+def received_offer_retention_s():
+    return 3600
+
+
+@pytest.fixture
+def sent_offer_retention_s():
+    return 7200
+
+
+@pytest.fixture
 def inserted_signing_profile_id(squeak_db, signing_profile):
     yield squeak_db.insert_profile(signing_profile)
 
@@ -79,11 +89,15 @@ def squeak_store(
     squeak_db,
     max_squeaks,
     max_squeaks_per_public_key_per_block,
+    received_offer_retention_s,
+    sent_offer_retention_s,
 ):
     return SqueakStore(
         squeak_db,
         max_squeaks,
         max_squeaks_per_public_key_per_block,
+        received_offer_retention_s,
+        sent_offer_retention_s,
     )
 
 
