@@ -251,7 +251,7 @@ class SqueakNode:
 
     def initialize_squeak_deletion_worker(self):
         self.squeak_deletion_worker = SqueakDeletionWorker(
-            self.squeak_controller,
+            self.squeak_store,
             self.config.node.squeak_deletion_interval_s,
         )
 
