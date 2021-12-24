@@ -34,6 +34,7 @@ from squeaknode.core.profiles import create_contact_profile
 from squeaknode.core.profiles import create_signing_profile
 from squeaknode.core.profiles import get_profile_private_key
 from squeaknode.core.received_offer import ReceivedOffer
+from squeaknode.core.received_payment import ReceivedPayment
 from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.sent_payment import SentPayment
 from squeaknode.core.squeak_entry import SqueakEntry
@@ -251,34 +252,34 @@ class SqueakStore:
     def save_sent_payment(self, sent_payment: SentPayment) -> int:
         return self.squeak_db.insert_sent_payment(sent_payment)
 
-    # def get_sent_payments(
-    #         self,
-    #         limit: int,
-    #         last_sent_payment: Optional[SentPayment],
-    # ) -> List[SentPayment]:
-    #     return self.squeak_db.get_sent_payments(
-    #         limit,
-    #         last_sent_payment,
-    #     )
+    def get_sent_payments(
+            self,
+            limit: int,
+            last_sent_payment: Optional[SentPayment],
+    ) -> List[SentPayment]:
+        return self.squeak_db.get_sent_payments(
+            limit,
+            last_sent_payment,
+        )
 
-    # def get_sent_payment(self, sent_payment_id: int) -> Optional[SentPayment]:
-    #     return self.squeak_db.get_sent_payment(sent_payment_id)
+    def get_sent_payment(self, sent_payment_id: int) -> Optional[SentPayment]:
+        return self.squeak_db.get_sent_payment(sent_payment_id)
 
-    # def get_sent_offers(self):
-    #     return self.squeak_db.get_sent_offers()
+    def get_sent_offers(self):
+        return self.squeak_db.get_sent_offers()
 
     def mark_received_offer_paid(self, payment_hash: bytes) -> None:
         self.squeak_db.set_received_offer_paid(payment_hash, True)
 
-    # def get_received_payments(
-    #         self,
-    #         limit: int,
-    #         last_received_payment: Optional[ReceivedPayment],
-    # ) -> List[ReceivedPayment]:
-    #     return self.squeak_db.get_received_payments(
-    #         limit,
-    #         last_received_payment,
-    #     )
+    def get_received_payments(
+            self,
+            limit: int,
+            last_received_payment: Optional[ReceivedPayment],
+    ) -> List[ReceivedPayment]:
+        return self.squeak_db.get_received_payments(
+            limit,
+            last_received_payment,
+        )
 
     # def delete_all_expired_offers(self):
     #     self.delete_all_expired_received_offers()

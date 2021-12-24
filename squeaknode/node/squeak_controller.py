@@ -438,23 +438,33 @@ class SqueakController:
             limit: int,
             last_sent_payment: Optional[SentPayment],
     ) -> List[SentPayment]:
-        return self.squeak_db.get_sent_payments(
+        # return self.squeak_db.get_sent_payments(
+        #     limit,
+        #     last_sent_payment,
+        # )
+        return self.squeak_store.get_sent_payments(
             limit,
             last_sent_payment,
         )
 
     def get_sent_payment(self, sent_payment_id: int) -> Optional[SentPayment]:
-        return self.squeak_db.get_sent_payment(sent_payment_id)
+        # return self.squeak_db.get_sent_payment(sent_payment_id)
+        return self.squeak_store.get_sent_payment(sent_payment_id)
 
     def get_sent_offers(self):
-        return self.squeak_db.get_sent_offers()
+        # return self.squeak_db.get_sent_offers()
+        return self.squeak_store.get_sent_offers()
 
     def get_received_payments(
             self,
             limit: int,
             last_received_payment: Optional[ReceivedPayment],
     ) -> List[ReceivedPayment]:
-        return self.squeak_db.get_received_payments(
+        # return self.squeak_db.get_received_payments(
+        #     limit,
+        #     last_received_payment,
+        # )
+        return self.squeak_store.get_received_payments(
             limit,
             last_received_payment,
         )
