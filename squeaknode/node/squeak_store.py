@@ -26,10 +26,12 @@ from typing import Optional
 from squeak.core import CSqueak
 
 from squeaknode.core.peer_address import PeerAddress
+from squeaknode.core.profiles import create_signing_profile
 from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.squeak_entry import SqueakEntry
 from squeaknode.core.squeak_peer import SqueakPeer
+from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.update_subscriptions_event import UpdateSubscriptionsEvent
 from squeaknode.node.listener_subscription_client import EventListener
 
@@ -133,13 +135,13 @@ class SqueakStore:
             peer_address,
         )
 
-    # def create_signing_profile(self, profile_name: str) -> int:
-    #     squeak_profile = create_signing_profile(
-    #         profile_name,
-    #     )
-    #     profile_id = self.squeak_db.insert_profile(squeak_profile)
-    #     self.create_update_subscriptions_event()
-    #     return profile_id
+    def create_signing_profile(self, profile_name: str) -> int:
+        squeak_profile = create_signing_profile(
+            profile_name,
+        )
+        profile_id = self.squeak_db.insert_profile(squeak_profile)
+        self.create_update_subscriptions_event()
+        return profile_id
 
     # def import_signing_profile(self, profile_name: str, private_key: SqueakPrivateKey) -> int:
     #     squeak_profile = create_signing_profile(
@@ -168,8 +170,8 @@ class SqueakStore:
     # def get_contact_profiles(self) -> List[SqueakProfile]:
     #     return self.squeak_db.get_contact_profiles()
 
-    # def get_squeak_profile(self, profile_id: int) -> Optional[SqueakProfile]:
-    #     return self.squeak_db.get_profile(profile_id)
+    def get_squeak_profile(self, profile_id: int) -> Optional[SqueakProfile]:
+        return self.squeak_db.get_profile(profile_id)
 
     # def get_squeak_profile_by_public_key(self, public_key: SqueakPublicKey) -> Optional[SqueakProfile]:
     #     return self.squeak_db.get_profile_by_public_key(public_key)

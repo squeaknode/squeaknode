@@ -153,7 +153,8 @@ class SqueakController:
         # self.new_secret_key_listener.handle_new_item(squeak)
 
     def make_squeak(self, profile_id: int, content_str: str, replyto_hash: Optional[bytes]) -> Optional[bytes]:
-        squeak_profile = self.squeak_db.get_profile(profile_id)
+        # squeak_profile = self.squeak_db.get_profile(profile_id)
+        squeak_profile = self.squeak_store.get_squeak_profile(profile_id)
         squeak, decryption_key = self.squeak_core.make_squeak(
             squeak_profile, content_str, replyto_hash)
         inserted_squeak_hash = self.save_squeak(squeak)
@@ -278,12 +279,13 @@ class SqueakController:
         return price_policy.get_price(squeak, peer_address)
 
     def create_signing_profile(self, profile_name: str) -> int:
-        squeak_profile = create_signing_profile(
-            profile_name,
-        )
-        profile_id = self.squeak_db.insert_profile(squeak_profile)
-        self.create_update_subscriptions_event()
-        return profile_id
+        # squeak_profile = create_signing_profile(
+        #     profile_name,
+        # )
+        # profile_id = self.squeak_db.insert_profile(squeak_profile)
+        # self.create_update_subscriptions_event()
+        # return profile_id
+        return self.squeak_store.create_signing_profile(profile_name)
 
     def import_signing_profile(self, profile_name: str, private_key: SqueakPrivateKey) -> int:
         squeak_profile = create_signing_profile(
