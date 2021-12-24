@@ -45,8 +45,6 @@ from squeaknode.core.lightning_address import LightningAddressHostPort
 from squeaknode.core.offer import Offer
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.peers import create_saved_peer
-from squeaknode.core.profiles import create_contact_profile
-from squeaknode.core.profiles import create_signing_profile
 from squeaknode.core.profiles import get_profile_private_key
 from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.received_payment import ReceivedPayment
@@ -60,7 +58,6 @@ from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.squeaks import get_hash
 from squeaknode.core.twitter_account import TwitterAccount
 from squeaknode.core.twitter_account_entry import TwitterAccountEntry
-from squeaknode.core.update_subscriptions_event import UpdateSubscriptionsEvent
 from squeaknode.core.update_twitter_stream_event import UpdateTwitterStreamEvent
 from squeaknode.core.user_config import UserConfig
 from squeaknode.node.active_download_manager import ActiveDownload
@@ -100,7 +97,7 @@ class SqueakController:
         # self.new_squeak_listener = EventListener()
         self.new_received_offer_listener = EventListener()
         self.new_secret_key_listener = EventListener()
-        self.new_follow_listener = EventListener()
+        # self.new_follow_listener = EventListener()
         self.twitter_stream_change_listener = EventListener()
         self.active_download_manager = download_manager
         self.tweet_forwarder = tweet_forwarder
@@ -288,25 +285,28 @@ class SqueakController:
         return self.squeak_store.create_signing_profile(profile_name)
 
     def import_signing_profile(self, profile_name: str, private_key: SqueakPrivateKey) -> int:
-        squeak_profile = create_signing_profile(
-            profile_name,
-            private_key,
-        )
-        profile_id = self.squeak_db.insert_profile(squeak_profile)
-        self.create_update_subscriptions_event()
-        return profile_id
+        # squeak_profile = create_signing_profile(
+        #     profile_name,
+        #     private_key,
+        # )
+        # profile_id = self.squeak_db.insert_profile(squeak_profile)
+        # self.create_update_subscriptions_event()
+        # return profile_id
+        return self.squeak_store.import_signing_profile(profile_name, private_key)
 
     def create_contact_profile(self, profile_name: str, public_key: SqueakPublicKey) -> int:
-        squeak_profile = create_contact_profile(
-            profile_name,
-            public_key,
-        )
-        profile_id = self.squeak_db.insert_profile(squeak_profile)
-        self.create_update_subscriptions_event()
-        return profile_id
+        # squeak_profile = create_contact_profile(
+        #     profile_name,
+        #     public_key,
+        # )
+        # profile_id = self.squeak_db.insert_profile(squeak_profile)
+        # self.create_update_subscriptions_event()
+        # return profile_id
+        return self.squeak_store.create_contact_profile(profile_name, public_key)
 
     def get_profiles(self) -> List[SqueakProfile]:
-        return self.squeak_db.get_profiles()
+        # return self.squeak_db.get_profiles()
+        return self.squeak_store.get_profiles()
 
     def get_signing_profiles(self) -> List[SqueakProfile]:
         return self.squeak_db.get_signing_profiles()
@@ -324,15 +324,17 @@ class SqueakController:
         return self.squeak_db.get_profile_by_name(name)
 
     def set_squeak_profile_following(self, profile_id: int, following: bool) -> None:
-        self.squeak_db.set_profile_following(profile_id, following)
-        self.create_update_subscriptions_event()
+        # self.squeak_db.set_profile_following(profile_id, following)
+        # self.create_update_subscriptions_event()
+        return self.squeak_store.set_squeak_profile_following(profile_id, following)
 
     def rename_squeak_profile(self, profile_id: int, profile_name: str) -> None:
         self.squeak_db.set_profile_name(profile_id, profile_name)
 
     def delete_squeak_profile(self, profile_id: int) -> None:
-        self.squeak_db.delete_profile(profile_id)
-        self.create_update_subscriptions_event()
+        # self.squeak_db.delete_profile(profile_id)
+        # self.create_update_subscriptions_event()
+        return self.squeak_store.delete_squeak_profile(profile_id)
 
     def set_squeak_profile_image(self, profile_id: int, profile_image: bytes) -> None:
         self.squeak_db.set_profile_image(profile_id, profile_image)
@@ -796,7 +798,8 @@ class SqueakController:
         yield from self.squeak_store.subscribe_new_secret_keys(stopped)
 
     def subscribe_follows(self, stopped: threading.Event):
-        yield from self.new_follow_listener.yield_items(stopped)
+        # yield from self.new_follow_listener.yield_items(stopped)
+        yield from self.squeak_store.subscribe_follows(stopped)
 
     def subscribe_twitter_stream_changes(self, stopped: threading.Event):
         yield from self.twitter_stream_change_listener.yield_items(stopped)
@@ -805,8 +808,8 @@ class SqueakController:
         locator = self.get_interested_locator()
         self.network_manager.update_local_subscriptions(locator)
 
-    def create_update_subscriptions_event(self):
-        self.new_follow_listener.handle_new_item(UpdateSubscriptionsEvent())
+    # def create_update_subscriptions_event(self):
+    #     self.new_follow_listener.handle_new_item(UpdateSubscriptionsEvent())
 
     def create_update_twitter_stream_event(self):
         self.twitter_stream_change_listener.handle_new_item(

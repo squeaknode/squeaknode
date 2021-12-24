@@ -21,11 +21,15 @@
 # SOFTWARE.
 import logging
 import threading
+from typing import List
 from typing import Optional
 
 from squeak.core import CSqueak
+from squeak.core.signing import SqueakPrivateKey
+from squeak.core.signing import SqueakPublicKey
 
 from squeaknode.core.peer_address import PeerAddress
+from squeaknode.core.profiles import create_contact_profile
 from squeaknode.core.profiles import create_signing_profile
 from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.sent_offer import SentOffer
@@ -143,26 +147,26 @@ class SqueakStore:
         self.create_update_subscriptions_event()
         return profile_id
 
-    # def import_signing_profile(self, profile_name: str, private_key: SqueakPrivateKey) -> int:
-    #     squeak_profile = create_signing_profile(
-    #         profile_name,
-    #         private_key,
-    #     )
-    #     profile_id = self.squeak_db.insert_profile(squeak_profile)
-    #     self.create_update_subscriptions_event()
-    #     return profile_id
+    def import_signing_profile(self, profile_name: str, private_key: SqueakPrivateKey) -> int:
+        squeak_profile = create_signing_profile(
+            profile_name,
+            private_key,
+        )
+        profile_id = self.squeak_db.insert_profile(squeak_profile)
+        self.create_update_subscriptions_event()
+        return profile_id
 
-    # def create_contact_profile(self, profile_name: str, public_key: SqueakPublicKey) -> int:
-    #     squeak_profile = create_contact_profile(
-    #         profile_name,
-    #         public_key,
-    #     )
-    #     profile_id = self.squeak_db.insert_profile(squeak_profile)
-    #     self.create_update_subscriptions_event()
-    #     return profile_id
+    def create_contact_profile(self, profile_name: str, public_key: SqueakPublicKey) -> int:
+        squeak_profile = create_contact_profile(
+            profile_name,
+            public_key,
+        )
+        profile_id = self.squeak_db.insert_profile(squeak_profile)
+        self.create_update_subscriptions_event()
+        return profile_id
 
-    # def get_profiles(self) -> List[SqueakProfile]:
-    #     return self.squeak_db.get_profiles()
+    def get_profiles(self) -> List[SqueakProfile]:
+        return self.squeak_db.get_profiles()
 
     # def get_signing_profiles(self) -> List[SqueakProfile]:
     #     return self.squeak_db.get_signing_profiles()
@@ -179,16 +183,16 @@ class SqueakStore:
     # def get_squeak_profile_by_name(self, name: str) -> Optional[SqueakProfile]:
     #     return self.squeak_db.get_profile_by_name(name)
 
-    # def set_squeak_profile_following(self, profile_id: int, following: bool) -> None:
-    #     self.squeak_db.set_profile_following(profile_id, following)
-    #     self.create_update_subscriptions_event()
+    def set_squeak_profile_following(self, profile_id: int, following: bool) -> None:
+        self.squeak_db.set_profile_following(profile_id, following)
+        self.create_update_subscriptions_event()
 
     # def rename_squeak_profile(self, profile_id: int, profile_name: str) -> None:
     #     self.squeak_db.set_profile_name(profile_id, profile_name)
 
-    # def delete_squeak_profile(self, profile_id: int) -> None:
-    #     self.squeak_db.delete_profile(profile_id)
-    #     self.create_update_subscriptions_event()
+    def delete_squeak_profile(self, profile_id: int) -> None:
+        self.squeak_db.delete_profile(profile_id)
+        self.create_update_subscriptions_event()
 
     # def set_squeak_profile_image(self, profile_id: int, profile_image: bytes) -> None:
     #     self.squeak_db.set_profile_image(profile_id, profile_image)
