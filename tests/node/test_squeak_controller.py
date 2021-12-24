@@ -27,7 +27,6 @@ from squeaknode.core.lightning_address import LightningAddressHostPort
 from squeaknode.core.peer_address import Network
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.squeak_core import SqueakCore
-from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.db.squeak_db import SqueakDb
 from squeaknode.network.network_manager import NetworkManager
 from squeaknode.node.active_download_manager import ActiveDownloadManager
@@ -198,18 +197,13 @@ def test_get_network_regtest(regtest_squeak_controller):
 #     assert squeak_controller.get_network() == "regtest"
 
 
-def test_create_peer(squeak_db, squeak_controller, peer_address):
+def test_create_peer(squeak_store, squeak_controller, peer_address):
     squeak_controller.create_peer(
         "fake_peer_name",
         peer_address,
     )
 
-    squeak_db.insert_peer.assert_called_with(
-        SqueakPeer(
-            peer_id=None,
-            peer_name="fake_peer_name",
-            address=peer_address,
-            autoconnect=False,
-            share_for_free=False,
-        )
+    squeak_store.create_peer.assert_called_with(
+        "fake_peer_name",
+        peer_address,
     )

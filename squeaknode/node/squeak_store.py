@@ -29,8 +29,10 @@ from squeak.core.signing import SqueakPrivateKey
 from squeak.core.signing import SqueakPublicKey
 
 from squeaknode.core.peer_address import PeerAddress
+from squeaknode.core.peers import create_saved_peer
 from squeaknode.core.profiles import create_contact_profile
 from squeaknode.core.profiles import create_signing_profile
+from squeaknode.core.profiles import get_profile_private_key
 from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.squeak_entry import SqueakEntry
@@ -200,23 +202,23 @@ class SqueakStore:
     def clear_squeak_profile_image(self, profile_id: int) -> None:
         self.squeak_db.set_profile_image(profile_id, None)
 
-    # def get_squeak_profile_private_key(self, profile_id: int) -> bytes:
-    #     profile = self.get_squeak_profile(profile_id)
-    #     if profile is None:
-    #         raise Exception("Profile with id: {} does not exist.".format(
-    #             profile_id,
-    #         ))
-    #     return get_profile_private_key(profile)
+    def get_squeak_profile_private_key(self, profile_id: int) -> bytes:
+        profile = self.get_squeak_profile(profile_id)
+        if profile is None:
+            raise Exception("Profile with id: {} does not exist.".format(
+                profile_id,
+            ))
+        return get_profile_private_key(profile)
 
-    # def create_peer(self, peer_name: str, peer_address: PeerAddress):
-    #     squeak_peer = create_saved_peer(
-    #         peer_name,
-    #         peer_address,
-    #     )
-    #     return self.squeak_db.insert_peer(squeak_peer)
+    def create_peer(self, peer_name: str, peer_address: PeerAddress):
+        squeak_peer = create_saved_peer(
+            peer_name,
+            peer_address,
+        )
+        return self.squeak_db.insert_peer(squeak_peer)
 
-    # def get_peer(self, peer_id: int) -> Optional[SqueakPeer]:
-    #     return self.squeak_db.get_peer(peer_id)
+    def get_peer(self, peer_id: int) -> Optional[SqueakPeer]:
+        return self.squeak_db.get_peer(peer_id)
 
     def get_peer_by_address(self, peer_address: PeerAddress) -> Optional[SqueakPeer]:
         return self.squeak_db.get_peer_by_address(peer_address)
