@@ -27,8 +27,8 @@ from squeak.core import CSqueak
 from squeaknode.config.config import SqueaknodeConfig
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.squeak_peer import SqueakPeer
-from squeaknode.db.squeak_db import SqueakDb
 from squeaknode.node.node_settings import NodeSettings
+from squeaknode.node.squeak_store import SqueakStore
 
 
 logger = logging.getLogger(__name__)
@@ -36,8 +36,9 @@ logger = logging.getLogger(__name__)
 
 class PricePolicy:
 
-    def __init__(self, squeak_db: SqueakDb, config: SqueaknodeConfig, node_settings: NodeSettings):
-        self.squeak_db = squeak_db
+    def __init__(self, squeak_store: SqueakStore, config: SqueaknodeConfig, node_settings: NodeSettings):
+        # self.squeak_db = squeak_db
+        self.squeak_store = squeak_store
         self.config = config
         self.node_settings = node_settings
 
@@ -55,7 +56,8 @@ class PricePolicy:
         return sell_price_msat
 
     def get_peer(self, peer_address: PeerAddress) -> Optional[SqueakPeer]:
-        return self.squeak_db.get_peer_by_address(peer_address)
+        # return self.squeak_db.get_peer_by_address(peer_address)
+        return self.squeak_store.get_peer_by_address(peer_address)
 
     def get_default_price(self) -> int:
         return self.config.node.price_msat

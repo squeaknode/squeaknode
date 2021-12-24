@@ -245,7 +245,11 @@ class SqueakController:
     def get_sent_offer_for_peer(self, squeak: CSqueak, peer_address: PeerAddress, price_msat: int) -> Optional[SentOffer]:
         squeak_hash = get_hash(squeak)
         # Check if there is an existing offer for the hash/peer_address combination
-        sent_offer = self.squeak_db.get_sent_offer_by_squeak_hash_and_peer(
+        # sent_offer = self.squeak_db.get_sent_offer_by_squeak_hash_and_peer(
+        #     squeak_hash,
+        #     peer_address,
+        # )
+        sent_offer = self.squeak_store.get_sent_offer_for_peer(
             squeak_hash,
             peer_address,
         )
@@ -264,12 +268,13 @@ class SqueakController:
         except Exception:
             logger.exception("Failed to create offer.")
             return None
-        self.squeak_db.insert_sent_offer(sent_offer)
+        # self.squeak_db.insert_sent_offer(sent_offer)
+        self.squeak_store.save_sent_offer(sent_offer)
         return sent_offer
 
     def get_price_for_squeak(self, squeak: CSqueak, peer_address: PeerAddress) -> int:
         price_policy = PricePolicy(
-            self.squeak_db, self.config, self.node_settings)
+            self.squeak_store, self.config, self.node_settings)
         return price_policy.get_price(squeak, peer_address)
 
     def create_signing_profile(self, profile_name: str) -> int:

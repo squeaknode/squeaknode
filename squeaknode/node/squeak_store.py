@@ -29,6 +29,7 @@ from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.squeak_entry import SqueakEntry
+from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.update_subscriptions_event import UpdateSubscriptionsEvent
 from squeaknode.node.listener_subscription_client import EventListener
 
@@ -211,8 +212,8 @@ class SqueakStore:
     # def get_peer(self, peer_id: int) -> Optional[SqueakPeer]:
     #     return self.squeak_db.get_peer(peer_id)
 
-    # def get_peer_by_address(self, peer_address: PeerAddress) -> Optional[SqueakPeer]:
-    #     return self.squeak_db.get_peer_by_address(peer_address)
+    def get_peer_by_address(self, peer_address: PeerAddress) -> Optional[SqueakPeer]:
+        return self.squeak_db.get_peer_by_address(peer_address)
 
     # def get_peers(self):
     #     return self.squeak_db.get_peers()
