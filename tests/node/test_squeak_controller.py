@@ -161,14 +161,6 @@ def regtest_squeak_controller(
     )
 
 
-def test_nothing():
-    assert True
-
-
-def test_get_buy_offer(squeak_controller):
-    assert squeak_controller.get_offer_reply is not None
-
-
 def test_get_network_default(squeak_controller):
     assert squeak_controller.get_network() == "testnet"
 

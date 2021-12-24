@@ -184,16 +184,15 @@ def test_save_sent_offer(squeak_store, squeak_db, sent_offer):
     mock_insert_sent_offer.assert_called_once_with(sent_offer)
 
 
-def test_get_sent_offer(squeak_store, squeak_db, sent_offer):
-    with mock.patch.object(
-            squeak_db,
-            'get_sent_offer_by_squeak_hash_and_peer',
-            new_callable=mock.PropertyMock,
-    ) as mock_get_sent_offer_by_squeak_hash_and_peer:
+def test_get_sent_offer_already_exists(squeak_store, squeak_db, sent_offer):
+    with mock.patch.object(squeak_db, 'get_sent_offer_by_squeak_hash_and_peer', autospec=True) as mock_get_sent_offer_by_squeak_hash_and_peer:
         mock_get_sent_offer_by_squeak_hash_and_peer.return_value = sent_offer
 
         retrieved_sent_offer = squeak_store.get_sent_offer_for_peer(
-            sent_offer.squeak_hash, sent_offer.peer_address)
+            sent_offer.squeak_hash,
+            sent_offer.peer_address,
+            sent_offer.price_msat,
+        )
 
     assert retrieved_sent_offer == sent_offer
 
