@@ -28,7 +28,10 @@ from typing import Optional
 from squeak.core import CSqueak
 from squeak.core.signing import SqueakPrivateKey
 from squeak.core.signing import SqueakPublicKey
+from squeak.net import CInterested
+from squeak.net import CSqueakLocator
 
+from squeaknode.core.block_range import BlockRange
 from squeaknode.core.lightning_address import LightningAddressHostPort
 from squeaknode.core.offer import Offer
 from squeaknode.core.peer_address import PeerAddress
@@ -69,6 +72,7 @@ class SqueakStore:
         squeak_retention_s,
         received_offer_retention_s,
         sent_offer_retention_s,
+        interested_block_range_size,
     ):
         self.squeak_db = squeak_db
         self.squeak_core = squeak_core
@@ -77,6 +81,7 @@ class SqueakStore:
         self.squeak_retention_s = squeak_retention_s
         self.received_offer_retention_s = received_offer_retention_s
         self.sent_offer_retention_s = sent_offer_retention_s
+        self.interested_block_range_size = interested_block_range_size
         self.new_squeak_listener = EventListener()
         self.new_received_offer_listener = EventListener()
         self.new_secret_key_listener = EventListener()
@@ -216,6 +221,29 @@ class SqueakStore:
             sent_payment.secret_key,
         )
         return sent_payment_id
+
+    def get_interested_locator(self) -> CSqueakLocator:
+        block_range = self.get_interested_block_range()
+        followed_public_keys = self.get_followed_public_keys()
+        if len(followed_public_keys) == 0:
+            return CSqueakLocator(
+                vInterested=[],
+            )
+        interests = [
+            CInterested(
+                pubkeys=followed_public_keys,
+                nMinBlockHeight=block_range.min_block,
+                nMaxBlockHeight=block_range.max_block,
+            )
+        ]
+        return CSqueakLocator(
+            vInterested=interests,
+        )
+
+    def get_interested_block_range(self) -> BlockRange:
+        max_block = self.squeak_core.get_best_block_height()
+        min_block = max(0, max_block - self.interested_block_range_size)
+        return BlockRange(min_block, max_block)
 
     def get_squeak(self, squeak_hash: bytes) -> Optional[CSqueak]:
         return self.squeak_db.get_squeak(squeak_hash)

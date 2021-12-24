@@ -83,6 +83,11 @@ def sent_offer_retention_s():
 
 
 @pytest.fixture
+def interested_block_range_size():
+    return 2016
+
+
+@pytest.fixture
 def inserted_signing_profile_id(squeak_db, signing_profile):
     yield squeak_db.insert_profile(signing_profile)
 
@@ -103,6 +108,7 @@ def squeak_store(
     squeak_retention_s,
     received_offer_retention_s,
     sent_offer_retention_s,
+    interested_block_range_size,
 ):
     return SqueakStore(
         squeak_db,
@@ -112,6 +118,7 @@ def squeak_store(
         squeak_retention_s,
         received_offer_retention_s,
         sent_offer_retention_s,
+        interested_block_range_size,
     )
 
 

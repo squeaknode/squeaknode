@@ -38,7 +38,6 @@ from squeak.net import CInterested
 from squeak.net import CInv
 from squeak.net import CSqueakLocator
 
-from squeaknode.core.block_range import BlockRange
 from squeaknode.core.connected_peer import ConnectedPeer
 from squeaknode.core.download_result import DownloadResult
 from squeaknode.core.lightning_address import LightningAddressHostPort
@@ -352,11 +351,11 @@ class SqueakController:
         ).open_subscription() as client:
             yield from client.get_received_payments()
 
-    def get_block_range(self) -> BlockRange:
-        max_block = self.squeak_core.get_best_block_height()
-        block_interval = self.config.node.interest_block_interval
-        min_block = max(0, max_block - block_interval)
-        return BlockRange(min_block, max_block)
+    # def get_block_range(self) -> BlockRange:
+    #     max_block = self.squeak_core.get_best_block_height()
+    #     block_interval = self.config.node.interest_block_interval
+    #     min_block = max(0, max_block - block_interval)
+    #     return BlockRange(min_block, max_block)
 
     def get_network(self) -> str:
         return self.config.node.network
@@ -615,22 +614,23 @@ class SqueakController:
         )
 
     def get_interested_locator(self) -> CSqueakLocator:
-        block_range = self.get_block_range()
-        followed_public_keys = self.get_followed_public_keys()
-        if len(followed_public_keys) == 0:
-            return CSqueakLocator(
-                vInterested=[],
-            )
-        interests = [
-            CInterested(
-                pubkeys=followed_public_keys,
-                nMinBlockHeight=block_range.min_block,
-                nMaxBlockHeight=block_range.max_block,
-            )
-        ]
-        return CSqueakLocator(
-            vInterested=interests,
-        )
+        # block_range = self.get_block_range()
+        # followed_public_keys = self.get_followed_public_keys()
+        # if len(followed_public_keys) == 0:
+        #     return CSqueakLocator(
+        #         vInterested=[],
+        #     )
+        # interests = [
+        #     CInterested(
+        #         pubkeys=followed_public_keys,
+        #         nMinBlockHeight=block_range.min_block,
+        #         nMaxBlockHeight=block_range.max_block,
+        #     )
+        # ]
+        # return CSqueakLocator(
+        #     vInterested=interests,
+        # )
+        return self.squeak_store.get_interested_locator()
 
     def download_squeaks(
             self,

@@ -178,6 +178,7 @@ class SqueakNode:
             self.config.node.squeak_retention_s,
             self.config.node.received_offer_retention_s,
             self.config.node.sent_offer_retention_s,
+            self.config.node.interest_block_interval,
         )
 
     def initialize_payment_processor(self):
