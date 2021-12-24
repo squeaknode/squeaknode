@@ -408,8 +408,8 @@ class SqueakStore:
     def get_sent_payment_summary(self) -> SentPaymentSummary:
         return self.squeak_db.get_sent_payment_summary()
 
-    # def clear_received_payment_settle_indices(self) -> None:
-    #     self.squeak_db.clear_received_payment_settle_indices()
+    def clear_received_payment_settle_indices(self) -> None:
+        self.squeak_db.clear_received_payment_settle_indices()
 
     # def delete_old_squeaks(self):
     #     squeaks_to_delete = self.squeak_db.get_old_squeaks_to_delete(

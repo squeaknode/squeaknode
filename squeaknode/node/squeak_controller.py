@@ -626,7 +626,8 @@ class SqueakController:
         return self.squeak_store.get_sent_payment_summary()
 
     def reprocess_received_payments(self) -> None:
-        self.squeak_db.clear_received_payment_settle_indices()
+        # self.squeak_db.clear_received_payment_settle_indices()
+        self.squeak_store.clear_received_payment_settle_indices()
         self.payment_processor.start_processing()
 
     def delete_old_squeaks(self):
