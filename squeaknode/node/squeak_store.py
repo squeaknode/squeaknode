@@ -56,12 +56,14 @@ class SqueakStore:
         squeak_db,
         max_squeaks,
         max_squeaks_per_public_key_per_block,
+        squeak_retention_s,
         received_offer_retention_s,
         sent_offer_retention_s,
     ):
         self.squeak_db = squeak_db
         self.max_squeaks = max_squeaks
         self.max_squeaks_per_public_key_per_block = max_squeaks_per_public_key_per_block,
+        self.squeak_retention_s = squeak_retention_s
         self.received_offer_retention_s = received_offer_retention_s
         self.sent_offer_retention_s = sent_offer_retention_s
         self.new_squeak_listener = EventListener()
@@ -411,17 +413,17 @@ class SqueakStore:
     def clear_received_payment_settle_indices(self) -> None:
         self.squeak_db.clear_received_payment_settle_indices()
 
-    # def delete_old_squeaks(self):
-    #     squeaks_to_delete = self.squeak_db.get_old_squeaks_to_delete(
-    #         self.config.node.squeak_retention_s,
-    #     )
-    #     for squeak_hash in squeaks_to_delete:
-    #         self.squeak_db.delete_squeak(
-    #             squeak_hash,
-    #         )
-    #         logger.info("Deleted squeak: {}".format(
-    #             squeak_hash.hex(),
-    #         ))
+    def delete_old_squeaks(self):
+        squeaks_to_delete = self.squeak_db.get_old_squeaks_to_delete(
+            self.squeak_retention_s,
+        )
+        for squeak_hash in squeaks_to_delete:
+            self.squeak_db.delete_squeak(
+                squeak_hash,
+            )
+            logger.info("Deleted squeak: {}".format(
+                squeak_hash.hex(),
+            ))
 
     # def like_squeak(self, squeak_hash: bytes):
     #     logger.info("Liking squeak: {}".format(

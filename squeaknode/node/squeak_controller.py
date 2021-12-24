@@ -631,16 +631,17 @@ class SqueakController:
         self.payment_processor.start_processing()
 
     def delete_old_squeaks(self):
-        squeaks_to_delete = self.squeak_db.get_old_squeaks_to_delete(
-            self.config.node.squeak_retention_s,
-        )
-        for squeak_hash in squeaks_to_delete:
-            self.squeak_db.delete_squeak(
-                squeak_hash,
-            )
-            logger.info("Deleted squeak: {}".format(
-                squeak_hash.hex(),
-            ))
+        # squeaks_to_delete = self.squeak_db.get_old_squeaks_to_delete(
+        #     self.config.node.squeak_retention_s,
+        # )
+        # for squeak_hash in squeaks_to_delete:
+        #     self.squeak_db.delete_squeak(
+        #         squeak_hash,
+        #     )
+        #     logger.info("Deleted squeak: {}".format(
+        #         squeak_hash.hex(),
+        #     ))
+        return self.squeak_store.delete_old_squeaks()
 
     def like_squeak(self, squeak_hash: bytes):
         logger.info("Liking squeak: {}".format(

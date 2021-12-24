@@ -63,6 +63,11 @@ def max_squeaks_per_public_key_per_block():
 
 
 @pytest.fixture
+def squeak_retention_s():
+    return 360000
+
+
+@pytest.fixture
 def received_offer_retention_s():
     return 3600
 
@@ -89,6 +94,7 @@ def squeak_store(
     squeak_db,
     max_squeaks,
     max_squeaks_per_public_key_per_block,
+    squeak_retention_s,
     received_offer_retention_s,
     sent_offer_retention_s,
 ):
@@ -96,6 +102,7 @@ def squeak_store(
         squeak_db,
         max_squeaks,
         max_squeaks_per_public_key_per_block,
+        squeak_retention_s,
         received_offer_retention_s,
         sent_offer_retention_s,
     )
