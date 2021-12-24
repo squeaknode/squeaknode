@@ -441,34 +441,34 @@ class SqueakStore:
             squeak_hash,
         )
 
-    # def lookup_squeaks(
-    #         self,
-    #         public_keys: List[SqueakPublicKey],
-    #         min_block: Optional[int],
-    #         max_block: Optional[int],
-    #         reply_to_hash: Optional[bytes],
-    # ) -> List[bytes]:
-    #     return self.squeak_db.lookup_squeaks(
-    #         public_keys,
-    #         min_block,
-    #         max_block,
-    #         reply_to_hash,
-    #         include_locked=True,
-    #     )
+    def lookup_squeaks(
+            self,
+            public_keys: List[SqueakPublicKey],
+            min_block: Optional[int],
+            max_block: Optional[int],
+            reply_to_hash: Optional[bytes],
+    ) -> List[bytes]:
+        return self.squeak_db.lookup_squeaks(
+            public_keys,
+            min_block,
+            max_block,
+            reply_to_hash,
+            include_locked=True,
+        )
 
-    # def lookup_secret_keys(
-    #         self,
-    #         public_keys: List[SqueakPublicKey],
-    #         min_block: Optional[int],
-    #         max_block: Optional[int],
-    #         reply_to_hash: Optional[bytes],
-    # ) -> List[bytes]:
-    #     return self.squeak_db.lookup_squeaks(
-    #         public_keys,
-    #         min_block,
-    #         max_block,
-    #         reply_to_hash,
-    #     )
+    def lookup_secret_keys(
+            self,
+            public_keys: List[SqueakPublicKey],
+            min_block: Optional[int],
+            max_block: Optional[int],
+            reply_to_hash: Optional[bytes],
+    ) -> List[bytes]:
+        return self.squeak_db.lookup_squeaks(
+            public_keys,
+            min_block,
+            max_block,
+            reply_to_hash,
+        )
 
     def subscribe_new_squeaks(self, stopped: threading.Event):
         yield from self.new_squeak_listener.yield_items(stopped)

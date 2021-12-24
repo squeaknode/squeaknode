@@ -680,7 +680,10 @@ class SqueakController:
             return None
         return ConnectedPeer(
             peer=peer,
-            saved_peer=self.squeak_db.get_peer_by_address(
+            # saved_peer=self.squeak_db.get_peer_by_address(
+            #     peer_address,
+            # ),
+            saved_peer=self.squeak_store.get_peer_by_address(
                 peer_address,
             ),
         )
@@ -690,7 +693,10 @@ class SqueakController:
         return [
             ConnectedPeer(
                 peer=peer,
-                saved_peer=self.squeak_db.get_peer_by_address(
+                # saved_peer=self.squeak_db.get_peer_by_address(
+                #     peer.remote_address,
+                # ),
+                saved_peer=self.squeak_store.get_peer_by_address(
                     peer.remote_address,
                 ),
             ) for peer in peers
@@ -703,12 +709,18 @@ class SqueakController:
             max_block: Optional[int],
             reply_to_hash: Optional[bytes],
     ) -> List[bytes]:
-        return self.squeak_db.lookup_squeaks(
+        # return self.squeak_db.lookup_squeaks(
+        #     public_keys,
+        #     min_block,
+        #     max_block,
+        #     reply_to_hash,
+        #     include_locked=True,
+        # )
+        return self.squeak_store.lookup_squeaks(
             public_keys,
             min_block,
             max_block,
             reply_to_hash,
-            include_locked=True,
         )
 
     def lookup_secret_keys(
@@ -718,7 +730,13 @@ class SqueakController:
             max_block: Optional[int],
             reply_to_hash: Optional[bytes],
     ) -> List[bytes]:
-        return self.squeak_db.lookup_squeaks(
+        # return self.squeak_db.lookup_squeaks(
+        #     public_keys,
+        #     min_block,
+        #     max_block,
+        #     reply_to_hash,
+        # )
+        return self.squeak_store.lookup_secret_keys(
             public_keys,
             min_block,
             max_block,
