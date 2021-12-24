@@ -425,21 +425,21 @@ class SqueakStore:
                 squeak_hash.hex(),
             ))
 
-    # def like_squeak(self, squeak_hash: bytes):
-    #     logger.info("Liking squeak: {}".format(
-    #         squeak_hash.hex(),
-    #     ))
-    #     self.squeak_db.set_squeak_liked(
-    #         squeak_hash,
-    #     )
+    def like_squeak(self, squeak_hash: bytes):
+        logger.info("Liking squeak: {}".format(
+            squeak_hash.hex(),
+        ))
+        self.squeak_db.set_squeak_liked(
+            squeak_hash,
+        )
 
-    # def unlike_squeak(self, squeak_hash: bytes):
-    #     logger.info("Unliking squeak: {}".format(
-    #         squeak_hash.hex(),
-    #     ))
-    #     self.squeak_db.set_squeak_unliked(
-    #         squeak_hash,
-    #     )
+    def unlike_squeak(self, squeak_hash: bytes):
+        logger.info("Unliking squeak: {}".format(
+            squeak_hash.hex(),
+        ))
+        self.squeak_db.set_squeak_unliked(
+            squeak_hash,
+        )
 
     # def lookup_squeaks(
     #         self,

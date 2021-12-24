@@ -644,20 +644,22 @@ class SqueakController:
         return self.squeak_store.delete_old_squeaks()
 
     def like_squeak(self, squeak_hash: bytes):
-        logger.info("Liking squeak: {}".format(
-            squeak_hash.hex(),
-        ))
-        self.squeak_db.set_squeak_liked(
-            squeak_hash,
-        )
+        # logger.info("Liking squeak: {}".format(
+        #     squeak_hash.hex(),
+        # ))
+        # self.squeak_db.set_squeak_liked(
+        #     squeak_hash,
+        # )
+        self.squeak_store.like_squeak(squeak_hash)
 
     def unlike_squeak(self, squeak_hash: bytes):
-        logger.info("Unliking squeak: {}".format(
-            squeak_hash.hex(),
-        ))
-        self.squeak_db.set_squeak_unliked(
-            squeak_hash,
-        )
+        # logger.info("Unliking squeak: {}".format(
+        #     squeak_hash.hex(),
+        # ))
+        # self.squeak_db.set_squeak_unliked(
+        #     squeak_hash,
+        # )
+        return self.squeak_store.unlike_squeak(squeak_hash)
 
     def connect_peer(self, peer_address: PeerAddress) -> None:
         logger.info("Connect to peer: {}".format(
