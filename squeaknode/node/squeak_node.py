@@ -269,7 +269,8 @@ class SqueakNode:
 
     def initialize_new_secret_key_worker(self):
         self.new_secret_key_worker = UpdateSubscribedSecretKeysWorker(
-            self.squeak_controller,
+            self.squeak_store,
+            self.network_manager,
         )
 
     def initialize_new_follow_worker(self):

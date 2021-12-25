@@ -30,9 +30,6 @@ from squeak.core import CSqueak
 from squeak.core.signing import SqueakPrivateKey
 from squeak.core.signing import SqueakPublicKey
 from squeak.messages import msg_getdata
-from squeak.messages import msg_inv
-from squeak.messages import MSG_SECRET_KEY
-from squeak.messages import MSG_SQUEAK
 from squeak.messages import MsgSerializable
 from squeak.net import CInterested
 from squeak.net import CInv
@@ -803,35 +800,35 @@ class SqueakController:
     def get_default_peer_port(self) -> int:
         return squeak.params.params.DEFAULT_PORT
 
-    def forward_squeak(self, squeak):
-        logger.debug("Forward new squeak: {!r}".format(
-            get_hash(squeak).hex(),
-        ))
-        for peer in self.network_manager.get_connected_peers():
-            if peer.is_remote_subscribed(squeak):
-                logger.debug("Forwarding to peer: {}".format(
-                    peer,
-                ))
-                squeak_hash = get_hash(squeak)
-                inv = CInv(type=MSG_SQUEAK, hash=squeak_hash)
-                inv_msg = msg_inv(inv=[inv])
-                peer.send_msg(inv_msg)
-        logger.debug("Finished checking peers to forward.")
+    # def forward_squeak(self, squeak):
+    #     logger.debug("Forward new squeak: {!r}".format(
+    #         get_hash(squeak).hex(),
+    #     ))
+    #     for peer in self.network_manager.get_connected_peers():
+    #         if peer.is_remote_subscribed(squeak):
+    #             logger.debug("Forwarding to peer: {}".format(
+    #                 peer,
+    #             ))
+    #             squeak_hash = get_hash(squeak)
+    #             inv = CInv(type=MSG_SQUEAK, hash=squeak_hash)
+    #             inv_msg = msg_inv(inv=[inv])
+    #             peer.send_msg(inv_msg)
+    #     logger.debug("Finished checking peers to forward.")
 
-    def forward_secret_key(self, squeak):
-        logger.debug("Forward new secret key for hash: {!r}".format(
-            get_hash(squeak).hex(),
-        ))
-        for peer in self.network_manager.get_connected_peers():
-            if peer.is_remote_subscribed(squeak):
-                logger.debug("Forwarding to peer: {}".format(
-                    peer,
-                ))
-                squeak_hash = get_hash(squeak)
-                inv = CInv(type=MSG_SECRET_KEY, hash=squeak_hash)
-                inv_msg = msg_inv(inv=[inv])
-                peer.send_msg(inv_msg)
-        logger.debug("Finished checking peers to forward.")
+    # def forward_secret_key(self, squeak):
+    #     logger.debug("Forward new secret key for hash: {!r}".format(
+    #         get_hash(squeak).hex(),
+    #     ))
+    #     for peer in self.network_manager.get_connected_peers():
+    #         if peer.is_remote_subscribed(squeak):
+    #             logger.debug("Forwarding to peer: {}".format(
+    #                 peer,
+    #             ))
+    #             squeak_hash = get_hash(squeak)
+    #             inv = CInv(type=MSG_SECRET_KEY, hash=squeak_hash)
+    #             inv_msg = msg_inv(inv=[inv])
+    #             peer.send_msg(inv_msg)
+    #     logger.debug("Finished checking peers to forward.")
 
     def set_sell_price_msat(self, sell_price_msat: int) -> None:
         self.node_settings.set_sell_price_msat(sell_price_msat)
