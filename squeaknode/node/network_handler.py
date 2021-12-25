@@ -70,6 +70,11 @@ class NetworkHandler:
     def get_squeak_secret_key(self, squeak_hash: bytes) -> Optional[bytes]:
         return self.squeak_store.get_squeak_secret_key(squeak_hash)
 
+    def get_unknown_invs(self, invs):
+        unknown_squeak_invs = self.get_unknown_squeaks(invs)
+        unknown_secret_key_invs = self.get_unknown_secret_keys(invs)
+        return unknown_squeak_invs + unknown_secret_key_invs
+
     def get_unknown_squeaks(self, invs):
         return [
             inv for inv in invs
