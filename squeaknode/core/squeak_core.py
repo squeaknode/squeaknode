@@ -361,15 +361,16 @@ class SqueakCore:
                         payment_hash = invoice.r_hash
                         settle_index = invoice.settle_index
                         sent_offer = get_sent_offer_fn(payment_hash)
-                        yield ReceivedPayment(
-                            received_payment_id=None,
-                            created_time_ms=None,
-                            squeak_hash=sent_offer.squeak_hash,
-                            payment_hash=sent_offer.payment_hash,
-                            price_msat=sent_offer.price_msat,
-                            settle_index=settle_index,
-                            peer_address=sent_offer.peer_address,
-                        )
+                        if sent_offer is not None:
+                            yield ReceivedPayment(
+                                received_payment_id=None,
+                                created_time_ms=None,
+                                squeak_hash=sent_offer.squeak_hash,
+                                payment_hash=sent_offer.payment_hash,
+                                price_msat=sent_offer.price_msat,
+                                settle_index=settle_index,
+                                peer_address=sent_offer.peer_address,
+                            )
             except grpc.RpcError as e:
                 if e.code() != grpc.StatusCode.CANCELLED:
                     raise InvoiceSubscriptionError()
