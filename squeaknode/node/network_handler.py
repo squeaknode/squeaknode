@@ -26,6 +26,8 @@ from typing import Optional
 from squeak.core import CSqueak
 from squeak.core.signing import SqueakPublicKey
 from squeak.messages import msg_getdata
+from squeak.messages import MSG_SECRET_KEY
+from squeak.messages import MSG_SQUEAK
 from squeak.messages import MsgSerializable
 from squeak.net import CInv
 from squeak.net import CSqueakLocator
@@ -67,6 +69,26 @@ class NetworkHandler:
 
     def get_squeak_secret_key(self, squeak_hash: bytes) -> Optional[bytes]:
         return self.squeak_store.get_squeak_secret_key(squeak_hash)
+
+    def get_unknown_invs(self, invs):
+        unknown_squeak_invs = self.get_unknown_squeaks(invs)
+        unknown_secret_key_invs = self.get_unknown_secret_keys(invs)
+        return unknown_squeak_invs + unknown_secret_key_invs
+
+    def get_unknown_squeaks(self, invs):
+        return [
+            inv for inv in invs
+            if inv.type == MSG_SQUEAK
+            and self.get_squeak(inv.hash) is None
+        ]
+
+    def get_unknown_secret_keys(self, invs):
+        return [
+            inv for inv in invs
+            if inv.type == MSG_SECRET_KEY
+            and self.get_squeak(inv.hash) is not None
+            and self.get_squeak_secret_key(inv.hash) is None
+        ]
 
     def save_squeak(self, squeak: CSqueak) -> Optional[bytes]:
         return self.squeak_store.save_squeak(squeak)

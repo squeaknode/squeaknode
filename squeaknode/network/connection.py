@@ -34,6 +34,7 @@ from squeak.messages import msg_pong
 from squeak.messages import MSG_SECRET_KEY
 from squeak.messages import MSG_SQUEAK
 from squeak.messages import msg_squeak
+from squeak.messages import MsgSerializable
 from squeak.net import CInterested
 from squeak.net import CInv
 
@@ -183,34 +184,16 @@ class Connection(object):
 
     def handle_inv(self, msg):
         invs = msg.inv
-        unknown_squeak_invs = [
-            inv for inv in invs
-            if inv.type == MSG_SQUEAK
-            and self.network_handler.get_squeak(inv.hash) is None
-        ]
-        unknown_secret_key_invs = [
-            inv for inv in invs
-            if inv.type == MSG_SECRET_KEY
-            and self.network_handler.get_squeak(inv.hash) is not None
-            and self.network_handler.get_squeak_secret_key(inv.hash) is None
-        ]
-        unknown_invs = unknown_squeak_invs + unknown_secret_key_invs
+        unknown_invs = self.network_handler.get_unknown_invs(invs)
         if unknown_invs:
             getdata_msg = msg_getdata(inv=unknown_invs)
             self.peer.send_msg(getdata_msg)
 
     def handle_getdata(self, msg):
         invs = msg.inv
-        not_found = []
         for inv in invs:
             reply_msg = self._get_inv_reply(inv)
-            if reply_msg is not None:
-                self.peer.send_msg(reply_msg)
-            else:
-                not_found.append(inv)
-        if not_found:
-            notfound_msg = msg_notfound(inv=not_found)
-            self.peer.send_msg(notfound_msg)
+            self.peer.send_msg(reply_msg)
 
     def handle_notfound(self, msg):
         pass
@@ -326,24 +309,27 @@ class Connection(object):
             reply_to_hash=reply_to_hash,
         )
 
-    def _get_inv_reply(self, inv):
+    def _get_inv_reply(self, inv) -> MsgSerializable:
         if inv.type == MSG_SQUEAK:
             return self._get_inv_reply_for_squeak(inv)
         if inv.type == MSG_SECRET_KEY:
             return self._get_inv_reply_for_secret_key(inv)
+        raise Exception("Uknown inv type.")
 
-    def _get_inv_reply_for_squeak(self, inv):
+    def _get_inv_reply_for_squeak(self, inv) -> MsgSerializable:
         squeak = self.network_handler.get_squeak(inv.hash)
         if squeak is not None:
             return msg_squeak(squeak=squeak)
+        else:
+            return msg_notfound(inv=[inv])
 
-    def _get_inv_reply_for_secret_key(self, inv):
+    def _get_inv_reply_for_secret_key(self, inv) -> MsgSerializable:
         resp = self.network_handler.get_secret_key_reply(
             inv.hash,
             self.peer.remote_address,
         )
         if resp is None:
-            return None
+            return msg_notfound(inv=[inv])
         return resp.get_msg()
 
 
