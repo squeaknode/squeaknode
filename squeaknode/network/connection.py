@@ -21,7 +21,9 @@
 # SOFTWARE.
 import logging
 import threading
+from typing import Optional
 
+from squeak.core import CSqueak
 from squeak.messages import msg_addr
 from squeak.messages import msg_getaddr
 from squeak.messages import msg_getdata
@@ -36,8 +38,8 @@ from squeak.net import CInterested
 from squeak.net import CInv
 
 from squeaknode.core.crypto import generate_ping_nonce
+from squeaknode.core.interests import squeak_matches_interest
 from squeaknode.core.offer import Offer
-from squeaknode.network.download_handler import DownloadHandler
 from squeaknode.network.peer import Peer
 from squeaknode.node.network_handler import NetworkHandler
 
@@ -61,7 +63,6 @@ class Connection(object):
         self.handshake_timer = HandshakeTimer(self)
         self.ping_timer = PingTimer(self)
         self.pong_timer = PongTimer(self)
-        self.download_handler = DownloadHandler(self.network_handler)
 
     def handshake(self):
         """Do a handshake with a peer.
@@ -219,7 +220,46 @@ class Connection(object):
 
     def handle_squeak(self, msg):
         squeak = msg.squeak
-        self.download_handler.handle_squeak(squeak)
+        # self.download_handler.handle_squeak(squeak)
+        saved_squeak_hash = self.save_active_download_squeak(squeak)
+        if saved_squeak_hash is None:
+            saved_squeak_hash = self.save_followed_squeak(squeak)
+        if saved_squeak_hash is not None:
+            self.network_handler.request_offers(saved_squeak_hash)
+
+    def save_active_download_squeak(self, squeak: CSqueak) -> Optional[bytes]:
+        """Save the given squeak as a result of an active download.
+
+        Returns:
+          bytes: the hash of the saved squeak.
+        """
+        counter = self.network_handler.get_download_squeak_counter(squeak)
+        if counter is None:
+            return None
+        saved_squeak_hash = self.network_handler.save_squeak(squeak)
+        if saved_squeak_hash is None:
+            return None
+        counter.increment()
+        return saved_squeak_hash
+
+    def save_followed_squeak(self, squeak: CSqueak) -> Optional[bytes]:
+        """Save the given squeak because it matches the followed
+        interest criteria.
+
+        Returns:
+          bytes: the hash of the saved squeak.
+        """
+        if not self.squeak_matches_interest(squeak):
+            return None
+        # TODO: catch exception if save_squeak fails (because of rate limit, for example).
+        return self.network_handler.save_squeak(squeak)
+
+    def squeak_matches_interest(self, squeak: CSqueak) -> bool:
+        locator = self.network_handler.get_interested_locator()
+        for interest in locator.vInterested:
+            if squeak_matches_interest(squeak, interest):
+                return True
+        return False
 
     def handle_offer(self, msg):
         offer = Offer(
@@ -229,10 +269,19 @@ class Connection(object):
             host=msg.host.decode('utf-8'),
             port=msg.port,
         )
-        self.download_handler.handle_offer(
+        # self.download_handler.handle_offer(
+        #     offer,
+        #     self.peer.remote_address,
+        # )
+        received_offer_id = self.network_handler.save_received_offer(
             offer,
             self.peer.remote_address,
         )
+        if received_offer_id is None:
+            return
+        counter = self.network_handler.get_download_offer_counter(offer)
+        if counter is not None:
+            counter.increment()
 
     def handle_secret_key(self, msg):
         self.network_handler.unlock_squeak(
