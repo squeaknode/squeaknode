@@ -738,9 +738,9 @@ class SqueakController:
         # yield from self.new_follow_listener.yield_items(stopped)
         yield from self.squeak_store.subscribe_follows(stopped)
 
-    def update_subscriptions(self):
-        locator = self.get_interested_locator()
-        self.network_manager.update_local_subscriptions(locator)
+    # def update_subscriptions(self):
+    #     locator = self.get_interested_locator()
+    #     self.network_manager.update_local_subscriptions(locator)
 
     # def create_update_subscriptions_event(self):
     #     self.new_follow_listener.handle_new_item(UpdateSubscriptionsEvent())

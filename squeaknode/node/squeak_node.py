@@ -275,12 +275,14 @@ class SqueakNode:
 
     def initialize_new_follow_worker(self):
         self.new_follow_worker = UpdateFollowsWorker(
-            self.squeak_controller,
+            self.squeak_store,
+            self.network_manager,
         )
 
     def initialize_peer_subscription_update_worker(self):
         self.new_bitcoin_block_worker = PeerSubscriptionUpdateWorker(
-            self.squeak_controller,
+            self.squeak_store,
+            self.network_manager,
             self.bitcoin_block_subscription_client,
         )
 
