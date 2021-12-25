@@ -176,7 +176,7 @@ export default function SqueakAddressPage() {
         <CreateContactProfileDialog
           open={createContactProfileDialogOpen}
           handleClose={handleCloseCreateContactProfileDialog}
-          initialAddress={pubkey}
+          initialPubkey={pubkey}
         />
       </>
     );
