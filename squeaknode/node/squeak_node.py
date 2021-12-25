@@ -211,11 +211,8 @@ class SqueakNode:
     def initialize_network_handler(self):
         self.network_handler = NetworkHandler(
             self.squeak_store,
-            self.squeak_core,
-            self.payment_processor,
             self.network_manager,
             self.download_manager,
-            self.twitter_forwarder,
             self.node_settings,
             self.config,
         )

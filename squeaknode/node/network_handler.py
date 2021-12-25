@@ -48,20 +48,14 @@ class NetworkHandler:
     def __init__(
         self,
         squeak_store: SqueakStore,
-        squeak_core,
-        payment_processor,
         network_manager,
         download_manager,
-        tweet_forwarder,
         node_settings,
         config,
     ):
         self.squeak_store = squeak_store
-        self.squeak_core = squeak_core
-        self.payment_processor = payment_processor
         self.network_manager = network_manager
         self.active_download_manager = download_manager
-        self.tweet_forwarder = tweet_forwarder
         self.node_settings = node_settings
         self.config = config
 
