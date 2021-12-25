@@ -22,7 +22,8 @@
 import logging
 import threading
 
-from squeaknode.node.squeak_controller import SqueakController
+from squeaknode.network.network_manager import NetworkManager
+from squeaknode.node.squeak_store import SqueakStore
 
 
 logger = logging.getLogger(__name__)
@@ -30,8 +31,13 @@ logger = logging.getLogger(__name__)
 
 class UpdateFollowsWorker:
 
-    def __init__(self, squeak_controller: SqueakController):
-        self.squeak_controller = squeak_controller
+    def __init__(
+            self,
+            squeak_store: SqueakStore,
+            network_manager: NetworkManager,
+    ):
+        self.squeak_store = squeak_store
+        self.network_manager = network_manager
         self.stopped = threading.Event()
 
     def start_running(self):
@@ -46,8 +52,9 @@ class UpdateFollowsWorker:
 
     def handle_new_follow(self):
         logger.debug("Starting UpdateFollowsWorker...")
-        for _ in self.squeak_controller.subscribe_follows(
+        for _ in self.squeak_store.subscribe_follows(
                 self.stopped,
         ):
             logger.debug("Handling update subscriptions event")
-            self.squeak_controller.update_subscriptions()
+            locator = self.squeak_store.get_interested_locator()
+            self.network_manager.update_local_subscriptions(locator)

@@ -39,7 +39,7 @@ from squeaknode.core.crypto import generate_ping_nonce
 from squeaknode.core.offer import Offer
 from squeaknode.network.download_handler import DownloadHandler
 from squeaknode.network.peer import Peer
-from squeaknode.node.squeak_controller import SqueakController
+from squeaknode.node.network_handler import NetworkHandler
 
 
 logger = logging.getLogger(__name__)
@@ -55,13 +55,13 @@ class Connection(object):
     """Handles lifecycle of a connection to a peer.
     """
 
-    def __init__(self, peer: Peer, squeak_controller: SqueakController):
+    def __init__(self, peer: Peer, network_handler: NetworkHandler):
         self.peer = peer
-        self.squeak_controller = squeak_controller
+        self.network_handler = network_handler
         self.handshake_timer = HandshakeTimer(self)
         self.ping_timer = PingTimer(self)
         self.pong_timer = PongTimer(self)
-        self.download_handler = DownloadHandler(self.squeak_controller)
+        self.download_handler = DownloadHandler(self.network_handler)
 
     def handshake(self):
         """Do a handshake with a peer.
@@ -110,7 +110,7 @@ class Connection(object):
         self.ping_timer.start_timer()
 
     def update_subscription(self):
-        locator = self.squeak_controller.get_interested_locator()
+        locator = self.network_handler.get_interested_locator()
         self.peer.update_local_subscription(locator)
 
     def update_addrs(self):
@@ -185,13 +185,13 @@ class Connection(object):
         unknown_squeak_invs = [
             inv for inv in invs
             if inv.type == MSG_SQUEAK
-            and self.squeak_controller.get_squeak(inv.hash) is None
+            and self.network_handler.get_squeak(inv.hash) is None
         ]
         unknown_secret_key_invs = [
             inv for inv in invs
             if inv.type == MSG_SECRET_KEY
-            and self.squeak_controller.get_squeak(inv.hash) is not None
-            and self.squeak_controller.get_squeak_secret_key(inv.hash) is None
+            and self.network_handler.get_squeak(inv.hash) is not None
+            and self.network_handler.get_squeak_secret_key(inv.hash) is None
         ]
         unknown_invs = unknown_squeak_invs + unknown_secret_key_invs
         if unknown_invs:
@@ -235,7 +235,7 @@ class Connection(object):
         )
 
     def handle_secret_key(self, msg):
-        self.squeak_controller.unlock_squeak(
+        self.network_handler.unlock_squeak(
             msg.hashSqk,
             msg.secretKey,
         )
@@ -264,7 +264,7 @@ class Connection(object):
         min_block = interest.nMinBlockHeight if interest.nMinBlockHeight != -1 else None
         max_block = interest.nMaxBlockHeight if interest.nMaxBlockHeight != -1 else None
         reply_to_hash = interest.hashReplySqk if interest.hashReplySqk != EMPTY_HASH else None
-        return self.squeak_controller.lookup_squeaks(
+        return self.network_handler.lookup_squeaks(
             public_keys=interest.pubkeys,
             min_block=min_block,
             max_block=max_block,
@@ -275,7 +275,7 @@ class Connection(object):
         min_block = interest.nMinBlockHeight if interest.nMinBlockHeight != -1 else None
         max_block = interest.nMaxBlockHeight if interest.nMaxBlockHeight != -1 else None
         reply_to_hash = interest.hashReplySqk if interest.hashReplySqk != EMPTY_HASH else None
-        return self.squeak_controller.lookup_secret_keys(
+        return self.network_handler.lookup_secret_keys(
             public_keys=interest.pubkeys,
             min_block=min_block,
             max_block=max_block,
@@ -289,12 +289,12 @@ class Connection(object):
             return self._get_inv_reply_for_secret_key(inv)
 
     def _get_inv_reply_for_squeak(self, inv):
-        squeak = self.squeak_controller.get_squeak(inv.hash)
+        squeak = self.network_handler.get_squeak(inv.hash)
         if squeak is not None:
             return msg_squeak(squeak=squeak)
 
     def _get_inv_reply_for_secret_key(self, inv):
-        resp = self.squeak_controller.get_secret_key_reply(
+        resp = self.network_handler.get_secret_key_reply(
             inv.hash,
             self.peer.remote_address,
         )

@@ -22,7 +22,6 @@
 import logging
 import threading
 
-from squeaknode.node.squeak_controller import SqueakController
 
 logger = logging.getLogger(__name__)
 
@@ -32,10 +31,10 @@ class ProcessForwardTweetsWorker:
         self.twitter_forwarder = twitter_forwarder
         self.stopped = threading.Event()
 
-    def start_running(self, squeak_controller: SqueakController):
+    def start_running(self):
         threading.Thread(
             target=self.forward_tweets,
-            args=(squeak_controller,),
+            args=(),
             daemon=True,
             name="process_forward_tweets_thread",
         ).start()
@@ -43,9 +42,9 @@ class ProcessForwardTweetsWorker:
     def stop_running(self):
         self.stopped.set()
 
-    def forward_tweets(self, squeak_controller: SqueakController):
+    def forward_tweets(self):
         logger.info("Starting ProcessForwardTweetsWorker...")
-        self.twitter_forwarder.start_processing(squeak_controller)
+        self.twitter_forwarder.start_processing()
         self.stopped.wait()
         logger.info("Stopping ProcessForwardTweetsWorker...")
         self.twitter_forwarder.stop_processing()
