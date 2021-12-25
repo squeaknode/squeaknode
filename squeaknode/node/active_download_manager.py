@@ -155,14 +155,13 @@ class OffersDownload(ActiveDownload):
 
 class ActiveDownloadManager:
 
-    def __init__(self):
+    def __init__(self, network_manager):
+        self.network_manager = network_manager
         self.downloads: Dict[str, ActiveDownload] = dict()
         self.executor = None
-        self.broadcast_fn = None
 
-    def start(self, broadcast_fn):
+    def start(self):
         logger.info("Starting Download Manager...")
-        self.broadcast_fn = broadcast_fn
         self.executor = ThreadPoolExecutor(max_workers=10)
 
     def stop(self):
@@ -190,7 +189,8 @@ class ActiveDownloadManager:
             del self.downloads[name_key]
 
     def download_task(self, download: ActiveDownload) -> DownloadResult:
-        download.initiate_download(self.broadcast_fn)
+        broadcast_fn = self.network_manager.broadcast_msg
+        download.initiate_download(broadcast_fn)
         download.wait_for_complete(DOWNLOAD_TIMEOUT_S)
         return download.get_result()
 

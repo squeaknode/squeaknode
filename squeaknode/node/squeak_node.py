@@ -103,9 +103,7 @@ class SqueakNode:
         self.new_secret_key_worker.start_running()
         self.new_follow_worker.start_running()
         self.new_bitcoin_block_worker.start_running()
-        self.download_manager.start(
-            self.squeak_controller.broadcast_msg,
-        )
+        self.download_manager.start()
 
     def stop_running(self):
         self.download_manager.stop()
@@ -288,4 +286,6 @@ class SqueakNode:
         )
 
     def initialize_download_manager(self):
-        self.download_manager = ActiveDownloadManager()
+        self.download_manager = ActiveDownloadManager(
+            self.network_manager,
+        )
