@@ -21,6 +21,7 @@
 # SOFTWARE.
 import logging
 import threading
+from typing import Optional
 
 from squeaknode.core.exception import InvoiceSubscriptionError
 from squeaknode.core.received_payment import ReceivedPayment
@@ -113,7 +114,7 @@ class PaymentProcessorTask:
     def get_latest_settle_index(self) -> int:
         return self.squeak_db.get_latest_settle_index() or 0
 
-    def get_sent_offer_for_payment_hash(self, payment_hash: bytes) -> SentOffer:
+    def get_sent_offer_for_payment_hash(self, payment_hash: bytes) -> Optional[SentOffer]:
         return self.squeak_db.get_sent_offer_by_payment_hash(
             payment_hash
         )
