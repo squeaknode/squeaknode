@@ -61,10 +61,10 @@ class NetworkManager(object):
         self.tor_proxy_port = self.config.tor.proxy_port
         self.connection_manager = ConnectionManager(self.local_address)
 
-    def start(self, squeak_controller):
+    def start(self, network_handler):
         peer_handler = PeerHandler(
             self.connection_manager,
-            squeak_controller,
+            network_handler,
         )
         self.peer_server = PeerServer(
             peer_handler,

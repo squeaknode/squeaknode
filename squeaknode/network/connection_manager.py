@@ -33,7 +33,7 @@ from squeaknode.network.connection import Connection
 from squeaknode.network.peer import Peer
 from squeaknode.network.peer_client import ConnectPeerResult
 from squeaknode.node.listener_subscription_client import EventListener
-from squeaknode.node.squeak_controller import SqueakController
+from squeaknode.node.network_handler import NetworkHandler
 
 
 MIN_PEERS = 5
@@ -62,7 +62,7 @@ class ConnectionManager(object):
             peer_socket: socket.socket,
             address: PeerAddress,
             outgoing: bool,
-            squeak_controller: SqueakController,
+            network_handler: NetworkHandler,
             result_queue: queue.Queue,
     ):
         try:
@@ -73,7 +73,7 @@ class ConnectionManager(object):
                 outgoing,
                 self.single_peer_changed_listener,
             )
-            connection = Connection(peer, squeak_controller)
+            connection = Connection(peer, network_handler)
             logger.debug("Doing handshake.")
             connection.handshake()
             logger.debug("Adding peer.")

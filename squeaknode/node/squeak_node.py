@@ -36,6 +36,7 @@ from squeaknode.db.squeak_db import SqueakDb
 from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
 from squeaknode.network.network_manager import NetworkManager
 from squeaknode.node.active_download_manager import ActiveDownloadManager
+from squeaknode.node.network_handler import NetworkHandler
 from squeaknode.node.node_settings import NodeSettings
 from squeaknode.node.payment_processor import PaymentProcessor
 from squeaknode.node.peer_connection_worker import PeerConnectionWorker
@@ -73,6 +74,7 @@ class SqueakNode:
         self.initialize_network_manager()
         self.initialize_download_manager()
         self.initialize_squeak_controller()
+        self.initialize_network_handler()
         self.initialize_admin_handler()
         self.initialize_admin_rpc_server()
         self.initialize_admin_web_server()
@@ -89,7 +91,7 @@ class SqueakNode:
     def start_running(self):
         self._initialize()
 
-        self.network_manager.start(self.squeak_controller)
+        self.network_manager.start(self.network_handler)
         if self.config.rpc.enabled:
             self.admin_rpc_server.start()
         if self.config.webadmin.enabled:
@@ -196,6 +198,18 @@ class SqueakNode:
 
     def initialize_squeak_controller(self):
         self.squeak_controller = SqueakController(
+            self.squeak_store,
+            self.squeak_core,
+            self.payment_processor,
+            self.network_manager,
+            self.download_manager,
+            self.twitter_forwarder,
+            self.node_settings,
+            self.config,
+        )
+
+    def initialize_network_handler(self):
+        self.network_handler = NetworkHandler(
             self.squeak_store,
             self.squeak_core,
             self.payment_processor,

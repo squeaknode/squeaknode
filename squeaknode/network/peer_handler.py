@@ -38,10 +38,10 @@ class PeerHandler():
     def __init__(
             self,
             connection_manager,
-            squeak_controller,
+            network_handler,
     ):
         self.connection_manager = connection_manager
-        self.squeak_controller = squeak_controller
+        self.network_handler = network_handler
 
     def handle_connection(
             self,
@@ -81,7 +81,7 @@ class PeerHandler():
                 peer_socket,
                 address,
                 outgoing,
-                self.squeak_controller,
+                self.network_handler,
                 result_queue,
         ) as connection:
             connection.handle_connection()

@@ -33,11 +33,9 @@ from squeak.messages import msg_getdata
 from squeak.messages import MsgSerializable
 from squeak.net import CInterested
 from squeak.net import CInv
-from squeak.net import CSqueakLocator
 
 from squeaknode.core.connected_peer import ConnectedPeer
 from squeaknode.core.download_result import DownloadResult
-from squeaknode.core.lightning_address import LightningAddressHostPort
 from squeaknode.core.offer import Offer
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.received_offer import ReceivedOffer
@@ -50,12 +48,7 @@ from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.squeaks import get_hash
 from squeaknode.core.twitter_account_entry import TwitterAccountEntry
-from squeaknode.node.active_download_manager import ActiveDownload
-from squeaknode.node.downloaded_object import DownloadedOffer
-from squeaknode.node.downloaded_object import DownloadedSqueak
-from squeaknode.node.price_policy import PricePolicy
 from squeaknode.node.received_payments_subscription_client import ReceivedPaymentsSubscriptionClient
-from squeaknode.node.secret_key_reply import SecretKeyReply
 from squeaknode.node.squeak_store import SqueakStore
 
 
@@ -102,34 +95,34 @@ class SqueakController:
     def delete_squeak(self, squeak_hash: bytes) -> None:
         self.squeak_store.delete_squeak(squeak_hash)
 
-    def get_download_squeak_counter(self, squeak: CSqueak) -> Optional[ActiveDownload]:
-        downloaded_squeak = DownloadedSqueak(squeak)
-        return self.active_download_manager.lookup_counter(downloaded_squeak)
+    # def get_download_squeak_counter(self, squeak: CSqueak) -> Optional[ActiveDownload]:
+    #     downloaded_squeak = DownloadedSqueak(squeak)
+    #     return self.active_download_manager.lookup_counter(downloaded_squeak)
 
-    def get_download_offer_counter(self, offer: Offer) -> Optional[ActiveDownload]:
-        downloaded_offer = DownloadedOffer(offer)
-        return self.active_download_manager.lookup_counter(downloaded_offer)
+    # def get_download_offer_counter(self, offer: Offer) -> Optional[ActiveDownload]:
+    #     downloaded_offer = DownloadedOffer(offer)
+    #     return self.active_download_manager.lookup_counter(downloaded_offer)
 
-    def get_secret_key_reply(self, squeak_hash: bytes, peer_address: PeerAddress) -> Optional[SecretKeyReply]:
-        squeak = self.get_squeak(squeak_hash)
-        price_msat = self.get_price_for_squeak(squeak, peer_address)
-        lnd_external_address: Optional[LightningAddressHostPort] = None
-        if self.config.lnd.external_host:
-            lnd_external_address = LightningAddressHostPort(
-                host=self.config.lnd.external_host,
-                port=self.config.lnd.port,
-            )
-        return self.squeak_store.get_secret_key_reply(
-            squeak_hash,
-            lnd_external_address,
-            peer_address,
-            price_msat,
-        )
+    # def get_secret_key_reply(self, squeak_hash: bytes, peer_address: PeerAddress) -> Optional[SecretKeyReply]:
+    #     squeak = self.get_squeak(squeak_hash)
+    #     price_msat = self.get_price_for_squeak(squeak, peer_address)
+    #     lnd_external_address: Optional[LightningAddressHostPort] = None
+    #     if self.config.lnd.external_host:
+    #         lnd_external_address = LightningAddressHostPort(
+    #             host=self.config.lnd.external_host,
+    #             port=self.config.lnd.port,
+    #         )
+    #     return self.squeak_store.get_secret_key_reply(
+    #         squeak_hash,
+    #         lnd_external_address,
+    #         peer_address,
+    #         price_msat,
+    #     )
 
-    def get_price_for_squeak(self, squeak: CSqueak, peer_address: PeerAddress) -> int:
-        price_policy = PricePolicy(
-            self.squeak_store, self.config, self.node_settings)
-        return price_policy.get_price(squeak, peer_address)
+    # def get_price_for_squeak(self, squeak: CSqueak, peer_address: PeerAddress) -> int:
+    #     price_policy = PricePolicy(
+    #         self.squeak_store, self.config, self.node_settings)
+    #     return price_policy.get_price(squeak, peer_address)
 
     def create_signing_profile(self, profile_name: str) -> int:
         # squeak_profile = create_signing_profile(
@@ -569,65 +562,65 @@ class SqueakController:
             ) for peer in peers
         ]
 
-    def lookup_squeaks(
-            self,
-            public_keys: List[SqueakPublicKey],
-            min_block: Optional[int],
-            max_block: Optional[int],
-            reply_to_hash: Optional[bytes],
-    ) -> List[bytes]:
-        # return self.squeak_db.lookup_squeaks(
-        #     public_keys,
-        #     min_block,
-        #     max_block,
-        #     reply_to_hash,
-        #     include_locked=True,
-        # )
-        return self.squeak_store.lookup_squeaks(
-            public_keys,
-            min_block,
-            max_block,
-            reply_to_hash,
-        )
+    # def lookup_squeaks(
+    #         self,
+    #         public_keys: List[SqueakPublicKey],
+    #         min_block: Optional[int],
+    #         max_block: Optional[int],
+    #         reply_to_hash: Optional[bytes],
+    # ) -> List[bytes]:
+    #     # return self.squeak_db.lookup_squeaks(
+    #     #     public_keys,
+    #     #     min_block,
+    #     #     max_block,
+    #     #     reply_to_hash,
+    #     #     include_locked=True,
+    #     # )
+    #     return self.squeak_store.lookup_squeaks(
+    #         public_keys,
+    #         min_block,
+    #         max_block,
+    #         reply_to_hash,
+    #     )
 
-    def lookup_secret_keys(
-            self,
-            public_keys: List[SqueakPublicKey],
-            min_block: Optional[int],
-            max_block: Optional[int],
-            reply_to_hash: Optional[bytes],
-    ) -> List[bytes]:
-        # return self.squeak_db.lookup_squeaks(
-        #     public_keys,
-        #     min_block,
-        #     max_block,
-        #     reply_to_hash,
-        # )
-        return self.squeak_store.lookup_secret_keys(
-            public_keys,
-            min_block,
-            max_block,
-            reply_to_hash,
-        )
+    # def lookup_secret_keys(
+    #         self,
+    #         public_keys: List[SqueakPublicKey],
+    #         min_block: Optional[int],
+    #         max_block: Optional[int],
+    #         reply_to_hash: Optional[bytes],
+    # ) -> List[bytes]:
+    #     # return self.squeak_db.lookup_squeaks(
+    #     #     public_keys,
+    #     #     min_block,
+    #     #     max_block,
+    #     #     reply_to_hash,
+    #     # )
+    #     return self.squeak_store.lookup_secret_keys(
+    #         public_keys,
+    #         min_block,
+    #         max_block,
+    #         reply_to_hash,
+    #     )
 
-    def get_interested_locator(self) -> CSqueakLocator:
-        # block_range = self.get_block_range()
-        # followed_public_keys = self.get_followed_public_keys()
-        # if len(followed_public_keys) == 0:
-        #     return CSqueakLocator(
-        #         vInterested=[],
-        #     )
-        # interests = [
-        #     CInterested(
-        #         pubkeys=followed_public_keys,
-        #         nMinBlockHeight=block_range.min_block,
-        #         nMaxBlockHeight=block_range.max_block,
-        #     )
-        # ]
-        # return CSqueakLocator(
-        #     vInterested=interests,
-        # )
-        return self.squeak_store.get_interested_locator()
+    # def get_interested_locator(self) -> CSqueakLocator:
+    #     # block_range = self.get_block_range()
+    #     # followed_public_keys = self.get_followed_public_keys()
+    #     # if len(followed_public_keys) == 0:
+    #     #     return CSqueakLocator(
+    #     #         vInterested=[],
+    #     #     )
+    #     # interests = [
+    #     #     CInterested(
+    #     #         pubkeys=followed_public_keys,
+    #     #         nMinBlockHeight=block_range.min_block,
+    #     #         nMaxBlockHeight=block_range.max_block,
+    #     #     )
+    #     # ]
+    #     # return CSqueakLocator(
+    #     #     vInterested=interests,
+    #     # )
+    #     return self.squeak_store.get_interested_locator()
 
     def download_squeaks(
             self,
