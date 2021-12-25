@@ -534,12 +534,12 @@ class SqueakController:
         ))
         self.network_manager.connect_peer_sync(peer_address)
 
-    def connect_saved_peers(self) -> None:
-        peers = self.get_autoconnect_peers()
-        for peer in peers:
-            self.network_manager.connect_peer_async(
-                peer.address,
-            )
+    # def connect_saved_peers(self) -> None:
+    #     peers = self.get_autoconnect_peers()
+    #     for peer in peers:
+    #         self.network_manager.connect_peer_async(
+    #             peer.address,
+    #         )
 
     def get_connected_peer(self, peer_address: PeerAddress) -> Optional[ConnectedPeer]:
         peer = self.network_manager.get_connected_peer(peer_address)

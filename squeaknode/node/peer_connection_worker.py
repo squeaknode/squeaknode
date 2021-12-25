@@ -21,8 +21,9 @@
 # SOFTWARE.
 import logging
 
+from squeaknode.network.network_manager import NetworkManager
 from squeaknode.node.periodic_worker import PeriodicWorker
-from squeaknode.node.squeak_controller import SqueakController
+from squeaknode.node.squeak_store import SqueakStore
 
 
 logger = logging.getLogger(__name__)
@@ -31,14 +32,20 @@ logger = logging.getLogger(__name__)
 class PeerConnectionWorker(PeriodicWorker):
     def __init__(
         self,
-        squeak_controller: SqueakController,
+        squeak_store: SqueakStore,
+        network_manager: NetworkManager,
         connect_interval_s: int,
     ):
-        self.squeak_controller = squeak_controller
+        self.squeak_store = squeak_store
+        self.network_manager = network_manager
         self.connect_interval_s = connect_interval_s
 
     def work_fn(self):
-        self.squeak_controller.connect_saved_peers()
+        peers = self.squeak_store.get_autoconnect_peers()
+        for peer in peers:
+            self.network_manager.connect_peer_async(
+                peer.address,
+            )
 
     def get_interval_s(self):
         return self.connect_interval_s

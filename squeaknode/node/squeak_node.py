@@ -245,7 +245,8 @@ class SqueakNode:
 
     def initialize_peer_connection_worker(self):
         self.peer_connection_worker = PeerConnectionWorker(
-            self.squeak_controller,
+            self.squeak_store,
+            self.network_manager,
             self.config.node.peer_autoconnect_interval_s,
         )
 
