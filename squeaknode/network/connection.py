@@ -187,16 +187,18 @@ class Connection(object):
         #     if inv.type == MSG_SQUEAK
         #     and self.network_handler.get_squeak(inv.hash) is None
         # ]
-        unknown_squeak_invs = self.network_handler.get_unknown_squeak_invs(
-            msg.invs)
+        unknown_squeak_invs = self.network_handler.get_unknown_squeaks(
+            msg.invs,
+        )
         # unknown_secret_key_invs = [
         #     inv for inv in invs
         #     if inv.type == MSG_SECRET_KEY
         #     and self.network_handler.get_squeak(inv.hash) is not None
         #     and self.network_handler.get_squeak_secret_key(inv.hash) is None
         # ]
-        unknown_secret_key_invs = self.network_handler.get_unknown_secret_key_invs(
-            msg.invs)
+        unknown_secret_key_invs = self.network_handler.get_unknown_secret_keys(
+            msg.invs,
+        )
         unknown_invs = unknown_squeak_invs + unknown_secret_key_invs
         if unknown_invs:
             getdata_msg = msg_getdata(inv=unknown_invs)
