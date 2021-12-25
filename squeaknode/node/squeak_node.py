@@ -257,7 +257,7 @@ class SqueakNode:
 
     def initialize_offer_expiry_worker(self):
         self.offer_expiry_worker = SqueakOfferExpiryWorker(
-            self.squeak_controller,
+            self.squeak_store,
             self.config.node.offer_deletion_interval_s,
         )
 
