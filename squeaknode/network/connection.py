@@ -220,7 +220,6 @@ class Connection(object):
 
     def handle_squeak(self, msg):
         squeak = msg.squeak
-        # self.download_handler.handle_squeak(squeak)
         saved_squeak_hash = self.save_active_download_squeak(squeak)
         if saved_squeak_hash is None:
             saved_squeak_hash = self.save_followed_squeak(squeak)
@@ -269,10 +268,6 @@ class Connection(object):
             host=msg.host.decode('utf-8'),
             port=msg.port,
         )
-        # self.download_handler.handle_offer(
-        #     offer,
-        #     self.peer.remote_address,
-        # )
         received_offer_id = self.network_handler.save_received_offer(
             offer,
             self.peer.remote_address,
