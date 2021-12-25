@@ -175,22 +175,6 @@ def test_save_squeak(squeak_store, squeak_db, squeak_core, block_header, squeak)
 #     assert squeak_store.get_squeak_secret_key(deleted_squeak_hash) is None
 
 
-def test_save_sent_offer(squeak_store, squeak_db, sent_offer):
-    with mock.patch.object(
-            squeak_db,
-            'insert_sent_offer',
-            new_callable=mock.PropertyMock,
-    ) as mock_insert_sent_offer:
-        mock_insert_sent_offer.return_value = 555
-
-        inserted_sent_offer_id = squeak_store.save_sent_offer(sent_offer)
-
-    assert inserted_sent_offer_id == 555
-    print("mock_insert_sent_offer.call_count:")
-    print(mock_insert_sent_offer.call_count)
-    mock_insert_sent_offer.assert_called_once_with(sent_offer)
-
-
 def test_get_sent_offer_already_exists(squeak_store, squeak_db, sent_offer):
     with mock.patch.object(squeak_db, 'get_sent_offer_by_squeak_hash_and_peer', autospec=True) as mock_get_sent_offer_by_squeak_hash_and_peer:
         mock_get_sent_offer_by_squeak_hash_and_peer.return_value = sent_offer

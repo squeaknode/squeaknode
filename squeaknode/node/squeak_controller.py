@@ -95,200 +95,85 @@ class SqueakController:
     def delete_squeak(self, squeak_hash: bytes) -> None:
         self.squeak_store.delete_squeak(squeak_hash)
 
-    # def get_download_squeak_counter(self, squeak: CSqueak) -> Optional[ActiveDownload]:
-    #     downloaded_squeak = DownloadedSqueak(squeak)
-    #     return self.active_download_manager.lookup_counter(downloaded_squeak)
-
-    # def get_download_offer_counter(self, offer: Offer) -> Optional[ActiveDownload]:
-    #     downloaded_offer = DownloadedOffer(offer)
-    #     return self.active_download_manager.lookup_counter(downloaded_offer)
-
-    # def get_secret_key_reply(self, squeak_hash: bytes, peer_address: PeerAddress) -> Optional[SecretKeyReply]:
-    #     squeak = self.get_squeak(squeak_hash)
-    #     price_msat = self.get_price_for_squeak(squeak, peer_address)
-    #     lnd_external_address: Optional[LightningAddressHostPort] = None
-    #     if self.config.lnd.external_host:
-    #         lnd_external_address = LightningAddressHostPort(
-    #             host=self.config.lnd.external_host,
-    #             port=self.config.lnd.port,
-    #         )
-    #     return self.squeak_store.get_secret_key_reply(
-    #         squeak_hash,
-    #         lnd_external_address,
-    #         peer_address,
-    #         price_msat,
-    #     )
-
-    # def get_price_for_squeak(self, squeak: CSqueak, peer_address: PeerAddress) -> int:
-    #     price_policy = PricePolicy(
-    #         self.squeak_store, self.config, self.node_settings)
-    #     return price_policy.get_price(squeak, peer_address)
-
     def create_signing_profile(self, profile_name: str) -> int:
-        # squeak_profile = create_signing_profile(
-        #     profile_name,
-        # )
-        # profile_id = self.squeak_db.insert_profile(squeak_profile)
-        # self.create_update_subscriptions_event()
-        # return profile_id
         return self.squeak_store.create_signing_profile(profile_name)
 
     def import_signing_profile(self, profile_name: str, private_key: SqueakPrivateKey) -> int:
-        # squeak_profile = create_signing_profile(
-        #     profile_name,
-        #     private_key,
-        # )
-        # profile_id = self.squeak_db.insert_profile(squeak_profile)
-        # self.create_update_subscriptions_event()
-        # return profile_id
         return self.squeak_store.import_signing_profile(profile_name, private_key)
 
     def create_contact_profile(self, profile_name: str, public_key: SqueakPublicKey) -> int:
-        # squeak_profile = create_contact_profile(
-        #     profile_name,
-        #     public_key,
-        # )
-        # profile_id = self.squeak_db.insert_profile(squeak_profile)
-        # self.create_update_subscriptions_event()
-        # return profile_id
         return self.squeak_store.create_contact_profile(profile_name, public_key)
 
     def get_profiles(self) -> List[SqueakProfile]:
-        # return self.squeak_db.get_profiles()
         return self.squeak_store.get_profiles()
 
     def get_signing_profiles(self) -> List[SqueakProfile]:
-        # return self.squeak_db.get_signing_profiles()
         return self.squeak_store.get_signing_profiles()
 
     def get_contact_profiles(self) -> List[SqueakProfile]:
-        # return self.squeak_db.get_contact_profiles()
         return self.squeak_store.get_contact_profiles()
 
     def get_squeak_profile(self, profile_id: int) -> Optional[SqueakProfile]:
-        # return self.squeak_db.get_profile(profile_id)
         return self.squeak_store.get_squeak_profile(profile_id)
 
     def get_squeak_profile_by_public_key(self, public_key: SqueakPublicKey) -> Optional[SqueakProfile]:
-        # return self.squeak_db.get_profile_by_public_key(public_key)
         return self.squeak_store.get_squeak_profile_by_public_key(public_key)
 
     def get_squeak_profile_by_name(self, name: str) -> Optional[SqueakProfile]:
-        # return self.squeak_db.get_profile_by_name(name)
         return self.squeak_store.get_squeak_profile_by_name(name)
 
     def set_squeak_profile_following(self, profile_id: int, following: bool) -> None:
-        # self.squeak_db.set_profile_following(profile_id, following)
-        # self.create_update_subscriptions_event()
         return self.squeak_store.set_squeak_profile_following(profile_id, following)
 
     def rename_squeak_profile(self, profile_id: int, profile_name: str) -> None:
-        # self.squeak_db.set_profile_name(profile_id, profile_name)
         return self.squeak_store.rename_squeak_profile(profile_id, profile_name)
 
     def delete_squeak_profile(self, profile_id: int) -> None:
-        # self.squeak_db.delete_profile(profile_id)
-        # self.create_update_subscriptions_event()
         return self.squeak_store.delete_squeak_profile(profile_id)
 
     def set_squeak_profile_image(self, profile_id: int, profile_image: bytes) -> None:
-        # self.squeak_db.set_profile_image(profile_id, profile_image)
         return self.squeak_store.set_squeak_profile_image(profile_id, profile_image)
 
     def clear_squeak_profile_image(self, profile_id: int) -> None:
-        # self.squeak_db.set_profile_image(profile_id, None)
         return self.squeak_store.clear_squeak_profile_image(profile_id)
 
     def get_squeak_profile_private_key(self, profile_id: int) -> bytes:
-        # profile = self.get_squeak_profile(profile_id)
-        # if profile is None:
-        #     raise Exception("Profile with id: {} does not exist.".format(
-        #         profile_id,
-        #     ))
-        # return get_profile_private_key(profile)
         return self.squeak_store.get_squeak_profile_private_key(profile_id)
 
     def create_peer(self, peer_name: str, peer_address: PeerAddress):
-        # squeak_peer = create_saved_peer(
-        #     peer_name,
-        #     peer_address,
-        # )
-        # return self.squeak_db.insert_peer(squeak_peer)
         return self.squeak_store.create_peer(peer_name, peer_address)
 
     def get_peer(self, peer_id: int) -> Optional[SqueakPeer]:
-        # return self.squeak_db.get_peer(peer_id)
         return self.squeak_store.get_peer(peer_id)
 
     def get_peer_by_address(self, peer_address: PeerAddress) -> Optional[SqueakPeer]:
-        # return self.squeak_db.get_peer_by_address(peer_address)
         return self.squeak_store.get_peer_by_address(peer_address)
 
     def get_peers(self):
-        # return self.squeak_db.get_peers()
         return self.squeak_store.get_peers()
 
     def get_autoconnect_peers(self) -> List[SqueakPeer]:
-        # return self.squeak_db.get_autoconnect_peers()
         return self.squeak_store.get_autoconnect_peers()
 
     def set_peer_autoconnect(self, peer_id: int, autoconnect: bool):
-        # self.squeak_db.set_peer_autoconnect(peer_id, autoconnect)
         return self.squeak_store.set_peer_autoconnect(peer_id, autoconnect)
 
     def set_peer_share_for_free(self, peer_id: int, share_for_free: bool):
-        # self.squeak_db.set_peer_share_for_free(peer_id, share_for_free)
         return self.squeak_store.set_peer_share_for_free(peer_id, share_for_free)
 
     def rename_peer(self, peer_id: int, peer_name: str):
-        # self.squeak_db.set_peer_name(peer_id, peer_name)
         return self.squeak_store.rename_peer(peer_id, peer_name)
 
     def delete_peer(self, peer_id: int):
-        # self.squeak_db.delete_peer(peer_id)
         return self.squeak_store.delete_peer(peer_id)
 
     def get_received_offers(self, squeak_hash: bytes) -> List[ReceivedOffer]:
-        # return self.squeak_db.get_received_offers(squeak_hash)
         return self.squeak_store.get_received_offers(squeak_hash)
 
     def get_received_offer(self, received_offer_id: int) -> Optional[ReceivedOffer]:
-        # return self.squeak_db.get_received_offer(
-        #     received_offer_id)
         return self.squeak_store.get_received_offer(received_offer_id)
 
     def pay_offer(self, received_offer_id: int) -> int:
-        # # Get the offer from the database
-        # # received_offer = self.squeak_db.get_received_offer(
-        # #     received_offer_id)
-        # received_offer = self.squeak_store.get_received_offer(
-        #     received_offer_id,
-        # )
-        # if received_offer is None:
-        #     raise Exception("Received offer with id {} not found.".format(
-        #         received_offer_id,
-        #     ))
-        # logger.info("Paying received offer: {}".format(received_offer))
-        # sent_payment = self.squeak_core.pay_offer(received_offer)
-        # # sent_payment_id = self.squeak_db.insert_sent_payment(sent_payment)
-        # sent_payment_id = self.squeak_store.save_sent_payment(sent_payment)
-        # # # Delete the received offer
-        # # self.squeak_db.delete_offer(sent_payment.payment_hash)
-        # # Mark the received offer as paid
-        # # self.squeak_db.set_received_offer_paid(
-        # #     sent_payment.payment_hash,
-        # #     paid=True,
-        # # )
-        # self.squeak_store.mark_received_offer_paid(sent_payment.payment_hash)
-        # # self.unlock_squeak(
-        # #     received_offer.squeak_hash,
-        # #     sent_payment.secret_key,
-        # # )
-        # self.squeak_store.unlock_squeak(
-        #     received_offer.squeak_hash,
-        #     sent_payment.secret_key,
-        # )
-        # return sent_payment_id
         return self.squeak_store.pay_offer(received_offer_id)
 
     def get_sent_payments(
@@ -296,21 +181,15 @@ class SqueakController:
             limit: int,
             last_sent_payment: Optional[SentPayment],
     ) -> List[SentPayment]:
-        # return self.squeak_db.get_sent_payments(
-        #     limit,
-        #     last_sent_payment,
-        # )
         return self.squeak_store.get_sent_payments(
             limit,
             last_sent_payment,
         )
 
     def get_sent_payment(self, sent_payment_id: int) -> Optional[SentPayment]:
-        # return self.squeak_db.get_sent_payment(sent_payment_id)
         return self.squeak_store.get_sent_payment(sent_payment_id)
 
     def get_sent_offers(self):
-        # return self.squeak_db.get_sent_offers()
         return self.squeak_store.get_sent_offers()
 
     def get_received_payments(
@@ -318,40 +197,26 @@ class SqueakController:
             limit: int,
             last_received_payment: Optional[ReceivedPayment],
     ) -> List[ReceivedPayment]:
-        # return self.squeak_db.get_received_payments(
-        #     limit,
-        #     last_received_payment,
-        # )
         return self.squeak_store.get_received_payments(
             limit,
             last_received_payment,
         )
 
     def delete_all_expired_offers(self):
-        # self.delete_all_expired_received_offers()
-        # self.delete_all_expired_sent_offers()
         self.squeak_store.delete_all_expired_offers()
 
     def subscribe_received_payments(self, initial_index: int, stopped: threading.Event):
         with ReceivedPaymentsSubscriptionClient(
-            # self.squeak_db,
             self.squeak_store,
             initial_index,
             stopped,
         ).open_subscription() as client:
             yield from client.get_received_payments()
 
-    # def get_block_range(self) -> BlockRange:
-    #     max_block = self.squeak_core.get_best_block_height()
-    #     block_interval = self.config.node.interest_block_interval
-    #     min_block = max(0, max_block - block_interval)
-    #     return BlockRange(min_block, max_block)
-
     def get_network(self) -> str:
         return self.config.node.network
 
     def get_squeak_entry(self, squeak_hash: bytes) -> Optional[SqueakEntry]:
-        # return self.squeak_db.get_squeak_entry(squeak_hash)
         return self.squeak_store.get_squeak_entry(squeak_hash)
 
     def get_timeline_squeak_entries(
@@ -359,10 +224,6 @@ class SqueakController:
             limit: int,
             last_entry: Optional[SqueakEntry],
     ) -> List[SqueakEntry]:
-        # return self.squeak_db.get_timeline_squeak_entries(
-        #     limit,
-        #     last_entry,
-        # )
         return self.squeak_store.get_timeline_squeak_entries(limit, last_entry)
 
     def get_liked_squeak_entries(
@@ -370,10 +231,6 @@ class SqueakController:
             limit: int,
             last_entry: Optional[SqueakEntry],
     ) -> List[SqueakEntry]:
-        # return self.squeak_db.get_liked_squeak_entries(
-        #     limit,
-        #     last_entry,
-        # )
         return self.squeak_store.get_liked_squeak_entries(limit, last_entry)
 
     def get_squeak_entries_for_public_key(
@@ -382,11 +239,6 @@ class SqueakController:
             limit: int,
             last_entry: Optional[SqueakEntry],
     ) -> List[SqueakEntry]:
-        # return self.squeak_db.get_squeak_entries_for_public_key(
-        #     public_key,
-        #     limit,
-        #     last_entry,
-        # )
         return self.squeak_store.get_squeak_entries_for_public_key(
             public_key,
             limit,
@@ -399,11 +251,6 @@ class SqueakController:
             limit: int,
             last_entry: Optional[SqueakEntry],
     ) -> List[SqueakEntry]:
-        # return self.squeak_db.get_squeak_entries_for_text_search(
-        #     search_text,
-        #     limit,
-        #     last_entry,
-        # )
         return self.squeak_store.get_squeak_entries_for_text_search(
             search_text,
             limit,
@@ -411,9 +258,6 @@ class SqueakController:
         )
 
     def get_ancestor_squeak_entries(self, squeak_hash: bytes) -> List[SqueakEntry]:
-        # return self.squeak_db.get_thread_ancestor_squeak_entries(
-        #     squeak_hash,
-        # )
         return self.squeak_store.get_ancestor_squeak_entries(squeak_hash)
 
     def get_reply_squeak_entries(
@@ -422,103 +266,36 @@ class SqueakController:
             limit: int,
             last_entry: Optional[SqueakEntry],
     ) -> List[SqueakEntry]:
-        # return self.squeak_db.get_thread_reply_squeak_entries(
-        #     squeak_hash,
-        #     limit,
-        #     last_entry,
-        # )
         return self.squeak_store.get_reply_squeak_entries(
             squeak_hash,
             limit,
             last_entry,
         )
 
-    # def get_number_of_squeaks(self) -> int:
-    #     return self.squeak_db.get_number_of_squeaks()
-
-    # def save_received_offer(self, offer: Offer, peer_address: PeerAddress) -> Optional[int]:
-    #     # squeak = self.get_squeak(offer.squeak_hash)
-    #     squeak = self.squeak_store.get_squeak(offer.squeak_hash)
-    #     # secret_key = self.get_squeak_secret_key(offer.squeak_hash)
-    #     secret_key = self.squeak_store.get_squeak_secret_key(offer.squeak_hash)
-    #     if squeak is None or secret_key is not None:
-    #         return None
-    #     try:
-    #         # TODO: Call unpack_offer with check_payment_point=True.
-    #         received_offer = self.squeak_core.unpack_offer(
-    #             squeak,
-    #             offer,
-    #             peer_address,
-    #         )
-    #     except Exception:
-    #         logger.exception("Failed to save received offer.")
-    #         return None
-    #     # received_offer_id = self.squeak_db.insert_received_offer(
-    #     #     received_offer)
-    #     # if received_offer_id is None:
-    #     #     return None
-    #     # logger.info("Saved received offer: {}".format(received_offer))
-    #     # received_offer = received_offer._replace(
-    #     #     received_offer_id=received_offer_id)
-    #     # self.new_received_offer_listener.handle_new_item(received_offer)
-    #     # return received_offer_id
-    #     return self.squeak_store.save_received_offer(received_offer)
-
     def save_received_offer(self, offer: Offer, peer_address: PeerAddress) -> Optional[int]:
         return self.squeak_store.save_received_offer(offer, peer_address)
 
-    # def get_followed_addresses(self) -> List[str]:
-    #     followed_profiles = self.squeak_db.get_following_profiles()
-    #     return [profile.address for profile in followed_profiles]
-
     # TODO: remove from controller.
     def get_followed_public_keys(self) -> List[SqueakPublicKey]:
-        # TODO: change squeak_store method to "get_followed_profiles"
-        # followed_profiles = self.squeak_db.get_following_profiles()
         return self.squeak_store.get_followed_public_keys()
 
     def get_received_payment_summary(self) -> ReceivedPaymentSummary:
-        # return self.squeak_db.get_received_payment_summary()
         return self.squeak_store.get_received_payment_summary()
 
     def get_sent_payment_summary(self) -> SentPaymentSummary:
-        # return self.squeak_db.get_sent_payment_summary()
         return self.squeak_store.get_sent_payment_summary()
 
     def reprocess_received_payments(self) -> None:
-        # self.squeak_db.clear_received_payment_settle_indices()
         self.squeak_store.clear_received_payment_settle_indices()
         self.payment_processor.start_processing()
 
     def delete_old_squeaks(self):
-        # squeaks_to_delete = self.squeak_db.get_old_squeaks_to_delete(
-        #     self.config.node.squeak_retention_s,
-        # )
-        # for squeak_hash in squeaks_to_delete:
-        #     self.squeak_db.delete_squeak(
-        #         squeak_hash,
-        #     )
-        #     logger.info("Deleted squeak: {}".format(
-        #         squeak_hash.hex(),
-        #     ))
         return self.squeak_store.delete_old_squeaks()
 
     def like_squeak(self, squeak_hash: bytes):
-        # logger.info("Liking squeak: {}".format(
-        #     squeak_hash.hex(),
-        # ))
-        # self.squeak_db.set_squeak_liked(
-        #     squeak_hash,
-        # )
         self.squeak_store.like_squeak(squeak_hash)
 
     def unlike_squeak(self, squeak_hash: bytes):
-        # logger.info("Unliking squeak: {}".format(
-        #     squeak_hash.hex(),
-        # ))
-        # self.squeak_db.set_squeak_unliked(
-        #     squeak_hash,
-        # )
         return self.squeak_store.unlike_squeak(squeak_hash)
 
     def connect_peer(self, peer_address: PeerAddress) -> None:
@@ -527,22 +304,12 @@ class SqueakController:
         ))
         self.network_manager.connect_peer_sync(peer_address)
 
-    # def connect_saved_peers(self) -> None:
-    #     peers = self.get_autoconnect_peers()
-    #     for peer in peers:
-    #         self.network_manager.connect_peer_async(
-    #             peer.address,
-    #         )
-
     def get_connected_peer(self, peer_address: PeerAddress) -> Optional[ConnectedPeer]:
         peer = self.network_manager.get_connected_peer(peer_address)
         if peer is None:
             return None
         return ConnectedPeer(
             peer=peer,
-            # saved_peer=self.squeak_db.get_peer_by_address(
-            #     peer_address,
-            # ),
             saved_peer=self.squeak_store.get_peer_by_address(
                 peer_address,
             ),
@@ -553,74 +320,11 @@ class SqueakController:
         return [
             ConnectedPeer(
                 peer=peer,
-                # saved_peer=self.squeak_db.get_peer_by_address(
-                #     peer.remote_address,
-                # ),
                 saved_peer=self.squeak_store.get_peer_by_address(
                     peer.remote_address,
                 ),
             ) for peer in peers
         ]
-
-    # def lookup_squeaks(
-    #         self,
-    #         public_keys: List[SqueakPublicKey],
-    #         min_block: Optional[int],
-    #         max_block: Optional[int],
-    #         reply_to_hash: Optional[bytes],
-    # ) -> List[bytes]:
-    #     # return self.squeak_db.lookup_squeaks(
-    #     #     public_keys,
-    #     #     min_block,
-    #     #     max_block,
-    #     #     reply_to_hash,
-    #     #     include_locked=True,
-    #     # )
-    #     return self.squeak_store.lookup_squeaks(
-    #         public_keys,
-    #         min_block,
-    #         max_block,
-    #         reply_to_hash,
-    #     )
-
-    # def lookup_secret_keys(
-    #         self,
-    #         public_keys: List[SqueakPublicKey],
-    #         min_block: Optional[int],
-    #         max_block: Optional[int],
-    #         reply_to_hash: Optional[bytes],
-    # ) -> List[bytes]:
-    #     # return self.squeak_db.lookup_squeaks(
-    #     #     public_keys,
-    #     #     min_block,
-    #     #     max_block,
-    #     #     reply_to_hash,
-    #     # )
-    #     return self.squeak_store.lookup_secret_keys(
-    #         public_keys,
-    #         min_block,
-    #         max_block,
-    #         reply_to_hash,
-    #     )
-
-    # def get_interested_locator(self) -> CSqueakLocator:
-    #     # block_range = self.get_block_range()
-    #     # followed_public_keys = self.get_followed_public_keys()
-    #     # if len(followed_public_keys) == 0:
-    #     #     return CSqueakLocator(
-    #     #         vInterested=[],
-    #     #     )
-    #     # interests = [
-    #     #     CInterested(
-    #     #         pubkeys=followed_public_keys,
-    #     #         nMinBlockHeight=block_range.min_block,
-    #     #         nMaxBlockHeight=block_range.max_block,
-    #     #     )
-    #     # ]
-    #     # return CSqueakLocator(
-    #     #     vInterested=interests,
-    #     # )
-    #     return self.squeak_store.get_interested_locator()
 
     def download_squeaks(
             self,
@@ -695,9 +399,6 @@ class SqueakController:
             yield [
                 ConnectedPeer(
                     peer=peer,
-                    # saved_peer=self.squeak_db.get_peer_by_address(
-                    #     peer.remote_address,
-                    # ),
                     saved_peer=self.squeak_store.get_peer_by_address(
                         peer.remote_address,
                     )
@@ -711,76 +412,54 @@ class SqueakController:
             else:
                 yield ConnectedPeer(
                     peer=peer,
-                    # saved_peer=self.squeak_db.get_peer_by_address(
-                    #     peer.remote_address,
-                    # ),
                     saved_peer=self.squeak_store.get_peer_by_address(
                         peer.remote_address,
                     )
                 )
 
     def subscribe_new_squeaks(self, stopped: threading.Event):
-        # yield from self.new_squeak_listener.yield_items(stopped)
         yield from self.squeak_store.subscribe_new_squeaks(stopped)
 
     def subscribe_new_secret_keys(self, stopped: threading.Event):
-        # yield from self.new_secret_key_listener.yield_items(stopped)
         yield from self.squeak_store.subscribe_new_secret_keys(stopped)
 
     def subscribe_follows(self, stopped: threading.Event):
-        # yield from self.new_follow_listener.yield_items(stopped)
         yield from self.squeak_store.subscribe_follows(stopped)
 
-    # def update_subscriptions(self):
-    #     locator = self.get_interested_locator()
-    #     self.network_manager.update_local_subscriptions(locator)
-
-    # def create_update_subscriptions_event(self):
-    #     self.new_follow_listener.handle_new_item(UpdateSubscriptionsEvent())
-
     def subscribe_received_offers_for_squeak(self, squeak_hash: bytes, stopped: threading.Event):
-        # for received_offer in self.new_received_offer_listener.yield_items(stopped):
-        #     if received_offer.squeak_hash == squeak_hash:
-        #         yield received_offer
         yield from self.squeak_store.subscribe_received_offers_for_squeak(
             squeak_hash,
             stopped,
         )
 
     def subscribe_squeak_entry(self, squeak_hash: bytes, stopped: threading.Event):
-        # for item in self.new_squeak_listener.yield_items(stopped):
         for item in self.squeak_store.subscribe_new_squeaks(stopped):
             if squeak_hash == get_hash(item):
                 yield self.get_squeak_entry(squeak_hash)
 
     def subscribe_squeak_reply_entries(self, squeak_hash: bytes, stopped: threading.Event):
-        # for item in self.new_squeak_listener.yield_items(stopped):
         for item in self.squeak_store.subscribe_new_squeaks(stopped):
             if squeak_hash == item.hashReplySqk:
                 reply_hash = get_hash(item)
                 yield self.get_squeak_entry(reply_hash)
 
     def subscribe_squeak_public_key_entries(self, public_key: SqueakPublicKey, stopped: threading.Event):
-        # for item in self.new_squeak_listener.yield_items(stopped):
         for item in self.squeak_store.subscribe_new_squeaks(stopped):
             if public_key == item.GetPubKey():
                 squeak_hash = get_hash(item)
                 yield self.get_squeak_entry(squeak_hash)
 
     def subscribe_squeak_ancestor_entries(self, squeak_hash: bytes, stopped: threading.Event):
-        # for item in self.new_squeak_listener.yield_items(stopped):
         for item in self.squeak_store.subscribe_new_squeaks(stopped):
             if squeak_hash == get_hash(item):
                 yield self.get_ancestor_squeak_entries(squeak_hash)
 
     def subscribe_squeak_entries(self, stopped: threading.Event):
-        # for item in self.new_squeak_listener.yield_items(stopped):
         for item in self.squeak_store.subscribe_new_squeaks(stopped):
             squeak_hash = get_hash(item)
             yield self.get_squeak_entry(squeak_hash)
 
     def subscribe_timeline_squeak_entries(self, stopped: threading.Event):
-        # for item in self.new_squeak_listener.yield_items(stopped):
         for item in self.squeak_store.subscribe_new_squeaks(stopped):
             followed_public_keys = self.get_followed_public_keys()
             if item.GetPubKey() in set(followed_public_keys):
@@ -792,36 +471,6 @@ class SqueakController:
 
     def get_default_peer_port(self) -> int:
         return squeak.params.params.DEFAULT_PORT
-
-    # def forward_squeak(self, squeak):
-    #     logger.debug("Forward new squeak: {!r}".format(
-    #         get_hash(squeak).hex(),
-    #     ))
-    #     for peer in self.network_manager.get_connected_peers():
-    #         if peer.is_remote_subscribed(squeak):
-    #             logger.debug("Forwarding to peer: {}".format(
-    #                 peer,
-    #             ))
-    #             squeak_hash = get_hash(squeak)
-    #             inv = CInv(type=MSG_SQUEAK, hash=squeak_hash)
-    #             inv_msg = msg_inv(inv=[inv])
-    #             peer.send_msg(inv_msg)
-    #     logger.debug("Finished checking peers to forward.")
-
-    # def forward_secret_key(self, squeak):
-    #     logger.debug("Forward new secret key for hash: {!r}".format(
-    #         get_hash(squeak).hex(),
-    #     ))
-    #     for peer in self.network_manager.get_connected_peers():
-    #         if peer.is_remote_subscribed(squeak):
-    #             logger.debug("Forwarding to peer: {}".format(
-    #                 peer,
-    #             ))
-    #             squeak_hash = get_hash(squeak)
-    #             inv = CInv(type=MSG_SECRET_KEY, hash=squeak_hash)
-    #             inv_msg = msg_inv(inv=[inv])
-    #             peer.send_msg(inv_msg)
-    #     logger.debug("Finished checking peers to forward.")
 
     def set_sell_price_msat(self, sell_price_msat: int) -> None:
         self.node_settings.set_sell_price_msat(sell_price_msat)
@@ -836,15 +485,6 @@ class SqueakController:
         return self.config.node.price_msat
 
     def add_twitter_account(self, handle: str, profile_id: int, bearer_token: str) -> Optional[int]:
-        # twitter_account = TwitterAccount(
-        #     twitter_account_id=None,
-        #     handle=handle,
-        #     profile_id=profile_id,
-        #     bearer_token=bearer_token,
-        # )
-        # account_id = self.squeak_db.insert_twitter_account(twitter_account)
-        # self.create_update_twitter_stream_event()
-        # return account_id
         twitter_account_id = self.squeak_store.add_twitter_account(
             handle,
             profile_id,
@@ -854,11 +494,9 @@ class SqueakController:
         return twitter_account_id
 
     def get_twitter_accounts(self) -> List[TwitterAccountEntry]:
-        # return self.squeak_db.get_twitter_accounts()
         return self.squeak_store.get_twitter_accounts()
 
     def delete_twitter_account(self, twitter_account_id: int) -> None:
-        # self.squeak_db.delete_twitter_account(twitter_account_id)
         self.squeak_store.delete_twitter_account(twitter_account_id)
         self.update_twitter_stream()
 

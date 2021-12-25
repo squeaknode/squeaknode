@@ -254,10 +254,6 @@ class SqueakStore:
     def delete_squeak(self, squeak_hash: bytes) -> None:
         self.squeak_db.delete_squeak(squeak_hash)
 
-    # TODO: delete this method.
-    def save_sent_offer(self, sent_offer: SentOffer) -> int:
-        return self.squeak_db.insert_sent_offer(sent_offer)
-
     def get_sent_offer_for_peer(
             self,
             squeak_hash: bytes,
@@ -451,20 +447,6 @@ class SqueakStore:
                     num_expired_sent_offers)
             )
 
-    # def subscribe_received_payments(self, initial_index: int, stopped: threading.Event):
-    #     with ReceivedPaymentsSubscriptionClient(
-    #         self.squeak_db,
-    #         initial_index,
-    #         stopped,
-    #     ).open_subscription() as client:
-    #         yield from client.get_received_payments()
-
-    # def get_block_range(self) -> BlockRange:
-    #     max_block = self.squeak_core.get_best_block_height()
-    #     block_interval = self.interest_block_interval
-    #     min_block = max(0, max_block - block_interval)
-    #     return BlockRange(min_block, max_block)
-
     def get_squeak_entry(self, squeak_hash: bytes) -> Optional[SqueakEntry]:
         return self.squeak_db.get_squeak_entry(squeak_hash)
 
@@ -528,17 +510,6 @@ class SqueakStore:
             limit,
             last_entry,
         )
-
-    # def save_received_offer(self, received_offer: ReceivedOffer) -> Optional[int]:
-    #     received_offer_id = self.squeak_db.insert_received_offer(
-    #         received_offer)
-    #     if received_offer_id is None:
-    #         return None
-    #     logger.info("Saved received offer: {}".format(received_offer))
-    #     received_offer = received_offer._replace(
-    #         received_offer_id=received_offer_id)
-    #     self.new_received_offer_listener.handle_new_item(received_offer)
-    #     return received_offer_id
 
     def save_received_offer(self, offer: Offer, peer_address: PeerAddress) -> Optional[int]:
         squeak = self.get_squeak(offer.squeak_hash)
@@ -651,45 +622,6 @@ class SqueakStore:
         for received_offer in self.new_received_offer_listener.yield_items(stopped):
             if received_offer.squeak_hash == squeak_hash:
                 yield received_offer
-
-    # def subscribe_squeak_entry(self, squeak_hash: bytes, stopped: threading.Event):
-    #     for item in self.new_squeak_listener.yield_items(stopped):
-    #         if squeak_hash == get_hash(item):
-    #             yield self.get_squeak_entry(squeak_hash)
-
-    # def subscribe_squeak_reply_entries(self, squeak_hash: bytes, stopped: threading.Event):
-    #     for item in self.new_squeak_listener.yield_items(stopped):
-    #         if squeak_hash == item.hashReplySqk:
-    #             reply_hash = get_hash(item)
-    #             yield self.get_squeak_entry(reply_hash)
-
-    # def subscribe_squeak_public_key_entries(self, public_key: SqueakPublicKey, stopped: threading.Event):
-    #     for item in self.new_squeak_listener.yield_items(stopped):
-    #         if public_key == item.GetPubKey():
-    #             squeak_hash = get_hash(item)
-    #             yield self.get_squeak_entry(squeak_hash)
-
-    # def subscribe_squeak_ancestor_entries(self, squeak_hash: bytes, stopped: threading.Event):
-    #     for item in self.new_squeak_listener.yield_items(stopped):
-    #         if squeak_hash == get_hash(item):
-    #             yield self.get_ancestor_squeak_entries(squeak_hash)
-
-    # def subscribe_squeak_entries(self, stopped: threading.Event):
-    #     for item in self.new_squeak_listener.yield_items(stopped):
-    #         squeak_hash = get_hash(item)
-    #         yield self.get_squeak_entry(squeak_hash)
-
-    # def subscribe_timeline_squeak_entries(self, stopped: threading.Event):
-    #     for item in self.new_squeak_listener.yield_items(stopped):
-    #         followed_public_keys = self.get_followed_public_keys()
-    #         if item.GetPubKey() in set(followed_public_keys):
-    #             squeak_hash = get_hash(item)
-    #             yield self.get_squeak_entry(squeak_hash)
-
-    # def create_update_twitter_stream_event(self):
-    #     self.twitter_stream_change_listener.handle_new_item(
-    #         UpdateTwitterStreamEvent()
-    #     )
 
     def add_twitter_account(self, handle: str, profile_id: int, bearer_token: str) -> Optional[int]:
         twitter_account = TwitterAccount(
