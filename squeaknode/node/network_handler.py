@@ -188,7 +188,17 @@ class NetworkHandler:
         self.broadcast_msg(getdata_msg)
 
     def save_received_offer(self, offer: Offer, peer_address: PeerAddress) -> Optional[int]:
-        return self.squeak_store.save_received_offer(offer, peer_address)
+        # return self.squeak_store.save_received_offer(offer, peer_address)
+        received_offer_id = self.squeak_store.save_received_offer(
+            offer,
+            peer_address,
+        )
+        if received_offer_id is None:
+            return None
+        counter = self.get_download_offer_counter(offer)
+        if counter is not None:
+            counter.increment()
+        return received_offer_id
 
     def get_download_offer_counter(self, offer: Offer) -> Optional[ActiveDownload]:
         downloaded_offer = DownloadedOffer(offer)

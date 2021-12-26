@@ -212,15 +212,10 @@ class Connection(object):
             host=msg.host.decode('utf-8'),
             port=msg.port,
         )
-        received_offer_id = self.network_handler.save_received_offer(
+        self.network_handler.save_received_offer(
             offer,
             self.peer.remote_address,
         )
-        if received_offer_id is None:
-            return
-        counter = self.network_handler.get_download_offer_counter(offer)
-        if counter is not None:
-            counter.increment()
 
     def handle_secret_key(self, msg):
         self.network_handler.unlock_squeak(
