@@ -26,6 +26,7 @@ from squeak.messages import msg_addr
 from squeak.messages import msg_getaddr
 from squeak.messages import msg_getdata
 from squeak.messages import msg_inv
+from squeak.messages import msg_notfound
 from squeak.messages import msg_ping
 from squeak.messages import msg_pong
 from squeak.messages import MSG_SECRET_KEY
@@ -184,22 +185,29 @@ class Connection(object):
         for inv in invs:
             if inv.type == MSG_SQUEAK:
                 squeak = self.network_handler.get_squeak(inv.hash)
-                reply_msg = msg_squeak(squeak=squeak)
-                self.peer.send_msg(reply_msg)
+                if squeak is None:
+                    reply_msg = msg_notfound(inv=[inv])
+                    self.peer.send_msg(reply_msg)
+                else:
+                    reply_msg = msg_squeak(squeak=squeak)
+                    self.peer.send_msg(reply_msg)
             if inv.type == MSG_SECRET_KEY:
                 reply = self.network_handler.get_secret_key_reply(
                     inv.hash,
                     self.peer.remote_address,
                 )
-                reply_msg = reply.get_msg()
-                self.peer.send_msg(reply_msg)
+                if reply is None:
+                    reply_msg = msg_notfound(inv=[inv])
+                    self.peer.send_msg(reply_msg)
+                else:
+                    reply_msg = reply.get_msg()
+                    self.peer.send_msg(reply_msg)
 
     def handle_notfound(self, msg):
         pass
 
     def handle_getsqueaks(self, msg):
         locator = msg.locator
-        # self._send_reply_invs(msg.locator)
         for interest in locator.vInterested:
             reply_invs = self.network_handler.get_reply_invs(interest)
             inv_msg = msg_inv(inv=reply_invs)
