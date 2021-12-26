@@ -79,7 +79,7 @@ def make_squeak_with_block(
         block_height,
         block_hash,
         timestamp,
-        replyto_hash,
+        reply_to=replyto_hash,
     )
 
 
