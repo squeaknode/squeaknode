@@ -666,21 +666,19 @@ class SqueakDb:
             num_squeaks = row["num_squeaks"]
             return num_squeaks
 
-    def number_of_squeaks_with_public_key_in_block_range(
+    def number_of_squeaks_with_public_key_with_block_height(
         self,
         public_key: SqueakPublicKey,
-        min_block: int,
-        max_block: int,
+        block_height: int,
     ) -> int:
-        """ Get number of squeaks with address in block range. """
+        """ Get number of squeaks with public key with block height. """
         s = (
             select([
                 func.count().label("num_squeaks"),
             ])
             .select_from(self.squeaks)
             .where(self.squeaks.c.author_public_key == public_key.to_bytes())
-            .where(self.squeaks.c.block_height >= min_block)
-            .where(self.squeaks.c.block_height <= max_block)
+            .where(self.squeaks.c.block_height == block_height)
         )
         with self.get_connection() as connection:
             result = connection.execute(s)

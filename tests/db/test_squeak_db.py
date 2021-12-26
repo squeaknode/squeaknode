@@ -928,20 +928,18 @@ def test_get_number_of_squeaks(
     assert num_squeaks == len(inserted_squeak_hashes)
 
 
-def test_number_of_squeaks_with_public_key_in_block_range(
+def test_number_of_squeaks_with_public_key_with_block_height(
         squeak_db,
         public_key,
         inserted_squeak_hashes,
 ):
-    min_block = 43
-    max_block = 91
-    num_squeaks = squeak_db.number_of_squeaks_with_public_key_in_block_range(
+    block_height = 43
+    num_squeaks = squeak_db.number_of_squeaks_with_public_key_with_block_height(
         public_key=public_key,
-        min_block=min_block,
-        max_block=max_block,
+        block_height=block_height,
     )
 
-    assert num_squeaks == max_block - min_block + 1
+    assert num_squeaks == 1
 
 
 def test_get_old_squeaks_to_delete(
