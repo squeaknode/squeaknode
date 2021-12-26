@@ -29,9 +29,11 @@ from squeak.messages import msg_getdata
 from squeak.messages import MSG_SECRET_KEY
 from squeak.messages import MSG_SQUEAK
 from squeak.messages import MsgSerializable
+from squeak.net import CInterested
 from squeak.net import CInv
 from squeak.net import CSqueakLocator
 
+from squeaknode.core.interests import squeak_matches_interest
 from squeaknode.core.lightning_address import LightningAddressHostPort
 from squeaknode.core.offer import Offer
 from squeaknode.core.peer_address import PeerAddress
@@ -43,6 +45,9 @@ from squeaknode.node.secret_key_reply import SecretKeyReply
 from squeaknode.node.squeak_store import SqueakStore
 
 logger = logging.getLogger(__name__)
+
+
+EMPTY_HASH = b'\x00' * 32
 
 
 class NetworkHandler:
@@ -91,10 +96,79 @@ class NetworkHandler:
         ]
 
     def save_squeak(self, squeak: CSqueak) -> Optional[bytes]:
+        # return self.squeak_store.save_squeak(squeak)
+        return self.save_active_download_squeak(squeak) or \
+            self.save_followed_squeak(squeak)
+
+    def save_active_download_squeak(self, squeak: CSqueak) -> Optional[bytes]:
+        """Save the given squeak as an active download.
+
+        Returns:
+          bytes: the hash of the saved squeak.
+        """
+        counter = self.get_download_squeak_counter(squeak)
+        if counter is None:
+            return None
+        saved_squeak_hash = self.squeak_store.save_squeak(squeak)
+        if saved_squeak_hash is None:
+            return None
+        counter.increment()
+        return saved_squeak_hash
+
+    def save_followed_squeak(self, squeak: CSqueak) -> Optional[bytes]:
+        """Save the given squeak because it matches the followed
+        interest criteria.
+
+        Returns:
+          bytes: the hash of the saved squeak.
+        """
+        if not self.squeak_matches_interest(squeak):
+            return None
+        # TODO: catch exception if save_squeak fails (because of rate limit, for example).
         return self.squeak_store.save_squeak(squeak)
+
+    def squeak_matches_interest(self, squeak: CSqueak) -> bool:
+        locator = self.get_interested_locator()
+        for interest in locator.vInterested:
+            if squeak_matches_interest(squeak, interest):
+                return True
+        return False
 
     def unlock_squeak(self, squeak_hash: bytes, secret_key: bytes):
         return self.squeak_store.unlock_squeak(squeak_hash, secret_key)
+
+    def get_reply_invs(self, interest):
+        squeak_hashes = self._get_local_squeaks(interest)
+        secret_key_hashes = self._get_local_secret_keys(interest)
+        squeak_invs = [
+            CInv(type=MSG_SQUEAK, hash=squeak_hash)
+            for squeak_hash in squeak_hashes]
+        secret_key_invs = [
+            CInv(type=MSG_SECRET_KEY, hash=squeak_hash)
+            for squeak_hash in secret_key_hashes]
+        return squeak_invs + secret_key_invs
+
+    def _get_local_squeaks(self, interest: CInterested):
+        min_block = interest.nMinBlockHeight if interest.nMinBlockHeight != -1 else None
+        max_block = interest.nMaxBlockHeight if interest.nMaxBlockHeight != -1 else None
+        reply_to_hash = interest.hashReplySqk if interest.hashReplySqk != EMPTY_HASH else None
+        return self.lookup_squeaks(
+            public_keys=interest.pubkeys,
+            min_block=min_block,
+            max_block=max_block,
+            reply_to_hash=reply_to_hash,
+        )
+
+    def _get_local_secret_keys(self, interest: CInterested):
+        min_block = interest.nMinBlockHeight if interest.nMinBlockHeight != -1 else None
+        max_block = interest.nMaxBlockHeight if interest.nMaxBlockHeight != -1 else None
+        reply_to_hash = interest.hashReplySqk if interest.hashReplySqk != EMPTY_HASH else None
+        return self.lookup_secret_keys(
+            public_keys=interest.pubkeys,
+            min_block=min_block,
+            max_block=max_block,
+            reply_to_hash=reply_to_hash,
+        )
 
     def lookup_squeaks(
             self,
@@ -151,7 +225,17 @@ class NetworkHandler:
         self.broadcast_msg(getdata_msg)
 
     def save_received_offer(self, offer: Offer, peer_address: PeerAddress) -> Optional[int]:
-        return self.squeak_store.save_received_offer(offer, peer_address)
+        # return self.squeak_store.save_received_offer(offer, peer_address)
+        received_offer_id = self.squeak_store.save_received_offer(
+            offer,
+            peer_address,
+        )
+        if received_offer_id is None:
+            return None
+        counter = self.get_download_offer_counter(offer)
+        if counter is not None:
+            counter.increment()
+        return received_offer_id
 
     def get_download_offer_counter(self, offer: Offer) -> Optional[ActiveDownload]:
         downloaded_offer = DownloadedOffer(offer)

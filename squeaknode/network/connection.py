@@ -21,9 +21,7 @@
 # SOFTWARE.
 import logging
 import threading
-from typing import Optional
 
-from squeak.core import CSqueak
 from squeak.messages import msg_addr
 from squeak.messages import msg_getaddr
 from squeak.messages import msg_getdata
@@ -35,11 +33,8 @@ from squeak.messages import MSG_SECRET_KEY
 from squeak.messages import MSG_SQUEAK
 from squeak.messages import msg_squeak
 from squeak.messages import MsgSerializable
-from squeak.net import CInterested
-from squeak.net import CInv
 
 from squeaknode.core.crypto import generate_ping_nonce
-from squeaknode.core.interests import squeak_matches_interest
 from squeaknode.core.offer import Offer
 from squeaknode.network.peer import Peer
 from squeaknode.node.network_handler import NetworkHandler
@@ -203,45 +198,9 @@ class Connection(object):
 
     def handle_squeak(self, msg):
         squeak = msg.squeak
-        saved_squeak_hash = self.save_active_download_squeak(squeak)
-        if saved_squeak_hash is None:
-            saved_squeak_hash = self.save_followed_squeak(squeak)
+        saved_squeak_hash = self.network_handler.save_squeak(squeak)
         if saved_squeak_hash is not None:
             self.network_handler.request_offers(saved_squeak_hash)
-
-    def save_active_download_squeak(self, squeak: CSqueak) -> Optional[bytes]:
-        """Save the given squeak as a result of an active download.
-
-        Returns:
-          bytes: the hash of the saved squeak.
-        """
-        counter = self.network_handler.get_download_squeak_counter(squeak)
-        if counter is None:
-            return None
-        saved_squeak_hash = self.network_handler.save_squeak(squeak)
-        if saved_squeak_hash is None:
-            return None
-        counter.increment()
-        return saved_squeak_hash
-
-    def save_followed_squeak(self, squeak: CSqueak) -> Optional[bytes]:
-        """Save the given squeak because it matches the followed
-        interest criteria.
-
-        Returns:
-          bytes: the hash of the saved squeak.
-        """
-        if not self.squeak_matches_interest(squeak):
-            return None
-        # TODO: catch exception if save_squeak fails (because of rate limit, for example).
-        return self.network_handler.save_squeak(squeak)
-
-    def squeak_matches_interest(self, squeak: CSqueak) -> bool:
-        locator = self.network_handler.get_interested_locator()
-        for interest in locator.vInterested:
-            if squeak_matches_interest(squeak, interest):
-                return True
-        return False
 
     def handle_offer(self, msg):
         offer = Offer(
@@ -251,15 +210,10 @@ class Connection(object):
             host=msg.host.decode('utf-8'),
             port=msg.port,
         )
-        received_offer_id = self.network_handler.save_received_offer(
+        self.network_handler.save_received_offer(
             offer,
             self.peer.remote_address,
         )
-        if received_offer_id is None:
-            return
-        counter = self.network_handler.get_download_offer_counter(offer)
-        if counter is not None:
-            counter.increment()
 
     def handle_secret_key(self, msg):
         self.network_handler.unlock_squeak(
@@ -274,40 +228,9 @@ class Connection(object):
 
     def _send_reply_invs(self, locator):
         for interest in locator.vInterested:
-            squeak_hashes = self._get_local_squeaks(interest)
-            secret_key_hashes = self._get_local_secret_keys(interest)
-            squeak_invs = [
-                CInv(type=MSG_SQUEAK, hash=squeak_hash)
-                for squeak_hash in squeak_hashes]
-            secret_key_invs = [
-                CInv(type=MSG_SECRET_KEY, hash=squeak_hash)
-                for squeak_hash in secret_key_hashes]
-            invs = squeak_invs + secret_key_invs
-            if invs:
-                inv_msg = msg_inv(inv=invs)
-                self.peer.send_msg(inv_msg)
-
-    def _get_local_squeaks(self, interest: CInterested):
-        min_block = interest.nMinBlockHeight if interest.nMinBlockHeight != -1 else None
-        max_block = interest.nMaxBlockHeight if interest.nMaxBlockHeight != -1 else None
-        reply_to_hash = interest.hashReplySqk if interest.hashReplySqk != EMPTY_HASH else None
-        return self.network_handler.lookup_squeaks(
-            public_keys=interest.pubkeys,
-            min_block=min_block,
-            max_block=max_block,
-            reply_to_hash=reply_to_hash,
-        )
-
-    def _get_local_secret_keys(self, interest: CInterested):
-        min_block = interest.nMinBlockHeight if interest.nMinBlockHeight != -1 else None
-        max_block = interest.nMaxBlockHeight if interest.nMaxBlockHeight != -1 else None
-        reply_to_hash = interest.hashReplySqk if interest.hashReplySqk != EMPTY_HASH else None
-        return self.network_handler.lookup_secret_keys(
-            public_keys=interest.pubkeys,
-            min_block=min_block,
-            max_block=max_block,
-            reply_to_hash=reply_to_hash,
-        )
+            reply_invs = self.network_handler.get_reply_invs(interest)
+            inv_msg = msg_inv(inv=reply_invs)
+            self.peer.send_msg(inv_msg)
 
     def _get_inv_reply(self, inv) -> MsgSerializable:
         if inv.type == MSG_SQUEAK:
