@@ -19,9 +19,9 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-from squeak.messages import msg_offer
 from squeak.messages import msg_secretkey
 from squeak.messages import MsgSerializable
+from squeak.net import COffer
 
 from squeaknode.core.offer import Offer
 
@@ -53,11 +53,14 @@ class OfferReply(SecretKeyReply):
         self.offer = offer
 
     def get_msg(self) -> MsgSerializable:
-        return msg_offer(
-            hashSqk=self.squeak_hash,
+        offer = COffer(
             nonce=self.offer.nonce,
             strPaymentInfo=self.offer.payment_request.encode(
                 'utf-8'),
             host=self.offer.host.encode('utf-8'),
             port=self.offer.port,
+        )
+        return msg_secretkey(
+            hashSqk=self.squeak_hash,
+            offer=offer,
         )

@@ -20,8 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import pytest
-from squeak.messages import msg_offer
 from squeak.messages import msg_secretkey
+from squeak.net import COffer
 
 from squeaknode.node.secret_key_reply import FreeSecretKeyReply
 from squeaknode.node.secret_key_reply import OfferReply
@@ -55,11 +55,13 @@ def test_free_secret_key_reply_msg(squeak_hash, secret_key, free_secret_key_repl
 def test_offer_reply_msg(squeak_hash, offer, offer_reply):
     reply_msg = offer_reply.get_msg()
 
-    assert reply_msg == msg_offer(
+    assert reply_msg == msg_secretkey(
         hashSqk=squeak_hash,
-        nonce=offer.nonce,
-        strPaymentInfo=offer.payment_request.encode(
-            'utf-8'),
-        host=offer.host.encode('utf-8'),
-        port=offer.port,
+        offer=COffer(
+            nonce=offer.nonce,
+            strPaymentInfo=offer.payment_request.encode(
+                'utf-8'),
+            host=offer.host.encode('utf-8'),
+            port=offer.port,
+        )
     )

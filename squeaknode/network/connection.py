@@ -145,8 +145,8 @@ class Connection(object):
             self.handle_getdata(msg)
         elif msg.command == b'notfound':
             self.handle_notfound(msg)
-        elif msg.command == b'offer':
-            self.handle_offer(msg)
+        # elif msg.command == b'offer':
+        #     self.handle_offer(msg)
         elif msg.command == b'secretkey':
             self.handle_secret_key(msg)
         elif msg.command == b'subscribe':
@@ -202,24 +202,37 @@ class Connection(object):
         if saved_squeak_hash is not None:
             self.network_handler.request_offers(saved_squeak_hash)
 
-    def handle_offer(self, msg):
-        offer = Offer(
-            squeak_hash=msg.hashSqk,
-            nonce=msg.nonce,
-            payment_request=msg.strPaymentInfo.decode('utf-8'),
-            host=msg.host.decode('utf-8'),
-            port=msg.port,
-        )
-        self.network_handler.save_received_offer(
-            offer,
-            self.peer.remote_address,
-        )
+    # def handle_offer(self, msg):
+    #     offer = Offer(
+    #         squeak_hash=msg.hashSqk,
+    #         nonce=msg.nonce,
+    #         payment_request=msg.strPaymentInfo.decode('utf-8'),
+    #         host=msg.host.decode('utf-8'),
+    #         port=msg.port,
+    #     )
+    #     self.network_handler.save_received_offer(
+    #         offer,
+    #         self.peer.remote_address,
+    #     )
 
     def handle_secret_key(self, msg):
-        self.network_handler.unlock_squeak(
-            msg.hashSqk,
-            msg.secretKey,
-        )
+        if msg.secretKey != EMPTY_HASH:
+            self.network_handler.unlock_squeak(
+                msg.hashSqk,
+                msg.secretKey,
+            )
+        elif msg.offer is not None:
+            offer = Offer(
+                squeak_hash=msg.hashSqk,
+                nonce=msg.offer.nonce,
+                payment_request=msg.offer.strPaymentInfo.decode('utf-8'),
+                host=msg.offer.host.decode('utf-8'),
+                port=msg.offer.port,
+            )
+            self.network_handler.save_received_offer(
+                offer,
+                self.peer.remote_address,
+            )
 
     def handle_subscribe(self, msg):
         if msg.protover < 60003:
