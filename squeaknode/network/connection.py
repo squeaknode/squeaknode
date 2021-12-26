@@ -204,40 +204,6 @@ class Connection(object):
         if saved_squeak_hash is not None:
             self.network_handler.request_offers(saved_squeak_hash)
 
-    # def save_active_download_squeak(self, squeak: CSqueak) -> Optional[bytes]:
-    #     """Save the given squeak as a result of an active download.
-
-    #     Returns:
-    #       bytes: the hash of the saved squeak.
-    #     """
-    #     counter = self.network_handler.get_download_squeak_counter(squeak)
-    #     if counter is None:
-    #         return None
-    #     saved_squeak_hash = self.network_handler.save_squeak(squeak)
-    #     if saved_squeak_hash is None:
-    #         return None
-    #     counter.increment()
-    #     return saved_squeak_hash
-
-    # def save_followed_squeak(self, squeak: CSqueak) -> Optional[bytes]:
-    #     """Save the given squeak because it matches the followed
-    #     interest criteria.
-
-    #     Returns:
-    #       bytes: the hash of the saved squeak.
-    #     """
-    #     if not self.squeak_matches_interest(squeak):
-    #         return None
-    #     # TODO: catch exception if save_squeak fails (because of rate limit, for example).
-    #     return self.network_handler.save_squeak(squeak)
-
-    # def squeak_matches_interest(self, squeak: CSqueak) -> bool:
-    #     locator = self.network_handler.get_interested_locator()
-    #     for interest in locator.vInterested:
-    #         if squeak_matches_interest(squeak, interest):
-    #             return True
-    #     return False
-
     def handle_offer(self, msg):
         offer = Offer(
             squeak_hash=msg.hashSqk,
