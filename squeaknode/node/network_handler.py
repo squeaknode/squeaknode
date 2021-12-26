@@ -32,6 +32,7 @@ from squeak.messages import MsgSerializable
 from squeak.net import CInv
 from squeak.net import CSqueakLocator
 
+from squeaknode.core.interests import squeak_matches_interest
 from squeaknode.core.lightning_address import LightningAddressHostPort
 from squeaknode.core.offer import Offer
 from squeaknode.core.peer_address import PeerAddress
@@ -91,7 +92,43 @@ class NetworkHandler:
         ]
 
     def save_squeak(self, squeak: CSqueak) -> Optional[bytes]:
+        # return self.squeak_store.save_squeak(squeak)
+        return self.save_active_download_squeak(squeak) or \
+            self.save_followed_squeak(squeak)
+
+    def save_active_download_squeak(self, squeak: CSqueak) -> Optional[bytes]:
+        """Save the given squeak as an active download.
+
+        Returns:
+          bytes: the hash of the saved squeak.
+        """
+        counter = self.get_download_squeak_counter(squeak)
+        if counter is None:
+            return None
+        saved_squeak_hash = self.squeak_store.save_squeak(squeak)
+        if saved_squeak_hash is None:
+            return None
+        counter.increment()
+        return saved_squeak_hash
+
+    def save_followed_squeak(self, squeak: CSqueak) -> Optional[bytes]:
+        """Save the given squeak because it matches the followed
+        interest criteria.
+
+        Returns:
+          bytes: the hash of the saved squeak.
+        """
+        if not self.squeak_matches_interest(squeak):
+            return None
+        # TODO: catch exception if save_squeak fails (because of rate limit, for example).
         return self.squeak_store.save_squeak(squeak)
+
+    def squeak_matches_interest(self, squeak: CSqueak) -> bool:
+        locator = self.get_interested_locator()
+        for interest in locator.vInterested:
+            if squeak_matches_interest(squeak, interest):
+                return True
+        return False
 
     def unlock_squeak(self, squeak_hash: bytes, secret_key: bytes):
         return self.squeak_store.unlock_squeak(squeak_hash, secret_key)
