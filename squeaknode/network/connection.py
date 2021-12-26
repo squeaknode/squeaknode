@@ -142,8 +142,6 @@ class Connection(object):
             self.handle_getdata(msg)
         elif msg.command == b'notfound':
             self.handle_notfound(msg)
-        # elif msg.command == b'offer':
-        #     self.handle_offer(msg)
         elif msg.command == b'secretkey':
             self.handle_secret_key(msg)
         elif msg.command == b'subscribe':
@@ -213,19 +211,6 @@ class Connection(object):
         if saved_squeak_hash is not None:
             self.network_handler.request_offers(saved_squeak_hash)
 
-    # def handle_offer(self, msg):
-    #     offer = Offer(
-    #         squeak_hash=msg.hashSqk,
-    #         nonce=msg.nonce,
-    #         payment_request=msg.strPaymentInfo.decode('utf-8'),
-    #         host=msg.host.decode('utf-8'),
-    #         port=msg.port,
-    #     )
-    #     self.network_handler.save_received_offer(
-    #         offer,
-    #         self.peer.remote_address,
-    #     )
-
     def handle_secret_key(self, msg):
         if msg.has_secret_key():
             self.network_handler.unlock_squeak(
@@ -247,42 +232,6 @@ class Connection(object):
 
     def handle_subscribe(self, msg):
         self.peer.set_remote_subscription(msg.locator)
-
-    # def _send_reply_invs(self, locator):
-    #     for interest in locator.vInterested:
-    #         reply_invs = self.network_handler.get_reply_invs(interest)
-    #         inv_msg = msg_inv(inv=reply_invs)
-    #         self.peer.send_msg(inv_msg)
-
-    # def _get_inv_reply(self, inv) -> MsgSerializable:
-    #     if inv.type == MSG_SQUEAK:
-    #         return self._get_inv_reply_for_squeak(inv)
-    #     if inv.type == MSG_SECRET_KEY:
-    #         return self._get_inv_reply_for_secret_key(inv)
-    #     raise Exception("Uknown inv type.")
-
-    # def _get_inv(self, inv) -> Optional[SecretKeyReply]:
-    #     if inv.type == MSG_SQUEAK:
-    #         return self._get_inv_reply_for_squeak(inv)
-    #     if inv.type == MSG_SECRET_KEY:
-    #         return self._get_inv_reply_for_secret_key(inv)
-    #     raise Exception("Uknown inv type.")
-
-    # def _get_inv_reply_for_squeak(self, inv) -> MsgSerializable:
-    #     squeak = self.network_handler.get_squeak(inv.hash)
-    #     if squeak is not None:
-    #         return msg_squeak(squeak=squeak)
-    #     else:
-    #         return msg_notfound(inv=[inv])
-
-    # def _get_inv_reply_for_secret_key(self, inv) -> MsgSerializable:
-    #     resp = self.network_handler.get_secret_key_reply(
-    #         inv.hash,
-    #         self.peer.remote_address,
-    #     )
-    #     if resp is None:
-    #         return msg_notfound(inv=[inv])
-    #     return resp.get_msg()
 
 
 class HandshakeTimer:
