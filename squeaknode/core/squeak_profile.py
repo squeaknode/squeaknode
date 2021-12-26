@@ -22,8 +22,8 @@
 from typing import NamedTuple
 from typing import Optional
 
-from squeak.core.signing import SqueakPrivateKey
-from squeak.core.signing import SqueakPublicKey
+from squeak.core.keys import SqueakPrivateKey
+from squeak.core.keys import SqueakPublicKey
 
 
 class SqueakProfile(NamedTuple):

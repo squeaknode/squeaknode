@@ -22,7 +22,7 @@
 import logging
 from typing import Optional
 
-from squeak.core.signing import SqueakPublicKey
+from squeak.core.keys import SqueakPublicKey
 
 from proto import squeak_admin_pb2
 from squeaknode.admin.profile_image_util import bytes_to_base64_string

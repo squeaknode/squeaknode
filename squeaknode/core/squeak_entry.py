@@ -22,7 +22,7 @@
 from typing import NamedTuple
 from typing import Optional
 
-from squeak.core.signing import SqueakPublicKey
+from squeak.core.keys import SqueakPublicKey
 
 from squeaknode.core.squeak_profile import SqueakProfile
 

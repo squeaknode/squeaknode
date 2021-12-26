@@ -27,8 +27,8 @@ from typing import Optional
 
 import squeak.params
 from squeak.core import CSqueak
-from squeak.core.signing import SqueakPrivateKey
-from squeak.core.signing import SqueakPublicKey
+from squeak.core.keys import SqueakPrivateKey
+from squeak.core.keys import SqueakPublicKey
 from squeak.messages import msg_getdata
 from squeak.messages import MsgSerializable
 from squeak.net import CInterested

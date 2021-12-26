@@ -24,7 +24,7 @@ from typing import List
 from typing import Optional
 
 from squeak.core import CSqueak
-from squeak.core.signing import SqueakPublicKey
+from squeak.core.keys import SqueakPublicKey
 from squeak.messages import msg_getdata
 from squeak.messages import MSG_SECRET_KEY
 from squeak.messages import MSG_SQUEAK

@@ -25,7 +25,7 @@ import random
 import uuid
 
 from bitcoin.core import CBlockHeader
-from squeak.core.signing import SqueakPrivateKey
+from squeak.core.keys import SqueakPrivateKey
 
 from squeaknode.core.peer_address import Network
 from squeaknode.core.peer_address import PeerAddress

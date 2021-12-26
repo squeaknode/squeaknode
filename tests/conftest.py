@@ -22,7 +22,7 @@
 import pytest
 from bitcoin.core import CBlockHeader
 from squeak.core.elliptic import payment_point_bytes_from_scalar_bytes
-from squeak.core.signing import SqueakPrivateKey
+from squeak.core.keys import SqueakPrivateKey
 
 from squeaknode.bitcoin.block_info import BlockInfo
 from squeaknode.core.connected_peer import ConnectedPeer
