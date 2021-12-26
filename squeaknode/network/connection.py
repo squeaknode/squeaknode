@@ -194,7 +194,12 @@ class Connection(object):
         pass
 
     def handle_getsqueaks(self, msg):
-        self._send_reply_invs(msg.locator)
+        locator = msg.locator
+        # self._send_reply_invs(msg.locator)
+        for interest in locator.vInterested:
+            reply_invs = self.network_handler.get_reply_invs(interest)
+            inv_msg = msg_inv(inv=reply_invs)
+            self.peer.send_msg(inv_msg)
 
     def handle_squeak(self, msg):
         squeak = msg.squeak
@@ -235,15 +240,13 @@ class Connection(object):
             )
 
     def handle_subscribe(self, msg):
-        if msg.protover < 60003:
-            self._send_reply_invs(msg.locator)
         self.peer.set_remote_subscription(msg.locator)
 
-    def _send_reply_invs(self, locator):
-        for interest in locator.vInterested:
-            reply_invs = self.network_handler.get_reply_invs(interest)
-            inv_msg = msg_inv(inv=reply_invs)
-            self.peer.send_msg(inv_msg)
+    # def _send_reply_invs(self, locator):
+    #     for interest in locator.vInterested:
+    #         reply_invs = self.network_handler.get_reply_invs(interest)
+    #         inv_msg = msg_inv(inv=reply_invs)
+    #         self.peer.send_msg(inv_msg)
 
     def _get_inv_reply(self, inv) -> MsgSerializable:
         if inv.type == MSG_SQUEAK:
