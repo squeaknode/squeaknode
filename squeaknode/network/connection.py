@@ -216,12 +216,12 @@ class Connection(object):
     #     )
 
     def handle_secret_key(self, msg):
-        if msg.secretKey != EMPTY_HASH:
+        if msg.has_secret_key():
             self.network_handler.unlock_squeak(
                 msg.hashSqk,
                 msg.secretKey,
             )
-        elif msg.offer is not None:
+        elif msg.has_offer():
             offer = Offer(
                 squeak_hash=msg.hashSqk,
                 nonce=msg.offer.nonce,
