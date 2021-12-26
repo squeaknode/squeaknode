@@ -96,10 +96,10 @@ def gen_squeak_with_block_header(private_key, block_height, replyto_hash=None):
     return squeak, block_info
 
 
-def gen_signing_profile(profile_name, signing_key):
+def gen_signing_profile(profile_name, private_key):
     return create_signing_profile(
         profile_name,
-        signing_key,
+        private_key,
     )
 
 
