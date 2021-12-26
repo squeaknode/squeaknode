@@ -77,7 +77,7 @@ class SqueakStore:
         self.squeak_db = squeak_db
         self.squeak_core = squeak_core
         self.max_squeaks = max_squeaks
-        self.max_squeaks_per_public_key_per_block = max_squeaks_per_public_key_per_block,
+        self.max_squeaks_per_public_key_per_block = max_squeaks_per_public_key_per_block
         self.squeak_retention_s = squeak_retention_s
         self.received_offer_retention_s = received_offer_retention_s
         self.sent_offer_retention_s = sent_offer_retention_s
@@ -97,6 +97,12 @@ class SqueakStore:
         if self.squeak_db.get_number_of_squeaks() >= self.max_squeaks:
             raise Exception("Exceeded max number of squeaks.")
         # TODO: Check if limit per public key per block is exceeded.
+        if self.squeak_db.number_of_squeaks_with_public_key_with_block_height(
+                squeak.GetPubKey(),
+                squeak.nBlockHeight,
+        ) >= self.max_squeaks_per_public_key_per_block:
+            raise Exception(
+                "Exceeded max number of squeaks per public key per block.")
         # Insert the squeak in db.
         inserted_squeak_hash = self.squeak_db.insert_squeak(
             squeak,

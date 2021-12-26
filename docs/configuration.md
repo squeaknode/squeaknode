@@ -9,7 +9,7 @@ config | type | valid values | has default | default value | environment variabl
 node.network | string | ['mainnet', 'testnet', 'regtest', 'simnet'] | yes | "testnet" | SQUEAKNODE_NODE_NETWORK | Which network to use.
 node.price_msat | int | [0,...] | yes | 10000 | SQUEAKNODE_NODE_PRICE_MSAT | The price to sell squeaks to other peers in millisatoshis.
 node.max_squeaks | int | [0,...] | yes | 10000 | SQUEAKNODE_NODE_MAX_SQUEAKS | The absolute maximum number of squeaks allowed in the database.
-node.max_squeaks_per_address_in_block_range | int | [0,...] | yes | 1000 | SQUEAKNODE_NODE_MAX_SQUEAKS_PER_ADDRESS_IN_BLOCK_RANGE | The maximum number of squeaks for an individual address in the recent block range.
+node.max_squeaks_per_public_key_per_block | int | [0,...] | yes | 1000 | SQUEAKNODE_NODE_MAX_SQUEAKS_PER_PUBLIC_KEY_PER_BLOCK | The maximum number of squeaks for an any public key with any block height.
 node.sqk_dir_path | string | | yes | "<USER_HOME>/.sqk" | SQUEAKNODE_NODE_SQK_DIR_PATH | The directory to store application data (only if using sqlite as database backend).
 node.log_level | string | | yes | "INFO" | SQUEAKNODE_NODE_LOG_LEVEL | The log level to use.
 node.sent_offer_retention_s | int | [0,...] | yes | 86400 | SQUEAKNODE_NODE_SENT_OFFER_RETENTION_S | The amount of time in seconds to keep a sent offer after expiry before deleting it.
