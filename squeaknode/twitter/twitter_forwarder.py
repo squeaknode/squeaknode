@@ -22,7 +22,6 @@
 import logging
 import threading
 from typing import Dict
-from typing import Optional
 
 from squeaknode.core.squeak_core import SqueakCore
 from squeaknode.core.twitter_account_entry import TwitterAccountEntry
@@ -166,21 +165,16 @@ class TwitterForwarderTask:
         if self.is_tweet_a_match(tweet):
             self.forward_tweet(tweet)
 
-    def make_squeak(
-            self,
-            profile_id: int,
-            content_str: str,
-    ) -> Optional[bytes]:
+    def make_squeak(self, profile_id: int, content_str: str):
         squeak_profile = self.squeak_store.get_squeak_profile(profile_id)
         if squeak_profile is None:
             raise Exception("Profile with id {} not found.".format(
                 profile_id,
             ))
-        squeak, secret_key = self.squeak_core.make_squeak(
+        squeak, secret_key, block_header = self.squeak_core.make_squeak(
             squeak_profile,
             content_str,
         )
-        block_header = self.squeak_core.get_block_header(squeak)
         inserted_squeak_hash = self.squeak_store.save_squeak(
             squeak,
             block_header,
@@ -192,4 +186,3 @@ class TwitterForwarderTask:
             secret_key,
             content_str,
         )
-        return inserted_squeak_hash
