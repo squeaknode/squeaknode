@@ -139,7 +139,6 @@ class NetworkHandler:
         return False
 
     def unlock_squeak(self, squeak_hash: bytes, secret_key: bytes):
-        # return self.squeak_store.unlock_squeak(squeak_hash, secret_key)
         squeak = self.squeak_store.get_squeak(squeak_hash)
         decrypted_content = self.squeak_core.get_decrypted_content(
             squeak,
@@ -298,7 +297,6 @@ class NetworkHandler:
         self.broadcast_msg(getdata_msg)
 
     def handle_received_offer(self, offer: Offer, peer_address: PeerAddress) -> Optional[int]:
-        # return self.squeak_store.save_received_offer(offer, peer_address)
         received_offer_id = self.save_received_offer(
             offer,
             peer_address,
