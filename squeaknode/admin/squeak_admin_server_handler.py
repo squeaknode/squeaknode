@@ -21,8 +21,8 @@
 # SOFTWARE.
 import logging
 
-from squeak.core.signing import SqueakPrivateKey
-from squeak.core.signing import SqueakPublicKey
+from squeak.core.keys import SqueakPrivateKey
+from squeak.core.keys import SqueakPublicKey
 
 from proto import squeak_admin_pb2
 from squeaknode.admin.messages import connected_peer_to_message

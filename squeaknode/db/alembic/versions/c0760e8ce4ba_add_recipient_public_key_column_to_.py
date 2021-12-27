@@ -19,18 +19,33 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-from typing import NamedTuple
-from typing import Optional
+"""Add recipient public key column to squeaks table.
 
-from squeak.core.keys import SqueakPrivateKey
-from squeak.core.keys import SqueakPublicKey
+Revision ID: c0760e8ce4ba
+Revises: b78f8169d063
+Create Date: 2021-12-26 14:13:00.159229
+
+"""
+import sqlalchemy as sa
+from alembic import op
 
 
-class SqueakProfile(NamedTuple):
-    """Represents a user who can author squeaks."""
-    profile_name: str
-    public_key: SqueakPublicKey
-    profile_id: Optional[int] = None
-    private_key: Optional[SqueakPrivateKey] = None
-    following: bool = True
-    profile_image: Optional[bytes] = None
+# revision identifiers, used by Alembic.
+revision = 'c0760e8ce4ba'
+down_revision = 'b78f8169d063'
+branch_labels = None
+depends_on = None
+
+
+def upgrade():
+    with op.batch_alter_table('squeak', schema=None) as batch_op:
+        batch_op.add_column(sa.Column('recipient_public_key',
+                                      sa.LargeBinary(length=33), nullable=True))
+        batch_op.create_index(batch_op.f('ix_squeak_recipient_public_key'), [
+                              'recipient_public_key'], unique=False)
+
+
+def downgrade():
+    with op.batch_alter_table('squeak', schema=None) as batch_op:
+        batch_op.drop_index(batch_op.f('ix_squeak_recipient_public_key'))
+        batch_op.drop_column('recipient_public_key')

@@ -23,6 +23,7 @@ from squeaknode.core.squeaks import check_squeak
 from squeaknode.core.squeaks import get_decrypted_content
 from squeaknode.core.squeaks import get_hash
 from squeaknode.core.squeaks import get_payment_point_of_secret_key
+from squeaknode.core.squeaks import make_squeak_with_block
 
 
 def test_get_hash(squeak, squeak_hash):
@@ -46,3 +47,14 @@ def test_get_decrypted_content(squeak, secret_key, squeak_content):
 def test_get_payment_point_of_secret_key(squeak, secret_key):
     assert get_payment_point_of_secret_key(
         secret_key) == squeak.paymentPoint
+
+
+def test_make_private_squeak(private_key, squeak_content, block_info):
+    squeak, _ = make_squeak_with_block(
+        private_key,
+        squeak_content,
+        block_info.block_height,
+        block_info.block_hash,
+    )
+
+    assert squeak.GetRecipientPubKey() is None

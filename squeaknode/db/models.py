@@ -76,6 +76,8 @@ class Models:
             Column("time_s", Integer, nullable=False),
             Column("author_public_key", LargeBinary(
                 33), index=True, nullable=False),
+            Column("recipient_public_key", LargeBinary(
+                33), index=True, nullable=True),
             Column("secret_key", LargeBinary(32), nullable=True),
             Column("block_time_s", Integer, nullable=False),
             Column("liked_time_ms", SLBigInteger, default=None, nullable=True),

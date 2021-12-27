@@ -22,7 +22,7 @@
 import pytest
 from bitcoin.core import CBlockHeader
 from squeak.core.elliptic import payment_point_bytes_from_scalar_bytes
-from squeak.core.signing import SqueakPrivateKey
+from squeak.core.keys import SqueakPrivateKey
 
 from squeaknode.bitcoin.block_info import BlockInfo
 from squeaknode.core.connected_peer import ConnectedPeer
@@ -63,6 +63,16 @@ def private_key_bytes(private_key):
 @pytest.fixture
 def public_key(private_key):
     yield private_key.get_public_key()
+
+
+@pytest.fixture
+def recipient_private_key():
+    yield SqueakPrivateKey.generate()
+
+
+@pytest.fixture
+def recipient_public_key(recipient_private_key):
+    yield recipient_private_key.get_public_key()
 
 
 @pytest.fixture
@@ -143,6 +153,17 @@ def reply_squeak_and_secret_key(private_key, reply_squeak_content, block_info, s
 
 
 @pytest.fixture
+def private_squeak_and_secret_key(private_key, squeak_content, block_info, recipient_public_key):
+    yield make_squeak_with_block(
+        private_key,
+        squeak_content,
+        block_info.block_height,
+        block_info.block_hash,
+        recipient_public_key=recipient_public_key,
+    )
+
+
+@pytest.fixture
 def squeak(squeak_and_secret_key):
     squeak, _ = squeak_and_secret_key
     yield squeak
@@ -191,6 +212,12 @@ def reply_squeak_hash(reply_squeak):
 
 
 @pytest.fixture
+def private_squeak(private_squeak_and_secret_key):
+    squeak, _ = private_squeak_and_secret_key
+    yield squeak
+
+
+@pytest.fixture
 def peer_address():
     yield PeerAddress(
         network=Network.IPV4,
@@ -210,6 +237,11 @@ def contact_profile_name():
 
 
 @pytest.fixture
+def recipient_contact_profile_name():
+    yield "recipient_contact_profile_name"
+
+
+@pytest.fixture
 def signing_profile(signing_profile_name, private_key):
     yield gen_signing_profile(
         signing_profile_name,
@@ -226,22 +258,33 @@ def contact_profile(contact_profile_name, public_key):
 
 
 @pytest.fixture
+def recipient_contact_profile(recipient_contact_profile_name, recipient_public_key):
+    yield gen_contact_profile(
+        recipient_contact_profile_name,
+        recipient_public_key,
+    )
+
+
+@pytest.fixture
 def squeak_entry_locked(
         squeak,
         squeak_bytes,
         squeak_hash,
         public_key,
+        recipient_public_key,
         block_count,
         block_hash,
         block_time,
         squeak_time,
         squeak_reply_to_hash,
         signing_profile,
+        recipient_contact_profile,
 ):
     yield SqueakEntry(
         squeak_hash=squeak_hash,
         serialized_squeak=squeak_bytes,
         public_key=public_key,
+        recipient_public_key=recipient_public_key,
         block_height=block_count,
         block_hash=block_hash,
         block_time=block_time,
@@ -250,6 +293,7 @@ def squeak_entry_locked(
         is_unlocked=False,
         secret_key=None,
         squeak_profile=signing_profile,
+        recipient_squeak_profile=recipient_contact_profile,
         liked_time_ms=None,
         content=None,
     )

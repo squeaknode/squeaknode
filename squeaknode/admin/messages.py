@@ -22,7 +22,7 @@
 import logging
 from typing import Optional
 
-from squeak.core.signing import SqueakPublicKey
+from squeak.core.keys import SqueakPublicKey
 
 from proto import squeak_admin_pb2
 from squeaknode.admin.profile_image_util import bytes_to_base64_string
@@ -218,6 +218,7 @@ def message_to_squeak_entry(msg: squeak_admin_pb2.SqueakDisplayEntry) -> SqueakE
         public_key=SqueakPublicKey.from_bytes(
             bytes.fromhex(msg.author_pubkey),
         ),
+        recipient_public_key=None,  # TODO: maybe implement this.
         block_height=msg.block_height,
         block_hash=bytes.fromhex(msg.block_hash),
         block_time=msg.block_time,
@@ -226,6 +227,7 @@ def message_to_squeak_entry(msg: squeak_admin_pb2.SqueakDisplayEntry) -> SqueakE
         is_unlocked=msg.is_unlocked,
         secret_key=secret_key,
         squeak_profile=None,  # TODO: message to squeak profile
+        recipient_squeak_profile=None,  # TODO: message to squeak profile
         liked_time_ms=like_time_ms,
         content=content_str,
     )

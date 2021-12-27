@@ -25,7 +25,7 @@ import random
 import uuid
 
 from bitcoin.core import CBlockHeader
-from squeak.core.signing import SqueakPrivateKey
+from squeak.core.keys import SqueakPrivateKey
 
 from squeaknode.core.peer_address import Network
 from squeaknode.core.peer_address import PeerAddress
@@ -96,10 +96,10 @@ def gen_squeak_with_block_header(private_key, block_height, replyto_hash=None):
     return squeak, block_info
 
 
-def gen_signing_profile(profile_name, signing_key):
+def gen_signing_profile(profile_name, private_key):
     return create_signing_profile(
         profile_name,
-        signing_key,
+        private_key,
     )
 
 

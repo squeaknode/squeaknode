@@ -27,7 +27,8 @@ from squeak.core import CheckSqueak
 from squeak.core import CSqueak
 from squeak.core import MakeSqueakFromStr
 from squeak.core.elliptic import payment_point_bytes_from_scalar_bytes
-from squeak.core.signing import SqueakPrivateKey
+from squeak.core.keys import SqueakPrivateKey
+from squeak.core.keys import SqueakPublicKey
 
 
 DATA_KEY_LENGTH = 32
@@ -58,6 +59,7 @@ def make_squeak_with_block(
         block_height: int,
         block_hash: bytes,
         replyto_hash: Optional[bytes] = None,
+        recipient_public_key: Optional[SqueakPublicKey] = None,
 ) -> Tuple[CSqueak, bytes]:
     """Create a new squeak.
 
@@ -79,7 +81,8 @@ def make_squeak_with_block(
         block_height,
         block_hash,
         timestamp,
-        replyto_hash,
+        reply_to=replyto_hash,
+        recipient=recipient_public_key,
     )
 
 
