@@ -233,7 +233,7 @@ class Connection(object):
                 host=msg.offer.host.decode('utf-8'),
                 port=msg.offer.port,
             )
-            self.network_handler.save_received_offer(
+            self.network_handler.handle_received_offer(
                 offer,
                 self.peer.remote_address,
             )

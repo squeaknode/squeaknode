@@ -24,7 +24,7 @@ import threading
 
 from squeaknode.bitcoin.bitcoin_block_subscription_client import BitcoinBlockSubscriptionClient
 from squeaknode.network.network_manager import NetworkManager
-from squeaknode.node.squeak_store import SqueakStore
+from squeaknode.node.network_handler import NetworkHandler
 
 
 logger = logging.getLogger(__name__)
@@ -33,12 +33,12 @@ logger = logging.getLogger(__name__)
 class PeerSubscriptionUpdateWorker:
     def __init__(
             self,
-            squeak_store: SqueakStore,
             network_manager: NetworkManager,
+            network_handler: NetworkHandler,
             block_subscription_client: BitcoinBlockSubscriptionClient,
     ):
-        self.squeak_store = squeak_store
         self.network_manager = network_manager
+        self.network_handler = network_handler
         self.block_subscription_client = block_subscription_client
 
     def start_running(self):
@@ -50,5 +50,5 @@ class PeerSubscriptionUpdateWorker:
     def subscribe_blocks(self):
         for block_hash in self.block_subscription_client.get_blocks():
             logger.info("Got block from zeromq: {}".format(block_hash.hex()))
-            locator = self.squeak_store.get_interested_locator()
+            locator = self.network_handler.get_interested_locator()
             self.network_manager.update_local_subscriptions(locator)

@@ -171,13 +171,11 @@ class SqueakNode:
     def initialize_squeak_store(self):
         self.squeak_store = SqueakStore(
             self.squeak_db,
-            self.squeak_core,
             self.config.node.max_squeaks,
             self.config.node.max_squeaks_per_public_key_per_block,
             self.config.node.squeak_retention_s,
             self.config.node.received_offer_retention_s,
             self.config.node.sent_offer_retention_s,
-            self.config.node.interest_block_interval,
         )
 
     def initialize_payment_processor(self):
@@ -190,6 +188,7 @@ class SqueakNode:
     def initialize_twitter_forwarder(self):
         self.twitter_forwarder = TwitterForwarder(
             self.squeak_store,
+            self.squeak_core,
             self.config.twitter.forward_tweets_retry_s,
         )
 
@@ -211,6 +210,7 @@ class SqueakNode:
     def initialize_network_handler(self):
         self.network_handler = NetworkHandler(
             self.squeak_store,
+            self.squeak_core,
             self.network_manager,
             self.download_manager,
             self.node_settings,
@@ -287,12 +287,13 @@ class SqueakNode:
         self.new_follow_worker = UpdateFollowsWorker(
             self.squeak_store,
             self.network_manager,
+            self.network_handler,
         )
 
     def initialize_peer_subscription_update_worker(self):
         self.new_bitcoin_block_worker = PeerSubscriptionUpdateWorker(
-            self.squeak_store,
             self.network_manager,
+            self.network_handler,
             self.bitcoin_block_subscription_client,
         )
 

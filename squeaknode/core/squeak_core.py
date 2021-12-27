@@ -65,6 +65,8 @@ class SqueakCore:
     def make_squeak(self, signing_profile: SqueakProfile, content_str: str, replyto_hash: Optional[bytes] = None) -> Tuple[CSqueak, bytes]:
         """Create a new squeak.
 
+        TODO: Include the block header in the result tuple.
+
         Args:
             signing_profile: The profile of the author of the squeak.
             content_str: The content of the squeak as a string.
