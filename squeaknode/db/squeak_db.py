@@ -84,6 +84,10 @@ class SqueakDb:
         logger.debug("SqlAlchemy version: {}".format(sqlalchemy.__version__))
         run_migrations(self.engine)
 
+        # Create aliases for profiles
+        self.author_profiles = self.profiles.alias()
+        self.recipient_profiles = self.profiles.alias()
+
     def init_with_retries(
             self,
             num_retries=INIT_NUM_RETRIES,
@@ -153,13 +157,11 @@ class SqueakDb:
         return self.timestamp_now_ms > \
             self.squeaks.c.created_time_ms + interval_s * 1000
 
-    @property
-    def profile_has_private_key(self):
-        return self.profiles.c.private_key != None  # noqa: E711
+    def profile_has_private_key(self, profiles_table):
+        return profiles_table.c.private_key != None  # noqa: E711
 
-    @property
-    def profile_is_following(self):
-        return self.profiles.c.following == True  # noqa: E711
+    def profile_is_following(self, profiles_table):
+        return profiles_table.c.following == True  # noqa: E711
 
     @property
     def timestamp_now_ms(self):
@@ -260,20 +262,20 @@ class SqueakDb:
 
     def get_squeak_entry(self, squeak_hash: bytes) -> Optional[SqueakEntry]:
         """ Get a squeak with the author profile. """
-        author_profiles = self.profiles.alias()
-        recipient_profiles = self.profiles.alias()
+        # author_profiles = self.profiles.alias()
+        # recipient_profiles = self.profiles.alias()
 
         s = (
-            select([self.squeaks, author_profiles, recipient_profiles])
+            select([self.squeaks, self.author_profiles, self.recipient_profiles])
             .select_from(
                 self.squeaks
                 .outerjoin(
-                    author_profiles,
-                    author_profiles.c.public_key == self.squeaks.c.author_public_key,
+                    self.author_profiles,
+                    self.author_profiles.c.public_key == self.squeaks.c.author_public_key,
                 )
                 .outerjoin(
-                    recipient_profiles,
-                    recipient_profiles.c.public_key == self.squeaks.c.recipient_public_key,
+                    self.recipient_profiles,
+                    self.recipient_profiles.c.public_key == self.squeaks.c.recipient_public_key,
                 )
             )
             .where(self.squeaks.c.hash == squeak_hash)
@@ -283,7 +285,11 @@ class SqueakDb:
             row = result.fetchone()
             if row is None:
                 return None
-            return self._parse_squeak_entry(row, author_profiles_table=author_profiles, recipient_profiles_table=recipient_profiles)
+            return self._parse_squeak_entry(
+                row,
+                # author_profiles_table=author_profiles,
+                # recipient_profiles_table=recipient_profiles,
+            )
 
     def get_timeline_squeak_entries(
             self,
@@ -306,14 +312,24 @@ class SqueakDb:
             last_squeak_hash.hex(),
         ))
         s = (
-            select([self.squeaks, self.profiles])
+            # select([self.squeaks, self.profiles])
+            select([self.squeaks, self.author_profiles, self.recipient_profiles])
             .select_from(
-                self.squeaks.outerjoin(
-                    self.profiles,
-                    self.profiles.c.public_key == self.squeaks.c.author_public_key,
+                # self.squeaks.outerjoin(
+                #     self.profiles,
+                #     self.profiles.c.public_key == self.squeaks.c.author_public_key,
+                # )
+                self.squeaks
+                .outerjoin(
+                    self.author_profiles,
+                    self.author_profiles.c.public_key == self.squeaks.c.author_public_key,
+                )
+                .outerjoin(
+                    self.recipient_profiles,
+                    self.recipient_profiles.c.public_key == self.squeaks.c.recipient_public_key,
                 )
             )
-            .where(self.profile_is_following)
+            .where(self.profile_is_following(self.author_profiles))
             .where(
                 tuple_(
                     self.squeaks.c.block_height,
@@ -355,11 +371,21 @@ class SqueakDb:
             last_squeak_hash.hex(),
         ))
         s = (
-            select([self.squeaks, self.profiles])
+            # select([self.squeaks, self.profiles])
+            select([self.squeaks, self.author_profiles, self.recipient_profiles])
             .select_from(
-                self.squeaks.outerjoin(
-                    self.profiles,
-                    self.profiles.c.public_key == self.squeaks.c.author_public_key,
+                # self.squeaks.outerjoin(
+                #     self.profiles,
+                #     self.profiles.c.public_key == self.squeaks.c.author_public_key,
+                # )
+                self.squeaks
+                .outerjoin(
+                    self.author_profiles,
+                    self.author_profiles.c.public_key == self.squeaks.c.author_public_key,
+                )
+                .outerjoin(
+                    self.recipient_profiles,
+                    self.recipient_profiles.c.public_key == self.squeaks.c.recipient_public_key,
                 )
             )
             .where(
@@ -409,11 +435,21 @@ class SqueakDb:
             last_squeak_hash.hex(),
         ))
         s = (
-            select([self.squeaks, self.profiles])
+            # select([self.squeaks, self.profiles])
+            select([self.squeaks, self.author_profiles, self.recipient_profiles])
             .select_from(
-                self.squeaks.outerjoin(
-                    self.profiles,
-                    self.profiles.c.public_key == self.squeaks.c.author_public_key,
+                # self.squeaks.outerjoin(
+                #     self.profiles,
+                #     self.profiles.c.public_key == self.squeaks.c.author_public_key,
+                # )
+                self.squeaks
+                .outerjoin(
+                    self.author_profiles,
+                    self.author_profiles.c.public_key == self.squeaks.c.author_public_key,
+                )
+                .outerjoin(
+                    self.recipient_profiles,
+                    self.recipient_profiles.c.public_key == self.squeaks.c.recipient_public_key,
                 )
             )
             .where(self.squeaks.c.author_public_key == public_key.to_bytes())
@@ -464,11 +500,21 @@ class SqueakDb:
             last_squeak_hash.hex(),
         ))
         s = (
-            select([self.squeaks, self.profiles])
+            # select([self.squeaks, self.profiles])
+            select([self.squeaks, self.author_profiles, self.recipient_profiles])
             .select_from(
-                self.squeaks.outerjoin(
-                    self.profiles,
-                    self.profiles.c.public_key == self.squeaks.c.author_public_key,
+                # self.squeaks.outerjoin(
+                #     self.profiles,
+                #     self.profiles.c.public_key == self.squeaks.c.author_public_key,
+                # )
+                self.squeaks
+                .outerjoin(
+                    self.author_profiles,
+                    self.author_profiles.c.public_key == self.squeaks.c.author_public_key,
+                )
+                .outerjoin(
+                    self.recipient_profiles,
+                    self.recipient_profiles.c.public_key == self.squeaks.c.recipient_public_key,
                 )
             )
             .where(self.squeaks.c.content.ilike(f'%{search_text}%'))
@@ -521,14 +567,23 @@ class SqueakDb:
         )
 
         s = (
-            select([self.squeaks, self.profiles])
+            # select([self.squeaks, self.profiles])
+            select([self.squeaks, self.author_profiles, self.recipient_profiles])
             .select_from(
                 self.squeaks.join(
                     ancestors,
                     ancestors.c.hash == self.squeaks.c.hash,
-                ).outerjoin(
-                    self.profiles,
-                    self.profiles.c.public_key == self.squeaks.c.author_public_key,
+                    # ).outerjoin(
+                    #     self.profiles,
+                    #     self.profiles.c.public_key == self.squeaks.c.author_public_key,
+                )
+                .outerjoin(
+                    self.author_profiles,
+                    self.author_profiles.c.public_key == self.squeaks.c.author_public_key,
+                )
+                .outerjoin(
+                    self.recipient_profiles,
+                    self.recipient_profiles.c.public_key == self.squeaks.c.recipient_public_key,
                 )
             )
             .order_by(
@@ -583,11 +638,21 @@ class SqueakDb:
             last_squeak_hash.hex(),
         ))
         s = (
-            select([self.squeaks, self.profiles])
+            # select([self.squeaks, self.profiles])
+            select([self.squeaks, self.author_profiles, self.recipient_profiles])
             .select_from(
-                self.squeaks.outerjoin(
-                    self.profiles,
-                    self.profiles.c.public_key == self.squeaks.c.author_public_key,
+                # self.squeaks.outerjoin(
+                #     self.profiles,
+                #     self.profiles.c.public_key == self.squeaks.c.author_public_key,
+                # )
+                self.squeaks
+                .outerjoin(
+                    self.author_profiles,
+                    self.author_profiles.c.public_key == self.squeaks.c.author_public_key,
+                )
+                .outerjoin(
+                    self.recipient_profiles,
+                    self.recipient_profiles.c.public_key == self.squeaks.c.recipient_public_key,
                 )
             )
             .where(self.squeaks.c.reply_hash == squeak_hash)
@@ -707,15 +772,25 @@ class SqueakDb:
         criteria for deletion.
         """
         s = (
-            select([self.squeaks, self.profiles])
+            # select([self.squeaks, self.profiles])
+            select([self.squeaks, self.author_profiles, self.recipient_profiles])
             .select_from(
-                self.squeaks.outerjoin(
-                    self.profiles,
-                    self.profiles.c.public_key == self.squeaks.c.author_public_key,
+                # self.squeaks.outerjoin(
+                #     self.profiles,
+                #     self.profiles.c.public_key == self.squeaks.c.author_public_key,
+                # )
+                self.squeaks
+                .outerjoin(
+                    self.author_profiles,
+                    self.author_profiles.c.public_key == self.squeaks.c.author_public_key,
+                )
+                .outerjoin(
+                    self.recipient_profiles,
+                    self.recipient_profiles.c.public_key == self.squeaks.c.recipient_public_key,
                 )
             )
             .where(self.squeak_is_older_than_retention(interval_s))
-            .where(not_(self.profile_has_private_key))
+            .where(not_(self.profile_has_private_key(self.author_profiles)))
             .where(not_(self.squeak_is_liked))
         )
         with self.get_connection() as connection:
@@ -750,7 +825,10 @@ class SqueakDb:
 
     def get_signing_profiles(self) -> List[SqueakProfile]:
         """ Get all signing profiles. """
-        s = select([self.profiles]).where(self.profile_has_private_key)
+        s = (
+            select([self.profiles])
+            .where(self.profile_has_private_key(self.profiles))
+        )
         with self.get_connection() as connection:
             result = connection.execute(s)
             rows = result.fetchall()
@@ -759,7 +837,10 @@ class SqueakDb:
 
     def get_contact_profiles(self) -> List[SqueakProfile]:
         """ Get all contact profiles. """
-        s = select([self.profiles]).where(not_(self.profile_has_private_key))
+        s = (
+            select([self.profiles])
+            .where(not_(self.profile_has_private_key(self.profiles)))
+        )
         with self.get_connection() as connection:
             result = connection.execute(s)
             rows = result.fetchall()
@@ -1458,7 +1539,8 @@ class SqueakDb:
     def _parse_squeak(self, row) -> CSqueak:
         return CSqueak.deserialize(row["squeak"])
 
-    def _parse_squeak_entry(self, row, author_profiles_table=None, recipient_profiles_table=None) -> SqueakEntry:
+    # def _parse_squeak_entry(self, row, author_profiles_table=None, recipient_profiles_table=None) -> SqueakEntry:
+    def _parse_squeak_entry(self, row) -> SqueakEntry:
         public_key_bytes = row["author_public_key"]
         recipient_public_key_bytes = row["recipient_public_key"]
         secret_key_column = row["secret_key"]
@@ -1467,9 +1549,9 @@ class SqueakDb:
             row["reply_hash"]) if row["reply_hash"] else None
         liked_time_ms = row["liked_time_ms"]
         profile = self._try_parse_squeak_profile(
-            row, profiles_table=author_profiles_table)
+            row, profiles_table=self.author_profiles)
         recipient_profile = self._try_parse_squeak_profile(
-            row, profiles_table=recipient_profiles_table)
+            row, profiles_table=self.recipient_profiles)
         return SqueakEntry(
             squeak_hash=(row["hash"]),
             serialized_squeak=(row["squeak"]),
