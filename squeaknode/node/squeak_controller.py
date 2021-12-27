@@ -78,7 +78,6 @@ class SqueakController:
         self.config = config
 
     def make_squeak(self, profile_id: int, content_str: str, replyto_hash: Optional[bytes]) -> Optional[bytes]:
-        # return self.squeak_store.make_squeak(profile_id, content_str, replyto_hash)
         squeak_profile = self.squeak_store.get_squeak_profile(profile_id)
         if squeak_profile is None:
             raise Exception("Profile with id {} not found.".format(
@@ -103,8 +102,6 @@ class SqueakController:
         return inserted_squeak_hash
 
     def pay_offer(self, received_offer_id: int) -> int:
-        # return self.squeak_store.pay_offer(received_offer_id)
-        # Get the offer from the database
         received_offer = self.squeak_store.get_received_offer(
             received_offer_id,
         )
@@ -115,16 +112,9 @@ class SqueakController:
         logger.info("Paying received offer: {}".format(received_offer))
         sent_payment = self.squeak_core.pay_offer(received_offer)
         sent_payment_id = self.squeak_store.save_sent_payment(sent_payment)
-        # # Delete the received offer
-        # self.squeak_db.delete_offer(sent_payment.payment_hash)
-        # Mark the received offer as paid
         self.squeak_store.mark_received_offer_paid(
             sent_payment.payment_hash,
         )
-        # self.unlock_squeak(
-        #     received_offer.squeak_hash,
-        #     sent_payment.secret_key,
-        # )
         squeak = self.squeak_store.get_squeak(received_offer.squeak_hash)
         decrypted_content = self.squeak_core.get_decrypted_content(
             squeak,
@@ -136,12 +126,6 @@ class SqueakController:
             decrypted_content,
         )
         return sent_payment_id
-
-    # def save_squeak(self, squeak: CSqueak) -> Optional[bytes]:
-    #     return self.squeak_store.save_squeak(squeak)
-
-    # def unlock_squeak(self, squeak_hash: bytes, secret_key: bytes):
-    #     return self.squeak_store.unlock_squeak(squeak_hash, secret_key)
 
     def get_squeak(self, squeak_hash: bytes) -> Optional[CSqueak]:
         return self.squeak_store.get_squeak(squeak_hash)
@@ -325,13 +309,6 @@ class SqueakController:
             limit,
             last_entry,
         )
-
-    # def save_received_offer(self, offer: Offer, peer_address: PeerAddress) -> Optional[int]:
-    #     return self.squeak_store.save_received_offer(offer, peer_address)
-
-    # # TODO: remove from controller.
-    # def get_followed_public_keys(self) -> List[SqueakPublicKey]:
-    #     return self.squeak_store.get_followed_public_keys()
 
     def get_received_payment_summary(self) -> ReceivedPaymentSummary:
         return self.squeak_store.get_received_payment_summary()
