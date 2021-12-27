@@ -62,7 +62,12 @@ class SqueakCore:
         self.bitcoin_client = bitcoin_client
         self.lightning_client = lightning_client
 
-    def make_squeak(self, signing_profile: SqueakProfile, content_str: str, replyto_hash: Optional[bytes] = None) -> Tuple[CSqueak, bytes]:
+    def make_squeak(
+            self,
+            signing_profile: SqueakProfile,
+            content_str: str,
+            replyto_hash: Optional[bytes] = None,
+    ) -> Tuple[CSqueak, bytes, CBlockHeader]:
         """Create a new squeak.
 
         TODO: Include the block header in the result tuple.
@@ -73,8 +78,8 @@ class SqueakCore:
             replyto_hash: The hash of the squeak to which this one is replying.
 
         Returns:
-            Tuple[CSqueak, bytes]: the squeak that was created together
-        with its decryption key.
+            Tuple[CSqueak, bytes, CBlockheader]: the squeak that was created together
+        with its decryption key and block header.
 
         Raises:
             Exception: If the profile does not have a signing key.
@@ -84,13 +89,14 @@ class SqueakCore:
         block_info = self.bitcoin_client.get_best_block_info()
         block_height = block_info.block_height
         block_hash = block_info.block_hash
-        return make_squeak_with_block(
+        squeak, secret_key = make_squeak_with_block(
             signing_profile.private_key,
             content_str,
             block_height,
             block_hash,
             replyto_hash,
         )
+        return squeak, secret_key, block_info.block_header
 
     def check_squeak(self, squeak: CSqueak) -> None:
         """Checks if the squeak is valid and has a valid signature.

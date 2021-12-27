@@ -289,8 +289,9 @@ def test_make_squeak(
         squeak_core,
         signing_profile,
         squeak_content,
+        block_header
 ):
-    created_squeak, created_secret_key = squeak_core.make_squeak(
+    created_squeak, created_secret_key, attached_block_header = squeak_core.make_squeak(
         signing_profile,
         squeak_content,
     )
@@ -300,6 +301,7 @@ def test_make_squeak(
     )
 
     assert decrypted_created_content == squeak_content
+    assert attached_block_header == block_header
 
 
 def test_make_squeak_with_contact_profile(

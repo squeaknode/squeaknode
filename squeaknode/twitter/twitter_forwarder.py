@@ -176,11 +176,10 @@ class TwitterForwarderTask:
             raise Exception("Profile with id {} not found.".format(
                 profile_id,
             ))
-        squeak, secret_key = self.squeak_core.make_squeak(
+        squeak, secret_key, block_header = self.squeak_core.make_squeak(
             squeak_profile,
             content_str,
         )
-        block_header = self.squeak_core.get_block_header(squeak)
         inserted_squeak_hash = self.squeak_store.save_squeak(
             squeak,
             block_header,
