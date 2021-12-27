@@ -56,6 +56,9 @@ logger = logging.getLogger(__name__)
 
 
 class SqueakController:
+    """Control plane for all actions on a node.
+
+    """
 
     def __init__(
         self,
