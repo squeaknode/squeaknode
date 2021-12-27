@@ -23,6 +23,7 @@ import logging
 import threading
 
 from squeaknode.network.network_manager import NetworkManager
+from squeaknode.node.network_handler import NetworkHandler
 from squeaknode.node.squeak_store import SqueakStore
 
 
@@ -35,9 +36,11 @@ class UpdateFollowsWorker:
             self,
             squeak_store: SqueakStore,
             network_manager: NetworkManager,
+            network_handler: NetworkHandler,
     ):
         self.squeak_store = squeak_store
         self.network_manager = network_manager
+        self.network_handler = network_handler
         self.stopped = threading.Event()
 
     def start_running(self):
@@ -56,5 +59,5 @@ class UpdateFollowsWorker:
                 self.stopped,
         ):
             logger.debug("Handling update subscriptions event")
-            locator = self.squeak_store.get_interested_locator()
+            locator = self.network_handler.get_interested_locator()
             self.network_manager.update_local_subscriptions(locator)

@@ -64,7 +64,6 @@ class SqueakStore:
         squeak_retention_s,
         received_offer_retention_s,
         sent_offer_retention_s,
-        interested_block_range_size,
     ):
         self.squeak_db = squeak_db
         self.max_squeaks = max_squeaks
@@ -72,7 +71,6 @@ class SqueakStore:
         self.squeak_retention_s = squeak_retention_s
         self.received_offer_retention_s = received_offer_retention_s
         self.sent_offer_retention_s = sent_offer_retention_s
-        self.interested_block_range_size = interested_block_range_size
         self.new_squeak_listener = EventListener()
         self.new_received_offer_listener = EventListener()
         self.new_secret_key_listener = EventListener()
@@ -81,10 +79,7 @@ class SqueakStore:
 
     def save_squeak(self, squeak: CSqueak, block_header: CBlockHeader) -> Optional[bytes]:
         # Check if the squeak is valid
-        # self.squeak_core.check_squeak(squeak)
         CheckSqueak(squeak)
-        # Get the block header for the squeak.
-        # block_header = self.squeak_core.get_block_header(squeak)
         # Check if limit exceeded.
         if self.squeak_db.get_number_of_squeaks() >= self.max_squeaks:
             raise Exception("Exceeded max number of squeaks.")
@@ -105,16 +100,11 @@ class SqueakStore:
         logger.info("Saved squeak: {}".format(
             inserted_squeak_hash.hex(),
         ))
-        # Notify the listener
         self.new_squeak_listener.handle_new_item(squeak)
         return inserted_squeak_hash
 
     def unlock_squeak(self, squeak_hash: bytes, secret_key: bytes, decrypted_content: str):
         squeak = self.squeak_db.get_squeak(squeak_hash)
-        # decrypted_content = self.squeak_core.get_decrypted_content(
-        #     squeak,
-        #     secret_key,
-        # )
         self.squeak_db.set_squeak_decryption_key(
             squeak_hash,
             secret_key,
@@ -123,102 +113,7 @@ class SqueakStore:
         logger.info("Unlocked squeak: {}".format(
             squeak_hash.hex(),
         ))
-        # Notify the listener
         self.new_secret_key_listener.handle_new_item(squeak)
-
-    # def make_squeak(self, profile_id: int, content_str: str, replyto_hash: Optional[bytes]) -> Optional[bytes]:
-    #     squeak_profile = self.squeak_db.get_profile(profile_id)
-    #     squeak, decryption_key = self.squeak_core.make_squeak(
-    #         squeak_profile,
-    #         content_str,
-    #         replyto_hash,
-    #     )
-    #     inserted_squeak_hash = self.save_squeak(squeak)
-    #     if inserted_squeak_hash is None:
-    #         return None
-    #     self.unlock_squeak(
-    #         inserted_squeak_hash,
-    #         decryption_key,
-    #     )
-    #     return inserted_squeak_hash
-
-    # def get_secret_key_reply(
-    #         self,
-    #         squeak_hash: bytes,
-    #         lnd_external_address: Optional[LightningAddressHostPort],
-    #         peer_address: PeerAddress,
-    #         price_msat: int,
-    # ) -> Optional[SecretKeyReply]:
-    #     if price_msat == 0:
-    #         return self.get_free_squeak_secret_key_reply(
-    #             squeak_hash,
-    #         )
-    #     else:
-    #         return self.get_offer_reply(
-    #             squeak_hash,
-    #             lnd_external_address,
-    #             peer_address,
-    #             price_msat,
-    #         )
-
-    # def get_offer_reply(
-    #         self,
-    #         squeak_hash: bytes,
-    #         lnd_external_address: Optional[LightningAddressHostPort],
-    #         peer_address: PeerAddress,
-    #         price_msat: int,
-    # ) -> Optional[OfferReply]:
-    #     sent_offer = self.get_sent_offer_for_peer(
-    #         squeak_hash,
-    #         peer_address,
-    #         price_msat,
-    #     )
-    #     if sent_offer is None:
-    #         return None
-    #     try:
-    #         offer = self.squeak_core.package_offer(
-    #             sent_offer,
-    #             lnd_external_address,
-    #         )
-    #         return OfferReply(
-    #             squeak_hash=squeak_hash,
-    #             offer=offer,
-    #         )
-    #     except Exception:
-    #         return None
-
-    # def get_free_squeak_secret_key_reply(self, squeak_hash: bytes) -> Optional[FreeSecretKeyReply]:
-    #     secret_key = self.get_squeak_secret_key(squeak_hash)
-    #     if secret_key is None:
-    #         return None
-    #     return FreeSecretKeyReply(
-    #         squeak_hash=squeak_hash,
-    #         secret_key=secret_key,
-    #     )
-
-    # def pay_offer(self, received_offer_id: int) -> int:
-    #     # Get the offer from the database
-    #     received_offer = self.squeak_db.get_received_offer(
-    #         received_offer_id)
-    #     if received_offer is None:
-    #         raise Exception("Received offer with id {} not found.".format(
-    #             received_offer_id,
-    #         ))
-    #     logger.info("Paying received offer: {}".format(received_offer))
-    #     sent_payment = self.squeak_core.pay_offer(received_offer)
-    #     sent_payment_id = self.squeak_db.insert_sent_payment(sent_payment)
-    #     # # Delete the received offer
-    #     # self.squeak_db.delete_offer(sent_payment.payment_hash)
-    #     # Mark the received offer as paid
-    #     self.squeak_db.set_received_offer_paid(
-    #         sent_payment.payment_hash,
-    #         True,
-    #     )
-    #     self.unlock_squeak(
-    #         received_offer.squeak_hash,
-    #         sent_payment.secret_key,
-    #     )
-    #     return sent_payment_id
 
     def get_squeak(self, squeak_hash: bytes) -> Optional[CSqueak]:
         return self.squeak_db.get_squeak(squeak_hash)
@@ -237,36 +132,6 @@ class SqueakStore:
 
     def save_sent_offer(self, sent_offer: SentOffer) -> int:
         return self.squeak_db.insert_sent_offer(sent_offer)
-
-    # def get_sent_offer_for_peer(
-    #         self,
-    #         squeak_hash: bytes,
-    #         peer_address: PeerAddress,
-    #         price_msat: int,
-    # ) -> Optional[SentOffer]:
-    #     # Check if there is an existing offer for the hash/peer_address combination
-    #     sent_offer = self.squeak_db.get_sent_offer_by_squeak_hash_and_peer(
-    #         squeak_hash,
-    #         peer_address,
-    #     )
-    #     if sent_offer:
-    #         return sent_offer
-    #     squeak = self.get_squeak(squeak_hash)
-    #     secret_key = self.get_squeak_secret_key(squeak_hash)
-    #     if squeak is None or secret_key is None:
-    #         return None
-    #     try:
-    #         sent_offer = self.squeak_core.create_offer(
-    #             squeak,
-    #             secret_key,
-    #             peer_address,
-    #             price_msat,
-    #         )
-    #     except Exception:
-    #         logger.exception("Failed to create offer.")
-    #         return None
-    #     self.squeak_db.insert_sent_offer(sent_offer)
-    #     return sent_offer
 
     def create_signing_profile(self, profile_name: str) -> int:
         squeak_profile = create_signing_profile(
@@ -494,31 +359,6 @@ class SqueakStore:
             limit,
             last_entry,
         )
-
-    # def save_received_offer(self, offer: Offer, peer_address: PeerAddress) -> Optional[int]:
-    #     squeak = self.get_squeak(offer.squeak_hash)
-    #     secret_key = self.get_squeak_secret_key(offer.squeak_hash)
-    #     if squeak is None or secret_key is not None:
-    #         return None
-    #     try:
-    #         # TODO: Call unpack_offer with check_payment_point=True.
-    #         received_offer = self.squeak_core.unpack_offer(
-    #             squeak,
-    #             offer,
-    #             peer_address,
-    #         )
-    #     except Exception:
-    #         logger.exception("Failed to save received offer.")
-    #         return None
-    #     received_offer_id = self.squeak_db.insert_received_offer(
-    #         received_offer)
-    #     if received_offer_id is None:
-    #         return None
-    #     logger.info("Saved received offer: {}".format(received_offer))
-    #     received_offer = received_offer._replace(
-    #         received_offer_id=received_offer_id)
-    #     self.new_received_offer_listener.handle_new_item(received_offer)
-    #     return received_offer_id
 
     def save_received_offer(self, received_offer: ReceivedOffer) -> Optional[int]:
         received_offer_id = self.squeak_db.insert_received_offer(

@@ -176,7 +176,6 @@ class SqueakNode:
             self.config.node.squeak_retention_s,
             self.config.node.received_offer_retention_s,
             self.config.node.sent_offer_retention_s,
-            self.config.node.interest_block_interval,
         )
 
     def initialize_payment_processor(self):
@@ -288,12 +287,13 @@ class SqueakNode:
         self.new_follow_worker = UpdateFollowsWorker(
             self.squeak_store,
             self.network_manager,
+            self.network_handler,
         )
 
     def initialize_peer_subscription_update_worker(self):
         self.new_bitcoin_block_worker = PeerSubscriptionUpdateWorker(
-            self.squeak_store,
             self.network_manager,
+            self.network_handler,
             self.bitcoin_block_subscription_client,
         )
 

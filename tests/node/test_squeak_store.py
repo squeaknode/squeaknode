@@ -77,20 +77,8 @@ def sent_offer_retention_s():
 
 
 @pytest.fixture
-def interested_block_range_size():
-    return 2016
-
-
-@pytest.fixture
 def inserted_signing_profile_id(squeak_db, signing_profile):
     yield squeak_db.insert_profile(signing_profile)
-
-
-# @pytest.fixture
-# def inserted_received_offer_id(squeak_db, received_offer, creation_date):
-#     with mock.patch.object(SqueakDb, 'timestamp_now_ms', new_callable=mock.PropertyMock) as mock_timestamp_ms:
-#         mock_timestamp_ms.return_value = creation_date / 1000
-#         yield squeak_db.insert_received_offer(received_offer)
 
 
 @pytest.fixture
@@ -101,7 +89,6 @@ def squeak_store(
     squeak_retention_s,
     received_offer_retention_s,
     sent_offer_retention_s,
-    interested_block_range_size,
 ):
     return SqueakStore(
         squeak_db,
@@ -110,7 +97,6 @@ def squeak_store(
         squeak_retention_s,
         received_offer_retention_s,
         sent_offer_retention_s,
-        interested_block_range_size,
     )
 
 
