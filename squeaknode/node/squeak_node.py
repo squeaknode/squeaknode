@@ -171,7 +171,6 @@ class SqueakNode:
     def initialize_squeak_store(self):
         self.squeak_store = SqueakStore(
             self.squeak_db,
-            self.squeak_core,
             self.config.node.max_squeaks,
             self.config.node.max_squeaks_per_public_key_per_block,
             self.config.node.squeak_retention_s,
@@ -190,6 +189,7 @@ class SqueakNode:
     def initialize_twitter_forwarder(self):
         self.twitter_forwarder = TwitterForwarder(
             self.squeak_store,
+            self.squeak_core,
             self.config.twitter.forward_tweets_retry_s,
         )
 
@@ -211,6 +211,7 @@ class SqueakNode:
     def initialize_network_handler(self):
         self.network_handler = NetworkHandler(
             self.squeak_store,
+            self.squeak_core,
             self.network_manager,
             self.download_manager,
             self.node_settings,

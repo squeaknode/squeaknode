@@ -24,7 +24,6 @@ import pytest
 from sqlalchemy import create_engine
 
 from squeaknode.core.lightning_address import LightningAddressHostPort
-from squeaknode.core.squeak_core import SqueakCore
 from squeaknode.db.squeak_db import SqueakDb
 from squeaknode.node.squeak_store import SqueakStore
 
@@ -40,11 +39,6 @@ def squeak_db(db_engine):
     db = SqueakDb(db_engine)
     db.init()
     yield db
-
-
-@pytest.fixture
-def squeak_core():
-    return mock.Mock(spec=SqueakCore)
 
 
 @pytest.fixture
@@ -102,7 +96,6 @@ def inserted_signing_profile_id(squeak_db, signing_profile):
 @pytest.fixture
 def squeak_store(
     squeak_db,
-    squeak_core,
     max_squeaks,
     max_squeaks_per_public_key_per_block,
     squeak_retention_s,
@@ -112,7 +105,6 @@ def squeak_store(
 ):
     return SqueakStore(
         squeak_db,
-        squeak_core,
         max_squeaks,
         max_squeaks_per_public_key_per_block,
         squeak_retention_s,
@@ -122,13 +114,9 @@ def squeak_store(
     )
 
 
-def test_save_squeak(squeak_store, squeak_db, squeak_core, block_header, squeak):
-    with mock.patch.object(squeak_core, 'check_squeak', autospec=True) as mock_check_squeak, \
-            mock.patch.object(squeak_core, 'get_block_header', autospec=True) as mock_get_block_header, \
-            mock.patch.object(squeak_db, 'insert_squeak', autospec=True) as mock_insert_squeak:
-        mock_check_squeak.return_value = None
-        mock_get_block_header.return_value = block_header
-        squeak_store.save_squeak(squeak)
+def test_save_squeak(squeak_store, squeak_db, block_header, squeak):
+    with mock.patch.object(squeak_db, 'insert_squeak', autospec=True) as mock_insert_squeak:
+        squeak_store.save_squeak(squeak, block_header)
 
         mock_insert_squeak.assert_called_once_with(squeak, block_header)
 
@@ -179,10 +167,9 @@ def test_get_sent_offer_already_exists(squeak_store, squeak_db, sent_offer):
     with mock.patch.object(squeak_db, 'get_sent_offer_by_squeak_hash_and_peer', autospec=True) as mock_get_sent_offer_by_squeak_hash_and_peer:
         mock_get_sent_offer_by_squeak_hash_and_peer.return_value = sent_offer
 
-        retrieved_sent_offer = squeak_store.get_sent_offer_for_peer(
+        retrieved_sent_offer = squeak_store.get_sent_offer_by_squeak_hash_and_peer(
             sent_offer.squeak_hash,
             sent_offer.peer_address,
-            sent_offer.price_msat,
         )
 
     assert retrieved_sent_offer == sent_offer
