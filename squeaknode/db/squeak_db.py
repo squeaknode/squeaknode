@@ -1471,7 +1471,8 @@ class SqueakDb:
         )
 
     def _parse_squeak_profile(self, row, author_profiles=None) -> SqueakProfile:
-        author_profiles = author_profiles or self.profiles
+        author_profiles = author_profiles if (
+            author_profiles is not None) else self.profiles
 
         private_key_bytes = row[author_profiles.c.private_key]
         private_key = SqueakPrivateKey.from_bytes(
