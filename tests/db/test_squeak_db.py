@@ -505,6 +505,35 @@ def test_get_squeak_entry(
         profile_id=None) == signing_profile
 
 
+def test_get_private_squeak_entry(
+        squeak_db,
+        private_squeak,
+        recipient_public_key,
+        block_header,
+        public_key,
+        signing_profile,
+        recipient_contact_profile,
+        inserted_signing_profile_id,
+):
+    inserted_private_squeak_hash = squeak_db.insert_squeak(
+        private_squeak, block_header)
+    squeak_db.insert_profile(
+        recipient_contact_profile)
+
+    retrieved_squeak_entry = squeak_db.get_squeak_entry(
+        inserted_private_squeak_hash)
+
+    assert retrieved_squeak_entry.squeak_hash == inserted_private_squeak_hash
+    assert retrieved_squeak_entry.public_key == public_key
+    assert retrieved_squeak_entry.content is None
+    assert retrieved_squeak_entry.block_time == block_header.nTime
+    assert retrieved_squeak_entry.squeak_profile._replace(
+        profile_id=None) == signing_profile
+    assert retrieved_squeak_entry.recipient_public_key == recipient_public_key
+    assert retrieved_squeak_entry.recipient_squeak_profile._replace(
+        profile_id=None) == recipient_contact_profile
+
+
 def test_get_missing_squeak_entry(squeak_db, squeak, squeak_hash):
     retrieved_squeak_entry = squeak_db.get_squeak_entry(squeak_hash)
 

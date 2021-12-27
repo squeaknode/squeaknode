@@ -214,11 +214,16 @@ class SqueakDb:
             created_time_ms=self.timestamp_now_ms,
             hash=get_hash(squeak),
             squeak=squeak.serialize(),
-            reply_hash=squeak.hashReplySqk if squeak.is_reply else None,
+            reply_hash=(squeak.hashReplySqk
+                        if squeak.is_reply
+                        else None),
             block_hash=squeak.hashBlock,
             block_height=squeak.nBlockHeight,
             time_s=squeak.nTime,
             author_public_key=squeak.GetPubKey().to_bytes(),
+            recipient_public_key=(squeak.GetRecipientPubKey().to_bytes()
+                                  if squeak.is_private_message
+                                  else None),
             secret_key=None,
             block_time_s=block_header.nTime,
         )
@@ -256,13 +261,19 @@ class SqueakDb:
     def get_squeak_entry(self, squeak_hash: bytes) -> Optional[SqueakEntry]:
         """ Get a squeak with the author profile. """
         author_profiles = self.profiles.alias()
+        recipient_profiles = self.profiles.alias()
 
         s = (
-            select([self.squeaks, author_profiles])
+            select([self.squeaks, author_profiles, recipient_profiles])
             .select_from(
-                self.squeaks.outerjoin(
+                self.squeaks
+                .outerjoin(
                     author_profiles,
                     author_profiles.c.public_key == self.squeaks.c.author_public_key,
+                )
+                .outerjoin(
+                    recipient_profiles,
+                    recipient_profiles.c.public_key == self.squeaks.c.recipient_public_key,
                 )
             )
             .where(self.squeaks.c.hash == squeak_hash)
@@ -272,7 +283,7 @@ class SqueakDb:
             row = result.fetchone()
             if row is None:
                 return None
-            return self._parse_squeak_entry(row, author_profiles=author_profiles)
+            return self._parse_squeak_entry(row, author_profiles_table=author_profiles, recipient_profiles_table=recipient_profiles)
 
     def get_timeline_squeak_entries(
             self,
@@ -1447,17 +1458,24 @@ class SqueakDb:
     def _parse_squeak(self, row) -> CSqueak:
         return CSqueak.deserialize(row["squeak"])
 
-    def _parse_squeak_entry(self, row, author_profiles=None) -> SqueakEntry:
+    def _parse_squeak_entry(self, row, author_profiles_table=None, recipient_profiles_table=None) -> SqueakEntry:
+        public_key_bytes = row["author_public_key"]
+        recipient_public_key_bytes = row["recipient_public_key"]
         secret_key_column = row["secret_key"]
         is_locked = bool(secret_key_column)
         reply_to = (
             row["reply_hash"]) if row["reply_hash"] else None
         liked_time_ms = row["liked_time_ms"]
-        profile = self._try_parse_squeak_profile(row, author_profiles)
+        profile = self._try_parse_squeak_profile(
+            row, profiles_table=author_profiles_table)
+        recipient_profile = self._try_parse_squeak_profile(
+            row, profiles_table=recipient_profiles_table)
         return SqueakEntry(
             squeak_hash=(row["hash"]),
             serialized_squeak=(row["squeak"]),
-            public_key=SqueakPublicKey.from_bytes(row["author_public_key"]),
+            public_key=SqueakPublicKey.from_bytes(public_key_bytes),
+            recipient_public_key=SqueakPublicKey.from_bytes(
+                recipient_public_key_bytes) if recipient_public_key_bytes else None,
             block_height=row["block_height"],
             block_hash=(row["block_hash"]),
             block_time=row["block_time_s"],
@@ -1468,29 +1486,33 @@ class SqueakDb:
             liked_time_ms=liked_time_ms,
             content=row["content"],
             squeak_profile=profile,
+            recipient_squeak_profile=recipient_profile,
         )
 
-    def _parse_squeak_profile(self, row, author_profiles=None) -> SqueakProfile:
-        author_profiles = author_profiles if (
-            author_profiles is not None) else self.profiles
+    def _parse_squeak_profile(self, row, profiles_table=None) -> SqueakProfile:
+        profiles_table = profiles_table if (
+            profiles_table is not None) else self.profiles
 
-        private_key_bytes = row[author_profiles.c.private_key]
+        private_key_bytes = row[profiles_table.c.private_key]
         private_key = SqueakPrivateKey.from_bytes(
             private_key_bytes) if private_key_bytes else None
         return SqueakProfile(
-            profile_id=row[author_profiles.c.profile_id],
-            profile_name=row[author_profiles.c.profile_name],
+            profile_id=row[profiles_table.c.profile_id],
+            profile_name=row[profiles_table.c.profile_name],
             private_key=private_key,
             public_key=SqueakPublicKey.from_bytes(
-                row[author_profiles.c.public_key]),
-            following=row[author_profiles.c.following],
-            profile_image=row[author_profiles.c.profile_image],
+                row[profiles_table.c.public_key]),
+            following=row[profiles_table.c.following],
+            profile_image=row[profiles_table.c.profile_image],
         )
 
-    def _try_parse_squeak_profile(self, row, author_profiles=None) -> Optional[SqueakProfile]:
-        if row["profile_id"] is None:
+    def _try_parse_squeak_profile(self, row, profiles_table=None) -> Optional[SqueakProfile]:
+        profiles_table = profiles_table if (
+            profiles_table is not None) else self.profiles
+
+        if row[profiles_table.c.profile_id] is None:
             return None
-        return self._parse_squeak_profile(row, author_profiles)
+        return self._parse_squeak_profile(row, profiles_table=profiles_table)
 
     def _parse_squeak_peer(self, row) -> SqueakPeer:
         return SqueakPeer(

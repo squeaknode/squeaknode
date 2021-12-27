@@ -31,6 +31,7 @@ class SqueakEntry(NamedTuple):
     squeak_hash: bytes
     serialized_squeak: bytes
     public_key: SqueakPublicKey
+    recipient_public_key: Optional[SqueakPublicKey]
     block_height: int
     block_hash: bytes
     block_time: int
@@ -39,5 +40,6 @@ class SqueakEntry(NamedTuple):
     is_unlocked: bool
     secret_key: Optional[bytes]
     squeak_profile: Optional[SqueakProfile]
+    recipient_squeak_profile: Optional[SqueakProfile]
     liked_time_ms: Optional[int] = None
     content: Optional[str] = None
