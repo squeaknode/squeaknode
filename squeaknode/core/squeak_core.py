@@ -67,7 +67,7 @@ class SqueakCore:
             signing_profile: SqueakProfile,
             content_str: str,
             replyto_hash: Optional[bytes] = None,
-    ) -> Tuple[CSqueak, bytes, CBlockHeader]:
+    ) -> Tuple[CSqueak, bytes]:
         """Create a new squeak.
 
         TODO: Include the block header in the result tuple.
@@ -78,8 +78,8 @@ class SqueakCore:
             replyto_hash: The hash of the squeak to which this one is replying.
 
         Returns:
-            Tuple[CSqueak, bytes, CBlockheader]: the squeak that was created together
-        with its decryption key and block header.
+            Tuple[CSqueak, bytes]: the squeak that was created together
+        with its decryption key.
 
         Raises:
             Exception: If the profile does not have a signing key.
@@ -96,7 +96,7 @@ class SqueakCore:
             block_hash,
             replyto_hash,
         )
-        return squeak, secret_key, block_info.block_header
+        return squeak, secret_key
 
     def check_squeak(self, squeak: CSqueak) -> None:
         """Checks if the squeak is valid and has a valid signature.
