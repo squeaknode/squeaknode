@@ -10,13 +10,13 @@ import { useHistory } from 'react-router-dom';
 
 import LockIcon from '@material-ui/icons/Lock';
 import DownloadIcon from '@material-ui/icons/CloudDownload';
-import ForwardIcon from '@mui/icons-material/Forward';
 
 // styles
 import useStyles from './styles';
 
 import SqueakActionBar from '../SqueakActionBar';
 import SqueakTime from '../SqueakTime';
+import PrivateSqueakIndicator from '../PrivateSqueakIndicator';
 
 import {
   goToSqueakPage,
@@ -44,16 +44,16 @@ export default function SqueakThreadItem({
     }
     goToPubkeyPage(history, squeak.getAuthorPubkey());
   };
-
-  const onRecipientAddressClick = (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    console.log('Handling recipient click...');
-    if (!squeak || !squeak.getIsPrivate()) {
-      return;
-    }
-    goToPubkeyPage(history, squeak.getRecipientPubkey());
-  };
+  //
+  // const onRecipientAddressClick = (event) => {
+  //   event.preventDefault();
+  //   event.stopPropagation();
+  //   console.log('Handling recipient click...');
+  //   if (!squeak || !squeak.getIsPrivate()) {
+  //     return;
+  //   }
+  //   goToPubkeyPage(history, squeak.getRecipientPubkey());
+  // };
 
   const onSqueakClick = (event) => {
     event.preventDefault();
@@ -63,22 +63,24 @@ export default function SqueakThreadItem({
 
   function PrivateMessageRecipient() {
     return (
-      <Grid
-        container
-        direction="row"
-        justify="flex-start"
-        alignItems="flex-start"
-      >
-        <Grid item>
-          <ForwardIcon/>
-          <Link
-            href="#"
-            onClick={onRecipientAddressClick}
-          >
-            {getRecipientAddressDisplay()}
-          </Link>
-        </Grid>
-      </Grid>
+      // <Grid
+      //   container
+      //   direction="row"
+      //   justify="flex-start"
+      //   alignItems="flex-start"
+      // >
+      //   <Grid item>
+      //     <ForwardIcon/>
+      //     <Link
+      //       href="#"
+      //       onClick={onRecipientAddressClick}
+      //     >
+      //       {getRecipientAddressDisplay()}
+      //     </Link>
+      //   </Grid>
+      // </Grid>
+      <PrivateSqueakIndicator squeak={squeak}>
+      </PrivateSqueakIndicator>
     );
   }
 
@@ -146,14 +148,14 @@ export default function SqueakThreadItem({
       : squeak.getAuthorPubkey();
   }
 
-  function getRecipientAddressDisplay() {
-    if (!squeak) {
-      return 'Recipient unknown';
-    }
-    return squeak.getIsRecipientKnown()
-      ? squeak.getRecipient().getProfileName()
-      : squeak.getRecipientPubkey();
-  }
+  // function getRecipientAddressDisplay() {
+  //   if (!squeak) {
+  //     return 'Recipient unknown';
+  //   }
+  //   return squeak.getIsRecipientKnown()
+  //     ? squeak.getRecipient().getProfileName()
+  //     : squeak.getRecipientPubkey();
+  // }
 
   function SqueakBackgroundColor() {
     if (!squeak || !squeak.getContentStr()) {
