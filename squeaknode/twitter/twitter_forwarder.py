@@ -183,5 +183,4 @@ class TwitterForwarderTask:
         self.squeak_store.unlock_squeak(
             inserted_squeak_hash,
             secret_key,
-            content_str,
         )

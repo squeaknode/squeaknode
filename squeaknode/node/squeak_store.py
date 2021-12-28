@@ -26,6 +26,7 @@ from typing import List
 from typing import Optional
 
 from squeak.core import CheckSqueak
+from squeak.core import CheckSqueakSecretKey
 from squeak.core import CSqueak
 from squeak.core.keys import SqueakPrivateKey
 from squeak.core.keys import SqueakPublicKey
@@ -107,8 +108,13 @@ class SqueakStore:
         self.new_squeak_listener.handle_new_item(squeak)
         return inserted_squeak_hash
 
-    def unlock_squeak(self, squeak_hash: bytes, secret_key: bytes, decrypted_content: str):
+    def unlock_squeak(self, squeak_hash: bytes, secret_key: bytes):
         squeak = self.squeak_db.get_squeak(squeak_hash)
+        CheckSqueakSecretKey(squeak, secret_key)
+        decrypted_content = self.squeak_core.get_decrypted_content(
+            squeak,
+            secret_key,
+        )
         self.squeak_db.set_squeak_decryption_key(
             squeak_hash,
             secret_key,

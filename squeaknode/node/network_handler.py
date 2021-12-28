@@ -137,15 +137,9 @@ class NetworkHandler:
         return False
 
     def unlock_squeak(self, squeak_hash: bytes, secret_key: bytes):
-        squeak = self.squeak_store.get_squeak(squeak_hash)
-        decrypted_content = self.squeak_core.get_decrypted_content(
-            squeak,
-            secret_key,
-        )
         self.squeak_store.unlock_squeak(
             squeak_hash,
             secret_key,
-            decrypted_content,
         )
 
     def get_secret_key_reply(self, squeak_hash: bytes, peer_address: PeerAddress) -> Optional[SecretKeyReply]:
