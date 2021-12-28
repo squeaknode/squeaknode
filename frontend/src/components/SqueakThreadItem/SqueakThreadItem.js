@@ -10,6 +10,7 @@ import { useHistory } from 'react-router-dom';
 
 import LockIcon from '@material-ui/icons/Lock';
 import DownloadIcon from '@material-ui/icons/CloudDownload';
+import ForwardIcon from '@mui/icons-material/Forward';
 
 // styles
 import useStyles from './styles';
@@ -44,11 +45,42 @@ export default function SqueakThreadItem({
     goToPubkeyPage(history, squeak.getAuthorPubkey());
   };
 
+  const onRecipientAddressClick = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    console.log('Handling recipient click...');
+    if (!squeak || !squeak.getIsPrivate()) {
+      return;
+    }
+    goToPubkeyPage(history, squeak.getRecipientPubkey());
+  };
+
   const onSqueakClick = (event) => {
     event.preventDefault();
     console.log(`Handling squeak click for hash: ${hash}`);
     goToSqueakPage(history, hash);
   };
+
+  function PrivateMessageRecipient() {
+    return (
+      <Grid
+        container
+        direction="row"
+        justify="flex-start"
+        alignItems="flex-start"
+      >
+        <Grid item>
+          <ForwardIcon/>
+          <Link
+            href="#"
+            onClick={onRecipientAddressClick}
+          >
+            {getRecipientAddressDisplay()}
+          </Link>
+        </Grid>
+      </Grid>
+    );
+  }
 
   function SqueakUnlockedContent() {
     return (
@@ -114,6 +146,15 @@ export default function SqueakThreadItem({
       : squeak.getAuthorPubkey();
   }
 
+  function getRecipientAddressDisplay() {
+    if (!squeak) {
+      return 'Recipient unknown';
+    }
+    return squeak.getIsRecipientKnown()
+      ? squeak.getRecipient().getProfileName()
+      : squeak.getRecipientPubkey();
+  }
+
   function SqueakBackgroundColor() {
     if (!squeak) {
       return SqueakLockedBackgroundColor();
@@ -149,6 +190,7 @@ export default function SqueakThreadItem({
           </Box>
         </Grid>
       </Grid>
+      {squeak.getIsPrivate() && PrivateMessageRecipient()}
       <Grid
         container
         direction="row"
