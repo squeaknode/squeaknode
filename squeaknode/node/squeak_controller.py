@@ -93,11 +93,8 @@ class SqueakController:
         )
         inserted_squeak_hash = self.squeak_store.save_squeak(squeak)
         if inserted_squeak_hash is None:
-            return None
-        self.squeak_store.unlock_squeak(
-            inserted_squeak_hash,
-            secret_key,
-        )
+            raise Exception("Failed to save squeak.")
+        self.squeak_store.save_secret_key(inserted_squeak_hash, secret_key)
         return inserted_squeak_hash
 
     def pay_offer(self, received_offer_id: int) -> int:
@@ -114,7 +111,7 @@ class SqueakController:
         self.squeak_store.mark_received_offer_paid(
             sent_payment.payment_hash,
         )
-        self.squeak_store.unlock_squeak(
+        self.squeak_store.save_secret_key(
             received_offer.squeak_hash,
             sent_payment.secret_key,
         )

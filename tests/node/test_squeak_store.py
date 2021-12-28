@@ -151,21 +151,32 @@ def test_save_squeak_above_max_per_pubkey(squeak_store, squeak_db, squeak_core, 
         assert mock_handle_new_squeak.call_count == 0
 
 
-def test_unlock_squeak(squeak_store, squeak_db, squeak_core, squeak, squeak_hash, secret_key, squeak_content):
+def test_save_secret_key(squeak_store, squeak_db, squeak_core, squeak, squeak_hash, secret_key):
     with mock.patch.object(squeak_db, 'get_squeak', autospec=True) as mock_get_squeak, \
             mock.patch.object(squeak_db, 'set_squeak_secret_key', autospec=True) as mock_set_squeak_secret_key, \
-            mock.patch.object(squeak_db, 'set_squeak_decrypted_content', autospec=True) as mock_set_squeak_decrypted_content, \
-            mock.patch.object(squeak_store.new_secret_key_listener, 'handle_new_item', autospec=True) as mock_handle_new_secret_key, \
-            mock.patch.object(squeak_core, 'get_decrypted_content', autospec=True) as mock_get_decrypted_content:
+            mock.patch.object(squeak_store, 'unlock_squeak', autospec=True) as mock_unlock_squeak, \
+            mock.patch.object(squeak_store.new_secret_key_listener, 'handle_new_item', autospec=True) as mock_handle_new_secret_key:
         mock_get_squeak.return_value = squeak
-        mock_get_decrypted_content.return_value = squeak_content
-        squeak_store.unlock_squeak(squeak_hash, secret_key)
+        squeak_store.save_secret_key(squeak_hash, secret_key)
 
         mock_set_squeak_secret_key.assert_called_once_with(
             squeak_hash, secret_key)
+        mock_handle_new_secret_key.assert_called_once_with(squeak)
+        mock_unlock_squeak.assert_called_once_with(squeak_hash)
+
+
+def test_unlock_squeak(squeak_store, squeak_db, squeak_core, squeak, squeak_hash, secret_key, squeak_content):
+    with mock.patch.object(squeak_db, 'get_squeak', autospec=True) as mock_get_squeak, \
+            mock.patch.object(squeak_db, 'get_squeak_secret_key', autospec=True) as mock_get_squeak_secret_key, \
+            mock.patch.object(squeak_db, 'set_squeak_decrypted_content', autospec=True) as mock_set_squeak_decrypted_content, \
+            mock.patch.object(squeak_core, 'get_decrypted_content', autospec=True) as mock_get_decrypted_content:
+        mock_get_squeak.return_value = squeak
+        mock_get_squeak_secret_key.return_value = secret_key
+        mock_get_decrypted_content.return_value = squeak_content
+        squeak_store.unlock_squeak(squeak_hash)
+
         mock_set_squeak_decrypted_content.assert_called_once_with(
             squeak_hash, squeak_content)
-        mock_handle_new_secret_key.assert_called_once_with(squeak)
 
 
 # @pytest.fixture

@@ -137,7 +137,7 @@ class NetworkHandler:
         return False
 
     def unlock_squeak(self, squeak_hash: bytes, secret_key: bytes):
-        self.squeak_store.unlock_squeak(
+        self.squeak_store.save_secret_key(
             squeak_hash,
             secret_key,
         )

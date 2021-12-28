@@ -180,7 +180,4 @@ class TwitterForwarderTask:
         )
         if inserted_squeak_hash is None:
             return None
-        self.squeak_store.unlock_squeak(
-            inserted_squeak_hash,
-            secret_key,
-        )
+        self.squeak_store.save_secret_key(inserted_squeak_hash, secret_key)
