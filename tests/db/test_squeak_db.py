@@ -63,8 +63,10 @@ def inserted_reply_squeak_hash(squeak_db, reply_squeak, block_header):
 
 @pytest.fixture
 def unlocked_squeak_hash(squeak_db, squeak, inserted_squeak_hash, secret_key, squeak_content):
-    squeak_db.set_squeak_decryption_key(
-        inserted_squeak_hash, secret_key, squeak_content)
+    squeak_db.set_squeak_secret_key(
+        inserted_squeak_hash, secret_key)
+    squeak_db.set_squeak_decrypted_content(
+        inserted_squeak_hash, squeak_content)
     yield inserted_squeak_hash
 
 

@@ -49,6 +49,7 @@ from squeaknode.core.squeak_profile import SqueakProfile
 from squeaknode.core.twitter_account import TwitterAccount
 from squeaknode.core.twitter_account_entry import TwitterAccountEntry
 from squeaknode.core.update_subscriptions_event import UpdateSubscriptionsEvent
+from squeaknode.db.squeak_db import SqueakDb
 from squeaknode.node.listener_subscription_client import EventListener
 
 
@@ -59,7 +60,7 @@ class SqueakStore:
 
     def __init__(
         self,
-        squeak_db,
+        squeak_db: SqueakDb,
         squeak_core: SqueakCore,
         max_squeaks,
         max_squeaks_per_public_key_per_block,
@@ -115,9 +116,12 @@ class SqueakStore:
             squeak,
             secret_key,
         )
-        self.squeak_db.set_squeak_decryption_key(
+        self.squeak_db.set_squeak_secret_key(
             squeak_hash,
             secret_key,
+        )
+        self.squeak_db.set_squeak_decrypted_content(
+            squeak_hash,
             decrypted_content,
         )
         logger.info("Unlocked squeak: {}".format(
