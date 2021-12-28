@@ -47,6 +47,7 @@ export default function SqueakDetailItem({
   const history = useHistory();
 
   const [buyDialogOpen, setBuyDialogOpen] = useState(false);
+  const [decryptDialogOpen, setDecryptDialogOpen] = useState(false);
   const [unlockedSnackbarOpen, setUnlockedSnackbarOpen] = useState(false);
 
   const handleClickOpenBuyDialog = () => {
@@ -55,6 +56,14 @@ export default function SqueakDetailItem({
 
   const handleCloseBuyDialog = () => {
     setBuyDialogOpen(false);
+  };
+
+  const handleClickOpenDecryptDialog = () => {
+    setDecryptDialogOpen(true);
+  };
+
+  const handleCloseDecryptDialog = () => {
+    setDecryptDialogOpen(false);
   };
 
   const onAddressClick = (event) => {
@@ -74,6 +83,15 @@ export default function SqueakDetailItem({
       return;
     }
     handleClickOpenBuyDialog();
+  };
+
+  const onDecryptClick = (event) => {
+    event.preventDefault();
+    console.log('Handling decrypt click...');
+    if (!squeak) {
+      return;
+    }
+    handleClickOpenDecryptDialog();
   };
 
   const onDownloadClick = (event) => {
@@ -127,6 +145,21 @@ export default function SqueakDetailItem({
     );
   }
 
+  function SqueakUnlockedButEncryptedContent() {
+    return (
+      <>
+        <LockIcon />
+        <Button
+          variant="contained"
+          onClick={onDecryptClick}
+        >
+          Use private key to decrypt
+        </Button>
+
+      </>
+    );
+  }
+
   function SqueakMissingContent() {
     return (
       <>
@@ -149,11 +182,23 @@ export default function SqueakDetailItem({
         </>
       );
     }
+    if (!squeak.getIsUnlocked()) {
+      return (
+        <>
+          {SqueakLockedContent()}
+        </>
+      );
+    }
+    if (!squeak.getContentStr()) {
+      return (
+        <>
+          {SqueakUnlockedButEncryptedContent()}
+        </>
+      );
+    }
     return (
       <>
-        {squeak.getIsUnlocked()
-          ? SqueakUnlockedContent()
-          : SqueakLockedContent()}
+        {SqueakUnlockedContent()}
       </>
     );
   }
