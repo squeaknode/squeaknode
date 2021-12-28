@@ -67,6 +67,7 @@ class SqueakCore:
             signing_profile: SqueakProfile,
             content_str: str,
             replyto_hash: Optional[bytes] = None,
+            recipient_profile: Optional[SqueakProfile] = None,
     ) -> Tuple[CSqueak, bytes]:
         """Create a new squeak.
 
@@ -94,7 +95,8 @@ class SqueakCore:
             content_str,
             block_height,
             block_hash,
-            replyto_hash,
+            replyto_hash=replyto_hash,
+            recipient_public_key=recipient_profile.public_key if recipient_profile else None,
         )
         return squeak, secret_key
 
@@ -131,21 +133,38 @@ class SqueakCore:
             raise Exception("Block hash incorrect.")
         return block_info.block_header
 
-    def get_decrypted_content(self, squeak: CSqueak, secret_key: bytes) -> str:
+    def get_decrypted_content(
+            self,
+            squeak: CSqueak,
+            secret_key: bytes,
+            author_profile: Optional[SqueakProfile] = None,
+            recipient_profile: Optional[SqueakProfile] = None,
+    ) -> str:
         """Checks if the secret key is valid for the given squeak and returns
         the decrypted content.
 
         Args:
             squeak: The squeak to be validated.
             secret_key: The secret key.
+            author_profile: The profile of the author.
+            recipient_profile: The profile of the recipient.
 
         Returns:
-            bytes: the decrypted content
+            str: the decrypted content as a string.
 
         Raises:
             Exception: If the secret key is not valid.
         """
-        return get_decrypted_content(squeak, secret_key)
+        if author_profile and author_profile.private_key is None:
+            raise Exception("Author profile does not have private key.")
+        if recipient_profile and recipient_profile.private_key is None:
+            raise Exception("Recipient profile does not have private key.")
+        return get_decrypted_content(
+            squeak,
+            secret_key,
+            authorPrivKey=author_profile.private_key if author_profile else None,
+            recipientPrivKey=recipient_profile.private_key if recipient_profile else None,
+        )
 
     def get_best_block_height(self) -> int:
         """Get the current height of the latest block in the blockchain.

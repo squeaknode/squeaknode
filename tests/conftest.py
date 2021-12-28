@@ -242,6 +242,11 @@ def recipient_contact_profile_name():
 
 
 @pytest.fixture
+def recipient_signing_profile_name():
+    yield "recipient_signing_profile_name"
+
+
+@pytest.fixture
 def signing_profile(signing_profile_name, private_key):
     yield gen_signing_profile(
         signing_profile_name,
@@ -262,6 +267,14 @@ def recipient_contact_profile(recipient_contact_profile_name, recipient_public_k
     yield gen_contact_profile(
         recipient_contact_profile_name,
         recipient_public_key,
+    )
+
+
+@pytest.fixture
+def recipient_signing_profile(recipient_signing_profile_name, recipient_private_key):
+    yield gen_signing_profile(
+        recipient_signing_profile_name,
+        recipient_private_key,
     )
 
 

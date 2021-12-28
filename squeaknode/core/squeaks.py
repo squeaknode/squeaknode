@@ -69,6 +69,7 @@ def make_squeak_with_block(
         block_height: The height of the latest block in the bitcoin blockchain.
         block_hahs: The hash of the latest block in the bitcoin blockchain.
         replyto_hash: The hash of the squeak to which this one is replying.
+        recipient_public_key: The public key of the recipient of a private squeak.
 
     Returns:
         Tuple[CSqueak, bytes]: the squeak that was created together
@@ -102,7 +103,12 @@ def check_squeak(squeak: CSqueak) -> None:
 
 
 # TODO: return bytes (encoded utf-8 content)
-def get_decrypted_content(squeak: CSqueak, secret_key: bytes) -> str:
+def get_decrypted_content(
+        squeak: CSqueak,
+        secret_key: bytes,
+        authorPrivKey: Optional[SqueakPrivateKey] = None,
+        recipientPrivKey: Optional[SqueakPrivateKey] = None,
+) -> str:
     """Checks if the secret key is valid for the given squeak and returns
     the decrypted content.
 
@@ -116,7 +122,11 @@ def get_decrypted_content(squeak: CSqueak, secret_key: bytes) -> str:
     Raises:
         Exception: If the secret key is not valid.
     """
-    return squeak.GetDecryptedContentStr(secret_key)
+    return squeak.GetDecryptedContentStr(
+        secret_key,
+        authorPrivKey=authorPrivKey,
+        recipientPrivKey=recipientPrivKey,
+    )
 
 
 def get_payment_point_of_secret_key(secret_key: bytes) -> bytes:

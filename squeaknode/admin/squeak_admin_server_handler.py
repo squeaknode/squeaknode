@@ -292,12 +292,18 @@ class SqueakAdminServerHandler(object):
         replyto_hash_str = request.replyto
         replyto_hash = bytes.fromhex(
             replyto_hash_str) if replyto_hash_str else None
+        has_recipient = request.has_recipient
+        recipient_profile_id = request.recipient_profile_id if has_recipient else None
         logger.info("Handle make squeak profile with id: {}".format(profile_id))
         inserted_squeak_hash = self.squeak_controller.make_squeak(
-            profile_id, content_str, replyto_hash
+            profile_id,
+            content_str,
+            replyto_hash,
+            recipient_profile_id,
         )
         inserted_squeak_hash_str = optional_squeak_hash_to_hex(
-            inserted_squeak_hash)
+            inserted_squeak_hash,
+        )
         return squeak_admin_pb2.MakeSqueakReply(
             squeak_hash=inserted_squeak_hash_str,
         )

@@ -267,6 +267,32 @@ def test_make_reply_squeak(
     ]
 
 
+def test_make_private_squeak(admin_stub, signing_profile_id, recipient_contact_profile_id):
+    make_squeak_content = "This is a private squeak!"
+    make_squeak_hash = make_squeak(
+        admin_stub,
+        signing_profile_id,
+        make_squeak_content,
+        recipient_profile_id=recipient_contact_profile_id,
+    )
+    assert len(make_squeak_hash) == 32 * 2
+
+    # Get the squeak display item
+    get_squeak_display_entry = get_squeak_display(
+        admin_stub, make_squeak_hash)
+    assert get_squeak_display_entry.squeak_hash == make_squeak_hash
+    assert (
+        get_squeak_display_entry.content_str == "This is a private squeak!"
+    )
+    assert get_squeak_display_entry.is_author_known
+    assert get_squeak_display_entry.HasField("author")
+    assert len(
+        get_squeak_display_entry.author.profile_image) > 0
+    assert not get_squeak_display_entry.is_reply
+    assert not bool(get_squeak_display_entry.reply_to)
+    assert len(get_squeak_display_entry.secret_key_hex) == 32 * 2
+
+
 def test_make_signing_profile(admin_stub):
     # Create a new signing profile
     profile_name = "test_signing_profile_name"

@@ -539,6 +539,12 @@ message MakeSqueakRequest {
 
     /// The replyto hash
     string replyto = 3;
+
+    /// Has a recipient
+    bool has_recipient = 4;
+
+    /// The profile id of the recipient if squeak is private
+    int32 recipient_profile_id = 5;
 }
 
 message MakeSqueakReply {

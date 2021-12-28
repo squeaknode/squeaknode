@@ -80,21 +80,40 @@ class SqueakController:
         self.node_settings = node_settings
         self.config = config
 
-    def make_squeak(self, profile_id: int, content_str: str, replyto_hash: Optional[bytes]) -> Optional[bytes]:
+    def make_squeak(
+            self,
+            profile_id: int,
+            content_str: str,
+            replyto_hash: Optional[bytes],
+            recipient_profile_id: Optional[int],
+    ) -> Optional[bytes]:
         squeak_profile = self.squeak_store.get_squeak_profile(profile_id)
         if squeak_profile is None:
             raise Exception("Profile with id {} not found.".format(
                 profile_id,
             ))
+        if recipient_profile_id:
+            recipient_profile = self.squeak_store.get_squeak_profile(
+                recipient_profile_id)
+            if recipient_profile is None:
+                raise Exception("Recipient profile with id {} not found.".format(
+                    recipient_profile_id,
+                ))
         squeak, secret_key = self.squeak_core.make_squeak(
             squeak_profile,
             content_str,
             replyto_hash,
+            recipient_profile=recipient_profile if recipient_profile_id else None,
         )
         inserted_squeak_hash = self.squeak_store.save_squeak(squeak)
         if inserted_squeak_hash is None:
             raise Exception("Failed to save squeak.")
         self.squeak_store.save_secret_key(inserted_squeak_hash, secret_key)
+        if squeak.is_private_message:
+            self.squeak_store.unlock_squeak(
+                inserted_squeak_hash,
+                author_profile_id=profile_id,
+            )
         return inserted_squeak_hash
 
     def pay_offer(self, received_offer_id: int) -> int:
@@ -116,6 +135,18 @@ class SqueakController:
             sent_payment.secret_key,
         )
         return sent_payment_id
+
+    def unlock_private_squeak_as_recipient(self, squeak_hash: bytes, recipient_profile_id: int):
+        self.squeak_store.unlock_squeak(
+            squeak_hash,
+            recipient_profile_id=recipient_profile_id,
+        )
+
+    def unlock_private_squeak_as_author(self, squeak_hash: bytes, author_profile_id: int):
+        self.squeak_store.unlock_squeak(
+            squeak_hash,
+            author_profile_id=author_profile_id,
+        )
 
     def get_squeak(self, squeak_hash: bytes) -> Optional[CSqueak]:
         return self.squeak_store.get_squeak(squeak_hash)
