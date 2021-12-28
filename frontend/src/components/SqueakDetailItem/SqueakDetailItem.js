@@ -22,6 +22,8 @@ import BuySqueakDialog from '../BuySqueakDialog';
 import SqueakActionBar from '../SqueakActionBar';
 import SqueakTime from '../SqueakTime';
 import SqueakUserAvatar from '../SqueakUserAvatar';
+import PrivateSqueakIndicator from '../PrivateSqueakIndicator';
+
 
 import {
   goToPubkeyPage,
@@ -91,6 +93,13 @@ export default function SqueakDetailItem({
     setUnlockedSnackbarOpen(true);
   };
 
+  function PrivateMessageRecipient() {
+    return (
+      <PrivateSqueakIndicator squeak={squeak}>
+      </PrivateSqueakIndicator>
+    );
+  }
+
   function SqueakUnlockedContent() {
     return (
       <Typography
@@ -157,12 +166,10 @@ export default function SqueakDetailItem({
   }
 
   function SqueakBackgroundColor() {
-    if (!squeak) {
+    if (!squeak || !squeak.getContentStr()) {
       return SqueakLockedBackgroundColor();
     }
-    return squeak.getIsUnlocked()
-      ? SqueakUnlockedBackgroundColor()
-      : SqueakLockedBackgroundColor();
+    return SqueakUnlockedBackgroundColor();
   }
 
   function getAddressDisplay() {
@@ -245,6 +252,7 @@ export default function SqueakDetailItem({
             </Box>
           </Grid>
         </Grid>
+        {squeak.getIsPrivate() && PrivateMessageRecipient()}
         <Grid
           container
           direction="row"
