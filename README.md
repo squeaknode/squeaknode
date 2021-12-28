@@ -10,10 +10,11 @@ Squeaknode allows you to create, view, buy, and sell squeaks.
 
 A squeak is an immutable structure that:
 * contains 280 utf-8 characters of text
-* optionally contains the hash of another squeak as a reply
+* contains the hash of another squeak as a reply, if the squeak is a reply
 * contains the height and block hash of the latest bitcoin block
 * contains the public key of the author, and is signed by the author
-* is encrypted until a lightning payment unlocks the text
+* contains the public key of the recipient, if the text is end-to-end encrypted
+* is encrypted until a lightning payment obtains the secret decryption key
 * has a unique hash that is derived from its contents
 
 The protocol is defined [here](https://github.com/yzernik/squeak/blob/master/docs/PROTOCOL.md).
