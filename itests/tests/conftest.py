@@ -96,6 +96,29 @@ def contact_profile_id(admin_stub, random_name, public_key):
 
 
 @pytest.fixture
+def recipient_signing_profile_id(admin_stub, random_recipient_name):
+    # Create a new signing profile
+    profile_id = create_signing_profile(admin_stub, random_recipient_name)
+    yield profile_id
+    # Delete the profile
+    delete_profile(admin_stub, profile_id)
+
+
+@pytest.fixture
+def recipient_contact_profile_id(admin_stub, random_recipient_name, public_key):
+    # Create a new contact profile
+    contact_profile_id = create_contact_profile(
+        admin_stub, random_recipient_name, public_key)
+    yield contact_profile_id
+    # Delete the profile
+    admin_stub.DeleteSqueakProfile(
+        squeak_admin_pb2.DeleteSqueakProfileRequest(
+            profile_id=contact_profile_id,
+        )
+    )
+
+
+@pytest.fixture
 def saved_squeak_hash(admin_stub, signing_profile_id):
     # Create a new squeak using the new profile
     make_squeak_content = "Hello from the profile on the server!"
@@ -136,6 +159,11 @@ def peer_id(admin_stub, random_name):
 @pytest.fixture
 def random_name():
     yield "random_name_{}".format(uuid.uuid1())
+
+
+@pytest.fixture
+def random_recipient_name():
+    yield "random_recipient_name_{}".format(uuid.uuid1())
 
 
 @pytest.fixture

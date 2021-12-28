@@ -356,12 +356,14 @@ def get_default_peer_port(node_stub):
     return get_default_peer_port_response.port
 
 
-def make_squeak(node_stub, profile_id, squeak_content, reply_to_hash=None):
+def make_squeak(node_stub, profile_id, squeak_content, reply_to_hash=None, recipient_profile_id=None):
     make_squeak_response = node_stub.MakeSqueak(
         squeak_admin_pb2.MakeSqueakRequest(
             profile_id=profile_id,
             content=squeak_content,
             replyto=reply_to_hash,
+            has_recipient=(recipient_profile_id is not None),
+            recipient_profile_id=recipient_profile_id,
         )
     )
     return make_squeak_response.squeak_hash
