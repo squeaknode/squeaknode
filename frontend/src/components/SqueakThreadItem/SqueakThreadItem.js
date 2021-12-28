@@ -156,12 +156,10 @@ export default function SqueakThreadItem({
   }
 
   function SqueakBackgroundColor() {
-    if (!squeak) {
+    if (!squeak || !squeak.getContentStr()) {
       return SqueakLockedBackgroundColor();
     }
-    return squeak.getIsUnlocked()
-      ? SqueakUnlockedBackgroundColor()
-      : SqueakLockedBackgroundColor();
+    return SqueakUnlockedBackgroundColor();
   }
 
   return (
