@@ -126,7 +126,12 @@ class SqueakStore:
         if not squeak.is_private_message:
             self.unlock_squeak(squeak_hash)
 
-    def unlock_squeak(self, squeak_hash: bytes, recipient_profile_id: Optional[int] = None):
+    def unlock_squeak(
+            self,
+            squeak_hash: bytes,
+            author_profile_id: Optional[int] = None,
+            recipient_profile_id: Optional[int] = None,
+    ):
         squeak = self.squeak_db.get_squeak(squeak_hash)
         secret_key = self.squeak_db.get_squeak_secret_key(squeak_hash)
         if squeak is None:
@@ -138,17 +143,20 @@ class SqueakStore:
                 recipient_profile_id)
             if recipient_profile is None:
                 raise Exception("Recipient profile does not exist.")
-            recipient_private_key = recipient_profile.private_key
-            if recipient_private_key is None:
-                raise Exception("Recipient profile must own the private key.")
-            # TODO: remove this log line later.
-            logger.info("Use private key here: {}".format(
-                recipient_private_key,
-            ))
             decrypted_content = self.squeak_core.get_decrypted_content(
                 squeak,
                 secret_key,
-                # TODO: use recipient private key here.
+                recipient_profile=recipient_profile,
+            )
+        elif author_profile_id:
+            author_profile = self.squeak_db.get_profile(
+                author_profile_id)
+            if author_profile is None:
+                raise Exception("Author profile does not exist.")
+            decrypted_content = self.squeak_core.get_decrypted_content(
+                squeak,
+                secret_key,
+                author_profile=author_profile,
             )
         else:
             decrypted_content = self.squeak_core.get_decrypted_content(

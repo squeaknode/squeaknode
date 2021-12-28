@@ -102,7 +102,12 @@ def check_squeak(squeak: CSqueak) -> None:
 
 
 # TODO: return bytes (encoded utf-8 content)
-def get_decrypted_content(squeak: CSqueak, secret_key: bytes) -> str:
+def get_decrypted_content(
+        squeak: CSqueak,
+        secret_key: bytes,
+        authorPrivKey: Optional[SqueakPrivateKey] = None,
+        recipientPrivKey: Optional[SqueakPrivateKey] = None,
+) -> str:
     """Checks if the secret key is valid for the given squeak and returns
     the decrypted content.
 
@@ -116,7 +121,11 @@ def get_decrypted_content(squeak: CSqueak, secret_key: bytes) -> str:
     Raises:
         Exception: If the secret key is not valid.
     """
-    return squeak.GetDecryptedContentStr(secret_key)
+    return squeak.GetDecryptedContentStr(
+        secret_key,
+        authorPrivKey=authorPrivKey,
+        recipientPrivKey=recipientPrivKey,
+    )
 
 
 def get_payment_point_of_secret_key(secret_key: bytes) -> bytes:
