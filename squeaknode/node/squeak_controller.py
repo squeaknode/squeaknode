@@ -117,6 +117,10 @@ class SqueakController:
         )
         return sent_payment_id
 
+    # TODO: implement this.
+    def unlock_private_squeak(self, squeak_hash: bytes, recipient_profile_id: int):
+        pass
+
     def get_squeak(self, squeak_hash: bytes) -> Optional[CSqueak]:
         return self.squeak_store.get_squeak(squeak_hash)
 
