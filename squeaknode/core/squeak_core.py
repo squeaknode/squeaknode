@@ -67,6 +67,7 @@ class SqueakCore:
             signing_profile: SqueakProfile,
             content_str: str,
             replyto_hash: Optional[bytes] = None,
+            recipient_profile: Optional[SqueakProfile] = None,
     ) -> Tuple[CSqueak, bytes]:
         """Create a new squeak.
 
@@ -94,7 +95,8 @@ class SqueakCore:
             content_str,
             block_height,
             block_hash,
-            replyto_hash,
+            replyto_hash=replyto_hash,
+            recipient_public_key=recipient_profile.public_key if recipient_profile else None,
         )
         return squeak, secret_key
 

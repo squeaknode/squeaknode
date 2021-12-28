@@ -316,6 +316,34 @@ def test_make_squeak_with_contact_profile(
     assert "Can't make squeak with a contact profile." in str(excinfo.value)
 
 
+def test_make_private_squeak(
+        squeak_core,
+        signing_profile,
+        squeak_content,
+        block_header,
+        recipient_signing_profile,
+        recipient_contact_profile,
+):
+    created_squeak, created_secret_key = squeak_core.make_squeak(
+        signing_profile,
+        squeak_content,
+        recipient_profile=recipient_contact_profile,
+    )
+    recipient_decrypted_content = squeak_core.get_decrypted_content(
+        created_squeak,
+        created_secret_key,
+        recipient_profile=recipient_signing_profile,
+    )
+    author_decrypted_content = squeak_core.get_decrypted_content(
+        created_squeak,
+        created_secret_key,
+        author_profile=signing_profile,
+    )
+
+    assert recipient_decrypted_content == squeak_content
+    assert author_decrypted_content == squeak_content
+
+
 def test_get_block_header(
         squeak_core,
         squeak,

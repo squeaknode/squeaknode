@@ -80,7 +80,13 @@ class SqueakController:
         self.node_settings = node_settings
         self.config = config
 
-    def make_squeak(self, profile_id: int, content_str: str, replyto_hash: Optional[bytes]) -> Optional[bytes]:
+    def make_squeak(
+            self,
+            profile_id: int,
+            content_str: str,
+            replyto_hash: Optional[bytes],
+            recipient_profile_id: Optional[int],
+    ) -> Optional[bytes]:
         squeak_profile = self.squeak_store.get_squeak_profile(profile_id)
         if squeak_profile is None:
             raise Exception("Profile with id {} not found.".format(
