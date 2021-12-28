@@ -25,7 +25,6 @@ from typing import Iterator
 from typing import List
 from typing import Optional
 
-from bitcoin.core import CBlockHeader
 from squeak.core import CheckSqueak
 from squeak.core import CSqueak
 from squeak.core.keys import SqueakPrivateKey
@@ -42,6 +41,7 @@ from squeaknode.core.received_payment_summary import ReceivedPaymentSummary
 from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.sent_payment import SentPayment
 from squeaknode.core.sent_payment_summary import SentPaymentSummary
+from squeaknode.core.squeak_core import SqueakCore
 from squeaknode.core.squeak_entry import SqueakEntry
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
@@ -59,6 +59,7 @@ class SqueakStore:
     def __init__(
         self,
         squeak_db,
+        squeak_core: SqueakCore,
         max_squeaks,
         max_squeaks_per_public_key_per_block,
         squeak_retention_s,
@@ -66,6 +67,7 @@ class SqueakStore:
         sent_offer_retention_s,
     ):
         self.squeak_db = squeak_db
+        self.squeak_core = squeak_core
         self.max_squeaks = max_squeaks
         self.max_squeaks_per_public_key_per_block = max_squeaks_per_public_key_per_block
         self.squeak_retention_s = squeak_retention_s
@@ -77,9 +79,11 @@ class SqueakStore:
         self.new_follow_listener = EventListener()
         self.twitter_stream_change_listener = EventListener()
 
-    def save_squeak(self, squeak: CSqueak, block_header: CBlockHeader) -> Optional[bytes]:
-        # Check if the squeak is valid
+    def save_squeak(self, squeak: CSqueak) -> Optional[bytes]:
+        # Check if the squeak is valid context free.
         CheckSqueak(squeak)
+        # Get the block header.
+        block_header = self.squeak_core.get_block_header(squeak)
         # Check if limit exceeded.
         if self.squeak_db.get_number_of_squeaks() >= self.max_squeaks:
             raise Exception("Exceeded max number of squeaks.")

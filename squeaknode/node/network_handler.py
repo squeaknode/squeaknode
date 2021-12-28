@@ -22,7 +22,6 @@
 import logging
 from typing import Optional
 
-from bitcoin.core import CBlockHeader
 from squeak.core import CSqueak
 from squeak.messages import msg_getdata
 from squeak.messages import MSG_SECRET_KEY
@@ -100,11 +99,10 @@ class NetworkHandler:
         ]
 
     def save_squeak(self, squeak: CSqueak) -> Optional[bytes]:
-        block_header = self.squeak_core.get_block_header(squeak)
-        return self.save_active_download_squeak(squeak, block_header) or \
-            self.save_followed_squeak(squeak, block_header)
+        return self.save_active_download_squeak(squeak) or \
+            self.save_followed_squeak(squeak)
 
-    def save_active_download_squeak(self, squeak: CSqueak, block_header: CBlockHeader) -> Optional[bytes]:
+    def save_active_download_squeak(self, squeak: CSqueak) -> Optional[bytes]:
         """Save the given squeak as an active download.
 
         Returns:
@@ -113,13 +111,13 @@ class NetworkHandler:
         counter = self.get_download_squeak_counter(squeak)
         if counter is None:
             return None
-        saved_squeak_hash = self.squeak_store.save_squeak(squeak, block_header)
+        saved_squeak_hash = self.squeak_store.save_squeak(squeak)
         if saved_squeak_hash is None:
             return None
         counter.increment()
         return saved_squeak_hash
 
-    def save_followed_squeak(self, squeak: CSqueak, block_header: CBlockHeader) -> Optional[bytes]:
+    def save_followed_squeak(self, squeak: CSqueak) -> Optional[bytes]:
         """Save the given squeak because it matches the followed
         interest criteria.
 
@@ -129,7 +127,7 @@ class NetworkHandler:
         if not self.squeak_matches_interest(squeak):
             return None
         # TODO: catch exception if save_squeak fails (because of rate limit, for example).
-        return self.squeak_store.save_squeak(squeak, block_header)
+        return self.squeak_store.save_squeak(squeak)
 
     def squeak_matches_interest(self, squeak: CSqueak) -> bool:
         locator = self.get_interested_locator()

@@ -171,6 +171,7 @@ class SqueakNode:
     def initialize_squeak_store(self):
         self.squeak_store = SqueakStore(
             self.squeak_db,
+            self.squeak_core,
             self.config.node.max_squeaks,
             self.config.node.max_squeaks_per_public_key_per_block,
             self.config.node.squeak_retention_s,
