@@ -19,6 +19,7 @@ import MuiAlert from '@material-ui/lab/Alert';
 import useStyles from './styles';
 
 import BuySqueakDialog from '../BuySqueakDialog';
+import DecryptSqueakDialog from '../DecryptSqueakDialog';
 import SqueakActionBar from '../SqueakActionBar';
 import SqueakTime from '../SqueakTime';
 import SqueakUserAvatar from '../SqueakUserAvatar';
