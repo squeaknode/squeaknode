@@ -21,7 +21,6 @@
 # SOFTWARE.
 import mock
 import pytest
-from sqlalchemy import create_engine
 
 from squeaknode.core.lightning_address import LightningAddressHostPort
 from squeaknode.core.squeak_core import SqueakCore
@@ -30,16 +29,8 @@ from squeaknode.node.squeak_store import SqueakStore
 
 
 @pytest.fixture
-def db_engine():
-    yield create_engine('sqlite://')
-
-
-@pytest.fixture
-def squeak_db(db_engine):
-    # TODO: use a mock object for db.
-    db = SqueakDb(db_engine)
-    db.init()
-    yield db
+def squeak_db():
+    return mock.Mock(spec=SqueakDb)
 
 
 @pytest.fixture
@@ -108,13 +99,56 @@ def squeak_store(
     )
 
 
-def test_save_squeak(squeak_store, squeak_db, squeak_core, block_header, squeak):
-    with mock.patch.object(squeak_db, 'insert_squeak', autospec=True) as mock_insert_squeak, \
+def test_save_squeak(squeak_store, squeak_db, squeak_core, block_header, squeak, squeak_hash):
+    with mock.patch.object(squeak_db, 'get_number_of_squeaks', autospec=True) as mock_get_number_of_squeaks, \
+            mock.patch.object(squeak_db, 'number_of_squeaks_with_public_key_with_block_height', autospec=True) as mock_number_of_squeaks_with_public_key_with_block_height, \
+            mock.patch.object(squeak_db, 'insert_squeak', autospec=True) as mock_insert_squeak, \
+            mock.patch.object(squeak_store.new_squeak_listener, 'handle_new_item', autospec=True) as mock_handle_new_squeak, \
             mock.patch.object(squeak_core, 'get_block_header', autospec=True) as mock_get_block_header:
+        mock_get_number_of_squeaks.return_value = 0
+        mock_number_of_squeaks_with_public_key_with_block_height.return_value = 0
         mock_get_block_header.return_value = block_header
+        mock_insert_squeak.return_value = squeak_hash
         squeak_store.save_squeak(squeak)
 
         mock_insert_squeak.assert_called_once_with(squeak, block_header)
+        mock_handle_new_squeak.assert_called_once_with(squeak)
+
+
+def test_save_squeak_above_max(squeak_store, squeak_db, squeak_core, block_header, squeak, squeak_hash, max_squeaks):
+    with mock.patch.object(squeak_db, 'get_number_of_squeaks', autospec=True) as mock_get_number_of_squeaks, \
+            mock.patch.object(squeak_db, 'number_of_squeaks_with_public_key_with_block_height', autospec=True) as mock_number_of_squeaks_with_public_key_with_block_height, \
+            mock.patch.object(squeak_db, 'insert_squeak', autospec=True) as mock_insert_squeak, \
+            mock.patch.object(squeak_store.new_squeak_listener, 'handle_new_item', autospec=True) as mock_handle_new_squeak, \
+            mock.patch.object(squeak_core, 'get_block_header', autospec=True) as mock_get_block_header:
+        mock_get_number_of_squeaks.return_value = max_squeaks + 1
+        mock_number_of_squeaks_with_public_key_with_block_height.return_value = 0
+        mock_get_block_header.return_value = block_header
+        mock_insert_squeak.return_value = squeak_hash
+
+        with pytest.raises(Exception):
+            squeak_store.save_squeak(squeak)
+
+        assert mock_insert_squeak.call_count == 0
+        assert mock_handle_new_squeak.call_count == 0
+
+
+def test_save_squeak_above_max_per_pubkey(squeak_store, squeak_db, squeak_core, block_header, squeak, squeak_hash, max_squeaks_per_public_key_per_block):
+    with mock.patch.object(squeak_db, 'get_number_of_squeaks', autospec=True) as mock_get_number_of_squeaks, \
+            mock.patch.object(squeak_db, 'number_of_squeaks_with_public_key_with_block_height', autospec=True) as mock_number_of_squeaks_with_public_key_with_block_height, \
+            mock.patch.object(squeak_db, 'insert_squeak', autospec=True) as mock_insert_squeak, \
+            mock.patch.object(squeak_store.new_squeak_listener, 'handle_new_item', autospec=True) as mock_handle_new_squeak, \
+            mock.patch.object(squeak_core, 'get_block_header', autospec=True) as mock_get_block_header:
+        mock_get_number_of_squeaks.return_value = 0
+        mock_number_of_squeaks_with_public_key_with_block_height.return_value = max_squeaks_per_public_key_per_block + 1
+        mock_get_block_header.return_value = block_header
+        mock_insert_squeak.return_value = squeak_hash
+
+        with pytest.raises(Exception):
+            squeak_store.save_squeak(squeak)
+
+        assert mock_insert_squeak.call_count == 0
+        assert mock_handle_new_squeak.call_count == 0
 
 
 # @pytest.fixture
