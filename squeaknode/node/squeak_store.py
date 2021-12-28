@@ -109,25 +109,56 @@ class SqueakStore:
         self.new_squeak_listener.handle_new_item(squeak)
         return inserted_squeak_hash
 
-    def unlock_squeak(self, squeak_hash: bytes, secret_key: bytes):
+    def save_secret_key(self, squeak_hash: bytes, secret_key: bytes):
         squeak = self.squeak_db.get_squeak(squeak_hash)
+        if squeak is None:
+            raise Exception("Squeakdoes not exist.")
         CheckSqueakSecretKey(squeak, secret_key)
-        decrypted_content = self.squeak_core.get_decrypted_content(
-            squeak,
-            secret_key,
-        )
         self.squeak_db.set_squeak_secret_key(
             squeak_hash,
             secret_key,
         )
+        logger.info("Saved squeak secret key: {}".format(
+            squeak_hash.hex(),
+        ))
+        self.new_secret_key_listener.handle_new_item(squeak)
+
+    def unlock_squeak(self, squeak_hash: bytes, recipient_profile_id: Optional[int] = None):
+        squeak = self.squeak_db.get_squeak(squeak_hash)
+        secret_key = self.squeak_db.get_squeak_secret_key(squeak_hash)
+        if squeak is None:
+            raise Exception("Squeakdoes not exist.")
+        if secret_key is None:
+            raise Exception("Secret key does not exist.")
+        if recipient_profile_id:
+            recipient_profile = self.squeak_db.get_profile(
+                recipient_profile_id)
+            if recipient_profile is None:
+                raise Exception("Recipient profile does not exist.")
+            recipient_private_key = recipient_profile.private_key
+            if recipient_private_key is None:
+                raise Exception("Recipient profile must own the private key.")
+            # TODO: remove this log line later.
+            logger.info("Use private key here: {}".format(
+                recipient_private_key,
+            ))
+            decrypted_content = self.squeak_core.get_decrypted_content(
+                squeak,
+                secret_key,
+                # TODO: use recipient private key here.
+            )
+        else:
+            decrypted_content = self.squeak_core.get_decrypted_content(
+                squeak,
+                secret_key,
+            )
         self.squeak_db.set_squeak_decrypted_content(
             squeak_hash,
             decrypted_content,
         )
-        logger.info("Unlocked squeak: {}".format(
+        logger.info("Unlocked squeak content: {}".format(
             squeak_hash.hex(),
         ))
-        self.new_secret_key_listener.handle_new_item(squeak)
 
     def get_squeak(self, squeak_hash: bytes) -> Optional[CSqueak]:
         return self.squeak_db.get_squeak(squeak_hash)
