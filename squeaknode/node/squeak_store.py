@@ -122,6 +122,9 @@ class SqueakStore:
             squeak_hash.hex(),
         ))
         self.new_secret_key_listener.handle_new_item(squeak)
+        # Unlock the squeak if it is not private.
+        if not squeak.is_private_message:
+            self.unlock_squeak(squeak_hash)
 
     def unlock_squeak(self, squeak_hash: bytes, recipient_profile_id: Optional[int] = None):
         squeak = self.squeak_db.get_squeak(squeak_hash)
