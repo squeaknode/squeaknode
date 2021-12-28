@@ -601,11 +601,13 @@ export function getContactProfilesRequest(handleResponse) {
   // });
 }
 
-export function makeSqueakRequest(profileId, content, replyto, handleResponse, handleErr) {
+export function makeSqueakRequest(profileId, content, replyto, hasRecipient, recipientProfileId, handleResponse, handleErr) {
   const request = new MakeSqueakRequest();
   request.setProfileId(profileId);
   request.setContent(content);
   request.setReplyto(replyto);
+  request.setHasRecipient(hasRecipient);
+  request.setRecipientProfileId(recipientProfileId);
   makeRequest(
     'makesqueakrequest',
     request,

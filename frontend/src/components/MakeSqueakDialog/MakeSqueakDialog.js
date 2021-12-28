@@ -11,6 +11,8 @@ import {
   InputLabel,
   Select,
   CircularProgress,
+  FormControlLabel,
+  Switch,
 } from '@material-ui/core';
 
 import { useHistory } from 'react-router-dom';
@@ -23,6 +25,7 @@ import SqueakThreadItem from '../SqueakThreadItem';
 import {
   makeSqueakRequest,
   getSigningProfilesRequest,
+  getProfilesRequest,
 } from '../../squeakclient/requests';
 import {
   goToSqueakPage,
@@ -40,6 +43,9 @@ export default function MakeSqueakDialog({
   const [profileId, setProfileId] = useState(-1);
   const [content, setContent] = useState('');
   const [signingProfiles, setSigningProfiles] = useState([]);
+  const [profiles, setProfiles] = useState([]);
+  const [isPrivate, setIsPrivate] = useState(false);
+  const [recipientProfileId, setrecipientProfileId] = useState(-1);
   const [loading, setLoading] = useState(false);
 
   const resetFields = () => {
@@ -55,6 +61,17 @@ export default function MakeSqueakDialog({
     setContent(event.target.value);
   };
 
+  const handleChangeIsPrivate = (event) => {
+    if (!event.target.checked) {
+      setrecipientProfileId(-1);
+    }
+    setIsPrivate(event.target.checked);
+  };
+
+  const handleChangeRecipient = (event) => {
+    setrecipientProfileId(event.target.value);
+  };
+
   const handleResponse = (response) => {
     setLoading(false);
     handleClose();
@@ -67,12 +84,16 @@ export default function MakeSqueakDialog({
     alert(`Error making squeak: ${err}`);
   };
 
-  const createSqueak = (profileId, content, replyto) => {
+  const createSqueak = (profileId, content, replyto, recipientProfileId) => {
+    const hasRecipient = recipientProfileId !== -1;
     setLoading(true);
-    makeSqueakRequest(profileId, content, replyto, handleResponse, handleErr);
+    makeSqueakRequest(profileId, content, replyto, hasRecipient, recipientProfileId, handleResponse, handleErr);
   };
   const loadSigningProfiles = () => {
     getSigningProfilesRequest(setSigningProfiles);
+  };
+  const loadProfiles = () => {
+    getProfilesRequest(setProfiles);
   };
 
   // useEffect(() => {
@@ -93,11 +114,16 @@ export default function MakeSqueakDialog({
       alert('Content cannot be empty.');
       return;
     }
-    createSqueak(profileId, content, replyto);
+    if (isPrivate && recipientProfileId === -1) {
+      alert('Recipient profile must be selected for a private squeak.');
+      return;
+    }
+    createSqueak(profileId, content, replyto, recipientProfileId);
   }
 
   function load(event) {
     loadSigningProfiles();
+    loadProfiles();
   }
 
   function cancel(event) {
@@ -133,6 +159,41 @@ export default function MakeSqueakDialog({
           onChange={handleChange}
         >
           {signingProfiles.map((p) => <MenuItem key={p.getProfileId()} value={p.getProfileId()}>{p.getProfileName()}</MenuItem>)}
+        </Select>
+      </FormControl>
+    );
+  }
+
+  function MakeSelectIsPrivate() {
+    return (
+      <FormControlLabel
+        className={classes.formControlLabel}
+        control={(
+          <Switch
+            checked={isPrivate}
+            onChange={handleChangeIsPrivate}
+            name="is-private-squeak"
+            size="small"
+          />
+        )}
+        label="Private Squeak"
+      />
+    );
+  }
+
+  function MakeSelectRecipientProfile() {
+    return (
+      <FormControl className={classes.formControl} required style={{ minWidth: 120 }}>
+        <InputLabel id="demo-simple-select-label">Recipient Profile</InputLabel>
+        <Select
+          labelId="recipient-profile-select-label"
+          id="recipient-profile-select"
+          variant="outlined"
+          margin="normal"
+          value={recipientProfileId}
+          onChange={handleChangeRecipient}
+        >
+          {profiles.map((p) => <MenuItem key={p.getProfileId()} value={p.getProfileId()}>{p.getProfileName()}</MenuItem>)}
         </Select>
       </FormControl>
     );
@@ -195,6 +256,10 @@ export default function MakeSqueakDialog({
             ? ReplySqueakContent() : <></>}
           {MakeSelectSigningProfile()}
           {MakeSqueakContentInput()}
+        </DialogContent>
+        <DialogContent>
+          {MakeSelectIsPrivate()}
+          {isPrivate && MakeSelectRecipientProfile()}
         </DialogContent>
         <DialogActions>
           {MakeCancelButton()}

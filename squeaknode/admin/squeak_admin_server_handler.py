@@ -294,7 +294,10 @@ class SqueakAdminServerHandler(object):
             replyto_hash_str) if replyto_hash_str else None
         has_recipient = request.has_recipient
         recipient_profile_id = request.recipient_profile_id if has_recipient else None
-        logger.info("Handle make squeak profile with id: {}".format(profile_id))
+        logger.info(
+            "Handle make squeak with author profile id: {}, and recipient profile id: {}".format(
+                profile_id, recipient_profile_id)
+        )
         inserted_squeak_hash = self.squeak_controller.make_squeak(
             profile_id,
             content_str,
