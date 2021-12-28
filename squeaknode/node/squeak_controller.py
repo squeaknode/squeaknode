@@ -97,7 +97,6 @@ class SqueakController:
         self.squeak_store.unlock_squeak(
             inserted_squeak_hash,
             secret_key,
-            content_str,
         )
         return inserted_squeak_hash
 
@@ -115,15 +114,9 @@ class SqueakController:
         self.squeak_store.mark_received_offer_paid(
             sent_payment.payment_hash,
         )
-        squeak = self.squeak_store.get_squeak(received_offer.squeak_hash)
-        decrypted_content = self.squeak_core.get_decrypted_content(
-            squeak,
-            sent_payment.secret_key,
-        )
         self.squeak_store.unlock_squeak(
             received_offer.squeak_hash,
             sent_payment.secret_key,
-            decrypted_content,
         )
         return sent_payment_id
 
