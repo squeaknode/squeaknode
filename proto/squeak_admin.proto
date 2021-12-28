@@ -607,6 +607,18 @@ message SqueakDisplayEntry {
 
     /// The secret key in hex.
     string secret_key_hex = 15;
+
+    /// Is private
+    bool is_private = 16;
+
+    /// The recipient pubkey in hex
+    string recipient_pubkey = 17;
+
+    /// Is recipient address known
+    bool is_recipient_known = 18;
+
+    /// The recipient name
+    SqueakProfile recipient = 19;
 }
 
 message GetTimelineSqueakDisplaysRequest {
