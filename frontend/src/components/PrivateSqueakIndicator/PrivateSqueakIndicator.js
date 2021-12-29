@@ -28,14 +28,14 @@ export default function PrivateSqueakIndicator({
   };
 
   function getRecipientAddressDisplay() {
-    if (!squeak) {
-      return 'Recipient unknown';
-    }
     return squeak.getIsRecipientKnown()
       ? squeak.getRecipient().getProfileName()
       : squeak.getRecipientPubkey();
   }
 
+  if (!squeak || !squeak.getIsPrivate()) {
+    return (<></>)
+  }
   return (
     <Grid
       container
