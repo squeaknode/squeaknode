@@ -62,6 +62,9 @@ export default function SqueakThreadItem({
   };
 
   function PrivateMessageRecipient() {
+    if (!squeak || squeak.getIsPrivate()) {
+      return (<></>)
+    }
     return (
       <PrivateSqueakIndicator squeak={squeak}>
       </PrivateSqueakIndicator>
@@ -184,7 +187,7 @@ export default function SqueakThreadItem({
           </Box>
         </Grid>
       </Grid>
-      {squeak.getIsPrivate() && PrivateMessageRecipient()}
+      {PrivateMessageRecipient()}
       <Grid
         container
         direction="row"
