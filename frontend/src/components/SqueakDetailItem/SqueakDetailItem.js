@@ -155,7 +155,6 @@ export default function SqueakDetailItem({
         >
           Use private key to decrypt
         </Button>
-
       </>
     );
   }

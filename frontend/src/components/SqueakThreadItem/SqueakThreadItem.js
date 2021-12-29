@@ -81,6 +81,14 @@ export default function SqueakThreadItem({
     );
   }
 
+  function SqueakUnlockedButEncryptedContent() {
+    return (
+      <>
+        <LockIcon />
+      </>
+    );
+  }
+
   function SqueakLockedContent() {
     return (
       <>
@@ -105,12 +113,23 @@ export default function SqueakThreadItem({
         </>
       );
     }
-
+    if (!squeak.getIsUnlocked()) {
+      return (
+        <>
+          {SqueakLockedContent()}
+        </>
+      );
+    }
+    if (!squeak.getContentStr()) {
+      return (
+        <>
+          {SqueakUnlockedButEncryptedContent()}
+        </>
+      );
+    }
     return (
       <>
-        {squeak.getIsUnlocked()
-          ? SqueakUnlockedContent()
-          : SqueakLockedContent()}
+        {SqueakUnlockedContent()}
       </>
     );
   }
