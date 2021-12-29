@@ -67,8 +67,8 @@ export default function SetSellPriceDialog({
   function handleSubmit(event) {
     event.preventDefault();
     console.log('sell price msat:', sellPriceMsat);
-    if (!sellPriceMsat) {
-      alert('Sell price cannot be empty.');
+    if (sellPriceMsat < 0) {
+      alert('Sell price cannot be negative.');
       return;
     }
     setSellPrice(sellPriceMsat);
