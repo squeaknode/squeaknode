@@ -691,6 +691,26 @@ class SqueakAdminServerHandler(object):
             sent_payment_id=sent_payment_id,
         )
 
+    def handle_decrypt_squeak(self, request):
+        squeak_hash_str = request.squeak_hash
+        squeak_hash = bytes.fromhex(squeak_hash_str)
+        has_author = request.has_author
+        author_profile_id = request.author_profile_id if has_author else None
+        has_recipient = request.has_recipient
+        recipient_profile_id = request.recipient_profile_id if has_recipient else None
+        logger.info(
+            "Handle decrypt squeak with hash: {}, recipient id: {}, author id: {}".format(
+                squeak_hash_str,
+                recipient_profile_id,
+                author_profile_id,
+            ),
+        )
+        self.squeak_controller.decrypt_private_squeak_as_author(
+            squeak_hash=squeak_hash,
+            author_profile_id=author_profile_id,
+        )
+        return squeak_admin_pb2.DecryptSqueakReply()
+
     def handle_get_sent_payments(self, request):
         limit = request.limit
         last_sent_payment = message_to_sent_payment(request.last_sent_payment) if request.HasField(
