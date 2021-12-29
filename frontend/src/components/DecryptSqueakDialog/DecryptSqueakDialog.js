@@ -19,6 +19,7 @@ import useStyles from './styles';
 import {
   getSigningProfilesRequest,
   // decryptSqueakRequest,
+  decryptRequest,
 } from '../../squeakclient/requests';
 
 export default function DecryptSqueakDialog({
@@ -61,8 +62,9 @@ export default function DecryptSqueakDialog({
   };
 
   const decrypt = (profileId) => {
+    const hasRecipient = profileId !== -1;
     setLoading(true);
-    // decryptSqueakRequest(offerId, handleDecryptResponse, handleDecryptErr);
+    decryptRequest(hash, null, -1, hasRecipient, profileId, handleDecryptResponse, handleDecryptErr);
   };
 
   useEffect(() => {
@@ -92,13 +94,15 @@ export default function DecryptSqueakDialog({
   function SelectProfileContent() {
     return (
       <FormControl className={classes.formControl} required style={{ minWidth: 120 }}>
-        <InputLabel id="offer-select-label">Offer</InputLabel>
-        <Select
-          labelId="offer-select-label"
-          id="offer-select"
-          value={profileId}
-          onChange={handleChangeProfileId}
-        >
+      <InputLabel id="demo-simple-select-label">Signing Profile</InputLabel>
+      <Select
+        labelId="demo-simple-select-label"
+        id="demo-simple-select"
+        variant="outlined"
+        margin="normal"
+        value={profileId}
+        onChange={handleChangeProfileId}
+      >
         {signingProfiles.map((p) => <MenuItem key={p.getProfileId()} value={p.getProfileId()}>{p.getProfileName()}</MenuItem>)}
         </Select>
       </FormControl>

@@ -141,6 +141,8 @@ import {
   ClearSellPriceReply,
   GetTwitterStreamStatusRequest,
   GetTwitterStreamStatusReply,
+  DecryptSqueakRequest,
+  DecryptSqueakReply,
 } from '../proto/squeak_admin_pb';
 
 console.log('The value of REACT_APP_DEV_MODE_ENABLED is:', Boolean(process.env.REACT_APP_DEV_MODE_ENABLED));
@@ -472,6 +474,22 @@ export function payOfferRequest(offerId, handleResponse, handleErr) {
   //     handleResponse(response);
   //   }
   // });
+}
+
+export function decryptRequest(squeakHash, hasAuthor, authorProfileId, hasRecipient, recipientProfileId, handleResponse, handleErr) {
+  const request = new DecryptSqueakRequest();
+  request.setSqueakHash(squeakHash);
+  request.setHasAuthor(hasAuthor);
+  request.setAuthorProfileId(authorProfileId);
+  request.setHasRecipient(hasRecipient);
+  request.setRecipientProfileId(recipientProfileId);
+  makeRequest(
+    'decryptsqueak',
+    request,
+    DecryptSqueakReply.deserializeBinary,
+    handleResponse,
+    handleErr,
+  );
 }
 
 export function getBuyOffersRequest(hash, handleResponse) {

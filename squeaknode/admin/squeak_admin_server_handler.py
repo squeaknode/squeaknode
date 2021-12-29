@@ -705,9 +705,10 @@ class SqueakAdminServerHandler(object):
                 author_profile_id,
             ),
         )
-        self.squeak_controller.decrypt_private_squeak_as_author(
+        self.squeak_controller.decrypt_private_squeak(
             squeak_hash=squeak_hash,
             author_profile_id=author_profile_id,
+            recipient_profile_id=recipient_profile_id,
         )
         return squeak_admin_pb2.DecryptSqueakReply()
 

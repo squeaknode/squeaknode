@@ -112,6 +112,10 @@ export default function SqueakDetailItem({
     setUnlockedSnackbarOpen(true);
   };
 
+  const handleDecryptComplete = () => {
+    reloadSqueak();
+  };
+
   function PrivateMessageRecipient() {
     return (
       <PrivateSqueakIndicator squeak={squeak}>
@@ -240,6 +244,21 @@ export default function SqueakDetailItem({
     );
   }
 
+  function DecryptDialogContent() {
+    return (
+      <>
+        <DecryptSqueakDialog
+          key={hash}
+          squeak={squeak}
+          open={decryptDialogOpen}
+          handleClose={handleCloseDecryptDialog}
+          handleDecryptComplete={handleDecryptComplete}
+          hash={hash}
+        />
+      </>
+    );
+  }
+
   function SqueakUnlockedActionContent() {
     return (
       <Snackbar open={unlockedSnackbarOpen} autoHideDuration={6000} onClose={handleCloseUnlockedSnackbar}>
@@ -333,6 +352,7 @@ export default function SqueakDetailItem({
           )}
       </Paper>
       {BuyDialogContent()}
+      {DecryptDialogContent()}
       {SqueakUnlockedActionContent()}
     </>
   );
