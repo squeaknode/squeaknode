@@ -151,8 +151,8 @@ class SqueakController:
     def get_squeak(self, squeak_hash: bytes) -> Optional[CSqueak]:
         return self.squeak_store.get_squeak(squeak_hash)
 
-    def get_squeak_secret_key(self, squeak_hash: bytes) -> Optional[bytes]:
-        return self.squeak_store.get_squeak_secret_key(squeak_hash)
+    # def get_squeak_secret_key(self, squeak_hash: bytes) -> Optional[bytes]:
+    #     return self.squeak_store.get_squeak_secret_key(squeak_hash)
 
     def delete_squeak(self, squeak_hash: bytes) -> None:
         self.squeak_store.delete_squeak(squeak_hash)
