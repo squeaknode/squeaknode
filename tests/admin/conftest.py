@@ -43,14 +43,33 @@ def default_profile_image():
 @pytest.fixture
 def signing_profile_msg(
         public_key,
+        signing_profile_name,
         default_profile_image,
 ):
     img_base64_str = bytes_to_base64_string(default_profile_image)
     yield squeak_admin_pb2.SqueakProfile(
         profile_id=None,
-        profile_name="fake_signing_profile_name",
+        profile_name=signing_profile_name,
         has_private_key=True,
         pubkey=public_key.to_bytes().hex(),
+        following=True,
+        profile_image=img_base64_str,
+        has_custom_profile_image=False,
+    )
+
+
+@pytest.fixture
+def recipient_profile_msg(
+        recipient_public_key,
+        recipient_contact_profile_name,
+        default_profile_image,
+):
+    img_base64_str = bytes_to_base64_string(default_profile_image)
+    yield squeak_admin_pb2.SqueakProfile(
+        profile_id=None,
+        profile_name=recipient_contact_profile_name,
+        has_private_key=False,
+        pubkey=recipient_public_key.to_bytes().hex(),
         following=True,
         profile_image=img_base64_str,
         has_custom_profile_image=False,
@@ -69,6 +88,8 @@ def squeak_entry_msg_locked(
         squeak_time,
         squeak_reply_to_hash,
         signing_profile_msg,
+        recipient_public_key,
+        recipient_profile_msg,
 ):
     yield squeak_admin_pb2.SqueakDisplayEntry(
         squeak_hash=squeak_hash.hex(),
@@ -86,6 +107,10 @@ def squeak_entry_msg_locked(
         is_author_known=True,
         author=signing_profile_msg,
         liked_time_ms=None,  # type: ignore
+        is_private=True,
+        recipient_pubkey=recipient_public_key.to_bytes().hex(),
+        is_recipient_known=True,
+        recipient=recipient_profile_msg,
     )
 
 

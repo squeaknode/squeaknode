@@ -209,6 +209,9 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
     def PayOffer(self, request, context):
         return self.handler.handle_pay_offer(request)
 
+    def DecryptSqueak(self, request, context):
+        return self.handler.handle_decrypt_squeak(request)
+
     def GetSentPayments(self, request, context):
         return self.handler.handle_get_sent_payments(request)
 

@@ -16,6 +16,7 @@ import useStyles from './styles';
 
 import SqueakActionBar from '../SqueakActionBar';
 import SqueakTime from '../SqueakTime';
+import PrivateSqueakIndicator from '../PrivateSqueakIndicator';
 
 import {
   goToSqueakPage,
@@ -43,12 +44,29 @@ export default function SqueakThreadItem({
     }
     goToPubkeyPage(history, squeak.getAuthorPubkey());
   };
+  //
+  // const onRecipientAddressClick = (event) => {
+  //   event.preventDefault();
+  //   event.stopPropagation();
+  //   console.log('Handling recipient click...');
+  //   if (!squeak || !squeak.getIsPrivate()) {
+  //     return;
+  //   }
+  //   goToPubkeyPage(history, squeak.getRecipientPubkey());
+  // };
 
   const onSqueakClick = (event) => {
     event.preventDefault();
     console.log(`Handling squeak click for hash: ${hash}`);
     goToSqueakPage(history, hash);
   };
+
+  function PrivateMessageRecipient() {
+    return (
+      <PrivateSqueakIndicator squeak={squeak}>
+      </PrivateSqueakIndicator>
+    );
+  }
 
   function SqueakUnlockedContent() {
     return (
@@ -60,6 +78,14 @@ export default function SqueakThreadItem({
       >
         {squeak.getContentStr()}
       </Typography>
+    );
+  }
+
+  function SqueakUnlockedButEncryptedContent() {
+    return (
+      <>
+        <LockIcon />
+      </>
     );
   }
 
@@ -87,12 +113,23 @@ export default function SqueakThreadItem({
         </>
       );
     }
-
+    if (!squeak.getIsUnlocked()) {
+      return (
+        <>
+          {SqueakLockedContent()}
+        </>
+      );
+    }
+    if (!squeak.getContentStr()) {
+      return (
+        <>
+          {SqueakUnlockedButEncryptedContent()}
+        </>
+      );
+    }
     return (
       <>
-        {squeak.getIsUnlocked()
-          ? SqueakUnlockedContent()
-          : SqueakLockedContent()}
+        {SqueakUnlockedContent()}
       </>
     );
   }
@@ -115,12 +152,10 @@ export default function SqueakThreadItem({
   }
 
   function SqueakBackgroundColor() {
-    if (!squeak) {
+    if (!squeak || !squeak.getContentStr()) {
       return SqueakLockedBackgroundColor();
     }
-    return squeak.getIsUnlocked()
-      ? SqueakUnlockedBackgroundColor()
-      : SqueakLockedBackgroundColor();
+    return SqueakUnlockedBackgroundColor();
   }
 
   return (
@@ -149,6 +184,7 @@ export default function SqueakThreadItem({
           </Box>
         </Grid>
       </Grid>
+      {squeak.getIsPrivate() && PrivateMessageRecipient()}
       <Grid
         container
         direction="row"

@@ -19,9 +19,12 @@ import MuiAlert from '@material-ui/lab/Alert';
 import useStyles from './styles';
 
 import BuySqueakDialog from '../BuySqueakDialog';
+import DecryptSqueakDialog from '../DecryptSqueakDialog';
 import SqueakActionBar from '../SqueakActionBar';
 import SqueakTime from '../SqueakTime';
 import SqueakUserAvatar from '../SqueakUserAvatar';
+import PrivateSqueakIndicator from '../PrivateSqueakIndicator';
+
 
 import {
   goToPubkeyPage,
@@ -44,6 +47,7 @@ export default function SqueakDetailItem({
   const history = useHistory();
 
   const [buyDialogOpen, setBuyDialogOpen] = useState(false);
+  const [decryptDialogOpen, setDecryptDialogOpen] = useState(false);
   const [unlockedSnackbarOpen, setUnlockedSnackbarOpen] = useState(false);
 
   const handleClickOpenBuyDialog = () => {
@@ -52,6 +56,14 @@ export default function SqueakDetailItem({
 
   const handleCloseBuyDialog = () => {
     setBuyDialogOpen(false);
+  };
+
+  const handleClickOpenDecryptDialog = () => {
+    setDecryptDialogOpen(true);
+  };
+
+  const handleCloseDecryptDialog = () => {
+    setDecryptDialogOpen(false);
   };
 
   const onAddressClick = (event) => {
@@ -73,6 +85,15 @@ export default function SqueakDetailItem({
     handleClickOpenBuyDialog();
   };
 
+  const onDecryptClick = (event) => {
+    event.preventDefault();
+    console.log('Handling decrypt click...');
+    if (!squeak) {
+      return;
+    }
+    handleClickOpenDecryptDialog();
+  };
+
   const onDownloadClick = (event) => {
     event.preventDefault();
     console.log('Handling download click...');
@@ -90,6 +111,17 @@ export default function SqueakDetailItem({
     reloadSqueak();
     setUnlockedSnackbarOpen(true);
   };
+
+  const handleDecryptComplete = () => {
+    reloadSqueak();
+  };
+
+  function PrivateMessageRecipient() {
+    return (
+      <PrivateSqueakIndicator squeak={squeak}>
+      </PrivateSqueakIndicator>
+    );
+  }
 
   function SqueakUnlockedContent() {
     return (
@@ -117,6 +149,20 @@ export default function SqueakDetailItem({
     );
   }
 
+  function SqueakUnlockedButEncryptedContent() {
+    return (
+      <>
+        <LockIcon />
+        <Button
+          variant="contained"
+          onClick={onDecryptClick}
+        >
+          Use private key to decrypt
+        </Button>
+      </>
+    );
+  }
+
   function SqueakMissingContent() {
     return (
       <>
@@ -139,11 +185,23 @@ export default function SqueakDetailItem({
         </>
       );
     }
+    if (!squeak.getIsUnlocked()) {
+      return (
+        <>
+          {SqueakLockedContent()}
+        </>
+      );
+    }
+    if (!squeak.getContentStr()) {
+      return (
+        <>
+          {SqueakUnlockedButEncryptedContent()}
+        </>
+      );
+    }
     return (
       <>
-        {squeak.getIsUnlocked()
-          ? SqueakUnlockedContent()
-          : SqueakLockedContent()}
+        {SqueakUnlockedContent()}
       </>
     );
   }
@@ -157,12 +215,10 @@ export default function SqueakDetailItem({
   }
 
   function SqueakBackgroundColor() {
-    if (!squeak) {
+    if (!squeak || !squeak.getContentStr()) {
       return SqueakLockedBackgroundColor();
     }
-    return squeak.getIsUnlocked()
-      ? SqueakUnlockedBackgroundColor()
-      : SqueakLockedBackgroundColor();
+    return SqueakUnlockedBackgroundColor();
   }
 
   function getAddressDisplay() {
@@ -182,6 +238,21 @@ export default function SqueakDetailItem({
           open={buyDialogOpen}
           handleClose={handleCloseBuyDialog}
           handlePaymentComplete={handlePaymentComplete}
+          hash={hash}
+        />
+      </>
+    );
+  }
+
+  function DecryptDialogContent() {
+    return (
+      <>
+        <DecryptSqueakDialog
+          key={hash}
+          squeak={squeak}
+          open={decryptDialogOpen}
+          handleClose={handleCloseDecryptDialog}
+          handleDecryptComplete={handleDecryptComplete}
           hash={hash}
         />
       </>
@@ -245,6 +316,7 @@ export default function SqueakDetailItem({
             </Box>
           </Grid>
         </Grid>
+        {squeak.getIsPrivate() && PrivateMessageRecipient()}
         <Grid
           container
           direction="row"
@@ -280,6 +352,7 @@ export default function SqueakDetailItem({
           )}
       </Paper>
       {BuyDialogContent()}
+      {DecryptDialogContent()}
       {SqueakUnlockedActionContent()}
     </>
   );

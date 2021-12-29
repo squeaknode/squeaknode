@@ -220,6 +220,10 @@ service SqueakAdmin {
   */
   rpc PayOffer (PayOfferRequest) returns (PayOfferReply) {}
 
+  /** sqkadmin: `decryptsqueak`
+  */
+  rpc DecryptSqueak (DecryptSqueakRequest) returns (DecryptSqueakReply) {}
+
   /** sqkadmin: `getsentpayments`
   */
   rpc GetSentPayments (GetSentPaymentsRequest) returns (GetSentPaymentsReply) {}
@@ -607,6 +611,18 @@ message SqueakDisplayEntry {
 
     /// The secret key in hex.
     string secret_key_hex = 15;
+
+    /// Is private
+    bool is_private = 16;
+
+    /// The recipient pubkey in hex
+    string recipient_pubkey = 17;
+
+    /// Is recipient address known
+    bool is_recipient_known = 18;
+
+    /// The recipient name
+    SqueakProfile recipient = 19;
 }
 
 message GetTimelineSqueakDisplaysRequest {
@@ -892,6 +908,26 @@ message PayOfferRequest {
 message PayOfferReply {
     /// Sent payment id
     int32 sent_payment_id = 1;
+}
+
+message DecryptSqueakRequest {
+    /// Hash of the squeak.
+    string squeak_hash = 1;
+
+    /// Has a recipient
+    bool has_recipient = 2;
+
+    /// The profile id of the recipient to decrypt the content
+    int32 recipient_profile_id = 3;
+
+    /// Has a author
+    bool has_author = 4;
+
+    /// The profile id of the author to decrypt the content
+    int32 author_profile_id = 5;
+}
+
+message DecryptSqueakReply {
 }
 
 message GetSentPaymentsRequest {

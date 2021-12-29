@@ -247,6 +247,12 @@ def create_app(handler, username, password):
     def payoffer(msg):
         return handler.handle_pay_offer(msg)
 
+    @app.route("/decryptsqueak", methods=["POST"])
+    @login_required
+    @protobuf_serialized(squeak_admin_pb2.DecryptSqueakRequest())
+    def decryptsqueak(msg):
+        return handler.handle_decrypt_squeak(msg)
+
     @app.route("/getbuyoffers", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.GetBuyOffersRequest())

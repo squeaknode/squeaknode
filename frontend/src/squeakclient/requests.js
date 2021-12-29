@@ -141,6 +141,8 @@ import {
   ClearSellPriceReply,
   GetTwitterStreamStatusRequest,
   GetTwitterStreamStatusReply,
+  DecryptSqueakRequest,
+  DecryptSqueakReply,
 } from '../proto/squeak_admin_pb';
 
 console.log('The value of REACT_APP_DEV_MODE_ENABLED is:', Boolean(process.env.REACT_APP_DEV_MODE_ENABLED));
@@ -474,6 +476,22 @@ export function payOfferRequest(offerId, handleResponse, handleErr) {
   // });
 }
 
+export function decryptRequest(squeakHash, hasAuthor, authorProfileId, hasRecipient, recipientProfileId, handleResponse, handleErr) {
+  const request = new DecryptSqueakRequest();
+  request.setSqueakHash(squeakHash);
+  request.setHasAuthor(hasAuthor);
+  request.setAuthorProfileId(authorProfileId);
+  request.setHasRecipient(hasRecipient);
+  request.setRecipientProfileId(recipientProfileId);
+  makeRequest(
+    'decryptsqueak',
+    request,
+    DecryptSqueakReply.deserializeBinary,
+    handleResponse,
+    handleErr,
+  );
+}
+
 export function getBuyOffersRequest(hash, handleResponse) {
   const request = new GetBuyOffersRequest();
   request.setSqueakHash(hash);
@@ -601,11 +619,13 @@ export function getContactProfilesRequest(handleResponse) {
   // });
 }
 
-export function makeSqueakRequest(profileId, content, replyto, handleResponse, handleErr) {
+export function makeSqueakRequest(profileId, content, replyto, hasRecipient, recipientProfileId, handleResponse, handleErr) {
   const request = new MakeSqueakRequest();
   request.setProfileId(profileId);
   request.setContent(content);
   request.setReplyto(replyto);
+  request.setHasRecipient(hasRecipient);
+  request.setRecipientProfileId(recipientProfileId);
   makeRequest(
     'makesqueakrequest',
     request,
