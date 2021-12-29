@@ -117,9 +117,6 @@ export default function SqueakDetailItem({
   };
 
   function PrivateMessageRecipient() {
-    if (!squeak || squeak.getIsPrivate()) {
-      return (<></>)
-    }
     return (
       <PrivateSqueakIndicator squeak={squeak}>
       </PrivateSqueakIndicator>

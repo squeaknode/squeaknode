@@ -62,9 +62,6 @@ export default function SqueakThreadItem({
   };
 
   function PrivateMessageRecipient() {
-    if (!squeak || squeak.getIsPrivate()) {
-      return (<></>)
-    }
     return (
       <PrivateSqueakIndicator squeak={squeak}>
       </PrivateSqueakIndicator>
