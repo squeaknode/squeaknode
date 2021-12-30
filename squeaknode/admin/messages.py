@@ -161,22 +161,20 @@ def payment_summary_to_message(
 
 
 def connected_peer_to_message(connected_peer: ConnectedPeer) -> squeak_admin_pb2.ConnectedPeer:
-    peer = connected_peer.peer
-    saved_peer = connected_peer.saved_peer
-    is_peer_saved = saved_peer is not None
-    saved_peer_msg = None
-    if saved_peer is not None:
-        saved_peer_msg = squeak_peer_to_message(saved_peer)
     return squeak_admin_pb2.ConnectedPeer(
-        peer_address=peer_address_to_message(peer.remote_address),
-        connect_time_s=peer.connect_time,
-        last_message_received_time_s=peer.last_msg_revc_time,
-        number_messages_received=peer.num_msgs_received,
-        number_bytes_received=peer.num_bytes_received,
-        number_messages_sent=peer.num_msgs_sent,
-        number_bytes_sent=peer.num_bytes_sent,
-        is_peer_saved=is_peer_saved,
-        saved_peer=saved_peer_msg,
+        peer_address=peer_address_to_message(
+            connected_peer.peer.remote_address),
+        connect_time_s=connected_peer.peer.connect_time,
+        last_message_received_time_s=connected_peer.peer.last_msg_revc_time,
+        number_messages_received=connected_peer.peer.num_msgs_received,
+        number_bytes_received=connected_peer.peer.num_bytes_received,
+        number_messages_sent=connected_peer.peer.num_msgs_sent,
+        number_bytes_sent=connected_peer.peer.num_bytes_sent,
+        is_peer_saved=(connected_peer.saved_peer is not None),
+        saved_peer=(
+            squeak_peer_to_message(connected_peer.saved_peer)
+            if connected_peer.saved_peer else None
+        ),
     )
 
 
