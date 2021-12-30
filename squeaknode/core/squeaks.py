@@ -67,7 +67,7 @@ def make_squeak_with_block(
         private_key: The private key to sign the squeak.
         content_str: The content of the squeak as a string.
         block_height: The height of the latest block in the bitcoin blockchain.
-        block_hahs: The hash of the latest block in the bitcoin blockchain.
+        block_hash: The hash of the latest block in the bitcoin blockchain.
         replyto_hash: The hash of the squeak to which this one is replying.
         recipient_public_key: The public key of the recipient of a private squeak.
 
