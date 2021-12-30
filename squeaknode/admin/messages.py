@@ -102,9 +102,8 @@ def squeak_peer_to_message(squeak_peer: SqueakPeer) -> squeak_admin_pb2.SqueakPe
 
 
 def received_offer_to_message(received_offer: ReceivedOffer) -> squeak_admin_pb2.OfferDisplayEntry:
-    received_offer_id = received_offer.received_offer_id or 0
     return squeak_admin_pb2.OfferDisplayEntry(
-        offer_id=received_offer_id,
+        offer_id=(received_offer.received_offer_id or 0),
         squeak_hash=received_offer.squeak_hash.hex(),
         price_msat=received_offer.price_msat,
         node_pubkey=received_offer.destination,
@@ -117,24 +116,21 @@ def received_offer_to_message(received_offer: ReceivedOffer) -> squeak_admin_pb2
 
 
 def sent_payment_to_message(sent_payment: SentPayment) -> squeak_admin_pb2.SentPayment:
-    sent_payment_id = sent_payment.sent_payment_id or 0
-    created_time_ms = sent_payment.created_time_ms or 0
     return squeak_admin_pb2.SentPayment(
-        sent_payment_id=sent_payment_id,
+        sent_payment_id=(sent_payment.sent_payment_id or 0),
         squeak_hash=sent_payment.squeak_hash.hex(),
         payment_hash=sent_payment.payment_hash.hex(),
         price_msat=sent_payment.price_msat,
         node_pubkey=sent_payment.node_pubkey,
         valid=sent_payment.valid,
-        time_ms=created_time_ms,
+        time_ms=(sent_payment.created_time_ms or 0),
         peer_address=peer_address_to_message(sent_payment.peer_address)
     )
 
 
 def sent_offer_to_message(sent_offer: SentOffer) -> squeak_admin_pb2.SentOffer:
-    sent_offer_id = sent_offer.sent_offer_id or 0
     return squeak_admin_pb2.SentOffer(
-        sent_offer_id=sent_offer_id,
+        sent_offer_id=(sent_offer.sent_offer_id or 0),
         squeak_hash=sent_offer.squeak_hash.hex(),
         payment_hash=sent_offer.payment_hash.hex(),
         price_msat=sent_offer.price_msat,
@@ -142,14 +138,12 @@ def sent_offer_to_message(sent_offer: SentOffer) -> squeak_admin_pb2.SentOffer:
 
 
 def received_payment_to_message(received_payment: ReceivedPayment) -> squeak_admin_pb2.ReceivedPayment:
-    received_payment_id = received_payment.received_payment_id or 0
-    created_time_ms = received_payment.created_time_ms or 0
     return squeak_admin_pb2.ReceivedPayment(
-        received_payment_id=received_payment_id,
+        received_payment_id=(received_payment.received_payment_id or 0),
         squeak_hash=received_payment.squeak_hash.hex(),
         payment_hash=received_payment.payment_hash.hex(),
         price_msat=received_payment.price_msat,
-        time_ms=created_time_ms,
+        time_ms=(received_payment.created_time_ms or 0),
         peer_address=peer_address_to_message(received_payment.peer_address)
     )
 
@@ -203,11 +197,6 @@ def message_to_peer_address(msg: squeak_admin_pb2.PeerAddress) -> PeerAddress:
 
 
 def message_to_squeak_entry(msg: squeak_admin_pb2.SqueakDisplayEntry) -> SqueakEntry:
-    like_time_ms = msg.liked_time_ms if msg.liked_time_ms > 0 else None
-    reply_to_hash = bytes.fromhex(msg.reply_to) if msg.reply_to else None
-    content_str = msg.content_str if len(msg.content_str) > 0 else None
-    secret_key = bytes.fromhex(
-        msg.secret_key_hex) if msg.secret_key_hex else None
     return SqueakEntry(
         squeak_hash=bytes.fromhex(msg.squeak_hash),
         serialized_squeak=bytes.fromhex(msg.serialized_squeak_hex),
@@ -219,13 +208,14 @@ def message_to_squeak_entry(msg: squeak_admin_pb2.SqueakDisplayEntry) -> SqueakE
         block_hash=bytes.fromhex(msg.block_hash),
         block_time=msg.block_time,
         squeak_time=msg.squeak_time,
-        reply_to=reply_to_hash,
+        reply_to=(bytes.fromhex(msg.reply_to) if msg.reply_to else None),
         is_unlocked=msg.is_unlocked,
-        secret_key=secret_key,
+        secret_key=(bytes.fromhex(
+            msg.secret_key_hex) if msg.secret_key_hex else None),
         squeak_profile=None,  # TODO: message to squeak profile
         recipient_squeak_profile=None,  # TODO: message to squeak profile
-        liked_time_ms=like_time_ms,
-        content=content_str,
+        liked_time_ms=(msg.liked_time_ms if msg.liked_time_ms > 0 else None),
+        content=(msg.content_str if len(msg.content_str) > 0 else None),
     )
 
 
