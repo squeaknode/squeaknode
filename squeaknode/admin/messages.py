@@ -49,30 +49,24 @@ DEFAULT_PROFILE_IMAGE = load_default_profile_image()
 
 
 def squeak_entry_to_message(squeak_entry: SqueakEntry) -> squeak_admin_pb2.SqueakDisplayEntry:
-    squeak_profile = squeak_entry.squeak_profile
-    secret_key = squeak_entry.secret_key.hex() if squeak_entry.secret_key else None
-    is_reply = bool(squeak_entry.reply_to)
-    reply_to = squeak_entry.reply_to.hex() if squeak_entry.reply_to else None
-    is_author_known = False
-    profile_msg = None
-    if squeak_profile is not None:
-        is_author_known = True
-        profile_msg = squeak_profile_to_message(squeak_profile)
     return squeak_admin_pb2.SqueakDisplayEntry(
         squeak_hash=squeak_entry.squeak_hash.hex(),
         serialized_squeak_hex=squeak_entry.serialized_squeak.hex(),
         is_unlocked=squeak_entry.is_unlocked,
-        secret_key_hex=secret_key,  # type: ignore
+        secret_key_hex=(squeak_entry.secret_key.hex()
+                        if squeak_entry.secret_key else None),  # type: ignore
         content_str=squeak_entry.content,  # type: ignore
         block_height=squeak_entry.block_height,
         block_hash=squeak_entry.block_hash.hex(),
         block_time=squeak_entry.block_time,
         squeak_time=squeak_entry.squeak_time,
-        is_reply=is_reply,
-        reply_to=reply_to,  # type: ignore
+        is_reply=(squeak_entry.reply_to is not None),
+        reply_to=(squeak_entry.reply_to.hex()
+                  if squeak_entry.reply_to else None),  # type: ignore
         author_pubkey=squeak_entry.public_key.to_bytes().hex(),
-        is_author_known=is_author_known,
-        author=profile_msg,
+        is_author_known=(squeak_entry.squeak_profile is not None),
+        author=(squeak_profile_to_message(squeak_entry.squeak_profile)
+                if squeak_entry.squeak_profile else None),
         liked_time_ms=squeak_entry.liked_time_ms,  # type: ignore
         is_private=(squeak_entry.recipient_public_key is not None),
         recipient_pubkey=(squeak_entry.recipient_public_key.to_bytes(
