@@ -4,8 +4,6 @@ flask-cors==3.0.10
 flask-login==0.5.0
 Flask-WTF==0.15.1
 googleapis-common-protos==1.53.0
-grpcio==1.39.0
-grpcio-tools==1.39.0
 importlib_resources==1.4.0
 mypy-protobuf==2.9
 protobuf==3.17.3
