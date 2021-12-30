@@ -13,8 +13,6 @@ RUN python -m venv /opt/venv
 # Make sure we use the virtualenv:
 ENV PATH="/opt/venv/bin:$PATH"
 
-COPY requirements.txt /
-
 RUN pip install --upgrade pip
 
 WORKDIR /app
