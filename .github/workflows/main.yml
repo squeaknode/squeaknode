@@ -36,11 +36,9 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements-dev.txt
-          pip install tox
       - name: Run tests and collect coverage
         run: |
-          make gen-protos
-          coverage run -m pytest tests
+          make test
           coverage xml
       -
         name: Coverage
