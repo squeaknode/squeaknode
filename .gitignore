@@ -22,3 +22,6 @@ dist/
 *.pyi
 
 libs/
+
+# Ignore coverage file
+coverage.xml
