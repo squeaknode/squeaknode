@@ -9,6 +9,7 @@ htmlcov/
 dist/
 /build/
 *.egg-info/
+.eggs/
 .idea/
 *.swp
 *~

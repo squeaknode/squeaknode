@@ -15,9 +15,8 @@ To change any database model, follow these steps.
 	```
 - Run the command to generate a new alembic migration:
 	```
-	virtualenv venv
+	python3 -m venv venv
 	source venv/bin/activate
-	pip install -r requirements.txt
 	pip install -e .
 	alembic -c squeaknode/db/alembic.ini revision --autogenerate -m "<YOUR_MESSAGE>"
 	```
