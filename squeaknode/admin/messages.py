@@ -218,11 +218,10 @@ def message_to_squeak_entry(msg: squeak_admin_pb2.SqueakDisplayEntry) -> SqueakE
 
 
 def message_to_sent_payment(msg: squeak_admin_pb2.SentPayment) -> SentPayment:
-    sent_payment_id = msg.sent_payment_id if msg.sent_payment_id > 0 else None
-    created_time_ms = msg.time_ms if msg.time_ms > 0 else None
     return SentPayment(
-        sent_payment_id=sent_payment_id,
-        created_time_ms=created_time_ms,
+        sent_payment_id=(
+            msg.sent_payment_id if msg.sent_payment_id > 0 else None),
+        created_time_ms=(msg.time_ms if msg.time_ms > 0 else None),
         peer_address=message_to_peer_address(msg.peer_address),
         squeak_hash=bytes.fromhex(msg.squeak_hash),
         payment_hash=bytes.fromhex(msg.payment_hash),
@@ -234,11 +233,10 @@ def message_to_sent_payment(msg: squeak_admin_pb2.SentPayment) -> SentPayment:
 
 
 def message_to_received_payment(msg: squeak_admin_pb2.ReceivedPayment) -> ReceivedPayment:
-    received_payment_id = msg.received_payment_id if msg.received_payment_id > 0 else None
-    created_time_ms = msg.time_ms if msg.time_ms > 0 else None
     return ReceivedPayment(
-        received_payment_id=received_payment_id,
-        created_time_ms=created_time_ms,
+        received_payment_id=(
+            msg.received_payment_id if msg.received_payment_id > 0 else None),
+        created_time_ms=(msg.time_ms if msg.time_ms > 0 else None),
         squeak_hash=bytes.fromhex(msg.squeak_hash),
         payment_hash=bytes.fromhex(msg.payment_hash),
         price_msat=msg.price_msat,
@@ -257,16 +255,14 @@ def download_result_to_message(download_result: DownloadResult) -> squeak_admin_
 
 
 def twitter_account_to_message(twitter_account_entry: TwitterAccountEntry) -> squeak_admin_pb2.TwitterAccount:
-    twitter_account_id = twitter_account_entry.twitter_account_id or 0
-    squeak_profile = twitter_account_entry.profile
-    profile_msg = None
-    if squeak_profile is not None:
-        profile_msg = squeak_profile_to_message(squeak_profile)
     return squeak_admin_pb2.TwitterAccount(
-        twitter_account_id=twitter_account_id,
+        twitter_account_id=(twitter_account_entry.twitter_account_id or 0),
         handle=twitter_account_entry.handle,
         profile_id=twitter_account_entry.profile_id,
-        profile=profile_msg,
+        profile=(
+            squeak_profile_to_message(twitter_account_entry.profile)
+            if twitter_account_entry.profile else None
+        ),
     )
 
 
