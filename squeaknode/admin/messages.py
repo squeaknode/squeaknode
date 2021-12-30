@@ -78,19 +78,16 @@ def squeak_entry_to_message(squeak_entry: SqueakEntry) -> squeak_admin_pb2.Squea
 
 
 def squeak_profile_to_message(squeak_profile: SqueakProfile) -> squeak_admin_pb2.SqueakProfile:
-    profile_id = squeak_profile.profile_id or 0
-    has_private_key = squeak_profile.private_key is not None
     profile_image = squeak_profile.profile_image or DEFAULT_PROFILE_IMAGE
-    has_custom_profile_image = squeak_profile.profile_image is not None
     image_base64_str = bytes_to_base64_string(profile_image)
     return squeak_admin_pb2.SqueakProfile(
-        profile_id=profile_id,
+        profile_id=squeak_profile.profile_id or 0,
         profile_name=squeak_profile.profile_name,
-        has_private_key=has_private_key,
+        has_private_key=(squeak_profile.private_key is not None),
         pubkey=squeak_profile.public_key.to_bytes().hex(),
         following=squeak_profile.following,
         profile_image=image_base64_str,
-        has_custom_profile_image=has_custom_profile_image,
+        has_custom_profile_image=(squeak_profile.profile_image is not None),
     )
 
 
