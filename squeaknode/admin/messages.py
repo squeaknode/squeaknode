@@ -49,30 +49,24 @@ DEFAULT_PROFILE_IMAGE = load_default_profile_image()
 
 
 def squeak_entry_to_message(squeak_entry: SqueakEntry) -> squeak_admin_pb2.SqueakDisplayEntry:
-    squeak_profile = squeak_entry.squeak_profile
-    secret_key = squeak_entry.secret_key.hex() if squeak_entry.secret_key else None
-    is_reply = bool(squeak_entry.reply_to)
-    reply_to = squeak_entry.reply_to.hex() if squeak_entry.reply_to else None
-    is_author_known = False
-    profile_msg = None
-    if squeak_profile is not None:
-        is_author_known = True
-        profile_msg = squeak_profile_to_message(squeak_profile)
     return squeak_admin_pb2.SqueakDisplayEntry(
         squeak_hash=squeak_entry.squeak_hash.hex(),
         serialized_squeak_hex=squeak_entry.serialized_squeak.hex(),
         is_unlocked=squeak_entry.is_unlocked,
-        secret_key_hex=secret_key,  # type: ignore
+        secret_key_hex=(squeak_entry.secret_key.hex()
+                        if squeak_entry.secret_key else None),  # type: ignore
         content_str=squeak_entry.content,  # type: ignore
         block_height=squeak_entry.block_height,
         block_hash=squeak_entry.block_hash.hex(),
         block_time=squeak_entry.block_time,
         squeak_time=squeak_entry.squeak_time,
-        is_reply=is_reply,
-        reply_to=reply_to,  # type: ignore
+        is_reply=(squeak_entry.reply_to is not None),
+        reply_to=(squeak_entry.reply_to.hex()
+                  if squeak_entry.reply_to else None),  # type: ignore
         author_pubkey=squeak_entry.public_key.to_bytes().hex(),
-        is_author_known=is_author_known,
-        author=profile_msg,
+        is_author_known=(squeak_entry.squeak_profile is not None),
+        author=(squeak_profile_to_message(squeak_entry.squeak_profile)
+                if squeak_entry.squeak_profile else None),
         liked_time_ms=squeak_entry.liked_time_ms,  # type: ignore
         is_private=(squeak_entry.recipient_public_key is not None),
         recipient_pubkey=(squeak_entry.recipient_public_key.to_bytes(
@@ -84,26 +78,22 @@ def squeak_entry_to_message(squeak_entry: SqueakEntry) -> squeak_admin_pb2.Squea
 
 
 def squeak_profile_to_message(squeak_profile: SqueakProfile) -> squeak_admin_pb2.SqueakProfile:
-    profile_id = squeak_profile.profile_id or 0
-    has_private_key = squeak_profile.private_key is not None
     profile_image = squeak_profile.profile_image or DEFAULT_PROFILE_IMAGE
-    has_custom_profile_image = squeak_profile.profile_image is not None
     image_base64_str = bytes_to_base64_string(profile_image)
     return squeak_admin_pb2.SqueakProfile(
-        profile_id=profile_id,
+        profile_id=squeak_profile.profile_id or 0,
         profile_name=squeak_profile.profile_name,
-        has_private_key=has_private_key,
+        has_private_key=(squeak_profile.private_key is not None),
         pubkey=squeak_profile.public_key.to_bytes().hex(),
         following=squeak_profile.following,
         profile_image=image_base64_str,
-        has_custom_profile_image=has_custom_profile_image,
+        has_custom_profile_image=(squeak_profile.profile_image is not None),
     )
 
 
 def squeak_peer_to_message(squeak_peer: SqueakPeer) -> squeak_admin_pb2.SqueakPeer:
-    peer_id = squeak_peer.peer_id or 0
     return squeak_admin_pb2.SqueakPeer(
-        peer_id=peer_id,
+        peer_id=(squeak_peer.peer_id or 0),
         peer_name=squeak_peer.peer_name,
         peer_address=peer_address_to_message(squeak_peer.address),
         autoconnect=squeak_peer.autoconnect,
@@ -112,9 +102,8 @@ def squeak_peer_to_message(squeak_peer: SqueakPeer) -> squeak_admin_pb2.SqueakPe
 
 
 def received_offer_to_message(received_offer: ReceivedOffer) -> squeak_admin_pb2.OfferDisplayEntry:
-    received_offer_id = received_offer.received_offer_id or 0
     return squeak_admin_pb2.OfferDisplayEntry(
-        offer_id=received_offer_id,
+        offer_id=(received_offer.received_offer_id or 0),
         squeak_hash=received_offer.squeak_hash.hex(),
         price_msat=received_offer.price_msat,
         node_pubkey=received_offer.destination,
@@ -127,24 +116,21 @@ def received_offer_to_message(received_offer: ReceivedOffer) -> squeak_admin_pb2
 
 
 def sent_payment_to_message(sent_payment: SentPayment) -> squeak_admin_pb2.SentPayment:
-    sent_payment_id = sent_payment.sent_payment_id or 0
-    created_time_ms = sent_payment.created_time_ms or 0
     return squeak_admin_pb2.SentPayment(
-        sent_payment_id=sent_payment_id,
+        sent_payment_id=(sent_payment.sent_payment_id or 0),
         squeak_hash=sent_payment.squeak_hash.hex(),
         payment_hash=sent_payment.payment_hash.hex(),
         price_msat=sent_payment.price_msat,
         node_pubkey=sent_payment.node_pubkey,
         valid=sent_payment.valid,
-        time_ms=created_time_ms,
+        time_ms=(sent_payment.created_time_ms or 0),
         peer_address=peer_address_to_message(sent_payment.peer_address)
     )
 
 
 def sent_offer_to_message(sent_offer: SentOffer) -> squeak_admin_pb2.SentOffer:
-    sent_offer_id = sent_offer.sent_offer_id or 0
     return squeak_admin_pb2.SentOffer(
-        sent_offer_id=sent_offer_id,
+        sent_offer_id=(sent_offer.sent_offer_id or 0),
         squeak_hash=sent_offer.squeak_hash.hex(),
         payment_hash=sent_offer.payment_hash.hex(),
         price_msat=sent_offer.price_msat,
@@ -152,14 +138,12 @@ def sent_offer_to_message(sent_offer: SentOffer) -> squeak_admin_pb2.SentOffer:
 
 
 def received_payment_to_message(received_payment: ReceivedPayment) -> squeak_admin_pb2.ReceivedPayment:
-    received_payment_id = received_payment.received_payment_id or 0
-    created_time_ms = received_payment.created_time_ms or 0
     return squeak_admin_pb2.ReceivedPayment(
-        received_payment_id=received_payment_id,
+        received_payment_id=(received_payment.received_payment_id or 0),
         squeak_hash=received_payment.squeak_hash.hex(),
         payment_hash=received_payment.payment_hash.hex(),
         price_msat=received_payment.price_msat,
-        time_ms=created_time_ms,
+        time_ms=(received_payment.created_time_ms or 0),
         peer_address=peer_address_to_message(received_payment.peer_address)
     )
 
@@ -177,22 +161,20 @@ def payment_summary_to_message(
 
 
 def connected_peer_to_message(connected_peer: ConnectedPeer) -> squeak_admin_pb2.ConnectedPeer:
-    peer = connected_peer.peer
-    saved_peer = connected_peer.saved_peer
-    is_peer_saved = saved_peer is not None
-    saved_peer_msg = None
-    if saved_peer is not None:
-        saved_peer_msg = squeak_peer_to_message(saved_peer)
     return squeak_admin_pb2.ConnectedPeer(
-        peer_address=peer_address_to_message(peer.remote_address),
-        connect_time_s=peer.connect_time,
-        last_message_received_time_s=peer.last_msg_revc_time,
-        number_messages_received=peer.num_msgs_received,
-        number_bytes_received=peer.num_bytes_received,
-        number_messages_sent=peer.num_msgs_sent,
-        number_bytes_sent=peer.num_bytes_sent,
-        is_peer_saved=is_peer_saved,
-        saved_peer=saved_peer_msg,
+        peer_address=peer_address_to_message(
+            connected_peer.peer.remote_address),
+        connect_time_s=connected_peer.peer.connect_time,
+        last_message_received_time_s=connected_peer.peer.last_msg_revc_time,
+        number_messages_received=connected_peer.peer.num_msgs_received,
+        number_bytes_received=connected_peer.peer.num_bytes_received,
+        number_messages_sent=connected_peer.peer.num_msgs_sent,
+        number_bytes_sent=connected_peer.peer.num_bytes_sent,
+        is_peer_saved=(connected_peer.saved_peer is not None),
+        saved_peer=(
+            squeak_peer_to_message(connected_peer.saved_peer)
+            if connected_peer.saved_peer else None
+        ),
     )
 
 
@@ -213,11 +195,6 @@ def message_to_peer_address(msg: squeak_admin_pb2.PeerAddress) -> PeerAddress:
 
 
 def message_to_squeak_entry(msg: squeak_admin_pb2.SqueakDisplayEntry) -> SqueakEntry:
-    like_time_ms = msg.liked_time_ms if msg.liked_time_ms > 0 else None
-    reply_to_hash = bytes.fromhex(msg.reply_to) if msg.reply_to else None
-    content_str = msg.content_str if len(msg.content_str) > 0 else None
-    secret_key = bytes.fromhex(
-        msg.secret_key_hex) if msg.secret_key_hex else None
     return SqueakEntry(
         squeak_hash=bytes.fromhex(msg.squeak_hash),
         serialized_squeak=bytes.fromhex(msg.serialized_squeak_hex),
@@ -229,22 +206,22 @@ def message_to_squeak_entry(msg: squeak_admin_pb2.SqueakDisplayEntry) -> SqueakE
         block_hash=bytes.fromhex(msg.block_hash),
         block_time=msg.block_time,
         squeak_time=msg.squeak_time,
-        reply_to=reply_to_hash,
+        reply_to=(bytes.fromhex(msg.reply_to) if msg.reply_to else None),
         is_unlocked=msg.is_unlocked,
-        secret_key=secret_key,
+        secret_key=(bytes.fromhex(
+            msg.secret_key_hex) if msg.secret_key_hex else None),
         squeak_profile=None,  # TODO: message to squeak profile
         recipient_squeak_profile=None,  # TODO: message to squeak profile
-        liked_time_ms=like_time_ms,
-        content=content_str,
+        liked_time_ms=(msg.liked_time_ms if msg.liked_time_ms > 0 else None),
+        content=(msg.content_str if len(msg.content_str) > 0 else None),
     )
 
 
 def message_to_sent_payment(msg: squeak_admin_pb2.SentPayment) -> SentPayment:
-    sent_payment_id = msg.sent_payment_id if msg.sent_payment_id > 0 else None
-    created_time_ms = msg.time_ms if msg.time_ms > 0 else None
     return SentPayment(
-        sent_payment_id=sent_payment_id,
-        created_time_ms=created_time_ms,
+        sent_payment_id=(
+            msg.sent_payment_id if msg.sent_payment_id > 0 else None),
+        created_time_ms=(msg.time_ms if msg.time_ms > 0 else None),
         peer_address=message_to_peer_address(msg.peer_address),
         squeak_hash=bytes.fromhex(msg.squeak_hash),
         payment_hash=bytes.fromhex(msg.payment_hash),
@@ -256,11 +233,10 @@ def message_to_sent_payment(msg: squeak_admin_pb2.SentPayment) -> SentPayment:
 
 
 def message_to_received_payment(msg: squeak_admin_pb2.ReceivedPayment) -> ReceivedPayment:
-    received_payment_id = msg.received_payment_id if msg.received_payment_id > 0 else None
-    created_time_ms = msg.time_ms if msg.time_ms > 0 else None
     return ReceivedPayment(
-        received_payment_id=received_payment_id,
-        created_time_ms=created_time_ms,
+        received_payment_id=(
+            msg.received_payment_id if msg.received_payment_id > 0 else None),
+        created_time_ms=(msg.time_ms if msg.time_ms > 0 else None),
         squeak_hash=bytes.fromhex(msg.squeak_hash),
         payment_hash=bytes.fromhex(msg.payment_hash),
         price_msat=msg.price_msat,
@@ -279,16 +255,14 @@ def download_result_to_message(download_result: DownloadResult) -> squeak_admin_
 
 
 def twitter_account_to_message(twitter_account_entry: TwitterAccountEntry) -> squeak_admin_pb2.TwitterAccount:
-    twitter_account_id = twitter_account_entry.twitter_account_id or 0
-    squeak_profile = twitter_account_entry.profile
-    profile_msg = None
-    if squeak_profile is not None:
-        profile_msg = squeak_profile_to_message(squeak_profile)
     return squeak_admin_pb2.TwitterAccount(
-        twitter_account_id=twitter_account_id,
+        twitter_account_id=(twitter_account_entry.twitter_account_id or 0),
         handle=twitter_account_entry.handle,
         profile_id=twitter_account_entry.profile_id,
-        profile=profile_msg,
+        profile=(
+            squeak_profile_to_message(twitter_account_entry.profile)
+            if twitter_account_entry.profile else None
+        ),
     )
 
 
