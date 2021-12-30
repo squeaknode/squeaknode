@@ -302,17 +302,17 @@ export default function SqueakDetailItem({
           </Grid>
           <Grid item>
             <Box p={2} fontWeight="fontWeightBold">
-              <Link
-                href="#"
-                onClick={onAddressClick}
+              <Typography
+                variant="h3"
+                style={{ whiteSpace: 'pre-line' }}
               >
-                <Typography
-                  variant="h3"
-                  style={{ whiteSpace: 'pre-line' }}
+                <Link
+                  href="#"
+                  onClick={onAddressClick}
                 >
                   {getAddressDisplay()}
-                </Typography>
-              </Link>
+                </Link>
+              </Typography>
             </Box>
           </Grid>
         </Grid>
