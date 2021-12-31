@@ -12,5 +12,5 @@ python-bitcoinlib==0.11.0
 pyzmq==22.3.0
 requests==2.26.0
 SQLAlchemy==1.4.25
-squeaklib==0.10.3
+squeaklib==0.10.4
 typed-config==0.2.5
