@@ -155,7 +155,7 @@ export default function SqueakPage() {
   //   return () => stream.cancel();
   // }, [hash]);
   useEffect(() => {
-    setReplySqueaks(null); // Temporary fix until component unmounts correcyly
+    setReplySqueaks(null); // Temporary fix until component unmounts correctly
     getReplySqueaks(hash, SQUEAKS_PER_PAGE, null);
   }, [getReplySqueaks, hash]);
   // useEffect(() => {
