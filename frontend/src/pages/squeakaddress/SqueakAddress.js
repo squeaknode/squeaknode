@@ -112,6 +112,7 @@ export default function SqueakAddressPage() {
     getSqueakProfile(pubkey);
   }, [pubkey]);
   useEffect(() => {
+    setSqueaks(null);
     getSqueaks(pubkey, SQUEAKS_PER_PAGE, null);
   }, [getSqueaks, pubkey]);
   // useEffect(() => {
