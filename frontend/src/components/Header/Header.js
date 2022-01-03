@@ -61,6 +61,7 @@ export default function Header(props) {
   const [profileMenu, setProfileMenu] = useState(null);
   const [username, setUsername] = useState('bob smith');
   const [network, setNetwork] = useState('');
+  const [value, setValue] = useState();
 
 
   const isSearchOpen = true;
@@ -71,6 +72,10 @@ export default function Header(props) {
 
   const getNetwork = () => {
     getNetworkRequest(setNetwork);
+  };
+
+  const handleChangeSearchText = (event) => {
+    setValue(event.target.value);
   };
 
   useEffect(() => {
@@ -128,16 +133,19 @@ export default function Header(props) {
             <SearchIcon classes={{ root: classes.headerIcon }} />
           </div>
           <InputBase
-            placeholder="Search…"
             classes={{
               root: classes.inputRoot,
               input: classes.inputInput,
             }}
+            value={value}
+            placeholder="Search…"
+            inputProps={{ 'aria-label': 'search google maps' }}
+            onChange={handleChangeSearchText}
             onKeyPress={(ev) => {
-              console.log(`Pressed keyCode ${ev.key}`);
               if (ev.key === 'Enter') {
                 ev.preventDefault();
                 const encodedText = encodeURIComponent(ev.target.value);
+                setValue('');
                 goToSearchPage(history, encodedText);
               }
             }}
