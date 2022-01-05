@@ -13,6 +13,7 @@ import {
   CircularProgress,
   FormControlLabel,
   Switch,
+  Typography,
 } from '@material-ui/core';
 
 import { useHistory } from 'react-router-dom';
@@ -51,6 +52,7 @@ export default function MakeSqueakDialog({
   const resetFields = () => {
     setProfileId(-1);
     setContent('');
+    setIsPrivate(false);
   };
 
   const handleChange = (event) => {
@@ -219,6 +221,14 @@ export default function MakeSqueakDialog({
     );
   }
 
+  function ContentLimitDisplay() {
+    return (
+      <Typography variant="caption">
+       {content.length} / 280
+      </Typography>
+    );
+  }
+
   function MakeCancelButton() {
     return (
       <Button
@@ -256,6 +266,7 @@ export default function MakeSqueakDialog({
             ? ReplySqueakContent() : <></>}
           {MakeSelectSigningProfile()}
           {MakeSqueakContentInput()}
+          {ContentLimitDisplay()}
         </DialogContent>
         <DialogContent>
           {MakeSelectIsPrivate()}
