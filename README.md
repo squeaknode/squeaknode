@@ -105,6 +105,10 @@ make test
 make itest
 ```
 
+## Release + Commit Verification
+
+All releases and all maintainer commits as of January 5, 2022 are signed by key `D761F27D9B20BA52` (yzernik@gmail.com). The key can be found [in this repo](https://github.com/squeaknode/squeaknode/blob/master/PGP.txt) and [on the Squeaknode website](https://squeaknode.org/pgp.txt).
+
 ## Telegram
 
 [Join our Telegram group!](https://t.me/squeaknode)
