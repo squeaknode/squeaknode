@@ -25,7 +25,6 @@ from typing import Iterable
 from typing import List
 from typing import Optional
 
-import squeak.params
 from squeak.core import CSqueak
 from squeak.core.keys import SqueakPrivateKey
 from squeak.core.keys import SqueakPublicKey
@@ -70,6 +69,7 @@ class SqueakController:
         tweet_forwarder,
         node_settings,
         config,
+        default_port,
     ):
         self.squeak_store = squeak_store
         self.squeak_core = squeak_core
@@ -79,6 +79,7 @@ class SqueakController:
         self.tweet_forwarder = tweet_forwarder
         self.node_settings = node_settings
         self.config = config
+        self.default_port = default_port
 
     def make_squeak(
             self,
@@ -522,7 +523,7 @@ class SqueakController:
         return self.network_manager.external_address
 
     def get_default_peer_port(self) -> int:
-        return squeak.params.params.DEFAULT_PORT
+        return self.default_port
 
     def set_sell_price_msat(self, sell_price_msat: int) -> None:
         self.node_settings.set_sell_price_msat(sell_price_msat)

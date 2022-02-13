@@ -21,6 +21,7 @@
 # SOFTWARE.
 import logging
 
+import squeak.params
 from squeak.params import SelectParams
 
 from squeaknode.admin.squeak_admin_server_handler import SqueakAdminServerHandler
@@ -59,9 +60,7 @@ class SqueakNode:
 
     def __init__(self, config: SqueaknodeConfig):
         self.config = config
-
-    def _initialize(self):
-        self.initialize_network()
+        self.set_network_params()
         self.initialize_db()
         self.initialize_node_settings()
         self.initialize_lightning_client()
@@ -89,7 +88,6 @@ class SqueakNode:
         self.initialize_peer_subscription_update_worker()
 
     def start_running(self):
-        self._initialize()
 
         self.network_manager.start(self.network_handler)
         if self.config.rpc.enabled:
@@ -116,15 +114,14 @@ class SqueakNode:
         self.forward_tweets_processor_worker.stop_running()
         self.new_squeak_worker.stop_running()
 
-    def initialize_network(self):
-        # load the network
-        self.network = self.config.node.network
-        SelectParams(self.network)
+    def set_network_params(self):
+        # load the network params
+        SelectParams(self.config.node.network)
 
     def initialize_db(self):
         connection_string = get_connection_string(
             self.config,
-            self.network,
+            self.config.node.network,
         )
         logger.info("Using connection string: {}".format(
             connection_string))
@@ -194,7 +191,10 @@ class SqueakNode:
         )
 
     def initialize_network_manager(self):
-        self.network_manager = NetworkManager(self.config)
+        self.network_manager = NetworkManager(
+            self.config,
+            squeak.params.params.DEFAULT_PORT,
+        )
 
     def initialize_squeak_controller(self):
         self.squeak_controller = SqueakController(
@@ -206,6 +206,7 @@ class SqueakNode:
             self.twitter_forwarder,
             self.node_settings,
             self.config,
+            squeak.params.params.DEFAULT_PORT,
         )
 
     def initialize_network_handler(self):
