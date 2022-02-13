@@ -101,6 +101,11 @@ def price_msat():
 
 
 @pytest.fixture
+def default_peer_port():
+    return 8765
+
+
+@pytest.fixture
 def payment_processor():
     return mock.Mock(spec=PaymentProcessor)
 
@@ -125,6 +130,7 @@ def squeak_controller(
     twitter_forwarder,
     node_settings,
     config,
+    default_peer_port,
 ):
     return SqueakController(
         squeak_store,
@@ -135,6 +141,7 @@ def squeak_controller(
         twitter_forwarder,
         node_settings,
         config,
+        default_peer_port,
     )
 
 
@@ -148,6 +155,7 @@ def regtest_squeak_controller(
     twitter_forwarder,
     node_settings,
     regtest_config,
+    default_peer_port,
 ):
     return SqueakController(
         squeak_store,
@@ -158,6 +166,7 @@ def regtest_squeak_controller(
         twitter_forwarder,
         node_settings,
         regtest_config,
+        default_peer_port,
     )
 
 

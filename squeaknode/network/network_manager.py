@@ -25,7 +25,6 @@ from typing import Iterable
 from typing import List
 from typing import Optional
 
-import squeak.params
 from squeak.messages import MsgSerializable
 from squeak.net import CSqueakLocator
 
@@ -50,11 +49,11 @@ class NetworkManager(object):
     """Interface for doing things involving the network.
     """
 
-    def __init__(self, config):
+    def __init__(self, config, default_port):
         self.config = config
         self.external_host = self.config.server.external_address
         self.local_ip = socket.gethostbyname('localhost')
-        self.local_port = self.config.server.port or squeak.params.params.DEFAULT_PORT
+        self.local_port = self.config.server.port or default_port
         self.peer_server = None
         self.peer_client = None
         self.tor_proxy_ip = self.config.tor.proxy_ip
