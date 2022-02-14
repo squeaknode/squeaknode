@@ -69,8 +69,8 @@ const reducer = (state = initialState, action) => {
                     user_likes.tweets.find(x=>x._id === action.data.id).likes.push(action.data.id)
                     user_likes.likes = user_likes.tweets.filter(x=>x._id === action.data.id).concat(user_likes.likes)
                 }
-            
-            }else if(action.payload.msg === "unliked"){ 
+
+            }else if(action.payload.msg === "unliked"){
 
                 if(Stweet_likes){
                     Stweet_likes.likes = Stweet_likes.likes.filter((x)=>{
@@ -99,28 +99,28 @@ const reducer = (state = initialState, action) => {
 
         case type.GET_ACCOUNT:
             return {...state, ...action.payload}
-            
-        case type.BOOKMARK: 
+
+        case type.BOOKMARK:
             let account_bookmarks = state.account
             if(action.payload.msg === "bookmarked"){
                 account_bookmarks.bookmarks.push(action.data.id)
-            }else if(action.payload.msg === "removed from bookmarks"){ 
+            }else if(action.payload.msg === "removed from bookmarks"){
                 let bookIndex = account_bookmarks.bookmarks.indexOf(action.data.id)
                 bookIndex > -1 && account_bookmarks.bookmarks.splice(bookIndex, 1)}
             return {...state, ...{account:account_bookmarks}}
 
-        case type.GET_USER:    
+        case type.GET_USER:
             return {...state, ...action.payload}
 
         case type.GET_BOOKMARKS:
             return {...state, ...action.payload}
-            
+
         case type.UPDATE_USER:
             Object.keys(action.data).forEach(key => action.data[key] === '' || action.data[key] === undefined ? delete action.data[key] : null)
             let updateUser = {...state.user, ...action.data}
             return {...state, ...{user:updateUser}}
 
-        case type.RETWEET: 
+        case type.RETWEET:
             let user_retweets = state.user
             let acc_retweets = state.account
             let t_retweets = state.tweets
@@ -133,7 +133,7 @@ const reducer = (state = initialState, action) => {
                         t_retweets[i].retweets.push(state.account._id)
                     }
                 }
-            }else if(action.payload.msg === "undo retweet"){ 
+            }else if(action.payload.msg === "undo retweet"){
                 if(Stweet_retweets){
                     Stweet_retweets.retweets = Stweet_retweets.retweets.filter((x)=>{
                         return x !== action.data.id
@@ -160,7 +160,7 @@ const reducer = (state = initialState, action) => {
             let singleTweet = state.tweet
             if(userTweetsD){
                 userTweetsD.tweets = userTweetsD && userTweetsD.tweets.filter((x=>{
-                    return x._id !== action.data })) 
+                    return x._id !== action.data }))
             }
             if(singleTweet && action.data === singleTweet._id){
                 window.location.replace('/home')
@@ -171,7 +171,7 @@ const reducer = (state = initialState, action) => {
             })
             return {...state, ...{user: userTweetsD}, ...{tweets: homeTweetsD}, ...{tweet: singleTweet}}
 
-        case type.FOLLOW_USER: 
+        case type.FOLLOW_USER:
             let accountF = state.account
             let user_followers = state.followers
             if(action.payload.msg === 'follow'){
@@ -184,36 +184,36 @@ const reducer = (state = initialState, action) => {
             }
             return {...state, ...{account: accountF}, ...{followers: user_followers}}
 
-        case type.GET_LIST: 
+        case type.GET_LIST:
             return {...state, ...action.payload}
 
-        case type.EDIT_LIST: 
+        case type.EDIT_LIST:
             ////
             return state
 
-        case type.CREATE_LIST: 
+        case type.CREATE_LIST:
             let add_list = state.lists
             add_list.unshift(action.payload.list)
             return {...state, ...{lists: add_list}}
 
-        case type.DELETE_LIST: 
+        case type.DELETE_LIST:
             ////
             return state
 
-        case type.GET_LISTS: 
+        case type.GET_LISTS:
             return {...state, ...action.payload}
 
-        case type.GET_TREND: 
+        case type.GET_TREND:
             return {...state, ...action.payload}
 
-        case type.SEARCH: 
+        case type.SEARCH:
             return {...state, ...action.payload}
 
-        case type.TREND_TWEETS: 
+        case type.TREND_TWEETS:
         let t_tweets = action.payload.tagTweets.tweets
             return {...state, ...{tagTweets: t_tweets}}
 
-        case type.ADD_TO_LIST: 
+        case type.ADD_TO_LIST:
             let added_list = state.list
             if(action.payload.msg === 'user removed'){
                 added_list.users = added_list.users.filter(x=>{ return x._id !== action.data.userId })
@@ -221,14 +221,14 @@ const reducer = (state = initialState, action) => {
                 added_list.users.push({username: action.data.username , _id: action.data.userId, name: action.data.name, profileImg: action.data.profileImg})
             }
             return {...state, ...{list: added_list}}
-        
-        case type.GET_FOLLOWERS: 
+
+        case type.GET_FOLLOWERS:
             return {...state, ...action.payload}
 
-        case type.GET_FOLLOWING: 
+        case type.GET_FOLLOWING:
             return {...state, ...action.payload}
 
-        case type.SEARCH_USERS: 
+        case type.SEARCH_USERS:
             return {...state, ...action.payload}
 
         case type.WHO_TO_FOLLOW:
