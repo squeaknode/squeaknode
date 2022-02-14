@@ -75,7 +75,7 @@ const Home = () => {
                     Latest Tweets
                 </h2>
             </div>
-            {session ? 
+            {session ?
             <div className="Tweet-input-wrapper">
                 <div className="Tweet-profile-wrapper">
                     <Link to={`/profile/${account && account.username}`}>
@@ -115,10 +115,9 @@ const Home = () => {
             {/* { state.account && <TweetCard parent={t.parent} key={'1'} id={'1'} user={'1'} createdAt={'2019'} description={'t.description'}
                 images={'t.images'} replies={[]} retweets={[]} likes={[]} style={{height:'0'}} />} */}
             {state.tweets.length > 0 ? state.tweets.map(t => {
-		console.log("Squeak:");
-		console.log(t);
-                return <TweetCard retweet={t.retweet} username={t.username} name={t.name} parent={t.parent} key={t._id} id={t._id} user={t.user} createdAt={t.createdAt} description={t.description}
-                    images={t.images} replies={t.replies} retweets={t.retweets} likes={t.likes} />
+                console.log(t);
+                return <TweetCard retweet={t.getReplyTo()} username={t.getAuthorPubkey()} name={t.getAuthorPubkey()} parent={null} key={t.getSqueakHash()} id={t.getSqueakHash()} user={t.getAuthorPubkey()} createdAt={t.getBlockTime()} description={t.getContentStr()}
+                    images={[]} replies={[]} retweets={[]} likes={[]} />
             }) : <Loader />}
         </div>
     )

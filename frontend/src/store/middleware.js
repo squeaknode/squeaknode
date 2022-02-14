@@ -37,11 +37,19 @@ export const applyMiddleware = dispatch => action => {
             .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
 
         case types.GET_TWEETS:
-	    return getTimelineSqueakDisplaysRequest(10, null, (resp) => {
-		console.log("Got timeline squeaks.");
-		console.log(resp);
-	        dispatch({ type: types.GET_TWEETS, payload: resp.data })
-	    });
+            // return axios.get(`${API_URL}/tweet`, action.payload)
+            // .then(res=> {
+            //   console.log(res.data);
+            //   dispatch({ type: types.GET_TWEETS, payload: res.data })
+            // })
+            // .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
+
+	          return getTimelineSqueakDisplaysRequest(10, null, (resp) => {
+		            console.log("Got timeline squeaks.");
+                let payload = {"tweets": resp.getSqueakDisplayEntriesList() };
+		            console.log(payload);
+	              dispatch({ type: types.GET_TWEETS, payload: payload })
+	          });
 
         case types.GET_TWEET:
             return axios.get(`${API_URL}/tweet/${action.payload}`, action.payload)
