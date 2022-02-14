@@ -32,8 +32,8 @@ export const useActions = (state, dispatch) => ({
         if(localStorage.getItem('Twittertoken')){
         const jwt = jwt_decode(localStorage.getItem('Twittertoken'))
         const current_time = new Date().getTime() / 1000;
-            if(current_time > jwt.exp){ 
-                dispatch({type: types.SET_STATE, payload: {session: false}}) 
+            if(current_time > jwt.exp){
+                dispatch({type: types.SET_STATE, payload: {session: false}})
                 localStorage.removeItem("Twittertoken")
             }else{
                 if(data === 'get account'){ dispatch({type: types.GET_ACCOUNT}) }
