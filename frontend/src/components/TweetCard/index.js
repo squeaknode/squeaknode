@@ -57,12 +57,12 @@ const TweetCard = React.memo(function TweetCard(props) {
 
     const goToTweet = (id) => {
         if(props.replyTo){ actions.getTweet(id) }
-        props.history.push(`/tweet/${props.user.username}/${id}`)
+        props.history.push(`/tweet/${props.user.getPubkey()}/${id}`)
     }
     const goToReply = (e,id) => {
         e.stopPropagation()
         if(props.replyTo){ actions.getTweet(id) }
-        props.history.push(`/tweet/${props.user.username}/${id}`)
+        props.history.push(`/tweet/${props.user.getPubkey()}/${id}`)
     }
 
     const uploadImage = (file) => {
@@ -160,7 +160,7 @@ const TweetCard = React.memo(function TweetCard(props) {
             <div onClick={()=>goToTweet(props.parent._id)} key={props.parent._id} style={{borderBottom: '0px'}} className="Tweet-card-wrapper">
                 <div style={{display:'flex', flexDirection:'column'}} className="card-userPic-wrapper">
                 {props.parent.parent ? <div style={{marginTop: '17px'}}></div> : null}
-                    <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.parent.user.username}`}>
+                    <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.parent.user.getPubkey()}`}>
                         <img alt="" style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={props.parent.user.profileImg}/>
                     </Link>
                     <div className="tweet-reply-thread"></div>
@@ -170,14 +170,14 @@ const TweetCard = React.memo(function TweetCard(props) {
                     <div className="card-content-header">
                         <div className="card-header-detail">
                             <span className="card-header-user">
-                                <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.parent.user.username}`}>{props.parent.user.name}</Link>
+                                <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.parent.user.getPubkey()}`}>{props.parent.user.name}</Link>
                             </span>
                             <span className="card-header-username">
-                                <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.parent.user.username}`}>{'@'+ props.parent.user.username}</Link>
+                                <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.parent.user.getPubkey()}`}>{'@'+ props.parent.user.getPubkey()}</Link>
                             </span>
                             <span className="card-header-dot">·</span>
                             <span className="card-header-date">
-                                {/* <Link to={`/profile/${props.parent.user.username}`}> */}
+                                {/* <Link to={`/profile/${props.parent.user.getPubkey()}`}> */}
                                         {moment(props.parent.createdAt).fromNow(true)}
                                 {/* </Link> */}
                             </span>
@@ -222,9 +222,9 @@ const TweetCard = React.memo(function TweetCard(props) {
                                 {props.parent.likes.length}
                             </div>
                         </div>
-                        <div onClick={(e)=> account && account.username === props.parent.user.username ? deleteTweet(e, props.parent._id): bookmarkTweet(e, props.parent._id)} className="card-button-wrap">
-                            <div className={account && account && account && account.username === props.parent.user.username ? "card-icon delete-icon" :"card-icon share-icon"}>
-                                {account && account && account && account.username === props.parent.user.username ?
+                        <div onClick={(e)=> account && account.username === props.parent.user.getPubkey() ? deleteTweet(e, props.parent._id): bookmarkTweet(e, props.parent._id)} className="card-button-wrap">
+                            <div className={account && account && account && account.username === props.parent.user.getPubkey() ? "card-icon delete-icon" :"card-icon share-icon"}>
+                                {account && account && account && account.username === props.parent.user.getPubkey() ?
                                 <ICON_DELETE styles={{fill:'rgb(101, 119, 134)'}} /> : account && account.bookmarks.includes(props.parent._id) ?
                                 <ICON_BOOKMARKFILL styles={{fill:'rgb(10, 113, 176)'}}/> :
                                 <ICON_BOOKMARK styles={{fill:'rgb(101, 119, 134)'}}/>}
@@ -243,21 +243,21 @@ const TweetCard = React.memo(function TweetCard(props) {
                     <div className="user-retweet-icon">
                         <ICON_RETWEET />
                     </div>
-                    <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.retweet.user.username}`}>
+                    <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.retweet.user.getPubkey()}`}>
                         <img alt="" style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={props.retweet.user.profileImg}/>
                     </Link>
                 </div>
                 <div className="card-content-wrapper">
                     {props.user._id === account && account._id ?
                     <div onClick={(e)=>goToUser(e,account.username)} className="user-retweeted"> You Retweeted </div> :
-                    <div onClick={(e)=>goToUser(e,props.user.username)} className="user-retweeted"> {props.user.username} Retweeted </div>}
+                    <div onClick={(e)=>goToUser(e,props.user.getPubkey())} className="user-retweeted"> {props.user.getPubkey()} Retweeted </div>}
                     <div className="card-content-header">
                         <div className="card-header-detail">
                             <span className="card-header-user">
-                                <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.retweet.user.username}`}>{props.retweet.user.name}</Link>
+                                <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.retweet.user.getPubkey()}`}>{props.retweet.user.name}</Link>
                             </span>
                             <span className="card-header-username">
-                                <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.retweet.user.username}`}>{'@'+ props.retweet.user.username}</Link>
+                                <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.retweet.user.getPubkey()}`}>{'@'+ props.retweet.user.getPubkey()}</Link>
                             </span>
                             <span className="card-header-dot">·</span>
                             <span className="card-header-date">
@@ -313,9 +313,9 @@ const TweetCard = React.memo(function TweetCard(props) {
                                 {props.retweet.likes.length}
                             </div>
                         </div>
-                        <div onClick={(e)=>account && account.username === props.retweet.user.username ? deleteTweet(e,props.retweet._id): bookmarkTweet(e,props.retweet._id)} className="card-button-wrap">
-                            <div className={account && account && account && account.username === props.retweet.user.username ? "card-icon delete-icon" :"card-icon share-icon"}>
-                                {account && account && account && account.username === props.retweet.user.username ?
+                        <div onClick={(e)=>account && account.username === props.retweet.user.getPubkey() ? deleteTweet(e,props.retweet._id): bookmarkTweet(e,props.retweet._id)} className="card-button-wrap">
+                            <div className={account && account && account && account.username === props.retweet.user.getPubkey() ? "card-icon delete-icon" :"card-icon share-icon"}>
+                                {account && account && account && account.username === props.retweet.user.getPubkey() ?
                                 <ICON_DELETE styles={{fill:'rgb(101, 119, 134)'}} /> : account && account.bookmarks.includes(props.retweet._id) ?
                                 <ICON_BOOKMARKFILL styles={{fill:'rgb(10, 113, 176)'}}/> :
                                 <ICON_BOOKMARK styles={{fill:'rgb(101, 119, 134)'}}/>}
@@ -329,7 +329,7 @@ const TweetCard = React.memo(function TweetCard(props) {
                 {/* <div className="user-retweet-icon">
                     <ICON_RETWEET />
                 </div> */}
-                <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.user.username}`}>
+                <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.user.getPubkey()}`}>
                     <img alt="" style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={props.user.profileImg}/>
                 </Link>
             </div>
@@ -340,10 +340,10 @@ const TweetCard = React.memo(function TweetCard(props) {
                 <div className="card-content-header">
                     <div className="card-header-detail">
                         <span className="card-header-user">
-                            <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.user.username}`}>{props.user.name}</Link>
+                            <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.user.getPubkey()}`}>{props.user.name}</Link>
                         </span>
                         <span className="card-header-username">
-                            <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.user.username}`}>{'@'+ props.user.username}</Link>
+                            <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.user.getPubkey()}`}>{'@'+ props.user.getPubkey()}</Link>
                         </span>
                         <span className="card-header-dot">·</span>
                         <span className="card-header-date">
@@ -399,9 +399,9 @@ const TweetCard = React.memo(function TweetCard(props) {
                             {props.likes.length}
                         </div>
                     </div>
-                    <div onClick={(e)=>account && account.username === props.user.username ? deleteTweet(e,props.id): bookmarkTweet(e,props.id)} className="card-button-wrap">
-                        <div className={account && account && account && account.username === props.user.username ? "card-icon delete-icon" :"card-icon share-icon"}>
-                            {account && account && account && account.username === props.user.username ?
+                    <div onClick={(e)=>account && account.username === props.user.getPubkey() ? deleteTweet(e,props.id): bookmarkTweet(e,props.id)} className="card-button-wrap">
+                        <div className={account && account && account && account.username === props.user.getPubkey() ? "card-icon delete-icon" :"card-icon share-icon"}>
+                            {account && account && account && account.username === props.user.getPubkey() ?
                             <ICON_DELETE styles={{fill:'rgb(101, 119, 134)'}} /> : account && account.bookmarks.includes(props.id) ?
                             <ICON_BOOKMARKFILL styles={{fill:'rgb(10, 113, 176)'}}/> :
                             <ICON_BOOKMARK styles={{fill:'rgb(101, 119, 134)'}}/>}
@@ -427,7 +427,7 @@ const TweetCard = React.memo(function TweetCard(props) {
                 <div style={{marginTop:'5px'}} className="modal-body">
                     <div className="reply-content-wrapper">
                         <div className="card-userPic-wrapper">
-                            <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${parent? props.parent.user.username:props.user.username}`}>
+                            <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${parent? props.parent.user.getPubkey():props.user.getPubkey()}`}>
                                 <img alt="" style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={parent? props.parent.user.profileImg : props.user.profileImg}/>
                             </Link>
                         </div>
@@ -435,10 +435,10 @@ const TweetCard = React.memo(function TweetCard(props) {
                             <div className="card-content-header">
                                 <div className="card-header-detail">
                                     <span className="card-header-user">
-                                        <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${parent? props.parent.user.username:props.user.username}`}>{parent? props.parent.user.name : props.user.name}</Link>
+                                        <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${parent? props.parent.user.getPubkey():props.user.getPubkey()}`}>{parent? props.parent.user.name : props.user.name}</Link>
                                     </span>
                                     <span className="card-header-username">
-                                        <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${parent? props.parent.user.username : props.user.username}`}>{parent? '@'+props.parent.user.username : '@'+props.user.username}</Link>
+                                        <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${parent? props.parent.user.getPubkey() : props.user.getPubkey()}`}>{parent? '@'+props.parent.user.getPubkey() : '@'+props.user.getPubkey()}</Link>
                                     </span>
                                     <span className="card-header-dot">·</span>
                                     <span className="card-header-date">
@@ -454,7 +454,7 @@ const TweetCard = React.memo(function TweetCard(props) {
                                     Replying to
                                 </span>
                                 <span className="main-tweet-user">
-                                    @{parent? props.parent.user.username : props.user.username}
+                                    @{parent? props.parent.user.getPubkey() : props.user.getPubkey()}
                                 </span>
                             </div>
                         </div>

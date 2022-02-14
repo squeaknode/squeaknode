@@ -116,7 +116,8 @@ const Home = () => {
                 images={'t.images'} replies={[]} retweets={[]} likes={[]} style={{height:'0'}} />} */}
             {state.tweets.length > 0 ? state.tweets.map(t => {
                 console.log(t);
-                return <TweetCard retweet={t.getReplyTo()} username={t.getAuthorPubkey()} name={t.getAuthorPubkey()} parent={null} key={t.getSqueakHash()} id={t.getSqueakHash()} user={t.getAuthorPubkey()} createdAt={t.getBlockTime()} description={t.getContentStr()}
+                console.log(t.getAuthor());
+                return <TweetCard retweet={t.getReplyTo()} username={t.getAuthorPubkey()} name={t.getAuthorPubkey()} parent={null} key={t.getSqueakHash()} id={t.getSqueakHash()} user={t.getAuthor()} createdAt={t.getBlockTime()} description={t.getContentStr()}
                     images={[]} replies={[]} retweets={[]} likes={[]} />
             }) : <Loader />}
         </div>
