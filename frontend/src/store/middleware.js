@@ -2,6 +2,10 @@ import types from './typeActions'
 import axios from 'axios'
 import {API_URL} from '../config'
 
+import {
+  getTimelineSqueakDisplaysRequest,
+} from '../squeakclient/requests';
+
 export const token = () => {
     if(localStorage.getItem('Twittertoken')){
         return localStorage.getItem('Twittertoken')
@@ -33,9 +37,11 @@ export const applyMiddleware = dispatch => action => {
             .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
 
         case types.GET_TWEETS:
-            return axios.get(`${API_URL}/tweet`, action.payload)
-            .then(res=>dispatch({ type: types.GET_TWEETS, payload: res.data }))
-            .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
+	    return getTimelineSqueakDisplaysRequest(10, null, (resp) => {
+		console.log("Got timeline squeaks.");
+		console.log(resp);
+	        dispatch({ type: types.GET_TWEETS, payload: resp.data })
+	    });
 
         case types.GET_TWEET:
             return axios.get(`${API_URL}/tweet/${action.payload}`, action.payload)
