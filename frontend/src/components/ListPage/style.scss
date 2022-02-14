@@ -1,0 +1,93 @@
+.listp-banner{
+    max-height: 200px;
+    height: 200px;
+    width: 100%;
+    img{
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+}
+
+.listp-details-wrap{
+    padding: 10px 10px 0 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 1px solid rgb(230, 236, 240);;
+}
+
+.list-owner-wrap{
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    cursor: pointer;
+    &:hover{
+        h4{text-decoration: underline;}
+    }
+    div{
+        margin-left: 5px;
+        color: rgb(101, 119, 134);
+    }
+}
+
+.Members:hover{
+    text-decoration: underline;
+}
+
+.listp-edit-btn{
+    margin: 20px 0;
+    min-width: 92px;
+    min-height: 39px;
+    display: flex;
+    font-weight: bold;
+    color: rgb(29, 161, 242);
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    cursor: pointer;
+    border: 1px solid rgb(29, 161, 242);
+    border-radius: 9999px;
+    transition: 0.2s ease-in-out;
+    &:hover{
+        background-color: rgba(29,161,242,0.1);
+    }
+}
+
+.list-description{
+    margin-top: 10px;
+}
+
+
+.modal-delete-box{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: rgb(224, 36, 94);
+    border-top: 1px solid rgb(230, 236, 240);
+    border-bottom: 1px solid rgb(230, 236, 240);
+    padding: 15px;
+    min-height: 49px;
+    cursor: pointer;
+    transition: 0.1s ease-in-out;
+    will-change: background-color;
+    margin-top: 30px;
+    &:hover{
+        font-weight: 600;
+        background-color: rgba(224, 36, 94, 0.1);
+    }
+}
+
+
+.no-b-border{
+    border-bottom: 1px solid transparent !important;
+}
+
+.Remove-switch{
+    background-color: rgb(224, 36, 94) !important;
+    border-color: rgb(224, 36, 94) !important;
+    span{
+        color: #fff !important;
+    }
+}

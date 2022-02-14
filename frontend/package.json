@@ -1,47 +1,33 @@
 {
-  "name": "squeak-node-frontend",
-  "version": "1.1.0",
+  "name": "twitter-frontend",
+  "version": "0.1.0",
   "private": true,
-  "resolutions": {
-    "websocket-extensions": "^0.1.4"
-  },
   "dependencies": {
-    "@emotion/react": "^11.6.0",
-    "@emotion/styled": "^11.6.0",
-    "@grpc/grpc-js": "~1.4.4",
-    "@grpc/proto-loader": "~0.6.7",
-    "@material-ui/core": "^4.12.3",
-    "@material-ui/icons": "^4.11.2",
-    "@material-ui/lab": "^4.0.0-alpha.57",
-    "@material-ui/styles": "^4.11.4",
-    "@mui/icons-material": "^5.1.1",
-    "@mui/material": "^5.1.1",
-    "@mui/styled-engine": "^5.1.1",
-    "apexcharts": "^3.22.2",
-    "async": "~3.2.2",
-    "classnames": "^2.2.6",
-    "font-awesome": "^4.7.0",
-    "google-protobuf": "^3.12.4",
-    "grpc-web": "^1.2.1",
-    "moment": "^2.29.1",
-    "mui-datatables": "^4.0.0",
-    "protobufjs": "^6.10.2",
-    "react": "^17.0.2",
-    "react-apexcharts": "^1.3.3",
-    "react-copy-to-clipboard": "^5.0.4",
-    "react-dom": "^17.0.2",
-    "react-router-dom": "^5.0.1",
-    "react-scripts": "^4.0.3",
-    "react-syntax-highlighter": "^15.4.5",
-    "react-toastify": "^8.1.0",
-    "recharts": "^2.1.6",
-    "tinycolor2": "^1.4.2"
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.5.0",
+    "@testing-library/user-event": "^7.2.1",
+    "axios": "^0.19.2",
+    "darkreader": "^4.9.10",
+    "dotenv": "^8.2.0",
+    "jwt-decode": "^2.2.0",
+    "moment": "^2.26.0",
+    "react": "^16.13.1",
+    "react-contenteditable": "^3.3.4",
+    "react-dom": "^16.13.1",
+    "react-responsive": "^8.1.0",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "3.4.1",
+    "sass": "^1.49.7",
+    "serve": "^11.3.2",
+    "socket.io-client": "^2.3.0"
   },
   "scripts": {
+    "dev": "react-scripts start",
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "heroku-postbuild": "npm run build"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -57,9 +43,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "prettier": "^2.4.1",
-    "terser": "^5.10.0"
   }
 }

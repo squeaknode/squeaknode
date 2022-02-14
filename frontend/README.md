@@ -1,29 +1,17 @@
-# frontend
+# Twitter-Clone 
 
-## Run in dev mode
+A website I build based on twitter please enjoy. This website is Not for actual usage only learning purposes.
 
-- Start bitcoin-core and lnd in docker-compose:
-	```
-	cd docker
-	docker-compose up
-	```
-- Start the backend with the `SQUEAKNODE_WEBADMIN_ENABLED`, `SQUEAKNODE_WEBADMIN_LOGIN_DISABLED`, and `SQUEAKNODE_WEBADMIN_ALLOW_CORS` environment variables:
-	```
-	python3 -m venv venv
-	source venv/bin/activate
-	pip install .
-	SQUEAKNODE_WEBADMIN_ENABLED=TRUE SQUEAKNODE_WEBADMIN_LOGIN_DISABLED=TRUE SQUEAKNODE_WEBADMIN_ALLOW_CORS=TRUE SQUEAKNODE_NETWORK=testnet squeaknode --config config.ini
-	```
-- Start the frontend in development mode:
-	```
-	cd frontend
-	make rundev
-	```
+[Website Link](https://twitterapp-clone.netlify.app)
 
-## Build for production
+[Backend Repo](https://github.com/Ali-hd/TwitterClone-Backend)
 
-- Run the build command:
-	```
-	cd frontend
-	make build
-	```
+
+
+## Technologies used
+- Reactjs
+- Context API
+- Node.js express
+- MongoDB mongoose
+- Image uploaded on Amazon S3
+- socket-io for real-time chatting
