@@ -170,7 +170,7 @@ const TweetCard = React.memo(function TweetCard(props) {
                     <div className="card-content-header">
                         <div className="card-header-detail">
                             <span className="card-header-user">
-                                <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.parent.user.getPubkey()}`}>{props.parent.user.name}</Link>
+                                <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.parent.user.getPubkey()}`}>{props.parent.user.getProfileName()}</Link>
                             </span>
                             <span className="card-header-username">
                                 <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.parent.user.getPubkey()}`}>{'@'+ props.parent.user.getPubkey()}</Link>
@@ -254,7 +254,7 @@ const TweetCard = React.memo(function TweetCard(props) {
                     <div className="card-content-header">
                         <div className="card-header-detail">
                             <span className="card-header-user">
-                                <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.retweet.user.getPubkey()}`}>{props.retweet.user.name}</Link>
+                                <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.retweet.user.getPubkey()}`}>{props.retweet.user.getProfileName()}</Link>
                             </span>
                             <span className="card-header-username">
                                 <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.retweet.user.getPubkey()}`}>{'@'+ props.retweet.user.getPubkey()}</Link>
@@ -340,7 +340,7 @@ const TweetCard = React.memo(function TweetCard(props) {
                 <div className="card-content-header">
                     <div className="card-header-detail">
                         <span className="card-header-user">
-                            <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.user.getPubkey()}`}>{props.user.name}</Link>
+                            <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.user.getPubkey()}`}>{props.user.getProfileName()}</Link>
                         </span>
                         <span className="card-header-username">
                             <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.user.getPubkey()}`}>{'@'+ props.user.getPubkey()}</Link>
@@ -435,7 +435,7 @@ const TweetCard = React.memo(function TweetCard(props) {
                             <div className="card-content-header">
                                 <div className="card-header-detail">
                                     <span className="card-header-user">
-                                        <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${parent? props.parent.user.getPubkey():props.user.getPubkey()}`}>{parent? props.parent.user.name : props.user.name}</Link>
+                                        <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${parent? props.parent.user.getPubkey():props.user.getPubkey()}`}>{parent? props.parent.user.getProfileName() : props.user.getProfileName()}</Link>
                                     </span>
                                     <span className="card-header-username">
                                         <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${parent? props.parent.user.getPubkey() : props.user.getPubkey()}`}>{parent? '@'+props.parent.user.getPubkey() : '@'+props.user.getPubkey()}</Link>
