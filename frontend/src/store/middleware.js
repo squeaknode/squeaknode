@@ -5,7 +5,7 @@ import {API_URL} from '../config'
 export const token = () => {
     if(localStorage.getItem('Twittertoken')){
         return localStorage.getItem('Twittertoken')
-    } 
+    }
     return null
 }
 
@@ -19,7 +19,7 @@ export const applyMiddleware = dispatch => action => {
 
         case types.REGISTER:
             return axios.post(`${API_URL}/auth/register`, action.payload)
-            .then(res=>dispatch({ type: types.REGISTER, payload: res.data, data: action.payload })) 
+            .then(res=>dispatch({ type: types.REGISTER, payload: res.data, data: action.payload }))
             .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
 
         case types.TWEET:
@@ -36,17 +36,17 @@ export const applyMiddleware = dispatch => action => {
             return axios.get(`${API_URL}/tweet`, action.payload)
             .then(res=>dispatch({ type: types.GET_TWEETS, payload: res.data }))
             .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
-            
+
         case types.GET_TWEET:
             return axios.get(`${API_URL}/tweet/${action.payload}`, action.payload)
             .then(res=>dispatch({ type: types.GET_TWEET, payload: res.data }))
             .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
-            
+
         case types.GET_ACCOUNT:
             return axios.get(`${API_URL}/auth/user`, headers)
             .then(res=>dispatch({ type: types.GET_ACCOUNT, payload: res.data }))
             .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
-            
+
         case types.BOOKMARK:
             return axios.post(`${API_URL}/tweet/${action.payload.id}/bookmark`, action.payload, headers)
             .then(res=>dispatch({ type: types.BOOKMARK, payload: res.data, data: action.payload }))
@@ -71,7 +71,7 @@ export const applyMiddleware = dispatch => action => {
             return axios.post(`${API_URL}/tweet/${action.payload.id}/retweet`, action.payload, headers)
             .then(res=>dispatch({ type: types.RETWEET, payload: res.data, data: action.payload }))
             .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
-        
+
         case types.DELETE_TWEET:
             return axios.delete(`${API_URL}/tweet/${action.payload}/delete`, headers)
             .then(res=>dispatch({ type: types.DELETE_TWEET, payload: res.data, data: action.payload }))
@@ -142,23 +142,22 @@ export const applyMiddleware = dispatch => action => {
         //     .then(res=>dispatch({ type: types.GET_FOLLOWING, payload: res.data, data: action.payload }))
         //     .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
 
-        case types.WHO_TO_FOLLOW: 
+        case types.WHO_TO_FOLLOW:
             return axios.get(`${API_URL}/user/i/suggestions`, headers)
             .then(res=>dispatch({ type: types.WHO_TO_FOLLOW, payload: res.data, data: action.payload }))
             .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
-            
-        
-        case types.GET_CONVERSATIONS: 
+
+        case types.GET_CONVERSATIONS:
             return axios.get(`${API_URL}/chat/conversations`, headers)
             .then(res=>dispatch({ type: types.GET_CONVERSATIONS, payload: res.data }))
             .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
 
-        case types.START_CHAT: 
+        case types.START_CHAT:
             return axios.post(`${API_URL}/chat/conversation`, action.payload, headers)
             .then(res=>dispatch({ type: types.START_CHAT, payload: res.data, data: action.payload }))
             .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
 
-        case types.GET_SINGLE_CONVERSATION: 
+        case types.GET_SINGLE_CONVERSATION:
             return axios.get(`${API_URL}/chat/conversation?id=${action.payload.id}`, headers)
             .then(res=>dispatch({ type: types.GET_SINGLE_CONVERSATION, payload: res.data, data: action.payload }))
             .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
