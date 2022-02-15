@@ -5,6 +5,7 @@ const initialState = {
     loggedin: false,
     tweets: [],
     tweet: null,
+    ancestorTweets: [],
     replyTweets: [],
     account: null,
     user: null,
@@ -115,6 +116,9 @@ const reducer = (state = initialState, action) => {
             return {...state, ...action.payload}
 
         case type.GET_USER_TWEETS:
+            return {...state, ...action.payload, loading: false, error: false}
+
+        case type.GET_ANCESTOR_TWEETS:
             return {...state, ...action.payload, loading: false, error: false}
 
         case type.GET_REPLY_TWEETS:

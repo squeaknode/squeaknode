@@ -8,6 +8,7 @@ import {
   getSqueakProfileByAddressRequest,
   getAddressSqueakDisplaysRequest,
   getReplySqueakDisplaysRequest,
+  getAncestorSqueakDisplaysRequest,
 } from '../squeakclient/requests';
 
 export const token = () => {
@@ -112,6 +113,19 @@ export const applyMiddleware = dispatch => action => {
                 console.log("payload");
 		            console.log(payload);
                 dispatch({ type: types.GET_USER_TWEETS, payload: payload });
+            });
+            // TODO: handle error response
+
+        case types.GET_ANCESTOR_TWEETS:
+            console.log("action.payload:");
+            console.log(action.payload);
+            return getAncestorSqueakDisplaysRequest(action.payload, (resp) => {
+                console.log("Got ancestor tweets.");
+                console.log(resp);
+                let payload = {"ancestorTweets": resp };
+                console.log("payload");
+                console.log(payload);
+                dispatch({ type: types.GET_ANCESTOR_TWEETS, payload: payload });
             });
             // TODO: handle error response
 

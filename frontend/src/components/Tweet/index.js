@@ -17,7 +17,7 @@ const TweetPage = (props) => {
     let history = useHistory();
 
     const { state, actions } = useContext(StoreContext)
-    const {tweet, replyTweets, account, session} = state
+    const {tweet, ancestorTweets, replyTweets, account, session} = state
 
     const [modalOpen, setModalOpen] = useState(false)
     const [replyText, setReplyText] = useState('')
@@ -27,6 +27,7 @@ const TweetPage = (props) => {
     useEffect(()=>{
         window.scrollTo(0, 0)
         actions.getTweet(props.match.params.id)
+        actions.getAncestorTweets(props.match.params.id)
         actions.getReplyTweets(props.match.params.id)
     }, [props.match.params.id])
     var image = new Image()
@@ -110,6 +111,9 @@ const TweetPage = (props) => {
     const goBack = () => {
         history.goBack()
     }
+
+    console.log("ancestorTweets");
+    console.log(ancestorTweets);
 
     return(
         <>
