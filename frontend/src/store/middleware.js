@@ -9,6 +9,7 @@ import {
   getAddressSqueakDisplaysRequest,
   getReplySqueakDisplaysRequest,
   getAncestorSqueakDisplaysRequest,
+  makeSqueakRequest,
 } from '../squeakclient/requests';
 
 export const token = () => {
@@ -33,9 +34,34 @@ export const applyMiddleware = dispatch => action => {
             .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
 
         case types.TWEET:
-            return axios.post(`${API_URL}/tweet/create`, action.payload, headers)
-            .then(res=>dispatch({ type: types.TWEET, payload: res.data, data: action.payload }))
-            .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
+            // return axios.post(`${API_URL}/tweet/create`, action.payload, headers)
+            // .then(res=>dispatch({ type: types.TWEET, payload: res.data, data: action.payload }))
+            // .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
+
+            console.log(action.payload);
+            let profileId = action.payload.signingProfile;
+            let content = action.payload.description;
+            let replyTo = action.payload.replyTo;
+            let hasRecipient = action.payload.hasRecipient;
+            let recipientProfileId = action.payload.recipientProfileId;
+
+            console.log(profileId);
+            console.log(content);
+            console.log(replyTo);
+            console.log(hasRecipient);
+            console.log(recipientProfileId);
+
+            return makeSqueakRequest(profileId, content, replyTo, hasRecipient, recipientProfileId, (resp) => {
+                console.log("Made squeak");
+                let squeakHash = resp;
+                return getSqueakDisplayRequest(squeakHash, (resp) => {
+    		            console.log("Got squeak.");
+                    let payload = {"tweet": resp };
+    		            console.log(payload);
+                    dispatch({ type: types.TWEET, payload: payload, data: action.payload });
+    	          });
+            });
+            // TODO: handle error response
 
         case types.LIKE_TWEET:
             return axios.post(`${API_URL}/tweet/${action.payload.id}/like`, action.payload, headers)
@@ -51,15 +77,12 @@ export const applyMiddleware = dispatch => action => {
             // .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
 
 	          return getTimelineSqueakDisplaysRequest(10, null, (resp) => {
-		            console.log("Got timeline squeaks.");
                 let payload = {"tweets": resp.getSqueakDisplayEntriesList() };
-		            console.log(payload);
 	              dispatch({ type: types.GET_TWEETS, payload: payload })
 	          });
             // TODO: handle error response
 
         case types.GET_TWEET:
-            console.log(action.payload);
             // return axios.get(`${API_URL}/tweet/${action.payload}`, action.payload)
             // .then(res=> {
             //   console.log(res.data);
@@ -68,9 +91,7 @@ export const applyMiddleware = dispatch => action => {
             // .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
 
             return getSqueakDisplayRequest(action.payload, (resp) => {
-		            console.log("Got squeak.");
                 let payload = {"tweet": resp };
-		            console.log(payload);
                 dispatch({ type: types.GET_TWEET, payload: payload });
 	          });
             // TODO: handle error response
@@ -93,51 +114,29 @@ export const applyMiddleware = dispatch => action => {
             // })
             // .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
 
-            console.log("action.payload:");
-            console.log(action.payload);
             return getSqueakProfileByAddressRequest(action.payload, (resp) => {
-                console.log("Got user profile.");
                 let payload = {"user": resp };
-                console.log(payload);
                 dispatch({ type: types.GET_USER, payload: payload });
             });
             // TODO: handle error response
 
         case types.GET_USER_TWEETS:
-            console.log("action.payload:");
-            console.log(action.payload);
             return getAddressSqueakDisplaysRequest(action.payload, 10, null, (resp) => {
-                console.log("Got user tweets.");
-                console.log(resp);
                 let payload = {"userTweets": resp };
-                console.log("payload");
-		            console.log(payload);
                 dispatch({ type: types.GET_USER_TWEETS, payload: payload });
             });
             // TODO: handle error response
 
         case types.GET_ANCESTOR_TWEETS:
-            console.log("action.payload:");
-            console.log(action.payload);
             return getAncestorSqueakDisplaysRequest(action.payload, (resp) => {
-                console.log("Got ancestor tweets.");
-                console.log(resp);
                 let payload = {"ancestorTweets": resp };
-                console.log("payload");
-                console.log(payload);
                 dispatch({ type: types.GET_ANCESTOR_TWEETS, payload: payload });
             });
             // TODO: handle error response
 
         case types.GET_REPLY_TWEETS:
-            console.log("action.payload:");
-            console.log(action.payload);
             return getReplySqueakDisplaysRequest(action.payload, 10, null, (resp) => {
-                console.log("Got reply tweets.");
-                console.log(resp);
                 let payload = {"replyTweets": resp };
-                console.log("payload");
-                console.log(payload);
                 dispatch({ type: types.GET_REPLY_TWEETS, payload: payload });
             });
             // TODO: handle error response

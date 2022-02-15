@@ -4,7 +4,7 @@ import { Link, withRouter, Redirect } from 'react-router-dom'
 import './style.scss'
 import { ICON_LOGO, ICON_HOME, ICON_HASH, ICON_BELL, ICON_INBOX
 ,ICON_BOOKMARK, ICON_LIST, ICON_USER, ICON_SETTINGS, ICON_HOMEFILL, ICON_HASHFILL,
-ICON_BELLFILL, ICON_BOOKMARKFILL, ICON_LISTFILL, ICON_USERFILL, ICON_FEATHER, 
+ICON_BELLFILL, ICON_BOOKMARKFILL, ICON_LISTFILL, ICON_USERFILL, ICON_FEATHER,
 ICON_CLOSE,ICON_IMGUPLOAD, ICON_INBOXFILL, ICON_LIGHT, ICON_DARK } from '../../Icons'
 import axios from 'axios'
 import {API_URL} from '../../config'
@@ -12,7 +12,7 @@ import ContentEditable from 'react-contenteditable'
 import {
     enable as enableDarkMode,
     disable as disableDarkMode,
-    setFetchMethod 
+    setFetchMethod
 } from 'darkreader';
 
 const Nav = ({history}) => {
@@ -23,6 +23,7 @@ const Nav = ({history}) => {
     const [theme, setTheme] = useState(true)
     const [modalOpen, setModalOpen] = useState(false)
     const [styleBody, setStyleBody] = useState(false)
+    const [tweetSigningProfile, setTweetSigningProfile] = useState(-1)
     const [tweetText, setTweetText] = useState('')
     const [tweetImage, setTweetImage] = useState(null)
     const [imageLoaded, setImageLoaded] = useState(false)
@@ -32,14 +33,14 @@ const Nav = ({history}) => {
     const isInitialMount = useRef(true);
     useEffect(() => {
         if (isInitialMount.current){ isInitialMount.current = false }
-        else { 
+        else {
             document.getElementsByTagName("body")[0].style.cssText = styleBody && "overflow-y: hidden; margin-right: 17px"
         }
     }, [styleBody])
 
     useEffect( () => () => document.getElementsByTagName("body")[0].style.cssText = "", [] )
 
-    useEffect(()=>{  
+    useEffect(()=>{
         let ran = false
         history.listen((location, action) => {
           state.account == null ? actions.verifyToken('get account') : actions.verifyToken()
@@ -53,14 +54,14 @@ const Nav = ({history}) => {
             localStorage.setItem('Theme', 'light')
         }
       }, [])
-      
+
       const path = history.location.pathname.slice(0,5)
 
       const openMore = () => { setMoreMenu(!moreMenu) }
 
       const handleMenuClick = (e) => { e.stopPropagation() }
 
-    
+
 
     const uploadImage = (file) => {
         let bodyFormData = new FormData()
@@ -70,7 +71,7 @@ const Nav = ({history}) => {
             .catch(err=>alert('error uploading image'))
     }
 
-    
+
     const onchangeImage = () => {
         let file = document.getElementById('image').files[0];
         uploadImage(file)
@@ -94,9 +95,9 @@ const Nav = ({history}) => {
 
 
     const handleChange = evt => {
-        if(tweetT.current.trim().length <= 280 
+        if(tweetT.current.trim().length <= 280
         && tweetT.current.split(/\r\n|\r|\n/).length <= 30){
-            tweetT.current = evt.target.value; 
+            tweetT.current = evt.target.value;
             setTweetText(tweetT.current)
         }
     };
@@ -107,12 +108,15 @@ const Nav = ({history}) => {
         toggleModal()
         if(!tweetText.length){return}
         const values = {
+            signingProfile: tweetSigningProfile,
             description: tweetText,
-            images: [tweetImage],
-            hashtags
+            replyTo: null,
+            hasRecipient: null,
+            recipientProfileId: -1
         }
         actions.tweet(values)
         tweetT.current = ''
+        setTweetSigningProfile(-1)
         setTweetText('')
         setTweetImage(null)
     }
@@ -149,8 +153,8 @@ const Nav = ({history}) => {
                             <div className="Nav-item">Explore</div>
                         </div>
                     </Link>
-                    {session ? 
-                    <> 
+                    {session ?
+                    <>
                     <Link to="/notifications" className="Nav-link">
                         <div className={path === '/noti' ? "Nav-item-hover active-Nav" : "Nav-item-hover"}>
                             {path === '/noti' ? <ICON_BELLFILL /> : <ICON_BELL />}
@@ -189,7 +193,7 @@ const Nav = ({history}) => {
                         </div>
                         <div onClick={()=>openMore()} style={{display: moreMenu ? 'block' : 'none'}} className="more-menu-background">
                         <div className="more-modal-wrapper">
-                            {moreMenu ? 
+                            {moreMenu ?
                             <div style={{top: `${document.getElementById('moremenu').getBoundingClientRect().top - 40}px`, left: `${document.getElementById('moremenu').getBoundingClientRect().left}px`, height: !session ? '104px' : null }} onClick={(e)=>handleMenuClick(e)} className="more-menu-content">
                                     <div onClick={changeTheme} className="more-menu-item">
                                         <span>Change Theme</span>
@@ -200,19 +204,19 @@ const Nav = ({history}) => {
                                         <span>Bookmarks</span>
                                         <span><ICON_BOOKMARK/></span>
                                     </Link> : null }
-                                    {session ? 
+                                    {session ?
                                     <div onClick={()=>actions.logout()} className="more-menu-item">
                                         Log out @{account && account.username}
-                                    </div> : 
+                                    </div> :
                                     <div onClick={()=>history.push('/login')} className="more-menu-item">
-                                    Log in 
+                                    Log in
                                     </div>}
                             </div> : null }
                         </div>
                         </div>
                     </div>
-                    {session ? 
-                    <div className="Nav-tweet">   
+                    {session ?
+                    <div className="Nav-tweet">
                         <div onClick={()=>toggleModal()} className="Nav-tweet-link">
                             <div className="Nav-tweet-btn btn-hide">
                                 Tweet
@@ -230,7 +234,7 @@ const Nav = ({history}) => {
             </div>
         </div>
 
-        {account && 
+        {account &&
         <div onClick={()=>toggleModal()} style={{display: modalOpen ? 'block' : 'none'}} className="modal-edit">
             <div style={{minHeight: '270px', height: 'initial'}} onClick={(e)=>handleModalClick(e)} className="modal-content">
                 <div className="modal-header">
