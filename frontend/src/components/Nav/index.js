@@ -8,6 +8,7 @@ ICON_BELLFILL, ICON_BOOKMARKFILL, ICON_LISTFILL, ICON_USERFILL, ICON_FEATHER,
 ICON_CLOSE,ICON_IMGUPLOAD, ICON_INBOXFILL, ICON_LIGHT, ICON_DARK } from '../../Icons'
 import axios from 'axios'
 import {API_URL} from '../../config'
+import MakeSqueak from '../MakeSqueak'
 import ContentEditable from 'react-contenteditable'
 import {
     enable as enableDarkMode,
@@ -23,12 +24,6 @@ const Nav = ({history}) => {
     const [theme, setTheme] = useState(true)
     const [modalOpen, setModalOpen] = useState(false)
     const [styleBody, setStyleBody] = useState(false)
-    const [tweetSigningProfile, setTweetSigningProfile] = useState(-1)
-    const [tweetText, setTweetText] = useState('')
-    const [tweetImage, setTweetImage] = useState(null)
-    const [imageLoaded, setImageLoaded] = useState(false)
-
-    const tweetT = useRef('');
 
     const isInitialMount = useRef(true);
     useEffect(() => {
@@ -61,64 +56,15 @@ const Nav = ({history}) => {
 
       const handleMenuClick = (e) => { e.stopPropagation() }
 
-
-
-    const uploadImage = (file) => {
-        let bodyFormData = new FormData()
-        bodyFormData.append('image', file)
-        axios.post(`${API_URL}/tweet/upload`, bodyFormData, { headers: { Authorization: `Bearer ${localStorage.getItem('Twittertoken')}`}})
-            .then(res=>{setTweetImage(res.data.imageUrl)})
-            .catch(err=>alert('error uploading image'))
-    }
-
-
-    const onchangeImage = () => {
-        let file = document.getElementById('image').files[0];
-        uploadImage(file)
-    }
-
-    const removeImage = () => {
-        document.getElementById('image').value = "";
-        setTweetImage(null)
-        setImageLoaded(false)
-    }
-
     const toggleModal = (e, type) => {
         if(e){ e.stopPropagation() }
         setStyleBody(!styleBody)
+        // TODO: Discard content on modal toggle off.
         setTimeout(()=>{ setModalOpen(!modalOpen) },20)
     }
 
     const handleModalClick = (e) => {
         e.stopPropagation()
-    }
-
-
-    const handleChange = evt => {
-        if(tweetT.current.trim().length <= 280
-        && tweetT.current.split(/\r\n|\r|\n/).length <= 30){
-            tweetT.current = evt.target.value;
-            setTweetText(tweetT.current)
-        }
-    };
-
-    const submitTweet = (type) => {
-
-        let hashtags = tweetText.match(/#(\w+)/g)
-        toggleModal()
-        if(!tweetText.length){return}
-        const values = {
-            signingProfile: tweetSigningProfile,
-            description: tweetText,
-            replyTo: null,
-            hasRecipient: null,
-            recipientProfileId: -1
-        }
-        actions.tweet(values)
-        tweetT.current = ''
-        setTweetSigningProfile(-1)
-        setTweetText('')
-        setTweetImage(null)
     }
 
     const changeTheme = () => {
@@ -246,38 +192,7 @@ const Nav = ({history}) => {
                     <p className="modal-title">Tweet</p>
                 </div>
                 <div style={{marginTop:'5px'}} className="modal-body">
-                    <div style={{position: 'relative'}} className="Tweet-input-wrapper">
-                        <div className="Tweet-profile-wrapper">
-                            <div>
-                                <img style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={account.profileImg}/>
-                            </div>
-                        </div>
-                        <div onClick={()=>document.getElementById('tweetPop').focus()} className="Tweet-input-side">
-                            <div className="inner-input-box">
-                                <ContentEditable onKeyDown={(e)=>tweetT.current.length>279 ? e.keyCode !== 8 && e.preventDefault(): null} id="tweetPop" onPaste={(e)=>e.preventDefault()} style={{minHeight: '120px'}} className={tweetText.length ? 'tweet-input-active' : null} placeholder="What's happening" html={tweetT.current} onChange={handleChange} />
-                            </div>
-                            {tweetImage && <div className="inner-image-box">
-                                <img onLoad={() => setImageLoaded(true)} className="tweet-upload-image" src={tweetImage} alt="tweet image" />
-                                {imageLoaded && <span onClick={removeImage} className="cancel-image">x</span>}
-                            </div>}
-                            <div className="inner-input-links">
-                                <div className="input-links-side">
-                                    <div style={{marginLeft:'-10px'}} className="input-attach-wrapper">
-                                        <ICON_IMGUPLOAD styles={{fill:'rgb(29, 161, 242)'}}/>
-                                        <input title=" " id="image" style={{opacity:'0'}} type="file" onChange={()=>onchangeImage()} />
-                                    </div>
-                                </div>
-                                <div className="tweet-btn-holder">
-                                    <div style={{ fontSize: '13px', color: tweetText.length >= 280 ? 'red' : null }}>
-                                        {tweetText.length > 0 && tweetText.length + '/280'}
-                                    </div>
-                                    <div onClick={()=>submitTweet('none')} className={tweetText.length ? 'tweet-btn-side tweet-btn-active' : 'tweet-btn-side'}>
-                                    Tweet
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <MakeSqueak />
                 </div>
             </div>
         </div>}
