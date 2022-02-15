@@ -5,6 +5,7 @@ import {API_URL} from '../config'
 import {
   getTimelineSqueakDisplaysRequest,
   getSqueakDisplayRequest,
+  getSqueakProfileByAddressRequest,
 } from '../squeakclient/requests';
 
 export const token = () => {
@@ -82,9 +83,24 @@ export const applyMiddleware = dispatch => action => {
             .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
 
         case types.GET_USER:
-            return axios.get(`${API_URL}/user/${action.payload}/tweets`)
-            .then(res=>dispatch({ type: types.GET_USER, payload: res.data }))
-            .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
+            // return axios.get(`${API_URL}/user/${action.payload}/tweets`)
+            // .then(res=> {
+            //   console.log(res);
+            //   dispatch({ type: types.GET_USER, payload: res.data });
+            // })
+            // .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
+
+            console.log("action.payload:");
+            console.log(action.payload);
+            return getSqueakProfileByAddressRequest(action.payload, (resp) => {
+                console.log("Got user profile.");
+                let payload = {"user": resp };
+                console.log(payload);
+                dispatch({ type: types.GET_USER, payload: payload });
+            });
+            // TODO: handle error response
+
+
 
         case types.GET_BOOKMARKS:
             return axios.get(`${API_URL}/user/i/bookmarks`, headers)
