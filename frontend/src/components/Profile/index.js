@@ -160,7 +160,7 @@ const Profile = (props) => {
                     </div>
                 </div>
                 <div className="profile-details-box">
-                    <div className="profile-name">{user.name}</div>
+                    <div className="profile-name">{user.getProfileName()}</div>
                     <div className="profile-username">@{account && account.username === userParam ? account.username : user.getPubkey()}</div>
                     <div className="profile-bio">
                         {user.description}
@@ -267,7 +267,7 @@ const Profile = (props) => {
                             <div className="edit-input-wrap">
                                 <div className="edit-input-content">
                                     <label>Name</label>
-                                    <input defaultValue={user.name} onChange={(e)=>setName(e.target.value)} type="text" name="name" className="edit-input"/>
+                                    <input defaultValue={user.getProfileName()} onChange={(e)=>setName(e.target.value)} type="text" name="name" className="edit-input"/>
                                 </div>
                             </div>
                             <div className="edit-input-wrap">
