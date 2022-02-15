@@ -49,9 +49,11 @@ const reducer = (state = initialState, action) => {
         case type.TWEET:
             let recentT = state.tweets
             let s_tweet = state.tweet
+            let replyT = state.replyTweets
             recentT.unshift(action.payload.tweet)
-            if(s_tweet && s_tweet._id === action.data.parent){
-                s_tweet.replies.unshift(action.payload.tweet)
+            if(s_tweet && s_tweet.getSqueakHash() === action.data.parent){
+                // Update the replies if the current selected squeak is active.
+                replyT.unshift(action.payload.tweet)
             }
             return {...state, loading: false, error: false}
 
