@@ -136,7 +136,7 @@ const Profile = (props) => {
                 </div>
                 <div className="profile-header-content">
                     <div className="profile-header-name">
-                            {account && account.username === userParam ? account.username : user.username}
+                            {account && account.username === userParam ? account.username : user.getPubkey()}
                     </div>
                     {/* <div className="profile-header-tweets">
                             82 Tweets
@@ -161,7 +161,7 @@ const Profile = (props) => {
                 </div>
                 <div className="profile-details-box">
                     <div className="profile-name">{user.name}</div>
-                    <div className="profile-username">@{account && account.username === userParam ? account.username : user.username}</div>
+                    <div className="profile-username">@{account && account.username === userParam ? account.username : user.getPubkey()}</div>
                     <div className="profile-bio">
                         {user.description}
                     </div>
