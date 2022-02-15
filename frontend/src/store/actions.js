@@ -131,5 +131,8 @@ export const useActions = (state, dispatch) => ({
     },
     getSingleConversation: data =>{
         dispatch({type: types.GET_SINGLE_CONVERSATION, payload: data})
+    },
+    getSigningProfiles: data => {
+        dispatch({type: types.GET_SIGNING_PROFILES, payload: data})
     }
 })

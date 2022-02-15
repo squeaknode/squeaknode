@@ -10,9 +10,9 @@ import Loader from '../Loader'
 
 const MakeSqueak = () => {
     const { state, actions } = useContext(StoreContext)
-    const { account, session } = state
+    const { signingProfiles, account, session } = state
     useEffect(() => {
-        // actions.getSigningProfiles()
+        actions.getSigningProfiles()
     }, [])
 
     //used for contenteditable divs on react hooks
@@ -43,7 +43,6 @@ const MakeSqueak = () => {
         tweetT.current = ''
         setTweetText('')
     }
-
 
     return (
             <div className="Tweet-input-wrapper">

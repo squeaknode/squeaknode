@@ -21,6 +21,7 @@ const initialState = {
     following: [],
     resultUsers: [],
     suggestions: [],
+    signingProfiles: [],
     top: '-100px',
     msg: '',
     conversations: null,
@@ -238,6 +239,9 @@ const reducer = (state = initialState, action) => {
             return {...state, ...action.payload}
 
         case type.GET_FOLLOWING:
+            return {...state, ...action.payload}
+
+        case type.GET_SIGNING_PROFILES:
             return {...state, ...action.payload}
 
         case type.SEARCH_USERS:

@@ -10,6 +10,7 @@ import {
   getReplySqueakDisplaysRequest,
   getAncestorSqueakDisplaysRequest,
   makeSqueakRequest,
+  getSigningProfilesRequest,
 } from '../squeakclient/requests';
 
 export const token = () => {
@@ -225,6 +226,17 @@ export const applyMiddleware = dispatch => action => {
         //     return axios.get(`${API_URL}/lists/i/following`, action.payload, headers)
         //     .then(res=>dispatch({ type: types.GET_FOLLOWING, payload: res.data, data: action.payload }))
         //     .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
+
+        case types.GET_SIGNING_PROFILES:
+            // return axios.get(`${API_URL}/user/${action.payload}/followers`, headers)
+            // .then(res=>dispatch({ type: types.GET_FOLLOWERS, payload: res.data, data: action.payload }))
+            // .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
+
+            return getSigningProfilesRequest((resp) => {
+                let payload = {"signingProfiles": resp };
+                dispatch({ type: types.GET_ANCESTOR_TWEETS, payload: payload });
+            });
+
 
         case types.WHO_TO_FOLLOW:
             return axios.get(`${API_URL}/user/i/suggestions`, headers)
