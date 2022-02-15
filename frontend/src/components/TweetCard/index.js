@@ -157,80 +157,6 @@ const TweetCard = React.memo(function TweetCard(props) {
 
     return (
         <div>
-            {props.parent ?
-            <div onClick={()=>goToTweet(props.parent._id)} key={props.parent._id} style={{borderBottom: '0px'}} className="Tweet-card-wrapper">
-                <div style={{display:'flex', flexDirection:'column'}} className="card-userPic-wrapper">
-                {props.parent.parent ? <div style={{marginTop: '17px'}}></div> : null}
-                    <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.parent.getAuthor().getPubkey()}`}>
-                        <img alt="" style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={`${getProfileImageSrcString(props.parent.getAuthor())}`}/>
-                    </Link>
-                    <div className="tweet-reply-thread"></div>
-                </div>
-                <div className="card-content-wrapper">
-                {props.parent.parent ? <div onClick={(e)=>goToReply(e,props.parent.parent._id)} className="user-replied">Replying to @{props.parent.parent.username}</div> : null}
-                    <div className="card-content-header">
-                        <div className="card-header-detail">
-                            <span className="card-header-user">
-                                <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.parent.getAuthor().getPubkey()}`}>{props.parent.getAuthor().getProfileName()}</Link>
-                            </span>
-                            <span className="card-header-username">
-                                <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.parent.getAuthor().getPubkey()}`}>{'@'+ props.parent.getAuthor().getPubkey()}</Link>
-                            </span>
-                            <span className="card-header-dot">·</span>
-                            <span className="card-header-date">
-                                {/* <Link to={`/profile/${props.parent.user.getPubkey()}`}> */}
-                                        {moment(props.parent.createdAt).fromNow(true)}
-                                {/* </Link> */}
-                            </span>
-                        </div>
-                        <div className="card-header-more">
-
-                        </div>
-                    </div>
-                    <div className="card-content-info">
-                    {props.parent.getContentStr()}
-                    </div>
-                    <div className="card-buttons-wrapper">
-                        <div onClick={(e)=>toggleModal(e, 'parent')} className="card-button-wrap reply-wrap">
-                            <div className="card-icon reply-icon">
-                                <ICON_REPLY styles={{fill:'rgb(101, 119, 134)'}}/>
-                            </div>
-                            <div className="card-icon-value">
-                                0
-                            </div>
-                        </div>
-                        <div onClick={(e)=>retweet(e, props.parent._id)} className="card-button-wrap retweet-wrap">
-                            <div className="card-icon retweet-icon">
-                                <ICON_RETWEET styles={account && account.retweets.includes(props.parent._id) ? {stroke: 'rgb(23, 191, 99)'} : {fill:'rgb(101, 119, 134)'}}/>
-                            </div>
-                            <div style={{color: account && account.retweets.includes(props.parent._id) && 'rgb(23, 191, 99)', opacity: 0 > 0 ? '1':'0'}} className="card-icon-value">
-                                0
-                            </div>
-                        </div>
-                        <div onClick={(e)=>likeTweet(e, props.parent._id)} className="card-button-wrap heart-wrap">
-                            <div className="card-icon heart-icon">
-                                {account && account.likes.includes(props.parent._id) ?
-                                <ICON_HEARTFULL styles={{fill:'rgb(224, 36, 94)'}}/> :
-                                <ICON_HEART styles={{fill:'rgb(101, 119, 134)'}}/>}
-                            </div>
-                            <div style={{color: account && false && 'rgb(224, 36, 94)', opacity: 0 > 0 ? '1':'0'}} className="card-icon-value">
-                                0
-                            </div>
-                        </div>
-                        <div onClick={(e)=> account && account.username === props.parent.user.getPubkey() ? deleteTweet(e, props.parent._id): bookmarkTweet(e, props.parent._id)} className="card-button-wrap">
-                            <div className={account && account && account && account.username === props.parent.getAuthor().getPubkey() ? "card-icon delete-icon" :"card-icon share-icon"}>
-                                {account && account && account && account.username === props.parent.getAuthor().getPubkey() ?
-                                <ICON_DELETE styles={{fill:'rgb(101, 119, 134)'}} /> : account && account.bookmarks.includes(props.parent._id) ?
-                                <ICON_BOOKMARKFILL styles={{fill:'rgb(10, 113, 176)'}}/> :
-                                <ICON_BOOKMARK styles={{fill:'rgb(101, 119, 134)'}}/>}
-                                {/* <ICON_SHARE /> */}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div> : null }
-
-            {/* ///////////////////////////parent up\\\\\\\\\\\\\\\\\\\\\\\\ */}
 
           {props.retweet && props.retweet._id ?
             <div onClick={()=>goToTweet(props.retweet._id)} key={props.retweet._id} className="Tweet-card-wrapper">
@@ -327,6 +253,7 @@ const TweetCard = React.memo(function TweetCard(props) {
                 <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.user.getPubkey()}`}>
                     <img alt="" style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={`${getProfileImageSrcString(props.user)}`}/>
                 </Link>
+                {props.hasReply? <div className="tweet-reply-thread"></div> : null}
             </div>
             <div className="card-content-wrapper">
                 {/* {props.username === account.username && props.retweets.includes(account._id) ?

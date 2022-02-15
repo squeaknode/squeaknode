@@ -201,7 +201,7 @@ const Profile = (props) => {
             userTweets.map(t=>{
                 if(!t.parent)
                 return <TweetCard retweet={t.getReplyTo()} username={t.getAuthorPubkey()} name={t.getAuthorPubkey()} parent={t} key={t.getSqueakHash()} id={t.getSqueakHash()} user={t.getAuthor()} createdAt={t.getBlockTime()} description={t.getContentStr()}
-                    images={[]} replies={[]} retweets={[]} likes={[]} />
+                images={[]} replies={[]} retweets={[]} likes={[]} />
             }): activeTab === 'Tweets&Replies' ?
             userTweets.map(t=>{
                 if(t.parent)

@@ -127,6 +127,13 @@ const TweetPage = (props) => {
                 </div>
                 <div className="tweet-header-content"> Tweet </div>
             </div>
+
+            {ancestorTweets.slice(0, -1).map(r=>{
+              // TODO: use replies instead of empty array.
+              return <TweetCard retweet={r.getReplyTo()} username={r.getAuthorPubkey()} name={r.getAuthorPubkey()} parent={null} key={r.getSqueakHash()} id={r.getSqueakHash()} user={r.getAuthor()} createdAt={r.getBlockTime()} description={r.getContentStr()}
+                images={[]} replies={[]} retweets={[]} likes={[]} hasReply={true} />
+            })}
+
             <div className="tweet-body-wrapper">
                 <div className="tweet-header-content">
                     <div className="tweet-user-pic">
