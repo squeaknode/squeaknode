@@ -2,6 +2,7 @@ import React, { useContext, useState, useRef, useEffect } from 'react'
 import './style.scss'
 import moment from 'moment'
 import { StoreContext } from '../../store/store'
+import { getProfileImageSrcString } from '../../squeakimages/images';
 import { Link, withRouter } from 'react-router-dom'
 import { ICON_REPLY, ICON_RETWEET,
     ICON_HEART, ICON_BOOKMARK, ICON_HEARTFULL, ICON_BOOKMARKFILL, ICON_DELETE, ICON_CLOSE,ICON_IMGUPLOAD} from '../../Icons'
@@ -161,7 +162,7 @@ const TweetCard = React.memo(function TweetCard(props) {
                 <div style={{display:'flex', flexDirection:'column'}} className="card-userPic-wrapper">
                 {props.parent.parent ? <div style={{marginTop: '17px'}}></div> : null}
                     <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.parent.user.getPubkey()}`}>
-                        <img alt="" style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={props.parent.user.profileImg}/>
+                        <img alt="" style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={`${getProfileImageSrcString(props.parent.user)}`}/>
                     </Link>
                     <div className="tweet-reply-thread"></div>
                 </div>
@@ -244,7 +245,7 @@ const TweetCard = React.memo(function TweetCard(props) {
                         <ICON_RETWEET />
                     </div>
                     <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.retweet.user.getPubkey()}`}>
-                        <img alt="" style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={props.retweet.user.profileImg}/>
+                        <img alt="" style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={`${getProfileImageSrcString(props.retweet.user)}`}/>
                     </Link>
                 </div>
                 <div className="card-content-wrapper">
@@ -330,7 +331,7 @@ const TweetCard = React.memo(function TweetCard(props) {
                     <ICON_RETWEET />
                 </div> */}
                 <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.user.getPubkey()}`}>
-                    <img alt="" style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={props.user.profileImg}/>
+                    <img alt="" style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={`${getProfileImageSrcString(props.user)}`}/>
                 </Link>
             </div>
             <div className="card-content-wrapper">
@@ -428,7 +429,7 @@ const TweetCard = React.memo(function TweetCard(props) {
                     <div className="reply-content-wrapper">
                         <div className="card-userPic-wrapper">
                             <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${parent? props.parent.user.getPubkey():props.user.getPubkey()}`}>
-                                <img alt="" style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={parent? props.parent.user.profileImg : props.user.profileImg}/>
+                                <img alt="" style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={parent? `${getProfileImageSrcString(props.parent.user)}` : `${getProfileImageSrcString(props.user)}`}/>
                             </Link>
                         </div>
                         <div className="card-content-wrapper">
