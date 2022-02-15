@@ -54,11 +54,9 @@ export const applyMiddleware = dispatch => action => {
 
             return makeSqueakRequest(profileId, content, replyTo, hasRecipient, recipientProfileId, (resp) => {
                 console.log("Made squeak");
-                let squeakHash = resp;
+                let squeakHash = resp.getSqueakHash();
                 return getSqueakDisplayRequest(squeakHash, (resp) => {
-    		            console.log("Got squeak.");
                     let payload = {"tweet": resp };
-    		            console.log(payload);
                     dispatch({ type: types.TWEET, payload: payload, data: action.payload });
     	          });
             });

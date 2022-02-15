@@ -7,6 +7,7 @@ import { ICON_IMGUPLOAD } from '../../Icons'
 import { Link } from 'react-router-dom'
 import { API_URL } from '../../config'
 import Loader from '../Loader'
+import Select from 'react-select'
 
 const MakeSqueak = () => {
     const { state, actions } = useContext(StoreContext)
@@ -25,15 +26,33 @@ const MakeSqueak = () => {
         }
         // document.getElementById('tweet-box').innerHTML = document.getElementById('tweet-box').innerHTML.replace(/(\#\w+)/g, '<span class="blue">$1</span>')
     };
+    const [signingProfile, setSigningProfile] = useState(null)
     const [tweetText, setTweetText] = useState("")
 
+    const optionsFromProfiles = (profiles) => {
+      return profiles.map((p) => {
+          return { value: p, label: p.getProfileName() }
+          // return { value: 'chocolate', label: 'Chocolate' }
+        });
+    }
+
+    const handleChangeSigningProfile = (e) => {
+      console.log("Signing profile Selected!!");
+      setSigningProfile(e.value);
+    }
+
     const submitTweet = () => {
+        if (!signingProfile) {
+          alert('Signing profile must be set.');
+          return;
+        }
+
         if (!tweetText.length) { return }
 
         let hashtags = tweetText.match(/#(\w+)/g)
 
         const values = {
-            signingProfile: -1,
+            signingProfile: signingProfile.getProfileId(),
             description: tweetText,
             replyTo: null,
             hasRecipient: null,
@@ -52,6 +71,9 @@ const MakeSqueak = () => {
                     </Link>
                 </div>
                 <div className="Tweet-input-side">
+                    <div className="inner-input-box">
+                        <Select options={optionsFromProfiles(signingProfiles)} onChange={handleChangeSigningProfile} />
+                    </div>
                     <div className="inner-input-box">
                         <ContentEditable onPaste={(e) => e.preventDefault()} id="tweet-box" className={tweetText.length ? 'tweet-input-active' : null} onKeyDown={(e)=>tweetT.current.length>279 ? e.keyCode !== 8 && e.preventDefault(): null} placeholder="What's happening?" html={tweetT.current} onChange={(e) => handleChange(e)} />
                     </div>

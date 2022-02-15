@@ -18,6 +18,7 @@
     "react-responsive": "^8.1.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
+    "react-select": "^5.2.2",
     "sass": "^1.49.7",
     "serve": "^11.3.2",
     "socket.io-client": "^2.3.0"
