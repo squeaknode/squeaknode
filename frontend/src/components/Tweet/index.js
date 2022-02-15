@@ -8,6 +8,7 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL, I
 ICON_DELETE, ICON_BOOKMARKFILL, ICON_IMGUPLOAD, ICON_CLOSE } from '../../Icons'
 import axios from 'axios'
 import {API_URL} from '../../config'
+import { getProfileImageSrcString } from '../../squeakimages/images';
 import ContentEditable from 'react-contenteditable'
 import TweetCard from '../TweetCard'
 
@@ -58,8 +59,8 @@ const TweetPage = (props) => {
     }
 
     const onchangeImage = () => {
-        let file = document.getElementById('image').files[0];
-        uploadImage(file)
+        //let file = document.getElementById('image').files[0];
+        //uploadImage(file)
     }
 
     const removeImage = () => {
@@ -81,9 +82,9 @@ const TweetPage = (props) => {
 
     const tweetT = useRef('');
     const handleChange = evt => {
-        if(tweetT.current.trim().length <= 280 
+        if(tweetT.current.trim().length <= 280
         && tweetT.current.split(/\r\n|\r|\n/).length <= 30){
-            tweetT.current = evt.target.value; 
+            tweetT.current = evt.target.value;
             setReplyText(tweetT.current)
         }
     };
@@ -111,7 +112,7 @@ const TweetPage = (props) => {
 
     return(
         <>
-            {tweet ? 
+            {tweet ?
             <div className="tweet-wrapper">
             <div className="tweet-header-wrapper">
                 <div className="profile-header-back">
@@ -124,34 +125,30 @@ const TweetPage = (props) => {
             <div className="tweet-body-wrapper">
                 <div className="tweet-header-content">
                     <div className="tweet-user-pic">
-                        <Link to={`/profile/${tweet.user.username}`}>
-                            <img alt="" style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={tweet.user.profileImg}/>
+                        <Link to={`/profile/${tweet.getAuthor().getPubkey()}`}>
+                            <img alt="" style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={`${getProfileImageSrcString(tweet.getAuthor())}`}/>
                         </Link>
                     </div>
                     <div className="tweet-user-wrap">
                         <div className="tweet-user-name">
-                            {tweet.user.name}
+                            {tweet.getAuthor().getProfileName()}
                         </div>
                         <div className="tweet-username">
-                            @{tweet.user.username}
-                        </div>     
+                            @{tweet.getAuthor().getPubkey()}
+                        </div>
                     </div>
                 </div>
                 <div className="tweet-content">
-                    {tweet.description}
+                    {tweet.getContentStr()}
                 </div>
-                {tweet.images[0] ? 
-                <div className="tweet-image-wrapper">
-                    <div style={{backgroundImage: `url(${tweet.images[0]})`,
-                     paddingBottom: `${image.src = tweet.images[0], 100/(image.width/image.height)}%`}}></div>
-                </div> : null }
+
                 <div className="tweet-date">
                     {moment(tweet.createdAt).format("h:mm A · MMM D, YYYY")}
                 </div>
                 <div className="tweet-stats">
-                    <div className="int-num"> {tweet.retweets.length} </div>
+                    <div className="int-num"> 0 </div>
                     <div className="int-text"> Retweets </div>
-                    <div className="int-num"> {tweet.likes.length} </div>
+                    <div className="int-num"> 0 </div>
                     <div className="int-text"> Likes </div>
                 </div>
                 <div className="tweet-interactions">
@@ -160,7 +157,7 @@ const TweetPage = (props) => {
                     </div>
                     <div onClick={()=>retweet(tweet._id)} className="tweet-int-icon">
                         <div className="card-icon retweet-icon">
-                             <ICON_RETWEET styles={account && account.retweets.includes(tweet._id) ? {stroke: 'rgb(23, 191, 99)'} : {fill:'rgb(101, 119, 134)'}}/> 
+                             <ICON_RETWEET styles={account && account.retweets.includes(tweet._id) ? {stroke: 'rgb(23, 191, 99)'} : {fill:'rgb(101, 119, 134)'}}/>
                         </div>
                     </div>
                     <div onClick={()=>likeTweet(tweet._id)} className="tweet-int-icon">
@@ -168,9 +165,9 @@ const TweetPage = (props) => {
                         {account && account.likes.includes(tweet._id) ? <ICON_HEARTFULL styles={{fill:'rgb(224, 36, 94)'}}
                          /> : <ICON_HEART/>} </div>
                     </div>
-                    <div onClick={()=>account && account.username === tweet.user.username ? deleteTweet(tweet._id) : bookmarkTweet(tweet._id)} className="tweet-int-icon">
-                        <div className={account && account.username === tweet.user.username ? "card-icon delete-icon" :"card-icon share-icon"}>
-                            {account && account.username === tweet.user.username ? 
+                    <div onClick={()=>account && account.username === tweet.getAuthor().getPubkey() ? deleteTweet(tweet._id) : bookmarkTweet(tweet._id)} className="tweet-int-icon">
+                        <div className={account && account.username === tweet.getAuthor().getPubkey() ? "card-icon delete-icon" :"card-icon share-icon"}>
+                            {account && account.username === tweet.getAuthor().getPubkey() ?
                                 <ICON_DELETE styles={{fill:'rgb(101, 119, 134)'}} /> : account && account.bookmarks.includes(tweet._id) ? <ICON_BOOKMARKFILL styles={{fill:'rgb(10, 113, 176)'}}/> :
                                 <ICON_BOOKMARK styles={{fill:'rgb(101, 119, 134)'}}/>}
                         </div>
@@ -178,11 +175,12 @@ const TweetPage = (props) => {
                 </div>
             </div>
 
-            {tweet.replies.map(r=>{
-                return <TweetCard retweet={r.retweet} username={r.username} name={r.name} replyTo={tweet.user.username} key={r._id} id={r._id} user={r.user} createdAt={r.createdAt} description={r.description}
-                images={r.images} replies={r.replies} retweets={r.retweets} likes={r.likes}  /> 
+            {[].map(r=>{
+                // TODO: use replies instead of empty array.
+                return <TweetCard retweet={r.retweet} username={r.username} name={r.name} replyTo={tweet.getAuthor().getPubkey()} key={r._id} id={r._id} user={r.user} createdAt={r.createdAt} description={r.description}
+                images={r.images} replies={r.replies} retweets={r.retweets} likes={r.likes}  />
             })}
-        
+
         </div>:<div className="tweet-wrapper"><Loader /></div>}
 
         {tweet && account ?
@@ -198,20 +196,20 @@ const TweetPage = (props) => {
                     <p className="modal-title">Reply</p>
                 </div>
                 <div style={{marginTop:'5px'}} className="modal-body">
-                    <div className="reply-content-wrapper">   
+                    <div className="reply-content-wrapper">
                         <div className="card-userPic-wrapper">
-                            <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${tweet.user.username}`}>
-                                <img alt="" style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={tweet.user.profileImg}/>
+                            <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${tweet.getAuthor().getPubkey()}`}>
+                                <img alt="" style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={`${getProfileImageSrcString(tweet.getAuthor())}`}/>
                             </Link>
                         </div>
                         <div className="card-content-wrapper">
                             <div className="card-content-header">
                                 <div className="card-header-detail">
                                     <span className="card-header-user">
-                                        <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${tweet.user.username}`}>{tweet.user.name}</Link>     
+                                        <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${tweet.getAuthor().getPubkey()}`}>{tweet.getAuthor().getPubkey()}</Link>
                                     </span>
                                     <span className="card-header-username">
-                                        <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${tweet.user.username}`}>{'@'+ tweet.user.username}</Link>
+                                        <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${tweet.getAuthor().getPubkey()}`}>{'@'+ tweet.getAuthor().getPubkey()}</Link>
                                     </span>
                                     <span className="card-header-dot">·</span>
                                     <span className="card-header-date">
@@ -223,14 +221,14 @@ const TweetPage = (props) => {
                                 </div>
                             </div>
                             <div className="card-content-info">
-                            {tweet.description}
+                            {tweet.getContentStr()}
                             </div>
                             <div className="reply-to-user">
                                 <span className="reply-tweet-username">
-                                    Replying to 
+                                    Replying to
                                 </span>
                                 <span className="main-tweet-user">
-                                    @{tweet.user.username}
+                                    @{tweet.getAuthor().getPubkey()}
                                 </span>
                             </div>
                         </div>

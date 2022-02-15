@@ -4,6 +4,7 @@ import {API_URL} from '../config'
 
 import {
   getTimelineSqueakDisplaysRequest,
+  getSqueakDisplayRequest,
 } from '../squeakclient/requests';
 
 export const token = () => {
@@ -12,6 +13,7 @@ export const token = () => {
     }
     return null
 }
+
 
 export const applyMiddleware = dispatch => action => {
     let headers = { headers: { Authorization: `Bearer ${token()}` } }
@@ -50,11 +52,24 @@ export const applyMiddleware = dispatch => action => {
 		            console.log(payload);
 	              dispatch({ type: types.GET_TWEETS, payload: payload })
 	          });
+            // TODO: handle error response
 
         case types.GET_TWEET:
-            return axios.get(`${API_URL}/tweet/${action.payload}`, action.payload)
-            .then(res=>dispatch({ type: types.GET_TWEET, payload: res.data }))
-            .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
+            console.log(action.payload);
+            // return axios.get(`${API_URL}/tweet/${action.payload}`, action.payload)
+            // .then(res=> {
+            //   console.log(res.data);
+            //   dispatch({ type: types.GET_TWEET, payload: res.data });
+            // })
+            // .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
+
+            return getSqueakDisplayRequest(action.payload, (resp) => {
+		            console.log("Got squeak.");
+                let payload = {"tweet": resp };
+		            console.log(payload);
+                dispatch({ type: types.GET_TWEET, payload: payload });
+	          });
+            // TODO: handle error response
 
         case types.GET_ACCOUNT:
             return axios.get(`${API_URL}/auth/user`, headers)
