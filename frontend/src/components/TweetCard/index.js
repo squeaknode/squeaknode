@@ -58,12 +58,12 @@ const TweetCard = React.memo(function TweetCard(props) {
 
     const goToTweet = (id) => {
         if(props.replyTo){ actions.getTweet(id) }
-        props.history.push(`/tweet/${props.user.getPubkey()}/${id}`)
+        props.history.push(`/tweet/${id}`)
     }
     const goToReply = (e,id) => {
         e.stopPropagation()
         if(props.replyTo){ actions.getTweet(id) }
-        props.history.push(`/tweet/${props.user.getPubkey()}/${id}`)
+        props.history.push(`/tweet/${id}`)
     }
 
     const uploadImage = (file) => {

@@ -21,7 +21,7 @@ import ChatPage from './components/ChatPage'
 const Home = lazy(() => import('./components/Home'))
 const Profile = lazy(() => import('./components/Profile'))
 
-const DefaultContainer = withRouter(({ history }) => { 
+const DefaultContainer = withRouter(({ history }) => {
   return (<div className="body-wrap">
     <main className="main">
       <div className={history.location.pathname.slice(0,9) !== '/messages' ? "middle-section ms-width" : "middle-section"}>
@@ -34,7 +34,7 @@ const DefaultContainer = withRouter(({ history }) => {
         <Route path="/profile/:username" exact>
           <Profile />
         </Route>
-        <Route path="/tweet/:username/:id" exact>
+        <Route path="/tweet/:id" exact>
           <Tweet />
         </Route>
         <Route path="/bookmarks" exact>
