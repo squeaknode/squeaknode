@@ -7,6 +7,7 @@ import {
   getSqueakDisplayRequest,
   getSqueakProfileByAddressRequest,
   getAddressSqueakDisplaysRequest,
+  getReplySqueakDisplaysRequest,
 } from '../squeakclient/requests';
 
 export const token = () => {
@@ -111,6 +112,19 @@ export const applyMiddleware = dispatch => action => {
                 console.log("payload");
 		            console.log(payload);
                 dispatch({ type: types.GET_USER_TWEETS, payload: payload });
+            });
+            // TODO: handle error response
+
+        case types.GET_REPLY_TWEETS:
+            console.log("action.payload:");
+            console.log(action.payload);
+            return getReplySqueakDisplaysRequest(action.payload, 10, null, (resp) => {
+                console.log("Got reply tweets.");
+                console.log(resp);
+                let payload = {"replyTweets": resp };
+                console.log("payload");
+                console.log(payload);
+                dispatch({ type: types.GET_REPLY_TWEETS, payload: payload });
             });
             // TODO: handle error response
 

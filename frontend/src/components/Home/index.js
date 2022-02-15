@@ -115,8 +115,6 @@ const Home = () => {
             {/* { state.account && <TweetCard parent={t.parent} key={'1'} id={'1'} user={'1'} createdAt={'2019'} description={'t.description'}
                 images={'t.images'} replies={[]} retweets={[]} likes={[]} style={{height:'0'}} />} */}
             {state.tweets.length > 0 ? state.tweets.map(t => {
-                console.log(t);
-                console.log(t.getAuthor());
                 return <TweetCard retweet={t.getReplyTo()} username={t.getAuthorPubkey()} name={t.getAuthorPubkey()} parent={null} key={t.getSqueakHash()} id={t.getSqueakHash()} user={t.getAuthor()} createdAt={t.getBlockTime()} description={t.getContentStr()}
                     images={[]} replies={[]} retweets={[]} likes={[]} />
             }) : <Loader />}

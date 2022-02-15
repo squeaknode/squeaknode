@@ -17,7 +17,7 @@ const TweetPage = (props) => {
     let history = useHistory();
 
     const { state, actions } = useContext(StoreContext)
-    const {tweet, account, session} = state
+    const {tweet, replyTweets, account, session} = state
 
     const [modalOpen, setModalOpen] = useState(false)
     const [replyText, setReplyText] = useState('')
@@ -27,6 +27,7 @@ const TweetPage = (props) => {
     useEffect(()=>{
         window.scrollTo(0, 0)
         actions.getTweet(props.match.params.id)
+        actions.getReplyTweets(props.match.params.id)
     }, [props.match.params.id])
     var image = new Image()
 
@@ -175,10 +176,10 @@ const TweetPage = (props) => {
                 </div>
             </div>
 
-            {[].map(r=>{
+            {replyTweets.map(r=>{
                 // TODO: use replies instead of empty array.
-                return <TweetCard retweet={r.retweet} username={r.username} name={r.name} replyTo={tweet.getAuthor().getPubkey()} key={r._id} id={r._id} user={r.user} createdAt={r.createdAt} description={r.description}
-                images={r.images} replies={r.replies} retweets={r.retweets} likes={r.likes}  />
+                return <TweetCard retweet={r.getReplyTo()} username={r.getAuthorPubkey()} name={r.getAuthorPubkey()} parent={null} key={r.getSqueakHash()} id={r.getSqueakHash()} user={r.getAuthor()} createdAt={r.getBlockTime()} description={r.getContentStr()}
+                    images={[]} replies={[]} retweets={[]} likes={[]} />
             })}
 
         </div>:<div className="tweet-wrapper"><Loader /></div>}

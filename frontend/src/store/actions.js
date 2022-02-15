@@ -95,7 +95,12 @@ export const useActions = (state, dispatch) => ({
         dispatch({type: types.ADD_TO_LIST, payload: data})
     },
     getUserTweets: data => {
+        dispatch({type: types.SET_STATE, payload: {loading: true}})
         dispatch({type: types.GET_USER_TWEETS, payload: data})
+    },
+    getReplyTweets: data => {
+        dispatch({type: types.SET_STATE, payload: {loading: true}})
+        dispatch({type: types.GET_REPLY_TWEETS, payload: data})
     },
     getFollowers: data => {
         dispatch({type: types.GET_FOLLOWERS, payload: data})
