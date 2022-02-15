@@ -26,12 +26,13 @@ const Profile = (props) => {
     const [loadingAvatar, setLoadingAvatar] = useState(false)
     const [loadingBanner, setLoadingBanner] = useState(false)
     const [styleBody, setStyleBody] = useState(false)
-    const {account, user, session} = state
+    const {account, user, userTweets, session} = state
     const userParam = props.match.params.username
 
     useEffect(() => {
         window.scrollTo(0, 0)
         actions.getUser(props.match.params.username)
+        actions.getUserTweets(props.match.params.username)
         //preventing edit modal from apprearing after clicking a user on memOpen
         setMemOpen(false)
         setModalOpen(false)
@@ -122,7 +123,6 @@ const Profile = (props) => {
         props.history.push(`/messages`)
     }
 
-
     return(
         <div>
             {user ?
@@ -198,23 +198,24 @@ const Profile = (props) => {
                 </div>
             </div>
             {activeTab === 'Tweets' ?
-            [].map(t=>{
+            userTweets.map(t=>{
                 if(!t.parent)
-                return <TweetCard retweet={t.retweet} username={t.username} name={t.name} key={'tweets'} parent={t.parent} key={t._id} id={t._id} user={t.user} createdAt={t.createdAt} description={t.description} images={t.images} replies={t.replies} retweets={t.retweets} likes={t.likes}  />
+                return <TweetCard retweet={t.getReplyTo()} username={t.getAuthorPubkey()} name={t.getAuthorPubkey()} parent={null} key={t.getSqueakHash()} id={t.getSqueakHash()} user={t.getAuthor()} createdAt={t.getBlockTime()} description={t.getContentStr()}
+                    images={[]} replies={[]} retweets={[]} likes={[]} />
             }): activeTab === 'Tweets&Replies' ?
-            [].map(t=>{
+            userTweets.map(t=>{
                 if(t.parent)
-                return <TweetCard retweet={t.retweet} username={t.username} name={t.name} key={'replies'} parent={t.parent} key={t._id} id={t._id} user={t.user} createdAt={t.createdAt} description={t.description}
+                return <TweetCard retweet={t.retweet} username={t.getAuthorPubkey()} name={t.name} key={'replies'} parent={t.parent} key={t.getSqueakHash()} id={t._id} user={t.user} createdAt={t.createdAt} description={t.description}
                 images={t.images} replies={t.replies} retweets={t.retweets} likes={t.likes}  />
              }) :
             activeTab === 'Likes' ?
-            [].map(t=>{
-                return <TweetCard retweet={t.retweet} username={t.username} name={t.name} key={'likes'} parent={t.parent} key={t._id} id={t._id} user={t.user} createdAt={t.createdAt} description={t.description}
+            userTweets.map(t=>{
+                return <TweetCard retweet={t.retweet} username={t.getAuthorPubkey()} name={t.name} key={'likes'} parent={t.parent} key={t.getSqueakHash()} id={t._id} user={t.user} createdAt={t.createdAt} description={t.description}
                 images={t.images} replies={t.replies} retweets={t.retweets} likes={t.likes}  />
             }): activeTab === 'Media' ?
-            [].map(t=>{
+            userTweets.map(t=>{
                 if(t.images[0])
-                return <TweetCard retweet={t.retweet} username={t.username} name={t.name} key={'tweets'} parent={t.parent} key={t._id} id={t._id} user={t.user} createdAt={t.createdAt} description={t.description}
+                return <TweetCard retweet={t.retweet} username={t.getAuthorPubkey()} name={t.name} key={'tweets'} parent={t.parent} key={t.getSqueakHash()} id={t._id} user={t.user} createdAt={t.createdAt} description={t.description}
                 images={t.images} replies={t.replies} retweets={t.retweets} likes={t.likes}  />
              }): null}
             </div>

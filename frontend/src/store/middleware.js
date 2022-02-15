@@ -6,6 +6,7 @@ import {
   getTimelineSqueakDisplaysRequest,
   getSqueakDisplayRequest,
   getSqueakProfileByAddressRequest,
+  getAddressSqueakDisplaysRequest,
 } from '../squeakclient/requests';
 
 export const token = () => {
@@ -100,7 +101,18 @@ export const applyMiddleware = dispatch => action => {
             });
             // TODO: handle error response
 
-
+        case types.GET_USER_TWEETS:
+            console.log("action.payload:");
+            console.log(action.payload);
+            return getAddressSqueakDisplaysRequest(action.payload, 10, null, (resp) => {
+                console.log("Got user tweets.");
+                console.log(resp);
+                let payload = {"userTweets": resp };
+                console.log("payload");
+		            console.log(payload);
+                dispatch({ type: types.GET_USER_TWEETS, payload: payload });
+            });
+            // TODO: handle error response
 
         case types.GET_BOOKMARKS:
             return axios.get(`${API_URL}/user/i/bookmarks`, headers)

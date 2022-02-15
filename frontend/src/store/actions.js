@@ -94,6 +94,9 @@ export const useActions = (state, dispatch) => ({
     addToList: data => {
         dispatch({type: types.ADD_TO_LIST, payload: data})
     },
+    getUserTweets: data => {
+        dispatch({type: types.GET_USER_TWEETS, payload: data})
+    },
     getFollowers: data => {
         dispatch({type: types.GET_FOLLOWERS, payload: data})
     },

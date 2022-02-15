@@ -7,6 +7,7 @@ const initialState = {
     tweet: null,
     account: null,
     user: null,
+    userTweets: [],
     bookmarks: [],
     recent_tweets: [],
     lists: [],
@@ -110,6 +111,9 @@ const reducer = (state = initialState, action) => {
             return {...state, ...{account:account_bookmarks}}
 
         case type.GET_USER:
+            return {...state, ...action.payload}
+
+        case type.GET_USER_TWEETS:
             return {...state, ...action.payload}
 
         case type.GET_BOOKMARKS:
