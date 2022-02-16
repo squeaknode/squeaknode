@@ -16,7 +16,8 @@ const Home = () => {
     const { account, session } = state
     useEffect(() => {
         window.scrollTo(0, 0)
-        actions.getTweets({lastTweet: null})
+        // actions.getTweets({lastTweet: null})
+        getMoreTweets();
     }, [])
 
     const getLastSqueak = (squeakLst) => {
