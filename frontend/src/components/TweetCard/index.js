@@ -132,31 +132,16 @@ const TweetCard = React.memo(function TweetCard(props) {
                         </span>
                         <span className="card-header-dot">·</span>
                         <span className="card-header-date">
-                                {moment(props.createdAt * 1000).fromNow(true)}
+                                {moment(props.tweet.getBlockTime() * 1000).fromNow(true)}
                         </span>
                     </div>
                     <div className="card-header-more">
 
                     </div>
                 </div>
-                {props.replyTo ?
-                <div className="replyTo-wrapper">
-                    <span className="reply-tweet-username">
-                            Replying to
-                        </span>
-                        <span className="main-tweet-user">
-                            @{props.replyTo}
-                        </span>
-                </div> : null }
                 <div className="card-content-info">
-                {props.description}
+                {props.tweet.getContentStr()}
                 </div>
-                {props.images[0] &&
-                <div className="card-content-images">
-                    <div className="card-image-link">
-                        <img alt="" src={props.images[0]}/>
-                    </div>
-                </div> }
                 <div className="card-buttons-wrapper">
                     <div onClick={(e)=>toggleModal(e)} className="card-button-wrap reply-wrap">
                         <div className="card-icon reply-icon">
@@ -170,7 +155,7 @@ const TweetCard = React.memo(function TweetCard(props) {
                         <div className="card-icon retweet-icon">
                             <ICON_RETWEET styles={account && account.retweets.includes(props.id) ? {stroke: 'rgb(23, 191, 99)'} : {fill:'rgb(101, 119, 134)'}}/>
                         </div>
-                        <div style={{color: account && account.retweets.includes(props.id) && 'rgb(23, 191, 99)', opacity: props.retweets.length > 0 ? '1':'0'}} className="card-icon-value">
+                        <div className="card-icon-value">
                             {props.retweets.length}
                         </div>
                     </div>
@@ -180,16 +165,13 @@ const TweetCard = React.memo(function TweetCard(props) {
                             <ICON_HEARTFULL styles={{fill:'rgb(224, 36, 94)'}}/> :
                             <ICON_HEART styles={{fill:'rgb(101, 119, 134)'}}/>}
                         </div>
-                        <div style={{color: account && account.likes.includes(props.id) && 'rgb(224, 36, 94)', opacity: props.likes.length > 0 ? '1':'0'}} className="card-icon-value">
+                        <div className="card-icon-value">
                             {props.likes.length}
                         </div>
                     </div>
-                    <div onClick={(e)=>account && account.username === props.user.getPubkey() ? deleteTweet(e,props.id): bookmarkTweet(e,props.id)} className="card-button-wrap">
-                        <div className={account && account && account && account.username === props.user.getPubkey() ? "card-icon delete-icon" :"card-icon share-icon"}>
-                            {account && account && account && account.username === props.user.getPubkey() ?
-                            <ICON_DELETE styles={{fill:'rgb(101, 119, 134)'}} /> : account && account.bookmarks.includes(props.id) ?
-                            <ICON_BOOKMARKFILL styles={{fill:'rgb(10, 113, 176)'}}/> :
-                            <ICON_BOOKMARK styles={{fill:'rgb(101, 119, 134)'}}/>}
+                    <div className="card-button-wrap">
+                        <div className="card-icon share-icon">
+                            <ICON_DELETE styles={{fill:'rgb(101, 119, 134)'}} />
                         </div>
                     </div>
                 </div>

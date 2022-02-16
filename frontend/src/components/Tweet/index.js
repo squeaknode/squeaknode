@@ -160,7 +160,7 @@ const TweetPage = (props) => {
                     <p className="modal-title">Reply</p>
                 </div>
                 <div style={{marginTop:'5px'}} className="modal-body">
-                  <MakeSqueak replyToTweet={tweet} replyTo={tweet.getSqueakHash()} user={tweet.getAuthor()} createdAt={tweet.getBlockTime()} description={tweet.getContentStr()} />
+                  <MakeSqueak replyToTweet={tweet} />
                 </div>
             </div> : null}
         </div>:null}
