@@ -338,6 +338,8 @@ class SqueakAdminServerHandler(object):
             limit,
             last_entry,
         ))
+        import time
+        time.sleep(5)
         squeak_entries = (
             self.squeak_controller.get_timeline_squeak_entries(
                 limit,
@@ -369,6 +371,8 @@ class SqueakAdminServerHandler(object):
             limit,
             last_entry,
         ))
+        import time
+        time.sleep(5)
         public_key = SqueakPublicKey.from_bytes(bytes.fromhex(public_key_hex))
         squeak_entries = (
             self.squeak_controller.get_squeak_entries_for_public_key(
