@@ -2,14 +2,16 @@ import React, { useEffect, useState, useContext, useRef } from 'react'
 import { StoreContext } from '../../store/store'
 import './style.scss'
 import axios from 'axios'
+import moment from 'moment'
 import ContentEditable from 'react-contenteditable'
 import { ICON_IMGUPLOAD } from '../../Icons'
 import { Link } from 'react-router-dom'
 import { API_URL } from '../../config'
+import { getProfileImageSrcString } from '../../squeakimages/images';
 import Loader from '../Loader'
 import Select from 'react-select'
 
-const MakeSqueak = () => {
+const MakeSqueak = (props) => {
     const { state, actions } = useContext(StoreContext)
     const { signingProfiles, account, session } = state
     useEffect(() => {
@@ -42,6 +44,8 @@ const MakeSqueak = () => {
     }
 
     const submitTweet = () => {
+        // TODO: toggle modal off here.
+
         if (!signingProfile) {
           alert('Signing profile must be set.');
           return;
@@ -54,7 +58,7 @@ const MakeSqueak = () => {
         const values = {
             signingProfile: signingProfile.getProfileId(),
             description: tweetText,
-            replyTo: null,
+            replyTo: props.replyTo,
             hasRecipient: null,
             recipientProfileId: -1
         }
@@ -64,6 +68,47 @@ const MakeSqueak = () => {
     }
 
     return (
+      <>
+
+      {/* Squeak being replied to. */}
+      {props.replyTo ?
+      <div className="reply-content-wrapper">
+          <div className="card-userPic-wrapper">
+              <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.user.getPubkey()}`}>
+                  <img alt="" style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={`${getProfileImageSrcString(props.user)}`}/>
+              </Link>
+          </div>
+          <div className="card-content-wrapper">
+              <div className="card-content-header">
+                  <div className="card-header-detail">
+                      <span className="card-header-user">
+                          <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.user.getPubkey()}`}>{props.user.getProfileName()}</Link>
+                      </span>
+                      <span className="card-header-username">
+                          <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.user.getPubkey()}`}>{'@'+props.user.getPubkey()}</Link>
+                      </span>
+                      <span className="card-header-dot">·</span>
+                      <span className="card-header-date">
+                                  {moment(props.createdAt * 1000).fromNow()}
+                      </span>
+                  </div>
+              </div>
+              <div className="card-content-info">
+              {props.description}
+              </div>
+              <div className="reply-to-user">
+                  <span className="reply-tweet-username">
+                      Replying to
+                  </span>
+                  <span className="main-tweet-user">
+                      @{props.user.getPubkey()}
+                  </span>
+              </div>
+          </div>
+      </div> : null }
+
+
+            {/* New squeak content input. */}
             <div className="Tweet-input-wrapper">
                 <div className="Tweet-profile-wrapper">
                     <Link to={`/profile/${account && account.username}`}>
@@ -93,6 +138,8 @@ const MakeSqueak = () => {
                     </div>
                 </div>
             </div>
+
+            </>
     )
 }
 

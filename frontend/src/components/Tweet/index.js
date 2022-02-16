@@ -10,6 +10,7 @@ import axios from 'axios'
 import {API_URL} from '../../config'
 import { getProfileImageSrcString } from '../../squeakimages/images';
 import ContentEditable from 'react-contenteditable'
+import MakeSqueak from '../MakeSqueak'
 import TweetCard from '../TweetCard'
 
 
@@ -20,9 +21,6 @@ const TweetPage = (props) => {
     const {tweet, ancestorTweets, replyTweets, account, session} = state
 
     const [modalOpen, setModalOpen] = useState(false)
-    const [replyText, setReplyText] = useState('')
-    const [replyImage, setReplyImg] = useState(null)
-    const [imageLoaded, setImageLoaded] = useState(false)
 
     useEffect(()=>{
         window.scrollTo(0, 0)
@@ -52,25 +50,6 @@ const TweetPage = (props) => {
         actions.deleteTweet(id)
     }
 
-    const uploadImage = (file) => {
-        let bodyFormData = new FormData()
-        bodyFormData.append('image', file)
-        axios.post(`${API_URL}/tweet/upload`, bodyFormData, { headers: { Authorization: `Bearer ${localStorage.getItem('Twittertoken')}`}})
-            .then(res=>{setReplyImg(res.data.imageUrl)})
-            .catch(err=>alert('error uploading image'))
-    }
-
-    const onchangeImage = () => {
-        //let file = document.getElementById('image').files[0];
-        //uploadImage(file)
-    }
-
-    const removeImage = () => {
-        document.getElementById('image').value = "";
-        setReplyImg(null)
-        setImageLoaded(false)
-    }
-
     const toggleModal = (e, type) => {
         if(e){ e.stopPropagation() }
         // if(param === 'edit'){setSaved(false)}
@@ -82,38 +61,9 @@ const TweetPage = (props) => {
         e.stopPropagation()
     }
 
-    const tweetT = useRef('');
-    const handleChange = evt => {
-        if(tweetT.current.trim().length <= 280
-        && tweetT.current.split(/\r\n|\r|\n/).length <= 30){
-            tweetT.current = evt.target.value;
-            setReplyText(tweetT.current)
-        }
-    };
-
-    const replyTweet = (type) => {
-        toggleModal()
-        let hashtags = replyText.match(/#(\w+)/g)
-        if(!replyText.length){return}
-        const values = {
-            description: replyText,
-            images: [replyImage],
-            parent: props.match.params.id,
-            hashtags,
-        }
-        actions.tweet(values)
-        tweetT.current = ''
-        setReplyText('')
-        setReplyImg(null)
-        actions.alert('Tweet sent!')
-    }
-
     const goBack = () => {
         history.goBack()
     }
-
-    console.log("ancestorTweets");
-    console.log(ancestorTweets);
 
     return(
         <>
@@ -155,7 +105,7 @@ const TweetPage = (props) => {
                 </div>
 
                 <div className="tweet-date">
-                    {moment(tweet.createdAt).format("h:mm A · MMM D, YYYY")}
+                    {moment(tweet.getBlockTime() * 1000).format("h:mm A · MMM D, YYYY")}
                 </div>
                 <div className="tweet-stats">
                     <div className="int-num"> 0 </div>
@@ -208,75 +158,7 @@ const TweetPage = (props) => {
                     <p className="modal-title">Reply</p>
                 </div>
                 <div style={{marginTop:'5px'}} className="modal-body">
-                    <div className="reply-content-wrapper">
-                        <div className="card-userPic-wrapper">
-                            <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${tweet.getAuthor().getPubkey()}`}>
-                                <img alt="" style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={`${getProfileImageSrcString(tweet.getAuthor())}`}/>
-                            </Link>
-                        </div>
-                        <div className="card-content-wrapper">
-                            <div className="card-content-header">
-                                <div className="card-header-detail">
-                                    <span className="card-header-user">
-                                        <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${tweet.getAuthor().getPubkey()}`}>{tweet.getAuthor().getPubkey()}</Link>
-                                    </span>
-                                    <span className="card-header-username">
-                                        <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${tweet.getAuthor().getPubkey()}`}>{'@'+ tweet.getAuthor().getPubkey()}</Link>
-                                    </span>
-                                    <span className="card-header-dot">·</span>
-                                    <span className="card-header-date">
-                                        {/* <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.user.username}`}> */}
-                                                {/* {moment(parent? props.parent.createdAt : props.createdAt).fromNow(true).replace(' ','').replace('an','1').replace('minutes','m').replace('hour','h').replace('hs','h')} */}
-                                                {moment(tweet.createdAt).fromNow()}
-                                        {/* </Link> */}
-                                    </span>
-                                </div>
-                            </div>
-                            <div className="card-content-info">
-                            {tweet.getContentStr()}
-                            </div>
-                            <div className="reply-to-user">
-                                <span className="reply-tweet-username">
-                                    Replying to
-                                </span>
-                                <span className="main-tweet-user">
-                                    @{tweet.getAuthor().getPubkey()}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <div style={{position: 'relative'}} className="Tweet-input-wrapper">
-                        <div className="Tweet-profile-wrapper">
-                            <div>
-                                <img alt="" style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={account.profileImg}/>
-                            </div>
-                        </div>
-                        <div onClick={()=>document.getElementById('replyBox').focus()} className="Tweet-input-side">
-                            <div className="inner-input-box">
-                                <ContentEditable onKeyDown={(e)=>tweetT.current.length>279 ? e.keyCode !== 8 && e.preventDefault(): null} id="replyBox" onPaste={(e)=>e.preventDefault()} id="replyBox" style={{minHeight: '120px'}} className={replyText.length ? 'tweet-input-active' : null} placeholder="Tweet your reply" html={tweetT.current} onChange={handleChange} />
-                            </div>
-                            {replyImage && <div className="inner-image-box">
-                                <img onLoad={() => setImageLoaded(true)} className="tweet-upload-image" src={replyImage} alt="tweet" />
-                                {imageLoaded && <span onClick={removeImage} className="cancel-image">x</span>}
-                            </div>}
-                            <div className="inner-input-links">
-                                <div className="input-links-side">
-                                    <div style={{marginLeft:'-10px'}} className="input-attach-wrapper">
-                                        <ICON_IMGUPLOAD styles={{fill:'rgb(29, 161, 242)'}}/>
-                                        <input title=" " id="image" style={{opacity:'0'}} type="file" onChange={()=>onchangeImage()} />
-                                    </div>
-                                </div>
-                                <div className="tweet-btn-holder">
-                                    <div style={{ fontSize: '13px', color: replyText.length >= 280 ? 'red' : null }}>
-                                        {replyText.length > 0 && replyText.length + '/280'}
-                                    </div>
-                                    <div onClick={()=>replyTweet('parent')} className={replyText.length ? 'tweet-btn-side tweet-btn-active' : 'tweet-btn-side'}>
-                                        Reply
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                  <MakeSqueak replyTo={tweet.getSqueakHash()} user={tweet.getAuthor()} createdAt={tweet.getBlockTime()} description={tweet.getContentStr()} />
                 </div>
             </div> : null}
         </div>:null}
