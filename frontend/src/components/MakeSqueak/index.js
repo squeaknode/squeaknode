@@ -111,8 +111,8 @@ const MakeSqueak = (props) => {
             {/* New squeak content input. */}
             <div className="Tweet-input-wrapper">
                 <div className="Tweet-profile-wrapper">
-                    <Link to={`/profile/${account && account.username}`}>
-                        {account && <img alt="" style={{ borderRadius: '50%', minWidth: '49px' }} width="100%" height="49px" src={account.profileImg} />}
+                    <Link to={`/profile/${signingProfile && signingProfile.getPubkey()}`}>
+                        {signingProfile && <img alt="" style={{ borderRadius: '50%', minWidth: '49px' }} width="100%" height="49px" src={`${getProfileImageSrcString(signingProfile)}`} />}
                     </Link>
                 </div>
                 <div className="Tweet-input-side">
