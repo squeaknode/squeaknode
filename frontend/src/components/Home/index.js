@@ -17,7 +17,7 @@ const Home = () => {
     useEffect(() => {
         window.scrollTo(0, 0)
         // actions.getTweets({lastTweet: null})
-        getMoreTweets();
+        reloadTweets();
     }, [])
 
     const getLastSqueak = (squeakLst) => {
@@ -32,6 +32,11 @@ const Home = () => {
     const getMoreTweets = () => {
         let lastTweet = getLastSqueak(state.tweets);
         actions.getTweets({lastTweet: lastTweet});
+    }
+
+    const reloadTweets = () => {
+        actions.clearTweets();
+        actions.getTweets({lastTweet: null});
     }
 
     return (
@@ -51,11 +56,9 @@ const Home = () => {
             })}
 
             {/* TODO: fix get loading state by doing this: https://medium.com/stashaway-engineering/react-redux-tips-better-way-to-handle-loading-flags-in-your-reducers-afda42a804c6 */}
-            {state.loading ? <Loader /> : null}
-
-            <div onClick={() => getMoreTweets()} className='tweet-btn-side'>
-                Load tweets
-            </div>
+            {state.loading ? <Loader /> : <div onClick={() => getMoreTweets()} className='tweet-btn-side tweet-btn-active'>
+                Load more tweets
+            </div>}
 
         </div>
     )

@@ -84,6 +84,10 @@ export const applyMiddleware = dispatch => action => {
 	          });
             // TODO: handle error response
 
+
+        case types.CLEAR_TWEETS:
+            dispatch({ type: types.CLEAR_TWEETS, payload: {}})
+
         case types.GET_TWEET:
             // return axios.get(`${API_URL}/tweet/${action.payload}`, action.payload)
             // .then(res=> {

@@ -103,6 +103,9 @@ const reducer = (state = initialState, action) => {
             newTweets.forEach(t => timelineT.push(t));
             return {...state, loading: false, error: false}
 
+        case type.CLEAR_TWEETS:
+            return {...state, ...{tweets: []}}
+
         case type.GET_TWEET:
             return {...state, ...action.payload, loading: false, error: false}
 
