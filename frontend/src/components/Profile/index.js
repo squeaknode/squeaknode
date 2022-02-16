@@ -32,7 +32,7 @@ const Profile = (props) => {
     useEffect(() => {
         window.scrollTo(0, 0)
         actions.getUser(props.match.params.username)
-        actions.getUserTweets(props.match.params.username)
+        actions.getUserTweets({username: props.match.params.username, lastUserTweet: null})
         //preventing edit modal from apprearing after clicking a user on memOpen
         setMemOpen(false)
         setModalOpen(false)
@@ -128,6 +128,20 @@ const Profile = (props) => {
         props.history.push(`/messages`)
     }
 
+    const getLastSqueak = (squeakLst) => {
+      if (squeakLst == null) {
+        return null;
+      } if (squeakLst.length === 0) {
+        return null;
+      }
+      return squeakLst.slice(-1)[0];
+    };
+
+    const getMoreTweets = () => {
+        let lastTweet = getLastSqueak(userTweets);
+        actions.getUserTweets({username: props.match.params.username, lastUserTweet: lastTweet})
+    }
+
     return(
         <div>
             {user ?
@@ -211,7 +225,7 @@ const Profile = (props) => {
                 if(!t.getReplyTo())
                 return <TweetCard tweet={t} retweet={t.getReplyTo()} username={t.getAuthorPubkey()} name={t.getAuthorPubkey()} parent={null} key={t.getSqueakHash()} id={t.getSqueakHash()} user={t.getAuthor()} createdAt={t.getBlockTime()} description={t.getContentStr()}
                     images={[]} replies={[]} retweets={[]} likes={[]} />
-            }): activeTab === 'Tweets&Replies' ?
+             }) : activeTab === 'Tweets&Replies' ?
             userTweets.map(t=>{
                 return <TweetCard tweet={t} retweet={t.getReplyTo()} username={t.getAuthorPubkey()} name={t.getAuthorPubkey()} parent={null} key={t.getSqueakHash()} id={t.getSqueakHash()} user={t.getAuthor()} createdAt={t.getBlockTime()} description={t.getContentStr()}
                     images={[]} replies={[]} retweets={[]} likes={[]} />
@@ -219,6 +233,12 @@ const Profile = (props) => {
             activeTab === 'Likes' ?
             null: activeTab === 'Media' ?
             null: null}
+            {/* TODO: fix get loading state by doing this: https://medium.com/stashaway-engineering/react-redux-tips-better-way-to-handle-loading-flags-in-your-reducers-afda42a804c6 */}
+            {state.loading ?
+                <Loader /> :
+                <div onClick={() => getMoreTweets()} className='tweet-btn-side tweet-btn-active'>
+                  Load more
+                </div>}
             </div>
             <div onClick={()=>toggleModal()} style={{display: modalOpen ? 'block' : 'none'}} className="modal-edit">
                 <div onClick={(e)=>handleModalClick(e)} className="modal-content">

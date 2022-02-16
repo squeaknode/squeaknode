@@ -129,7 +129,9 @@ export const applyMiddleware = dispatch => action => {
             // TODO: handle error response
 
         case types.GET_USER_TWEETS:
-            return getAddressSqueakDisplaysRequest(action.payload, 10, null, (resp) => {
+            let username = action.payload.username
+            let lastUserTweet = action.payload.lastUserTweet
+            return getAddressSqueakDisplaysRequest(username, 10, lastUserTweet, (resp) => {
                 let payload = {"userTweets": resp };
                 dispatch({ type: types.GET_USER_TWEETS, payload: payload });
             });
