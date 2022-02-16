@@ -32,7 +32,7 @@ const Profile = (props) => {
     useEffect(() => {
         window.scrollTo(0, 0)
         actions.getUser(props.match.params.username)
-        actions.getUserTweets({username: props.match.params.username, lastUserTweet: null})
+        reloadTweets();
         //preventing edit modal from apprearing after clicking a user on memOpen
         setMemOpen(false)
         setModalOpen(false)
@@ -140,6 +140,11 @@ const Profile = (props) => {
     const getMoreTweets = () => {
         let lastTweet = getLastSqueak(userTweets);
         actions.getUserTweets({username: props.match.params.username, lastUserTweet: lastTweet})
+    }
+
+    const reloadTweets = () => {
+        actions.clearUserTweets();
+        actions.getUserTweets({username: props.match.params.username, lastTweet: null});
     }
 
     return(

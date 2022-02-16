@@ -130,6 +130,9 @@ const reducer = (state = initialState, action) => {
             newUserTweets.forEach(t => userT.push(t));
             return {...state, loading: false, error: false}
 
+        case type.CLEAR_USER_TWEETS:
+            return {...state, ...{userTweets: []}}
+
         case type.GET_ANCESTOR_TWEETS:
             return {...state, ...action.payload, loading: false, error: false}
 

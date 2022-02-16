@@ -86,7 +86,6 @@ export const applyMiddleware = dispatch => action => {
 	          });
             // TODO: handle error response
 
-
         case types.CLEAR_TWEETS:
             dispatch({ type: types.CLEAR_TWEETS, payload: {}})
 
@@ -136,6 +135,9 @@ export const applyMiddleware = dispatch => action => {
                 dispatch({ type: types.GET_USER_TWEETS, payload: payload });
             });
             // TODO: handle error response
+
+        case types.CLEAR_USER_TWEETS:
+            dispatch({ type: types.CLEAR_USER_TWEETS, payload: {}})
 
         case types.GET_ANCESTOR_TWEETS:
             return getAncestorSqueakDisplaysRequest(action.payload, (resp) => {

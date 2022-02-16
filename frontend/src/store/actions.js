@@ -104,6 +104,9 @@ export const useActions = (state, dispatch) => ({
         dispatch({type: types.SET_STATE, payload: {loading: true}})
         dispatch({type: types.GET_USER_TWEETS, payload: data})
     },
+    clearUserTweets: data => {
+        dispatch({type: types.CLEAR_USER_TWEETS, payload: data})
+    },
     getAncestorTweets: data => {
         dispatch({type: types.SET_STATE, payload: {loading: true}})
         dispatch({type: types.GET_ANCESTOR_TWEETS, payload: data})
