@@ -200,24 +200,17 @@ const Profile = (props) => {
             {activeTab === 'Tweets' ?
             userTweets.map(t=>{
                 if(!t.parent)
-                return <TweetCard retweet={t.getReplyTo()} username={t.getAuthorPubkey()} name={t.getAuthorPubkey()} parent={t} key={t.getSqueakHash()} id={t.getSqueakHash()} user={t.getAuthor()} createdAt={t.getBlockTime()} description={t.getContentStr()}
-                images={[]} replies={[]} retweets={[]} likes={[]} />
+                return <TweetCard tweet={t} retweet={t.getReplyTo()} username={t.getAuthorPubkey()} name={t.getAuthorPubkey()} parent={null} key={t.getSqueakHash()} id={t.getSqueakHash()} user={t.getAuthor()} createdAt={t.getBlockTime()} description={t.getContentStr()}
+                    images={[]} replies={[]} retweets={[]} likes={[]} />
             }): activeTab === 'Tweets&Replies' ?
             userTweets.map(t=>{
                 if(t.parent)
-                return <TweetCard retweet={t.retweet} username={t.getAuthorPubkey()} name={t.name} key={'replies'} parent={t.parent} key={t.getSqueakHash()} id={t._id} user={t.user} createdAt={t.createdAt} description={t.description}
-                images={t.images} replies={t.replies} retweets={t.retweets} likes={t.likes}  />
+                return <TweetCard tweet={t} retweet={t.getReplyTo()} username={t.getAuthorPubkey()} name={t.getAuthorPubkey()} parent={null} key={t.getSqueakHash()} id={t.getSqueakHash()} user={t.getAuthor()} createdAt={t.getBlockTime()} description={t.getContentStr()}
+                    images={[]} replies={[]} retweets={[]} likes={[]} />
              }) :
             activeTab === 'Likes' ?
-            userTweets.map(t=>{
-                return <TweetCard retweet={t.retweet} username={t.getAuthorPubkey()} name={t.name} key={'likes'} parent={t.parent} key={t.getSqueakHash()} id={t._id} user={t.user} createdAt={t.createdAt} description={t.description}
-                images={t.images} replies={t.replies} retweets={t.retweets} likes={t.likes}  />
-            }): activeTab === 'Media' ?
-            userTweets.map(t=>{
-                if(t.images[0])
-                return <TweetCard retweet={t.retweet} username={t.getAuthorPubkey()} name={t.name} key={'tweets'} parent={t.parent} key={t.getSqueakHash()} id={t._id} user={t.user} createdAt={t.createdAt} description={t.description}
-                images={t.images} replies={t.replies} retweets={t.retweets} likes={t.likes}  />
-             }): null}
+            null: activeTab === 'Media' ?
+            null: null}
             </div>
             <div onClick={()=>toggleModal()} style={{display: modalOpen ? 'block' : 'none'}} className="modal-edit">
                 <div onClick={(e)=>handleModalClick(e)} className="modal-content">
