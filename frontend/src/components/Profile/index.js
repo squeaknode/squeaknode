@@ -208,12 +208,11 @@ const Profile = (props) => {
             </div>
             {activeTab === 'Tweets' ?
             userTweets.map(t=>{
-                if(!t.parent)
+                if(!t.getReplyTo())
                 return <TweetCard tweet={t} retweet={t.getReplyTo()} username={t.getAuthorPubkey()} name={t.getAuthorPubkey()} parent={null} key={t.getSqueakHash()} id={t.getSqueakHash()} user={t.getAuthor()} createdAt={t.getBlockTime()} description={t.getContentStr()}
                     images={[]} replies={[]} retweets={[]} likes={[]} />
             }): activeTab === 'Tweets&Replies' ?
             userTweets.map(t=>{
-                if(t.parent)
                 return <TweetCard tweet={t} retweet={t.getReplyTo()} username={t.getAuthorPubkey()} name={t.getAuthorPubkey()} parent={null} key={t.getSqueakHash()} id={t.getSqueakHash()} user={t.getAuthor()} createdAt={t.getBlockTime()} description={t.getContentStr()}
                     images={[]} replies={[]} retweets={[]} likes={[]} />
              }) :
