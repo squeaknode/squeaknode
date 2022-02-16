@@ -58,7 +58,7 @@ const MakeSqueak = (props) => {
         const values = {
             signingProfile: signingProfile.getProfileId(),
             description: tweetText,
-            replyTo: props.replyTo,
+            replyTo: props.replyToTweet ? props.replyToTweet.getSqueakHash() : null,
             hasRecipient: null,
             recipientProfileId: -1
         }
@@ -71,37 +71,37 @@ const MakeSqueak = (props) => {
       <>
 
       {/* Squeak being replied to. */}
-      {props.replyTo ?
+      {props.replyToTweet ?
       <div className="reply-content-wrapper">
           <div className="card-userPic-wrapper">
-              <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.user.getPubkey()}`}>
-                  <img alt="" style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={`${getProfileImageSrcString(props.user)}`}/>
+              <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.replyToTweet.getAuthor().getPubkey()}`}>
+                  <img alt="" style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={`${getProfileImageSrcString(props.replyToTweet.getAuthor())}`}/>
               </Link>
           </div>
           <div className="card-content-wrapper">
               <div className="card-content-header">
                   <div className="card-header-detail">
                       <span className="card-header-user">
-                          <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.user.getPubkey()}`}>{props.user.getProfileName()}</Link>
+                          <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.replyToTweet.getAuthor().getPubkey()}`}>{props.replyToTweet.getAuthor().getProfileName()}</Link>
                       </span>
                       <span className="card-header-username">
-                          <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.user.getPubkey()}`}>{'@'+props.user.getPubkey()}</Link>
+                          <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.replyToTweet.getAuthor().getPubkey()}`}>{'@'+props.replyToTweet.getAuthor().getPubkey()}</Link>
                       </span>
                       <span className="card-header-dot">·</span>
                       <span className="card-header-date">
-                                  {moment(props.createdAt * 1000).fromNow()}
+                                  {moment(props.replyToTweet.getBlockTime() * 1000).fromNow()}
                       </span>
                   </div>
               </div>
               <div className="card-content-info">
-              {props.description}
+              {props.replyToTweet.getContentStr()}
               </div>
               <div className="reply-to-user">
                   <span className="reply-tweet-username">
                       Replying to
                   </span>
                   <span className="main-tweet-user">
-                      @{props.user.getPubkey()}
+                      @{props.replyToTweet.getAuthor().getPubkey()}
                   </span>
               </div>
           </div>

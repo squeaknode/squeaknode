@@ -65,6 +65,8 @@ const TweetPage = (props) => {
         history.goBack()
     }
 
+    console.log(tweet);
+
     return(
         <>
             {tweet ?
@@ -80,7 +82,7 @@ const TweetPage = (props) => {
 
             {ancestorTweets.slice(0, -1).map(r=>{
               // TODO: use replies instead of empty array.
-              return <TweetCard retweet={r.getReplyTo()} username={r.getAuthorPubkey()} name={r.getAuthorPubkey()} parent={null} key={r.getSqueakHash()} id={r.getSqueakHash()} user={r.getAuthor()} createdAt={r.getBlockTime()} description={r.getContentStr()}
+              return <TweetCard tweet={r} retweet={r.getReplyTo()} username={r.getAuthorPubkey()} name={r.getAuthorPubkey()} parent={null} key={r.getSqueakHash()} id={r.getSqueakHash()} user={r.getAuthor()} createdAt={r.getBlockTime()} description={r.getContentStr()}
                 images={[]} replies={[]} retweets={[]} likes={[]} hasReply={true} />
             })}
 
@@ -139,7 +141,7 @@ const TweetPage = (props) => {
 
             {replyTweets.map(r=>{
                 // TODO: use replies instead of empty array.
-                return <TweetCard retweet={r.getReplyTo()} username={r.getAuthorPubkey()} name={r.getAuthorPubkey()} parent={null} key={r.getSqueakHash()} id={r.getSqueakHash()} user={r.getAuthor()} createdAt={r.getBlockTime()} description={r.getContentStr()}
+                return <TweetCard tweet={r} retweet={r.getReplyTo()} username={r.getAuthorPubkey()} name={r.getAuthorPubkey()} parent={null} key={r.getSqueakHash()} id={r.getSqueakHash()} user={r.getAuthor()} createdAt={r.getBlockTime()} description={r.getContentStr()}
                     images={[]} replies={[]} retweets={[]} likes={[]} />
             })}
 
@@ -158,7 +160,7 @@ const TweetPage = (props) => {
                     <p className="modal-title">Reply</p>
                 </div>
                 <div style={{marginTop:'5px'}} className="modal-body">
-                  <MakeSqueak replyTo={tweet.getSqueakHash()} user={tweet.getAuthor()} createdAt={tweet.getBlockTime()} description={tweet.getContentStr()} />
+                  <MakeSqueak replyToTweet={tweet} replyTo={tweet.getSqueakHash()} user={tweet.getAuthor()} createdAt={tweet.getBlockTime()} description={tweet.getContentStr()} />
                 </div>
             </div> : null}
         </div>:null}
