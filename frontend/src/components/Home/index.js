@@ -45,11 +45,13 @@ const Home = () => {
             <div className="Tweet-input-divider"></div>
             {/* { state.account && <TweetCard parent={t.parent} key={'1'} id={'1'} user={'1'} createdAt={'2019'} description={'t.description'}
                 images={'t.images'} replies={[]} retweets={[]} likes={[]} style={{height:'0'}} />} */}
-            {state.tweets.length > 0 ? state.tweets.map(t => {
+            {state.tweets.map(t => {
                 return <TweetCard retweet={t.getReplyTo()} username={t.getAuthorPubkey()} name={t.getAuthorPubkey()} parent={null} key={t.getSqueakHash()} id={t.getSqueakHash()} user={t.getAuthor()} createdAt={t.getBlockTime()} description={t.getContentStr()}
                     images={[]} replies={[]} retweets={[]} likes={[]} />
-            }) : <Loader />}
+            })}
 
+            {/* TODO: fix get loading state by doing this: https://medium.com/stashaway-engineering/react-redux-tips-better-way-to-handle-loading-flags-in-your-reducers-afda42a804c6 */}
+            {state.loading ? <Loader /> : null}
 
             <div onClick={() => getMoreTweets()} className='tweet-btn-side'>
                 Load tweets
