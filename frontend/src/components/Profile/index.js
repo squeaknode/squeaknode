@@ -87,6 +87,11 @@ const Profile = (props) => {
         actions.followUser(id)
     }
 
+    const unfollowUser = (e,id) => {
+        e.stopPropagation()
+        actions.unfollowUser(id)
+    }
+
     const uploadImage = (file,type) => {
         let bodyFormData = new FormData()
         bodyFormData.append('image', file)
@@ -116,7 +121,7 @@ const Profile = (props) => {
 
     const startChat = () => {
         if(!session){ actions.alert('Please Sign In'); return }
-        actions.startChat({id:user._id, func: goToMsg})
+        actions.startChat({id:user.getPubkey(), func: goToMsg})
     }
 
     const goToMsg = () => {
@@ -152,11 +157,15 @@ const Profile = (props) => {
                         <img src={avatar.length > 0 && saved ? avatar : `${getProfileImageSrcString(user)}`} alt=""/>
                     </div>
                     {account && account.username === userParam? null : <span onClick={()=>startChat()} className="new-msg"><ICON_NEWMSG/></span>}
-                    <div onClick={(e)=>account && account.username === userParam ? toggleModal('edit'): followUser(e,user._id)}
-                     className={account && account.following.includes(user._id) ? 'unfollow-switch profile-edit-button' : 'profile-edit-button'}>
+                    <div onClick={(e)=>account && account.username === userParam ? toggleModal('edit'):
+                      user.getFollowing() ?
+                      unfollowUser(e,user.getProfileId()) :
+                      followUser(e,user.getProfileId())
+                    }
+                     className={account && user.getFollowing() ? 'unfollow-switch profile-edit-button' : 'profile-edit-button'}>
                         {account && account.username === userParam?
                         <span>Edit profile</span> :
-                        <span><span>{ account && account.following.includes(user._id) ? 'Following' : 'Follow'}</span></span>}
+                        <span><span>{ account && user.getFollowing() ? 'Following' : 'Follow'}</span></span>}
                     </div>
                 </div>
                 <div className="profile-details-box">

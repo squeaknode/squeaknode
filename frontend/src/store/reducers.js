@@ -193,17 +193,10 @@ const reducer = (state = initialState, action) => {
             return {...state, ...{user: userTweetsD}, ...{tweets: homeTweetsD}, ...{tweet: singleTweet}}
 
         case type.FOLLOW_USER:
-            let accountF = state.account
-            let user_followers = state.followers
-            if(action.payload.msg === 'follow'){
-                accountF.following.push(action.data)
-            }else if(action.payload.msg === 'unfollow'){
-                accountF.following = accountF.following.filter(f=>{
-                    return f !== action.data })
-                user_followers = user_followers.filter(f=>{
-                    return f._id !== action.data })
-            }
-            return {...state, ...{account: accountF}, ...{followers: user_followers}}
+            return {...state, ...action.payload, loading: false, error: false}
+
+        case type.UNFOLLOW_USER:
+            return {...state, ...action.payload, loading: false, error: false}
 
         case type.GET_LIST:
             return {...state, ...action.payload}

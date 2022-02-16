@@ -66,6 +66,9 @@ export const useActions = (state, dispatch) => ({
     followUser: data => {
         dispatch({type: types.FOLLOW_USER, payload: data})
     },
+    unfollowUser: data => {
+        dispatch({type: types.UNFOLLOW_USER, payload: data})
+    },
     editList: data => {
         dispatch({type: types.EDIT_LIST, payload: data})
     },

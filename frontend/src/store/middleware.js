@@ -11,6 +11,8 @@ import {
   getAncestorSqueakDisplaysRequest,
   makeSqueakRequest,
   getSigningProfilesRequest,
+  setSqueakProfileFollowingRequest,
+  getSqueakProfileRequest,
 } from '../squeakclient/requests';
 
 export const token = () => {
@@ -168,9 +170,25 @@ export const applyMiddleware = dispatch => action => {
             .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
 
         case types.FOLLOW_USER:
-            return axios.post(`${API_URL}/user/${action.payload}/follow`, action.payload, headers)
-            .then(res=>dispatch({ type: types.FOLLOW_USER, payload: res.data, data: action.payload }))
-            .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
+            // return axios.post(`${API_URL}/user/${action.payload}/follow`, action.payload, headers)
+            // .then(res=>dispatch({ type: types.FOLLOW_USER, payload: res.data, data: action.payload }))
+            // .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
+
+            return setSqueakProfileFollowingRequest(action.payload, true, (resp) => {
+              console.log(resp);
+              return getSqueakProfileRequest(action.payload, (resp) => {
+                  let payload = {"user": resp.getSqueakProfile() };
+                  dispatch({ type: types.FOLLOW_USER, payload: payload, data: action.payload });
+              });
+            });
+
+        case types.UNFOLLOW_USER:
+            return setSqueakProfileFollowingRequest(action.payload, false, (resp) => {
+              return getSqueakProfileRequest(action.payload, (resp) => {
+                  let payload = {"user": resp.getSqueakProfile() };
+                  dispatch({ type: types.UNFOLLOW_USER, payload: payload, data: action.payload });
+            });
+        });
 
         case types.EDIT_LIST:
             return axios.put(`${API_URL}/lists/${action.payload.id}/edit`, action.payload, headers)
