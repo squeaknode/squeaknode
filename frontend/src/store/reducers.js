@@ -98,7 +98,10 @@ const reducer = (state = initialState, action) => {
             return {...state, ...{account:account_likes}, ...{tweets:tweet_likes}, ...{user: user_likes}, ...{tweet: Stweet_likes}}
 
         case type.GET_TWEETS:
-            return {...state, ...action.payload, loading: false, error: false}
+            let timelineT = state.tweets
+            let newTweets = action.payload.tweets
+            newTweets.forEach(t => timelineT.push(t));
+            return {...state, loading: false, error: false}
 
         case type.GET_TWEET:
             return {...state, ...action.payload, loading: false, error: false}

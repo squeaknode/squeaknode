@@ -16,8 +16,22 @@ const Home = () => {
     const { account, session } = state
     useEffect(() => {
         window.scrollTo(0, 0)
-        actions.getTweets()
+        actions.getTweets({lastTweet: null})
     }, [])
+
+    const getLastSqueak = (squeakLst) => {
+      if (squeakLst == null) {
+        return null;
+      } if (squeakLst.length === 0) {
+        return null;
+      }
+      return squeakLst.slice(-1)[0];
+    };
+
+    const getMoreTweets = () => {
+        let lastTweet = getLastSqueak(state.tweets);
+        actions.getTweets({lastTweet: lastTweet});
+    }
 
     return (
         <div className="Home-wrapper">
@@ -34,6 +48,12 @@ const Home = () => {
                 return <TweetCard retweet={t.getReplyTo()} username={t.getAuthorPubkey()} name={t.getAuthorPubkey()} parent={null} key={t.getSqueakHash()} id={t.getSqueakHash()} user={t.getAuthor()} createdAt={t.getBlockTime()} description={t.getContentStr()}
                     images={[]} replies={[]} retweets={[]} likes={[]} />
             }) : <Loader />}
+
+
+            <div onClick={() => getMoreTweets()} className='tweet-btn-side'>
+                Load tweets
+            </div>
+
         </div>
     )
 }

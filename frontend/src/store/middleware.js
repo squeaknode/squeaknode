@@ -75,8 +75,11 @@ export const applyMiddleware = dispatch => action => {
             // })
             // .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
 
-	          return getTimelineSqueakDisplaysRequest(10, null, (resp) => {
+            let lastTweet = action.payload.lastTweet
+
+	          return getTimelineSqueakDisplaysRequest(10, lastTweet, (resp) => {
                 let payload = {"tweets": resp.getSqueakDisplayEntriesList() };
+                console.log(payload);
 	              dispatch({ type: types.GET_TWEETS, payload: payload })
 	          });
             // TODO: handle error response
