@@ -249,6 +249,8 @@ const Profile = (props) => {
                   Load more
                 </div>}
             </div>
+
+            {/* Modal */}
             <div onClick={()=>toggleModal()} style={{display: modalOpen ? 'block' : 'none'}} className="modal-edit">
                 <div onClick={(e)=>handleModalClick(e)} className="modal-content">
                     <div className={memOpen ? "modal-header no-b-border" : "modal-header"}>
