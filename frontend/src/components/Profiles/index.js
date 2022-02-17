@@ -37,6 +37,11 @@ const Profiles = (props) => {
         actions.followUser(id)
     }
 
+    const unfollowUser = (e,id) => {
+        e.stopPropagation()
+        actions.unfollowUser(id)
+    }
+
     const goToUser = (id) => {
         props.history.push(`/profile/${id}`)
     }
@@ -76,7 +81,11 @@ const Profiles = (props) => {
                     <div className="search-user-username">@{f.getPubkey()}</div>
                     </div>
                     {f._id === account && account._id ? null :
-                      <div onClick={(e)=>followUser(e,f._id)} className={account && f.getFollowing() ? "follow-btn-wrap unfollow-switch":"follow-btn-wrap"}>
+                      <div onClick={(e)=>{
+                        f.getFollowing() ?
+                        unfollowUser(e,f.getProfileId()) :
+                        followUser(e,f.getProfileId())
+                      }} className={account && f.getFollowing() ? "follow-btn-wrap unfollow-switch":"follow-btn-wrap"}>
                         <span><span>{account && f.getFollowing() ? 'Following' : 'Follow'}</span></span>
                       </div>}
                     </div>
@@ -100,7 +109,11 @@ const Profiles = (props) => {
                     <div className="search-user-username">@{f.getPubkey()}</div>
                     </div>
                     {f._id === account && account._id ? null :
-                      <div onClick={(e)=>followUser(e,f._id)} className={account && f.getFollowing() ? "follow-btn-wrap unfollow-switch":"follow-btn-wrap"}>
+                      <div onClick={(e)=>{
+                        f.getFollowing() ?
+                        unfollowUser(e,f.getProfileId()) :
+                        followUser(e,f.getProfileId())
+                      }} className={account && f.getFollowing() ? "follow-btn-wrap unfollow-switch":"follow-btn-wrap"}>
                         <span><span>{account && f.getFollowing() ? 'Following' : 'Follow'}</span></span>
                       </div>}
                     </div>

@@ -79,10 +79,8 @@ export const applyMiddleware = dispatch => action => {
             // .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
 
             let lastTweet = action.payload.lastTweet
-
 	          return getTimelineSqueakDisplaysRequest(10, lastTweet, (resp) => {
                 let payload = {"tweets": resp.getSqueakDisplayEntriesList() };
-                console.log(payload);
 	              dispatch({ type: types.GET_TWEETS, payload: payload })
 	          });
             // TODO: handle error response
@@ -175,12 +173,7 @@ export const applyMiddleware = dispatch => action => {
             .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
 
         case types.FOLLOW_USER:
-            // return axios.post(`${API_URL}/user/${action.payload}/follow`, action.payload, headers)
-            // .then(res=>dispatch({ type: types.FOLLOW_USER, payload: res.data, data: action.payload }))
-            // .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
-
             return setSqueakProfileFollowingRequest(action.payload, true, (resp) => {
-              console.log(resp);
               return getSqueakProfileRequest(action.payload, (resp) => {
                   let payload = {"user": resp.getSqueakProfile() };
                   dispatch({ type: types.FOLLOW_USER, payload: payload, data: action.payload });

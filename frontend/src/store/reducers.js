@@ -200,10 +200,32 @@ const reducer = (state = initialState, action) => {
             return {...state, ...{user: userTweetsD}, ...{tweets: homeTweetsD}, ...{tweet: singleTweet}}
 
         case type.FOLLOW_USER:
-            return {...state, ...action.payload, loading: false, error: false}
+            let followedUser = action.payload.user
+            let followSP = state.signingProfiles
+            let followCP = state.contactProfiles
+            let newFollowSP = followSP.map(u => {
+              return u.getPubkey() === followedUser.getPubkey() ?
+              followedUser : u
+            })
+            let newFollowCP = followCP.map(u => {
+              return u.getPubkey() === followedUser.getPubkey() ?
+              followedUser : u
+            })
+            return {...state, ...{user: followedUser}, ...{signingProfiles: newFollowSP}, ...{contactProfiles: newFollowCP}}
 
         case type.UNFOLLOW_USER:
-            return {...state, ...action.payload, loading: false, error: false}
+            let unfollowedUser = action.payload.user
+            let unfollowSP = state.signingProfiles
+            let unfollowCP = state.contactProfiles
+            let newUnfollowSP = unfollowSP.map(u => {
+              return u.getPubkey() === unfollowedUser.getPubkey() ?
+              unfollowedUser : u
+            })
+            let newUnFollowCP = unfollowCP.map(u => {
+              return u.getPubkey() === unfollowedUser.getPubkey() ?
+              unfollowedUser : u
+            })
+            return {...state, ...{user: unfollowedUser}, ...{signingProfiles: newUnfollowSP}, ...{contactProfiles: newUnFollowCP}}
 
         case type.GET_LIST:
             return {...state, ...action.payload}
