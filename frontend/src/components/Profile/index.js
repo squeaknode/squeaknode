@@ -54,6 +54,7 @@ const Profile = (props) => {
 
     const editProfile = () => {
         let values = {
+            profileId: user.getProfileId(),
             name: editName,
             description: editBio,
             location: editLocation,
@@ -176,6 +177,12 @@ const Profile = (props) => {
                         <img src={avatar.length > 0 && saved ? avatar : `${getProfileImageSrcString(user)}`} alt=""/>
                     </div>
                     {account && account.username === userParam? null : <span onClick={()=>startChat()} className="new-msg"><ICON_NEWMSG/></span>}
+                    {account &&
+                      <div onClick={(e)=>toggleModal('edit')}
+                       className='profile-edit-button'>
+                          <span>Edit profile</span>
+                      </div>
+                    }
                     <div onClick={(e)=>account && account.username === userParam ? toggleModal('edit'):
                       user.getFollowing() ?
                       unfollowUser(e,user.getProfileId()) :

@@ -14,6 +14,7 @@ import {
   getContactProfilesRequest,
   setSqueakProfileFollowingRequest,
   getSqueakProfileRequest,
+  renameSqueakProfileRequest,
 } from '../squeakclient/requests';
 
 export const token = () => {
@@ -158,9 +159,17 @@ export const applyMiddleware = dispatch => action => {
             .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
 
         case types.UPDATE_USER:
-            return axios.put(`${API_URL}/user/i`, action.payload, headers)
-            .then(res=>dispatch({ type: types.UPDATE_USER, payload: res.data, data: action.payload }))
-            .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
+            // return axios.put(`${API_URL}/user/i`, action.payload, headers)
+            // .then(res=>dispatch({ type: types.UPDATE_USER, payload: res.data, data: action.payload }))
+            // .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
+            let updateProfileId = action.payload.profileId;
+            let newName = action.payload.name;
+            return renameSqueakProfileRequest(updateProfileId, newName, (resp) => {
+              return getSqueakProfileRequest(updateProfileId, (resp) => {
+                  let payload = {"user": resp.getSqueakProfile() };
+                  dispatch({ type: types.UPDATE_USER, payload: payload, data: action.payload });
+              });
+            });
 
         case types.RETWEET:
             return axios.post(`${API_URL}/tweet/${action.payload.id}/retweet`, action.payload, headers)

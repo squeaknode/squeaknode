@@ -144,8 +144,8 @@ const reducer = (state = initialState, action) => {
             return {...state, ...action.payload}
 
         case type.UPDATE_USER:
-            Object.keys(action.data).forEach(key => action.data[key] === '' || action.data[key] === undefined ? delete action.data[key] : null)
-            let updateUser = {...state.user, ...action.data}
+            console.log(action.payload.user)
+            let updateUser = action.payload.user
             return {...state, ...{user:updateUser}}
 
         case type.RETWEET:
