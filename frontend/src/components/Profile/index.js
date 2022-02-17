@@ -183,16 +183,16 @@ const Profile = (props) => {
                           <span>Edit profile</span>
                       </div>
                     }
-                    <div onClick={(e)=>account && account.username === userParam ? toggleModal('edit'):
-                      user.getFollowing() ?
-                      unfollowUser(e,user.getProfileId()) :
-                      followUser(e,user.getProfileId())
+                    {account &&
+                      <div onClick={(e)=>
+                        user.getFollowing() ?
+                        unfollowUser(e,user.getProfileId()) :
+                        followUser(e,user.getProfileId())
+                      }
+                       className={user.getFollowing() ? 'unfollow-switch profile-edit-button' : 'profile-edit-button'}>
+                          <span><span>{ account && user.getFollowing() ? 'Following' : 'Follow'}</span></span>
+                      </div>
                     }
-                     className={account && user.getFollowing() ? 'unfollow-switch profile-edit-button' : 'profile-edit-button'}>
-                        {account && account.username === userParam?
-                        <span>Edit profile</span> :
-                        <span><span>{ account && user.getFollowing() ? 'Following' : 'Follow'}</span></span>}
-                    </div>
                 </div>
                 <div className="profile-details-box">
                     <div className="profile-name">{user.getProfileName()}</div>
