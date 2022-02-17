@@ -14,9 +14,9 @@ const Profile = (props) => {
     const { state, actions } = useContext(StoreContext)
     const [activeTab, setActiveTab] = useState('Tweets')
     const [editName, setName] = useState('')
-    const [modalOpen, setModalOpen] = useState(false)
+    const [editModalOpen, setEditModalOpen] = useState(false)
+    const [spendingModalOpen, setSpendingModalOpen] = useState(false)
     const [saved, setSaved] = useState(false)
-    const [memOpen, setMemOpen] = useState(false)
     const [tab, setTab] = useState('Sats Spent')
     const [styleBody, setStyleBody] = useState(false)
     const {account, user, userTweets, session} = state
@@ -27,8 +27,7 @@ const Profile = (props) => {
         actions.getUser(props.match.params.username)
         reloadTweets();
         //preventing edit modal from apprearing after clicking a user on memOpen
-        setMemOpen(false)
-        setModalOpen(false)
+        setEditModalOpen(false)
         setName('')
     }, [props.match.params.username])
 
@@ -53,19 +52,22 @@ const Profile = (props) => {
         }
         actions.updateUser(values)
         setSaved(true)
-        toggleModal()
+        toggleEditModal()
     }
 
-    const toggleModal = (param, type) => {
+    const toggleEditModal = (param, type) => {
         setStyleBody(!styleBody)
-        if(param === 'edit'){setSaved(false)}
+        setSaved(false)
+        setTimeout(()=>{ setEditModalOpen(!editModalOpen) },20)
+    }
+
+    const toggleSpendingModal = (param, type) => {
+        setStyleBody(!styleBody)
         if(type){setTab(type)}
-        if(param === 'members'){
-            setMemOpen(true)
-            actions.getFollowers(props.match.params.username)
-        }
-        if(memOpen){setMemOpen(false)}
-        setTimeout(()=>{ setModalOpen(!modalOpen) },20)
+        // TODO: fetch spending info
+        // actions.getFollowers(props.match.params.username)
+        if(type){setTab(type)}
+        setTimeout(()=>{ setSpendingModalOpen(!spendingModalOpen) },20)
     }
 
     const handleModalClick = (e) => {
@@ -110,11 +112,11 @@ const Profile = (props) => {
       }
       actions.updateUserImage(values)
       setSaved(true)
-      toggleModal()
+      toggleEditModal()
     };
 
     const goToUser = (id) => {
-        setModalOpen(false)
+        setEditModalOpen(false)
         props.history.push(`/profile/${id}`)
     }
 
@@ -175,7 +177,7 @@ const Profile = (props) => {
                         <img src={`${getProfileImageSrcString(user)}`} alt=""/>
                     </div>
                     {account &&
-                      <div onClick={(e)=>toggleModal('edit')}
+                      <div onClick={(e)=>toggleEditModal('edit')}
                        className='profile-edit-button'>
                           <span>Edit profile</span>
                       </div>
@@ -204,12 +206,12 @@ const Profile = (props) => {
                 </div>
                 <div className="profile-social-box">
                         {/* TODO: Implement sats spent */}
-                        <div onClick={()=>toggleModal('members','Sats Earned')}>
+                        <div onClick={()=>toggleSpendingModal('members','Sats Spent')}>
                             <p className="follow-num"> 0 </p>
                             <p className="follow-text"> sats spent </p>
                         </div>
                         {/* TODO: Implement sats eaned */}
-                        <div onClick={()=>toggleModal('members', 'Sats Spent')}>
+                        <div onClick={()=>toggleSpendingModal('members', 'Sats Earned')}>
                             <p className="follow-num"> 0 </p>
                             <p className="follow-text"> sats earned </p>
                         </div>
@@ -250,35 +252,22 @@ const Profile = (props) => {
                 </div>}
             </div>
 
-            {/* Modal */}
-            <div onClick={()=>toggleModal()} style={{display: modalOpen ? 'block' : 'none'}} className="modal-edit">
+            {/* Modal for edit profile */}
+            <div onClick={()=>toggleEditModal()} style={{display: editModalOpen ? 'block' : 'none'}} className="modal-edit">
                 <div onClick={(e)=>handleModalClick(e)} className="modal-content">
-                    <div className={memOpen ? "modal-header no-b-border" : "modal-header"}>
+                    <div className="modal-header">
                         <div className="modal-closeIcon">
-                            <div onClick={()=>toggleModal()} className="modal-closeIcon-wrap">
+                            <div onClick={()=>toggleEditModal()} className="modal-closeIcon-wrap">
                                 <ICON_CLOSE />
                             </div>
                         </div>
-                        <p className="modal-title">{memOpen ? null : 'Edit Profile'}</p>
-                        {memOpen ? null :
+                        <p className="modal-title">'Edit Profile'</p>
                         <div className="save-modal-wrapper">
                             <div onClick={editProfile} className="save-modal-btn">
                                 Save
                             </div>
-                        </div>}
-                    </div>
-                    {memOpen ? <div className="modal-body">
-                    <div className="explore-nav-menu">
-                        <div onClick={()=>setTab('Sats Spent')} className={tab =='Sats Spent' ? `explore-nav-item activeTab` : `explore-nav-item`}>
-                            Sats Spent
-                        </div>
-                        <div onClick={()=>setTab('Sats Earned')} className={tab =='Sats Earned' ? `explore-nav-item activeTab` : `explore-nav-item`}>
-                            Sats Earned
                         </div>
                     </div>
-                    <div className="modal-scroll">
-                    </div>
-                    </div> :
                     <div className="modal-body">
                         <div className="modal-banner">
                         </div>
@@ -299,9 +288,38 @@ const Profile = (props) => {
                                 </div>
                             </div>
                         </form>
-                    </div>}
+                    </div>
                 </div>
             </div>
+
+
+            {/* Modal for sats spent and earned */}
+            <div onClick={()=>toggleSpendingModal()} style={{display: spendingModalOpen ? 'block' : 'none'}} className="modal-edit">
+                <div onClick={(e)=>handleModalClick(e)} className="modal-content">
+                    <div className="modal-header no-b-border">
+                        <div className="modal-closeIcon">
+                            <div onClick={()=>toggleEditModal()} className="modal-closeIcon-wrap">
+                                <ICON_CLOSE />
+                            </div>
+                        </div>
+                        <p className="modal-title">{null}</p>
+                    </div>
+                    <div className="modal-body">
+                    <div className="explore-nav-menu">
+                        <div onClick={()=>setTab('Sats Spent')} className={tab =='Sats Spent' ? `explore-nav-item activeTab` : `explore-nav-item`}>
+                            Sats Spent
+                        </div>
+                        <div onClick={()=>setTab('Sats Earned')} className={tab =='Sats Earned' ? `explore-nav-item activeTab` : `explore-nav-item`}>
+                            Sats Earned
+                        </div>
+                    </div>
+                    <div className="modal-scroll">
+                    </div>
+                    </div>
+                </div>
+            </div>
+
+
             </div>: <div className="profile-wrapper"><Loader/> </div> }
         </div>
     )
