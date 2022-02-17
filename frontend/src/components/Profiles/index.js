@@ -62,9 +62,6 @@ const Profiles = (props) => {
                     <div onClick={()=>setTab('Contact Profiles')} className={tab === 'Contact Profiles' ? `explore-nav-item activeTab` : `explore-nav-item`}>
                         Contact Profiles
                     </div>
-                    <div onClick={()=>setTab('Search')} className={tab === 'Search' ? `explore-nav-item activeTab` : `explore-nav-item`}>
-                        Search
-                    </div>
                 </div>
                 {tab === 'Signing Profiles' ?
                 signingProfiles.map(f=>{
@@ -113,10 +110,7 @@ const Profiles = (props) => {
                   </div>
                 </div>
                 })
-                :
-                result.length ? result.map(r=>{
-                    return <TweetCard retweet={r.retweet} username={r.username} name={r.name} parent={r.parent} key={r._id} id={r._id} user={r.user} createdAt={r.createdAt} description={r.description} images={r.images} replies={r.replies} retweets={r.retweets} likes={r.likes} />
-                }) : <div className="try-searching">
+                : <div className="try-searching">
                         Nothing to see here ..
                         <div/>
                     Try searching for people, usernames, or keywords
