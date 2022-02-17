@@ -17,7 +17,7 @@ const Profile = (props) => {
     const [modalOpen, setModalOpen] = useState(false)
     const [saved, setSaved] = useState(false)
     const [memOpen, setMemOpen] = useState(false)
-    const [tab, setTab] = useState('Followers')
+    const [tab, setTab] = useState('Sats Spent')
     const [styleBody, setStyleBody] = useState(false)
     const {account, user, userTweets, session} = state
     const userParam = props.match.params.username
@@ -204,12 +204,12 @@ const Profile = (props) => {
                 </div>
                 <div className="profile-social-box">
                         {/* TODO: Implement sats spent */}
-                        <div onClick={()=>toggleModal('members','Following')}>
+                        <div onClick={()=>toggleModal('members','Sats Earned')}>
                             <p className="follow-num"> 0 </p>
                             <p className="follow-text"> sats spent </p>
                         </div>
                         {/* TODO: Implement sats eaned */}
-                        <div onClick={()=>toggleModal('members', 'Followers')}>
+                        <div onClick={()=>toggleModal('members', 'Sats Spent')}>
                             <p className="follow-num"> 0 </p>
                             <p className="follow-text"> sats earned </p>
                         </div>
@@ -267,11 +267,11 @@ const Profile = (props) => {
                     </div>
                     {memOpen ? <div className="modal-body">
                     <div className="explore-nav-menu">
-                        <div onClick={()=>setTab('Followers')} className={tab =='Followers' ? `explore-nav-item activeTab` : `explore-nav-item`}>
-                            Followers
+                        <div onClick={()=>setTab('Sats Spent')} className={tab =='Sats Spent' ? `explore-nav-item activeTab` : `explore-nav-item`}>
+                            Sats Spent
                         </div>
-                        <div onClick={()=>setTab('Following')} className={tab =='Following' ? `explore-nav-item activeTab` : `explore-nav-item`}>
-                            Following
+                        <div onClick={()=>setTab('Sats Earned')} className={tab =='Sats Earned' ? `explore-nav-item activeTab` : `explore-nav-item`}>
+                            Sats Earned
                         </div>
                     </div>
                     <div className="modal-scroll">
