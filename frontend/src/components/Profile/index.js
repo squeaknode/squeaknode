@@ -20,7 +20,6 @@ const Profile = (props) => {
     const [saved, setSaved] = useState(false)
     const [memOpen, setMemOpen] = useState(false)
     const [tab, setTab] = useState('Followers')
-    const [loadingAvatar, setLoadingAvatar] = useState(false)
     const [styleBody, setStyleBody] = useState(false)
     const {account, user, userTweets, session} = state
     const userParam = props.match.params.username
@@ -87,21 +86,8 @@ const Profile = (props) => {
         actions.unfollowUser(id)
     }
 
-    // const uploadImage = (file,type) => {
-    //     let bodyFormData = new FormData()
-    //     bodyFormData.append('image', file)
-    //     axios.post(`${API_URL}/tweet/upload`, bodyFormData, { headers: { Authorization: `Bearer ${localStorage.getItem('Twittertoken')}`}})
-    //         .then(res=>{
-    //             type === 'banner' ? setBanner(res.data.imageUrl) : setAvatar(res.data.imageUrl)
-    //             type === 'banner' ? setLoadingBanner(false) : setLoadingAvatar(false)
-    //         })
-    //         .catch(err=>actions.alert('error uploading image'))
-    // }
-
     const changeAvatar = () => {
-        setLoadingAvatar(true)
         let file = document.getElementById('avatar').files[0];
-        // uploadImage(file, 'avatar')
         uploadAvatar(file);
     }
 
@@ -299,7 +285,7 @@ const Profile = (props) => {
                         </div>
                         <div className="modal-profile-pic">
                             <div className="modal-back-pic">
-                                <img src={loadingAvatar? "https://i.imgur.com/62jOROc.gif" : avatar.length > 0 ? avatar : `${getProfileImageSrcString(user)}`} alt="profile" />
+                                <img src={avatar.length > 0 ? avatar : `${getProfileImageSrcString(user)}`} alt="profile" />
                                 <div>
                                     <ICON_UPLOAD/>
                                     <input onChange={()=>changeAvatar()} title=" " id="avatar" style={{opacity:'0'}} type="file"/>
