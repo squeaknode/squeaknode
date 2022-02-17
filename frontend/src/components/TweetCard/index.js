@@ -160,7 +160,7 @@ const TweetCard = React.memo(function TweetCard(props) {
                             {props.likes.length}
                         </div>
                     </div>
-                    <div className="card-button-wrap">
+                    <div onClick={(e)=>deleteTweet(e,props.id)} className="card-button-wrap">
                         <div className="card-icon share-icon">
                             <ICON_DELETE styles={{fill:'rgb(101, 119, 134)'}} />
                         </div>

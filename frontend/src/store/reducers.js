@@ -190,20 +190,29 @@ const reducer = (state = initialState, action) => {
 
         case type.DELETE_TWEET:
             let userTweetsD = state.userTweets
+            let replyTweetsD = state.replyTweets
             let homeTweetsD = state.tweets
             let singleTweet = state.tweet
-            if(userTweetsD){
-                userTweetsD = userTweetsD.filter((x=>{
-                    return x.getSqueakHash() !== action.data }))
-            }
+            userTweetsD = userTweetsD.filter((x)=>{
+                    return x.getSqueakHash() !== action.data
+            })
+            replyTweetsD = replyTweetsD.filter((x)=>{
+                    return x.getSqueakHash() !== action.data
+            })
             if(singleTweet && action.data === singleTweet.getSqueakHash()){
                 window.location.replace('/home')
                 singleTweet = null
             }
             homeTweetsD = homeTweetsD.filter((x)=>{
-                return x._id !== action.data
+                return x.getSqueakHash() !== action.data
             })
-            return {...state, ...{user: userTweetsD}, ...{tweets: homeTweetsD}, ...{tweet: singleTweet}}
+            return {
+                ...state,
+                ...{userTweets: userTweetsD},
+                ...{replyTweets: replyTweetsD},
+                ...{tweets: homeTweetsD},
+                ...{tweet: singleTweet}
+            }
 
         case type.FOLLOW_USER:
             let followedUser = action.payload.user
