@@ -10,7 +10,7 @@ import TweetCard from '../TweetCard'
 
 const Profiles = (props) => {
     const { state, actions } = useContext(StoreContext)
-    const { account, signingProfiles, contactProfiles, trends, result, tagTweets} = state
+    const { account, signingProfiles, contactProfiles, result, tagTweets} = state
     const [tab, setTab] = useState('Signing Profiles')
     const [trendOpen, setTrendOpen] = useState(false)
 
@@ -24,7 +24,6 @@ const Profiles = (props) => {
 
     useEffect(() => {
         window.scrollTo(0, 0)
-        actions.getTrend()
         actions.getSigningProfiles()
         actions.getContactProfiles()
         // if(props.history.location.search.length>0){
@@ -42,22 +41,10 @@ const Profiles = (props) => {
         props.history.push(`/profile/${id}`)
     }
 
-    const goToTrend = (hash) => {
-        setTrendOpen(true)
-        let hashtag = hash.substring(1)
-        actions.getTrendTweets(hashtag)
-    }
-
 
     return(
         <div className="explore-wrapper">
             <div className={trendOpen ? "explore-header header-border" : "explore-header"}>
-                {trendOpen &&
-                <div className="explore-header-back">
-                    <div onClick={()=>setTrendOpen(false)} className="explore-back-wrapper">
-                        <ICON_ARROWBACK/>
-                    </div>
-                </div>}
                 <div className="explore-search-wrapper">
                     <div className="explore-search-icon">
                         <ICON_SEARCH/>
@@ -67,7 +54,6 @@ const Profiles = (props) => {
                     </div>
                 </div>
             </div>
-            {!trendOpen ?
             <div>
                 <div className="explore-nav-menu">
                     <div onClick={()=>setTab('Signing Profiles')} className={tab === 'Signing Profiles' ? `explore-nav-item activeTab` : `explore-nav-item`}>
@@ -75,9 +61,6 @@ const Profiles = (props) => {
                     </div>
                     <div onClick={()=>setTab('Contact Profiles')} className={tab === 'Contact Profiles' ? `explore-nav-item activeTab` : `explore-nav-item`}>
                         Contact Profiles
-                    </div>
-                    <div onClick={()=>setTab('Trends')} className={tab === 'Trends' ? `explore-nav-item activeTab` : `explore-nav-item`}>
-                        Trending
                     </div>
                     <div onClick={()=>setTab('Search')} className={tab === 'Search' ? `explore-nav-item activeTab` : `explore-nav-item`}>
                         Search
@@ -131,16 +114,6 @@ const Profiles = (props) => {
                 </div>
                 })
                 :
-                tab === 'Trends' ?
-                    trends.length>0 ?
-                    trends.map((t,i)=>{
-                    return  <div onClick={()=>goToTrend(t.content)} key={t._id} className="trending-card-wrapper">
-                                <div className="trending-card-header">{i+1} <span>·</span> Trending</div>
-                                <div className="trending-card-content"> {t.content} </div>
-                                <div className="trending-card-count"> {t.count} Tweets </div>
-                            </div>
-                    }) : <Loader/>
-                :
                 result.length ? result.map(r=>{
                     return <TweetCard retweet={r.retweet} username={r.username} name={r.name} parent={r.parent} key={r._id} id={r._id} user={r.user} createdAt={r.createdAt} description={r.description} images={r.images} replies={r.replies} retweets={r.retweets} likes={r.likes} />
                 }) : <div className="try-searching">
@@ -150,11 +123,7 @@ const Profiles = (props) => {
 
                 </div>
                 }
-            </div> : <div>
-            {tagTweets.length>0 && tagTweets.map(t=>{
-            return <TweetCard retweet={t.retweet} username={t.username} name={t.name} parent={t.parent} key={t._id} id={t._id} user={t.user} createdAt={t.createdAt} description={t.description} images={t.images} replies={t.replies} retweets={t.retweets} likes={t.likes}  />
-                })}
-            </div>}
+            </div>
         </div>
     )
 }
