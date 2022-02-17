@@ -15,6 +15,7 @@ import {
   setSqueakProfileFollowingRequest,
   getSqueakProfileRequest,
   renameSqueakProfileRequest,
+  setSqueakProfileImageRequest,
 } from '../squeakclient/requests';
 
 export const token = () => {
@@ -166,6 +167,16 @@ export const applyMiddleware = dispatch => action => {
             let newName = action.payload.name;
             return renameSqueakProfileRequest(updateProfileId, newName, (resp) => {
               return getSqueakProfileRequest(updateProfileId, (resp) => {
+                  let payload = {"user": resp.getSqueakProfile() };
+                  dispatch({ type: types.UPDATE_USER, payload: payload, data: action.payload });
+              });
+            });
+
+        case types.UPDATE_USER_IMAGE:
+            let updateImageProfileId = action.payload.profileId;
+            let profileImg = action.payload.profileImg;
+            return setSqueakProfileImageRequest(updateImageProfileId, profileImg, (resp) => {
+              return getSqueakProfileRequest(updateImageProfileId, (resp) => {
                   let payload = {"user": resp.getSqueakProfile() };
                   dispatch({ type: types.UPDATE_USER, payload: payload, data: action.payload });
               });

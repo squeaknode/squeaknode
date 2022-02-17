@@ -99,10 +99,36 @@ const Profile = (props) => {
     // }
 
     const changeAvatar = () => {
-        // setLoadingAvatar(true)
-        // let file = document.getElementById('avatar').files[0];
+        setLoadingAvatar(true)
+        let file = document.getElementById('avatar').files[0];
         // uploadImage(file, 'avatar')
+        uploadAvatar(file);
     }
+
+    const uploadAvatar = (file) => {
+      if (file == null)
+        return;
+      const reader = new FileReader();
+      reader.addEventListener('load', () => {
+        // convert image file to base64 string
+        // preview.src = reader.result;
+        const imageBase64Stripped = reader.result.split(',')[1];
+        uploadAvatarAsBase64(imageBase64Stripped);
+      }, false);
+      if (file) {
+        reader.readAsDataURL(file);
+      }
+    };
+
+    const uploadAvatarAsBase64 = (imageBase64) => {
+      let values = {
+          profileId: user.getProfileId(),
+          profileImg: imageBase64,
+      }
+      actions.updateUserImage(values)
+      setSaved(true)
+      toggleModal()
+    };
 
     const goToUser = (id) => {
         setModalOpen(false)

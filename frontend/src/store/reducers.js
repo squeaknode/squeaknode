@@ -146,6 +146,12 @@ const reducer = (state = initialState, action) => {
         case type.UPDATE_USER:
             console.log(action.payload.user)
             let updateUser = action.payload.user
+            let updateUserTweets = state.userTweets
+            console.log(updateUserTweets);
+            updateUserTweets.forEach((item, i) => {
+              item.setAuthor(updateUser);
+            });
+
             return {...state, ...{user:updateUser}}
 
         case type.RETWEET:
