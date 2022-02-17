@@ -4,8 +4,8 @@ import { withRouter, useHistory , Link } from 'react-router-dom'
 import './style.scss'
 import moment from 'moment'
 import Loader from '../Loader'
-import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL, ICON_BOOKMARK,
-ICON_DELETE, ICON_BOOKMARKFILL, ICON_IMGUPLOAD, ICON_CLOSE } from '../../Icons'
+import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
+ICON_DELETE, ICON_IMGUPLOAD, ICON_CLOSE } from '../../Icons'
 import axios from 'axios'
 import {API_URL} from '../../config'
 import { getProfileImageSrcString } from '../../squeakimages/images';
@@ -40,11 +40,6 @@ const TweetPage = (props) => {
         if(!session){ actions.alert('Please Sign In'); return }
         info = { dest: "tweet", id }
         actions.retweet(info)
-    }
-    const bookmarkTweet = (id) => {
-        if(!session){ actions.alert('Please Sign In'); return }
-        info = { dest: "tweet", id }
-        actions.bookmarkTweet(info)
     }
     const deleteTweet = (id) => {
         actions.deleteTweet(id)
@@ -127,11 +122,9 @@ const TweetPage = (props) => {
                         {account && account.likes.includes(tweet._id) ? <ICON_HEARTFULL styles={{fill:'rgb(224, 36, 94)'}}
                          /> : <ICON_HEART/>} </div>
                     </div>
-                    <div onClick={()=>account && account.username === tweet.getAuthor().getPubkey() ? deleteTweet(tweet._id) : bookmarkTweet(tweet._id)} className="tweet-int-icon">
-                        <div className={account && account.username === tweet.getAuthor().getPubkey() ? "card-icon delete-icon" :"card-icon share-icon"}>
-                            {account && account.username === tweet.getAuthor().getPubkey() ?
-                                <ICON_DELETE styles={{fill:'rgb(101, 119, 134)'}} /> : account && account.bookmarks.includes(tweet._id) ? <ICON_BOOKMARKFILL styles={{fill:'rgb(10, 113, 176)'}}/> :
-                                <ICON_BOOKMARK styles={{fill:'rgb(101, 119, 134)'}}/>}
+                    <div onClick={()=>deleteTweet(tweet._id)} className="tweet-int-icon">
+                        <div className="card-icon delete-icon">
+                            <ICON_DELETE styles={{fill:'rgb(101, 119, 134)'}} />
                         </div>
                     </div>
                 </div>

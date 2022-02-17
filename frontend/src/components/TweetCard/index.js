@@ -5,7 +5,7 @@ import { StoreContext } from '../../store/store'
 import { getProfileImageSrcString } from '../../squeakimages/images';
 import { Link, withRouter } from 'react-router-dom'
 import { ICON_REPLY, ICON_RETWEET,
-    ICON_HEART, ICON_BOOKMARK, ICON_HEARTFULL, ICON_BOOKMARKFILL, ICON_DELETE, ICON_CLOSE,ICON_IMGUPLOAD} from '../../Icons'
+    ICON_HEART, ICON_HEARTFULL, ICON_DELETE, ICON_CLOSE,ICON_IMGUPLOAD} from '../../Icons'
 import axios from 'axios'
 import {API_URL} from '../../config'
 import MakeSqueak from '../MakeSqueak'
@@ -29,15 +29,6 @@ const TweetCard = React.memo(function TweetCard(props) {
             info = { dest: "profile", id }
         }else{ info = { id } }
         actions.likeTweet(info)
-    }
-
-    const bookmarkTweet = (e,id) => {
-        e.stopPropagation()
-        if(!session){ actions.alert('Please Sign In'); return }
-        if(props.history.location.pathname.slice(1,5) === 'prof'){
-            info = { dest: "profile", id }
-        }else{ info = { id } }
-        actions.bookmarkTweet(info)
     }
 
     const retweet = (e,id, retweetId) => {
