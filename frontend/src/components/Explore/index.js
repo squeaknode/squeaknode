@@ -26,7 +26,7 @@ const Explore = (props) => {
         actions.getTrend()
         // if(props.history.location.search.length>0){
         //     goToTrend(props.history.location.search.substring(1))
-            
+
         // }
     }, [])
 
@@ -36,20 +36,20 @@ const Explore = (props) => {
     // }
 
     // const goToUser = (id) => {
-    //     props.history.push(`/profile/${id}`)      
-    // } 
+    //     props.history.push(`/profile/${id}`)
+    // }
 
     const goToTrend = (hash) => {
         setTrendOpen(true)
         let hashtag = hash.substring(1)
         actions.getTrendTweets(hashtag)
     }
-    
+
 
     return(
         <div className="explore-wrapper">
             <div className={trendOpen ? "explore-header header-border" : "explore-header"}>
-                {trendOpen && 
+                {trendOpen &&
                 <div className="explore-header-back">
                     <div onClick={()=>setTrendOpen(false)} className="explore-back-wrapper">
                         <ICON_ARROWBACK/>
@@ -68,14 +68,14 @@ const Explore = (props) => {
             <div>
                 <div className="explore-nav-menu">
                     <div onClick={()=>setTab('Trends')} className={tab === 'Trends' ? `explore-nav-item activeTab` : `explore-nav-item`}>
-                        Trending 
+                        Trending
                     </div>
                     <div onClick={()=>setTab('Search')} className={tab === 'Search' ? `explore-nav-item activeTab` : `explore-nav-item`}>
                         Search
                     </div>
                 </div>
-                {tab === 'Trends' ? 
-                    trends.length>0 ? 
+                {tab === 'Trends' ?
+                    trends.length>0 ?
                     trends.map((t,i)=>{
                     return  <div onClick={()=>goToTrend(t.content)} key={t._id} className="trending-card-wrapper">
                                 <div className="trending-card-header">{i+1} <span>·</span> Trending</div>
@@ -83,7 +83,7 @@ const Explore = (props) => {
                                 <div className="trending-card-count"> {t.count} Tweets </div>
                             </div>
                     }) : <Loader/>
-                : 
+                :
                 result.length ? result.map(r=>{
                     return <TweetCard retweet={r.retweet} username={r.username} name={r.name} parent={r.parent} key={r._id} id={r._id} user={r.user} createdAt={r.createdAt} description={r.description} images={r.images} replies={r.replies} retweets={r.retweets} likes={r.likes} />
                 }) : <div className="try-searching">
