@@ -189,14 +189,14 @@ const reducer = (state = initialState, action) => {
             return {...state, ...{user:user_retweets}, ...{account: acc_retweets}, ...{tweets: t_retweets}, ...{tweet: Stweet_retweets}}
 
         case type.DELETE_TWEET:
-            let userTweetsD = state.user
+            let userTweetsD = state.userTweets
             let homeTweetsD = state.tweets
             let singleTweet = state.tweet
             if(userTweetsD){
-                userTweetsD.tweets = userTweetsD && userTweetsD.tweets.filter((x=>{
-                    return x._id !== action.data }))
+                userTweetsD = userTweetsD.filter((x=>{
+                    return x.getSqueakHash() !== action.data }))
             }
-            if(singleTweet && action.data === singleTweet._id){
+            if(singleTweet && action.data === singleTweet.getSqueakHash()){
                 window.location.replace('/home')
                 singleTweet = null
             }

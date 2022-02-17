@@ -19,6 +19,7 @@ import {
   createSigningProfileRequest,
   createContactProfileRequest,
   deleteProfileRequest,
+  deleteSqueakRequest,
 } from '../squeakclient/requests';
 
 export const token = () => {
@@ -188,9 +189,15 @@ export const applyMiddleware = dispatch => action => {
             .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
 
         case types.DELETE_TWEET:
-            return axios.delete(`${API_URL}/tweet/${action.payload}/delete`, headers)
-            .then(res=>dispatch({ type: types.DELETE_TWEET, payload: res.data, data: action.payload }))
-            .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
+            // return axios.delete(`${API_URL}/tweet/${action.payload}/delete`, headers)
+            // .then(res=>dispatch({ type: types.DELETE_TWEET, payload: res.data, data: action.payload }))
+            // .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
+
+            console.log(action);
+            let deleteTweetId = action.payload;
+            return deleteSqueakRequest(deleteTweetId, (resp) => {
+              dispatch({ type: types.DELETE_TWEET, payload: {}, data: action.payload });
+            });
 
         case types.FOLLOW_USER:
             return setSqueakProfileFollowingRequest(action.payload, true, (resp) => {

@@ -69,6 +69,7 @@ export const useActions = (state, dispatch) => ({
         dispatch({type: types.RETWEET, payload: data})
     },
     deleteTweet: data => {
+        console.log(data);
         dispatch({type: types.DELETE_TWEET, payload: data})
     },
     followUser: data => {

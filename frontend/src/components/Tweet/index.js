@@ -112,17 +112,17 @@ const TweetPage = (props) => {
                     <div onClick={()=>toggleModal()} className="tweet-int-icon">
                         <div className="card-icon reply-icon"> <ICON_REPLY /> </div>
                     </div>
-                    <div onClick={()=>retweet(tweet._id)} className="tweet-int-icon">
+                    <div onClick={()=>retweet(tweet.getSqueakHash())} className="tweet-int-icon">
                         <div className="card-icon retweet-icon">
-                             <ICON_RETWEET styles={account && account.retweets.includes(tweet._id) ? {stroke: 'rgb(23, 191, 99)'} : {fill:'rgb(101, 119, 134)'}}/>
+                             <ICON_RETWEET styles={account && account.retweets.includes(tweet.getSqueakHash()) ? {stroke: 'rgb(23, 191, 99)'} : {fill:'rgb(101, 119, 134)'}}/>
                         </div>
                     </div>
-                    <div onClick={()=>likeTweet(tweet._id)} className="tweet-int-icon">
+                    <div onClick={()=>likeTweet(tweet.getSqueakHash())} className="tweet-int-icon">
                         <div className="card-icon heart-icon">
-                        {account && account.likes.includes(tweet._id) ? <ICON_HEARTFULL styles={{fill:'rgb(224, 36, 94)'}}
+                        {account && account.likes.includes(tweet.getSqueakHash()) ? <ICON_HEARTFULL styles={{fill:'rgb(224, 36, 94)'}}
                          /> : <ICON_HEART/>} </div>
                     </div>
-                    <div onClick={()=>deleteTweet(tweet._id)} className="tweet-int-icon">
+                    <div onClick={()=>deleteTweet(tweet.getSqueakHash())} className="tweet-int-icon">
                         <div className="card-icon delete-icon">
                             <ICON_DELETE styles={{fill:'rgb(101, 119, 134)'}} />
                         </div>
