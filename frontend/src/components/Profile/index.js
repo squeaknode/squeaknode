@@ -16,7 +16,6 @@ const Profile = (props) => {
     const [activeTab, setActiveTab] = useState('Tweets')
     const [editName, setName] = useState('')
     const [modalOpen, setModalOpen] = useState(false)
-    const [avatar, setAvatar] = useState('')
     const [saved, setSaved] = useState(false)
     const [memOpen, setMemOpen] = useState(false)
     const [tab, setTab] = useState('Followers')
@@ -52,7 +51,6 @@ const Profile = (props) => {
         let values = {
             profileId: user.getProfileId(),
             name: editName,
-            profileImg: avatar,
         }
         actions.updateUser(values)
         setSaved(true)
@@ -175,7 +173,7 @@ const Profile = (props) => {
             <div className="profile-details-wrapper">
                 <div className="profile-options">
                     <div className="profile-image-wrapper">
-                        <img src={avatar.length > 0 && saved ? avatar : `${getProfileImageSrcString(user)}`} alt=""/>
+                        <img src={`${getProfileImageSrcString(user)}`} alt=""/>
                     </div>
                     {account &&
                       <div onClick={(e)=>toggleModal('edit')}
@@ -285,7 +283,7 @@ const Profile = (props) => {
                         </div>
                         <div className="modal-profile-pic">
                             <div className="modal-back-pic">
-                                <img src={avatar.length > 0 ? avatar : `${getProfileImageSrcString(user)}`} alt="profile" />
+                                <img src={`${getProfileImageSrcString(user)}`} alt="profile" />
                                 <div>
                                     <ICON_UPLOAD/>
                                     <input onChange={()=>changeAvatar()} title=" " id="avatar" style={{opacity:'0'}} type="file"/>
