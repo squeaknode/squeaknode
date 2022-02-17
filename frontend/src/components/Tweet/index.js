@@ -65,8 +65,6 @@ const TweetPage = (props) => {
         history.goBack()
     }
 
-    console.log(tweet);
-
     return(
         <>
             {tweet ?
