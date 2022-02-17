@@ -192,8 +192,6 @@ const Profiles = (props) => {
                 </div>
 
                 <div className="modal-body">
-                    <div className="modal-banner">
-                    </div>
                     <form className="edit-form">
                         <div className="edit-input-wrap">
                             <div className="edit-input-content">
