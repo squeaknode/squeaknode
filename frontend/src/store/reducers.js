@@ -274,6 +274,11 @@ const reducer = (state = initialState, action) => {
         case type.GET_FOLLOWING:
             return {...state, ...action.payload}
 
+        case type.CREATE_SIGNING_PROFILE:
+            let createdSP = state.signingProfiles
+            createdSP.push(action.payload.user)
+            return {...state, loading: false, error: false}
+
         case type.GET_SIGNING_PROFILES:
             return {...state, ...action.payload}
 

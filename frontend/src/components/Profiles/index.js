@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from 'react'
 import { StoreContext } from '../../store/store'
 import './style.scss'
 import { withRouter, Link } from 'react-router-dom'
-import { ICON_SEARCH, ICON_ARROWBACK } from '../../Icons'
+import { ICON_SEARCH, ICON_ARROWBACK, ICON_CLOSE } from '../../Icons'
 import { getProfileImageSrcString } from '../../squeakimages/images';
 import Loader from '../Loader'
 import TweetCard from '../TweetCard'
@@ -12,7 +12,9 @@ const Profiles = (props) => {
     const { state, actions } = useContext(StoreContext)
     const { account, signingProfiles, contactProfiles, result, tagTweets} = state
     const [tab, setTab] = useState('Signing Profiles')
-
+    const [modalOpen, setModalOpen] = useState(false)
+    const [styleBody, setStyleBody] = useState(false)
+    const [newProfileName, setNewProfileName] = useState('')
 
     const searchOnChange = (param) => {
         if(tab !== 'Search'){setTab('Search')}
@@ -45,8 +47,31 @@ const Profiles = (props) => {
         props.history.push(`/profile/${id}`)
     }
 
+    const toggleModal = (param, type) => {
+        setStyleBody(!styleBody)
+        // if(param === 'edit'){setSaved(false)}
+        // if(type){setTab(type)}
+        // if(param === 'members'){
+        //     setMemOpen(true)
+        //     actions.getFollowers(props.match.params.username)
+        // }
+        // if(memOpen){setMemOpen(false)}
+        setTimeout(()=>{ setModalOpen(!modalOpen) },20)
+    }
+
+    const createSigningProfile = () => {
+        console.log(newProfileName);
+        actions.createSigningProfile({profileName: newProfileName});
+    }
+
+    const handleModalClick = (e) => {
+        e.stopPropagation()
+    }
+
 
     return(
+        <div>
+
         <div className="explore-wrapper">
             <div className="explore-header">
                 <div className="explore-search-wrapper">
@@ -57,6 +82,22 @@ const Profiles = (props) => {
                         <input onChange={(e)=>searchOnChange(e.target.value)} placeholder="Search for people" type="text" name="search"/>
                     </div>
                 </div>
+            </div>
+            <div className="profile-details-wrapper">
+            <div className="profiles-options">
+            {account &&
+              <div onClick={(e)=>toggleModal('edit')}
+               className='profiles-create-button'>
+                  <span>Add Signing Profile</span>
+              </div>
+            }
+            {account &&
+              <div onClick={(e)=>toggleModal('edit')}
+               className='profiles-create-button'>
+                  <span>Add Contact Profile</span>
+              </div>
+            }
+            </div>
             </div>
             <div>
                 <div className="explore-nav-menu">
@@ -130,6 +171,43 @@ const Profiles = (props) => {
                 </div>
                 }
             </div>
+        </div>
+
+
+        <div onClick={()=>toggleModal()} style={{display: modalOpen ? 'block' : 'none'}} className="modal-edit">
+            <div onClick={(e)=>handleModalClick(e)} className="modal-content">
+                <div className="modal-header">
+                    <div className="modal-closeIcon">
+                        <div onClick={()=>toggleModal()} className="modal-closeIcon-wrap">
+                            <ICON_CLOSE />
+                        </div>
+                    </div>
+                    <p className="modal-title">Add Signing Profile</p>
+
+                    <div className="save-modal-wrapper">
+                        <div onClick={createSigningProfile} className="save-modal-btn">
+                            Submit
+                        </div>
+                    </div>
+                </div>
+
+                <div className="modal-body">
+                    <div className="modal-banner">
+                    </div>
+                    <form className="edit-form">
+                        <div className="edit-input-wrap">
+                            <div className="edit-input-content">
+                                <label>Profile Name</label>
+                                <input onChange={(e)=>setNewProfileName(e.target.value)} type="text" name="name" className="edit-input"/>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+
         </div>
     )
 }

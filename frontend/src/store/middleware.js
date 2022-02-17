@@ -16,6 +16,7 @@ import {
   getSqueakProfileRequest,
   renameSqueakProfileRequest,
   setSqueakProfileImageRequest,
+  createSigningProfileRequest,
 } from '../squeakclient/requests';
 
 export const token = () => {
@@ -44,21 +45,12 @@ export const applyMiddleware = dispatch => action => {
             // .then(res=>dispatch({ type: types.TWEET, payload: res.data, data: action.payload }))
             // .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
 
-            console.log(action.payload);
             let profileId = action.payload.signingProfile;
             let content = action.payload.description;
             let replyTo = action.payload.replyTo;
             let hasRecipient = action.payload.hasRecipient;
             let recipientProfileId = action.payload.recipientProfileId;
-
-            console.log(profileId);
-            console.log(content);
-            console.log(replyTo);
-            console.log(hasRecipient);
-            console.log(recipientProfileId);
-
             return makeSqueakRequest(profileId, content, replyTo, hasRecipient, recipientProfileId, (resp) => {
-                console.log("Made squeak");
                 let squeakHash = resp.getSqueakHash();
                 return getSqueakDisplayRequest(squeakHash, (resp) => {
                     let payload = {"tweet": resp };
@@ -267,6 +259,16 @@ export const applyMiddleware = dispatch => action => {
         //     return axios.get(`${API_URL}/lists/i/following`, action.payload, headers)
         //     .then(res=>dispatch({ type: types.GET_FOLLOWING, payload: res.data, data: action.payload }))
         //     .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
+
+        case types.CREATE_SIGNING_PROFILE:
+            let newSigningProfileName = action.payload.profileName
+            return createSigningProfileRequest(newSigningProfileName, (resp) => {
+                let newSigningProfileId = resp.getProfileId();
+                return getSqueakProfileRequest(newSigningProfileId, (resp) => {
+                    let payload = {"user": resp.getSqueakProfile() };
+                    dispatch({ type: types.CREATE_SIGNING_PROFILE, payload: payload, data: action.payload });
+                });
+            });
 
         case types.GET_SIGNING_PROFILES:
             return getSigningProfilesRequest((resp) => {
