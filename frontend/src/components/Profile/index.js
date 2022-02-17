@@ -195,7 +195,7 @@ const Profile = (props) => {
                 </div>
                 <div className="profile-details-box">
                     <div className="profile-name">{user.getProfileName()}</div>
-                    <div className="profile-username">@{account && account.username === userParam ? account.username : user.getPubkey()}</div>
+                    <div className="profile-username">@{user.getPubkey()}</div>
                     <div className="profile-bio">
                         {user.description}
                     </div>
