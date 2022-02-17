@@ -15,16 +15,12 @@ const Profile = (props) => {
     const { state, actions } = useContext(StoreContext)
     const [activeTab, setActiveTab] = useState('Tweets')
     const [editName, setName] = useState('')
-    const [editBio, setBio] = useState('')
-    const [editLocation, setLocation] = useState('')
     const [modalOpen, setModalOpen] = useState(false)
-    const [banner, setBanner] = useState('')
     const [avatar, setAvatar] = useState('')
     const [saved, setSaved] = useState(false)
     const [memOpen, setMemOpen] = useState(false)
     const [tab, setTab] = useState('Followers')
     const [loadingAvatar, setLoadingAvatar] = useState(false)
-    const [loadingBanner, setLoadingBanner] = useState(false)
     const [styleBody, setStyleBody] = useState(false)
     const {account, user, userTweets, session} = state
     const userParam = props.match.params.username
@@ -57,10 +53,7 @@ const Profile = (props) => {
         let values = {
             profileId: user.getProfileId(),
             name: editName,
-            description: editBio,
-            location: editLocation,
             profileImg: avatar,
-            banner: banner
         }
         actions.updateUser(values)
         setSaved(true)
@@ -94,26 +87,21 @@ const Profile = (props) => {
         actions.unfollowUser(id)
     }
 
-    const uploadImage = (file,type) => {
-        let bodyFormData = new FormData()
-        bodyFormData.append('image', file)
-        axios.post(`${API_URL}/tweet/upload`, bodyFormData, { headers: { Authorization: `Bearer ${localStorage.getItem('Twittertoken')}`}})
-            .then(res=>{
-                type === 'banner' ? setBanner(res.data.imageUrl) : setAvatar(res.data.imageUrl)
-                type === 'banner' ? setLoadingBanner(false) : setLoadingAvatar(false)
-            })
-            .catch(err=>actions.alert('error uploading image'))
-    }
+    // const uploadImage = (file,type) => {
+    //     let bodyFormData = new FormData()
+    //     bodyFormData.append('image', file)
+    //     axios.post(`${API_URL}/tweet/upload`, bodyFormData, { headers: { Authorization: `Bearer ${localStorage.getItem('Twittertoken')}`}})
+    //         .then(res=>{
+    //             type === 'banner' ? setBanner(res.data.imageUrl) : setAvatar(res.data.imageUrl)
+    //             type === 'banner' ? setLoadingBanner(false) : setLoadingAvatar(false)
+    //         })
+    //         .catch(err=>actions.alert('error uploading image'))
+    // }
 
-    const changeBanner = () => {
-        setLoadingBanner(true)
-        let file = document.getElementById('banner').files[0];
-        uploadImage(file, 'banner')
-    }
     const changeAvatar = () => {
-        setLoadingAvatar(true)
-        let file = document.getElementById('avatar').files[0];
-        uploadImage(file, 'avatar')
+        // setLoadingAvatar(true)
+        // let file = document.getElementById('avatar').files[0];
+        // uploadImage(file, 'avatar')
     }
 
     const goToUser = (id) => {
@@ -170,7 +158,7 @@ const Profile = (props) => {
                 </div>
             </div>
             <div className="profile-banner-wrapper">
-                <img src={banner.length > 0 && saved ? banner : user.banner} alt=""/>
+                <img alt=""/>
             </div>
             <div className="profile-details-wrapper">
                 <div className="profile-options">
@@ -282,11 +270,6 @@ const Profile = (props) => {
                     </div> :
                     <div className="modal-body">
                         <div className="modal-banner">
-                            <img src={loadingBanner? "https://i.imgur.com/62jOROc.gif" : banner.length > 0 ? banner : user.banner} alt="modal-banner" />
-                            <div>
-                                <ICON_UPLOAD/>
-                                <input onChange={()=>changeBanner()} title=" " id="banner" style={{opacity:'0'}} type="file"/>
-                            </div>
                         </div>
                         <div className="modal-profile-pic">
                             <div className="modal-back-pic">
