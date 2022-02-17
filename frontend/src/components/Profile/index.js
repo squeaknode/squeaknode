@@ -8,7 +8,6 @@ import Loader from '../Loader'
 import moment from 'moment'
 import TweetCard from '../TweetCard'
 import {API_URL} from '../../config'
-import axios from 'axios'
 
 
 const Profile = (props) => {
