@@ -12,7 +12,6 @@ const Profiles = (props) => {
     const { state, actions } = useContext(StoreContext)
     const { account, signingProfiles, contactProfiles, result, tagTweets} = state
     const [tab, setTab] = useState('Signing Profiles')
-    const [trendOpen, setTrendOpen] = useState(false)
 
 
     const searchOnChange = (param) => {
@@ -49,7 +48,7 @@ const Profiles = (props) => {
 
     return(
         <div className="explore-wrapper">
-            <div className={trendOpen ? "explore-header header-border" : "explore-header"}>
+            <div className="explore-header">
                 <div className="explore-search-wrapper">
                     <div className="explore-search-icon">
                         <ICON_SEARCH/>
