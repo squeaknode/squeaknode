@@ -332,10 +332,6 @@ const Profile = (props) => {
                             </div>
                         </div>
                     </div>
-                    <div className="modal-body">
-                        <div className="modal-banner">
-                        </div>
-                    </div>
                 </div>
             </div>
 
