@@ -56,6 +56,7 @@ const reducer = (state = initialState, action) => {
                 // Update the replies if the current selected squeak is active.
                 replyT.unshift(action.payload.tweet)
             }
+            // TODO: update `state.userTweets` with the new tweet.
             return {...state, loading: false, error: false}
 
         case type.LIKE_TWEET:
