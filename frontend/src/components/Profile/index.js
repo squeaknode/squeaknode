@@ -15,6 +15,7 @@ const Profile = (props) => {
     const [activeTab, setActiveTab] = useState('Tweets')
     const [editName, setName] = useState('')
     const [editModalOpen, setEditModalOpen] = useState(false)
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false)
     const [spendingModalOpen, setSpendingModalOpen] = useState(false)
     const [saved, setSaved] = useState(false)
     const [tab, setTab] = useState('Sats Spent')
@@ -55,10 +56,26 @@ const Profile = (props) => {
         toggleEditModal()
     }
 
+    const deleteProfile = () => {
+        let values = {
+            profileId: user.getProfileId(),
+        }
+        actions.deleteUser(values);
+        toggleDeleteModal();
+    }
+
     const toggleEditModal = (param, type) => {
         setStyleBody(!styleBody)
         setSaved(false)
+        console.log(user.getProfileName());
+        setName(user.getProfileName())
         setTimeout(()=>{ setEditModalOpen(!editModalOpen) },20)
+    }
+
+    const toggleDeleteModal = () => {
+        setStyleBody(!styleBody)
+        setSaved(false)
+        setTimeout(()=>{ setDeleteModalOpen(!deleteModalOpen) },20)
     }
 
     const toggleSpendingModal = (param, type) => {
@@ -177,9 +194,15 @@ const Profile = (props) => {
                         <img src={`${getProfileImageSrcString(user)}`} alt=""/>
                     </div>
                     {account &&
+                      <div onClick={(e)=>toggleDeleteModal('edit')}
+                       className='profile-edit-button'>
+                          <span>Delete</span>
+                      </div>
+                    }
+                    {account &&
                       <div onClick={(e)=>toggleEditModal('edit')}
                        className='profile-edit-button'>
-                          <span>Edit profile</span>
+                          <span>Edit</span>
                       </div>
                     }
                     {account &&
@@ -288,6 +311,30 @@ const Profile = (props) => {
                                 </div>
                             </div>
                         </form>
+                    </div>
+                </div>
+            </div>
+
+
+            {/* Modal for delete profile */}
+            <div onClick={()=>toggleDeleteModal()} style={{display: deleteModalOpen ? 'block' : 'none'}} className="modal-edit">
+                <div onClick={(e)=>handleModalClick(e)} className="modal-content">
+                    <div className="modal-header">
+                        <div className="modal-closeIcon">
+                            <div onClick={()=>toggleDeleteModal()} className="modal-closeIcon-wrap">
+                                <ICON_CLOSE />
+                            </div>
+                        </div>
+                        <p className="modal-title">'Delete Profile'</p>
+                        <div className="save-modal-wrapper">
+                            <div onClick={deleteProfile} className="save-modal-btn">
+                                Delete
+                            </div>
+                        </div>
+                    </div>
+                    <div className="modal-body">
+                        <div className="modal-banner">
+                        </div>
                     </div>
                 </div>
             </div>

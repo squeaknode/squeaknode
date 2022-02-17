@@ -18,6 +18,7 @@ import {
   setSqueakProfileImageRequest,
   createSigningProfileRequest,
   createContactProfileRequest,
+  deleteProfileRequest,
 } from '../squeakclient/requests';
 
 export const token = () => {
@@ -173,6 +174,12 @@ export const applyMiddleware = dispatch => action => {
                   let payload = {"user": resp.getSqueakProfile() };
                   dispatch({ type: types.UPDATE_USER, payload: payload, data: action.payload });
               });
+            });
+
+        case types.DELETE_USER:
+            let deleteProfileId = action.payload.profileId;
+            return deleteProfileRequest(deleteProfileId, (resp) => {
+              dispatch({ type: types.DELETE_USER, payload: {}, data: action.payload });
             });
 
         case types.RETWEET:

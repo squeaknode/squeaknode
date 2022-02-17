@@ -143,6 +143,9 @@ const reducer = (state = initialState, action) => {
         case type.GET_BOOKMARKS:
             return {...state, ...action.payload}
 
+        case type.DELETE_USER:
+            return {...state, ...{user:null}, loading: false, error: false}
+
         case type.UPDATE_USER:
             let updateUser = action.payload.user
             let updateUserTweets = state.userTweets

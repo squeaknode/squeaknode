@@ -61,6 +61,10 @@ export const useActions = (state, dispatch) => ({
         dispatch({type: types.SET_STATE, payload: {loading: true}})
         dispatch({type: types.UPDATE_USER_IMAGE, payload: data})
     },
+    deleteUser: data => {
+        dispatch({type: types.SET_STATE, payload: {loading: true}})
+        dispatch({type: types.DELETE_USER, payload: data})
+    },
     retweet: data => {
         dispatch({type: types.RETWEET, payload: data})
     },
