@@ -17,6 +17,9 @@ export const useActions = (state, dispatch) => ({
     likeTweet: data => {
         dispatch({type: types.LIKE_TWEET, payload: data})
     },
+    unlikeTweet: data => {
+        dispatch({type: types.UNLIKE_TWEET, payload: data})
+    },
     getTweets: data => {
         dispatch({type: types.SET_STATE, payload: {loading: true}})
         dispatch({type: types.GET_TWEETS, payload: data})

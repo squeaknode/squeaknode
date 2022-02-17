@@ -59,45 +59,83 @@ const reducer = (state = initialState, action) => {
             // TODO: update `state.userTweets` with the new tweet.
             return {...state, loading: false, error: false}
 
-        case type.LIKE_TWEET:
-            let account_likes = state.account
-            let tweet_likes = state.tweets
-            let user_likes = state.user
-            let Stweet_likes = state.tweet
-            if(action.payload.msg === "liked"){
-
-                if(Stweet_likes){
-                    Stweet_likes.likes.push(action.data.id)
-                }
-
-                account_likes.likes.push(action.data.id)
-                tweet_likes.length && tweet_likes.find(x=>x._id === action.data.id).likes.push(account_likes._id)
-
-                if(action.data.dest === 'profile'){
-                    user_likes.tweets.find(x=>x._id === action.data.id).likes.push(action.data.id)
-                    user_likes.likes = user_likes.tweets.filter(x=>x._id === action.data.id).concat(user_likes.likes)
-                }
-
-            }else if(action.payload.msg === "unliked"){
-
-                if(Stweet_likes){
-                    Stweet_likes.likes = Stweet_likes.likes.filter((x)=>{
-                        return x !== action.data.id
-                     });
-                }
-
-                tweet_likes.length && tweet_likes.find(x=>x._id === action.data.id).likes.pop()
-                let likeIndex = account_likes.likes.indexOf(action.data.id)
-                likeIndex > -1 && account_likes.likes.splice(likeIndex, 1)
-
-                if(action.data.dest === 'profile'){
-                    user_likes.tweets.find(x=>x._id === action.data.id).likes.pop()
-                    user_likes.likes = user_likes.likes.filter((x)=>{
-                       return x._id !== action.data.id
-                    });
-                }
+        case type.UPDATE_TWEET:
+            let updatedTweet = action.payload.tweet
+            let userTweetsU = state.userTweets
+            let replyTweetsU = state.replyTweets
+            let ancestorTweetsU = state.ancestorTweets
+            let homeTweetsU = state.tweets
+            let singleTweetU = state.tweet
+            userTweetsU = userTweetsU.map((x)=>{
+                return x.getSqueakHash() === updatedTweet.getSqueakHash() ?
+                updatedTweet : x
+            })
+            replyTweetsU = replyTweetsU.map((x)=>{
+                return x.getSqueakHash() === updatedTweet.getSqueakHash() ?
+                updatedTweet : x
+            })
+            ancestorTweetsU = ancestorTweetsU.map((x)=>{
+                return x.getSqueakHash() === updatedTweet.getSqueakHash() ?
+                updatedTweet : x
+            })
+            homeTweetsU = homeTweetsU.map((x)=>{
+                return x.getSqueakHash() === updatedTweet.getSqueakHash() ?
+                updatedTweet : x
+            })
+            if (singleTweetU) {
+              singleTweetU = singleTweetU.getSqueakHash() === updatedTweet.getSqueakHash() ? updatedTweet : singleTweetU;
             }
-            return {...state, ...{account:account_likes}, ...{tweets:tweet_likes}, ...{user: user_likes}, ...{tweet: Stweet_likes}}
+            return {
+                ...state,
+                ...{tweet: singleTweetU},
+                ...{userTweets: userTweetsU},
+                ...{replyTweets: replyTweetsU},
+                ...{ancestorTweets: ancestorTweetsU},
+                ...{tweets: homeTweetsU},
+            }
+
+        // case type.LIKE_TWEET:
+        //     console.log("action.payload")
+        //     console.log(action.payload)
+        //
+        //     let account_likes = state.account
+        //     let tweet_likes = state.tweets
+        //     let user_likes = state.user
+        //     let Stweet_likes = state.tweet
+        //     if(action.payload.msg === "liked"){
+        //
+        //         if(Stweet_likes){
+        //             Stweet_likes.likes.push(action.data.id)
+        //         }
+        //
+        //         account_likes.likes.push(action.data.id)
+        //         tweet_likes.length && tweet_likes.find(x=>x._id === action.data.id).likes.push(account_likes._id)
+        //
+        //         if(action.data.dest === 'profile'){
+        //             user_likes.tweets.find(x=>x._id === action.data.id).likes.push(action.data.id)
+        //             user_likes.likes = user_likes.tweets.filter(x=>x._id === action.data.id).concat(user_likes.likes)
+        //         }
+        //
+        //     }else if(action.payload.msg === "unliked"){
+        //
+        //         if(Stweet_likes){
+        //             Stweet_likes.likes = Stweet_likes.likes.filter((x)=>{
+        //                 return x !== action.data.id
+        //              });
+        //         }
+        //
+        //         tweet_likes.length && tweet_likes.find(x=>x._id === action.data.id).likes.pop()
+        //         let likeIndex = account_likes.likes.indexOf(action.data.id)
+        //         likeIndex > -1 && account_likes.likes.splice(likeIndex, 1)
+        //
+        //         if(action.data.dest === 'profile'){
+        //             user_likes.tweets.find(x=>x._id === action.data.id).likes.pop()
+        //             user_likes.likes = user_likes.likes.filter((x)=>{
+        //                return x._id !== action.data.id
+        //             });
+        //         }
+        //     }
+        //     return {...state, ...{account:account_likes}, ...{tweets:tweet_likes}, ...{user: user_likes}, ...{tweet: Stweet_likes}}
 
         case type.GET_TWEETS:
             let timelineT = state.tweets

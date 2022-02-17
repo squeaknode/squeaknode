@@ -23,12 +23,14 @@ const TweetCard = React.memo(function TweetCard(props) {
 
     let info
     const likeTweet = (e,id) => {
-        e.stopPropagation()
+        if(e){ e.stopPropagation() }
         if(!session){ actions.alert('Please Sign In'); return }
-        if(props.history.location.pathname.slice(1,5) === 'prof'){
-            info = { dest: "profile", id }
-        }else{ info = { id } }
-        actions.likeTweet(info)
+        actions.likeTweet(id)
+    }
+    const unlikeTweet = (e,id) => {
+        if(e){ e.stopPropagation() }
+        if(!session){ actions.alert('Please Sign In'); return }
+        actions.unlikeTweet(id)
     }
 
     const retweet = (e,id, retweetId) => {
@@ -95,6 +97,7 @@ const TweetCard = React.memo(function TweetCard(props) {
           MM: '%dM', y:  'a year', yy: '%dY' }
       });
 
+
     return (
         <div>
 
@@ -150,9 +153,13 @@ const TweetCard = React.memo(function TweetCard(props) {
                             {props.retweets.length}
                         </div>
                     </div>
-                    <div onClick={(e)=>likeTweet(e,props.id)} className="card-button-wrap heart-wrap">
+                    <div onClick={(e)=>
+                      props.tweet.getLikedTimeMs() ?
+                      unlikeTweet(e, props.tweet.getSqueakHash()) :
+                      likeTweet(e, props.tweet.getSqueakHash())
+                    } className="card-button-wrap heart-wrap">
                         <div className="card-icon heart-icon">
-                            {account && account.likes.includes(props.id) ?
+                            {account && props.tweet.getLikedTimeMs() ?
                             <ICON_HEARTFULL styles={{fill:'rgb(224, 36, 94)'}}/> :
                             <ICON_HEART styles={{fill:'rgb(101, 119, 134)'}}/>}
                         </div>

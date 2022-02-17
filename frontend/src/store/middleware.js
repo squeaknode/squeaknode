@@ -20,6 +20,8 @@ import {
   createContactProfileRequest,
   deleteProfileRequest,
   deleteSqueakRequest,
+  likeSqueakRequest,
+  unlikeSqueakRequest,
 } from '../squeakclient/requests';
 
 export const token = () => {
@@ -63,9 +65,26 @@ export const applyMiddleware = dispatch => action => {
             // TODO: handle error response
 
         case types.LIKE_TWEET:
-            return axios.post(`${API_URL}/tweet/${action.payload.id}/like`, action.payload, headers)
-            .then(res=>dispatch({ type: types.LIKE_TWEET, payload: res.data, data: action.payload }))
-            .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
+            // return axios.post(`${API_URL}/tweet/${action.payload.id}/like`, action.payload, headers)
+            // .then(res=>dispatch({ type: types.LIKE_TWEET, payload: res.data, data: action.payload }))
+            // .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
+
+            let likeTweetId = action.payload;
+            return likeSqueakRequest(likeTweetId, (resp) => {
+              return getSqueakDisplayRequest(likeTweetId, (resp) => {
+                  let payload = {"tweet": resp };
+                  dispatch({ type: types.UPDATE_TWEET, payload: payload, data: action.payload });
+              });
+            });
+
+        case types.UNLIKE_TWEET:
+            let unlikeTweetId = action.payload;
+            return unlikeSqueakRequest(unlikeTweetId, (resp) => {
+              return getSqueakDisplayRequest(unlikeTweetId, (resp) => {
+                  let payload = {"tweet": resp };
+                  dispatch({ type: types.UPDATE_TWEET, payload: payload, data: action.payload });
+              });
+            });
 
         case types.GET_TWEETS:
             // return axios.get(`${API_URL}/tweet`, action.payload)

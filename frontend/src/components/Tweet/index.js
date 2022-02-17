@@ -33,8 +33,11 @@ const TweetPage = (props) => {
     let info
     const likeTweet = (id) => {
         if(!session){ actions.alert('Please Sign In'); return }
-        info = { dest: "tweet", id }
-        actions.likeTweet(info)
+        actions.likeTweet(id)
+    }
+    const unlikeTweet = (id) => {
+        if(!session){ actions.alert('Please Sign In'); return }
+        actions.unlikeTweet(id)
     }
     const retweet = (id) => {
         if(!session){ actions.alert('Please Sign In'); return }
@@ -117,9 +120,13 @@ const TweetPage = (props) => {
                              <ICON_RETWEET styles={account && account.retweets.includes(tweet.getSqueakHash()) ? {stroke: 'rgb(23, 191, 99)'} : {fill:'rgb(101, 119, 134)'}}/>
                         </div>
                     </div>
-                    <div onClick={()=>likeTweet(tweet.getSqueakHash())} className="tweet-int-icon">
+                    <div onClick={()=>{
+                      tweet.getLikedTimeMs() ?
+                      unlikeTweet(tweet.getSqueakHash()) :
+                      likeTweet(tweet.getSqueakHash())
+                    }} className="tweet-int-icon">
                         <div className="card-icon heart-icon">
-                        {account && account.likes.includes(tweet.getSqueakHash()) ? <ICON_HEARTFULL styles={{fill:'rgb(224, 36, 94)'}}
+                        {account && tweet.getLikedTimeMs() ? <ICON_HEARTFULL styles={{fill:'rgb(224, 36, 94)'}}
                          /> : <ICON_HEART/>} </div>
                     </div>
                     <div onClick={()=>deleteTweet(tweet.getSqueakHash())} className="tweet-int-icon">
