@@ -279,6 +279,11 @@ const reducer = (state = initialState, action) => {
             createdSP.push(action.payload.user)
             return {...state, loading: false, error: false}
 
+        case type.CREATE_CONTACT_PROFILE:
+            let createdCP = state.contactProfiles
+            createdCP.push(action.payload.user)
+            return {...state, loading: false, error: false}
+
         case type.GET_SIGNING_PROFILES:
             return {...state, ...action.payload}
 

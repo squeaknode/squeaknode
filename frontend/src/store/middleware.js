@@ -17,6 +17,7 @@ import {
   renameSqueakProfileRequest,
   setSqueakProfileImageRequest,
   createSigningProfileRequest,
+  createContactProfileRequest,
 } from '../squeakclient/requests';
 
 export const token = () => {
@@ -267,6 +268,17 @@ export const applyMiddleware = dispatch => action => {
                 return getSqueakProfileRequest(newSigningProfileId, (resp) => {
                     let payload = {"user": resp.getSqueakProfile() };
                     dispatch({ type: types.CREATE_SIGNING_PROFILE, payload: payload, data: action.payload });
+                });
+            });
+
+        case types.CREATE_CONTACT_PROFILE:
+            let newContactProfileName = action.payload.profileName
+            let newContactProfilePubkey = action.payload.pubkey
+            return createContactProfileRequest(newContactProfileName, newContactProfilePubkey, (resp) => {
+                let newContactProfileId = resp.getProfileId();
+                return getSqueakProfileRequest(newContactProfileId, (resp) => {
+                    let payload = {"user": resp.getSqueakProfile() };
+                    dispatch({ type: types.CREATE_CONTACT_PROFILE, payload: payload, data: action.payload });
                 });
             });
 

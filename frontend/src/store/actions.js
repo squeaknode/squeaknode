@@ -148,6 +148,9 @@ export const useActions = (state, dispatch) => ({
     createSigningProfile: data => {
         dispatch({type: types.CREATE_SIGNING_PROFILE, payload: data})
     },
+    createContactProfile: data => {
+        dispatch({type: types.CREATE_CONTACT_PROFILE, payload: data})
+    },
     getSigningProfiles: data => {
         dispatch({type: types.GET_SIGNING_PROFILES, payload: data})
     },

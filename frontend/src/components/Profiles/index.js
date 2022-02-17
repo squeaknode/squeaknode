@@ -12,9 +12,11 @@ const Profiles = (props) => {
     const { state, actions } = useContext(StoreContext)
     const { account, signingProfiles, contactProfiles, result, tagTweets} = state
     const [tab, setTab] = useState('Signing Profiles')
-    const [modalOpen, setModalOpen] = useState(false)
+    const [signingProfileModalOpen, setSigningProfileModalOpen] = useState(false)
+    const [contactProfileModalOpen, setContactProfileModalOpen] = useState(false)
     const [styleBody, setStyleBody] = useState(false)
     const [newProfileName, setNewProfileName] = useState('')
+    const [newProfilePubkey, setNewProfilePubkey] = useState('')
 
     const searchOnChange = (param) => {
         if(tab !== 'Search'){setTab('Search')}
@@ -47,7 +49,7 @@ const Profiles = (props) => {
         props.history.push(`/profile/${id}`)
     }
 
-    const toggleModal = (param, type) => {
+    const toggleSigningProfileModal = (param, type) => {
         setStyleBody(!styleBody)
         // if(param === 'edit'){setSaved(false)}
         // if(type){setTab(type)}
@@ -56,12 +58,29 @@ const Profiles = (props) => {
         //     actions.getFollowers(props.match.params.username)
         // }
         // if(memOpen){setMemOpen(false)}
-        setTimeout(()=>{ setModalOpen(!modalOpen) },20)
+        setTimeout(()=>{ setSigningProfileModalOpen(!signingProfileModalOpen) },20)
+    }
+
+    const toggleContactProfileModal = (param, type) => {
+        setStyleBody(!styleBody)
+        // if(param === 'edit'){setSaved(false)}
+        // if(type){setTab(type)}
+        // if(param === 'members'){
+        //     setMemOpen(true)
+        //     actions.getFollowers(props.match.params.username)
+        // }
+        // if(memOpen){setMemOpen(false)}
+        setTimeout(()=>{ setContactProfileModalOpen(!contactProfileModalOpen) },20)
     }
 
     const createSigningProfile = () => {
-        console.log(newProfileName);
         actions.createSigningProfile({profileName: newProfileName});
+        toggleSigningProfileModal();
+    }
+
+    const createContactProfile = () => {
+        actions.createContactProfile({profileName: newProfileName, pubkey: newProfilePubkey});
+        toggleContactProfileModal();
     }
 
     const handleModalClick = (e) => {
@@ -86,13 +105,13 @@ const Profiles = (props) => {
             <div className="profile-details-wrapper">
             <div className="profiles-options">
             {account &&
-              <div onClick={(e)=>toggleModal('edit')}
+              <div onClick={(e)=>toggleSigningProfileModal('edit')}
                className='profiles-create-button'>
                   <span>Add Signing Profile</span>
               </div>
             }
             {account &&
-              <div onClick={(e)=>toggleModal('edit')}
+              <div onClick={(e)=>toggleContactProfileModal('edit')}
                className='profiles-create-button'>
                   <span>Add Contact Profile</span>
               </div>
@@ -174,11 +193,12 @@ const Profiles = (props) => {
         </div>
 
 
-        <div onClick={()=>toggleModal()} style={{display: modalOpen ? 'block' : 'none'}} className="modal-edit">
+        {/* Modal for create signing profile */}
+        <div onClick={()=>toggleSigningProfileModal()} style={{display: signingProfileModalOpen ? 'block' : 'none'}} className="modal-edit">
             <div onClick={(e)=>handleModalClick(e)} className="modal-content">
                 <div className="modal-header">
                     <div className="modal-closeIcon">
-                        <div onClick={()=>toggleModal()} className="modal-closeIcon-wrap">
+                        <div onClick={()=>toggleSigningProfileModal()} className="modal-closeIcon-wrap">
                             <ICON_CLOSE />
                         </div>
                     </div>
@@ -204,6 +224,42 @@ const Profiles = (props) => {
             </div>
         </div>
 
+        {/* Modal for create signing profile */}
+        <div onClick={()=>toggleContactProfileModal()} style={{display: contactProfileModalOpen ? 'block' : 'none'}} className="modal-edit">
+            <div onClick={(e)=>handleModalClick(e)} className="modal-content">
+                <div className="modal-header">
+                    <div className="modal-closeIcon">
+                        <div onClick={()=>toggleSigningProfileModal()} className="modal-closeIcon-wrap">
+                            <ICON_CLOSE />
+                        </div>
+                    </div>
+                    <p className="modal-title">Add Contact Profile</p>
+
+                    <div className="save-modal-wrapper">
+                        <div onClick={createContactProfile} className="save-modal-btn">
+                            Submit
+                        </div>
+                    </div>
+                </div>
+
+                <div className="modal-body">
+                    <form className="edit-form">
+                        <div className="edit-input-wrap">
+                            <div className="edit-input-content">
+                                <label>Profile Name</label>
+                                <input onChange={(e)=>setNewProfileName(e.target.value)} type="text" name="name" className="edit-input"/>
+                            </div>
+                        </div>
+                        <div className="edit-input-wrap">
+                            <div className="edit-input-content">
+                                <label>Public Key</label>
+                                <input onChange={(e)=>setNewProfilePubkey(e.target.value)} type="text" name="name" className="edit-input"/>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
 
 
         </div>
