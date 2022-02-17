@@ -55,7 +55,7 @@ const Profiles = (props) => {
                         <ICON_SEARCH/>
                     </div>
                     <div className="explore-search-input">
-                        <input onChange={(e)=>searchOnChange(e.target.value)} placeholder="Search for hashtags or people" type="text" name="search"/>
+                        <input onChange={(e)=>searchOnChange(e.target.value)} placeholder="Search for people" type="text" name="search"/>
                     </div>
                 </div>
             </div>
