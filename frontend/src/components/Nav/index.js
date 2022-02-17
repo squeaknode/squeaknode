@@ -93,10 +93,10 @@ const Nav = ({history}) => {
                             <div className="Nav-item">Home</div>
                         </div>
                     </Link>
-                    <Link to="/explore" className="Nav-link">
+                    <Link to="/profiles" className="Nav-link">
                         <div className={path === '/expl' ? "Nav-item-hover active-Nav" : "Nav-item-hover"}>
-                            {path === '/expl' ? <ICON_HASHFILL /> : <ICON_HASH />}
-                            <div className="Nav-item">Explore</div>
+                            {path === '/expl' ? <ICON_USERFILL /> : <ICON_USER />}
+                            <div className="Nav-item">Profiles</div>
                         </div>
                     </Link>
                     {session ?
@@ -123,12 +123,6 @@ const Nav = ({history}) => {
                         <div className={path === '/list' ? "Nav-item-hover active-Nav" : "Nav-item-hover"}>
                             {path === '/list' ? <ICON_LISTFILL /> : <ICON_LIST />}
                             <div className="Nav-item">Lists</div>
-                        </div>
-                    </Link>
-                    <Link className="Nav-link" to={`/profile/${account && account.username}`}>
-                        <div className={path === '/prof' ? "Nav-item-hover active-Nav" : "Nav-item-hover"}>
-                            {path === '/prof' ? <ICON_USERFILL /> : <ICON_USER />}
-                            <div className="Nav-item">Profile</div>
                         </div>
                     </Link>
                     </> : null}

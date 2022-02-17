@@ -8,7 +8,7 @@ import Loader from '../Loader'
 import TweetCard from '../TweetCard'
 
 
-const Explore = (props) => {
+const Profiles = (props) => {
     const { state, actions } = useContext(StoreContext)
     const { account, signingProfiles, contactProfiles, trends, result, tagTweets} = state
     const [tab, setTab] = useState('Signing Profiles')
@@ -159,4 +159,4 @@ const Explore = (props) => {
     )
 }
 
-export default withRouter(Explore)
+export default withRouter(Profiles)

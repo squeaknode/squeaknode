@@ -11,7 +11,7 @@ import Tweet from './components/Tweet'
 import Bookmarks from './components/Bookmarks'
 import Lists from './components/Lists'
 import ListPage from './components/ListPage'
-import Explore from './components/Explore'
+import Profiles from './components/Profiles'
 import Feed from './components/Feed'
 import Notifications from './components/Notifications'
 import Messages from './components/Messages'
@@ -46,8 +46,8 @@ const DefaultContainer = withRouter(({ history }) => {
         <Route path="/lists/:id" exact>
           <ListPage />
         </Route>
-        <Route path="/explore" exact>
-          <Explore/>
+        <Route path="/profiles" exact>
+          <Profiles/>
         </Route>
         <Route path="/notifications" exact>
           <Notifications/>
