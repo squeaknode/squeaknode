@@ -143,5 +143,8 @@ export const useActions = (state, dispatch) => ({
     },
     getSigningProfiles: data => {
         dispatch({type: types.GET_SIGNING_PROFILES, payload: data})
+    },
+    getContactProfiles: data => {
+        dispatch({type: types.GET_CONTACT_PROFILES, payload: data})
     }
 })

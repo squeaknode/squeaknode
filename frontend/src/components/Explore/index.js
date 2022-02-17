@@ -10,7 +10,7 @@ import TweetCard from '../TweetCard'
 
 const Explore = (props) => {
     const { state, actions } = useContext(StoreContext)
-    const { account, signingProfiles, trends, result, tagTweets} = state
+    const { account, signingProfiles, contactProfiles, trends, result, tagTweets} = state
     const [tab, setTab] = useState('Signing Profiles')
     const [trendOpen, setTrendOpen] = useState(false)
 
@@ -26,6 +26,7 @@ const Explore = (props) => {
         window.scrollTo(0, 0)
         actions.getTrend()
         actions.getSigningProfiles()
+        actions.getContactProfiles()
         // if(props.history.location.search.length>0){
         //     goToTrend(props.history.location.search.substring(1))
 
@@ -72,6 +73,9 @@ const Explore = (props) => {
                     <div onClick={()=>setTab('Signing Profiles')} className={tab === 'Signing Profiles' ? `explore-nav-item activeTab` : `explore-nav-item`}>
                         Signing Profiles
                     </div>
+                    <div onClick={()=>setTab('Contact Profiles')} className={tab === 'Contact Profiles' ? `explore-nav-item activeTab` : `explore-nav-item`}>
+                        Contact Profiles
+                    </div>
                     <div onClick={()=>setTab('Trends')} className={tab === 'Trends' ? `explore-nav-item activeTab` : `explore-nav-item`}>
                         Trending
                     </div>
@@ -81,6 +85,30 @@ const Explore = (props) => {
                 </div>
                 {tab === 'Signing Profiles' ?
                 signingProfiles.map(f=>{
+                  return <div onClick={()=>goToUser(f.getPubkey())} key={f.getPubkey()} className="search-result-wapper">
+                    <Link to={`/profile/${f.getPubkey()}`} className="search-userPic-wrapper">
+                      <img style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={`${getProfileImageSrcString(f)}`}/>
+                    </Link>
+                    <div className="search-user-details">
+                    <div className="search-user-warp">
+                    <div className="search-user-info">
+                    <div className="search-user-name">{f.getProfileName()}</div>
+                    <div className="search-user-username">@{f.getPubkey()}</div>
+                    </div>
+                    {f._id === account && account._id ? null :
+                      <div onClick={(e)=>followUser(e,f._id)} className={account && f.getFollowing() ? "follow-btn-wrap unfollow-switch":"follow-btn-wrap"}>
+                        <span><span>{account && f.getFollowing() ? 'Following' : 'Follow'}</span></span>
+                      </div>}
+                    </div>
+                    <div className="search-user-bio">
+                      &nbsp;
+                    </div>
+                  </div>
+                </div>
+                })
+                :
+                tab === 'Contact Profiles' ?
+                contactProfiles.map(f=>{
                   return <div onClick={()=>goToUser(f.getPubkey())} key={f.getPubkey()} className="search-result-wapper">
                     <Link to={`/profile/${f.getPubkey()}`} className="search-userPic-wrapper">
                       <img style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={`${getProfileImageSrcString(f)}`}/>

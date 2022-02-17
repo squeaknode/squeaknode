@@ -22,6 +22,7 @@ const initialState = {
     resultUsers: [],
     suggestions: [],
     signingProfiles: [],
+    contactProfiles: [],
     top: '-100px',
     msg: '',
     conversations: null,
@@ -249,6 +250,9 @@ const reducer = (state = initialState, action) => {
             return {...state, ...action.payload}
 
         case type.GET_SIGNING_PROFILES:
+            return {...state, ...action.payload}
+
+        case type.GET_CONTACT_PROFILES:
             return {...state, ...action.payload}
 
         case type.SEARCH_USERS:

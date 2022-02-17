@@ -11,6 +11,7 @@ import {
   getAncestorSqueakDisplaysRequest,
   makeSqueakRequest,
   getSigningProfilesRequest,
+  getContactProfilesRequest,
   setSqueakProfileFollowingRequest,
   getSqueakProfileRequest,
 } from '../squeakclient/requests';
@@ -255,15 +256,16 @@ export const applyMiddleware = dispatch => action => {
         //     .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
 
         case types.GET_SIGNING_PROFILES:
-            // return axios.get(`${API_URL}/user/${action.payload}/followers`, headers)
-            // .then(res=>dispatch({ type: types.GET_FOLLOWERS, payload: res.data, data: action.payload }))
-            // .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
-
             return getSigningProfilesRequest((resp) => {
                 let payload = {"signingProfiles": resp };
-                dispatch({ type: types.GET_ANCESTOR_TWEETS, payload: payload });
+                dispatch({ type: types.GET_SIGNING_PROFILES, payload: payload });
             });
 
+        case types.GET_CONTACT_PROFILES:
+            return getContactProfilesRequest((resp) => {
+                let payload = {"contactProfiles": resp };
+                dispatch({ type: types.GET_CONTACT_PROFILES, payload: payload });
+        });
 
         case types.WHO_TO_FOLLOW:
             return axios.get(`${API_URL}/user/i/suggestions`, headers)
