@@ -161,7 +161,7 @@ const Profile = (props) => {
                 </div>
                 <div className="profile-header-content">
                     <div className="profile-header-name">
-                            {account && account.username === userParam ? account.username : user.getPubkey()}
+                            {user.getPubkey()}
                     </div>
                     {/* <div className="profile-header-tweets">
                             82 Tweets
@@ -176,7 +176,6 @@ const Profile = (props) => {
                     <div className="profile-image-wrapper">
                         <img src={avatar.length > 0 && saved ? avatar : `${getProfileImageSrcString(user)}`} alt=""/>
                     </div>
-                    {account && account.username === userParam? null : <span onClick={()=>startChat()} className="new-msg"><ICON_NEWMSG/></span>}
                     {account &&
                       <div onClick={(e)=>toggleModal('edit')}
                        className='profile-edit-button'>
