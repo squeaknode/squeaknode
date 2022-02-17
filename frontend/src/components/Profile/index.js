@@ -36,6 +36,7 @@ const Profile = (props) => {
         //preventing edit modal from apprearing after clicking a user on memOpen
         setMemOpen(false)
         setModalOpen(false)
+        setName('')
     }, [props.match.params.username])
 
     const isInitialMount = useRef(true);
@@ -301,18 +302,6 @@ const Profile = (props) => {
                                 <div className="edit-input-content">
                                     <label>Name</label>
                                     <input defaultValue={user.getProfileName()} onChange={(e)=>setName(e.target.value)} type="text" name="name" className="edit-input"/>
-                                </div>
-                            </div>
-                            <div className="edit-input-wrap">
-                                <div className="edit-input-content">
-                                    <label>Bio</label>
-                                    <input defaultValue={user.description} onChange={(e)=>setBio(e.target.value)} type="text" name="bio" className="edit-input"/>
-                                </div>
-                            </div>
-                            <div className="edit-input-wrap">
-                                <div className="edit-input-content">
-                                    <label>Location</label>
-                                    <input defaultValue={user.location} onChange={(e)=>setLocation(e.target.value)} type="text" name="location" className="edit-input"/>
                                 </div>
                             </div>
                         </form>
