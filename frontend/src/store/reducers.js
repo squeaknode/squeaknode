@@ -234,6 +234,7 @@ const reducer = (state = initialState, action) => {
             let replyTweetsD = state.replyTweets
             let homeTweetsD = state.tweets
             let singleTweet = state.tweet
+            // TODO: Delete ancestor tweets.
             userTweetsD = userTweetsD.filter((x)=>{
                     return x.getSqueakHash() !== deletedTweetHash
             })
