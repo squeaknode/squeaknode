@@ -232,10 +232,13 @@ const reducer = (state = initialState, action) => {
             let deletedTweetHash = action.payload.squeakHash
             let userTweetsD = state.userTweets
             let replyTweetsD = state.replyTweets
+            let ancestorTweetsD = state.ancestorTweets
             let homeTweetsD = state.tweets
             let singleTweet = state.tweet
-            // TODO: Delete ancestor tweets.
             userTweetsD = userTweetsD.filter((x)=>{
+                    return x.getSqueakHash() !== deletedTweetHash
+            })
+            ancestorTweetsD = ancestorTweetsD.filter((x)=>{
                     return x.getSqueakHash() !== deletedTweetHash
             })
             replyTweetsD = replyTweetsD.filter((x)=>{
@@ -252,6 +255,7 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 ...{userTweets: userTweetsD},
                 ...{replyTweets: replyTweetsD},
+                ...{ancestorTweets: ancestorTweetsD},
                 ...{tweets: homeTweetsD},
                 ...{tweet: singleTweet}
             }
