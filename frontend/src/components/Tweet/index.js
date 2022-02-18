@@ -97,11 +97,9 @@ const TweetPage = (props) => {
 
                 {tweet ?
                 <>
-
-
                 <div className="tweet-header-content">
                     <div className="tweet-user-pic">
-                        <Link to={author ? `/profile/${author.getPubkey()}` : '/'}>
+                        <Link to={`/profile/${tweet.getAuthorPubkey()}`}>
                             <img alt="" style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={author ? `${getProfileImageSrcString(author)}` : null}/>
                         </Link>
                     </div>
@@ -112,11 +110,9 @@ const TweetPage = (props) => {
                                'Unknown Author'
                              }
                         </div>
-                        {author &&
-                          <div className="tweet-username">
-                              @{author.getPubkey()}
-                          </div>
-                        }
+                        <div className="tweet-username">
+                            @{tweet.getAuthorPubkey()}
+                        </div>
                     </div>
                 </div>
                 <div className="tweet-content">

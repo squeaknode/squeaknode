@@ -97,6 +97,7 @@ const TweetCard = React.memo(function TweetCard(props) {
           MM: '%dM', y:  'a year', yy: '%dY' }
       });
 
+    const author = props.user;
 
     return (
         <div>
@@ -106,8 +107,8 @@ const TweetCard = React.memo(function TweetCard(props) {
             {props.tweet ?
               <>
               <div className="card-userPic-wrapper">
-                  <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.user.getPubkey()}`}>
-                      <img alt="" style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={`${getProfileImageSrcString(props.user)}`}/>
+                  <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.tweet.getAuthorPubkey()}`}>
+                      <img alt="" style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={author ? `${getProfileImageSrcString(author)}` : null}/>
                   </Link>
                   {props.hasReply? <div className="tweet-reply-thread"></div> : null}
               </div>
@@ -115,10 +116,10 @@ const TweetCard = React.memo(function TweetCard(props) {
                   <div className="card-content-header">
                       <div className="card-header-detail">
                           <span className="card-header-user">
-                              <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.user.getPubkey()}`}>{props.user.getProfileName()}</Link>
+                              <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.tweet.getAuthorPubkey()}`}>{author ? author.getProfileName(): 'Unknown Author'}</Link>
                           </span>
                           <span className="card-header-username">
-                              <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.user.getPubkey()}`}>{'@'+ props.user.getPubkey()}</Link>
+                              <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.tweet.getAuthorPubkey()}`}>{'@'+ props.tweet.getAuthorPubkey()}</Link>
                           </span>
                           <span className="card-header-dot">·</span>
                           <span className="card-header-date">
