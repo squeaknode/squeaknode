@@ -60,6 +60,7 @@ const reducer = (state = initialState, action) => {
             return {...state, loading: false, error: false}
 
         case type.UPDATE_TWEET:
+            let updatedTweetHash = action.payload.squeakHash
             let updatedTweet = action.payload.tweet
             let userTweetsU = state.userTweets
             let replyTweetsU = state.replyTweets
@@ -67,23 +68,23 @@ const reducer = (state = initialState, action) => {
             let homeTweetsU = state.tweets
             let singleTweetU = state.tweet
             userTweetsU = userTweetsU.map((x)=>{
-                return x.getSqueakHash() === updatedTweet.getSqueakHash() ?
+                return x.getSqueakHash() === updatedTweetHash ?
                 updatedTweet : x
             })
             replyTweetsU = replyTweetsU.map((x)=>{
-                return x.getSqueakHash() === updatedTweet.getSqueakHash() ?
+                return x.getSqueakHash() === updatedTweetHash ?
                 updatedTweet : x
             })
             ancestorTweetsU = ancestorTweetsU.map((x)=>{
-                return x.getSqueakHash() === updatedTweet.getSqueakHash() ?
+                return x.getSqueakHash() === updatedTweetHash ?
                 updatedTweet : x
             })
             homeTweetsU = homeTweetsU.map((x)=>{
-                return x.getSqueakHash() === updatedTweet.getSqueakHash() ?
+                return x.getSqueakHash() === updatedTweetHash ?
                 updatedTweet : x
             })
             if (singleTweetU) {
-              singleTweetU = singleTweetU.getSqueakHash() === updatedTweet.getSqueakHash() ? updatedTweet : singleTweetU;
+              singleTweetU = singleTweetU.getSqueakHash() === updatedTweetHash ? updatedTweet : singleTweetU;
             }
             return {
                 ...state,
@@ -228,22 +229,23 @@ const reducer = (state = initialState, action) => {
             return {...state, ...{user:user_retweets}, ...{account: acc_retweets}, ...{tweets: t_retweets}, ...{tweet: Stweet_retweets}}
 
         case type.DELETE_TWEET:
+            let deletedTweetHash = action.payload.squeakHash
             let userTweetsD = state.userTweets
             let replyTweetsD = state.replyTweets
             let homeTweetsD = state.tweets
             let singleTweet = state.tweet
             userTweetsD = userTweetsD.filter((x)=>{
-                    return x.getSqueakHash() !== action.data
+                    return x.getSqueakHash() !== deletedTweetHash
             })
             replyTweetsD = replyTweetsD.filter((x)=>{
-                    return x.getSqueakHash() !== action.data
+                    return x.getSqueakHash() !== deletedTweetHash
             })
-            if(singleTweet && action.data === singleTweet.getSqueakHash()){
-                window.location.replace('/home')
+            if(singleTweet && deletedTweetHash === singleTweet.getSqueakHash()){
+                // window.location.replace('/home')
                 singleTweet = null
             }
             homeTweetsD = homeTweetsD.filter((x)=>{
-                return x.getSqueakHash() !== action.data
+                return x.getSqueakHash() !== deletedTweetHash
             })
             return {
                 ...state,

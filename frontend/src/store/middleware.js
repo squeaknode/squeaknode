@@ -68,11 +68,10 @@ export const applyMiddleware = dispatch => action => {
             // return axios.post(`${API_URL}/tweet/${action.payload.id}/like`, action.payload, headers)
             // .then(res=>dispatch({ type: types.LIKE_TWEET, payload: res.data, data: action.payload }))
             // .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
-
             let likeTweetId = action.payload;
             return likeSqueakRequest(likeTweetId, (resp) => {
               return getSqueakDisplayRequest(likeTweetId, (resp) => {
-                  let payload = {"tweet": resp };
+                  let payload = {tweet: resp, squeakHash:  likeTweetId};
                   dispatch({ type: types.UPDATE_TWEET, payload: payload, data: action.payload });
               });
             });
@@ -81,7 +80,7 @@ export const applyMiddleware = dispatch => action => {
             let unlikeTweetId = action.payload;
             return unlikeSqueakRequest(unlikeTweetId, (resp) => {
               return getSqueakDisplayRequest(unlikeTweetId, (resp) => {
-                  let payload = {"tweet": resp };
+                  let payload = {tweet: resp, squeakHash:  unlikeTweetId};
                   dispatch({ type: types.UPDATE_TWEET, payload: payload, data: action.payload });
               });
             });
@@ -212,10 +211,10 @@ export const applyMiddleware = dispatch => action => {
             // .then(res=>dispatch({ type: types.DELETE_TWEET, payload: res.data, data: action.payload }))
             // .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
 
-            console.log(action);
             let deleteTweetId = action.payload;
             return deleteSqueakRequest(deleteTweetId, (resp) => {
-              dispatch({ type: types.DELETE_TWEET, payload: {}, data: action.payload });
+              let payload = {tweet: null, squeakHash:  deleteTweetId};
+              dispatch({ type: types.DELETE_TWEET, payload: payload, data: action.payload });
             });
 
         case types.FOLLOW_USER:
