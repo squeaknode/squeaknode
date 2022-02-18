@@ -257,12 +257,10 @@ const Profile = (props) => {
             {activeTab === 'Tweets' ?
             userTweets.map(t=>{
                 if(!t.getReplyTo())
-                return <TweetCard tweet={t} retweet={t.getReplyTo()} username={t.getAuthorPubkey()} name={t.getAuthorPubkey()} parent={null} key={t.getSqueakHash()} id={t.getSqueakHash()} user={t.getAuthor()} createdAt={t.getBlockTime()} description={t.getContentStr()}
-                    images={[]} replies={[]} retweets={[]} likes={[]} />
+                return <TweetCard tweet={t} key={t.getSqueakHash()} id={t.getSqueakHash()} user={t.getAuthor()} />
              }) : activeTab === 'Tweets&Replies' ?
             userTweets.map(t=>{
-                return <TweetCard tweet={t} retweet={t.getReplyTo()} username={t.getAuthorPubkey()} name={t.getAuthorPubkey()} parent={null} key={t.getSqueakHash()} id={t.getSqueakHash()} user={t.getAuthor()} createdAt={t.getBlockTime()} description={t.getContentStr()}
-                    images={[]} replies={[]} retweets={[]} likes={[]} />
+                return <TweetCard tweet={t} key={t.getSqueakHash()} id={t.getSqueakHash()} user={t.getAuthor()} />
              }) :
             activeTab === 'Likes' ?
             null: activeTab === 'Media' ?

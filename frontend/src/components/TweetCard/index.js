@@ -135,7 +135,7 @@ const TweetCard = React.memo(function TweetCard(props) {
                             <ICON_REPLY styles={{fill:'rgb(101, 119, 134)'}}/>
                         </div>
                         <div className="card-icon-value">
-                            {props.replies.length > 0 && props.replies.length}
+                            0
                         </div>
                     </div>
                     <div onClick={(e)=>retweet(e,props.id)} className="card-button-wrap retweet-wrap">
@@ -143,7 +143,7 @@ const TweetCard = React.memo(function TweetCard(props) {
                             <ICON_RETWEET styles={account && account.retweets.includes(props.id) ? {stroke: 'rgb(23, 191, 99)'} : {fill:'rgb(101, 119, 134)'}}/>
                         </div>
                         <div className="card-icon-value">
-                            {props.retweets.length}
+                            0
                         </div>
                     </div>
                     <div onClick={(e)=>
@@ -157,7 +157,7 @@ const TweetCard = React.memo(function TweetCard(props) {
                             <ICON_HEART styles={{fill:'rgb(101, 119, 134)'}}/>}
                         </div>
                         <div className="card-icon-value">
-                            {props.likes.length}
+                            0
                         </div>
                     </div>
                     <div onClick={(e)=>deleteTweet(e,props.id)} className="card-button-wrap">

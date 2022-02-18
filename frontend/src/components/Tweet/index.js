@@ -79,8 +79,8 @@ const TweetPage = (props) => {
             {/* Ancestor tweets */}
             {ancestorTweets.slice(0, -1).map(r=>{
               // TODO: use replies instead of empty array.
-              return <TweetCard tweet={r} retweet={r.getReplyTo()} username={r.getAuthorPubkey()} name={r.getAuthorPubkey()} parent={null} key={r.getSqueakHash()} id={r.getSqueakHash()} user={r.getAuthor()} createdAt={r.getBlockTime()} description={r.getContentStr()}
-                images={[]} replies={[]} retweets={[]} likes={[]} hasReply={true} />
+              return <TweetCard tweet={r} key={r.getSqueakHash()} id={r.getSqueakHash()} user={r.getAuthor()}
+                replies={[]} hasReply={true} />
             })}
 
             {/* Current tweet */}
@@ -142,8 +142,7 @@ const TweetPage = (props) => {
             {/* Reply tweets */}
             {replyTweets.map(r=>{
                 // TODO: use replies instead of empty array.
-                return <TweetCard tweet={r} retweet={r.getReplyTo()} username={r.getAuthorPubkey()} name={r.getAuthorPubkey()} parent={null} key={r.getSqueakHash()} id={r.getSqueakHash()} user={r.getAuthor()} createdAt={r.getBlockTime()} description={r.getContentStr()}
-                    images={[]} replies={[]} retweets={[]} likes={[]} />
+                return <TweetCard tweet={r}  key={r.getSqueakHash()} id={r.getSqueakHash()} user={r.getAuthor()}/>
             })}
 
         </div>:<div className="tweet-wrapper"><Loader /></div>}
