@@ -77,6 +77,14 @@ const TweetPage = (props) => {
                 <div className="tweet-header-content"> Tweet </div>
             </div>
 
+            {/* Unknown Ancestor tweet */}
+            {ancestorTweets.length > 0 && ancestorTweets[0].getReplyTo() &&
+              <TweetCard tweet={null} key={ancestorTweets[0].getReplyTo()} id={ancestorTweets[0].getReplyTo()}
+                replies={[]} hasReply={true} />
+            }
+
+
+
             {/* Ancestor tweets */}
             {ancestorTweets.slice(0, -1).map(r=>{
               // TODO: use replies instead of empty array.

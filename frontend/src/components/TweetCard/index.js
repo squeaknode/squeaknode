@@ -101,72 +101,89 @@ const TweetCard = React.memo(function TweetCard(props) {
     return (
         <div>
 
-            <div onClick={()=>goToTweet(props.id)} key={props.id} className="Tweet-card-wrapper">
-            <div className="card-userPic-wrapper">
-                <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.user.getPubkey()}`}>
-                    <img alt="" style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={`${getProfileImageSrcString(props.user)}`}/>
-                </Link>
-                {props.hasReply? <div className="tweet-reply-thread"></div> : null}
-            </div>
-            <div className="card-content-wrapper">
-                <div className="card-content-header">
-                    <div className="card-header-detail">
-                        <span className="card-header-user">
-                            <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.user.getPubkey()}`}>{props.user.getProfileName()}</Link>
-                        </span>
-                        <span className="card-header-username">
-                            <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.user.getPubkey()}`}>{'@'+ props.user.getPubkey()}</Link>
-                        </span>
-                        <span className="card-header-dot">·</span>
-                        <span className="card-header-date">
-                                {moment(props.tweet.getBlockTime() * 1000).fromNow(true)}
-                        </span>
-                    </div>
-                    <div className="card-header-more">
+        <div onClick={()=>goToTweet(props.id)} key={props.id} className="Tweet-card-wrapper">
 
-                    </div>
-                </div>
-                <div className="card-content-info">
-                {props.tweet.getContentStr()}
-                </div>
-                <div className="card-buttons-wrapper">
-                    <div onClick={(e)=>toggleModal(e)} className="card-button-wrap reply-wrap">
-                        <div className="card-icon reply-icon">
-                            <ICON_REPLY styles={{fill:'rgb(101, 119, 134)'}}/>
-                        </div>
-                        <div className="card-icon-value">
-                            0
-                        </div>
-                    </div>
-                    <div onClick={(e)=>retweet(e,props.id)} className="card-button-wrap retweet-wrap">
-                        <div className="card-icon retweet-icon">
-                            <ICON_RETWEET styles={account && account.retweets.includes(props.id) ? {stroke: 'rgb(23, 191, 99)'} : {fill:'rgb(101, 119, 134)'}}/>
-                        </div>
-                        <div className="card-icon-value">
-                            0
-                        </div>
-                    </div>
-                    <div onClick={(e)=>
-                      props.tweet.getLikedTimeMs() ?
-                      unlikeTweet(e, props.tweet.getSqueakHash()) :
-                      likeTweet(e, props.tweet.getSqueakHash())
-                    } className="card-button-wrap heart-wrap">
-                        <div className="card-icon heart-icon">
-                            {account && props.tweet.getLikedTimeMs() ?
-                            <ICON_HEARTFULL styles={{fill:'rgb(224, 36, 94)'}}/> :
-                            <ICON_HEART styles={{fill:'rgb(101, 119, 134)'}}/>}
-                        </div>
-                        <div className="card-icon-value">
-                            0
-                        </div>
-                    </div>
-                    <div onClick={(e)=>deleteTweet(e,props.id)} className="card-button-wrap">
-                        <div className="card-icon share-icon">
-                            <ICON_DELETE styles={{fill:'rgb(101, 119, 134)'}} />
-                        </div>
-                    </div>
-                </div>
-            </div>
+            {props.tweet ?
+              <>
+              <div className="card-userPic-wrapper">
+                  <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.user.getPubkey()}`}>
+                      <img alt="" style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={`${getProfileImageSrcString(props.user)}`}/>
+                  </Link>
+                  {props.hasReply? <div className="tweet-reply-thread"></div> : null}
+              </div>
+              <div className="card-content-wrapper">
+                  <div className="card-content-header">
+                      <div className="card-header-detail">
+                          <span className="card-header-user">
+                              <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.user.getPubkey()}`}>{props.user.getProfileName()}</Link>
+                          </span>
+                          <span className="card-header-username">
+                              <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.user.getPubkey()}`}>{'@'+ props.user.getPubkey()}</Link>
+                          </span>
+                          <span className="card-header-dot">·</span>
+                          <span className="card-header-date">
+                                  {moment(props.tweet.getBlockTime() * 1000).fromNow(true)}
+                          </span>
+                      </div>
+                      <div className="card-header-more">
+
+                      </div>
+                  </div>
+                  <div className="card-content-info">
+                  {props.tweet.getContentStr()}
+                  </div>
+                  <div className="card-buttons-wrapper">
+                      <div onClick={(e)=>toggleModal(e)} className="card-button-wrap reply-wrap">
+                          <div className="card-icon reply-icon">
+                              <ICON_REPLY styles={{fill:'rgb(101, 119, 134)'}}/>
+                          </div>
+                          <div className="card-icon-value">
+                              0
+                          </div>
+                      </div>
+                      <div onClick={(e)=>retweet(e,props.id)} className="card-button-wrap retweet-wrap">
+                          <div className="card-icon retweet-icon">
+                              <ICON_RETWEET styles={account && account.retweets.includes(props.id) ? {stroke: 'rgb(23, 191, 99)'} : {fill:'rgb(101, 119, 134)'}}/>
+                          </div>
+                          <div className="card-icon-value">
+                              0
+                          </div>
+                      </div>
+                      <div onClick={(e)=>
+                        props.tweet.getLikedTimeMs() ?
+                        unlikeTweet(e, props.tweet.getSqueakHash()) :
+                        likeTweet(e, props.tweet.getSqueakHash())
+                      } className="card-button-wrap heart-wrap">
+                          <div className="card-icon heart-icon">
+                              {account && props.tweet.getLikedTimeMs() ?
+                              <ICON_HEARTFULL styles={{fill:'rgb(224, 36, 94)'}}/> :
+                              <ICON_HEART styles={{fill:'rgb(101, 119, 134)'}}/>}
+                          </div>
+                          <div className="card-icon-value">
+                              0
+                          </div>
+                      </div>
+                      <div onClick={(e)=>deleteTweet(e,props.id)} className="card-button-wrap">
+                          <div className="card-icon share-icon">
+                              <ICON_DELETE styles={{fill:'rgb(101, 119, 134)'}} />
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              </> :
+              <>
+              <div className="card-userPic-wrapper">
+                      <img alt="" style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={null}/>
+                  {props.hasReply? <div className="tweet-reply-thread"></div> : null}
+              </div>
+              <div className="card-content-wrapper">
+                  <div className="card-content-info">
+                  Missing Tweet
+                  </div>
+              </div>
+              </>
+            }
+
         </div>
 
         {/* tweet modal */}
