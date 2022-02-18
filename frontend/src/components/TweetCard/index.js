@@ -101,21 +101,14 @@ const TweetCard = React.memo(function TweetCard(props) {
     return (
         <div>
 
-          {props.user ?
             <div onClick={()=>goToTweet(props.id)} key={props.id} className="Tweet-card-wrapper">
             <div className="card-userPic-wrapper">
-                {/* <div className="user-retweet-icon">
-                    <ICON_RETWEET />
-                </div> */}
                 <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.user.getPubkey()}`}>
                     <img alt="" style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={`${getProfileImageSrcString(props.user)}`}/>
                 </Link>
                 {props.hasReply? <div className="tweet-reply-thread"></div> : null}
             </div>
             <div className="card-content-wrapper">
-                {/* {props.username === account.username && props.retweets.includes(account._id) ?
-                <div className="user-retweeted"> You Retweeted </div> :
-                props.username !== account.username &&  */}
                 <div className="card-content-header">
                     <div className="card-header-detail">
                         <span className="card-header-user">
@@ -174,10 +167,10 @@ const TweetCard = React.memo(function TweetCard(props) {
                     </div>
                 </div>
             </div>
-        </div> : null}
+        </div>
 
-                                                                                        {/* tweet modal */}
-        {props.parent || props.user ?
+        {/* tweet modal */}
+        {props.tweet ?
             <div onClick={()=>toggleModal()} style={{display: modalOpen ? 'block' : 'none'}} className="modal-edit">
             {modalOpen ?
             <div style={{minHeight: '350px', height: 'initial'}} onClick={(e)=>handleModalClick(e)} className="modal-content">
