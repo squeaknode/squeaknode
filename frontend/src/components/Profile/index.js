@@ -17,6 +17,7 @@ const Profile = (props) => {
     const [editModalOpen, setEditModalOpen] = useState(false)
     const [deleteModalOpen, setDeleteModalOpen] = useState(false)
     const [spendingModalOpen, setSpendingModalOpen] = useState(false)
+    const [createModalOpen, setCreateModalOpen] = useState(false)
     const [saved, setSaved] = useState(false)
     const [tab, setTab] = useState('Sats Spent')
     const [styleBody, setStyleBody] = useState(false)
@@ -64,10 +65,14 @@ const Profile = (props) => {
         toggleDeleteModal();
     }
 
+    const createContactProfile = () => {
+        actions.createContactProfile({profileName: editName, pubkey: userParam});
+        toggleCreateModal();
+    }
+
     const toggleEditModal = (param, type) => {
         setStyleBody(!styleBody)
         setSaved(false)
-        console.log(user.getProfileName());
         setName(user.getProfileName())
         setTimeout(()=>{ setEditModalOpen(!editModalOpen) },20)
     }
@@ -85,6 +90,12 @@ const Profile = (props) => {
         // actions.getFollowers(props.match.params.username)
         if(type){setTab(type)}
         setTimeout(()=>{ setSpendingModalOpen(!spendingModalOpen) },20)
+    }
+
+    const toggleCreateModal = (param, type) => {
+        setStyleBody(!styleBody)
+        setSaved(false)
+        setTimeout(()=>{ setCreateModalOpen(!createModalOpen) },20)
     }
 
     const handleModalClick = (e) => {
@@ -183,6 +194,15 @@ const Profile = (props) => {
                     <div className="profile-image-wrapper">
                         <img src={user ? `${getProfileImageSrcString(user)}` : null} alt=""/>
                     </div>
+
+                    {account && !user &&
+                      <div onClick={(e)=>toggleCreateModal('create')}
+                       className='profiles-create-button'>
+                          <span>Add Contact Profile</span>
+                      </div>
+                    }
+
+
                     {account && user &&
                       <div onClick={(e)=>toggleDeleteModal('edit')}
                        className='profile-edit-button'>
@@ -356,6 +376,43 @@ const Profile = (props) => {
                     </div>
                     <div className="modal-scroll">
                     </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Modal for create signing profile */}
+            <div onClick={()=>toggleCreateModal()} style={{display: createModalOpen ? 'block' : 'none'}} className="modal-edit">
+                <div onClick={(e)=>handleModalClick(e)} className="modal-content">
+                    <div className="modal-header">
+                        <div className="modal-closeIcon">
+                            <div onClick={()=>toggleCreateModal()} className="modal-closeIcon-wrap">
+                                <ICON_CLOSE />
+                            </div>
+                        </div>
+                        <p className="modal-title">Add Contact Profile</p>
+
+                        <div className="save-modal-wrapper">
+                            <div onClick={createContactProfile} className="save-modal-btn">
+                                Submit
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="modal-body">
+                        <form className="edit-form">
+                            <div className="edit-input-wrap">
+                                <div className="edit-input-content">
+                                    <label>Profile Name</label>
+                                    <input defaultValue={''} onChange={(e)=>setName(e.target.value)} type="text" name="name" className="edit-input"/>
+                                </div>
+                            </div>
+                            <div className="edit-input-wrap">
+                                <div className="edit-input-content">
+                                    <label>Public Key</label>
+                                    <input defaultValue={userParam} readOnly type="text" name="name" className="edit-input"/>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>

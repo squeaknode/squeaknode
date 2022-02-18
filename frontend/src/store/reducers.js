@@ -184,6 +184,10 @@ const reducer = (state = initialState, action) => {
             return {...state, ...action.payload}
 
         case type.DELETE_USER:
+            let deletedUserTweets = state.userTweets
+            deletedUserTweets.forEach((item, i) => {
+              item.setAuthor(null);
+            });
             return {...state, ...{user:null}, loading: false, error: false}
 
         case type.UPDATE_USER:
@@ -338,9 +342,14 @@ const reducer = (state = initialState, action) => {
             return {...state, loading: false, error: false}
 
         case type.CREATE_CONTACT_PROFILE:
+            let createdContactUser = action.payload.user
             let createdCP = state.contactProfiles
-            createdCP.push(action.payload.user)
-            return {...state, loading: false, error: false}
+            let updateCreatedContactUserTweets = state.userTweets
+            createdCP.push(createdContactUser)
+            updateCreatedContactUserTweets.forEach((item, i) => {
+              item.setAuthor(createdContactUser);
+            });
+            return {...state, ...{user: createdContactUser}, loading: false, error: false}
 
         case type.GET_SIGNING_PROFILES:
             return {...state, ...action.payload}

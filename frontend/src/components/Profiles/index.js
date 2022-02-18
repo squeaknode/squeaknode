@@ -224,12 +224,12 @@ const Profiles = (props) => {
             </div>
         </div>
 
-        {/* Modal for create signing profile */}
+        {/* Modal for create contact profile */}
         <div onClick={()=>toggleContactProfileModal()} style={{display: contactProfileModalOpen ? 'block' : 'none'}} className="modal-edit">
             <div onClick={(e)=>handleModalClick(e)} className="modal-content">
                 <div className="modal-header">
                     <div className="modal-closeIcon">
-                        <div onClick={()=>toggleSigningProfileModal()} className="modal-closeIcon-wrap">
+                        <div onClick={()=>toggleContactProfileModal()} className="modal-closeIcon-wrap">
                             <ICON_CLOSE />
                         </div>
                     </div>
