@@ -137,15 +137,6 @@ const Profile = (props) => {
         props.history.push(`/profile/${id}`)
     }
 
-    const startChat = () => {
-        if(!session){ actions.alert('Please Sign In'); return }
-        actions.startChat({id:user.getPubkey(), func: goToMsg})
-    }
-
-    const goToMsg = () => {
-        props.history.push(`/messages`)
-    }
-
     const getLastSqueak = (squeakLst) => {
       if (squeakLst == null) {
         return null;
@@ -167,7 +158,6 @@ const Profile = (props) => {
 
     return(
         <div>
-            {user ?
             <div>
             <div className="profile-wrapper">
             <div className="profile-header-wrapper">
@@ -178,7 +168,7 @@ const Profile = (props) => {
                 </div>
                 <div className="profile-header-content">
                     <div className="profile-header-name">
-                            {user.getPubkey()}
+                            {userParam}
                     </div>
                     {/* <div className="profile-header-tweets">
                             82 Tweets
@@ -191,21 +181,21 @@ const Profile = (props) => {
             <div className="profile-details-wrapper">
                 <div className="profile-options">
                     <div className="profile-image-wrapper">
-                        <img src={`${getProfileImageSrcString(user)}`} alt=""/>
+                        <img src={user ? `${getProfileImageSrcString(user)}` : null} alt=""/>
                     </div>
-                    {account &&
+                    {account && user &&
                       <div onClick={(e)=>toggleDeleteModal('edit')}
                        className='profile-edit-button'>
                           <span>Delete</span>
                       </div>
                     }
-                    {account &&
+                    {account && user &&
                       <div onClick={(e)=>toggleEditModal('edit')}
                        className='profile-edit-button'>
                           <span>Edit</span>
                       </div>
                     }
-                    {account &&
+                    {account && user &&
                       <div onClick={(e)=>
                         user.getFollowing() ?
                         unfollowUser(e,user.getProfileId()) :
@@ -217,14 +207,13 @@ const Profile = (props) => {
                     }
                 </div>
                 <div className="profile-details-box">
-                    <div className="profile-name">{user.getProfileName()}</div>
-                    <div className="profile-username">@{user.getPubkey()}</div>
+                    <div className="profile-name">{user ? user.getProfileName() : ''}</div>
+                    <div className="profile-username">@{userParam}</div>
                     <div className="profile-bio">
-                        {user.description}
+                        &nbsp;
                     </div>
                     <div className="profile-info-box">
-                        <ICON_DATE/>
-                        <div className="profile-date"> Joined {moment(user.createdAt).format("MMMM YYYY")} </div>
+                        &nbsp;
                     </div>
                 </div>
                 <div className="profile-social-box">
@@ -294,21 +283,32 @@ const Profile = (props) => {
                         </div>
                         <div className="modal-profile-pic">
                             <div className="modal-back-pic">
-                                <img src={`${getProfileImageSrcString(user)}`} alt="profile" />
+                                <img src={user ? `${getProfileImageSrcString(user)}` : null} alt="profile" />
                                 <div>
                                     <ICON_UPLOAD/>
                                     <input onChange={()=>changeAvatar()} title=" " id="avatar" style={{opacity:'0'}} type="file"/>
                                 </div>
                             </div>
                         </div>
-                        <form className="edit-form">
-                            <div className="edit-input-wrap">
-                                <div className="edit-input-content">
-                                    <label>Name</label>
-                                    <input defaultValue={user.getProfileName()} onChange={(e)=>setName(e.target.value)} type="text" name="name" className="edit-input"/>
-                                </div>
-                            </div>
-                        </form>
+                        {user ?
+                          <form className="edit-form">
+                              <div className="edit-input-wrap">
+                                  <div className="edit-input-content">
+                                      <label>Name</label>
+                                      <input defaultValue={user.getProfileName()} onChange={(e)=>setName(e.target.value)} type="text" name="name" className="edit-input"/>
+                                  </div>
+                              </div>
+                          </form> :
+                          <form className="create-form">
+                              <div className="create-input-wrap">
+                                  <div className="create-input-content">
+                                      <label>Name</label>
+                                      <input defaultValue={''} onChange={(e)=>setName(e.target.value)} type="text" name="name" className="edit-input"/>
+                                  </div>
+                              </div>
+                          </form>
+
+                        }
                     </div>
                 </div>
             </div>
@@ -361,7 +361,7 @@ const Profile = (props) => {
             </div>
 
 
-            </div>: <div className="profile-wrapper"><Loader/> </div> }
+            </div>
         </div>
     )
 }
