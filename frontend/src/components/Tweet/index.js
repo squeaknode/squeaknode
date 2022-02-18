@@ -63,10 +63,11 @@ const TweetPage = (props) => {
         history.goBack()
     }
 
+    const author = tweet && tweet.getAuthor()
+
     return(
         <>
-            {tweet ?
-            <div className="tweet-wrapper">
+        <div className="tweet-wrapper">
             <div className="tweet-header-wrapper">
                 <div className="profile-header-back">
                     <div onClick={()=>goBack()} className="header-back-wrapper">
@@ -85,19 +86,29 @@ const TweetPage = (props) => {
 
             {/* Current tweet */}
             <div className="tweet-body-wrapper">
+
+                {tweet ?
+                <>
+
+
                 <div className="tweet-header-content">
                     <div className="tweet-user-pic">
-                        <Link to={`/profile/${tweet.getAuthor().getPubkey()}`}>
-                            <img alt="" style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={`${getProfileImageSrcString(tweet.getAuthor())}`}/>
+                        <Link to={author ? `/profile/${author.getPubkey()}` : '/'}>
+                            <img alt="" style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={author ? `${getProfileImageSrcString(author)}` : null}/>
                         </Link>
                     </div>
                     <div className="tweet-user-wrap">
                         <div className="tweet-user-name">
-                            {tweet.getAuthor().getProfileName()}
+                            {author ?
+                               author.getProfileName() :
+                               'Unknown Author'
+                             }
                         </div>
-                        <div className="tweet-username">
-                            @{tweet.getAuthor().getPubkey()}
-                        </div>
+                        {author &&
+                          <div className="tweet-username">
+                              @{author.getPubkey()}
+                          </div>
+                        }
                     </div>
                 </div>
                 <div className="tweet-content">
@@ -137,6 +148,16 @@ const TweetPage = (props) => {
                         </div>
                     </div>
                 </div>
+                </> :
+                <div className="tweet-header-content">
+                    <div className="tweet-user-pic">
+                            <img alt="" style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={null}/>
+                    </div>
+                    <div className="tweet-content">
+                        Missing Tweet
+                    </div>
+                </div>
+              }
             </div>
 
             {/* Reply tweets */}
@@ -145,7 +166,7 @@ const TweetPage = (props) => {
                 return <TweetCard tweet={r}  key={r.getSqueakHash()} id={r.getSqueakHash()} user={r.getAuthor()}/>
             })}
 
-        </div>:<div className="tweet-wrapper"><Loader /></div>}
+        </div>
 
         {tweet && account ?
         <div onClick={()=>toggleModal()} style={{display: modalOpen ? 'block' : 'none'}} className="modal-edit">
