@@ -186,7 +186,7 @@ const Nav = ({history}) => {
                     <p className="modal-title">Tweet</p>
                 </div>
                 <div style={{marginTop:'5px'}} className="modal-body">
-                    <MakeSqueak />
+                    <MakeSqueak submittedCallback={toggleModal} />
                 </div>
             </div>
         </div>}

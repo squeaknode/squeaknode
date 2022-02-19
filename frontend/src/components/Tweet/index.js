@@ -185,7 +185,7 @@ const TweetPage = (props) => {
                     <p className="modal-title">Reply</p>
                 </div>
                 <div style={{marginTop:'5px'}} className="modal-body">
-                  <MakeSqueak replyToTweet={tweet} />
+                  <MakeSqueak replyToTweet={tweet} submittedCallback={toggleModal} />
                 </div>
             </div> : null}
         </div>:null}

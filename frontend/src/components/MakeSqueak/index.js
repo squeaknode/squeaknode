@@ -65,6 +65,7 @@ const MakeSqueak = (props) => {
         actions.tweet(values)
         tweetT.current = ''
         setTweetText('')
+        props.submittedCallback();
     }
 
     const author = props.user;
