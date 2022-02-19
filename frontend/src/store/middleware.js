@@ -340,7 +340,12 @@ export const applyMiddleware = dispatch => action => {
 
             return connectSqueakPeerRequest(connectPeerNetwork, connectPeerHost, connectPeerPort, (resp) => {
               return getConnectedPeersRequest((resp) => {
-                  let payload = {"connectedPeers": resp };
+                  let connectedPeerConnection = resp.find(obj => {
+                    return obj.getPeerAddress().getNetwork() === connectPeerNetwork &&
+                    obj.getPeerAddress().getHost() === connectPeerHost &&
+                    obj.getPeerAddress().getPort() == connectPeerPort
+                  })
+                  let payload = {"connectedPeers": resp, "peerConnection": connectedPeerConnection };
                   dispatch({ type: types.GET_CONNECTED_PEERS, payload: payload });
               });
             });
@@ -352,7 +357,12 @@ export const applyMiddleware = dispatch => action => {
 
             return disconnectSqueakPeerRequest(disconnectPeerNetwork, disconnectPeerHost, disconnectPeerPort, (resp) => {
               return getConnectedPeersRequest((resp) => {
-                  let payload = {"connectedPeers": resp };
+                  let disconnectedPeerConnection = resp.find(obj => {
+                    return obj.getPeerAddress().getNetwork() === connectPeerNetwork &&
+                      obj.getPeerAddress().getHost() === connectPeerHost &&
+                      obj.getPeerAddress().getPort() == connectPeerPort
+                  })
+                  let payload = {"connectedPeers": resp, "peerConnection": disconnectedPeerConnection };
                   dispatch({ type: types.GET_CONNECTED_PEERS, payload: payload });
               });
             });

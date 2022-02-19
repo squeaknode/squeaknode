@@ -25,8 +25,6 @@ const {account, peer, peerConnection, list, listTweets, resultUsers} = state
 useEffect(() => {
     window.scrollTo(0, 0)
     // actions.getList(props.match.params.id)
-    console.log("props.match.params");
-    console.log(props.match.params);
     actions.getPeer({
       network: props.match.params.network,
       host: props.match.params.host,
@@ -73,8 +71,6 @@ const disconnectPeer = (e) => {
     network: props.match.params.network});
 }
 
-console.log(peer);
-console.log(peerConnection);
 
 return(
     <div>
