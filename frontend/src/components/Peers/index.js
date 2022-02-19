@@ -12,8 +12,8 @@ const Peers = (props) => {
     const { state, actions } = useContext(StoreContext)
     const { account, peers, connectedPeers, result, tagTweets} = state
     const [tab, setTab] = useState('Connected Peers')
-    const [signingProfileModalOpen, setSigningProfileModalOpen] = useState(false)
-    const [contactProfileModalOpen, setContactProfileModalOpen] = useState(false)
+    const [savePeerModalOpen, setSavePeerModalOpen] = useState(false)
+    const [connectPeerModalOpen, setconnectPeerModalOpen] = useState(false)
     const [styleBody, setStyleBody] = useState(false)
     const [name, setName] = useState('')
     const [host, setHost] = useState('')
@@ -29,8 +29,8 @@ const Peers = (props) => {
 
     useEffect(() => {
         window.scrollTo(0, 0)
-        // actions.getSigningProfiles()
-        // actions.getContactProfiles()
+        // actions.getSavePeers()
+        // actions.getconnectPeers()
         actions.getConnectedPeers();
         actions.getPeers();
         // if(props.history.location.search.length>0){
@@ -67,7 +67,7 @@ const Peers = (props) => {
       return connectedPeerAddresses.includes(peerAddressStr);
     };
 
-    const toggleSigningProfileModal = (param, type) => {
+    const toggleSavePeerModal = (param, type) => {
         setStyleBody(!styleBody)
         // if(param === 'edit'){setSaved(false)}
         // if(type){setTab(type)}
@@ -76,10 +76,10 @@ const Peers = (props) => {
         //     actions.getFollowers(props.match.params.username)
         // }
         // if(memOpen){setMemOpen(false)}
-        setTimeout(()=>{ setSigningProfileModalOpen(!signingProfileModalOpen) },20)
+        setTimeout(()=>{ setSavePeerModalOpen(!savePeerModalOpen) },20)
     }
 
-    const toggleContactProfileModal = (param, type) => {
+    const toggleconnectPeerModal = (param, type) => {
         setStyleBody(!styleBody)
         // if(param === 'edit'){setSaved(false)}
         // if(type){setTab(type)}
@@ -88,7 +88,7 @@ const Peers = (props) => {
         //     actions.getFollowers(props.match.params.username)
         // }
         // if(memOpen){setMemOpen(false)}
-        setTimeout(()=>{ setContactProfileModalOpen(!contactProfileModalOpen) },20)
+        setTimeout(()=>{ setconnectPeerModalOpen(!connectPeerModalOpen) },20)
     }
 
     const getNetwork = () => {
@@ -101,13 +101,13 @@ const Peers = (props) => {
     const savePeer = () => {
         const network = getNetwork();
         actions.savePeer({name: name, host: host, port: port, network: network});
-        toggleSigningProfileModal();
+        toggleSavePeerModal();
     }
 
     const connectPeer = () => {
         const network = getNetwork();
         actions.connectPeer({host: host, port: port, network: network});
-        toggleContactProfileModal();
+        toggleconnectPeerModal();
     }
 
     const handleChangeUseTor = () => {
@@ -127,13 +127,13 @@ const Peers = (props) => {
             <div className="profile-details-wrapper">
             <div className="profiles-options">
             {account &&
-              <div onClick={(e)=>toggleContactProfileModal('edit')}
+              <div onClick={(e)=>toggleconnectPeerModal('edit')}
                className='profiles-create-button'>
                   <span>Connect Peer</span>
               </div>
             }
             {account &&
-              <div onClick={(e)=>toggleSigningProfileModal('edit')}
+              <div onClick={(e)=>toggleSavePeerModal('edit')}
                className='profiles-create-button'>
                   <span>Add Saved Peer</span>
               </div>
@@ -212,12 +212,12 @@ const Peers = (props) => {
         </div>
 
 
-        {/* Modal for create signing profile */}
-        <div onClick={()=>toggleSigningProfileModal()} style={{display: signingProfileModalOpen ? 'block' : 'none'}} className="modal-edit">
+        {/* Modal for create save peer */}
+        <div onClick={()=>toggleSavePeerModal()} style={{display: savePeerModalOpen ? 'block' : 'none'}} className="modal-edit">
             <div onClick={(e)=>handleModalClick(e)} className="modal-content">
                 <div className="modal-header">
                     <div className="modal-closeIcon">
-                        <div onClick={()=>toggleSigningProfileModal()} className="modal-closeIcon-wrap">
+                        <div onClick={()=>toggleSavePeerModal()} className="modal-closeIcon-wrap">
                             <ICON_CLOSE />
                         </div>
                     </div>
@@ -268,11 +268,11 @@ const Peers = (props) => {
         </div>
 
         {/* Modal for connect peer */}
-        <div onClick={()=>toggleContactProfileModal()} style={{display: contactProfileModalOpen ? 'block' : 'none'}} className="modal-edit">
+        <div onClick={()=>toggleconnectPeerModal()} style={{display: connectPeerModalOpen ? 'block' : 'none'}} className="modal-edit">
             <div onClick={(e)=>handleModalClick(e)} className="modal-content">
                 <div className="modal-header">
                     <div className="modal-closeIcon">
-                        <div onClick={()=>toggleContactProfileModal()} className="modal-closeIcon-wrap">
+                        <div onClick={()=>toggleconnectPeerModal()} className="modal-closeIcon-wrap">
                             <ICON_CLOSE />
                         </div>
                     </div>
