@@ -163,5 +163,11 @@ export const useActions = (state, dispatch) => ({
     },
     getContactProfiles: data => {
         dispatch({type: types.GET_CONTACT_PROFILES, payload: data})
+    },
+    connectPeer: data => {
+        dispatch({type: types.CONNECT_PEER, payload: data})
+    },
+    getConnectedPeers: data => {
+        dispatch({type: types.GET_CONNECTED_PEERS, payload: data})
     }
 })

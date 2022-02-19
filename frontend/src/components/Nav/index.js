@@ -78,8 +78,6 @@ const Nav = ({history}) => {
         }
     }
 
-    console.log(path);
-
     return(
         <div className="Nav-component">
         <div className="Nav-width">

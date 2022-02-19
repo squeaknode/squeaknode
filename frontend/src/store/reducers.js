@@ -23,6 +23,7 @@ const initialState = {
     suggestions: [],
     signingProfiles: [],
     contactProfiles: [],
+    connectedPeers: [],
     top: '-100px',
     msg: '',
     conversations: null,
@@ -355,6 +356,9 @@ const reducer = (state = initialState, action) => {
             return {...state, ...action.payload}
 
         case type.GET_CONTACT_PROFILES:
+            return {...state, ...action.payload}
+
+        case type.GET_CONNECTED_PEERS:
             return {...state, ...action.payload}
 
         case type.SEARCH_USERS:

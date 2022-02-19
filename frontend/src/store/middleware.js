@@ -22,6 +22,9 @@ import {
   deleteSqueakRequest,
   likeSqueakRequest,
   unlikeSqueakRequest,
+  getPeersRequest,
+  getConnectedPeersRequest,
+  connectSqueakPeerRequest,
 } from '../squeakclient/requests';
 
 export const token = () => {
@@ -324,7 +327,25 @@ export const applyMiddleware = dispatch => action => {
             return getContactProfilesRequest((resp) => {
                 let payload = {"contactProfiles": resp };
                 dispatch({ type: types.GET_CONTACT_PROFILES, payload: payload });
-        });
+            });
+
+        case types.CONNECT_PEER:
+            let connectPeerNetwork = action.payload.network;
+            let connectPeerHost = action.payload.host;
+            let connectPeerPort = action.payload.port;
+
+            return connectSqueakPeerRequest(connectPeerNetwork, connectPeerHost, connectPeerPort, (resp) => {
+              return getConnectedPeersRequest((resp) => {
+                  let payload = {"connectedPeers": resp };
+                  dispatch({ type: types.GET_CONNECTED_PEERS, payload: payload });
+              });
+            });
+
+        case types.GET_CONNECTED_PEERS:
+            return getConnectedPeersRequest((resp) => {
+                let payload = {"connectedPeers": resp };
+                dispatch({ type: types.GET_CONNECTED_PEERS, payload: payload });
+            });
 
         case types.WHO_TO_FOLLOW:
             return axios.get(`${API_URL}/user/i/suggestions`, headers)

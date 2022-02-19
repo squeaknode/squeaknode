@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from 'react'
 import { StoreContext } from '../../store/store'
 import './style.scss'
 import { withRouter, Link } from 'react-router-dom'
-import { ICON_SEARCH, ICON_ARROWBACK, ICON_CLOSE } from '../../Icons'
+import { ICON_SEARCH, ICON_ARROWBACK, ICON_CLOSE, ICON_LAPTOPFILL } from '../../Icons'
 import { getProfileImageSrcString } from '../../squeakimages/images';
 import Loader from '../Loader'
 import TweetCard from '../TweetCard'
@@ -10,13 +10,14 @@ import TweetCard from '../TweetCard'
 
 const Peers = (props) => {
     const { state, actions } = useContext(StoreContext)
-    const { account, signingProfiles, contactProfiles, result, tagTweets} = state
-    const [tab, setTab] = useState('Signing Profiles')
+    const { account, signingProfiles, connectedPeers, result, tagTweets} = state
+    const [tab, setTab] = useState('Connected Peers')
     const [signingProfileModalOpen, setSigningProfileModalOpen] = useState(false)
     const [contactProfileModalOpen, setContactProfileModalOpen] = useState(false)
     const [styleBody, setStyleBody] = useState(false)
-    const [newProfileName, setNewProfileName] = useState('')
-    const [newProfilePubkey, setNewProfilePubkey] = useState('')
+    const [host, setHost] = useState('')
+    const [port, setPort] = useState('')
+    const [useTor, setUseTor] = useState(false)
 
     const searchOnChange = (param) => {
         if(tab !== 'Search'){setTab('Search')}
@@ -27,8 +28,9 @@ const Peers = (props) => {
 
     useEffect(() => {
         window.scrollTo(0, 0)
-        actions.getSigningProfiles()
-        actions.getContactProfiles()
+        // actions.getSigningProfiles()
+        // actions.getContactProfiles()
+        actions.getConnectedPeers()
         // if(props.history.location.search.length>0){
         //     goToTrend(props.history.location.search.substring(1))
 
@@ -47,6 +49,11 @@ const Peers = (props) => {
 
     const goToUser = (id) => {
         props.history.push(`/profile/${id}`)
+    }
+
+    const goToPeer = (peerAddress) => {
+        // TODO
+        // props.history.push(`/profile/${id}`)
     }
 
     const toggleSigningProfileModal = (param, type) => {
@@ -74,19 +81,20 @@ const Peers = (props) => {
     }
 
     const createSigningProfile = () => {
-        actions.createSigningProfile({profileName: newProfileName});
+        // actions.createSigningProfile({profileName: newProfileName});
         toggleSigningProfileModal();
     }
 
-    const createContactProfile = () => {
-        actions.createContactProfile({profileName: newProfileName, pubkey: newProfilePubkey});
+    const connectPeer = () => {
+        // TODO: get network from `useTor`
+        const network = 'IPV4';
+        actions.connectPeer({host: host, port: port, network: network});
         toggleContactProfileModal();
     }
 
     const handleModalClick = (e) => {
         e.stopPropagation()
     }
-
 
     return(
         <div>
@@ -105,26 +113,26 @@ const Peers = (props) => {
             <div className="profile-details-wrapper">
             <div className="profiles-options">
             {account &&
-              <div onClick={(e)=>toggleSigningProfileModal('edit')}
+              <div onClick={(e)=>toggleContactProfileModal('edit')}
                className='profiles-create-button'>
-                  <span>Add Signing Profile</span>
+                  <span>Connect Peer</span>
               </div>
             }
             {account &&
-              <div onClick={(e)=>toggleContactProfileModal('edit')}
+              <div onClick={(e)=>toggleSigningProfileModal('edit')}
                className='profiles-create-button'>
-                  <span>Add Contact Profile</span>
+                  <span>Add Saved Peer</span>
               </div>
             }
             </div>
             </div>
             <div>
                 <div className="explore-nav-menu">
-                    <div onClick={()=>setTab('Signing Profiles')} className={tab === 'Signing Profiles' ? `explore-nav-item activeTab` : `explore-nav-item`}>
-                        Signing Profiles
+                    <div onClick={()=>setTab('Connected Peers')} className={tab === 'Connected Peers' ? `explore-nav-item activeTab` : `explore-nav-item`}>
+                        Connected Peers
                     </div>
-                    <div onClick={()=>setTab('Contact Profiles')} className={tab === 'Contact Profiles' ? `explore-nav-item activeTab` : `explore-nav-item`}>
-                        Contact Profiles
+                    <div onClick={()=>setTab('Signing Profiles')} className={tab === 'Signing Profiles' ? `explore-nav-item activeTab` : `explore-nav-item`}>
+                        Saved Peers
                     </div>
                 </div>
                 {tab === 'Signing Profiles' ?
@@ -155,26 +163,22 @@ const Peers = (props) => {
                 </div>
                 })
                 :
-                tab === 'Contact Profiles' ?
-                contactProfiles.map(f=>{
-                  return <div onClick={()=>goToUser(f.getPubkey())} key={f.getPubkey()} className="search-result-wapper">
-                    <Link to={`/profile/${f.getPubkey()}`} className="search-userPic-wrapper">
-                      <img style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={`${getProfileImageSrcString(f)}`}/>
-                    </Link>
+                tab === 'Connected Peers' ?
+                connectedPeers.map(p=>{
+                  const peerAddress = p.getPeerAddress();
+                  const host = peerAddress.getHost();
+                  const port = peerAddress.getPort();
+                  const addrStr = host + '@' + port;
+                  const savedPeer = p.getSavedPeer();
+                  const savedPeerName = savedPeer && savedPeer.getPeerName();
+                  return <div onClick={()=>goToPeer(666)} key={addrStr} className="search-result-wapper">
+                    <ICON_LAPTOPFILL styles={{fill:"rgb(0,128,0)", width:'48px', height:"48px"}} />
                     <div className="search-user-details">
                     <div className="search-user-warp">
                     <div className="search-user-info">
-                    <div className="search-user-name">{f.getProfileName()}</div>
-                    <div className="search-user-username">@{f.getPubkey()}</div>
+                    <div className="search-user-name">{savedPeerName}</div>
+                    <div className="search-user-username">{addrStr}</div>
                     </div>
-                    {f._id === account && account._id ? null :
-                      <div onClick={(e)=>{
-                        f.getFollowing() ?
-                        unfollowUser(e,f.getProfileId()) :
-                        followUser(e,f.getProfileId())
-                      }} className={account && f.getFollowing() ? "follow-btn-wrap unfollow-switch":"follow-btn-wrap"}>
-                        <span><span>{account && f.getFollowing() ? 'Following' : 'Follow'}</span></span>
-                      </div>}
                     </div>
                     <div className="search-user-bio">
                       &nbsp;
@@ -215,8 +219,6 @@ const Peers = (props) => {
                     <form className="edit-form">
                         <div className="edit-input-wrap">
                             <div className="edit-input-content">
-                                <label>Profile Name</label>
-                                <input onChange={(e)=>setNewProfileName(e.target.value)} type="text" name="name" className="edit-input"/>
                             </div>
                         </div>
                     </form>
@@ -224,7 +226,7 @@ const Peers = (props) => {
             </div>
         </div>
 
-        {/* Modal for create contact profile */}
+        {/* Modal for connect peer */}
         <div onClick={()=>toggleContactProfileModal()} style={{display: contactProfileModalOpen ? 'block' : 'none'}} className="modal-edit">
             <div onClick={(e)=>handleModalClick(e)} className="modal-content">
                 <div className="modal-header">
@@ -233,10 +235,10 @@ const Peers = (props) => {
                             <ICON_CLOSE />
                         </div>
                     </div>
-                    <p className="modal-title">Add Contact Profile</p>
+                    <p className="modal-title">Connect Peer</p>
 
                     <div className="save-modal-wrapper">
-                        <div onClick={createContactProfile} className="save-modal-btn">
+                        <div onClick={connectPeer} className="save-modal-btn">
                             Submit
                         </div>
                     </div>
@@ -246,14 +248,14 @@ const Peers = (props) => {
                     <form className="edit-form">
                         <div className="edit-input-wrap">
                             <div className="edit-input-content">
-                                <label>Profile Name</label>
-                                <input onChange={(e)=>setNewProfileName(e.target.value)} type="text" name="name" className="edit-input"/>
+                                <label>Host</label>
+                                <input onChange={(e)=>setHost(e.target.value)} type="text" name="name" className="edit-input"/>
                             </div>
                         </div>
                         <div className="edit-input-wrap">
                             <div className="edit-input-content">
-                                <label>Public Key</label>
-                                <input onChange={(e)=>setNewProfilePubkey(e.target.value)} type="text" name="name" className="edit-input"/>
+                                <label>Port</label>
+                                <input onChange={(e)=>setPort(e.target.value)} type="text" name="name" className="edit-input"/>
                             </div>
                         </div>
                     </form>
