@@ -129,8 +129,6 @@ const MakeSqueak = (props) => {
                     </div>
                     <div className="inner-input-links">
                         <div className="input-links-side">
-                            <div style={{ marginLeft: '-10px' }} className="input-attach-wrapper">
-                            </div>
                         </div>
                         <div className="tweet-btn-holder">
                             <div style={{ fontSize: '13px', color: tweetText.length >= 280 ? 'red' : null }}>
