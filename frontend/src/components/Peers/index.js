@@ -101,14 +101,6 @@ const Peers = (props) => {
 
         <div className="explore-wrapper">
             <div className="explore-header">
-                <div className="explore-search-wrapper">
-                    <div className="explore-search-icon">
-                        <ICON_SEARCH/>
-                    </div>
-                    <div className="explore-search-input">
-                        <input onChange={(e)=>searchOnChange(e.target.value)} placeholder="Search for people" type="text" name="search"/>
-                    </div>
-                </div>
             </div>
             <div className="profile-details-wrapper">
             <div className="profiles-options">
