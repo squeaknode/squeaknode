@@ -93,19 +93,28 @@ const Peers = (props) => {
         setTimeout(()=>{ setContactProfileModalOpen(!contactProfileModalOpen) },20)
     }
 
+    const getNetwork = () => {
+      if (useTor) {
+        return 'TORV3';
+      }
+      return 'IPV4';
+    };
+
     const savePeer = () => {
-        // TODO: get network from `useTor`
-        const network = 'IPV4';
+        const network = getNetwork();
         actions.savePeer({name: name, host: host, port: port, network: network});
         toggleSigningProfileModal();
     }
 
     const connectPeer = () => {
-        // TODO: get network from `useTor`
-        const network = 'IPV4';
+        const network = getNetwork();
         actions.connectPeer({host: host, port: port, network: network});
         toggleContactProfileModal();
     }
+
+    const handleChangeUseTor = () => {
+      setUseTor(!useTor);
+    };
 
     const handleModalClick = (e) => {
         e.stopPropagation()
@@ -280,6 +289,18 @@ const Peers = (props) => {
                             <div className="edit-input-content">
                                 <label>Port</label>
                                 <input onChange={(e)=>setPort(e.target.value)} type="text" name="name" className="edit-input"/>
+                            </div>
+                        </div>
+                        <div className="edit-input-wrap">
+                            <div className="edit-input-content">
+                            <label>
+                            <input
+                            type="checkbox"
+                            checked={useTor}
+                            onChange={handleChangeUseTor}
+                            />
+                            Use Tor
+                            </label>
                             </div>
                         </div>
                     </form>
