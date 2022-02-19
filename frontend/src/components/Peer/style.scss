@@ -110,7 +110,7 @@
     }
 }
 
-.profile-edit-button{
+.peer-connect-button{
     min-height: 39px;
     min-width: 98.8px;
     transition: 0.2s ease-in-out;
@@ -134,19 +134,19 @@
     }
 }
 
-.unfollow-switch{
+.disconnect{
     background-color: rgb(29, 161, 242);
     span{color: #fff !important;}
 }
 
-.unfollow-switch:hover{
+.disconnect:hover{
     background-color: rgb(202,32,85) !important;
     border: 1px solid transparent;
     span{
         color: #fff;
         span{display: none;}
         &:before{
-            content: 'Unfollow';
+            content: 'Disconnect';
         }
     }
 }

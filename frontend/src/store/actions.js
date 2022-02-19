@@ -167,6 +167,9 @@ export const useActions = (state, dispatch) => ({
     connectPeer: data => {
         dispatch({type: types.CONNECT_PEER, payload: data})
     },
+    disconnectPeer: data => {
+        dispatch({type: types.DISCONNECT_PEER, payload: data})
+    },
     savePeer: data => {
         dispatch({type: types.SAVE_PEER, payload: data})
     },

@@ -59,6 +59,19 @@ const goToUser = (id) => {
     props.history.push(`/profile/${id}`)
 }
 
+const connectPeer = (e) => {
+    actions.connectPeer({
+      host: props.match.params.host,
+      port: props.match.params.port,
+      network: props.match.params.network});
+}
+
+const disconnectPeer = (e) => {
+  actions.disconnectPeer({
+    host: props.match.params.host,
+    port: props.match.params.port,
+    network: props.match.params.network});
+}
 
 console.log(peer);
 console.log(peerConnection);
@@ -96,6 +109,16 @@ return(
              <div onClick={()=>console.log('edit')} className="listp-edit-btn">
                     Edit List
              </div>
+             {account &&
+               <div onClick={(e)=>
+                 peerConnection ?
+                 disconnectPeer(e) :
+                 connectPeer(e)
+               }
+                className={peerConnection ? 'disconnect peer-connect-button' : 'peer-connect-button'}>
+                   <span><span>{ account && peerConnection ? 'Connected' : 'Not Connected'}</span></span>
+               </div>
+             }
         </div>
         {listTweets && listTweets.map(t=>{
             return <TweetCard retweet={t.retweet} username={t.username} name={t.name} parent={t.parent} key={t._id} id={t._id} user={t.user} createdAt={t.createdAt} description={t.description} images={t.images} replies={t.replies} retweets={t.retweets} likes={t.likes}  />

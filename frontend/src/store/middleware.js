@@ -25,6 +25,7 @@ import {
   getPeersRequest,
   getConnectedPeersRequest,
   connectSqueakPeerRequest,
+  disconnectSqueakPeerRequest,
   createPeerRequest,
   getPeerByAddressRequest,
   getConnectedPeerRequest,
@@ -338,6 +339,18 @@ export const applyMiddleware = dispatch => action => {
             let connectPeerPort = action.payload.port;
 
             return connectSqueakPeerRequest(connectPeerNetwork, connectPeerHost, connectPeerPort, (resp) => {
+              return getConnectedPeersRequest((resp) => {
+                  let payload = {"connectedPeers": resp };
+                  dispatch({ type: types.GET_CONNECTED_PEERS, payload: payload });
+              });
+            });
+
+        case types.DISCONNECT_PEER:
+            let disconnectPeerNetwork = action.payload.network;
+            let disconnectPeerHost = action.payload.host;
+            let disconnectPeerPort = action.payload.port;
+
+            return disconnectSqueakPeerRequest(disconnectPeerNetwork, disconnectPeerHost, disconnectPeerPort, (resp) => {
               return getConnectedPeersRequest((resp) => {
                   let payload = {"connectedPeers": resp };
                   dispatch({ type: types.GET_CONNECTED_PEERS, payload: payload });
