@@ -347,6 +347,14 @@ export const applyMiddleware = dispatch => action => {
                 dispatch({ type: types.GET_CONNECTED_PEERS, payload: payload });
             });
 
+        case types.GET_PEERS:
+            console.log('Calling get peers');
+            return getPeersRequest((resp) => {
+                let payload = {"peers": resp };
+                console.log(payload);
+                dispatch({ type: types.GET_PEERS, payload: payload });
+            });
+
         case types.WHO_TO_FOLLOW:
             return axios.get(`${API_URL}/user/i/suggestions`, headers)
             .then(res=>dispatch({ type: types.WHO_TO_FOLLOW, payload: res.data, data: action.payload }))

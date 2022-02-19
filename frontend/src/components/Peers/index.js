@@ -10,7 +10,7 @@ import TweetCard from '../TweetCard'
 
 const Peers = (props) => {
     const { state, actions } = useContext(StoreContext)
-    const { account, signingProfiles, connectedPeers, result, tagTweets} = state
+    const { account, peers, connectedPeers, result, tagTweets} = state
     const [tab, setTab] = useState('Connected Peers')
     const [signingProfileModalOpen, setSigningProfileModalOpen] = useState(false)
     const [contactProfileModalOpen, setContactProfileModalOpen] = useState(false)
@@ -30,7 +30,9 @@ const Peers = (props) => {
         window.scrollTo(0, 0)
         // actions.getSigningProfiles()
         // actions.getContactProfiles()
-        actions.getConnectedPeers()
+        actions.getConnectedPeers();
+        console.log('Calling getPeers');
+        actions.getPeers();
         // if(props.history.location.search.length>0){
         //     goToTrend(props.history.location.search.substring(1))
 
@@ -55,6 +57,16 @@ const Peers = (props) => {
         // TODO
         // props.history.push(`/profile/${id}`)
     }
+
+    const peerAddressToStr = (peerAddress) => {
+      return `${peerAddress.getNetwork()}/${peerAddress.getHost()}:${peerAddress.getPort()}`;
+    }
+
+    const isPeerConnected = (peerAddress) => {
+      const peerAddressStr = peerAddressToStr(peerAddress);
+      const connectedPeerAddresses = connectedPeers.map((p) => peerAddressToStr(p.getPeerAddress()));
+      return connectedPeerAddresses.includes(peerAddressStr);
+    };
 
     const toggleSigningProfileModal = (param, type) => {
         setStyleBody(!styleBody)
@@ -96,6 +108,8 @@ const Peers = (props) => {
         e.stopPropagation()
     }
 
+    console.log(peers);
+
     return(
         <div>
 
@@ -123,30 +137,31 @@ const Peers = (props) => {
                     <div onClick={()=>setTab('Connected Peers')} className={tab === 'Connected Peers' ? `explore-nav-item activeTab` : `explore-nav-item`}>
                         Connected Peers
                     </div>
-                    <div onClick={()=>setTab('Signing Profiles')} className={tab === 'Signing Profiles' ? `explore-nav-item activeTab` : `explore-nav-item`}>
+                    <div onClick={()=>setTab('Saved Peers')} className={tab === 'Saved Peers' ? `explore-nav-item activeTab` : `explore-nav-item`}>
                         Saved Peers
                     </div>
                 </div>
-                {tab === 'Signing Profiles' ?
-                signingProfiles.map(f=>{
-                  return <div onClick={()=>goToUser(f.getPubkey())} key={f.getPubkey()} className="search-result-wapper">
-                    <Link to={`/profile/${f.getPubkey()}`} className="search-userPic-wrapper">
-                      <img style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={`${getProfileImageSrcString(f)}`}/>
-                    </Link>
+                {tab === 'Saved Peers' ?
+                peers.map(sp=>{
+                  const peerId = sp.getPeerId();
+                  const savedPeerName = sp.getPeerName();
+                  const peerAddress = sp.getPeerAddress();
+                  const host = peerAddress.getHost();
+                  const port = peerAddress.getPort();
+                  const addrStr = host + '@' + port;
+                  const isConnected = isPeerConnected(peerAddress);
+
+                  return <div onClick={()=>goToUser(peerId)} key={peerId} className="search-result-wapper">
+                    {isConnected ?
+                      <ICON_LAPTOPFILL styles={{fill:"rgb(0,128,0)", width:'48px', height:"48px"}} /> :
+                      <ICON_LAPTOPFILL styles={{fill:"rgb(255,0,0)", width:'48px', height:"48px"}} />
+                    }
                     <div className="search-user-details">
                     <div className="search-user-warp">
                     <div className="search-user-info">
-                    <div className="search-user-name">{f.getProfileName()}</div>
-                    <div className="search-user-username">@{f.getPubkey()}</div>
+                    <div className="search-user-name">{savedPeerName}</div>
+                    <div className="search-user-username">{addrStr}</div>
                     </div>
-                    {f._id === account && account._id ? null :
-                      <div onClick={(e)=>{
-                        f.getFollowing() ?
-                        unfollowUser(e,f.getProfileId()) :
-                        followUser(e,f.getProfileId())
-                      }} className={account && f.getFollowing() ? "follow-btn-wrap unfollow-switch":"follow-btn-wrap"}>
-                        <span><span>{account && f.getFollowing() ? 'Following' : 'Follow'}</span></span>
-                      </div>}
                     </div>
                     <div className="search-user-bio">
                       &nbsp;
