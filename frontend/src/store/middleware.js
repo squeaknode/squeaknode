@@ -376,10 +376,14 @@ export const applyMiddleware = dispatch => action => {
 
             return createPeerRequest(savePeerName, savePeerNetwork, savePeerHost, savePeerPort, (resp) => {
               console.log(resp);
-              return getPeerByAddressRequest(savePeerNetwork, savePeerHost, savePeerPort, (resp) => {
+              getPeerByAddressRequest(savePeerNetwork, savePeerHost, savePeerPort, (resp) => {
                   let payload = {"savedPeer": resp };
                   console.log(payload);
                   dispatch({ type: types.SAVE_PEER, payload: payload });
+              });
+              getConnectedPeersRequest((resp) => {
+                  let payload = {"connectedPeers": resp };
+                  dispatch({ type: types.GET_CONNECTED_PEERS, payload: payload });
               });
             });
 
