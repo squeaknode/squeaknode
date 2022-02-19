@@ -3,8 +3,8 @@ import { StoreContext } from '../../store/store'
 import { Link, withRouter, Redirect } from 'react-router-dom'
 import './style.scss'
 import { ICON_LOGO, ICON_HOME, ICON_HASH, ICON_BELL, ICON_INBOX
-,ICON_BOOKMARK, ICON_LIST, ICON_USER, ICON_SETTINGS, ICON_HOMEFILL, ICON_HASHFILL,
-ICON_BELLFILL, ICON_BOOKMARKFILL, ICON_LISTFILL, ICON_USERFILL, ICON_FEATHER,
+,ICON_BOOKMARK, ICON_LIST, ICON_USER, ICON_LAPTOP, ICON_SETTINGS, ICON_HOMEFILL, ICON_HASHFILL,
+ICON_BELLFILL, ICON_BOOKMARKFILL, ICON_LISTFILL, ICON_USERFILL, ICON_LAPTOPFILL, ICON_FEATHER,
 ICON_CLOSE,ICON_IMGUPLOAD, ICON_INBOXFILL, ICON_LIGHT, ICON_DARK } from '../../Icons'
 import axios from 'axios'
 import {API_URL} from '../../config'
@@ -78,6 +78,8 @@ const Nav = ({history}) => {
         }
     }
 
+    console.log(path);
+
     return(
         <div className="Nav-component">
         <div className="Nav-width">
@@ -94,13 +96,19 @@ const Nav = ({history}) => {
                         </div>
                     </Link>
                     <Link to="/profiles" className="Nav-link">
-                        <div className={path === '/expl' ? "Nav-item-hover active-Nav" : "Nav-item-hover"}>
-                            {path === '/expl' ? <ICON_USERFILL /> : <ICON_USER />}
+                        <div className={path === '/profiles' ? "Nav-item-hover active-Nav" : "Nav-item-hover"}>
+                            {path === '/prof' ? <ICON_USERFILL /> : <ICON_USER />}
                             <div className="Nav-item">Profiles</div>
                         </div>
                     </Link>
                     {session ?
                     <>
+                    <Link to="/peers" className="Nav-link">
+                        <div className={path === '/expl' ? "Nav-item-hover active-Nav" : "Nav-item-hover"}>
+                            {path === '/peer' ? <ICON_LAPTOPFILL /> : <ICON_LAPTOP />}
+                            <div className="Nav-item">Peers</div>
+                        </div>
+                    </Link>
                     <Link to="/notifications" className="Nav-link">
                         <div className={path === '/noti' ? "Nav-item-hover active-Nav" : "Nav-item-hover"}>
                             {path === '/noti' ? <ICON_BELLFILL /> : <ICON_BELL />}

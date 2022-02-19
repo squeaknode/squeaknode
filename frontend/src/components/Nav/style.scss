@@ -94,7 +94,7 @@
     margin-top: 15px;
     margin-bottom: 5px;
     display: flex;
-    
+
 }
 
 .Nav-tweet-link{
@@ -158,13 +158,13 @@
 }
 
 .more-menu-background{
-    position: fixed; 
-    z-index: 20; 
+    position: fixed;
+    z-index: 20;
     left: 0;
     top: 0;
-    width: 100%; 
+    width: 100%;
     height: 100%;
-    overflow: auto; 
+    overflow: auto;
     cursor: auto;
 }
 
@@ -195,7 +195,7 @@
 
 @media only screen and (min-width: 451px){
     .more-menu-content{
-        
+
         height: 104px;
     }
 }
@@ -215,7 +215,7 @@
         display: flex;
         align-items: center;
     }
-    
+
 }
 
 .more-menu-item svg{
