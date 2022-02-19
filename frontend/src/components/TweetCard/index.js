@@ -201,7 +201,7 @@ const TweetCard = React.memo(function TweetCard(props) {
                     <p className="modal-title">Reply</p>
                 </div>
                 <div style={{marginTop:'5px'}} className="modal-body">
-                  <MakeSqueak replyToTweet={props.tweet} />
+                  <MakeSqueak replyToTweet={props.tweet} submittedCallback={toggleModal} />
                 </div>
             </div> : null}
         </div> : null}
