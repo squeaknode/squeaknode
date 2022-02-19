@@ -370,8 +370,16 @@ const reducer = (state = initialState, action) => {
         case type.GET_PEER_CONNECTION:
                 return {...state, ...action.payload}
 
-        case type.DELETE_PEER:
-            return {...state, ...{peer: null}, loading: false, error: false}
+        case type.UPDATE_PEER:
+            let updatePeer = action.payload.user
+            return {...state, ...{peer: updatePeer}, loading: false, error: false}
+
+        case type.SAVE_PEER:
+            console.log(action.payload);
+            let createdPeer = action.payload.savedPeer
+            let createdPeers = state.peers
+            createdPeers.push(createdPeer)
+            return {...state, ...{peers: createdPeers}, ...{peer: createdPeer}, loading: false, error: false}
 
         case type.SEARCH_USERS:
             return {...state, ...action.payload}

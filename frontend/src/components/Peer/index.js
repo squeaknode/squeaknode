@@ -16,6 +16,7 @@ const [modalOpen, setModalOpen] = useState(false)
 const [editName, setName] = useState('')
 const [editDescription, setDescription] = useState('')
 const [deleteModalOpen, setDeleteModalOpen] = useState(false)
+const [savePeerModalOpen, setSavePeerModalOpen] = useState(false)
 const [banner, setBanner] = useState('')
 const [saved, setSaved] = useState(false)
 const [tab, setTab] = useState('Members')
@@ -80,10 +81,24 @@ const deletePeer = () => {
     toggleDeleteModal();
 }
 
+const savePeer = () => {
+    actions.savePeer({
+      name: editName,
+      host: props.match.params.host,
+      port: props.match.params.port,
+      network: props.match.params.network});
+    toggleSavePeerModal();
+}
+
 const toggleDeleteModal = () => {
     setStyleBody(!styleBody)
     setSaved(false)
     setTimeout(()=>{ setDeleteModalOpen(!deleteModalOpen) },20)
+}
+
+const toggleSavePeerModal = (param, type) => {
+    setStyleBody(!styleBody)
+    setTimeout(()=>{ setSavePeerModalOpen(!savePeerModalOpen) },20)
 }
 
 const handleModalClick = (e) => {
@@ -118,6 +133,13 @@ return(
                   <span>Delete</span>
               </div>
             }
+            {account && !peer &&
+              <div onClick={(e)=>toggleSavePeerModal('edit')}
+               className='profiles-create-button'>
+                  <span>Add Saved Peer</span>
+              </div>
+            }
+
 
             <div className="list-owner-wrap">
                 <div>{props.match.params.host}:{props.match.params.port}</div>
@@ -156,6 +178,37 @@ return(
             </div>
         </div>
     </div>
+
+    {/* Modal for create save peer */}
+    <div onClick={()=>toggleSavePeerModal()} style={{display: savePeerModalOpen ? 'block' : 'none'}} className="modal-edit">
+        <div onClick={(e)=>handleModalClick(e)} className="modal-content">
+            <div className="modal-header">
+                <div className="modal-closeIcon">
+                    <div onClick={()=>toggleSavePeerModal()} className="modal-closeIcon-wrap">
+                        <ICON_CLOSE />
+                    </div>
+                </div>
+                <p className="modal-title">Save Peer</p>
+
+                <div className="save-modal-wrapper">
+                    <div onClick={savePeer} className="save-modal-btn">
+                        Submit
+                    </div>
+                </div>
+            </div>
+            <div className="modal-body">
+                <form className="edit-form">
+                <div className="edit-input-wrap">
+                    <div className="edit-input-content">
+                        <label>Name</label>
+                        <input onChange={(e)=>setName(e.target.value)} type="text" name="name" className="edit-input"/>
+                    </div>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 
     </div>
     )

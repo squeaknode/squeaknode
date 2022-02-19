@@ -375,9 +375,11 @@ export const applyMiddleware = dispatch => action => {
             let savePeerPort = action.payload.port;
 
             return createPeerRequest(savePeerName, savePeerNetwork, savePeerHost, savePeerPort, (resp) => {
-              return getPeersRequest((resp) => {
-                  let payload = {"peers": resp };
-                  dispatch({ type: types.GET_PEERS, payload: payload });
+              console.log(resp);
+              return getPeerByAddressRequest(savePeerNetwork, savePeerHost, savePeerPort, (resp) => {
+                  let payload = {"savedPeer": resp };
+                  console.log(payload);
+                  dispatch({ type: types.SAVE_PEER, payload: payload });
               });
             });
 
@@ -416,7 +418,7 @@ export const applyMiddleware = dispatch => action => {
         case types.DELETE_PEER:
             let deletePeerId = action.payload.peerId;
             return deletePeerRequest(deletePeerId, (resp) => {
-                dispatch({ type: types.DELETE_PEER, payload: {}, data: action.payload });
+                dispatch({ type: types.UPDATE_PEER, payload: {}, data: action.payload });
             });
 
         case types.WHO_TO_FOLLOW:
