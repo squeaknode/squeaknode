@@ -30,6 +30,7 @@ import {
   getPeerByAddressRequest,
   getConnectedPeerRequest,
   deletePeerRequest,
+  getNetworkRequest,
 } from '../squeakclient/requests';
 
 export const token = () => {
@@ -52,6 +53,12 @@ export const applyMiddleware = dispatch => action => {
             return axios.post(`${API_URL}/auth/register`, action.payload)
             .then(res=>dispatch({ type: types.REGISTER, payload: res.data, data: action.payload }))
             .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
+
+        case types.GET_NETWORK:
+            return getNetworkRequest((resp) => {
+                let payload = {"network": resp };
+                dispatch({ type: types.GET_NETWORK, payload: payload });
+    	       });
 
         case types.TWEET:
             // return axios.post(`${API_URL}/tweet/create`, action.payload, headers)

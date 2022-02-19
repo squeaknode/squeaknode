@@ -18,7 +18,7 @@ const TweetPage = (props) => {
     let history = useHistory();
 
     const { state, actions } = useContext(StoreContext)
-    const {tweet, ancestorTweets, replyTweets, account, session} = state
+    const {tweet, ancestorTweets, replyTweets, network, account, session} = state
 
     const [modalOpen, setModalOpen] = useState(false)
 
@@ -27,6 +27,7 @@ const TweetPage = (props) => {
         actions.getTweet(props.match.params.id)
         actions.getAncestorTweets(props.match.params.id)
         actions.getReplyTweets(props.match.params.id)
+        actions.getNetwork()
     }, [props.match.params.id])
     var image = new Image()
 
@@ -75,6 +76,8 @@ const TweetPage = (props) => {
     }
 
     const author = tweet && tweet.getAuthor()
+
+    console.log(network);
 
     return(
         <>
@@ -131,7 +134,7 @@ const TweetPage = (props) => {
                 </div>
 
                 <div className="tweet-date">
-                    <a href={getBlockDetailUrl(tweet.getBlockHash(), 'testnet')}
+                    <a href={getBlockDetailUrl(tweet.getBlockHash(), network)}
                      target="_blank"
                      rel="noopener"
                      >

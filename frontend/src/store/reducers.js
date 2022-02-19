@@ -3,6 +3,7 @@ import type from './typeActions'
 const initialState = {
     session: true,
     loggedin: false,
+    network: null,
     tweets: [],
     tweet: null,
     ancestorTweets: [],
@@ -49,6 +50,9 @@ const reducer = (state = initialState, action) => {
 
         case type.REGISTER:
             setTimeout(()=>{action.data.func()},250)
+            return {...state, ...action.payload, loading: false, error: false}
+
+        case type.GET_NETWORK:
             return {...state, ...action.payload, loading: false, error: false}
 
         case type.TWEET:

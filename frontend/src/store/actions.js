@@ -10,6 +10,9 @@ export const useActions = (state, dispatch) => ({
         dispatch({type: types.SET_STATE, payload: {loading: true}})
         dispatch({type: types.REGISTER, payload: data})
     },
+    getNetwork: data => {
+        dispatch({type: types.GET_NETWORK, payload: data})
+    },
     tweet: data => {
         dispatch({type: types.SET_STATE, payload: {loading: true}})
         dispatch({type: types.TWEET, payload: data})
