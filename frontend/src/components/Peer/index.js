@@ -20,7 +20,7 @@ const [saved, setSaved] = useState(false)
 const [tab, setTab] = useState('Members')
 const [bannerLoading, setBannerLoading] = useState(false)
 const [styleBody, setStyleBody] = useState(false)
-const {account, peer, list, listTweets, resultUsers} = state
+const {account, peer, peerConnection, list, listTweets, resultUsers} = state
 
 useEffect(() => {
     window.scrollTo(0, 0)
@@ -28,6 +28,11 @@ useEffect(() => {
     console.log("props.match.params");
     console.log(props.match.params);
     actions.getPeer({
+      network: props.match.params.network,
+      host: props.match.params.host,
+      port: props.match.params.port,
+    });
+    actions.getPeerConnection({
       network: props.match.params.network,
       host: props.match.params.host,
       port: props.match.params.port,
@@ -88,6 +93,7 @@ const addToList = (e,username,userId, profileImg,name) => {
 }
 
 console.log(peer);
+console.log(peerConnection);
 
 return(
     <div>

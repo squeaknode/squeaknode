@@ -174,11 +174,12 @@ export const useActions = (state, dispatch) => ({
         dispatch({type: types.GET_CONNECTED_PEERS, payload: data})
     },
     getPeers: data => {
-        console.log('getPeers');
         dispatch({type: types.GET_PEERS, payload: data})
     },
     getPeer: data => {
-        console.log('getPeer');
         dispatch({type: types.GET_PEER, payload: data})
+    },
+    getPeerConnection: data => {
+        dispatch({type: types.GET_PEER_CONNECTION, payload: data})
     }
 })
