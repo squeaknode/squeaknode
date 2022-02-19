@@ -105,7 +105,7 @@ return(
                  connectPeer(e)
               }
                 className={peerConnection ? 'disconnect peer-connect-button' : 'peer-connect-button'}>
-                   <span><span>{ account && peerConnection ? 'Connected' : 'Not Connected'}</span></span>
+                   <span><span>{ account && peerConnection ? 'Connected' : 'Connect'}</span></span>
               </div>
             }
         </div>
