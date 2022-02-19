@@ -254,6 +254,18 @@ const Peers = (props) => {
                             <input onChange={(e)=>setPort(e.target.value)} type="text" name="name" className="edit-input"/>
                         </div>
                     </div>
+                    <div className="edit-input-wrap">
+                        <div className="edit-input-content">
+                        <label>
+                        <input
+                        type="checkbox"
+                        checked={useTor}
+                        onChange={handleChangeUseTor}
+                        />
+                        Use Tor
+                        </label>
+                        </div>
+                    </div>
                     </form>
                 </div>
             </div>
