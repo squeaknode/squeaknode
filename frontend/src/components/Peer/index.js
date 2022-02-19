@@ -98,23 +98,16 @@ return(
             <div className="list-owner-wrap">
                 <div>{peer.getPeerAddress().getHost()}:{peer.getPeerAddress().getPort()}</div>
             </div>
-            <div onClick={()=>console.log('members')} className="list-owner-wrap Members">
-                    <h4>{[]}</h4>
-                    <div>Members</div>
-             </div>
-             <div onClick={()=>console.log('edit')} className="listp-edit-btn">
-                    Edit List
-             </div>
-             {account &&
-               <div onClick={(e)=>
+            {account &&
+              <div onClick={(e)=>
                  peerConnection ?
                  disconnectPeer(e) :
                  connectPeer(e)
-               }
+              }
                 className={peerConnection ? 'disconnect peer-connect-button' : 'peer-connect-button'}>
                    <span><span>{ account && peerConnection ? 'Connected' : 'Not Connected'}</span></span>
-               </div>
-             }
+              </div>
+            }
         </div>
         {listTweets && listTweets.map(t=>{
             return <TweetCard retweet={t.retweet} username={t.username} name={t.name} parent={t.parent} key={t._id} id={t._id} user={t.user} createdAt={t.createdAt} description={t.description} images={t.images} replies={t.replies} retweets={t.retweets} likes={t.likes}  />
