@@ -32,7 +32,6 @@ const Peers = (props) => {
         // actions.getSigningProfiles()
         // actions.getContactProfiles()
         actions.getConnectedPeers();
-        console.log('Calling getPeers');
         actions.getPeers();
         // if(props.history.location.search.length>0){
         //     goToTrend(props.history.location.search.substring(1))
@@ -55,7 +54,6 @@ const Peers = (props) => {
     }
 
     const goToPeer = (peerAddress) => {
-        console.log(peerAddress);
         props.history.push(`/peer/${peerAddress.getNetwork()}/${peerAddress.getHost()}/${peerAddress.getPort()}`)
     }
 
@@ -119,8 +117,6 @@ const Peers = (props) => {
     const handleModalClick = (e) => {
         e.stopPropagation()
     }
-
-    console.log(peers);
 
     return(
         <div>

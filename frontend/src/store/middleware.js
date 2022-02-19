@@ -29,6 +29,7 @@ import {
   createPeerRequest,
   getPeerByAddressRequest,
   getConnectedPeerRequest,
+  deletePeerRequest,
 } from '../squeakclient/requests';
 
 export const token = () => {
@@ -376,7 +377,6 @@ export const applyMiddleware = dispatch => action => {
             return createPeerRequest(savePeerName, savePeerNetwork, savePeerHost, savePeerPort, (resp) => {
               return getPeersRequest((resp) => {
                   let payload = {"peers": resp };
-                  console.log(payload);
                   dispatch({ type: types.GET_PEERS, payload: payload });
               });
             });
@@ -388,10 +388,8 @@ export const applyMiddleware = dispatch => action => {
             });
 
         case types.GET_PEERS:
-            console.log('Calling get peers');
             return getPeersRequest((resp) => {
                 let payload = {"peers": resp };
-                console.log(payload);
                 dispatch({ type: types.GET_PEERS, payload: payload });
             });
 
@@ -413,6 +411,12 @@ export const applyMiddleware = dispatch => action => {
             return getConnectedPeerRequest(getPeerConnectionNetwork, getPeerConnectionHost, getPeerConnectionPort, (resp) => {
                 let payload = {"peerConnection": resp };
                 dispatch({ type: types.GET_PEER_CONNECTION, payload: payload });
+            });
+
+        case types.DELETE_PEER:
+            let deletePeerId = action.payload.peerId;
+            return deletePeerRequest(deletePeerId, (resp) => {
+                dispatch({ type: types.DELETE_PEER, payload: {}, data: action.payload });
             });
 
         case types.WHO_TO_FOLLOW:

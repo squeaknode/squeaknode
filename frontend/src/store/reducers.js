@@ -370,6 +370,9 @@ const reducer = (state = initialState, action) => {
         case type.GET_PEER_CONNECTION:
                 return {...state, ...action.payload}
 
+        case type.DELETE_PEER:
+            return {...state, ...{peer: null}, loading: false, error: false}
+
         case type.SEARCH_USERS:
             return {...state, ...action.payload}
 

@@ -184,5 +184,9 @@ export const useActions = (state, dispatch) => ({
     },
     getPeerConnection: data => {
         dispatch({type: types.GET_PEER_CONNECTION, payload: data})
+    },
+    deletePeer: data => {
+        dispatch({type: types.SET_STATE, payload: {loading: true}})
+        dispatch({type: types.DELETE_PEER, payload: data})
     }
 })

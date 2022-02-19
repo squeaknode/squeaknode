@@ -15,6 +15,7 @@ const [modalOpen, setModalOpen] = useState(false)
 
 const [editName, setName] = useState('')
 const [editDescription, setDescription] = useState('')
+const [deleteModalOpen, setDeleteModalOpen] = useState(false)
 const [banner, setBanner] = useState('')
 const [saved, setSaved] = useState(false)
 const [tab, setTab] = useState('Members')
@@ -71,11 +72,28 @@ const disconnectPeer = (e) => {
     network: props.match.params.network});
 }
 
+const deletePeer = () => {
+    let values = {
+        peerId: peer.getPeerId(),
+    }
+    actions.deletePeer(values);
+    toggleDeleteModal();
+}
+
+const toggleDeleteModal = () => {
+    setStyleBody(!styleBody)
+    setSaved(false)
+    setTimeout(()=>{ setDeleteModalOpen(!deleteModalOpen) },20)
+}
+
+const handleModalClick = (e) => {
+    e.stopPropagation()
+}
+
 
 return(
     <div>
-        {peer ?
-    <div>
+
       <div className="bookmarks-wrapper">
         <div className="bookmarks-header-wrapper">
             <div className="profile-header-back">
@@ -85,18 +103,24 @@ return(
             </div>
             <div className="bookmarks-header-content">
                 <div className="bookmarks-header-name">
-                    {peer.getPeerName()}
+                    {peer && peer.getPeerName()}
                 </div>
                 <div className="bookmarks-header-tweets">
-                    {peer.getPeerAddress().getHost()}:{peer.getPeerAddress().getPort()}
+                    {props.match.params.host}:{props.match.params.port}
                 </div>
             </div>
         </div>
         <div className="listp-details-wrap">
-            <div className="bookmarks-header-name">{saved && false ? editName : peer.getPeerName()}</div>
-            {''.length> 0 || saved ? <div className="list-description">{saved && false ? editDescription : '' }</div> : null }
+            <div className="bookmarks-header-name">{peer && peer.getPeerName()}</div>
+            {account && peer &&
+              <div onClick={(e)=>toggleDeleteModal()}
+               className='peer-connect-button'>
+                  <span>Delete</span>
+              </div>
+            }
+
             <div className="list-owner-wrap">
-                <div>{peer.getPeerAddress().getHost()}:{peer.getPeerAddress().getPort()}</div>
+                <div>{props.match.params.host}:{props.match.params.port}</div>
             </div>
             {account &&
               <div onClick={(e)=>
@@ -114,7 +138,25 @@ return(
         })}
     </div>
 
-    </div> : <div className="bookmarks-wrapper"><Loader/> </div> }
+    {/* Modal for delete profile */}
+    <div onClick={()=>toggleDeleteModal()} style={{display: deleteModalOpen ? 'block' : 'none'}} className="modal-edit">
+        <div onClick={(e)=>handleModalClick(e)} className="modal-content">
+            <div className="modal-header">
+                <div className="modal-closeIcon">
+                    <div onClick={()=>toggleDeleteModal()} className="modal-closeIcon-wrap">
+                        <ICON_CLOSE />
+                    </div>
+                </div>
+                <p className="modal-title">'Delete Peer'</p>
+                <div className="save-modal-wrapper">
+                    <div onClick={deletePeer} className="save-modal-btn">
+                        Delete
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     </div>
     )
 }
