@@ -15,6 +15,7 @@ const Peers = (props) => {
     const [signingProfileModalOpen, setSigningProfileModalOpen] = useState(false)
     const [contactProfileModalOpen, setContactProfileModalOpen] = useState(false)
     const [styleBody, setStyleBody] = useState(false)
+    const [name, setName] = useState('')
     const [host, setHost] = useState('')
     const [port, setPort] = useState('')
     const [useTor, setUseTor] = useState(false)
@@ -92,8 +93,10 @@ const Peers = (props) => {
         setTimeout(()=>{ setContactProfileModalOpen(!contactProfileModalOpen) },20)
     }
 
-    const createSigningProfile = () => {
-        // actions.createSigningProfile({profileName: newProfileName});
+    const savePeer = () => {
+        // TODO: get network from `useTor`
+        const network = 'IPV4';
+        actions.savePeer({name: name, host: host, port: port, network: network});
         toggleSigningProfileModal();
     }
 
@@ -213,10 +216,10 @@ const Peers = (props) => {
                             <ICON_CLOSE />
                         </div>
                     </div>
-                    <p className="modal-title">Add Signing Profile</p>
+                    <p className="modal-title">Save Peer</p>
 
                     <div className="save-modal-wrapper">
-                        <div onClick={createSigningProfile} className="save-modal-btn">
+                        <div onClick={savePeer} className="save-modal-btn">
                             Submit
                         </div>
                     </div>
@@ -224,10 +227,24 @@ const Peers = (props) => {
 
                 <div className="modal-body">
                     <form className="edit-form">
-                        <div className="edit-input-wrap">
-                            <div className="edit-input-content">
-                            </div>
+                    <div className="edit-input-wrap">
+                        <div className="edit-input-content">
+                            <label>Name</label>
+                            <input onChange={(e)=>setName(e.target.value)} type="text" name="name" className="edit-input"/>
                         </div>
+                    </div>
+                    <div className="edit-input-wrap">
+                        <div className="edit-input-content">
+                            <label>Host</label>
+                            <input onChange={(e)=>setHost(e.target.value)} type="text" name="name" className="edit-input"/>
+                        </div>
+                    </div>
+                    <div className="edit-input-wrap">
+                        <div className="edit-input-content">
+                            <label>Port</label>
+                            <input onChange={(e)=>setPort(e.target.value)} type="text" name="name" className="edit-input"/>
+                        </div>
+                    </div>
                     </form>
                 </div>
             </div>

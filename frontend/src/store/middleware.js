@@ -25,6 +25,7 @@ import {
   getPeersRequest,
   getConnectedPeersRequest,
   connectSqueakPeerRequest,
+  createPeerRequest,
 } from '../squeakclient/requests';
 
 export const token = () => {
@@ -338,6 +339,20 @@ export const applyMiddleware = dispatch => action => {
               return getConnectedPeersRequest((resp) => {
                   let payload = {"connectedPeers": resp };
                   dispatch({ type: types.GET_CONNECTED_PEERS, payload: payload });
+              });
+            });
+
+        case types.SAVE_PEER:
+            let savePeerName = action.payload.name;
+            let savePeerNetwork = action.payload.network;
+            let savePeerHost = action.payload.host;
+            let savePeerPort = action.payload.port;
+
+            return createPeerRequest(savePeerName, savePeerNetwork, savePeerHost, savePeerPort, (resp) => {
+              return getPeersRequest((resp) => {
+                  let payload = {"peers": resp };
+                  console.log(payload);
+                  dispatch({ type: types.GET_PEERS, payload: payload });
               });
             });
 
