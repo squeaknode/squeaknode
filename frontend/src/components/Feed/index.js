@@ -20,8 +20,8 @@ useEffect(() => {
 }, [])
 
 const goToUser = (id) => {
-    props.history.push(`/profile/${id}`)      
-} 
+    props.history.push(`/profile/${id}`)
+}
 
 const followUser = (e, id) => {
     e.stopPropagation()
@@ -44,37 +44,6 @@ return(
                 Show more
             </div>
         </div>
-        {account ? 
-        <div className="feed-trending-card">
-            <h3 className="feed-card-header">Who to follow</h3>
-            {suggestions.length > 0  ? 
-            suggestions.map(s=>{
-                if(s.username !== account.username) {
-                    return <div key={s._id} className="feed-card-trend">
-                    <div onClick={()=>goToUser(s.username)} className="sugg-result-wapper">
-                        <Link to={`/profile/${s.username}`} className="search-userPic-wrapper">
-                                <img alt="" style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={s.profileImg}/>
-                        </Link>
-                        <div className="search-user-details">
-                            <div className="search-user-warp">
-                                <div className="search-user-info">
-                                    <div className="search-user-name">{s.name}</div>
-                                    <div className="search-user-username">@{s.username}</div>
-                                </div>
-                                <div onClick={(e)=>followUser(e, s._id)} className={account.following.includes(s._id) ?"follow-btn-wrap unfollow-switch":"follow-btn-wrap"}>
-                                    <span style={{lineHeight: '0.8'}}><span>{ account.following.includes(s._id) ? 'Following' : 'Follow'}</span></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                }
-            })
-             : <Loader/>}
-            <div className="feed-more">
-                {/* Show more */}
-            </div>
-        </div> : null }
     </div>
     )
 }
