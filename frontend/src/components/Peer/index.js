@@ -50,27 +50,6 @@ useEffect(() => {
 useEffect( () => () => document.getElementsByTagName("body")[0].style.cssText = "", [] )
 
 
-const handleModalClick = (e) => {
-    e.stopPropagation()
-}
-
-const uploadImage = (file) => {
-    let bodyFormData = new FormData()
-    bodyFormData.append('image', file)
-    axios.post(`${API_URL}/tweet/upload`, bodyFormData, { headers: { Authorization: `Bearer ${localStorage.getItem('Twittertoken')}`}})
-        .then(res=>{
-            setBanner(res.data.imageUrl)
-            setBannerLoading(false)
-        })
-        .catch(err=>alert('error uploading image'))
-}
-
-const changeBanner = () => {
-    setBannerLoading(true)
-    let file = document.getElementById('banner').files[0];
-    uploadImage(file)
-}
-
 const deleteList = () => {
     actions.deleteList(props.match.params.id)
     props.history.push('/lists')
@@ -80,17 +59,6 @@ const goToUser = (id) => {
     props.history.push(`/profile/${id}`)
 }
 
-const searchOnChange = (param) => {
-    if(param.length>0){
-        actions.searchUsers({username: param})
-    }
-}
-
-const addToList = (e,username,userId, profileImg,name) => {
-    e.stopPropagation()
-    let values = {id: props.match.params.id, username, userId, profileImg,name}
-    actions.addToList(values)
-}
 
 console.log(peer);
 console.log(peerConnection);
