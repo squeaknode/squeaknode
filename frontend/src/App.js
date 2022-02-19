@@ -21,6 +21,7 @@ import ChatPage from './components/ChatPage'
 
 const Home = lazy(() => import('./components/Home'))
 const Profile = lazy(() => import('./components/Profile'))
+const Peer = lazy(() => import('./components/Peer'))
 
 const DefaultContainer = withRouter(({ history }) => {
   return (<div className="body-wrap">
@@ -34,6 +35,9 @@ const DefaultContainer = withRouter(({ history }) => {
         </Route>
         <Route path="/profile/:username" exact>
           <Profile />
+        </Route>
+        <Route path="/peer/:network/:host/:port" exact>
+          <Peer />
         </Route>
         <Route path="/tweet/:id" exact>
           <Tweet />

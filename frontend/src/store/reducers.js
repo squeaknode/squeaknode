@@ -25,6 +25,7 @@ const initialState = {
     contactProfiles: [],
     connectedPeers: [],
     peers: [],
+    peer: null,
     top: '-100px',
     msg: '',
     conversations: null,

@@ -55,8 +55,8 @@ const Peers = (props) => {
     }
 
     const goToPeer = (peerAddress) => {
-        // TODO
-        // props.history.push(`/profile/${id}`)
+        console.log(peerAddress);
+        props.history.push(`/peer/${peerAddress.getNetwork()}/${peerAddress.getHost()}/${peerAddress.getPort()}`)
     }
 
     const peerAddressToStr = (peerAddress) => {
@@ -154,7 +154,7 @@ const Peers = (props) => {
                   const addrStr = host + '@' + port;
                   const isConnected = isPeerConnected(peerAddress);
 
-                  return <div onClick={()=>goToUser(peerId)} key={peerId} className="search-result-wapper">
+                  return <div onClick={()=>goToPeer(peerAddress)} key={peerId} className="search-result-wapper">
                     {isConnected ?
                       <ICON_LAPTOPFILL styles={{fill:"rgb(0,128,0)", width:'48px', height:"48px"}} /> :
                       <ICON_LAPTOPFILL styles={{fill:"rgb(255,0,0)", width:'48px', height:"48px"}} />
@@ -181,7 +181,7 @@ const Peers = (props) => {
                   const addrStr = host + '@' + port;
                   const savedPeer = p.getSavedPeer();
                   const savedPeerName = savedPeer && savedPeer.getPeerName();
-                  return <div onClick={()=>goToPeer(666)} key={addrStr} className="search-result-wapper">
+                  return <div onClick={()=>goToPeer(peerAddress)} key={addrStr} className="search-result-wapper">
                     <ICON_LAPTOPFILL styles={{fill:"rgb(0,128,0)", width:'48px', height:"48px"}} />
                     <div className="search-user-details">
                     <div className="search-user-warp">
