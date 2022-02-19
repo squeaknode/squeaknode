@@ -151,7 +151,7 @@ const Peers = (props) => {
                   const peerAddress = sp.getPeerAddress();
                   const host = peerAddress.getHost();
                   const port = peerAddress.getPort();
-                  const addrStr = host + '@' + port;
+                  const addrStr = host + ':' + port;
                   const isConnected = isPeerConnected(peerAddress);
 
                   return <div onClick={()=>goToPeer(peerAddress)} key={peerId} className="search-result-wapper">
@@ -178,7 +178,7 @@ const Peers = (props) => {
                   const peerAddress = p.getPeerAddress();
                   const host = peerAddress.getHost();
                   const port = peerAddress.getPort();
-                  const addrStr = host + '@' + port;
+                  const addrStr = host + ':' + port;
                   const savedPeer = p.getSavedPeer();
                   const savedPeerName = savedPeer && savedPeer.getPeerName();
                   return <div onClick={()=>goToPeer(peerAddress)} key={addrStr} className="search-result-wapper">

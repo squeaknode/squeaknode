@@ -79,7 +79,7 @@ return(
                     {peer.getPeerName()}
                 </div>
                 <div className="bookmarks-header-tweets">
-                    @{peer.getPeerAddress().getHost()}
+                    {peer.getPeerAddress().getHost()}:{peer.getPeerAddress().getPort()}
                 </div>
             </div>
         </div>
@@ -87,8 +87,7 @@ return(
             <div className="bookmarks-header-name">{saved && false ? editName : peer.getPeerName()}</div>
             {''.length> 0 || saved ? <div className="list-description">{saved && false ? editDescription : '' }</div> : null }
             <div className="list-owner-wrap">
-                <h4>{peer.getPeerName()}</h4>
-                <div>@{peer.getPeerAddress().getHost()}</div>
+                <div>{peer.getPeerAddress().getHost()}:{peer.getPeerAddress().getPort()}</div>
             </div>
             <div onClick={()=>console.log('members')} className="list-owner-wrap Members">
                     <h4>{[]}</h4>
