@@ -63,6 +63,17 @@ const TweetPage = (props) => {
         history.goBack()
     }
 
+    const getBlockDetailUrl = (blockHash, network) => {
+      switch (network) {
+        case 'mainnet':
+          return `https://blockstream.info/block/${blockHash}`;
+        case 'testnet':
+          return `https://blockstream.info/testnet/block/${blockHash}`;
+        default:
+          return '';
+      }
+    }
+
     const author = tweet && tweet.getAuthor()
 
     return(
@@ -120,7 +131,12 @@ const TweetPage = (props) => {
                 </div>
 
                 <div className="tweet-date">
-                    {moment(tweet.getBlockTime() * 1000).format("h:mm A · MMM D, YYYY")}
+                    <a href={getBlockDetailUrl(tweet.getBlockHash(), 'testnet')}
+                     target="_blank"
+                     rel="noopener"
+                     >
+                        {moment(tweet.getBlockTime() * 1000).format("h:mm A · MMM D, YYYY")} (Block #{tweet.getBlockHeight()})
+                    </a>
                 </div>
                 <div className="tweet-stats">
                     <div className="int-num"> 0 </div>
