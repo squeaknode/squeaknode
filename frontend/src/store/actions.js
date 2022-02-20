@@ -180,6 +180,9 @@ export const useActions = (state, dispatch) => ({
     getContactProfiles: data => {
         dispatch({type: types.GET_CONTACT_PROFILES, payload: data})
     },
+    getPaymentSummary: data => {
+        dispatch({type: types.GET_PAYMENT_SUMMARY, payload: data})
+    },
     connectPeer: data => {
         dispatch({type: types.CONNECT_PEER, payload: data})
     },

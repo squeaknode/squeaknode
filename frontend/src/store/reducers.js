@@ -33,6 +33,7 @@ const initialState = {
     msg: '',
     conversations: null,
     conversation: null,
+    paymentSummary: null,
     error: false
 }
 
@@ -367,6 +368,9 @@ const reducer = (state = initialState, action) => {
             return {...state, ...action.payload}
 
         case type.GET_CONTACT_PROFILES:
+            return {...state, ...action.payload}
+
+        case type.GET_PAYMENT_SUMMARY:
             return {...state, ...action.payload}
 
         case type.GET_CONNECTED_PEERS:
