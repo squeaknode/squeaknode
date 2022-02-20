@@ -378,7 +378,6 @@ export const applyMiddleware = dispatch => action => {
             });
 
         case types.IMPORT_SIGNING_PROFILE:
-            console.log(action.payload);
             let importSigningProfileName = action.payload.profileName
             let importSigningProfilePrivKey = action.payload.privateKey
             return importSigningProfileRequest(importSigningProfileName, importSigningProfilePrivKey, (resp) => {
@@ -458,7 +457,6 @@ export const applyMiddleware = dispatch => action => {
                 });
               },
             (err) => {
-              console.log(err);
               alert(err);
             }
           );

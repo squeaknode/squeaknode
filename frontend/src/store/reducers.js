@@ -382,7 +382,6 @@ const reducer = (state = initialState, action) => {
         case type.GET_SENT_PAYMENTS:
             let paymentsSP = state.sentPayments
             let newSP = action.payload.sentPayments
-            console.log(newSP);
             newSP.forEach(t => paymentsSP.push(t));
             return {...state, loading: false, error: false}
 
@@ -392,7 +391,6 @@ const reducer = (state = initialState, action) => {
         case type.GET_RECEIVED_PAYMENTS:
             let paymentsRP = state.receivedPayments
             let newRP = action.payload.receivedPayments
-            console.log(newRP);
             newRP.forEach(t => paymentsRP.push(t));
             return {...state, loading: false, error: false}
 
@@ -413,7 +411,6 @@ const reducer = (state = initialState, action) => {
             return {...state, ...{peer: updatePeer}, loading: false, error: false}
 
         case type.SAVE_PEER:
-            console.log(action.payload);
             let createdPeer = action.payload.savedPeer
             let createdPeers = state.peers
             createdPeers.push(createdPeer)

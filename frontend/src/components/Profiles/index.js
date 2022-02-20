@@ -77,12 +77,8 @@ const Profiles = (props) => {
 
     const createSigningProfile = () => {
         if (usePrivKey) {
-          console.log('Calling actions.importSigningProfile');
-          console.log(newProfileName);
-          console.log(newProfilePrivkey);
           actions.importSigningProfile({profileName: newProfileName, privateKey: newProfilePrivkey});
         } else {
-          console.log('Calling actions.createSigningProfile');
           actions.createSigningProfile({profileName: newProfileName});
         }
         toggleSigningProfileModal();

@@ -42,7 +42,6 @@ export const useActions = (state, dispatch) => ({
         dispatch({type: types.DOWNLOAD_TWEET, payload: data})
     },
     buyTweet: data => {
-        console.log(data);
         dispatch({type: types.SET_STATE, payload: {loading: true}})
         dispatch({type: types.BUY_TWEET, payload: data})
     },
