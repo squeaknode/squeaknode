@@ -115,7 +115,7 @@ const Payments = (props) => {
                 </div>
                 })}
                 {/* TODO: fix get loading state by doing this: https://medium.com/stashaway-engineering/react-redux-tips-better-way-to-handle-loading-flags-in-your-reducers-afda42a804c6 */}
-                {state.loading ? <Loader /> : <div onClick={() => getMoreSentPayments()} className='tweet-btn-side tweet-btn-active'>
+                {state.loading ? <Loader /> : <div onClick={() => getMoreReceivedPayments()} className='tweet-btn-side tweet-btn-active'>
                     Load more
                 </div>}
                 </>
