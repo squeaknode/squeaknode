@@ -237,9 +237,11 @@ const Profile = (props) => {
                                       <div onClick={toggleEditModal} className="more-menu-item">
                                           <span>Edit Profile</span>
                                       </div>
-                                      <div onClick={toggleExportModal} className="more-menu-item">
-                                          <span>Export Private Key</span>
-                                      </div>
+                                      {user.getHasPrivateKey() &&
+                                        <div onClick={toggleExportModal} className="more-menu-item">
+                                            <span>Export Private Key</span>
+                                        </div>
+                                      }
                               </div> : null }
                           </div>
                           </div>
