@@ -106,7 +106,7 @@ const TweetPage = (props) => {
             })}
 
             {/* Current tweet */}
-            <div className="tweet-body-wrapper">
+            <div className={tweet ? "tweet-body-wrapper" : "tweet-body-wrapper missing-tweet"}>
 
                 {tweet ?
                 <>

@@ -62,6 +62,10 @@
     // overflow: hidden; causing tweet page info to cuttoff
 }
 
+.missing-tweet{
+    background-color: rgb(211,211,211);
+}
+
 .tweet-header-content{
     margin-top: 10px;
     margin-bottom: 10px;
@@ -194,7 +198,7 @@
     svg{ fill: rgb(23, 191, 99) !important; }
 }
 .heart-icon:hover{
-    
+
     background-color: rgba(224, 36, 94,0.1);
     svg{ fill: rgb(224, 36, 94) !important; }
 }

@@ -102,7 +102,7 @@ const TweetCard = React.memo(function TweetCard(props) {
     return (
         <div>
 
-        <div onClick={()=>goToTweet(props.id)} key={props.id} className="Tweet-card-wrapper">
+        <div onClick={()=>goToTweet(props.id)} key={props.id} className={props.tweet ? "Tweet-card-wrapper" : "Tweet-card-wrapper missing-tweet"} >
 
             {props.tweet ?
               <>

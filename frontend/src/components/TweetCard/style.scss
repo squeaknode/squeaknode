@@ -12,7 +12,7 @@
 
 .card-userPic-wrapper{
     flex-basis: 49px;
-    margin-right: 10px;  
+    margin-right: 10px;
     display: flex;
     flex-direction: column;
     img{
@@ -26,6 +26,9 @@
     flex-basis: calc(100% - 49px);
 }
 
+.missing-tweet{
+    background-color: rgb(211,211,211);
+}
 
 .card-content-header{
     margin-bottom: 2px;
@@ -118,7 +121,7 @@
             svg{ fill: rgb(23, 191, 99) !important; }
         }
         .heart-icon{
-            
+
             background-color: rgba(224, 36, 94,0.1);
             svg{ fill: rgb(224, 36, 94) !important; }
         }
@@ -208,7 +211,7 @@
 .user-retweet-icon svg{
     width: 13px;
     height: 18.75px;
-    fill: rgb(101, 119, 134);   
+    fill: rgb(101, 119, 134);
 }
 
 .user-retweeted{
