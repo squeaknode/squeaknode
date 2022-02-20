@@ -34,12 +34,12 @@ return(
         {paymentSummary ?
           <div className="feed-trending-card">
               <h3 className="feed-card-header">Payments</h3>
-              <div onClick={()=>props.history.push('/explore')}className="feed-card-trend">
+              <div onClick={()=>props.history.push('/payments')}className="feed-card-trend">
                   <div>Amount Spent</div>
                   <div>{paymentSummary.getAmountSpentMsat() / 1000} sats</div>
                   <div>{paymentSummary.getNumSentPayments()} squeaks</div>
               </div>
-              <div onClick={()=>props.history.push('/explore')}className="feed-card-trend">
+              <div onClick={()=>props.history.push('/payments')}className="feed-card-trend">
                   <div>Amount Earned</div>
                   <div>{paymentSummary.getAmountEarnedMsat() / 1000} sats</div>
                   <div>{paymentSummary.getNumReceivedPayments()} squeaks</div>
