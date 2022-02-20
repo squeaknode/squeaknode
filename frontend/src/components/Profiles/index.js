@@ -17,6 +17,8 @@ const Profiles = (props) => {
     const [styleBody, setStyleBody] = useState(false)
     const [newProfileName, setNewProfileName] = useState('')
     const [newProfilePubkey, setNewProfilePubkey] = useState('')
+    const [usePrivKey, setUsePrivKey] = useState(false)
+    const [newProfilePrivkey, setNewProfilePrivkey] = useState('')
 
     const searchOnChange = (param) => {
         if(tab !== 'Search'){setTab('Search')}
@@ -74,7 +76,15 @@ const Profiles = (props) => {
     }
 
     const createSigningProfile = () => {
-        actions.createSigningProfile({profileName: newProfileName});
+        if (usePrivKey) {
+          console.log('Calling actions.importSigningProfile');
+          console.log(newProfileName);
+          console.log(newProfilePrivkey);
+          actions.importSigningProfile({profileName: newProfileName, privateKey: newProfilePrivkey});
+        } else {
+          console.log('Calling actions.createSigningProfile');
+          actions.createSigningProfile({profileName: newProfileName});
+        }
         toggleSigningProfileModal();
     }
 
@@ -86,6 +96,10 @@ const Profiles = (props) => {
     const handleModalClick = (e) => {
         e.stopPropagation()
     }
+
+    const handleChangeUsePrivKey = () => {
+      setUsePrivKey(!usePrivKey);
+    };
 
 
     return(
@@ -219,6 +233,26 @@ const Profiles = (props) => {
                                 <input onChange={(e)=>setNewProfileName(e.target.value)} type="text" name="name" className="edit-input"/>
                             </div>
                         </div>
+                        <div className="edit-input-wrap">
+                            <div className="edit-input-content">
+                            <label>
+                            <input
+                            type="checkbox"
+                            checked={usePrivKey}
+                            onChange={handleChangeUsePrivKey}
+                            />
+                              Import Existing Private Key
+                            </label>
+                            </div>
+                        </div>
+                        {usePrivKey &&
+                          <div className="edit-input-wrap">
+                              <div className="edit-input-content">
+                                  <label>Private Key</label>
+                                  <input onChange={(e)=>setNewProfilePrivkey(e.target.value)} type="text" name="name" className="edit-input"/>
+                              </div>
+                          </div>
+                        }
                     </form>
                 </div>
             </div>

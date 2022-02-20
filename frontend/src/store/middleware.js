@@ -38,6 +38,7 @@ import {
   getSentPaymentsRequest,
   getReceivedPaymentsRequest,
   getSqueakProfilePrivateKey,
+  importSigningProfileRequest,
 } from '../squeakclient/requests';
 
 export const token = () => {
@@ -371,6 +372,18 @@ export const applyMiddleware = dispatch => action => {
             return createSigningProfileRequest(newSigningProfileName, (resp) => {
                 let newSigningProfileId = resp.getProfileId();
                 return getSqueakProfileRequest(newSigningProfileId, (resp) => {
+                    let payload = {"user": resp.getSqueakProfile() };
+                    dispatch({ type: types.CREATE_SIGNING_PROFILE, payload: payload, data: action.payload });
+                });
+            });
+
+        case types.IMPORT_SIGNING_PROFILE:
+            console.log(action.payload);
+            let importSigningProfileName = action.payload.profileName
+            let importSigningProfilePrivKey = action.payload.privateKey
+            return importSigningProfileRequest(importSigningProfileName, importSigningProfilePrivKey, (resp) => {
+                let importSigningProfileId = resp.getProfileId();
+                return getSqueakProfileRequest(importSigningProfileId, (resp) => {
                     let payload = {"user": resp.getSqueakProfile() };
                     dispatch({ type: types.CREATE_SIGNING_PROFILE, payload: payload, data: action.payload });
                 });
