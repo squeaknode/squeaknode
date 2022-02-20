@@ -21,6 +21,7 @@ const TweetPage = (props) => {
     const {tweet, ancestorTweets, replyTweets, network, account, session} = state
 
     const [modalOpen, setModalOpen] = useState(false)
+    const [buyModalOpen, setBuyModalOpen] = useState(false)
 
     useEffect(()=>{
         window.scrollTo(0, 0)
@@ -57,6 +58,12 @@ const TweetPage = (props) => {
         // if(param === 'edit'){setSaved(false)}
         // if(type === 'parent'){setParent(true)}else{setParent(false)}
         setModalOpen(!modalOpen)
+    }
+
+    const toggleBuyModal = () => {
+        // if(param === 'edit'){setSaved(false)}
+        // if(type === 'parent'){setParent(true)}else{setParent(false)}
+        setBuyModalOpen(!buyModalOpen)
     }
 
     const handleModalClick = (e) => {
@@ -138,7 +145,7 @@ const TweetPage = (props) => {
                   </div> :
                   <div className="tweet-content locked-content">
                       <ICON_LOCKFILL styles={{width:'48px', height:"48px", padding: "5px"}} />
-                      <div onClick={()=>downloadTweet(props.match.params.id)}
+                      <div onClick={()=>toggleBuyModal(props.match.params.id)}
                        className='tweet-unlock-button'>
                           <span>Unlock</span>
                       </div>
@@ -221,6 +228,26 @@ const TweetPage = (props) => {
                 </div>
                 <div style={{marginTop:'5px'}} className="modal-body">
                   <MakeSqueak replyToTweet={tweet} submittedCallback={toggleModal} />
+                </div>
+            </div> : null}
+        </div>:null}
+
+        {tweet && account ?
+        <div onClick={()=>toggleBuyModal()} style={{display: buyModalOpen ? 'block' : 'none'}} className="modal-edit">
+            {buyModalOpen ?
+            <div style={{minHeight: '379px', height: 'initial'}} onClick={(e)=>handleModalClick(e)} className="modal-content">
+                <div className="modal-header">
+                    <div className="modal-closeIcon">
+                        <div onClick={()=>toggleBuyModal()} className="modal-closeIcon-wrap">
+                            <ICON_CLOSE />
+                        </div>
+                    </div>
+                    <p className="modal-title">Buy Squeak</p>
+                </div>
+                <div style={{marginTop:'5px'}} className="modal-body">
+
+                    Buy form here.
+
                 </div>
             </div> : null}
         </div>:null}
