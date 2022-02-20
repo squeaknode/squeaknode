@@ -12,6 +12,7 @@ import Bookmarks from './components/Bookmarks'
 import Lists from './components/Lists'
 import ListPage from './components/ListPage'
 import Profiles from './components/Profiles'
+import Payments from './components/Payments'
 import Peers from './components/Peers'
 import Feed from './components/Feed'
 import Notifications from './components/Notifications'
@@ -53,6 +54,9 @@ const DefaultContainer = withRouter(({ history }) => {
         </Route>
         <Route path="/profiles" exact>
           <Profiles/>
+        </Route>
+        <Route path="/payments" exact>
+          <Payments/>
         </Route>
         <Route path="/peers" exact>
           <Peers/>

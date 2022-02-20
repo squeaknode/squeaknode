@@ -107,6 +107,12 @@ const Nav = ({history}) => {
                             <div className="Nav-item">Peers</div>
                         </div>
                     </Link>
+                    <Link to="/payments" className="Nav-link">
+                        <div className={path === '/paym' ? "Nav-item-hover active-Nav" : "Nav-item-hover"}>
+                            {path === '/paym' ?  <ICON_LISTFILL /> : <ICON_LIST />}
+                            <div className="Nav-item">Payments</div>
+                        </div>
+                    </Link>
                     <Link to="/notifications" className="Nav-link">
                         <div className={path === '/noti' ? "Nav-item-hover active-Nav" : "Nav-item-hover"}>
                             {path === '/noti' ? <ICON_BELLFILL /> : <ICON_BELL />}
