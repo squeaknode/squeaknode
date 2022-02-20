@@ -109,7 +109,6 @@ export const applyMiddleware = dispatch => action => {
         case types.GET_TWEETS:
             // return axios.get(`${API_URL}/tweet`, action.payload)
             // .then(res=> {
-            //   console.log(res.data);
             //   dispatch({ type: types.GET_TWEETS, payload: res.data })
             // })
             // .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
@@ -122,13 +121,10 @@ export const applyMiddleware = dispatch => action => {
             // TODO: handle error response
 
         case types.BUY_TWEET:
-                console.log(action.payload);
                 let buyOfferId = action.payload.offerId
                 let buySqueakHash = action.payload.squeakHash
                 return payOfferRequest(buyOfferId, (resp) => {
-                  console.log(resp);
                   return getSqueakDisplayRequest(buySqueakHash, (resp) => {
-                      console.log(resp);
                       let payload = {"tweet": resp };
                       dispatch({ type: types.GET_TWEET, payload: payload });
       	          });
@@ -141,7 +137,6 @@ export const applyMiddleware = dispatch => action => {
         case types.GET_TWEET:
             // return axios.get(`${API_URL}/tweet/${action.payload}`, action.payload)
             // .then(res=> {
-            //   console.log(res.data);
             //   dispatch({ type: types.GET_TWEET, payload: res.data });
             // })
             // .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
@@ -173,7 +168,6 @@ export const applyMiddleware = dispatch => action => {
     	          });
                 getAncestorSqueakDisplaysRequest(action.payload, (resp) => {
                     let payload = {"ancestorTweets": resp };
-                    console.log(payload)
                     dispatch({ type: types.GET_ANCESTOR_TWEETS, payload: payload });
                 });
                 return;
@@ -192,7 +186,6 @@ export const applyMiddleware = dispatch => action => {
         case types.GET_USER:
             // return axios.get(`${API_URL}/user/${action.payload}/tweets`)
             // .then(res=> {
-            //   console.log(res);
             //   dispatch({ type: types.GET_USER, payload: res.data });
             // })
             // .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
@@ -401,11 +394,9 @@ export const applyMiddleware = dispatch => action => {
             });
 
         case types.GET_SENT_PAYMENTS:
-            console.log(action.payload);
             let lastSentPayment = action.payload.lastSentPayment
             return getSentPaymentsRequest(10, lastSentPayment, (resp) => {
                 let payload = {"sentPayments": resp.getSentPaymentsList() };
-                console.log(payload);
                 dispatch({ type: types.GET_SENT_PAYMENTS, payload: payload });
             });
 
@@ -415,10 +406,8 @@ export const applyMiddleware = dispatch => action => {
 
         case types.GET_RECEIVED_PAYMENTS:
             let lastReceivedPayment = action.payload.lastReceivedPayment
-            console.log(lastReceivedPayment);
             return getReceivedPaymentsRequest(10, lastReceivedPayment, (resp) => {
                 let payload = {"receivedPayments": resp.getReceivedPaymentsList() };
-                console.log(payload);
                 dispatch({ type: types.GET_RECEIVED_PAYMENTS, payload: payload });
             });
 
