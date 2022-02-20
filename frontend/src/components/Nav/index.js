@@ -119,24 +119,6 @@ const Nav = ({history}) => {
                             <div className="Nav-item">Notifications</div>
                         </div>
                     </Link>
-                    <Link to="/messages" className="Nav-link">
-                        <div className={path === '/mess' ? "Nav-item-hover active-Nav" : "Nav-item-hover"}>
-                            {path === '/mess' ?   <ICON_INBOXFILL /> :<ICON_INBOX />}
-                            <div className="Nav-item">Messages</div>
-                        </div>
-                    </Link>
-                    <Link className="Nav-link" to={`/bookmarks`}>
-                        <div className={path === '/book' ? "Nav-item-hover active-Nav" : "Nav-item-hover"}>
-                            {path === '/book' ? <ICON_BOOKMARKFILL /> : <ICON_BOOKMARK />}
-                            <div className="Nav-item">Bookmarks</div>
-                        </div>
-                    </Link>
-                    <Link className="Nav-link" to={`/lists`}>
-                        <div className={path === '/list' ? "Nav-item-hover active-Nav" : "Nav-item-hover"}>
-                            {path === '/list' ? <ICON_LISTFILL /> : <ICON_LIST />}
-                            <div className="Nav-item">Lists</div>
-                        </div>
-                    </Link>
                     </> : null}
                     <div id="moremenu" onClick={openMore} className="Nav-link">
                         <div className={"Nav-item-hover"}>
