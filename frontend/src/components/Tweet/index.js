@@ -77,7 +77,6 @@ const TweetPage = (props) => {
 
     const author = tweet && tweet.getAuthor()
 
-    console.log(network);
 
     return(
         <>
