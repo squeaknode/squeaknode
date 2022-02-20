@@ -122,7 +122,12 @@ const Peers = (props) => {
         <div>
 
         <div className="explore-wrapper">
-            <div className="explore-header">
+            <div className="peers-header-wrapper">
+                <div className="peers-header-content">
+                    <div className="peers-header-name">
+                        Peers
+                    </div>
+                </div>
             </div>
             <div className="profile-details-wrapper">
             <div className="profiles-options">
