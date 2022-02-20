@@ -172,6 +172,8 @@ const Profile = (props) => {
 
     const handleMenuClick = (e) => { e.stopPropagation() }
 
+    console.log(user)
+    console.log(user && user.getHasPrivateKey())
 
     return(
         <div>
@@ -205,7 +207,6 @@ const Profile = (props) => {
                       <div id="moremenu" onClick={openMore} className="Nav-link">
                           <div className={"Nav-item-hover"}>
                               <ICON_SETTINGS  />
-                              <div className="Nav-item">More</div>
                           </div>
                           <div onClick={()=>openMore()} style={{display: moreMenu ? 'block' : 'none'}} className="more-menu-background">
                           <div className="more-modal-wrapper">
