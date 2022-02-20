@@ -123,12 +123,16 @@ export const applyMiddleware = dispatch => action => {
         case types.BUY_TWEET:
                 let buyOfferId = action.payload.offerId
                 let buySqueakHash = action.payload.squeakHash
-                return payOfferRequest(buyOfferId, (resp) => {
-                  return getSqueakDisplayRequest(buySqueakHash, (resp) => {
+                return payOfferRequest(buyOfferId,
+                  (resp) => {
+                    getSqueakDisplayRequest(buySqueakHash, (resp) => {
                       let payload = {"tweet": resp };
                       dispatch({ type: types.GET_TWEET, payload: payload });
-      	          });
-                });
+      	          })},
+                  (err) => {
+                    alert(err);
+                  },
+              );
 
         case types.CLEAR_TWEETS:
             dispatch({ type: types.CLEAR_TWEETS, payload: {}})
@@ -420,8 +424,9 @@ export const applyMiddleware = dispatch => action => {
             let connectPeerHost = action.payload.host;
             let connectPeerPort = action.payload.port;
 
-            return connectSqueakPeerRequest(connectPeerNetwork, connectPeerHost, connectPeerPort, (resp) => {
-              return getConnectedPeersRequest((resp) => {
+            return connectSqueakPeerRequest(connectPeerNetwork, connectPeerHost, connectPeerPort,
+               (resp) => {
+                 getConnectedPeersRequest((resp) => {
                   let connectedPeerConnection = resp.find(obj => {
                     return obj.getPeerAddress().getNetwork() === connectPeerNetwork &&
                     obj.getPeerAddress().getHost() === connectPeerHost &&
@@ -429,8 +434,13 @@ export const applyMiddleware = dispatch => action => {
                   })
                   let payload = {"connectedPeers": resp, "peerConnection": connectedPeerConnection };
                   dispatch({ type: types.GET_CONNECTED_PEERS, payload: payload });
-              });
-            });
+                });
+              },
+            (err) => {
+              console.log(err);
+              alert(err);
+            }
+          );
 
         case types.DISCONNECT_PEER:
             let disconnectPeerNetwork = action.payload.network;

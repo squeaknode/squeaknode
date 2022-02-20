@@ -56,7 +56,6 @@ const TweetPage = (props) => {
         actions.downloadTweet(id)
     }
     const buySqueak = (id) => {
-        console.log(offer.getOfferId());
         const offerId = offer && offer.getOfferId();
         if (!offerId) {
           return;
@@ -109,10 +108,8 @@ const TweetPage = (props) => {
     }
 
     const handleChangeOffer = (e) => {
-      console.log("Offer Selected!!");
       setOffer(e.value);
     }
-
 
     const author = tweet && tweet.getAuthor()
 
@@ -168,18 +165,25 @@ const TweetPage = (props) => {
                     </div>
                 </div>
 
-                {tweet.getContentStr() ?
-                  <div className="tweet-content">
-                      {tweet.getContentStr()}
-                  </div> :
-                  <div className="tweet-content locked-content">
-                      <ICON_LOCKFILL styles={{width:'48px', height:"48px", padding: "5px"}} />
-                      <div onClick={()=>toggleBuyModal(props.match.params.id)}
-                       className='tweet-unlock-button'>
-                          <span>Unlock</span>
-                      </div>
-                  </div>
+                {state.loading ?
+                   <Loader /> :
+                   <>
+                   {tweet.getContentStr() ?
+                     <div className="tweet-content">
+                         {tweet.getContentStr()}
+                     </div> :
+                     <div className="tweet-content locked-content">
+                         <ICON_LOCKFILL styles={{width:'48px', height:"48px", padding: "5px"}} />
+                         <div onClick={()=>toggleBuyModal(props.match.params.id)}
+                          className='tweet-unlock-button'>
+                             <span>Unlock</span>
+                         </div>
+                     </div>
+                   }
+                   </>
                 }
+
+
 
                 <div className="tweet-date">
                     <a href={getBlockDetailUrl(tweet.getBlockHash(), network)}
