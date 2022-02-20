@@ -375,13 +375,14 @@ const reducer = (state = initialState, action) => {
             return {...state, ...action.payload}
 
         case type.GET_SENT_PAYMENTS:
-            console.log(action.payload);
             let paymentsSP = state.sentPayments
             let newSP = action.payload.sentPayments
-            console.log(paymentsSP);
             console.log(newSP);
             newSP.forEach(t => paymentsSP.push(t));
             return {...state, loading: false, error: false}
+
+        case type.CLEAR_SENT_PAYMENTS:
+            return {...state, ...{sentPayments: []}}
 
         case type.GET_CONNECTED_PEERS:
             return {...state, ...action.payload}

@@ -135,6 +135,7 @@ export const applyMiddleware = dispatch => action => {
 
         case types.CLEAR_TWEETS:
             dispatch({ type: types.CLEAR_TWEETS, payload: {}})
+            return;
 
         case types.GET_TWEET:
             // return axios.get(`${API_URL}/tweet/${action.payload}`, action.payload)
@@ -401,13 +402,15 @@ export const applyMiddleware = dispatch => action => {
         case types.GET_SENT_PAYMENTS:
             console.log(action.payload);
             let lastSentPayment = action.payload.lastSentPayment
-            console.log(lastSentPayment);
             return getSentPaymentsRequest(10, lastSentPayment, (resp) => {
-                console.log(resp);
                 let payload = {"sentPayments": resp.getSentPaymentsList() };
                 console.log(payload);
                 dispatch({ type: types.GET_SENT_PAYMENTS, payload: payload });
             });
+
+        case types.CLEAR_SENT_PAYMENTS:
+            dispatch({ type: types.CLEAR_SENT_PAYMENTS, payload: {}})
+            return;
 
         case types.CONNECT_PEER:
             let connectPeerNetwork = action.payload.network;

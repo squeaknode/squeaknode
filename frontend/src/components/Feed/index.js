@@ -29,8 +29,6 @@ const followUser = (e, id) => {
     actions.followUser(id)
 }
 
-console.log(paymentSummary)
-
 return(
     <div className="feed-wrapper">
         {paymentSummary ?

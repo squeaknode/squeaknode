@@ -187,6 +187,9 @@ export const useActions = (state, dispatch) => ({
         dispatch({type: types.SET_STATE, payload: {loading: true}})
         dispatch({type: types.GET_SENT_PAYMENTS, payload: data})
     },
+    clearSentPayments: data => {
+        dispatch({type: types.CLEAR_SENT_PAYMENTS, payload: data})
+    },
     connectPeer: data => {
         dispatch({type: types.CONNECT_PEER, payload: data})
     },

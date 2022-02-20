@@ -41,11 +41,12 @@ const Payments = (props) => {
 
     const getMoreSentPayments = () => {
         let lastSentPayment = getLastSentPayment(state.sentPayments);
-        actions.getTweets({lastSentPayment: lastSentPayment});
+        console.log(lastSentPayment)
+        actions.getSentPayments({lastSentPayment: lastSentPayment});
     }
 
     const reloadSentPayments = () => {
-        actions.clearTweets();
+        actions.clearSentPayments();
         actions.getSentPayments({lastSentPayment: null});
     }
 
@@ -61,8 +62,6 @@ const Payments = (props) => {
         if(props.replyTo){ actions.getTweet(id) }
         props.history.push(`/tweet/${id}`)
     }
-
-    console.log(sentPayments);
 
     return(
         <div>
@@ -109,20 +108,26 @@ const Payments = (props) => {
                 })
                 :
                 tab === 'Sent Payments' ?
-                sentPayments.map(f=>{
-                  return <div onClick={()=>goToTweet(f.getSqueakHash())} key={f.getPaymentHash()} className="search-result-wapper">
-                    <div className="search-user-details">
-                    <div className="search-user-warp">
-                    <div className="search-user-info">
-                    <div className="payment-price">{f.getPriceMsat() / 1000} sats</div>
-                    <div className="payment-squeak-hash"><b>Squeak Hash</b>: {f.getSqueakHash()}</div>
-                    <div className="payment-peer-address"><b>Peer</b>: {f.getPeerAddress().getHost()}:{f.getPeerAddress().getPort()}</div>
-                    <div className="payment-lightning-node"><b>Lightning Node</b>: {f.getNodePubkey()}</div>
-                    </div>
+                  <>
+                  {sentPayments.map(f=>{
+                    return <div onClick={()=>goToTweet(f.getSqueakHash())} key={f.getPaymentHash()} className="search-result-wapper">
+                      <div className="search-user-details">
+                      <div className="search-user-warp">
+                      <div className="search-user-info">
+                      <div className="payment-price">{f.getPriceMsat() / 1000} sats</div>
+                      <div className="payment-squeak-hash"><b>Squeak Hash</b>: {f.getSqueakHash()}</div>
+                      <div className="payment-peer-address"><b>Peer</b>: {f.getPeerAddress().getHost()}:{f.getPeerAddress().getPort()}</div>
+                      <div className="payment-lightning-node"><b>Lightning Node</b>: {f.getNodePubkey()}</div>
+                      </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-                })
+                  })}
+                  {/* TODO: fix get loading state by doing this: https://medium.com/stashaway-engineering/react-redux-tips-better-way-to-handle-loading-flags-in-your-reducers-afda42a804c6 */}
+                  {state.loading ? <Loader /> : <div onClick={() => getMoreSentPayments()} className='tweet-btn-side tweet-btn-active'>
+                      Load more
+                  </div>}
+                  </>
                 : <div className="try-searching">
                         Nothing to see here ..
                         <div/>
