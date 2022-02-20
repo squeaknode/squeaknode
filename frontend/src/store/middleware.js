@@ -163,10 +163,16 @@ export const applyMiddleware = dispatch => action => {
                 if (downloadResult.getNumberDownloaded() === 0) {
                   return;
                 }
-                return getSqueakDisplayRequest(action.payload, (resp) => {
+                getSqueakDisplayRequest(action.payload, (resp) => {
                     let payload = {"tweet": resp };
                     dispatch({ type: types.GET_TWEET, payload: payload });
     	          });
+                getAncestorSqueakDisplaysRequest(action.payload, (resp) => {
+                    let payload = {"ancestorTweets": resp };
+                    console.log(payload)
+                    dispatch({ type: types.GET_ANCESTOR_TWEETS, payload: payload });
+                });
+                return;
     	       });
 
         case types.GET_ACCOUNT:
@@ -425,10 +431,8 @@ export const applyMiddleware = dispatch => action => {
             let savePeerPort = action.payload.port;
 
             return createPeerRequest(savePeerName, savePeerNetwork, savePeerHost, savePeerPort, (resp) => {
-              console.log(resp);
               getPeerByAddressRequest(savePeerNetwork, savePeerHost, savePeerPort, (resp) => {
                   let payload = {"savedPeer": resp };
-                  console.log(payload);
                   dispatch({ type: types.SAVE_PEER, payload: payload });
               });
               getConnectedPeersRequest((resp) => {
