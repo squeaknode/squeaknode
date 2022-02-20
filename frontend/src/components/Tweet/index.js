@@ -5,7 +5,7 @@ import './style.scss'
 import moment from 'moment'
 import Loader from '../Loader'
 import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
-ICON_DELETE, ICON_IMGUPLOAD, ICON_CLOSE } from '../../Icons'
+ICON_DELETE, ICON_IMGUPLOAD, ICON_CLOSE, ICON_LOCKFILL } from '../../Icons'
 import axios from 'axios'
 import {API_URL} from '../../config'
 import { getProfileImageSrcString } from '../../squeakimages/images';
@@ -131,9 +131,19 @@ const TweetPage = (props) => {
                         </div>
                     </div>
                 </div>
-                <div className="tweet-content">
-                    {tweet.getContentStr()}
-                </div>
+
+                {tweet.getContentStr() ?
+                  <div className="tweet-content">
+                      {tweet.getContentStr()}
+                  </div> :
+                  <div className="tweet-content locked-content">
+                      <ICON_LOCKFILL styles={{width:'48px', height:"48px", padding: "5px"}} />
+                      <div onClick={()=>downloadTweet(props.match.params.id)}
+                       className='tweet-unlock-button'>
+                          <span>Unlock</span>
+                      </div>
+                  </div>
+                }
 
                 <div className="tweet-date">
                     <a href={getBlockDetailUrl(tweet.getBlockHash(), network)}

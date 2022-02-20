@@ -130,9 +130,16 @@ const TweetCard = React.memo(function TweetCard(props) {
 
                       </div>
                   </div>
-                  <div className="card-content-info">
-                  {props.tweet.getContentStr()}
-                  </div>
+
+                  {props.tweet.getContentStr() ?
+                    <div className="card-content-info">
+                        {props.tweet.getContentStr()}
+                    </div> :
+                    <div className="card-content-info card-content-locked-content">
+                        Locked content
+                    </div>
+                  }
+
                   <div className="card-buttons-wrapper">
                       <div onClick={(e)=>toggleModal(e)} className="card-button-wrap reply-wrap">
                           <div className="card-icon reply-icon">
