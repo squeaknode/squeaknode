@@ -31,6 +31,7 @@ import {
   getConnectedPeerRequest,
   deletePeerRequest,
   getNetworkRequest,
+  downloadSqueakRequest,
 } from '../squeakclient/requests';
 
 export const token = () => {
@@ -131,6 +132,27 @@ export const applyMiddleware = dispatch => action => {
                 dispatch({ type: types.GET_TWEET, payload: payload });
 	          });
             // TODO: handle error response
+
+        case types.DOWNLOAD_TWEET:
+            return downloadSqueakRequest(action.payload, (resp) => {
+                const downloadResult = resp.getDownloadResult();
+                const numPeers = downloadResult.getNumberPeers();
+                const numDownloaded = downloadResult.getNumberDownloaded();
+                if (numPeers === 0) {
+                  let payload = {msg: "Unable to download because zero connected peers."}
+                  dispatch({ type: types.ERROR, payload: payload });
+                } else {
+                  let payload = {msg: `Downloaded ${numDownloaded} squeaks from ${numPeers} connected peers.`}
+                  dispatch({ type: types.ERROR, payload: payload });
+                }
+                if (downloadResult.getNumberDownloaded() === 0) {
+                  return;
+                }
+                return getSqueakDisplayRequest(action.payload, (resp) => {
+                    let payload = {"tweet": resp };
+                    dispatch({ type: types.GET_TWEET, payload: payload });
+    	          });
+    	       });
 
         case types.GET_ACCOUNT:
             return axios.get(`${API_URL}/auth/user`, headers)

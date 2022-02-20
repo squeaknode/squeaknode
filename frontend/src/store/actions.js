@@ -37,6 +37,10 @@ export const useActions = (state, dispatch) => ({
         dispatch({type: types.SET_STATE, payload: {loading: true}})
         dispatch({type: types.GET_TWEET, payload: data})
     },
+    downloadTweet: data => {
+        dispatch({type: types.SET_STATE, payload: {loading: true}})
+        dispatch({type: types.DOWNLOAD_TWEET, payload: data})
+    },
     verifyToken: data => {
         if(localStorage.getItem('Twittertoken')){
         const jwt = jwt_decode(localStorage.getItem('Twittertoken'))

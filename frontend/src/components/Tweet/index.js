@@ -48,6 +48,9 @@ const TweetPage = (props) => {
     const deleteTweet = (id) => {
         actions.deleteTweet(id)
     }
+    const downloadTweet = (id) => {
+        actions.downloadTweet(id)
+    }
 
     const toggleModal = (e, type) => {
         if(e){ e.stopPropagation() }
@@ -177,6 +180,10 @@ const TweetPage = (props) => {
                     </div>
                     <div className="tweet-content">
                         Missing Tweet
+                        <div onClick={()=>downloadTweet(props.match.params.id)}
+                         className='profiles-create-button'>
+                            <span>Download Tweet</span>
+                        </div>
                     </div>
                 </div>
               }
