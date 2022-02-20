@@ -80,6 +80,10 @@ export const useActions = (state, dispatch) => ({
         dispatch({type: types.SET_STATE, payload: {loading: true}})
         dispatch({type: types.DELETE_USER, payload: data})
     },
+    exportPrivateKey: data => {
+        dispatch({type: types.SET_STATE, payload: {loading: true}})
+        dispatch({type: types.EXPORT_PRIVATE_KEY, payload: data})
+    },
     retweet: data => {
         dispatch({type: types.RETWEET, payload: data})
     },

@@ -37,6 +37,7 @@ import {
   getPaymentSummaryRequest,
   getSentPaymentsRequest,
   getReceivedPaymentsRequest,
+  getSqueakProfilePrivateKey,
 } from '../squeakclient/requests';
 
 export const token = () => {
@@ -264,6 +265,15 @@ export const applyMiddleware = dispatch => action => {
             let deleteProfileId = action.payload.profileId;
             return deleteProfileRequest(deleteProfileId, (resp) => {
               dispatch({ type: types.DELETE_USER, payload: {}, data: action.payload });
+            });
+
+        case types.EXPORT_PRIVATE_KEY:
+            let exportProfileID = action.payload.profileId;
+            return getSqueakProfilePrivateKey(exportProfileID, (resp) => {
+              console.log(resp);
+              let payload = {"privateKey": resp.getPrivateKey() };
+              console.log(payload);
+              dispatch({ type: types.EXPORT_PRIVATE_KEY, payload: payload, data: action.payload });
             });
 
         case types.RETWEET:

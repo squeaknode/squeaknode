@@ -36,6 +36,7 @@ const initialState = {
     paymentSummary: null,
     sentPayments: [],
     receivedPayments: [],
+    privateKey: null,
     error: false
 }
 
@@ -212,6 +213,11 @@ const reducer = (state = initialState, action) => {
               item.setAuthor(updateUser);
             });
             return {...state, ...{user:updateUser}, loading: false, error: false}
+
+        case type.EXPORT_PRIVATE_KEY:
+            console.log(action);
+            console.log(action.payload.privateKey);
+            return {...state, ...action.payload}
 
         case type.RETWEET:
             let user_retweets = state.user

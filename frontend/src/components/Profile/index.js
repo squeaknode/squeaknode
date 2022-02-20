@@ -15,14 +15,16 @@ const Profile = (props) => {
     const [activeTab, setActiveTab] = useState('Tweets')
     const [moreMenu, setMoreMenu] = useState(false)
     const [editName, setName] = useState('')
+    // const [privateKey, setPrivateKey] = useState('')
     const [editModalOpen, setEditModalOpen] = useState(false)
     const [deleteModalOpen, setDeleteModalOpen] = useState(false)
+    const [exportModalOpen, setExportModalOpen] = useState(false)
     const [spendingModalOpen, setSpendingModalOpen] = useState(false)
     const [createModalOpen, setCreateModalOpen] = useState(false)
     const [saved, setSaved] = useState(false)
     const [tab, setTab] = useState('Sats Spent')
     const [styleBody, setStyleBody] = useState(false)
-    const {account, user, userTweets, session} = state
+    const {account, user, userTweets, privateKey, session} = state
     const userParam = props.match.params.username
 
     useEffect(() => {
@@ -66,6 +68,16 @@ const Profile = (props) => {
         toggleDeleteModal();
     }
 
+
+    const exportPrivateKey = () => {
+        console.log('Exporting private key.');
+        let values = {
+            profileId: user.getProfileId(),
+        }
+        actions.exportPrivateKey(values);
+        // toggleExportModal();
+    }
+
     const createContactProfile = () => {
         actions.createContactProfile({profileName: editName, pubkey: userParam});
         toggleCreateModal();
@@ -82,6 +94,12 @@ const Profile = (props) => {
         setStyleBody(!styleBody)
         setSaved(false)
         setTimeout(()=>{ setDeleteModalOpen(!deleteModalOpen) },20)
+    }
+
+    const toggleExportModal = () => {
+        setStyleBody(!styleBody)
+        setSaved(false)
+        setTimeout(()=>{ setExportModalOpen(!exportModalOpen) },20)
     }
 
     const toggleSpendingModal = (param, type) => {
@@ -174,6 +192,7 @@ const Profile = (props) => {
 
     console.log(user)
     console.log(user && user.getHasPrivateKey())
+    console.log(privateKey)
 
     return(
         <div>
@@ -211,12 +230,15 @@ const Profile = (props) => {
                           <div onClick={()=>openMore()} style={{display: moreMenu ? 'block' : 'none'}} className="more-menu-background">
                           <div className="more-modal-wrapper">
                               {moreMenu ?
-                              <div style={{top: `${document.getElementById('moremenu').getBoundingClientRect().top - 40}px`, left: `${document.getElementById('moremenu').getBoundingClientRect().left}px`, height: !session ? '104px' : null }} onClick={(e)=>handleMenuClick(e)} className="more-menu-content">
+                              <div style={{top: `${document.getElementById('moremenu').getBoundingClientRect().top - 40}px`, left: `${document.getElementById('moremenu').getBoundingClientRect().left}px`, height: '160px' }} onClick={(e)=>handleMenuClick(e)} className="more-menu-content">
                                       <div onClick={toggleDeleteModal} className="more-menu-item">
                                           <span>Delete Profile</span>
                                       </div>
                                       <div onClick={toggleEditModal} className="more-menu-item">
                                           <span>Edit Profile</span>
+                                      </div>
+                                      <div onClick={toggleExportModal} className="more-menu-item">
+                                          <span>Export Private Key</span>
                                       </div>
                               </div> : null }
                           </div>
@@ -366,6 +388,37 @@ const Profile = (props) => {
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            {/* Modal for delete profile */}
+            <div onClick={()=>toggleExportModal()} style={{display: exportModalOpen ? 'block' : 'none'}} className="modal-edit">
+                <div onClick={(e)=>handleModalClick(e)} className="modal-content">
+                    <div className="modal-header">
+                        <div className="modal-closeIcon">
+                            <div onClick={()=>toggleExportModal()} className="modal-closeIcon-wrap">
+                                <ICON_CLOSE />
+                            </div>
+                        </div>
+                        <p className="modal-title">'Export Private Key'</p>
+                        <div className="save-modal-wrapper">
+                            <div onClick={exportPrivateKey} className="save-modal-btn">
+                                Export
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="modal-body">
+                        <form className="edit-form">
+                            <div className="edit-input-wrap">
+                                <div className="edit-input-content">
+                                    <label>Private Key</label>
+                                    <input defaultValue={privateKey} readOnly type="text" name="name" className="edit-input"/>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
                 </div>
             </div>
 
