@@ -270,9 +270,7 @@ export const applyMiddleware = dispatch => action => {
         case types.EXPORT_PRIVATE_KEY:
             let exportProfileID = action.payload.profileId;
             return getSqueakProfilePrivateKey(exportProfileID, (resp) => {
-              console.log(resp);
               let payload = {"privateKey": resp.getPrivateKey() };
-              console.log(payload);
               dispatch({ type: types.EXPORT_PRIVATE_KEY, payload: payload, data: action.payload });
             });
 

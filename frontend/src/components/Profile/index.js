@@ -70,7 +70,6 @@ const Profile = (props) => {
 
 
     const exportPrivateKey = () => {
-        console.log('Exporting private key.');
         let values = {
             profileId: user.getProfileId(),
         }
@@ -190,9 +189,6 @@ const Profile = (props) => {
 
     const handleMenuClick = (e) => { e.stopPropagation() }
 
-    console.log(user)
-    console.log(user && user.getHasPrivateKey())
-    console.log(privateKey)
 
     return(
         <div>
