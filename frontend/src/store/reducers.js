@@ -35,6 +35,7 @@ const initialState = {
     conversation: null,
     paymentSummary: null,
     sentPayments: [],
+    receivedPayments: [],
     error: false
 }
 
@@ -383,6 +384,16 @@ const reducer = (state = initialState, action) => {
 
         case type.CLEAR_SENT_PAYMENTS:
             return {...state, ...{sentPayments: []}}
+
+        case type.GET_RECEIVED_PAYMENTS:
+            let paymentsRP = state.receivedPayments
+            let newRP = action.payload.receivedPayments
+            console.log(newRP);
+            newRP.forEach(t => paymentsRP.push(t));
+            return {...state, loading: false, error: false}
+
+        case type.CLEAR_RECEIVED_PAYMENTS:
+            return {...state, ...{receivedPayments: []}}
 
         case type.GET_CONNECTED_PEERS:
             return {...state, ...action.payload}

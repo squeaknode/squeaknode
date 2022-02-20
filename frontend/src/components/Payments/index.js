@@ -10,7 +10,7 @@ import TweetCard from '../TweetCard'
 
 const Payments = (props) => {
     const { state, actions } = useContext(StoreContext)
-    const { account, sentPayments, signingProfiles, contactProfiles, result, tagTweets} = state
+    const { account, sentPayments, receivedPayments, signingProfiles, contactProfiles, result, tagTweets} = state
     const [tab, setTab] = useState('Signing Profiles')
     const [styleBody, setStyleBody] = useState(false)
     const [newProfileName, setNewProfileName] = useState('')
@@ -23,6 +23,7 @@ const Payments = (props) => {
         //actions.getContactProfiles()
 
         reloadSentPayments();
+        reloadReceivedPayments();
 
         // if(props.history.location.search.length>0){
         //     goToTrend(props.history.location.search.substring(1))
@@ -48,6 +49,17 @@ const Payments = (props) => {
     const reloadSentPayments = () => {
         actions.clearSentPayments();
         actions.getSentPayments({lastSentPayment: null});
+    }
+
+    const getMoreReceivedPayments = () => {
+        let lastReceivedPayment = getLastSentPayment(state.receivedPayments);
+        console.log(lastReceivedPayment)
+        actions.getReceivedPayments({lastReceivedPayment: lastReceivedPayment});
+    }
+
+    const reloadReceivedPayments = () => {
+        actions.clearReceivedPayments();
+        actions.getReceivedPayments({lastReceivedPayment: null});
     }
 
     const goToUser = (id) => {
@@ -88,24 +100,26 @@ const Payments = (props) => {
                     </div>
                 </div>
                 {tab === 'Signing Profiles' ?
-                signingProfiles.map(f=>{
-                  return <div onClick={()=>goToUser(f.getPubkey())} key={f.getPubkey()} className="search-result-wapper">
-                    <Link to={`/profile/${f.getPubkey()}`} className="search-userPic-wrapper">
-                      <img style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={`${getProfileImageSrcString(f)}`}/>
-                    </Link>
+                <>
+                {receivedPayments.map(f=>{
+                  return <div onClick={()=>goToTweet(f.getSqueakHash())} key={f.getPaymentHash()} className="search-result-wapper">
                     <div className="search-user-details">
                     <div className="search-user-warp">
                     <div className="search-user-info">
-                    <div className="search-user-name">{f.getProfileName()}</div>
-                    <div className="search-user-username">@{f.getPubkey()}</div>
+                    <div className="payment-price">{f.getPriceMsat() / 1000} sats</div>
+                    <div className="payment-squeak-hash"><b>Squeak Hash</b>: {f.getSqueakHash()}</div>
+                    <div className="payment-peer-address"><b>Peer</b>: {f.getPeerAddress().getHost()}:{f.getPeerAddress().getPort()}</div>
                     </div>
-                    </div>
-                    <div className="search-user-bio">
-                      &nbsp;
                     </div>
                   </div>
                 </div>
-                })
+                })}
+                {/* TODO: fix get loading state by doing this: https://medium.com/stashaway-engineering/react-redux-tips-better-way-to-handle-loading-flags-in-your-reducers-afda42a804c6 */}
+                {state.loading ? <Loader /> : <div onClick={() => getMoreSentPayments()} className='tweet-btn-side tweet-btn-active'>
+                    Load more
+                </div>}
+                </>
+
                 :
                 tab === 'Sent Payments' ?
                   <>

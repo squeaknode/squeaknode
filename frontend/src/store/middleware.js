@@ -36,6 +36,7 @@ import {
   payOfferRequest,
   getPaymentSummaryRequest,
   getSentPaymentsRequest,
+  getReceivedPaymentsRequest,
 } from '../squeakclient/requests';
 
 export const token = () => {
@@ -410,6 +411,18 @@ export const applyMiddleware = dispatch => action => {
 
         case types.CLEAR_SENT_PAYMENTS:
             dispatch({ type: types.CLEAR_SENT_PAYMENTS, payload: {}})
+            return;
+
+        case types.GET_RECEIVED_PAYMENTS:
+            let lastReveivedPayment = action.payload.lastReveivedPayment
+            return getReceivedPaymentsRequest(10, lastReveivedPayment, (resp) => {
+                let payload = {"receivedPayments": resp.getReceivedPaymentsList() };
+                console.log(payload);
+                dispatch({ type: types.GET_RECEIVED_PAYMENTS, payload: payload });
+            });
+
+        case types.CLEAR_RECEIVED_PAYMENTS:
+            dispatch({ type: types.CLEAR_RECEIVED_PAYMENTS, payload: {}})
             return;
 
         case types.CONNECT_PEER:
