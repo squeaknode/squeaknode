@@ -103,10 +103,8 @@ const TweetPage = (props) => {
     }
 
     const optionsFromOffers = (offers) => {
-      console.log(offers)
-      return offers.map((p) => {
-          return { value: p, label: p.getPriceMsat() }
-          // return { value: 'chocolate', label: 'Chocolate' }
+      return offers.map((offer) => {
+          return { value: offer, label: `${offer.getPriceMsat()} msats (${offer.getPeerAddress().getHost()}:${offer.getPeerAddress().getPort()})` }
         });
     }
 
@@ -284,10 +282,13 @@ const TweetPage = (props) => {
                         {offer &&
                           <>
                           <div className="inner-input-box">
-                              {offer.getPriceMsat()} msats
+                              <b>Price</b>: {offer.getPriceMsat()} msats
                           </div>
                           <div className="inner-input-box">
-                              {offer.getPeerAddress().getHost()}:{offer.getPeerAddress().getPort()}
+                              <b>Peer</b>: {offer.getPeerAddress().getHost()}:{offer.getPeerAddress().getPort()}
+                          </div>
+                          <div className="inner-input-box">
+                              <b>Lightning Node</b>: {offer.getNodePubkey()}@{offer.getNodeHost()}:{offer.getNodePort()}
                           </div>
                           </>
                         }
