@@ -32,6 +32,8 @@ import {
   deletePeerRequest,
   getNetworkRequest,
   downloadSqueakRequest,
+  getBuyOffersRequest,
+  payOfferRequest,
 } from '../squeakclient/requests';
 
 export const token = () => {
@@ -115,6 +117,19 @@ export const applyMiddleware = dispatch => action => {
 	              dispatch({ type: types.GET_TWEETS, payload: payload })
 	          });
             // TODO: handle error response
+
+        case types.BUY_TWEET:
+                console.log(action.payload);
+                let buyOfferId = action.payload.offerId
+                let buySqueakHash = action.payload.squeakHash
+                return payOfferRequest(buyOfferId, (resp) => {
+                  console.log(resp);
+                  return getSqueakDisplayRequest(buySqueakHash, (resp) => {
+                      console.log(resp);
+                      let payload = {"tweet": resp };
+                      dispatch({ type: types.GET_TWEET, payload: payload });
+      	          });
+                });
 
         case types.CLEAR_TWEETS:
             dispatch({ type: types.CLEAR_TWEETS, payload: {}})
@@ -203,6 +218,12 @@ export const applyMiddleware = dispatch => action => {
                 dispatch({ type: types.GET_REPLY_TWEETS, payload: payload });
             });
             // TODO: handle error response
+
+        case types.GET_TWEET_OFFERS:
+            return getBuyOffersRequest(action.payload, (resp) => {
+                let payload = {"tweetOffers": resp };
+                dispatch({ type: types.GET_TWEET_OFFERS, payload: payload });
+            });
 
         case types.GET_BOOKMARKS:
             return axios.get(`${API_URL}/user/i/bookmarks`, headers)

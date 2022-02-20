@@ -8,6 +8,7 @@ const initialState = {
     tweet: null,
     ancestorTweets: [],
     replyTweets: [],
+    tweetOffers: [],
     account: null,
     user: null,
     userTweets: [],
@@ -186,6 +187,9 @@ const reducer = (state = initialState, action) => {
             return {...state, ...action.payload, loading: false, error: false}
 
         case type.GET_REPLY_TWEETS:
+            return {...state, ...action.payload, loading: false, error: false}
+
+        case type.GET_TWEET_OFFERS:
             return {...state, ...action.payload, loading: false, error: false}
 
         case type.GET_BOOKMARKS:

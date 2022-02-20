@@ -41,6 +41,11 @@ export const useActions = (state, dispatch) => ({
         dispatch({type: types.SET_STATE, payload: {loading: true}})
         dispatch({type: types.DOWNLOAD_TWEET, payload: data})
     },
+    buyTweet: data => {
+        console.log(data);
+        dispatch({type: types.SET_STATE, payload: {loading: true}})
+        dispatch({type: types.BUY_TWEET, payload: data})
+    },
     verifyToken: data => {
         if(localStorage.getItem('Twittertoken')){
         const jwt = jwt_decode(localStorage.getItem('Twittertoken'))
@@ -132,6 +137,10 @@ export const useActions = (state, dispatch) => ({
     getReplyTweets: data => {
         dispatch({type: types.SET_STATE, payload: {loading: true}})
         dispatch({type: types.GET_REPLY_TWEETS, payload: data})
+    },
+    getTweetOffers: data => {
+        dispatch({type: types.SET_STATE, payload: {loading: true}})
+        dispatch({type: types.GET_TWEET_OFFERS, payload: data})
     },
     getFollowers: data => {
         dispatch({type: types.GET_FOLLOWERS, payload: data})

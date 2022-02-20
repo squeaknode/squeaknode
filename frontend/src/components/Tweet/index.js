@@ -12,16 +12,19 @@ import { getProfileImageSrcString } from '../../squeakimages/images';
 import ContentEditable from 'react-contenteditable'
 import MakeSqueak from '../MakeSqueak'
 import TweetCard from '../TweetCard'
+import Select from 'react-select'
 
 
 const TweetPage = (props) => {
     let history = useHistory();
 
     const { state, actions } = useContext(StoreContext)
-    const {tweet, ancestorTweets, replyTweets, network, account, session} = state
+    const {tweet, ancestorTweets, replyTweets, tweetOffers, network, account, session} = state
 
     const [modalOpen, setModalOpen] = useState(false)
     const [buyModalOpen, setBuyModalOpen] = useState(false)
+    const [offer, setOffer] = useState(null)
+
 
     useEffect(()=>{
         window.scrollTo(0, 0)
@@ -52,6 +55,19 @@ const TweetPage = (props) => {
     const downloadTweet = (id) => {
         actions.downloadTweet(id)
     }
+    const buySqueak = (id) => {
+        console.log(offer.getOfferId());
+        const offerId = offer && offer.getOfferId();
+        if (!offerId) {
+          return;
+        }
+        const values = {
+          offerId: offerId,
+          squeakHash: props.match.params.id,
+        }
+        actions.buyTweet(values)
+        toggleBuyModal();
+    }
 
     const toggleModal = (e, type) => {
         if(e){ e.stopPropagation() }
@@ -61,6 +77,7 @@ const TweetPage = (props) => {
     }
 
     const toggleBuyModal = () => {
+        actions.getTweetOffers(props.match.params.id);
         // if(param === 'edit'){setSaved(false)}
         // if(type === 'parent'){setParent(true)}else{setParent(false)}
         setBuyModalOpen(!buyModalOpen)
@@ -84,6 +101,20 @@ const TweetPage = (props) => {
           return '';
       }
     }
+
+    const optionsFromOffers = (offers) => {
+      console.log(offers)
+      return offers.map((p) => {
+          return { value: p, label: p.getPriceMsat() }
+          // return { value: 'chocolate', label: 'Chocolate' }
+        });
+    }
+
+    const handleChangeOffer = (e) => {
+      console.log("Offer Selected!!");
+      setOffer(e.value);
+    }
+
 
     const author = tweet && tweet.getAuthor()
 
@@ -245,8 +276,32 @@ const TweetPage = (props) => {
                     <p className="modal-title">Buy Squeak</p>
                 </div>
                 <div style={{marginTop:'5px'}} className="modal-body">
+                    {tweetOffers.length} offers.
+                    <div className="Tweet-input-side">
+                        <div className="inner-input-box">
+                            <Select options={optionsFromOffers(tweetOffers)} onChange={handleChangeOffer} />
+                        </div>
+                        {offer &&
+                          <>
+                          <div className="inner-input-box">
+                              {offer.getPriceMsat()} msats
+                          </div>
+                          <div className="inner-input-box">
+                              {offer.getPeerAddress().getHost()}:{offer.getPeerAddress().getPort()}
+                          </div>
+                          </>
+                        }
+                        <div className="inner-input-links">
+                            <div className="input-links-side">
+                            </div>
+                            <div className="tweet-btn-holder">
+                                <div onClick={buySqueak} className={offer ? 'tweet-btn-side tweet-btn-active' : 'tweet-btn-side'}>
+                                    Buy
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                    Buy form here.
 
                 </div>
             </div> : null}
