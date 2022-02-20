@@ -1,6 +1,6 @@
 import React , { useEffect, useState, useContext, useRef} from 'react'
 import './style.scss'
-import { ICON_ARROWBACK, ICON_MARKDOWN, ICON_DATE, ICON_CLOSE, ICON_UPLOAD, ICON_NEWMSG } from '../../Icons'
+import { ICON_ARROWBACK, ICON_MARKDOWN, ICON_DATE, ICON_CLOSE, ICON_UPLOAD, ICON_NEWMSG, ICON_SETTINGS, ICON_DARK } from '../../Icons'
 import { withRouter, Link } from 'react-router-dom'
 import { StoreContext } from '../../store/store'
 import { getProfileImageSrcString } from '../../squeakimages/images';
@@ -13,6 +13,7 @@ import {API_URL} from '../../config'
 const Profile = (props) => {
     const { state, actions } = useContext(StoreContext)
     const [activeTab, setActiveTab] = useState('Tweets')
+    const [moreMenu, setMoreMenu] = useState(false)
     const [editName, setName] = useState('')
     const [editModalOpen, setEditModalOpen] = useState(false)
     const [deleteModalOpen, setDeleteModalOpen] = useState(false)
@@ -167,6 +168,11 @@ const Profile = (props) => {
         actions.getUserTweets({username: props.match.params.username, lastTweet: null});
     }
 
+    const openMore = () => { setMoreMenu(!moreMenu) }
+
+    const handleMenuClick = (e) => { e.stopPropagation() }
+
+
     return(
         <div>
             <div>
@@ -195,26 +201,28 @@ const Profile = (props) => {
                         <img src={user ? `${getProfileImageSrcString(user)}` : null} alt=""/>
                     </div>
 
-                    {account && !user &&
-                      <div onClick={(e)=>toggleCreateModal('create')}
-                       className='profiles-create-button'>
-                          <span>Add Contact Profile</span>
+                    {user &&
+                      <div id="moremenu" onClick={openMore} className="Nav-link">
+                          <div className={"Nav-item-hover"}>
+                              <ICON_SETTINGS  />
+                              <div className="Nav-item">More</div>
+                          </div>
+                          <div onClick={()=>openMore()} style={{display: moreMenu ? 'block' : 'none'}} className="more-menu-background">
+                          <div className="more-modal-wrapper">
+                              {moreMenu ?
+                              <div style={{top: `${document.getElementById('moremenu').getBoundingClientRect().top - 40}px`, left: `${document.getElementById('moremenu').getBoundingClientRect().left}px`, height: !session ? '104px' : null }} onClick={(e)=>handleMenuClick(e)} className="more-menu-content">
+                                      <div onClick={toggleDeleteModal} className="more-menu-item">
+                                          <span>Delete Profile</span>
+                                      </div>
+                                      <div onClick={toggleEditModal} className="more-menu-item">
+                                          <span>Edit Profile</span>
+                                      </div>
+                              </div> : null }
+                          </div>
+                          </div>
                       </div>
                     }
 
-
-                    {account && user &&
-                      <div onClick={(e)=>toggleDeleteModal('edit')}
-                       className='profile-edit-button'>
-                          <span>Delete</span>
-                      </div>
-                    }
-                    {account && user &&
-                      <div onClick={(e)=>toggleEditModal('edit')}
-                       className='profile-edit-button'>
-                          <span>Edit</span>
-                      </div>
-                    }
                     {account && user &&
                       <div onClick={(e)=>
                         user.getFollowing() ?
@@ -223,6 +231,13 @@ const Profile = (props) => {
                       }
                        className={user.getFollowing() ? 'unfollow-switch profile-edit-button' : 'profile-edit-button'}>
                           <span><span>{ account && user.getFollowing() ? 'Following' : 'Follow'}</span></span>
+                      </div>
+                    }
+
+                    {account && !user &&
+                      <div onClick={(e)=>toggleCreateModal('create')}
+                       className='profiles-create-button'>
+                          <span>Add Contact Profile</span>
                       </div>
                     }
                 </div>
