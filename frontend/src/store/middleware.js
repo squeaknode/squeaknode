@@ -414,8 +414,9 @@ export const applyMiddleware = dispatch => action => {
             return;
 
         case types.GET_RECEIVED_PAYMENTS:
-            let lastReveivedPayment = action.payload.lastReveivedPayment
-            return getReceivedPaymentsRequest(10, lastReveivedPayment, (resp) => {
+            let lastReceivedPayment = action.payload.lastReceivedPayment
+            console.log(lastReceivedPayment);
+            return getReceivedPaymentsRequest(10, lastReceivedPayment, (resp) => {
                 let payload = {"receivedPayments": resp.getReceivedPaymentsList() };
                 console.log(payload);
                 dispatch({ type: types.GET_RECEIVED_PAYMENTS, payload: payload });
