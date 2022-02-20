@@ -127,11 +127,21 @@
     flex-direction: column;
 }
 
-.search-user-name{
+.payment-price{
     font-weight: bold;
 }
 
-.search-user-username{
+.payment-squeak-hash{
+    color: rgb(101, 119, 134);
+    line-height: 1;
+}
+
+.payment-peer-address{
+    color: rgb(101, 119, 134);
+    line-height: 1;
+}
+
+.payment-lightning-node{
     color: rgb(101, 119, 134);
     line-height: 1;
 }

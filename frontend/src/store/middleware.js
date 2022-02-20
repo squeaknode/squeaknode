@@ -35,6 +35,7 @@ import {
   getBuyOffersRequest,
   payOfferRequest,
   getPaymentSummaryRequest,
+  getSentPaymentsRequest,
 } from '../squeakclient/requests';
 
 export const token = () => {
@@ -395,6 +396,17 @@ export const applyMiddleware = dispatch => action => {
             return getPaymentSummaryRequest((resp) => {
                 let payload = {"paymentSummary": resp.getPaymentSummary() };
                 dispatch({ type: types.GET_PAYMENT_SUMMARY, payload: payload });
+            });
+
+        case types.GET_SENT_PAYMENTS:
+            console.log(action.payload);
+            let lastSentPayment = action.payload.lastSentPayment
+            console.log(lastSentPayment);
+            return getSentPaymentsRequest(10, lastSentPayment, (resp) => {
+                console.log(resp);
+                let payload = {"sentPayments": resp.getSentPaymentsList() };
+                console.log(payload);
+                dispatch({ type: types.GET_SENT_PAYMENTS, payload: payload });
             });
 
         case types.CONNECT_PEER:
