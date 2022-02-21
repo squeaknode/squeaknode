@@ -6,6 +6,7 @@ import { ICON_LOGO, ICON_HOME, ICON_HASH, ICON_BELL, ICON_INBOX
 , ICON_LIST, ICON_USER, ICON_LAPTOP, ICON_SETTINGS, ICON_HOMEFILL, ICON_HASHFILL,
 ICON_BELLFILL, ICON_LISTFILL, ICON_USERFILL, ICON_LAPTOPFILL, ICON_FEATHER,
 ICON_CLOSE,ICON_IMGUPLOAD, ICON_INBOXFILL, ICON_LIGHT, ICON_DARK } from '../../Icons'
+import { ReactComponent as YourSvg } from '../../icon.svg';
 import axios from 'axios'
 import {API_URL} from '../../config'
 import MakeSqueak from '../MakeSqueak'
@@ -81,7 +82,7 @@ const Nav = ({history}) => {
             <div className="Nav-Content">
                 <nav className="Nav-wrapper">
                     <Link to={`/app/home`} className="logo-wrapper">
-                        <ICON_LOGO styles={{fill:"rgb(29,161,242)", width:'47px', height:"30px"}}/>
+                        <YourSvg styles={{fill:"rgb(29,161,242)", width:'47px', height:"30px"}}/>
                     </Link>
                     <Link className="Nav-link" to={`/app/home`}>
                         <div className={path === '/home' ? "Nav-item-hover active-Nav" : "Nav-item-hover"}>
