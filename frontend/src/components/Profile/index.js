@@ -238,9 +238,6 @@ const Profile = (props) => {
                                       <div onClick={toggleEditModal} className="more-menu-item">
                                           <span>Edit Profile</span>
                                       </div>
-                                      <div onClick={downloadUserSqueaks} className="more-menu-item">
-                                          <span>Download Squeaks</span>
-                                      </div>
                                       {user.getHasPrivateKey() &&
                                         <div onClick={toggleExportModal} className="more-menu-item">
                                             <span>Export Private Key</span>
@@ -249,6 +246,15 @@ const Profile = (props) => {
                               </div> : null }
                           </div>
                           </div>
+                      </div>
+                    }
+
+                    {account &&
+                      <div onClick={(e)=>
+                        downloadUserSqueaks()
+                      }
+                       className={'profile-edit-button'}>
+                          <span><span>{'Download Squeaks'}</span></span>
                       </div>
                     }
 
