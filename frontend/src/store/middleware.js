@@ -181,14 +181,10 @@ export const applyMiddleware = dispatch => action => {
     	       });
 
         case types.DOWNLOAD_USER_SQUEAKS:
-            console.log('Calling downloadAddressSqueaksRequest.');
             return downloadAddressSqueaksRequest(action.payload, (resp) => {
-                console.log("resp:");
-                console.log(resp);
                 const downloadResult = resp.getDownloadResult();
                 const numPeers = downloadResult.getNumberPeers();
                 const numDownloaded = downloadResult.getNumberDownloaded();
-                console.log(numDownloaded);
                 if (numPeers === 0) {
                   let payload = {msg: "Unable to download because zero connected peers."}
                     dispatch({ type: types.ERROR, payload: payload });
@@ -199,10 +195,7 @@ export const applyMiddleware = dispatch => action => {
                   if (downloadResult.getNumberDownloaded() === 0) {
                     return;
                   }
-                  console.log('Getting user squeaks');
-                  console.log(action.payload);
                   getAddressSqueakDisplaysRequest(action.payload, 10, null, (resp) => {
-                      console.log(resp);
                       let payload = {"userTweets": resp };
                       dispatch({ type: types.CLEAR_USER_TWEETS, payload: {}})
                       dispatch({ type: types.GET_USER_TWEETS, payload: payload });
