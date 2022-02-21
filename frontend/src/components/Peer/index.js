@@ -138,6 +138,11 @@ return(
         </div>
         <div className="listp-details-wrap">
             <div className="bookmarks-header-name">{peer && peer.getPeerName()}</div>
+            <div className="list-owner-wrap">
+                <div>{props.match.params.host}:{props.match.params.port}</div>
+            </div>
+
+            <div className="profile-options">
             {peer &&
               <div onClick={(e)=>toggleDeleteModal()}
                className='peer-connect-button'>
@@ -150,11 +155,10 @@ return(
                   <span>Add Saved Peer</span>
               </div>
             }
-
-
-            <div className="list-owner-wrap">
-                <div>{props.match.params.host}:{props.match.params.port}</div>
             </div>
+
+
+            <div className="profile-options">
             <div onClick={(e)=>
                  peerConnection ?
                  disconnectPeer(e) :
@@ -163,7 +167,9 @@ return(
                 className={peerConnection ? 'disconnect peer-connect-button' : 'peer-connect-button'}>
                    <span><span>{ peerConnection ? 'Connected' : 'Connect'}</span></span>
             </div>
+            </div>
 
+            <div className="profile-options">
             {peer &&
               <div onClick={(e)=>
                 peer.getAutoconnect() ?
@@ -174,6 +180,7 @@ return(
                   <span><span>{ peer.getAutoconnect() ? 'Autoconnecting' : 'Not Autoconnecting'}</span></span>
               </div>
             }
+            </div>
 
         </div>
 
