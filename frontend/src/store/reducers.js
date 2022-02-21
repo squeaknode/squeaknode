@@ -55,10 +55,7 @@ const reducer = (state = initialState, action) => {
             return {...state, ...action.payload, loggedin: true, loading: false, error: false}
 
         case type.LOGOUT:
-            console.log('Logout.');
             window.location.replace('/')
-            // window.location.assign('https://www.javascripttutorial.net/');
-            console.log('Changed page.');
             return {...state, ...action.payload}
 
         case type.REGISTER:
@@ -117,9 +114,6 @@ const reducer = (state = initialState, action) => {
             }
 
         // case type.LIKE_TWEET:
-        //     console.log("action.payload")
-        //     console.log(action.payload)
-        //
         //     let account_likes = state.account
         //     let tweet_likes = state.tweets
         //     let user_likes = state.user

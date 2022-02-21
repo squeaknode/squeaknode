@@ -60,9 +60,7 @@ export const applyMiddleware = dispatch => action => {
             .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
 
         case types.LOGOUT:
-            console.log('logout');
             return logoutRequest((resp) => {
-                console.log('resp');
                 dispatch({ type: types.LOGOUT, payload: {} });
             })
 

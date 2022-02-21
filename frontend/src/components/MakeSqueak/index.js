@@ -39,7 +39,6 @@ const MakeSqueak = (props) => {
     }
 
     const handleChangeSigningProfile = (e) => {
-      console.log("Signing profile Selected!!");
       setSigningProfile(e.value);
     }
 

@@ -43,7 +43,6 @@ const Payments = (props) => {
 
     const getMoreSentPayments = () => {
         let lastSentPayment = getLastSentPayment(state.sentPayments);
-        console.log(lastSentPayment)
         actions.getSentPayments({lastSentPayment: lastSentPayment});
     }
 
@@ -54,7 +53,6 @@ const Payments = (props) => {
 
     const getMoreReceivedPayments = () => {
         let lastReceivedPayment = getLastSentPayment(state.receivedPayments);
-        console.log(lastReceivedPayment)
         actions.getReceivedPayments({lastReceivedPayment: lastReceivedPayment});
     }
 
