@@ -1,5 +1,6 @@
 import React , { useEffect, useState, useContext, useRef } from 'react'
 import './style.scss'
+import moment from 'moment'
 import {  withRouter, Link } from 'react-router-dom'
 import { StoreContext } from '../../store/store'
 import Loader from '../Loader'
@@ -22,7 +23,7 @@ const [saved, setSaved] = useState(false)
 const [tab, setTab] = useState('Members')
 const [bannerLoading, setBannerLoading] = useState(false)
 const [styleBody, setStyleBody] = useState(false)
-const {peer, peerConnection, list, listTweets, resultUsers} = state
+const {peer, peerConnection, list} = state
 
 useEffect(() => {
     window.scrollTo(0, 0)
@@ -153,9 +154,39 @@ return(
                    <span><span>{ peerConnection ? 'Connected' : 'Connect'}</span></span>
             </div>
         </div>
-        {listTweets && listTweets.map(t=>{
-            return <TweetCard retweet={t.retweet} username={t.username} name={t.name} parent={t.parent} key={t._id} id={t._id} user={t.user} createdAt={t.createdAt} description={t.description} images={t.images} replies={t.replies} retweets={t.retweets} likes={t.likes}  />
-        })}
+
+        <div className="feed-wrapper">
+            {peerConnection &&
+              <div className="feed-trending-card">
+                  <div className="feed-card-trend">
+                      <div>Connection Time</div>
+                      <div>{moment(peerConnection.getConnectTimeS() * 1000).fromNow(true)}</div>
+                  </div>
+                  <div className="feed-card-trend">
+                      <div>Bytes received</div>
+                      <div>{peerConnection.getNumberBytesReceived()}</div>
+                  </div>
+                  <div className="feed-card-trend">
+                      <div>Messages received</div>
+                      <div>{peerConnection.getNumberMessagesReceived()}</div>
+                  </div>
+                  <div className="feed-card-trend">
+                      <div>Last Message Received Time</div>
+                      <div>{moment(peerConnection.getLastMessageReceivedTimeS() * 1000).fromNow(true)}</div>
+                  </div>
+                  <div className="feed-card-trend">
+                      <div>Bytes sent</div>
+                      <div>{peerConnection.getNumberBytesSent()}</div>
+                  </div>
+                  <div className="feed-card-trend">
+                      <div>Messages sent</div>
+                      <div>{peerConnection.getNumberMessagesSent()}</div>
+                  </div>
+              </div>
+            }
+        </div>
+
+
     </div>
 
     {/* Modal for delete profile */}
