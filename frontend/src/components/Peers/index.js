@@ -234,11 +234,6 @@ const Peers = (props) => {
                         </div>
                     </div>
                     <p className="modal-title">'Show External Address'</p>
-                    <div className="save-modal-wrapper">
-                        <div onClick={() => console.log('foo')} className="save-modal-btn">
-                            Export
-                        </div>
-                    </div>
                 </div>
 
                 <div className="modal-body">
