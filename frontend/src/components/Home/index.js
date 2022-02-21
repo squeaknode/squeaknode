@@ -43,7 +43,7 @@ const Home = () => {
         <div className="Home-wrapper">
             <div className="Home-header-wrapper">
                 <h2 className="Home-header">
-                    Latest Tweets
+                    Latest Squeaks
                 </h2>
             </div>
             {session ? <MakeSqueak /> : null }

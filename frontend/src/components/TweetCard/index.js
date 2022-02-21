@@ -39,7 +39,8 @@ const TweetCard = React.memo(function TweetCard(props) {
         if(props.history.location.pathname.slice(1,5) === 'prof'){
             info = { dest: "profile", id, retweetId }
         }else{ info = { id, retweetId } }
-        actions.retweet(info)
+        // actions.retweet(info)
+        alert('Re-Squeak not yet implemented!');
     }
 
     const deleteTweet = (e,id) => {

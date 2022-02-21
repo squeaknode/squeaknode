@@ -47,7 +47,8 @@ const TweetPage = (props) => {
     const retweet = (id) => {
         if(!session){ actions.alert('Please Sign In'); return }
         info = { dest: "tweet", id }
-        actions.retweet(info)
+        // actions.retweet(info)
+        alert('Re-Squeak not yet implemented!');
     }
     const deleteTweet = (id) => {
         actions.deleteTweet(id)
@@ -123,7 +124,7 @@ const TweetPage = (props) => {
                         <ICON_ARROWBACK/>
                     </div>
                 </div>
-                <div className="tweet-header-content"> Tweet </div>
+                <div className="tweet-header-content"> Squeak </div>
             </div>
 
             {/* Unknown Ancestor tweet */}
@@ -195,9 +196,9 @@ const TweetPage = (props) => {
                 </div>
                 <div className="tweet-stats">
                     <div className="int-num"> 0 </div>
-                    <div className="int-text"> Retweets </div>
+                    <div className="int-text"> Sats Spent </div>
                     <div className="int-num"> 0 </div>
-                    <div className="int-text"> Likes </div>
+                    <div className="int-text"> Sats Earned </div>
                 </div>
                 <div className="tweet-interactions">
                     <div onClick={()=>toggleModal()} className="tweet-int-icon">
