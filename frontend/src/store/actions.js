@@ -153,10 +153,6 @@ export const useActions = (state, dispatch) => ({
     getConversations: data => {
         dispatch({type: types.GET_CONVERSATIONS, payload: data})
     },
-    startChat: data => {
-        dispatch({type: types.SET_STATE, payload: {startingChat: true}})
-        dispatch({type: types.START_CHAT, payload: data})
-    },
     getSingleConversation: data =>{
         dispatch({type: types.GET_SINGLE_CONVERSATION, payload: data})
     },

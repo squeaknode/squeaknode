@@ -13,9 +13,7 @@ import Payments from './components/Payments'
 import Peers from './components/Peers'
 import Feed from './components/Feed'
 import Notifications from './components/Notifications'
-import Messages from './components/Messages'
 import Alerts from './components/Alerts'
-import ChatPage from './components/ChatPage'
 
 const Home = lazy(() => import('./components/Home'))
 const Profile = lazy(() => import('./components/Profile'))
@@ -52,13 +50,7 @@ const DefaultContainer = withRouter(({ history }) => {
         <Route path="/notifications" exact>
           <Notifications/>
         </Route>
-        <Route path="/messages">
-          <Messages/>
-        </Route>
       </div>
-        <Route path="/messages" >
-            <ChatPage/>
-        </Route>
         {history.location.pathname.slice(0,9) !== '/messages' &&
         <div className="right-section">
           <Feed/>
