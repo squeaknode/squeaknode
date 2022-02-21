@@ -47,7 +47,7 @@ const Nav = ({history}) => {
         }
       }, [])
 
-      const path = history.location.pathname.slice(0,5)
+      const path = history.location.pathname.slice(4,9)
 
       const openMore = () => { setMoreMenu(!moreMenu) }
 
