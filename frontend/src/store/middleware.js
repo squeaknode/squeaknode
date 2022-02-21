@@ -41,6 +41,8 @@ import {
   importSigningProfileRequest,
   downloadAddressSqueaksRequest,
   logoutRequest,
+  setPeerAutoconnectRequest,
+  getPeerRequest,
 } from '../squeakclient/requests';
 
 export const token = () => {
@@ -321,6 +323,22 @@ export const applyMiddleware = dispatch => action => {
                   dispatch({ type: types.UNFOLLOW_USER, payload: payload, data: action.payload });
             });
         });
+
+        case types.SET_PEER_AUTOCONNECT:
+            return setPeerAutoconnectRequest(action.payload, true, (resp) => {
+              getPeerRequest(action.payload, (resp) => {
+                  let payload = {"savedPeer": resp.getSqueakPeer() };
+                  dispatch({ type: types.SAVE_PEER, payload: payload });
+              });
+            });
+
+        case types.SET_PEER_NOT_AUTOCONNECT:
+            return setPeerAutoconnectRequest(action.payload, false, (resp) => {
+              getPeerRequest(action.payload, (resp) => {
+                  let payload = {"savedPeer": resp.getSqueakPeer() };
+                  dispatch({ type: types.SAVE_PEER, payload: payload });
+              });
+            });
 
         case types.EDIT_LIST:
             return axios.put(`${API_URL}/lists/${action.payload.id}/edit`, action.payload, headers)

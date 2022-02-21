@@ -90,6 +90,12 @@ export const useActions = (state, dispatch) => ({
     unfollowUser: data => {
         dispatch({type: types.UNFOLLOW_USER, payload: data})
     },
+    setPeerAutoconnect: data => {
+        dispatch({type: types.SET_PEER_AUTOCONNECT, payload: data})
+    },
+    setPeerNotAutoconnect: data => {
+        dispatch({type: types.SET_PEER_NOT_AUTOCONNECT, payload: data})
+    },
     logout: () => {
         // localStorage.removeItem("Twittertoken")
         // window.location.reload()

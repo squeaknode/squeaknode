@@ -151,6 +151,23 @@
     }
 }
 
+.remove-autoconnect{
+    background-color: rgb(29, 161, 242);
+    span{color: #fff !important;}
+}
+
+.remove-autoconnect:hover{
+    background-color: rgb(202,32,85) !important;
+    border: 1px solid transparent;
+    span{
+        color: #fff;
+        span{display: none;}
+        &:before{
+            content: 'Set Not Autoconnecting';
+        }
+    }
+}
+
 .profile-details-box{
     margin-top: 40px;
 }

@@ -91,6 +91,16 @@ const savePeer = () => {
     toggleSavePeerModal();
 }
 
+const setIsAutoconnect = (e,id) => {
+    e.stopPropagation()
+    actions.setPeerAutoconnect(id)
+}
+
+const setIsNotAutoconnect = (e,id) => {
+    e.stopPropagation()
+    actions.setPeerNotAutoconnect(id)
+}
+
 const toggleDeleteModal = () => {
     setStyleBody(!styleBody)
     setSaved(false)
@@ -153,6 +163,18 @@ return(
                 className={peerConnection ? 'disconnect peer-connect-button' : 'peer-connect-button'}>
                    <span><span>{ peerConnection ? 'Connected' : 'Connect'}</span></span>
             </div>
+
+            {peer &&
+              <div onClick={(e)=>
+                peer.getAutoconnect() ?
+                setIsNotAutoconnect(e,peer.getPeerId()) :
+                setIsAutoconnect(e,peer.getPeerId())
+              }
+               className={peer.getAutoconnect() ? 'remove-autoconnect peer-connect-button' : 'peer-connect-button'}>
+                  <span><span>{ peer.getAutoconnect() ? 'Autoconnecting' : 'Not Autoconnecting'}</span></span>
+              </div>
+            }
+
         </div>
 
         <div className="feed-wrapper">
