@@ -205,7 +205,7 @@ const TweetPage = (props) => {
                     </div>
                     <div onClick={()=>retweet(tweet.getSqueakHash())} className="tweet-int-icon">
                         <div className="card-icon retweet-icon">
-                             <ICON_RETWEET styles={account && account.retweets.includes(tweet.getSqueakHash()) ? {stroke: 'rgb(23, 191, 99)'} : {fill:'rgb(101, 119, 134)'}}/>
+                             <ICON_RETWEET styles={account && false ? {stroke: 'rgb(23, 191, 99)'} : {fill:'rgb(101, 119, 134)'}}/>
                         </div>
                     </div>
                     <div onClick={()=>{

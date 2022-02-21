@@ -149,14 +149,13 @@ const Profiles = (props) => {
                     <div className="search-user-name">{f.getProfileName()}</div>
                     <div className="search-user-username">@{f.getPubkey()}</div>
                     </div>
-                    {f._id === account && account._id ? null :
-                      <div onClick={(e)=>{
+                    <div onClick={(e)=>{
                         f.getFollowing() ?
                         unfollowUser(e,f.getProfileId()) :
                         followUser(e,f.getProfileId())
                       }} className={account && f.getFollowing() ? "follow-btn-wrap unfollow-switch":"follow-btn-wrap"}>
                         <span><span>{account && f.getFollowing() ? 'Following' : 'Follow'}</span></span>
-                      </div>}
+                    </div>
                     </div>
                     <div className="search-user-bio">
                       &nbsp;
@@ -177,14 +176,13 @@ const Profiles = (props) => {
                     <div className="search-user-name">{f.getProfileName()}</div>
                     <div className="search-user-username">@{f.getPubkey()}</div>
                     </div>
-                    {f._id === account && account._id ? null :
-                      <div onClick={(e)=>{
+                    <div onClick={(e)=>{
                         f.getFollowing() ?
                         unfollowUser(e,f.getProfileId()) :
                         followUser(e,f.getProfileId())
                       }} className={account && f.getFollowing() ? "follow-btn-wrap unfollow-switch":"follow-btn-wrap"}>
                         <span><span>{account && f.getFollowing() ? 'Following' : 'Follow'}</span></span>
-                      </div>}
+                    </div>
                     </div>
                     <div className="search-user-bio">
                       &nbsp;

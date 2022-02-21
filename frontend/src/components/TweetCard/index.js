@@ -154,7 +154,7 @@ const TweetCard = React.memo(function TweetCard(props) {
                       </div>
                       <div onClick={(e)=>retweet(e,props.id)} className="card-button-wrap retweet-wrap">
                           <div className="card-icon retweet-icon">
-                              <ICON_RETWEET styles={account && account.retweets.includes(props.id) ? {stroke: 'rgb(23, 191, 99)'} : {fill:'rgb(101, 119, 134)'}}/>
+                              <ICON_RETWEET styles={account && false ? {stroke: 'rgb(23, 191, 99)'} : {fill:'rgb(101, 119, 134)'}}/>
                           </div>
                           <div className="card-icon-value">
                               0
