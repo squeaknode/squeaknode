@@ -1,5 +1,5 @@
 import React, { Suspense, lazy } from 'react'
-import { Route, Switch, BrowserRouter, Redirect, withRouter } from 'react-router-dom'
+import { Route, Switch, HashRouter, Redirect, withRouter } from 'react-router-dom'
 import { StoreProvider } from './store/store'
 import 'dotenv/config'
 import './App.scss'
@@ -67,7 +67,7 @@ function App() {
   return (
     <div className="dark-mode">
       <StoreProvider>
-        <BrowserRouter>
+        <HashRouter>
           <Suspense fallback={<Loader />}>
             <Alerts />
             <Switch>
@@ -80,7 +80,7 @@ function App() {
               <Route component={DefaultContainer} />
             </Switch>
           </Suspense>
-        </BrowserRouter>
+        </HashRouter>
       </StoreProvider>
     </div>
   )
