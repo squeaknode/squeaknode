@@ -30,9 +30,6 @@ export const useActions = (state, dispatch) => ({
     clearTweets: data => {
         dispatch({type: types.CLEAR_TWEETS, payload: data})
     },
-    bookmarkTweet: data => {
-        dispatch({type: types.BOOKMARK, payload: data})
-    },
     getTweet: data => {
         dispatch({type: types.SET_STATE, payload: {loading: true}})
         dispatch({type: types.GET_TWEET, payload: data})

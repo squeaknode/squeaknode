@@ -3,8 +3,8 @@ import { StoreContext } from '../../store/store'
 import { Link, withRouter, Redirect } from 'react-router-dom'
 import './style.scss'
 import { ICON_LOGO, ICON_HOME, ICON_HASH, ICON_BELL, ICON_INBOX
-,ICON_BOOKMARK, ICON_LIST, ICON_USER, ICON_LAPTOP, ICON_SETTINGS, ICON_HOMEFILL, ICON_HASHFILL,
-ICON_BELLFILL, ICON_BOOKMARKFILL, ICON_LISTFILL, ICON_USERFILL, ICON_LAPTOPFILL, ICON_FEATHER,
+, ICON_LIST, ICON_USER, ICON_LAPTOP, ICON_SETTINGS, ICON_HOMEFILL, ICON_HASHFILL,
+ICON_BELLFILL, ICON_LISTFILL, ICON_USERFILL, ICON_LAPTOPFILL, ICON_FEATHER,
 ICON_CLOSE,ICON_IMGUPLOAD, ICON_INBOXFILL, ICON_LIGHT, ICON_DARK } from '../../Icons'
 import axios from 'axios'
 import {API_URL} from '../../config'
@@ -133,11 +133,6 @@ const Nav = ({history}) => {
                                         <span>Change Theme</span>
                                         <span>{theme ? <ICON_DARK/> : <ICON_LIGHT />}</span>
                                     </div>
-                                    {session ?
-                                    <Link to={`/bookmarks`} className="more-menu-item more-item">
-                                        <span>Bookmarks</span>
-                                        <span><ICON_BOOKMARK/></span>
-                                    </Link> : null }
                                     {session ?
                                     <div onClick={()=>actions.logout()} className="more-menu-item">
                                         Log out @{account && account.username}
