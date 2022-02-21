@@ -103,7 +103,7 @@ const TweetPage = (props) => {
 
     const optionsFromOffers = (offers) => {
       return offers.map((offer) => {
-          return { value: offer, label: `${offer.getPriceMsat()} msats (${offer.getPeerAddress().getHost()}:${offer.getPeerAddress().getPort()})` }
+          return { value: offer, label: `${offer.getPriceMsat() / 1000} sats (${offer.getPeerAddress().getHost()}:${offer.getPeerAddress().getPort()})` }
         });
     }
 
@@ -286,7 +286,7 @@ const TweetPage = (props) => {
                         {offer &&
                           <>
                           <div className="inner-input-box">
-                              <b>Price</b>: {offer.getPriceMsat()} msats
+                              <b>Price</b>: {offer.getPriceMsat() / 1000} sats
                           </div>
                           <div className="inner-input-box">
                               <b>Peer</b>: {offer.getPeerAddress().getHost()}:{offer.getPeerAddress().getPort()}
