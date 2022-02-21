@@ -389,7 +389,7 @@ const Profile = (props) => {
                 </div>
             </div>
 
-            {/* Modal for delete profile */}
+            {/* Modal for export profile */}
             <div onClick={()=>toggleExportModal()} style={{display: exportModalOpen ? 'block' : 'none'}} className="modal-edit">
                 <div onClick={(e)=>handleModalClick(e)} className="modal-content">
                     <div className="modal-header">
