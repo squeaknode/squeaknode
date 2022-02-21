@@ -138,9 +138,6 @@ export const useActions = (state, dispatch) => ({
     searchUsers: data => {
         dispatch({type: types.SEARCH_USERS, payload: data})
     },
-    whoToFollow: data => {
-        dispatch({type: types.WHO_TO_FOLLOW, payload: data})
-    },
     alert: data => {
         dispatch({type: types.SET_STATE, payload: {top: '16px', msg: data}})
         setTimeout(() => { dispatch({type: types.SET_STATE, payload: {top: '-100px'}}) }, 2700)

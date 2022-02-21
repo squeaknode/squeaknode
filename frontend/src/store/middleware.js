@@ -548,11 +548,6 @@ export const applyMiddleware = dispatch => action => {
                 dispatch({ type: types.UPDATE_PEER, payload: {}, data: action.payload });
             });
 
-        case types.WHO_TO_FOLLOW:
-            return axios.get(`${API_URL}/user/i/suggestions`, headers)
-            .then(res=>dispatch({ type: types.WHO_TO_FOLLOW, payload: res.data, data: action.payload }))
-            .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
-
         case types.GET_CONVERSATIONS:
             return axios.get(`${API_URL}/chat/conversations`, headers)
             .then(res=>dispatch({ type: types.GET_CONVERSATIONS, payload: res.data }))
