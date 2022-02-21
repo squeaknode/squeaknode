@@ -13,7 +13,7 @@ import MakeSqueak from '../MakeSqueak'
 
 const Home = () => {
     const { state, actions } = useContext(StoreContext)
-    const { account, session } = state
+    const { session } = state
     useEffect(() => {
         window.scrollTo(0, 0)
         // actions.getTweets({lastTweet: null})

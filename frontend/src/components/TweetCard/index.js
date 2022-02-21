@@ -15,7 +15,7 @@ import ContentEditable from 'react-contenteditable'
 
 const TweetCard = React.memo(function TweetCard(props) {
     const { state, actions } = useContext(StoreContext)
-    const {account, session} = state
+    const { session} = state
 
     const [modalOpen, setModalOpen] = useState(false)
     const [parent, setParent] = useState(false)
@@ -154,7 +154,7 @@ const TweetCard = React.memo(function TweetCard(props) {
                       </div>
                       <div onClick={(e)=>retweet(e,props.id)} className="card-button-wrap retweet-wrap">
                           <div className="card-icon retweet-icon">
-                              <ICON_RETWEET styles={account && false ? {stroke: 'rgb(23, 191, 99)'} : {fill:'rgb(101, 119, 134)'}}/>
+                              <ICON_RETWEET styles={false ? {stroke: 'rgb(23, 191, 99)'} : {fill:'rgb(101, 119, 134)'}}/>
                           </div>
                           <div className="card-icon-value">
                               0
@@ -166,7 +166,7 @@ const TweetCard = React.memo(function TweetCard(props) {
                         likeTweet(e, props.tweet.getSqueakHash())
                       } className="card-button-wrap heart-wrap">
                           <div className="card-icon heart-icon">
-                              {account && props.tweet.getLikedTimeMs() ?
+                              {props.tweet.getLikedTimeMs() ?
                               <ICON_HEARTFULL styles={{fill:'rgb(224, 36, 94)'}}/> :
                               <ICON_HEART styles={{fill:'rgb(101, 119, 134)'}}/>}
                           </div>

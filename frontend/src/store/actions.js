@@ -61,9 +61,6 @@ export const useActions = (state, dispatch) => ({
         dispatch({type: types.SET_STATE, payload: {loading: true}})
         dispatch({type: types.GET_USER, payload: data})
     },
-    getBookmarks: data => {
-        dispatch({type: types.GET_BOOKMARKS})
-    },
     updateUser: data => {
         dispatch({type: types.SET_STATE, payload: {loading: true}})
         dispatch({type: types.UPDATE_USER, payload: data})

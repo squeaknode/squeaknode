@@ -24,7 +24,7 @@ const Profile = (props) => {
     const [saved, setSaved] = useState(false)
     const [tab, setTab] = useState('Sats Spent')
     const [styleBody, setStyleBody] = useState(false)
-    const {account, user, userTweets, privateKey, session} = state
+    const {user, userTweets, privateKey, session} = state
     const userParam = props.match.params.username
 
     useEffect(() => {
@@ -249,27 +249,25 @@ const Profile = (props) => {
                       </div>
                     }
 
-                    {account &&
-                      <div onClick={(e)=>
+                    <div onClick={(e)=>
                         downloadUserSqueaks()
                       }
                        className={'profile-edit-button'}>
                           <span><span>{'Download Squeaks'}</span></span>
-                      </div>
-                    }
+                    </div>
 
-                    {account && user &&
+                    {user &&
                       <div onClick={(e)=>
                         user.getFollowing() ?
                         unfollowUser(e,user.getProfileId()) :
                         followUser(e,user.getProfileId())
                       }
                        className={user.getFollowing() ? 'unfollow-switch profile-edit-button' : 'profile-edit-button'}>
-                          <span><span>{ account && user.getFollowing() ? 'Following' : 'Follow'}</span></span>
+                          <span><span>{ user.getFollowing() ? 'Following' : 'Follow'}</span></span>
                       </div>
                     }
 
-                    {account && !user &&
+                    {!user &&
                       <div onClick={(e)=>toggleCreateModal('create')}
                        className='profiles-create-button'>
                           <span>Add Contact Profile</span>

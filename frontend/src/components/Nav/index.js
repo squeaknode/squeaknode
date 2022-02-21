@@ -19,7 +19,7 @@ import {
 const Nav = ({history}) => {
     const { state, actions } = useContext(StoreContext)
 
-    const { account, session } = state
+    const { session } = state
     const [moreMenu, setMoreMenu] = useState(false)
     const [theme, setTheme] = useState(true)
     const [modalOpen, setModalOpen] = useState(false)
@@ -37,10 +37,6 @@ const Nav = ({history}) => {
 
     useEffect(()=>{
         let ran = false
-        history.listen((location, action) => {
-          state.account == null ? actions.verifyToken('get account') : actions.verifyToken()
-        });
-        !ran && state.account == null ? actions.verifyToken('get account') : actions.verifyToken()
         if(localStorage.getItem('Theme')=='dark'){
             setTheme('dark')
             setFetchMethod(window.fetch)
@@ -135,7 +131,7 @@ const Nav = ({history}) => {
                                     </div>
                                     {session ?
                                     <div onClick={()=>actions.logout()} className="more-menu-item">
-                                        Log out @{account && account.username}
+                                        Log out
                                     </div> :
                                     <div onClick={()=>history.push('/login')} className="more-menu-item">
                                     Log in
@@ -163,7 +159,6 @@ const Nav = ({history}) => {
             </div>
         </div>
 
-        {account &&
         <div onClick={()=>toggleModal()} style={{display: modalOpen ? 'block' : 'none'}} className="modal-edit">
             <div style={{minHeight: '270px', height: 'initial'}} onClick={(e)=>handleModalClick(e)} className="modal-content">
                 <div className="modal-header">
@@ -178,7 +173,7 @@ const Nav = ({history}) => {
                     <MakeSqueak submittedCallback={toggleModal} />
                 </div>
             </div>
-        </div>}
+        </div>
         </div>
     )
 }

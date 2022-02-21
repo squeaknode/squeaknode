@@ -22,7 +22,7 @@ const [saved, setSaved] = useState(false)
 const [tab, setTab] = useState('Members')
 const [bannerLoading, setBannerLoading] = useState(false)
 const [styleBody, setStyleBody] = useState(false)
-const {account, peer, peerConnection, list, listTweets, resultUsers} = state
+const {peer, peerConnection, list, listTweets, resultUsers} = state
 
 useEffect(() => {
     window.scrollTo(0, 0)
@@ -127,13 +127,13 @@ return(
         </div>
         <div className="listp-details-wrap">
             <div className="bookmarks-header-name">{peer && peer.getPeerName()}</div>
-            {account && peer &&
+            {peer &&
               <div onClick={(e)=>toggleDeleteModal()}
                className='peer-connect-button'>
                   <span>Delete</span>
               </div>
             }
-            {account && !peer &&
+            {!peer &&
               <div onClick={(e)=>toggleSavePeerModal('edit')}
                className='profiles-create-button'>
                   <span>Add Saved Peer</span>
@@ -144,16 +144,14 @@ return(
             <div className="list-owner-wrap">
                 <div>{props.match.params.host}:{props.match.params.port}</div>
             </div>
-            {account &&
-              <div onClick={(e)=>
+            <div onClick={(e)=>
                  peerConnection ?
                  disconnectPeer(e) :
                  connectPeer(e)
               }
                 className={peerConnection ? 'disconnect peer-connect-button' : 'peer-connect-button'}>
-                   <span><span>{ account && peerConnection ? 'Connected' : 'Connect'}</span></span>
-              </div>
-            }
+                   <span><span>{ peerConnection ? 'Connected' : 'Connect'}</span></span>
+            </div>
         </div>
         {listTweets && listTweets.map(t=>{
             return <TweetCard retweet={t.retweet} username={t.username} name={t.name} parent={t.parent} key={t._id} id={t._id} user={t.user} createdAt={t.createdAt} description={t.description} images={t.images} replies={t.replies} retweets={t.retweets} likes={t.likes}  />

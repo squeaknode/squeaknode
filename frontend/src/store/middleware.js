@@ -208,11 +208,6 @@ export const applyMiddleware = dispatch => action => {
             .then(res=>dispatch({ type: types.GET_ACCOUNT, payload: res.data }))
             .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
 
-        case types.BOOKMARK:
-            return axios.post(`${API_URL}/tweet/${action.payload.id}/bookmark`, action.payload, headers)
-            .then(res=>dispatch({ type: types.BOOKMARK, payload: res.data, data: action.payload }))
-            .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
-
         case types.GET_USER:
             // return axios.get(`${API_URL}/user/${action.payload}/tweets`)
             // .then(res=> {
@@ -257,11 +252,6 @@ export const applyMiddleware = dispatch => action => {
                 let payload = {"tweetOffers": resp };
                 dispatch({ type: types.GET_TWEET_OFFERS, payload: payload });
             });
-
-        case types.GET_BOOKMARKS:
-            return axios.get(`${API_URL}/user/i/bookmarks`, headers)
-            .then(res=>dispatch({ type: types.GET_BOOKMARKS, payload: res.data }))
-            .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
 
         case types.UPDATE_USER:
             // return axios.put(`${API_URL}/user/i`, action.payload, headers)

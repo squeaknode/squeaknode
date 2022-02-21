@@ -9,7 +9,7 @@ const Feed = (props) => {
 
 const { state, actions } = useContext(StoreContext)
 
-const {account, paymentSummary, trends, suggestions, session} = state
+const {paymentSummary, trends, suggestions, session} = state
 // const userParam = props.match.params.username
 
 useEffect(() => {

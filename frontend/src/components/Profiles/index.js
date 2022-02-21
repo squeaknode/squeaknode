@@ -10,7 +10,7 @@ import TweetCard from '../TweetCard'
 
 const Profiles = (props) => {
     const { state, actions } = useContext(StoreContext)
-    const { account, signingProfiles, contactProfiles, result, tagTweets} = state
+    const { signingProfiles, contactProfiles, result, tagTweets} = state
     const [tab, setTab] = useState('Signing Profiles')
     const [signingProfileModalOpen, setSigningProfileModalOpen] = useState(false)
     const [contactProfileModalOpen, setContactProfileModalOpen] = useState(false)
@@ -114,18 +114,14 @@ const Profiles = (props) => {
             </div>
             <div className="profile-details-wrapper">
             <div className="profiles-options">
-            {account &&
-              <div onClick={(e)=>toggleSigningProfileModal('edit')}
+            <div onClick={(e)=>toggleSigningProfileModal('edit')}
                className='profiles-create-button'>
                   <span>Add Signing Profile</span>
-              </div>
-            }
-            {account &&
-              <div onClick={(e)=>toggleContactProfileModal('edit')}
+            </div>
+            <div onClick={(e)=>toggleContactProfileModal('edit')}
                className='profiles-create-button'>
                   <span>Add Contact Profile</span>
-              </div>
-            }
+            </div>
             </div>
             </div>
             <div>
@@ -153,8 +149,8 @@ const Profiles = (props) => {
                         f.getFollowing() ?
                         unfollowUser(e,f.getProfileId()) :
                         followUser(e,f.getProfileId())
-                      }} className={account && f.getFollowing() ? "follow-btn-wrap unfollow-switch":"follow-btn-wrap"}>
-                        <span><span>{account && f.getFollowing() ? 'Following' : 'Follow'}</span></span>
+                      }} className={f.getFollowing() ? "follow-btn-wrap unfollow-switch":"follow-btn-wrap"}>
+                        <span><span>{f.getFollowing() ? 'Following' : 'Follow'}</span></span>
                     </div>
                     </div>
                     <div className="search-user-bio">
@@ -180,8 +176,8 @@ const Profiles = (props) => {
                         f.getFollowing() ?
                         unfollowUser(e,f.getProfileId()) :
                         followUser(e,f.getProfileId())
-                      }} className={account && f.getFollowing() ? "follow-btn-wrap unfollow-switch":"follow-btn-wrap"}>
-                        <span><span>{account && f.getFollowing() ? 'Following' : 'Follow'}</span></span>
+                      }} className={f.getFollowing() ? "follow-btn-wrap unfollow-switch":"follow-btn-wrap"}>
+                        <span><span>{f.getFollowing() ? 'Following' : 'Follow'}</span></span>
                     </div>
                     </div>
                     <div className="search-user-bio">

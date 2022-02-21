@@ -19,7 +19,7 @@ const TweetPage = (props) => {
     let history = useHistory();
 
     const { state, actions } = useContext(StoreContext)
-    const {tweet, ancestorTweets, replyTweets, tweetOffers, network, account, session} = state
+    const {tweet, ancestorTweets, replyTweets, tweetOffers, network, session} = state
 
     const [modalOpen, setModalOpen] = useState(false)
     const [buyModalOpen, setBuyModalOpen] = useState(false)
@@ -205,7 +205,7 @@ const TweetPage = (props) => {
                     </div>
                     <div onClick={()=>retweet(tweet.getSqueakHash())} className="tweet-int-icon">
                         <div className="card-icon retweet-icon">
-                             <ICON_RETWEET styles={account && false ? {stroke: 'rgb(23, 191, 99)'} : {fill:'rgb(101, 119, 134)'}}/>
+                             <ICON_RETWEET styles={false ? {stroke: 'rgb(23, 191, 99)'} : {fill:'rgb(101, 119, 134)'}}/>
                         </div>
                     </div>
                     <div onClick={()=>{
@@ -214,7 +214,7 @@ const TweetPage = (props) => {
                       likeTweet(tweet.getSqueakHash())
                     }} className="tweet-int-icon">
                         <div className="card-icon heart-icon">
-                        {account && tweet.getLikedTimeMs() ? <ICON_HEARTFULL styles={{fill:'rgb(224, 36, 94)'}}
+                        {tweet.getLikedTimeMs() ? <ICON_HEARTFULL styles={{fill:'rgb(224, 36, 94)'}}
                          /> : <ICON_HEART/>} </div>
                     </div>
                     <div onClick={()=>deleteTweet(tweet.getSqueakHash())} className="tweet-int-icon">
@@ -247,7 +247,7 @@ const TweetPage = (props) => {
 
         </div>
 
-        {tweet && account ?
+        {tweet ?
         <div onClick={()=>toggleModal()} style={{display: modalOpen ? 'block' : 'none'}} className="modal-edit">
             {modalOpen ?
             <div style={{minHeight: '379px', height: 'initial'}} onClick={(e)=>handleModalClick(e)} className="modal-content">
@@ -265,7 +265,7 @@ const TweetPage = (props) => {
             </div> : null}
         </div>:null}
 
-        {tweet && account ?
+        {tweet ?
         <div onClick={()=>toggleBuyModal()} style={{display: buyModalOpen ? 'block' : 'none'}} className="modal-edit">
             {buyModalOpen ?
             <div style={{minHeight: '379px', height: 'initial'}} onClick={(e)=>handleModalClick(e)} className="modal-content">

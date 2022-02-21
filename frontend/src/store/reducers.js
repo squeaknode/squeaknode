@@ -166,15 +166,6 @@ const reducer = (state = initialState, action) => {
         case type.GET_ACCOUNT:
             return {...state, ...action.payload}
 
-        case type.BOOKMARK:
-            let account_bookmarks = state.account
-            if(action.payload.msg === "bookmarked"){
-                account_bookmarks.bookmarks.push(action.data.id)
-            }else if(action.payload.msg === "removed from bookmarks"){
-                let bookIndex = account_bookmarks.bookmarks.indexOf(action.data.id)
-                bookIndex > -1 && account_bookmarks.bookmarks.splice(bookIndex, 1)}
-            return {...state, ...{account:account_bookmarks}}
-
         case type.GET_USER:
             return {...state, ...action.payload}
 
@@ -195,9 +186,6 @@ const reducer = (state = initialState, action) => {
 
         case type.GET_TWEET_OFFERS:
             return {...state, ...action.payload, loading: false, error: false}
-
-        case type.GET_BOOKMARKS:
-            return {...state, ...action.payload}
 
         case type.DELETE_USER:
             let deletedUserTweets = state.userTweets

@@ -11,7 +11,7 @@ import TweetCard from '../TweetCard'
 
 const Payments = (props) => {
     const { state, actions } = useContext(StoreContext)
-    const { account, sentPayments, receivedPayments, signingProfiles, contactProfiles, result, tagTweets} = state
+    const { sentPayments, receivedPayments, signingProfiles, contactProfiles, result, tagTweets} = state
     const [tab, setTab] = useState('Sent Payments')
     const [styleBody, setStyleBody] = useState(false)
     const [newProfileName, setNewProfileName] = useState('')

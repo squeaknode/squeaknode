@@ -13,7 +13,7 @@ import Select from 'react-select'
 
 const MakeSqueak = (props) => {
     const { state, actions } = useContext(StoreContext)
-    const { signingProfiles, account, session } = state
+    const { signingProfiles, session } = state
     useEffect(() => {
         actions.getSigningProfiles()
     }, [])

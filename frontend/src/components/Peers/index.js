@@ -10,7 +10,7 @@ import TweetCard from '../TweetCard'
 
 const Peers = (props) => {
     const { state, actions } = useContext(StoreContext)
-    const { account, peers, connectedPeers, result, tagTweets} = state
+    const { peers, connectedPeers, result, tagTweets} = state
     const [tab, setTab] = useState('Connected Peers')
     const [savePeerModalOpen, setSavePeerModalOpen] = useState(false)
     const [connectPeerModalOpen, setconnectPeerModalOpen] = useState(false)
@@ -131,18 +131,14 @@ const Peers = (props) => {
             </div>
             <div className="profile-details-wrapper">
             <div className="profiles-options">
-            {account &&
-              <div onClick={(e)=>toggleconnectPeerModal('edit')}
+            <div onClick={(e)=>toggleconnectPeerModal('edit')}
                className='profiles-create-button'>
                   <span>Connect Peer</span>
-              </div>
-            }
-            {account &&
-              <div onClick={(e)=>toggleSavePeerModal('edit')}
+            </div>
+            <div onClick={(e)=>toggleSavePeerModal('edit')}
                className='profiles-create-button'>
                   <span>Add Saved Peer</span>
-              </div>
-            }
+            </div>
             </div>
             </div>
             <div>
