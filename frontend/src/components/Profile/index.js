@@ -224,14 +224,14 @@ const Profile = (props) => {
                     </div>
 
                     {user &&
-                      <div id="moremenu" onClick={openMore} className="Nav-link">
+                      <div id="profileMoreMenu" onClick={openMore} className="Nav-link">
                           <div className={"Nav-item-hover"}>
                               <ICON_SETTINGS  />
                           </div>
                           <div onClick={()=>openMore()} style={{display: moreMenu ? 'block' : 'none'}} className="more-menu-background">
                           <div className="more-modal-wrapper">
                               {moreMenu ?
-                              <div style={{top: `${document.getElementById('moremenu').getBoundingClientRect().top - 40}px`, left: `${document.getElementById('moremenu').getBoundingClientRect().left}px`, height: '210px' }} onClick={(e)=>handleMenuClick(e)} className="more-menu-content">
+                              <div style={{top: `${document.getElementById('profileMoreMenu').getBoundingClientRect().top - 40}px`, left: `${document.getElementById('profileMoreMenu').getBoundingClientRect().left}px`, height: '210px' }} onClick={(e)=>handleMenuClick(e)} className="more-menu-content">
                                       <div onClick={toggleDeleteModal} className="more-menu-item">
                                           <span>Delete Profile</span>
                                       </div>
