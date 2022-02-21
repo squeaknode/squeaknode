@@ -91,8 +91,9 @@ export const useActions = (state, dispatch) => ({
         dispatch({type: types.UNFOLLOW_USER, payload: data})
     },
     logout: () => {
-        localStorage.removeItem("Twittertoken")
-        window.location.reload()
+        // localStorage.removeItem("Twittertoken")
+        // window.location.reload()
+        dispatch({type: types.LOGOUT, payload: {}})
     },
     getList: data => {
         dispatch({type: types.GET_LIST, payload: data})

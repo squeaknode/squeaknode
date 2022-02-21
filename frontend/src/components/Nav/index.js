@@ -129,13 +129,9 @@ const Nav = ({history}) => {
                                         <span>Change Theme</span>
                                         <span>{theme ? <ICON_DARK/> : <ICON_LIGHT />}</span>
                                     </div>
-                                    {session ?
                                     <div onClick={()=>actions.logout()} className="more-menu-item">
                                         Log out
-                                    </div> :
-                                    <div onClick={()=>history.push('/login')} className="more-menu-item">
-                                    Log in
-                                    </div>}
+                                    </div>
                             </div> : null }
                         </div>
                         </div>

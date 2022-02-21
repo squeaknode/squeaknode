@@ -40,6 +40,7 @@ import {
   getSqueakProfilePrivateKey,
   importSigningProfileRequest,
   downloadAddressSqueaksRequest,
+  logoutRequest,
 } from '../squeakclient/requests';
 
 export const token = () => {
@@ -57,6 +58,11 @@ export const applyMiddleware = dispatch => action => {
             return axios.post(`${API_URL}/auth/login`, action.payload)
             .then(res=>dispatch({ type: types.LOGIN, payload: res.data, rememberMe: action.payload.remember }))
             .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
+
+        case types.LOGOUT:
+            logoutRequest((resp) => {
+                dispatch({ type: types.LOGOUT, payload: {} });
+            })
 
         case types.REGISTER:
             return axios.post(`${API_URL}/auth/register`, action.payload)

@@ -53,6 +53,10 @@ const reducer = (state = initialState, action) => {
             localStorage.setItem("Twittertoken", action.payload.token)
             return {...state, ...action.payload, loggedin: true, loading: false, error: false}
 
+        case type.LOGOUT:
+            console.log('Logout.');
+            window.location.reload();
+
         case type.REGISTER:
             setTimeout(()=>{action.data.func()},250)
             return {...state, ...action.payload, loading: false, error: false}
