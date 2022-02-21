@@ -134,7 +134,7 @@ const MakeSqueak = (props) => {
                                 {tweetText.length > 0 && tweetText.length + '/280'}
                             </div>
                             <div onClick={submitTweet} className={tweetText.length ? 'tweet-btn-side tweet-btn-active' : 'tweet-btn-side'}>
-                                Tweet
+                                Squeak
                             </div>
                         </div>
                     </div>

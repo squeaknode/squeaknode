@@ -141,7 +141,7 @@ const Nav = ({history}) => {
                     <div className="Nav-tweet">
                         <div onClick={()=>toggleModal()} className="Nav-tweet-link">
                             <div className="Nav-tweet-btn btn-hide">
-                                Tweet
+                                Squeak
                             </div>
                             <div className="Nav-tweet-btn btn-show">
                                 <span><ICON_FEATHER/></span>
@@ -164,7 +164,7 @@ const Nav = ({history}) => {
                             <ICON_CLOSE />
                         </div>
                     </div>
-                    <p className="modal-title">Tweet</p>
+                    <p className="modal-title">Squeak</p>
                 </div>
                 <div style={{marginTop:'5px'}} className="modal-body">
                     <MakeSqueak submittedCallback={toggleModal} />
