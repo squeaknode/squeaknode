@@ -630,14 +630,9 @@ export function makeSqueakRequest(profileId, content, replyto, hasRecipient, rec
     'makesqueakrequest',
     request,
     MakeSqueakReply.deserializeBinary,
-    (response) => {
-      handleResponse(response);
-    },
+    handleResponse,
     handleErr,
   );
-  // client.makeSqueak(request, {}, (err, response) => {
-  //   handleResponse(response);
-  // });
 }
 
 export function getSqueakDisplayRequest(hash, handleResponse) {

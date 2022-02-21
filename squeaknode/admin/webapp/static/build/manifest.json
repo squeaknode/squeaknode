@@ -1,15 +1,11 @@
 {
-  "short_name": "Squeaknode",
-  "name": "Squeaknode is a frontend for accessing a squeak node",
+  "short_name": "Twitter Clone",
+  "name": "Twitter Clone",
   "icons": [
-    {
-      "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
-    }
+   
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#536DFE",
+  "theme_color": "#000000",
   "background_color": "#ffffff"
 }

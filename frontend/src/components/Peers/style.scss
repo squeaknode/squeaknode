@@ -1,0 +1,29 @@
+
+.peers-header-wrapper{
+    position: sticky;
+    border-bottom: 1px solid rgb(230, 236, 240);
+    border-left: 1px solid rgb(230, 236, 240);
+    background-color: #fff;
+    z-index: 8;
+    top: 0px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    height: 53px;
+    min-height: 53px;
+    padding-left: 15px;
+    padding-right: 15px;
+    max-width: 1000px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.peers-header-content{
+    display: flex;
+    flex-direction: column;
+}
+
+.peers-header-name{
+    font-weight: 800;
+    font-size: 19px;
+}
