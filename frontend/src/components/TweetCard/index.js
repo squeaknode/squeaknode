@@ -5,7 +5,7 @@ import { StoreContext } from '../../store/store'
 import { getProfileImageSrcString } from '../../squeakimages/images';
 import { Link, withRouter } from 'react-router-dom'
 import { ICON_REPLY, ICON_RETWEET,
-    ICON_HEART, ICON_HEARTFULL, ICON_DELETE, ICON_CLOSE,ICON_IMGUPLOAD} from '../../Icons'
+    ICON_HEART, ICON_HEARTFULL, ICON_DELETE, ICON_CLOSE,ICON_IMGUPLOAD, ICON_LOCKFILL} from '../../Icons'
 import axios from 'axios'
 import {API_URL} from '../../config'
 import MakeSqueak from '../MakeSqueak'
@@ -136,7 +136,10 @@ const TweetCard = React.memo(function TweetCard(props) {
                         {props.tweet.getContentStr()}
                     </div> :
                     <div className="card-content-info card-content-locked-content">
+                        <ICON_LOCKFILL styles={{width:'36px', height:"36px", padding: "5px"}} />
+                        <div>
                         Locked content
+                        </div>
                     </div>
                   }
 
