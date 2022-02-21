@@ -217,40 +217,6 @@ const reducer = (state = initialState, action) => {
         case type.EXPORT_PRIVATE_KEY:
             return {...state, ...action.payload}
 
-        case type.RETWEET:
-            let user_retweets = state.user
-            let acc_retweets = state.account
-            let t_retweets = state.tweets
-            let Stweet_retweets = state.tweet
-            if(action.payload.msg === "retweeted"){
-                if(Stweet_retweets){ Stweet_retweets.retweets.push(action.data.id) }
-                acc_retweets.retweets.push(action.data.id)
-                for(let i = 0; i < t_retweets.length; i++){
-                    if(t_retweets[i]._id === action.data.id){
-                        t_retweets[i].retweets.push(state.account._id)
-                    }
-                }
-            }else if(action.payload.msg === "undo retweet"){
-                if(Stweet_retweets){
-                    Stweet_retweets.retweets = Stweet_retweets.retweets.filter((x)=>{
-                        return x !== action.data.id
-                     });
-                }
-                let accRe_Index = acc_retweets.retweets.indexOf(action.data.id)
-                accRe_Index > -1 && acc_retweets.retweets.splice(accRe_Index, 1)
-                if(user_retweets){
-                    user_retweets.tweets = user_retweets.tweets.filter((x)=>{
-                        return x._id !== action.data.id})
-                }
-                for(let i = 0; i < t_retweets.length; i++){
-                    if(t_retweets[i]._id === action.data.id){
-                        t_retweets[i].retweets = t_retweets[i].retweets.filter((x)=>{
-                            return x !== state.account._id})
-                        }
-                    }
-                }
-            return {...state, ...{user:user_retweets}, ...{account: acc_retweets}, ...{tweets: t_retweets}, ...{tweet: Stweet_retweets}}
-
         case type.DELETE_TWEET:
             let deletedTweetHash = action.payload.squeakHash
             let userTweetsD = state.userTweets

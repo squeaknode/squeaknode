@@ -299,11 +299,6 @@ export const applyMiddleware = dispatch => action => {
               dispatch({ type: types.EXPORT_PRIVATE_KEY, payload: payload, data: action.payload });
             });
 
-        case types.RETWEET:
-            return axios.post(`${API_URL}/tweet/${action.payload.id}/retweet`, action.payload, headers)
-            .then(res=>dispatch({ type: types.RETWEET, payload: res.data, data: action.payload }))
-            .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
-
         case types.DELETE_TWEET:
             // return axios.delete(`${API_URL}/tweet/${action.payload}/delete`, headers)
             // .then(res=>dispatch({ type: types.DELETE_TWEET, payload: res.data, data: action.payload }))

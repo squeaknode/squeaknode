@@ -84,9 +84,6 @@ export const useActions = (state, dispatch) => ({
         dispatch({type: types.SET_STATE, payload: {loading: true}})
         dispatch({type: types.EXPORT_PRIVATE_KEY, payload: data})
     },
-    retweet: data => {
-        dispatch({type: types.RETWEET, payload: data})
-    },
     deleteTweet: data => {
         dispatch({type: types.DELETE_TWEET, payload: data})
     },
