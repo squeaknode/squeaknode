@@ -64,7 +64,7 @@ const Payments = (props) => {
     }
 
     const goToUser = (id) => {
-        props.history.push(`/profile/${id}`)
+        props.history.push(`/app/profile/${id}`)
     }
 
     const handleModalClick = (e) => {
@@ -73,7 +73,7 @@ const Payments = (props) => {
 
     const goToTweet = (id) => {
         if(props.replyTo){ actions.getTweet(id) }
-        props.history.push(`/tweet/${id}`)
+        props.history.push(`/app/tweet/${id}`)
     }
 
     return(

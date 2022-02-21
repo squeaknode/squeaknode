@@ -80,16 +80,16 @@ const Nav = ({history}) => {
             <div className="Nav">
             <div className="Nav-Content">
                 <nav className="Nav-wrapper">
-                    <Link to={`/home`} className="logo-wrapper">
+                    <Link to={`/app/home`} className="logo-wrapper">
                         <ICON_LOGO styles={{fill:"rgb(29,161,242)", width:'47px', height:"30px"}}/>
                     </Link>
-                    <Link className="Nav-link" to={`/home`}>
+                    <Link className="Nav-link" to={`/app/home`}>
                         <div className={path === '/home' ? "Nav-item-hover active-Nav" : "Nav-item-hover"}>
                             {path === '/home' ? <ICON_HOMEFILL /> : <ICON_HOME />}
                             <div className="Nav-item">Home</div>
                         </div>
                     </Link>
-                    <Link to="/profiles" className="Nav-link">
+                    <Link to="/app/profiles" className="Nav-link">
                         <div className={path === '/profiles' ? "Nav-item-hover active-Nav" : "Nav-item-hover"}>
                             {path === '/prof' ? <ICON_USERFILL /> : <ICON_USER />}
                             <div className="Nav-item">Profiles</div>
@@ -97,19 +97,19 @@ const Nav = ({history}) => {
                     </Link>
                     {session ?
                     <>
-                    <Link to="/peers" className="Nav-link">
+                    <Link to="/app/peers" className="Nav-link">
                         <div className={path === '/expl' ? "Nav-item-hover active-Nav" : "Nav-item-hover"}>
                             {path === '/peer' ? <ICON_LAPTOPFILL /> : <ICON_LAPTOP />}
                             <div className="Nav-item">Peers</div>
                         </div>
                     </Link>
-                    <Link to="/payments" className="Nav-link">
+                    <Link to="/app/payments" className="Nav-link">
                         <div className={path === '/paym' ? "Nav-item-hover active-Nav" : "Nav-item-hover"}>
                             {path === '/paym' ?  <ICON_LISTFILL /> : <ICON_LIST />}
                             <div className="Nav-item">Payments</div>
                         </div>
                     </Link>
-                    <Link to="/notifications" className="Nav-link">
+                    <Link to="/app/notifications" className="Nav-link">
                         <div className={path === '/noti' ? "Nav-item-hover active-Nav" : "Nav-item-hover"}>
                             {path === '/noti' ? <ICON_BELLFILL /> : <ICON_BELL />}
                             <div className="Nav-item">Notifications</div>

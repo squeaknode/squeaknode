@@ -27,7 +27,7 @@ const SignUpPage = (props) => {
     }
 
     const Redirect = () => {
-        props.history.push('/login')
+        props.history.push('/app/login')
     }
 
     return(
@@ -66,7 +66,7 @@ const SignUpPage = (props) => {
                 </button>
             </form>
             <p className="signup-option">
-                <Link to="/login">
+                <Link to="/app/login">
                     Log in to Twitter
                 </Link>
             </p>

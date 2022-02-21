@@ -79,7 +79,7 @@ const MakeSqueak = (props) => {
       {props.replyToTweet ?
       <div className="reply-content-wrapper">
           <div className="card-userPic-wrapper">
-              <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.replyToTweet.getAuthorPubkey()}`}>
+              <Link onClick={(e)=>e.stopPropagation()} to={`/app/profile/${props.replyToTweet.getAuthorPubkey()}`}>
                   <img alt="" style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={author ? `${getProfileImageSrcString(props.replyToTweet.getAuthor())}`: null}/>
               </Link>
           </div>
@@ -87,10 +87,10 @@ const MakeSqueak = (props) => {
               <div className="card-content-header">
                   <div className="card-header-detail">
                       <span className="card-header-user">
-                          <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.replyToTweet.getAuthorPubkey()}`}>{author ? author.getProfileName(): 'Unknown Author'}</Link>
+                          <Link onClick={(e)=>e.stopPropagation()} to={`/app/profile/${props.replyToTweet.getAuthorPubkey()}`}>{author ? author.getProfileName(): 'Unknown Author'}</Link>
                       </span>
                       <span className="card-header-username">
-                          <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.replyToTweet.getAuthorPubkey()}`}>{'@'+props.replyToTweet.getAuthorPubkey()}</Link>
+                          <Link onClick={(e)=>e.stopPropagation()} to={`/app/profile/${props.replyToTweet.getAuthorPubkey()}`}>{'@'+props.replyToTweet.getAuthorPubkey()}</Link>
                       </span>
                       <span className="card-header-dot">·</span>
                       <span className="card-header-date">
@@ -116,7 +116,7 @@ const MakeSqueak = (props) => {
             {/* New squeak content input. */}
             <div className="Tweet-input-wrapper">
                 <div className="Tweet-profile-wrapper">
-                    <Link to={`/profile/${signingProfile && signingProfile.getPubkey()}`}>
+                    <Link to={`/app/profile/${signingProfile && signingProfile.getPubkey()}`}>
                         {signingProfile && <img alt="" style={{ borderRadius: '50%', minWidth: '49px' }} width="100%" height="49px" src={`${getProfileImageSrcString(signingProfile)}`} />}
                     </Link>
                 </div>

@@ -168,7 +168,7 @@ const Profile = (props) => {
 
     const goToUser = (id) => {
         setEditModalOpen(false)
-        props.history.push(`/profile/${id}`)
+        props.history.push(`/app/profile/${id}`)
     }
 
     const getLastSqueak = (squeakLst) => {

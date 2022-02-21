@@ -24,30 +24,30 @@ const DefaultContainer = withRouter(({ history }) => {
     <main className="main">
       <div className={history.location.pathname.slice(0,9) !== '/messages' ? "middle-section ms-width" : "middle-section"}>
         <Route path="/" exact>
-          <Redirect to="/home" />
+          <Redirect to="/app/home" />
         </Route>
-        <Route path="/home" exact>
+        <Route path="/app/home" exact>
           <Home />
         </Route>
-        <Route path="/profile/:username" exact>
+        <Route path="/app/profile/:username" exact>
           <Profile />
         </Route>
-        <Route path="/peer/:network/:host/:port" exact>
+        <Route path="/app/peer/:network/:host/:port" exact>
           <Peer />
         </Route>
-        <Route path="/tweet/:id" exact>
+        <Route path="/app/tweet/:id" exact>
           <Tweet />
         </Route>
-        <Route path="/profiles" exact>
+        <Route path="/app/profiles" exact>
           <Profiles/>
         </Route>
-        <Route path="/payments" exact>
+        <Route path="/app/payments" exact>
           <Payments/>
         </Route>
-        <Route path="/peers" exact>
+        <Route path="/app/peers" exact>
           <Peers/>
         </Route>
-        <Route path="/notifications" exact>
+        <Route path="/app/notifications" exact>
           <Notifications/>
         </Route>
       </div>

@@ -148,7 +148,7 @@ const TweetPage = (props) => {
                 <>
                 <div className="tweet-header-content">
                     <div className="tweet-user-pic">
-                        <Link to={`/profile/${tweet.getAuthorPubkey()}`}>
+                        <Link to={`/app/profile/${tweet.getAuthorPubkey()}`}>
                             <img alt="" style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={author ? `${getProfileImageSrcString(author)}` : null}/>
                         </Link>
                     </div>

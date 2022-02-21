@@ -49,12 +49,12 @@ const TweetCard = React.memo(function TweetCard(props) {
 
     const goToTweet = (id) => {
         if(props.replyTo){ actions.getTweet(id) }
-        props.history.push(`/tweet/${id}`)
+        props.history.push(`/app/tweet/${id}`)
     }
     const goToReply = (e,id) => {
         e.stopPropagation()
         if(props.replyTo){ actions.getTweet(id) }
-        props.history.push(`/tweet/${id}`)
+        props.history.push(`/app/tweet/${id}`)
     }
 
     const toggleModal = (e, type) => {
@@ -88,7 +88,7 @@ const TweetCard = React.memo(function TweetCard(props) {
 
     const goToUser = (e,username) => {
         e.stopPropagation()
-        props.history.push(`/profile/${username}`)
+        props.history.push(`/app/profile/${username}`)
     }
 
     moment.updateLocale('en', {
@@ -107,7 +107,7 @@ const TweetCard = React.memo(function TweetCard(props) {
             {props.tweet ?
               <>
               <div className="card-userPic-wrapper">
-                  <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.tweet.getAuthorPubkey()}`}>
+                  <Link onClick={(e)=>e.stopPropagation()} to={`/app/profile/${props.tweet.getAuthorPubkey()}`}>
                       <img alt="" style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={author ? `${getProfileImageSrcString(author)}` : null}/>
                   </Link>
                   {props.hasReply? <div className="tweet-reply-thread"></div> : null}
@@ -116,10 +116,10 @@ const TweetCard = React.memo(function TweetCard(props) {
                   <div className="card-content-header">
                       <div className="card-header-detail">
                           <span className="card-header-user">
-                              <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.tweet.getAuthorPubkey()}`}>{author ? author.getProfileName(): 'Unknown Author'}</Link>
+                              <Link onClick={(e)=>e.stopPropagation()} to={`/app/profile/${props.tweet.getAuthorPubkey()}`}>{author ? author.getProfileName(): 'Unknown Author'}</Link>
                           </span>
                           <span className="card-header-username">
-                              <Link onClick={(e)=>e.stopPropagation()} to={`/profile/${props.tweet.getAuthorPubkey()}`}>{'@'+ props.tweet.getAuthorPubkey()}</Link>
+                              <Link onClick={(e)=>e.stopPropagation()} to={`/app/profile/${props.tweet.getAuthorPubkey()}`}>{'@'+ props.tweet.getAuthorPubkey()}</Link>
                           </span>
                           <span className="card-header-dot">·</span>
                           <span className="card-header-date">

@@ -50,11 +50,11 @@ const Peers = (props) => {
     }
 
     const goToUser = (id) => {
-        props.history.push(`/profile/${id}`)
+        props.history.push(`/app/profile/${id}`)
     }
 
     const goToPeer = (peerAddress) => {
-        props.history.push(`/peer/${peerAddress.getNetwork()}/${peerAddress.getHost()}/${peerAddress.getPort()}`)
+        props.history.push(`/app/peer/${peerAddress.getNetwork()}/${peerAddress.getHost()}/${peerAddress.getPort()}`)
     }
 
     const peerAddressToStr = (peerAddress) => {

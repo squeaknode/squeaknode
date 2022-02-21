@@ -1,5 +1,6 @@
 import type from './typeActions'
 
+
 const initialState = {
     session: true,
     loggedin: false,
@@ -55,7 +56,9 @@ const reducer = (state = initialState, action) => {
 
         case type.LOGOUT:
             console.log('Logout.');
-            window.location.reload();
+            // window.location.replace('/')
+            window.location.assign('https://www.javascripttutorial.net/');
+            return {...state, ...action.payload}
 
         case type.REGISTER:
             setTimeout(()=>{action.data.func()},250)

@@ -48,7 +48,7 @@ const Profiles = (props) => {
     }
 
     const goToUser = (id) => {
-        props.history.push(`/profile/${id}`)
+        props.history.push(`/app/profile/${id}`)
     }
 
     const toggleSigningProfileModal = (param, type) => {
@@ -136,7 +136,7 @@ const Profiles = (props) => {
                 {tab === 'Signing Profiles' ?
                 signingProfiles.map(f=>{
                   return <div onClick={()=>goToUser(f.getPubkey())} key={f.getPubkey()} className="search-result-wapper">
-                    <Link to={`/profile/${f.getPubkey()}`} className="search-userPic-wrapper">
+                    <Link to={`/app/profile/${f.getPubkey()}`} className="search-userPic-wrapper">
                       <img style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={`${getProfileImageSrcString(f)}`}/>
                     </Link>
                     <div className="search-user-details">
@@ -163,7 +163,7 @@ const Profiles = (props) => {
                 tab === 'Contact Profiles' ?
                 contactProfiles.map(f=>{
                   return <div onClick={()=>goToUser(f.getPubkey())} key={f.getPubkey()} className="search-result-wapper">
-                    <Link to={`/profile/${f.getPubkey()}`} className="search-userPic-wrapper">
+                    <Link to={`/app/profile/${f.getPubkey()}`} className="search-userPic-wrapper">
                       <img style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={`${getProfileImageSrcString(f)}`}/>
                     </Link>
                     <div className="search-user-details">

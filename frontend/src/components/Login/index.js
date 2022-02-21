@@ -47,7 +47,7 @@ const LoginPage = () => {
                 </button>
             </form>
             <p className="signup-option">
-                <Link to="/signup">
+                <Link to="/app/signup">
                     Sign up for Twitter
                 </Link>
             </p>
