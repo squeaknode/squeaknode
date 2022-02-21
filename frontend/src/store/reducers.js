@@ -56,8 +56,9 @@ const reducer = (state = initialState, action) => {
 
         case type.LOGOUT:
             console.log('Logout.');
-            // window.location.replace('/')
-            window.location.assign('https://www.javascripttutorial.net/');
+            window.location.replace('/')
+            // window.location.assign('https://www.javascripttutorial.net/');
+            console.log('Changed page.');
             return {...state, ...action.payload}
 
         case type.REGISTER:

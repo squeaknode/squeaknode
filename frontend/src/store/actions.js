@@ -91,6 +91,7 @@ export const useActions = (state, dispatch) => ({
         dispatch({type: types.UNFOLLOW_USER, payload: data})
     },
     logout: () => {
+        console.log('logout');
         // localStorage.removeItem("Twittertoken")
         // window.location.reload()
         dispatch({type: types.LOGOUT, payload: {}})

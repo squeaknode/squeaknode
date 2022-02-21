@@ -1,6 +1,7 @@
 export default {
     SET_STATE: 'SET_STATE',
     LOGIN: 'LOGIN',
+    LOGOUT: 'LOGOUT',
     REGISTER: 'REGISTER',
     GET_NETWORK: 'GET_NETWORK',
     TWEET: 'TWEET',
