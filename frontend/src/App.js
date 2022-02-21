@@ -8,8 +8,6 @@ import Nav from './components/Nav'
 import Login from './components/Login'
 import Signup from './components/Signup'
 import Tweet from './components/Tweet'
-import Lists from './components/Lists'
-import ListPage from './components/ListPage'
 import Profiles from './components/Profiles'
 import Payments from './components/Payments'
 import Peers from './components/Peers'
@@ -41,12 +39,6 @@ const DefaultContainer = withRouter(({ history }) => {
         </Route>
         <Route path="/tweet/:id" exact>
           <Tweet />
-        </Route>
-        <Route path="/lists" exact>
-          <Lists />
-        </Route>
-        <Route path="/lists/:id" exact>
-          <ListPage />
         </Route>
         <Route path="/profiles" exact>
           <Profiles/>
