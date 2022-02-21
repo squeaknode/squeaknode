@@ -77,6 +77,11 @@ const Profile = (props) => {
         // toggleExportModal();
     }
 
+    const downloadUserSqueaks = () => {
+        actions.downloadUserSqueaks(userParam);
+    }
+
+
     const createContactProfile = () => {
         actions.createContactProfile({profileName: editName, pubkey: userParam});
         toggleCreateModal();
@@ -226,12 +231,15 @@ const Profile = (props) => {
                           <div onClick={()=>openMore()} style={{display: moreMenu ? 'block' : 'none'}} className="more-menu-background">
                           <div className="more-modal-wrapper">
                               {moreMenu ?
-                              <div style={{top: `${document.getElementById('moremenu').getBoundingClientRect().top - 40}px`, left: `${document.getElementById('moremenu').getBoundingClientRect().left}px`, height: '160px' }} onClick={(e)=>handleMenuClick(e)} className="more-menu-content">
+                              <div style={{top: `${document.getElementById('moremenu').getBoundingClientRect().top - 40}px`, left: `${document.getElementById('moremenu').getBoundingClientRect().left}px`, height: '210px' }} onClick={(e)=>handleMenuClick(e)} className="more-menu-content">
                                       <div onClick={toggleDeleteModal} className="more-menu-item">
                                           <span>Delete Profile</span>
                                       </div>
                                       <div onClick={toggleEditModal} className="more-menu-item">
                                           <span>Edit Profile</span>
+                                      </div>
+                                      <div onClick={downloadUserSqueaks} className="more-menu-item">
+                                          <span>Download Squeaks</span>
                                       </div>
                                       {user.getHasPrivateKey() &&
                                         <div onClick={toggleExportModal} className="more-menu-item">
