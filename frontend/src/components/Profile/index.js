@@ -299,10 +299,10 @@ const Profile = (props) => {
             </div>
             <div className="profile-nav-menu">
                 <div key={'tweets'} onClick={()=>changeTab('Tweets')} className={activeTab ==='Tweets' ? `profile-nav-item activeTab` : `profile-nav-item`}>
-                    Tweets
+                    Squeaks
                 </div>
                 <div key={'replies'} onClick={()=>changeTab('Tweets&Replies')} className={activeTab ==='Tweets&Replies' ? `profile-nav-item activeTab` : `profile-nav-item`}>
-                    Tweets & replies
+                    Squeaks & replies
                 </div>
                 <div key={'media'} onClick={()=>changeTab('Media')} className={activeTab ==='Media' ? `profile-nav-item activeTab` : `profile-nav-item`}>
                     Media
