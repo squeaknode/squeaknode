@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { StoreContext } from '../../store/store'
 import './style.scss'
+import moment from 'moment'
 import { withRouter, Link } from 'react-router-dom'
 import { ICON_SEARCH, ICON_ARROWBACK, ICON_CLOSE } from '../../Icons'
 import { getProfileImageSrcString } from '../../squeakimages/images';
@@ -110,6 +111,7 @@ const Payments = (props) => {
                     <div className="payment-squeak-hash"><b>Squeak Hash</b>: {f.getSqueakHash()}</div>
                     <div className="payment-peer-address"><b>Peer</b>: {f.getPeerAddress().getHost()}:{f.getPeerAddress().getPort()}</div>
                     <div className="payment-lightning-node"><b>Lightning Node</b>: {f.getNodePubkey()}</div>
+                    <div className="payment-time">{moment(f.getTimeMs()).format("h:mm A · MMM D, YYYY")}</div>
                     </div>
                     </div>
                   </div>
@@ -132,6 +134,7 @@ const Payments = (props) => {
                       <div className="payment-price">{f.getPriceMsat() / 1000} sats</div>
                       <div className="payment-squeak-hash"><b>Squeak Hash</b>: {f.getSqueakHash()}</div>
                       <div className="payment-peer-address"><b>Peer</b>: {f.getPeerAddress().getHost()}:{f.getPeerAddress().getPort()}</div>
+                      <div className="payment-time">{moment(f.getTimeMs()).format("h:mm A · MMM D, YYYY")}</div>
                       </div>
                       </div>
                     </div>
