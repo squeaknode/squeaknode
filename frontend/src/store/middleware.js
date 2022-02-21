@@ -43,6 +43,7 @@ import {
   logoutRequest,
   setPeerAutoconnectRequest,
   getPeerRequest,
+  getExternalAddressRequest,
 } from '../squeakclient/requests';
 
 export const token = () => {
@@ -509,6 +510,12 @@ export const applyMiddleware = dispatch => action => {
                   let payload = {"connectedPeers": resp, "peerConnection": disconnectedPeerConnection };
                   dispatch({ type: types.GET_CONNECTED_PEERS, payload: payload });
               });
+            });
+
+        case types.GET_EXTERNAL_ADDRESS:
+            return getExternalAddressRequest((resp) => {
+                let payload = {"externalAddress": resp };
+                dispatch({ type: types.GET_EXTERNAL_ADDRESS, payload: payload, data: action.payload });
             });
 
         case types.SAVE_PEER:

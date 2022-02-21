@@ -10,10 +10,11 @@ import TweetCard from '../TweetCard'
 
 const Peers = (props) => {
     const { state, actions } = useContext(StoreContext)
-    const { peers, connectedPeers, result, tagTweets} = state
+    const { peers, connectedPeers, result, tagTweets, externalAddress} = state
     const [tab, setTab] = useState('Connected Peers')
     const [savePeerModalOpen, setSavePeerModalOpen] = useState(false)
     const [connectPeerModalOpen, setconnectPeerModalOpen] = useState(false)
+    const [showExternalAddressModalOpen, setShowExternalAddressModalOpen] = useState(false)
     const [styleBody, setStyleBody] = useState(false)
     const [name, setName] = useState('')
     const [host, setHost] = useState('')
@@ -33,6 +34,7 @@ const Peers = (props) => {
         // actions.getconnectPeers()
         actions.getConnectedPeers();
         actions.getPeers();
+        actions.getExternalAddress();
         // if(props.history.location.search.length>0){
         //     goToTrend(props.history.location.search.substring(1))
 
@@ -91,6 +93,11 @@ const Peers = (props) => {
         setTimeout(()=>{ setconnectPeerModalOpen(!connectPeerModalOpen) },20)
     }
 
+    const toggleShowExternalAddressModalOpen = () => {
+        setStyleBody(!styleBody)
+        setTimeout(()=>{ setShowExternalAddressModalOpen(!showExternalAddressModalOpen) },20)
+    }
+
     const getNetwork = () => {
       if (useTor) {
         return 'TORV3';
@@ -118,6 +125,7 @@ const Peers = (props) => {
         e.stopPropagation()
     }
 
+
     return(
         <div>
 
@@ -131,6 +139,10 @@ const Peers = (props) => {
             </div>
             <div className="profile-details-wrapper">
             <div className="profiles-options">
+            <div onClick={(e)=>toggleShowExternalAddressModalOpen('edit')}
+               className='profiles-create-button'>
+                  <span>Show External Address</span>
+            </div>
             <div onClick={(e)=>toggleconnectPeerModal('edit')}
                className='profiles-create-button'>
                   <span>Connect Peer</span>
@@ -209,6 +221,49 @@ const Peers = (props) => {
 
                 </div>
                 }
+            </div>
+        </div>
+
+        {/* Modal for show external address */}
+        <div onClick={()=>toggleShowExternalAddressModalOpen()} style={{display: showExternalAddressModalOpen ? 'block' : 'none'}} className="modal-edit">
+            <div onClick={(e)=>handleModalClick(e)} className="modal-content">
+                <div className="modal-header">
+                    <div className="modal-closeIcon">
+                        <div onClick={()=>toggleShowExternalAddressModalOpen()} className="modal-closeIcon-wrap">
+                            <ICON_CLOSE />
+                        </div>
+                    </div>
+                    <p className="modal-title">'Show External Address'</p>
+                    <div className="save-modal-wrapper">
+                        <div onClick={() => console.log('foo')} className="save-modal-btn">
+                            Export
+                        </div>
+                    </div>
+                </div>
+
+                <div className="modal-body">
+                    <form className="edit-form">
+                        <div className="edit-input-wrap">
+                            <div className="edit-input-content">
+                                <label>Network</label>
+                                <input defaultValue={externalAddress && externalAddress.getNetwork()} readOnly type="text" name="name" className="edit-input"/>
+                            </div>
+                        </div>
+                        <div className="edit-input-wrap">
+                            <div className="edit-input-content">
+                                <label>Host</label>
+                                <input defaultValue={externalAddress && externalAddress.getHost()} readOnly type="text" name="name" className="edit-input"/>
+                            </div>
+                        </div>
+                        <div className="edit-input-wrap">
+                            <div className="edit-input-content">
+                                <label>Port</label>
+                                <input defaultValue={externalAddress && externalAddress.getPort()} readOnly type="text" name="name" className="edit-input"/>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
             </div>
         </div>
 

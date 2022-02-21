@@ -38,6 +38,7 @@ const initialState = {
     sentPayments: [],
     receivedPayments: [],
     privateKey: null,
+    externalAddress: null,
     error: false
 }
 
@@ -205,6 +206,9 @@ const reducer = (state = initialState, action) => {
             return {...state, ...{user:updateUser}, loading: false, error: false}
 
         case type.EXPORT_PRIVATE_KEY:
+            return {...state, ...action.payload}
+
+        case type.GET_EXTERNAL_ADDRESS:
             return {...state, ...action.payload}
 
         case type.DELETE_TWEET:
