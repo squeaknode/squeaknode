@@ -171,9 +171,6 @@ const SqueakCard = React.memo(function SqueakCard(props) {
                               <ICON_HEARTFULL styles={{fill:'rgb(224, 36, 94)'}}/> :
                               <ICON_HEART styles={{fill:'rgb(101, 119, 134)'}}/>}
                           </div>
-                          <div className="card-icon-value">
-                              0
-                          </div>
                       </div>
                       <div onClick={(e)=>deleteSqueak(e,props.id)} className="card-button-wrap">
                           <div className="card-icon share-icon">
