@@ -114,7 +114,7 @@ const Nav = ({history}) => {
                         </div>
                     </Link>
                     <Link to="/app/profiles" className="Nav-link">
-                        <div className={path === '/profiles' ? "Nav-item-hover active-Nav" : "Nav-item-hover"}>
+                        <div className={path === '/prof' ? "Nav-item-hover active-Nav" : "Nav-item-hover"}>
                             {path === '/prof' ? <ICON_USERFILL /> : <ICON_USER />}
                             <div className="Nav-item">Profiles</div>
                         </div>
@@ -122,7 +122,7 @@ const Nav = ({history}) => {
                     {session ?
                     <>
                     <Link to="/app/peers" className="Nav-link">
-                        <div className={path === '/expl' ? "Nav-item-hover active-Nav" : "Nav-item-hover"}>
+                        <div className={path === '/peer' ? "Nav-item-hover active-Nav" : "Nav-item-hover"}>
                             {path === '/peer' ? <ICON_LAPTOPFILL /> : <ICON_LAPTOP />}
                             <div className="Nav-item">Peers</div>
                         </div>
