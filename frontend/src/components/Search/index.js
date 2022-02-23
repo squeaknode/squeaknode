@@ -89,13 +89,13 @@ const Search = (props) => {
             </div>
             <div className="Tweet-input-divider"></div>
             {searchTweets.map(t => {
-                return <TweetCard tweet={t} key={t.getSqueakHash()} id={t.getSqueakHash()} user={t.getAuthor()} />
+                return <TweetCard squeak={t} key={t.getSqueakHash()} id={t.getSqueakHash()} user={t.getAuthor()} />
             })}
 
             {/* TODO: fix get loading state by doing this: https://medium.com/stashaway-engineering/react-redux-tips-better-way-to-handle-loading-flags-in-your-reducers-afda42a804c6 */}
             {searchTweets.length > 0 &&
               <>
-              {state.loading ? <Loader /> : <div onClick={() => getMoreTweets()} className='tweet-btn-side tweet-btn-active'>
+              {state.loading ? <Loader /> : <div onClick={() => getMoreTweets()} className='squeak-btn-side squeak-btn-active'>
                   Load more
               </div>}
               </>

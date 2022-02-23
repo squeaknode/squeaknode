@@ -138,12 +138,12 @@ const Nav = ({history}) => {
                         </div>
                     </div>
                     {session ?
-                    <div className="Nav-tweet">
-                        <div onClick={()=>toggleModal()} className="Nav-tweet-link">
-                            <div className="Nav-tweet-btn btn-hide">
+                    <div className="Nav-squeak">
+                        <div onClick={()=>toggleModal()} className="Nav-squeak-link">
+                            <div className="Nav-squeak-btn btn-hide">
                                 Squeak
                             </div>
-                            <div className="Nav-tweet-btn btn-show">
+                            <div className="Nav-squeak-btn btn-show">
                                 <span><ICON_FEATHER/></span>
                             </div>
                         </div>

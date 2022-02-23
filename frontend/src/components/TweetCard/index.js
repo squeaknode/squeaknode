@@ -33,13 +33,13 @@ const TweetCard = React.memo(function TweetCard(props) {
         actions.unlikeTweet(id)
     }
 
-    const retweet = (e,id, retweetId) => {
+    const resqueak = (e,id, resqueakId) => {
         e.stopPropagation()
         if(!session){ actions.alert('Please Sign In'); return }
         if(props.history.location.pathname.slice(1,5) === 'prof'){
-            info = { dest: "profile", id, retweetId }
-        }else{ info = { id, retweetId } }
-        // actions.retweet(info)
+            info = { dest: "profile", id, resqueakId }
+        }else{ info = { id, resqueakId } }
+        // actions.resqueak(info)
         alert('Re-Squeak not yet implemented!');
     }
 
@@ -50,12 +50,12 @@ const TweetCard = React.memo(function TweetCard(props) {
 
     const goToTweet = (id) => {
         if(props.replyTo){ actions.getTweet(id) }
-        props.history.push(`/app/tweet/${id}`)
+        props.history.push(`/app/squeak/${id}`)
     }
     const goToReply = (e,id) => {
         e.stopPropagation()
         if(props.replyTo){ actions.getTweet(id) }
-        props.history.push(`/app/tweet/${id}`)
+        props.history.push(`/app/squeak/${id}`)
     }
 
     const toggleModal = (e, type) => {
@@ -103,28 +103,28 @@ const TweetCard = React.memo(function TweetCard(props) {
     return (
         <div>
 
-        <div onClick={()=>goToTweet(props.id)} key={props.id} className={props.tweet ? "Tweet-card-wrapper" : "Tweet-card-wrapper missing-tweet"} >
+        <div onClick={()=>goToTweet(props.id)} key={props.id} className={props.squeak ? "Tweet-card-wrapper" : "Tweet-card-wrapper missing-squeak"} >
 
-            {props.tweet ?
+            {props.squeak ?
               <>
               <div className="card-userPic-wrapper">
-                  <Link onClick={(e)=>e.stopPropagation()} to={`/app/profile/${props.tweet.getAuthorPubkey()}`}>
+                  <Link onClick={(e)=>e.stopPropagation()} to={`/app/profile/${props.squeak.getAuthorPubkey()}`}>
                       <img alt="" style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={author ? `${getProfileImageSrcString(author)}` : null}/>
                   </Link>
-                  {props.hasReply? <div className="tweet-reply-thread"></div> : null}
+                  {props.hasReply? <div className="squeak-reply-thread"></div> : null}
               </div>
               <div className="card-content-wrapper">
                   <div className="card-content-header">
                       <div className="card-header-detail">
                           <span className="card-header-user">
-                              <Link onClick={(e)=>e.stopPropagation()} to={`/app/profile/${props.tweet.getAuthorPubkey()}`}>{author ? author.getProfileName(): 'Unknown Author'}</Link>
+                              <Link onClick={(e)=>e.stopPropagation()} to={`/app/profile/${props.squeak.getAuthorPubkey()}`}>{author ? author.getProfileName(): 'Unknown Author'}</Link>
                           </span>
                           <span className="card-header-username">
-                              <Link onClick={(e)=>e.stopPropagation()} to={`/app/profile/${props.tweet.getAuthorPubkey()}`}>{'@'+ props.tweet.getAuthorPubkey()}</Link>
+                              <Link onClick={(e)=>e.stopPropagation()} to={`/app/profile/${props.squeak.getAuthorPubkey()}`}>{'@'+ props.squeak.getAuthorPubkey()}</Link>
                           </span>
                           <span className="card-header-dot">·</span>
                           <span className="card-header-date">
-                                  {moment(props.tweet.getBlockTime() * 1000).fromNow(true)}
+                                  {moment(props.squeak.getBlockTime() * 1000).fromNow(true)}
                           </span>
                       </div>
                       <div className="card-header-more">
@@ -132,9 +132,9 @@ const TweetCard = React.memo(function TweetCard(props) {
                       </div>
                   </div>
 
-                  {props.tweet.getContentStr() ?
+                  {props.squeak.getContentStr() ?
                     <div className="card-content-info">
-                        {props.tweet.getContentStr()}
+                        {props.squeak.getContentStr()}
                     </div> :
                     <div className="card-content-info card-content-locked-content">
                         <ICON_LOCKFILL styles={{width:'36px', height:"36px", padding: "5px"}} />
@@ -153,8 +153,8 @@ const TweetCard = React.memo(function TweetCard(props) {
                               0
                           </div>
                       </div>
-                      <div onClick={(e)=>retweet(e,props.id)} className="card-button-wrap retweet-wrap">
-                          <div className="card-icon retweet-icon">
+                      <div onClick={(e)=>resqueak(e,props.id)} className="card-button-wrap resqueak-wrap">
+                          <div className="card-icon resqueak-icon">
                               <ICON_RETWEET styles={false ? {stroke: 'rgb(23, 191, 99)'} : {fill:'rgb(101, 119, 134)'}}/>
                           </div>
                           <div className="card-icon-value">
@@ -162,12 +162,12 @@ const TweetCard = React.memo(function TweetCard(props) {
                           </div>
                       </div>
                       <div onClick={(e)=>
-                        props.tweet.getLikedTimeMs() ?
-                        unlikeTweet(e, props.tweet.getSqueakHash()) :
-                        likeTweet(e, props.tweet.getSqueakHash())
+                        props.squeak.getLikedTimeMs() ?
+                        unlikeTweet(e, props.squeak.getSqueakHash()) :
+                        likeTweet(e, props.squeak.getSqueakHash())
                       } className="card-button-wrap heart-wrap">
                           <div className="card-icon heart-icon">
-                              {props.tweet.getLikedTimeMs() ?
+                              {props.squeak.getLikedTimeMs() ?
                               <ICON_HEARTFULL styles={{fill:'rgb(224, 36, 94)'}}/> :
                               <ICON_HEART styles={{fill:'rgb(101, 119, 134)'}}/>}
                           </div>
@@ -186,7 +186,7 @@ const TweetCard = React.memo(function TweetCard(props) {
               <>
               <div className="card-userPic-wrapper">
                       <img alt="" style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={null}/>
-                  {props.hasReply? <div className="tweet-reply-thread"></div> : null}
+                  {props.hasReply? <div className="squeak-reply-thread"></div> : null}
               </div>
               <div className="card-content-wrapper">
                   <div className="card-content-info">
@@ -198,8 +198,8 @@ const TweetCard = React.memo(function TweetCard(props) {
 
         </div>
 
-        {/* tweet modal */}
-        {props.tweet ?
+        {/* squeak modal */}
+        {props.squeak ?
             <div onClick={()=>toggleModal()} style={{display: modalOpen ? 'block' : 'none'}} className="modal-edit">
             {modalOpen ?
             <div style={{minHeight: '350px', height: 'initial'}} onClick={(e)=>handleModalClick(e)} className="modal-content">
@@ -212,7 +212,7 @@ const TweetCard = React.memo(function TweetCard(props) {
                     <p className="modal-title">Reply</p>
                 </div>
                 <div style={{marginTop:'5px'}} className="modal-body">
-                  <MakeSqueak replyToTweet={props.tweet} submittedCallback={toggleModal} />
+                  <MakeSqueak replyToTweet={props.squeak} submittedCallback={toggleModal} />
                 </div>
             </div> : null}
         </div> : null}

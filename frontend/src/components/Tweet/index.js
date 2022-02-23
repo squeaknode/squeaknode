@@ -19,7 +19,7 @@ const TweetPage = (props) => {
     let history = useHistory();
 
     const { state, actions } = useContext(StoreContext)
-    const {tweet, ancestorTweets, replyTweets, tweetOffers, network, session} = state
+    const {squeak, ancestorTweets, replyTweets, squeakOffers, network, session} = state
 
     const [modalOpen, setModalOpen] = useState(false)
     const [buyModalOpen, setBuyModalOpen] = useState(false)
@@ -44,10 +44,10 @@ const TweetPage = (props) => {
         if(!session){ actions.alert('Please Sign In'); return }
         actions.unlikeTweet(id)
     }
-    const retweet = (id) => {
+    const resqueak = (id) => {
         if(!session){ actions.alert('Please Sign In'); return }
-        info = { dest: "tweet", id }
-        // actions.retweet(info)
+        info = { dest: "squeak", id }
+        // actions.resqueak(info)
         alert('Re-Squeak not yet implemented!');
     }
     const deleteTweet = (id) => {
@@ -112,56 +112,56 @@ const TweetPage = (props) => {
       setOffer(e.value);
     }
 
-    const author = tweet && tweet.getAuthor()
+    const author = squeak && squeak.getAuthor()
 
 
     return(
         <>
-        <div className="tweet-wrapper">
-            <div className="tweet-header-wrapper">
+        <div className="squeak-wrapper">
+            <div className="squeak-header-wrapper">
                 <div className="profile-header-back">
                     <div onClick={()=>goBack()} className="header-back-wrapper">
                         <ICON_ARROWBACK/>
                     </div>
                 </div>
-                <div className="tweet-header-content"> Squeak </div>
+                <div className="squeak-header-content"> Squeak </div>
             </div>
 
-            {/* Unknown Ancestor tweet */}
+            {/* Unknown Ancestor squeak */}
             {ancestorTweets.length > 0 && ancestorTweets[0].getReplyTo() &&
-              <TweetCard tweet={null} key={ancestorTweets[0].getReplyTo()} id={ancestorTweets[0].getReplyTo()}
+              <TweetCard squeak={null} key={ancestorTweets[0].getReplyTo()} id={ancestorTweets[0].getReplyTo()}
                 replies={[]} hasReply={true} />
             }
 
 
 
-            {/* Ancestor tweets */}
+            {/* Ancestor squeaks */}
             {ancestorTweets.slice(0, -1).map(r=>{
               // TODO: use replies instead of empty array.
-              return <TweetCard tweet={r} key={r.getSqueakHash()} id={r.getSqueakHash()} user={r.getAuthor()}
+              return <TweetCard squeak={r} key={r.getSqueakHash()} id={r.getSqueakHash()} user={r.getAuthor()}
                 replies={[]} hasReply={true} />
             })}
 
-            {/* Current tweet */}
-            <div className={tweet ? "tweet-body-wrapper" : "tweet-body-wrapper missing-tweet"}>
+            {/* Current squeak */}
+            <div className={squeak ? "squeak-body-wrapper" : "squeak-body-wrapper missing-squeak"}>
 
-                {tweet ?
+                {squeak ?
                 <>
-                <div className="tweet-header-content">
-                    <div className="tweet-user-pic">
-                        <Link to={`/app/profile/${tweet.getAuthorPubkey()}`}>
+                <div className="squeak-header-content">
+                    <div className="squeak-user-pic">
+                        <Link to={`/app/profile/${squeak.getAuthorPubkey()}`}>
                             <img alt="" style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={author ? `${getProfileImageSrcString(author)}` : null}/>
                         </Link>
                     </div>
-                    <div className="tweet-user-wrap">
-                        <div className="tweet-user-name">
+                    <div className="squeak-user-wrap">
+                        <div className="squeak-user-name">
                             {author ?
                                author.getProfileName() :
                                'Unknown Author'
                              }
                         </div>
-                        <div className="tweet-username">
-                            @{tweet.getAuthorPubkey()}
+                        <div className="squeak-username">
+                            @{squeak.getAuthorPubkey()}
                         </div>
                     </div>
                 </div>
@@ -169,14 +169,14 @@ const TweetPage = (props) => {
                 {state.loading ?
                    <Loader /> :
                    <>
-                   {tweet.getContentStr() ?
-                     <div className="tweet-content">
-                         {tweet.getContentStr()}
+                   {squeak.getContentStr() ?
+                     <div className="squeak-content">
+                         {squeak.getContentStr()}
                      </div> :
-                     <div className="tweet-content locked-content">
+                     <div className="squeak-content locked-content">
                          <ICON_LOCKFILL styles={{width:'48px', height:"48px", padding: "5px"}} />
                          <div onClick={()=>toggleBuyModal(props.match.params.id)}
-                          className='tweet-unlock-button'>
+                          className='squeak-unlock-button'>
                              <span>Unlock</span>
                          </div>
                      </div>
@@ -186,50 +186,50 @@ const TweetPage = (props) => {
 
 
 
-                <div className="tweet-date">
-                    <a href={getBlockDetailUrl(tweet.getBlockHash(), network)}
+                <div className="squeak-date">
+                    <a href={getBlockDetailUrl(squeak.getBlockHash(), network)}
                      target="_blank"
                      rel="noopener"
                      >
-                        {moment(tweet.getBlockTime() * 1000).format("h:mm A · MMM D, YYYY")} (Block #{tweet.getBlockHeight()})
+                        {moment(squeak.getBlockTime() * 1000).format("h:mm A · MMM D, YYYY")} (Block #{squeak.getBlockHeight()})
                     </a>
                 </div>
-                <div className="tweet-stats">
+                <div className="squeak-stats">
                     <div className="int-num"> 0 </div>
                     <div className="int-text"> Sats Spent </div>
                     <div className="int-num"> 0 </div>
                     <div className="int-text"> Sats Earned </div>
                 </div>
-                <div className="tweet-interactions">
-                    <div onClick={()=>toggleModal()} className="tweet-int-icon">
+                <div className="squeak-interactions">
+                    <div onClick={()=>toggleModal()} className="squeak-int-icon">
                         <div className="card-icon reply-icon"> <ICON_REPLY /> </div>
                     </div>
-                    <div onClick={()=>retweet(tweet.getSqueakHash())} className="tweet-int-icon">
-                        <div className="card-icon retweet-icon">
+                    <div onClick={()=>resqueak(squeak.getSqueakHash())} className="squeak-int-icon">
+                        <div className="card-icon resqueak-icon">
                              <ICON_RETWEET styles={false ? {stroke: 'rgb(23, 191, 99)'} : {fill:'rgb(101, 119, 134)'}}/>
                         </div>
                     </div>
                     <div onClick={()=>{
-                      tweet.getLikedTimeMs() ?
-                      unlikeTweet(tweet.getSqueakHash()) :
-                      likeTweet(tweet.getSqueakHash())
-                    }} className="tweet-int-icon">
+                      squeak.getLikedTimeMs() ?
+                      unlikeTweet(squeak.getSqueakHash()) :
+                      likeTweet(squeak.getSqueakHash())
+                    }} className="squeak-int-icon">
                         <div className="card-icon heart-icon">
-                        {tweet.getLikedTimeMs() ? <ICON_HEARTFULL styles={{fill:'rgb(224, 36, 94)'}}
+                        {squeak.getLikedTimeMs() ? <ICON_HEARTFULL styles={{fill:'rgb(224, 36, 94)'}}
                          /> : <ICON_HEART/>} </div>
                     </div>
-                    <div onClick={()=>deleteTweet(tweet.getSqueakHash())} className="tweet-int-icon">
+                    <div onClick={()=>deleteTweet(squeak.getSqueakHash())} className="squeak-int-icon">
                         <div className="card-icon delete-icon">
                             <ICON_DELETE styles={{fill:'rgb(101, 119, 134)'}} />
                         </div>
                     </div>
                 </div>
                 </> :
-                <div className="tweet-header-content">
-                    <div className="tweet-user-pic">
+                <div className="squeak-header-content">
+                    <div className="squeak-user-pic">
                             <img alt="" style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={null}/>
                     </div>
-                    <div className="tweet-content">
+                    <div className="squeak-content">
                         Missing Tweet
                         <div onClick={()=>downloadTweet(props.match.params.id)}
                          className='profiles-create-button'>
@@ -240,15 +240,15 @@ const TweetPage = (props) => {
               }
             </div>
 
-            {/* Reply tweets */}
+            {/* Reply squeaks */}
             {replyTweets.map(r=>{
                 // TODO: use replies instead of empty array.
-                return <TweetCard tweet={r}  key={r.getSqueakHash()} id={r.getSqueakHash()} user={r.getAuthor()}/>
+                return <TweetCard squeak={r}  key={r.getSqueakHash()} id={r.getSqueakHash()} user={r.getAuthor()}/>
             })}
 
         </div>
 
-        {tweet ?
+        {squeak ?
         <div onClick={()=>toggleModal()} style={{display: modalOpen ? 'block' : 'none'}} className="modal-edit">
             {modalOpen ?
             <div style={{minHeight: '379px', height: 'initial'}} onClick={(e)=>handleModalClick(e)} className="modal-content">
@@ -261,12 +261,12 @@ const TweetPage = (props) => {
                     <p className="modal-title">Reply</p>
                 </div>
                 <div style={{marginTop:'5px'}} className="modal-body">
-                  <MakeSqueak replyToTweet={tweet} submittedCallback={toggleModal} />
+                  <MakeSqueak replyToTweet={squeak} submittedCallback={toggleModal} />
                 </div>
             </div> : null}
         </div>:null}
 
-        {tweet ?
+        {squeak ?
         <div onClick={()=>toggleBuyModal()} style={{display: buyModalOpen ? 'block' : 'none'}} className="modal-edit">
             {buyModalOpen ?
             <div style={{minHeight: '379px', height: 'initial'}} onClick={(e)=>handleModalClick(e)} className="modal-content">
@@ -279,10 +279,10 @@ const TweetPage = (props) => {
                     <p className="modal-title">Buy Squeak</p>
                 </div>
                 <div style={{marginTop:'5px'}} className="modal-body">
-                    {tweetOffers.length} offers.
+                    {squeakOffers.length} offers.
                     <div className="Tweet-input-side">
                         <div className="inner-input-box">
-                            <Select options={optionsFromOffers(tweetOffers)} onChange={handleChangeOffer} />
+                            <Select options={optionsFromOffers(squeakOffers)} onChange={handleChangeOffer} />
                         </div>
                         {offer &&
                           <>
@@ -300,8 +300,8 @@ const TweetPage = (props) => {
                         <div className="inner-input-links">
                             <div className="input-links-side">
                             </div>
-                            <div className="tweet-btn-holder">
-                                <div onClick={buySqueak} className={offer ? 'tweet-btn-side tweet-btn-active' : 'tweet-btn-side'}>
+                            <div className="squeak-btn-holder">
+                                <div onClick={buySqueak} className={offer ? 'squeak-btn-side squeak-btn-active' : 'squeak-btn-side'}>
                                     Buy
                                 </div>
                             </div>

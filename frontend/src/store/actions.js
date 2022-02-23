@@ -13,7 +13,7 @@ export const useActions = (state, dispatch) => ({
     getNetwork: data => {
         dispatch({type: types.GET_NETWORK, payload: data})
     },
-    tweet: data => {
+    squeak: data => {
         dispatch({type: types.SET_STATE, payload: {loading: true}})
         dispatch({type: types.TWEET, payload: data})
     },

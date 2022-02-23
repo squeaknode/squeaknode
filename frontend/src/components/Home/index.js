@@ -30,7 +30,7 @@ const Home = () => {
     };
 
     const getMoreTweets = () => {
-        let lastTweet = getLastSqueak(state.tweets);
+        let lastTweet = getLastSqueak(state.squeaks);
         actions.getTweets({lastTweet: lastTweet});
     }
 
@@ -48,12 +48,12 @@ const Home = () => {
             </div>
             {session ? <MakeSqueak /> : null }
             <div className="Tweet-input-divider"></div>
-            {state.tweets.map(t => {
-                return <TweetCard tweet={t} key={t.getSqueakHash()} id={t.getSqueakHash()} user={t.getAuthor()} />
+            {state.squeaks.map(t => {
+                return <TweetCard squeak={t} key={t.getSqueakHash()} id={t.getSqueakHash()} user={t.getAuthor()} />
             })}
 
             {/* TODO: fix get loading state by doing this: https://medium.com/stashaway-engineering/react-redux-tips-better-way-to-handle-loading-flags-in-your-reducers-afda42a804c6 */}
-            {state.loading ? <Loader /> : <div onClick={() => getMoreTweets()} className='tweet-btn-side tweet-btn-active'>
+            {state.loading ? <Loader /> : <div onClick={() => getMoreTweets()} className='squeak-btn-side squeak-btn-active'>
                 Load more
             </div>}
 

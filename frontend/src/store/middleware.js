@@ -80,7 +80,7 @@ export const applyMiddleware = dispatch => action => {
     	       });
 
         case types.TWEET:
-            // return axios.post(`${API_URL}/tweet/create`, action.payload, headers)
+            // return axios.post(`${API_URL}/squeak/create`, action.payload, headers)
             // .then(res=>dispatch({ type: types.TWEET, payload: res.data, data: action.payload }))
             // .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
 
@@ -92,20 +92,20 @@ export const applyMiddleware = dispatch => action => {
             return makeSqueakRequest(profileId, content, replyTo, hasRecipient, recipientProfileId, (resp) => {
                 let squeakHash = resp.getSqueakHash();
                 return getSqueakDisplayRequest(squeakHash, (resp) => {
-                    let payload = {"tweet": resp };
+                    let payload = {"squeak": resp };
                     dispatch({ type: types.TWEET, payload: payload, data: action.payload });
     	          });
             });
             // TODO: handle error response
 
         case types.LIKE_TWEET:
-            // return axios.post(`${API_URL}/tweet/${action.payload.id}/like`, action.payload, headers)
+            // return axios.post(`${API_URL}/squeak/${action.payload.id}/like`, action.payload, headers)
             // .then(res=>dispatch({ type: types.LIKE_TWEET, payload: res.data, data: action.payload }))
             // .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
             let likeTweetId = action.payload;
             return likeSqueakRequest(likeTweetId, (resp) => {
               return getSqueakDisplayRequest(likeTweetId, (resp) => {
-                  let payload = {tweet: resp, squeakHash:  likeTweetId};
+                  let payload = {squeak: resp, squeakHash:  likeTweetId};
                   dispatch({ type: types.UPDATE_TWEET, payload: payload, data: action.payload });
               });
             });
@@ -114,13 +114,13 @@ export const applyMiddleware = dispatch => action => {
             let unlikeTweetId = action.payload;
             return unlikeSqueakRequest(unlikeTweetId, (resp) => {
               return getSqueakDisplayRequest(unlikeTweetId, (resp) => {
-                  let payload = {tweet: resp, squeakHash:  unlikeTweetId};
+                  let payload = {squeak: resp, squeakHash:  unlikeTweetId};
                   dispatch({ type: types.UPDATE_TWEET, payload: payload, data: action.payload });
               });
             });
 
         case types.GET_TWEETS:
-            // return axios.get(`${API_URL}/tweet`, action.payload)
+            // return axios.get(`${API_URL}/squeak`, action.payload)
             // .then(res=> {
             //   dispatch({ type: types.GET_TWEETS, payload: res.data })
             // })
@@ -128,7 +128,7 @@ export const applyMiddleware = dispatch => action => {
 
             let lastTweet = action.payload.lastTweet
 	          return getTimelineSqueakDisplaysRequest(10, lastTweet, (resp) => {
-                let payload = {"tweets": resp.getSqueakDisplayEntriesList() };
+                let payload = {"squeaks": resp.getSqueakDisplayEntriesList() };
 	              dispatch({ type: types.GET_TWEETS, payload: payload })
 	          });
             // TODO: handle error response
@@ -139,7 +139,7 @@ export const applyMiddleware = dispatch => action => {
                 return payOfferRequest(buyOfferId,
                   (resp) => {
                     getSqueakDisplayRequest(buySqueakHash, (resp) => {
-                      let payload = {"tweet": resp };
+                      let payload = {"squeak": resp };
                       dispatch({ type: types.GET_TWEET, payload: payload });
       	          })},
                   (err) => {
@@ -152,14 +152,14 @@ export const applyMiddleware = dispatch => action => {
             return;
 
         case types.GET_TWEET:
-            // return axios.get(`${API_URL}/tweet/${action.payload}`, action.payload)
+            // return axios.get(`${API_URL}/squeak/${action.payload}`, action.payload)
             // .then(res=> {
             //   dispatch({ type: types.GET_TWEET, payload: res.data });
             // })
             // .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
 
             return getSqueakDisplayRequest(action.payload, (resp) => {
-                let payload = {"tweet": resp };
+                let payload = {"squeak": resp };
                 dispatch({ type: types.GET_TWEET, payload: payload });
 	          });
             // TODO: handle error response
@@ -180,7 +180,7 @@ export const applyMiddleware = dispatch => action => {
                   return;
                 }
                 getSqueakDisplayRequest(action.payload, (resp) => {
-                    let payload = {"tweet": resp };
+                    let payload = {"squeak": resp };
                     dispatch({ type: types.GET_TWEET, payload: payload });
     	          });
                 getAncestorSqueakDisplaysRequest(action.payload, (resp) => {
@@ -219,7 +219,7 @@ export const applyMiddleware = dispatch => action => {
             .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
 
         case types.GET_USER:
-            // return axios.get(`${API_URL}/user/${action.payload}/tweets`)
+            // return axios.get(`${API_URL}/user/${action.payload}/squeaks`)
             // .then(res=> {
             //   dispatch({ type: types.GET_USER, payload: res.data });
             // })
@@ -259,7 +259,7 @@ export const applyMiddleware = dispatch => action => {
 
         case types.GET_TWEET_OFFERS:
             return getBuyOffersRequest(action.payload, (resp) => {
-                let payload = {"tweetOffers": resp };
+                let payload = {"squeakOffers": resp };
                 dispatch({ type: types.GET_TWEET_OFFERS, payload: payload });
             });
 
@@ -300,13 +300,13 @@ export const applyMiddleware = dispatch => action => {
             });
 
         case types.DELETE_TWEET:
-            // return axios.delete(`${API_URL}/tweet/${action.payload}/delete`, headers)
+            // return axios.delete(`${API_URL}/squeak/${action.payload}/delete`, headers)
             // .then(res=>dispatch({ type: types.DELETE_TWEET, payload: res.data, data: action.payload }))
             // .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
 
             let deleteTweetId = action.payload;
             return deleteSqueakRequest(deleteTweetId, (resp) => {
-              let payload = {tweet: null, squeakHash:  deleteTweetId};
+              let payload = {squeak: null, squeakHash:  deleteTweetId};
               dispatch({ type: types.DELETE_TWEET, payload: payload, data: action.payload });
             });
 

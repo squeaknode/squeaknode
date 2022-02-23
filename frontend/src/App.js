@@ -39,7 +39,7 @@ const DefaultContainer = withRouter(({ history }) => {
         <Route path="/app/peer/:network/:host/:port" exact>
           <Peer />
         </Route>
-        <Route path="/app/tweet/:id" exact>
+        <Route path="/app/squeak/:id" exact>
           <Tweet />
         </Route>
         <Route path="/app/profiles" exact>

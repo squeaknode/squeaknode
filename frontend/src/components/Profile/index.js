@@ -209,7 +209,7 @@ const Profile = (props) => {
                     <div className="profile-header-name">
                             {userParam}
                     </div>
-                    {/* <div className="profile-header-tweets">
+                    {/* <div className="profile-header-squeaks">
                             82 Tweets
                     </div> */}
                 </div>
@@ -298,7 +298,7 @@ const Profile = (props) => {
                 </div>
             </div>
             <div className="profile-nav-menu">
-                <div key={'tweets'} onClick={()=>changeTab('Tweets')} className={activeTab ==='Tweets' ? `profile-nav-item activeTab` : `profile-nav-item`}>
+                <div key={'squeaks'} onClick={()=>changeTab('Tweets')} className={activeTab ==='Tweets' ? `profile-nav-item activeTab` : `profile-nav-item`}>
                     Squeaks
                 </div>
                 <div key={'replies'} onClick={()=>changeTab('Tweets&Replies')} className={activeTab ==='Tweets&Replies' ? `profile-nav-item activeTab` : `profile-nav-item`}>
@@ -314,10 +314,10 @@ const Profile = (props) => {
             {activeTab === 'Tweets' ?
             userTweets.map(t=>{
                 if(!t.getReplyTo())
-                return <TweetCard tweet={t} key={t.getSqueakHash()} id={t.getSqueakHash()} user={t.getAuthor()} />
+                return <TweetCard squeak={t} key={t.getSqueakHash()} id={t.getSqueakHash()} user={t.getAuthor()} />
              }) : activeTab === 'Tweets&Replies' ?
             userTweets.map(t=>{
-                return <TweetCard tweet={t} key={t.getSqueakHash()} id={t.getSqueakHash()} user={t.getAuthor()} />
+                return <TweetCard squeak={t} key={t.getSqueakHash()} id={t.getSqueakHash()} user={t.getAuthor()} />
              }) :
             activeTab === 'Likes' ?
             null: activeTab === 'Media' ?
@@ -325,7 +325,7 @@ const Profile = (props) => {
             {/* TODO: fix get loading state by doing this: https://medium.com/stashaway-engineering/react-redux-tips-better-way-to-handle-loading-flags-in-your-reducers-afda42a804c6 */}
             {state.loading ?
                 <Loader /> :
-                <div onClick={() => getMoreTweets()} className='tweet-btn-side tweet-btn-active'>
+                <div onClick={() => getMoreTweets()} className='squeak-btn-side squeak-btn-active'>
                   Load more
                 </div>}
             </div>

@@ -71,7 +71,7 @@ const Payments = (props) => {
 
     const goToTweet = (id) => {
         if(props.replyTo){ actions.getTweet(id) }
-        props.history.push(`/app/tweet/${id}`)
+        props.history.push(`/app/squeak/${id}`)
     }
 
     return(
@@ -116,7 +116,7 @@ const Payments = (props) => {
                 </div>
                 })}
                 {/* TODO: fix get loading state by doing this: https://medium.com/stashaway-engineering/react-redux-tips-better-way-to-handle-loading-flags-in-your-reducers-afda42a804c6 */}
-                {state.loading ? <Loader /> : <div onClick={() => getMoreSentPayments()} className='tweet-btn-side tweet-btn-active'>
+                {state.loading ? <Loader /> : <div onClick={() => getMoreSentPayments()} className='squeak-btn-side squeak-btn-active'>
                     Load more
                 </div>}
                 </>
@@ -139,7 +139,7 @@ const Payments = (props) => {
                   </div>
                   })}
                   {/* TODO: fix get loading state by doing this: https://medium.com/stashaway-engineering/react-redux-tips-better-way-to-handle-loading-flags-in-your-reducers-afda42a804c6 */}
-                  {state.loading ? <Loader /> : <div onClick={() => getMoreReceivedPayments()} className='tweet-btn-side tweet-btn-active'>
+                  {state.loading ? <Loader /> : <div onClick={() => getMoreReceivedPayments()} className='squeak-btn-side squeak-btn-active'>
                       Load more
                   </div>}
                   </>

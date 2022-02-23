@@ -19,17 +19,17 @@ const MakeSqueak = (props) => {
     }, [])
 
     //used for contenteditable divs on react hooks
-    const tweetT = useRef('');
+    const squeakT = useRef('');
     const handleChange = (evt, e) => {
-        if (tweetT.current.trim().length <= 280
-            && tweetT.current.split(/\r\n|\r|\n/).length <= 30) {
-            tweetT.current = evt.target.value;
-            setTweetText(tweetT.current)
+        if (squeakT.current.trim().length <= 280
+            && squeakT.current.split(/\r\n|\r|\n/).length <= 30) {
+            squeakT.current = evt.target.value;
+            setTweetText(squeakT.current)
         }
-        // document.getElementById('tweet-box').innerHTML = document.getElementById('tweet-box').innerHTML.replace(/(\#\w+)/g, '<span class="blue">$1</span>')
+        // document.getElementById('squeak-box').innerHTML = document.getElementById('squeak-box').innerHTML.replace(/(\#\w+)/g, '<span class="blue">$1</span>')
     };
     const [signingProfile, setSigningProfile] = useState(null)
-    const [tweetText, setTweetText] = useState("")
+    const [squeakText, setTweetText] = useState("")
 
     const optionsFromProfiles = (profiles) => {
       return profiles.map((p) => {
@@ -50,19 +50,19 @@ const MakeSqueak = (props) => {
           return;
         }
 
-        if (!tweetText.length) { return }
+        if (!squeakText.length) { return }
 
-        let hashtags = tweetText.match(/#(\w+)/g)
+        let hashtags = squeakText.match(/#(\w+)/g)
 
         const values = {
             signingProfile: signingProfile.getProfileId(),
-            description: tweetText,
+            description: squeakText,
             replyTo: props.replyToTweet ? props.replyToTweet.getSqueakHash() : null,
             hasRecipient: null,
             recipientProfileId: -1
         }
-        actions.tweet(values)
-        tweetT.current = ''
+        actions.squeak(values)
+        squeakT.current = ''
         setTweetText('')
         if (props.submittedCallback) {
           props.submittedCallback();
@@ -101,10 +101,10 @@ const MakeSqueak = (props) => {
               {props.replyToTweet.getContentStr()}
               </div>
               <div className="reply-to-user">
-                  <span className="reply-tweet-username">
+                  <span className="reply-squeak-username">
                       Replying to
                   </span>
-                  <span className="main-tweet-user">
+                  <span className="main-squeak-user">
                       @{props.replyToTweet.getAuthorPubkey()}
                   </span>
               </div>
@@ -124,16 +124,16 @@ const MakeSqueak = (props) => {
                         <Select options={optionsFromProfiles(signingProfiles)} onChange={handleChangeSigningProfile} />
                     </div>
                     <div className="inner-input-box">
-                        <ContentEditable onPaste={(e) => e.preventDefault()} id="tweet-box" className={tweetText.length ? 'tweet-input-active' : null} onKeyDown={(e)=>tweetT.current.length>279 ? e.keyCode !== 8 && e.preventDefault(): null} placeholder="What's happening?" html={tweetT.current} onChange={(e) => handleChange(e)} />
+                        <ContentEditable onPaste={(e) => e.preventDefault()} id="squeak-box" className={squeakText.length ? 'squeak-input-active' : null} onKeyDown={(e)=>squeakT.current.length>279 ? e.keyCode !== 8 && e.preventDefault(): null} placeholder="What's happening?" html={squeakT.current} onChange={(e) => handleChange(e)} />
                     </div>
                     <div className="inner-input-links">
                         <div className="input-links-side">
                         </div>
-                        <div className="tweet-btn-holder">
-                            <div style={{ fontSize: '13px', color: tweetText.length >= 280 ? 'red' : null }}>
-                                {tweetText.length > 0 && tweetText.length + '/280'}
+                        <div className="squeak-btn-holder">
+                            <div style={{ fontSize: '13px', color: squeakText.length >= 280 ? 'red' : null }}>
+                                {squeakText.length > 0 && squeakText.length + '/280'}
                             </div>
-                            <div onClick={submitTweet} className={tweetText.length ? 'tweet-btn-side tweet-btn-active' : 'tweet-btn-side'}>
+                            <div onClick={submitTweet} className={squeakText.length ? 'squeak-btn-side squeak-btn-active' : 'squeak-btn-side'}>
                                 Squeak
                             </div>
                         </div>

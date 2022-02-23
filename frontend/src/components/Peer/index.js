@@ -131,7 +131,7 @@ return(
                 <div className="bookmarks-header-name">
                     {peer && peer.getPeerName()}
                 </div>
-                <div className="bookmarks-header-tweets">
+                <div className="bookmarks-header-squeaks">
                     {props.match.params.host}:{props.match.params.port}
                 </div>
             </div>
