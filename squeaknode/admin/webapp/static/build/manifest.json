@@ -1,8 +1,8 @@
 {
-  "short_name": "Twitter Clone",
-  "name": "Twitter Clone",
+  "short_name": "Squeaknode",
+  "name": "Squeaknode",
   "icons": [
-   
+
   ],
   "start_url": ".",
   "display": "standalone",
