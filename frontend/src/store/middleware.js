@@ -45,6 +45,9 @@ import {
   getPeerRequest,
   getExternalAddressRequest,
   getSearchSqueakDisplaysRequest,
+  getSellPriceRequest,
+  setSellPriceRequest,
+  clearSellPriceRequest,
 } from '../squeakclient/requests';
 
 export const token = () => {
@@ -381,14 +384,10 @@ export const applyMiddleware = dispatch => action => {
             // .then(res=>dispatch({ type: types.SEARCH, payload: res.data }))
             // .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
 
-            console.log(action.payload);
             let searchText = action.payload.searchText
             let lastSearchSqueak = action.payload.lastSqueak
-            console.log(lastSearchSqueak);
 	          return getSearchSqueakDisplaysRequest(searchText, 10, lastSearchSqueak, (resp) => {
-                console.log(resp);
                 let payload = {"searchSqueaks": resp };
-                console.log(payload);
 	              dispatch({ type: types.SEARCH, payload: payload })
 	          });
 
@@ -532,6 +531,29 @@ export const applyMiddleware = dispatch => action => {
             return getExternalAddressRequest((resp) => {
                 let payload = {"externalAddress": resp };
                 dispatch({ type: types.GET_EXTERNAL_ADDRESS, payload: payload, data: action.payload });
+            });
+
+        case types.GET_SELL_PRICE:
+            return getSellPriceRequest((resp) => {
+                let payload = {"sellPrice": resp };
+                dispatch({ type: types.GET_SELL_PRICE, payload: payload, data: action.payload });
+            });
+
+        case types.SET_SELL_PRICE:
+            let newSellPriceMsat = action.payload.sellPriceMsat;
+            return setSellPriceRequest(newSellPriceMsat, (resp) => {
+              return getSellPriceRequest((resp) => {
+                  let payload = {"sellPrice": resp };
+                  dispatch({ type: types.GET_SELL_PRICE, payload: payload, data: action.payload });
+              });
+            });
+
+        case types.CLEAR_SELL_PRICE:
+            return clearSellPriceRequest((resp) => {
+              return getSellPriceRequest((resp) => {
+                  let payload = {"sellPrice": resp };
+                  dispatch({ type: types.GET_SELL_PRICE, payload: payload, data: action.payload });
+              });
             });
 
         case types.SAVE_PEER:
