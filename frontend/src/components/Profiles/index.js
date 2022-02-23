@@ -9,6 +9,7 @@ import TweetCard from '../TweetCard'
 
 
 const Profiles = (props) => {
+    console.log(props);
     const { state, actions } = useContext(StoreContext)
     const { signingProfiles, contactProfiles, result, tagTweets} = state
     const [tab, setTab] = useState('Signing Profiles')
@@ -19,6 +20,7 @@ const Profiles = (props) => {
     const [newProfilePubkey, setNewProfilePubkey] = useState('')
     const [usePrivKey, setUsePrivKey] = useState(false)
     const [newProfilePrivkey, setNewProfilePrivkey] = useState('')
+
 
     const searchOnChange = (param) => {
         if(tab !== 'Search'){setTab('Search')}

@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useContext, useRef } from 'react'
+import React, { useEffect, useState, useContext, useRef, useMemo } from 'react'
+import { withRouter, useLocation } from 'react-router-dom';
 import { StoreContext } from '../../store/store'
 import './style.scss'
 import axios from 'axios'
@@ -11,14 +12,26 @@ import TweetCard from '../TweetCard'
 import MakeSqueak from '../MakeSqueak'
 
 
-const Search = () => {
-    const { state, actions } = useContext(StoreContext)
-    const { searchTweets, session } = state
-    const [searchText, setSearchText] = useState('')
+const Search = (props) => {
+    const { state, actions } = useContext(StoreContext);
+    const { search } = useLocation();
+    const { searchTweets, session } = state;
+    const [searchText, setSearchText] = useState('');
+
+    const q = useMemo(() => {
+      const p = new URLSearchParams(search);
+      const q = p.get('q');
+      return q ? decodeURIComponent(q) : '';
+    }, [search]);
+
 
     useEffect(() => {
         window.scrollTo(0, 0)
         // actions.getTweets({lastTweet: null})
+        if (q && q.length > 1) {
+          setSearchText(q);
+          reloadTweets();
+        }
     }, [])
 
     const changeSearchText = (param) => {
@@ -27,9 +40,9 @@ const Search = () => {
 
     const searchOnEnter = (e) => {
         if (e.keyCode === 13) {
-          console.log(searchText);
           if(searchText.length>0){
             reloadTweets();
+            goToNewSearch(searchText);
           }
         }
     }
@@ -59,6 +72,10 @@ const Search = () => {
         });
     }
 
+    const goToNewSearch = (newSearchText) => {
+        props.history.push(`/app/search?q=${newSearchText}`);
+    }
+
     return (
         <div className="Home-wrapper">
             <div className="explore-header">
@@ -67,7 +84,7 @@ const Search = () => {
                     <ICON_SEARCH/>
                 </div>
                 <div className="explore-search-input">
-                    <input onKeyDown={(e)=>searchOnEnter(e)} onChange={(e)=>changeSearchText(e.target.value)} placeholder="Search Squeaks" type="text" name="search"/>
+                    <input value={searchText} onKeyDown={(e)=>searchOnEnter(e)} onChange={(e)=>changeSearchText(e.target.value)} placeholder="Search Squeaks" type="text" name="search"/>
                 </div>
             </div>
             </div>
@@ -89,4 +106,4 @@ const Search = () => {
     )
 }
 
-export default Search
+export default withRouter(Search)
