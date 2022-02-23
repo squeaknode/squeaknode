@@ -9,6 +9,7 @@ const initialState = {
     tweet: null,
     ancestorTweets: [],
     replyTweets: [],
+    searchTweets: [],
     tweetOffers: [],
     account: null,
     user: null,
@@ -293,8 +294,14 @@ const reducer = (state = initialState, action) => {
         case type.GET_TREND:
             return {...state, ...action.payload}
 
+        case type.CLEAR_SEARCH:
+            return {...state, ...{searchTweets: []}}
+
         case type.SEARCH:
-            return {...state, ...action.payload}
+            let searchT = state.searchTweets
+            let newSearchTweets = action.payload.searchTweets
+            newSearchTweets.forEach(t => searchT.push(t));
+            return {...state, loading: false, error: false}
 
         case type.TREND_TWEETS:
         let t_tweets = action.payload.tagTweets.tweets
