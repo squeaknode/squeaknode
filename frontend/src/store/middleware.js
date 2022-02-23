@@ -44,6 +44,7 @@ import {
   setPeerAutoconnectRequest,
   getPeerRequest,
   getExternalAddressRequest,
+  getSearchSqueakDisplaysRequest,
 } from '../squeakclient/requests';
 
 export const token = () => {
@@ -371,10 +372,25 @@ export const applyMiddleware = dispatch => action => {
             .then(res=>dispatch({ type: types.GET_TREND, payload: res.data }))
             .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
 
+        case types.CLEAR_SEARCH:
+            dispatch({ type: types.CLEAR_SEARCH, payload: {}})
+            return;
+
         case types.SEARCH:
-            return axios.post(`${API_URL}/trend`, action.payload)
-            .then(res=>dispatch({ type: types.SEARCH, payload: res.data }))
-            .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
+            // return axios.post(`${API_URL}/trend`, action.payload)
+            // .then(res=>dispatch({ type: types.SEARCH, payload: res.data }))
+            // .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
+
+            console.log(action.payload);
+            let searchText = action.payload.searchText
+            let lastSearchTweet = action.payload.lastTweet
+            console.log(lastSearchTweet);
+	          return getSearchSqueakDisplaysRequest(searchText, 10, lastSearchTweet, (resp) => {
+                console.log(resp);
+                let payload = {"searchTweets": resp };
+                console.log(payload);
+	              dispatch({ type: types.SEARCH, payload: payload })
+	          });
 
         case types.SEARCH_USERS:
             return axios.post(`${API_URL}/user`, action.payload)

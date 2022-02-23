@@ -12,6 +12,7 @@ import Profiles from './components/Profiles'
 import Payments from './components/Payments'
 import Peers from './components/Peers'
 import Feed from './components/Feed'
+import Search from './components/Search'
 import Notifications from './components/Notifications'
 import Alerts from './components/Alerts'
 
@@ -28,6 +29,9 @@ const DefaultContainer = withRouter(({ history }) => {
         </Route>
         <Route path="/app/home" exact>
           <Home />
+        </Route>
+        <Route path="/app/search" exact>
+          <Search />
         </Route>
         <Route path="/app/profile/:username" exact>
           <Profile />
