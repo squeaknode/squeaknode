@@ -5,13 +5,13 @@ import { withRouter, Link } from 'react-router-dom'
 import { ICON_SEARCH, ICON_ARROWBACK, ICON_CLOSE } from '../../Icons'
 import { getProfileImageSrcString } from '../../squeakimages/images';
 import Loader from '../Loader'
-import TweetCard from '../TweetCard'
+import SqueakCard from '../SqueakCard'
 
 
 const Profiles = (props) => {
     console.log(props);
     const { state, actions } = useContext(StoreContext)
-    const { signingProfiles, contactProfiles, result, tagTweets} = state
+    const { signingProfiles, contactProfiles, result, tagSqueaks} = state
     const [tab, setTab] = useState('Signing Profiles')
     const [signingProfileModalOpen, setSigningProfileModalOpen] = useState(false)
     const [contactProfileModalOpen, setContactProfileModalOpen] = useState(false)

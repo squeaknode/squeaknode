@@ -5,22 +5,22 @@ const initialState = {
     session: true,
     loggedin: false,
     network: null,
-    tweets: [],
-    tweet: null,
-    ancestorTweets: [],
-    replyTweets: [],
-    searchTweets: [],
-    tweetOffers: [],
+    squeaks: [],
+    squeak: null,
+    ancestorSqueaks: [],
+    replySqueaks: [],
+    searchSqueaks: [],
+    squeakOffers: [],
     account: null,
     user: null,
-    userTweets: [],
+    userSqueaks: [],
     bookmarks: [],
-    recent_tweets: [],
+    recent_squeaks: [],
     lists: [],
     list: null,
     trends: [],
     result: [],
-    tagTweets: [],
+    tagSqueaks: [],
     followers: [],
     following: [],
     resultUsers: [],
@@ -68,101 +68,101 @@ const reducer = (state = initialState, action) => {
             return {...state, ...action.payload, loading: false, error: false}
 
         case type.TWEET:
-            let recentT = state.tweets
-            let s_tweet = state.tweet
-            let replyT = state.replyTweets
-            recentT.unshift(action.payload.tweet)
-            if(s_tweet && s_tweet.getSqueakHash() === action.data.replyTo){
+            let recentT = state.squeaks
+            let s_squeak = state.squeak
+            let replyT = state.replySqueaks
+            recentT.unshift(action.payload.squeak)
+            if(s_squeak && s_squeak.getSqueakHash() === action.data.replyTo){
                 // Update the replies if the current selected squeak is active.
-                replyT.unshift(action.payload.tweet)
+                replyT.unshift(action.payload.squeak)
             }
-            // TODO: update `state.userTweets` with the new tweet.
+            // TODO: update `state.userSqueaks` with the new squeak.
             return {...state, loading: false, error: false}
 
         case type.UPDATE_TWEET:
-            let updatedTweetHash = action.payload.squeakHash
-            let updatedTweet = action.payload.tweet
-            let userTweetsU = state.userTweets
-            let replyTweetsU = state.replyTweets
-            let ancestorTweetsU = state.ancestorTweets
-            let homeTweetsU = state.tweets
-            let singleTweetU = state.tweet
-            userTweetsU = userTweetsU.map((x)=>{
-                return x.getSqueakHash() === updatedTweetHash ?
-                updatedTweet : x
+            let updatedSqueakHash = action.payload.squeakHash
+            let updatedSqueak = action.payload.squeak
+            let userSqueaksU = state.userSqueaks
+            let replySqueaksU = state.replySqueaks
+            let ancestorSqueaksU = state.ancestorSqueaks
+            let homeSqueaksU = state.squeaks
+            let singleSqueakU = state.squeak
+            userSqueaksU = userSqueaksU.map((x)=>{
+                return x.getSqueakHash() === updatedSqueakHash ?
+                updatedSqueak : x
             })
-            replyTweetsU = replyTweetsU.map((x)=>{
-                return x.getSqueakHash() === updatedTweetHash ?
-                updatedTweet : x
+            replySqueaksU = replySqueaksU.map((x)=>{
+                return x.getSqueakHash() === updatedSqueakHash ?
+                updatedSqueak : x
             })
-            ancestorTweetsU = ancestorTweetsU.map((x)=>{
-                return x.getSqueakHash() === updatedTweetHash ?
-                updatedTweet : x
+            ancestorSqueaksU = ancestorSqueaksU.map((x)=>{
+                return x.getSqueakHash() === updatedSqueakHash ?
+                updatedSqueak : x
             })
-            homeTweetsU = homeTweetsU.map((x)=>{
-                return x.getSqueakHash() === updatedTweetHash ?
-                updatedTweet : x
+            homeSqueaksU = homeSqueaksU.map((x)=>{
+                return x.getSqueakHash() === updatedSqueakHash ?
+                updatedSqueak : x
             })
-            if (singleTweetU) {
-              singleTweetU = singleTweetU.getSqueakHash() === updatedTweetHash ? updatedTweet : singleTweetU;
+            if (singleSqueakU) {
+              singleSqueakU = singleSqueakU.getSqueakHash() === updatedSqueakHash ? updatedSqueak : singleSqueakU;
             }
             return {
                 ...state,
-                ...{tweet: singleTweetU},
-                ...{userTweets: userTweetsU},
-                ...{replyTweets: replyTweetsU},
-                ...{ancestorTweets: ancestorTweetsU},
-                ...{tweets: homeTweetsU},
+                ...{squeak: singleSqueakU},
+                ...{userSqueaks: userSqueaksU},
+                ...{replySqueaks: replySqueaksU},
+                ...{ancestorSqueaks: ancestorSqueaksU},
+                ...{squeaks: homeSqueaksU},
             }
 
         // case type.LIKE_TWEET:
         //     let account_likes = state.account
-        //     let tweet_likes = state.tweets
+        //     let squeak_likes = state.squeaks
         //     let user_likes = state.user
-        //     let Stweet_likes = state.tweet
+        //     let Ssqueak_likes = state.squeak
         //     if(action.payload.msg === "liked"){
         //
-        //         if(Stweet_likes){
-        //             Stweet_likes.likes.push(action.data.id)
+        //         if(Ssqueak_likes){
+        //             Ssqueak_likes.likes.push(action.data.id)
         //         }
         //
         //         account_likes.likes.push(action.data.id)
-        //         tweet_likes.length && tweet_likes.find(x=>x._id === action.data.id).likes.push(account_likes._id)
+        //         squeak_likes.length && squeak_likes.find(x=>x._id === action.data.id).likes.push(account_likes._id)
         //
         //         if(action.data.dest === 'profile'){
-        //             user_likes.tweets.find(x=>x._id === action.data.id).likes.push(action.data.id)
-        //             user_likes.likes = user_likes.tweets.filter(x=>x._id === action.data.id).concat(user_likes.likes)
+        //             user_likes.squeaks.find(x=>x._id === action.data.id).likes.push(action.data.id)
+        //             user_likes.likes = user_likes.squeaks.filter(x=>x._id === action.data.id).concat(user_likes.likes)
         //         }
         //
         //     }else if(action.payload.msg === "unliked"){
         //
-        //         if(Stweet_likes){
-        //             Stweet_likes.likes = Stweet_likes.likes.filter((x)=>{
+        //         if(Ssqueak_likes){
+        //             Ssqueak_likes.likes = Ssqueak_likes.likes.filter((x)=>{
         //                 return x !== action.data.id
         //              });
         //         }
         //
-        //         tweet_likes.length && tweet_likes.find(x=>x._id === action.data.id).likes.pop()
+        //         squeak_likes.length && squeak_likes.find(x=>x._id === action.data.id).likes.pop()
         //         let likeIndex = account_likes.likes.indexOf(action.data.id)
         //         likeIndex > -1 && account_likes.likes.splice(likeIndex, 1)
         //
         //         if(action.data.dest === 'profile'){
-        //             user_likes.tweets.find(x=>x._id === action.data.id).likes.pop()
+        //             user_likes.squeaks.find(x=>x._id === action.data.id).likes.pop()
         //             user_likes.likes = user_likes.likes.filter((x)=>{
         //                return x._id !== action.data.id
         //             });
         //         }
         //     }
-        //     return {...state, ...{account:account_likes}, ...{tweets:tweet_likes}, ...{user: user_likes}, ...{tweet: Stweet_likes}}
+        //     return {...state, ...{account:account_likes}, ...{squeaks:squeak_likes}, ...{user: user_likes}, ...{squeak: Ssqueak_likes}}
 
         case type.GET_TWEETS:
-            let timelineT = state.tweets
-            let newTweets = action.payload.tweets
-            newTweets.forEach(t => timelineT.push(t));
+            let timelineT = state.squeaks
+            let newSqueaks = action.payload.squeaks
+            newSqueaks.forEach(t => timelineT.push(t));
             return {...state, loading: false, error: false}
 
         case type.CLEAR_TWEETS:
-            return {...state, ...{tweets: []}}
+            return {...state, ...{squeaks: []}}
 
         case type.GET_TWEET:
             return {...state, ...action.payload, loading: false, error: false}
@@ -174,13 +174,13 @@ const reducer = (state = initialState, action) => {
             return {...state, ...action.payload}
 
         case type.GET_USER_TWEETS:
-            let userT = state.userTweets
-            let newUserTweets = action.payload.userTweets
-            newUserTweets.forEach(t => userT.push(t));
+            let userT = state.userSqueaks
+            let newUserSqueaks = action.payload.userSqueaks
+            newUserSqueaks.forEach(t => userT.push(t));
             return {...state, loading: false, error: false}
 
         case type.CLEAR_USER_TWEETS:
-            return {...state, ...{userTweets: []}}
+            return {...state, ...{userSqueaks: []}}
 
         case type.GET_ANCESTOR_TWEETS:
             return {...state, ...action.payload, loading: false, error: false}
@@ -192,16 +192,16 @@ const reducer = (state = initialState, action) => {
             return {...state, ...action.payload, loading: false, error: false}
 
         case type.DELETE_USER:
-            let deletedUserTweets = state.userTweets
-            deletedUserTweets.forEach((item, i) => {
+            let deletedUserSqueaks = state.userSqueaks
+            deletedUserSqueaks.forEach((item, i) => {
               item.setAuthor(null);
             });
             return {...state, ...{user:null}, loading: false, error: false}
 
         case type.UPDATE_USER:
             let updateUser = action.payload.user
-            let updateUserTweets = state.userTweets
-            updateUserTweets.forEach((item, i) => {
+            let updateUserSqueaks = state.userSqueaks
+            updateUserSqueaks.forEach((item, i) => {
               item.setAuthor(updateUser);
             });
             return {...state, ...{user:updateUser}, loading: false, error: false}
@@ -213,35 +213,35 @@ const reducer = (state = initialState, action) => {
             return {...state, ...action.payload}
 
         case type.DELETE_TWEET:
-            let deletedTweetHash = action.payload.squeakHash
-            let userTweetsD = state.userTweets
-            let replyTweetsD = state.replyTweets
-            let ancestorTweetsD = state.ancestorTweets
-            let homeTweetsD = state.tweets
-            let singleTweet = state.tweet
-            userTweetsD = userTweetsD.filter((x)=>{
-                    return x.getSqueakHash() !== deletedTweetHash
+            let deletedSqueakHash = action.payload.squeakHash
+            let userSqueaksD = state.userSqueaks
+            let replySqueaksD = state.replySqueaks
+            let ancestorSqueaksD = state.ancestorSqueaks
+            let homeSqueaksD = state.squeaks
+            let singleSqueak = state.squeak
+            userSqueaksD = userSqueaksD.filter((x)=>{
+                    return x.getSqueakHash() !== deletedSqueakHash
             })
-            ancestorTweetsD = ancestorTweetsD.filter((x)=>{
-                    return x.getSqueakHash() !== deletedTweetHash
+            ancestorSqueaksD = ancestorSqueaksD.filter((x)=>{
+                    return x.getSqueakHash() !== deletedSqueakHash
             })
-            replyTweetsD = replyTweetsD.filter((x)=>{
-                    return x.getSqueakHash() !== deletedTweetHash
+            replySqueaksD = replySqueaksD.filter((x)=>{
+                    return x.getSqueakHash() !== deletedSqueakHash
             })
-            if(singleTweet && deletedTweetHash === singleTweet.getSqueakHash()){
+            if(singleSqueak && deletedSqueakHash === singleSqueak.getSqueakHash()){
                 // window.location.replace('/home')
-                singleTweet = null
+                singleSqueak = null
             }
-            homeTweetsD = homeTweetsD.filter((x)=>{
-                return x.getSqueakHash() !== deletedTweetHash
+            homeSqueaksD = homeSqueaksD.filter((x)=>{
+                return x.getSqueakHash() !== deletedSqueakHash
             })
             return {
                 ...state,
-                ...{userTweets: userTweetsD},
-                ...{replyTweets: replyTweetsD},
-                ...{ancestorTweets: ancestorTweetsD},
-                ...{tweets: homeTweetsD},
-                ...{tweet: singleTweet}
+                ...{userSqueaks: userSqueaksD},
+                ...{replySqueaks: replySqueaksD},
+                ...{ancestorSqueaks: ancestorSqueaksD},
+                ...{squeaks: homeSqueaksD},
+                ...{squeak: singleSqueak}
             }
 
         case type.FOLLOW_USER:
@@ -295,17 +295,17 @@ const reducer = (state = initialState, action) => {
             return {...state, ...action.payload}
 
         case type.CLEAR_SEARCH:
-            return {...state, ...{searchTweets: []}}
+            return {...state, ...{searchSqueaks: []}}
 
         case type.SEARCH:
-            let searchT = state.searchTweets
-            let newSearchTweets = action.payload.searchTweets
-            newSearchTweets.forEach(t => searchT.push(t));
+            let searchT = state.searchSqueaks
+            let newSearchSqueaks = action.payload.searchSqueaks
+            newSearchSqueaks.forEach(t => searchT.push(t));
             return {...state, loading: false, error: false}
 
         case type.TREND_TWEETS:
-        let t_tweets = action.payload.tagTweets.tweets
-            return {...state, ...{tagTweets: t_tweets}}
+        let t_squeaks = action.payload.tagSqueaks.squeaks
+            return {...state, ...{tagSqueaks: t_squeaks}}
 
         case type.ADD_TO_LIST:
             let added_list = state.list
@@ -330,9 +330,9 @@ const reducer = (state = initialState, action) => {
         case type.CREATE_CONTACT_PROFILE:
             let createdContactUser = action.payload.user
             let createdCP = state.contactProfiles
-            let updateCreatedContactUserTweets = state.userTweets
+            let updateCreatedContactUserSqueaks = state.userSqueaks
             createdCP.push(createdContactUser)
-            updateCreatedContactUserTweets.forEach((item, i) => {
+            updateCreatedContactUserSqueaks.forEach((item, i) => {
               item.setAuthor(createdContactUser);
             });
             return {...state, ...{user: createdContactUser}, loading: false, error: false}

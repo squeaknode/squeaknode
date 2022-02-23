@@ -5,12 +5,12 @@ import { withRouter, Link } from 'react-router-dom'
 import { ICON_SEARCH, ICON_ARROWBACK, ICON_CLOSE, ICON_LAPTOPFILL } from '../../Icons'
 import { getProfileImageSrcString } from '../../squeakimages/images';
 import Loader from '../Loader'
-import TweetCard from '../TweetCard'
+import SqueakCard from '../SqueakCard'
 
 
 const Peers = (props) => {
     const { state, actions } = useContext(StoreContext)
-    const { peers, connectedPeers, result, tagTweets, externalAddress} = state
+    const { peers, connectedPeers, result, tagSqueaks, externalAddress} = state
     const [tab, setTab] = useState('Connected Peers')
     const [savePeerModalOpen, setSavePeerModalOpen] = useState(false)
     const [connectPeerModalOpen, setconnectPeerModalOpen] = useState(false)

@@ -1,4 +1,4 @@
-.tweet-wrapper{
+.squeak-wrapper{
     max-width: 600px;
     border-right: 1px solid rgb(230, 236, 240);
     width: 100%;
@@ -7,7 +7,7 @@
     flex-direction: column;
 }
 
-.tweet-header-wrapper{
+.squeak-header-wrapper{
     position: sticky;
     border-bottom: 1px solid rgb(230, 236, 240);
     border-left: 1px solid rgb(230, 236, 240);
@@ -51,29 +51,29 @@
     fill: rgb(29,161,242);
 }
 
-.tweet-header-content{
+.squeak-header-content{
     font-weight: 800;
     font-size: 19px;
 }
 
-.tweet-body-wrapper{
+.squeak-body-wrapper{
     padding: 0 15px;
     border-bottom: 1px solid rgb(230, 236, 240);
-    // overflow: hidden; causing tweet page info to cuttoff
+    // overflow: hidden; causing squeak page info to cuttoff
 }
 
-.missing-tweet{
+.missing-squeak{
     background-color: rgb(211,211,211);
 }
 
-.tweet-header-content{
+.squeak-header-content{
     margin-top: 10px;
     margin-bottom: 10px;
     display: flex;
     align-items: center;
 }
 
-.tweet-user-pic{
+.squeak-user-pic{
     flex-basis: 49px;
     margin-right: 10px;
     img{
@@ -81,13 +81,13 @@
     }
 }
 
-.tweet-user-wrap{
+.squeak-user-wrap{
     display: flex;
     flex-direction: column;
     justify-content: center
 }
 
-.tweet-user-name{
+.squeak-user-name{
     font-size: 16px;
     font-weight: bold;
     cursor: pointer;
@@ -96,13 +96,13 @@
     }
 }
 
-.tweet-username{
+.squeak-username{
     font-size: 15.5px;
     font-weight: 400;
     color: rgb(101, 119, 134);
 }
 
-.tweet-content{
+.squeak-content{
     margin-top: 10px;
     font-size: 23px;
     margin-bottom: 10px;
@@ -116,13 +116,13 @@
   background-color: rgb(211,211,211);
 }
 
-.tweet-date{
+.squeak-date{
     margin: 15px 0;
     font-size: 15px;
     color: rgb(101, 119, 134);
 }
 
-.tweet-stats{
+.squeak-stats{
     display: flex;
     padding: 15px 5px;
     border-top: 1px solid rgb(230, 236, 240);
@@ -139,13 +139,13 @@
     margin-right: 20px;
 }
 
-.tweet-interactions{
+.squeak-interactions{
     display: flex;
     justify-content: space-evenly;
 
 }
 
-.tweet-int-icon{
+.squeak-int-icon{
     min-height: 49px;
     width: 100%;
     padding: 0 5px;
@@ -161,7 +161,7 @@
 }
 //////////////////////@exten
 
-.tweet-replies-wrapper{
+.squeak-replies-wrapper{
     padding: 10px 15px 0 15px;
     transition: 0.2s ease-in-out;
     display: flex;
@@ -173,13 +173,13 @@
 }
 
 
-.reply-tweet-username{
+.reply-squeak-username{
     font-size: 15.5px;
     margin-right: 5px;
     color: rgb(101, 119, 134);
 }
 
-.main-tweet-user{
+.main-squeak-user{
     color: rgb(27, 149, 224);
     &:hover{ text-decoration: underline;}
 }
@@ -200,7 +200,7 @@
     background-color: rgba(29, 161, 242,0.1);
     svg{ fill: rgb(29, 161, 242) !important; }
 }
-.retweet-icon:hover{
+.resqueak-icon:hover{
     background-color: rgba(23, 191, 99,0.1);
     svg{ fill: rgb(23, 191, 99) !important; }
 }
@@ -231,7 +231,7 @@
     font-size: 13px;
 }
 
-.retweet-int:hover{
+.resqueak-int:hover{
     color: rgb(23, 191, 99);
 }
 .heart-int:hover{
@@ -241,7 +241,7 @@
 
 
 ////////////@extend
-.tweet-image-wrapper{
+.squeak-image-wrapper{
     overflow: hidden;
     max-height: 730px;
 
@@ -259,7 +259,7 @@
     }
 }
 
-.tweet-unlock-button{
+.squeak-unlock-button{
     min-height: 39px;
     min-width: 98.8px;
     transition: 0.2s ease-in-out;

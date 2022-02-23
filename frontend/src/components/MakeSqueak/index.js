@@ -19,17 +19,17 @@ const MakeSqueak = (props) => {
     }, [])
 
     //used for contenteditable divs on react hooks
-    const tweetT = useRef('');
+    const squeakT = useRef('');
     const handleChange = (evt, e) => {
-        if (tweetT.current.trim().length <= 280
-            && tweetT.current.split(/\r\n|\r|\n/).length <= 30) {
-            tweetT.current = evt.target.value;
-            setTweetText(tweetT.current)
+        if (squeakT.current.trim().length <= 280
+            && squeakT.current.split(/\r\n|\r|\n/).length <= 30) {
+            squeakT.current = evt.target.value;
+            setSqueakText(squeakT.current)
         }
-        // document.getElementById('tweet-box').innerHTML = document.getElementById('tweet-box').innerHTML.replace(/(\#\w+)/g, '<span class="blue">$1</span>')
+        // document.getElementById('squeak-box').innerHTML = document.getElementById('squeak-box').innerHTML.replace(/(\#\w+)/g, '<span class="blue">$1</span>')
     };
     const [signingProfile, setSigningProfile] = useState(null)
-    const [tweetText, setTweetText] = useState("")
+    const [squeakText, setSqueakText] = useState("")
 
     const optionsFromProfiles = (profiles) => {
       return profiles.map((p) => {
@@ -42,7 +42,7 @@ const MakeSqueak = (props) => {
       setSigningProfile(e.value);
     }
 
-    const submitTweet = () => {
+    const submitSqueak = () => {
         // TODO: toggle modal off here.
 
         if (!signingProfile) {
@@ -50,62 +50,62 @@ const MakeSqueak = (props) => {
           return;
         }
 
-        if (!tweetText.length) { return }
+        if (!squeakText.length) { return }
 
-        let hashtags = tweetText.match(/#(\w+)/g)
+        let hashtags = squeakText.match(/#(\w+)/g)
 
         const values = {
             signingProfile: signingProfile.getProfileId(),
-            description: tweetText,
-            replyTo: props.replyToTweet ? props.replyToTweet.getSqueakHash() : null,
+            description: squeakText,
+            replyTo: props.replyToSqueak ? props.replyToSqueak.getSqueakHash() : null,
             hasRecipient: null,
             recipientProfileId: -1
         }
-        actions.tweet(values)
-        tweetT.current = ''
-        setTweetText('')
+        actions.squeak(values)
+        squeakT.current = ''
+        setSqueakText('')
         if (props.submittedCallback) {
           props.submittedCallback();
         }
     }
 
-    const author = props.replyToTweet && props.replyToTweet.getAuthor();
+    const author = props.replyToSqueak && props.replyToSqueak.getAuthor();
 
     return (
       <>
 
       {/* Squeak being replied to. */}
-      {props.replyToTweet ?
+      {props.replyToSqueak ?
       <div className="reply-content-wrapper">
           <div className="card-userPic-wrapper">
-              <Link onClick={(e)=>e.stopPropagation()} to={`/app/profile/${props.replyToTweet.getAuthorPubkey()}`}>
-                  <img alt="" style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={author ? `${getProfileImageSrcString(props.replyToTweet.getAuthor())}`: null}/>
+              <Link onClick={(e)=>e.stopPropagation()} to={`/app/profile/${props.replyToSqueak.getAuthorPubkey()}`}>
+                  <img alt="" style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={author ? `${getProfileImageSrcString(props.replyToSqueak.getAuthor())}`: null}/>
               </Link>
           </div>
           <div className="card-content-wrapper">
               <div className="card-content-header">
                   <div className="card-header-detail">
                       <span className="card-header-user">
-                          <Link onClick={(e)=>e.stopPropagation()} to={`/app/profile/${props.replyToTweet.getAuthorPubkey()}`}>{author ? author.getProfileName(): 'Unknown Author'}</Link>
+                          <Link onClick={(e)=>e.stopPropagation()} to={`/app/profile/${props.replyToSqueak.getAuthorPubkey()}`}>{author ? author.getProfileName(): 'Unknown Author'}</Link>
                       </span>
                       <span className="card-header-username">
-                          <Link onClick={(e)=>e.stopPropagation()} to={`/app/profile/${props.replyToTweet.getAuthorPubkey()}`}>{'@'+props.replyToTweet.getAuthorPubkey()}</Link>
+                          <Link onClick={(e)=>e.stopPropagation()} to={`/app/profile/${props.replyToSqueak.getAuthorPubkey()}`}>{'@'+props.replyToSqueak.getAuthorPubkey()}</Link>
                       </span>
                       <span className="card-header-dot">·</span>
                       <span className="card-header-date">
-                                  {moment(props.replyToTweet.getBlockTime() * 1000).fromNow()}
+                                  {moment(props.replyToSqueak.getBlockTime() * 1000).fromNow()}
                       </span>
                   </div>
               </div>
               <div className="card-content-info">
-              {props.replyToTweet.getContentStr()}
+              {props.replyToSqueak.getContentStr()}
               </div>
               <div className="reply-to-user">
-                  <span className="reply-tweet-username">
+                  <span className="reply-squeak-username">
                       Replying to
                   </span>
-                  <span className="main-tweet-user">
-                      @{props.replyToTweet.getAuthorPubkey()}
+                  <span className="main-squeak-user">
+                      @{props.replyToSqueak.getAuthorPubkey()}
                   </span>
               </div>
           </div>
@@ -113,27 +113,27 @@ const MakeSqueak = (props) => {
 
 
             {/* New squeak content input. */}
-            <div className="Tweet-input-wrapper">
-                <div className="Tweet-profile-wrapper">
+            <div className="Squeak-input-wrapper">
+                <div className="Squeak-profile-wrapper">
                     <Link to={`/app/profile/${signingProfile && signingProfile.getPubkey()}`}>
                         {signingProfile && <img alt="" style={{ borderRadius: '50%', minWidth: '49px' }} width="100%" height="49px" src={`${getProfileImageSrcString(signingProfile)}`} />}
                     </Link>
                 </div>
-                <div className="Tweet-input-side">
+                <div className="Squeak-input-side">
                     <div className="inner-input-box">
                         <Select options={optionsFromProfiles(signingProfiles)} onChange={handleChangeSigningProfile} />
                     </div>
                     <div className="inner-input-box">
-                        <ContentEditable onPaste={(e) => e.preventDefault()} id="tweet-box" className={tweetText.length ? 'tweet-input-active' : null} onKeyDown={(e)=>tweetT.current.length>279 ? e.keyCode !== 8 && e.preventDefault(): null} placeholder="What's happening?" html={tweetT.current} onChange={(e) => handleChange(e)} />
+                        <ContentEditable onPaste={(e) => e.preventDefault()} id="squeak-box" className={squeakText.length ? 'squeak-input-active' : null} onKeyDown={(e)=>squeakT.current.length>279 ? e.keyCode !== 8 && e.preventDefault(): null} placeholder="What's happening?" html={squeakT.current} onChange={(e) => handleChange(e)} />
                     </div>
                     <div className="inner-input-links">
                         <div className="input-links-side">
                         </div>
-                        <div className="tweet-btn-holder">
-                            <div style={{ fontSize: '13px', color: tweetText.length >= 280 ? 'red' : null }}>
-                                {tweetText.length > 0 && tweetText.length + '/280'}
+                        <div className="squeak-btn-holder">
+                            <div style={{ fontSize: '13px', color: squeakText.length >= 280 ? 'red' : null }}>
+                                {squeakText.length > 0 && squeakText.length + '/280'}
                             </div>
-                            <div onClick={submitTweet} className={tweetText.length ? 'tweet-btn-side tweet-btn-active' : 'tweet-btn-side'}>
+                            <div onClick={submitSqueak} className={squeakText.length ? 'squeak-btn-side squeak-btn-active' : 'squeak-btn-side'}>
                                 Squeak
                             </div>
                         </div>

@@ -1,4 +1,4 @@
-.Tweet-card-wrapper{
+.Squeak-card-wrapper{
     border-bottom: 1px solid rgb(230, 236, 240);
     display: flex;
     transition: 0.2s ease-in-out;
@@ -26,7 +26,7 @@
     flex-basis: calc(100% - 49px);
 }
 
-.missing-tweet{
+.missing-squeak{
     background-color: rgb(211,211,211);
 }
 
@@ -116,7 +116,7 @@
             background-color: rgba(29, 161, 242,0.1);
             svg{ fill: rgb(29, 161, 242) !important; }
         }
-        .retweet-icon{
+        .resqueak-icon{
             background-color: rgba(23, 191, 99,0.1);
             svg{ fill: rgb(23, 191, 99) !important; }
         }
@@ -139,7 +139,7 @@
 .reply-wrap:hover{
     color: rgb(29, 161, 242);
 }
-.retweet-wrap:hover{
+.resqueak-wrap:hover{
     color: rgb(23, 191, 99);
 }
 .heart-wrap:hover{
@@ -175,13 +175,13 @@
 }
 
 
-.reply-tweet-username{
+.reply-squeak-username{
     font-size: 15.5px;
     margin-right: 5px;
     color: rgb(101, 119, 134);
 }
 
-.main-tweet-user{
+.main-squeak-user{
     color: rgb(27, 149, 224);
     &:hover{ text-decoration: underline;}
 }
@@ -202,19 +202,19 @@
     margin-bottom: 2px;
 }
 
-.user-retweet-icon{
+.user-resqueak-icon{
     display: flex;
     justify-content: flex-end;
     margin-bottom: 5px;
 }
 
-.user-retweet-icon svg{
+.user-resqueak-icon svg{
     width: 13px;
     height: 18.75px;
     fill: rgb(101, 119, 134);
 }
 
-.user-retweeted{
+.user-resqueaked{
     color: rgb(101, 119, 134);
     font-size: 13px;
     margin-bottom: 5px;
@@ -223,7 +223,7 @@
     }
 }
 
-.tweet-reply-thread{
+.squeak-reply-thread{
     margin-top: 2px;
     width: 2px;
     background-color: rgb(204, 214, 221);

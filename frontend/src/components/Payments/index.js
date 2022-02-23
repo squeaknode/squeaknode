@@ -6,12 +6,12 @@ import { withRouter, Link } from 'react-router-dom'
 import { ICON_SEARCH, ICON_ARROWBACK, ICON_CLOSE } from '../../Icons'
 import { getProfileImageSrcString } from '../../squeakimages/images';
 import Loader from '../Loader'
-import TweetCard from '../TweetCard'
+import SqueakCard from '../SqueakCard'
 
 
 const Payments = (props) => {
     const { state, actions } = useContext(StoreContext)
-    const { sentPayments, receivedPayments, signingProfiles, contactProfiles, result, tagTweets} = state
+    const { sentPayments, receivedPayments, signingProfiles, contactProfiles, result, tagSqueaks} = state
     const [tab, setTab] = useState('Sent Payments')
     const [styleBody, setStyleBody] = useState(false)
     const [newProfileName, setNewProfileName] = useState('')
@@ -69,9 +69,9 @@ const Payments = (props) => {
         e.stopPropagation()
     }
 
-    const goToTweet = (id) => {
-        if(props.replyTo){ actions.getTweet(id) }
-        props.history.push(`/app/tweet/${id}`)
+    const goToSqueak = (id) => {
+        if(props.replyTo){ actions.getSqueak(id) }
+        props.history.push(`/app/squeak/${id}`)
     }
 
     return(
@@ -101,7 +101,7 @@ const Payments = (props) => {
                 {tab === 'Sent Payments' ?
                 <>
                 {sentPayments.map(f=>{
-                  return <div onClick={()=>goToTweet(f.getSqueakHash())} key={f.getPaymentHash()} className="search-result-wapper">
+                  return <div onClick={()=>goToSqueak(f.getSqueakHash())} key={f.getPaymentHash()} className="search-result-wapper">
                     <div className="search-user-details">
                     <div className="search-user-warp">
                     <div className="search-user-info">
@@ -116,7 +116,7 @@ const Payments = (props) => {
                 </div>
                 })}
                 {/* TODO: fix get loading state by doing this: https://medium.com/stashaway-engineering/react-redux-tips-better-way-to-handle-loading-flags-in-your-reducers-afda42a804c6 */}
-                {state.loading ? <Loader /> : <div onClick={() => getMoreSentPayments()} className='tweet-btn-side tweet-btn-active'>
+                {state.loading ? <Loader /> : <div onClick={() => getMoreSentPayments()} className='squeak-btn-side squeak-btn-active'>
                     Load more
                 </div>}
                 </>
@@ -125,7 +125,7 @@ const Payments = (props) => {
                 tab === 'Received Payments' ?
                   <>
                   {receivedPayments.map(f=>{
-                    return <div onClick={()=>goToTweet(f.getSqueakHash())} key={f.getPaymentHash()} className="search-result-wapper">
+                    return <div onClick={()=>goToSqueak(f.getSqueakHash())} key={f.getPaymentHash()} className="search-result-wapper">
                       <div className="search-user-details">
                       <div className="search-user-warp">
                       <div className="search-user-info">
@@ -139,7 +139,7 @@ const Payments = (props) => {
                   </div>
                   })}
                   {/* TODO: fix get loading state by doing this: https://medium.com/stashaway-engineering/react-redux-tips-better-way-to-handle-loading-flags-in-your-reducers-afda42a804c6 */}
-                  {state.loading ? <Loader /> : <div onClick={() => getMoreReceivedPayments()} className='tweet-btn-side tweet-btn-active'>
+                  {state.loading ? <Loader /> : <div onClick={() => getMoreReceivedPayments()} className='squeak-btn-side squeak-btn-active'>
                       Load more
                   </div>}
                   </>

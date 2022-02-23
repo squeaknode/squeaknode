@@ -89,7 +89,7 @@
     margin-left: 20px;
     margin-right: 20px;
 }
-.Nav-tweet{
+.Nav-squeak{
     width: 100%;
     margin-top: 15px;
     margin-bottom: 5px;
@@ -97,7 +97,7 @@
 
 }
 
-.Nav-tweet-link{
+.Nav-squeak-link{
     width: 90%;
     background-color: rgb(29, 161, 242);
     box-shadow: rgba(0, 0, 0, 0.08) 0px 8px 28px;
@@ -117,10 +117,10 @@
 }
 
 @media only screen and (max-width: 1286px) {
-    .Nav-tweet-link{ width: 100%; }
-    .Nav-tweet{justify-content: center;}
+    .Nav-squeak-link{ width: 100%; }
+    .Nav-squeak{justify-content: center;}
 }
-.Nav-tweet-btn{
+.Nav-squeak-btn{
     color: #fff;
     font-size: 15px;
     font-weight: bold;
@@ -132,13 +132,13 @@
         align-items: center;
         justify-content: center;
     }
-    content: 'Tweet';
+    content: 'Squeak';
 }
 .btn-show{
     display: none;
 }
 @media only screen and (max-width: 1282px) {
-    .Nav-tweet-link{
+    .Nav-squeak-link{
         max-width: 49px;
         width: 49px;
         padding: 0;
@@ -151,7 +151,7 @@
         display: block;
     }
   }
-.Nav-tweet-btn span svg{
+.Nav-squeak-btn span svg{
     width: 22.25px; height:22.25px;
     min-width: 22.25px;
     fill: #fff;

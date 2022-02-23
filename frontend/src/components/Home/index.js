@@ -7,7 +7,7 @@ import { ICON_IMGUPLOAD } from '../../Icons'
 import { Link } from 'react-router-dom'
 import { API_URL } from '../../config'
 import Loader from '../Loader'
-import TweetCard from '../TweetCard'
+import SqueakCard from '../SqueakCard'
 import MakeSqueak from '../MakeSqueak'
 
 
@@ -16,8 +16,8 @@ const Home = () => {
     const { session } = state
     useEffect(() => {
         window.scrollTo(0, 0)
-        // actions.getTweets({lastTweet: null})
-        reloadTweets();
+        // actions.getSqueaks({lastSqueak: null})
+        reloadSqueaks();
     }, [])
 
     const getLastSqueak = (squeakLst) => {
@@ -29,14 +29,14 @@ const Home = () => {
       return squeakLst.slice(-1)[0];
     };
 
-    const getMoreTweets = () => {
-        let lastTweet = getLastSqueak(state.tweets);
-        actions.getTweets({lastTweet: lastTweet});
+    const getMoreSqueaks = () => {
+        let lastSqueak = getLastSqueak(state.squeaks);
+        actions.getSqueaks({lastSqueak: lastSqueak});
     }
 
-    const reloadTweets = () => {
-        actions.clearTweets();
-        actions.getTweets({lastTweet: null});
+    const reloadSqueaks = () => {
+        actions.clearSqueaks();
+        actions.getSqueaks({lastSqueak: null});
     }
 
     return (
@@ -47,13 +47,13 @@ const Home = () => {
                 </h2>
             </div>
             {session ? <MakeSqueak /> : null }
-            <div className="Tweet-input-divider"></div>
-            {state.tweets.map(t => {
-                return <TweetCard tweet={t} key={t.getSqueakHash()} id={t.getSqueakHash()} user={t.getAuthor()} />
+            <div className="Squeak-input-divider"></div>
+            {state.squeaks.map(t => {
+                return <SqueakCard squeak={t} key={t.getSqueakHash()} id={t.getSqueakHash()} user={t.getAuthor()} />
             })}
 
             {/* TODO: fix get loading state by doing this: https://medium.com/stashaway-engineering/react-redux-tips-better-way-to-handle-loading-flags-in-your-reducers-afda42a804c6 */}
-            {state.loading ? <Loader /> : <div onClick={() => getMoreTweets()} className='tweet-btn-side tweet-btn-active'>
+            {state.loading ? <Loader /> : <div onClick={() => getMoreSqueaks()} className='squeak-btn-side squeak-btn-active'>
                 Load more
             </div>}
 

@@ -4,7 +4,7 @@ import moment from 'moment'
 import {  withRouter, Link } from 'react-router-dom'
 import { StoreContext } from '../../store/store'
 import Loader from '../Loader'
-import TweetCard from '../TweetCard'
+import SqueakCard from '../SqueakCard'
 import {API_URL} from '../../config'
 import axios from 'axios'
 import {ICON_ARROWBACK, ICON_UPLOAD, ICON_CLOSE,ICON_SEARCH } from '../../Icons'
@@ -131,7 +131,7 @@ return(
                 <div className="bookmarks-header-name">
                     {peer && peer.getPeerName()}
                 </div>
-                <div className="bookmarks-header-tweets">
+                <div className="bookmarks-header-squeaks">
                     {props.match.params.host}:{props.match.params.port}
                 </div>
             </div>
