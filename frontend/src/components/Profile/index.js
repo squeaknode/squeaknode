@@ -323,11 +323,16 @@ const Profile = (props) => {
             null: activeTab === 'Media' ?
             null: null}
             {/* TODO: fix get loading state by doing this: https://medium.com/stashaway-engineering/react-redux-tips-better-way-to-handle-loading-flags-in-your-reducers-afda42a804c6 */}
-            {state.loading ?
-                <Loader /> :
-                <div onClick={() => getMoreSqueaks()} className='squeak-btn-side squeak-btn-active'>
-                  Load more
+            {userSqueaks.length > 0 &&
+                <>
+                {state.loading ?
+                    <Loader /> :
+                    <div onClick={() => getMoreSqueaks()} className='squeak-btn-side squeak-btn-active'>
+                      Load more
                 </div>}
+                </>
+            }
+
             </div>
 
             {/* Modal for edit profile */}
