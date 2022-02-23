@@ -107,7 +107,12 @@ export const useActions = (state, dispatch) => ({
     getTrend: data => {
         dispatch({type: types.GET_TREND, payload: data})
     },
+    clearSearch: data => {
+        console.log(data)
+        dispatch({type: types.CLEAR_SEARCH, payload: data})
+    },
     search: data => {
+        console.log(data)
         dispatch({type: types.SEARCH, payload: data})
     },
     getTrendTweets: data => {
