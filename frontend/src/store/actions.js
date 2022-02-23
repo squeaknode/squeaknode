@@ -17,28 +17,28 @@ export const useActions = (state, dispatch) => ({
         dispatch({type: types.SET_STATE, payload: {loading: true}})
         dispatch({type: types.TWEET, payload: data})
     },
-    likeTweet: data => {
+    likeSqueak: data => {
         dispatch({type: types.LIKE_TWEET, payload: data})
     },
-    unlikeTweet: data => {
+    unlikeSqueak: data => {
         dispatch({type: types.UNLIKE_TWEET, payload: data})
     },
-    getTweets: data => {
+    getSqueaks: data => {
         dispatch({type: types.SET_STATE, payload: {loading: true}})
         dispatch({type: types.GET_TWEETS, payload: data})
     },
-    clearTweets: data => {
+    clearSqueaks: data => {
         dispatch({type: types.CLEAR_TWEETS, payload: data})
     },
-    getTweet: data => {
+    getSqueak: data => {
         dispatch({type: types.SET_STATE, payload: {loading: true}})
         dispatch({type: types.GET_TWEET, payload: data})
     },
-    downloadTweet: data => {
+    downloadSqueak: data => {
         dispatch({type: types.SET_STATE, payload: {loading: true}})
         dispatch({type: types.DOWNLOAD_TWEET, payload: data})
     },
-    buyTweet: data => {
+    buySqueak: data => {
         dispatch({type: types.SET_STATE, payload: {loading: true}})
         dispatch({type: types.BUY_TWEET, payload: data})
     },
@@ -81,7 +81,7 @@ export const useActions = (state, dispatch) => ({
         dispatch({type: types.SET_STATE, payload: {loading: true}})
         dispatch({type: types.EXPORT_PRIVATE_KEY, payload: data})
     },
-    deleteTweet: data => {
+    deleteSqueak: data => {
         dispatch({type: types.DELETE_TWEET, payload: data})
     },
     followUser: data => {
@@ -115,28 +115,28 @@ export const useActions = (state, dispatch) => ({
         console.log(data)
         dispatch({type: types.SEARCH, payload: data})
     },
-    getTrendTweets: data => {
+    getTrendSqueaks: data => {
         dispatch({type: types.TREND_TWEETS, payload: data})
     },
     addToList: data => {
         dispatch({type: types.ADD_TO_LIST, payload: data})
     },
-    getUserTweets: data => {
+    getUserSqueaks: data => {
         dispatch({type: types.SET_STATE, payload: {loading: true}})
         dispatch({type: types.GET_USER_TWEETS, payload: data})
     },
-    clearUserTweets: data => {
+    clearUserSqueaks: data => {
         dispatch({type: types.CLEAR_USER_TWEETS, payload: data})
     },
-    getAncestorTweets: data => {
+    getAncestorSqueaks: data => {
         dispatch({type: types.SET_STATE, payload: {loading: true}})
         dispatch({type: types.GET_ANCESTOR_TWEETS, payload: data})
     },
-    getReplyTweets: data => {
+    getReplySqueaks: data => {
         dispatch({type: types.SET_STATE, payload: {loading: true}})
         dispatch({type: types.GET_REPLY_TWEETS, payload: data})
     },
-    getTweetOffers: data => {
+    getSqueakOffers: data => {
         dispatch({type: types.SET_STATE, payload: {loading: true}})
         dispatch({type: types.GET_TWEET_OFFERS, payload: data})
     },

@@ -13,7 +13,7 @@ import ContentEditable from 'react-contenteditable'
 
 
 
-const TweetCard = React.memo(function TweetCard(props) {
+const SqueakCard = React.memo(function SqueakCard(props) {
     const { state, actions } = useContext(StoreContext)
     const { session} = state
 
@@ -22,15 +22,15 @@ const TweetCard = React.memo(function TweetCard(props) {
     const [styleBody, setStyleBody] = useState(false)
 
     let info
-    const likeTweet = (e,id) => {
+    const likeSqueak = (e,id) => {
         if(e){ e.stopPropagation() }
         if(!session){ actions.alert('Please Sign In'); return }
-        actions.likeTweet(id)
+        actions.likeSqueak(id)
     }
-    const unlikeTweet = (e,id) => {
+    const unlikeSqueak = (e,id) => {
         if(e){ e.stopPropagation() }
         if(!session){ actions.alert('Please Sign In'); return }
-        actions.unlikeTweet(id)
+        actions.unlikeSqueak(id)
     }
 
     const resqueak = (e,id, resqueakId) => {
@@ -43,18 +43,18 @@ const TweetCard = React.memo(function TweetCard(props) {
         alert('Re-Squeak not yet implemented!');
     }
 
-    const deleteTweet = (e,id) => {
+    const deleteSqueak = (e,id) => {
         e.stopPropagation()
-        actions.deleteTweet(id)
+        actions.deleteSqueak(id)
     }
 
-    const goToTweet = (id) => {
-        if(props.replyTo){ actions.getTweet(id) }
+    const goToSqueak = (id) => {
+        if(props.replyTo){ actions.getSqueak(id) }
         props.history.push(`/app/squeak/${id}`)
     }
     const goToReply = (e,id) => {
         e.stopPropagation()
-        if(props.replyTo){ actions.getTweet(id) }
+        if(props.replyTo){ actions.getSqueak(id) }
         props.history.push(`/app/squeak/${id}`)
     }
 
@@ -103,7 +103,7 @@ const TweetCard = React.memo(function TweetCard(props) {
     return (
         <div>
 
-        <div onClick={()=>goToTweet(props.id)} key={props.id} className={props.squeak ? "Tweet-card-wrapper" : "Tweet-card-wrapper missing-squeak"} >
+        <div onClick={()=>goToSqueak(props.id)} key={props.id} className={props.squeak ? "Squeak-card-wrapper" : "Squeak-card-wrapper missing-squeak"} >
 
             {props.squeak ?
               <>
@@ -163,8 +163,8 @@ const TweetCard = React.memo(function TweetCard(props) {
                       </div>
                       <div onClick={(e)=>
                         props.squeak.getLikedTimeMs() ?
-                        unlikeTweet(e, props.squeak.getSqueakHash()) :
-                        likeTweet(e, props.squeak.getSqueakHash())
+                        unlikeSqueak(e, props.squeak.getSqueakHash()) :
+                        likeSqueak(e, props.squeak.getSqueakHash())
                       } className="card-button-wrap heart-wrap">
                           <div className="card-icon heart-icon">
                               {props.squeak.getLikedTimeMs() ?
@@ -175,7 +175,7 @@ const TweetCard = React.memo(function TweetCard(props) {
                               0
                           </div>
                       </div>
-                      <div onClick={(e)=>deleteTweet(e,props.id)} className="card-button-wrap">
+                      <div onClick={(e)=>deleteSqueak(e,props.id)} className="card-button-wrap">
                           <div className="card-icon share-icon">
                               <ICON_DELETE styles={{fill:'rgb(101, 119, 134)'}} />
                           </div>
@@ -190,7 +190,7 @@ const TweetCard = React.memo(function TweetCard(props) {
               </div>
               <div className="card-content-wrapper">
                   <div className="card-content-info">
-                  Missing Tweet
+                  Missing Squeak
                   </div>
               </div>
               </>
@@ -212,7 +212,7 @@ const TweetCard = React.memo(function TweetCard(props) {
                     <p className="modal-title">Reply</p>
                 </div>
                 <div style={{marginTop:'5px'}} className="modal-body">
-                  <MakeSqueak replyToTweet={props.squeak} submittedCallback={toggleModal} />
+                  <MakeSqueak replyToSqueak={props.squeak} submittedCallback={toggleModal} />
                 </div>
             </div> : null}
         </div> : null}
@@ -220,4 +220,4 @@ const TweetCard = React.memo(function TweetCard(props) {
     )
 });
 
-export default withRouter(TweetCard)
+export default withRouter(SqueakCard)

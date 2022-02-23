@@ -6,13 +6,13 @@ import { StoreContext } from '../../store/store'
 import { getProfileImageSrcString } from '../../squeakimages/images';
 import Loader from '../Loader'
 import moment from 'moment'
-import TweetCard from '../TweetCard'
+import SqueakCard from '../SqueakCard'
 import {API_URL} from '../../config'
 
 
 const Profile = (props) => {
     const { state, actions } = useContext(StoreContext)
-    const [activeTab, setActiveTab] = useState('Tweets')
+    const [activeTab, setActiveTab] = useState('Squeaks')
     const [moreMenu, setMoreMenu] = useState(false)
     const [editName, setName] = useState('')
     // const [privateKey, setPrivateKey] = useState('')
@@ -24,13 +24,13 @@ const Profile = (props) => {
     const [saved, setSaved] = useState(false)
     const [tab, setTab] = useState('Sats Spent')
     const [styleBody, setStyleBody] = useState(false)
-    const {user, userTweets, privateKey, session} = state
+    const {user, userSqueaks, privateKey, session} = state
     const userParam = props.match.params.username
 
     useEffect(() => {
         window.scrollTo(0, 0)
         actions.getUser(props.match.params.username)
-        reloadTweets();
+        reloadSqueaks();
         //preventing edit modal from apprearing after clicking a user on memOpen
         setEditModalOpen(false)
         setName('')
@@ -180,14 +180,14 @@ const Profile = (props) => {
       return squeakLst.slice(-1)[0];
     };
 
-    const getMoreTweets = () => {
-        let lastTweet = getLastSqueak(userTweets);
-        actions.getUserTweets({username: props.match.params.username, lastUserTweet: lastTweet})
+    const getMoreSqueaks = () => {
+        let lastSqueak = getLastSqueak(userSqueaks);
+        actions.getUserSqueaks({username: props.match.params.username, lastUserSqueak: lastSqueak})
     }
 
-    const reloadTweets = () => {
-        actions.clearUserTweets();
-        actions.getUserTweets({username: props.match.params.username, lastTweet: null});
+    const reloadSqueaks = () => {
+        actions.clearUserSqueaks();
+        actions.getUserSqueaks({username: props.match.params.username, lastSqueak: null});
     }
 
     const openMore = () => { setMoreMenu(!moreMenu) }
@@ -210,7 +210,7 @@ const Profile = (props) => {
                             {userParam}
                     </div>
                     {/* <div className="profile-header-squeaks">
-                            82 Tweets
+                            82 Squeaks
                     </div> */}
                 </div>
             </div>
@@ -298,10 +298,10 @@ const Profile = (props) => {
                 </div>
             </div>
             <div className="profile-nav-menu">
-                <div key={'squeaks'} onClick={()=>changeTab('Tweets')} className={activeTab ==='Tweets' ? `profile-nav-item activeTab` : `profile-nav-item`}>
+                <div key={'squeaks'} onClick={()=>changeTab('Squeaks')} className={activeTab ==='Squeaks' ? `profile-nav-item activeTab` : `profile-nav-item`}>
                     Squeaks
                 </div>
-                <div key={'replies'} onClick={()=>changeTab('Tweets&Replies')} className={activeTab ==='Tweets&Replies' ? `profile-nav-item activeTab` : `profile-nav-item`}>
+                <div key={'replies'} onClick={()=>changeTab('Squeaks&Replies')} className={activeTab ==='Squeaks&Replies' ? `profile-nav-item activeTab` : `profile-nav-item`}>
                     Squeaks & replies
                 </div>
                 <div key={'media'} onClick={()=>changeTab('Media')} className={activeTab ==='Media' ? `profile-nav-item activeTab` : `profile-nav-item`}>
@@ -311,13 +311,13 @@ const Profile = (props) => {
                     Likes
                 </div>
             </div>
-            {activeTab === 'Tweets' ?
-            userTweets.map(t=>{
+            {activeTab === 'Squeaks' ?
+            userSqueaks.map(t=>{
                 if(!t.getReplyTo())
-                return <TweetCard squeak={t} key={t.getSqueakHash()} id={t.getSqueakHash()} user={t.getAuthor()} />
-             }) : activeTab === 'Tweets&Replies' ?
-            userTweets.map(t=>{
-                return <TweetCard squeak={t} key={t.getSqueakHash()} id={t.getSqueakHash()} user={t.getAuthor()} />
+                return <SqueakCard squeak={t} key={t.getSqueakHash()} id={t.getSqueakHash()} user={t.getAuthor()} />
+             }) : activeTab === 'Squeaks&Replies' ?
+            userSqueaks.map(t=>{
+                return <SqueakCard squeak={t} key={t.getSqueakHash()} id={t.getSqueakHash()} user={t.getAuthor()} />
              }) :
             activeTab === 'Likes' ?
             null: activeTab === 'Media' ?
@@ -325,7 +325,7 @@ const Profile = (props) => {
             {/* TODO: fix get loading state by doing this: https://medium.com/stashaway-engineering/react-redux-tips-better-way-to-handle-loading-flags-in-your-reducers-afda42a804c6 */}
             {state.loading ?
                 <Loader /> :
-                <div onClick={() => getMoreTweets()} className='squeak-btn-side squeak-btn-active'>
+                <div onClick={() => getMoreSqueaks()} className='squeak-btn-side squeak-btn-active'>
                   Load more
                 </div>}
             </div>

@@ -7,7 +7,7 @@ import Loader from './components/Loader'
 import Nav from './components/Nav'
 import Login from './components/Login'
 import Signup from './components/Signup'
-import Tweet from './components/Tweet'
+import Squeak from './components/Squeak'
 import Profiles from './components/Profiles'
 import Payments from './components/Payments'
 import Peers from './components/Peers'
@@ -40,7 +40,7 @@ const DefaultContainer = withRouter(({ history }) => {
           <Peer />
         </Route>
         <Route path="/app/squeak/:id" exact>
-          <Tweet />
+          <Squeak />
         </Route>
         <Route path="/app/profiles" exact>
           <Profiles/>

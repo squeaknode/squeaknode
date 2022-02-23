@@ -314,13 +314,13 @@
 //////from home
 
 
-.Tweet-input-wrapper{
+.Squeak-input-wrapper{
     padding: 10px 15px 5px 15px;
     display: flex;
     margin-bottom: 2px;
 }
 
-.Tweet-profile-wrapper{
+.Squeak-profile-wrapper{
     flex-basis: 49px;
     padding-top: 5px;
     margin-right: 10px;
@@ -328,7 +328,7 @@
         object-fit: cover;
     }
 }
-.Tweet-input-side{
+.Squeak-input-side{
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -428,7 +428,7 @@
     }
 }
 
-.Tweet-input-divider{
+.Squeak-input-divider{
     min-height: 10px;
     height: 10px;
     background-color: rgb(230, 236, 240);

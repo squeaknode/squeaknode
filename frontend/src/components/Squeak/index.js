@@ -11,15 +11,15 @@ import {API_URL} from '../../config'
 import { getProfileImageSrcString } from '../../squeakimages/images';
 import ContentEditable from 'react-contenteditable'
 import MakeSqueak from '../MakeSqueak'
-import TweetCard from '../TweetCard'
+import SqueakCard from '../SqueakCard'
 import Select from 'react-select'
 
 
-const TweetPage = (props) => {
+const SqueakPage = (props) => {
     let history = useHistory();
 
     const { state, actions } = useContext(StoreContext)
-    const {squeak, ancestorTweets, replyTweets, squeakOffers, network, session} = state
+    const {squeak, ancestorSqueaks, replySqueaks, squeakOffers, network, session} = state
 
     const [modalOpen, setModalOpen] = useState(false)
     const [buyModalOpen, setBuyModalOpen] = useState(false)
@@ -28,21 +28,21 @@ const TweetPage = (props) => {
 
     useEffect(()=>{
         window.scrollTo(0, 0)
-        actions.getTweet(props.match.params.id)
-        actions.getAncestorTweets(props.match.params.id)
-        actions.getReplyTweets(props.match.params.id)
+        actions.getSqueak(props.match.params.id)
+        actions.getAncestorSqueaks(props.match.params.id)
+        actions.getReplySqueaks(props.match.params.id)
         actions.getNetwork()
     }, [props.match.params.id])
     var image = new Image()
 
     let info
-    const likeTweet = (id) => {
+    const likeSqueak = (id) => {
         if(!session){ actions.alert('Please Sign In'); return }
-        actions.likeTweet(id)
+        actions.likeSqueak(id)
     }
-    const unlikeTweet = (id) => {
+    const unlikeSqueak = (id) => {
         if(!session){ actions.alert('Please Sign In'); return }
-        actions.unlikeTweet(id)
+        actions.unlikeSqueak(id)
     }
     const resqueak = (id) => {
         if(!session){ actions.alert('Please Sign In'); return }
@@ -50,11 +50,11 @@ const TweetPage = (props) => {
         // actions.resqueak(info)
         alert('Re-Squeak not yet implemented!');
     }
-    const deleteTweet = (id) => {
-        actions.deleteTweet(id)
+    const deleteSqueak = (id) => {
+        actions.deleteSqueak(id)
     }
-    const downloadTweet = (id) => {
-        actions.downloadTweet(id)
+    const downloadSqueak = (id) => {
+        actions.downloadSqueak(id)
     }
     const buySqueak = (id) => {
         const offerId = offer && offer.getOfferId();
@@ -65,7 +65,7 @@ const TweetPage = (props) => {
           offerId: offerId,
           squeakHash: props.match.params.id,
         }
-        actions.buyTweet(values)
+        actions.buySqueak(values)
         toggleBuyModal();
     }
 
@@ -77,7 +77,7 @@ const TweetPage = (props) => {
     }
 
     const toggleBuyModal = () => {
-        actions.getTweetOffers(props.match.params.id);
+        actions.getSqueakOffers(props.match.params.id);
         // if(param === 'edit'){setSaved(false)}
         // if(type === 'parent'){setParent(true)}else{setParent(false)}
         setBuyModalOpen(!buyModalOpen)
@@ -128,17 +128,17 @@ const TweetPage = (props) => {
             </div>
 
             {/* Unknown Ancestor squeak */}
-            {ancestorTweets.length > 0 && ancestorTweets[0].getReplyTo() &&
-              <TweetCard squeak={null} key={ancestorTweets[0].getReplyTo()} id={ancestorTweets[0].getReplyTo()}
+            {ancestorSqueaks.length > 0 && ancestorSqueaks[0].getReplyTo() &&
+              <SqueakCard squeak={null} key={ancestorSqueaks[0].getReplyTo()} id={ancestorSqueaks[0].getReplyTo()}
                 replies={[]} hasReply={true} />
             }
 
 
 
             {/* Ancestor squeaks */}
-            {ancestorTweets.slice(0, -1).map(r=>{
+            {ancestorSqueaks.slice(0, -1).map(r=>{
               // TODO: use replies instead of empty array.
-              return <TweetCard squeak={r} key={r.getSqueakHash()} id={r.getSqueakHash()} user={r.getAuthor()}
+              return <SqueakCard squeak={r} key={r.getSqueakHash()} id={r.getSqueakHash()} user={r.getAuthor()}
                 replies={[]} hasReply={true} />
             })}
 
@@ -211,14 +211,14 @@ const TweetPage = (props) => {
                     </div>
                     <div onClick={()=>{
                       squeak.getLikedTimeMs() ?
-                      unlikeTweet(squeak.getSqueakHash()) :
-                      likeTweet(squeak.getSqueakHash())
+                      unlikeSqueak(squeak.getSqueakHash()) :
+                      likeSqueak(squeak.getSqueakHash())
                     }} className="squeak-int-icon">
                         <div className="card-icon heart-icon">
                         {squeak.getLikedTimeMs() ? <ICON_HEARTFULL styles={{fill:'rgb(224, 36, 94)'}}
                          /> : <ICON_HEART/>} </div>
                     </div>
-                    <div onClick={()=>deleteTweet(squeak.getSqueakHash())} className="squeak-int-icon">
+                    <div onClick={()=>deleteSqueak(squeak.getSqueakHash())} className="squeak-int-icon">
                         <div className="card-icon delete-icon">
                             <ICON_DELETE styles={{fill:'rgb(101, 119, 134)'}} />
                         </div>
@@ -230,10 +230,10 @@ const TweetPage = (props) => {
                             <img alt="" style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={null}/>
                     </div>
                     <div className="squeak-content">
-                        Missing Tweet
-                        <div onClick={()=>downloadTweet(props.match.params.id)}
+                        Missing Squeak
+                        <div onClick={()=>downloadSqueak(props.match.params.id)}
                          className='profiles-create-button'>
-                            <span>Download Tweet</span>
+                            <span>Download Squeak</span>
                         </div>
                     </div>
                 </div>
@@ -241,9 +241,9 @@ const TweetPage = (props) => {
             </div>
 
             {/* Reply squeaks */}
-            {replyTweets.map(r=>{
+            {replySqueaks.map(r=>{
                 // TODO: use replies instead of empty array.
-                return <TweetCard squeak={r}  key={r.getSqueakHash()} id={r.getSqueakHash()} user={r.getAuthor()}/>
+                return <SqueakCard squeak={r}  key={r.getSqueakHash()} id={r.getSqueakHash()} user={r.getAuthor()}/>
             })}
 
         </div>
@@ -261,7 +261,7 @@ const TweetPage = (props) => {
                     <p className="modal-title">Reply</p>
                 </div>
                 <div style={{marginTop:'5px'}} className="modal-body">
-                  <MakeSqueak replyToTweet={squeak} submittedCallback={toggleModal} />
+                  <MakeSqueak replyToSqueak={squeak} submittedCallback={toggleModal} />
                 </div>
             </div> : null}
         </div>:null}
@@ -280,7 +280,7 @@ const TweetPage = (props) => {
                 </div>
                 <div style={{marginTop:'5px'}} className="modal-body">
                     {squeakOffers.length} offers.
-                    <div className="Tweet-input-side">
+                    <div className="Squeak-input-side">
                         <div className="inner-input-box">
                             <Select options={optionsFromOffers(squeakOffers)} onChange={handleChangeOffer} />
                         </div>
@@ -316,4 +316,4 @@ const TweetPage = (props) => {
     )
 }
 
-export default withRouter(TweetPage)
+export default withRouter(SqueakPage)

@@ -8,14 +8,14 @@ import { ICON_IMGUPLOAD, ICON_SEARCH } from '../../Icons'
 import { Link } from 'react-router-dom'
 import { API_URL } from '../../config'
 import Loader from '../Loader'
-import TweetCard from '../TweetCard'
+import SqueakCard from '../SqueakCard'
 import MakeSqueak from '../MakeSqueak'
 
 
 const Search = (props) => {
     const { state, actions } = useContext(StoreContext);
     const { search } = useLocation();
-    const { searchTweets, session } = state;
+    const { searchSqueaks, session } = state;
     const [searchText, setSearchText] = useState('');
 
     const q = useMemo(() => {
@@ -27,10 +27,10 @@ const Search = (props) => {
 
     useEffect(() => {
         window.scrollTo(0, 0)
-        // actions.getTweets({lastTweet: null})
+        // actions.getSqueaks({lastSqueak: null})
         if (q && q.length > 1) {
           setSearchText(q);
-          reloadTweets(q);
+          reloadSqueaks(q);
         }
     }, [q])
 
@@ -55,19 +55,19 @@ const Search = (props) => {
       return squeakLst.slice(-1)[0];
     };
 
-    const getMoreTweets = () => {
-        let lastTweet = getLastSqueak(state.searchTweets);
+    const getMoreSqueaks = () => {
+        let lastSqueak = getLastSqueak(state.searchSqueaks);
         actions.search({
           searchText: searchText,
-          lastTweet: lastTweet
+          lastSqueak: lastSqueak
         });
     }
 
-    const reloadTweets = (s) => {
+    const reloadSqueaks = (s) => {
         actions.clearSearch();
         actions.search({
           searchText: s,
-          lastTweet: null
+          lastSqueak: null
         });
     }
 
@@ -87,15 +87,15 @@ const Search = (props) => {
                 </div>
             </div>
             </div>
-            <div className="Tweet-input-divider"></div>
-            {searchTweets.map(t => {
-                return <TweetCard squeak={t} key={t.getSqueakHash()} id={t.getSqueakHash()} user={t.getAuthor()} />
+            <div className="Squeak-input-divider"></div>
+            {searchSqueaks.map(t => {
+                return <SqueakCard squeak={t} key={t.getSqueakHash()} id={t.getSqueakHash()} user={t.getAuthor()} />
             })}
 
             {/* TODO: fix get loading state by doing this: https://medium.com/stashaway-engineering/react-redux-tips-better-way-to-handle-loading-flags-in-your-reducers-afda42a804c6 */}
-            {searchTweets.length > 0 &&
+            {searchSqueaks.length > 0 &&
               <>
-              {state.loading ? <Loader /> : <div onClick={() => getMoreTweets()} className='squeak-btn-side squeak-btn-active'>
+              {state.loading ? <Loader /> : <div onClick={() => getMoreSqueaks()} className='squeak-btn-side squeak-btn-active'>
                   Load more
               </div>}
               </>

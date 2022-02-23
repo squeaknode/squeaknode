@@ -7,20 +7,20 @@ const initialState = {
     network: null,
     squeaks: [],
     squeak: null,
-    ancestorTweets: [],
-    replyTweets: [],
-    searchTweets: [],
+    ancestorSqueaks: [],
+    replySqueaks: [],
+    searchSqueaks: [],
     squeakOffers: [],
     account: null,
     user: null,
-    userTweets: [],
+    userSqueaks: [],
     bookmarks: [],
     recent_squeaks: [],
     lists: [],
     list: null,
     trends: [],
     result: [],
-    tagTweets: [],
+    tagSqueaks: [],
     followers: [],
     following: [],
     resultUsers: [],
@@ -70,49 +70,49 @@ const reducer = (state = initialState, action) => {
         case type.TWEET:
             let recentT = state.squeaks
             let s_squeak = state.squeak
-            let replyT = state.replyTweets
+            let replyT = state.replySqueaks
             recentT.unshift(action.payload.squeak)
             if(s_squeak && s_squeak.getSqueakHash() === action.data.replyTo){
                 // Update the replies if the current selected squeak is active.
                 replyT.unshift(action.payload.squeak)
             }
-            // TODO: update `state.userTweets` with the new squeak.
+            // TODO: update `state.userSqueaks` with the new squeak.
             return {...state, loading: false, error: false}
 
         case type.UPDATE_TWEET:
-            let updatedTweetHash = action.payload.squeakHash
-            let updatedTweet = action.payload.squeak
-            let userTweetsU = state.userTweets
-            let replyTweetsU = state.replyTweets
-            let ancestorTweetsU = state.ancestorTweets
-            let homeTweetsU = state.squeaks
-            let singleTweetU = state.squeak
-            userTweetsU = userTweetsU.map((x)=>{
-                return x.getSqueakHash() === updatedTweetHash ?
-                updatedTweet : x
+            let updatedSqueakHash = action.payload.squeakHash
+            let updatedSqueak = action.payload.squeak
+            let userSqueaksU = state.userSqueaks
+            let replySqueaksU = state.replySqueaks
+            let ancestorSqueaksU = state.ancestorSqueaks
+            let homeSqueaksU = state.squeaks
+            let singleSqueakU = state.squeak
+            userSqueaksU = userSqueaksU.map((x)=>{
+                return x.getSqueakHash() === updatedSqueakHash ?
+                updatedSqueak : x
             })
-            replyTweetsU = replyTweetsU.map((x)=>{
-                return x.getSqueakHash() === updatedTweetHash ?
-                updatedTweet : x
+            replySqueaksU = replySqueaksU.map((x)=>{
+                return x.getSqueakHash() === updatedSqueakHash ?
+                updatedSqueak : x
             })
-            ancestorTweetsU = ancestorTweetsU.map((x)=>{
-                return x.getSqueakHash() === updatedTweetHash ?
-                updatedTweet : x
+            ancestorSqueaksU = ancestorSqueaksU.map((x)=>{
+                return x.getSqueakHash() === updatedSqueakHash ?
+                updatedSqueak : x
             })
-            homeTweetsU = homeTweetsU.map((x)=>{
-                return x.getSqueakHash() === updatedTweetHash ?
-                updatedTweet : x
+            homeSqueaksU = homeSqueaksU.map((x)=>{
+                return x.getSqueakHash() === updatedSqueakHash ?
+                updatedSqueak : x
             })
-            if (singleTweetU) {
-              singleTweetU = singleTweetU.getSqueakHash() === updatedTweetHash ? updatedTweet : singleTweetU;
+            if (singleSqueakU) {
+              singleSqueakU = singleSqueakU.getSqueakHash() === updatedSqueakHash ? updatedSqueak : singleSqueakU;
             }
             return {
                 ...state,
-                ...{squeak: singleTweetU},
-                ...{userTweets: userTweetsU},
-                ...{replyTweets: replyTweetsU},
-                ...{ancestorTweets: ancestorTweetsU},
-                ...{squeaks: homeTweetsU},
+                ...{squeak: singleSqueakU},
+                ...{userSqueaks: userSqueaksU},
+                ...{replySqueaks: replySqueaksU},
+                ...{ancestorSqueaks: ancestorSqueaksU},
+                ...{squeaks: homeSqueaksU},
             }
 
         // case type.LIKE_TWEET:
@@ -157,8 +157,8 @@ const reducer = (state = initialState, action) => {
 
         case type.GET_TWEETS:
             let timelineT = state.squeaks
-            let newTweets = action.payload.squeaks
-            newTweets.forEach(t => timelineT.push(t));
+            let newSqueaks = action.payload.squeaks
+            newSqueaks.forEach(t => timelineT.push(t));
             return {...state, loading: false, error: false}
 
         case type.CLEAR_TWEETS:
@@ -174,13 +174,13 @@ const reducer = (state = initialState, action) => {
             return {...state, ...action.payload}
 
         case type.GET_USER_TWEETS:
-            let userT = state.userTweets
-            let newUserTweets = action.payload.userTweets
-            newUserTweets.forEach(t => userT.push(t));
+            let userT = state.userSqueaks
+            let newUserSqueaks = action.payload.userSqueaks
+            newUserSqueaks.forEach(t => userT.push(t));
             return {...state, loading: false, error: false}
 
         case type.CLEAR_USER_TWEETS:
-            return {...state, ...{userTweets: []}}
+            return {...state, ...{userSqueaks: []}}
 
         case type.GET_ANCESTOR_TWEETS:
             return {...state, ...action.payload, loading: false, error: false}
@@ -192,16 +192,16 @@ const reducer = (state = initialState, action) => {
             return {...state, ...action.payload, loading: false, error: false}
 
         case type.DELETE_USER:
-            let deletedUserTweets = state.userTweets
-            deletedUserTweets.forEach((item, i) => {
+            let deletedUserSqueaks = state.userSqueaks
+            deletedUserSqueaks.forEach((item, i) => {
               item.setAuthor(null);
             });
             return {...state, ...{user:null}, loading: false, error: false}
 
         case type.UPDATE_USER:
             let updateUser = action.payload.user
-            let updateUserTweets = state.userTweets
-            updateUserTweets.forEach((item, i) => {
+            let updateUserSqueaks = state.userSqueaks
+            updateUserSqueaks.forEach((item, i) => {
               item.setAuthor(updateUser);
             });
             return {...state, ...{user:updateUser}, loading: false, error: false}
@@ -213,35 +213,35 @@ const reducer = (state = initialState, action) => {
             return {...state, ...action.payload}
 
         case type.DELETE_TWEET:
-            let deletedTweetHash = action.payload.squeakHash
-            let userTweetsD = state.userTweets
-            let replyTweetsD = state.replyTweets
-            let ancestorTweetsD = state.ancestorTweets
-            let homeTweetsD = state.squeaks
-            let singleTweet = state.squeak
-            userTweetsD = userTweetsD.filter((x)=>{
-                    return x.getSqueakHash() !== deletedTweetHash
+            let deletedSqueakHash = action.payload.squeakHash
+            let userSqueaksD = state.userSqueaks
+            let replySqueaksD = state.replySqueaks
+            let ancestorSqueaksD = state.ancestorSqueaks
+            let homeSqueaksD = state.squeaks
+            let singleSqueak = state.squeak
+            userSqueaksD = userSqueaksD.filter((x)=>{
+                    return x.getSqueakHash() !== deletedSqueakHash
             })
-            ancestorTweetsD = ancestorTweetsD.filter((x)=>{
-                    return x.getSqueakHash() !== deletedTweetHash
+            ancestorSqueaksD = ancestorSqueaksD.filter((x)=>{
+                    return x.getSqueakHash() !== deletedSqueakHash
             })
-            replyTweetsD = replyTweetsD.filter((x)=>{
-                    return x.getSqueakHash() !== deletedTweetHash
+            replySqueaksD = replySqueaksD.filter((x)=>{
+                    return x.getSqueakHash() !== deletedSqueakHash
             })
-            if(singleTweet && deletedTweetHash === singleTweet.getSqueakHash()){
+            if(singleSqueak && deletedSqueakHash === singleSqueak.getSqueakHash()){
                 // window.location.replace('/home')
-                singleTweet = null
+                singleSqueak = null
             }
-            homeTweetsD = homeTweetsD.filter((x)=>{
-                return x.getSqueakHash() !== deletedTweetHash
+            homeSqueaksD = homeSqueaksD.filter((x)=>{
+                return x.getSqueakHash() !== deletedSqueakHash
             })
             return {
                 ...state,
-                ...{userTweets: userTweetsD},
-                ...{replyTweets: replyTweetsD},
-                ...{ancestorTweets: ancestorTweetsD},
-                ...{squeaks: homeTweetsD},
-                ...{squeak: singleTweet}
+                ...{userSqueaks: userSqueaksD},
+                ...{replySqueaks: replySqueaksD},
+                ...{ancestorSqueaks: ancestorSqueaksD},
+                ...{squeaks: homeSqueaksD},
+                ...{squeak: singleSqueak}
             }
 
         case type.FOLLOW_USER:
@@ -295,17 +295,17 @@ const reducer = (state = initialState, action) => {
             return {...state, ...action.payload}
 
         case type.CLEAR_SEARCH:
-            return {...state, ...{searchTweets: []}}
+            return {...state, ...{searchSqueaks: []}}
 
         case type.SEARCH:
-            let searchT = state.searchTweets
-            let newSearchTweets = action.payload.searchTweets
-            newSearchTweets.forEach(t => searchT.push(t));
+            let searchT = state.searchSqueaks
+            let newSearchSqueaks = action.payload.searchSqueaks
+            newSearchSqueaks.forEach(t => searchT.push(t));
             return {...state, loading: false, error: false}
 
         case type.TREND_TWEETS:
-        let t_squeaks = action.payload.tagTweets.squeaks
-            return {...state, ...{tagTweets: t_squeaks}}
+        let t_squeaks = action.payload.tagSqueaks.squeaks
+            return {...state, ...{tagSqueaks: t_squeaks}}
 
         case type.ADD_TO_LIST:
             let added_list = state.list
@@ -330,9 +330,9 @@ const reducer = (state = initialState, action) => {
         case type.CREATE_CONTACT_PROFILE:
             let createdContactUser = action.payload.user
             let createdCP = state.contactProfiles
-            let updateCreatedContactUserTweets = state.userTweets
+            let updateCreatedContactUserSqueaks = state.userSqueaks
             createdCP.push(createdContactUser)
-            updateCreatedContactUserTweets.forEach((item, i) => {
+            updateCreatedContactUserSqueaks.forEach((item, i) => {
               item.setAuthor(createdContactUser);
             });
             return {...state, ...{user: createdContactUser}, loading: false, error: false}

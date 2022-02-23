@@ -6,12 +6,12 @@ import { withRouter, Link } from 'react-router-dom'
 import { ICON_SEARCH, ICON_ARROWBACK, ICON_CLOSE } from '../../Icons'
 import { getProfileImageSrcString } from '../../squeakimages/images';
 import Loader from '../Loader'
-import TweetCard from '../TweetCard'
+import SqueakCard from '../SqueakCard'
 
 
 const Payments = (props) => {
     const { state, actions } = useContext(StoreContext)
-    const { sentPayments, receivedPayments, signingProfiles, contactProfiles, result, tagTweets} = state
+    const { sentPayments, receivedPayments, signingProfiles, contactProfiles, result, tagSqueaks} = state
     const [tab, setTab] = useState('Sent Payments')
     const [styleBody, setStyleBody] = useState(false)
     const [newProfileName, setNewProfileName] = useState('')
@@ -69,8 +69,8 @@ const Payments = (props) => {
         e.stopPropagation()
     }
 
-    const goToTweet = (id) => {
-        if(props.replyTo){ actions.getTweet(id) }
+    const goToSqueak = (id) => {
+        if(props.replyTo){ actions.getSqueak(id) }
         props.history.push(`/app/squeak/${id}`)
     }
 
@@ -101,7 +101,7 @@ const Payments = (props) => {
                 {tab === 'Sent Payments' ?
                 <>
                 {sentPayments.map(f=>{
-                  return <div onClick={()=>goToTweet(f.getSqueakHash())} key={f.getPaymentHash()} className="search-result-wapper">
+                  return <div onClick={()=>goToSqueak(f.getSqueakHash())} key={f.getPaymentHash()} className="search-result-wapper">
                     <div className="search-user-details">
                     <div className="search-user-warp">
                     <div className="search-user-info">
@@ -125,7 +125,7 @@ const Payments = (props) => {
                 tab === 'Received Payments' ?
                   <>
                   {receivedPayments.map(f=>{
-                    return <div onClick={()=>goToTweet(f.getSqueakHash())} key={f.getPaymentHash()} className="search-result-wapper">
+                    return <div onClick={()=>goToSqueak(f.getSqueakHash())} key={f.getPaymentHash()} className="search-result-wapper">
                       <div className="search-user-details">
                       <div className="search-user-warp">
                       <div className="search-user-info">
