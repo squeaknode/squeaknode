@@ -30,9 +30,9 @@ const Search = (props) => {
         // actions.getTweets({lastTweet: null})
         if (q && q.length > 1) {
           setSearchText(q);
-          reloadTweets();
+          reloadTweets(q);
         }
-    }, [])
+    }, [q])
 
     const changeSearchText = (param) => {
         setSearchText(param);
@@ -41,7 +41,6 @@ const Search = (props) => {
     const searchOnEnter = (e) => {
         if (e.keyCode === 13) {
           if(searchText.length>0){
-            reloadTweets();
             goToNewSearch(searchText);
           }
         }
@@ -64,10 +63,10 @@ const Search = (props) => {
         });
     }
 
-    const reloadTweets = () => {
+    const reloadTweets = (s) => {
         actions.clearSearch();
         actions.search({
-          searchText: searchText,
+          searchText: s,
           lastTweet: null
         });
     }
