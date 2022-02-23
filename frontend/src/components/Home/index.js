@@ -13,7 +13,7 @@ import MakeSqueak from '../MakeSqueak'
 
 const Home = () => {
     const { state, actions } = useContext(StoreContext)
-    const { session } = state
+    const { squeaks, session } = state
     useEffect(() => {
         window.scrollTo(0, 0)
         // actions.getSqueaks({lastSqueak: null})
@@ -30,7 +30,7 @@ const Home = () => {
     };
 
     const getMoreSqueaks = () => {
-        let lastSqueak = getLastSqueak(state.squeaks);
+        let lastSqueak = getLastSqueak(squeaks);
         actions.getSqueaks({lastSqueak: lastSqueak});
     }
 
@@ -48,14 +48,18 @@ const Home = () => {
             </div>
             {session ? <MakeSqueak /> : null }
             <div className="Squeak-input-divider"></div>
-            {state.squeaks.map(t => {
+            {squeaks.map(t => {
                 return <SqueakCard squeak={t} key={t.getSqueakHash()} id={t.getSqueakHash()} user={t.getAuthor()} />
             })}
 
             {/* TODO: fix get loading state by doing this: https://medium.com/stashaway-engineering/react-redux-tips-better-way-to-handle-loading-flags-in-your-reducers-afda42a804c6 */}
-            {state.loading ? <Loader /> : <div onClick={() => getMoreSqueaks()} className='squeak-btn-side squeak-btn-active'>
-                Load more
-            </div>}
+            {squeaks.length > 0 &&
+              <>
+              {state.loading ? <Loader /> : <div onClick={() => getMoreSqueaks()} className='squeak-btn-side squeak-btn-active'>
+                  Load more
+              </div>}
+              </>
+            }
 
         </div>
     )
