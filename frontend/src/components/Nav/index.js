@@ -20,11 +20,13 @@ import {
 const Nav = ({history}) => {
     const { state, actions } = useContext(StoreContext)
 
-    const { session } = state
+    const { sellPrice, session } = state
     const [moreMenu, setMoreMenu] = useState(false)
     const [theme, setTheme] = useState(true)
     const [modalOpen, setModalOpen] = useState(false)
+    const [sellPriceModalOpen, setSellPriceModalOpen] = useState(false)
     const [styleBody, setStyleBody] = useState(false)
+    const [newSellPriceMsat, setNewSellPriceMsat] = useState('')
 
     const isInitialMount = useRef(true);
     useEffect(() => {
@@ -45,6 +47,7 @@ const Nav = ({history}) => {
         }else if(!localStorage.getItem('Theme')){
             localStorage.setItem('Theme', 'light')
         }
+        actions.getSellPrice();
       }, [])
 
       const path = history.location.pathname.slice(4,9)
@@ -60,6 +63,12 @@ const Nav = ({history}) => {
         setTimeout(()=>{ setModalOpen(!modalOpen) },20)
     }
 
+    const toggleSellPriceModal = (param, type) => {
+        setStyleBody(!styleBody)
+        setTimeout(()=>{ setSellPriceModalOpen(!sellPriceModalOpen) },20)
+    }
+
+
     const handleModalClick = (e) => {
         e.stopPropagation()
     }
@@ -74,6 +83,20 @@ const Nav = ({history}) => {
             enableDarkMode();
         }
     }
+
+    const updateSellPrice = () => {
+        let values = {
+            sellPriceMsat: newSellPriceMsat,
+        }
+        actions.setSellPrice(values)
+        toggleSellPriceModal()
+    }
+
+    const setSellPriceToDefault = () => {
+        actions.clearSellPrice()
+        toggleSellPriceModal()
+    }
+
 
     return(
         <div className="Nav-component">
@@ -125,10 +148,14 @@ const Nav = ({history}) => {
                         <div onClick={()=>openMore()} style={{display: moreMenu ? 'block' : 'none'}} className="more-menu-background">
                         <div className="more-modal-wrapper">
                             {moreMenu ?
-                            <div style={{top: `${document.getElementById('moremenu').getBoundingClientRect().top - 40}px`, left: `${document.getElementById('moremenu').getBoundingClientRect().left}px`, height: !session ? '104px' : null }} onClick={(e)=>handleMenuClick(e)} className="more-menu-content">
+                            <div style={{top: `${document.getElementById('moremenu').getBoundingClientRect().top - 40}px`, left: `${document.getElementById('moremenu').getBoundingClientRect().left}px`, height: '154px' }} onClick={(e)=>handleMenuClick(e)} className="more-menu-content">
                                     <div onClick={changeTheme} className="more-menu-item">
                                         <span>Change Theme</span>
                                         <span>{theme ? <ICON_DARK/> : <ICON_LIGHT />}</span>
+                                    </div>
+                                    <div onClick={toggleSellPriceModal} className="more-menu-item">
+                                        <span>Update Sell Price</span>
+                                        <span><ICON_HASH /></span>
                                     </div>
                                     <div onClick={()=>actions.logout()} className="more-menu-item">
                                         Log out
@@ -171,6 +198,46 @@ const Nav = ({history}) => {
                 </div>
             </div>
         </div>
+
+
+        {/* Modal for set sell price */}
+        <div onClick={()=>toggleSellPriceModal()} style={{display: sellPriceModalOpen ? 'block' : 'none'}} className="modal-edit">
+            <div onClick={(e)=>handleModalClick(e)} className="modal-content">
+                <div className="modal-header">
+                    <div className="modal-closeIcon">
+                        <div onClick={()=>toggleSellPriceModal()} className="modal-closeIcon-wrap">
+                            <ICON_CLOSE />
+                        </div>
+                    </div>
+                    <p className="modal-title">'Sell Price'</p>
+                    <div className="save-modal-wrapper">
+                        <div onClick={updateSellPrice} className="save-modal-btn">
+                            Save
+                        </div>
+                    </div>
+                    <div className="save-modal-wrapper">
+                        <div onClick={setSellPriceToDefault} className="save-modal-btn">
+                            Reset To Default
+                        </div>
+                    </div>
+                </div>
+                {sellPrice &&
+                <div className="modal-body">
+                      <form className="edit-form">
+                          <div className="edit-input-wrap">
+                              <div className="edit-input-content">
+                                  <label>Sell Price (msats)</label>
+                                  <input defaultValue={sellPrice.getPriceMsatIsSet() ? sellPrice.getPriceMsat() : sellPrice.getDefaultPriceMsat()} onChange={(e)=>setNewSellPriceMsat(e.target.value)} type="text" name="sellPrice" className="edit-input"/>
+                              </div>
+                          </div>
+                      </form>
+                </div>
+                }
+            </div>
+        </div>
+
+
+
         </div>
     )
 }

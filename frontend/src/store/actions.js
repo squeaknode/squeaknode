@@ -195,6 +195,18 @@ export const useActions = (state, dispatch) => ({
         dispatch({type: types.SET_STATE, payload: {loading: true}})
         dispatch({type: types.GET_EXTERNAL_ADDRESS, payload: data})
     },
+    getSellPrice: data => {
+        dispatch({type: types.SET_STATE, payload: {loading: true}})
+        dispatch({type: types.GET_SELL_PRICE, payload: data})
+    },
+    setSellPrice: data => {
+        dispatch({type: types.SET_STATE, payload: {loading: true}})
+        dispatch({type: types.SET_SELL_PRICE, payload: data})
+    },
+    clearSellPrice: data => {
+        dispatch({type: types.SET_STATE, payload: {loading: true}})
+        dispatch({type: types.CLEAR_SELL_PRICE, payload: data})
+    },
     connectPeer: data => {
         dispatch({type: types.CONNECT_PEER, payload: data})
     },

@@ -40,6 +40,7 @@ const initialState = {
     receivedPayments: [],
     privateKey: null,
     externalAddress: null,
+    sellPrice: null,
     error: false
 }
 
@@ -210,6 +211,9 @@ const reducer = (state = initialState, action) => {
             return {...state, ...action.payload}
 
         case type.GET_EXTERNAL_ADDRESS:
+            return {...state, ...action.payload}
+
+        case type.GET_SELL_PRICE:
             return {...state, ...action.payload}
 
         case type.DELETE_TWEET:
