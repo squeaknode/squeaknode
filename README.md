@@ -7,6 +7,8 @@
 
 A peer-to-peer status feed with posts unlocked by Lightning.
 
+![Screenshot from 2021-11-11 04-17-41](docs/images/squeak-page.png)
+
 Squeaknode allows you to create, view, buy, and sell squeaks.
 
 A squeak is an immutable structure that:
