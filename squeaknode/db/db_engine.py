@@ -24,7 +24,7 @@ from pathlib import Path
 from sqlalchemy import create_engine
 
 
-DB_FILE = "data-v3.db"
+DB_FILE = "data-v4.db"
 
 
 def get_engine(connection_string):
