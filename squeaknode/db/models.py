@@ -75,9 +75,9 @@ class Models:
             Column("block_height", Integer, nullable=False),
             Column("time_s", Integer, nullable=False),
             Column("author_public_key", LargeBinary(
-                33), index=True, nullable=False),
+                32), index=True, nullable=False),
             Column("recipient_public_key", LargeBinary(
-                33), index=True, nullable=True),
+                32), index=True, nullable=True),
             Column("secret_key", LargeBinary(32), nullable=True),
             Column("block_time_s", Integer, nullable=False),
             Column("liked_time_ms", SLBigInteger, default=None, nullable=True),
@@ -91,7 +91,7 @@ class Models:
             Column("created_time_ms", SLBigInteger, nullable=False),
             Column("profile_name", String, unique=True, nullable=False),
             Column("private_key", LargeBinary, nullable=True),
-            Column("public_key", LargeBinary(33), unique=True, nullable=False),
+            Column("public_key", LargeBinary(32), unique=True, nullable=False),
             Column("following", Boolean, nullable=False),
             Column("profile_image", LargeBinary, nullable=True),
             sqlite_autoincrement=True,
