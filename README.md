@@ -1,7 +1,7 @@
 # squeaknode
 
 [![GitHub release](https://img.shields.io/github/release/squeaknode/squeaknode.svg)](https://github.com/squeaknode/squeaknode/releases)
-[![GitHub CI workflow](https://github.com/squeaknode/squeaknode/actions/workflows/main.yml/badge.svg)](https://github.com/squeaknode/squeaknode/actions/workflows/main.yml)
+[![GitHub CI workflow](https://github.com/squeaknode/squeaknode/actions/workflows/ci.yml/badge.svg)](https://github.com/squeaknode/squeaknode/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/squeaknode/squeaknode/branch/master/graph/badge.svg?token=VV8WW3VR3Y)](https://codecov.io/gh/squeaknode/squeaknode)
 [![Join the chat at https://gitter.im/squeaknode/squeaknode](https://badges.gitter.im/squeaknode/squeaknode.svg)](https://gitter.im/squeaknode/squeaknode?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
