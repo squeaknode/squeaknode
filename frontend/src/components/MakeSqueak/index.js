@@ -42,6 +42,12 @@ const MakeSqueak = (props) => {
       setSigningProfile(e.value);
     }
 
+    const pastePlainText = (e) => {
+      e.preventDefault();
+      var text = e.clipboardData.getData('text/plain');
+      document.execCommand('insertText', false, text);
+    }
+
     const submitSqueak = () => {
         // TODO: toggle modal off here.
 
@@ -51,8 +57,6 @@ const MakeSqueak = (props) => {
         }
 
         if (!squeakText.length) { return }
-
-        let hashtags = squeakText.match(/#(\w+)/g)
 
         const values = {
             signingProfile: signingProfile.getProfileId(),
@@ -124,7 +128,7 @@ const MakeSqueak = (props) => {
                         <Select options={optionsFromProfiles(signingProfiles)} onChange={handleChangeSigningProfile} />
                     </div>
                     <div className="inner-input-box">
-                        <ContentEditable onPaste={(e) => e.preventDefault()} id="squeak-box" className={squeakText.length ? 'squeak-input-active' : null} onKeyDown={(e)=>squeakT.current.length>279 ? e.keyCode !== 8 && e.preventDefault(): null} placeholder="What's happening?" html={squeakT.current} onChange={(e) => handleChange(e)} />
+                        <ContentEditable onPaste={(e) => pastePlainText(e)} id="squeak-box" className={squeakText.length ? 'squeak-input-active' : null} onKeyDown={(e)=>squeakT.current.length>279 ? e.keyCode !== 8 && e.preventDefault(): null} placeholder="What's happening?" html={squeakT.current} onChange={(e) => handleChange(e)} />
                     </div>
                     <div className="inner-input-links">
                         <div className="input-links-side">
