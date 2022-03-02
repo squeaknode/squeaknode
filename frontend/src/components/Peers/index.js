@@ -105,15 +105,30 @@ const Peers = (props) => {
       return 'IPV4';
     };
 
+    function removeHttp(url) {
+      return url.replace(/^https?:\/\//, '');
+    }
+
     const savePeer = () => {
         const network = getNetwork();
-        actions.savePeer({name: name, host: host, port: port, network: network});
+        const strippedHost = removeHttp(host);
+        actions.savePeer({
+          name: name,
+          host: strippedHost,
+          port: port,
+          network: network
+        });
         toggleSavePeerModal();
     }
 
     const connectPeer = () => {
         const network = getNetwork();
-        actions.connectPeer({host: host, port: port, network: network});
+        const strippedHost = removeHttp(host);
+        actions.connectPeer({
+          host: strippedHost,
+          port: port,
+          network: network
+        });
         toggleconnectPeerModal();
     }
 
