@@ -36,6 +36,7 @@ const Squeak = (props) => {
   const replySqueaks = useSelector(selectReplySqueaks);
   const loadingCurrentSqueakStatus = useSelector((state) => state.squeak.currentSqueakStatus)
   const loadingAncestorSqueaksStatus = useSelector((state) => state.squeak.ancestorSqueaksStatus)
+  const loadingReplySqueaksStatus = useSelector((state) => state.squeak.replySqueaksStatus)
   const dispatch = useDispatch();
 
   const [modalOpen, setModalOpen] = useState(false)
@@ -269,20 +270,31 @@ const Squeak = (props) => {
 
 
       {/* Ancestor squeaks */}
-      {ancestorSqueaks.slice(0, -1).map(r=>{
-        // TODO: use replies instead of empty array.
-        return <SqueakCard squeak={r} key={r.getSqueakHash()} id={r.getSqueakHash()} user={r.getAuthor()}
-          replies={[]} hasReply={true} />
-      })}
+      {loadingAncestorSqueaksStatus === 'loading' ?
+        <Loader /> :
+        <>
+        {ancestorSqueaks.slice(0, -1).map(r=>{
+          // TODO: use replies instead of empty array.
+          return <SqueakCard squeak={r} key={r.getSqueakHash()} id={r.getSqueakHash()} user={r.getAuthor()}
+            replies={[]} hasReply={true} />
+          })}
+        </>
+      }
+
 
       {/* Current squeak */}
       {renderedCurrentSqueak}
 
       {/* Reply squeaks */}
-      {replySqueaks.map(r=>{
-          // TODO: use replies instead of empty array.
-          return <SqueakCard squeak={r}  key={r.getSqueakHash()} id={r.getSqueakHash()} user={r.getAuthor()}/>
-      })}
+      {loadingReplySqueaksStatus === 'loading' ?
+        <Loader /> :
+        <>
+          {replySqueaks.map(r=>{
+            // TODO: use replies instead of empty array.
+            return <SqueakCard squeak={r}  key={r.getSqueakHash()} id={r.getSqueakHash()} user={r.getAuthor()}/>
+          })}
+        </>
+      }
 
   </div>
 
