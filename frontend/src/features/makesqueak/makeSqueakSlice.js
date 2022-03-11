@@ -36,7 +36,7 @@ export const setMakeSqueak = createAsyncThunk(
       hasRecipient,
       recipientProfileId,
     );
-    return response.getSqueakDisplayEntry();
+    return response.getSqueakHash();
   }
 )
 
@@ -47,10 +47,11 @@ const makeSqueakSlice = createSlice({
   extraReducers: (builder) => {
     builder
     .addCase(setMakeSqueak.pending, (state, action) => {
+      console.log('setMakeSqueak pending');
       state.makeSqueakStatus = 'loading'
     })
     .addCase(setMakeSqueak.fulfilled, (state, action) => {
-      console.log(action);
+      console.log('setMakeSqueak fulfilled');
       const newSqueakHash = action.payload;
       state.makeSqueakStatus = 'idle';
       console.log('Go to new squeak');

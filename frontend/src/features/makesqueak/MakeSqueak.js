@@ -10,6 +10,7 @@ import { getProfileImageSrcString } from '../../squeakimages/images';
 import Loader from '../../components/Loader'
 import Select from 'react-select'
 
+import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
 
 
@@ -21,6 +22,8 @@ import {
 const MakeSqueak = (props) => {
     const { state, actions } = useContext(StoreContext)
     const { signingProfiles, session } = state
+
+    const makeSqueakStatus = useSelector(selectMakeSqueakStatus);
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -86,6 +89,8 @@ const MakeSqueak = (props) => {
     }
 
     const author = props.replyToSqueak && props.replyToSqueak.getAuthor();
+
+    console.log(makeSqueakStatus);
 
     return (
       <>
