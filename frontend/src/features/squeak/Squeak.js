@@ -17,7 +17,7 @@ import MakeSqueak from '../../components/MakeSqueak'
 
 import { selectCurrentSqueak, selectAncestorSqueaks } from './squeakSlice'
 
-import { fetchSqueak, fetchAncestorSqueaks } from './squeakSlice'
+import { fetchSqueak, fetchAncestorSqueaks, clearAll } from './squeakSlice'
 import store from '../../store'
 
 
@@ -39,11 +39,11 @@ const Squeak = (props) => {
       window.scrollTo(0, 0)
       // actions.getSqueaks({lastSqueak: null})
       // reloadSqueaks();
-      console.log('fetchSqueak');
-      // dispatch(clearSqueak());
+      console.log('useEffect of Squeak component.');
+      // dispatch(clearAll());
       dispatch(fetchSqueak(props.id));
       dispatch(fetchAncestorSqueaks(props.id));
-  }, [])
+  }, [props.id])
 
   const toggleModal = (e, type) => {
       if(e){ e.stopPropagation() }
@@ -136,8 +136,6 @@ const Squeak = (props) => {
 
   const network = 'testnet';
 
-  console.log(loadingCurrentSqueakStatus);
-  console.log(ancestorSqueaks);
 
     const squeak = currentSqueak;
     const author = currentSqueak && currentSqueak.getAuthor();

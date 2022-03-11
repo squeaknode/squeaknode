@@ -23,7 +23,6 @@ export const fetchSqueak = createAsyncThunk(
   async (squeakHash) => {
     console.log('Fetching squeak');
     const response = await getSqueak(squeakHash);
-    console.log(response);
     return response.getSqueakDisplayEntry();
   }
 )
@@ -33,7 +32,6 @@ export const fetchAncestorSqueaks = createAsyncThunk(
   async (squeakHash) => {
     console.log('Fetching ancestor squeaks');
     const response = await getAncestorSqueaks(squeakHash);
-    console.log(response);
     return response.getSqueakDisplayEntriesList();
   }
 )
@@ -42,7 +40,16 @@ export const fetchAncestorSqueaks = createAsyncThunk(
 const squeakSlice = createSlice({
   name: 'squeak',
   initialState,
-  reducers: {},
+  reducers: {
+    clearAll(state, action) {
+      console.log('Clear squeak and other data.');
+      state.currentSqueakStatus = 'idle';
+      state.currentSqueak = null;
+      state.ancestorSqueaksStatus = 'idle';
+      state.ancestorSqueaks = []
+      state.replySqueaks = [];
+    },
+  },
   extraReducers: (builder) => {
     builder
     .addCase(fetchSqueak.pending, (state, action) => {
@@ -66,10 +73,9 @@ const squeakSlice = createSlice({
   },
 })
 
-// export const {
-//   allTodosCompleted,
-//   completedTodosCleared,
-// } = squeakSlice.actions
+export const {
+  clearAll,
+} = squeakSlice.actions
 
 export default squeakSlice.reducer
 
