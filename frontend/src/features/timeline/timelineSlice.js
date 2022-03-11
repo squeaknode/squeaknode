@@ -4,7 +4,7 @@ import {
   createAsyncThunk,
   createEntityAdapter,
 } from '@reduxjs/toolkit'
-import { client, getTimelineSqueaks } from '../../api/client'
+import { client, getTimelineSqueaks, getSqueak, likeSqueak, unlikeSqueak } from '../../api/client'
 
 const timelineAdapter = createEntityAdapter()
 
@@ -23,6 +23,27 @@ export const fetchTimeline = createAsyncThunk(
     return response.getSqueakDisplayEntriesList();
   }
 )
+
+export const setLikeSqueak = createAsyncThunk(
+  'squeak/setLikeSqueak',
+  async (squeakHash) => {
+    console.log('Liking squeak');
+    await likeSqueak(squeakHash);
+    const response = await getSqueak(squeakHash);
+    return response.getSqueakDisplayEntry();
+  }
+)
+
+export const setUnlikeSqueak = createAsyncThunk(
+  'squeak/setUnlikeSqueak',
+  async (squeakHash) => {
+    console.log('Unliking squeak');
+    await unlikeSqueak(squeakHash);
+    const response = await getSqueak(squeakHash);
+    return response.getSqueakDisplayEntry();
+  }
+)
+
 
 
 const timelineSlice = createSlice({
@@ -45,6 +66,18 @@ const timelineSlice = createSlice({
       const newEntities = action.payload;
       state.entities = state.entities.concat(newEntities);
       state.status = 'idle'
+    })
+    .addCase(setLikeSqueak.fulfilled, (state, action) => {
+      console.log(action);
+      const newSqueak = action.payload;
+      const currentIndex = state.entities.findIndex(squeak => squeak.getSqueakHash() === newSqueak.getSqueakHash());
+      state.entities[currentIndex] = newSqueak;
+    })
+    .addCase(setUnlikeSqueak.fulfilled, (state, action) => {
+      console.log(action);
+      const newSqueak = action.payload;
+      const currentIndex = state.entities.findIndex(squeak => squeak.getSqueakHash() === newSqueak.getSqueakHash());
+      state.entities[currentIndex] = newSqueak;
     })
   },
 })
