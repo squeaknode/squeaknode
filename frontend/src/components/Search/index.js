@@ -9,7 +9,6 @@ import { Link } from 'react-router-dom'
 import { API_URL } from '../../config'
 import Loader from '../Loader'
 import SqueakCard from '../SqueakCard'
-import MakeSqueak from '../MakeSqueak'
 
 
 const Search = (props) => {

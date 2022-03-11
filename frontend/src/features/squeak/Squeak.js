@@ -12,7 +12,7 @@ import { getProfileImageSrcString } from '../../squeakimages/images';
 
 import SqueakCard from '../../components/SqueakCard'
 import Loader from '../../components/Loader'
-import MakeSqueak from '../../components/MakeSqueak'
+import MakeSqueak from '../makesqueak/MakeSqueak'
 
 
 import {
