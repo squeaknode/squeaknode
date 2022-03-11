@@ -267,8 +267,6 @@ const Squeak = (props) => {
           replies={[]} hasReply={true} />
       }
 
-
-
       {/* Ancestor squeaks */}
       {loadingAncestorSqueaksStatus === 'loading' ?
         <Loader /> :
@@ -280,7 +278,6 @@ const Squeak = (props) => {
           })}
         </>
       }
-
 
       {/* Current squeak */}
       {renderedCurrentSqueak}
