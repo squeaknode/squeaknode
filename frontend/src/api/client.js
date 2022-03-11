@@ -229,3 +229,15 @@ export const getTimelineSqueaks = (limit, lastSqueak) => {
       deser: deser,
     });
 }
+
+export const getSqueak = (squeakHash) => {
+    console.log('Calling getSqueak');
+    const request = new GetSqueakDisplayRequest();
+    request.setSqueakHash(squeakHash);
+    const deser = GetSqueakDisplayReply.deserializeBinary;
+    return axiosBaseQuery({
+      url: '/getsqueakdisplay',
+      req: request,
+      deser: deser,
+    });
+}
