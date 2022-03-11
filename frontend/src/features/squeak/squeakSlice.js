@@ -63,8 +63,9 @@ export const setLikeSqueak = createAsyncThunk(
   'squeak/setLikeSqueak',
   async (squeakHash) => {
     console.log('Liking squeak');
-    const response = await likeSqueak(squeakHash);
-    return response;
+    await likeSqueak(squeakHash);
+    const response = await getSqueak(squeakHash);
+    return response.getSqueakDisplayEntry();
   }
 )
 
@@ -72,8 +73,9 @@ export const setUnlikeSqueak = createAsyncThunk(
   'squeak/setUnlikeSqueak',
   async (squeakHash) => {
     console.log('Unliking squeak');
-    const response = await unlikeSqueak(squeakHash);
-    return response;
+    await unlikeSqueak(squeakHash);
+    const response = await getSqueak(squeakHash);
+    return response.getSqueakDisplayEntry();
   }
 )
 
@@ -119,6 +121,18 @@ const squeakSlice = createSlice({
       const replySqueaks = action.payload;
       state.replySqueaks = replySqueaks;
       state.replySqueaksStatus = 'idle';
+    })
+    .addCase(setLikeSqueak.fulfilled, (state, action) => {
+      console.log(action);
+      const newSqueak = action.payload;
+      state.currentSqueak = newSqueak;
+      state.currentSqueakStatus = 'idle';
+    })
+    .addCase(setUnlikeSqueak.fulfilled, (state, action) => {
+      console.log(action);
+      const newSqueak = action.payload;
+      state.currentSqueak = newSqueak;
+      state.currentSqueakStatus = 'idle';
     })
   },
 })
