@@ -15,6 +15,7 @@ import Feed from './components/Feed'
 import Search from './components/Search'
 import Notifications from './components/Notifications'
 import Alerts from './components/Alerts'
+import TodoList from './features/todos/TodoList'
 
 const Home = lazy(() => import('./components/Home'))
 const Profile = lazy(() => import('./components/Profile'))
@@ -28,7 +29,7 @@ const DefaultContainer = withRouter(({ history }) => {
           <Redirect to="/app/home" />
         </Route>
         <Route path="/app/home" exact>
-          <Home />
+          <TodoList />
         </Route>
         <Route path="/app/search" exact>
           <Search />
