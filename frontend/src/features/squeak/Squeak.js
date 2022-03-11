@@ -15,16 +15,18 @@ import Loader from '../../components/Loader'
 import MakeSqueak from '../../components/MakeSqueak'
 
 
-import { selectCurrentSqueak } from './squeakSlice'
+import { selectCurrentSqueak, selectAncestorSqueaks } from './squeakSlice'
 
-import { fetchSqueak } from './squeakSlice'
+import { fetchSqueak, fetchAncestorSqueaks } from './squeakSlice'
 import store from '../../store'
 
 
 const Squeak = (props) => {
   const currentSqueak = useSelector(selectCurrentSqueak);
+  const ancestorSqueaks = useSelector(selectAncestorSqueaks);
   const loadingCurrentSqueakStatus = useSelector((state) => state.squeak.currentSqueakStatus)
-  const dispatch = useDispatch()
+  const loadingAncestorSqueaksStatus = useSelector((state) => state.squeak.ancestorSqueaksStatus)
+  const dispatch = useDispatch();
 
   const [modalOpen, setModalOpen] = useState(false)
   const [buyModalOpen, setBuyModalOpen] = useState(false)
@@ -40,6 +42,7 @@ const Squeak = (props) => {
       console.log('fetchSqueak');
       // dispatch(clearSqueak());
       dispatch(fetchSqueak(props.id));
+      dispatch(fetchAncestorSqueaks(props.id));
   }, [])
 
   const toggleModal = (e, type) => {
@@ -119,7 +122,7 @@ const Squeak = (props) => {
   }
 
 
-  const ancestorSqueaks = [];
+  // const ancestorSqueaks = [];
 
   const replySqueaks = [];
 
@@ -134,6 +137,7 @@ const Squeak = (props) => {
   const network = 'testnet';
 
   console.log(loadingCurrentSqueakStatus);
+  console.log(ancestorSqueaks);
 
     const squeak = currentSqueak;
     const author = currentSqueak && currentSqueak.getAuthor();

@@ -241,3 +241,15 @@ export const getSqueak = (squeakHash) => {
       deser: deser,
     });
 }
+
+export const getAncestorSqueaks = (squeakHash) => {
+    console.log('Calling getAncestorSqueaks');
+    const request = new GetAncestorSqueakDisplaysRequest();
+    request.setSqueakHash(squeakHash);
+    const deser = GetAncestorSqueakDisplaysReply.deserializeBinary;
+    return axiosBaseQuery({
+      url: '/getancestorsqueakdisplays',
+      req: request,
+      deser: deser,
+    });
+}
