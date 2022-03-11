@@ -9,7 +9,7 @@ import { API_URL } from '../../config'
 import Loader from '../Loader'
 import SqueakCard from '../SqueakCard'
 import MakeSqueak from '../MakeSqueak'
-import TodoList from '../../features/todos/TodoList'
+import Timeline from '../../features/timeline/Timeline'
 
 
 
@@ -51,7 +51,7 @@ const Home = () => {
             <MakeSqueak />
             <div className="Squeak-input-divider"></div>
 
-            <TodoList />
+            <Timeline />
 
         </div>
     )

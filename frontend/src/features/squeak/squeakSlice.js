@@ -12,7 +12,7 @@ import {
 } from '../../api/client'
 import { StatusFilters } from '../filters/filtersSlice'
 
-const todosAdapter = createEntityAdapter()
+const squeakAdapter = createEntityAdapter()
 
 const initialState = {
   currentSqueakStatus: 'idle',

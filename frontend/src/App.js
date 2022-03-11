@@ -15,7 +15,6 @@ import Feed from './components/Feed'
 import Search from './components/Search'
 import Notifications from './components/Notifications'
 import Alerts from './components/Alerts'
-import TodoList from './features/todos/TodoList'
 
 const Home = lazy(() => import('./components/Home'))
 const Profile = lazy(() => import('./components/Profile'))

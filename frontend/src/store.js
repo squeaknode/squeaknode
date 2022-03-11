@@ -1,13 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit'
 
-import todosReducer from './features/todos/todosSlice'
+import timelineReducer from './features/timeline/timelineSlice'
 import squeakReducer from './features/squeak/squeakSlice'
 import filtersReducer from './features/filters/filtersSlice'
 
 const store = configureStore({
   reducer: {
     // Define a top-level state field named `todos`, handled by `todosReducer`
-    todos: todosReducer,
+    timeline: timelineReducer,
     squeak: squeakReducer,
     filters: filtersReducer,
   },
