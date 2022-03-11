@@ -16,6 +16,10 @@ import MakeSqueak from '../../components/MakeSqueak'
 
 
 import {
+  selectNetwork,
+  fetchNetwork,
+} from './networkSlice'
+import {
   selectCurrentSqueak,
   selectCurrentSqueakStatus,
   fetchSqueak,
@@ -39,6 +43,7 @@ import store from '../../store'
 
 
 const Squeak = (props) => {
+  const network = useSelector(selectNetwork);
   const currentSqueak = useSelector(selectCurrentSqueak);
   const ancestorSqueaks = useSelector(selectAncestorSqueaks);
   const replySqueaks = useSelector(selectReplySqueaks);
@@ -58,10 +63,9 @@ const Squeak = (props) => {
 
   useEffect(() => {
       window.scrollTo(0, 0)
-      // actions.getSqueaks({lastSqueak: null})
-      // reloadSqueaks();
       console.log('useEffect of Squeak component.');
       // dispatch(clearAll());
+      dispatch(fetchNetwork());
       dispatch(fetchSqueak(props.id));
       dispatch(fetchAncestorSqueaks(props.id));
       dispatch(fetchReplySqueaks({squeakHash: props.id, limit: 9, lastSqueak: null}));
@@ -156,8 +160,7 @@ const Squeak = (props) => {
       });
   }
 
-  const network = 'testnet';
-
+  console.log(network);
   console.log(ancestorSqueaks);
 
 

@@ -214,6 +214,16 @@ export const axiosBaseQuery =
     }
   }
 
+export const getNetwork = () => {
+    console.log('Calling getNetwork');
+    const request = new GetNetworkRequest();
+    const deser = GetNetworkReply.deserializeBinary;
+    return axiosBaseQuery({
+      url: '/getnetwork',
+      req: request,
+      deser: deser,
+    });
+}
 
 export const getTimelineSqueaks = (limit, lastSqueak) => {
     console.log('Calling getTimelineSqueaks');
