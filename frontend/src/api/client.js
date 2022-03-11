@@ -303,3 +303,19 @@ export const unlikeSqueak = (squeakHash) => {
       deser: deser,
     });
 }
+
+export const makeSqueak = (profileId, content, replyTo, hasRecipient, recipientProfileId) => {
+    console.log('Calling makeSqueak');
+    const request = new MakeSqueakRequest();
+    request.setProfileId(profileId);
+    request.setContent(content);
+    request.setReplyto(replyTo);
+    request.setHasRecipient(hasRecipient);
+    request.setRecipientProfileId(recipientProfileId);
+    const deser = MakeSqueakReply.deserializeBinary;
+    return axiosBaseQuery({
+      url: '/makesqueakrequest',
+      req: request,
+      deser: deser,
+    });
+}
