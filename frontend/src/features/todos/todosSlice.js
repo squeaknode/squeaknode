@@ -26,6 +26,14 @@ export const fetchTodos = createAsyncThunk(
   }
 )
 
+// export const clearTodos = createAsyncThunk(
+//   'todos/clearTodos',
+//   async () => {
+//     console.log('Clearing todos');
+//     return [];
+//   }
+// )
+
 export const saveNewTodo = createAsyncThunk(
   'todos/saveNewTodo',
   async (text) => {
@@ -38,6 +46,12 @@ export const saveNewTodo = createAsyncThunk(
 const todosSlice = createSlice({
   name: 'todos',
   initialState,
+  reducers: {
+    clearTodos(state, action) {
+      console.log('Clear todos reducer.');
+      state.entities = [];
+    },
+  },
   extraReducers: (builder) => {
     builder
     .addCase(fetchTodos.pending, (state, action) => {
@@ -60,6 +74,7 @@ export const {
   allTodosCompleted,
   completedTodosCleared,
   todoAdded,
+  clearTodos,
 } = todosSlice.actions
 
 export default todosSlice.reducer

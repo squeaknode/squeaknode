@@ -8,7 +8,7 @@ import Loader from '../../components/Loader'
 
 
 
-import { selectTodos, selectTodoIds, selectLastTodo } from './todosSlice'
+import { clearTodos, selectTodos, selectTodoIds, selectLastTodo } from './todosSlice'
 
 import { fetchTodos } from './todosSlice'
 import store from '../../store'
@@ -26,6 +26,7 @@ const TodoList = () => {
       // actions.getSqueaks({lastSqueak: null})
       // reloadSqueaks();
       console.log('fetchTodos');
+      dispatch(clearTodos());
       dispatch(fetchTodos(null));
   }, [])
 
