@@ -201,16 +201,18 @@ export const axiosBaseQuery =
   async ({ url, req, deser }) => {
     try {
       const data = req.serializeBinary();
-      const result = await axios({ url: web_host_port + url, responseType: 'arraybuffer', method: 'post', data })
-      const deserRes = deser(result.data);
+      // const result = await axios({ url: web_host_port + url, responseType: 'arraybuffer', method: 'post', data })
+      const result = await fetch(web_host_port + url, {
+        method: 'post',
+        body: data,
+      });
+      if (!result.ok) { throw result; }
+      const buf = await result.arrayBuffer();
+      const deserRes = deser(buf);
       return deserRes;
     } catch (axiosError) {
-      console.log('got error');
-      console.log(axiosError);
-      let err = axiosError
-      return {
-        error: { status: err.response?.status, data: err.response?.data },
-      }
+      const errorText = await axiosError.text();
+      throw errorText;
     }
   }
 

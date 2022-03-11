@@ -86,9 +86,10 @@ const MakeSqueak = (props) => {
         dispatch(setMakeSqueak(values))
           .then(unwrapResult)
           .then((squeakHash) => {
-            // do additional work
-            console.log(squeakHash);
             props.history.push(`/app/squeak/${squeakHash}`);
+          })
+          .catch((err) => {
+            alert(err.message);
           });
         squeakT.current = ''
         setSqueakText('')
