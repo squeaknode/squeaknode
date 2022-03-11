@@ -26,6 +26,8 @@ import {
   fetchAncestorSqueaks,
   fetchReplySqueaks,
   clearAll,
+  setLikeSqueak,
+  setUnlikeSqueak,
 } from './squeakSlice'
 import store from '../../store'
 
@@ -87,13 +89,13 @@ const Squeak = (props) => {
   }
 
   const unlikeSqueak = (id) => {
-      // TODO: unlike
-      // actions.unlikeSqueak(id)
+    console.log('Clicked like');
+    dispatch(setUnlikeSqueak(props.id));
   }
 
   const likeSqueak = (id) => {
-      // TODO: like
-      // actions.likeSqueak(id)
+      console.log('Clicked like');
+      dispatch(setLikeSqueak(props.id));
   }
 
   const deleteSqueak = (id) => {

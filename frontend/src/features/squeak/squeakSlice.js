@@ -9,6 +9,8 @@ import {
   getSqueak,
   getAncestorSqueaks,
   getReplySqueaks,
+  likeSqueak,
+  unlikeSqueak,
 } from '../../api/client'
 
 const squeakAdapter = createEntityAdapter()
@@ -57,6 +59,24 @@ export const fetchReplySqueaks = createAsyncThunk(
   }
 )
 
+export const setLikeSqueak = createAsyncThunk(
+  'squeak/setLikeSqueak',
+  async (squeakHash) => {
+    console.log('Liking squeak');
+    const response = await likeSqueak(squeakHash);
+    return response;
+  }
+)
+
+export const setUnlikeSqueak = createAsyncThunk(
+  'squeak/setUnlikeSqueak',
+  async (squeakHash) => {
+    console.log('Unliking squeak');
+    const response = await unlikeSqueak(squeakHash);
+    return response;
+  }
+)
+
 
 const squeakSlice = createSlice({
   name: 'squeak',
@@ -100,6 +120,15 @@ const squeakSlice = createSlice({
       state.replySqueaks = replySqueaks;
       state.replySqueaksStatus = 'idle';
     })
+    // .addCase(setLikeSqueak.pending, (state, action) => {
+    //   state.ancestorSqueaksStatus = 'loading'
+    // })
+    // .addCase(setLikeSqueak.fulfilled, (state, action) => {
+    //   console.log(action);
+    //   const ancestorSqueaks = action.payload;
+    //   state.ancestorSqueaks = ancestorSqueaks;
+    //   state.ancestorSqueaksStatus = 'idle';
+    // })
   },
 })
 

@@ -269,3 +269,27 @@ export const getReplySqueaks = (squeakHash, limit, lastSqueak) => {
       deser: deser,
     });
 }
+
+export const likeSqueak = (squeakHash) => {
+    console.log('Calling likeSqueak');
+    const request = new LikeSqueakRequest();
+    request.setSqueakHash(squeakHash);
+    const deser = LikeSqueakReply.deserializeBinary;
+    return axiosBaseQuery({
+      url: '/likesqueak',
+      req: request,
+      deser: deser,
+    });
+}
+
+export const unlikeSqueak = (squeakHash) => {
+    console.log('Calling unlikeSqueak');
+    const request = new UnlikeSqueakRequest();
+    request.setSqueakHash(squeakHash);
+    const deser = UnlikeSqueakReply.deserializeBinary;
+    return axiosBaseQuery({
+      url: '/unlikesqueak',
+      req: request,
+      deser: deser,
+    });
+}
