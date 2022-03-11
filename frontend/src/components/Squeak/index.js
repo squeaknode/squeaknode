@@ -1,5 +1,5 @@
 import React from 'react'
-import { withRouter, useHistory , Link } from 'react-router-dom'
+import { withRouter , Link } from 'react-router-dom'
 import './style.scss'
 import Squeak from '../../features/squeak/Squeak'
 

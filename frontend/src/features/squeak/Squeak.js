@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { withRouter, useHistory , Link } from 'react-router-dom'
+import { withRouter , Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
 import Select from 'react-select'
@@ -57,8 +57,6 @@ const Squeak = (props) => {
   const [offer, setOffer] = useState(null)
 
 
-  let history = useHistory();
-
   const replySqueaksLimit = 10;
 
   useEffect(() => {
@@ -91,7 +89,7 @@ const Squeak = (props) => {
   }
 
   const goBack = () => {
-    history.goBack()
+    props.history.goBack()
   }
 
   const resqueak = (id) => {
@@ -375,4 +373,4 @@ const Squeak = (props) => {
   </>
 }
 
-export default Squeak
+export default withRouter(Squeak)
