@@ -120,15 +120,6 @@ const squeakSlice = createSlice({
       state.replySqueaks = replySqueaks;
       state.replySqueaksStatus = 'idle';
     })
-    // .addCase(setLikeSqueak.pending, (state, action) => {
-    //   state.ancestorSqueaksStatus = 'loading'
-    // })
-    // .addCase(setLikeSqueak.fulfilled, (state, action) => {
-    //   console.log(action);
-    //   const ancestorSqueaks = action.payload;
-    //   state.ancestorSqueaks = ancestorSqueaks;
-    //   state.ancestorSqueaksStatus = 'idle';
-    // })
   },
 })
 
