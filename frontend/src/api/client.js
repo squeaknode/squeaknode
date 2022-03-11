@@ -253,3 +253,19 @@ export const getAncestorSqueaks = (squeakHash) => {
       deser: deser,
     });
 }
+
+export const getReplySqueaks = (squeakHash, limit, lastSqueak) => {
+    console.log('Calling getAncestorSqueaks');
+    const request = new GetReplySqueakDisplaysRequest();
+    request.setSqueakHash(squeakHash);
+    request.setLimit(limit);
+    if (lastSqueak) {
+      request.setLastEntry(lastSqueak);
+    }
+    const deser = GetReplySqueakDisplaysReply.deserializeBinary;
+    return axiosBaseQuery({
+      url: '/getreplysqueakdisplays',
+      req: request,
+      deser: deser,
+    });
+}

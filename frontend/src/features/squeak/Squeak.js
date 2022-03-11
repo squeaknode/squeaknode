@@ -15,15 +15,25 @@ import Loader from '../../components/Loader'
 import MakeSqueak from '../../components/MakeSqueak'
 
 
-import { selectCurrentSqueak, selectAncestorSqueaks } from './squeakSlice'
+import {
+  selectCurrentSqueak,
+  selectAncestorSqueaks,
+  selectReplySqueaks,
+} from './squeakSlice'
 
-import { fetchSqueak, fetchAncestorSqueaks, clearAll } from './squeakSlice'
+import {
+  fetchSqueak,
+  fetchAncestorSqueaks,
+  fetchReplySqueaks,
+  clearAll,
+} from './squeakSlice'
 import store from '../../store'
 
 
 const Squeak = (props) => {
   const currentSqueak = useSelector(selectCurrentSqueak);
   const ancestorSqueaks = useSelector(selectAncestorSqueaks);
+  const replySqueaks = useSelector(selectReplySqueaks);
   const loadingCurrentSqueakStatus = useSelector((state) => state.squeak.currentSqueakStatus)
   const loadingAncestorSqueaksStatus = useSelector((state) => state.squeak.ancestorSqueaksStatus)
   const dispatch = useDispatch();
@@ -35,6 +45,8 @@ const Squeak = (props) => {
 
   let history = useHistory();
 
+  const replySqueaksLimit = 10;
+
   useEffect(() => {
       window.scrollTo(0, 0)
       // actions.getSqueaks({lastSqueak: null})
@@ -43,6 +55,7 @@ const Squeak = (props) => {
       // dispatch(clearAll());
       dispatch(fetchSqueak(props.id));
       dispatch(fetchAncestorSqueaks(props.id));
+      dispatch(fetchReplySqueaks({squeakHash: props.id, limit: 9, lastSqueak: null}));
   }, [props.id])
 
   const toggleModal = (e, type) => {
@@ -124,7 +137,7 @@ const Squeak = (props) => {
 
   // const ancestorSqueaks = [];
 
-  const replySqueaks = [];
+  // const replySqueaks = [];
 
   const squeakOffers = [];
 

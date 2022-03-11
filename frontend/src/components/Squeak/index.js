@@ -27,13 +27,13 @@ const SqueakPage = (props) => {
     const [offer, setOffer] = useState(null)
 
 
-    useEffect(()=>{
-        window.scrollTo(0, 0)
-        actions.getSqueak(props.match.params.id)
-        actions.getAncestorSqueaks(props.match.params.id)
-        actions.getReplySqueaks(props.match.params.id)
-        actions.getNetwork()
-    }, [props.match.params.id])
+    // useEffect(()=>{
+    //     window.scrollTo(0, 0)
+    //     actions.getSqueak(props.match.params.id)
+    //     actions.getAncestorSqueaks(props.match.params.id)
+    //     actions.getReplySqueaks(props.match.params.id)
+    //     actions.getNetwork()
+    // }, [props.match.params.id])
     var image = new Image()
 
     let info

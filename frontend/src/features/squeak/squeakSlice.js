@@ -4,7 +4,12 @@ import {
   createAsyncThunk,
   createEntityAdapter,
 } from '@reduxjs/toolkit'
-import { client, getSqueak, getAncestorSqueaks } from '../../api/client'
+import {
+  client,
+  getSqueak,
+  getAncestorSqueaks,
+  getReplySqueaks,
+} from '../../api/client'
 import { StatusFilters } from '../filters/filtersSlice'
 
 const todosAdapter = createEntityAdapter()
@@ -14,6 +19,7 @@ const initialState = {
   currentSqueak: null,
   ancestorSqueaksStatus: 'idle',
   ancestorSqueaks: [],
+  replySqueaksStatus: 'idle',
   replySqueaks: [],
 }
 
@@ -32,6 +38,22 @@ export const fetchAncestorSqueaks = createAsyncThunk(
   async (squeakHash) => {
     console.log('Fetching ancestor squeaks');
     const response = await getAncestorSqueaks(squeakHash);
+    return response.getSqueakDisplayEntriesList();
+  }
+)
+
+export const fetchReplySqueaks = createAsyncThunk(
+  'squeak/fetchReplySqueaks',
+  async (values) => {
+    console.log('Fetching reply squeaks');
+    console.log(values.squeakHash);
+    console.log(values.limit);
+    console.log(values.lastSqueak);
+    const response = await getReplySqueaks(
+      values.squeakHash,
+      values.limit,
+      values.lastSqueak,
+    );
     return response.getSqueakDisplayEntriesList();
   }
 )
@@ -70,6 +92,15 @@ const squeakSlice = createSlice({
       state.ancestorSqueaks = ancestorSqueaks;
       state.ancestorSqueaksStatus = 'idle';
     })
+    .addCase(fetchReplySqueaks.pending, (state, action) => {
+      state.replySqueaksStatus = 'loading'
+    })
+    .addCase(fetchReplySqueaks.fulfilled, (state, action) => {
+      console.log(action);
+      const replySqueaks = action.payload;
+      state.replySqueaks = replySqueaks;
+      state.replySqueaksStatus = 'idle';
+    })
   },
 })
 
@@ -82,3 +113,5 @@ export default squeakSlice.reducer
 export const selectCurrentSqueak = state => state.squeak.currentSqueak
 
 export const selectAncestorSqueaks = state => state.squeak.ancestorSqueaks
+
+export const selectReplySqueaks = state => state.squeak.replySqueaks
