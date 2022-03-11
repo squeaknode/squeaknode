@@ -10,7 +10,6 @@ import {
   getAncestorSqueaks,
   getReplySqueaks,
 } from '../../api/client'
-import { StatusFilters } from '../filters/filtersSlice'
 
 const squeakAdapter = createEntityAdapter()
 

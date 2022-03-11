@@ -5,7 +5,6 @@ import {
   createEntityAdapter,
 } from '@reduxjs/toolkit'
 import { client, getTimelineSqueaks } from '../../api/client'
-import { StatusFilters } from '../filters/filtersSlice'
 
 const timelineAdapter = createEntityAdapter()
 
