@@ -90,7 +90,6 @@ const MakeSqueak = (props) => {
 
     const author = props.replyToSqueak && props.replyToSqueak.getAuthor();
 
-    console.log(makeSqueakStatus);
 
     return (
       <>
