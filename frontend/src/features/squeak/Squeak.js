@@ -17,18 +17,22 @@ import MakeSqueak from '../../components/MakeSqueak'
 
 import {
   selectCurrentSqueak,
-  selectAncestorSqueaks,
+  selectCurrentSqueakStatus,
   selectReplySqueaks,
 } from './squeakSlice'
-
 import {
   fetchSqueak,
-  fetchAncestorSqueaks,
   fetchReplySqueaks,
   clearAll,
   setLikeSqueak,
   setUnlikeSqueak,
 } from './squeakSlice'
+import {
+  selectAncestorSqueaks,
+  selectAncestorSqueaksStatus,
+  fetchAncestorSqueaks,
+  clearAncestors,
+} from './ancestorSqueaksSlice'
 import store from '../../store'
 
 
@@ -36,8 +40,8 @@ const Squeak = (props) => {
   const currentSqueak = useSelector(selectCurrentSqueak);
   const ancestorSqueaks = useSelector(selectAncestorSqueaks);
   const replySqueaks = useSelector(selectReplySqueaks);
-  const loadingCurrentSqueakStatus = useSelector((state) => state.squeak.currentSqueakStatus)
-  const loadingAncestorSqueaksStatus = useSelector((state) => state.squeak.ancestorSqueaksStatus)
+  const loadingCurrentSqueakStatus = useSelector(selectCurrentSqueakStatus)
+  const loadingAncestorSqueaksStatus = useSelector(selectAncestorSqueaksStatus)
   const loadingReplySqueaksStatus = useSelector((state) => state.squeak.replySqueaksStatus)
   const dispatch = useDispatch();
 
@@ -151,6 +155,8 @@ const Squeak = (props) => {
   }
 
   const network = 'testnet';
+
+  console.log(ancestorSqueaks);
 
 
     const squeak = currentSqueak;

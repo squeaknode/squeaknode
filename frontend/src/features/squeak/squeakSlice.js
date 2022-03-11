@@ -7,7 +7,6 @@ import {
 import {
   client,
   getSqueak,
-  getAncestorSqueaks,
   getReplySqueaks,
   likeSqueak,
   unlikeSqueak,
@@ -18,8 +17,6 @@ const squeakAdapter = createEntityAdapter()
 const initialState = {
   currentSqueakStatus: 'idle',
   currentSqueak: null,
-  ancestorSqueaksStatus: 'idle',
-  ancestorSqueaks: [],
   replySqueaksStatus: 'idle',
   replySqueaks: [],
 }
@@ -31,15 +28,6 @@ export const fetchSqueak = createAsyncThunk(
     console.log('Fetching squeak');
     const response = await getSqueak(squeakHash);
     return response.getSqueakDisplayEntry();
-  }
-)
-
-export const fetchAncestorSqueaks = createAsyncThunk(
-  'squeak/fetchAncestorSqueaks',
-  async (squeakHash) => {
-    console.log('Fetching ancestor squeaks');
-    const response = await getAncestorSqueaks(squeakHash);
-    return response.getSqueakDisplayEntriesList();
   }
 )
 
@@ -88,8 +76,6 @@ const squeakSlice = createSlice({
       console.log('Clear squeak and other data.');
       state.currentSqueakStatus = 'idle';
       state.currentSqueak = null;
-      state.ancestorSqueaksStatus = 'idle';
-      state.ancestorSqueaks = []
       state.replySqueaks = [];
     },
   },
@@ -103,15 +89,6 @@ const squeakSlice = createSlice({
       const newSqueak = action.payload;
       state.currentSqueak = newSqueak;
       state.currentSqueakStatus = 'idle';
-    })
-    .addCase(fetchAncestorSqueaks.pending, (state, action) => {
-      state.ancestorSqueaksStatus = 'loading'
-    })
-    .addCase(fetchAncestorSqueaks.fulfilled, (state, action) => {
-      console.log(action);
-      const ancestorSqueaks = action.payload;
-      state.ancestorSqueaks = ancestorSqueaks;
-      state.ancestorSqueaksStatus = 'idle';
     })
     .addCase(fetchReplySqueaks.pending, (state, action) => {
       state.replySqueaksStatus = 'loading'
@@ -145,6 +122,6 @@ export default squeakSlice.reducer
 
 export const selectCurrentSqueak = state => state.squeak.currentSqueak
 
-export const selectAncestorSqueaks = state => state.squeak.ancestorSqueaks
+export const selectCurrentSqueakStatus = state => state.squeak.currentSqueakStatus
 
 export const selectReplySqueaks = state => state.squeak.replySqueaks
