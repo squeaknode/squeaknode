@@ -52,6 +52,7 @@ const makeSqueakSlice = createSlice({
     })
     .addCase(setMakeSqueak.fulfilled, (state, action) => {
       console.log('setMakeSqueak fulfilled');
+      console.log(action);
       const newSqueakHash = action.payload;
       state.makeSqueakStatus = 'idle';
       console.log('Go to new squeak');

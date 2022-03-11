@@ -1,4 +1,7 @@
 import React, { useEffect, useState, useContext, useRef } from 'react'
+import { withRouter } from 'react-router-dom'
+import { unwrapResult } from '@reduxjs/toolkit'
+
 import { StoreContext } from '../../store/store'
 import axios from 'axios'
 import moment from 'moment'
@@ -75,12 +78,18 @@ const MakeSqueak = (props) => {
             description: squeakText,
             replyTo: props.replyToSqueak ? props.replyToSqueak.getSqueakHash() : null,
             hasRecipient: null,
-            recipientProfileId: -1
+            recipientProfileId: -1,
         }
         // TODO: use makesqueak slice
         // actions.squeak(values)
         console.log('makeSqueak');
-        dispatch(setMakeSqueak(values));
+        dispatch(setMakeSqueak(values))
+          .then(unwrapResult)
+          .then((squeakHash) => {
+            // do additional work
+            console.log(squeakHash);
+            props.history.push(`/app/squeak/${squeakHash}`);
+          });
         squeakT.current = ''
         setSqueakText('')
         if (props.submittedCallback) {
@@ -165,4 +174,4 @@ const MakeSqueak = (props) => {
     )
 }
 
-export default MakeSqueak
+export default withRouter(MakeSqueak)
