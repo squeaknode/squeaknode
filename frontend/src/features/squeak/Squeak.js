@@ -18,11 +18,7 @@ import MakeSqueak from '../../components/MakeSqueak'
 import {
   selectCurrentSqueak,
   selectCurrentSqueakStatus,
-  selectReplySqueaks,
-} from './squeakSlice'
-import {
   fetchSqueak,
-  fetchReplySqueaks,
   clearAll,
   setLikeSqueak,
   setUnlikeSqueak,
@@ -33,6 +29,12 @@ import {
   fetchAncestorSqueaks,
   clearAncestors,
 } from './ancestorSqueaksSlice'
+import {
+  selectReplySqueaks,
+  selectReplySqueaksStatus,
+  fetchReplySqueaks,
+  clearReplies,
+} from './replySqueaksSlice'
 import store from '../../store'
 
 

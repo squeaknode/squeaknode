@@ -3,6 +3,7 @@ import { configureStore } from '@reduxjs/toolkit'
 import timelineReducer from './features/timeline/timelineSlice'
 import squeakReducer from './features/squeak/squeakSlice'
 import ancestorSqueaksReducer from './features/squeak/ancestorSqueaksSlice'
+import replySqueaksReducer from './features/squeak/replySqueaksSlice'
 
 const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ const store = configureStore({
     timeline: timelineReducer,
     squeak: squeakReducer,
     ancestorSqueaks: ancestorSqueaksReducer,
+    replySqueaks: replySqueaksReducer,
   },
 })
 
