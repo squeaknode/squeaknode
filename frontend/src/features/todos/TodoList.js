@@ -3,8 +3,12 @@ import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
 
 import TodoListItem from './TodoListItem'
+import SqueakCard from '../../components/SqueakCard'
+import Loader from '../../components/Loader'
 
-import { selectTodoIds, selectLastTodo } from './todosSlice'
+
+
+import { selectTodos, selectTodoIds, selectLastTodo } from './todosSlice'
 
 import { fetchTodos } from './todosSlice'
 import store from '../../store'
@@ -12,6 +16,7 @@ import store from '../../store'
 
 const TodoList = () => {
   const todoIds = useSelector(selectTodoIds)
+  const todos = useSelector(selectTodos);
   const loadingStatus = useSelector((state) => state.todos.status)
   const lastSqueak = useSelector(selectLastTodo)
   const dispatch = useDispatch()
@@ -19,23 +24,23 @@ const TodoList = () => {
 
   console.log(todoIds);
 
-  if (loadingStatus === 'loading') {
-    return (
-      <div className="todo-list">
-        <div className="loader" />
-      </div>
-    )
-  }
-
-  const renderedListItems = todoIds.map((todoId) => {
-    return <TodoListItem key={todoId} id={todoId} />
+  const renderedListItems = todos.map((todo) => {
+    return <SqueakCard squeak={todo} key={todo.getSqueakHash()} id={todo.getSqueakHash()} user={todo.getAuthor()} />
   })
 
   return <>
           <ul className="todo-list">{renderedListItems}</ul>
-          <button onClick={() => dispatch(fetchTodos(lastSqueak))}>
+
+          {loadingStatus === 'loading' ?
+          <div className="todo-list">
+            <Loader />
+          </div>
+          :
+          <div onClick={() => dispatch(fetchTodos(lastSqueak))} className='squeak-btn-side squeak-btn-active'>
             LOAD MORE
-          </button>
+          </div>
+          }
+
          </>
 }
 

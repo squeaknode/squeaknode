@@ -29,7 +29,7 @@ const DefaultContainer = withRouter(({ history }) => {
           <Redirect to="/app/home" />
         </Route>
         <Route path="/app/home" exact>
-          <TodoList />
+          <Home />
         </Route>
         <Route path="/app/search" exact>
           <Search />

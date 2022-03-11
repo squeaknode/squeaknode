@@ -9,6 +9,8 @@ import { API_URL } from '../../config'
 import Loader from '../Loader'
 import SqueakCard from '../SqueakCard'
 import MakeSqueak from '../MakeSqueak'
+import TodoList from '../../features/todos/TodoList'
+
 
 
 const Home = () => {
@@ -48,18 +50,8 @@ const Home = () => {
             </div>
             {session ? <MakeSqueak /> : null }
             <div className="Squeak-input-divider"></div>
-            {squeaks.map(t => {
-                return <SqueakCard squeak={t} key={t.getSqueakHash()} id={t.getSqueakHash()} user={t.getAuthor()} />
-            })}
 
-            {/* TODO: fix get loading state by doing this: https://medium.com/stashaway-engineering/react-redux-tips-better-way-to-handle-loading-flags-in-your-reducers-afda42a804c6 */}
-            {squeaks.length > 0 &&
-              <>
-              {state.loading ? <Loader /> : <div onClick={() => getMoreSqueaks()} className='squeak-btn-side squeak-btn-active'>
-                  Load more
-              </div>}
-              </>
-            }
+            <TodoList />
 
         </div>
     )
