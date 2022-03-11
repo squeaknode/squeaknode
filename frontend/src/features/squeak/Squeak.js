@@ -23,7 +23,7 @@ import store from '../../store'
 
 const Squeak = (props) => {
   const currentSqueak = useSelector(selectCurrentSqueak);
-  const loadingCurrentSqueakStatus = useSelector((state) => state.todos.currentSqueakStatus)
+  const loadingCurrentSqueakStatus = useSelector((state) => state.squeak.currentSqueakStatus)
   const dispatch = useDispatch()
 
   const [modalOpen, setModalOpen] = useState(false)
@@ -133,10 +133,14 @@ const Squeak = (props) => {
 
   const network = 'testnet';
 
+  console.log(loadingCurrentSqueakStatus);
 
     const squeak = currentSqueak;
     const author = currentSqueak && currentSqueak.getAuthor();
     const renderedCurrentSqueak =
+        <>
+            {loadingCurrentSqueakStatus === 'loading' ?
+               <Loader /> :
              <div className={squeak ? "squeak-body-wrapper" : "squeak-body-wrapper missing-squeak"}>
                 {squeak ?
                 <>
@@ -159,10 +163,7 @@ const Squeak = (props) => {
                     </div>
                 </div>
 
-                {loadingCurrentSqueakStatus === 'loading' ?
-                   <Loader /> :
-                   <>
-                   {squeak.getContentStr() ?
+                {squeak.getContentStr() ?
                      <div className="squeak-content">
                          {squeak.getContentStr()}
                      </div> :
@@ -173,10 +174,7 @@ const Squeak = (props) => {
                              <span>Unlock</span>
                          </div>
                      </div>
-                   }
-                   </>
                 }
-
 
 
                 <div className="squeak-date">
@@ -232,6 +230,8 @@ const Squeak = (props) => {
                 </div>
               }
             </div>
+          }
+        </>
 
   return <>
 
