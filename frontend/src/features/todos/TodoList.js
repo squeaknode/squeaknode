@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
 
@@ -20,6 +20,14 @@ const TodoList = () => {
   const loadingStatus = useSelector((state) => state.todos.status)
   const lastSqueak = useSelector(selectLastTodo)
   const dispatch = useDispatch()
+
+  useEffect(() => {
+      window.scrollTo(0, 0)
+      // actions.getSqueaks({lastSqueak: null})
+      // reloadSqueaks();
+      console.log('fetchTodos');
+      dispatch(fetchTodos(null));
+  }, [])
 
 
   console.log(todoIds);
