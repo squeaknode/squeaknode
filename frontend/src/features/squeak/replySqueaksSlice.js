@@ -69,4 +69,4 @@ export default replySqueaksSlice.reducer
 
 export const selectReplySqueaks = state => state.replySqueaks.replySqueaks
 
-export const selectAncestorSqueaksStatus = state => state.replySqueaks.replySqueaksStatus
+export const selectReplySqueaksStatus = state => state.replySqueaks.replySqueaksStatus
