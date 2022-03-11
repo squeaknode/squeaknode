@@ -7,7 +7,6 @@ import {
 import {
   client,
   getSqueak,
-  getReplySqueaks,
   likeSqueak,
   unlikeSqueak,
 } from '../../api/client'
@@ -17,8 +16,6 @@ const squeakAdapter = createEntityAdapter()
 const initialState = {
   currentSqueakStatus: 'idle',
   currentSqueak: null,
-  replySqueaksStatus: 'idle',
-  replySqueaks: [],
 }
 
 // Thunk functions
@@ -28,22 +25,6 @@ export const fetchSqueak = createAsyncThunk(
     console.log('Fetching squeak');
     const response = await getSqueak(squeakHash);
     return response.getSqueakDisplayEntry();
-  }
-)
-
-export const fetchReplySqueaks = createAsyncThunk(
-  'squeak/fetchReplySqueaks',
-  async (values) => {
-    console.log('Fetching reply squeaks');
-    console.log(values.squeakHash);
-    console.log(values.limit);
-    console.log(values.lastSqueak);
-    const response = await getReplySqueaks(
-      values.squeakHash,
-      values.limit,
-      values.lastSqueak,
-    );
-    return response.getSqueakDisplayEntriesList();
   }
 )
 
@@ -76,7 +57,6 @@ const squeakSlice = createSlice({
       console.log('Clear squeak and other data.');
       state.currentSqueakStatus = 'idle';
       state.currentSqueak = null;
-      state.replySqueaks = [];
     },
   },
   extraReducers: (builder) => {
@@ -89,15 +69,6 @@ const squeakSlice = createSlice({
       const newSqueak = action.payload;
       state.currentSqueak = newSqueak;
       state.currentSqueakStatus = 'idle';
-    })
-    .addCase(fetchReplySqueaks.pending, (state, action) => {
-      state.replySqueaksStatus = 'loading'
-    })
-    .addCase(fetchReplySqueaks.fulfilled, (state, action) => {
-      console.log(action);
-      const replySqueaks = action.payload;
-      state.replySqueaks = replySqueaks;
-      state.replySqueaksStatus = 'idle';
     })
     .addCase(setLikeSqueak.fulfilled, (state, action) => {
       console.log(action);
@@ -123,5 +94,3 @@ export default squeakSlice.reducer
 export const selectCurrentSqueak = state => state.squeak.currentSqueak
 
 export const selectCurrentSqueakStatus = state => state.squeak.currentSqueakStatus
-
-export const selectReplySqueaks = state => state.squeak.replySqueaks
