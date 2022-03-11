@@ -122,19 +122,19 @@ export const applyMiddleware = dispatch => action => {
               });
             });
 
-        case types.GET_TWEETS:
-            // return axios.get(`${API_URL}/squeak`, action.payload)
-            // .then(res=> {
-            //   dispatch({ type: types.GET_TWEETS, payload: res.data })
-            // })
-            // .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
-
-            let lastSqueak = action.payload.lastSqueak
-	          return getTimelineSqueakDisplaysRequest(10, lastSqueak, (resp) => {
-                let payload = {"squeaks": resp.getSqueakDisplayEntriesList() };
-	              dispatch({ type: types.GET_TWEETS, payload: payload })
-	          });
-            // TODO: handle error response
+        // case types.GET_TWEETS:
+        //     // return axios.get(`${API_URL}/squeak`, action.payload)
+        //     // .then(res=> {
+        //     //   dispatch({ type: types.GET_TWEETS, payload: res.data })
+        //     // })
+        //     // .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
+        //
+        //     let lastSqueak = action.payload.lastSqueak
+	      //     return getTimelineSqueakDisplaysRequest(10, lastSqueak, (resp) => {
+        //         let payload = {"squeaks": resp.getSqueakDisplayEntriesList() };
+	      //         dispatch({ type: types.GET_TWEETS, payload: payload })
+	      //     });
+        //     // TODO: handle error response
 
         case types.BUY_TWEET:
                 let buyOfferId = action.payload.offerId
@@ -150,9 +150,9 @@ export const applyMiddleware = dispatch => action => {
                   },
               );
 
-        case types.CLEAR_TWEETS:
-            dispatch({ type: types.CLEAR_TWEETS, payload: {}})
-            return;
+        // case types.CLEAR_TWEETS:
+        //     dispatch({ type: types.CLEAR_TWEETS, payload: {}})
+        //     return;
 
         case types.GET_TWEET:
             // return axios.get(`${API_URL}/squeak/${action.payload}`, action.payload)

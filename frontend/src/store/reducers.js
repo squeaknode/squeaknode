@@ -5,7 +5,7 @@ const initialState = {
     session: true,
     loggedin: false,
     network: null,
-    squeaks: [],
+    // squeaks: [],
     squeak: null,
     ancestorSqueaks: [],
     replySqueaks: [],
@@ -156,14 +156,14 @@ const reducer = (state = initialState, action) => {
         //     }
         //     return {...state, ...{account:account_likes}, ...{squeaks:squeak_likes}, ...{user: user_likes}, ...{squeak: Ssqueak_likes}}
 
-        case type.GET_TWEETS:
-            let timelineT = state.squeaks
-            let newSqueaks = action.payload.squeaks
-            newSqueaks.forEach(t => timelineT.push(t));
-            return {...state, loading: false, error: false}
+        // case type.GET_TWEETS:
+        //     let timelineT = state.squeaks
+        //     let newSqueaks = action.payload.squeaks
+        //     newSqueaks.forEach(t => timelineT.push(t));
+        //     return {...state, loading: false, error: false}
 
-        case type.CLEAR_TWEETS:
-            return {...state, ...{squeaks: []}}
+        // case type.CLEAR_TWEETS:
+        //     return {...state, ...{squeaks: []}}
 
         case type.GET_TWEET:
             return {...state, ...action.payload, loading: false, error: false}

@@ -23,13 +23,13 @@ export const useActions = (state, dispatch) => ({
     unlikeSqueak: data => {
         dispatch({type: types.UNLIKE_TWEET, payload: data})
     },
-    getSqueaks: data => {
-        dispatch({type: types.SET_STATE, payload: {loading: true}})
-        dispatch({type: types.GET_TWEETS, payload: data})
-    },
-    clearSqueaks: data => {
-        dispatch({type: types.CLEAR_TWEETS, payload: data})
-    },
+    // getSqueaks: data => {
+    //     dispatch({type: types.SET_STATE, payload: {loading: true}})
+    //     dispatch({type: types.GET_TWEETS, payload: data})
+    // },
+    // clearSqueaks: data => {
+    //     dispatch({type: types.CLEAR_TWEETS, payload: data})
+    // },
     getSqueak: data => {
         dispatch({type: types.SET_STATE, payload: {loading: true}})
         dispatch({type: types.GET_TWEET, payload: data})
