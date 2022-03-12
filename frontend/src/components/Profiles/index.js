@@ -13,6 +13,7 @@ import SigningProfiles from '../../features/profiles/SigningProfiles'
 import ContactProfiles from '../../features/profiles/ContactProfiles'
 import { setCreateSigningProfile } from '../../features/profiles/createSigningProfileSlice'
 import { setImportSigningProfile } from '../../features/profiles/importSigningProfileSlice'
+import { setCreateContactProfile } from '../../features/profiles/createContactProfileSlice'
 
 
 
@@ -90,7 +91,8 @@ const Profiles = (props) => {
     }
 
     const createContactProfile = () => {
-        actions.createContactProfile({profileName: newProfileName, pubkey: newProfilePubkey});
+        // actions.createContactProfile({profileName: newProfileName, pubkey: newProfilePubkey});
+        dispatch(setCreateContactProfile({profileName: newProfileName, pubkey: newProfilePubkey}));
         toggleContactProfileModal();
     }
 

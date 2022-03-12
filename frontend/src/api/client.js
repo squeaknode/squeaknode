@@ -386,3 +386,16 @@ export const importSigningProfile = (profileName, privateKey) => {
       deser: deser,
     });
 }
+
+export const createContactProfile = (profileName, pubkey) => {
+    console.log('Calling createContactProfile');
+    const request = new CreateContactProfileRequest();
+    request.setProfileName(profileName);
+    request.setPubkey(pubkey);
+    const deser = CreateContactProfileReply.deserializeBinary;
+    return baseRequest({
+      url: '/createcontactprofile',
+      req: request,
+      deser: deser,
+    });
+}
