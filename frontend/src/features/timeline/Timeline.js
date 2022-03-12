@@ -34,8 +34,6 @@ const Timeline = () => {
   }, [])
 
 
-  console.log(squeakIds);
-
   const renderedListItems = squeaks.map((squeak) => {
     return <SqueakCard squeak={squeak} key={squeak.getSqueakHash()} id={squeak.getSqueakHash()} user={squeak.getAuthor()} />
   })

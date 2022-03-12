@@ -23,7 +23,6 @@ const initialState = {
 export const fetchSigningProfiles = createAsyncThunk(
   'signingProfiles/fetchSigningProfiles',
   async (squeakHash) => {
-    console.log('Fetching signing profiles');
     const response = await getSigningProfiles();
     return response.getSqueakProfilesList();
   }
@@ -36,7 +35,6 @@ const signingProfilesSlice = createSlice({
   extraReducers: (builder) => {
     builder
     .addCase(fetchSigningProfiles.fulfilled, (state, action) => {
-      console.log(action);
       const signingProfiles = action.payload;
       state.signingProfiles = signingProfiles;
     })

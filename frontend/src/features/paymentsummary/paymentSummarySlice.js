@@ -18,7 +18,6 @@ export const fetchPaymentSummary = createAsyncThunk(
   async () => {
     console.log('Fetching paymentSummary');
     const response = await getPaymentSummary();
-    console.log(response);
     return response.getPaymentSummary();
   }
 )
@@ -31,7 +30,6 @@ const paymentSummarySlice = createSlice({
   extraReducers: (builder) => {
     builder
     .addCase(fetchPaymentSummary.fulfilled, (state, action) => {
-      console.log(action);
       const paymentSummary = action.payload;
       state.paymentSummary = paymentSummary;
     })

@@ -25,8 +25,6 @@ const PaymentSummary = (props) => {
   }, [])
 
 
-  console.log(paymentSummary);
-
   return (
       <>
           {paymentSummary ?
