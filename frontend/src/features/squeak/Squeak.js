@@ -18,7 +18,7 @@ import MakeSqueak from '../profiles/MakeSqueak'
 import {
   selectNetwork,
   fetchNetwork,
-} from './networkSlice'
+} from '../../features/network/networkSlice'
 import {
   selectCurrentSqueak,
   selectCurrentSqueakStatus,

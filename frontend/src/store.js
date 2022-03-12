@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit'
 
-import networkReducer from './features/squeak/networkSlice'
+import networkReducer from './features/network/networkSlice'
 import timelineReducer from './features/timeline/timelineSlice'
 import squeakReducer from './features/squeak/squeakSlice'
 import ancestorSqueaksReducer from './features/squeak/ancestorSqueaksSlice'
