@@ -158,7 +158,7 @@ const SERVER_PORT = process.env.REACT_APP_SERVER_PORT || window.location.port;
 
 export const web_host_port = `${window.location.protocol}//${window.location.hostname}:${SERVER_PORT}`;
 
-export const axiosBaseQuery =
+export const baseRequest =
   async ({ url, req, deser }) => {
     try {
       const data = req.serializeBinary();
@@ -181,7 +181,7 @@ export const getNetwork = () => {
     console.log('Calling getNetwork');
     const request = new GetNetworkRequest();
     const deser = GetNetworkReply.deserializeBinary;
-    return axiosBaseQuery({
+    return baseRequest({
       url: '/getnetwork',
       req: request,
       deser: deser,
@@ -196,7 +196,7 @@ export const getTimelineSqueaks = (limit, lastSqueak) => {
       request.setLastEntry(lastSqueak);
     }
     const deser = GetTimelineSqueakDisplaysReply.deserializeBinary;
-    return axiosBaseQuery({
+    return baseRequest({
       url: '/gettimelinesqueakdisplays',
       req: request,
       deser: deser,
@@ -208,7 +208,7 @@ export const getSqueak = (squeakHash) => {
     const request = new GetSqueakDisplayRequest();
     request.setSqueakHash(squeakHash);
     const deser = GetSqueakDisplayReply.deserializeBinary;
-    return axiosBaseQuery({
+    return baseRequest({
       url: '/getsqueakdisplay',
       req: request,
       deser: deser,
@@ -220,7 +220,7 @@ export const getAncestorSqueaks = (squeakHash) => {
     const request = new GetAncestorSqueakDisplaysRequest();
     request.setSqueakHash(squeakHash);
     const deser = GetAncestorSqueakDisplaysReply.deserializeBinary;
-    return axiosBaseQuery({
+    return baseRequest({
       url: '/getancestorsqueakdisplays',
       req: request,
       deser: deser,
@@ -236,7 +236,7 @@ export const getReplySqueaks = (squeakHash, limit, lastSqueak) => {
       request.setLastEntry(lastSqueak);
     }
     const deser = GetReplySqueakDisplaysReply.deserializeBinary;
-    return axiosBaseQuery({
+    return baseRequest({
       url: '/getreplysqueakdisplays',
       req: request,
       deser: deser,
@@ -248,7 +248,7 @@ export const likeSqueak = (squeakHash) => {
     const request = new LikeSqueakRequest();
     request.setSqueakHash(squeakHash);
     const deser = LikeSqueakReply.deserializeBinary;
-    return axiosBaseQuery({
+    return baseRequest({
       url: '/likesqueak',
       req: request,
       deser: deser,
@@ -260,7 +260,7 @@ export const unlikeSqueak = (squeakHash) => {
     const request = new UnlikeSqueakRequest();
     request.setSqueakHash(squeakHash);
     const deser = UnlikeSqueakReply.deserializeBinary;
-    return axiosBaseQuery({
+    return baseRequest({
       url: '/unlikesqueak',
       req: request,
       deser: deser,
@@ -276,7 +276,7 @@ export const makeSqueak = (profileId, content, replyTo, hasRecipient, recipientP
     request.setHasRecipient(hasRecipient);
     request.setRecipientProfileId(recipientProfileId);
     const deser = MakeSqueakReply.deserializeBinary;
-    return axiosBaseQuery({
+    return baseRequest({
       url: '/makesqueakrequest',
       req: request,
       deser: deser,
@@ -287,7 +287,7 @@ export const getSigningProfiles = () => {
     console.log('Calling getSigningProfiles');
     const request = new GetSigningProfilesRequest();
     const deser = GetSigningProfilesReply.deserializeBinary;
-    return axiosBaseQuery({
+    return baseRequest({
       url: '/getsigningprofiles',
       req: request,
       deser: deser,
