@@ -293,3 +293,14 @@ export const getSigningProfiles = () => {
       deser: deser,
     });
 }
+
+export const getPaymentSummary = () => {
+    console.log('Calling getPaymentSummary');
+    const request = new GetPaymentSummaryRequest();
+    const deser = GetPaymentSummaryReply.deserializeBinary;
+    return baseRequest({
+      url: '/getpaymentsummary',
+      req: request,
+      deser: deser,
+    });
+}

@@ -7,6 +7,7 @@ import ancestorSqueaksReducer from './features/squeak/ancestorSqueaksSlice'
 import replySqueaksReducer from './features/squeak/replySqueaksSlice'
 import makeSqueakReducer from './features/makesqueak/makeSqueakSlice'
 import signingProfilesReducer from './features/makesqueak/signingProfilesSlice'
+import paymentSummaryReducer from './features/paymentsummary/paymentSummarySlice'
 
 const store = configureStore({
   reducer: {
@@ -18,6 +19,7 @@ const store = configureStore({
     replySqueaks: replySqueaksReducer,
     makeSqueak: makeSqueakReducer,
     signingProfiles: signingProfilesReducer,
+    paymentSummary: paymentSummaryReducer,
   },
 })
 
