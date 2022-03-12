@@ -4,9 +4,9 @@ import {
   createAsyncThunk,
   createEntityAdapter,
 } from '@reduxjs/toolkit'
-import { client, getTimelineSqueaks, getSqueak, likeSqueak, unlikeSqueak } from '../../api/client'
+import { client, getSearchSqueaks, getSqueak, likeSqueak, unlikeSqueak } from '../../api/client'
 
-const timelineAdapter = createEntityAdapter()
+const searchAdapter = createEntityAdapter()
 
 const initialState = {
   status: 'idle',
@@ -14,16 +14,20 @@ const initialState = {
 }
 
 // Thunk functions
-export const fetchTimeline = createAsyncThunk(
-  'timeline/fetchTimeline',
-  async (lastSqueak) => {
-    const response = await getTimelineSqueaks(5, lastSqueak);
+export const fetchSearch = createAsyncThunk(
+  'search/fetchSearch',
+  async (values) => {
+    const response = await getSearchSqueaks(
+      values.searchText,
+      values.limit,
+      values.lastSqueak,
+    );
     return response.getSqueakDisplayEntriesList();
   }
 )
 
 export const setLikeSqueak = createAsyncThunk(
-  'timeline/setLikeSqueak',
+  'search/setLikeSqueak',
   async (squeakHash) => {
     await likeSqueak(squeakHash);
     const response = await getSqueak(squeakHash);
@@ -32,7 +36,7 @@ export const setLikeSqueak = createAsyncThunk(
 )
 
 export const setUnlikeSqueak = createAsyncThunk(
-  'timeline/setUnlikeSqueak',
+  'search/setUnlikeSqueak',
   async (squeakHash) => {
     await unlikeSqueak(squeakHash);
     const response = await getSqueak(squeakHash);
@@ -42,20 +46,20 @@ export const setUnlikeSqueak = createAsyncThunk(
 
 
 
-const timelineSlice = createSlice({
-  name: 'timeline',
+const searchSlice = createSlice({
+  name: 'search',
   initialState,
   reducers: {
-    clearTimeline(state, action) {
+    clearSearch(state, action) {
       state.entities = [];
     },
   },
   extraReducers: (builder) => {
     builder
-    .addCase(fetchTimeline.pending, (state, action) => {
+    .addCase(fetchSearch.pending, (state, action) => {
       state.status = 'loading'
     })
-    .addCase(fetchTimeline.fulfilled, (state, action) => {
+    .addCase(fetchSearch.fulfilled, (state, action) => {
       const newEntities = action.payload;
       state.entities = state.entities.concat(newEntities);
       state.status = 'idle'
@@ -74,26 +78,26 @@ const timelineSlice = createSlice({
 })
 
 export const {
-  clearTimeline,
-} = timelineSlice.actions
+  clearSearch,
+} = searchSlice.actions
 
-export default timelineSlice.reducer
+export default searchSlice.reducer
 
-export const selectTimelineSqueaks = state => state.timeline.entities
+export const selectSearchSqueaks = state => state.search.entities
 
-export const selectLastTimelineSqueak = createSelector(
-  selectTimelineSqueaks,
+export const selectLastSearchSqueak = createSelector(
+  selectSearchSqueaks,
   squeaks => squeaks.length > 0 && squeaks[squeaks.length - 1]
 )
 
-export const selectTimelineSqueakIds = createSelector(
+export const selectSearchSqueakIds = createSelector(
   // First, pass one or more "input selector" functions:
-  selectTimelineSqueaks,
+  selectSearchSqueaks,
   // Then, an "output selector" that receives all the input results as arguments
   // and returns a final result value
   squeaks => squeaks.map(squeak => squeak.getSqueakHash())
 )
 
-export const selectTimelineSqueakById = (state, squeakId) => {
-  return selectTimelineSqueaks(state).find(squeak => squeak.getSqueakHash() === squeakId)
+export const selectSearchSqueakById = (state, squeakId) => {
+  return selectSearchSqueaks(state).find(squeak => squeak.getSqueakHash() === squeakId)
 }

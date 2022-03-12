@@ -334,3 +334,19 @@ export const getReceivedPayments = (limit, lastReceivedPayment) => {
       deser: deser,
     });
 }
+
+export const getSearchSqueaks = (searchText, limit, lastSqueak) => {
+    console.log('Calling getSearchSqueaks');
+    const request = new GetSearchSqueakDisplaysRequest();
+    request.setSearchText(searchText);
+    request.setLimit(limit);
+    if (lastSqueak) {
+      request.setLastEntry(lastSqueak);
+    }
+    const deser = GetSearchSqueakDisplaysReply.deserializeBinary;
+    return baseRequest({
+      url: '/getsearchsqueakdisplays',
+      req: request,
+      deser: deser,
+    });
+}

@@ -10,6 +10,7 @@ import signingProfilesReducer from './features/makesqueak/signingProfilesSlice'
 import paymentSummaryReducer from './features/paymentsummary/paymentSummarySlice'
 import sentPaymentsReducer from './features/payments/sentPaymentsSlice'
 import receivedPaymentsReducer from './features/payments/receivedPaymentsSlice'
+import searchReducer from './features/search/searchSlice'
 
 const store = configureStore({
   reducer: {
@@ -24,6 +25,7 @@ const store = configureStore({
     paymentSummary: paymentSummaryReducer,
     sentPayments: sentPaymentsReducer,
     receivedPayments: receivedPaymentsReducer,
+    search: searchReducer,
   },
 })
 

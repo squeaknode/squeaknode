@@ -9,6 +9,8 @@ import { Link } from 'react-router-dom'
 import { API_URL } from '../../config'
 import Loader from '../Loader'
 import SqueakCard from '../SqueakCard'
+import SearchResults from '../../features/search/SearchResults'
+
 
 
 const Search = (props) => {
@@ -76,30 +78,7 @@ const Search = (props) => {
 
     return (
         <div className="Home-wrapper">
-            <div className="explore-header">
-            <div className="explore-search-wrapper">
-                <div className="explore-search-icon">
-                    <ICON_SEARCH/>
-                </div>
-                <div className="explore-search-input">
-                    <input value={searchText} onKeyDown={(e)=>searchOnEnter(e)} onChange={(e)=>changeSearchText(e.target.value)} placeholder="Search Squeaks" type="text" name="search"/>
-                </div>
-            </div>
-            </div>
-            <div className="Squeak-input-divider"></div>
-            {searchSqueaks.map(t => {
-                return <SqueakCard squeak={t} key={t.getSqueakHash()} id={t.getSqueakHash()} user={t.getAuthor()} />
-            })}
-
-            {/* TODO: fix get loading state by doing this: https://medium.com/stashaway-engineering/react-redux-tips-better-way-to-handle-loading-flags-in-your-reducers-afda42a804c6 */}
-            {searchSqueaks.length > 0 &&
-              <>
-              {state.loading ? <Loader /> : <div onClick={() => getMoreSqueaks()} className='squeak-btn-side squeak-btn-active'>
-                  Load more
-              </div>}
-              </>
-            }
-
+          <SearchResults />
         </div>
     )
 }
