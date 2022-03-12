@@ -737,58 +737,58 @@ export function getAddressSqueakDisplaysRequest(pubkey, limit, lastEntry, handle
 //   // });
 // }
 
-export function createContactProfileRequest(profileName, pubkey, handleResponse, handleErr) {
-  const request = new CreateContactProfileRequest();
-  request.setProfileName(profileName);
-  request.setPubkey(pubkey);
-  makeRequest(
-    'createcontactprofile',
-    request,
-    CreateContactProfileReply.deserializeBinary,
-    (response) => {
-      handleResponse(response);
-    },
-    handleErr,
-  );
-  // client.createContactProfile(request, {}, (err, response) => {
-  //   handleResponse(response);
-  // });
-}
+// export function createContactProfileRequest(profileName, pubkey, handleResponse, handleErr) {
+//   const request = new CreateContactProfileRequest();
+//   request.setProfileName(profileName);
+//   request.setPubkey(pubkey);
+//   makeRequest(
+//     'createcontactprofile',
+//     request,
+//     CreateContactProfileReply.deserializeBinary,
+//     (response) => {
+//       handleResponse(response);
+//     },
+//     handleErr,
+//   );
+//   // client.createContactProfile(request, {}, (err, response) => {
+//   //   handleResponse(response);
+//   // });
+// }
 
-export function createSigningProfileRequest(profileName, handleResponse, handleErr) {
-  const request = new CreateSigningProfileRequest();
-  request.setProfileName(profileName);
-  makeRequest(
-    'createsigningprofile',
-    request,
-    CreateSigningProfileReply.deserializeBinary,
-    (response) => {
-      handleResponse(response);
-    },
-    handleErr,
-  );
-  // client.createSigningProfile(request, {}, (err, response) => {
-  //   handleResponse(response);
-  // });
-}
+// export function createSigningProfileRequest(profileName, handleResponse, handleErr) {
+//   const request = new CreateSigningProfileRequest();
+//   request.setProfileName(profileName);
+//   makeRequest(
+//     'createsigningprofile',
+//     request,
+//     CreateSigningProfileReply.deserializeBinary,
+//     (response) => {
+//       handleResponse(response);
+//     },
+//     handleErr,
+//   );
+//   // client.createSigningProfile(request, {}, (err, response) => {
+//   //   handleResponse(response);
+//   // });
+// }
 
-export function importSigningProfileRequest(profileName, privateKey, handleResponse, handleErr) {
-  const request = new ImportSigningProfileRequest();
-  request.setProfileName(profileName);
-  request.setPrivateKey(privateKey);
-  makeRequest(
-    'importsigningprofile',
-    request,
-    ImportSigningProfileReply.deserializeBinary,
-    (response) => {
-      handleResponse(response);
-    },
-    handleErr,
-  );
-  // client.importSigningProfile(request, {}, (err, response) => {
-  //   handleResponse(response);
-  // });
-}
+// export function importSigningProfileRequest(profileName, privateKey, handleResponse, handleErr) {
+//   const request = new ImportSigningProfileRequest();
+//   request.setProfileName(profileName);
+//   request.setPrivateKey(privateKey);
+//   makeRequest(
+//     'importsigningprofile',
+//     request,
+//     ImportSigningProfileReply.deserializeBinary,
+//     (response) => {
+//       handleResponse(response);
+//     },
+//     handleErr,
+//   );
+//   // client.importSigningProfile(request, {}, (err, response) => {
+//   //   handleResponse(response);
+//   // });
+// }
 
 export function createPeerRequest(peerName, network, host, port, handleResponse) {
   const request = new CreatePeerRequest();
