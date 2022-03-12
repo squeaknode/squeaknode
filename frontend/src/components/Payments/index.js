@@ -8,6 +8,7 @@ import { getProfileImageSrcString } from '../../squeakimages/images';
 import Loader from '../Loader'
 import SqueakCard from '../SqueakCard'
 import SentPayments from '../../features/payments/SentPayments'
+import ReceivedPayments from '../../features/payments/ReceivedPayments'
 
 
 const Payments = (props) => {
@@ -107,28 +108,7 @@ const Payments = (props) => {
                 :
                 tab === 'Received Payments' ?
                   <>
-                  {receivedPayments.map(f=>{
-                    return <div onClick={()=>goToSqueak(f.getSqueakHash())} key={f.getPaymentHash()} className="search-result-wapper">
-                      <div className="search-user-details">
-                      <div className="search-user-warp">
-                      <div className="search-user-info">
-                      <div className="payment-price">{f.getPriceMsat() / 1000} sats</div>
-                      <div className="payment-squeak-hash"><b>Squeak Hash</b>: {f.getSqueakHash()}</div>
-                      <div className="payment-peer-address"><b>Peer</b>: {f.getPeerAddress().getHost()}:{f.getPeerAddress().getPort()}</div>
-                      <div className="payment-time">{moment(f.getTimeMs()).format("h:mm A · MMM D, YYYY")}</div>
-                      </div>
-                      </div>
-                    </div>
-                  </div>
-                  })}
-                  {/* TODO: fix get loading state by doing this: https://medium.com/stashaway-engineering/react-redux-tips-better-way-to-handle-loading-flags-in-your-reducers-afda42a804c6 */}
-                  {receivedPayments.length > 0 &&
-                      <>
-                      {state.loading ? <Loader /> : <div onClick={() => getMoreReceivedPayments()} className='squeak-btn-side squeak-btn-active'>
-                          Load more
-                      </div>}
-                      </>
-                  }
+                    <ReceivedPayments />
                   </>
                 : <div className="try-searching">
                         Nothing to see here ..

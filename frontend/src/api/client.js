@@ -319,3 +319,18 @@ export const getSentPayments = (limit, lastSentPayment) => {
       deser: deser,
     });
 }
+
+export const getReceivedPayments = (limit, lastReceivedPayment) => {
+    console.log('Calling getSentPayments');
+    const request = new GetReceivedPaymentsRequest();
+    request.setLimit(limit);
+    if (lastReceivedPayment) {
+      request.setLastReceivedPayment(lastReceivedPayment);
+    }
+    const deser = GetReceivedPaymentsReply.deserializeBinary;
+    return baseRequest({
+      url: '/getreceivedpayments',
+      req: request,
+      deser: deser,
+    });
+}
