@@ -7,8 +7,11 @@ import { getProfileImageSrcString } from '../../squeakimages/images';
 import Loader from '../Loader'
 import SqueakCard from '../SqueakCard'
 
+import { useDispatch } from 'react-redux'
+
 import SigningProfiles from '../../features/profiles/SigningProfiles'
 import ContactProfiles from '../../features/profiles/ContactProfiles'
+import { setCreateSigningProfile } from '../../features/profiles/createSigningProfileSlice'
 
 
 
@@ -22,6 +25,9 @@ const Profiles = (props) => {
     const [newProfilePubkey, setNewProfilePubkey] = useState('')
     const [usePrivKey, setUsePrivKey] = useState(false)
     const [newProfilePrivkey, setNewProfilePrivkey] = useState('')
+
+    const dispatch = useDispatch()
+
 
 
     const searchOnChange = (param) => {
@@ -73,7 +79,9 @@ const Profiles = (props) => {
         if (usePrivKey) {
           actions.importSigningProfile({profileName: newProfileName, privateKey: newProfilePrivkey});
         } else {
-          actions.createSigningProfile({profileName: newProfileName});
+          // actions.createSigningProfile({profileName: newProfileName});
+          console.log('Create signing profile with name:', newProfileName);
+          dispatch(setCreateSigningProfile({profileName: newProfileName}));
         }
         toggleSigningProfileModal();
     }

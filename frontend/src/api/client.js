@@ -361,3 +361,15 @@ export const getSearchSqueaks = (searchText, limit, lastSqueak) => {
       deser: deser,
     });
 }
+
+export const createSigningProfile = (profileName) => {
+    console.log('Calling createSigningProfile');
+    const request = new CreateSigningProfileRequest();
+    request.setProfileName(profileName);
+    const deser = CreateSigningProfileReply.deserializeBinary;
+    return baseRequest({
+      url: '/createsigningprofile',
+      req: request,
+      deser: deser,
+    });
+}
