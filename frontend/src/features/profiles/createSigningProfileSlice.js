@@ -46,7 +46,7 @@ const createSigningProfileSlice = createSlice({
       console.log(action);
       const newSqueakHash = action.payload;
       state.createSigningProfileStatus = 'idle';
-      console.log('Go to new squeak');
+      console.log('Go to new profile');
     })
   },
 })

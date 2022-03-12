@@ -373,3 +373,16 @@ export const createSigningProfile = (profileName) => {
       deser: deser,
     });
 }
+
+export const importSigningProfile = (profileName, privateKey) => {
+    console.log('Calling importSigningProfile');
+    const request = new ImportSigningProfileRequest();
+    request.setProfileName(profileName);
+    request.setPrivateKey(privateKey);
+    const deser = ImportSigningProfileReply.deserializeBinary;
+    return baseRequest({
+      url: '/importsigningprofile',
+      req: request,
+      deser: deser,
+    });
+}

@@ -12,6 +12,7 @@ import { useDispatch } from 'react-redux'
 import SigningProfiles from '../../features/profiles/SigningProfiles'
 import ContactProfiles from '../../features/profiles/ContactProfiles'
 import { setCreateSigningProfile } from '../../features/profiles/createSigningProfileSlice'
+import { setImportSigningProfile } from '../../features/profiles/importSigningProfileSlice'
 
 
 
@@ -77,7 +78,9 @@ const Profiles = (props) => {
 
     const createSigningProfile = () => {
         if (usePrivKey) {
-          actions.importSigningProfile({profileName: newProfileName, privateKey: newProfilePrivkey});
+          // actions.importSigningProfile({profileName: newProfileName, privateKey: newProfilePrivkey});
+          console.log('Import signing profile with name:', newProfileName);
+          dispatch(setImportSigningProfile({profileName: newProfileName, privateKey: newProfilePrivkey}));
         } else {
           // actions.createSigningProfile({profileName: newProfileName});
           console.log('Create signing profile with name:', newProfileName);
