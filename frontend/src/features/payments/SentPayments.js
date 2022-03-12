@@ -70,10 +70,6 @@ const SentPayments = (props) => {
            </div>
     })
 
-  // squeaks.map((squeak) => {
-  //   return <SqueakCard squeak={squeak} key={squeak.getSqueakHash()} id={squeak.getSqueakHash()} user={squeak.getAuthor()} />
-  // })
-
   return <>
           {renderedListItems}
 
