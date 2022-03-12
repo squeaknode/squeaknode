@@ -44,7 +44,7 @@ const SearchResults = (props) => {
   useEffect(() => {
       window.scrollTo(0, 0)
       // actions.getSqueaks({lastSqueak: null})
-      if (q && q.length > 1) {
+      if (q && q.length > 0) {
         setSearchText(q);
         //reloadSqueaks(q);
 
