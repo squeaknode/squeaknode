@@ -719,23 +719,23 @@ export function getAddressSqueakDisplaysRequest(pubkey, limit, lastEntry, handle
   // });
 }
 
-export function getSearchSqueakDisplaysRequest(searchText, limit, lastEntry, handleResponse) {
-  const request = new GetSearchSqueakDisplaysRequest();
-  request.setSearchText(searchText);
-  request.setLimit(limit);
-  request.setLastEntry(lastEntry);
-  makeRequest(
-    'getsearchsqueakdisplays',
-    request,
-    GetSearchSqueakDisplaysReply.deserializeBinary,
-    (response) => {
-      handleResponse(response.getSqueakDisplayEntriesList());
-    },
-  );
-  // client.getAddressSqueakDisplays(request, {}, (err, response) => {
-  //   handleResponse(response.getSqueakDisplayEntriesList());
-  // });
-}
+// export function getSearchSqueakDisplaysRequest(searchText, limit, lastEntry, handleResponse) {
+//   const request = new GetSearchSqueakDisplaysRequest();
+//   request.setSearchText(searchText);
+//   request.setLimit(limit);
+//   request.setLastEntry(lastEntry);
+//   makeRequest(
+//     'getsearchsqueakdisplays',
+//     request,
+//     GetSearchSqueakDisplaysReply.deserializeBinary,
+//     (response) => {
+//       handleResponse(response.getSqueakDisplayEntriesList());
+//     },
+//   );
+//   // client.getAddressSqueakDisplays(request, {}, (err, response) => {
+//   //   handleResponse(response.getSqueakDisplayEntriesList());
+//   // });
+// }
 
 export function createContactProfileRequest(profileName, pubkey, handleResponse, handleErr) {
   const request = new CreateContactProfileRequest();

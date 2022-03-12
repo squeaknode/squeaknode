@@ -379,17 +379,17 @@ export const applyMiddleware = dispatch => action => {
             dispatch({ type: types.CLEAR_SEARCH, payload: {}})
             return;
 
-        case types.SEARCH:
-            // return axios.post(`${API_URL}/trend`, action.payload)
-            // .then(res=>dispatch({ type: types.SEARCH, payload: res.data }))
-            // .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
-
-            let searchText = action.payload.searchText
-            let lastSearchSqueak = action.payload.lastSqueak
-	          return getSearchSqueakDisplaysRequest(searchText, 10, lastSearchSqueak, (resp) => {
-                let payload = {"searchSqueaks": resp };
-	              dispatch({ type: types.SEARCH, payload: payload })
-	          });
+        // case types.SEARCH:
+        //     // return axios.post(`${API_URL}/trend`, action.payload)
+        //     // .then(res=>dispatch({ type: types.SEARCH, payload: res.data }))
+        //     // .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
+        //
+        //     let searchText = action.payload.searchText
+        //     let lastSearchSqueak = action.payload.lastSqueak
+	      //     return getSearchSqueakDisplaysRequest(searchText, 10, lastSearchSqueak, (resp) => {
+        //         let payload = {"searchSqueaks": resp };
+	      //         dispatch({ type: types.SEARCH, payload: payload })
+	      //     });
 
         case types.SEARCH_USERS:
             return axios.post(`${API_URL}/user`, action.payload)
