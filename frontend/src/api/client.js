@@ -304,3 +304,18 @@ export const getPaymentSummary = () => {
       deser: deser,
     });
 }
+
+export const getSentPayments = (limit, lastSentPayment) => {
+    console.log('Calling getSentPayments');
+    const request = new GetSentPaymentsRequest();
+    request.setLimit(limit);
+    if (lastSentPayment) {
+      request.setLastSentPayment(lastSentPayment);
+    }
+    const deser = GetSentPaymentsReply.deserializeBinary;
+    return baseRequest({
+      url: '/getsentpayments',
+      req: request,
+      deser: deser,
+    });
+}

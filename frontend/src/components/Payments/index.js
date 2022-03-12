@@ -7,6 +7,7 @@ import { ICON_SEARCH, ICON_ARROWBACK, ICON_CLOSE } from '../../Icons'
 import { getProfileImageSrcString } from '../../squeakimages/images';
 import Loader from '../Loader'
 import SqueakCard from '../SqueakCard'
+import SentPayments from '../../features/payments/SentPayments'
 
 
 const Payments = (props) => {
@@ -100,29 +101,7 @@ const Payments = (props) => {
                 </div>
                 {tab === 'Sent Payments' ?
                 <>
-                {sentPayments.map(f=>{
-                  return <div onClick={()=>goToSqueak(f.getSqueakHash())} key={f.getPaymentHash()} className="search-result-wapper">
-                    <div className="search-user-details">
-                    <div className="search-user-warp">
-                    <div className="search-user-info">
-                    <div className="payment-price">{f.getPriceMsat() / 1000} sats</div>
-                    <div className="payment-squeak-hash"><b>Squeak Hash</b>: {f.getSqueakHash()}</div>
-                    <div className="payment-peer-address"><b>Peer</b>: {f.getPeerAddress().getHost()}:{f.getPeerAddress().getPort()}</div>
-                    <div className="payment-lightning-node"><b>Lightning Node</b>: {f.getNodePubkey()}</div>
-                    <div className="payment-time">{moment(f.getTimeMs()).format("h:mm A · MMM D, YYYY")}</div>
-                    </div>
-                    </div>
-                  </div>
-                </div>
-                })}
-                {/* TODO: fix get loading state by doing this: https://medium.com/stashaway-engineering/react-redux-tips-better-way-to-handle-loading-flags-in-your-reducers-afda42a804c6 */}
-                {sentPayments.length > 0 &&
-                    <>
-                    {state.loading ? <Loader /> : <div onClick={() => getMoreSentPayments()} className='squeak-btn-side squeak-btn-active'>
-                        Load more
-                    </div>}
-                    </>
-                }
+                <SentPayments />
                 </>
 
                 :
