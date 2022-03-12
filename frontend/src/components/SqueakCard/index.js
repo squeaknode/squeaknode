@@ -10,7 +10,7 @@ import { ICON_REPLY, ICON_RETWEET,
     ICON_HEART, ICON_HEARTFULL, ICON_DELETE, ICON_CLOSE,ICON_IMGUPLOAD, ICON_LOCKFILL} from '../../Icons'
 import axios from 'axios'
 import {API_URL} from '../../config'
-import MakeSqueak from '../../features/profiles/MakeSqueak'
+import MakeSqueak from '../../features/makesqueak/MakeSqueak'
 import ContentEditable from 'react-contenteditable'
 
 import { setLikeSqueak, setUnlikeSqueak } from '../../features/timeline/timelineSlice'
