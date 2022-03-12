@@ -76,11 +76,11 @@ export const applyMiddleware = dispatch => action => {
             .then(res=>dispatch({ type: types.REGISTER, payload: res.data, data: action.payload }))
             .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
 
-        case types.GET_NETWORK:
-            return getNetworkRequest((resp) => {
-                let payload = {"network": resp };
-                dispatch({ type: types.GET_NETWORK, payload: payload });
-    	       });
+        // case types.GET_NETWORK:
+        //     return getNetworkRequest((resp) => {
+        //         let payload = {"network": resp };
+        //         dispatch({ type: types.GET_NETWORK, payload: payload });
+    	  //      });
 
         // case types.TWEET:
         //     // return axios.post(`${API_URL}/squeak/create`, action.payload, headers)

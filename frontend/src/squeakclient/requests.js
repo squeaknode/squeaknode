@@ -957,20 +957,20 @@ export function downloadAddressSqueaksRequest(pubkey, handleResponse) {
 //   // });
 // }
 
-export function getNetworkRequest(handleResponse) {
-  const request = new GetNetworkRequest();
-  makeRequest(
-    'getnetwork',
-    request,
-    GetNetworkReply.deserializeBinary,
-    (response) => {
-      handleResponse(response.getNetwork());
-    },
-  );
-  // client.getNetwork(request, {}, (err, response) => {
-  //   handleResponse(response.getNetwork());
-  // });
-}
+// export function getNetworkRequest(handleResponse) {
+//   const request = new GetNetworkRequest();
+//   makeRequest(
+//     'getnetwork',
+//     request,
+//     GetNetworkReply.deserializeBinary,
+//     (response) => {
+//       handleResponse(response.getNetwork());
+//     },
+//   );
+//   // client.getNetwork(request, {}, (err, response) => {
+//   //   handleResponse(response.getNetwork());
+//   // });
+// }
 
 export function getSqueakProfilePrivateKey(id, handleResponse) {
   const request = new GetSqueakProfilePrivateKeyRequest();
