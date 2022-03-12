@@ -7,9 +7,11 @@ import { getProfileImageSrcString } from '../../squeakimages/images';
 import Loader from '../Loader'
 import SqueakCard from '../SqueakCard'
 
+import SigningProfiles from '../../features/profiles/SigningProfiles'
+
+
 
 const Profiles = (props) => {
-    console.log(props);
     const { state, actions } = useContext(StoreContext)
     const { signingProfiles, contactProfiles, result, tagSqueaks} = state
     const [tab, setTab] = useState('Signing Profiles')
@@ -136,31 +138,7 @@ const Profiles = (props) => {
                     </div>
                 </div>
                 {tab === 'Signing Profiles' ?
-                signingProfiles.map(f=>{
-                  return <div onClick={()=>goToUser(f.getPubkey())} key={f.getPubkey()} className="search-result-wapper">
-                    <Link to={`/app/profile/${f.getPubkey()}`} className="search-userPic-wrapper">
-                      <img style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={`${getProfileImageSrcString(f)}`}/>
-                    </Link>
-                    <div className="search-user-details">
-                    <div className="search-user-warp">
-                    <div className="search-user-info">
-                    <div className="search-user-name">{f.getProfileName()}</div>
-                    <div className="search-user-username">@{f.getPubkey()}</div>
-                    </div>
-                    <div onClick={(e)=>{
-                        f.getFollowing() ?
-                        unfollowUser(e,f.getProfileId()) :
-                        followUser(e,f.getProfileId())
-                      }} className={f.getFollowing() ? "follow-btn-wrap unfollow-switch":"follow-btn-wrap"}>
-                        <span><span>{f.getFollowing() ? 'Following' : 'Follow'}</span></span>
-                    </div>
-                    </div>
-                    <div className="search-user-bio">
-                      &nbsp;
-                    </div>
-                  </div>
-                </div>
-                })
+                  <SigningProfiles />
                 :
                 tab === 'Contact Profiles' ?
                 contactProfiles.map(f=>{
