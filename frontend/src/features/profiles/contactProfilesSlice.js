@@ -39,7 +39,7 @@ const contactProfilesSlice = createSlice({
     })
     .addCase(fetchContactProfiles.fulfilled, (state, action) => {
       const newContactProfiles = action.payload;
-      state.contactProfiles = state.contactProfiles.concat(newContactProfiles);
+      state.contactProfiles = newContactProfiles;
       state.status = 'idle'
     })
   },

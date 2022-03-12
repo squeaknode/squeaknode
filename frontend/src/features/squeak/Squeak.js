@@ -12,7 +12,7 @@ import { getProfileImageSrcString } from '../../squeakimages/images';
 
 import SqueakCard from '../../components/SqueakCard'
 import Loader from '../../components/Loader'
-import MakeSqueak from '../makesqueak/MakeSqueak'
+import MakeSqueak from '../profiles/MakeSqueak'
 
 
 import {
@@ -157,9 +157,6 @@ const Squeak = (props) => {
         return { value: offer, label: `${offer.getPriceMsat() / 1000} sats (${offer.getPeerAddress().getHost()}:${offer.getPeerAddress().getPort()})` }
       });
   }
-
-  console.log(network);
-  console.log(ancestorSqueaks);
 
 
     const squeak = currentSqueak;

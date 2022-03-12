@@ -9,7 +9,7 @@ import { API_URL } from '../../config'
 import Loader from '../Loader'
 import SqueakCard from '../SqueakCard'
 //import MakeSqueak from '../MakeSqueak'
-import MakeSqueak from '../../features/makesqueak/MakeSqueak'
+import MakeSqueak from '../../features/profiles/MakeSqueak'
 import Timeline from '../../features/timeline/Timeline'
 
 

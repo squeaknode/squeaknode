@@ -39,7 +39,7 @@ const signingProfilesSlice = createSlice({
     })
     .addCase(fetchSigningProfiles.fulfilled, (state, action) => {
       const newSigningProfiles = action.payload;
-      state.signingProfiles = state.signingProfiles.concat(newSigningProfiles);
+      state.signingProfiles = newSigningProfiles;
       state.status = 'idle'
     })
   },
