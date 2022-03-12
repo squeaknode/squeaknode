@@ -2,13 +2,9 @@ import React, { useEffect, useState, useContext, useRef } from 'react'
 import { withRouter } from 'react-router-dom'
 import { unwrapResult } from '@reduxjs/toolkit'
 
-import { StoreContext } from '../../store/store'
-import axios from 'axios'
 import moment from 'moment'
 import ContentEditable from 'react-contenteditable'
-import { ICON_IMGUPLOAD } from '../../Icons'
 import { Link } from 'react-router-dom'
-import { API_URL } from '../../config'
 import { getProfileImageSrcString } from '../../squeakimages/images';
 import Loader from '../../components/Loader'
 import Select from 'react-select'
@@ -21,16 +17,19 @@ import {
   setMakeSqueak,
   selectMakeSqueakStatus,
 } from './makeSqueakSlice'
+import {
+  selectSigningProfiles,
+  fetchSigningProfiles,
+} from './signingProfilesSlice'
 
 const MakeSqueak = (props) => {
-    const { state, actions } = useContext(StoreContext)
-    const { signingProfiles, session } = state
-
+    const signingProfiles = useSelector(selectSigningProfiles);
     const makeSqueakStatus = useSelector(selectMakeSqueakStatus);
     const dispatch = useDispatch();
 
     useEffect(() => {
-        actions.getSigningProfiles()
+        // actions.getSigningProfiles()
+        dispatch(fetchSigningProfiles());
     }, [])
 
     //used for contenteditable divs on react hooks

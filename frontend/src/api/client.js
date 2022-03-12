@@ -321,3 +321,14 @@ export const makeSqueak = (profileId, content, replyTo, hasRecipient, recipientP
       deser: deser,
     });
 }
+
+export const getSigningProfiles = () => {
+    console.log('Calling getSigningProfiles');
+    const request = new GetSigningProfilesRequest();
+    const deser = GetSigningProfilesReply.deserializeBinary;
+    return axiosBaseQuery({
+      url: '/getsigningprofiles',
+      req: request,
+      deser: deser,
+    });
+}
