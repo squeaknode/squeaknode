@@ -988,20 +988,20 @@ export function getSqueakProfilePrivateKey(id, handleResponse) {
   // });
 }
 
-export function getPaymentSummaryRequest(handleResponse) {
-  const request = new GetPaymentSummaryRequest();
-  makeRequest(
-    'getpaymentsummary',
-    request,
-    GetPaymentSummaryReply.deserializeBinary,
-    (response) => {
-      handleResponse(response);
-    },
-  );
-  // client.getPaymentSummary(request, {}, (err, response) => {
-  //   handleResponse(response);
-  // });
-}
+// export function getPaymentSummaryRequest(handleResponse) {
+//   const request = new GetPaymentSummaryRequest();
+//   makeRequest(
+//     'getpaymentsummary',
+//     request,
+//     GetPaymentSummaryReply.deserializeBinary,
+//     (response) => {
+//       handleResponse(response);
+//     },
+//   );
+//   // client.getPaymentSummary(request, {}, (err, response) => {
+//   //   handleResponse(response);
+//   // });
+// }
 
 export function reprocessReceivedPaymentsRequest(handleResponse) {
   const request = new ReprocessReceivedPaymentsRequest();

@@ -460,11 +460,11 @@ export const applyMiddleware = dispatch => action => {
         //         dispatch({ type: types.GET_CONTACT_PROFILES, payload: payload });
         //     });
 
-        case types.GET_PAYMENT_SUMMARY:
-            return getPaymentSummaryRequest((resp) => {
-                let payload = {"paymentSummary": resp.getPaymentSummary() };
-                dispatch({ type: types.GET_PAYMENT_SUMMARY, payload: payload });
-            });
+        // case types.GET_PAYMENT_SUMMARY:
+        //     return getPaymentSummaryRequest((resp) => {
+        //         let payload = {"paymentSummary": resp.getPaymentSummary() };
+        //         dispatch({ type: types.GET_PAYMENT_SUMMARY, payload: payload });
+        //     });
 
         // case types.GET_SENT_PAYMENTS:
         //     let lastSentPayment = action.payload.lastSentPayment
