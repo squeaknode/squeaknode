@@ -7,9 +7,9 @@ import {
   getSqueakDisplayRequest,
   getSqueakProfileByAddressRequest,
   getAddressSqueakDisplaysRequest,
-  getReplySqueakDisplaysRequest,
-  getAncestorSqueakDisplaysRequest,
-  makeSqueakRequest,
+  //getReplySqueakDisplaysRequest,
+  //getAncestorSqueakDisplaysRequest,
+  //makeSqueakRequest,
   getSigningProfilesRequest,
   getContactProfilesRequest,
   setSqueakProfileFollowingRequest,
@@ -82,24 +82,24 @@ export const applyMiddleware = dispatch => action => {
                 dispatch({ type: types.GET_NETWORK, payload: payload });
     	       });
 
-        case types.TWEET:
-            // return axios.post(`${API_URL}/squeak/create`, action.payload, headers)
-            // .then(res=>dispatch({ type: types.TWEET, payload: res.data, data: action.payload }))
-            // .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
-
-            let profileId = action.payload.signingProfile;
-            let content = action.payload.description;
-            let replyTo = action.payload.replyTo;
-            let hasRecipient = action.payload.hasRecipient;
-            let recipientProfileId = action.payload.recipientProfileId;
-            return makeSqueakRequest(profileId, content, replyTo, hasRecipient, recipientProfileId, (resp) => {
-                let squeakHash = resp.getSqueakHash();
-                return getSqueakDisplayRequest(squeakHash, (resp) => {
-                    let payload = {"squeak": resp };
-                    dispatch({ type: types.TWEET, payload: payload, data: action.payload });
-    	          });
-            });
-            // TODO: handle error response
+        // case types.TWEET:
+        //     // return axios.post(`${API_URL}/squeak/create`, action.payload, headers)
+        //     // .then(res=>dispatch({ type: types.TWEET, payload: res.data, data: action.payload }))
+        //     // .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
+        //
+        //     let profileId = action.payload.signingProfile;
+        //     let content = action.payload.description;
+        //     let replyTo = action.payload.replyTo;
+        //     let hasRecipient = action.payload.hasRecipient;
+        //     let recipientProfileId = action.payload.recipientProfileId;
+        //     return makeSqueakRequest(profileId, content, replyTo, hasRecipient, recipientProfileId, (resp) => {
+        //         let squeakHash = resp.getSqueakHash();
+        //         return getSqueakDisplayRequest(squeakHash, (resp) => {
+        //             let payload = {"squeak": resp };
+        //             dispatch({ type: types.TWEET, payload: payload, data: action.payload });
+    	  //         });
+        //     });
+        //     // TODO: handle error response
 
         case types.LIKE_TWEET:
             // return axios.post(`${API_URL}/squeak/${action.payload.id}/like`, action.payload, headers)
@@ -186,10 +186,10 @@ export const applyMiddleware = dispatch => action => {
                     let payload = {"squeak": resp };
                     dispatch({ type: types.GET_TWEET, payload: payload });
     	          });
-                getAncestorSqueakDisplaysRequest(action.payload, (resp) => {
-                    let payload = {"ancestorSqueaks": resp };
-                    dispatch({ type: types.GET_ANCESTOR_TWEETS, payload: payload });
-                });
+                // getAncestorSqueakDisplaysRequest(action.payload, (resp) => {
+                //     let payload = {"ancestorSqueaks": resp };
+                //     dispatch({ type: types.GET_ANCESTOR_TWEETS, payload: payload });
+                // });
                 return;
     	       });
 
@@ -246,19 +246,19 @@ export const applyMiddleware = dispatch => action => {
         case types.CLEAR_USER_TWEETS:
             dispatch({ type: types.CLEAR_USER_TWEETS, payload: {}})
 
-        case types.GET_ANCESTOR_TWEETS:
-            return getAncestorSqueakDisplaysRequest(action.payload, (resp) => {
-                let payload = {"ancestorSqueaks": resp };
-                dispatch({ type: types.GET_ANCESTOR_TWEETS, payload: payload });
-            });
-            // TODO: handle error response
+        // case types.GET_ANCESTOR_TWEETS:
+        //     return getAncestorSqueakDisplaysRequest(action.payload, (resp) => {
+        //         let payload = {"ancestorSqueaks": resp };
+        //         dispatch({ type: types.GET_ANCESTOR_TWEETS, payload: payload });
+        //     });
+        //     // TODO: handle error response
 
-        case types.GET_REPLY_TWEETS:
-            return getReplySqueakDisplaysRequest(action.payload, 10, null, (resp) => {
-                let payload = {"replySqueaks": resp };
-                dispatch({ type: types.GET_REPLY_TWEETS, payload: payload });
-            });
-            // TODO: handle error response
+        // case types.GET_REPLY_TWEETS:
+        //     return getReplySqueakDisplaysRequest(action.payload, 10, null, (resp) => {
+        //         let payload = {"replySqueaks": resp };
+        //         dispatch({ type: types.GET_REPLY_TWEETS, payload: payload });
+        //     });
+        //     // TODO: handle error response
 
         case types.GET_TWEET_OFFERS:
             return getBuyOffersRequest(action.payload, (resp) => {
