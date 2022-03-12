@@ -399,3 +399,40 @@ export const createContactProfile = (profileName, pubkey) => {
       deser: deser,
     });
 }
+
+export const getProfile = (id) => {
+    console.log('Calling getProfile');
+    const request = new GetSqueakProfileRequest();
+    request.setProfileId(id);
+    const deser = GetSqueakProfileReply.deserializeBinary;
+    return baseRequest({
+      url: '/getsqueakprofile',
+      req: request,
+      deser: deser,
+    });
+}
+
+export const getProfileByPubkey = (pubkey) => {
+    console.log('Calling getProfileByPubkey');
+    const request = new GetSqueakProfileByPubKeyRequest();
+    request.setPubkey(pubkey);
+    const deser = GetSqueakProfileByPubKeyReply.deserializeBinary;
+    return baseRequest({
+      url: '/getsqueakprofilebypubkey',
+      req: request,
+      deser: deser,
+    });
+}
+
+export const setProfileFollowing = (id, following) => {
+    console.log('Calling setProfileFollowing');
+    const request = new SetSqueakProfileFollowingRequest();
+    request.setProfileId(id);
+    request.setFollowing(following);
+    const deser = SetSqueakProfileFollowingReply.deserializeBinary;
+    return baseRequest({
+      url: '/setsqueakprofilefollowing',
+      req: request,
+      deser: deser,
+    });
+}

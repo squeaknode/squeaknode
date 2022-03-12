@@ -15,6 +15,7 @@ import searchReducer from './features/search/searchSlice'
 import createSigningProfileReducer from './features/profiles/createSigningProfileSlice'
 import importSigningProfileReducer from './features/profiles/importSigningProfileSlice'
 import createContactProfileReducer from './features/profiles/createContactProfileSlice'
+import profileReducer from './features/profile/profileSlice'
 
 const store = configureStore({
   reducer: {
@@ -34,6 +35,7 @@ const store = configureStore({
     sentPayments: sentPaymentsReducer,
     receivedPayments: receivedPaymentsReducer,
     search: searchReducer,
+    profile: profileReducer,
   },
 })
 

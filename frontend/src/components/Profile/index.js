@@ -9,6 +9,16 @@ import moment from 'moment'
 import SqueakCard from '../SqueakCard'
 import {API_URL} from '../../config'
 
+import { useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
+
+import {
+ fetchProfile,
+ setFollowProfile,
+ setUnfollowProfile,
+ selectCurrentProfile,
+} from '../../features/profile/profileSlice'
+
 
 const Profile = (props) => {
     const { state, actions } = useContext(StoreContext)
@@ -24,12 +34,19 @@ const Profile = (props) => {
     const [saved, setSaved] = useState(false)
     const [tab, setTab] = useState('Sats Spent')
     const [styleBody, setStyleBody] = useState(false)
-    const {user, userSqueaks, privateKey, session} = state
+    // const {user, userSqueaks, privateKey, session} = state
+    const { userSqueaks, privateKey, session} = state
     const userParam = props.match.params.username
+
+    const user = useSelector(selectCurrentProfile);
+    const dispatch = useDispatch();
+
+
 
     useEffect(() => {
         window.scrollTo(0, 0)
-        actions.getUser(props.match.params.username)
+        // actions.getUser(props.match.params.username)
+        dispatch(fetchProfile(props.match.params.username));
         reloadSqueaks();
         //preventing edit modal from apprearing after clicking a user on memOpen
         setEditModalOpen(false)
@@ -128,12 +145,15 @@ const Profile = (props) => {
     const followUser = (e,id) => {
         if(!session){ actions.alert('Please Sign In'); return }
         e.stopPropagation()
-        actions.followUser(id)
+        // actions.followUser(id)
+        dispatch(setFollowProfile(id));
     }
 
     const unfollowUser = (e,id) => {
+        console.log(e);
         e.stopPropagation()
-        actions.unfollowUser(id)
+        // actions.unfollowUser(id)
+        dispatch(setUnfollowProfile(id));
     }
 
     const changeAvatar = () => {

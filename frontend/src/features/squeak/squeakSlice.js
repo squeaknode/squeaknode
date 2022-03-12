@@ -73,12 +73,14 @@ const squeakSlice = createSlice({
     .addCase(setLikeSqueak.fulfilled, (state, action) => {
       console.log(action);
       const newSqueak = action.payload;
+      // TODO: only update state if the new squeak has the same id/hash.
       state.currentSqueak = newSqueak;
       state.currentSqueakStatus = 'idle';
     })
     .addCase(setUnlikeSqueak.fulfilled, (state, action) => {
       console.log(action);
       const newSqueak = action.payload;
+      // TODO: only update state if the new squeak has the same id/hash.
       state.currentSqueak = newSqueak;
       state.currentSqueakStatus = 'idle';
     })
