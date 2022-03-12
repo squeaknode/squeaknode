@@ -7,6 +7,7 @@ import ancestorSqueaksReducer from './features/squeak/ancestorSqueaksSlice'
 import replySqueaksReducer from './features/squeak/replySqueaksSlice'
 import makeSqueakReducer from './features/makesqueak/makeSqueakSlice'
 import signingProfilesReducer from './features/makesqueak/signingProfilesSlice'
+import contactProfilesReducer from './features/profiles/contactProfilesSlice'
 import paymentSummaryReducer from './features/paymentsummary/paymentSummarySlice'
 import sentPaymentsReducer from './features/payments/sentPaymentsSlice'
 import receivedPaymentsReducer from './features/payments/receivedPaymentsSlice'
@@ -21,7 +22,8 @@ const store = configureStore({
     ancestorSqueaks: ancestorSqueaksReducer,
     replySqueaks: replySqueaksReducer,
     makeSqueak: makeSqueakReducer,
-    signingProfiles: signingProfilesReducer,
+    signingProfiles: signingProfilesReducer, // TODO: move signing profiles to profiles directory.
+    contactProfiles: contactProfilesReducer,
     paymentSummary: paymentSummaryReducer,
     sentPayments: sentPaymentsReducer,
     receivedPayments: receivedPaymentsReducer,

@@ -294,6 +294,17 @@ export const getSigningProfiles = () => {
     });
 }
 
+export const getContactProfiles = () => {
+    console.log('Calling getContactProfiles');
+    const request = new GetContactProfilesRequest();
+    const deser = GetContactProfilesReply.deserializeBinary;
+    return baseRequest({
+      url: '/getcontactprofiles',
+      req: request,
+      deser: deser,
+    });
+}
+
 export const getPaymentSummary = () => {
     console.log('Calling getPaymentSummary');
     const request = new GetPaymentSummaryRequest();

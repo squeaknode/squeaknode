@@ -8,12 +8,12 @@ import Loader from '../Loader'
 import SqueakCard from '../SqueakCard'
 
 import SigningProfiles from '../../features/profiles/SigningProfiles'
+import ContactProfiles from '../../features/profiles/ContactProfiles'
 
 
 
 const Profiles = (props) => {
     const { state, actions } = useContext(StoreContext)
-    const { signingProfiles, contactProfiles, result, tagSqueaks} = state
     const [tab, setTab] = useState('Signing Profiles')
     const [signingProfileModalOpen, setSigningProfileModalOpen] = useState(false)
     const [contactProfileModalOpen, setContactProfileModalOpen] = useState(false)
@@ -30,16 +30,6 @@ const Profiles = (props) => {
             actions.search({description: param})
         }
     }
-
-    useEffect(() => {
-        window.scrollTo(0, 0)
-        actions.getSigningProfiles()
-        actions.getContactProfiles()
-        // if(props.history.location.search.length>0){
-        //     goToTrend(props.history.location.search.substring(1))
-
-        // }
-    }, [])
 
     const followUser = (e, id) => {
         e.stopPropagation()
@@ -141,31 +131,7 @@ const Profiles = (props) => {
                   <SigningProfiles />
                 :
                 tab === 'Contact Profiles' ?
-                contactProfiles.map(f=>{
-                  return <div onClick={()=>goToUser(f.getPubkey())} key={f.getPubkey()} className="search-result-wapper">
-                    <Link to={`/app/profile/${f.getPubkey()}`} className="search-userPic-wrapper">
-                      <img style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={`${getProfileImageSrcString(f)}`}/>
-                    </Link>
-                    <div className="search-user-details">
-                    <div className="search-user-warp">
-                    <div className="search-user-info">
-                    <div className="search-user-name">{f.getProfileName()}</div>
-                    <div className="search-user-username">@{f.getPubkey()}</div>
-                    </div>
-                    <div onClick={(e)=>{
-                        f.getFollowing() ?
-                        unfollowUser(e,f.getProfileId()) :
-                        followUser(e,f.getProfileId())
-                      }} className={f.getFollowing() ? "follow-btn-wrap unfollow-switch":"follow-btn-wrap"}>
-                        <span><span>{f.getFollowing() ? 'Following' : 'Follow'}</span></span>
-                    </div>
-                    </div>
-                    <div className="search-user-bio">
-                      &nbsp;
-                    </div>
-                  </div>
-                </div>
-                })
+                  <ContactProfiles />
                 : <div className="try-searching">
                         Nothing to see here ..
                         <div/>

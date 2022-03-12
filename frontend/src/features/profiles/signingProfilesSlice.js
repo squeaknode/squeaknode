@@ -18,7 +18,7 @@ export const fetchSigningProfiles = createAsyncThunk(
   'signingProfiles/fetchSigningProfiles',
   async () => {
     const response = await getSigningProfiles();
-    return response.getSigningProfilesList();
+    return response.getSqueakProfilesList();
   }
 )
 
