@@ -466,27 +466,27 @@ export const applyMiddleware = dispatch => action => {
                 dispatch({ type: types.GET_PAYMENT_SUMMARY, payload: payload });
             });
 
-        case types.GET_SENT_PAYMENTS:
-            let lastSentPayment = action.payload.lastSentPayment
-            return getSentPaymentsRequest(10, lastSentPayment, (resp) => {
-                let payload = {"sentPayments": resp.getSentPaymentsList() };
-                dispatch({ type: types.GET_SENT_PAYMENTS, payload: payload });
-            });
+        // case types.GET_SENT_PAYMENTS:
+        //     let lastSentPayment = action.payload.lastSentPayment
+        //     return getSentPaymentsRequest(10, lastSentPayment, (resp) => {
+        //         let payload = {"sentPayments": resp.getSentPaymentsList() };
+        //         dispatch({ type: types.GET_SENT_PAYMENTS, payload: payload });
+        //     });
 
-        case types.CLEAR_SENT_PAYMENTS:
-            dispatch({ type: types.CLEAR_SENT_PAYMENTS, payload: {}})
-            return;
+        // case types.CLEAR_SENT_PAYMENTS:
+        //     dispatch({ type: types.CLEAR_SENT_PAYMENTS, payload: {}})
+        //     return;
 
-        case types.GET_RECEIVED_PAYMENTS:
-            let lastReceivedPayment = action.payload.lastReceivedPayment
-            return getReceivedPaymentsRequest(10, lastReceivedPayment, (resp) => {
-                let payload = {"receivedPayments": resp.getReceivedPaymentsList() };
-                dispatch({ type: types.GET_RECEIVED_PAYMENTS, payload: payload });
-            });
-
-        case types.CLEAR_RECEIVED_PAYMENTS:
-            dispatch({ type: types.CLEAR_RECEIVED_PAYMENTS, payload: {}})
-            return;
+        // case types.GET_RECEIVED_PAYMENTS:
+        //     let lastReceivedPayment = action.payload.lastReceivedPayment
+        //     return getReceivedPaymentsRequest(10, lastReceivedPayment, (resp) => {
+        //         let payload = {"receivedPayments": resp.getReceivedPaymentsList() };
+        //         dispatch({ type: types.GET_RECEIVED_PAYMENTS, payload: payload });
+        //     });
+        //
+        // case types.CLEAR_RECEIVED_PAYMENTS:
+        //     dispatch({ type: types.CLEAR_RECEIVED_PAYMENTS, payload: {}})
+        //     return;
 
         case types.CONNECT_PEER:
             let connectPeerNetwork = action.payload.network;

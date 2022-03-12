@@ -347,26 +347,26 @@ const reducer = (state = initialState, action) => {
         case type.GET_CONTACT_PROFILES:
             return {...state, ...action.payload}
 
-        case type.GET_PAYMENT_SUMMARY:
-            return {...state, ...action.payload}
+        // case type.GET_PAYMENT_SUMMARY:
+        //     return {...state, ...action.payload}
+        //
+        // case type.GET_SENT_PAYMENTS:
+        //     let paymentsSP = state.sentPayments
+        //     let newSP = action.payload.sentPayments
+        //     newSP.forEach(t => paymentsSP.push(t));
+        //     return {...state, loading: false, error: false}
 
-        case type.GET_SENT_PAYMENTS:
-            let paymentsSP = state.sentPayments
-            let newSP = action.payload.sentPayments
-            newSP.forEach(t => paymentsSP.push(t));
-            return {...state, loading: false, error: false}
-
-        case type.CLEAR_SENT_PAYMENTS:
-            return {...state, ...{sentPayments: []}}
-
-        case type.GET_RECEIVED_PAYMENTS:
-            let paymentsRP = state.receivedPayments
-            let newRP = action.payload.receivedPayments
-            newRP.forEach(t => paymentsRP.push(t));
-            return {...state, loading: false, error: false}
-
-        case type.CLEAR_RECEIVED_PAYMENTS:
-            return {...state, ...{receivedPayments: []}}
+        // case type.CLEAR_SENT_PAYMENTS:
+        //     return {...state, ...{sentPayments: []}}
+        //
+        // case type.GET_RECEIVED_PAYMENTS:
+        //     let paymentsRP = state.receivedPayments
+        //     let newRP = action.payload.receivedPayments
+        //     newRP.forEach(t => paymentsRP.push(t));
+        //     return {...state, loading: false, error: false}
+        //
+        // case type.CLEAR_RECEIVED_PAYMENTS:
+        //     return {...state, ...{receivedPayments: []}}
 
         case type.GET_CONNECTED_PEERS:
             return {...state, ...action.payload}

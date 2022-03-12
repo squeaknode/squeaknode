@@ -923,39 +923,39 @@ export function downloadAddressSqueaksRequest(pubkey, handleResponse) {
   // });
 }
 
-export function getSentPaymentsRequest(limit, lastSentPayment, handleResponse) {
-  const request = new GetSentPaymentsRequest();
-  request.setLimit(limit);
-  request.setLastSentPayment(lastSentPayment);
-  makeRequest(
-    'getsentpayments',
-    request,
-    GetSentPaymentsReply.deserializeBinary,
-    (response) => {
-      handleResponse(response);
-    },
-  );
-  // client.getSentPayments(request, {}, (err, response) => {
-  //   handleResponse(response);
-  // });
-}
+// export function getSentPaymentsRequest(limit, lastSentPayment, handleResponse) {
+//   const request = new GetSentPaymentsRequest();
+//   request.setLimit(limit);
+//   request.setLastSentPayment(lastSentPayment);
+//   makeRequest(
+//     'getsentpayments',
+//     request,
+//     GetSentPaymentsReply.deserializeBinary,
+//     (response) => {
+//       handleResponse(response);
+//     },
+//   );
+//   // client.getSentPayments(request, {}, (err, response) => {
+//   //   handleResponse(response);
+//   // });
+// }
 
-export function getReceivedPaymentsRequest(limit, lastReceivedPayment, handleResponse) {
-  const request = new GetReceivedPaymentsRequest();
-  request.setLimit(limit);
-  request.setLastReceivedPayment(lastReceivedPayment);
-  makeRequest(
-    'getreceivedpayments',
-    request,
-    GetReceivedPaymentsReply.deserializeBinary,
-    (response) => {
-      handleResponse(response);
-    },
-  );
-  // client.getReceivedPayments(request, {}, (err, response) => {
-  //   handleResponse(response);
-  // });
-}
+// export function getReceivedPaymentsRequest(limit, lastReceivedPayment, handleResponse) {
+//   const request = new GetReceivedPaymentsRequest();
+//   request.setLimit(limit);
+//   request.setLastReceivedPayment(lastReceivedPayment);
+//   makeRequest(
+//     'getreceivedpayments',
+//     request,
+//     GetReceivedPaymentsReply.deserializeBinary,
+//     (response) => {
+//       handleResponse(response);
+//     },
+//   );
+//   // client.getReceivedPayments(request, {}, (err, response) => {
+//   //   handleResponse(response);
+//   // });
+// }
 
 export function getNetworkRequest(handleResponse) {
   const request = new GetNetworkRequest();
