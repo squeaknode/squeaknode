@@ -38,8 +38,6 @@ const SentPayments = (props) => {
   }
 
 
-  console.log(sentPayments);
-
   {sentPayments.map(f=>{
     return <div onClick={()=>goToSqueak(f.getSqueakHash())} key={f.getPaymentHash()} className="search-result-wapper">
       <div className="search-user-details">

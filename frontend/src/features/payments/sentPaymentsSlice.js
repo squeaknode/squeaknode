@@ -17,9 +17,7 @@ const initialState = {
 export const fetchSentPayments = createAsyncThunk(
   'sentPayments/fetchSentPayments',
   async (lastSentPayment) => {
-    console.log('Fetching sentPayments');
     const response = await getSentPayments(5, lastSentPayment);
-    console.log(response);
     return response.getSentPaymentsList();
   }
 )
@@ -30,7 +28,6 @@ const sentPaymentsSlice = createSlice({
   initialState,
   reducers: {
     clearSentPayments(state, action) {
-      console.log('Clear sentPayments reducer.');
       state.status = 'idle'
       state.sentPayments = [];
     },
@@ -41,8 +38,6 @@ const sentPaymentsSlice = createSlice({
       state.status = 'loading'
     })
     .addCase(fetchSentPayments.fulfilled, (state, action) => {
-      console.log('Add case');
-      console.log(action);
       const newSentPayments = action.payload;
       state.sentPayments = state.sentPayments.concat(newSentPayments);
       state.status = 'idle'
