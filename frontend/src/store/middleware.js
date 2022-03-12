@@ -448,17 +448,17 @@ export const applyMiddleware = dispatch => action => {
                 });
             });
 
-        case types.GET_SIGNING_PROFILES:
-            return getSigningProfilesRequest((resp) => {
-                let payload = {"signingProfiles": resp };
-                dispatch({ type: types.GET_SIGNING_PROFILES, payload: payload });
-            });
-
-        case types.GET_CONTACT_PROFILES:
-            return getContactProfilesRequest((resp) => {
-                let payload = {"contactProfiles": resp };
-                dispatch({ type: types.GET_CONTACT_PROFILES, payload: payload });
-            });
+        // case types.GET_SIGNING_PROFILES:
+        //     return getSigningProfilesRequest((resp) => {
+        //         let payload = {"signingProfiles": resp };
+        //         dispatch({ type: types.GET_SIGNING_PROFILES, payload: payload });
+        //     });
+        //
+        // case types.GET_CONTACT_PROFILES:
+        //     return getContactProfilesRequest((resp) => {
+        //         let payload = {"contactProfiles": resp };
+        //         dispatch({ type: types.GET_CONTACT_PROFILES, payload: payload });
+        //     });
 
         case types.GET_PAYMENT_SUMMARY:
             return getPaymentSummaryRequest((resp) => {

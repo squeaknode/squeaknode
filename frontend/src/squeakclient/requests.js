@@ -589,35 +589,35 @@ export function getProfilesRequest(handleResponse) {
   // });
 }
 
-export function getSigningProfilesRequest(handleResponse) {
-  const request = new GetSigningProfilesRequest();
-  makeRequest(
-    'getsigningprofiles',
-    request,
-    GetSigningProfilesReply.deserializeBinary,
-    (response) => {
-      handleResponse(response.getSqueakProfilesList());
-    },
-  );
-  // client.getSigningProfiles(request, {}, (err, response) => {
-  //   handleResponse(response.getSqueakProfilesList());
-  // });
-}
+// export function getSigningProfilesRequest(handleResponse) {
+//   const request = new GetSigningProfilesRequest();
+//   makeRequest(
+//     'getsigningprofiles',
+//     request,
+//     GetSigningProfilesReply.deserializeBinary,
+//     (response) => {
+//       handleResponse(response.getSqueakProfilesList());
+//     },
+//   );
+//   // client.getSigningProfiles(request, {}, (err, response) => {
+//   //   handleResponse(response.getSqueakProfilesList());
+//   // });
+// }
 
-export function getContactProfilesRequest(handleResponse) {
-  const request = new GetContactProfilesRequest();
-  makeRequest(
-    'getcontactprofiles',
-    request,
-    GetContactProfilesReply.deserializeBinary,
-    (response) => {
-      handleResponse(response.getSqueakProfilesList());
-    },
-  );
-  // client.getContactProfiles(request, {}, (err, response) => {
-  //   handleResponse(response.getSqueakProfilesList());
-  // });
-}
+// export function getContactProfilesRequest(handleResponse) {
+//   const request = new GetContactProfilesRequest();
+//   makeRequest(
+//     'getcontactprofiles',
+//     request,
+//     GetContactProfilesReply.deserializeBinary,
+//     (response) => {
+//       handleResponse(response.getSqueakProfilesList());
+//     },
+//   );
+//   // client.getContactProfiles(request, {}, (err, response) => {
+//   //   handleResponse(response.getSqueakProfilesList());
+//   // });
+// }
 //
 // export function makeSqueakRequest(profileId, content, replyto, hasRecipient, recipientProfileId, handleResponse, handleErr) {
 //   const request = new MakeSqueakRequest();

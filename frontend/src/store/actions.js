@@ -168,12 +168,12 @@ export const useActions = (state, dispatch) => ({
     createContactProfile: data => {
         dispatch({type: types.CREATE_CONTACT_PROFILE, payload: data})
     },
-    getSigningProfiles: data => {
-        dispatch({type: types.GET_SIGNING_PROFILES, payload: data})
-    },
-    getContactProfiles: data => {
-        dispatch({type: types.GET_CONTACT_PROFILES, payload: data})
-    },
+    // getSigningProfiles: data => {
+    //     dispatch({type: types.GET_SIGNING_PROFILES, payload: data})
+    // },
+    // getContactProfiles: data => {
+    //     dispatch({type: types.GET_CONTACT_PROFILES, payload: data})
+    // },
     getPaymentSummary: data => {
         dispatch({type: types.GET_PAYMENT_SUMMARY, payload: data})
     },
