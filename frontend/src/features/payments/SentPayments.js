@@ -14,7 +14,7 @@ import {
   selectSentPayments,
   selectSentPaymentsStatus,
   selectLastSentPaymentsSqueak,
-} from './sentPaymentsSlice'
+} from './paymentsSlice'
 
 
 const SentPayments = (props) => {
