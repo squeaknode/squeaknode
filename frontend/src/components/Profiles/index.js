@@ -40,47 +40,19 @@ const Profiles = (props) => {
         }
     }
 
-    const followUser = (e, id) => {
-        e.stopPropagation()
-        actions.followUser(id)
-    }
-
-    const unfollowUser = (e,id) => {
-        e.stopPropagation()
-        actions.unfollowUser(id)
-    }
-
-    const goToUser = (id) => {
-        props.history.push(`/app/profile/${id}`)
-    }
 
     const toggleSigningProfileModal = (param, type) => {
         setStyleBody(!styleBody)
-        // if(param === 'edit'){setSaved(false)}
-        // if(type){setTab(type)}
-        // if(param === 'members'){
-        //     setMemOpen(true)
-        //     actions.getFollowers(props.match.params.username)
-        // }
-        // if(memOpen){setMemOpen(false)}
         setTimeout(()=>{ setSigningProfileModalOpen(!signingProfileModalOpen) },20)
     }
 
     const toggleContactProfileModal = (param, type) => {
         setStyleBody(!styleBody)
-        // if(param === 'edit'){setSaved(false)}
-        // if(type){setTab(type)}
-        // if(param === 'members'){
-        //     setMemOpen(true)
-        //     actions.getFollowers(props.match.params.username)
-        // }
-        // if(memOpen){setMemOpen(false)}
         setTimeout(()=>{ setContactProfileModalOpen(!contactProfileModalOpen) },20)
     }
 
     const createSigningProfile = () => {
         if (usePrivKey) {
-          // actions.importSigningProfile({profileName: newProfileName, privateKey: newProfilePrivkey});
           console.log('Import signing profile with name:', newProfileName);
           dispatch(setImportSigningProfile({profileName: newProfileName, privateKey: newProfilePrivkey}))
           .then(unwrapResult)
@@ -92,7 +64,6 @@ const Profiles = (props) => {
             alert(err.message);
           });
         } else {
-          // actions.createSigningProfile({profileName: newProfileName});
           console.log('Create signing profile with name:', newProfileName);
           dispatch(setCreateSigningProfile({profileName: newProfileName}))
           .then(unwrapResult)
@@ -108,7 +79,6 @@ const Profiles = (props) => {
     }
 
     const createContactProfile = () => {
-        // actions.createContactProfile({profileName: newProfileName, pubkey: newProfilePubkey});
         dispatch(setCreateContactProfile({profileName: newProfileName, pubkey: newProfilePubkey}))
         .then(unwrapResult)
         .then((pubkey) => {
