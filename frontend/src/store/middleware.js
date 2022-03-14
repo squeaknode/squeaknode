@@ -289,18 +289,18 @@ export const applyMiddleware = dispatch => action => {
               });
             });
 
-        case types.DELETE_USER:
-            let deleteProfileId = action.payload.profileId;
-            return deleteProfileRequest(deleteProfileId, (resp) => {
-              dispatch({ type: types.DELETE_USER, payload: {}, data: action.payload });
-            });
+        // case types.DELETE_USER:
+        //     let deleteProfileId = action.payload.profileId;
+        //     return deleteProfileRequest(deleteProfileId, (resp) => {
+        //       dispatch({ type: types.DELETE_USER, payload: {}, data: action.payload });
+        //     });
 
-        case types.EXPORT_PRIVATE_KEY:
-            let exportProfileID = action.payload.profileId;
-            return getSqueakProfilePrivateKey(exportProfileID, (resp) => {
-              let payload = {"privateKey": resp.getPrivateKey() };
-              dispatch({ type: types.EXPORT_PRIVATE_KEY, payload: payload, data: action.payload });
-            });
+        // case types.EXPORT_PRIVATE_KEY:
+        //     let exportProfileID = action.payload.profileId;
+        //     return getSqueakProfilePrivateKey(exportProfileID, (resp) => {
+        //       let payload = {"privateKey": resp.getPrivateKey() };
+        //       dispatch({ type: types.EXPORT_PRIVATE_KEY, payload: payload, data: action.payload });
+        //     });
 
         case types.DELETE_TWEET:
             // return axios.delete(`${API_URL}/squeak/${action.payload}/delete`, headers)

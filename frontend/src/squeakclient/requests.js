@@ -827,21 +827,21 @@ export function deletePeerRequest(peerId, handleResponse) {
   // });
 }
 
-export function deleteProfileRequest(profileId, handleResponse) {
-  const request = new DeleteSqueakProfileRequest();
-  request.setProfileId(profileId);
-  makeRequest(
-    'deleteprofile',
-    request,
-    DeleteSqueakProfileReply.deserializeBinary,
-    (response) => {
-      handleResponse(response);
-    },
-  );
-  // client.deleteSqueakProfile(request, {}, (err, response) => {
-  //   handleResponse(response);
-  // });
-}
+// export function deleteProfileRequest(profileId, handleResponse) {
+//   const request = new DeleteSqueakProfileRequest();
+//   request.setProfileId(profileId);
+//   makeRequest(
+//     'deleteprofile',
+//     request,
+//     DeleteSqueakProfileReply.deserializeBinary,
+//     (response) => {
+//       handleResponse(response);
+//     },
+//   );
+//   // client.deleteSqueakProfile(request, {}, (err, response) => {
+//   //   handleResponse(response);
+//   // });
+// }
 
 export function deleteSqueakRequest(squeakHash, handleResponse) {
   const request = new DeleteSqueakRequest();
@@ -972,21 +972,21 @@ export function downloadAddressSqueaksRequest(pubkey, handleResponse) {
 //   // });
 // }
 
-export function getSqueakProfilePrivateKey(id, handleResponse) {
-  const request = new GetSqueakProfilePrivateKeyRequest();
-  request.setProfileId(id);
-  makeRequest(
-    'getsqueakprofileprivatekey',
-    request,
-    GetSqueakProfilePrivateKeyReply.deserializeBinary,
-    (response) => {
-      handleResponse(response);
-    },
-  );
-  // client.getSqueakProfilePrivateKey(request, {}, (err, response) => {
-  //   handleResponse(response);
-  // });
-}
+// export function getSqueakProfilePrivateKey(id, handleResponse) {
+//   const request = new GetSqueakProfilePrivateKeyRequest();
+//   request.setProfileId(id);
+//   makeRequest(
+//     'getsqueakprofileprivatekey',
+//     request,
+//     GetSqueakProfilePrivateKeyReply.deserializeBinary,
+//     (response) => {
+//       handleResponse(response);
+//     },
+//   );
+//   // client.getSqueakProfilePrivateKey(request, {}, (err, response) => {
+//   //   handleResponse(response);
+//   // });
+// }
 
 // export function getPaymentSummaryRequest(handleResponse) {
 //   const request = new GetPaymentSummaryRequest();
