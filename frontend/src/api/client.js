@@ -436,3 +436,15 @@ export const setProfileFollowing = (id, following) => {
       deser: deser,
     });
 }
+
+export const deleteProfile = (id) => {
+    console.log('Calling deleteProfile');
+    const request = new DeleteSqueakProfileRequest();
+    request.setProfileId(id);
+    const deser = DeleteSqueakProfileReply.deserializeBinary;
+    return baseRequest({
+      url: '/deleteprofile',
+      req: request,
+      deser: deser,
+    });
+}

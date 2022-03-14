@@ -9,6 +9,7 @@ import {
   getProfile,
   getProfileByPubkey,
   setProfileFollowing,
+  deleteProfile,
 } from '../../api/client'
 
 const profileAdapter = createEntityAdapter()
@@ -51,6 +52,16 @@ export const setUnfollowProfile = createAsyncThunk(
   }
 )
 
+// Use profile id for now. In the future, change RPC to accept pubkey.
+export const setDeleteProfile = createAsyncThunk(
+  'profile/setDeleteProfile',
+  async (values) => {
+    console.log('Deleting profile');
+    await deleteProfile(values.profileId);
+    return null;
+  }
+)
+
 
 const profileSlice = createSlice({
   name: 'profile',
@@ -85,6 +96,13 @@ const profileSlice = createSlice({
       const newProfile = action.payload;
       // TODO: only update state if the new profile has the same id/pubkey.
       state.currentProfile = newProfile;
+      state.currentProfileStatus = 'idle';
+    })
+    .addCase(setDeleteProfile.fulfilled, (state, action) => {
+      console.log(action);
+      const deletedProfile = action.payload;
+      // TODO: only update state if the new profile has the same id/pubkey.
+      state.currentProfile = deletedProfile;
       state.currentProfileStatus = 'idle';
     })
   },

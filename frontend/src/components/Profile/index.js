@@ -17,6 +17,7 @@ import {
  setFollowProfile,
  setUnfollowProfile,
  selectCurrentProfile,
+ setDeleteProfile,
 } from '../../features/profile/profileSlice'
 
 
@@ -81,7 +82,9 @@ const Profile = (props) => {
         let values = {
             profileId: user.getProfileId(),
         }
-        actions.deleteUser(values);
+        console.log('Delete user here');
+        // actions.deleteUser(values);
+        dispatch(setDeleteProfile(values));
         toggleDeleteModal();
     }
 
