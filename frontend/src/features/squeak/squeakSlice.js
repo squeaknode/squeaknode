@@ -13,6 +13,7 @@ import {
   getReplySqueaks,
   getTimelineSqueaks,
   getSearchSqueaks,
+  makeSqueak,
 } from '../../api/client'
 
 const squeakAdapter = createEntityAdapter()
@@ -28,6 +29,7 @@ const initialState = {
   timelineSqueaks: [],
   searchSqueaksStatus: 'idle',
   searchSqueaks: [],
+  makeSqueakStatus: 'idle',
 }
 
 // Thunk functions
@@ -102,6 +104,27 @@ export const fetchSearch = createAsyncThunk(
       values.lastSqueak,
     );
     return response.getSqueakDisplayEntriesList();
+  }
+)
+
+export const setMakeSqueak = createAsyncThunk(
+  'squeak/makeSqueak',
+  async (values) => {
+    console.log('Making squeak');
+    let profileId = values.signingProfile;
+    let content = values.description;
+    let replyTo = values.replyTo;
+    let hasRecipient = values.hasRecipient;
+    let recipientProfileId = values.recipientProfileId;
+
+    const response = await makeSqueak(
+      profileId,
+      content,
+      replyTo,
+      hasRecipient,
+      recipientProfileId,
+    );
+    return response.getSqueakHash();
   }
 )
 
@@ -191,6 +214,17 @@ const squeakSlice = createSlice({
       state.searchSqueaks = state.searchSqueaks.concat(newEntities);
       state.searchSqueaksStatus = 'idle'
     })
+    .addCase(setMakeSqueak.pending, (state, action) => {
+      console.log('setMakeSqueak pending');
+      state.makeSqueakStatus = 'loading'
+    })
+    .addCase(setMakeSqueak.fulfilled, (state, action) => {
+      console.log('setMakeSqueak fulfilled');
+      console.log(action);
+      const newSqueakHash = action.payload;
+      state.makeSqueakStatus = 'idle';
+      console.log('Go to new squeak');
+    })
   },
 })
 
@@ -233,3 +267,5 @@ export const selectLastSearchSqueak = createSelector(
   selectSearchSqueaks,
   squeaks => squeaks.length > 0 && squeaks[squeaks.length - 1]
 )
+
+export const selectMakeSqueakStatus = state => state.squeak.makeSqueakStatus
