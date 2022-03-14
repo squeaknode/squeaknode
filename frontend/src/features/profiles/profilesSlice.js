@@ -16,6 +16,7 @@ import {
   importSigningProfile,
   renameProfile,
   changeProfileImage,
+  clearProfileImage,
   getPrivateKey,
 } from '../../api/client'
 
@@ -98,6 +99,18 @@ export const setProfileImage = createAsyncThunk(
     let profileId = values.profileId;
     let imageBase64 = values.imageBase64;
     await changeProfileImage(profileId, imageBase64);
+    const response = await getProfile(profileId);
+    return response.getSqueakProfile();
+  }
+)
+
+// Use profile id for now. In the future, change RPC to accept pubkey.
+export const setClearProfileImage = createAsyncThunk(
+  'profile/setClearProfileImage',
+  async (values) => {
+    console.log('Clearing image for profile');
+    let profileId = values.profileId;
+    await clearProfileImage(profileId);
     const response = await getProfile(profileId);
     return response.getSqueakProfile();
   }
@@ -236,6 +249,15 @@ const profilesSlice = createSlice({
       updatedProfileInArray(state.contactProfiles, newProfile);
     })
     .addCase(setProfileImage.fulfilled, (state, action) => {
+      console.log(action);
+      const newProfile = action.payload;
+      if (state.currentProfile && state.currentProfile.getPubkey() === newProfile.getPubkey()) {
+        state.currentProfile = newProfile;
+      }
+      updatedProfileInArray(state.signingProfiles, newProfile);
+      updatedProfileInArray(state.contactProfiles, newProfile);
+    })
+    .addCase(setClearProfileImage.fulfilled, (state, action) => {
       console.log(action);
       const newProfile = action.payload;
       if (state.currentProfile && state.currentProfile.getPubkey() === newProfile.getPubkey()) {

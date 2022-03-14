@@ -491,6 +491,18 @@ export const changeProfileImage = (id, imageBase64) => {
     });
 }
 
+export const clearProfileImage = (id, imageBase64) => {
+    console.log('Calling clearProfileImage');
+    const request = new ClearSqueakProfileImageRequest();
+    request.setProfileId(id);
+    const deser = ClearSqueakProfileImageReply.deserializeBinary;
+    return baseRequest({
+      url: '/clearsqueakprofileimage',
+      req: request,
+      deser: deser,
+    });
+}
+
 export const getPrivateKey = (id) => {
     console.log('Calling getProfilePrivateKey');
     const request = new GetSqueakProfilePrivateKeyRequest();

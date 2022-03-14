@@ -22,6 +22,7 @@ import {
  setRenameProfile,
  setCreateContactProfile,
  setProfileImage,
+ setClearProfileImage,
  getProfilePrivateKey,
 } from '../../features/profiles/profilesSlice'
 import {
@@ -187,6 +188,14 @@ const Profile = (props) => {
         uploadAvatar(file);
     }
 
+    const clearAvatar = () => {
+      dispatch(setClearProfileImage({
+        profileId: user.getProfileId(),
+      }));
+      setSaved(true)
+      toggleEditModal()
+    }
+
     const uploadAvatar = (file) => {
       if (file == null)
         return;
@@ -203,10 +212,6 @@ const Profile = (props) => {
     };
 
     const uploadAvatarAsBase64 = (imageBase64) => {
-      let values = {
-          profileId: user.getProfileId(),
-          profileImg: imageBase64,
-      }
       dispatch(setProfileImage({
         profileId: user.getProfileId(),
         imageBase64: imageBase64,
@@ -401,6 +406,11 @@ const Profile = (props) => {
                             </div>
                         </div>
                         <p className="modal-title">'Edit Profile'</p>
+                        <div className="save-modal-wrapper">
+                            <div onClick={clearAvatar} className="save-modal-btn">
+                                Clear Image
+                            </div>
+                        </div>
                         <div className="save-modal-wrapper">
                             <div onClick={editProfile} className="save-modal-btn">
                                 Save
