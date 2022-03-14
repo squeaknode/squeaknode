@@ -15,6 +15,8 @@ import {
   clearSigningProfiles,
   selectSigningProfiles,
   selectSigningProfilesStatus,
+  setFollowProfile,
+  setUnfollowProfile,
 } from './profilesSlice'
 
 
@@ -45,12 +47,14 @@ const SigningProfiles = (props) => {
       e.stopPropagation()
       // actions.followUser(id)
       console.log('Follow clicked');
+      dispatch(setFollowProfile(id));
   }
 
   const unfollowUser = (e,id) => {
       e.stopPropagation()
       // actions.unfollowUser(id)
       console.log('Unfollow clicked');
+      dispatch(setUnfollowProfile(id));
   }
 
 

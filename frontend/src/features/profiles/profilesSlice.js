@@ -130,6 +130,12 @@ export const setImportSigningProfile = createAsyncThunk(
   }
 )
 
+const updatedProfileInArray = (profileArr, newProfile) => {
+  const currentIndex = profileArr.findIndex(profile => profile.getPubkey() === newProfile.getPubkey());
+  if (currentIndex != -1) {
+    profileArr[currentIndex] = newProfile;
+  }
+}
 
 
 const profilesSlice = createSlice({
@@ -167,6 +173,8 @@ const profilesSlice = createSlice({
       if (state.currentProfile && state.currentProfile.getPubkey() === newProfile.getPubkey()) {
         state.currentProfile = newProfile;
       }
+      updatedProfileInArray(state.signingProfiles, newProfile);
+      updatedProfileInArray(state.contactProfiles, newProfile);
       state.currentProfileStatus = 'idle';
     })
     .addCase(setUnfollowProfile.fulfilled, (state, action) => {
@@ -175,6 +183,8 @@ const profilesSlice = createSlice({
       if (state.currentProfile && state.currentProfile.getPubkey() === newProfile.getPubkey()) {
         state.currentProfile = newProfile;
       }
+      updatedProfileInArray(state.signingProfiles, newProfile);
+      updatedProfileInArray(state.contactProfiles, newProfile);
       state.currentProfileStatus = 'idle';
     })
     .addCase(setDeleteProfile.fulfilled, (state, action) => {
