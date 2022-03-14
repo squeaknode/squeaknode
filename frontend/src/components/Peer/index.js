@@ -67,15 +67,6 @@ useEffect(() => {
 useEffect( () => () => document.getElementsByTagName("body")[0].style.cssText = "", [] )
 
 
-const deleteList = () => {
-    actions.deleteList(props.match.params.id)
-    props.history.push('/app/lists')
-}
-
-const goToUser = (id) => {
-    props.history.push(`/app/profile/${id}`)
-}
-
 const connectPeer = (e) => {
     actions.connectPeer({
       host: props.match.params.host,
