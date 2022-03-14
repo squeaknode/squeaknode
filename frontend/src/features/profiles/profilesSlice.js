@@ -7,6 +7,9 @@ import {
 import {
   getSigningProfiles,
   getContactProfiles,
+  createContactProfile,
+  createSigningProfile,
+  importSigningProfile,
 } from '../../api/client'
 
 const profilesAdapter = createEntityAdapter()
@@ -16,6 +19,9 @@ const initialState = {
   signingProfiles: [],
   contactProfilesStatus: 'idle',
   contactProfiles: [],
+  createContactProfileStatus: 'idle',
+  createSigningProfileStatus: 'idle',
+  importSigningProfileStatus: 'idle',
 }
 
 // Thunk functions
@@ -34,6 +40,45 @@ export const fetchContactProfiles = createAsyncThunk(
     return response.getSqueakProfilesList();
   }
 )
+
+export const setCreateContactProfile = createAsyncThunk(
+  'profiles/createContactProfile',
+  async (values) => {
+    console.log('Creating contact profile');
+    let profileName = values.profileName;
+    let pubkey = values.pubkey;
+
+    const response = await createContactProfile(profileName, pubkey);
+    console.log(response);
+    return response.getSqueakHash();
+  }
+)
+
+export const setCreateSigningProfile = createAsyncThunk(
+  'profiles/createSigningProfile',
+  async (values) => {
+    console.log('Creating signing profile');
+    let profileName = values.profileName;
+
+    const response = await createSigningProfile(profileName);
+    console.log(response);
+    return response.getSqueakHash();
+  }
+)
+
+export const setImportSigningProfile = createAsyncThunk(
+  'profiles/importSigningProfile',
+  async (values) => {
+    console.log('Importing signing profile');
+    let profileName = values.profileName;
+    let privateKey = values.privateKey;
+
+    const response = await importSigningProfile(profileName, privateKey);
+    console.log(response);
+    return response.getSqueakHash();
+  }
+)
+
 
 
 const profilesSlice = createSlice({
@@ -67,6 +112,39 @@ const profilesSlice = createSlice({
       state.contactProfiles = newContactProfiles;
       state.contactProfilesStatus = 'idle'
     })
+    .addCase(setCreateContactProfile.pending, (state, action) => {
+      console.log('setCreateContactProfile pending');
+      state.createContactProfileStatus = 'loading'
+    })
+    .addCase(setCreateContactProfile.fulfilled, (state, action) => {
+      console.log('setCreateContactProfile fulfilled');
+      console.log(action);
+      const newSqueakHash = action.payload;
+      state.createContactProfileStatus = 'idle';
+      console.log('Go to new profile');
+    })
+    .addCase(setCreateSigningProfile.pending, (state, action) => {
+      console.log('setCreateSigningProfile pending');
+      state.createSigningProfileStatus = 'loading'
+    })
+    .addCase(setCreateSigningProfile.fulfilled, (state, action) => {
+      console.log('setCreateSigningProfile fulfilled');
+      console.log(action);
+      const newSqueakHash = action.payload;
+      state.createSigningProfileStatus = 'idle';
+      console.log('Go to new profile');
+    })
+    .addCase(setImportSigningProfile.pending, (state, action) => {
+      console.log('setImportSigningProfile pending');
+      state.importSigningProfileStatus = 'loading'
+    })
+    .addCase(setImportSigningProfile.fulfilled, (state, action) => {
+      console.log('setImportSigningProfile fulfilled');
+      console.log(action);
+      const newSqueakHash = action.payload;
+      state.importSigningProfileStatus = 'idle';
+      console.log('Go to new profile');
+    })
   },
 })
 
@@ -84,3 +162,9 @@ export const selectSigningProfilesStatus = state => state.profiles.signingProfil
 export const selectContactProfiles = state => state.profiles.contactProfiles
 
 export const selectContactProfilesStatus = state => state.profiles.contactProfilesStatus
+
+export const selectCreateContactProfileStatus = state => state.createContactProfile.createContactProfileStatus
+
+export const selectCreateSigningProfileStatus = state => state.createSigningProfile.createSigningProfileStatus
+
+export const selectImportSigningProfileStatus = state => state.importSigningProfile.importSigningProfileStatus

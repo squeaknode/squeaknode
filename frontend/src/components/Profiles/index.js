@@ -11,9 +11,9 @@ import { useDispatch } from 'react-redux'
 
 import SigningProfiles from '../../features/profiles/SigningProfiles'
 import ContactProfiles from '../../features/profiles/ContactProfiles'
-import { setCreateSigningProfile } from '../../features/profiles/createSigningProfileSlice'
-import { setImportSigningProfile } from '../../features/profiles/importSigningProfileSlice'
-import { setCreateContactProfile } from '../../features/profiles/createContactProfileSlice'
+import { setCreateSigningProfile } from '../../features/profiles/profilesSlice'
+import { setImportSigningProfile } from '../../features/profiles/profilesSlice'
+import { setCreateContactProfile } from '../../features/profiles/profilesSlice'
 
 
 

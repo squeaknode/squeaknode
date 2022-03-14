@@ -4,20 +4,13 @@ import networkReducer from './features/network/networkSlice'
 import squeaksReducer from './features/squeaks/squeaksSlice'
 import profilesReducer from './features/profiles/profilesSlice'
 import paymentsReducer from './features/payments/paymentsSlice'
-import createSigningProfileReducer from './features/profiles/createSigningProfileSlice'
-import importSigningProfileReducer from './features/profiles/importSigningProfileSlice'
-import createContactProfileReducer from './features/profiles/createContactProfileSlice'
 import profileReducer from './features/profile/profileSlice'
 
 const store = configureStore({
   reducer: {
-    // Define a top-level state field named `todos`, handled by `todosReducer`
     network: networkReducer,
     squeaks: squeaksReducer,
     profiles: profilesReducer,
-    createSigningProfile: createSigningProfileReducer,
-    importSigningProfile: importSigningProfileReducer,
-    createContactProfile: createContactProfileReducer,
     payments: paymentsReducer,
     profile: profileReducer,
   },
