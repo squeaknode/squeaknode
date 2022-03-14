@@ -226,8 +226,6 @@ const Profile = (props) => {
 
     const getMoreSqueaks = () => {
         let lastSqueak = getLastSqueak(profileSqueaks);
-        // TODO
-        // actions.getUserSqueaks({username: props.match.params.username, lastUserSqueak: lastSqueak})
         dispatch(fetchProfileSqueaks({
           profilePubkey: props.match.params.username,
           limit: 10,
@@ -236,9 +234,7 @@ const Profile = (props) => {
     }
 
     const reloadSqueaks = () => {
-        //actions.clearUserSqueaks();
         dispatch(clearProfileSqueaks());
-        // actions.getUserSqueaks({username: props.match.params.username, lastSqueak: null});
         dispatch(fetchProfileSqueaks({
           profilePubkey: props.match.params.username,
           limit: 10,
