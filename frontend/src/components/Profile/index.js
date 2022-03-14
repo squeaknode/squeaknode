@@ -18,7 +18,7 @@ import {
  setUnfollowProfile,
  selectCurrentProfile,
  setDeleteProfile,
-} from '../../features/profile/profileSlice'
+} from '../../features/profiles/profilesSlice'
 
 
 const Profile = (props) => {

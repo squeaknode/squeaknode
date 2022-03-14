@@ -5,6 +5,10 @@ import {
   createEntityAdapter,
 } from '@reduxjs/toolkit'
 import {
+  getProfile,
+  getProfileByPubkey,
+  setProfileFollowing,
+  deleteProfile,
   getSigningProfiles,
   getContactProfiles,
   createContactProfile,
@@ -15,6 +19,8 @@ import {
 const profilesAdapter = createEntityAdapter()
 
 const initialState = {
+  currentProfileStatus: 'idle',
+  currentProfile: null,
   signingProfilesStatus: 'idle',
   signingProfiles: [],
   contactProfilesStatus: 'idle',
@@ -25,6 +31,48 @@ const initialState = {
 }
 
 // Thunk functions
+export const fetchProfile = createAsyncThunk(
+  'profile/fetchProfile',
+  async (pubkey) => {
+    console.log('Fetching profile');
+    const response = await getProfileByPubkey(pubkey);
+    console.log(response);
+    return response.getSqueakProfile();
+  }
+)
+
+// Use profile id for now. In the future, change RPC to accept pubkey.
+export const setFollowProfile = createAsyncThunk(
+  'profile/setFollowProfile',
+  async (id) => {
+    console.log('Following profile');
+    await setProfileFollowing(id, true);
+    const response = await getProfile(id);
+    return response.getSqueakProfile();
+  }
+)
+
+// Use profile id for now. In the future, change RPC to accept pubkey.
+export const setUnfollowProfile = createAsyncThunk(
+  'profile/setUnfollowProfile',
+  async (id) => {
+    console.log('Unfollowing profile');
+    await setProfileFollowing(id, false);
+    const response = await getProfile(id);
+    return response.getSqueakProfile();
+  }
+)
+
+// Use profile id for now. In the future, change RPC to accept pubkey.
+export const setDeleteProfile = createAsyncThunk(
+  'profile/setDeleteProfile',
+  async (values) => {
+    console.log('Deleting profile');
+    await deleteProfile(values.profileId);
+    return null;
+  }
+)
+
 export const fetchSigningProfiles = createAsyncThunk(
   'profiles/fetchSigningProfiles',
   async () => {
@@ -85,6 +133,11 @@ const profilesSlice = createSlice({
   name: 'profiles',
   initialState,
   reducers: {
+    clearAll(state, action) {
+      console.log('Clear profile and other data.');
+      state.currentProfileStatus = 'idle';
+      state.currentProfile = null;
+    },
     clearSigningProfiles(state, action) {
       state.signingProfilesStatus = 'idle'
       state.signingProfiles = [];
@@ -96,6 +149,36 @@ const profilesSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+    .addCase(fetchProfile.pending, (state, action) => {
+      state.currentProfileStatus = 'loading'
+    })
+    .addCase(fetchProfile.fulfilled, (state, action) => {
+      console.log(action);
+      const newProfile = action.payload;
+      state.currentProfile = newProfile;
+      state.currentProfileStatus = 'idle';
+    })
+    .addCase(setFollowProfile.fulfilled, (state, action) => {
+      console.log(action);
+      const newProfile = action.payload;
+      // TODO: only update state if the new profile has the same id/pubkey.
+      state.currentProfile = newProfile;
+      state.currentProfileStatus = 'idle';
+    })
+    .addCase(setUnfollowProfile.fulfilled, (state, action) => {
+      console.log(action);
+      const newProfile = action.payload;
+      // TODO: only update state if the new profile has the same id/pubkey.
+      state.currentProfile = newProfile;
+      state.currentProfileStatus = 'idle';
+    })
+    .addCase(setDeleteProfile.fulfilled, (state, action) => {
+      console.log(action);
+      const deletedProfile = action.payload;
+      // TODO: only update state if the new profile has the same id/pubkey.
+      state.currentProfile = deletedProfile;
+      state.currentProfileStatus = 'idle';
+    })
     .addCase(fetchSigningProfiles.pending, (state, action) => {
       state.signingProfilesStatus = 'loading'
     })
@@ -149,11 +232,16 @@ const profilesSlice = createSlice({
 })
 
 export const {
+  clearAll,
   clearSigningProfiles,
   clearContactProfiles,
 } = profilesSlice.actions
 
 export default profilesSlice.reducer
+
+export const selectCurrentProfile = state => state.profiles.currentProfile
+
+export const selectCurrentProfileStatus = state => state.profiles.currentProfileStatus
 
 export const selectSigningProfiles = state => state.profiles.signingProfiles
 
