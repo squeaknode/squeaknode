@@ -164,22 +164,26 @@ const profilesSlice = createSlice({
     .addCase(setFollowProfile.fulfilled, (state, action) => {
       console.log(action);
       const newProfile = action.payload;
-      // TODO: only update state if the new profile has the same id/pubkey.
-      state.currentProfile = newProfile;
+      if (state.currentProfile && state.currentProfile.getPubkey() === newProfile.getPubkey()) {
+        state.currentProfile = newProfile;
+      }
       state.currentProfileStatus = 'idle';
     })
     .addCase(setUnfollowProfile.fulfilled, (state, action) => {
       console.log(action);
       const newProfile = action.payload;
-      // TODO: only update state if the new profile has the same id/pubkey.
-      state.currentProfile = newProfile;
+      if (state.currentProfile && state.currentProfile.getPubkey() === newProfile.getPubkey()) {
+        state.currentProfile = newProfile;
+      }
       state.currentProfileStatus = 'idle';
     })
     .addCase(setDeleteProfile.fulfilled, (state, action) => {
       console.log(action);
-      const deletedProfile = action.payload;
-      // TODO: only update state if the new profile has the same id/pubkey.
-      state.currentProfile = deletedProfile;
+      const deletedProfileId = action.meta.arg.profileId;
+      console.log(deletedProfileId);
+      if (state.currentProfile && state.currentProfile.getProfileId() === deletedProfileId) {
+        state.currentProfile = null;
+      }
       state.currentProfileStatus = 'idle';
     })
     .addCase(fetchSigningProfiles.pending, (state, action) => {
