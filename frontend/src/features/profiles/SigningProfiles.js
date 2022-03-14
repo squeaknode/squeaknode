@@ -15,7 +15,7 @@ import {
   clearSigningProfiles,
   selectSigningProfiles,
   selectSigningProfilesStatus,
-} from './signingProfilesSlice'
+} from './profilesSlice'
 
 
 const SigningProfiles = (props) => {

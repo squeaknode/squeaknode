@@ -15,7 +15,7 @@ import {
   clearContactProfiles,
   selectContactProfiles,
   selectContactProfilesStatus,
-} from './contactProfilesSlice'
+} from './profilesSlice'
 
 
 const ContactProfiles = (props) => {

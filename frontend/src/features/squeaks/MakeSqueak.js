@@ -20,7 +20,7 @@ import {
 import {
   selectSigningProfiles,
   fetchSigningProfiles,
-} from '../../features/profiles/signingProfilesSlice'
+} from '../../features/profiles/profilesSlice'
 
 const MakeSqueak = (props) => {
     const signingProfiles = useSelector(selectSigningProfiles);

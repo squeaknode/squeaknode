@@ -2,8 +2,7 @@ import { configureStore } from '@reduxjs/toolkit'
 
 import networkReducer from './features/network/networkSlice'
 import squeaksReducer from './features/squeaks/squeaksSlice'
-import signingProfilesReducer from './features/profiles/signingProfilesSlice'
-import contactProfilesReducer from './features/profiles/contactProfilesSlice'
+import profilesReducer from './features/profiles/profilesSlice'
 import paymentsReducer from './features/payments/paymentsSlice'
 import createSigningProfileReducer from './features/profiles/createSigningProfileSlice'
 import importSigningProfileReducer from './features/profiles/importSigningProfileSlice'
@@ -15,8 +14,7 @@ const store = configureStore({
     // Define a top-level state field named `todos`, handled by `todosReducer`
     network: networkReducer,
     squeaks: squeaksReducer,
-    signingProfiles: signingProfilesReducer,
-    contactProfiles: contactProfilesReducer,
+    profiles: profilesReducer,
     createSigningProfile: createSigningProfileReducer,
     importSigningProfile: importSigningProfileReducer,
     createContactProfile: createContactProfileReducer,
