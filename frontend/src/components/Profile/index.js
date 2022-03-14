@@ -157,8 +157,6 @@ const Profile = (props) => {
     const toggleSpendingModal = (param, type) => {
         setStyleBody(!styleBody)
         if(type){setTab(type)}
-        // TODO: fetch spending info
-        // actions.getFollowers(props.match.params.username)
         if(type){setTab(type)}
         setTimeout(()=>{ setSpendingModalOpen(!spendingModalOpen) },20)
     }
