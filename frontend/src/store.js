@@ -3,8 +3,6 @@ import { configureStore } from '@reduxjs/toolkit'
 import networkReducer from './features/network/networkSlice'
 import timelineReducer from './features/timeline/timelineSlice'
 import squeakReducer from './features/squeak/squeakSlice'
-import ancestorSqueaksReducer from './features/squeak/ancestorSqueaksSlice'
-import replySqueaksReducer from './features/squeak/replySqueaksSlice'
 import makeSqueakReducer from './features/makesqueak/makeSqueakSlice'
 import signingProfilesReducer from './features/profiles/signingProfilesSlice'
 import contactProfilesReducer from './features/profiles/contactProfilesSlice'
@@ -23,8 +21,6 @@ const store = configureStore({
     network: networkReducer,
     timeline: timelineReducer,
     squeak: squeakReducer,
-    ancestorSqueaks: ancestorSqueaksReducer,
-    replySqueaks: replySqueaksReducer,
     makeSqueak: makeSqueakReducer,
     signingProfiles: signingProfilesReducer,
     contactProfiles: contactProfilesReducer,

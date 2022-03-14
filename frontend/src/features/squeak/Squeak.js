@@ -26,19 +26,15 @@ import {
   clearAll,
   setLikeSqueak,
   setUnlikeSqueak,
-} from './squeakSlice'
-import {
+  fetchAncestorSqueaks,
   selectAncestorSqueaks,
   selectAncestorSqueaksStatus,
-  fetchAncestorSqueaks,
   clearAncestors,
-} from './ancestorSqueaksSlice'
-import {
+  fetchReplySqueaks,
   selectReplySqueaks,
   selectReplySqueaksStatus,
-  fetchReplySqueaks,
   clearReplies,
-} from './replySqueaksSlice'
+} from './squeakSlice'
 import store from '../../store'
 
 
@@ -49,7 +45,7 @@ const Squeak = (props) => {
   const replySqueaks = useSelector(selectReplySqueaks);
   const loadingCurrentSqueakStatus = useSelector(selectCurrentSqueakStatus)
   const loadingAncestorSqueaksStatus = useSelector(selectAncestorSqueaksStatus)
-  const loadingReplySqueaksStatus = useSelector((state) => state.squeak.replySqueaksStatus)
+  const loadingReplySqueaksStatus = useSelector(selectReplySqueaksStatus)
   const dispatch = useDispatch();
 
   const [modalOpen, setModalOpen] = useState(false)
