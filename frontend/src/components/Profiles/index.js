@@ -7,6 +7,7 @@ import { getProfileImageSrcString } from '../../squeakimages/images';
 import Loader from '../Loader'
 import SqueakCard from '../SqueakCard'
 
+import { unwrapResult } from '@reduxjs/toolkit'
 import { useDispatch } from 'react-redux'
 
 import SigningProfiles from '../../features/profiles/SigningProfiles'
@@ -81,18 +82,42 @@ const Profiles = (props) => {
         if (usePrivKey) {
           // actions.importSigningProfile({profileName: newProfileName, privateKey: newProfilePrivkey});
           console.log('Import signing profile with name:', newProfileName);
-          dispatch(setImportSigningProfile({profileName: newProfileName, privateKey: newProfilePrivkey}));
+          dispatch(setImportSigningProfile({profileName: newProfileName, privateKey: newProfilePrivkey}))
+          .then(unwrapResult)
+          .then((pubkey) => {
+            console.log('Created profile with pubkey', pubkey);
+            props.history.push(`/app/profile/${pubkey}`);
+          })
+          .catch((err) => {
+            alert(err.message);
+          });
         } else {
           // actions.createSigningProfile({profileName: newProfileName});
           console.log('Create signing profile with name:', newProfileName);
-          dispatch(setCreateSigningProfile({profileName: newProfileName}));
+          dispatch(setCreateSigningProfile({profileName: newProfileName}))
+          .then(unwrapResult)
+          .then((pubkey) => {
+            console.log('Created profile with pubkey', pubkey);
+            props.history.push(`/app/profile/${pubkey}`);
+          })
+          .catch((err) => {
+            alert(err.message);
+          });
         }
         toggleSigningProfileModal();
     }
 
     const createContactProfile = () => {
         // actions.createContactProfile({profileName: newProfileName, pubkey: newProfilePubkey});
-        dispatch(setCreateContactProfile({profileName: newProfileName, pubkey: newProfilePubkey}));
+        dispatch(setCreateContactProfile({profileName: newProfileName, pubkey: newProfilePubkey}))
+        .then(unwrapResult)
+        .then((pubkey) => {
+          console.log('Created profile with pubkey', pubkey);
+          props.history.push(`/app/profile/${pubkey}`);
+        })
+        .catch((err) => {
+          alert(err.message);
+        });
         toggleContactProfileModal();
     }
 

@@ -95,10 +95,11 @@ export const setCreateContactProfile = createAsyncThunk(
     console.log('Creating contact profile');
     let profileName = values.profileName;
     let pubkey = values.pubkey;
-
-    const response = await createContactProfile(profileName, pubkey);
+    const createResponse = await createContactProfile(profileName, pubkey);
+    console.log(createResponse);
+    const response = await getProfile(createResponse.getProfileId());
     console.log(response);
-    return response.getSqueakHash();
+    return response.getSqueakProfile().getPubkey();
   }
 )
 
@@ -107,10 +108,11 @@ export const setCreateSigningProfile = createAsyncThunk(
   async (values) => {
     console.log('Creating signing profile');
     let profileName = values.profileName;
-
-    const response = await createSigningProfile(profileName);
+    const createResponse = await createSigningProfile(profileName);
+    console.log(createResponse);
+    const response = await getProfile(createResponse.getProfileId());
     console.log(response);
-    return response.getSqueakHash();
+    return response.getSqueakProfile().getPubkey();
   }
 )
 
@@ -120,10 +122,11 @@ export const setImportSigningProfile = createAsyncThunk(
     console.log('Importing signing profile');
     let profileName = values.profileName;
     let privateKey = values.privateKey;
-
-    const response = await importSigningProfile(profileName, privateKey);
+    const createResponse = await importSigningProfile(profileName, privateKey);
+    console.log(createResponse);
+    const response = await getProfile(createResponse.getProfileId());
     console.log(response);
-    return response.getSqueakHash();
+    return response.getSqueakProfile().getPubkey();
   }
 )
 
