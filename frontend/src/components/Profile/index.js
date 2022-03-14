@@ -9,6 +9,7 @@ import moment from 'moment'
 import SqueakCard from '../SqueakCard'
 import {API_URL} from '../../config'
 
+import { unwrapResult } from '@reduxjs/toolkit'
 import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
 
@@ -21,6 +22,7 @@ import {
  setRenameProfile,
  setCreateContactProfile,
  setProfileImage,
+ getProfilePrivateKey,
 } from '../../features/profiles/profilesSlice'
 import {
  fetchProfileSqueaks,
@@ -36,7 +38,7 @@ const Profile = (props) => {
     const [activeTab, setActiveTab] = useState('Squeaks')
     const [moreMenu, setMoreMenu] = useState(false)
     const [editName, setName] = useState('')
-    // const [privateKey, setPrivateKey] = useState('')
+    const [privateKey, setPrivateKey] = useState('')
     const [editModalOpen, setEditModalOpen] = useState(false)
     const [deleteModalOpen, setDeleteModalOpen] = useState(false)
     const [exportModalOpen, setExportModalOpen] = useState(false)
@@ -50,7 +52,7 @@ const Profile = (props) => {
     const profileSqueaks = useSelector(selectProfileSqueaks);
     const lastUserSqueak = useSelector(selectLastProfileSqueak);
     const profileSqueaksStatus = useSelector(selectProfileSqueaksStatus);
-    const privateKey = 'TODO';
+    // const privateKey = 'TODO';
 
     const user = useSelector(selectCurrentProfile);
     const dispatch = useDispatch();
@@ -59,7 +61,6 @@ const Profile = (props) => {
 
     useEffect(() => {
         window.scrollTo(0, 0)
-        // actions.getUser(props.match.params.username)
         dispatch(fetchProfile(props.match.params.username));
         reloadSqueaks();
         //preventing edit modal from apprearing after clicking a user on memOpen
@@ -109,9 +110,12 @@ const Profile = (props) => {
         let values = {
             profileId: user.getProfileId(),
         }
-        // TODO
-        // actions.exportPrivateKey(values);
-        // toggleExportModal();
+        dispatch(getProfilePrivateKey(values))
+        .then(unwrapResult)
+        .then((privateKey) =>{
+          console.log(privateKey);
+          setPrivateKey(privateKey);
+        });
     }
 
     const downloadUserSqueaks = () => {

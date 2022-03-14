@@ -490,3 +490,15 @@ export const changeProfileImage = (id, imageBase64) => {
       deser: deser,
     });
 }
+
+export const getPrivateKey = (id) => {
+    console.log('Calling getProfilePrivateKey');
+    const request = new GetSqueakProfilePrivateKeyRequest();
+    request.setProfileId(id);
+    const deser = GetSqueakProfilePrivateKeyReply.deserializeBinary;
+    return baseRequest({
+      url: '/getsqueakprofileprivatekey',
+      req: request,
+      deser: deser,
+    });
+}

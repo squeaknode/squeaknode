@@ -16,6 +16,7 @@ import {
   importSigningProfile,
   renameProfile,
   changeProfileImage,
+  getPrivateKey,
 } from '../../api/client'
 
 const profilesAdapter = createEntityAdapter()
@@ -30,6 +31,7 @@ const initialState = {
   createContactProfileStatus: 'idle',
   createSigningProfileStatus: 'idle',
   importSigningProfileStatus: 'idle',
+  exportPrivateKeyStatus: 'idle',
 }
 
 // Thunk functions
@@ -155,6 +157,17 @@ export const setImportSigningProfile = createAsyncThunk(
     const response = await getProfile(createResponse.getProfileId());
     console.log(response);
     return response.getSqueakProfile().getPubkey();
+  }
+)
+
+export const getProfilePrivateKey = createAsyncThunk(
+  'profiles/getProfilePrivateKey',
+  async (values) => {
+    console.log('Exporting profile private key');
+    let profileId = values.profileId;
+    const response = await getPrivateKey(profileId);
+    console.log(response);
+    return response.getPrivateKey();
   }
 )
 
@@ -287,6 +300,15 @@ const profilesSlice = createSlice({
       const newSqueakHash = action.payload;
       state.importSigningProfileStatus = 'idle';
       console.log('Go to new profile');
+    })
+    .addCase(getProfilePrivateKey.pending, (state, action) => {
+      console.log('getProfilePrivateKey pending');
+      state.exportPrivateKeyStatus = 'loading'
+    })
+    .addCase(getProfilePrivateKey.fulfilled, (state, action) => {
+      console.log('getProfilePrivateKey fulfilled');
+      console.log(action);
+      state.exportPrivateKeyStatus = 'idle';
     })
   },
 })
