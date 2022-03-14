@@ -9,8 +9,8 @@ import { client, getSearchSqueaks, getSqueak, likeSqueak, unlikeSqueak } from '.
 const searchAdapter = createEntityAdapter()
 
 const initialState = {
-  status: 'idle',
-  entities: []
+  searchSqueaksStatus: 'idle',
+  searchSqueaks: []
 }
 
 // Thunk functions
@@ -51,28 +51,28 @@ const searchSlice = createSlice({
   initialState,
   reducers: {
     clearSearch(state, action) {
-      state.entities = [];
+      state.searchSqueaks = [];
     },
   },
   extraReducers: (builder) => {
     builder
     .addCase(fetchSearch.pending, (state, action) => {
-      state.status = 'loading'
+      state.searchSqueaksStatus = 'loading'
     })
     .addCase(fetchSearch.fulfilled, (state, action) => {
       const newEntities = action.payload;
-      state.entities = state.entities.concat(newEntities);
-      state.status = 'idle'
+      state.searchSqueaks = state.searchSqueaks.concat(newEntities);
+      state.searchSqueaksStatus = 'idle'
     })
     .addCase(setLikeSqueak.fulfilled, (state, action) => {
       const newSqueak = action.payload;
-      const currentIndex = state.entities.findIndex(squeak => squeak.getSqueakHash() === newSqueak.getSqueakHash());
-      state.entities[currentIndex] = newSqueak;
+      const currentIndex = state.searchSqueaks.findIndex(squeak => squeak.getSqueakHash() === newSqueak.getSqueakHash());
+      state.searchSqueaks[currentIndex] = newSqueak;
     })
     .addCase(setUnlikeSqueak.fulfilled, (state, action) => {
       const newSqueak = action.payload;
-      const currentIndex = state.entities.findIndex(squeak => squeak.getSqueakHash() === newSqueak.getSqueakHash());
-      state.entities[currentIndex] = newSqueak;
+      const currentIndex = state.searchSqueaks.findIndex(squeak => squeak.getSqueakHash() === newSqueak.getSqueakHash());
+      state.searchSqueaks[currentIndex] = newSqueak;
     })
   },
 })
@@ -83,21 +83,11 @@ export const {
 
 export default searchSlice.reducer
 
-export const selectSearchSqueaks = state => state.search.entities
+export const selectSearchSqueaks = state => state.search.searchSqueaks
+
+export const selectSearchSqueaksStatus = state => state.search.searchSqueaksStatus
 
 export const selectLastSearchSqueak = createSelector(
   selectSearchSqueaks,
   squeaks => squeaks.length > 0 && squeaks[squeaks.length - 1]
 )
-
-export const selectSearchSqueakIds = createSelector(
-  // First, pass one or more "input selector" functions:
-  selectSearchSqueaks,
-  // Then, an "output selector" that receives all the input results as arguments
-  // and returns a final result value
-  squeaks => squeaks.map(squeak => squeak.getSqueakHash())
-)
-
-export const selectSearchSqueakById = (state, squeakId) => {
-  return selectSearchSqueaks(state).find(squeak => squeak.getSqueakHash() === squeakId)
-}

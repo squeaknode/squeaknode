@@ -15,19 +15,17 @@ import Loader from '../../components/Loader'
 
 import {
   clearSearch,
+  fetchSearch,
   selectSearchSqueaks,
-  selectSearchSqueakIds,
   selectLastSearchSqueak,
-} from './searchSlice'
-
-import { fetchSearch } from './searchSlice'
+  selectSearchSqueaksStatus,
+ } from './searchSlice'
 import store from '../../store'
 
 
 const SearchResults = (props) => {
-  const squeakIds = useSelector(selectSearchSqueakIds)
   const squeaks = useSelector(selectSearchSqueaks);
-  const loadingStatus = useSelector((state) => state.search.status)
+  const loadingStatus = useSelector(selectSearchSqueaksStatus)
   const lastSqueak = useSelector(selectLastSearchSqueak)
   const dispatch = useDispatch()
 
@@ -117,17 +115,15 @@ const SearchResults = (props) => {
       })}
 
       {/* TODO: fix get loading state by doing this: https://medium.com/stashaway-engineering/react-redux-tips-better-way-to-handle-loading-flags-in-your-reducers-afda42a804c6 */}
-      {squeaks.length > 0 &&
-        <>
-        {loadingStatus == 'loading' ?
+        {loadingStatus === 'loading' ?
+        <div className="todo-list">
           <Loader />
-          :
-          <div onClick={() => getMoreSqueaks()} className='squeak-btn-side squeak-btn-active'>
-            Load more
-          </div>
+        </div>
+        :
+        <div onClick={() => getMoreSqueaks()} className='squeak-btn-side squeak-btn-active'>
+          LOAD MORE
+        </div>
         }
-        </>
-      }
          </>
 }
 
