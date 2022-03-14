@@ -15,6 +15,7 @@ import {
   getSearchSqueaks,
   getProfileSqueaks,
   makeSqueak,
+  deleteSqueak,
 } from '../../api/client'
 
 const squeakAdapter = createEntityAdapter()
@@ -62,6 +63,15 @@ export const setUnlikeSqueak = createAsyncThunk(
     await unlikeSqueak(squeakHash);
     const response = await getSqueak(squeakHash);
     return response.getSqueakDisplayEntry();
+  }
+)
+
+export const setDeleteSqueak = createAsyncThunk(
+  'squeaks/setDeleteSqueak',
+  async (squeakHash) => {
+    console.log('Deleting squeak');
+    await deleteSqueak(squeakHash);
+    return null;
   }
 )
 
@@ -154,6 +164,10 @@ const updatedSqueakInArray = (squeakArr, newSqueak) => {
   }
 }
 
+const removeSqueakInArray = (squeakArr, squeakHash) => {
+  return squeakArr.filter(squeak => squeak.getSqueakHash() !== squeakHash);
+}
+
 
 const squeaksSlice = createSlice({
   name: 'squeaks',
@@ -218,6 +232,19 @@ const squeaksSlice = createSlice({
       updatedSqueakInArray(state.ancestorSqueaks, newSqueak);
       updatedSqueakInArray(state.replySqueaks, newSqueak);
       updatedSqueakInArray(state.profileSqueaks, newSqueak);
+    })
+    .addCase(setDeleteSqueak.fulfilled, (state, action) => {
+      console.log(action);
+      const deletedSqueakHash = action.meta.arg;
+      if (state.currentSqueak && state.currentSqueak.getSqueakHash() === deletedSqueakHash) {
+        console.log('Matched current squeak')
+        state.currentSqueak = null;
+      }
+      state.timelineSqueaks = removeSqueakInArray(state.timelineSqueaks, deletedSqueakHash);
+      state.searchSqueaks = removeSqueakInArray(state.searchSqueaks, deletedSqueakHash);
+      state.ancestorSqueaks = removeSqueakInArray(state.ancestorSqueaks, deletedSqueakHash);
+      state.replySqueaks = removeSqueakInArray(state.replySqueaks, deletedSqueakHash);
+      state.profileSqueaks = removeSqueakInArray(state.profileSqueaks, deletedSqueakHash);
     })
     .addCase(fetchAncestorSqueaks.pending, (state, action) => {
       state.ancestorSqueaksStatus = 'loading'

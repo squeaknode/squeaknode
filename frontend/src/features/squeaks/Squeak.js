@@ -34,6 +34,7 @@ import {
   selectReplySqueaks,
   selectReplySqueaksStatus,
   clearReplies,
+  setDeleteSqueak,
 } from './squeaksSlice'
 import store from '../../store'
 
@@ -105,6 +106,7 @@ const Squeak = (props) => {
   const deleteSqueak = (id) => {
       // TODO: delete
       // actions.deleteSqueak(id)
+      dispatch(setDeleteSqueak(props.id));
   }
 
   const downloadSqueak = (id) => {

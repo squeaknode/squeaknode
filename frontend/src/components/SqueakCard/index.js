@@ -16,6 +16,7 @@ import ContentEditable from 'react-contenteditable'
 import {
   setLikeSqueak,
   setUnlikeSqueak,
+  setDeleteSqueak,
 } from '../../features/squeaks/squeaksSlice'
 
 
@@ -57,7 +58,8 @@ const SqueakCard = React.memo(function SqueakCard(props) {
 
     const deleteSqueak = (e,id) => {
         e.stopPropagation()
-        actions.deleteSqueak(id)
+        // actions.deleteSqueak(id)
+        dispatch(setDeleteSqueak(id));
     }
 
     const goToSqueak = (id) => {

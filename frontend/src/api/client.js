@@ -283,6 +283,18 @@ export const unlikeSqueak = (squeakHash) => {
     });
 }
 
+export const deleteSqueak = (squeakHash) => {
+    console.log('Calling deleteSqueak');
+    const request = new DeleteSqueakRequest();
+    request.setSqueakHash(squeakHash);
+    const deser = DeleteSqueakReply.deserializeBinary;
+    return baseRequest({
+      url: '/deletesqueak',
+      req: request,
+      deser: deser,
+    });
+}
+
 export const makeSqueak = (profileId, content, replyTo, hasRecipient, recipientProfileId) => {
     console.log('Calling makeSqueak');
     const request = new MakeSqueakRequest();
