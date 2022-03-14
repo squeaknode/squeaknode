@@ -20,8 +20,6 @@ import {
   getPrivateKey,
 } from '../../api/client'
 
-const profilesAdapter = createEntityAdapter()
-
 const initialState = {
   currentProfileStatus: 'idle',
   currentProfile: null,

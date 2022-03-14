@@ -6,8 +6,6 @@ import {
 } from '@reduxjs/toolkit'
 import { client, getNetwork } from '../../api/client'
 
-const networkAdapter = createEntityAdapter()
-
 const initialState = {
   network: null
 }

@@ -18,8 +18,6 @@ import {
   deleteSqueak,
 } from '../../api/client'
 
-const squeakAdapter = createEntityAdapter()
-
 const initialState = {
   currentSqueakStatus: 'idle',
   currentSqueak: null,

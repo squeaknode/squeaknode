@@ -10,8 +10,6 @@ import {
   getPaymentSummary,
 } from '../../api/client'
 
-const paymentsAdapter = createEntityAdapter()
-
 const initialState = {
   sentPaymentsStatus: 'idle',
   sentPayments: [],
