@@ -843,21 +843,21 @@ export function deletePeerRequest(peerId, handleResponse) {
 //   // });
 // }
 
-export function deleteSqueakRequest(squeakHash, handleResponse) {
-  const request = new DeleteSqueakRequest();
-  request.setSqueakHash(squeakHash);
-  makeRequest(
-    'deletesqueak',
-    request,
-    DeleteSqueakReply.deserializeBinary,
-    (response) => {
-      handleResponse(response);
-    },
-  );
-  // client.deleteSqueak(request, {}, (err, response) => {
-  //   handleResponse(response);
-  // });
-}
+// export function deleteSqueakRequest(squeakHash, handleResponse) {
+//   const request = new DeleteSqueakRequest();
+//   request.setSqueakHash(squeakHash);
+//   makeRequest(
+//     'deletesqueak',
+//     request,
+//     DeleteSqueakReply.deserializeBinary,
+//     (response) => {
+//       handleResponse(response);
+//     },
+//   );
+//   // client.deleteSqueak(request, {}, (err, response) => {
+//   //   handleResponse(response);
+//   // });
+// }
 
 export function downloadSqueakRequest(squeakHash, handleResponse) {
   const request = new DownloadSqueakRequest();

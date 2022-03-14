@@ -302,16 +302,16 @@ export const applyMiddleware = dispatch => action => {
         //       dispatch({ type: types.EXPORT_PRIVATE_KEY, payload: payload, data: action.payload });
         //     });
 
-        case types.DELETE_TWEET:
-            // return axios.delete(`${API_URL}/squeak/${action.payload}/delete`, headers)
-            // .then(res=>dispatch({ type: types.DELETE_TWEET, payload: res.data, data: action.payload }))
-            // .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
-
-            let deleteSqueakId = action.payload;
-            return deleteSqueakRequest(deleteSqueakId, (resp) => {
-              let payload = {squeak: null, squeakHash:  deleteSqueakId};
-              dispatch({ type: types.DELETE_TWEET, payload: payload, data: action.payload });
-            });
+        // case types.DELETE_TWEET:
+        //     // return axios.delete(`${API_URL}/squeak/${action.payload}/delete`, headers)
+        //     // .then(res=>dispatch({ type: types.DELETE_TWEET, payload: res.data, data: action.payload }))
+        //     // .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
+        //
+        //     let deleteSqueakId = action.payload;
+        //     return deleteSqueakRequest(deleteSqueakId, (resp) => {
+        //       let payload = {squeak: null, squeakHash:  deleteSqueakId};
+        //       dispatch({ type: types.DELETE_TWEET, payload: payload, data: action.payload });
+        //     });
 
         // case types.FOLLOW_USER:
         //     return setSqueakProfileFollowingRequest(action.payload, true, (resp) => {
