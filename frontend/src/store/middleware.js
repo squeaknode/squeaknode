@@ -193,46 +193,46 @@ export const applyMiddleware = dispatch => action => {
         //         return;
     	  //      });
 
-        case types.DOWNLOAD_USER_SQUEAKS:
-            return downloadAddressSqueaksRequest(action.payload, (resp) => {
-                const downloadResult = resp.getDownloadResult();
-                const numPeers = downloadResult.getNumberPeers();
-                const numDownloaded = downloadResult.getNumberDownloaded();
-                if (numPeers === 0) {
-                  let payload = {msg: "Unable to download because zero connected peers."}
-                    dispatch({ type: types.ERROR, payload: payload });
-                  } else {
-                    let payload = {msg: `Downloaded ${numDownloaded} squeaks from ${numPeers} connected peers.`}
-                    dispatch({ type: types.ERROR, payload: payload });
-                  }
-                  if (downloadResult.getNumberDownloaded() === 0) {
-                    return;
-                  }
-                  getAddressSqueakDisplaysRequest(action.payload, 10, null, (resp) => {
-                      let payload = {"userSqueaks": resp };
-                      dispatch({ type: types.CLEAR_USER_TWEETS, payload: {}})
-                      dispatch({ type: types.GET_USER_TWEETS, payload: payload });
-                  });
-                  return;
-         	  });
+        // case types.DOWNLOAD_USER_SQUEAKS:
+        //     return downloadAddressSqueaksRequest(action.payload, (resp) => {
+        //         const downloadResult = resp.getDownloadResult();
+        //         const numPeers = downloadResult.getNumberPeers();
+        //         const numDownloaded = downloadResult.getNumberDownloaded();
+        //         if (numPeers === 0) {
+        //           let payload = {msg: "Unable to download because zero connected peers."}
+        //             dispatch({ type: types.ERROR, payload: payload });
+        //           } else {
+        //             let payload = {msg: `Downloaded ${numDownloaded} squeaks from ${numPeers} connected peers.`}
+        //             dispatch({ type: types.ERROR, payload: payload });
+        //           }
+        //           if (downloadResult.getNumberDownloaded() === 0) {
+        //             return;
+        //           }
+        //           getAddressSqueakDisplaysRequest(action.payload, 10, null, (resp) => {
+        //               let payload = {"userSqueaks": resp };
+        //               dispatch({ type: types.CLEAR_USER_TWEETS, payload: {}})
+        //               dispatch({ type: types.GET_USER_TWEETS, payload: payload });
+        //           });
+        //           return;
+        //  	  });
 
-        case types.GET_ACCOUNT:
-            return axios.get(`${API_URL}/auth/user`, headers)
-            .then(res=>dispatch({ type: types.GET_ACCOUNT, payload: res.data }))
-            .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
-
-        case types.GET_USER:
-            // return axios.get(`${API_URL}/user/${action.payload}/squeaks`)
-            // .then(res=> {
-            //   dispatch({ type: types.GET_USER, payload: res.data });
-            // })
-            // .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
-
-            return getSqueakProfileByAddressRequest(action.payload, (resp) => {
-                let payload = {"user": resp };
-                dispatch({ type: types.GET_USER, payload: payload });
-            });
-            // TODO: handle error response
+        // case types.GET_ACCOUNT:
+        //     return axios.get(`${API_URL}/auth/user`, headers)
+        //     .then(res=>dispatch({ type: types.GET_ACCOUNT, payload: res.data }))
+        //     .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
+        //
+        // case types.GET_USER:
+        //     // return axios.get(`${API_URL}/user/${action.payload}/squeaks`)
+        //     // .then(res=> {
+        //     //   dispatch({ type: types.GET_USER, payload: res.data });
+        //     // })
+        //     // .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
+        //
+        //     return getSqueakProfileByAddressRequest(action.payload, (resp) => {
+        //         let payload = {"user": resp };
+        //         dispatch({ type: types.GET_USER, payload: payload });
+        //     });
+        //     // TODO: handle error response
 
         // case types.GET_USER_TWEETS:
         //     let username = action.payload.username

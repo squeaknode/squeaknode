@@ -684,40 +684,40 @@ export function getSqueakDisplayRequest(hash, handleResponse) {
 //   //   handleResponse(response.getSqueakDisplayEntriesList());
 //   // });
 // }
-
-export function getSqueakProfileByAddressRequest(pubkey, handleResponse) {
-  const request = new GetSqueakProfileByPubKeyRequest();
-  request.setPubkey(pubkey);
-  makeRequest(
-    'getsqueakprofilebypubkey',
-    request,
-    GetSqueakProfileByPubKeyReply.deserializeBinary,
-    (response) => {
-      handleResponse(response.getSqueakProfile());
-    },
-  );
-  // client.getSqueakProfileByAddress(request, {}, (err, response) => {
-  //   handleResponse(response.getSqueakProfile());
-  // });
-}
-
-export function getAddressSqueakDisplaysRequest(pubkey, limit, lastEntry, handleResponse) {
-  const request = new GetPubKeySqueakDisplaysRequest();
-  request.setPubkey(pubkey);
-  request.setLimit(limit);
-  request.setLastEntry(lastEntry);
-  makeRequest(
-    'getpubkeysqueakdisplays',
-    request,
-    GetPubKeySqueakDisplaysReply.deserializeBinary,
-    (response) => {
-      handleResponse(response.getSqueakDisplayEntriesList());
-    },
-  );
-  // client.getAddressSqueakDisplays(request, {}, (err, response) => {
-  //   handleResponse(response.getSqueakDisplayEntriesList());
-  // });
-}
+//
+// export function getSqueakProfileByAddressRequest(pubkey, handleResponse) {
+//   const request = new GetSqueakProfileByPubKeyRequest();
+//   request.setPubkey(pubkey);
+//   makeRequest(
+//     'getsqueakprofilebypubkey',
+//     request,
+//     GetSqueakProfileByPubKeyReply.deserializeBinary,
+//     (response) => {
+//       handleResponse(response.getSqueakProfile());
+//     },
+//   );
+//   // client.getSqueakProfileByAddress(request, {}, (err, response) => {
+//   //   handleResponse(response.getSqueakProfile());
+//   // });
+// }
+//
+// export function getAddressSqueakDisplaysRequest(pubkey, limit, lastEntry, handleResponse) {
+//   const request = new GetPubKeySqueakDisplaysRequest();
+//   request.setPubkey(pubkey);
+//   request.setLimit(limit);
+//   request.setLastEntry(lastEntry);
+//   makeRequest(
+//     'getpubkeysqueakdisplays',
+//     request,
+//     GetPubKeySqueakDisplaysReply.deserializeBinary,
+//     (response) => {
+//       handleResponse(response.getSqueakDisplayEntriesList());
+//     },
+//   );
+//   // client.getAddressSqueakDisplays(request, {}, (err, response) => {
+//   //   handleResponse(response.getSqueakDisplayEntriesList());
+//   // });
+// }
 
 // export function getSearchSqueakDisplaysRequest(searchText, limit, lastEntry, handleResponse) {
 //   const request = new GetSearchSqueakDisplaysRequest();
@@ -1018,37 +1018,37 @@ export function reprocessReceivedPaymentsRequest(handleResponse) {
   // });
 }
 
-export function likeSqueakRequest(hash, handleResponse) {
-  const request = new LikeSqueakRequest();
-  request.setSqueakHash(hash);
-  makeRequest(
-    'likesqueak',
-    request,
-    LikeSqueakReply.deserializeBinary,
-    (response) => {
-      handleResponse(response);
-    },
-  );
-  // client.likeSqueak(request, {}, (err, response) => {
-  //   handleResponse(response);
-  // });
-}
+// export function likeSqueakRequest(hash, handleResponse) {
+//   const request = new LikeSqueakRequest();
+//   request.setSqueakHash(hash);
+//   makeRequest(
+//     'likesqueak',
+//     request,
+//     LikeSqueakReply.deserializeBinary,
+//     (response) => {
+//       handleResponse(response);
+//     },
+//   );
+//   // client.likeSqueak(request, {}, (err, response) => {
+//   //   handleResponse(response);
+//   // });
+// }
 
-export function unlikeSqueakRequest(hash, handleResponse) {
-  const request = new UnlikeSqueakRequest();
-  request.setSqueakHash(hash);
-  makeRequest(
-    'unlikesqueak',
-    request,
-    UnlikeSqueakReply.deserializeBinary,
-    (response) => {
-      handleResponse(response);
-    },
-  );
-  // client.unlikeSqueak(request, {}, (err, response) => {
-  //   handleResponse(response);
-  // });
-}
+// export function unlikeSqueakRequest(hash, handleResponse) {
+//   const request = new UnlikeSqueakRequest();
+//   request.setSqueakHash(hash);
+//   makeRequest(
+//     'unlikesqueak',
+//     request,
+//     UnlikeSqueakReply.deserializeBinary,
+//     (response) => {
+//       handleResponse(response);
+//     },
+//   );
+//   // client.unlikeSqueak(request, {}, (err, response) => {
+//   //   handleResponse(response);
+//   // });
+// }
 
 export function getLikedSqueakDisplaysRequest(limit, lastEntry, handleResponse, handleErr) {
   const request = new GetLikedSqueakDisplaysRequest();
