@@ -9,7 +9,7 @@ import { getReceivedPayments } from '../../api/client'
 const receivedPaymentsAdapter = createEntityAdapter()
 
 const initialState = {
-  status: 'idle',
+  receivedPaymentsStatus: 'idle',
   receivedPayments: []
 }
 
@@ -28,19 +28,19 @@ const receivedPaymentsSlice = createSlice({
   initialState,
   reducers: {
     clearReceivedPayments(state, action) {
-      state.status = 'idle'
+      state.receivedPaymentsStatus = 'idle'
       state.receivedPayments = [];
     },
   },
   extraReducers: (builder) => {
     builder
     .addCase(fetchReceivedPayments.pending, (state, action) => {
-      state.status = 'loading'
+      state.receivedPaymentsStatus = 'loading'
     })
     .addCase(fetchReceivedPayments.fulfilled, (state, action) => {
       const newReceivedPayments = action.payload;
       state.receivedPayments = state.receivedPayments.concat(newReceivedPayments);
-      state.status = 'idle'
+      state.receivedPaymentsStatus = 'idle'
     })
   },
 })
@@ -58,4 +58,4 @@ export const selectLastReceivedPaymentsSqueak = createSelector(
   receivedPayments => receivedPayments.length > 0 && receivedPayments[receivedPayments.length - 1]
 )
 
-export const selectReceivedPaymentsStatus = state => state.receivedPayments.status
+export const selectReceivedPaymentsStatus = state => state.receivedPayments.receivedPaymentsStatus

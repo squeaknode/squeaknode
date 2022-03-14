@@ -9,7 +9,7 @@ import { getSentPayments } from '../../api/client'
 const sentPaymentsAdapter = createEntityAdapter()
 
 const initialState = {
-  status: 'idle',
+  sentPaymentsStatus: 'idle',
   sentPayments: []
 }
 
@@ -28,19 +28,19 @@ const sentPaymentsSlice = createSlice({
   initialState,
   reducers: {
     clearSentPayments(state, action) {
-      state.status = 'idle'
+      state.sentPaymentsStatus = 'idle'
       state.sentPayments = [];
     },
   },
   extraReducers: (builder) => {
     builder
     .addCase(fetchSentPayments.pending, (state, action) => {
-      state.status = 'loading'
+      state.sentPaymentsStatus = 'loading'
     })
     .addCase(fetchSentPayments.fulfilled, (state, action) => {
       const newSentPayments = action.payload;
       state.sentPayments = state.sentPayments.concat(newSentPayments);
-      state.status = 'idle'
+      state.sentPaymentsStatus = 'idle'
     })
   },
 })
@@ -58,4 +58,4 @@ export const selectLastSentPaymentsSqueak = createSelector(
   sentPayments => sentPayments.length > 0 && sentPayments[sentPayments.length - 1]
 )
 
-export const selectSentPaymentsStatus = state => state.sentPayments.status
+export const selectSentPaymentsStatus = state => state.sentPayments.sentPaymentsStatus
