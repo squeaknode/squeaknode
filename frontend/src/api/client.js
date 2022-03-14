@@ -526,3 +526,19 @@ export const getPrivateKey = (id) => {
       deser: deser,
     });
 }
+
+export const getPeer = (network, host, port) => {
+    console.log('Calling getPeer');
+    const request = new GetPeerByAddressRequest();
+    const peerAddress = new PeerAddress();
+    peerAddress.setNetwork(network);
+    peerAddress.setHost(host);
+    peerAddress.setPort(port);
+    request.setPeerAddress(peerAddress);
+    const deser = GetPeerByAddressReply.deserializeBinary;
+    return baseRequest({
+      url: '/getpeerbyaddress',
+      req: request,
+      deser: deser,
+    });
+}

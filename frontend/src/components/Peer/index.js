@@ -9,6 +9,17 @@ import {API_URL} from '../../config'
 import axios from 'axios'
 import {ICON_ARROWBACK, ICON_UPLOAD, ICON_CLOSE,ICON_SEARCH } from '../../Icons'
 
+import { unwrapResult } from '@reduxjs/toolkit'
+import { useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
+
+import {
+  fetchPeer,
+  selectCurrentPeer,
+  selectCurrentPeerStatus,
+} from '../../features/peers/peersSlice'
+
+
 const Peer = (props) => {
 
 const { state, actions } = useContext(StoreContext)
@@ -23,16 +34,21 @@ const [saved, setSaved] = useState(false)
 const [tab, setTab] = useState('Members')
 const [bannerLoading, setBannerLoading] = useState(false)
 const [styleBody, setStyleBody] = useState(false)
-const {peer, peerConnection, list} = state
+// const {peer, peerConnection, list} = state
+const {peerConnection, list} = state
+
+const peer = useSelector(selectCurrentPeer);
+const dispatch = useDispatch();
+
 
 useEffect(() => {
     window.scrollTo(0, 0)
-    // actions.getList(props.match.params.id)
-    actions.getPeer({
+    dispatch(fetchPeer({
       network: props.match.params.network,
       host: props.match.params.host,
       port: props.match.params.port,
-    });
+    }));
+
     actions.getPeerConnection({
       network: props.match.params.network,
       host: props.match.params.host,
