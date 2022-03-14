@@ -170,14 +170,12 @@ const Profile = (props) => {
 
     const followUser = (e,id) => {
         e.stopPropagation()
-        // actions.followUser(id)
         dispatch(setFollowProfile(id));
     }
 
     const unfollowUser = (e,id) => {
         console.log(e);
         e.stopPropagation()
-        // actions.unfollowUser(id)
         dispatch(setUnfollowProfile(id));
     }
 
