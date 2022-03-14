@@ -123,7 +123,10 @@ const Profile = (props) => {
         dispatch(setCreateContactProfile({
           pubkey: userParam,
           profileName: editName,
-        }));
+        }))
+        .then(() => {
+          dispatch(fetchProfile(props.match.params.username));
+        });
         toggleCreateModal();
     }
 
@@ -281,7 +284,11 @@ const Profile = (props) => {
                           <div onClick={()=>openMore()} style={{display: moreMenu ? 'block' : 'none'}} className="more-menu-background">
                           <div className="more-modal-wrapper">
                               {moreMenu ?
-                              <div style={{top: `${document.getElementById('profileMoreMenu').getBoundingClientRect().top - 40}px`, left: `${document.getElementById('profileMoreMenu').getBoundingClientRect().left}px`, height: '210px' }} onClick={(e)=>handleMenuClick(e)} className="more-menu-content">
+                              <div style={{
+                                top: document.getElementById('profileMoreMenu') && `${document.getElementById('profileMoreMenu').getBoundingClientRect().top - 40}px`,
+                                left: document.getElementById('profileMoreMenu') && `${document.getElementById('profileMoreMenu').getBoundingClientRect().left}px`,
+                                height: '210px',
+                               }} onClick={(e)=>handleMenuClick(e)} className="more-menu-content">
                                       <div onClick={toggleDeleteModal} className="more-menu-item">
                                           <span>Delete Profile</span>
                                       </div>
