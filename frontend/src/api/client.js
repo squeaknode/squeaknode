@@ -464,3 +464,16 @@ export const deleteProfile = (id) => {
       deser: deser,
     });
 }
+
+export const renameProfile = (id, profileName) => {
+    console.log('Calling renameProfile');
+    const request = new RenameSqueakProfileRequest();
+    request.setProfileId(id);
+    request.setProfileName(profileName);
+    const deser = RenameSqueakProfileReply.deserializeBinary;
+    return baseRequest({
+      url: '/renamesqueakprofile',
+      req: request,
+      deser: deser,
+    });
+}

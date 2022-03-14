@@ -18,6 +18,7 @@ import {
  setUnfollowProfile,
  selectCurrentProfile,
  setDeleteProfile,
+ setRenameProfile,
 } from '../../features/profiles/profilesSlice'
 import {
  fetchProfileSqueaks,
@@ -83,8 +84,11 @@ const Profile = (props) => {
             profileId: user.getProfileId(),
             name: editName,
         }
-        // TODO
-        // actions.updateUser(values)
+        dispatch(setRenameProfile({
+          profileId: user.getProfileId(),
+          profileName: editName,
+        }));
+        // TODO: chain action to update profile squeaks with the new name.
         setSaved(true)
         toggleEditModal()
     }

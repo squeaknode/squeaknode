@@ -14,6 +14,7 @@ import {
   createContactProfile,
   createSigningProfile,
   importSigningProfile,
+  renameProfile,
 } from '../../api/client'
 
 const profilesAdapter = createEntityAdapter()
@@ -70,6 +71,19 @@ export const setDeleteProfile = createAsyncThunk(
     console.log('Deleting profile');
     await deleteProfile(values.profileId);
     return null;
+  }
+)
+
+// Use profile id for now. In the future, change RPC to accept pubkey.
+export const setRenameProfile = createAsyncThunk(
+  'profile/setRenameProfile',
+  async (values) => {
+    console.log('Renaming profile');
+    let profileId = values.profileId;
+    let profileName = values.profileName;
+    await renameProfile(profileId, profileName);
+    const response = await getProfile(profileId);
+    return response.getSqueakProfile();
   }
 )
 
@@ -175,7 +189,6 @@ const profilesSlice = createSlice({
       }
       updatedProfileInArray(state.signingProfiles, newProfile);
       updatedProfileInArray(state.contactProfiles, newProfile);
-      state.currentProfileStatus = 'idle';
     })
     .addCase(setUnfollowProfile.fulfilled, (state, action) => {
       console.log(action);
@@ -185,7 +198,15 @@ const profilesSlice = createSlice({
       }
       updatedProfileInArray(state.signingProfiles, newProfile);
       updatedProfileInArray(state.contactProfiles, newProfile);
-      state.currentProfileStatus = 'idle';
+    })
+    .addCase(setRenameProfile.fulfilled, (state, action) => {
+      console.log(action);
+      const newProfile = action.payload;
+      if (state.currentProfile && state.currentProfile.getPubkey() === newProfile.getPubkey()) {
+        state.currentProfile = newProfile;
+      }
+      updatedProfileInArray(state.signingProfiles, newProfile);
+      updatedProfileInArray(state.contactProfiles, newProfile);
     })
     .addCase(setDeleteProfile.fulfilled, (state, action) => {
       console.log(action);
@@ -194,7 +215,6 @@ const profilesSlice = createSlice({
       if (state.currentProfile && state.currentProfile.getProfileId() === deletedProfileId) {
         state.currentProfile = null;
       }
-      state.currentProfileStatus = 'idle';
     })
     .addCase(fetchSigningProfiles.pending, (state, action) => {
       state.signingProfilesStatus = 'loading'
