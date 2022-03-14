@@ -10,7 +10,7 @@ import Loader from '../Loader'
 import SqueakCard from '../SqueakCard'
 //import MakeSqueak from '../MakeSqueak'
 import MakeSqueak from '../../features/makesqueak/MakeSqueak'
-import Timeline from '../../features/timeline/Timeline'
+import Timeline from '../../features/squeak/Timeline'
 
 
 
