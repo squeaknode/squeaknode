@@ -13,6 +13,7 @@ import {
   getReplySqueaks,
   getTimelineSqueaks,
   getSearchSqueaks,
+  getProfileSqueaks,
   makeSqueak,
 } from '../../api/client'
 
@@ -29,6 +30,8 @@ const initialState = {
   timelineSqueaks: [],
   searchSqueaksStatus: 'idle',
   searchSqueaks: [],
+  profileSqueaksStatus: 'idle',
+  profileSqueaks: [],
   makeSqueakStatus: 'idle',
 }
 
@@ -107,6 +110,22 @@ export const fetchSearch = createAsyncThunk(
   }
 )
 
+export const fetchProfileSqueaks = createAsyncThunk(
+  'squeaks/fetchProfileSqueaks',
+  async (values) => {
+    console.log('Fetching profile squeaks');
+    console.log(values.profilePubkey);
+    console.log(values.limit);
+    console.log(values.lastSqueak);
+    const response = await getProfileSqueaks(
+      values.profilePubkey,
+      values.limit,
+      values.lastSqueak,
+    );
+    return response.getSqueakDisplayEntriesList();
+  }
+)
+
 export const setMakeSqueak = createAsyncThunk(
   'squeaks/makeSqueak',
   async (values) => {
@@ -160,6 +179,9 @@ const squeaksSlice = createSlice({
     },
     clearSearch(state, action) {
       state.searchSqueaks = [];
+    },
+    clearProfileSqueaks(state, action) {
+      state.profileSqueaks = [];
     },
   },
   extraReducers: (builder) => {
@@ -229,6 +251,14 @@ const squeaksSlice = createSlice({
       state.searchSqueaks = state.searchSqueaks.concat(newEntities);
       state.searchSqueaksStatus = 'idle'
     })
+    .addCase(fetchProfileSqueaks.pending, (state, action) => {
+      state.profileSqueaksStatus = 'loading'
+    })
+    .addCase(fetchProfileSqueaks.fulfilled, (state, action) => {
+      const newEntities = action.payload;
+      state.profileSqueaks = state.profileSqueaks.concat(newEntities);
+      state.profileSqueaksStatus = 'idle'
+    })
     .addCase(setMakeSqueak.pending, (state, action) => {
       console.log('setMakeSqueak pending');
       state.makeSqueakStatus = 'loading'
@@ -249,6 +279,7 @@ export const {
   clearReplies,
   clearTimeline,
   clearSearch,
+  clearProfileSqueaks,
 } = squeaksSlice.actions
 
 export default squeaksSlice.reducer
@@ -280,6 +311,15 @@ export const selectSearchSqueaksStatus = state => state.squeaks.searchSqueaksSta
 
 export const selectLastSearchSqueak = createSelector(
   selectSearchSqueaks,
+  squeaks => squeaks.length > 0 && squeaks[squeaks.length - 1]
+)
+
+export const selectProfileSqueaks = state => state.squeaks.profileSqueaks
+
+export const selectProfileSqueaksStatus = state => state.squeaks.profileSqueaksStatus
+
+export const selectLastProfileSqueak = createSelector(
+  selectProfileSqueaks,
   squeaks => squeaks.length > 0 && squeaks[squeaks.length - 1]
 )
 

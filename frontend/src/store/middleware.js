@@ -234,14 +234,14 @@ export const applyMiddleware = dispatch => action => {
             });
             // TODO: handle error response
 
-        case types.GET_USER_TWEETS:
-            let username = action.payload.username
-            let lastUserSqueak = action.payload.lastUserSqueak
-            return getAddressSqueakDisplaysRequest(username, 10, lastUserSqueak, (resp) => {
-                let payload = {"userSqueaks": resp };
-                dispatch({ type: types.GET_USER_TWEETS, payload: payload });
-            });
-            // TODO: handle error response
+        // case types.GET_USER_TWEETS:
+        //     let username = action.payload.username
+        //     let lastUserSqueak = action.payload.lastUserSqueak
+        //     return getAddressSqueakDisplaysRequest(username, 10, lastUserSqueak, (resp) => {
+        //         let payload = {"userSqueaks": resp };
+        //         dispatch({ type: types.GET_USER_TWEETS, payload: payload });
+        //     });
+        //     // TODO: handle error response
 
         case types.CLEAR_USER_TWEETS:
             dispatch({ type: types.CLEAR_USER_TWEETS, payload: {}})

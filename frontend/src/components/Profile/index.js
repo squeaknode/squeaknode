@@ -19,10 +19,17 @@ import {
  selectCurrentProfile,
  setDeleteProfile,
 } from '../../features/profiles/profilesSlice'
+import {
+ fetchProfileSqueaks,
+ selectProfileSqueaks,
+ selectLastProfileSqueak,
+ selectProfileSqueaksStatus,
+ clearProfileSqueaks,
+} from '../../features/squeaks/squeaksSlice'
 
 
 const Profile = (props) => {
-    const { state, actions } = useContext(StoreContext)
+    // const { state, actions } = useContext(StoreContext)
     const [activeTab, setActiveTab] = useState('Squeaks')
     const [moreMenu, setMoreMenu] = useState(false)
     const [editName, setName] = useState('')
@@ -35,9 +42,12 @@ const Profile = (props) => {
     const [saved, setSaved] = useState(false)
     const [tab, setTab] = useState('Sats Spent')
     const [styleBody, setStyleBody] = useState(false)
-    // const {user, userSqueaks, privateKey, session} = state
-    const { userSqueaks, privateKey, session} = state
     const userParam = props.match.params.username
+
+    const profileSqueaks = useSelector(selectProfileSqueaks);
+    const lastUserSqueak = useSelector(selectLastProfileSqueak);
+    const profileSqueaksStatus = useSelector(selectProfileSqueaksStatus);
+    const privateKey = 'TODO';
 
     const user = useSelector(selectCurrentProfile);
     const dispatch = useDispatch();
@@ -73,7 +83,8 @@ const Profile = (props) => {
             profileId: user.getProfileId(),
             name: editName,
         }
-        actions.updateUser(values)
+        // TODO
+        // actions.updateUser(values)
         setSaved(true)
         toggleEditModal()
     }
@@ -93,17 +104,20 @@ const Profile = (props) => {
         let values = {
             profileId: user.getProfileId(),
         }
-        actions.exportPrivateKey(values);
+        // TODO
+        // actions.exportPrivateKey(values);
         // toggleExportModal();
     }
 
     const downloadUserSqueaks = () => {
-        actions.downloadUserSqueaks(userParam);
+        // TODO
+        // actions.downloadUserSqueaks(userParam);
     }
 
 
     const createContactProfile = () => {
-        actions.createContactProfile({profileName: editName, pubkey: userParam});
+        // TODO
+        // actions.createContactProfile({profileName: editName, pubkey: userParam});
         toggleCreateModal();
     }
 
@@ -146,7 +160,6 @@ const Profile = (props) => {
     }
 
     const followUser = (e,id) => {
-        if(!session){ actions.alert('Please Sign In'); return }
         e.stopPropagation()
         // actions.followUser(id)
         dispatch(setFollowProfile(id));
@@ -184,7 +197,8 @@ const Profile = (props) => {
           profileId: user.getProfileId(),
           profileImg: imageBase64,
       }
-      actions.updateUserImage(values)
+      // TODO
+      // actions.updateUserImage(values)
       setSaved(true)
       toggleEditModal()
     };
@@ -199,13 +213,25 @@ const Profile = (props) => {
     };
 
     const getMoreSqueaks = () => {
-        let lastSqueak = getLastSqueak(userSqueaks);
-        actions.getUserSqueaks({username: props.match.params.username, lastUserSqueak: lastSqueak})
+        let lastSqueak = getLastSqueak(profileSqueaks);
+        // TODO
+        // actions.getUserSqueaks({username: props.match.params.username, lastUserSqueak: lastSqueak})
+        dispatch(fetchProfileSqueaks({
+          profilePubkey: props.match.params.username,
+          limit: 10,
+          lastSqueak: lastUserSqueak,
+        }));
     }
 
     const reloadSqueaks = () => {
-        actions.clearUserSqueaks();
-        actions.getUserSqueaks({username: props.match.params.username, lastSqueak: null});
+        //actions.clearUserSqueaks();
+        dispatch(clearProfileSqueaks());
+        // actions.getUserSqueaks({username: props.match.params.username, lastSqueak: null});
+        dispatch(fetchProfileSqueaks({
+          profilePubkey: props.match.params.username,
+          limit: 10,
+          lastSqueak: null,
+        }));
     }
 
     const openMore = () => { setMoreMenu(!moreMenu) }
@@ -330,20 +356,20 @@ const Profile = (props) => {
                 </div>
             </div>
             {activeTab === 'Squeaks' ?
-            userSqueaks.map(t=>{
+            profileSqueaks.map(t=>{
                 if(!t.getReplyTo())
                 return <SqueakCard squeak={t} key={t.getSqueakHash()} id={t.getSqueakHash()} user={t.getAuthor()} />
              }) : activeTab === 'Squeaks&Replies' ?
-            userSqueaks.map(t=>{
+            profileSqueaks.map(t=>{
                 return <SqueakCard squeak={t} key={t.getSqueakHash()} id={t.getSqueakHash()} user={t.getAuthor()} />
              }) :
             activeTab === 'Likes' ?
             null: activeTab === 'Media' ?
             null: null}
             {/* TODO: fix get loading state by doing this: https://medium.com/stashaway-engineering/react-redux-tips-better-way-to-handle-loading-flags-in-your-reducers-afda42a804c6 */}
-            {userSqueaks.length > 0 &&
+            {profileSqueaks.length > 0 &&
                 <>
-                {state.loading ?
+                {profileSqueaksStatus == 'loading' ?
                     <Loader /> :
                     <div onClick={() => getMoreSqueaks()} className='squeak-btn-side squeak-btn-active'>
                       Load more

@@ -101,41 +101,41 @@ export const useActions = (state, dispatch) => ({
         // window.location.reload()
         dispatch({type: types.LOGOUT, payload: {}})
     },
-    getList: data => {
-        dispatch({type: types.GET_LIST, payload: data})
-    },
-    getTrend: data => {
-        dispatch({type: types.GET_TREND, payload: data})
-    },
-    clearSearch: data => {
-        console.log(data)
-        dispatch({type: types.CLEAR_SEARCH, payload: data})
-    },
-    search: data => {
-        console.log(data)
-        dispatch({type: types.SEARCH, payload: data})
-    },
-    getTrendSqueaks: data => {
-        dispatch({type: types.TREND_TWEETS, payload: data})
-    },
-    addToList: data => {
-        dispatch({type: types.ADD_TO_LIST, payload: data})
-    },
-    getUserSqueaks: data => {
-        dispatch({type: types.SET_STATE, payload: {loading: true}})
-        dispatch({type: types.GET_USER_TWEETS, payload: data})
-    },
-    clearUserSqueaks: data => {
-        dispatch({type: types.CLEAR_USER_TWEETS, payload: data})
-    },
-    getAncestorSqueaks: data => {
-        dispatch({type: types.SET_STATE, payload: {loading: true}})
-        dispatch({type: types.GET_ANCESTOR_TWEETS, payload: data})
-    },
-    getReplySqueaks: data => {
-        dispatch({type: types.SET_STATE, payload: {loading: true}})
-        dispatch({type: types.GET_REPLY_TWEETS, payload: data})
-    },
+    // getList: data => {
+    //     dispatch({type: types.GET_LIST, payload: data})
+    // },
+    // getTrend: data => {
+    //     dispatch({type: types.GET_TREND, payload: data})
+    // },
+    // clearSearch: data => {
+    //     console.log(data)
+    //     dispatch({type: types.CLEAR_SEARCH, payload: data})
+    // },
+    // search: data => {
+    //     console.log(data)
+    //     dispatch({type: types.SEARCH, payload: data})
+    // },
+    // getTrendSqueaks: data => {
+    //     dispatch({type: types.TREND_TWEETS, payload: data})
+    // },
+    // addToList: data => {
+    //     dispatch({type: types.ADD_TO_LIST, payload: data})
+    // },
+    // getUserSqueaks: data => {
+    //     dispatch({type: types.SET_STATE, payload: {loading: true}})
+    //     dispatch({type: types.GET_USER_TWEETS, payload: data})
+    // },
+    // clearUserSqueaks: data => {
+    //     dispatch({type: types.CLEAR_USER_TWEETS, payload: data})
+    // },
+    // getAncestorSqueaks: data => {
+    //     dispatch({type: types.SET_STATE, payload: {loading: true}})
+    //     dispatch({type: types.GET_ANCESTOR_TWEETS, payload: data})
+    // },
+    // getReplySqueaks: data => {
+    //     dispatch({type: types.SET_STATE, payload: {loading: true}})
+    //     dispatch({type: types.GET_REPLY_TWEETS, payload: data})
+    // },
     getSqueakOffers: data => {
         dispatch({type: types.SET_STATE, payload: {loading: true}})
         dispatch({type: types.GET_TWEET_OFFERS, payload: data})

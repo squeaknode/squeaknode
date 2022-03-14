@@ -171,23 +171,23 @@ const reducer = (state = initialState, action) => {
         case type.GET_ACCOUNT:
             return {...state, ...action.payload}
 
-        case type.GET_USER:
-            return {...state, ...action.payload}
+        // case type.GET_USER:
+        //     return {...state, ...action.payload}
 
-        case type.GET_USER_TWEETS:
-            let userT = state.userSqueaks
-            let newUserSqueaks = action.payload.userSqueaks
-            newUserSqueaks.forEach(t => userT.push(t));
-            return {...state, loading: false, error: false}
+        // case type.GET_USER_TWEETS:
+        //     let userT = state.userSqueaks
+        //     let newUserSqueaks = action.payload.userSqueaks
+        //     newUserSqueaks.forEach(t => userT.push(t));
+        //     return {...state, loading: false, error: false}
 
-        case type.CLEAR_USER_TWEETS:
-            return {...state, ...{userSqueaks: []}}
+        // case type.CLEAR_USER_TWEETS:
+        //     return {...state, ...{userSqueaks: []}}
 
-        case type.GET_ANCESTOR_TWEETS:
-            return {...state, ...action.payload, loading: false, error: false}
-
-        case type.GET_REPLY_TWEETS:
-            return {...state, ...action.payload, loading: false, error: false}
+        // case type.GET_ANCESTOR_TWEETS:
+        //     return {...state, ...action.payload, loading: false, error: false}
+        //
+        // case type.GET_REPLY_TWEETS:
+        //     return {...state, ...action.payload, loading: false, error: false}
 
         case type.GET_TWEET_OFFERS:
             return {...state, ...action.payload, loading: false, error: false}

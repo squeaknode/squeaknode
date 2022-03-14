@@ -243,6 +243,22 @@ export const getReplySqueaks = (squeakHash, limit, lastSqueak) => {
     });
 }
 
+export const getProfileSqueaks = (pubkey, limit, lastSqueak) => {
+    console.log('Calling getProfileSqueaks');
+    const request = new GetPubKeySqueakDisplaysRequest();
+    request.setPubkey(pubkey);
+    request.setLimit(limit);
+    if (lastSqueak) {
+      request.setLastEntry(lastSqueak);
+    }
+    const deser = GetPubKeySqueakDisplaysReply.deserializeBinary;
+    return baseRequest({
+      url: '/getpubkeysqueakdisplays',
+      req: request,
+      deser: deser,
+    });
+}
+
 export const likeSqueak = (squeakHash) => {
     console.log('Calling likeSqueak');
     const request = new LikeSqueakRequest();
