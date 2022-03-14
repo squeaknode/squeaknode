@@ -553,3 +553,19 @@ export const getConnectedPeers = () => {
       deser: deser,
     });
 }
+
+export const connectPeer = (network, host, port) => {
+    console.log('Calling connectPeer');
+    const request = new ConnectSqueakPeerRequest();
+    const peerAddress = new PeerAddress();
+    peerAddress.setNetwork(network);
+    peerAddress.setHost(host);
+    peerAddress.setPort(port);
+    request.setPeerAddress(peerAddress);
+    const deser = ConnectSqueakPeerReply.deserializeBinary;
+    return baseRequest({
+      url: '/connectpeer',
+      req: request,
+      deser: deser,
+    });
+}

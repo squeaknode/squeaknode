@@ -15,8 +15,11 @@ import { useDispatch } from 'react-redux'
 
 import {
   fetchPeer,
+  fetchConnectedPeers,
   selectCurrentPeer,
   selectCurrentPeerStatus,
+  selectConnectedPeers,
+  selectPeerConnectionByAddress,
 } from '../../features/peers/peersSlice'
 
 
@@ -35,9 +38,16 @@ const [tab, setTab] = useState('Members')
 const [bannerLoading, setBannerLoading] = useState(false)
 const [styleBody, setStyleBody] = useState(false)
 // const {peer, peerConnection, list} = state
-const {peerConnection, list} = state
+//const {peerConnection, list} = state
+const {list} = state
 
 const peer = useSelector(selectCurrentPeer);
+const connectedPeers = useSelector(selectConnectedPeers);
+const peerConnection = useSelector(state => selectPeerConnectionByAddress(state, {
+  network: props.match.params.network,
+  host: props.match.params.host,
+  port: props.match.params.port,
+}));
 const dispatch = useDispatch();
 
 
@@ -48,12 +58,13 @@ useEffect(() => {
       host: props.match.params.host,
       port: props.match.params.port,
     }));
+    dispatch(fetchConnectedPeers());
 
-    actions.getPeerConnection({
-      network: props.match.params.network,
-      host: props.match.params.host,
-      port: props.match.params.port,
-    });
+    // actions.getPeerConnection({
+    //   network: props.match.params.network,
+    //   host: props.match.params.host,
+    //   port: props.match.params.port,
+    // });
 }, [])
 
 const isInitialMount = useRef(true);
@@ -123,6 +134,7 @@ const handleModalClick = (e) => {
     e.stopPropagation()
 }
 
+console.log(connectedPeers);
 
 return(
     <div>
