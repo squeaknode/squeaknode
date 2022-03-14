@@ -569,3 +569,20 @@ export const connectPeer = (network, host, port) => {
       deser: deser,
     });
 }
+
+
+export const disconnectPeer = (network, host, port) => {
+    console.log('Calling disconnectPeer');
+    const request = new DisconnectSqueakPeerRequest();
+    const peerAddress = new PeerAddress();
+    peerAddress.setNetwork(network);
+    peerAddress.setHost(host);
+    peerAddress.setPort(port);
+    request.setPeerAddress(peerAddress);
+    const deser = DisconnectSqueakPeerReply.deserializeBinary;
+    return baseRequest({
+      url: '/disconnectpeer',
+      req: request,
+      deser: deser,
+    });
+}

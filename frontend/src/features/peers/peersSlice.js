@@ -8,6 +8,7 @@ import {
   getPeer,
   getConnectedPeers,
   connectPeer,
+  disconnectPeer,
 } from '../../api/client'
 
 const initialState = {
@@ -63,7 +64,23 @@ export const setConnectPeer = createAsyncThunk(
       port,
     );
     const response = await getConnectedPeers();
-    console.log(response);
+    return response.getConnectedPeersList();
+  }
+)
+
+export const setDisconnectPeer = createAsyncThunk(
+  'peers/setDisconnectPeer',
+  async (values) => {
+    console.log('Disconnecting peer');
+    let network = values.network;
+    let host = values.host;
+    let port = values.port;
+    await disconnectPeer(
+      network,
+      host,
+      port,
+    );
+    const response = await getConnectedPeers();
     return response.getConnectedPeersList();
   }
 )
@@ -109,6 +126,16 @@ const peersSlice = createSlice({
       const newConnectedPeers = action.payload;
       state.connectedPeers = newConnectedPeers;
       state.connectPeerStatus = 'idle';
+    })
+    .addCase(setDisconnectPeer.pending, (state, action) => {
+      console.log(action);
+      state.disconnectPeerStatus = 'loading'
+    })
+    .addCase(setDisconnectPeer.fulfilled, (state, action) => {
+      console.log(action);
+      const newConnectedPeers = action.payload;
+      state.connectedPeers = newConnectedPeers;
+      state.disconnectPeerStatus = 'idle';
     })
   },
 })

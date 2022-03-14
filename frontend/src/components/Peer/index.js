@@ -21,6 +21,7 @@ import {
   selectConnectedPeers,
   selectPeerConnectionByAddress,
   setConnectPeer,
+  setDisconnectPeer,
 } from '../../features/peers/peersSlice'
 
 
@@ -60,12 +61,6 @@ useEffect(() => {
       port: props.match.params.port,
     }));
     dispatch(fetchConnectedPeers());
-
-    // actions.getPeerConnection({
-    //   network: props.match.params.network,
-    //   host: props.match.params.host,
-    //   port: props.match.params.port,
-    // });
 }, [])
 
 const isInitialMount = useRef(true);
@@ -80,10 +75,6 @@ useEffect( () => () => document.getElementsByTagName("body")[0].style.cssText = 
 
 
 const connectPeer = (e) => {
-    // actions.connectPeer({
-    //   host: props.match.params.host,
-    //   port: props.match.params.port,
-    //   network: props.match.params.network});
     dispatch(setConnectPeer({
         host: props.match.params.host,
         port: props.match.params.port,
@@ -92,10 +83,11 @@ const connectPeer = (e) => {
 }
 
 const disconnectPeer = (e) => {
-  actions.disconnectPeer({
-    host: props.match.params.host,
-    port: props.match.params.port,
-    network: props.match.params.network});
+  dispatch(setDisconnectPeer({
+      host: props.match.params.host,
+      port: props.match.params.port,
+      network: props.match.params.network,
+  }));
 }
 
 const deletePeer = () => {
