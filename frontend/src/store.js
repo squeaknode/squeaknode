@@ -8,7 +8,6 @@ import contactProfilesReducer from './features/profiles/contactProfilesSlice'
 import paymentSummaryReducer from './features/paymentsummary/paymentSummarySlice'
 import sentPaymentsReducer from './features/payments/sentPaymentsSlice'
 import receivedPaymentsReducer from './features/payments/receivedPaymentsSlice'
-import searchReducer from './features/search/searchSlice'
 import createSigningProfileReducer from './features/profiles/createSigningProfileSlice'
 import importSigningProfileReducer from './features/profiles/importSigningProfileSlice'
 import createContactProfileReducer from './features/profiles/createContactProfileSlice'
@@ -28,7 +27,6 @@ const store = configureStore({
     paymentSummary: paymentSummaryReducer,
     sentPayments: sentPaymentsReducer,
     receivedPayments: receivedPaymentsReducer,
-    search: searchReducer,
     profile: profileReducer,
   },
 })

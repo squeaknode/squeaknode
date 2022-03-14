@@ -19,7 +19,8 @@ import {
   selectSearchSqueaks,
   selectLastSearchSqueak,
   selectSearchSqueaksStatus,
- } from './searchSlice'
+ } from '../squeak/squeakSlice'
+
 import store from '../../store'
 
 

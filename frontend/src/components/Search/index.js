@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom'
 import { API_URL } from '../../config'
 import Loader from '../Loader'
 import SqueakCard from '../SqueakCard'
-import SearchResults from '../../features/search/SearchResults'
+import SearchResults from '../../features/squeak/SearchResults'
 
 
 

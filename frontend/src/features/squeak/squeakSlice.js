@@ -12,6 +12,7 @@ import {
   getAncestorSqueaks,
   getReplySqueaks,
   getTimelineSqueaks,
+  getSearchSqueaks,
 } from '../../api/client'
 
 const squeakAdapter = createEntityAdapter()
@@ -24,7 +25,9 @@ const initialState = {
   replySqueaksStatus: 'idle',
   replySqueaks: [],
   timelineSqueaksStatus: 'idle',
-  timelineSqueaks: []
+  timelineSqueaks: [],
+  searchSqueaksStatus: 'idle',
+  searchSqueaks: [],
 }
 
 // Thunk functions
@@ -90,6 +93,18 @@ export const fetchTimeline = createAsyncThunk(
   }
 )
 
+export const fetchSearch = createAsyncThunk(
+  'search/fetchSearch',
+  async (values) => {
+    const response = await getSearchSqueaks(
+      values.searchText,
+      values.limit,
+      values.lastSqueak,
+    );
+    return response.getSqueakDisplayEntriesList();
+  }
+)
+
 
 const squeakSlice = createSlice({
   name: 'squeak',
@@ -112,6 +127,9 @@ const squeakSlice = createSlice({
     },
     clearTimeline(state, action) {
       state.timelineSqueaks = [];
+    },
+    clearSearch(state, action) {
+      state.searchSqueaks = [];
     },
   },
   extraReducers: (builder) => {
@@ -165,6 +183,14 @@ const squeakSlice = createSlice({
       state.timelineSqueaks = state.timelineSqueaks.concat(newEntities);
       state.timelineSqueaksStatus = 'idle'
     })
+    .addCase(fetchSearch.pending, (state, action) => {
+      state.searchSqueaksStatus = 'loading'
+    })
+    .addCase(fetchSearch.fulfilled, (state, action) => {
+      const newEntities = action.payload;
+      state.searchSqueaks = state.searchSqueaks.concat(newEntities);
+      state.searchSqueaksStatus = 'idle'
+    })
   },
 })
 
@@ -173,6 +199,7 @@ export const {
   clearAncestors,
   clearReplies,
   clearTimeline,
+  clearSearch,
 } = squeakSlice.actions
 
 export default squeakSlice.reducer
@@ -195,5 +222,14 @@ export const selectTimelineSqueaksStatus = state => state.squeak.timelineSqueaks
 
 export const selectLastTimelineSqueak = createSelector(
   selectTimelineSqueaks,
+  squeaks => squeaks.length > 0 && squeaks[squeaks.length - 1]
+)
+
+export const selectSearchSqueaks = state => state.squeak.searchSqueaks
+
+export const selectSearchSqueaksStatus = state => state.squeak.searchSqueaksStatus
+
+export const selectLastSearchSqueak = createSelector(
+  selectSearchSqueaks,
   squeaks => squeaks.length > 0 && squeaks[squeaks.length - 1]
 )
