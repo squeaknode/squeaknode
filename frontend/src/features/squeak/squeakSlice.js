@@ -11,6 +11,7 @@ import {
   unlikeSqueak,
   getAncestorSqueaks,
   getReplySqueaks,
+  getTimelineSqueaks,
 } from '../../api/client'
 
 const squeakAdapter = createEntityAdapter()
@@ -22,6 +23,8 @@ const initialState = {
   ancestorSqueaks: [],
   replySqueaksStatus: 'idle',
   replySqueaks: [],
+  timelineSqueaksStatus: 'idle',
+  timelineSqueaks: []
 }
 
 // Thunk functions
@@ -79,6 +82,14 @@ export const fetchReplySqueaks = createAsyncThunk(
   }
 )
 
+export const fetchTimeline = createAsyncThunk(
+  'timeline/fetchTimeline',
+  async (lastSqueak) => {
+    const response = await getTimelineSqueaks(5, lastSqueak);
+    return response.getSqueakDisplayEntriesList();
+  }
+)
+
 
 const squeakSlice = createSlice({
   name: 'squeak',
@@ -98,6 +109,9 @@ const squeakSlice = createSlice({
       console.log('Clear reply squeaks.');
       state.replySqueaksStatus = 'idle';
       state.replySqueaks = [];
+    },
+    clearTimeline(state, action) {
+      state.timelineSqueaks = [];
     },
   },
   extraReducers: (builder) => {
@@ -143,6 +157,14 @@ const squeakSlice = createSlice({
       state.replySqueaks = replySqueaks;
       state.replySqueaksStatus = 'idle';
     })
+    .addCase(fetchTimeline.pending, (state, action) => {
+      state.timelineSqueaksStatus = 'loading'
+    })
+    .addCase(fetchTimeline.fulfilled, (state, action) => {
+      const newEntities = action.payload;
+      state.timelineSqueaks = state.timelineSqueaks.concat(newEntities);
+      state.timelineSqueaksStatus = 'idle'
+    })
   },
 })
 
@@ -150,6 +172,7 @@ export const {
   clearAll,
   clearAncestors,
   clearReplies,
+  clearTimeline,
 } = squeakSlice.actions
 
 export default squeakSlice.reducer
@@ -165,3 +188,12 @@ export const selectAncestorSqueaksStatus = state => state.squeak.ancestorSqueaks
 export const selectReplySqueaks = state => state.squeak.replySqueaks
 
 export const selectReplySqueaksStatus = state => state.squeak.replySqueaksStatus
+
+export const selectTimelineSqueaks = state => state.squeak.timelineSqueaks
+
+export const selectTimelineSqueaksStatus = state => state.squeak.timelineSqueaksStatus
+
+export const selectLastTimelineSqueak = createSelector(
+  selectTimelineSqueaks,
+  squeaks => squeaks.length > 0 && squeaks[squeaks.length - 1]
+)

@@ -1,7 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit'
 
 import networkReducer from './features/network/networkSlice'
-import timelineReducer from './features/timeline/timelineSlice'
 import squeakReducer from './features/squeak/squeakSlice'
 import makeSqueakReducer from './features/makesqueak/makeSqueakSlice'
 import signingProfilesReducer from './features/profiles/signingProfilesSlice'
@@ -19,7 +18,6 @@ const store = configureStore({
   reducer: {
     // Define a top-level state field named `todos`, handled by `todosReducer`
     network: networkReducer,
-    timeline: timelineReducer,
     squeak: squeakReducer,
     makeSqueak: makeSqueakReducer,
     signingProfiles: signingProfilesReducer,

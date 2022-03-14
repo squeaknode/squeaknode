@@ -7,19 +7,17 @@ import Loader from '../../components/Loader'
 
 
 import {
-  clearTimeline,
+  fetchTimeline,
   selectTimelineSqueaks,
-  selectTimelineSqueakIds,
-  selectLastTimelineSqueak,
   selectTimelineSqueaksStatus,
-} from './timelineSlice'
+  selectLastTimelineSqueak,
+  clearTimeline,
+} from '../squeak/squeakSlice'
 
-import { fetchTimeline } from './timelineSlice'
 import store from '../../store'
 
 
 const Timeline = () => {
-  const squeakIds = useSelector(selectTimelineSqueakIds)
   const squeaks = useSelector(selectTimelineSqueaks);
   const loadingStatus = useSelector(selectTimelineSqueaksStatus)
   const lastSqueak = useSelector(selectLastTimelineSqueak)
