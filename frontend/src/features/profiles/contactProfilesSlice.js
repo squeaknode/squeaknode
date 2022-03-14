@@ -9,7 +9,7 @@ import { getContactProfiles } from '../../api/client'
 const contactProfilesAdapter = createEntityAdapter()
 
 const initialState = {
-  status: 'idle',
+  contactProfilesStatus: 'idle',
   contactProfiles: []
 }
 
@@ -28,19 +28,19 @@ const contactProfilesSlice = createSlice({
   initialState,
   reducers: {
     clearContactProfiles(state, action) {
-      state.status = 'idle'
+      state.contactProfilesStatus = 'idle'
       state.contactProfiles = [];
     },
   },
   extraReducers: (builder) => {
     builder
     .addCase(fetchContactProfiles.pending, (state, action) => {
-      state.status = 'loading'
+      state.contactProfilesStatus = 'loading'
     })
     .addCase(fetchContactProfiles.fulfilled, (state, action) => {
       const newContactProfiles = action.payload;
       state.contactProfiles = newContactProfiles;
-      state.status = 'idle'
+      state.contactProfilesStatus = 'idle'
     })
   },
 })
@@ -53,4 +53,4 @@ export default contactProfilesSlice.reducer
 
 export const selectContactProfiles = state => state.contactProfiles.contactProfiles
 
-export const selectContactProfilesStatus = state => state.contactProfiles.status
+export const selectContactProfilesStatus = state => state.contactProfiles.contactProfilesStatus

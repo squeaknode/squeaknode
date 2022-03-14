@@ -9,7 +9,7 @@ import { getSigningProfiles } from '../../api/client'
 const signingProfilesAdapter = createEntityAdapter()
 
 const initialState = {
-  status: 'idle',
+  signingProfilesStatus: 'idle',
   signingProfiles: []
 }
 
@@ -28,19 +28,19 @@ const signingProfilesSlice = createSlice({
   initialState,
   reducers: {
     clearSigningProfiles(state, action) {
-      state.status = 'idle'
+      state.signingProfilesStatus = 'idle'
       state.signingProfiles = [];
     },
   },
   extraReducers: (builder) => {
     builder
     .addCase(fetchSigningProfiles.pending, (state, action) => {
-      state.status = 'loading'
+      state.signingProfilesStatus = 'loading'
     })
     .addCase(fetchSigningProfiles.fulfilled, (state, action) => {
       const newSigningProfiles = action.payload;
       state.signingProfiles = newSigningProfiles;
-      state.status = 'idle'
+      state.signingProfilesStatus = 'idle'
     })
   },
 })
@@ -53,4 +53,4 @@ export default signingProfilesSlice.reducer
 
 export const selectSigningProfiles = state => state.signingProfiles.signingProfiles
 
-export const selectSigningProfilesStatus = state => state.signingProfiles.status
+export const selectSigningProfilesStatus = state => state.signingProfiles.signingProfilesStatus
