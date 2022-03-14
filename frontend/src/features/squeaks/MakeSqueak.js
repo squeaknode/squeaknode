@@ -16,7 +16,7 @@ import { useDispatch } from 'react-redux'
 import {
   setMakeSqueak,
   selectMakeSqueakStatus,
-} from '../squeak/squeakSlice'
+} from '../squeaks/squeaksSlice'
 import {
   selectSigningProfiles,
   fetchSigningProfiles,

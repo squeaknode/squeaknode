@@ -12,7 +12,7 @@ import {
   selectTimelineSqueaksStatus,
   selectLastTimelineSqueak,
   clearTimeline,
-} from '../squeak/squeakSlice'
+} from '../squeaks/squeaksSlice'
 
 import store from '../../store'
 

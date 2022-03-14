@@ -9,7 +9,7 @@ ICON_CLOSE,ICON_IMGUPLOAD, ICON_INBOXFILL, ICON_LIGHT, ICON_DARK } from '../../I
 import { ReactComponent as YourSvg } from '../../icon.svg';
 import axios from 'axios'
 import {API_URL} from '../../config'
-import MakeSqueak from '../../features/squeak/MakeSqueak'
+import MakeSqueak from '../../features/squeaks/MakeSqueak'
 import ContentEditable from 'react-contenteditable'
 import {
     enable as enableDarkMode,

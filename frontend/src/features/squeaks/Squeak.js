@@ -12,7 +12,7 @@ import { getProfileImageSrcString } from '../../squeakimages/images';
 
 import SqueakCard from '../../components/SqueakCard'
 import Loader from '../../components/Loader'
-import MakeSqueak from '../squeak/MakeSqueak'
+import MakeSqueak from '../squeaks/MakeSqueak'
 
 
 import {
@@ -34,7 +34,7 @@ import {
   selectReplySqueaks,
   selectReplySqueaksStatus,
   clearReplies,
-} from './squeakSlice'
+} from './squeaksSlice'
 import store from '../../store'
 
 

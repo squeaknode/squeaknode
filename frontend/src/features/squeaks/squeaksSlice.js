@@ -34,7 +34,7 @@ const initialState = {
 
 // Thunk functions
 export const fetchSqueak = createAsyncThunk(
-  'squeak/fetchSqueak',
+  'squeaks/fetchSqueak',
   async (squeakHash) => {
     console.log('Fetching squeak');
     const response = await getSqueak(squeakHash);
@@ -43,7 +43,7 @@ export const fetchSqueak = createAsyncThunk(
 )
 
 export const setLikeSqueak = createAsyncThunk(
-  'squeak/setLikeSqueak',
+  'squeaks/setLikeSqueak',
   async (squeakHash) => {
     console.log('Liking squeak');
     await likeSqueak(squeakHash);
@@ -53,7 +53,7 @@ export const setLikeSqueak = createAsyncThunk(
 )
 
 export const setUnlikeSqueak = createAsyncThunk(
-  'squeak/setUnlikeSqueak',
+  'squeaks/setUnlikeSqueak',
   async (squeakHash) => {
     console.log('Unliking squeak');
     await unlikeSqueak(squeakHash);
@@ -63,7 +63,7 @@ export const setUnlikeSqueak = createAsyncThunk(
 )
 
 export const fetchAncestorSqueaks = createAsyncThunk(
-  'squeak/fetchAncestorSqueaks',
+  'squeaks/fetchAncestorSqueaks',
   async (squeakHash) => {
     console.log('Fetching ancestor squeaks');
     const response = await getAncestorSqueaks(squeakHash);
@@ -72,7 +72,7 @@ export const fetchAncestorSqueaks = createAsyncThunk(
 )
 
 export const fetchReplySqueaks = createAsyncThunk(
-  'squeak/fetchReplySqueaks',
+  'squeaks/fetchReplySqueaks',
   async (values) => {
     console.log('Fetching reply squeaks');
     console.log(values.squeakHash);
@@ -88,7 +88,7 @@ export const fetchReplySqueaks = createAsyncThunk(
 )
 
 export const fetchTimeline = createAsyncThunk(
-  'squeak/fetchTimeline',
+  'squeaks/fetchTimeline',
   async (lastSqueak) => {
     const response = await getTimelineSqueaks(5, lastSqueak);
     return response.getSqueakDisplayEntriesList();
@@ -96,7 +96,7 @@ export const fetchTimeline = createAsyncThunk(
 )
 
 export const fetchSearch = createAsyncThunk(
-  'search/fetchSearch',
+  'searchs/fetchSearch',
   async (values) => {
     const response = await getSearchSqueaks(
       values.searchText,
@@ -108,7 +108,7 @@ export const fetchSearch = createAsyncThunk(
 )
 
 export const setMakeSqueak = createAsyncThunk(
-  'squeak/makeSqueak',
+  'squeaks/makeSqueak',
   async (values) => {
     console.log('Making squeak');
     let profileId = values.signingProfile;
@@ -136,8 +136,8 @@ const updatedSqueakInArray = (squeakArr, newSqueak) => {
 }
 
 
-const squeakSlice = createSlice({
-  name: 'squeak',
+const squeaksSlice = createSlice({
+  name: 'squeaks',
   initialState,
   reducers: {
     clearAll(state, action) {
@@ -249,38 +249,38 @@ export const {
   clearReplies,
   clearTimeline,
   clearSearch,
-} = squeakSlice.actions
+} = squeaksSlice.actions
 
-export default squeakSlice.reducer
+export default squeaksSlice.reducer
 
-export const selectCurrentSqueak = state => state.squeak.currentSqueak
+export const selectCurrentSqueak = state => state.squeaks.currentSqueak
 
-export const selectCurrentSqueakStatus = state => state.squeak.currentSqueakStatus
+export const selectCurrentSqueakStatus = state => state.squeaks.currentSqueakStatus
 
-export const selectAncestorSqueaks = state => state.squeak.ancestorSqueaks
+export const selectAncestorSqueaks = state => state.squeaks.ancestorSqueaks
 
-export const selectAncestorSqueaksStatus = state => state.squeak.ancestorSqueaksStatus
+export const selectAncestorSqueaksStatus = state => state.squeaks.ancestorSqueaksStatus
 
-export const selectReplySqueaks = state => state.squeak.replySqueaks
+export const selectReplySqueaks = state => state.squeaks.replySqueaks
 
-export const selectReplySqueaksStatus = state => state.squeak.replySqueaksStatus
+export const selectReplySqueaksStatus = state => state.squeaks.replySqueaksStatus
 
-export const selectTimelineSqueaks = state => state.squeak.timelineSqueaks
+export const selectTimelineSqueaks = state => state.squeaks.timelineSqueaks
 
-export const selectTimelineSqueaksStatus = state => state.squeak.timelineSqueaksStatus
+export const selectTimelineSqueaksStatus = state => state.squeaks.timelineSqueaksStatus
 
 export const selectLastTimelineSqueak = createSelector(
   selectTimelineSqueaks,
   squeaks => squeaks.length > 0 && squeaks[squeaks.length - 1]
 )
 
-export const selectSearchSqueaks = state => state.squeak.searchSqueaks
+export const selectSearchSqueaks = state => state.squeaks.searchSqueaks
 
-export const selectSearchSqueaksStatus = state => state.squeak.searchSqueaksStatus
+export const selectSearchSqueaksStatus = state => state.squeaks.searchSqueaksStatus
 
 export const selectLastSearchSqueak = createSelector(
   selectSearchSqueaks,
   squeaks => squeaks.length > 0 && squeaks[squeaks.length - 1]
 )
 
-export const selectMakeSqueakStatus = state => state.squeak.makeSqueakStatus
+export const selectMakeSqueakStatus = state => state.squeaks.makeSqueakStatus

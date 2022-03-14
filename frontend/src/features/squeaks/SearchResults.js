@@ -19,7 +19,7 @@ import {
   selectSearchSqueaks,
   selectLastSearchSqueak,
   selectSearchSqueaksStatus,
- } from '../squeak/squeakSlice'
+} from '../squeaks/squeaksSlice'
 
 import store from '../../store'
 
