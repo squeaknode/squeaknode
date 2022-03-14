@@ -11,6 +11,7 @@ import {
   selectTimelineSqueaks,
   selectTimelineSqueakIds,
   selectLastTimelineSqueak,
+  selectTimelineSqueaksStatus,
 } from './timelineSlice'
 
 import { fetchTimeline } from './timelineSlice'
@@ -20,7 +21,7 @@ import store from '../../store'
 const Timeline = () => {
   const squeakIds = useSelector(selectTimelineSqueakIds)
   const squeaks = useSelector(selectTimelineSqueaks);
-  const loadingStatus = useSelector((state) => state.timeline.status)
+  const loadingStatus = useSelector(selectTimelineSqueaksStatus)
   const lastSqueak = useSelector(selectLastTimelineSqueak)
   const dispatch = useDispatch()
 

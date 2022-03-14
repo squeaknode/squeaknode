@@ -9,8 +9,8 @@ import { client, getTimelineSqueaks, getSqueak, likeSqueak, unlikeSqueak } from 
 const timelineAdapter = createEntityAdapter()
 
 const initialState = {
-  status: 'idle',
-  entities: []
+  timelineSqueaksStatus: 'idle',
+  timelineSqueaks: []
 }
 
 // Thunk functions
@@ -47,28 +47,28 @@ const timelineSlice = createSlice({
   initialState,
   reducers: {
     clearTimeline(state, action) {
-      state.entities = [];
+      state.timelineSqueaks = [];
     },
   },
   extraReducers: (builder) => {
     builder
     .addCase(fetchTimeline.pending, (state, action) => {
-      state.status = 'loading'
+      state.timelineSqueaksStatus = 'loading'
     })
     .addCase(fetchTimeline.fulfilled, (state, action) => {
       const newEntities = action.payload;
-      state.entities = state.entities.concat(newEntities);
-      state.status = 'idle'
+      state.timelineSqueaks = state.timelineSqueaks.concat(newEntities);
+      state.timelineSqueaksStatus = 'idle'
     })
     .addCase(setLikeSqueak.fulfilled, (state, action) => {
       const newSqueak = action.payload;
-      const currentIndex = state.entities.findIndex(squeak => squeak.getSqueakHash() === newSqueak.getSqueakHash());
-      state.entities[currentIndex] = newSqueak;
+      const currentIndex = state.timelineSqueaks.findIndex(squeak => squeak.getSqueakHash() === newSqueak.getSqueakHash());
+      state.timelineSqueaks[currentIndex] = newSqueak;
     })
     .addCase(setUnlikeSqueak.fulfilled, (state, action) => {
       const newSqueak = action.payload;
-      const currentIndex = state.entities.findIndex(squeak => squeak.getSqueakHash() === newSqueak.getSqueakHash());
-      state.entities[currentIndex] = newSqueak;
+      const currentIndex = state.timelineSqueaks.findIndex(squeak => squeak.getSqueakHash() === newSqueak.getSqueakHash());
+      state.timelineSqueaks[currentIndex] = newSqueak;
     })
   },
 })
@@ -79,7 +79,9 @@ export const {
 
 export default timelineSlice.reducer
 
-export const selectTimelineSqueaks = state => state.timeline.entities
+export const selectTimelineSqueaks = state => state.timeline.timelineSqueaks
+
+export const selectTimelineSqueaksStatus = state => state.timeline.timelineSqueaksStatus
 
 export const selectLastTimelineSqueak = createSelector(
   selectTimelineSqueaks,
