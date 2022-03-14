@@ -181,6 +181,8 @@ const squeakSlice = createSlice({
       }
       updatedSqueakInArray(state.timelineSqueaks, newSqueak);
       updatedSqueakInArray(state.searchSqueaks, newSqueak);
+      updatedSqueakInArray(state.ancestorSqueaks, newSqueak);
+      updatedSqueakInArray(state.replySqueaks, newSqueak);
     })
     .addCase(setUnlikeSqueak.fulfilled, (state, action) => {
       console.log(action);
@@ -190,6 +192,8 @@ const squeakSlice = createSlice({
       }
       updatedSqueakInArray(state.timelineSqueaks, newSqueak);
       updatedSqueakInArray(state.searchSqueaks, newSqueak);
+      updatedSqueakInArray(state.ancestorSqueaks, newSqueak);
+      updatedSqueakInArray(state.replySqueaks, newSqueak);
     })
     .addCase(fetchAncestorSqueaks.pending, (state, action) => {
       state.ancestorSqueaksStatus = 'loading'
