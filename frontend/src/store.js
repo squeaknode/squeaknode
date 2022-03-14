@@ -4,7 +4,6 @@ import networkReducer from './features/network/networkSlice'
 import squeaksReducer from './features/squeaks/squeaksSlice'
 import signingProfilesReducer from './features/profiles/signingProfilesSlice'
 import contactProfilesReducer from './features/profiles/contactProfilesSlice'
-import paymentSummaryReducer from './features/paymentsummary/paymentSummarySlice'
 import paymentsReducer from './features/payments/paymentsSlice'
 import createSigningProfileReducer from './features/profiles/createSigningProfileSlice'
 import importSigningProfileReducer from './features/profiles/importSigningProfileSlice'
@@ -21,7 +20,6 @@ const store = configureStore({
     createSigningProfile: createSigningProfileReducer,
     importSigningProfile: importSigningProfileReducer,
     createContactProfile: createContactProfileReducer,
-    paymentSummary: paymentSummaryReducer,
     payments: paymentsReducer,
     profile: profileReducer,
   },

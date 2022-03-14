@@ -11,7 +11,7 @@ import { useDispatch } from 'react-redux'
 import {
   fetchPaymentSummary,
   selectPaymentSummary,
-} from './paymentSummarySlice'
+} from './paymentsSlice'
 
 
 const PaymentSummary = (props) => {

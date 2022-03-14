@@ -7,6 +7,7 @@ import {
 import {
   getSentPayments,
   getReceivedPayments,
+  getPaymentSummary,
 } from '../../api/client'
 
 const paymentsAdapter = createEntityAdapter()
@@ -15,7 +16,8 @@ const initialState = {
   sentPaymentsStatus: 'idle',
   sentPayments: [],
   receivedPaymentsStatus: 'idle',
-  receivedPayments: []
+  receivedPayments: [],
+  paymentSummary: null,
 }
 
 // Thunk functions
@@ -32,6 +34,15 @@ export const fetchReceivedPayments = createAsyncThunk(
   async (lastReceivedPayment) => {
     const response = await getReceivedPayments(5, lastReceivedPayment);
     return response.getReceivedPaymentsList();
+  }
+)
+
+export const fetchPaymentSummary = createAsyncThunk(
+  'payments/fetchPaymentSummary',
+  async () => {
+    console.log('Fetching paymentSummary');
+    const response = await getPaymentSummary();
+    return response.getPaymentSummary();
   }
 )
 
@@ -67,6 +78,10 @@ const paymentsSlice = createSlice({
       state.receivedPayments = state.receivedPayments.concat(newReceivedPayments);
       state.receivedPaymentsStatus = 'idle'
     })
+    .addCase(fetchPaymentSummary.fulfilled, (state, action) => {
+      const paymentSummary = action.payload;
+      state.paymentSummary = paymentSummary;
+    })
   },
 })
 
@@ -94,3 +109,5 @@ export const selectLastReceivedPaymentsSqueak = createSelector(
 )
 
 export const selectReceivedPaymentsStatus = state => state.payments.receivedPaymentsStatus
+
+export const selectPaymentSummary = state => state.payments.paymentSummary

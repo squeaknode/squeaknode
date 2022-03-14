@@ -4,7 +4,7 @@ import {  withRouter, Link } from 'react-router-dom'
 import { StoreContext } from '../../store/store'
 import { ICON_SEARCH } from '../../Icons'
 import Loader from '../Loader'
-import PaymentSummary from '../../features/paymentsummary/PaymentSummary'
+import PaymentSummary from '../../features/payments/PaymentSummary'
 
 
 const Feed = (props) => {
