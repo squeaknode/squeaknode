@@ -128,6 +128,13 @@ export const setMakeSqueak = createAsyncThunk(
   }
 )
 
+const updatedSqueakInArray = (squeakArr, newSqueak) => {
+  const currentIndex = squeakArr.findIndex(squeak => squeak.getSqueakHash() === newSqueak.getSqueakHash());
+  if (currentIndex != -1) {
+    squeakArr[currentIndex] = newSqueak;
+  }
+}
+
 
 const squeakSlice = createSlice({
   name: 'squeak',
@@ -169,16 +176,20 @@ const squeakSlice = createSlice({
     .addCase(setLikeSqueak.fulfilled, (state, action) => {
       console.log(action);
       const newSqueak = action.payload;
-      // TODO: only update state if the new squeak has the same id/hash.
-      state.currentSqueak = newSqueak;
-      state.currentSqueakStatus = 'idle';
+      if (state.currentSqueak && state.currentSqueak.getSqueakHash() === newSqueak.getSqueakHash()) {
+        state.currentSqueak = newSqueak;
+      }
+      updatedSqueakInArray(state.timelineSqueaks, newSqueak);
+      updatedSqueakInArray(state.searchSqueaks, newSqueak);
     })
     .addCase(setUnlikeSqueak.fulfilled, (state, action) => {
       console.log(action);
       const newSqueak = action.payload;
-      // TODO: only update state if the new squeak has the same id/hash.
-      state.currentSqueak = newSqueak;
-      state.currentSqueakStatus = 'idle';
+      if (state.currentSqueak && state.currentSqueak.getSqueakHash() === newSqueak.getSqueakHash()) {
+        state.currentSqueak = newSqueak;
+      }
+      updatedSqueakInArray(state.timelineSqueaks, newSqueak);
+      updatedSqueakInArray(state.searchSqueaks, newSqueak);
     })
     .addCase(fetchAncestorSqueaks.pending, (state, action) => {
       state.ancestorSqueaksStatus = 'loading'

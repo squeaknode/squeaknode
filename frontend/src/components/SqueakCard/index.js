@@ -13,6 +13,10 @@ import {API_URL} from '../../config'
 import MakeSqueak from '../../features/squeak/MakeSqueak'
 import ContentEditable from 'react-contenteditable'
 
+import {
+  setLikeSqueak,
+  setUnlikeSqueak,
+} from '../../features/squeak/squeakSlice'
 
 
 const SqueakCard = React.memo(function SqueakCard(props) {
@@ -31,14 +35,14 @@ const SqueakCard = React.memo(function SqueakCard(props) {
         //if(!session){ actions.alert('Please Sign In'); return }
         //actions.likeSqueak(id)
         console.log('Clicked like with id', id);
-        //dispatch(setLikeSqueak(id));
+        dispatch(setLikeSqueak(id));
     }
     const unlikeSqueak = (e,id) => {
         if(e){ e.stopPropagation() }
         //if(!session){ actions.alert('Please Sign In'); return }
         //actions.unlikeSqueak(id)
         console.log('Clicked unlike with id', id);
-        //dispatch(setUnlikeSqueak(id));
+        dispatch(setUnlikeSqueak(id));
     }
 
     const resqueak = (e,id, resqueakId) => {
