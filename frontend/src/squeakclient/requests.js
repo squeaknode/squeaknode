@@ -433,16 +433,16 @@ function makeRequest(route, request, deserializeMsg, handleResponse, handleError
 //   );
 // }
 
-export function clearSqueakProfileImageRequest(id, handleResponse) {
-  const request = new ClearSqueakProfileImageRequest();
-  request.setProfileId(id);
-  makeRequest(
-    'clearsqueakprofileimage',
-    request,
-    ClearSqueakProfileImageReply.deserializeBinary,
-    handleResponse,
-  );
-}
+// export function clearSqueakProfileImageRequest(id, handleResponse) {
+//   const request = new ClearSqueakProfileImageRequest();
+//   request.setProfileId(id);
+//   makeRequest(
+//     'clearsqueakprofileimage',
+//     request,
+//     ClearSqueakProfileImageReply.deserializeBinary,
+//     handleResponse,
+//   );
+// }
 
 export function getPeersRequest(handleResponse) {
   const request = new GetPeersRequest();
@@ -635,21 +635,21 @@ export function setPeerShareForFreeRequest(id, shareForFree, handleResponse) {
 //   );
 // }
 
-export function getSqueakDisplayRequest(hash, handleResponse) {
-  const request = new GetSqueakDisplayRequest();
-  request.setSqueakHash(hash);
-  makeRequest(
-    'getsqueakdisplay',
-    request,
-    GetSqueakDisplayReply.deserializeBinary,
-    (response) => {
-      handleResponse(response.getSqueakDisplayEntry());
-    },
-  );
-  // client.getSqueakDisplay(request, {}, (err, response) => {
-  //   handleResponse(response.getSqueakDisplayEntry());
-  // });
-}
+// export function getSqueakDisplayRequest(hash, handleResponse) {
+//   const request = new GetSqueakDisplayRequest();
+//   request.setSqueakHash(hash);
+//   makeRequest(
+//     'getsqueakdisplay',
+//     request,
+//     GetSqueakDisplayReply.deserializeBinary,
+//     (response) => {
+//       handleResponse(response.getSqueakDisplayEntry());
+//     },
+//   );
+//   // client.getSqueakDisplay(request, {}, (err, response) => {
+//   //   handleResponse(response.getSqueakDisplayEntry());
+//   // });
+// }
 
 // export function getAncestorSqueakDisplaysRequest(hash, handleResponse) {
 //   const request = new GetAncestorSqueakDisplaysRequest();
