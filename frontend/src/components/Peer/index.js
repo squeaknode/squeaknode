@@ -20,6 +20,7 @@ import {
   selectCurrentPeerStatus,
   selectConnectedPeers,
   selectPeerConnectionByAddress,
+  setConnectPeer,
 } from '../../features/peers/peersSlice'
 
 
@@ -79,10 +80,15 @@ useEffect( () => () => document.getElementsByTagName("body")[0].style.cssText = 
 
 
 const connectPeer = (e) => {
-    actions.connectPeer({
-      host: props.match.params.host,
-      port: props.match.params.port,
-      network: props.match.params.network});
+    // actions.connectPeer({
+    //   host: props.match.params.host,
+    //   port: props.match.params.port,
+    //   network: props.match.params.network});
+    dispatch(setConnectPeer({
+        host: props.match.params.host,
+        port: props.match.params.port,
+        network: props.match.params.network,
+    }));
 }
 
 const disconnectPeer = (e) => {
@@ -134,7 +140,6 @@ const handleModalClick = (e) => {
     e.stopPropagation()
 }
 
-console.log(connectedPeers);
 
 return(
     <div>

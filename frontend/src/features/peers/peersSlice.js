@@ -57,13 +57,14 @@ export const setConnectPeer = createAsyncThunk(
     let network = values.network;
     let host = values.host;
     let port = values.port;
-    const response = await connectPeer(
+    await connectPeer(
       network,
       host,
       port,
     );
+    const response = await getConnectedPeers();
     console.log(response);
-    return response;
+    return response.getConnectedPeersList();
   }
 )
 
@@ -87,7 +88,6 @@ const peersSlice = createSlice({
       state.currentPeerStatus = 'loading'
     })
     .addCase(fetchPeer.fulfilled, (state, action) => {
-      console.log(action);
       const newPeer = action.payload;
       state.currentPeer = newPeer;
       state.currentPeerStatus = 'idle';
@@ -96,16 +96,18 @@ const peersSlice = createSlice({
       state.connectedPeersStatus = 'loading'
     })
     .addCase(fetchConnectedPeers.fulfilled, (state, action) => {
-      console.log(action);
-      const newPeer = action.payload;
-      state.connectedPeers = newPeer;
+      const newConnectedPeers = action.payload;
+      state.connectedPeers = newConnectedPeers;
       state.connectedPeersStatus = 'idle';
     })
     .addCase(setConnectPeer.pending, (state, action) => {
+      console.log(action);
       state.connectPeerStatus = 'loading'
     })
     .addCase(setConnectPeer.fulfilled, (state, action) => {
       console.log(action);
+      const newConnectedPeers = action.payload;
+      state.connectedPeers = newConnectedPeers;
       state.connectPeerStatus = 'idle';
     })
   },
@@ -136,8 +138,6 @@ export const selectPeerConnectionByAddress = createSelector(
     (state, address) => address
   ],
   (connectedPeers, address) => {
-    console.log('Trying to select peer connection.');
-    console.log(address);
     return connectedPeers.find(obj => {
       return obj.getPeerAddress().getNetwork() === address.network &&
       obj.getPeerAddress().getHost() === address.host &&
