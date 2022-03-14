@@ -477,3 +477,16 @@ export const renameProfile = (id, profileName) => {
       deser: deser,
     });
 }
+
+export const changeProfileImage = (id, imageBase64) => {
+    console.log('Calling changeProfileImage');
+    const request = new SetSqueakProfileImageRequest();
+    request.setProfileId(id);
+    request.setProfileImage(imageBase64);
+    const deser = SetSqueakProfileImageReply.deserializeBinary;
+    return baseRequest({
+      url: '/setsqueakprofileimage',
+      req: request,
+      deser: deser,
+    });
+}

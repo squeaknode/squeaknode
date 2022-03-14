@@ -20,6 +20,7 @@ import {
  setDeleteProfile,
  setRenameProfile,
  setCreateContactProfile,
+ setProfileImage,
 } from '../../features/profiles/profilesSlice'
 import {
  fetchProfileSqueaks,
@@ -204,8 +205,10 @@ const Profile = (props) => {
           profileId: user.getProfileId(),
           profileImg: imageBase64,
       }
-      // TODO
-      // actions.updateUserImage(values)
+      dispatch(setProfileImage({
+        profileId: user.getProfileId(),
+        imageBase64: imageBase64,
+      }));
       setSaved(true)
       toggleEditModal()
     };
