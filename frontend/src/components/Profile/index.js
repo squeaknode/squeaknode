@@ -19,6 +19,7 @@ import {
  selectCurrentProfile,
  setDeleteProfile,
  setRenameProfile,
+ setCreateContactProfile,
 } from '../../features/profiles/profilesSlice'
 import {
  fetchProfileSqueaks,
@@ -98,7 +99,6 @@ const Profile = (props) => {
             profileId: user.getProfileId(),
         }
         console.log('Delete user here');
-        // actions.deleteUser(values);
         dispatch(setDeleteProfile(values));
         toggleDeleteModal();
     }
@@ -120,8 +120,10 @@ const Profile = (props) => {
 
 
     const createContactProfile = () => {
-        // TODO
-        // actions.createContactProfile({profileName: editName, pubkey: userParam});
+        dispatch(setCreateContactProfile({
+          pubkey: userParam,
+          profileName: editName,
+        }));
         toggleCreateModal();
     }
 
