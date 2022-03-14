@@ -382,56 +382,56 @@ function makeRequest(route, request, deserializeMsg, handleResponse, handleError
 //   );
 // }
 
-export function getSqueakProfileRequest(id, handleResponse, handleErr) {
-  const request = new GetSqueakProfileRequest();
-  request.setProfileId(id);
-  makeRequest(
-    'getsqueakprofile',
-    request,
-    GetSqueakProfileReply.deserializeBinary,
-    handleResponse,
-    handleErr,
-  );
-  // client.getSqueakProfile(request, {}, (err, response) => {
-  //   handleResponse(response.getSqueakProfile());
-  // });
-}
+// export function getSqueakProfileRequest(id, handleResponse, handleErr) {
+//   const request = new GetSqueakProfileRequest();
+//   request.setProfileId(id);
+//   makeRequest(
+//     'getsqueakprofile',
+//     request,
+//     GetSqueakProfileReply.deserializeBinary,
+//     handleResponse,
+//     handleErr,
+//   );
+//   // client.getSqueakProfile(request, {}, (err, response) => {
+//   //   handleResponse(response.getSqueakProfile());
+//   // });
+// }
 
-export function setSqueakProfileFollowingRequest(id, following, handleResponse) {
-  const request = new SetSqueakProfileFollowingRequest();
-  request.setProfileId(id);
-  request.setFollowing(following);
-  makeRequest(
-    'setsqueakprofilefollowing',
-    request,
-    SetSqueakProfileFollowingReply.deserializeBinary,
-    handleResponse,
-  );
-}
-
-export function renameSqueakProfileRequest(id, profileName, handleResponse) {
-  const request = new RenameSqueakProfileRequest();
-  request.setProfileId(id);
-  request.setProfileName(profileName);
-  makeRequest(
-    'renamesqueakprofile',
-    request,
-    RenameSqueakProfileReply.deserializeBinary,
-    handleResponse,
-  );
-}
-
-export function setSqueakProfileImageRequest(id, profileImage, handleResponse) {
-  const request = new SetSqueakProfileImageRequest();
-  request.setProfileId(id);
-  request.setProfileImage(profileImage);
-  makeRequest(
-    'setsqueakprofileimage',
-    request,
-    SetSqueakProfileImageReply.deserializeBinary,
-    handleResponse,
-  );
-}
+// export function setSqueakProfileFollowingRequest(id, following, handleResponse) {
+//   const request = new SetSqueakProfileFollowingRequest();
+//   request.setProfileId(id);
+//   request.setFollowing(following);
+//   makeRequest(
+//     'setsqueakprofilefollowing',
+//     request,
+//     SetSqueakProfileFollowingReply.deserializeBinary,
+//     handleResponse,
+//   );
+// }
+//
+// export function renameSqueakProfileRequest(id, profileName, handleResponse) {
+//   const request = new RenameSqueakProfileRequest();
+//   request.setProfileId(id);
+//   request.setProfileName(profileName);
+//   makeRequest(
+//     'renamesqueakprofile',
+//     request,
+//     RenameSqueakProfileReply.deserializeBinary,
+//     handleResponse,
+//   );
+// }
+//
+// export function setSqueakProfileImageRequest(id, profileImage, handleResponse) {
+//   const request = new SetSqueakProfileImageRequest();
+//   request.setProfileId(id);
+//   request.setProfileImage(profileImage);
+//   makeRequest(
+//     'setsqueakprofileimage',
+//     request,
+//     SetSqueakProfileImageReply.deserializeBinary,
+//     handleResponse,
+//   );
+// }
 
 export function clearSqueakProfileImageRequest(id, handleResponse) {
   const request = new ClearSqueakProfileImageRequest();
@@ -574,20 +574,20 @@ export function setPeerShareForFreeRequest(id, shareForFree, handleResponse) {
   );
 }
 
-export function getProfilesRequest(handleResponse) {
-  const request = new GetProfilesRequest();
-  makeRequest(
-    'getprofiles',
-    request,
-    GetProfilesReply.deserializeBinary,
-    (response) => {
-      handleResponse(response.getSqueakProfilesList());
-    },
-  );
-  // client.getProfiles(request, {}, (err, response) => {
-  //   handleResponse(response.getSqueakProfilesList());
-  // });
-}
+// export function getProfilesRequest(handleResponse) {
+//   const request = new GetProfilesRequest();
+//   makeRequest(
+//     'getprofiles',
+//     request,
+//     GetProfilesReply.deserializeBinary,
+//     (response) => {
+//       handleResponse(response.getSqueakProfilesList());
+//     },
+//   );
+//   // client.getProfiles(request, {}, (err, response) => {
+//   //   handleResponse(response.getSqueakProfilesList());
+//   // });
+// }
 
 // export function getSigningProfilesRequest(handleResponse) {
 //   const request = new GetSigningProfilesRequest();

@@ -101,26 +101,26 @@ export const applyMiddleware = dispatch => action => {
         //     });
         //     // TODO: handle error response
 
-        case types.LIKE_TWEET:
-            // return axios.post(`${API_URL}/squeak/${action.payload.id}/like`, action.payload, headers)
-            // .then(res=>dispatch({ type: types.LIKE_TWEET, payload: res.data, data: action.payload }))
-            // .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
-            let likeSqueakId = action.payload;
-            return likeSqueakRequest(likeSqueakId, (resp) => {
-              return getSqueakDisplayRequest(likeSqueakId, (resp) => {
-                  let payload = {squeak: resp, squeakHash:  likeSqueakId};
-                  dispatch({ type: types.UPDATE_TWEET, payload: payload, data: action.payload });
-              });
-            });
-
-        case types.UNLIKE_TWEET:
-            let unlikeSqueakId = action.payload;
-            return unlikeSqueakRequest(unlikeSqueakId, (resp) => {
-              return getSqueakDisplayRequest(unlikeSqueakId, (resp) => {
-                  let payload = {squeak: resp, squeakHash:  unlikeSqueakId};
-                  dispatch({ type: types.UPDATE_TWEET, payload: payload, data: action.payload });
-              });
-            });
+        // case types.LIKE_TWEET:
+        //     // return axios.post(`${API_URL}/squeak/${action.payload.id}/like`, action.payload, headers)
+        //     // .then(res=>dispatch({ type: types.LIKE_TWEET, payload: res.data, data: action.payload }))
+        //     // .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
+        //     let likeSqueakId = action.payload;
+        //     return likeSqueakRequest(likeSqueakId, (resp) => {
+        //       return getSqueakDisplayRequest(likeSqueakId, (resp) => {
+        //           let payload = {squeak: resp, squeakHash:  likeSqueakId};
+        //           dispatch({ type: types.UPDATE_TWEET, payload: payload, data: action.payload });
+        //       });
+        //     });
+        //
+        // case types.UNLIKE_TWEET:
+        //     let unlikeSqueakId = action.payload;
+        //     return unlikeSqueakRequest(unlikeSqueakId, (resp) => {
+        //       return getSqueakDisplayRequest(unlikeSqueakId, (resp) => {
+        //           let payload = {squeak: resp, squeakHash:  unlikeSqueakId};
+        //           dispatch({ type: types.UPDATE_TWEET, payload: payload, data: action.payload });
+        //       });
+        //     });
 
         // case types.GET_TWEETS:
         //     // return axios.get(`${API_URL}/squeak`, action.payload)
@@ -136,62 +136,62 @@ export const applyMiddleware = dispatch => action => {
 	      //     });
         //     // TODO: handle error response
 
-        case types.BUY_TWEET:
-                let buyOfferId = action.payload.offerId
-                let buySqueakHash = action.payload.squeakHash
-                return payOfferRequest(buyOfferId,
-                  (resp) => {
-                    getSqueakDisplayRequest(buySqueakHash, (resp) => {
-                      let payload = {"squeak": resp };
-                      dispatch({ type: types.GET_TWEET, payload: payload });
-      	          })},
-                  (err) => {
-                    alert(err);
-                  },
-              );
+        // case types.BUY_TWEET:
+        //         let buyOfferId = action.payload.offerId
+        //         let buySqueakHash = action.payload.squeakHash
+        //         return payOfferRequest(buyOfferId,
+        //           (resp) => {
+        //             getSqueakDisplayRequest(buySqueakHash, (resp) => {
+        //               let payload = {"squeak": resp };
+        //               dispatch({ type: types.GET_TWEET, payload: payload });
+      	//           })},
+        //           (err) => {
+        //             alert(err);
+        //           },
+        //       );
 
         // case types.CLEAR_TWEETS:
         //     dispatch({ type: types.CLEAR_TWEETS, payload: {}})
         //     return;
 
-        case types.GET_TWEET:
-            // return axios.get(`${API_URL}/squeak/${action.payload}`, action.payload)
-            // .then(res=> {
-            //   dispatch({ type: types.GET_TWEET, payload: res.data });
-            // })
-            // .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
+        // case types.GET_TWEET:
+        //     // return axios.get(`${API_URL}/squeak/${action.payload}`, action.payload)
+        //     // .then(res=> {
+        //     //   dispatch({ type: types.GET_TWEET, payload: res.data });
+        //     // })
+        //     // .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
+        //
+        //     return getSqueakDisplayRequest(action.payload, (resp) => {
+        //         let payload = {"squeak": resp };
+        //         dispatch({ type: types.GET_TWEET, payload: payload });
+	      //     });
+        //     // TODO: handle error response
 
-            return getSqueakDisplayRequest(action.payload, (resp) => {
-                let payload = {"squeak": resp };
-                dispatch({ type: types.GET_TWEET, payload: payload });
-	          });
-            // TODO: handle error response
-
-        case types.DOWNLOAD_TWEET:
-            return downloadSqueakRequest(action.payload, (resp) => {
-                const downloadResult = resp.getDownloadResult();
-                const numPeers = downloadResult.getNumberPeers();
-                const numDownloaded = downloadResult.getNumberDownloaded();
-                if (numPeers === 0) {
-                  let payload = {msg: "Unable to download because zero connected peers."}
-                  dispatch({ type: types.ERROR, payload: payload });
-                } else {
-                  let payload = {msg: `Downloaded ${numDownloaded} squeaks from ${numPeers} connected peers.`}
-                  dispatch({ type: types.ERROR, payload: payload });
-                }
-                if (downloadResult.getNumberDownloaded() === 0) {
-                  return;
-                }
-                getSqueakDisplayRequest(action.payload, (resp) => {
-                    let payload = {"squeak": resp };
-                    dispatch({ type: types.GET_TWEET, payload: payload });
-    	          });
-                // getAncestorSqueakDisplaysRequest(action.payload, (resp) => {
-                //     let payload = {"ancestorSqueaks": resp };
-                //     dispatch({ type: types.GET_ANCESTOR_TWEETS, payload: payload });
-                // });
-                return;
-    	       });
+        // case types.DOWNLOAD_TWEET:
+        //     return downloadSqueakRequest(action.payload, (resp) => {
+        //         const downloadResult = resp.getDownloadResult();
+        //         const numPeers = downloadResult.getNumberPeers();
+        //         const numDownloaded = downloadResult.getNumberDownloaded();
+        //         if (numPeers === 0) {
+        //           let payload = {msg: "Unable to download because zero connected peers."}
+        //           dispatch({ type: types.ERROR, payload: payload });
+        //         } else {
+        //           let payload = {msg: `Downloaded ${numDownloaded} squeaks from ${numPeers} connected peers.`}
+        //           dispatch({ type: types.ERROR, payload: payload });
+        //         }
+        //         if (downloadResult.getNumberDownloaded() === 0) {
+        //           return;
+        //         }
+        //         getSqueakDisplayRequest(action.payload, (resp) => {
+        //             let payload = {"squeak": resp };
+        //             dispatch({ type: types.GET_TWEET, payload: payload });
+    	  //         });
+        //         // getAncestorSqueakDisplaysRequest(action.payload, (resp) => {
+        //         //     let payload = {"ancestorSqueaks": resp };
+        //         //     dispatch({ type: types.GET_ANCESTOR_TWEETS, payload: payload });
+        //         // });
+        //         return;
+    	  //      });
 
         case types.DOWNLOAD_USER_SQUEAKS:
             return downloadAddressSqueaksRequest(action.payload, (resp) => {
@@ -266,28 +266,28 @@ export const applyMiddleware = dispatch => action => {
                 dispatch({ type: types.GET_TWEET_OFFERS, payload: payload });
             });
 
-        case types.UPDATE_USER:
-            // return axios.put(`${API_URL}/user/i`, action.payload, headers)
-            // .then(res=>dispatch({ type: types.UPDATE_USER, payload: res.data, data: action.payload }))
-            // .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
-            let updateProfileId = action.payload.profileId;
-            let newName = action.payload.name;
-            return renameSqueakProfileRequest(updateProfileId, newName, (resp) => {
-              return getSqueakProfileRequest(updateProfileId, (resp) => {
-                  let payload = {"user": resp.getSqueakProfile() };
-                  dispatch({ type: types.UPDATE_USER, payload: payload, data: action.payload });
-              });
-            });
+        // case types.UPDATE_USER:
+        //     // return axios.put(`${API_URL}/user/i`, action.payload, headers)
+        //     // .then(res=>dispatch({ type: types.UPDATE_USER, payload: res.data, data: action.payload }))
+        //     // .catch(err=>dispatch({ type: types.ERROR, payload: err.response.data }))
+        //     let updateProfileId = action.payload.profileId;
+        //     let newName = action.payload.name;
+        //     return renameSqueakProfileRequest(updateProfileId, newName, (resp) => {
+        //       return getSqueakProfileRequest(updateProfileId, (resp) => {
+        //           let payload = {"user": resp.getSqueakProfile() };
+        //           dispatch({ type: types.UPDATE_USER, payload: payload, data: action.payload });
+        //       });
+        //     });
 
-        case types.UPDATE_USER_IMAGE:
-            let updateImageProfileId = action.payload.profileId;
-            let profileImg = action.payload.profileImg;
-            return setSqueakProfileImageRequest(updateImageProfileId, profileImg, (resp) => {
-              return getSqueakProfileRequest(updateImageProfileId, (resp) => {
-                  let payload = {"user": resp.getSqueakProfile() };
-                  dispatch({ type: types.UPDATE_USER, payload: payload, data: action.payload });
-              });
-            });
+        // case types.UPDATE_USER_IMAGE:
+        //     let updateImageProfileId = action.payload.profileId;
+        //     let profileImg = action.payload.profileImg;
+        //     return setSqueakProfileImageRequest(updateImageProfileId, profileImg, (resp) => {
+        //       return getSqueakProfileRequest(updateImageProfileId, (resp) => {
+        //           let payload = {"user": resp.getSqueakProfile() };
+        //           dispatch({ type: types.UPDATE_USER, payload: payload, data: action.payload });
+        //       });
+        //     });
 
         // case types.DELETE_USER:
         //     let deleteProfileId = action.payload.profileId;
@@ -313,21 +313,21 @@ export const applyMiddleware = dispatch => action => {
               dispatch({ type: types.DELETE_TWEET, payload: payload, data: action.payload });
             });
 
-        case types.FOLLOW_USER:
-            return setSqueakProfileFollowingRequest(action.payload, true, (resp) => {
-              return getSqueakProfileRequest(action.payload, (resp) => {
-                  let payload = {"user": resp.getSqueakProfile() };
-                  dispatch({ type: types.FOLLOW_USER, payload: payload, data: action.payload });
-              });
-            });
-
-        case types.UNFOLLOW_USER:
-            return setSqueakProfileFollowingRequest(action.payload, false, (resp) => {
-              return getSqueakProfileRequest(action.payload, (resp) => {
-                  let payload = {"user": resp.getSqueakProfile() };
-                  dispatch({ type: types.UNFOLLOW_USER, payload: payload, data: action.payload });
-            });
-        });
+        // case types.FOLLOW_USER:
+        //     return setSqueakProfileFollowingRequest(action.payload, true, (resp) => {
+        //       return getSqueakProfileRequest(action.payload, (resp) => {
+        //           let payload = {"user": resp.getSqueakProfile() };
+        //           dispatch({ type: types.FOLLOW_USER, payload: payload, data: action.payload });
+        //       });
+        //     });
+        //
+        // case types.UNFOLLOW_USER:
+        //     return setSqueakProfileFollowingRequest(action.payload, false, (resp) => {
+        //       return getSqueakProfileRequest(action.payload, (resp) => {
+        //           let payload = {"user": resp.getSqueakProfile() };
+        //           dispatch({ type: types.UNFOLLOW_USER, payload: payload, data: action.payload });
+        //     });
+        // });
 
         case types.SET_PEER_AUTOCONNECT:
             return setPeerAutoconnectRequest(action.payload, true, (resp) => {
