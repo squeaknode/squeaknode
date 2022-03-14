@@ -542,3 +542,14 @@ export const getPeer = (network, host, port) => {
       deser: deser,
     });
 }
+
+export const getConnectedPeers = () => {
+    console.log('Calling getConnectedPeers');
+    const request = new GetConnectedPeersRequest();
+    const deser = GetConnectedPeersReply.deserializeBinary;
+    return baseRequest({
+      url: '/getconnectedpeers',
+      req: request,
+      deser: deser,
+    });
+}

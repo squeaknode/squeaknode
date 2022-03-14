@@ -6,6 +6,7 @@ import {
 } from '@reduxjs/toolkit'
 import {
   getPeer,
+  getConnectedPeers,
 } from '../../api/client'
 
 const initialState = {
@@ -38,6 +39,16 @@ export const fetchPeer = createAsyncThunk(
   }
 )
 
+export const fetchConnectedPeers = createAsyncThunk(
+  'peers/fetchConnectedPeers',
+  async () => {
+    console.log('Fetching connected peers');
+    const response = await getConnectedPeers();
+    console.log(response);
+    return response.getConnectedPeersList();
+  }
+)
+
 const peersSlice = createSlice({
   name: 'peers',
   initialState,
@@ -63,6 +74,15 @@ const peersSlice = createSlice({
       state.currentPeer = newPeer;
       state.currentPeerStatus = 'idle';
     })
+    .addCase(fetchConnectedPeers.pending, (state, action) => {
+      state.connectedPeersStatus = 'loading'
+    })
+    .addCase(fetchConnectedPeers.fulfilled, (state, action) => {
+      console.log(action);
+      const newPeer = action.payload;
+      state.connectedPeers = newPeer;
+      state.connectedPeersStatus = 'idle';
+    })
   },
 })
 
@@ -80,3 +100,7 @@ export const selectCurrentPeerStatus = state => state.peers.currentPeerStatus
 export const selectSavedPeers = state => state.peers.savedPeers
 
 export const selectSavedPeersStatus = state => state.peers.savedPeersStatus
+
+export const selectConnectedPeers = state => state.peers.connectedPeers
+
+export const selectConnectedPeersStatus = state => state.peers.connectedPeersStatus

@@ -7,10 +7,21 @@ import { getProfileImageSrcString } from '../../squeakimages/images';
 import Loader from '../Loader'
 import SqueakCard from '../SqueakCard'
 
+import { unwrapResult } from '@reduxjs/toolkit'
+import { useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
+
+import {
+  fetchConnectedPeers,
+  selectConnectedPeers,
+  selectConnectedPeersStatus,
+} from '../../features/peers/peersSlice'
+
 
 const Peers = (props) => {
     const { state, actions } = useContext(StoreContext)
-    const { peers, connectedPeers, result, tagSqueaks, externalAddress} = state
+    //const { peers, connectedPeers, result, tagSqueaks, externalAddress} = state
+    const { peers, result, tagSqueaks, externalAddress} = state
     const [tab, setTab] = useState('Connected Peers')
     const [savePeerModalOpen, setSavePeerModalOpen] = useState(false)
     const [connectPeerModalOpen, setconnectPeerModalOpen] = useState(false)
@@ -21,12 +32,16 @@ const Peers = (props) => {
     const [port, setPort] = useState('')
     const [useTor, setUseTor] = useState(false)
 
+    const connectedPeers = useSelector(selectConnectedPeers);
+    const dispatch = useDispatch();
+
 
     useEffect(() => {
         window.scrollTo(0, 0)
         // actions.getSavePeers()
         // actions.getconnectPeers()
-        actions.getConnectedPeers();
+        // actions.getConnectedPeers();
+        dispatch(fetchConnectedPeers());
         actions.getPeers();
         actions.getExternalAddress();
         // if(props.history.location.search.length>0){
@@ -134,6 +149,8 @@ const Peers = (props) => {
         e.stopPropagation()
     }
 
+
+    console.log(connectedPeers);
 
     return(
         <div>
