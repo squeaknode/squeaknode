@@ -21,12 +21,6 @@ const Peers = (props) => {
     const [port, setPort] = useState('')
     const [useTor, setUseTor] = useState(false)
 
-    const searchOnChange = (param) => {
-        if(tab !== 'Search'){setTab('Search')}
-        if(param.length>0){
-            actions.search({description: param})
-        }
-    }
 
     useEffect(() => {
         window.scrollTo(0, 0)
