@@ -184,6 +184,13 @@ const peersSlice = createSlice({
     .addCase(setSavePeer.fulfilled, (state, action) => {
       console.log(action);
       const newSavedPeers = action.payload;
+      const savedAddress = action.meta.arg;
+      const newSavedPeer = newSavedPeers.find(savedPeer => {
+        return savedPeer.getPeerAddress().getNetwork() === savedAddress.network &&
+        savedPeer.getPeerAddress().getHost() === savedAddress.host &&
+        savedPeer.getPeerAddress().getPort() == savedAddress.port
+      });
+      state.currentPeer = newSavedPeer;
       state.savedPeers = newSavedPeers;
       state.savePeerStatus = 'idle';
     })
