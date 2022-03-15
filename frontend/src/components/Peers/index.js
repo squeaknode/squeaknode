@@ -240,12 +240,6 @@ const Peers = (props) => {
                     <form className="edit-form">
                         <div className="edit-input-wrap">
                             <div className="edit-input-content">
-                                <label>Network</label>
-                                <input defaultValue={externalAddress && externalAddress.getNetwork()} readOnly type="text" name="name" className="edit-input"/>
-                            </div>
-                        </div>
-                        <div className="edit-input-wrap">
-                            <div className="edit-input-content">
                                 <label>Host</label>
                                 <input defaultValue={externalAddress && externalAddress.getHost()} readOnly type="text" name="name" className="edit-input"/>
                             </div>
