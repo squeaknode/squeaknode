@@ -907,21 +907,21 @@ function makeRequest(route, request, deserializeMsg, handleResponse, handleError
 //   // });
 // }
 
-// export function downloadAddressSqueaksRequest(pubkey, handleResponse) {
-//   const request = new DownloadPubKeySqueaksRequest();
-//   request.setPubkey(pubkey);
-//   makeRequest(
-//     'downloadaddresssqueaks',
-//     request,
-//     DownloadPubKeySqueaksReply.deserializeBinary,
-//     (response) => {
-//       handleResponse(response);
-//     },
-//   );
-//   // client.downloadAddressSqueaks(request, {}, (err, response) => {
-//   //   handleResponse(response);
-//   // });
-// }
+export function downloadAddressSqueaksRequest(pubkey, handleResponse) {
+  const request = new DownloadPubKeySqueaksRequest();
+  request.setPubkey(pubkey);
+  makeRequest(
+    'downloadaddresssqueaks',
+    request,
+    DownloadPubKeySqueaksReply.deserializeBinary,
+    (response) => {
+      handleResponse(response);
+    },
+  );
+  // client.downloadAddressSqueaks(request, {}, (err, response) => {
+  //   handleResponse(response);
+  // });
+}
 
 // export function getSentPaymentsRequest(limit, lastSentPayment, handleResponse) {
 //   const request = new GetSentPaymentsRequest();

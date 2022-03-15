@@ -31,6 +31,7 @@ import {
  selectLastProfileSqueak,
  selectProfileSqueaksStatus,
  clearProfileSqueaks,
+ setDownloadPubkeySqueaks,
 } from '../../features/squeaks/squeaksSlice'
 
 
@@ -120,8 +121,10 @@ const Profile = (props) => {
     }
 
     const downloadUserSqueaks = () => {
-        // TODO
-        // actions.downloadUserSqueaks(userParam);
+        dispatch(setDownloadPubkeySqueaks(props.match.params.username))
+        .then(() => {
+          console.log('Finished downloading pubkey squeaks.');
+        });
     }
 
 
