@@ -42,28 +42,10 @@ const Peers = (props) => {
 
     useEffect(() => {
         window.scrollTo(0, 0)
-        // actions.getSavePeers()
-        // actions.getconnectPeers()
-        // actions.getConnectedPeers();
         dispatch(fetchConnectedPeers());
         dispatch(fetchSavedPeers());
-        actions.getPeers();
         actions.getExternalAddress();
-        // if(props.history.location.search.length>0){
-        //     goToTrend(props.history.location.search.substring(1))
-
-        // }
     }, [])
-
-    const followUser = (e, id) => {
-        e.stopPropagation()
-        actions.followUser(id)
-    }
-
-    const unfollowUser = (e,id) => {
-        e.stopPropagation()
-        actions.unfollowUser(id)
-    }
 
     const goToUser = (id) => {
         props.history.push(`/app/profile/${id}`)
@@ -85,25 +67,11 @@ const Peers = (props) => {
 
     const toggleSavePeerModal = (param, type) => {
         setStyleBody(!styleBody)
-        // if(param === 'edit'){setSaved(false)}
-        // if(type){setTab(type)}
-        // if(param === 'members'){
-        //     setMemOpen(true)
-        //     actions.getFollowers(props.match.params.username)
-        // }
-        // if(memOpen){setMemOpen(false)}
         setTimeout(()=>{ setSavePeerModalOpen(!savePeerModalOpen) },20)
     }
 
     const toggleconnectPeerModal = (param, type) => {
         setStyleBody(!styleBody)
-        // if(param === 'edit'){setSaved(false)}
-        // if(type){setTab(type)}
-        // if(param === 'members'){
-        //     setMemOpen(true)
-        //     actions.getFollowers(props.match.params.username)
-        // }
-        // if(memOpen){setMemOpen(false)}
         setTimeout(()=>{ setconnectPeerModalOpen(!connectPeerModalOpen) },20)
     }
 
