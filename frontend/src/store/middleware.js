@@ -328,22 +328,22 @@ export const applyMiddleware = dispatch => action => {
         //           dispatch({ type: types.UNFOLLOW_USER, payload: payload, data: action.payload });
         //     });
         // });
-
-        case types.SET_PEER_AUTOCONNECT:
-            return setPeerAutoconnectRequest(action.payload, true, (resp) => {
-              getPeerRequest(action.payload, (resp) => {
-                  let payload = {"savedPeer": resp.getSqueakPeer() };
-                  dispatch({ type: types.SAVE_PEER, payload: payload });
-              });
-            });
-
-        case types.SET_PEER_NOT_AUTOCONNECT:
-            return setPeerAutoconnectRequest(action.payload, false, (resp) => {
-              getPeerRequest(action.payload, (resp) => {
-                  let payload = {"savedPeer": resp.getSqueakPeer() };
-                  dispatch({ type: types.SAVE_PEER, payload: payload });
-              });
-            });
+        //
+        // case types.SET_PEER_AUTOCONNECT:
+        //     return setPeerAutoconnectRequest(action.payload, true, (resp) => {
+        //       getPeerRequest(action.payload, (resp) => {
+        //           let payload = {"savedPeer": resp.getSqueakPeer() };
+        //           dispatch({ type: types.SAVE_PEER, payload: payload });
+        //       });
+        //     });
+        //
+        // case types.SET_PEER_NOT_AUTOCONNECT:
+        //     return setPeerAutoconnectRequest(action.payload, false, (resp) => {
+        //       getPeerRequest(action.payload, (resp) => {
+        //           let payload = {"savedPeer": resp.getSqueakPeer() };
+        //           dispatch({ type: types.SAVE_PEER, payload: payload });
+        //       });
+        //     });
 
         case types.EDIT_LIST:
             return axios.put(`${API_URL}/lists/${action.payload.id}/edit`, action.payload, headers)
@@ -488,50 +488,50 @@ export const applyMiddleware = dispatch => action => {
         //     dispatch({ type: types.CLEAR_RECEIVED_PAYMENTS, payload: {}})
         //     return;
 
-        case types.CONNECT_PEER:
-            let connectPeerNetwork = action.payload.network;
-            let connectPeerHost = action.payload.host;
-            let connectPeerPort = action.payload.port;
+        // case types.CONNECT_PEER:
+        //     let connectPeerNetwork = action.payload.network;
+        //     let connectPeerHost = action.payload.host;
+        //     let connectPeerPort = action.payload.port;
+        //
+        //     return connectSqueakPeerRequest(connectPeerNetwork, connectPeerHost, connectPeerPort,
+        //        (resp) => {
+        //          getConnectedPeersRequest((resp) => {
+        //           let connectedPeerConnection = resp.find(obj => {
+        //             return obj.getPeerAddress().getNetwork() === connectPeerNetwork &&
+        //             obj.getPeerAddress().getHost() === connectPeerHost &&
+        //             obj.getPeerAddress().getPort() == connectPeerPort
+        //           })
+        //           let payload = {"connectedPeers": resp, "peerConnection": connectedPeerConnection };
+        //           dispatch({ type: types.GET_CONNECTED_PEERS, payload: payload });
+        //         });
+        //       },
+        //     (err) => {
+        //       alert(err);
+        //     }
+        //   );
 
-            return connectSqueakPeerRequest(connectPeerNetwork, connectPeerHost, connectPeerPort,
-               (resp) => {
-                 getConnectedPeersRequest((resp) => {
-                  let connectedPeerConnection = resp.find(obj => {
-                    return obj.getPeerAddress().getNetwork() === connectPeerNetwork &&
-                    obj.getPeerAddress().getHost() === connectPeerHost &&
-                    obj.getPeerAddress().getPort() == connectPeerPort
-                  })
-                  let payload = {"connectedPeers": resp, "peerConnection": connectedPeerConnection };
-                  dispatch({ type: types.GET_CONNECTED_PEERS, payload: payload });
-                });
-              },
-            (err) => {
-              alert(err);
-            }
-          );
+        // case types.DISCONNECT_PEER:
+        //     let disconnectPeerNetwork = action.payload.network;
+        //     let disconnectPeerHost = action.payload.host;
+        //     let disconnectPeerPort = action.payload.port;
+        //
+        //     return disconnectSqueakPeerRequest(disconnectPeerNetwork, disconnectPeerHost, disconnectPeerPort, (resp) => {
+        //       return getConnectedPeersRequest((resp) => {
+        //           let disconnectedPeerConnection = resp.find(obj => {
+        //             return obj.getPeerAddress().getNetwork() === connectPeerNetwork &&
+        //               obj.getPeerAddress().getHost() === connectPeerHost &&
+        //               obj.getPeerAddress().getPort() == connectPeerPort
+        //           })
+        //           let payload = {"connectedPeers": resp, "peerConnection": disconnectedPeerConnection };
+        //           dispatch({ type: types.GET_CONNECTED_PEERS, payload: payload });
+        //       });
+        //     });
 
-        case types.DISCONNECT_PEER:
-            let disconnectPeerNetwork = action.payload.network;
-            let disconnectPeerHost = action.payload.host;
-            let disconnectPeerPort = action.payload.port;
-
-            return disconnectSqueakPeerRequest(disconnectPeerNetwork, disconnectPeerHost, disconnectPeerPort, (resp) => {
-              return getConnectedPeersRequest((resp) => {
-                  let disconnectedPeerConnection = resp.find(obj => {
-                    return obj.getPeerAddress().getNetwork() === connectPeerNetwork &&
-                      obj.getPeerAddress().getHost() === connectPeerHost &&
-                      obj.getPeerAddress().getPort() == connectPeerPort
-                  })
-                  let payload = {"connectedPeers": resp, "peerConnection": disconnectedPeerConnection };
-                  dispatch({ type: types.GET_CONNECTED_PEERS, payload: payload });
-              });
-            });
-
-        case types.GET_EXTERNAL_ADDRESS:
-            return getExternalAddressRequest((resp) => {
-                let payload = {"externalAddress": resp };
-                dispatch({ type: types.GET_EXTERNAL_ADDRESS, payload: payload, data: action.payload });
-            });
+        // case types.GET_EXTERNAL_ADDRESS:
+        //     return getExternalAddressRequest((resp) => {
+        //         let payload = {"externalAddress": resp };
+        //         dispatch({ type: types.GET_EXTERNAL_ADDRESS, payload: payload, data: action.payload });
+        //     });
 
         case types.GET_SELL_PRICE:
             return getSellPriceRequest((resp) => {
@@ -556,60 +556,60 @@ export const applyMiddleware = dispatch => action => {
               });
             });
 
-        case types.SAVE_PEER:
-            let savePeerName = action.payload.name;
-            let savePeerNetwork = action.payload.network;
-            let savePeerHost = action.payload.host;
-            let savePeerPort = action.payload.port;
+        // case types.SAVE_PEER:
+        //     let savePeerName = action.payload.name;
+        //     let savePeerNetwork = action.payload.network;
+        //     let savePeerHost = action.payload.host;
+        //     let savePeerPort = action.payload.port;
+        //
+        //     return createPeerRequest(savePeerName, savePeerNetwork, savePeerHost, savePeerPort, (resp) => {
+        //       getPeerByAddressRequest(savePeerNetwork, savePeerHost, savePeerPort, (resp) => {
+        //           let payload = {"savedPeer": resp };
+        //           dispatch({ type: types.SAVE_PEER, payload: payload });
+        //       });
+        //       getConnectedPeersRequest((resp) => {
+        //           let payload = {"connectedPeers": resp };
+        //           dispatch({ type: types.GET_CONNECTED_PEERS, payload: payload });
+        //       });
+        //     });
 
-            return createPeerRequest(savePeerName, savePeerNetwork, savePeerHost, savePeerPort, (resp) => {
-              getPeerByAddressRequest(savePeerNetwork, savePeerHost, savePeerPort, (resp) => {
-                  let payload = {"savedPeer": resp };
-                  dispatch({ type: types.SAVE_PEER, payload: payload });
-              });
-              getConnectedPeersRequest((resp) => {
-                  let payload = {"connectedPeers": resp };
-                  dispatch({ type: types.GET_CONNECTED_PEERS, payload: payload });
-              });
-            });
+        // case types.GET_CONNECTED_PEERS:
+        //     return getConnectedPeersRequest((resp) => {
+        //         let payload = {"connectedPeers": resp };
+        //         dispatch({ type: types.GET_CONNECTED_PEERS, payload: payload });
+        //     });
 
-        case types.GET_CONNECTED_PEERS:
-            return getConnectedPeersRequest((resp) => {
-                let payload = {"connectedPeers": resp };
-                dispatch({ type: types.GET_CONNECTED_PEERS, payload: payload });
-            });
+        // case types.GET_PEERS:
+        //     return getPeersRequest((resp) => {
+        //         let payload = {"peers": resp };
+        //         dispatch({ type: types.GET_PEERS, payload: payload });
+        //     });
+        //
+        // case types.GET_PEER:
+        //     let getPeerNetwork = action.payload.network;
+        //     let getPeerHost = action.payload.host;
+        //     let getPeerPort = action.payload.port;
+        //
+        //     return getPeerByAddressRequest(getPeerNetwork, getPeerHost, getPeerPort, (resp) => {
+        //         let payload = {"peer": resp };
+        //         dispatch({ type: types.GET_PEERS, payload: payload });
+        //     });
 
-        case types.GET_PEERS:
-            return getPeersRequest((resp) => {
-                let payload = {"peers": resp };
-                dispatch({ type: types.GET_PEERS, payload: payload });
-            });
-
-        case types.GET_PEER:
-            let getPeerNetwork = action.payload.network;
-            let getPeerHost = action.payload.host;
-            let getPeerPort = action.payload.port;
-
-            return getPeerByAddressRequest(getPeerNetwork, getPeerHost, getPeerPort, (resp) => {
-                let payload = {"peer": resp };
-                dispatch({ type: types.GET_PEERS, payload: payload });
-            });
-
-        case types.GET_PEER_CONNECTION:
-            let getPeerConnectionNetwork = action.payload.network;
-            let getPeerConnectionHost = action.payload.host;
-            let getPeerConnectionPort = action.payload.port;
-
-            return getConnectedPeerRequest(getPeerConnectionNetwork, getPeerConnectionHost, getPeerConnectionPort, (resp) => {
-                let payload = {"peerConnection": resp };
-                dispatch({ type: types.GET_PEER_CONNECTION, payload: payload });
-            });
-
-        case types.DELETE_PEER:
-            let deletePeerId = action.payload.peerId;
-            return deletePeerRequest(deletePeerId, (resp) => {
-                dispatch({ type: types.UPDATE_PEER, payload: {}, data: action.payload });
-            });
+        // case types.GET_PEER_CONNECTION:
+        //     let getPeerConnectionNetwork = action.payload.network;
+        //     let getPeerConnectionHost = action.payload.host;
+        //     let getPeerConnectionPort = action.payload.port;
+        //
+        //     return getConnectedPeerRequest(getPeerConnectionNetwork, getPeerConnectionHost, getPeerConnectionPort, (resp) => {
+        //         let payload = {"peerConnection": resp };
+        //         dispatch({ type: types.GET_PEER_CONNECTION, payload: payload });
+        //     });
+        //
+        // case types.DELETE_PEER:
+        //     let deletePeerId = action.payload.peerId;
+        //     return deletePeerRequest(deletePeerId, (resp) => {
+        //         dispatch({ type: types.UPDATE_PEER, payload: {}, data: action.payload });
+        //     });
 
         case types.GET_CONVERSATIONS:
             return axios.get(`${API_URL}/chat/conversations`, headers)

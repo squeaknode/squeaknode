@@ -444,17 +444,17 @@ function makeRequest(route, request, deserializeMsg, handleResponse, handleError
 //   );
 // }
 
-export function getPeersRequest(handleResponse) {
-  const request = new GetPeersRequest();
-  makeRequest(
-    'getpeers',
-    request,
-    GetPeersReply.deserializeBinary,
-    (response) => {
-      handleResponse(response.getSqueakPeersList());
-    },
-  );
-}
+// export function getPeersRequest(handleResponse) {
+//   const request = new GetPeersRequest();
+//   makeRequest(
+//     'getpeers',
+//     request,
+//     GetPeersReply.deserializeBinary,
+//     (response) => {
+//       handleResponse(response.getSqueakPeersList());
+//     },
+//   );
+// }
 
 export function payOfferRequest(offerId, handleResponse, handleErr) {
   const request = new PayOfferRequest();
@@ -518,61 +518,61 @@ export function getBuyOfferRequest(offerId, handleResponse) {
   );
 }
 
-export function getPeerRequest(id, handleResponse) {
-  const request = new GetPeerRequest();
-  request.setPeerId(id);
-  makeRequest(
-    'getpeer',
-    request,
-    GetPeerReply.deserializeBinary,
-    handleResponse,
-  );
-}
+// export function getPeerRequest(id, handleResponse) {
+//   const request = new GetPeerRequest();
+//   request.setPeerId(id);
+//   makeRequest(
+//     'getpeer',
+//     request,
+//     GetPeerReply.deserializeBinary,
+//     handleResponse,
+//   );
+// }
+//
+// export function getPeerByAddressRequest(network, host, port, handleResponse) {
+//   const request = new GetPeerByAddressRequest();
+//   const peerAddress = new PeerAddress();
+//   peerAddress.setNetwork(network);
+//   peerAddress.setHost(host);
+//   peerAddress.setPort(port);
+//   request.setPeerAddress(peerAddress);
+//   makeRequest(
+//     'getpeerbyaddress',
+//     request,
+//     GetPeerByAddressReply.deserializeBinary,
+//     (response) => {
+//       handleResponse(response.getSqueakPeer());
+//     },
+//   );
+// }
+//
+// export function setPeerAutoconnectRequest(id, autoconnect, handleResponse) {
+//   const request = new SetPeerAutoconnectRequest();
+//   request.setPeerId(id);
+//   request.setAutoconnect(autoconnect);
+//   makeRequest(
+//     'setpeerautoconnect',
+//     request,
+//     SetPeerAutoconnectReply.deserializeBinary,
+//     (response) => {
+//       handleResponse(response);
+//     },
+//   );
+// }
 
-export function getPeerByAddressRequest(network, host, port, handleResponse) {
-  const request = new GetPeerByAddressRequest();
-  const peerAddress = new PeerAddress();
-  peerAddress.setNetwork(network);
-  peerAddress.setHost(host);
-  peerAddress.setPort(port);
-  request.setPeerAddress(peerAddress);
-  makeRequest(
-    'getpeerbyaddress',
-    request,
-    GetPeerByAddressReply.deserializeBinary,
-    (response) => {
-      handleResponse(response.getSqueakPeer());
-    },
-  );
-}
-
-export function setPeerAutoconnectRequest(id, autoconnect, handleResponse) {
-  const request = new SetPeerAutoconnectRequest();
-  request.setPeerId(id);
-  request.setAutoconnect(autoconnect);
-  makeRequest(
-    'setpeerautoconnect',
-    request,
-    SetPeerAutoconnectReply.deserializeBinary,
-    (response) => {
-      handleResponse(response);
-    },
-  );
-}
-
-export function setPeerShareForFreeRequest(id, shareForFree, handleResponse) {
-  const request = new SetPeerShareForFreeRequest();
-  request.setPeerId(id);
-  request.setShareForFree(shareForFree);
-  makeRequest(
-    'setpeershareforfree',
-    request,
-    SetPeerShareForFreeReply.deserializeBinary,
-    (response) => {
-      handleResponse(response);
-    },
-  );
-}
+// export function setPeerShareForFreeRequest(id, shareForFree, handleResponse) {
+//   const request = new SetPeerShareForFreeRequest();
+//   request.setPeerId(id);
+//   request.setShareForFree(shareForFree);
+//   makeRequest(
+//     'setpeershareforfree',
+//     request,
+//     SetPeerShareForFreeReply.deserializeBinary,
+//     (response) => {
+//       handleResponse(response);
+//     },
+//   );
+// }
 
 // export function getProfilesRequest(handleResponse) {
 //   const request = new GetProfilesRequest();
@@ -790,42 +790,42 @@ export function setPeerShareForFreeRequest(id, shareForFree, handleResponse) {
 //   // });
 // }
 
-export function createPeerRequest(peerName, network, host, port, handleResponse) {
-  const request = new CreatePeerRequest();
-  const peerAddress = new PeerAddress();
-  peerAddress.setNetwork(network);
-  peerAddress.setHost(host);
-  peerAddress.setPort(port);
-  request.setPeerName(peerName);
-  request.setPeerAddress(peerAddress);
-  makeRequest(
-    'createpeer',
-    request,
-    CreatePeerReply.deserializeBinary,
-    (response) => {
-      handleResponse(response);
-    },
-  );
-  // client.createPeer(request, {}, (err, response) => {
-  //   handleResponse(response);
-  // });
-}
+// export function createPeerRequest(peerName, network, host, port, handleResponse) {
+//   const request = new CreatePeerRequest();
+//   const peerAddress = new PeerAddress();
+//   peerAddress.setNetwork(network);
+//   peerAddress.setHost(host);
+//   peerAddress.setPort(port);
+//   request.setPeerName(peerName);
+//   request.setPeerAddress(peerAddress);
+//   makeRequest(
+//     'createpeer',
+//     request,
+//     CreatePeerReply.deserializeBinary,
+//     (response) => {
+//       handleResponse(response);
+//     },
+//   );
+//   // client.createPeer(request, {}, (err, response) => {
+//   //   handleResponse(response);
+//   // });
+// }
 
-export function deletePeerRequest(peerId, handleResponse) {
-  const request = new DeletePeerRequest();
-  request.setPeerId(peerId);
-  makeRequest(
-    'deletepeer',
-    request,
-    DeletePeerReply.deserializeBinary,
-    (response) => {
-      handleResponse(response);
-    },
-  );
-  // client.deletePeer(request, {}, (err, response) => {
-  //   handleResponse(response);
-  // });
-}
+// export function deletePeerRequest(peerId, handleResponse) {
+//   const request = new DeletePeerRequest();
+//   request.setPeerId(peerId);
+//   makeRequest(
+//     'deletepeer',
+//     request,
+//     DeletePeerReply.deserializeBinary,
+//     (response) => {
+//       handleResponse(response);
+//     },
+//   );
+//   // client.deletePeer(request, {}, (err, response) => {
+//   //   handleResponse(response);
+//   // });
+// }
 
 // export function deleteProfileRequest(profileId, handleResponse) {
 //   const request = new DeleteSqueakProfileRequest();
@@ -1068,96 +1068,96 @@ export function getLikedSqueakDisplaysRequest(limit, lastEntry, handleResponse, 
   // });
 }
 
-export function getConnectedPeersRequest(handleResponse) {
-  const request = new GetConnectedPeersRequest();
-  makeRequest(
-    'getconnectedpeers',
-    request,
-    GetConnectedPeersReply.deserializeBinary,
-    (response) => {
-      handleResponse(response.getConnectedPeersList());
-    },
-  );
-  // client.getConnectedPeers(request, {}, (err, response) => {
-  //   handleResponse(response.getConnectedPeersList());
-  // });
-}
+// export function getConnectedPeersRequest(handleResponse) {
+//   const request = new GetConnectedPeersRequest();
+//   makeRequest(
+//     'getconnectedpeers',
+//     request,
+//     GetConnectedPeersReply.deserializeBinary,
+//     (response) => {
+//       handleResponse(response.getConnectedPeersList());
+//     },
+//   );
+//   // client.getConnectedPeers(request, {}, (err, response) => {
+//   //   handleResponse(response.getConnectedPeersList());
+//   // });
+// }
 
-export function getConnectedPeerRequest(network, host, port, handleResponse) {
-  const request = new GetConnectedPeerRequest();
-  const peerAddress = new PeerAddress();
-  peerAddress.setNetwork(network);
-  peerAddress.setHost(host);
-  peerAddress.setPort(port);
-  request.setPeerAddress(peerAddress);
-  makeRequest(
-    'getconnectedpeer',
-    request,
-    GetConnectedPeerReply.deserializeBinary,
-    (response) => {
-      handleResponse(response.getConnectedPeer());
-    },
-  );
-  // client.getConnectedPeer(request, {}, (err, response) => {
-  //   handleResponse(response.getConnectedPeer());
-  // });
-}
+// export function getConnectedPeerRequest(network, host, port, handleResponse) {
+//   const request = new GetConnectedPeerRequest();
+//   const peerAddress = new PeerAddress();
+//   peerAddress.setNetwork(network);
+//   peerAddress.setHost(host);
+//   peerAddress.setPort(port);
+//   request.setPeerAddress(peerAddress);
+//   makeRequest(
+//     'getconnectedpeer',
+//     request,
+//     GetConnectedPeerReply.deserializeBinary,
+//     (response) => {
+//       handleResponse(response.getConnectedPeer());
+//     },
+//   );
+//   // client.getConnectedPeer(request, {}, (err, response) => {
+//   //   handleResponse(response.getConnectedPeer());
+//   // });
+// }
 
-export function connectSqueakPeerRequest(network, host, port, handleResponse, handleErr) {
-  const request = new ConnectSqueakPeerRequest();
-  const peerAddress = new PeerAddress();
-  peerAddress.setNetwork(network);
-  peerAddress.setHost(host);
-  peerAddress.setPort(port);
-  request.setPeerAddress(peerAddress);
-  makeRequest(
-    'connectpeer',
-    request,
-    ConnectSqueakPeerReply.deserializeBinary,
-    (response) => {
-      handleResponse(response);
-    },
-    handleErr,
-  );
-  // client.connectPeer(request, {}, (err, response) => {
-  //   handleResponse(response);
-  // });
-}
+// export function connectSqueakPeerRequest(network, host, port, handleResponse, handleErr) {
+//   const request = new ConnectSqueakPeerRequest();
+//   const peerAddress = new PeerAddress();
+//   peerAddress.setNetwork(network);
+//   peerAddress.setHost(host);
+//   peerAddress.setPort(port);
+//   request.setPeerAddress(peerAddress);
+//   makeRequest(
+//     'connectpeer',
+//     request,
+//     ConnectSqueakPeerReply.deserializeBinary,
+//     (response) => {
+//       handleResponse(response);
+//     },
+//     handleErr,
+//   );
+//   // client.connectPeer(request, {}, (err, response) => {
+//   //   handleResponse(response);
+//   // });
+// }
+//
+// export function disconnectSqueakPeerRequest(network, host, port, handleResponse) {
+//   const request = new DisconnectSqueakPeerRequest();
+//   const peerAddress = new PeerAddress();
+//   peerAddress.setNetwork(network);
+//   peerAddress.setHost(host);
+//   peerAddress.setPort(port);
+//   request.setPeerAddress(peerAddress);
+//   makeRequest(
+//     'disconnectpeer',
+//     request,
+//     DisconnectSqueakPeerReply.deserializeBinary,
+//     (response) => {
+//       handleResponse(response);
+//     },
+//   );
+//   // client.disconnectPeer(request, {}, (err, response) => {
+//   //   handleResponse(response);
+//   // });
+// }
 
-export function disconnectSqueakPeerRequest(network, host, port, handleResponse) {
-  const request = new DisconnectSqueakPeerRequest();
-  const peerAddress = new PeerAddress();
-  peerAddress.setNetwork(network);
-  peerAddress.setHost(host);
-  peerAddress.setPort(port);
-  request.setPeerAddress(peerAddress);
-  makeRequest(
-    'disconnectpeer',
-    request,
-    DisconnectSqueakPeerReply.deserializeBinary,
-    (response) => {
-      handleResponse(response);
-    },
-  );
-  // client.disconnectPeer(request, {}, (err, response) => {
-  //   handleResponse(response);
-  // });
-}
-
-export function getExternalAddressRequest(handleResponse) {
-  const request = new GetExternalAddressRequest();
-  makeRequest(
-    'getexternaladdress',
-    request,
-    GetExternalAddressReply.deserializeBinary,
-    (response) => {
-      handleResponse(response.getPeerAddress());
-    },
-  );
-  // client.getNetwork(request, {}, (err, response) => {
-  //   handleResponse(response.getNetwork());
-  // });
-}
+// export function getExternalAddressRequest(handleResponse) {
+//   const request = new GetExternalAddressRequest();
+//   makeRequest(
+//     'getexternaladdress',
+//     request,
+//     GetExternalAddressReply.deserializeBinary,
+//     (response) => {
+//       handleResponse(response.getPeerAddress());
+//     },
+//   );
+//   // client.getNetwork(request, {}, (err, response) => {
+//   //   handleResponse(response.getNetwork());
+//   // });
+// }
 
 export function getDefaultPeerPortRequest(handleResponse) {
   const request = new GetDefaultPeerPortRequest();
