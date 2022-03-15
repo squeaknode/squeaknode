@@ -447,3 +447,5 @@ export const selectMakeSqueakStatus = state => state.squeaks.makeSqueakStatus
 export const selectSqueakOffers = state => state.squeaks.squeakOffers
 
 export const selectSqueakOffersStatus = state => state.squeaks.squeakOffersStatus
+
+export const selectBuySqueakStatus = state => state.squeaks.buySqueakStatus
