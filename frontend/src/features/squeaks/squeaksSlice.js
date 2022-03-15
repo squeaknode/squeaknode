@@ -340,6 +340,9 @@ const squeaksSlice = createSlice({
       console.log('setMakeSqueak pending');
       state.makeSqueakStatus = 'loading'
     })
+    .addCase(setMakeSqueak.rejected, (state, action) => {
+      state.makeSqueakStatus = 'idle'
+    })
     .addCase(setMakeSqueak.fulfilled, (state, action) => {
       console.log('setMakeSqueak fulfilled');
       console.log(action);
@@ -358,6 +361,9 @@ const squeaksSlice = createSlice({
     })
     .addCase(setBuySqueak.pending, (state, action) => {
       state.buySqueakStatus = 'loading'
+    })
+    .addCase(setBuySqueak.rejected, (state, action) => {
+      state.buySqueakStatus = 'idle'
     })
     .addCase(setBuySqueak.fulfilled, (state, action) => {
       console.log(action);

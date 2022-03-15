@@ -14,6 +14,7 @@ import SqueakCard from '../../components/SqueakCard'
 import Loader from '../../components/Loader'
 import MakeSqueak from '../squeaks/MakeSqueak'
 
+import { unwrapResult } from '@reduxjs/toolkit'
 
 import {
   selectNetwork,
@@ -140,7 +141,11 @@ const Squeak = (props) => {
         squeakHash: props.match.params.id,
       }
       console.log('Buy clicked.');
-      dispatch(setBuySqueak(values));
+      dispatch(setBuySqueak(values))
+      .then(unwrapResult)
+      .catch((err) => {
+        alert(err.message);
+      });
       toggleBuyModal();
   }
 
