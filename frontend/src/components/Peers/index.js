@@ -19,13 +19,19 @@ import {
   fetchSavedPeers,
   setConnectPeer,
 } from '../../features/peers/peersSlice'
+import {
+  fetchExternalAddress,
+  selectExternalAddress,
+} from '../../features/externalAddress/externalAddressSlice'
+
 
 
 const Peers = (props) => {
     const { state, actions } = useContext(StoreContext)
     //const { peers, connectedPeers, result, tagSqueaks, externalAddress} = state
     //const { peers, result, tagSqueaks, externalAddress} = state
-    const { result, tagSqueaks, externalAddress} = state
+    //const { result, tagSqueaks, externalAddress} = state
+    const { result, tagSqueaks } = state
     const [tab, setTab] = useState('Connected Peers')
     const [savePeerModalOpen, setSavePeerModalOpen] = useState(false)
     const [connectPeerModalOpen, setconnectPeerModalOpen] = useState(false)
@@ -36,6 +42,7 @@ const Peers = (props) => {
     const [port, setPort] = useState('')
     const [useTor, setUseTor] = useState(false)
 
+    const externalAddress = useSelector(selectExternalAddress);
     const peers = useSelector(selectSavedPeers);
     const connectedPeers = useSelector(selectConnectedPeers);
     const dispatch = useDispatch();
@@ -43,9 +50,9 @@ const Peers = (props) => {
 
     useEffect(() => {
         window.scrollTo(0, 0)
+        dispatch(fetchExternalAddress());
         dispatch(fetchConnectedPeers());
         dispatch(fetchSavedPeers());
-        actions.getExternalAddress();
     }, [])
 
     const goToUser = (id) => {
@@ -123,8 +130,6 @@ const Peers = (props) => {
         e.stopPropagation()
     }
 
-
-    console.log(connectedPeers);
 
     return(
         <div>

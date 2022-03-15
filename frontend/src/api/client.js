@@ -597,3 +597,14 @@ export const disconnectPeer = (network, host, port) => {
       deser: deser,
     });
 }
+
+export const getExternalAddress = () => {
+    console.log('Calling getExternalAddress');
+    const request = new GetExternalAddressRequest();
+    const deser = GetExternalAddressReply.deserializeBinary;
+    return baseRequest({
+      url: '/getexternaladdress',
+      req: request,
+      deser: deser,
+    });
+}
