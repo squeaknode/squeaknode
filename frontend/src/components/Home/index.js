@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useContext, useRef } from 'react'
-import { StoreContext } from '../../store/store'
 import './style.scss'
 import axios from 'axios'
 import ContentEditable from 'react-contenteditable'

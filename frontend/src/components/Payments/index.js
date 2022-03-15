@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useContext } from 'react'
-import { StoreContext } from '../../store/store'
 import './style.scss'
 import moment from 'moment'
 import { withRouter, Link } from 'react-router-dom'
@@ -12,7 +11,6 @@ import ReceivedPayments from '../../features/payments/ReceivedPayments'
 
 
 const Payments = (props) => {
-    const { state, actions } = useContext(StoreContext)
     const [tab, setTab] = useState('Sent Payments')
     const [styleBody, setStyleBody] = useState(false)
 

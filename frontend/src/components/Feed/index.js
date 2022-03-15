@@ -1,7 +1,6 @@
 import React , { useEffect, useContext, useState } from 'react'
 import './style.scss'
 import {  withRouter, Link } from 'react-router-dom'
-import { StoreContext } from '../../store/store'
 import { ICON_SEARCH } from '../../Icons'
 import Loader from '../Loader'
 import PaymentSummary from '../../features/payments/PaymentSummary'
@@ -9,9 +8,6 @@ import PaymentSummary from '../../features/payments/PaymentSummary'
 
 const Feed = (props) => {
 
-const { state, actions } = useContext(StoreContext)
-
-const {paymentSummary, trends, session} = state
 const [searchText, setSearchText] = useState('');
 
 

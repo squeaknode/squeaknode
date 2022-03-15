@@ -2,7 +2,6 @@ import React , { useEffect, useState, useContext, useRef} from 'react'
 import './style.scss'
 import { ICON_ARROWBACK, ICON_MARKDOWN, ICON_DATE, ICON_CLOSE, ICON_UPLOAD, ICON_NEWMSG, ICON_SETTINGS, ICON_DARK } from '../../Icons'
 import { withRouter, Link } from 'react-router-dom'
-import { StoreContext } from '../../store/store'
 import { getProfileImageSrcString } from '../../squeakimages/images';
 import Loader from '../Loader'
 import moment from 'moment'
@@ -36,7 +35,6 @@ import {
 
 
 const Profile = (props) => {
-    // const { state, actions } = useContext(StoreContext)
     const [activeTab, setActiveTab] = useState('Squeaks')
     const [moreMenu, setMoreMenu] = useState(false)
     const [editName, setName] = useState('')

@@ -2,7 +2,6 @@ import React , { useEffect, useState, useContext, useRef } from 'react'
 import './style.scss'
 import moment from 'moment'
 import {  withRouter, Link } from 'react-router-dom'
-import { StoreContext } from '../../store/store'
 import Loader from '../Loader'
 import SqueakCard from '../SqueakCard'
 import {API_URL} from '../../config'
@@ -31,7 +30,6 @@ import {
 
 const Peer = (props) => {
 
-const { state, actions } = useContext(StoreContext)
 const [modalOpen, setModalOpen] = useState(false)
 
 const [editName, setName] = useState('')
@@ -43,9 +41,6 @@ const [saved, setSaved] = useState(false)
 const [tab, setTab] = useState('Members')
 const [bannerLoading, setBannerLoading] = useState(false)
 const [styleBody, setStyleBody] = useState(false)
-// const {peer, peerConnection, list} = state
-//const {peerConnection, list} = state
-const {list} = state
 
 const peer = useSelector(selectCurrentPeer);
 const connectedPeers = useSelector(selectConnectedPeers);

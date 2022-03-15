@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useContext } from 'react'
-import { StoreContext } from '../../store/store'
 import './style.scss'
 import { withRouter, Link } from 'react-router-dom'
 import { ICON_SEARCH, ICON_ARROWBACK, ICON_CLOSE } from '../../Icons'
@@ -20,7 +19,6 @@ import {
 
 
 const Profiles = (props) => {
-    const { state, actions } = useContext(StoreContext)
     const [tab, setTab] = useState('Signing Profiles')
     const [signingProfileModalOpen, setSigningProfileModalOpen] = useState(false)
     const [contactProfileModalOpen, setContactProfileModalOpen] = useState(false)

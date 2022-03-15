@@ -1,5 +1,4 @@
 import React , { useEffect, useState, useContext, useRef } from 'react'
-import { StoreContext } from '../../store/store'
 import { Link, withRouter, Redirect } from 'react-router-dom'
 import './style.scss'
 import { ICON_LOGO, ICON_HOME, ICON_HASH, ICON_BELL, ICON_INBOX
@@ -35,9 +34,6 @@ import {
 } from '../../features/account/accountSlice'
 
 const Nav = ({history}) => {
-    const { state, actions } = useContext(StoreContext)
-
-    // const { sellPrice, session } = state
     const [moreMenu, setMoreMenu] = useState(false)
     const [theme, setTheme] = useState(true)
     const [modalOpen, setModalOpen] = useState(false)

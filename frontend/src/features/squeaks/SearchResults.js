@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useContext, useRef, useMemo } from 'react'
 import { withRouter, useLocation } from 'react-router-dom';
-import { StoreContext } from '../../store/store'
 import ContentEditable from 'react-contenteditable'
 import { ICON_IMGUPLOAD, ICON_SEARCH } from '../../Icons'
 import { Link } from 'react-router-dom'

@@ -1,6 +1,5 @@
 import React , { useEffect, useContext, useState } from 'react'
 import {  withRouter, Link } from 'react-router-dom'
-import { StoreContext } from '../../store/store'
 import { ICON_SEARCH } from '../../Icons'
 import Loader from '../../components/Loader'
 

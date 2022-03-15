@@ -3,7 +3,6 @@ import { useDispatch } from 'react-redux'
 
 import './style.scss'
 import moment from 'moment'
-import { StoreContext } from '../../store/store'
 import { getProfileImageSrcString } from '../../squeakimages/images';
 import { Link, withRouter } from 'react-router-dom'
 import { ICON_REPLY, ICON_RETWEET,
@@ -21,9 +20,6 @@ import {
 
 
 const SqueakCard = React.memo(function SqueakCard(props) {
-    const { state, actions } = useContext(StoreContext)
-    const { session} = state
-
     const [modalOpen, setModalOpen] = useState(false)
     const [parent, setParent] = useState(false)
     const [styleBody, setStyleBody] = useState(false)

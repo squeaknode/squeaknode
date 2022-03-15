@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useContext, useRef, useMemo } from 'react'
 import { withRouter, useLocation } from 'react-router-dom';
-import { StoreContext } from '../../store/store'
 import './style.scss'
 import axios from 'axios'
 import ContentEditable from 'react-contenteditable'
