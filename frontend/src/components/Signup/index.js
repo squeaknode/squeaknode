@@ -22,7 +22,7 @@ const SignUpPage = (props) => {
                 password,
                 func: Redirect
             }
-            actions.signup(values)
+            // TODO: signup here.
         }
     }
 

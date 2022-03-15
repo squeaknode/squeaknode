@@ -33,48 +33,34 @@ const SqueakCard = React.memo(function SqueakCard(props) {
     let info
     const likeSqueak = (e,id) => {
         if(e){ e.stopPropagation() }
-        //if(!session){ actions.alert('Please Sign In'); return }
-        //actions.likeSqueak(id)
         console.log('Clicked like with id', id);
         dispatch(setLikeSqueak(id));
     }
     const unlikeSqueak = (e,id) => {
         if(e){ e.stopPropagation() }
-        //if(!session){ actions.alert('Please Sign In'); return }
-        //actions.unlikeSqueak(id)
         console.log('Clicked unlike with id', id);
         dispatch(setUnlikeSqueak(id));
     }
 
     const resqueak = (e,id, resqueakId) => {
         e.stopPropagation()
-        if(!session){ actions.alert('Please Sign In'); return }
         if(props.history.location.pathname.slice(1,5) === 'prof'){
             info = { dest: "profile", id, resqueakId }
         }else{ info = { id, resqueakId } }
-        // actions.resqueak(info)
         alert('Re-Squeak not yet implemented!');
     }
 
     const deleteSqueak = (e,id) => {
         e.stopPropagation()
-        // actions.deleteSqueak(id)
         dispatch(setDeleteSqueak(id));
     }
 
     const goToSqueak = (id) => {
-        if(props.replyTo){ actions.getSqueak(id) }
-        props.history.push(`/app/squeak/${id}`)
-    }
-    const goToReply = (e,id) => {
-        e.stopPropagation()
-        if(props.replyTo){ actions.getSqueak(id) }
         props.history.push(`/app/squeak/${id}`)
     }
 
     const toggleModal = (e, type) => {
         if(e){ e.stopPropagation() }
-        if(!session){ actions.alert('Please Sign In'); return }
         setStyleBody(!styleBody)
         if(type === 'parent'){setParent(true)}else{setParent(false)}
         setTimeout(()=>{ setModalOpen(!modalOpen) },20)
