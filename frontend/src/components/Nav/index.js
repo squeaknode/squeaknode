@@ -37,6 +37,8 @@ import {
 import {
   selectMakeSqueakStatus,
   selectBuySqueakStatus,
+  selectDownloadSqueakStatus,
+  selectDownloadPubkeySqueakStatus,
 } from '../../features/squeaks/squeaksSlice'
 
 const Nav = ({history}) => {
@@ -289,6 +291,29 @@ const Nav = ({history}) => {
             </div>
         </div>
 
+        {/* Block screen with modal when download squeak is waiting. */}
+        <div style={{display: useSelector(selectDownloadSqueakStatus) === 'loading' ? 'block' : 'none'}} className="modal-edit">
+            <div style={{minHeight: '270px', height: 'initial'}} className="modal-content">
+                <div className="modal-header">
+                    <p className="modal-title">Downloading squeak...</p>
+                </div>
+                <div style={{marginTop:'5px'}} className="modal-body">
+                    <Loader />
+                </div>
+            </div>
+        </div>
+
+        {/* Block screen with modal when download pubkey squeaks is waiting. */}
+        <div style={{display: useSelector(selectDownloadPubkeySqueakStatus) === 'loading' ? 'block' : 'none'}} className="modal-edit">
+            <div style={{minHeight: '270px', height: 'initial'}} className="modal-content">
+                <div className="modal-header">
+                    <p className="modal-title">Downloading pubkey squeaks...</p>
+                </div>
+                <div style={{marginTop:'5px'}} className="modal-body">
+                    <Loader />
+                </div>
+            </div>
+        </div>
 
         </div>
     )

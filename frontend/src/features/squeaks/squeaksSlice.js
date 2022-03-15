@@ -381,6 +381,9 @@ const squeaksSlice = createSlice({
     .addCase(setDownloadSqueak.pending, (state, action) => {
       state.downloadSqueakStatus = 'loading'
     })
+    .addCase(setDownloadSqueak.rejected, (state, action) => {
+      state.downloadSqueakStatus = 'idle'
+    })
     .addCase(setDownloadSqueak.fulfilled, (state, action) => {
       console.log(action);
       state.downloadSqueakStatus = 'idle';
@@ -390,6 +393,9 @@ const squeaksSlice = createSlice({
     })
     .addCase(setDownloadPubkeySqueaks.pending, (state, action) => {
       state.downloadPubkeySqueakStatus = 'loading'
+    })
+    .addCase(setDownloadPubkeySqueaks.rejected, (state, action) => {
+      state.downloadPubkeySqueakStatus = 'idle'
     })
     .addCase(setDownloadPubkeySqueaks.fulfilled, (state, action) => {
       console.log(action);
@@ -455,3 +461,7 @@ export const selectSqueakOffers = state => state.squeaks.squeakOffers
 export const selectSqueakOffersStatus = state => state.squeaks.squeakOffersStatus
 
 export const selectBuySqueakStatus = state => state.squeaks.buySqueakStatus
+
+export const selectDownloadSqueakStatus = state => state.squeaks.downloadSqueakStatus
+
+export const selectDownloadPubkeySqueakStatus = state => state.squeaks.downloadPubkeySqueakStatus
