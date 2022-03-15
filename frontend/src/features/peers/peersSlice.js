@@ -11,6 +11,7 @@ import {
   disconnectPeer,
   getSavedPeers,
   savePeer,
+  deletePeer,
 } from '../../api/client'
 
 const initialState = {
@@ -23,6 +24,7 @@ const initialState = {
   connectPeerStatus: 'idle',
   disconnectPeerStatus: 'idle',
   savePeerStatus: 'idle',
+  deletePeerStatus: 'idle',
 }
 
 // Thunk functions
@@ -116,6 +118,17 @@ export const setSavePeer = createAsyncThunk(
   }
 )
 
+export const setDeletePeer = createAsyncThunk(
+  'peers/setDeletePeer',
+  async (values) => {
+    console.log('Deleting peer');
+    let peerId = values.peerId;
+    await deletePeer(peerId);
+    const response = await getSavedPeers();
+    return response.getSqueakPeersList();
+  }
+)
+
 
 const peersSlice = createSlice({
   name: 'peers',
@@ -193,6 +206,17 @@ const peersSlice = createSlice({
       state.currentPeer = newSavedPeer;
       state.savedPeers = newSavedPeers;
       state.savePeerStatus = 'idle';
+    })
+    .addCase(setDeletePeer.pending, (state, action) => {
+      console.log(action);
+      state.deletePeerStatus = 'loading'
+    })
+    .addCase(setDeletePeer.fulfilled, (state, action) => {
+      console.log(action);
+      const newSavedPeers = action.payload;
+      state.currentPeer = null;
+      state.savedPeers = newSavedPeers;
+      state.deletePeerStatus = 'idle';
     })
   },
 })

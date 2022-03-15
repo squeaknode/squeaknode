@@ -625,3 +625,15 @@ export const savePeer = (peerName, network, host, port) => {
       deser: deser,
     });
 }
+
+export const deletePeer = (peerId) => {
+    console.log('Calling savePeer');
+    const request = new DeletePeerRequest();
+    request.setPeerId(peerId);
+    const deser = DeletePeerReply.deserializeBinary;
+    return baseRequest({
+      url: '/deletepeer',
+      req: request,
+      deser: deser,
+    });
+}

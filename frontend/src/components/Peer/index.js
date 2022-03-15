@@ -23,6 +23,7 @@ import {
   setConnectPeer,
   setDisconnectPeer,
   setSavePeer,
+  setDeletePeer,
 } from '../../features/peers/peersSlice'
 
 
@@ -95,7 +96,7 @@ const deletePeer = () => {
     let values = {
         peerId: peer.getPeerId(),
     }
-    actions.deletePeer(values);
+    dispatch(setDeletePeer(values));
     toggleDeleteModal();
 }
 
