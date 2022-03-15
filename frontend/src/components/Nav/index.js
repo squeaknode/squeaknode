@@ -27,6 +27,8 @@ import {
   selectSellPriceOverride,
   selectSellPriceUsingOverride,
   selectSellPriceInfo,
+  setSellPrice,
+  setClearSellPrice,
 } from '../../features/sellPrice/sellPriceSlice'
 
 const Nav = ({history}) => {
@@ -64,7 +66,6 @@ const Nav = ({history}) => {
         }else if(!localStorage.getItem('Theme')){
             localStorage.setItem('Theme', 'light')
         }
-        // actions.getSellPrice();
         dispatch(fetchSellPrice());
       }, [])
 
@@ -106,12 +107,12 @@ const Nav = ({history}) => {
         let values = {
             sellPriceMsat: newSellPriceMsat,
         }
-        actions.setSellPrice(values)
+        dispatch(setSellPrice(newSellPriceMsat));
         toggleSellPriceModal()
     }
 
     const setSellPriceToDefault = () => {
-        actions.clearSellPrice()
+        dispatch(setClearSellPrice());
         toggleSellPriceModal()
     }
 

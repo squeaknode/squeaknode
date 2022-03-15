@@ -4,7 +4,11 @@ import {
   createAsyncThunk,
   createEntityAdapter,
 } from '@reduxjs/toolkit'
-import { client, getSellPrice } from '../../api/client'
+import {
+  getSellPrice,
+  updateSellPrice,
+  clearSellPrice,
+} from '../../api/client'
 
 const initialState = {
   sellPriceInfo: null,
@@ -21,6 +25,28 @@ export const fetchSellPrice = createAsyncThunk(
   }
 )
 
+export const setSellPrice = createAsyncThunk(
+  'sellPrice/setSellPrice',
+  async (sellPriceMsat) => {
+    console.log('Updating sellPrice');
+    await updateSellPrice(sellPriceMsat);
+    const response = await getSellPrice();
+    console.log(response);
+    return response;
+  }
+)
+
+export const setClearSellPrice = createAsyncThunk(
+  'sellPrice/setClearSellPrice',
+  async (sellPriceMsat) => {
+    console.log('Clearing sellPrice');
+    await clearSellPrice();
+    const response = await getSellPrice();
+    console.log(response);
+    return response;
+  }
+)
+
 const sellPriceSlice = createSlice({
   name: 'sellPrice',
   initialState,
@@ -28,6 +54,16 @@ const sellPriceSlice = createSlice({
   extraReducers: (builder) => {
     builder
     .addCase(fetchSellPrice.fulfilled, (state, action) => {
+      console.log(action);
+      const sellPriceInfo = action.payload;
+      state.sellPriceInfo = sellPriceInfo;
+    })
+    .addCase(setSellPrice.fulfilled, (state, action) => {
+      console.log(action);
+      const sellPriceInfo = action.payload;
+      state.sellPriceInfo = sellPriceInfo;
+    })
+    .addCase(setClearSellPrice.fulfilled, (state, action) => {
       console.log(action);
       const sellPriceInfo = action.payload;
       state.sellPriceInfo = sellPriceInfo;

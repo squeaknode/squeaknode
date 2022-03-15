@@ -698,3 +698,26 @@ export const getSellPrice = () => {
       deser: deser,
     });
 }
+
+export const updateSellPrice = (priceMsat) => {
+    console.log('Calling updateSellPrice');
+    const request = new SetSellPriceRequest();
+    request.setPriceMsat(priceMsat);
+    const deser = SetSellPriceReply.deserializeBinary;
+    return baseRequest({
+      url: '/setsellprice',
+      req: request,
+      deser: deser,
+    });
+}
+
+export const clearSellPrice = () => {
+    console.log('Calling clearSellPrice');
+    const request = new ClearSellPriceRequest();
+    const deser = ClearSellPriceReply.deserializeBinary;
+    return baseRequest({
+      url: '/clearsellprice',
+      req: request,
+      deser: deser,
+    });
+}
