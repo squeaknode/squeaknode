@@ -12,6 +12,8 @@ import {
   getSavedPeers,
   savePeer,
   deletePeer,
+  enableAutoconnectPeer,
+  disableAutoconnectPeer,
 } from '../../api/client'
 
 const initialState = {
@@ -129,6 +131,28 @@ export const setDeletePeer = createAsyncThunk(
   }
 )
 
+export const setPeerAutoconnectEnabled = createAsyncThunk(
+  'peers/setPeerAutoconnectEnabled',
+  async (values) => {
+    console.log('Setting peer autoconnect enabled');
+    let peerId = values.peerId;
+    await enableAutoconnectPeer(peerId);
+    const response = await getSavedPeers();
+    return response.getSqueakPeersList();
+  }
+)
+
+export const setPeerAutoconnectDisabled = createAsyncThunk(
+  'peers/setPeerAutoconnectDisabled',
+  async (values) => {
+    console.log('Setting peer autoconnect disabled');
+    let peerId = values.peerId;
+    await disableAutoconnectPeer(peerId);
+    const response = await getSavedPeers();
+    return response.getSqueakPeersList();
+  }
+)
+
 
 const peersSlice = createSlice({
   name: 'peers',
@@ -217,6 +241,26 @@ const peersSlice = createSlice({
       state.currentPeer = null;
       state.savedPeers = newSavedPeers;
       state.deletePeerStatus = 'idle';
+    })
+    .addCase(setPeerAutoconnectEnabled.fulfilled, (state, action) => {
+      console.log(action);
+      const newSavedPeers = action.payload;
+      const peerId = action.meta.arg.peerId;
+      const newSavedPeer = newSavedPeers.find(savedPeer => {
+        return savedPeer.getPeerId() === peerId
+      });
+      state.currentPeer = newSavedPeer;
+      state.savedPeers = newSavedPeers;
+    })
+    .addCase(setPeerAutoconnectDisabled.fulfilled, (state, action) => {
+      console.log(action);
+      const newSavedPeers = action.payload;
+      const peerId = action.meta.arg.peerId;
+      const newSavedPeer = newSavedPeers.find(savedPeer => {
+        return savedPeer.getPeerId() === peerId
+      });
+      state.currentPeer = newSavedPeer;
+      state.savedPeers = newSavedPeers;
     })
   },
 })

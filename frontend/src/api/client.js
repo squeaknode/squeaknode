@@ -637,3 +637,29 @@ export const deletePeer = (peerId) => {
       deser: deser,
     });
 }
+
+export const enableAutoconnectPeer = (peerId) => {
+    console.log('Calling enableAutoconnectPeer');
+    const request = new SetPeerAutoconnectRequest();
+    request.setPeerId(peerId);
+    request.setAutoconnect(true);
+    const deser = SetPeerAutoconnectReply.deserializeBinary;
+    return baseRequest({
+      url: '/setpeerautoconnect',
+      req: request,
+      deser: deser,
+    });
+}
+
+export const disableAutoconnectPeer = (peerId) => {
+    console.log('Calling disableAutoconnectPeer');
+    const request = new SetPeerAutoconnectRequest();
+    request.setPeerId(peerId);
+    request.setAutoconnect(false);
+    const deser = SetPeerAutoconnectReply.deserializeBinary;
+    return baseRequest({
+      url: '/setpeerautoconnect',
+      req: request,
+      deser: deser,
+    });
+}

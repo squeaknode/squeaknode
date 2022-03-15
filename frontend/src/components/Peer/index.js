@@ -24,6 +24,8 @@ import {
   setDisconnectPeer,
   setSavePeer,
   setDeletePeer,
+  setPeerAutoconnectEnabled,
+  setPeerAutoconnectDisabled,
 } from '../../features/peers/peersSlice'
 
 
@@ -117,12 +119,23 @@ const savePeer = () => {
 
 const setIsAutoconnect = (e,id) => {
     e.stopPropagation()
-    actions.setPeerAutoconnect(id)
+    // actions.setPeerAutoconnect(id)
+    console.log(id);
+    console.log(peer.getPeerId());
+    let values = {
+        peerId: peer.getPeerId(),
+    }
+
+    dispatch(setPeerAutoconnectEnabled(values));
 }
 
 const setIsNotAutoconnect = (e,id) => {
     e.stopPropagation()
-    actions.setPeerNotAutoconnect(id)
+    // actions.setPeerNotAutoconnect(id)
+    let values = {
+        peerId: peer.getPeerId(),
+    }
+    dispatch(setPeerAutoconnectDisabled(values));
 }
 
 const toggleDeleteModal = () => {
