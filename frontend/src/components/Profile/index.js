@@ -122,7 +122,6 @@ const Profile = (props) => {
         dispatch(setDownloadPubkeySqueaks(props.match.params.username))
         .then(() => {
           console.log('Finished downloading pubkey squeaks.');
-          reloadSqueaks();
         });
     }
 
