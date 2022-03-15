@@ -1217,35 +1217,35 @@ export function downloadRepliesRequest(squeakHash, handleResponse) {
 //   );
 // }
 
-export function setSellPriceRequest(priceMsat, handleResponse) {
-  const request = new SetSellPriceRequest();
-  request.setPriceMsat(priceMsat);
-  makeRequest(
-    'setsellprice',
-    request,
-    SetSellPriceReply.deserializeBinary,
-    handleResponse,
-  );
-}
-
-export function clearSellPriceRequest(handleResponse) {
-  const request = new ClearSellPriceRequest();
-  makeRequest(
-    'clearsellprice',
-    request,
-    ClearSellPriceReply.deserializeBinary,
-    handleResponse,
-  );
-}
-
-export function getSellPriceRequest(handleResponse) {
-  const request = new GetSellPriceRequest();
-  makeRequest(
-    'getsellprice',
-    request,
-    GetSellPriceReply.deserializeBinary,
-    (response) => {
-      handleResponse(response);
-    },
-  );
-}
+// export function setSellPriceRequest(priceMsat, handleResponse) {
+//   const request = new SetSellPriceRequest();
+//   request.setPriceMsat(priceMsat);
+//   makeRequest(
+//     'setsellprice',
+//     request,
+//     SetSellPriceReply.deserializeBinary,
+//     handleResponse,
+//   );
+// }
+//
+// export function clearSellPriceRequest(handleResponse) {
+//   const request = new ClearSellPriceRequest();
+//   makeRequest(
+//     'clearsellprice',
+//     request,
+//     ClearSellPriceReply.deserializeBinary,
+//     handleResponse,
+//   );
+// }
+//
+// export function getSellPriceRequest(handleResponse) {
+//   const request = new GetSellPriceRequest();
+//   makeRequest(
+//     'getsellprice',
+//     request,
+//     GetSellPriceReply.deserializeBinary,
+//     (response) => {
+//       handleResponse(response);
+//     },
+//   );
+// }

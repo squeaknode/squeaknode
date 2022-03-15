@@ -533,28 +533,28 @@ export const applyMiddleware = dispatch => action => {
         //         dispatch({ type: types.GET_EXTERNAL_ADDRESS, payload: payload, data: action.payload });
         //     });
 
-        case types.GET_SELL_PRICE:
-            return getSellPriceRequest((resp) => {
-                let payload = {"sellPrice": resp };
-                dispatch({ type: types.GET_SELL_PRICE, payload: payload, data: action.payload });
-            });
-
-        case types.SET_SELL_PRICE:
-            let newSellPriceMsat = action.payload.sellPriceMsat;
-            return setSellPriceRequest(newSellPriceMsat, (resp) => {
-              return getSellPriceRequest((resp) => {
-                  let payload = {"sellPrice": resp };
-                  dispatch({ type: types.GET_SELL_PRICE, payload: payload, data: action.payload });
-              });
-            });
-
-        case types.CLEAR_SELL_PRICE:
-            return clearSellPriceRequest((resp) => {
-              return getSellPriceRequest((resp) => {
-                  let payload = {"sellPrice": resp };
-                  dispatch({ type: types.GET_SELL_PRICE, payload: payload, data: action.payload });
-              });
-            });
+        // case types.GET_SELL_PRICE:
+        //     return getSellPriceRequest((resp) => {
+        //         let payload = {"sellPrice": resp };
+        //         dispatch({ type: types.GET_SELL_PRICE, payload: payload, data: action.payload });
+        //     });
+        //
+        // case types.SET_SELL_PRICE:
+        //     let newSellPriceMsat = action.payload.sellPriceMsat;
+        //     return setSellPriceRequest(newSellPriceMsat, (resp) => {
+        //       return getSellPriceRequest((resp) => {
+        //           let payload = {"sellPrice": resp };
+        //           dispatch({ type: types.GET_SELL_PRICE, payload: payload, data: action.payload });
+        //       });
+        //     });
+        //
+        // case types.CLEAR_SELL_PRICE:
+        //     return clearSellPriceRequest((resp) => {
+        //       return getSellPriceRequest((resp) => {
+        //           let payload = {"sellPrice": resp };
+        //           dispatch({ type: types.GET_SELL_PRICE, payload: payload, data: action.payload });
+        //       });
+        //     });
 
         // case types.SAVE_PEER:
         //     let savePeerName = action.payload.name;
