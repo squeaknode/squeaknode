@@ -116,8 +116,6 @@ const Squeak = (props) => {
   }
 
   const downloadSqueak = (id) => {
-      // TODO: download
-      // actions.downloadSqueak(id)
       dispatch(setDownloadSqueak(props.id));
   }
 

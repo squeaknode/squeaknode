@@ -39,14 +39,10 @@ const SearchResults = (props) => {
     return q ? decodeURIComponent(q) : '';
   }, [search]);
 
-
   useEffect(() => {
       window.scrollTo(0, 0)
-      // actions.getSqueaks({lastSqueak: null})
       if (q && q.length > 0) {
         setSearchText(q);
-        //reloadSqueaks(q);
-
         console.log('fetchTodos');
         dispatch(clearSearch());
         const values = {

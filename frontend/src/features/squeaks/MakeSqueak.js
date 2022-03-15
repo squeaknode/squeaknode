@@ -28,7 +28,6 @@ const MakeSqueak = (props) => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        // actions.getSigningProfiles()
         dispatch(fetchSigningProfiles());
     }, [])
 
@@ -79,8 +78,6 @@ const MakeSqueak = (props) => {
             hasRecipient: null,
             recipientProfileId: -1,
         }
-        // TODO: use makesqueak slice
-        // actions.squeak(values)
         console.log('makeSqueak');
         dispatch(setMakeSqueak(values))
           .then(unwrapResult)

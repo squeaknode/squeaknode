@@ -27,8 +27,6 @@ const SigningProfiles = (props) => {
 
   useEffect(() => {
       window.scrollTo(0, 0)
-      // actions.getSqueaks({lastSqueak: null})
-      // reloadSqueaks();
       console.log('fetchSigningProfiles');
       dispatch(clearSigningProfiles());
       dispatch(fetchSigningProfiles(null));

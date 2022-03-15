@@ -27,17 +27,10 @@ const ContactProfiles = (props) => {
 
   useEffect(() => {
       window.scrollTo(0, 0)
-      // actions.getSqueaks({lastSqueak: null})
-      // reloadSqueaks();
       console.log('fetchContactProfiles');
       dispatch(clearContactProfiles());
       dispatch(fetchContactProfiles());
   }, [])
-
-  const goToSqueak = (id) => {
-      // if(props.replyTo){ actions.getSqueak(id) }
-      props.history.push(`/app/squeak/${id}`)
-  }
 
   const goToUser = (id) => {
       props.history.push(`/app/profile/${id}`)

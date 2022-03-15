@@ -25,15 +25,12 @@ const ReceivedPayments = (props) => {
 
   useEffect(() => {
       window.scrollTo(0, 0)
-      // actions.getSqueaks({lastSqueak: null})
-      // reloadSqueaks();
       console.log('fetchReceivedPayments');
       dispatch(clearReceivedPayments());
       dispatch(fetchReceivedPayments(null));
   }, [])
 
   const goToSqueak = (id) => {
-      // if(props.replyTo){ actions.getSqueak(id) }
       props.history.push(`/app/squeak/${id}`)
   }
 

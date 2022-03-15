@@ -25,8 +25,6 @@ const Timeline = () => {
 
   useEffect(() => {
       window.scrollTo(0, 0)
-      // actions.getSqueaks({lastSqueak: null})
-      // reloadSqueaks();
       console.log('fetchTodos');
       dispatch(clearTimeline());
       dispatch(fetchTimeline(null));

@@ -25,18 +25,14 @@ const SentPayments = (props) => {
 
   useEffect(() => {
       window.scrollTo(0, 0)
-      // actions.getSqueaks({lastSqueak: null})
-      // reloadSqueaks();
       console.log('fetchSentPayments');
       dispatch(clearSentPayments());
       dispatch(fetchSentPayments(null));
   }, [])
 
   const goToSqueak = (id) => {
-      // if(props.replyTo){ actions.getSqueak(id) }
       props.history.push(`/app/squeak/${id}`)
   }
-
 
   const renderedListItems = sentPayments.map(f=>{
     return <div onClick={()=>goToSqueak(f.getSqueakHash())} key={f.getPaymentHash()} className="search-result-wapper">
