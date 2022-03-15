@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useContext } from 'react'
-import { StoreContext } from '../../store/store'
 import './style.scss'
 import moment from 'moment'
 import { withRouter, Link } from 'react-router-dom'
@@ -7,72 +6,13 @@ import { ICON_SEARCH, ICON_ARROWBACK, ICON_CLOSE } from '../../Icons'
 import { getProfileImageSrcString } from '../../squeakimages/images';
 import Loader from '../Loader'
 import SqueakCard from '../SqueakCard'
+import SentPayments from '../../features/payments/SentPayments'
+import ReceivedPayments from '../../features/payments/ReceivedPayments'
 
 
 const Payments = (props) => {
-    const { state, actions } = useContext(StoreContext)
-    const { sentPayments, receivedPayments, signingProfiles, contactProfiles, result, tagSqueaks} = state
     const [tab, setTab] = useState('Sent Payments')
     const [styleBody, setStyleBody] = useState(false)
-    const [newProfileName, setNewProfileName] = useState('')
-    const [newProfilePubkey, setNewProfilePubkey] = useState('')
-
-
-    useEffect(() => {
-        window.scrollTo(0, 0)
-        //actions.getSigningProfiles()
-        //actions.getContactProfiles()
-
-        reloadSentPayments();
-        reloadReceivedPayments();
-
-        // if(props.history.location.search.length>0){
-        //     goToTrend(props.history.location.search.substring(1))
-
-        // }
-    }, [])
-
-    const getLastSentPayment = (squeakLst) => {
-      if (squeakLst == null) {
-        return null;
-      } if (squeakLst.length === 0) {
-        return null;
-      }
-      return squeakLst.slice(-1)[0];
-    };
-
-    const getMoreSentPayments = () => {
-        let lastSentPayment = getLastSentPayment(state.sentPayments);
-        actions.getSentPayments({lastSentPayment: lastSentPayment});
-    }
-
-    const reloadSentPayments = () => {
-        actions.clearSentPayments();
-        actions.getSentPayments({lastSentPayment: null});
-    }
-
-    const getMoreReceivedPayments = () => {
-        let lastReceivedPayment = getLastSentPayment(state.receivedPayments);
-        actions.getReceivedPayments({lastReceivedPayment: lastReceivedPayment});
-    }
-
-    const reloadReceivedPayments = () => {
-        actions.clearReceivedPayments();
-        actions.getReceivedPayments({lastReceivedPayment: null});
-    }
-
-    const goToUser = (id) => {
-        props.history.push(`/app/profile/${id}`)
-    }
-
-    const handleModalClick = (e) => {
-        e.stopPropagation()
-    }
-
-    const goToSqueak = (id) => {
-        if(props.replyTo){ actions.getSqueak(id) }
-        props.history.push(`/app/squeak/${id}`)
-    }
 
     return(
         <div>
@@ -100,56 +40,13 @@ const Payments = (props) => {
                 </div>
                 {tab === 'Sent Payments' ?
                 <>
-                {sentPayments.map(f=>{
-                  return <div onClick={()=>goToSqueak(f.getSqueakHash())} key={f.getPaymentHash()} className="search-result-wapper">
-                    <div className="search-user-details">
-                    <div className="search-user-warp">
-                    <div className="search-user-info">
-                    <div className="payment-price">{f.getPriceMsat() / 1000} sats</div>
-                    <div className="payment-squeak-hash"><b>Squeak Hash</b>: {f.getSqueakHash()}</div>
-                    <div className="payment-peer-address"><b>Peer</b>: {f.getPeerAddress().getHost()}:{f.getPeerAddress().getPort()}</div>
-                    <div className="payment-lightning-node"><b>Lightning Node</b>: {f.getNodePubkey()}</div>
-                    <div className="payment-time">{moment(f.getTimeMs()).format("h:mm A · MMM D, YYYY")}</div>
-                    </div>
-                    </div>
-                  </div>
-                </div>
-                })}
-                {/* TODO: fix get loading state by doing this: https://medium.com/stashaway-engineering/react-redux-tips-better-way-to-handle-loading-flags-in-your-reducers-afda42a804c6 */}
-                {sentPayments.length > 0 &&
-                    <>
-                    {state.loading ? <Loader /> : <div onClick={() => getMoreSentPayments()} className='squeak-btn-side squeak-btn-active'>
-                        Load more
-                    </div>}
-                    </>
-                }
+                <SentPayments />
                 </>
 
                 :
                 tab === 'Received Payments' ?
                   <>
-                  {receivedPayments.map(f=>{
-                    return <div onClick={()=>goToSqueak(f.getSqueakHash())} key={f.getPaymentHash()} className="search-result-wapper">
-                      <div className="search-user-details">
-                      <div className="search-user-warp">
-                      <div className="search-user-info">
-                      <div className="payment-price">{f.getPriceMsat() / 1000} sats</div>
-                      <div className="payment-squeak-hash"><b>Squeak Hash</b>: {f.getSqueakHash()}</div>
-                      <div className="payment-peer-address"><b>Peer</b>: {f.getPeerAddress().getHost()}:{f.getPeerAddress().getPort()}</div>
-                      <div className="payment-time">{moment(f.getTimeMs()).format("h:mm A · MMM D, YYYY")}</div>
-                      </div>
-                      </div>
-                    </div>
-                  </div>
-                  })}
-                  {/* TODO: fix get loading state by doing this: https://medium.com/stashaway-engineering/react-redux-tips-better-way-to-handle-loading-flags-in-your-reducers-afda42a804c6 */}
-                  {receivedPayments.length > 0 &&
-                      <>
-                      {state.loading ? <Loader /> : <div onClick={() => getMoreReceivedPayments()} className='squeak-btn-side squeak-btn-active'>
-                          Load more
-                      </div>}
-                      </>
-                  }
+                    <ReceivedPayments />
                   </>
                 : <div className="try-searching">
                         Nothing to see here ..

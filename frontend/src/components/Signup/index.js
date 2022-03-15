@@ -1,12 +1,9 @@
 import React, { useState, useContext } from 'react'
-import { StoreContext } from '../../store/store'
 import './style.scss'
 import { Link, withRouter } from 'react-router-dom'
 import { ICON_LOGO } from '../../Icons'
 
 const SignUpPage = (props) => {
-    const { actions } = useContext(StoreContext)
-
     const [name, setName] = useState('')
     const [username, setUsername] = useState('')
     const [email, setEmail] = useState('')
@@ -22,7 +19,7 @@ const SignUpPage = (props) => {
                 password,
                 func: Redirect
             }
-            actions.signup(values)
+            // TODO: signup here.
         }
     }
 

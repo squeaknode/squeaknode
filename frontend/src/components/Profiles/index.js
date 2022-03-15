@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useContext } from 'react'
-import { StoreContext } from '../../store/store'
 import './style.scss'
 import { withRouter, Link } from 'react-router-dom'
 import { ICON_SEARCH, ICON_ARROWBACK, ICON_CLOSE } from '../../Icons'
@@ -7,11 +6,19 @@ import { getProfileImageSrcString } from '../../squeakimages/images';
 import Loader from '../Loader'
 import SqueakCard from '../SqueakCard'
 
+import { unwrapResult } from '@reduxjs/toolkit'
+import { useDispatch } from 'react-redux'
+
+import SigningProfiles from '../../features/profiles/SigningProfiles'
+import ContactProfiles from '../../features/profiles/ContactProfiles'
+import {
+  setCreateSigningProfile,
+  setImportSigningProfile,
+  setCreateContactProfile,
+} from '../../features/profiles/profilesSlice'
+
 
 const Profiles = (props) => {
-    console.log(props);
-    const { state, actions } = useContext(StoreContext)
-    const { signingProfiles, contactProfiles, result, tagSqueaks} = state
     const [tab, setTab] = useState('Signing Profiles')
     const [signingProfileModalOpen, setSigningProfileModalOpen] = useState(false)
     const [contactProfileModalOpen, setContactProfileModalOpen] = useState(false)
@@ -21,73 +28,62 @@ const Profiles = (props) => {
     const [usePrivKey, setUsePrivKey] = useState(false)
     const [newProfilePrivkey, setNewProfilePrivkey] = useState('')
 
+    const dispatch = useDispatch()
 
     const searchOnChange = (param) => {
         if(tab !== 'Search'){setTab('Search')}
         if(param.length>0){
-            actions.search({description: param})
+            // TODO: search for a profile by name.
         }
-    }
-
-    useEffect(() => {
-        window.scrollTo(0, 0)
-        actions.getSigningProfiles()
-        actions.getContactProfiles()
-        // if(props.history.location.search.length>0){
-        //     goToTrend(props.history.location.search.substring(1))
-
-        // }
-    }, [])
-
-    const followUser = (e, id) => {
-        e.stopPropagation()
-        actions.followUser(id)
-    }
-
-    const unfollowUser = (e,id) => {
-        e.stopPropagation()
-        actions.unfollowUser(id)
-    }
-
-    const goToUser = (id) => {
-        props.history.push(`/app/profile/${id}`)
     }
 
     const toggleSigningProfileModal = (param, type) => {
         setStyleBody(!styleBody)
-        // if(param === 'edit'){setSaved(false)}
-        // if(type){setTab(type)}
-        // if(param === 'members'){
-        //     setMemOpen(true)
-        //     actions.getFollowers(props.match.params.username)
-        // }
-        // if(memOpen){setMemOpen(false)}
         setTimeout(()=>{ setSigningProfileModalOpen(!signingProfileModalOpen) },20)
     }
 
     const toggleContactProfileModal = (param, type) => {
         setStyleBody(!styleBody)
-        // if(param === 'edit'){setSaved(false)}
-        // if(type){setTab(type)}
-        // if(param === 'members'){
-        //     setMemOpen(true)
-        //     actions.getFollowers(props.match.params.username)
-        // }
-        // if(memOpen){setMemOpen(false)}
         setTimeout(()=>{ setContactProfileModalOpen(!contactProfileModalOpen) },20)
     }
 
     const createSigningProfile = () => {
         if (usePrivKey) {
-          actions.importSigningProfile({profileName: newProfileName, privateKey: newProfilePrivkey});
+          console.log('Import signing profile with name:', newProfileName);
+          dispatch(setImportSigningProfile({profileName: newProfileName, privateKey: newProfilePrivkey}))
+          .then(unwrapResult)
+          .then((pubkey) => {
+            console.log('Created profile with pubkey', pubkey);
+            props.history.push(`/app/profile/${pubkey}`);
+          })
+          .catch((err) => {
+            alert(err.message);
+          });
         } else {
-          actions.createSigningProfile({profileName: newProfileName});
+          console.log('Create signing profile with name:', newProfileName);
+          dispatch(setCreateSigningProfile({profileName: newProfileName}))
+          .then(unwrapResult)
+          .then((pubkey) => {
+            console.log('Created profile with pubkey', pubkey);
+            props.history.push(`/app/profile/${pubkey}`);
+          })
+          .catch((err) => {
+            alert(err.message);
+          });
         }
         toggleSigningProfileModal();
     }
 
     const createContactProfile = () => {
-        actions.createContactProfile({profileName: newProfileName, pubkey: newProfilePubkey});
+        dispatch(setCreateContactProfile({profileName: newProfileName, pubkey: newProfilePubkey}))
+        .then(unwrapResult)
+        .then((pubkey) => {
+          console.log('Created profile with pubkey', pubkey);
+          props.history.push(`/app/profile/${pubkey}`);
+        })
+        .catch((err) => {
+          alert(err.message);
+        });
         toggleContactProfileModal();
     }
 
@@ -136,58 +132,10 @@ const Profiles = (props) => {
                     </div>
                 </div>
                 {tab === 'Signing Profiles' ?
-                signingProfiles.map(f=>{
-                  return <div onClick={()=>goToUser(f.getPubkey())} key={f.getPubkey()} className="search-result-wapper">
-                    <Link to={`/app/profile/${f.getPubkey()}`} className="search-userPic-wrapper">
-                      <img style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={`${getProfileImageSrcString(f)}`}/>
-                    </Link>
-                    <div className="search-user-details">
-                    <div className="search-user-warp">
-                    <div className="search-user-info">
-                    <div className="search-user-name">{f.getProfileName()}</div>
-                    <div className="search-user-username">@{f.getPubkey()}</div>
-                    </div>
-                    <div onClick={(e)=>{
-                        f.getFollowing() ?
-                        unfollowUser(e,f.getProfileId()) :
-                        followUser(e,f.getProfileId())
-                      }} className={f.getFollowing() ? "follow-btn-wrap unfollow-switch":"follow-btn-wrap"}>
-                        <span><span>{f.getFollowing() ? 'Following' : 'Follow'}</span></span>
-                    </div>
-                    </div>
-                    <div className="search-user-bio">
-                      &nbsp;
-                    </div>
-                  </div>
-                </div>
-                })
+                  <SigningProfiles />
                 :
                 tab === 'Contact Profiles' ?
-                contactProfiles.map(f=>{
-                  return <div onClick={()=>goToUser(f.getPubkey())} key={f.getPubkey()} className="search-result-wapper">
-                    <Link to={`/app/profile/${f.getPubkey()}`} className="search-userPic-wrapper">
-                      <img style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={`${getProfileImageSrcString(f)}`}/>
-                    </Link>
-                    <div className="search-user-details">
-                    <div className="search-user-warp">
-                    <div className="search-user-info">
-                    <div className="search-user-name">{f.getProfileName()}</div>
-                    <div className="search-user-username">@{f.getPubkey()}</div>
-                    </div>
-                    <div onClick={(e)=>{
-                        f.getFollowing() ?
-                        unfollowUser(e,f.getProfileId()) :
-                        followUser(e,f.getProfileId())
-                      }} className={f.getFollowing() ? "follow-btn-wrap unfollow-switch":"follow-btn-wrap"}>
-                        <span><span>{f.getFollowing() ? 'Following' : 'Follow'}</span></span>
-                    </div>
-                    </div>
-                    <div className="search-user-bio">
-                      &nbsp;
-                    </div>
-                  </div>
-                </div>
-                })
+                  <ContactProfiles />
                 : <div className="try-searching">
                         Nothing to see here ..
                         <div/>

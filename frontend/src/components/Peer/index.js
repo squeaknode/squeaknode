@@ -2,16 +2,34 @@ import React , { useEffect, useState, useContext, useRef } from 'react'
 import './style.scss'
 import moment from 'moment'
 import {  withRouter, Link } from 'react-router-dom'
-import { StoreContext } from '../../store/store'
 import Loader from '../Loader'
 import SqueakCard from '../SqueakCard'
 import {API_URL} from '../../config'
 import axios from 'axios'
 import {ICON_ARROWBACK, ICON_UPLOAD, ICON_CLOSE,ICON_SEARCH } from '../../Icons'
 
+import { unwrapResult } from '@reduxjs/toolkit'
+import { useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
+
+import {
+  fetchPeer,
+  fetchConnectedPeers,
+  selectCurrentPeer,
+  selectCurrentPeerStatus,
+  selectConnectedPeers,
+  selectPeerConnectionByAddress,
+  setConnectPeer,
+  setDisconnectPeer,
+  setSavePeer,
+  setDeletePeer,
+  setPeerAutoconnectEnabled,
+  setPeerAutoconnectDisabled,
+} from '../../features/peers/peersSlice'
+
+
 const Peer = (props) => {
 
-const { state, actions } = useContext(StoreContext)
 const [modalOpen, setModalOpen] = useState(false)
 
 const [editName, setName] = useState('')
@@ -23,21 +41,25 @@ const [saved, setSaved] = useState(false)
 const [tab, setTab] = useState('Members')
 const [bannerLoading, setBannerLoading] = useState(false)
 const [styleBody, setStyleBody] = useState(false)
-const {peer, peerConnection, list} = state
+
+const peer = useSelector(selectCurrentPeer);
+const connectedPeers = useSelector(selectConnectedPeers);
+const peerConnection = useSelector(state => selectPeerConnectionByAddress(state, {
+  network: props.match.params.network,
+  host: props.match.params.host,
+  port: props.match.params.port,
+}));
+const dispatch = useDispatch();
+
 
 useEffect(() => {
     window.scrollTo(0, 0)
-    // actions.getList(props.match.params.id)
-    actions.getPeer({
+    dispatch(fetchPeer({
       network: props.match.params.network,
       host: props.match.params.host,
       port: props.match.params.port,
-    });
-    actions.getPeerConnection({
-      network: props.match.params.network,
-      host: props.match.params.host,
-      port: props.match.params.port,
-    });
+    }));
+    dispatch(fetchConnectedPeers());
 }, [])
 
 const isInitialMount = useRef(true);
@@ -51,54 +73,62 @@ useEffect(() => {
 useEffect( () => () => document.getElementsByTagName("body")[0].style.cssText = "", [] )
 
 
-const deleteList = () => {
-    actions.deleteList(props.match.params.id)
-    props.history.push('/app/lists')
-}
-
-const goToUser = (id) => {
-    props.history.push(`/app/profile/${id}`)
-}
-
 const connectPeer = (e) => {
-    actions.connectPeer({
-      host: props.match.params.host,
-      port: props.match.params.port,
-      network: props.match.params.network});
+    dispatch(setConnectPeer({
+        host: props.match.params.host,
+        port: props.match.params.port,
+        network: props.match.params.network,
+    }));
 }
 
 const disconnectPeer = (e) => {
-  actions.disconnectPeer({
-    host: props.match.params.host,
-    port: props.match.params.port,
-    network: props.match.params.network});
+  dispatch(setDisconnectPeer({
+      host: props.match.params.host,
+      port: props.match.params.port,
+      network: props.match.params.network,
+  }));
 }
 
 const deletePeer = () => {
     let values = {
         peerId: peer.getPeerId(),
     }
-    actions.deletePeer(values);
+    dispatch(setDeletePeer(values));
     toggleDeleteModal();
 }
 
+function removeHttp(url) {
+  return url.replace(/^https?:\/\//, '');
+}
+
 const savePeer = () => {
-    actions.savePeer({
-      name: editName,
-      host: props.match.params.host,
-      port: props.match.params.port,
-      network: props.match.params.network});
+    const strippedHost = removeHttp(props.match.params.host);
+    dispatch(setSavePeer({
+        name: editName,
+        host: strippedHost,
+        port: props.match.params.port,
+        network: props.match.params.network,
+    }));
     toggleSavePeerModal();
 }
 
 const setIsAutoconnect = (e,id) => {
     e.stopPropagation()
-    actions.setPeerAutoconnect(id)
+    console.log(id);
+    console.log(peer.getPeerId());
+    let values = {
+        peerId: peer.getPeerId(),
+    }
+
+    dispatch(setPeerAutoconnectEnabled(values));
 }
 
 const setIsNotAutoconnect = (e,id) => {
     e.stopPropagation()
-    actions.setPeerNotAutoconnect(id)
+    let values = {
+        peerId: peer.getPeerId(),
+    }
+    dispatch(setPeerAutoconnectDisabled(values));
 }
 
 const toggleDeleteModal = () => {

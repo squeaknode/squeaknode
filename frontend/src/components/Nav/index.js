@@ -1,5 +1,4 @@
 import React , { useEffect, useState, useContext, useRef } from 'react'
-import { StoreContext } from '../../store/store'
 import { Link, withRouter, Redirect } from 'react-router-dom'
 import './style.scss'
 import { ICON_LOGO, ICON_HOME, ICON_HASH, ICON_BELL, ICON_INBOX
@@ -9,7 +8,7 @@ ICON_CLOSE,ICON_IMGUPLOAD, ICON_INBOXFILL, ICON_LIGHT, ICON_DARK } from '../../I
 import { ReactComponent as YourSvg } from '../../icon.svg';
 import axios from 'axios'
 import {API_URL} from '../../config'
-import MakeSqueak from '../MakeSqueak'
+import MakeSqueak from '../../features/squeaks/MakeSqueak'
 import ContentEditable from 'react-contenteditable'
 import {
     enable as enableDarkMode,
@@ -17,16 +16,35 @@ import {
     setFetchMethod
 } from 'darkreader';
 
-const Nav = ({history}) => {
-    const { state, actions } = useContext(StoreContext)
+import { unwrapResult } from '@reduxjs/toolkit'
+import { useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 
-    const { sellPrice, session } = state
+import {
+  fetchSellPrice,
+  selectSellPriceDefault,
+  selectSellPriceOverride,
+  selectSellPriceUsingOverride,
+  selectSellPriceInfo,
+  setSellPrice,
+  setClearSellPrice,
+} from '../../features/sellPrice/sellPriceSlice'
+import {
+  setLogout,
+} from '../../features/account/accountSlice'
+
+const Nav = ({history}) => {
     const [moreMenu, setMoreMenu] = useState(false)
     const [theme, setTheme] = useState(true)
     const [modalOpen, setModalOpen] = useState(false)
     const [sellPriceModalOpen, setSellPriceModalOpen] = useState(false)
     const [styleBody, setStyleBody] = useState(false)
     const [newSellPriceMsat, setNewSellPriceMsat] = useState('')
+
+    const session = true;
+    const sellPrice = useSelector(selectSellPriceInfo);
+    const dispatch = useDispatch();
+
 
     const isInitialMount = useRef(true);
     useEffect(() => {
@@ -47,7 +65,7 @@ const Nav = ({history}) => {
         }else if(!localStorage.getItem('Theme')){
             localStorage.setItem('Theme', 'light')
         }
-        actions.getSellPrice();
+        dispatch(fetchSellPrice());
       }, [])
 
       const path = history.location.pathname.slice(4,9)
@@ -88,15 +106,20 @@ const Nav = ({history}) => {
         let values = {
             sellPriceMsat: newSellPriceMsat,
         }
-        actions.setSellPrice(values)
+        dispatch(setSellPrice(newSellPriceMsat));
         toggleSellPriceModal()
     }
 
     const setSellPriceToDefault = () => {
-        actions.clearSellPrice()
+        dispatch(setClearSellPrice());
         toggleSellPriceModal()
     }
 
+    const logout = () => {
+        dispatch(setLogout());
+    }
+
+    console.log(sellPrice);
 
     return(
         <div className="Nav-component">
@@ -157,7 +180,7 @@ const Nav = ({history}) => {
                                         <span>Update Sell Price</span>
                                         <span><ICON_HASH /></span>
                                     </div>
-                                    <div onClick={()=>actions.logout()} className="more-menu-item">
+                                    <div onClick={()=>logout()} className="more-menu-item">
                                         Log out
                                     </div>
                             </div> : null }

@@ -1,14 +1,16 @@
 import React, {useContext} from 'react'
-import { StoreContext } from '../../store/store'
 import './style.scss'
 
 const Alert = (props) => {
-    const { state, actions } = useContext(StoreContext)
+
+    // TODO: Get these values from a state or slice.
+    const top = '-100px';
+    const msg = '';
 
     return(
-        <div style={{top: state.top}} className="alert-wrapper">
+        <div style={{top: top}} className="alert-wrapper">
             <div className="alert-content">
-                {state.msg}
+                {msg}
             </div>
         </div>
     )

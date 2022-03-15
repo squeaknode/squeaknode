@@ -2,20 +2,43 @@ import React , { useEffect, useState, useContext, useRef} from 'react'
 import './style.scss'
 import { ICON_ARROWBACK, ICON_MARKDOWN, ICON_DATE, ICON_CLOSE, ICON_UPLOAD, ICON_NEWMSG, ICON_SETTINGS, ICON_DARK } from '../../Icons'
 import { withRouter, Link } from 'react-router-dom'
-import { StoreContext } from '../../store/store'
 import { getProfileImageSrcString } from '../../squeakimages/images';
 import Loader from '../Loader'
 import moment from 'moment'
 import SqueakCard from '../SqueakCard'
 import {API_URL} from '../../config'
 
+import { unwrapResult } from '@reduxjs/toolkit'
+import { useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
+
+import {
+ fetchProfile,
+ setFollowProfile,
+ setUnfollowProfile,
+ selectCurrentProfile,
+ setDeleteProfile,
+ setRenameProfile,
+ setCreateContactProfile,
+ setProfileImage,
+ setClearProfileImage,
+ getProfilePrivateKey,
+} from '../../features/profiles/profilesSlice'
+import {
+ fetchProfileSqueaks,
+ selectProfileSqueaks,
+ selectLastProfileSqueak,
+ selectProfileSqueaksStatus,
+ clearProfileSqueaks,
+ setDownloadPubkeySqueaks,
+} from '../../features/squeaks/squeaksSlice'
+
 
 const Profile = (props) => {
-    const { state, actions } = useContext(StoreContext)
     const [activeTab, setActiveTab] = useState('Squeaks')
     const [moreMenu, setMoreMenu] = useState(false)
     const [editName, setName] = useState('')
-    // const [privateKey, setPrivateKey] = useState('')
+    const [privateKey, setPrivateKey] = useState('')
     const [editModalOpen, setEditModalOpen] = useState(false)
     const [deleteModalOpen, setDeleteModalOpen] = useState(false)
     const [exportModalOpen, setExportModalOpen] = useState(false)
@@ -24,12 +47,21 @@ const Profile = (props) => {
     const [saved, setSaved] = useState(false)
     const [tab, setTab] = useState('Sats Spent')
     const [styleBody, setStyleBody] = useState(false)
-    const {user, userSqueaks, privateKey, session} = state
     const userParam = props.match.params.username
+
+    const profileSqueaks = useSelector(selectProfileSqueaks);
+    const lastUserSqueak = useSelector(selectLastProfileSqueak);
+    const profileSqueaksStatus = useSelector(selectProfileSqueaksStatus);
+    // const privateKey = 'TODO';
+
+    const user = useSelector(selectCurrentProfile);
+    const dispatch = useDispatch();
+
+
 
     useEffect(() => {
         window.scrollTo(0, 0)
-        actions.getUser(props.match.params.username)
+        dispatch(fetchProfile(props.match.params.username));
         reloadSqueaks();
         //preventing edit modal from apprearing after clicking a user on memOpen
         setEditModalOpen(false)
@@ -55,7 +87,11 @@ const Profile = (props) => {
             profileId: user.getProfileId(),
             name: editName,
         }
-        actions.updateUser(values)
+        dispatch(setRenameProfile({
+          profileId: user.getProfileId(),
+          profileName: editName,
+        }));
+        // TODO: chain action to update profile squeaks with the new name.
         setSaved(true)
         toggleEditModal()
     }
@@ -64,7 +100,8 @@ const Profile = (props) => {
         let values = {
             profileId: user.getProfileId(),
         }
-        actions.deleteUser(values);
+        console.log('Delete user here');
+        dispatch(setDeleteProfile(values));
         toggleDeleteModal();
     }
 
@@ -73,17 +110,30 @@ const Profile = (props) => {
         let values = {
             profileId: user.getProfileId(),
         }
-        actions.exportPrivateKey(values);
-        // toggleExportModal();
+        dispatch(getProfilePrivateKey(values))
+        .then(unwrapResult)
+        .then((privateKey) =>{
+          console.log(privateKey);
+          setPrivateKey(privateKey);
+        });
     }
 
     const downloadUserSqueaks = () => {
-        actions.downloadUserSqueaks(userParam);
+        dispatch(setDownloadPubkeySqueaks(props.match.params.username))
+        .then(() => {
+          console.log('Finished downloading pubkey squeaks.');
+        });
     }
 
 
     const createContactProfile = () => {
-        actions.createContactProfile({profileName: editName, pubkey: userParam});
+        dispatch(setCreateContactProfile({
+          pubkey: userParam,
+          profileName: editName,
+        }))
+        .then(() => {
+          dispatch(fetchProfile(props.match.params.username));
+        });
         toggleCreateModal();
     }
 
@@ -109,8 +159,6 @@ const Profile = (props) => {
     const toggleSpendingModal = (param, type) => {
         setStyleBody(!styleBody)
         if(type){setTab(type)}
-        // TODO: fetch spending info
-        // actions.getFollowers(props.match.params.username)
         if(type){setTab(type)}
         setTimeout(()=>{ setSpendingModalOpen(!spendingModalOpen) },20)
     }
@@ -126,19 +174,27 @@ const Profile = (props) => {
     }
 
     const followUser = (e,id) => {
-        if(!session){ actions.alert('Please Sign In'); return }
         e.stopPropagation()
-        actions.followUser(id)
+        dispatch(setFollowProfile(id));
     }
 
     const unfollowUser = (e,id) => {
+        console.log(e);
         e.stopPropagation()
-        actions.unfollowUser(id)
+        dispatch(setUnfollowProfile(id));
     }
 
     const changeAvatar = () => {
         let file = document.getElementById('avatar').files[0];
         uploadAvatar(file);
+    }
+
+    const clearAvatar = () => {
+      dispatch(setClearProfileImage({
+        profileId: user.getProfileId(),
+      }));
+      setSaved(true)
+      toggleEditModal()
     }
 
     const uploadAvatar = (file) => {
@@ -157,19 +213,13 @@ const Profile = (props) => {
     };
 
     const uploadAvatarAsBase64 = (imageBase64) => {
-      let values = {
-          profileId: user.getProfileId(),
-          profileImg: imageBase64,
-      }
-      actions.updateUserImage(values)
+      dispatch(setProfileImage({
+        profileId: user.getProfileId(),
+        imageBase64: imageBase64,
+      }));
       setSaved(true)
       toggleEditModal()
     };
-
-    const goToUser = (id) => {
-        setEditModalOpen(false)
-        props.history.push(`/app/profile/${id}`)
-    }
 
     const getLastSqueak = (squeakLst) => {
       if (squeakLst == null) {
@@ -181,13 +231,21 @@ const Profile = (props) => {
     };
 
     const getMoreSqueaks = () => {
-        let lastSqueak = getLastSqueak(userSqueaks);
-        actions.getUserSqueaks({username: props.match.params.username, lastUserSqueak: lastSqueak})
+        let lastSqueak = getLastSqueak(profileSqueaks);
+        dispatch(fetchProfileSqueaks({
+          profilePubkey: props.match.params.username,
+          limit: 10,
+          lastSqueak: lastUserSqueak,
+        }));
     }
 
     const reloadSqueaks = () => {
-        actions.clearUserSqueaks();
-        actions.getUserSqueaks({username: props.match.params.username, lastSqueak: null});
+        dispatch(clearProfileSqueaks());
+        dispatch(fetchProfileSqueaks({
+          profilePubkey: props.match.params.username,
+          limit: 10,
+          lastSqueak: null,
+        }));
     }
 
     const openMore = () => { setMoreMenu(!moreMenu) }
@@ -231,7 +289,11 @@ const Profile = (props) => {
                           <div onClick={()=>openMore()} style={{display: moreMenu ? 'block' : 'none'}} className="more-menu-background">
                           <div className="more-modal-wrapper">
                               {moreMenu ?
-                              <div style={{top: `${document.getElementById('profileMoreMenu').getBoundingClientRect().top - 40}px`, left: `${document.getElementById('profileMoreMenu').getBoundingClientRect().left}px`, height: '210px' }} onClick={(e)=>handleMenuClick(e)} className="more-menu-content">
+                              <div style={{
+                                top: document.getElementById('profileMoreMenu') && `${document.getElementById('profileMoreMenu').getBoundingClientRect().top - 40}px`,
+                                left: document.getElementById('profileMoreMenu') && `${document.getElementById('profileMoreMenu').getBoundingClientRect().left}px`,
+                                height: '210px',
+                               }} onClick={(e)=>handleMenuClick(e)} className="more-menu-content">
                                       <div onClick={toggleDeleteModal} className="more-menu-item">
                                           <span>Delete Profile</span>
                                       </div>
@@ -312,20 +374,20 @@ const Profile = (props) => {
                 </div>
             </div>
             {activeTab === 'Squeaks' ?
-            userSqueaks.map(t=>{
+            profileSqueaks.map(t=>{
                 if(!t.getReplyTo())
                 return <SqueakCard squeak={t} key={t.getSqueakHash()} id={t.getSqueakHash()} user={t.getAuthor()} />
              }) : activeTab === 'Squeaks&Replies' ?
-            userSqueaks.map(t=>{
+            profileSqueaks.map(t=>{
                 return <SqueakCard squeak={t} key={t.getSqueakHash()} id={t.getSqueakHash()} user={t.getAuthor()} />
              }) :
             activeTab === 'Likes' ?
             null: activeTab === 'Media' ?
             null: null}
             {/* TODO: fix get loading state by doing this: https://medium.com/stashaway-engineering/react-redux-tips-better-way-to-handle-loading-flags-in-your-reducers-afda42a804c6 */}
-            {userSqueaks.length > 0 &&
+            {profileSqueaks.length > 0 &&
                 <>
-                {state.loading ?
+                {profileSqueaksStatus == 'loading' ?
                     <Loader /> :
                     <div onClick={() => getMoreSqueaks()} className='squeak-btn-side squeak-btn-active'>
                       Load more
@@ -345,6 +407,11 @@ const Profile = (props) => {
                             </div>
                         </div>
                         <p className="modal-title">'Edit Profile'</p>
+                        <div className="save-modal-wrapper">
+                            <div onClick={clearAvatar} className="save-modal-btn">
+                                Clear Image
+                            </div>
+                        </div>
                         <div className="save-modal-wrapper">
                             <div onClick={editProfile} className="save-modal-btn">
                                 Save

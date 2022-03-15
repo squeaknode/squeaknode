@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useContext } from 'react'
-import { StoreContext } from '../../store/store'
 import './style.scss'
 import { withRouter, Link } from 'react-router-dom'
 import { ICON_SEARCH, ICON_ARROWBACK, ICON_CLOSE, ICON_LAPTOPFILL } from '../../Icons'
@@ -7,10 +6,27 @@ import { getProfileImageSrcString } from '../../squeakimages/images';
 import Loader from '../Loader'
 import SqueakCard from '../SqueakCard'
 
+import { unwrapResult } from '@reduxjs/toolkit'
+import { useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
+
+import {
+  fetchConnectedPeers,
+  selectConnectedPeers,
+  selectConnectedPeersStatus,
+  selectSavedPeers,
+  fetchSavedPeers,
+  setConnectPeer,
+  setSavePeer,
+} from '../../features/peers/peersSlice'
+import {
+  fetchExternalAddress,
+  selectExternalAddress,
+} from '../../features/externalAddress/externalAddressSlice'
+
+
 
 const Peers = (props) => {
-    const { state, actions } = useContext(StoreContext)
-    const { peers, connectedPeers, result, tagSqueaks, externalAddress} = state
     const [tab, setTab] = useState('Connected Peers')
     const [savePeerModalOpen, setSavePeerModalOpen] = useState(false)
     const [connectPeerModalOpen, setconnectPeerModalOpen] = useState(false)
@@ -21,35 +37,18 @@ const Peers = (props) => {
     const [port, setPort] = useState('')
     const [useTor, setUseTor] = useState(false)
 
-    const searchOnChange = (param) => {
-        if(tab !== 'Search'){setTab('Search')}
-        if(param.length>0){
-            actions.search({description: param})
-        }
-    }
+    const externalAddress = useSelector(selectExternalAddress);
+    const peers = useSelector(selectSavedPeers);
+    const connectedPeers = useSelector(selectConnectedPeers);
+    const dispatch = useDispatch();
+
 
     useEffect(() => {
         window.scrollTo(0, 0)
-        // actions.getSavePeers()
-        // actions.getconnectPeers()
-        actions.getConnectedPeers();
-        actions.getPeers();
-        actions.getExternalAddress();
-        // if(props.history.location.search.length>0){
-        //     goToTrend(props.history.location.search.substring(1))
-
-        // }
+        dispatch(fetchExternalAddress());
+        dispatch(fetchConnectedPeers());
+        dispatch(fetchSavedPeers());
     }, [])
-
-    const followUser = (e, id) => {
-        e.stopPropagation()
-        actions.followUser(id)
-    }
-
-    const unfollowUser = (e,id) => {
-        e.stopPropagation()
-        actions.unfollowUser(id)
-    }
 
     const goToUser = (id) => {
         props.history.push(`/app/profile/${id}`)
@@ -71,25 +70,11 @@ const Peers = (props) => {
 
     const toggleSavePeerModal = (param, type) => {
         setStyleBody(!styleBody)
-        // if(param === 'edit'){setSaved(false)}
-        // if(type){setTab(type)}
-        // if(param === 'members'){
-        //     setMemOpen(true)
-        //     actions.getFollowers(props.match.params.username)
-        // }
-        // if(memOpen){setMemOpen(false)}
         setTimeout(()=>{ setSavePeerModalOpen(!savePeerModalOpen) },20)
     }
 
     const toggleconnectPeerModal = (param, type) => {
         setStyleBody(!styleBody)
-        // if(param === 'edit'){setSaved(false)}
-        // if(type){setTab(type)}
-        // if(param === 'members'){
-        //     setMemOpen(true)
-        //     actions.getFollowers(props.match.params.username)
-        // }
-        // if(memOpen){setMemOpen(false)}
         setTimeout(()=>{ setconnectPeerModalOpen(!connectPeerModalOpen) },20)
     }
 
@@ -112,23 +97,23 @@ const Peers = (props) => {
     const savePeer = () => {
         const network = getNetwork();
         const strippedHost = removeHttp(host);
-        actions.savePeer({
-          name: name,
-          host: strippedHost,
-          port: port,
-          network: network
-        });
+        dispatch(setSavePeer({
+            name: name,
+            host: strippedHost,
+            port: port,
+            network: network,
+        }));
         toggleSavePeerModal();
     }
 
     const connectPeer = () => {
         const network = getNetwork();
         const strippedHost = removeHttp(host);
-        actions.connectPeer({
-          host: strippedHost,
-          port: port,
-          network: network
-        });
+        dispatch(setConnectPeer({
+            host: strippedHost,
+            port: port,
+            network: network,
+        }));
         toggleconnectPeerModal();
     }
 
