@@ -9,6 +9,7 @@ import {
   getConnectedPeers,
   connectPeer,
   disconnectPeer,
+  getSavedPeers,
 } from '../../api/client'
 
 const initialState = {
@@ -48,6 +49,16 @@ export const fetchConnectedPeers = createAsyncThunk(
     const response = await getConnectedPeers();
     console.log(response);
     return response.getConnectedPeersList();
+  }
+)
+
+export const fetchSavedPeers = createAsyncThunk(
+  'peers/fetchSavedPeers',
+  async () => {
+    console.log('Fetching saved peers');
+    const response = await getSavedPeers();
+    console.log(response);
+    return response.getSqueakPeersList();
   }
 )
 
@@ -116,6 +127,14 @@ const peersSlice = createSlice({
       const newConnectedPeers = action.payload;
       state.connectedPeers = newConnectedPeers;
       state.connectedPeersStatus = 'idle';
+    })
+    .addCase(fetchSavedPeers.pending, (state, action) => {
+      state.savedPeersStatus = 'loading'
+    })
+    .addCase(fetchSavedPeers.fulfilled, (state, action) => {
+      const newSavedPeers = action.payload;
+      state.savedPeers = newSavedPeers;
+      state.savedPeersStatus = 'idle';
     })
     .addCase(setConnectPeer.pending, (state, action) => {
       console.log(action);

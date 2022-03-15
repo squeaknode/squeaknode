@@ -15,13 +15,16 @@ import {
   fetchConnectedPeers,
   selectConnectedPeers,
   selectConnectedPeersStatus,
+  selectSavedPeers,
+  fetchSavedPeers,
 } from '../../features/peers/peersSlice'
 
 
 const Peers = (props) => {
     const { state, actions } = useContext(StoreContext)
     //const { peers, connectedPeers, result, tagSqueaks, externalAddress} = state
-    const { peers, result, tagSqueaks, externalAddress} = state
+    //const { peers, result, tagSqueaks, externalAddress} = state
+    const { result, tagSqueaks, externalAddress} = state
     const [tab, setTab] = useState('Connected Peers')
     const [savePeerModalOpen, setSavePeerModalOpen] = useState(false)
     const [connectPeerModalOpen, setconnectPeerModalOpen] = useState(false)
@@ -32,6 +35,7 @@ const Peers = (props) => {
     const [port, setPort] = useState('')
     const [useTor, setUseTor] = useState(false)
 
+    const peers = useSelector(selectSavedPeers);
     const connectedPeers = useSelector(selectConnectedPeers);
     const dispatch = useDispatch();
 
@@ -42,6 +46,7 @@ const Peers = (props) => {
         // actions.getconnectPeers()
         // actions.getConnectedPeers();
         dispatch(fetchConnectedPeers());
+        dispatch(fetchSavedPeers());
         actions.getPeers();
         actions.getExternalAddress();
         // if(props.history.location.search.length>0){

@@ -554,6 +554,17 @@ export const getConnectedPeers = () => {
     });
 }
 
+export const getSavedPeers = () => {
+    console.log('Calling getSavedPeers');
+    const request = new GetPeersRequest();
+    const deser = GetPeersReply.deserializeBinary;
+    return baseRequest({
+      url: '/getpeers',
+      req: request,
+      deser: deser,
+    });
+}
+
 export const connectPeer = (network, host, port) => {
     console.log('Calling connectPeer');
     const request = new ConnectSqueakPeerRequest();
