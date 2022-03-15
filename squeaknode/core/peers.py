@@ -38,7 +38,7 @@ def create_saved_peer(
 
 
 def validate_saved_peer_name(peer_name: str) -> None:
-    if len(peer_name) == 0:
-        raise Exception(
-            "Peer name cannot be empty.",
-        )
+    """Check if the given name is valid for a peer.
+
+    Raise exception if name is invalid.
+    """

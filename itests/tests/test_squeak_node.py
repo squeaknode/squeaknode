@@ -558,18 +558,6 @@ def test_create_peer(admin_stub):
     assert get_peer_by_address_response.peer_name == "fake_peer_name"
 
 
-def test_create_peer_empty_name(admin_stub):
-    # Try to create a new signing profile with an empty name
-    with pytest.raises(Exception) as excinfo:
-        create_saved_peer(
-            admin_stub,
-            "",
-            "another_fake_host",
-            1234,
-        )
-    assert "Peer name cannot be empty." in str(excinfo.value)
-
-
 def test_set_peer_autoconnect(admin_stub, peer_id):
     # Get the peer
     get_peer_response = admin_stub.GetPeer(

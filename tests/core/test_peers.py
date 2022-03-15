@@ -69,9 +69,7 @@ def test_create_saved_peer(peer_name, peer_address):
 
 
 def test_create_saved_peer_empty_name(peer_address):
-    with pytest.raises(Exception) as excinfo:
-        create_saved_peer("", peer_address)
-    assert "Peer name cannot be empty." in str(excinfo.value)
+    create_saved_peer("", peer_address)
 
 
 def test_create_saved_peer_use_tor(peer_name, peer_address_with_tor):
