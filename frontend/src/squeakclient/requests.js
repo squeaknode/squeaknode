@@ -476,21 +476,21 @@ function makeRequest(route, request, deserializeMsg, handleResponse, handleError
 //   // });
 // }
 
-export function decryptRequest(squeakHash, hasAuthor, authorProfileId, hasRecipient, recipientProfileId, handleResponse, handleErr) {
-  const request = new DecryptSqueakRequest();
-  request.setSqueakHash(squeakHash);
-  request.setHasAuthor(hasAuthor);
-  request.setAuthorProfileId(authorProfileId);
-  request.setHasRecipient(hasRecipient);
-  request.setRecipientProfileId(recipientProfileId);
-  makeRequest(
-    'decryptsqueak',
-    request,
-    DecryptSqueakReply.deserializeBinary,
-    handleResponse,
-    handleErr,
-  );
-}
+// export function decryptRequest(squeakHash, hasAuthor, authorProfileId, hasRecipient, recipientProfileId, handleResponse, handleErr) {
+//   const request = new DecryptSqueakRequest();
+//   request.setSqueakHash(squeakHash);
+//   request.setHasAuthor(hasAuthor);
+//   request.setAuthorProfileId(authorProfileId);
+//   request.setHasRecipient(hasRecipient);
+//   request.setRecipientProfileId(recipientProfileId);
+//   makeRequest(
+//     'decryptsqueak',
+//     request,
+//     DecryptSqueakReply.deserializeBinary,
+//     handleResponse,
+//     handleErr,
+//   );
+// }
 
 // export function getBuyOffersRequest(hash, handleResponse) {
 //   const request = new GetBuyOffersRequest();
@@ -1003,20 +1003,20 @@ export function downloadRepliesRequest(squeakHash, handleResponse) {
 //   // });
 // }
 
-export function reprocessReceivedPaymentsRequest(handleResponse) {
-  const request = new ReprocessReceivedPaymentsRequest();
-  makeRequest(
-    'reprocessreceivedpayments',
-    request,
-    ReprocessReceivedPaymentsReply.deserializeBinary,
-    (response) => {
-      handleResponse(response);
-    },
-  );
-  // client.reprocessReceivedPayments(request, {}, (err, response) => {
-  //   handleResponse(response);
-  // });
-}
+// export function reprocessReceivedPaymentsRequest(handleResponse) {
+//   const request = new ReprocessReceivedPaymentsRequest();
+//   makeRequest(
+//     'reprocessreceivedpayments',
+//     request,
+//     ReprocessReceivedPaymentsReply.deserializeBinary,
+//     (response) => {
+//       handleResponse(response);
+//     },
+//   );
+//   // client.reprocessReceivedPayments(request, {}, (err, response) => {
+//   //   handleResponse(response);
+//   // });
+// }
 
 // export function likeSqueakRequest(hash, handleResponse) {
 //   const request = new LikeSqueakRequest();
@@ -1050,23 +1050,23 @@ export function reprocessReceivedPaymentsRequest(handleResponse) {
 //   // });
 // }
 
-export function getLikedSqueakDisplaysRequest(limit, lastEntry, handleResponse, handleErr) {
-  const request = new GetLikedSqueakDisplaysRequest();
-  request.setLimit(limit);
-  request.setLastEntry(lastEntry);
-  makeRequest(
-    'getlikedsqueakdisplays',
-    request,
-    GetLikedSqueakDisplaysReply.deserializeBinary,
-    (response) => {
-      handleResponse(response.getSqueakDisplayEntriesList());
-    },
-    handleErr,
-  );
-  // client.getLikedSqueakDisplays(request, {}, (err, response) => {
-  //   handleResponse(response.getSqueakDisplayEntriesList());
-  // });
-}
+// export function getLikedSqueakDisplaysRequest(limit, lastEntry, handleResponse, handleErr) {
+//   const request = new GetLikedSqueakDisplaysRequest();
+//   request.setLimit(limit);
+//   request.setLastEntry(lastEntry);
+//   makeRequest(
+//     'getlikedsqueakdisplays',
+//     request,
+//     GetLikedSqueakDisplaysReply.deserializeBinary,
+//     (response) => {
+//       handleResponse(response.getSqueakDisplayEntriesList());
+//     },
+//     handleErr,
+//   );
+//   // client.getLikedSqueakDisplays(request, {}, (err, response) => {
+//   //   handleResponse(response.getSqueakDisplayEntriesList());
+//   // });
+// }
 
 // export function getConnectedPeersRequest(handleResponse) {
 //   const request = new GetConnectedPeersRequest();
@@ -1158,64 +1158,64 @@ export function getLikedSqueakDisplaysRequest(limit, lastEntry, handleResponse, 
 //   //   handleResponse(response.getNetwork());
 //   // });
 // }
+//
+// export function getDefaultPeerPortRequest(handleResponse) {
+//   const request = new GetDefaultPeerPortRequest();
+//   makeRequest(
+//     'getdefaultpeerport',
+//     request,
+//     GetDefaultPeerPortReply.deserializeBinary,
+//     (response) => {
+//       handleResponse(response.getPort());
+//     },
+//   );
+// }
 
-export function getDefaultPeerPortRequest(handleResponse) {
-  const request = new GetDefaultPeerPortRequest();
-  makeRequest(
-    'getdefaultpeerport',
-    request,
-    GetDefaultPeerPortReply.deserializeBinary,
-    (response) => {
-      handleResponse(response.getPort());
-    },
-  );
-}
-
-export function getTwitterAccountsRequest(handleResponse) {
-  const request = new GetTwitterAccountsRequest();
-  makeRequest(
-    'gettwitteraccounts',
-    request,
-    GetTwitterAccountsReply.deserializeBinary,
-    (response) => {
-      handleResponse(response.getTwitterAccountsList());
-    },
-  );
-}
-
-export function addTwitterAccountRequest(twitterHandle, profileId, bearerToken, handleResponse) {
-  const request = new AddTwitterAccountRequest();
-  request.setHandle(twitterHandle);
-  request.setProfileId(profileId);
-  request.setBearerToken(bearerToken);
-  makeRequest(
-    'addtwitteraccount',
-    request,
-    AddTwitterAccountReply.deserializeBinary,
-    handleResponse,
-  );
-}
-
-export function deleteTwitterAccountRequest(twitterAccountId, handleResponse) {
-  const request = new DeleteTwitterAccountRequest();
-  request.setTwitterAccountId(twitterAccountId);
-  makeRequest(
-    'deletetwitteraccount',
-    request,
-    DeleteTwitterAccountReply.deserializeBinary,
-    handleResponse,
-  );
-}
-
-export function getTwitterStreamStatusRequest(handleResponse) {
-  const request = new GetTwitterStreamStatusRequest();
-  makeRequest(
-    'gettwitterstreamstatus',
-    request,
-    GetTwitterStreamStatusReply.deserializeBinary,
-    handleResponse,
-  );
-}
+// export function getTwitterAccountsRequest(handleResponse) {
+//   const request = new GetTwitterAccountsRequest();
+//   makeRequest(
+//     'gettwitteraccounts',
+//     request,
+//     GetTwitterAccountsReply.deserializeBinary,
+//     (response) => {
+//       handleResponse(response.getTwitterAccountsList());
+//     },
+//   );
+// }
+//
+// export function addTwitterAccountRequest(twitterHandle, profileId, bearerToken, handleResponse) {
+//   const request = new AddTwitterAccountRequest();
+//   request.setHandle(twitterHandle);
+//   request.setProfileId(profileId);
+//   request.setBearerToken(bearerToken);
+//   makeRequest(
+//     'addtwitteraccount',
+//     request,
+//     AddTwitterAccountReply.deserializeBinary,
+//     handleResponse,
+//   );
+// }
+//
+// export function deleteTwitterAccountRequest(twitterAccountId, handleResponse) {
+//   const request = new DeleteTwitterAccountRequest();
+//   request.setTwitterAccountId(twitterAccountId);
+//   makeRequest(
+//     'deletetwitteraccount',
+//     request,
+//     DeleteTwitterAccountReply.deserializeBinary,
+//     handleResponse,
+//   );
+// }
+//
+// export function getTwitterStreamStatusRequest(handleResponse) {
+//   const request = new GetTwitterStreamStatusRequest();
+//   makeRequest(
+//     'gettwitterstreamstatus',
+//     request,
+//     GetTwitterStreamStatusReply.deserializeBinary,
+//     handleResponse,
+//   );
+// }
 
 export function setSellPriceRequest(priceMsat, handleResponse) {
   const request = new SetSellPriceRequest();
