@@ -17,6 +17,7 @@ import {
   selectConnectedPeersStatus,
   selectSavedPeers,
   fetchSavedPeers,
+  setConnectPeer,
 } from '../../features/peers/peersSlice'
 
 
@@ -106,11 +107,11 @@ const Peers = (props) => {
     const connectPeer = () => {
         const network = getNetwork();
         const strippedHost = removeHttp(host);
-        actions.connectPeer({
-          host: strippedHost,
-          port: port,
-          network: network
-        });
+        dispatch(setConnectPeer({
+            host: strippedHost,
+            port: port,
+            network: network,
+        }));
         toggleconnectPeerModal();
     }
 
