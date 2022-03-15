@@ -492,31 +492,31 @@ export function decryptRequest(squeakHash, hasAuthor, authorProfileId, hasRecipi
   );
 }
 
-export function getBuyOffersRequest(hash, handleResponse) {
-  const request = new GetBuyOffersRequest();
-  request.setSqueakHash(hash);
-  makeRequest(
-    'getbuyoffers',
-    request,
-    GetBuyOffersReply.deserializeBinary,
-    (response) => {
-      handleResponse(response.getOffersList());
-    },
-  );
-}
+// export function getBuyOffersRequest(hash, handleResponse) {
+//   const request = new GetBuyOffersRequest();
+//   request.setSqueakHash(hash);
+//   makeRequest(
+//     'getbuyoffers',
+//     request,
+//     GetBuyOffersReply.deserializeBinary,
+//     (response) => {
+//       handleResponse(response.getOffersList());
+//     },
+//   );
+// }
 
-export function getBuyOfferRequest(offerId, handleResponse) {
-  const request = new GetBuyOfferRequest();
-  request.setOfferId(offerId);
-  makeRequest(
-    'getbuyoffer',
-    request,
-    GetBuyOfferReply.deserializeBinary,
-    (response) => {
-      handleResponse(response.getOffer());
-    },
-  );
-}
+// export function getBuyOfferRequest(offerId, handleResponse) {
+//   const request = new GetBuyOfferRequest();
+//   request.setOfferId(offerId);
+//   makeRequest(
+//     'getbuyoffer',
+//     request,
+//     GetBuyOfferReply.deserializeBinary,
+//     (response) => {
+//       handleResponse(response.getOffer());
+//     },
+//   );
+// }
 
 // export function getPeerRequest(id, handleResponse) {
 //   const request = new GetPeerRequest();

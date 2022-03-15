@@ -260,11 +260,11 @@ export const applyMiddleware = dispatch => action => {
         //     });
         //     // TODO: handle error response
 
-        case types.GET_TWEET_OFFERS:
-            return getBuyOffersRequest(action.payload, (resp) => {
-                let payload = {"squeakOffers": resp };
-                dispatch({ type: types.GET_TWEET_OFFERS, payload: payload });
-            });
+        // case types.GET_TWEET_OFFERS:
+        //     return getBuyOffersRequest(action.payload, (resp) => {
+        //         let payload = {"squeakOffers": resp };
+        //         dispatch({ type: types.GET_TWEET_OFFERS, payload: payload });
+        //     });
 
         // case types.UPDATE_USER:
         //     // return axios.put(`${API_URL}/user/i`, action.payload, headers)
