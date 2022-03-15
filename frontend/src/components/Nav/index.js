@@ -30,6 +30,9 @@ import {
   setSellPrice,
   setClearSellPrice,
 } from '../../features/sellPrice/sellPriceSlice'
+import {
+  setLogout,
+} from '../../features/account/accountSlice'
 
 const Nav = ({history}) => {
     const { state, actions } = useContext(StoreContext)

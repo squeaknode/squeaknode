@@ -177,6 +177,14 @@ export const baseRequest =
     }
   }
 
+export function logout(handleResponse) {
+  fetch(`${web_host_port}/logout`, {
+    method: 'get',
+  }).then((response) => response.arrayBuffer()).then((data) => {
+    handleResponse(data);
+  });
+}
+
 export const getNetwork = () => {
     console.log('Calling getNetwork');
     const request = new GetNetworkRequest();
