@@ -35,6 +35,9 @@ import {
   selectReplySqueaksStatus,
   clearReplies,
   setDeleteSqueak,
+  selectSqueakOffers,
+  fetchSqueakOffers,
+  setBuySqueak,
 } from './squeaksSlice'
 import store from '../../store'
 
@@ -44,6 +47,7 @@ const Squeak = (props) => {
   const currentSqueak = useSelector(selectCurrentSqueak);
   const ancestorSqueaks = useSelector(selectAncestorSqueaks);
   const replySqueaks = useSelector(selectReplySqueaks);
+  const squeakOffers = useSelector(selectSqueakOffers);
   const loadingCurrentSqueakStatus = useSelector(selectCurrentSqueakStatus)
   const loadingAncestorSqueaksStatus = useSelector(selectAncestorSqueaksStatus)
   const loadingReplySqueaksStatus = useSelector(selectReplySqueaksStatus)
@@ -64,6 +68,7 @@ const Squeak = (props) => {
       dispatch(fetchSqueak(props.id));
       dispatch(fetchAncestorSqueaks(props.id));
       dispatch(fetchReplySqueaks({squeakHash: props.id, limit: 9, lastSqueak: null}));
+      dispatch(fetchSqueakOffers(props.id));
   }, [props.id])
 
   const toggleModal = (e, type) => {
@@ -131,11 +136,13 @@ const Squeak = (props) => {
         return;
       }
       // TODO: buy
-      // const values = {
-      //   offerId: offerId,
-      //   squeakHash: props.match.params.id,
-      // }
+      const values = {
+        offerId: offerId,
+        squeakHash: props.match.params.id,
+      }
       // actions.buySqueak(values)
+      console.log('Buy clicked.');
+      dispatch(setBuySqueak(values));
       toggleBuyModal();
   }
 
@@ -148,7 +155,7 @@ const Squeak = (props) => {
 
   // const replySqueaks = [];
 
-  const squeakOffers = [];
+  // const squeakOffers = [];
 
   const optionsFromOffers = (offers) => {
     return offers.map((offer) => {

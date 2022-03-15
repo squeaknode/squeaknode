@@ -16,6 +16,8 @@ import {
   getProfileSqueaks,
   makeSqueak,
   deleteSqueak,
+  getSqueakOffers,
+  buySqueak,
 } from '../../api/client'
 
 const initialState = {
@@ -32,6 +34,9 @@ const initialState = {
   profileSqueaksStatus: 'idle',
   profileSqueaks: [],
   makeSqueakStatus: 'idle',
+  squeakOffersStatus: 'idle',
+  squeakOffers: [],
+  buySqueakStatus: 'idle',
 }
 
 // Thunk functions
@@ -152,6 +157,28 @@ export const setMakeSqueak = createAsyncThunk(
       recipientProfileId,
     );
     return response.getSqueakHash();
+  }
+)
+
+export const fetchSqueakOffers = createAsyncThunk(
+  'squeaks/fetchSqueakOffers',
+  async (squeakHash) => {
+    console.log('Fetching squeak offers');
+    const response = await getSqueakOffers(squeakHash);
+    console.log(response);
+    return response.getOffersList();
+  }
+)
+
+export const setBuySqueak = createAsyncThunk(
+  'squeaks/setBuySqueak',
+  async (values) => {
+    console.log('Buying squeak');
+    let offerId = values.offerId;
+    let squeakHash = values.squeakHash;
+    await buySqueak(offerId);
+    const response = await getSqueak(squeakHash);
+    return response.getSqueakDisplayEntry();
   }
 )
 
@@ -297,6 +324,32 @@ const squeaksSlice = createSlice({
       state.makeSqueakStatus = 'idle';
       console.log('Go to new squeak');
     })
+    .addCase(fetchSqueakOffers.pending, (state, action) => {
+      state.squeakOffersStatus = 'loading'
+    })
+    .addCase(fetchSqueakOffers.fulfilled, (state, action) => {
+      console.log(action);
+      const squeakOffers = action.payload;
+      state.squeakOffers = squeakOffers;
+      state.squeakOffersStatus = 'idle';
+    })
+    .addCase(setBuySqueak.pending, (state, action) => {
+      state.buySqueakStatus = 'loading'
+    })
+    .addCase(setBuySqueak.fulfilled, (state, action) => {
+      console.log(action);
+      state.buySqueakStatus = 'idle';
+      const newSqueak = action.payload;
+      if (state.currentSqueak && state.currentSqueak.getSqueakHash() === newSqueak.getSqueakHash()) {
+        state.currentSqueak = newSqueak;
+      }
+      updatedSqueakInArray(state.timelineSqueaks, newSqueak);
+      updatedSqueakInArray(state.searchSqueaks, newSqueak);
+      updatedSqueakInArray(state.ancestorSqueaks, newSqueak);
+      updatedSqueakInArray(state.replySqueaks, newSqueak);
+      updatedSqueakInArray(state.profileSqueaks, newSqueak);
+
+    })
   },
 })
 
@@ -351,3 +404,7 @@ export const selectLastProfileSqueak = createSelector(
 )
 
 export const selectMakeSqueakStatus = state => state.squeaks.makeSqueakStatus
+
+export const selectSqueakOffers = state => state.squeaks.squeakOffers
+
+export const selectSqueakOffersStatus = state => state.squeaks.squeakOffersStatus

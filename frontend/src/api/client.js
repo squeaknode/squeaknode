@@ -663,3 +663,27 @@ export const disableAutoconnectPeer = (peerId) => {
       deser: deser,
     });
 }
+
+export const getSqueakOffers = (squeakHash) => {
+    console.log('Calling getSqueakOffers');
+    const request = new GetBuyOffersRequest();
+    request.setSqueakHash(squeakHash);
+    const deser = GetBuyOffersReply.deserializeBinary;
+    return baseRequest({
+      url: '/getbuyoffers',
+      req: request,
+      deser: deser,
+    });
+}
+
+export const buySqueak = (offerId) => {
+    console.log('Calling buySqueak');
+    const request = new PayOfferRequest();
+    request.setOfferId(offerId);
+    const deser = PayOfferReply.deserializeBinary;
+    return baseRequest({
+      url: '/payoffer',
+      req: request,
+      deser: deser,
+    });
+}
