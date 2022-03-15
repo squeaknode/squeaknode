@@ -18,6 +18,7 @@ import {
   deleteSqueak,
   getSqueakOffers,
   buySqueak,
+  downloadSqueak,
 } from '../../api/client'
 
 const initialState = {
@@ -37,6 +38,7 @@ const initialState = {
   squeakOffersStatus: 'idle',
   squeakOffers: [],
   buySqueakStatus: 'idle',
+  downloadSqueakStatus: 'idle',
 }
 
 // Thunk functions
@@ -177,6 +179,16 @@ export const setBuySqueak = createAsyncThunk(
     let offerId = values.offerId;
     let squeakHash = values.squeakHash;
     await buySqueak(offerId);
+    const response = await getSqueak(squeakHash);
+    return response.getSqueakDisplayEntry();
+  }
+)
+
+export const setDownloadSqueak = createAsyncThunk(
+  'squeaks/setDownloadSqueak',
+  async (squeakHash) => {
+    console.log('Downloading squeak');
+    await downloadSqueak(squeakHash);
     const response = await getSqueak(squeakHash);
     return response.getSqueakDisplayEntry();
   }
@@ -348,7 +360,16 @@ const squeaksSlice = createSlice({
       updatedSqueakInArray(state.ancestorSqueaks, newSqueak);
       updatedSqueakInArray(state.replySqueaks, newSqueak);
       updatedSqueakInArray(state.profileSqueaks, newSqueak);
-
+    })
+    .addCase(setDownloadSqueak.pending, (state, action) => {
+      state.downloadSqueakStatus = 'loading'
+    })
+    .addCase(setDownloadSqueak.fulfilled, (state, action) => {
+      console.log(action);
+      state.downloadSqueakStatus = 'idle';
+      const newSqueak = action.payload;
+      // TODO: check if current squeak is the one that got downloaded.
+      state.currentSqueak = newSqueak;
     })
   },
 })

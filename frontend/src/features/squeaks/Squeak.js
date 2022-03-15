@@ -38,6 +38,7 @@ import {
   selectSqueakOffers,
   fetchSqueakOffers,
   setBuySqueak,
+  setDownloadSqueak,
 } from './squeaksSlice'
 import store from '../../store'
 
@@ -117,6 +118,7 @@ const Squeak = (props) => {
   const downloadSqueak = (id) => {
       // TODO: download
       // actions.downloadSqueak(id)
+      dispatch(setDownloadSqueak(props.id));
   }
 
   const getBlockDetailUrl = (blockHash, network) => {

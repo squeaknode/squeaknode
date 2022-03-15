@@ -732,3 +732,15 @@ export const clearSellPrice = () => {
       deser: deser,
     });
 }
+
+export const downloadSqueak = (squeakHash) => {
+    console.log('Calling downloadSqueak');
+    const request = new DownloadSqueakRequest();
+    request.setSqueakHash(squeakHash);
+    const deser = DownloadSqueakReply.deserializeBinary;
+    return baseRequest({
+      url: '/downloadsqueak',
+      req: request,
+      deser: deser,
+    });
+}
