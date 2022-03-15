@@ -111,8 +111,6 @@ const Squeak = (props) => {
   }
 
   const deleteSqueak = (id) => {
-      // TODO: delete
-      // actions.deleteSqueak(id)
       dispatch(setDeleteSqueak(props.id));
   }
 
