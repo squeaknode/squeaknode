@@ -102,7 +102,7 @@ class Models:
             self.metadata,
             Column("peer_id", Integer, primary_key=True),
             Column("created_time_ms", SLBigInteger, nullable=False),
-            Column("peer_name", String, nullable=False),
+            Column("peer_name", String, nullable=True),
             Column("network", String(10), nullable=False),
             Column("host", String, nullable=False),
             Column("port", Integer, nullable=False),
