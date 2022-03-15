@@ -10,6 +10,8 @@ import axios from 'axios'
 import {API_URL} from '../../config'
 import MakeSqueak from '../../features/squeaks/MakeSqueak'
 import ContentEditable from 'react-contenteditable'
+import Loader from '../Loader'
+
 import {
     enable as enableDarkMode,
     disable as disableDarkMode,
@@ -32,6 +34,12 @@ import {
 import {
   setLogout,
 } from '../../features/account/accountSlice'
+import {
+  selectMakeSqueakStatus,
+  selectBuySqueakStatus,
+  selectDownloadSqueakStatus,
+  selectDownloadPubkeySqueakStatus,
+} from '../../features/squeaks/squeaksSlice'
 
 const Nav = ({history}) => {
     const [moreMenu, setMoreMenu] = useState(false)
@@ -259,7 +267,53 @@ const Nav = ({history}) => {
             </div>
         </div>
 
+        {/* Block screen with modal when make squeak is waiting. */}
+        <div style={{display: useSelector(selectMakeSqueakStatus) === 'loading' ? 'block' : 'none'}} className="modal-edit">
+            <div style={{minHeight: '270px', height: 'initial'}} className="modal-content">
+                <div className="modal-header">
+                    <p className="modal-title">Making squeak...</p>
+                </div>
+                <div style={{marginTop:'5px'}} className="modal-body">
+                    <Loader />
+                </div>
+            </div>
+        </div>
 
+        {/* Block screen with modal when buy squeak is waiting. */}
+        <div style={{display: useSelector(selectBuySqueakStatus) === 'loading' ? 'block' : 'none'}} className="modal-edit">
+            <div style={{minHeight: '270px', height: 'initial'}} className="modal-content">
+                <div className="modal-header">
+                    <p className="modal-title">Buying squeak...</p>
+                </div>
+                <div style={{marginTop:'5px'}} className="modal-body">
+                    <Loader />
+                </div>
+            </div>
+        </div>
+
+        {/* Block screen with modal when download squeak is waiting. */}
+        <div style={{display: useSelector(selectDownloadSqueakStatus) === 'loading' ? 'block' : 'none'}} className="modal-edit">
+            <div style={{minHeight: '270px', height: 'initial'}} className="modal-content">
+                <div className="modal-header">
+                    <p className="modal-title">Downloading squeak...</p>
+                </div>
+                <div style={{marginTop:'5px'}} className="modal-body">
+                    <Loader />
+                </div>
+            </div>
+        </div>
+
+        {/* Block screen with modal when download pubkey squeaks is waiting. */}
+        <div style={{display: useSelector(selectDownloadPubkeySqueakStatus) === 'loading' ? 'block' : 'none'}} className="modal-edit">
+            <div style={{minHeight: '270px', height: 'initial'}} className="modal-content">
+                <div className="modal-header">
+                    <p className="modal-title">Downloading pubkey squeaks...</p>
+                </div>
+                <div style={{marginTop:'5px'}} className="modal-body">
+                    <Loader />
+                </div>
+            </div>
+        </div>
 
         </div>
     )

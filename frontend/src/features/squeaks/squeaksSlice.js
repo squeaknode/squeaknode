@@ -340,6 +340,9 @@ const squeaksSlice = createSlice({
       console.log('setMakeSqueak pending');
       state.makeSqueakStatus = 'loading'
     })
+    .addCase(setMakeSqueak.rejected, (state, action) => {
+      state.makeSqueakStatus = 'idle'
+    })
     .addCase(setMakeSqueak.fulfilled, (state, action) => {
       console.log('setMakeSqueak fulfilled');
       console.log(action);
@@ -359,6 +362,9 @@ const squeaksSlice = createSlice({
     .addCase(setBuySqueak.pending, (state, action) => {
       state.buySqueakStatus = 'loading'
     })
+    .addCase(setBuySqueak.rejected, (state, action) => {
+      state.buySqueakStatus = 'idle'
+    })
     .addCase(setBuySqueak.fulfilled, (state, action) => {
       console.log(action);
       state.buySqueakStatus = 'idle';
@@ -375,6 +381,9 @@ const squeaksSlice = createSlice({
     .addCase(setDownloadSqueak.pending, (state, action) => {
       state.downloadSqueakStatus = 'loading'
     })
+    .addCase(setDownloadSqueak.rejected, (state, action) => {
+      state.downloadSqueakStatus = 'idle'
+    })
     .addCase(setDownloadSqueak.fulfilled, (state, action) => {
       console.log(action);
       state.downloadSqueakStatus = 'idle';
@@ -384,6 +393,9 @@ const squeaksSlice = createSlice({
     })
     .addCase(setDownloadPubkeySqueaks.pending, (state, action) => {
       state.downloadPubkeySqueakStatus = 'loading'
+    })
+    .addCase(setDownloadPubkeySqueaks.rejected, (state, action) => {
+      state.downloadPubkeySqueakStatus = 'idle'
     })
     .addCase(setDownloadPubkeySqueaks.fulfilled, (state, action) => {
       console.log(action);
@@ -447,3 +459,9 @@ export const selectMakeSqueakStatus = state => state.squeaks.makeSqueakStatus
 export const selectSqueakOffers = state => state.squeaks.squeakOffers
 
 export const selectSqueakOffersStatus = state => state.squeaks.squeakOffersStatus
+
+export const selectBuySqueakStatus = state => state.squeaks.buySqueakStatus
+
+export const selectDownloadSqueakStatus = state => state.squeaks.downloadSqueakStatus
+
+export const selectDownloadPubkeySqueakStatus = state => state.squeaks.downloadPubkeySqueakStatus
