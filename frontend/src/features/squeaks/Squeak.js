@@ -79,8 +79,10 @@ const Squeak = (props) => {
   }
 
   const toggleBuyModal = () => {
-      // TODO: load offers
-      // actions.getSqueakOffers(props.match.params.id);
+      // load offers on modal open.
+      if (!buyModalOpen) {
+        dispatch(fetchSqueakOffers(props.id));
+      }
       // if(param === 'edit'){setSaved(false)}
       // if(type === 'parent'){setParent(true)}else{setParent(false)}
       setBuyModalOpen(!buyModalOpen)
@@ -135,12 +137,10 @@ const Squeak = (props) => {
       if (!offerId) {
         return;
       }
-      // TODO: buy
       const values = {
         offerId: offerId,
         squeakHash: props.match.params.id,
       }
-      // actions.buySqueak(values)
       console.log('Buy clicked.');
       dispatch(setBuySqueak(values));
       toggleBuyModal();
