@@ -15,32 +15,6 @@ import Timeline from '../../features/squeaks/Timeline'
 
 
 const Home = () => {
-    // const { state, actions } = useContext(StoreContext)
-    // const { squeaks, session } = state
-    // useEffect(() => {
-    //     window.scrollTo(0, 0)
-    //     // actions.getSqueaks({lastSqueak: null})
-    //     reloadSqueaks();
-    // }, [])
-
-    // const getLastSqueak = (squeakLst) => {
-    //   if (squeakLst == null) {
-    //     return null;
-    //   } if (squeakLst.length === 0) {
-    //     return null;
-    //   }
-    //   return squeakLst.slice(-1)[0];
-    // };
-
-    // const getMoreSqueaks = () => {
-    //     let lastSqueak = getLastSqueak(squeaks);
-    //     actions.getSqueaks({lastSqueak: lastSqueak});
-    // }
-    //
-    // const reloadSqueaks = () => {
-    //     actions.clearSqueaks();
-    //     actions.getSqueaks({lastSqueak: null});
-    // }
 
     return (
         <div className="Home-wrapper">

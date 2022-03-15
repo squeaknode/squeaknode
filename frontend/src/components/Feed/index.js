@@ -15,18 +15,8 @@ const {paymentSummary, trends, session} = state
 const [searchText, setSearchText] = useState('');
 
 
-useEffect(() => {
-    //actions.getPaymentSummary();
-    //actions.getTrend()
-}, [])
-
 const goToUser = (id) => {
     props.history.push(`/app/profile/${id}`)
-}
-
-const followUser = (e, id) => {
-    e.stopPropagation()
-    actions.followUser(id)
 }
 
 const changeSearchText = (param) => {

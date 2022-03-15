@@ -119,6 +119,10 @@ const Nav = ({history}) => {
         toggleSellPriceModal()
     }
 
+    const logout = () => {
+        dispatch(setLogout());
+    }
+
     console.log(sellPrice);
 
     return(
@@ -180,7 +184,7 @@ const Nav = ({history}) => {
                                         <span>Update Sell Price</span>
                                         <span><ICON_HASH /></span>
                                     </div>
-                                    <div onClick={()=>actions.logout()} className="more-menu-item">
+                                    <div onClick={()=>logout()} className="more-menu-item">
                                         Log out
                                     </div>
                             </div> : null }

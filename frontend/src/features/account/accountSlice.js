@@ -18,6 +18,7 @@ export const setLogout = createAsyncThunk(
   async () => {
     console.log('Logging out');
     await logout();
+    console.log('Logged out');
     return null;
   }
 )
@@ -28,6 +29,9 @@ const accountSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+    .addCase(setLogout.pending, (state, action) => {
+      console.log('Logging out in reducer...');
+    })
     .addCase(setLogout.fulfilled, (state, action) => {
       console.log(action);
       // Reload page to show logged out page.

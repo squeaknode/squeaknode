@@ -177,12 +177,15 @@ export const baseRequest =
     }
   }
 
-export function logout(handleResponse) {
-  fetch(`${web_host_port}/logout`, {
-    method: 'get',
-  }).then((response) => response.arrayBuffer()).then((data) => {
-    handleResponse(data);
-  });
+export const logout =
+  async () => {
+    const logoutResponse = await fetch(`${web_host_port}/logout`, {
+      method: 'get',
+    });
+    console.log('Got logout response');
+    const buf = await logoutResponse.arrayBuffer();
+    console.log('Got buf');
+    return buf;
 }
 
 export const getNetwork = () => {
