@@ -22,6 +22,7 @@ import {
   selectPeerConnectionByAddress,
   setConnectPeer,
   setDisconnectPeer,
+  setSavePeer,
 } from '../../features/peers/peersSlice'
 
 
@@ -98,12 +99,18 @@ const deletePeer = () => {
     toggleDeleteModal();
 }
 
+function removeHttp(url) {
+  return url.replace(/^https?:\/\//, '');
+}
+
 const savePeer = () => {
-    actions.savePeer({
-      name: editName,
-      host: props.match.params.host,
-      port: props.match.params.port,
-      network: props.match.params.network});
+    const strippedHost = removeHttp(props.match.params.host);
+    dispatch(setSavePeer({
+        name: editName,
+        host: strippedHost,
+        port: props.match.params.port,
+        network: props.match.params.network,
+    }));
     toggleSavePeerModal();
 }
 
