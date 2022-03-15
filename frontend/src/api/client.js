@@ -687,3 +687,14 @@ export const buySqueak = (offerId) => {
       deser: deser,
     });
 }
+
+export const getSellPrice = () => {
+    console.log('Calling getSellPrice');
+    const request = new GetSellPriceRequest();
+    const deser = GetSellPriceReply.deserializeBinary;
+    return baseRequest({
+      url: '/getsellprice',
+      req: request,
+      deser: deser,
+    });
+}

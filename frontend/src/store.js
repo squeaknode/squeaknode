@@ -6,6 +6,7 @@ import profilesReducer from './features/profiles/profilesSlice'
 import peersReducer from './features/peers/peersSlice'
 import externalAddressReducer from './features/externalAddress/externalAddressSlice'
 import paymentsReducer from './features/payments/paymentsSlice'
+import sellPriceReducer from './features/sellPrice/sellPriceSlice'
 
 const store = configureStore({
   reducer: {
@@ -15,6 +16,7 @@ const store = configureStore({
     peers: peersReducer,
     externalAddress: externalAddressReducer,
     payments: paymentsReducer,
+    sellPrice: sellPriceReducer,
   },
 })
 

@@ -17,16 +17,33 @@ import {
     setFetchMethod
 } from 'darkreader';
 
+import { unwrapResult } from '@reduxjs/toolkit'
+import { useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
+
+import {
+  fetchSellPrice,
+  selectSellPriceDefault,
+  selectSellPriceOverride,
+  selectSellPriceUsingOverride,
+  selectSellPriceInfo,
+} from '../../features/sellPrice/sellPriceSlice'
+
 const Nav = ({history}) => {
     const { state, actions } = useContext(StoreContext)
 
-    const { sellPrice, session } = state
+    // const { sellPrice, session } = state
     const [moreMenu, setMoreMenu] = useState(false)
     const [theme, setTheme] = useState(true)
     const [modalOpen, setModalOpen] = useState(false)
     const [sellPriceModalOpen, setSellPriceModalOpen] = useState(false)
     const [styleBody, setStyleBody] = useState(false)
     const [newSellPriceMsat, setNewSellPriceMsat] = useState('')
+
+    const session = true;
+    const sellPrice = useSelector(selectSellPriceInfo);
+    const dispatch = useDispatch();
+
 
     const isInitialMount = useRef(true);
     useEffect(() => {
@@ -47,7 +64,8 @@ const Nav = ({history}) => {
         }else if(!localStorage.getItem('Theme')){
             localStorage.setItem('Theme', 'light')
         }
-        actions.getSellPrice();
+        // actions.getSellPrice();
+        dispatch(fetchSellPrice());
       }, [])
 
       const path = history.location.pathname.slice(4,9)
@@ -97,6 +115,7 @@ const Nav = ({history}) => {
         toggleSellPriceModal()
     }
 
+    console.log(sellPrice);
 
     return(
         <div className="Nav-component">
