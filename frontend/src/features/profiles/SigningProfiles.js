@@ -34,25 +34,18 @@ const SigningProfiles = (props) => {
       dispatch(fetchSigningProfiles(null));
   }, [])
 
-  const goToSqueak = (id) => {
-      // if(props.replyTo){ actions.getSqueak(id) }
-      props.history.push(`/app/squeak/${id}`)
-  }
-
   const goToUser = (id) => {
       props.history.push(`/app/profile/${id}`)
   }
 
   const followUser = (e, id) => {
       e.stopPropagation()
-      // actions.followUser(id)
       console.log('Follow clicked');
       dispatch(setFollowProfile(id));
   }
 
   const unfollowUser = (e,id) => {
       e.stopPropagation()
-      // actions.unfollowUser(id)
       console.log('Unfollow clicked');
       dispatch(setUnfollowProfile(id));
   }

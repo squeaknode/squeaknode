@@ -15,6 +15,8 @@ import {
   clearContactProfiles,
   selectContactProfiles,
   selectContactProfilesStatus,
+  setFollowProfile,
+  setUnfollowProfile,
 } from './profilesSlice'
 
 
@@ -43,14 +45,14 @@ const ContactProfiles = (props) => {
 
   const followUser = (e, id) => {
       e.stopPropagation()
-      // actions.followUser(id)
       console.log('Follow clicked');
+      dispatch(setFollowProfile(id));
   }
 
   const unfollowUser = (e,id) => {
       e.stopPropagation()
-      // actions.unfollowUser(id)
       console.log('Unfollow clicked');
+      dispatch(setUnfollowProfile(id));
   }
 
   console.log(contactProfiles);
