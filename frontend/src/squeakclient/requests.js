@@ -456,25 +456,25 @@ function makeRequest(route, request, deserializeMsg, handleResponse, handleError
 //   );
 // }
 
-export function payOfferRequest(offerId, handleResponse, handleErr) {
-  const request = new PayOfferRequest();
-  request.setOfferId(offerId);
-  makeRequest(
-    'payoffer',
-    request,
-    PayOfferReply.deserializeBinary,
-    handleResponse,
-    handleErr,
-  );
-  // client.payOffer(request, {}, (err, response) => {
-  //   if (err) {
-  //     handleErr(err);
-  //   }
-  //   if (response) {
-  //     handleResponse(response);
-  //   }
-  // });
-}
+// export function payOfferRequest(offerId, handleResponse, handleErr) {
+//   const request = new PayOfferRequest();
+//   request.setOfferId(offerId);
+//   makeRequest(
+//     'payoffer',
+//     request,
+//     PayOfferReply.deserializeBinary,
+//     handleResponse,
+//     handleErr,
+//   );
+//   // client.payOffer(request, {}, (err, response) => {
+//   //   if (err) {
+//   //     handleErr(err);
+//   //   }
+//   //   if (response) {
+//   //     handleResponse(response);
+//   //   }
+//   // });
+// }
 
 export function decryptRequest(squeakHash, hasAuthor, authorProfileId, hasRecipient, recipientProfileId, handleResponse, handleErr) {
   const request = new DecryptSqueakRequest();
