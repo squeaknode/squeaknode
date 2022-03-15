@@ -10,6 +10,7 @@ import {
   connectPeer,
   disconnectPeer,
   getSavedPeers,
+  savePeer,
 } from '../../api/client'
 
 const initialState = {
@@ -96,6 +97,26 @@ export const setDisconnectPeer = createAsyncThunk(
   }
 )
 
+export const setSavePeer = createAsyncThunk(
+  'peers/setSavePeer',
+  async (values) => {
+    console.log('Saving peer');
+    let name = values.name;
+    let network = values.network;
+    let host = values.host;
+    let port = values.port;
+    await savePeer(
+      name,
+      network,
+      host,
+      port,
+    );
+    const response = await getSavedPeers();
+    return response.getSqueakPeersList();
+  }
+)
+
+
 const peersSlice = createSlice({
   name: 'peers',
   initialState,
@@ -155,6 +176,16 @@ const peersSlice = createSlice({
       const newConnectedPeers = action.payload;
       state.connectedPeers = newConnectedPeers;
       state.disconnectPeerStatus = 'idle';
+    })
+    .addCase(setSavePeer.pending, (state, action) => {
+      console.log(action);
+      state.savePeerStatus = 'loading'
+    })
+    .addCase(setSavePeer.fulfilled, (state, action) => {
+      console.log(action);
+      const newSavedPeers = action.payload;
+      state.savedPeers = newSavedPeers;
+      state.savePeerStatus = 'idle';
     })
   },
 })

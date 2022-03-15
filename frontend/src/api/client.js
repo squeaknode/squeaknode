@@ -608,3 +608,20 @@ export const getExternalAddress = () => {
       deser: deser,
     });
 }
+
+export const savePeer = (peerName, network, host, port) => {
+    console.log('Calling savePeer');
+    const request = new CreatePeerRequest();
+    const peerAddress = new PeerAddress();
+    peerAddress.setNetwork(network);
+    peerAddress.setHost(host);
+    peerAddress.setPort(port);
+    request.setPeerName(peerName);
+    request.setPeerAddress(peerAddress);
+    const deser = CreatePeerReply.deserializeBinary;
+    return baseRequest({
+      url: '/createpeer',
+      req: request,
+      deser: deser,
+    });
+}

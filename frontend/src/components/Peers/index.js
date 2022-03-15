@@ -18,6 +18,7 @@ import {
   selectSavedPeers,
   fetchSavedPeers,
   setConnectPeer,
+  setSavePeer,
 } from '../../features/peers/peersSlice'
 import {
   fetchExternalAddress,
@@ -102,12 +103,12 @@ const Peers = (props) => {
     const savePeer = () => {
         const network = getNetwork();
         const strippedHost = removeHttp(host);
-        actions.savePeer({
-          name: name,
-          host: strippedHost,
-          port: port,
-          network: network
-        });
+        dispatch(setSavePeer({
+            name: name,
+            host: strippedHost,
+            port: port,
+            network: network,
+        }));
         toggleSavePeerModal();
     }
 
