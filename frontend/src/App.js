@@ -1,6 +1,5 @@
 import React, { Suspense, lazy } from 'react'
 import { Route, Switch, HashRouter, Redirect, withRouter } from 'react-router-dom'
-import { StoreProvider } from './store/store'
 import 'dotenv/config'
 import './App.scss'
 import Loader from './components/Loader'
@@ -70,7 +69,6 @@ const DefaultContainer = withRouter(({ history }) => {
 function App() {
   return (
     <div className="dark-mode">
-      <StoreProvider>
         <HashRouter>
           <Suspense fallback={<Loader />}>
             <Alerts />
@@ -85,7 +83,6 @@ function App() {
             </Switch>
           </Suspense>
         </HashRouter>
-      </StoreProvider>
     </div>
   )
 }
