@@ -119,7 +119,6 @@ const savePeer = () => {
 
 const setIsAutoconnect = (e,id) => {
     e.stopPropagation()
-    // actions.setPeerAutoconnect(id)
     console.log(id);
     console.log(peer.getPeerId());
     let values = {
@@ -131,7 +130,6 @@ const setIsAutoconnect = (e,id) => {
 
 const setIsNotAutoconnect = (e,id) => {
     e.stopPropagation()
-    // actions.setPeerNotAutoconnect(id)
     let values = {
         peerId: peer.getPeerId(),
     }
