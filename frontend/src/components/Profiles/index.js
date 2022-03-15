@@ -19,7 +19,6 @@ import {
 } from '../../features/profiles/profilesSlice'
 
 
-
 const Profiles = (props) => {
     const { state, actions } = useContext(StoreContext)
     const [tab, setTab] = useState('Signing Profiles')
@@ -33,15 +32,12 @@ const Profiles = (props) => {
 
     const dispatch = useDispatch()
 
-
-
     const searchOnChange = (param) => {
         if(tab !== 'Search'){setTab('Search')}
         if(param.length>0){
-            actions.search({description: param})
+            // TODO: search for a profile by name.
         }
     }
-
 
     const toggleSigningProfileModal = (param, type) => {
         setStyleBody(!styleBody)
