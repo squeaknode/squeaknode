@@ -859,53 +859,53 @@ function makeRequest(route, request, deserializeMsg, handleResponse, handleError
 //   // });
 // }
 
-export function downloadSqueakRequest(squeakHash, handleResponse) {
-  const request = new DownloadSqueakRequest();
-  request.setSqueakHash(squeakHash);
-  makeRequest(
-    'downloadsqueak',
-    request,
-    DownloadSqueakReply.deserializeBinary,
-    (response) => {
-      handleResponse(response);
-    },
-  );
-  // client.downloadSqueak(request, {}, (err, response) => {
-  //   handleResponse(response);
-  // });
-}
+// export function downloadSqueakRequest(squeakHash, handleResponse) {
+//   const request = new DownloadSqueakRequest();
+//   request.setSqueakHash(squeakHash);
+//   makeRequest(
+//     'downloadsqueak',
+//     request,
+//     DownloadSqueakReply.deserializeBinary,
+//     (response) => {
+//       handleResponse(response);
+//     },
+//   );
+//   // client.downloadSqueak(request, {}, (err, response) => {
+//   //   handleResponse(response);
+//   // });
+// }
 
-export function downloadOffersRequest(squeakHash, handleResponse) {
-  const request = new DownloadOffersRequest();
-  request.setSqueakHash(squeakHash);
-  makeRequest(
-    'downloadoffers',
-    request,
-    DownloadOffersReply.deserializeBinary,
-    (response) => {
-      handleResponse(response);
-    },
-  );
-  // client.downloadOffers(request, {}, (err, response) => {
-  //   handleResponse(response);
-  // });
-}
-
-export function downloadRepliesRequest(squeakHash, handleResponse) {
-  const request = new DownloadRepliesRequest();
-  request.setSqueakHash(squeakHash);
-  makeRequest(
-    'downloadreplies',
-    request,
-    DownloadRepliesReply.deserializeBinary,
-    (response) => {
-      handleResponse(response);
-    },
-  );
-  // client.downloadReplies(request, {}, (err, response) => {
-  //   handleResponse(response);
-  // });
-}
+// export function downloadOffersRequest(squeakHash, handleResponse) {
+//   const request = new DownloadOffersRequest();
+//   request.setSqueakHash(squeakHash);
+//   makeRequest(
+//     'downloadoffers',
+//     request,
+//     DownloadOffersReply.deserializeBinary,
+//     (response) => {
+//       handleResponse(response);
+//     },
+//   );
+//   // client.downloadOffers(request, {}, (err, response) => {
+//   //   handleResponse(response);
+//   // });
+// }
+//
+// export function downloadRepliesRequest(squeakHash, handleResponse) {
+//   const request = new DownloadRepliesRequest();
+//   request.setSqueakHash(squeakHash);
+//   makeRequest(
+//     'downloadreplies',
+//     request,
+//     DownloadRepliesReply.deserializeBinary,
+//     (response) => {
+//       handleResponse(response);
+//     },
+//   );
+//   // client.downloadReplies(request, {}, (err, response) => {
+//   //   handleResponse(response);
+//   // });
+// }
 
 // export function downloadAddressSqueaksRequest(pubkey, handleResponse) {
 //   const request = new DownloadPubKeySqueaksRequest();
