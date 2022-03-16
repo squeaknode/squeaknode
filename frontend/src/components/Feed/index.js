@@ -10,11 +10,6 @@ const Feed = (props) => {
 
 const [searchText, setSearchText] = useState('');
 
-
-const goToUser = (id) => {
-    props.history.push(`/app/profile/${id}`)
-}
-
 const changeSearchText = (param) => {
     setSearchText(param);
 }

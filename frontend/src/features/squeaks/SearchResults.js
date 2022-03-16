@@ -38,6 +38,8 @@ const SearchResults = (props) => {
     return q ? decodeURIComponent(q) : '';
   }, [search]);
 
+  const scrollSize = 10;
+
   useEffect(() => {
       window.scrollTo(0, 0)
       if (q && q.length > 0) {
@@ -46,7 +48,7 @@ const SearchResults = (props) => {
         dispatch(clearSearch());
         const values = {
           searchText: q,
-          limit: 5,
+          limit: scrollSize,
           lastSqueak: null,
         }
         dispatch(fetchSearch(values));
@@ -83,7 +85,7 @@ const SearchResults = (props) => {
     let lastSqueak = getLastSqueak(squeaks);
     const values = {
       searchText: searchText,
-      limit: 5,
+      limit: scrollSize,
       lastSqueak: lastSqueak,
     }
     dispatch(fetchSearch(values));

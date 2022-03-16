@@ -21,16 +21,22 @@ const initialState = {
 // Thunk functions
 export const fetchSentPayments = createAsyncThunk(
   'payments/fetchSentPayments',
-  async (lastSentPayment) => {
-    const response = await getSentPayments(5, lastSentPayment);
+  async (values) => {
+    const response = await getSentPayments(
+      values.limit,
+      values.lastSentPayment,
+    );
     return response.getSentPaymentsList();
   }
 )
 
 export const fetchReceivedPayments = createAsyncThunk(
   'payments/fetchReceivedPayments',
-  async (lastReceivedPayment) => {
-    const response = await getReceivedPayments(5, lastReceivedPayment);
+  async (values) => {
+    const response = await getReceivedPayments(
+      values.limit,
+      values.lastReceivedPayment,
+    );
     return response.getReceivedPaymentsList();
   }
 )
