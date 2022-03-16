@@ -27,8 +27,18 @@ const SentPayments = (props) => {
       window.scrollTo(0, 0)
       console.log('fetchSentPayments');
       dispatch(clearSentPayments());
-      dispatch(fetchSentPayments(null));
+      dispatch(fetchSentPayments({
+        limit: 10,
+        lastSentPayment: null,
+      }));
   }, [])
+
+  const fetchMore = () => {
+    dispatch(fetchSentPayments({
+      limit: 10,
+      lastSentPayment: lastSentPayment,
+    }));
+  }
 
   const goToSqueak = (id) => {
       props.history.push(`/app/squeak/${id}`)
@@ -58,7 +68,7 @@ const SentPayments = (props) => {
             <Loader />
           </div>
           :
-          <div onClick={() => dispatch(fetchSentPayments(lastSentPayment))} className='squeak-btn-side squeak-btn-active'>
+          <div onClick={() => fetchMore()} className='squeak-btn-side squeak-btn-active'>
             LOAD MORE
           </div>
           }
