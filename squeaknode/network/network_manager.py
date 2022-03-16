@@ -34,7 +34,6 @@ from squeaknode.network.connection_manager import ConnectionManager
 from squeaknode.network.peer import Peer
 from squeaknode.network.peer_client import PeerClient
 from squeaknode.network.peer_handler import PeerHandler
-from squeaknode.network.peer_server import PeerServer
 
 
 MIN_PEERS = 5
@@ -54,7 +53,7 @@ class NetworkManager(object):
         self.external_host = self.config.server.external_address
         self.local_ip = socket.gethostbyname('localhost')
         self.local_port = self.config.server.port or default_port
-        self.peer_server = None
+        # self.peer_server = None
         self.peer_client = None
         self.tor_proxy_ip = self.config.tor.proxy_ip
         self.tor_proxy_port = self.config.tor.proxy_port
@@ -65,19 +64,19 @@ class NetworkManager(object):
             self.connection_manager,
             network_handler,
         )
-        self.peer_server = PeerServer(
-            peer_handler,
-            self.local_port,
-        )
+        # self.peer_server = PeerServer(
+        #     peer_handler,
+        #     self.local_port,
+        # )
         self.peer_client = PeerClient(
             peer_handler,
             self.tor_proxy_ip,
             self.tor_proxy_port,
         )
-        self.peer_server.start()
+        # self.peer_server.start()
 
     def stop(self):
-        self.peer_server.stop()
+        # self.peer_server.stop()
         self.connection_manager.stop_all_connections()
 
     def connect_peer_sync(self, peer_address: PeerAddress) -> None:

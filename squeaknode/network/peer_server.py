@@ -21,16 +21,15 @@
 # SOFTWARE.
 import logging
 import socket
-import threading
 
-from squeaknode.core.peer_address import Network
-from squeaknode.core.peer_address import PeerAddress
+from squeaknode.network.app import SqueakPeerWebServer
+from squeaknode.network.squeak_peer_server_handler import SqueakPeerServerHandler
 
 
 MIN_PEERS = 5
 MAX_PEERS = 10
 UPDATE_THREAD_SLEEP_TIME = 10
-
+PEER_SERVER_HOST = "0.0.0.0"  # TODO: use config instead
 
 logger = logging.getLogger(__name__)
 
@@ -43,49 +42,57 @@ class PeerServer(object):
         self.peer_handler = peer_handler
         self.port = port
         self.listen_socket = socket.socket()
+        peer_handler = SqueakPeerServerHandler()
+        self.server = SqueakPeerWebServer(
+            PEER_SERVER_HOST,
+            self.port,
+            None,
+        )
 
     def start(self):
         logger.info("Starting peer server with port: {}".format(
             self.port,
         ))
-        # Start Listen thread
-        threading.Thread(
-            target=self.accept_connections,
-            name="peer_server_listen_thread",
-        ).start()
+        # # Start Listen thread
+        # threading.Thread(
+        #     target=self.accept_connections,
+        #     name="peer_server_listen_thread",
+        # ).start()
+        self.server.start()
 
     def stop(self):
         logger.info("Stopping peer server listener thread...")
-        self.listen_socket.shutdown(socket.SHUT_RDWR)
-        self.listen_socket.close()
+        # self.listen_socket.shutdown(socket.SHUT_RDWR)
+        # self.listen_socket.close()
+        self.server.stop()
 
-    def accept_connections(self):
-        try:
-            self.listen_socket.bind(('', self.port))
-            self.listen_socket.listen()
-            while True:
-                peer_socket, address = self.listen_socket.accept()
-                host, port = address
-                peer_address = PeerAddress(
-                    network=Network.IPV4,
-                    host=host,
-                    port=port,
-                )
-                peer_socket.setblocking(True)
-                self.handle_connection(
-                    peer_socket,
-                    peer_address,
-                )
-        except Exception:
-            logger.exception("Accept peer connections failed.")
+    # def accept_connections(self):
+    #     try:
+    #         self.listen_socket.bind(('', self.port))
+    #         self.listen_socket.listen()
+    #         while True:
+    #             peer_socket, address = self.listen_socket.accept()
+    #             host, port = address
+    #             peer_address = PeerAddress(
+    #                 network=Network.IPV4,
+    #                 host=host,
+    #                 port=port,
+    #             )
+    #             peer_socket.setblocking(True)
+    #             self.handle_connection(
+    #                 peer_socket,
+    #                 peer_address,
+    #             )
+    #     except Exception:
+    #         logger.exception("Accept peer connections failed.")
 
-    def handle_connection(
-            self,
-            peer_socket: socket.socket,
-            peer_address: PeerAddress,
-    ):
-        """Handle a newly connected peer socket."""
-        threading.Thread(
-            target=self.peer_handler.handle_connection,
-            args=(peer_socket, peer_address, False),
-        ).start()
+    # def handle_connection(
+    #         self,
+    #         peer_socket: socket.socket,
+    #         peer_address: PeerAddress,
+    # ):
+    #     """Handle a newly connected peer socket."""
+    #     threading.Thread(
+    #         target=self.peer_handler.handle_connection,
+    #         args=(peer_socket, peer_address, False),
+    #     ).start()

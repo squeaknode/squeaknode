@@ -35,7 +35,9 @@ from squeaknode.db.db_engine import get_connection_string
 from squeaknode.db.db_engine import get_engine
 from squeaknode.db.squeak_db import SqueakDb
 from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
+from squeaknode.network.app import SqueakPeerWebServer
 from squeaknode.network.network_manager import NetworkManager
+from squeaknode.network.squeak_peer_server_handler import SqueakPeerServerHandler
 from squeaknode.node.active_download_manager import ActiveDownloadManager
 from squeaknode.node.network_handler import NetworkHandler
 from squeaknode.node.node_settings import NodeSettings
@@ -74,6 +76,10 @@ class SqueakNode:
         self.create_download_manager()
         self.create_squeak_controller()
         self.create_network_handler()
+
+        self.create_peer_handler()
+        self.create_peer_web_server()
+
         self.create_admin_handler()
         self.create_admin_rpc_server()
         self.create_admin_web_server()
@@ -96,6 +102,7 @@ class SqueakNode:
             self.admin_rpc_server.start()
         if self.config.webadmin.enabled:
             self.admin_web_server.start()
+        self.peer_web_server.start()
         self.received_payment_processor_worker.start_running()
         self.forward_tweets_processor_worker.start_running()
         self.peer_connection_worker.start()
@@ -111,6 +118,7 @@ class SqueakNode:
         self.download_manager.stop()
         self.admin_web_server.stop()
         self.admin_rpc_server.stop()
+        self.peer_web_server.stop()
         self.network_manager.stop()
         self.received_payment_processor_worker.stop_running()
         self.forward_tweets_processor_worker.stop_running()
@@ -222,6 +230,11 @@ class SqueakNode:
             self.squeak_controller,
         )
 
+    def create_peer_handler(self):
+        self.peer_handler = SqueakPeerServerHandler(
+            self.squeak_controller,
+        )
+
     def create_admin_rpc_server(self):
         self.admin_rpc_server = SqueakAdminServerServicer(
             self.config.rpc.host,
@@ -239,6 +252,13 @@ class SqueakNode:
             self.config.webadmin.login_disabled,
             self.config.webadmin.allow_cors,
             self.admin_handler,
+        )
+
+    def create_peer_web_server(self):
+        self.peer_web_server = SqueakPeerWebServer(
+            self.config.server.host,
+            squeak.params.params.DEFAULT_PORT,
+            self.peer_handler,
         )
 
     def create_received_payment_processor_worker(self):
