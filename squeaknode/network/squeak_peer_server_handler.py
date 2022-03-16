@@ -25,6 +25,10 @@ from typing import Optional
 
 from squeak.core.keys import SqueakPublicKey
 
+from squeaknode.core.lightning_address import LightningAddressHostPort
+from squeaknode.core.offer import Offer
+from squeaknode.core.peer_address import Network
+from squeaknode.core.peer_address import PeerAddress
 from squeaknode.node.price_policy import PricePolicy
 from squeaknode.node.squeak_store import SqueakStore
 
@@ -72,10 +76,33 @@ class SqueakPeerServerHandler(object):
             raise NotFoundError()
         return secret_key
 
-    # def handle_get_offer(self, squeak_hash_str) -> Optional[bytes]:
-    #     squeak_hash = bytes.fromhex(squeak_hash_str)
-    #     logger.info("Handle get offer for hash: {}".format(squeak_hash_str))
-    #     price_msat = self.get_price_for_squeak()
+    def handle_get_offer(self, squeak_hash_str, client_host) -> Optional[Offer]:
+        squeak_hash = bytes.fromhex(squeak_hash_str)
+        logger.info("Handle get offer for hash: {}, client_host: {}".format(
+            squeak_hash_str, client_host))
+        client_addr = PeerAddress(
+            network=Network.IPV4,
+            host=client_host,
+            port=0,
+        )
+        logger.info("client_addr: {}".format(client_addr))
+        price_msat = self.get_price_for_squeak()
+        if price_msat == 0:
+            raise NotFoundError()
+        # TODO: lnd_external_address should be configured inside SqueakStore.
+        lnd_external_address: Optional[LightningAddressHostPort] = None
+        if self.config.lnd.external_host:
+            lnd_external_address = LightningAddressHostPort(
+                host=self.config.lnd.external_host,
+                port=self.config.lnd.port,
+            )
+        logger.info(lnd_external_address)
+        return self.squeak_store.get_packaged_offer(
+            squeak_hash,
+            client_addr,
+            price_msat,
+            lnd_external_address,
+        )
 
     def handle_lookup_squeaks(
             self,

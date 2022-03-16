@@ -79,18 +79,23 @@ def create_app(handler):
         logger.info(secret_key_bytes)
         return secret_key_bytes
 
-    # @app.route('/offer/<hash>')
-    # def offer(hash):
-    #     logger.info("Getting offer route.")
-    #     logger.info(hash)
-    #     try:
-    #         offer_bytes = handler.handle_get_offer(hash)
-    #     except NotFoundError:
-    #         return "Not found", 404
-    #     except PaymentRequiredError:
-    #         return "Payment required", 402
-    #     logger.info(secret_key_bytes)
-    #     return secret_key_bytes
+    @app.route('/offer/<hash>')
+    def offer(hash):
+        logger.info("Getting offer route.")
+        logger.info(hash)
+        client_host = request.remote_addr
+        logger.info(client_host)
+        try:
+            offer = handler.handle_get_offer(hash, client_host)
+        except NotFoundError:
+            return "Not found", 404
+        return jsonify({
+            'squeak_hash': offer.squeak_hash.hex(),
+            'nonce': offer.nonce.hex(),
+            'payment_request': offer.payment_request,
+            'host': offer.host,
+            'port': offer.port,
+        })
 
     @app.route("/lookup")
     def lookup():
