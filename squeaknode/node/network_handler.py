@@ -314,7 +314,7 @@ class NetworkHandler:
             self.config,
             self.node_settings,
         )
-        return price_policy.get_price(squeak, peer_address)
+        return price_policy.get_price()
 
     def broadcast_msg(self, msg: MsgSerializable) -> int:
         return self.network_manager.broadcast_msg(msg)

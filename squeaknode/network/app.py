@@ -28,6 +28,9 @@ from flask import jsonify
 from flask import request
 from werkzeug.serving import make_server
 
+from squeaknode.network.squeak_peer_server_handler import NotFoundError
+from squeaknode.network.squeak_peer_server_handler import PaymentRequiredError
+
 logger = logging.getLogger(__name__)
 
 
@@ -62,6 +65,32 @@ def create_app(handler):
         squeak_bytes = handler.handle_get_squeak_bytes(hash)
         logger.info(squeak_bytes)
         return squeak_bytes
+
+    @app.route('/secretkey/<hash>')
+    def secret_key(hash):
+        logger.info("Getting secretkey route.")
+        logger.info(hash)
+        try:
+            secret_key_bytes = handler.handle_get_secret_key(hash)
+        except NotFoundError:
+            return "Not found", 404
+        except PaymentRequiredError:
+            return "Payment required", 402
+        logger.info(secret_key_bytes)
+        return secret_key_bytes
+
+    # @app.route('/offer/<hash>')
+    # def offer(hash):
+    #     logger.info("Getting offer route.")
+    #     logger.info(hash)
+    #     try:
+    #         offer_bytes = handler.handle_get_offer(hash)
+    #     except NotFoundError:
+    #         return "Not found", 404
+    #     except PaymentRequiredError:
+    #         return "Payment required", 402
+    #     logger.info(secret_key_bytes)
+    #     return secret_key_bytes
 
     @app.route("/lookup")
     def lookup():

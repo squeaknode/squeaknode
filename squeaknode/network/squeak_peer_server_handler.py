@@ -25,24 +25,57 @@ from typing import Optional
 
 from squeak.core.keys import SqueakPublicKey
 
+from squeaknode.node.price_policy import PricePolicy
 from squeaknode.node.squeak_store import SqueakStore
 
 logger = logging.getLogger(__name__)
 
 
+class PaymentRequiredError(Exception):
+    pass
+
+
+class NotFoundError(Exception):
+    pass
+
+
 class SqueakPeerServerHandler(object):
     """Handles peer server commands."""
 
-    def __init__(self, squeak_store: SqueakStore):
+    def __init__(
+            self,
+            squeak_store: SqueakStore,
+            node_settings,
+            config,
+    ):
         self.squeak_store = squeak_store
+        self.node_settings = node_settings
+        self.config = config
 
     def handle_get_squeak_bytes(self, squeak_hash_str) -> Optional[bytes]:
         squeak_hash = bytes.fromhex(squeak_hash_str)
         logger.info("Handle get squeak for hash: {}".format(squeak_hash_str))
         squeak = self.squeak_store.get_squeak(squeak_hash)
         if not squeak:
-            return None
+            raise NotFoundError()
         return squeak.serialize()
+
+    def handle_get_secret_key(self, squeak_hash_str) -> Optional[bytes]:
+        squeak_hash = bytes.fromhex(squeak_hash_str)
+        logger.info(
+            "Handle get secret key for hash: {}".format(squeak_hash_str))
+        price_msat = self.get_price_for_squeak()
+        if price_msat > 0:
+            raise PaymentRequiredError()
+        secret_key = self.squeak_store.get_squeak_secret_key(squeak_hash)
+        if not secret_key:
+            raise NotFoundError()
+        return secret_key
+
+    # def handle_get_offer(self, squeak_hash_str) -> Optional[bytes]:
+    #     squeak_hash = bytes.fromhex(squeak_hash_str)
+    #     logger.info("Handle get offer for hash: {}".format(squeak_hash_str))
+    #     price_msat = self.get_price_for_squeak()
 
     def handle_lookup_squeaks(
             self,
@@ -63,3 +96,11 @@ class SqueakPeerServerHandler(object):
             max_block,
             None,
         )
+
+    def get_price_for_squeak(self) -> int:
+        price_policy = PricePolicy(
+            self.squeak_store,
+            self.config,
+            self.node_settings,
+        )
+        return price_policy.get_price()

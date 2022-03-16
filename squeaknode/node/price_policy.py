@@ -22,8 +22,6 @@
 import logging
 from typing import Optional
 
-from squeak.core import CSqueak
-
 from squeaknode.config.config import SqueaknodeConfig
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.squeak_peer import SqueakPeer
@@ -42,14 +40,10 @@ class PricePolicy:
         self.config = config
         self.node_settings = node_settings
 
-    def get_price(self, squeak: CSqueak, peer_address: PeerAddress) -> int:
+    def get_price(self) -> int:
         """Get the price to sell this squeak to this peer.
 
         """
-        # Return zero for price if peer is configured to be share for free.
-        peer = self.get_peer(peer_address)
-        if peer is not None and peer.share_for_free:
-            return 0
         sell_price_msat = self.get_sell_price_msat()
         if sell_price_msat is None:
             return self.get_default_price()

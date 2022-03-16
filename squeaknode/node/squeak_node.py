@@ -233,6 +233,8 @@ class SqueakNode:
     def create_peer_handler(self):
         self.peer_handler = SqueakPeerServerHandler(
             self.squeak_store,
+            self.node_settings,
+            self.config,
         )
 
     def create_admin_rpc_server(self):

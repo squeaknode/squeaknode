@@ -30,32 +30,10 @@ def price_policy():
     yield PricePolicy(None, None, None)
 
 
-def test_get_price(price_policy, squeak, peer_address, user_config):
+def test_get_price(price_policy, user_config):
     with mock.patch.object(price_policy, 'get_peer', autospec=True) as mock_get_peer, \
             mock.patch.object(price_policy, 'get_sell_price_msat', autospec=True) as mock_get_sell_price_msat:
         mock_get_peer.return_value = None
         mock_get_sell_price_msat.return_value = 555
 
-        assert price_policy.get_price(squeak, peer_address) == 555
-
-
-def test_get_price_profile_share_free_peer(price_policy, squeak, peer_address, peer, user_config):
-    with mock.patch.object(price_policy, 'get_peer', autospec=True) as mock_get_peer, \
-            mock.patch.object(price_policy, 'get_sell_price_msat', autospec=True) as mock_get_sell_price_msat:
-        mock_get_peer.return_value = peer._replace(
-            share_for_free=True,
-        )
-        mock_get_sell_price_msat.return_value = 555
-
-        assert price_policy.get_price(squeak, peer_address) == 0
-
-
-def test_get_price_profile_no_share_free_peer(price_policy, squeak, peer_address, peer, user_config):
-    with mock.patch.object(price_policy, 'get_peer', autospec=True) as mock_get_peer, \
-            mock.patch.object(price_policy, 'get_sell_price_msat', autospec=True) as mock_get_sell_price_msat:
-        mock_get_peer.return_value = peer._replace(
-            share_for_free=False,
-        )
-        mock_get_sell_price_msat.return_value = 555
-
-        assert price_policy.get_price(squeak, peer_address) == 555
+        assert price_policy.get_price() == 555
