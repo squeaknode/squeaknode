@@ -19,26 +19,23 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-from squeaknode.core.peer_address import PeerAddress
-from squeaknode.core.squeak_peer import SqueakPeer
+"""Set autoconnect to true by default
+
+Revision ID: 0e3b79a31b58
+Revises: a2122c4711cc
+Create Date: 2022-03-15 16:39:53.615791
+
+"""
+# revision identifiers, used by Alembic.
+revision = '0e3b79a31b58'
+down_revision = 'a2122c4711cc'
+branch_labels = None
+depends_on = None
 
 
-def create_saved_peer(
-        peer_name: str,
-        peer_address: PeerAddress,
-) -> SqueakPeer:
-    validate_saved_peer_name(peer_name)
-    return SqueakPeer(
-        peer_id=None,
-        peer_name=peer_name,
-        address=peer_address,
-        autoconnect=True,
-        share_for_free=False,
-    )
+def upgrade():
+    pass
 
 
-def validate_saved_peer_name(peer_name: str) -> None:
-    """Check if the given name is valid for a peer.
-
-    Raise exception if name is invalid.
-    """
+def downgrade():
+    pass

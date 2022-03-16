@@ -27,9 +27,8 @@ import {
 
 
 const Peers = (props) => {
-    const [tab, setTab] = useState('Connected Peers')
+    const [tab, setTab] = useState('Saved Peers')
     const [savePeerModalOpen, setSavePeerModalOpen] = useState(false)
-    const [connectPeerModalOpen, setconnectPeerModalOpen] = useState(false)
     const [showExternalAddressModalOpen, setShowExternalAddressModalOpen] = useState(false)
     const [styleBody, setStyleBody] = useState(false)
     const [name, setName] = useState('')
@@ -73,11 +72,6 @@ const Peers = (props) => {
         setTimeout(()=>{ setSavePeerModalOpen(!savePeerModalOpen) },20)
     }
 
-    const toggleconnectPeerModal = (param, type) => {
-        setStyleBody(!styleBody)
-        setTimeout(()=>{ setconnectPeerModalOpen(!connectPeerModalOpen) },20)
-    }
-
     const toggleShowExternalAddressModalOpen = () => {
         setStyleBody(!styleBody)
         setTimeout(()=>{ setShowExternalAddressModalOpen(!showExternalAddressModalOpen) },20)
@@ -106,17 +100,6 @@ const Peers = (props) => {
         toggleSavePeerModal();
     }
 
-    const connectPeer = () => {
-        const network = getNetwork();
-        const strippedHost = removeHttp(host);
-        dispatch(setConnectPeer({
-            host: strippedHost,
-            port: port,
-            network: network,
-        }));
-        toggleconnectPeerModal();
-    }
-
     const handleChangeUseTor = () => {
       setUseTor(!useTor);
     };
@@ -143,23 +126,19 @@ const Peers = (props) => {
                className='profiles-create-button'>
                   <span>Show External Address</span>
             </div>
-            <div onClick={(e)=>toggleconnectPeerModal('edit')}
-               className='profiles-create-button'>
-                  <span>Connect Peer</span>
-            </div>
             <div onClick={(e)=>toggleSavePeerModal('edit')}
                className='profiles-create-button'>
-                  <span>Add Saved Peer</span>
+                  <span>Add Peer</span>
             </div>
             </div>
             </div>
             <div>
                 <div className="explore-nav-menu">
-                    <div onClick={()=>setTab('Connected Peers')} className={tab === 'Connected Peers' ? `explore-nav-item activeTab` : `explore-nav-item`}>
-                        Connected Peers
-                    </div>
                     <div onClick={()=>setTab('Saved Peers')} className={tab === 'Saved Peers' ? `explore-nav-item activeTab` : `explore-nav-item`}>
                         Saved Peers
+                    </div>
+                    <div onClick={()=>setTab('Connected Peers')} className={tab === 'Connected Peers' ? `explore-nav-item activeTab` : `explore-nav-item`}>
+                        Connected Peers
                     </div>
                 </div>
                 {tab === 'Saved Peers' ?
@@ -279,7 +258,7 @@ const Peers = (props) => {
                     <form className="edit-form">
                     <div className="edit-input-wrap">
                         <div className="edit-input-content">
-                            <label>Name</label>
+                            <label>Name (not required)</label>
                             <input onChange={(e)=>setName(e.target.value)} type="text" name="name" className="edit-input"/>
                         </div>
                     </div>
@@ -307,55 +286,6 @@ const Peers = (props) => {
                         </label>
                         </div>
                     </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        {/* Modal for connect peer */}
-        <div onClick={()=>toggleconnectPeerModal()} style={{display: connectPeerModalOpen ? 'block' : 'none'}} className="modal-edit">
-            <div onClick={(e)=>handleModalClick(e)} className="modal-content">
-                <div className="modal-header">
-                    <div className="modal-closeIcon">
-                        <div onClick={()=>toggleconnectPeerModal()} className="modal-closeIcon-wrap">
-                            <ICON_CLOSE />
-                        </div>
-                    </div>
-                    <p className="modal-title">Connect Peer</p>
-
-                    <div className="save-modal-wrapper">
-                        <div onClick={connectPeer} className="save-modal-btn">
-                            Submit
-                        </div>
-                    </div>
-                </div>
-
-                <div className="modal-body">
-                    <form className="edit-form">
-                        <div className="edit-input-wrap">
-                            <div className="edit-input-content">
-                                <label>Host</label>
-                                <input onChange={(e)=>setHost(e.target.value)} type="text" name="name" className="edit-input"/>
-                            </div>
-                        </div>
-                        <div className="edit-input-wrap">
-                            <div className="edit-input-content">
-                                <label>Port</label>
-                                <input onChange={(e)=>setPort(e.target.value)} type="text" name="name" className="edit-input"/>
-                            </div>
-                        </div>
-                        <div className="edit-input-wrap">
-                            <div className="edit-input-content">
-                            <label>
-                            <input
-                            type="checkbox"
-                            checked={useTor}
-                            onChange={handleChangeUseTor}
-                            />
-                            Use Tor
-                            </label>
-                            </div>
-                        </div>
                     </form>
                 </div>
             </div>

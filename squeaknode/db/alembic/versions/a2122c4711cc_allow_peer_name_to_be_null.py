@@ -19,26 +19,33 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-from squeaknode.core.peer_address import PeerAddress
-from squeaknode.core.squeak_peer import SqueakPeer
+"""Allow peer name to be null
+
+Revision ID: a2122c4711cc
+Revises: 691c8a25cda5
+Create Date: 2022-03-15 14:31:38.050091
+
+"""
+import sqlalchemy as sa
+from alembic import op
 
 
-def create_saved_peer(
-        peer_name: str,
-        peer_address: PeerAddress,
-) -> SqueakPeer:
-    validate_saved_peer_name(peer_name)
-    return SqueakPeer(
-        peer_id=None,
-        peer_name=peer_name,
-        address=peer_address,
-        autoconnect=True,
-        share_for_free=False,
-    )
+# revision identifiers, used by Alembic.
+revision = 'a2122c4711cc'
+down_revision = '691c8a25cda5'
+branch_labels = None
+depends_on = None
 
 
-def validate_saved_peer_name(peer_name: str) -> None:
-    """Check if the given name is valid for a peer.
+def upgrade():
+    with op.batch_alter_table('peer', schema=None) as batch_op:
+        batch_op.alter_column('peer_name',
+                              existing_type=sa.VARCHAR(),
+                              nullable=True)
 
-    Raise exception if name is invalid.
-    """
+
+def downgrade():
+    with op.batch_alter_table('peer', schema=None) as batch_op:
+        batch_op.alter_column('peer_name',
+                              existing_type=sa.VARCHAR(),
+                              nullable=False)

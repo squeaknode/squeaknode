@@ -1208,7 +1208,7 @@ def test_get_autoconnect_squeak_peers_none(
 ):
     peers = squeak_db.get_autoconnect_peers()
 
-    assert len(peers) == 0
+    assert len(peers) == len(inserted_squeak_peer_ids)
 
 
 def test_set_peer_name(squeak_db, peer_with_new_name_id, new_peer_name):
