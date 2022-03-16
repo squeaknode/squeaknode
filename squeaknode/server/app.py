@@ -108,11 +108,14 @@ def create_app(handler):
             max_block,
             pubkeys,
         ))
-        squeak_hashes = handler.handle_lookup_squeaks(
-            pubkeys,
-            min_block,
-            max_block,
-        )
+        if len(pubkeys) == 0:
+            squeak_hashes = []
+        else:
+            squeak_hashes = handler.handle_lookup_squeaks(
+                pubkeys,
+                min_block,
+                max_block,
+            )
         squeak_hashes_str = [
             squeak_hash.hex()
             for squeak_hash in squeak_hashes
