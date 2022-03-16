@@ -28,8 +28,8 @@ from flask import jsonify
 from flask import request
 from werkzeug.serving import make_server
 
-from squeaknode.network.squeak_peer_server_handler import NotFoundError
-from squeaknode.network.squeak_peer_server_handler import PaymentRequiredError
+from squeaknode.server.squeak_peer_server_handler import NotFoundError
+from squeaknode.server.squeak_peer_server_handler import PaymentRequiredError
 
 logger = logging.getLogger(__name__)
 

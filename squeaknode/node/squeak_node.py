@@ -35,9 +35,7 @@ from squeaknode.db.db_engine import get_connection_string
 from squeaknode.db.db_engine import get_engine
 from squeaknode.db.squeak_db import SqueakDb
 from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
-from squeaknode.network.app import SqueakPeerWebServer
 from squeaknode.network.network_manager import NetworkManager
-from squeaknode.network.squeak_peer_server_handler import SqueakPeerServerHandler
 from squeaknode.node.active_download_manager import ActiveDownloadManager
 from squeaknode.node.network_handler import NetworkHandler
 from squeaknode.node.node_settings import NodeSettings
@@ -53,6 +51,8 @@ from squeaknode.node.squeak_store import SqueakStore
 from squeaknode.node.update_follows_worker import UpdateFollowsWorker
 from squeaknode.node.update_subscribed_secret_key_worker import UpdateSubscribedSecretKeysWorker
 from squeaknode.node.update_subscribed_squeak_worker import UpdateSubscribedSqueaksWorker
+from squeaknode.server.app import SqueakPeerWebServer
+from squeaknode.server.squeak_peer_server_handler import SqueakPeerServerHandler
 from squeaknode.twitter.twitter_forwarder import TwitterForwarder
 
 logger = logging.getLogger(__name__)
