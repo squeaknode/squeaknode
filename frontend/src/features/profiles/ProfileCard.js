@@ -43,6 +43,7 @@ const ProfileCard = (props) => {
                       <div className="search-user-username">@{profile.getPubkey()}</div>
                   </div>
                   <div onClick={(e)=>{
+                      e.preventDefault();
                       profile.getFollowing() ?
                       unfollowUser(e,profile.getProfileId()) :
                       followUser(e,profile.getProfileId())
