@@ -120,11 +120,6 @@ def create_app(handler):
         logger.info(squeak_hashes_str)
         return jsonify(squeak_hashes_str)
 
-    # @app.route("/gettimelinesqueakdisplays", methods=["POST"])
-    # @protobuf_serialized(squeak_admin_pb2.GetTimelineSqueakDisplaysRequest())
-    # def gettimelinesqueakdisplays(msg):
-    #     return handler.handle_get_timeline_squeak_display_entries(msg)
-
     return app
 
 
