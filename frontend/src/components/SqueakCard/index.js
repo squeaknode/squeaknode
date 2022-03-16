@@ -39,6 +39,7 @@ const SqueakCard = React.memo(function SqueakCard(props) {
     }
 
     const resqueak = (e,id, resqueakId) => {
+        e.preventDefault();
         e.stopPropagation()
         if(props.history.location.pathname.slice(1,5) === 'prof'){
             info = { dest: "profile", id, resqueakId }
@@ -47,12 +48,16 @@ const SqueakCard = React.memo(function SqueakCard(props) {
     }
 
     const deleteSqueak = (e,id) => {
-        e.stopPropagation()
+        e.preventDefault();
+        e.stopPropagation();
         dispatch(setDeleteSqueak(id));
     }
 
     const toggleModal = (e, type) => {
-        if(e){ e.stopPropagation() }
+        if(e){
+            e.preventDefault();
+            e.stopPropagation();
+        }
         setStyleBody(!styleBody)
         if(type === 'parent'){setParent(true)}else{setParent(false)}
         setTimeout(()=>{ setModalOpen(!modalOpen) },20)
@@ -153,11 +158,12 @@ const SqueakCard = React.memo(function SqueakCard(props) {
                               0
                           </div>
                       </div>
-                      <div onClick={(e)=>
+                      <div onClick={(e)=> {
+                        e.preventDefault();
                         props.squeak.getLikedTimeMs() ?
                         unlikeSqueak(e, props.squeak.getSqueakHash()) :
                         likeSqueak(e, props.squeak.getSqueakHash())
-                      } className="card-button-wrap heart-wrap">
+                      }} className="card-button-wrap heart-wrap">
                           <div className="card-icon heart-icon">
                               {props.squeak.getLikedTimeMs() ?
                               <ICON_HEARTFULL styles={{fill:'rgb(224, 36, 94)'}}/> :
