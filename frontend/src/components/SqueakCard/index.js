@@ -51,10 +51,6 @@ const SqueakCard = React.memo(function SqueakCard(props) {
         dispatch(setDeleteSqueak(id));
     }
 
-    const goToSqueak = (id) => {
-        props.history.push(`/app/squeak/${id}`)
-    }
-
     const toggleModal = (e, type) => {
         if(e){ e.stopPropagation() }
         setStyleBody(!styleBody)
@@ -99,7 +95,7 @@ const SqueakCard = React.memo(function SqueakCard(props) {
     return (
         <div>
 
-        <div onClick={()=>goToSqueak(props.id)} key={props.id} className={props.squeak ? "Squeak-card-wrapper" : "Squeak-card-wrapper missing-squeak"} >
+        <Link onClick={(e)=>e.stopPropagation()} to={`/app/squeak/${props.id}`} key={props.id} className={props.squeak ? "Squeak-card-wrapper" : "Squeak-card-wrapper missing-squeak"} >
 
             {props.squeak ?
               <>
@@ -189,7 +185,7 @@ const SqueakCard = React.memo(function SqueakCard(props) {
               </>
             }
 
-        </div>
+        </Link>
 
         {/* squeak modal */}
         {props.squeak ?
@@ -209,6 +205,8 @@ const SqueakCard = React.memo(function SqueakCard(props) {
                 </div>
             </div> : null}
         </div> : null}
+
+
         </div>
     )
 });

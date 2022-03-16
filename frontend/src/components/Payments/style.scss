@@ -97,11 +97,10 @@
     color: rgb(29, 161, 242);
 }
 
-.search-result-wapper{
+.payment-wapper{
     border-bottom: 1px solid rgb(230, 236, 240);
     padding: 10px 15px;
     transition: 0.2s;
-    cursor: pointer;
     display: flex;
     &:hover{
         background-color: rgb(245,248,250);

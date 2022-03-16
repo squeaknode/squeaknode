@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
-import { withRouter } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 import moment from 'moment'
 
 import SqueakCard from '../../components/SqueakCard'
@@ -45,12 +45,12 @@ const ReceivedPayments = (props) => {
   }
 
   const renderedListItems = receivedPayments.map(f=>{
-    return <div onClick={()=>goToSqueak(f.getSqueakHash())} key={f.getPaymentHash()} className="search-result-wapper">
+    return <div key={f.getPaymentHash()} className="payment-wapper">
               <div className="search-user-details">
                   <div className="search-user-warp">
                       <div className="search-user-info">
                           <div className="payment-price">{f.getPriceMsat() / 1000} sats</div>
-                          <div className="payment-squeak-hash"><b>Squeak Hash</b>: {f.getSqueakHash()}</div>
+                          <div className="payment-squeak-hash"><b>Squeak Hash</b>: <Link  style={{color: "blue", fontWeight: 'bold'}} to={`/app/squeak/${f.getSqueakHash()}`}>{f.getSqueakHash()}</Link></div>
                           <div className="payment-peer-address"><b>Peer</b>: {f.getPeerAddress().getHost()}:{f.getPeerAddress().getPort()}</div>
                           <div className="payment-time">{moment(f.getTimeMs()).format("h:mm A · MMM D, YYYY")}</div>
                       </div>
