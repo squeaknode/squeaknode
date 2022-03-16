@@ -27,7 +27,7 @@ import {
 
 
 const Peers = (props) => {
-    const [tab, setTab] = useState('Connected Peers')
+    const [tab, setTab] = useState('Saved Peers')
     const [savePeerModalOpen, setSavePeerModalOpen] = useState(false)
     const [showExternalAddressModalOpen, setShowExternalAddressModalOpen] = useState(false)
     const [styleBody, setStyleBody] = useState(false)
@@ -128,17 +128,17 @@ const Peers = (props) => {
             </div>
             <div onClick={(e)=>toggleSavePeerModal('edit')}
                className='profiles-create-button'>
-                  <span>Add Saved Peer</span>
+                  <span>Add Peer</span>
             </div>
             </div>
             </div>
             <div>
                 <div className="explore-nav-menu">
-                    <div onClick={()=>setTab('Connected Peers')} className={tab === 'Connected Peers' ? `explore-nav-item activeTab` : `explore-nav-item`}>
-                        Connected Peers
-                    </div>
                     <div onClick={()=>setTab('Saved Peers')} className={tab === 'Saved Peers' ? `explore-nav-item activeTab` : `explore-nav-item`}>
                         Saved Peers
+                    </div>
+                    <div onClick={()=>setTab('Connected Peers')} className={tab === 'Connected Peers' ? `explore-nav-item activeTab` : `explore-nav-item`}>
+                        Connected Peers
                     </div>
                 </div>
                 {tab === 'Saved Peers' ?
