@@ -27,8 +27,18 @@ const Timeline = () => {
       window.scrollTo(0, 0)
       console.log('fetchTodos');
       dispatch(clearTimeline());
-      dispatch(fetchTimeline(null));
+      dispatch(fetchTimeline({
+        limit: 10,
+        lastSqueak: null,
+      }));
   }, [])
+
+  const fetchMore = () => {
+    dispatch(fetchTimeline({
+      limit: 10,
+      lastSqueak: lastSqueak,
+    }));
+  }
 
 
   const renderedListItems = squeaks.map((squeak) => {
@@ -43,7 +53,7 @@ const Timeline = () => {
             <Loader />
           </div>
           :
-          <div onClick={() => dispatch(fetchTimeline(lastSqueak))} className='squeak-btn-side squeak-btn-active'>
+          <div onClick={() => fetchMore()} className='squeak-btn-side squeak-btn-active'>
             LOAD MORE
           </div>
           }

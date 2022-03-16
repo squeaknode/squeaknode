@@ -109,8 +109,11 @@ export const fetchReplySqueaks = createAsyncThunk(
 
 export const fetchTimeline = createAsyncThunk(
   'squeaks/fetchTimeline',
-  async (lastSqueak) => {
-    const response = await getTimelineSqueaks(5, lastSqueak);
+  async (values) => {
+    const response = await getTimelineSqueaks(
+      values.limit,
+      values.lastSqueak,
+    );
     return response.getSqueakDisplayEntriesList();
   }
 )
