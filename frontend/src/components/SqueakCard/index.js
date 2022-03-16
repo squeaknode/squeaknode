@@ -95,8 +95,7 @@ const SqueakCard = React.memo(function SqueakCard(props) {
     return (
         <div>
 
-        <Link onClick={(e)=>e.stopPropagation()} to={`/app/squeak/${props.id}`}>
-        <div key={props.id} className={props.squeak ? "Squeak-card-wrapper" : "Squeak-card-wrapper missing-squeak"} >
+        <Link onClick={(e)=>e.stopPropagation()} to={`/app/squeak/${props.id}`} key={props.id} className={props.squeak ? "Squeak-card-wrapper" : "Squeak-card-wrapper missing-squeak"} >
 
             {props.squeak ?
               <>
@@ -186,7 +185,7 @@ const SqueakCard = React.memo(function SqueakCard(props) {
               </>
             }
 
-        </div>
+        </Link>
 
         {/* squeak modal */}
         {props.squeak ?
@@ -206,8 +205,6 @@ const SqueakCard = React.memo(function SqueakCard(props) {
                 </div>
             </div> : null}
         </div> : null}
-
-        </Link>
 
 
         </div>
