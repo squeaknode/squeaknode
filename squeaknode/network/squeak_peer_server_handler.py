@@ -20,9 +20,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import logging
+from typing import List
 from typing import Optional
 
-from squeaknode.node.squeak_controller import SqueakController
+from squeak.core.keys import SqueakPublicKey
+
+from squeaknode.node.squeak_store import SqueakStore
 
 logger = logging.getLogger(__name__)
 
@@ -30,13 +33,33 @@ logger = logging.getLogger(__name__)
 class SqueakPeerServerHandler(object):
     """Handles peer server commands."""
 
-    def __init__(self, squeak_controller: SqueakController):
-        self.squeak_controller = squeak_controller
+    def __init__(self, squeak_store: SqueakStore):
+        self.squeak_store = squeak_store
 
     def handle_get_squeak_bytes(self, squeak_hash_str) -> Optional[bytes]:
         squeak_hash = bytes.fromhex(squeak_hash_str)
         logger.info("Handle get squeak for hash: {}".format(squeak_hash_str))
-        squeak = self.squeak_controller.get_squeak(squeak_hash)
+        squeak = self.squeak_store.get_squeak(squeak_hash)
         if not squeak:
             return None
         return squeak.serialize()
+
+    def handle_lookup_squeaks(
+            self,
+            pubkey_strs: List[str],
+            min_block: Optional[int],
+            max_block: Optional[int],
+    ) -> List[bytes]:
+        pubkeys = [
+            SqueakPublicKey.from_bytes(bytes.fromhex(pubkey_str))
+            for pubkey_str in pubkey_strs
+        ]
+
+        # Add separate endpoint for replies.
+        # reply_to_hash = interest.hashReplySqk if interest.hashReplySqk != EMPTY_HASH else None
+        return self.squeak_store.lookup_squeaks(
+            pubkeys,
+            min_block,
+            max_block,
+            None,
+        )

@@ -232,7 +232,7 @@ class SqueakNode:
 
     def create_peer_handler(self):
         self.peer_handler = SqueakPeerServerHandler(
-            self.squeak_controller,
+            self.squeak_store,
         )
 
     def create_admin_rpc_server(self):

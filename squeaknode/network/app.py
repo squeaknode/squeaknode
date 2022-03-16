@@ -24,8 +24,9 @@ import os
 import threading
 
 from flask import Flask
+from flask import jsonify
+from flask import request
 from werkzeug.serving import make_server
-
 
 logger = logging.getLogger(__name__)
 
@@ -53,6 +54,37 @@ def create_app(handler):
     def hello_world():
         logger.info("Getting hello route.")
         return "Hello, World!"
+
+    @app.route('/squeak/<hash>')
+    def squeak(hash):
+        logger.info("Getting squeak route.")
+        logger.info(hash)
+        squeak_bytes = handler.handle_get_squeak_bytes(hash)
+        logger.info(squeak_bytes)
+        return squeak_bytes
+
+    @app.route("/lookup")
+    def lookup():
+        logger.info("Getting lookup route.")
+        min_block = request.args.get('minblock')
+        max_block = request.args.get('maxblock')
+        pubkeys = request.args.getlist('pubkeys')
+        logger.info("Hello, lookup! Min block {}, Max block {}, pubkeys: {}".format(
+            min_block,
+            max_block,
+            pubkeys,
+        ))
+        squeak_hashes = handler.handle_lookup_squeaks(
+            pubkeys,
+            min_block,
+            max_block,
+        )
+        squeak_hashes_str = [
+            squeak_hash.hex()
+            for squeak_hash in squeak_hashes
+        ]
+        logger.info(squeak_hashes_str)
+        return jsonify(squeak_hashes_str)
 
     # @app.route("/gettimelinesqueakdisplays", methods=["POST"])
     # @protobuf_serialized(squeak_admin_pb2.GetTimelineSqueakDisplaysRequest())
