@@ -106,7 +106,7 @@ class Models:
             Column("network", String(10), nullable=False),
             Column("host", String, nullable=False),
             Column("port", Integer, nullable=False),
-            Column("autoconnect", Boolean, nullable=False),
+            Column("autoconnect", Boolean, nullable=False, default=True),
             Column("share_for_free", Boolean, nullable=False, default=False),
             UniqueConstraint('host', 'port',
                              name='uq_peer_host_port'),

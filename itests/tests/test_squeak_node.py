@@ -556,17 +556,10 @@ def test_create_peer(admin_stub):
         port=1234,
     )
     assert get_peer_by_address_response.peer_name == "fake_peer_name"
+    assert get_peer_response.squeak_peer.autoconnect
 
 
 def test_set_peer_autoconnect(admin_stub, peer_id):
-    # Get the peer
-    get_peer_response = admin_stub.GetPeer(
-        squeak_admin_pb2.GetPeerRequest(
-            peer_id=peer_id,
-        )
-    )
-    assert not get_peer_response.squeak_peer.autoconnect
-
     # Set the peer to be autoconnect
     admin_stub.SetPeerAutoconnect(
         squeak_admin_pb2.SetPeerAutoconnectRequest(
@@ -582,6 +575,22 @@ def test_set_peer_autoconnect(admin_stub, peer_id):
         )
     )
     assert get_peer_response.squeak_peer.autoconnect
+
+    # Set the peer to be not autoconnect
+    admin_stub.SetPeerAutoconnect(
+        squeak_admin_pb2.SetPeerAutoconnectRequest(
+            peer_id=peer_id,
+            autoconnect=False,
+        )
+    )
+
+    # Get the peer again
+    get_peer_response = admin_stub.GetPeer(
+        squeak_admin_pb2.GetPeerRequest(
+            peer_id=peer_id,
+        )
+    )
+    assert not get_peer_response.squeak_peer.autoconnect
 
 
 def test_rename_peer(admin_stub, peer_id, random_name):
