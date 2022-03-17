@@ -25,7 +25,6 @@ from squeak.core.elliptic import payment_point_bytes_from_scalar_bytes
 from squeak.core.keys import SqueakPrivateKey
 
 from squeaknode.bitcoin.block_info import BlockInfo
-from squeaknode.core.connected_peer import ConnectedPeer
 from squeaknode.core.download_result import DownloadResult
 from squeaknode.core.lightning_address import LightningAddressHostPort
 from squeaknode.core.offer import Offer
@@ -44,7 +43,6 @@ from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeaks import get_hash
 from squeaknode.core.squeaks import make_squeak_with_block
 from squeaknode.core.user_config import UserConfig
-from squeaknode.network.peer import Peer
 from tests.utils import gen_contact_profile
 from tests.utils import gen_signing_profile
 from tests.utils import sha256
@@ -554,25 +552,6 @@ def sent_payment_summary(
     yield SentPaymentSummary(
         num_sent_payments=num_sent_payments,
         total_amount_sent_msat=total_amount_sent_msat,
-    )
-
-
-@pytest.fixture
-def peer_object(peer_address):
-    yield Peer(
-        peer_socket=None,
-        local_address=peer_address,
-        remote_address=peer_address,
-        outgoing=True,
-        peer_changed_listener=None,
-    )
-
-
-@pytest.fixture
-def connected_peer(peer, peer_object):
-    yield ConnectedPeer(
-        peer=peer_object,
-        saved_peer=peer,
     )
 
 
