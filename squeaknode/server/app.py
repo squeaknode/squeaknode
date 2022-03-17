@@ -26,6 +26,7 @@ import threading
 from flask import Flask
 from flask import jsonify
 from flask import request
+from flask_sock import Sock
 from werkzeug.serving import make_server
 
 from squeaknode.server.squeak_peer_server_handler import NotFoundError
@@ -47,6 +48,7 @@ def create_app(handler):
     )
     logger.debug("Starting flask with app.root_path: {}".format(app.root_path))
     logger.debug("Files in root path: {}".format(os.listdir(app.root_path)))
+    sock = Sock(app)
 
     @app.route("/")
     def index():
@@ -122,6 +124,17 @@ def create_app(handler):
         ]
         logger.info(squeak_hashes_str)
         return jsonify(squeak_hashes_str)
+
+    @sock.route('/echo')
+    def echo(ws):
+        count = 0
+        while True:
+            data = f'hello_{count}'
+            logger.info(data)
+            ws.send(data)
+            count += 1
+            import time
+            time.sleep(5)
 
     return app
 

@@ -2,6 +2,7 @@ alembic==1.7.1
 Flask==2.0.1
 flask-cors==3.0.10
 flask-login==0.5.0
+flask-sock==0.5.1
 Flask-WTF==0.15.1
 googleapis-common-protos==1.53.0
 importlib_resources==1.4.0
