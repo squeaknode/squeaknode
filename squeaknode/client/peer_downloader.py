@@ -80,13 +80,14 @@ class PeerDownloader:
             pubkeys: List[SqueakPublicKey],
     ) -> None:
         # Download the squeak if not already owned.
-        if not self.squeak_store.get_squeak(squeak_hash):
-            squeak = self.client.get_squeak(squeak_hash)
-            if squeak and \
-               squeak.nBlockHeight >= min_block and \
-               squeak.nBlockHeight <= max_block and \
-               squeak.GetPubKey() in pubkeys:
-                self.squeak_store.save_squeak(squeak)
+        if self.squeak_store.get_squeak(squeak_hash):
+            return
+        squeak = self.client.get_squeak(squeak_hash)
+        if squeak and \
+           squeak.nBlockHeight >= min_block and \
+           squeak.nBlockHeight <= max_block and \
+           squeak.GetPubKey() in pubkeys:
+            self.squeak_store.save_squeak(squeak)
 
     def download_secret_key(
             self,
@@ -102,10 +103,11 @@ class PeerDownloader:
            squeak.nBlockHeight <= max_block and \
            squeak.GetPubKey() in pubkeys:
             # Download the secret key is not already unlocked.
-            if not self.squeak_store.get_squeak_secret_key(squeak_hash):
-                secret_key = self.client.get_secret_key(squeak_hash)
-                if secret_key:
-                    self.squeak_store.save_secret_key(squeak_hash, secret_key)
+            if self.squeak_store.get_squeak_secret_key(squeak_hash):
+                return
+            secret_key = self.client.get_secret_key(squeak_hash)
+            if secret_key:
+                self.squeak_store.save_secret_key(squeak_hash, secret_key)
 
     def download_offer(
             self,
@@ -121,11 +123,12 @@ class PeerDownloader:
            squeak.nBlockHeight <= max_block and \
            squeak.GetPubKey() in pubkeys:
             # Download the secret key is not already unlocked.
-            if not self.squeak_store.get_squeak_secret_key(squeak_hash):
-                offer = self.client.get_offer(squeak_hash)
-                if offer:
-                    self.squeak_store.handle_offer(
-                        squeak,
-                        offer,
-                        self.peer.address,
-                    )
+            if self.squeak_store.get_squeak_secret_key(squeak_hash):
+                return
+            offer = self.client.get_offer(squeak_hash)
+            if offer:
+                self.squeak_store.handle_offer(
+                    squeak,
+                    offer,
+                    self.peer.address,
+                )

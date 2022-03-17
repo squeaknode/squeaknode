@@ -147,6 +147,7 @@ def create_app(handler):
             max_block,
             pubkeys,
         ))
+        # TODO: This special case should not need to be handled here.
         if len(pubkeys) == 0:
             squeak_hashes = []
         else:
