@@ -19,13 +19,11 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-from squeaknode.admin.messages import connected_peer_to_message
 from squeaknode.admin.messages import download_result_to_message
 from squeaknode.admin.messages import message_to_peer_address
 from squeaknode.admin.messages import message_to_received_payment
 from squeaknode.admin.messages import message_to_sent_payment
 from squeaknode.admin.messages import message_to_squeak_entry
-from squeaknode.admin.messages import optional_connected_peer_to_message
 from squeaknode.admin.messages import optional_received_offer_to_message
 from squeaknode.admin.messages import optional_sent_payment_to_message
 from squeaknode.admin.messages import optional_squeak_entry_to_message
@@ -145,12 +143,6 @@ def test_payment_summary_to_message(
     assert msg == payment_summary_msg
 
 
-def test_connected_peer_to_message(connected_peer, connected_peer_msg):
-    msg = connected_peer_to_message(connected_peer)
-
-    assert msg == connected_peer_msg
-
-
 def test_optional_profile_to_message_none():
     msg = optional_squeak_profile_to_message(None)
 
@@ -221,15 +213,3 @@ def test_optional_sent_payment_to_message(sent_payment, sent_payment_msg):
     msg = optional_sent_payment_to_message(sent_payment)
 
     assert msg == sent_payment_msg
-
-
-def test_optional_connected_peer_to_message_none():
-    msg = optional_connected_peer_to_message(None)
-
-    assert msg is None
-
-
-def test_optional_connected_peer_to_message(connected_peer, connected_peer_msg):
-    msg = optional_connected_peer_to_message(connected_peer)
-
-    assert msg == connected_peer_msg

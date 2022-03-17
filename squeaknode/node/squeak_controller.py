@@ -21,20 +21,16 @@
 # SOFTWARE.
 import logging
 import threading
-from typing import Iterable
 from typing import List
 from typing import Optional
 
 from squeak.core import CSqueak
 from squeak.core.keys import SqueakPrivateKey
 from squeak.core.keys import SqueakPublicKey
-from squeak.messages import msg_getdata
-from squeak.messages import MsgSerializable
-from squeak.net import CInterested
-from squeak.net import CInv
 
-from squeaknode.core.connected_peer import ConnectedPeer
+from squeaknode.client.network_controller import NetworkController
 from squeaknode.core.download_result import DownloadResult
+from squeaknode.core.peer_address import Network
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.received_payment import ReceivedPayment
@@ -64,8 +60,6 @@ class SqueakController:
         squeak_store: SqueakStore,
         squeak_core: SqueakCore,
         payment_processor,
-        network_manager,
-        download_manager,
         tweet_forwarder,
         node_settings,
         config,
@@ -74,8 +68,6 @@ class SqueakController:
         self.squeak_store = squeak_store
         self.squeak_core = squeak_core
         self.payment_processor = payment_processor
-        self.network_manager = network_manager
-        self.active_download_manager = download_manager
         self.tweet_forwarder = tweet_forwarder
         self.node_settings = node_settings
         self.config = config
@@ -279,11 +271,21 @@ class SqueakController:
     def get_squeak_entry(self, squeak_hash: bytes) -> Optional[SqueakEntry]:
         return self.squeak_store.get_squeak_entry(squeak_hash)
 
+    def download_single_squeak(self, squeak_hash: bytes) -> DownloadResult:
+        network_controller = NetworkController(self.squeak_store, self.config)
+        network_controller.download_single_squeak(squeak_hash)
+        return DownloadResult(1, 1, 0, 9999)
+
     def get_timeline_squeak_entries(
             self,
             limit: int,
             last_entry: Optional[SqueakEntry],
     ) -> List[SqueakEntry]:
+        # TODO: remove this temporary hack, after converting this to websockets.
+        logger.info('Start downloading timeline...')
+        network_controller = NetworkController(self.squeak_store, self.config)
+        network_controller.download_timeline()
+        logger.info('Finished downloading timeline.')
         return self.squeak_store.get_timeline_squeak_entries(limit, last_entry)
 
     def get_liked_squeak_entries(
@@ -299,6 +301,11 @@ class SqueakController:
             limit: int,
             last_entry: Optional[SqueakEntry],
     ) -> List[SqueakEntry]:
+        # TODO: remove this temporary hack, after converting this to websockets.
+        logger.info('Start downloading pubkey squeaks...')
+        network_controller = NetworkController(self.squeak_store, self.config)
+        network_controller.download_pubkey_squeaks(public_key)
+        logger.info('Finished downloading pubkey squeaks.')
         return self.squeak_store.get_squeak_entries_for_public_key(
             public_key,
             limit,
@@ -351,125 +358,6 @@ class SqueakController:
     def unlike_squeak(self, squeak_hash: bytes):
         return self.squeak_store.unlike_squeak(squeak_hash)
 
-    def connect_peer(self, peer_address: PeerAddress) -> None:
-        logger.info("Connect to peer: {}".format(
-            peer_address,
-        ))
-        self.network_manager.connect_peer_sync(peer_address)
-
-    def get_connected_peer(self, peer_address: PeerAddress) -> Optional[ConnectedPeer]:
-        peer = self.network_manager.get_connected_peer(peer_address)
-        if peer is None:
-            return None
-        return ConnectedPeer(
-            peer=peer,
-            saved_peer=self.squeak_store.get_peer_by_address(
-                peer_address,
-            ),
-        )
-
-    def get_connected_peers(self) -> List[ConnectedPeer]:
-        peers = self.network_manager.get_connected_peers()
-        return [
-            ConnectedPeer(
-                peer=peer,
-                saved_peer=self.squeak_store.get_peer_by_address(
-                    peer.remote_address,
-                ),
-            ) for peer in peers
-        ]
-
-    def download_squeaks(
-            self,
-            public_keys: List[SqueakPublicKey],
-            min_block: int,
-            max_block: int,
-            replyto_hash: Optional[bytes],
-    ) -> DownloadResult:
-        interest = CInterested(
-            pubkeys=public_keys,
-            nMinBlockHeight=min_block,
-            nMaxBlockHeight=max_block,
-            replyto_squeak_hash=replyto_hash,
-        ) if replyto_hash else CInterested(
-            pubkeys=public_keys,
-            nMinBlockHeight=min_block,
-            nMaxBlockHeight=max_block,
-        )
-        return self.active_download_manager.download_interest(10, interest)
-
-    def download_single_squeak(self, squeak_hash: bytes) -> DownloadResult:
-        logger.info("Downloading single squeak: {}".format(
-            squeak_hash.hex(),
-        ))
-        return self.active_download_manager.download_hash(squeak_hash)
-
-    def download_offers(self, squeak_hash: bytes) -> DownloadResult:
-        logger.info("Downloading offers for squeak: {}".format(
-            squeak_hash.hex(),
-        ))
-        return self.active_download_manager.download_offers(10, squeak_hash)
-
-    def request_offers(self, squeak_hash: bytes):
-        logger.info("Requesting offers for squeak: {}".format(
-            squeak_hash.hex(),
-        ))
-        invs = [
-            CInv(type=2, hash=squeak_hash)
-        ]
-        getdata_msg = msg_getdata(inv=invs)
-        self.broadcast_msg(getdata_msg)
-
-    def download_replies(self, squeak_hash: bytes) -> DownloadResult:
-        logger.info("Downloading replies for squeak: {}".format(
-            squeak_hash.hex(),
-        ))
-        interest = CInterested(
-            hashReplySqk=squeak_hash,
-        )
-        return self.active_download_manager.download_interest(10, interest)
-
-    def download_public_key_squeaks(self, public_key: SqueakPublicKey) -> DownloadResult:
-        logger.info("Downloading squeaks for public key: {}".format(
-            public_key,
-        ))
-        interest = CInterested(
-            pubkeys=[public_key],
-        )
-        return self.active_download_manager.download_interest(10, interest)
-
-    def broadcast_msg(self, msg: MsgSerializable) -> int:
-        return self.network_manager.broadcast_msg(msg)
-
-    def disconnect_peer(self, peer_address: PeerAddress) -> None:
-        logger.info("Disconnect to peer: {}".format(
-            peer_address,
-        ))
-        self.network_manager.disconnect_peer(peer_address)
-
-    def subscribe_connected_peers(self, stopped: threading.Event) -> Iterable[List[ConnectedPeer]]:
-        for peers in self.network_manager.subscribe_connected_peers(stopped):
-            yield [
-                ConnectedPeer(
-                    peer=peer,
-                    saved_peer=self.squeak_store.get_peer_by_address(
-                        peer.remote_address,
-                    )
-                ) for peer in peers
-            ]
-
-    def subscribe_connected_peer(self, peer_address: PeerAddress, stopped: threading.Event) -> Iterable[Optional[ConnectedPeer]]:
-        for peer in self.network_manager.subscribe_connected_peer(peer_address, stopped):
-            if peer is None:
-                yield None
-            else:
-                yield ConnectedPeer(
-                    peer=peer,
-                    saved_peer=self.squeak_store.get_peer_by_address(
-                        peer.remote_address,
-                    )
-                )
-
     def subscribe_new_squeaks(self, stopped: threading.Event):
         yield from self.squeak_store.subscribe_new_squeaks(stopped)
 
@@ -520,7 +408,11 @@ class SqueakController:
                 yield self.get_squeak_entry(squeak_hash)
 
     def get_external_address(self) -> PeerAddress:
-        return self.network_manager.external_address
+        return PeerAddress(
+            network=Network.IPV4,
+            host=self.config.server.external_address or '',
+            port=self.config.server.port or 0,
+        )
 
     def get_default_peer_port(self) -> int:
         return self.default_port

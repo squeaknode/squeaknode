@@ -744,15 +744,3 @@ export const downloadSqueak = (squeakHash) => {
       deser: deser,
     });
 }
-
-export const downloadPubkeySqueaks = (pubkey) => {
-    console.log('Calling downloadPubkeySqueaks');
-    const request = new DownloadPubKeySqueaksRequest();
-    request.setPubkey(pubkey);
-    const deser = DownloadPubKeySqueaksReply.deserializeBinary;
-    return baseRequest({
-      url: '/downloadaddresssqueaks',
-      req: request,
-      deser: deser,
-    });
-}

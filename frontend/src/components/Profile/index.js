@@ -30,7 +30,6 @@ import {
  selectLastProfileSqueak,
  selectProfileSqueaksStatus,
  clearProfileSqueaks,
- setDownloadPubkeySqueaks,
 } from '../../features/squeaks/squeaksSlice'
 
 
@@ -117,14 +116,6 @@ const Profile = (props) => {
           setPrivateKey(privateKey);
         });
     }
-
-    const downloadUserSqueaks = () => {
-        dispatch(setDownloadPubkeySqueaks(props.match.params.username))
-        .then(() => {
-          console.log('Finished downloading pubkey squeaks.');
-        });
-    }
-
 
     const createContactProfile = () => {
         dispatch(setCreateContactProfile({
@@ -310,13 +301,6 @@ const Profile = (props) => {
                           </div>
                       </div>
                     }
-
-                    <div onClick={(e)=>
-                        downloadUserSqueaks()
-                      }
-                       className={'profile-edit-button'}>
-                          <span><span>{'Download Squeaks'}</span></span>
-                    </div>
 
                     {user &&
                       <div onClick={(e)=>

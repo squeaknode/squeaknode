@@ -27,7 +27,6 @@ from squeak.core.keys import SqueakPublicKey
 from proto import squeak_admin_pb2
 from squeaknode.admin.profile_image_util import bytes_to_base64_string
 from squeaknode.admin.profile_image_util import load_default_profile_image
-from squeaknode.core.connected_peer import ConnectedPeer
 from squeaknode.core.download_result import DownloadResult
 from squeaknode.core.peer_address import Network
 from squeaknode.core.peer_address import PeerAddress
@@ -160,24 +159,6 @@ def payment_summary_to_message(
     )
 
 
-def connected_peer_to_message(connected_peer: ConnectedPeer) -> squeak_admin_pb2.ConnectedPeer:
-    return squeak_admin_pb2.ConnectedPeer(
-        peer_address=peer_address_to_message(
-            connected_peer.peer.remote_address),
-        connect_time_s=connected_peer.peer.connect_time,
-        last_message_received_time_s=connected_peer.peer.last_msg_revc_time,
-        number_messages_received=connected_peer.peer.num_msgs_received,
-        number_bytes_received=connected_peer.peer.num_bytes_received,
-        number_messages_sent=connected_peer.peer.num_msgs_sent,
-        number_bytes_sent=connected_peer.peer.num_bytes_sent,
-        is_peer_saved=(connected_peer.saved_peer is not None),
-        saved_peer=(
-            squeak_peer_to_message(connected_peer.saved_peer)
-            if connected_peer.saved_peer else None
-        ),
-    )
-
-
 def peer_address_to_message(peer_address: PeerAddress) -> squeak_admin_pb2.PeerAddress:
     return squeak_admin_pb2.PeerAddress(
         network=peer_address.network.name,
@@ -300,9 +281,3 @@ def optional_sent_payment_to_message(sent_payment: Optional[SentPayment]) -> Opt
     if sent_payment is None:
         return None
     return sent_payment_to_message(sent_payment)
-
-
-def optional_connected_peer_to_message(connected_peer: Optional[ConnectedPeer]) -> Optional[squeak_admin_pb2.ConnectedPeer]:
-    if connected_peer is None:
-        return None
-    return connected_peer_to_message(connected_peer)

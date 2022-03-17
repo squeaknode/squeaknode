@@ -11,12 +11,8 @@ import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
 
 import {
-  fetchConnectedPeers,
-  selectConnectedPeers,
-  selectConnectedPeersStatus,
   selectSavedPeers,
   fetchSavedPeers,
-  setConnectPeer,
   setSavePeer,
 } from '../../features/peers/peersSlice'
 import {
@@ -38,14 +34,12 @@ const Peers = (props) => {
 
     const externalAddress = useSelector(selectExternalAddress);
     const peers = useSelector(selectSavedPeers);
-    const connectedPeers = useSelector(selectConnectedPeers);
     const dispatch = useDispatch();
 
 
     useEffect(() => {
         window.scrollTo(0, 0)
         dispatch(fetchExternalAddress());
-        dispatch(fetchConnectedPeers());
         dispatch(fetchSavedPeers());
     }, [])
 
@@ -60,12 +54,6 @@ const Peers = (props) => {
     const peerAddressToStr = (peerAddress) => {
       return `${peerAddress.getNetwork()}/${peerAddress.getHost()}:${peerAddress.getPort()}`;
     }
-
-    const isPeerConnected = (peerAddress) => {
-      const peerAddressStr = peerAddressToStr(peerAddress);
-      const connectedPeerAddresses = connectedPeers.map((p) => peerAddressToStr(p.getPeerAddress()));
-      return connectedPeerAddresses.includes(peerAddressStr);
-    };
 
     const toggleSavePeerModal = (param, type) => {
         setStyleBody(!styleBody)
@@ -135,10 +123,7 @@ const Peers = (props) => {
             <div>
                 <div className="explore-nav-menu">
                     <div onClick={()=>setTab('Saved Peers')} className={tab === 'Saved Peers' ? `explore-nav-item activeTab` : `explore-nav-item`}>
-                        Saved Peers
-                    </div>
-                    <div onClick={()=>setTab('Connected Peers')} className={tab === 'Connected Peers' ? `explore-nav-item activeTab` : `explore-nav-item`}>
-                        Connected Peers
+                        Peers
                     </div>
                 </div>
                 {tab === 'Saved Peers' ?
@@ -149,13 +134,9 @@ const Peers = (props) => {
                   const host = peerAddress.getHost();
                   const port = peerAddress.getPort();
                   const addrStr = host + ':' + port;
-                  const isConnected = isPeerConnected(peerAddress);
 
                   return <div onClick={()=>goToPeer(peerAddress)} key={peerId} className="search-result-wapper">
-                    {isConnected ?
-                      <ICON_LAPTOPFILL styles={{fill:"rgb(0,128,0)", width:'48px', height:"48px"}} /> :
-                      <ICON_LAPTOPFILL styles={{fill:"rgb(255,0,0)", width:'48px', height:"48px"}} />
-                    }
+                    <ICON_LAPTOPFILL styles={{fill:"rgb(0,128,0)", width:'48px', height:"48px"}} /> :
                     <div className="search-user-details">
                     <div className="search-user-warp">
                     <div className="search-user-info">
@@ -171,28 +152,7 @@ const Peers = (props) => {
                 })
                 :
                 tab === 'Connected Peers' ?
-                connectedPeers.map(p=>{
-                  const peerAddress = p.getPeerAddress();
-                  const host = peerAddress.getHost();
-                  const port = peerAddress.getPort();
-                  const addrStr = host + ':' + port;
-                  const savedPeer = p.getSavedPeer();
-                  const savedPeerName = savedPeer && savedPeer.getPeerName();
-                  return <div onClick={()=>goToPeer(peerAddress)} key={addrStr} className="search-result-wapper">
-                    <ICON_LAPTOPFILL styles={{fill:"rgb(0,128,0)", width:'48px', height:"48px"}} />
-                    <div className="search-user-details">
-                    <div className="search-user-warp">
-                    <div className="search-user-info">
-                    <div className="search-user-name">{savedPeerName}</div>
-                    <div className="search-user-username">{addrStr}</div>
-                    </div>
-                    </div>
-                    <div className="search-user-bio">
-                      &nbsp;
-                    </div>
-                  </div>
-                </div>
-                })
+                <></>
                 : <div className="try-searching">
                         Nothing to see here ..
                         <div/>

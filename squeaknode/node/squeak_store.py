@@ -31,6 +31,8 @@ from squeak.core import CSqueak
 from squeak.core.keys import SqueakPrivateKey
 from squeak.core.keys import SqueakPublicKey
 
+from squeaknode.core.lightning_address import LightningAddressHostPort
+from squeaknode.core.offer import Offer
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.peers import create_saved_peer
 from squeaknode.core.profiles import create_contact_profile
@@ -188,6 +190,55 @@ class SqueakStore:
 
     def save_sent_offer(self, sent_offer: SentOffer) -> int:
         return self.squeak_db.insert_sent_offer(sent_offer)
+
+    def get_sent_offer_for_peer(
+            self,
+            squeak_hash: bytes,
+            peer_address: PeerAddress,
+            price_msat: int,
+    ) -> Optional[SentOffer]:
+        # Check if there is an existing offer for the hash/peer_address combination
+        sent_offer = self.get_sent_offer_by_squeak_hash_and_peer(
+            squeak_hash,
+            peer_address,
+        )
+        if sent_offer:
+            return sent_offer
+        squeak = self.get_squeak(squeak_hash)
+        secret_key = self.get_squeak_secret_key(squeak_hash)
+        if squeak is None or secret_key is None:
+            return None
+        try:
+            sent_offer = self.squeak_core.create_offer(
+                squeak,
+                secret_key,
+                peer_address,
+                price_msat,
+            )
+        except Exception:
+            logger.exception("Failed to create offer.")
+            return None
+        self.save_sent_offer(sent_offer)
+        return sent_offer
+
+    def get_packaged_offer(
+            self,
+            squeak_hash: bytes,
+            peer_address: PeerAddress,
+            price_msat: int,
+            lnd_external_address: Optional[LightningAddressHostPort],
+    ) -> Optional[Offer]:
+        sent_offer = self.get_sent_offer_for_peer(
+            squeak_hash,
+            peer_address,
+            price_msat,
+        )
+        if sent_offer is None:
+            return None
+        return self.squeak_core.package_offer(
+            sent_offer,
+            lnd_external_address,
+        )
 
     def create_signing_profile(self, profile_name: str) -> int:
         squeak_profile = create_signing_profile(
@@ -426,6 +477,14 @@ class SqueakStore:
             received_offer_id=received_offer_id)
         self.new_received_offer_listener.handle_new_item(received_offer)
         return received_offer_id
+
+    def handle_offer(self, squeak: CSqueak, offer: Offer, peer_address: PeerAddress):
+        received_offer = self.squeak_core.unpack_offer(
+            squeak,
+            offer,
+            peer_address,
+        )
+        self.save_received_offer(received_offer)
 
     def get_followed_public_keys(self) -> List[SqueakPublicKey]:
         followed_profiles = self.squeak_db.get_following_profiles()

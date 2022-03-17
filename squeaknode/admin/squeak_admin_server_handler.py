@@ -25,13 +25,11 @@ from squeak.core.keys import SqueakPrivateKey
 from squeak.core.keys import SqueakPublicKey
 
 from proto import squeak_admin_pb2
-from squeaknode.admin.messages import connected_peer_to_message
 from squeaknode.admin.messages import download_result_to_message
 from squeaknode.admin.messages import message_to_peer_address
 from squeaknode.admin.messages import message_to_received_payment
 from squeaknode.admin.messages import message_to_sent_payment
 from squeaknode.admin.messages import message_to_squeak_entry
-from squeaknode.admin.messages import optional_connected_peer_to_message
 from squeaknode.admin.messages import optional_received_offer_to_message
 from squeaknode.admin.messages import optional_sent_payment_to_message
 from squeaknode.admin.messages import optional_squeak_entry_to_message
@@ -884,69 +882,12 @@ class SqueakAdminServerHandler(object):
         self.squeak_controller.connect_peer(peer_address)
         return squeak_admin_pb2.ConnectPeerReply()
 
-    def handle_get_connected_peers(self, request):
-        logger.info("Handle get connected peers.")
-        connected_peers = self.squeak_controller.get_connected_peers()
-        logger.info("Connected peers: {}".format(
-            connected_peers,
-        ))
-        connected_peers_display_msgs = [
-            connected_peer_to_message(peer) for peer in connected_peers
-        ]
-        return squeak_admin_pb2.GetConnectedPeersReply(
-            connected_peers=connected_peers_display_msgs
-        )
-
-    def handle_get_connected_peer(self, request):
-        peer_address = message_to_peer_address(request.peer_address)
-        logger.info("Handle get connected peer for address: {}".format(
-            peer_address,
-        ))
-        connected_peer = self.squeak_controller.get_connected_peer(
-            peer_address)
-        logger.info("Connected peer: {}".format(
-            connected_peer,
-        ))
-        connected_peers_display_msg = optional_connected_peer_to_message(
-            connected_peer)
-        return squeak_admin_pb2.GetConnectedPeerReply(
-            connected_peer=connected_peers_display_msg
-        )
-
     def handle_disconnect_peer(self, request):
         peer_address = message_to_peer_address(request.peer_address)
         logger.info(
             "Handle disconnect peer with peer address: {}".format(peer_address))
         self.squeak_controller.disconnect_peer(peer_address)
         return squeak_admin_pb2.DisconnectPeerReply()
-
-    def handle_subscribe_connected_peers(self, request, stopped):
-        logger.info("Handle subscribe connected peers")
-        connected_peers_stream = self.squeak_controller.subscribe_connected_peers(
-            stopped,
-        )
-        for connected_peers in connected_peers_stream:
-            connected_peers_display_msgs = [
-                connected_peer_to_message(peer) for peer in connected_peers
-            ]
-            yield squeak_admin_pb2.GetConnectedPeersReply(
-                connected_peers=connected_peers_display_msgs
-            )
-
-    def handle_subscribe_connected_peer(self, request, stopped):
-        peer_address = message_to_peer_address(request.peer_address)
-        logger.info(
-            "Handle subscribe connected peer with peer address: {}".format(peer_address))
-        connected_peer_stream = self.squeak_controller.subscribe_connected_peer(
-            peer_address,
-            stopped,
-        )
-        for connected_peer in connected_peer_stream:
-            connected_peer_display_msg = optional_connected_peer_to_message(
-                connected_peer)
-            yield squeak_admin_pb2.GetConnectedPeerReply(
-                connected_peer=connected_peer_display_msg,
-            )
 
     def handle_subscribe_buy_offers(self, request, stopped):
         squeak_hash_str = request.squeak_hash

@@ -14,13 +14,8 @@ import { useDispatch } from 'react-redux'
 
 import {
   fetchPeer,
-  fetchConnectedPeers,
   selectCurrentPeer,
   selectCurrentPeerStatus,
-  selectConnectedPeers,
-  selectPeerConnectionByAddress,
-  setConnectPeer,
-  setDisconnectPeer,
   setSavePeer,
   setDeletePeer,
   setPeerAutoconnectEnabled,
@@ -43,12 +38,6 @@ const [bannerLoading, setBannerLoading] = useState(false)
 const [styleBody, setStyleBody] = useState(false)
 
 const peer = useSelector(selectCurrentPeer);
-const connectedPeers = useSelector(selectConnectedPeers);
-const peerConnection = useSelector(state => selectPeerConnectionByAddress(state, {
-  network: props.match.params.network,
-  host: props.match.params.host,
-  port: props.match.params.port,
-}));
 const dispatch = useDispatch();
 
 
@@ -59,7 +48,6 @@ useEffect(() => {
       host: props.match.params.host,
       port: props.match.params.port,
     }));
-    dispatch(fetchConnectedPeers());
 }, [])
 
 const isInitialMount = useRef(true);
@@ -72,22 +60,6 @@ useEffect(() => {
 
 useEffect( () => () => document.getElementsByTagName("body")[0].style.cssText = "", [] )
 
-
-const connectPeer = (e) => {
-    dispatch(setConnectPeer({
-        host: props.match.params.host,
-        port: props.match.params.port,
-        network: props.match.params.network,
-    }));
-}
-
-const disconnectPeer = (e) => {
-  dispatch(setDisconnectPeer({
-      host: props.match.params.host,
-      port: props.match.params.port,
-      network: props.match.params.network,
-  }));
-}
 
 const deletePeer = () => {
     let values = {
@@ -187,18 +159,6 @@ return(
             }
             </div>
 
-
-            <div className="profile-options">
-            <div onClick={(e)=>
-                 peerConnection ?
-                 disconnectPeer(e) :
-                 connectPeer(e)
-              }
-                className={peerConnection ? 'disconnect peer-connect-button' : 'peer-connect-button'}>
-                   <span><span>{ peerConnection ? 'Connected' : 'Connect'}</span></span>
-            </div>
-            </div>
-
             <div className="profile-options">
             {peer &&
               <div onClick={(e)=>
@@ -215,34 +175,20 @@ return(
         </div>
 
         <div className="feed-wrapper">
-            {peerConnection &&
               <div className="feed-trending-card">
                   <div className="feed-card-trend">
-                      <div>Connection Time</div>
-                      <div>{moment(peerConnection.getConnectTimeS() * 1000).fromNow(true)}</div>
+                      <div>Number of downloads</div>
+                      <div>TODO</div>
                   </div>
                   <div className="feed-card-trend">
-                      <div>Bytes received</div>
-                      <div>{peerConnection.getNumberBytesReceived()}</div>
+                      <div>Number of purchases</div>
+                      <div>TODO</div>
                   </div>
                   <div className="feed-card-trend">
-                      <div>Messages received</div>
-                      <div>{peerConnection.getNumberMessagesReceived()}</div>
-                  </div>
-                  <div className="feed-card-trend">
-                      <div>Last Message Received Time</div>
-                      <div>{moment(peerConnection.getLastMessageReceivedTimeS() * 1000).fromNow(true)}</div>
-                  </div>
-                  <div className="feed-card-trend">
-                      <div>Bytes sent</div>
-                      <div>{peerConnection.getNumberBytesSent()}</div>
-                  </div>
-                  <div className="feed-card-trend">
-                      <div>Messages sent</div>
-                      <div>{peerConnection.getNumberMessagesSent()}</div>
+                      <div>Last connection time</div>
+                      <div>TODO</div>
                   </div>
               </div>
-            }
         </div>
 
 

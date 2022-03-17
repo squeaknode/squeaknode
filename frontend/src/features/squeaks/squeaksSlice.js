@@ -19,7 +19,6 @@ import {
   getSqueakOffers,
   buySqueak,
   downloadSqueak,
-  downloadPubkeySqueaks,
 } from '../../api/client'
 
 const initialState = {
@@ -40,7 +39,6 @@ const initialState = {
   squeakOffers: [],
   buySqueakStatus: 'idle',
   downloadSqueakStatus: 'idle',
-  downloadPubkeySqueakStatus: 'idle',
 }
 
 // Thunk functions
@@ -196,15 +194,6 @@ export const setDownloadSqueak = createAsyncThunk(
     await downloadSqueak(squeakHash);
     const response = await getSqueak(squeakHash);
     return response.getSqueakDisplayEntry();
-  }
-)
-
-export const setDownloadPubkeySqueaks = createAsyncThunk(
-  'squeaks/setDownloadPubkeySqueaks',
-  async (pubkey) => {
-    console.log('Downloading pubkey squeaks');
-    const response = await downloadPubkeySqueaks(pubkey);
-    return response;
   }
 )
 
@@ -394,16 +383,6 @@ const squeaksSlice = createSlice({
       // TODO: check if current squeak is the one that got downloaded.
       state.currentSqueak = newSqueak;
     })
-    .addCase(setDownloadPubkeySqueaks.pending, (state, action) => {
-      state.downloadPubkeySqueakStatus = 'loading'
-    })
-    .addCase(setDownloadPubkeySqueaks.rejected, (state, action) => {
-      state.downloadPubkeySqueakStatus = 'idle'
-    })
-    .addCase(setDownloadPubkeySqueaks.fulfilled, (state, action) => {
-      console.log(action);
-      state.downloadPubkeySqueakStatus = 'idle';
-    })
   },
 })
 
@@ -466,5 +445,3 @@ export const selectSqueakOffersStatus = state => state.squeaks.squeakOffersStatu
 export const selectBuySqueakStatus = state => state.squeaks.buySqueakStatus
 
 export const selectDownloadSqueakStatus = state => state.squeaks.downloadSqueakStatus
-
-export const selectDownloadPubkeySqueakStatus = state => state.squeaks.downloadPubkeySqueakStatus

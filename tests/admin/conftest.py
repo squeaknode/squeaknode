@@ -219,21 +219,6 @@ def payment_summary_msg(
 
 
 @pytest.fixture
-def connected_peer_msg(peer_address_message, peer_msg):
-    yield squeak_admin_pb2.ConnectedPeer(
-        peer_address=peer_address_message,
-        connect_time_s=0,
-        last_message_received_time_s=0,
-        number_messages_received=0,
-        number_bytes_received=0,
-        number_messages_sent=0,
-        number_bytes_sent=0,
-        is_peer_saved=True,
-        saved_peer=peer_msg,
-    )
-
-
-@pytest.fixture
 def download_result_msg(
         download_result,
 ):
