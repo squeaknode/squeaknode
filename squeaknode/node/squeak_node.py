@@ -36,6 +36,7 @@ from squeaknode.db.squeak_db import SqueakDb
 from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
 from squeaknode.node.node_settings import NodeSettings
 from squeaknode.node.payment_processor import PaymentProcessor
+from squeaknode.node.process_forward_tweets_worker import ProcessForwardTweetsWorker
 from squeaknode.node.process_received_payments_worker import ProcessReceivedPaymentsWorker
 from squeaknode.node.squeak_controller import SqueakController
 from squeaknode.node.squeak_deletion_worker import SqueakDeletionWorker
@@ -72,6 +73,7 @@ class SqueakNode:
         self.create_received_payment_processor_worker()
         self.create_squeak_deletion_worker()
         self.create_offer_expiry_worker()
+        self.create_forward_tweets_processor_worker()
 
     def start_running(self):
         self.squeak_db.init_with_retries()
@@ -85,12 +87,14 @@ class SqueakNode:
         self.received_payment_processor_worker.start_running()
         self.squeak_deletion_worker.start()
         self.offer_expiry_worker.start()
+        self.forward_tweets_processor_worker.start_running()
 
     def stop_running(self):
         self.admin_web_server.stop()
         self.admin_rpc_server.stop()
         self.peer_web_server.stop()
         self.received_payment_processor_worker.stop_running()
+        self.forward_tweets_processor_worker.stop_running()
 
     def set_network_params(self):
         SelectParams(self.config.node.network)
@@ -222,4 +226,9 @@ class SqueakNode:
         self.offer_expiry_worker = SqueakOfferExpiryWorker(
             self.squeak_store,
             self.config.node.offer_deletion_interval_s,
+        )
+
+    def create_forward_tweets_processor_worker(self):
+        self.forward_tweets_processor_worker = ProcessForwardTweetsWorker(
+            self.twitter_forwarder,
         )
