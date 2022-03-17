@@ -27,6 +27,7 @@ import requests
 from squeak.core import CSqueak
 from squeak.core.keys import SqueakPublicKey
 
+from squeaknode.core.offer import Offer
 from squeaknode.core.squeak_peer import SqueakPeer
 
 logger = logging.getLogger(__name__)
@@ -73,3 +74,28 @@ class PeerClient:
             return None
         squeak_bytes = r.content
         return CSqueak.deserialize(squeak_bytes)
+
+    def get_secret_key(self, squeak_hash: bytes) -> Optional[bytes]:
+        squeak_hash_str = squeak_hash.hex()
+        url = f"{self.base_url}/secretkey/{squeak_hash_str}"
+        r = requests.get(url)
+        if r.status_code != requests.codes.ok:
+            return None
+        secret_key = r.content
+        return secret_key
+
+    def get_offer(self, squeak_hash: bytes) -> Optional[Offer]:
+        squeak_hash_str = squeak_hash.hex()
+        url = f"{self.base_url}/offer/{squeak_hash_str}"
+        r = requests.get(url)
+        if r.status_code != requests.codes.ok:
+            return None
+        offer_json = r.json()
+        offer = Offer(
+            squeak_hash=bytes.fromhex(offer_json['squeak_hash']),
+            nonce=bytes.fromhex(offer_json['nonce']),
+            payment_request=offer_json['payment_request'],
+            host=offer_json['host'],
+            port=int(offer_json['port']),
+        )
+        return offer

@@ -478,6 +478,14 @@ class SqueakStore:
         self.new_received_offer_listener.handle_new_item(received_offer)
         return received_offer_id
 
+    def handle_offer(self, squeak: CSqueak, offer: Offer, peer_address: PeerAddress):
+        received_offer = self.squeak_core.unpack_offer(
+            squeak,
+            offer,
+            peer_address,
+        )
+        self.save_received_offer(received_offer)
+
     def get_followed_public_keys(self) -> List[SqueakPublicKey]:
         followed_profiles = self.squeak_db.get_following_profiles()
         return [profile.public_key for profile in followed_profiles]
