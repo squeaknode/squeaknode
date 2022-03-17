@@ -294,6 +294,11 @@ class SqueakController:
             limit: int,
             last_entry: Optional[SqueakEntry],
     ) -> List[SqueakEntry]:
+        # TODO: remove this temporary hack, after converting this to websockets.
+        logger.info('Start downloading pubkey squeaks...')
+        network_controller = NetworkController(self.squeak_store, self.config)
+        network_controller.download_pubkey_squeaks(public_key)
+        logger.info('Finished downloading pubkey squeaks.')
         return self.squeak_store.get_squeak_entries_for_public_key(
             public_key,
             limit,
