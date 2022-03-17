@@ -136,7 +136,7 @@ const Peers = (props) => {
                   const addrStr = host + ':' + port;
 
                   return <Link to={peerUrl(peerAddress)} key={peerId} className="search-result-wapper">
-                    <ICON_LAPTOPFILL styles={{fill:"rgb(0,128,0)", width:'48px', height:"48px"}} />
+                    <ICON_LAPTOPFILL styles={{width:'64px', height:"64px"}} />
                     <div className="search-user-details">
                     <div className="search-user-warp">
                     <div className="search-user-info">
