@@ -104,8 +104,10 @@ def test_get_external_address(admin_stub):
     external_address = get_external_address(admin_stub)
 
     print(external_address)
-    assert external_address.host is not None and len(external_address.host) > 0
-    assert external_address.port > 0
+    # assert external_address.host is not None and len(external_address.host) > 0
+    assert external_address.host == 'myexternaladdress.com'
+    # assert external_address.port > 0
+    assert external_address.port == 8765
 
 
 def test_get_default_peer_port(admin_stub):
