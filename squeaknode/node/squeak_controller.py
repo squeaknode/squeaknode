@@ -29,6 +29,7 @@ from squeak.core.keys import SqueakPrivateKey
 from squeak.core.keys import SqueakPublicKey
 
 from squeaknode.client.network_controller import NetworkController
+from squeaknode.core.peer_address import Network
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.received_payment import ReceivedPayment
@@ -401,8 +402,11 @@ class SqueakController:
                 yield self.get_squeak_entry(squeak_hash)
 
     def get_external_address(self) -> PeerAddress:
-        # TODO: return self.network_manager.external_address
-        pass
+        return PeerAddress(
+            network=Network.IPV4,
+            host=self.config.server.external_address or '',
+            port=self.config.server.port or 0,
+        )
 
     def get_default_peer_port(self) -> int:
         return self.default_port
