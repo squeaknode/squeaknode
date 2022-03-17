@@ -28,7 +28,6 @@ from squeak.core import CSqueak
 from squeak.core.keys import SqueakPrivateKey
 from squeak.core.keys import SqueakPublicKey
 
-from squeaknode.core.download_result import DownloadResult
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.received_payment import ReceivedPayment
@@ -340,50 +339,6 @@ class SqueakController:
 
     def unlike_squeak(self, squeak_hash: bytes):
         return self.squeak_store.unlike_squeak(squeak_hash)
-
-    def download_squeaks(
-            self,
-            public_keys: List[SqueakPublicKey],
-            min_block: int,
-            max_block: int,
-            replyto_hash: Optional[bytes],
-    ) -> DownloadResult:
-        # TODO
-        return DownloadResult(0, 0, 0, 0)
-
-    def download_single_squeak(self, squeak_hash: bytes) -> DownloadResult:
-        logger.info("Downloading single squeak: {}".format(
-            squeak_hash.hex(),
-        ))
-        # TODO
-        return DownloadResult(0, 0, 0, 0)
-
-    def download_offers(self, squeak_hash: bytes) -> DownloadResult:
-        logger.info("Downloading offers for squeak: {}".format(
-            squeak_hash.hex(),
-        ))
-        # TODO
-        return DownloadResult(0, 0, 0, 0)
-
-    def request_offers(self, squeak_hash: bytes):
-        logger.info("Requesting offers for squeak: {}".format(
-            squeak_hash.hex(),
-        ))
-        # TODO
-
-    def download_replies(self, squeak_hash: bytes) -> DownloadResult:
-        logger.info("Downloading replies for squeak: {}".format(
-            squeak_hash.hex(),
-        ))
-        # TODO
-        return DownloadResult(0, 0, 0, 0)
-
-    def download_public_key_squeaks(self, public_key: SqueakPublicKey) -> DownloadResult:
-        logger.info("Downloading squeaks for public key: {}".format(
-            public_key,
-        ))
-        # TODO
-        return DownloadResult(0, 0, 0, 0)
 
     def subscribe_new_squeaks(self, stopped: threading.Event):
         yield from self.squeak_store.subscribe_new_squeaks(stopped)
