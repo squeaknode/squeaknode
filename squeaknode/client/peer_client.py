@@ -38,9 +38,8 @@ DOWNLOAD_TIMEOUT_S = 10
 
 class PeerClient:
 
-    def __init__(self, peer: SqueakPeer, config):
+    def __init__(self, peer: SqueakPeer):
         self.peer = peer
-        self.config = config
         self.base_url = f"http://{peer.address.host}:{peer.address.port}"
 
     def lookup(

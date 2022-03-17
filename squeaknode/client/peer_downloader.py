@@ -22,6 +22,7 @@
 import logging
 from typing import List
 
+from squeak.core import CSqueak
 from squeak.core.keys import SqueakPublicKey
 
 from squeaknode.client.peer_client import PeerClient
@@ -34,74 +35,49 @@ logger = logging.getLogger(__name__)
 DOWNLOAD_TIMEOUT_S = 10
 
 
-class PeerDownloader:
+class RangeDownloader:
 
-    def __init__(self, peer: SqueakPeer, squeak_store: SqueakStore, config):
-        self.peer = peer
-        self.client = PeerClient(peer, config)
-        self.squeak_store = squeak_store
-        self.config = config
-
-    def download_squeaks(
+    def __init__(
             self,
+            peer: SqueakPeer,
+            squeak_store: SqueakStore,
             min_block: int,
             max_block: int,
             pubkeys: List[SqueakPublicKey],
-    ) -> None:
-        squeak_hashes = self.client.lookup(min_block, max_block, pubkeys)
+    ):
+        self.peer = peer
+        self.client = PeerClient(peer)
+        self.squeak_store = squeak_store
+        self.min_block = min_block
+        self.max_block = max_block
+        self.pubkeys = pubkeys
+
+    def download_squeaks(self) -> None:
+        squeak_hashes = self.client.lookup(
+            self.min_block,
+            self.max_block,
+            self.pubkeys,
+        )
         for squeak_hash in squeak_hashes:
             # Download the squeak if not already owned.
-            self.download_squeak(
-                squeak_hash,
-                min_block,
-                max_block,
-                pubkeys,
-            )
+            self.download_squeak(squeak_hash)
             # Download the secret key if not already unlocked.
-            self.download_secret_key(
-                squeak_hash,
-                min_block,
-                max_block,
-                pubkeys,
-            )
+            self.download_secret_key(squeak_hash)
             # Download the offer if not already unlocked.
-            self.download_offer(
-                squeak_hash,
-                min_block,
-                max_block,
-                pubkeys,
-            )
+            self.download_offer(squeak_hash)
 
-    def download_squeak(
-            self,
-            squeak_hash: bytes,
-            min_block: int,
-            max_block: int,
-            pubkeys: List[SqueakPublicKey],
-    ) -> None:
+    def download_squeak(self, squeak_hash: bytes) -> None:
         # Download the squeak if not already owned.
         if self.squeak_store.get_squeak(squeak_hash):
             return
         squeak = self.client.get_squeak(squeak_hash)
-        if squeak and \
-           squeak.nBlockHeight >= min_block and \
-           squeak.nBlockHeight <= max_block and \
-           squeak.GetPubKey() in pubkeys:
+        if squeak and self.is_squeak_wanted(squeak):
             self.squeak_store.save_squeak(squeak)
 
-    def download_secret_key(
-            self,
-            squeak_hash: bytes,
-            min_block: int,
-            max_block: int,
-            pubkeys: List[SqueakPublicKey],
-    ) -> None:
+    def download_secret_key(self, squeak_hash: bytes) -> None:
         # Get the squeak from the database.
         squeak = self.squeak_store.get_squeak(squeak_hash)
-        if squeak and \
-           squeak.nBlockHeight >= min_block and \
-           squeak.nBlockHeight <= max_block and \
-           squeak.GetPubKey() in pubkeys:
+        if squeak and self.is_squeak_wanted(squeak):
             # Download the secret key is not already unlocked.
             if self.squeak_store.get_squeak_secret_key(squeak_hash):
                 return
@@ -109,19 +85,10 @@ class PeerDownloader:
             if secret_key:
                 self.squeak_store.save_secret_key(squeak_hash, secret_key)
 
-    def download_offer(
-            self,
-            squeak_hash: bytes,
-            min_block: int,
-            max_block: int,
-            pubkeys: List[SqueakPublicKey],
-    ) -> None:
+    def download_offer(self, squeak_hash: bytes) -> None:
         # Get the squeak from the database.
         squeak = self.squeak_store.get_squeak(squeak_hash)
-        if squeak and \
-           squeak.nBlockHeight >= min_block and \
-           squeak.nBlockHeight <= max_block and \
-           squeak.GetPubKey() in pubkeys:
+        if squeak and self.is_squeak_wanted(squeak):
             # Download the secret key is not already unlocked.
             if self.squeak_store.get_squeak_secret_key(squeak_hash):
                 return
@@ -132,3 +99,8 @@ class PeerDownloader:
                     offer,
                     self.peer.address,
                 )
+
+    def is_squeak_wanted(self, squeak: CSqueak) -> bool:
+        return squeak.nBlockHeight >= self.min_block and \
+            squeak.nBlockHeight <= self.max_block and \
+            squeak.GetPubKey() in self.pubkeys

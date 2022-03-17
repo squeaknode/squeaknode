@@ -23,7 +23,7 @@ import logging
 
 from squeak.core.keys import SqueakPublicKey
 
-from squeaknode.client.peer_downloader import PeerDownloader
+from squeaknode.client.peer_downloader import RangeDownloader
 from squeaknode.node.squeak_store import SqueakStore
 
 logger = logging.getLogger(__name__)
@@ -44,15 +44,25 @@ class NetworkController:
         followed_public_keys = self.squeak_store.get_followed_public_keys()
         peers = self.squeak_store.get_autoconnect_peers()
         for peer in peers:
-            downloader = PeerDownloader(peer, self.squeak_store, self.config)
-            downloader.download_squeaks(
-                min_block, max_block, followed_public_keys)
+            downloader = RangeDownloader(
+                peer,
+                self.squeak_store,
+                min_block,
+                max_block,
+                followed_public_keys,
+            )
+            downloader.download_squeaks()
 
     def download_pubkey_squeaks(self, pubkey: SqueakPublicKey) -> None:
         min_block = 0  # TODO
         max_block = 999999999999  # TODO
         peers = self.squeak_store.get_autoconnect_peers()
         for peer in peers:
-            downloader = PeerDownloader(peer, self.squeak_store, self.config)
-            downloader.download_squeaks(
-                min_block, max_block, [pubkey])
+            downloader = RangeDownloader(
+                peer,
+                self.squeak_store,
+                min_block,
+                max_block,
+                [pubkey],
+            )
+            downloader.download_squeaks()
