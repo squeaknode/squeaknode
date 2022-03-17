@@ -136,6 +136,28 @@ def create_app(handler):
             import time
             time.sleep(5)
 
+    @sock.route('/subscribetimeline')
+    def subscribe_timeline(ws):
+        logger.info("Getting lookup route.")
+        min_block = request.args.get('minblock')
+        max_block = request.args.get('maxblock')
+        pubkeys = request.args.getlist('pubkeys')
+        logger.info("Hello, lookup! Min block {}, Max block {}, pubkeys: {}".format(
+            min_block,
+            max_block,
+            pubkeys,
+        ))
+        if len(pubkeys) == 0:
+            squeak_hashes = []
+        else:
+            squeak_hashes = handler.handle_lookup_squeaks(
+                pubkeys,
+                min_block,
+                max_block,
+            )
+        for squeak_hash in squeak_hashes:
+            ws.send(squeak_hash.hex())
+
     return app
 
 
