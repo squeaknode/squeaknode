@@ -64,7 +64,7 @@ class SqueakPeerServerHandler(object):
             raise NotFoundError()
         return squeak.serialize()
 
-    def handle_get_secret_key(self, squeak_hash_str) -> Optional[bytes]:
+    def handle_get_secret_key(self, squeak_hash_str) -> bytes:
         squeak_hash = bytes.fromhex(squeak_hash_str)
         logger.info(
             "Handle get secret key for hash: {}".format(squeak_hash_str))
@@ -76,7 +76,7 @@ class SqueakPeerServerHandler(object):
             raise NotFoundError()
         return secret_key
 
-    def handle_get_offer(self, squeak_hash_str, client_host) -> Optional[Offer]:
+    def handle_get_offer(self, squeak_hash_str, client_host) -> Offer:
         squeak_hash = bytes.fromhex(squeak_hash_str)
         logger.info("Handle get offer for hash: {}, client_host: {}".format(
             squeak_hash_str, client_host))
@@ -97,12 +97,15 @@ class SqueakPeerServerHandler(object):
                 port=self.config.lnd.port,
             )
         logger.info(lnd_external_address)
-        return self.squeak_store.get_packaged_offer(
+        offer = self.squeak_store.get_packaged_offer(
             squeak_hash,
             client_addr,
             price_msat,
             lnd_external_address,
         )
+        if not offer:
+            raise NotFoundError()
+        return offer
 
     def handle_lookup_squeaks(
             self,
