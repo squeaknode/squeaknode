@@ -40,7 +40,7 @@ class PeerClient:
     def __init__(self, peer: SqueakPeer, config):
         self.peer = peer
         self.config = config
-        self.base_url = f"{peer.address.host}:{peer.address.port}"
+        self.base_url = f"http://{peer.address.host}:{peer.address.port}"
 
     def lookup(
             self,
@@ -72,4 +72,4 @@ class PeerClient:
         if r.status_code != requests.codes.ok:
             return None
         squeak_bytes = r.content
-        return CSqueak.from_bytes(squeak_bytes)
+        return CSqueak.deserialize(squeak_bytes)

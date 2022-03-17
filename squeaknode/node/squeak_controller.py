@@ -28,6 +28,7 @@ from squeak.core import CSqueak
 from squeak.core.keys import SqueakPrivateKey
 from squeak.core.keys import SqueakPublicKey
 
+from squeaknode.client.network_controller import NetworkController
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.received_payment import ReceivedPayment
@@ -273,6 +274,11 @@ class SqueakController:
             limit: int,
             last_entry: Optional[SqueakEntry],
     ) -> List[SqueakEntry]:
+        # TODO: remove this temporary hack, after converting this to websockets.
+        logger.info('Start downloading timeline...')
+        network_controller = NetworkController(self.squeak_store, self.config)
+        network_controller.download_timeline()
+        logger.info('Finished downloading timeline.')
         return self.squeak_store.get_timeline_squeak_entries(limit, last_entry)
 
     def get_liked_squeak_entries(
