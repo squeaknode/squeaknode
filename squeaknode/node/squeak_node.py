@@ -27,7 +27,6 @@ from squeak.params import SelectParams
 from squeaknode.admin.squeak_admin_server_handler import SqueakAdminServerHandler
 from squeaknode.admin.squeak_admin_server_servicer import SqueakAdminServerServicer
 from squeaknode.admin.webapp.app import SqueakAdminWebServer
-from squeaknode.bitcoin.bitcoin_block_subscription_client import BitcoinBlockSubscriptionClient
 from squeaknode.bitcoin.bitcoin_core_client import BitcoinCoreClient
 from squeaknode.config.config import SqueaknodeConfig
 from squeaknode.core.squeak_core import SqueakCore
@@ -58,7 +57,6 @@ class SqueakNode:
         self.create_node_settings()
         self.create_lightning_client()
         self.create_bitcoin_client()
-        self.create_bitcoin_block_subscription_client()
         self.create_squeak_core()
         self.create_squeak_store()
         self.create_payment_processor()
@@ -126,12 +124,6 @@ class SqueakNode:
             self.config.bitcoin.rpc_pass,
             self.config.bitcoin.rpc_use_ssl,
             self.config.bitcoin.rpc_ssl_cert,
-        )
-
-    def create_bitcoin_block_subscription_client(self):
-        self.bitcoin_block_subscription_client = BitcoinBlockSubscriptionClient(
-            self.config.bitcoin.rpc_host,
-            self.config.bitcoin.zeromq_hashblock_port,
         )
 
     def create_squeak_core(self):
