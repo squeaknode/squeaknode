@@ -29,6 +29,7 @@ from squeak.core.keys import SqueakPrivateKey
 from squeak.core.keys import SqueakPublicKey
 
 from squeaknode.client.network_controller import NetworkController
+from squeaknode.core.download_result import DownloadResult
 from squeaknode.core.peer_address import Network
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.received_offer import ReceivedOffer
@@ -269,6 +270,11 @@ class SqueakController:
 
     def get_squeak_entry(self, squeak_hash: bytes) -> Optional[SqueakEntry]:
         return self.squeak_store.get_squeak_entry(squeak_hash)
+
+    def download_single_squeak(self, squeak_hash: bytes) -> DownloadResult:
+        network_controller = NetworkController(self.squeak_store, self.config)
+        network_controller.download_single_squeak(squeak_hash)
+        return DownloadResult(1, 1, 0, 9999)
 
     def get_timeline_squeak_entries(
             self,

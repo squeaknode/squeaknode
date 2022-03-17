@@ -24,6 +24,7 @@ import logging
 from squeak.core.keys import SqueakPublicKey
 
 from squeaknode.client.peer_downloader import RangeDownloader
+from squeaknode.client.peer_downloader import SingleDownloader
 from squeaknode.node.squeak_store import SqueakStore
 
 logger = logging.getLogger(__name__)
@@ -64,5 +65,15 @@ class NetworkController:
                 min_block,
                 max_block,
                 [pubkey],
+            )
+            downloader.download()
+
+    def download_single_squeak(self, squeak_hash: bytes) -> None:
+        peers = self.squeak_store.get_autoconnect_peers()
+        for peer in peers:
+            downloader = SingleDownloader(
+                peer,
+                self.squeak_store,
+                squeak_hash,
             )
             downloader.download()

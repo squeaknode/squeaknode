@@ -29,6 +29,7 @@ from squeak.core.keys import SqueakPublicKey
 
 from squeaknode.client.peer_client import PeerClient
 from squeaknode.core.squeak_peer import SqueakPeer
+from squeaknode.core.squeaks import get_hash
 from squeaknode.node.squeak_store import SqueakStore
 
 logger = logging.getLogger(__name__)
@@ -125,3 +126,21 @@ class RangeDownloader(PeerDownloader):
         return squeak.nBlockHeight >= self.min_block and \
             squeak.nBlockHeight <= self.max_block and \
             squeak.GetPubKey() in self.pubkeys
+
+
+class SingleDownloader(PeerDownloader):
+
+    def __init__(
+            self,
+            peer: SqueakPeer,
+            squeak_store: SqueakStore,
+            squeak_hash: bytes,
+    ):
+        super().__init__(peer, squeak_store)
+        self.squeak_hash = squeak_hash
+
+    def get_hashes(self) -> List[bytes]:
+        return [self.squeak_hash]
+
+    def is_squeak_wanted(self, squeak: CSqueak) -> bool:
+        return get_hash(squeak) == self.squeak_hash
