@@ -166,8 +166,8 @@ return(
                 setIsNotAutoconnect(e,peer.getPeerId()) :
                 setIsAutoconnect(e,peer.getPeerId())
               }
-               className={peer.getAutoconnect() ? 'remove-autoconnect peer-connect-button' : 'peer-connect-button'}>
-                  <span><span>{ peer.getAutoconnect() ? 'Autoconnecting' : 'Not Autoconnecting'}</span></span>
+               className={peer.getAutoconnect() ? 'enable-btn-wrap disable-switch' : 'enable-btn-wrap'}>
+                  <span><span>{ peer.getAutoconnect() ? 'Enabled' : 'Disabled'}</span></span>
               </div>
             }
             </div>

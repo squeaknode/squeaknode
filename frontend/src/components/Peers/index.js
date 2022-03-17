@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useContext } from 'react'
 import './style.scss'
 import { withRouter, Link } from 'react-router-dom'
-import { ICON_SEARCH, ICON_ARROWBACK, ICON_CLOSE, ICON_LAPTOPFILL } from '../../Icons'
+import { ICON_SEARCH, ICON_ARROWBACK, ICON_CLOSE } from '../../Icons'
 import { getProfileImageSrcString } from '../../squeakimages/images';
 import Loader from '../Loader'
 import SqueakCard from '../SqueakCard'
+import PeerCard from '../../features/peers/PeerCard'
 
 import { unwrapResult } from '@reduxjs/toolkit'
 import { useSelector } from 'react-redux'
@@ -128,27 +129,7 @@ const Peers = (props) => {
                 </div>
                 {tab === 'Saved Peers' ?
                 peers.map(sp=>{
-                  const peerId = sp.getPeerId();
-                  const savedPeerName = sp.getPeerName();
-                  const peerAddress = sp.getPeerAddress();
-                  const host = peerAddress.getHost();
-                  const port = peerAddress.getPort();
-                  const addrStr = host + ':' + port;
-
-                  return <Link to={peerUrl(peerAddress)} key={peerId} className="search-result-wapper">
-                    <ICON_LAPTOPFILL styles={{width:'64px', height:"64px"}} />
-                    <div className="search-user-details">
-                    <div className="search-user-warp">
-                    <div className="search-user-info">
-                    <div className="search-user-name">{savedPeerName}</div>
-                    <div className="search-user-username">{addrStr}</div>
-                    </div>
-                    </div>
-                    <div className="search-user-bio">
-                      &nbsp;
-                    </div>
-                  </div>
-                </Link>
+                  return <PeerCard peer={sp}/>
                 })
                 :
                 tab === 'Connected Peers' ?
