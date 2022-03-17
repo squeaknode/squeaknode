@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import logging
+from abc import ABC
+from abc import abstractmethod
 from typing import List
 
 from squeak.core import CSqueak
@@ -35,29 +37,25 @@ logger = logging.getLogger(__name__)
 DOWNLOAD_TIMEOUT_S = 10
 
 
-class RangeDownloader:
+class PeerDownloader(ABC):
 
-    def __init__(
-            self,
-            peer: SqueakPeer,
-            squeak_store: SqueakStore,
-            min_block: int,
-            max_block: int,
-            pubkeys: List[SqueakPublicKey],
-    ):
+    def __init__(self, peer: SqueakPeer, squeak_store: SqueakStore):
         self.peer = peer
         self.client = PeerClient(peer)
         self.squeak_store = squeak_store
-        self.min_block = min_block
-        self.max_block = max_block
-        self.pubkeys = pubkeys
 
-    def download_squeaks(self) -> None:
-        squeak_hashes = self.client.lookup(
-            self.min_block,
-            self.max_block,
-            self.pubkeys,
-        )
+    @abstractmethod
+    def get_hashes(self) -> List[bytes]:
+        """Get list of squeak hashes to download.
+        """
+
+    @abstractmethod
+    def is_squeak_wanted(self, squeak: CSqueak) -> bool:
+        """Return true if squeak is supposed to be downloaded.
+        """
+
+    def download(self) -> None:
+        squeak_hashes = self.get_hashes()
         for squeak_hash in squeak_hashes:
             # Download the squeak if not already owned.
             self.download_squeak(squeak_hash)
@@ -99,6 +97,29 @@ class RangeDownloader:
                     offer,
                     self.peer.address,
                 )
+
+
+class RangeDownloader(PeerDownloader):
+
+    def __init__(
+            self,
+            peer: SqueakPeer,
+            squeak_store: SqueakStore,
+            min_block: int,
+            max_block: int,
+            pubkeys: List[SqueakPublicKey],
+    ):
+        super().__init__(peer, squeak_store)
+        self.min_block = min_block
+        self.max_block = max_block
+        self.pubkeys = pubkeys
+
+    def get_hashes(self) -> List[bytes]:
+        return self.client.lookup(
+            self.min_block,
+            self.max_block,
+            self.pubkeys,
+        )
 
     def is_squeak_wanted(self, squeak: CSqueak) -> bool:
         return squeak.nBlockHeight >= self.min_block and \

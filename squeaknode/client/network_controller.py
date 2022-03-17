@@ -51,7 +51,7 @@ class NetworkController:
                 max_block,
                 followed_public_keys,
             )
-            downloader.download_squeaks()
+            downloader.download()
 
     def download_pubkey_squeaks(self, pubkey: SqueakPublicKey) -> None:
         min_block = 0  # TODO
@@ -65,4 +65,4 @@ class NetworkController:
                 max_block,
                 [pubkey],
             )
-            downloader.download_squeaks()
+            downloader.download()
