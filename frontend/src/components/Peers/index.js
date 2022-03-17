@@ -47,8 +47,8 @@ const Peers = (props) => {
         props.history.push(`/app/profile/${id}`)
     }
 
-    const goToPeer = (peerAddress) => {
-        props.history.push(`/app/peer/${peerAddress.getNetwork()}/${peerAddress.getHost()}/${peerAddress.getPort()}`)
+    const peerUrl = (peerAddress) => {
+        return `/app/peer/${peerAddress.getNetwork()}/${peerAddress.getHost()}/${peerAddress.getPort()}`;
     }
 
     const peerAddressToStr = (peerAddress) => {
@@ -135,7 +135,7 @@ const Peers = (props) => {
                   const port = peerAddress.getPort();
                   const addrStr = host + ':' + port;
 
-                  return <div onClick={()=>goToPeer(peerAddress)} key={peerId} className="search-result-wapper">
+                  return <Link to={peerUrl(peerAddress)} key={peerId} className="search-result-wapper">
                     <ICON_LAPTOPFILL styles={{fill:"rgb(0,128,0)", width:'48px', height:"48px"}} />
                     <div className="search-user-details">
                     <div className="search-user-warp">
@@ -148,7 +148,7 @@ const Peers = (props) => {
                       &nbsp;
                     </div>
                   </div>
-                </div>
+                </Link>
                 })
                 :
                 tab === 'Connected Peers' ?
