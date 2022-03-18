@@ -454,8 +454,10 @@ class SqueakController:
         self.node_settings.clear_sell_price_msat()
 
     def get_sell_price_msat(self) -> int:
-        return self.node_settings.get_sell_price_msat() or \
-            self.config.node.price_msat
+        configured_price = self.node_settings.get_sell_price_msat()
+        if configured_price is None:
+            return self.config.node.price_msat
+        return configured_price
 
     def get_default_sell_price_msat(self) -> int:
         return self.config.node.price_msat
