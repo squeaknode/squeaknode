@@ -25,225 +25,225 @@ import {
 
 const Peer = (props) => {
 
-const [modalOpen, setModalOpen] = useState(false)
+  const [modalOpen, setModalOpen] = useState(false)
 
-const [editName, setName] = useState('')
-const [editDescription, setDescription] = useState('')
-const [deleteModalOpen, setDeleteModalOpen] = useState(false)
-const [savePeerModalOpen, setSavePeerModalOpen] = useState(false)
-const [banner, setBanner] = useState('')
-const [saved, setSaved] = useState(false)
-const [tab, setTab] = useState('Members')
-const [bannerLoading, setBannerLoading] = useState(false)
-const [styleBody, setStyleBody] = useState(false)
+  const [editName, setName] = useState('')
+  const [editDescription, setDescription] = useState('')
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false)
+  const [savePeerModalOpen, setSavePeerModalOpen] = useState(false)
+  const [banner, setBanner] = useState('')
+  const [saved, setSaved] = useState(false)
+  const [tab, setTab] = useState('Members')
+  const [bannerLoading, setBannerLoading] = useState(false)
+  const [styleBody, setStyleBody] = useState(false)
 
-const peer = useSelector(selectCurrentPeer);
-const dispatch = useDispatch();
+  const peer = useSelector(selectCurrentPeer);
+  const dispatch = useDispatch();
 
 
-useEffect(() => {
+  useEffect(() => {
     window.scrollTo(0, 0)
     dispatch(fetchPeer({
       network: props.match.params.network,
       host: props.match.params.host,
       port: props.match.params.port,
     }));
-}, [])
+  }, [])
 
-const isInitialMount = useRef(true);
-useEffect(() => {
+  const isInitialMount = useRef(true);
+  useEffect(() => {
     if (isInitialMount.current){ isInitialMount.current = false }
     else {
-        document.getElementsByTagName("body")[0].style.cssText = styleBody && "overflow-y: hidden; margin-right: 17px"
+      document.getElementsByTagName("body")[0].style.cssText = styleBody && "overflow-y: hidden; margin-right: 17px"
     }
-}, [styleBody])
+  }, [styleBody])
 
-useEffect( () => () => document.getElementsByTagName("body")[0].style.cssText = "", [] )
+  useEffect( () => () => document.getElementsByTagName("body")[0].style.cssText = "", [] )
 
 
-const deletePeer = () => {
+  const deletePeer = () => {
     let values = {
-        peerId: peer.getPeerId(),
+      peerId: peer.getPeerId(),
     }
     dispatch(setDeletePeer(values));
     toggleDeleteModal();
-}
+  }
 
-function removeHttp(url) {
-  return url.replace(/^https?:\/\//, '');
-}
+  function removeHttp(url) {
+    return url.replace(/^https?:\/\//, '');
+  }
 
-const savePeer = () => {
+  const savePeer = () => {
     const strippedHost = removeHttp(props.match.params.host);
     dispatch(setSavePeer({
-        name: editName,
-        host: strippedHost,
-        port: props.match.params.port,
-        network: props.match.params.network,
+      name: editName,
+      host: strippedHost,
+      port: props.match.params.port,
+      network: props.match.params.network,
     }));
     toggleSavePeerModal();
-}
+  }
 
-const setIsAutoconnect = (e,id) => {
+  const setIsAutoconnect = (e,id) => {
     e.stopPropagation()
     console.log(id);
     console.log(peer.getPeerId());
     let values = {
-        peerId: peer.getPeerId(),
+      peerId: peer.getPeerId(),
     }
 
     dispatch(setPeerAutoconnectEnabled(values));
-}
+  }
 
-const setIsNotAutoconnect = (e,id) => {
+  const setIsNotAutoconnect = (e,id) => {
     e.stopPropagation()
     let values = {
-        peerId: peer.getPeerId(),
+      peerId: peer.getPeerId(),
     }
     dispatch(setPeerAutoconnectDisabled(values));
-}
+  }
 
-const toggleDeleteModal = () => {
+  const toggleDeleteModal = () => {
     setStyleBody(!styleBody)
     setSaved(false)
     setTimeout(()=>{ setDeleteModalOpen(!deleteModalOpen) },20)
-}
+  }
 
-const toggleSavePeerModal = (param, type) => {
+  const toggleSavePeerModal = (param, type) => {
     setStyleBody(!styleBody)
     setTimeout(()=>{ setSavePeerModalOpen(!savePeerModalOpen) },20)
-}
+  }
 
-const handleModalClick = (e) => {
+  const handleModalClick = (e) => {
     e.stopPropagation()
-}
+  }
 
 
-return(
+  return(
     <div>
 
-    <div className="profile-wrapper">
-    <div className="profile-header-wrapper">
-        <div className="profile-header-back">
+      <div className="profile-wrapper">
+        <div className="profile-header-wrapper">
+          <div className="profile-header-back">
             <div onClick={()=>window.history.back()} className="header-back-wrapper">
-                <ICON_ARROWBACK/>
+              <ICON_ARROWBACK/>
             </div>
-        </div>
-        <div className="profile-header-content">
+          </div>
+          <div className="profile-header-content">
             <div className="profile-header-name">
-                    {props.match.params.host}:{props.match.params.port}
+              {props.match.params.host}:{props.match.params.port}
             </div>
+          </div>
         </div>
-    </div>
 
         <div className="listp-details-wrap">
-            <div className="bookmarks-header-name">{peer && peer.getPeerName()}</div>
-            <div className="list-owner-wrap">
-                <div>{props.match.params.host}:{props.match.params.port}</div>
-            </div>
+          <div className="bookmarks-header-name">{peer && peer.getPeerName()}</div>
+          <div className="list-owner-wrap">
+            <div>{props.match.params.host}:{props.match.params.port}</div>
+          </div>
 
-            <div className="profile-options">
+          <div className="profile-options">
             {peer &&
               <div onClick={(e)=>toggleDeleteModal()}
-               className='peer-connect-button'>
-                  <span>Delete</span>
+                className='peer-connect-button'>
+                <span>Delete</span>
               </div>
             }
             {!peer &&
               <div onClick={(e)=>toggleSavePeerModal('edit')}
-               className='profiles-create-button'>
-                  <span>Add Saved Peer</span>
+                className='profiles-create-button'>
+                <span>Add Saved Peer</span>
               </div>
             }
-            </div>
+          </div>
 
-            <div className="profile-options">
+          <div className="profile-options">
             {peer &&
               <div onClick={(e)=>
-                peer.getAutoconnect() ?
-                setIsNotAutoconnect(e,peer.getPeerId()) :
-                setIsAutoconnect(e,peer.getPeerId())
-              }
-               className={peer.getAutoconnect() ? 'enable-btn-wrap disable-switch' : 'enable-btn-wrap'}>
-                  <span><span>{ peer.getAutoconnect() ? 'Enabled' : 'Disabled'}</span></span>
+                  peer.getAutoconnect() ?
+                  setIsNotAutoconnect(e,peer.getPeerId()) :
+                  setIsAutoconnect(e,peer.getPeerId())
+                }
+                className={peer.getAutoconnect() ? 'enable-btn-wrap disable-switch' : 'enable-btn-wrap'}>
+                <span><span>{ peer.getAutoconnect() ? 'Enabled' : 'Disabled'}</span></span>
               </div>
             }
-            </div>
+          </div>
 
         </div>
 
         <div className="feed-wrapper">
-              <div className="feed-trending-card">
-                  <div className="feed-card-trend">
-                      <div>Number of downloads</div>
-                      <div>TODO</div>
-                  </div>
-                  <div className="feed-card-trend">
-                      <div>Number of purchases</div>
-                      <div>TODO</div>
-                  </div>
-                  <div className="feed-card-trend">
-                      <div>Last connection time</div>
-                      <div>TODO</div>
-                  </div>
+          <div className="feed-trending-card">
+            <div className="feed-card-trend">
+              <div>Number of downloads</div>
+              <div>TODO</div>
+            </div>
+            <div className="feed-card-trend">
+              <div>Number of purchases</div>
+              <div>TODO</div>
+            </div>
+            <div className="feed-card-trend">
+              <div>Last connection time</div>
+              <div>TODO</div>
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+
+      {/* Modal for delete profile */}
+      <div onClick={()=>toggleDeleteModal()} style={{display: deleteModalOpen ? 'block' : 'none'}} className="modal-edit">
+        <div onClick={(e)=>handleModalClick(e)} className="modal-content">
+          <div className="modal-header">
+            <div className="modal-closeIcon">
+              <div onClick={()=>toggleDeleteModal()} className="modal-closeIcon-wrap">
+                <ICON_CLOSE />
               </div>
+            </div>
+            <p className="modal-title">'Delete Peer'</p>
+            <div className="save-modal-wrapper">
+              <div onClick={deletePeer} className="save-modal-btn">
+                Delete
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
 
-
-    </div>
-
-    {/* Modal for delete profile */}
-    <div onClick={()=>toggleDeleteModal()} style={{display: deleteModalOpen ? 'block' : 'none'}} className="modal-edit">
+      {/* Modal for create save peer */}
+      <div onClick={()=>toggleSavePeerModal()} style={{display: savePeerModalOpen ? 'block' : 'none'}} className="modal-edit">
         <div onClick={(e)=>handleModalClick(e)} className="modal-content">
-            <div className="modal-header">
-                <div className="modal-closeIcon">
-                    <div onClick={()=>toggleDeleteModal()} className="modal-closeIcon-wrap">
-                        <ICON_CLOSE />
-                    </div>
-                </div>
-                <p className="modal-title">'Delete Peer'</p>
-                <div className="save-modal-wrapper">
-                    <div onClick={deletePeer} className="save-modal-btn">
-                        Delete
-                    </div>
-                </div>
+          <div className="modal-header">
+            <div className="modal-closeIcon">
+              <div onClick={()=>toggleSavePeerModal()} className="modal-closeIcon-wrap">
+                <ICON_CLOSE />
+              </div>
             </div>
+            <p className="modal-title">Save Peer</p>
+
+            <div className="save-modal-wrapper">
+              <div onClick={savePeer} className="save-modal-btn">
+                Submit
+              </div>
+            </div>
+          </div>
+          <div className="modal-body">
+            <form className="edit-form">
+              <div className="edit-input-wrap">
+                <div className="edit-input-content">
+                  <label>Name</label>
+                  <input onChange={(e)=>setName(e.target.value)} type="text" name="name" className="edit-input"/>
+                </div>
+              </div>
+            </form>
+          </div>
         </div>
-    </div>
-
-    {/* Modal for create save peer */}
-    <div onClick={()=>toggleSavePeerModal()} style={{display: savePeerModalOpen ? 'block' : 'none'}} className="modal-edit">
-        <div onClick={(e)=>handleModalClick(e)} className="modal-content">
-            <div className="modal-header">
-                <div className="modal-closeIcon">
-                    <div onClick={()=>toggleSavePeerModal()} className="modal-closeIcon-wrap">
-                        <ICON_CLOSE />
-                    </div>
-                </div>
-                <p className="modal-title">Save Peer</p>
-
-                <div className="save-modal-wrapper">
-                    <div onClick={savePeer} className="save-modal-btn">
-                        Submit
-                    </div>
-                </div>
-            </div>
-            <div className="modal-body">
-                <form className="edit-form">
-                <div className="edit-input-wrap">
-                    <div className="edit-input-content">
-                        <label>Name</label>
-                        <input onChange={(e)=>setName(e.target.value)} type="text" name="name" className="edit-input"/>
-                    </div>
-                </div>
-                </form>
-            </div>
-        </div>
-    </div>
+      </div>
 
 
     </div>
-    )
+  )
 }
 
 export default withRouter(Peer)
