@@ -221,6 +221,7 @@ class SqueakStore:
         self.save_sent_offer(sent_offer)
         return sent_offer
 
+    # TODO: remove this method. Do this logic in squeakcontroller.
     def get_packaged_offer(
             self,
             squeak_hash: bytes,

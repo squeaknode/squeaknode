@@ -46,7 +46,7 @@ const Nav = ({history}) => {
     const [modalOpen, setModalOpen] = useState(false)
     const [sellPriceModalOpen, setSellPriceModalOpen] = useState(false)
     const [styleBody, setStyleBody] = useState(false)
-    const [newSellPriceMsat, setNewSellPriceMsat] = useState('')
+    const [newSellPriceMsat, setNewSellPriceMsat] = useState(0)
 
     const session = true;
     const sellPrice = useSelector(selectSellPriceInfo);
@@ -114,6 +114,7 @@ const Nav = ({history}) => {
             sellPriceMsat: newSellPriceMsat,
         }
         dispatch(setSellPrice(newSellPriceMsat));
+        setNewSellPriceMsat(0);
         toggleSellPriceModal()
     }
 
@@ -253,11 +254,14 @@ const Nav = ({history}) => {
                 </div>
                 {sellPrice &&
                 <div className="modal-body">
+                      <div className="edit-input-wrap">
+                            Current Sell Price: {sellPrice.getPriceMsat() / 1000} sats
+                      </div>
                       <form className="edit-form">
                           <div className="edit-input-wrap">
                               <div className="edit-input-content">
-                                  <label>Sell Price (msats)</label>
-                                  <input defaultValue={sellPrice.getPriceMsatIsSet() ? sellPrice.getPriceMsat() : sellPrice.getDefaultPriceMsat()} onChange={(e)=>setNewSellPriceMsat(e.target.value)} type="text" name="sellPrice" className="edit-input"/>
+                                  <label>New Sell Price (msats)</label>
+                                  <input value={newSellPriceMsat} onChange={(e)=>setNewSellPriceMsat(e.target.value)} type="text" name="sellPrice" className="edit-input"/>
                               </div>
                           </div>
                       </form>

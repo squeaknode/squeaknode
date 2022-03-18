@@ -70,23 +70,17 @@ def test_get_sell_price(admin_stub):
     # Get the sell price
     price = get_sell_price(admin_stub)
 
-    assert price.price_msat == 0
-    assert not price.price_msat_is_set
-    assert price.default_price_msat == 1000000
+    assert price.price_msat == 1000000
 
     set_sell_price(admin_stub, 98765)
     price = get_sell_price(admin_stub)
 
     assert price.price_msat == 98765
-    assert price.price_msat_is_set
-    assert price.default_price_msat == 1000000
 
     clear_sell_price(admin_stub)
     price = get_sell_price(admin_stub)
 
-    assert price.price_msat == 0
-    assert not price.price_msat_is_set
-    assert price.default_price_msat == 1000000
+    assert price.price_msat == 1000000
 
 
 def test_get_external_address(admin_stub):

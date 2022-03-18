@@ -243,6 +243,7 @@ const Profile = (props) => {
 
   const handleMenuClick = (e) => { e.stopPropagation() }
 
+  console.log(user && user.getProfileName());
 
   return(
     <div>
@@ -408,25 +409,14 @@ const Profile = (props) => {
                         </div>
                       </div>
                     </div>
-                    {user ?
                       <form className="edit-form">
                         <div className="edit-input-wrap">
                           <div className="edit-input-content">
-                            <label>Name</label>
-                            <input defaultValue={user.getProfileName()} onChange={(e)=>setName(e.target.value)} type="text" name="name" className="edit-input"/>
-                          </div>
-                        </div>
-                      </form> :
-                      <form className="create-form">
-                        <div className="create-input-wrap">
-                          <div className="create-input-content">
                             <label>Name</label>
                             <input defaultValue={''} onChange={(e)=>setName(e.target.value)} type="text" name="name" className="edit-input"/>
                           </div>
                         </div>
                       </form>
-
-                    }
                   </div>
                 </div>
               </div>
