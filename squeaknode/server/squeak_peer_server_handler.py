@@ -29,8 +29,7 @@ from squeaknode.core.lightning_address import LightningAddressHostPort
 from squeaknode.core.offer import Offer
 from squeaknode.core.peer_address import Network
 from squeaknode.core.peer_address import PeerAddress
-from squeaknode.node.price_policy import PricePolicy
-from squeaknode.node.squeak_store import SqueakStore
+from squeaknode.node.squeak_controller import SqueakController
 
 logger = logging.getLogger(__name__)
 
@@ -48,18 +47,18 @@ class SqueakPeerServerHandler(object):
 
     def __init__(
             self,
-            squeak_store: SqueakStore,
+            squeak_controller: SqueakController,
             node_settings,
             config,
     ):
-        self.squeak_store = squeak_store
+        self.squeak_controller = squeak_controller
         self.node_settings = node_settings
         self.config = config
 
     def handle_get_squeak_bytes(self, squeak_hash_str) -> Optional[bytes]:
         squeak_hash = bytes.fromhex(squeak_hash_str)
         logger.info("Handle get squeak for hash: {}".format(squeak_hash_str))
-        squeak = self.squeak_store.get_squeak(squeak_hash)
+        squeak = self.squeak_controller.get_squeak(squeak_hash)
         if not squeak:
             raise NotFoundError()
         return squeak.serialize()
@@ -71,7 +70,7 @@ class SqueakPeerServerHandler(object):
         price_msat = self.get_price_for_squeak()
         if price_msat > 0:
             raise PaymentRequiredError()
-        secret_key = self.squeak_store.get_squeak_secret_key(squeak_hash)
+        secret_key = self.squeak_controller.get_squeak_secret_key(squeak_hash)
         if not secret_key:
             raise NotFoundError()
         return secret_key
@@ -89,7 +88,7 @@ class SqueakPeerServerHandler(object):
         price_msat = self.get_price_for_squeak()
         if price_msat == 0:
             raise NotFoundError()
-        # TODO: lnd_external_address should be configured inside SqueakStore.
+        # TODO: lnd_external_address should be configured inside SqueakStore/SqueakController.
         lnd_external_address: Optional[LightningAddressHostPort] = None
         if self.config.lnd.external_host:
             lnd_external_address = LightningAddressHostPort(
@@ -97,7 +96,7 @@ class SqueakPeerServerHandler(object):
                 port=self.config.lnd.port,
             )
         logger.info(lnd_external_address)
-        offer = self.squeak_store.get_packaged_offer(
+        offer = self.squeak_controller.get_packaged_offer(
             squeak_hash,
             client_addr,
             price_msat,
@@ -117,10 +116,9 @@ class SqueakPeerServerHandler(object):
             SqueakPublicKey.from_bytes(bytes.fromhex(pubkey_str))
             for pubkey_str in pubkey_strs
         ]
-
         # Add separate endpoint for replies.
         # reply_to_hash = interest.hashReplySqk if interest.hashReplySqk != EMPTY_HASH else None
-        return self.squeak_store.lookup_squeaks(
+        return self.squeak_controller.lookup_squeaks(
             pubkeys,
             min_block,
             max_block,
@@ -128,9 +126,4 @@ class SqueakPeerServerHandler(object):
         )
 
     def get_price_for_squeak(self) -> int:
-        price_policy = PricePolicy(
-            self.squeak_store,
-            self.config,
-            self.node_settings,
-        )
-        return price_policy.get_price()
+        return self.squeak_controller.get_sell_price_msat()

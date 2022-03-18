@@ -254,42 +254,6 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
     def GetLikedSqueakDisplays(self, request, context):
         return self.handler.handle_get_liked_squeak_display_entries(request)
 
-    def ConnectPeer(self, request, context):
-        return self.handler.handle_connect_peer(request)
-
-    def GetConnectedPeers(self, request, context):
-        return self.handler.handle_get_connected_peers(request)
-
-    def GetConnectedPeer(self, request, context):
-        return self.handler.handle_get_connected_peer(request)
-
-    def DisconnectPeer(self, request, context):
-        return self.handler.handle_disconnect_peer(request)
-
-    def SubscribeConnectedPeers(self, request, context):
-        stopped = threading.Event()
-
-        def on_rpc_done():
-            logger.info("Stopping SubscribeConnectedPeers.")
-            stopped.set()
-        context.add_callback(on_rpc_done)
-        return self.handler.handle_subscribe_connected_peers(
-            request,
-            stopped,
-        )
-
-    def SubscribeConnectedPeer(self, request, context):
-        stopped = threading.Event()
-
-        def on_rpc_done():
-            logger.info("Stopping SubscribeConnectedPeer.")
-            stopped.set()
-        context.add_callback(on_rpc_done)
-        return self.handler.handle_subscribe_connected_peer(
-            request,
-            stopped,
-        )
-
     def SubscribeBuyOffers(self, request, context):
         stopped = threading.Event()
 

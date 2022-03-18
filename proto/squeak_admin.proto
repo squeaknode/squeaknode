@@ -1299,12 +1299,6 @@ message GetSellPriceRequest {
 message GetSellPriceReply {
     /// The price in msats
     int64 price_msat = 1;
-
-    /// Price is set
-    bool price_msat_is_set = 2;
-
-    /// The default price in msats
-    int64 default_price_msat = 3;
 }
 
 message TwitterAccount {

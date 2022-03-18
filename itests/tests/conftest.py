@@ -35,7 +35,6 @@ from tests.util import create_signing_profile
 from tests.util import delete_profile
 from tests.util import generate_private_key
 from tests.util import get_public_key
-from tests.util import open_peer_connection
 
 
 @pytest.fixture(autouse=True)
@@ -174,41 +173,3 @@ def random_image():
 @pytest.fixture
 def random_image_base64_string(random_image):
     yield bytes_to_base64_string(random_image)
-
-
-# @pytest.fixture
-# def connected_peer_id(other_admin_stub):
-#     # Add the main node as a peer
-#     create_peer_response = other_admin_stub.CreatePeer(
-#         squeak_admin_pb2.CreatePeerRequest(
-#             peer_name="test_peer",
-#             host="squeaknode",
-#             port=8774,
-#         )
-#     )
-#     peer_id = create_peer_response.peer_id
-#     # Set the peer to be downloading
-#     other_admin_stub.SetPeerDownloading(
-#         squeak_admin_pb2.SetPeerDownloadingRequest(
-#             peer_id=peer_id,
-#             downloading=True,
-#         )
-#     )
-#     yield peer_id
-#     # Delete the peer
-#     other_admin_stub.DeletePeer(
-#         squeak_admin_pb2.DeletePeerRequest(
-#             peer_id=peer_id,
-#         )
-#     )
-
-
-@pytest.fixture
-def connected_tcp_peer_id(other_admin_stub):
-    with open_peer_connection(
-            other_admin_stub,
-            "test_peer",
-            "squeaknode",
-            18777,
-    ):
-        yield

@@ -874,21 +874,6 @@ class SqueakAdminServerHandler(object):
             squeak_display_entries=squeak_display_msgs
         )
 
-    def handle_connect_peer(self, request):
-        logger.info("peer address msg: {}".format(request.peer_address))
-        peer_address = message_to_peer_address(request.peer_address)
-        logger.info(
-            "Handle connect peer with peer address: {}".format(peer_address))
-        self.squeak_controller.connect_peer(peer_address)
-        return squeak_admin_pb2.ConnectPeerReply()
-
-    def handle_disconnect_peer(self, request):
-        peer_address = message_to_peer_address(request.peer_address)
-        logger.info(
-            "Handle disconnect peer with peer address: {}".format(peer_address))
-        self.squeak_controller.disconnect_peer(peer_address)
-        return squeak_admin_pb2.DisconnectPeerReply()
-
     def handle_subscribe_buy_offers(self, request, stopped):
         squeak_hash_str = request.squeak_hash
         squeak_hash = bytes.fromhex(squeak_hash_str)
@@ -1030,16 +1015,9 @@ class SqueakAdminServerHandler(object):
     def handle_get_sell_price(self, request):
         logger.info("Handle get sell price")
         sell_price_msat = self.squeak_controller.get_sell_price_msat()
-        price_msat_is_set = sell_price_msat is not None
-        default_sell_price_msat = self.squeak_controller.get_default_sell_price_msat()
         logger.info("sell price: {}".format(sell_price_msat))
-        logger.info("price_msat_is_set: {}".format(price_msat_is_set))
-        logger.info("default_sell_price_msat: {}".format(
-            default_sell_price_msat))
         return squeak_admin_pb2.GetSellPriceReply(
             price_msat=sell_price_msat,
-            price_msat_is_set=price_msat_is_set,
-            default_price_msat=default_sell_price_msat,
         )
 
     def handle_add_twitter_account(self, request):

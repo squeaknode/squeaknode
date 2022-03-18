@@ -180,7 +180,7 @@ class SqueakNode:
 
     def create_peer_handler(self):
         self.peer_handler = SqueakPeerServerHandler(
-            self.squeak_store,
+            self.squeak_controller,
             self.node_settings,
             self.config,
         )

@@ -30,6 +30,8 @@ from squeak.core.keys import SqueakPublicKey
 
 from squeaknode.client.network_controller import NetworkController
 from squeaknode.core.download_result import DownloadResult
+from squeaknode.core.lightning_address import LightningAddressHostPort
+from squeaknode.core.offer import Offer
 from squeaknode.core.peer_address import Network
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.received_offer import ReceivedOffer
@@ -129,6 +131,20 @@ class SqueakController:
         )
         return sent_payment_id
 
+    def get_packaged_offer(
+            self,
+            squeak_hash: bytes,
+            peer_address: PeerAddress,
+            price_msat: int,
+            lnd_external_address: Optional[LightningAddressHostPort],
+    ) -> Optional[Offer]:
+        return self.squeak_store.get_packaged_offer(
+            squeak_hash,
+            peer_address,
+            price_msat,
+            lnd_external_address,
+        )
+
     def decrypt_private_squeak(
             self,
             squeak_hash: bytes,
@@ -144,8 +160,8 @@ class SqueakController:
     def get_squeak(self, squeak_hash: bytes) -> Optional[CSqueak]:
         return self.squeak_store.get_squeak(squeak_hash)
 
-    # def get_squeak_secret_key(self, squeak_hash: bytes) -> Optional[bytes]:
-    #     return self.squeak_store.get_squeak_secret_key(squeak_hash)
+    def get_squeak_secret_key(self, squeak_hash: bytes) -> Optional[bytes]:
+        return self.squeak_store.get_squeak_secret_key(squeak_hash)
 
     def delete_squeak(self, squeak_hash: bytes) -> None:
         self.squeak_store.delete_squeak(squeak_hash)
@@ -295,6 +311,20 @@ class SqueakController:
     ) -> List[SqueakEntry]:
         return self.squeak_store.get_liked_squeak_entries(limit, last_entry)
 
+    def lookup_squeaks(
+            self,
+            public_keys: List[SqueakPublicKey],
+            min_block: Optional[int],
+            max_block: Optional[int],
+            reply_to_hash: Optional[bytes],
+    ) -> List[bytes]:
+        return self.squeak_store.lookup_squeaks(
+            public_keys,
+            min_block,
+            max_block,
+            reply_to_hash,
+        )
+
     def get_squeak_entries_for_public_key(
             self,
             public_key: SqueakPublicKey,
@@ -423,8 +453,9 @@ class SqueakController:
     def clear_sell_price_msat(self) -> None:
         self.node_settings.clear_sell_price_msat()
 
-    def get_sell_price_msat(self) -> Optional[int]:
-        return self.node_settings.get_sell_price_msat()
+    def get_sell_price_msat(self) -> int:
+        return self.node_settings.get_sell_price_msat() or \
+            self.config.node.price_msat
 
     def get_default_sell_price_msat(self) -> int:
         return self.config.node.price_msat
