@@ -84,7 +84,7 @@ const Peer = (props) => {
     toggleSavePeerModal();
   }
 
-  const setIsAutoconnect = (e,id) => {
+  const enable = (e,id) => {
     e.stopPropagation()
     console.log(id);
     console.log(peer.getPeerId());
@@ -95,7 +95,7 @@ const Peer = (props) => {
     dispatch(setPeerAutoconnectEnabled(values));
   }
 
-  const setIsNotAutoconnect = (e,id) => {
+  const disable = (e,id) => {
     e.stopPropagation()
     let values = {
       peerId: peer.getPeerId(),
@@ -161,8 +161,8 @@ const Peer = (props) => {
             {peer &&
               <div onClick={(e)=>
                   peer.getAutoconnect() ?
-                  setIsNotAutoconnect(e,peer.getPeerId()) :
-                  setIsAutoconnect(e,peer.getPeerId())
+                  disable(e,peer.getPeerId()) :
+                  enable(e,peer.getPeerId())
                 }
                 className={peer.getAutoconnect() ? 'enable-btn-wrap disable-switch' : 'enable-btn-wrap'}>
                 <span><span>{ peer.getAutoconnect() ? 'Enabled' : 'Disabled'}</span></span>
