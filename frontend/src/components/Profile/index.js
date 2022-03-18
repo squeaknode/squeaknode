@@ -320,9 +320,6 @@ const Profile = (props) => {
               <div className="profile-details-box">
                 <div className="profile-name">{user ? user.getProfileName() : ''}</div>
                 <div className="profile-username">@{userParam}</div>
-                <div className="profile-bio">
-                  &nbsp;
-                </div>
                 <div className="profile-info-box">
                   &nbsp;
                 </div>

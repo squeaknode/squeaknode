@@ -148,9 +148,10 @@ const Peer = (props) => {
               </div>
             }
           </div>
-          <div className="bookmarks-header-name">{peer && peer.getPeerName()}</div>
-          <div className="list-owner-wrap">
-            <div>{props.match.params.host}:{props.match.params.port}</div>
+
+          <div className="profile-details-box">
+            <div className="profile-name">{peer && peer.getPeerName()}</div>
+            <div className="profile-username">{props.match.params.host}:{props.match.params.port}</div>
           </div>
 
           <div className="profile-options">
