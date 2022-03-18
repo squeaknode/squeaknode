@@ -1303,7 +1303,7 @@ message GetSellPriceReply {
     /// Price is set
     bool price_msat_is_set = 2;
 
-    /// The defauly price in msats
+    /// The default price in msats
     int64 default_price_msat = 3;
 }
 
