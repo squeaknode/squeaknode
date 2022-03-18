@@ -122,22 +122,20 @@ const handleModalClick = (e) => {
 return(
     <div>
 
-      <div className="bookmarks-wrapper">
-        <div className="bookmarks-header-wrapper">
-            <div className="profile-header-back">
-                <div onClick={()=>window.history.back()} className="header-back-wrapper">
-                    <ICON_ARROWBACK/>
-                </div>
-            </div>
-            <div className="bookmarks-header-content">
-                <div className="bookmarks-header-name">
-                    {peer && peer.getPeerName()}
-                </div>
-                <div className="bookmarks-header-squeaks">
-                    {props.match.params.host}:{props.match.params.port}
-                </div>
+    <div className="profile-wrapper">
+    <div className="profile-header-wrapper">
+        <div className="profile-header-back">
+            <div onClick={()=>window.history.back()} className="header-back-wrapper">
+                <ICON_ARROWBACK/>
             </div>
         </div>
+        <div className="profile-header-content">
+            <div className="profile-header-name">
+                    {props.match.params.host}:{props.match.params.port}
+            </div>
+        </div>
+    </div>
+
         <div className="listp-details-wrap">
             <div className="bookmarks-header-name">{peer && peer.getPeerName()}</div>
             <div className="list-owner-wrap">
@@ -166,8 +164,8 @@ return(
                 setIsNotAutoconnect(e,peer.getPeerId()) :
                 setIsAutoconnect(e,peer.getPeerId())
               }
-               className={peer.getAutoconnect() ? 'remove-autoconnect peer-connect-button' : 'peer-connect-button'}>
-                  <span><span>{ peer.getAutoconnect() ? 'Autoconnecting' : 'Not Autoconnecting'}</span></span>
+               className={peer.getAutoconnect() ? 'enable-btn-wrap disable-switch' : 'enable-btn-wrap'}>
+                  <span><span>{ peer.getAutoconnect() ? 'Enabled' : 'Disabled'}</span></span>
               </div>
             }
             </div>

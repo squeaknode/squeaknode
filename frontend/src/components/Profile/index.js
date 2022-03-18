@@ -258,9 +258,6 @@ const Profile = (props) => {
                     <div className="profile-header-name">
                             {userParam}
                     </div>
-                    {/* <div className="profile-header-squeaks">
-                            82 Squeaks
-                    </div> */}
                 </div>
             </div>
             <div className="profile-banner-wrapper">
