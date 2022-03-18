@@ -35,6 +35,7 @@ from tests.util import create_signing_profile
 from tests.util import delete_profile
 from tests.util import generate_private_key
 from tests.util import get_public_key
+from tests.util import saved_peer
 
 
 @pytest.fixture(autouse=True)
@@ -53,6 +54,12 @@ def admin_stub():
 def other_admin_stub():
     with grpc.insecure_channel("squeaknode_other:8994") as admin_channel:
         yield squeak_admin_pb2_grpc.SqueakAdminStub(admin_channel)
+
+
+@pytest.fixture
+def admin_peer(other_admin_stub):
+    with saved_peer(other_admin_stub, 'squeaknode', 'squeaknode', 18777):
+        yield
 
 
 @pytest.fixture

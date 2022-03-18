@@ -481,18 +481,6 @@ def create_app(handler, username, password):
     def getlikedsqueakdisplays(msg):
         return handler.handle_get_liked_squeak_display_entries(msg)
 
-    @app.route("/connectpeer", methods=["POST"])
-    @login_required
-    @protobuf_serialized(squeak_admin_pb2.ConnectPeerRequest())
-    def connectpeer(msg):
-        return handler.handle_connect_peer(msg)
-
-    @app.route("/disconnectpeer", methods=["POST"])
-    @login_required
-    @protobuf_serialized(squeak_admin_pb2.DisconnectPeerRequest())
-    def disconnectpeer(msg):
-        return handler.handle_disconnect_peer(msg)
-
     @app.route("/getexternaladdress", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.GetExternalAddressRequest())

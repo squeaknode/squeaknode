@@ -85,6 +85,24 @@ def peer_connection(node_stub, lightning_host, remote_pubkey):
 
 
 @contextmanager
+def saved_peer(node_stub, peer_name, host, port):
+    # Create a new peer
+    peer_id = create_saved_peer(
+        node_stub,
+        peer_name,
+        host,
+        port,
+    )
+    yield peer_id
+    # Delete the peer
+    node_stub.DeletePeer(
+        squeak_admin_pb2.DeletePeerRequest(
+            peer_id=peer_id,
+        )
+    )
+
+
+@contextmanager
 def free_price(node_stub):
     # Set the price to zero
     set_sell_price(node_stub, 0)
