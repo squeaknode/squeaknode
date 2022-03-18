@@ -48,7 +48,7 @@ const PeerCard = (props) => {
 
       return <Link onClick={(e)=>e.stopPropagation()} to={peerUrl} key={peerId} className="search-result-wapper">
           <div className="search-userPic-wrapper">
-              <ICON_LAPTOPFILL styles={{width:'64px', height:"64px"}} />
+              <ICON_LAPTOPFILL styles={{width:'32px', height:"32px"}} />
           </div>
           <div className="search-user-details">
               <div className="search-user-warp">
