@@ -32,19 +32,13 @@ from proto import lnd_pb2 as ln
 from proto import squeak_admin_pb2
 from tests.util import channel
 from tests.util import clear_sell_price
-from tests.util import connect_squeak_peer
 from tests.util import create_contact_profile
 from tests.util import create_saved_peer
 from tests.util import create_signing_profile
 from tests.util import delete_profile
 from tests.util import delete_squeak
-from tests.util import download_offers
 from tests.util import download_squeak
-from tests.util import download_squeaks
-from tests.util import download_squeaks_for_pubkey
 from tests.util import free_price
-from tests.util import get_connected_peer
-from tests.util import get_connected_peers
 from tests.util import get_default_peer_port
 from tests.util import get_external_address
 from tests.util import get_hash
@@ -58,15 +52,11 @@ from tests.util import get_squeak_display
 from tests.util import get_squeak_profile
 from tests.util import import_signing_profile
 from tests.util import make_squeak
-from tests.util import open_peer_connection
 from tests.util import peer_connection
-from tests.util import public_key_from_hex
 from tests.util import send_coins
 from tests.util import set_sell_price
-from tests.util import subscribe_connected_peers
 from tests.util import subscribe_squeak_ancestor_entries
 from tests.util import subscribe_squeak_entry
-from tests.util import subscribe_squeaks_for_address
 
 
 def test_get_network(admin_stub):
@@ -650,16 +640,12 @@ def test_send_coins(admin_stub, other_admin_stub):
 def test_buy_squeak(
     admin_stub,
     other_admin_stub,
-    connected_tcp_peer_id,
     signing_profile_id,
     saved_squeak_hash,
+    admin_peer,
 ):
     # Download squeak
     download_squeak(other_admin_stub, saved_squeak_hash)
-
-    # Download offer
-    download_offers(other_admin_stub, saved_squeak_hash)
-    time.sleep(5)
 
     # Get the sent offers from the seller node
     get_sent_offers_response = admin_stub.GetSentOffers(
@@ -804,8 +790,8 @@ def test_buy_squeak(
 def test_download_free_squeak(
     admin_stub,
     other_admin_stub,
-    connected_tcp_peer_id,
     saved_squeak_hash,
+    admin_peer,
 ):
     with free_price(admin_stub):
         # Download squeak
@@ -814,10 +800,6 @@ def test_download_free_squeak(
         print(download_result)
         assert download_result.number_downloaded == 1
         assert download_result.number_requested == 1
-
-        # Download offer
-        download_offers(other_admin_stub, saved_squeak_hash)
-        time.sleep(5)
 
     # Get the squeak display item
     get_squeak_display_entry = get_squeak_display(
@@ -830,9 +812,9 @@ def test_download_free_squeak(
 def test_download_single_squeak(
     admin_stub,
     other_admin_stub,
-    connected_tcp_peer_id,
     signing_profile_id,
     saved_squeak_hash,
+    admin_peer,
 ):
 
     with subscribe_squeak_entry(other_admin_stub, saved_squeak_hash) as subscription_queue, \
@@ -862,10 +844,6 @@ def test_download_single_squeak(
             other_admin_stub, saved_squeak_hash)
         assert squeak_display_entry is not None
 
-        # Download offer
-        download_offers(other_admin_stub, saved_squeak_hash)
-        time.sleep(5)
-
         # Get the buy offer
         get_buy_offers_response = other_admin_stub.GetBuyOffers(
             squeak_admin_pb2.GetBuyOffersRequest(
@@ -884,49 +862,6 @@ def test_download_single_squeak(
         print("ancestor_subscription_queue item:")
         print(item)
         assert item[0].squeak_hash == saved_squeak_hash
-
-
-def test_download_squeaks_for_pubkey(
-    admin_stub,
-    other_admin_stub,
-    connected_tcp_peer_id,
-    signing_profile_id,
-    saved_squeak_hash,
-):
-    squeak_profile = get_squeak_profile(admin_stub, signing_profile_id)
-    squeak_profile_pubkey = squeak_profile.pubkey
-
-    with subscribe_squeaks_for_address(other_admin_stub, squeak_profile_pubkey) as subscription_queue:
-
-        # Get the squeak display item (should be empty)
-        squeak_display_entry = get_squeak_display(
-            other_admin_stub, saved_squeak_hash)
-        assert squeak_display_entry is None
-
-        # Get buy offers for the squeak hash (should be empty)
-        get_buy_offers_response = other_admin_stub.GetBuyOffers(
-            squeak_admin_pb2.GetBuyOffersRequest(
-                squeak_hash=saved_squeak_hash,
-            )
-        )
-        # print(get_buy_offers_response)
-        assert len(get_buy_offers_response.offers) == 0
-
-        # Download squeaks for address
-        download_result = download_squeaks_for_pubkey(
-            other_admin_stub, squeak_profile_pubkey)
-        assert download_result.number_downloaded == 1
-        assert download_result.number_requested == 10
-
-        # Get the squeak display item
-        squeak_display_entry = get_squeak_display(
-            other_admin_stub, saved_squeak_hash)
-        assert squeak_display_entry is not None
-
-        item = subscription_queue.get()
-        print("item:")
-        print(item)
-        assert item.squeak_hash == saved_squeak_hash
 
 
 def test_like_squeak(admin_stub, saved_squeak_hash):
@@ -964,154 +899,6 @@ def test_like_squeak(admin_stub, saved_squeak_hash):
     assert (
         get_squeak_display_entry.liked_time_ms == 0
     )
-
-
-def test_connect_peer(admin_stub, other_admin_stub):
-    # connected_peers = get_connected_peers(admin_stub)
-    # assert len(connected_peers) == 0
-    # other_connected_peers = get_connected_peers(other_admin_stub)
-    # assert len(other_connected_peers) == 0
-
-    with subscribe_connected_peers(other_admin_stub) as subscription_queue:
-        with open_peer_connection(
-                other_admin_stub,
-                "test_peer",
-                "squeaknode",
-                18777,
-        ):
-            connected_peers = get_connected_peers(admin_stub)
-            print(connected_peers)
-            assert len(connected_peers) == 1
-            print("connected_peers: {}".format(connected_peers))
-            other_connected_peers = get_connected_peers(other_admin_stub)
-            assert len(other_connected_peers) == 1
-            print("other_connected_peers: {}".format(other_connected_peers))
-            assert other_connected_peers[0].peer_address.host == "squeaknode"
-            assert other_connected_peers[0].peer_address.port == 18777
-            connected_peer = get_connected_peer(
-                other_admin_stub, "squeaknode", 18777)
-            assert connected_peer is not None
-
-            # Get item from queue
-            item = subscription_queue.get()
-            print("item:")
-            print(item)
-            assert len(item) == 1
-
-        time.sleep(2)
-        connected_peers = get_connected_peers(admin_stub)
-        assert len(connected_peers) == 0
-        other_connected_peers = get_connected_peers(other_admin_stub)
-        assert len(other_connected_peers) == 0
-
-        # Get item from queue
-        item = subscription_queue.get()
-        print("item:")
-        print(item)
-        assert len(item) == 0
-
-
-def test_connect_invalid_peer_address(admin_stub):
-    with pytest.raises(Exception) as excinfo:
-        # Try to connect the peer and fail
-        connect_squeak_peer(
-            admin_stub,
-            host="fake_peer_host_56789",
-            port=12345,
-        )
-    assert "Name or service not known" in str(excinfo.value)
-
-
-def test_get_squeak_by_lookup(
-    admin_stub,
-    other_admin_stub,
-    connected_tcp_peer_id,
-    signing_profile_id,
-    saved_squeak_hash,
-):
-    # Get the squeak profile
-    squeak_profile = get_squeak_profile(admin_stub, signing_profile_id)
-    squeak_profile_pubkey = squeak_profile.pubkey
-    squeak_profile.profile_name
-
-    # Get the squeak display item
-    squeak_display_entry = get_squeak_display(
-        other_admin_stub, saved_squeak_hash)
-    assert squeak_display_entry is None
-
-    # Sync squeaks
-    download_result = download_squeaks(
-        other_admin_stub,
-        [squeak_profile_pubkey],
-        -1,
-        -1,
-        None,
-    )
-    print(download_result)
-    assert download_result.number_downloaded == 1
-    assert download_result.number_requested == 10
-
-    # Get the squeak display item
-    squeak_display_entry = get_squeak_display(
-        other_admin_stub, saved_squeak_hash)
-    assert squeak_display_entry.squeak_hash == saved_squeak_hash
-
-
-def test_subscribe_squeaks(
-    admin_stub,
-    other_admin_stub,
-    signing_profile_id,
-):
-
-    # Get the squeak profile
-    squeak_profile = get_squeak_profile(
-        admin_stub, signing_profile_id)
-    squeak_profile_pubkey = squeak_profile.pubkey
-    squeak_profile_name = squeak_profile.profile_name
-
-    # Add the contact profile to the other server and set the profile to be following
-    public_key = public_key_from_hex(squeak_profile_pubkey)
-    contact_profile_id = create_contact_profile(
-        other_admin_stub, squeak_profile_name, public_key)
-    other_admin_stub.SetSqueakProfileFollowing(
-        squeak_admin_pb2.SetSqueakProfileFollowingRequest(
-            profile_id=contact_profile_id,
-            following=True,
-        )
-    )
-
-    with free_price(admin_stub), \
-        open_peer_connection(
-        other_admin_stub,
-        "test_peer",
-        "squeaknode",
-        18777,
-    ):
-        # Create a new squeak using the new profile
-        make_squeak_content = "Hello this message should be subscribed!"
-        make_squeak_hash = make_squeak(
-            admin_stub,
-            signing_profile_id,
-            make_squeak_content,
-        )
-
-        time.sleep(2)
-
-        # Get the squeak display item
-        squeak_display_entry = get_squeak_display(
-            other_admin_stub,
-            make_squeak_hash,
-        )
-        assert squeak_display_entry is not None
-
-        # Get the squeak display item
-        get_squeak_display_entry = get_squeak_display(
-            other_admin_stub,
-            make_squeak_hash,
-        )
-        assert (
-            get_squeak_display_entry.content_str == make_squeak_content
-        )
 
 
 def test_search(admin_stub, signing_profile_id):
