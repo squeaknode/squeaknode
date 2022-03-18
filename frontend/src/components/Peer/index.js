@@ -135,28 +135,7 @@ const Peer = (props) => {
             </div>
           </div>
         </div>
-
-        <div className="listp-details-wrap">
-          <div className="bookmarks-header-name">{peer && peer.getPeerName()}</div>
-          <div className="list-owner-wrap">
-            <div>{props.match.params.host}:{props.match.params.port}</div>
-          </div>
-
-          <div className="profile-options">
-            {peer &&
-              <div onClick={(e)=>toggleDeleteModal()}
-                className='peer-connect-button'>
-                <span>Delete</span>
-              </div>
-            }
-            {!peer &&
-              <div onClick={(e)=>toggleSavePeerModal('edit')}
-                className='profiles-create-button'>
-                <span>Add Saved Peer</span>
-              </div>
-            }
-          </div>
-
+        <div className="profile-details-wrapper">
           <div className="profile-options">
             {peer &&
               <div onClick={(e)=>
@@ -166,6 +145,19 @@ const Peer = (props) => {
                 }
                 className={peer.getAutoconnect() ? 'enable-btn-wrap disable-switch' : 'enable-btn-wrap'}>
                 <span><span>{ peer.getAutoconnect() ? 'Enabled' : 'Disabled'}</span></span>
+              </div>
+            }
+          </div>
+          <div className="bookmarks-header-name">{peer && peer.getPeerName()}</div>
+          <div className="list-owner-wrap">
+            <div>{props.match.params.host}:{props.match.params.port}</div>
+          </div>
+
+          <div className="profile-options">
+            {!peer &&
+              <div onClick={(e)=>toggleSavePeerModal('edit')}
+                className='profiles-create-button'>
+                <span>Add Saved Peer</span>
               </div>
             }
           </div>
@@ -192,7 +184,7 @@ const Peer = (props) => {
 
       </div>
 
-      {/* Modal for delete profile */}
+      {/* Modal for delete peer */}
       <div onClick={()=>toggleDeleteModal()} style={{display: deleteModalOpen ? 'block' : 'none'}} className="modal-edit">
         <div onClick={(e)=>handleModalClick(e)} className="modal-content">
           <div className="modal-header">
