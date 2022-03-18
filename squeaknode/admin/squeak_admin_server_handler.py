@@ -874,21 +874,6 @@ class SqueakAdminServerHandler(object):
             squeak_display_entries=squeak_display_msgs
         )
 
-    def handle_connect_peer(self, request):
-        logger.info("peer address msg: {}".format(request.peer_address))
-        peer_address = message_to_peer_address(request.peer_address)
-        logger.info(
-            "Handle connect peer with peer address: {}".format(peer_address))
-        self.squeak_controller.connect_peer(peer_address)
-        return squeak_admin_pb2.ConnectPeerReply()
-
-    def handle_disconnect_peer(self, request):
-        peer_address = message_to_peer_address(request.peer_address)
-        logger.info(
-            "Handle disconnect peer with peer address: {}".format(peer_address))
-        self.squeak_controller.disconnect_peer(peer_address)
-        return squeak_admin_pb2.DisconnectPeerReply()
-
     def handle_subscribe_buy_offers(self, request, stopped):
         squeak_hash_str = request.squeak_hash
         squeak_hash = bytes.fromhex(squeak_hash_str)
