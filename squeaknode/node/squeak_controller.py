@@ -135,9 +135,17 @@ class SqueakController:
             self,
             squeak_hash: bytes,
             peer_address: PeerAddress,
-            price_msat: int,
-            lnd_external_address: Optional[LightningAddressHostPort],
     ) -> Optional[Offer]:
+        lnd_external_address: Optional[LightningAddressHostPort] = None
+        if self.config.lnd.external_host:
+            lnd_external_address = LightningAddressHostPort(
+                host=self.config.lnd.external_host,
+                port=self.config.lnd.port,
+            )
+        logger.info(lnd_external_address)
+        price_msat = self.get_sell_price_msat()
+        if price_msat == 0:
+            return None
         return self.squeak_store.get_packaged_offer(
             squeak_hash,
             peer_address,
