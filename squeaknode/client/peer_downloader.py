@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import logging
+import threading
 from abc import ABC
 from abc import abstractmethod
 from typing import List
@@ -54,6 +55,13 @@ class PeerDownloader(ABC):
     def is_squeak_wanted(self, squeak: CSqueak) -> bool:
         """Return true if squeak is supposed to be downloaded.
         """
+
+    def download_async(self) -> None:
+        thread = threading.Thread(
+            target=self.download,
+            args=(),
+        )
+        thread.start()
 
     def download(self) -> None:
         squeak_hashes = self.get_hashes()

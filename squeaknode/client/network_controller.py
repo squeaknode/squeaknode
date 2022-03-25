@@ -39,7 +39,7 @@ class NetworkController:
         self.squeak_store = squeak_store
         self.config = config
 
-    def download_timeline(self) -> None:
+    def download_timeline_async(self) -> None:
         min_block = 0  # TODO
         max_block = 999999999999  # TODO
         followed_public_keys = self.squeak_store.get_followed_public_keys()
@@ -52,9 +52,9 @@ class NetworkController:
                 max_block,
                 followed_public_keys,
             )
-            downloader.download()
+            downloader.download_async()
 
-    def download_pubkey_squeaks(self, pubkey: SqueakPublicKey) -> None:
+    def download_pubkey_squeaks_async(self, pubkey: SqueakPublicKey) -> None:
         min_block = 0  # TODO
         max_block = 999999999999  # TODO
         peers = self.squeak_store.get_autoconnect_peers()
@@ -66,7 +66,7 @@ class NetworkController:
                 max_block,
                 [pubkey],
             )
-            downloader.download()
+            downloader.download_async()
 
     def download_single_squeak(self, squeak_hash: bytes) -> None:
         peers = self.squeak_store.get_autoconnect_peers()
@@ -76,4 +76,4 @@ class NetworkController:
                 self.squeak_store,
                 squeak_hash,
             )
-            downloader.download()
+            downloader.download_async()

@@ -33,7 +33,7 @@ from squeaknode.core.squeak_peer import SqueakPeer
 logger = logging.getLogger(__name__)
 
 
-DOWNLOAD_TIMEOUT_S = 10
+REQUEST_TIMEOUT_S = 10
 
 
 class PeerClient:
@@ -58,7 +58,11 @@ class PeerClient:
             'pubkeys': pubkeys_str,
         }
         url = f"{self.base_url}/lookup"
-        r = requests.get(url, params=payload)  # type: ignore
+        r = requests.get(  # type: ignore
+            url,
+            params=payload,  # type: ignore
+            timeout=REQUEST_TIMEOUT_S,
+        )
         squeak_hashes_str = r.json()
         return [
             bytes.fromhex(squeak_hash_str)
@@ -68,7 +72,7 @@ class PeerClient:
     def get_squeak(self, squeak_hash: bytes) -> Optional[CSqueak]:
         squeak_hash_str = squeak_hash.hex()
         url = f"{self.base_url}/squeak/{squeak_hash_str}"
-        r = requests.get(url)
+        r = requests.get(url, timeout=REQUEST_TIMEOUT_S)
         if r.status_code != requests.codes.ok:
             return None
         squeak_bytes = r.content
@@ -77,7 +81,7 @@ class PeerClient:
     def get_secret_key(self, squeak_hash: bytes) -> Optional[bytes]:
         squeak_hash_str = squeak_hash.hex()
         url = f"{self.base_url}/secretkey/{squeak_hash_str}"
-        r = requests.get(url)
+        r = requests.get(url, timeout=REQUEST_TIMEOUT_S)
         if r.status_code != requests.codes.ok:
             return None
         secret_key = r.content
@@ -86,7 +90,7 @@ class PeerClient:
     def get_offer(self, squeak_hash: bytes) -> Optional[Offer]:
         squeak_hash_str = squeak_hash.hex()
         url = f"{self.base_url}/offer/{squeak_hash_str}"
-        r = requests.get(url)
+        r = requests.get(url, timeout=REQUEST_TIMEOUT_S)
         if r.status_code != requests.codes.ok:
             return None
         offer_json = r.json()

@@ -40,7 +40,7 @@ class SqueakDownloadWorker(PeriodicWorker):
             self.squeak_store, None)  # TODO: network controller should be passed as arg.
 
     def work_fn(self):
-        self.network_controller.download_timeline()
+        self.network_controller.download_timeline_async()
 
     def get_interval_s(self):
         return self.clean_interval_s
