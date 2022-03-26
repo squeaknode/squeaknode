@@ -28,6 +28,7 @@ from squeaknode.admin.squeak_admin_server_handler import SqueakAdminServerHandle
 from squeaknode.admin.squeak_admin_server_servicer import SqueakAdminServerServicer
 from squeaknode.admin.webapp.app import SqueakAdminWebServer
 from squeaknode.bitcoin.bitcoin_core_client import BitcoinCoreClient
+from squeaknode.client.network_controller import NetworkController
 from squeaknode.config.config import SqueaknodeConfig
 from squeaknode.core.squeak_core import SqueakCore
 from squeaknode.db.db_engine import get_connection_string
@@ -63,6 +64,7 @@ class SqueakNode:
         self.create_squeak_store()
         self.create_payment_processor()
         self.create_twitter_forwarder()
+        self.create_network_controller()
         self.create_squeak_controller()
 
         self.create_peer_handler()
@@ -164,12 +166,20 @@ class SqueakNode:
             self.config.twitter.forward_tweets_retry_s,
         )
 
+    def create_network_controller(self):
+        self.network_controller = NetworkController(
+            self.squeak_store,
+            self.config.tor.proxy_ip,
+            self.config.tor.proxy_port,
+        )
+
     def create_squeak_controller(self):
         self.squeak_controller = SqueakController(
             self.squeak_store,
             self.squeak_core,
             self.payment_processor,
             self.twitter_forwarder,
+            self.network_controller,
             self.node_settings,
             self.config,
             squeak.params.params.DEFAULT_PORT,
@@ -228,6 +238,7 @@ class SqueakNode:
     def create_squeak_download_worker(self):
         self.squeak_download_worker = SqueakDownloadWorker(
             self.squeak_store,
+            self.network_controller,
             self.config.node.peer_download_interval_s,
             self.config.node.interest_block_interval,
         )

@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import logging
+from typing import Optional
 
 from squeak.core.keys import SqueakPublicKey
 
@@ -35,8 +36,15 @@ DOWNLOAD_TIMEOUT_S = 10
 
 class NetworkController:
 
-    def __init__(self, squeak_store: SqueakStore):
+    def __init__(
+            self,
+            squeak_store: SqueakStore,
+            proxy_host: Optional[str],
+            proxy_port: Optional[int],
+    ):
         self.squeak_store = squeak_store
+        self.proxy_host = proxy_host
+        self.proxy_port = proxy_port
 
     def download_timeline_async(
             self,
@@ -50,6 +58,8 @@ class NetworkController:
             downloader = RangeDownloader(
                 peer,
                 self.squeak_store,
+                self.proxy_host,
+                self.proxy_port,
                 min_block,
                 max_block,
                 followed_public_keys,
@@ -64,6 +74,8 @@ class NetworkController:
             downloader = RangeDownloader(
                 peer,
                 self.squeak_store,
+                self.proxy_host,
+                self.proxy_port,
                 min_block,
                 max_block,
                 [pubkey],
@@ -76,6 +88,8 @@ class NetworkController:
             downloader = SingleDownloader(
                 peer,
                 self.squeak_store,
+                self.proxy_host,
+                self.proxy_port,
                 squeak_hash,
             )
             downloader.download_async()

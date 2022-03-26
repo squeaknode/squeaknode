@@ -28,7 +28,6 @@ from squeak.core import CSqueak
 from squeak.core.keys import SqueakPrivateKey
 from squeak.core.keys import SqueakPublicKey
 
-from squeaknode.client.network_controller import NetworkController
 from squeaknode.core.download_result import DownloadResult
 from squeaknode.core.lightning_address import LightningAddressHostPort
 from squeaknode.core.offer import Offer
@@ -63,6 +62,7 @@ class SqueakController:
         squeak_core: SqueakCore,
         payment_processor,
         tweet_forwarder,
+        network_controller,
         node_settings,
         config,
         default_port,
@@ -71,6 +71,7 @@ class SqueakController:
         self.squeak_core = squeak_core
         self.payment_processor = payment_processor
         self.tweet_forwarder = tweet_forwarder
+        self.network_controller = network_controller
         self.node_settings = node_settings
         self.config = config
         self.default_port = default_port
@@ -296,8 +297,7 @@ class SqueakController:
         return self.squeak_store.get_squeak_entry(squeak_hash)
 
     def download_single_squeak(self, squeak_hash: bytes) -> DownloadResult:
-        network_controller = NetworkController(self.squeak_store)
-        network_controller.download_single_squeak(squeak_hash)
+        self.network_controller.download_single_squeak(squeak_hash)
         return DownloadResult(1, 1, 0, 9999)
 
     def get_timeline_squeak_entries(
@@ -307,8 +307,7 @@ class SqueakController:
     ) -> List[SqueakEntry]:
         # TODO: remove this temporary hack, after converting this to websockets.
         # logger.info('Start downloading timeline...')
-        # network_controller = NetworkController(self.squeak_store)
-        # network_controller.download_timeline()
+        # self.network_controller.download_timeline()
         # logger.info('Finished downloading timeline.')
         return self.squeak_store.get_timeline_squeak_entries(limit, last_entry)
 
@@ -341,8 +340,7 @@ class SqueakController:
     ) -> List[SqueakEntry]:
         # TODO: remove this temporary hack, after converting this to websockets.
         logger.info('Start downloading pubkey squeaks...')
-        network_controller = NetworkController(self.squeak_store)
-        network_controller.download_pubkey_squeaks_async(public_key)
+        self.network_controller.download_pubkey_squeaks_async(public_key)
         logger.info('Finished downloading pubkey squeaks.')
         return self.squeak_store.get_squeak_entries_for_public_key(
             public_key,

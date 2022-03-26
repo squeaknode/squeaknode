@@ -28,6 +28,7 @@ from squeak.core import CSqueak
 from squeak.core.keys import SqueakPublicKey
 
 from squeaknode.core.offer import Offer
+from squeaknode.core.peer_address import Network
 from squeaknode.core.squeak_peer import SqueakPeer
 
 logger = logging.getLogger(__name__)
@@ -38,9 +39,23 @@ REQUEST_TIMEOUT_S = 10
 
 class PeerClient:
 
-    def __init__(self, peer: SqueakPeer):
+    def __init__(
+            self,
+            peer: SqueakPeer,
+            proxy_host: Optional[str],
+            proxy_port: Optional[int],
+    ):
         self.peer = peer
+        self.proxy_host = proxy_host
+        self.proxy_port = proxy_port
         self.base_url = f"http://{peer.address.host}:{peer.address.port}"
+        self.proxies = {}
+        if peer.address.network == Network.TORV3 and \
+           proxy_host is not None and \
+           proxy_port is not None:
+            self.proxies = {
+                "http": f'socks5://{proxy_host}:{proxy_port}',
+            }
 
     def lookup(
             self,
@@ -61,6 +76,7 @@ class PeerClient:
         r = requests.get(  # type: ignore
             url,
             params=payload,  # type: ignore
+            proxies=self.proxies,
             timeout=REQUEST_TIMEOUT_S,
         )
         squeak_hashes_str = r.json()
@@ -72,7 +88,11 @@ class PeerClient:
     def get_squeak(self, squeak_hash: bytes) -> Optional[CSqueak]:
         squeak_hash_str = squeak_hash.hex()
         url = f"{self.base_url}/squeak/{squeak_hash_str}"
-        r = requests.get(url, timeout=REQUEST_TIMEOUT_S)
+        r = requests.get(
+            url,
+            proxies=self.proxies,
+            timeout=REQUEST_TIMEOUT_S,
+        )
         if r.status_code != requests.codes.ok:
             return None
         squeak_bytes = r.content
@@ -81,7 +101,11 @@ class PeerClient:
     def get_secret_key(self, squeak_hash: bytes) -> Optional[bytes]:
         squeak_hash_str = squeak_hash.hex()
         url = f"{self.base_url}/secretkey/{squeak_hash_str}"
-        r = requests.get(url, timeout=REQUEST_TIMEOUT_S)
+        r = requests.get(
+            url,
+            proxies=self.proxies,
+            timeout=REQUEST_TIMEOUT_S,
+        )
         if r.status_code != requests.codes.ok:
             return None
         secret_key = r.content
@@ -90,7 +114,11 @@ class PeerClient:
     def get_offer(self, squeak_hash: bytes) -> Optional[Offer]:
         squeak_hash_str = squeak_hash.hex()
         url = f"{self.base_url}/offer/{squeak_hash_str}"
-        r = requests.get(url, timeout=REQUEST_TIMEOUT_S)
+        r = requests.get(
+            url,
+            proxies=self.proxies,
+            timeout=REQUEST_TIMEOUT_S,
+        )
         if r.status_code != requests.codes.ok:
             return None
         offer_json = r.json()
