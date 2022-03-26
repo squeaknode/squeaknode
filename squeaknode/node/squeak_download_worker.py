@@ -32,15 +32,14 @@ class SqueakDownloadWorker(PeriodicWorker):
     def __init__(
         self,
         squeak_store: SqueakStore,
+        network_controller: NetworkController,
         download_timeline_interval_s: int,
         interest_block_interval: int,
     ):
         self.squeak_store = squeak_store
         self.download_timeline_interval_s = download_timeline_interval_s
         self.interest_block_interval = interest_block_interval
-        self.network_controller = NetworkController(
-            self.squeak_store,
-        )
+        self.network_controller = network_controller
 
     def work_fn(self):
         self.network_controller.download_timeline_async(

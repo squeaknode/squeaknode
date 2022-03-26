@@ -24,6 +24,7 @@ import threading
 from abc import ABC
 from abc import abstractmethod
 from typing import List
+from typing import Optional
 
 from squeak.core import CSqueak
 from squeak.core.keys import SqueakPublicKey
@@ -41,9 +42,17 @@ DOWNLOAD_TIMEOUT_S = 10
 
 class PeerDownloader(ABC):
 
-    def __init__(self, peer: SqueakPeer, squeak_store: SqueakStore):
+    def __init__(
+            self,
+            peer: SqueakPeer,
+            squeak_store: SqueakStore,
+            proxy_host: Optional[str],
+            proxy_port: Optional[int],
+    ):
         self.peer = peer
-        self.client = PeerClient(peer)
+        self.proxy_host = proxy_host
+        self.proxy_port = proxy_port
+        self.client = PeerClient(peer, proxy_host, proxy_port)
         self.squeak_store = squeak_store
 
     @abstractmethod
@@ -114,11 +123,13 @@ class RangeDownloader(PeerDownloader):
             self,
             peer: SqueakPeer,
             squeak_store: SqueakStore,
+            proxy_host: Optional[str],
+            proxy_port: Optional[int],
             min_block: int,
             max_block: int,
             pubkeys: List[SqueakPublicKey],
     ):
-        super().__init__(peer, squeak_store)
+        super().__init__(peer, squeak_store, proxy_host, proxy_port)
         self.min_block = min_block
         self.max_block = max_block
         self.pubkeys = pubkeys
@@ -142,9 +153,11 @@ class SingleDownloader(PeerDownloader):
             self,
             peer: SqueakPeer,
             squeak_store: SqueakStore,
+            proxy_host: Optional[str],
+            proxy_port: Optional[int],
             squeak_hash: bytes,
     ):
-        super().__init__(peer, squeak_store)
+        super().__init__(peer, squeak_store, proxy_host, proxy_port)
         self.squeak_hash = squeak_hash
 
     def get_hashes(self) -> List[bytes]:

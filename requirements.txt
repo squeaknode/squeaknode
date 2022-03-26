@@ -11,7 +11,7 @@ protobuf==3.17.3
 PySocks==1.7.1
 python-bitcoinlib==0.11.0
 pyzmq==22.3.0
-requests==2.26.0
+requests[socks]==2.26.0
 SQLAlchemy==1.4.25
 squeaklib==0.11.0
 typed-config==0.2.5
