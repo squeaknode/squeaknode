@@ -56,6 +56,8 @@ class PeerClient:
             self.proxies = {
                 "http": f'socks5://{proxy_host}:{proxy_port}',
             }
+        logger.info("Using base url: {}".format(self.base_url))
+        logger.info("Using proxies: {}".format(self.proxies))
 
     def lookup(
             self,
