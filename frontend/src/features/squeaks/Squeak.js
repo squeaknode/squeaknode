@@ -356,7 +356,10 @@ const Squeak = (props) => {
                         <b>Peer</b>: {offer.getPeerAddress().getHost()}:{offer.getPeerAddress().getPort()}
                     </div>
                     <div className="inner-input-box">
-                        <b>Lightning Node</b>: {offer.getNodePubkey()}@{offer.getNodeHost()}:{offer.getNodePort()}
+                        <b>Lightning Node</b>:&nbsp;
+                          <a href={`https://amboss.space/node/${offer.getNodePubkey()}`} style={{color: "blue", fontWeight: 'bold'}}>
+                              {offer.getNodePubkey()}@{offer.getNodeHost()}:{offer.getNodePort()}
+                          </a>
                     </div>
                     </>
                   }
