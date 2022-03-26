@@ -447,7 +447,7 @@ class SqueakController:
         return PeerAddress(
             network=Network.IPV4,
             host=self.config.server.external_address or '',
-            port=self.config.server.port or 0,
+            port=self.config.server.external_port or 0,
         )
 
     def get_default_peer_port(self) -> int:
