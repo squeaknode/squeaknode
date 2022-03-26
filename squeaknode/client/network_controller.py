@@ -50,8 +50,8 @@ class NetworkController:
             self,
             interest_block_interval: int,
     ) -> None:
-        min_block = 0  # TODO
-        max_block = 999999999999  # TODO
+        max_block = self.squeak_store.get_latest_block()
+        min_block = max(0, max_block - interest_block_interval)
         followed_public_keys = self.squeak_store.get_followed_public_keys()
         peers = self.squeak_store.get_autoconnect_peers()
         for peer in peers:

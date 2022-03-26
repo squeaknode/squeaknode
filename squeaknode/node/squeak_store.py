@@ -588,3 +588,6 @@ class SqueakStore:
 
     def delete_twitter_account(self, twitter_account_id: int) -> None:
         self.squeak_db.delete_twitter_account(twitter_account_id)
+
+    def get_latest_block(self) -> int:
+        return self.squeak_core.get_best_block_height()
