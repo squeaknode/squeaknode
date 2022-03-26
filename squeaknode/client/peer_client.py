@@ -54,7 +54,7 @@ class PeerClient:
            proxy_host is not None and \
            proxy_port is not None:
             self.proxies = {
-                "http": f'socks5://{proxy_host}:{proxy_port}',
+                "http": f'socks5h://{proxy_host}:{proxy_port}',
             }
         logger.info("Using base url: {}".format(self.base_url))
         logger.info("Using proxies: {}".format(self.proxies))
