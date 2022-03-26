@@ -41,6 +41,7 @@ DEFAULT_MAX_SQUEAKS = 10000
 DEFAULT_MAX_SQUEAKS_PER_PUBLIC_KEY_PER_BLOCK = 100
 DEFAULT_SERVER_RPC_HOST = "0.0.0.0"
 DEFAULT_SERVER_RPC_PORT = None
+DEFAULT_EXTERNAL_PORT = 8555
 DEFAULT_ADMIN_RPC_HOST = "0.0.0.0"
 DEFAULT_ADMIN_RPC_PORT = 8994
 DEFAULT_WEBADMIN_HOST = "0.0.0.0"
@@ -103,6 +104,8 @@ class ServerConfig(Config):
     host = key(cast=str, required=False, default=DEFAULT_SERVER_RPC_HOST)
     port = key(cast=int, required=False, default=DEFAULT_SERVER_RPC_PORT)
     external_address = key(cast=str, required=False, default="")
+    external_port = key(cast=int, required=False,
+                        default=DEFAULT_EXTERNAL_PORT)
 
 
 @section('rpc')
