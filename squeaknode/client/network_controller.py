@@ -35,11 +35,13 @@ DOWNLOAD_TIMEOUT_S = 10
 
 class NetworkController:
 
-    def __init__(self, squeak_store: SqueakStore, config):
+    def __init__(self, squeak_store: SqueakStore):
         self.squeak_store = squeak_store
-        self.config = config
 
-    def download_timeline_async(self) -> None:
+    def download_timeline_async(
+            self,
+            interest_block_interval: int,
+    ) -> None:
         min_block = 0  # TODO
         max_block = 999999999999  # TODO
         followed_public_keys = self.squeak_store.get_followed_public_keys()

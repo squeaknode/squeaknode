@@ -228,7 +228,8 @@ class SqueakNode:
     def create_squeak_download_worker(self):
         self.squeak_download_worker = SqueakDownloadWorker(
             self.squeak_store,
-            30,  # TODO: Make the download interval a config.
+            self.config.node.peer_download_interval_s,
+            self.config.node.interest_block_interval,
         )
 
     def create_offer_expiry_worker(self):

@@ -62,7 +62,7 @@ DEFAULT_INTEREST_BLOCK_INTERVAL = 2016
 DEFAULT_SENT_OFFER_RETENTION_S = 86400
 DEFAULT_RECEIVED_OFFER_RETENTION_S = 86400
 DEFAULT_OFFER_DELETION_INTERVAL_S = 10
-DEFAULT_PEER_AUTOCONNECT_INTERVAL_S = 10
+DEFAULT_PEER_DOWNLOAD_INTERVAL_S = 10
 DEFAULT_SUBSCRIBE_INVOICES_RETRY_S = 10
 DEFAULT_SQUEAK_RETENTION_S = 604800
 DEFAULT_SQUEAK_DELETION_INTERVAL_S = 10
@@ -152,8 +152,8 @@ class NodeConfig(Config):
         cast=int, required=False, default=DEFAULT_OFFER_DELETION_INTERVAL_S)
     interest_block_interval = key(
         cast=int, required=False, default=DEFAULT_INTEREST_BLOCK_INTERVAL)
-    peer_autoconnect_interval_s = key(
-        cast=int, required=False, default=DEFAULT_PEER_AUTOCONNECT_INTERVAL_S)
+    peer_download_interval_s = key(
+        cast=int, required=False, default=DEFAULT_PEER_DOWNLOAD_INTERVAL_S)
 
 
 @section('db')

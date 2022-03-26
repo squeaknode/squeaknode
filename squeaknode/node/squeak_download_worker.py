@@ -32,18 +32,23 @@ class SqueakDownloadWorker(PeriodicWorker):
     def __init__(
         self,
         squeak_store: SqueakStore,
-        clean_interval_s: int,
+        download_timeline_interval_s: int,
+        interest_block_interval: int,
     ):
         self.squeak_store = squeak_store
-        self.clean_interval_s = clean_interval_s
+        self.download_timeline_interval_s = download_timeline_interval_s
+        self.interest_block_interval = interest_block_interval
         self.network_controller = NetworkController(
-            self.squeak_store, None)  # TODO: network controller should be passed as arg.
+            self.squeak_store,
+        )
 
     def work_fn(self):
-        self.network_controller.download_timeline_async()
+        self.network_controller.download_timeline_async(
+            self.interest_block_interval,
+        )
 
     def get_interval_s(self):
-        return self.clean_interval_s
+        return self.download_timeline_interval_s
 
     def get_name(self):
         return "squeak_download_worker"
