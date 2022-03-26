@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import logging
+import threading
 from abc import ABC
 from abc import abstractmethod
 from typing import List
@@ -55,17 +56,24 @@ class PeerDownloader(ABC):
         """Return true if squeak is supposed to be downloaded.
         """
 
+    def download_async(self) -> None:
+        thread = threading.Thread(
+            target=self.download,
+            args=(),
+        )
+        thread.start()
+
     def download(self) -> None:
         squeak_hashes = self.get_hashes()
         for squeak_hash in squeak_hashes:
             # Download the squeak if not already owned.
-            self.download_squeak(squeak_hash)
+            self.get_squeak(squeak_hash)
             # Download the secret key if not already unlocked.
-            self.download_secret_key(squeak_hash)
+            self.get_secret_key(squeak_hash)
             # Download the offer if not already unlocked.
-            self.download_offer(squeak_hash)
+            self.get_offer(squeak_hash)
 
-    def download_squeak(self, squeak_hash: bytes) -> None:
+    def get_squeak(self, squeak_hash: bytes) -> None:
         # Download the squeak if not already owned.
         if self.squeak_store.get_squeak(squeak_hash):
             return
@@ -73,7 +81,7 @@ class PeerDownloader(ABC):
         if squeak and self.is_squeak_wanted(squeak):
             self.squeak_store.save_squeak(squeak)
 
-    def download_secret_key(self, squeak_hash: bytes) -> None:
+    def get_secret_key(self, squeak_hash: bytes) -> None:
         # Get the squeak from the database.
         squeak = self.squeak_store.get_squeak(squeak_hash)
         if squeak and self.is_squeak_wanted(squeak):
@@ -84,7 +92,7 @@ class PeerDownloader(ABC):
             if secret_key:
                 self.squeak_store.save_secret_key(squeak_hash, secret_key)
 
-    def download_offer(self, squeak_hash: bytes) -> None:
+    def get_offer(self, squeak_hash: bytes) -> None:
         # Get the squeak from the database.
         squeak = self.squeak_store.get_squeak(squeak_hash)
         if squeak and self.is_squeak_wanted(squeak):

@@ -40,6 +40,7 @@ from squeaknode.node.process_forward_tweets_worker import ProcessForwardTweetsWo
 from squeaknode.node.process_received_payments_worker import ProcessReceivedPaymentsWorker
 from squeaknode.node.squeak_controller import SqueakController
 from squeaknode.node.squeak_deletion_worker import SqueakDeletionWorker
+from squeaknode.node.squeak_download_worker import SqueakDownloadWorker
 from squeaknode.node.squeak_offer_expiry_worker import SqueakOfferExpiryWorker
 from squeaknode.node.squeak_store import SqueakStore
 from squeaknode.server.app import SqueakPeerWebServer
@@ -72,6 +73,7 @@ class SqueakNode:
         self.create_admin_web_server()
         self.create_received_payment_processor_worker()
         self.create_squeak_deletion_worker()
+        self.create_squeak_download_worker()
         self.create_offer_expiry_worker()
         self.create_forward_tweets_processor_worker()
 
@@ -86,6 +88,7 @@ class SqueakNode:
         self.peer_web_server.start()
         self.received_payment_processor_worker.start_running()
         self.squeak_deletion_worker.start()
+        self.squeak_download_worker.start()
         self.offer_expiry_worker.start()
         self.forward_tweets_processor_worker.start_running()
 
@@ -220,6 +223,13 @@ class SqueakNode:
         self.squeak_deletion_worker = SqueakDeletionWorker(
             self.squeak_store,
             self.config.node.squeak_deletion_interval_s,
+        )
+
+    def create_squeak_download_worker(self):
+        self.squeak_download_worker = SqueakDownloadWorker(
+            self.squeak_store,
+            self.config.node.peer_download_interval_s,
+            self.config.node.interest_block_interval,
         )
 
     def create_offer_expiry_worker(self):

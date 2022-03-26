@@ -296,7 +296,7 @@ class SqueakController:
         return self.squeak_store.get_squeak_entry(squeak_hash)
 
     def download_single_squeak(self, squeak_hash: bytes) -> DownloadResult:
-        network_controller = NetworkController(self.squeak_store, self.config)
+        network_controller = NetworkController(self.squeak_store)
         network_controller.download_single_squeak(squeak_hash)
         return DownloadResult(1, 1, 0, 9999)
 
@@ -306,10 +306,10 @@ class SqueakController:
             last_entry: Optional[SqueakEntry],
     ) -> List[SqueakEntry]:
         # TODO: remove this temporary hack, after converting this to websockets.
-        logger.info('Start downloading timeline...')
-        network_controller = NetworkController(self.squeak_store, self.config)
-        network_controller.download_timeline()
-        logger.info('Finished downloading timeline.')
+        # logger.info('Start downloading timeline...')
+        # network_controller = NetworkController(self.squeak_store)
+        # network_controller.download_timeline()
+        # logger.info('Finished downloading timeline.')
         return self.squeak_store.get_timeline_squeak_entries(limit, last_entry)
 
     def get_liked_squeak_entries(
@@ -341,8 +341,8 @@ class SqueakController:
     ) -> List[SqueakEntry]:
         # TODO: remove this temporary hack, after converting this to websockets.
         logger.info('Start downloading pubkey squeaks...')
-        network_controller = NetworkController(self.squeak_store, self.config)
-        network_controller.download_pubkey_squeaks(public_key)
+        network_controller = NetworkController(self.squeak_store)
+        network_controller.download_pubkey_squeaks_async(public_key)
         logger.info('Finished downloading pubkey squeaks.')
         return self.squeak_store.get_squeak_entries_for_public_key(
             public_key,
