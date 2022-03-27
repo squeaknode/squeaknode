@@ -32,6 +32,7 @@ from squeak.core.keys import SqueakPublicKey
 from squeaknode.client.peer_client import PeerClient
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeaks import get_hash
+from squeaknode.node.squeak_store import SqueakStore
 
 logger = logging.getLogger(__name__)
 
@@ -44,7 +45,7 @@ class PeerDownloader(ABC):
     def __init__(
             self,
             peer: SqueakPeer,
-            squeak_controller,
+            squeak_store: SqueakStore,
             proxy_host: Optional[str],
             proxy_port: Optional[int],
     ):
@@ -52,7 +53,7 @@ class PeerDownloader(ABC):
         self.proxy_host = proxy_host
         self.proxy_port = proxy_port
         self.client = PeerClient(peer, proxy_host, proxy_port)
-        self.squeak_controller = squeak_controller
+        self.squeak_store = squeak_store
 
     @abstractmethod
     def get_hashes(self) -> List[bytes]:
@@ -83,33 +84,33 @@ class PeerDownloader(ABC):
 
     def get_squeak(self, squeak_hash: bytes) -> None:
         # Download the squeak if not already owned.
-        if self.squeak_controller.get_squeak(squeak_hash):
+        if self.squeak_store.get_squeak(squeak_hash):
             return
         squeak = self.client.get_squeak(squeak_hash)
         if squeak and self.is_squeak_wanted(squeak):
-            self.squeak_controller.save_squeak(squeak)
+            self.squeak_store.save_squeak(squeak)
 
     def get_secret_key(self, squeak_hash: bytes) -> None:
         # Get the squeak from the database.
-        squeak = self.squeak_controller.get_squeak(squeak_hash)
+        squeak = self.squeak_store.get_squeak(squeak_hash)
         if squeak and self.is_squeak_wanted(squeak):
             # Download the secret key is not already unlocked.
-            if self.squeak_controller.get_squeak_secret_key(squeak_hash):
+            if self.squeak_store.get_squeak_secret_key(squeak_hash):
                 return
             secret_key = self.client.get_secret_key(squeak_hash)
             if secret_key:
-                self.squeak_controller.save_secret_key(squeak_hash, secret_key)
+                self.squeak_store.save_secret_key(squeak_hash, secret_key)
 
     def get_offer(self, squeak_hash: bytes) -> None:
         # Get the squeak from the database.
-        squeak = self.squeak_controller.get_squeak(squeak_hash)
+        squeak = self.squeak_store.get_squeak(squeak_hash)
         if squeak and self.is_squeak_wanted(squeak):
             # Download the secret key is not already unlocked.
-            if self.squeak_controller.get_squeak_secret_key(squeak_hash):
+            if self.squeak_store.get_squeak_secret_key(squeak_hash):
                 return
             offer = self.client.get_offer(squeak_hash)
             if offer:
-                self.squeak_controller.handle_offer(
+                self.squeak_store.handle_offer(
                     squeak,
                     offer,
                     self.peer.address,
@@ -121,14 +122,14 @@ class RangeDownloader(PeerDownloader):
     def __init__(
             self,
             peer: SqueakPeer,
-            squeak_controller,
+            squeak_store: SqueakStore,
             proxy_host: Optional[str],
             proxy_port: Optional[int],
             min_block: int,
             max_block: int,
             pubkeys: List[SqueakPublicKey],
     ):
-        super().__init__(peer, squeak_controller, proxy_host, proxy_port)
+        super().__init__(peer, squeak_store, proxy_host, proxy_port)
         self.min_block = min_block
         self.max_block = max_block
         self.pubkeys = pubkeys
@@ -151,12 +152,12 @@ class SingleDownloader(PeerDownloader):
     def __init__(
             self,
             peer: SqueakPeer,
-            squeak_controller,
+            squeak_store: SqueakStore,
             proxy_host: Optional[str],
             proxy_port: Optional[int],
             squeak_hash: bytes,
     ):
-        super().__init__(peer, squeak_controller, proxy_host, proxy_port)
+        super().__init__(peer, squeak_store, proxy_host, proxy_port)
         self.squeak_hash = squeak_hash
 
     def get_hashes(self) -> List[bytes]:
