@@ -42,7 +42,7 @@ class SqueakDownloadWorker(PeriodicWorker):
         self.network_controller = network_controller
 
     def work_fn(self):
-        self.network_controller.download_timeline_async(
+        self.network_controller.download_timeline(
             self.interest_block_interval,
         )
 

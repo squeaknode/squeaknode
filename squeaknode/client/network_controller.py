@@ -54,7 +54,7 @@ class NetworkController:
             self.proxy_port,
         )
 
-    def download_timeline_async(
+    def download_timeline(
             self,
             interest_block_interval: int,
     ) -> None:
