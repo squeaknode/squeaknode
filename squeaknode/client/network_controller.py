@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import logging
+from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import wait
 from typing import Optional
 
 from squeak.core.keys import SqueakPublicKey
@@ -84,12 +86,19 @@ class NetworkController:
 
     def download_single_squeak(self, squeak_hash: bytes) -> None:
         peers = self.squeak_store.get_autoconnect_peers()
-        for peer in peers:
-            downloader = SingleDownloader(
+        downloaders = [
+            SingleDownloader(
                 peer,
                 self.squeak_store,
                 self.proxy_host,
                 self.proxy_port,
                 squeak_hash,
-            )
-            downloader.download_async()
+            ) for peer in peers
+        ]
+        with ThreadPoolExecutor(50) as executor:
+            # submit tasks and collect futures
+            futures = [executor.submit(downloader.download)
+                       for downloader in downloaders]
+            # wait for all tasks to complete
+            wait(futures)
+            logger.info('All downloads are done!')
