@@ -63,9 +63,9 @@ class SqueakNode:
         self.create_squeak_core()
         self.create_squeak_store()
         self.create_payment_processor()
-        self.create_twitter_forwarder()
-        self.create_network_controller()
         self.create_squeak_controller()
+        self.create_network_controller()
+        self.create_twitter_forwarder()
 
         self.create_peer_handler()
         self.create_peer_web_server()
@@ -144,7 +144,6 @@ class SqueakNode:
     def create_squeak_store(self):
         self.squeak_store = SqueakStore(
             self.squeak_db,
-            self.squeak_core,
             self.config.node.max_squeaks,
             self.config.node.max_squeaks_per_public_key_per_block,
             self.config.node.squeak_retention_s,
@@ -161,16 +160,9 @@ class SqueakNode:
 
     def create_twitter_forwarder(self):
         self.twitter_forwarder = TwitterForwarder(
-            self.squeak_store,
+            self.squeak_controller,
             self.squeak_core,
             self.config.twitter.forward_tweets_retry_s,
-        )
-
-    def create_network_controller(self):
-        self.network_controller = NetworkController(
-            self.squeak_store,
-            self.config.tor.proxy_ip,
-            self.config.tor.proxy_port,
         )
 
     def create_squeak_controller(self):
@@ -178,11 +170,16 @@ class SqueakNode:
             self.squeak_store,
             self.squeak_core,
             self.payment_processor,
-            self.twitter_forwarder,
-            self.network_controller,
             self.node_settings,
             self.config,
             squeak.params.params.DEFAULT_PORT,
+        )
+
+    def create_network_controller(self):
+        self.network_controller = NetworkController(
+            self.squeak_controller,
+            self.config.tor.proxy_ip,
+            self.config.tor.proxy_port,
         )
 
     def create_admin_handler(self):
