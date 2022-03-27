@@ -296,13 +296,6 @@ def get_external_address(node_stub):
     return get_external_address_response.peer_address
 
 
-def get_default_peer_port(node_stub):
-    get_default_peer_port_response = node_stub.GetDefaultPeerPort(
-        squeak_admin_pb2.GetDefaultPeerPortRequest()
-    )
-    return get_default_peer_port_response.port
-
-
 def make_squeak(node_stub, profile_id, squeak_content, reply_to_hash=None, recipient_profile_id=None):
     make_squeak_response = node_stub.MakeSqueak(
         squeak_admin_pb2.MakeSqueakRequest(
