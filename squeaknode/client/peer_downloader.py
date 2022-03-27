@@ -28,6 +28,7 @@ from squeak.core.keys import SqueakPublicKey
 
 from squeaknode.client.peer_client import PeerClient
 from squeaknode.core.squeak_peer import SqueakPeer
+from squeaknode.core.squeaks import get_hash
 from squeaknode.node.squeak_store import SqueakStore
 
 logger = logging.getLogger(__name__)
@@ -92,3 +93,39 @@ class PeerDownloader(ABC):
                         offer,
                         self.peer.address,
                     )
+
+    def download_single_squeak(
+            self,
+            squeak_hash: bytes,
+    ) -> None:
+        # Download the squeak if not already owned.
+        if self.squeak_store.get_squeak(squeak_hash):
+            raise Exception('Squeak already saved.')
+
+        squeak = self.client.get_squeak(squeak_hash)
+        if squeak and \
+           get_hash(squeak) == squeak_hash:
+            self.squeak_store.save_squeak(squeak)
+        else:
+            raise Exception('Failed to download squeak.')
+
+        # Get the local squeak.
+        squeak = self.squeak_store.get_squeak(squeak_hash)
+
+        # Download the secret key if not already owned.
+        if squeak and \
+           not self.squeak_store.get_squeak_secret_key(squeak_hash):
+            secret_key = self.client.get_secret_key(squeak_hash)
+            if secret_key:
+                self.squeak_store.save_secret_key(squeak_hash, secret_key)
+
+        # Download offer if the secret key if not already owned.
+        if squeak and \
+           not self.squeak_store.get_squeak_secret_key(squeak_hash):
+            offer = self.client.get_offer(squeak_hash)
+            if offer:
+                self.squeak_store.handle_offer(
+                    squeak,
+                    offer,
+                    self.peer.address,
+                )

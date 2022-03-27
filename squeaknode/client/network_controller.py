@@ -79,7 +79,6 @@ class NetworkController:
             ]
             # wait for all tasks to complete
             wait(futures)
-            logger.info('All downloads are done!')
 
     # def download_pubkey_squeaks_async(self, pubkey: SqueakPublicKey) -> None:
     #     min_block = 0  # TODO
@@ -97,21 +96,19 @@ class NetworkController:
     #         )
     #         downloader.download_async()
 
-    # def download_single_squeak(self, squeak_hash: bytes) -> None:
-    #     peers = self.squeak_store.get_autoconnect_peers()
-    #     downloaders = [
-    #         SingleDownloader(
-    #             peer,
-    #             self.squeak_store,
-    #             self.proxy_host,
-    #             self.proxy_port,
-    #             squeak_hash,
-    #         ) for peer in peers
-    #     ]
-    #     with ThreadPoolExecutor(50) as executor:
-    #         # submit tasks and collect futures
-    #         futures = [executor.submit(downloader.download)
-    #                    for downloader in downloaders]
-    #         # wait for all tasks to complete
-    #         wait(futures)
-    #         logger.info('All downloads are done!')
+    def download_single_squeak(self, squeak_hash: bytes) -> None:
+        peers = self.squeak_store.get_autoconnect_peers()
+        downloaders = [
+            self.get_downloader(peer)
+            for peer in peers
+        ]
+        with ThreadPoolExecutor(50) as executor:
+            # submit tasks and collect futures
+            futures = [
+                executor.submit(
+                    downloader.download_single_squeak,
+                    squeak_hash
+                )
+                for downloader in downloaders]
+            # wait for all tasks to complete
+            wait(futures)
