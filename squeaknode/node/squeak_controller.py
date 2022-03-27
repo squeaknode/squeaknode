@@ -65,14 +65,12 @@ class SqueakController:
         payment_processor,
         node_settings,
         config,
-        default_port,
     ):
         self.squeak_store = squeak_store
         self.squeak_core = squeak_core
         self.payment_processor = payment_processor
         self.node_settings = node_settings
         self.config = config
-        self.default_port = default_port
 
     def save_squeak(self, squeak: CSqueak) -> Optional[bytes]:
         # Get the block header.
@@ -568,7 +566,7 @@ class SqueakController:
         )
 
     def get_default_peer_port(self) -> int:
-        return self.default_port
+        return 0  # TODO: maybe remove this method.
 
     def set_sell_price_msat(self, sell_price_msat: int) -> None:
         self.node_settings.set_sell_price_msat(sell_price_msat)

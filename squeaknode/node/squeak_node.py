@@ -172,7 +172,6 @@ class SqueakNode:
             self.payment_processor,
             self.node_settings,
             self.config,
-            squeak.params.params.DEFAULT_PORT,
         )
 
     def create_network_controller(self):
