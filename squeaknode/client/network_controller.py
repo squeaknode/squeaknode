@@ -26,7 +26,6 @@ from squeak.core.keys import SqueakPublicKey
 
 from squeaknode.client.peer_downloader import RangeDownloader
 from squeaknode.client.peer_downloader import SingleDownloader
-from squeaknode.node.squeak_store import SqueakStore
 
 logger = logging.getLogger(__name__)
 
@@ -38,11 +37,11 @@ class NetworkController:
 
     def __init__(
             self,
-            squeak_store: SqueakStore,
+            squeak_controller,
             proxy_host: Optional[str],
             proxy_port: Optional[int],
     ):
-        self.squeak_store = squeak_store
+        self.squeak_controller = squeak_controller
         self.proxy_host = proxy_host
         self.proxy_port = proxy_port
 
@@ -50,14 +49,14 @@ class NetworkController:
             self,
             interest_block_interval: int,
     ) -> None:
-        max_block = self.squeak_store.get_latest_block()
+        max_block = self.squeak_controller.get_latest_block()
         min_block = max(0, max_block - interest_block_interval)
-        followed_public_keys = self.squeak_store.get_followed_public_keys()
-        peers = self.squeak_store.get_autoconnect_peers()
+        followed_public_keys = self.squeak_controller.get_followed_public_keys()
+        peers = self.squeak_controller.get_autoconnect_peers()
         for peer in peers:
             downloader = RangeDownloader(
                 peer,
-                self.squeak_store,
+                self.squeak_controller,
                 self.proxy_host,
                 self.proxy_port,
                 min_block,
@@ -69,11 +68,11 @@ class NetworkController:
     def download_pubkey_squeaks_async(self, pubkey: SqueakPublicKey) -> None:
         min_block = 0  # TODO
         max_block = 999999999999  # TODO
-        peers = self.squeak_store.get_autoconnect_peers()
+        peers = self.squeak_controller.get_autoconnect_peers()
         for peer in peers:
             downloader = RangeDownloader(
                 peer,
-                self.squeak_store,
+                self.squeak_controller,
                 self.proxy_host,
                 self.proxy_port,
                 min_block,
@@ -83,11 +82,11 @@ class NetworkController:
             downloader.download_async()
 
     def download_single_squeak(self, squeak_hash: bytes) -> None:
-        peers = self.squeak_store.get_autoconnect_peers()
+        peers = self.squeak_controller.get_autoconnect_peers()
         for peer in peers:
             downloader = SingleDownloader(
                 peer,
-                self.squeak_store,
+                self.squeak_controller,
                 self.proxy_host,
                 self.proxy_port,
                 squeak_hash,
