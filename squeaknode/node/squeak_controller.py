@@ -91,24 +91,7 @@ class SqueakController:
         )
 
     def pay_offer(self, received_offer_id: int) -> int:
-        received_offer = self.squeak_store.get_received_offer(
-            received_offer_id,
-        )
-        if received_offer is None:
-            raise Exception("Received offer with id {} not found.".format(
-                received_offer_id,
-            ))
-        logger.info("Paying received offer: {}".format(received_offer))
-        sent_payment = self.squeak_core.pay_offer(received_offer)
-        sent_payment_id = self.squeak_store.save_sent_payment(sent_payment)
-        self.squeak_store.mark_received_offer_paid(
-            sent_payment.payment_hash,
-        )
-        self.squeak_store.save_secret_key(
-            received_offer.squeak_hash,
-            sent_payment.secret_key,
-        )
-        return sent_payment_id
+        return self.squeak_store.pay_offer(received_offer_id)
 
     def get_packaged_offer(
             self,
