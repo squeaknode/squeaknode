@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import logging
+from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import wait
 from typing import Optional
 
 from squeaknode.client.peer_downloader import PeerDownloader
@@ -60,13 +62,24 @@ class NetworkController:
         min_block = max(0, max_block - interest_block_interval)
         followed_public_keys = self.squeak_store.get_followed_public_keys()
         peers = self.squeak_store.get_autoconnect_peers()
-        for peer in peers:
-            downloader = self.get_downloader(peer)
-            downloader.download_interest_range(
-                min_block,
-                max_block,
-                followed_public_keys,
-            )
+        downloaders = [
+            self.get_downloader(peer)
+            for peer in peers
+        ]
+        with ThreadPoolExecutor(50) as executor:
+            # submit tasks and collect futures
+            futures = [
+                executor.submit(
+                    downloader.download_interest_range,
+                    min_block,
+                    max_block,
+                    followed_public_keys,
+                )
+                for downloader in downloaders
+            ]
+            # wait for all tasks to complete
+            wait(futures)
+            logger.info('All downloads are done!')
 
     # def download_pubkey_squeaks_async(self, pubkey: SqueakPublicKey) -> None:
     #     min_block = 0  # TODO
