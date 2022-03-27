@@ -63,7 +63,6 @@ class SqueakController:
         network_controller,
         node_settings,
         config,
-        default_port,
     ):
         self.squeak_store = squeak_store
         self.payment_processor = payment_processor
@@ -71,7 +70,6 @@ class SqueakController:
         self.network_controller = network_controller
         self.node_settings = node_settings
         self.config = config
-        self.default_port = default_port
 
     def make_squeak(
             self,
@@ -409,7 +407,7 @@ class SqueakController:
         )
 
     def get_default_peer_port(self) -> int:
-        return self.default_port
+        return 0  # TODO: remove default port method.
 
     def set_sell_price_msat(self, sell_price_msat: int) -> None:
         self.node_settings.set_sell_price_msat(sell_price_msat)

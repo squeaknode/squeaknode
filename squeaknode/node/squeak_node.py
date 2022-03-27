@@ -181,7 +181,6 @@ class SqueakNode:
             self.network_controller,
             self.node_settings,
             self.config,
-            squeak.params.params.DEFAULT_PORT,
         )
 
     def create_admin_handler(self):
