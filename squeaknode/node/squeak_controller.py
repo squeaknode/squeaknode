@@ -28,7 +28,6 @@ from squeak.core import CSqueak
 from squeak.core.keys import SqueakPrivateKey
 from squeak.core.keys import SqueakPublicKey
 
-from squeaknode.client.network_controller import NetworkController
 from squeaknode.core.download_result import DownloadResult
 from squeaknode.core.lightning_address import LightningAddressHostPort
 from squeaknode.core.offer import Offer
@@ -37,10 +36,8 @@ from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.received_payment import ReceivedPayment
 from squeaknode.core.received_payment_summary import ReceivedPaymentSummary
-from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.sent_payment import SentPayment
 from squeaknode.core.sent_payment_summary import SentPaymentSummary
-from squeaknode.core.squeak_core import SqueakCore
 from squeaknode.core.squeak_entry import SqueakEntry
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
@@ -61,21 +58,18 @@ class SqueakController:
     def __init__(
         self,
         squeak_store: SqueakStore,
-        squeak_core: SqueakCore,
         payment_processor,
+        tweet_forwarder,
+        network_controller,
         node_settings,
         config,
     ):
         self.squeak_store = squeak_store
-        self.squeak_core = squeak_core
         self.payment_processor = payment_processor
+        self.tweet_forwarder = tweet_forwarder
+        self.network_controller = network_controller
         self.node_settings = node_settings
         self.config = config
-
-    def save_squeak(self, squeak: CSqueak) -> Optional[bytes]:
-        # Get the block header.
-        block_header = self.squeak_core.get_block_header(squeak)
-        return self.squeak_store.save_squeak(squeak, block_header)
 
     def make_squeak(
             self,
@@ -84,118 +78,15 @@ class SqueakController:
             replyto_hash: Optional[bytes],
             recipient_profile_id: Optional[int],
     ) -> Optional[bytes]:
-        squeak_profile = self.squeak_store.get_squeak_profile(profile_id)
-        if squeak_profile is None:
-            raise Exception("Profile with id {} not found.".format(
-                profile_id,
-            ))
-        if recipient_profile_id:
-            recipient_profile = self.squeak_store.get_squeak_profile(
-                recipient_profile_id)
-            if recipient_profile is None:
-                raise Exception("Recipient profile with id {} not found.".format(
-                    recipient_profile_id,
-                ))
-        squeak, secret_key = self.squeak_core.make_squeak(
-            squeak_profile,
+        return self.squeak_store.make_squeak(
+            profile_id,
             content_str,
             replyto_hash,
-            recipient_profile=recipient_profile if recipient_profile_id else None,
+            recipient_profile_id,
         )
-        inserted_squeak_hash = self.save_squeak(squeak)
-        if inserted_squeak_hash is None:
-            raise Exception("Failed to save squeak.")
-        self.squeak_store.save_secret_key(inserted_squeak_hash, secret_key)
-        if squeak.is_private_message:
-            self.unlock_squeak(
-                inserted_squeak_hash,
-                author_profile_id=profile_id,
-            )
-        else:
-            self.unlock_squeak(
-                inserted_squeak_hash,
-            )
-        return inserted_squeak_hash
-
-    def save_secret_key(self, squeak_hash: bytes, secret_key: bytes):
-        squeak = self.squeak_store.get_squeak(squeak_hash)
-        if squeak is None:
-            raise Exception("Squeakdoes not exist.")
-        self.squeak_store.save_secret_key(squeak_hash, secret_key)
-        if not squeak.is_private_message:
-            self.unlock_squeak(squeak_hash)
-
-    def unlock_squeak(
-            self,
-            squeak_hash: bytes,
-            author_profile_id: Optional[int] = None,
-            recipient_profile_id: Optional[int] = None,
-    ):
-        squeak = self.squeak_store.get_squeak(squeak_hash)
-        secret_key = self.squeak_store.get_squeak_secret_key(squeak_hash)
-        if squeak is None:
-            raise Exception("Squeakdoes not exist.")
-        if secret_key is None:
-            raise Exception("Secret key does not exist.")
-        if recipient_profile_id:
-            recipient_profile = self.squeak_store.get_squeak_profile(
-                recipient_profile_id)
-            if recipient_profile is None:
-                raise Exception("Recipient profile does not exist.")
-            decrypted_content = self.squeak_core.get_decrypted_content(
-                squeak,
-                secret_key,
-                recipient_profile=recipient_profile,
-            )
-        elif author_profile_id:
-            author_profile = self.squeak_store.get_squeak_profile(
-                author_profile_id)
-            if author_profile is None:
-                raise Exception("Author profile does not exist.")
-            decrypted_content = self.squeak_core.get_decrypted_content(
-                squeak,
-                secret_key,
-                author_profile=author_profile,
-            )
-        else:
-            decrypted_content = self.squeak_core.get_decrypted_content(
-                squeak,
-                secret_key,
-            )
-        self.squeak_store.set_decrypted_content(
-            squeak_hash,
-            decrypted_content,
-        )
-        logger.info("Unlocked squeak content: {}".format(
-            squeak_hash.hex(),
-        ))
 
     def pay_offer(self, received_offer_id: int) -> int:
-        received_offer = self.squeak_store.get_received_offer(
-            received_offer_id,
-        )
-        if received_offer is None:
-            raise Exception("Received offer with id {} not found.".format(
-                received_offer_id,
-            ))
-        squeak = self.squeak_store.get_squeak(received_offer.squeak_hash)
-        if squeak is None:
-            raise Exception("Squeak for received offer with id {} not found.".format(
-                received_offer_id,
-            ))
-        logger.info("Paying received offer: {}".format(received_offer))
-        sent_payment = self.squeak_core.pay_offer(received_offer)
-        sent_payment_id = self.squeak_store.save_sent_payment(sent_payment)
-        self.squeak_store.mark_received_offer_paid(
-            sent_payment.payment_hash,
-        )
-        self.squeak_store.save_secret_key(
-            received_offer.squeak_hash,
-            sent_payment.secret_key,
-        )
-        if not squeak.is_private_message:
-            self.unlock_squeak(received_offer.squeak_hash)
-        return sent_payment_id
+        return self.squeak_store.pay_offer(received_offer_id)
 
     def get_packaged_offer(
             self,
@@ -212,53 +103,24 @@ class SqueakController:
         price_msat = self.get_sell_price_msat()
         if price_msat == 0:
             return None
-        # return self.squeak_store.get_packaged_offer(
-        #     squeak_hash,
-        #     peer_address,
-        #     price_msat,
-        #     lnd_external_address,
-        # )
-        sent_offer = self.get_sent_offer_for_peer(
+        return self.squeak_store.get_packaged_offer(
             squeak_hash,
             peer_address,
             price_msat,
-        )
-        if sent_offer is None:
-            return None
-        return self.squeak_core.package_offer(
-            sent_offer,
             lnd_external_address,
         )
 
-    def get_sent_offer_for_peer(
+    def decrypt_private_squeak(
             self,
             squeak_hash: bytes,
-            peer_address: PeerAddress,
-            price_msat: int,
-    ) -> Optional[SentOffer]:
-        # Check if there is an existing offer for the hash/peer_address combination
-        sent_offer = self.squeak_store.get_sent_offer_by_squeak_hash_and_peer(
+            author_profile_id: Optional[int],
+            recipient_profile_id: Optional[int],
+    ):
+        self.squeak_store.unlock_squeak(
             squeak_hash,
-            peer_address,
+            author_profile_id=author_profile_id,
+            recipient_profile_id=recipient_profile_id,
         )
-        if sent_offer:
-            return sent_offer
-        squeak = self.squeak_store.get_squeak(squeak_hash)
-        secret_key = self.squeak_store.get_squeak_secret_key(squeak_hash)
-        if squeak is None or secret_key is None:
-            return None
-        try:
-            sent_offer = self.squeak_core.create_offer(
-                squeak,
-                secret_key,
-                peer_address,
-                price_msat,
-            )
-        except Exception:
-            logger.exception("Failed to create offer.")
-            return None
-        self.squeak_store.save_sent_offer(sent_offer)
-        return sent_offer
 
     def get_squeak(self, squeak_hash: bytes) -> Optional[CSqueak]:
         return self.squeak_store.get_squeak(squeak_hash)
@@ -314,9 +176,6 @@ class SqueakController:
     def get_squeak_profile_private_key(self, profile_id: int) -> bytes:
         return self.squeak_store.get_squeak_profile_private_key(profile_id)
 
-    def get_followed_public_keys(self) -> List[SqueakPublicKey]:
-        return self.squeak_store.get_followed_public_keys()
-
     def create_peer(self, peer_name: str, peer_address: PeerAddress):
         return self.squeak_store.create_peer(peer_name, peer_address)
 
@@ -343,14 +202,6 @@ class SqueakController:
 
     def delete_peer(self, peer_id: int):
         return self.squeak_store.delete_peer(peer_id)
-
-    def handle_offer(self, squeak: CSqueak, offer: Offer, peer_address: PeerAddress):
-        received_offer = self.squeak_core.unpack_offer(
-            squeak,
-            offer,
-            peer_address,
-        )
-        self.squeak_store.save_received_offer(received_offer)
 
     def get_received_offers(self, squeak_hash: bytes) -> List[ReceivedOffer]:
         return self.squeak_store.get_received_offers(squeak_hash)
@@ -402,12 +253,7 @@ class SqueakController:
         return self.squeak_store.get_squeak_entry(squeak_hash)
 
     def download_single_squeak(self, squeak_hash: bytes) -> DownloadResult:
-        network_controller = NetworkController(
-            self,
-            self.config.tor.proxy_ip,
-            self.config.tor.proxy_port,
-        )
-        network_controller.download_single_squeak(squeak_hash)
+        self.network_controller.download_single_squeak(squeak_hash)
         return DownloadResult(1, 1, 0, 9999)
 
     def get_timeline_squeak_entries(
@@ -450,12 +296,7 @@ class SqueakController:
     ) -> List[SqueakEntry]:
         # TODO: remove this temporary hack, after converting this to websockets.
         logger.info('Start downloading pubkey squeaks...')
-        network_controller = NetworkController(
-            self,
-            self.config.tor.proxy_ip,
-            self.config.tor.proxy_port,
-        )
-        network_controller.download_pubkey_squeaks_async(public_key)
+        self.network_controller.download_pubkey_squeaks_async(public_key)
         logger.info('Finished downloading pubkey squeaks.')
         return self.squeak_store.get_squeak_entries_for_public_key(
             public_key,
@@ -566,7 +407,7 @@ class SqueakController:
         )
 
     def get_default_peer_port(self) -> int:
-        return 0  # TODO: maybe remove this method.
+        return 0  # TODO: remove default port method.
 
     def set_sell_price_msat(self, sell_price_msat: int) -> None:
         self.node_settings.set_sell_price_msat(sell_price_msat)
@@ -589,7 +430,7 @@ class SqueakController:
             profile_id,
             bearer_token,
         )
-        # self.update_twitter_stream()
+        self.update_twitter_stream()
         return twitter_account_id
 
     def get_twitter_accounts(self) -> List[TwitterAccountEntry]:
@@ -597,10 +438,7 @@ class SqueakController:
 
     def delete_twitter_account(self, twitter_account_id: int) -> None:
         self.squeak_store.delete_twitter_account(twitter_account_id)
-        # self.update_twitter_stream()
+        self.update_twitter_stream()
 
-    # def update_twitter_stream(self) -> None:
-    #     self.tweet_forwarder.start_processing()
-
-    def get_latest_block(self) -> int:
-        return self.squeak_core.get_best_block_height()
+    def update_twitter_stream(self) -> None:
+        self.tweet_forwarder.start_processing()

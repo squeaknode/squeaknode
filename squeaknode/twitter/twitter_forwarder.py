@@ -25,7 +25,7 @@ from typing import Dict
 
 from squeaknode.core.squeak_core import SqueakCore
 from squeaknode.core.twitter_account_entry import TwitterAccountEntry
-from squeaknode.node.squeak_controller import SqueakController
+from squeaknode.node.squeak_store import SqueakStore
 from squeaknode.twitter.twitter_stream import TwitterStream
 
 
@@ -36,11 +36,11 @@ class TwitterForwarder:
 
     def __init__(
             self,
-            squeak_controller: SqueakController,
+            squeak_store: SqueakStore,
             squeak_core: SqueakCore,
             retry_s: int,
     ):
-        self.squeak_controller = squeak_controller
+        self.squeak_store = squeak_store
         self.squeak_core = squeak_core
         self.retry_s = retry_s
         self.lock = threading.Lock()
@@ -54,9 +54,9 @@ class TwitterForwarder:
                 del self.current_tasks[handle]
 
             # Start new tasks.
-            for account in self.squeak_controller.get_twitter_accounts():
+            for account in self.squeak_store.get_twitter_accounts():
                 task = TwitterForwarderTask(
-                    self.squeak_controller,
+                    self.squeak_store,
                     self.squeak_core,
                     account,
                     self.retry_s,
@@ -83,12 +83,12 @@ class TwitterForwarderTask:
 
     def __init__(
         self,
-        squeak_controller: SqueakController,
+        squeak_store: SqueakStore,
         squeak_core: SqueakCore,
         twitter_account: TwitterAccountEntry,
         retry_s: int,
     ):
-        self.squeak_controller = squeak_controller
+        self.squeak_store = squeak_store
         self.squeak_core = squeak_core
         self.twitter_account = twitter_account
         self.retry_s = retry_s
@@ -166,7 +166,7 @@ class TwitterForwarderTask:
             self.forward_tweet(tweet)
 
     def make_squeak(self, profile_id: int, content_str: str):
-        squeak_profile = self.squeak_controller.get_squeak_profile(profile_id)
+        squeak_profile = self.squeak_store.get_squeak_profile(profile_id)
         if squeak_profile is None:
             raise Exception("Profile with id {} not found.".format(
                 profile_id,
@@ -175,10 +175,9 @@ class TwitterForwarderTask:
             squeak_profile,
             content_str,
         )
-        inserted_squeak_hash = self.squeak_controller.save_squeak(
+        inserted_squeak_hash = self.squeak_store.save_squeak(
             squeak,
         )
         if inserted_squeak_hash is None:
             return None
-        self.squeak_controller.save_secret_key(
-            inserted_squeak_hash, secret_key)
+        self.squeak_store.save_secret_key(inserted_squeak_hash, secret_key)
