@@ -38,7 +38,6 @@ from squeaknode.core.received_payment import ReceivedPayment
 from squeaknode.core.received_payment_summary import ReceivedPaymentSummary
 from squeaknode.core.sent_payment import SentPayment
 from squeaknode.core.sent_payment_summary import SentPaymentSummary
-from squeaknode.core.squeak_core import SqueakCore
 from squeaknode.core.squeak_entry import SqueakEntry
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
@@ -59,7 +58,6 @@ class SqueakController:
     def __init__(
         self,
         squeak_store: SqueakStore,
-        squeak_core: SqueakCore,
         payment_processor,
         tweet_forwarder,
         network_controller,
@@ -68,7 +66,6 @@ class SqueakController:
         default_port,
     ):
         self.squeak_store = squeak_store
-        self.squeak_core = squeak_core
         self.payment_processor = payment_processor
         self.tweet_forwarder = tweet_forwarder
         self.network_controller = network_controller

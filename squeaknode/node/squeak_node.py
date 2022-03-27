@@ -176,7 +176,6 @@ class SqueakNode:
     def create_squeak_controller(self):
         self.squeak_controller = SqueakController(
             self.squeak_store,
-            self.squeak_core,
             self.payment_processor,
             self.twitter_forwarder,
             self.network_controller,
