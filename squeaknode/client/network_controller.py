@@ -20,14 +20,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import logging
-from concurrent.futures import ThreadPoolExecutor
-from concurrent.futures import wait
 from typing import Optional
 
-from squeak.core.keys import SqueakPublicKey
-
-from squeaknode.client.peer_downloader import RangeDownloader
-from squeaknode.client.peer_downloader import SingleDownloader
+from squeaknode.client.peer_downloader import PeerDownloader
+from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.node.squeak_store import SqueakStore
 
 logger = logging.getLogger(__name__)
@@ -48,6 +44,14 @@ class NetworkController:
         self.proxy_host = proxy_host
         self.proxy_port = proxy_port
 
+    def get_downloader(self, peer: SqueakPeer):
+        return PeerDownloader(
+            peer,
+            self.squeak_store,
+            self.proxy_host,
+            self.proxy_port,
+        )
+
     def download_timeline_async(
             self,
             interest_block_interval: int,
@@ -57,48 +61,44 @@ class NetworkController:
         followed_public_keys = self.squeak_store.get_followed_public_keys()
         peers = self.squeak_store.get_autoconnect_peers()
         for peer in peers:
-            downloader = RangeDownloader(
-                peer,
-                self.squeak_store,
-                self.proxy_host,
-                self.proxy_port,
+            downloader = self.get_downloader(peer)
+            downloader.download_interest_range(
                 min_block,
                 max_block,
                 followed_public_keys,
             )
-            downloader.download_async()
 
-    def download_pubkey_squeaks_async(self, pubkey: SqueakPublicKey) -> None:
-        min_block = 0  # TODO
-        max_block = 999999999999  # TODO
-        peers = self.squeak_store.get_autoconnect_peers()
-        for peer in peers:
-            downloader = RangeDownloader(
-                peer,
-                self.squeak_store,
-                self.proxy_host,
-                self.proxy_port,
-                min_block,
-                max_block,
-                [pubkey],
-            )
-            downloader.download_async()
+    # def download_pubkey_squeaks_async(self, pubkey: SqueakPublicKey) -> None:
+    #     min_block = 0  # TODO
+    #     max_block = 999999999999  # TODO
+    #     peers = self.squeak_store.get_autoconnect_peers()
+    #     for peer in peers:
+    #         downloader = RangeDownloader(
+    #             peer,
+    #             self.squeak_store,
+    #             self.proxy_host,
+    #             self.proxy_port,
+    #             min_block,
+    #             max_block,
+    #             [pubkey],
+    #         )
+    #         downloader.download_async()
 
-    def download_single_squeak(self, squeak_hash: bytes) -> None:
-        peers = self.squeak_store.get_autoconnect_peers()
-        downloaders = [
-            SingleDownloader(
-                peer,
-                self.squeak_store,
-                self.proxy_host,
-                self.proxy_port,
-                squeak_hash,
-            ) for peer in peers
-        ]
-        with ThreadPoolExecutor(50) as executor:
-            # submit tasks and collect futures
-            futures = [executor.submit(downloader.download)
-                       for downloader in downloaders]
-            # wait for all tasks to complete
-            wait(futures)
-            logger.info('All downloads are done!')
+    # def download_single_squeak(self, squeak_hash: bytes) -> None:
+    #     peers = self.squeak_store.get_autoconnect_peers()
+    #     downloaders = [
+    #         SingleDownloader(
+    #             peer,
+    #             self.squeak_store,
+    #             self.proxy_host,
+    #             self.proxy_port,
+    #             squeak_hash,
+    #         ) for peer in peers
+    #     ]
+    #     with ThreadPoolExecutor(50) as executor:
+    #         # submit tasks and collect futures
+    #         futures = [executor.submit(downloader.download)
+    #                    for downloader in downloaders]
+    #         # wait for all tasks to complete
+    #         wait(futures)
+    #         logger.info('All downloads are done!')
