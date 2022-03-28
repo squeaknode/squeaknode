@@ -86,7 +86,7 @@ const TwitterAccountCard = (props) => {
                 height: '40px',
               }} onClick={(e)=>handleMenuClick(e)} className="more-menu-content">
               <div onClick={deleteTwitterAccount} className="more-menu-item">
-                <span>Delete Twitter Account Forwarder</span>
+                <span>Delete</span>
               </div>
             </div> : null }
           </div>
