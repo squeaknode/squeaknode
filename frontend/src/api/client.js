@@ -744,3 +744,40 @@ export const downloadSqueak = (squeakHash) => {
       deser: deser,
     });
 }
+
+export const getTwitterAccounts = () => {
+    console.log('Calling getTwitterAccounts');
+    const request = new GetTwitterAccountsRequest();
+    const deser = GetTwitterAccountsReply.deserializeBinary;
+    return baseRequest({
+      url: '/gettwitteraccounts',
+      req: request,
+      deser: deser,
+    });
+}
+
+export const createTwitterAccount = (twitterHandle, profileId, bearerToken) => {
+    console.log('Calling createTwitterAccount');
+    const request = new AddTwitterAccountRequest();
+    request.setHandle(twitterHandle);
+    request.setProfileId(profileId);
+    request.setBearerToken(bearerToken);
+    const deser = AddTwitterAccountReply.deserializeBinary;
+    return baseRequest({
+      url: '/addtwitteraccount',
+      req: request,
+      deser: deser,
+    });
+}
+
+export const deleteTwitterAccount = (twitterAccountId) => {
+    console.log('Calling deleteTwitterAccount');
+    const request = new DeleteTwitterAccountRequest();
+    request.setTwitterAccountId(twitterAccountId);
+    const deser = DeleteTwitterAccountReply.deserializeBinary;
+    return baseRequest({
+      url: '/deletetwitteraccount',
+      req: request,
+      deser: deser,
+    });
+}
