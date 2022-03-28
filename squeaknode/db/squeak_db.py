@@ -1716,4 +1716,5 @@ class SqueakDb:
             profile_id=row["profile_id"],
             bearer_token=row["bearer_token"],
             profile=profile,
+            is_forwarding=False,
         )

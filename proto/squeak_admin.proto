@@ -352,10 +352,6 @@ service SqueakAdmin {
   */
   rpc DeleteTwitterAccount (DeleteTwitterAccountRequest) returns (DeleteTwitterAccountReply) {}
 
-  /** sqkadmin: `gettwitterstreamstatus`
-  */
-  rpc GetTwitterStreamStatus (GetTwitterStreamStatusRequest) returns (GetTwitterStreamStatusReply) {}
-
 }
 
 message CreateSigningProfileRequest {
@@ -1316,6 +1312,9 @@ message TwitterAccount {
 
     /// The profile
     SqueakProfile profile = 5;
+
+    /// Is twitter stream forwarding successfully.
+    bool is_forwarding = 6;
 }
 
 message AddTwitterAccountRequest {
@@ -1348,12 +1347,4 @@ message DeleteTwitterAccountRequest {
 }
 
 message DeleteTwitterAccountReply {
-}
-
-message GetTwitterStreamStatusRequest {
-}
-
-message GetTwitterStreamStatusReply {
-    /// Is twitter stream active
-    bool is_stream_active = 1;
 }

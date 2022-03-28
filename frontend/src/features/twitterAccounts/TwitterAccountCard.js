@@ -55,6 +55,9 @@ const TwitterAccountCard = (props) => {
   //   setTimeout(()=>{ setDeleteModalOpen(!deleteModalOpen) },20)
   // }
 
+  console.log(twitterAccount);
+  console.log(twitterAccount.getIsForwarding());
+
   return <div onClick={(e)=>e.stopPropagation()} key={profile.getPubkey()} className="search-result-wapper">
     <Link to={`/app/profile/${profile.getPubkey()}`} className="search-userPic-wrapper">
       <img style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={`${getProfileImageSrcString(profile)}`}/>
@@ -72,6 +75,11 @@ const TwitterAccountCard = (props) => {
       <div className="search-user-bio">
         &nbsp;
       </div>
+      {
+        twitterAccount.getIsForwarding() ?
+        <div style={{color: "green", fontWeight: 'bold'}}>Forwarding Successfully</div>  :
+        <div style={{color: "red", fontWeight: 'bold'}}>Forwarding Failing</div>
+      }
     </div>
     <div id="profileMoreMenu" onClick={openMore} className="Nav-link">
       <div className={"Nav-item-hover"}>
