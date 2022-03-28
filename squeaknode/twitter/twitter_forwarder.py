@@ -23,7 +23,6 @@ import logging
 import threading
 from typing import Dict
 
-from squeaknode.core.squeak_core import SqueakCore
 from squeaknode.core.twitter_account_entry import TwitterAccountEntry
 from squeaknode.node.squeak_store import SqueakStore
 from squeaknode.twitter.twitter_stream import TwitterStream
@@ -37,11 +36,9 @@ class TwitterForwarder:
     def __init__(
             self,
             squeak_store: SqueakStore,
-            squeak_core: SqueakCore,
             retry_s: int,
     ):
         self.squeak_store = squeak_store
-        self.squeak_core = squeak_core
         self.retry_s = retry_s
         self.lock = threading.Lock()
         self.current_tasks: Dict[str, TwitterForwarderTask] = {}
@@ -57,7 +54,6 @@ class TwitterForwarder:
             for account in self.squeak_store.get_twitter_accounts():
                 task = TwitterForwarderTask(
                     self.squeak_store,
-                    self.squeak_core,
                     account,
                     self.retry_s,
                 )
@@ -84,12 +80,10 @@ class TwitterForwarderTask:
     def __init__(
         self,
         squeak_store: SqueakStore,
-        squeak_core: SqueakCore,
         twitter_account: TwitterAccountEntry,
         retry_s: int,
     ):
         self.squeak_store = squeak_store
-        self.squeak_core = squeak_core
         self.twitter_account = twitter_account
         self.retry_s = retry_s
         self.stopped = threading.Event()
@@ -166,18 +160,9 @@ class TwitterForwarderTask:
             self.forward_tweet(tweet)
 
     def make_squeak(self, profile_id: int, content_str: str):
-        squeak_profile = self.squeak_store.get_squeak_profile(profile_id)
-        if squeak_profile is None:
-            raise Exception("Profile with id {} not found.".format(
-                profile_id,
-            ))
-        squeak, secret_key = self.squeak_core.make_squeak(
-            squeak_profile,
+        self.squeak_store.make_squeak(
+            profile_id,
             content_str,
+            None,
+            None,
         )
-        inserted_squeak_hash = self.squeak_store.save_squeak(
-            squeak,
-        )
-        if inserted_squeak_hash is None:
-            return None
-        self.squeak_store.save_secret_key(inserted_squeak_hash, secret_key)
