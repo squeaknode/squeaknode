@@ -38,11 +38,11 @@ const TwitterAccountCard = (props) => {
   // }
 
   const deleteTwitterAccount = (e) => {
-      e.stopPropagation()
-      console.log('Delete clicked');
-      dispatch(setDeleteTwitterAccount({
-        twitterAccountId: twitterAccount.getTwitterAccountId(),
-      }));
+    e.stopPropagation()
+    console.log('Delete clicked');
+    dispatch(setDeleteTwitterAccount({
+      twitterAccountId: twitterAccount.getTwitterAccountId(),
+    }));
   }
 
   const openMore = () => { setMoreMenu(!moreMenu) }
@@ -78,29 +78,29 @@ const TwitterAccountCard = (props) => {
       {
         twitterAccount.getIsForwarding() ?
         <div style={{color: "green", fontWeight: 'bold'}}>Forwarding Successfully</div>  :
-        <div style={{color: "red", fontWeight: 'bold'}}>Forwarding Failing</div>
-      }
-    </div>
-    <div id="profileMoreMenu" onClick={openMore} className="Nav-link">
-      <div className={"Nav-item-hover"}>
-        <ICON_SETTINGS  />
+          <div style={{color: "red", fontWeight: 'bold'}}>Forwarding Failing</div>
+        }
       </div>
-      <div onClick={()=>openMore()} style={{display: moreMenu ? 'block' : 'none'}} className="more-menu-background">
-        <div className="more-modal-wrapper">
-          {moreMenu ?
-            <div style={{
-                top: document.getElementById('profileMoreMenu') && `${document.getElementById('profileMoreMenu').getBoundingClientRect().top - 40}px`,
-                left: document.getElementById('profileMoreMenu') && `${document.getElementById('profileMoreMenu').getBoundingClientRect().left}px`,
-                height: '40px',
-              }} onClick={(e)=>handleMenuClick(e)} className="more-menu-content">
-              <div onClick={deleteTwitterAccount} className="more-menu-item">
-                <span>Delete</span>
-              </div>
-            </div> : null }
+      <div id="profileMoreMenu" onClick={openMore} className="Nav-link">
+        <div className={"Nav-item-hover"}>
+          <ICON_SETTINGS  />
+        </div>
+        <div onClick={()=>openMore()} style={{display: moreMenu ? 'block' : 'none'}} className="more-menu-background">
+          <div className="more-modal-wrapper">
+            {moreMenu ?
+              <div style={{
+                  top: document.getElementById('profileMoreMenu') && `${document.getElementById('profileMoreMenu').getBoundingClientRect().top - 40}px`,
+                  left: document.getElementById('profileMoreMenu') && `${document.getElementById('profileMoreMenu').getBoundingClientRect().left}px`,
+                  height: '40px',
+                }} onClick={(e)=>handleMenuClick(e)} className="more-menu-content">
+                <div onClick={deleteTwitterAccount} className="more-menu-item">
+                  <span>Delete</span>
+                </div>
+              </div> : null }
+            </div>
           </div>
         </div>
       </div>
-  </div>
-}
+    }
 
-export default withRouter(TwitterAccountCard)
+    export default withRouter(TwitterAccountCard)
