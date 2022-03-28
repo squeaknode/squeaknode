@@ -243,8 +243,6 @@ const Profile = (props) => {
 
   const handleMenuClick = (e) => { e.stopPropagation() }
 
-  console.log(user && user.getProfileName());
-
   return(
     <div>
       <div>
