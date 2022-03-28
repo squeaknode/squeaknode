@@ -23,6 +23,7 @@ const TwitterAccountCard = (props) => {
 
   const twitterAccount = props.twitterAccount;
   const profile = twitterAccount.getProfile();
+  const moreMenuId = `twitterAccountMoreMenu_${twitterAccount.getTwitterAccountId()}`;
   const dispatch = useDispatch();
 
   // const followUser = (e, id) => {
@@ -81,7 +82,7 @@ const TwitterAccountCard = (props) => {
           <div style={{color: "red", fontWeight: 'bold'}}>Forwarding Failing</div>
         }
       </div>
-      <div id="profileMoreMenu" onClick={openMore} className="Nav-link">
+      <div id={moreMenuId} onClick={openMore} className="Nav-link">
         <div className={"Nav-item-hover"}>
           <ICON_SETTINGS  />
         </div>
@@ -89,8 +90,8 @@ const TwitterAccountCard = (props) => {
           <div className="more-modal-wrapper">
             {moreMenu ?
               <div style={{
-                  top: document.getElementById('profileMoreMenu') && `${document.getElementById('profileMoreMenu').getBoundingClientRect().top - 40}px`,
-                  left: document.getElementById('profileMoreMenu') && `${document.getElementById('profileMoreMenu').getBoundingClientRect().left}px`,
+                  top: document.getElementById(moreMenuId) && `${document.getElementById(moreMenuId).getBoundingClientRect().top - 40}px`,
+                  left: document.getElementById(moreMenuId) && `${document.getElementById(moreMenuId).getBoundingClientRect().left}px`,
                   height: '40px',
                 }} onClick={(e)=>handleMenuClick(e)} className="more-menu-content">
                 <div onClick={deleteTwitterAccount} className="more-menu-item">
