@@ -345,9 +345,6 @@ const Profile = (props) => {
               <div key={'replies'} onClick={()=>changeTab('Squeaks&Replies')} className={activeTab ==='Squeaks&Replies' ? `profile-nav-item activeTab` : `profile-nav-item`}>
                 Squeaks & replies
               </div>
-              <div key={'media'} onClick={()=>changeTab('Media')} className={activeTab ==='Media' ? `profile-nav-item activeTab` : `profile-nav-item`}>
-                Media
-              </div>
               <div key={'likes'} onClick={()=>changeTab('Likes')} className={activeTab ==='Likes' ? `profile-nav-item activeTab` : `profile-nav-item`}>
                 Likes
               </div>
@@ -361,7 +358,6 @@ const Profile = (props) => {
                 return <SqueakCard squeak={t} key={t.getSqueakHash()} id={t.getSqueakHash()} user={t.getAuthor()} />
               }) :
               activeTab === 'Likes' ?
-              null: activeTab === 'Media' ?
               null: null}
               {/* TODO: fix get loading state by doing this: https://medium.com/stashaway-engineering/react-redux-tips-better-way-to-handle-loading-flags-in-your-reducers-afda42a804c6 */}
               {profileSqueaks.length > 0 &&
