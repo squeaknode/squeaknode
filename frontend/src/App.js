@@ -12,6 +12,7 @@ import Payments from './components/Payments'
 import Peers from './components/Peers'
 import Feed from './components/Feed'
 import Search from './components/Search'
+import Twitter from './components/Twitter'
 import Notifications from './components/Notifications'
 import Alerts from './components/Alerts'
 
@@ -49,6 +50,9 @@ const DefaultContainer = withRouter(({ history }) => {
         </Route>
         <Route path="/app/peers" exact>
           <Peers/>
+        </Route>
+        <Route path="/app/twitter" exact>
+          <Twitter/>
         </Route>
         <Route path="/app/notifications" exact>
           <Notifications/>

@@ -8,6 +8,7 @@ import externalAddressReducer from './features/externalAddress/externalAddressSl
 import paymentsReducer from './features/payments/paymentsSlice'
 import sellPriceReducer from './features/sellPrice/sellPriceSlice'
 import accountReducer from './features/account/accountSlice'
+import twitterAccounsReducer from './features/twitterAccounts/twitterAccountsSlice'
 
 const store = configureStore({
   reducer: {
@@ -19,6 +20,7 @@ const store = configureStore({
     payments: paymentsReducer,
     sellPrice: sellPriceReducer,
     account: accountReducer,
+    twitterAccounts: twitterAccounsReducer,
   },
 })
 
