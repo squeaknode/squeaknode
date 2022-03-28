@@ -121,12 +121,6 @@ def create_app(handler, username, password):
         logger.info("Getting user.")
         return current_user.username
 
-    @app.route("/hello")
-    @login_required
-    def hello_world():
-        logger.info("Getting hello route.")
-        return "Hello, World!"
-
     @app.route("/lndgetinfo", methods=["POST"])
     @login_required
     @protobuf_serialized(lnd_pb2.GetInfoRequest())
