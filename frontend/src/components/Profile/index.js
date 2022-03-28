@@ -243,8 +243,6 @@ const Profile = (props) => {
 
   const handleMenuClick = (e) => { e.stopPropagation() }
 
-  console.log(user && user.getProfileName());
-
   return(
     <div>
       <div>
@@ -345,24 +343,25 @@ const Profile = (props) => {
               <div key={'replies'} onClick={()=>changeTab('Squeaks&Replies')} className={activeTab ==='Squeaks&Replies' ? `profile-nav-item activeTab` : `profile-nav-item`}>
                 Squeaks & replies
               </div>
-              <div key={'media'} onClick={()=>changeTab('Media')} className={activeTab ==='Media' ? `profile-nav-item activeTab` : `profile-nav-item`}>
-                Media
-              </div>
-              <div key={'likes'} onClick={()=>changeTab('Likes')} className={activeTab ==='Likes' ? `profile-nav-item activeTab` : `profile-nav-item`}>
-                Likes
+              <div key={'liked'} onClick={()=>changeTab('Liked')} className={activeTab ==='Liked' ? `profile-nav-item activeTab` : `profile-nav-item`}>
+                Liked
               </div>
             </div>
             {activeTab === 'Squeaks' ?
               profileSqueaks.map(t=>{
                 if(!t.getReplyTo())
                 return <SqueakCard squeak={t} key={t.getSqueakHash()} id={t.getSqueakHash()} user={t.getAuthor()} />
-              }) : activeTab === 'Squeaks&Replies' ?
+              }) :
+              activeTab === 'Squeaks&Replies' ?
               profileSqueaks.map(t=>{
                 return <SqueakCard squeak={t} key={t.getSqueakHash()} id={t.getSqueakHash()} user={t.getAuthor()} />
               }) :
-              activeTab === 'Likes' ?
-              null: activeTab === 'Media' ?
-              null: null}
+              activeTab === 'Liked' ?
+              profileSqueaks.map(t=>{
+                if(t.getLikedTimeMs())
+                return <SqueakCard squeak={t} key={t.getSqueakHash()} id={t.getSqueakHash()} user={t.getAuthor()} />
+              }) :
+              null}
               {/* TODO: fix get loading state by doing this: https://medium.com/stashaway-engineering/react-redux-tips-better-way-to-handle-loading-flags-in-your-reducers-afda42a804c6 */}
               {profileSqueaks.length > 0 &&
                 <>
@@ -409,14 +408,14 @@ const Profile = (props) => {
                         </div>
                       </div>
                     </div>
-                      <form className="edit-form">
-                        <div className="edit-input-wrap">
-                          <div className="edit-input-content">
-                            <label>Name</label>
-                            <input defaultValue={''} onChange={(e)=>setName(e.target.value)} type="text" name="name" className="edit-input"/>
-                          </div>
+                    <form className="edit-form">
+                      <div className="edit-input-wrap">
+                        <div className="edit-input-content">
+                          <label>Name</label>
+                          <input defaultValue={''} onChange={(e)=>setName(e.target.value)} type="text" name="name" className="edit-input"/>
                         </div>
-                      </form>
+                      </div>
+                    </form>
                   </div>
                 </div>
               </div>
