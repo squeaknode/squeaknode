@@ -89,6 +89,7 @@ const Nav = ({history}) => {
     }
 
     const toggleSellPriceModal = (param, type) => {
+        setMoreMenu(false);
         setStyleBody(!styleBody)
         setTimeout(()=>{ setSellPriceModalOpen(!sellPriceModalOpen) },20)
     }
@@ -99,6 +100,7 @@ const Nav = ({history}) => {
     }
 
     const changeTheme = () => {
+        setMoreMenu(false);
         if(localStorage.getItem('Theme') === 'dark'){
             disableDarkMode()
             localStorage.setItem('Theme', 'light')
@@ -127,7 +129,10 @@ const Nav = ({history}) => {
         dispatch(setLogout());
     }
 
-    console.log(sellPrice);
+    const goToTwitterPage = (param, type) => {
+      setMoreMenu(false);
+      history.push(`/app/twitter`);
+    }
 
     return(
         <div className="Nav-component">
@@ -186,6 +191,10 @@ const Nav = ({history}) => {
                                     </div>
                                     <div onClick={toggleSellPriceModal} className="more-menu-item">
                                         <span>Update Sell Price</span>
+                                        <span><ICON_HASH /></span>
+                                    </div>
+                                    <div onClick={goToTwitterPage} className="more-menu-item">
+                                        <span>Forward Tweets</span>
                                         <span><ICON_HASH /></span>
                                     </div>
                                     <div onClick={()=>logout()} className="more-menu-item">
