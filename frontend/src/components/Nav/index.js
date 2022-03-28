@@ -4,7 +4,7 @@ import './style.scss'
 import { ICON_LOGO, ICON_HOME, ICON_HASH, ICON_BELL, ICON_INBOX
 , ICON_LIST, ICON_USER, ICON_LAPTOP, ICON_SETTINGS, ICON_HOMEFILL, ICON_HASHFILL,
 ICON_BELLFILL, ICON_LISTFILL, ICON_USERFILL, ICON_LAPTOPFILL, ICON_FEATHER,
-ICON_CLOSE,ICON_IMGUPLOAD, ICON_INBOXFILL, ICON_LIGHT, ICON_DARK } from '../../Icons'
+ICON_CLOSE,ICON_IMGUPLOAD, ICON_INBOXFILL, ICON_LIGHT, ICON_DARK, ICON_TWITTER } from '../../Icons'
 import { ReactComponent as YourSvg } from '../../icon.svg';
 import axios from 'axios'
 import {API_URL} from '../../config'
@@ -89,6 +89,7 @@ const Nav = ({history}) => {
     }
 
     const toggleSellPriceModal = (param, type) => {
+        setMoreMenu(false);
         setStyleBody(!styleBody)
         setTimeout(()=>{ setSellPriceModalOpen(!sellPriceModalOpen) },20)
     }
@@ -99,6 +100,7 @@ const Nav = ({history}) => {
     }
 
     const changeTheme = () => {
+        setMoreMenu(false);
         if(localStorage.getItem('Theme') === 'dark'){
             disableDarkMode()
             localStorage.setItem('Theme', 'light')
@@ -127,7 +129,10 @@ const Nav = ({history}) => {
         dispatch(setLogout());
     }
 
-    console.log(sellPrice);
+    const goToTwitterPage = (param, type) => {
+      setMoreMenu(false);
+      history.push(`/app/twitter`);
+    }
 
     return(
         <div className="Nav-component">
@@ -187,6 +192,10 @@ const Nav = ({history}) => {
                                     <div onClick={toggleSellPriceModal} className="more-menu-item">
                                         <span>Update Sell Price</span>
                                         <span><ICON_HASH /></span>
+                                    </div>
+                                    <div onClick={goToTwitterPage} className="more-menu-item">
+                                        <span>Forward Tweets</span>
+                                        <span><ICON_TWITTER /></span>
                                     </div>
                                     <div onClick={()=>logout()} className="more-menu-item">
                                         Log out
