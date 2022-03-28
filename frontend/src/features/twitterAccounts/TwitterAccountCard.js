@@ -56,9 +56,9 @@ const TwitterAccountCard = (props) => {
   // }
 
   return <div onClick={(e)=>e.stopPropagation()} key={profile.getPubkey()} className="search-result-wapper">
-    <div className="search-userPic-wrapper">
+    <Link to={`/app/profile/${profile.getPubkey()}`} className="search-userPic-wrapper">
       <img style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={`${getProfileImageSrcString(profile)}`}/>
-    </div>
+    </Link>
     <div className="search-user-details">
       <div className="search-user-warp">
         <div className="search-user-info">
