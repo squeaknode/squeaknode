@@ -32,3 +32,4 @@ class TwitterAccountEntry(NamedTuple):
     profile_id: int
     bearer_token: str
     profile: Optional[SqueakProfile]
+    is_forwarding: bool

@@ -426,7 +426,15 @@ class SqueakController:
         return twitter_account_id
 
     def get_twitter_accounts(self) -> List[TwitterAccountEntry]:
-        return self.squeak_store.get_twitter_accounts()
+        accounts = self.squeak_store.get_twitter_accounts()
+        return [
+            account._replace(
+                is_forwarding=self.tweet_forwarder.is_processing(
+                    account.handle,
+                ),
+            )
+            for account in accounts
+        ]
 
     def delete_twitter_account(self, twitter_account_id: int) -> None:
         self.squeak_store.delete_twitter_account(twitter_account_id)

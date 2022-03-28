@@ -244,6 +244,7 @@ def twitter_account_to_message(twitter_account_entry: TwitterAccountEntry) -> sq
             squeak_profile_to_message(twitter_account_entry.profile)
             if twitter_account_entry.profile else None
         ),
+        is_forwarding=twitter_account_entry.is_forwarding,
     )
 
 
