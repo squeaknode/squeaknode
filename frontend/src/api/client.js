@@ -769,3 +769,15 @@ export const createTwitterAccount = (twitterHandle, profileId, bearerToken) => {
       deser: deser,
     });
 }
+
+export const deleteTwitterAccount = (twitterAccountId) => {
+    console.log('Calling deleteTwitterAccount');
+    const request = new DeleteTwitterAccountRequest();
+    request.setTwitterAccountId(twitterAccountId);
+    const deser = DeleteTwitterAccountReply.deserializeBinary;
+    return baseRequest({
+      url: '/deletetwitteraccount',
+      req: request,
+      deser: deser,
+    });
+}

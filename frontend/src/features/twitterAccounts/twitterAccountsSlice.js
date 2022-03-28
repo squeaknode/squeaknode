@@ -6,7 +6,8 @@ import {
 } from '@reduxjs/toolkit'
 import {
   getTwitterAccounts,
-  createTwitterAccount
+  createTwitterAccount,
+  deleteTwitterAccount,
 } from '../../api/client'
 
 const initialState = {
@@ -20,8 +21,11 @@ export const setDeleteTwitterAccount = createAsyncThunk(
   'twitterAccounts/setDeleteTwitterAccount',
   async (values) => {
     console.log('Deleting twitter account');
-    // await deleteTwitterAccount(values.profileId);
-    return null;
+    let twitterAccountId = values.twitterAccountId;
+    await deleteTwitterAccount(twitterAccountId);
+    const response = await getTwitterAccounts();
+    console.log(response);
+    return response.getTwitterAccountsList();
   }
 )
 
@@ -73,14 +77,6 @@ const twitterAccountsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-    // .addCase(setDeleteProfile.fulfilled, (state, action) => {
-    //   console.log(action);
-    //   const deletedProfileId = action.meta.arg.profileId;
-    //   console.log(deletedProfileId);
-    //   if (state.currentProfile && state.currentProfile.getProfileId() === deletedProfileId) {
-    //     state.currentProfile = null;
-    //   }
-    // })
     .addCase(fetchTwitterAccounts.pending, (state, action) => {
       state.twitterAccountsStatus = 'loading'
     })
@@ -100,6 +96,13 @@ const twitterAccountsSlice = createSlice({
       state.twitterAccounts = newTwitterAccounts;
       state.twitterAccountsStatus = 'idle'
       state.createTwitterAccountStatus = 'idle';
+    })
+    .addCase(setDeleteTwitterAccount.fulfilled, (state, action) => {
+      console.log(action);
+      const newTwitterAccounts = action.payload;
+      state.twitterAccounts = newTwitterAccounts;
+      state.twitterAccountsStatus = 'idle'
+
     })
   },
 })
