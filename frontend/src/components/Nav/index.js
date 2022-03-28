@@ -4,7 +4,7 @@ import './style.scss'
 import { ICON_LOGO, ICON_HOME, ICON_HASH, ICON_BELL, ICON_INBOX
 , ICON_LIST, ICON_USER, ICON_LAPTOP, ICON_SETTINGS, ICON_HOMEFILL, ICON_HASHFILL,
 ICON_BELLFILL, ICON_LISTFILL, ICON_USERFILL, ICON_LAPTOPFILL, ICON_FEATHER,
-ICON_CLOSE,ICON_IMGUPLOAD, ICON_INBOXFILL, ICON_LIGHT, ICON_DARK } from '../../Icons'
+ICON_CLOSE,ICON_IMGUPLOAD, ICON_INBOXFILL, ICON_LIGHT, ICON_DARK, ICON_TWITTER } from '../../Icons'
 import { ReactComponent as YourSvg } from '../../icon.svg';
 import axios from 'axios'
 import {API_URL} from '../../config'
@@ -195,7 +195,7 @@ const Nav = ({history}) => {
                                     </div>
                                     <div onClick={goToTwitterPage} className="more-menu-item">
                                         <span>Forward Tweets</span>
-                                        <span><ICON_HASH /></span>
+                                        <span><ICON_TWITTER /></span>
                                     </div>
                                     <div onClick={()=>logout()} className="more-menu-item">
                                         Log out
