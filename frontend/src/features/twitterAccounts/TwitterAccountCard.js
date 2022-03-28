@@ -69,7 +69,7 @@ const TwitterAccountCard = (props) => {
           <div className="search-user-username">@{profile.getPubkey()}</div>
         </div>
       </div>
-      <div className="search-user-username"><b>Twitter Handle</b>: <a href={`https://twitter.com/${twitterAccount.getHandle()}`} style={{color: "blue", fontWeight: 'bold'}}>
+      <div className="search-user-username"><b>Twitter Handle</b>: <a href={`https://twitter.com/${twitterAccount.getHandle()}`} target="_blank" rel="noopener noreferrer" style={{color: "blue", fontWeight: 'bold'}}>
         {twitterAccount.getHandle()}
       </a></div>
       <div className="search-user-bio">
