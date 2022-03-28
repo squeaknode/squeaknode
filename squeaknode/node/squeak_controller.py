@@ -422,7 +422,7 @@ class SqueakController:
             profile_id,
             bearer_token,
         )
-        self.update_twitter_stream()
+        self.tweet_forwarder.restart()
         return twitter_account_id
 
     def get_twitter_accounts(self) -> List[TwitterAccountEntry]:
@@ -438,7 +438,4 @@ class SqueakController:
 
     def delete_twitter_account(self, twitter_account_id: int) -> None:
         self.squeak_store.delete_twitter_account(twitter_account_id)
-        self.update_twitter_stream()
-
-    def update_twitter_stream(self) -> None:
-        self.tweet_forwarder.start_processing()
+        self.tweet_forwarder.restart()

@@ -43,6 +43,12 @@ class TwitterForwarder:
         self.lock = threading.Lock()
         self.current_tasks: Dict[str, TwitterForwarderTask] = {}
 
+    def restart(self):
+        threading.Thread(
+            target=self.start_processing,
+            daemon=True,
+        ).start()
+
     def start_processing(self):
         with self.lock:
             # Stop existing running tasks.
