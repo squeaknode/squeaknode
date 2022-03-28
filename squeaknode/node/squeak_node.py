@@ -162,7 +162,6 @@ class SqueakNode:
     def create_twitter_forwarder(self):
         self.twitter_forwarder = TwitterForwarder(
             self.squeak_store,
-            self.squeak_core,
             self.config.twitter.forward_tweets_retry_s,
         )
 
