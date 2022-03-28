@@ -166,18 +166,9 @@ class TwitterForwarderTask:
             self.forward_tweet(tweet)
 
     def make_squeak(self, profile_id: int, content_str: str):
-        squeak_profile = self.squeak_store.get_squeak_profile(profile_id)
-        if squeak_profile is None:
-            raise Exception("Profile with id {} not found.".format(
-                profile_id,
-            ))
-        squeak, secret_key = self.squeak_core.make_squeak(
-            squeak_profile,
+        self.squeak_store.make_squeak(
+            profile_id,
             content_str,
+            None,
+            None,
         )
-        inserted_squeak_hash = self.squeak_store.save_squeak(
-            squeak,
-        )
-        if inserted_squeak_hash is None:
-            return None
-        self.squeak_store.save_secret_key(inserted_squeak_hash, secret_key)
