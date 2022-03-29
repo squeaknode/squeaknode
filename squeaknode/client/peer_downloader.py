@@ -64,35 +64,11 @@ class PeerDownloader(ABC):
             pubkeys,
         )
         for squeak_hash in squeak_hashes:
-            # Download the squeak if not already owned.
-            if not self.squeak_store.get_squeak(squeak_hash):
-                squeak = self.client.get_squeak(squeak_hash)
-                if squeak and \
-                   squeak.nBlockHeight >= min_block and \
-                   squeak.nBlockHeight <= max_block and \
-                   squeak.GetPubKey() in pubkeys:
-                    self.squeak_store.save_squeak(squeak)
-
-            # Get the local squeak.
-            squeak = self.squeak_store.get_squeak(squeak_hash)
-
-            # Download the secret key if not already owned.
-            if squeak and \
-               not self.squeak_store.get_squeak_secret_key(squeak_hash):
-                secret_key = self.client.get_secret_key(squeak_hash)
-                if secret_key:
-                    self.squeak_store.save_secret_key(squeak_hash, secret_key)
-
-            # Download offer if the secret key if not already owned.
-            if squeak and \
-               not self.squeak_store.get_squeak_secret_key(squeak_hash):
-                offer = self.client.get_offer(squeak_hash)
-                if offer:
-                    self.squeak_store.handle_offer(
-                        squeak,
-                        offer,
-                        self.peer.address,
-                    )
+            self.download_squeak(squeak_hash)
+        for squeak_hash in squeak_hashes:
+            # self.download_squeak(squeak_hash)
+            # download secret key/offer.
+            pass
 
     def download_single_squeak(
             self,
@@ -129,3 +105,32 @@ class PeerDownloader(ABC):
                     offer,
                     self.peer.address,
                 )
+
+    def download_squeak(
+            self,
+            squeak_hash: bytes,
+            min_block: Optional[int] = None,
+            max_block: Optional[int] = None,
+            pubkeys: Optional[List[SqueakPublicKey]] = None,
+    ) -> None:
+        # Download the squeak if not already owned.
+        if self.squeak_store.get_squeak(squeak_hash):
+            return
+
+        # Download the squeak if not already owned.
+        squeak = self.client.get_squeak(squeak_hash)
+
+        # Check if the squeak is valid.
+        if not squeak:
+            return
+        if get_hash(squeak) != squeak_hash:
+            return
+        if min_block and squeak.nBlockHeight < min_block:
+            return
+        if max_block and squeak.nBlockHeight > max_block:
+            return
+        if pubkeys and squeak.GetPubKey() not in pubkeys:
+            return
+
+        # Save the squeak.
+        self.squeak_store.save_squeak(squeak)
