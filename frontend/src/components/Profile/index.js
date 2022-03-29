@@ -39,7 +39,6 @@ import {
 const Profile = (props) => {
   const [activeTab, setActiveTab] = useState('Squeaks')
   const [moreMenu, setMoreMenu] = useState(false)
-  const [editName, setName] = useState('')
   const [privateKey, setPrivateKey] = useState('')
   const [editModalOpen, setEditModalOpen] = useState(false)
   const [changeImageModalOpen, setChangeImageModalOpen] = useState(false)
@@ -47,7 +46,6 @@ const Profile = (props) => {
   const [exportModalOpen, setExportModalOpen] = useState(false)
   const [spendingModalOpen, setSpendingModalOpen] = useState(false)
   const [createModalOpen, setCreateModalOpen] = useState(false)
-  const [saved, setSaved] = useState(false)
   const [tab, setTab] = useState('Sats Spent')
   const [styleBody, setStyleBody] = useState(false)
   const userParam = props.match.params.username
@@ -68,7 +66,6 @@ const Profile = (props) => {
     reloadSqueaks();
     //preventing edit modal from apprearing after clicking a user on memOpen
     setEditModalOpen(false)
-    setName('')
   }, [props.match.params.username])
 
   const isInitialMount = useRef(true);
@@ -91,7 +88,6 @@ const Profile = (props) => {
       profileName: values.name,
     }));
     // TODO: chain action to update profile squeaks with the new name.
-    setSaved(true)
     toggleEditModal()
   }
 
@@ -130,29 +126,24 @@ const Profile = (props) => {
   const toggleEditModal = (param, type) => {
     setMoreMenu(false);
     setStyleBody(!styleBody)
-    setSaved(false)
-    setName(user.getProfileName())
     setTimeout(()=>{ setEditModalOpen(!editModalOpen) },20)
   }
 
   const toggleChangeImageModal = (param, type) => {
     setMoreMenu(false);
     setStyleBody(!styleBody)
-    setSaved(false)
     setTimeout(()=>{ setChangeImageModalOpen(!changeImageModalOpen) },20)
   }
 
   const toggleDeleteModal = () => {
     setMoreMenu(false);
     setStyleBody(!styleBody)
-    setSaved(false)
     setTimeout(()=>{ setDeleteModalOpen(!deleteModalOpen) },20)
   }
 
   const toggleExportModal = () => {
     setMoreMenu(false);
     setStyleBody(!styleBody)
-    setSaved(false)
     setTimeout(()=>{ setExportModalOpen(!exportModalOpen) },20)
   }
 
@@ -165,7 +156,6 @@ const Profile = (props) => {
 
   const toggleCreateModal = (param, type) => {
     setStyleBody(!styleBody)
-    setSaved(false)
     setTimeout(()=>{ setCreateModalOpen(!createModalOpen) },20)
   }
 
@@ -187,7 +177,6 @@ const Profile = (props) => {
   const changeAvatar = () => {
     let file = document.getElementById('avatar').files[0];
     uploadAvatar(file);
-    setSaved(true);
     toggleChangeImageModal();
   }
 
@@ -195,7 +184,6 @@ const Profile = (props) => {
     dispatch(setClearProfileImage({
       profileId: user.getProfileId(),
     }));
-    setSaved(true)
   }
 
   const uploadAvatar = (file) => {
