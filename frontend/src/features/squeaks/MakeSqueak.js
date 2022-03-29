@@ -40,11 +40,14 @@ const MakeSqueak = (props) => {
     console.log(values.content);
 
     if (!values.signingProfileId) {
-      alert('signingProfileId must be set.');
+      alert('Signing Profile must be selected.');
       return;
     }
 
-    if (!values.content.length) { return }
+    if (!values.content) {
+      alert('Content cannot be empty.');
+      return;
+    }
 
     const makeValues = {
       signingProfile: values.signingProfileId,
