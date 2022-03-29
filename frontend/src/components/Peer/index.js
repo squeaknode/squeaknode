@@ -105,11 +105,8 @@ const Peer = (props) => {
     dispatch(setPeerAutoconnectDisabled(values));
   }
 
-  const editPeer = () => {
-    let values = {
-      peerId: peer.getPeerId(),
-      name: editName,
-    }
+  const editPeer = ({values}) => {
+    console.log('Calling editPeer with name:', values.name);
     // TODO: call rename action.
     alert('Rename peer not yet implemented!');
     // dispatch(setRenameProfile({
@@ -122,6 +119,7 @@ const Peer = (props) => {
   }
 
   const toggleEditModal = (param, type) => {
+    setMoreMenu(false);
     setStyleBody(!styleBody)
     setSaved(false)
     setName(peer.getPeerName())
@@ -130,12 +128,14 @@ const Peer = (props) => {
 
 
   const toggleDeleteModal = () => {
+    setMoreMenu(false);
     setStyleBody(!styleBody)
     setSaved(false)
     setTimeout(()=>{ setDeleteModalOpen(!deleteModalOpen) },20)
   }
 
   const toggleSavePeerModal = (param, type) => {
+    setMoreMenu(false);
     setStyleBody(!styleBody)
     setTimeout(()=>{ setSavePeerModalOpen(!savePeerModalOpen) },20)
   }
@@ -187,6 +187,25 @@ const Peer = (props) => {
             </div>
             <button type="submit" className={'squeak-btn-side squeak-btn-active'}>
               Delete
+            </button>
+          </div>
+        </div>
+      </Form>
+    );
+
+    const EditPeerForm = () => (
+      <Form onSubmit={editPeer} className="Squeak-input-side">
+        <div className="edit-input-wrap">
+          <Input class="informed-input" name="name" label="Peer Name" />
+        </div>
+        <div className="inner-input-links">
+          <div className="input-links-side">
+          </div>
+          <div className="squeak-btn-holder">
+            <div style={{ fontSize: '13px', color: null }}>
+            </div>
+            <button type="submit" className={'squeak-btn-side squeak-btn-active'}>
+              Submit
             </button>
           </div>
         </div>
@@ -331,32 +350,9 @@ const Peer = (props) => {
                 </div>
               </div>
               <p className="modal-title">Edit Peer</p>
-              <div className="save-modal-wrapper">
-                <div onClick={editPeer} className="save-modal-btn">
-                  Save
-                </div>
-              </div>
             </div>
             <div className="modal-body">
-              {peer ?
-                <form className="edit-form">
-                  <div className="edit-input-wrap">
-                    <div className="edit-input-content">
-                      <label>Name</label>
-                      <input defaultValue={peer.getPeerName()} onChange={(e)=>setName(e.target.value)} type="text" name="name" className="edit-input"/>
-                    </div>
-                  </div>
-                </form> :
-                <form className="create-form">
-                  <div className="create-input-wrap">
-                    <div className="create-input-content">
-                      <label>Name</label>
-                      <input defaultValue={''} onChange={(e)=>setName(e.target.value)} type="text" name="name" className="edit-input"/>
-                    </div>
-                  </div>
-                </form>
-
-              }
+              <EditPeerForm />
             </div>
           </div>
         </div>
