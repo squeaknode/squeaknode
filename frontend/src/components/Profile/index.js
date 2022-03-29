@@ -116,10 +116,10 @@ const Profile = (props) => {
     });
   }
 
-  const createContactProfile = () => {
+  const createContactProfile = ({values}) => {
     dispatch(setCreateContactProfile({
       pubkey: userParam,
-      profileName: editName,
+      profileName: values.name,
     }))
     .then(() => {
       dispatch(fetchProfile(props.match.params.username));
@@ -245,6 +245,28 @@ const Profile = (props) => {
 
   const handleMenuClick = (e) => { e.stopPropagation() }
 
+
+  const AddContactProfileForm = () => (
+    <Form onSubmit={createContactProfile} className="Squeak-input-side">
+      <div className="edit-input-wrap">
+        <Input class="informed-input" name="name" label="Profile Name" placeholder="Satoshi" />
+      </div>
+      <div className="edit-input-wrap">
+        <Input class="informed-input" name="pubkey" label="Public Key" defaultValue={userParam} readOnly />
+      </div>
+      <div className="inner-input-links">
+        <div className="input-links-side">
+        </div>
+        <div className="squeak-btn-holder">
+          <div style={{ fontSize: '13px', color: null }}>
+          </div>
+          <button type="submit" className={'squeak-btn-side squeak-btn-active'}>
+            Submit
+          </button>
+        </div>
+      </div>
+    </Form>
+  );
 
     const EditProfileForm = () => (
       <Form onSubmit={editProfile} className="Squeak-input-side">
@@ -492,7 +514,7 @@ const Profile = (props) => {
                 </div>
               </div>
 
-              {/* Modal for create signing profile */}
+              {/* Modal for create contact profile */}
               <div onClick={()=>toggleCreateModal()} style={{display: createModalOpen ? 'block' : 'none'}} className="modal-edit">
                 <div onClick={(e)=>handleModalClick(e)} className="modal-content">
                   <div className="modal-header">
@@ -502,29 +524,10 @@ const Profile = (props) => {
                       </div>
                     </div>
                     <p className="modal-title">Add Contact Profile</p>
-
-                    <div className="save-modal-wrapper">
-                      <div onClick={createContactProfile} className="save-modal-btn">
-                        Submit
-                      </div>
-                    </div>
                   </div>
 
                   <div className="modal-body">
-                    <form className="edit-form">
-                      <div className="edit-input-wrap">
-                        <div className="edit-input-content">
-                          <label>Profile Name</label>
-                          <input defaultValue={''} onChange={(e)=>setName(e.target.value)} type="text" name="name" className="edit-input"/>
-                        </div>
-                      </div>
-                      <div className="edit-input-wrap">
-                        <div className="edit-input-content">
-                          <label>Public Key</label>
-                          <input defaultValue={userParam} readOnly type="text" name="name" className="edit-input"/>
-                        </div>
-                      </div>
-                    </form>
+                    <AddContactProfileForm />
                   </div>
                 </div>
               </div>
