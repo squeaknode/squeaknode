@@ -26,11 +26,6 @@ const Profiles = (props) => {
   const [signingProfileModalOpen, setSigningProfileModalOpen] = useState(false)
   const [contactProfileModalOpen, setContactProfileModalOpen] = useState(false)
   const [styleBody, setStyleBody] = useState(false)
-  const [newProfileName, setNewProfileName] = useState('')
-  const [newProfilePubkey, setNewProfilePubkey] = useState('')
-  const [usePrivKey, setUsePrivKey] = useState(false)
-  const [newProfilePrivkey, setNewProfilePrivkey] = useState('')
-
   const dispatch = useDispatch()
 
   const searchOnChange = (param) => {
@@ -78,8 +73,8 @@ const Profiles = (props) => {
     toggleSigningProfileModal();
   }
 
-  const createContactProfile = () => {
-    dispatch(setCreateContactProfile({profileName: newProfileName, pubkey: newProfilePubkey}))
+  const createContactProfile = ({values}) => {
+    dispatch(setCreateContactProfile({profileName: values.name, pubkey: values.pubkey}))
     .then(unwrapResult)
     .then((pubkey) => {
       console.log('Created profile with pubkey', pubkey);
@@ -95,10 +90,6 @@ const Profiles = (props) => {
     e.stopPropagation()
   }
 
-  const handleChangeUsePrivKey = () => {
-    setUsePrivKey(!usePrivKey);
-  };
-
   const CreateSigningProfileForm = () => (
     <Form onSubmit={createSigningProfile} className="Squeak-input-side">
       <div className="edit-input-wrap">
@@ -112,6 +103,26 @@ const Profiles = (props) => {
           <Input class="informed-input" name="privateKey" label="Private Key" />
         </div>
       </Relevant>
+      <div className="inner-input-links">
+        <div className="squeak-btn-holder">
+          <div style={{ fontSize: '13px', color: null }}>
+          </div>
+          <button type="submit" className={'squeak-btn-side squeak-btn-active'}>
+            Submit
+          </button>
+        </div>
+      </div>
+    </Form>
+  );
+
+  const CreateContactProfileForm = () => (
+    <Form onSubmit={createContactProfile} className="Squeak-input-side">
+      <div className="edit-input-wrap">
+        <Input class="informed-input" name="name" label="Profile Name" placeholder="Satoshi" />
+      </div>
+      <div className="edit-input-wrap">
+        <Input class="informed-input" name="pubkey" label="Public Key" />
+      </div>
       <div className="inner-input-links">
         <div className="squeak-btn-holder">
           <div style={{ fontSize: '13px', color: null }}>
@@ -204,29 +215,10 @@ const Profiles = (props) => {
             </div>
           </div>
           <p className="modal-title">Add Contact Profile</p>
-
-          <div className="save-modal-wrapper">
-            <div onClick={createContactProfile} className="save-modal-btn">
-              Submit
-            </div>
-          </div>
         </div>
 
         <div className="modal-body">
-          <form className="edit-form">
-            <div className="edit-input-wrap">
-              <div className="edit-input-content">
-                <label>Profile Name</label>
-                <input onChange={(e)=>setNewProfileName(e.target.value)} type="text" name="name" className="edit-input"/>
-              </div>
-            </div>
-            <div className="edit-input-wrap">
-              <div className="edit-input-content">
-                <label>Public Key</label>
-                <input onChange={(e)=>setNewProfilePubkey(e.target.value)} type="text" name="name" className="edit-input"/>
-              </div>
-            </div>
-          </form>
+          <CreateContactProfileForm />
         </div>
       </div>
     </div>
