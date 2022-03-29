@@ -108,6 +108,16 @@ const Peers = (props) => {
       </Form>
     );
 
+    const ShowExternalAddressForm = () => (
+      <Form className="Squeak-input-side">
+        <div className="edit-input-wrap">
+          <Input class="informed-input" name="host" label="Host" initialValue={externalAddress && externalAddress.getHost()} readOnly />
+        </div>
+        <div className="edit-input-wrap">
+          <Input class="informed-input" name="port" label="Port" initialValue={externalAddress && externalAddress.getPort()} readOnly/>
+        </div>
+      </Form>
+    );
 
     return(
         <div>
@@ -164,24 +174,11 @@ const Peers = (props) => {
                             <ICON_CLOSE />
                         </div>
                     </div>
-                    <p className="modal-title">'Show External Address'</p>
+                    <p className="modal-title">Show External Address</p>
                 </div>
 
                 <div className="modal-body">
-                    <form className="edit-form">
-                        <div className="edit-input-wrap">
-                            <div className="edit-input-content">
-                                <label>Host</label>
-                                <input defaultValue={externalAddress && externalAddress.getHost()} readOnly type="text" name="name" className="edit-input"/>
-                            </div>
-                        </div>
-                        <div className="edit-input-wrap">
-                            <div className="edit-input-content">
-                                <label>Port</label>
-                                <input defaultValue={externalAddress && externalAddress.getPort()} readOnly type="text" name="name" className="edit-input"/>
-                            </div>
-                        </div>
-                    </form>
+                  <ShowExternalAddressForm />
                 </div>
 
             </div>
