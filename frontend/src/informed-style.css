@@ -1,11 +1,11 @@
 
-input {
+.informed-input {
   margin-bottom: 1rem;
 }
 
-input:not([type='checkbox']):not([type='radio']),
-textarea,
-select {
+.informed-input:not([type='checkbox']):not([type='radio']),
+.informed-textarea,
+.informed-select {
   margin-bottom: 1rem;
   margin-top: 1rem;
   display: block;
@@ -22,11 +22,11 @@ select {
   display: block;
 }
 
-textarea {
+.informed-textarea {
   max-width: 100%;
 }
 
-select {
+.informed-select {
   /* needed */
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -62,7 +62,7 @@ select {
   border-top: 10px solid #333;
 }
 
-label {
+.informed-label {
   /* text-align: left; */
   /* margin-left: 1rem; */
   margin-bottom: 1rem;

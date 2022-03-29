@@ -79,7 +79,7 @@ const MakeSqueak = (props) => {
 
   const MakeSqueakForm = () => (
     <Form onSubmit={submitSqueak} className="Squeak-input-side">
-      <Select name="signingProfileId" initialValue="">
+      <Select class="informed-select" name="signingProfileId" initialValue="">
         <Option value="" disabled>
           Select Signing Profile...
         </Option>
@@ -87,7 +87,7 @@ const MakeSqueak = (props) => {
           return <option value={p.getProfileId()}>{p.getProfileName()}</option>
         })}
       </Select>
-      <TextArea name="content" placeholder="What's happening..." />
+      <TextArea class="informed-input" class="informed-textarea" name="content" placeholder="What's happening..." />
       <div className="inner-input-links">
         <div className="input-links-side">
         </div>
