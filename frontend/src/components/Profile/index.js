@@ -42,6 +42,7 @@ const Profile = (props) => {
   const [editName, setName] = useState('')
   const [privateKey, setPrivateKey] = useState('')
   const [editModalOpen, setEditModalOpen] = useState(false)
+  const [changeImageModalOpen, setChangeImageModalOpen] = useState(false)
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
   const [exportModalOpen, setExportModalOpen] = useState(false)
   const [spendingModalOpen, setSpendingModalOpen] = useState(false)
@@ -134,6 +135,13 @@ const Profile = (props) => {
     setTimeout(()=>{ setEditModalOpen(!editModalOpen) },20)
   }
 
+  const toggleChangeImageModal = (param, type) => {
+    setMoreMenu(false);
+    setStyleBody(!styleBody)
+    setSaved(false)
+    setTimeout(()=>{ setChangeImageModalOpen(!changeImageModalOpen) },20)
+  }
+
   const toggleDeleteModal = () => {
     setMoreMenu(false);
     setStyleBody(!styleBody)
@@ -179,6 +187,8 @@ const Profile = (props) => {
   const changeAvatar = () => {
     let file = document.getElementById('avatar').files[0];
     uploadAvatar(file);
+    setSaved(true);
+    toggleChangeImageModal();
   }
 
   const clearAvatar = () => {
@@ -186,7 +196,6 @@ const Profile = (props) => {
       profileId: user.getProfileId(),
     }));
     setSaved(true)
-    toggleEditModal()
   }
 
   const uploadAvatar = (file) => {
@@ -209,8 +218,6 @@ const Profile = (props) => {
       profileId: user.getProfileId(),
       imageBase64: imageBase64,
     }));
-    setSaved(true)
-    toggleEditModal()
   };
 
   const getLastSqueak = (squeakLst) => {
@@ -267,59 +274,74 @@ const Profile = (props) => {
     </Form>
   );
 
-    const EditProfileForm = () => (
-      <Form onSubmit={editProfile} className="Squeak-input-side">
-        <div className="edit-input-wrap">
-          <Input class="informed-input" name="name" label="Profile Name" placeholder="Satoshi" />
+  const EditProfileForm = () => (
+    <Form onSubmit={editProfile} className="Squeak-input-side">
+      <div className="edit-input-wrap">
+        <Input class="informed-input" name="name" label="Profile Name" placeholder="Satoshi" />
+      </div>
+      <div className="inner-input-links">
+        <div className="input-links-side">
         </div>
-        <div className="inner-input-links">
-          <div className="input-links-side">
+        <div className="squeak-btn-holder">
+          <div style={{ fontSize: '13px', color: null }}>
           </div>
-          <div className="squeak-btn-holder">
-            <div style={{ fontSize: '13px', color: null }}>
-            </div>
-            <button type="submit" className={'squeak-btn-side squeak-btn-active'}>
-              Submit
-            </button>
-          </div>
+          <button type="submit" className={'squeak-btn-side squeak-btn-active'}>
+            Submit
+          </button>
         </div>
-      </Form>
-    );
+      </div>
+    </Form>
+  );
 
-    const DeleteProfileForm = () => (
-      <Form onSubmit={deleteProfile} className="Squeak-input-side">
-        <div className="inner-input-links">
-          <div className="input-links-side">
-          </div>
-          <div className="squeak-btn-holder">
-            <div style={{ fontSize: '13px', color: null }}>
-            </div>
-            <button type="submit" className={'squeak-btn-side squeak-btn-active'}>
-              Delete
-            </button>
+  const ChangeProfileImageForm = () => (
+    <Form onSubmit={uploadAvatar} className="Squeak-input-side">
+      <div className="modal-profile-pic">
+        <div className="modal-back-pic">
+          <img src={user ? `${getProfileImageSrcString(user)}` : null} alt="profile" />
+          <div>
+            <ICON_UPLOAD/>
+            <input onChange={()=>changeAvatar()} title=" " id="avatar" style={{opacity:'0'}} type="file"/>
           </div>
         </div>
-      </Form>
-    );
+      </div>
+    </Form>
+  );
 
-    const ExportPrivateKeyForm = () => (
-      <Form onSubmit={exportPrivateKey} className="Squeak-input-side">
-        <div className="edit-input-wrap">
-          <Input class="informed-input" name="privateKey" label="Display Private Key" initialValue={privateKey} readOnly />
+
+  const DeleteProfileForm = () => (
+    <Form onSubmit={deleteProfile} className="Squeak-input-side">
+      <div className="inner-input-links">
+        <div className="input-links-side">
         </div>
-        <div className="inner-input-links">
-          <div className="input-links-side">
+        <div className="squeak-btn-holder">
+          <div style={{ fontSize: '13px', color: null }}>
           </div>
-          <div className="squeak-btn-holder">
-            <div style={{ fontSize: '13px', color: null }}>
-            </div>
-            <button type="submit" className={'squeak-btn-side squeak-btn-active'}>
-              Export
-            </button>
-          </div>
+          <button type="submit" className={'squeak-btn-side squeak-btn-active'}>
+            Delete
+          </button>
         </div>
-      </Form>
-    );
+      </div>
+    </Form>
+  );
+
+  const ExportPrivateKeyForm = () => (
+    <Form onSubmit={exportPrivateKey} className="Squeak-input-side">
+      <div className="edit-input-wrap">
+        <Input class="informed-input" name="privateKey" label="Display Private Key" initialValue={privateKey} readOnly />
+      </div>
+      <div className="inner-input-links">
+        <div className="input-links-side">
+        </div>
+        <div className="squeak-btn-holder">
+          <div style={{ fontSize: '13px', color: null }}>
+          </div>
+          <button type="submit" className={'squeak-btn-side squeak-btn-active'}>
+            Export
+          </button>
+        </div>
+      </div>
+    </Form>
+  );
 
   return(
     <div>
@@ -361,6 +383,9 @@ const Profile = (props) => {
                           }} onClick={(e)=>handleMenuClick(e)} className="more-menu-content">
                           <div onClick={toggleEditModal} className="more-menu-item">
                             <span>Edit Profile</span>
+                          </div>
+                          <div onClick={toggleChangeImageModal} className="more-menu-item">
+                            <span>Change Image</span>
                           </div>
                           {user.getHasPrivateKey() &&
                             <div onClick={toggleExportModal} className="more-menu-item">
@@ -466,6 +491,25 @@ const Profile = (props) => {
                   </div>
                   <div className="modal-body">
                     <EditProfileForm />
+                  </div>
+                </div>
+              </div>
+
+              {/* Modal for change profile image */}
+              <div onClick={()=>toggleChangeImageModal()} style={{display: changeImageModalOpen ? 'block' : 'none'}} className="modal-edit">
+                <div onClick={(e)=>handleModalClick(e)} className="modal-content">
+                  <div className="modal-header">
+                    <div className="modal-closeIcon">
+                      <div onClick={()=>toggleEditModal()} className="modal-closeIcon-wrap">
+                        <ICON_CLOSE />
+                      </div>
+                    </div>
+                    <p className="modal-title">'Change Profile Image'</p>
+                  </div>
+                  <div className="modal-body">
+                    <div className="modal-banner">
+                    </div>
+                    <ChangeProfileImageForm />
                   </div>
                 </div>
               </div>
