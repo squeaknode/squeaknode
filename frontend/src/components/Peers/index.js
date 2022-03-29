@@ -30,10 +30,6 @@ const Peers = (props) => {
     const [savePeerModalOpen, setSavePeerModalOpen] = useState(false)
     const [showExternalAddressModalOpen, setShowExternalAddressModalOpen] = useState(false)
     const [styleBody, setStyleBody] = useState(false)
-    const [name, setName] = useState('')
-    const [host, setHost] = useState('')
-    const [port, setPort] = useState('')
-    const [useTor, setUseTor] = useState(false)
 
     const externalAddress = useSelector(selectExternalAddress);
     const peers = useSelector(selectSavedPeers);
@@ -45,10 +41,6 @@ const Peers = (props) => {
         dispatch(fetchExternalAddress());
         dispatch(fetchSavedPeers());
     }, [])
-
-    const goToUser = (id) => {
-        props.history.push(`/app/profile/${id}`)
-    }
 
     const peerUrl = (peerAddress) => {
         return `/app/peer/${peerAddress.getNetwork()}/${peerAddress.getHost()}/${peerAddress.getPort()}`;
@@ -90,10 +82,6 @@ const Peers = (props) => {
         }));
         toggleSavePeerModal();
     }
-
-    const handleChangeUseTor = () => {
-      setUseTor(!useTor);
-    };
 
     const handleModalClick = (e) => {
         e.stopPropagation()
