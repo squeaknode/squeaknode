@@ -286,6 +286,22 @@ const Profile = (props) => {
       </Form>
     );
 
+    const DeleteProfileForm = () => (
+      <Form onSubmit={deleteProfile} className="Squeak-input-side">
+        <div className="inner-input-links">
+          <div className="input-links-side">
+          </div>
+          <div className="squeak-btn-holder">
+            <div style={{ fontSize: '13px', color: null }}>
+            </div>
+            <button type="submit" className={'squeak-btn-side squeak-btn-active'}>
+              Delete
+            </button>
+          </div>
+        </div>
+      </Form>
+    );
+
     const ExportPrivateKeyForm = () => (
       <Form onSubmit={exportPrivateKey} className="Squeak-input-side">
         <div className="edit-input-wrap">
@@ -343,9 +359,6 @@ const Profile = (props) => {
                             left: document.getElementById('profileMoreMenu') && `${document.getElementById('profileMoreMenu').getBoundingClientRect().left}px`,
                             height: '210px',
                           }} onClick={(e)=>handleMenuClick(e)} className="more-menu-content">
-                          <div onClick={toggleDeleteModal} className="more-menu-item">
-                            <span>Delete Profile</span>
-                          </div>
                           <div onClick={toggleEditModal} className="more-menu-item">
                             <span>Edit Profile</span>
                           </div>
@@ -354,6 +367,9 @@ const Profile = (props) => {
                               <span>Export Private Key</span>
                             </div>
                           }
+                          <div onClick={toggleDeleteModal} className="more-menu-item">
+                            <span>Delete Profile</span>
+                          </div>
                         </div> : null }
                       </div>
                     </div>
@@ -465,11 +481,10 @@ const Profile = (props) => {
                       </div>
                     </div>
                     <p className="modal-title">'Delete Profile'</p>
-                    <div className="save-modal-wrapper">
-                      <div onClick={deleteProfile} className="save-modal-btn">
-                        Delete
-                      </div>
-                    </div>
+                  </div>
+
+                  <div className="modal-body">
+                    <DeleteProfileForm />
                   </div>
                 </div>
               </div>
