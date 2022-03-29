@@ -41,35 +41,35 @@ const SearchResults = (props) => {
   const scrollSize = 10;
 
   useEffect(() => {
-      window.scrollTo(0, 0)
-      if (q && q.length > 0) {
-        setSearchText(q);
-        console.log('fetchTodos');
-        dispatch(clearSearch());
-        const values = {
-          searchText: q,
-          limit: scrollSize,
-          lastSqueak: null,
-        }
-        dispatch(fetchSearch(values));
+    window.scrollTo(0, 0)
+    if (q && q.length > 0) {
+      setSearchText(q);
+      console.log('fetchTodos');
+      dispatch(clearSearch());
+      const values = {
+        searchText: q,
+        limit: scrollSize,
+        lastSqueak: null,
       }
+      dispatch(fetchSearch(values));
+    }
   }, [q])
 
   const searchOnEnter = (e) => {
-      if (e.keyCode === 13) {
-        if(searchText.length>0){
-          goToNewSearch(searchText);
-        }
+    if (e.keyCode === 13) {
+      if(searchText.length>0){
+        goToNewSearch(searchText);
       }
+    }
   }
 
   const goToNewSearch = (newSearchText) => {
-      props.history.push(`/app/search?q=${newSearchText}`);
+    props.history.push(`/app/search?q=${newSearchText}`);
   }
 
 
   const changeSearchText = (param) => {
-      setSearchText(param);
+    setSearchText(param);
   }
 
   const getLastSqueak = (squeakLst) => {
@@ -97,32 +97,31 @@ const SearchResults = (props) => {
   })
 
   return <>
-      <div className="explore-header">
-      <div className="explore-search-wrapper">
-          <div className="explore-search-icon">
-              <ICON_SEARCH/>
-          </div>
-          <div className="explore-search-input">
-              <input value={searchText} onKeyDown={(e)=>searchOnEnter(e)} onChange={(e)=>changeSearchText(e.target.value)} placeholder="Search Squeaks" type="text" name="search"/>
-          </div>
+  <div className="explore-header">
+    <div className="explore-search-wrapper">
+      <div className="explore-search-icon">
+        <ICON_SEARCH/>
       </div>
+      <div className="explore-search-input">
+        <input value={searchText} onKeyDown={(e)=>searchOnEnter(e)} onChange={(e)=>changeSearchText(e.target.value)} placeholder="Search Squeaks" type="text" name="search"/>
       </div>
-      <div className="Squeak-input-divider"></div>
-      {squeaks.map(t => {
-          return <SqueakCard squeak={t} key={t.getSqueakHash()} id={t.getSqueakHash()} user={t.getAuthor()} />
-      })}
+    </div>
+  </div>
+  <div className="Squeak-input-divider"></div>
+  {squeaks.map(t => {
+    return <SqueakCard squeak={t} key={t.getSqueakHash()} id={t.getSqueakHash()} user={t.getAuthor()} />
+  })}
 
-      {/* TODO: fix get loading state by doing this: https://medium.com/stashaway-engineering/react-redux-tips-better-way-to-handle-loading-flags-in-your-reducers-afda42a804c6 */}
-        {loadingStatus === 'loading' ?
-        <div className="todo-list">
-          <Loader />
-        </div>
-        :
-        <div onClick={() => getMoreSqueaks()} className='squeak-btn-side squeak-btn-active'>
-          LOAD MORE
-        </div>
-        }
-         </>
+  {loadingStatus === 'loading' ?
+    <div className="todo-list">
+      <Loader />
+    </div>
+    :
+    <div onClick={() => getMoreSqueaks()} className='squeak-btn-side squeak-btn-active'>
+      LOAD MORE
+    </div>
+  }
+  </>
 }
 
 export default withRouter(SearchResults)
