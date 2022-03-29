@@ -7,6 +7,8 @@ import Loader from '../Loader'
 import SqueakCard from '../SqueakCard'
 import PeerCard from '../../features/peers/PeerCard'
 
+import { Form, Input, Select, Checkbox, Relevant, Debug, TextArea, Option } from 'informed';
+
 import { unwrapResult } from '@reduxjs/toolkit'
 import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
@@ -28,10 +30,6 @@ const Peers = (props) => {
     const [savePeerModalOpen, setSavePeerModalOpen] = useState(false)
     const [showExternalAddressModalOpen, setShowExternalAddressModalOpen] = useState(false)
     const [styleBody, setStyleBody] = useState(false)
-    const [name, setName] = useState('')
-    const [host, setHost] = useState('')
-    const [port, setPort] = useState('')
-    const [useTor, setUseTor] = useState(false)
 
     const externalAddress = useSelector(selectExternalAddress);
     const peers = useSelector(selectSavedPeers);
@@ -44,18 +42,6 @@ const Peers = (props) => {
         dispatch(fetchSavedPeers());
     }, [])
 
-    const goToUser = (id) => {
-        props.history.push(`/app/profile/${id}`)
-    }
-
-    const peerUrl = (peerAddress) => {
-        return `/app/peer/${peerAddress.getNetwork()}/${peerAddress.getHost()}/${peerAddress.getPort()}`;
-    }
-
-    const peerAddressToStr = (peerAddress) => {
-      return `${peerAddress.getNetwork()}/${peerAddress.getHost()}:${peerAddress.getPort()}`;
-    }
-
     const toggleSavePeerModal = (param, type) => {
         setStyleBody(!styleBody)
         setTimeout(()=>{ setSavePeerModalOpen(!savePeerModalOpen) },20)
@@ -66,7 +52,7 @@ const Peers = (props) => {
         setTimeout(()=>{ setShowExternalAddressModalOpen(!showExternalAddressModalOpen) },20)
     }
 
-    const getNetwork = () => {
+    const getNetwork = (useTor) => {
       if (useTor) {
         return 'TORV3';
       }
@@ -77,26 +63,61 @@ const Peers = (props) => {
       return url.replace(/^https?:\/\//, '');
     }
 
-    const savePeer = () => {
-        const network = getNetwork();
-        const strippedHost = removeHttp(host);
+    const savePeer = ({values}) => {
+        const network = getNetwork(values.useTor);
+        const strippedHost = removeHttp(values.host);
         dispatch(setSavePeer({
-            name: name,
+            name: values.name,
             host: strippedHost,
-            port: port,
+            port: values.port,
             network: network,
         }));
         toggleSavePeerModal();
     }
 
-    const handleChangeUseTor = () => {
-      setUseTor(!useTor);
-    };
-
     const handleModalClick = (e) => {
         e.stopPropagation()
     }
 
+    const AddPeerForm = () => (
+      <Form onSubmit={savePeer} className="Squeak-input-side">
+        <div className="edit-input-wrap">
+          <Input class="informed-input" name="name" label="Peer Name (not required)" />
+        </div>
+        <div className="edit-input-wrap">
+          <Input class="informed-input" name="host" label="Host" />
+        </div>
+        <div className="edit-input-wrap">
+          <Input class="informed-input" name="port" label="Port" />
+        </div>
+        <div className="edit-input-wrap">
+          <Checkbox class="informed-input" name="useTor" label="Connect With Tor" />
+        </div>
+
+        <div className="inner-input-links">
+          <div className="input-links-side">
+          </div>
+          <div className="squeak-btn-holder">
+            <div style={{ fontSize: '13px', color: null }}>
+            </div>
+            <button type="submit" className={'squeak-btn-side squeak-btn-active'}>
+              Submit
+            </button>
+          </div>
+        </div>
+      </Form>
+    );
+
+    const ShowExternalAddressForm = () => (
+      <Form className="Squeak-input-side">
+        <div className="edit-input-wrap">
+          <Input class="informed-input" name="host" label="Host" initialValue={externalAddress && externalAddress.getHost()} readOnly />
+        </div>
+        <div className="edit-input-wrap">
+          <Input class="informed-input" name="port" label="Port" initialValue={externalAddress && externalAddress.getPort()} readOnly/>
+        </div>
+      </Form>
+    );
 
     return(
         <div>
@@ -153,24 +174,11 @@ const Peers = (props) => {
                             <ICON_CLOSE />
                         </div>
                     </div>
-                    <p className="modal-title">'Show External Address'</p>
+                    <p className="modal-title">Show External Address</p>
                 </div>
 
                 <div className="modal-body">
-                    <form className="edit-form">
-                        <div className="edit-input-wrap">
-                            <div className="edit-input-content">
-                                <label>Host</label>
-                                <input defaultValue={externalAddress && externalAddress.getHost()} readOnly type="text" name="name" className="edit-input"/>
-                            </div>
-                        </div>
-                        <div className="edit-input-wrap">
-                            <div className="edit-input-content">
-                                <label>Port</label>
-                                <input defaultValue={externalAddress && externalAddress.getPort()} readOnly type="text" name="name" className="edit-input"/>
-                            </div>
-                        </div>
-                    </form>
+                  <ShowExternalAddressForm />
                 </div>
 
             </div>
@@ -186,48 +194,12 @@ const Peers = (props) => {
                             <ICON_CLOSE />
                         </div>
                     </div>
-                    <p className="modal-title">Save Peer</p>
+                    <p className="modal-title">Add Peer</p>
 
-                    <div className="save-modal-wrapper">
-                        <div onClick={savePeer} className="save-modal-btn">
-                            Submit
-                        </div>
-                    </div>
                 </div>
 
                 <div className="modal-body">
-                    <form className="edit-form">
-                    <div className="edit-input-wrap">
-                        <div className="edit-input-content">
-                            <label>Name (not required)</label>
-                            <input onChange={(e)=>setName(e.target.value)} type="text" name="name" className="edit-input"/>
-                        </div>
-                    </div>
-                    <div className="edit-input-wrap">
-                        <div className="edit-input-content">
-                            <label>Host</label>
-                            <input onChange={(e)=>setHost(e.target.value)} type="text" name="name" className="edit-input"/>
-                        </div>
-                    </div>
-                    <div className="edit-input-wrap">
-                        <div className="edit-input-content">
-                            <label>Port</label>
-                            <input onChange={(e)=>setPort(e.target.value)} type="text" name="name" className="edit-input"/>
-                        </div>
-                    </div>
-                    <div className="edit-input-wrap">
-                        <div className="edit-input-content">
-                        <label>
-                        <input
-                        type="checkbox"
-                        checked={useTor}
-                        onChange={handleChangeUseTor}
-                        />
-                        Use Tor
-                        </label>
-                        </div>
-                    </div>
-                    </form>
+                    <AddPeerForm />
                 </div>
             </div>
         </div>

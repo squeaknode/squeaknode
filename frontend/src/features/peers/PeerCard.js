@@ -22,17 +22,17 @@ const PeerCard = (props) => {
   const dispatch = useDispatch();
 
   const enable = (e, id) => {
-      e.stopPropagation()
-      console.log('Enable peer clicked');
-      console.log(id);
-      dispatch(setPeerAutoconnectEnabled({peerId: id}));
+    e.stopPropagation()
+    console.log('Enable peer clicked');
+    console.log(id);
+    dispatch(setPeerAutoconnectEnabled({peerId: id}));
   }
 
   const disable = (e,id) => {
-      e.stopPropagation()
-      console.log('Disable peer clicked');
-      console.log(id);
-      dispatch(setPeerAutoconnectDisabled({peerId: id}));
+    e.stopPropagation()
+    console.log('Disable peer clicked');
+    console.log(id);
+    dispatch(setPeerAutoconnectDisabled({peerId: id}));
   }
 
   const peerId = peer.getPeerId();
@@ -44,32 +44,30 @@ const PeerCard = (props) => {
   const addrStr = host + ':' + port;
   const enabled = peer.getAutoconnect();
 
-  console.log(peerId);
-
-      return <Link onClick={(e)=>e.stopPropagation()} to={peerUrl} key={peerId} className="search-result-wapper">
-          <div className="search-userPic-wrapper">
-              <ICON_LAPTOPFILL styles={{width:'32px', height:"32px"}} />
-          </div>
-          <div className="search-user-details">
-              <div className="search-user-warp">
-                  <div className="search-user-info">
-                      <div className="search-user-name">{savedPeerName}</div>
-                      <div className="search-user-username">{addrStr}</div>
-                  </div>
-                  <div onClick={(e)=>{
-                      e.preventDefault();
-                      enabled ?
-                      disable(e, peerId) :
-                      enable(e, peerId)
-                  }} className={enabled ? "enable-btn-wrap disable-switch":"enable-btn-wrap"}>
-                  <span><span>{enabled ? 'Enabled' : 'Disabled'}</span></span>
-              </div>
-          </div>
-          <div className="search-user-bio">
-                &nbsp;
-          </div>
+  return <Link onClick={(e)=>e.stopPropagation()} to={peerUrl} key={peerId} className="search-result-wapper">
+    <div className="search-userPic-wrapper">
+      <ICON_LAPTOPFILL styles={{width:'32px', height:"32px"}} />
+    </div>
+    <div className="search-user-details">
+      <div className="search-user-warp">
+        <div className="search-user-info">
+          <div className="search-user-name">{savedPeerName}</div>
+          <div className="search-user-username">{addrStr}</div>
         </div>
-      </Link>
+        <div onClick={(e)=>{
+            e.preventDefault();
+            enabled ?
+            disable(e, peerId) :
+            enable(e, peerId)
+          }} className={enabled ? "enable-btn-wrap disable-switch":"enable-btn-wrap"}>
+          <span><span>{enabled ? 'Enabled' : 'Disabled'}</span></span>
+        </div>
+      </div>
+      <div className="search-user-bio">
+        &nbsp;
+      </div>
+    </div>
+  </Link>
 }
 
 export default withRouter(PeerCard)
