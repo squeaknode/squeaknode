@@ -8,6 +8,9 @@ import moment from 'moment'
 import SqueakCard from '../SqueakCard'
 import {API_URL} from '../../config'
 
+import { Form, Input, Select, Checkbox, Relevant, Debug, TextArea, Option } from 'informed';
+
+
 import { unwrapResult } from '@reduxjs/toolkit'
 import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
@@ -81,14 +84,10 @@ const Profile = (props) => {
     setActiveTab(tab)
   }
 
-  const editProfile = () => {
-    let values = {
-      profileId: user.getProfileId(),
-      name: editName,
-    }
+  const editProfile = ({values}) => {
     dispatch(setRenameProfile({
       profileId: user.getProfileId(),
-      profileName: editName,
+      profileName: values.name,
     }));
     // TODO: chain action to update profile squeaks with the new name.
     setSaved(true)
@@ -129,6 +128,7 @@ const Profile = (props) => {
   }
 
   const toggleEditModal = (param, type) => {
+    setMoreMenu(false);
     setStyleBody(!styleBody)
     setSaved(false)
     setName(user.getProfileName())
@@ -136,12 +136,14 @@ const Profile = (props) => {
   }
 
   const toggleDeleteModal = () => {
+    setMoreMenu(false);
     setStyleBody(!styleBody)
     setSaved(false)
     setTimeout(()=>{ setDeleteModalOpen(!deleteModalOpen) },20)
   }
 
   const toggleExportModal = () => {
+    setMoreMenu(false);
     setStyleBody(!styleBody)
     setSaved(false)
     setTimeout(()=>{ setExportModalOpen(!exportModalOpen) },20)
@@ -242,6 +244,26 @@ const Profile = (props) => {
   const openMore = () => { setMoreMenu(!moreMenu) }
 
   const handleMenuClick = (e) => { e.stopPropagation() }
+
+
+    const EditProfileForm = () => (
+      <Form onSubmit={editProfile} className="Squeak-input-side">
+        <div className="edit-input-wrap">
+          <Input class="informed-input" name="name" label="Profile Name" placeholder="Satoshi" />
+        </div>
+        <div className="inner-input-links">
+          <div className="input-links-side">
+          </div>
+          <div className="squeak-btn-holder">
+            <div style={{ fontSize: '13px', color: null }}>
+            </div>
+            <button type="submit" className={'squeak-btn-side squeak-btn-active'}>
+              Submit
+            </button>
+          </div>
+        </div>
+      </Form>
+    );
 
   return(
     <div>
@@ -385,37 +407,9 @@ const Profile = (props) => {
                       </div>
                     </div>
                     <p className="modal-title">'Edit Profile'</p>
-                    <div className="save-modal-wrapper">
-                      <div onClick={clearAvatar} className="save-modal-btn">
-                        Clear Image
-                      </div>
-                    </div>
-                    <div className="save-modal-wrapper">
-                      <div onClick={editProfile} className="save-modal-btn">
-                        Save
-                      </div>
-                    </div>
                   </div>
                   <div className="modal-body">
-                    <div className="modal-banner">
-                    </div>
-                    <div className="modal-profile-pic">
-                      <div className="modal-back-pic">
-                        <img src={user ? `${getProfileImageSrcString(user)}` : null} alt="profile" />
-                        <div>
-                          <ICON_UPLOAD/>
-                          <input onChange={()=>changeAvatar()} title=" " id="avatar" style={{opacity:'0'}} type="file"/>
-                        </div>
-                      </div>
-                    </div>
-                    <form className="edit-form">
-                      <div className="edit-input-wrap">
-                        <div className="edit-input-content">
-                          <label>Name</label>
-                          <input defaultValue={''} onChange={(e)=>setName(e.target.value)} type="text" name="name" className="edit-input"/>
-                        </div>
-                      </div>
-                    </form>
+                    <EditProfileForm />
                   </div>
                 </div>
               </div>
