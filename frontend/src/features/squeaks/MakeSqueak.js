@@ -79,32 +79,26 @@ const MakeSqueak = (props) => {
 
   const MakeSqueakForm = () => (
     <Form onSubmit={submitSqueak} className="Squeak-input-side">
-        <div className="inner-input-box">
-          <Select name="signingProfileId" initialValue="">
-            <Option value="" disabled>
-              Select Signing Profile...
-            </Option>
-            {signingProfiles.map(p => {
-              return <option value={p.getProfileId()}>{p.getProfileName()}</option>
-            })}
-          </Select>
+      <Select name="signingProfileId" initialValue="">
+        <Option value="" disabled>
+          Select Signing Profile...
+        </Option>
+        {signingProfiles.map(p => {
+          return <option value={p.getProfileId()}>{p.getProfileName()}</option>
+        })}
+      </Select>
+      <TextArea name="content" placeholder="What's happening..." />
+      <div className="inner-input-links">
+        <div className="input-links-side">
         </div>
-        <div className="inner-input-box">
-          <TextArea name="content" placeholder="What's happening..." />
+        <div className="squeak-btn-holder">
+          <div style={{ fontSize: '13px', color: null }}>
+          </div>
+          <button type="submit" className={'squeak-btn-side squeak-btn-active'}>
+            Squeak
+          </button>
         </div>
-
-        <div className="inner-input-links">
-            <div className="input-links-side">
-            </div>
-            <div className="squeak-btn-holder">
-                <div style={{ fontSize: '13px', color: null }}>
-
-                </div>
-                <button type="submit" className={'squeak-btn-side squeak-btn-active'}>
-                  Squeak
-                </button>
-            </div>
-        </div>
+      </div>
     </Form>
   );
 
