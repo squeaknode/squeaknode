@@ -5,8 +5,8 @@ import { ICON_SEARCH, ICON_ARROWBACK, ICON_CLOSE } from '../../Icons'
 import { getProfileImageSrcString } from '../../squeakimages/images';
 import Loader from '../Loader'
 import SqueakCard from '../SqueakCard'
-import Select from 'react-select'
 
+import { Form, Input, Checkbox, Select, Relevant, Debug, TextArea, Option } from 'informed';
 
 import { unwrapResult } from '@reduxjs/toolkit'
 import { useDispatch } from 'react-redux'
@@ -31,10 +31,6 @@ const Twitter = (props) => {
   const [tab, setTab] = useState('Signing Profiles')
   const [twitterAccountModalOpen, setTwitterAccountModalOpen] = useState(false)
   const [styleBody, setStyleBody] = useState(false)
-  const [twitterHandle, setTwitterHandle] = useState('')
-  const [newProfilePubkey, setNewProfilePubkey] = useState('')
-  const [bearerToken, setBearerToken] = useState('')
-  const [signingProfile, setSigningProfile] = useState(null)
 
   const signingProfiles = useSelector(selectSigningProfiles);
 
@@ -59,20 +55,20 @@ const Twitter = (props) => {
     setTimeout(()=>{ setTwitterAccountModalOpen(!twitterAccountModalOpen) },20)
   }
 
-  const createTwitterAccount = () => {
-    console.log('Create twitter account with handle:', twitterHandle);
-    if (!signingProfile) {
+  const createTwitterAccount = ({values}) => {
+    console.log('Create twitter account with handle:', values.twitterHandle);
+    if (!values.signingProfileId) {
       alert('Signing profile must be set.');
       return;
     }
     dispatch(setCreateTwitterAccount({
-      twitterHandle: twitterHandle,
-      profileId: signingProfile.getProfileId(),
-      bearerToken: bearerToken,
+      twitterHandle: values.twitterHandle,
+      profileId: values.signingProfileId,
+      bearerToken: values.twitterBearerToken,
     }))
     .then(unwrapResult)
     .then((pubkey) => {
-      console.log('Created twitter account with handle', twitterHandle);
+      console.log('Created twitter account with handle', values.twitterHandle);
     })
     .catch((err) => {
       alert(err.message);
@@ -84,10 +80,37 @@ const Twitter = (props) => {
     e.stopPropagation()
   }
 
-  const handleChangeSigningProfile = (e) => {
-    setSigningProfile(e.value);
-  }
-
+  const AddTwitterAccountForm = () => (
+    <Form onSubmit={createTwitterAccount} className="Squeak-input-side">
+      <div className="edit-input-wrap">
+        <Input class="informed-input" name="twitterHandle" label="Twitter Handle" />
+      </div>
+      <div className="edit-input-wrap">
+        <Input class="informed-input" name="twitterBearerToken" label="Twitter Bearer Token" />
+      </div>
+      <div className="edit-input-wrap">
+      <Select class="informed-select" name="signingProfileId" initialValue="">
+        <Option value="" disabled>
+          Select Signing Profile...
+        </Option>
+        {signingProfiles.map(p => {
+          return <option value={p.getProfileId()}>{p.getProfileName()}</option>
+        })}
+      </Select>
+      </div>
+      <div className="inner-input-links">
+        <div className="input-links-side">
+        </div>
+        <div className="squeak-btn-holder">
+          <div style={{ fontSize: '13px', color: null }}>
+          </div>
+          <button type="submit" className={'squeak-btn-side squeak-btn-active'}>
+            Add Twitter Account
+          </button>
+        </div>
+      </div>
+    </Form>
+  );
 
   return(
     <div>
@@ -129,37 +152,10 @@ const Twitter = (props) => {
               </div>
             </div>
             <p className="modal-title">Add Twitter Account</p>
-
-            <div className="save-modal-wrapper">
-              <div onClick={createTwitterAccount} className="save-modal-btn">
-                Submit
-              </div>
-            </div>
           </div>
 
           <div className="modal-body">
-            <form className="edit-form">
-              <div className="edit-input-wrap">
-                <div className="edit-input-content">
-                  <label>Twitter Handle</label>
-                  <input onChange={(e)=>setTwitterHandle(e.target.value)} type="text" name="name" className="edit-input"/>
-                </div>
-              </div>
-              <div className="edit-input-wrap">
-                <div className="edit-input-content">
-                  <label>Twitter Bearer Token</label>
-                  <input onChange={(e)=>setBearerToken(e.target.value)} type="text" name="name" className="edit-input"/>
-                </div>
-              </div>
-              <div className="edit-input-wrap">
-                <div className="edit-input-content">
-                  <label>Signing Profile</label>
-                  <div className="inner-input-box">
-                      <Select options={optionsFromProfiles(signingProfiles)} onChange={handleChangeSigningProfile} />
-                  </div>
-                </div>
-              </div>
-            </form>
+            <AddTwitterAccountForm />
           </div>
         </div>
       </div>

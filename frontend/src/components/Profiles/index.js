@@ -103,7 +103,10 @@ const Profiles = (props) => {
           <Input class="informed-input" name="privateKey" label="Private Key" />
         </div>
       </Relevant>
+
       <div className="inner-input-links">
+        <div className="input-links-side">
+        </div>
         <div className="squeak-btn-holder">
           <div style={{ fontSize: '13px', color: null }}>
           </div>
@@ -123,7 +126,10 @@ const Profiles = (props) => {
       <div className="edit-input-wrap">
         <Input class="informed-input" name="pubkey" label="Public Key" />
       </div>
+
       <div className="inner-input-links">
+        <div className="input-links-side">
+        </div>
         <div className="squeak-btn-holder">
           <div style={{ fontSize: '13px', color: null }}>
           </div>
