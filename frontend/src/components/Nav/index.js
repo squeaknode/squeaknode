@@ -12,6 +12,8 @@ import MakeSqueak from '../../features/squeaks/MakeSqueak'
 import ContentEditable from 'react-contenteditable'
 import Loader from '../Loader'
 
+import { Form, Input, Select, Checkbox, Relevant, Debug, TextArea, Option } from 'informed';
+
 import {
     enable as enableDarkMode,
     disable as disableDarkMode,
@@ -111,18 +113,13 @@ const Nav = ({history}) => {
         }
     }
 
-    const updateSellPrice = () => {
-        let values = {
-            sellPriceMsat: newSellPriceMsat,
-        }
-        dispatch(setSellPrice(newSellPriceMsat));
+    const updateSellPrice = ({values}) => {
+        dispatch(setSellPrice(values.sellPriceMsat));
         setNewSellPriceMsat(0);
-        toggleSellPriceModal()
     }
 
     const setSellPriceToDefault = () => {
         dispatch(setClearSellPrice());
-        toggleSellPriceModal()
     }
 
     const logout = () => {
@@ -133,6 +130,25 @@ const Nav = ({history}) => {
       setMoreMenu(false);
       history.push(`/app/twitter`);
     }
+
+    const UpdateSellPriceForm = () => (
+      <Form onSubmit={updateSellPrice} className="Squeak-input-side">
+        <div className="edit-input-wrap">
+          <Input class="informed-input" name="sellPriceMsat" type="number" label="Sell Price (msats)" />
+        </div>
+        <div className="inner-input-links">
+          <div className="input-links-side">
+          </div>
+          <div className="squeak-btn-holder">
+            <div style={{ fontSize: '13px', color: null }}>
+            </div>
+            <button type="submit" className={'squeak-btn-side squeak-btn-active'}>
+              Submit
+            </button>
+          </div>
+        </div>
+      </Form>
+    );
 
     return(
         <div className="Nav-component">
@@ -249,12 +265,7 @@ const Nav = ({history}) => {
                             <ICON_CLOSE />
                         </div>
                     </div>
-                    <p className="modal-title">'Sell Price'</p>
-                    <div className="save-modal-wrapper">
-                        <div onClick={updateSellPrice} className="save-modal-btn">
-                            Save
-                        </div>
-                    </div>
+                    <p className="modal-title">Sell Price</p>
                     <div className="save-modal-wrapper">
                         <div onClick={setSellPriceToDefault} className="save-modal-btn">
                             Reset To Default
@@ -266,14 +277,7 @@ const Nav = ({history}) => {
                       <div className="edit-input-wrap">
                             Current Sell Price: {sellPrice.getPriceMsat() / 1000} sats
                       </div>
-                      <form className="edit-form">
-                          <div className="edit-input-wrap">
-                              <div className="edit-input-content">
-                                  <label>New Sell Price (msats)</label>
-                                  <input value={newSellPriceMsat} onChange={(e)=>setNewSellPriceMsat(e.target.value)} type="text" name="sellPrice" className="edit-input"/>
-                              </div>
-                          </div>
-                      </form>
+                      <UpdateSellPriceForm />
                 </div>
                 }
             </div>
