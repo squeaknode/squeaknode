@@ -42,14 +42,6 @@ const Peers = (props) => {
         dispatch(fetchSavedPeers());
     }, [])
 
-    const peerUrl = (peerAddress) => {
-        return `/app/peer/${peerAddress.getNetwork()}/${peerAddress.getHost()}/${peerAddress.getPort()}`;
-    }
-
-    const peerAddressToStr = (peerAddress) => {
-      return `${peerAddress.getNetwork()}/${peerAddress.getHost()}:${peerAddress.getPort()}`;
-    }
-
     const toggleSavePeerModal = (param, type) => {
         setStyleBody(!styleBody)
         setTimeout(()=>{ setSavePeerModalOpen(!savePeerModalOpen) },20)
