@@ -246,7 +246,7 @@ const Profile = (props) => {
         <Input class="informed-input" name="name" label="Profile Name" placeholder="Satoshi" />
       </div>
       <div className="edit-input-wrap">
-        <Input class="informed-input" name="pubkey" label="Public Key" defaultValue={userParam} readOnly />
+        <Input class="informed-input" name="pubkey" label="Public Key" defaultValue={userParam} readOnly disabled />
       </div>
       <div className="inner-input-links">
         <div className="input-links-side">
