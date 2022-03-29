@@ -88,7 +88,7 @@ const Peers = (props) => {
           <Input class="informed-input" name="host" label="Host" />
         </div>
         <div className="edit-input-wrap">
-          <Input class="informed-input" name="port" label="Port" />
+          <Input class="informed-input" name="port" type="number" label="Port" />
         </div>
         <div className="edit-input-wrap">
           <Checkbox class="informed-input" name="useTor" label="Connect With Tor" />
