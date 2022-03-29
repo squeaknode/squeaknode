@@ -105,10 +105,9 @@ const Profile = (props) => {
 
 
   const exportPrivateKey = () => {
-    let values = {
+    dispatch(getProfilePrivateKey({
       profileId: user.getProfileId(),
-    }
-    dispatch(getProfilePrivateKey(values))
+    }))
     .then(unwrapResult)
     .then((privateKey) =>{
       console.log(privateKey);
@@ -281,6 +280,25 @@ const Profile = (props) => {
             </div>
             <button type="submit" className={'squeak-btn-side squeak-btn-active'}>
               Submit
+            </button>
+          </div>
+        </div>
+      </Form>
+    );
+
+    const ExportPrivateKeyForm = () => (
+      <Form onSubmit={exportPrivateKey} className="Squeak-input-side">
+        <div className="edit-input-wrap">
+          <Input class="informed-input" name="privateKey" label="Display Private Key" initialValue={privateKey} readOnly />
+        </div>
+        <div className="inner-input-links">
+          <div className="input-links-side">
+          </div>
+          <div className="squeak-btn-holder">
+            <div style={{ fontSize: '13px', color: null }}>
+            </div>
+            <button type="submit" className={'squeak-btn-side squeak-btn-active'}>
+              Export
             </button>
           </div>
         </div>
@@ -466,22 +484,10 @@ const Profile = (props) => {
                       </div>
                     </div>
                     <p className="modal-title">'Export Private Key'</p>
-                    <div className="save-modal-wrapper">
-                      <div onClick={exportPrivateKey} className="save-modal-btn">
-                        Export
-                      </div>
-                    </div>
                   </div>
 
                   <div className="modal-body">
-                    <form className="edit-form">
-                      <div className="edit-input-wrap">
-                        <div className="edit-input-content">
-                          <label>Private Key</label>
-                          <input defaultValue={privateKey} readOnly type="text" name="name" className="edit-input"/>
-                        </div>
-                      </div>
-                    </form>
+                    <ExportPrivateKeyForm />
                   </div>
 
                 </div>
