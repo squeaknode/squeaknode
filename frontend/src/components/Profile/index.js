@@ -8,6 +8,9 @@ import moment from 'moment'
 import SqueakCard from '../SqueakCard'
 import {API_URL} from '../../config'
 
+import { Form, Input, Select, Checkbox, Relevant, Debug, TextArea, Option } from 'informed';
+
+
 import { unwrapResult } from '@reduxjs/toolkit'
 import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
@@ -36,14 +39,13 @@ import {
 const Profile = (props) => {
   const [activeTab, setActiveTab] = useState('Squeaks')
   const [moreMenu, setMoreMenu] = useState(false)
-  const [editName, setName] = useState('')
   const [privateKey, setPrivateKey] = useState('')
   const [editModalOpen, setEditModalOpen] = useState(false)
+  const [changeImageModalOpen, setChangeImageModalOpen] = useState(false)
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
   const [exportModalOpen, setExportModalOpen] = useState(false)
   const [spendingModalOpen, setSpendingModalOpen] = useState(false)
   const [createModalOpen, setCreateModalOpen] = useState(false)
-  const [saved, setSaved] = useState(false)
   const [tab, setTab] = useState('Sats Spent')
   const [styleBody, setStyleBody] = useState(false)
   const userParam = props.match.params.username
@@ -64,7 +66,6 @@ const Profile = (props) => {
     reloadSqueaks();
     //preventing edit modal from apprearing after clicking a user on memOpen
     setEditModalOpen(false)
-    setName('')
   }, [props.match.params.username])
 
   const isInitialMount = useRef(true);
@@ -81,17 +82,12 @@ const Profile = (props) => {
     setActiveTab(tab)
   }
 
-  const editProfile = () => {
-    let values = {
-      profileId: user.getProfileId(),
-      name: editName,
-    }
+  const editProfile = ({values}) => {
     dispatch(setRenameProfile({
       profileId: user.getProfileId(),
-      profileName: editName,
+      profileName: values.name,
     }));
     // TODO: chain action to update profile squeaks with the new name.
-    setSaved(true)
     toggleEditModal()
   }
 
@@ -106,10 +102,9 @@ const Profile = (props) => {
 
 
   const exportPrivateKey = () => {
-    let values = {
+    dispatch(getProfilePrivateKey({
       profileId: user.getProfileId(),
-    }
-    dispatch(getProfilePrivateKey(values))
+    }))
     .then(unwrapResult)
     .then((privateKey) =>{
       console.log(privateKey);
@@ -117,10 +112,10 @@ const Profile = (props) => {
     });
   }
 
-  const createContactProfile = () => {
+  const createContactProfile = ({values}) => {
     dispatch(setCreateContactProfile({
       pubkey: userParam,
-      profileName: editName,
+      profileName: values.name,
     }))
     .then(() => {
       dispatch(fetchProfile(props.match.params.username));
@@ -129,21 +124,26 @@ const Profile = (props) => {
   }
 
   const toggleEditModal = (param, type) => {
+    setMoreMenu(false);
     setStyleBody(!styleBody)
-    setSaved(false)
-    setName(user.getProfileName())
     setTimeout(()=>{ setEditModalOpen(!editModalOpen) },20)
   }
 
-  const toggleDeleteModal = () => {
+  const toggleChangeImageModal = (param, type) => {
+    setMoreMenu(false);
     setStyleBody(!styleBody)
-    setSaved(false)
+    setTimeout(()=>{ setChangeImageModalOpen(!changeImageModalOpen) },20)
+  }
+
+  const toggleDeleteModal = () => {
+    setMoreMenu(false);
+    setStyleBody(!styleBody)
     setTimeout(()=>{ setDeleteModalOpen(!deleteModalOpen) },20)
   }
 
   const toggleExportModal = () => {
+    setMoreMenu(false);
     setStyleBody(!styleBody)
-    setSaved(false)
     setTimeout(()=>{ setExportModalOpen(!exportModalOpen) },20)
   }
 
@@ -156,7 +156,6 @@ const Profile = (props) => {
 
   const toggleCreateModal = (param, type) => {
     setStyleBody(!styleBody)
-    setSaved(false)
     setTimeout(()=>{ setCreateModalOpen(!createModalOpen) },20)
   }
 
@@ -178,14 +177,13 @@ const Profile = (props) => {
   const changeAvatar = () => {
     let file = document.getElementById('avatar').files[0];
     uploadAvatar(file);
+    toggleChangeImageModal();
   }
 
   const clearAvatar = () => {
     dispatch(setClearProfileImage({
       profileId: user.getProfileId(),
     }));
-    setSaved(true)
-    toggleEditModal()
   }
 
   const uploadAvatar = (file) => {
@@ -208,8 +206,6 @@ const Profile = (props) => {
       profileId: user.getProfileId(),
       imageBase64: imageBase64,
     }));
-    setSaved(true)
-    toggleEditModal()
   };
 
   const getLastSqueak = (squeakLst) => {
@@ -242,6 +238,98 @@ const Profile = (props) => {
   const openMore = () => { setMoreMenu(!moreMenu) }
 
   const handleMenuClick = (e) => { e.stopPropagation() }
+
+
+  const AddContactProfileForm = () => (
+    <Form onSubmit={createContactProfile} className="Squeak-input-side">
+      <div className="edit-input-wrap">
+        <Input class="informed-input" name="name" label="Profile Name" placeholder="Satoshi" />
+      </div>
+      <div className="edit-input-wrap">
+        <Input class="informed-input" name="pubkey" label="Public Key" defaultValue={userParam} readOnly />
+      </div>
+      <div className="inner-input-links">
+        <div className="input-links-side">
+        </div>
+        <div className="squeak-btn-holder">
+          <div style={{ fontSize: '13px', color: null }}>
+          </div>
+          <button type="submit" className={'squeak-btn-side squeak-btn-active'}>
+            Submit
+          </button>
+        </div>
+      </div>
+    </Form>
+  );
+
+  const EditProfileForm = () => (
+    <Form onSubmit={editProfile} className="Squeak-input-side">
+      <div className="edit-input-wrap">
+        <Input class="informed-input" name="name" label="Profile Name" placeholder="Satoshi" />
+      </div>
+      <div className="inner-input-links">
+        <div className="input-links-side">
+        </div>
+        <div className="squeak-btn-holder">
+          <div style={{ fontSize: '13px', color: null }}>
+          </div>
+          <button type="submit" className={'squeak-btn-side squeak-btn-active'}>
+            Submit
+          </button>
+        </div>
+      </div>
+    </Form>
+  );
+
+  const ChangeProfileImageForm = () => (
+    <Form onSubmit={uploadAvatar} className="Squeak-input-side">
+      <div className="modal-profile-pic">
+        <div className="modal-back-pic">
+          <img src={user ? `${getProfileImageSrcString(user)}` : null} alt="profile" />
+          <div>
+            <ICON_UPLOAD/>
+            <input onChange={()=>changeAvatar()} title=" " id="avatar" style={{opacity:'0'}} type="file"/>
+          </div>
+        </div>
+      </div>
+    </Form>
+  );
+
+
+  const DeleteProfileForm = () => (
+    <Form onSubmit={deleteProfile} className="Squeak-input-side">
+      <div className="inner-input-links">
+        <div className="input-links-side">
+        </div>
+        <div className="squeak-btn-holder">
+          <div style={{ fontSize: '13px', color: null }}>
+          </div>
+          <button type="submit" className={'squeak-btn-side squeak-btn-active'}>
+            Delete
+          </button>
+        </div>
+      </div>
+    </Form>
+  );
+
+  const ExportPrivateKeyForm = () => (
+    <Form onSubmit={exportPrivateKey} className="Squeak-input-side">
+      <div className="edit-input-wrap">
+        <Input class="informed-input" name="privateKey" label="Display Private Key" initialValue={privateKey} readOnly />
+      </div>
+      <div className="inner-input-links">
+        <div className="input-links-side">
+        </div>
+        <div className="squeak-btn-holder">
+          <div style={{ fontSize: '13px', color: null }}>
+          </div>
+          <button type="submit" className={'squeak-btn-side squeak-btn-active'}>
+            Export
+          </button>
+        </div>
+      </div>
+    </Form>
+  );
 
   return(
     <div>
@@ -281,17 +369,20 @@ const Profile = (props) => {
                             left: document.getElementById('profileMoreMenu') && `${document.getElementById('profileMoreMenu').getBoundingClientRect().left}px`,
                             height: '210px',
                           }} onClick={(e)=>handleMenuClick(e)} className="more-menu-content">
-                          <div onClick={toggleDeleteModal} className="more-menu-item">
-                            <span>Delete Profile</span>
-                          </div>
                           <div onClick={toggleEditModal} className="more-menu-item">
                             <span>Edit Profile</span>
+                          </div>
+                          <div onClick={toggleChangeImageModal} className="more-menu-item">
+                            <span>Change Image</span>
                           </div>
                           {user.getHasPrivateKey() &&
                             <div onClick={toggleExportModal} className="more-menu-item">
                               <span>Export Private Key</span>
                             </div>
                           }
+                          <div onClick={toggleDeleteModal} className="more-menu-item">
+                            <span>Delete Profile</span>
+                          </div>
                         </div> : null }
                       </div>
                     </div>
@@ -385,37 +476,28 @@ const Profile = (props) => {
                       </div>
                     </div>
                     <p className="modal-title">'Edit Profile'</p>
-                    <div className="save-modal-wrapper">
-                      <div onClick={clearAvatar} className="save-modal-btn">
-                        Clear Image
+                  </div>
+                  <div className="modal-body">
+                    <EditProfileForm />
+                  </div>
+                </div>
+              </div>
+
+              {/* Modal for change profile image */}
+              <div onClick={()=>toggleChangeImageModal()} style={{display: changeImageModalOpen ? 'block' : 'none'}} className="modal-edit">
+                <div onClick={(e)=>handleModalClick(e)} className="modal-content">
+                  <div className="modal-header">
+                    <div className="modal-closeIcon">
+                      <div onClick={()=>toggleEditModal()} className="modal-closeIcon-wrap">
+                        <ICON_CLOSE />
                       </div>
                     </div>
-                    <div className="save-modal-wrapper">
-                      <div onClick={editProfile} className="save-modal-btn">
-                        Save
-                      </div>
-                    </div>
+                    <p className="modal-title">'Change Profile Image'</p>
                   </div>
                   <div className="modal-body">
                     <div className="modal-banner">
                     </div>
-                    <div className="modal-profile-pic">
-                      <div className="modal-back-pic">
-                        <img src={user ? `${getProfileImageSrcString(user)}` : null} alt="profile" />
-                        <div>
-                          <ICON_UPLOAD/>
-                          <input onChange={()=>changeAvatar()} title=" " id="avatar" style={{opacity:'0'}} type="file"/>
-                        </div>
-                      </div>
-                    </div>
-                    <form className="edit-form">
-                      <div className="edit-input-wrap">
-                        <div className="edit-input-content">
-                          <label>Name</label>
-                          <input defaultValue={''} onChange={(e)=>setName(e.target.value)} type="text" name="name" className="edit-input"/>
-                        </div>
-                      </div>
-                    </form>
+                    <ChangeProfileImageForm />
                   </div>
                 </div>
               </div>
@@ -431,11 +513,10 @@ const Profile = (props) => {
                       </div>
                     </div>
                     <p className="modal-title">'Delete Profile'</p>
-                    <div className="save-modal-wrapper">
-                      <div onClick={deleteProfile} className="save-modal-btn">
-                        Delete
-                      </div>
-                    </div>
+                  </div>
+
+                  <div className="modal-body">
+                    <DeleteProfileForm />
                   </div>
                 </div>
               </div>
@@ -450,22 +531,10 @@ const Profile = (props) => {
                       </div>
                     </div>
                     <p className="modal-title">'Export Private Key'</p>
-                    <div className="save-modal-wrapper">
-                      <div onClick={exportPrivateKey} className="save-modal-btn">
-                        Export
-                      </div>
-                    </div>
                   </div>
 
                   <div className="modal-body">
-                    <form className="edit-form">
-                      <div className="edit-input-wrap">
-                        <div className="edit-input-content">
-                          <label>Private Key</label>
-                          <input defaultValue={privateKey} readOnly type="text" name="name" className="edit-input"/>
-                        </div>
-                      </div>
-                    </form>
+                    <ExportPrivateKeyForm />
                   </div>
 
                 </div>
@@ -498,7 +567,7 @@ const Profile = (props) => {
                 </div>
               </div>
 
-              {/* Modal for create signing profile */}
+              {/* Modal for create contact profile */}
               <div onClick={()=>toggleCreateModal()} style={{display: createModalOpen ? 'block' : 'none'}} className="modal-edit">
                 <div onClick={(e)=>handleModalClick(e)} className="modal-content">
                   <div className="modal-header">
@@ -508,29 +577,10 @@ const Profile = (props) => {
                       </div>
                     </div>
                     <p className="modal-title">Add Contact Profile</p>
-
-                    <div className="save-modal-wrapper">
-                      <div onClick={createContactProfile} className="save-modal-btn">
-                        Submit
-                      </div>
-                    </div>
                   </div>
 
                   <div className="modal-body">
-                    <form className="edit-form">
-                      <div className="edit-input-wrap">
-                        <div className="edit-input-content">
-                          <label>Profile Name</label>
-                          <input defaultValue={''} onChange={(e)=>setName(e.target.value)} type="text" name="name" className="edit-input"/>
-                        </div>
-                      </div>
-                      <div className="edit-input-wrap">
-                        <div className="edit-input-content">
-                          <label>Public Key</label>
-                          <input defaultValue={userParam} readOnly type="text" name="name" className="edit-input"/>
-                        </div>
-                      </div>
-                    </form>
+                    <AddContactProfileForm />
                   </div>
                 </div>
               </div>
