@@ -56,7 +56,6 @@ class SqueakPeerServerHandler(object):
 
     def handle_get_squeak_bytes(self, squeak_hash_str) -> Optional[bytes]:
         squeak_hash = bytes.fromhex(squeak_hash_str)
-        logger.info("Handle get squeak for hash: {}".format(squeak_hash_str))
         squeak = self.squeak_controller.get_squeak(squeak_hash)
         if not squeak:
             raise NotFoundError()
@@ -64,8 +63,6 @@ class SqueakPeerServerHandler(object):
 
     def handle_get_secret_key(self, squeak_hash_str) -> bytes:
         squeak_hash = bytes.fromhex(squeak_hash_str)
-        logger.info(
-            "Handle get secret key for hash: {}".format(squeak_hash_str))
         price_msat = self.squeak_controller.get_sell_price_msat()
         if price_msat > 0:
             raise PaymentRequiredError()
@@ -76,14 +73,11 @@ class SqueakPeerServerHandler(object):
 
     def handle_get_offer(self, squeak_hash_str, client_host) -> Offer:
         squeak_hash = bytes.fromhex(squeak_hash_str)
-        logger.info("Handle get offer for hash: {}, client_host: {}".format(
-            squeak_hash_str, client_host))
         client_addr = PeerAddress(
             network=Network.IPV4,
             host=client_host,
             port=0,
         )
-        logger.info("client_addr: {}".format(client_addr))
         offer = self.squeak_controller.get_packaged_offer(
             squeak_hash,
             client_addr,

@@ -26,7 +26,6 @@ import threading
 from flask import Flask
 from flask import jsonify
 from flask import request
-from flask_sock import Sock
 from werkzeug.serving import make_server
 
 from squeaknode.server.squeak_peer_server_handler import NotFoundError
@@ -48,45 +47,33 @@ def create_app(handler):
     )
     logger.debug("Starting flask with app.root_path: {}".format(app.root_path))
     logger.debug("Files in root path: {}".format(os.listdir(app.root_path)))
-    sock = Sock(app)
 
     @app.route("/")
     def index():
-        logger.info("Getting index route.")
         return "Hello, Index!"
 
     @app.route("/hello")
     def hello_world():
-        logger.info("Getting hello route.")
         return "Hello, World!"
 
     @app.route('/squeak/<hash>')
     def squeak(hash):
-        logger.info("Getting squeak route.")
-        logger.info(hash)
         squeak_bytes = handler.handle_get_squeak_bytes(hash)
-        logger.info(squeak_bytes)
         return squeak_bytes
 
     @app.route('/secretkey/<hash>')
     def secret_key(hash):
-        logger.info("Getting secretkey route.")
-        logger.info(hash)
         try:
             secret_key_bytes = handler.handle_get_secret_key(hash)
         except NotFoundError:
             return "Not found", 404
         except PaymentRequiredError:
             return "Payment required", 402
-        logger.info(secret_key_bytes)
         return secret_key_bytes
 
     @app.route('/offer/<hash>')
     def offer(hash):
-        logger.info("Getting offer route.")
-        logger.info(hash)
         client_host = request.remote_addr
-        logger.info(client_host)
         try:
             offer = handler.handle_get_offer(hash, client_host)
         except NotFoundError:
@@ -101,15 +88,9 @@ def create_app(handler):
 
     @app.route("/lookup")
     def lookup():
-        logger.info("Getting lookup route.")
         min_block = request.args.get('minblock')
         max_block = request.args.get('maxblock')
         pubkeys = request.args.getlist('pubkeys')
-        logger.info("Hello, lookup! Min block {}, Max block {}, pubkeys: {}".format(
-            min_block,
-            max_block,
-            pubkeys,
-        ))
         if len(pubkeys) == 0:
             squeak_hashes = []
         else:
@@ -122,42 +103,41 @@ def create_app(handler):
             squeak_hash.hex()
             for squeak_hash in squeak_hashes
         ]
-        logger.info(squeak_hashes_str)
         return jsonify(squeak_hashes_str)
 
-    @sock.route('/echo')
-    def echo(ws):
-        count = 0
-        while True:
-            data = f'hello_{count}'
-            logger.info(data)
-            ws.send(data)
-            count += 1
-            import time
-            time.sleep(5)
+    # @sock.route('/echo')
+    # def echo(ws):
+    #     count = 0
+    #     while True:
+    #         data = f'hello_{count}'
+    #         logger.info(data)
+    #         ws.send(data)
+    #         count += 1
+    #         import time
+    #         time.sleep(5)
 
-    @sock.route('/subscribetimeline')
-    def subscribe_timeline(ws):
-        logger.info("Getting lookup route.")
-        min_block = request.args.get('minblock')
-        max_block = request.args.get('maxblock')
-        pubkeys = request.args.getlist('pubkeys')
-        logger.info("Hello, lookup! Min block {}, Max block {}, pubkeys: {}".format(
-            min_block,
-            max_block,
-            pubkeys,
-        ))
-        # TODO: This special case should not need to be handled here.
-        if len(pubkeys) == 0:
-            squeak_hashes = []
-        else:
-            squeak_hashes = handler.handle_lookup_squeaks(
-                pubkeys,
-                min_block,
-                max_block,
-            )
-        for squeak_hash in squeak_hashes:
-            ws.send(squeak_hash.hex())
+    # @sock.route('/subscribetimeline')
+    # def subscribe_timeline(ws):
+    #     logger.info("Getting lookup route.")
+    #     min_block = request.args.get('minblock')
+    #     max_block = request.args.get('maxblock')
+    #     pubkeys = request.args.getlist('pubkeys')
+    #     logger.info("Hello, lookup! Min block {}, Max block {}, pubkeys: {}".format(
+    #         min_block,
+    #         max_block,
+    #         pubkeys,
+    #     ))
+    #     # TODO: This special case should not need to be handled here.
+    #     if len(pubkeys) == 0:
+    #         squeak_hashes = []
+    #     else:
+    #         squeak_hashes = handler.handle_lookup_squeaks(
+    #             pubkeys,
+    #             min_block,
+    #             max_block,
+    #         )
+    #     for squeak_hash in squeak_hashes:
+    #         ws.send(squeak_hash.hex())
 
     return app
 
