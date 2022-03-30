@@ -150,6 +150,9 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
       console.log('Buy clicked.');
       dispatch(setBuySqueak(values))
       .then(unwrapResult)
+      .then(() => {
+        dispatch(fetchPaymentSummaryForSqueak({squeakHash: props.id}));
+      })
       .catch((err) => {
         alert(err.message);
       });
@@ -172,8 +175,6 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
         return { value: offer, label: `${offer.getPriceMsat() / 1000} sats (${offer.getPeerAddress().getHost()}:${offer.getPeerAddress().getPort()})` }
       });
     }
-
-    console.log(paymentSummary);
 
 
     const squeak = currentSqueak;
