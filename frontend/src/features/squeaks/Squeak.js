@@ -68,7 +68,7 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
     const [modalOpen, setModalOpen] = useState(false)
     const [buyModalOpen, setBuyModalOpen] = useState(false)
     const [spendingModalOpen, setSpendingModalOpen] = useState(false)
-    const [tab, setTab] = useState('Sats Spent')
+    const [tab, setTab] = useState('Sent Payments')
     const [offer, setOffer] = useState(null)
 
 
@@ -240,11 +240,11 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
               </a>
             </div>
             <div className="squeak-stats">
-              <div onClick={()=>toggleSpendingModal('members','Sats Spent')} >
+              <div onClick={()=>toggleSpendingModal('members','Sent Payments')} >
                 <div className="int-num"> {paymentSummary && paymentSummary.getAmountSpentMsat() / 1000} </div>
                 <div className="int-text"> Sats Spent </div>
               </div>
-              <div onClick={()=>toggleSpendingModal('members','Sats Earned')} >
+              <div onClick={()=>toggleSpendingModal('members','Received Payments')} >
                 <div className="int-num"> {paymentSummary && paymentSummary.getAmountEarnedMsat() / 1000} </div>
                 <div className="int-text"> Sats Earned </div>
               </div>
@@ -411,7 +411,7 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
                 </div>:null}
 
 
-                {/* Modal for sats spent and earned */}
+                {/* Modal for sent payments and received payments */}
                 {squeak &&
                   <div onClick={()=>toggleSpendingModal()} style={{display: spendingModalOpen ? 'block' : 'none'}} className="modal-edit">
                     <div onClick={(e)=>handleModalClick(e)} className="modal-content">
@@ -425,21 +425,21 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
                       </div>
                       <div className="modal-body">
                         <div className="explore-nav-menu">
-                          <div onClick={()=>setTab('Sats Spent')} className={tab =='Sats Spent' ? `explore-nav-item activeTab` : `explore-nav-item`}>
-                            Sats Spent
+                          <div onClick={()=>setTab('Sent Payments')} className={tab =='Sent Payments' ? `explore-nav-item activeTab` : `explore-nav-item`}>
+                            Sent Payments
                           </div>
-                          <div onClick={()=>setTab('Sats Earned')} className={tab =='Sats Earned' ? `explore-nav-item activeTab` : `explore-nav-item`}>
-                            Sats Earned
+                          <div onClick={()=>setTab('Received Payments')} className={tab =='Received Payments' ? `explore-nav-item activeTab` : `explore-nav-item`}>
+                            Received Payments
                           </div>
                         </div>
                         <div className="modal-scroll">
-                          {tab === 'Sats Spent' ?
+                          {tab === 'Sent Payments' ?
                           <>
                           <SentPayments squeakHash={props.id} />
                           </>
 
                           :
-                          tab === 'Sats Earned' ?
+                          tab === 'Received Payments' ?
                             <>
                               <ReceivedPayments squeakHash={props.id} />
                             </>
