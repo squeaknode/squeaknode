@@ -546,7 +546,7 @@ const Profile = (props) => {
                 <div onClick={(e)=>handleModalClick(e)} className="modal-content">
                   <div className="modal-header no-b-border">
                     <div className="modal-closeIcon">
-                      <div onClick={()=>toggleEditModal()} className="modal-closeIcon-wrap">
+                      <div onClick={()=>toggleSpendingModal()} className="modal-closeIcon-wrap">
                         <ICON_CLOSE />
                       </div>
                     </div>
