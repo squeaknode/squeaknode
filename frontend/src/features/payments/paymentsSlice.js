@@ -8,6 +8,7 @@ import {
   getSentPayments,
   getReceivedPayments,
   getPaymentSummary,
+  getPaymentSummaryForSqueak,
 } from '../../api/client'
 
 const initialState = {
@@ -16,6 +17,7 @@ const initialState = {
   receivedPaymentsStatus: 'idle',
   receivedPayments: [],
   paymentSummary: null,
+  paymentSummaryForSqueak: null,
 }
 
 // Thunk functions
@@ -46,6 +48,15 @@ export const fetchPaymentSummary = createAsyncThunk(
   async () => {
     console.log('Fetching paymentSummary');
     const response = await getPaymentSummary();
+    return response.getPaymentSummary();
+  }
+)
+
+export const fetchPaymentSummaryForSqueak = createAsyncThunk(
+  'payments/fetchPaymentSummaryForSqueak',
+  async (values) => {
+    console.log('Fetching paymentSummary for squeak:', values.squeakHash);
+    const response = await getPaymentSummaryForSqueak(values.squeakHash);
     return response.getPaymentSummary();
   }
 )
@@ -86,6 +97,10 @@ const paymentsSlice = createSlice({
       const paymentSummary = action.payload;
       state.paymentSummary = paymentSummary;
     })
+    .addCase(fetchPaymentSummaryForSqueak.fulfilled, (state, action) => {
+      const paymentSummaryForSqueak = action.payload;
+      state.paymentSummaryForSqueak = paymentSummaryForSqueak;
+    })
   },
 })
 
@@ -115,3 +130,5 @@ export const selectLastReceivedPaymentsSqueak = createSelector(
 export const selectReceivedPaymentsStatus = state => state.payments.receivedPaymentsStatus
 
 export const selectPaymentSummary = state => state.payments.paymentSummary
+
+export const selectPaymentSummaryForSqueak = state => state.payments.paymentSummaryForSqueak

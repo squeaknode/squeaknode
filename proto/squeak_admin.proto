@@ -252,6 +252,10 @@ service SqueakAdmin {
   */
   rpc GetPaymentSummary (GetPaymentSummaryRequest) returns (GetPaymentSummaryReply) {}
 
+  /** sqkadmin: `getpaymentsummaryforsqueak`
+  */
+  rpc GetPaymentSummaryForSqueak (GetPaymentSummaryForSqueakRequest) returns (GetPaymentSummaryForSqueakReply) {}
+
   /** sqkadmin: `reprocessreceivedpayments`
   */
   rpc ReprocessReceivedPayments (ReprocessReceivedPaymentsRequest) returns (ReprocessReceivedPaymentsReply) {}
@@ -1090,6 +1094,16 @@ message GetPaymentSummaryRequest {
 }
 
 message GetPaymentSummaryReply {
+    // Payment summary of the node
+    PaymentSummary payment_summary = 1;
+}
+
+message GetPaymentSummaryForSqueakRequest {
+    /// Hash of the squeak.
+    string squeak_hash = 1;
+}
+
+message GetPaymentSummaryForSqueakReply {
     // Payment summary of the node
     PaymentSummary payment_summary = 1;
 }

@@ -1367,6 +1367,16 @@ def test_get_sent_payments(squeak_db, inserted_sent_payment_ids):
     assert len(retrieved_sent_payments) == len(inserted_sent_payment_ids)
 
 
+def test_get_sent_payments_for_squeak(squeak_db, squeak_hash, inserted_sent_payment_ids):
+    retrieved_sent_payments = squeak_db.get_sent_payments_for_squeak(
+        squeak_hash,
+        limit=1000,
+        last_sent_payment=None,
+    )
+
+    assert len(retrieved_sent_payments) == len(inserted_sent_payment_ids)
+
+
 def test_get_sent_offer(squeak_db, inserted_sent_offer_id, sent_offer, payment_hash):
     retrieved_sent_offer = squeak_db.get_sent_offer_by_payment_hash(
         payment_hash,
@@ -1538,6 +1548,16 @@ def test_get_received_payments(squeak_db, inserted_received_payment_ids):
     assert len(received_payments) == len(inserted_received_payment_ids)
 
 
+def test_get_received_payments_for_squeak(squeak_db, squeak_hash, inserted_received_payment_ids):
+    received_payments = squeak_db.get_received_payments_for_squeak(
+        squeak_hash,
+        limit=1000,
+        last_received_payment=None,
+    )
+
+    assert len(received_payments) == len(inserted_received_payment_ids)
+
+
 def test_yield_received_payments_from_settle_index(squeak_db, inserted_received_payment_ids):
     payments_iter = squeak_db.yield_received_payments_from_index(
         start_index=0,
@@ -1580,6 +1600,26 @@ def test_get_received_payment_summary(squeak_db, inserted_received_payment_ids, 
 
 def test_get_sent_payment_summary(squeak_db, inserted_sent_payment_ids, price_msat):
     sent_payment_summary = squeak_db.get_sent_payment_summary()
+
+    assert sent_payment_summary.num_sent_payments == len(
+        inserted_sent_payment_ids)
+    assert sent_payment_summary.total_amount_sent_msat == price_msat * \
+        len(inserted_sent_payment_ids)
+
+
+def test_get_received_payment_summary_for_squeak(squeak_db, squeak_hash, inserted_received_payment_ids, price_msat):
+    received_payment_summary = squeak_db.get_received_payment_summary_for_squeak(
+        squeak_hash)
+
+    assert received_payment_summary.num_received_payments == len(
+        inserted_received_payment_ids)
+    assert received_payment_summary.total_amount_received_msat == price_msat * \
+        len(inserted_received_payment_ids)
+
+
+def test_get_sent_payment_summary_for_squeak(squeak_db, squeak_hash, inserted_sent_payment_ids, price_msat):
+    sent_payment_summary = squeak_db.get_sent_payment_summary_for_squeak(
+        squeak_hash)
 
     assert sent_payment_summary.num_sent_payments == len(
         inserted_sent_payment_ids)

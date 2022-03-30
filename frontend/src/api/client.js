@@ -143,6 +143,8 @@ import {
   GetTwitterStreamStatusReply,
   DecryptSqueakRequest,
   DecryptSqueakReply,
+  GetPaymentSummaryForSqueakRequest,
+  GetPaymentSummaryForSqueakReply,
 } from '../proto/squeak_admin_pb';
 
 import axios from 'axios'
@@ -350,6 +352,18 @@ export const getPaymentSummary = () => {
     const deser = GetPaymentSummaryReply.deserializeBinary;
     return baseRequest({
       url: '/getpaymentsummary',
+      req: request,
+      deser: deser,
+    });
+}
+
+export const getPaymentSummaryForSqueak = (squeakHash) => {
+    console.log('Calling getPaymentSummaryForSqueak');
+    const request = new GetPaymentSummaryForSqueakRequest();
+    request.setSqueakHash(squeakHash);
+    const deser = GetPaymentSummaryForSqueakReply.deserializeBinary;
+    return baseRequest({
+      url: '/getpaymentsummaryforsqueak',
       req: request,
       deser: deser,
     });
