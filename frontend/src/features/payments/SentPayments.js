@@ -45,6 +45,8 @@ const SentPayments = (props) => {
   }
 
   const renderedListItems = sentPayments.map(sentPayment=>{
+    const peerAddress = sentPayment.getPeerAddress();
+    const peerUrl = `/app/peer/${peerAddress.getNetwork()}/${peerAddress.getHost()}/${peerAddress.getPort()}`;
     return <div key={sentPayment.getPaymentHash()} className="payment-wapper">
       <div className="search-user-details">
         <div className="search-user-warp">
@@ -53,13 +55,19 @@ const SentPayments = (props) => {
               {sentPayment.getPriceMsat() / 1000} sats
             </div>
             <div className="payment-squeak-hash">
-              <b>Squeak Hash</b>: <Link style={{color: "blue", fontWeight: 'bold'}} to={`/app/squeak/${sentPayment.getSqueakHash()}`}>{sentPayment.getSqueakHash()}</Link>
+              <b>Squeak Hash</b>:&nbsp;
+                <Link style={{color: "blue", fontWeight: 'bold'}} to={`/app/squeak/${sentPayment.getSqueakHash()}`}>
+                {sentPayment.getSqueakHash()}
+              </Link>
             </div>
             <div className="payment-peer-address">
-              <b>Peer</b>: {sentPayment.getPeerAddress().getHost()}:{sentPayment.getPeerAddress().getPort()}
+              <b>Peer</b>:&nbsp;
+                <Link to={peerUrl} style={{color: "blue", fontWeight: 'bold'}}>
+                  {sentPayment.getPeerAddress().getHost()}:{sentPayment.getPeerAddress().getPort()}
+                </Link>
               </div>
               <div className="payment-lightning-node">
-                <b>Lightning Node</b>::&nbsp;
+                <b>Lightning Node</b>:&nbsp;
                   <a href={`https://amboss.space/node/${sentPayment.getNodePubkey()}`}
                     target="_blank" rel="noopener noreferrer"
                     style={{color: "blue", fontWeight: 'bold'}}
