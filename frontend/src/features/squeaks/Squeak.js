@@ -63,6 +63,7 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
 
     const [modalOpen, setModalOpen] = useState(false)
     const [buyModalOpen, setBuyModalOpen] = useState(false)
+    const [spendingModalOpen, setSpendingModalOpen] = useState(false)
     const [offer, setOffer] = useState(null)
 
 
@@ -95,6 +96,11 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
       // if(param === 'edit'){setSaved(false)}
       // if(type === 'parent'){setParent(true)}else{setParent(false)}
       setBuyModalOpen(!buyModalOpen)
+    }
+
+    const toggleSpendingModal = (param, type) => {
+      console.log('Toggle spending modal');
+      setTimeout(()=>{ setSpendingModalOpen(!spendingModalOpen) },20)
     }
 
     const handleModalClick = (e) => {
@@ -227,11 +233,15 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
                 {moment(squeak.getBlockTime() * 1000).format("h:mm A · MMM D, YYYY")} (Block #{squeak.getBlockHeight()})
               </a>
             </div>
-            <div className="squeak-stats">
-              <div className="int-num"> {paymentSummary && paymentSummary.getAmountSpentMsat() / 1000} </div>
-              <div className="int-text"> Sats Spent </div>
-              <div className="int-num"> {paymentSummary && paymentSummary.getAmountEarnedMsat() / 1000} </div>
-              <div className="int-text"> Sats Earned </div>
+            <div onClick={()=>toggleSpendingModal('members','Sats Spent')} className="squeak-stats">
+              <div>
+                <div className="int-num"> {paymentSummary && paymentSummary.getAmountSpentMsat() / 1000} </div>
+                <div className="int-text"> Sats Spent </div>
+              </div>
+              <div>
+                <div className="int-num"> {paymentSummary && paymentSummary.getAmountEarnedMsat() / 1000} </div>
+                <div className="int-text"> Sats Earned </div>
+              </div>
             </div>
             <div className="squeak-interactions">
               <div onClick={()=>toggleModal()} className="squeak-int-icon">
