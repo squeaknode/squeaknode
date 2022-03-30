@@ -46,6 +46,10 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
     selectPaymentSummaryForSqueak,
   } from '../../features/payments/paymentsSlice'
 
+  import SentPayments from '../../features/payments/SentPayments'
+  import ReceivedPayments from '../../features/payments/ReceivedPayments'
+
+
   import store from '../../store'
 
 
@@ -429,6 +433,23 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
                           </div>
                         </div>
                         <div className="modal-scroll">
+                          {tab === 'Sats Spent' ?
+                          <>
+                          <SentPayments squeakHash={props.id} />
+                          </>
+
+                          :
+                          tab === 'Sats Earned' ?
+                            <>
+                              <ReceivedPayments />
+                            </>
+                          : <div className="try-searching">
+                                  Nothing to see here ..
+                                  <div/>
+                              Try searching for people, usernames, or keywords
+
+                          </div>
+                          }
                         </div>
                       </div>
                     </div>

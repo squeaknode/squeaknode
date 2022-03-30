@@ -145,6 +145,8 @@ import {
   DecryptSqueakReply,
   GetPaymentSummaryForSqueakRequest,
   GetPaymentSummaryForSqueakReply,
+  GetSentPaymentsForSqueakRequest,
+  GetSentPaymentsForSqueakReply,
 } from '../proto/squeak_admin_pb';
 
 import axios from 'axios'
@@ -379,6 +381,22 @@ export const getSentPayments = (limit, lastSentPayment) => {
     const deser = GetSentPaymentsReply.deserializeBinary;
     return baseRequest({
       url: '/getsentpayments',
+      req: request,
+      deser: deser,
+    });
+}
+
+export const getSentPaymentsForSqueak = (squeakHash, limit, lastSentPayment) => {
+    console.log('Calling getSentPaymentsForSqueak');
+    const request = new GetSentPaymentsForSqueakRequest();
+    request.setSqueakHash(squeakHash);
+    request.setLimit(limit);
+    if (lastSentPayment) {
+      request.setLastSentPayment(lastSentPayment);
+    }
+    const deser = GetSentPaymentsForSqueakReply.deserializeBinary;
+    return baseRequest({
+      url: '/getsentpaymentsforsqueak',
       req: request,
       deser: deser,
     });

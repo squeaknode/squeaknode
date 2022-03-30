@@ -28,13 +28,15 @@ const SentPayments = (props) => {
     console.log('fetchSentPayments');
     dispatch(clearSentPayments());
     dispatch(fetchSentPayments({
+      squeakHash: props.squeakHash,
       limit: 10,
       lastSentPayment: null,
     }));
-  }, [])
+  }, [props.squeakHash])
 
   const fetchMore = () => {
     dispatch(fetchSentPayments({
+      squeakHash: props.squeakHash,
       limit: 10,
       lastSentPayment: lastSentPayment,
     }));

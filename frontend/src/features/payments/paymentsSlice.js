@@ -6,6 +6,7 @@ import {
 } from '@reduxjs/toolkit'
 import {
   getSentPayments,
+  getSentPaymentsForSqueak,
   getReceivedPayments,
   getPaymentSummary,
   getPaymentSummaryForSqueak,
@@ -24,7 +25,12 @@ const initialState = {
 export const fetchSentPayments = createAsyncThunk(
   'payments/fetchSentPayments',
   async (values) => {
-    const response = await getSentPayments(
+    const response = values.squeakHash ? await getSentPaymentsForSqueak(
+      values.squeakHash,
+      values.limit,
+      values.lastSentPayment,
+    )
+    : await getSentPayments(
       values.limit,
       values.lastSentPayment,
     );
