@@ -451,6 +451,12 @@ def create_app(handler, username, password):
     def getpaymentsummary(msg):
         return handler.handle_get_payment_summary(msg)
 
+    @app.route("/getpaymentsummaryforsqueak", methods=["POST"])
+    @login_required
+    @protobuf_serialized(squeak_admin_pb2.GetPaymentSummaryForSqueakRequest())
+    def getpaymentsummaryforsqueak(msg):
+        return handler.handle_get_payment_summary_for_squeak(msg)
+
     @app.route("/reprocessreceivedpayments", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.ReprocessReceivedPaymentsRequest())

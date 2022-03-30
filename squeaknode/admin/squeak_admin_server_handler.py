@@ -820,6 +820,24 @@ class SqueakAdminServerHandler(object):
             payment_summary=payment_summary_msg,
         )
 
+    def handle_get_payment_summary_for_squeak(self, request):
+        squeak_hash_str = request.squeak_hash
+        squeak_hash = bytes.fromhex(squeak_hash_str)
+        logger.info("Handle get payment summary for squeak hash: {}".format(
+            squeak_hash_str,
+        ))
+        received_payment_summary = self.squeak_controller.get_received_payment_summary_for_squeak(
+            squeak_hash)
+        sent_payment_summary = self.squeak_controller.get_sent_payment_summary(
+            squeak_hash)
+        payment_summary_msg = payment_summary_to_message(
+            received_payment_summary,
+            sent_payment_summary,
+        )
+        return squeak_admin_pb2.GetPaymentSummaryForSqueakReply(
+            payment_summary=payment_summary_msg,
+        )
+
     def handle_reprocess_received_payments(self, request):
         logger.info("Handle reprocess received payments")
         self.squeak_controller.reprocess_received_payments()
