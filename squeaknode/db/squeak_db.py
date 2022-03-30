@@ -1214,6 +1214,49 @@ class SqueakDb:
                 self._parse_sent_payment(row) for row in rows]
             return sent_payments
 
+    def get_sent_payments_for_squeak(
+            self,
+            squeak_hash: bytes,
+            limit: int,
+            last_sent_payment: Optional[SentPayment],
+    ) -> List[SentPayment]:
+        """ Get sent payments for a squeak. """
+        last_created_time = last_sent_payment.created_time_ms if last_sent_payment else self.timestamp_now_ms
+        last_payment_hash = last_sent_payment.payment_hash if last_sent_payment else MAX_HASH
+        logger.info("""Get sent payments db query with
+        limit: {}
+        last_created_time: {}
+        last_payment_hash: {}
+        """.format(
+            limit,
+            last_created_time,
+            last_payment_hash.hex(),
+        ))
+        s = (
+            select([self.sent_payments])
+            .where(self.sent_payments.c.squeak_hash == squeak_hash)
+            .where(
+                tuple_(
+                    self.sent_payments.c.created_time_ms,
+                    self.sent_payments.c.payment_hash,
+                ) < tuple_(
+                    last_created_time,
+                    last_payment_hash,
+                )
+            )
+            .order_by(
+                self.sent_payments.c.created_time_ms.desc(),
+                self.sent_payments.c.payment_hash.desc(),
+            )
+            .limit(limit)
+        )
+        with self.get_connection() as connection:
+            result = connection.execute(s)
+            rows = result.fetchall()
+            sent_payments = [
+                self._parse_sent_payment(row) for row in rows]
+            return sent_payments
+
     def get_sent_payment(self, sent_payment_id: int) -> Optional[SentPayment]:
         """ Get sent payment by id. """
         s = (

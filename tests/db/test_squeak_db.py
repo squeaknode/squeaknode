@@ -1367,6 +1367,16 @@ def test_get_sent_payments(squeak_db, inserted_sent_payment_ids):
     assert len(retrieved_sent_payments) == len(inserted_sent_payment_ids)
 
 
+def test_get_sent_payments_for_squeak(squeak_db, squeak_hash, inserted_sent_payment_ids):
+    retrieved_sent_payments = squeak_db.get_sent_payments_for_squeak(
+        squeak_hash,
+        limit=1000,
+        last_sent_payment=None,
+    )
+
+    assert len(retrieved_sent_payments) == len(inserted_sent_payment_ids)
+
+
 def test_get_sent_offer(squeak_db, inserted_sent_offer_id, sent_offer, payment_hash):
     retrieved_sent_offer = squeak_db.get_sent_offer_by_payment_hash(
         payment_hash,
