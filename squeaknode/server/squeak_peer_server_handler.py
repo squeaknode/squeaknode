@@ -54,7 +54,7 @@ class SqueakPeerServerHandler(object):
         self.node_settings = node_settings
         self.config = config
 
-    def handle_get_squeak_bytes(self, squeak_hash_str) -> Optional[bytes]:
+    def handle_get_squeak_bytes(self, squeak_hash_str) -> bytes:
         squeak_hash = bytes.fromhex(squeak_hash_str)
         squeak = self.squeak_controller.get_squeak(squeak_hash)
         if not squeak:
