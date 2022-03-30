@@ -18,6 +18,7 @@ import {
   setCreateSigningProfile,
   setImportSigningProfile,
   setCreateContactProfile,
+  fetchSigningProfiles,
 } from '../../features/profiles/profilesSlice'
 
 
@@ -53,6 +54,7 @@ const Profiles = (props) => {
       .then(unwrapResult)
       .then((pubkey) => {
         console.log('Created profile with pubkey', pubkey);
+        dispatch(fetchSigningProfiles());
         props.history.push(`/app/profile/${pubkey}`);
       })
       .catch((err) => {
@@ -64,6 +66,7 @@ const Profiles = (props) => {
       .then(unwrapResult)
       .then((pubkey) => {
         console.log('Created profile with pubkey', pubkey);
+        dispatch(fetchSigningProfiles());
         props.history.push(`/app/profile/${pubkey}`);
       })
       .catch((err) => {
