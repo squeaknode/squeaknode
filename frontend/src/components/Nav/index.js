@@ -200,7 +200,7 @@ const Nav = ({history}) => {
                         <div onClick={()=>openMore()} style={{display: moreMenu ? 'block' : 'none'}} className="more-menu-background">
                         <div className="more-modal-wrapper">
                             {moreMenu ?
-                            <div style={{top: `${document.getElementById('moremenu').getBoundingClientRect().top - 40}px`, left: `${document.getElementById('moremenu').getBoundingClientRect().left}px`, height: '154px' }} onClick={(e)=>handleMenuClick(e)} className="more-menu-content">
+                            <div style={{top: `${document.getElementById('moremenu').getBoundingClientRect().top - 40}px`, left: `${document.getElementById('moremenu').getBoundingClientRect().left}px`, height: '208px' }} onClick={(e)=>handleMenuClick(e)} className="more-menu-content">
                                     <div onClick={changeTheme} className="more-menu-item">
                                         <span>Change Theme</span>
                                         <span>{theme ? <ICON_DARK/> : <ICON_LIGHT />}</span>
