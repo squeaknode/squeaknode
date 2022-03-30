@@ -238,12 +238,6 @@ class SqueakStore:
     def delete_squeak(self, squeak_hash: bytes) -> None:
         self.squeak_db.delete_squeak(squeak_hash)
 
-    def get_sent_offer_by_squeak_hash_and_peer(self, squeak_hash: bytes, peer_address: PeerAddress) -> Optional[SentOffer]:
-        return self.squeak_db.get_sent_offer_by_squeak_hash_and_peer(
-            squeak_hash,
-            peer_address,
-        )
-
     def save_sent_offer(self, sent_offer: SentOffer) -> int:
         return self.squeak_db.insert_sent_offer(sent_offer)
 
@@ -253,13 +247,6 @@ class SqueakStore:
             peer_address: PeerAddress,
             price_msat: int,
     ) -> Optional[SentOffer]:
-        # Check if there is an existing offer for the hash/peer_address combination
-        sent_offer = self.get_sent_offer_by_squeak_hash_and_peer(
-            squeak_hash,
-            peer_address,
-        )
-        if sent_offer:
-            return sent_offer
         squeak = self.get_squeak(squeak_hash)
         secret_key = self.get_squeak_secret_key(squeak_hash)
         if squeak is None or secret_key is None:
