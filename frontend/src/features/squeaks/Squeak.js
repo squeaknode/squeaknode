@@ -342,42 +342,44 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
                   <p className="modal-title">Buy Squeak</p>
                 </div>
                 <div style={{marginTop:'5px'}} className="modal-body">
-                  {squeakOffers.length} offers.
                   <div className="Squeak-input-side">
-                    <div className="inner-input-box">
-                      <Select options={optionsFromOffers(squeakOffers)} onChange={handleChangeOffer} />
-                    </div>
-                    {offer &&
-                      <>
+                    <div className="edit-input-wrap">
+                      {squeakOffers.length} offers.
                       <div className="inner-input-box">
-                        <b>Price</b>: {offer.getPriceMsat() / 1000} sats
-                        </div>
+                        <Select options={optionsFromOffers(squeakOffers)} onChange={handleChangeOffer} />
+                      </div>
+                      {offer &&
+                        <>
                         <div className="inner-input-box">
-                          <b>Peer</b>: {offer.getPeerAddress().getHost()}:{offer.getPeerAddress().getPort()}
+                          <b>Price</b>: {offer.getPriceMsat() / 1000} sats
                           </div>
                           <div className="inner-input-box">
-                            <b>Lightning Node</b>:&nbsp;
-                              <a href={`https://amboss.space/node/${offer.getNodePubkey()}`}
-                                target="_blank" rel="noopener noreferrer"
-                                style={{color: "blue", fontWeight: 'bold'}}
-                                >
-                                {offer.getNodePubkey()}@{offer.getNodeHost()}:{offer.getNodePort()}
-                              </a>
+                            <b>Peer</b>: {offer.getPeerAddress().getHost()}:{offer.getPeerAddress().getPort()}
                             </div>
-                            </>
-                        }
-                        <div className="inner-input-links">
-                          <div className="input-links-side">
-                          </div>
-                          <div className="squeak-btn-holder">
-                            <div onClick={buySqueak} className={offer ? 'squeak-btn-side squeak-btn-active' : 'squeak-btn-side'}>
-                              Buy
+                            <div className="inner-input-box">
+                              <b>Lightning Node</b>:&nbsp;
+                                <a href={`https://amboss.space/node/${offer.getNodePubkey()}`}
+                                  target="_blank" rel="noopener noreferrer"
+                                  style={{color: "blue", fontWeight: 'bold'}}
+                                  >
+                                  {offer.getNodePubkey()}@{offer.getNodeHost()}:{offer.getNodePort()}
+                                </a>
+                              </div>
+                              </>
+                          }
+                          <div className="inner-input-links">
+                            <div className="input-links-side">
+                            </div>
+                            <div className="squeak-btn-holder">
+                              <div onClick={buySqueak} className={offer ? 'squeak-btn-side squeak-btn-active' : 'squeak-btn-side'}>
+                                Buy
+                              </div>
                             </div>
                           </div>
                         </div>
+
+
                       </div>
-
-
                     </div>
                   </div> : null}
                 </div>:null}
