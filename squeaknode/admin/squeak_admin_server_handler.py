@@ -828,7 +828,7 @@ class SqueakAdminServerHandler(object):
         ))
         received_payment_summary = self.squeak_controller.get_received_payment_summary_for_squeak(
             squeak_hash)
-        sent_payment_summary = self.squeak_controller.get_sent_payment_summary(
+        sent_payment_summary = self.squeak_controller.get_sent_payment_summary_for_squeak(
             squeak_hash)
         payment_summary_msg = payment_summary_to_message(
             received_payment_summary,

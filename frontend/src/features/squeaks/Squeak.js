@@ -41,6 +41,11 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
     setBuySqueak,
     setDownloadSqueak,
   } from './squeaksSlice'
+  import {
+    fetchPaymentSummaryForSqueak,
+    selectPaymentSummaryForSqueak,
+  } from '../../features/payments/paymentsSlice'
+
   import store from '../../store'
 
 
@@ -53,6 +58,7 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
     const loadingCurrentSqueakStatus = useSelector(selectCurrentSqueakStatus)
     const loadingAncestorSqueaksStatus = useSelector(selectAncestorSqueaksStatus)
     const loadingReplySqueaksStatus = useSelector(selectReplySqueaksStatus)
+    const paymentSummary = useSelector(selectPaymentSummaryForSqueak)
     const dispatch = useDispatch();
 
     const [modalOpen, setModalOpen] = useState(false)
@@ -71,6 +77,7 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
       dispatch(fetchAncestorSqueaks(props.id));
       dispatch(fetchReplySqueaks({squeakHash: props.id, limit: 9, lastSqueak: null}));
       dispatch(fetchSqueakOffers(props.id));
+      dispatch(fetchPaymentSummaryForSqueak({squeakHash: props.id}));
     }, [props.id])
 
     const toggleModal = (e, type) => {
@@ -166,6 +173,8 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
       });
     }
 
+    console.log(paymentSummary);
+
 
     const squeak = currentSqueak;
     const author = currentSqueak && currentSqueak.getAuthor();
@@ -218,9 +227,9 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
               </a>
             </div>
             <div className="squeak-stats">
-              <div className="int-num"> 0 </div>
+              <div className="int-num"> {paymentSummary && paymentSummary.getAmountSpentMsat() / 1000} </div>
               <div className="int-text"> Sats Spent </div>
-              <div className="int-num"> 0 </div>
+              <div className="int-num"> {paymentSummary && paymentSummary.getAmountEarnedMsat() / 1000} </div>
               <div className="int-text"> Sats Earned </div>
             </div>
             <div className="squeak-interactions">
