@@ -441,7 +441,7 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
                           :
                           tab === 'Sats Earned' ?
                             <>
-                              <ReceivedPayments />
+                              <ReceivedPayments squeakHash={props.id} />
                             </>
                           : <div className="try-searching">
                                   Nothing to see here ..

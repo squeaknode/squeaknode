@@ -8,6 +8,7 @@ import {
   getSentPayments,
   getSentPaymentsForSqueak,
   getReceivedPayments,
+  getReceivedPaymentsForSqueak,
   getPaymentSummary,
   getPaymentSummaryForSqueak,
 } from '../../api/client'
@@ -41,7 +42,12 @@ export const fetchSentPayments = createAsyncThunk(
 export const fetchReceivedPayments = createAsyncThunk(
   'payments/fetchReceivedPayments',
   async (values) => {
-    const response = await getReceivedPayments(
+    const response = values.squeakHash ? await getReceivedPaymentsForSqueak(
+      values.squeakHash,
+      values.limit,
+      values.lastReceivedPayment,
+    )
+    : await getReceivedPayments(
       values.limit,
       values.lastReceivedPayment,
     );
