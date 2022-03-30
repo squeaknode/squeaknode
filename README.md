@@ -50,7 +50,6 @@ rpc_host=localhost
 rpc_port=8332
 rpc_user=devuser
 rpc_pass=devpass
-zeromq_hashblock_port=28334
 
 [tor]
 proxy_ip=localhost
