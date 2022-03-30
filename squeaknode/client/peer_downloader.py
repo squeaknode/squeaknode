@@ -66,9 +66,7 @@ class PeerDownloader(ABC):
         for squeak_hash in squeak_hashes:
             self.download_squeak(squeak_hash)
         for squeak_hash in squeak_hashes:
-            # self.download_squeak(squeak_hash)
-            # download secret key/offer.
-            pass
+            self.download_secret_key(squeak_hash)
 
     def download_single_squeak(
             self,
@@ -134,3 +132,28 @@ class PeerDownloader(ABC):
 
         # Save the squeak.
         self.squeak_store.save_squeak(squeak)
+
+    def download_secret_key(self, squeak_hash: bytes) -> None:
+        squeak = self.client.get_squeak(squeak_hash)
+
+        # Download the squeak if not already owned.
+        if not squeak:
+            return
+
+        if self.squeak_store.get_squeak_secret_key(squeak_hash):
+            return
+
+        # Download the secret key if not already owned.
+        secret_key = self.client.get_secret_key(squeak_hash)
+        if secret_key:
+            self.squeak_store.save_secret_key(squeak_hash, secret_key)
+            return
+
+        # Download the offer if secret key not already owned.
+        offer = self.client.get_offer(squeak_hash)
+        if offer:
+            self.squeak_store.handle_offer(
+                squeak,
+                offer,
+                self.peer.address,
+            )
