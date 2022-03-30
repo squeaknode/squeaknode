@@ -313,7 +313,7 @@ const Peer = (props) => {
                   <ICON_CLOSE />
                 </div>
               </div>
-              <p className="modal-title">'Delete Peer'</p>
+              <p className="modal-title">Delete Peer</p>
             </div>
             <div className="modal-body">
               <DeletePeerForm />

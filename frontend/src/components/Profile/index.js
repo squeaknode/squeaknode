@@ -475,7 +475,7 @@ const Profile = (props) => {
                         <ICON_CLOSE />
                       </div>
                     </div>
-                    <p className="modal-title">'Edit Profile'</p>
+                    <p className="modal-title">Edit Profile</p>
                   </div>
                   <div className="modal-body">
                     <EditProfileForm />
@@ -488,11 +488,11 @@ const Profile = (props) => {
                 <div onClick={(e)=>handleModalClick(e)} className="modal-content">
                   <div className="modal-header">
                     <div className="modal-closeIcon">
-                      <div onClick={()=>toggleEditModal()} className="modal-closeIcon-wrap">
+                      <div onClick={()=>toggleChangeImageModal()} className="modal-closeIcon-wrap">
                         <ICON_CLOSE />
                       </div>
                     </div>
-                    <p className="modal-title">'Change Profile Image'</p>
+                    <p className="modal-title">Change Profile Image</p>
                   </div>
                   <div className="modal-body">
                     <div className="modal-banner">
@@ -512,7 +512,7 @@ const Profile = (props) => {
                         <ICON_CLOSE />
                       </div>
                     </div>
-                    <p className="modal-title">'Delete Profile'</p>
+                    <p className="modal-title">Delete Profile</p>
                   </div>
 
                   <div className="modal-body">
@@ -530,7 +530,7 @@ const Profile = (props) => {
                         <ICON_CLOSE />
                       </div>
                     </div>
-                    <p className="modal-title">'Export Private Key'</p>
+                    <p className="modal-title">Export Private Key</p>
                   </div>
 
                   <div className="modal-body">
