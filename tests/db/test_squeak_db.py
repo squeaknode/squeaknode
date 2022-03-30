@@ -1587,6 +1587,26 @@ def test_get_sent_payment_summary(squeak_db, inserted_sent_payment_ids, price_ms
         len(inserted_sent_payment_ids)
 
 
+def test_get_received_payment_summary_for_squeak(squeak_db, squeak_hash, inserted_received_payment_ids, price_msat):
+    received_payment_summary = squeak_db.get_received_payment_summary_for_squeak(
+        squeak_hash)
+
+    assert received_payment_summary.num_received_payments == len(
+        inserted_received_payment_ids)
+    assert received_payment_summary.total_amount_received_msat == price_msat * \
+        len(inserted_received_payment_ids)
+
+
+def test_get_sent_payment_summary_for_squeak(squeak_db, squeak_hash, inserted_sent_payment_ids, price_msat):
+    sent_payment_summary = squeak_db.get_sent_payment_summary_for_squeak(
+        squeak_hash)
+
+    assert sent_payment_summary.num_sent_payments == len(
+        inserted_sent_payment_ids)
+    assert sent_payment_summary.total_amount_sent_msat == price_msat * \
+        len(inserted_sent_payment_ids)
+
+
 def test_get_config(squeak_db, user_config, inserted_user_config_username):
     retrieved_config = squeak_db.get_config(inserted_user_config_username)
 
