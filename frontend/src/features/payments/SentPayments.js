@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux'
 import { Link, withRouter } from 'react-router-dom'
 import moment from 'moment'
 
-import SqueakCard from '../../components/SqueakCard'
+import SentPaymentCard from './SentPaymentCard'
 import Loader from '../../components/Loader'
 
 
@@ -45,57 +45,23 @@ const SentPayments = (props) => {
   }
 
   const renderedListItems = sentPayments.map(sentPayment=>{
-    const peerAddress = sentPayment.getPeerAddress();
-    const peerUrl = `/app/peer/${peerAddress.getNetwork()}/${peerAddress.getHost()}/${peerAddress.getPort()}`;
-    return <div key={sentPayment.getPaymentHash()} className="payment-wapper">
-      <div className="search-user-details">
-        <div className="search-user-warp">
-          <div className="search-user-info">
-            <div className="payment-price">
-              {sentPayment.getPriceMsat() / 1000} sats
-            </div>
-            <div className="payment-squeak-hash">
-              <b>Squeak Hash</b>:&nbsp;
-                <Link style={{color: "blue", fontWeight: 'bold'}} to={`/app/squeak/${sentPayment.getSqueakHash()}`}>
-                {sentPayment.getSqueakHash()}
-              </Link>
-            </div>
-            <div className="payment-peer-address">
-              <b>Peer</b>:&nbsp;
-                <Link to={peerUrl} style={{color: "blue", fontWeight: 'bold'}}>
-                  {sentPayment.getPeerAddress().getHost()}:{sentPayment.getPeerAddress().getPort()}
-                </Link>
-              </div>
-              <div className="payment-lightning-node">
-                <b>Lightning Node</b>:&nbsp;
-                  <a href={`https://amboss.space/node/${sentPayment.getNodePubkey()}`}
-                    target="_blank" rel="noopener noreferrer"
-                    style={{color: "blue", fontWeight: 'bold'}}
-                    >
-                    {sentPayment.getNodePubkey()}
-                  </a>
-                </div>
-                <div className="payment-time">{moment(sentPayment.getTimeMs()).format("h:mm A · MMM D, YYYY")}</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      })
+    return <SentPaymentCard sentPayment={sentPayment} />
+  })
 
-      return <>
-      {renderedListItems}
+  return <>
+  {renderedListItems}
 
-      {sentPaymentsStatus === 'loading' ?
-        <div className="todo-list">
-          <Loader />
-        </div>
-        :
-        <div onClick={() => fetchMore()} className='squeak-btn-side squeak-btn-active'>
-          LOAD MORE
-        </div>
-      }
-
-      </>
+  {sentPaymentsStatus === 'loading' ?
+    <div className="todo-list">
+      <Loader />
+    </div>
+    :
+    <div onClick={() => fetchMore()} className='squeak-btn-side squeak-btn-active'>
+      LOAD MORE
+    </div>
   }
 
-  export default withRouter(SentPayments)
+  </>
+}
+
+export default withRouter(SentPayments)
