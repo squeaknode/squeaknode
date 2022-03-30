@@ -110,7 +110,7 @@ class PeerDownloader(ABC):
         self.squeak_store.save_squeak(squeak)
 
     def download_secret_key(self, squeak_hash: bytes) -> None:
-        squeak = self.client.get_squeak(squeak_hash)
+        squeak = self.squeak_store.get_squeak(squeak_hash)
 
         # Download the squeak if not already owned.
         if not squeak:
