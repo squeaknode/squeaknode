@@ -183,15 +183,15 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
                 </Link>
               </div>
               <div className="squeak-user-wrap">
-                <div className="squeak-user-name">
+                <Link to={`/app/profile/${squeak.getAuthorPubkey()}`} className="squeak-user-name">
                   {author ?
                     author.getProfileName() :
                     'Unknown Author'
                   }
-                </div>
-                <div className="squeak-username">
+                </Link>
+                <Link to={`/app/profile/${squeak.getAuthorPubkey()}`} className="squeak-username">
                   @{squeak.getAuthorPubkey()}
-                </div>
+                </Link>
               </div>
             </div>
 
