@@ -99,7 +99,6 @@ class SqueakController:
                 host=self.config.lnd.external_host,
                 port=self.config.lnd.port,
             )
-        logger.info(lnd_external_address)
         price_msat = self.get_sell_price_msat()
         if price_msat == 0:
             return None
