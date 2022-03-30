@@ -215,6 +215,9 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
     def GetSentPayments(self, request, context):
         return self.handler.handle_get_sent_payments(request)
 
+    def GetSentPaymentsForSqueak(self, request, context):
+        return self.handler.handle_get_sent_payments_for_squeak(request)
+
     def GetSentPayment(self, request, context):
         return self.handler.handle_get_sent_payment(request)
 
@@ -223,6 +226,9 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
 
     def GetReceivedPayments(self, request, context):
         return self.handler.handle_get_received_payments(request)
+
+    def GetReceivedPaymentsForSqueak(self, request, context):
+        return self.handler.handle_get_received_payments_for_squeak(request)
 
     def SubscribeReceivedPayments(self, request, context):
         stopped = threading.Event()

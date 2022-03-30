@@ -421,6 +421,12 @@ def create_app(handler, username, password):
     def getsentpayments(msg):
         return handler.handle_get_sent_payments(msg)
 
+    @app.route("/getsentpaymentsforsqueak", methods=["POST"])
+    @login_required
+    @protobuf_serialized(squeak_admin_pb2.GetSentPaymentsForSqueakRequest())
+    def getsentpaymentsforsqueak(msg):
+        return handler.handle_get_sent_payments_for_squeak(msg)
+
     @app.route("/getsentoffers", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.GetSentOffersRequest())
@@ -432,6 +438,12 @@ def create_app(handler, username, password):
     @protobuf_serialized(squeak_admin_pb2.GetReceivedPaymentsRequest())
     def getreceivedpayments(msg):
         return handler.handle_get_received_payments(msg)
+
+    @app.route("/getreceivedpaymentsforsqueak", methods=["POST"])
+    @login_required
+    @protobuf_serialized(squeak_admin_pb2.GetReceivedPaymentsForSqueakRequest())
+    def getreceivedpaymentsforsqueak(msg):
+        return handler.handle_get_received_payments_for_squeak(msg)
 
     @app.route("/getnetwork", methods=["POST"])
     @login_required

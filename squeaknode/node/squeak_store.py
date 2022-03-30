@@ -406,6 +406,18 @@ class SqueakStore:
             last_sent_payment,
         )
 
+    def get_sent_payments_for_squeak(
+            self,
+            squeak_hash: bytes,
+            limit: int,
+            last_sent_payment: Optional[SentPayment],
+    ) -> List[SentPayment]:
+        return self.squeak_db.get_sent_payments_for_squeak(
+            squeak_hash,
+            limit,
+            last_sent_payment,
+        )
+
     def get_sent_payment(self, sent_payment_id: int) -> Optional[SentPayment]:
         return self.squeak_db.get_sent_payment(sent_payment_id)
 
@@ -421,6 +433,18 @@ class SqueakStore:
             last_received_payment: Optional[ReceivedPayment],
     ) -> List[ReceivedPayment]:
         return self.squeak_db.get_received_payments(
+            limit,
+            last_received_payment,
+        )
+
+    def get_received_payments_for_squeak(
+            self,
+            squeak_hash: bytes,
+            limit: int,
+            last_received_payment: Optional[ReceivedPayment],
+    ) -> List[ReceivedPayment]:
+        return self.squeak_db.get_received_payments_for_squeak(
+            squeak_hash,
             limit,
             last_received_payment,
         )

@@ -228,6 +228,10 @@ service SqueakAdmin {
   */
   rpc GetSentPayments (GetSentPaymentsRequest) returns (GetSentPaymentsReply) {}
 
+  /** sqkadmin: `getsentpaymentsforsqueak`
+  */
+  rpc GetSentPaymentsForSqueak (GetSentPaymentsForSqueakRequest) returns (GetSentPaymentsForSqueakReply) {}
+
   /** sqkadmin: `getsentpayment`
   */
   rpc GetSentPayment (GetSentPaymentRequest) returns (GetSentPaymentReply) {}
@@ -239,6 +243,10 @@ service SqueakAdmin {
   /** sqkadmin: `getreceivedpayments`
   */
   rpc GetReceivedPayments (GetReceivedPaymentsRequest) returns (GetReceivedPaymentsReply) {}
+
+  /** sqkadmin: `getreceivedpaymentsforsqueak`
+  */
+  rpc GetReceivedPaymentsForSqueak (GetReceivedPaymentsForSqueakRequest) returns (GetReceivedPaymentsForSqueakReply) {}
 
   /** sqkadmin: `subscribereceivedpayments`
   */
@@ -943,6 +951,22 @@ message GetSentPaymentsReply {
     repeated SentPayment sent_payments = 1;
 }
 
+message GetSentPaymentsForSqueakRequest {
+    /// Hash of the squeak.
+    string squeak_hash = 1;
+
+    /// Limit number of results
+    int32 limit = 2;
+
+    /// Last entry
+    SentPayment last_sent_payment = 3;
+}
+
+message GetSentPaymentsForSqueakReply {
+    /// The sent payments
+    repeated SentPayment sent_payments = 1;
+}
+
 message GetSentPaymentRequest {
     /// Sent payment id
     int32 sent_payment_id = 1;
@@ -1053,6 +1077,22 @@ message GetReceivedPaymentsRequest {
 }
 
 message GetReceivedPaymentsReply {
+    /// The received payments
+    repeated ReceivedPayment received_payments = 1;
+}
+
+message GetReceivedPaymentsForSqueakRequest {
+    /// Hash of the squeak.
+    string squeak_hash = 1;
+
+    /// Limit number of results
+    int32 limit = 2;
+
+    /// Last entry
+    ReceivedPayment last_received_payment = 3;
+}
+
+message GetReceivedPaymentsForSqueakReply {
     /// The received payments
     repeated ReceivedPayment received_payments = 1;
 }
