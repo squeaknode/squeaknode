@@ -46,6 +46,10 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
     selectPaymentSummaryForSqueak,
   } from '../../features/payments/paymentsSlice'
 
+  import SentPayments from '../../features/payments/SentPayments'
+  import ReceivedPayments from '../../features/payments/ReceivedPayments'
+
+
   import store from '../../store'
 
 
@@ -63,6 +67,8 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
 
     const [modalOpen, setModalOpen] = useState(false)
     const [buyModalOpen, setBuyModalOpen] = useState(false)
+    const [spendingModalOpen, setSpendingModalOpen] = useState(false)
+    const [tab, setTab] = useState('Sats Spent')
     const [offer, setOffer] = useState(null)
 
 
@@ -95,6 +101,12 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
       // if(param === 'edit'){setSaved(false)}
       // if(type === 'parent'){setParent(true)}else{setParent(false)}
       setBuyModalOpen(!buyModalOpen)
+    }
+
+    const toggleSpendingModal = (param, type) => {
+      console.log('Toggle spending modal');
+      if(type){setTab(type)}
+      setTimeout(()=>{ setSpendingModalOpen(!spendingModalOpen) },20)
     }
 
     const handleModalClick = (e) => {
@@ -228,10 +240,14 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
               </a>
             </div>
             <div className="squeak-stats">
-              <div className="int-num"> {paymentSummary && paymentSummary.getAmountSpentMsat() / 1000} </div>
-              <div className="int-text"> Sats Spent </div>
-              <div className="int-num"> {paymentSummary && paymentSummary.getAmountEarnedMsat() / 1000} </div>
-              <div className="int-text"> Sats Earned </div>
+              <div onClick={()=>toggleSpendingModal('members','Sats Spent')} >
+                <div className="int-num"> {paymentSummary && paymentSummary.getAmountSpentMsat() / 1000} </div>
+                <div className="int-text"> Sats Spent </div>
+              </div>
+              <div onClick={()=>toggleSpendingModal('members','Sats Earned')} >
+                <div className="int-num"> {paymentSummary && paymentSummary.getAmountEarnedMsat() / 1000} </div>
+                <div className="int-text"> Sats Earned </div>
+              </div>
             </div>
             <div className="squeak-interactions">
               <div onClick={()=>toggleModal()} className="squeak-int-icon">
@@ -393,7 +409,54 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
                     </div>
                   </div> : null}
                 </div>:null}
-                </>
-            }
 
-            export default withRouter(Squeak)
+
+                {/* Modal for sats spent and earned */}
+                {squeak &&
+                  <div onClick={()=>toggleSpendingModal()} style={{display: spendingModalOpen ? 'block' : 'none'}} className="modal-edit">
+                    <div onClick={(e)=>handleModalClick(e)} className="modal-content">
+                      <div className="modal-header no-b-border">
+                        <div className="modal-closeIcon">
+                          <div onClick={()=>toggleSpendingModal()} className="modal-closeIcon-wrap">
+                            <ICON_CLOSE />
+                          </div>
+                        </div>
+                        <p className="modal-title">{null}</p>
+                      </div>
+                      <div className="modal-body">
+                        <div className="explore-nav-menu">
+                          <div onClick={()=>setTab('Sats Spent')} className={tab =='Sats Spent' ? `explore-nav-item activeTab` : `explore-nav-item`}>
+                            Sats Spent
+                          </div>
+                          <div onClick={()=>setTab('Sats Earned')} className={tab =='Sats Earned' ? `explore-nav-item activeTab` : `explore-nav-item`}>
+                            Sats Earned
+                          </div>
+                        </div>
+                        <div className="modal-scroll">
+                          {tab === 'Sats Spent' ?
+                          <>
+                          <SentPayments squeakHash={props.id} />
+                          </>
+
+                          :
+                          tab === 'Sats Earned' ?
+                            <>
+                              <ReceivedPayments squeakHash={props.id} />
+                            </>
+                          : <div className="try-searching">
+                                  Nothing to see here ..
+                                  <div/>
+                              Try searching for people, usernames, or keywords
+
+                          </div>
+                          }
+                        </div>
+                      </div>
+                    </div>
+                  </div>}
+
+
+                  </>
+              }
+
+              export default withRouter(Squeak)

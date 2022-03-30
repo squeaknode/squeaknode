@@ -127,16 +127,25 @@
     padding: 15px 5px;
     border-top: 1px solid rgb(230, 236, 240);
     border-bottom: 1px solid rgb(230, 236, 240);
+    div{
+        display: flex;
+        cursor: pointer;
+        &:hover{
+            text-decoration: underline;
+        }
+    }
 }
 
 .int-num{
     font-weight: bold;
     margin-right: 5px;
+    cursor: pointer;
 }
 
 .int-text{
     color: rgb(101, 119, 134);
     margin-right: 20px;
+    cursor: pointer;
 }
 
 .squeak-interactions{
