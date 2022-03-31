@@ -349,14 +349,20 @@ class SqueakController:
     def get_received_payment_summary(self) -> ReceivedPaymentSummary:
         return self.squeak_store.get_received_payment_summary()
 
-    def get_sent_payment_summary(self) -> SentPaymentSummary:
-        return self.squeak_store.get_sent_payment_summary()
-
     def get_received_payment_summary_for_squeak(self, squeak_hash: bytes) -> ReceivedPaymentSummary:
         return self.squeak_store.get_received_payment_summary_for_squeak(squeak_hash)
 
+    def get_received_payment_summary_for_pubkey(self, pubkey: SqueakPublicKey) -> ReceivedPaymentSummary:
+        return self.squeak_store.get_received_payment_summary_for_pubkey(pubkey)
+
+    def get_sent_payment_summary(self) -> SentPaymentSummary:
+        return self.squeak_store.get_sent_payment_summary()
+
     def get_sent_payment_summary_for_squeak(self, squeak_hash: bytes) -> SentPaymentSummary:
         return self.squeak_store.get_sent_payment_summary_for_squeak(squeak_hash)
+
+    def get_sent_payment_summary_for_pubkey(self, pubkey: SqueakPublicKey) -> SentPaymentSummary:
+        return self.squeak_store.get_sent_payment_summary_for_pubkey(pubkey)
 
     def reprocess_received_payments(self) -> None:
         self.squeak_store.clear_received_payment_settle_indices()

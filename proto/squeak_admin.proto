@@ -232,6 +232,10 @@ service SqueakAdmin {
   */
   rpc GetSentPaymentsForSqueak (GetSentPaymentsForSqueakRequest) returns (GetSentPaymentsForSqueakReply) {}
 
+  /** sqkadmin: `getsentpaymentsforpubkey`
+  */
+  rpc GetSentPaymentsForPubkey (GetSentPaymentsForPubkeyRequest) returns (GetSentPaymentsForPubkeyReply) {}
+
   /** sqkadmin: `getsentpayment`
   */
   rpc GetSentPayment (GetSentPaymentRequest) returns (GetSentPaymentReply) {}
@@ -248,6 +252,10 @@ service SqueakAdmin {
   */
   rpc GetReceivedPaymentsForSqueak (GetReceivedPaymentsForSqueakRequest) returns (GetReceivedPaymentsForSqueakReply) {}
 
+  /** sqkadmin: `getreceivedpaymentsforpubkey`
+  */
+  rpc GetReceivedPaymentsForPubkey (GetReceivedPaymentsForPubkeyRequest) returns (GetReceivedPaymentsForPubkeyReply) {}
+
   /** sqkadmin: `subscribereceivedpayments`
   */
   rpc SubscribeReceivedPayments (SubscribeReceivedPaymentsRequest) returns (stream ReceivedPayment) {}
@@ -263,6 +271,10 @@ service SqueakAdmin {
   /** sqkadmin: `getpaymentsummaryforsqueak`
   */
   rpc GetPaymentSummaryForSqueak (GetPaymentSummaryForSqueakRequest) returns (GetPaymentSummaryForSqueakReply) {}
+
+  /** sqkadmin: `getpaymentsummaryforpubkey`
+  */
+  rpc GetPaymentSummaryForPubkey (GetPaymentSummaryForPubkeyRequest) returns (GetPaymentSummaryForPubkeyReply) {}
 
   /** sqkadmin: `reprocessreceivedpayments`
   */
@@ -967,6 +979,22 @@ message GetSentPaymentsForSqueakReply {
     repeated SentPayment sent_payments = 1;
 }
 
+message GetSentPaymentsForPubkeyRequest {
+    /// The pubkey in hex
+    string pubkey = 1;
+
+    /// Limit number of results
+    int32 limit = 2;
+
+    /// Last entry
+    SentPayment last_sent_payment = 3;
+}
+
+message GetSentPaymentsForPubkeyReply {
+    /// The sent payments
+    repeated SentPayment sent_payments = 1;
+}
+
 message GetSentPaymentRequest {
     /// Sent payment id
     int32 sent_payment_id = 1;
@@ -1097,6 +1125,22 @@ message GetReceivedPaymentsForSqueakReply {
     repeated ReceivedPayment received_payments = 1;
 }
 
+message GetReceivedPaymentsForPubkeyRequest {
+    /// The pubkey in hex
+    string pubkey = 1;
+
+    /// Limit number of results
+    int32 limit = 2;
+
+    /// Last entry
+    ReceivedPayment last_received_payment = 3;
+}
+
+message GetReceivedPaymentsForPubkeyReply {
+    /// The received payments
+    repeated ReceivedPayment received_payments = 1;
+}
+
 message ReceivedPayment {
     /// The received payment id
     int32 received_payment_id = 1;
@@ -1144,6 +1188,16 @@ message GetPaymentSummaryForSqueakRequest {
 }
 
 message GetPaymentSummaryForSqueakReply {
+    // Payment summary of the node
+    PaymentSummary payment_summary = 1;
+}
+
+message GetPaymentSummaryForPubkeyRequest {
+    /// The pubkey in hex
+    string pubkey = 1;
+}
+
+message GetPaymentSummaryForPubkeyReply {
     // Payment summary of the node
     PaymentSummary payment_summary = 1;
 }
