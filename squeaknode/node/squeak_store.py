@@ -461,6 +461,18 @@ class SqueakStore:
             last_received_payment,
         )
 
+    def get_received_payments_for_pubkey(
+            self,
+            pubkey: SqueakPublicKey,
+            limit: int,
+            last_received_payment: Optional[ReceivedPayment],
+    ) -> List[ReceivedPayment]:
+        return self.squeak_db.get_received_payments_for_pubkey(
+            pubkey,
+            limit,
+            last_received_payment,
+        )
+
     def delete_all_expired_offers(self):
         self.delete_all_expired_received_offers()
         self.delete_all_expired_sent_offers()

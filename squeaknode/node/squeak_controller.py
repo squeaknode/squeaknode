@@ -270,6 +270,18 @@ class SqueakController:
             last_received_payment,
         )
 
+    def get_received_payments_for_pubkey(
+            self,
+            pubkey: SqueakPublicKey,
+            limit: int,
+            last_received_payment: Optional[ReceivedPayment],
+    ) -> List[ReceivedPayment]:
+        return self.squeak_store.get_received_payments_for_pubkey(
+            pubkey,
+            limit,
+            last_received_payment,
+        )
+
     def delete_all_expired_offers(self):
         self.squeak_store.delete_all_expired_offers()
 

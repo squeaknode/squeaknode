@@ -13,6 +13,7 @@ import {
   getPaymentSummary,
   getPaymentSummaryForSqueak,
   getPaymentSummaryForPubkey,
+  getReceivedPaymentsForPubkey,
 } from '../../api/client'
 
 const initialState = {
@@ -54,6 +55,11 @@ export const fetchReceivedPayments = createAsyncThunk(
       values.squeakHash,
       values.limit,
       values.lastReceivedPayment,
+    )
+    : values.pubkey ? await getReceivedPaymentsForPubkey(
+      values.pubkey,
+      values.limit,
+      values.lastSentPayment,
     )
     : await getReceivedPayments(
       values.limit,
