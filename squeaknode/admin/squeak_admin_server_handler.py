@@ -773,7 +773,6 @@ class SqueakAdminServerHandler(object):
 
     def handle_get_sent_payments_for_pubkey(self, request):
         public_key_hex = request.pubkey
-        public_key = SqueakPublicKey.from_bytes(bytes.fromhex(public_key_hex))
         limit = request.limit
         last_sent_payment = message_to_sent_payment(request.last_sent_payment) if request.HasField(
             "last_sent_payment") else None
@@ -786,6 +785,7 @@ class SqueakAdminServerHandler(object):
             limit,
             last_sent_payment,
         ))
+        public_key = SqueakPublicKey.from_bytes(bytes.fromhex(public_key_hex))
         sent_payments = self.squeak_controller.get_sent_payments_for_pubkey(
             public_key,
             limit,
@@ -887,7 +887,6 @@ class SqueakAdminServerHandler(object):
 
     def handle_get_received_payments_for_pubkey(self, request):
         public_key_hex = request.pubkey
-        public_key = SqueakPublicKey.from_bytes(bytes.fromhex(public_key_hex))
         limit = request.limit
         last_received_payment = message_to_received_payment(request.last_received_payment) if request.HasField(
             "last_received_payment") else None
@@ -896,10 +895,11 @@ class SqueakAdminServerHandler(object):
         limit: {}
         last_received_payment: {}
         """.format(
-            public_key,
+            public_key_hex,
             limit,
             last_received_payment,
         ))
+        public_key = SqueakPublicKey.from_bytes(bytes.fromhex(public_key_hex))
         received_payments = self.squeak_controller.get_received_payments_for_pubkey(
             public_key,
             limit,
@@ -972,10 +972,10 @@ class SqueakAdminServerHandler(object):
 
     def handle_get_payment_summary_for_pubkey(self, request):
         public_key_hex = request.pubkey
-        public_key = SqueakPublicKey.from_bytes(bytes.fromhex(public_key_hex))
         logger.info("Handle get payment summary for pubkey: {}".format(
             public_key_hex,
         ))
+        public_key = SqueakPublicKey.from_bytes(bytes.fromhex(public_key_hex))
         received_payment_summary = self.squeak_controller.get_received_payment_summary_for_pubkey(
             public_key)
         sent_payment_summary = self.squeak_controller.get_sent_payment_summary_for_pubkey(

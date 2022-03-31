@@ -34,6 +34,10 @@ import {
   selectProfileSqueaksStatus,
   clearProfileSqueaks,
 } from '../../features/squeaks/squeaksSlice'
+import {
+  fetchPaymentSummaryForPubkey,
+  selectPaymentSummaryForPubkey,
+} from '../../features/payments/paymentsSlice'
 
 
 const Profile = (props) => {
@@ -54,6 +58,7 @@ const Profile = (props) => {
   const lastUserSqueak = useSelector(selectLastProfileSqueak);
   const profileSqueaksStatus = useSelector(selectProfileSqueaksStatus);
   // const privateKey = 'TODO';
+  const paymentSummary = useSelector(selectPaymentSummaryForPubkey)
 
   const user = useSelector(selectCurrentProfile);
   const dispatch = useDispatch();
@@ -64,8 +69,9 @@ const Profile = (props) => {
     window.scrollTo(0, 0)
     dispatch(fetchProfile(props.match.params.username));
     reloadSqueaks();
+    dispatch(fetchPaymentSummaryForPubkey({pubkey: props.match.params.username}));
     //preventing edit modal from apprearing after clicking a user on memOpen
-    setEditModalOpen(false)
+    setEditModalOpen(false);
   }, [props.match.params.username])
 
   const isInitialMount = useRef(true);
@@ -331,6 +337,8 @@ const Profile = (props) => {
     </Form>
   );
 
+  console.log(paymentSummary);
+
   return(
     <div>
       <div>
@@ -417,12 +425,12 @@ const Profile = (props) => {
               <div className="profile-social-box">
                 {/* TODO: Implement sats spent */}
                 <div onClick={()=>toggleSpendingModal('members','Sats Spent')}>
-                  <p className="follow-num"> 0 </p>
+                  <p className="follow-num"> {paymentSummary && paymentSummary.getAmountSpentMsat() / 1000} </p>
                   <p className="follow-text"> sats spent </p>
                 </div>
                 {/* TODO: Implement sats eaned */}
                 <div onClick={()=>toggleSpendingModal('members', 'Sats Earned')}>
-                  <p className="follow-num"> 0 </p>
+                  <p className="follow-num"> {paymentSummary && paymentSummary.getAmountEarnedMsat() / 1000} </p>
                   <p className="follow-text"> sats earned </p>
                 </div>
               </div>

@@ -149,6 +149,8 @@ import {
   GetSentPaymentsForSqueakReply,
   GetReceivedPaymentsForSqueakRequest,
   GetReceivedPaymentsForSqueakReply,
+  GetPaymentSummaryForPubkeyRequest,
+  GetPaymentSummaryForPubkeyReply,
 } from '../proto/squeak_admin_pb';
 
 import axios from 'axios'
@@ -368,6 +370,18 @@ export const getPaymentSummaryForSqueak = (squeakHash) => {
     const deser = GetPaymentSummaryForSqueakReply.deserializeBinary;
     return baseRequest({
       url: '/getpaymentsummaryforsqueak',
+      req: request,
+      deser: deser,
+    });
+}
+
+export const getPaymentSummaryForPubkey = (pubkey) => {
+    console.log('Calling getPaymentSummaryForPubkey');
+    const request = new GetPaymentSummaryForPubkeyRequest();
+    request.setPubkey(pubkey);
+    const deser = GetPaymentSummaryForPubkeyReply.deserializeBinary;
+    return baseRequest({
+      url: '/getpaymentsummaryforpubkey',
       req: request,
       deser: deser,
     });
