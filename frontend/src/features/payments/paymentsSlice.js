@@ -59,7 +59,7 @@ export const fetchReceivedPayments = createAsyncThunk(
     : values.pubkey ? await getReceivedPaymentsForPubkey(
       values.pubkey,
       values.limit,
-      values.lastSentPayment,
+      values.lastReceivedPayment,
     )
     : await getReceivedPayments(
       values.limit,
