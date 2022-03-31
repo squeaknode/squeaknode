@@ -9,29 +9,20 @@
       <form action="" method="post" novalidate>
 	{{ form.hidden_tag() }}
         <div class="form-group">
-          <label for="userName">Username</label>
-          <input type="name" class="form-control" id="userName" placeholder="Username">
-        </div>
-	<p>
           {{ form.username.label }}<br>
-          {{ form.username(size=32) }}<br>
+          {{ form.username(size=32, class_="form-control", placeholder_="Username") }}<br>
           {% for error in form.username.errors %}
           <span style="color: red;">[{{ error }}]</span>
           {% endfor %}
-        </p>
-        <div class="form-group">
-          <label for="exampleInputPassword1">Password</label>
-          <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
         </div>
-        <p>
+        <div class="form-group">
           {{ form.password.label }}<br>
-          {{ form.password(size=32) }}<br>
+          {{ form.password(size=32, class_="form-control", placeholder_="Password") }}<br>
           {% for error in form.password.errors %}
           <span style="color: red;">[{{ error }}]</span>
           {% endfor %}
-        </p>
-        <button type="submit" class="btn btn-primary">Login</button>
-	<p>{{ form.submit() }}</p>
+        </div>
+	{{ form.submit(class_="btn btn-primary") }}
         <hr />
       </form>
     </div>
