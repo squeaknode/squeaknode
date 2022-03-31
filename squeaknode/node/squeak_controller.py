@@ -230,6 +230,18 @@ class SqueakController:
             last_sent_payment,
         )
 
+    def get_sent_payments_for_pubkey(
+            self,
+            pubkey: SqueakPublicKey,
+            limit: int,
+            last_sent_payment: Optional[SentPayment],
+    ) -> List[SentPayment]:
+        return self.squeak_store.get_sent_payments_for_pubkey(
+            pubkey,
+            limit,
+            last_sent_payment,
+        )
+
     def get_sent_payment(self, sent_payment_id: int) -> Optional[SentPayment]:
         return self.squeak_store.get_sent_payment(sent_payment_id)
 
@@ -254,6 +266,18 @@ class SqueakController:
     ) -> List[ReceivedPayment]:
         return self.squeak_store.get_received_payments_for_squeak(
             squeak_hash,
+            limit,
+            last_received_payment,
+        )
+
+    def get_received_payments_for_pubkey(
+            self,
+            pubkey: SqueakPublicKey,
+            limit: int,
+            last_received_payment: Optional[ReceivedPayment],
+    ) -> List[ReceivedPayment]:
+        return self.squeak_store.get_received_payments_for_pubkey(
+            pubkey,
             limit,
             last_received_payment,
         )

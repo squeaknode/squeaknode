@@ -39,6 +39,10 @@ import {
   selectPaymentSummaryForPubkey,
 } from '../../features/payments/paymentsSlice'
 
+import SentPayments from '../../features/payments/SentPayments'
+import ReceivedPayments from '../../features/payments/ReceivedPayments'
+
+
 
 const Profile = (props) => {
   const [activeTab, setActiveTab] = useState('Squeaks')
@@ -50,7 +54,7 @@ const Profile = (props) => {
   const [exportModalOpen, setExportModalOpen] = useState(false)
   const [spendingModalOpen, setSpendingModalOpen] = useState(false)
   const [createModalOpen, setCreateModalOpen] = useState(false)
-  const [tab, setTab] = useState('Sats Spent')
+  const [tab, setTab] = useState('Sent Payments')
   const [styleBody, setStyleBody] = useState(false)
   const userParam = props.match.params.username
 
@@ -424,12 +428,12 @@ const Profile = (props) => {
               </div>
               <div className="profile-social-box">
                 {/* TODO: Implement sats spent */}
-                <div onClick={()=>toggleSpendingModal('members','Sats Spent')}>
+                <div onClick={()=>toggleSpendingModal('members','Sent Payments')}>
                   <p className="follow-num"> {paymentSummary && paymentSummary.getAmountSpentMsat() / 1000} </p>
                   <p className="follow-text"> sats spent </p>
                 </div>
                 {/* TODO: Implement sats eaned */}
-                <div onClick={()=>toggleSpendingModal('members', 'Sats Earned')}>
+                <div onClick={()=>toggleSpendingModal('members', 'Received Payments')}>
                   <p className="follow-num"> {paymentSummary && paymentSummary.getAmountEarnedMsat() / 1000} </p>
                   <p className="follow-text"> sats earned </p>
                 </div>
@@ -562,41 +566,58 @@ const Profile = (props) => {
                   </div>
                   <div className="modal-body">
                     <div className="explore-nav-menu">
-                      <div onClick={()=>setTab('Sats Spent')} className={tab =='Sats Spent' ? `explore-nav-item activeTab` : `explore-nav-item`}>
-                        Sats Spent
+                      <div onClick={()=>setTab('Sent Payments')} className={tab =='Sent Payments' ? `explore-nav-item activeTab` : `explore-nav-item`}>
+                        Sent Payments
                       </div>
-                      <div onClick={()=>setTab('Sats Earned')} className={tab =='Sats Earned' ? `explore-nav-item activeTab` : `explore-nav-item`}>
-                        Sats Earned
+                      <div onClick={()=>setTab('Received Payments')} className={tab =='Received Payments' ? `explore-nav-item activeTab` : `explore-nav-item`}>
+                        Received Payments
                       </div>
                     </div>
                     <div className="modal-scroll">
-                    </div>
+                      {tab === 'Sent Payments' ?
+                        <>
+                        <SentPayments pubkey={props.match.params.username} />
+                        </>
+
+                      :
+                      tab === 'Received Payments' ?
+                      <>
+                      <ReceivedPayments pubkey={props.match.params.username} />
+                      </>
+                    : <div className="try-searching">
+                    Nothing to see here ..
+                    <div/>
+                    Try searching for people, usernames, or keywords
+
                   </div>
-                </div>
+                }
               </div>
-
-              {/* Modal for create contact profile */}
-              <div onClick={()=>toggleCreateModal()} style={{display: createModalOpen ? 'block' : 'none'}} className="modal-edit">
-                <div onClick={(e)=>handleModalClick(e)} className="modal-content">
-                  <div className="modal-header">
-                    <div className="modal-closeIcon">
-                      <div onClick={()=>toggleCreateModal()} className="modal-closeIcon-wrap">
-                        <ICON_CLOSE />
-                      </div>
-                    </div>
-                    <p className="modal-title">Add Contact Profile</p>
-                  </div>
-
-                  <div className="modal-body">
-                    <AddContactProfileForm />
-                  </div>
-                </div>
-              </div>
-
-
             </div>
           </div>
-        )
-      }
+        </div>
 
-      export default withRouter(Profile)
+        {/* Modal for create contact profile */}
+        <div onClick={()=>toggleCreateModal()} style={{display: createModalOpen ? 'block' : 'none'}} className="modal-edit">
+          <div onClick={(e)=>handleModalClick(e)} className="modal-content">
+            <div className="modal-header">
+              <div className="modal-closeIcon">
+                <div onClick={()=>toggleCreateModal()} className="modal-closeIcon-wrap">
+                  <ICON_CLOSE />
+                </div>
+              </div>
+              <p className="modal-title">Add Contact Profile</p>
+            </div>
+
+            <div className="modal-body">
+              <AddContactProfileForm />
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+  )
+}
+
+export default withRouter(Profile)

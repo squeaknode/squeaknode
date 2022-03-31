@@ -151,6 +151,10 @@ import {
   GetReceivedPaymentsForSqueakReply,
   GetPaymentSummaryForPubkeyRequest,
   GetPaymentSummaryForPubkeyReply,
+  GetSentPaymentsForPubkeyRequest,
+  GetSentPaymentsForPubkeyReply,
+  GetReceivedPaymentsForPubkeyRequest,
+  GetReceivedPaymentsForPubkeyReply,
 } from '../proto/squeak_admin_pb';
 
 import axios from 'axios'
@@ -418,6 +422,22 @@ export const getSentPaymentsForSqueak = (squeakHash, limit, lastSentPayment) => 
     });
 }
 
+export const getSentPaymentsForPubkey = (pubkey, limit, lastSentPayment) => {
+    console.log('Calling getSentPaymentsForPubkey');
+    const request = new GetSentPaymentsForPubkeyRequest();
+    request.setPubkey(pubkey);
+    request.setLimit(limit);
+    if (lastSentPayment) {
+      request.setLastSentPayment(lastSentPayment);
+    }
+    const deser = GetSentPaymentsForPubkeyReply.deserializeBinary;
+    return baseRequest({
+      url: '/getsentpaymentsforpubkey',
+      req: request,
+      deser: deser,
+    });
+}
+
 export const getReceivedPayments = (limit, lastReceivedPayment) => {
     console.log('Calling getReceivedPayments');
     const request = new GetReceivedPaymentsRequest();
@@ -444,6 +464,22 @@ export const getReceivedPaymentsForSqueak = (squeakHash, limit, lastReceivedPaym
     const deser = GetReceivedPaymentsForSqueakReply.deserializeBinary;
     return baseRequest({
       url: '/getreceivedpaymentsforsqueak',
+      req: request,
+      deser: deser,
+    });
+}
+
+export const getReceivedPaymentsForPubkey = (pubkey, limit, lastReceivedPayment) => {
+    console.log('Calling getReceivedPaymentsForPubkey');
+    const request = new GetReceivedPaymentsForPubkeyRequest();
+    request.setPubkey(pubkey);
+    request.setLimit(limit);
+    if (lastReceivedPayment) {
+      request.setLastReceivedPayment(lastReceivedPayment);
+    }
+    const deser = GetReceivedPaymentsForPubkeyReply.deserializeBinary;
+    return baseRequest({
+      url: '/getreceivedpaymentsforpubkey',
       req: request,
       deser: deser,
     });

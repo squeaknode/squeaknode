@@ -29,6 +29,7 @@ const SentPayments = (props) => {
     dispatch(clearSentPayments());
     dispatch(fetchSentPayments({
       squeakHash: props.squeakHash,
+      pubkey: props.pubkey,
       limit: 10,
       lastSentPayment: null,
     }));
@@ -37,6 +38,7 @@ const SentPayments = (props) => {
   const fetchMore = () => {
     dispatch(fetchSentPayments({
       squeakHash: props.squeakHash,
+      pubkey: props.pubkey,
       limit: 10,
       lastSentPayment: lastSentPayment,
     }));
