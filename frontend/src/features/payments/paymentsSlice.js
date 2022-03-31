@@ -7,6 +7,7 @@ import {
 import {
   getSentPayments,
   getSentPaymentsForSqueak,
+  getSentPaymentsForPubkey,
   getReceivedPayments,
   getReceivedPaymentsForSqueak,
   getPaymentSummary,
@@ -30,6 +31,11 @@ export const fetchSentPayments = createAsyncThunk(
   async (values) => {
     const response = values.squeakHash ? await getSentPaymentsForSqueak(
       values.squeakHash,
+      values.limit,
+      values.lastSentPayment,
+    )
+    : values.pubkey ? await getSentPaymentsForPubkey(
+      values.pubkey,
       values.limit,
       values.lastSentPayment,
     )
