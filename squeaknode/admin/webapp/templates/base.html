@@ -5,18 +5,11 @@
         {% else %}
         <title>Welcome to Squeaknode</title>
         {% endif %}
+	<link rel="stylesheet" href="assets/css/bootstrap.min.css">
+	<link rel="stylesheet" href="assets/css/ionicons.min.css">
+	<link rel="stylesheet" href="assets/css/login.css">
     </head>
     <body>
-        <div>
-            Squeaknode:
-            <a href="{{ url_for('index') }}">Home</a>
-            {% if current_user.is_anonymous %}
-            <a href="{{ url_for('login') }}">Login</a>
-            {% else %}
-            <a href="{{ url_for('logout') }}">Logout</a>
-            {% endif %}
-        </div>
-        <hr>
         {% with messages = get_flashed_messages() %}
         {% if messages %}
         <ul>
@@ -27,5 +20,8 @@
         {% endif %}
         {% endwith %}
         {% block content %}{% endblock %}
+
+	<script src="assets/js/jquery.min.js"></script>
+	<script src="assets/js/bootstrap.bundle.min.js"></script>
     </body>
 </html>
