@@ -1,12 +1,24 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="login-clean">
-  <form method="post">
-    <h2 class="sr-only">Login Form</h2>
-    <div class="illustration"><i class="icon ion-ios-navigate"></i></div>
-    <div class="form-group"><input class="form-control" type="email" name="email" placeholder="Email"></div>
-    <div class="form-group"><input class="form-control" type="password" name="password" placeholder="Password"></div>
-    <div class="form-group"><button class="btn btn-primary btn-block" type="submit">Log In</button></div><a href="#" class="forgot">Forgot your email or password?</a></form>
+<div class="back">
+  <div class="div-center">
+    <div class="content">
+      <h3>Squeaknode Login</h3>
+      <hr />
+      <form>
+        <div class="form-group">
+          <label for="userName">Username</label>
+          <input type="name" class="form-control" id="userName" placeholder="Username">
+        </div>
+        <div class="form-group">
+          <label for="exampleInputPassword1">Password</label>
+          <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+        </div>
+        <button type="submit" class="btn btn-primary">Login</button>
+        <hr />
+      </form>
+    </div>
+  </div>
 </div>
 {% endblock %}
