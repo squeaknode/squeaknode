@@ -9,7 +9,6 @@
     "@testing-library/user-event": "^7.2.1",
     "axios": "^0.21.2",
     "darkreader": "^4.9.10",
-    "dotenv": "^8.2.0",
     "google-protobuf": "^3.12.4",
     "informed": "^4.6.1",
     "jwt-decode": "^2.2.0",
