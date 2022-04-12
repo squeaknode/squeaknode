@@ -10,17 +10,18 @@ import { ICON_REPLY, ICON_RETWEET,
 import axios from 'axios'
 import {API_URL} from '../../config'
 import MakeSqueak from '../../features/squeaks/MakeSqueak'
+import DeleteSqueak from '../../features/squeaks/DeleteSqueak'
 import ContentEditable from 'react-contenteditable'
 
 import {
   setLikeSqueak,
   setUnlikeSqueak,
-  setDeleteSqueak,
 } from '../../features/squeaks/squeaksSlice'
 
 
 const SqueakCard = React.memo(function SqueakCard(props) {
-    const [modalOpen, setModalOpen] = useState(false)
+    const [replyModalOpen, setModalOpen] = useState(false)
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false)
     const [parent, setParent] = useState(false)
     const [styleBody, setStyleBody] = useState(false)
     const dispatch = useDispatch()
@@ -47,21 +48,26 @@ const SqueakCard = React.memo(function SqueakCard(props) {
         alert('Re-Squeak not yet implemented!');
     }
 
-    const deleteSqueak = (e,id) => {
-        e.preventDefault();
-        e.stopPropagation();
-        dispatch(setDeleteSqueak(id));
-    }
-
-    const toggleModal = (e, type) => {
+    const toggleReplyModal = (e, type) => {
         if(e){
             e.preventDefault();
             e.stopPropagation();
         }
         setStyleBody(!styleBody)
         if(type === 'parent'){setParent(true)}else{setParent(false)}
-        setTimeout(()=>{ setModalOpen(!modalOpen) },20)
+        setTimeout(()=>{ setModalOpen(!replyModalOpen) },20)
     }
+
+    const toggleDeleteModal = (e, type) => {
+        if(e){
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        setStyleBody(!styleBody)
+        if(type === 'parent'){setParent(true)}else{setParent(false)}
+        setTimeout(()=>{ setDeleteModalOpen(!deleteModalOpen) },20)
+    }
+
 
     const handleModalClick = (e) => {
         e.stopPropagation()
@@ -82,7 +88,7 @@ const SqueakCard = React.memo(function SqueakCard(props) {
         if (isInitialMount.current){ isInitialMount.current = false;}
         else if(document.getElementById("replyBox")) {
           document.getElementById("replyBox").focus(); }
-      }, [modalOpen])
+      }, [replyModalOpen])
 
     const goToUser = (e,username) => {
         e.stopPropagation()
@@ -142,7 +148,7 @@ const SqueakCard = React.memo(function SqueakCard(props) {
                   }
 
                   <div className="card-buttons-wrapper">
-                      <div onClick={(e)=>toggleModal(e)} className="card-button-wrap reply-wrap">
+                      <div onClick={(e)=>toggleReplyModal(e)} className="card-button-wrap reply-wrap">
                           <div className="card-icon reply-icon">
                               <ICON_REPLY styles={{fill:'rgb(101, 119, 134)'}}/>
                           </div>
@@ -170,7 +176,7 @@ const SqueakCard = React.memo(function SqueakCard(props) {
                               <ICON_HEART styles={{fill:'rgb(101, 119, 134)'}}/>}
                           </div>
                       </div>
-                      <div onClick={(e)=>deleteSqueak(e,props.id)} className="card-button-wrap">
+                      <div onClick={(e)=>toggleDeleteModal(e)} className="card-button-wrap">
                           <div className="card-icon share-icon">
                               <ICON_DELETE styles={{fill:'rgb(101, 119, 134)'}} />
                           </div>
@@ -193,21 +199,40 @@ const SqueakCard = React.memo(function SqueakCard(props) {
 
         </Link>
 
-        {/* squeak modal */}
+        {/* reply modal */}
         {props.squeak ?
-            <div onClick={()=>toggleModal()} style={{display: modalOpen ? 'block' : 'none'}} className="modal-edit">
-            {modalOpen ?
+            <div onClick={()=>toggleReplyModal()} style={{display: replyModalOpen ? 'block' : 'none'}} className="modal-edit">
+            {replyModalOpen ?
             <div style={{minHeight: '350px', height: 'initial'}} onClick={(e)=>handleModalClick(e)} className="modal-content">
                 <div className="modal-header">
                     <div className="modal-closeIcon">
-                        <div onClick={()=>toggleModal()} className="modal-closeIcon-wrap">
+                        <div onClick={()=>toggleReplyModal()} className="modal-closeIcon-wrap">
                             <ICON_CLOSE />
                         </div>
                     </div>
                     <p className="modal-title">Reply</p>
                 </div>
                 <div style={{marginTop:'5px'}} className="modal-body">
-                  <MakeSqueak replyToSqueak={props.squeak} submittedCallback={toggleModal} />
+                  <MakeSqueak replyToSqueak={props.squeak} submittedCallback={toggleReplyModal} />
+                </div>
+            </div> : null}
+        </div> : null}
+
+        {/* delete modal */}
+        {props.squeak ?
+            <div onClick={()=>toggleDeleteModal()} style={{display: deleteModalOpen ? 'block' : 'none'}} className="modal-edit">
+            {deleteModalOpen ?
+            <div style={{minHeight: '350px', height: 'initial'}} onClick={(e)=>handleModalClick(e)} className="modal-content">
+                <div className="modal-header">
+                    <div className="modal-closeIcon">
+                        <div onClick={()=>toggleDeleteModal()} className="modal-closeIcon-wrap">
+                            <ICON_CLOSE />
+                        </div>
+                    </div>
+                    <p className="modal-title">Delete Squeak</p>
+                </div>
+                <div style={{marginTop:'5px'}} className="modal-body">
+                  <DeleteSqueak squeakHash={props.id} submittedCallback={toggleDeleteModal} />
                 </div>
             </div> : null}
         </div> : null}

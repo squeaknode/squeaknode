@@ -13,6 +13,7 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
   import SqueakCard from '../../components/SqueakCard'
   import Loader from '../../components/Loader'
   import MakeSqueak from '../squeaks/MakeSqueak'
+  import DeleteSqueak from '../../features/squeaks/DeleteSqueak'
 
   import { unwrapResult } from '@reduxjs/toolkit'
 
@@ -35,7 +36,6 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
     selectReplySqueaks,
     selectReplySqueaksStatus,
     clearReplies,
-    setDeleteSqueak,
     selectSqueakOffers,
     fetchSqueakOffers,
     setBuySqueak,
@@ -65,7 +65,8 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
     const paymentSummary = useSelector(selectPaymentSummaryForSqueak)
     const dispatch = useDispatch();
 
-    const [modalOpen, setModalOpen] = useState(false)
+    const [replyModalOpen, setModalOpen] = useState(false)
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false)
     const [buyModalOpen, setBuyModalOpen] = useState(false)
     const [spendingModalOpen, setSpendingModalOpen] = useState(false)
     const [tab, setTab] = useState('Sent Payments')
@@ -86,11 +87,18 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
       dispatch(fetchPaymentSummaryForSqueak({squeakHash: props.id}));
     }, [props.id])
 
-    const toggleModal = (e, type) => {
+    const toggleReplyModal = (e, type) => {
       if(e){ e.stopPropagation() }
       // if(param === 'edit'){setSaved(false)}
       // if(type === 'parent'){setParent(true)}else{setParent(false)}
-      setModalOpen(!modalOpen)
+      setModalOpen(!replyModalOpen)
+    }
+
+    const toggleDeleteModal = (e, type) => {
+      if(e){ e.stopPropagation() }
+      // if(param === 'edit'){setSaved(false)}
+      // if(type === 'parent'){setParent(true)}else{setParent(false)}
+      setDeleteModalOpen(!deleteModalOpen)
     }
 
     const toggleBuyModal = () => {
@@ -129,10 +137,6 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
     const likeSqueak = (id) => {
       console.log('Clicked like');
       dispatch(setLikeSqueak(props.id));
-    }
-
-    const deleteSqueak = (id) => {
-      dispatch(setDeleteSqueak(props.id));
     }
 
     const downloadSqueak = (id) => {
@@ -250,7 +254,7 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
               </div>
             </div>
             <div className="squeak-interactions">
-              <div onClick={()=>toggleModal()} className="squeak-int-icon">
+              <div onClick={()=>toggleReplyModal()} className="squeak-int-icon">
                 <div className="card-icon reply-icon"> <ICON_REPLY /> </div>
               </div>
               <div onClick={()=>resqueak(squeak.getSqueakHash())} className="squeak-int-icon">
@@ -267,7 +271,7 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
                   {squeak.getLikedTimeMs() ? <ICON_HEARTFULL styles={{fill:'rgb(224, 36, 94)'}}
                   /> : <ICON_HEART/>} </div>
               </div>
-              <div onClick={()=>deleteSqueak(squeak.getSqueakHash())} className="squeak-int-icon">
+              <div onClick={()=>toggleDeleteModal()} className="squeak-int-icon">
                 <div className="card-icon delete-icon">
                   <ICON_DELETE styles={{fill:'rgb(101, 119, 134)'}} />
                 </div>
@@ -338,22 +342,40 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
     </div>
 
     {squeak ?
-      <div onClick={()=>toggleModal()} style={{display: modalOpen ? 'block' : 'none'}} className="modal-edit">
-        {modalOpen ?
+      <div onClick={()=>toggleReplyModal()} style={{display: replyModalOpen ? 'block' : 'none'}} className="modal-edit">
+        {replyModalOpen ?
           <div style={{minHeight: '379px', height: 'initial'}} onClick={(e)=>handleModalClick(e)} className="modal-content">
             <div className="modal-header">
               <div className="modal-closeIcon">
-                <div onClick={()=>toggleModal()} className="modal-closeIcon-wrap">
+                <div onClick={()=>toggleReplyModal()} className="modal-closeIcon-wrap">
                   <ICON_CLOSE />
                 </div>
               </div>
               <p className="modal-title">Reply</p>
             </div>
             <div style={{marginTop:'5px'}} className="modal-body">
-              <MakeSqueak replyToSqueak={squeak} submittedCallback={toggleModal} />
+              <MakeSqueak replyToSqueak={squeak} submittedCallback={toggleReplyModal} />
             </div>
           </div> : null}
         </div>:null}
+
+        {squeak ?
+          <div onClick={()=>toggleDeleteModal()} style={{display: deleteModalOpen ? 'block' : 'none'}} className="modal-edit">
+            {deleteModalOpen ?
+              <div style={{minHeight: '379px', height: 'initial'}} onClick={(e)=>handleModalClick(e)} className="modal-content">
+                <div className="modal-header">
+                  <div className="modal-closeIcon">
+                    <div onClick={()=>toggleDeleteModal()} className="modal-closeIcon-wrap">
+                      <ICON_CLOSE />
+                    </div>
+                  </div>
+                  <p className="modal-title">Delete Squeak</p>
+                </div>
+                <div style={{marginTop:'5px'}} className="modal-body">
+                  <DeleteSqueak squeakHash={squeak.getSqueakHash()} submittedCallback={toggleDeleteModal} />
+                </div>
+              </div> : null}
+            </div>:null}
 
         {squeak ?
           <div onClick={()=>toggleBuyModal()} style={{display: buyModalOpen ? 'block' : 'none'}} className="modal-edit">
