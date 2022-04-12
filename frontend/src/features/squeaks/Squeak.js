@@ -238,7 +238,7 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
             <div className="squeak-date">
               <a href={getBlockDetailUrl(squeak.getBlockHash(), network)}
                 target="_blank"
-                rel="noopener"
+                rel="noopener noreferrer"
                 >
                 {moment(squeak.getBlockTime() * 1000).format("h:mm A · MMM D, YYYY")} (Block #{squeak.getBlockHeight()})
               </a>
