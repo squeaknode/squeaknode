@@ -1,6 +1,5 @@
 import React, { Suspense, lazy } from 'react'
 import { Route, Switch, HashRouter, Redirect, withRouter } from 'react-router-dom'
-import 'dotenv/config'
 import './App.scss'
 import './informed-style.css'
 import Loader from './components/Loader'
