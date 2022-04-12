@@ -54,6 +54,14 @@ You can also run your own squeaknode on your host machine.
 	cd frontend
 	make rundev
 	```
+- Lint the frontend code:
+	```
+	node_modules/.bin/eslint .
+	```
+	or
+	```
+	node_modules/.bin/eslint . --fix
+	```
 
 
 #### Connect to the containerized squeaknode
