@@ -14,6 +14,7 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
   import Loader from '../../components/Loader'
   import MakeSqueak from '../squeaks/MakeSqueak'
   import DeleteSqueak from '../../features/squeaks/DeleteSqueak'
+  import BuySqueak from '../squeaks/BuySqueak'
 
   import { unwrapResult } from '@reduxjs/toolkit'
 
@@ -70,7 +71,6 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
     const [buyModalOpen, setBuyModalOpen] = useState(false)
     const [spendingModalOpen, setSpendingModalOpen] = useState(false)
     const [tab, setTab] = useState('Sent Payments')
-    const [offer, setOffer] = useState(null)
 
 
     const replySqueaksLimit = 10;
@@ -154,30 +154,7 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
       }
     }
 
-    const buySqueak = (id) => {
-      const offerId = offer && offer.getOfferId();
-      if (!offerId) {
-        return;
-      }
-      const values = {
-        offerId: offerId,
-        squeakHash: props.match.params.id,
-      }
-      console.log('Buy clicked.');
-      dispatch(setBuySqueak(values))
-      .then(unwrapResult)
-      .then(() => {
-        dispatch(fetchPaymentSummaryForSqueak({squeakHash: props.id}));
-      })
-      .catch((err) => {
-        alert(err.message);
-      });
-      toggleBuyModal();
-    }
 
-    const handleChangeOffer = (e) => {
-      setOffer(e.value);
-    }
 
 
     // const ancestorSqueaks = [];
@@ -186,11 +163,6 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
 
     // const squeakOffers = [];
 
-    const optionsFromOffers = (offers) => {
-      return offers.map((offer) => {
-        return { value: offer, label: `${offer.getPriceMsat() / 1000} sats (${offer.getPeerAddress().getHost()}:${offer.getPeerAddress().getPort()})` }
-      });
-    }
 
 
     const squeak = currentSqueak;
@@ -377,57 +349,20 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
               </div> : null}
             </div>:null}
 
-        {squeak ?
-          <div onClick={()=>toggleBuyModal()} style={{display: buyModalOpen ? 'block' : 'none'}} className="modal-edit">
-            {buyModalOpen ?
-              <div style={{minHeight: '379px', height: 'initial'}} onClick={(e)=>handleModalClick(e)} className="modal-content">
-                <div className="modal-header">
-                  <div className="modal-closeIcon">
-                    <div onClick={()=>toggleBuyModal()} className="modal-closeIcon-wrap">
-                      <ICON_CLOSE />
-                    </div>
-                  </div>
-                  <p className="modal-title">Buy Squeak</p>
-                </div>
-                <div style={{marginTop:'5px'}} className="modal-body">
-                  <div className="Squeak-input-side">
-                    <div className="edit-input-wrap">
-                      {squeakOffers.length} offers.
-                      <div className="inner-input-box">
-                        <Select options={optionsFromOffers(squeakOffers)} onChange={handleChangeOffer} />
-                      </div>
-                      {offer &&
-                        <>
-                        <div className="inner-input-box">
-                          <b>Price</b>: {offer.getPriceMsat() / 1000} sats
-                          </div>
-                          <div className="inner-input-box">
-                            <b>Peer</b>: {offer.getPeerAddress().getHost()}:{offer.getPeerAddress().getPort()}
-                            </div>
-                            <div className="inner-input-box">
-                              <b>Lightning Node</b>:&nbsp;
-                                <a href={`https://amboss.space/node/${offer.getNodePubkey()}`}
-                                  target="_blank" rel="noopener noreferrer"
-                                  style={{color: "blue", fontWeight: 'bold'}}
-                                  >
-                                  {offer.getNodePubkey()}@{offer.getNodeHost()}:{offer.getNodePort()}
-                                </a>
-                              </div>
-                              </>
-                          }
-                          <div className="inner-input-links">
-                            <div className="input-links-side">
-                            </div>
-                            <div className="squeak-btn-holder">
-                              <div onClick={buySqueak} className={offer ? 'squeak-btn-side squeak-btn-active' : 'squeak-btn-side'}>
-                                Buy
-                              </div>
-                            </div>
-                          </div>
+            {squeak ?
+              <div onClick={()=>toggleBuyModal()} style={{display: buyModalOpen ? 'block' : 'none'}} className="modal-edit">
+                {buyModalOpen ?
+                  <div style={{minHeight: '379px', height: 'initial'}} onClick={(e)=>handleModalClick(e)} className="modal-content">
+                    <div className="modal-header">
+                      <div className="modal-closeIcon">
+                        <div onClick={()=>toggleBuyModal()} className="modal-closeIcon-wrap">
+                          <ICON_CLOSE />
                         </div>
-
-
                       </div>
+                      <p className="modal-title">Buy Squeak</p>
+                    </div>
+                    <div style={{marginTop:'5px'}} className="modal-body">
+                      <BuySqueak squeakHash={props.match.params.id} squeakOffers={squeakOffers} submittedCallback={toggleBuyModal} />
                     </div>
                   </div> : null}
                 </div>:null}
@@ -456,29 +391,29 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
                         </div>
                         <div className="modal-scroll">
                           {tab === 'Sent Payments' ?
-                          <>
-                          <SentPayments squeakHash={props.id} />
-                          </>
+                            <>
+                            <SentPayments squeakHash={props.id} />
+                            </>
 
                           :
                           tab === 'Received Payments' ?
-                            <>
-                              <ReceivedPayments squeakHash={props.id} />
-                            </>
-                          : <div className="try-searching">
-                                  Nothing to see here ..
-                                  <div/>
-                              Try searching for people, usernames, or keywords
+                          <>
+                          <ReceivedPayments squeakHash={props.id} />
+                          </>
+                        : <div className="try-searching">
+                        Nothing to see here ..
+                        <div/>
+                        Try searching for people, usernames, or keywords
 
-                          </div>
-                          }
-                        </div>
                       </div>
-                    </div>
-                  </div>}
+                    }
+                  </div>
+                </div>
+              </div>
+            </div>}
 
 
-                  </>
-              }
+            </>
+        }
 
-              export default withRouter(Squeak)
+        export default withRouter(Squeak)
