@@ -274,8 +274,8 @@ class SqueakDb:
                 self.squeaks,
                 self.author_profiles,
                 self.recipient_profiles,
-                func.count(self.reply_squeaks.c.hash).label("num_replies")],
-            )
+                func.count(self.reply_squeaks.c.hash).label("num_replies"),
+            ])
             .select_from(
                 self.squeaks
                 .outerjoin(
@@ -291,12 +291,13 @@ class SqueakDb:
                     self.reply_squeaks.c.reply_hash == self.squeaks.c.hash,
                 )
             )
+            .group_by(self.squeaks.c.hash)
             .where(self.squeaks.c.hash == squeak_hash)
         )
         with self.get_connection() as connection:
             result = connection.execute(s)
             row = result.fetchone()
-            if row is None or row["hash"] is None:
+            if row is None:
                 return None
             print("row:")
             print(row)
@@ -329,7 +330,12 @@ class SqueakDb:
         ))
         s = (
             # select([self.squeaks, self.profiles])
-            select([self.squeaks, self.author_profiles, self.recipient_profiles])
+            select([
+                self.squeaks,
+                self.author_profiles,
+                self.recipient_profiles,
+                func.count(self.reply_squeaks.c.hash).label("num_replies"),
+            ])
             .select_from(
                 # self.squeaks.outerjoin(
                 #     self.profiles,
@@ -343,6 +349,10 @@ class SqueakDb:
                 .outerjoin(
                     self.recipient_profiles,
                     self.recipient_profiles.c.public_key == self.squeaks.c.recipient_public_key,
+                )
+                .outerjoin(
+                    self.reply_squeaks,
+                    self.reply_squeaks.c.reply_hash == self.squeaks.c.hash,
                 )
             )
             .where(self.profile_is_following(self.author_profiles))
@@ -388,7 +398,12 @@ class SqueakDb:
         ))
         s = (
             # select([self.squeaks, self.profiles])
-            select([self.squeaks, self.author_profiles, self.recipient_profiles])
+            select([
+                self.squeaks,
+                self.author_profiles,
+                self.recipient_profiles,
+                func.count(self.reply_squeaks.c.hash).label("num_replies"),
+            ])
             .select_from(
                 # self.squeaks.outerjoin(
                 #     self.profiles,
@@ -402,6 +417,10 @@ class SqueakDb:
                 .outerjoin(
                     self.recipient_profiles,
                     self.recipient_profiles.c.public_key == self.squeaks.c.recipient_public_key,
+                )
+                .outerjoin(
+                    self.reply_squeaks,
+                    self.reply_squeaks.c.reply_hash == self.squeaks.c.hash,
                 )
             )
             .where(
@@ -452,7 +471,12 @@ class SqueakDb:
         ))
         s = (
             # select([self.squeaks, self.profiles])
-            select([self.squeaks, self.author_profiles, self.recipient_profiles])
+            select([
+                self.squeaks,
+                self.author_profiles,
+                self.recipient_profiles,
+                func.count(self.reply_squeaks.c.hash).label("num_replies"),
+            ])
             .select_from(
                 # self.squeaks.outerjoin(
                 #     self.profiles,
@@ -466,6 +490,10 @@ class SqueakDb:
                 .outerjoin(
                     self.recipient_profiles,
                     self.recipient_profiles.c.public_key == self.squeaks.c.recipient_public_key,
+                )
+                .outerjoin(
+                    self.reply_squeaks,
+                    self.reply_squeaks.c.reply_hash == self.squeaks.c.hash,
                 )
             )
             .where(self.squeaks.c.author_public_key == public_key.to_bytes())
@@ -517,7 +545,12 @@ class SqueakDb:
         ))
         s = (
             # select([self.squeaks, self.profiles])
-            select([self.squeaks, self.author_profiles, self.recipient_profiles])
+            select([
+                self.squeaks,
+                self.author_profiles,
+                self.recipient_profiles,
+                func.count(self.reply_squeaks.c.hash).label("num_replies"),
+            ])
             .select_from(
                 # self.squeaks.outerjoin(
                 #     self.profiles,
@@ -531,6 +564,10 @@ class SqueakDb:
                 .outerjoin(
                     self.recipient_profiles,
                     self.recipient_profiles.c.public_key == self.squeaks.c.recipient_public_key,
+                )
+                .outerjoin(
+                    self.reply_squeaks,
+                    self.reply_squeaks.c.reply_hash == self.squeaks.c.hash,
                 )
             )
             .where(self.squeaks.c.content.ilike(f'%{search_text}%'))
@@ -584,7 +621,12 @@ class SqueakDb:
 
         s = (
             # select([self.squeaks, self.profiles])
-            select([self.squeaks, self.author_profiles, self.recipient_profiles])
+            select([
+                self.squeaks,
+                self.author_profiles,
+                self.recipient_profiles,
+                func.count(self.reply_squeaks.c.hash).label("num_replies"),
+            ])
             .select_from(
                 self.squeaks.join(
                     ancestors,
@@ -600,6 +642,10 @@ class SqueakDb:
                 .outerjoin(
                     self.recipient_profiles,
                     self.recipient_profiles.c.public_key == self.squeaks.c.recipient_public_key,
+                )
+                .outerjoin(
+                    self.reply_squeaks,
+                    self.reply_squeaks.c.reply_hash == self.squeaks.c.hash,
                 )
             )
             .order_by(
@@ -655,7 +701,12 @@ class SqueakDb:
         ))
         s = (
             # select([self.squeaks, self.profiles])
-            select([self.squeaks, self.author_profiles, self.recipient_profiles])
+            select([
+                self.squeaks,
+                self.author_profiles,
+                self.recipient_profiles,
+                func.count(self.reply_squeaks.c.hash).label("num_replies"),
+            ])
             .select_from(
                 # self.squeaks.outerjoin(
                 #     self.profiles,
@@ -669,6 +720,10 @@ class SqueakDb:
                 .outerjoin(
                     self.recipient_profiles,
                     self.recipient_profiles.c.public_key == self.squeaks.c.recipient_public_key,
+                )
+                .outerjoin(
+                    self.reply_squeaks,
+                    self.reply_squeaks.c.reply_hash == self.squeaks.c.hash,
                 )
             )
             .where(self.squeaks.c.reply_hash == squeak_hash)
