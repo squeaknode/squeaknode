@@ -4,7 +4,7 @@ import './style.scss'
 import { ICON_LOGO, ICON_HOME, ICON_HASH, ICON_BELL, ICON_INBOX
 , ICON_LIST, ICON_USER, ICON_LAPTOP, ICON_SETTINGS, ICON_HOMEFILL, ICON_HASHFILL,
 ICON_BELLFILL, ICON_LISTFILL, ICON_USERFILL, ICON_LAPTOPFILL, ICON_FEATHER,
-ICON_CLOSE,ICON_IMGUPLOAD, ICON_INBOXFILL, ICON_LIGHT, ICON_DARK, ICON_TWITTER } from '../../Icons'
+ICON_CLOSE,ICON_IMGUPLOAD, ICON_INBOXFILL, ICON_LIGHT, ICON_DARK, ICON_TWITTER, ICON_QUESTION } from '../../Icons'
 import { ReactComponent as YourSvg } from '../../icon.svg';
 import axios from 'axios'
 import {API_URL} from '../../config'
@@ -222,7 +222,7 @@ const Nav = ({history}) => {
                                     </div>
                                     <div onClick={toggleAboutModal} className="more-menu-item">
                                         <span>About</span>
-                                        <span><ICON_TWITTER /></span>
+                                        <span><ICON_QUESTION /></span>
                                     </div>
                                     <div onClick={()=>logout()} className="more-menu-item">
                                         Log out
@@ -307,7 +307,18 @@ const Nav = ({history}) => {
                 </div>
                 <div className="modal-body">
                       <div className="edit-input-wrap">
-                            Squeaknode is open-source software. View the source code here: https://github.com/squeaknode/squeaknode
+                            Squeaknode is open-source software. View the source code here:&nbsp;
+                            <a href="https://github.com/squeaknode/squeaknode"
+                              target="_blank" rel="noopener noreferrer"
+                              style={{color: "blue", fontWeight: 'bold'}}
+                              >https://github.com/squeaknode/squeaknode</a>
+                      </div>
+                      <div className="edit-input-wrap">
+                            Have questions? Join the telegram chat here:&nbsp;
+                            <a href="https://t.me/squeaknode"
+                              target="_blank" rel="noopener noreferrer"
+                              style={{color: "blue", fontWeight: 'bold'}}
+                              >t.me/squeaknode</a>
                       </div>
                 </div>
             </div>
