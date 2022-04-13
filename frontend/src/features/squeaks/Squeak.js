@@ -59,7 +59,6 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
     const currentSqueak = useSelector(selectCurrentSqueak);
     const ancestorSqueaks = useSelector(selectAncestorSqueaks);
     const replySqueaks = useSelector(selectReplySqueaks);
-    const squeakOffers = useSelector(selectSqueakOffers);
     const loadingCurrentSqueakStatus = useSelector(selectCurrentSqueakStatus)
     const loadingAncestorSqueaksStatus = useSelector(selectAncestorSqueaksStatus)
     const loadingReplySqueaksStatus = useSelector(selectReplySqueaksStatus)
@@ -83,7 +82,6 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
       dispatch(fetchSqueak(props.id));
       dispatch(fetchAncestorSqueaks(props.id));
       dispatch(fetchReplySqueaks({squeakHash: props.id, limit: 9, lastSqueak: null}));
-      dispatch(fetchSqueakOffers(props.id));
       dispatch(fetchPaymentSummaryForSqueak({squeakHash: props.id}));
     }, [props.id])
 
@@ -104,6 +102,7 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
     const toggleBuyModal = () => {
       // load offers on modal open.
       if (!buyModalOpen) {
+        console.log('fetchSqueakOffers', props.id);
         dispatch(fetchSqueakOffers(props.id));
       }
       // if(param === 'edit'){setSaved(false)}
@@ -362,7 +361,7 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
                       <p className="modal-title">Buy Squeak</p>
                     </div>
                     <div style={{marginTop:'5px'}} className="modal-body">
-                      <BuySqueak squeakHash={props.match.params.id} squeakOffers={squeakOffers} submittedCallback={toggleBuyModal} />
+                      <BuySqueak squeakHash={props.match.params.id} submittedCallback={toggleBuyModal} />
                     </div>
                   </div> : null}
                 </div>:null}

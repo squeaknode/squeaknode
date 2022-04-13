@@ -19,6 +19,8 @@ import { useDispatch } from 'react-redux'
 import {
   setBuySqueak,
   selectBuySqueakStatus,
+  selectSqueakOffers,
+  fetchSqueakOffers,
 } from '../squeaks/squeaksSlice'
 import {
   fetchPaymentSummaryForSqueak,
@@ -31,18 +33,14 @@ import {
 
 const BuySqueak = (props) => {
   console.log(props.squeakHash);
-  console.log(props.squeakOffers);
 
   const signingProfiles = useSelector(selectSigningProfiles);
   const buySqueakStatus = useSelector(selectBuySqueakStatus);
+  const squeakOffers = useSelector(selectSqueakOffers);
   const dispatch = useDispatch();
 
-  const [offer, setOffer] = useState(null)
+  const [offer, setOffer] = useState(null);
 
-
-  useEffect(() => {
-    dispatch(fetchSigningProfiles());
-  }, [])
 
   const buySqueak = (id) => {
     const offerId = offer && offer.getOfferId();
@@ -85,9 +83,9 @@ const BuySqueak = (props) => {
 
     <div className="Squeak-input-side">
       <div className="edit-input-wrap">
-        {props.squeakOffers.length} offers
+        {squeakOffers.length} offers
         <div className="inner-input-box">
-          <Select options={optionsFromOffers(props.squeakOffers)} onChange={handleChangeOffer} />
+          <Select options={optionsFromOffers(squeakOffers)} onChange={handleChangeOffer} />
         </div>
         {offer &&
           <>
@@ -123,8 +121,8 @@ const BuySqueak = (props) => {
         </div>
 
 
-      </>
-  )
-}
+        </>
+    )
+  }
 
-export default withRouter(BuySqueak)
+  export default withRouter(BuySqueak)
