@@ -19,7 +19,7 @@ const Home = () => {
         <div className="Home-wrapper">
             <div className="Home-header-wrapper">
                 <h2 className="Home-header">
-                    Latest Squeaks
+                    Home
                 </h2>
             </div>
             <MakeSqueak />
