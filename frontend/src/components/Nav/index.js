@@ -47,6 +47,7 @@ const Nav = ({history}) => {
     const [theme, setTheme] = useState(true)
     const [modalOpen, setModalOpen] = useState(false)
     const [sellPriceModalOpen, setSellPriceModalOpen] = useState(false)
+    const [aboutModalOpen, setAboutModalOpen] = useState(false)
     const [styleBody, setStyleBody] = useState(false)
     const [newSellPriceMsat, setNewSellPriceMsat] = useState(0)
 
@@ -94,6 +95,12 @@ const Nav = ({history}) => {
         setMoreMenu(false);
         setStyleBody(!styleBody)
         setTimeout(()=>{ setSellPriceModalOpen(!sellPriceModalOpen) },20)
+    }
+
+    const toggleAboutModal = (param, type) => {
+        setMoreMenu(false);
+        setStyleBody(!styleBody)
+        setTimeout(()=>{ setAboutModalOpen(!aboutModalOpen) },20)
     }
 
 
@@ -200,7 +207,7 @@ const Nav = ({history}) => {
                         <div onClick={()=>openMore()} style={{display: moreMenu ? 'block' : 'none'}} className="more-menu-background">
                         <div className="more-modal-wrapper">
                             {moreMenu ?
-                            <div style={{top: `${document.getElementById('moremenu').getBoundingClientRect().top - 40}px`, left: `${document.getElementById('moremenu').getBoundingClientRect().left}px`, height: '208px' }} onClick={(e)=>handleMenuClick(e)} className="more-menu-content">
+                            <div style={{top: `${document.getElementById('moremenu').getBoundingClientRect().top - 40}px`, left: `${document.getElementById('moremenu').getBoundingClientRect().left}px`, height: '258px' }} onClick={(e)=>handleMenuClick(e)} className="more-menu-content">
                                     <div onClick={changeTheme} className="more-menu-item">
                                         <span>Change Theme</span>
                                         <span>{theme ? <ICON_DARK/> : <ICON_LIGHT />}</span>
@@ -211,6 +218,10 @@ const Nav = ({history}) => {
                                     </div>
                                     <div onClick={goToTwitterPage} className="more-menu-item">
                                         <span>Forward Tweets</span>
+                                        <span><ICON_TWITTER /></span>
+                                    </div>
+                                    <div onClick={toggleAboutModal} className="more-menu-item">
+                                        <span>About</span>
                                         <span><ICON_TWITTER /></span>
                                     </div>
                                     <div onClick={()=>logout()} className="more-menu-item">
@@ -280,6 +291,25 @@ const Nav = ({history}) => {
                       <UpdateSellPriceForm />
                 </div>
                 }
+            </div>
+        </div>
+
+        {/* Modal for about info */}
+        <div onClick={()=>toggleAboutModal()} style={{display: aboutModalOpen ? 'block' : 'none'}} className="modal-edit">
+            <div onClick={(e)=>handleModalClick(e)} className="modal-content">
+                <div className="modal-header">
+                    <div className="modal-closeIcon">
+                        <div onClick={()=>toggleAboutModal()} className="modal-closeIcon-wrap">
+                            <ICON_CLOSE />
+                        </div>
+                    </div>
+                    <p className="modal-title">About Squeaknode</p>
+                </div>
+                <div className="modal-body">
+                      <div className="edit-input-wrap">
+                            Squeaknode is open-source software. View the source code here: https://github.com/squeaknode/squeaknode
+                      </div>
+                </div>
             </div>
         </div>
 
