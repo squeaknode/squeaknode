@@ -172,7 +172,7 @@ const SqueakCard = React.memo(function SqueakCard(props) {
                               <ICON_REPLY styles={{fill:'rgb(101, 119, 134)'}}/>
                           </div>
                           <div className="card-icon-value">
-                              0
+                              {props.squeak.getNumReplies()}
                           </div>
                       </div>
                       <div onClick={(e)=>resqueak(e,props.id)} className="card-button-wrap resqueak-wrap">
