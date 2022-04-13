@@ -11,17 +11,20 @@ import axios from 'axios'
 import {API_URL} from '../../config'
 import MakeSqueak from '../../features/squeaks/MakeSqueak'
 import DeleteSqueak from '../../features/squeaks/DeleteSqueak'
+import BuySqueak from '../../features/squeaks/BuySqueak'
 import ContentEditable from 'react-contenteditable'
 
 import {
   setLikeSqueak,
   setUnlikeSqueak,
+  fetchSqueakOffers,
 } from '../../features/squeaks/squeaksSlice'
 
 
 const SqueakCard = React.memo(function SqueakCard(props) {
     const [replyModalOpen, setModalOpen] = useState(false)
     const [deleteModalOpen, setDeleteModalOpen] = useState(false)
+    const [buyModalOpen, setBuyModalOpen] = useState(false)
     const [parent, setParent] = useState(false)
     const [styleBody, setStyleBody] = useState(false)
     const dispatch = useDispatch()
@@ -66,6 +69,16 @@ const SqueakCard = React.memo(function SqueakCard(props) {
         setStyleBody(!styleBody)
         if(type === 'parent'){setParent(true)}else{setParent(false)}
         setTimeout(()=>{ setDeleteModalOpen(!deleteModalOpen) },20)
+    }
+
+    const toggleBuyModal = (e, type) => {
+        if(e){
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        setStyleBody(!styleBody)
+        if(type === 'parent'){setParent(true)}else{setParent(false)}
+        setTimeout(()=>{ setBuyModalOpen(!buyModalOpen) },20)
     }
 
 
@@ -139,7 +152,13 @@ const SqueakCard = React.memo(function SqueakCard(props) {
                     <div className="card-content-info">
                         {props.squeak.getContentStr()}
                     </div> :
-                    <div className="card-content-info card-content-locked-content">
+                    <div onClick={(e)=> {
+                      e.preventDefault();
+                      dispatch(fetchSqueakOffers(props.id));
+                      toggleBuyModal();
+                    }
+                  }
+                       className="card-content-info card-content-locked-content">
                         <ICON_LOCKFILL styles={{width:'36px', height:"36px", padding: "5px"}} />
                         <div>
                         Locked content
@@ -233,6 +252,25 @@ const SqueakCard = React.memo(function SqueakCard(props) {
                 </div>
                 <div style={{marginTop:'5px'}} className="modal-body">
                   <DeleteSqueak squeakHash={props.id} submittedCallback={toggleDeleteModal} />
+                </div>
+            </div> : null}
+        </div> : null}
+
+        {/* buy modal */}
+        {props.squeak ?
+            <div onClick={()=>toggleBuyModal()} style={{display: buyModalOpen ? 'block' : 'none'}} className="modal-edit">
+            {buyModalOpen ?
+            <div style={{minHeight: '350px', height: 'initial'}} onClick={(e)=>handleModalClick(e)} className="modal-content">
+                <div className="modal-header">
+                    <div className="modal-closeIcon">
+                        <div onClick={()=>toggleBuyModal()} className="modal-closeIcon-wrap">
+                            <ICON_CLOSE />
+                        </div>
+                    </div>
+                    <p className="modal-title">Buy Squeak</p>
+                </div>
+                <div style={{marginTop:'5px'}} className="modal-body">
+                  <BuySqueak squeakHash={props.id} submittedCallback={toggleBuyModal} />
                 </div>
             </div> : null}
         </div> : null}
