@@ -196,13 +196,15 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
               <div className="squeak-content">
                 {squeak.getContentStr()}
               </div> :
-              <div className="squeak-content locked-content">
+              <Link>
+              <div onClick={()=>toggleBuyModal(props.match.params.id)}
+                className="squeak-content locked-content">
                 <ICON_LOCKFILL styles={{width:'48px', height:"48px", padding: "5px"}} />
-                <div onClick={()=>toggleBuyModal(props.match.params.id)}
-                  className='squeak-unlock-button'>
-                  <span>Unlock</span>
-                </div>
+                  <div>
+                  Locked content
+                  </div>
               </div>
+            </Link>
             }
 
 
