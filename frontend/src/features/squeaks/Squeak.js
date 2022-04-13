@@ -139,7 +139,14 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
     }
 
     const downloadSqueak = (id) => {
-      dispatch(setDownloadSqueak(props.id));
+      dispatch(setDownloadSqueak(props.id))
+      .then(unwrapResult)
+      .then((squeak) => {
+        dispatch(fetchAncestorSqueaks(props.id));
+      })
+      .catch((err) => {
+        alert(err.message);
+      });
     }
 
     const getBlockDetailUrl = (blockHash, network) => {
