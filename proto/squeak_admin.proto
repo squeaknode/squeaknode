@@ -643,6 +643,9 @@ message SqueakDisplayEntry {
 
     /// The recipient name
     SqueakProfile recipient = 19;
+
+    /// Number of replies
+    int32 num_replies = 20;
 }
 
 message GetTimelineSqueakDisplaysRequest {

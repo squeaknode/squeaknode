@@ -236,6 +236,7 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
             <div className="squeak-interactions">
               <div onClick={()=>toggleReplyModal()} className="squeak-int-icon">
                 <div className="card-icon reply-icon"> <ICON_REPLY /> </div>
+                {squeak.getNumReplies()}
               </div>
               <div onClick={()=>resqueak(squeak.getSqueakHash())} className="squeak-int-icon">
                 <div className="card-icon resqueak-icon">

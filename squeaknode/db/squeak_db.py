@@ -88,6 +88,10 @@ class SqueakDb:
         self.author_profiles = self.profiles.alias()
         self.recipient_profiles = self.profiles.alias()
 
+        # Create aliases for squeaks
+        self.display_squeaks = self.squeaks.alias()
+        self.reply_squeaks = self.squeaks.alias()
+
     def init_with_retries(
             self,
             num_retries=INIT_NUM_RETRIES,
@@ -266,7 +270,12 @@ class SqueakDb:
         # recipient_profiles = self.profiles.alias()
 
         s = (
-            select([self.squeaks, self.author_profiles, self.recipient_profiles])
+            select([
+                self.squeaks,
+                self.author_profiles,
+                self.recipient_profiles,
+                func.count(self.reply_squeaks.c.hash).label("num_replies")],
+            )
             .select_from(
                 self.squeaks
                 .outerjoin(
@@ -277,14 +286,21 @@ class SqueakDb:
                     self.recipient_profiles,
                     self.recipient_profiles.c.public_key == self.squeaks.c.recipient_public_key,
                 )
+                .outerjoin(
+                    self.reply_squeaks,
+                    self.reply_squeaks.c.reply_hash == self.squeaks.c.hash,
+                )
             )
             .where(self.squeaks.c.hash == squeak_hash)
         )
         with self.get_connection() as connection:
             result = connection.execute(s)
             row = result.fetchone()
-            if row is None:
+            if row is None or row["hash"] is None:
                 return None
+            print("row:")
+            print(row)
+            logger.info("row: {}".format(row))
             return self._parse_squeak_entry(
                 row,
                 # author_profiles_table=author_profiles,
@@ -1838,6 +1854,7 @@ class SqueakDb:
             is_unlocked=is_locked,
             secret_key=(row["secret_key"]),
             liked_time_ms=liked_time_ms,
+            num_replies=row["num_replies"],
             content=row["content"],
             squeak_profile=profile,
             recipient_squeak_profile=recipient_profile,
