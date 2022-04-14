@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom'
 import { getProfileImageSrcString } from '../../squeakimages/images';
 import Loader from '../../components/Loader'
 
-import { Form, Input, Select, Checkbox, Relevant, Debug, TextArea, Option } from 'informed';
+import { Form, Input, Select, Checkbox, Relevant, Debug, TextArea, Option, FormStateAccessor } from 'informed';
 
 import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
@@ -92,8 +92,13 @@ const MakeSqueak = (props) => {
         <div className="input-links-side">
         </div>
         <div className="squeak-btn-holder">
-          <div style={{ fontSize: '13px', color: null }}>
-          </div>
+          <FormStateAccessor>
+            {formState => (
+              <div style={{ fontSize: '13px', color: formState.values.content && formState.values.content.length >= 280 ? 'red' : null }}>
+                {formState.values.content && formState.values.content.length > 0 && formState.values.content.length + '/280'}
+              </div>
+            )}
+          </FormStateAccessor>
           <button type="submit" className={'squeak-btn-side squeak-btn-active'}>
             Squeak
           </button>
