@@ -291,7 +291,11 @@ class SqueakDb:
                     self.reply_squeaks.c.reply_hash == self.squeaks.c.hash,
                 )
             )
-            .group_by(self.squeaks.c.hash)
+            .group_by(
+                self.squeaks,
+                self.author_profiles,
+                self.recipient_profiles,
+            )
             .where(self.squeaks.c.hash == squeak_hash)
         )
         with self.get_connection() as connection:
@@ -299,9 +303,6 @@ class SqueakDb:
             row = result.fetchone()
             if row is None:
                 return None
-            print("row:")
-            print(row)
-            logger.info("row: {}".format(row))
             return self._parse_squeak_entry(
                 row,
                 # author_profiles_table=author_profiles,
@@ -355,7 +356,11 @@ class SqueakDb:
                     self.reply_squeaks.c.reply_hash == self.squeaks.c.hash,
                 )
             )
-            .group_by(self.squeaks.c.hash)
+            .group_by(
+                self.squeaks,
+                self.author_profiles,
+                self.recipient_profiles,
+            )
             .where(self.profile_is_following(self.author_profiles))
             .where(
                 tuple_(
@@ -424,7 +429,11 @@ class SqueakDb:
                     self.reply_squeaks.c.reply_hash == self.squeaks.c.hash,
                 )
             )
-            .group_by(self.squeaks.c.hash)
+            .group_by(
+                self.squeaks,
+                self.author_profiles,
+                self.recipient_profiles,
+            )
             .where(
                 self.squeak_is_liked,
             )
@@ -498,7 +507,11 @@ class SqueakDb:
                     self.reply_squeaks.c.reply_hash == self.squeaks.c.hash,
                 )
             )
-            .group_by(self.squeaks.c.hash)
+            .group_by(
+                self.squeaks,
+                self.author_profiles,
+                self.recipient_profiles,
+            )
             .where(self.squeaks.c.author_public_key == public_key.to_bytes())
             .where(
                 tuple_(
@@ -573,7 +586,11 @@ class SqueakDb:
                     self.reply_squeaks.c.reply_hash == self.squeaks.c.hash,
                 )
             )
-            .group_by(self.squeaks.c.hash)
+            .group_by(
+                self.squeaks,
+                self.author_profiles,
+                self.recipient_profiles,
+            )
             .where(self.squeaks.c.content.ilike(f'%{search_text}%'))
             .where(
                 tuple_(
@@ -652,7 +669,12 @@ class SqueakDb:
                     self.reply_squeaks.c.reply_hash == self.squeaks.c.hash,
                 )
             )
-            .group_by(self.squeaks.c.hash)
+            .group_by(
+                self.squeaks,
+                self.author_profiles,
+                self.recipient_profiles,
+                ancestors.c.depth,
+            )
             .order_by(
                 ancestors.c.depth.desc(),
             )
@@ -731,7 +753,11 @@ class SqueakDb:
                     self.reply_squeaks.c.reply_hash == self.squeaks.c.hash,
                 )
             )
-            .group_by(self.squeaks.c.hash)
+            .group_by(
+                self.squeaks,
+                self.author_profiles,
+                self.recipient_profiles,
+            )
             .where(self.squeaks.c.reply_hash == squeak_hash)
             .where(
                 tuple_(
