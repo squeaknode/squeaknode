@@ -1816,6 +1816,45 @@ class SqueakDb:
             sent_payment_summary = self._parse_sent_payment_summary(row)
             return sent_payment_summary
 
+    def get_received_payment_summary_for_peer(self, peer_address: PeerAddress) -> ReceivedPaymentSummary:
+        """ Get received payment summary for a single peer. """
+        s = (
+            select([
+                func.count().label("num_payments_received"),
+                func.sum(self.received_payments.c.price_msat).label(
+                    "total_amount_received_msat"),
+            ])
+            .select_from(self.received_payments)
+            .where(self.received_payments.c.peer_network == peer_address.network)
+            .where(self.received_payments.c.peer_host == peer_address.host)
+            .where(self.received_payments.c.peer_port == peer_address.port)
+        )
+        with self.get_connection() as connection:
+            result = connection.execute(s)
+            row = result.fetchone()
+            received_payment_summary = self._parse_received_payment_summary(
+                row)
+            return received_payment_summary
+
+    def get_sent_payment_summary_for_peer(self, peer_address: PeerAddress) -> SentPaymentSummary:
+        """ Get sent payment summary for a peer. """
+        s = (
+            select([
+                func.count().label("num_payments_sent"),
+                func.sum(self.sent_payments.c.price_msat).label(
+                    "total_amount_sent_msat"),
+            ])
+            .select_from(self.sent_payments)
+            .where(self.received_payments.c.peer_network == peer_address.network)
+            .where(self.received_payments.c.peer_host == peer_address.host)
+            .where(self.received_payments.c.peer_port == peer_address.port)
+        )
+        with self.get_connection() as connection:
+            result = connection.execute(s)
+            row = result.fetchone()
+            sent_payment_summary = self._parse_sent_payment_summary(row)
+            return sent_payment_summary
+
     def insert_config(self, user_config: UserConfig) -> Optional[str]:
         """ Insert a new config.
 

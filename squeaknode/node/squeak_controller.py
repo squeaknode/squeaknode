@@ -397,6 +397,16 @@ class SqueakController:
             received_payment_summary=received_payment_summary,
         )
 
+    def get_payment_summary_for_peer(self, peer_address: PeerAddress) -> PaymentSummary:
+        received_payment_summary = self.squeak_store.get_received_payment_summary_for_peer(
+            peer_address)
+        sent_payment_summary = self.squeak_store.get_sent_payment_summary_for_peer(
+            peer_address)
+        return PaymentSummary(
+            sent_payment_summary=sent_payment_summary,
+            received_payment_summary=received_payment_summary,
+        )
+
     # def get_received_payment_summary(self) -> ReceivedPaymentSummary:
     #     return self.squeak_store.get_received_payment_summary()
 

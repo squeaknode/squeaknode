@@ -591,6 +591,9 @@ class SqueakStore:
     def get_received_payment_summary_for_pubkey(self, pubkey: SqueakPublicKey) -> ReceivedPaymentSummary:
         return self.squeak_db.get_received_payment_summary_for_pubkey(pubkey)
 
+    def get_received_payment_summary_for_peer(self, peer_address: PeerAddress) -> ReceivedPaymentSummary:
+        return self.squeak_db.get_received_payment_summary_for_peer(peer_address)
+
     def get_sent_payment_summary(self) -> SentPaymentSummary:
         return self.squeak_db.get_sent_payment_summary()
 
@@ -599,6 +602,9 @@ class SqueakStore:
 
     def get_sent_payment_summary_for_pubkey(self, pubkey: SqueakPublicKey) -> SentPaymentSummary:
         return self.squeak_db.get_sent_payment_summary_for_pubkey(pubkey)
+
+    def get_sent_payment_summary_for_peer(self, peer_address: PeerAddress) -> SentPaymentSummary:
+        return self.squeak_db.get_sent_payment_summary_for_peer(peer_address)
 
     def clear_received_payment_settle_indices(self) -> None:
         self.squeak_db.clear_received_payment_settle_indices()

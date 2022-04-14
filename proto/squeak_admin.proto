@@ -276,6 +276,10 @@ service SqueakAdmin {
   */
   rpc GetPaymentSummaryForPubkey (GetPaymentSummaryForPubkeyRequest) returns (GetPaymentSummaryForPubkeyReply) {}
 
+  /** sqkadmin: `getpaymentsummaryforpeer`
+  */
+  rpc GetPaymentSummaryForPeer (GetPaymentSummaryForPeerRequest) returns (GetPaymentSummaryForPeerReply) {}
+
   /** sqkadmin: `reprocessreceivedpayments`
   */
   rpc ReprocessReceivedPayments (ReprocessReceivedPaymentsRequest) returns (ReprocessReceivedPaymentsReply) {}
@@ -1201,6 +1205,16 @@ message GetPaymentSummaryForPubkeyRequest {
 }
 
 message GetPaymentSummaryForPubkeyReply {
+    // Payment summary of the node
+    PaymentSummary payment_summary = 1;
+}
+
+message GetPaymentSummaryForPeerRequest {
+    /// Peer address
+    PeerAddress peer_address = 1;
+}
+
+message GetPaymentSummaryForPeerReply {
     // Payment summary of the node
     PaymentSummary payment_summary = 1;
 }

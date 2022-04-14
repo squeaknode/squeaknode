@@ -257,6 +257,12 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
     def GetPaymentSummaryForSqueak(self, request, context):
         return self.handler.handle_get_payment_summary_for_squeak(request)
 
+    def GetPaymentSummaryForPubkey(self, request, context):
+        return self.handler.handle_get_payment_summary_for_pubkey(request)
+
+    def GetPaymentSummaryForPeer(self, request, context):
+        return self.handler.handle_get_payment_summary_for_peer(request)
+
     def ReprocessReceivedPayments(self, request, context):
         return self.handler.handle_reprocess_received_payments(request)
 

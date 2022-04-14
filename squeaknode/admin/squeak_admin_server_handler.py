@@ -980,6 +980,20 @@ class SqueakAdminServerHandler(object):
             payment_summary=payment_summary_msg,
         )
 
+    def handle_get_payment_summary_for_peer(self, request):
+        peer_address = message_to_peer_address(request.peer_address)
+        logger.info("Handle get payment summary for peer address: {}".format(
+            peer_address,
+        ))
+        payment_summary = self.squeak_controller.get_payment_summary_for_peer(
+            peer_address)
+        payment_summary_msg = payment_summary_to_message(
+            payment_summary,
+        )
+        return squeak_admin_pb2.GetPaymentSummaryForPubkeyReply(
+            payment_summary=payment_summary_msg,
+        )
+
     def handle_reprocess_received_payments(self, request):
         logger.info("Handle reprocess received payments")
         self.squeak_controller.reprocess_received_payments()
