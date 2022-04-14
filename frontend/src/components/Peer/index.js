@@ -284,9 +284,11 @@ const Peer = (props) => {
               }
             </div>
 
-            <div className="profile-details-box">
-              <div className="profile-name">{peer && peer.getPeerName()}</div>
-              <div className="profile-username">{props.match.params.host}:{props.match.params.port}</div>
+            <div className="profile-header-content">
+              <div className="profile-header-name">
+                <div className="profile-name">{peer && peer.getPeerName()}</div>
+                <div className="profile-username">{props.match.params.host}:{props.match.params.port}</div>
+              </div>
             </div>
 
             <div className="profile-social-box">
@@ -315,14 +317,6 @@ const Peer = (props) => {
 
           <div className="feed-wrapper">
             <div className="feed-trending-card">
-              <div className="feed-card-trend">
-                <div>Number of downloads</div>
-                <div>TODO</div>
-              </div>
-              <div className="feed-card-trend">
-                <div>Number of purchases</div>
-                <div>TODO</div>
-              </div>
               <div className="feed-card-trend">
                 <div>Last connection time</div>
                 <div>TODO</div>
