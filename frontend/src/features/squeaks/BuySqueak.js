@@ -23,8 +23,10 @@ import {
   fetchSqueakOffers,
 } from '../squeaks/squeaksSlice'
 import {
+  fetchPaymentSummary,
   fetchPaymentSummaryForSqueak,
   selectPaymentSummaryForSqueak,
+  fetchPaymentSummaryForPubkey,
 } from '../../features/payments/paymentsSlice'
 import {
   selectSigningProfiles,
@@ -32,7 +34,10 @@ import {
 } from '../../features/profiles/profilesSlice'
 
 const BuySqueak = (props) => {
-  console.log(props.squeakHash);
+  const squeak = props.squeak;
+  const squeakHash = squeak.getSqueakHash();
+  const pubkey = squeak.getAuthorPubkey();
+  console.log(props.squeak);
 
   const signingProfiles = useSelector(selectSigningProfiles);
   const buySqueakStatus = useSelector(selectBuySqueakStatus);
@@ -49,13 +54,15 @@ const BuySqueak = (props) => {
     }
     const values = {
       offerId: offerId,
-      squeakHash: props.squeakHash,
+      squeakHash: squeakHash,
     }
     console.log('Buy clicked.');
     dispatch(setBuySqueak(values))
     .then(unwrapResult)
     .then(() => {
-      dispatch(fetchPaymentSummaryForSqueak({squeakHash: props.squeakHash}));
+      dispatch(fetchPaymentSummary());
+      dispatch(fetchPaymentSummaryForSqueak({squeakHash: squeakHash}));
+      dispatch(fetchPaymentSummaryForPubkey({pubkey: pubkey}));
     })
     .catch((err) => {
       alert(err.message);

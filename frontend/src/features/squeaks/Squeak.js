@@ -371,7 +371,7 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
                       <p className="modal-title">Buy Squeak</p>
                     </div>
                     <div style={{marginTop:'5px'}} className="modal-body">
-                      <BuySqueak squeakHash={props.match.params.id} submittedCallback={toggleBuyModal} />
+                      <BuySqueak squeak={squeak} submittedCallback={toggleBuyModal} />
                     </div>
                   </div> : null}
                 </div>:null}
