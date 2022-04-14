@@ -23,6 +23,10 @@ import {
   setPeerAutoconnectEnabled,
   setPeerAutoconnectDisabled,
 } from '../../features/peers/peersSlice'
+import {
+  fetchPaymentSummaryForPeer,
+  selectPaymentSummaryForPeer,
+} from '../../features/payments/paymentsSlice'
 
 
 const Peer = (props) => {
@@ -41,12 +45,18 @@ const Peer = (props) => {
   const [styleBody, setStyleBody] = useState(false)
 
   const peer = useSelector(selectCurrentPeer);
+  const paymentSummary = useSelector(selectPaymentSummaryForPeer)
   const dispatch = useDispatch();
 
 
   useEffect(() => {
     window.scrollTo(0, 0)
     dispatch(fetchPeer({
+      network: props.match.params.network,
+      host: props.match.params.host,
+      port: props.match.params.port,
+    }));
+    dispatch(fetchPaymentSummaryForPeer({
       network: props.match.params.network,
       host: props.match.params.host,
       port: props.match.params.port,
@@ -140,6 +150,10 @@ const Peer = (props) => {
     setTimeout(()=>{ setSavePeerModalOpen(!savePeerModalOpen) },20)
   }
 
+  const toggleSpendingModal = (param, type) => {
+    // TODO.
+  }
+
   const handleModalClick = (e) => {
     e.stopPropagation()
   }
@@ -212,6 +226,8 @@ const Peer = (props) => {
       </Form>
     );
 
+    console.log(paymentSummary);
+
   return(
     <div>
 
@@ -271,6 +287,19 @@ const Peer = (props) => {
             <div className="profile-details-box">
               <div className="profile-name">{peer && peer.getPeerName()}</div>
               <div className="profile-username">{props.match.params.host}:{props.match.params.port}</div>
+            </div>
+
+            <div className="profile-social-box">
+              {/* TODO: Implement sats spent */}
+              <div onClick={()=>toggleSpendingModal('members','Sent Payments')}>
+                <p className="follow-num"> {paymentSummary && paymentSummary.getAmountSpentMsat() / 1000} </p>
+                <p className="follow-text"> sats spent </p>
+              </div>
+              {/* TODO: Implement sats eaned */}
+              <div onClick={()=>toggleSpendingModal('members', 'Received Payments')}>
+                <p className="follow-num"> {paymentSummary && paymentSummary.getAmountEarnedMsat() / 1000} </p>
+                <p className="follow-text"> sats earned </p>
+              </div>
             </div>
 
             <div className="profile-options">

@@ -487,11 +487,11 @@ def create_app(handler, username, password):
     def getpaymentsummaryforpubkey(msg):
         return handler.handle_get_payment_summary_for_pubkey(msg)
 
-    @app.route("/getpaymentsummaryforpubkey", methods=["POST"])
+    @app.route("/getpaymentsummaryforpeer", methods=["POST"])
     @login_required
-    @protobuf_serialized(squeak_admin_pb2.GetPaymentSummaryForPubkeyRequest())
+    @protobuf_serialized(squeak_admin_pb2.GetPaymentSummaryForPeerRequest())
     def getpaymentsummaryforpeer(msg):
-        return handler.handle_get_payment_summary_for_pubkey(msg)
+        return handler.handle_get_payment_summary_for_peer(msg)
 
     @app.route("/reprocessreceivedpayments", methods=["POST"])
     @login_required

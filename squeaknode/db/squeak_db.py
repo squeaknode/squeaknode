@@ -1825,7 +1825,7 @@ class SqueakDb:
                     "total_amount_received_msat"),
             ])
             .select_from(self.received_payments)
-            .where(self.received_payments.c.peer_network == peer_address.network)
+            .where(self.received_payments.c.peer_network == peer_address.network.name)
             .where(self.received_payments.c.peer_host == peer_address.host)
             .where(self.received_payments.c.peer_port == peer_address.port)
         )
@@ -1845,7 +1845,7 @@ class SqueakDb:
                     "total_amount_sent_msat"),
             ])
             .select_from(self.sent_payments)
-            .where(self.received_payments.c.peer_network == peer_address.network)
+            .where(self.received_payments.c.peer_network == peer_address.network.name)
             .where(self.received_payments.c.peer_host == peer_address.host)
             .where(self.received_payments.c.peer_port == peer_address.port)
         )

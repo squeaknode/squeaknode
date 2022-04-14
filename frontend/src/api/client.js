@@ -155,6 +155,8 @@ import {
   GetSentPaymentsForPubkeyReply,
   GetReceivedPaymentsForPubkeyRequest,
   GetReceivedPaymentsForPubkeyReply,
+  GetPaymentSummaryForPeerRequest,
+  GetPaymentSummaryForPeerReply,
 } from '../proto/squeak_admin_pb';
 
 import axios from 'axios'
@@ -386,6 +388,22 @@ export const getPaymentSummaryForPubkey = (pubkey) => {
     const deser = GetPaymentSummaryForPubkeyReply.deserializeBinary;
     return baseRequest({
       url: '/getpaymentsummaryforpubkey',
+      req: request,
+      deser: deser,
+    });
+}
+
+export const getPaymentSummaryForPeer = (network, host, port) => {
+    console.log('Calling getPaymentSummaryForPeer');
+    const request = new GetPaymentSummaryForPeerRequest();
+    const peerAddress = new PeerAddress();
+    peerAddress.setNetwork(network);
+    peerAddress.setHost(host);
+    peerAddress.setPort(port);
+    request.setPeerAddress(peerAddress);
+    const deser = GetPaymentSummaryForPeerReply.deserializeBinary;
+    return baseRequest({
+      url: '/getpaymentsummaryforpeer',
       req: request,
       deser: deser,
     });
