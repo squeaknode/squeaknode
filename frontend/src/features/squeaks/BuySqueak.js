@@ -27,6 +27,7 @@ import {
   fetchPaymentSummaryForSqueak,
   selectPaymentSummaryForSqueak,
   fetchPaymentSummaryForPubkey,
+  clearSentPayments,
 } from '../../features/payments/paymentsSlice'
 import {
   selectSigningProfiles,
@@ -60,6 +61,7 @@ const BuySqueak = (props) => {
     dispatch(setBuySqueak(values))
     .then(unwrapResult)
     .then(() => {
+      dispatch(clearSentPayments());
       dispatch(fetchPaymentSummary());
       dispatch(fetchPaymentSummaryForSqueak({squeakHash: squeakHash}));
       dispatch(fetchPaymentSummaryForPubkey({pubkey: pubkey}));
