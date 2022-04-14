@@ -89,7 +89,7 @@ const Twitter = (props) => {
         <Input class="informed-input" name="twitterBearerToken" label="Twitter Bearer Token" />
       </div>
       <div className="edit-input-wrap">
-      <Select class="informed-select" name="signingProfileId" initialValue="">
+      <Select class="informed-select" name="signingProfileId" label="Signing Profile" initialValue="">
         <Option value="" disabled>
           Select Signing Profile...
         </Option>
