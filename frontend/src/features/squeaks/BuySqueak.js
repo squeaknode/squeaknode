@@ -23,6 +23,7 @@ import {
   fetchSqueakOffers,
 } from '../squeaks/squeaksSlice'
 import {
+  fetchPaymentSummary,
   fetchPaymentSummaryForSqueak,
   selectPaymentSummaryForSqueak,
 } from '../../features/payments/paymentsSlice'
@@ -55,6 +56,7 @@ const BuySqueak = (props) => {
     dispatch(setBuySqueak(values))
     .then(unwrapResult)
     .then(() => {
+      dispatch(fetchPaymentSummary());
       dispatch(fetchPaymentSummaryForSqueak({squeakHash: props.squeakHash}));
     })
     .catch((err) => {
