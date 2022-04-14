@@ -26,187 +26,190 @@ import {
 
 
 const Peers = (props) => {
-    const [tab, setTab] = useState('Saved Peers')
-    const [savePeerModalOpen, setSavePeerModalOpen] = useState(false)
-    const [showExternalAddressModalOpen, setShowExternalAddressModalOpen] = useState(false)
-    const [styleBody, setStyleBody] = useState(false)
+  const [tab, setTab] = useState('Saved Peers')
+  const [savePeerModalOpen, setSavePeerModalOpen] = useState(false)
+  const [showExternalAddressModalOpen, setShowExternalAddressModalOpen] = useState(false)
+  const [styleBody, setStyleBody] = useState(false)
 
-    const externalAddress = useSelector(selectExternalAddress);
-    const peers = useSelector(selectSavedPeers);
-    const dispatch = useDispatch();
+  const externalAddress = useSelector(selectExternalAddress);
+  const peers = useSelector(selectSavedPeers);
+  const dispatch = useDispatch();
 
 
-    useEffect(() => {
-        window.scrollTo(0, 0)
-        dispatch(fetchExternalAddress());
-        dispatch(fetchSavedPeers());
-    }, [])
+  useEffect(() => {
+    window.scrollTo(0, 0)
+    dispatch(fetchExternalAddress());
+    dispatch(fetchSavedPeers());
+  }, [])
 
-    const toggleSavePeerModal = (param, type) => {
-        setStyleBody(!styleBody)
-        setTimeout(()=>{ setSavePeerModalOpen(!savePeerModalOpen) },20)
+  const toggleSavePeerModal = (param, type) => {
+    setStyleBody(!styleBody)
+    setTimeout(()=>{ setSavePeerModalOpen(!savePeerModalOpen) },20)
+  }
+
+  const toggleShowExternalAddressModalOpen = () => {
+    setStyleBody(!styleBody)
+    setTimeout(()=>{ setShowExternalAddressModalOpen(!showExternalAddressModalOpen) },20)
+  }
+
+  const getNetwork = (useTor) => {
+    if (useTor) {
+      return 'TORV3';
     }
+    return 'IPV4';
+  };
 
-    const toggleShowExternalAddressModalOpen = () => {
-        setStyleBody(!styleBody)
-        setTimeout(()=>{ setShowExternalAddressModalOpen(!showExternalAddressModalOpen) },20)
-    }
+  function removeHttp(url) {
+    return url.replace(/^https?:\/\//, '');
+  }
 
-    const getNetwork = (useTor) => {
-      if (useTor) {
-        return 'TORV3';
-      }
-      return 'IPV4';
-    };
+  const savePeer = ({values}) => {
+    const network = getNetwork(values.useTor);
+    const strippedHost = removeHttp(values.host);
+    dispatch(setSavePeer({
+      name: values.name,
+      host: strippedHost,
+      port: values.port,
+      network: network,
+    }));
+    toggleSavePeerModal();
+  }
 
-    function removeHttp(url) {
-      return url.replace(/^https?:\/\//, '');
-    }
+  const handleModalClick = (e) => {
+    e.stopPropagation()
+  }
 
-    const savePeer = ({values}) => {
-        const network = getNetwork(values.useTor);
-        const strippedHost = removeHttp(values.host);
-        dispatch(setSavePeer({
-            name: values.name,
-            host: strippedHost,
-            port: values.port,
-            network: network,
-        }));
-        toggleSavePeerModal();
-    }
+  const AddPeerForm = () => (
+    <Form onSubmit={savePeer} className="Squeak-input-side">
+      <div className="edit-input-wrap">
+        <Input class="informed-input" name="name" label="Peer Name (not required)" />
+      </div>
+      <div className="edit-input-wrap">
+        <Input class="informed-input" name="host" label="Host" />
+      </div>
+      <div className="edit-input-wrap">
+        <Input class="informed-input" name="port" type="number" label="Port" />
+      </div>
+      <div className="edit-input-wrap">
+        <Checkbox class="informed-input" name="useTor" label="Connect With Tor: " />
+      </div>
 
-    const handleModalClick = (e) => {
-        e.stopPropagation()
-    }
-
-    const AddPeerForm = () => (
-      <Form onSubmit={savePeer} className="Squeak-input-side">
-        <div className="edit-input-wrap">
-          <Input class="informed-input" name="name" label="Peer Name (not required)" />
+      <div className="inner-input-links">
+        <div className="input-links-side">
         </div>
-        <div className="edit-input-wrap">
-          <Input class="informed-input" name="host" label="Host" />
-        </div>
-        <div className="edit-input-wrap">
-          <Input class="informed-input" name="port" type="number" label="Port" />
-        </div>
-        <div className="edit-input-wrap">
-          <Checkbox class="informed-input" name="useTor" label="Connect With Tor: " />
-        </div>
-
-        <div className="inner-input-links">
-          <div className="input-links-side">
+        <div className="squeak-btn-holder">
+          <div style={{ fontSize: '13px', color: null }}>
           </div>
-          <div className="squeak-btn-holder">
-            <div style={{ fontSize: '13px', color: null }}>
+          <button type="submit" className={'squeak-btn-side squeak-btn-active'}>
+            Submit
+          </button>
+        </div>
+      </div>
+    </Form>
+  );
+
+  const ShowExternalAddressForm = () => (
+    <Form className="Squeak-input-side">
+      <div className="edit-input-wrap">
+        <p>Other squeaknodes can connect to your node using this address to exchange squeaks and offers.</p>
+      </div>
+      <div className="edit-input-wrap">
+        <Input class="informed-input" name="host" label="Host" initialValue={externalAddress && externalAddress.getHost()} readOnly />
+      </div>
+      <div className="edit-input-wrap">
+        <Input class="informed-input" name="port" label="Port" initialValue={externalAddress && externalAddress.getPort()} readOnly/>
+      </div>
+    </Form>
+  );
+
+  return(
+    <div>
+
+      <div className="explore-wrapper">
+        <div className="peers-header-wrapper">
+          <div className="peers-header-content">
+            <div className="peers-header-name">
+              Peers
             </div>
-            <button type="submit" className={'squeak-btn-side squeak-btn-active'}>
-              Submit
-            </button>
           </div>
         </div>
-      </Form>
-    );
-
-    const ShowExternalAddressForm = () => (
-      <Form className="Squeak-input-side">
-        <div className="edit-input-wrap">
-          <Input class="informed-input" name="host" label="Host" initialValue={externalAddress && externalAddress.getHost()} readOnly />
-        </div>
-        <div className="edit-input-wrap">
-          <Input class="informed-input" name="port" label="Port" initialValue={externalAddress && externalAddress.getPort()} readOnly/>
-        </div>
-      </Form>
-    );
-
-    return(
-        <div>
-
-        <div className="explore-wrapper">
-            <div className="peers-header-wrapper">
-                <div className="peers-header-content">
-                    <div className="peers-header-name">
-                        Peers
-                    </div>
-                </div>
-            </div>
-            <div className="profile-details-wrapper">
-            <div className="profiles-options">
+        <div className="profile-details-wrapper">
+          <div className="profiles-options">
             <div onClick={(e)=>toggleShowExternalAddressModalOpen('edit')}
-               className='profiles-create-button'>
-                  <span>Show External Address</span>
+              className='profiles-create-button'>
+              <span>Show External Address</span>
             </div>
             <div onClick={(e)=>toggleSavePeerModal('edit')}
-               className='profiles-create-button'>
-                  <span>Add Peer</span>
+              className='profiles-create-button'>
+              <span>Add Peer</span>
             </div>
-            </div>
-            </div>
-            <div>
-                <div className="explore-nav-menu">
-                    <div onClick={()=>setTab('Saved Peers')} className={tab === 'Saved Peers' ? `explore-nav-item activeTab` : `explore-nav-item`}>
-                        Peers
-                    </div>
-                </div>
-                {tab === 'Saved Peers' ?
-                peers.map(sp=>{
-                  return <PeerCard peer={sp}/>
-                })
-                :
-                tab === 'Connected Peers' ?
-                <></>
-                : <div className="try-searching">
-                        Nothing to see here ..
-                        <div/>
-                    Try searching for people, usernames, or keywords
-
-                </div>
-                }
-            </div>
+          </div>
         </div>
-
-        {/* Modal for show external address */}
-        <div onClick={()=>toggleShowExternalAddressModalOpen()} style={{display: showExternalAddressModalOpen ? 'block' : 'none'}} className="modal-edit">
-            <div onClick={(e)=>handleModalClick(e)} className="modal-content">
-                <div className="modal-header">
-                    <div className="modal-closeIcon">
-                        <div onClick={()=>toggleShowExternalAddressModalOpen()} className="modal-closeIcon-wrap">
-                            <ICON_CLOSE />
-                        </div>
-                    </div>
-                    <p className="modal-title">Show External Address</p>
-                </div>
-
-                <div className="modal-body">
-                  <ShowExternalAddressForm />
-                </div>
-
+        <div>
+          <div className="explore-nav-menu">
+            <div onClick={()=>setTab('Saved Peers')} className={tab === 'Saved Peers' ? `explore-nav-item activeTab` : `explore-nav-item`}>
+              Peers
             </div>
-        </div>
-
-
-        {/* Modal for create save peer */}
-        <div onClick={()=>toggleSavePeerModal()} style={{display: savePeerModalOpen ? 'block' : 'none'}} className="modal-edit">
-            <div onClick={(e)=>handleModalClick(e)} className="modal-content">
-                <div className="modal-header">
-                    <div className="modal-closeIcon">
-                        <div onClick={()=>toggleSavePeerModal()} className="modal-closeIcon-wrap">
-                            <ICON_CLOSE />
-                        </div>
-                    </div>
-                    <p className="modal-title">Add Peer</p>
-
-                </div>
-
-                <div className="modal-body">
-                    <AddPeerForm />
-                </div>
-            </div>
-        </div>
-
+          </div>
+          {tab === 'Saved Peers' ?
+            peers.map(sp=>{
+              return <PeerCard peer={sp}/>
+            })
+            :
+            tab === 'Connected Peers' ?
+            <></>
+          : <div className="try-searching">
+          Nothing to see here ..
+          <div/>
+          Try searching for people, usernames, or keywords
 
         </div>
-    )
+      }
+    </div>
+  </div>
+
+  {/* Modal for show external address */}
+  <div onClick={()=>toggleShowExternalAddressModalOpen()} style={{display: showExternalAddressModalOpen ? 'block' : 'none'}} className="modal-edit">
+    <div onClick={(e)=>handleModalClick(e)} className="modal-content">
+      <div className="modal-header">
+        <div className="modal-closeIcon">
+          <div onClick={()=>toggleShowExternalAddressModalOpen()} className="modal-closeIcon-wrap">
+            <ICON_CLOSE />
+          </div>
+        </div>
+        <p className="modal-title">Show External Address</p>
+      </div>
+
+      <div className="modal-body">
+        <ShowExternalAddressForm />
+      </div>
+
+    </div>
+  </div>
+
+
+  {/* Modal for create save peer */}
+  <div onClick={()=>toggleSavePeerModal()} style={{display: savePeerModalOpen ? 'block' : 'none'}} className="modal-edit">
+    <div onClick={(e)=>handleModalClick(e)} className="modal-content">
+      <div className="modal-header">
+        <div className="modal-closeIcon">
+          <div onClick={()=>toggleSavePeerModal()} className="modal-closeIcon-wrap">
+            <ICON_CLOSE />
+          </div>
+        </div>
+        <p className="modal-title">Add Peer</p>
+
+      </div>
+
+      <div className="modal-body">
+        <AddPeerForm />
+      </div>
+    </div>
+  </div>
+
+
+</div>
+)
 }
 
 export default withRouter(Peers)
