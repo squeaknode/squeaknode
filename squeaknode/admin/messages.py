@@ -28,14 +28,13 @@ from proto import squeak_admin_pb2
 from squeaknode.admin.profile_image_util import bytes_to_base64_string
 from squeaknode.admin.profile_image_util import load_default_profile_image
 from squeaknode.core.download_result import DownloadResult
+from squeaknode.core.payment_summary import PaymentSummary
 from squeaknode.core.peer_address import Network
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.received_payment import ReceivedPayment
-from squeaknode.core.received_payment_summary import ReceivedPaymentSummary
 from squeaknode.core.sent_offer import SentOffer
 from squeaknode.core.sent_payment import SentPayment
-from squeaknode.core.sent_payment_summary import SentPaymentSummary
 from squeaknode.core.squeak_entry import SqueakEntry
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
@@ -149,14 +148,13 @@ def received_payment_to_message(received_payment: ReceivedPayment) -> squeak_adm
 
 
 def payment_summary_to_message(
-        received_payment_summary: ReceivedPaymentSummary,
-        sent_payment_summary: SentPaymentSummary,
+        payment_summary: PaymentSummary,
 ) -> squeak_admin_pb2.PaymentSummary:
     return squeak_admin_pb2.PaymentSummary(
-        num_received_payments=received_payment_summary.num_received_payments,
-        num_sent_payments=sent_payment_summary.num_sent_payments,
-        amount_earned_msat=received_payment_summary.total_amount_received_msat,
-        amount_spent_msat=sent_payment_summary.total_amount_sent_msat,
+        num_received_payments=payment_summary.received_payment_summary.num_received_payments,
+        num_sent_payments=payment_summary.sent_payment_summary.num_sent_payments,
+        amount_earned_msat=payment_summary.received_payment_summary.total_amount_received_msat,
+        amount_spent_msat=payment_summary.sent_payment_summary.total_amount_sent_msat,
     )
 
 

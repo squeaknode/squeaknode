@@ -28,6 +28,7 @@ from squeaknode.bitcoin.block_info import BlockInfo
 from squeaknode.core.download_result import DownloadResult
 from squeaknode.core.lightning_address import LightningAddressHostPort
 from squeaknode.core.offer import Offer
+from squeaknode.core.payment_summary import PaymentSummary
 from squeaknode.core.peer_address import Network
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.received_offer import ReceivedOffer
@@ -553,6 +554,17 @@ def sent_payment_summary(
     yield SentPaymentSummary(
         num_sent_payments=num_sent_payments,
         total_amount_sent_msat=total_amount_sent_msat,
+    )
+
+
+@pytest.fixture
+def payment_summary(
+        received_payment_summary,
+        sent_payment_summary,
+):
+    yield PaymentSummary(
+        sent_payment_summary=sent_payment_summary,
+        received_payment_summary=received_payment_summary,
     )
 
 

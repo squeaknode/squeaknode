@@ -31,13 +31,12 @@ from squeak.core.keys import SqueakPublicKey
 from squeaknode.core.download_result import DownloadResult
 from squeaknode.core.lightning_address import LightningAddressHostPort
 from squeaknode.core.offer import Offer
+from squeaknode.core.payment_summary import PaymentSummary
 from squeaknode.core.peer_address import Network
 from squeaknode.core.peer_address import PeerAddress
 from squeaknode.core.received_offer import ReceivedOffer
 from squeaknode.core.received_payment import ReceivedPayment
-from squeaknode.core.received_payment_summary import ReceivedPaymentSummary
 from squeaknode.core.sent_payment import SentPayment
-from squeaknode.core.sent_payment_summary import SentPaymentSummary
 from squeaknode.core.squeak_entry import SqueakEntry
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeak_profile import SqueakProfile
@@ -370,23 +369,51 @@ class SqueakController:
             last_entry,
         )
 
-    def get_received_payment_summary(self) -> ReceivedPaymentSummary:
-        return self.squeak_store.get_received_payment_summary()
+    def get_payment_summary(self) -> PaymentSummary:
+        received_payment_summary = self.squeak_store.get_received_payment_summary()
+        sent_payment_summary = self.squeak_store.get_sent_payment_summary()
+        return PaymentSummary(
+            sent_payment_summary=sent_payment_summary,
+            received_payment_summary=received_payment_summary,
+        )
 
-    def get_received_payment_summary_for_squeak(self, squeak_hash: bytes) -> ReceivedPaymentSummary:
-        return self.squeak_store.get_received_payment_summary_for_squeak(squeak_hash)
+    def get_payment_summary_for_squeak(self, squeak_hash: bytes) -> PaymentSummary:
+        received_payment_summary = self.squeak_store.get_received_payment_summary_for_squeak(
+            squeak_hash)
+        sent_payment_summary = self.squeak_store.get_sent_payment_summary_for_squeak(
+            squeak_hash)
+        return PaymentSummary(
+            sent_payment_summary=sent_payment_summary,
+            received_payment_summary=received_payment_summary,
+        )
 
-    def get_received_payment_summary_for_pubkey(self, pubkey: SqueakPublicKey) -> ReceivedPaymentSummary:
-        return self.squeak_store.get_received_payment_summary_for_pubkey(pubkey)
+    def get_payment_summary_for_pubkey(self, pubkey: SqueakPublicKey) -> PaymentSummary:
+        received_payment_summary = self.squeak_store.get_received_payment_summary_for_pubkey(
+            pubkey)
+        sent_payment_summary = self.squeak_store.get_sent_payment_summary_for_pubkey(
+            pubkey)
+        return PaymentSummary(
+            sent_payment_summary=sent_payment_summary,
+            received_payment_summary=received_payment_summary,
+        )
 
-    def get_sent_payment_summary(self) -> SentPaymentSummary:
-        return self.squeak_store.get_sent_payment_summary()
+    # def get_received_payment_summary(self) -> ReceivedPaymentSummary:
+    #     return self.squeak_store.get_received_payment_summary()
 
-    def get_sent_payment_summary_for_squeak(self, squeak_hash: bytes) -> SentPaymentSummary:
-        return self.squeak_store.get_sent_payment_summary_for_squeak(squeak_hash)
+    # def get_received_payment_summary_for_squeak(self, squeak_hash: bytes) -> ReceivedPaymentSummary:
+    #     return self.squeak_store.get_received_payment_summary_for_squeak(squeak_hash)
 
-    def get_sent_payment_summary_for_pubkey(self, pubkey: SqueakPublicKey) -> SentPaymentSummary:
-        return self.squeak_store.get_sent_payment_summary_for_pubkey(pubkey)
+    # def get_received_payment_summary_for_pubkey(self, pubkey: SqueakPublicKey) -> ReceivedPaymentSummary:
+    #     return self.squeak_store.get_received_payment_summary_for_pubkey(pubkey)
+
+    # def get_sent_payment_summary(self) -> SentPaymentSummary:
+    #     return self.squeak_store.get_sent_payment_summary()
+
+    # def get_sent_payment_summary_for_squeak(self, squeak_hash: bytes) -> SentPaymentSummary:
+    #     return self.squeak_store.get_sent_payment_summary_for_squeak(squeak_hash)
+
+    # def get_sent_payment_summary_for_pubkey(self, pubkey: SqueakPublicKey) -> SentPaymentSummary:
+    #     return self.squeak_store.get_sent_payment_summary_for_pubkey(pubkey)
 
     def reprocess_received_payments(self) -> None:
         self.squeak_store.clear_received_payment_settle_indices()

@@ -942,11 +942,9 @@ class SqueakAdminServerHandler(object):
 
     def handle_get_payment_summary(self, request):
         logger.info("Handle get payment summary")
-        received_payment_summary = self.squeak_controller.get_received_payment_summary()
-        sent_payment_summary = self.squeak_controller.get_sent_payment_summary()
+        payment_summary = self.squeak_controller.get_payment_summary()
         payment_summary_msg = payment_summary_to_message(
-            received_payment_summary,
-            sent_payment_summary,
+            payment_summary,
         )
         return squeak_admin_pb2.GetPaymentSummaryReply(
             payment_summary=payment_summary_msg,
@@ -958,13 +956,10 @@ class SqueakAdminServerHandler(object):
         logger.info("Handle get payment summary for squeak hash: {}".format(
             squeak_hash_str,
         ))
-        received_payment_summary = self.squeak_controller.get_received_payment_summary_for_squeak(
-            squeak_hash)
-        sent_payment_summary = self.squeak_controller.get_sent_payment_summary_for_squeak(
+        payment_summary = self.squeak_controller.get_payment_summary_for_squeak(
             squeak_hash)
         payment_summary_msg = payment_summary_to_message(
-            received_payment_summary,
-            sent_payment_summary,
+            payment_summary,
         )
         return squeak_admin_pb2.GetPaymentSummaryForSqueakReply(
             payment_summary=payment_summary_msg,
@@ -976,13 +971,10 @@ class SqueakAdminServerHandler(object):
             public_key_hex,
         ))
         public_key = SqueakPublicKey.from_bytes(bytes.fromhex(public_key_hex))
-        received_payment_summary = self.squeak_controller.get_received_payment_summary_for_pubkey(
-            public_key)
-        sent_payment_summary = self.squeak_controller.get_sent_payment_summary_for_pubkey(
+        payment_summary = self.squeak_controller.get_payment_summary_for_pubkey(
             public_key)
         payment_summary_msg = payment_summary_to_message(
-            received_payment_summary,
-            sent_payment_summary,
+            payment_summary,
         )
         return squeak_admin_pb2.GetPaymentSummaryForPubkeyReply(
             payment_summary=payment_summary_msg,
