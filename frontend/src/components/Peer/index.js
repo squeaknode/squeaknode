@@ -38,6 +38,7 @@ const Peer = (props) => {
   const [editModalOpen, setEditModalOpen] = useState(false)
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
   const [savePeerModalOpen, setSavePeerModalOpen] = useState(false)
+  const [spendingModalOpen, setSpendingModalOpen] = useState(false)
   const [banner, setBanner] = useState('')
   const [saved, setSaved] = useState(false)
   const [tab, setTab] = useState('Members')
@@ -151,7 +152,10 @@ const Peer = (props) => {
   }
 
   const toggleSpendingModal = (param, type) => {
-    // TODO.
+    setStyleBody(!styleBody)
+    if(type){setTab(type)}
+    if(type){setTab(type)}
+    setTimeout(()=>{ setSpendingModalOpen(!spendingModalOpen) },20)
   }
 
   const handleModalClick = (e) => {
@@ -380,6 +384,50 @@ const Peer = (props) => {
             </div>
           </div>
         </div>
+
+
+                      {/* Modal for sats spent and earned */}
+                      <div onClick={()=>toggleSpendingModal()} style={{display: spendingModalOpen ? 'block' : 'none'}} className="modal-edit">
+                        <div onClick={(e)=>handleModalClick(e)} className="modal-content">
+                          <div className="modal-header no-b-border">
+                            <div className="modal-closeIcon">
+                              <div onClick={()=>toggleSpendingModal()} className="modal-closeIcon-wrap">
+                                <ICON_CLOSE />
+                              </div>
+                            </div>
+                            <p className="modal-title">{null}</p>
+                          </div>
+                          <div className="modal-body">
+                            <div className="explore-nav-menu">
+                              <div onClick={()=>setTab('Sent Payments')} className={tab =='Sent Payments' ? `explore-nav-item activeTab` : `explore-nav-item`}>
+                                Sent Payments
+                              </div>
+                              <div onClick={()=>setTab('Received Payments')} className={tab =='Received Payments' ? `explore-nav-item activeTab` : `explore-nav-item`}>
+                                Received Payments
+                              </div>
+                            </div>
+                            <div className="modal-scroll">
+                              {tab === 'Sent Payments' ?
+                                <>
+                                <SentPayments pubkey={props.match.params.username} />
+                                </>
+
+                              :
+                              tab === 'Received Payments' ?
+                              <>
+                              <ReceivedPayments pubkey={props.match.params.username} />
+                              </>
+                            : <div className="try-searching">
+                            Nothing to see here ..
+                            <div/>
+                            Try searching for people, usernames, or keywords
+
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
 
       </div>

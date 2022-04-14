@@ -430,6 +430,18 @@ class SqueakStore:
             last_sent_payment,
         )
 
+    def get_sent_payments_for_peer(
+            self,
+            peer_address: PeerAddress,
+            limit: int,
+            last_sent_payment: Optional[SentPayment],
+    ) -> List[SentPayment]:
+        return self.squeak_db.get_sent_payments_for_peer(
+            peer_address,
+            limit,
+            last_sent_payment,
+        )
+
     def get_sent_payment(self, sent_payment_id: int) -> Optional[SentPayment]:
         return self.squeak_db.get_sent_payment(sent_payment_id)
 
@@ -469,6 +481,18 @@ class SqueakStore:
     ) -> List[ReceivedPayment]:
         return self.squeak_db.get_received_payments_for_pubkey(
             pubkey,
+            limit,
+            last_received_payment,
+        )
+
+    def get_received_payments_for_peer(
+            self,
+            peer_address: PeerAddress,
+            limit: int,
+            last_received_payment: Optional[ReceivedPayment],
+    ) -> List[ReceivedPayment]:
+        return self.squeak_db.get_received_payments_for_peer(
+            peer_address,
             limit,
             last_received_payment,
         )

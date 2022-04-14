@@ -1411,6 +1411,53 @@ class SqueakDb:
                 self._parse_sent_payment(row) for row in rows]
             return sent_payments
 
+    def get_sent_payments_for_peer(
+            self,
+            peer_address: PeerAddress,
+            limit: int,
+            last_sent_payment: Optional[SentPayment],
+    ) -> List[SentPayment]:
+        """ Get sent payments for a peer. """
+        last_created_time = last_sent_payment.created_time_ms if last_sent_payment else self.timestamp_now_ms
+        last_payment_hash = last_sent_payment.payment_hash if last_sent_payment else MAX_HASH
+        logger.info("""Get sent payments db query with
+        peer_address: {}
+        limit: {}
+        last_created_time: {}
+        last_payment_hash: {}
+        """.format(
+            peer_address,
+            limit,
+            last_created_time,
+            last_payment_hash.hex(),
+        ))
+        s = (
+            select([self.sent_payments])
+            .where(self.received_payments.c.peer_network == peer_address.network.name)
+            .where(self.received_payments.c.peer_host == peer_address.host)
+            .where(self.received_payments.c.peer_port == peer_address.port)
+            .where(
+                tuple_(
+                    self.sent_payments.c.created_time_ms,
+                    self.sent_payments.c.payment_hash,
+                ) < tuple_(
+                    last_created_time,
+                    last_payment_hash,
+                )
+            )
+            .order_by(
+                self.sent_payments.c.created_time_ms.desc(),
+                self.sent_payments.c.payment_hash.desc(),
+            )
+            .limit(limit)
+        )
+        with self.get_connection() as connection:
+            result = connection.execute(s)
+            rows = result.fetchall()
+            sent_payments = [
+                self._parse_sent_payment(row) for row in rows]
+            return sent_payments
+
     def get_sent_payment(self, sent_payment_id: int) -> Optional[SentPayment]:
         """ Get sent payment by id. """
         s = (
@@ -1651,6 +1698,53 @@ class SqueakDb:
                 )
             )
             .where(self.squeaks.c.author_public_key == public_key.to_bytes())
+            .where(
+                tuple_(
+                    self.received_payments.c.created_time_ms,
+                    self.received_payments.c.payment_hash,
+                ) < tuple_(
+                    last_created_time,
+                    last_payment_hash,
+                )
+            )
+            .order_by(
+                self.received_payments.c.created_time_ms.desc(),
+                self.received_payments.c.payment_hash.desc(),
+            )
+            .limit(limit)
+        )
+        with self.get_connection() as connection:
+            result = connection.execute(s)
+            rows = result.fetchall()
+            received_payments = [
+                self._parse_received_payment(row) for row in rows]
+            return received_payments
+
+    def get_received_payments_for_peer(
+            self,
+            peer_address: PeerAddress,
+            limit: int,
+            last_received_payment: Optional[ReceivedPayment],
+    ) -> List[ReceivedPayment]:
+        """ Get received payments for a squeak. """
+        last_created_time = last_received_payment.created_time_ms if last_received_payment else self.timestamp_now_ms
+        last_payment_hash = last_received_payment.payment_hash if last_received_payment else MAX_HASH
+        logger.info("""Get received payments db query with
+        peer_address: {}
+        limit: {}
+        last_created_time: {}
+        last_payment_hash: {}
+        """.format(
+            peer_address,
+            limit,
+            last_created_time,
+            last_payment_hash.hex(),
+        ))
+        s = (
+            select([self.received_payments])
+            .where(self.received_payments.c.peer_network == peer_address.network.name)
+            .where(self.received_payments.c.peer_host == peer_address.host)
+            .where(self.received_payments.c.peer_port == peer_address.port)
             .where(
                 tuple_(
                     self.received_payments.c.created_time_ms,
