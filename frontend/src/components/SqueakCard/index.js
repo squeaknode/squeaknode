@@ -270,7 +270,7 @@ const SqueakCard = React.memo(function SqueakCard(props) {
                     <p className="modal-title">Buy Squeak</p>
                 </div>
                 <div style={{marginTop:'5px'}} className="modal-body">
-                  <BuySqueak squeakHash={props.id} submittedCallback={toggleBuyModal} />
+                  <BuySqueak squeak={props.squeak} submittedCallback={toggleBuyModal} />
                 </div>
             </div> : null}
         </div> : null}
