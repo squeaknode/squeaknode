@@ -191,42 +191,42 @@ const Peer = (props) => {
     </Form>
   );
 
-    const DeletePeerForm = () => (
-      <Form onSubmit={deletePeer} className="Squeak-input-side">
-        <div className="inner-input-links">
-          <div className="input-links-side">
-          </div>
-          <div className="squeak-btn-holder">
-            <div style={{ fontSize: '13px', color: null }}>
-            </div>
-            <button type="submit" className={'squeak-btn-side squeak-btn-active'}>
-              Delete
-            </button>
-          </div>
+  const DeletePeerForm = () => (
+    <Form onSubmit={deletePeer} className="Squeak-input-side">
+      <div className="inner-input-links">
+        <div className="input-links-side">
         </div>
-      </Form>
-    );
+        <div className="squeak-btn-holder">
+          <div style={{ fontSize: '13px', color: null }}>
+          </div>
+          <button type="submit" className={'squeak-btn-side squeak-btn-active'}>
+            Delete
+          </button>
+        </div>
+      </div>
+    </Form>
+  );
 
-    const EditPeerForm = () => (
-      <Form onSubmit={editPeer} className="Squeak-input-side">
-        <div className="edit-input-wrap">
-          <Input class="informed-input" name="name" label="Peer Name" />
+  const EditPeerForm = () => (
+    <Form onSubmit={editPeer} className="Squeak-input-side">
+      <div className="edit-input-wrap">
+        <Input class="informed-input" name="name" label="Peer Name" />
+      </div>
+      <div className="inner-input-links">
+        <div className="input-links-side">
         </div>
-        <div className="inner-input-links">
-          <div className="input-links-side">
+        <div className="squeak-btn-holder">
+          <div style={{ fontSize: '13px', color: null }}>
           </div>
-          <div className="squeak-btn-holder">
-            <div style={{ fontSize: '13px', color: null }}>
-            </div>
-            <button type="submit" className={'squeak-btn-side squeak-btn-active'}>
-              Submit
-            </button>
-          </div>
+          <button type="submit" className={'squeak-btn-side squeak-btn-active'}>
+            Submit
+          </button>
         </div>
-      </Form>
-    );
+      </div>
+    </Form>
+  );
 
-    console.log(paymentSummary);
+  console.log(paymentSummary);
 
   return(
     <div>
@@ -287,6 +287,7 @@ const Peer = (props) => {
             <div className="profile-header-content">
               <div className="profile-header-name">
                 <div className="profile-name">{peer && peer.getPeerName()}</div>
+                <div className="profile-username">Network: {props.match.params.network}</div>
                 <div className="profile-username">{props.match.params.host}:{props.match.params.port}</div>
               </div>
             </div>
