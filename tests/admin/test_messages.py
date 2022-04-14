@@ -131,13 +131,11 @@ def test_message_to_sent_payment(sent_payment, sent_payment_msg):
 
 
 def test_payment_summary_to_message(
-        received_payment_summary,
-        sent_payment_summary,
+        payment_summary,
         payment_summary_msg,
 ):
     msg = payment_summary_to_message(
-        received_payment_summary,
-        sent_payment_summary,
+        payment_summary,
     )
 
     assert msg == payment_summary_msg
