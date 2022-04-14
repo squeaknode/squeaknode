@@ -343,6 +343,7 @@ const squeaksSlice = createSlice({
       console.log('Go to new squeak');
     })
     .addCase(fetchSqueakOffers.pending, (state, action) => {
+      state.squeakOffers = [];
       state.squeakOffersStatus = 'loading'
     })
     .addCase(fetchSqueakOffers.fulfilled, (state, action) => {
