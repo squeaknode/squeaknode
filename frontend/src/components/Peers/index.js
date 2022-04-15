@@ -82,15 +82,16 @@ const Peers = (props) => {
   const AddPeerForm = () => (
     <Form onSubmit={savePeer} className="Squeak-input-side">
       <div className="edit-input-wrap">
+        <p>View a list of public nodes here: <a
+          href="https://github.com/squeaknode/nodes/blob/master/README.md"
+          target="_blank" rel="noopener noreferrer"
+          style={{color: "blue", fontWeight: 'bold'}}
+          >https://github.com/squeaknode/nodes/blob/master/README.md</a></p>
+      </div>
+      <div className="edit-input-wrap">
         <Input class="informed-input" name="name" label="Peer Name (not required)" />
-      </div>
-      <div className="edit-input-wrap">
         <Input class="informed-input" name="host" label="Host" />
-      </div>
-      <div className="edit-input-wrap">
         <Input class="informed-input" name="port" type="number" label="Port" />
-      </div>
-      <div className="edit-input-wrap">
         <Checkbox class="informed-input" name="useTor" label="Connect With Tor: " />
       </div>
 
@@ -115,8 +116,6 @@ const Peers = (props) => {
       </div>
       <div className="edit-input-wrap">
         <Input class="informed-input" name="host" label="Host" initialValue={externalAddress && externalAddress.getHost()} readOnly />
-      </div>
-      <div className="edit-input-wrap">
         <Input class="informed-input" name="port" label="Port" initialValue={externalAddress && externalAddress.getPort()} readOnly/>
       </div>
     </Form>
