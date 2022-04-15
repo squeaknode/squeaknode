@@ -8,12 +8,15 @@ import {
   getSentPayments,
   getSentPaymentsForSqueak,
   getSentPaymentsForPubkey,
+  getSentPaymentsForPeer,
   getReceivedPayments,
   getReceivedPaymentsForSqueak,
+  getReceivedPaymentsForPubkey,
+  getReceivedPaymentsForPeer,
   getPaymentSummary,
   getPaymentSummaryForSqueak,
   getPaymentSummaryForPubkey,
-  getReceivedPaymentsForPubkey,
+  getPaymentSummaryForPeer,
 } from '../../api/client'
 
 const initialState = {
@@ -24,6 +27,7 @@ const initialState = {
   paymentSummary: null,
   paymentSummaryForSqueak: null,
   paymentSummaryForPubkey: null,
+  paymentSummaryForPeer: null,
 }
 
 // Thunk functions
@@ -37,6 +41,13 @@ export const fetchSentPayments = createAsyncThunk(
     )
     : values.pubkey ? await getSentPaymentsForPubkey(
       values.pubkey,
+      values.limit,
+      values.lastSentPayment,
+    )
+    : (values.network && values.host && values.port) ? await getSentPaymentsForPeer(
+      values.network,
+      values.host,
+      values.port,
       values.limit,
       values.lastSentPayment,
     )
@@ -58,6 +69,13 @@ export const fetchReceivedPayments = createAsyncThunk(
     )
     : values.pubkey ? await getReceivedPaymentsForPubkey(
       values.pubkey,
+      values.limit,
+      values.lastReceivedPayment,
+    )
+    : (values.network && values.host && values.port) ? await getReceivedPaymentsForPeer(
+      values.network,
+      values.host,
+      values.port,
       values.limit,
       values.lastReceivedPayment,
     )
@@ -92,6 +110,15 @@ export const fetchPaymentSummaryForPubkey = createAsyncThunk(
   async (values) => {
     console.log('Fetching paymentSummary for pubkey:', values.pubkey);
     const response = await getPaymentSummaryForPubkey(values.pubkey);
+    return response.getPaymentSummary();
+  }
+)
+
+export const fetchPaymentSummaryForPeer = createAsyncThunk(
+  'payments/fetchPaymentSummaryForPeer',
+  async (values) => {
+    console.log('Fetching paymentSummary for peer:', values.network, values.host, values.port);
+    const response = await getPaymentSummaryForPeer(values.network, values.host, values.port);
     return response.getPaymentSummary();
   }
 )
@@ -140,6 +167,10 @@ const paymentsSlice = createSlice({
       const paymentSummaryForPubkey = action.payload;
       state.paymentSummaryForPubkey = paymentSummaryForPubkey;
     })
+    .addCase(fetchPaymentSummaryForPeer.fulfilled, (state, action) => {
+      const paymentSummaryForPeer = action.payload;
+      state.paymentSummaryForPeer = paymentSummaryForPeer;
+    })
   },
 })
 
@@ -173,3 +204,5 @@ export const selectPaymentSummary = state => state.payments.paymentSummary
 export const selectPaymentSummaryForSqueak = state => state.payments.paymentSummaryForSqueak
 
 export const selectPaymentSummaryForPubkey = state => state.payments.paymentSummaryForPubkey
+
+export const selectPaymentSummaryForPeer = state => state.payments.paymentSummaryForPeer

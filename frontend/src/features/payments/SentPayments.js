@@ -30,6 +30,9 @@ const SentPayments = (props) => {
     dispatch(fetchSentPayments({
       squeakHash: props.squeakHash,
       pubkey: props.pubkey,
+      network: props.network,
+      host: props.host,
+      port: props.port,
       limit: 10,
       lastSentPayment: null,
     }));
@@ -39,6 +42,9 @@ const SentPayments = (props) => {
     dispatch(fetchSentPayments({
       squeakHash: props.squeakHash,
       pubkey: props.pubkey,
+      network: props.network,
+      host: props.host,
+      port: props.port,
       limit: 10,
       lastSentPayment: lastSentPayment,
     }));

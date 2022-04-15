@@ -241,6 +241,18 @@ class SqueakController:
             last_sent_payment,
         )
 
+    def get_sent_payments_for_peer(
+            self,
+            peer_address: PeerAddress,
+            limit: int,
+            last_sent_payment: Optional[SentPayment],
+    ) -> List[SentPayment]:
+        return self.squeak_store.get_sent_payments_for_peer(
+            peer_address,
+            limit,
+            last_sent_payment,
+        )
+
     def get_sent_payment(self, sent_payment_id: int) -> Optional[SentPayment]:
         return self.squeak_store.get_sent_payment(sent_payment_id)
 
@@ -277,6 +289,18 @@ class SqueakController:
     ) -> List[ReceivedPayment]:
         return self.squeak_store.get_received_payments_for_pubkey(
             pubkey,
+            limit,
+            last_received_payment,
+        )
+
+    def get_received_payments_for_peer(
+            self,
+            peer_address: PeerAddress,
+            limit: int,
+            last_received_payment: Optional[ReceivedPayment],
+    ) -> List[ReceivedPayment]:
+        return self.squeak_store.get_received_payments_for_peer(
+            peer_address,
             limit,
             last_received_payment,
         )
@@ -392,6 +416,16 @@ class SqueakController:
             pubkey)
         sent_payment_summary = self.squeak_store.get_sent_payment_summary_for_pubkey(
             pubkey)
+        return PaymentSummary(
+            sent_payment_summary=sent_payment_summary,
+            received_payment_summary=received_payment_summary,
+        )
+
+    def get_payment_summary_for_peer(self, peer_address: PeerAddress) -> PaymentSummary:
+        received_payment_summary = self.squeak_store.get_received_payment_summary_for_peer(
+            peer_address)
+        sent_payment_summary = self.squeak_store.get_sent_payment_summary_for_peer(
+            peer_address)
         return PaymentSummary(
             sent_payment_summary=sent_payment_summary,
             received_payment_summary=received_payment_summary,

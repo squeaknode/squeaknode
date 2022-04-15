@@ -236,6 +236,10 @@ service SqueakAdmin {
   */
   rpc GetSentPaymentsForPubkey (GetSentPaymentsForPubkeyRequest) returns (GetSentPaymentsForPubkeyReply) {}
 
+  /** sqkadmin: `getsentpaymentsforpeer`
+  */
+  rpc GetSentPaymentsForPeer (GetSentPaymentsForPeerRequest) returns (GetSentPaymentsForPeerReply) {}
+
   /** sqkadmin: `getsentpayment`
   */
   rpc GetSentPayment (GetSentPaymentRequest) returns (GetSentPaymentReply) {}
@@ -256,6 +260,10 @@ service SqueakAdmin {
   */
   rpc GetReceivedPaymentsForPubkey (GetReceivedPaymentsForPubkeyRequest) returns (GetReceivedPaymentsForPubkeyReply) {}
 
+  /** sqkadmin: `getreceivedpaymentsforpeer`
+  */
+  rpc GetReceivedPaymentsForPeer (GetReceivedPaymentsForPeerRequest) returns (GetReceivedPaymentsForPeerReply) {}
+
   /** sqkadmin: `subscribereceivedpayments`
   */
   rpc SubscribeReceivedPayments (SubscribeReceivedPaymentsRequest) returns (stream ReceivedPayment) {}
@@ -275,6 +283,10 @@ service SqueakAdmin {
   /** sqkadmin: `getpaymentsummaryforpubkey`
   */
   rpc GetPaymentSummaryForPubkey (GetPaymentSummaryForPubkeyRequest) returns (GetPaymentSummaryForPubkeyReply) {}
+
+  /** sqkadmin: `getpaymentsummaryforpeer`
+  */
+  rpc GetPaymentSummaryForPeer (GetPaymentSummaryForPeerRequest) returns (GetPaymentSummaryForPeerReply) {}
 
   /** sqkadmin: `reprocessreceivedpayments`
   */
@@ -998,6 +1010,22 @@ message GetSentPaymentsForPubkeyReply {
     repeated SentPayment sent_payments = 1;
 }
 
+message GetSentPaymentsForPeerRequest {
+    /// Peer address
+    PeerAddress peer_address = 1;
+
+    /// Limit number of results
+    int32 limit = 2;
+
+    /// Last entry
+    SentPayment last_sent_payment = 3;
+}
+
+message GetSentPaymentsForPeerReply {
+    /// The sent payments
+    repeated SentPayment sent_payments = 1;
+}
+
 message GetSentPaymentRequest {
     /// Sent payment id
     int32 sent_payment_id = 1;
@@ -1144,6 +1172,22 @@ message GetReceivedPaymentsForPubkeyReply {
     repeated ReceivedPayment received_payments = 1;
 }
 
+message GetReceivedPaymentsForPeerRequest {
+    /// Peer address
+    PeerAddress peer_address = 1;
+
+    /// Limit number of results
+    int32 limit = 2;
+
+    /// Last entry
+    ReceivedPayment last_received_payment = 3;
+}
+
+message GetReceivedPaymentsForPeerReply {
+    /// The received payments
+    repeated ReceivedPayment received_payments = 1;
+}
+
 message ReceivedPayment {
     /// The received payment id
     int32 received_payment_id = 1;
@@ -1201,6 +1245,16 @@ message GetPaymentSummaryForPubkeyRequest {
 }
 
 message GetPaymentSummaryForPubkeyReply {
+    // Payment summary of the node
+    PaymentSummary payment_summary = 1;
+}
+
+message GetPaymentSummaryForPeerRequest {
+    /// Peer address
+    PeerAddress peer_address = 1;
+}
+
+message GetPaymentSummaryForPeerReply {
     // Payment summary of the node
     PaymentSummary payment_summary = 1;
 }

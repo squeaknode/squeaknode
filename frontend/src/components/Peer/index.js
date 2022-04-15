@@ -23,6 +23,13 @@ import {
   setPeerAutoconnectEnabled,
   setPeerAutoconnectDisabled,
 } from '../../features/peers/peersSlice'
+import {
+  fetchPaymentSummaryForPeer,
+  selectPaymentSummaryForPeer,
+} from '../../features/payments/paymentsSlice'
+import SentPayments from '../../features/payments/SentPayments'
+import ReceivedPayments from '../../features/payments/ReceivedPayments'
+
 
 
 const Peer = (props) => {
@@ -34,6 +41,7 @@ const Peer = (props) => {
   const [editModalOpen, setEditModalOpen] = useState(false)
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
   const [savePeerModalOpen, setSavePeerModalOpen] = useState(false)
+  const [spendingModalOpen, setSpendingModalOpen] = useState(false)
   const [banner, setBanner] = useState('')
   const [saved, setSaved] = useState(false)
   const [tab, setTab] = useState('Members')
@@ -41,12 +49,18 @@ const Peer = (props) => {
   const [styleBody, setStyleBody] = useState(false)
 
   const peer = useSelector(selectCurrentPeer);
+  const paymentSummary = useSelector(selectPaymentSummaryForPeer)
   const dispatch = useDispatch();
 
 
   useEffect(() => {
     window.scrollTo(0, 0)
     dispatch(fetchPeer({
+      network: props.match.params.network,
+      host: props.match.params.host,
+      port: props.match.params.port,
+    }));
+    dispatch(fetchPaymentSummaryForPeer({
       network: props.match.params.network,
       host: props.match.params.host,
       port: props.match.params.port,
@@ -140,6 +154,13 @@ const Peer = (props) => {
     setTimeout(()=>{ setSavePeerModalOpen(!savePeerModalOpen) },20)
   }
 
+  const toggleSpendingModal = (param, type) => {
+    setStyleBody(!styleBody)
+    if(type){setTab(type)}
+    if(type){setTab(type)}
+    setTimeout(()=>{ setSpendingModalOpen(!spendingModalOpen) },20)
+  }
+
   const handleModalClick = (e) => {
     e.stopPropagation()
   }
@@ -177,40 +198,42 @@ const Peer = (props) => {
     </Form>
   );
 
-    const DeletePeerForm = () => (
-      <Form onSubmit={deletePeer} className="Squeak-input-side">
-        <div className="inner-input-links">
-          <div className="input-links-side">
-          </div>
-          <div className="squeak-btn-holder">
-            <div style={{ fontSize: '13px', color: null }}>
-            </div>
-            <button type="submit" className={'squeak-btn-side squeak-btn-active'}>
-              Delete
-            </button>
-          </div>
+  const DeletePeerForm = () => (
+    <Form onSubmit={deletePeer} className="Squeak-input-side">
+      <div className="inner-input-links">
+        <div className="input-links-side">
         </div>
-      </Form>
-    );
+        <div className="squeak-btn-holder">
+          <div style={{ fontSize: '13px', color: null }}>
+          </div>
+          <button type="submit" className={'squeak-btn-side squeak-btn-active'}>
+            Delete
+          </button>
+        </div>
+      </div>
+    </Form>
+  );
 
-    const EditPeerForm = () => (
-      <Form onSubmit={editPeer} className="Squeak-input-side">
-        <div className="edit-input-wrap">
-          <Input class="informed-input" name="name" label="Peer Name" />
+  const EditPeerForm = () => (
+    <Form onSubmit={editPeer} className="Squeak-input-side">
+      <div className="edit-input-wrap">
+        <Input class="informed-input" name="name" label="Peer Name" />
+      </div>
+      <div className="inner-input-links">
+        <div className="input-links-side">
         </div>
-        <div className="inner-input-links">
-          <div className="input-links-side">
+        <div className="squeak-btn-holder">
+          <div style={{ fontSize: '13px', color: null }}>
           </div>
-          <div className="squeak-btn-holder">
-            <div style={{ fontSize: '13px', color: null }}>
-            </div>
-            <button type="submit" className={'squeak-btn-side squeak-btn-active'}>
-              Submit
-            </button>
-          </div>
+          <button type="submit" className={'squeak-btn-side squeak-btn-active'}>
+            Submit
+          </button>
         </div>
-      </Form>
-    );
+      </div>
+    </Form>
+  );
+
+  console.log(paymentSummary);
 
   return(
     <div>
@@ -268,9 +291,25 @@ const Peer = (props) => {
               }
             </div>
 
-            <div className="profile-details-box">
-              <div className="profile-name">{peer && peer.getPeerName()}</div>
-              <div className="profile-username">{props.match.params.host}:{props.match.params.port}</div>
+            <div className="profile-header-content">
+              <div className="profile-header-name">
+                <div className="profile-name">{peer && peer.getPeerName()}</div>
+                <div className="profile-username">Network: {props.match.params.network}</div>
+                <div className="profile-username">{props.match.params.host}:{props.match.params.port}</div>
+              </div>
+            </div>
+
+            <div className="profile-social-box">
+              {/* TODO: Implement sats spent */}
+              <div onClick={()=>toggleSpendingModal('members','Sent Payments')}>
+                <p className="follow-num"> {paymentSummary && paymentSummary.getAmountSpentMsat() / 1000} </p>
+                <p className="follow-text"> sats spent </p>
+              </div>
+              {/* TODO: Implement sats eaned */}
+              <div onClick={()=>toggleSpendingModal('members', 'Received Payments')}>
+                <p className="follow-num"> {paymentSummary && paymentSummary.getAmountEarnedMsat() / 1000} </p>
+                <p className="follow-text"> sats earned </p>
+              </div>
             </div>
 
             <div className="profile-options">
@@ -286,14 +325,6 @@ const Peer = (props) => {
 
           <div className="feed-wrapper">
             <div className="feed-trending-card">
-              <div className="feed-card-trend">
-                <div>Number of downloads</div>
-                <div>TODO</div>
-              </div>
-              <div className="feed-card-trend">
-                <div>Number of purchases</div>
-                <div>TODO</div>
-              </div>
               <div className="feed-card-trend">
                 <div>Last connection time</div>
                 <div>TODO</div>
@@ -356,6 +387,49 @@ const Peer = (props) => {
             </div>
           </div>
         </div>
+
+
+                      {/* Modal for sats spent and earned */}
+                      <div onClick={()=>toggleSpendingModal()} style={{display: spendingModalOpen ? 'block' : 'none'}} className="modal-edit">
+                        <div onClick={(e)=>handleModalClick(e)} className="modal-content">
+                          <div className="modal-header no-b-border">
+                            <div className="modal-closeIcon">
+                              <div onClick={()=>toggleSpendingModal()} className="modal-closeIcon-wrap">
+                                <ICON_CLOSE />
+                              </div>
+                            </div>
+                            <p className="modal-title">{null}</p>
+                          </div>
+                          <div className="modal-body">
+                            <div className="explore-nav-menu">
+                              <div onClick={()=>setTab('Sent Payments')} className={tab =='Sent Payments' ? `explore-nav-item activeTab` : `explore-nav-item`}>
+                                Sent Payments
+                              </div>
+                              <div onClick={()=>setTab('Received Payments')} className={tab =='Received Payments' ? `explore-nav-item activeTab` : `explore-nav-item`}>
+                                Received Payments
+                              </div>
+                            </div>
+                            <div className="modal-scroll">
+                              {tab === 'Sent Payments' ?
+                                <>
+                                <SentPayments network={props.match.params.network} host={props.match.params.host} port={props.match.params.port} />
+                                </>
+                              :
+                              tab === 'Received Payments' ?
+                              <>
+                              <ReceivedPayments network={props.match.params.network} host={props.match.params.host} port={props.match.params.port} />
+                              </>
+                            : <div className="try-searching">
+                            Nothing to see here ..
+                            <div/>
+                            Try searching for people, usernames, or keywords
+
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
 
       </div>

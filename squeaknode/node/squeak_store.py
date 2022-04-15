@@ -430,6 +430,18 @@ class SqueakStore:
             last_sent_payment,
         )
 
+    def get_sent_payments_for_peer(
+            self,
+            peer_address: PeerAddress,
+            limit: int,
+            last_sent_payment: Optional[SentPayment],
+    ) -> List[SentPayment]:
+        return self.squeak_db.get_sent_payments_for_peer(
+            peer_address,
+            limit,
+            last_sent_payment,
+        )
+
     def get_sent_payment(self, sent_payment_id: int) -> Optional[SentPayment]:
         return self.squeak_db.get_sent_payment(sent_payment_id)
 
@@ -469,6 +481,18 @@ class SqueakStore:
     ) -> List[ReceivedPayment]:
         return self.squeak_db.get_received_payments_for_pubkey(
             pubkey,
+            limit,
+            last_received_payment,
+        )
+
+    def get_received_payments_for_peer(
+            self,
+            peer_address: PeerAddress,
+            limit: int,
+            last_received_payment: Optional[ReceivedPayment],
+    ) -> List[ReceivedPayment]:
+        return self.squeak_db.get_received_payments_for_peer(
+            peer_address,
             limit,
             last_received_payment,
         )
@@ -591,6 +615,9 @@ class SqueakStore:
     def get_received_payment_summary_for_pubkey(self, pubkey: SqueakPublicKey) -> ReceivedPaymentSummary:
         return self.squeak_db.get_received_payment_summary_for_pubkey(pubkey)
 
+    def get_received_payment_summary_for_peer(self, peer_address: PeerAddress) -> ReceivedPaymentSummary:
+        return self.squeak_db.get_received_payment_summary_for_peer(peer_address)
+
     def get_sent_payment_summary(self) -> SentPaymentSummary:
         return self.squeak_db.get_sent_payment_summary()
 
@@ -599,6 +626,9 @@ class SqueakStore:
 
     def get_sent_payment_summary_for_pubkey(self, pubkey: SqueakPublicKey) -> SentPaymentSummary:
         return self.squeak_db.get_sent_payment_summary_for_pubkey(pubkey)
+
+    def get_sent_payment_summary_for_peer(self, peer_address: PeerAddress) -> SentPaymentSummary:
+        return self.squeak_db.get_sent_payment_summary_for_peer(peer_address)
 
     def clear_received_payment_settle_indices(self) -> None:
         self.squeak_db.clear_received_payment_settle_indices()

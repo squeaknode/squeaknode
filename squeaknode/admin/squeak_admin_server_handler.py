@@ -804,6 +804,38 @@ class SqueakAdminServerHandler(object):
             sent_payments=sent_payment_msgs,
         )
 
+    def handle_get_sent_payments_for_peer(self, request):
+        peer_address = message_to_peer_address(request.peer_address)
+        limit = request.limit
+        last_sent_payment = message_to_sent_payment(request.last_sent_payment) if request.HasField(
+            "last_sent_payment") else None
+        logger.info("""Handle get sent payments with
+        peer_address: {}
+        limit: {}
+        last_sent_payment: {}
+        """.format(
+            peer_address,
+            limit,
+            last_sent_payment,
+        ))
+        sent_payments = self.squeak_controller.get_sent_payments_for_peer(
+            peer_address,
+            limit,
+            last_sent_payment,
+        )
+        logger.info(
+            "Got number of sent payments: {}".format(
+                len(sent_payments)
+            )
+        )
+        sent_payment_msgs = [
+            sent_payment_to_message(sent_payment)
+            for sent_payment in sent_payments
+        ]
+        return squeak_admin_pb2.GetSentPaymentsReply(
+            sent_payments=sent_payment_msgs,
+        )
+
     def handle_get_sent_payment(self, request):
         sent_payment_id = request.sent_payment_id
         logger.info(
@@ -918,6 +950,38 @@ class SqueakAdminServerHandler(object):
             received_payments=received_payment_msgs,
         )
 
+    def handle_get_received_payments_for_peer(self, request):
+        peer_address = message_to_peer_address(request.peer_address)
+        limit = request.limit
+        last_received_payment = message_to_received_payment(request.last_received_payment) if request.HasField(
+            "last_received_payment") else None
+        logger.info("""Handle get received payments with
+        peer_address: {}
+        limit: {}
+        last_received_payment: {}
+        """.format(
+            peer_address,
+            limit,
+            last_received_payment,
+        ))
+        received_payments = self.squeak_controller.get_received_payments_for_peer(
+            peer_address,
+            limit,
+            last_received_payment,
+        )
+        logger.info(
+            "Got number of received payments: {}".format(
+                len(received_payments)
+            )
+        )
+        received_payment_msgs = [
+            received_payment_to_message(received_payment)
+            for received_payment in received_payments
+        ]
+        return squeak_admin_pb2.GetReceivedPaymentsReply(
+            received_payments=received_payment_msgs,
+        )
+
     def handle_subscribe_received_payments(self, request, stopped):
         payment_index = request.payment_index
         logger.info(
@@ -973,6 +1037,20 @@ class SqueakAdminServerHandler(object):
         public_key = SqueakPublicKey.from_bytes(bytes.fromhex(public_key_hex))
         payment_summary = self.squeak_controller.get_payment_summary_for_pubkey(
             public_key)
+        payment_summary_msg = payment_summary_to_message(
+            payment_summary,
+        )
+        return squeak_admin_pb2.GetPaymentSummaryForPubkeyReply(
+            payment_summary=payment_summary_msg,
+        )
+
+    def handle_get_payment_summary_for_peer(self, request):
+        peer_address = message_to_peer_address(request.peer_address)
+        logger.info("Handle get payment summary for peer address: {}".format(
+            peer_address,
+        ))
+        payment_summary = self.squeak_controller.get_payment_summary_for_peer(
+            peer_address)
         payment_summary_msg = payment_summary_to_message(
             payment_summary,
         )
