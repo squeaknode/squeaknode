@@ -299,7 +299,7 @@ class SqueakController:
             limit: int,
             last_received_payment: Optional[ReceivedPayment],
     ) -> List[ReceivedPayment]:
-        return self.squeak_store.get_received_payments_for_pubkey(
+        return self.squeak_store.get_received_payments_for_peer(
             peer_address,
             limit,
             last_received_payment,

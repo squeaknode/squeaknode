@@ -8,12 +8,14 @@ import {
   getSentPayments,
   getSentPaymentsForSqueak,
   getSentPaymentsForPubkey,
+  getSentPaymentsForPeer,
   getReceivedPayments,
   getReceivedPaymentsForSqueak,
+  getReceivedPaymentsForPubkey,
+  getReceivedPaymentsForPeer,
   getPaymentSummary,
   getPaymentSummaryForSqueak,
   getPaymentSummaryForPubkey,
-  getReceivedPaymentsForPubkey,
   getPaymentSummaryForPeer,
 } from '../../api/client'
 
@@ -42,6 +44,13 @@ export const fetchSentPayments = createAsyncThunk(
       values.limit,
       values.lastSentPayment,
     )
+    : (values.network && values.host && values.port) ? await getSentPaymentsForPeer(
+      values.network,
+      values.host,
+      values.port,
+      values.limit,
+      values.lastSentPayment,
+    )
     : await getSentPayments(
       values.limit,
       values.lastSentPayment,
@@ -60,6 +69,13 @@ export const fetchReceivedPayments = createAsyncThunk(
     )
     : values.pubkey ? await getReceivedPaymentsForPubkey(
       values.pubkey,
+      values.limit,
+      values.lastReceivedPayment,
+    )
+    : (values.network && values.host && values.port) ? await getReceivedPaymentsForPeer(
+      values.network,
+      values.host,
+      values.port,
       values.limit,
       values.lastReceivedPayment,
     )

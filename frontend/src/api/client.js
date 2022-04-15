@@ -157,6 +157,10 @@ import {
   GetReceivedPaymentsForPubkeyReply,
   GetPaymentSummaryForPeerRequest,
   GetPaymentSummaryForPeerReply,
+  GetSentPaymentsForPeerRequest,
+  GetSentPaymentsForPeerReply,
+  GetReceivedPaymentsForPeerRequest,
+  GetReceivedPaymentsForPeerReply,
 } from '../proto/squeak_admin_pb';
 
 import axios from 'axios'
@@ -456,6 +460,26 @@ export const getSentPaymentsForPubkey = (pubkey, limit, lastSentPayment) => {
     });
 }
 
+export const getSentPaymentsForPeer = (network, host, port, limit, lastSentPayment) => {
+    console.log('Calling getSentPaymentsForPubkey');
+    const request = new GetSentPaymentsForPeerRequest();
+    const peerAddress = new PeerAddress();
+    peerAddress.setNetwork(network);
+    peerAddress.setHost(host);
+    peerAddress.setPort(port);
+    request.setPeerAddress(peerAddress);
+    request.setLimit(limit);
+    if (lastSentPayment) {
+      request.setLastSentPayment(lastSentPayment);
+    }
+    const deser = GetSentPaymentsForPeerReply.deserializeBinary;
+    return baseRequest({
+      url: '/getsentpaymentsforpeer',
+      req: request,
+      deser: deser,
+    });
+}
+
 export const getReceivedPayments = (limit, lastReceivedPayment) => {
     console.log('Calling getReceivedPayments');
     const request = new GetReceivedPaymentsRequest();
@@ -498,6 +522,26 @@ export const getReceivedPaymentsForPubkey = (pubkey, limit, lastReceivedPayment)
     const deser = GetReceivedPaymentsForPubkeyReply.deserializeBinary;
     return baseRequest({
       url: '/getreceivedpaymentsforpubkey',
+      req: request,
+      deser: deser,
+    });
+}
+
+export const getReceivedPaymentsForPeer = (network, host, port, limit, lastReceivedPayment) => {
+    console.log('Calling getReceivedPaymentsForPeer');
+    const request = new GetReceivedPaymentsForPeerRequest();
+    const peerAddress = new PeerAddress();
+    peerAddress.setNetwork(network);
+    peerAddress.setHost(host);
+    peerAddress.setPort(port);
+    request.setPeerAddress(peerAddress);
+    request.setLimit(limit);
+    if (lastReceivedPayment) {
+      request.setLastReceivedPayment(lastReceivedPayment);
+    }
+    const deser = GetReceivedPaymentsForPeerReply.deserializeBinary;
+    return baseRequest({
+      url: '/getreceivedpaymentsforpeer',
       req: request,
       deser: deser,
     });

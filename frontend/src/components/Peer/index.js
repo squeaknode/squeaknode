@@ -27,6 +27,9 @@ import {
   fetchPaymentSummaryForPeer,
   selectPaymentSummaryForPeer,
 } from '../../features/payments/paymentsSlice'
+import SentPayments from '../../features/payments/SentPayments'
+import ReceivedPayments from '../../features/payments/ReceivedPayments'
+
 
 
 const Peer = (props) => {
@@ -409,13 +412,12 @@ const Peer = (props) => {
                             <div className="modal-scroll">
                               {tab === 'Sent Payments' ?
                                 <>
-                                <SentPayments pubkey={props.match.params.username} />
+                                <SentPayments network={props.match.params.network} host={props.match.params.host} port={props.match.params.port} />
                                 </>
-
                               :
                               tab === 'Received Payments' ?
                               <>
-                              <ReceivedPayments pubkey={props.match.params.username} />
+                              <ReceivedPayments network={props.match.params.network} host={props.match.params.host} port={props.match.params.port} />
                               </>
                             : <div className="try-searching">
                             Nothing to see here ..
