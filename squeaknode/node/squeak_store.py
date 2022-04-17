@@ -230,7 +230,11 @@ class SqueakStore:
         return sent_payment_id
 
     def get_squeak(self, squeak_hash: bytes) -> Optional[CSqueak]:
-        return self.squeak_db.get_squeak(squeak_hash)
+        # TODO: remove this after squeak protocol struct stabilizes.
+        try:
+            return self.squeak_db.get_squeak(squeak_hash)
+        except Exception:
+            return None
 
     def get_squeak_secret_key(self, squeak_hash: bytes) -> Optional[bytes]:
         return self.squeak_db.get_squeak_secret_key(squeak_hash)

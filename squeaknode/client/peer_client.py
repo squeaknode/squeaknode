@@ -98,7 +98,10 @@ class PeerClient:
         if r.status_code != requests.codes.ok:
             return None
         squeak_bytes = r.content
-        return CSqueak.deserialize(squeak_bytes)
+        try:
+            return CSqueak.deserialize(squeak_bytes)
+        except Exception:
+            return None
 
     def get_secret_key(self, squeak_hash: bytes) -> Optional[bytes]:
         squeak_hash_str = squeak_hash.hex()
