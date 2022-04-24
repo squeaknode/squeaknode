@@ -23,7 +23,7 @@ import { ICON_REPLY, ICON_RETWEET,
 
 
   const SqueakCard = React.memo(function SqueakCard(props) {
-    const [replyModalOpen, setModalOpen] = useState(false)
+    const [replyModalOpen, setReplyModalOpen] = useState(false)
     const [resqueakModalOpen, setResqueakModalOpen] = useState(false)
     const [deleteModalOpen, setDeleteModalOpen] = useState(false)
     const [buyModalOpen, setBuyModalOpen] = useState(false)
@@ -66,7 +66,7 @@ import { ICON_REPLY, ICON_RETWEET,
       }
       setStyleBody(!styleBody)
       if(type === 'parent'){setParent(true)}else{setParent(false)}
-      setTimeout(()=>{ setModalOpen(!replyModalOpen) },20)
+      setTimeout(()=>{ setReplyModalOpen(!replyModalOpen) },20)
     }
 
     const toggleResqueakModal = (e, type) => {
