@@ -317,7 +317,7 @@ class SqueakAdminServerHandler(object):
         replyto_hash = bytes.fromhex(
             replyto_hash_str) if replyto_hash_str else None
         logger.info(
-            "Handle make squeak with author profile id: {}".format(
+            "Handle make resqueak with author profile id: {}".format(
                 profile_id,
             )
         )

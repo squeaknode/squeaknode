@@ -28,6 +28,7 @@ from typing import Optional
 from squeak.core import CBaseSqueak
 from squeak.core import CheckSqueak
 from squeak.core import CheckSqueakSecretKey
+from squeak.core import CResqueak
 from squeak.core import CSqueak
 from squeak.core.keys import SqueakPrivateKey
 from squeak.core.keys import SqueakPublicKey
@@ -157,10 +158,16 @@ class SqueakStore:
             raise Exception(
                 "Exceeded max number of squeaks per public key per block.")
         # Insert the squeak in db.
-        inserted_squeak_hash = self.squeak_db.insert_squeak(
-            base_squeak,
-            block_header,
-        )
+        if isinstance(base_squeak, CSqueak):
+            inserted_squeak_hash = self.squeak_db.insert_squeak(
+                base_squeak,
+                block_header,
+            )
+        elif isinstance(base_squeak, CResqueak):
+            inserted_squeak_hash = self.squeak_db.insert_resqueak(
+                base_squeak,
+                block_header,
+            )
         if inserted_squeak_hash is None:
             return None
         logger.info("Saved squeak: {}".format(

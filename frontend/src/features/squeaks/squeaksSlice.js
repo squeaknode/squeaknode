@@ -15,6 +15,7 @@ import {
   getSearchSqueaks,
   getProfileSqueaks,
   makeSqueak,
+  makeResqueak,
   deleteSqueak,
   getSqueakOffers,
   buySqueak,
@@ -160,6 +161,23 @@ export const setMakeSqueak = createAsyncThunk(
       replyTo,
       hasRecipient,
       recipientProfileId,
+    );
+    return response.getSqueakHash();
+  }
+)
+
+export const setMakeResqueak = createAsyncThunk(
+  'squeaks/setMakeResqueak',
+  async (values) => {
+    console.log('Making resqueak');
+    let profileId = values.signingProfile;
+    let resqueakedHash = values.resqueakedHash;
+    let replyTo = values.replyTo;
+
+    const response = await makeResqueak(
+      profileId,
+      resqueakedHash,
+      replyTo,
     );
     return response.getSqueakHash();
   }
@@ -337,6 +355,20 @@ const squeaksSlice = createSlice({
     })
     .addCase(setMakeSqueak.fulfilled, (state, action) => {
       console.log('setMakeSqueak fulfilled');
+      console.log(action);
+      const newSqueakHash = action.payload;
+      state.makeSqueakStatus = 'idle';
+      console.log('Go to new squeak');
+    })
+    .addCase(setMakeResqueak.pending, (state, action) => {
+      console.log('setMakeResqueak pending');
+      state.makeSqueakStatus = 'loading'
+    })
+    .addCase(setMakeResqueak.rejected, (state, action) => {
+      state.makeSqueakStatus = 'idle'
+    })
+    .addCase(setMakeResqueak.fulfilled, (state, action) => {
+      console.log('setMakeResqueak fulfilled');
       console.log(action);
       const newSqueakHash = action.payload;
       state.makeSqueakStatus = 'idle';

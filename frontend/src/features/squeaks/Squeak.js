@@ -13,6 +13,7 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
   import SqueakCard from '../../components/SqueakCard'
   import Loader from '../../components/Loader'
   import MakeSqueak from '../squeaks/MakeSqueak'
+  import MakeResqueak from '../squeaks/MakeResqueak'
   import DeleteSqueak from '../../features/squeaks/DeleteSqueak'
   import BuySqueak from '../squeaks/BuySqueak'
 
@@ -66,6 +67,7 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
     const dispatch = useDispatch();
 
     const [replyModalOpen, setModalOpen] = useState(false)
+    const [resqueakModalOpen, setResqueakModalOpen] = useState(false)
     const [deleteModalOpen, setDeleteModalOpen] = useState(false)
     const [buyModalOpen, setBuyModalOpen] = useState(false)
     const [spendingModalOpen, setSpendingModalOpen] = useState(false)
@@ -90,6 +92,15 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
       // if(param === 'edit'){setSaved(false)}
       // if(type === 'parent'){setParent(true)}else{setParent(false)}
       setModalOpen(!replyModalOpen)
+    }
+
+    const toggleResqueakModal = (e, type) => {
+      if(e){ e.stopPropagation() }
+
+      console.log('Toggling resqueak modal: ', resqueakModalOpen);
+      // if(param === 'edit'){setSaved(false)}
+      // if(type === 'parent'){setParent(true)}else{setParent(false)}
+      setResqueakModalOpen(!resqueakModalOpen)
     }
 
     const toggleDeleteModal = (e, type) => {
@@ -238,7 +249,7 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
                 <div className="card-icon reply-icon"> <ICON_REPLY /> </div>
                 {squeak.getNumReplies()}
               </div>
-              <div onClick={()=>resqueak(squeak.getSqueakHash())} className="squeak-int-icon">
+              <div onClick={()=>toggleResqueakModal()} className="squeak-int-icon">
                 <div className="card-icon resqueak-icon">
                   <ICON_RETWEET styles={false ? {stroke: 'rgb(23, 191, 99)'} : {fill:'rgb(101, 119, 134)'}}/>
                 </div>
@@ -339,6 +350,24 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
             </div>
           </div> : null}
         </div>:null}
+
+        {squeak ?
+          <div onClick={()=>toggleResqueakModal()} style={{display: resqueakModalOpen ? 'block' : 'none'}} className="modal-edit">
+            {resqueakModalOpen ?
+              <div style={{minHeight: '379px', height: 'initial'}} onClick={(e)=>handleModalClick(e)} className="modal-content">
+                <div className="modal-header">
+                  <div className="modal-closeIcon">
+                    <div onClick={()=>toggleResqueakModal()} className="modal-closeIcon-wrap">
+                      <ICON_CLOSE />
+                    </div>
+                  </div>
+                  <p className="modal-title">Resqueak</p>
+                </div>
+                <div style={{marginTop:'5px'}} className="modal-body">
+                  <MakeResqueak resqueakedSqueak={squeak} submittedCallback={toggleResqueakModal} />
+                </div>
+              </div> : null}
+            </div>:null}
 
         {squeak ?
           <div onClick={()=>toggleDeleteModal()} style={{display: deleteModalOpen ? 'block' : 'none'}} className="modal-edit">
