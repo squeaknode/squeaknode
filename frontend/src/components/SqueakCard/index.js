@@ -170,7 +170,6 @@ import { ICON_REPLY, ICON_RETWEET,
             <>
             <div className="card-userPic-wrapper">
               <Link onClick={(e)=>{
-                  e.preventDefault();
                   e.stopPropagation();
                 }} to={`/app/profile/${props.squeak.getAuthorPubkey()}`}>
                 <img alt="" style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={author ? `${getProfileImageSrcString(author)}` : null}/>
@@ -182,13 +181,11 @@ import { ICON_REPLY, ICON_RETWEET,
                 <div className="card-header-detail">
                   <span className="card-header-user">
                     <Link onClick={(e)=>{
-                        e.preventDefault();
                         e.stopPropagation();
                       }} to={`/app/profile/${props.squeak.getAuthorPubkey()}`}>{author ? author.getProfileName(): 'Unknown Author'}</Link>
                     </span>
                     <span className="card-header-username">
                       <Link onClick={(e)=>{
-                          e.preventDefault();
                           e.stopPropagation();
                         }} to={`/app/profile/${props.squeak.getAuthorPubkey()}`}>{'@'+ props.squeak.getAuthorPubkey()}</Link>
                       </span>
