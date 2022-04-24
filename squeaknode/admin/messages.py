@@ -67,6 +67,7 @@ def squeak_entry_to_message(squeak_entry: SqueakEntry) -> squeak_admin_pb2.Squea
                 if squeak_entry.squeak_profile else None),
         liked_time_ms=squeak_entry.liked_time_ms,  # type: ignore
         num_replies=squeak_entry.num_replies,
+        num_resqueaks=squeak_entry.num_resqueaks,
         is_private=(squeak_entry.recipient_public_key is not None),
         recipient_pubkey=(squeak_entry.recipient_public_key.to_bytes(
         ).hex() if squeak_entry.recipient_public_key else None),

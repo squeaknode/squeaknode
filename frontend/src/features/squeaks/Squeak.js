@@ -270,6 +270,7 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
                 <div className="card-icon resqueak-icon">
                   <ICON_RETWEET styles={false ? {stroke: 'rgb(23, 191, 99)'} : {fill:'rgb(101, 119, 134)'}}/>
                 </div>
+                {squeak.getNumResqueaks()}
               </div>
               <div onClick={()=>{
                   squeak.getLikedTimeMs() ?

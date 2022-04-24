@@ -219,7 +219,7 @@ import { ICON_REPLY, ICON_RETWEET,
                         <ICON_RETWEET styles={false ? {stroke: 'rgb(23, 191, 99)'} : {fill:'rgb(101, 119, 134)'}}/>
                       </div>
                       <div className="card-icon-value">
-                        0
+                        {props.squeak.getNumResqueaks()}
                       </div>
                     </div>
                     <div onClick={(e)=> {

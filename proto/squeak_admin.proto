@@ -687,6 +687,9 @@ message SqueakDisplayEntry {
 
     /// Resqueaked squeak
     SqueakDisplayEntry resqueaked_squeak = 23;
+
+    /// Number of resqueaks
+    int32 num_resqueaks = 24;
 }
 
 message GetTimelineSqueakDisplaysRequest {
