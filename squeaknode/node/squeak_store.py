@@ -25,6 +25,7 @@ from typing import Iterator
 from typing import List
 from typing import Optional
 
+from squeak.core import CBaseSqueak
 from squeak.core import CheckSqueak
 from squeak.core import CheckSqueakSecretKey
 from squeak.core import CSqueak
@@ -119,24 +120,45 @@ class SqueakStore:
             )
         return inserted_squeak_hash
 
-    def save_squeak(self, squeak: CSqueak) -> Optional[bytes]:
+    def make_resqueak(
+            self,
+            profile_id: int,
+            resqueaked_hash: bytes,
+            replyto_hash: Optional[bytes],
+    ) -> Optional[bytes]:
+        squeak_profile = self.get_squeak_profile(profile_id)
+        if squeak_profile is None:
+            raise Exception("Profile with id {} not found.".format(
+                profile_id,
+            ))
+        resqueak = self.squeak_core.make_resqueak(
+            squeak_profile,
+            resqueaked_hash,
+            replyto_hash,
+        )
+        inserted_resqueak_hash = self.save_squeak(resqueak)
+        if inserted_resqueak_hash is None:
+            raise Exception("Failed to save resqueak.")
+        return inserted_resqueak_hash
+
+    def save_squeak(self, base_squeak: CBaseSqueak) -> Optional[bytes]:
         # Check if the squeak is valid context free.
-        CheckSqueak(squeak)
+        CheckSqueak(base_squeak)
         # Get the block header.
-        block_header = self.squeak_core.get_block_header(squeak)
+        block_header = self.squeak_core.get_block_header(base_squeak)
         # Check if limit exceeded.
         if self.squeak_db.get_number_of_squeaks() >= self.max_squeaks:
             raise Exception("Exceeded max number of squeaks.")
         # TODO: Check if limit per public key per block is exceeded.
         if self.squeak_db.number_of_squeaks_with_public_key_with_block_height(
-                squeak.GetPubKey(),
-                squeak.nBlockHeight,
+                base_squeak.GetPubKey(),
+                base_squeak.nBlockHeight,
         ) >= self.max_squeaks_per_public_key_per_block:
             raise Exception(
                 "Exceeded max number of squeaks per public key per block.")
         # Insert the squeak in db.
         inserted_squeak_hash = self.squeak_db.insert_squeak(
-            squeak,
+            base_squeak,
             block_header,
         )
         if inserted_squeak_hash is None:
@@ -144,7 +166,7 @@ class SqueakStore:
         logger.info("Saved squeak: {}".format(
             inserted_squeak_hash.hex(),
         ))
-        self.new_squeak_listener.handle_new_item(squeak)
+        self.new_squeak_listener.handle_new_item(base_squeak)
         return inserted_squeak_hash
 
     def save_secret_key(self, squeak_hash: bytes, secret_key: bytes):
