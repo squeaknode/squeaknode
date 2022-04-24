@@ -34,12 +34,18 @@ import { ICON_REPLY, ICON_RETWEET,
 
     let info
     const likeSqueak = (e,id) => {
-      if(e){ e.stopPropagation() }
+      if(e){
+        e.preventDefault();
+        e.stopPropagation();
+      }
       console.log('Clicked like with id', id);
       dispatch(setLikeSqueak(id));
     }
     const unlikeSqueak = (e,id) => {
-      if(e){ e.stopPropagation() }
+      if(e){
+        e.preventDefault();
+        e.stopPropagation();
+      }
       console.log('Clicked unlike with id', id);
       dispatch(setUnlikeSqueak(id));
     }
@@ -95,7 +101,8 @@ import { ICON_REPLY, ICON_RETWEET,
 
 
     const handleModalClick = (e) => {
-      e.stopPropagation()
+      e.preventDefault();
+      e.stopPropagation();
     }
 
     const isInitialMount = useRef(true);
@@ -114,11 +121,6 @@ import { ICON_REPLY, ICON_RETWEET,
       else if(document.getElementById("replyBox")) {
         document.getElementById("replyBox").focus(); }
       }, [replyModalOpen])
-
-      const goToUser = (e,username) => {
-        e.stopPropagation()
-        props.history.push(`/app/profile/${username}`)
-      }
 
       const getRegularSqueakContent = (squeak) => {
         return squeak.getContentStr() ?
@@ -160,171 +162,184 @@ import { ICON_REPLY, ICON_RETWEET,
       return (
         <div>
 
-          <Link onClick={(e)=>e.stopPropagation()} to={`/app/squeak/${props.id}`} key={props.id} className={props.squeak ? "Squeak-card-wrapper" : "Squeak-card-wrapper missing-squeak"} >
+          <Link onClick={(e)=>{
+              e.preventDefault();
+              e.stopPropagation()
+            }
+          } to={`/app/squeak/${props.id}`} key={props.id} className={props.squeak ? "Squeak-card-wrapper" : "Squeak-card-wrapper missing-squeak"} >
 
-            {props.squeak ?
-              <>
-              <div className="card-userPic-wrapper">
-                <Link onClick={(e)=>e.stopPropagation()} to={`/app/profile/${props.squeak.getAuthorPubkey()}`}>
-                  <img alt="" style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={author ? `${getProfileImageSrcString(author)}` : null}/>
-                </Link>
-                {props.hasReply? <div className="squeak-reply-thread"></div> : null}
-              </div>
-              <div className="card-content-wrapper">
-                <div className="card-content-header">
-                  <div className="card-header-detail">
-                    <span className="card-header-user">
-                      <Link onClick={(e)=>e.stopPropagation()} to={`/app/profile/${props.squeak.getAuthorPubkey()}`}>{author ? author.getProfileName(): 'Unknown Author'}</Link>
+          {props.squeak ?
+            <>
+            <div className="card-userPic-wrapper">
+              <Link onClick={(e)=>{
+                  e.preventDefault();
+                  e.stopPropagation();
+                }} to={`/app/profile/${props.squeak.getAuthorPubkey()}`}>
+                <img alt="" style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={author ? `${getProfileImageSrcString(author)}` : null}/>
+              </Link>
+              {props.hasReply? <div className="squeak-reply-thread"></div> : null}
+            </div>
+            <div className="card-content-wrapper">
+              <div className="card-content-header">
+                <div className="card-header-detail">
+                  <span className="card-header-user">
+                    <Link onClick={(e)=>{
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }} to={`/app/profile/${props.squeak.getAuthorPubkey()}`}>{author ? author.getProfileName(): 'Unknown Author'}</Link>
                     </span>
                     <span className="card-header-username">
-                      <Link onClick={(e)=>e.stopPropagation()} to={`/app/profile/${props.squeak.getAuthorPubkey()}`}>{'@'+ props.squeak.getAuthorPubkey()}</Link>
-                    </span>
-                    <span className="card-header-dot">·</span>
-                    <span className="card-header-date">
-                      {moment(props.squeak.getBlockTime() * 1000).fromNow(true)}
-                    </span>
-                  </div>
-                  <div className="card-header-more">
+                      <Link onClick={(e)=>{
+                          e.preventDefault();
+                          e.stopPropagation();
+                        }} to={`/app/profile/${props.squeak.getAuthorPubkey()}`}>{'@'+ props.squeak.getAuthorPubkey()}</Link>
+                      </span>
+                      <span className="card-header-dot">·</span>
+                      <span className="card-header-date">
+                        {moment(props.squeak.getBlockTime() * 1000).fromNow(true)}
+                      </span>
+                    </div>
+                    <div className="card-header-more">
 
+                    </div>
                   </div>
-                </div>
 
-                {props.squeak.getIsResqueak() ?
-                  getResqueakContent(props.squeak) :
-                  getRegularSqueakContent(props.squeak)
-                }
+                  {props.squeak.getIsResqueak() ?
+                    getResqueakContent(props.squeak) :
+                    getRegularSqueakContent(props.squeak)
+                  }
 
-                <div className="card-buttons-wrapper">
-                  <div onClick={(e)=>toggleReplyModal(e)} className="card-button-wrap reply-wrap">
-                    <div className="card-icon reply-icon">
-                      <ICON_REPLY styles={{fill:'rgb(101, 119, 134)'}}/>
+                  <div className="card-buttons-wrapper">
+                    <div onClick={(e)=>toggleReplyModal(e)} className="card-button-wrap reply-wrap">
+                      <div className="card-icon reply-icon">
+                        <ICON_REPLY styles={{fill:'rgb(101, 119, 134)'}}/>
+                      </div>
+                      <div className="card-icon-value">
+                        {props.squeak.getNumReplies()}
+                      </div>
                     </div>
-                    <div className="card-icon-value">
-                      {props.squeak.getNumReplies()}
+                    <div onClick={(e)=>toggleResqueakModal(e)} className="card-button-wrap resqueak-wrap">
+                      <div className="card-icon resqueak-icon">
+                        <ICON_RETWEET styles={false ? {stroke: 'rgb(23, 191, 99)'} : {fill:'rgb(101, 119, 134)'}}/>
+                      </div>
+                      <div className="card-icon-value">
+                        0
+                      </div>
                     </div>
-                  </div>
-                  <div onClick={(e)=>toggleResqueakModal(e)} className="card-button-wrap resqueak-wrap">
-                    <div className="card-icon resqueak-icon">
-                      <ICON_RETWEET styles={false ? {stroke: 'rgb(23, 191, 99)'} : {fill:'rgb(101, 119, 134)'}}/>
-                    </div>
-                    <div className="card-icon-value">
-                      0
-                    </div>
-                  </div>
-                  <div onClick={(e)=> {
-                      e.preventDefault();
-                      props.squeak.getLikedTimeMs() ?
-                      unlikeSqueak(e, props.squeak.getSqueakHash()) :
-                      likeSqueak(e, props.squeak.getSqueakHash())
-                    }} className="card-button-wrap heart-wrap">
-                    <div className="card-icon heart-icon">
-                      {props.squeak.getLikedTimeMs() ?
-                        <ICON_HEARTFULL styles={{fill:'rgb(224, 36, 94)'}}/> :
-                          <ICON_HEART styles={{fill:'rgb(101, 119, 134)'}}/>}
+                    <div onClick={(e)=> {
+                        e.preventDefault();
+                        props.squeak.getLikedTimeMs() ?
+                        unlikeSqueak(e, props.squeak.getSqueakHash()) :
+                        likeSqueak(e, props.squeak.getSqueakHash())
+                      }} className="card-button-wrap heart-wrap">
+                      <div className="card-icon heart-icon">
+                        {props.squeak.getLikedTimeMs() ?
+                          <ICON_HEARTFULL styles={{fill:'rgb(224, 36, 94)'}}/> :
+                            <ICON_HEART styles={{fill:'rgb(101, 119, 134)'}}/>}
+                            </div>
+                          </div>
+                          <div onClick={(e)=>toggleDeleteModal(e)} className="card-button-wrap">
+                            <div className="card-icon share-icon">
+                              <ICON_DELETE styles={{fill:'rgb(101, 119, 134)'}} />
+                            </div>
                           </div>
                         </div>
-                        <div onClick={(e)=>toggleDeleteModal(e)} className="card-button-wrap">
-                          <div className="card-icon share-icon">
-                            <ICON_DELETE styles={{fill:'rgb(101, 119, 134)'}} />
-                          </div>
+                      </div>
+                      </> :
+                      <>
+                      <div className="card-userPic-wrapper">
+                        <img alt="" style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={null}/>
+                        {props.hasReply? <div className="squeak-reply-thread"></div> : null}
+                      </div>
+                      <div className="card-content-wrapper">
+                        <div className="card-content-info">
+                          Missing Squeak
                         </div>
                       </div>
-                    </div>
-                    </> :
-                    <>
-                    <div className="card-userPic-wrapper">
-                      <img alt="" style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={null}/>
-                      {props.hasReply? <div className="squeak-reply-thread"></div> : null}
-                    </div>
-                    <div className="card-content-wrapper">
-                      <div className="card-content-info">
-                        Missing Squeak
-                      </div>
-                    </div>
-                    </>
-                }
+                      </>
+                  }
 
-              </Link>
+                </Link>
 
-              {/* reply modal */}
-              {props.squeak ?
-                <div onClick={()=>toggleReplyModal()} style={{display: replyModalOpen ? 'block' : 'none'}} className="modal-edit">
-                  {replyModalOpen ?
-                    <div style={{minHeight: '350px', height: 'initial'}} onClick={(e)=>handleModalClick(e)} className="modal-content">
-                      <div className="modal-header">
-                        <div className="modal-closeIcon">
-                          <div onClick={()=>toggleReplyModal()} className="modal-closeIcon-wrap">
-                            <ICON_CLOSE />
+                {/* reply modal */}
+                {props.squeak ?
+                  <div onClick={()=>toggleReplyModal()} style={{display: replyModalOpen ? 'block' : 'none'}} className="modal-edit">
+                    {replyModalOpen ?
+                      <div style={{minHeight: '350px', height: 'initial'}} onClick={(e)=>handleModalClick(e)} className="modal-content">
+                        <div className="modal-header">
+                          <div className="modal-closeIcon">
+                            <div onClick={()=>toggleReplyModal()} className="modal-closeIcon-wrap">
+                              <ICON_CLOSE />
+                            </div>
                           </div>
+                          <p className="modal-title">Reply</p>
                         </div>
-                        <p className="modal-title">Reply</p>
-                      </div>
-                      <div style={{marginTop:'5px'}} className="modal-body">
-                        <MakeSqueak replyToSqueak={props.squeak} submittedCallback={toggleReplyModal} />
-                      </div>
+                        <div style={{marginTop:'5px'}} className="modal-body">
+                          <MakeSqueak replyToSqueak={props.squeak} submittedCallback={toggleReplyModal} />
+                        </div>
+                      </div> : null}
                     </div> : null}
-                  </div> : null}
 
-                  {/* resqueak modal */}
-                  {props.squeak ?
-                    <div onClick={()=>toggleResqueakModal()} style={{display: resqueakModalOpen ? 'block' : 'none'}} className="modal-edit">
-                      {resqueakModalOpen ?
-                        <div style={{minHeight: '350px', height: 'initial'}} onClick={(e)=>handleModalClick(e)} className="modal-content">
-                          <div className="modal-header">
-                            <div className="modal-closeIcon">
-                              <div onClick={()=>toggleResqueakModal()} className="modal-closeIcon-wrap">
-                                <ICON_CLOSE />
-                              </div>
-                            </div>
-                            <p className="modal-title">Resqueak</p>
-                          </div>
-                          <div style={{marginTop:'5px'}} className="modal-body">
-                            <MakeResqueak resqueakedSqueak={props.squeak} submittedCallback={toggleResqueakModal} />
-                          </div>
-                        </div> : null}
-                      </div> : null}
-
-                  {/* delete modal */}
-                  {props.squeak ?
-                    <div onClick={()=>toggleDeleteModal()} style={{display: deleteModalOpen ? 'block' : 'none'}} className="modal-edit">
-                      {deleteModalOpen ?
-                        <div style={{minHeight: '350px', height: 'initial'}} onClick={(e)=>handleModalClick(e)} className="modal-content">
-                          <div className="modal-header">
-                            <div className="modal-closeIcon">
-                              <div onClick={()=>toggleDeleteModal()} className="modal-closeIcon-wrap">
-                                <ICON_CLOSE />
-                              </div>
-                            </div>
-                            <p className="modal-title">Delete Squeak</p>
-                          </div>
-                          <div style={{marginTop:'5px'}} className="modal-body">
-                            <DeleteSqueak squeakHash={props.id} submittedCallback={toggleDeleteModal} />
-                          </div>
-                        </div> : null}
-                      </div> : null}
-
-                      {/* buy modal */}
-                      {props.squeak ?
-                        <div onClick={()=>toggleBuyModal()} style={{display: buyModalOpen ? 'block' : 'none'}} className="modal-edit">
-                          {buyModalOpen ?
-                            <div style={{minHeight: '350px', height: 'initial'}} onClick={(e)=>handleModalClick(e)} className="modal-content">
-                              <div className="modal-header">
-                                <div className="modal-closeIcon">
-                                  <div onClick={()=>toggleBuyModal()} className="modal-closeIcon-wrap">
-                                    <ICON_CLOSE />
-                                  </div>
+                    {/* resqueak modal */}
+                    {props.squeak ?
+                      <div onClick={()=>toggleResqueakModal()} style={{display: resqueakModalOpen ? 'block' : 'none'}} className="modal-edit">
+                        {resqueakModalOpen ?
+                          <div style={{minHeight: '350px', height: 'initial'}} onClick={(e)=>handleModalClick(e)} className="modal-content">
+                            <div className="modal-header">
+                              <div className="modal-closeIcon">
+                                <div onClick={()=>toggleResqueakModal()} className="modal-closeIcon-wrap">
+                                  <ICON_CLOSE />
                                 </div>
-                                <p className="modal-title">Buy Squeak</p>
                               </div>
-                              <div style={{marginTop:'5px'}} className="modal-body">
-                                <BuySqueak squeak={props.squeak} submittedCallback={toggleBuyModal} />
-                              </div>
-                            </div> : null}
+                              <p className="modal-title">Resqueak</p>
+                            </div>
+                            <div style={{marginTop:'5px'}} className="modal-body">
+                              <MakeResqueak resqueakedSqueak={props.squeak} submittedCallback={toggleResqueakModal} />
+                            </div>
                           </div> : null}
+                        </div> : null}
+
+                        {/* delete modal */}
+                        {props.squeak ?
+                          <div onClick={()=>toggleDeleteModal()} style={{display: deleteModalOpen ? 'block' : 'none'}} className="modal-edit">
+                            {deleteModalOpen ?
+                              <div style={{minHeight: '350px', height: 'initial'}} onClick={(e)=>handleModalClick(e)} className="modal-content">
+                                <div className="modal-header">
+                                  <div className="modal-closeIcon">
+                                    <div onClick={()=>toggleDeleteModal()} className="modal-closeIcon-wrap">
+                                      <ICON_CLOSE />
+                                    </div>
+                                  </div>
+                                  <p className="modal-title">Delete Squeak</p>
+                                </div>
+                                <div style={{marginTop:'5px'}} className="modal-body">
+                                  <DeleteSqueak squeakHash={props.id} submittedCallback={toggleDeleteModal} />
+                                </div>
+                              </div> : null}
+                            </div> : null}
+
+                            {/* buy modal */}
+                            {props.squeak ?
+                              <div onClick={()=>toggleBuyModal()} style={{display: buyModalOpen ? 'block' : 'none'}} className="modal-edit">
+                                {buyModalOpen ?
+                                  <div style={{minHeight: '350px', height: 'initial'}} onClick={(e)=>handleModalClick(e)} className="modal-content">
+                                    <div className="modal-header">
+                                      <div className="modal-closeIcon">
+                                        <div onClick={()=>toggleBuyModal()} className="modal-closeIcon-wrap">
+                                          <ICON_CLOSE />
+                                        </div>
+                                      </div>
+                                      <p className="modal-title">Buy Squeak</p>
+                                    </div>
+                                    <div style={{marginTop:'5px'}} className="modal-body">
+                                      <BuySqueak squeak={props.squeak} submittedCallback={toggleBuyModal} />
+                                    </div>
+                                  </div> : null}
+                                </div> : null}
 
 
-                        </div>
-                      )
-                    });
+                              </div>
+                            )
+                          });
 
-                    export default withRouter(SqueakCard)
+                          export default withRouter(SqueakCard)
