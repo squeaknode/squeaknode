@@ -10,6 +10,7 @@ import { ICON_REPLY, ICON_RETWEET,
   import axios from 'axios'
   import {API_URL} from '../../config'
   import MakeSqueak from '../../features/squeaks/MakeSqueak'
+  import MakeResqueak from '../../features/squeaks/MakeResqueak'
   import DeleteSqueak from '../../features/squeaks/DeleteSqueak'
   import BuySqueak from '../../features/squeaks/BuySqueak'
   import ContentEditable from 'react-contenteditable'
@@ -23,6 +24,7 @@ import { ICON_REPLY, ICON_RETWEET,
 
   const SqueakCard = React.memo(function SqueakCard(props) {
     const [replyModalOpen, setModalOpen] = useState(false)
+    const [resqueakModalOpen, setResqueakModalOpen] = useState(false)
     const [deleteModalOpen, setDeleteModalOpen] = useState(false)
     const [buyModalOpen, setBuyModalOpen] = useState(false)
     const [parent, setParent] = useState(false)
@@ -59,6 +61,16 @@ import { ICON_REPLY, ICON_RETWEET,
       setStyleBody(!styleBody)
       if(type === 'parent'){setParent(true)}else{setParent(false)}
       setTimeout(()=>{ setModalOpen(!replyModalOpen) },20)
+    }
+
+    const toggleResqueakModal = (e, type) => {
+      if(e){
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      setStyleBody(!styleBody)
+      if(type === 'parent'){setParent(true)}else{setParent(false)}
+      setTimeout(()=>{ setResqueakModalOpen(!resqueakModalOpen) },20)
     }
 
     const toggleDeleteModal = (e, type) => {
@@ -191,7 +203,7 @@ import { ICON_REPLY, ICON_RETWEET,
                       {props.squeak.getNumReplies()}
                     </div>
                   </div>
-                  <div onClick={(e)=>resqueak(e,props.id)} className="card-button-wrap resqueak-wrap">
+                  <div onClick={(e)=>toggleResqueakModal(e)} className="card-button-wrap resqueak-wrap">
                     <div className="card-icon resqueak-icon">
                       <ICON_RETWEET styles={false ? {stroke: 'rgb(23, 191, 99)'} : {fill:'rgb(101, 119, 134)'}}/>
                     </div>
@@ -252,6 +264,25 @@ import { ICON_REPLY, ICON_RETWEET,
                       </div>
                     </div> : null}
                   </div> : null}
+
+                  {/* resqueak modal */}
+                  {props.squeak ?
+                    <div onClick={()=>toggleResqueakModal()} style={{display: resqueakModalOpen ? 'block' : 'none'}} className="modal-edit">
+                      {resqueakModalOpen ?
+                        <div style={{minHeight: '350px', height: 'initial'}} onClick={(e)=>handleModalClick(e)} className="modal-content">
+                          <div className="modal-header">
+                            <div className="modal-closeIcon">
+                              <div onClick={()=>toggleResqueakModal()} className="modal-closeIcon-wrap">
+                                <ICON_CLOSE />
+                              </div>
+                            </div>
+                            <p className="modal-title">Resqueak</p>
+                          </div>
+                          <div style={{marginTop:'5px'}} className="modal-body">
+                            <MakeResqueak resqueakedSqueak={props.squeak} submittedCallback={toggleResqueakModal} />
+                          </div>
+                        </div> : null}
+                      </div> : null}
 
                   {/* delete modal */}
                   {props.squeak ?
