@@ -108,6 +108,33 @@ const SqueakCard = React.memo(function SqueakCard(props) {
         props.history.push(`/app/profile/${username}`)
     }
 
+    const getRegularSqueakContent = (squeak) => {
+      return squeak.getContentStr() ?
+        <div className="card-content-info">
+            {squeak.getContentStr()}
+        </div> :
+        <div onClick={(e)=> {
+          e.preventDefault();
+          dispatch(fetchSqueakOffers(props.id));
+          toggleBuyModal();
+        }
+      }
+           className="card-content-info card-content-locked-content">
+            <ICON_LOCKFILL styles={{width:'36px', height:"36px", padding: "5px"}} />
+            <div>
+            Locked content
+            </div>
+        </div>
+    }
+
+    const getResqueakContent = (squeak) => {
+      const resqueakedSqueak = squeak.getResqueakedSqueak();
+      return <div className="squeak-content">
+          <SqueakCard squeak={resqueakedSqueak} key={resqueakedSqueak.getSqueakHash()} id={resqueakedSqueak.getSqueakHash()} user={resqueakedSqueak.getAuthor()}
+            replies={[]} hasReply={false} />
+        </div>
+    }
+
     moment.updateLocale('en', {
         relativeTime: { future: 'in %s', past: '%s ago', s:  'few seconds ago', ss: '%ss',
           m:  '1m', mm: '%dm', h:  '1h', hh: '%dh', d:  'a day', dd: '%dd', M:  'a month',
@@ -148,22 +175,9 @@ const SqueakCard = React.memo(function SqueakCard(props) {
                       </div>
                   </div>
 
-                  {props.squeak.getContentStr() ?
-                    <div className="card-content-info">
-                        {props.squeak.getContentStr()}
-                    </div> :
-                    <div onClick={(e)=> {
-                      e.preventDefault();
-                      dispatch(fetchSqueakOffers(props.id));
-                      toggleBuyModal();
-                    }
-                  }
-                       className="card-content-info card-content-locked-content">
-                        <ICON_LOCKFILL styles={{width:'36px', height:"36px", padding: "5px"}} />
-                        <div>
-                        Locked content
-                        </div>
-                    </div>
+                  {props.squeak.getIsResqueak() ?
+                    getResqueakContent(props.squeak) :
+                    getRegularSqueakContent(props.squeak)
                   }
 
                   <div className="card-buttons-wrapper">
