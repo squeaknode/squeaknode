@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom'
 import { getProfileImageSrcString } from '../../squeakimages/images';
 import Loader from '../../components/Loader'
 
-import { Form, Input, Select, Checkbox, Relevant, Debug, TextArea, Option, FormStateAccessor } from 'informed';
+import { Form, Input, Select, Checkbox, Relevant, Debug, TextArea, Option, FormStateAccessor, useFormApi } from 'informed';
 
 import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
@@ -78,9 +78,20 @@ const MakeSqueak = (props) => {
   const author = props.replyToSqueak && props.replyToSqueak.getAuthor();
 
   const validateContent = value => {
-  if (value && value.length > 280)
+    if (value && value.length > 280)
     return 'Content must be less than 280 characters';
-};
+  };
+
+  const SubmitButton = () => {
+    const formApi = useFormApi();
+
+    return <button
+      type="submit"
+      className={'squeak-btn-side squeak-btn-active'}
+      onClick={formApi.submitForm}>
+      Squeak
+    </button>
+  };
 
   const MakeSqueakForm = () => (
     <Form onSubmit={submitSqueak} className="Squeak-input-side">
@@ -104,9 +115,7 @@ const MakeSqueak = (props) => {
               </div>
             )}
           </FormStateAccessor>
-          <button type="submit" className={'squeak-btn-side squeak-btn-active'}>
-            Squeak
-          </button>
+          <SubmitButton />
         </div>
       </div>
     </Form>

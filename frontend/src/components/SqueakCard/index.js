@@ -101,6 +101,7 @@ import { ICON_REPLY, ICON_RETWEET,
 
 
     const handleModalClick = (e) => {
+      e.preventDefault();
       e.stopPropagation();
     }
 
