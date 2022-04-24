@@ -199,9 +199,7 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
 
     const getResqueakContent = (squeak) => {
       const resqueakedSqueak = squeak.getResqueakedSqueak();
-      console.log(resqueakedSqueak.getAuthor().getProfileName());
       return <div className="squeak-content">
-          {resqueakedSqueak.getAuthor().getProfileName()}
           <SqueakCard squeak={resqueakedSqueak} key={resqueakedSqueak.getSqueakHash()} id={resqueakedSqueak.getSqueakHash()} user={resqueakedSqueak.getAuthor()}
             replies={[]} hasReply={false} />
         </div>
