@@ -162,7 +162,6 @@ import { ICON_REPLY, ICON_RETWEET,
         <div>
 
           <Link onClick={(e)=>{
-              e.preventDefault();
               e.stopPropagation()
             }
           } to={`/app/squeak/${props.id}`} key={props.id} className={props.squeak ? "Squeak-card-wrapper" : "Squeak-card-wrapper missing-squeak"} >
