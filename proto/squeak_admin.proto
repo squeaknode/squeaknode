@@ -678,6 +678,15 @@ message SqueakDisplayEntry {
 
     /// Number of replies
     int32 num_replies = 20;
+
+    /// Is resqueak
+    bool is_resqueak = 21;
+
+    /// Resqueaked hash
+    string resqueaked_hash = 22;
+
+    /// Resqueaked squeak
+    SqueakDisplayEntry resqueaked_squeak = 23;
 }
 
 message GetTimelineSqueakDisplaysRequest {

@@ -73,6 +73,9 @@ def squeak_entry_to_message(squeak_entry: SqueakEntry) -> squeak_admin_pb2.Squea
         is_recipient_known=(squeak_entry.recipient_squeak_profile is not None),
         recipient=(squeak_profile_to_message(squeak_entry.recipient_squeak_profile)
                    if squeak_entry.recipient_squeak_profile else None),
+        is_resqueak=(squeak_entry.resqueaked_hash is not None),
+        resqueaked_hash=(squeak_entry.resqueaked_hash.hex()
+                         if squeak_entry.resqueaked_hash else None),  # type: ignore
     )
 
 
