@@ -619,6 +619,8 @@ def test_get_resqueak_entry(
     assert retrieved_resqueak_entry.resqueaked_hash == inserted_squeak_hash
     assert retrieved_resqueak_entry.resqueaked_squeak == retrieved_squeak_entry
     assert retrieved_resqueak_entry.resqueaked_squeak.public_key == public_key
+    assert retrieved_resqueak_entry.num_resqueaks == 0
+    assert retrieved_resqueak_entry.resqueaked_squeak.num_resqueaks == 1
 
 
 def test_get_timeline_squeak_entries(squeak_db, followed_squeak_hashes):

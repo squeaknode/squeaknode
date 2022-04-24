@@ -96,6 +96,8 @@ class SqueakDb:
         self.reply_squeaks = self.squeaks.alias()
         self.resqueaked_squeaks = self.squeaks.alias()
         self.resqueaked_reply_squeaks = self.squeaks.alias()
+        self.resqueaks = self.squeaks.alias()
+        self.resqueaked_resqueaks = self.squeaks.alias()
 
     def init_with_retries(
             self,
@@ -313,6 +315,9 @@ class SqueakDb:
                 func.count(self.reply_squeaks.c.hash).label("num_replies"),
                 func.count(self.resqueaked_reply_squeaks.c.hash).label(
                     "num_resqueak_replies"),
+                func.count(self.resqueaks.c.hash).label("num_resqueaks"),
+                func.count(self.resqueaked_resqueaks.c.hash).label(
+                    "num_resqueak_resqueaks"),
             ])
             .select_from(
                 self.squeaks
@@ -329,6 +334,10 @@ class SqueakDb:
                     self.reply_squeaks.c.reply_hash == self.squeaks.c.hash,
                 )
                 .outerjoin(
+                    self.resqueaks,
+                    self.resqueaks.c.resqueak_hash == self.squeaks.c.hash,
+                )
+                .outerjoin(
                     self.resqueaked_squeaks,
                     self.resqueaked_squeaks.c.hash == self.squeaks.c.resqueak_hash,
                 )
@@ -339,6 +348,10 @@ class SqueakDb:
                 .outerjoin(
                     self.resqueaked_reply_squeaks,
                     self.resqueaked_reply_squeaks.c.reply_hash == self.resqueaked_squeaks.c.hash,
+                )
+                .outerjoin(
+                    self.resqueaked_resqueaks,
+                    self.resqueaked_resqueaks.c.resqueak_hash == self.resqueaked_squeaks.c.hash,
                 )
             )
             .group_by(
@@ -392,6 +405,9 @@ class SqueakDb:
                 func.count(self.reply_squeaks.c.hash).label("num_replies"),
                 func.count(self.resqueaked_reply_squeaks.c.hash).label(
                     "num_resqueak_replies"),
+                func.count(self.resqueaks.c.hash).label("num_resqueaks"),
+                func.count(self.resqueaked_resqueaks.c.hash).label(
+                    "num_resqueak_resqueaks"),
             ])
             .select_from(
                 # self.squeaks.outerjoin(
@@ -412,6 +428,10 @@ class SqueakDb:
                     self.reply_squeaks.c.reply_hash == self.squeaks.c.hash,
                 )
                 .outerjoin(
+                    self.resqueaks,
+                    self.resqueaks.c.resqueak_hash == self.squeaks.c.hash,
+                )
+                .outerjoin(
                     self.resqueaked_squeaks,
                     self.resqueaked_squeaks.c.hash == self.squeaks.c.resqueak_hash,
                 )
@@ -422,6 +442,10 @@ class SqueakDb:
                 .outerjoin(
                     self.resqueaked_reply_squeaks,
                     self.resqueaked_reply_squeaks.c.reply_hash == self.resqueaked_squeaks.c.hash,
+                )
+                .outerjoin(
+                    self.resqueaked_resqueaks,
+                    self.resqueaked_resqueaks.c.resqueak_hash == self.resqueaked_squeaks.c.hash,
                 )
             )
             .group_by(
@@ -483,6 +507,9 @@ class SqueakDb:
                 func.count(self.reply_squeaks.c.hash).label("num_replies"),
                 func.count(self.resqueaked_reply_squeaks.c.hash).label(
                     "num_resqueak_replies"),
+                func.count(self.resqueaks.c.hash).label("num_resqueaks"),
+                func.count(self.resqueaked_resqueaks.c.hash).label(
+                    "num_resqueak_resqueaks"),
             ])
             .select_from(
                 # self.squeaks.outerjoin(
@@ -503,6 +530,10 @@ class SqueakDb:
                     self.reply_squeaks.c.reply_hash == self.squeaks.c.hash,
                 )
                 .outerjoin(
+                    self.resqueaks,
+                    self.resqueaks.c.resqueak_hash == self.squeaks.c.hash,
+                )
+                .outerjoin(
                     self.resqueaked_squeaks,
                     self.resqueaked_squeaks.c.hash == self.squeaks.c.resqueak_hash,
                 )
@@ -513,6 +544,10 @@ class SqueakDb:
                 .outerjoin(
                     self.resqueaked_reply_squeaks,
                     self.resqueaked_reply_squeaks.c.reply_hash == self.resqueaked_squeaks.c.hash,
+                )
+                .outerjoin(
+                    self.resqueaked_resqueaks,
+                    self.resqueaked_resqueaks.c.resqueak_hash == self.resqueaked_squeaks.c.hash,
                 )
             )
             .group_by(
@@ -579,6 +614,9 @@ class SqueakDb:
                 func.count(self.reply_squeaks.c.hash).label("num_replies"),
                 func.count(self.resqueaked_reply_squeaks.c.hash).label(
                     "num_resqueak_replies"),
+                func.count(self.resqueaks.c.hash).label("num_resqueaks"),
+                func.count(self.resqueaked_resqueaks.c.hash).label(
+                    "num_resqueak_resqueaks"),
             ])
             .select_from(
                 # self.squeaks.outerjoin(
@@ -599,6 +637,10 @@ class SqueakDb:
                     self.reply_squeaks.c.reply_hash == self.squeaks.c.hash,
                 )
                 .outerjoin(
+                    self.resqueaks,
+                    self.resqueaks.c.resqueak_hash == self.squeaks.c.hash,
+                )
+                .outerjoin(
                     self.resqueaked_squeaks,
                     self.resqueaked_squeaks.c.hash == self.squeaks.c.resqueak_hash,
                 )
@@ -609,6 +651,10 @@ class SqueakDb:
                 .outerjoin(
                     self.resqueaked_reply_squeaks,
                     self.resqueaked_reply_squeaks.c.reply_hash == self.resqueaked_squeaks.c.hash,
+                )
+                .outerjoin(
+                    self.resqueaked_resqueaks,
+                    self.resqueaked_resqueaks.c.resqueak_hash == self.resqueaked_squeaks.c.hash,
                 )
             )
             .group_by(
@@ -676,6 +722,9 @@ class SqueakDb:
                 func.count(self.reply_squeaks.c.hash).label("num_replies"),
                 func.count(self.resqueaked_reply_squeaks.c.hash).label(
                     "num_resqueak_replies"),
+                func.count(self.resqueaks.c.hash).label("num_resqueaks"),
+                func.count(self.resqueaked_resqueaks.c.hash).label(
+                    "num_resqueak_resqueaks"),
             ])
             .select_from(
                 # self.squeaks.outerjoin(
@@ -696,6 +745,10 @@ class SqueakDb:
                     self.reply_squeaks.c.reply_hash == self.squeaks.c.hash,
                 )
                 .outerjoin(
+                    self.resqueaks,
+                    self.resqueaks.c.resqueak_hash == self.squeaks.c.hash,
+                )
+                .outerjoin(
                     self.resqueaked_squeaks,
                     self.resqueaked_squeaks.c.hash == self.squeaks.c.resqueak_hash,
                 )
@@ -706,6 +759,10 @@ class SqueakDb:
                 .outerjoin(
                     self.resqueaked_reply_squeaks,
                     self.resqueaked_reply_squeaks.c.reply_hash == self.resqueaked_squeaks.c.hash,
+                )
+                .outerjoin(
+                    self.resqueaked_resqueaks,
+                    self.resqueaked_resqueaks.c.resqueak_hash == self.resqueaked_squeaks.c.hash,
                 )
             )
             .group_by(
@@ -775,6 +832,9 @@ class SqueakDb:
                 func.count(self.reply_squeaks.c.hash).label("num_replies"),
                 func.count(self.resqueaked_reply_squeaks.c.hash).label(
                     "num_resqueak_replies"),
+                func.count(self.resqueaks.c.hash).label("num_resqueaks"),
+                func.count(self.resqueaked_resqueaks.c.hash).label(
+                    "num_resqueak_resqueaks"),
             ])
             .select_from(
                 self.squeaks.join(
@@ -797,6 +857,10 @@ class SqueakDb:
                     self.reply_squeaks.c.reply_hash == self.squeaks.c.hash,
                 )
                 .outerjoin(
+                    self.resqueaks,
+                    self.resqueaks.c.resqueak_hash == self.squeaks.c.hash,
+                )
+                .outerjoin(
                     self.resqueaked_squeaks,
                     self.resqueaked_squeaks.c.hash == self.squeaks.c.resqueak_hash,
                 )
@@ -807,6 +871,10 @@ class SqueakDb:
                 .outerjoin(
                     self.resqueaked_reply_squeaks,
                     self.resqueaked_reply_squeaks.c.reply_hash == self.resqueaked_squeaks.c.hash,
+                )
+                .outerjoin(
+                    self.resqueaked_resqueaks,
+                    self.resqueaked_resqueaks.c.resqueak_hash == self.resqueaked_squeaks.c.hash,
                 )
             )
             .group_by(
@@ -879,6 +947,9 @@ class SqueakDb:
                 func.count(self.reply_squeaks.c.hash).label("num_replies"),
                 func.count(self.resqueaked_reply_squeaks.c.hash).label(
                     "num_resqueak_replies"),
+                func.count(self.resqueaks.c.hash).label("num_resqueaks"),
+                func.count(self.resqueaked_resqueaks.c.hash).label(
+                    "num_resqueak_resqueaks"),
             ])
             .select_from(
                 # self.squeaks.outerjoin(
@@ -899,6 +970,10 @@ class SqueakDb:
                     self.reply_squeaks.c.reply_hash == self.squeaks.c.hash,
                 )
                 .outerjoin(
+                    self.resqueaks,
+                    self.resqueaks.c.resqueak_hash == self.squeaks.c.hash,
+                )
+                .outerjoin(
                     self.resqueaked_squeaks,
                     self.resqueaked_squeaks.c.hash == self.squeaks.c.resqueak_hash,
                 )
@@ -909,6 +984,10 @@ class SqueakDb:
                 .outerjoin(
                     self.resqueaked_reply_squeaks,
                     self.resqueaked_reply_squeaks.c.reply_hash == self.resqueaked_squeaks.c.hash,
+                )
+                .outerjoin(
+                    self.resqueaked_resqueaks,
+                    self.resqueaked_resqueaks.c.resqueak_hash == self.resqueaked_squeaks.c.hash,
                 )
             )
             .group_by(
@@ -2240,6 +2319,7 @@ class SqueakDb:
             secret_key=(row["secret_key"]),
             liked_time_ms=liked_time_ms,
             num_replies=row["num_replies"],
+            num_resqueaks=row["num_resqueaks"],
             content=row["content"],
             resqueaked_hash=row["resqueak_hash"],
             resqueaked_squeak=resqueaked_squeak,
@@ -2275,6 +2355,7 @@ class SqueakDb:
             liked_time_ms=liked_time_ms,
             # TODO: needs another join. row[self.resqueaked_squeaks.c.num_replies],
             num_replies=row["num_resqueak_replies"],
+            num_resqueaks=row["num_resqueak_resqueaks"],
             content=row[self.resqueaked_squeaks.c.content],
             resqueaked_hash=row[self.resqueaked_squeaks.c.resqueak_hash],
             squeak_profile=profile,

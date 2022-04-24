@@ -324,6 +324,7 @@ def squeak_entry_locked(
         recipient_squeak_profile=recipient_contact_profile,
         liked_time_ms=None,
         num_replies=0,
+        num_resqueaks=0,
         content=None,
     )
 

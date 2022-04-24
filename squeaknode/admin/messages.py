@@ -199,6 +199,7 @@ def message_to_squeak_entry(msg: squeak_admin_pb2.SqueakDisplayEntry) -> SqueakE
         recipient_squeak_profile=None,  # TODO: message to squeak profile
         liked_time_ms=(msg.liked_time_ms if msg.liked_time_ms > 0 else None),
         num_replies=0,
+        num_resqueaks=0,
         content=(msg.content_str if len(msg.content_str) > 0 else None),
     )
 
