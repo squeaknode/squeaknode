@@ -595,6 +595,32 @@ def test_get_secret_key_missing_squeak(squeak_db, squeak, squeak_hash):
     assert retrieved_secret_key is None
 
 
+def test_get_resqueak_entry(
+        squeak_db,
+        resqueak,
+        squeak,
+        block_header,
+        public_key,
+        signing_profile,
+        inserted_resqueak_hash,
+        inserted_squeak_hash,
+        inserted_signing_profile_id,
+):
+    retrieved_resqueak_entry = squeak_db.get_squeak_entry(
+        inserted_resqueak_hash)
+    retrieved_squeak_entry = squeak_db.get_squeak_entry(inserted_squeak_hash)
+
+    assert retrieved_resqueak_entry.squeak_hash == inserted_resqueak_hash
+    assert retrieved_resqueak_entry.public_key == public_key
+    assert retrieved_resqueak_entry.content is None
+    assert retrieved_resqueak_entry.block_time == block_header.nTime
+    assert retrieved_resqueak_entry.squeak_profile._replace(
+        profile_id=None) == signing_profile
+    assert retrieved_resqueak_entry.resqueaked_hash == inserted_squeak_hash
+    assert retrieved_resqueak_entry.resqueaked_squeak == retrieved_squeak_entry
+    assert retrieved_resqueak_entry.resqueaked_squeak.public_key == public_key
+
+
 def test_get_timeline_squeak_entries(squeak_db, followed_squeak_hashes):
     timeline_squeak_entries = squeak_db.get_timeline_squeak_entries(
         limit=2,

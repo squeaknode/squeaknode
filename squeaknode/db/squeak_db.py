@@ -93,6 +93,7 @@ class SqueakDb:
         # Create aliases for squeaks
         self.display_squeaks = self.squeaks.alias()
         self.reply_squeaks = self.squeaks.alias()
+        self.resqueaked_squeaks = self.squeaks.alias()
 
     def init_with_retries(
             self,
@@ -305,6 +306,7 @@ class SqueakDb:
                 self.squeaks,
                 self.author_profiles,
                 self.recipient_profiles,
+                self.resqueaked_squeaks,
                 func.count(self.reply_squeaks.c.hash).label("num_replies"),
             ])
             .select_from(
@@ -321,11 +323,16 @@ class SqueakDb:
                     self.reply_squeaks,
                     self.reply_squeaks.c.reply_hash == self.squeaks.c.hash,
                 )
+                .outerjoin(
+                    self.resqueaked_squeaks,
+                    self.resqueaked_squeaks.c.hash == self.squeaks.c.resqueak_hash,
+                )
             )
             .group_by(
                 self.squeaks,
                 self.author_profiles,
                 self.recipient_profiles,
+                self.resqueaked_squeaks,
             )
             .where(self.squeaks.c.hash == squeak_hash)
         )
@@ -366,6 +373,7 @@ class SqueakDb:
                 self.squeaks,
                 self.author_profiles,
                 self.recipient_profiles,
+                self.resqueaked_squeaks,
                 func.count(self.reply_squeaks.c.hash).label("num_replies"),
             ])
             .select_from(
@@ -386,11 +394,16 @@ class SqueakDb:
                     self.reply_squeaks,
                     self.reply_squeaks.c.reply_hash == self.squeaks.c.hash,
                 )
+                .outerjoin(
+                    self.resqueaked_squeaks,
+                    self.resqueaked_squeaks.c.hash == self.squeaks.c.resqueak_hash,
+                )
             )
             .group_by(
                 self.squeaks,
                 self.author_profiles,
                 self.recipient_profiles,
+                self.resqueaked_squeaks,
             )
             .where(self.profile_is_following(self.author_profiles))
             .where(
@@ -439,6 +452,7 @@ class SqueakDb:
                 self.squeaks,
                 self.author_profiles,
                 self.recipient_profiles,
+                self.resqueaked_squeaks,
                 func.count(self.reply_squeaks.c.hash).label("num_replies"),
             ])
             .select_from(
@@ -459,11 +473,16 @@ class SqueakDb:
                     self.reply_squeaks,
                     self.reply_squeaks.c.reply_hash == self.squeaks.c.hash,
                 )
+                .outerjoin(
+                    self.resqueaked_squeaks,
+                    self.resqueaked_squeaks.c.hash == self.squeaks.c.resqueak_hash,
+                )
             )
             .group_by(
                 self.squeaks,
                 self.author_profiles,
                 self.recipient_profiles,
+                self.resqueaked_squeaks,
             )
             .where(
                 self.squeak_is_liked,
@@ -517,6 +536,7 @@ class SqueakDb:
                 self.squeaks,
                 self.author_profiles,
                 self.recipient_profiles,
+                self.resqueaked_squeaks,
                 func.count(self.reply_squeaks.c.hash).label("num_replies"),
             ])
             .select_from(
@@ -537,11 +557,16 @@ class SqueakDb:
                     self.reply_squeaks,
                     self.reply_squeaks.c.reply_hash == self.squeaks.c.hash,
                 )
+                .outerjoin(
+                    self.resqueaked_squeaks,
+                    self.resqueaked_squeaks.c.hash == self.squeaks.c.resqueak_hash,
+                )
             )
             .group_by(
                 self.squeaks,
                 self.author_profiles,
                 self.recipient_profiles,
+                self.resqueaked_squeaks,
             )
             .where(self.squeaks.c.author_public_key == public_key.to_bytes())
             .where(
@@ -596,6 +621,7 @@ class SqueakDb:
                 self.squeaks,
                 self.author_profiles,
                 self.recipient_profiles,
+                self.resqueaked_squeaks,
                 func.count(self.reply_squeaks.c.hash).label("num_replies"),
             ])
             .select_from(
@@ -616,11 +642,16 @@ class SqueakDb:
                     self.reply_squeaks,
                     self.reply_squeaks.c.reply_hash == self.squeaks.c.hash,
                 )
+                .outerjoin(
+                    self.resqueaked_squeaks,
+                    self.resqueaked_squeaks.c.hash == self.squeaks.c.resqueak_hash,
+                )
             )
             .group_by(
                 self.squeaks,
                 self.author_profiles,
                 self.recipient_profiles,
+                self.resqueaked_squeaks,
             )
             .where(self.squeaks.c.content.ilike(f'%{search_text}%'))
             .where(
@@ -677,6 +708,7 @@ class SqueakDb:
                 self.squeaks,
                 self.author_profiles,
                 self.recipient_profiles,
+                self.resqueaked_squeaks,
                 func.count(self.reply_squeaks.c.hash).label("num_replies"),
             ])
             .select_from(
@@ -699,11 +731,16 @@ class SqueakDb:
                     self.reply_squeaks,
                     self.reply_squeaks.c.reply_hash == self.squeaks.c.hash,
                 )
+                .outerjoin(
+                    self.resqueaked_squeaks,
+                    self.resqueaked_squeaks.c.hash == self.squeaks.c.resqueak_hash,
+                )
             )
             .group_by(
                 self.squeaks,
                 self.author_profiles,
                 self.recipient_profiles,
+                self.resqueaked_squeaks,
                 ancestors.c.depth,
             )
             .order_by(
@@ -763,6 +800,7 @@ class SqueakDb:
                 self.squeaks,
                 self.author_profiles,
                 self.recipient_profiles,
+                self.resqueaked_squeaks,
                 func.count(self.reply_squeaks.c.hash).label("num_replies"),
             ])
             .select_from(
@@ -783,11 +821,16 @@ class SqueakDb:
                     self.reply_squeaks,
                     self.reply_squeaks.c.reply_hash == self.squeaks.c.hash,
                 )
+                .outerjoin(
+                    self.resqueaked_squeaks,
+                    self.resqueaked_squeaks.c.hash == self.squeaks.c.resqueak_hash,
+                )
             )
             .group_by(
                 self.squeaks,
                 self.author_profiles,
                 self.recipient_profiles,
+                self.resqueaked_squeaks,
             )
             .where(self.squeaks.c.reply_hash == squeak_hash)
             .where(
@@ -2094,6 +2137,8 @@ class SqueakDb:
             row, profiles_table=self.author_profiles)
         recipient_profile = self._try_parse_squeak_profile(
             row, profiles_table=self.recipient_profiles)
+        resqueaked_squeak = self._parse_resqueaked_squeak_entry(
+            row) if row[self.resqueaked_squeaks.c.author_public_key] else None
         return SqueakEntry(
             squeak_hash=(row["hash"]),
             serialized_squeak=(row["squeak"]),
@@ -2110,6 +2155,42 @@ class SqueakDb:
             liked_time_ms=liked_time_ms,
             num_replies=row["num_replies"],
             content=row["content"],
+            resqueaked_hash=row["resqueak_hash"],
+            resqueaked_squeak=resqueaked_squeak,
+            squeak_profile=profile,
+            recipient_squeak_profile=recipient_profile,
+        )
+
+    def _parse_resqueaked_squeak_entry(self, row) -> SqueakEntry:
+        public_key_bytes = row[self.resqueaked_squeaks.c.author_public_key]
+        recipient_public_key_bytes = row[self.resqueaked_squeaks.c.recipient_public_key]
+        secret_key_column = row[self.resqueaked_squeaks.c.secret_key]
+        is_locked = bool(secret_key_column)
+        reply_to = (
+            row[self.resqueaked_squeaks.c.reply_hash]) if row[self.resqueaked_squeaks.c.reply_hash] else None
+        liked_time_ms = row[self.resqueaked_squeaks.c.liked_time_ms]
+        profile = self._try_parse_squeak_profile(
+            row, profiles_table=self.author_profiles)
+        recipient_profile = self._try_parse_squeak_profile(
+            row, profiles_table=self.recipient_profiles)
+        return SqueakEntry(
+            squeak_hash=(row[self.resqueaked_squeaks.c.hash]),
+            serialized_squeak=(row[self.resqueaked_squeaks.c.squeak]),
+            public_key=SqueakPublicKey.from_bytes(public_key_bytes),
+            recipient_public_key=SqueakPublicKey.from_bytes(
+                recipient_public_key_bytes) if recipient_public_key_bytes else None,
+            block_height=row[self.resqueaked_squeaks.c.block_height],
+            block_hash=(row[self.resqueaked_squeaks.c.block_hash]),
+            block_time=row[self.resqueaked_squeaks.c.block_time_s],
+            squeak_time=row[self.resqueaked_squeaks.c.time_s],
+            reply_to=reply_to,
+            is_unlocked=is_locked,
+            secret_key=(row[self.resqueaked_squeaks.c.secret_key]),
+            liked_time_ms=liked_time_ms,
+            # TODO: needs another join. row[self.resqueaked_squeaks.c.num_replies],
+            num_replies=0,
+            content=row[self.resqueaked_squeaks.c.content],
+            resqueaked_hash=row[self.resqueaked_squeaks.c.resqueak_hash],
             squeak_profile=profile,
             recipient_squeak_profile=recipient_profile,
         )
