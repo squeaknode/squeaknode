@@ -34,6 +34,7 @@ from sqlalchemy import not_
 from sqlalchemy import or_
 from sqlalchemy.sql import select
 from sqlalchemy.sql import tuple_
+from squeak.core import CResqueak
 from squeak.core import CSqueak
 from squeak.core.keys import SqueakPrivateKey
 from squeak.core.keys import SqueakPublicKey
@@ -231,6 +232,35 @@ class SqueakDb:
                                   if squeak.is_private_message
                                   else None),
             secret_key=None,
+            block_time_s=block_header.nTime,
+        )
+        with self.get_connection() as connection:
+            try:
+                res = connection.execute(ins)
+                squeak_hash = res.inserted_primary_key[0]
+                return squeak_hash
+            except sqlalchemy.exc.IntegrityError:
+                logger.debug("Failed to insert squeak.", exc_info=True)
+                return None
+
+    def insert_resqueak(self, resqueak: CResqueak, block_header: CBlockHeader) -> Optional[bytes]:
+        """ Insert a new resqueak.
+
+        Return the hash (bytes) of the inserted resqueak.
+        Return None if resqueak already exists.
+        """
+        ins = self.squeaks.insert().values(
+            created_time_ms=self.timestamp_now_ms,
+            hash=get_hash(resqueak),
+            squeak=resqueak.serialize(),
+            reply_hash=(resqueak.hashReplySqk
+                        if resqueak.is_reply
+                        else None),
+            block_hash=resqueak.hashBlock,
+            block_height=resqueak.nBlockHeight,
+            time_s=resqueak.nTime,
+            author_public_key=resqueak.GetPubKey().to_bytes(),
+            resqueak_hash=resqueak.hashResqueakSqk,
             block_time_s=block_header.nTime,
         )
         with self.get_connection() as connection:

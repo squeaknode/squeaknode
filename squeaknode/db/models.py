@@ -82,6 +82,7 @@ class Models:
             Column("block_time_s", Integer, nullable=False),
             Column("liked_time_ms", SLBigInteger, default=None, nullable=True),
             Column("content", String(280), nullable=True),
+            Column("resqueak_hash", LargeBinary(32), nullable=True),
         )
 
         self.profiles = Table(
