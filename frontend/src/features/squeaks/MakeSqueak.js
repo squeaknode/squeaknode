@@ -78,7 +78,7 @@ const MakeSqueak = (props) => {
   const author = props.replyToSqueak && props.replyToSqueak.getAuthor();
 
   const validateContent = value => {
-  if (!value || value.length > 280)
+  if (value && value.length > 280)
     return 'Content must be less than 280 characters';
 };
 
