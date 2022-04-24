@@ -28,6 +28,7 @@ from typing import Optional
 
 import sqlalchemy
 from bitcoin.core import CBlockHeader
+from sqlalchemy import distinct
 from sqlalchemy import func
 from sqlalchemy import literal
 from sqlalchemy import not_
@@ -312,11 +313,13 @@ class SqueakDb:
                 self.resqueaked_author_profiles,
                 self.recipient_profiles,
                 self.resqueaked_squeaks,
-                func.count(self.reply_squeaks.c.hash).label("num_replies"),
-                func.count(self.resqueaked_reply_squeaks.c.hash).label(
+                func.count(distinct(self.reply_squeaks.c.hash)
+                           ).label("num_replies"),
+                func.count(distinct(self.resqueaked_reply_squeaks.c.hash)).label(
                     "num_resqueak_replies"),
-                func.count(self.resqueaks.c.hash).label("num_resqueaks"),
-                func.count(self.resqueaked_resqueaks.c.hash).label(
+                func.count(distinct(self.resqueaks.c.hash)
+                           ).label("num_resqueaks"),
+                func.count(distinct(self.resqueaked_resqueaks.c.hash)).label(
                     "num_resqueak_resqueaks"),
             ])
             .select_from(
@@ -402,11 +405,13 @@ class SqueakDb:
                 self.resqueaked_author_profiles,
                 self.recipient_profiles,
                 self.resqueaked_squeaks,
-                func.count(self.reply_squeaks.c.hash).label("num_replies"),
-                func.count(self.resqueaked_reply_squeaks.c.hash).label(
+                func.count(distinct(self.reply_squeaks.c.hash)
+                           ).label("num_replies"),
+                func.count(distinct(self.resqueaked_reply_squeaks.c.hash)).label(
                     "num_resqueak_replies"),
-                func.count(self.resqueaks.c.hash).label("num_resqueaks"),
-                func.count(self.resqueaked_resqueaks.c.hash).label(
+                func.count(distinct(self.resqueaks.c.hash)
+                           ).label("num_resqueaks"),
+                func.count(distinct(self.resqueaked_resqueaks.c.hash)).label(
                     "num_resqueak_resqueaks"),
             ])
             .select_from(
@@ -504,11 +509,13 @@ class SqueakDb:
                 self.resqueaked_author_profiles,
                 self.recipient_profiles,
                 self.resqueaked_squeaks,
-                func.count(self.reply_squeaks.c.hash).label("num_replies"),
-                func.count(self.resqueaked_reply_squeaks.c.hash).label(
+                func.count(distinct(self.reply_squeaks.c.hash)
+                           ).label("num_replies"),
+                func.count(distinct(self.resqueaked_reply_squeaks.c.hash)).label(
                     "num_resqueak_replies"),
-                func.count(self.resqueaks.c.hash).label("num_resqueaks"),
-                func.count(self.resqueaked_resqueaks.c.hash).label(
+                func.count(distinct(self.resqueaks.c.hash)
+                           ).label("num_resqueaks"),
+                func.count(distinct(self.resqueaked_resqueaks.c.hash)).label(
                     "num_resqueak_resqueaks"),
             ])
             .select_from(
@@ -611,11 +618,13 @@ class SqueakDb:
                 self.resqueaked_author_profiles,
                 self.recipient_profiles,
                 self.resqueaked_squeaks,
-                func.count(self.reply_squeaks.c.hash).label("num_replies"),
-                func.count(self.resqueaked_reply_squeaks.c.hash).label(
+                func.count(distinct(self.reply_squeaks.c.hash)
+                           ).label("num_replies"),
+                func.count(distinct(self.resqueaked_reply_squeaks.c.hash)).label(
                     "num_resqueak_replies"),
-                func.count(self.resqueaks.c.hash).label("num_resqueaks"),
-                func.count(self.resqueaked_resqueaks.c.hash).label(
+                func.count(distinct(self.resqueaks.c.hash)
+                           ).label("num_resqueaks"),
+                func.count(distinct(self.resqueaked_resqueaks.c.hash)).label(
                     "num_resqueak_resqueaks"),
             ])
             .select_from(
@@ -719,11 +728,13 @@ class SqueakDb:
                 self.resqueaked_author_profiles,
                 self.recipient_profiles,
                 self.resqueaked_squeaks,
-                func.count(self.reply_squeaks.c.hash).label("num_replies"),
-                func.count(self.resqueaked_reply_squeaks.c.hash).label(
+                func.count(distinct(self.reply_squeaks.c.hash)
+                           ).label("num_replies"),
+                func.count(distinct(self.resqueaked_reply_squeaks.c.hash)).label(
                     "num_resqueak_replies"),
-                func.count(self.resqueaks.c.hash).label("num_resqueaks"),
-                func.count(self.resqueaked_resqueaks.c.hash).label(
+                func.count(distinct(self.resqueaks.c.hash)
+                           ).label("num_resqueaks"),
+                func.count(distinct(self.resqueaked_resqueaks.c.hash)).label(
                     "num_resqueak_resqueaks"),
             ])
             .select_from(
@@ -829,11 +840,13 @@ class SqueakDb:
                 self.resqueaked_author_profiles,
                 self.recipient_profiles,
                 self.resqueaked_squeaks,
-                func.count(self.reply_squeaks.c.hash).label("num_replies"),
-                func.count(self.resqueaked_reply_squeaks.c.hash).label(
+                func.count(distinct(self.reply_squeaks.c.hash)
+                           ).label("num_replies"),
+                func.count(distinct(self.resqueaked_reply_squeaks.c.hash)).label(
                     "num_resqueak_replies"),
-                func.count(self.resqueaks.c.hash).label("num_resqueaks"),
-                func.count(self.resqueaked_resqueaks.c.hash).label(
+                func.count(distinct(self.resqueaks.c.hash)
+                           ).label("num_resqueaks"),
+                func.count(distinct(self.resqueaked_resqueaks.c.hash)).label(
                     "num_resqueak_resqueaks"),
             ])
             .select_from(
@@ -944,11 +957,13 @@ class SqueakDb:
                 self.resqueaked_author_profiles,
                 self.recipient_profiles,
                 self.resqueaked_squeaks,
-                func.count(self.reply_squeaks.c.hash).label("num_replies"),
-                func.count(self.resqueaked_reply_squeaks.c.hash).label(
+                func.count(distinct(self.reply_squeaks.c.hash)
+                           ).label("num_replies"),
+                func.count(distinct(self.resqueaked_reply_squeaks.c.hash)).label(
                     "num_resqueak_replies"),
-                func.count(self.resqueaks.c.hash).label("num_resqueaks"),
-                func.count(self.resqueaked_resqueaks.c.hash).label(
+                func.count(distinct(self.resqueaks.c.hash)
+                           ).label("num_resqueaks"),
+                func.count(distinct(self.resqueaked_resqueaks.c.hash)).label(
                     "num_resqueak_resqueaks"),
             ])
             .select_from(
