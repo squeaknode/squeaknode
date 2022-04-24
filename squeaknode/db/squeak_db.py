@@ -34,6 +34,7 @@ from sqlalchemy import not_
 from sqlalchemy import or_
 from sqlalchemy.sql import select
 from sqlalchemy.sql import tuple_
+from squeak.core import CBaseSqueak
 from squeak.core import CResqueak
 from squeak.core import CSqueak
 from squeak.core.keys import SqueakPrivateKey
@@ -272,7 +273,7 @@ class SqueakDb:
                 logger.debug("Failed to insert squeak.", exc_info=True)
                 return None
 
-    def get_squeak(self, squeak_hash: bytes) -> Optional[CSqueak]:
+    def get_squeak(self, squeak_hash: bytes) -> Optional[CBaseSqueak]:
         """ Get a squeak. """
         s = select([self.squeaks]).where(
             self.squeaks.c.hash == squeak_hash)
@@ -2074,8 +2075,11 @@ class SqueakDb:
         with self.get_connection() as connection:
             connection.execute(delete_twitter_account_stmt)
 
-    def _parse_squeak(self, row) -> CSqueak:
-        return CSqueak.deserialize(row["squeak"])
+    def _parse_squeak(self, row) -> CBaseSqueak:
+        if row["resqueak_hash"]:
+            return CResqueak.deserialize(row["squeak"])
+        else:
+            return CSqueak.deserialize(row["squeak"])
 
     # def _parse_squeak_entry(self, row, author_profiles_table=None, recipient_profiles_table=None) -> SqueakEntry:
     def _parse_squeak_entry(self, row) -> SqueakEntry:

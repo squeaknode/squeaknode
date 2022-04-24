@@ -62,6 +62,11 @@ def inserted_reply_squeak_hash(squeak_db, reply_squeak, block_header):
 
 
 @pytest.fixture
+def inserted_resqueak_hash(squeak_db, resqueak, block_header):
+    yield squeak_db.insert_resqueak(resqueak, block_header)
+
+
+@pytest.fixture
 def unlocked_squeak_hash(squeak_db, squeak, inserted_squeak_hash, secret_key, squeak_content):
     squeak_db.set_squeak_secret_key(
         inserted_squeak_hash, secret_key)
@@ -486,6 +491,12 @@ def test_get_missing_squeak(squeak_db, squeak, squeak_hash):
     retrieved_squeak = squeak_db.get_squeak(squeak_hash)
 
     assert retrieved_squeak is None
+
+
+def test_get_resqueak(squeak_db, resqueak, inserted_resqueak_hash):
+    retrieved_resqueak = squeak_db.get_squeak(inserted_resqueak_hash)
+
+    assert retrieved_resqueak == resqueak
 
 
 def test_get_squeak_entry(
