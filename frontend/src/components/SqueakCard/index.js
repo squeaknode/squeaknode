@@ -258,12 +258,12 @@ import { ICON_REPLY, ICON_RETWEET,
 
                 {/* reply modal */}
                 {props.squeak ?
-                  <div onClick={()=>toggleReplyModal()} style={{display: replyModalOpen ? 'block' : 'none'}} className="modal-edit">
+                  <div onClick={(e)=>toggleReplyModal(e)} style={{display: replyModalOpen ? 'block' : 'none'}} className="modal-edit">
                     {replyModalOpen ?
                       <div style={{minHeight: '350px', height: 'initial'}} onClick={(e)=>handleModalClick(e)} className="modal-content">
                         <div className="modal-header">
                           <div className="modal-closeIcon">
-                            <div onClick={()=>toggleReplyModal()} className="modal-closeIcon-wrap">
+                            <div onClick={(e)=>toggleReplyModal(e)} className="modal-closeIcon-wrap">
                               <ICON_CLOSE />
                             </div>
                           </div>
@@ -277,12 +277,12 @@ import { ICON_REPLY, ICON_RETWEET,
 
                     {/* resqueak modal */}
                     {props.squeak ?
-                      <div onClick={()=>toggleResqueakModal()} style={{display: resqueakModalOpen ? 'block' : 'none'}} className="modal-edit">
+                      <div onClick={(e)=>toggleResqueakModal(e)} style={{display: resqueakModalOpen ? 'block' : 'none'}} className="modal-edit">
                         {resqueakModalOpen ?
                           <div style={{minHeight: '350px', height: 'initial'}} onClick={(e)=>handleModalClick(e)} className="modal-content">
                             <div className="modal-header">
                               <div className="modal-closeIcon">
-                                <div onClick={()=>toggleResqueakModal()} className="modal-closeIcon-wrap">
+                                <div onClick={(e)=>toggleResqueakModal(e)} className="modal-closeIcon-wrap">
                                   <ICON_CLOSE />
                                 </div>
                               </div>
@@ -296,12 +296,12 @@ import { ICON_REPLY, ICON_RETWEET,
 
                         {/* delete modal */}
                         {props.squeak ?
-                          <div onClick={()=>toggleDeleteModal()} style={{display: deleteModalOpen ? 'block' : 'none'}} className="modal-edit">
+                          <div onClick={(e)=>toggleDeleteModal(e)} style={{display: deleteModalOpen ? 'block' : 'none'}} className="modal-edit">
                             {deleteModalOpen ?
                               <div style={{minHeight: '350px', height: 'initial'}} onClick={(e)=>handleModalClick(e)} className="modal-content">
                                 <div className="modal-header">
                                   <div className="modal-closeIcon">
-                                    <div onClick={()=>toggleDeleteModal()} className="modal-closeIcon-wrap">
+                                    <div onClick={(e)=>toggleDeleteModal(e)} className="modal-closeIcon-wrap">
                                       <ICON_CLOSE />
                                     </div>
                                   </div>
@@ -315,12 +315,12 @@ import { ICON_REPLY, ICON_RETWEET,
 
                             {/* buy modal */}
                             {props.squeak ?
-                              <div onClick={()=>toggleBuyModal()} style={{display: buyModalOpen ? 'block' : 'none'}} className="modal-edit">
+                              <div onClick={(e)=>toggleBuyModal(e)} style={{display: buyModalOpen ? 'block' : 'none'}} className="modal-edit">
                                 {buyModalOpen ?
                                   <div style={{minHeight: '350px', height: 'initial'}} onClick={(e)=>handleModalClick(e)} className="modal-content">
                                     <div className="modal-header">
                                       <div className="modal-closeIcon">
-                                        <div onClick={()=>toggleBuyModal()} className="modal-closeIcon-wrap">
+                                        <div onClick={(e)=>toggleBuyModal(e)} className="modal-closeIcon-wrap">
                                           <ICON_CLOSE />
                                         </div>
                                       </div>
