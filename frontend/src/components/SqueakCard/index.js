@@ -145,10 +145,8 @@ import { ICON_REPLY, ICON_RETWEET,
       const resqueakedHash = squeak.getResqueakedHash();
       const resqueakedSqueak = squeak.getResqueakedSqueak();
       const resqueakedAuthor = resqueakedSqueak && resqueakedSqueak.getAuthor();
-      return <div className="squeak-content">
-        <SqueakCard squeak={resqueakedSqueak} key={resqueakedHash} id={resqueakedHash} user={resqueakedAuthor}
+      return <SqueakCard squeak={resqueakedSqueak} key={resqueakedHash} id={resqueakedHash} user={resqueakedAuthor}
           replies={[]} hasReply={false} />
-      </div>
     }
 
     moment.updateLocale('en', {
