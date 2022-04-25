@@ -42,6 +42,7 @@ from squeaknode.core.sent_payment_summary import SentPaymentSummary
 from squeaknode.core.squeak_entry import SqueakEntry
 from squeaknode.core.squeak_peer import SqueakPeer
 from squeaknode.core.squeaks import get_hash
+from squeaknode.core.squeaks import make_resqueak_with_block
 from squeaknode.core.squeaks import make_squeak_with_block
 from squeaknode.core.user_config import UserConfig
 from tests.utils import gen_contact_profile
@@ -217,6 +218,21 @@ def private_squeak(private_squeak_and_secret_key):
 
 
 @pytest.fixture
+def resqueak(private_key, squeak_hash, block_info):
+    yield make_resqueak_with_block(
+        private_key,
+        squeak_hash,
+        block_info.block_height,
+        block_info.block_hash,
+    )
+
+
+@pytest.fixture
+def resqueak_hash(resqueak):
+    yield get_hash(resqueak)
+
+
+@pytest.fixture
 def peer_address():
     yield PeerAddress(
         network=Network.IPV4,
@@ -308,6 +324,7 @@ def squeak_entry_locked(
         recipient_squeak_profile=recipient_contact_profile,
         liked_time_ms=None,
         num_replies=0,
+        num_resqueaks=0,
         content=None,
     )
 

@@ -13,6 +13,7 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
   import SqueakCard from '../../components/SqueakCard'
   import Loader from '../../components/Loader'
   import MakeSqueak from '../squeaks/MakeSqueak'
+  import MakeResqueak from '../squeaks/MakeResqueak'
   import DeleteSqueak from '../../features/squeaks/DeleteSqueak'
   import BuySqueak from '../squeaks/BuySqueak'
 
@@ -66,6 +67,7 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
     const dispatch = useDispatch();
 
     const [replyModalOpen, setModalOpen] = useState(false)
+    const [resqueakModalOpen, setResqueakModalOpen] = useState(false)
     const [deleteModalOpen, setDeleteModalOpen] = useState(false)
     const [buyModalOpen, setBuyModalOpen] = useState(false)
     const [spendingModalOpen, setSpendingModalOpen] = useState(false)
@@ -90,6 +92,15 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
       // if(param === 'edit'){setSaved(false)}
       // if(type === 'parent'){setParent(true)}else{setParent(false)}
       setModalOpen(!replyModalOpen)
+    }
+
+    const toggleResqueakModal = (e, type) => {
+      if(e){ e.stopPropagation() }
+
+      console.log('Toggling resqueak modal: ', resqueakModalOpen);
+      // if(param === 'edit'){setSaved(false)}
+      // if(type === 'parent'){setParent(true)}else{setParent(false)}
+      setResqueakModalOpen(!resqueakModalOpen)
     }
 
     const toggleDeleteModal = (e, type) => {
@@ -170,6 +181,32 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
     // const squeakOffers = [];
 
 
+    const getRegularSqueakContent = (squeak) => {
+      return squeak.getContentStr() ?
+        <div className="squeak-content">
+          {squeak.getContentStr()}
+        </div> :
+        <Link>
+          <div onClick={()=>toggleBuyModal(props.match.params.id)}
+            className="squeak-content locked-content">
+            <ICON_LOCKFILL styles={{width:'48px', height:"48px", padding: "5px"}} />
+            <div>
+              Locked content
+            </div>
+          </div>
+        </Link>
+    }
+
+    const getResqueakContent = (squeak) => {
+      const resqueakedHash = squeak.getResqueakedHash();
+      const resqueakedSqueak = squeak.getResqueakedSqueak();
+      const resqueakedAuthor = resqueakedSqueak && resqueakedSqueak.getAuthor();
+      return <div className="squeak-content">
+        <SqueakCard squeak={resqueakedSqueak} key={resqueakedHash} id={resqueakedHash} user={resqueakedAuthor}
+          replies={[]} hasReply={false} />
+        </div>
+    }
+
 
     const squeak = currentSqueak;
     const author = currentSqueak && currentSqueak.getAuthor();
@@ -199,19 +236,10 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
               </div>
             </div>
 
-            {squeak.getContentStr() ?
-              <div className="squeak-content">
-                {squeak.getContentStr()}
-              </div> :
-              <Link>
-              <div onClick={()=>toggleBuyModal(props.match.params.id)}
-                className="squeak-content locked-content">
-                <ICON_LOCKFILL styles={{width:'48px', height:"48px", padding: "5px"}} />
-                  <div>
-                  Locked content
-                  </div>
-              </div>
-            </Link>
+
+            {squeak.getIsResqueak() ?
+              getResqueakContent(squeak) :
+              getRegularSqueakContent(squeak)
             }
 
 
@@ -238,10 +266,11 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
                 <div className="card-icon reply-icon"> <ICON_REPLY /> </div>
                 {squeak.getNumReplies()}
               </div>
-              <div onClick={()=>resqueak(squeak.getSqueakHash())} className="squeak-int-icon">
+              <div onClick={()=>toggleResqueakModal()} className="squeak-int-icon">
                 <div className="card-icon resqueak-icon">
                   <ICON_RETWEET styles={false ? {stroke: 'rgb(23, 191, 99)'} : {fill:'rgb(101, 119, 134)'}}/>
                 </div>
+                {squeak.getNumResqueaks()}
               </div>
               <div onClick={()=>{
                   squeak.getLikedTimeMs() ?
@@ -341,88 +370,106 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
         </div>:null}
 
         {squeak ?
-          <div onClick={()=>toggleDeleteModal()} style={{display: deleteModalOpen ? 'block' : 'none'}} className="modal-edit">
-            {deleteModalOpen ?
+          <div onClick={()=>toggleResqueakModal()} style={{display: resqueakModalOpen ? 'block' : 'none'}} className="modal-edit">
+            {resqueakModalOpen ?
               <div style={{minHeight: '379px', height: 'initial'}} onClick={(e)=>handleModalClick(e)} className="modal-content">
                 <div className="modal-header">
                   <div className="modal-closeIcon">
-                    <div onClick={()=>toggleDeleteModal()} className="modal-closeIcon-wrap">
+                    <div onClick={()=>toggleResqueakModal()} className="modal-closeIcon-wrap">
                       <ICON_CLOSE />
                     </div>
                   </div>
-                  <p className="modal-title">Delete Squeak</p>
+                  <p className="modal-title">Resqueak</p>
                 </div>
                 <div style={{marginTop:'5px'}} className="modal-body">
-                  <DeleteSqueak squeakHash={squeak.getSqueakHash()} submittedCallback={toggleDeleteModal} />
+                  <MakeResqueak resqueakedSqueak={squeak} submittedCallback={toggleResqueakModal} />
                 </div>
               </div> : null}
             </div>:null}
 
             {squeak ?
-              <div onClick={()=>toggleBuyModal()} style={{display: buyModalOpen ? 'block' : 'none'}} className="modal-edit">
-                {buyModalOpen ?
+              <div onClick={()=>toggleDeleteModal()} style={{display: deleteModalOpen ? 'block' : 'none'}} className="modal-edit">
+                {deleteModalOpen ?
                   <div style={{minHeight: '379px', height: 'initial'}} onClick={(e)=>handleModalClick(e)} className="modal-content">
                     <div className="modal-header">
                       <div className="modal-closeIcon">
-                        <div onClick={()=>toggleBuyModal()} className="modal-closeIcon-wrap">
+                        <div onClick={()=>toggleDeleteModal()} className="modal-closeIcon-wrap">
                           <ICON_CLOSE />
                         </div>
                       </div>
-                      <p className="modal-title">Buy Squeak</p>
+                      <p className="modal-title">Delete Squeak</p>
                     </div>
                     <div style={{marginTop:'5px'}} className="modal-body">
-                      <BuySqueak squeak={squeak} submittedCallback={toggleBuyModal} />
+                      <DeleteSqueak squeakHash={squeak.getSqueakHash()} submittedCallback={toggleDeleteModal} />
                     </div>
                   </div> : null}
                 </div>:null}
 
-
-                {/* Modal for sent payments and received payments */}
-                {squeak &&
-                  <div onClick={()=>toggleSpendingModal()} style={{display: spendingModalOpen ? 'block' : 'none'}} className="modal-edit">
-                    <div onClick={(e)=>handleModalClick(e)} className="modal-content">
-                      <div className="modal-header no-b-border">
-                        <div className="modal-closeIcon">
-                          <div onClick={()=>toggleSpendingModal()} className="modal-closeIcon-wrap">
-                            <ICON_CLOSE />
+                {squeak ?
+                  <div onClick={()=>toggleBuyModal()} style={{display: buyModalOpen ? 'block' : 'none'}} className="modal-edit">
+                    {buyModalOpen ?
+                      <div style={{minHeight: '379px', height: 'initial'}} onClick={(e)=>handleModalClick(e)} className="modal-content">
+                        <div className="modal-header">
+                          <div className="modal-closeIcon">
+                            <div onClick={()=>toggleBuyModal()} className="modal-closeIcon-wrap">
+                              <ICON_CLOSE />
+                            </div>
                           </div>
+                          <p className="modal-title">Buy Squeak</p>
                         </div>
-                        <p className="modal-title">{null}</p>
-                      </div>
-                      <div className="modal-body">
-                        <div className="explore-nav-menu">
-                          <div onClick={()=>setTab('Sent Payments')} className={tab =='Sent Payments' ? `explore-nav-item activeTab` : `explore-nav-item`}>
-                            Sent Payments
-                          </div>
-                          <div onClick={()=>setTab('Received Payments')} className={tab =='Received Payments' ? `explore-nav-item activeTab` : `explore-nav-item`}>
-                            Received Payments
-                          </div>
+                        <div style={{marginTop:'5px'}} className="modal-body">
+                          <BuySqueak squeak={squeak} submittedCallback={toggleBuyModal} />
                         </div>
-                        <div className="modal-scroll">
-                          {tab === 'Sent Payments' ?
-                            <>
-                            <SentPayments squeakHash={props.id} />
-                            </>
+                      </div> : null}
+                    </div>:null}
 
-                          :
-                          tab === 'Received Payments' ?
-                          <>
-                          <ReceivedPayments squeakHash={props.id} />
-                          </>
-                        : <div className="try-searching">
-                        Nothing to see here ..
-                        <div/>
-                        Try searching for people, usernames, or keywords
 
+                    {/* Modal for sent payments and received payments */}
+                    {squeak &&
+                      <div onClick={()=>toggleSpendingModal()} style={{display: spendingModalOpen ? 'block' : 'none'}} className="modal-edit">
+                        <div onClick={(e)=>handleModalClick(e)} className="modal-content">
+                          <div className="modal-header no-b-border">
+                            <div className="modal-closeIcon">
+                              <div onClick={()=>toggleSpendingModal()} className="modal-closeIcon-wrap">
+                                <ICON_CLOSE />
+                              </div>
+                            </div>
+                            <p className="modal-title">{null}</p>
+                          </div>
+                          <div className="modal-body">
+                            <div className="explore-nav-menu">
+                              <div onClick={()=>setTab('Sent Payments')} className={tab =='Sent Payments' ? `explore-nav-item activeTab` : `explore-nav-item`}>
+                                Sent Payments
+                              </div>
+                              <div onClick={()=>setTab('Received Payments')} className={tab =='Received Payments' ? `explore-nav-item activeTab` : `explore-nav-item`}>
+                                Received Payments
+                              </div>
+                            </div>
+                            <div className="modal-scroll">
+                              {tab === 'Sent Payments' ?
+                                <>
+                                <SentPayments squeakHash={props.id} />
+                                </>
+
+                              :
+                              tab === 'Received Payments' ?
+                              <>
+                              <ReceivedPayments squeakHash={props.id} />
+                              </>
+                            : <div className="try-searching">
+                            Nothing to see here ..
+                            <div/>
+                            Try searching for people, usernames, or keywords
+
+                          </div>
+                        }
                       </div>
-                    }
+                    </div>
                   </div>
-                </div>
-              </div>
-            </div>}
+                </div>}
 
 
-            </>
-        }
+                </>
+            }
 
-        export default withRouter(Squeak)
+            export default withRouter(Squeak)

@@ -88,6 +88,8 @@ import {
   GetSigningProfilesReply,
   GetContactProfilesReply,
   MakeSqueakReply,
+  MakeResqueakRequest,
+  MakeResqueakReply,
   GetSqueakDisplayReply,
   GetAncestorSqueakDisplaysReply,
   GetReplySqueakDisplaysReply,
@@ -335,6 +337,20 @@ export const makeSqueak = (profileId, content, replyTo, hasRecipient, recipientP
     const deser = MakeSqueakReply.deserializeBinary;
     return baseRequest({
       url: '/makesqueakrequest',
+      req: request,
+      deser: deser,
+    });
+}
+
+export const makeResqueak = (profileId, resqueakedHash, replyTo) => {
+    console.log('Calling makeResqueak');
+    const request = new MakeResqueakRequest();
+    request.setProfileId(profileId);
+    request.setResqueakedHash(resqueakedHash);
+    request.setReplyto(replyTo);
+    const deser = MakeResqueakReply.deserializeBinary;
+    return baseRequest({
+      url: '/makeresqueak',
       req: request,
       deser: deser,
     });

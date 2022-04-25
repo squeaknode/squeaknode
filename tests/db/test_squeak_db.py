@@ -62,6 +62,11 @@ def inserted_reply_squeak_hash(squeak_db, reply_squeak, block_header):
 
 
 @pytest.fixture
+def inserted_resqueak_hash(squeak_db, resqueak, block_header):
+    yield squeak_db.insert_resqueak(resqueak, block_header)
+
+
+@pytest.fixture
 def unlocked_squeak_hash(squeak_db, squeak, inserted_squeak_hash, secret_key, squeak_content):
     squeak_db.set_squeak_secret_key(
         inserted_squeak_hash, secret_key)
@@ -488,6 +493,12 @@ def test_get_missing_squeak(squeak_db, squeak, squeak_hash):
     assert retrieved_squeak is None
 
 
+def test_get_resqueak(squeak_db, resqueak, inserted_resqueak_hash):
+    retrieved_resqueak = squeak_db.get_squeak(inserted_resqueak_hash)
+
+    assert retrieved_resqueak == resqueak
+
+
 def test_get_squeak_entry(
         squeak_db,
         squeak,
@@ -582,6 +593,34 @@ def test_get_secret_key_missing_squeak(squeak_db, squeak, squeak_hash):
     )
 
     assert retrieved_secret_key is None
+
+
+def test_get_resqueak_entry(
+        squeak_db,
+        resqueak,
+        squeak,
+        block_header,
+        public_key,
+        signing_profile,
+        inserted_resqueak_hash,
+        inserted_squeak_hash,
+        inserted_signing_profile_id,
+):
+    retrieved_resqueak_entry = squeak_db.get_squeak_entry(
+        inserted_resqueak_hash)
+    retrieved_squeak_entry = squeak_db.get_squeak_entry(inserted_squeak_hash)
+
+    assert retrieved_resqueak_entry.squeak_hash == inserted_resqueak_hash
+    assert retrieved_resqueak_entry.public_key == public_key
+    assert retrieved_resqueak_entry.content is None
+    assert retrieved_resqueak_entry.block_time == block_header.nTime
+    assert retrieved_resqueak_entry.squeak_profile._replace(
+        profile_id=None) == signing_profile
+    assert retrieved_resqueak_entry.resqueaked_hash == inserted_squeak_hash
+    assert retrieved_resqueak_entry.resqueaked_squeak == retrieved_squeak_entry
+    assert retrieved_resqueak_entry.resqueaked_squeak.public_key == public_key
+    assert retrieved_resqueak_entry.num_resqueaks == 0
+    assert retrieved_resqueak_entry.resqueaked_squeak.num_resqueaks == 1
 
 
 def test_get_timeline_squeak_entries(squeak_db, followed_squeak_hashes):

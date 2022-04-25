@@ -22,6 +22,7 @@
 import logging
 from typing import List
 from typing import Optional
+from typing import Tuple
 
 from squeak.core.keys import SqueakPublicKey
 
@@ -54,12 +55,17 @@ class SqueakPeerServerHandler(object):
         self.node_settings = node_settings
         self.config = config
 
-    def handle_get_squeak_bytes(self, squeak_hash_str) -> bytes:
+    def handle_get_squeak_bytes(self, squeak_hash_str) -> Tuple[str, bytes]:
+        """Return a tuple with the squeak type and the squeak bytes.
+
+        Returns: (str, bytes)
+        """
         squeak_hash = bytes.fromhex(squeak_hash_str)
         squeak = self.squeak_controller.get_squeak(squeak_hash)
         if not squeak:
             raise NotFoundError()
-        return squeak.serialize()
+        squeak_type = 'resqueak' if squeak.is_resqueak else 'squeak'
+        return squeak_type, squeak.serialize()
 
     def handle_get_secret_key(self, squeak_hash_str) -> bytes:
         squeak_hash = bytes.fromhex(squeak_hash_str)

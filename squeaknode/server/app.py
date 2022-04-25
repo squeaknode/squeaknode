@@ -59,10 +59,13 @@ def create_app(handler):
     @app.route('/squeak/<hash>')
     def squeak(hash):
         try:
-            squeak_bytes = handler.handle_get_squeak_bytes(hash)
+            squeak_type, squeak_bytes = handler.handle_get_squeak_bytes(hash)
         except NotFoundError:
             return "Not found", 404
-        return squeak_bytes
+        return jsonify({
+            'squeak_type': squeak_type,
+            'squeak_bytes': squeak_bytes.hex(),
+        })
 
     @app.route('/secretkey/<hash>')
     def secret_key(hash):

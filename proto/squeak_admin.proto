@@ -128,6 +128,10 @@ service SqueakAdmin {
   */
   rpc MakeSqueak (MakeSqueakRequest) returns (MakeSqueakReply) {}
 
+  /** sqkadmin: `makeresqueak`
+  */
+  rpc MakeResqueak (MakeResqueakRequest) returns (MakeResqueakReply) {}
+
   /** sqkadmin: `getsqueakdisplay`
   */
   rpc GetSqueakDisplay (GetSqueakDisplayRequest) returns (GetSqueakDisplayReply) {}
@@ -588,6 +592,22 @@ message MakeSqueakReply {
     string squeak_hash = 1;
 }
 
+message MakeResqueakRequest {
+    /// The profile id
+    int32 profile_id = 1;
+
+    /// The content
+    string resqueaked_hash = 2;
+
+    /// The replyto hash
+    string replyto = 3;
+}
+
+message MakeResqueakReply {
+    /// Hash of the created resqueak.
+    string squeak_hash = 1;
+}
+
 message GetSqueakDisplayRequest {
     /// Hash of the squeak.
     string squeak_hash = 1;
@@ -658,6 +678,18 @@ message SqueakDisplayEntry {
 
     /// Number of replies
     int32 num_replies = 20;
+
+    /// Is resqueak
+    bool is_resqueak = 21;
+
+    /// Resqueaked hash
+    string resqueaked_hash = 22;
+
+    /// Resqueaked squeak
+    SqueakDisplayEntry resqueaked_squeak = 23;
+
+    /// Number of resqueaks
+    int32 num_resqueaks = 24;
 }
 
 message GetTimelineSqueakDisplaysRequest {

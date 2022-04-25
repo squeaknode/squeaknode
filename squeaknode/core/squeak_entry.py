@@ -42,5 +42,8 @@ class SqueakEntry(NamedTuple):
     squeak_profile: Optional[SqueakProfile]
     recipient_squeak_profile: Optional[SqueakProfile]
     num_replies: int
+    num_resqueaks: int
     liked_time_ms: Optional[int] = None
     content: Optional[str] = None
+    resqueaked_hash: Optional[bytes] = None
+    resqueaked_squeak: Optional['SqueakEntry'] = None  # type: ignore

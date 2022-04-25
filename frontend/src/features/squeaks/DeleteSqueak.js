@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom'
 import { getProfileImageSrcString } from '../../squeakimages/images';
 import Loader from '../../components/Loader'
 
-import { Form, Input, Select, Checkbox, Relevant, Debug, TextArea, Option } from 'informed';
+import { Form, Input, Select, Checkbox, Relevant, Debug, TextArea, Option, useFormApi } from 'informed';
 
 import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
@@ -36,6 +36,17 @@ const DeleteSqueak = (props) => {
 
   const author = props.replyToSqueak && props.replyToSqueak.getAuthor();
 
+  const SubmitButton = () => {
+    const formApi = useFormApi();
+
+    return <button
+      type="submit"
+      className={'squeak-btn-side squeak-btn-active'}
+      onClick={formApi.submitForm}>
+      Delete
+    </button>
+  };
+
   const DeleteSqueakForm = () => (
     <Form onSubmit={deleteSqueak} className="Squeak-input-side">
       <div className="inner-input-links">
@@ -44,9 +55,7 @@ const DeleteSqueak = (props) => {
         <div className="squeak-btn-holder">
           <div style={{ fontSize: '13px', color: null }}>
           </div>
-          <button type="submit" className={'squeak-btn-side squeak-btn-active'}>
-            Delete
-          </button>
+          <SubmitButton />
         </div>
       </div>
     </Form>

@@ -26,6 +26,7 @@ from typing import Tuple
 
 import grpc
 from bitcoin.core import CBlockHeader
+from squeak.core import CBaseSqueak
 from squeak.core import CSqueak
 
 from squeaknode.bitcoin.bitcoin_client import BitcoinClient
@@ -46,6 +47,7 @@ from squeaknode.core.squeaks import check_squeak
 from squeaknode.core.squeaks import get_decrypted_content
 from squeaknode.core.squeaks import get_hash
 from squeaknode.core.squeaks import get_payment_point_of_secret_key
+from squeaknode.core.squeaks import make_resqueak_with_block
 from squeaknode.core.squeaks import make_squeak_with_block
 from squeaknode.lightning.lightning_client import LightningClient
 
@@ -70,8 +72,6 @@ class SqueakCore:
             recipient_profile: Optional[SqueakProfile] = None,
     ) -> Tuple[CSqueak, bytes]:
         """Create a new squeak.
-
-        TODO: Include the block header in the result tuple.
 
         Args:
             signing_profile: The profile of the author of the squeak.
@@ -100,7 +100,40 @@ class SqueakCore:
         )
         return squeak, secret_key
 
-    def check_squeak(self, squeak: CSqueak) -> None:
+    def make_resqueak(
+            self,
+            signing_profile: SqueakProfile,
+            resqueak_hash: bytes,
+            replyto_hash: Optional[bytes] = None,
+    ) -> Tuple[CSqueak, bytes]:
+        """Create a new resqueak.
+
+        Args:
+            signing_profile: The profile of the author of the squeak.
+            resqueak_hash: The hash of the squeak to resqueak.
+            replyto_hash: The hash of the squeak to which this one is replying.
+
+        Returns:
+            CResqueak: the resqueak that was created.
+
+        Raises:
+            Exception: If the profile does not have a signing key.
+        """
+        if signing_profile.private_key is None:
+            raise Exception("Can't make squeak with a contact profile.")
+        block_info = self.bitcoin_client.get_best_block_info()
+        block_height = block_info.block_height
+        block_hash = block_info.block_hash
+        squeak = make_resqueak_with_block(
+            signing_profile.private_key,
+            resqueak_hash,
+            block_height,
+            block_hash,
+            replyto_hash=replyto_hash,
+        )
+        return squeak
+
+    def check_squeak(self, base_squeak: CBaseSqueak) -> None:
         """Checks if the squeak is valid and has a valid signature.
 
         Args:
@@ -112,9 +145,9 @@ class SqueakCore:
         Raises:
             Exception: If the squeak is not valid.
         """
-        check_squeak(squeak)
+        check_squeak(base_squeak)
 
-    def get_block_header(self, squeak: CSqueak) -> CBlockHeader:
+    def get_block_header(self, base_squeak: CBaseSqueak) -> CBlockHeader:
         """Checks if the embedded block hash in the squeak is valid for its
         block height and return the associtated block header.
 
@@ -128,8 +161,8 @@ class SqueakCore:
             Exception: If the block hash is not valid.
         """
         block_info = self.bitcoin_client.get_block_info_by_height(
-            squeak.nBlockHeight)
-        if squeak.hashBlock != block_info.block_hash:
+            base_squeak.nBlockHeight)
+        if base_squeak.hashBlock != block_info.block_hash:
             raise Exception("Block hash incorrect.")
         return block_info.block_header
 

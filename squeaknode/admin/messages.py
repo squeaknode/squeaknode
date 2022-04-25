@@ -67,12 +67,18 @@ def squeak_entry_to_message(squeak_entry: SqueakEntry) -> squeak_admin_pb2.Squea
                 if squeak_entry.squeak_profile else None),
         liked_time_ms=squeak_entry.liked_time_ms,  # type: ignore
         num_replies=squeak_entry.num_replies,
+        num_resqueaks=squeak_entry.num_resqueaks,
         is_private=(squeak_entry.recipient_public_key is not None),
         recipient_pubkey=(squeak_entry.recipient_public_key.to_bytes(
         ).hex() if squeak_entry.recipient_public_key else None),
         is_recipient_known=(squeak_entry.recipient_squeak_profile is not None),
         recipient=(squeak_profile_to_message(squeak_entry.recipient_squeak_profile)
                    if squeak_entry.recipient_squeak_profile else None),
+        is_resqueak=(squeak_entry.resqueaked_hash is not None),
+        resqueaked_hash=(squeak_entry.resqueaked_hash.hex()
+                         if squeak_entry.resqueaked_hash else None),  # type: ignore
+        resqueaked_squeak=(squeak_entry_to_message(squeak_entry.resqueaked_squeak)
+                           if squeak_entry.resqueaked_squeak else None),  # type: ignore
     )
 
 
@@ -194,6 +200,7 @@ def message_to_squeak_entry(msg: squeak_admin_pb2.SqueakDisplayEntry) -> SqueakE
         recipient_squeak_profile=None,  # TODO: message to squeak profile
         liked_time_ms=(msg.liked_time_ms if msg.liked_time_ms > 0 else None),
         num_replies=0,
+        num_resqueaks=0,
         content=(msg.content_str if len(msg.content_str) > 0 else None),
     )
 
