@@ -42,7 +42,7 @@ EXPOSE 12994
 ENV PATH="/opt/venv/bin:$PATH"
 
 # Copy the entrypoint script.
-COPY "start-squeaknode.sh" .
-RUN chmod +x start-squeaknode.sh
+COPY "entrypoint.sh" .
+RUN chmod +x entrypoint.sh
 
-CMD ["./start-squeaknode.sh"]
+CMD ["./entrypoint.sh"]
