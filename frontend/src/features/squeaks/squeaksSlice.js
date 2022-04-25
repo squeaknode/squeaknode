@@ -220,10 +220,32 @@ const updatedSqueakInArray = (squeakArr, newSqueak) => {
   if (currentIndex != -1) {
     squeakArr[currentIndex] = newSqueak;
   }
+
+  // Update resqueaked squeaks
+  for (let i = 0; i < squeakArr.length; i++) {
+    const currentSqueak = squeakArr[i];
+    const currentResqueakedSqueak = currentSqueak.getResqueakedSqueak();
+    if (currentResqueakedSqueak && currentResqueakedSqueak.getSqueakHash() === newSqueak.getSqueakHash()) {
+      const modifiedSqueak = currentSqueak.clone();
+      modifiedSqueak.setResqueakedSqueak(newSqueak);
+      squeakArr[i] = modifiedSqueak;
+    }
+  }
 }
 
 const removeSqueakInArray = (squeakArr, squeakHash) => {
   return squeakArr.filter(squeak => squeak.getSqueakHash() !== squeakHash);
+
+  // Remove resqueaked squeaks
+  for (let i = 0; i < squeakArr.length; i++) {
+    const currentSqueak = squeakArr[i];
+    const currentResqueakedSqueak = currentSqueak.getResqueakedSqueak();
+    if (currentResqueakedSqueak && currentResqueakedSqueak.getSqueakHash() === squeakHash) {
+      const modifiedSqueak = currentSqueak.clone();
+      modifiedSqueak.setResqueakedSqueak(null);
+      squeakArr[i] = modifiedSqueak;
+    }
+  }
 }
 
 
