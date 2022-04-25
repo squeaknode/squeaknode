@@ -307,9 +307,6 @@ const squeaksSlice = createSlice({
     .addCase(setLikeSqueak.fulfilled, (state, action) => {
       console.log(action);
       const newSqueak = action.payload;
-      // if (state.currentSqueak && state.currentSqueak.getSqueakHash() === newSqueak.getSqueakHash()) {
-      //   state.currentSqueak = newSqueak;
-      // }
       updateCurrentSqueak(state, newSqueak);
       updatedSqueakInArray(state.timelineSqueaks, newSqueak);
       updatedSqueakInArray(state.searchSqueaks, newSqueak);
@@ -320,9 +317,6 @@ const squeaksSlice = createSlice({
     .addCase(setUnlikeSqueak.fulfilled, (state, action) => {
       console.log(action);
       const newSqueak = action.payload;
-      // if (state.currentSqueak && state.currentSqueak.getSqueakHash() === newSqueak.getSqueakHash()) {
-      //   state.currentSqueak = newSqueak;
-      // }
       updateCurrentSqueak(state, newSqueak);
       updatedSqueakInArray(state.timelineSqueaks, newSqueak);
       updatedSqueakInArray(state.searchSqueaks, newSqueak);
@@ -433,9 +427,6 @@ const squeaksSlice = createSlice({
       console.log(action);
       state.buySqueakStatus = 'idle';
       const newSqueak = action.payload;
-      // if (state.currentSqueak && state.currentSqueak.getSqueakHash() === newSqueak.getSqueakHash()) {
-      //   state.currentSqueak = newSqueak;
-      // }
       updateCurrentSqueak(state, newSqueak);
       updatedSqueakInArray(state.timelineSqueaks, newSqueak);
       updatedSqueakInArray(state.searchSqueaks, newSqueak);
