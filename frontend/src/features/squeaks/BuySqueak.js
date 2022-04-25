@@ -109,29 +109,34 @@ const BuySqueak = (props) => {
                   <a href={`https://amboss.space/node/${offer.getNodePubkey()}`}
                     target="_blank" rel="noopener noreferrer"
                     style={{color: "blue", fontWeight: 'bold'}}
-                    >
-                    {offer.getNodePubkey()}@{offer.getNodeHost()}:{offer.getNodePort()}
-                  </a>
+                    onClick={()=>{
+                      window.open(
+                        `https://amboss.space/node/${offer.getNodePubkey()}`,
+                        "_blank", "noreferrer");
+                      }}
+                      >
+                      {offer.getNodePubkey()}@{offer.getNodeHost()}:{offer.getNodePort()}
+                    </a>
+                  </div>
+                  </>
+              }
+              <div className="inner-input-links">
+                <div className="input-links-side">
                 </div>
-                </>
-            }
-            <div className="inner-input-links">
-              <div className="input-links-side">
-              </div>
-              <div className="squeak-btn-holder">
-                <div onClick={buySqueak} className={offer ? 'squeak-btn-side squeak-btn-active' : 'squeak-btn-side'}>
-                  Buy
+                <div className="squeak-btn-holder">
+                  <div onClick={buySqueak} className={offer ? 'squeak-btn-side squeak-btn-active' : 'squeak-btn-side'}>
+                    Buy
+                  </div>
                 </div>
               </div>
             </div>
+
+
           </div>
 
 
-        </div>
+          </>
+      )
+    }
 
-
-        </>
-    )
-  }
-
-  export default withRouter(BuySqueak)
+    export default withRouter(BuySqueak)
