@@ -87,7 +87,7 @@ services:
       - "lnd_server:lnd"
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=0
-    entrypoint: ["./start-squeaknode.sh"]
+    entrypoint: ["./entrypoint.sh"]
 
 volumes:
   lnd_server_dir:

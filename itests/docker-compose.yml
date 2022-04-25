@@ -125,7 +125,7 @@ services:
       - "squeaknode_db:squeaknode_db"
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=0
-    entrypoint: ["./start-squeaknode.sh"]
+    entrypoint: ["./entrypoint.sh"]
 
   squeaknode_other:
     image: squeaknode
@@ -145,7 +145,7 @@ services:
       - "squeaknode_other_db:squeaknode_other_db"
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=0
-    entrypoint: ["./start-squeaknode.sh"]
+    entrypoint: ["./entrypoint.sh"]
 
   test:
     image: test
