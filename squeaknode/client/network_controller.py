@@ -96,13 +96,8 @@ class NetworkController:
             )
             for downloader in downloaders]
         for future in as_completed(futures):
-            # retrieve the result
-            # result = future.result()
-            # print(result)
             err = future.exception()
-            logger.info('Got err: {}'.format(err))
             if err is None:
-                logger.info('Returning because of successful result.')
                 break
         executor.shutdown(wait=False)
 
