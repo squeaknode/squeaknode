@@ -163,6 +163,8 @@ import {
   GetSentPaymentsForPeerReply,
   GetReceivedPaymentsForPeerRequest,
   GetReceivedPaymentsForPeerReply,
+  DownloadSqueakSecretKeyRequest,
+  DownloadSqueakSecretKeyReply,
 } from '../proto/squeak_admin_pb';
 
 import axios from 'axios'
@@ -918,6 +920,18 @@ export const downloadSqueak = (squeakHash) => {
     const deser = DownloadSqueakReply.deserializeBinary;
     return baseRequest({
       url: '/downloadsqueak',
+      req: request,
+      deser: deser,
+    });
+}
+
+export const downloadSqueakSecretKey = (squeakHash) => {
+    console.log('Calling downloadSqueakSecretKey');
+    const request = new DownloadSqueakSecretKeyRequest();
+    request.setSqueakHash(squeakHash);
+    const deser = DownloadSqueakSecretKeyReply.deserializeBinary;
+    return baseRequest({
+      url: '/downloadsqueaksecretkey',
       req: request,
       deser: deser,
     });
