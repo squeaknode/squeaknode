@@ -338,6 +338,10 @@ class SqueakController:
         self.network_controller.download_single_squeak(squeak_hash)
         return DownloadResult(1, 1, 0, 9999)
 
+    def download_single_squeak_secret_key(self, squeak_hash: bytes) -> DownloadResult:
+        self.network_controller.download_single_squeak_secret_key(squeak_hash)
+        return DownloadResult(1, 1, 0, 9999)
+
     def get_timeline_squeak_entries(
             self,
             limit: int,

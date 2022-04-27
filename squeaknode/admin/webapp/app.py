@@ -403,6 +403,12 @@ def create_app(handler, username, password):
     def downloadsqueak(msg):
         return handler.handle_download_squeak(msg)
 
+    @app.route("/downloadsqueaksecretkey", methods=["POST"])
+    @login_required
+    @protobuf_serialized(squeak_admin_pb2.DownloadSqueakSecretKeyRequest())
+    def downloadsqueaksecretkey(msg):
+        return handler.handle_download_squeak_secret_key(msg)
+
     @app.route("/downloadoffers", methods=["POST"])
     @login_required
     @protobuf_serialized(squeak_admin_pb2.DownloadOffersRequest())

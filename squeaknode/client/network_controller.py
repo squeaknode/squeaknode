@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import logging
+from concurrent.futures import as_completed
 from concurrent.futures import ThreadPoolExecutor
 from concurrent.futures import wait
 from typing import Optional
@@ -77,10 +78,35 @@ class NetworkController:
                 )
                 for downloader in downloaders
             ]
-            # wait for all tasks to complete
+            # wait for at least one task to complete successfully.
             wait(futures)
 
     def download_single_squeak(self, squeak_hash: bytes) -> None:
+        peers = self.squeak_store.get_autoconnect_peers()
+        downloaders = [
+            self.get_downloader(peer)
+            for peer in peers
+        ]
+        executor = ThreadPoolExecutor(50)
+        # submit tasks and collect futures
+        futures = [
+            executor.submit(
+                downloader.download_single_squeak,
+                squeak_hash
+            )
+            for downloader in downloaders]
+        for future in as_completed(futures):
+            # retrieve the result
+            # result = future.result()
+            # print(result)
+            err = future.exception()
+            logger.info('Got err: {}'.format(err))
+            if err is None:
+                logger.info('Returning because of successful result.')
+                break
+        executor.shutdown(wait=False)
+
+    def download_single_squeak_secret_key(self, squeak_hash: bytes) -> None:
         peers = self.squeak_store.get_autoconnect_peers()
         downloaders = [
             self.get_downloader(peer)
@@ -90,7 +116,7 @@ class NetworkController:
             # submit tasks and collect futures
             futures = [
                 executor.submit(
-                    downloader.download_single_squeak,
+                    downloader.download_single_squeak_secret_key,
                     squeak_hash
                 )
                 for downloader in downloaders]

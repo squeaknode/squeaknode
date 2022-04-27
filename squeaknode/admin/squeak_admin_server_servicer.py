@@ -200,6 +200,9 @@ class SqueakAdminServerServicer(squeak_admin_pb2_grpc.SqueakAdminServicer):
     def DownloadSqueak(self, request, context):
         return self.handler.handle_download_squeak(request)
 
+    def DownloadSqueakSecretKey(self, request, context):
+        return self.handler.handle_download_squeak_secret_key(request)
+
     def DownloadOffers(self, request, context):
         return self.handler.handle_download_offers(request)
 
