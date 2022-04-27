@@ -108,13 +108,16 @@ const BuySqueak = (props) => {
 
     const DownloadOffersForm = () => (
       <Form onSubmit={submitDownloadOffers} className="Squeak-input-side">
-        <div className="inner-input-links">
-          <div className="input-links-side">
+          <div className="inner-input-links">
+            <div className="input-links-side">
+            </div>
+            <div className="squeak-btn-holder">
+              {downloadSqueakOffersStatus === 'idle' ?
+              <SubmitDownloadOffersButton /> :
+              <Loader />
+              }
+            </div>
           </div>
-          <div className="squeak-btn-holder">
-            <SubmitDownloadOffersButton />
-          </div>
-        </div>
       </Form>
     );
 
