@@ -83,9 +83,7 @@ class PeerDownloader(ABC):
             self,
             squeak_hash: bytes,
     ) -> None:
-        logger.info('Start download_single_squeak...')
         self.download_squeak(squeak_hash)
-        logger.info('Finish download_single_squeak...')
 
     def download_single_squeak_secret_key(
             self,
