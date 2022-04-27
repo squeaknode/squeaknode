@@ -667,6 +667,19 @@ class SqueakAdminServerHandler(object):
             download_result=download_result_msg,
         )
 
+    def handle_download_squeak_secret_key(self, request):
+        squeak_hash_str = request.squeak_hash
+        squeak_hash = bytes.fromhex(squeak_hash_str)
+        logger.info(
+            "Handle download squeak secret key for hash: {}".format(squeak_hash_str))
+        download_result = self.squeak_controller.download_single_squeak_secret_key(
+            squeak_hash)
+        logger.info("Download result: {}".format(download_result))
+        download_result_msg = download_result_to_message(download_result)
+        return squeak_admin_pb2.DownloadSqueakReply(
+            download_result=download_result_msg,
+        )
+
     def handle_download_offers(self, request):
         squeak_hash_str = request.squeak_hash
         squeak_hash = bytes.fromhex(squeak_hash_str)

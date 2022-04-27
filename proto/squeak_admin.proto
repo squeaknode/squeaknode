@@ -208,6 +208,10 @@ service SqueakAdmin {
   */
   rpc DownloadSqueak (DownloadSqueakRequest) returns (DownloadSqueakReply) {}
 
+  /** sqkadmin: `downloadsqueaksecretkey`
+  */
+  rpc DownloadSqueakSecretKey (DownloadSqueakSecretKeyRequest) returns (DownloadSqueakSecretKeyReply) {}
+
   /** sqkadmin: `downloadoffers`
   */
   rpc DownloadOffers (DownloadOffersRequest) returns (DownloadOffersReply) {}
@@ -1100,6 +1104,16 @@ message DownloadSqueakRequest {
 }
 
 message DownloadSqueakReply {
+    // The download result
+    DownloadResult download_result = 1;
+}
+
+message DownloadSqueakSecretKeyRequest {
+    /// The squeak hash.
+    string squeak_hash = 1;
+}
+
+message DownloadSqueakSecretKeyReply {
     // The download result
     DownloadResult download_result = 1;
 }

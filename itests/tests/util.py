@@ -221,6 +221,15 @@ def download_squeak(node_stub, squeak_hash):
     return download_squeak_response.download_result
 
 
+def download_squeak_secret_key(node_stub, squeak_hash):
+    download_squeak_secret_key_response = node_stub.DownloadSqueakSecretKey(
+        squeak_admin_pb2.DownloadSqueakSecretKeyRequest(
+            squeak_hash=squeak_hash,
+        ),
+    )
+    return download_squeak_secret_key_response.download_result
+
+
 def download_squeaks(node_stub, pubkeys_in_hex, min_block, max_block, reply_to):
     download_squeaks_response = node_stub.DownloadSqueaks(
         squeak_admin_pb2.DownloadSqueaksRequest(

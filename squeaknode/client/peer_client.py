@@ -24,6 +24,7 @@ from typing import List
 from typing import Optional
 
 import requests
+from squeak.core import CBaseSqueak
 from squeak.core import CResqueak
 from squeak.core import CSqueak
 from squeak.core.keys import SqueakPublicKey
@@ -88,7 +89,7 @@ class PeerClient:
             for squeak_hash_str in squeak_hashes_str
         ]
 
-    def get_squeak(self, squeak_hash: bytes) -> Optional[CSqueak]:
+    def get_squeak(self, squeak_hash: bytes) -> Optional[CBaseSqueak]:
         squeak_hash_str = squeak_hash.hex()
         url = f"{self.base_url}/squeak/{squeak_hash_str}"
         r = requests.get(

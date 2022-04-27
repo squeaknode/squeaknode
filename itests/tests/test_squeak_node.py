@@ -38,6 +38,7 @@ from tests.util import create_signing_profile
 from tests.util import delete_profile
 from tests.util import delete_squeak
 from tests.util import download_squeak
+from tests.util import download_squeak_secret_key
 from tests.util import free_price
 from tests.util import get_external_address
 from tests.util import get_hash
@@ -631,6 +632,8 @@ def test_buy_squeak(
 ):
     # Download squeak
     download_squeak(other_admin_stub, saved_squeak_hash)
+    # Download secret key
+    download_squeak_secret_key(other_admin_stub, saved_squeak_hash)
 
     # Get the sent offers from the seller node
     get_sent_offers_response = admin_stub.GetSentOffers(
@@ -781,6 +784,8 @@ def test_download_free_squeak(
     with free_price(admin_stub):
         # Download squeak
         download_result = download_squeak(other_admin_stub, saved_squeak_hash)
+        # Download secret key
+        download_squeak_secret_key(other_admin_stub, saved_squeak_hash)
         print('download_result:')
         print(download_result)
         assert download_result.number_downloaded == 1
@@ -821,6 +826,8 @@ def test_download_single_squeak(
 
         # Download squeak
         download_result = download_squeak(other_admin_stub, saved_squeak_hash)
+        # Download secret key
+        download_squeak_secret_key(other_admin_stub, saved_squeak_hash)
         assert download_result.number_downloaded == 1
         assert download_result.number_requested == 1
 

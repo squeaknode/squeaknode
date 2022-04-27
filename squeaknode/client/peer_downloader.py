@@ -64,20 +64,31 @@ class PeerDownloader(ABC):
             pubkeys,
         )
         for squeak_hash in squeak_hashes:
-            self.download_squeak(
-                squeak_hash,
-                min_block,
-                max_block,
-                pubkeys,
-            )
+            try:
+                self.download_squeak(
+                    squeak_hash,
+                    min_block,
+                    max_block,
+                    pubkeys,
+                )
+            except Exception:
+                pass
         for squeak_hash in squeak_hashes:
-            self.download_secret_key(squeak_hash)
+            try:
+                self.download_secret_key(squeak_hash)
+            except Exception:
+                pass
 
     def download_single_squeak(
             self,
             squeak_hash: bytes,
     ) -> None:
         self.download_squeak(squeak_hash)
+
+    def download_single_squeak_secret_key(
+            self,
+            squeak_hash: bytes,
+    ) -> None:
         self.download_secret_key(squeak_hash)
 
     def download_squeak(
@@ -89,22 +100,22 @@ class PeerDownloader(ABC):
     ) -> None:
         # Download the squeak if not already owned.
         if self.squeak_store.get_squeak(squeak_hash):
-            return
+            raise Exception('Squeak already saved.')
 
         # Download the squeak if not already owned.
         squeak = self.client.get_squeak(squeak_hash)
 
         # Check if the squeak is valid.
         if not squeak:
-            return
+            raise Exception('Squeak not found.')
         if get_hash(squeak) != squeak_hash:
-            return
+            raise Exception('Squeak has wrong hash.')
         if min_block and squeak.nBlockHeight < min_block:
-            return
+            raise Exception('Squeak has block height below minimum.')
         if max_block and squeak.nBlockHeight > max_block:
-            return
+            raise Exception('Squeak has block height above minimum.')
         if pubkeys and squeak.GetPubKey() not in pubkeys:
-            return
+            raise Exception('Squeak has wronge pubkey.')
 
         # Save the squeak.
         self.squeak_store.save_squeak(squeak)
@@ -114,10 +125,10 @@ class PeerDownloader(ABC):
 
         # Check if squeak is already owned.
         if not squeak:
-            return
+            raise Exception('Squeak is not already saved.')
 
         if self.squeak_store.get_squeak_secret_key(squeak_hash):
-            return
+            raise Exception('Squeak secret key is already saved.')
 
         # Download the secret key if not already owned.
         secret_key = self.client.get_secret_key(squeak_hash)
@@ -127,7 +138,7 @@ class PeerDownloader(ABC):
 
         for received_offer in self.squeak_store.get_received_offers(squeak_hash):
             if received_offer.peer_address == self.peer.address:
-                return
+                raise Exception('Received offer from this peer already saved.')
 
         # Download the offer if secret key not already owned.
         offer = self.client.get_offer(squeak_hash)
