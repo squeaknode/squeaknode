@@ -23,7 +23,7 @@ from typing import NamedTuple
 
 
 class PayReq(NamedTuple):
-    """Represents info about the lightning node."""
+    """Represents a payment request."""
     payment_hash: bytes
     payment_point: bytes
     num_msat: int
