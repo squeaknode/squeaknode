@@ -11,10 +11,10 @@ A peer-to-peer status feed with posts unlocked by Lightning.
 
 Squeaknode allows you to create, view, buy, and sell squeaks.
 
-A squeak is an immutable structure that:
+A squeak is an immutable, signed structure that:
 * contains up to 280 utf-8 characters of text, encrypted (can only be decrypted with access to the decryption key obtained by lightning payment)
 * contains the height and block hash of the latest bitcoin block
-* contains the public key of the author, and is signed by the author
+* contains the public key of the author
 * contains the public key of the recipient, if the text is end-to-end encrypted
 * contains the hash of another squeak, if the squeak is a reply
 * can be used to derive a unique hash
