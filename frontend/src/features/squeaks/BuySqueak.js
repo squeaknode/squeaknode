@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom'
 import { getProfileImageSrcString } from '../../squeakimages/images';
 import Loader from '../../components/Loader'
 
-import { Form, Input, Checkbox, Relevant, Debug, TextArea, Option } from 'informed';
+import { Form, Input, Checkbox, Relevant, Debug, TextArea, Option, useFormApi } from 'informed';
 
 import Select from 'react-select'
 
@@ -21,6 +21,8 @@ import {
   selectBuySqueakStatus,
   selectSqueakOffers,
   fetchSqueakOffers,
+  selectDownloadSqueakOffersStatus,
+  setDownloadSqueakOffers,
 } from '../squeaks/squeaksSlice'
 import {
   fetchPaymentSummary,
@@ -43,6 +45,7 @@ const BuySqueak = (props) => {
   const signingProfiles = useSelector(selectSigningProfiles);
   const buySqueakStatus = useSelector(selectBuySqueakStatus);
   const squeakOffers = useSelector(selectSqueakOffers);
+  const downloadSqueakOffersStatus = useSelector(selectDownloadSqueakOffersStatus);
   const dispatch = useDispatch();
 
   const [offer, setOffer] = useState(null);
@@ -86,12 +89,45 @@ const BuySqueak = (props) => {
     });
   }
 
+  const submitDownloadOffers = ({ values }) => {
+    console.log(values);
+    console.log('downloadOffers');
+    dispatch(setDownloadSqueakOffers(squeakHash));
+  }
+
+  const SubmitDownloadOffersButton = () => {
+    const formApi = useFormApi();
+
+    return <button
+      type="submit"
+      className={'squeak-btn-side squeak-btn-active'}
+      onClick={formApi.submitForm}>
+      Re-download Offers
+    </button>
+  };
+
+    const DownloadOffersForm = () => (
+      <Form onSubmit={submitDownloadOffers} className="Squeak-input-side">
+          <div className="inner-input-links">
+            <div className="input-links-side">
+            </div>
+            <div className="squeak-btn-holder">
+              {downloadSqueakOffersStatus === 'idle' ?
+              <SubmitDownloadOffersButton /> :
+              <Loader />
+              }
+            </div>
+          </div>
+      </Form>
+    );
+
   return (
     <>
 
 
     <div className="Squeak-input-side">
       <div className="edit-input-wrap">
+        <DownloadOffersForm />
         {squeakOffers.length} offers
         <div className="inner-input-box">
           <Select options={optionsFromOffers(squeakOffers)} onChange={handleChangeOffer} />

@@ -20,6 +20,7 @@ import {
   getSqueakOffers,
   buySqueak,
   downloadSqueak,
+  downloadSqueakSecretKey,
 } from '../../api/client'
 
 const initialState = {
@@ -36,10 +37,10 @@ const initialState = {
   profileSqueaksStatus: 'idle',
   profileSqueaks: [],
   makeSqueakStatus: 'idle',
-  squeakOffersStatus: 'idle',
   squeakOffers: [],
   buySqueakStatus: 'idle',
   downloadSqueakStatus: 'idle',
+  downloadSqueakOffersStatus: 'idle',
 }
 
 // Thunk functions
@@ -212,6 +213,16 @@ export const setDownloadSqueak = createAsyncThunk(
     await downloadSqueak(squeakHash);
     const response = await getSqueak(squeakHash);
     return response.getSqueakDisplayEntry();
+  }
+)
+
+export const setDownloadSqueakOffers = createAsyncThunk(
+  'squeaks/setDownloadSqueakOffers',
+  async (squeakHash) => {
+    console.log('Downloading squeak offers');
+    await downloadSqueakSecretKey(squeakHash);
+    const response = await getSqueakOffers(squeakHash);
+    return response.getOffersList();
   }
 )
 
@@ -409,13 +420,11 @@ const squeaksSlice = createSlice({
     })
     .addCase(fetchSqueakOffers.pending, (state, action) => {
       state.squeakOffers = [];
-      state.squeakOffersStatus = 'loading'
     })
     .addCase(fetchSqueakOffers.fulfilled, (state, action) => {
       console.log(action);
       const squeakOffers = action.payload;
       state.squeakOffers = squeakOffers;
-      state.squeakOffersStatus = 'idle';
     })
     .addCase(setBuySqueak.pending, (state, action) => {
       state.buySqueakStatus = 'loading'
@@ -446,6 +455,18 @@ const squeaksSlice = createSlice({
       const newSqueak = action.payload;
       // TODO: check if current squeak is the one that got downloaded.
       state.currentSqueak = newSqueak;
+    })
+    .addCase(setDownloadSqueakOffers.pending, (state, action) => {
+      state.downloadSqueakOffersStatus = 'loading'
+    })
+    .addCase(setDownloadSqueakOffers.rejected, (state, action) => {
+      state.downloadSqueakOffersStatus = 'idle'
+    })
+    .addCase(setDownloadSqueakOffers.fulfilled, (state, action) => {
+      console.log(action);
+      state.downloadSqueakOffersStatus = 'idle';
+      const squeakOffers = action.payload;
+      state.squeakOffers = squeakOffers;
     })
   },
 })
@@ -504,8 +525,8 @@ export const selectMakeSqueakStatus = state => state.squeaks.makeSqueakStatus
 
 export const selectSqueakOffers = state => state.squeaks.squeakOffers
 
-export const selectSqueakOffersStatus = state => state.squeaks.squeakOffersStatus
-
 export const selectBuySqueakStatus = state => state.squeaks.buySqueakStatus
 
 export const selectDownloadSqueakStatus = state => state.squeaks.downloadSqueakStatus
+
+export const selectDownloadSqueakOffersStatus = state => state.squeaks.downloadSqueakOffersStatus
