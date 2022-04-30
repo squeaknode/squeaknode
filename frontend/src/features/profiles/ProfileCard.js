@@ -34,7 +34,9 @@ const ProfileCard = (props) => {
 
       return <Link onClick={(e)=>e.stopPropagation()} to={`/app/profile/${profile.getPubkey()}`} key={profile.getPubkey()} className="search-result-wapper">
           <div className="search-userPic-wrapper">
+            <div className="search-userPic">
               <img style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={`${getProfileImageSrcString(profile)}`}/>
+          </div>
           </div>
           <div className="search-user-details">
               <div className="search-user-warp">

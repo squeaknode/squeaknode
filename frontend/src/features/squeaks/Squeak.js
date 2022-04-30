@@ -218,7 +218,9 @@ import { ICON_ARROWBACK, ICON_HEART, ICON_REPLY, ICON_RETWEET, ICON_HEARTFULL,
             <div className="squeak-header-content">
               <div className="squeak-user-pic">
                 <Link to={`/app/profile/${squeak.getAuthorPubkey()}`}>
-                  <img alt="" style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={author ? `${getProfileImageSrcString(author)}` : null}/>
+                  <div className="card-userPic">
+                    <img alt="" width="100%" height="49px" src={author ? `${getProfileImageSrcString(author)}` : null}/>
+                  </div>
                 </Link>
               </div>
               <div className="squeak-user-wrap">
