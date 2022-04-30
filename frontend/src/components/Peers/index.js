@@ -1,11 +1,13 @@
 import React, { useEffect, useState, useContext } from 'react'
 import './style.scss'
 import { withRouter, Link } from 'react-router-dom'
-import { ICON_SEARCH, ICON_ARROWBACK, ICON_CLOSE } from '../../Icons'
+import { ICON_SEARCH, ICON_ARROWBACK, ICON_CLOSE, ICON_CLIPBOARD } from '../../Icons'
 import { getProfileImageSrcString } from '../../squeakimages/images';
 import Loader from '../Loader'
 import SqueakCard from '../SqueakCard'
 import PeerCard from '../../features/peers/PeerCard'
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import ReactTooltip from "react-tooltip";
 
 import { Form, Input, Select, Checkbox, Relevant, Debug, TextArea, Option } from 'informed';
 
@@ -114,9 +116,41 @@ const Peers = (props) => {
       <div className="edit-input-wrap">
         <p>Other Squeaknode instances can connect to your node using this address to download squeaks and offers.</p>
       </div>
-      <div className="edit-input-wrap">
-        <Input class="informed-input" name="host" label="Host" initialValue={externalAddress && externalAddress.getHost()} readOnly />
-        <Input class="informed-input" name="port" label="Port" initialValue={externalAddress && externalAddress.getPort()} readOnly/>
+      <div class="float-container">
+        <div class="float-child">
+          <div className="edit-input-wrap">
+            <Input class="informed-input" name="host" label="Host" initialValue={externalAddress && externalAddress.getHost()} readOnly />
+          </div>
+        </div>
+        <div class="float-child">
+          <CopyToClipboard
+            text={externalAddress && externalAddress.getHost()}
+            >
+            <a data-tip="Copy to clipboard">
+              <button fullWidth={false}>
+                <ICON_CLIPBOARD />
+              </button>
+            </a>
+          </CopyToClipboard>
+        </div>
+      </div>
+      <div class="float-container">
+        <div class="float-child">
+          <div className="edit-input-wrap">
+            <Input class="informed-input" name="port" label="Port" initialValue={externalAddress && externalAddress.getPort()} readOnly/>
+          </div>
+        </div>
+        <div class="float-child">
+          <CopyToClipboard
+            text={externalAddress && externalAddress.getPort()}
+            >
+            <a data-tip="Copy to clipboard">
+              <button fullWidth={false}>
+                <ICON_CLIPBOARD />
+              </button>
+            </a>
+          </CopyToClipboard>
+        </div>
       </div>
     </Form>
   );
