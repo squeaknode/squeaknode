@@ -112,7 +112,7 @@ const Peers = (props) => {
   const ShowExternalAddressForm = () => (
     <Form className="Squeak-input-side">
       <div className="edit-input-wrap">
-        <p>Other Squeaknode instances can connect to your node using this address to exchange squeaks and offers.</p>
+        <p>Other Squeaknode instances can connect to your node using this address to download squeaks and offers.</p>
       </div>
       <div className="edit-input-wrap">
         <Input class="informed-input" name="host" label="Host" initialValue={externalAddress && externalAddress.getHost()} readOnly />
