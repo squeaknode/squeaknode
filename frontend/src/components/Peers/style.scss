@@ -69,3 +69,16 @@
         }
     }
 }
+
+
+.float-container {
+  display: flex; /* ADDED */
+  align-items: center; /* ADDED */
+  width: 100%;
+}
+
+.float-child {
+  position: relative;
+  float: left;
+  width: 730px;
+}
