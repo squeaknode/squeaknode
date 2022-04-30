@@ -71,7 +71,7 @@ def create_app(handler, username, password):
 
     @login.unauthorized_handler
     def unauthorized_callback():
-        return redirect("/login")
+        return redirect(url_for("login"))
 
     def protobuf_serialized(request_message):
         def decorator(func):
