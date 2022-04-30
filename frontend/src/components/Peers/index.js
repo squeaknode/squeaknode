@@ -126,7 +126,7 @@ const Peers = (props) => {
           <CopyToClipboard
             text={externalAddress && externalAddress.getHost()}
             >
-            <a data-tip="Copy to clipboard">
+            <a data-tip="Copy host">
               <button fullWidth={false}>
                 <ICON_CLIPBOARD />
               </button>
@@ -144,7 +144,7 @@ const Peers = (props) => {
           <CopyToClipboard
             text={externalAddress && externalAddress.getPort()}
             >
-            <a data-tip="Copy to clipboard">
+            <a data-tip="Copy port">
               <button fullWidth={false}>
                 <ICON_CLIPBOARD />
               </button>
@@ -152,6 +152,7 @@ const Peers = (props) => {
           </CopyToClipboard>
         </div>
       </div>
+      <ReactTooltip effect="solid" />
     </Form>
   );
 
