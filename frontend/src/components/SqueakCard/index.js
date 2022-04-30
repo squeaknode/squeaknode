@@ -171,7 +171,9 @@ import { ICON_REPLY, ICON_RETWEET,
               <Link onClick={(e)=>{
                   e.stopPropagation();
                 }} to={`/app/profile/${props.squeak.getAuthorPubkey()}`}>
-                <img alt="" style={{borderRadius:'50%', minWidth:'49px'}} width="100%" height="49px" src={author ? `${getProfileImageSrcString(author)}` : null}/>
+                <div className="card-userPic">
+                  <img alt="" width="100%" height="49px" src={author ? `${getProfileImageSrcString(author)}` : null}/>
+                </div>
               </Link>
               {props.hasReply? <div className="squeak-reply-thread"></div> : null}
             </div>
