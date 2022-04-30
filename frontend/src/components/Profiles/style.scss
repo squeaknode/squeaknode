@@ -111,8 +111,28 @@
 .search-userPic-wrapper{
     flex-basis: 49px;
     margin-right: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.search-userPic{
+  img{
+      object-fit: cover;
+      border-radius: 50%;
+      min-width: 49px;
+
+      -webkit-transition: all 1s ease;
+      -moz-transition: all 1s ease;
+      -o-transition: all 1s ease;
+      -ms-transition: all 1s ease;
+      transition: all 1s ease;
+  }
+}
+
+.search-userPic:hover{
     img{
-        object-fit: cover;
+      -webkit-filter: brightness(70%);
+      filter: brightness(70%);
     }
 }
 
