@@ -33,7 +33,7 @@ The protocol is defined [here](https://github.com/yzernik/squeak/blob/master/doc
 * a Tor SOCKS5 proxy (you can open Tor Browser and run it in the background)
 
 ### Step 1. Create the configuration
-> Update the **config.ini** file and fill in the relevant sections to connect to your Bitcoin node and LND node:
+> Create a **config.ini** file and fill in the relevant sections to connect to your Bitcoin node and LND node:
 
 ```
 [node]
