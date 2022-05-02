@@ -18,9 +18,7 @@ RUN pip install --upgrade pip
 WORKDIR /app
 
 # Copy the source code.
-COPY squeaknode ./squeaknode
-COPY proto ./proto
-COPY LICENSE MANIFEST.in README.md requirements.txt setup.cfg setup.py  ./
+COPY . .
 
 RUN pip install .[postgres]
 
