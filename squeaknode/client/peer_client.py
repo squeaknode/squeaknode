@@ -99,19 +99,16 @@ class PeerClient:
         )
         if r.status_code != requests.codes.ok:
             return None
-        logger.info(r)
-        squeak_json = r.json()
-        # squeak_bytes = r.content
-        squeak_type = squeak_json['squeak_type']
-        squeak_bytes_hex = squeak_json['squeak_bytes']
-        squeak_bytes = bytes.fromhex(squeak_bytes_hex)
-        logger.info('Client downloaded: {}'.format(squeak_json))
-        if squeak_type == 'squeak':
+        squeak_bytes = r.content
+        try:
             return CSqueak.deserialize(squeak_bytes)
-        elif squeak_type == 'resqueak':
+        except Exception:
+            pass
+        try:
             return CResqueak.deserialize(squeak_bytes)
-        else:
-            return None
+        except Exception:
+            pass
+        return None
 
     def get_secret_key(self, squeak_hash: bytes) -> Optional[bytes]:
         squeak_hash_str = squeak_hash.hex()
