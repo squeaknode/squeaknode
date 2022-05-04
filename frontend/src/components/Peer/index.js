@@ -22,6 +22,7 @@ import {
   setDeletePeer,
   setPeerAutoconnectEnabled,
   setPeerAutoconnectDisabled,
+  setRenamePeer,
 } from '../../features/peers/peersSlice'
 import {
   fetchPaymentSummaryForPeer,
@@ -121,13 +122,10 @@ const Peer = (props) => {
 
   const editPeer = ({values}) => {
     console.log('Calling editPeer with name:', values.name);
-    // TODO: call rename action.
-    alert('Rename peer not yet implemented!');
-    // dispatch(setRenameProfile({
-    //   peerId: user.getPeerId(),
-    //   profileName: editName,
-    // }));
-    // TODO: chain action to update profile squeaks with the new name.
+    dispatch(setRenamePeer({
+      peerId: peer.getPeerId(),
+      peerName: values.name,
+    }));
     setSaved(true)
     toggleEditModal()
   }

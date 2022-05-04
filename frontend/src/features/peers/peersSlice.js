@@ -6,12 +6,14 @@ import {
 } from '@reduxjs/toolkit'
 import {
   getPeer,
+  getPeerByAddress,
   getConnectedPeers,
   connectPeer,
   disconnectPeer,
   getSavedPeers,
   savePeer,
   deletePeer,
+  renamePeer,
   enableAutoconnectPeer,
   disableAutoconnectPeer,
 } from '../../api/client'
@@ -37,7 +39,7 @@ export const fetchPeer = createAsyncThunk(
     let network = values.network;
     let host = values.host;
     let port = values.port;
-    const response = await getPeer(
+    const response = await getPeerByAddress(
       network,
       host,
       port,
@@ -153,6 +155,22 @@ export const setPeerAutoconnectDisabled = createAsyncThunk(
   }
 )
 
+export const setRenamePeer = createAsyncThunk(
+  'profile/setRenamePeer',
+  async (values) => {
+    console.log('Renaming peer');
+    console.log(values.peerId);
+    console.log(values.peerName);
+    let peerId = values.peerId;
+    let peerName = values.peerName;
+    await renamePeer(peerId, peerName);
+    console.log('Getting renamed peer');
+    const response = await getPeer(peerId);
+    console.log(response);
+    return response.getSqueakPeer();
+  }
+)
+
 
 const peersSlice = createSlice({
   name: 'peers',
@@ -261,6 +279,14 @@ const peersSlice = createSlice({
       });
       state.currentPeer = newSavedPeer;
       state.savedPeers = newSavedPeers;
+    })
+    .addCase(setRenamePeer.pending, (state, action) => {
+      state.currentPeerStatus = 'loading'
+    })
+    .addCase(setRenamePeer.fulfilled, (state, action) => {
+      const newPeer = action.payload;
+      state.currentPeer = newPeer;
+      state.currentPeerStatus = 'idle';
     })
   },
 })
