@@ -63,7 +63,7 @@ def parse_args():
 
 
 def get_ascii_name():
-    return r"""\
+    return r"""
    _____                        _                    _
   / ____|                      | |                  | |
  | (___   __ _ _   _  ___  __ _| | ___ __   ___   __| | ___
