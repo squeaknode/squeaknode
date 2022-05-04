@@ -165,6 +165,8 @@ import {
   GetReceivedPaymentsForPeerReply,
   DownloadSqueakSecretKeyRequest,
   DownloadSqueakSecretKeyReply,
+  RenamePeerRequest,
+  RenamePeerReply,
 } from '../proto/squeak_admin_pb';
 
 import axios from 'axios'
@@ -718,8 +720,20 @@ export const getPrivateKey = (id) => {
     });
 }
 
-export const getPeer = (network, host, port) => {
+export const getPeer = (peerId) => {
     console.log('Calling getPeer');
+    const request = new GetPeerRequest();
+    request.setPeerId(peerId);
+    const deser = GetPeerReply.deserializeBinary;
+    return baseRequest({
+      url: '/getpeer',
+      req: request,
+      deser: deser,
+    });
+}
+
+export const getPeerByAddress = (network, host, port) => {
+    console.log('Calling getPeerByAddress');
     const request = new GetPeerByAddressRequest();
     const peerAddress = new PeerAddress();
     peerAddress.setNetwork(network);
@@ -729,6 +743,19 @@ export const getPeer = (network, host, port) => {
     const deser = GetPeerByAddressReply.deserializeBinary;
     return baseRequest({
       url: '/getpeerbyaddress',
+      req: request,
+      deser: deser,
+    });
+}
+
+export const renamePeer = (peerId, peerName) => {
+    console.log('Calling renamePeer');
+    const request = new RenamePeerRequest();
+    request.setPeerId(peerId);
+    request.setPeerName(peerName);
+    const deser = RenamePeerReply.deserializeBinary;
+    return baseRequest({
+      url: '/renamepeer',
       req: request,
       deser: deser,
     });
