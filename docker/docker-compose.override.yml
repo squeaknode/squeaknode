@@ -19,6 +19,16 @@ services:
   #   environment:
   #     - NETWORK=testnet
 
+  clightning_client:
+    command:
+      - --bitcoin-rpcconnect=bitcoin-core
+      - --bitcoin-rpcuser=devuser
+      - --bitcoin-rpcpassword=devpass
+      - --network=testnet
+      - --plugin-dir=/usr/libexec/c-lightning/plugins
+      - --alias=myitestnode
+      - --log-level=debug
+
 volumes:
   # shared volume is needed for sharing the btcd certificate
   shared:

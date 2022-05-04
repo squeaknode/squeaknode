@@ -57,6 +57,26 @@ services:
       - net.ipv6.conf.all.disable_ipv6=0
     entrypoint: ["./start-lnd.sh"]
 
+  clightning_client:
+    image: elementsproject/lightningd:v0.11.0.1
+    container_name: clightning
+    environment:
+      EXPOSE_TCP: "true"
+    expose:
+      - "9735"
+      - "10009"
+    ports:
+      - 10010:10009
+    volumes:
+      - ~/.lightning:/root/.lightning"
+      - tor-dir:/var/lib/tor
+    links:
+      - "bitcoin-core:bitcoin-core"
+    depends_on:
+      - "tor-node"
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=0
+
   tor-node:
     image: osminogin/tor-simple
     container_name: tor-node
