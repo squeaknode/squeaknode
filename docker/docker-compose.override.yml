@@ -26,8 +26,10 @@ services:
       - --bitcoin-rpcpassword=devpass
       - --network=testnet
       - --plugin-dir=/usr/libexec/c-lightning/plugins
-      - --alias=myitestnode
+      - --alias=mydockernode
       - --log-level=debug
+      - --rpc-file=/root/.lightning/lightning-rpc
+      - --rpc-file-mode=0777
 
 volumes:
   # shared volume is needed for sharing the btcd certificate

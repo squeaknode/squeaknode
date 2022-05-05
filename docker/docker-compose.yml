@@ -60,15 +60,16 @@ services:
   clightning_client:
     image: elementsproject/lightningd:v0.11.0.1
     container_name: clightning
-    environment:
-      EXPOSE_TCP: "true"
     expose:
       - "9735"
+      - "19735"
+      - "9835"
       - "10009"
     ports:
       - 10010:10009
+      - 9835:9835
     volumes:
-      - ~/.lightning:/root/.lightning"
+      - ~/.lightning:/root/.lightning
       - tor-dir:/var/lib/tor
     links:
       - "bitcoin-core:bitcoin-core"

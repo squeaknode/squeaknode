@@ -56,6 +56,9 @@ BITCOIN_RPC_PORT = {
 }
 DEFAULT_LND_PORT = 9735
 DEFAULT_LND_RPC_PORT = 10009
+DEFAULT_CLIGHTNING_DIR = ".lightning"
+DEFAULT_CLIGHTNING_RPC_FILE = str(
+    Path.home() / DEFAULT_CLIGHTNING_DIR / 'lightning-rpc')
 DEFAULT_SQK_DIR = ".sqk"
 DEFAULT_SQK_DIR_PATH = str(Path.home() / DEFAULT_SQK_DIR)
 DEFAULT_LND_HOST = "localhost"
@@ -90,6 +93,13 @@ class LndConfig(Config):
     rpc_port = key(cast=int, required=False, default=DEFAULT_LND_RPC_PORT)
     tls_cert_path = key(cast=str, required=False, default="")
     macaroon_path = key(cast=str, required=False, default="")
+
+
+@section('clightning')
+class CLightningConfig(Config):
+    enabled = key(cast=bool, required=False, default=False)
+    rpc_file = key(cast=str, required=False,
+                   default=DEFAULT_CLIGHTNING_RPC_FILE)
 
 
 @section('tor')
@@ -173,6 +183,7 @@ class TwitterConfig(Config):
 class SqueaknodeConfig(Config):
     bitcoin = group_key(BitcoinConfig)
     lnd = group_key(LndConfig)
+    clightning = group_key(CLightningConfig)
     tor = group_key(TorConfig)
     server = group_key(ServerConfig)
     rpc = group_key(RpcConfig)

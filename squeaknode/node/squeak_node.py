@@ -34,6 +34,7 @@ from squeaknode.core.squeak_core import SqueakCore
 from squeaknode.db.db_engine import get_connection_string
 from squeaknode.db.db_engine import get_engine
 from squeaknode.db.squeak_db import SqueakDb
+from squeaknode.lightning.clightning_lightning_client import CLightningClient
 from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
 from squeaknode.node.node_settings import NodeSettings
 from squeaknode.node.payment_processor import PaymentProcessor
@@ -118,12 +119,17 @@ class SqueakNode:
         self.node_settings = NodeSettings(self.squeak_db)
 
     def create_lightning_client(self):
-        self.lightning_client = LNDLightningClient(
-            self.config.lnd.host,
-            self.config.lnd.rpc_port,
-            self.config.lnd.tls_cert_path,
-            self.config.lnd.macaroon_path,
-        )
+        if self.config.clightning.enabled:
+            self.lightning_client = CLightningClient(
+                self.config.clightning.rpc_file,
+            )
+        else:
+            self.lightning_client = LNDLightningClient(
+                self.config.lnd.host,
+                self.config.lnd.rpc_port,
+                self.config.lnd.tls_cert_path,
+                self.config.lnd.macaroon_path,
+            )
 
     def create_bitcoin_client(self):
         self.bitcoin_client = BitcoinCoreClient(

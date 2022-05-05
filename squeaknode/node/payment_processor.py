@@ -101,6 +101,8 @@ class PaymentProcessorTask:
                 )
                 if self.stopped.is_set():
                     self.payments_result.cancel_fn()
+                logger.info(self.payments_result)
+                logger.info(self.payments_result.result_stream)
                 for received_payment in self.payments_result.result_stream:
                     self.handle_received_payment(received_payment)
             except InvoiceSubscriptionError:
@@ -109,7 +111,15 @@ class PaymentProcessorTask:
                         self.retry_s,
                     ),
                 )
-                self.stopped.wait(self.retry_s)
+                # self.stopped.wait(self.retry_s)
+            except Exception:
+                logger.error(
+                    "Unable to subscribe invoices (Unknown error). Retrying in {} seconds...".format(
+                        self.retry_s,
+                    ),
+                )
+                # self.stopped.wait(self.retry_s)
+            self.stopped.wait(self.retry_s)
 
     def get_latest_settle_index(self) -> int:
         return self.squeak_db.get_latest_settle_index() or 0

@@ -35,6 +35,14 @@ logger = logging.getLogger(__name__)
 class LightningClient(ABC):
 
     @abstractmethod
+    def init(self):
+        """Initialize the lightning client.
+
+        Returns:
+            None
+        """
+
+    @abstractmethod
     def get_info(self) -> Info:
         """Get info about the lightning node.
 
