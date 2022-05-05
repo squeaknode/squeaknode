@@ -50,20 +50,9 @@ class CLightningClient(LightningClient):
         pass
 
     def pay_invoice(self, payment_request: str) -> Payment:
-        pay_req = self.decode_pay_req(payment_request)
-        logger.info('decoded pay_req: {}'.format(pay_req))
-        logger.info('pay_req.destination: {}'.format(pay_req.destination))
-        route = self.lrpc.getroute(pay_req.destination, pay_req.num_msat, 1)
-        logger.info('route: {}'.format(route))
-        payment = self.lrpc.sendpay(
-            route['route'],
-            pay_req.payment_hash.hex(),
-        )
+        payment = self.lrpc.pay(payment_request)
         logger.info('payment: {}'.format(payment))
-        completed_payment = self.lrpc.waitsendpay(
-            pay_req.payment_hash.hex(),
-        )
-        if completed_payment['status'] == 'complete':
+        if payment['status'] == 'complete':
             return Payment(
                 payment_preimage=bytes.fromhex(payment['payment_preimage']),
                 payment_error='',
