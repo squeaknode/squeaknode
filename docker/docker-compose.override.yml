@@ -30,6 +30,7 @@ services:
       - --log-level=debug
       - --rpc-file=/root/.lightning/lightning-rpc
       - --rpc-file-mode=0777
+      - --proxy=tor-node:9050
 
 volumes:
   # shared volume is needed for sharing the btcd certificate
