@@ -170,7 +170,6 @@ class LNDLightningClient(LightningClient):
         def get_invoice_stream():
             try:
                 for invoice in subscribe_result:
-                    print(invoice)
                     if invoice.settled:
                         yield invoice
             except grpc.RpcError as e:
