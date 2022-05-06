@@ -44,16 +44,14 @@ class CLightningClient(LightningClient):
         rpc_path: str,
     ) -> None:
         self.rpc_path = rpc_path
+
+    def init(self):
         # Create an instance of the LightningRpc object using the Core Lightning daemon on your computer.
         logger.info('initializing clightning client: {}'.format(self.rpc_path))
         self.lrpc = LightningRpc(self.rpc_path)
 
-    def init(self):
-        pass
-
     def pay_invoice(self, payment_request: str) -> Payment:
         payment = self.lrpc.pay(payment_request)
-        logger.info('payment: {}'.format(payment))
         if payment['status'] == 'complete':
             return Payment(
                 payment_preimage=bytes.fromhex(payment['payment_preimage']),
@@ -69,7 +67,6 @@ class CLightningClient(LightningClient):
         info = self.lrpc.getinfo()
         pubkey = info['id']
         binding = info.get('binding')
-        logger.info(binding)
         uris = []
         if binding:
             for b in binding:
@@ -77,7 +74,6 @@ class CLightningClient(LightningClient):
                 if ':' not in address:  # TODO: Change type of uri to LightningAddress.
                     port = b['port']
                     uri = f"{pubkey}@{address}:{port}"
-                    logger.info(uri)
                     uris.append(uri)
         return Info(
             uris=uris,
@@ -95,19 +91,14 @@ class CLightningClient(LightningClient):
         )
 
     def create_invoice(self, preimage: bytes, amount_msat: int) -> Invoice:
-        logger.info('preimage: {}'.format(preimage.hex()))
-        logger.info('amount msat: {}'.format(amount_msat))
         created_invoice = self.lrpc.invoice(
             amount_msat,
             label=str(uuid.uuid4()),
             description="Squeaknode invoice",
             preimage=preimage.hex(),
         )
-        logger.info('created invoice: {}'.format(created_invoice))
         creation_time = int(time.time())
         expiry = int(created_invoice['expires_at']) - creation_time
-        logger.info('creation_time: {}'.format(creation_time))
-        logger.info('expiry: {}'.format(expiry))
         return Invoice(
             r_hash=bytes.fromhex(created_invoice['payment_hash']),
             payment_request=created_invoice['bolt11'],
