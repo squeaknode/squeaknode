@@ -79,14 +79,6 @@ class CLightningClient(LightningClient):
                     uri = f"{pubkey}@{address}:{port}"
                     logger.info(uri)
                     uris.append(uri)
-
-        # get_info_request = lnd_pb2.GetInfoRequest()
-        # get_info_response = self.stub.GetInfo(
-        #     get_info_request,
-        # )
-        # return Info(
-        #     uris=get_info_response.uris,
-        # )
         return Info(
             uris=uris,
         )
@@ -102,12 +94,6 @@ class CLightningClient(LightningClient):
             expiry=int(pay_req['expiry']),
         )
 
-    # def lookup_invoice(self, r_hash_str: str) -> lnd_pb2.Invoice:
-    #     payment_hash = lnd_pb2.PaymentHash(
-    #         r_hash_str=r_hash_str,
-    #     )
-    #     return self.stub.LookupInvoice(payment_hash)
-
     def create_invoice(self, preimage: bytes, amount_msat: int) -> Invoice:
         logger.info('preimage: {}'.format(preimage.hex()))
         logger.info('amount msat: {}'.format(amount_msat))
@@ -118,27 +104,10 @@ class CLightningClient(LightningClient):
             preimage=preimage.hex(),
         )
         logger.info('created invoice: {}'.format(created_invoice))
-
-        # add_invoice_response = self.add_invoice(preimage, amount_msat)
-        # payment_hash = add_invoice_response.r_hash
-        # lookup_invoice_response = self.lookup_invoice(
-        #     payment_hash.hex()
-        # )
-        # return Invoice(
-        #     r_hash=lookup_invoice_response.r_hash,
-        #     payment_request=lookup_invoice_response.payment_request,
-        #     value_msat=amount_msat,
-        #     settled=lookup_invoice_response.settled,
-        #     settle_index=lookup_invoice_response.settle_index,
-        #     creation_date=lookup_invoice_response.creation_date,
-        #     expiry=lookup_invoice_response.expiry,
-        # )
-
         creation_time = int(time.time())
         expiry = int(created_invoice['expires_at']) - creation_time
         logger.info('creation_time: {}'.format(creation_time))
         logger.info('expiry: {}'.format(expiry))
-
         return Invoice(
             r_hash=bytes.fromhex(created_invoice['payment_hash']),
             payment_request=created_invoice['bolt11'],
