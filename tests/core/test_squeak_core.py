@@ -131,9 +131,10 @@ def failed_payment(payment_request):
 
 @pytest.fixture
 def invoice_stream(settled_invoice, unsettled_invoice):
+    # Length of invoices list is 1.
     invoices = [
         settled_invoice,
-        unsettled_invoice,
+        # unsettled_invoice,
     ]
     yield InvoiceStream(
         cancel=lambda: None,
@@ -516,6 +517,7 @@ def test_unlock_squeak(squeak_core, squeak, squeak_content, completed_payment):
 
 def test_get_received_payments(squeak_core, settle_index, sent_offer, received_payment):
     def get_sent_offer_fn(payment_hash):
+        print(payment_hash)
         return sent_offer
 
     received_payments_stream = squeak_core.get_received_payments(
@@ -523,6 +525,7 @@ def test_get_received_payments(squeak_core, settle_index, sent_offer, received_p
         get_sent_offer_fn,
     )
     received_payments = list(received_payments_stream.result_stream)
+    print(received_payments)
 
     assert len(received_payments) == 1
     assert received_payments[0] == received_payment

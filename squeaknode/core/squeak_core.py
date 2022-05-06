@@ -24,13 +24,11 @@ from typing import Callable
 from typing import Optional
 from typing import Tuple
 
-import grpc
 from bitcoin.core import CBlockHeader
 from squeak.core import CBaseSqueak
 from squeak.core import CSqueak
 
 from squeaknode.bitcoin.bitcoin_client import BitcoinClient
-from squeaknode.core.exception import InvoiceSubscriptionError
 from squeaknode.core.lightning_address import LightningAddressHostPort
 from squeaknode.core.offer import Offer
 from squeaknode.core.peer_address import PeerAddress
@@ -416,25 +414,20 @@ class SqueakCore:
 
         def get_payment_stream():
             # Yield the received payments.
-            try:
-                for invoice in invoice_stream.result_stream:
-                    if invoice.settled:
-                        payment_hash = invoice.r_hash
-                        settle_index = invoice.settle_index
-                        sent_offer = get_sent_offer_fn(payment_hash)
-                        if sent_offer is not None:
-                            yield ReceivedPayment(
-                                received_payment_id=None,
-                                created_time_ms=None,
-                                squeak_hash=sent_offer.squeak_hash,
-                                payment_hash=sent_offer.payment_hash,
-                                price_msat=sent_offer.price_msat,
-                                settle_index=settle_index,
-                                peer_address=sent_offer.peer_address,
-                            )
-            except grpc.RpcError as e:
-                if e.code() != grpc.StatusCode.CANCELLED:
-                    raise InvoiceSubscriptionError()
+            for invoice in invoice_stream.result_stream:
+                payment_hash = invoice.r_hash
+                settle_index = invoice.settle_index
+                sent_offer = get_sent_offer_fn(payment_hash)
+                if sent_offer is not None:
+                    yield ReceivedPayment(
+                        received_payment_id=None,
+                        created_time_ms=None,
+                        squeak_hash=sent_offer.squeak_hash,
+                        payment_hash=sent_offer.payment_hash,
+                        price_msat=sent_offer.price_msat,
+                        settle_index=settle_index,
+                        peer_address=sent_offer.peer_address,
+                    )
 
         return ReceivedPaymentsStream(
             cancel_fn=cancel_subscription,
