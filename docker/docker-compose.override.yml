@@ -26,7 +26,20 @@ services:
       - --bitcoin-rpcpassword=devpass
       - --network=testnet
       - --plugin-dir=/usr/libexec/c-lightning/plugins
-      - --alias=mydockernode
+      - --alias=myclientningclient
+      - --log-level=debug
+      - --rpc-file=/root/.lightning/lightning-rpc
+      - --rpc-file-mode=0777
+      - --proxy=tor-node:9050
+
+  clightning_server:
+    command:
+      - --bitcoin-rpcconnect=bitcoin-core
+      - --bitcoin-rpcuser=devuser
+      - --bitcoin-rpcpassword=devpass
+      - --network=testnet
+      - --plugin-dir=/usr/libexec/c-lightning/plugins
+      - --alias=myclientningserver
       - --log-level=debug
       - --rpc-file=/root/.lightning/lightning-rpc
       - --rpc-file-mode=0777

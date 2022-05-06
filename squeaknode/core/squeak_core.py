@@ -259,6 +259,7 @@ class SqueakCore:
         """
         info = self.lightning_client.get_info()
         for uri in info.uris:
+            logger.info('uri: {}'.format(uri))
             pubkey, address = uri.split("@")
             host, port_str = address.split(":")
             port = int(port_str)

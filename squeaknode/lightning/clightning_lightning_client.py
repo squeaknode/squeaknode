@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import logging
+import time
+import uuid
 
 from pyln.client import LightningRpc
 
@@ -64,6 +66,20 @@ class CLightningClient(LightningClient):
             )
 
     def get_info(self) -> Info:
+        info = self.lrpc.getinfo()
+        pubkey = info['id']
+        binding = info.get('binding')
+        logger.info(binding)
+        uris = []
+        if binding:
+            for b in binding:
+                address = b['address']
+                if ':' not in address:  # TODO: Change type of uri to LightningAddress.
+                    port = b['port']
+                    uri = f"{pubkey}@{address}:{port}"
+                    logger.info(uri)
+                    uris.append(uri)
+
         # get_info_request = lnd_pb2.GetInfoRequest()
         # get_info_response = self.stub.GetInfo(
         #     get_info_request,
@@ -72,7 +88,7 @@ class CLightningClient(LightningClient):
         #     uris=get_info_response.uris,
         # )
         return Info(
-            uris=[],
+            uris=uris,
         )
 
     def decode_pay_req(self, payment_request: str) -> PayReq:
@@ -93,6 +109,16 @@ class CLightningClient(LightningClient):
     #     return self.stub.LookupInvoice(payment_hash)
 
     def create_invoice(self, preimage: bytes, amount_msat: int) -> Invoice:
+        logger.info('preimage: {}'.format(preimage.hex()))
+        logger.info('amount msat: {}'.format(amount_msat))
+        created_invoice = self.lrpc.invoice(
+            amount_msat,
+            label=str(uuid.uuid4()),
+            description="Squeaknode invoice",
+            preimage=preimage.hex(),
+        )
+        logger.info('created invoice: {}'.format(created_invoice))
+
         # add_invoice_response = self.add_invoice(preimage, amount_msat)
         # payment_hash = add_invoice_response.r_hash
         # lookup_invoice_response = self.lookup_invoice(
@@ -107,14 +133,20 @@ class CLightningClient(LightningClient):
         #     creation_date=lookup_invoice_response.creation_date,
         #     expiry=lookup_invoice_response.expiry,
         # )
+
+        creation_time = int(time.time())
+        expiry = int(created_invoice['expires_at']) - creation_time
+        logger.info('creation_time: {}'.format(creation_time))
+        logger.info('expiry: {}'.format(expiry))
+
         return Invoice(
-            r_hash=b'',
-            payment_request='',
-            value_msat=0,
+            r_hash=bytes.fromhex(created_invoice['payment_hash']),
+            payment_request=created_invoice['bolt11'],
+            value_msat=amount_msat,
             settled=False,
             settle_index=0,
-            creation_date=0,
-            expiry=0,
+            creation_date=creation_time,
+            expiry=expiry,
         )
 
     def subscribe_invoices(self, settle_index: int) -> InvoiceStream:
