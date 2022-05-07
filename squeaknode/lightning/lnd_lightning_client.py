@@ -27,6 +27,7 @@ import grpc
 
 from proto import lnd_pb2
 from proto import lnd_pb2_grpc
+from squeaknode.core.exception import InvoiceSubscriptionError
 from squeaknode.lightning.info import Info
 from squeaknode.lightning.invoice import Invoice
 from squeaknode.lightning.invoice_stream import InvoiceStream
@@ -165,7 +166,17 @@ class LNDLightningClient(LightningClient):
         subscribe_result = self.stub.SubscribeInvoices(
             subscribe_invoices_request,
         )
+
+        def get_invoice_stream():
+            try:
+                for invoice in subscribe_result:
+                    if invoice.settled:
+                        yield invoice
+            except grpc.RpcError as e:
+                if e.code() != grpc.StatusCode.CANCELLED:
+                    raise InvoiceSubscriptionError()
+
         return InvoiceStream(
             cancel=subscribe_result.cancel,
-            result_stream=iter(subscribe_result),
+            result_stream=get_invoice_stream(),
         )

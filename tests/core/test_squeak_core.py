@@ -131,9 +131,10 @@ def failed_payment(payment_request):
 
 @pytest.fixture
 def invoice_stream(settled_invoice, unsettled_invoice):
+    # Length of invoices list is 1.
     invoices = [
         settled_invoice,
-        unsettled_invoice,
+        # unsettled_invoice,
     ]
     yield InvoiceStream(
         cancel=lambda: None,
