@@ -189,6 +189,9 @@ class MockLightningClient(LightningClient):
         self.payment = payment
         self.invoice_stream = invoice_stream
 
+    def init(self):
+        pass
+
     def get_info(self):
         return self.info
 
