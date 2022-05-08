@@ -39,10 +39,10 @@ The protocol is defined [here](https://github.com/yzernik/squeak/blob/master/doc
 [node]
 network=mainnet
 
-[lnd]
-host=localhost
-tls_cert_path=~/.lnd/tls.cert
-macaroon_path=~/.lnd/data/chain/bitcoin/mainnet/admin.macaroon
+[lightning]
+backend=lnd
+lnd_tls_cert_path=~/.lnd/tls.cert
+lnd_macaroon_path=~/.lnd/data/chain/bitcoin/testnet/admin.macaroon
 
 [bitcoin]
 rpc_host=localhost
@@ -58,6 +58,14 @@ proxy_port=9150
 enabled=true
 username=devuser
 password=devpass
+```
+
+If you want to use [c-lightning](https://github.com/ElementsProject/lightning) as the Lightning Network node backend instead of [LND](https://github.com/lightningnetwork/lnd), replace the `lightning` section with the following:
+
+```
+[lightning]
+backend=clightning
+clightning_rpc_file=~/.lightning/lightning-rpc
 ```
 
 Add any other [configs](docs/configuration.md) that you need.
