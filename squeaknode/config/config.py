@@ -54,11 +54,15 @@ BITCOIN_RPC_PORT = {
     "testnet": 18332,
     "simnet": 18556,
 }
+DEFAULT_LIGHTNING_BACKEND = "lnd"
 DEFAULT_LND_PORT = 9735
 DEFAULT_LND_RPC_PORT = 10009
+DEFAULT_CLIGHTNING_DIR = ".lightning"
+DEFAULT_CLIGHTNING_RPC_FILE = str(
+    Path.home() / DEFAULT_CLIGHTNING_DIR / 'lightning-rpc')
 DEFAULT_SQK_DIR = ".sqk"
 DEFAULT_SQK_DIR_PATH = str(Path.home() / DEFAULT_SQK_DIR)
-DEFAULT_LND_HOST = "localhost"
+DEFAULT_LND_RPC_HOST = "localhost"
 DEFAULT_INTEREST_BLOCK_INTERVAL = 2016
 DEFAULT_SENT_OFFER_RETENTION_S = 86400
 DEFAULT_RECEIVED_OFFER_RETENTION_S = 86400
@@ -82,14 +86,17 @@ class BitcoinConfig(Config):
                                 default=DEFAULT_BITCOIN_ZEROMQ_HASHBLOCK_PORT)
 
 
-@section('lnd')
-class LndConfig(Config):
-    host = key(cast=str, required=False, default=DEFAULT_LND_HOST)
+@section('lightning')
+class LightningConfig(Config):
+    backend = key(cast=str, required=False, default=DEFAULT_LIGHTNING_BACKEND)
     external_host = key(cast=str, required=False, default="")
-    port = key(cast=int, required=False, default=DEFAULT_LND_PORT)
-    rpc_port = key(cast=int, required=False, default=DEFAULT_LND_RPC_PORT)
-    tls_cert_path = key(cast=str, required=False, default="")
-    macaroon_path = key(cast=str, required=False, default="")
+    external_port = key(cast=int, required=False, default=DEFAULT_LND_PORT)
+    lnd_rpc_host = key(cast=str, required=False, default=DEFAULT_LND_RPC_HOST)
+    lnd_rpc_port = key(cast=int, required=False, default=DEFAULT_LND_RPC_PORT)
+    lnd_tls_cert_path = key(cast=str, required=False, default="")
+    lnd_macaroon_path = key(cast=str, required=False, default="")
+    clightning_rpc_file = key(cast=str, required=False,
+                              default=DEFAULT_CLIGHTNING_RPC_FILE)
 
 
 @section('tor')
@@ -172,7 +179,7 @@ class TwitterConfig(Config):
 
 class SqueaknodeConfig(Config):
     bitcoin = group_key(BitcoinConfig)
-    lnd = group_key(LndConfig)
+    lightning = group_key(LightningConfig)
     tor = group_key(TorConfig)
     server = group_key(ServerConfig)
     rpc = group_key(RpcConfig)

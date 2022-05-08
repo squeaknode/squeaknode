@@ -19,6 +19,16 @@ services:
     environment:
       - NETWORK=mainnet
 
+  clightning_client:
+    command:
+      - --bitcoin-rpcconnect=bitcoin-core
+      - --bitcoin-rpcuser=devuser
+      - --bitcoin-rpcpassword=devpass
+      - --network=mainnet
+      - --plugin-dir=/usr/libexec/c-lightning/plugins
+      - --alias=myitestnode
+      - --log-level=debug
+
   # squeaknode:
   #   environment:
   #     - NETWORK=mainnet

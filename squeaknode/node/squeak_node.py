@@ -34,6 +34,7 @@ from squeaknode.core.squeak_core import SqueakCore
 from squeaknode.db.db_engine import get_connection_string
 from squeaknode.db.db_engine import get_engine
 from squeaknode.db.squeak_db import SqueakDb
+from squeaknode.lightning.clightning_lightning_client import CLightningClient
 from squeaknode.lightning.lnd_lightning_client import LNDLightningClient
 from squeaknode.node.node_settings import NodeSettings
 from squeaknode.node.payment_processor import PaymentProcessor
@@ -47,6 +48,7 @@ from squeaknode.node.squeak_store import SqueakStore
 from squeaknode.server.app import SqueakPeerWebServer
 from squeaknode.server.squeak_peer_server_handler import SqueakPeerServerHandler
 from squeaknode.twitter.twitter_forwarder import TwitterForwarder
+
 
 logger = logging.getLogger(__name__)
 
@@ -118,12 +120,21 @@ class SqueakNode:
         self.node_settings = NodeSettings(self.squeak_db)
 
     def create_lightning_client(self):
-        self.lightning_client = LNDLightningClient(
-            self.config.lnd.host,
-            self.config.lnd.rpc_port,
-            self.config.lnd.tls_cert_path,
-            self.config.lnd.macaroon_path,
-        )
+        if self.config.lightning.backend == 'lnd':
+            self.lightning_client = LNDLightningClient(
+                self.config.lightning.lnd_rpc_host,
+                self.config.lightning.lnd_rpc_port,
+                self.config.lightning.lnd_tls_cert_path,
+                self.config.lightning.lnd_macaroon_path,
+            )
+        elif self.config.lightning.backend == 'clightning':
+            self.lightning_client = CLightningClient(
+                self.config.lightning.clightning_rpc_file,
+            )
+        else:
+            raise Exception('Invalid lightning backend: {}'.format(
+                self.config.lightning.backend,
+            ))
 
     def create_bitcoin_client(self):
         self.bitcoin_client = BitcoinCoreClient(
