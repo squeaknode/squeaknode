@@ -111,21 +111,36 @@ class CLightningClient(LightningClient):
         )
 
     def subscribe_invoices(self, settle_index: int) -> InvoiceStream:
-        # subscribe_invoices_request = lnd_pb2.InvoiceSubscription(
-        #     settle_index=settle_index,
-        # )
-        # subscribe_result = self.stub.SubscribeInvoices(
-        #     subscribe_invoices_request,
-        # )
-        # return InvoiceStream(
-        #     cancel=subscribe_result.cancel,
-        #     result_stream=iter(subscribe_result),
-        # )
+        logger.info(
+            'Calling subscribe_invoices with settle_index: {}'.format(settle_index))
+
         def cancel_fn():
             return None
 
         def get_invoice_stream():
-            raise InvoiceSubscriptionError()
+            try:
+                logger.info(
+                    'Calling get_invoice_stream with settle_index: {}'.format(settle_index))
+                pay_index = settle_index
+                while True:
+                    logger.info(
+                        'waiting for payment with pay_index: {}'.format(pay_index))
+                    payment = self.lrpc.waitanyinvoice(lastpay_index=pay_index)
+                    logger.info(
+                        'got payment: {}'.format(payment))
+                    if payment['status'] == 'paid':
+                        pay_index = payment.get('pay_index') or 0
+                        yield Invoice(
+                            r_hash=bytes.fromhex(payment['payment_hash']),
+                            payment_request=payment.get('bolt11') or '',
+                            value_msat=payment.get('value_msat'),
+                            settled=True,
+                            settle_index=pay_index,
+                            creation_date=0,  # This value is ignored.
+                            expiry=payment['expires_at'],
+                        )
+            except Exception:
+                raise InvoiceSubscriptionError()
 
         return InvoiceStream(
             cancel=cancel_fn,

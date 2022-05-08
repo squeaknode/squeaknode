@@ -171,7 +171,15 @@ class LNDLightningClient(LightningClient):
             try:
                 for invoice in subscribe_result:
                     if invoice.settled:
-                        yield invoice
+                        yield Invoice(
+                            r_hash=invoice.r_hash,
+                            payment_request=invoice.payment_request,
+                            value_msat=invoice.value_msat,
+                            settled=invoice.settled,
+                            settle_index=invoice.settle_index,
+                            creation_date=invoice.creation_date,
+                            expiry=invoice.expiry,
+                        )
             except grpc.RpcError as e:
                 if e.code() != grpc.StatusCode.CANCELLED:
                     raise InvoiceSubscriptionError()

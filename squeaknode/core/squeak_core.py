@@ -414,6 +414,8 @@ class SqueakCore:
         def get_payment_stream():
             # Yield the received payments.
             for invoice in invoice_stream.result_stream:
+                logger.info('invoice: {}'.format(invoice))
+                logger.info('type(invoice): {}'.format(type(invoice)))
                 payment_hash = invoice.r_hash
                 settle_index = invoice.settle_index
                 sent_offer = get_sent_offer_fn(payment_hash)
