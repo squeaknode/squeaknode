@@ -120,17 +120,21 @@ class SqueakNode:
         self.node_settings = NodeSettings(self.squeak_db)
 
     def create_lightning_client(self):
-        if self.config.clightning.enabled:
+        if self.config.lightning.backend == 'lnd':
+            self.lightning_client = LNDLightningClient(
+                self.config.lightning.lnd_rpc_host,
+                self.config.lightning.lnd_rpc_port,
+                self.config.lightning.lnd_tls_cert_path,
+                self.config.lightning.lnd_macaroon_path,
+            )
+        elif self.config.lightning.backend == 'clightning':
             self.lightning_client = CLightningClient(
-                self.config.clightning.rpc_file,
+                self.config.lightning.clightning_rpc_file,
             )
         else:
-            self.lightning_client = LNDLightningClient(
-                self.config.lnd.host,
-                self.config.lnd.rpc_port,
-                self.config.lnd.tls_cert_path,
-                self.config.lnd.macaroon_path,
-            )
+            raise Exception('Invalid lightning backend: {}'.format(
+                self.config.lightning.backend,
+            ))
 
     def create_bitcoin_client(self):
         self.bitcoin_client = BitcoinCoreClient(

@@ -105,10 +105,10 @@ class SqueakController:
             peer_address: PeerAddress,
     ) -> Optional[Offer]:
         lnd_external_address: Optional[LightningAddressHostPort] = None
-        if self.config.lnd.external_host:
+        if self.config.lightning.external_host:
             lnd_external_address = LightningAddressHostPort(
-                host=self.config.lnd.external_host,
-                port=self.config.lnd.port,
+                host=self.config.lightning.external_host,
+                port=self.config.lightning.external_port,
             )
         price_msat = self.get_sell_price_msat()
         if price_msat == 0:
