@@ -111,23 +111,15 @@ class CLightningClient(LightningClient):
         )
 
     def subscribe_invoices(self, settle_index: int) -> InvoiceStream:
-        logger.info(
-            'Calling subscribe_invoices with settle_index: {}'.format(settle_index))
 
         def cancel_fn():
             return None
 
         def get_invoice_stream():
             try:
-                logger.info(
-                    'Calling get_invoice_stream with settle_index: {}'.format(settle_index))
                 pay_index = settle_index
                 while True:
-                    logger.info(
-                        'waiting for payment with pay_index: {}'.format(pay_index))
                     payment = self.lrpc.waitanyinvoice(lastpay_index=pay_index)
-                    logger.info(
-                        'got payment: {}'.format(payment))
                     if payment['status'] == 'paid':
                         pay_index = payment.get('pay_index') or 0
                         yield Invoice(
