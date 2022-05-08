@@ -62,19 +62,6 @@ def parse_args():
     return parser.parse_args()
 
 
-def get_ascii_name():
-    return r"""
-   _____                        _                    _
-  / ____|                      | |                  | |
- | (___   __ _ _   _  ___  __ _| | ___ __   ___   __| | ___
-  \___ \ / _` | | | |/ _ \/ _` | |/ / '_ \ / _ \ / _` |/ _ \
-  ____) | (_| | |_| |  __/ (_| |   <| | | | (_) | (_| |  __/
- |_____/ \__, |\__,_|\___|\__,_|_|\_\_| |_|\___/ \__,_|\___|
-            | |
-            |_|
-    """
-
-
 def main():
     logging.basicConfig(level=logging.ERROR)
     args = parse_args()
@@ -94,7 +81,6 @@ def main():
 
 
 def run_node(config):
-    logger.info(get_ascii_name())
     logger.info("Config: {}".format(config))
     signal(SIGTERM, handler)
     signal(SIGINT, handler)
