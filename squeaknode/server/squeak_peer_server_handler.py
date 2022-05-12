@@ -75,12 +75,12 @@ class SqueakPeerServerHandler(object):
             raise NotFoundError()
         return secret_key
 
-    def handle_get_offer(self, squeak_hash_str, client_host) -> Offer:
+    def handle_get_offer(self, squeak_hash_str, client_host, client_port) -> Offer:
         squeak_hash = bytes.fromhex(squeak_hash_str)
         client_addr = PeerAddress(
             network=Network.IPV4,
             host=client_host,
-            port=0,
+            port=client_port,
         )
         offer = self.squeak_controller.get_packaged_offer(
             squeak_hash,
