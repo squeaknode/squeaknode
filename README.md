@@ -42,7 +42,7 @@ network=mainnet
 [lightning]
 backend=lnd
 lnd_tls_cert_path=~/.lnd/tls.cert
-lnd_macaroon_path=~/.lnd/data/chain/bitcoin/testnet/admin.macaroon
+lnd_macaroon_path=~/.lnd/data/chain/bitcoin/mainnet/admin.macaroon
 
 [bitcoin]
 rpc_host=localhost
