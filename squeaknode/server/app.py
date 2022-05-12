@@ -77,7 +77,7 @@ def create_app(handler):
     @app.route('/offer/<hash>')
     def offer(hash):
         client_host = request.remote_addr
-        client_port = request.remote_port
+        client_port = request.environ.get('REMOTE_PORT') or 0
         try:
             offer = handler.handle_get_offer(hash, client_host, client_port)
         except NotFoundError:
