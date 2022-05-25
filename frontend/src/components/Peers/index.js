@@ -75,11 +75,12 @@ const Peers = (props) => {
 
   const savePeer = ({values}) => {
     const network = getNetwork(values.useTor);
-    const strippedHost = removeHttp(values.host);
+    const strippedAddress = removeHttp(values.address);
+    const url = new URL(`http://${strippedAddress}`);
     dispatch(setSavePeer({
       name: values.name,
-      host: strippedHost,
-      port: values.port,
+      host: url.hostname,
+      port: url.port,
       network: network,
     }));
     toggleSavePeerModal();
@@ -100,8 +101,7 @@ const Peers = (props) => {
       </div>
       <div className="edit-input-wrap">
         <Input class="informed-input" name="name" label="Peer Name (not required)" />
-        <Input class="informed-input" name="host" label="Host" />
-        <Input class="informed-input" name="port" type="number" label="Port" />
+        <Input class="informed-input" name="address" label="Address (host:port)" />
         <Checkbox class="informed-input" name="useTor" label="Connect With Tor: " />
       </div>
 
