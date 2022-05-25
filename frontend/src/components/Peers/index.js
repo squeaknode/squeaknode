@@ -61,6 +61,14 @@ const Peers = (props) => {
     return 'IPV4';
   };
 
+  const getExternalAddressStr = () => {
+    if (externalAddress) {
+      return `${externalAddress.getHost()}:${externalAddress.getPort()}`;
+    } else {
+      return '';
+    }
+  };
+
   function removeHttp(url) {
     return url.replace(/^https?:\/\//, '');
   }
@@ -119,32 +127,14 @@ const Peers = (props) => {
       <div class="float-container">
         <div class="float-child">
           <div className="edit-input-wrap">
-            <Input class="informed-input" name="host" label="Host" initialValue={externalAddress && externalAddress.getHost()} readOnly />
+            <Input class="informed-input" name="external-address" label="External Address" initialValue={externalAddress && `${getExternalAddressStr()}`} readOnly />
           </div>
         </div>
         <div class="float-child">
           <CopyToClipboard
-            text={externalAddress && externalAddress.getHost()}
+            text={externalAddress && `${getExternalAddressStr()}`}
             >
             <a data-tip="Copy host">
-              <button fullWidth={false}>
-                <ICON_CLIPBOARD />
-              </button>
-            </a>
-          </CopyToClipboard>
-        </div>
-      </div>
-      <div class="float-container">
-        <div class="float-child">
-          <div className="edit-input-wrap">
-            <Input class="informed-input" name="port" label="Port" initialValue={externalAddress && externalAddress.getPort()} readOnly/>
-          </div>
-        </div>
-        <div class="float-child">
-          <CopyToClipboard
-            text={externalAddress && externalAddress.getPort()}
-            >
-            <a data-tip="Copy port">
               <button fullWidth={false}>
                 <ICON_CLIPBOARD />
               </button>
