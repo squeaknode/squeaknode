@@ -121,6 +121,7 @@ def gen_squeak_peer(peer_name):
     return create_saved_peer(
         peer_name,
         peer_address,
+        0,
     )
 
 
