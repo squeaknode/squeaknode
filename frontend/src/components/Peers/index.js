@@ -61,17 +61,26 @@ const Peers = (props) => {
     return 'IPV4';
   };
 
+  const getExternalAddressStr = () => {
+    if (externalAddress) {
+      return `${externalAddress.getHost()}:${externalAddress.getPort()}`;
+    } else {
+      return '';
+    }
+  };
+
   function removeHttp(url) {
     return url.replace(/^https?:\/\//, '');
   }
 
   const savePeer = ({values}) => {
     const network = getNetwork(values.useTor);
-    const strippedHost = removeHttp(values.host);
+    const strippedAddress = removeHttp(values.address);
+    const url = new URL(`http://${strippedAddress}`);
     dispatch(setSavePeer({
       name: values.name,
-      host: strippedHost,
-      port: values.port,
+      host: url.hostname,
+      port: url.port,
       network: network,
     }));
     toggleSavePeerModal();
@@ -92,8 +101,7 @@ const Peers = (props) => {
       </div>
       <div className="edit-input-wrap">
         <Input class="informed-input" name="name" label="Peer Name (not required)" />
-        <Input class="informed-input" name="host" label="Host" />
-        <Input class="informed-input" name="port" type="number" label="Port" />
+        <Input class="informed-input" name="address" label="Address (host:port)" />
         <Checkbox class="informed-input" name="useTor" label="Connect With Tor: " />
       </div>
 
@@ -119,32 +127,14 @@ const Peers = (props) => {
       <div class="float-container">
         <div class="float-child">
           <div className="edit-input-wrap">
-            <Input class="informed-input" name="host" label="Host" initialValue={externalAddress && externalAddress.getHost()} readOnly />
+            <Input class="informed-input" name="external-address" label="External Address" initialValue={externalAddress && `${getExternalAddressStr()}`} readOnly />
           </div>
         </div>
         <div class="float-child">
           <CopyToClipboard
-            text={externalAddress && externalAddress.getHost()}
+            text={externalAddress && `${getExternalAddressStr()}`}
             >
             <a data-tip="Copy host">
-              <button fullWidth={false}>
-                <ICON_CLIPBOARD />
-              </button>
-            </a>
-          </CopyToClipboard>
-        </div>
-      </div>
-      <div class="float-container">
-        <div class="float-child">
-          <div className="edit-input-wrap">
-            <Input class="informed-input" name="port" label="Port" initialValue={externalAddress && externalAddress.getPort()} readOnly/>
-          </div>
-        </div>
-        <div class="float-child">
-          <CopyToClipboard
-            text={externalAddress && externalAddress.getPort()}
-            >
-            <a data-tip="Copy port">
               <button fullWidth={false}>
                 <ICON_CLIPBOARD />
               </button>
