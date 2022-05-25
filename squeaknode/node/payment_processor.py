@@ -91,7 +91,9 @@ class PaymentProcessorTask:
     def process_subscribed_invoices(self):
         while not self.stopped.is_set():
             try:
-                latest_settle_index = self.get_latest_settle_index()
+                # Use zero as starting settle index, so that no invoices are skipped.
+                # latest_settle_index = self.get_latest_settle_index()
+                latest_settle_index = 0
                 logger.info("Starting payment subscription with settle index: {}".format(
                     latest_settle_index,
                 ))
