@@ -32,6 +32,11 @@ def peer_name():
 
 
 @pytest.fixture
+def default_peer_port():
+    yield 9999
+
+
+@pytest.fixture
 def peer_address():
     yield PeerAddress(
         network=Network.IPV4,
@@ -58,24 +63,37 @@ def peer_address_with_no_port():
     )
 
 
-def test_create_saved_peer(peer_name, peer_address):
+def test_create_saved_peer(peer_name, peer_address, default_peer_port):
     peer = create_saved_peer(
         peer_name,
         peer_address,
+        default_peer_port,
     )
 
     assert peer.peer_name == peer_name
     assert peer.address == peer_address
 
 
-def test_create_saved_peer_empty_name(peer_address):
-    create_saved_peer("", peer_address)
+def test_create_saved_peer_empty_name(peer_address, default_peer_port):
+    create_saved_peer("", peer_address, default_peer_port)
 
 
-def test_create_saved_peer_use_tor(peer_name, peer_address_with_tor):
+def test_create_saved_peer_no_port(peer_name, peer_address_with_no_port, default_peer_port):
+    peer = create_saved_peer(
+        peer_name,
+        peer_address_with_no_port,
+        default_peer_port,
+    )
+
+    assert peer.peer_name == peer_name
+    assert peer.address.port == default_peer_port
+
+
+def test_create_saved_peer_use_tor(peer_name, peer_address_with_tor, default_peer_port):
     peer = create_saved_peer(
         peer_name,
         peer_address_with_tor,
+        default_peer_port,
     )
 
     assert peer.peer_name == peer_name

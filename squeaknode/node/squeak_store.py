@@ -389,10 +389,11 @@ class SqueakStore:
             ))
         return get_profile_private_key(profile)
 
-    def create_peer(self, peer_name: str, peer_address: PeerAddress):
+    def create_peer(self, peer_name: str, peer_address: PeerAddress, default_peer_port):
         squeak_peer = create_saved_peer(
             peer_name,
             peer_address,
+            default_peer_port,
         )
         return self.squeak_db.insert_peer(squeak_peer)
 

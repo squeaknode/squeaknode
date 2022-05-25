@@ -167,4 +167,5 @@ def test_create_peer(squeak_store, squeak_controller, peer_address):
     squeak_store.create_peer.assert_called_with(
         "fake_peer_name",
         peer_address,
+        8555,
     )

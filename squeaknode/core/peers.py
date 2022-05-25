@@ -26,8 +26,13 @@ from squeaknode.core.squeak_peer import SqueakPeer
 def create_saved_peer(
         peer_name: str,
         peer_address: PeerAddress,
+        default_peer_port: int,
 ) -> SqueakPeer:
     validate_saved_peer_name(peer_name)
+    if peer_address.port == 0:
+        peer_address = peer_address._replace(
+            port=default_peer_port,
+        )
     return SqueakPeer(
         peer_id=None,
         peer_name=peer_name,

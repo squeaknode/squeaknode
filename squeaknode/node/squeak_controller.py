@@ -187,7 +187,11 @@ class SqueakController:
         return self.squeak_store.get_squeak_profile_private_key(profile_id)
 
     def create_peer(self, peer_name: str, peer_address: PeerAddress):
-        return self.squeak_store.create_peer(peer_name, peer_address)
+        return self.squeak_store.create_peer(
+            peer_name,
+            peer_address,
+            self.config.server.port or 0,
+        )
 
     def get_peer(self, peer_id: int) -> Optional[SqueakPeer]:
         return self.squeak_store.get_peer(peer_id)
