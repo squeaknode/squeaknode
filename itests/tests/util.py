@@ -437,6 +437,13 @@ def disconnect_peer(node_stub, pubkey):
     )
 
 
+def get_balance(node_stub):
+    get_balance_request = lnd_pb2.WalletBalanceRequest()
+    return node_stub.LndWalletBalance(
+        get_balance_request,
+    )
+
+
 def send_coins(node_stub, addr, amount):
     send_coins_request = lnd_pb2.SendCoinsRequest(
         addr=addr,
