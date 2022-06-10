@@ -40,6 +40,7 @@ from tests.util import delete_squeak
 from tests.util import download_squeak
 from tests.util import download_squeak_secret_key
 from tests.util import free_price
+from tests.util import get_balance
 from tests.util import get_external_address
 from tests.util import get_hash
 from tests.util import get_network
@@ -607,6 +608,18 @@ def test_delete_peer(admin_stub, peer_id):
 
 def test_send_coins(admin_stub, other_admin_stub):
     new_address_response = admin_stub.LndNewAddress(ln.NewAddressRequest())
+    get_balance_response = get_balance(
+        other_admin_stub,
+    )
+    print("Get balance: {}".format(get_balance_response))
+    print("--------------------")
+    print("--------------------")
+    print("--------------------")
+    print("--------------------")
+    print("--------------------")
+    print("--------------------")
+    print("--------------------")
+    print("--------------------", flush=True)
     send_coins_response = send_coins(
         other_admin_stub, new_address_response.address, 55555555
     )
